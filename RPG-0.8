@@ -1,0 +1,311 @@
+import random
+import time
+
+# Función para imprimir texto con retraso
+def imprimir_con_retraso(texto, retraso=0.01):
+    for letra in texto:
+        print(letra, end='', flush=True)
+        time.sleep(retraso)
+    print()
+
+class Personaje:
+    def __init__(self, nombre, clase, nivel=1):
+        self.nombre = nombre
+        self.clase = clase
+        self.nivel = nivel
+        self.hp = 200  # Health Points
+        self.mp = 20   # Mana Points
+        self.str = 0   # Strength
+        self.int = 0   # Intelligence
+        self.res = 0   # Resistance
+        self.vit = 0   # Vitality
+        self.def_ = 5  # Defense
+        self.atk = 30  # Attack
+        self.exp = 0   # Experience
+        self.habilidades = []
+        self.armas = []
+        self.magia = []
+        self.inventario = []
+        self.monstruos_eliminados = []  # Para rastrear los monstruos eliminados
+
+    def esta_vivo(self):
+        return self.hp > 0
+
+    def atacar(self, enemigo):
+        dano = self.atk - enemigo.def_
+        dano = max(dano, 0)
+        enemigo.hp -= dano
+        imprimir_con_retraso(f"{self.nombre} ataca a {enemigo.nombre} y causa {dano} de daño.", 0.01)
+
+    def recibir_dano(self, dano):
+        self.hp -= dano
+        if self.hp < 0:
+            self.hp = 0
+        imprimir_con_retraso(f"{self.nombre} recibe {dano} de daño. Vida restante: {self.hp}", 0.01)
+
+    def subir_nivel(self):
+        self.nivel += 1
+        self.hp = 200  # Restablece la vida al máximo al subir de nivel
+        self.mp += 5
+        self.atk += 2
+        self.def_ += 1
+        imprimir_con_retraso(f"{self.nombre} ha subido al nivel {self.nivel}!", 0.01)
+
+    def ganar_experiencia(self, exp):
+        self.exp += exp
+        imprimir_con_retraso(f"Experiencia actual: {self.exp}/{self.nivel * 100}", 0.01)
+        while self.exp >= self.nivel * 100:  # Necesita 100 exp por nivel
+            self.exp -= self.nivel * 100
+            self.subir_nivel()
+
+    def agregar_al_inventario(self, item):
+        if len(self.inventario) < 10:
+            self.inventario.append(item)
+            imprimir_con_retraso(f"Has recibido un {item} y lo has añadido a tu inventario.", 0.01)
+        else:
+            imprimir_con_retraso("Tu inventario está lleno. No puedes añadir más objetos.", 0.01)
+
+    def revisar_inventario(self):
+        if not self.inventario:
+            imprimir_con_retraso("Tu inventario está vacío...", 0.01)
+            time.sleep(2)
+            return False
+        else:
+            imprimir_con_retraso("Tu inventario contiene:", 0.01)
+            for item in self.inventario:
+                imprimir_con_retraso(f"- {item}", 0.01)
+            return True
+
+    def equipar_arma(self, item):
+        if item in self.inventario:
+            if item == "Pergamino de Fuego":
+                self.magia.append("Hechizo de Fuego")
+                imprimir_con_retraso(f"{self.nombre} ha equipado el {item}. Ahora puede usar magia de fuego.", 0.01)
+            elif item == "Arco de dos manos":
+                self.armas.append("Arco de dos manos")
+                imprimir_con_retraso(f"{self.nombre} ha equipado el {item}.", 0.01)
+            elif item == "Espada de dos manos":
+                self.armas.append("Espada de dos manos")
+                imprimir_con_retraso(f"{self.nombre} ha equipado el {item}.", 0.01)
+            self.inventario.remove(item)
+        else:
+            imprimir_con_retraso(f"No tienes un {item} en tu inventario.", 0.01)
+
+    def usar_magia(self, enemigo):
+        if "Hechizo de Fuego" in self.magia:
+            dano = self.atk  # El daño del hechizo es equivalente al ataque base
+            enemigo.hp -= dano
+            imprimir_con_retraso(f"{self.nombre} usa Hechizo de Fuego y causa {dano} de daño a {enemigo.nombre}.", 0.01)
+        else:
+            imprimir_con_retraso("No tienes hechizos disponibles para usar.", 0.01)
+
+    def agregar_monstruo_eliminado(self, monstruo):
+        self.monstruos_eliminados.append(monstruo)
+
+class Monstruo:
+    def __init__(self, nombre, hp, def_, atk, exp):
+        self.nombre = nombre
+        self.hp = hp
+        self.def_ = def_
+        self.atk = atk
+        self.exp = exp
+
+    def atacar(self, personaje):
+        dano = self.atk - personaje.def_
+        dano = max(dano, 0)
+        personaje.recibir_dano(dano)
+        imprimir_con_retraso(f"{self.nombre} ataca a {personaje.nombre} y causa {dano} de daño.", 0.01)
+
+def ajustar_estadisticas_monstruo(monstruo, nivel_jugador):
+    factor = 1 + 0.02 * (nivel_jugador - 1)
+    factor = min(factor, 1.05)  # Limitar el incremento de dificultad al 5%
+    monstruo.hp = int(monstruo.hp * factor)
+    monstruo.def_ = int(monstruo.def_ * factor)
+    monstruo.atk = int(monstruo.atk * factor)
+
+def seleccionar_monstruo(monstruos, nivel_jugador):
+    monstruos_validos = [m for m in monstruos]  # Considerar todos los monstruos
+    monstruo = random.choice(monstruos_validos)
+    ajustar_estadisticas_monstruo(monstruo, nivel_jugador)
+    return monstruo
+
+def combate_turno(personaje, monstruo):
+    imprimir_con_retraso(f"\n{personaje.nombre}: Vida {personaje.hp}, Daño {personaje.atk}", 0.01)
+    imprimir_con_retraso(f"{monstruo.nombre}: Vida {monstruo.hp}, Daño {monstruo.atk}", 0.01)
+
+    if personaje.clase == "Mago":
+        imprimir_con_retraso(f"\n{personaje.nombre}, es tu turno. ¿Qué deseas hacer?\n1. Usar Magia\n2. Huir", 0.01)
+        eleccion = input().strip()
+        if eleccion == "1":
+            personaje.usar_magia(monstruo)
+            if monstruo.hp > 0:
+                monstruo.atacar(personaje)
+            return personaje.esta_vivo()
+        elif eleccion == "2":
+            imprimir_con_retraso(f"{personaje.nombre} huye de la batalla.", 0.01)
+            return False
+        else:
+            imprimir_con_retraso("Selección no válida.")
+            return combate_turno(personaje, monstruo)
+    else:
+        imprimir_con_retraso(f"\n{personaje.nombre}, es tu turno. ¿Qué deseas hacer?\n1. Atacar\n2. Huir", 0.01)
+        eleccion = input().strip()
+        if eleccion == "1":
+            personaje.atacar(monstruo)
+            if monstruo.hp > 0:
+                monstruo.atacar(personaje)
+            return personaje.esta_vivo()
+        elif eleccion == "2":
+            imprimir_con_retraso(f"{personaje.nombre} huye de la batalla.", 0.01)
+            return False
+        else:
+            imprimir_con_retraso("Selección no válida.")
+            return combate_turno(personaje, monstruo)
+
+def descanso(personaje):
+    imprimir_con_retraso("Descansando... Por favor espera", 0.01)
+    time.sleep(3)
+    personaje.hp = 200
+    imprimir_con_retraso(f"{personaje.nombre} ha descansado y ha recuperado toda su vida.", 0.01)
+
+def interfaz_casa(personaje):
+    while True:
+        imprimir_con_retraso("\n--- Casa ---\n1. Inventario\n2. Descansar\n3. Aventura\n4. Terminar el juego", 0.01)
+        eleccion = input("Selecciona una opción: ").strip()
+        if eleccion == "1":
+            imprimir_con_retraso("\nTu inventario:", 0.01)
+            if not personaje.revisar_inventario():
+                time.sleep(2)
+            else:
+                imprimir_con_retraso("\nVolviendo al menú de la casa...", 0.01)
+                time.sleep(2)
+        elif eleccion == "2":
+            descanso(personaje)
+            imprimir_con_retraso("\nVolviendo al menú de la casa...", 0.01)
+            time.sleep(2)
+        elif eleccion == "3":
+            aventura(personaje)
+            break
+        elif eleccion == "4":
+            imprimir_con_retraso(f"\nEstadísticas de {personaje.nombre}:", 0.01)
+            imprimir_con_retraso(f"Nivel: {personaje.nivel}", 0.01)
+            imprimir_con_retraso(f"Vida: {personaje.hp}", 0.01)
+            imprimir_con_retraso(f"Experiencia: {personaje.exp}/{personaje.nivel * 100}", 0.01)
+            imprimir_con_retraso(f"Monstruos eliminados:", 0.01)
+            for m in personaje.monstruos_eliminados:
+                imprimir_con_retraso(f"- {m.nombre}", 0.01)
+            imprimir_con_retraso("Gracias por jugar. ¡Hasta la próxima!", 0.01)
+            break
+        else:
+            imprimir_con_retraso("Selección no válida. Por favor, elige una opción del 1 al 4.", 0.01)
+
+def aventura(personaje):
+    monstruos = crear_monstruos()
+    while personaje.esta_vivo():
+        monstruo = seleccionar_monstruo(monstruos, personaje.nivel)
+        
+        imprimir_con_retraso(f"\n¡Un {monstruo.nombre} salvaje ha aparecido! Prepárate para la batalla.", 0.01)
+        
+        experiencia_ganada = 0  # Inicializar experiencia ganada en el combate actual
+        while personaje.esta_vivo() and monstruo.hp > 0:
+            if not combate_turno(personaje, monstruo):
+                break
+        
+        if personaje.esta_vivo():
+            experiencia_ganada = monstruo.exp
+            personaje.agregar_monstruo_eliminado(monstruo)
+            imprimir_con_retraso(f"\n¡{personaje.nombre} ha derrotado a {monstruo.nombre}!", 0.01)
+            personaje.ganar_experiencia(experiencia_ganada)
+            imprimir_con_retraso(f"Experiencia actual: {personaje.exp}/{personaje.nivel * 100}", 0.01)
+            imprimir_con_retraso(f"\n¿Qué deseas hacer ahora?\n1. Regresar a casa\n2. Continuar el combate", 0.01)
+            eleccion = input().strip()
+            if eleccion == "1":
+                interfaz_casa(personaje)
+                break
+            elif eleccion == "2":
+                personaje.hp += 20
+                personaje.hp = min(personaje.hp, 200)  # Asegurarse de que la vida no exceda el máximo
+                imprimir_con_retraso(f"\n{personaje.nombre} se prepara para el próximo combate. Vida restaurada a {personaje.hp}.", 0.01)
+            else:
+                imprimir_con_retraso("Selección no válida. Regresando a casa...", 0.01)
+                interfaz_casa(personaje)
+                break
+        else:
+            imprimir_con_retraso(f"\n{personaje.nombre} ha sido derrotado por {monstruo.nombre}. Fin del juego.", 0.01)
+            break
+
+def crear_monstruos():
+    monstruos = [
+        Monstruo("Goblin", 50, 2, 10, 10),
+        Monstruo("Esqueleto", 60, 3, 12, 12),
+        Monstruo("Orco", 80, 4, 15, 15),
+        Monstruo("Troll", 100, 5, 20, 20),
+        Monstruo("Dragón", 150, 6, 25, 25),
+        Monstruo("Centauro", 70, 3, 18, 18),
+        Monstruo("Mumiia", 65, 4, 14, 14),
+        Monstruo("Cíclope", 90, 5, 22, 22),
+        Monstruo("Quimera", 120, 6, 28, 28),
+        Monstruo("Grifo", 85, 4, 16, 16),
+        Monstruo("Basilisco", 95, 5, 21, 21),
+        Monstruo("Gárgola", 75, 3, 17, 17),
+        Monstruo("Sirena", 55, 2, 13, 13),
+        Monstruo("Liche", 110, 6, 27, 27),
+        Monstruo("Hidra", 130, 7, 30, 30),
+        Monstruo("Demonio", 140, 7, 35, 35),
+        Monstruo("Fantasma", 50, 2, 12, 12),
+        Monstruo("Golem", 80, 6, 20, 20),
+        Monstruo("Araña Gigante", 60, 3, 15, 15),
+        Monstruo("Minotauro", 100, 6, 25, 25),
+        Monstruo("Driada", 55, 2, 14, 14)
+    ]
+    return monstruos
+
+def seleccionar_clase():
+    imprimir_con_retraso("\nSelecciona tu clase:\n1. Guerrero\n2. Mago\n3. Arquero", 0.01)
+    eleccion = input().strip()
+    if eleccion == "1":
+        return "Guerrero"
+    elif eleccion == "2":
+        return "Mago"
+    elif eleccion == "3":
+        return "Arquero"
+    else:
+        imprimir_con_retraso("Selección no válida. Por favor elige 1, 2 o 3.", 0.01)
+        return seleccionar_clase()
+
+def iniciar_juego():
+    imprimir_con_retraso("Bienvenido al reino de la aventura. Aquí lucharás contra monstruos, mejorarás tus habilidades y crecerás en poder.", 0.01)
+    
+    nombre_personaje = input("Introduce el nombre de tu personaje: ").strip()
+    clase_personaje = seleccionar_clase()
+    
+    personaje = Personaje(nombre_personaje, clase_personaje)
+    
+    if clase_personaje == "Mago":
+        personaje.agregar_al_inventario("Pergamino de Fuego")
+    elif clase_person personaje == "Arquero":
+        personaje.agregar_al_inventario("Arco de dos manos")
+    elif clase_personaje == "Guerrero":
+        personaje.agregar_al_inventario("Espada de dos manos")
+
+    imprimir_con_retraso("\nMiremos tu inventario...", 0.01)
+    if personaje.revisar_inventario():
+        item_inicial = personaje.inventario[0]
+        imprimir_con_retraso(f"Tienes un {item_inicial}. ¿Deseas equiparlo? (sí/no): ", 0.01)
+        equipar = input().strip().lower()
+        if equipar in ["sí", "si"]:
+            personaje.equipar_arma(item_inicial)
+            imprimir_con_retraso(f"\n{personaje.nombre} dice: '¡Perfecto, ahora estamos listos para la batalla!'", 0.01)
+        else:
+            imprimir_con_retraso("Si no equipas este objeto, no podrás continuar ya que es necesario para tu aventura.")
+            equipar = input(f"¿Deseas equipar el {item_inicial}? (sí/no): ").strip().lower()
+            if equipar in ["sí", "si"]:
+                personaje.equipar_arma(item_inicial)
+                imprimir_con_retraso(f"\n{personaje.nombre} dice: '¡Perfecto, ahora estamos listos para la batalla!'", 0.01)
+            else:
+                imprimir_con_retraso("No has equipado el objeto. La aventura comienza ahora sin el equipo recomendado.", 0.01)
+    
+    aventura(personaje)
+
+# Ejecutar el juego
+iniciar_juego()
