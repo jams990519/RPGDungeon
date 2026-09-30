@@ -110,3 +110,6 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-58 | ¿La versión web entra en la beta o después? | Después: primero Telegram; la web empieza como Mini App dentro de Telegram y luego como sitio propio |
 | P-59 | ¿El mismo personaje en Telegram y en la web, entrando con la cuenta de Telegram? | Sí |
 | P-60 | ¿Dominio y alojamiento del sitio web? | Decidirlo antes de construir el cliente web |
+| P-61 | ¿La app móvil es nativa o empieza como la web instalable en el teléfono? | Empezar con la web instalable (PWA) y hacer app de tiendas cuando el juego esté estable |
+| P-62 | ¿La app va a las tiendas de Apple y Google? | Sí, más adelante. Allí los pagos pasan por el sistema de cada tienda y las apuestas simuladas suben la edad mínima: revisar antes |
+| P-63 | ¿Qué edad mínima tendrá el juego en las tiendas? | 17+/18+ si se mantienen las apuestas con moneda del juego; si no, más bajo |
