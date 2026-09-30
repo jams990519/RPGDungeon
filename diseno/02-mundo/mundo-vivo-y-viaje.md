@@ -61,6 +61,13 @@ Las estaciones también cambian qué se pesca, qué se caza y qué se cultiva.
 
 Los recursos no están siempre en el mismo nodo. Las **vetas** (minerales, hierbas, maderas) aparecen, se agotan y reaparecen en otro lado, y cada una tiene **calidad propia** (ver [Fabricación](../07-economia/fabricacion.md)). Encontrar una veta excelente es una noticia que vale oro, y se vende (el Cartógrafo y el Informante viven de esto).
 
-## 7. Eventos del mundo
+## 7. Rumores y secretos
+
+- En las tabernas circulan **rumores**: frases que insinúan algo sin decirlo ("*dicen que el curtidor recibe visitas de noche*", "*un cazador vio una cueva detrás de la cascada del piso 6*").
+- Algunos son falsos. Los verdaderos llevan a **secretos**: jefes ocultos, vetas raras, pasadizos, mapas del tesoro y **oficios secretos**.
+- **Oficios secretos:** el oficio de Robo, el Contrabando, la Falsificación y los venenos prohibidos no los enseña ningún entrenador a la vista. Un entrenador puede **insinuarlo**, y el jugador tiene que seguir el rumor hasta encontrar al Gremio de Ladrones o al maestro que se lo enseñe (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)).
+- Los rumores se compran a los taberneros y a los informantes, y se pueden vender.
+
+## 8. Eventos del mundo
 
 Invasiones, eclipses, migraciones y epidemias: ver [Eventos](../06-contenido/eventos.md).

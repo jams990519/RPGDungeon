@@ -11,6 +11,9 @@ En casi todos los MMORPG la vida es una barra que se llena sola. Aquí **el cuer
 | [enfermedades.md](enfermedades.md) | Carrera entre gravedad e inmunidad, contagio, catálogo de 14 enfermedades, epidemias de servidor, vampirismo y licantropía |
 | [mente.md](mente.md) | Estrés con aflicciones y virtudes, cordura, corrupción, quién cura la mente |
 | [secuelas-y-muerte.md](secuelas-y-muerte.md) | Cicatrices, miembros perdidos y prótesis, males crónicos, qué se pierde al caer en cada zona, Juramento de Hierro |
+| [curacion-y-tratamientos.md](curacion-y-tratamientos.md) | **Cómo se cura todo:** Medicina como oficio que se estudia (enfermero, médico, cirujano), diagnóstico, tratamientos, **cirugía como minijuego**, dónde curarse, consulta entre jugadores con pago, tabla de problema → cura, vacunas |
+| [rasgos-adquiridos.md](rasgos-adquiridos.md) | Fobias, manías y virtudes que dejan las experiencias; cómo se quitan o se fijan |
+| [animales-y-cultivos.md](animales-y-cultivos.md) | Salud de monturas, ganado y cosechas; veterinaria; cría selectiva; plagas del campo; hibridación |
 
 ## Las siete capas
 

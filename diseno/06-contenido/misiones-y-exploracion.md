@@ -88,6 +88,8 @@ El camino al Guardián: salas fijas que se aprenden, atajos que se desbloquean (
 
 ## 9. Cacerías
 
+El sistema completo, con todos sus formatos, está en [Cacerías](cacerias.md). En resumen:
+
 **De dónde sale.** *Monster Hunter* (rastrear, romper partes y fabricar con lo que rompiste) y el sistema *Prey* de *Midnight* (cazar objetivos en dificultad Normal, Difícil o Pesadilla).
 
 **Cómo funciona.**
@@ -101,4 +103,4 @@ El camino al Guardián: salas fijas que se aprenden, atajos que se desbloquean (
 - **Pesca:** oficio menor con minijuego (ver [Profesiones](../07-economia/profesiones.md)).
 - **Arqueología:** excavar sitios, sobre todo en las Ruinas Olvidadas. Las piezas completan colecciones y dan lore, monturas y curiosidades, como en WoW.
 - **Duelos de mascotas:** las batallas de mascotas de WoW **ya son por turnos**; son un juego dentro del juego (ver [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md)).
-- **Seguidores:** la mesa de misiones de las fortalezas de WoW (*Warlords of Draenor*). Mandas PNJ reclutados a misiones de 4 a 12 horas y vuelven con recursos. Es juego pasivo que se revisa en un toque, perfecto para Telegram (ver [Vivienda](../08-social/vivienda.md)).
+- **Seguidores:** la mesa de misiones de las fortalezas de WoW (*Warlords of Draenor*). Mandas PNJ reclutados a misiones de 4 a 12 horas y vuelven con recursos. Es juego pasivo que se revisa en un toque, perfecto para Telegram (ver [Casa propia](../09-construccion/casa-propia.md)).

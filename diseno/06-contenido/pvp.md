@@ -86,6 +86,7 @@ Los campos de batalla de WoW (capturar la bandera, controlar bases) no funcionan
 **De dónde sale.** Chat Wars, el juego de este género más longevo de Telegram (desde 2016): cada jugador elige atacar otro castillo o defender el suyo antes de una batalla a hora fija, y el resultado se publica en un canal. TowerWars adoptó el mismo formato con 4 castillos y dos batallas al día, y funciona.
 
 **Cómo funciona aquí:**
+- **Cada castillo es una facción** (ver [Facciones](../02-mundo/facciones.md)). La guerra empieza con el primer cisma: antes no hay contra quién pelear.
 - **Dos batallas al día** a hora fija, con aviso 15 minutos antes (horario por definir: P-31).
 - Antes de cada batalla, cada jugador elige: **atacar** un puesto enemigo, **defender** uno propio o **no participar**.
 - Las facciones controlan **puestos avanzados** en los pisos, al principio uno por tramo. Las batallas deciden quién los conquista o los defiende.
@@ -100,7 +101,7 @@ Los campos de batalla de WoW (capturar la bandera, controlar bases) no funcionan
 **De dónde sale.** Los territorios de Albion en zonas negras, los asedios de castillos de *Lineage 2*, la soberanía de EVE y *Bastion Siege* (estrategia de fortalezas por Telegram, hacia 2017).
 
 - Hay **territorios** en las Profundidades (zonas negras) de cada piso desde el tramo IV.
-- Un gremio, o una alianza de gremios, reclama un territorio con un **estandarte**. Para defenderlo construye y mantiene una **fortaleza** (con el oficio de Arquitectura) y paga un mantenimiento semanal (sumidero).
+- Un gremio, o una alianza de gremios, reclama un territorio con un **estandarte**. Para defenderlo construye y mantiene una **fortaleza** (con constructores de rango; ver [Construcción](../09-construccion/README.md)) y paga un mantenimiento semanal (sumidero).
 - **Ventanas de asedio** semanales a una hora fija que elige el defensor dentro de un rango, para que nadie ataque a las 4 de la mañana del defensor.
 - El asedio usa el tablero de nodos (§6), con murallas, puertas y armas de asedio fabricadas por ingenieros y carpinteros.
 - **Qué da un territorio:** una veta o un jardín exclusivo, impuestos sobre lo que se recolecta ahí, un salón con bonos de fabricación para los miembros y prestigio en el mapa.

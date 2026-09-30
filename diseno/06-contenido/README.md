@@ -9,6 +9,9 @@ Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que 
 | [misiones-y-exploracion.md](misiones-y-exploracion.md) | Encargos, misiones, expediciones, Profundidades con compañero, Laberinto, roguelite semanal, Pruebas de Maestría, Pesadillas, cacerías y más |
 | [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | Mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
 | [jefes.md](jefes.md) | Tipos de jefe, las 10 reglas de Elden Ring en texto, invocaciones asíncronas, ejemplo completo (Wyrm de las Dunas) |
+| [cacerias.md](cacerias.md) | El bucle de una cacería, 11 formatos (presas, caza mayor, bestias legendarias, captura viva…), calidad de la pieza, herramientas, rangos de cazador |
+| [investigaciones.md](investigaciones.md) | Casos detectivescos con tablero de pistas e interrogatorios; investigación de curas, recetas, planos, idiomas y el Gran Misterio de la Torre |
+| [crimen-y-justicia.md](crimen-y-justicia.md) | Delitos, el oficio de ladrón, gremio de ladrones y perista, contrabando, guardia, tribunal por turnos, penas |
 | [eventos.md](eventos.md) | Apertura de pisos, epidemias, invasiones, eclipses, festivales, torneos |
 | [pvp.md](pvp.md) | Zonas por color, karma, cazarrecompensas, invasiones, arenas, campos de batalla por nodos, guerra de facciones, territorios |
 
@@ -25,4 +28,4 @@ Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que 
 **Depende de:** [Combate](../04-combate/README.md), [Mundo](../02-mundo/README.md), [Social](../08-social/README.md).
 **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Economía](../07-economia/README.md), [Progresión](../03-personaje/progresion.md).
 
-**Preguntas abiertas:** P-26 a P-31 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
+**Preguntas abiertas:** P-26 a P-31, P-49 y P-50 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

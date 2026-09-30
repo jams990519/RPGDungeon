@@ -2,7 +2,7 @@
 
 > **Módulo** [01 · Plataforma](README.md) · **Condiciona a:** todos los módulos · **Estado:** propuesta
 
-Todavía no se escribe código. Este documento fija **cómo se va a partir el juego en piezas** para que, cuando empiece el código, cada sistema del diseño se convierta en un módulo que se pueda construir, probar y cambiar sin romper los demás. Las carpetas de `diseno/` están ordenadas igual que estos módulos.
+Todavía no se escribe código. Este documento fija **cómo se va a partir el juego en piezas** (25 módulos) para que, cuando empiece el código, cada sistema del diseño se convierta en un módulo que se pueda construir, probar y cambiar sin romper los demás. Las carpetas de `diseno/` están ordenadas igual que estos módulos.
 
 ---
 
@@ -27,14 +27,14 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 | M6 | **Enemigos y jefes** | Repertorios, avisos, fases, postura, partes, elección de objetivo | [Jefes](../06-contenido/jefes.md) |
 | M7 | **Salud** | Heridas, condiciones, enfermedades, mente, secuelas, muerte | [05 · Salud](../05-salud/README.md) |
 | M8 | **Mundo** | Pisos, nodos, zonas, clima, estaciones, ecología, viaje | [02 · Mundo](../02-mundo/README.md) |
-| M9 | **Frente y Sellos** | Apertura de pisos, esfuerzo de guerra, pioneros, sellos personales | [Torre y pisos](../02-mundo/torre-y-pisos.md) |
-| M10 | **Misiones** | Campañas, encargos, tablones, expediciones, cacerías | [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) |
+| M9 | **Frente, Sellos y Fundación** | Apertura de pisos, esfuerzo de guerra, pioneros, sellos personales, necesidades de la ciudad, gobierno, cismas, crisis | [Torre y pisos](../02-mundo/torre-y-pisos.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Crisis](../02-mundo/crisis-problemas-y-soluciones.md) |
+| M10 | **Misiones** | Campañas, encargos, tablones, expediciones, cacerías, investigaciones | [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Cacerías](../06-contenido/cacerias.md), [Investigaciones](../06-contenido/investigaciones.md) |
 | M11 | **Instancias** | Mazmorras, Llaves del Piso, Profundidades, bandas, buscador de grupos | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) |
-| M12 | **PvP** | Zonas, karma, invasiones, arenas, campos, guerra de facciones, territorios | [PvP](../06-contenido/pvp.md) |
+| M12 | **PvP, crimen y justicia** | Zonas, karma, invasiones, arenas, campos, guerra de castillos, territorios, delitos, tribunal | [PvP](../06-contenido/pvp.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md) |
 | M13 | **Economía** | Monedas, mercados, órdenes, correo, impuestos, Mercado Negro, contratos | [Economía](../07-economia/economia.md) |
 | M14 | **Oficios** | Recolección, refinado, fabricación, recetas, calidad, vetas | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md) |
 | M15 | **Social** | Gremios, alianzas, grupos, amigos, salas retransmitidas, vivienda | [08 · Social](../08-social/README.md) |
-| M16 | **Minijuegos** | Cada minijuego es un complemento que se enchufa (taberna, dados, cartas…) | [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md) |
+| M16 | **Minijuegos y apuestas** | Cada minijuego es un complemento que se enchufa (taberna, dados, cartas…); apuestas legales e ilegales | [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md), [Apuestas](../08-social/apuestas.md) |
 | M17 | **Colecciones y logros** | Bestiario, apariencias, títulos, logros, cicatrices como trofeo | [Progresión](../03-personaje/progresion.md) |
 | M18 | **Temporadas y rankings** | Temporadas de M+, arena, ligas, tablas | [Progresión](../03-personaje/progresion.md) |
 | M19 | **Mensajería** | Mensaje vivo, cola de ediciones, límites de envío, avisos | [Telegram](telegram.md) |
@@ -42,6 +42,8 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 | M21 | **Simulador de balance** | Corre specs contra escenarios fijos | [Balance](../03-personaje/balance.md) |
 | M22 | **Pagos** | Telegram Stars, aislado del resto | [Monetización](../07-economia/monetizacion.md) |
 | M23 | **Anti-trampas** | Multicuentas, bots, comercio sospechoso | [Seguridad](seguridad-y-anti-trampas.md) |
+| M24 | **Construcción** | Parcelas, planos, obras por jornadas, casas, edificios de organizaciones, defensa | [09 · Construcción](../09-construccion/README.md) |
+| M25 | **Propiedad** | Puestos, locales, licencias, subastas, tasas, crédito | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) |
 
 **Adaptadores:** bot de Telegram · Mini App · API pública de solo lectura (para herramientas de la comunidad, como la que tuvo Chat Wars) · panel de administración.
 

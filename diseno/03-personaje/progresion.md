@@ -21,7 +21,7 @@ Pediste que el juego sea tan amplio que quien encuentre algo que le guste pueda 
 | **Colecciones** | Apariencias, monturas, mascotas, cartas, cicatrices, recetas, arqueología | Cientos de piezas | WoW |
 | **Rangos de temporada** | Mítica+, arena, ligas | Se reinicia cada temporada | WoW, Path of Exile |
 | **Prestigio social** | Pionero, títulos, Salón de los Caídos, gremio | — | SAO, WoW Hardcore |
-| **Casa y seguidores** | Vivienda, granja, mesa de misiones | Largo (ver [Vivienda](../08-social/vivienda.md)) | WoW, Albion |
+| **Casa y seguidores** | Vivienda, granja, mesa de misiones | Largo (ver [Casa propia](../09-construccion/casa-propia.md)) | WoW, Albion |
 
 ## 2. Experiencia: se gana de todo
 

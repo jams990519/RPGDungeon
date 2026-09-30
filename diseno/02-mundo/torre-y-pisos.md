@@ -27,7 +27,7 @@ Cada **tramo** de 10 pisos tiene un bioma dominante, un tier de materiales (T1-T
 
 | Tramo | Pisos | Bioma dominante | Nivel | Materiales | Especial |
 |---|---|---|---|---|---|
-| I | 1-10 | 🌲 Bosque Susurrante | 1-10 | T1 | Piso 1: Ciudad del Comienzo (tutorial, todo zona segura) |
+| I | 1-10 | 🌲 Bosque Susurrante | 1-10 | T1 | Piso 1: el Claro, donde los jugadores fundan el primer castillo desde cero |
 | II | 11-20 | 🌾 Pradera Dorada | 11-20 | T2 | Primeras zonas rojas y primer mercado regional |
 | III | 21-30 | 💎 Cueva de Cristal | 21-30 | T3 | **Piso 25: el Primer Muro** |
 | IV | 31-40 | 🐸 Pantano Putrefacto | 31-40 | T4 | Enfermedades de pantano y primeras zonas negras |
@@ -71,7 +71,7 @@ El **Frente** es el piso más alto que el servidor ha abierto. Un piso recién p
 | **1. Descubrimiento** | Explora el piso entre todos. Cada nodo que visita cualquiera suma al **mapa del servidor**. Al llegar al 100 % del camino principal aparece la entrada del Laberinto | 2-5 días | SAO (los que despejaban el frente mapeaban el laberinto) |
 | **2. Esfuerzo de guerra** | Todos donan materiales y oro al **Campamento de Asalto** del piso, con una meta visible por material. Al completarse se abre la Guarida | 3-7 días | WoW (Ahn'Qiraj), Chat Wars |
 | **3. Asalto** | El Guardián se abre como **jefe de mundo**. Cualquier grupo de 5 a 25 lo puede intentar. El primer grupo que lo mata es **Pionero del Piso** | Hasta que caiga | SAO, Elden Ring |
-| **4. Asentamiento** | La escalera se abre, se construye el asentamiento superior y se abren mercado y rutas. El Guardián queda como **Eco del Guardián** para quien llegue después | Permanente | SAO (los pisos conquistados se volvían habitables) |
+| **4. Asentamiento** | La escalera se abre y **los jugadores construyen** el asentamiento del piso nuevo (con constructores de rango y materiales de todos los oficios), y luego abren mercado y rutas. El Guardián queda como **Eco del Guardián** para quien llegue después | Permanente | SAO (los pisos conquistados se volvían habitables) |
 
 - **Pioneros.** El grupo de la primera muerte recibe un título permanente ("Pionero del Piso 17"), un cosmético único e irrepetible y su nombre en la Gaceta y en una placa del asentamiento. Ningún poder: la recompensa es el prestigio.
 - **Crédito por facción.** Las facciones compiten por cuántos Pioneros tienen, y eso suma trofeos de temporada a la [guerra de facciones](../06-contenido/pvp.md).
@@ -116,8 +116,8 @@ Un piso recibe **Viento de Cola** cuando el Frente está **5 o más pisos por en
 
 | Piso | Qué lo hace distinto |
 |---|---|
-| **1 · Ciudad del Comienzo** | Tutorial, todo zona azul. Aquí se eligen raza y trasfondo; la clase llega en el nivel 10. Guía PNJ y protección de novato |
-| **Cada 10 · Capitales** | Ciudad grande con mercado regional, banco, entrenadores de oficios mayores y barrios de cada facción. Aquí se abre la banda del tramo |
+| **1 · El Claro** | Al lanzar no hay ciudad: solo una fogata y unos PNJ supervivientes. El tutorial es construir el primer asentamiento entre todos, hasta que llegue a Castillo (ver [Fundación y cisma](fundacion-y-cisma.md)). Aquí se eligen raza y trasfondo; la clase llega en el nivel 10. Zona azul y protección de novato |
+| **Cada 10 · Capitales** | Al conquistarlo, el servidor construye aquí una capital con su Castillo (mercado regional, banco, entrenadores de oficios mayores, barrios de cada castillo). Aquí se abre la banda del tramo |
 | **25, 50 y 75 · Los Muros** | En SAO fueron los pisos más sangrientos. Aquí son jefes de tramo con dos o tres fases estilo Elden Ring y un esfuerzo de guerra del doble de tamaño. El asalto pide varios grupos en frentes paralelos: uno contiene a los invocados mientras otro rompe la postura del jefe |
 | **100 · La Cima** | Fin de la primera era. La primera muerte del jefe final cierra la temporada larga y abre la siguiente era, con torre e historia nuevas; los héroes conservan lo suyo |
 

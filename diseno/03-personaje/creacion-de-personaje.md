@@ -2,7 +2,7 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Alimenta a:** [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** propuesta
 
-Se crea en el **Piso 1 (Ciudad del Comienzo)**, en este orden: linaje → trasfondo → apariencia → facción (nivel 5) → clase (nivel 10).
+Se crea en el **Piso 1 (el Claro)**, en este orden: linaje → trasfondo → apariencia → castillo donde vivir (nivel 5; al principio hay uno solo, ver [Facciones](../02-mundo/facciones.md)) → clase (nivel 10).
 
 ---
 

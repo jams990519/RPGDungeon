@@ -9,6 +9,7 @@ Quién es tu héroe y cómo crece: linaje, trasfondo, clase, talentos, equipo y 
 | [balance.md](balance.md) | Qué está roto en WoW, las 10 reglas de balance, el simulador y los objetivos numéricos, números chicos |
 | [talentos.md](talentos.md) | Árboles de clase, spec, héroe y Ápice; configuraciones y cambios gratis |
 | [equipamiento.md](equipamiento.md) | 16 ranuras atadas a zonas del cuerpo, carga, propiedades de los objetos, durabilidad, técnicas de equipo, suerte con red |
+| [descubrimiento-y-colecciones.md](descubrimiento-y-colecciones.md) | Ser el primero en descubrir (lugares, especies, recetas, secretos), registro de descubridores, 14 colecciones, el museo |
 | [progresion.md](progresion.md) | Las 12 escaleras paralelas, experiencia, maestrías, Renombre, reputaciones, colecciones, temporadas, metas de un día a dos años |
 
 **Depende de:** [Mundo](../02-mundo/README.md) (nivel ligado al piso), [Economía](../07-economia/README.md) (equipo fabricado).
