@@ -46,6 +46,7 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 | D-37 | **Peleas ilegales entre jugadores** (el Foso y el circuito clandestino) | [Peleas clandestinas](../06-contenido/peleas-clandestinas.md), [Apuestas](../08-social/apuestas.md) |
 | D-38 | **Vía libre para agregar cualquier sistema de juego** que sume, siempre conectado a la red de sistemas | [Catálogo ampliado](catalogo-ampliado.md) |
 | D-39 | **Hay más de 500 jugadores listos:** antes de abrir la beta se responde el cuestionario de beta | [Cuestionario de beta](cuestionario-beta.md) |
+| D-40 | **Modular para montarlo también en web:** un solo motor y un solo mundo; Telegram y la web son clientes con las mismas reglas, y ninguno da ventaja | [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md), [Arquitectura](../01-plataforma/arquitectura-modular.md) |
 
 ## Provisionales (tomadas por Claude, a confirmar)
 

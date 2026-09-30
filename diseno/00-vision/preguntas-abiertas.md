@@ -107,3 +107,6 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-46 | ¿Tecnología: Python + aiogram (como TowerWars) con PostgreSQL? | Sí |
 | P-47 | ¿Presupuesto mensual de servidor? | Definirlo antes de la alfa |
 | P-48 | ¿API pública de solo lectura para herramientas de la comunidad? | Sí, en la beta |
+| P-58 | ¿La versión web entra en la beta o después? | Después: primero Telegram; la web empieza como Mini App dentro de Telegram y luego como sitio propio |
+| P-59 | ¿El mismo personaje en Telegram y en la web, entrando con la cuenta de Telegram? | Sí |
+| P-60 | ¿Dominio y alojamiento del sitio web? | Decidirlo antes de construir el cliente web |
