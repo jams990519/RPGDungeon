@@ -1,0 +1,28 @@
+# 06 · Contenido: PvE y PvP
+
+Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que el servidor tarda un mes en matar, para 1 jugador, grupos, bandas y el servidor entero.
+
+## Documentos
+
+| Documento | Qué contiene |
+|---|---|
+| [misiones-y-exploracion.md](misiones-y-exploracion.md) | Encargos, misiones, expediciones, Profundidades con compañero, Laberinto, roguelite semanal, Pruebas de Maestría, Pesadillas, cacerías y más |
+| [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | Mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
+| [jefes.md](jefes.md) | Tipos de jefe, las 10 reglas de Elden Ring en texto, invocaciones asíncronas, ejemplo completo (Wyrm de las Dunas) |
+| [eventos.md](eventos.md) | Apertura de pisos, epidemias, invasiones, eclipses, festivales, torneos |
+| [pvp.md](pvp.md) | Zonas por color, karma, cazarrecompensas, invasiones, arenas, campos de batalla por nodos, guerra de facciones, territorios |
+
+## Matriz de contenido
+
+| | 1 jugador | 2 a 5 jugadores | 10 a 25 jugadores | Todo el servidor |
+|---|---|---|---|---|
+| **Toque** (1-3 min) | Encargos, cosechar, santuario diario, enigma del día | — | — | Donar al Esfuerzo de Guerra |
+| **Sesión** (15-45 min) | Campaña, expediciones, Profundidades, Laberinto, Pruebas de Maestría, cacerías, pesca, arqueología, duelos de mascotas, arena asíncrona | Mazmorras, Mítica+, cacerías, jefes errantes, arenas 2v2 y 3v3 | Campos de batalla | — |
+| **Cita** (hora fija) | — | — | Bandas, asaltos a Guardianes, asedios | Jefe semanal, guerra de facciones, epidemias, invasiones, festivales, apertura de piso |
+
+**Regla:** cada tipo de contenido da algo que los demás no dan (ver la tabla final de [Mazmorras y bandas](mazmorras-y-bandas.md)), para que nadie esté obligado a hacer lo que no le gusta.
+
+**Depende de:** [Combate](../04-combate/README.md), [Mundo](../02-mundo/README.md), [Social](../08-social/README.md).
+**Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Economía](../07-economia/README.md), [Progresión](../03-personaje/progresion.md).
+
+**Preguntas abiertas:** P-26 a P-31 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
