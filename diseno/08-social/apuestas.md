@@ -33,7 +33,7 @@
 | Lugar | Dónde | Cómo se entra | Qué hay |
 |---|---|---|---|
 | **Garito del callejón** | La trastienda de un asentamiento | Una **contraseña** que da un informante o que se descubre en una investigación. Cambia cada semana | Dados cargados, cartas marcadas, apuestas sin tope |
-| **El Foso** | Refugios de forajidos en zonas rojas | Karma naranja o rojo, o alguien que te avale | **Peleas de bestias** (capturadas en cacerías) y **peleas a primera sangre entre jugadores** con apuesta |
+| **El Foso** | Refugios de forajidos en zonas rojas | Karma naranja o rojo, o alguien que te avale | **Peleas de bestias** (capturadas en cacerías) y **peleas a primera sangre entre jugadores** con apuesta (ver [Peleas clandestinas](../06-contenido/peleas-clandestinas.md)) |
 | **Carreras clandestinas** | Caminos de zonas rojas, de noche | Invitación | Carreras sin reglas, donde se vale sabotear |
 | **Casinos ilegales de jugadores** | Construidos por gremios en zonas rojas o negras, sin licencia | Lo que decida el dueño | Sin impuestos, sin protección, sin límites |
 
@@ -116,6 +116,7 @@ Quien quiera dedicarse solo al azar tiene un camino propio, con progreso, reputa
 | Sistema | Conexión |
 |---|---|
 | [Cacerías](../06-contenido/cacerias.md) | La captura viva abastece el Foso |
+| [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) | El Circuito Clandestino y el Foso: formatos, luchadores, promotores, amaños y redadas |
 | [Profesiones](../07-economia/profesiones.md) | La crianza abastece las carreras; Joyería y Carpintería fabrican dados (buenos y cargados); Inscripción fabrica mazos y cartas marcadas; la cocina abastece los reservados |
 | [Construcción](../09-construccion/README.md) | Los gremios construyen casinos, hipódromos y garitos |
 | [Investigaciones](../06-contenido/investigaciones.md) | Casos de juego sucio y contraseñas de garitos |
