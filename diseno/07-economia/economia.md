@@ -50,6 +50,7 @@ La reputación, los Sellos y el conocimiento **no** son monedas: son progreso.
 
 ### 3.1 Recursos regionales
 
+- Cada terreno produce lo suyo y carece de lo demás (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)), y hay **yacimientos únicos** en puntos concretos del mapa.
 - Cada tramo tiene **materiales que solo existen ahí** (la madera liviana de los Jardines Flotantes, el cristal de la Cueva de Cristal, las especias del Desierto), y cada piso tiene su especialidad dentro del tramo.
 - Las ciudades necesitan cosas que no producen: el piso helado necesita comida del piso de la pradera, y la pradera necesita el metal de las cuevas.
 - Resultado: **siempre hay algo que llevar de un lado a otro**, y los precios difieren por ciudad sin que nadie lo fuerce.

@@ -39,6 +39,9 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 | D-30 | **Crimen y justicia** con Infamia, campamentos de bandidos, perista jugador y recompensas que publican las víctimas | [Crimen y justicia](../06-contenido/crimen-y-justicia.md) |
 | D-31 | **Rumores y oficios secretos**, insinuados y no revelados | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) |
 | D-32 | **Capa de descubrimiento y coleccionismo** | [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) |
+| D-33 | **Zonas por geografía real:** cada terreno produce lo suyo y carece de lo demás; ninguna zona es autosuficiente | [Geografía y recursos](../02-mundo/geografia-y-recursos.md) |
+| D-34 | **Asentamientos como nodos** (estilo Ashes of Creation): crecen con la actividad, limitan a sus vecinos, decaen si nadie los sostiene y se pueden quemar | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
+| D-35 | **Yacimientos únicos** atados a un punto del mapa (estilo Life is Feudal), que se disputan | [Geografía y recursos](../02-mundo/geografia-y-recursos.md) |
 
 ## Provisionales (tomadas por Claude, a confirmar)
 

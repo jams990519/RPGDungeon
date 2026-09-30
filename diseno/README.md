@@ -28,7 +28,7 @@
 |---|---|---|
 | [00 · Visión](00-vision/README.md) | Qué es, qué está decidido, qué falta, cómo se conecta todo, en qué orden se construye | Pilares, roles, red de sistemas, catálogo ampliado, decisiones, preguntas, hoja de ruta, glosario |
 | [01 · Plataforma](01-plataforma/README.md) | Telegram, arquitectura modular (sin código), anti-trampas | 3 |
-| [02 · Mundo](02-mundo/README.md) | **Fundación desde cero y cismas**, ciudades y Castillo con entrenadores, crisis, la Torre de 100 pisos, mundo vivo, rumores, facciones | 6 |
+| [02 · Mundo](02-mundo/README.md) | **Fundación desde cero, nodos y cismas**, ciudades y Castillo con entrenadores, crisis, **geografía y yacimientos únicos**, la Torre de 100 pisos, mundo vivo, rumores, facciones | 7 |
 | [03 · Personaje](03-personaje/README.md) | Linajes, trasfondos, 15 clases y 46 specs, **balance**, talentos, equipo, descubrimiento y colecciones, progresión a dos años | 7 |
 | [04 · Combate](04-combate/README.md) | Rondas simultáneas, barras, filas, estados por acumulación, partes del cuerpo, avisos, tácticas automáticas | 3 |
 | [05 · Salud](05-salud/README.md) | Heridas por zona, condiciones, enfermedades y epidemias, mente, secuelas y muerte, **curación como oficio**, rasgos adquiridos, animales y cultivos | 8 |

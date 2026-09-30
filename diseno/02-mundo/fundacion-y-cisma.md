@@ -56,6 +56,18 @@ Cada necesidad tiene una **barra semanal** visible para todos en `/ciudad`. El a
 
 Cada etapa es una **obra de servidor** (ver [Construcción](../09-construccion/gremios-y-organizaciones.md)). Pasar de Claro a Castillo debería llevar **semanas**, no días: es la primera temporada del juego.
 
+## 3.1 Nodos: los jugadores deciden dónde florece la civilización
+
+**De dónde sale.** *Ashes of Creation* y su sistema de **nodos**: la actividad de los jugadores en una zona la hace crecer (campamento, aldea, pueblo, ciudad), y al crecer desbloquea servicios, mercado, gobierno y contenido. Los nodos vecinos quedan limitados, así que la comunidad decide dónde florece la civilización.
+
+- **Cada piso tiene varios sitios de nodo** (5 a 10): lugares donde se puede fundar un asentamiento, cada uno con su geografía (ver [Geografía y recursos](geografia-y-recursos.md)).
+- **Crecen con la actividad:** todo lo que hacen los jugadores en la zona de un nodo (misiones, recolección, fabricación, obras, comercio) suma **experiencia de nodo**. Con experiencia y con sus obras construidas, el nodo sube de etapa (§3).
+- **Zona de influencia:** un nodo que crece limita a sus vecinos, que no pueden pasar de cierta etapa mientras él exista y se convierten en sus **vasallos** (aldeas que le pagan una parte de sus impuestos y reciben su protección). En un piso no puede haber dos ciudades pegadas: hay que elegir.
+- **Decadencia:** si nadie sostiene un nodo (sin residentes activos, sin sus necesidades cubiertas), pierde experiencia, baja de etapa y termina en **ruinas**. Otro grupo puede refundarlo.
+- **Destrucción:** los asentamientos en zonas rojas y negras se pueden **asediar y quemar** (ver [Defensa](../09-construccion/defensa-y-protecciones.md)). Al caer, los edificios quedan en ruinas y los vasallos quedan libres para crecer. Los campamentos de bandidos (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) son el primer ejemplo de asentamiento que se toma y se pierde; los gremios fundan asentamientos que crecen y que otros pueden quemar.
+
+**Por qué conviene.** El mapa de la civilización lo dibujan los jugadores, cambia con el tiempo, y cada ciudad existe porque alguien la sostiene.
+
 ## 4. Gobierno
 
 **De dónde sale.** *Wakfu* (Ankama, 2012): cada nación elige a un **gobernador** por voto popular, y el gobernador nombra cargos. Por ejemplo, un **Ecologista**, que dicta leyes sobre qué recursos se pueden recolectar para cuidar el ecosistema. También *Star Wars Galaxies*, con sus alcaldes de ciudades de jugadores.
