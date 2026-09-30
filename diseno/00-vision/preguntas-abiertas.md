@@ -54,7 +54,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-20 | ¿Miembros perdidos permanentes? | Sí, raros, con prótesis viables y regeneración |
 | P-21 | ¿Enfermedades contagiosas entre jugadores? | Sí |
 | P-22 | ¿Curación en horas y días reales? | Sí, con descanso fuera de línea que la acelera |
-| P-23 | ¿Sustento y temperatura? | Sí, en versión positiva (no castiga por no jugar) |
+| P-23 | ¿Sustento, temperatura y sed? | ✅ **Decidido (D-36):** sí, y se puede llegar a caer por frío, calor, sed o contaminación según la zona. Solo corre mientras juegas |
 | P-24 | ¿Estrés con aflicciones? | Sí |
 | P-25 | ¿Vampirismo y licantropía jugables? | Sí, en una expansión |
 | P-56 | ¿Suciedad e higiene (termas)? | Sí, ligera |
@@ -90,7 +90,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-49 | ¿Casos de investigación semanales para todo el servidor, con ranking? | Sí |
-| P-50 | ¿Apuestas ilegales, incluidas las peleas entre jugadores en el Foso? | Sí, con redadas y karma |
+| P-50 | ¿Apuestas ilegales, incluidas las peleas entre jugadores en el Foso? | ✅ **Decidido (D-37):** sí |
 | P-51 | ¿Construcción por planos con opciones, o pieza por pieza libre? | Planos con opciones en la estructura; libertad total en decoración |
 | P-52 | ¿Lo construido en zonas peligrosas se puede atacar con el dueño desconectado? | Sí, con horas protegidas, escudo después de un ataque y bóveda que no se roba |
 | P-57 | ¿Panteón de dioses con sacerdotes jugadores? | Sí, en la primera expansión |

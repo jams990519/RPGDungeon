@@ -42,6 +42,10 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 | D-33 | **Zonas por geografía real:** cada terreno produce lo suyo y carece de lo demás; ninguna zona es autosuficiente | [Geografía y recursos](../02-mundo/geografia-y-recursos.md) |
 | D-34 | **Asentamientos como nodos** (estilo Ashes of Creation): crecen con la actividad, limitan a sus vecinos, decaen si nadie los sostiene y se pueden quemar | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | D-35 | **Yacimientos únicos** atados a un punto del mapa (estilo Life is Feudal), que se disputan | [Geografía y recursos](../02-mundo/geografia-y-recursos.md) |
+| D-36 | **Peligros según la zona:** contaminación, frío, calor y **sed** pueden llevarte a caer (con las reglas de caída de cada zona), además de las heridas y enfermedades propias de cada lugar | [Peligros del entorno](../05-salud/peligros-del-entorno.md) |
+| D-37 | **Peleas ilegales entre jugadores** (el Foso y el circuito clandestino) | [Peleas clandestinas](../06-contenido/peleas-clandestinas.md), [Apuestas](../08-social/apuestas.md) |
+| D-38 | **Vía libre para agregar cualquier sistema de juego** que sume, siempre conectado a la red de sistemas | [Catálogo ampliado](catalogo-ampliado.md) |
+| D-39 | **Hay más de 500 jugadores listos:** antes de abrir la beta se responde el cuestionario de beta | [Cuestionario de beta](cuestionario-beta.md) |
 
 ## Provisionales (tomadas por Claude, a confirmar)
 
