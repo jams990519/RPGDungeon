@@ -92,6 +92,9 @@ class GameService:
         epoch = int(content.balance.get("world", {}).get("epoch", 1))
         if meta and meta.get("epoch", 1) != epoch:
             # A new epoch restarts the game: wipe player data and create a new world (D-64).
+            for key, _ in list(store.items("hero")):
+                if store.get("player", key) is None:
+                    store.put("player", key, {"first_seen": clock.now()})
             for namespace in ("hero", "combat", "zone", "pending"):
                 for key, _ in list(store.items(namespace)):
                     store.delete(namespace, key)
@@ -107,6 +110,7 @@ class GameService:
 
     def view(self, account_id: str) -> View:
         """Current screen for an account. [ES] Qué hace: muestra la pantalla actual. La llaman: los clientes (al abrir o actualizar). Si cambia, afecta: todos los clientes."""
+        self._seen(account_id)
         hero = self._load(account_id)
         if hero is None:
             return self._creation_view(account_id)
@@ -116,6 +120,7 @@ class GameService:
 
     def text(self, account_id: str, text: str) -> View:
         """Handle free text (only used to name the hero). [ES] Qué hace: recibe texto escrito (el nombre del héroe). La llaman: los clientes. Si cambia, afecta: la creación de personaje."""
+        self._seen(account_id)
         hero = self._load(account_id)
         if hero is not None:
             view = self.view(account_id)
@@ -168,6 +173,33 @@ class GameService:
         owner = self.store.get("invite_code", code)
         if owner and owner.get("account") != account_id:
             self.store.put("referral", account_id, {"referrer": owner["account"]})
+
+    def _seen(self, account_id: str) -> None:
+        if self.store.get("player", account_id) is None:
+            self.store.put("player", account_id, {"first_seen": self.clock.now()})
+
+    def players(self) -> list[str]:
+        """Every account that ever played (survives the one-time reset). [ES] Qué hace: lista a todos los jugadores, para avisarles los parches. La llaman: los clientes. Si cambia, afecta: los avisos."""
+        accounts = {k for k, _ in self.store.items("player")} | {k for k, _ in self.store.items("hero")}
+        return sorted(accounts)
+
+    def pending_announcement(self) -> View | None:
+        """The newest patch notes if they were not announced yet; marks them announced.
+
+        [ES]
+        Qué hace: devuelve el aviso del parche nuevo una sola vez (y lo marca como avisado).
+        La llaman: el bot al arrancar, para mandarlo a todos.
+        Si cambia, afecta: los avisos de parches.
+        """
+        patches = self.content.patches or {}
+        if not patches:
+            return None
+        latest = list(patches.values())[-1]
+        meta = self.store.get("meta", "announce") or {}
+        if meta.get("version") == latest["version"]:
+            return None
+        self.store.put("meta", "announce", {"version": latest["version"], "at": self.clock.now()})
+        return View(kind="patch", title=latest["title"], body=["• " + line for line in latest["notes"]])
 
     def menu(self) -> list[Action]:
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard).

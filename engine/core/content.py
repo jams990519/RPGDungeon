@@ -55,6 +55,7 @@ class Content:
     items: dict[str, Any]
     balance: dict[str, Any]
     texts: dict[str, Any]
+    patches: dict[str, Any] | None = None
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -86,6 +87,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         items=_read(base / "items.yaml"),
         balance=_read(base / "balance.yaml"),
         texts=_read_texts(base / "locales", lang),
+        patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
     )
 
 

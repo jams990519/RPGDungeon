@@ -151,6 +151,30 @@ async def notifier(bot: Bot, service: GameService) -> None:
         await asyncio.sleep(TICK_SECONDS)
 
 
+async def announce_patch(bot: Bot, service: GameService) -> None:
+    """Send the new patch notes to every Telegram player, once per version, slowly (Telegram limits).
+
+    [ES]
+    Qué hace: avisa a todos los jugadores lo nuevo de cada parche, una sola vez por versión.
+    La llaman: main, al arrancar.
+    Si cambia, afecta: los avisos de parches.
+    """
+    view = service.pending_announcement()
+    if view is None:
+        return
+    sent = 0
+    for account_id in service.players():
+        if not account_id.startswith("tg:"):
+            continue
+        try:
+            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service))
+            sent += 1
+        except Exception:  # blocked the bot, deleted account, etc.
+            log.info("could not announce to %s", account_id)
+        await asyncio.sleep(0.05)
+    log.info("patch announced to %d players", sent)
+
+
 async def main() -> None:
     """Start polling. [ES] Qué hace: arranca el bot. La llaman: python -m adapters.telegram.bot. Si cambia, afecta: el arranque del bot."""
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -167,6 +191,7 @@ async def main() -> None:
     log.info("running as @%s", me.username)
     render_module.BOT_USERNAME[0] = me.username or ""
     asyncio.create_task(notifier(bot, service))
+    asyncio.create_task(announce_patch(bot, service))
     await dp.start_polling(bot, drop_pending_updates=True)
 
 

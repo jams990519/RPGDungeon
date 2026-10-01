@@ -276,3 +276,16 @@ def test_class_pages_have_at_most_six_buttons(service):
         seen.add(nxt[-1])
         view = service.act("test:9", nxt[-1])
     assert len(seen & {f"grp:{g}" for g in service._class_groups()}) == len(service._class_groups())
+
+
+def test_patch_announced_once_and_players_survive_reset(content, clock):
+    from engine.core import MemoryStore
+    from engine.service import GameService
+    store = MemoryStore()
+    store.put("meta", "world", {"seed": 1, "epoch": 1})
+    store.put("hero", "tg:5", {"name": "Viejo"})
+    service = GameService(content, store, clock)
+    assert "tg:5" in service.players()            # kept for the announcement even after the reset
+    view = service.pending_announcement()
+    assert view is not None and view.body
+    assert service.pending_announcement() is None  # only once per version

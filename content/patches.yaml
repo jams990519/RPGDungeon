@@ -1,0 +1,16 @@
+# Patch notes announced to every player once, when a new version starts (newest last).
+# [ES] Notas de cada parche. Al arrancar una versión nueva, el bot avisa a todos los jugadores una sola vez.
+# Lo usan: engine/service/game.py (pending_announcement), adapters/telegram/bot.py (envío).
+# Si cambias esto, revisa: la versión nueva debe ser distinta de la anterior; si no, no se avisa.
+
+v0_4:
+  version: "0.4"
+  title: "🌅 Lost Realms 0.4: el mundo empieza de nuevo"
+  notes:
+    - "El juego se reinició una única vez para que todos empiecen de cero con todo disponible. Desde ahora tu progreso se guarda para siempre."
+    - "⚔️ Las 15 clases y sus 46 especializaciones: Guerrero, Paladín, Cazador, Pícaro, Sacerdote, Caballero de la Muerte, Chamán, Mago, Brujo, Monje, Druida, Cazador de demonios, Evocador, Nigromante y Bardo. Cada una con roles de Ataque, Defensa, Curación o Soporte."
+    - "🧭 Menú nuevo abajo: Zona, Explorar, Campamento y Héroe."
+    - "⚡ Energía para viajar: 20 como máximo, se recuperan 20 al día. Viajar a una zona vecina toma de 5 a 10 minutos."
+    - "🪓 Recolecta madera, piedra, fibra, hierbas y metal, y ayuda a levantar el campamento del Claro, de fogata a castillo."
+    - "📜 Un tutorial con pistas te enseña lo básico, y 👥 tu enlace de invitación te da energía por cada amigo que entre."
+    - "Toca /start para crear tu héroe."
