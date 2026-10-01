@@ -531,6 +531,41 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 
 **Lo que queda por mirar:** el Comercio es una fuente de monedas (vender da hasta 20 % más). Si en la beta entra demasiado bronce, se compensa con el impuesto del mercado de órdenes (segunda tanda de la economía).
 
+### Octubre de 2026: el 🧭 Explorador y los ⛺ campamentos enemigos (D-112)
+
+**Por qué.** El dueño pidió que explorar sea un oficio que muestre más del mapa con el rango y que haya campamentos enemigos que cambien de lugar cada día y no dejen explorar su zona (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14). Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `explorer` y `enemy_camps`; el beneficio, en `content/professions.yaml` → explorador.perk). No se movió ningún número de antes.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Experiencia de Explorador (`explorer.xp_per_step`, `xp_full_zone`) | 5 por vuelta de exploración y 6 más al dejar una zona al 100 % | ~6 por ⚡ (una zona se completa en ~4 vueltas), como refinar (6): rango 100 en ~1 año dedicado, con la curva de todos los oficios |
+| Beneficio del Explorador (`perk.explore`) | +5 puntos de exploración por vuelta al rango 100 (+1 cada 20 rangos) | Como los demás beneficios (D-111): parejo con el rango y chico (una vuelta da 15 a 30) |
+| Umbrales del mapa (`explorer.ranks`) | ⏱️ 10 · ⛺ a 3 zonas 25 · 🕵️ 30 · ⛺ todo el mapa 50 · 👹 fuerza 75 · 🏅 título 100 | La tabla de §1.14; el 10 llega en ~3 días de toda la energía, el 30 en ~1 mes |
+| Lugares con su tiempo desde el rango 10 (`explorer.places_listed`) | 8 (sin rango, 3) | Lo que pidió el dueño ("qué tan lejos está"); los botones siguen en 3 |
+| Campamentos por día (`enemy_camps.density`, `min_lejania`) | ~3 % de las zonas de Lejanía 2 o más (4 o 5 en un mapa de 13 × 13) | Que cada uno tenga alguno cerca sin llenar el mapa de zonas bloqueadas |
+| Guarnición (`garrison`, `level_bonus`) | 4 a 8 enemigos contando al jefe, del nivel de la zona + 1 | Un día de trabajo para uno, una tarde para varios (§6.2 de supervivencia: nunca más de + 2) |
+| Jefe (`chief_hp_mult`, `chief_attack_mult`) | El más fuerte del bioma, vida × 1,8 y ataque × 1,2 | Más difícil que un guardia sin pedir grupo (la Noche de prueba, pensada para varios, usa 2,0 y 1,3) |
+| Energía de una pelea del asalto (`fight_energy`) | 2 ⚡ | Como una presa (D-108): la experiencia por ⚡ queda a la par |
+| Cofre (`chest`) | nivel × 25 🥉, 3 a 5 materiales de la zona, 60 de experiencia × (1 + 0,15 × (nivel − 1)), 50 % de una pieza de equipo del nivel | Unas 15 peleas comunes de monedas; el equipo es el sorteo de botín de siempre con más probabilidad (las comunes: 15 %, 10 % desde el nivel 10), nunca de artesano |
+| Parte de cada uno que peleó (`share`) | nivel × 8 🥉 y 30 de experiencia × (1 + 0,15 × (nivel − 1)) | Como una pelea más; huir no cuenta |
+| Infiltrarse (`infiltrate`) | 3 ⚡; te descubren 45 % al rango 30 y 0,5 puntos menos por rango (10 % al 100, mínimo 5 %); +10 % de exploración y 15 de experiencia de Explorador | 5 de oficio por ⚡, como explorar; una vez por campamento y día |
+
+**Medido con el motor** (`tools/balance_report.py`: `kit_for` y `fight`, 45 especializaciones, los 8 biomas con peligro, 2 peleas por bioma; el jefe es el más fuerte del bioma al nivel de la zona + 1 con vida × 1,8 y ataque × 1,2; el guardia, uno de la lista del bioma al nivel + 1):
+
+| Zona | Kit | Gana al jefe | Gana al guardia | Vida al terminar con el guardia |
+|---|---|---|---|---|
+| 3 | equipo de inicio, sin puntos (a) | 38 % | 98 % | 51 % |
+| 3 | puntos y botín de su nivel (b) | 85 % | 100 % | 67 % |
+| 5 | b | 85 % | 100 % | 66 % |
+| 10 | b | 97 % | 100 % | 65 % |
+| 30 | b | 88 % | 100 % | 60 % |
+| 60 | b | 95 % | 100 % | 69 % |
+
+Sin puntos ni equipo de su nivel, el jefe es casi imposible desde la zona 5 (10 %, y 0 % en la 30): el campamento premia a quien ya juega su nivel. Con el kit de su nivel, una pelea del asalto deja ~65 % de vida, como una pelea común (C-21).
+
+**Experiencia por ⚡ frente a D-108.** Una pelea del asalto es del nivel + 1: en una zona de nivel 3, un lobo da 30 × 1,45 = 43 por 2 ⚡ (~22 por ⚡) contra ~20 de cazarlo en la misma zona (un 10 % más; un 4 % en una zona de nivel 10). Un campamento de 6 en solitario (5 guardias, el jefe y el cofre) da 6 × 43 + 87 = 348 por 12 ⚡ (~29 por ⚡), y ~22 contando los ~4 ⚡ del viaje para llegar: a la par de D-108, porque cada campamento cae una sola vez por día y se reparte entre todos los que pelean.
+
+**Lo que queda por mirar:** si 3 % deja demasiadas zonas bloqueadas cerca de los campamentos de jugadores (medir cuántas veces por día un jugador encuentra su zona bloqueada); si el cofre (50 % de equipo) hace que los campamentos rindan más que cazar para el equipo (D-113 pide que lo mejor lo fabriquen los jugadores: el cofre da el botín común de su nivel, nunca equipo de artesano); si el jefe de los anillos lejanos debería pedir grupo.
+
 ### Octubre de 2026: ⚙️ Opciones y peleas automáticas en los lotes (D-114)
 
 **Por qué.** El dueño pidió que, si sale una pelea en medio de un lote, el jugador pueda elegir antes si el héroe la pelea solo o si se corta para pelearla él, con un botón de opciones (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.1). La forma de jugar sola se mudó del simulador al motor (`engine/combat/auto.py`), así hay **una sola**: la de las peleas automáticas es la que mide el simulador. Los números de las opciones y de la cacería en lote son **nuevos**, propuestos por Claude; los umbrales de la forma de jugar **no cambiaron**: son los que el simulador ya tenía escritos en su código y ahora viven en `balance.yaml`.

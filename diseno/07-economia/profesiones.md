@@ -54,6 +54,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 | | ⛏️ Minero | 1 por cada 🪨 piedra, ⚙️ metal o 🏺 arcilla; desde el rango 10, 💠 gemas en bruto |
 | | 🌿 Herbolario | 1 por cada 🌿 hierba curativa o 🧵 fibra; desde el rango 10, 🌸 flores de luna |
 | | 🔪 Desollador | 1 por cada 🍖 carne o 🦌 piel que sueltan las bestias al vencerlas |
+| Exploración (D-112) | 🧭 Explorador | 5 por cada vuelta de 🔎 exploración y 6 más al dejar una zona al 100 %; 15 por cada 🕵️ infiltración. Con el rango ve más en el mapa ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) |
 | Refinado | 🪚 Aserradero · 🔥 Fundición · 💧 Destilación · 🧶 Tejeduría · 🪣 Curtiduría | 6 por cada vez que refinas en una estación |
 | Fabricación | 🪑 Carpintería · 🔨 Herrería · ⚗️ Alquimia · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería | 12 por cada pieza de equipo (6 por las vendas y la poción de vida, 8 por la poción mayor) |
 
@@ -129,7 +130,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 🌿 Herbolario | Todos, sobre todo quien explora | La vida vuelve sola un **20 %** más rápido fuera de combate | Sangre de vida |
 | ⛏️ Minero | Tanques | **+5 %** de vida máxima | Dureza |
 | 🪓 Leñador | Recolectores | **+10** de espacio en la mochila | — |
-| 🧭 Explorador (D-112) | Quien explora | Hasta **+5 puntos** de porcentaje por vuelta, y con el rango ve más en el mapa (campamentos enemigos, distancias, su fuerza) e infiltra campamentos ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | — |
+| 🧭 Explorador (D-112, en el juego) | Quien explora | Hasta **+5 puntos** de porcentaje por vuelta (+1 cada 20 rangos), y con el rango ve más en el mapa (tiempos de viaje en el 10, campamentos enemigos a 3 zonas en el 25 y en todo el mapa en el 50, su fuerza en el 75) e infiltra campamentos desde el 30 ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | — |
 | 🔪 Desollador | Ataque | **+4 %** de ataque | Maestro de anatomía |
 | Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **30 %** de sacar una unidad extra al refinar (0,3 % por rango, ya en la fase 1; +10 % en una estación del campamento) | El retorno de *Albion* |
 | 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
@@ -363,7 +364,7 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | 🎣 Pescador | 🏰 Campamento | El pescado rinde 30 % más en la despensa | fase 2 |
 | 🌾 Agricultor | 🏰 Campamento | El huerto del campamento da 1 ración más al día por cada agricultor de rango 50 o más | fase 3 |
 | 🐑 Ganadero | 🐎 Viaje | Viajes 15 % más rápidos (monturas) | fase 3 |
-| 🧭 Explorador | 🧭 Mapa | Ve más en el mapa y +5 puntos de exploración por vuelta (D-112) | en la cola |
+| 🧭 Explorador | 🧭 Mapa | Ve más en el mapa (tiempos, ⛺ campamentos enemigos, su fuerza), 🕵️ se infiltra desde el rango 30 y +5 puntos de exploración por vuelta (D-112; [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | **en el juego** |
 | Refinado (5 oficios) | 🛠️ Oficio | Hasta 30 % de sacar una unidad más al refinar | en el juego |
 | Cantería | 🏰 Castillo | Las obras de piedra del campamento piden 15 % menos piedra | fase 2 |
 | 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | en la cola (hoy da +4 % de ataque con arco o bastón: pasa a esto cuando exista la obra maestra) |
