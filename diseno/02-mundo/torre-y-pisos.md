@@ -1,6 +1,8 @@
 # La Torre: 100 pisos y cómo se sube de uno a otro
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Jefes](../06-contenido/jefes.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Alimenta a:** [Progresión](../03-personaje/progresion.md), [Economía](../07-economia/economia.md), [PvP](../06-contenido/pvp.md) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Jefes](../06-contenido/jefes.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Alimenta a:** [Progresión](../03-personaje/progresion.md), [Economía](../07-economia/economia.md), [PvP](../06-contenido/pvp.md) · **Estado:** se retira (D-58)
+
+> **Se retira por D-58:** ya no hay Torre ni pisos. El mundo es un mapa infinito y viajar toma tiempo. Qué pasa con cada concepto de este documento está en [Mapa infinito y viaje](mapa-infinito-y-viaje.md), §4. El Colapso y las comunidades PNJ siguen (D-45): ver [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
 
 **De dónde sale.**
 - *Sword Art Online*: un castillo flotante de 100 pisos. Cada piso es un mundo con ciudades, campos y un laberinto que termina en el jefe, y el piso siguiente no existe para nadie hasta que alguien mata a ese jefe.
@@ -19,7 +21,7 @@
 
 Un mundo roto en cien pedazos quedó apilado en una torre que flota sobre la nada. Cada piso es un fragmento con su cielo, su clima y sus pueblos. Quien despierta en el Piso 1 es un **Ascendente**: lleva en el pecho una marca que solo se apaga en la Cima. Nadie sabe qué hay en el Piso 100. Los rumores dicen que quien llegue podrá rehacer el mundo, o salir de él.
 
-**El Colapso.** Los supervivientes llaman **el Colapso** al día en que el mundo se rompió. Desde entonces todo está en ruinas, el conocimiento de antes se perdió y los pocos que quedaron, todos PNJ, resisten en comunidades con sus propias reglas. Los Ascendentes despiertan sin nada entre esas ruinas: pueden unirse a una comunidad o fundar algo nuevo en el Claro. Qué causó el Colapso es parte del Gran Misterio de la Torre (ver [Investigaciones](../06-contenido/investigaciones.md)). Todo esto está en [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
+**El Colapso (sigue vigente con el mapa infinito, D-45).** Los supervivientes llaman **el Colapso** al día en que el mundo se rompió. Desde entonces todo está en ruinas, el conocimiento de antes se perdió y los pocos que quedaron, todos PNJ, resisten en comunidades con sus propias reglas. Los Ascendentes despiertan sin nada junto a la fogata del Claro: pueden unirse a una comunidad o fundar algo nuevo ahí mismo. Qué causó el Colapso es parte del Gran Misterio (ver [Investigaciones](../06-contenido/investigaciones.md)). Todo esto está en [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
 
 La premisa es original a propósito. Los **sistemas** de WoW, SAO y Elden Ring se pueden copiar; sus nombres, personajes, lugares y textos no (ver [Referencias, apartado legal](../99-referencias/referencias.md)).
 
