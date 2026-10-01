@@ -58,9 +58,11 @@ class Content:
     patches: dict[str, Any] | None = None
 
 
-def _read(path: Path) -> dict[str, Any]:
+def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
     with path.open(encoding="utf-8") as handle:
         data = yaml.safe_load(handle) or {}
+    if keep_retired:
+        return data
     return {k: v for k, v in data.items() if not (isinstance(v, dict) and v.get("retired"))}
 
 
@@ -81,7 +83,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
     """
     base = content_dir or DEFAULT_CONTENT_DIR
     return Content(
-        classes=_read(base / "classes.yaml"),
+        classes=_read(base / "classes.yaml", keep_retired=True),
         enemies=_read(base / "enemies.yaml"),
         biomes=_read(base / "biomes.yaml"),
         items=_read(base / "items.yaml"),

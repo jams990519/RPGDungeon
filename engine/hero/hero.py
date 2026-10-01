@@ -67,6 +67,11 @@ class Hero:
     referred_by: str | None = None
     referral_paid: bool = False
     merit: int = 0
+    talents: dict[str, int] = field(default_factory=dict)
+    points: int = 0
+    unlocked: list[str] = field(default_factory=list)
+    explored: list[str] = field(default_factory=list)
+    camp: str | None = None
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])
 
@@ -104,10 +109,11 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
     """
     base = class_def["base"]
     per = class_def.get("per_level", {})
+    bonus = class_def.get("talent_bonus", {})
     lv = max(1, level) - 1
     return {
-        "max_hp": int(base["hp"] + per.get("hp", 0) * lv),
-        "attack": float(base["attack"] + per.get("attack", 0) * lv),
+        "max_hp": int((base["hp"] + per.get("hp", 0) * lv) * (1 + bonus.get("hp", 0.0))),
+        "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0))),
         "armor": float(base.get("armor", 0.0)),
         "initiative": float(base.get("initiative", 10)),
     }

@@ -28,21 +28,21 @@ role:
   soporte: "✦ Soporte"
 
 class_group:
-  guerrero: {name: "🛡 Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
-  picaro: {name: "🗡️ Pícaro", desc: "cuero, energía y combos: rápido y letal"}
-  sacerdote: {name: "✨ Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
+  guerrero: {name: "🏰 Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
+  picaro: {name: "🐍 Pícaro", desc: "cuero, energía y combos: rápido y letal"}
+  sacerdote: {name: "📿 Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
 
 class:
   guerrero:
-    name: "🛡 Guerrero · Protección"
+    name: "🏰 Guerrero · Protección"
     role: "aguanta golpes, bloquea y castiga"
     attack_name: "Tajo"
   picaro:
-    name: "🗡️ Pícaro · Asesinato"
+    name: "🐍 Pícaro · Asesinato"
     role: "rápido, esquiva y remata con combos"
     attack_name: "Puñalada"
   sacerdote:
-    name: "✨ Sacerdote · Disciplina"
+    name: "📿 Sacerdote · Disciplina"
     role: "se cura, se escuda y desgasta"
     attack_name: "Castigo"
 
@@ -213,7 +213,7 @@ menu:
 zone:
   title: "📍 Dónde estás"
   header: "{name} — {biome}"
-  distance: "Lejanía {lejania} · Anillo {ring} · Peligro de nivel {level}"
+  distance: "📌 Coordenadas ({x}, {y}) · Lejanía {lejania} · Anillo {ring} · Peligro de nivel {level}"
   discovered_by: "🧭 La descubrió {name}"
   routes: "Rutas:"
   uncharted: "❔ Tierra sin cartografiar"
@@ -259,7 +259,7 @@ map:
 hero:
   title: "👤 Tu héroe"
   status_line: "❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · 💰 {gold} · Nivel {level}"
-  name_line: "{name} — {cls} ({role})"
+  name_line: "{icon} {name} — {cls} ({role})"
   level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
   hp_line: "❤️ Vida {hp}/{max_hp}"
   stats_line: "⚔️ Ataque {attack} · 🛡 Armadura {armor}% · ⚡ Iniciativa {initiative}"
@@ -280,7 +280,7 @@ combat:
   enemy_line: "{enemy} · nivel {level}"
   enemy_hp: "❤️ {pct}% {bar}"
   warning: "⚠️ {text}"
-  hero_line: "🟥 {name} — {cls}"
+  hero_line: "{icon} {name} — {cls}"
   hero_bars: "❤️ {hp}/{max_hp} · 🔷 {resource} {value} · 🔋 {stamina}"
   combo: "🎯 Combo {n}/5"
   toxicity: "☠️ Toxicidad {n}%"
@@ -422,3 +422,49 @@ energy:
 
 invite:
   line: "👥 Invita amigos con tu enlace: por cada jugador nuevo que entre ganas +{bonus} ⚡ de energía extra. Invitados: {n}."
+
+talents:
+  button: "🌟 Talentos ({n})"
+  title: "🌟 Talentos"
+  intro: "Cada nivel te da 1 punto. Ponlo en una especialización de tu clase: con 1, 3 y 6 puntos desbloqueas sus 3 habilidades, y cada punto te hace más fuerte en su rol. Tu especialización principal ⭐ es la que tiene más puntos."
+  points: "Puntos sin usar: {n}"
+  spec_line: "{name} — {role}: {n} puntos"
+  spec_title: "{name} · {role}"
+  spec_points: "Puntos aquí: {n} · Sin usar: {free}"
+  spend_button: "➕ Poner 1 punto aquí"
+  spent: "🌟 Pusiste 1 punto."
+  unlocked: "Desbloqueaste: {names}."
+  new_point: "🌟 Ganaste 1 punto de talento: 👤 Héroe → 🌟 Talentos."
+  bar: "Barra de combate: {abilities}"
+
+camps:
+  title: "🏕️ Campamentos"
+  zone_line: "🏕️ Aquí está {name} ({n} miembros)"
+  info: "🏕️ {name}, fundado por {founder}, en las coordenadas ({x}, {y}). Miembros: {n}."
+  you_member: "Eres parte de este campamento."
+  found_intro: "Aquí no hay campamento. Para fundar uno en ({x}, {y}) necesitas:"
+  req_far: "Estar lejos del Claro (Lejanía {n} o más)"
+  req_explored: "Haber explorado esta zona (🧭 Explorar → 🔎)"
+  req_known: "Conocer los alrededores: {n} de {need} zonas vecinas pisadas"
+  req_alone: "Que no haya otro campamento a {n} zonas o menos"
+  req_cost: "Llevar {items}"
+  req_one: "No haber fundado otro campamento"
+  found_button: "🏕️ Fundar campamento aquí"
+  cannot: "Todavía no cumples todo lo necesario."
+  founded: "🏕️ ¡Fundaste tu campamento en ({x}, {y})! Quien llegue aquí lo encontrará, y te avisaré."
+  default_name: "Campamento de {name}"
+  found_it: "🏕️ Encontraste {name}, fundado por {founder}."
+  members_told: "Sus miembros fueron avisados de tu llegada."
+  visit_title: "🏕️ Alguien llegó a tu campamento"
+  visit_body: "{name} (nivel {level}) llegó a {camp}. ¿Cómo lo reciben?"
+  friendly: "🤝 Amistoso"
+  hostile: "⚔️ Hostil"
+  already_answered: "Otro miembro ya respondió por ese visitante."
+  you_answered: "Respondiste: {relation}."
+  answer:
+    friendly: "🤝 {camp} te recibe como amigo ({name} respondió)."
+    hostile: "⚔️ {camp} te considera hostil ({name} respondió). Ten cuidado."
+  relation:
+    friendly: "🤝 Amistoso"
+    hostile: "⚔️ Hostil"
+    unknown: "❔ Todavía no respondieron si eres bienvenido."
