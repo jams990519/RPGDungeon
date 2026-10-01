@@ -13,7 +13,8 @@ Para qué sirve: es el juego visto desde afuera. Cada cliente llama a view(), te
 act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
     diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3;
-    diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97)
+    diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
+    diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging,
     engine.social (cuentas del gremio, D-97), content/*
@@ -33,6 +34,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     Diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.13
     D-97 (provisional): "guild" (gremio de un campamento, clave "x:y" del campamento: nombre, nivel, contadores)
     y "guild_name" (nombres de gremio tomados). Los miembros del gremio son los del campamento ("camp").
+    D-99 (provisional): en cada "camp/<x:y>" de nivel 5 o más, "next_raid_at" (hora de la próxima incursión),
+    "raid" (la incursión abierta: kind "raid" o "trial", at, until, required, wins, fights {héroe: fighting, won,
+    lost o fled}, enemy, level), "raids" ({"won", "lost"}), "trial_won" y "trial_retry_at" (Noche de prueba).
+    Una pelea de defensa lleva "raid" ({"camp", "at"}) en su estado de "combat". Diseño: §0.5 del mismo documento
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -49,6 +54,7 @@ Reglas que nunca se rompen:
     9. Ver a otros jugadores en la zona (D-96) es solo información: nunca da premio, pelea ni ventaja, nunca se
        lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
     10. El gremio (D-97) nunca saca a nadie: si el cupo baja, los que ya están se quedan.
+    11. Una incursión perdida (D-99) solo quita parte de la despensa: nunca niveles, zonas ni miembros.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -65,10 +71,14 @@ Si cambias esto, revisa:
       _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
     - Gremio (D-97): balance.yaml guild; engine/social/guilds.py; textos guild.* en es.yaml; tests/test_guilds.py.
       Sus contadores se suman en _settle (exploración y recolección) y en _end_combat (victoria)
+      tests/test_raids.py (incursiones y Noche de prueba, D-99)
+    - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
+      🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _grow_view/_grow_camp (castillo pide la prueba ganada)
 """
 
 from __future__ import annotations
 
+import math
 import re
 import unicodedata
 from dataclasses import asdict, replace
@@ -111,12 +121,13 @@ from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
+from engine.world import raids as raid_rules
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
-            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild"}
+            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -176,6 +187,7 @@ class GameService:
         if hero is None:
             return self._creation_view(account_id)
         notices = self._settle(hero)
+        self._raid_settle(hero)
         self._save(hero)
         return self._main_view(hero, notice=self._join(notices))
 
@@ -213,6 +225,7 @@ class GameService:
         self._mark_seen(hero)
         notices = self._settle(hero)
         self._presence_note(hero)                       # D-96: others see you in 📍 Zona
+        self._raid_settle(hero)             # D-99: the camp's raid clock is lazy too
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
@@ -500,7 +513,7 @@ class GameService:
         stats = hero_stats(self._kit(hero), hero.level)
         if not in_combat and hero.hp < stats["max_hp"] and hero.last_regen_at:
             regen = self.content.balance["regen"]
-            pct = (regen["downed_percent_per_minute"] if hero.downed else regen["hp_percent_per_minute"]) / 100
+            pct = 1 / (regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"])      # share of max hp per minute
             per_second = stats["max_hp"] * pct / (60 * self.time_scale)
             gained = int((now - hero.last_regen_at) * per_second)
             if gained > 0:
@@ -622,6 +635,7 @@ class GameService:
         t = self.texts
         key = f"{zone.x}:{zone.y}"
         before = self._known_resources(hero, zone.x, zone.y)
+        before_pct = self._explored_pct(hero, zone.x, zone.y)
         low, high = self.content.balance["exploration"]["per_step"]
         hero.exploration[key] = min(100, self._explored_pct(hero, zone.x, zone.y) + int(rng.uniform(low, high + 1)))
         if key not in hero.explored:
@@ -630,9 +644,14 @@ class GameService:
         if new:
             names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
             activity["log"].append(t.t("explore.revealed", items=names))
+        bal = self.content.balance["explore"]
+        xp = bal["xp_per_step"]                       # exploring teaches: experience every round (owner's request)
         if hero.exploration[key] >= 100:
             activity["log"].append(t.t("explore.full", name=self._zone_name(zone)))
-        bal = self.content.balance["explore"]
+            if before_pct < 100:
+                xp += bal["xp_full_zone"]             # finishing a zone is worth more
+        activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
+        activity["log"] += self._give_xp(hero, xp)
         roll = rng.random()
         if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
             return self._start_combat(hero, zone, rng, "encounter.found")
@@ -790,6 +809,8 @@ class GameService:
             return self._hero_view(hero)
         if action_id == "stats":
             return self._stats_view(hero)
+        if action_id == "health":
+            return self._health_view(hero)
         if action_id == "explore_menu":
             return self._explore_menu(hero)
         if action_id == "talents":
@@ -882,6 +903,10 @@ class GameService:
             return self._grow_camp(hero, cx, cy)
         if action_id == "campfeed":
             return self._camp_feed(hero)
+        if action_id == "defend":                       # D-99: from the raid notice or the camp screen
+            return self._defend(hero)
+        if action_id == "trial":                        # D-99: call the Noche de prueba (grow screen, level 8)
+            return self._start_trial(hero)
         if action_id == "askjoin":
             return self._ask_join(hero)
         if action_id == "leave":
@@ -1054,6 +1079,8 @@ class GameService:
                     lines.append(t.t("batch.found", items=self._item_list(activity["got"])))
                 if activity.get("coins"):
                     lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
+                if activity.get("xp"):
+                    lines.append(t.t("batch.xp", xp=activity["xp"]))
         lines += activity.get("log", [])
         if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
             lines.append(t.t(f"batch.reason.{reason}"))
@@ -1754,8 +1781,12 @@ class GameService:
                 if pantry:
                     body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
                     actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
+                body += self._raid_lines(camp)            # D-99: the next raid, or the one going on
                 # D-97: the guild screen holds the camp's members, rename (founder) and leave (members): 4 buttons at most
                 actions.append(Action(id="guild", label=t.t("guild.button")))
+                defend = self._defend_action(camp, hero)  # D-99: while a raid lasts, 🛡️ Defender takes the place of ↩️ Volver
+                if defend:
+                    actions.append(defend)
             else:
                 rel = camp["relations"].get(hero.id)
                 body.append(t.t(f"camps.relation.{rel or 'unknown'}"))
@@ -1763,7 +1794,8 @@ class GameService:
                     body.append(t.t("camps.join_waiting"))
                 elif hero.camp is None and rel != "hostile":
                     actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
-            actions.append(Action(id="home", label=t.t("menu.back")))
+            if len(actions) < 4:              # D-75: with 🛡️ Defender there is no room; the menu goes back
+                actions.append(Action(id="home", label=t.t("menu.back")))
             return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         reqs = self._camp_requirements(hero)
         body = [t.t("camps.found_intro", x=zone.x, y=zone.y), ""] + [("✅ " if ok else "▫️ ") + text for text, ok in reqs]
@@ -1824,10 +1856,13 @@ class GameService:
         self.store.put("camp_name", self._name_key(name), {"camp": key})
         self.store.put("camp", key, {"name": name, "founder": hero.name, "founder_id": hero.id,
                                       "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now(),
-                                      "level": 1, "zones": [[hero.x, hero.y]]})
+                                      "level": 1, "zones": [[hero.x, hero.y]], "next_raid_at": self.clock.now() + self._raid_interval()})
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
-        return self._camp_here_view(hero, notice=t.t("camps.founded", name=name, x=hero.x, y=hero.y))
+        notice = t.t("camps.founded", name=name, x=hero.x, y=hero.y)
+        if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
+            notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["interval_days"])
+        return self._camp_here_view(hero, notice=notice)
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
         """How many members fit: base + per level (D-84), or the guild's capacity if bigger (D-97).
@@ -1955,6 +1990,8 @@ class GameService:
             if not all(ok for _, ok in castle):
                 return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body + ["", t.t("guild.castle_blocked")],
                             actions=[Action(id="guild", label=t.t("guild.button")), Action(id="claro", label=t.t("menu.back"))])
+        if self._trial_needed(camp):           # D-99: then castillo needs a won Noche de prueba (after the guild, D-97)
+            return self._trial_view(hero, camp)
         if not candidates:
             return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
         per = 3 if len(candidates) <= 3 else 2
@@ -1999,6 +2036,8 @@ class GameService:
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
         if not all(ok for _, ok in self._castle_needs(camp)):     # D-97: no castle without a guild that is ready
             return self._grow_view(hero)
+        if self._trial_needed(camp):           # D-99: castillo needs a won Noche de prueba
+            return self._trial_view(hero, camp)
         level = camp.get("level", 1)
         cost = self._grow_cost(level)
         chests = self._grow_chests(level)          # D-92: paid from the chests of the member who grows
@@ -2275,6 +2314,303 @@ class GameService:
         return [(t.t("guild.castle_has_guild"), guild is not None),
                 (level_line, bool(guild) and guild["level"] >= cfg["castle_min_level"]),
                 (t.t("guild.castle_members", need=cfg["castle_min_members"], n=n), n >= cfg["castle_min_members"])]
+
+    # ------------------------------------------------------------------ camp raids and the Noche de prueba (D-99, provisional)
+
+    def _raid_cfg(self) -> dict[str, Any]:
+        return self.content.balance["raids"]
+
+    def _raid_sub(self, kind: str) -> dict[str, Any]:
+        """The numbers of a raid kind: the weekly raid ("raid") or the Noche de prueba ("trial")."""
+        cfg = self._raid_cfg()
+        return cfg["trial"] if kind == "trial" else cfg
+
+    def _raid_interval(self) -> float:
+        return self._seconds(self._raid_cfg()["interval_days"] * 24 * 60)
+
+    def _days_until(self, when: float) -> int:
+        return max(0, math.ceil((when - self.clock.now()) / self._day_seconds()))
+
+    def _raid_settle(self, hero: Hero) -> None:
+        """The lazy raid clock of the hero's camp (D-99): schedule it, open it when due, close it when its window ended.
+
+        [ES]
+        Qué hace: el reloj perezoso de las incursiones del campamento del héroe (sin reloj de fondo). La primera vez
+        que un miembro juega en un campamento de nivel raids.from_level o más, agenda la próxima (raids.interval_days).
+        Cuando un miembro juega después de esa hora, llega la incursión: aviso con 🛡️ Defender a los miembros activos.
+        Cuando su ventana terminó, la cierra (defendida o perdida). Solo campamentos de jugadores: el Claro no es un
+        campamento guardado en "camp", así que nunca tiene incursiones (D-95, D-98).
+        La llaman: view() y act(), después de _settle.
+        Si cambia, afecta: cuándo llegan y cuándo terminan las incursiones de todos los campamentos.
+        """
+        if not hero.camp:
+            return
+        camp = self.store.get("camp", hero.camp)
+        if not camp or hero.id not in camp.get("members", []):
+            return
+        now = self.clock.now()
+        changed = False
+        raid = camp.get("raid")
+        if raid and self._raid_over(raid):
+            self._resolve_raid(camp, raid, hero)
+            changed = True
+        if camp.get("level", 1) >= self._raid_cfg()["from_level"]:
+            if camp.get("next_raid_at") is None:          # reached raids.from_level, or a camp from before the patch
+                camp["next_raid_at"] = now + self._raid_interval()
+                changed = True
+            elif not camp.get("raid") and now >= camp["next_raid_at"]:
+                self._open_raid(camp, "raid", hero.id)
+                changed = True
+        if changed:
+            self.store.put("camp", hero.camp, camp)
+
+    def _raid_over(self, raid: dict[str, Any]) -> bool:
+        """True when the window closed and nobody is still fighting for it (or the grace time is over too)."""
+        now = self.clock.now()
+        if now < raid["until"]:
+            return False
+        if now >= raid["until"] + self._seconds(self._raid_cfg()["grace_minutes"]):
+            return True
+        return not any(result == "fighting" and self.store.get("combat", hid) for hid, result in raid["fights"].items())
+
+    def _raid_enemy(self, camp: dict[str, Any], kind: str, at: float) -> tuple[str, int]:
+        """The enemy of a raid: from the biome and level of the camp's zone; the strongest one for the Noche de prueba."""
+        zone = self._zone(camp["x"], camp["y"])
+        roll = hash_unit(self.world_seed, "raid", camp["x"], camp["y"], at)
+        return raid_rules.pick_enemy(self.content.enemies, zone.biome, zone.level + self._raid_sub(kind)["enemy_level_bonus"],
+                                     strongest=kind == "trial", roll=roll)
+
+    def _open_raid(self, camp: dict[str, Any], kind: str, opener: str) -> None:
+        """Start a raid (or the Noche de prueba) and tell the active members, with the 🛡️ Defender button (D-99).
+
+        [ES]
+        Qué hace: abre la incursión en el campamento (enemigo, ventana, victorias necesarias según los miembros activos)
+        y les manda el aviso con 🛡️ Defender. Quien la abrió cuenta como activo. El llamador guarda el campamento.
+        La llaman: _raid_settle (la semanal) y _start_trial (la Noche de prueba).
+        Si cambia, afecta: a quién le llega el aviso y cuántas victorias hacen falta.
+        """
+        now = self.clock.now()
+        sub = self._raid_sub(kind)
+        active = self._active()
+        told = [member for member in camp["members"] if member in active or member == opener]
+        enemy_id, level = self._raid_enemy(camp, kind, now)
+        raid = {"kind": kind, "at": now, "until": now + self._seconds(self._raid_cfg()["window_minutes"]),
+                "required": raid_rules.required_wins(len(told), sub["required_share"], sub["min_wins"]),
+                "wins": 0, "fights": {}, "enemy": enemy_id, "level": level}
+        camp["raid"] = raid
+        notice = self._raid_notice(camp, raid)
+        for member in told:
+            self._push(member, notice)
+
+    def _raid_notice(self, camp: dict[str, Any], raid: dict[str, Any]) -> View:
+        t = self.texts
+        trial = raid["kind"] == "trial"
+        enemy = t.t(self.content.enemies[raid["enemy"]]["name_key"])
+        body = [t.t("raids.trial_arrive" if trial else "raids.arrive", enemy=enemy, level=raid["level"]),
+                t.t("raids.need", need=raid["required"], time=self._fmt_duration(raid["until"] - raid["at"])),
+                t.t("raids.trial_stakes", days=self._raid_cfg()["trial"]["retry_days"]) if trial else t.t("raids.stakes")]
+        return View(kind="camp_raid", title=t.t("raids.trial_title" if trial else "raids.title", camp=camp["name"]), body=body,
+                    actions=[Action(id="defend", label=t.t("raids.defend_button"))])
+
+    def _defend_action(self, camp: dict[str, Any], hero: Hero) -> Action | None:
+        """🛡️ Defender while the camp's raid window is open and this member has not fought yet."""
+        raid = camp.get("raid")
+        if not raid or hero.id in raid["fights"] or self.clock.now() >= raid["until"]:
+            return None
+        return Action(id="defend", label=self.texts.t("raids.defend_button"))
+
+    def _defend(self, hero: Hero) -> View:
+        """🛡️ Defender: fight ONE combat for your camp's open raid, wherever you are (D-99).
+
+        [ES]
+        Qué hace: el miembro sale a defender su campamento: UNA pelea con el motor de combate normal contra el enemigo
+        de la incursión (en la Noche de prueba, su versión élite). Se puede desde cualquier zona, sin energía, si no
+        estás ocupado. Perder sigue las reglas normales de derrota: no hay castigo extra.
+        La llaman: el botón 🛡️ Defender del aviso, de la pantalla del campamento o de la Noche de prueba.
+        Si cambia, afecta: las victorias de la incursión (_raid_fight_done) y tests/test_raids.py.
+        """
+        t = self.texts
+        key = hero.camp
+        camp = self.store.get("camp", key) if key else None
+        raid = camp.get("raid") if camp else None
+        if not raid or hero.id not in camp["members"] or self.clock.now() >= raid["until"]:
+            return self._main_view(hero, notice=t.t("raids.none"))
+        if hero.id in raid["fights"]:
+            return self._main_view(hero, notice=t.t("raids.already"))
+        if hero.activity:
+            return self._activity_view(hero, notice=t.t("raids.busy"))
+        trial = raid["kind"] == "trial"
+        edef = self.content.enemies[raid["enemy"]]
+        seed = int(hash_unit(self.world_seed, hero.id, "raid", raid["at"]) * 2**31)
+        state = make_combat(raid["enemy"], edef, raid["level"], self._kit(hero), seed)
+        if trial:
+            sub = self._raid_sub("trial")
+            raid_rules.scale_enemy(state, sub["enemy_hp_mult"], sub["enemy_attack_mult"])
+        state["raid"] = {"camp": key, "at": raid["at"]}
+        self.store.put("combat", hero.id, state)
+        raid["fights"][hero.id] = "fighting"
+        self.store.put("camp", key, camp)
+        self.bus.publish(CombatStarted(hero.id, raid["enemy"], seed))
+        notice = t.t("raids.trial_started" if trial else "raids.started", camp=camp["name"], enemy=t.t(edef["name_key"]), level=raid["level"])
+        return self._combat_view(hero, state, notice=notice)
+
+    def _raid_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
+        """Count a defender's finished fight on the camp's raid (a win only if it is still the same raid)."""
+        t = self.texts
+        ref = state["raid"]
+        camp = self.store.get("camp", ref["camp"])
+        raid = camp.get("raid") if camp else None
+        if not raid or raid.get("at") != ref["at"]:
+            return ["", t.t("raids.fight_late")]
+        won = state["outcome"] == "victory"
+        raid["fights"][hero.id] = "won" if won else ("lost" if state["outcome"] == "defeat" else "fled")
+        if won:
+            raid["wins"] += 1
+        self.store.put("camp", ref["camp"], camp)
+        return ["", t.t("raids.fight_won" if won else "raids.fight_lost", camp=camp["name"], wins=raid["wins"], need=raid["required"])]
+
+    def _resolve_raid(self, camp: dict[str, Any], raid: dict[str, Any], actor: Hero) -> None:
+        """Close a raid whose window ended: defended or lost, and tell every member (D-99).
+
+        [ES]
+        Qué hace: cierra la incursión. Defendida (victorias ≥ necesarias): premio chico a cada defensor (raids.reward
+        o trial.reward). Perdida: la incursión semanal se lleva raids.loss_share de la despensa (si tiene) y nada más;
+        la Noche de prueba no se lleva nada y se reintenta a los trial.retry_days. Agenda la próxima incursión semanal.
+        Nunca toca niveles, zonas ni miembros (§15). El llamador guarda el campamento.
+        La llama: _raid_settle.
+        Si cambia, afecta: la despensa, la experiencia y las monedas de los defensores, y si el campamento puede ser castillo.
+        """
+        t = self.texts
+        now = self.clock.now()
+        trial = raid["kind"] == "trial"
+        sub = self._raid_sub(raid["kind"])
+        won = raid["wins"] >= raid["required"]
+        camp.pop("raid", None)
+        name, score = camp["name"], {"wins": raid["wins"], "need": raid["required"]}
+        body: list[str] = []
+        if won:
+            body.append(t.t("raids.trial_won" if trial else "raids.defended", camp=name, **score))
+            for hero_id in raid["fights"]:
+                self._raid_reward(hero_id, sub["reward"], actor)
+            if raid["fights"]:
+                body.append(t.t("raids.reward", xp=sub["reward"]["xp"], gold=self._money(sub["reward"]["gold"])))
+        if trial and camp.get("next_raid_at") is not None and camp["next_raid_at"] <= raid["until"]:
+            # the weekly raid came due during the Noche de prueba: the trial was that week's raid
+            camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
+        if trial and won:
+            camp["trial_won"] = True
+        elif trial:
+            camp["trial_retry_at"] = raid["until"] + self._seconds(sub["retry_days"] * 24 * 60)
+            body.append(t.t("raids.trial_lost", camp=name, time=self._fmt_duration(camp["trial_retry_at"] - now), **score))
+        else:
+            record = camp.setdefault("raids", {"won": 0, "lost": 0})
+            record["won" if won else "lost"] += 1
+            if not won:
+                lost = self._raid_food_loss(camp)
+                body += [t.t("raids.lost", camp=name, **score),
+                         t.t("raids.lost_food", rations=lost) if lost else t.t("raids.lost_nothing")]
+            camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
+            body.append(t.t("raids.next", n=self._days_until(camp["next_raid_at"])))
+        view = View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name), body=body)
+        for member in camp["members"]:
+            self._push(member, view)
+
+    def _raid_reward(self, hero_id: str, reward: dict[str, int], actor: Hero) -> None:
+        """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it."""
+        target = actor if actor.id == hero_id else self._load(hero_id)
+        if target is None:
+            return
+        target.gold += reward["gold"]
+        self._give_xp(target, reward["xp"])
+        if target is not actor:
+            self._save(target)
+
+    def _raid_food_loss(self, camp: dict[str, Any]) -> int:
+        """A lost raid takes raids.loss_share of the camp's pantry, if it has one; returns the rations taken."""
+        if self._camp_pantry(camp) is None:              # also settles the consumption up to now
+            return 0
+        key = f"{camp['x']}:{camp['y']}"
+        data = self.store.get("pantry", key)
+        lost = raid_rules.food_lost(data["rations"], self._raid_cfg()["loss_share"])
+        data["rations"] = max(0.0, data["rations"] - lost)
+        self.store.put("pantry", key, data)
+        return int(round(lost))
+
+    def _raid_lines(self, camp: dict[str, Any]) -> list[str]:
+        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before."""
+        t = self.texts
+        cfg = self._raid_cfg()
+        raid = camp.get("raid")
+        if raid:
+            left = self._fmt_duration(max(0.0, raid["until"] - self.clock.now()))
+            return [t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
+                        n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)]
+        level = camp.get("level", 1)
+        if level >= cfg["from_level"]:
+            nxt = camp.get("next_raid_at")
+            return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else cfg["interval_days"])]
+        if level == cfg["from_level"] - 1:
+            return [t.t("raids.soon_line", level=cfg["from_level"])]
+        return []
+
+    def _trial_needed(self, camp: dict[str, Any]) -> bool:
+        """True if growing one level needs a Noche de prueba the camp has not won yet (8 → 9, castillo)."""
+        return camp.get("level", 1) + 1 == self._raid_sub("trial")["to_level"] and not camp.get("trial_won")
+
+    def _trial_blocker(self, camp: dict[str, Any]) -> str | None:
+        """Why the Noche de prueba cannot be called right now (a notice), or None."""
+        t = self.texts
+        if camp.get("raid"):
+            return t.t("raids.trial_busy")
+        wait = camp.get("trial_retry_at", 0.0) - self.clock.now()
+        if wait > 0:
+            return t.t("raids.trial_wait", time=self._fmt_duration(wait))
+        if self._camp_starving(camp):
+            return t.t("raids.trial_famine")
+        return None
+
+    def _trial_view(self, hero: Hero, camp: dict[str, Any], notice: str | None = None) -> View:
+        """The grow screen at level 8: castillo needs a won Noche de prueba; call it or defend it here (D-99).
+
+        [ES]
+        Qué hace: en lugar de las zonas para crecer, muestra que castillo pide ganar la Noche de prueba, contra qué
+        enemigo y cuántas victorias hacen falta. Botones: 🌙 Noche de prueba (si se puede convocar) o 🛡️ Defender
+        (si ya empezó), y ↩️ Volver. Como mucho 2 botones.
+        La llaman: _grow_view y _grow_camp (nivel 8 sin la prueba ganada) y _start_trial.
+        Si cambia, afecta: cómo se llega a castillo.
+        """
+        t = self.texts
+        sub = self._raid_sub("trial")
+        enemy_id, level = self._raid_enemy(camp, "trial", 0.0)
+        required = raid_rules.required_wins(self._camp_active(camp), sub["required_share"], sub["min_wins"])
+        body = [t.t("raids.trial_intro", camp=camp["name"], enemy=t.t(self.content.enemies[enemy_id]["name_key"]), level=level),
+                t.t("raids.trial_how", need=required, days=sub["retry_days"],
+                    time=self._fmt_duration(self._seconds(self._raid_cfg()["window_minutes"])))]
+        actions: list[Action] = []
+        defend = self._defend_action(camp, hero)
+        if camp.get("raid"):
+            body += self._raid_lines(camp) + ([] if camp["raid"]["kind"] == "trial" else [t.t("raids.trial_busy")])
+        else:
+            blocker = self._trial_blocker(camp)
+            body += [blocker] if blocker and blocker != notice else []
+            actions += [] if blocker else [Action(id="trial", label=t.t("raids.trial_button"))]
+        actions += [defend] if defend else []
+        actions.append(Action(id="claro", label=t.t("menu.back")))
+        return View(kind="camp_trial", title=t.t("raids.trial_screen"), body=body, actions=actions, notice=notice)
+
+    def _start_trial(self, hero: Hero) -> View:
+        """🌙 Noche de prueba: a member at the camp calls it (level 8, pantry not empty, no raid on, after the retry wait)."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id not in camp["members"] or hero.activity or not self._trial_needed(camp):
+            return self._camp_here_view(hero)
+        blocker = self._trial_blocker(camp)
+        if blocker:
+            return self._trial_view(hero, camp, notice=blocker)
+        self._open_raid(camp, "trial", hero.id)
+        self.store.put("camp", key, camp)
+        return self._trial_view(hero, camp, notice=t.t("raids.trial_sent"))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2571,7 +2907,7 @@ class GameService:
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
         body += self._tutorial_hint(hero)
         actions = [Action(id="bag", label=t.t("bag.button_new" if hero.gear_new else "menu.bag")), Action(id="talents", label=t.t("talents.button", n=hero.points)),
-                   Action(id="stats", label=t.t("hero.stats_button")), Action(id="home", label=t.t("menu.back"))]
+                   Action(id="stats", label=t.t("hero.stats_button")), Action(id="health", label=t.t("health.button"))]   # 4 buttons (D-75): back with the menu
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
 
     def _coins_line(self, hero: Hero) -> str:
@@ -2590,10 +2926,10 @@ class GameService:
         if hero.hp >= max_hp:
             return []
         regen = self.content.balance["regen"]
-        pct = regen["downed_percent_per_minute"] if hero.downed else regen["hp_percent_per_minute"]
-        seconds = (max_hp - hero.hp) / (max_hp * pct / 100) * 60 * self.time_scale
+        full = regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"]
+        seconds = (max_hp - hero.hp) / max_hp * full * 60 * self.time_scale
         key = "hero.downed_line" if hero.downed else "hero.regen_line"
-        return [self.texts.t(key, pct=f"{pct:g}", time=self._fmt_duration(seconds))]
+        return [self.texts.t(key, full=self._fmt_duration(full * 60), time=self._fmt_duration(seconds))]
 
     def _status_text(self, hero: Hero) -> str:
         t = self.texts
@@ -2601,6 +2937,38 @@ class GameService:
             return t.t("hero.status.combat")
         kind = (hero.activity or {}).get("kind")
         return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+
+    def _health_view(self, hero: Hero) -> View:
+        """🩺 Salud: how your body is right now, how it recovers and what can cure it (owner's request).
+
+        [ES]
+        Qué hace: junta todo lo de la salud del héroe en una pantalla: vida, cómo está el cuerpo (sano, magullado,
+        herido, muy herido o 🤕 malherido), cuánto falta para curarse solo, las enfermedades (hoy ninguna: llegan
+        con la capa de salud, D-09) y con qué curarse. Aquí aparecerán las heridas por partes y las enfermedades.
+        La llaman: el botón 🩺 Salud de la ficha del héroe y el atajo /salud.
+        Si cambia, afecta: dónde ve el jugador su estado; los números salen de balance.yaml regen.
+        """
+        t = self.texts
+        max_hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
+        pct = round(100 * hero.hp / max(1, max_hp))
+        if hero.downed:
+            body_state = "downed"
+        else:
+            body_state = next(name for name, low in (("healthy", 100), ("bruised", 60), ("hurt", 25), ("badly_hurt", 0)) if pct >= low)
+        regen = self.content.balance["regen"]
+        body = [t.t("health.hp", hp=hero.hp, max_hp=max_hp, pct=pct, bar=self._bar(hero.hp, max_hp, 10)),
+                t.t("health.body", state=t.t(f"health.state.{body_state}")),
+                *self._recovery_lines(hero, max_hp),
+                t.t("health.recovery", full=self._fmt_duration(regen["hp_full_minutes"] * 60),
+                    downed=self._fmt_duration(regen["downed_full_minutes"] * 60)),
+                "",
+                t.t("health.diseases"),
+                t.t("health.toxicity"),
+                "",
+                t.t("health.cures"),
+                t.t("health.coming")]
+        actions = [Action(id="potions", label=t.t("potions.button")), Action(id="hero", label=t.t("menu.back"))]
+        return View(kind="health", title=t.t("health.title"), body=body, actions=actions)
 
     def _stats_view(self, hero: Hero) -> View:
         """Every characteristic with a short explanation of what it does (D-76)."""
@@ -3388,6 +3756,8 @@ class GameService:
             hero.downed = True                 # D-83: falling means a long recovery
             self.bus.publish(HeroDowned(hero.id))
             lines.append(t.t("combat.defeat_consequence", gold=self._money(lost)))
+        if state.get("raid"):                  # D-99: a defender's fight counts for the camp's raid
+            lines += self._raid_fight_done(hero, state)
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))

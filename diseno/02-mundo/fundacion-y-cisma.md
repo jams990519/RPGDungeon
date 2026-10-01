@@ -88,6 +88,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
 - **El castillo pide gremio** (D-97, provisional): para pasar del nivel 8 al 9 hace falta un gremio de nivel 5 o más con 10 miembros o más (`guild.castle_min_level`, `guild.castle_min_members`). Sin gremio, el campamento se queda en ciudad. La pantalla de agrandar lo muestra con ✅ y ▫️.
+- **Para pasar del nivel 8 al 9 (castillo)** hay que ganar antes la **🌙 Noche de prueba** (D-99, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). Los materiales se pagan igual.
 
 | Nivel | Nombre | Zonas | Cupo sin gremio | Costo de llegar desde el nivel anterior |
 |---|---|---|---|---|
@@ -95,7 +96,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
 | 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra, 30 de fibra y 1 🪎 cofre |
-| 9 | Castillo | 9 | 18 (o el cupo del gremio, si es mayor) | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres, y un gremio de nivel 5 con 10 miembros (D-97) |
+| 9 | Castillo | 9 | 18 (o el cupo del gremio, si es mayor) | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres, y un gremio de nivel 5 con 10 miembros (D-97), y la 🌙 Noche de prueba ganada (D-99) |
 
 Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra, 180 de fibra y 6 🪎 cofres** (1 + 2 + 3, de 6 a 9). Los nombres por nivel están en `camps.stages`.
 
@@ -107,7 +108,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4), y para ser castillo hace falta un **gremio** listo (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0). El gremio todavía no tiene rangos, banco ni salón. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4), y para ser castillo hace falta un **gremio** listo (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0). Desde el nivel 5 (pueblo) llega **una incursión por semana**: los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no alcanzan las victorias, la despensa pierde una parte y nada más. Y castillo pide ganar la **Noche de prueba** (D-99, provisional; [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). El Claro nunca tiene despensa ni incursiones: es el campamento base (D-95, D-98). El gremio todavía no tiene rangos, banco ni salón. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 

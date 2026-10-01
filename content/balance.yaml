@@ -53,6 +53,8 @@ explore:
   minutes: 10
   encounter: 0.45
   item: 0.35                 # [ES] el resto es oro
+  xp_per_step: 3             # [ES] pedido del dueño: explorar da experiencia en cada vuelta
+  xp_full_zone: 15           # [ES] y un extra al dejar una zona explorada al 100 %
   arrival_encounter_scale: 1.0
 
 presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
@@ -61,8 +63,8 @@ presence:                    # [ES] D-96 (provisional): ver a los otros jugadore
   cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
 
 regen:
-  hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola (de 0 a lleno: 100 minutos)
-  downed_percent_per_minute: 0.2  # [ES] D-83: si caíste, te recuperas mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
+  hp_full_minutes: 240        # [ES] pedido del dueño: fuera de combate la vida vuelve sola, de 0 a llena en 4 horas
+  downed_full_minutes: 500    # [ES] D-83: si caíste, mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
 
 hero:
   start_gold: 10
@@ -151,6 +153,26 @@ pantry:                      # [ES] D-93 (provisional): la despensa de los campa
   states: {abundancia: 14, holgada: 7, justa: 3, escasez: 1, hambruna: 0}   # [ES] desde cuántos días enteros de comida rige cada estado; hambruna = menos de 1 día (el campamento no crece)
   xp_per_ration: 2           # [ES] experiencia por cada ración aportada a la despensa del campamento (como settlement.xp_per_unit por material)
   merit_per_ration: 1        # [ES] mérito por cada ración aportada (como la obra común: 1 por material)
+
+raids:                       # [ES] D-99 (provisional): incursiones de los campamentos de jugadores, 2.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.5, §7.2). El Claro nunca tiene: es el campamento base (D-95, D-98). Números orientativos: se ajustan en la beta
+  from_level: 1              # [ES] D-105: desde que fundas el campamento (nivel 1) llega una oleada por semana, con aviso al fundarlo (antes: desde pueblo, nivel 5)
+  interval_days: 7           # [ES] días reales entre incursiones. Reloj perezoso: llega cuando un miembro juega después de esa hora
+  window_minutes: 60         # [ES] cuánto dura el aviso: en ese tiempo cada miembro puede tocar 🛡️ Defender y pelear UNA vez
+  grace_minutes: 15          # [ES] si al cerrar la ventana alguien sigue peleando, se lo espera hasta esto para que su pelea cuente
+  required_share: 0.5        # [ES] victorias necesarias = la mitad de los miembros activos al llegar, redondeado hacia arriba...
+  min_wins: 1                # [ES] ...y nunca menos de 1
+  loss_share: 0.25           # [ES] si no alcanzan, la despensa pierde el 25 % de sus raciones y nada más (§7.2, §15)
+  enemy_level_bonus: 1       # [ES] el enemigo es del bioma del campamento, con el nivel de su zona + 1 (§6.2: nunca más de + 2)
+  reward: {xp: 80, gold: 30} # [ES] si se defiende, cada defensor gana 80 de experiencia y 30 🥉, además del premio normal de su pelea
+  trial:                     # [ES] Noche de prueba: la incursión grande antes de castillo (§7.2). Si se pierde no se pierde nada
+    to_level: 9              # [ES] crecer a este nivel pide haberla ganado (tiene que coincidir con castillo en camps.stages)
+    required_share: 0.5      # [ES] la mitad de los miembros activos de hoy, redondeado hacia arriba...
+    min_wins: 2              # [ES] ...y nunca menos de 2 victorias de miembros distintos: el castillo se gana en conjunto
+    retry_days: 2            # [ES] si se pierde, se puede volver a convocar a los 2 días (§7.2)
+    enemy_level_bonus: 2     # [ES] el enemigo más fuerte del bioma, con el nivel de la zona + 2 (el tope de §6.2)...
+    enemy_hp_mult: 2.0       # [ES] ...el doble de vida...
+    enemy_attack_mult: 1.3   # [ES] ...y 30 % más de ataque: una versión élite, solo en esa pelea
+    reward: {xp: 200, gold: 100}   # [ES] si la ganan, cada defensor gana 200 de experiencia y 100 🥉 (1 🪙)
 
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda, provisiones]   # [ES] D-93: 🥖 provisiones, comida de emergencia cara (sumidero de monedas, §15.8)
