@@ -906,7 +906,7 @@ batch:
     stopped: "❌ Te detuviste: la energía de la vuelta en curso volvió."
     fight: "⚔️ Algo te interrumpió."
     energy: "⚡ Te quedaste sin energía."
-    bag_full: "🎒 La mochila está llena: vende o deja cosas en el Claro."
+    bag_full: "🎒 La mochila está llena: vende en el mercader o aporta a la obra del Claro."
     depleted: "🪫 Esta zona está agotada por ahora: sus recursos vuelven con el tiempo."
     full_explored: "✅ Ya no queda nada por explorar aquí."
 

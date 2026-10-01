@@ -169,3 +169,13 @@ v0_9_2:
     - "💪 Las que sufrían (Cazador · Puntería, Guerrero Señor de la Guerra, Bardo Estratega y otras) tienen más vida y algunas, más golpe."
     - "✚ Las de curación curan un poco menos: seguían ganando casi todo sin esfuerzo."
     - "🐻 El Oso de las cumbres pega un poco menos fuerte con Aplastar."
+
+v0_9_3:
+  version: "0.9.3"
+  title: "🛠️ Lost Realms 0.9.3: arreglos"
+  notes:
+    - "🧪 Ya no gastas pociones ni pagas la posada con la vida llena. Una poción termina el estado de 🤕 malherido."
+    - "🪓 Si la mochila está llena o la zona agotada, recolectar te avisa antes de empezar y no gasta energía."
+    - "🎒 La mochila cuenta igual en todas las pantallas."
+    - "🏕️ Tocar otro botón mientras te piden el nombre del campamento cancela la fundación (ya no se funda sin querer)."
+    - "⚔️ En combate, el menú de abajo te avisa que termines la pelea primero."
