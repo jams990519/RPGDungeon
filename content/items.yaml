@@ -52,7 +52,7 @@ fibra:
   price: 2
 
 # Food (D-93, provisional): it goes to a settlement pantry. food = rations it is worth.
-# [ES] Comida (D-93, provisional): se aporta a la despensa del Claro (desde aldea) o de tu campamento (desde nivel 3).
+# [ES] Comida (D-93, provisional): se aporta a la despensa de tu campamento (desde nivel 3). El Claro no tiene (D-95).
 # food = cuántas raciones vale cada unidad (1 ración = lo que come un residente activo en un día real).
 # loot_amount = cuántas suelta un enemigo cuando sale en su botín (loot de enemies.yaml); sin esto, 1.
 # Lo usan: engine/service/game.py (botín, mercader, 🌾 Aportar comida), engine/world/pantry.py (food_in).

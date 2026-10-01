@@ -5,14 +5,16 @@
 **Qué pidió el dueño.** Que no exista un castillo al empezar: que todo arranque **desde cero** y la gente **construya el mundo** (D-45). Que el Claro sea la sede común y que los jugadores **funden sus propios campamentos**, que crezcan hasta ciudades y castillos (D-71, D-81, D-87). Que el mundo se pueda **dividir** por decisión de los jugadores, con desventajas para quien queda. Y que haya gente dedicada a todo: agricultores, cazadores, expertos en cada cosa.
 
 **Las dos piezas de hoy.**
-1. **El Claro:** la sede común de todo el servidor, con una **obra común** que sube por etapas, de fogata a castillo.
+1. **El Claro:** el **campamento base** de todo el servidor, con mercader y posada. **No crece** (D-98): la obra común que lo subía de fogata a castillo se quitó en la 0.11.
 2. **Los campamentos de jugadores:** cada uno se funda lejos del Claro, tiene nombre y miembros, y crece **eligiendo zonas** hasta castillo.
 
 Todo lo demás de este documento (necesidades, gobierno, cisma, relaciones entre castillos) es la capa profunda que se monta encima, como propuesta.
 
 ---
 
-## 1. El Claro: la obra común (en el juego)
+## 1. El Claro: la obra común (historia: se quitó en la 0.11)
+
+> **Ya no existe (D-98, confirmada por el dueño el 1-oct-2026):** el Claro es el **campamento base** y no crece. La obra común se quitó en la 0.11: ya no se aportan materiales al Claro y su etapa guardada queda fija (decide la posada y sus zonas). Todo el crecimiento (niveles, mejoras, conocimiento, castillo) es solo para los campamentos de los jugadores. Esta sección queda como historia de la 0.4 a la 0.10.1.
 
 Al abrir el servidor no hay ciudad. En el centro del mapa, en (0, 0), está **el Claro**: una fogata entre ruinas. Ahí despierta cada héroe nuevo.
 
@@ -34,7 +36,7 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 - **Cada etapa baja 1 🥉 el precio de la posada,** hasta un mínimo de 1 (`settlement.inn_discount_per_stage`).
 - **El Claro ocupa 1 zona más por etapa** (D-81). Crece en una espiral fija: norte, este, sur, oeste y las diagonales.
 - **Una etapa ganada no se pierde.** Hoy el Claro nunca baja.
-- **El Claro no se mantiene** (D-95, confirmada por el dueño): es el campamento principal del mapa y no tiene dueño, así que no tiene despensa ni otros mínimos; sube solo con la obra común pagada. La comida (D-93) es solo para los campamentos de jugadores. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
+- **El Claro no se mantiene** (D-95, confirmada por el dueño): es el campamento principal del mapa y no tiene dueño, así que no tiene despensa ni otros mínimos; y tampoco crece (D-98). La comida (D-93) es solo para los campamentos de jugadores. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
 
 ### 1.2 Lo que ofrece el Claro
 
@@ -81,6 +83,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 ### 2.4 Crecer eligiendo zonas
 
 - Cualquier miembro toca **⬆️ Agrandar campamento** y paga de su mochila **15 de madera, 10 de piedra y 5 de fibra, por el nivel actual** (`camps.grow_cost_per_level`, D-81).
+- **Desde el nivel 6, también 🪎 cofres** (D-92, provisional): 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9; la fórmula es `camps.chests_per_level` × (nivel actual − `chests_from_level` + 1), y sigue igual después del castillo. Los paga el miembro que agranda. Un cofre se arma en el Claro con 10 💰 bolsas, 10 de madera y 5 piezas de metal (ver [Economía](../07-economia/economia.md) §2). La pantalla de agrandar muestra el costo en cofres y cuántos tienes; si faltan, no se cobra nada.
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
 
@@ -89,10 +92,10 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | 1 | Campamento | 1 | 2 | Fundar: 20 de madera y 10 de piedra |
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
-| 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra y 30 de fibra |
-| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra y 40 de fibra |
+| 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra, 30 de fibra y 1 🪎 cofre |
+| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres |
 
-Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra y 180 de fibra**. Los nombres por nivel están en `camps.stages`.
+Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra, 180 de fibra y 6 🪎 cofres** (1 + 2 + 3, de 6 a 9). Los nombres por nivel están en `camps.stages`.
 
 **Qué da el territorio:**
 - En cualquier territorio (de tu campamento, de otro o del Claro) no te atacan: ni al llegar, ni al explorar, ni al recolectar.
@@ -102,7 +105,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 
@@ -217,7 +220,7 @@ Las etapas ya existen con sus nombres. Lo que falta es que cada una **abra algo*
 
 ## 8. Todo en texto y por turnos
 
-- **Hoy:** el menú fijo **🏕️ Campamento** abre la obra común, el mercader y la posada en el Claro, o la pantalla del campamento donde estás. La zona muestra "🏕️ Territorio de…".
+- **Hoy:** el menú fijo **🏕️ Campamento** abre el mercader y la posada en el Claro (sin obra común desde la 0.11, D-98), o la pantalla del campamento donde estás. La zona muestra "🏕️ Territorio de…".
 - **Propuesta:** `/ciudad` con la etapa, las barras de necesidades y los pedidos de la semana; elecciones con encuestas de Telegram; cartas de cisma firmadas reenviando el mensaje; todo lo importante en la Gaceta.
 
 ## 9. De dónde sale

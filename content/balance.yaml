@@ -55,6 +55,11 @@ explore:
   item: 0.35                 # [ES] el resto es oro
   arrival_encounter_scale: 1.0
 
+presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
+  minutes: 15                # [ES] un jugador "está" en la zona si tocó un botón en los últimos 15 min (o si su héroe explora, recolecta o duerme ahí, aunque tenga el chat cerrado)
+  max_listed: 5              # [ES] cuántos nombres muestra 📍 Zona como mucho; el resto sale como "… y N más" (pantallas cortas, D-86)
+  cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
+
 regen:
   hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola (de 0 a lleno: 100 minutos)
   downed_percent_per_minute: 0.2  # [ES] D-83: si caíste, te recuperas mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
@@ -64,7 +69,9 @@ hero:
   belt_slots: {pocion_vida: 3, venda: 2}     # [ES] cuánto cabe en el cinturón de cada cosa
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
-  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan)
+  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan).
+                             # [ES] D-90 (provisional): lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos entran aunque pase de 60),
+                             # [ES] pero con la mochila en 60 o más no se recolecta ni se compra hasta vender o usar cosas
   defeat_gold_loss: 0.1
   # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent (D-78). Con toda la energía
   # cada día, el nivel 100 llega en unos 2,5 años; quien juega menos tarda más. Nivel 10 en ~18 días, 20 en ~70.
@@ -75,6 +82,7 @@ world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
 resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
+  per_page: 8                # [ES] cuántos recursos muestra cada página de 📦 Recursos en la mochila
   region_scale: {madera: 5, piedra: 4, fibra: 3, hierba_curativa: 3, pieza_metal: 6, arcilla: 4}   # [ES] tamaño base de las manchas de cada recurso
   biome_bonus: 0.25          # [ES] cuánto ayuda el bioma (más madera en el bosque)
   threshold: 0.62            # [ES] desde qué fuerza un recurso aparece en la zona
@@ -98,8 +106,7 @@ gather:                      # [ES] recolectar en la zona actual
   encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
   own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
 
-settlement:                  # [ES] el campamento del Claro: obra común de todo el servidor (D-45)
-  xp_per_unit: 2             # [ES] experiencia por cada material aportado
+settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables
   stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
     - {id: fogata, needs: {madera: 40, fibra: 30}}
     - {id: campamento, needs: {madera: 120, fibra: 80, piedra: 60}}
@@ -112,7 +119,7 @@ settlement:                  # [ES] el campamento del Claro: obra común de todo
 tutorial:
   reward_gold: 5
   reward_xp: 20
-  steps: [explore_claro, gather, donate, leave_claro, win_fight, heal, use_places]
+  steps: [explore_claro, gather, sell, leave_claro, win_fight, heal, use_places]   # [ES] D-98: "sell" (vender al mercader) reemplazó a "donate" (la obra del Claro ya no existe); el índice de cada héroe no cambia
 
 camps:                       # [ES] campamentos que fundan los jugadores lejos del Claro (D-71)
   found_cost: {madera: 20, piedra: 10}
@@ -128,6 +135,9 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   members_base: 2             # [ES] D-84: miembros que caben en un campamento de nivel 1 (contando al fundador)
   members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
   grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
+  chests_from_level: 6       # [ES] D-92 (provisional): agrandar DESDE este nivel también cuesta 🪎 cofres (6→7 es el primero; ciudad y castillo)
+  chests_per_level: 1        # [ES] cofres = esto × (nivel actual − chests_from_level + 1): 6→7 pide 1, 7→8 pide 2, 8→9 pide 3 (6 hasta castillo).
+                             # [ES] Los paga de sus cofres (hero.chests) el miembro que agranda. Subirlo encarece mucho los campamentos grandes (cada cofre = 10 bolsas)
 
 pantry:                      # [ES] D-93 (provisional): la despensa de los campamentos de jugadores, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §7.2). El Claro no se mantiene: no tiene dueño (D-95). Números orientativos: se ajustan en la beta
   camp_from_level: 3         # [ES] los campamentos de jugadores, desde el nivel 3 (aldea): despensa chica, capa ligera (§7.2)
@@ -143,11 +153,14 @@ shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda, provisiones]   # [ES] D-93: 🥖 provisiones, comida de emergencia cara (sumidero de monedas, §15.8)
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
 
-currency:                    # [ES] monedas (D-80, D-85): 3 comunes que se ganan, bolsas que se cosen, diamantes que se compran y credenciales de oficio
+currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se ganan, bolsas que se cosen, cofres que se arman, diamantes que se compran y credenciales de oficio
   rate: 100                  # [ES] 100 🥉 bronce = 1 🪙 plata; 100 🪙 = 1 🥇 oro. Hero.gold guarda TODO en bronce
-  icons: {bronze: "🥉", silver: "🪙", gold: "🥇", bags: "💰", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño
+  icons: {bronze: "🥉", silver: "🪙", gold: "🥇", bags: "💰", chests: "🪎", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño (🪎 cofre desde D-92; el 💵 billete no entra, P-73)
   bag_recipe: {fibra: 4, pieza_metal: 1}   # [ES] hilo (fibra) y un cierre de metal...
   bag_coins: 100             # [ES] ...más 1 🥈 de plata por bolsa: saca monedas y materiales del juego
+  chest_recipe: {bags: 10, madera: 10, pieza_metal: 5}   # [ES] D-92 (provisional): un 🪎 cofre se arma en el Claro con 10 💰 bolsas (salen de hero.bags)
+                             # [ES] y madera y metal de la mochila. Paga el crecimiento de los campamentos grandes (camps.chests_from_level). Sumidero grande:
+                             # [ES] 1 cofre = 40 de fibra, 15 de metal, 10 de madera y 10 🪙 de plata
   banner_phase: beta         # [ES] el estandarte que se compra ahora es el de beta tester; después de la beta pasar a "premium"
   gem_shop:                  # [ES] D-43: con gemas solo cosméticos y aceleradores, nunca poder
     xp_boost: {gems: 100, xp_mult: 1.5, days: 7}   # [ES] +50 % de experiencia por 7 días (P-66)

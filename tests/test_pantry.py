@@ -67,10 +67,10 @@ def test_the_claro_never_has_a_pantry(service):
     make_hero(service)
     for stage in range(len(service.content.balance["settlement"]["stages"])):
         set_stage(service, stage)
-        view = service.act("test:1", "camp")
-        assert [a.id for a in view.actions] == ["donate", "claro"], stage
-        assert not any("Despensa" in line for line in view.body + service.act("test:1", "claro").body)
-        assert service.act("test:1", "feed").kind == "camp"          # an old 0.10 button just opens the work
+        view = service.act("test:1", "claro")
+        assert [a.id for a in view.actions] == ["shop", "inn", "home"], stage
+        assert not any("Despensa" in line for line in view.body)
+        assert service.act("test:1", "feed").kind == "claro"         # an old 0.10 button lands on the Claro
     assert service.store.get("pantry", "claro") is None
     assert "claro_from_stage" not in service.content.balance["pantry"]
 
@@ -108,15 +108,14 @@ def test_the_claro_inn_heals_even_with_old_pantry_data(service):
     assert view.kind == "activity" and service._load("test:1").activity["kind"] == "rest"
 
 
-def test_the_claro_rises_as_soon_as_the_work_is_paid(service):
+def test_the_claro_keeps_its_stage_and_never_grows(service):
     needs = dict(service.content.balance["settlement"]["stages"][ALDEA]["needs"])
     set_stage(service, ALDEA, dict(needs, madera=needs["madera"] - 1))
     make_hero(service)
-    set_rations(service, "claro", 0)
     give(service, "test:1", madera=1)
     view = service.act("test:1", "donate")
-    data = service._settlement()
-    assert data["stage"] == ALDEA + 1 and data["progress"] == {} and "pueblo" in view.notice
+    assert service._settlement()["stage"] == ALDEA and "no crece" in view.notice   # what it had stays (D-98)
+    assert service._load("test:1").backpack["madera"] == 1
 
 
 def test_camp_cannot_grow_with_an_empty_pantry(service):
@@ -204,8 +203,7 @@ def test_merchant_sells_provisions_without_losing_buttons(service):
 def test_claro_screens_keep_four_buttons(service):
     set_stage(service, ALDEA)
     make_hero(service)
-    assert len(service.act("test:1", "claro").actions) == 4
-    assert [a.id for a in service.act("test:1", "camp").actions] == ["donate", "claro"]
+    assert [a.id for a in service.act("test:1", "claro").actions] == ["shop", "inn", "home"]
 
 
 def test_every_claro_button_works_from_aldea(content):
@@ -236,7 +234,7 @@ def test_every_claro_button_works_from_aldea(content):
             continue
         seen.add(key)
         queue.extend(path + [a.id] for a in view.actions if len(path) < 3 and a.id in follow)
-    assert {"claro", "camp", "shop"} <= {kind for kind, _ in seen}
+    assert {"claro", "shop"} <= {kind for kind, _ in seen}           # D-98: no common work screen any more
 
 
 def test_old_heroes_load_and_get_seen_lazily(service, clock):

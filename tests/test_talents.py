@@ -20,10 +20,9 @@ def test_new_hero_starts_with_attack_and_one_response(service):
 
 def test_level_up_gives_point_and_point_unlocks_ability(service):
     make_hero(service, class_id="guerrero")
-    hero = service.store.get("hero", "test:1")
-    hero["backpack"].update({"madera": 40, "fibra": 30})   # 70 units x 2 xp -> level 2
-    service.store.put("hero", "test:1", hero)
-    service.act("test:1", "donate")
+    hero = service._load("test:1")
+    service._give_xp(hero, 2 * service.content.balance["hero"]["xp_formula"]["base"])   # enough for level 2
+    service._save(hero)
     hero = service._load("test:1")
     assert hero.level >= 2 and hero.points >= 1
     view = service.act("test:1", "pt:guerrero_furia")

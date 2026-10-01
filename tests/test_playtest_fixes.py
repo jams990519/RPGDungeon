@@ -114,16 +114,18 @@ def test_menu_buttons_in_combat_say_why_nothing_happens(service):
     assert service.act("test:1", "back").notice is None      # closing the belt is not an error
 
 
-def test_xp_shown_for_donating_includes_the_boost(service, clock):
+def test_xp_shown_includes_the_boost(service, clock):
     make_hero(service)
     hero = service._load("test:1")
-    hero.tutorial = len(service.content.balance["tutorial"]["steps"])
+    hero.tutorial = service.content.balance["tutorial"]["steps"].index("sell")
     hero.xp_boost_until = clock.now() + 3600
-    hero.backpack["madera"] = 10
+    hero.backpack["madera"] = 1
     service._save(hero)
-    view = service.act("test:1", "donate")
+    service.act("test:1", "shop")
+    view = service.act("test:1", "sell:all")
     gained = service._load("test:1").xp
-    assert gained == 30 and f"+{gained} experiencia" in view.notice      # 10 × 2 xp × 1.5
+    reward = service.content.balance["tutorial"]["reward_xp"]
+    assert gained == int(reward * 1.5) and f"+{gained} experiencia" in view.notice
 
 
 def test_console_shows_the_menu_and_shortcuts(service, monkeypatch, capsys):

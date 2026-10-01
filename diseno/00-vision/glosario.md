@@ -20,6 +20,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Clamor** | El "lust": más iniciativa y acciones rápidas durante 3 rondas | [Balance](../03-personaje/balance.md) |
 | **Capital regional** | Asentamiento principal de una región, en un lugar clave (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Claro** | El lugar vacío donde empieza cada fundación. **El Claro** (con mayúscula) es la zona `(0, 0)`, Lejanía 0, donde despiertan los Errantes | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
+| **Cofre (🪎)** | Moneda que se arma en el Claro (💰 Monedas → 🪎 Armar cofre) con 10 💰 bolsas, 10 de madera y 5 piezas de metal. Paga lo grande: agrandar un campamento desde el nivel 6 cuesta 1, 2 y 3 cofres (de 6 a 7, de 7 a 8 y de 8 a 9). El 💵 billete no entra como moneda (D-92, provisional) | [Economía](../07-economia/economia.md) §2, [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.4 |
 | **Derribado / caído** | 0 de vida: 3 rondas para ser levantado, y después cae | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
 | **Despensa** | La comida guardada de un campamento de jugadores desde el nivel 3 (el Claro no tiene: no tiene dueño, D-95). Se llena con **🌾 Aportar comida** (🍖 carne de las bestias, 🥖 provisiones del mercader) y la comen cada día sus residentes activos. Se mide en días que alcanza: abundancia, holgada, justa, escasez y hambruna (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 |
 | **Eco** | Copia de un héroe manejada por sus Tácticas (para invocaciones y arena asíncrona) | [Jefes](../06-contenido/jefes.md) |
@@ -44,11 +45,13 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Mancha** | Lugar donde caíste; guarda tu Esencia y muestra tus últimas rondas | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |
 | **Mercado Negro** | PNJ que compra equipo a los artesanos y lo pone en el botín de los monstruos | [Economía](../07-economia/economia.md) |
+| **Mochila llena** | La mochila en su espacio (60) o más. Lo que encuentras igual entra (botín, equipo, carne, hallazgos), pero no se recolecta ni se compra hasta vender o usar cosas (D-90, provisional) | [Inventario y mochilas](../03-personaje/inventario-y-mochilas.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12 |
 | **Necesidades de la ciudad** | Comida, materiales, herramientas, defensa, salud, ánimo, orden y tesoro | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | **Obra común** | Lo que todo el servidor levanta junto en el Claro, aportando materiales: sube de fogata a campamento, aldea, pueblo, ciudad y castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §1 |
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Poder de Objeto** | Número que resume lo bueno que es un objeto | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Postura** | Barra de los enemigos grandes; rota, abre golpes críticos | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
+| **Presente (en la zona) / cruzarse** | Un jugador está **presente** en una zona si su héroe está ahí y tocó un botón en los últimos 15 minutos, o explora, recolecta o duerme ahí. Los presentes salen en el bloque 👥 de 📍 Zona con lo que hacen; al explorar o recolectar, a veces **te cruzas** con uno (👋, solo un texto, sin premio ni pelea) (D-96, provisional) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.13 |
 | **Presupuesto de poder** | 100 puntos por spec en 6 ejes | [Balance](../03-personaje/balance.md) |
 | **Profundidades** | Contenido para 1 a 5 jugadores con compañero PNJ | [Misiones](../06-contenido/misiones-y-exploracion.md) |
 | **Ración** | La unidad de comida: lo que come un residente activo en un día real. 🍖 La carne vale 2 y 🥖 las provisiones, 1 (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4 |

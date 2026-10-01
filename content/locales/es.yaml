@@ -392,6 +392,19 @@ map:
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "Zonas exploradas al 100 %: 🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla"
 
+presence:                     # [ES] D-96 (provisional): los otros jugadores de tu zona (bloque 👥 de 📍 Zona) y los cruces al explorar o recolectar
+  title: "👥 También en esta zona ({n}):"
+  line: "• {name} · {cls} · nv {level} · {activity}"
+  more: "• … y {n} más"
+  crossed: "👋 Te cruzaste con {name} ({cls}, nivel {level}), que andaba {activity}."
+  activity:                   # [ES] lo que hace cada uno; el motor elige la clave según su actividad
+    explore: "🔎 explorando"
+    gather: "🪓 recolectando"
+    combat: "⚔️ peleando"
+    rest: "🛌 descansando"
+    travel: "🚶 de paso"
+    idle: "🧍 por aquí"
+
 hero:
   title: "👤 Tu héroe"
   top_line: "{icon} {name} — 📍 {place}"
@@ -429,11 +442,36 @@ bag:
   title: "🎒 Mochila"
   belt: "Cinturón: {items}"
   backpack: "Mochila: {items}"
+  intro: "Lo que llevas, ordenado por botones:"
+  help_gear: "🛡️ Equipo: lo que tienes puesto y las piezas que encontraste. Ahí ves si te sirven y te las equipas."
+  help_potions: "🧪 Pociones: cada poción y remedio con lo que cura. Ahí las usas."
+  help_wallet: "💰 Monedas: bronce, plata, oro, bolsas, cofres y diamantes. En el Claro coses bolsas y armas cofres."
+  help_resources: "📦 Recursos: los materiales y la comida que juntaste, cuántos tienes y para qué sirven."
   empty: "vacío"
   use_button: "{emoji} Usar {item} (×{n})"
   button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
   full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
+  full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90: lo que encuentras igual entra
+
+resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedido del dueño): materiales y comida, de a páginas
+  button: "📦 Recursos"
+  title: "📦 Recursos"
+  intro: "Lo que juntaste y para qué sirve:"
+  line: "{emoji} {item} ×{n} — {use}"
+  none: "Todavía no juntaste nada. Recolecta en las zonas con 🪓 Recolectar."
+  page: "Página {n} de {total}"
+  more: "➡️ Ver más"
+  use_default: "se vende al mercader del Claro"
+  use:
+    madera: "fundar y agrandar campamentos, armar cofres"
+    piedra: "fundar y agrandar campamentos"
+    fibra: "coser bolsas, agrandar campamentos"
+    pieza_metal: "coser bolsas y armar cofres"
+    arcilla: "se vende al mercader; servirá para el abono y los oficios"
+    hierba_curativa: "se vende al mercader; servirá para remedios"
+    carne: "comida: 2 raciones para la despensa de tu campamento"
+    provisiones: "comida: 1 ración para la despensa de tu campamento"
 
 combat:
   title: "⚔️ Combate · Ronda {n}"
@@ -541,22 +579,8 @@ gather:
   found: "🪓 Recolectaste: {items}."
   ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
 
-camp:
-  button: "🔥 Obra del campamento"
-  title: "🔥 La obra del campamento"
-  intro: "Lo que todos levantan juntos. Cada etapa hace al Claro más seguro y útil."
-  stage: "Etapa: {stage} ({n}/{total})"
-  needs_title: "Para llegar a {next}:"
+camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
-  complete: "🏰 ¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes."
-  top_title: "Quienes más aportaron:"
-  top_line: "{n}. {name} — {merit} de mérito"
-  your_merit: "Tu mérito: {merit}"
-  donate_button: "🤲 Aportar mis materiales"
-  nothing: "No llevas nada que el campamento necesite ahora. Recolecta afuera."
-  donated: "🤲 Aportaste {items}: +{xp} experiencia y +{merit} de mérito."
-  stage_up: "🎉 ¡Entre todos, el Claro pasó a ser {stage}!"
-  bonus: "Mejora actual: la posada cuesta {price}."
   stages:
     fogata: "una fogata"
     campamento: "un campamento"
@@ -572,7 +596,7 @@ tutorial:
   steps:
     explore_claro: "Las ruinas alrededor de la fogata todavía esconden cosas. Nadie va a buscarlas por ti."
     gather: "La tierra da lo que necesitas para levantar algo. Hay que agacharse y juntarlo."
-    donate: "Solo nadie sobrevive. Alguien cuida el fuego del Claro y acepta ayuda."
+    sell: "Lo que juntas vale algo. Hay alguien en el Claro que compra lo que te sobra."
     leave_claro: "Más allá del Claro hay tierras que nadie pisó. Cada paso cuesta tiempo."
     win_fight: "Afuera hay criaturas. Mira lo que preparan antes de elegir qué hacer."
     heal: "Las heridas no se van solas tan rápido. Hay quien vende remedio y hay donde dormir."
@@ -581,7 +605,9 @@ tutorial:
 claro:
   button: "🏕️ Campamento"
   title: "🏕️ Campamento del Claro"
-  intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."
+  intro: "El campamento base, donde empiezan todos: la fogata, el mercader y un lugar para dormir."
+  grow_hint: "🏕️ El Claro no crece. Para crecer, funda tu propio campamento lejos de aquí: tus campamentos son los que suben de nivel, mejoran y llegan a castillo."
+  no_growth: "🔥 La obra del Claro terminó: el Claro es el campamento base y ya no crece. Lo que juntes sirve para fundar y agrandar tus campamentos, coser bolsas y armar cofres."
   far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
 
 pantry:                       # [ES] D-93 (provisional): la despensa de los campamentos de jugadores (desde nivel 3). El Claro no tiene: no tiene dueño (D-95)
@@ -684,7 +710,7 @@ camps:
   grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."
   grow_option: "({x}, {y}) {items}"
   grow_more: "▶️ Ver más zonas"
-  stage_line: "🏰 Es un {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
+  stage_line: "🏰 Etapa: {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
   stage:
     campamento: "campamento"
     aldea: "aldea"
@@ -692,6 +718,9 @@ camps:
     ciudad: "ciudad"
     castillo: "castillo"
   grow_missing: "Para agrandarlo necesitas {items}."
+  chest_cost: "🪎 Cofre ×{n}"   # [ES] D-92: agrandar desde el nivel 6 también cuesta cofres
+  chests_have: "🪎 Tienes {n} {n|cofre|cofres}. Se arman en el Claro, en 💰 Monedas (/monedas)."
+  grow_missing_chests: "🪎 Te faltan cofres: tienes {n} de {need}. Se arman en el Claro, en 💰 Monedas (/monedas)."
   grow_blocked: "No queda espacio libre alrededor para crecer."
   grown: "⬆️ ¡El campamento creció! Ahora ocupa {zones} zonas (sumó ({x}, {y}))."
   land_line: "🏕️ Territorio de {name}"
@@ -838,16 +867,21 @@ wallet:
   coins: "Monedas: {coins}"
   coins_help: "🥉 Bronce, 🪙 Plata y 🥇 Oro se ganan jugando y se juntan solas: {rate} de bronce son 1 de plata y {rate} de plata son 1 de oro."
   bags: "💰 Bolsas: {n}"
-  bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para lo que venga."
+  bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para armar cofres."
+  chests: "🪎 Cofres: {n}"   # [ES] D-92 (provisional)
+  chests_help: "Se arman en el Claro con {bags} 💰 {bags|bolsa|bolsas} y {items}. Pagan el crecimiento de los campamentos grandes (desde el nivel {level})."
   gems: "💎 Diamantes: {n}"
   gems_help: "Los diamantes se compran. Dan comodidades y cosméticos, nunca poder."
   cards: "🪪 Credenciales de oficio: {n}"
   cards_help: "Tu carta de presentación de oficio: la muestras a otros jugadores para que sepan qué sabes hacer. Llegan con los oficios."
   boost_on: "⭐ Experiencia +50 % activa: quedan {time}."
   sew_button: "💰 Coser una bolsa"
-  sew_in_claro: "💰 Las bolsas se cosen en el Claro."
+  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro."
   sew_missing: "Para coser una bolsa necesitas {items} y {coins}."
   sewn: "💰 Cosiste una bolsa. Ahora tienes {n}."
+  chest_button: "🪎 Armar cofre"
+  chest_missing: "Para armar un cofre necesitas {bags} 💰 {bags|bolsa|bolsas} (tienes {have}) y {items}."
+  chest_built: "🪎 Armaste un cofre. Ahora tienes {n}."
   gems_button: "💎 Tienda de diamantes"
   gem_shop_title: "💎 Tienda de diamantes"
   gem_shop_intro: "Los diamantes se compran con dinero real (muy pronto). Solo dan comodidades y cosméticos."

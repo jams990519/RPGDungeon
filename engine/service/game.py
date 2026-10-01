@@ -26,23 +26,39 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     no tiene dueño, D-95):
     {"rations", "at"}, consumo perezoso) y "active" (registro de quién jugó hoy y ayer, claves "0" y "1"
     según el día; se pisa solo, nunca crece). Diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.4
+    D-96 (provisional): "presence" (clave "x:y": {"seen": {cuenta: hora en que se anotó}}): quién puede estar en
+    cada zona. Es solo un índice: si alguien cuenta como presente se decide al leer, con su ficha (sigue en esa zona
+    y tocó un botón hace menos de presence.minutes, o explora, recolecta o duerme ahí). Se poda al leer.
+    Diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.13
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
     3. Ningún texto visible se escribe aquí: todo sale de content/locales (Texts).
     4. El servicio no sabe qué cliente lo llama: el id de cuenta lo arma el adaptador.
     5. El Pionero de un Guardián se escribe una sola vez y nunca se pisa; el aviso al servidor sale una sola vez.
-    6. Nada se cobra a cambio de nada: un remedio con la vida llena, la posada sin heridas o recolectar con la
-       mochila llena o la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
-    7. La despensa (D-93) solo recibe lo que un jugador aporta: nunca toma comida de la mochila de nadie, y el
-       hambre nunca baja la etapa del Claro ni quita niveles, zonas o miembros a un campamento.
+    6. Nada se cobra a cambio de nada: un remedio con la vida llena, la posada sin heridas, recolectar o comprar
+       con la mochila llena o recolectar en la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
+    7. La despensa (D-93) es solo de los campamentos de jugadores y solo recibe lo que un jugador aporta: nunca
+       toma comida de la mochila de nadie, y el hambre nunca quita niveles, zonas o miembros. El Claro es el
+       campamento base: no crece ni se mantiene (D-95, D-98).
+    8. Lo que se encuentra nunca se pierde (D-90, provisional): botín, equipo, carne y hallazgos de explorar entran
+       aunque la mochila pase de su espacio; con la mochila en su espacio o más, solo se frenan recolectar y comprar.
+    9. Ver a otros jugadores en la zona (D-96) es solo información: nunca da premio, pelea ni ventaja, nunca se
+       lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
-      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93)
+      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
+      tests/test_backpack.py (mochila llena D-90 y cofre D-92)
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
+    - Mochila llena (D-90): balance.yaml hero.backpack_capacity; _bag_full, _bag_add, _gather_blocked, _buy
+    - Cofre (D-92): balance.yaml currency.chest_recipe e icons.chests, camps.chests_from_level y chests_per_level;
+      Hero.chests; _build_chest, _grow_chests; textos wallet.chest*, camps.chest* en es.yaml
+      tests/test_zone_players.py (jugadores en la zona, D-96)
+    - Jugadores en la zona (D-96): balance.yaml presence; textos presence.* en es.yaml; Hero.seen_at (lo marca
+      _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
 """
 
 from __future__ import annotations
@@ -97,6 +113,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
+# Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
+PRESENT_BUSY = ("explore", "gather", "rest")
 
 
 class GameService:
@@ -187,6 +205,7 @@ class GameService:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
         notices = self._settle(hero)
+        self._presence_note(hero)                       # D-96: others see you in 📍 Zona
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
@@ -508,6 +527,7 @@ class GameService:
                 if fight:
                     notices += self._batch_summary(hero, activity, "fight") + [fight]
                     continue
+                activity["log"] += self._cross_paths(hero, zone, activity)     # D-96: flavour only
                 reason = self._continue_batch(hero, activity, activity["until"])
                 if reason:
                     notices += self._batch_summary(hero, activity, reason)
@@ -520,7 +540,9 @@ class GameService:
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
         """Finish one travel leg; chain the next leg of a multi-zone trip if any."""
         notices: list[str] = []
+        left = (hero.x, hero.y)
         hero.x, hero.y = activity["to"]
+        self._presence_move(hero, *left)                # D-96: out of the zone it left, into the new one
         zone = self._zone(hero.x, hero.y)
         hero.remember(hero.x, hero.y)
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
@@ -605,8 +627,8 @@ class GameService:
         if roll < bal["encounter"] + bal["item"]:
             options = ["hierba_curativa", "pieza_metal", "venda", "pocion_vida"]
             item_id = rng.pick_weighted(options, [5, 3, 2, 1])
-            if self._bag_add(hero, item_id, 1):
-                activity["got"][item_id] = activity["got"].get(item_id, 0) + 1
+            self._bag_add(hero, item_id, 1)                  # never lost, even with a full backpack (D-90)
+            activity["got"][item_id] = activity["got"].get(item_id, 0) + 1
             return None
         coins = int(zone.level * rng.uniform(2, 5)) + 1
         hero.gold += coins
@@ -614,7 +636,7 @@ class GameService:
         return None
 
     def _gather_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
-        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87)."""
+        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87, D-90)."""
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
         land = self._territory(zone.x, zone.y)
@@ -630,11 +652,10 @@ class GameService:
         got: dict[str, int] = {}
         for _ in range(max(1, amount)):
             options = [r for r in resources if stock[r] >= cfg["min_yield"]]
-            if not options or self._bag_used(hero) >= self._bag_cap():
+            if not options or self._bag_full(hero):      # gathering stops at the space (D-90); finds do not
                 break
             res = rng.pick_weighted(options, [resources[r] * stock[r] for r in options])
-            if not self._bag_add(hero, res, 1):
-                break
+            self._bag_add(hero, res, 1)
             stock[res] = max(0.0, stock[res] - cfg["per_unit"])
             got[res] = got.get(res, 0) + 1
         self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
@@ -642,7 +663,7 @@ class GameService:
             activity["got"][res] = activity["got"].get(res, 0) + n
         if not got:
             activity["left"] = 0
-            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_used(hero) >= self._bag_cap() else "batch.reason.depleted"))
+            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else "batch.reason.depleted"))
         return None
 
     # ------------------------------------------------------------------ creation
@@ -796,6 +817,9 @@ class GameService:
             return self._bag_view(hero)
         if action_id == "potions":
             return self._potions_view(hero)
+        if action_id == "resources" or action_id.startswith("res:"):
+            page = action_id[4:]
+            return self._resources_view(hero, int(page) if page.isdigit() else 0)
         if action_id == "wallet":
             return self._wallet_view(hero)
         if action_id == "gems":
@@ -804,6 +828,8 @@ class GameService:
             return self._buy_with_gems(hero, action_id[4:])
         if action_id == "sew":
             return self._sew_bag(hero)
+        if action_id == "chest":
+            return self._build_chest(hero)
         if action_id == "gear":
             return self._worn_view(hero)
         if action_id.startswith("gear:"):
@@ -852,10 +878,10 @@ class GameService:
             return self._camp_here_view(hero)
         if action_id == "claro":
             return self._claro_view(hero)
-        if action_id in ("camp", "donate", "feed"):     # "feed": old 0.10 button, the Claro has no pantry now (D-95)
+        if action_id in ("camp", "donate", "feed"):     # old buttons of the Claro's common work: it no longer grows (D-98)
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
-            return self._donate(hero) if action_id == "donate" else self._camp_view(hero)
+            return self._claro_view(hero, notice=t.t("claro.no_growth"))
         if action_id.startswith("sellg:"):
             return self._sell_gear(hero, action_id[6:], in_claro)
         if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
@@ -929,8 +955,9 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
-        if kind == "gather" and self._gather_blocked(hero, zone):
-            return self._explore_menu(hero, notice=t.t(self._gather_blocked(hero, zone)))
+        blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
+        if blocked:
+            return self._explore_menu(hero, notice=blocked)
         if hero.energy < 1:
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         minutes = self.content.balance[kind]["minutes"]
@@ -963,8 +990,9 @@ class GameService:
         n = hero.energy if amount == "max" else (int(amount) if amount.isdigit() else 0)
         n = min(n, hero.energy)
         zone = self._zone(hero.x, hero.y)
-        if kind == "gather" and self._gather_blocked(hero, zone):
-            return self._explore_menu(hero, notice=t.t(self._gather_blocked(hero, zone)))   # no energy spent for nothing
+        blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
+        if blocked:
+            return self._explore_menu(hero, notice=blocked)   # no energy spent for nothing
         if n < 1 or not self._spend_energy(hero, kind):
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
@@ -975,12 +1003,12 @@ class GameService:
         return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=n, time=self._fmt_duration(seconds * n)))
 
     def _gather_blocked(self, hero: Hero, zone: Zone) -> str | None:
-        """Text key of why gathering here would give nothing (full backpack or depleted zone), else None."""
-        if self._bag_used(hero) >= self._bag_cap():
-            return "batch.reason.bag_full"
+        """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None."""
+        if self._bag_full(hero):
+            return self._bag_full_line(hero)
         stock = self._stock(zone.x, zone.y)
         if all(level < self.content.balance["stock"]["min_yield"] for level in stock.values()):
-            return "batch.reason.depleted"
+            return self.texts.t("batch.reason.depleted")
         return None
 
     def _stop_batch(self, hero: Hero) -> View:
@@ -1021,7 +1049,7 @@ class GameService:
             return "done"
         if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
             return "full_explored"
-        if kind == "gather" and self._bag_used(hero) >= self._bag_cap():
+        if kind == "gather" and self._bag_full(hero):
             return "bag_full"
         if not self._spend_energy(hero, kind):
             return "energy"
@@ -1038,12 +1066,33 @@ class GameService:
     def _bag_used(self, hero: Hero) -> int:
         return sum(hero.backpack.values())
 
+    def _bag_full(self, hero: Hero) -> bool:
+        """True when the backpack is at or over its space: then gathering and buying wait (D-90).
+
+        [ES]
+        Qué hace: dice si la mochila llegó a su espacio (60) o lo pasó. Con la mochila llena no se recolecta ni se
+        compra hasta vender o usar cosas; lo que se encuentra igual entra (D-90, provisional).
+        La llaman: _gather_blocked, _continue_batch, _gather_step, _buy, _shop_view y _bag_view.
+        Si cambia, afecta: cuándo se corta recolectar y cuándo el mercader no vende (balance.yaml hero.backpack_capacity).
+        """
+        return self._bag_used(hero) >= self._bag_cap()
+
+    def _bag_full_line(self, hero: Hero) -> str:
+        """🎒 Mochila llena (63/60): sell or use things to gather or buy again (D-90)."""
+        return self.texts.t("bag.full_line", used=self._bag_used(hero), cap=self._bag_cap())
+
     def _bag_add(self, hero: Hero, item_id: str, count: int) -> int:
-        """Put items in the backpack up to its space; returns how many fit."""
-        fit = max(0, min(count, self._bag_cap() - self._bag_used(hero)))
-        if fit:
-            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + fit
-        return fit
+        """Put found items in the backpack, even beyond its space: what you find is never lost (D-90).
+
+        [ES]
+        Qué hace: guarda en la mochila lo que encuentras (hallazgos de explorar), aunque pase del espacio.
+        La llaman: _explore_step y _gather_step (recolectar se corta antes, en el tope).
+        Si cambia, afecta: si los hallazgos se pierden con la mochila llena (D-90 dice que nunca).
+        """
+        count = max(0, count)
+        if count:
+            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
+        return count
 
     def _zone_resources(self, x: int, y: int) -> dict[str, float]:
         zone = self._zone(x, y)
@@ -1131,6 +1180,7 @@ class GameService:
         elif land:
             body.append(t.t("camps.land_line", name=land["name"]))
         body += self._lair_lines(zone)
+        body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
@@ -1182,39 +1232,161 @@ class GameService:
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining), t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y))]
             title = t.t("explore.title")
+        if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
+            body += self._zone_players_lines(hero, self._zone(hero.x, hero.y))
         body += ["", self._status_line(hero), t.t("activity.offline_ok")]
         actions = [Action(id="refresh", label=t.t("menu.refresh"))]
         if activity.get("kind") in ("gather", "explore"):
             actions.append(Action(id="stop", label=t.t("batch.stop")))
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
+    # ------------------------------------------------------------------ players in the zone (D-96, provisional)
+
+    def _presence_note(self, hero: Hero) -> None:
+        """Make sure the hero is listed in the presence record of its zone.
+
+        One read per button; a write only when the hero is missing (just arrived, or pruned after being idle).
+        Whether it really counts as present is decided on read, from the hero's own record.
+
+        [ES]
+        Qué hace: anota al héroe en el registro de presencia de su zona (espacio "presence", clave "x:y").
+        Lee una vez por botón y solo escribe si falta (acaba de llegar o se lo quitó por estar inactivo).
+        La llaman: act() en cada botón (después de _settle) y _presence_move al llegar a una zona.
+        Si cambia, afecta: quién aparece en 👥 de 📍 Zona y con quién te cruzas al explorar o recolectar.
+        """
+        key = f"{hero.x}:{hero.y}"
+        record = self.store.get("presence", key) or {"seen": {}}
+        if hero.id in record.get("seen", {}):
+            return
+        record.setdefault("seen", {})[hero.id] = self.clock.now()
+        self.store.put("presence", key, record)
+
+    def _presence_move(self, hero: Hero, old_x: int, old_y: int) -> None:
+        """On arrival: take the hero out of the zone it left and note it in the new one.
+
+        [ES]
+        Qué hace: al llegar a una zona, quita al héroe del registro de la zona que dejó y lo anota en la nueva
+        (aunque el jugador tenga el chat cerrado: los tramos de una ruta llegan solos). Un registro vacío se borra.
+        La llama: _arrive. Si cambia, afecta: que alguien siga "apareciendo" en una zona que ya dejó.
+        """
+        if (old_x, old_y) != (hero.x, hero.y):
+            key = f"{old_x}:{old_y}"
+            old = self.store.get("presence", key)
+            if old and old.get("seen", {}).pop(hero.id, None) is not None:
+                if old["seen"]:
+                    self.store.put("presence", key, old)
+                else:
+                    self.store.delete("presence", key)
+        self._presence_note(hero)
+
+    def _zone_players(self, x: int, y: int, exclude: str | None = None) -> list[dict[str, Any]]:
+        """Other players present in zone (x, y) now, most recently seen first; prunes the record on the way.
+
+        Present = the hero is in that zone AND (pressed a button in the last presence.minutes, OR is
+        exploring, gathering or sleeping there right now). Heroes who left, no longer exist or are idle
+        for longer are taken out of the record (they come back with their next button).
+
+        [ES]
+        Qué hace: lista a los otros jugadores que están ahora en la zona, con lo que hacen (nombre, clase, nivel,
+        actividad); el primero es el que jugó hace menos. "Está" = su héroe sigue en esa zona Y tocó un botón en
+        los últimos presence.minutes (Hero.seen_at, que marca _mark_seen) O está explorando, recolectando o
+        durmiendo ahí. Al leer, saca del registro a quien se fue, ya no existe o lleva más tiempo inactivo.
+        Nunca saca a "exclude" (quien mira): su ficha guardada todavía no tiene el botón de ahora.
+        La llaman: _zone_players_lines (📍 Zona y la pantalla de actividad) y _cross_paths.
+        Si cambia, afecta: quién ve a quién; nada de reglas (sin premio, sin pelea, D-96).
+        """
+        key = f"{x}:{y}"
+        record = self.store.get("presence", key)
+        if not record or not record.get("seen"):
+            return []
+        t = self.texts
+        cutoff = self.clock.now() - self._seconds(self.content.balance["presence"]["minutes"])
+        players: list[dict[str, Any]] = []
+        gone: list[str] = []
+        for account in list(record["seen"]):
+            if account == exclude:
+                continue
+            data = self.store.get("hero", account)
+            if not data or (data.get("x"), data.get("y")) != (x, y):
+                gone.append(account)
+                continue
+            kind = "combat" if self.store.get("combat", account) is not None else (data.get("activity") or {}).get("kind") or "idle"
+            if data.get("seen_at", 0.0) < cutoff and kind not in PRESENT_BUSY:
+                gone.append(account)
+                continue
+            other = Hero.from_dict(data)
+            group = self.content.classes.get(other.class_id, {}).get("group", other.class_id)
+            players.append({"id": account, "name": self._banner(other) + other.name, "cls": t.t(f"class_group.{group}.name"),
+                            "level": other.level, "activity": t.t(f"presence.activity.{kind}"), "seen": other.seen_at})
+        if gone:
+            for account in gone:
+                record["seen"].pop(account, None)
+            if record["seen"]:
+                self.store.put("presence", key, record)
+            else:
+                self.store.delete("presence", key)
+        players.sort(key=lambda p: -p["seen"])
+        return players
+
+    def _zone_players_lines(self, hero: Hero, zone: Zone) -> list[str]:
+        """👥 block of the zone screen: up to presence.max_listed players, then "… y N más". Empty if nobody.
+
+        [ES]
+        Qué hace: arma las líneas 👥 de 📍 Zona (una por jugador, con su actividad) y "… y N más" si pasan del
+        tope presence.max_listed. Si no hay nadie, no muestra nada (pantallas cortas, D-86). No agrega botones.
+        La llaman: _zone_view y _activity_view (explorando, recolectando o durmiendo).
+        Si cambia, afecta: el largo de 📍 Zona en los tres clientes.
+        """
+        players = self._zone_players(zone.x, zone.y, exclude=hero.id)
+        if not players:
+            return []
+        t = self.texts
+        cap = max(1, int(self.content.balance["presence"]["max_listed"]))
+        lines = [t.t("presence.title", n=len(players))]
+        lines += [t.t("presence.line", name=p["name"], cls=p["cls"], level=p["level"], activity=p["activity"]) for p in players[:cap]]
+        if len(players) > cap:
+            lines.append(t.t("presence.more", n=len(players) - cap))
+        return lines
+
+    def _cross_paths(self, hero: Hero, zone: Zone, activity: dict[str, Any]) -> list[str]:
+        """After an exploring or gathering step with no fight: maybe a "👋 you crossed X" line (flavour only).
+
+        Uses its own deterministic draw (hash of world seed, hero and step end), so the step's Rng and every
+        other result stay exactly as before. The same player is crossed at most once per batch.
+
+        [ES]
+        Qué hace: tras una vuelta de exploración o recolección sin pelea, con probabilidad presence.cross_chance,
+        agrega al resumen "👋 Te cruzaste con Bram (🏰 Guerrero, nivel 2), que andaba 🪓 recolectando." si hay
+        alguien en la zona. Solo texto: sin premio, sin pelea, sin PvP, en cualquier zona (también el Claro y los
+        campamentos). Usa su propio sorteo fijo, así no cambia ningún otro resultado de la vuelta; a cada jugador
+        te lo cruzas una sola vez por lote (activity["met"]).
+        La llama: _settle. Si cambia, afecta: solo el texto del resumen del lote.
+        """
+        if hash_unit(self.world_seed, hero.id, activity["until"], "cross") >= self.content.balance["presence"]["cross_chance"]:
+            return []
+        met = activity.setdefault("met", [])
+        others = [p for p in self._zone_players(zone.x, zone.y, exclude=hero.id) if p["id"] not in met]
+        if not others:
+            return []
+        pick = others[int(hash_unit(self.world_seed, hero.id, activity["until"], "who") * len(others)) % len(others)]
+        met.append(pick["id"])
+        return [self.texts.t("presence.crossed", name=pick["name"], cls=pick["cls"], level=pick["level"], activity=pick["activity"])]
+
     # ------------------------------------------------------------------ gathering, camp, tutorial
 
-    def _gather_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
-        """Gather the zone's materials (biomes.yaml "gather"); dangerous zones may ambush."""
-        bal = self.content.balance["gather"]
-        danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
-        if danger > 0 and rng.chance(danger):
-            return self._start_combat(hero, zone, rng, "gather.ambush")
-        table = self.content.biomes[zone.biome].get("gather", {})
-        if not table:
-            return self.texts.t("camp.nothing")
-        low, high = bal["amount"]
-        amount = int(rng.uniform(low, high + 1)) + zone.level // 3
-        found: dict[str, int] = {}
-        for _ in range(max(1, amount)):
-            item_id = rng.pick_weighted(list(table), list(table.values()))
-            found[item_id] = found.get(item_id, 0) + 1
-        for item_id, count in found.items():
-            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
-        return self.texts.t("gather.found", items=self._item_list(found))
-
     def _claro_view(self, hero: Hero, notice: str | None = None) -> View:
-        """The Claro's camp screen: the common work, the trader and the inn (no pantry: it has no owner, D-95)."""
+        """The Claro: the fixed base camp with the trader and the inn. It never grows (D-98) nor eats (D-95).
+
+        [ES]
+        Qué hace: muestra el campamento base, donde empiezan todos: mercader, posada y la pista para crecer
+        fundando tu propio campamento. El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
+        La llaman: el botón 🏕️ Campamento estando en el Claro, y los botones viejos de la obra (camp, donate, feed).
+        Si cambia, afecta: la primera pantalla de todos los jugadores nuevos (tope de 4 botones, D-75).
+        """
         t = self.texts
-        body = [t.t("claro.intro"), self._status_line(hero)]
+        body = [t.t("claro.intro"), t.t("claro.grow_hint"), self._status_line(hero)]
         return View(kind="claro", title=t.t("claro.title"), body=body + self._tutorial_hint(hero),
-                    actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
+                    actions=[Action(id="shop", label=t.t("shop.button")),
                              Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))],
                     notice=notice)
 
@@ -1226,82 +1398,6 @@ class GameService:
         inn = self.content.balance["inn"]
         stage = self._settlement()["stage"]
         return max(1, inn["price"] - stage * self.content.balance["settlement"]["inn_discount_per_stage"])
-
-    def _camp_view(self, hero: Hero, notice: str | None = None) -> View:
-        t = self.texts
-        stages = self.content.balance["settlement"]["stages"]
-        data = self._settlement()
-        stage = stages[data["stage"]]
-        body = [t.t("camp.intro"), t.t("camp.stage", stage=t.t(f"camp.stages.{stage['id']}"), n=data["stage"] + 1, total=len(stages)), ""]
-        if stage["needs"]:
-            nxt = stages[data["stage"] + 1]["id"]
-            body.append(t.t("camp.needs_title", next=t.t(f"camp.stages.{nxt}")))
-            for item_id, need in stage["needs"].items():
-                have = min(need, data["progress"].get(item_id, 0))
-                item = self.content.items[item_id]
-                body.append(t.t("camp.need_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=need, bar=self._bar(have, need, 8)))
-        else:
-            body.append(t.t("camp.complete"))
-        body.append(t.t("camp.bonus", price=self._money(self._inn_price())))
-        top = sorted(data["merit"].items(), key=lambda kv: -kv[1])[:5]
-        if top:
-            body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
-        body += ["", t.t("camp.your_merit", merit=hero.merit)]
-        body += self._tutorial_hint(hero)
-        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="claro", label=t.t("menu.back"))]
-        return View(kind="camp", title=t.t("camp.title"), body=body, actions=actions, notice=notice)
-
-    def _donate(self, hero: Hero) -> View:
-        """Give every material the current stage still needs; earn xp and merit; maybe level up the camp."""
-        t = self.texts
-        cfg = self.content.balance["settlement"]
-        data = self._settlement()
-        stage = cfg["stages"][data["stage"]]
-        given: dict[str, int] = {}
-        for item_id, need in stage["needs"].items():
-            missing = need - data["progress"].get(item_id, 0)
-            count = min(missing, hero.backpack.get(item_id, 0))
-            if count > 0:
-                given[item_id] = count
-                data["progress"][item_id] = data["progress"].get(item_id, 0) + count
-                hero.backpack[item_id] -= count
-                if hero.backpack[item_id] <= 0:
-                    del hero.backpack[item_id]
-        if not given:
-            return self._camp_view(hero, notice=t.t("camp.nothing"))
-        units = sum(given.values())
-        xp = units * cfg["xp_per_unit"]
-        hero.merit += units
-        data["merit"][hero.name] = data["merit"].get(hero.name, 0) + units
-        lines = [t.t("camp.donated", items=self._item_list(given), xp=int(xp * self._xp_mult(hero)), merit=units)]   # the xp really given
-        lines += self._give_xp(hero, xp)
-        lines += self._claro_rise(data)
-        self.store.put("settlement", "claro", data)
-        lines += self._tutorial(hero, "donate")
-        return self._camp_view(hero, notice="\n".join(lines))
-
-    def _work_paid(self, data: dict[str, Any]) -> bool:
-        """True when every material of the Claro's current stage is in."""
-        stage = self.content.balance["settlement"]["stages"][data["stage"]]
-        return bool(stage["needs"]) and all(data["progress"].get(i, 0) >= n for i, n in stage["needs"].items())
-
-    def _claro_rise(self, data: dict[str, Any]) -> list[str]:
-        """Raise the Claro one stage when its work is paid (it never goes down and has no pantry, D-95).
-
-        [ES]
-        Qué hace: sube el Claro de etapa cuando la obra común está pagada. El Claro no se mantiene: no tiene
-        dueño, así que no tiene despensa (D-95); solo los campamentos de jugadores comen (D-93).
-        La llama: _donate. Nunca baja la etapa.
-        Si cambia, afecta: el ritmo del Claro hasta castillo (P-55), su territorio y la posada.
-        """
-        t = self.texts
-        stages = self.content.balance["settlement"]["stages"]
-        if not self._work_paid(data):
-            return []
-        nxt = stages[data["stage"] + 1]["id"]
-        data["stage"] += 1
-        data["progress"] = {}
-        return [t.t("camp.stage_up", stage=t.t(f"camp.stages.{nxt}"))]
 
     # ------------------------------------------------------------------ settlement pantry (D-93, provisional)
 
@@ -1496,6 +1592,7 @@ class GameService:
         """The Claro trader: buy belt items and 🥖 provisions (D-93), sell materials (half price).
 
         [ES] Hasta 3 botones de compra (shop.sells) + 💱 Vender materiales; ↩️ Volver solo si cabe (tope de 4, D-75).
+        Con la mochila llena (D-90) muestra la línea de mochila llena; comprar se rechaza en _buy sin cobrar.
         """
         t = self.texts
         shop = self.content.balance["shop"]
@@ -1512,6 +1609,8 @@ class GameService:
             total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
             body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
             actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=self._money(total))))
+        if self._bag_full(hero):  # D-90: buying waits until there is room again
+            body += ["", self._bag_full_line(hero)]
         if len(actions) < 4:     # 4 buttons at most (D-75); without room, 🏕️ Campamento in the menu goes back to the same place
             actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
@@ -1521,6 +1620,8 @@ class GameService:
         if item_id not in self.content.balance["shop"]["sells"]:
             return self._shop_view(hero)
         item = self.content.items[item_id]
+        if self._bag_full(hero):
+            return self._shop_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
         if hero.gold < item["price"]:
             return self._shop_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= item["price"]
@@ -1539,7 +1640,10 @@ class GameService:
                     sold[i] = n
                     del hero.backpack[i]
             hero.gold += total
-            return self._shop_view(hero, notice=t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total)) if sold else None)
+            if not sold:
+                return self._shop_view(hero)
+            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + self._tutorial(hero, "sell")
+            return self._shop_view(hero, notice="\n".join(lines))
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
             return self._shop_view(hero)
@@ -1548,7 +1652,8 @@ class GameService:
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
         hero.gold += price
-        return self._shop_view(hero, notice=t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price)))
+        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
+        return self._shop_view(hero, notice="\n".join(lines))
 
     def _rest(self, hero: Hero) -> View:
         """Inn: pay gold, sleep a few minutes, wake with full health."""
@@ -1614,7 +1719,7 @@ class GameService:
                     t.t("camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
             actions = []
             if hero.id in camp["members"]:
-                body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._item_list(self._grow_cost(level)))]
+                body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level))]
                 actions.append(Action(id="grow", label=t.t("camps.grow_button")))
                 pantry = self._camp_pantry(camp)          # D-93: from level 3 (aldea), a small pantry
                 if pantry:
@@ -1755,6 +1860,28 @@ class GameService:
     def _grow_cost(self, level: int) -> dict[str, int]:
         return {i: n * level for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
 
+    def _grow_chests(self, level: int) -> int:
+        """🪎 chests that growing a camp from `level` costs (D-92, provisional): 0 below camps.chests_from_level,
+        then chests_per_level × (level − chests_from_level + 1): 6→7 asks 1, 7→8 asks 2, 8→9 asks 3.
+
+        [ES]
+        Qué hace: dice cuántos cofres pide agrandar un campamento desde su nivel actual (desde el 6).
+        La llaman: _grow_cost_text, _grow_view y _grow_camp.
+        Si cambia, afecta: el ritmo de los campamentos hasta ciudad y castillo, y cuántas bolsas salen del juego
+        (balance.yaml camps.chests_from_level y chests_per_level; tests/test_backpack.py).
+        """
+        cfg = self.content.balance["camps"]
+        start = cfg.get("chests_from_level")
+        if start is None or level < start:
+            return 0
+        return int(cfg.get("chests_per_level", 1)) * (level - start + 1)
+
+    def _grow_cost_text(self, level: int) -> str:
+        """The materials of growing from `level`, plus its 🪎 chests when it asks for them (D-92)."""
+        text = self._item_list(self._grow_cost(level))
+        chests = self._grow_chests(level)
+        return text + (" · " + self.texts.t("camps.chest_cost", n=chests) if chests else "")
+
     def _grow_candidates(self, camp: dict[str, Any]) -> list[list[int]]:
         """Free zones touching the camp's land: where it can grow next (D-87: you choose)."""
         zones = camp.get("zones", [[camp["x"], camp["y"]]])
@@ -1778,7 +1905,9 @@ class GameService:
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
         level = camp.get("level", 1)
         candidates = self._grow_candidates(camp)
-        body = [t.t("camps.grow_intro", items=self._item_list(self._grow_cost(level)))]
+        body = [t.t("camps.grow_intro", items=self._grow_cost_text(level))]
+        if self._grow_chests(level):     # D-92: from level 6 growing also costs chests
+            body.append(t.t("camps.chests_have", n=hero.chests))
         if not candidates:
             return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
         per = 3 if len(candidates) <= 3 else 2
@@ -1804,7 +1933,16 @@ class GameService:
         return self.texts.t(f"camps.stage.{name}")
 
     def _grow_camp(self, hero: Hero, cx: int, cy: int) -> View:
-        """Make the camp bigger: pay materials and take the chosen free zone next to its land (1, 2, 3, 4... zones)."""
+        """Make the camp bigger: pay materials and take the chosen free zone next to its land (1, 2, 3, 4... zones).
+
+        [ES]
+        Qué hace: el miembro que agranda paga los materiales de su mochila (camps.grow_cost_per_level × nivel) y,
+        desde el nivel 6, también 🪎 cofres (D-92); el campamento suma 1 nivel y la zona elegida. Con la despensa
+        vacía no crece (D-93). Si falta algo, avisa y no cobra nada.
+        La llaman: los botones de zona de ⬆️ Agrandar campamento (claim:x:y).
+        Si cambia, afecta: niveles, zonas y cupo de miembros de los campamentos (tests/test_camps.py,
+        tests/test_pantry.py, tests/test_backpack.py).
+        """
         t = self.texts
         key = f"{hero.x}:{hero.y}"
         camp = self.store.get("camp", key)
@@ -1814,8 +1952,12 @@ class GameService:
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
         level = camp.get("level", 1)
         cost = self._grow_cost(level)
-        if any(hero.backpack.get(i, 0) < n for i, n in cost.items()):
-            return self._camp_here_view(hero, notice=t.t("camps.grow_missing", items=self._item_list(cost)))
+        chests = self._grow_chests(level)          # D-92: paid from the chests of the member who grows
+        if any(hero.backpack.get(i, 0) < n for i, n in cost.items()) or hero.chests < chests:
+            lines = [t.t("camps.grow_missing", items=self._grow_cost_text(level))]
+            if hero.chests < chests:
+                lines.append(t.t("camps.grow_missing_chests", n=hero.chests, need=chests))
+            return self._camp_here_view(hero, notice="\n".join(lines))
         zones = camp.get("zones", [[camp["x"], camp["y"]]])
         new = [cx, cy] if [cx, cy] in self._grow_candidates(camp) else None
         if new is None:
@@ -1824,6 +1966,7 @@ class GameService:
             hero.backpack[item_id] -= n
             if hero.backpack[item_id] <= 0:
                 del hero.backpack[item_id]
+        hero.chests -= chests
         camp["zones"] = zones + [new]
         camp["level"] = level + 1
         self.store.put("camp", key, camp)
@@ -2159,13 +2302,14 @@ class GameService:
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
 
     def _coins_line(self, hero: Hero) -> str:
-        """🥉 bronze · 🪙 silver · 🥇 gold · 💰 bags · 💎 diamonds, each with its amount, zeros included (D-86)."""
+        """🥉 bronze · 🪙 silver · 🥇 gold · 💰 bags · 🪎 chests · 💎 diamonds, each with its amount, zeros included (D-86, D-92)."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, hero.gold), rate * rate)
         silver, bronze = divmod(rest, rate)
         icons = cfg["icons"]
-        parts = [(icons["bronze"], bronze), (icons["silver"], silver), (icons["gold"], gold), (icons["bags"], hero.bags), (icons["gems"], hero.gems)]
+        parts = [(icons["bronze"], bronze), (icons["silver"], silver), (icons["gold"], gold), (icons["bags"], hero.bags),
+                 (icons["chests"], hero.chests), (icons["gems"], hero.gems)]
         return self.texts.t("hero.coins_line", coins="   ".join(f"{i} {n}" for i, n in parts))
 
     def _recovery_lines(self, hero: Hero, max_hp: int) -> list[str]:
@@ -2216,14 +2360,55 @@ class GameService:
         return " · ".join(parts)
 
     def _bag_view(self, hero: Hero) -> View:
+        """The backpack hub: what each button holds (it never lists everything you carry), the space line, health.
+
+        [ES]
+        Qué hace: explica para qué sirve cada botón (🛡️ Equipo, 🧪 Pociones, 💰 Monedas, 📦 Recursos) en lugar de
+        listar todo lo que llevas: con miles de cosas no se podría leer (pedido del dueño). Muestra el espacio
+        (o la mochila llena, D-90). Son 4 botones (D-75): para volver al héroe está 👤 Héroe en el menú de abajo.
+        La llaman: el botón 🎒 Mochila de la ficha del héroe y el atajo /inv.
+        Si cambia, afecta: cómo llega el jugador a su equipo, pociones, monedas y recursos.
+        """
         t = self.texts
-        loose = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") != "gear"}
-        body = [t.t("bag.belt", items=self._item_list(hero.belt)), t.t("bag.backpack", items=self._item_list(loose)), "", self._status_line(hero)]
+        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
+        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources"),
+                "", space, self._status_line(hero)]
         body += self._recovery_lines(hero, hero_stats(self._kit(hero), hero.level)["max_hp"])
         actions = [Action(id="gear", label=t.t("gear.button_new" if hero.gear_new else "gear.button")),
                    Action(id="potions", label=t.t("potions.button")), Action(id="wallet", label=t.t("wallet.button")),
-                   Action(id="hero", label=t.t("menu.back"))]
+                   Action(id="resources", label=t.t("resources.button"))]
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
+
+    def _resources_view(self, hero: Hero, page: int = 0) -> View:
+        """📦 Recursos: materials and food you carry, how many and what they are for, a page at a time.
+
+        [ES]
+        Qué hace: lista los materiales y la comida de la mochila (no el equipo, que está en 🛡️ Equipo, ni las
+        pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve cada uno.
+        La llaman: el botón 📦 Recursos de la mochila.
+        Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
+        """
+        t = self.texts
+        per = self.content.balance["resources"].get("per_page", 8)
+        kinds = ("material", "food")
+        owned = sorted(((i, n) for i, n in hero.backpack.items() if n > 0 and self.content.items.get(i, {}).get("kind") in kinds),
+                       key=lambda kv: (-kv[1], kv[0]))
+        pages = max(1, (len(owned) + per - 1) // per)
+        page %= pages
+        body = [t.t("resources.intro")]
+        for item_id, n in owned[page * per: page * per + per]:
+            item = self.content.items[item_id]
+            use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
+            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n, use=use))
+        if not owned:
+            body.append(t.t("resources.none"))
+        if pages > 1:
+            body.append(t.t("resources.page", n=page + 1, total=pages))
+        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
+        body += ["", space]
+        actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
+        actions.append(Action(id="bag", label=t.t("menu.back")))
+        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions)
 
     def _potions_view(self, hero: Hero, notice: str | None = None) -> View:
         """Every potion and remedy you carry, with what it does, and a button to use it (D-86)."""
@@ -2253,16 +2438,28 @@ class GameService:
         return self.texts.t(f"wallet.banner_tag.{hero.banner}") + " " if hero.banner else ""
 
     def _wallet_view(self, hero: Hero, notice: str | None = None) -> View:
-        """The five currencies: bronze, silver, gold (earned), bags (sewn), gems (bought)."""
+        """The currencies: bronze, silver, gold (earned), bags (sewn), chests (assembled, D-92), gems (bought), cards.
+
+        [ES]
+        Qué hace: muestra cada moneda con su ayuda. En el Claro: 💰 Coser una bolsa, 🪎 Armar cofre, 💎 Tienda de
+        diamantes y ↩️ Volver (4 botones, D-75); fuera del Claro, un aviso de que se hacen en el Claro.
+        La llaman: el botón 💰 Monedas de la mochila y el atajo /monedas.
+        Si cambia, afecta: dónde se cosen las bolsas y se arman los cofres (tests/test_currency.py, tests/test_backpack.py).
+        """
         t = self.texts
         cfg = self.content.balance["currency"]
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        bags_need, materials = self._chest_recipe()
         body = [
             t.t("wallet.coins", coins=self._money(hero.gold)),
             t.t("wallet.coins_help", rate=cfg["rate"]),
             "",
             t.t("wallet.bags", n=hero.bags),
             t.t("wallet.bags_help", items=self._item_list(cfg["bag_recipe"]), coins=self._money(cfg["bag_coins"])),
+            "",
+            t.t("wallet.chests", n=hero.chests),
+            t.t("wallet.chests_help", bags=bags_need, items=self._item_list(materials),
+                level=self.content.balance["camps"]["chests_from_level"]),
             "",
             t.t("wallet.gems", n=hero.gems),
             t.t("wallet.gems_help"),
@@ -2273,12 +2470,41 @@ class GameService:
         if hero.xp_boost_until > self.clock.now():
             body += ["", t.t("wallet.boost_on", time=self._fmt_duration(hero.xp_boost_until - self.clock.now()))]
         actions = []
-        if in_claro:
-            actions.append(Action(id="sew", label=t.t("wallet.sew_button")))
+        if in_claro:      # 4 buttons at most (D-75): sew, chest, gems, back
+            actions += [Action(id="sew", label=t.t("wallet.sew_button")), Action(id="chest", label=t.t("wallet.chest_button"))]
         else:
             body.append(t.t("wallet.sew_in_claro"))
         actions += [Action(id="gems", label=t.t("wallet.gems_button")), Action(id="bag", label=t.t("menu.back"))]
         return View(kind="wallet", title=t.t("wallet.title"), body=body, actions=actions, notice=notice)
+
+    def _chest_recipe(self) -> tuple[int, dict[str, int]]:
+        """Bags and backpack materials one 🪎 chest needs (balance currency.chest_recipe; "bags" means Hero.bags)."""
+        recipe = dict(self.content.balance["currency"]["chest_recipe"])
+        return int(recipe.pop("bags", 0)), recipe
+
+    def _build_chest(self, hero: Hero) -> View:
+        """Assemble one 🪎 chest in the Claro: 10 sewn bags plus wood and metal (D-92, provisional).
+
+        [ES]
+        Qué hace: arma un cofre con 10 💰 bolsas (de Hero.bags) y madera y metal de la mochila; solo en el Claro y
+        sin actividad. Si falta algo, avisa la receta y no gasta nada.
+        La llaman: el botón 🪎 Armar cofre de 💰 Monedas.
+        Si cambia, afecta: el crecimiento de los campamentos grandes (_grow_chests) y cuántas bolsas y materiales
+        salen del juego (balance.yaml currency.chest_recipe).
+        """
+        t = self.texts
+        if not (hero.x == 0 and hero.y == 0 and not hero.activity):
+            return self._wallet_view(hero, notice=t.t("shop.only_in_claro"))
+        bags, materials = self._chest_recipe()
+        if hero.bags < bags or any(hero.backpack.get(i, 0) < n for i, n in materials.items()):
+            return self._wallet_view(hero, notice=t.t("wallet.chest_missing", bags=bags, have=hero.bags, items=self._item_list(materials)))
+        for item_id, n in materials.items():
+            hero.backpack[item_id] -= n
+            if hero.backpack[item_id] <= 0:
+                del hero.backpack[item_id]
+        hero.bags -= bags
+        hero.chests += 1
+        return self._wallet_view(hero, notice=t.t("wallet.chest_built", n=hero.chests))
 
     def _sew_bag(self, hero: Hero) -> View:
         """Sew one bag in the Claro: thread, a metal clasp and coins (a sink for coins and materials)."""

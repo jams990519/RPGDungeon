@@ -140,7 +140,7 @@ def test_equipment_lives_in_hero_then_bag(service):
     body = "\n".join(hero_view.body)
     assert "Espada" not in body and "al empezar cada combate" not in body       # short card (D-86)
     bag = service.act("test:1", "bag")
-    assert [a.id for a in bag.actions] == ["gear", "potions", "wallet", "hero"]
+    assert [a.id for a in bag.actions] == ["gear", "potions", "wallet", "resources"]   # back to the hero: 👤 Héroe in the menu
     worn = service.act("test:1", "gear")
     assert any("Espada oxidada" in line and "+4% ataque" in line for line in worn.body)
     potions = service.act("test:1", "potions")

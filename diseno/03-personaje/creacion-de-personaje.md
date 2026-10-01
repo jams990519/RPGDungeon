@@ -45,7 +45,7 @@ Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre
 - Todos los números están en `content/balance.yaml`.
 - En la ficha, la clase aparece como "sin especialización todavía" y con el ícono de la clase (D-70, D-86).
 - Si entraste con el enlace de un amigo, él gana energía apenas creas tu héroe (D-65).
-- El tutorial empieza solo, con pistas y sin instrucciones (D-56): explorar el Claro, recolectar, aportar a la obra común, salir del Claro, ganar una pelea, curarte y usar 📒 Lugares. Cada paso cumplido da 5 🥉 y 20 de experiencia (`tutorial`).
+- El tutorial empieza solo, con pistas y sin instrucciones (D-56): explorar el Claro, recolectar, vender lo que sobra al mercader (antes: aportar a la obra común, quitada por D-98), salir del Claro, ganar una pelea, curarte y usar 📒 Lugares. Cada paso cumplido da 5 🥉 y 20 de experiencia (`tutorial`).
 
 ## 2. La especialización llega después
 

@@ -21,7 +21,7 @@ El diseño se escribió primero, como un juego de años. Desde D-59 se programa 
 | **Mapa** | Mapa infinito por coordenadas, 9 biomas y 18 enemigos. Viajar toma 2, 2, 3, 3… minutos según la distancia al Claro o a tu campamento | D-58, D-61, D-78 | `engine/world/`, `content/biomes.yaml` |
 | **Energía** | 50 como máximo y 40 por día. Moverse, explorar y recolectar gastan 1. Explorar y recolectar van en lotes de 5, 10, 20, 40 o toda | D-65, D-78, D-87 | `content/balance.yaml` (`energy`) |
 | **Recursos** | 6 recursos en regiones de distintos tamaños. Cada zona se explora por porcentaje hasta el 100 %. Lo que se recolecta mucho se agota y vuelve con el tiempo | D-87 | `engine/world/resources.py` |
-| **El Claro** | Sede común. Su obra común sube de fogata a castillo con los materiales de todos. Tiene mercader, posada y costura de bolsas | D-45, D-71 | `content/balance.yaml` (`settlement`) |
+| **El Claro** | Campamento base de todos: **no crece** (D-98; su obra común se quitó en la 0.11). Tiene mercader, posada, costura de bolsas y armado de cofres | D-45, D-71 | `content/balance.yaml` (`settlement`) |
 | **Campamentos** | Los jugadores los fundan lejos del Claro, les ponen nombre, aceptan miembros y los agrandan zona por zona hasta castillo | D-71, D-81, D-84, D-87 | `content/balance.yaml` (`camps`), `engine/world/territory.py` |
 | **Equipo** | 7 ranuras y 4 rarezas. El juego dice si una pieza es para ti, pero puedes ponerte lo que quieras | D-77, D-83 | `engine/hero/gear.py`, `content/items.yaml` |
 | **Salud** | La vida vuelve sola. Si caes, vuelve mucho más lento, salvo con pociones o la posada | D-83 | `content/balance.yaml` (`regen`) |
