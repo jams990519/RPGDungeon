@@ -17,7 +17,7 @@ Datos de los que es dueño: ninguno (solo lee)
 Reglas que nunca se rompen:
     1. Los IDs de contenido son estables: solo se agregan; para retirar algo, retired: true.
 Si cambias esto, revisa:
-    - Todos los catálogos: engine/classes, engine/enemies, engine/world
+    - Todos los catálogos: engine/classes, engine/enemies, engine/world, engine/professions (D-109)
     - Pruebas: tests/test_content.py
 """
 
@@ -46,6 +46,8 @@ class Content:
         patches: content/patches.yaml (patch notes, D-67).
         camp_upgrades: content/camp_upgrades.yaml ("upgrades" and "knowledge" of player camps, D-101),
             read with retired entries kept (a built improvement keeps counting).
+        professions: content/professions.yaml (chained professions, phase 1, D-109: "ranks", "professions",
+            "stations" and "recipes"), read with retired entries kept (the service hides retired recipes).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -61,6 +63,7 @@ class Content:
     texts: dict[str, Any]
     patches: dict[str, Any] | None = None
     camp_upgrades: dict[str, Any] | None = None
+    professions: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -96,6 +99,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         texts=_read_texts(base / "locales", lang),
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
+        professions=_read(base / "professions.yaml", keep_retired=True) if (base / "professions.yaml").exists() else {},
     )
 
 

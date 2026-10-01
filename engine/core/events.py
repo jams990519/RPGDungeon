@@ -10,7 +10,7 @@ Documento de diseño: diseno/01-plataforma/arquitectura-modular.md §1 regla 3 y
 Módulo: M1 Núcleo
 Depende de: ninguno
 Lo usan: engine/service/game.py (publica), telemetría futura (escucha)
-Eventos que publica: los define aquí; los publican Combate, Mundo y Héroe
+Eventos que publica: los define aquí; los publican Combate, Mundo, Héroe y Oficios (ItemCrafted, ProfessionRankUp: D-109)
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
 Reglas que nunca se rompen:
@@ -107,6 +107,23 @@ class BossDefeated(Event):
     enemy_id: str
     first_win: bool
     first_in_server: bool
+
+
+@dataclass(frozen=True)
+class ItemCrafted(Event):
+    """A hero refined or crafted at a station (D-109). count: units made this time. [ES] ObjetoFabricado."""
+    hero_id: str
+    recipe_id: str
+    item_id: str
+    count: int
+
+
+@dataclass(frozen=True)
+class ProfessionRankUp(Event):
+    """A hero's profession reached a new rank (D-109). [ES] RangoDeOficioSubido."""
+    hero_id: str
+    profession_id: str
+    rank: int
 
 
 Handler = Callable[[Event], None]

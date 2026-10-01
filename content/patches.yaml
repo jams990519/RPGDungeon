@@ -269,3 +269,15 @@ v0_14_1:
   title: "⏱️ Lost Realms 0.14.1: tiempo estimado"
   notes:
     - "⏱️ Al elegir cuánta energía gastar explorando o recolectando, cada opción dice cuánto tardará en total, y la pantalla te dice cuánto tardarías con toda tu energía."
+
+v0_15:
+  version: "0.15"
+  title: "⚒️ Lost Realms 0.15: los oficios"
+  notes:
+    - "⚒️ Llegan los oficios, como en World of Warcraft: recolectar → refinar → fabricar. Míralos en el Claro (⚒️ Oficios) o con /oficios."
+    - "🪓⛏️🌿🔪 Leñador, Minero, Herbolario y Desollador suben recolectando y desollando bestias. Con el rango juntas un poco más, y desde el rango 10 aparecen 💠 gemas en bruto y 🌸 flores de luna. Las bestias ahora también sueltan 🦌 piel."
+    - "🪚 Refina en una estación: madera → tablón, metal → lingote, hierba → extracto, fibra → tela, piel → cuero."
+    - "🛠️ Fabrica con materiales de varios oficios: arcos y bastones, espadas y placas, cuero y malla, túnicas y vendas, joyas, pociones y la nueva 🍷 poción mayor. El equipo de artesano de rango alto es el mejor del juego por ahora."
+    - "🏕️ El 🧵 Taller y la 🔨 Herrería de tu campamento también son estaciones, y ahí refinas un poco mejor."
+    - "💱 Vender todo ya no vende lo refinado ni los raros: esos se venden de a uno."
+    - "✨ Refinar y fabricar también te suben de nivel, al mismo ritmo que los otros caminos."

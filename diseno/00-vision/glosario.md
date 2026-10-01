@@ -30,9 +30,11 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Eco del Guardián** | El Guardián de una región ya pacificada, en instancia para quien llega después | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Encargo** | Misión con temporizador que se encola | [Misiones](../06-contenido/misiones-y-exploracion.md) |
 | **Enfoque** | Recurso diario que mejora el rendimiento de fabricar y recolectar | [Economía](../07-economia/economia.md) |
+| **Equipo de artesano** | El equipo que sale de una receta de oficio: como el botín de su nivel en el rango 1, y algo mejor en los rangos 25 y 50. Nunca sale en el botín al azar (D-109) | [Profesiones](../07-economia/profesiones.md) §0.1 |
 | **Esencia** | Moneda de progreso que se gana matando; la no depositada queda en la mancha al caer | [Economía](../07-economia/economia.md) |
 | **Errante** | Nombre de los jugadores en la premisa: los que despiertan en el Claro sin memoria y recorren el mundo. No confundir con los Errantes del Viento, una comunidad PNJ | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Esfuerzo de guerra** | Donaciones de todo el servidor para abrir la Guarida del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
+| **Estación (de oficio)** | Donde se refina o se fabrica: el Claro tiene todas las básicas; un campamento, las que abren su 🧵 Taller y su 🔨 Herrería (D-109) | [Profesiones](../07-economia/profesiones.md) §0.1 |
 | **Firmeza** | Barra que al llenarse da inmunidad al control 3 rondas | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
 | **Fortuna (la)** | Ala de juego legal del Castillo | [Apuestas](../08-social/apuestas.md) |
 | **Frontera (la)** | Hasta dónde llega el mundo explorado y pacificado del servidor; cada región nueva pasa por cuatro fases | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
@@ -49,6 +51,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Llave de Mazmorra / reloj de rondas** | La Mítica+ adaptada a turnos | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) |
 | **Lejanía** | Distancia en anillos cuadrados desde el Claro: la mayor de las dos coordenadas, sin signo. Más Lejanía, más peligro. Más allá del anillo X está la **Lejanía profunda** | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Mancha** | Lugar donde caíste; guarda tu Esencia y muestra tus últimas rondas | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
+| **Material raro** | 💠 Gema en bruto (minero) o 🌸 flor de luna (herbolario): aparecen al recolectar desde el rango 10 de su oficio (D-109) | [Profesiones](../07-economia/profesiones.md) §0.1 |
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |
 | **Mejora (del campamento)** | Una de las 20 obras que los miembros de un campamento de jugadores levantan entre todos (servicios, despensa, defensas y Biblioteca). Cada nivel del 1 al 8 abre alguna; lo construido queda para siempre y castillo pide 15. El Claro no tiene (D-101, provisional; D-98) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6 |
 | **Mercado Negro** | PNJ que compra equipo a los artesanos y lo pone en el botín de los monstruos | [Economía](../07-economia/economia.md) |
@@ -58,6 +61,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Obra (de mejora)** | Una mejora del campamento a medio construir: cualquier miembro toca 🤲 y aporta lo que pide y lleva en la mochila, sin permiso; al completarse, queda construida (D-101, provisional) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6 |
 | **Obra común** | Lo que todo el servidor levanta junto en el Claro, aportando materiales: sube de fogata a campamento, aldea, pueblo, ciudad y castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §1 |
 | **Partida de caza** | Una cacería en grupo de los miembros de un campamento (D-106, provisional): un miembro la convoca en su zona con 🏹 Partida de caza, avisa solo a los miembros presentes en esa misma zona y dura 30 minutos. Cada uno pelea su presa (1 contra 1), pero cada presa da más experiencia y botín por compañero presente y todas suman a una cuenta común con un premio chico al final. **Cazar** (🏹 Cazar en 🧭 Explorar) es pelear en la zona sin explorar ni recolectar, por 2 ⚡ cada presa | [Cacerías](../06-contenido/cacerias.md) §0 |
+| **Oficios encadenados** | Recolectar → refinar → fabricar (D-109): casi toda receta pide materiales de dos oficios o más, para que los jugadores se necesiten | [Profesiones](../07-economia/profesiones.md) §0 |
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Poder de Objeto** | Número que resume lo bueno que es un objeto | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Postura** | Barra de los enemigos grandes; rota, abre golpes críticos | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
@@ -66,7 +70,9 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Profundidades** | Contenido para 1 a 5 jugadores con compañero PNJ | [Misiones](../06-contenido/misiones-y-exploracion.md) |
 | **Ración** | La unidad de comida: lo que come un residente activo en un día real. 🍖 La carne vale 2 y 🥖 las provisiones, 1 (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4 |
 | **Raigambre** | El primer Guardián del juego, "el Guardián del Claro": un árbol antiguo con corazón de ámbar que vive en (5, 2) (D-82) | [Jefes](../06-contenido/jefes.md) |
+| **Rango (de oficio)** | El nivel de cada oficio, de 1 a 100, que sube haciéndolo y abre recetas y materiales raros. Títulos: Aprendiz, Oficial, Experto, Artesano, Maestro y Gran Maestro (D-109) | [Profesiones](../07-economia/profesiones.md) §0.1 y §4 |
 | **Recuerdo** | Recompensa garantizada de un Guardián, que se cambia por una pieza icónica | [Equipamiento](../03-personaje/equipamiento.md) |
+| **Refinar** | Convertir un material recolectado en uno que sirve para fabricar (madera → tablón, metal → lingote, piel → cuero…), en una estación y con energía (D-109) | [Profesiones](../07-economia/profesiones.md) §0.1 |
 | **Región** | Mancha de zonas del mismo bioma con su Guardián (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Rol** | Qué eres en el mundo (médico, constructor, tahúr…), aparte de la clase | [Roles](roles-y-caminos-de-juego.md) |
 | **Sala retransmitida** | Grupo armado por el bot en privado, que replica mensajes entre participantes | [Telegram](../01-plataforma/telegram.md) |

@@ -16,12 +16,14 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
-Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M15 y M19)
+    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
+Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging,
-    engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), content/*
+    engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
+    D-109), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
-    HitReceived, HeroDowned, CombatEnded, BossDefeated
+    HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
 Eventos que escucha: ninguno
 Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta" del almacén
     (en "meta", "guardian:<id>" guarda para siempre al primer héroe que venció a cada Guardián, D-82)
@@ -67,6 +69,9 @@ Reglas que nunca se rompen:
     13. Cazar (D-106) solo da la pelea y su botín: nunca exploración ni recursos. No hay presas donde el bioma no tiene
         peligro (el Claro) ni en la guarida del Guardián. La partida de caza no junta a nadie en una pelea (el combate
         sigue de 1 contra 1) y solo avisa a los miembros presentes en la misma zona (sin teletransporte).
+    14. Los oficios (D-109) no tienen tope (D-57). Refinar y fabricar se hacen enteros o no se hacen: si falta un
+        material, energía, la estación o el rango, no se gasta nada. Las unidades extra y los raros de los oficios usan
+        su propio sorteo: nunca cambian lo que la vuelta de recolección o la pelea dan por su cuenta.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -103,6 +108,13 @@ Si cambias esto, revisa:
       ("huntjoin"); _explore_menu (4 botones: 📒 Lugares se mudó a 🗺️ Mapa, que es la vuelta de _places_view),
       _start_combat (marca "hunt" en el combate), _end_combat (bono, cuenta de presas y 🏹 Otra presa) y la presencia
       de D-96 (_zone_players decide a quién avisa la partida y quién da bono); _spend_energy recibe el costo de cazar
+    - Oficios encadenados (D-109): content/professions.yaml (oficios, estaciones y recetas), balance.yaml professions
+      (curva de rango, unidad extra, raros, experiencia de héroe por ⚡, bono del campamento), engine/professions;
+      Hero.professions; textos prof.*, profession.* e item.* en es.yaml; tests/test_professions.py. Tocan _gather_step
+      (_trade_gather: oficio, unidad extra y raros), _batch_summary (línea ⚒️ Oficios), _end_combat (_trade_loot: carne y
+      piel del 🔪 Desollador), _claro_view (⚒️ Oficios es su 3.er botón), _workshop_view (4.º botón) y _services_view
+      (⚒️ Oficios si hay 🔨 Herrería sin 🧵 Taller), _hero_view (línea /oficios) y COMMANDS (/oficios). La experiencia de
+      héroe al refinar y fabricar (_make_xp) sigue a D-108: tiene que quedar a la par de recolectar por cada ⚡
 """
 
 from __future__ import annotations
@@ -136,6 +148,8 @@ from engine.core import (
     HeroCreated,
     HeroDowned,
     HitReceived,
+    ItemCrafted,
+    ProfessionRankUp,
     Rng,
     Store,
     Texts,
@@ -146,6 +160,7 @@ from engine.core import (
 )
 from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, source_choices, starter_gear, suits, unequip
+from engine.professions import gatherer_of, max_times, missing_for, rank_of, rank_title, xp_for_rank
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
@@ -157,7 +172,8 @@ from engine.world.resources import main_resource, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
-            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health"}
+            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health",
+            "/oficios": "oficios"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -165,6 +181,8 @@ CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 PRESENT_BUSY = ("explore", "gather", "rest")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive")
+# Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
+PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
 
 
 class GameService:
@@ -764,6 +782,7 @@ class GameService:
             stock[res] = max(0.0, stock[res] - cfg["per_unit"])
             got[res] = got.get(res, 0) + 1
         self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
+        activity["log"] += self._trade_gather(hero, got, activity)    # D-109: gathering professions (rank, extra units, rare finds)
         for res, n in got.items():
             activity["got"][res] = activity["got"].get(res, 0) + n
         if got:                                       # D-108: gathering alone also reaches level 100
@@ -962,6 +981,8 @@ class GameService:
             return self._memento_view(hero)
         if action_id.startswith("mem:"):
             return self._use_memento(hero, action_id[4:])
+        if action_id.startswith(PROF_ACTIONS):          # D-109: ⚒️ Oficios, its stations, recipes and 🔨 Hacer
+            return self._prof_action(hero, action_id)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
             return self._ask_camp_name(hero, "found")
@@ -1169,6 +1190,8 @@ class GameService:
                 lines.append(t.t("batch.gathered", n=activity["done"], items=self._item_list(activity.get("got", {}))))
                 if activity.get("xp"):
                     lines.append(t.t("batch.xp_gather", xp=activity["xp"]))
+                if activity.get("trade"):                 # D-109: what each gathering profession earned
+                    lines.append(self._trade_summary(activity["trade"]))
             else:
                 zone = self._zone(hero.x, hero.y)
                 lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
@@ -1541,16 +1564,20 @@ class GameService:
         """The Claro: the fixed base camp with the trader and the inn. It never grows (D-98) nor eats (D-95).
 
         [ES]
-        Qué hace: muestra el campamento base, donde empiezan todos: mercader, posada y la pista para crecer
-        fundando tu propio campamento. El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
+        Qué hace: muestra el campamento base, donde empiezan todos: mercader, posada, ⚒️ Oficios (las estaciones
+        básicas de refinar y fabricar, D-109) y la pista para crecer fundando tu propio campamento. El Claro no crece
+        ni se mantiene (D-95, D-98): no tiene obra común.
         La llaman: el botón 🏕️ Campamento estando en el Claro, y los botones viejos de la obra (camp, donate, feed).
-        Si cambia, afecta: la primera pantalla de todos los jugadores nuevos (tope de 4 botones, D-75).
+        Si cambia, afecta: la primera pantalla de todos los jugadores nuevos (tope de 4 botones, D-75: ya están los 4;
+        tests/test_pantry.py y tests/test_service.py miran el orden).
         """
         t = self.texts
-        body = [t.t("claro.intro"), t.t("claro.grow_hint"), self._status_line(hero)]
+        body = [t.t("claro.intro"), t.t("claro.grow_hint"), t.t("claro.trades_hint"), self._status_line(hero)]
         return View(kind="claro", title=t.t("claro.title"), body=body + self._tutorial_hint(hero),
                     actions=[Action(id="shop", label=t.t("shop.button")),
-                             Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))],
+                             Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))),
+                             Action(id="oficios", label=t.t("prof.button")),      # D-109: the Claro has the basic stations
+                             Action(id="home", label=t.t("menu.back"))],
                     notice=notice)
 
     def _settlement(self) -> dict[str, Any]:
@@ -1803,7 +1830,8 @@ class GameService:
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(item["price"]))))
         actions = actions[:3]
         sellable = {i: n for i, n in hero.backpack.items()      # food stays: it feeds the pantry (D-93)
-                    if self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")}
+                    if self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")
+                    and not self.content.items[i].get("keep")}       # refined goods and rares are sold one by one (D-109)
         if sellable:
             total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
             body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
@@ -1834,7 +1862,7 @@ class GameService:
             total, sold = 0, {}
             for i, n in list(hero.backpack.items()):
                 item = self.content.items.get(i, {})
-                if item.get("kind") == "material" and not item.get("food") and n > 0:
+                if item.get("kind") == "material" and not item.get("food") and not item.get("keep") and n > 0:
                     total += max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"])) * n
                     sold[i] = n
                     del hero.backpack[i]
@@ -3589,6 +3617,7 @@ class GameService:
         Qué hace: junta los servicios construidos: 🛏️ Refugio (curarse como en la posada del Claro, más barato),
         💱 Vender materiales (Puesto de trueque; la comida nunca), 🧵 Taller (bolsas y cofres) y la nota de la
         🔨 Herrería (vender equipo desde 🛡️ Equipo). 4 botones como máximo: Refugio, Vender, Taller y ↩️ Volver.
+        Las estaciones de oficio (D-109) se abren desde el 🧵 Taller; sin Taller y con 🔨 Herrería, ⚒️ Oficios toma su lugar.
         La llama: 🏘️ Servicios de 🔨 Mejoras, y cada servicio al terminar.
         Si cambia, afecta: qué se puede hacer en el campamento sin volver al Claro.
         """
@@ -3620,6 +3649,8 @@ class GameService:
             actions.append(Action(id="ctaller", label=t.t("upgrades.workshop_button")))
         if self._camp_service(camp, "sell_gear"):
             body.append(t.t("upgrades.smithy_line"))
+            if not self._camp_service(camp, "craft") and self._stations_here(hero)[0]:
+                actions.append(Action(id="oficios", label=t.t("prof.button")))   # D-109: no Taller: the Herrería's stations go here
         if len(body) == 1:
             body.append(t.t("upgrades.no_services"))
         body += ["", self._status_line(hero)]
@@ -3661,7 +3692,7 @@ class GameService:
         total, sold = 0, {}
         for item_id, n in list(hero.backpack.items()):
             item = self.content.items.get(item_id, {})
-            if item.get("kind") == "material" and not item.get("food") and n > 0:
+            if item.get("kind") == "material" and not item.get("food") and not item.get("keep") and n > 0:
                 total += max(1, int(item["price"] * service["sell_ratio"])) * n
                 sold[item_id] = n
                 del hero.backpack[item_id]
@@ -3686,7 +3717,8 @@ class GameService:
         return bool(here) and self._camp_service(here[0], "sell_gear") is not None
 
     def _workshop_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🧵 Taller: sew 💰 bags and assemble 🪎 chests at the camp, with the Claro's recipes (D-101)."""
+        """🧵 Taller: sew 💰 bags and assemble 🪎 chests at the camp, with the Claro's recipes (D-101); ⚒️ Oficios opens the
+        camp's profession stations (D-109). [ES] 4 botones: Coser, Armar cofre, ⚒️ Oficios y ↩️ Volver."""
         here = self._upgrades_here(hero)
         if not here:
             return self._upgrades_elsewhere(hero)
@@ -3701,8 +3733,10 @@ class GameService:
                 t.t("wallet.chests", n=hero.chests),
                 t.t("upgrades.chest_recipe", bags=bags_need, items=self._item_list(materials)),
                 "", t.t("hero.gold_line", gold=self._money(hero.gold))]
+        if self._stations_here(hero)[0]:                # D-109: the Taller's stations (and the Herrería's) for ⚒️ Oficios
+            body.insert(1, t.t("prof.workshop_line"))
         actions = [Action(id="tsew", label=t.t("wallet.sew_button")), Action(id="tchest", label=t.t("wallet.chest_button")),
-                   Action(id="upsvc", label=t.t("menu.back"))]
+                   Action(id="oficios", label=t.t("prof.button")), Action(id="upsvc", label=t.t("menu.back"))]
         return View(kind="camp_workshop", title=t.t("upgrades.workshop_title"), body=body, actions=actions, notice=notice)
 
     def _knowledge_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -3804,6 +3838,479 @@ class GameService:
                     self._push(member, news)
         self.store.put("upgrades", key, record)
         return self._knowledge_view(hero, notice="\n".join(lines))
+
+    # ------------------------------------------------------------------ chained professions, phase 1 (D-109)
+
+    def _prof_cfg(self) -> dict[str, Any]:
+        return self.content.balance["professions"]
+
+    def _prof_catalog(self) -> dict[str, dict[str, Any]]:
+        """The professions of content/professions.yaml, in file order (gathering, refining, crafting)."""
+        return (self.content.professions or {}).get("professions") or {}
+
+    def _recipes(self) -> dict[str, dict[str, Any]]:
+        """Every recipe that can be made, in file order (retired ones are hidden)."""
+        recipes = (self.content.professions or {}).get("recipes") or {}
+        return {rid: rdef for rid, rdef in recipes.items() if not rdef.get("retired")}
+
+    def _prof_rank(self, hero: Hero, pid: str) -> int:
+        """A hero's rank (1-100) in a profession, from its profession xp (rank 1 if never started).
+
+        [ES]
+        Qué hace: da el rango de un oficio para este héroe (1 si nunca lo empezó), con la curva de
+        balance.yaml professions.rank_formula.
+        La llaman: todas las funciones de esta sección.
+        Si cambia, afecta: qué recetas y materiales raros tiene abiertos cada uno.
+        """
+        cfg = self._prof_cfg()
+        return rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+
+    def _prof_name(self, pid: str) -> str:
+        pdef = self._prof_catalog().get(pid, {})
+        return f"{pdef.get('emoji', '')} {self.texts.t(pdef.get('name_key', f'profession.{pid}.name'))}".strip()
+
+    def _rank_title(self, rank: int) -> str:
+        """Aprendiz, Oficial, Experto, Artesano, Maestro or Gran Maestro (content/professions.yaml "ranks")."""
+        return self.texts.t(f"prof.rank.{rank_title(rank, (self.content.professions or {}).get('ranks') or [])}")
+
+    def _item_label(self, item_id: str) -> str:
+        item = self.content.items[item_id]
+        return f"{item['emoji']} {self.texts.t(item['name_key'])}"
+
+    def _recipe_name(self, rid: str) -> str:
+        """What a recipe makes, as "🟢🗡️ Espada forjada" (gear, with its rarity) or "🧪 Poción de vida ×2"."""
+        out_id, count = next(iter(self._recipes()[rid]["output"].items()))
+        name = self._gear_name(out_id) if self.content.items[out_id].get("kind") == "gear" else self._item_label(out_id)
+        return name + (f" ×{count}" if count > 1 else "")
+
+    def _prof_gain(self, hero: Hero, pid: str, xp: int) -> list[str]:
+        """Add profession xp; on a new rank, a line (and ProfessionRankUp) plus the recipes or rare find it opens.
+
+        [ES]
+        Qué hace: suma experiencia a un oficio y, si sube de rango, avisa el rango nuevo, las recetas que abre y el
+        material raro que empieza a aparecer. Nunca resta (el rango no baja).
+        La llaman: _trade_gather (recolectar), _trade_loot (botín de bestias) y _make (refinar y fabricar).
+        Si cambia, afecta: el avance de todos los oficios y los avisos de subida.
+        """
+        if xp <= 0 or pid not in self._prof_catalog():
+            return []
+        before = self._prof_rank(hero, pid)
+        hero.professions[pid] = hero.professions.get(pid, 0) + int(xp)
+        after = self._prof_rank(hero, pid)
+        if after <= before:
+            return []
+        self.bus.publish(ProfessionRankUp(hero.id, pid, after))
+        t = self.texts
+        lines = [t.t("prof.rank_up", name=self._prof_name(pid), rank=after, title=self._rank_title(after))]
+        opened = [self._recipe_name(rid) for rid, rdef in self._recipes().items()
+                  if rdef["profession"] == pid and before < int(rdef.get("min_rank", 1)) <= after]
+        if opened:
+            lines.append(t.t("prof.unlocked", items=", ".join(opened)))
+        rare = self._prof_catalog()[pid].get("rare")
+        if rare and before < int(rare["min_rank"]) <= after:
+            lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
+        return lines
+
+    def _trade_gather(self, hero: Hero, got: dict[str, int], activity: dict[str, Any]) -> list[str]:
+        """One gathering round raises its gathering professions (🪓 ⛏️ 🌿): profession xp per unit, an extra unit
+        now and then by rank (up to the backpack's space, D-90) and, from the profession's rank, a rare find.
+
+        It uses its own draw, so it never changes what the round itself gathered or whether a fight starts.
+
+        [ES]
+        Qué hace: después de cada vuelta de recolección, suma 1 de experiencia de oficio por unidad al oficio que la
+        junta (madera → leñador; piedra, metal y arcilla → minero; hierba y fibra → herbolario), sortea una unidad más
+        por unidad según el rango (professions.rank_yield, sin pasar el espacio de la mochila) y, desde el rango del
+        raro, la 💠 gema en bruto o la 🌸 flor de luna. Agrega lo extra a `got` (cuenta para el resumen y el gremio).
+        La llama: _gather_step.
+        Si cambia, afecta: el ritmo de los oficios de recolección y cuánto material raro entra al juego.
+        """
+        if not got:
+            return []
+        cfg = self._prof_cfg()
+        catalog = self._prof_catalog()
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "trade", activity.get("until", 0), activity.get("done", 0)) * 2**31))
+        gained: dict[str, int] = {}
+        for res in list(got):
+            pid = gatherer_of(res, catalog)
+            if not pid:
+                continue
+            rank = self._prof_rank(hero, pid)
+            extra = sum(1 for _ in range(got[res]) if rng.chance(rank * cfg["rank_yield"]))
+            extra = min(extra, max(0, self._bag_cap() - self._bag_used(hero)))     # gathering stops at the space (D-90)
+            if extra:
+                self._bag_add(hero, res, extra)
+                got[res] += extra
+            gained[pid] = gained.get(pid, 0) + got[res] * cfg["gather_xp_per_unit"]
+        lines: list[str] = []
+        trade = activity.setdefault("trade", {})
+        for pid, xp in gained.items():
+            rank = self._prof_rank(hero, pid)
+            rare = catalog[pid].get("rare")
+            if rare and rank >= int(rare["min_rank"]) and rare["item"] in self.content.items:
+                if rng.chance(cfg["rare_chance"] + cfg["rare_per_rank"] * (rank - int(rare["min_rank"]))):
+                    self._bag_add(hero, rare["item"], 1)          # a find: never lost (D-90)
+                    got[rare["item"]] = got.get(rare["item"], 0) + 1
+            trade[pid] = trade.get(pid, 0) + xp
+            lines += self._prof_gain(hero, pid, xp)
+        return lines
+
+    def _trade_summary(self, trade: dict[str, int]) -> str:
+        """⚒️ Oficios: 🪓 Leñador +12 · 🌿 Herbolario +7 (end of a gathering batch)."""
+        parts = [f"{self._prof_name(pid)} +{xp}" for pid, xp in trade.items() if xp]
+        return self.texts.t("prof.summary", items=" · ".join(parts))
+
+    def _trade_loot(self, hero: Hero, item_id: str, count: int, lines: list[str], seed: int) -> int:
+        """🔪 Desollador: carne and piel from a beast raise the profession; by rank, an extra unit now and then.
+
+        Own draw (never changes the fight's other loot). Returns the extra units, already in the backpack.
+
+        [ES]
+        Qué hace: cuando una bestia suelta 🍖 carne o 🦌 piel, suma 1 de experiencia de Desollador por unidad y, según
+        el rango, a veces una unidad más (el botín nunca se pierde, D-90). Los avisos de rango van a `lines`.
+        La llama: _end_combat (botín de cada victoria).
+        Si cambia, afecta: cuánta carne y piel entra al juego (despensa y Curtiduría).
+        """
+        catalog = self._prof_catalog()
+        pid = gatherer_of(item_id, catalog)
+        if not pid or item_id not in (catalog[pid].get("skins") or []) or count <= 0:
+            return 0
+        cfg = self._prof_cfg()
+        rank = self._prof_rank(hero, pid)
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "skin", seed, item_id) * 2**31))
+        extra = sum(1 for _ in range(count) if rng.chance(rank * cfg["rank_yield"]))
+        if extra:
+            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + extra
+        lines += self._prof_gain(hero, pid, (count + extra) * cfg["gather_xp_per_unit"])
+        return extra
+
+    def _stations_here(self, hero: Hero) -> tuple[list[str], str | None]:
+        """(stations, "claro" | "camp") the hero can use where it stands, or ([], None); never while busy.
+
+        [ES]
+        Qué hace: dice qué estaciones de oficio hay donde está el héroe: todas las básicas en el Claro; en el centro de
+        su campamento, las que abren sus mejoras construidas (🧵 Taller y 🔨 Herrería, content/professions.yaml
+        "stations"). Ocupado (viaje, exploración...) no hay ninguna: una actividad a la vez.
+        La llaman: ⚒️ Oficios, las estaciones, las recetas, _make, el Taller y los servicios del campamento.
+        Si cambia, afecta: dónde se puede refinar y fabricar.
+        """
+        if hero.activity:
+            return [], None
+        stations = (self.content.professions or {}).get("stations") or {}
+        if (hero.x, hero.y) == (0, 0):
+            return list(stations.get("claro") or []), "claro"
+        here = self._upgrades_here(hero)
+        if not here:
+            return [], None
+        built = self._built(here[0])
+        found: list[str] = []
+        for uid, sids in (stations.get("camp") or {}).items():
+            if uid in built:
+                found += [sid for sid in sids if sid not in found]
+        return (found, "camp") if found else ([], None)
+
+    def _prof_back(self, hero: Hero) -> str:
+        """Where ↩️ Volver of ⚒️ Oficios goes: the Claro, your camp's 🧵 Taller or services, or the hero sheet."""
+        if (hero.x, hero.y) == (0, 0):
+            return "claro"
+        here = self._upgrades_here(hero)
+        if here:
+            return "ctaller" if self._camp_service(here[0], "craft") else "upsvc"
+        return "hero"
+
+    def _make_bonus(self, rank: int, where: str | None) -> float:
+        """Chance of one more unit per refining: rank × professions.rank_yield, + professions.camp_bonus at your camp."""
+        cfg = self._prof_cfg()
+        return rank * cfg["rank_yield"] + (cfg["camp_bonus"] if where == "camp" else 0.0)
+
+    def _make_xp(self, hero: Hero, recipe: dict[str, Any], rank: int) -> int:
+        """Hero xp of making a recipe once (D-108): hero_xp_per_energy × energy, scaled like a zone of level
+        min(hero level, profession rank) — a novice crafter learns little; a dedicated one keeps pace with the others."""
+        return self._zone_xp(self._prof_cfg()["hero_xp_per_energy"] * int(recipe.get("energy", 1)), min(hero.level, rank))
+
+    def _pay_energy(self, hero: Hero, cost: int) -> None:
+        """Pay `cost` energy (the caller checked it is there); same rule as _spend_energy (D-78)."""
+        if hero.energy >= self.content.balance["energy"]["max"]:
+            hero.energy_at = self.clock.now()
+        hero.energy -= cost
+
+    def _rank_bar(self, hero: Hero, pid: str) -> str:
+        """▓▓▓░░░░░ 37 % towards the next rank (full at the top rank)."""
+        cfg = self._prof_cfg()
+        rank = self._prof_rank(hero, pid)
+        if rank >= cfg["max_rank"]:
+            return self._bar(1, 1, 8) + " 100 %"
+        low, high = xp_for_rank(cfg["rank_formula"], rank), xp_for_rank(cfg["rank_formula"], rank + 1)
+        have = hero.professions.get(pid, 0) - low
+        return f"{self._bar(have, max(1, high - low), 8)} {int(100 * have / max(1, high - low))} %"
+
+    def _next_unlock(self, hero: Hero, pid: str) -> str | None:
+        """🔓 What the next rank threshold of a profession opens: its rare find, or its next recipes."""
+        t = self.texts
+        rank = self._prof_rank(hero, pid)
+        rare = self._prof_catalog()[pid].get("rare")
+        if rare and rank < int(rare["min_rank"]):
+            return t.t("prof.next", rank=rare["min_rank"], items=self._item_label(rare["item"]))
+        later = [(int(rdef.get("min_rank", 1)), rid) for rid, rdef in self._recipes().items()
+                 if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) > rank]
+        if not later:
+            return None
+        need = min(r for r, _ in later)
+        return t.t("prof.next", rank=need, items=", ".join(self._recipe_name(rid) for r, rid in later if r == need))
+
+    def _stations_line(self, where: str | None, stations: list[str]) -> str:
+        t = self.texts
+        if where == "claro":
+            return t.t("prof.stations_claro")
+        if where == "camp":
+            return t.t("prof.stations_camp", items=", ".join(self._prof_name(sid) for sid in stations),
+                       pct=round(100 * self._prof_cfg()["camp_bonus"]))
+        return t.t("prof.stations_none")
+
+    def _prof_action(self, hero: Hero, action_id: str) -> View:
+        """Route the buttons of ⚒️ Oficios (D-109): "oficios", "est:<branch>:<page>", "rec:<recipe>:<page>",
+        "mk:<recipe>:<times>:<page>". [ES] Qué hace: reparte los botones de los oficios. La llama: _idle_action.
+        Si cambia, afecta: los IDs de botón de los oficios (los clientes solo los reenvían)."""
+        parts = action_id.split(":")
+        page = int(parts[-1]) if len(parts) > 2 and parts[-1].isdigit() else 0
+        if parts[0] == "est" and len(parts) >= 2:
+            return self._station_view(hero, parts[1], page)
+        if parts[0] == "rec" and len(parts) >= 2:
+            return self._recipe_view(hero, parts[1], page)
+        if parts[0] == "mk" and len(parts) >= 3 and parts[2].isdigit():
+            return self._make(hero, parts[1], int(parts[2]), int(parts[3]) if len(parts) > 3 and parts[3].isdigit() else 0)
+        return self._professions_view(hero)
+
+    def _professions_view(self, hero: Hero, notice: str | None = None) -> View:
+        """⚒️ Oficios: your rank in every profession you started, how to raise it and what the next rank opens;
+        the professions not started yet; the stations where you stand. Buttons: 🪚 Refinar, 🛠️ Fabricar, ↩️ Volver.
+
+        [ES]
+        Qué hace: muestra los oficios que empezaste, agrupados en recolección, refinado y fabricación, cada uno con su
+        rango (y título), la barra hasta el próximo, cómo se sube y qué abre el próximo umbral; después, los que faltan
+        empezar (sin tope de oficios, D-57) y dónde están las estaciones. Con estaciones aquí (el Claro o tu
+        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. 3 botones como mucho (D-75).
+        La llaman: el atajo /oficios, ⚒️ Oficios del Claro, del 🧵 Taller y de los servicios del campamento.
+        Si cambia, afecta: dónde ve el jugador sus oficios (tests/test_professions.py).
+        """
+        t = self.texts
+        catalog = self._prof_catalog()
+        body = [t.t("prof.intro")]
+        started = [pid for pid in catalog if hero.professions.get(pid, 0) > 0]
+        branch = None
+        for pid in started:
+            pdef = catalog[pid]
+            if pdef.get("branch") != branch:
+                branch = pdef.get("branch")
+                body += ["", t.t(f"prof.branch.{branch}")]
+            rank = self._prof_rank(hero, pid)
+            body.append(t.t("prof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid)))
+            body.append(t.t("prof.how_line", how=t.t(pdef.get("how_key", f"profession.{pid}.how"))))
+            unlock = self._next_unlock(hero, pid)
+            if unlock:
+                body.append(unlock)
+        if not started:
+            body += ["", t.t("prof.none")]
+        rest = [self._prof_name(pid) for pid in catalog if pid not in started]
+        if rest:
+            body += ["", t.t("prof.not_started", items=", ".join(rest))]
+        stations, where = self._stations_here(hero)
+        body += ["", self._stations_line(where, stations) if (where or not hero.activity) else t.t("activity.busy"),
+                 t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"])]
+        actions = []
+        if stations:
+            actions = [Action(id="est:refine:0", label=t.t("prof.refine_button")), Action(id="est:craft:0", label=t.t("prof.craft_button"))]
+        actions.append(Action(id=self._prof_back(hero), label=t.t("menu.back")))
+        return View(kind="professions", title=t.t("prof.title"), body=body, actions=actions, notice=notice)
+
+    def _station_view(self, hero: Hero, branch: str, page: int = 0, notice: str | None = None) -> View:
+        """🪚 Refinar / 🛠️ Fabricar: the recipes of this branch you can do here with your rank, ✅ first (you carry it
+        all), then those you carry part of (with what is missing), then the rest; 2 per page when there are more than 3.
+
+        [ES]
+        Qué hace: lista las recetas de refinado o de fabricación de las estaciones de aquí que tu rango ya abre:
+        primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las
+        demás. Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
+        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios.
+        La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, ➡️ Ver más y ↩️ Volver de cada receta.
+        Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py).
+        """
+        t = self.texts
+        if branch not in ("refine", "craft"):
+            return self._professions_view(hero)
+        if hero.activity:
+            return self._professions_view(hero, notice=t.t("activity.busy"))
+        stations, where = self._stations_here(hero)
+        if not stations:
+            return self._professions_view(hero, notice=notice or t.t("prof.no_station"))
+        catalog = self._prof_catalog()
+        recipes = self._recipes()
+        entries: list[tuple[int, str, dict[str, int]]] = []
+        elsewhere = False
+        for rid, rdef in recipes.items():
+            pid = rdef["profession"]
+            if catalog.get(pid, {}).get("branch") != branch or self._prof_rank(hero, pid) < int(rdef.get("min_rank", 1)):
+                continue
+            if pid not in stations:
+                elsewhere = True
+                continue
+            missing = missing_for(rdef, hero.backpack)
+            carried = any(hero.backpack.get(item, 0) > 0 for item in rdef["inputs"])
+            entries.append((0 if not missing else 1 if carried else 2, rid, missing))
+        entries.sort(key=lambda entry: entry[0])           # stable: file order inside each group
+        per = int(self._prof_cfg()["per_page"])
+        pages = 1 if len(entries) <= 3 else (len(entries) + per - 1) // per
+        page %= pages
+        shown = entries if pages == 1 else entries[page * per: page * per + per]
+        body = [t.t(f"prof.station_intro_{branch}"), self._stations_line(where, stations),
+                t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"]), ""]
+        actions = []
+        for _, rid, missing in shown:
+            rdef = recipes[rid]
+            body.append(t.t("prof.entry_ok" if not missing else "prof.entry", item=self._recipe_name(rid),
+                            inputs=self._item_list(rdef["inputs"]), energy=rdef["energy"]))
+            if missing:
+                body.append(t.t("prof.entry_missing", items=self._item_list(missing)))
+            actions.append(Action(id=f"rec:{rid}:{page}", label=t.t("prof.entry_button_ok" if not missing else "prof.entry_button",
+                                                                     item=self._recipe_name(rid))))
+        if not entries:
+            body.append(t.t("prof.station_empty"))
+        if pages > 1:
+            body.append(t.t("prof.page", n=page + 1, total=pages))
+            actions.append(Action(id=f"est:{branch}:{page + 1}", label=t.t("prof.more")))
+        if elsewhere:
+            body.append(t.t("prof.more_in_claro"))
+        body.append(t.t("prof.locked_hint"))
+        actions.append(Action(id="oficios", label=t.t("menu.back")))
+        return View(kind="station", title=t.t(f"prof.station_title_{branch}"), body=body, actions=actions[:4], notice=notice)
+
+    def _recipe_view(self, hero: Hero, rid: str, page: int = 0, notice: str | None = None) -> View:
+        """One recipe: what it needs (✅ / ❌ with have/need), what it makes, energy, what you earn, 🔨 Hacer 1 / 5 / todo.
+
+        [ES]
+        Qué hace: muestra una receta: los materiales que pide con lo que llevas (✅ o ❌), lo que sale (con los bonos si
+        es equipo, o cuánto cura si es poción), la energía por vez, la experiencia de héroe y de oficio que da, y la
+        probabilidad de una unidad más al refinar. Botones: 🔨 Hacer 1, 🔨 Hacer 5 (o lo que alcance), 🔨 Hacer todo
+        (si alcanza para más de 5) y ↩️ Volver a la estación: 4 como mucho (D-75). Si falta algo, lo dice y no hay botón.
+        La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar, y _make al terminar (o al rechazar).
+        Si cambia, afecta: tests/test_professions.py.
+        """
+        t = self.texts
+        rdef = self._recipes().get(rid)
+        if not rdef:
+            return self._professions_view(hero, notice=notice)
+        pid = rdef["profession"]
+        branch = self._prof_catalog().get(pid, {}).get("branch", "craft")
+        rank = self._prof_rank(hero, pid)
+        need_rank = int(rdef.get("min_rank", 1))
+        stations, where = self._stations_here(hero)
+        body = [self._recipe_name(rid),
+                t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank), "",
+                t.t("prof.recipe_needs")]
+        for item_id, n in rdef["inputs"].items():
+            have = hero.backpack.get(item_id, 0)
+            body.append(t.t("prof.have_line" if have >= n else "prof.lack_line", item=self._item_label(item_id), have=have, need=n))
+        out_id = next(iter(rdef["output"]))
+        item = self.content.items[out_id]
+        body.append("")
+        if item.get("kind") == "gear":
+            body.append(t.t("prof.gear_out", slot=t.t(f"gear.slot.{item['slot']}"), type=t.t(f"gear.type.{item['type']}"),
+                            level=item.get("req_level", 1), stats=self._gear_stats_text(item.get("stats", {}))))
+            body.append(self._gear_status(hero, item))
+        elif item.get("heal"):
+            body.append(t.t("prof.heal_out", heal=round(item["heal"] * 100), tox=item.get("toxicity", 0)))
+        elif t.has(f"resources.use.{out_id}"):
+            body.append(t.t("prof.material_out", use=t.t(f"resources.use.{out_id}")))
+        body.append(t.t("prof.energy_cost", energy=rdef["energy"], have=hero.energy))
+        body.append(t.t("prof.gains", xp=int(self._make_xp(hero, rdef, rank) * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=rdef["xp"]))
+        if branch == "refine" and round(100 * self._make_bonus(rank, where)):
+            body.append(t.t("prof.yield_line", pct=round(100 * self._make_bonus(rank, where))))
+        actions = []
+        if rank < need_rank:
+            body.append(t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
+        elif pid not in stations:
+            body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
+        else:
+            times = max_times(rdef, hero.backpack, hero.energy)
+            batch = int(self._prof_cfg()["make_batch"])
+            if times >= 1:
+                actions.append(Action(id=f"mk:{rid}:1:{page}", label=t.t("prof.make_button", n=1)))
+            if times >= 2:
+                actions.append(Action(id=f"mk:{rid}:{min(batch, times)}:{page}", label=t.t("prof.make_button", n=min(batch, times))))
+            if times > batch:
+                actions.append(Action(id=f"mk:{rid}:{times}:{page}", label=t.t("prof.make_all", n=times)))
+            missing = missing_for(rdef, hero.backpack)
+            if missing:
+                body.append(t.t("prof.missing_line", items=self._item_list(missing)))
+            elif not times:
+                body.append(self._no_energy_notice(hero))
+        actions.append(Action(id=f"est:{branch}:{page}" if stations else "oficios", label=t.t("menu.back")))
+        return View(kind="recipe", title=t.t("prof.recipe_title"), body=body, actions=actions[:4], notice=notice)
+
+    def _make(self, hero: Hero, rid: str, times: int, page: int = 0) -> View:
+        """🔨 Hacer: refine or craft a recipe `times` times at a station; all or nothing.
+
+        [ES]
+        Qué hace: hace la receta tantas veces: comprueba la estación (Claro o tu campamento), que no estés ocupado, tu
+        rango, los materiales y la energía de TODAS las veces; si algo falta, avisa y no gasta nada (regla 6). Si
+        alcanza: gasta la energía y los materiales, guarda lo que sale (al refinar, a veces una unidad más por el rango y
+        el campamento), da experiencia de héroe (D-108) y de oficio, pone el equipo nuevo si esa ranura estaba vacía y
+        llena el cinturón con las pociones. Publica ItemCrafted (y ProfessionRankUp si sube de rango).
+        La llaman: los botones 🔨 Hacer de la receta.
+        Si cambia, afecta: la economía de los oficios (balance.yaml professions; content/professions.yaml).
+        """
+        t = self.texts
+        rdef = self._recipes().get(rid)
+        if not rdef or times < 1:
+            return self._professions_view(hero)
+        pid = rdef["profession"]
+        if hero.activity:
+            return self._recipe_view(hero, rid, page, notice=t.t("activity.busy"))
+        stations, where = self._stations_here(hero)
+        if pid not in stations:
+            return self._recipe_view(hero, rid, page, notice=t.t("prof.no_station"))
+        rank = self._prof_rank(hero, pid)
+        if rank < int(rdef.get("min_rank", 1)):
+            return self._recipe_view(hero, rid, page, notice=t.t("prof.locked", need=rdef["min_rank"], name=self._prof_name(pid), rank=rank))
+        missing = missing_for(rdef, hero.backpack, times)
+        if missing:
+            return self._recipe_view(hero, rid, page, notice=t.t("prof.missing", items=self._item_list(missing)))
+        cost = int(rdef.get("energy", 1)) * times
+        if hero.energy < cost:
+            return self._recipe_view(hero, rid, page, notice=self._no_energy_notice(hero))
+        self._pay_energy(hero, cost)
+        for item_id, n in rdef["inputs"].items():
+            hero.backpack[item_id] -= int(n) * times
+            if hero.backpack[item_id] <= 0:
+                del hero.backpack[item_id]
+        out_id, out_n = next(iter(rdef["output"].items()))
+        extra = 0
+        if self._prof_catalog()[pid].get("branch") == "refine":       # specialists and camps get more out (D-101)
+            rng = Rng(int(hash_unit(self.world_seed, hero.id, "make", rid, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
+            chance = self._make_bonus(rank, where)
+            extra = sum(1 for _ in range(times) if rng.chance(chance))
+        made = int(out_n) * times + extra
+        hero.backpack[out_id] = hero.backpack.get(out_id, 0) + made
+        lines = [t.t("prof.made", items=self._item_list({out_id: made}), energy=cost)]
+        if extra:
+            lines.append(t.t("prof.made_extra", n=extra))
+        item = self.content.items[out_id]
+        if item.get("kind") == "gear":
+            if out_id not in hero.gear_new:
+                hero.gear_new.append(out_id)
+            worn = auto_equip(hero, out_id, self.content.items, self.content.classes, self.content.balance)
+            if worn:
+                self._clamp_hp(hero)
+            lines.append(t.t("prof.gear_worn" if worn else "prof.gear_made"))
+        if item.get("belt"):
+            self._refill_belt(hero)
+        self.bus.publish(ItemCrafted(hero.id, rid, out_id, made))
+        xp = self._make_xp(hero, rdef, rank) * times
+        prof_xp = int(rdef.get("xp", 0)) * times
+        lines.append(t.t("prof.gained", xp=int(xp * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=prof_xp))
+        lines += self._give_xp(hero, xp)
+        lines += self._prof_gain(hero, pid, prof_xp)
+        return self._recipe_view(hero, rid, page, notice="\n".join(lines))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -4091,6 +4598,7 @@ class GameService:
             t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
             t.t("hero.class_short", icon=self._hero_icon(hero), cls=class_line),
             t.t("hero.skills_link", n=hero.points),
+            t.t("hero.trades_link"),                                    # D-109: ⚒️ Oficios lives behind /oficios
             *([t.t("guardian.titles_line", titles=", ".join(t.t(f"guardian.title.{x}") for x in hero.titles))] if hero.titles else []),
             t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
             t.t("hero.xp_line", xp=hero.xp, next=high),
@@ -4956,6 +5464,7 @@ class GameService:
                     low, high = item.get("loot_amount", [1, 1])      # D-93: 🍖 carne comes in 1-2
                     count = low if high <= low else min(high, int(rng.uniform(low, high + 1)))
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
+                    count += self._trade_loot(hero, item_id, count, lines, state["seed"])     # D-109: 🔪 Desollador (carne, piel)
                     label = f"{item['emoji']} {t.t(item['name_key'])}" if count == 1 else self._item_list({item_id: count})
                     lines.append(t.t("combat.loot", item=label))
             drop = self.content.balance["gear"]["drop_chance"] * (1 + bonus) if bonus else None    # D-106: party bonus
