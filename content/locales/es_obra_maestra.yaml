@@ -1,0 +1,48 @@
+# Masterwork pieces and camp furniture texts (D-116, confirmed). Numbers live in content/balance.yaml "masterwork",
+# the furniture items in content/items.yaml (kind: furniture) and their recipes in content/professions.yaml.
+# [ES] Textos de la ✒️ obra maestra (una pieza de equipo fabricada que sale exclusiva, mejor y con la firma de quien la
+# hizo) y de los 🪑 muebles del campamento que solo hace la Carpintería. Una obra maestra usa el nombre de su pieza
+# (item.<id>) más la marca ✒️: no lleva texto propio. Sin números escritos a mano: los pone el motor.
+# Lo leen: engine/core/content.py (se junta con es.yaml) y engine/service/game.py (_make, _recipe_view, _professions_view,
+# _gear_name, _masterwork_note, _item_view, _upgrades_view, _works_view, _place_furniture, _resources_view).
+# Si cambias una clave, búscala en engine/service/game.py: una clave que falta se ve como [clave]
+# (tests/test_masterwork.py revisa que no falte ninguna).
+
+item:
+  literas_roble: "Literas de roble"
+  armero_roble: "Armero de roble"
+
+furniture:                    # [ES] qué hace cada mueble, en una frase (items.yaml desc_key)
+  literas_roble: "+1 lugar para un miembro del campamento"
+  armero_roble: "+1 de 🛡️ Defensa del campamento contra las oleadas"
+
+gear:
+  masterwork_mark: " ✒️"
+  masterwork_by: "✒️ Obra maestra de {name}"
+  masterwork_unsigned: "✒️ Obra maestra"
+  masterwork_help: "Exclusiva: +{pct} % en cada bono y un bono más que la pieza normal. El mercader paga más por ella."
+
+prof:
+  perk:
+    masterwork: "+{v} % de obra maestra"
+  masterwork_line: "✒️ {pct} % de que cada pieza salga obra maestra: exclusiva, mejor y con tu firma."
+  masterwork_made: "✒️ ¡Obra maestra! {item} ×{n}: {n|salió exclusiva, mejor|salieron exclusivas, mejores} y con la firma de {name}."
+  furniture_out: "Sale: 🪑 mueble para tu campamento · {desc} (uno de cada mueble por campamento)"
+  furniture_made: "🪑 Llévalo al centro de tu campamento y colócalo en 🔨 Mejoras → 🔨 Obras."
+
+upgrades:
+  furniture_line: "🪑 Muebles: {names}"
+  furniture_by: "{name} (de {hero})"
+  furniture_hint: "🪑 Llevas para colocar: {names}. Está en 🔨 Obras."
+  furniture_intro: "🪑 Los muebles de la Carpintería se colocan una vez y quedan para siempre: uno de cada uno por campamento."
+  furniture_entry: "🪑 {name}: {desc}"
+  furniture_button: "🪑 Colocar {name}"
+  furniture_placed: "🪑 Colocaste {name} en {camp}: {desc}. Queda para siempre."
+  furniture_already: "🪑 {camp} ya tiene {name}: uno de cada mueble por campamento. Guárdalo: sirve si un día te mudas a otro campamento."
+  furniture_push_title: "🪑 Tu campamento tiene un mueble nuevo"
+  furniture_push: "🪑 {hero} colocó {name} en {camp}: {desc}."
+
+resources:
+  use:
+    literas_roble: "🪑 mueble: colócalo en tu campamento (🔨 Mejoras → 🔨 Obras) · +1 lugar para un miembro"
+    armero_roble: "🪑 mueble: colócalo en tu campamento (🔨 Mejoras → 🔨 Obras) · +1 de 🛡️ Defensa"

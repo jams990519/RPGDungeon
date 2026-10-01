@@ -1407,7 +1407,7 @@ resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedid
     arcilla: "frascos de la ⚗️ Alquimia (pociones); mejoras del campamento"
     hierba_curativa: "la 💧 Destilación la vuelve extracto; vendas de la 🪡 Sastrería"
     piel: "la 🪣 Curtiduría la vuelve cuero"
-    tablon: "🪑 Carpintería: arcos y bastones"
+    tablon: "🪑 Carpintería: arcos, bastones y muebles del campamento"
     lingote: "🔨 Herrería, 🦺 Peletería (malla) y 💍 Joyería"
     extracto: "⚗️ Alquimia (pociones), 🪡 Sastrería y 🦺 Peletería"
     tela_tejida: "🪡 Sastrería, 🪑 Carpintería, 🦺 Peletería y 🔨 Herrería"
@@ -2348,7 +2348,7 @@ profession:                   # [ES] D-109: nombre de cada oficio y cómo se sub
     how: "en una estación: 🦌 piel → 🟤 cuero"
   carpinteria:
     name: "Carpintería"
-    how: "arcos y bastones: 🟫 tablones con 🧣 tela o 🟤 cuero"
+    how: "arcos y bastones (🟫 tablones con 🧣 tela o 🟤 cuero) y, desde el rango 40, 🪑 muebles para el campamento"
   herreria:
     name: "Herrería"
     how: "espadas, dagas y petos: 🔩 lingotes con 🟤 cuero"

@@ -30,6 +30,10 @@
 #       lo mejor de cada nivel lo fabrican los jugadores; tests/test_balance_d110.py); nunca sale en el botín al azar (engine/hero/gear.py).
 #     - D-110: las líneas de equipo tienen una receta por nivel de pieza hasta el 100, en los rangos 55 a 100 (al final del archivo).
 #     - Las estaciones del campamento dependen de los ids de content/camp_upgrades.yaml (taller, herreria).
+#     - D-116: la ✒️ obra maestra. Toda pieza de equipo fabricada (source: crafted) tiene su gemela "<id>_obra" que arma el
+#       motor al cargar (engine/professions/rules.py masterwork_items; números en balance.yaml masterwork). La probabilidad
+#       sale del rango del oficio que fabrica: la 🪑 Carpintería usa su perk {masterwork}; los demás, masterwork.base_chance.
+#       Las recetas de 🪑 muebles (literas_roble, armero_roble) dan objetos kind: furniture que se colocan en el campamento.
 
 # Rank titles (design §4). [ES] Títulos de rango: desde qué rango rige cada uno (profesiones.md §4).
 ranks:
@@ -106,7 +110,8 @@ professions:
     name_key: profession.carpinteria.name
     how_key: profession.carpinteria.how
     branch: craft
-    perk: {attack: 0.04, weapon_type: [arco, baston]}   # [ES] D-111: +4 % de ataque peleando con arco o bastón
+    perk: {masterwork: 0.15}                 # [ES] D-116: hasta 15 % de que cada arco o bastón que fabricas salga ✒️ obra maestra (exclusiva, mejor y con tu firma), parejo con el rango.
+                                             # [ES] Reemplaza al +4 % de ataque con arco o bastón de D-111 (0.16-0.20). Además hace los 🪑 muebles del campamento (recetas abajo)
   herreria:
     emoji: "🔨"
     name_key: profession.herreria.name
@@ -243,6 +248,23 @@ recipes:
     min_rank: 50
     energy: 2
     xp: 12
+  # ---- D-116: 🪑 camp furniture, only Carpentry. [ES] Muebles exclusivos para el campamento: solo la 🪑 Carpintería los
+  # hace. Se colocan en tu campamento (🔨 Mejoras → 🔨 Obras → 🪑 Colocar), uno de cada mueble por campamento, y dan un
+  # bono chico para siempre a los miembros (items.yaml "effect"). Cuestan 4 ⚡ y dan 24 de experiencia de oficio (6 por ⚡, como las demás).
+  literas_roble:
+    profession: carpinteria
+    inputs: {tablon: 12, tela_tejida: 4, cuero_curtido: 2}   # [ES] aserradero + tejeduría + curtiduría
+    output: {literas_roble: 1}
+    min_rank: 40
+    energy: 4
+    xp: 24
+  armero_roble:
+    profession: carpinteria
+    inputs: {tablon: 16, lingote: 6, cuero_curtido: 3}       # [ES] aserradero + fundición + curtiduría
+    output: {armero_roble: 1}
+    min_rank: 70
+    energy: 4
+    xp: 24
 
   # ---- Herrería: armas y placas (lingotes + cuero para el mango y las correas)
   espada_forjada:

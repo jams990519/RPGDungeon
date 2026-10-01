@@ -8,7 +8,8 @@ Para qué sirve: leer los archivos de contenido (clases, enemigos, biomas, objet
 números de balance y textos) para que el motor no tenga datos escritos a mano.
 Documento de diseño: diseno/01-plataforma/arquitectura-modular.md §1 regla 4; convenciones §4
 Módulo: M1 Núcleo
-Depende de: content/*.yaml, PyYAML
+Depende de: content/*.yaml, PyYAML; engine/professions/rules.py (masterwork_items: las ✒️ obras maestras que se
+    derivan de cada pieza de artesano al cargar los objetos, D-116; ese módulo no importa nada del motor)
 Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
     (content/story.yaml → Content.story: orígenes, campaña, personajes, facciones y encargos, D-117)
@@ -17,9 +18,13 @@ Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
 Reglas que nunca se rompen:
     1. Los IDs de contenido son estables: solo se agregan; para retirar algo, retired: true.
+    2. Las obras maestras (D-116) se derivan siempre igual de items.yaml y balance.yaml masterwork: mismo id
+       (<pieza>_obra), así las que guardan los héroes siguen cargando. Una escrita a mano en items.yaml gana.
 Si cambias esto, revisa:
     - Todos los catálogos: engine/classes, engine/enemies, engine/world, engine/professions (D-109), engine/story (D-117)
-    - Pruebas: tests/test_content.py
+    - Obra maestra (D-116): Content.items trae también las piezas "<id>_obra" (source: masterwork); quien recorre todos
+      los objetos las ve (nunca salen en el botín ni en el equipo inicial: tienen "source")
+    - Pruebas: tests/test_content.py, tests/test_masterwork.py
 """
 
 from __future__ import annotations
@@ -41,7 +46,8 @@ class Content:
         classes: content/classes.yaml as a dict keyed by class id.
         enemies: content/enemies.yaml keyed by enemy id.
         biomes: content/biomes.yaml keyed by biome id.
-        items: content/items.yaml keyed by item id.
+        items: content/items.yaml keyed by item id, plus the masterwork twin of every crafted gear piece ("<id>_obra",
+            source: masterwork, D-116), derived from balance.yaml "masterwork".
         balance: content/balance.yaml (tunable numbers).
         texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts).
         patches: content/patches.yaml (patch notes, D-67).
@@ -89,17 +95,23 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         A Content object.
 
     [ES]
-    Qué hace: lee todos los archivos de contenido.
+    Qué hace: lee todos los archivos de contenido y agrega a los objetos las ✒️ obras maestras de cada pieza de
+    artesano (D-116, engine/professions/rules.py masterwork_items).
     La llaman: el servicio del juego al arrancar, y las pruebas.
     Si cambia, afecta: el arranque del juego.
     """
+    from engine.professions.rules import masterwork_items     # pure helper, no engine imports (no cycle)
+
     base = content_dir or DEFAULT_CONTENT_DIR
+    items = _read(base / "items.yaml")
+    balance = _read(base / "balance.yaml")
+    items.update(masterwork_items(items, balance.get("masterwork")))     # D-116: ✒️ the masterwork twins
     return Content(
         classes=_read(base / "classes.yaml", keep_retired=True),
         enemies=_read(base / "enemies.yaml"),
         biomes=_read(base / "biomes.yaml"),
-        items=_read(base / "items.yaml"),
-        balance=_read(base / "balance.yaml"),
+        items=items,
+        balance=balance,
         texts=_read_texts(base / "locales", lang),
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},

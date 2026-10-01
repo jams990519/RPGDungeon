@@ -34,6 +34,10 @@ Si cambias esto, revisa:
       📖 Historia, sin bloquear nada); story = misiones hechas, paso en curso, decisiones, encargos del día y premios
       cobrados; factions = reputación por facción; journal = entradas del 📔 Diario; bio = biografía de /bio. Todos
       vacíos por defecto, así los héroes viejos cargan igual (engine/service/story.py; tests/test_story.py)
+    - gear_signatures (D-116): la firma de cada ✒️ obra maestra que lleva el héroe (id de la pieza "<id>_obra" → nombre
+      de quien la fabricó). Vacío por defecto: los héroes guardados antes cargan igual. Hoy solo firma uno mismo (no hay
+      mercado entre jugadores); cuando exista, la firma tiene que viajar con la pieza (engine/service/game.py _make,
+      _masterwork_note, _sell_gear; tests/test_masterwork.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -93,6 +97,9 @@ class Hero:
         factions: reputation points per faction id (D-117); missing = 0 (Desconocido).
         journal: 📔 Diario entries {"t": time, "k": text key, "v": values}, oldest first, capped (balance story.journal_max).
         bio: the short biography written with /bio (D-117); "" = none.
+        gear_signatures: who made each ✒️ masterwork the hero holds (D-116), "<piece>_obra" -> crafter's hero name.
+            Empty for heroes saved before it. All copies of one masterwork id share one signature: fine while only the
+            crafter holds its own masterworks; a player market will need the signature to travel with each piece.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -154,6 +161,7 @@ class Hero:
     factions: dict[str, int] = field(default_factory=dict)
     journal: list[dict[str, Any]] = field(default_factory=list)
     bio: str = ""
+    gear_signatures: dict[str, str] = field(default_factory=dict)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
