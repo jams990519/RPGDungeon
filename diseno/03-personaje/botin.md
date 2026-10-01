@@ -547,7 +547,7 @@ WoW esconde su protección contra mala racha. Aquí se ve, y tiene nombre: **Con
 | Un artefacto concreto de un jefe | 20 % | +8 % | 11 |
 | Un artefacto menor de élites y únicos | 2 % | +2 % | 50 |
 | Un plano de Guardián | 10 % | +5 % | 19 |
-| Una pieza Legendaria (🔴, ⚫, Abismal o más) | 0,2 % | — | Tras 60 piezas Épicas o menores seguidas, la siguiente es Legendaria |
+| Una pieza Legendaria (🔴, ⚫, Abismal o más) | 0,2 % | — | Tras 25 piezas Épicas seguidas sin ningún Legendario, la siguiente es Legendaria (unas 2,5 veces lo esperado: protege de la mala racha sin inflar los Legendarios) |
 | Una carta, curiosidad o apariencia nueva | — | — | "Lo nuevo pesa más" (§3.1) |
 
 ### 7.4 Tesoro Semanal

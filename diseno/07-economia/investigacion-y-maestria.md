@@ -181,7 +181,7 @@ Los PI son **personales**: no se comercian, no se compran y no los toca ningún 
 | **Fracasar en el minijuego** | 1 | Se aprende del error. Como mucho 5 al día |
 | **Zona de riesgo** | +25 % en 🔴 roja · +50 % en ⚫ negra | Para disecar, excavar y tomar muestras ahí. En 🔵 azul y 🟡 amarilla, lo normal |
 
-**Tope semanal: 300 PI.** Por encima, cada fuente da la cuarta parte. El que juega 12 horas al día no se escapa, y el que juega una hora al día llega cerca del tope con la lectura, el Enfoque y algún caso.
+**Tope semanal: 300 PI.** Por encima, cada fuente da la cuarta parte, hasta un **máximo absoluto de 400 PI** por semana. El que juega 12 horas al día no se escapa, y el que juega una hora al día llega cerca del tope con la lectura, el Enfoque y algún caso.
 
 ### 4.2 En qué se gastan
 
@@ -518,7 +518,7 @@ Los jugadores escriben libros con **Inscripción** (ver libros de jugadores en [
 | **Consumibles mejores** | Los remedios y consumibles nuevos siguen las reglas de [Balance](../03-personaje/balance.md): no se apilan con los de su tipo y no dan utilidades que nadie más tenga |
 | **Recetas exclusivas** | Patentes que vencen (18 semanas como máximo), secretos que se redescubren, ingeniería inversa |
 | **Ciudades viejas con todo** | Un nodo a la vez, tiempo mínimo, cumbres que se excluyen y difusión (−10 % por cada ciudad que ya lo tenga, hasta −40 %) |
-| **El que juega todo el día** | Tope semanal de 300 PI, Enfoque diario, tiempo real en proyectos y nodos, 3 especialidades de Maestría a la vez |
+| **El que juega todo el día** | Tope semanal de 300 PI (400 como máximo absoluto), Enfoque diario, tiempo real en proyectos y nodos, 3 especialidades de Maestría a la vez |
 | **El que llega tarde** | Maestría descansada, libros de técnica, aprendices con +25 %, difusión de nodos, patentes viejas que ya son públicas. Además, cuando el Frente está 5 pisos o más por encima de un tramo, subir rango con recetas de ese tramo da +25 % de experiencia: el Viento de Cola de los oficios (ver [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.3) |
 | **Pagar para ganar** | Los PI, la Maestría, los proyectos, el Saber de la ciudad y las patentes no se compran ni se aceleran con dinero real (ver [Monetización](monetizacion.md)) |
 | **Perderlo todo** | Nada de este sistema se pierde para siempre. Un fracaso cuesta materiales y la mitad de los PI; un nodo dormido despierta; la Maestría no se olvida. La única excepción es la de siempre: un personaje de Juramento de Hierro que cae |
@@ -640,7 +640,7 @@ Propuestas para numerar en [Preguntas abiertas](../00-vision/preguntas-abiertas.
 |---|---|
 | ¿Cuánto dura una patente? | 12 semanas, más una renovación de 6 con tasa autodeclarada |
 | ¿El cisma se lleva conocimiento? | Sí: los nodos 1 a 3 se recuerdan; el resto, a mitad de costo |
-| ¿Tope semanal de PI? | 300; por encima, cada fuente da la cuarta parte |
+| ¿Tope semanal de PI? | 300; por encima, cada fuente da la cuarta parte, hasta 400 como máximo absoluto |
 | ¿Cumbres que se excluyen? | Sí, cambiables pagando la otra entera y esperando 4 semanas |
 | ¿Saberes combinados ocultos hasta que alguien los abre? | Sí |
 | ¿Cuántas especialidades de Maestría a la vez? | 3, como los especialistas de FFXIV |
