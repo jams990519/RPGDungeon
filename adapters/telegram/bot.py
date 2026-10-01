@@ -22,7 +22,7 @@ Reglas que nunca se rompen:
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
 Si cambias esto, revisa:
     - Motor: engine/service/game.py (view, text, act, tick)
-    - Despliegue: Procfile / railway.json
+    - Despliegue: railway.json (comando de arranque)
 """
 
 from __future__ import annotations

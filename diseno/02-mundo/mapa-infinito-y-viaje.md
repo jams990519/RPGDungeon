@@ -68,7 +68,9 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 | Zona descubierta | espacio `zone`, clave `x:y` | Nombre del descubridor y la hora |
 | Posición y actividad del héroe | espacio `hero` | `x`, `y` y el viaje o la exploración en curso con su hora de fin |
 
-**El mapa descubierto es del servidor:** lo que descubre uno lo ven todos, con su nombre ("🧭 La descubrió Aria"). Cada héroe lleva la cuenta de cuántas zonas descubrió.
+**El mapa recuerda los lugares (D-61), en dos memorias:**
+- **La del mundo:** quién descubrió cada zona queda guardado para siempre ("🧭 La descubrió Aria").
+- **La de cada héroe:** la lista de zonas que pisó (campo `known` del héroe, empieza con el Claro). Su mapa, sus rutas y su lista de Lugares usan esta memoria: una zona que descubrió otro y tú no pisaste se ve como "▪️ Otro la descubrió, pero tú no la conoces", sin bioma ni nombre.
 
 > **Cuidado:** cambiar los umbrales de la tabla 1.2, el ruido o los IDs de bioma **cambia el mapa de un mundo ya creado**. Ver la nota `[ES]` de [mapgen.py](../../engine/world/mapgen.py).
 
@@ -77,11 +79,11 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 - Desde una zona se viaja **solo a las 4 vecinas** (norte, sur, este, oeste). No hay diagonales ni teletransporte.
 - Los minutos dependen del **bioma de destino**, con dos ajustes:
   - **Senderos del Claro (×0,6):** si el origen y el destino tienen Lejanía ≤ 1 (las 9 zonas alrededor del Claro).
-  - **Zona sin descubrir (×1,25):** nadie en el servidor la pisó todavía.
+  - **Zona que no conoces (×1,25):** tu héroe nunca la pisó (aunque otro sí). Conocer la ruta acelera.
 - Ningún viaje baja de 1 minuto. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
 - La pantalla redondea hacia arriba al minuto.
 
-| Bioma | Peligro al llegar | Base (min) | Cerca del Claro | Sin descubrir | Cerca y sin descubrir |
+| Bioma | Peligro al llegar | Base (min) | Cerca del Claro | Que no conoces | Cerca y que no conoces |
 |---|---|---|---|---|---|
 | 🔥 Claro | 0 % | 10 | 6 | — | — |
 | 🌾 Pradera | 25 % | 15 | 9 | 19 | 12 |
@@ -97,7 +99,8 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 
 - **Temporizadores perezosos:** el viaje guarda solo su hora de fin. Cada orden del jugador primero "cierra las cuentas" del héroe (termina lo que ya venció). No hay un proceso por héroe.
 - **Aviso:** el bot de Telegram revisa cada 15 segundos quién terminó y le manda la pantalla de llegada. El jugador puede cerrar el chat.
-- **Una actividad a la vez:** viajando no se explora ni se cambia de rumbo; en combate no se viaja. Sí se puede mirar el mapa, el héroe y la mochila.
+- **Una actividad a la vez:** viajando no se explora ni se cambia de rumbo; en combate no se viaja. Sí se puede mirar el mapa, los Lugares, el héroe y la mochila.
+- **📒 Lugares:** lista los lugares que tu héroe recuerda, del más cercano al más lejano (se muestran 8), con la distancia en zonas y el tiempo estimado. Al elegir uno, el héroe viaja solo, zona por zona: primero en el eje este-oeste y después en el norte-sur. Cada tramo se encadena desde la hora en que terminó el anterior, aunque nadie mire. Un encuentro al llegar a un tramo corta el viaje ("⛔ Tu viaje se corta en…").
 - **Al llegar:** se publica `TravelArrived`. Si nadie había pisado la zona, queda a nombre del héroe y se publica `ZoneDiscovered`.
 - **Encuentro al llegar:** probabilidad = peligro del bioma × 1,0 (`arrival_encounter_scale`). El enemigo sale de los que viven en ese bioma y encajan con el nivel de la zona; su nivel es el de la zona, +1 con 30 % de probabilidad. El sorteo usa la semilla del mundo, el héroe y la hora de llegada: el resultado no cambia aunque se repita la orden.
 
@@ -117,7 +120,7 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-El botón 🗺️ Mapa dibuja 7 × 7 zonas (3 a cada lado). 🧍 eres tú, el emoji del bioma marca lo descubierto por cualquiera y ▫️ lo que nadie descubrió. El norte está arriba.
+El botón 🗺️ Mapa dibuja 7 × 7 zonas (3 a cada lado). 🧍 eres tú, el emoji del bioma marca lo que **tu héroe recuerda**, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
 
 ### 1.10 Pantalla de ejemplo
 
@@ -140,12 +143,12 @@ Rutas:
 ⬅️ Oeste: 🏚️ Ruinas Cañada Rojo · 30 min
 
 [⬆️ Norte · 19 min] [⬇️ Sur · 19 min] [➡️ Este · 19 min] [⬅️ Oeste · 30 min]
-[🔎 Explorar · 10 min] [🗺️ Mapa] [👤 Héroe] [🎒 Mochila]
+[🔎 Explorar · 10 min] [📒 Lugares] [🗺️ Mapa] [👤 Héroe] [🎒 Mochila]
 ```
 
 ```text
-🗺️ Mapa de los alrededores
-🧍 tú · ▫️ sin descubrir · el norte está arriba
+🗺️ Tu mapa
+🧍 tú · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba
 ▫️▫️▫️▫️▫️▫️▫️
 ▫️▫️▫️▫️▫️▫️▫️
 ▫️▫️▫️▫️▫️▫️▫️
@@ -268,10 +271,7 @@ Qué pasa con cada concepto de [Torre y pisos](torre-y-pisos.md):
 - *Recomiendo A.* D-43 permite aceleradores de experiencia y botín, pero si el viaje se compra, el que paga gana en comercio y en la Frontera, y se rompe la distancia que pide D-58.
 
 **¿El mapa descubierto es de todos o de cada uno?**
-- A. De todos (como en v0.1).
-- B. De cada uno: solo ves lo que pisaste o lo que dice un mapa que compraste.
-- C. Mixto: todos ven que la zona existe y quién la descubrió; los lugares y rutas de adentro los conoce quien fue o compró el mapa.
-- *Recomiendo C,* porque mantiene la gloria del descubridor y le da trabajo al Cartógrafo.
+- ✅ **Decidido por D-61:** mixto. El mundo recuerda quién descubrió cada zona; cada héroe recuerda lo que pisó. Falta decidir si se podrán comprar mapas para aprender zonas sin pisarlas (recomiendo que sí, como oficio del Cartógrafo).
 
 **Si te emboscan mientras viajas desconectado, ¿qué pasa?**
 - A. El combate espera a que vuelvas (como en v0.1).

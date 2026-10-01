@@ -1,6 +1,6 @@
 # Mundo vivo y viaje
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Torre y pisos](torre-y-pisos.md) · **Alimenta a:** [Economía](../07-economia/economia.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md) · **Alimenta a:** [Economía](../07-economia/economia.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta
 
 ---
 
