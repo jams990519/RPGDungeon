@@ -50,7 +50,9 @@ Si cambias esto, revisa:
     - Obra maestra (D-116): balance.yaml masterwork (bono, bono de más por ranura, precio y probabilidad base) y el
       perk {masterwork} de la 🪑 Carpintería en content/professions.yaml; el servicio la sortea en _make
     - Beneficios (perks): una clave nueva va en PERK_KEYS, en el texto prof.perk.<clave> y donde el servicio la use. D-112:
-      "explore" (🧭 Explorador) son puntos de exploración por vuelta (game.py _explore_step usa la parte entera)
+      "explore" (🧭 Explorador) son puntos de exploración por vuelta (game.py _explore_step usa la parte entera). D-172:
+      "stealth" (🥷 Sigilo del 🧭 Explorador) es la probabilidad de evitar una pelea al azar (game.py _stealth_chance, con el
+      tope balance.yaml explorer.stealth_max; solo al explorar con ✋ Manual y en la emboscada del viaje)
     - ✨ Encantamiento (D-115, fase 2): balance.yaml enchanting (esencias por rareza y nivel, costo por nivel de la pieza,
       un encantamiento por ranura con su valor de min a max); los precios de las esencias en items.yaml tienen que dejar
       que desencantar y vender las esencias pague siempre menos que vender la pieza (tests/test_oficios_equipo.py)
@@ -182,6 +184,7 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
 
 PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "masterwork", "explore",
              "disenchant",      # [ES] D-115 (fase 2): ✨ Encantamiento, esencias de más al desencantar
+             "stealth",         # [ES] D-172: 🥷 Sigilo del 🧭 Explorador, probabilidad de evitar una pelea al azar (explorar con ✋ Manual, viajar)
              "fish_food", "cook_food", "stone_cost", "build_cost", "repair_cost")      # D-115 phase 2: the camp perks (last 5)
 # [ES] D-115/D-116: los beneficios de campamento y castillo. No son del héroe: rige el mejor rango entre los miembros del
 # campamento (camp_perks). fish_food y cook_food = raciones de más en la despensa (fracción); stone_cost, build_cost y
@@ -206,8 +209,9 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
     de más), bag (espacio de mochila de más), sell (monedas de más al vender, 💱 Comercio, D-116), masterwork (solo
     informativo: la probabilidad de obra maestra de la 🪑 Carpintería; la que vale para cada receta la da
     masterwork_chance, porque es del oficio que fabrica, D-116), explore (puntos de exploración de más por
-    vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera) y disenchant (fracción de esencias de más al
-    desencantar, ✨ Encantamiento, D-115 fase 2: disenchant_amount). D-115: también las claves de campamento
+    vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera), disenchant (fracción de esencias de más al
+    desencantar, ✨ Encantamiento, D-115 fase 2: disenchant_amount) y stealth (🥷 Sigilo del 🧭 Explorador, D-172:
+    probabilidad de evitar una pelea al azar al explorar o viajar). D-115: también las claves de campamento
     (CAMP_PERK_KEYS) con el rango propio, solo para mostrarlas: las que valen son las del mejor miembro (camp_perks).
     La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).

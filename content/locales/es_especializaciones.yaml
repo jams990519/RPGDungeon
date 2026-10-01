@@ -86,7 +86,7 @@ spec:
     desc: "Sigues el rastro del botín: más monedas cuando cae un campamento enemigo en el que peleaste."
   explorador_infiltrado:
     name: "Infiltrado"
-    desc: "Te mueves como una sombra: cuesta más descubrirte cuando te infiltras."
+    desc: "Te mueves como una sombra: cuesta más descubrirte cuando te infiltras, y evitas más peleas al explorar y al viajar (🥷 Sigilo)."
   # ---- Refinado
   aserradero_nobles:
     name: "Tablones nobles"

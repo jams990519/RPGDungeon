@@ -22,8 +22,9 @@ Documento de diseño: diseno/06-contenido/mazmorras-y-bandas.md §0 (D-164, D-16
 Módulo: M8 Mundo (dónde están las entradas) con datos de M6 (content/dungeons.yaml, content/enemies.yaml) y M3 (botín)
 Depende de: engine.core.rng (hash_unit, Rng), engine/world/mapgen.py (lejania), engine/world/raids.py (power: quién es el
     más fuerte); los números llegan de content/balance.yaml, bloque dungeons; las familias, de content/dungeons.yaml
-Lo usan: engine/service/game.py (sección "solo dungeons": _dng_kind, _dng_today, _dng_go, _dng_fight_done, el mapa),
-    tests/test_mazmorras.py
+Lo usan: engine/service/game.py (sección "solo dungeons": _dng_kind, _dng_today, _dng_go, _dng_fight_done, el mapa; D-172:
+    el 🔭 Reconocer de lejos muestra la familia, el jefe y el cofre de hoy, y el ❓ pasa a 🕳️ / 🌀), tests/test_mazmorras.py,
+    tests/test_reconocimiento.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (el servicio guarda el avance de cada héroe en el espacio "dungeon" del almacén y la lista
