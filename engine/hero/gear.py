@@ -1,8 +1,11 @@
 """Gear: who can wear what, the bonus it gives, loot rolls and equip rules (D-77).
 
 [ES]
-Para qué sirve: el equipo del héroe. Dice si una pieza es "para ti" (tipo de tu clase y nivel),
-suma los bonos de lo que llevas puesto, sortea el botín de equipo al ganar y pone o quita piezas.
+Para qué sirve: el equipo del héroe. Dice si una pieza te sirve (tipo de tu clase) y si ya tienes
+el nivel, suma los bonos de lo que llevas puesto, sortea el botín de equipo al ganar y pone o quita
+piezas. Desde D-83 juegas como quieras: el nivel es lo único que impide ponerse algo; una pieza que no
+es de tu clase se puede llevar, pero rinde la mitad (gear.off_type_factor). La primera pieza de una
+ranura vacía se pone sola.
 Documento de diseño: diseno/03-personaje/equipamiento.md §11 (lo que ya está en el juego)
 Módulo: M2 Héroe (equipo)
 Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear), content/classes.yaml (group)
@@ -12,7 +15,7 @@ Eventos que escucha: ninguno
 Datos de los que es dueño: Hero.gear (ranura -> id de objeto)
 Reglas que nunca se rompen:
     1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde.
-    2. Solo se pone lo que es de tu tipo y de tu nivel o menos.
+    2. Solo el nivel impide ponerse una pieza (D-83). El tipo es una referencia: fuera de tu clase rinde menos.
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat)
     - Números: balance.yaml gear.*, items.yaml stats (mueven el balance de todas las clases)
@@ -39,33 +42,43 @@ def allowed_types(classes: dict[str, Any], balance: dict[str, Any], hero: Hero) 
     return {cfg["armor_by_group"].get(group, ""), *cfg["weapons_by_group"].get(group, []), "joya"}
 
 
+def suits(item: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> bool:
+    """True if the piece is of a type the hero's class uses (full bonus). [ES] Qué hace: dice si la pieza es de tu clase (la referencia "te sirve"). La llaman: el servicio y gear_bonus. Si cambia, afecta: los consejos y cuánto rinde cada pieza."""
+    return item.get("type") in allowed_types(classes, balance, hero)
+
+
 def can_use(item: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> str | None:
-    """None if the hero can wear it now; else "type" (not for your class) or "level" (later).
+    """None if the hero can wear it now; "level" if its level is still too low (the only hard rule, D-83).
 
     [ES]
-    Qué hace: dice si la pieza es para ti ahora, más adelante ("level") o nunca ("type").
-    La llaman: el servicio (vistas y botín) y equip().
+    Qué hace: dice si ya puedes ponerte la pieza. Solo el nivel lo impide; el tipo es un consejo (suits).
+    La llaman: el servicio (vistas y botín), equip() y auto_equip().
     Si cambia, afecta: quién puede ponerse cada pieza.
     """
-    if item.get("type") not in allowed_types(classes, balance, hero):
-        return "type"
     if hero.level < item.get("req_level", 1):
         return "level"
     return None
 
 
-def gear_bonus(items: dict[str, Any], hero: Hero) -> dict[str, float]:
-    """Sum of the stats of everything worn: {"attack": +frac, "hp": +frac, "armor": +flat}.
+def piece_stats(item: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> dict[str, float]:
+    """What a piece really gives this hero: full stats if it suits the class, else × gear.off_type_factor. [ES] Qué hace: los bonos reales de una pieza para ti. La llaman: gear_bonus y las vistas. Si cambia, afecta: cuánto rinde el equipo."""
+    factor = 1.0 if suits(item, hero, classes, balance) else balance["gear"]["off_type_factor"]
+    return {stat: float(value) * factor for stat, value in item.get("stats", {}).items()}
+
+
+def gear_bonus(items: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> dict[str, float]:
+    """Sum of what everything worn gives: {"attack": +frac, "hp": +frac, "armor": +flat}.
 
     [ES]
-    Qué hace: suma los bonos de lo que llevas puesto.
+    Qué hace: suma los bonos de lo que llevas puesto (las piezas que no son de tu clase rinden la mitad).
     La llaman: el servicio al armar el kit; hero_stats los aplica.
     Si cambia, afecta: vida, ataque y defensa en combate.
     """
     total: dict[str, float] = {}
     for item_id in hero.gear.values():
-        for stat, value in items.get(item_id, {}).get("stats", {}).items():
-            total[stat] = total.get(stat, 0.0) + float(value)
+        if item_id in items:
+            for stat, value in piece_stats(items[item_id], hero, classes, balance).items():
+                total[stat] = total.get(stat, 0.0) + value
     return total
 
 
@@ -123,6 +136,14 @@ def equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[str, An
         hero.backpack[old] = hero.backpack.get(old, 0) + 1
     hero.gear[slot] = item_id
     return None
+
+
+def auto_equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any]) -> bool:
+    """Wear a new piece by itself only if its slot is empty and the level allows it (D-83). [ES] Qué hace: si no llevas nada en esa ranura, te pone sola la pieza nueva, aunque no sea la mejor para ti. La llama: el servicio al soltar botín. Si cambia, afecta: qué llevas puesto sin tocar nada."""
+    item = items.get(item_id, {})
+    if item.get("kind") != "gear" or hero.gear.get(item.get("slot", "")):
+        return False
+    return equip(hero, item_id, items, classes, balance) is None
 
 
 def unequip(hero: Hero, slot: str) -> str | None:

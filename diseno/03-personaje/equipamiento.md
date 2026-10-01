@@ -173,20 +173,21 @@ Dos ranuras de utilidad deciden qué llevas encima (D-47). El detalle de capacid
 
 Ver P-14, P-34 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
-## 11. Lo que ya está en el juego (parche 0.6, D-77)
+## 11. Lo que ya está en el juego (parches 0.6 y 0.7.2, D-77 y D-83)
 
 La capa simple (D-44). Todo lo de arriba sigue siendo el plan; esto es lo que hoy funciona en @LostRealmsbot.
 
 | Pieza del sistema | En el juego | Dónde está |
 |---|---|---|
-| **Ranuras** | 3: ⚔️ arma, 🛡️ armadura, 💍 joya | `content/balance.yaml` → `gear.slots` |
+| **Ranuras** | 7: ⚔️ arma, ⛑️ cabeza, 🥋 pecho (`armadura`), 🧤 manos, 👖 piernas, 🥾 pies y 💍 joya (D-83) | `content/balance.yaml` → `gear.slots` |
 | **Tipos** | Armadura de tela, cuero, malla o placas según la clase (tabla del §2). Armas: espada, daga, arco o bastón; cada clase usa una o dos. Las joyas sirven a todos | `gear.armor_by_group`, `gear.weapons_by_group` |
-| **Requisitos** | Nivel mínimo y tipo de tu clase. Sin la libertad con castigo de peso del §2, que llega con la carga | `engine/hero/gear.py` → `can_use` |
-| **Para ti o no** | Cada pieza dice ✅ es para ti, 🔒 es para ti desde el nivel N o ❌ no es para tu clase (se vende en el Claro). Al verla se compara con lo que llevas: ⬆️ mejor o ⬇️ peor | `engine/service/game.py` → `_gear_view`, `_item_view` |
+| **Requisitos** | Solo el **nivel** impide ponerse una pieza (D-83). Juegas como quieras: una pieza que no es de tu clase se puede llevar, pero rinde la mitad (`gear.off_type_factor`). Es la "libertad con costo" del §2, sin el peso todavía | `engine/hero/gear.py` → `can_use`, `suits`, `piece_stats` |
+| **El juego aconseja** | Cada pieza dice ✅ te sirve (es de tu clase), ⚠️ no es de tu clase (rinde la mitad) o 🔒 desde el nivel N. Al verla se compara con lo que llevas (⬆️ mejor, ⬇️ peor) y muestra cuánto te da a ti. Tú decides | `engine/service/game.py` → `_gear_view`, `_item_view` |
 | **Rareza** | 4 escalones, uno por cada nivel de pieza: ⚪ común (nivel 1), 🟢 poco común (3), 🔵 rara (5) y 🟣 épica (8). Sin afijos todavía | `content/items.yaml` |
 | **Bonos** | Arma: +4/8/12/17 % ataque. Armadura: +5/9/14/20 % vida y +1/2/3/4 % defensa. Joya: vida y ataque. La defensa total nunca pasa de 60 % | `items.yaml` → `stats`; `gear.armor_cap` |
-| **Botín** | El 15 % de las victorias suelta una pieza de nivel cercano al del enemigo (de −4 a +1). El 70 % de las piezas es de tu tipo; lo raro sale menos | `gear.drop_chance`, `gear.for_you_chance`, `gear.rarity_weight` |
-| **Equipo inicial** | Arma y armadura básicas de tu clase, ya puestas. Los héroes que existían antes de la 0.6 las recibieron una vez | `starter_gear` |
-| **Dónde se ve** | Línea 🛡️ Equipo en la ficha, /equipo, 🎒 Mochila → 🛡️ Equipo y una línea en /stats | Cliente de Telegram |
+| **Botín** | El 15 % de las victorias suelta una pieza de nivel cercano al del enemigo (de −4 a +1). El 70 % de las piezas es de tu tipo; lo raro sale menos. El aviso del combate solo dice que cayó algo; qué es, se mira en 👤 Héroe → 🛡️ Equipo, marcado con 🆕 (D-83) | `gear.drop_chance`, `gear.for_you_chance`, `gear.rarity_weight` |
+| **Equipo inicial** | Arma y pecho básicos de tu clase, ya puestos. Los héroes que existían antes de la 0.6 los recibieron una vez | `starter_gear` |
+| **Se pone solo** | Solo la primera pieza de una ranura vacía, aunque no sea la mejor para ti (si no tenías botas, te pone las que caen). Si ya llevas algo ahí, la pieza nueva va a la mochila (D-83) | `auto_equip` |
+| **Dónde se ve** | Solo en 👤 Héroe → 🛡️ Equipo (y su atajo /equipo). La ficha lo resume en una línea | Cliente de Telegram |
 
 **Falta, en este orden:** fabricar equipo (herrería y sastrería), más ranuras, durabilidad y reparación, afijos, la carga y el Recuerdo del Guardián cuando llegue el primer jefe de región.

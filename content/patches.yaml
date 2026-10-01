@@ -98,3 +98,12 @@ v0_7_1:
     - "🛡️ En el territorio de un campamento o del Claro no te atacan al llegar."
     - "🧭 El viaje cuenta la distancia desde el borde de tu campamento: mientras más grande, más cerca queda todo."
     - "🔥 El Claro también crece con cada etapa de la obra común."
+
+v0_7_2:
+  version: "0.7.2"
+  title: "🛡️ Lost Realms 0.7.2: equipo libre y recuperación"
+  notes:
+    - "💗 Tu vida vuelve sola con el tiempo, y tu ficha dice cuánto falta. Si caes en combate quedas 🤕 malherido: te recuperas mucho más lento (unas 8 horas), salvo que bebas pociones o duermas en la posada."
+    - "🛡️ El equipo ahora está en 👤 Héroe → 🛡️ Equipo. Ahí ves lo que te cayó (🆕), qué te da y si te sirve. El juego te aconseja, pero tú decides: puedes ponerte cualquier pieza de tu nivel; si no es de tu clase, rinde la mitad."
+    - "🎁 Si cae una pieza y no llevabas nada en ese lugar, te la pones sola (aunque no sea la mejor para ti)."
+    - "⛑️🧤👖🥾 Nuevas ranuras: cabeza, manos, piernas y pies."

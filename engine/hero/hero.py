@@ -36,6 +36,8 @@ class Hero:
         gold: ALL the hero's coins, counted in bronze (D-80: 100 bronze = 1 silver, 100 silver = 1 gold).
         bags: sewn bags (a currency made in the Claro); gems: bought currency (D-43).
         xp_boost_until: end of the gem experience accelerator; banner: unique banner bought with gems.
+        downed: fell in combat; health comes back much slower until full (D-83).
+        gear_new: gear pieces not looked at yet (shown with 🆕 in the equipment screen).
         hp: current health (max is derived).
         x, y: zone coordinates on the infinite map; (0, 0) is the Claro.
         activity: None or {"kind": "travel"|"explore", "until": ts, ...}.
@@ -85,6 +87,8 @@ class Hero:
     energy_version: int = 0
     xp_boost_until: float = 0.0
     banner: str | None = None
+    downed: bool = False
+    gear_new: list[str] = field(default_factory=list)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

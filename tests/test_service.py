@@ -314,3 +314,22 @@ def test_patch_announced_once_and_players_survive_reset(content, clock):
     view = service.pending_announcement()
     assert view is not None and view.body
     assert service.pending_announcement() is None  # only once per version
+
+
+def test_falling_means_a_slow_recovery(service, clock):
+    from engine.hero import hero_stats
+    make_hero(service)
+    hero = service._load("test:1")
+    max_hp = hero_stats(service._kit(hero), hero.level)["max_hp"]
+    hero.hp, hero.downed, hero.last_regen_at = 1, True, clock.now()
+    service._save(hero)
+    for _ in range(10):                                   # acting every minute must not lose the slow regen
+        clock.advance(60)
+        service.act("test:1", "hero")
+    slow = service._load("test:1").hp
+    assert 1 < slow < 1 + max_hp * 0.03
+    assert "Malherido" in "\n".join(service.act("test:1", "hero").body)
+    clock.advance(9 * 3600)
+    service.act("test:1", "hero")
+    hero = service._load("test:1")
+    assert hero.hp == max_hp and not hero.downed
