@@ -278,3 +278,21 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Cruce por vuelta de exploración o recolección | 15 % | Con alguien presente todo el lote, 10 vueltas dan en promedio 1,5 sorteos ganados; como a cada jugador te lo cruzas una sola vez por lote, el resumen suma pocas líneas |
 
 **Lo que queda por mirar:** en la beta, si el Claro se llena (más de 5 presentes seguido) y conviene mostrar primero a los que hacen algo, o subir el tope.
+
+### Octubre de 2026: el gremio del campamento (D-97, provisional)
+
+**Por qué.** El dueño pidió por voz que, desde tu campamento, se pueda crear un gremio que deje entrar a más gente a medida que progresa, con requisitos de exploraciones, combates y misiones, y que sirva para tener un castillo (ver [Gremios y vida social](../08-social/gremios-y-social.md) §0). Son números **nuevos**, no movidos, propuestos por Claude. Todavía no se midieron con jugadores: se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `guild`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Crear el gremio | 50 🥉 | Un sumidero chico: crear el campamento ya costó progreso |
+| Cupo por nivel (1 a 8) | 4 · 6 · 8 · 12 · 16 · 20 · 25 · 30 | Con gremio, reemplaza a la cuenta de antes (2 + 2 por nivel del campamento); nadie sale si baja |
+| Subir del nivel 1 al 2 | 40 exploraciones, 20 peleas ganadas y 100 recursos | Un grupo chico lo logra en uno o dos días: el primer paso se siente rápido |
+| Cada nivel siguiente | ~×1,6 (hasta 670, 335 y 1.680 para el 7 → 8) | Como la obra del Claro: cada etapa pide bastante más |
+| Castillo | Gremio de nivel 5 o más y 10 miembros o más | El castillo es de un grupo, no de una persona sola |
+
+**Cuenta rápida.** Cada exploración y cada recolección gastan 1 de energía (40 por día). Un miembro que reparte su energía entre explorar y recolectar suma por día unas 20 exploraciones, 6 a 8 peleas ganadas y 50 a 60 recursos (con el 50 % extra de su territorio). Llegar al nivel 5 pide en total 370 exploraciones, 182 victorias y 930 recursos: un grupo activo de 4 a 6 miembros lo logra en una semana. Lo que más frena al castillo es juntar 10 miembros, no los contadores, y eso es a propósito.
+
+**Lo que queda por mirar:** si las victorias frenan más que lo demás (en el territorio no hay peleas), si conviene que la comida aportada a la despensa cuente, y qué pedirán las misiones cuando existan. Medir en la beta cuántos días tarda un gremio real en cada nivel.
