@@ -54,7 +54,7 @@
 
 | Oficio | Fabrica | Para quién | Necesita de | Especializaciones |
 |---|---|---|---|---|
-| 🪵 **Carpintería** | Arcos, bastones, escudos, cañas, mangos de herramienta, muebles, carros | Los que pelean, Pescador, Construcción | Aserradero, Curtiduría o Tejeduría, Herrería (clavos) | Arquería · Escudos · Mobiliario y carros |
+| 🪵 **Carpintería** | Arcos, bastones, escudos, cañas, mangos de herramienta, muebles, carros (en el juego: arcos, bastones, ✒️ obras maestras y 🪑 muebles del campamento, D-116) | Los que pelean, los campamentos, Pescador, Construcción | Aserradero, Curtiduría o Tejeduría, Herrería (clavos) | Arquería · Escudos · Mobiliario y carros |
 | 🔨 **Herrería** | Armas de metal, placas, herramientas de todos los oficios, clavos y bisagras, agujas; repara | Los que pelean, todos los recolectores, Construcción, Medicina | Fundición, Curtiduría, Leñador (carbón) | Forjador de armas · Armero · Herramientas |
 | 🧶 **Peletería** | Armaduras de cuero y malla, mochilas (más espacio), sillas de montar | Los que pelean, todos (mochilas), Ganadero | Curtiduría, Tejeduría, Fundición | Cuero ligero · Malla · Talabartería |
 | 🧵 **Sastrería** | Túnicas, capas, ropa de clima, vendas limpias, toldos, 💰 bolsas | Los que pelean, Medicina, Construcción, todos (bolsas) | Tejeduría, Destilación (tintes) | Túnicas mágicas · Ropa de clima · Textil médico |
