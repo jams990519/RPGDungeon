@@ -12,6 +12,6 @@ Qué es el juego, qué está decidido, qué falta decidir, cómo se conecta todo
 | [preguntas-abiertas.md](preguntas-abiertas.md) | Las preguntas abiertas (P-xx), cada una con recomendación |
 | [sistema-de-preguntas.md](sistema-de-preguntas.md) | **Todas las preguntas que el dueño tiene que responder**, en tandas por prioridad y en un solo texto para pegar en un chat de voz: entrevista (E-xx), preguntas abiertas (P-xx) y antes de la beta (C-xxx). Toda duda nueva entra aquí |
 | [entrevista-de-voz.md](entrevista-de-voz.md) | 54 preguntas listas para pegar en un chat de voz: el dueño responde hablando y trae el resumen (decisiones que frenan el trabajo, historia y rol, oficios y economía, combate, castillos, comunidad y prioridades) |
-| [cuestionario-beta.md](cuestionario-beta.md) | 160 preguntas antes de abrir la beta a 500+ jugadores, con la primera tanda de 14 arriba (D-39) |
+| [cuestionario-beta.md](cuestionario-beta.md) | 160 preguntas antes de abrir la beta a 500+ jugadores, con la primera tanda de 14 arriba (D-39). Cada una marcada como respondida, sin efecto, repetida o abierta; las abiertas se preguntan desde el sistema de preguntas (tandas 4 a 6) |
 | [hoja-de-ruta.md](hoja-de-ruta.md) | Lo que ya está en el juego (0.9.2) y los parches 0.4 a 0.9.2; próximas fases en orden de prioridad (propuesta), expansiones por anillos, riesgos y reglas de trabajo |
 | [glosario.md](glosario.md) | Los términos propios del diseño |
