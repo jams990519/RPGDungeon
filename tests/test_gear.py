@@ -23,7 +23,7 @@ def test_every_class_has_gear(content):
         wanted += [(w, "arma") for w in weapons] + [("joya", "joya")]
         for typ, slot in wanted:
             tiers = sorted(it["tier"] for it in gear if it["type"] == typ and it["slot"] == slot)
-            assert tiers == [1, 2, 3, 4], (group, typ, slot)
+            assert tiers == list(range(1, 15)), (group, typ, slot)     # 1-4 up to level 8, then every 10 levels to 100 (D-110)
     for it in gear:
         assert it["slot"] in cfg["slots"] and it["rarity"] in cfg["rarity_icon"]
 

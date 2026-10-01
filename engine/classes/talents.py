@@ -18,7 +18,9 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Combate: engine/combat/engine.py recibe el kit como class_def (el orden de la barra es el de los botones)
     - Servicio: engine/service/game.py (pantallas 🌟 Talentos y 🎛️ Barra de combate)
-    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py
+    - D-110: la barra automática de Defensa guarda su curación más nueva en la casilla 3 (HEAL_FIRST_ROLES); la mejora
+      pasiva puede traer armor (talents.passive.defensa), que hero_stats suma a la armadura (tools/balance_report.py)
+    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py, tests/test_balance_d110.py
 """
 
 from __future__ import annotations
@@ -137,8 +139,15 @@ def _known_unlocked(classes: dict[str, Any], hero: Hero) -> tuple[dict[str, tupl
 DAMAGE_KINDS = ("strike", "finisher", "dot")
 
 
-def _auto_slots(known: dict[str, Any], unlocked: list[str]) -> list[str]:
-    """Automatic bar: newest response, newest damage ability (strike, finisher or dot), newest other one."""
+HEAL_FIRST_ROLES = ("defensa",)    # D-110: a tank's automatic bar keeps a heal in slot 3
+
+
+def _auto_slots(known: dict[str, Any], unlocked: list[str], role: str | None = None) -> list[str]:
+    """Automatic bar: newest response, newest damage ability (strike, finisher or dot), newest other one.
+
+    D-110: for Defensa the third slot is the newest heal when one is unlocked (a tank whose
+    automatic bar dropped its heal for a newer utility could not hold out, which is its role).
+    """
     responses = [a for a in unlocked if _is_response(known[a][2])]
     if not responses:
         return unlocked[-3:]
@@ -146,6 +155,9 @@ def _auto_slots(known: dict[str, Any], unlocked: list[str]) -> list[str]:
     damage = [a for a in unlocked if known[a][2]["kind"] in DAMAGE_KINDS]
     if damage:
         chosen.append(damage[-1])
+    heals = [a for a in unlocked if known[a][2]["kind"] == "heal" and a not in chosen]
+    if role in HEAL_FIRST_ROLES and heals:
+        chosen.append(heals[-1])
     for pool in ([a for a in unlocked if not _is_response(known[a][2])], unlocked):
         for ability_id in reversed(pool):
             if len(chosen) < 3 and ability_id not in chosen:
@@ -159,13 +171,13 @@ def bar_slots(classes: dict[str, Any], hero: Hero) -> list[str]:
     [ES]
     Qué hace: devuelve la barra en uso: la que eligió el jugador (hero.bar) si sigue valiendo; si no,
     la automática (casilla 1 = la respuesta más nueva, casilla 2 = el golpe más nuevo, casilla 3 = la otra
-    habilidad más nueva).
+    habilidad más nueva; D-110: en Defensa, la curación más nueva, si ya abrió alguna).
     Si la barra elegida tiene casillas vacías y hay habilidades libres, las llena con las últimas.
     La llaman: bar(), el servicio (pantalla 🎛️ Barra de combate) y set_bar_slot().
     Si cambia, afecta: qué botones salen en combate y en qué orden.
     """
     known, unlocked = _known_unlocked(classes, hero)
-    auto = _auto_slots(known, unlocked)
+    auto = _auto_slots(known, unlocked, classes.get(hero.class_id, {}).get("role"))
     saved = list(hero.bar or [])
     has_response = any(_is_response(known[a][2]) for a in unlocked)
     valid = (

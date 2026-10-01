@@ -47,6 +47,8 @@ Cada clase mantiene su recurso de WoW, adaptado a rondas. Además, **todas** com
 | ✚ **Curación** | Cura, quita estados y levanta a los derribados | Druida Restauración |
 | ✦ **Soporte** | Potencia a los aliados o debilita y controla a los enemigos, y además pega | Bardo Estratega |
 
+**Cómo se nota el rol en una pelea sola (D-110, en el juego desde la pasada de balance de clases y roles):** el ⚔ Ataque mata en menos rondas y termina con menos vida; el ✦ Soporte queda en medio; la 🛡 Defensa tarda ~1,5 veces más pero termina con más vida que el Ataque de su clase (desde el nivel 25: tiene más armadura base que su hermano de Ataque, sus puntos le suman armadura y su barra automática guarda una curación); la ✚ Curación es la que más tarda (~2 veces) y la que más vida deja. Las cifras y cómo se miden están en [Balance](balance.md) §7.
+
 Cómo leer cada clase:
 - **Fila** es donde suele pelear la spec (ver las filas en [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 - **Firma en turnos** es la mecánica que hace que esa spec **se juegue distinto en turnos**, no solo que tenga otros números.

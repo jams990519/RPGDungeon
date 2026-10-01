@@ -49,11 +49,11 @@ Lo de arriba es el diseño completo, para más adelante. La versión jugable usa
 | Nivel, con todo en una sola | 2 | 4 | 7 | 11 | 17 | 25 | 35 | 47 |
 
   Con los 99 puntos del nivel 100 se pueden abrir dos especializaciones completas, o una completa y repartir el resto.
-- **Mejora pasiva pequeña:** cada punto suma alrededor de un 1 % según el rol de la especialización (Ataque: +1 % de ataque; Defensa: +1 % de vida; Curación: +0,6 % de vida y +0,4 % de ataque; Soporte: +0,6 % de ataque y +0,4 % de vida). Cuentan hasta 50 puntos por especialización. Al nivel 5 es un +4 %.
+- **Mejora pasiva pequeña:** cada punto suma alrededor de un 1 % según el rol de la especialización (Ataque: +1 % de ataque; Defensa: +1,25 % de vida y +0,2 de armadura; Curación: +0,85 % de vida y +0,4 % de ataque; Soporte: +0,5 % de ataque y +0,6 % de vida; desde la pasada de D-110, ver [Balance](balance.md) §7). Cuentan hasta 50 puntos por especialización. Al nivel 5 es un +4 o +5 %.
 - **Barra de combate de 3 (D-46), elegible:** en 🌟 Talentos → 🎛️ Barra de combate.
   - Casilla 1: una **respuesta** al aviso (🛡 bloquear, 💨 esquivar o 🫧 escudo). Nunca queda sin respuesta.
   - Casillas 2 y 3: cualquier otra habilidad que ya abriste, también de otra especialización de tu clase.
-  - Si no eliges, la barra **se arma sola**: tu respuesta más nueva, tu golpe más nuevo (golpe, remate o daño en el tiempo) y tu otra habilidad más nueva.
+  - Si no eliges, la barra **se arma sola**: tu respuesta más nueva, tu golpe más nuevo (golpe, remate o daño en el tiempo) y tu otra habilidad más nueva; en las de 🛡 Defensa, la casilla 3 es su curación más nueva, si ya abrió alguna (D-110).
   - Cada habilidad muestra una línea corta de qué hace, sacada de sus números (por ejemplo, "golpe ×1,3 · te cura 15 % del daño · +15 de Ira").
 - **Reiniciar la especialización** cuesta 10 💰 por nivel (D-74): devuelve los puntos y vacía la barra elegida.
 - **Los héroes guardados no pierden nada:** conservan sus habilidades, y al entrar ganan las que sus puntos ya pagan con la tabla nueva.

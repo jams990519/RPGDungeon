@@ -1,7 +1,7 @@
 """Chained professions, phase 1 (D-109): gather -> refine -> craft.
 
 [ES] Pruebas de los ⚒️ Oficios: el catálogo (15 oficios, recetas que piden materiales de 2 oficios o más, equipo de
-artesano que vale como el botín de su nivel y nunca sale al azar), el rango que sale de la experiencia de oficio, la
+artesano que vale algo más que el botín de su nivel, D-113, y nunca sale al azar), el rango que sale de la experiencia de oficio, la
 experiencia de oficio al recolectar y al vencer bestias (carne y piel, solo de bestias), el material raro solo desde su
 rango, refinar y fabricar en una estación (gasta materiales y energía, da experiencia de héroe y de oficio, todo o
 nada), el equipo y la poción fabricados que se usan, las estaciones del Claro y del campamento (🧵 Taller, 🔨 Herrería),
@@ -60,10 +60,13 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
         assert rdef["profession"] in profs and profs[rdef["profession"]]["branch"] in ("refine", "craft"), rid
         assert all(item in content.items for item in list(rdef["inputs"]) + list(rdef["output"])), rid
         assert rdef["energy"] >= 1 and rdef["xp"] >= 1 and 1 <= rdef["min_rank"] <= 100, rid
+    gear_crafts = {"carpinteria", "herreria", "sastreria", "peleteria", "joyeria"}
     for pid in by_branch["refine"] + by_branch["craft"]:
         ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid})
         assert ranks[0] == 1, pid                                       # everyone can start every profession
-        if pid in by_branch["craft"]:
+        if pid in gear_crafts:                                          # D-110/D-113: a gear tier every 5 ranks from 55 to 100
+            assert ranks == [1, 25, 50] + list(range(55, 101, 5)), pid
+        elif pid in by_branch["craft"]:
             assert ranks == [1, 25, 50], pid                            # recipes at increasing ranks
     stations = data["stations"]
     assert set(stations["claro"]) == set(by_branch["refine"] + by_branch["craft"])
@@ -91,7 +94,9 @@ def test_crafted_gear_is_like_loot_of_its_level_and_better_at_high_ranks(content
     for typ in ("espada", "daga", "arco", "baston", "tela", "cuero", "malla", "placas", "joya"):
         loot2, loot4 = items[f"{typ}_2"], items[f"{typ}_4"]
         first, best = items[f"artesano_{typ}_1"], items[f"artesano_{typ}_3"]
-        assert first["stats"] == loot2["stats"] and first["req_level"] == loot2["req_level"], typ      # rank 1: like loot
+        assert all(first["stats"].get(k, 0) >= v for k, v in loot2["stats"].items()), typ          # rank 1: like loot...
+        assert sum(first["stats"].values()) > sum(loot2["stats"].values()), typ                      # ...and a bit more (D-113)
+        assert first["req_level"] == loot2["req_level"], typ
         assert all(best["stats"].get(k, 0) >= v for k, v in loot4["stats"].items()), typ
         assert sum(best["stats"].values()) > sum(loot4["stats"].values()), typ                       # rank 50: a bit more
         assert best["req_level"] == loot4["req_level"], typ
