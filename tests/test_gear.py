@@ -96,6 +96,8 @@ def test_gear_screens_keep_four_buttons_and_sell_in_claro(service):
         hero.backpack[item_id] = 1
     service._save(hero)
     view = service.act("test:1", "gear")
+    assert view.kind == "gear_worn" and [a.id for a in view.actions] == ["gear:0", "bag"]
+    view = service.act("test:1", "gear:0")
     assert view.kind == "gear" and len(view.actions) <= 4
     assert any(a.id.startswith("gear:") for a in view.actions)
     seen = set()
@@ -130,13 +132,18 @@ def test_first_piece_of_an_empty_slot_is_worn_by_itself(content):
     assert hero.backpack == {"pies_tela_1": 1, "tela_2": 1}
 
 
-def test_equipment_lives_in_the_hero_screen(service):
+def test_equipment_lives_in_hero_then_bag(service):
     make_hero(service, class_id="guerrero")
     hero_view = service.act("test:1", "hero")
-    assert any(a.id == "gear" for a in hero_view.actions)
+    assert [a.id for a in hero_view.actions] == ["bag", "talents", "stats", "home"]
+    body = "\n".join(hero_view.body)
+    assert "Espada" not in body and "al empezar cada combate" not in body       # short card (D-86)
     bag = service.act("test:1", "bag")
-    assert not any(a.id == "gear" for a in bag.actions)
-    assert any(a.id == "hero" for a in service.act("test:1", "gear").actions)
+    assert [a.id for a in bag.actions] == ["gear", "potions", "wallet", "hero"]
+    worn = service.act("test:1", "gear")
+    assert any("Espada oxidada" in line and "+4% ataque" in line for line in worn.body)
+    potions = service.act("test:1", "potions")
+    assert any("cura 35%" in line for line in potions.body) and potions.actions[-1].id == "bag"
 
 
 def test_loot_marks_new_pieces_until_seen(service):

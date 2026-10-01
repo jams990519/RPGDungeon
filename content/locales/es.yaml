@@ -370,11 +370,12 @@ hero:
   stats_link: "📊 Estadísticas: /stats"
   atk_def: "⚔️ Atk: {attack}  🛡 Def: {armor}%"
   energy_line: "⚡ Energía: {energy}/{max_energy}"
-  resource_line: "🔷 {resource}: {value}/{max} (al empezar cada combate)"
-  coins_line: "Monedas: {gold}   💰 Bolsas: {bags}   💎 Diamantes: {gems}   🪪 {cards} — /monedas"
+  resource_line: "🔷 {resource}: {max}/{max}"
+  class_short: "{cls}"
+  coins_line: "{coins}"
   inv_link: "🎒 Mochila: {n} — /inv"
-  skills_link: "🌟 Habilidades: /habilidades ({n} puntos sin usar) · En uso: {bar}"
-  status_title: "Estado:"
+  skills_link: "🌟 Habilidades: /habilidades"
+  status_title: "Estado: {status}"
   stats_button: "📊 Estadísticas"
   status:
     idle: "🧍 Libre"
@@ -399,6 +400,7 @@ bag:
   backpack: "Mochila: {items}"
   empty: "vacío"
   use_button: "{emoji} Usar {item} (×{n})"
+  button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
 
 combat:
@@ -569,6 +571,7 @@ talents:
   respec_button: "🔄 Reiniciar especialización · {cost}"
   no_spec: "sin especialización todavía"
   no_role: "ganas tu primer punto de talento al subir de nivel"
+  choose_first: "👉 Primero escoge tu especialización: toca una de abajo y ponle tu punto. Ganas tu primer punto de talento al subir al nivel 2."
   respec_done: "🔄 Pagaste {cost}: tus puntos volvieron. Tienes {n} para repartir."
 
 camps:
@@ -649,6 +652,12 @@ gear:
   title: "🛡️ Equipo"
   button: "🛡️ Equipo"
   button_new: "🛡️ Equipo 🆕"
+  simple_line: "{emoji} {item}   {stats}"
+  nothing_worn: "No llevas nada puesto."
+  in_bag: "🎒 Piezas en la mochila: {n}"
+  equip_menu: "🔁 Equipar"
+  equip_menu_new: "🔁 Equipar 🆕"
+  equip_title: "🔁 Equipar o quitar"
   item_title: "🔎 Pieza de equipo"
   hero_line: "🛡️ Equipo: {items} — /equipo"
   slot:
@@ -684,7 +693,8 @@ gear:
   total: "Total del equipo: {stats}"
   backpack_title: "En la mochila ({n}):"
   backpack_line: "• {item}{n} — {status}"
-  backpack_empty: "No tienes más piezas. Los enemigos a veces sueltan equipo al ganar."
+  backpack_empty: "No tienes piezas en la mochila. Los enemigos a veces sueltan equipo al ganar."
+  worn_title: "Puestas (tócalas para quitarlas):"
   hint: "Toca una pieza para ver qué te da, ponértela o venderla en el Claro. Tú decides: el juego solo te aconseja."
   piece_button: "{item}"
   piece_worn: "✔️ {item}"
@@ -745,4 +755,11 @@ wallet:
   no_gems: "No tienes diamantes suficientes."
   boost_bought: "⭐ ¡Listo! Ganas +50 % de experiencia durante 7 días."
   banner_bought: "🚩 ¡Listo! Tu estandarte {tag} ya va al lado de tu nombre."
+
+potions:
+  button: "🧪 Pociones"
+  title: "🧪 Pociones"
+  intro: "Lo que llevas para curarte y para qué sirve:"
+  line: "{emoji} {item} ×{n} — cura {heal}% de tu vida · toxicidad {tox}"
+  none: "No llevas pociones. El mercader del Claro las vende."
 
