@@ -103,7 +103,7 @@ Quien quiera dedicarse solo al azar tiene un camino propio, con progreso, reputa
 
 ## 4. Límites y protección
 
-1. **Nunca con dinero real.** Ni Stars ni Gemas se apuestan, y lo que se gana no se convierte en dinero real (ver [Monetización](../07-economia/monetizacion.md)).
+1. **Nunca con dinero real (regla del dueño, D-43).** Solo se apuesta oro del juego, que no se vende por dinero. Ni Stars ni Gemas se apuestan, y lo que se gana no se convierte en dinero real (ver [Monetización](../07-economia/monetizacion.md)).
 2. **Si existe la ficha** (oro comprable con dinero), los juegos contra la casa pasan a usar **fichas de la Fortuna**, que no se compran ni se cambian por oro.
 3. **Tope diario de pérdidas** en lo legal, según el nivel. En lo ilegal no hay tope, pero sí riesgo de redada.
 4. **Voto de Templanza:** cualquier jugador puede cerrarse el acceso al azar durante un tiempo. Es voluntario y no tiene marcha atrás hasta que vence.

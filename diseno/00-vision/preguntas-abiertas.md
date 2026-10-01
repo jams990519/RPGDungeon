@@ -77,8 +77,8 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-32 | ¿Mercados locales o una subasta global? | Locales por ciudad, con correo entre ciudades |
 | P-33 | ¿Mercado Negro que alimenta el botín? | Sí |
 | P-34 | ¿El equipo se gasta hasta romperse? | Sí |
-| P-35 | ¿Monetización: cosméticos y Premium de comodidad con Stars? ¿Ficha de oro? | Cosméticos y comodidad; ficha, no al principio |
-| P-36 | ¿Apuestas con oro en lugares legales? | Sí, con tope y comisión; nunca con Stars |
+| P-35 | ¿Monetización: cosméticos y Premium de comodidad con Stars? ¿Ficha de oro? | ✅ **Decidido (D-43):** cosméticos y aceleradores (experiencia, recursos); todo lo demás con moneda del juego; sin ficha de oro |
+| P-36 | ¿Apuestas con oro en lugares legales? | ✅ **Decidido (D-43):** solo con oro del juego, nunca con dinero real |
 | P-37 | ¿Máximo de 2 oficios mayores por personaje? | Sí, y los menores sin límite |
 | P-38 | ¿Minijuego de fabricación más fabricación rápida? | Sí |
 | P-39 | ¿Calidad de recursos por veta? | Sí, desde la beta |
@@ -112,4 +112,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-60 | ¿Dominio y alojamiento del sitio web? | Decidirlo antes de construir el cliente web |
 | P-61 | ¿La app móvil es nativa o empieza como la web instalable en el teléfono? | Empezar con la web instalable (PWA) y hacer app de tiendas cuando el juego esté estable |
 | P-62 | ¿La app va a las tiendas de Apple y Google? | Sí, más adelante. Allí los pagos pasan por el sistema de cada tienda y las apuestas simuladas suben la edad mínima: revisar antes |
+| P-64 | ¿Se cobra algo durante la beta? | No: solo recompensas de fundador gratis para quienes prueban |
+| P-65 | ¿Los aceleradores también suben el botín de equipo, o solo recursos y experiencia? | Solo recursos y experiencia; el equipo se gana o se fabrica |
+| P-66 | ¿De cuánto son los aceleradores (por ejemplo +25 % o +50 %) y cuánto duran? | +50 % durante 7 días, uno por tipo, sin efecto en lo competitivo |
 | P-63 | ¿Qué edad mínima tendrá el juego en las tiendas? | 17+/18+ si se mantienen las apuestas con moneda del juego; si no, más bajo |

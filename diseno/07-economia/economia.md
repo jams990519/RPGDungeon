@@ -19,7 +19,7 @@
 3. **Los mercados son locales.** El precio del hierro en el piso 12 no es el del piso 30. Mover mercancía es un oficio.
 4. **El oro que entra tiene que salir.** Cada fuente de oro tiene un sumidero equivalente, y se mide todos los meses.
 5. **Riesgo = recompensa.** Los mejores materiales están en las zonas peligrosas (ver [PvP](../06-contenido/pvp.md)).
-6. **Nada se compra con dinero real que dé poder** (ver [Monetización](monetizacion.md)).
+6. **Todo se hace con la moneda del juego.** Con dinero real solo se compran cosméticos y aceleradores (experiencia, recursos); nunca oro, equipo, Esencia ni nada que se pueda apostar (ver [Monetización](monetizacion.md)).
 7. **Los sumideros son porcentajes, nunca montos fijos.** Una tasa de 100 de oro no significa nada para quien tiene millones; un impuesto del 5 % funciona igual toda la vida del juego. Impuestos, comisiones, reparaciones, tasas de parcelas y de viaje se calculan siempre como porcentaje del valor.
 8. **Cada piso produce cosas distintas.** Si cada zona tiene recursos propios, el comercio nace solo (§3.1).
 
@@ -133,7 +133,7 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 | Seguros de equipo | EVE Online | §7 |
 | Informe económico mensual y un economista | EVE Online | §9 |
 | Pedidos de fabricación | WoW | §7 |
-| Ficha de oro por dinero real | WoW, Albion, EVE (PLEX) | Solo más adelante (ver [Monetización](monetizacion.md)) |
+| Ficha de oro por dinero real | WoW, Albion, EVE (PLEX) | **Descartada:** el oro nunca se vende por dinero real (ver [Monetización](monetizacion.md)) |
 | **Límite de compra por horas** en el mercado (no comprar más de N unidades cada 4 horas) | RuneScape (Grand Exchange) | Contra la manipulación y el acaparamiento de materiales clave |
 | **Bandas de precio** (precio mínimo y máximo por objeto, según su historial) | Black Desert | Contra el comercio con dinero real (nadie vende una espada épica a 1 de oro) |
 | **Cargamentos de comercio cuyo valor depende de la distancia y cae si se entregan muchos** | ArcheAge | Los pedidos de las ciudades pagan más por traer mercancía de lejos, y pagan menos a medida que se cubren |
@@ -145,7 +145,7 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 | **Especulación con bienes perecederos** | Animal Crossing (el mercado de nabos) | Mercancía de temporada cuyo precio cambia dos veces al día en cada ciudad y que se pudre si la guardas mucho |
 | Cadenas de producción según las necesidades de la población | Anno, Victoria 3 | Las necesidades de la ciudad (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md)) |
 | Rutas de comercio con oferta y demanda | Elite Dangerous | Recursos regionales (§3.1) y caravanas (§4) |
-| **Lección:** la subasta con dinero real se cerró en 2014 | Diablo III | Nunca se vende ni se compra poder con dinero real |
+| **Lección:** la subasta con dinero real se cerró en 2014 | Diablo III | Nunca se vende oro, equipo ni materiales con dinero real |
 
 ## 11. Roles económicos que deben existir solos
 

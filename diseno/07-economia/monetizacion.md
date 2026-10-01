@@ -1,60 +1,81 @@
 # Monetización
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Economía](economia.md), [Telegram](../01-plataforma/telegram.md) · **Estado:** propuesta. **Nada de esto se activa sin decisión del dueño** (P-35)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Economía](economia.md), [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) · **Se conecta con:** [Apuestas](../08-social/apuestas.md), [Progresión](../03-personaje/progresion.md), [Balance](../03-personaje/balance.md) · **Estado:** **regla decidida por el dueño (D-43)**; los detalles son propuesta
+
+**La regla del dueño (1 de octubre de 2026):**
+- **Todo dentro del juego se hace con la moneda del juego.**
+- La **moneda externa** (dinero real) sirve solo para comprar **cosméticos** y **beneficios** como más experiencia, más botín de recursos y cosas por el estilo.
+- **Nadie paga para apostar.** Las apuestas son solo con oro del juego, para que nadie pierda dinero real ni culpe al juego por ello.
 
 **De dónde sale.**
-- *Albion Online*: Premium (más Enfoque, menos impuestos) y oro comprable que se cambia por plata en un mercado entre jugadores.
-- *World of Warcraft*: la ficha (WoW Token), que se compra con dinero real y se vende por oro en la subasta.
-- *Catizen* (Telegram): 34 millones de usuarios y unos 800.000 pagadores, con una facturación de alrededor de 10 millones de dólares a mediados de 2024, sin depender de un token.
-- **La lección de los juegos de "tocar para ganar":** Hamster Kombat pasó de unos 300 a unos 41 millones de jugadores mensuales (−86 %) después de repartir su token en 2024, y un cofundador de Notcoin dijo que el modelo "probablemente está muerto porque no es sostenible" (ver [Investigación de Telegram](../99-referencias/investigacion-juegos-telegram.md)).
+- *Albion Online*: el Premium acelera el progreso (más Enfoque, más fama) sin vender equipo.
+- *Path of Exile* y *Warframe*: la mayor parte de lo que se vende son cosméticos y comodidades.
+- *RuneScape*: potenciadores de experiencia y la polémica que generaron cuando se pasaron de la raya.
+- *Catizen* (Telegram): 34 millones de usuarios y unos 800.000 pagadores, sin depender de un token.
+- La lección de los juegos de "tocar para ganar" de Telegram, que se desplomaron al repartir su token (ver [Investigación de Telegram](../99-referencias/investigacion-juegos-telegram.md)).
 
 ---
 
 ## 1. Principios
 
-1. **Nunca se vende poder.** Ni equipo, ni Esencia, ni experiencia, ni Sellos, ni prioridad en el Frente.
-2. **Nada de criptomonedas, tokens ni promesas de "ganar dinero".** Es lo que mató a los juegos de tocar para ganar el día del reparto.
-3. **Pagar tiene que sentirse como apoyar el juego** y recibir algo lindo o cómodo a cambio.
-4. **Todo se paga con Telegram Stars**, que cumple las reglas de Apple y Google para bienes digitales.
+1. **Dentro del juego, solo moneda del juego.** Oro, Esencia, Honor, reputación y moneda de temporada (ver [Economía](economia.md)).
+2. **El dinero real compra Gemas** (la moneda premium), y las Gemas compran **solo cosméticos y aceleradores** (§2).
+3. **Nunca se vende:** oro, equipo, materiales directos, Esencia, Sellos, saltarse pisos o bloqueos, ventajas en PvP clasificado, revivir en el Juramento de Hierro, ni nada que se pueda apostar.
+4. **Las Gemas jamás se apuestan**, y lo que se gana apostando nunca se convierte en dinero real (ver [Apuestas](../08-social/apuestas.md)).
+5. **Nada de criptomonedas, tokens ni promesas de "ganar dinero".**
 
-## 2. Qué se puede vender
+## 2. Qué se puede comprar con Gemas
 
-| Producto | Qué es | Riesgo para el balance |
+| Producto | Qué es | Límites |
 |---|---|---|
-| **Cosméticos** | Apariencias de equipo, monturas de estética, marcos de perfil, emojis de personaje, fondos de tarjeta | Ninguno |
-| **Pase de temporada cosmético** | Recompensas estéticas por jugar la temporada; la versión gratis también da cosas | Ninguno |
-| **Premium de comodidad** | Más espacio en el banco, más casillas en la cola de encargos, más configuraciones de talentos, 1 casilla más de venta en el mercado | Bajo |
-| **Servicios** | Cambio de nombre, de apariencia, de linaje | Ninguno |
-| **Apoyo al servidor** | Contribución voluntaria con un título de mecenas | Ninguno |
+| **Cosméticos** | Apariencias de equipo, monturas de estética, marcos de perfil, emblemas, tintes exclusivos, decoración de casa, emojis de personaje | Ninguno: no dan ventaja |
+| **Acelerador de experiencia** | +X % de experiencia de personaje durante un tiempo | Ver §3 |
+| **Acelerador de oficio** | +X % de experiencia de oficios durante un tiempo | Ver §3 |
+| **Acelerador de recursos** | +X % de **recursos** obtenidos: recolección, caza, partes de monstruo, cosechas | Solo materiales. No toca equipo, artefactos, Recuerdos ni cofres de jefe |
+| **Comodidad** | Más espacio de banco, más casillas en la cola de encargos, más configuraciones de talentos, una segunda casa | No dan poder |
+| **Servicios** | Cambio de nombre, apariencia o linaje | — |
+| **Pase de temporada** | Recompensas cosméticas y algunos aceleradores por jugar la temporada; la versión gratis también da cosas | — |
+| **Apoyo al servidor** | Contribución voluntaria con título de mecenas | — |
 
-## 3. Qué no se vende nunca
+## 3. Reglas de los aceleradores
 
-- Potenciadores de experiencia o de botín.
-- Equipo, materiales o Esencia.
-- Saltarse Sellos, pisos o bloqueos.
-- Revivir en el Juramento de Hierro.
-- Ventajas en PvP.
+Los aceleradores son la parte delicada: aceleran el progreso, y si se descontrolan se vuelven "pagar para ganar".
 
-## 4. La ficha (oro por Gemas): con cuidado y más adelante
+1. **Aceleran, no saltan.** El Techo del Piso sigue mandando: nadie pasa de nivel Frente + 5 por mucho acelerador que tenga (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)).
+2. **Uno por tipo.** No se suman dos aceleradores de experiencia.
+3. **Porcentajes moderados**, por ejemplo +25 % a +50 %, nunca el doble o el triple.
+4. **No funcionan en lo competitivo:** arena clasificada, guerra de castillos, rankings de temporada ni carreras de Pioneros.
+5. **También se ganan jugando:** eventos, logros y el Tesoro Semanal dan aceleradores, así quien no paga también los usa de vez en cuando.
+6. **La economía se ajusta:** el acelerador de recursos mete más materiales al mundo, y los sumideros en porcentaje (ver [Economía](economia.md)) y el informe mensual lo compensan.
+7. **Recompensas en su lugar:** los aceleradores no tocan el botín de equipo, los artefactos ni los Recuerdos. Los mejores objetos se siguen ganando o fabricando.
 
-**Qué es.** Un jugador compra Gemas con Stars y las vende a otro jugador por oro en el mercado, como la ficha de WoW o el oro de Albion.
-- **A favor:** el oro tiene un canal legal y baja el comercio con dinero real (ver [Seguridad](../01-plataforma/seguridad-y-anti-trampas.md)). Quien tiene poco tiempo compra con dinero; quien tiene tiempo consigue cosméticos jugando.
-- **En contra:** el oro pasa a tener precio en dinero real, y eso toca los juegos de azar (§5).
-- **Recomendación:** **no** en el lanzamiento. Revisarlo cuando la economía esté estable y haya datos.
+## 4. Cómo se paga en cada plataforma
 
-## 5. Juegos de azar y ley
+El catálogo es el mismo en todos los clientes (ver [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md)):
 
-La taberna tiene juegos con oro (dados, cartas; ver [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md)).
-- Si el oro **no** se puede comprar con dinero real, es un juego de azar sin valor real, con menos riesgo legal.
-- Si el oro **sí** se puede comprar (con la ficha), apostar oro pasa a parecerse a apostar dinero, y en muchos países eso está regulado.
-- **Regla:** mientras exista cualquier forma de convertir dinero real en oro, la taberna usa **fichas de taberna** que no se compran ni se cambian por oro, o se limita a premios cosméticos.
+| Plataforma | Cómo se paga | Nota |
+|---|---|---|
+| **Telegram** | Telegram Stars | Cumple las reglas de Apple y Google para bienes digitales |
+| **Web** | Pasarela de pago propia | Mismos precios en Gemas |
+| **App móvil en tiendas** | Pago integrado de Apple y de Google | Las tiendas obligan a usar su sistema para bienes digitales y se quedan una comisión (ver P-62) |
 
-## 6. Regalos coleccionables de Telegram
+Las Gemas son de la **cuenta**: se usan en cualquier cliente.
 
-Desde 2025, Telegram permite regalos coleccionables que se pueden mejorar, transferir y vender. En el futuro podrían servir como premio de prestigio para Pioneros o campeones de temporada, fuera del juego. Queda como idea, sin prioridad.
+## 5. La ficha de oro: descartada
+
+Vender oro por dinero real (como la ficha de WoW) **queda descartado** por la regla del dueño. Si el oro se pudiera comprar, apostar oro sería apostar dinero real, justo lo que se quiere evitar.
+
+## 6. Juegos de azar y ley
+
+- **Las apuestas solo usan oro del juego, que no se compra con dinero.** Es un juego de azar sin valor real, con mucho menos riesgo legal.
+- **Matiz:** el acelerador de recursos permite conseguir más materiales, que se venden por oro. Es una conexión indirecta y débil, pero conviene revisarla con un abogado antes de llevar el juego a las tiendas.
+- **Tiendas de aplicaciones:** las apuestas simuladas suben la edad mínima (ver P-63).
+- **Topes y Voto de Templanza** en el azar (ver [Apuestas](../08-social/apuestas.md)).
 
 ## 7. Cuándo
 
-- **Alfa y beta:** nada de pagos. Solo recompensas de fundador (títulos, cosméticos) para quienes prueban.
-- **Lanzamiento:** cosméticos y Premium de comodidad.
-- **Más adelante:** pase de temporada; la ficha, solo si los datos lo justifican.
+| Fase | Qué se vende |
+|---|---|
+| **Alfa y beta** | Nada (recomendado). Solo recompensas de fundador gratuitas para quienes prueban (ver P-64) |
+| **Lanzamiento** | Cosméticos, comodidad y aceleradores |
+| **Más adelante** | Pase de temporada |
