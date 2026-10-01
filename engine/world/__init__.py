@@ -17,9 +17,12 @@ Aquí también viven, mientras no exista engine/front, pantry.py: las cuentas de
 y raids.py: las cuentas de las incursiones y de la Noche de prueba de los campamentos (D-99, provisional).
 encounters.py dice qué enemigos pueden salir en cada zona: los del bioma cuya franja de nivel tiene el nivel de la
 zona (D-108); lo usan los encuentros del servicio y las incursiones.
+enemy_camps.py dice dónde hay ⛺ campamentos enemigos cada día (semilla + día), su guarnición y su cofre, y hasta dónde
+los ve cada 🧭 Explorador (D-112).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Encuentros: encounters.py (bioma y franja de nivel de content/enemies.yaml); tests/test_bestiary.py
+    - Campamentos enemigos: enemy_camps.py (usa encounters.py y raids.power); tests/test_enemy_camps.py
     - Pruebas: tests/test_world.py
 """
 

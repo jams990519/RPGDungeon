@@ -77,6 +77,14 @@ professions:
     skins: [carne, piel]                       # [ES] del botín de las bestias (las que sueltan carne, enemies.yaml)
     perk: {attack: 0.04}                     # [ES] D-111: +4 % de ataque al rango 100
 
+  # ---- Exploración (D-112): sube explorando, no junta materiales
+  explorador:
+    emoji: "🧭"
+    name_key: profession.explorador.name
+    how_key: profession.explorador.how
+    branch: explore                            # [ES] rama propia: sube con cada vuelta de exploración (balance.yaml explorer), no con materiales
+    perk: {explore: 5}                         # [ES] D-112: +5 puntos de exploración por vuelta al rango 100 (1 cada 20 rangos); lo que ve en el mapa con el rango, en balance.yaml explorer.ranks
+
   # ---- Refinado: en una estación, gasta energía
   aserradero:
     emoji: "🪚"
