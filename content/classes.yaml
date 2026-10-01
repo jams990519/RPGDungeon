@@ -15,7 +15,6 @@
 #   empower (pegas más) | expose (el enemigo recibe más) | weaken (el enemigo pega menos) | hot (cura por ronda): value, rounds
 # Opcionales: cost, cooldown, gain (recurso que da una respuesta).
 
-
 guerrero_furia:
   group: guerrero
   role: ataque
