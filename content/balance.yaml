@@ -52,7 +52,8 @@ explore:
   arrival_encounter_scale: 1.0
 
 regen:
-  hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola
+  hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola (de 0 a lleno: 100 minutos)
+  downed_percent_per_minute: 0.2  # [ES] D-83: si caíste, te recuperas mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
 
 hero:
   start_gold: 10
@@ -111,7 +112,8 @@ currency:                    # [ES] cinco monedas (D-80): 3 comunes que se ganan
     banner: {gems: 150}      # [ES] estandarte único al lado de tu nombre
 
 gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranuras, 4 tipos de armadura, 4 de arma
-  slots: [arma, armadura, joya]
+  slots: [arma, cabeza, armadura, manos, piernas, pies, joya]   # [ES] D-83: armadura = pecho
+  off_type_factor: 0.5       # [ES] D-83: puedes ponerte lo que quieras; si no es de tu clase rinde la mitad
   armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
   armor_by_group:            # [ES] qué armadura usa cada clase (como en WoW)
     guerrero: placas

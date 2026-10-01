@@ -7,7 +7,7 @@
 from conftest import make_hero
 from engine.core import Rng
 from engine.hero import Hero, hero_stats
-from engine.hero.gear import allowed_types, can_use, equip, roll_gear, starter_gear
+from engine.hero.gear import allowed_types, auto_equip, can_use, equip, gear_bonus, roll_gear, starter_gear, suits
 
 
 def test_every_class_has_gear(content):
@@ -18,9 +18,11 @@ def test_every_class_has_gear(content):
         armor = cfg["armor_by_group"][group]
         weapons = cfg["weapons_by_group"][group]
         assert weapons, group
-        for typ in [armor, *weapons, "joya"]:
-            tiers = sorted(it["tier"] for it in gear if it["type"] == typ)
-            assert tiers == [1, 2, 3, 4], (group, typ)
+        wanted = [(armor, slot) for slot in ("armadura", "cabeza", "manos", "piernas", "pies")]
+        wanted += [(w, "arma") for w in weapons] + [("joya", "joya")]
+        for typ, slot in wanted:
+            tiers = sorted(it["tier"] for it in gear if it["type"] == typ and it["slot"] == slot)
+            assert tiers == [1, 2, 3, 4], (group, typ, slot)
     for it in gear:
         assert it["slot"] in cfg["slots"] and it["rarity"] in cfg["rarity_icon"]
 
@@ -51,11 +53,13 @@ def test_requirements_type_and_level(content):
     classes, balance, items = content.classes, content.balance, content.items
     hero = Hero(id="h", name="H", class_id="picaro", level=1)
     assert can_use(items["daga_1"], hero, classes, balance) is None
-    assert can_use(items["placas_1"], hero, classes, balance) == "type"
-    assert can_use(items["daga_3"], hero, classes, balance) == "level"
+    assert can_use(items["placas_1"], hero, classes, balance) is None          # D-83: you may wear anything...
+    assert not suits(items["placas_1"], hero, classes, balance)               # ...but the game tells you it does not suit you
+    assert can_use(items["daga_3"], hero, classes, balance) == "level"         # the level is the only hard rule
     hero.backpack = {"daga_3": 1, "placas_1": 1}
     assert equip(hero, "daga_3", items, classes, balance) == "level"
-    assert equip(hero, "placas_1", items, classes, balance) == "type"
+    assert equip(hero, "placas_1", items, classes, balance) is None
+    assert gear_bonus(items, hero, classes, balance)["hp"] == items["placas_1"]["stats"]["hp"] * balance["gear"]["off_type_factor"]
     hero.level = 5
     assert equip(hero, "daga_3", items, classes, balance) is None
     assert hero.gear["arma"] == "daga_3" and "daga_3" not in hero.backpack
@@ -100,7 +104,7 @@ def test_gear_screens_keep_four_buttons_and_sell_in_claro(service):
         view = service.act("test:1", next(a.id for a in view.actions if a.id.startswith("gear:")))
     assert len(seen) == 7                                    # 2 worn + 5 in the backpack
     item = service.act("test:1", "item:tela_1")
-    assert not any(a.id.startswith("equip:") for a in item.actions)
+    assert any(a.id.startswith("equip:") for a in item.actions) and "rinde la mitad" in "\n".join(item.body)
     gold = service._load("test:1").gold
     service.act("test:1", "sellg:tela_1")
     hero = service._load("test:1")
@@ -113,3 +117,38 @@ def test_starter_gear_exists_for_every_spec(content):
             continue
         hero = Hero(id="h", name="H", class_id=class_id)
         assert len(starter_gear(content.items, content.classes, content.balance, hero)) == 2, class_id
+
+
+def test_first_piece_of_an_empty_slot_is_worn_by_itself(content):
+    classes, balance, items = content.classes, content.balance, content.items
+    hero = Hero(id="h", name="H", class_id="mago_fuego", level=1, gear={"arma": "baston_1", "armadura": "tela_1"})
+    hero.backpack = {"pies_placas_1": 1, "pies_tela_1": 1, "tela_2": 1}
+    assert auto_equip(hero, "pies_placas_1", items, classes, balance)      # no boots yet: worn, even if it does not suit
+    assert hero.gear["pies"] == "pies_placas_1"
+    assert not auto_equip(hero, "pies_tela_1", items, classes, balance)    # the slot is taken now: stays in the backpack
+    assert not auto_equip(hero, "tela_2", items, classes, balance)
+    assert hero.backpack == {"pies_tela_1": 1, "tela_2": 1}
+
+
+def test_equipment_lives_in_the_hero_screen(service):
+    make_hero(service, class_id="guerrero")
+    hero_view = service.act("test:1", "hero")
+    assert any(a.id == "gear" for a in hero_view.actions)
+    bag = service.act("test:1", "bag")
+    assert not any(a.id == "gear" for a in bag.actions)
+    assert any(a.id == "hero" for a in service.act("test:1", "gear").actions)
+
+
+def test_loot_marks_new_pieces_until_seen(service):
+    make_hero(service, class_id="guerrero")
+    hero = service._load("test:1")
+    hero.backpack["joya_1"] = 1
+    line = service._loot_line(hero, "joya_1")
+    assert hero.gear.get("joya") == "joya_1" and "te la pusiste" in line
+    hero.backpack["espada_1"] = 1
+    line = service._loot_line(hero, "espada_1")
+    assert hero.gear["arma"] == "espada_1" and "espada_1" in hero.gear_new and "Héroe" in line
+    service._save(hero)
+    assert "🆕" in "\n".join(service.act("test:1", "gear").body)
+    service.act("test:1", "item:espada_1")
+    assert "espada_1" not in service._load("test:1").gear_new

@@ -447,3 +447,711 @@ joya_4:
   req_level: 8
   stats: {hp: 0.11, attack: 0.08}
   price: 90
+
+# Armor pieces for head, hands, legs and feet (D-83). Same rules as the rest of the gear (D-77).
+# [ES] Piezas de cabeza, manos, piernas y pies (D-83), una por tipo de armadura y por nivel de pieza.
+# Sus bonos son más chicos que los del pecho (slot armadura). IDs estables: solo se agregan.
+cabeza_tela_1:
+  name_key: item.cabeza_tela_1
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: tela
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+cabeza_tela_2:
+  name_key: item.cabeza_tela_2
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.04, armor: 0.01}
+  price: 15
+cabeza_tela_3:
+  name_key: item.cabeza_tela_3
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.06, armor: 0.01}
+  price: 34
+cabeza_tela_4:
+  name_key: item.cabeza_tela_4
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.08, armor: 0.02}
+  price: 68
+cabeza_cuero_1:
+  name_key: item.cabeza_cuero_1
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: cuero
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+cabeza_cuero_2:
+  name_key: item.cabeza_cuero_2
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.04, armor: 0.01}
+  price: 15
+cabeza_cuero_3:
+  name_key: item.cabeza_cuero_3
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.06, armor: 0.01}
+  price: 34
+cabeza_cuero_4:
+  name_key: item.cabeza_cuero_4
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.08, armor: 0.02}
+  price: 68
+cabeza_malla_1:
+  name_key: item.cabeza_malla_1
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: malla
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+cabeza_malla_2:
+  name_key: item.cabeza_malla_2
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.04, armor: 0.01}
+  price: 15
+cabeza_malla_3:
+  name_key: item.cabeza_malla_3
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.06, armor: 0.01}
+  price: 34
+cabeza_malla_4:
+  name_key: item.cabeza_malla_4
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.08, armor: 0.02}
+  price: 68
+cabeza_placas_1:
+  name_key: item.cabeza_placas_1
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: placas
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+cabeza_placas_2:
+  name_key: item.cabeza_placas_2
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.04, armor: 0.01}
+  price: 15
+cabeza_placas_3:
+  name_key: item.cabeza_placas_3
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.06, armor: 0.01}
+  price: 34
+cabeza_placas_4:
+  name_key: item.cabeza_placas_4
+  emoji: "⛑️"
+  kind: gear
+  slot: cabeza
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.08, armor: 0.02}
+  price: 68
+manos_tela_1:
+  name_key: item.manos_tela_1
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: tela
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.01, hp: 0.01}
+  price: 6
+manos_tela_2:
+  name_key: item.manos_tela_2
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.02, hp: 0.02}
+  price: 15
+manos_tela_3:
+  name_key: item.manos_tela_3
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.03, hp: 0.03}
+  price: 34
+manos_tela_4:
+  name_key: item.manos_tela_4
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.04, hp: 0.04}
+  price: 68
+manos_cuero_1:
+  name_key: item.manos_cuero_1
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: cuero
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.01, hp: 0.01}
+  price: 6
+manos_cuero_2:
+  name_key: item.manos_cuero_2
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.02, hp: 0.02}
+  price: 15
+manos_cuero_3:
+  name_key: item.manos_cuero_3
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.03, hp: 0.03}
+  price: 34
+manos_cuero_4:
+  name_key: item.manos_cuero_4
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.04, hp: 0.04}
+  price: 68
+manos_malla_1:
+  name_key: item.manos_malla_1
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: malla
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.01, hp: 0.01}
+  price: 6
+manos_malla_2:
+  name_key: item.manos_malla_2
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.02, hp: 0.02}
+  price: 15
+manos_malla_3:
+  name_key: item.manos_malla_3
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.03, hp: 0.03}
+  price: 34
+manos_malla_4:
+  name_key: item.manos_malla_4
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.04, hp: 0.04}
+  price: 68
+manos_placas_1:
+  name_key: item.manos_placas_1
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: placas
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.01, hp: 0.01}
+  price: 6
+manos_placas_2:
+  name_key: item.manos_placas_2
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.02, hp: 0.02}
+  price: 15
+manos_placas_3:
+  name_key: item.manos_placas_3
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.03, hp: 0.03}
+  price: 34
+manos_placas_4:
+  name_key: item.manos_placas_4
+  emoji: "🧤"
+  kind: gear
+  slot: manos
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.04, hp: 0.04}
+  price: 68
+piernas_tela_1:
+  name_key: item.piernas_tela_1
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: tela
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.03, armor: 0.01}
+  price: 6
+piernas_tela_2:
+  name_key: item.piernas_tela_2
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.05, armor: 0.01}
+  price: 15
+piernas_tela_3:
+  name_key: item.piernas_tela_3
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.08, armor: 0.02}
+  price: 34
+piernas_tela_4:
+  name_key: item.piernas_tela_4
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.11, armor: 0.02}
+  price: 68
+piernas_cuero_1:
+  name_key: item.piernas_cuero_1
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: cuero
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.03, armor: 0.01}
+  price: 6
+piernas_cuero_2:
+  name_key: item.piernas_cuero_2
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.05, armor: 0.01}
+  price: 15
+piernas_cuero_3:
+  name_key: item.piernas_cuero_3
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.08, armor: 0.02}
+  price: 34
+piernas_cuero_4:
+  name_key: item.piernas_cuero_4
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.11, armor: 0.02}
+  price: 68
+piernas_malla_1:
+  name_key: item.piernas_malla_1
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: malla
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.03, armor: 0.01}
+  price: 6
+piernas_malla_2:
+  name_key: item.piernas_malla_2
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.05, armor: 0.01}
+  price: 15
+piernas_malla_3:
+  name_key: item.piernas_malla_3
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.08, armor: 0.02}
+  price: 34
+piernas_malla_4:
+  name_key: item.piernas_malla_4
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.11, armor: 0.02}
+  price: 68
+piernas_placas_1:
+  name_key: item.piernas_placas_1
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: placas
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.03, armor: 0.01}
+  price: 6
+piernas_placas_2:
+  name_key: item.piernas_placas_2
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.05, armor: 0.01}
+  price: 15
+piernas_placas_3:
+  name_key: item.piernas_placas_3
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.08, armor: 0.02}
+  price: 34
+piernas_placas_4:
+  name_key: item.piernas_placas_4
+  emoji: "👖"
+  kind: gear
+  slot: piernas
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.11, armor: 0.02}
+  price: 68
+pies_tela_1:
+  name_key: item.pies_tela_1
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: tela
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+pies_tela_2:
+  name_key: item.pies_tela_2
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.03, armor: 0.01}
+  price: 15
+pies_tela_3:
+  name_key: item.pies_tela_3
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.05, armor: 0.01}
+  price: 34
+pies_tela_4:
+  name_key: item.pies_tela_4
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.07, armor: 0.02}
+  price: 68
+pies_cuero_1:
+  name_key: item.pies_cuero_1
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: cuero
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+pies_cuero_2:
+  name_key: item.pies_cuero_2
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.03, armor: 0.01}
+  price: 15
+pies_cuero_3:
+  name_key: item.pies_cuero_3
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.05, armor: 0.01}
+  price: 34
+pies_cuero_4:
+  name_key: item.pies_cuero_4
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.07, armor: 0.02}
+  price: 68
+pies_malla_1:
+  name_key: item.pies_malla_1
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: malla
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+pies_malla_2:
+  name_key: item.pies_malla_2
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.03, armor: 0.01}
+  price: 15
+pies_malla_3:
+  name_key: item.pies_malla_3
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.05, armor: 0.01}
+  price: 34
+pies_malla_4:
+  name_key: item.pies_malla_4
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.07, armor: 0.02}
+  price: 68
+pies_placas_1:
+  name_key: item.pies_placas_1
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: placas
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.02}
+  price: 6
+pies_placas_2:
+  name_key: item.pies_placas_2
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.03, armor: 0.01}
+  price: 15
+pies_placas_3:
+  name_key: item.pies_placas_3
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.05, armor: 0.01}
+  price: 34
+pies_placas_4:
+  name_key: item.pies_placas_4
+  emoji: "🥾"
+  kind: gear
+  slot: pies
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.07, armor: 0.02}
+  price: 68
