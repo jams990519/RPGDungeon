@@ -110,7 +110,7 @@ def test_chest_is_assembled_only_in_the_claro(service):
     place(service, "test:1", 3, 0, bags=10, backpack={"madera": 10, "pieza_metal": 5})
     view = service.act("test:1", "wallet")
     assert not any(a.id == "chest" for a in view.actions)
-    assert "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro." in view.body
+    assert "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro, o en el 🧵 Taller de tu campamento." in view.body   # D-101
     view = service.act("test:1", "chest")
     hero = service._load("test:1")
     assert view.notice and hero.chests == 0 and hero.bags == 10 and hero.backpack["madera"] == 10

@@ -647,7 +647,7 @@ pantry:                       # [ES] D-93 (provisional): la despensa de los camp
     hambruna: "🔴 Hambruna"
 
 raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde que se funda el campamento; en el diseño, "incursiones") y Noche de prueba (antes de castillo) de los campamentos de jugadores. El Claro nunca tiene
-  founded_warning: "🌊 Aviso: cada {n} {n|día|días} llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo."
+  founded_warning: "🌊 Aviso: cada {n} {n|día|días} llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
   soon_line: "👁 Al llegar a pueblo (nivel {level}) empiezan las oleadas: una por semana."
   next_line: "👁 Próxima oleada en {n} {n|día|días}. La defienden los miembros conectados."
   open_line: "🔔 ¡Oleada! Defensores: {n} · victorias {wins}/{need} · quedan {time}"
@@ -936,7 +936,7 @@ wallet:
   cards_help: "Tu carta de presentación de oficio: la muestras a otros jugadores para que sepan qué sabes hacer. Llegan con los oficios."
   boost_on: "⭐ Experiencia +50 % activa: quedan {time}."
   sew_button: "💰 Coser una bolsa"
-  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro."
+  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro, o en el 🧵 Taller de tu campamento."
   sew_missing: "Para coser una bolsa necesitas {items} y {coins}."
   sewn: "💰 Cosiste una bolsa. Ahora tienes {n}."
   chest_button: "🪎 Armar cofre"
@@ -1092,9 +1092,155 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   full: "Este campamento está lleno: su gremio tiene que subir de nivel para que entre alguien más."
   no_camp: "🛡️ El gremio se crea desde tu campamento. Primero funda uno o únete a uno."
   rename_camp: "✏️ Renombrar campamento"
-  castle_title: "🏰 Para pasar a castillo, el gremio tiene que estar listo:"
+  castle_title: "🏰 Para pasar a castillo hace falta:"   # [ES] D-97 y D-101: debajo van las líneas del gremio y la de las mejoras
   castle_has_guild: "Tener gremio"
   castle_level: "Gremio de nivel {need} o más (es de nivel {level})"
   castle_level_none: "Gremio de nivel {need} o más"
   castle_members: "{need} miembros o más (son {n})"
   castle_blocked: "Todavía no puede ser castillo. Míralo en 🛡️ Gremio."
+
+upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo en content/camp_upgrades.yaml). El Claro no tiene (D-98)
+  button: "🔨 Mejoras"
+  title: "🔨 Mejoras del campamento"
+  header: "🔨 Mejoras de {camp}"
+  count: "🏗️ Construidas: {n} de {total} · para castillo hacen falta {need}"
+  defense: "🛡️ Defensa: {n}"
+  defense_help: "Las defensas refuerzan los alrededores: cada punto ayuda a proteger el campamento cuando lleguen las oleadas."
+  built_line: "✅ {names}"
+  none_built: "Todavía no construyeron ninguna mejora."
+  open_title: "🔨 Obras abiertas:"
+  open_line: "{name} {bar} {pct} %"
+  open_more: "…y {n} más en 🔨 Obras."
+  locked_line: "🔒 En nivel {level} {n|se abre|se abren}: {names}"
+  works_button: "🔨 Obras ({n})"
+  services_button: "🏘️ Servicios"
+  works_title: "🔨 Obras del campamento"
+  works_intro: "Toca 🤲 en una obra para aportar todo lo que pide y llevas en la mochila (y sus monedas). Cualquier miembro puede aportar. Lo que se termina queda para siempre."
+  page: "Página {n} de {total}"
+  work_line: "{name} · nivel {level}"
+  defense_mark: " · 🛡️ +{n}"
+  give_button: "🤲 {name}"
+  more: "➡️ Ver más"
+  no_works: "No hay obras abiertas ahora: agranden el campamento para abrir más."
+  nothing_to_give: "No llevas nada de lo que pide {name}. Le falta: {items}."
+  given: "🤲 Aportaste {items} a {name}: +{xp} experiencia y +{merit} de mérito."
+  built: "🎉 ¡Terminaron {name}! Queda para siempre."
+  built_push_title: "🔨 Tu campamento tiene una mejora nueva"
+  built_push: "🔨 {hero} terminó {name} en {camp}."
+  coin_line: "Monedas: {have} de {need} {bar}"
+  claro_none: "🏕️ El Claro es el campamento base: no tiene mejoras. Las mejoras se construyen en tu campamento."
+  members_only: "🔨 Las mejoras las construyen los miembros, estando en su campamento."
+  camp_line: "🔨 Mejoras construidas: {n} · 🛡️ Defensa: {defense}"
+  castle_line: "🔨 {need} mejoras construidas o más (tienen {n})"
+  castle_blocked: "Todavía no puede ser castillo: les faltan mejoras. Constrúyanlas en 🔨 Mejoras."
+  services_title: "🏘️ Servicios del campamento"
+  services_intro: "Lo que ya construyeron y pueden usar los miembros aquí, sin volver al Claro."
+  rest_line: "🛏️ Refugio: duermes un rato y despiertas con la vida llena · {price}"
+  rest_button: "🛏️ Refugio · {price}"
+  rest_started: "🛏️ Pagas {price} y te acuestas en el refugio. Despertarás en {time}."
+  trade_line: "🏪 Puesto de trueque: compra tus materiales a la mitad de su precio. La comida no: va a la despensa."
+  nothing_to_sell: "No llevas materiales para vender. La comida no se vende: va a la despensa."
+  workshop_line: "🧵 Taller: coser 💰 bolsas y armar 🪎 cofres, como en el Claro."
+  workshop_button: "🧵 Taller"
+  workshop_title: "🧵 Taller del campamento"
+  workshop_intro: "Aquí se cosen 💰 bolsas y se arman 🪎 cofres, con la misma receta que en el Claro."
+  bag_recipe: "Una bolsa pide {items} y {coins}."
+  chest_recipe: "Un cofre pide {bags} 💰 {bags|bolsa|bolsas} y {items}."
+  smithy_line: "🔨 Herrería: vende el equipo que no usas desde 🛡️ Equipo, como en el Claro."
+  no_services: "Todavía no construyeron servicios."
+  need_library: "📚 Primero construyan la 📚 Biblioteca."
+  granary_line: "🌾 Granero: comen un {pct} % menos."
+  garden_line: "🥬 Huerto: suma {n} {n|ración|raciones} por día."
+  smoked: "🍖 Ahumadero: la carne rindió {n} {n|ración|raciones} más."
+
+knowledge:                    # [ES] D-101 (provisional): el 📚 Conocimiento del campamento, que se abre con la Biblioteca
+  button: "📚 Conocimiento"
+  locked: "📚 El conocimiento se abre con la 📚 Biblioteca (nivel {level})."
+  title: "📚 Conocimiento del campamento"
+  intro: "Lo que el campamento aprende entre todos queda para siempre."
+  rule: "Se estudia una cosa a la vez. Vale solo para los miembros, en el territorio del campamento."
+  done_line: "✅ {name}: {desc}"
+  current_line: "📖 Estudian {name}: {desc}"
+  open_line: "▫️ {name}: {desc}"
+  choose: "Elijan qué estudiar primero:"
+  start_button: "📖 {name}"
+  give_button: "🤲 Aportar al estudio"
+  all_done: "🏆 Ya aprendieron todo lo que hay por ahora."
+  one_at_a_time: "Ya están estudiando otra cosa: terminen eso primero."
+  started: "📖 Empezaron a estudiar {name}. Cada miembro aporta lo que lleva."
+  done: "🎉 ¡Aprendieron {name}!"
+  push_title: "📚 Tu campamento aprendió algo nuevo"
+  push: "📚 Con el aporte de {hero}, {camp} aprendió {name}."
+
+upgrade:                      # [ES] D-101: nombre y efecto de cada mejora (los IDs están en content/camp_upgrades.yaml)
+  fogon:
+    name: "Fogón"
+    desc: "Los miembros recuperan vida un 50 % más rápido en el territorio."
+  empalizada:
+    name: "Empalizada"
+    desc: "Un cerco de troncos que frena a las alimañas."
+  torre_vigia:
+    name: "Torre de vigía"
+    desc: "Ven venir los ataques antes: avisa con tiempo."
+  pozo:
+    name: "Pozo"
+    desc: "Los recursos de las zonas del territorio vuelven un 50 % más rápido."
+  refugio:
+    name: "Refugio"
+    desc: "Cúrate en el campamento como en la posada del Claro, más barato."
+  trueque:
+    name: "Puesto de trueque"
+    desc: "Vende tus materiales en el campamento. La comida no se vende."
+  granero:
+    name: "Granero"
+    desc: "Los miembros comen un 10 % menos de la despensa."
+  trampas:
+    name: "Trampas"
+    desc: "Cepos y fosos escondidos alrededor del campamento."
+  ahumadero:
+    name: "Ahumadero"
+    desc: "Cada 🍖 carne aportada a la despensa vale 1 ración más."
+  perrera:
+    name: "Perrera"
+    desc: "Perros de guardia que huelen a los intrusos."
+  cabanas:
+    name: "Cabañas"
+    desc: "Caben 2 miembros más en el campamento."
+  taller:
+    name: "Taller"
+    desc: "Cose 💰 bolsas y arma 🪎 cofres en el campamento."
+  muralla:
+    name: "Muralla de piedra"
+    desc: "Una muralla de verdad: hay que romperla para entrar."
+  huerto:
+    name: "Huerto"
+    desc: "Suma 1 ración por día a la despensa."
+  braseros:
+    name: "Braseros"
+    desc: "Fuego en la muralla: de noche defiende todavía más."
+  herreria:
+    name: "Herrería"
+    desc: "Vende en el campamento el equipo que no usas."
+  enfermeria:
+    name: "Enfermería"
+    desc: "Quien cayó se recupera un 50 % más rápido en el territorio."
+  biblioteca:
+    name: "Biblioteca"
+    desc: "Abre el 📚 Conocimiento del campamento."
+  torres_arqueros:
+    name: "Torres de arqueros"
+    desc: "Disparan solas contra lo que se acerque."
+  foso:
+    name: "Foso"
+    desc: "Agua alrededor de la muralla: nadie llega fácil."
+
+tech:                         # [ES] D-101: nombre y efecto de cada estudio del 📚 Conocimiento
+  herramientas:
+    name: "Herramientas"
+    desc: "+10 % de recursos al recolectar en el territorio."
+  cartografia:
+    name: "Cartografía"
+    desc: "+5 puntos de exploración por vuelta en el territorio."
+  rastreo:
+    name: "Rastreo"
+    desc: "+10 % de probabilidad de 🍖 carne en el territorio y en las zonas que lo tocan."

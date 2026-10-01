@@ -1,6 +1,6 @@
 # Fundación y cisma: el mundo empieza de cero y los jugadores deciden si se divide
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md), [Construcción](../09-construccion/README.md), [Profesiones](../07-economia/profesiones.md), [Gremios y vida social](../08-social/gremios-y-social.md) §0 (el castillo pide gremio, D-97) · **Alimenta a:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Supervivencia del asentamiento](supervivencia-del-asentamiento.md), [Facciones](facciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §3 en adelante es propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md), [Construcción](../09-construccion/README.md), [Profesiones](../07-economia/profesiones.md), [Gremios y vida social](../08-social/gremios-y-social.md) §0 (el castillo pide gremio, D-97) · **Alimenta a:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Supervivencia del asentamiento](supervivencia-del-asentamiento.md), [Facciones](facciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** §1 y §2 están en el juego (desde la 0.9.2; las mejoras de §2.6, D-101 provisional); §3 en adelante es propuesta
 
 **Qué pidió el dueño.** Que no exista un castillo al empezar: que todo arranque **desde cero** y la gente **construya el mundo** (D-45). Que el Claro sea la sede común y que los jugadores **funden sus propios campamentos**, que crezcan hasta ciudades y castillos (D-71, D-81, D-87). Que el mundo se pueda **dividir** por decisión de los jugadores, con desventajas para quien queda. Y que haya gente dedicada a todo: agricultores, cazadores, expertos en cada cosa.
 
@@ -89,6 +89,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
 - **El castillo pide gremio** (D-97, provisional): para pasar del nivel 8 al 9 hace falta un gremio de nivel 5 o más con 10 miembros o más (`guild.castle_min_level`, `guild.castle_min_members`). Sin gremio, el campamento se queda en ciudad. La pantalla de agrandar lo muestra con ✅ y ▫️.
 - **Para pasar del nivel 8 al 9 (castillo)** hay que ganar antes la **🌙 Noche de prueba** (D-99, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). Los materiales se pagan igual.
+- **El castillo también pide 15 mejoras construidas** (D-101, provisional; ver §2.6, `upgrades.castle_min_built`). La pantalla de agrandar lo muestra con ✅ o ▫️ y, si faltan, ofrece 🔨 Mejoras. El orden es: gremio listo, 15 mejoras y Noche de prueba.
 
 | Nivel | Nombre | Zonas | Cupo sin gremio | Costo de llegar desde el nivel anterior |
 |---|---|---|---|---|
@@ -96,7 +97,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
 | 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra, 30 de fibra y 1 🪎 cofre |
-| 9 | Castillo | 9 | 18 (o el cupo del gremio, si es mayor) | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres, y un gremio de nivel 5 con 10 miembros (D-97), y la 🌙 Noche de prueba ganada (D-99) |
+| 9 | Castillo | 9 | 18 (o el cupo del gremio, si es mayor) | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres, y un gremio de nivel 5 con 10 miembros (D-97), 15 mejoras construidas (D-101) y la 🌙 Noche de prueba ganada (D-99) |
 
 Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra, 180 de fibra y 6 🪎 cofres** (1 + 2 + 3, de 6 a 9). Los nombres por nivel están en `camps.stages`.
 
@@ -106,11 +107,64 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 - Nadie puede fundar otro campamento encima.
 - El viaje cuenta la distancia desde la zona más cercana de tu territorio.
 
-### 2.5 Lo que todavía no tienen
+### 2.5 Lo que tienen y lo que todavía no
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4), y para ser castillo hace falta un **gremio** listo (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0). Desde el nivel 5 (pueblo) llega **una incursión por semana**: los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no alcanzan las victorias, la despensa pierde una parte y nada más. Y castillo pide ganar la **Noche de prueba** (D-99, provisional; [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). El Claro nunca tiene despensa ni incursiones: es el campamento base (D-95, D-98). El gremio todavía no tiene rangos, banco ni salón. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Desde las **🔨 Mejoras** (D-101, provisional; §2.6) un campamento de jugadores tiene servicios propios que se ganan construyendo: refugio para curarse, puesto de trueque, taller de bolsas y cofres, herrería y biblioteca. Todavía **no tiene** almacén común ni una obra común para crecer: crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4), y para ser castillo hace falta un **gremio** listo (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0) y 15 mejoras construidas (D-101). Desde que se funda (D-105; antes, desde el nivel 5) llega **una oleada (incursión) por semana**: los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no alcanzan las victorias, la despensa pierde una parte y nada más. Y castillo pide ganar la **Noche de prueba** (D-99, provisional; [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). El Claro nunca tiene despensa ni incursiones: es el campamento base (D-95, D-98). El gremio todavía no tiene rangos, banco ni salón. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
+
+### 2.6 Mejoras y conocimiento del campamento (en el juego, D-101 provisional)
+
+**Qué pidió el dueño.** "Que agreguen más división: para llegar a castillo, unas 15 mejoras del campamento o más". Y que al crear el campamento te avisen que llegarán oleadas y que "tienes que reforzar las cosas en los alrededores para poder protegerlo" (D-105). Las mejoras y el conocimiento son **solo para tus campamentos**: el Claro es el campamento base y no crece (D-98).
+
+**Cómo se juega.**
+- **🏕️ Campamento → 🔨 Mejoras** (solo miembros, estando en el campamento) muestra cuántas mejoras construyeron de las 20, cuántas pide el castillo (15), la **🛡️ Defensa**, lo construido, las próximas obras con su barra de avance y qué se abre en el nivel siguiente.
+- **🔨 Obras** lista las mejoras que el nivel del campamento ya abrió, con lo que pide cada una. Cualquier miembro toca **🤲** en una obra y aporta todo lo que esa obra todavía pide y él lleva en la mochila (también sus monedas, si pide). No hace falta permiso de nadie y nunca se toma de más. Cada material aportado da 1 de experiencia y 1 de mérito (`upgrades.xp_per_unit`, `merit_per_unit`).
+- Al completarse, la mejora queda **construida para siempre** y se avisa a los demás miembros. Nada la quita: ni el hambre, ni una oleada perdida, ni que alguien se vaya.
+- **🏘️ Servicios** junta lo que se usa en el campamento: 🛏️ Refugio, 💱 Vender materiales y 🧵 Taller (la 🔨 Herrería se usa desde 🛡️ Equipo). **📚 Conocimiento** aparece con la Biblioteca.
+- Los efectos valen **solo para los miembros**. Los de vida, recolección y exploración, además, solo **dentro del territorio** del campamento.
+- **Botones del campamento** (4 como máximo, D-75): ⬆️ Agrandar · 🌾 Aportar comida (desde nivel 3) · 🛡️ Gremio · 🔨 Mejoras; sin despensa, también ↩️ Volver. Mientras dura una oleada que todavía no peleaste, 🛡️ Defender (D-99) toma el 4.º lugar.
+
+**Qué abre cada nivel** (`content/camp_upgrades.yaml`; los materiales son de la mochila, las monedas en 🥉 bronce):
+
+| Nivel | Mejora | Cuesta | Qué hace | 🛡️ |
+|---|---|---|---|---|
+| 1 | 🔥 Fogón | 20 madera, 15 piedra | Los miembros en el territorio recuperan vida ×1,5 | — |
+| 1 | 🪵 Empalizada | 30 madera, 10 fibra | Primera defensa | +1 |
+| 2 | 🗼 Torre de vigía | 50 madera, 20 piedra, 10 fibra | Defensa; guarda 2 horas de aviso anticipado para las oleadas (todavía no lo usan) | +1 |
+| 2 | ⛲ Pozo | 50 piedra, 20 arcilla | Los recursos de las zonas del territorio vuelven un 50 % más rápido | — |
+| 3 | 🛏️ Refugio | 70 madera, 40 fibra, 15 arcilla | Curarse en el campamento como en la posada del Claro, por 2 🥉 (la posada cuesta 4) | — |
+| 3 | 🏪 Puesto de trueque | 60 madera, 40 piedra, 20 fibra y 1 🥈 | Vender materiales en el campamento a la mitad de su precio; la comida nunca | — |
+| 3 | 🌾 Granero | 80 madera, 50 piedra | Los miembros comen un 10 % menos de la despensa | — |
+| 3 | 🪤 Trampas | 50 madera, 40 fibra, 15 metal | Defensa | +1 |
+| 4 | 🍖 Ahumadero | 100 madera, 70 piedra, 30 arcilla | Cada 🍖 carne aportada a la despensa vale 3 raciones en vez de 2 | — |
+| 4 | 🐕 Perrera | 100 madera, 40 fibra, 30 carne | Defensa | +1 |
+| 4 | 🛖 Cabañas | 140 madera, 60 fibra, 30 arcilla | 2 miembros más de cupo (con o sin gremio) | — |
+| 5 | 🧵 Taller | 140 madera, 80 piedra, 50 fibra, 30 metal y 2 🥈 | Coser 💰 bolsas y armar 🪎 cofres en el campamento, con la receta del Claro | — |
+| 5 | 🧱 Muralla de piedra | 260 piedra, 60 madera, 40 arcilla | Defensa | +2 |
+| 5 | 🥬 Huerto | 80 madera, 60 fibra, 50 hierba, 40 arcilla | Suma 1 ración por día a la despensa | — |
+| 6 | 🔥 Braseros | 120 madera, 120 piedra, 50 metal | Defensa; de noche cuenta 1 más | +1 |
+| 6 | 🔨 Herrería | 180 piedra, 70 metal, 100 madera, 30 arcilla y 3 🥈 | Vender en el campamento el equipo que no usas | — |
+| 7 | 🏥 Enfermería | 180 madera, 100 fibra, 100 hierba, 80 piedra y 3 🥈 | Quien cayó se recupera ×1,5 en el territorio | — |
+| 7 | 📚 Biblioteca | 220 madera, 150 piedra, 100 fibra, 60 arcilla y 5 🥈 | Abre el 📚 Conocimiento | — |
+| 8 | 🏹 Torres de arqueros | 280 madera, 150 piedra, 70 metal, 60 fibra | Defensa | +2 |
+| 8 | 🌊 Foso | 360 piedra, 140 arcilla, 100 madera | Defensa | +2 |
+
+En total son 20 mejoras (unos 5.000 materiales y 14 🥈). Todas se abren antes del castillo: con el nivel 8 se puede elegir cuáles 15 construir. Las 8 defensas suman **11 puntos de 🛡️ Defensa** (12 de noche).
+
+**📚 Conocimiento** (con la Biblioteca). Se estudia **uno a la vez**; lo elige y lo paga cualquier miembro, como una obra, y queda para siempre:
+
+| Estudio | Cuesta | Qué hace (solo miembros) |
+|---|---|---|
+| ⚒️ Herramientas | 150 madera, 50 metal y 3 🥈 | +10 % de recursos al recolectar en el territorio (encima del +50 % de siempre) |
+| 🗺️ Cartografía | 150 fibra, 80 arcilla y 3 🥈 | +5 puntos de exploración por vuelta en el territorio |
+| 🐾 Rastreo | 100 fibra, 60 hierba, 40 carne y 3 🥈 | +10 % de probabilidad de 🍖 carne en el territorio y en las zonas que lo tocan (en el territorio no hay peleas, D-81) |
+
+**🛡️ Defensa y oleadas.** `GameService._camp_defense(camp)` suma los puntos de las defensas construidas (con `night=True`, también los de noche). Hoy se muestra en el campamento (también a los visitantes) y en 🔨 Mejoras. **Todavía no cambia las oleadas** (D-99): queda lista para que cada punto baje la fuerza de la oleada o las victorias que pide; conectarlo es el paso siguiente.
+
+**Ritmo.** El Fogón y la Empalizada cuestan 35 y 40 materiales: dos jugadores los levantan en un día. Las 15 mejoras más baratas suman unos 2.500 materiales y 3 🥈; con lo que hace falta para crecer (unos 1.100 materiales y 6 🪎 cofres hasta castillo), un grupo de 5 tarda varias semanas, al ritmo del gremio y de la Noche de prueba. Los números son orientativos: se ajustan en la beta (registro en [Balance](../03-personaje/balance.md) §7).
+
+**De dónde sale.** *Clash of Clans* y *Rise of Kingdoms*: cada nivel del ayuntamiento abre edificios nuevos. *Valheim*: el fogón que te hace descansar y las defensas contra oleadas. *Albion Online*: servicios en la isla del gremio. *Civilization*: el conocimiento colectivo que se investiga de a uno. Lo que se usa del diseño: graneros y ahumadero de [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §4.3, defensas de [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) §2 y el árbol de conocimiento de [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §6, en su capa simple (D-44).
 
 ## 3. Las necesidades del asentamiento (propuesta)
 
@@ -130,6 +184,7 @@ Más adelante, un asentamiento (el Claro o un campamento grande) **necesitaría 
 - **Capa simple:** el jugador ve unas pocas barras y toca 📋 Aportar, igual que hoy aporta a la obra común.
 - **Capa profunda:** los medidores con umbrales, la despensa, las incursiones y las decisiones están en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md).
 - **Por qué conviene:** toda la infraestructura depende de farmear, fabricar y progresar, y cada rol es necesario de verdad. Ver [Red de sistemas](../00-vision/red-de-sistemas.md).
+- **Lo que ya está en el juego (D-101):** en los campamentos de jugadores, 🛡 **Defensa** la dan las defensas de §2.6 (puntos de 🛡️ Defensa para las oleadas), 🌾 **Comida** la despensa (D-93) con Granero, Ahumadero y Huerto, y ⚕️ **Salud** el Fogón, el Refugio y la Enfermería. El resto de la tabla sigue como propuesta.
 
 ## 4. Qué abre cada etapa (propuesta)
 
@@ -143,6 +198,8 @@ Las etapas ya existen con sus nombres. Lo que falta es que cada una **abra algo*
 | **Pueblo** | Etapa 4 | Nivel 5-6 | Gobierno (§5), taller público, mercado entre jugadores |
 | **Ciudad** | Etapa 5 | Nivel 7-8 | Estaciones públicas mejores, cirugía segura, investigación |
 | **Castillo** | Etapa 6 | Nivel 9 o más | El Castillo y sus alas, cada una como obra aparte (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) |
+
+> **En el juego (D-101, provisional):** en los campamentos de jugadores cada nivel del 1 al 8 ya abre mejoras (servicios, despensa, defensas y conocimiento): la lista está en §2.6. La columna de la derecha queda como propuesta para lo que venga después (almacén común, gobierno, mercado entre jugadores) y para el Claro, que ya no crece (D-98).
 
 *Los documentos viejos llaman "Claro" a la primera etapa y "Villa" a la cuarta. Hoy son **Fogata** y **Pueblo**.*
 
@@ -235,6 +292,7 @@ Las etapas ya existen con sus nombres. Lo que falta es que cada una **abra algo*
 - *EVE Online*: alianzas que se separan y cambian el mapa.
 - *Civilization* y *Crusader Kings*: secesiones y el costo de dividir un reino.
 - *Chat Wars* y TowerWars: la vida en torno a un castillo, con su chat y sus órdenes.
+- *Clash of Clans*, *Rise of Kingdoms* y *Valheim*: edificios que abre cada nivel y defensas contra oleadas (las mejoras de §2.6).
 
 ## 10. Preguntas
 
