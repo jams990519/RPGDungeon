@@ -51,7 +51,7 @@ flowchart LR
 | **Salud** | Remedios, vendas, férulas, comida, descanso | Pacientes para médicos, demanda de oficios | Hierbas, lino, comida | Remedios, instrumental, prótesis | Rango de Medicina |
 | **Construcción** | Piedra, madera, metal, telas, mecanismos, jornadas de trabajo | Casas, talleres, castillos, defensas | Todo el material base | Clavos, puertas, ornamentos, mecanismos | Rango de Construcción |
 | **Ciudades** | Comida, materiales, defensa, salud, ánimo, impuestos | Servicios, entrenadores, mercados, votos | Comida semanal | Herramientas, reparaciones | Etapa de la ciudad |
-| **Profesiones** | Materiales, estaciones, entrenadores, Enfoque | Objetos, servicios | Sí | Herramientas de otros oficios | Rangos, exámenes, especializaciones |
+| **Profesiones** | Materiales, estaciones, entrenadores, Enfoque | Objetos, servicios | Sí | Herramientas de otros oficios | Rangos, exámenes, especializaciones Red completa de 26 oficios y sus ciclos: [Red de oficios](../07-economia/red-de-oficios.md) (D-115) |
 | **Economía** | Todo lo que se vende | Precios, crédito, sumideros | Mercancía | Mercancía | Acceso a puestos y licencias |
 | **Cacerías** | Cebos, trampas, sedantes, equipo | Pieles de calidad, bestias vivas, trofeos, control de poblaciones | Es farmeo | Trampas, cebos | Rangos de la Orden de Cazadores |
 | **Apuestas** | Oro, monturas criadas, bestias capturadas, dados y mazos fabricados | Sumidero de oro, fama de tahúr | Bestias para el Foso | Dados, mazos, casinos | Fama de tahúr |

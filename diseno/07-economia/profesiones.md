@@ -42,6 +42,8 @@ Esta es la **capa simple** que se programa primero, con los recursos que ya hay 
 
 **De dónde sale:** *World of Warcraft* (oficios primarios que se necesitan entre sí), *Albion Online* (el paso de refinado) y *Dofus* (oficios dentro de un juego por turnos).
 
+**La red completa**, con los 26 oficios, sus especializaciones y en qué orden entran, está en [Red de oficios](red-de-oficios.md) (D-115). La fase 1 de arriba es su primera parte.
+
 ### 0.1 El beneficio de cada oficio (D-111)
 
 El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un tipo de jugador**, que crece con la experiencia en ese oficio, como en World of Warcraft (la Herboristería cura, la Minería da aguante, el Desuello da crítico…). El ejemplo del dueño: **la medicina les da a los sanadores un porcentaje extra de sanación**.
