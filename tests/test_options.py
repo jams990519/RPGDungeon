@@ -103,11 +103,11 @@ def test_bottom_menu_and_command(service):
     assert service.act("test:1", service.commands()["/opciones"]).kind == "options"
 
 
-def test_telegram_bottom_keyboard_fits_five_buttons(service):
+def test_telegram_bottom_keyboard_fits_six_buttons(service):
     from adapters.telegram.bot import menu_keyboard
     keyboard = menu_keyboard(service)
-    assert [len(row) for row in keyboard.keyboard] == [2, 2, 1]        # 3 short rows on a phone
-    assert keyboard.keyboard[-1][0].text == "⚙️ Opciones"
+    assert [len(row) for row in keyboard.keyboard] == [2, 2, 2]        # 3 short rows on a phone (D-117: 📖 Historia is the 6th)
+    assert keyboard.keyboard[-1][-1].text == "⚙️ Opciones"
 
 
 def test_options_can_change_during_a_batch_but_not_in_combat(service, clock):

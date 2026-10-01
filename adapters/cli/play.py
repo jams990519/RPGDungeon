@@ -18,7 +18,8 @@ Datos de los que es dueño: ninguno (guarda en data/consola.sqlite3)
 Reglas que nunca se rompen:
     1. No agrega reglas: solo dibuja vistas y manda acciones.
     2. Muestra también el menú fijo del motor (service.menu()) y acepta sus atajos
-       (service.commands()), como Telegram: sin ellos, de la zona solo se podía viajar.
+       (service.commands()), como Telegram: sin ellos, de la zona solo se podía viajar. Los atajos con texto
+       (/bio <texto>, /saludar <nombre>, D-117) van a service.text(), igual que en Telegram.
 Si cambias esto, revisa:
     - Nada del juego depende de este archivo
     - Prueba: tests/test_playtest_fixes.py (la consola llega a Explorar)
@@ -80,6 +81,8 @@ def main() -> None:
             view = service.act(account, buttons[int(raw) - 1].id)
         elif raw.lower() in service.commands():
             view = service.act(account, service.commands()[raw.lower()])
+        elif raw.startswith("/"):
+            view = service.text(account, raw)       # D-117: /bio <texto>, /saludar <nombre>, /diario <nombre>...
         elif view.expects_text:
             view = service.text(account, raw)
         else:

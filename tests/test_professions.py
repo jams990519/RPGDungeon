@@ -318,7 +318,7 @@ def test_oficios_command_and_screen(service):
     ready(service)
     assert service.commands()["/oficios"] == "oficios"
     view = service.act("test:1", "claro")
-    assert ids(view) == ["shop", "inn", "oficios", "home"]
+    assert ids(view) == ["shop", "inn", "oficios", "board"]          # D-117: 📜 Tablón took the ↩️ Volver slot
     view = service.act("test:1", "oficios")
     assert view.kind == "professions" and ids(view) == ["est:refine:0", "est:craft:0", "claro"]
     assert any("Todavía no empezaste" in line for line in view.body)

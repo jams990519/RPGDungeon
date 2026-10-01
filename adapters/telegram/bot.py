@@ -22,7 +22,8 @@ Reglas que nunca se rompen:
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
 Si cambias esto, revisa:
     - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble, /opciones... salen
-      del motor; el menú fijo tiene 5 botones desde D-114)
+      del motor; el menú fijo tiene 6 botones desde D-117, con 📖 Historia). Un texto con "/" que no es un atajo exacto
+      va a service.text(), que entiende los atajos con texto (/bio <texto>, /saludar <nombre>, /brindar, /diario <nombre>)
     - Despliegue: railway.json (comando de arranque)
 """
 
@@ -53,7 +54,7 @@ MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
 def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114: 2 por fila, así 5 botones son 3 filas cortas que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
+    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe, 📖 Historia y ⚙️ Opciones, D-114 y D-117: 2 por fila, así 6 botones son 3 filas cortas que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
     labels = [KeyboardButton(text=a.label) for a in service.menu()]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
@@ -120,10 +121,11 @@ def register(dp: Dispatcher, service: GameService) -> None:
             view = service.act(account, menu_ids[message.text])
         elif word in commands:
             view = service.act(account, commands[word])
-        elif message.text == MENU_LABEL or message.text.startswith("/"):
-            if message.text == MENU_LABEL:
-                await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+        elif message.text == MENU_LABEL:
+            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
             view = service.view(account)
+        elif message.text.startswith("/"):
+            view = service.text(account, message.text)      # D-117: /bio <texto>, /saludar <nombre>... (unknown ones show the game)
         else:
             view = service.text(account, message.text)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))

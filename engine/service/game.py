@@ -18,11 +18,14 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
+    diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
+    engine/service/story.py, StoryMixin, de la que GameService hereda)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
     engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
-    D-109), content/*
+    D-109), engine.service.story (StoryMixin: 📖 Historia, origen, misiones, facciones, encargos, diario y gestos, D-117;
+    usa engine.story), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -51,6 +54,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-114: Hero.options (⚙️ Opciones; vacío = balance.yaml auto_fight.defaults) y la actividad "hunt" (🏹 Cazar en lote,
     con las mismas claves que un lote de explorar). Un lote con peleas automáticas suma en su actividad "fights"
     ({"won", "lost", "fled"}), "fight_xp", "fight_gold", "gold_lost", "loot" y "fight_trade" para el resumen del final.
+    D-117 (provisional): Hero.origin, Hero.story, Hero.factions, Hero.journal y Hero.bio, y el espacio "camp_tasks"
+    (encargos semanales de cada campamento, clave "x:y"); los maneja engine/service/story.py (ver su encabezado).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -82,6 +87,8 @@ Reglas que nunca se rompen:
         encuentros comunes de un lote y las presas de la cacería en lote; nunca el Guardián, las defensas del campamento ni
         las emboscadas del viaje. Con ✋ Manual (lo de siempre) el lote se corta en la pelea. El bot avisa una sola vez por
         lote, al final, aunque haya habido muchas peleas.
+    16. La historia (D-117) nunca bloquea el juego ni da poder de combate: el origen se puede elegir después, el menú de
+        abajo siempre funciona y los rasgos y premios son de oficio, precio, reputación, consumibles, materiales y títulos.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -135,10 +142,20 @@ Si cambias esto, revisa:
     - ⚙️ Opciones y peleas automáticas (D-114): balance.yaml auto_fight (opciones por defecto, % de 🩹 Retirarse, tope de
       rondas y umbrales de la forma de jugar) y hunt.batch / hunt.batch_minutes; engine/combat/auto.py (la forma de jugar,
       la misma que usa tools/sim.py); Hero.options; textos options.*, auto.*, batch.*_hunt, batch.reason.auto_* y hunt.batch_*
-      y hunt.mode_* en es.yaml; tests/test_options.py. Tocan menu() (5.º botón), COMMANDS (/opciones), _idle_action ("options",
+      y hunt.mode_* en es.yaml; tests/test_options.py. Tocan menu() (⚙️ Opciones, último botón), COMMANDS (/opciones), _idle_action ("options",
       "opt:"), _settle (_batch_fight → _auto_combat → _end_combat), _amount_view, _start_batch, _stop_batch, _continue_batch,
       _batch_summary (_auto_summary), _activity_view, _hunt_view y _hunt ("prey" abre 🏹 Cazar en lote en automático) y
       PRESENT_BUSY (quien caza en lote cuenta como presente, D-96)
+    - Historia y rol (D-117): content/story.yaml (orígenes, misiones, personajes, facciones, encargos), textos story.* en
+      content/locales/es_historia.yaml, balance.yaml story; engine/service/story.py y engine/story; tests/test_story.py.
+      El gancho _story_event se llama en _arrive (visit), _explore_step (explore), _gather_step (gather), _end_combat (win,
+      también las peleas automáticas: _auto_combat pasa state["story"] al resumen del lote), _make (craft), _sell, _camp_sell
+      y _sell_gear (sell), _found_camp (camp), _camp_feed (feed) y _give_to_work / _give_to_study (build). Tocan además
+      menu() (📖 Historia es el 6.º botón, ⚙️ Opciones sigue último), COMMANDS (/historia, /diario, /bio, /encargos,
+      /saludar, /brindar), text() (atajos con texto), _idle_action (STORY_ACTIONS; "hero" ofrece el origen una vez),
+      _create_action (el origen después de la clase), _claro_view (📜 Tablón en lugar de ↩️ Volver), _shop_view y _buy (descuento
+      del origen), _prof_gain (experiencia de oficio del origen), _hero_view (origen, emblema, biografía y títulos de la
+      historia), _zone_players (emblema junto al nombre) y tick() (relee el héroe: otro pudo pagarle un encargo de campamento)
 """
 
 from __future__ import annotations
@@ -191,6 +208,7 @@ from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
+from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.world import raids as raid_rules
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
@@ -199,7 +217,9 @@ from engine.world.resources import main_resource, zone_resources
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
             "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health",
-            "/oficios": "oficios", "/opciones": "options"}
+            "/oficios": "oficios", "/opciones": "options",
+            "/historia": "story", "/diario": "journal", "/bio": "bio", "/encargos": "board",     # D-117: story and roleplay
+            "/saludar": "gesture:saludar", "/brindar": "gesture:brindar"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -213,8 +233,8 @@ UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctalle
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
 
 
-class GameService:
-    """The engine's facade for every client.
+class GameService(StoryMixin):
+    """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117).
 
     Args:
         content: loaded content.
@@ -271,9 +291,30 @@ class GameService:
         return self._main_view(hero, notice=self._join(notices))
 
     def text(self, account_id: str, text: str) -> View:
-        """Handle free text (only used to name the hero). [ES] Qué hace: recibe texto escrito (el nombre del héroe). La llaman: los clientes. Si cambia, afecta: la creación de personaje."""
+        """Handle free text: the hero's name, a camp or guild name, or a typed command ("/bio ...", "/saludar Bram").
+
+        [ES]
+        Qué hace: recibe texto escrito: el nombre del héroe al crearlo, el nombre de un campamento o gremio, o un atajo
+        escrito con "/" (D-117: /bio <texto>, /saludar <nombre>, /brindar <texto>, /diario <nombre>; los atajos sin texto,
+        como /stats, van como su botón). Un "/" sin héroe todavía muestra la creación, sin error.
+        La llaman: los clientes (Telegram manda aquí todo texto que empieza con "/" y no es un atajo exacto).
+        Si cambia, afecta: la creación de personaje, los nombres de campamento y gremio, y los atajos con texto.
+        """
         self._seen(account_id)
         hero = self._load(account_id)
+        if text.lstrip().startswith("/"):
+            if hero is None:
+                return self.view(account_id)
+            self._mark_seen(hero)
+            notices = self._settle(hero)
+            typed = self._typed_command(hero, text)      # D-117: commands that carry text
+            self._save(hero)
+            if typed is None:
+                word = text.split()[0].split("@")[0].lower() if text.split() else ""
+                typed = self.act(account_id, COMMANDS[word]) if word in COMMANDS else self.view(account_id)
+            if notices:                                  # what _settle finished (a trip, a batch) is told once, here
+                typed.notice = self._join(notices + ([typed.notice] if typed.notice else []))
+            return typed
         if hero is not None and self.store.get("camp_naming", account_id):
             view = self._name_camp(hero, " ".join(text.split()))
             self._save(hero)
@@ -375,14 +416,15 @@ class GameService:
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard).
 
         [ES]
-        Qué hace: da el menú fijo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114); cada cliente lo dibuja abajo o
-        al costado. D-46 deja hasta 6.
-        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 5 quedan 3 filas).
+        Qué hace: da el menú fijo (Zona, Explorar, Campamento, Héroe, 📖 Historia y ⚙️ Opciones; D-114, D-117); cada cliente
+        lo dibuja abajo o al costado. D-46 deja hasta 6: ya están los 6. ⚙️ Opciones sigue siendo el último.
+        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 6 quedan 3 filas).
         Si cambia, afecta: la navegación de todos los clientes (tests/test_buttons.py y tests/test_options.py miran el tope).
         """
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
                 Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero")),
+                Action(id="story", label=t.t("menu.story")),          # D-117: 📖 Historia, the 6th and last slot of D-46
                 Action(id="options", label=t.t("menu.options"))]
 
     def commands(self) -> dict[str, str]:
@@ -410,6 +452,7 @@ class GameService:
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
                 continue
+            data = self.store.get("hero", account_id) or data     # fresh: an earlier hero may have paid this one (D-117 camp tasks)
             hero = Hero.from_dict(data)
             ensure_talents(self.content.classes, self.content.balance, hero)
             notices = self._settle(hero)
@@ -694,6 +737,7 @@ class GameService:
             hero.zones_discovered += 1
             self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
             notices.append(self.texts.t("travel.discovered_named", name=self._zone_name(zone)))
+        notices += self._story_event(hero, "visit", x=hero.x, y=hero.y, lejania=zone.lejania, lair=self._is_lair(hero.x, hero.y))   # D-117
         danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
         if self._territory(hero.x, hero.y):
             danger = 0.0                      # camps and the Claro protect their land (D-81)
@@ -801,6 +845,7 @@ class GameService:
                 xp += bal["xp_full_zone"]             # finishing a zone is worth more
         activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
         activity["log"] += self._give_xp(hero, xp)
+        activity["log"] += self._story_event(hero, "explore", x=zone.x, y=zone.y, lejania=zone.lejania)     # D-117
         roll = rng.random()
         if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
             return self._start_combat(hero, zone, rng, "encounter.found")
@@ -843,6 +888,8 @@ class GameService:
         activity["log"] += self._trade_gather(hero, got, activity)    # D-109: gathering professions (rank, extra units, rare finds)
         for res, n in got.items():
             activity["got"][res] = activity["got"].get(res, 0) + n
+        if got:
+            activity["log"] += self._story_event(hero, "gather", items=dict(got))     # D-117: missions and tasks
         if got:                                       # D-108: gathering alone also reaches level 100
             xp = self._zone_xp(bal["xp_per_step"], zone.level)
             activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
@@ -941,10 +988,12 @@ class GameService:
             self.store.delete("referral", account_id)
         self.store.put("invite_code", self.invite_code(account_id), {"account": account_id})
         self._pay_referral(hero)
+        hero.story["offered"] = True                     # D-117: the origin is chosen right now (or later, in 📖 Historia)
+        self._journal(hero, "awoke")
         self._save(hero)
         self.store.delete("pending", account_id)
         self.bus.publish(HeroCreated(hero.id, class_id))
-        return self._zone_view(hero, notice=self.texts.t("create.welcome", name=hero.name))
+        return self._origin_view(hero, notice=self.texts.t("create.welcome", name=hero.name))
 
     # ------------------------------------------------------------------ idle actions
 
@@ -960,10 +1009,12 @@ class GameService:
         t = self.texts
         if action_id == "map":
             return self._map_view(hero)
-        if action_id == "hero":
-            return self._hero_view(hero)
+        if action_id == "hero":                         # D-117: heroes without an origin get the choice once, here or in 📖 Historia
+            return self._origin_offer(hero) or self._hero_view(hero)
         if action_id == "options":                      # D-114: ⚙️ Opciones (bottom menu, /opciones); works while busy too
             return self._options_view(hero)
+        if action_id.startswith(STORY_ACTIONS):         # D-117: 📖 Historia and its screens, 📜 Tablón, gestures; also while busy
+            return self._story_action(hero, action_id)
         if action_id.startswith("opt:"):
             return self._set_option(hero, action_id[4:])
         if action_id == "stats":
@@ -1631,7 +1682,8 @@ class GameService:
                 continue
             other = Hero.from_dict(data)
             group = self.content.classes.get(other.class_id, {}).get("group", other.class_id)
-            players.append({"id": account, "name": self._banner(other) + other.name, "cls": t.t(f"class_group.{group}.name"),
+            players.append({"id": account, "name": self._banner(other) + self._emblem_name(other), "plain": other.name,   # D-117: emblem
+                            "cls": t.t(f"class_group.{group}.name"),
                             "level": other.level, "activity": t.t(f"presence.activity.{kind}"), "seen": other.seen_at})
         if gone:
             for account in gone:
@@ -1694,19 +1746,20 @@ class GameService:
 
         [ES]
         Qué hace: muestra el campamento base, donde empiezan todos: mercader, posada, ⚒️ Oficios (las estaciones
-        básicas de refinar y fabricar, D-109) y la pista para crecer fundando tu propio campamento. El Claro no crece
-        ni se mantiene (D-95, D-98): no tiene obra común.
+        básicas de refinar y fabricar, D-109), 📜 Tablón (los encargos del día y los personajes del Claro, D-117; tomó el
+        lugar de ↩️ Volver: 📍 Zona en el menú de abajo vuelve) y la pista para crecer fundando tu propio campamento.
+        El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
         La llaman: el botón 🏕️ Campamento estando en el Claro, y los botones viejos de la obra (camp, donate, feed).
         Si cambia, afecta: la primera pantalla de todos los jugadores nuevos (tope de 4 botones, D-75: ya están los 4;
         tests/test_pantry.py y tests/test_service.py miran el orden).
         """
         t = self.texts
-        body = [t.t("claro.intro"), t.t("claro.grow_hint"), t.t("claro.trades_hint"), self._status_line(hero)]
+        body = [t.t("claro.intro"), t.t("claro.grow_hint"), t.t("claro.trades_hint"), t.t("story.claro_hint"), self._status_line(hero)]
         return View(kind="claro", title=t.t("claro.title"), body=body + self._tutorial_hint(hero),
                     actions=[Action(id="shop", label=t.t("shop.button")),
                              Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))),
                              Action(id="oficios", label=t.t("prof.button")),      # D-109: the Claro has the basic stations
-                             Action(id="home", label=t.t("menu.back"))],
+                             Action(id="board", label=t.t("story.button_board"))],  # D-117: the tasks board (📍 Zona in the menu goes back)
                     notice=notice)
 
     def _settlement(self) -> dict[str, Any]:
@@ -1876,6 +1929,7 @@ class GameService:
         rations += smoked
         self._add_rations(f"{camp['x']}:{camp['y']}", rations)
         lines, _ = self._food_reward(hero, given, rations)
+        lines += self._story_event(hero, "feed", rations=rations)     # D-117: camp tasks
         if smoked:
             lines.insert(1, t.t("upgrades.smoked", n=smoked))
         return self._camp_here_view(hero, notice="\n".join(lines))
@@ -1955,8 +2009,9 @@ class GameService:
         actions = []
         for item_id in shop["sells"]:
             item = self.content.items[item_id]
-            body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=self._money(item["price"])))
-            actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(item["price"]))))
+            price = self._shop_price(hero, item_id)              # D-117: 🕳️ Huérfano de las Ruinas pays 10 % less
+            body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=self._money(price)))
+            actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(price))))
         actions = actions[:3]
         sellable = {i: n for i, n in hero.backpack.items()      # food stays: it feeds the pantry (D-93)
                     if self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")
@@ -1978,9 +2033,10 @@ class GameService:
         item = self.content.items[item_id]
         if self._bag_full(hero):
             return self._shop_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
-        if hero.gold < item["price"]:
+        price = self._shop_price(hero, item_id)                  # D-117: the origin's discount, if any
+        if hero.gold < price:
             return self._shop_view(hero, notice=t.t("shop.no_gold"))
-        hero.gold -= item["price"]
+        hero.gold -= price
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
         self._refill_belt(hero)
         return self._shop_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
@@ -2000,6 +2056,7 @@ class GameService:
             total, trade = self._merchant_sale(hero, total)     # D-116: 💱 Comercio
             hero.gold += total
             lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
+            lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)          # D-117
             return self._shop_view(hero, notice="\n".join(lines))
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
@@ -2011,6 +2068,7 @@ class GameService:
         price, trade = self._merchant_sale(hero, price)         # D-116: 💱 Comercio
         hero.gold += price
         lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + trade + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
+        lines += self._story_event(hero, "sell", n=1, coins=price)                             # D-117
         return self._shop_view(hero, notice="\n".join(lines))
 
     def _rest(self, hero: Hero) -> View:
@@ -2182,6 +2240,9 @@ class GameService:
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
         notice = t.t("camps.founded", name=name, x=hero.x, y=hero.y)
+        story = self._story_event(hero, "camp", name=name)            # D-117: the journal (and any mission that asks for a camp)
+        if story:
+            notice += "\n" + "\n".join(story)
         if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
             notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["interval_days"])
         return self._camp_here_view(hero, notice=notice)
@@ -3748,6 +3809,7 @@ class GameService:
         if not given:
             return self._works_view(hero, page, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
         lines = self._contribution_lines(hero, given, name)
+        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins"))     # D-117: camp tasks
         if all(int(progress.get(k, 0)) >= n for k, n in need.items()):
             record["built"][uid] = self.clock.now()
             record["works"].pop(uid, None)
@@ -3868,6 +3930,7 @@ class GameService:
         total, trade = self._merchant_sale(hero, total)         # D-116: 💱 Comercio
         hero.gold += total
         lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
+        lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)              # D-117
         return self._services_view(hero, notice="\n".join(lines))
 
     def _can_craft(self, hero: Hero) -> bool:
@@ -3995,6 +4058,7 @@ class GameService:
         if not given:
             return self._knowledge_view(hero, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
         lines = self._contribution_lines(hero, given, name)
+        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins"))     # D-117: camp tasks
         if all(int(progress.get(k, 0)) >= n for k, n in need.items()):
             tech.setdefault("done", []).append(tid)
             tech["current"], tech["progress"] = None, {}
@@ -4076,6 +4140,7 @@ class GameService:
         """
         if xp <= 0 or pid not in self._prof_catalog():
             return []
+        xp = int(round(xp * (1 + self._origin_prof_bonus(hero, pid))))      # D-117: the origin's trait (e.g. ⛏️ Minero +15 %)
         before = self._prof_rank(hero, pid)
         hero.professions[pid] = hero.professions.get(pid, 0) + int(xp)
         after = self._prof_rank(hero, pid)
@@ -4513,6 +4578,7 @@ class GameService:
         lines.append(t.t("prof.gained", xp=int(xp * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=prof_xp))
         lines += self._give_xp(hero, xp)
         lines += self._prof_gain(hero, pid, prof_xp)
+        lines += self._story_event(hero, "craft", recipe=rid, profession=pid, item=out_id, n=times)     # D-117
         return self._recipe_view(hero, rid, page, notice="\n".join(lines))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -4786,7 +4852,11 @@ class GameService:
                     actions=[Action(id="places", label=t.t("menu.places")), Action(id="explore_menu", label=t.t("menu.back"))])
 
     def _hero_view(self, hero: Hero) -> View:
-        """Hero sheet (D-76): level, xp, health, /stats, attack and defense, energy, resource, coins, /inv, /habilidades, status."""
+        """Hero sheet (D-76): level, xp, health, /stats, attack and defense, energy, resource, coins, /inv, /habilidades, status.
+
+        [ES] Qué hace: la ficha del héroe. Desde D-117 suma el origen (con el atajo /historia), el emblema de su mejor oficio y
+        la biografía de /bio, y los títulos de la historia junto a los de Pionero. Sigue con 4 botones (tests/test_gear.py).
+        """
         t = self.texts
         cdef = self._kit(hero)
         stats = hero_stats(cdef, hero.level)
@@ -4802,7 +4872,8 @@ class GameService:
             t.t("hero.class_short", icon=self._hero_icon(hero), cls=class_line),
             t.t("hero.skills_link", n=hero.points),
             t.t("hero.trades_link"),                                    # D-109: ⚒️ Oficios lives behind /oficios
-            *([t.t("guardian.titles_line", titles=", ".join(t.t(f"guardian.title.{x}") for x in hero.titles))] if hero.titles else []),
+            *([t.t("guardian.titles_line", titles=", ".join(self._title_name(x) for x in hero.titles))] if hero.titles else []),
+            *self._story_hero_lines(hero),                              # D-117: origin (/historia), role emblem and /bio
             t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
             t.t("hero.xp_line", xp=hero.xp, next=high),
             t.t("hero.hp_line", hp=hero.hp, max_hp=stats["max_hp"]),
@@ -5288,7 +5359,8 @@ class GameService:
             del hero.backpack[item_id]
         price, _trade = self._merchant_sale(hero, price)       # D-116: 💱 Comercio
         hero.gold += price
-        return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price)))
+        story = self._story_event(hero, "sell", n=1, coins=price)                                    # D-117
+        return self._gear_view(hero, notice=self._join([t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price))] + story))
 
     # ------------------------------------------------------------------ the region Guardian (D-82)
 
@@ -5603,6 +5675,8 @@ class GameService:
                  on_hit=lambda dmg: self.bus.publish(HitReceived(hero.id, dmg, False)))
         self._end_combat(hero, state)
         outcome = state["outcome"]
+        ups = {t.t("combat.level_up", level=n) for n in range(level + 1, hero.level + 1)} | {t.t("talents.new_point")}
+        activity["log"] += [line for line in state.get("story", []) if line not in ups]    # D-117 (level-ups come below)
         fights = activity.setdefault("fights", {})
         key = {"victory": "won", "defeat": "lost"}.get(outcome, "fled")
         fights[key] = fights.get(key, 0) + 1
@@ -5865,6 +5939,11 @@ class GameService:
                 lines.append(t.t("combat.level_up", level=hero.level))
                 lines.append(t.t("talents.new_point"))
             self._pay_referral(hero)
+            # D-117: a won fight moves missions and tasks (the zone's biome; a hunt; the Guardian); automatic fights read
+            # state["story"] to put these lines in the batch summary (_auto_combat)
+            state["story"] = self._story_event(hero, "win", enemy=enemy["id"], biome=self._zone(hero.x, hero.y).biome,
+                                               level=enemy["level"], hunt=bool(state.get("hunt")), boss=bool(edef.get("boss")))
+            lines += state["story"]
         elif outcome == "defeat":
             lost = int(hero.gold * hb["defeat_gold_loss"])
             hero.gold -= lost

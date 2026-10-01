@@ -868,7 +868,7 @@ menu:
   zone: "📍 Zona"
   explore: "🧭 Explorar"
   camp: "🏕️ Campamento"
-  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · ⚙️ Opciones."
+  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · 📖 Historia · ⚙️ Opciones."
   map: "🗺️ Mapa"
   hero: "👤 Héroe"
   bag: "🎒 Mochila"
@@ -877,6 +877,7 @@ menu:
   continue: "▶️ Continuar"
   places: "📒 Lugares"
   options: "⚙️ Opciones"           # [ES] D-114: 5.º botón del menú de abajo (D-46 deja hasta 6)
+  story: "📖 Historia"            # [ES] D-117: 6.º botón del menú de abajo, antes de ⚙️ Opciones (D-46 deja hasta 6)
 
 options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho
   title: "⚙️ Opciones"
