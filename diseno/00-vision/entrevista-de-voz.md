@@ -111,6 +111,8 @@ Todas van, junto con las dudas nuevas, en la **segunda tanda** de abajo.
 
 ## Segunda tanda (1-oct-2026)
 
+> ⚠️ **La versión vigente está en el [Sistema de preguntas](sistema-de-preguntas.md)**, que junta esta tanda con las preguntas viejas del diseño y las de antes de la beta. El texto de abajo queda como historia.
+
 **Para qué sirve.** Junta en una sola charla lo que quedó sin responder (E-03, el tono de E-10 y los bloques 6 y 7: E-44 a E-54) y las dudas nuevas que salieron de la primera tanda (**E-55 a E-82**, registradas como P-78 a P-105 en [Preguntas abiertas](preguntas-abiertas.md)), más lo que quedó pendiente de la ampliación de diseño (**E-83 a E-91**, P-106 a P-114). E-73 y E-77 se quitaron porque la ampliación las respondió (D-168 y D-166), y E-58 se cambió a 10 etapas. **Versión final (1-oct-2026):** se sumaron 6 dudas nuevas (**E-92 a E-97**, P-115 a P-120), E-52 tiene las prioridades de hoy y el orden va de lo que frena trabajo a lo que puede esperar. Las preguntas que frenan trabajo son las de los bloques C, D y E: deciden cómo se programan el asentamiento por escalones, las razas, el día y la noche, y la economía entre jugadores.
 
 Todo lo que va dentro del bloque de abajo se copia tal cual.

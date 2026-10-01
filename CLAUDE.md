@@ -10,6 +10,7 @@ Toda sesión de IA que trabaje en este repositorio lee esto primero. Una orden n
 - **Lo decidido:** [decisiones.md](diseno/00-vision/decisiones.md) (D-xx). Solo la tabla "Confirmadas por el dueño" es ley; lo demás es provisional o propuesta.
 - **Si un documento contradice una decisión confirmada, manda la decisión** y se avisa del documento viejo. Ejemplo: D-58 quitó los pisos, pero muchos documentos todavía los nombran.
 - **Lo que falta decidir:** [preguntas-abiertas.md](diseno/00-vision/preguntas-abiertas.md) (P-xx, cada una con recomendación).
+- **Todo lo que hay que preguntarle al dueño:** el [sistema de preguntas](diseno/00-vision/sistema-de-preguntas.md), en tandas por prioridad y listo para pegar en un chat de voz. Toda duda nueva entra ahí (siguiente E-xx libre, con su P-xx y una recomendación), y lo que depende de una respuesta espera.
 - **Antes de la beta:** el [cuestionario de beta](diseno/00-vision/cuestionario-beta.md) (D-39): 160 preguntas, con la primera tanda arriba.
 - **Cómo se parte el juego:** [arquitectura-modular.md](diseno/01-plataforma/arquitectura-modular.md) (25 módulos, M1 a M25) y [web-y-multiplataforma.md](diseno/01-plataforma/web-y-multiplataforma.md).
 - **Qué aprendimos de otro juego:** [lecciones-de-towerwars.md](diseno/99-referencias/lecciones-de-towerwars.md).

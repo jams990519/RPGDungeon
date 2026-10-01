@@ -11,7 +11,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-01 | ¿Cómo se llama el juego? | ✅ Decidido (D-62): *Lost Realms* |
-| P-02 | ¿El diseño y el código viven en RPGDungeon o en un repositorio nuevo? | El diseño puede quedarse aquí; el código, en un repositorio nuevo dedicado cuando empiece |
+| P-02 | ¿El diseño y el código viven en RPGDungeon o en un repositorio nuevo? | ✅ **Decidido (D-23):** el repositorio RPGDungeon se dedica por completo al juego, con el diseño y el código |
 | P-03 | ¿Mundo propio con nombres originales, o nombres de WoW (solo uso privado, sin cobrar)? | ✅ **Decidido (D-135):** nombres propios y originales |
 | P-04 | ¿Idiomas desde el día uno? | Español e inglés |
 | P-05 | ¿Cuántos jugadores esperas en el primer año? | Diseñar para 1.000-5.000 activos y poder crecer |
@@ -23,11 +23,11 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 |---|---|---|
 | P-07 | ¿100 pisos? ¿Con cuántos se lanza? | ✅ **Decidido (D-58):** ya no hay pisos. El mapa es infinito y se abre por parches (D-60) |
 | P-08 | ¿Un solo servidor para todos o varios? | Uno solo (español e inglés juntos) mientras quepa |
-| P-09 | ¿Los Pioneros suman a su castillo? | Sí |
+| P-09 | ¿Los Pioneros suman a su castillo? | ✅ **Sin efecto (D-58):** ya no hay pisos ni pioneros de piso |
 | P-10 | ¿Los castillos nacen solo por cisma, o se puede fundar un segundo castillo desde el principio? | ✅ **Decidido (D-155):** sin tope de castillos; quien se separa funda otro, pero empieza de cero |
-| P-11 | ¿Un día de juego dura 6 horas reales? | Sí |
+| P-11 | ¿Un día de juego dura 6 horas reales? | ✅ **Decidido (D-126):** un día del mundo dura hasta 4 días reales; la duración exacta se pregunta en E-63 (P-86) |
 | P-54 | ¿Mínimo para un cisma y tope de castillos? | ✅ **Decidido (D-155):** sin tope de castillos; el límite es el tiempo y la gente |
-| P-55 | ¿Cuánto debería tardar el servidor en llevar el Claro hasta Castillo? | 4-6 semanas: es la primera temporada |
+| P-55 | ¿Cuánto debería tardar el servidor en llevar el Claro hasta Castillo? | ✅ **Sin efecto (D-98):** el Claro es el campamento base y no crece |
 
 ## Personaje
 
@@ -35,11 +35,11 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 |---|---|---|
 | P-12 | ¿15 clases (13 de WoW + Nigromante + Bardo)? ¿Alguna más (Ingeniero)? | ✅ **Decidido (D-151):** siguen las 15 clases con 3 especializaciones |
 | P-13 | ¿Cuántos botones en combate? | ✅ **Decidido (D-46):** 6: Atacar, 3 habilidades, Huir y Mochila |
-| P-67 | ¿Donde no se puede huir (Guardianes, arena), el botón Huir se vuelve Esquivar? | Sí |
+| P-67 | ¿Donde no se puede huir (Guardianes, arena), el botón Huir se vuelve Esquivar? | ✅ **Decidido (D-82):** contra el Guardián, 🏃 Huir se vuelve 🌀 Esquivar |
 | P-68 | ¿La técnica del arma (idea de Albion) ocupa una de las 3 casillas de habilidad, o se elimina? | Que pueda ocupar una de las 3 casillas, a elección del jugador |
-| P-71 | ¿El equipo de la 0.6 (3 ranuras: arma, armadura y joya; 4 tipos de armadura como en WoW; requisito de nivel y de tipo; botín "para ti" el 70 % de las veces) queda así, o se suma ya la libertad de ponerse otra armadura con castigo de peso? | Que quede así en la capa simple; las 10 ranuras, la carga y la durabilidad llegan con la fabricación (D-44, D-77). **En el juego hoy:** 7 ranuras, y solo el nivel impide ponerse una pieza (D-83) |
-| P-14 | ¿Armadura libre con penalización de peso? | Sí |
-| P-15 | ¿Cualquier linaje con cualquier clase? | Sí |
+| P-71 | ¿El equipo de la 0.6 (3 ranuras: arma, armadura y joya; 4 tipos de armadura como en WoW; requisito de nivel y de tipo; botín "para ti" el 70 % de las veces) queda así, o se suma ya la libertad de ponerse otra armadura con castigo de peso? | ✅ **Decidido (D-83, D-94):** 7 ranuras; solo el nivel impide ponerse una pieza; las de otra clase rinden al 50 % |
+| P-14 | ¿Armadura libre con penalización de peso? | ✅ **Decidido (D-83, D-94):** solo el nivel impide ponerse una pieza; las de otra clase rinden al 50 % |
+| P-15 | ¿Cualquier linaje con cualquier clase? | ✅ **Se pregunta con las razas (P-89, E-66)** |
 | P-16 | ¿Nivel ligado al piso (Techo del Piso)? | ✅ **Sin efecto (D-58):** ya no hay pisos. La idea sigue como Techo de la Frontera (propuesta, ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)) |
 
 ## Combate
@@ -83,7 +83,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-35 | ¿Monetización: cosméticos y Premium de comodidad con Stars? ¿Ficha de oro? | ✅ **Decidido (D-43):** cosméticos y aceleradores (experiencia, recursos); todo lo demás con moneda del juego; sin ficha de oro |
 | P-36 | ¿Apuestas con oro en lugares legales? | ✅ **Decidido (D-43):** solo con oro del juego, nunca con dinero real |
 | P-37 | ¿Máximo de 2 oficios mayores por personaje? | ✅ **Reemplazada por D-57:** sin límite duro; cada oficio extra cuesta más tiempo |
-| P-69 | ¿El costo del conocimiento es solo natural (tiempo, recursos, preparación, costos de cada oficio) o se suma un freno extra para quien acumula muchos oficios? | Solo natural, como dijiste; si en la beta se ve que alguien lo domina todo demasiado rápido, se agrega un freno suave |
+| P-69 | ¿El costo del conocimiento es solo natural (tiempo, recursos, preparación, costos de cada oficio) o se suma un freno extra para quien acumula muchos oficios? | ✅ **Decidido (D-146):** sin límite de oficios; el freno es el tiempo y las especializaciones |
 | P-76 | ¿Los beneficios de oficio (D-111) se suman todos, o solo cuentan los de tus 2 oficios de fabricación más altos? | ✅ **Decidido (D-121):** se suman todos, y otros jugadores pueden darte beneficios de sus oficios |
 | P-77 | ¿A qué velocidad se llega al nivel 100 ahora que lo largo es la historia y el rol (D-117)? Hoy (D-78): unos 2 años jugando todos los días con toda la energía | ✅ **Decidido (D-118):** se quedan los ~2 años: no se acelera la subida |
 | P-70 | ¿Lo que no usas se olvida poco a poco? | ✅ **Decidido (D-146):** no se olvidan; sin límite de oficios; abandonar uno es empezar de cero |
@@ -110,12 +110,12 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-42 | ¿Grupos de Telegram oficiales por castillo y por región? | Sí |
 | P-43 | ¿Casa propia desde el principio? | ✅ **Decidido (D-158):** sí, desde el inicio: lo primero que construyes es tu casa, para 3 a 5 jugadores |
 | P-44 | ¿Mini App o solo chat? | Solo chat primero; Mini App después para mapa, talentos y mercado |
-| P-45 | ¿Vigor (energía) para las acciones de mundo abierto? | Sí, generoso; las instancias, con bloqueos semanales |
+| P-45 | ¿Vigor (energía) para las acciones de mundo abierto? | ✅ **Decidido (D-78, D-164):** toda acción gasta energía; las mazmorras se reinician cada día |
 | P-46 | ¿Tecnología: Python + aiogram (como TowerWars) con PostgreSQL? | Sí |
 | P-47 | ¿Presupuesto mensual de servidor? | Definirlo antes de la alfa |
 | P-48 | ¿API pública de solo lectura para herramientas de la comunidad? | Sí, en la beta |
 | P-58 | ¿La versión web entra en la beta o después? | Después: primero Telegram; la web empieza como Mini App dentro de Telegram y luego como sitio propio |
-| P-59 | ¿El mismo personaje en Telegram y en la web, entrando con la cuenta de Telegram? | Sí |
+| P-59 | ¿El mismo personaje en Telegram y en la web, entrando con la cuenta de Telegram? | ✅ **Decidido (D-41):** la misma cuenta, el mismo mundo y el mismo héroe en todos los clientes |
 | P-60 | ¿Dominio y alojamiento del sitio web? | Decidirlo antes de construir el cliente web |
 | P-61 | ¿La app móvil es nativa o empieza como la web instalable en el teléfono? | Empezar con la web instalable (PWA) y hacer app de tiendas cuando el juego esté estable |
 | P-62 | ¿La app va a las tiendas de Apple y Google? | Sí, más adelante. Allí los pagos pasan por el sistema de cada tienda y las apuestas simuladas suben la edad mínima: revisar antes |
@@ -130,7 +130,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 
 ## Dudas de la entrevista de voz (segunda tanda, 1-oct-2026)
 
-Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82). P-106 a P-114 salieron de la ampliación de diseño del dueño (D-164 a D-173) y van como E-83 a E-91. P-115 a P-120 son las últimas dudas (E-92 a E-97).
+Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82). P-106 a P-114 salieron de la ampliación de diseño del dueño (D-164 a D-173) y van como E-83 a E-91. P-115 a P-120 son las últimas dudas (E-92 a E-97). **Todas las preguntas que quedan abiertas se hacen desde el [Sistema de preguntas](sistema-de-preguntas.md)**; las P-xx viejas que siguen abiertas van ahí como E-98 a E-121.
 
 | # | Pregunta | Recomendación |
 |---|---|---|
