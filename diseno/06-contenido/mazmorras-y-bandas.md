@@ -2,6 +2,8 @@
 
 > **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md), [Jefes](jefes.md), [Social](../08-social/gremios-y-social.md) (buscador de grupos) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md) (botín), [Progresión](../03-personaje/progresion.md) (temporadas) · **Estado:** propuesta
 
+> ⚠️ **Lo que decidió el dueño (1-oct-2026) manda sobre lo de abajo:** las mazmorras tienen estructura fija y cambian cada día de facción, jefe, camino y botín; todo tipo de enemigo tiene su jefe; la misma mazmorra se corre con 5, 10, 20 o más de 25 jugadores, con más dificultad y recompensa; tanques y curadores con recompensa propia (D-164). Para el jugador solo: mazmorras chicas de recompensa modesta y mazmorras profundas por pisos (D-170). Jefes de mundo (D-150) y PvP en mazmorras: en la segunda tanda de la entrevista (P-108, P-110).
+
 ---
 
 ## 1. Mazmorras

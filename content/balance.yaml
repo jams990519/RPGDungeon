@@ -364,6 +364,15 @@ masterwork:                  # [ES] D-116 (confirmada): ✒️ obra maestra. Al 
   price_mult: 1.25           # [ES] el mercader paga 25 % más por una obra maestra que por la pieza normal. Con la probabilidad más alta (15 %) vender
                              # [ES] todo lo fabricado rinde en promedio ~3,7 % más; la pieza normal ya vale casi lo mismo que sus materiales (tests/test_masterwork.py)
 
+specs:                       # [ES] D-115 y D-141 (confirmada): 🎓 especializaciones de oficio (red-de-oficios.md §3). Cada oficio tiene 3 (content/professions.yaml "specs"); una al rango 25, otra al 75, nunca las tres. Números propuestos por Claude: se ajustan en la beta
+  slots_at: [25, 75]         # [ES] desde qué rango del oficio se abre cada lugar de especialización: la 1.ª al 25, la 2.ª al 75 (nunca una 3.ª: siempre hace falta otro jugador)
+  mastery_xp: 7200           # [ES] dominio: la experiencia de oficio que ganas en ese oficio mientras tienes la especialización. Con 7.200 llega al 100 % (~1 mes dedicado, a ~240 por día) y su efecto
+                             # [ES] crece parejo de 0 al valor completo. Cambiar de especialización es empezar de cero en la nueva (el dominio de la vieja queda guardado por si vuelves)
+  recipe_mastery: 0.25       # [ES] las recetas exclusivas de una especialización se abren con 25 % de dominio (~1 semana dedicada) y el rango que pide la receta
+  switch_cost: {base: 100, per_rank: 20}   # [ES] P-105 (recomendación: monedas que suben con el rango): cambiar una especialización por otra cuesta 100 🥉 + 20 🥉 por rango del oficio
+                             # [ES] (rango 25: 6 🥈; 50: 11 🥈; 75: 16 🥈; 100: 21 🥈). Elegir la 1.ª (rango 25) y la 2.ª (rango 75) no cuesta nada
+  per_page: 2                # [ES] oficios por página en 🎓 Especialización cuando hay más de 3 (4 botones como mucho, D-75)
+
 auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
   defaults: {fights: manual, retreat: 30, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 30 % de vida (D-119, entrevista E-02; antes 50), sí usar pociones
   retreat_choices: [30, 50, 70]   # [ES] 🩹 Retirarse con menos de: el botón va pasando por estos % de vida. Al terminar una pelea automática por debajo, el lote se corta; si una pelea sale con la vida ya por debajo, el héroe no pelea solo y la pelea te espera

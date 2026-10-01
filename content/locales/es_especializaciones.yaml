@@ -1,0 +1,334 @@
+# Texts of the 🎓 profession specializations (D-115, D-141): names and one-line descriptions of the 3 specializations of each
+# profession, the effect phrases, the screens (⚒️ Oficios → 🎓 Especialización) and the exclusive pieces and furniture.
+# Numbers live in content/balance.yaml ("specs") and content/professions.yaml ("specs" effects, recipes with "spec").
+# [ES] Textos de las 🎓 especializaciones de oficio (red-de-oficios.md §3): el nombre y una frase de cada especialización
+# (spec.<id>.name y spec.<id>.desc, ids de content/professions.yaml "specs"), las frases de cada tipo de efecto
+# (spec.effect.<tipo>; los beneficios usan prof.perk.<clave>), las pantallas, los avisos y los nombres de las piezas y muebles
+# exclusivos (content/items.yaml, "espec_*", paveses_roble y carro_viveres). Sin números escritos a mano: los pone el motor.
+# Lo leen: engine/core/content.py (se junta con es.yaml) y engine/service/game.py (sección "profession specializations":
+# _pspecs_view, _pspec_prof_view, _pspec_view, _pspec_switch_view, _pspec_pick, _pspec_switch, _pspec_gain, _pspec_effect_text; y
+# _professions_view, _station_view, _recipe_view, _make, _trade_loot).
+# Si cambias una clave, búscala en engine/service/game.py: una clave que falta se ve como [clave]
+# (tests/test_especializaciones.py revisa que no falte ninguna).
+
+item:
+  espec_arco_1: "Arco largo de arquero"
+  espec_arco_2: "Arco largo del maestro arquero"
+  espec_espada_1: "Hoja de forjador"
+  espec_espada_2: "Hoja del maestro forjador"
+  espec_placas_1: "Coraza de armero"
+  espec_placas_2: "Coraza del maestro armero"
+  espec_cuero_1: "Jubón de cuero fino"
+  espec_cuero_2: "Jubón del maestro peletero"
+  espec_malla_1: "Cota de anillas finas"
+  espec_malla_2: "Cota del maestro mallero"
+  espec_tela_1: "Túnica rúnica"
+  espec_tela_2: "Túnica del maestro arcano"
+  espec_joya_gemas_1: "Collar de gemas talladas"
+  espec_joya_gemas_2: "Collar del maestro tallador"
+  espec_joya_oro_1: "Sello de orfebre"
+  espec_joya_oro_2: "Sello del maestro orfebre"
+  paveses_roble: "Paveses de roble"
+  carro_viveres: "Carro de víveres"
+
+furniture:                    # [ES] qué hace cada mueble exclusivo, en una frase (items.yaml desc_key)
+  paveses_roble: "+1 de 🛡️ Defensa del campamento contra las oleadas"
+  carro_viveres: "los miembros comen 5 % menos de la despensa"
+
+resources:
+  use:
+    paveses_roble: "🪑 mueble: colócalo en tu campamento (🔨 Mejoras → 🔨 Obras) · +1 de 🛡️ Defensa"
+    carro_viveres: "🪑 mueble: colócalo en tu campamento (🔨 Mejoras → 🔨 Obras) · los miembros comen 5 % menos"
+
+spec:
+  # ---- Recolección
+  lenador_nobles:
+    name: "Maderas nobles"
+    desc: "Sabes qué tronco vale la pena: tu madera da mejores tablones cuando la aserras. (La 🌳 madera noble llegará más adelante.)"
+  lenador_carbon:
+    name: "Leña y carbón"
+    desc: "Preparas leña y carbón para la fragua: tus lingotes rinden más cuando fundes."
+  lenador_tala:
+    name: "Tala rápida"
+    desc: "Talas más rápido que nadie: más madera en cada vuelta."
+  minero_metales:
+    name: "Metales"
+    desc: "Sigues las vetas de metal: más metal en cada vuelta."
+  minero_gemas:
+    name: "Gemas"
+    desc: "Tu ojo encuentra las piedras preciosas: más gemas en bruto al minar."
+  minero_cantera:
+    name: "Cantera"
+    desc: "Sacas piedra y arcilla a lo grande, para las obras del campamento."
+  herbolario_medicinales:
+    name: "Medicinales"
+    desc: "Conoces cada hierba que cura: más hierba curativa en cada vuelta."
+  herbolario_flores:
+    name: "Flores raras"
+    desc: "Sabes dónde se esconden las flores de luna: las encuentras más seguido."
+  herbolario_fibras:
+    name: "Fibras"
+    desc: "Juntas fibra para los tejedores: más fibra en cada vuelta."
+  desollador_pieles:
+    name: "Pieles finas"
+    desc: "Desuellas sin romper la piel: más piel de cada bestia."
+  desollador_carniceria:
+    name: "Carnicería"
+    desc: "Aprovechas cada pieza de carne: más carne para la despensa."
+  desollador_trofeos:
+    name: "Trofeos"
+    desc: "Guardas colmillos y cristales de las bestias: a veces son gemas para la Joyería."
+  explorador_cartografo:
+    name: "Cartógrafo de campo"
+    desc: "Anotas todo lo que ves: exploras más rápido cada zona."
+  explorador_rastreador:
+    name: "Rastreador"
+    desc: "Sigues el rastro del botín: más monedas cuando cae un campamento enemigo en el que peleaste."
+  explorador_infiltrado:
+    name: "Infiltrado"
+    desc: "Te mueves como una sombra: cuesta más descubrirte cuando te infiltras."
+  # ---- Refinado
+  aserradero_nobles:
+    name: "Tablones nobles"
+    desc: "El maestro de la sierra: más tablones de la misma madera."
+  aserradero_carbon:
+    name: "Carbón"
+    desc: "Haces carbón con los restos: tus tablones rinden algo más y tus lingotes también, si fundes."
+  aserradero_papel:
+    name: "Papel"
+    desc: "Haces papel para mapas y apuntes: algo más de tablones y exploras un poco más rápido. (La Inscripción llegará más adelante.)"
+  fundicion_hierro:
+    name: "Hierro"
+    desc: "El maestro del horno: más lingotes del mismo metal."
+  fundicion_preciosos:
+    name: "Metales preciosos"
+    desc: "Separas lo valioso del mineral: algo más de lingotes y, a veces, una gema en bruto."
+  fundicion_aleaciones:
+    name: "Aleaciones"
+    desc: "Mezclas metales para las armaduras: algo más de lingotes y más obras maestras en malla y placas, si las fabricas."
+  destilacion_extractos:
+    name: "Extractos"
+    desc: "El maestro del alambique: más extractos de las mismas hierbas."
+  destilacion_tintes:
+    name: "Tintes y tinta"
+    desc: "Preparas tintes: algo más de extractos y más obras maestras en tela y cuero, si las fabricas."
+  destilacion_licores:
+    name: "Licores"
+    desc: "Destilas licores para las pociones: algo más de extractos y más pociones, si las preparas."
+  tejeduria_lino:
+    name: "Lino"
+    desc: "Tejes lino limpio: algo más de tela y más vendas, si las coses."
+  tejeduria_lana:
+    name: "Lana"
+    desc: "El maestro del telar: más tela de la misma fibra."
+  tejeduria_seda:
+    name: "Seda"
+    desc: "Tejes la tela más fina: algo más de tela y más obras maestras en tela, si la coses."
+  curtiduria_grueso:
+    name: "Cuero grueso"
+    desc: "El maestro de la curtiembre: más cuero de las mismas pieles."
+  curtiduria_fino:
+    name: "Cuero fino"
+    desc: "Curtes el cuero más suave: algo más de cuero y más obras maestras en cuero, si las fabricas."
+  curtiduria_pergamino:
+    name: "Pergamino"
+    desc: "Haces pergamino para mapas: algo más de cuero y exploras un poco más rápido. (La Inscripción llegará más adelante.)"
+  # ---- Fabricación
+  carpinteria_arqueria:
+    name: "Arquería"
+    desc: "Los mejores arcos salen de tus manos: más obras maestras en arcos y arcos que solo tú haces."
+  carpinteria_escudos:
+    name: "Escudos"
+    desc: "Trabajas la madera dura: más obras maestras en bastones y paveses de roble para defender el campamento. (Los escudos llegarán con su ranura.)"
+  carpinteria_mobiliario:
+    name: "Mobiliario y carros"
+    desc: "Haces muebles y carros: un carro de mano para cargar más y el carro de víveres para tu campamento."
+  herreria_armas:
+    name: "Forjador de armas"
+    desc: "Forjas las mejores hojas: más obras maestras en espadas y dagas, y hojas que solo tú haces."
+  herreria_armero:
+    name: "Armero"
+    desc: "Para placas, ven contigo: más obras maestras en placas y corazas que solo tú haces."
+  herreria_herramientas:
+    name: "Herramientas"
+    desc: "Te haces buenas herramientas: un poco más de todo lo que recolectas o desuellas."
+  peleteria_cuero:
+    name: "Cuero ligero"
+    desc: "Armaduras de cuero que no pesan: más obras maestras en cuero y jubones que solo tú haces."
+  peleteria_malla:
+    name: "Malla"
+    desc: "Anilla por anilla: más obras maestras en malla y cotas que solo tú haces."
+  peleteria_talabarteria:
+    name: "Talabartería"
+    desc: "Alforjas y mochilas a tu medida: llevas más cosas. (Las sillas de montar llegarán con las monturas.)"
+  sastreria_tunicas:
+    name: "Túnicas mágicas"
+    desc: "Bordas runas en la tela: más obras maestras en túnicas y túnicas que solo tú haces."
+  sastreria_clima:
+    name: "Ropa de clima"
+    desc: "Abrigo para cabeza, manos, piernas y pies: más obras maestras en esas piezas de tela. (El clima llegará más adelante.)"
+  sastreria_medico:
+    name: "Textil médico"
+    desc: "Coses vendas limpias: más vendas en cada tanda."
+  alquimia_pociones:
+    name: "Pociones"
+    desc: "El maestro de las pociones: más pociones en cada tanda."
+  alquimia_elixires:
+    name: "Elixires"
+    desc: "Conoces la dosis justa: tus pociones curan más."
+  alquimia_venenos:
+    name: "Venenos"
+    desc: "Untas tus armas con veneno: pegas un poco más fuerte. (Los venenos para otros llegarán más adelante.)"
+  medicina_auxilios:
+    name: "Primeros auxilios"
+    desc: "Vendas como nadie: tus vendas y ungüentos curan más."
+  medicina_cirugia:
+    name: "Cirugía"
+    desc: "Manos firmes: si eres sanador, tus curaciones curan más."
+  medicina_farmacia:
+    name: "Farmacia"
+    desc: "Preparas remedios en cantidad: más ungüentos, botiquines y vendajes en cada tanda."
+  joyeria_gemas:
+    name: "Talla de gemas"
+    desc: "Tallas cada gema a la perfección: más obras maestras en joyas y collares que solo tú haces."
+  joyeria_orfebreria:
+    name: "Orfebrería"
+    desc: "Trabajas el metal fino: tus lingotes rinden más al fundir y haces sellos que solo tú haces."
+  joyeria_vidrieria:
+    name: "Vidriería"
+    desc: "Soplas frascos de vidrio: más pociones en cada tanda, si las preparas."
+  # ---- Servicio y artes arcanas
+  comercio_abastecedor:
+    name: "Abastecedor"
+    desc: "Compras y vendes materiales: más monedas al venderle materiales al mercader."
+  comercio_tratante:
+    name: "Tratante de equipo"
+    desc: "Sabes lo que vale cada pieza: más monedas al vender equipo."
+  comercio_caravanero:
+    name: "Caravanero"
+    desc: "Negocias en los campamentos: más monedas en el trueque. (Las caravanas llegarán más adelante.)"
+  encantamiento_armas:
+    name: "Armas"
+    desc: "Encantas filos: tu ⚔️ Filo suma más."
+  encantamiento_armaduras:
+    name: "Armaduras"
+    desc: "Encantas armaduras y joyas: tu ❤️ Vigor y tu 🛡️ Guarda suman más."
+  encantamiento_desencantar:
+    name: "Desencantar"
+    desc: "Le sacas todo al equipo viejo: más esencias al desencantar."
+
+  # ---- Frases de los efectos (el número sale de tu dominio)
+  effect:
+    yield: "+{v} % de sacar una unidad más de {what}"
+    find: "+{v} % de hallar {what}"
+    masterwork: "+{v} % de ✒️ obra maestra en las piezas de {what}"
+    coins: "+{v} % de monedas {what}"
+    enchant: "+{v} punto en {what} al encantar"
+    detect: "−{v} puntos de que te descubran al 🕵️ infiltrarte"
+  sale:
+    goods: "al venderle materiales al mercader"
+    gear: "al vender equipo"
+    barter: "en el 💱 trueque del campamento"
+    ecamp: "de los ⛺ campamentos enemigos (cofre y parte)"
+  slots_of: "{types} ({slots})"
+  and: " y "
+
+  # ---- Pantallas
+  button: "🎓 Especialización"
+  title: "🎓 Especialización"
+  intro: "Al rango {first} de un oficio eliges una especialización; al {second}, una segunda. Nunca las tres: siempre hace falta otro jugador. Cada una da más rendimiento o mejor calidad en su línea y, algunas, recetas que solo ella hace."
+  mastery_rule: "📈 Su efecto crece con tu dominio: la experiencia de ese oficio que ganas mientras la tienes ({full} para el 100 %). Cambiar una por otra cuesta monedas y empiezas de cero en la nueva; lo aprendido en la vieja queda guardado por si vuelves."
+  hub_line: "{name} · rango {rank}: {state}"
+  state_held: "🎓 {names}"
+  state_free: "🎓 puedes elegir una"
+  state_held_free: "🎓 {names} · puedes sumar otra"
+  none: "Ningún oficio llegó todavía al rango {rank}. Súbelo para elegir su especialización."
+  locked_list: "🔒 Desde el rango {rank}: {items}"
+  prof_title: "🎓 {name}"
+  prof_intro: "{name} · rango {rank} ({title}) · especializaciones: {used}/{slots}"
+  next_first: "🔓 En rango {rank} eliges tu primera especialización."
+  next_second: "🔓 En rango {rank} puedes sumar una segunda."
+  line_held: "✅ {name} · dominio {bar}"
+  line_saved: "💾 {name} · dominio guardado: {pct} %"
+  line_other: "▫️ {name}"
+  effect_line: "   ↳ {effect}"
+  exclusive_line: "   📜 Solo ella: {items}"
+  held_mark: "✅ "
+  view_title: "🎓 Especialización"
+  of_prof: "Especialización de {prof} · tu rango {rank} ({title})"
+  mastery_line: "📈 Dominio: {bar}"
+  effect_now: "✨ Ahora: {effect}"
+  effect_full: "🎯 Con todo el dominio: {effect}"
+  exclusive_title: "📜 Recetas que solo ella hace:"
+  exclusive_entry: "{mark} {item} · rango {rank} y {pct} % de dominio"
+  exclusive_none: "📜 No tiene recetas propias: su fuerza está en el efecto."
+  held_note: "✅ La tienes. Sigue con {prof} para dominarla."
+  locked_note: "🔒 Pide rango {rank} de {prof} (tienes {have})."
+  pick_note: "Elegirla es gratis: es tu {n|primera|segunda} especialización de {prof}."
+  switch_note: "Tus lugares están llenos: para tomarla, deja una ({cost}). Empiezas con {pct} % de dominio; lo de la que dejas queda guardado."
+  pick_button: "🎓 Elegir {name}"
+  switch_button: "🔄 Dejar {name} ({cost})"
+  confirm_title: "🔄 Cambiar de especialización"
+  confirm_body: "Dejas {old} y tomas {new}. Cuesta {cost}."
+  confirm_lose: "Pierdes su efecto y sus recetas exclusivas mientras no la tengas. Su dominio ({pct} %) queda guardado por si vuelves."
+  confirm_start: "{new} empieza con {pct} % de dominio."
+  gold_line: "Tienes {have}."
+  confirm_button: "✅ Sí, cambiar ({cost})"
+  picked: "🎓 Elegiste {name} en {prof}. Su efecto crece con tu dominio: sigue con tu oficio."
+  switched: "🔄 Dejaste {old} y tomaste {new} (−{cost}). El dominio de {old} quedó guardado."
+  no_gold: "🥉 Te faltan monedas: cambiar cuesta {cost} y tienes {have}. No gastaste nada."
+  err_held: "Ya tienes esa especialización."
+  err_full: "Tus lugares están llenos: deja una para tomar esta."
+  err_locked: "🔒 Todavía no: pide rango {rank} de {prof}."
+  err_switch: "No se pudo cambiar: mira de nuevo tus especializaciones. No gastaste nada."
+  unlock_first: "🎓 Ya puedes elegir especialización en {prof}: ⚒️ Oficios → 🎓 Especialización."
+  unlock_second: "🎓 Ya puedes sumar una segunda especialización en {prof}: ⚒️ Oficios → 🎓 Especialización."
+  recipe_unlocked: "🎓 Nueva receta exclusiva de {spec}: {items}."
+  mastered: "🎓 Dominas {spec}: su efecto ya es completo."
+  prof_line: "   🎓 {items}"
+  prof_line_item: "{name} ({pct} %)"
+  prof_free: "   🎓 Puedes elegir especialización: 🎓 Especialización."
+  recipe_line: "🎓 Receta exclusiva de {spec}."
+  recipe_locked: "🔒 Pide {pct} % de dominio de {spec} (tienes {have} %)."
+  recipe_not_held: "🔒 Solo la hace quien tiene la especialización {spec} de {prof}."
+  yield_line: "⭐ {pct} % de sacar una unidad más (por tu especialización)."
+  found: "🎓 Tu especialización halló {items}."
+  mark: "🎓 "
+
+  # ---- Fase 2, lado del campamento (D-115): agregadas al unir las dos ramas
+  pescador_redes:
+    name: "Redes"
+    desc: "Pescas con red: más pescado en cada vuelta."
+  pescador_perlas:
+    name: "Perlas"
+    desc: "Abres cada concha: a veces sale una perla, que la Joyería paga como gema."
+  pescador_ahumado:
+    name: "Ahumado y salazón"
+    desc: "Tus platos de pescado y tus conservas rinden más en la despensa."
+  cocina_guisos:
+    name: "Guisos"
+    desc: "Raciones y guisos de cazador que rinden más."
+  cocina_conservas:
+    name: "Conservas"
+    desc: "Conservas y pescado asado que rinden más."
+  cocina_banquetes:
+    name: "Banquetes"
+    desc: "Festines y banquetes que rinden más."
+  canteria_sillares:
+    name: "Sillares"
+    desc: "Cortas la piedra con precisión: más sillares."
+  canteria_tallado:
+    name: "Tallado"
+    desc: "Tallas la piedra fina: algún sillar de más y, a veces, una gema escondida."
+  canteria_muros:
+    name: "Muros"
+    desc: "Conoces la cantera: algún sillar de más y más piedra al recolectar."
+  construccion_madera:
+    name: "Obras de madera"
+    desc: "Preparas mejor la madera de las obras: más tablones al aserrar."
+  construccion_piedra:
+    name: "Obras de piedra"
+    desc: "Preparas mejor la piedra de las obras: más sillares."
+  construccion_fortificaciones:
+    name: "Fortificaciones"
+    desc: "Herrajes y clavos para murallas y torres: más lingotes al fundir."

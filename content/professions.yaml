@@ -25,6 +25,18 @@
 #     inputs: materiales de la mochila por vez. output: lo que sale por vez (ids de items.yaml).
 #     min_rank: rango del oficio desde el que se puede hacer. energy: ⚡ por vez (D-78: toda acción fuera del combate
 #     gasta energía). xp: experiencia de oficio por vez. La experiencia de héroe sale de energy (balance.yaml professions).
+#     spec (D-141, opcional): la 🎓 especialización que la hace exclusiva: solo la ve y la hace quien la tiene, con el rango
+#     de la receta y balance.yaml specs.recipe_mastery de dominio.
+# 🎓 Especializaciones (D-115, D-141; bloque "specs", debajo de "ranks"):
+#     specs.<oficio>: las 3 especializaciones del oficio (red-de-oficios.md §2). Cada una: id (estable y único en todo el juego:
+#     el héroe guarda las que tiene en Hero.prof_specs y su dominio en Hero.spec_xp), emoji y effects: una lista corta de
+#     efectos con su valor al 100 % de dominio (crece parejo con el dominio). Tipos de efecto (engine/professions/rules.py
+#     SPEC_KINDS): yield (unidad de más al recolectar, desollar, refinar o fabricar los items de la lista), find (hallar un
+#     item por vuelta, por unidad desollada o por vez refinada del oficio de la especialización), masterwork (✒️ obra maestra de
+#     más en las piezas de esas ranuras o tipos), perk (se suma a un beneficio de PERK_KEYS; roles limita a un rol), coins
+#     (monedas de más en sales: goods, gear, barter o ecamp), enchant (puntos de más en esos encantamientos) y detect (menos
+#     probabilidad de que te descubran al infiltrarte). Textos: spec.<id>.name y spec.<id>.desc en
+#     content/locales/es_especializaciones.yaml. Un oficio nuevo suma las suyas aquí, sin tocar el motor.
 # Si cambias esto, revisa:
 #     - Casi toda receta de fabricación pide materiales de 2 oficios o más (D-109): tests/test_professions.py lo comprueba.
 #     - Las cantidades mueven la demanda de cada material y el valor de cada oficio (registro de balance en
@@ -56,6 +68,115 @@ ranks:
   - {id: artesano, from: 61}
   - {id: maestro, from: 81}
   - {id: gran_maestro, from: 96}
+
+# ---- D-115 / D-141: 🎓 profession specializations (3 per profession; one at rank 25, another at 75, never the three).
+# [ES] Especializaciones de oficio (red-de-oficios.md §3; números en balance.yaml specs). "value" es el efecto con el 100 % de
+# dominio (crece parejo desde 0 con la experiencia de oficio que ganas mientras la tienes). Los nombres vienen de la red de oficios
+# §2; donde el material todavía no existe (carbón, papel, pergamino, seda, escudos, herramientas, venenos...), la especialización
+# da hoy un efecto cercano en su línea y suma lo suyo cuando ese material o esa ranura entren al juego. El 💱 Comercio no tenía
+# especializaciones en la tabla: las tres son propuesta de Claude. Las recetas exclusivas (spec: <id>) están en "recipes", después
+# de las de Medicina. IDs estables: nunca se renombran ni se borran (retired: true para retirar una).
+specs:
+  # ---- Recolección: más de lo suyo, o un raro de más
+  lenador:
+    - {id: lenador_nobles, emoji: "🌳", effects: [{kind: yield, items: [tablon], value: 0.10}]}        # [ES] madera escogida: tus 🟫 tablones rinden más al aserrar
+    - {id: lenador_carbon, emoji: "🔥", effects: [{kind: yield, items: [lingote], value: 0.10}]}       # [ES] leña y carbón para la fragua: tus 🔩 lingotes rinden más al fundir
+    - {id: lenador_tala, emoji: "🪓", effects: [{kind: yield, items: [madera], value: 0.20}]}          # [ES] +20 % de sacar 🪵 madera de más
+  minero:
+    - {id: minero_metales, emoji: "⚙️", effects: [{kind: yield, items: [pieza_metal], value: 0.20}]}
+    - {id: minero_gemas, emoji: "💠", effects: [{kind: find, items: [gema_bruta], value: 0.08}]}       # [ES] por vuelta en la que minas algo, aparte del raro de siempre
+    - {id: minero_cantera, emoji: "🪨", effects: [{kind: yield, items: [piedra, arcilla], value: 0.20}]}
+  herbolario:
+    - {id: herbolario_medicinales, emoji: "🌿", effects: [{kind: yield, items: [hierba_curativa], value: 0.20}]}
+    - {id: herbolario_flores, emoji: "🌸", effects: [{kind: find, items: [flor_luna], value: 0.08}]}
+    - {id: herbolario_fibras, emoji: "🧵", effects: [{kind: yield, items: [fibra], value: 0.20}]}
+  desollador:
+    - {id: desollador_pieles, emoji: "🦌", effects: [{kind: yield, items: [piel], value: 0.20}]}
+    - {id: desollador_carniceria, emoji: "🍖", effects: [{kind: yield, items: [carne], value: 0.20}]}
+    - {id: desollador_trofeos, emoji: "🦴", effects: [{kind: find, items: [gema_bruta], value: 0.03}]}  # [ES] colmillos y cristales para la Joyería: por cada 🍖 o 🦌 que sacas
+  explorador:
+    - {id: explorador_cartografo, emoji: "🗺️", effects: [{kind: perk, key: explore, value: 3}]}        # [ES] +3 puntos de exploración por vuelta (la parte entera)
+    - {id: explorador_rastreador, emoji: "🐾", effects: [{kind: coins, sales: [ecamp], value: 0.30}]}  # [ES] +30 % de monedas de los ⛺ campamentos enemigos (cofre y parte)
+    - {id: explorador_infiltrado, emoji: "🕵️", effects: [{kind: detect, value: 0.10}]}                 # [ES] −10 puntos de que te descubran al 🕵️ infiltrarte (sin bajar de detect_min)
+  # ---- Refinado: la del material principal rinde +15 %; las otras +5 % y algo de su línea
+  aserradero:
+    - {id: aserradero_nobles, emoji: "🟫", effects: [{kind: yield, items: [tablon], value: 0.15}]}
+    - {id: aserradero_carbon, emoji: "🔥", effects: [{kind: yield, items: [tablon], value: 0.05}, {kind: yield, items: [lingote], value: 0.10}]}
+    - {id: aserradero_papel, emoji: "📜", effects: [{kind: yield, items: [tablon], value: 0.05}, {kind: perk, key: explore, value: 1}]}
+  fundicion:
+    - {id: fundicion_hierro, emoji: "🔩", effects: [{kind: yield, items: [lingote], value: 0.15}]}
+    - {id: fundicion_preciosos, emoji: "🪙", effects: [{kind: yield, items: [lingote], value: 0.05}, {kind: find, items: [gema_bruta], value: 0.03}]}
+    - {id: fundicion_aleaciones, emoji: "⛓️", effects: [{kind: yield, items: [lingote], value: 0.05}, {kind: masterwork, types: [malla, placas], value: 0.02}]}
+  destilacion:
+    - {id: destilacion_extractos, emoji: "🧴", effects: [{kind: yield, items: [extracto], value: 0.15}]}
+    - {id: destilacion_tintes, emoji: "🎨", effects: [{kind: yield, items: [extracto], value: 0.05}, {kind: masterwork, types: [tela, cuero], value: 0.02}]}
+    - {id: destilacion_licores, emoji: "🍶", effects: [{kind: yield, items: [extracto], value: 0.05}, {kind: yield, items: [pocion_vida, pocion_mayor], value: 0.10}]}
+  tejeduria:
+    - {id: tejeduria_lino, emoji: "🌾", effects: [{kind: yield, items: [tela_tejida], value: 0.05}, {kind: yield, items: [venda], value: 0.10}]}
+    - {id: tejeduria_lana, emoji: "🐑", effects: [{kind: yield, items: [tela_tejida], value: 0.15}]}
+    - {id: tejeduria_seda, emoji: "🪡", effects: [{kind: yield, items: [tela_tejida], value: 0.05}, {kind: masterwork, types: [tela], value: 0.02}]}
+  curtiduria:
+    - {id: curtiduria_grueso, emoji: "🟤", effects: [{kind: yield, items: [cuero_curtido], value: 0.15}]}
+    - {id: curtiduria_fino, emoji: "🧤", effects: [{kind: yield, items: [cuero_curtido], value: 0.05}, {kind: masterwork, types: [cuero], value: 0.02}]}
+    - {id: curtiduria_pergamino, emoji: "📜", effects: [{kind: yield, items: [cuero_curtido], value: 0.05}, {kind: perk, key: explore, value: 1}]}
+  # ---- Fabricación: ✒️ obra maestra de más en su línea y recetas exclusivas (o más rendimiento en sus remedios)
+  carpinteria:
+    - {id: carpinteria_arqueria, emoji: "🏹", effects: [{kind: masterwork, types: [arco], value: 0.05}]}      # [ES] exclusivas: espec_arco_1 y _2
+    - {id: carpinteria_escudos, emoji: "🛡️", effects: [{kind: masterwork, types: [baston], value: 0.05}]}    # [ES] madera dura: bastones y, cuando exista su ranura, escudos; exclusiva: 🛡️ paveses_roble
+    - {id: carpinteria_mobiliario, emoji: "🛒", effects: [{kind: perk, key: bag, value: 10}]}                 # [ES] un carro de mano: +10 de mochila; exclusiva: 🛒 carro_viveres
+  herreria:
+    - {id: herreria_armas, emoji: "⚔️", effects: [{kind: masterwork, types: [espada, daga], value: 0.05}]}  # [ES] exclusivas: espec_espada_1 y _2
+    - {id: herreria_armero, emoji: "🛡️", effects: [{kind: masterwork, types: [placas], value: 0.05}]}      # [ES] exclusivas: espec_placas_1 y _2
+    - {id: herreria_herramientas, emoji: "🔧", effects: [{kind: yield, items: [madera, piedra, pieza_metal, arcilla, hierba_curativa, fibra, carne, piel], value: 0.05}]}   # [ES] tus herramientas: +5 % en todo lo que recolectas o desuellas
+  peleteria:
+    - {id: peleteria_cuero, emoji: "🦺", effects: [{kind: masterwork, types: [cuero], value: 0.05}]}       # [ES] exclusivas: espec_cuero_1 y _2
+    - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2
+    - {id: peleteria_talabarteria, emoji: "🎒", effects: [{kind: perk, key: bag, value: 10}]}             # [ES] alforjas y mochilas: +10 de mochila (las sillas de montar, con las monturas)
+  sastreria:
+    - {id: sastreria_tunicas, emoji: "🔮", effects: [{kind: masterwork, types: [tela], slots: [armadura], value: 0.05}]}                  # [ES] exclusivas: espec_tela_1 y _2
+    - {id: sastreria_clima, emoji: "🧥", effects: [{kind: masterwork, types: [tela], slots: [cabeza, manos, piernas, pies], value: 0.05}]}   # [ES] el clima, cuando llegue
+    - {id: sastreria_medico, emoji: "🩹", effects: [{kind: yield, items: [venda], value: 0.25}]}
+  alquimia:
+    - {id: alquimia_pociones, emoji: "🧪", effects: [{kind: yield, items: [pocion_vida, pocion_mayor], value: 0.20}]}
+    - {id: alquimia_elixires, emoji: "🍷", effects: [{kind: perk, key: potion, value: 0.10}]}
+    - {id: alquimia_venenos, emoji: "☠️", effects: [{kind: perk, key: attack, value: 0.02}]}              # [ES] veneno en tus armas: +2 % de ataque (los venenos para vender, más adelante)
+  medicina:
+    - {id: medicina_auxilios, emoji: "🩹", effects: [{kind: perk, key: bandage, value: 0.15}]}
+    - {id: medicina_cirugia, emoji: "🩺", effects: [{kind: perk, key: heal, roles: [curacion], value: 0.10}]}
+    - {id: medicina_farmacia, emoji: "💊", effects: [{kind: yield, items: [unguento, botiquin, vendaje_maestro], value: 0.20}]}
+  joyeria:
+    - {id: joyeria_gemas, emoji: "💎", effects: [{kind: masterwork, types: [joya], value: 0.05}]}          # [ES] exclusivas: espec_joya_gemas_1 y _2
+    - {id: joyeria_orfebreria, emoji: "🪙", effects: [{kind: yield, items: [lingote], value: 0.10}]}       # [ES] exclusivas: espec_joya_oro_1 y _2
+    - {id: joyeria_vidrieria, emoji: "🫙", effects: [{kind: yield, items: [pocion_vida, pocion_mayor], value: 0.10}]}   # [ES] frascos de vidrio para la Alquimia
+  # ---- Servicio y artes arcanas
+  comercio:
+    - {id: comercio_abastecedor, emoji: "📦", effects: [{kind: coins, sales: [goods], value: 0.10}]}      # [ES] materiales al mercader del Claro
+    - {id: comercio_tratante, emoji: "🛡️", effects: [{kind: coins, sales: [gear], value: 0.10}]}         # [ES] tu equipo viejo
+    - {id: comercio_caravanero, emoji: "🐪", effects: [{kind: coins, sales: [barter], value: 0.10}]}      # [ES] el 💱 trueque del campamento (y las caravanas, cuando lleguen)
+  encantamiento:
+    - {id: encantamiento_armas, emoji: "⚔️", effects: [{kind: enchant, enchants: [filo], value: 0.01}]}           # [ES] +1 punto en ⚔️ Filo (antes de redondear)
+    - {id: encantamiento_armaduras, emoji: "🛡️", effects: [{kind: enchant, enchants: [vigor, guarda], value: 0.01}]}
+    - {id: encantamiento_desencantar, emoji: "💨", effects: [{kind: perk, key: disenchant, value: 0.20}]}
+  # ---- Fase 2, lado del campamento (D-115): las del 🎣 Pescador, la 🍲 Cocina, la 🗿 Cantería y la 🏗️ Construcción.
+  # [ES] Las agregó el líder al unir las dos ramas. Sus beneficios de campamento (mejor rango entre los miembros) no cambian;
+  # la especialización suma a lo que hace cada uno con sus manos. La Construcción todavía no tiene obras por especialización:
+  # hoy prepara mejor los materiales de su línea (efecto cercano, como Papel o Pergamino) y sumará lo suyo cuando lleguen.
+  pescador:
+    - {id: pescador_redes, emoji: "🕸️", effects: [{kind: yield, items: [pescado], value: 0.20}]}                       # [ES] +20 % de sacar 🐟 pescado de más
+    - {id: pescador_perlas, emoji: "🦪", effects: [{kind: find, items: [gema_bruta], value: 0.05}]}                    # [ES] perlas: a veces una 💠 gema al pescar
+    - {id: pescador_ahumado, emoji: "🔥", effects: [{kind: yield, items: [pescado_asado, conserva], value: 0.15}]}     # [ES] ahumado y salazón: tus platos de pescado rinden más
+  cocina:
+    - {id: cocina_guisos, emoji: "🍲", effects: [{kind: yield, items: [racion_campamento, guiso_cazador], value: 0.15}]}
+    - {id: cocina_conservas, emoji: "🫙", effects: [{kind: yield, items: [conserva, pescado_asado], value: 0.15}]}
+    - {id: cocina_banquetes, emoji: "🍗", effects: [{kind: yield, items: [festin, banquete], value: 0.15}]}
+  canteria:
+    - {id: canteria_sillares, emoji: "🧱", effects: [{kind: yield, items: [sillar], value: 0.15}]}
+    - {id: canteria_tallado, emoji: "💠", effects: [{kind: yield, items: [sillar], value: 0.05}, {kind: find, items: [gema_bruta], value: 0.03}]}
+    - {id: canteria_muros, emoji: "🏯", effects: [{kind: yield, items: [sillar], value: 0.05}, {kind: yield, items: [piedra], value: 0.10}]}
+  construccion:
+    - {id: construccion_madera, emoji: "🪵", effects: [{kind: yield, items: [tablon], value: 0.10}]}                   # [ES] obras de madera: tablones mejor preparados
+    - {id: construccion_piedra, emoji: "🧱", effects: [{kind: yield, items: [sillar], value: 0.10}]}                   # [ES] obras de piedra
+    - {id: construccion_fortificaciones, emoji: "🏰", effects: [{kind: yield, items: [lingote], value: 0.10}]}         # [ES] fortificaciones: herrajes y clavos
 
 professions:
   # ---- Recolección: sube al recolectar (o al vencer bestias, el desollador)
@@ -533,6 +654,31 @@ recipes:
     min_rank: 50
     energy: 2
     xp: 12
+
+  # ---- D-115 / D-141: 🎓 exclusive recipes (spec: <id>): only that specialization makes them, with recipe_mastery of mastery.
+  # [ES] Recetas exclusivas de las especializaciones (red-de-oficios.md §3): solo las ve y las hace quien tiene esa especialización
+  # con 25 % de dominio (balance.yaml specs.recipe_mastery) y el rango de la receta. Las de equipo: la receta de artesano de su línea
+  # y nivel con 1 material más (nivel 5) o 1 💠 gema y 1 🌸 flor de luna más (nivel 100); 2 ⚡ y 12 de experiencia de oficio, como
+  # las demás piezas (D-108). Sus piezas (content/items.yaml, "espec_*") valen 5 % más que las de artesano. Una línea por receta.
+  espec_arco_1: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 6, cuero_curtido: 2}, output: {espec_arco_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_arco_2: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 22, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_arco_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_espada_1: {profession: herreria, spec: herreria_armas, inputs: {lingote: 6, cuero_curtido: 2}, output: {espec_espada_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_espada_2: {profession: herreria, spec: herreria_armas, inputs: {lingote: 18, cuero_curtido: 8, gema_bruta: 5, flor_luna: 1}, output: {espec_espada_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_placas_1: {profession: herreria, spec: herreria_armero, inputs: {lingote: 8, cuero_curtido: 3}, output: {espec_placas_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_placas_2: {profession: herreria, spec: herreria_armero, inputs: {lingote: 20, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_placas_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_cuero_1: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 7, tela_tejida: 2}, output: {espec_cuero_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_cuero_2: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 21, tela_tejida: 8, extracto: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_cuero_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_malla_1: {profession: peleteria, spec: peleteria_malla, inputs: {cuero_curtido: 3, lingote: 5}, output: {espec_malla_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_malla_2: {profession: peleteria, spec: peleteria_malla, inputs: {lingote: 17, cuero_curtido: 10, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_malla_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_tela_1: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 7, extracto: 1}, output: {espec_tela_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_tela_2: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 24, extracto: 7, flor_luna: 5, gema_bruta: 1}, output: {espec_tela_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_joya_gemas_1: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 2, gema_bruta: 3}, output: {espec_joya_gemas_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_joya_gemas_2: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_gemas_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  espec_joya_oro_1: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 3, gema_bruta: 2}, output: {espec_joya_oro_1: 1}, min_rank: 25, energy: 2, xp: 12}
+  espec_joya_oro_2: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_oro_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  # [ES] 🪑 Muebles exclusivos (como los de la Carpintería: 4 ⚡ y 24 de experiencia de oficio; aserradero + curtiduría + fundición)
+  paveses_roble: {profession: carpinteria, spec: carpinteria_escudos, inputs: {tablon: 14, cuero_curtido: 4, lingote: 2}, output: {paveses_roble: 1}, min_rank: 50, energy: 4, xp: 24}
+  carro_viveres: {profession: carpinteria, spec: carpinteria_mobiliario, inputs: {tablon: 10, lingote: 2, cuero_curtido: 2}, output: {carro_viveres: 1}, min_rank: 25, energy: 4, xp: 24}
 
   # ---- D-110 / D-113: crafted gear every 10 levels up to 100, at ranks 55 to 100 (5 ranks per tier). Refined inputs
   # from 2 branches or more (and the rares: 💠 gems, 🌸 moon flowers), growing with the tier.
