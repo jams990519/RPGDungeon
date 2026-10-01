@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5; las 🎓 especializaciones de D-141, §0.6 y §5); el resto, propuesta
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -21,7 +21,7 @@
 
 El dueño pidió (1-oct-2026) preparar los oficios **como en World of Warcraft**: para que un carpintero avance hace falta un recolector y alguien que refine; para crear pociones hace falta herbología y alquimia; los joyeros y los guerreros necesitan lo que hacen otros. **Que avanzar no dependa de una sola cosa y que 50 jugadores tengan tareas distintas, con mucha variedad.** Sigue valiendo D-57: no hay tope duro de oficios; quien quiere serlo todo avanza mucho más lento que el especialista, porque cada oficio pide su tiempo, sus materiales y su estación.
 
-Esta es la **capa simple** que se programa primero, con los recursos que ya hay en el juego. El resto de este documento (especializaciones, maestría por objeto, exámenes, enfermedades laborales) queda como capa profunda, para después.
+Esta es la **capa simple** que se programa primero, con los recursos que ya hay en el juego. El resto de este documento (maestría por objeto, exámenes, enfermedades laborales) queda como capa profunda, para después. Las especializaciones ya están en su capa simple (§0.6).
 
 **Las tres capas, en chico:**
 
@@ -129,7 +129,7 @@ En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea l
 - **🪚 Refinar / 🛠️ Fabricar:** las recetas que tu rango abre en las estaciones de aquí, primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las demás; de a 2 por página si son más de 3.
 - **📜 Receta:** lo que pide (✅ o ❌ con lo que llevas), lo que sale, la energía y lo que ganas. Botones: 🔨 Hacer 1 · 🔨 Hacer 5 (o lo que alcance) · 🔨 Hacer todo · ↩️ Volver. Si falta un material, la energía, la estación o el rango, no se gasta nada.
 
-**Lo que falta (segunda tanda):** el **mercado entre jugadores** para venderse lo que cada uno hace. Mientras tanto cada jugador puede hacer toda la cadena él solo, más lento que el especialista, y vender lo que le sobre al mercader del Claro. Lo profundo (especializaciones, maestría por objeto, exámenes, calidad, herramientas, enfermedades laborales) sigue siendo propuesta.
+**Lo que falta (segunda tanda):** el **mercado entre jugadores** para venderse lo que cada uno hace. Mientras tanto cada jugador puede hacer toda la cadena él solo, más lento que el especialista, y vender lo que le sobre al mercader del Claro. Las 🎓 especializaciones ya están en su capa simple (§0.6); lo profundo (maestría por objeto, exámenes, calidad, herramientas, enfermedades laborales) sigue siendo propuesta.
 
 **La red completa**, con los 26 oficios, sus especializaciones y en qué orden entran, está en [Red de oficios](red-de-oficios.md) (D-115). La fase 1 de arriba es su primera parte.
 
@@ -281,6 +281,8 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 ## 5. Especializaciones y conocimiento
 
 **De dónde sale.** WoW desde *Dragonflight*.
+
+> **En el juego (capa simple, D-141):** una especialización al rango 25 y otra al 75, nunca las tres, con un **dominio** que crece con la experiencia de oficio que ganas mientras la tienes (no con puntos de conocimiento). Cambiar cuesta monedas y empieza de cero en la nueva; el dominio de la vieja queda guardado. Detalle en §0.6 y en [Red de oficios](red-de-oficios.md) §3.1. Lo de abajo (árbol con ramas, conocimiento semanal con tope) sigue siendo la capa profunda.
 
 - Cada oficio mayor tiene un **árbol de especialización** con 3 o 4 ramas (ver la tabla del §2.3).
 - Los puntos de ese árbol se ganan con **conocimiento**: la primera vez que fabricas cada receta, misiones semanales de oficio, tratados que sueltan los jefes y el estudio de objetos de otros artesanos.
@@ -454,6 +456,22 @@ El dueño pidió (1-oct-2026) **tantos oficios como hagan falta, que dependan un
 - **Nunca fabrica monedas:** las esencias valen poco en el mercader (✨ 1 🥉, 🔮 3 🥉, y 💱 Vender todo no las vende): desencantar y vender las esencias siempre paga menos que vender la pieza, aun con el beneficio del rango 100 (`tests/test_oficios_equipo.py` lo comprueba con cada pieza).
 - **Dónde se ve:** ✨ junto al nombre de la pieza en 🛡️ Equipo y en 🔁 Equipar; en la pieza, "✨ Encantamiento: ⚔️ Filo +2% ataque"; en /encantar, lo que llevas encantado.
 - **Datos y código:** números en `content/balance.yaml` → `enchanting`; el oficio en `content/professions.yaml` (`encantamiento`, `branch: enchant`, `perk: {disenchant: 0.30}`); las esencias en `content/items.yaml` (`esencia`, `esencia_mayor`); las cuentas en `engine/professions/rules.py` (`disenchant_yield`, `disenchant_amount`, `enchant_for_slot`, `enchant_value`, `enchant_cost`); el encantamiento de cada pieza en `Hero.gear_enchants` (vacío para los héroes de antes) y su bono en `engine/hero/gear.py` (`real_stats`, `gear_bonus`); las pantallas en `engine/service/game.py` (sección "enchanting"). Pruebas: `tests/test_oficios_equipo.py`.
-- **Lo que queda para después (capa profunda):** elegir el encantamiento (más de uno por ranura), encantamientos más fuertes con esencias mayores, runas para las defensas del campamento (Construcción), las especializaciones (Armas · Armaduras · Desencantar, red-de-oficios.md §3) y vender esencias entre jugadores en el mercado. Como la firma de la obra maestra, hoy el encantamiento se guarda por héroe y por tipo de pieza (todas las copias del mismo id lo comparten): cuando exista el mercado, tiene que viajar con cada pieza.
+- **Lo que queda para después (capa profunda):** elegir el encantamiento (más de uno por ranura), encantamientos más fuertes con esencias mayores, runas para las defensas del campamento (Construcción) y vender esencias entre jugadores en el mercado. Sus tres especializaciones (⚔️ Armas, 🛡️ Armaduras y 💨 Desencantar) ya están en el juego (§0.6). Como la firma de la obra maestra, hoy el encantamiento se guarda por héroe y por tipo de pieza (todas las copias del mismo id lo comparten): cuando exista el mercado, tiene que viajar con cada pieza.
 
 **De dónde sale:** *World of Warcraft* (el encantador desencanta lo que otros fabrican en polvos y esencias, y encanta una ranura por pieza) y *Albion Online* (el encantamiento como el gran sumidero de equipo y materiales).
+
+
+### 0.6 Las 🎓 especializaciones en el juego (D-115, D-141)
+
+El dueño confirmó (entrevista de voz, E-25) **una especialización al rango 25 y otra al 75, nunca las tres** (D-141), como proponía la [Red de oficios](red-de-oficios.md) §3: cada oficio tiene 3; la especialización da recetas que solo ella hace, mejor calidad en su línea y más rendimiento; cambiar se puede pagando y empezando de cero, y lo aprendido en la vieja queda guardado. Esta es la capa simple (D-44); la tabla completa de las 57 y sus números está en [Red de oficios](red-de-oficios.md) §3.1.
+
+- **Dónde:** ⚒️ Oficios → 🎓 Especialización (aparece cuando un oficio llega al rango 25; también /especialidad) → un oficio → una especialización → 🎓 Elegir o 🔄 Dejar otra. Debajo de cada oficio, en ⚒️ Oficios, se ven las que tienes con su dominio, o "🎓 Puedes elegir especialización".
+- **Lugares:** ninguno antes del rango 25; uno del 25 al 74; dos desde el 75. Elegir en un lugar libre es gratis.
+- **Dominio:** el efecto crece parejo con la experiencia de ese oficio que ganas mientras la tienes: 7.200 para el 100 % (~1 mes dedicado). Es lo que hace que cambiar sea empezar de cero.
+- **Cambiar** (P-105, la recomendación): 100 🥉 + 20 🥉 por rango del oficio, con confirmación. La que dejas pierde su efecto y sus recetas exclusivas; su dominio queda guardado por si vuelves.
+- **Qué da cada una:** más rendimiento en su línea (recolectores +20 %, refinadores +15 % o +5 % y algo de su línea, remedios +20-25 %), ✒️ obra maestra de más en su línea (+5 % los artesanos de equipo), hallazgos (💠 gemas, 🌸 flores de luna), beneficios (pociones, vendas, curaciones, mochila, exploración, esencias), monedas (Comercio, Rastreador) o un punto más al encantar.
+- **Recetas exclusivas:** 18. Cada especialización de equipo tiene dos piezas (nivel 5, rango 25; nivel 100, rango 100) que son la pieza de artesano de su línea con cada bono × 1,05 y un punto propio, con su ✒️ obra maestra; la 🪑 Carpintería suma dos muebles (🛡️ Paveses de roble, +1 de Defensa; 🛒 Carro de víveres, los miembros comen 5 % menos). Se abren con 25 % de dominio y solo las ve quien tiene esa especialización.
+- **Calidad por especialización** (D-143): más adelante, sobre este mismo dominio.
+- **Datos y código:** `content/professions.yaml` (`specs`, recetas con `spec`), `content/balance.yaml` → `specs`, `engine/professions/rules.py` (`spec_*`, `switch_cost`), `Hero.prof_specs` y `Hero.spec_xp` (vacíos para los héroes de antes), la sección "profession specializations" de `engine/service/game.py` y los textos de `content/locales/es_especializaciones.yaml`. Pruebas: `tests/test_especializaciones.py`.
+
+**De dónde sale:** *World of Warcraft* desde *Dragonflight* (las especializaciones de cada oficio y su avance con la práctica) y *Albion Online* (el retorno de material del especialista).

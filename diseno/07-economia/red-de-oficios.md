@@ -1,6 +1,6 @@
 # Red de oficios: quién necesita a quién
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115); las especializaciones, confirmadas (D-141) y en el juego (§3.1)
 
 **De dónde sale.**
 - *World of Warcraft*: oficios que se piden materiales entre sí (el herrero necesita al minero, el encantador desencanta lo que otros fabrican) y especializaciones por oficio desde *Dragonflight*.
@@ -79,6 +79,46 @@
 - **Cambiar de especialización** se puede, pagando y empezando de cero en la nueva. Lo aprendido en la vieja queda guardado por si se vuelve.
 - **Por qué:** dos herreros nunca son iguales. "Para placas, ve con Lisbeth; para herramientas, con Bram."
 
+### 3.1 En el juego (D-115, D-141)
+
+Lo que ya está programado (capa simple, D-44). Decisión del dueño: **una al rango 25 y otra al 75, nunca las tres** (D-141). El costo de cambiar sigue la recomendación de P-105 (monedas que suben con el rango).
+
+- **Dónde:** ⚒️ Oficios → **🎓 Especialización** (aparece cuando algún oficio llega al rango 25; también con **/especialidad**) → un oficio → una especialización → **🎓 Elegir** o **🔄 Dejar otra**. Cada pantalla, 4 botones como mucho. Al llegar al 25 el juego avisa: "🎓 Ya puedes elegir especialización en …"; al 75, que puedes sumar una segunda. En ⚒️ Oficios, debajo de cada oficio, se ven las tuyas con su dominio.
+- **Lugares:** antes del rango 25, ninguno; del 25 al 74, uno; desde el 75, dos. Elegir en un lugar libre es gratis. La tercera nunca: con los dos lugares llenos, solo se puede **cambiar** una por otra.
+- **Dominio:** el efecto de cada especialización **crece con tu dominio**, de 0 al 100 %: la experiencia de ese oficio que ganas mientras la tienes. Con **7.200** llega al 100 % (~1 mes dedicado, a ~240 por día). Así elegir una nueva es "empezar de cero" de verdad.
+- **Cambiar:** cuesta **100 🥉 + 20 🥉 por rango** del oficio (rango 25: 6 🥈; 50: 11 🥈; 75: 16 🥈; 100: 21 🥈) y pide confirmación. La que dejas pierde su efecto y sus recetas, pero **su dominio queda guardado**: si vuelves a ella, sigues donde quedaste. La nueva empieza con el dominio que tenía guardado (0 si nunca la tuviste).
+- **Recetas que solo ella hace:** se abren con **25 % de dominio** (~1 semana) y el rango de la receta. Son 18: dos piezas por cada especialización de equipo (una del nivel 5, receta de rango 25, para usar apenas la eliges; otra del nivel 100, rango 100, lo mejor del juego en su línea) y dos 🪑 muebles. Cada pieza es la de artesano de su ranura, tipo y nivel con cada bono × 1,05 y un punto propio, y tiene su ✒️ obra maestra. Quien no tiene la especialización no las ve; si abre una, ve "🔒 Solo la hace quien tiene la especialización …" y no se gasta nada.
+
+**Las 57 especializaciones** (el efecto, con todo el dominio; los nombres son los de las tablas del §2):
+
+| Oficio | Especializaciones y lo que dan |
+|---|---|
+| 🪓 Leñador | 🌳 Maderas nobles: +10 % de unidad extra de 🟫 tablón al aserrar · 🔥 Leña y carbón: +10 % de 🔩 lingote al fundir · 🪓 Tala rápida: +20 % de 🪵 madera |
+| ⛏️ Minero | ⚙️ Metales: +20 % de ⚙️ metal · 💠 Gemas: +8 % por vuelta de hallar una 💠 gema en bruto (aparte del raro de siempre) · 🪨 Cantera: +20 % de 🪨 piedra y 🏺 arcilla |
+| 🌿 Herbolario | 🌿 Medicinales: +20 % de 🌿 hierba curativa · 🌸 Flores raras: +8 % por vuelta de hallar una 🌸 flor de luna · 🧵 Fibras: +20 % de 🧵 fibra |
+| 🔪 Desollador | 🦌 Pieles finas: +20 % de 🦌 piel · 🍖 Carnicería: +20 % de 🍖 carne · 🦴 Trofeos: +3 % por cada carne o piel de hallar una 💠 gema |
+| 🧭 Explorador | 🗺️ Cartógrafo de campo: +3 de exploración por vuelta · 🐾 Rastreador: +30 % de monedas de los ⛺ campamentos enemigos (cofre y parte) · 🕵️ Infiltrado: −10 puntos de que te descubran |
+| 🪚 Aserradero | 🟫 Tablones nobles: +15 % de tablón · 🔥 Carbón: +5 % de tablón y +10 % de lingote · 📜 Papel: +5 % de tablón y +1 de exploración |
+| 🔥 Fundición | 🔩 Hierro: +15 % de lingote · 🪙 Metales preciosos: +5 % de lingote y +3 % por vez de una 💠 gema · ⛓️ Aleaciones: +5 % de lingote y +2 % de ✒️ obra maestra en malla y placas |
+| 💧 Destilación | 🧴 Extractos: +15 % de extracto · 🎨 Tintes y tinta: +5 % de extracto y +2 % de obra maestra en tela y cuero · 🍶 Licores: +5 % de extracto y +10 % de pociones |
+| 🧶 Tejeduría | 🌾 Lino: +5 % de tela y +10 % de vendas · 🐑 Lana: +15 % de tela · 🪡 Seda: +5 % de tela y +2 % de obra maestra en tela |
+| 🪣 Curtiduría | 🟤 Cuero grueso: +15 % de cuero · 🧤 Cuero fino: +5 % de cuero y +2 % de obra maestra en cuero · 📜 Pergamino: +5 % de cuero y +1 de exploración |
+| 🪑 Carpintería | 🏹 Arquería: +5 % de obra maestra en arcos; 🎓 Arco largo de arquero (nivel 5) y del maestro arquero (nivel 100) · 🛡️ Escudos: +5 % de obra maestra en bastones; 🎓 🛡️ Paveses de roble (mueble, rango 50: +1 de 🛡️ Defensa) · 🛒 Mobiliario y carros: +10 de mochila; 🎓 🛒 Carro de víveres (mueble, rango 25: los miembros comen 5 % menos) |
+| 🔨 Herrería | ⚔️ Forjador de armas: +5 % de obra maestra en espadas y dagas; 🎓 Hoja de forjador y del maestro forjador · 🛡️ Armero: +5 % de obra maestra en placas; 🎓 Coraza de armero y del maestro armero · 🔧 Herramientas: +5 % de unidad extra en todo lo que recolectas o desuellas |
+| 🦺 Peletería | 🦺 Cuero ligero: +5 % de obra maestra en cuero; 🎓 Jubón de cuero fino y del maestro peletero · ⛓️ Malla: +5 % de obra maestra en malla; 🎓 Cota de anillas finas y del maestro mallero · 🎒 Talabartería: +10 de mochila |
+| 🪡 Sastrería | 🔮 Túnicas mágicas: +5 % de obra maestra en túnicas; 🎓 Túnica rúnica y del maestro arcano · 🧥 Ropa de clima: +5 % de obra maestra en cabeza, manos, piernas y pies de tela · 🩹 Textil médico: +25 % de vendas |
+| ⚗️ Alquimia | 🧪 Pociones: +20 % de pociones · 🍷 Elixires: pociones +10 % · ☠️ Venenos: +2 % de ataque |
+| 🩺 Medicina | 🩹 Primeros auxilios: vendas y ungüentos +15 % · 🩺 Cirugía: curaciones +10 % (sanadores) · 💊 Farmacia: +20 % de ungüentos, botiquines y vendajes |
+| 💍 Joyería | 💎 Talla de gemas: +5 % de obra maestra en joyas; 🎓 Collar de gemas talladas y del maestro tallador · 🪙 Orfebrería: +10 % de lingote al fundir; 🎓 Sello de orfebre y del maestro orfebre · 🫙 Vidriería: +10 % de pociones |
+| 💱 Comercio | 📦 Abastecedor: +10 % de monedas al venderle materiales al mercader · 🛡️ Tratante de equipo: +10 % al vender equipo · 🐪 Caravanero: +10 % en el 💱 trueque del campamento |
+| ✨ Encantamiento | ⚔️ Armas: +1 punto en ⚔️ Filo al encantar · 🛡️ Armaduras: +1 punto en ❤️ Vigor y 🛡️ Guarda · 💨 Desencantar: +20 % de esencias |
+
+- **Donde el material todavía no existe** (carbón, papel, pergamino, lana y seda, escudos, herramientas, venenos para vender, sillas de montar, el clima), la especialización da hoy un efecto cercano en su línea y suma lo suyo cuando ese material o esa ranura entren al juego. El 💱 Comercio no tenía especializaciones en la tabla: las tres son propuesta de Claude.
+- **Cuánto pesan:** son chicas a propósito, como los beneficios de oficio (D-111). Las que tocan el combate (🍷 Elixires, 🩹 Primeros auxilios, 🩺 Cirugía, ☠️ Venenos, ⚔️ Armas y 🛡️ Armaduras del Encantamiento) suman a lo sumo un 2 % de ataque, un 10-15 % de curación o 1 punto de encantamiento.
+- **La calidad por especialización** (D-143) llega después: se apoyará en este mismo dominio.
+- **Los oficios que vengan** (Cocina, Pescador, Cantería, Construcción…) suman sus tres especializaciones solo con contenido, en `content/professions.yaml` → `specs`, sin tocar el motor.
+- **Datos y código:** `content/professions.yaml` (`specs` y las recetas con `spec`), `content/balance.yaml` → `specs`, `content/items.yaml` (`espec_*`, `paveses_roble`, `carro_viveres`), `engine/professions/rules.py` (`spec_*`, `switch_cost`), `Hero.prof_specs` y `Hero.spec_xp` (vacíos para los héroes de antes) y la sección "profession specializations" de `engine/service/game.py`. Textos: `content/locales/es_especializaciones.yaml`. Pruebas: `tests/test_especializaciones.py`.
+
 ## 4. Los ciclos que mantienen el sistema
 
 | Ciclo | Cómo gira |
@@ -96,7 +136,7 @@
 |---|---|---|
 | **1 (en curso)** | Leñador, Minero, Herbolario, Desollador · Aserradero, Fundición, Destilación, Tejeduría, Curtiduría · Carpintería, Herrería, Alquimia, Sastrería, Peletería, Joyería | Usan los recursos que ya están en el juego y hacen el equipo |
 | **1.5** | 🩺 Medicina (D-111, en el juego) · 🧭 Explorador (D-112, en el juego: [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | Ya están decididos y conectados con los sanadores y el mapa |
-| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde cierto nivel, y las defensas se reparan después de las oleadas) · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
+| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde cierto nivel, y las defensas se reparan después de las oleadas) · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** (en el juego, §3.1) | Cierran los ciclos de comida, campamento y equipo |
 | **3** | 🌾 Agricultor y 🐑 Ganadero (granero, huerto y corral) · 📜 Inscripción · ⚙️ Ingeniería · 💱 Comercio | Profundizan; necesitan el mercado de órdenes de la segunda tanda de la economía |
 
 **Fase 2, lado del equipo (en el juego):** ✨ Encantamiento (desencantar y encantar, con su beneficio de +30 % de esencias al rango 100; [Profesiones](profesiones.md) §0.5), el aviso "⬆️ Tienes una pieza mejor" y el equipo de artesano de cabeza, manos, piernas y pies (208 recetas de 🪡 Sastrería, 🦺 Peletería y 🔨 Herrería; [Profesiones](profesiones.md) §0.1). Así el ciclo del **Equipo** del §4 gira entero: el artesano hace todas las ranuras, el encantador desencanta lo viejo y mejora lo nuevo.
