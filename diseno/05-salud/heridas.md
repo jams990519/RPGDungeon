@@ -17,7 +17,7 @@ Siete zonas, como en Tarkov: pocas para leerlas de un vistazo, suficientes para 
 
 | Zona | La protege (ver [Equipamiento](../03-personaje/equipamiento.md)) | Si está herida |
 |---|---|---|
-| **Cabeza** | Casco | Baja la precisión; los hechizos pueden fallar; riesgo de conmoción; se pueden perder los ojos |
+| **Cabeza** | Casco | Baja la precisión; los hechizos pueden fallar; riesgo de conmoción; se puede perder un ojo (nunca los dos) |
 | **Torso** | Pecho, hombros | Baja el Aguante máximo; posible hemorragia interna. Zona vital |
 | **Abdomen** | Cintura, pecho | El Sustento baja más rápido; se infecta con más facilidad. Zona vital |
 | **Brazo izquierdo** | Muñecas, guantes | El escudo o el arma secundaria rinden menos |
@@ -50,21 +50,23 @@ Siete zonas, como en Tarkov: pocas para leerlas de un vistazo, suficientes para 
 
 ## 2. Tipos de herida
 
-| Herida | Causa típica | Efecto mientras dura | Tratamiento | Si no se trata, puede… |
-|---|---|---|---|---|
-| **Contusión** | Contundente | Penalización leve en la zona | Tiempo (horas) | — |
-| **Arañazo** | Garras, espinas | Casi nada | Limpiar y vendar | Infectarse (poco) |
-| **Laceración** | Corte | Sangrado leve | Vendar; suturar si es moderada o peor | Infectarse o pasar a sangrado grave |
-| **Herida profunda** | Perforación, crítico | Sangrado grave | Sutura (Medicina) | Hemorragia; infección seria |
-| **Mordida** | Bestias, no-muertos | Sangrado y **riesgo de la enfermedad de esa criatura** | Limpiar; antídoto o tratamiento específico | Contagiar la enfermedad de la criatura |
-| **Esguince / luxación** | Caídas, derribos | Bajan la iniciativa y la esquiva | Vendaje compresivo; recolocar (Medicina) | Volverse crónico |
-| **Fractura** | Contundente fuerte, caídas | La zona casi no sirve | **Entablillar** y tiempo (días) | Soldar mal y dejar secuela permanente |
-| **Quemadura** (grados 1 a 3) | Fuego, rayo, ácido | Dolor; en grado 3 se pierde piel y la infección es fácil | Ungüento; injerto en grado 3 | Infectarse; dejar cicatriz |
-| **Congelación** | Escarcha, clima | Dedos o extremidades torpes | Calor gradual, no brusco | Necrosis, y perder dedos o el miembro |
-| **Conmoción** | Golpe en la cabeza | Fallan la precisión y los hechizos; confusión | Reposo sin combate | Empeorar con otro golpe |
-| **Hemorragia interna** | Perforación o contundente en torso o abdomen | Pierde vida máxima poco a poco | **Cirugía** | Derribarte fuera de combate |
-| **Nervio dañado** | Cortes graves en brazos o piernas | Temblor: fallan las acciones de precisión | Tratamiento y tiempo largo | Secuela permanente |
-| **Miembro inutilizado** | Una zona recibe demasiado daño | La zona no funciona | Cirugía | Amputación |
+| Herida | Causa típica | Efecto mientras dura | Tratamiento | Si no se trata, puede… | Si se deja empeorar, puede terminar en (♾️) |
+|---|---|---|---|---|---|
+| **Contusión** | Contundente | Penalización leve en la zona | Tiempo (horas) | — | — |
+| **Arañazo** | Garras, espinas | Casi nada | Limpiar y vendar | Infectarse (poco) | — |
+| **Laceración** | Corte | Sangrado leve | Vendar; suturar si es moderada o peor | Infectarse o pasar a sangrado grave | Si la infección llega a gangrena: pierna o brazo perdido |
+| **Herida profunda** | Perforación, crítico | Sangrado grave | Sutura (Medicina) | Hemorragia; infección seria | Gangrena: pierna o brazo perdido. En la cabeza: ojo perdido |
+| **Mordida** | Bestias, no-muertos | Sangrado y **riesgo de la enfermedad de esa criatura** | Limpiar; antídoto o tratamiento específico | Contagiar la enfermedad de la criatura | Mordida sucia → gangrena: pierna o brazo perdido. Podredumbre Gris: piel marcada |
+| **Esguince / luxación** | Caídas, derribos | Bajan la iniciativa y la esquiva | Vendaje compresivo; recolocar (Medicina) | Volverse crónico 🔁 | En la rodilla, si se sigue forzando: rodilla destrozada |
+| **Fractura** | Contundente fuerte, caídas | La zona casi no sirve | **Entablillar** y tiempo (días) | Soldar mal: *Rodilla mala* u otro mal crónico 🔁 | Volver a romper la misma pierna sin operarla: rodilla destrozada. Fractura abierta que se infecta: miembro perdido |
+| **Quemadura** (grados 1 a 3) | Fuego, rayo, ácido | Dolor; en grado 3 se pierde piel y la infección es fácil | Ungüento; injerto en grado 3 | Infectarse; dejar cicatriz | Grado 3 sin injerto: piel marcada. En la cara: cicatriz grave. Ácido en los ojos: ojo perdido |
+| **Congelación** | Escarcha, clima | Dedos o extremidades torpes | Calor gradual, no brusco | Necrosis | Dedos u oreja perdidos; si es todo el pie o la mano, el miembro |
+| **Conmoción** | Golpe en la cabeza | Fallan la precisión y los hechizos; confusión | Reposo sin combate | Empeorar con otro golpe | Otra conmoción sin el reposo indicado: sordera parcial |
+| **Hemorragia interna** | Perforación o contundente en torso o abdomen | Pierde vida máxima poco a poco | **Cirugía** | Derribarte fuera de combate | — |
+| **Nervio dañado** | Cortes graves en brazos o piernas | Temblor: fallan las acciones de precisión | Tratamiento y tiempo largo | Volverse crónico 🔁 | En un brazo, seguir peleando con él sin el tratamiento: nervio cortado |
+| **Miembro inutilizado** | Una zona recibe demasiado daño | La zona no funciona | Cirugía | Pasar a peligro de secuela (🔴) | Sin cirugía antes del último aviso: miembro perdido |
+
+**Hasta dónde puede llegar.** La última columna dice a qué secuela definitiva (♾️) puede llevar cada herida si se deja empeorar. Nunca pasa de golpe: hace falta la cadena entera (no tratarla, que se complique, ignorar el aviso 🔴 y el último aviso), con un aviso claro en cada paso y tiempo para volver a un médico. Los efectos de cada secuela en combate y fuera de él, y qué la compensa, están en [Secuelas y muerte](secuelas-y-muerte.md) (§3 y §5).
 
 ## 3. Gravedad y tiempos
 
@@ -110,10 +112,13 @@ Si un sacerdote pudiera borrar una fractura con un botón, el sistema no existir
 - Solo algunas habilidades, con enfriamiento largo, **bajan un nivel** a una herida leve o moderada: el Sacerdote Sagrado en combate y ciertos rituales fuera de él.
 - Las heridas graves y críticas **siempre** necesitan tratamiento físico o el templo.
 - El milagro mayor, **Restauración**, cura una herida de cualquier gravedad. Cada sanador puede hacerlo una vez al día, cuesta un reactivo raro y lo deja agotado.
+- **Estabilizar también gana tiempo:** congela durante 10 pasos el reloj de una herida que va camino a una secuela, una vez por herida (ver [Secuelas y muerte](secuelas-y-muerte.md) §5).
+- **Ninguna magia devuelve lo perdido.** Restauración cura la herida, no la secuela definitiva: no hace crecer una pierna ni un ojo.
 
 **Por qué conviene.** Los sanadores siguen siendo imprescindibles en combate, y además nace una economía de servicios (médicos, alquimistas, sastres, sacerdotes) que un juego de dos años necesita.
 
 ## 7. Límites
 
 - **Como máximo 2 heridas graves o críticas a la vez.** Una tercera se convierte en **agotamiento** (una penalización general) en lugar de otra herida.
-- **Protección de novato:** hasta el nivel 10 solo hay heridas leves.
+- **Protección de novato:** hasta el nivel 10 solo hay heridas leves, así que ninguna herida puede volverse crónica ni definitiva.
+- **Nunca los dos de un par:** no se pierden las dos piernas, los dos brazos ni los dos ojos (ver [Secuelas y muerte](secuelas-y-muerte.md) §5.5).
