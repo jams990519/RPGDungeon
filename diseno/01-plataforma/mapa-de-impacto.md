@@ -130,6 +130,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | El contenido son datos, no código | Regla 4 |
 | Identificadores estables: solo se agregan, nunca se renombran ni se reutilizan | Regla 5 |
 | Todo azar usa una semilla guardada | Regla 6 |
+| El motor devuelve vistas, no mensajes: estado, avisos y acciones con su ID, con los textos ya traducidos; cada cliente las dibuja | Regla 7 |
 | Todo en texto y por turnos | D-05 |
 | Amplio pero ligero: cada sistema tiene una capa simple por defecto y una profunda opcional | D-44 |
 | Combate de 6 botones como máximo y una sola elección por ronda | D-46 |
@@ -1064,15 +1065,15 @@ Cuando cambian, se cambian **en todos** sus lugares en el mismo cambio. Si no, e
 
 ## 5. Acople con los clientes: Telegram, web y app móvil
 
-Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). El detalle de cómo se arma cada cliente está en [Web y multiplataforma](web-y-multiplataforma.md); si ese documento usa otros nombres para las piezas de abajo, mandan los suyos. Aquí solo va **qué cambio del motor obliga a tocar los clientes**.
+Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mini App de Telegram es el mismo cliente web abierto dentro de Telegram, no un cliente aparte. El detalle de cómo se arma cada cliente está en [Web y multiplataforma](web-y-multiplataforma.md) §3 y en la regla 7 de la [arquitectura](arquitectura-modular.md) ("el motor devuelve vistas, no mensajes"); si esos documentos usan otros nombres para las piezas de abajo, mandan los suyos. Aquí solo va **qué cambio del motor obliga a tocar los clientes**.
 
 ### 5.1 Las tres piezas que comparten el motor y los clientes
 
 | Pieza | Qué es | Quién la define | Regla |
 |---|---|---|---|
-| **Vista neutra** | El estado que el motor entrega para una pantalla (combate, cuerpo, mercado, obra, ciudad), sin formato de ningún cliente | El módulo dueño; la entrega M19 | Se amplía agregando campos; nunca se quita ni se renombra uno sin una versión nueva de la vista |
+| **Vista** | Lo que el motor responde a cada orden: el estado, los avisos y las acciones disponibles, solo con lo que ese jugador puede ver y sin formato de ningún cliente (combate, cuerpo, mercado, obra, ciudad) | El módulo dueño; la entrega M19 | Se amplía agregando campos; nunca se quita ni se renombra uno sin una versión nueva de la vista |
 | **ID de acción** | El identificador de cada cosa que el jugador puede hacer (atacar, beber, pujar, firmar) | El módulo dueño | Estable y corto: cabe en los 64 bytes de `callback_data` de Telegram. Solo se agrega (C-18) |
-| **Clave de texto** | La referencia a un texto del catálogo de idiomas (ES y EN) | M1 (catálogo) y cada módulo para sus textos | El motor nunca lleva texto visible; los clientes nunca inventan textos de reglas |
+| **Textos** | Lo que lee el jugador, en español e inglés | Los archivos de idiomas de M1 y los de contenido de cada módulo | Nunca se escriben en el código del motor. El motor los entrega ya traducidos al idioma del jugador dentro de la vista. Los clientes no inventan textos de reglas |
 
 **La regla de oro: los clientes no calculan reglas.** Solo muestran lo que manda el motor. Es la lección de TowerWars: el nivel mínimo de una pieza estaba declarado, pero ni el mercado ni el almacén lo comprobaban. Si un cliente calcula algo (un precio, un tiempo de curación, si una acción está permitida), cada cambio de balance obliga a tocar tres clientes y tarde o temprano uno queda distinto, lo que **rompe** D-40.
 
@@ -1086,7 +1087,7 @@ Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). El de
 | Renombrar o quitar una acción | Sí: **rompe** | Botones ya enviados en Telegram, atajos de la app, Tácticas guardadas. Se retira, no se borra (C-18) |
 | Un campo nuevo en una vista | Compatible | Los clientes viejos lo ignoran; los nuevos lo muestran |
 | Quitar o renombrar un campo de una vista | Sí: **rompe** | Sobre todo la app instalada que no se actualizó. Hace falta una versión nueva de la vista |
-| Un texto nuevo o cambiado | Sí | Clave en ES y EN. En Telegram, que el mensaje no pase de 4.096 caracteres en el idioma más largo |
+| Un texto nuevo o cambiado | Sí, poco | El texto en ES y EN en los archivos de idiomas. En Telegram, que el mensaje no pase de 4.096 caracteres en el idioma más largo; en pantallas chicas, que el botón no se trunque |
 | Un temporizador | Sí, poco | El motor manda la hora de fin y cada cliente muestra la cuenta atrás. La misma duración en todos |
 | Una tirada al azar visible | Sí | En Telegram, dado nativo; en la web y la app no existe: tirada del servidor con semilla publicada después (M1, M16) |
 | Un aviso urgente (te toca, te atacan, la despensa está en Justa) | Sí | Telegram: el bot solo escribe a quien le dio `/start`; app: notificación; web: aviso en pantalla. Las preferencias viven en M19 |
@@ -1110,7 +1111,7 @@ Cada una necesita un equivalente con **la misma garantía** en la web y la app, 
 
 ### 5.4 Cómo se ve en el código
 
-Una opción de acción de la vista neutra, con su nota `[ES]` (formato de clase de [Convenciones](convenciones-de-codigo.md) §3):
+Una acción disponible dentro de una vista, con su nota `[ES]` (formato de clase de [Convenciones](convenciones-de-codigo.md) §3):
 
 ```python
 from dataclasses import dataclass
@@ -1118,16 +1119,17 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True, slots=True)
 class ActionOption:
-    """One action the player can take right now, for any client.
+    """One action the player can take right now, the same for every client.
 
     Attributes:
         action_id: Stable short id, e.g. "cmb.attack". Must fit Telegram's
             64-byte callback_data together with the session token.
-        label_key: Key in the language catalog, e.g. "combat.action.attack".
+        label: Text already translated to the player's language by the
+            language catalog (M1). Never written in engine code.
         enabled: False when the action exists but cannot be used now.
 
     [ES]
-    Qué es: una opción de la vista neutra, lo que el jugador puede hacer ahora.
+    Qué es: una acción disponible dentro de una vista (regla 7 de la arquitectura).
         Es la misma para Telegram, la web y la app (D-40, D-41).
     Quién la usa: la crea el módulo dueño (por ejemplo M5 Combate, con los 6 botones
         de D-46); la entrega M19; cada cliente la dibuja como botón, enlace o toque.
@@ -1138,8 +1140,14 @@ class ActionOption:
     """
 
     action_id: str
-    label_key: str
+    # Stable forever: add new ids, never rename or reuse old ones.
+    # [ES] ID fijo (regla 5). Telegram lo manda en callback_data; la app y la web lo
+    #      guardan en atajos. Cambiarlo rompe los tres clientes sin dar error (C-18).
+    label: str
     enabled: bool = True
+    # Disabled options are still shown, so players see why they cannot act.
+    # [ES] Lo decide el motor (sin Aguante, pierna rota, sin objetos en el cinturón).
+    #      El cliente solo lo muestra apagado: nunca calcula la regla (§5.1).
 ```
 
 ---

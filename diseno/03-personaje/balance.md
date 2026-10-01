@@ -18,7 +18,7 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 | 2 | **Tanques desiguales** | Temporada 1 de *Midnight*: en llaves altas dominó el Maestro Cervecero y el resto casi no aparecía | Mismos objetivos de mitigación y autonomía para las 11 specs de Defensa |
 | 3 | **"Impuesto híbrido"** | Durante años las clases puras pegaron más por diseño; en *Icecrown Citadel* el Sacerdote Sombra rendía un 6 % menos a propósito | La unidad de balance es la **spec**, no la clase: mismo rol, mismo objetivo. Además, aquí todas las clases son híbridas (3 roles cada una, 4 el Druida) |
 | 4 | **Utilidades obligatorias** | Ansia de Sangre fue exclusiva del Chamán hasta 2010, y hoy los grupos siguen buscando "lust" y resurrección en combate | Cada utilidad clave la tienen 4 o más clases **y** un consumible fabricado. Ninguna clase es obligatoria |
-| 5 | **Apoyo que se apila** | El Evocador de Aumentación apilado permitió matar un jefe Mítico en unos 30 s. Blizzard admitió que "su contribución es demasiado impactante" | Los efectos de Soporte de la **misma familia** no se suman sobre el mismo objetivo: queda el más fuerte (regla 5) |
+| 5 | **Soporte que se apila** | El Evocador de Aumentación apilado permitió matar un jefe Mítico en unos 30 s. Blizzard admitió que "su contribución es demasiado impactante" | Los efectos de Soporte de la **misma familia** no se suman sobre el mismo objetivo: queda el más fuerte (regla 5) |
 | 6 | **Control encadenado en PvP** | El sistema de rendimientos decrecientes se reescribió en 12.0 para dar inmunidad tras 2 aplicaciones | **Firmeza** desde el primer día (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)) |
 | 7 | **Sanadores inmortales o inútiles en arena** | WoW baja la curación a medida que avanza la partida ("dampening") | Amortiguación de curación por ronda en PvP |
 | 8 | **Inflación de números** | En *Shadowlands* hubo que comprimirlo todo (nivel 120 → 50) porque el daño iba camino a los miles de millones | Números chicos desde el diseño (§4) |
@@ -86,8 +86,8 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 8. **Mismo escalado con el equipo.** Todas las specs escalan igual con el Poder de Objeto. El simulador lo comprueba en cada tramo: ninguna spec puede "despertar" en el tramo 8 ni morirse en el 3.
 
 9. **Dificultad declarada, techo parejo.** Cada spec lleva una etiqueta de dificultad (★ a ★★★), y el simulador mide dos cosas:
-   - **Juego básico**, con las [Tácticas](../04-combate/avisos-y-tacticas.md) automáticas por defecto: todas las specs a ±10 % de la mediana.
-   - **Juego óptimo**, con el mejor plan posible: todas a ±3 %.
+   - **Juego básico**, con las [Tácticas](../04-combate/avisos-y-tacticas.md) automáticas por defecto: todas las specs a ±10 % de la mediana de su rol.
+   - **Juego óptimo**, con el mejor plan posible: todas a ±3 % de la mediana de su rol.
 
    Así una spec fácil no domina y una difícil no queda inútil. En un juego por turnos no hay velocidad de dedos: la dificultad es **planificar**.
 
@@ -95,18 +95,27 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 
 ## 3. Cómo se mide
 
-**Simulador de combate** (el equivalente a SimulationCraft, módulo M21). Corre cada spec contra un conjunto fijo de escenarios en cada tramo de equipo: un objetivo, varios objetivos, pelea con cambios de fila, pelea con fases, y PvP 1v1 contra cada una de las otras specs. Corre con cada cambio de balance y **antes** de publicarlo.
+**Simulador de combate** (el equivalente a SimulationCraft, módulo M21). Corre cada spec contra un conjunto fijo de escenarios en cada tramo de equipo: un objetivo, varios objetivos, pelea con cambios de fila, pelea con fases, y PvP 1v1 contra cada una de las otras specs. Además corre:
+- **Grupos de referencia** (1 🛡 + 1 ✚ + 3 de ⚔ o ✦, en todas las combinaciones), porque Defensa, Curación y Soporte solo se entienden en grupo.
+- **Escenarios en solitario** (misión, encargo, Profundidades normales) para medir la autonomía de la regla 4.
 
-**Objetivos numéricos:**
+Corre con cada cambio de balance y **antes** de publicarlo.
 
-| Métrica | Objetivo |
-|---|---|
-| Daño sostenido (juego óptimo) | Toda spec de daño a ±3 % de la mediana |
-| Ráfaga | ±5 % |
-| Mitigación efectiva de tanques | ±4 % |
-| Curación efectiva de sanadores | ±4 % |
-| Victorias por spec en arena clasificada | 47-53 % |
-| Popularidad en contenido alto (M+ 15 o más, top 500 de arena) | Ninguna spec por encima del doble del promedio |
+**Objetivos numéricos.** Cada métrica compara specs del **mismo rol**; las dos filas que cruzan roles lo dicen.
+
+| Métrica | Specs que se comparan | Objetivo |
+|---|---|---|
+| Daño sostenido (juego óptimo) | ⚔ Ataque | A ±3 % de la mediana de Ataque |
+| Ráfaga | ⚔ Ataque | ±5 % |
+| Mitigación efectiva: daño que evita al grupo, contando la mascota, el demonio o los esqueletos | 🛡 Defensa | ±4 % |
+| Curación efectiva, sin contar la que sobra | ✚ Curación | ±4 % |
+| Aumento del grupo: cuánto más rinde el grupo con esa spec que con un Ataque medio, sumando su propio daño | ✦ Soporte | ±4 % de la mediana de Soporte |
+| Daño propio del Soporte | ✦ Soporte | Entre el 60 y el 75 % de la mediana de Ataque |
+| Soporte frente a Ataque (cruza roles) | ✦ y ⚔ | Un grupo con 2 de Ataque + 1 de Soporte rinde lo mismo que con 3 de Ataque (±3 %); con 3 de Soporte, rinde menos |
+| Tiempo en solitario (cruza roles) | Todas | El objetivo de su rol en la regla 4, y a ±10 % de la mediana de su rol |
+| Victorias en solitario (juego básico) | Todas | 90 % o más en el contenido en solitario de su tramo |
+| Victorias por spec en arena clasificada | Todas | 47-53 % |
+| Popularidad en contenido alto (M+ 15 o más, top 500 de arena) | Todas, dentro de su rol | Ninguna spec por encima del doble del promedio de su rol |
 
 **Ritmo y registro:**
 - Ajustes cada dos semanas; urgencias en cualquier momento.
