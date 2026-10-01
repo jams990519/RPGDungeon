@@ -1,7 +1,7 @@
 """Telegram bot process: receives updates, calls GameService, edits the live message.
 
 Environment variables (names only in .env.example, never values in the repo):
-  TELEGRAM_BOT_TOKEN  token of @thetowerwarbot
+  TELEGRAM_BOT_TOKEN  token of @LostRealmsbot
   RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
@@ -21,7 +21,7 @@ Reglas que nunca se rompen:
     1. El id de cuenta es "tg:<id de usuario>"; el motor no lo interpreta.
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
 Si cambias esto, revisa:
-    - Motor: engine/service/game.py (view, text, act, tick)
+    - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble... salen del motor)
     - Despliegue: railway.json (comando de arranque)
 """
 
@@ -113,7 +113,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
         menu_ids = {a.label: a.id for a in service.menu()}
-        commands = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home", "/equipo": "gear", "/monedas": "wallet", "/doble": "dual"}
+        commands = service.commands()
         word = (message.text or "").split("@")[0].strip().lower()
         if message.text in menu_ids:
             view = service.act(account, menu_ids[message.text])

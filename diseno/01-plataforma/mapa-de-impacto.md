@@ -1104,6 +1104,8 @@ Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mi
 
 **La regla de oro: los clientes no calculan reglas.** Solo muestran lo que manda el motor. Es la lección de TowerWars: el nivel mínimo de una pieza estaba declarado, pero ni el mercado ni el almacén lo comprobaban. Si un cliente calcula algo (un precio, un tiempo de curación, si una acción está permitida), cada cambio de balance obliga a tocar tres clientes y tarde o temprano uno queda distinto, lo que **rompe** D-40.
 
+**El menú fijo y los atajos también son del motor (ya en código).** `GameService.menu()` da el menú de siempre (📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe) y `GameService.commands()` da los atajos escritos que nombran los textos (`/stats`, `/inv`, `/habilidades`, `/equipo`, `/monedas`, `/doble`...). Todo cliente debe mostrar los dos: la pantalla de zona solo trae los 4 viajes y la 🔀 Doble especialización solo se abre con `/doble`. Un cliente que no los muestre deja al jugador sin poder explorar (le pasaba a la consola hasta la prueba de juego de la 0.9.2). Si cambia un atajo, se tocan los textos que lo nombran en `es.yaml`, `adapters/telegram/bot.py` y `adapters/cli/play.py` lo leen solos. Pruebas: `tests/test_playtest_fixes.py`.
+
 ### 5.2 Qué cambio del motor obliga a tocar los clientes
 
 | Cambio en el motor | ¿Toca los clientes? | Qué hay que tocar |
