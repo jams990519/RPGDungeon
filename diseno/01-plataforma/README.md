@@ -6,6 +6,7 @@ Dónde vive el juego (Telegram), cómo se parte en piezas (arquitectura modular)
 |---|---|
 | [telegram.md](telegram.md) | Lo que Telegram permite y prohíbe, los diez principios de diseño, dónde ocurre cada cosa, carga del servidor |
 | [arquitectura-modular.md](arquitectura-modular.md) | Los 25 módulos del juego, quién depende de quién, eventos entre módulos, herramientas de administración (sin código) |
+| [web-y-multiplataforma.md](web-y-multiplataforma.md) | Un mundo y un motor con varios clientes (Telegram, web, Mini App, app móvil): capas, vistas neutras, cuentas vinculadas, juego cruzado, tabla de equivalencias de cada función de Telegram, avisos, seguridad, orden sugerido |
 | [seguridad-y-anti-trampas.md](seguridad-y-anti-trampas.md) | Multicuentas, bots, comercio con dinero real, sanciones, privacidad, moderación |
 
-**Preguntas abiertas de este módulo:** P-44 (Mini App), P-45 (Vigor), P-46 (tecnología), P-47 (presupuesto), P-48 (API pública). Ver [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
+**Preguntas abiertas de este módulo:** P-44 (Mini App), P-45 (Vigor), P-46 (tecnología), P-47 (presupuesto), P-48 (API pública), P-58 a P-60 (web), P-61 y P-62 (app móvil). Ver [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

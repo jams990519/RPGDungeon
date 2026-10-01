@@ -2,6 +2,8 @@
 
 > **Módulo** [01 · Plataforma](README.md) · **Condiciona a:** todos los módulos · **Estado:** propuesta
 
+> **Nota: Telegram es el primer cliente, pero no el único** (D-40, D-41). Todo lo que este documento describe con funciones de Telegram (dados nativos, reenvíos, encuestas, grupos y temas, modo inline, Mini Apps, Stars, límites de largo y de botones, mensajes vivos) tiene su regla neutral y su equivalente web en [Web y multiplataforma](web-y-multiplataforma.md). Los ejemplos "Cómo se ve en Telegram" de todo el diseño son una representación entre varias.
+
 Antes de diseñar un solo sistema hay que aceptar dónde vive el juego. Telegram no es una pantalla de juego: es un chat. Todo el diseño está pensado para funcionar **con mensajes, botones y turnos**, nunca en tiempo real.
 
 ---

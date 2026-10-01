@@ -6,14 +6,15 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 
 ---
 
-## 1. Seis reglas de arquitectura
+## 1. Siete reglas de arquitectura
 
-1. **El motor no sabe que existe Telegram.** Las reglas del juego viven en un motor puro. Telegram es un **adaptador** que traduce botones a órdenes y resultados a mensajes. Mañana puede haber otro adaptador (Mini App, web, app) sin tocar una regla. Es la arquitectura hexagonal que TowerWars ya usa ("nada en el motor importa nada de los adaptadores"), y es su mejor decisión técnica.
+1. **El motor no sabe que existe Telegram.** Las reglas del juego viven en un motor puro. Telegram es un **adaptador** que traduce botones a órdenes y resultados a mensajes. **La web es un cliente de primer nivel, igual que Telegram** (D-40), y también lo será la app móvil (D-41): todos usan el mismo motor y las mismas reglas, y ninguno da ventaja (ver [Web y multiplataforma](web-y-multiplataforma.md)). Es la arquitectura hexagonal que TowerWars ya usa ("nada en el motor importa nada de los adaptadores"), y es su mejor decisión técnica.
 2. **Cada módulo es dueño de sus datos.** Salud es la única que escribe heridas; Economía, la única que mueve oro. Los demás piden, no tocan.
 3. **Los módulos se hablan por eventos.** Combate no llama a Salud: publica `GolpeRecibido` y Salud decide si hay herida. Así se puede construir Combate antes que Salud, y agregar Salud después sin reescribir Combate.
 4. **El contenido son datos, no código.** Pisos, jefes, clases, recetas, enfermedades y misiones se describen en archivos de datos. Agregar el piso 37 no debería requerir programar.
 5. **Identificadores estables, solo se agregan.** Cada habilidad, objeto, receta o jefe tiene un ID que nunca cambia ni se reutiliza. TowerWars aprendió por las malas que asignar códigos por orden de aparición rompe todo lo que viene detrás cuando se inserta algo en el medio.
 6. **Todo azar es reproducible.** Cada combate usa una semilla guardada. Eso permite repetir una pelea para investigar un error, mostrar las "manchas de sangre" (las últimas rondas de una muerte) y correr el simulador de balance.
+7. **El motor devuelve vistas, no mensajes.** A cada orden responde con una vista estructurada: el estado, los avisos y las acciones disponibles con su ID, con los textos ya traducidos y solo lo que ese jugador puede ver. Cada cliente la dibuja según sus límites: Telegram como mensaje con botones, la web como panel. Ver [Web y multiplataforma](web-y-multiplataforma.md) §3.
 
 ## 2. Mapa de módulos
 
@@ -45,7 +46,7 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 | M24 | **Construcción** | Parcelas, planos, obras por jornadas, casas, edificios de organizaciones, defensa | [09 · Construcción](../09-construccion/README.md) |
 | M25 | **Propiedad** | Puestos, locales, licencias, subastas, tasas, crédito | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) |
 
-**Adaptadores:** bot de Telegram · Mini App · API pública de solo lectura (para herramientas de la comunidad, como la que tuvo Chat Wars) · panel de administración.
+**Adaptadores:** bot de Telegram · cliente web (la **Mini App** de Telegram es este mismo cliente web abierto dentro de Telegram, no un adaptador aparte) · app móvil (D-41) · API pública de solo lectura (para herramientas de la comunidad, como la que tuvo Chat Wars) · panel de administración.
 
 ## 3. Quién depende de quién
 
@@ -105,7 +106,7 @@ TowerWars aprendió que "un diagnóstico de segunda mano no es un hecho": varias
 ```
 motor/          reglas puras, un subpaquete por módulo (M1-M23)
 contenido/      datos: pisos, jefes, clases, recetas, enfermedades, misiones
-adaptadores/    telegram/, miniapp/, api/, admin/
+adaptadores/    telegram/, web/ (también la Mini App), api/, admin/
 simulador/      balance
 pruebas/        por módulo, sin Telegram
 diseno/         este documento
