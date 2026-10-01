@@ -24,3 +24,13 @@ v0_5:
     - "Cada clase tiene como máximo 3 especializaciones. Druida · Equilibrio se retiró; si la tenías, recuperaste tus puntos."
     - "🏕️ Funda tu propio campamento lejos del Claro: explora la zona y conoce sus alrededores. Si alguien llega a tu campamento, te aviso para que decidas si es 🤝 amistoso o ⚔️ hostil."
     - "📌 Cada lugar muestra sus coordenadas."
+
+v0_5_1:
+  version: "0.5.1"
+  title: "⚖️ Lost Realms 0.5.1: roles más parejos"
+  notes:
+    - "Cada clase cumple al menos dos roles, y los roles están mejor repartidos entre todas."
+    - "🌑 Pícaro · Sutileza ahora es de Soporte: golpea desde las sombras y ciega al enemigo con Polvo Cegador."
+    - "🐺 Cazador · Bestias ahora es de Soporte: su bestia marca la presa y todos pegan más fuerte."
+    - "🌨️ Mago · Escarcha ahora es de Soporte: Escarcha Paralizante hace que el enemigo pegue más flojo."
+    - "📿 Sacerdote · Disciplina vuelve a ser de Curación."

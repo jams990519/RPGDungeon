@@ -47,7 +47,7 @@ class:
     attack_name: "Disparo firme"
   cazador_bestias:
     name: "🐺 Cazador · Bestias"
-    role: "su mascota tanquea y él la dirige"
+    role: "su bestia marca la presa y todos pegan más fuerte"
     attack_name: "Disparo de cobra"
   cazador_supervivencia:
     name: "🪤 Cazador · Supervivencia"
@@ -55,7 +55,7 @@ class:
     attack_name: "Lanza de supervivencia"
   picaro_sutileza:
     name: "🌑 Pícaro · Sutileza"
-    role: "no bloquea, esquiva: tanque de riesgo y premio"
+    role: "golpea desde las sombras y ciega al enemigo"
     attack_name: "Puñalada sombría"
   picaro_forajido:
     name: "🏴‍☠️ Pícaro · Forajido"
@@ -99,7 +99,7 @@ class:
     attack_name: "Bola de fuego"
   mago_escarcha:
     name: "🌨️ Mago · Escarcha"
-    role: "congela y deja que el hielo reciba el daño"
+    role: "congela y frena al enemigo para que pegue más flojo"
     attack_name: "Descarga de escarcha"
   mago_arcano:
     name: "💠 Mago · Arcano"
@@ -236,7 +236,7 @@ ability:
   aspecto_de_la_tortuga:
     name: "Aspecto de la Tortuga"
   postura_provocar:
-    name: "Postura: Provocar"
+    name: "Presa Marcada"
   trampa_de_alquitran:
     name: "Trampa de Alquitrán"
   marca_del_cazador:
@@ -248,7 +248,7 @@ ability:
   contraataque:
     name: "Contraataque"
   provocacion_burlona:
-    name: "Provocación Burlona"
+    name: "Polvo Cegador"
   dados_del_destino:
     name: "Dados del Destino"
   distraccion:
@@ -314,7 +314,7 @@ ability:
   lanza_de_hielo:
     name: "Lanza de Hielo"
   muro_de_hielo:
-    name: "Muro de Hielo"
+    name: "Escarcha Paralizante"
   poder_arcano:
     name: "Poder Arcano"
   ralentizar:

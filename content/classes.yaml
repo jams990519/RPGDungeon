@@ -233,14 +233,14 @@ cazador_punteria:
 cazador_bestias:
   group: cazador
   icon: "🐺"
-  role: defensa
+  role: soporte
   name_key: class.cazador_bestias.name
   role_key: class.cazador_bestias.role
   resource: foco
   resource_start: 60
   resource_max: 100
   resource_regen: 15
-  base: {hp: 125, attack: 11, armor: 0.20, initiative: 11}
+  base: {hp: 118, attack: 11, armor: 0.14, initiative: 11}
   per_level: {hp: 14, attack: 1.4}
   attack: {power: 1.0, gain: 5}
   abilities:
@@ -255,11 +255,11 @@ cazador_bestias:
       stamina: 1
       gain: 10
     - id: postura_provocar
-      kind: weaken
+      kind: expose
       cost: 30
-      value: 0.35
-      rounds: 4
-      cooldown: 3
+      value: 0.5
+      rounds: 5
+      cooldown: 4
 
 cazador_supervivencia:
   group: cazador
@@ -325,14 +325,14 @@ picaro:
 picaro_sutileza:
   group: picaro
   icon: "🌑"
-  role: defensa
+  role: soporte
   name_key: class.picaro_sutileza.name
   role_key: class.picaro_sutileza.role
   resource: energia
   resource_start: 100
   resource_max: 100
   resource_regen: 20
-  base: {hp: 120, attack: 12, armor: 0.14, initiative: 14}
+  base: {hp: 105, attack: 12, armor: 0.10, initiative: 14}
   per_level: {hp: 14, attack: 1.5}
   attack: {power: 1.0, gain: 0}
   abilities:
@@ -349,8 +349,8 @@ picaro_sutileza:
       kind: weaken
       cost: 25
       value: 0.35
-      rounds: 4
-      cooldown: 3
+      rounds: 5
+      cooldown: 4
 
 picaro_forajido:
   group: picaro
@@ -447,7 +447,7 @@ sacerdote_sagrado:
 sacerdote:
   group: sacerdote
   icon: "📿"
-  role: soporte
+  role: curacion
   name_key: class.sacerdote.name
   role_key: class.sacerdote.role
   resource: mana
@@ -688,14 +688,14 @@ mago_fuego:
 mago_escarcha:
   group: mago
   icon: "🌨️"
-  role: defensa
+  role: soporte
   name_key: class.mago_escarcha.name
   role_key: class.mago_escarcha.role
   resource: mana
   resource_start: 60
   resource_max: 100
   resource_regen: 4
-  base: {hp: 120, attack: 11, armor: 0.12, initiative: 11}
+  base: {hp: 100, attack: 11, armor: 0.06, initiative: 11}
   per_level: {hp: 14, attack: 1.4}
   attack: {power: 1.0, gain: 9}
   abilities:
@@ -712,8 +712,8 @@ mago_escarcha:
       kind: weaken
       cost: 25
       value: 0.35
-      rounds: 4
-      cooldown: 3
+      rounds: 5
+      cooldown: 4
 
 mago_arcano:
   group: mago
