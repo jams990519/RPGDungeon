@@ -36,7 +36,7 @@
 - Los jugadores **despiertan sin nada** junto a la fogata del Claro, entre restos de antes: con lo puesto, lo poco que les deja su trasfondo (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)) y una **marca en el pecho**.
 - Recuerdan poco: retazos de quiénes eran (su trasfondo), pero no cómo llegaron ni qué significa la marca.
 - La marca es lo que los hace distintos: **solo un Ascendente puede vencer a un Guardián y pacificar su región** (ver la Frontera en [Mapa infinito y viaje](mapa-infinito-y-viaje.md), §2.1). Para los supervivientes, son la primera esperanza en años. O una amenaza.
-- Algunos PNJ juran que **antes hubo otros marcados**, que subieron y no volvieron. Es un gancho para las cadenas de trasfondo (el maestro que desapareció más allá de la Frontera, el capitán que te busca).
+- Algunos PNJ juran que **antes hubo otros marcados**, que se fueron lejos y no volvieron. Es un gancho para las cadenas de trasfondo (el maestro que desapareció más allá de la Frontera, el capitán que te busca).
 
 ### 1.3 Qué causó el Colapso: el misterio
 
@@ -54,12 +54,12 @@ Al abrir el servidor ya hay **seis comunidades de supervivientes**, todas de PNJ
 
 | Comunidad | Dónde | Gobierno | Su cultura en una frase | Cómo ve a los Ascendentes | Su versión del Colapso |
 |---|---|---|---|---|---|
-| 🛡 **Bastión Gris** | Lejanía 1, al norte del Claro | Campamento militar: la Mariscal Hedda y sus oficiales | "Primero el muro" | Reclutas | Una guerra que se perdió: "el enemigo sigue arriba" |
+| 🛡 **Bastión Gris** | Lejanía 1, al norte del Claro | Campamento militar: la Mariscal Hedda y sus oficiales | "Primero el muro" | Reclutas | Una guerra que se perdió: "el enemigo sigue ahí afuera" |
 | ⚖️ **Lonja del Vado** | Lejanía 1, al oeste, en un vado | República de mercaderes: un consejo de siete casas | "Todo tiene precio, y el precio es justo" | Clientes y socios | Una quiebra: los antiguos firmaron una deuda que no pudieron pagar |
 | ⛲ **Hospicio de la Fuente** | Lejanía 1, al este, junto a un manantial | Monasterio de sanadores: la Abadesa y su orden | "Nadie se queda sin cura" | Pacientes, y futuros sanadores | Una enfermedad: el mundo enfermó y se partió |
 | 🐎 **Errantes del Viento** | Lejanía 1: cambian de zona cada estación, siempre junto al Claro | Nómadas: el consejo de las ancianas | "La tierra no se ata" | Un presagio de cambio | El mundo se cansó de que lo ataran a un lugar |
 | 🔥 **Santuario de la Llama** | Lejanía 3 (anillo I), en una isla de un lago | Teocracia: el Sumo Custodio de la Llama | "La Llama limpia lo que el Vacío ensucia" | Elegidos que deben probarse | Un castigo por la magia prohibida |
-| 🪶 **Nido de Cuervos** | Lejanía 5 (anillo II), en un barranco de zona amarilla | Ninguno: manda la Reina de los Cuervos, mientras pueda | "Aquí nadie pregunta" | Mano de obra | Los poderosos se salvaron arriba y dejaron al resto |
+| 🪶 **Nido de Cuervos** | Lejanía 5 (anillo II), en un barranco de zona amarilla | Ninguno: manda la Reina de los Cuervos, mientras pueda | "Aquí nadie pregunta" | Mano de obra | Los poderosos se salvaron lejos y dejaron al resto |
 
 Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.md)), los Errantes se mudan una vez por semana.
 
@@ -214,7 +214,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 
 - Quien quiere sus propias reglas va **al Claro**, o a un lugar libre de una región ya pacificada, y funda con otros jugadores (ver [Fundación y cisma](fundacion-y-cisma.md) y el parche 11 de [Mapa infinito y viaje](mapa-infinito-y-viaje.md)).
 - **Si nadie deja un castillo, no es un cisma.** Basta una Carta de fundación con pocos firmantes (por ejemplo, 5) y sin plazo de espera. Valen las reglas de los nodos y el tope de castillos de [Fundación y cisma](fundacion-y-cisma.md).
-- **Sin atajos:** si algún firmante fue residente de una ciudad de jugadores en los últimos 30 días, sí cuenta como cisma, con su mínimo, su plazo y sus desventajas. Así nadie usa una comunidad PNJ para saltarse el cisma (D-18).
+- **Sin atajos:** quien deja una ciudad de jugadores para firmar paga la mudanza de [Facciones](facciones.md). Si los que se van de una misma ciudad llegan al mínimo del cisma, es un cisma, con su plazo y sus desventajas. Así nadie usa una comunidad PNJ para saltarse el cisma (D-18).
 - **Las mismas leyes, otros dueños.** Las leyes de las comunidades (toque de queda, prohibir armas dentro, diezmo, libre comercio, vedas de caza) salen de la misma lista que puede votar un asentamiento de jugadores cuando llega a Villa. Cada comunidad es un **ejemplo vivo** de un modelo: antes de votar una ley, puedes ver cómo funciona.
 
 ### 5.2 Colonia con bendición
