@@ -312,13 +312,13 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 ### Octubre de 2026: las incursiones de los campamentos (D-99, provisional)
 
-**Por qué.** Segunda parte de "construir no alcanza", después de la despensa: desde pueblo (nivel 5) los campamentos de jugadores reciben una incursión por semana, y pasar a castillo pide ganar la Noche de prueba (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §7.2). El Claro nunca tiene incursiones: es el campamento base (D-95, D-98). Son números **nuevos**, no movidos, y se ajustan en la beta.
+**Por qué.** Segunda parte de "construir no alcanza", después de la despensa: desde que se fundan (D-105; antes desde pueblo, nivel 5) los campamentos de jugadores reciben una incursión ("oleada") por semana, y pasar a castillo pide ganar la Noche de prueba (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §7.2). El Claro nunca tiene incursiones: es el campamento base (D-95, D-98). Son números **nuevos**, no movidos, y se ajustan en la beta.
 
 **Números nuevos** (`content/balance.yaml` → `raids`):
 
 | Número | Valor | De dónde sale |
 |---|---|---|
-| Desde qué nivel | 5 (pueblo) | §7.2, capa ligera |
+| Desde qué nivel | ~~5 (pueblo)~~ → **1: desde que se funda**, con aviso al fundarlo (movido el 1-oct-2026, D-105) | §7.2, capa ligera; el dueño las quiere desde la fundación |
 | Cada cuánto | 7 días reales (reloj perezoso: llega cuando un miembro juega después de esa hora) | §7.2: "una incursión por semana" |
 | Ventana del aviso | 60 minutos, más 15 de espera para una pelea que ya empezó | Que dé tiempo a los conectados sin trabar la semana |
 | Victorias necesarias | la mitad de los miembros activos al llegar, hacia arriba; al menos 1 | §7.2: fuerza escalada a los miembros activos |

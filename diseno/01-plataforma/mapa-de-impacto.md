@@ -160,7 +160,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M6 | Enemigos y jefes | Medio | Avisos (de su texto dependen las Tácticas y el Bestiario), botín, contagio de monstruos |
 | M7 | Salud | Alto | Duraciones, contagio, qué cura la magia, protección de novato |
 | M8 | Mundo | Alto | Color de zona, tiempo de viaje (D-58), ecología, clima |
-| M9 | Frontera y Fundación | Alto | Etapas del Claro (se guardan por posición), costo de crecer de los campamentos, territorio, despensa (`pantry.*`) e incursiones y Noche de prueba (`raids.*`, D-99). Propuesta: ritmo de la Frontera, medidores de la ciudad |
+| M9 | Frontera y Fundación | Alto | Etapas del Claro (se guardan por posición), costo de crecer de los campamentos, territorio, despensa (`pantry.*`) e incursiones ("oleadas" para el jugador, desde la fundación, D-105) y Noche de prueba (`raids.*`, D-99). Propuesta: ritmo de la Frontera, medidores de la ciudad |
 | M10 | Misiones | Medio | Oro que pagan (inflación), rendimiento de expediciones, investigación |
 | M11 | Instancias | Medio | Carriles de recompensa, reloj de rondas |
 | M12 | PvP, crimen y justicia | Alto | Reglas de caída por zona, protección del Juramento de Hierro, karma |

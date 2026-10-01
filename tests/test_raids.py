@@ -1,6 +1,7 @@
 """Camp raids and the Noche de prueba, phase 2 of "building is not enough" (D-99, provisional; only player camps).
 
-[ES] Pruebas de las incursiones: desde pueblo (nivel 5) llega una por semana con reloj perezoso; los miembros
+[ES] Pruebas de las incursiones (para el jugador, "oleadas"): desde que se funda el campamento (D-105) llega una por
+semana con reloj perezoso y un aviso al fundarlo; los miembros
 conectados tocan 🛡️ Defender y pelean una vez cada uno; si alcanzan las victorias, premio chico; si no, la despensa
 pierde una parte y nada más. La Noche de prueba traba el paso a castillo (nivel 9) hasta ganarla y se reintenta
 a los 2 días. El Claro nunca tiene incursiones: es el campamento base (D-95, D-98). También el tope de 4 botones.
@@ -97,24 +98,24 @@ def test_pure_rules(content):
     assert raid_rules.pick_enemy(content.enemies, "bosque", 6, roll=0.99)[0] in content.enemies
 
 
-def test_no_raids_below_pueblo_and_never_in_the_claro(service, clock):
+def test_waves_start_when_the_camp_is_founded_and_never_in_the_claro(service, clock):
     make_hero(service, "test:1", "Lyra")
-    camp_at_level(service, 4)
+    view = found_at(service, "test:1", 6, 0)                        # D-105: from the very first level, with a warning
+    assert "oleada" in view.notice and "Refuerza" in view.notice and "7 días" in view.notice
+    assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + 7 * DAY)
+    assert any("Próxima oleada en 7 días" in line for line in view.body)
+    clock.advance(7 * DAY)
     view = service.act("test:1", "claro")
-    assert any("pueblo" in line and "incursiones" in line for line in view.body)    # heads-up one level before
-    assert "next_raid_at" not in camp(service)
-    clock.advance(30 * DAY)
-    view = service.act("test:1", "claro")
-    assert "next_raid_at" not in camp(service) and not camp(service).get("raid")
-    assert "defend" not in [a.id for a in view.actions] and not pushes(service, "camp_raid")
+    assert camp(service)["raid"]["required"] == 1 and "defend" in [a.id for a in view.actions]   # a camp of one can defend it
     # The Claro is the base camp: it is not a "camp" record, so it never has raids (D-95, D-98).
     make_hero(service, "test:2", "Bram")
     for _ in range(3):
         clock.advance(7 * DAY)
         for screen in ("claro", "camp"):
             view = service.act("test:2", screen)
-            assert not any("ncursión" in line for line in view.body) and "defend" not in [a.id for a in view.actions]
-    assert service.store.get("camp", "0:0") is None and not pushes(service, "camp_raid")
+            assert not any("leada" in line for line in view.body) and "defend" not in [a.id for a in view.actions]
+    assert service.store.get("camp", "0:0") is None
+    assert all(account == "test:1" for account, _ in pushes(service, "camp_raid"))
     assert service.act("test:2", "defend").notice == service.texts.t("raids.none")
 
 
@@ -123,7 +124,7 @@ def test_raid_arrives_after_the_interval(service, clock):
     camp_at_level(service, 5)
     view = service.act("test:1", "claro")
     assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + 7 * DAY)   # existing camp: scheduled lazily
-    assert any("Próxima incursión en 7 días" in line for line in view.body)
+    assert any("Próxima oleada en 7 días" in line for line in view.body)
     clock.advance(7 * DAY - 60)
     view = service.act("test:1", "claro")
     assert not camp(service).get("raid") and any("en 1 día" in line for line in view.body)
@@ -132,7 +133,7 @@ def test_raid_arrives_after_the_interval(service, clock):
     view = service.act("test:1", "claro")
     raid = camp(service)["raid"]
     assert raid["kind"] == "raid" and raid["required"] == 1 and raid["until"] == pytest.approx(clock.now() + HOUR)
-    assert any(line.startswith("🔔 ¡Incursión!") and "victorias 0/1" in line for line in view.body)
+    assert any(line.startswith("🔔 ¡Oleada!") and "victorias 0/1" in line for line in view.body)
     assert [a.id for a in view.actions] == ["grow", "campfeed", "guild", "defend"]   # Defender takes the place of Volver
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]

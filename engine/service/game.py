@@ -1856,10 +1856,13 @@ class GameService:
         self.store.put("camp_name", self._name_key(name), {"camp": key})
         self.store.put("camp", key, {"name": name, "founder": hero.name, "founder_id": hero.id,
                                       "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now(),
-                                      "level": 1, "zones": [[hero.x, hero.y]]})
+                                      "level": 1, "zones": [[hero.x, hero.y]], "next_raid_at": self.clock.now() + self._raid_interval()})
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
-        return self._camp_here_view(hero, notice=t.t("camps.founded", name=name, x=hero.x, y=hero.y))
+        notice = t.t("camps.founded", name=name, x=hero.x, y=hero.y)
+        if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
+            notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["interval_days"])
+        return self._camp_here_view(hero, notice=notice)
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
         """How many members fit: base + per level (D-84), or the guild's capacity if bigger (D-97).
@@ -2352,7 +2355,7 @@ class GameService:
             self._resolve_raid(camp, raid, hero)
             changed = True
         if camp.get("level", 1) >= self._raid_cfg()["from_level"]:
-            if camp.get("next_raid_at") is None:          # reached pueblo, or a camp from before the patch
+            if camp.get("next_raid_at") is None:          # reached raids.from_level, or a camp from before the patch
                 camp["next_raid_at"] = now + self._raid_interval()
                 changed = True
             elif not camp.get("raid") and now >= camp["next_raid_at"]:

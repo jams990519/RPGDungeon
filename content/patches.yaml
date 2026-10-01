@@ -227,3 +227,13 @@ v0_12_1:
   title: "🗺️ Lost Realms 0.12.1: mapa más grande"
   notes:
     - "🗺️ El mapa ahora es un cuadrado de 13 × 13: ocupa el ancho del mensaje y es igual de alto, así ves más mundo de una vez."
+
+v0_13:
+  version: "0.13"
+  title: "🌊 Lost Realms 0.13: oleadas, salud y explorar con experiencia"
+  notes:
+    - "🌊 Tu campamento recibe oleadas de enemigos cada 7 días desde que lo fundas. Te llega un aviso con 🛡️ Defender: cada miembro pelea una vez, esté donde esté. Si resisten, cada defensor gana experiencia y 🥉; si no, la despensa pierde parte de su comida y nada más."
+    - "🌙 Para que un campamento llegue a castillo, además del gremio, hay que ganar la Noche de prueba: un enemigo élite que se vence entre varios."
+    - "🩺 Nuevo botón Salud en 👤 Héroe: tu vida, cómo está tu cuerpo, cuánto falta para curarte solo y con qué curarte. También con /salud."
+    - "❤️ La vida vuelve completa en 4 horas fuera de combate (si caíste, tarda más)."
+    - "🧭 Explorar ahora da experiencia: 3 por vuelta y 15 más al dejar una zona al 100 %."

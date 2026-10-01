@@ -155,7 +155,7 @@ pantry:                      # [ES] D-93 (provisional): la despensa de los campa
   merit_per_ration: 1        # [ES] mérito por cada ración aportada (como la obra común: 1 por material)
 
 raids:                       # [ES] D-99 (provisional): incursiones de los campamentos de jugadores, 2.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.5, §7.2). El Claro nunca tiene: es el campamento base (D-95, D-98). Números orientativos: se ajustan en la beta
-  from_level: 5              # [ES] desde pueblo (nivel 5): una incursión por semana (§7.2)
+  from_level: 1              # [ES] D-105: desde que fundas el campamento (nivel 1) llega una oleada por semana, con aviso al fundarlo (antes: desde pueblo, nivel 5)
   interval_days: 7           # [ES] días reales entre incursiones. Reloj perezoso: llega cuando un miembro juega después de esa hora
   window_minutes: 60         # [ES] cuánto dura el aviso: en ese tiempo cada miembro puede tocar 🛡️ Defender y pelear UNA vez
   grace_minutes: 15          # [ES] si al cerrar la ventana alguien sigue peleando, se lo espera hasta esto para que su pelea cuente
