@@ -1,12 +1,50 @@
-# Classes playable in version 0.1 (three roles: defense, attack, healing).
-# [ES] Clases de la versión 0.1. Cada una tiene Atacar + 3 habilidades (D-46),
-# al menos una "respuesta" defensiva, y un recurso propio.
+# Classes and specializations: 15 classes, 46 specs (diseno/03-personaje/clases-y-especializaciones.md).
+# [ES] Clases y especializaciones. Cada entrada es una spec; "group" es su clase.
+# El orden del archivo es el orden en que se muestran las clases y sus specs (el del diseño).
+# Cada spec tiene Atacar + 3 habilidades (D-46), al menos una "respuesta" al aviso, y un recurso.
 # Para qué sirve: definir las clases como datos; agregar una clase no requiere programar.
-# Lo usan: engine/classes, engine/combat, engine/hero.
-# Si cambias esto, revisa: los IDs son estables (nunca se renombran);
+# Lo usan: engine/combat, engine/hero, engine/service (creación del héroe).
+# Textos: content/locales/es.yaml (guerrero, picaro, sacerdote) y content/locales/es_clases.yaml (el resto).
+# Si cambias esto, revisa: los IDs (de spec y de habilidad) son estables, nunca se renombran;
 # cambiar números mueve el balance (anotarlo en el registro de balance).
-# Campos de habilidad: kind = strike | heal | response | dot | interrupt | finisher.
+# IDs viejos: guerrero = Guerrero Protección, picaro = Pícaro Asesinato, sacerdote = Sacerdote Disciplina.
+# Campos de habilidad: kind =
+#   strike (power; lifesteal opcional: parte del daño que te cura) | finisher (power + per_combo; gasta combos)
+#   heal (value × vida máx.) | dot (power, rounds) | interrupt (power; corta un golpe interruptible si actúas antes)
 #   response: block (frena value del golpe) | dodge (evita golpes esquivables) | shield (escudo de value × vida máx.)
+#   empower (pegas más) | expose (el enemigo recibe más) | weaken (el enemigo pega menos) | hot (cura por ronda): value, rounds
+# Opcionales: cost, cooldown, gain (recurso que da una respuesta).
+
+
+guerrero_furia:
+  group: guerrero
+  role: ataque
+  name_key: class.guerrero_furia.name
+  role_key: class.guerrero_furia.role
+  resource: ira
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 125, attack: 13, armor: 0.20, initiative: 10}
+  per_level: {hp: 13, attack: 1.7}
+  attack: {power: 1.0, gain: 18}
+  abilities:
+    - id: golpe_colosal
+      kind: expose
+      cost: 20
+      value: 0.4
+      rounds: 4
+      cooldown: 3
+    - id: ejecutar
+      kind: strike
+      cost: 30
+      power: 2.0
+    - id: parada
+      kind: response
+      response: block
+      value: 0.6
+      stamina: 1
+      gain: 10
 
 guerrero:
   group: guerrero
@@ -37,6 +75,216 @@ guerrero:
       value: 0.25
       cooldown: 4
 
+guerrero_senor_guerra:
+  group: guerrero
+  role: soporte
+  name_key: class.guerrero_senor_guerra.name
+  role_key: class.guerrero_senor_guerra.role
+  resource: ira
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 130, attack: 13, armor: 0.20, initiative: 9}
+  per_level: {hp: 14, attack: 1.5}
+  attack: {power: 1.0, gain: 18}
+  abilities:
+    - id: estandarte_de_guerra
+      kind: empower
+      cost: 25
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: estandarte_de_muralla
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: intervenir
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+      gain: 10
+
+paladin_reprension:
+  group: paladin
+  role: ataque
+  name_key: class.paladin_reprension.name
+  role_key: class.paladin_reprension.role
+  resource: poder_sagrado
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 125, attack: 13, armor: 0.18, initiative: 9}
+  per_level: {hp: 14, attack: 1.6}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: juicio
+      kind: expose
+      cost: 20
+      value: 0.4
+      rounds: 4
+      cooldown: 3
+    - id: veredicto_templario
+      kind: strike
+      cost: 35
+      power: 2.3
+    - id: escudo_divino
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+
+paladin_proteccion:
+  group: paladin
+  role: defensa
+  name_key: class.paladin_proteccion.name
+  role_key: class.paladin_proteccion.role
+  resource: poder_sagrado
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 135, attack: 11, armor: 0.22, initiative: 9}
+  per_level: {hp: 15, attack: 1.4}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: escudo_del_vengador
+      kind: interrupt
+      cost: 30
+      power: 1.3
+      cooldown: 3
+    - id: bendicion_de_proteccion
+      kind: response
+      response: shield
+      value: 0.4
+      stamina: 1
+      gain: 15
+    - id: aura_de_devocion
+      kind: weaken
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+
+paladin_sagrado:
+  group: paladin
+  role: curacion
+  name_key: class.paladin_sagrado.name
+  role_key: class.paladin_sagrado.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 115, attack: 10, armor: 0.18, initiative: 9}
+  per_level: {hp: 13, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: destello_de_luz
+      kind: heal
+      cost: 30
+      value: 0.3
+    - id: faro_de_luz
+      kind: hot
+      cost: 25
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: escudo_divino_sagrado
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+cazador_punteria:
+  group: cazador
+  role: ataque
+  name_key: class.cazador_punteria.name
+  role_key: class.cazador_punteria.role
+  resource: foco
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 110, attack: 13, armor: 0.12, initiative: 12}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 5}
+  abilities:
+    - id: apuntar
+      kind: empower
+      cost: 20
+      value: 0.6
+      rounds: 2
+      cooldown: 3
+    - id: disparo_certero
+      kind: strike
+      cost: 40
+      power: 2.0
+    - id: destrabarse
+      kind: response
+      response: dodge
+      stamina: 1
+
+cazador_bestias:
+  group: cazador
+  role: defensa
+  name_key: class.cazador_bestias.name
+  role_key: class.cazador_bestias.role
+  resource: foco
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 125, attack: 11, armor: 0.20, initiative: 11}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 5}
+  abilities:
+    - id: orden_de_matar
+      kind: strike
+      cost: 30
+      power: 1.7
+    - id: aspecto_de_la_tortuga
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+      gain: 10
+    - id: postura_provocar
+      kind: weaken
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+
+cazador_supervivencia:
+  group: cazador
+  role: soporte
+  name_key: class.cazador_supervivencia.name
+  role_key: class.cazador_supervivencia.role
+  resource: foco
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 115, attack: 12, armor: 0.14, initiative: 11}
+  per_level: {hp: 13, attack: 1.5}
+  attack: {power: 1.0, gain: 5}
+  abilities:
+    - id: trampa_de_alquitran
+      kind: weaken
+      cost: 30
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: marca_del_cazador
+      kind: expose
+      cost: 20
+      value: 0.5
+      rounds: 5
+      cooldown: 4
+    - id: senuelo
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
 picaro:
   group: picaro
   role: ataque
@@ -65,6 +313,124 @@ picaro:
       power: 0.4
       cooldown: 3
 
+picaro_sutileza:
+  group: picaro
+  role: defensa
+  name_key: class.picaro_sutileza.name
+  role_key: class.picaro_sutileza.role
+  resource: energia
+  resource_start: 100
+  resource_max: 100
+  resource_regen: 20
+  base: {hp: 120, attack: 12, armor: 0.14, initiative: 14}
+  per_level: {hp: 14, attack: 1.5}
+  attack: {power: 1.0, gain: 0}
+  abilities:
+    - id: danza_de_las_sombras
+      kind: response
+      response: dodge
+      stamina: 1
+      gain: 25
+    - id: contraataque
+      kind: strike
+      cost: 35
+      power: 1.7
+    - id: provocacion_burlona
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+
+picaro_forajido:
+  group: picaro
+  role: soporte
+  name_key: class.picaro_forajido.name
+  role_key: class.picaro_forajido.role
+  resource: energia
+  resource_start: 100
+  resource_max: 100
+  resource_regen: 20
+  base: {hp: 110, attack: 12, armor: 0.10, initiative: 14}
+  per_level: {hp: 13, attack: 1.5}
+  attack: {power: 1.0, gain: 0}
+  abilities:
+    - id: dados_del_destino
+      kind: empower
+      cost: 25
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: distraccion
+      kind: weaken
+      cost: 20
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: capa_de_sombras
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+sacerdote_sombra:
+  group: sacerdote
+  role: ataque
+  name_key: class.sacerdote_sombra.name
+  role_key: class.sacerdote_sombra.role
+  resource: locura
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 100, attack: 13, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.7}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: toque_vampirico
+      kind: dot
+      cost: 20
+      power: 0.6
+      rounds: 4
+    - id: tortura_mental
+      kind: strike
+      cost: 30
+      power: 1.8
+      lifesteal: 0.2
+    - id: dispersion
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+sacerdote_sagrado:
+  group: sacerdote
+  role: curacion
+  name_key: class.sacerdote_sagrado.name
+  role_key: class.sacerdote_sagrado.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 100, attack: 10, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: plegaria_de_sanacion
+      kind: heal
+      cost: 30
+      value: 0.32
+    - id: renovar
+      kind: hot
+      cost: 20
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: palabra_de_poder_escudo
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
 sacerdote:
   group: sacerdote
   role: curacion
@@ -92,3 +458,906 @@ sacerdote:
       cost: 20
       power: 0.55
       rounds: 3
+
+caballero_muerte_escarcha:
+  group: caballero_muerte
+  role: ataque
+  name_key: class.caballero_muerte_escarcha.name
+  role_key: class.caballero_muerte_escarcha.role
+  resource: runas
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 125, attack: 13, armor: 0.18, initiative: 9}
+  per_level: {hp: 14, attack: 1.7}
+  attack: {power: 1.0, gain: 10}
+  abilities:
+    - id: golpe_de_escarcha
+      kind: strike
+      cost: 40
+      power: 1.8
+    - id: helada_mental
+      kind: interrupt
+      cost: 20
+      power: 0.5
+      cooldown: 3
+    - id: entereza_ligada_al_hielo
+      kind: response
+      response: block
+      value: 0.6
+      stamina: 1
+
+caballero_muerte_sangre:
+  group: caballero_muerte
+  role: defensa
+  name_key: class.caballero_muerte_sangre.name
+  role_key: class.caballero_muerte_sangre.role
+  resource: runas
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 135, attack: 11, armor: 0.20, initiative: 9}
+  per_level: {hp: 15, attack: 1.4}
+  attack: {power: 1.0, gain: 10}
+  abilities:
+    - id: golpe_de_muerte
+      kind: strike
+      cost: 35
+      power: 1.3
+      lifesteal: 0.4
+    - id: escudo_de_huesos
+      kind: response
+      response: block
+      value: 0.65
+      stamina: 1
+      gain: 10
+    - id: hervor_de_sangre
+      kind: dot
+      cost: 20
+      power: 0.4
+      rounds: 3
+
+caballero_muerte_profano:
+  group: caballero_muerte
+  role: soporte
+  name_key: class.caballero_muerte_profano.name
+  role_key: class.caballero_muerte_profano.role
+  resource: runas
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 15
+  base: {hp: 125, attack: 12, armor: 0.18, initiative: 9}
+  per_level: {hp: 14, attack: 1.5}
+  attack: {power: 1.0, gain: 10}
+  abilities:
+    - id: peste
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: ejercito_de_los_muertos
+      kind: dot
+      cost: 40
+      power: 0.7
+      rounds: 3
+      cooldown: 4
+    - id: caparazon_antimagia
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+chaman_elemental:
+  group: chaman
+  role: ataque
+  name_key: class.chaman_elemental.name
+  role_key: class.chaman_elemental.role
+  resource: voragine
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 115, attack: 13, armor: 0.12, initiative: 10}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: descarga_de_lava
+      kind: strike
+      cost: 30
+      power: 2.0
+    - id: choque_de_llamas
+      kind: dot
+      cost: 20
+      power: 0.6
+      rounds: 3
+    - id: paso_espiritual
+      kind: response
+      response: dodge
+      stamina: 1
+
+chaman_restauracion:
+  group: chaman
+  role: curacion
+  name_key: class.chaman_restauracion.name
+  role_key: class.chaman_restauracion.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 110, attack: 10, armor: 0.12, initiative: 10}
+  per_level: {hp: 12, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: sanacion_en_cadena
+      kind: heal
+      cost: 30
+      value: 0.32
+    - id: totem_de_marea
+      kind: hot
+      cost: 25
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: cambio_astral
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+chaman_totems:
+  group: chaman
+  role: soporte
+  name_key: class.chaman_totems.name
+  role_key: class.chaman_totems.role
+  resource: voragine
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 115, attack: 12, armor: 0.14, initiative: 10}
+  per_level: {hp: 13, attack: 1.5}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: totem_viento_furioso
+      kind: empower
+      cost: 25
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: totem_piel_de_piedra
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: totem_de_captura
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+mago_fuego:
+  group: mago
+  role: ataque
+  name_key: class.mago_fuego.name
+  role_key: class.mago_fuego.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 100, attack: 14, armor: 0.05, initiative: 11}
+  per_level: {hp: 11, attack: 1.9}
+  attack: {power: 1.0, gain: 9}
+  abilities:
+    - id: piroexplosion
+      kind: strike
+      cost: 35
+      power: 2.5
+    - id: combustion
+      kind: empower
+      cost: 25
+      value: 0.5
+      rounds: 4
+      cooldown: 3
+    - id: bloque_de_hielo
+      kind: response
+      response: shield
+      value: 0.4
+      stamina: 1
+
+mago_escarcha:
+  group: mago
+  role: defensa
+  name_key: class.mago_escarcha.name
+  role_key: class.mago_escarcha.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 120, attack: 11, armor: 0.12, initiative: 11}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 9}
+  abilities:
+    - id: barrera_de_hielo
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: lanza_de_hielo
+      kind: strike
+      cost: 30
+      power: 1.7
+    - id: muro_de_hielo
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+
+mago_arcano:
+  group: mago
+  role: soporte
+  name_key: class.mago_arcano.name
+  role_key: class.mago_arcano.role
+  resource: cargas_arcanas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 110, attack: 13, armor: 0.05, initiative: 11}
+  per_level: {hp: 11, attack: 1.6}
+  attack: {power: 1.0, gain: 25}
+  abilities:
+    - id: poder_arcano
+      kind: empower
+      cost: 40
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: ralentizar
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: barrera_prismatica
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+
+brujo_destruccion:
+  group: brujo
+  role: ataque
+  name_key: class.brujo_destruccion.name
+  role_key: class.brujo_destruccion.role
+  resource: fragmentos_alma
+  resource_start: 20
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 100, attack: 14, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.8}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: descarga_del_caos
+      kind: strike
+      cost: 40
+      power: 2.4
+    - id: inmolar
+      kind: dot
+      power: 0.6
+      rounds: 4
+      cooldown: 3
+    - id: resolucion_inagotable
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+brujo_demonologia:
+  group: brujo
+  role: defensa
+  name_key: class.brujo_demonologia.name
+  role_key: class.brujo_demonologia.role
+  resource: fragmentos_alma
+  resource_start: 20
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 120, attack: 11, armor: 0.12, initiative: 10}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: hachazo_vil
+      kind: strike
+      cost: 30
+      power: 1.7
+    - id: vinculo_demoniaco
+      kind: weaken
+      cost: 20
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+    - id: sacrificio
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+
+brujo_afliccion:
+  group: brujo
+  role: soporte
+  name_key: class.brujo_afliccion.name
+  role_key: class.brujo_afliccion.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 110, attack: 12, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.6}
+  attack: {power: 1.0, gain: 9}
+  abilities:
+    - id: maldicion_de_debilidad
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: drenar_alma
+      kind: strike
+      cost: 25
+      power: 1.3
+      lifesteal: 0.5
+    - id: circulo_demoniaco
+      kind: response
+      response: dodge
+      stamina: 1
+
+monje_viajero_viento:
+  group: monje
+  role: ataque
+  name_key: class.monje_viajero_viento.name
+  role_key: class.monje_viajero_viento.role
+  resource: chi
+  resource_start: 20
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 110, attack: 13, armor: 0.10, initiative: 13}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: patada_del_sol_naciente
+      kind: strike
+      cost: 35
+      power: 2.0
+    - id: palma_mistica
+      kind: expose
+      cost: 20
+      value: 0.4
+      rounds: 4
+      cooldown: 3
+    - id: rodar
+      kind: response
+      response: dodge
+      stamina: 1
+
+monje_maestro_cervecero:
+  group: monje
+  role: defensa
+  name_key: class.monje_maestro_cervecero.name
+  role_key: class.monje_maestro_cervecero.role
+  resource: chi
+  resource_start: 20
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 125, attack: 11, armor: 0.16, initiative: 12}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: golpe_de_barril
+      kind: strike
+      cost: 30
+      power: 1.7
+    - id: toque_de_karma
+      kind: response
+      response: block
+      value: 0.65
+      stamina: 1
+      gain: 10
+    - id: brebaje_purificador
+      kind: heal
+      cost: 30
+      value: 0.2
+      cooldown: 3
+
+monje_tejedor_niebla:
+  group: monje
+  role: curacion
+  name_key: class.monje_tejedor_niebla.name
+  role_key: class.monje_tejedor_niebla.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 105, attack: 10, armor: 0.10, initiative: 12}
+  per_level: {hp: 12, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: niebla_envolvente
+      kind: hot
+      cost: 25
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: vivificar
+      kind: heal
+      cost: 30
+      value: 0.3
+    - id: capullo_de_vida
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+druida_feral:
+  group: druida
+  role: ataque
+  name_key: class.druida_feral.name
+  role_key: class.druida_feral.role
+  resource: energia
+  resource_start: 100
+  resource_max: 100
+  resource_regen: 20
+  base: {hp: 110, attack: 13, armor: 0.10, initiative: 13}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 0, combo: 1}
+  abilities:
+    - id: mordedura_feroz
+      kind: finisher
+      cost: 35
+      power: 0.6
+      per_combo: 0.55
+    - id: desgarrar
+      kind: dot
+      cost: 30
+      power: 0.6
+      rounds: 4
+    - id: piel_de_corteza
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+druida_guardian:
+  group: druida
+  role: defensa
+  name_key: class.druida_guardian.name
+  role_key: class.druida_guardian.role
+  resource: ira
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 135, attack: 11, armor: 0.20, initiative: 9}
+  per_level: {hp: 15, attack: 1.4}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: destrozar
+      kind: strike
+      cost: 25
+      power: 1.6
+    - id: pelaje_de_hierro
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+      gain: 10
+    - id: regeneracion_frenetica
+      kind: heal
+      cost: 40
+      value: 0.25
+      cooldown: 4
+
+druida_restauracion:
+  group: druida
+  role: curacion
+  name_key: class.druida_restauracion.name
+  role_key: class.druida_restauracion.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 105, attack: 10, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: rejuvenecimiento
+      kind: hot
+      cost: 25
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: alivio_presto
+      kind: heal
+      cost: 30
+      value: 0.3
+    - id: corteza_de_hierro
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+druida_equilibrio:
+  group: druida
+  role: soporte
+  name_key: class.druida_equilibrio.name
+  role_key: class.druida_equilibrio.role
+  resource: poder_astral
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 120, attack: 13, armor: 0.12, initiative: 11}
+  per_level: {hp: 12, attack: 1.6}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: eclipse_solar
+      kind: empower
+      cost: 30
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: raices_enredadoras
+      kind: weaken
+      cost: 20
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: carrerilla_salvaje
+      kind: response
+      response: dodge
+      stamina: 1
+
+cazador_demonios_estrago:
+  group: cazador_demonios
+  role: ataque
+  name_key: class.cazador_demonios_estrago.name
+  role_key: class.cazador_demonios_estrago.role
+  resource: furia
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 120, attack: 14, armor: 0.10, initiative: 13}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 25}
+  abilities:
+    - id: golpe_del_caos
+      kind: strike
+      cost: 30
+      power: 2.3
+    - id: metamorfosis
+      kind: empower
+      cost: 30
+      value: 0.5
+      rounds: 4
+      cooldown: 3
+    - id: salto_vil
+      kind: response
+      response: dodge
+      stamina: 1
+
+cazador_demonios_venganza:
+  group: cazador_demonios
+  role: defensa
+  name_key: class.cazador_demonios_venganza.name
+  role_key: class.cazador_demonios_venganza.role
+  resource: furia
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 125, attack: 11, armor: 0.16, initiative: 12}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: sigilo_de_llamas
+      kind: dot
+      cost: 25
+      power: 0.7
+      rounds: 3
+    - id: puas_demoniacas
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+      gain: 10
+    - id: sigilo_de_miseria
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 3
+
+cazador_demonios_devorador:
+  group: cazador_demonios
+  role: soporte
+  name_key: class.cazador_demonios_devorador.name
+  role_key: class.cazador_demonios_devorador.role
+  resource: fragmentos_alma
+  resource_start: 20
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 120, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 13, attack: 1.5}
+  attack: {power: 1.0, gain: 20}
+  abilities:
+    - id: entregar_alma
+      kind: empower
+      cost: 40
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: marca_del_caos
+      kind: expose
+      cost: 20
+      value: 0.5
+      rounds: 5
+      cooldown: 4
+    - id: escudo_de_almas
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+evocador_devastacion:
+  group: evocador
+  role: ataque
+  name_key: class.evocador_devastacion.name
+  role_key: class.evocador_devastacion.role
+  resource: esencia
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 110, attack: 13, armor: 0.12, initiative: 10}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 5}
+  abilities:
+    - id: aliento_de_fuego
+      kind: dot
+      cost: 30
+      power: 0.75
+      rounds: 3
+    - id: desintegrar
+      kind: strike
+      cost: 30
+      power: 1.9
+    - id: planear
+      kind: response
+      response: dodge
+      stamina: 1
+
+evocador_preservacion:
+  group: evocador
+  role: curacion
+  name_key: class.evocador_preservacion.name
+  role_key: class.evocador_preservacion.role
+  resource: esencia
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 110, attack: 10, armor: 0.12, initiative: 10}
+  per_level: {hp: 12, attack: 1.3}
+  attack: {power: 0.95, gain: 5}
+  abilities:
+    - id: eco
+      kind: hot
+      cost: 25
+      value: 0.08
+      rounds: 4
+      cooldown: 4
+    - id: rebobinar
+      kind: heal
+      cost: 30
+      value: 0.32
+    - id: escamas_obsidianas
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+evocador_aumentacion:
+  group: evocador
+  role: soporte
+  name_key: class.evocador_aumentacion.name
+  role_key: class.evocador_aumentacion.role
+  resource: esencia
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 115, attack: 12, armor: 0.14, initiative: 10}
+  per_level: {hp: 12, attack: 1.5}
+  attack: {power: 1.0, gain: 5}
+  abilities:
+    - id: poder_de_ebano
+      kind: empower
+      cost: 40
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: presciencia
+      kind: expose
+      cost: 20
+      value: 0.5
+      rounds: 5
+      cooldown: 4
+    - id: salto_temporal
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+nigromante_plaga:
+  group: nigromante
+  role: ataque
+  name_key: class.nigromante_plaga.name
+  role_key: class.nigromante_plaga.role
+  resource: almas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 105, attack: 14, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.8}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: plaga_reptante
+      kind: dot
+      cost: 25
+      power: 0.8
+      rounds: 4
+    - id: estallido_putrido
+      kind: strike
+      cost: 35
+      power: 2.0
+    - id: forma_espectral
+      kind: response
+      response: dodge
+      stamina: 1
+
+nigromante_legion:
+  group: nigromante
+  role: defensa
+  name_key: class.nigromante_legion.name
+  role_key: class.nigromante_legion.role
+  resource: almas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 125, attack: 11, armor: 0.14, initiative: 10}
+  per_level: {hp: 14, attack: 1.4}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: hueso_protector
+      kind: response
+      response: block
+      value: 0.75
+      stamina: 1
+      gain: 15
+    - id: levantar_esqueletos
+      kind: dot
+      cost: 30
+      power: 0.7
+      rounds: 3
+    - id: grito_del_sepulcro
+      kind: interrupt
+      cost: 15
+      power: 0.4
+      cooldown: 3
+
+nigromante_drenaje:
+  group: nigromante
+  role: curacion
+  name_key: class.nigromante_drenaje.name
+  role_key: class.nigromante_drenaje.role
+  resource: almas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 5
+  base: {hp: 100, attack: 10, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.3}
+  attack: {power: 0.95, gain: 15}
+  abilities:
+    - id: sifon_vital
+      kind: strike
+      cost: 25
+      power: 1.2
+      lifesteal: 0.8
+    - id: pacto_de_sangre
+      kind: heal
+      cost: 30
+      value: 0.3
+    - id: velo_de_almas
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+bardo_duelista:
+  group: bardo
+  role: ataque
+  name_key: class.bardo_duelista.name
+  role_key: class.bardo_duelista.role
+  resource: compas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 110, attack: 13, armor: 0.10, initiative: 13}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 10, combo: 1}
+  abilities:
+    - id: floritura_final
+      kind: finisher
+      cost: 30
+      power: 0.6
+      per_combo: 0.55
+    - id: estocada_ritmica
+      kind: strike
+      cost: 30
+      power: 1.8
+    - id: paso_de_baile
+      kind: response
+      response: dodge
+      stamina: 1
+
+bardo_trovador:
+  group: bardo
+  role: curacion
+  name_key: class.bardo_trovador.name
+  role_key: class.bardo_trovador.role
+  resource: compas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 105, attack: 10, armor: 0.10, initiative: 12}
+  per_level: {hp: 12, attack: 1.3}
+  attack: {power: 0.95, gain: 10}
+  abilities:
+    - id: balada_curativa
+      kind: hot
+      cost: 30
+      value: 0.08
+      rounds: 5
+      cooldown: 5
+    - id: nota_curativa
+      kind: heal
+      cost: 30
+      value: 0.3
+    - id: nota_sostenida
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+
+bardo_estratega:
+  group: bardo
+  role: soporte
+  name_key: class.bardo_estratega.name
+  role_key: class.bardo_estratega.role
+  resource: compas
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 10
+  base: {hp: 110, attack: 12, armor: 0.10, initiative: 13}
+  per_level: {hp: 13, attack: 1.5}
+  attack: {power: 1.0, gain: 10}
+  abilities:
+    - id: allegro
+      kind: empower
+      cost: 25
+      value: 0.6
+      rounds: 5
+      cooldown: 4
+    - id: contratiempo
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 5
+      cooldown: 4
+    - id: calderon
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1

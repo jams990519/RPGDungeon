@@ -16,9 +16,20 @@ combat:
   toxicity_max: 100
 
 travel:
-  near_claro_factor: 0.6     # [ES] alrededor del Claro hay senderos: se viaja más rápido
-  unknown_zone_factor: 1.25  # [ES] ir a una zona que nadie descubrió tarda más
+  near_claro_factor: 1.0     # [ES] senderos alrededor del Claro (1.0 = sin ventaja; los viajes ya son cortos)
+  unknown_zone_factor: 1.2   # [ES] ir a una zona que tu héroe no conoce tarda un poco más
   level_per_lejania: 0.9     # [ES] nivel de la zona = 1 + Lejanía × esto
+
+energy:                      # [ES] energía para moverse entre zonas (D-65)
+  max: 20
+  per_day: 20                # [ES] se recupera de a 1, repartido en el día (1 cada 72 min)
+  per_move: 1                # [ES] cada viaje a una zona vecina gasta esto
+
+invite:                      # [ES] invitar jugadores da energía (D-65): se paga apenas el invitado entra con el enlace y crea su héroe
+  bonus_referrer: 1
+  bonus_invited: 0
+  reward_level: 1
+  cap_factor: 2              # [ES] la energía extra puede llegar hasta 2 × el máximo
 
 explore:
   minutes: 10

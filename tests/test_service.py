@@ -135,8 +135,7 @@ def test_multi_leg_route_chains(service, clock):
 
 def test_shop_and_inn_in_claro(service, clock):
     make_hero(service)
-    zone = service.view("test:1")
-    assert "claro" in [a.id for a in zone.actions]
+    assert "claro" in [a.id for a in service.menu()]
     ids = [a.id for a in service.act("test:1", "claro").actions]
     assert "shop" in ids and "inn" in ids and "camp" in ids
     hero = service.store.get("hero", "test:1")
@@ -238,3 +237,27 @@ def test_tutorial_hint_shows_in_zone(service):
     make_hero(service)
     view = service.view("test:1")
     assert any("📜" in line for line in view.body)
+
+
+def test_invite_link_gives_energy_on_join(service):
+    make_hero(service, "test:1", "Lyra")
+    before = service.store.get("hero", "test:1")["energy"]
+    code = service.invite_code("test:1")
+    service.register_referral("test:2", code)
+    make_hero(service, "test:2", "Bram")
+    inviter = service.store.get("hero", "test:1")
+    assert inviter["energy"] == before + 1 and inviter["invites"] == 1
+    service.register_referral("test:1", code)       # cannot invite yourself again
+    assert service.store.get("referral", "test:1") is None
+
+
+def test_travel_costs_energy(service, clock):
+    make_hero(service)
+    hero = service.store.get("hero", "test:1")
+    hero["energy"] = 0
+    service.store.put("hero", "test:1", hero)
+    view = service.act("test:1", "go:n")
+    assert view.kind == "zone" and "⚡" in (view.notice or "")
+    clock.advance(86400 / 20 + 5)
+    view = service.act("test:1", "go:n")
+    assert view.kind == "activity"

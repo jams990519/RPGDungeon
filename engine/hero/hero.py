@@ -61,6 +61,11 @@ class Hero:
     last_regen_at: float = 0.0
     kills: int = 0
     tutorial: int = 0
+    energy: int = 20
+    energy_at: float = 0.0
+    invites: int = 0
+    referred_by: str | None = None
+    referral_paid: bool = False
     merit: int = 0
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])

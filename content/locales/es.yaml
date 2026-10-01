@@ -194,6 +194,10 @@ time:
   hours: "{h} h {m} min"
 
 menu:
+  zone: "📍 Zona"
+  explore: "🧭 Explorar"
+  camp: "🏕️ Campamento"
+  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe."
   map: "🗺️ Mapa"
   hero: "👤 Héroe"
   bag: "🎒 Mochila"
@@ -227,6 +231,8 @@ travel:
   goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
 
 explore:
+  menu_title: "🧭 Explorar"
+  menu_intro: "Recorre la zona, junta materiales o revisa tus mapas."
   title: "🔎 Explorando"
   started: "🔎 Empiezas a recorrer la zona. Tardarás {time}."
   in_progress: "Recorres la zona con cuidado."
@@ -248,7 +254,7 @@ map:
 
 hero:
   title: "👤 Tu héroe"
-  status_line: "❤️ {hp}/{max_hp} · 💰 {gold} · Nivel {level}"
+  status_line: "❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · 💰 {gold} · Nivel {level}"
   name_line: "{name} — {cls} ({role})"
   level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
   hp_line: "❤️ Vida {hp}/{max_hp}"
@@ -364,8 +370,8 @@ gather:
   ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
 
 camp:
-  button: "🔥 Campamento"
-  title: "🔥 El campamento del Claro"
+  button: "🔥 Obra del campamento"
+  title: "🔥 La obra del campamento"
   intro: "Lo que todos levantan juntos. Cada etapa hace al Claro más seguro y útil."
   stage: "Etapa: {stage} ({n}/{total})"
   needs_title: "Para llegar a {next}:"
@@ -401,6 +407,14 @@ tutorial:
     use_places: "Quien recuerda los caminos no se pierde. Tu memoria guarda los lugares que pisaste."
 
 claro:
-  button: "🏘️ Servicios del Claro"
-  title: "🏘️ El Claro"
+  button: "🏕️ Campamento"
+  title: "🏕️ Campamento del Claro"
   intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."
+  far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
+
+energy:
+  empty: "⚡ Sin energía para viajar. Recuperas 1 en {time} (20 al día)."
+  route_stopped: "⚡ Te quedaste sin energía: el viaje se detiene en {name}."
+
+invite:
+  line: "👥 Invita amigos con tu enlace: por cada jugador nuevo que entre ganas +{bonus} ⚡ de energía extra. Invitados: {n}."

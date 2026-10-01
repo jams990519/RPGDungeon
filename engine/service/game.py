@@ -151,6 +151,36 @@ class GameService:
             view.notice = self._join(notices + ([view.notice] if view.notice else []))
         return view
 
+    def invite_code(self, account_id: str) -> str:
+        """Short stable invite code for an account. [ES] Qué hace: da el código de invitación del jugador. La llaman: el servicio y los clientes. Si cambia, afecta: los enlaces ya compartidos."""
+        return format(int(hash_unit("invite", account_id) * 36**7), "x")[:8]
+
+    def register_referral(self, account_id: str, code: str) -> None:
+        """Remember who invited a new account (before it creates a hero).
+
+        [ES]
+        Qué hace: anota quién invitó a un jugador nuevo, si todavía no tiene héroe.
+        La llaman: los clientes cuando alguien entra con un enlace de invitación.
+        Si cambia, afecta: el premio de energía por invitar.
+        """
+        if self._load(account_id) is not None or not code:
+            return
+        owner = self.store.get("invite_code", code)
+        if owner and owner.get("account") != account_id:
+            self.store.put("referral", account_id, {"referrer": owner["account"]})
+
+    def menu(self) -> list[Action]:
+        """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard).
+
+        [ES]
+        Qué hace: da el menú fijo (Zona, Explorar, Campamento, Héroe); cada cliente lo dibuja abajo o al costado.
+        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo).
+        Si cambia, afecta: la navegación de todos los clientes.
+        """
+        t = self.texts
+        return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
+                Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero"))]
+
     def tick(self) -> list[tuple[str, View]]:
         """Finish every timer that is due; return (account_id, view) notifications.
 
@@ -274,6 +304,7 @@ class GameService:
             hero.hp = min(stats["max_hp"], hero.hp + int(stats["max_hp"] * pct * minutes))
         if not in_combat:
             hero.last_regen_at = now
+        self._regen_energy(hero, now)
         while hero.activity and hero.activity["until"] <= now and self.store.get("combat", hero.id) is None:
             activity = hero.activity
             hero.activity = None
@@ -319,12 +350,43 @@ class GameService:
                 notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
             notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
             return notices
+        if path and not self._spend_energy(hero):
+            notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
+            path = []
         if path:
             nx, ny = path.pop(0)
             seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
             hero.activity = {"kind": "travel", "to": [nx, ny], "until": activity["until"] + seconds,
                              "dir": activity.get("dir", "n"), "path": path, "goal": activity.get("goal")}
         return notices
+
+    def _energy_period(self) -> float:
+        cfg = self.content.balance["energy"]
+        return 86400 / cfg["per_day"] * self.time_scale
+
+    def _regen_energy(self, hero: Hero, now: float) -> None:
+        """Lazy energy regeneration: +1 every (day / per_day) seconds, up to the max (D-65)."""
+        cfg = self.content.balance["energy"]
+        if hero.energy >= cfg["max"] or not hero.energy_at:
+            hero.energy_at = now
+            return
+        gained = int((now - hero.energy_at) // self._energy_period())
+        if gained > 0:
+            hero.energy = min(cfg["max"], hero.energy + gained)
+            hero.energy_at = now if hero.energy >= cfg["max"] else hero.energy_at + gained * self._energy_period()
+
+    def _spend_energy(self, hero: Hero) -> bool:
+        cost = self.content.balance["energy"]["per_move"]
+        if hero.energy < cost:
+            return False
+        if hero.energy >= self.content.balance["energy"]["max"]:
+            hero.energy_at = self.clock.now()
+        hero.energy -= cost
+        return True
+
+    def _no_energy_notice(self, hero: Hero) -> str:
+        wait = self._energy_period() - (self.clock.now() - hero.energy_at)
+        return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)))
 
     def _explore_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
         bal = self.content.balance["explore"]
@@ -400,7 +462,15 @@ class GameService:
         hb = self.content.balance["hero"]
         stats = hero_stats(self.content.classes[class_id], 1)
         hero = Hero(id=account_id, name=pending["name"], class_id=class_id, gold=hb["start_gold"], hp=stats["max_hp"],
+                    energy=self.content.balance["energy"]["max"], energy_at=self.clock.now(),
                     belt=dict(hb["start_belt"]), backpack=dict(hb["start_backpack"]), last_regen_at=self.clock.now())
+        referral = self.store.get("referral", account_id)
+        if referral:
+            hero.referred_by = referral["referrer"]
+            hero.energy += self.content.balance["invite"]["bonus_invited"]
+            self.store.delete("referral", account_id)
+        self.store.put("invite_code", self.invite_code(account_id), {"account": account_id})
+        self._pay_referral(hero)
         self._save(hero)
         self.store.delete("pending", account_id)
         self.bus.publish(HeroCreated(hero.id, class_id))
@@ -422,6 +492,8 @@ class GameService:
             return self._map_view(hero)
         if action_id == "hero":
             return self._hero_view(hero)
+        if action_id == "explore_menu":
+            return self._explore_menu(hero)
         if action_id == "bag":
             return self._bag_view(hero)
         if action_id == "places":
@@ -429,7 +501,7 @@ class GameService:
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "claro":
             if not in_claro:
-                return self._main_view(hero, notice=t.t("shop.only_in_claro"))
+                return self._main_view(hero, notice=t.t("claro.far"))
             return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
                         actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
                                  Action(id="inn", label=t.t("inn.button", price=self._inn_price())), Action(id="home", label=t.t("menu.back"))])
@@ -456,6 +528,8 @@ class GameService:
             view.notice = t.t("activity.busy")
             return view
         if action_id.startswith("go:") and action_id[3:] in DIRECTIONS:
+            if not self._spend_energy(hero):
+                return self._zone_view(hero, notice=self._no_energy_notice(hero))
             direction = action_id[3:]
             dest, seconds, _ = self._route_seconds(hero, direction)
             until = self.clock.now() + seconds
@@ -469,6 +543,8 @@ class GameService:
                 return self._places_view(hero)
             if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
                 return self._places_view(hero)
+            if not self._spend_energy(hero):
+                return self._zone_view(hero, notice=self._no_energy_notice(hero))
             path = self._path(hero.x, hero.y, gx, gy)
             nx, ny = path.pop(0)
             seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
@@ -512,7 +588,8 @@ class GameService:
 
     def _status_line(self, hero: Hero) -> str:
         stats = hero_stats(self.content.classes[hero.class_id], hero.level)
-        return self.texts.t("hero.status_line", hp=hero.hp, max_hp=stats["max_hp"], gold=hero.gold, level=hero.level)
+        return self.texts.t("hero.status_line", hp=hero.hp, max_hp=stats["max_hp"], gold=hero.gold, level=hero.level,
+                            energy=hero.energy, max_energy=self.content.balance["energy"]["max"])
 
     def _zone_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -539,17 +616,7 @@ class GameService:
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
-        gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
-        actions.append(Action(id="gather", label=t.t("gather.button", time=gather_time)))
-        if zone.x == 0 and zone.y == 0:
-            actions.append(Action(id="claro", label=t.t("claro.button")))
-        actions += [
-            Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
-            Action(id="places", label=t.t("menu.places")),
-            Action(id="map", label=t.t("menu.map")),
-            Action(id="hero", label=t.t("menu.hero")),
-            Action(id="bag", label=t.t("menu.bag")),
-        ]
+        body += ["", t.t("menu.hint")]
         return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice)
 
     def _activity_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -581,12 +648,7 @@ class GameService:
             body = [t.t("explore.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("explore.title")
         body += ["", self._status_line(hero), t.t("activity.offline_ok")]
-        actions = [
-            Action(id="refresh", label=t.t("menu.refresh")),
-            Action(id="map", label=t.t("menu.map")),
-            Action(id="hero", label=t.t("menu.hero")),
-            Action(id="bag", label=t.t("menu.bag")),
-        ]
+        actions = [Action(id="refresh", label=t.t("menu.refresh"))]
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ gathering, camp, tutorial
@@ -640,7 +702,7 @@ class GameService:
             body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
         body += ["", t.t("camp.your_merit", merit=hero.merit)]
         body += self._tutorial_hint(hero)
-        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="home", label=t.t("menu.back"))]
+        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="camp", title=t.t("camp.title"), body=body, actions=actions, notice=notice)
 
     def _donate(self, hero: Hero) -> View:
@@ -683,7 +745,23 @@ class GameService:
             hero.level += 1
             hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
             lines.append(self.texts.t("combat.level_up", level=hero.level))
+        self._pay_referral(hero)
         return lines
+
+    def _pay_referral(self, hero: Hero) -> None:
+        """When an invited hero reaches the reward level, the inviter gets bonus energy (once)."""
+        cfg = self.content.balance["invite"]
+        if not hero.referred_by or hero.referral_paid or hero.level < cfg["reward_level"]:
+            return
+        hero.referral_paid = True
+        data = self.store.get("hero", hero.referred_by)
+        if not data:
+            return
+        inviter = Hero.from_dict(data)
+        cap = self.content.balance["energy"]["max"] * cfg["cap_factor"]
+        inviter.energy = min(cap, inviter.energy + cfg["bonus_referrer"])
+        inviter.invites += 1
+        self._save(inviter)
 
     def _tutorial(self, hero: Hero, step: str) -> list[str]:
         """Advance the tutorial if this is the current step; small reward (D-56: hints, not solutions)."""
@@ -713,12 +791,13 @@ class GameService:
             item = self.content.items[item_id]
             body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=item["price"]))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=item["price"])))
-        for item_id, count in sorted(hero.backpack.items()):
+        sellable = [(i, n) for i, n in sorted(hero.backpack.items()) if self.content.items.get(i, {}).get("kind") == "material"]
+        for item_id, count in sellable[:3]:
             item = self.content.items.get(item_id, {})
             if item.get("kind") == "material":
                 price = max(1, int(item["price"] * shop["sell_ratio"]))
                 actions.append(Action(id=f"sell:{item_id}", label=t.t("shop.sell_button", emoji=item["emoji"], n=count, price=price)))
-        actions.append(Action(id="home", label=t.t("menu.back")))
+        actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
 
     def _buy(self, hero: Hero, item_id: str) -> View:
@@ -757,6 +836,18 @@ class GameService:
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
         return self._activity_view(hero, notice=t.t("inn.started", price=price, time=self._fmt_duration(seconds)))
 
+    def _explore_menu(self, hero: Hero, notice: str | None = None) -> View:
+        t = self.texts
+        zone = self._zone(hero.x, hero.y)
+        explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
+        gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
+        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro")]
+        body += self._tutorial_hint(hero)
+        actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
+                   Action(id="gather", label=t.t("gather.button", time=gather_time)),
+                   Action(id="map", label=t.t("menu.map")), Action(id="places", label=t.t("menu.places"))]
+        return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
+
     def _places_view(self, hero: Hero) -> View:
         """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""
         t = self.texts
@@ -773,16 +864,16 @@ class GameService:
         places.sort()
         body = [t.t("places.intro", n=len(hero.known))]
         actions = []
-        for seconds, x, y in places[:8]:
+        for seconds, x, y in places[:5]:
             zone = self._zone(x, y)
             body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone),
                             zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
         if not places:
             body.append(t.t("places.none"))
-        elif len(places) > 8:
-            body.append(t.t("places.more", n=len(places) - 8))
-        actions.append(Action(id="home", label=t.t("menu.back")))
+        elif len(places) > 5:
+            body.append(t.t("places.more", n=len(places) - 5))
+        actions.append(Action(id="explore_menu", label=t.t("menu.back")))
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
 
     def _map_view(self, hero: Hero) -> View:
@@ -802,7 +893,7 @@ class GameService:
                     row += "▫️"
             rows.append(row)
         body = [t.t("map.legend")] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
-        return View(kind="map", title=t.t("map.title"), body=body, actions=[Action(id="home", label=t.t("menu.back"))])
+        return View(kind="map", title=t.t("map.title"), body=body, actions=[Action(id="explore_menu", label=t.t("menu.back"))])
 
     def _hero_view(self, hero: Hero) -> View:
         t = self.texts
@@ -817,7 +908,11 @@ class GameService:
             t.t("hero.gold_line", gold=hero.gold),
             t.t("hero.record_line", kills=hero.kills, zones=hero.zones_discovered),
         ]
-        return View(kind="hero", title=t.t("hero.title"), body=body, actions=[Action(id="home", label=t.t("menu.back"))])
+        cfg = self.content.balance["invite"]
+        body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
+        body += self._tutorial_hint(hero)
+        return View(kind="hero", title=t.t("hero.title"), body=body, actions=[Action(id="bag", label=t.t("menu.bag")), Action(id="home", label=t.t("menu.back"))],
+                    meta={"invite_code": self.invite_code(hero.id)})
 
     def _item_list(self, items: dict[str, int]) -> str:
         if not items:
@@ -838,7 +933,8 @@ class GameService:
             if item.get("heal"):
                 count = hero.backpack.get(item_id, 0) + hero.belt.get(item_id, 0)
                 actions.append(Action(id=f"use:{item_id}", label=t.t("bag.use_button", emoji=item["emoji"], item=t.t(item["name_key"]), n=count)))
-        actions.append(Action(id="home", label=t.t("menu.back")))
+        actions = actions[:5]
+        actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
 
     # ------------------------------------------------------------------ combat
@@ -980,6 +1076,7 @@ class GameService:
                 hero.level += 1
                 hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
                 lines.append(t.t("combat.level_up", level=hero.level))
+            self._pay_referral(hero)
         elif outcome == "defeat":
             lost = int(hero.gold * hb["defeat_gold_loss"])
             hero.gold -= lost
