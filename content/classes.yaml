@@ -9,6 +9,8 @@
 #   response: block (frena value del golpe) | dodge (evita golpes esquivables) | shield (escudo de value × vida máx.)
 
 guerrero:
+  group: guerrero
+  role: defensa
   name_key: class.guerrero.name
   role_key: class.guerrero.role
   resource: ira
@@ -36,6 +38,8 @@ guerrero:
       cooldown: 4
 
 picaro:
+  group: picaro
+  role: ataque
   name_key: class.picaro.name
   role_key: class.picaro.role
   resource: energia
@@ -62,6 +66,8 @@ picaro:
       cooldown: 3
 
 sacerdote:
+  group: sacerdote
+  role: curacion
   name_key: class.sacerdote.name
   role_key: class.sacerdote.role
   resource: mana

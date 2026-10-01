@@ -202,6 +202,14 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
     def name_of(a: dict[str, Any]) -> str:
         return t.t(f"ability.{a['id']}.name")
 
+    def hero_mult() -> float:
+        mult = 1.0
+        if hs.get("empower"):
+            mult *= 1 + hs["empower"]["value"]
+        if enemy.get("exposed"):
+            mult *= 1 + enemy["exposed"]["value"]
+        return mult
+
     # Step 1: responses and items go first.
     if ability and ability["kind"] == "response":
         used_response = True
@@ -233,7 +241,7 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
         nonlocal interrupted
         if kind == "attack":
             spec = class_def["attack"]
-            dmg, crit = _roll_damage(stats["attack"], spec.get("power", 1.0), enemy["armor"], rng, bal)
+            dmg, crit = _roll_damage(stats["attack"], spec.get("power", 1.0) * hero_mult(), enemy["armor"], rng, bal)
             enemy["hp"] -= dmg
             hs["resource"] = min(class_def["resource_max"], hs["resource"] + spec.get("gain", 0))
             hs["combo"] = min(5, hs["combo"] + spec.get("combo", 0))
@@ -248,9 +256,14 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
                 if akind == "finisher":
                     power += ability.get("per_combo", 0.0) * hs["combo"]
                     hs["combo"] = 0
-                dmg, crit = _roll_damage(stats["attack"], power, enemy["armor"], rng, bal)
+                dmg, crit = _roll_damage(stats["attack"], power * hero_mult(), enemy["armor"], rng, bal)
                 enemy["hp"] -= dmg
                 lines.append(t.t("combat.hit_enemy", action=name_of(ability), dmg=dmg, crit=t.t("combat.crit") if crit else ""))
+                if ability.get("lifesteal"):
+                    healed = min(stats["max_hp"] - hero.hp, round(dmg * ability["lifesteal"]))
+                    if healed > 0:
+                        hero.hp += healed
+                        lines.append(t.t("combat.lifesteal", amount=healed))
                 if akind == "interrupt":
                     if not hero_first:
                         lines.append(t.t("combat.interrupt_late", move=move_name))
@@ -266,6 +279,13 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
             elif akind == "dot":
                 enemy["dot"] = {"power": ability.get("power", 0.5), "rounds": ability.get("rounds", 3)}
                 lines.append(t.t("combat.dot_applied", action=name_of(ability), rounds=ability.get("rounds", 3)))
+            elif akind in ("empower", "hot"):
+                hs[akind] = {"value": ability.get("value", 0.2), "rounds": ability.get("rounds", 3)}
+                lines.append(t.t(f"combat.{akind}_applied", action=name_of(ability), rounds=ability.get("rounds", 3)))
+            elif akind in ("expose", "weaken"):
+                key = "exposed" if akind == "expose" else "weakened"
+                enemy[key] = {"value": ability.get("value", 0.2), "rounds": ability.get("rounds", 3)}
+                lines.append(t.t(f"combat.{akind}_applied", action=name_of(ability), rounds=ability.get("rounds", 3)))
 
     def enemy_acts() -> None:
         if enemy["hp"] <= 0 or interrupted:
@@ -274,7 +294,8 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
             enemy["buff"] = move.get("buff", 1.5)
             lines.append(t.t("combat.channel", enemy=enemy_name, move=move_name))
             return
-        dmg, crit = _roll_damage(enemy["attack"], move.get("power", 1.0) * enemy["buff"], stats["armor"], rng, bal)
+        weak = 1 - enemy["weakened"]["value"] if enemy.get("weakened") else 1.0
+        dmg, crit = _roll_damage(enemy["attack"], move.get("power", 1.0) * enemy["buff"] * weak, stats["armor"], rng, bal)
         enemy["buff"] = 1.0
         tags = move.get("tags", [])
         if response:
@@ -309,12 +330,18 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
 
     # Damage over time ticks after the actions.
     if enemy["dot"] and enemy["hp"] > 0:
-        dmg = max(1, round(stats["attack"] * enemy["dot"]["power"]))
+        dmg = max(1, round(stats["attack"] * enemy["dot"]["power"] * hero_mult()))
         enemy["hp"] -= dmg
         enemy["dot"]["rounds"] -= 1
         lines.append(t.t("combat.dot_tick", enemy=enemy_name, dmg=dmg))
         if enemy["dot"]["rounds"] <= 0:
             enemy["dot"] = None
+
+    if hs.get("hot") and hero.hp > 0:
+        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * hs["hot"]["value"]))
+        if healed > 0:
+            hero.hp += healed
+            lines.append(t.t("combat.hot_tick", amount=healed))
 
     # Outcome checks.
     if enemy["hp"] <= 0:
@@ -339,6 +366,11 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
     if not used_response:
         hs["stamina"] = min(stamina_max, hs["stamina"] + 1)
     hs["resource"] = min(class_def["resource_max"], hs["resource"] + class_def.get("resource_regen", 0))
+    for holder, key in ((hs, "empower"), (hs, "hot"), (enemy, "exposed"), (enemy, "weakened")):
+        if holder.get(key):
+            holder[key]["rounds"] -= 1
+            if holder[key]["rounds"] <= 0:
+                holder[key] = None
     for key in list(hs["cooldowns"]):
         hs["cooldowns"][key] -= 1
         if hs["cooldowns"][key] <= 0:

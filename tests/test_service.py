@@ -19,6 +19,8 @@ def test_creation_flow(service):
     assert view.notice  # bad name
     view = service.text("test:1", "Lyra")
     assert view.kind == "create_class"
+    view = service.act("test:1", "grp:guerrero")
+    assert any(a.id == "cls:guerrero" for a in view.actions)
     view = service.act("test:1", "cls:guerrero")
     assert view.kind == "zone"
 

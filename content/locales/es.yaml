@@ -13,19 +13,32 @@ create:
   name_taken: "⚠️ Ese nombre ya lo usa otro héroe. Prueba con otro."
   ask_class: "{name}, ¿cómo peleas? La clase define tu forma de combatir. Todas valen lo mismo: la diferencia la hacen tus oficios y lo que aprendas."
   rename: "✏️ Cambiar nombre"
+  ask_spec: "{group}: elige tu especialización. Define tu rol, solo y en grupo."
+  other_class: "↩️ Otra clase"
   welcome: "✨ Bienvenido, {name}. Explora los alrededores del Claro y abre camino hacia lo desconocido."
+
+role:
+  ataque: "⚔ Ataque"
+  defensa: "🛡 Defensa"
+  curacion: "✚ Curación"
+  soporte: "✦ Soporte"
+
+class_group:
+  guerrero: {name: "🛡 Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
+  picaro: {name: "🗡️ Pícaro", desc: "cuero, energía y combos: rápido y letal"}
+  sacerdote: {name: "✨ Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
 
 class:
   guerrero:
-    name: "🛡 Guerrero"
+    name: "🛡 Guerrero · Protección"
     role: "aguanta golpes, bloquea y castiga"
     attack_name: "Tajo"
   picaro:
-    name: "🗡️ Pícaro"
+    name: "🗡️ Pícaro · Asesinato"
     role: "rápido, esquiva y remata con combos"
     attack_name: "Puñalada"
   sacerdote:
-    name: "✨ Sacerdote"
+    name: "✨ Sacerdote · Disciplina"
     role: "se cura, se escuda y desgasta"
     attack_name: "Castigo"
 
@@ -282,6 +295,12 @@ combat:
   heal: "💚 {action}: recuperas {amount}"
   dot_applied: "🩸 {action}: sufrirá {rounds} rondas"
   dot_tick: "🩸 {enemy} sufre {dmg}"
+  lifesteal: "🩸 Robas {amount} de vida"
+  empower_applied: "🔥 {action}: pegas más fuerte durante {rounds} rondas"
+  hot_applied: "🌿 {action}: te curas un poco cada ronda durante {rounds} rondas"
+  hot_tick: "🌿 Recuperas {amount}"
+  expose_applied: "🎯 {action}: el enemigo recibe más daño durante {rounds} rondas"
+  weaken_applied: "🌀 {action}: el enemigo pega más flojo durante {rounds} rondas"
   item_used: "🎒 {item}: recuperas {amount}"
   flee_ok: "🏃 Lograste huir."
   flee_fail: "🏃 No pudiste escapar."

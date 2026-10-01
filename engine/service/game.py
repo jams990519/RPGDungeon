@@ -315,17 +315,37 @@ class GameService:
 
     # ------------------------------------------------------------------ creation
 
+    def _class_groups(self) -> list[str]:
+        """Class ids in content order; each groups several specs (content/classes.yaml "group")."""
+        groups: list[str] = []
+        for class_id, cdef in self.content.classes.items():
+            group = cdef.get("group", class_id)
+            if group not in groups:
+                groups.append(group)
+        return groups
+
     def _creation_view(self, account_id: str) -> View:
         t = self.texts
         pending = self.store.get("pending", account_id)
         if not pending or pending.get("stage") != "class":
             self.store.put("pending", account_id, {"stage": "name"})
             return View(kind="create_name", title=t.t("create.title"), body=[t.t("create.intro"), "", t.t("create.ask_name")], expects_text=True)
-        body = [t.t("create.ask_class", name=pending["name"]), ""]
-        actions = []
-        for class_id, cdef in self.content.classes.items():
-            body.append(f"• {t.t(cdef['name_key'])} — {t.t(cdef['role_key'])}")
-            actions.append(Action(id=f"cls:{class_id}", label=t.t(cdef["name_key"])))
+        group = pending.get("group")
+        if not group:
+            body = [t.t("create.ask_class", name=pending["name"]), ""]
+            actions = []
+            for gid in self._class_groups():
+                body.append(f"• {t.t(f'class_group.{gid}.name')} — {t.t(f'class_group.{gid}.desc')}")
+                actions.append(Action(id=f"grp:{gid}", label=t.t(f"class_group.{gid}.name")))
+        else:
+            body = [t.t("create.ask_spec", group=t.t(f"class_group.{group}.name")), ""]
+            actions = []
+            for class_id, cdef in self.content.classes.items():
+                if cdef.get("group", class_id) != group:
+                    continue
+                body.append(f"• {t.t(cdef['name_key'])} — {t.t('role.' + cdef.get('role', 'ataque'))}: {t.t(cdef['role_key'])}")
+                actions.append(Action(id=f"cls:{class_id}", label=t.t(cdef["name_key"])))
+            actions.append(Action(id="grp:", label=t.t("create.other_class")))
         actions.append(Action(id="rename", label=t.t("create.rename")))
         return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions)
 
@@ -333,6 +353,11 @@ class GameService:
         pending = self.store.get("pending", account_id) or {}
         if action_id == "rename":
             self.store.delete("pending", account_id)
+            return self._creation_view(account_id)
+        if action_id.startswith("grp:") and pending.get("stage") == "class":
+            group = action_id[4:]
+            pending["group"] = group if group in self._class_groups() else None
+            self.store.put("pending", account_id, pending)
             return self._creation_view(account_id)
         if not action_id.startswith("cls:") or pending.get("stage") != "class":
             return self._creation_view(account_id)
