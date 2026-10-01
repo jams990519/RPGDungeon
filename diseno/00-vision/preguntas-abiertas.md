@@ -34,7 +34,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-12 | ¿15 clases (13 de WoW + Nigromante + Bardo)? ¿Alguna más (Ingeniero)? | 15, lanzadas por expansiones como en WoW; el Ingeniero, como oficio |
-| P-13 | ¿Barra de 8 botones con técnicas de arma y armadura (híbrido WoW + Albion)? | Sí |
+| P-13 | ¿Cuántos botones en combate? | ✅ **Decidido (D-46):** de 4 a 6 como máximo; la técnica del arma va en el botón Más |
 | P-14 | ¿Armadura libre con penalización de peso? | Sí |
 | P-15 | ¿Cualquier linaje con cualquier clase? | Sí |
 | P-16 | ¿Nivel ligado al piso (Techo del Piso)? | Sí |
