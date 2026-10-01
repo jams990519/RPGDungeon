@@ -1,6 +1,6 @@
 # Convenciones de código: inglés con notas [ES]
 
-> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Arquitectura modular](arquitectura-modular.md), [Decisiones](../00-vision/decisiones.md), [Lecciones de TowerWars](../99-referencias/lecciones-de-towerwars.md) · **Condiciona a:** todo el código, los datos de contenido y las pruebas · **Estado:** propuesta
+> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Arquitectura modular](arquitectura-modular.md), [Decisiones](../00-vision/decisiones.md), [Lecciones de TowerWars](../99-referencias/lecciones-de-towerwars.md) · **Condiciona a:** todo el código, los datos de contenido y las pruebas · **Estado:** la regla base está confirmada (D-42); los detalles son propuesta
 
 **Qué pediste.** Que el código tenga notas suficientes para entender todo lo que pasa alrededor de cada pieza. Que el código esté en inglés y que debajo vaya una nota en español, entre corchetes, que explique para qué sirve cada cosa y con qué se conecta. Así, cuando le pidas a la IA que cambie una sola línea, puede responderte: "ok, pero esto también va a romper esto y esto, o puede afectar esto otro".
 
@@ -11,7 +11,7 @@
 - **Grafos de dependencias y contratos de importación** (en Python, herramientas como *pydeps* e *import-linter*): se dibuja quién importa a quién y se prohíben las flechas que no deben existir.
 - **Lecciones de TowerWars:** el motor puro, los IDs estables, las migraciones, el registro de balance y, sobre todo, que **la wiki vieja mentía** (describía 6 clases de un modelo anterior). Ver [Lecciones de TowerWars](../99-referencias/lecciones-de-towerwars.md).
 
-**Todavía no se escribe código (D-04).** Este documento fija las reglas para cuando empiece. Los ejemplos están en Python porque es la tecnología propuesta (P-46).
+**El código ya está autorizado (D-59, que reemplaza a D-04).** Estas reglas valen desde la primera línea. Los ejemplos están en Python porque es la tecnología propuesta (P-46).
 
 ---
 
@@ -31,10 +31,10 @@
 - **El dueño**, que puede leer cualquier archivo y entender su papel sin leer el código.
 - **La IA**, que antes de tocar algo lee la nota y sabe a quién más afecta. La nota no traduce el docstring: es el mapa de alrededor.
 
-**El marcador `[ES]`.** Siempre igual: `[ES]` en mayúsculas, entre corchetes, al principio de una línea. Nada más en el código usa ese texto (los documentos de `diseno/` solo lo nombran), así que buscarlo en las carpetas de código encuentra todas las notas:
+**El marcador `[ES]`.** Siempre igual: `[ES]` en mayúsculas, entre corchetes, al principio de una línea. Nada más en el código usa ese texto (los documentos de `diseno/` solo lo nombran), así que buscarlo en las carpetas de código encuentra todas las notas. La única excepción son los esquemas de datos, donde la nota va en el campo `x-es` (§4); por eso la búsqueda lleva las dos marcas:
 
 ```
-grep -rn "\[ES\]" engine/ content/ adapters/ simulator/ tests/ tools/
+grep -rn -e "\[ES\]" -e "x-es:" engine/ content/ adapters/ simulator/ tests/ tools/
 ```
 
 **Dónde va cada nota:**
@@ -50,7 +50,7 @@ grep -rn "\[ES\]" engine/ content/ adapters/ simulator/ tests/ tools/
 | **Constante de balance** | Comentario en inglés, `# [ES]` y entrada en el registro de balance |
 | **Migración de base de datos** | Encabezado con `-- [ES]`: qué tabla, qué módulo es su dueño, si se puede revertir |
 | **Prueba** | Nombre en inglés y `[ES]` con la regla del diseño que protege |
-| **Archivo de datos** (pisos, jefes, recetas…) | Encabezado `# [ES]` y una nota por tipo de dato (§4) |
+| **Archivo de datos** (zonas del mapa, jefes, recetas…) | Encabezado `# [ES]` y una nota por tipo de dato (§4) |
 
 **En otros lenguajes** (la web y la app móvil pueden usar otro, ver [Web y multiplataforma](web-y-multiplataforma.md)) la regla es la misma, con la sintaxis de comentario de cada uno: `/** ... [ES] ... */` en TypeScript, `# [ES]` en YAML, `-- [ES]` en SQL.
 
@@ -66,7 +66,7 @@ Cada archivo de código empieza con un docstring: primero el propósito en ingl�
 [ES]
 Para qué sirve: <una o dos frases, sin tecnicismos>
 Documento de diseño: <ruta en diseno/ y sección, por ejemplo diseno/05-salud/heridas.md §4>
-Módulo: <M1 a M25 y su nombre, por ejemplo M7 Salud>
+Módulo: <M1 a M25 y su nombre, por ejemplo M7 Salud, o "capa de servicios" (§7.1)>
 Depende de: <módulos, archivos y datos que este archivo usa>
 Lo usan: <archivos y módulos que importan o llaman a este>
 Eventos que publica: <nombre en código (nombre en el diseño), o ninguno>
@@ -146,7 +146,7 @@ La nota corta puede remitir al encabezado del archivo ("ver *Si cambias esto, re
 
 ## 4. Archivos de datos de contenido
 
-El contenido son datos, no código (regla 4 de la [arquitectura](arquitectura-modular.md)): pisos, jefes, monstruos, recetas, enfermedades y misiones viven en archivos. La propuesta es **YAML**, porque admite comentarios (JSON no), y así cada archivo puede llevar su nota [ES].
+El contenido son datos, no código (regla 4 de la [arquitectura](arquitectura-modular.md)): las zonas del mapa, los jefes, monstruos, recetas, enfermedades y misiones viven en archivos. La propuesta es **YAML**, porque admite comentarios (JSON no), y así cada archivo puede llevar su nota [ES].
 
 **Cuatro reglas:**
 1. **Cada tipo de dato tiene un esquema documentado** (`content/schemas/`), con la descripción de cada campo en inglés y su nota en español. El motor rechaza al arrancar cualquier dato que no cumpla el esquema.
@@ -214,7 +214,8 @@ Para qué sirve: convierte la armadura de quien recibe el golpe en el porcentaje
     de daño que se absorbe, con la fórmula def / (def + K).
 Documento de diseño: diseno/04-combate/dano-y-estados.md §1 · diseno/03-personaje/balance.md §4
 Módulo: M5 Combate
-Depende de: content/balance/armor.yaml (valor de K por tramo). Nada más.
+Depende de: ningún otro archivo. K llega como argumento: damage.py la lee de
+    content/balance/armor.yaml (un valor por tramo).
 Lo usan: engine/combat/damage.py (cada golpe físico), engine/combat/buildup.py
     (la armadura frena la acumulación de estados), simulator/ (M21).
 Eventos que publica: ninguno (cálculo puro).
@@ -328,7 +329,7 @@ class HitReceived:
     hp_after: int
 ```
 
-### 5.3 Una función que escucha: la herida que nace del golpe
+### 5.3 Una función que escucha: la herida que nace del golpe (`engine/health/wound_rules.py`)
 
 ```python
 def on_hit_received(event: HitReceived, hero: HeroHealth, rng: SeededRng) -> Wound | None:
@@ -336,6 +337,7 @@ def on_hit_received(event: HitReceived, hero: HeroHealth, rng: SeededRng) -> Wou
 
     A wound is rolled only on a critical hit or when health crosses 50 %
     or 25 % of max in this fight. Zone armor lowers chance and severity.
+    Downs (HeroDowned) and boss moves that wound have their own listeners.
 
     Args:
         event: The ``HitReceived`` published by combat.
@@ -356,9 +358,11 @@ def on_hit_received(event: HitReceived, hero: HeroHealth, rng: SeededRng) -> Wou
     if not (event.critical or crossed_threshold(event.hp_before, event.hp_after, hero.max_hp)):
         return None
     wound = roll_wound(event.zone, event.damage_type, hero.zone_armor(event.zone), rng)
-    # Novice protection: below level 10, wounds are always minor.
-    # [ES] Protección de novato: hasta el nivel 10 solo hay heridas leves (heridas.md §7).
-    if hero.level < 10:
+    # Novice protection: up to and including level 10, wounds are always minor.
+    # [ES] Protección de novato: hasta el nivel 10 (incluido) solo hay heridas leves
+    #      (heridas.md §7). El umbral se repite en otros documentos: cambiarlo aquí
+    #      obliga a cambiarlos todos (mapa-de-impacto.md §4.7 y §6.2).
+    if hero.level <= 10:
         wound = wound.capped_at(Severity.MINOR)
     publish(WoundCreated(hero_id=hero.hero_id, wound=wound))
     return wound
@@ -466,11 +470,11 @@ Riesgo: medio · ¿Sigo?
 
 ### 7.1 Módulos y carpetas de código
 
-Con la regla de idioma, las carpetas del código van en inglés (la [arquitectura](arquitectura-modular.md) §6 las propone en español; hay que alinearlas cuando se edite ese documento). `diseno/` queda igual.
+Con la regla de idioma, las carpetas del código van en inglés (la [arquitectura](arquitectura-modular.md) §6 las propone en español; hay que alinearlas antes del primer archivo de código, D-59). `diseno/` queda igual.
 
 ```
 engine/       pure rules, one package per module (M1-M25, except M21)
-content/      data: floors, bosses, classes, recipes, diseases, quests, balance, schemas
+content/      data: map, bosses, classes, recipes, diseases, quests, balance, schemas
 adapters/     telegram/, web/, mobile/, api/, admin/
 simulator/    M21 balance simulator
 tests/        one folder per module, no Telegram needed
@@ -494,6 +498,8 @@ diseno/       design documents (Spanish)
 | M12 PvP, crimen y justicia | `engine/pvp` | M25 Propiedad | `engine/property` |
 | M13 Economía | `engine/economy` | | |
 
+**Fuera de los 25 módulos están los servicios de juego:** la puerta única entre los clientes y el motor ([Web y multiplataforma](web-y-multiplataforma.md) §2). Reciben órdenes, llaman a los módulos y devuelven vistas, sin reglas propias. En el código viven en `engine/service/`, y su encabezado dice "capa de servicios" en el campo Módulo y nombra los módulos que une.
+
 **Cada módulo expone su parte pública en su `__init__.py`.** Los demás importan solo desde ahí, nunca un archivo interno de otro módulo. Así, lo que se puede romper desde fuera es poco y está a la vista.
 
 ### 7.2 Diccionario diseño ↔ código
@@ -508,20 +514,22 @@ El diseño usa nombres en español y el código en inglés. Este diccionario es 
 | `EnfermedadContagiada` | `DiseaseContracted` | Enfermedad | `disease` |
 | `ParteRota` | `PartBroken` | Aguante · Firmeza · Postura | `stamina` · `tenacity` · `poise` |
 | `JefeDerrotado` | `BossDefeated` | Esencia · Mancha | `essence` · `bloodstain` |
-| `PisoAbierto` | `FloorOpened` | Piso · Jefe · Receta | `floor` · `boss` · `recipe` |
+| `PisoAbierto` (en revisión por D-58) | `FloorOpened` | Piso (se retira, D-58) · Jefe · Receta | `floor` · `boss` · `recipe` |
 | `ObjetoFabricado` | `ItemCrafted` | Oficio | `profession` |
 | `OrdenEjecutada` | `OrderFilled` | Tramo | `tier` |
-| `ObjetoDestruido` | `ItemDestroyed` | Sello · Pionero | `seal` · `pioneer` |
+| `ObjetoDestruido` | `ItemDestroyed` | Sello (se retira, D-58) · Pionero | `seal` · `pioneer` |
 
 El diccionario crece en esta misma sección cada vez que el código necesita un término nuevo del diseño.
 
-## 8. Herramientas futuras (no se escriben todavía)
+**Dos trampas de nombres.** *Zona* nombra tres cosas en el diseño: la zona del cuerpo (`body_zone`), el color de zona del PvP y, con D-58, la casilla del mapa. En el código cada una lleva su propio nombre, que se elige al agregarla aquí. Y *M1* a *M25* son siempre módulos: los grados de Maestría que [Investigación y maestría](../07-economia/investigacion-y-maestria.md) escribe M10, M20… no lo son.
 
-Cuando empiece el código, estas herramientas corren en local antes de cada subida. Si alguna falla, no se sube.
+## 8. Herramientas de control (se escriben junto con el código)
+
+Ya se puede programar (D-59). Estas herramientas se escriben junto con el primer código y, desde que existan, corren en local antes de cada subida. Si alguna falla, no se sube.
 
 | Herramienta | Qué hace |
 |---|---|
-| **Revisor de notas** (`tools/check_notes.py`) | Comprueba que todo archivo de `engine/`, `content/`, `adapters/` y `tests/` tenga encabezado en inglés y nota [ES] con los 10 campos; que cada clase y función pública tenga docstring y nota [ES]; y que las rutas de "Documento de diseño" existan |
+| **Revisor de notas** (`tools/check_notes.py`) | Comprueba que todo archivo de código (`engine/`, `adapters/`, `simulator/`, `tests/` y `tools/`) tenga encabezado en inglés y nota [ES] con los 10 campos; que todo archivo de `content/` tenga su encabezado `# [ES]` (§4); que cada clase y función pública tenga docstring y nota [ES]; y que las rutas de "Documento de diseño" existan |
 | **Grafo de dependencias real** (`tools/dependency_graph.py`) | Construye el grafo con las importaciones, las suscripciones a eventos y las lecturas de archivos de datos. Lo compara con el mapa de impacto y con los campos "Depende de" y "Lo usan", y avisa de cuatro cosas: una dependencia que no está declarada, una declarada que ya no existe, el motor importando un cliente, y un módulo que escribe datos de los que no es dueño. Puede dibujar el grafo en el formato de los diagramas del diseño |
 | **Contratos de importación** | Prohíben las flechas que no deben existir: `engine/` nunca importa `adapters/`, y ningún módulo importa archivos internos de otro |
 | **Revisor de IDs** (`tools/check_ids.py`) | Compara el contenido con la versión anterior: falla si un ID desapareció, cambió de nombre o se reutilizó |

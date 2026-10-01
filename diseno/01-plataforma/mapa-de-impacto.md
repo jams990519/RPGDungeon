@@ -1,10 +1,10 @@
 # Mapa de impacto: qué se mueve cuando cambias algo
 
-> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Arquitectura modular](arquitectura-modular.md), [Convenciones de código](convenciones-de-codigo.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Se conecta con:** todos los módulos, [Web y multiplataforma](web-y-multiplataforma.md) · **Estado:** propuesta
+> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Arquitectura modular](arquitectura-modular.md), [Convenciones de código](convenciones-de-codigo.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Se conecta con:** todos los módulos, [Web y multiplataforma](web-y-multiplataforma.md) · **Estado:** propuesta; el mapa en sí lo pide D-42 (confirmada)
 
 **Qué pediste.** Que cuando le pidas a la IA que crea el juego cambiar una sola cosa, la IA entienda todo lo que pasa alrededor y pueda decirte: "ok, pero esto también va a romper esto, esto y esto, o puede afectar esto y esto". Es la decisión D-42 (ver [Decisiones](../00-vision/decisiones.md)).
 
-Este documento es **el mapa que se consulta antes de cambiar algo**: una regla, un número, un módulo, un texto o una pantalla. Las notas `[ES]` del código apuntan aquí (ver [Convenciones de código](convenciones-de-codigo.md)), y este mapa apunta a los documentos de diseño. Todavía no hay código (D-04): los ejemplos de código son ilustrativos.
+Este documento es **el mapa que se consulta antes de cambiar algo**: una regla, un número, un módulo, un texto o una pantalla. Las notas `[ES]` del código apuntan aquí (ver [Convenciones de código](convenciones-de-codigo.md)), y este mapa apunta a los documentos de diseño. El código ya está autorizado (D-59, que reemplaza a D-04): los ejemplos de código de este mapa son ilustrativos, y el mapa se actualiza en el mismo cambio que el código (§1.5).
 
 **De dónde sale.**
 - **Lecciones de TowerWars** (ver [Lecciones de TowerWars](../99-referencias/lecciones-de-towerwars.md)): "la ropa no contaba" (la guerra calculaba el poder por su lado y el equipo no sumaba), "si un número de balance se movió y no está en el registro, se movió a ciegas" y "la documentación vieja miente".
@@ -84,13 +84,19 @@ Este mapa se actualiza **en el mismo cambio** que lo vuelve viejo, nunca despué
 2. Un documento de diseño agrega una dependencia nueva (un "Depende de" o "Se conecta con" nuevo en su línea de módulo).
 3. Se mueve un número sensible (§4), junto con su entrada en el registro de balance.
 4. Se confirma o se descarta una decisión (D-xx) o una pregunta (P-xx) que cambia una regla.
-5. Cuando haya código: en el mismo cambio que toca el código. La herramienta de grafo de dependencias de las [Convenciones](convenciones-de-codigo.md) §8 comparará el grafo real con este mapa y avisará de las diferencias.
+5. Con el código (D-59): en el mismo cambio que toca el código. La herramienta de grafo de dependencias de las [Convenciones](convenciones-de-codigo.md) §8 comparará el grafo real con este mapa y avisará de las diferencias.
 
 **Quién lo actualiza:** quien hace el cambio, persona o IA.
 
 **Si este mapa y otro documento no coinciden:** manda el documento del módulo, que es más específico, y se corrige el mapa. Por encima de los dos mandan las decisiones confirmadas del dueño. Si un documento todavía no recoge una decisión confirmada, este mapa sigue la decisión y lo anota en §6.2.
 
-**Estado al 1 de octubre de 2026.** El diseño se está revisando en paralelo para aplicar las decisiones D-44 a D-49 (6 botones, mochilas, impuesto de la casa, el Colapso, amplio pero ligero, clases igualadas). Donde un documento todavía dice otra cosa, aquí se sigue la decisión.
+**Estado al 1 de octubre de 2026.** El diseño se está revisando en paralelo para aplicar las decisiones D-44 a D-59. Donde un documento todavía dice otra cosa, aquí se sigue la decisión y la diferencia queda anotada en §6.2. Tres decisiones cambian reglas que este mapa daba por fijas:
+
+- **D-58: ya no hay Torre ni pisos.** El mundo es un mapa sin borde y moverse entre lugares toma tiempo real. Vocabulario (propuesta de [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)): piso → zona y región; Frente → Frontera; Techo del Piso → Techo de la Frontera. Siguen el Guardián (ahora de la región), el Eco, los Pioneros y el Viento de Cola. Se retiran el Sello del Piso y, como propuesta, la piedra de paso; las menciones que quedan al Sello (sus pruebas, `SelloObtenido`) son conexiones que se caen con él. Ya están ajustadas las fichas M2, M8, M9 y M22 y las cascadas C-05, C-08 y C-15. Donde todavía quede "piso" (las Llaves del Piso de M11, el evento `PisoAbierto`), léase "región": el nombre nuevo lo fija la [arquitectura](arquitectura-modular.md).
+- **D-57: no hay límite de oficios.** El freno es el costo natural del conocimiento: tiempo, materiales, preparación y los costos de cada oficio. Ya están ajustadas la ficha M14 y la cascada C-12.
+- **D-59: el código ya está autorizado** (reemplaza a D-04). Este mapa y las [Convenciones](convenciones-de-codigo.md) valen desde la primera línea.
+
+Las demás decisiones nuevas suman sistemas sin cambiar las reglas de este mapa: roles por spec y juego en solitario (D-50), secuelas definitivas y cómo reponerlas (D-51, D-53), botín amplio (D-52), escalera de conocimiento (D-54), elixires propios (D-55) y aprender con pistas (D-56). Su dueño propuesto está en §6.1.
 
 ### 1.6 Cómo se ve en el código
 
@@ -134,6 +140,8 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | Todo en texto y por turnos | D-05 |
 | Amplio pero ligero: cada sistema tiene una capa simple por defecto y una profunda opcional | D-44 |
 | Combate de 6 botones como máximo y una sola elección por ronda | D-46 |
+| Sin pisos: el mapa no tiene borde y moverse entre lugares toma tiempo real | D-58 |
+| Sin límites duros de oficios: el freno es el costo natural del conocimiento | D-57 |
 | Clases igualadas: la diferencia la hacen los oficios y el conocimiento | D-49 |
 | Sumideros siempre en porcentaje | D-27 |
 | El dinero real compra solo cosméticos y aceleradores; nadie paga para apostar | D-43 |
@@ -145,19 +153,19 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | # | Módulo | Radio de impacto | Lo más delicado de tocar |
 |---|---|---|---|
 | M1 | Núcleo | Muy alto: lo usan todos | Semilla del azar, reinicios diarios y semanales, forma de los eventos, IDs, cuentas |
-| M2 | Héroe | Alto | Nivel 10 (protecciones de novato), Techo del Piso, rasgos de linaje |
+| M2 | Héroe | Alto | Nivel 10 (protecciones de novato), Techo de la Frontera (antes, del Piso), rasgos de linaje |
 | M3 | Clases y talentos | Alto | Presupuesto de poder, IDs de habilidades, utilidades clave, la barra de 6 |
 | M4 | Equipo e inventario | Muy alto | Poder de Objeto (una sola fuente de verdad), durabilidad, zona que protege cada ranura, mochilas |
 | M5 | Combate | Muy alto | Mitigación, datos de `GolpeRecibido`, temporizador, tope de PvP |
 | M6 | Enemigos y jefes | Medio | Avisos (de su texto dependen las Tácticas y el Bestiario), botín, contagio de monstruos |
 | M7 | Salud | Alto | Duraciones, contagio, qué cura la magia, protección de novato |
-| M8 | Mundo | Alto | Color de zona, costo de viaje por peso, ecología, clima |
-| M9 | Frente, Sellos y Fundación | Alto | Ritmo de pisos, medidores de la ciudad, requisitos de etapa, Sello |
+| M8 | Mundo | Alto | Color de zona, tiempo de viaje (D-58), ecología, clima |
+| M9 | Frente, Sellos y Fundación | Alto | Ritmo de avance de la Frontera (antes, de pisos), medidores de la ciudad, requisitos de etapa |
 | M10 | Misiones | Medio | Oro que pagan (inflación), rendimiento de expediciones, investigación |
 | M11 | Instancias | Medio | Carriles de recompensa, reloj de rondas |
 | M12 | PvP, crimen y justicia | Alto | Reglas de caída por zona, protección del Juramento de Hierro, karma |
 | M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles |
-| M14 | Oficios | Alto | Límite de oficios mayores, vetas, rangos y exámenes |
+| M14 | Oficios | Alto | Costo del conocimiento (D-57), vetas, rangos y exámenes |
 | M15 | Social | Medio | Tamaño de grupo, vales por reenvío |
 | M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
 | M17 | Colecciones y logros | Bajo, salvo que dé poder | Regla de las 3 vistas, nunca poder |
@@ -194,7 +202,7 @@ flowchart LR
 1. **Poder:** M3 y M4 → M5 → M6, M11, M12 y M21. Todo número de combate termina en el simulador.
 2. **Cuerpo:** M5 → M7 → M14 → M13. Cada golpe es, al final, trabajo para un médico y oro que se quema en el sanatorio.
 3. **Oro:** M13 con M14, M16, M24 y M25. Toda fuente de oro necesita su sumidero.
-4. **Torre y ciudad:** M9 → M8, M2, M14, M24 y M25. Abrir un piso o subir de etapa una ciudad enciende servicios, lugares y rangos.
+4. **Frontera y ciudad:** M9 → M8, M2, M14, M24 y M25. Pacificar una región (antes, abrir un piso) o subir de etapa una ciudad enciende servicios, lugares y rangos.
 5. **Pantalla:** todos → M19 → los tres clientes. Lo que se ve es un contrato (§5).
 
 ### 2.3 Las 25 fichas
@@ -220,7 +228,7 @@ flowchart LR
 - **La hora o el día de los reinicios** → todo lo diario y semanal: Enfoque (M14), topes del Foso y de recompensas (M12, M16, M23), Tesoro Semanal y bloqueos de mazmorras y bandas (M11), conocimiento semanal de oficios (M14), cuotas y barras semanales de la ciudad (M9), tasas y mantenimiento semanales (M25, M24), estaciones (M8).
 - **La forma de un evento o del bus** → todos los que lo escuchan (columna "Eventos que escucha" de cada ficha). Un evento se amplía agregando campos con valor por defecto; nunca se le quita ni se le cambia el significado a uno.
 - **Cómo se vincula una cuenta** → la entrada en los tres clientes, la detección de multicuentas y cuentas vinculadas (M23), las Gemas de la cuenta (M22), las colecciones y la reputación de cuenta (M17, M2).
-- **Agregar un idioma o cambiar una clave de texto** → todos los textos de contenido (pisos, avisos de jefes, casos, misiones), las plantillas de notas en el suelo (M6), los mensajes de M19 y los tres clientes. Una clave borrada deja un hueco en pantalla.
+- **Agregar un idioma o cambiar una clave de texto** → todos los textos de contenido (zonas, avisos de jefes, casos, misiones), las plantillas de notas en el suelo (M6), los mensajes de M19 y los tres clientes. Una clave borrada deja un hueco en pantalla.
 
 ---
 
@@ -230,7 +238,7 @@ flowchart LR
 |---|---|
 | **Para qué sirve** | Quién es cada personaje y cuánto creció: linaje, trasfondo, apariencia, nivel, experiencia y perfil |
 | **Documentos de diseño** | [Creación de personaje](../03-personaje/creacion-de-personaje.md), [Progresión](../03-personaje/progresion.md) |
-| **Depende de** | M1; M9 (el Techo del Piso usa el piso del último Sello) |
+| **Depende de** | M1; M9 (el Techo de la Frontera depende de hasta dónde llegó la Frontera; antes, del piso del último Sello) |
 | **Lo usan** | M3 (clase al nivel 10, puntos de talento por nivel), M4 (la capacidad de carga sale del linaje y el aguante), M7 (rasgo de cuerpo del linaje, nivel 10 de la protección de novato, Resolución), M10 (misiones de trasfondo), M12 y M16 (novatos fuera del PvP y del Circuito), M13 (rasgos de linaje con PNJ), M14 (rasgo de oficio, empujón del trasfondo), M15 (gremio desde el nivel 5, mentoría hasta el 20), M22 (aceleradores de experiencia), M23 (nivel mínimo para transferir) |
 | **Eventos que publica** | Propuestos: `HeroeCreado`, `NivelSubido` |
 | **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`), `ObjetoFabricado` (`ItemCrafted`), `HeridaTratada` (`WoundTreated`) para dar experiencia. Propuestos: `CombateTerminado`, `MisionCompletada`, `InstanciaCompletada`, `SelloObtenido` |
@@ -239,8 +247,8 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **Un rasgo de linaje** → la tabla de linajes de [Peligros del entorno](../05-salud/peligros-del-entorno.md) §9 y del [Bestiario](../06-contenido/bestiario.md) §5.1 (quién resiste qué contagio), las reglas de cuerpo de Salud (M7) y el oficio que mejora (M14). Si se acerca al combate, **rompe** la regla 10 de [Balance](../03-personaje/balance.md) y D-49, y hay que medir (M21). El rasgo del Goblin con PNJ nunca puede tocar el mercado entre jugadores (M13).
-- **La curva de experiencia** → el ritmo de nivel frente al Frente (M9), cuándo llegan los árboles de héroe (nivel 50) y Ápice (90) (M3), el valor de los aceleradores (M22), del Viento de Cola (+25 %) y de la experiencia descansada.
-- **El Techo del Piso** → C-08.
+- **La curva de experiencia** → el ritmo de nivel frente a la Frontera (M9), cuándo llegan los árboles de héroe (nivel 50) y Ápice (90) (M3), el valor de los aceleradores (M22), del Viento de Cola (+25 %) y de la experiencia descansada.
+- **El Techo de la Frontera** (antes, Techo del Piso) → C-08.
 - **El nivel de la clase (10) o de la protección de novato (10)** → el tutorial del Claro (M9), heridas, enfermedades y peligros de novato (M7), PvP, robos y Circuito (M12, M16), transferencias (M23), el kit sin clase (M3). Esa regla está escrita en siete documentos (§4.7).
 - **La experiencia descansada** → el valor de dormir en posada o en casa (M24) y el de los jugadores que entran poco. Nunca se suma con un acelerador del mismo tipo (M22).
 - **El Renombre** → bonos de carga (M4), banco (M13), viaje (M8) y Enfoque (M14). Si da daño, **rompe** su regla.
@@ -279,7 +287,7 @@ flowchart LR
 | **Para qué sirve** | Todo objeto: qué es, dónde se lleva, cuánto pesa, cuánto aguanta, qué técnica da y cuánto poder resume. También las mochilas y el inventario |
 | **Documentos de diseño** | [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md) (calidad y firma). Inventario y mochilas (D-47, documento en redacción) |
 | **Depende de** | M1; M2 (capacidad de carga); M14 (crea los objetos fabricados); M6 (artefactos y Recuerdos) |
-| **Lo usan** | M5 (estadísticas, iniciativa por peso y Celeridad, resistencias, objetos del botón Mochila), M7 (protección por zona, capa de clima, protección contra el entorno), M11 (Poder de Objeto mínimo del buscador), M12 (botín al caer, plantillas de arena, poder de guerra), M13 (el mercado ordena por Poder de Objeto), M8 (la piedra de paso cobra por peso), M21, M24 (equipo de los guardias), M17 (apariencias), M23 (transferencias sospechosas) |
+| **Lo usan** | M5 (estadísticas, iniciativa por peso y Celeridad, resistencias, objetos del botón Mochila), M7 (protección por zona, capa de clima, protección contra el entorno), M11 (Poder de Objeto mínimo del buscador), M12 (botín al caer, plantillas de arena, poder de guerra), M13 (el mercado ordena por Poder de Objeto), M8 (caravanas y monturas: la carga pesa en el viaje), M21, M24 (equipo de los guardias), M17 (apariencias), M23 (transferencias sospechosas) |
 | **Eventos que publica** | `ObjetoDestruido` (`ItemDestroyed`). Propuestos: `ObjetoEquipado`, `ObjetoReparado` |
 | **Eventos que escucha** | `GolpeRecibido` (`HitReceived`) para el desgaste; `HeroeCaido` (`HeroFallen`) para el −10 % de durabilidad en zona amarilla y el botín en roja y negra (junto con M12); `ObjetoFabricado` (`ItemCrafted`) |
 | **Datos de los que es dueño** | Objetos y sus siete propiedades (tramo, calidad, rareza, encantamiento, mejoras, afijos, engarces), durabilidad actual y máxima, peso, atadura, firma; ranuras equipadas; mochilas, cinturón de combate, alforjas y botiquín (D-47); carga; la fórmula del Poder de Objeto; las técnicas de equipo |
@@ -289,7 +297,7 @@ flowchart LR
 - **La fórmula del Poder de Objeto** → requisitos del buscador (M11), orden del mercado (M13), poder de guerra (M12), Mercado Negro, simulador (M21).
 - **El desgaste o la pérdida de máxima al reparar** → cuántas semanas dura una pieza, la demanda de herreros (M14), el oro quemado en reparaciones (M13) y el valor del herrero frente al PNJ. Es el final de la cadena C-01.
 - **Qué zona protege cada ranura** → probabilidad y gravedad de heridas por zona (M7), la barra de Contagio que frena la armadura de la zona ([Bestiario](../06-contenido/bestiario.md) §5.1), `/cuerpo` y la pantalla de equipo en los clientes.
-- **Una técnica de equipo** → hoy [Equipamiento](../03-personaje/equipamiento.md) §7 las pone en la barra de 8; con los 6 botones de D-46 hay que decidir dónde quedan (§6.2). Cambian la demanda de cada tipo de arma y armadura (M13, M14), las Tácticas y el simulador.
+- **Una técnica de equipo** → con D-46, una técnica puede ocupar una de las 3 casillas de habilidad, y las marcadas 🛡 o 💨 son respuestas que cuestan Aguante ([Equipamiento](../03-personaje/equipamiento.md) §7). Cambian la demanda de cada tipo de arma y armadura (M13, M14), las Tácticas y el simulador.
 - **Las mochilas o el cinturón** (D-47) → lo que entra en el botón Mochila del combate (M5), la carga, los tipos de mochila por oficio (M14) y la pantalla de inventario de los tres clientes.
 - **La tabla de carga** → iniciativa y Aguante (M5), las placas que hunden en agua profunda (M7), el Taurino (M2), el Renombre de carga.
 - **La atadura** → qué se comercia (M13), mulas y comercio con dinero real (M23), botín en PvP (M12).
@@ -314,7 +322,7 @@ flowchart LR
 - **La fórmula de mitigación** → C-01.
 - **El temporizador de ronda** → C-10.
 - **El tope de golpe o la amortiguación de PvP** → C-16.
-- **El Aguante, las reacciones o la Firmeza** → el valor de leer avisos (M6), las armaduras pesadas que bajan el máximo (M4), el calor y la sed que lo bajan (M7), el control en PvP (M12) y las specs de control (M21). Con D-46 este modelo está en revisión: confirmar en [Ronda y acciones](../04-combate/ronda-y-acciones.md) antes de tocarlo.
+- **El Aguante, las respuestas o la Firmeza** → el valor de leer avisos (M6), las armaduras pesadas que bajan el máximo (M4), el calor y la sed que lo bajan (M7), el control en PvP (M12) y las specs de control (M21). Con D-46, el Aguante paga las respuestas al aviso y 🌀 Esquivar ([Ronda y acciones](../04-combate/ronda-y-acciones.md) §3 y §5).
 - **Las 3 rondas de derribado** → resurrecciones en combate (M3), Sales de Reanimación (M14), heridas garantizadas (M7), reloj de Mítica+ (M11), derribos por el entorno (M7).
 - **Los datos de `GolpeRecibido`** → Salud (heridas y barra de Contagio), Equipo (durabilidad) y Mente (estrés) al mismo tiempo. Cambiar el significado de un campo (por ejemplo, el daño antes o después de la armadura) cambia cuántas heridas aparecen **sin dar ningún error** ([Convenciones](convenciones-de-codigo.md) §5.2).
 - **Una mecánica avanzada** (ruptura, golpe extra, técnicas combinadas, superficies, terreno, emboscada, moral, Límite, reacciones avanzadas, apostar turnos) → su eje en el presupuesto de poder y su objetivo en el simulador ([Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §15), los oficios que viven de ella (aceites, frascos, bombas, botas: §14 de ese documento), las Tácticas por defecto que la usan en la capa simple (D-44).
@@ -329,7 +337,7 @@ flowchart LR
 | **Para qué sirve** | Cómo pelea cada enemigo: repertorio, avisos (también los que mienten), fases, postura, escudo de ruptura, partes, a quién elige como objetivo, qué contagia y qué deja |
 | **Documentos de diseño** | [Jefes](../06-contenido/jefes.md), [Bestiario](../06-contenido/bestiario.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Daño y estados](../04-combate/dano-y-estados.md) §3 (partes), [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §3 y §9 (ruptura, moral) |
 | **Depende de** | M5; M8 (dónde vive cada criatura y su población); M17 (conocimiento del Bestiario para las pistas); M21 (prueba de que el jefe es justo) |
-| **Lo usan** | M5; M9 (el Guardián abre la escalera; Pioneros; Eco del Guardián; incursiones a la ciudad); M10 (presas de cacería, jefes de campo); M11 (jefes de mazmorra y banda); M4 y M14 (artefactos, Recuerdos, planos, materiales de partes); M13 (precios de materiales de monstruo); M7 (contagios de monstruo); M17 (Bestiario); M18 (jefe semanal por gremio); M15 y M16 (jefe errante con Cuerno de Invocación) |
+| **Lo usan** | M5; M9 (el Guardián de cada región; Pioneros; Eco del Guardián; incursiones a la ciudad); M10 (presas de cacería, jefes de campo); M11 (jefes de mazmorra y banda); M4 y M14 (artefactos, Recuerdos, planos, materiales de partes); M13 (precios de materiales de monstruo); M7 (contagios de monstruo); M17 (Bestiario); M18 (jefe semanal por gremio); M15 y M16 (jefe errante con Cuerno de Invocación) |
 | **Eventos que publica** | `JefeDerrotado` (`BossDefeated`). Propuestos: `MovimientoVisto` (para que M17 cuente las 3 vistas), `MonstruoConNombre` (un alfa que asciende y sale en la Gaceta) |
 | **Eventos que escucha** | `ParteRota` (`PartBroken`): quita el movimiento de esa parte |
 | **Datos de los que es dueño** | Ficha de cada enemigo (vida, postura, escudo, debilidades, resistencias, repertorio de 8 a 12 movimientos, textos de aviso, fases al 66 % y al 33 %, partes, contagios, modificadores), las 19 familias, los monstruos únicos, las tablas de botín, los signos de invocación, los espíritus, las notas en el suelo |
@@ -376,21 +384,21 @@ flowchart LR
 
 | | |
 |---|---|
-| **Para qué sirve** | El escenario: pisos, nodos, zonas de color, terrenos, clima, estaciones, día y noche, ecología, viaje y manchas |
-| **Documentos de diseño** | [02 · Mundo](../02-mundo/README.md), [Torre y pisos](../02-mundo/torre-y-pisos.md) §2-3, [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md) §4 (rigor por terreno y tramo), [Bestiario](../06-contenido/bestiario.md) §10 (ecología) |
-| **Depende de** | M1 (reloj); M9 (un piso solo existe cuando se abre) |
+| **Para qué sirve** | El escenario: el mapa sin borde (zonas, regiones y lugares; antes, pisos), nodos, zonas de color, terrenos, clima, estaciones, día y noche, ecología, viaje y manchas |
+| **Documentos de diseño** | [02 · Mundo](../02-mundo/README.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (D-58, reemplaza a [Torre y pisos](../02-mundo/torre-y-pisos.md)), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md) §4 (rigor por terreno y tramo), [Bestiario](../06-contenido/bestiario.md) §10 (ecología) |
+| **Depende de** | M1 (reloj); M9 (una región nueva pasa por descubrimiento, esfuerzo de guerra, Guardián y asentamiento antes de poblarse) |
 | **Lo usan** | M7 (clima, rigor, zona); M9 (sitios de nodo para fundar; ecología que sube la amenaza de la ciudad); M10 (nodos de expedición y rastreo); M12 (zonas de color, territorios); M13 (un mercado por asentamiento, transporte por peso); M14 (cada terreno produce lo suyo; nodos para las vetas); M24 (parcelas y reglas por zona); M6 (dónde aparece cada criatura); M17 (atlas, descubridores de lugares) |
 | **Eventos que publica** | Propuestos: `ClimaCambiado`, `EstacionCambiada`, `PoblacionCambiada` (Escasa, Normal, Abundante, Plaga), `NodoDescubierto`, `ManchaCreada` |
-| **Eventos que escucha** | `HeroeCaido` (`HeroFallen`) para dejar la mancha; `PisoAbierto` (`FloorOpened`) para que el piso sea jugable. Propuestos: `PresaCazada` (baja la población), `ObraTerminada` (puentes, caminos y piedras de paso nuevas) |
-| **Datos de los que es dueño** | Pisos, nodos y conexiones; el color de zona de cada nodo; terrenos; rigor de peligros por nodo; clima, estación y hora del día; poblaciones de especies; rutas y costo de viaje; manchas de sangre; rumores. Propuesta (§6.1): yacimientos únicos y Vigor |
-| **Reglas que nunca se rompen** | En zona azul no se pelea ni hay peligro mortal. La piedra de paso cobra por peso. Ninguna zona es autosuficiente (D-33). El rigor nunca pasa de 3. Las criaturas nativas no sufren su entorno. Los pisos son datos: agregar uno no pide programar |
+| **Eventos que escucha** | `HeroeCaido` (`HeroFallen`) para dejar la mancha; `PisoAbierto` (`FloorOpened`; con D-58, el avance de la Frontera) para que la región sea jugable. Propuestos: `PresaCazada` (baja la población), `ObraTerminada` (puentes, caminos y postas nuevas) |
+| **Datos de los que es dueño** | Zonas y regiones del mapa, nodos y conexiones; el color de zona de cada nodo; terrenos; rigor de peligros por nodo; clima, estación y hora del día; poblaciones de especies; rutas y costo de viaje; manchas de sangre; rumores. Propuesta (§6.1): yacimientos únicos y Vigor |
+| **Reglas que nunca se rompen** | En zona azul no se pelea ni hay peligro mortal. Moverse entre lugares toma tiempo real (D-58). Ninguna zona es autosuficiente (D-33). El rigor nunca pasa de 3. Las criaturas nativas no sufren su entorno. El mapa es contenido: sus zonas y biomas se describen en datos, no en código (regla 4) |
 
 **Si cambias esto, revisa:**
 - **El color de zona de un nodo** → qué se pierde al caer ahí (C-11), PvP e invasiones (M12), qué se puede construir (M24), recompensas de encargos (M10).
-- **El costo de viaje por peso** → C-15.
+- **El tiempo de viaje** (antes, el costo de la piedra de paso por peso) → C-15.
 - **La ecología** (cuánto crece o baja cada población) → precios de materiales de monstruo (M13), amenaza e incursiones a la ciudad (M9) y a las construcciones (M24), el tablón de caza (M10), las migraciones y los brotes en la fauna (M7).
 - **El clima o las estaciones** → enfermedades de temporada (M7), rigor de peligros (+1 por clima, M7), cosechas, inviernos y despensa de la ciudad (M9, M14), jornadas de obra (M24), rastros de caza (M10).
-- **Los terrenos de un piso** → qué produce y qué le falta, y por lo tanto las rutas de comercio (M13), la sal y la comida que tiene que comprar una ciudad (M9) y dónde conviene fundar.
+- **Los terrenos de una zona o región** → qué produce y qué le falta, y por lo tanto las rutas de comercio (M13), la sal y la comida que tiene que comprar una ciudad (M9) y dónde conviene fundar.
 - **Las manchas** (cuánto duran, qué muestran) → recuperar la Esencia (M13), aprender de muertes ajenas (M6), la semilla (M1).
 
 ---
@@ -399,22 +407,22 @@ flowchart LR
 
 | | |
 |---|---|
-| **Para qué sirve** | La conquista y la vida política de la Torre: abrir pisos, Sellos personales, fundar ciudades y sostenerlas (comida, salud, ánimo, seguridad, orden y amenaza), gobierno, cismas, comunidades y crisis |
-| **Documentos de diseño** | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4-5, [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md), [Crisis](../02-mundo/crisis-problemas-y-soluciones.md), [Facciones](../02-mundo/facciones.md). El Colapso y las comunidades (D-45, documento en redacción) |
-| **Depende de** | M8; M6 (Guardián, bestias de las incursiones); M10, M11, M12, M14 y M2 (las 6 pruebas del Sello); M14 y M24 (las necesidades se cubren con oficios y las etapas son obras); M13 (tesoro e impuestos); M7 (brotes y epidemias); M5 y M24 (defensa de la ciudad por rondas) |
-| **Lo usan** | M2 (Techo del Piso); M8 (pisos nuevos); M12 (la guerra de castillos nace con el primer cisma; las leyes deciden qué es delito); M13 (mercados nuevos; impuestos locales); M14 (los entrenadores dependen del ala de Oficios construida y abastecida; especialidad de cada capital); M16 (leyes del juego, ala de la Fortuna); M24 (obras de servidor); M25 (plazas y parcelas nuevas, licencias del Castillo, impuesto de la casa); M18 (Pioneros por facción); M19 (aviso escalonado, Gaceta, `/ciudad`) |
-| **Eventos que publica** | `PisoAbierto` (`FloorOpened`). Propuestos: `FaseDePisoCambiada`, `SelloObtenido`, `EtapaDeCiudadCambiada`, `MedidorDeCiudadCambiado`, `IncursionLanzada`, `CrisisIniciada`, `LeyAprobada`, `CismaDeclarado`, `CastilloFundado` |
+| **Para qué sirve** | La conquista y la vida política del mapa: avanzar la Frontera región por región (antes, abrir pisos y ganar Sellos), fundar ciudades y sostenerlas (comida, salud, ánimo, seguridad, orden y amenaza), gobierno, cismas, comunidades y crisis |
+| **Documentos de diseño** | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (D-58: las fases de [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.1 pasan a las regiones), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md), [Crisis](../02-mundo/crisis-problemas-y-soluciones.md), [Facciones](../02-mundo/facciones.md), [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) (D-45) |
+| **Depende de** | M8; M6 (Guardián, bestias de las incursiones); M10, M11, M12, M14 y M2 (las 6 pruebas del Sello, que se retira con D-58); M14 y M24 (las necesidades se cubren con oficios y las etapas son obras); M13 (tesoro e impuestos); M7 (brotes y epidemias); M5 y M24 (defensa de la ciudad por rondas) |
+| **Lo usan** | M2 (Techo de la Frontera); M8 (regiones nuevas); M12 (la guerra de castillos nace con el primer cisma; las leyes deciden qué es delito); M13 (mercados nuevos; impuestos locales); M14 (los entrenadores dependen del ala de Oficios construida y abastecida; especialidad de cada capital); M16 (leyes del juego, ala de la Fortuna); M24 (obras de servidor); M25 (plazas y parcelas nuevas, licencias del Castillo, impuesto de la casa); M18 (Pioneros por facción); M19 (aviso escalonado, Gaceta, `/ciudad`) |
+| **Eventos que publica** | `PisoAbierto` (`FloorOpened`; con D-58, avance de la Frontera, nombre pendiente). Propuestos: `FaseDePisoCambiada` (de región, con D-58), `SelloObtenido` (se retira con D-58), `EtapaDeCiudadCambiada`, `MedidorDeCiudadCambiado`, `IncursionLanzada`, `CrisisIniciada`, `LeyAprobada`, `CismaDeclarado`, `CastilloFundado` |
 | **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`) para Pioneros y Sellos; `EnfermedadContagiada` (`DiseaseContracted`) para brotes. Propuestos: `PoblacionCambiada` (amenaza e invasiones), `ObraTerminada`, `DefensaResuelta`, `TemporadaTerminada` (fin de mandatos), `NuevoDiaDeJuego` (la cuenta diaria de la ciudad) |
-| **Datos de los que es dueño** | El Frente y la fase de cada piso, el mapa del servidor, las metas del Esfuerzo de Guerra, los Pioneros, los Sellos de cada héroe; el estado de cada asentamiento (etapa, experiencia de nodo, vasallos, población de aldeanos, despensa y raciones, medidores, amenaza, racha de etapa, cuotas y registro de aportes, pedidos); gobierno (cargos, leyes, mandatos); castillos, comunidades y relaciones; crisis activas |
-| **Reglas que nunca se rompen** | El piso siguiente no existe hasta que cae su Guardián. El servidor no pasa del último piso publicado. Sello = Guardián obligatorio + 3 de 6 pruebas (menos con Viento de Cola). Los Pioneros ganan prestigio, nunca poder. Gobernador electo con mandatos que vencen por temporada (D-29), máximo dos seguidos. Construir no alcanza: una etapa se sube sosteniendo sus mínimos y superando incursiones. Nada personal se pierde aunque la ciudad caiga; bajar de etapa apaga edificios, no los destruye. Cisma con mínimo de firmas y 7 días de plazo; tope de castillos. Antes del primer cisma no hay guerra de castillos. Ninguna crisis arruina a nadie para siempre |
+| **Datos de los que es dueño** | La Frontera y la fase de cada región (antes, el Frente y cada piso), el mapa del servidor, las metas del Esfuerzo de Guerra, los Pioneros; el estado de cada asentamiento (etapa, experiencia de nodo, vasallos, población de aldeanos, despensa y raciones, medidores, amenaza, racha de etapa, cuotas y registro de aportes, pedidos); gobierno (cargos, leyes, mandatos); castillos, comunidades y relaciones; crisis activas |
+| **Reglas que nunca se rompen** | Una región no se puebla hasta que cae su Guardián (D-58 lleva a las regiones las cuatro fases del piso). Los jefes de mundo siguen, repartidos por el mapa (D-08, D-58). Los Pioneros ganan prestigio, nunca poder. Gobernador electo con mandatos que vencen por temporada (D-29), máximo dos seguidos. Construir no alcanza: una etapa se sube sosteniendo sus mínimos y superando incursiones. Nada personal se pierde aunque la ciudad caiga; bajar de etapa apaga edificios, no los destruye. Cisma con mínimo de firmas y 7 días de plazo; tope de castillos. Antes del primer cisma no hay guerra de castillos. Ninguna crisis arruina a nadie para siempre |
 
 **Si cambias esto, revisa:**
-- **El ritmo de apertura de pisos** → C-05.
+- **El ritmo de avance de la Frontera** (antes, de apertura de pisos) → C-05.
 - **El consumo de comida o los umbrales de la despensa** → C-06.
-- **El Techo del Piso o el Viento de Cola** → C-08.
+- **El Techo de la Frontera o el Viento de Cola** → C-08.
 - **La amenaza** (qué la sube, fuerza de la incursión) → la demanda de murallas, guardias y armas (M24, M14), los contratos de caza de control (M10), las leyes del Ecologista (M8), la comida de los guardias (C-06) y el valor de la torre de vigía.
 - **Los requisitos de etapa** (población, despensa sostenida, racha, Noche de prueba) → cuánto tarda el Claro en llegar a Castillo (P-55), cuándo se encienden entrenadores, subastas, crédito, minijuegos y sanatorio (M14, M25, M13, M16, M7).
-- **Las pruebas del Sello** → la demanda de mapas (cartógrafos, M14), del Laberinto (M11), de la campaña (M10), de los encargos artesanales (M14) y de la Senda de sangre (M12). Quitar la prueba de PvP **rompe** el principio de que el PvP es opcional para progresar ([PvP](../06-contenido/pvp.md)).
+- **Las pruebas del Sello** (el Sello se retira con D-58; si su papel pasa a otra pieza, esto vale para ella) → la demanda de mapas (cartógrafos, M14), del Laberinto (M11), de la campaña (M10), de los encargos artesanales (M14) y de la Senda de sangre (M12). Quitar la prueba de PvP **rompe** el principio de que el PvP es opcional para progresar ([PvP](../06-contenido/pvp.md)).
 - **El mínimo para un cisma o el tope de castillos** → cuántas facciones hay (M12, M15), el tamaño de cada ciudad para sostener sus medidores, las plazas y licencias por castillo (M25).
 - **Los poderes del gobernador** → impuestos locales e impuesto de la casa (M13, M25, D-48), cuarentenas (M7), licencias (M25, M16), raciones y jornadas extra (C-06), vedas del Ecologista (M14, M8).
 - **Las comunidades PNJ del Colapso** (D-45) → dónde se paga el impuesto de la casa (M25), qué reglas valen en cada reino (M12, M16), cuánto cuesta fundar en lugar de unirse.
@@ -518,16 +526,16 @@ flowchart LR
 | | |
 |---|---|
 | **Para qué sirve** | Cómo se produce todo: recolectar, refinar, fabricar (con minijuego o rápido), recetas, planos, calidad de las vetas, rangos con exámenes y especializaciones, incluidos Medicina y Construcción |
-| **Documentos de diseño** | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md), [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md), [Curación](../05-salud/curacion-y-tratamientos.md) §0 y §4 (Medicina), [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2 (rangos de Construcción), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §3 (entrenadores) |
+| **Documentos de diseño** | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md), [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md), [Curación](../05-salud/curacion-y-tratamientos.md) §0 y §4 (Medicina), [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2 (rangos de Construcción), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §3 (entrenadores), [Investigación y maestría](../07-economia/investigacion-y-maestria.md) (D-54) |
 | **Depende de** | M1; M2; M4 (crea los objetos); M8 (terrenos y nodos); M9 (entrenadores según el ala de Oficios; especialidad de la capital); M13 (mercado y pedidos); M24 (estaciones en casa y gremio); M10 (recetas y planos investigados) |
 | **Lo usan** | M4, M7, M24, M9 (comida, conservas, herramientas comunes; contribución artesanal del Sello), M13, M16 (dados, mazos y sus versiones trucadas), M12 (Dedos de Sangre, Grilletes, armas de asedio), M6 (Cuernos de Invocación), M5 (aceites, frascos y bombas de las mecánicas avanzadas), M3 (consumibles de utilidades clave), M17 (firma, obras maestras, recetario) |
 | **Eventos que publica** | `ObjetoFabricado` (`ItemCrafted`). Propuestos: `RecetaDescubierta`, `RangoDeOficioSubido`, `VetaAparecida` / `VetaAgotada` |
 | **Eventos que escucha** | `HeridaTratada` (`WoundTreated`): experiencia de Medicina. Propuestos: `EtapaDeCiudadCambiada` (entrenadores disponibles), `NuevaSemana` (conocimiento semanal), `InvestigacionCompletada` (recetas recuperadas) |
 | **Datos de los que es dueño** | Nivel y rango de cada oficio por personaje, conocimiento y especializaciones, maestrías por objeto, recetas aprendidas y descubiertas, planos y copias, vetas (lugar, atributos, duración), trabajadores, registro de obras maestras. Propuesta (§6.1): el Enfoque diario |
-| **Reglas que nunca se rompen** | Profesiones profundas (D-10). Construir y curar se estudian: sin rango no hay trabajo de alto nivel, no ayuda cualquiera (D-11). 2 oficios mayores por personaje; una recolección a 100 y las demás a 60; menores sin límite. Los oficios no se comparten entre personajes. Cada rango pide examen. El conocimiento semanal tiene tope. La fabricación rápida llega como mucho a Notable. La destreza de los dedos nunca decide la calidad real. Todo lo fabricado lleva firma |
+| **Reglas que nunca se rompen** | Profesiones profundas (D-10). Construir y curar se estudian: sin rango no hay trabajo de alto nivel, no ayuda cualquiera (D-11). Sin límite duro de oficios: el freno es el costo natural del conocimiento (D-57; [Profesiones](../07-economia/profesiones.md) §3 todavía dice 2 mayores). Los oficios no se comparten entre personajes. Cada rango pide examen. El conocimiento semanal tiene tope. La fabricación rápida llega como mucho a Notable. La destreza de los dedos nunca decide la calidad real. Todo lo fabricado lleva firma |
 
 **Si cambias esto, revisa:**
-- **El límite de oficios mayores** → C-12.
+- **El costo de aprender un oficio** (antes, el límite de oficios mayores) → C-12.
 - **La aparición de vetas** → C-13.
 - **La curva de rango** (Gran Maestro en ~1 año) → la duración del juego del artesano, cuándo hay obras maestras, quién puede curar (M7) y construir (M24) cada cosa.
 - **El minijuego de fabricación** → la calidad media de todo el equipo (M4), la tasa de obras maestras y su pantalla en los tres clientes.
@@ -576,7 +584,7 @@ flowchart LR
 **Si cambias esto, revisa:**
 - **La comisión de la casa** → oro quemado (M13, M20) y negocio de los casinos de jugadores (M24, M25).
 - **Los topes o el Voto de Templanza** → quitarlos **rompe** la regla de topes diarios y complica las tiendas de aplicaciones (P-62, P-63).
-- **La tirada pública auditable** → el dado nativo de Telegram no decide ninguna tirada que cuente: la decide el motor con una semilla cuya huella se publica antes y que se revela después ([Web y multiplataforma](web-y-multiplataforma.md) §6.1). Cambiar ese mecanismo toca M1 (semillas), M15 (botín de grupo), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), la API pública y los tres clientes (§5.3).
+- **La tirada pública auditable** → el dado nativo de Telegram no decide ninguna tirada que cuente: la decide el motor con una semilla cuya huella se publica antes y que se revela después ([Web y multiplataforma](web-y-multiplataforma.md) §6.1). Cambiar ese mecanismo toca M1 (semillas), M5 (emboscada e iniciativa inicial), M15 (botín de grupo), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), la API pública y los tres clientes (§5.3).
 - **Agregar un minijuego** → recompensas con tope, un lugar en el mundo y nada de poder; si es de destreza, nunca decide calidad real (M14).
 - **Las reglas de lo ilegal** (garitos, redadas) → Infamia y guardia (M12), contraseñas (M10), orden de la ciudad (M9).
 
@@ -638,7 +646,7 @@ flowchart LR
 **Si cambias esto, revisa:**
 - **El formato de una vista o de un aviso** → los tres clientes (§5).
 - **Los límites de envío o de edición** → solo el adaptador de Telegram: la carga del servidor y el riesgo de que Telegram frene los envíos en combates en grupo y bandas (M5, M11).
-- **El aviso escalonado** → la apertura de pisos (M9), la Guarida, las vetas excepcionales y los eventos de servidor; la hora de apertura tiene que seguir siendo la misma para todos.
+- **El aviso escalonado** → la apertura de regiones (antes, de pisos) (M9), la Guarida, las vetas excepcionales y los eventos de servidor; la hora de apertura tiene que seguir siendo la misma para todos.
 - **La precisión pública de un dato** (vida del jefe en %, Aguante en fichas) → lo que puede deducir un jugador en cada cliente; una precisión más fina en un cliente **rompe** D-40.
 - **Un canal** (Gaceta, Mercado) → lo que publican M9, M12, M14, M7 y M20.
 
@@ -693,7 +701,7 @@ flowchart LR
 | **Eventos que publica** | Propuestos: `CompraConfirmada`, `AceleradorActivado`, `ReembolsoAplicado` |
 | **Eventos que escucha** | Propuesto: `TemporadaIniciada` (pase de temporada) |
 | **Datos de los que es dueño** | Saldo de Gemas, compras y recibos, aceleradores activos, catálogo y precios |
-| **Reglas que nunca se rompen** | D-43: el dinero real compra solo cosméticos y aceleradores. Nunca oro, equipo, materiales directos, Esencia, Sellos, saltos de piso, ventaja en PvP ni revivir en el Juramento de Hierro. Las Gemas nunca se apuestan ni se cambian por oro. Aceleradores: uno por tipo, de +25 % a +50 %; no saltan el Techo del Piso, no cuentan en lo competitivo y no tocan equipo, artefactos ni Recuerdos. Mismo catálogo en los tres clientes. Nada se vende en alfa y beta |
+| **Reglas que nunca se rompen** | D-43: el dinero real compra solo cosméticos y aceleradores. Nunca oro, equipo, materiales directos, Esencia, saltos de progreso (antes, Sellos y pisos), ventaja en PvP ni revivir en el Juramento de Hierro. Las Gemas nunca se apuestan ni se cambian por oro. Aceleradores: uno por tipo, de +25 % a +50 %; no saltan el Techo de la Frontera, no cuentan en lo competitivo y no tocan equipo, artefactos ni Recuerdos. Mismo catálogo en los tres clientes. Nada se vende en alfa y beta |
 
 **Si cambias esto, revisa:**
 - **El porcentaje de un acelerador** → C-17.
@@ -729,7 +737,7 @@ flowchart LR
 | **Para qué sirve** | Levantar y defender lo construido: obras por jornadas, casas, edificios de organizaciones, obras de servidor, graneros y defensas |
 | **Documentos de diseño** | [09 · Construcción](../09-construccion/README.md), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Casa propia](../09-construccion/casa-propia.md), [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §4.3, §6.5 y §8 |
 | **Depende de** | M14 (rango de Construcción y materiales), M13 (presupuesto en custodia, mantenimiento), M25 (parcelas), M5 (la defensa usa el combate y las Tácticas), M8 (zona, clima de la jornada, poblaciones), M9 (obras de servidor; la despensa y las herramientas comunes deciden el avance), M15 (permisos de gremio) |
-| **Lo usan** | M9 (cada etapa de ciudad es una obra; graneros y murallas sostienen los medidores), M7 (dormitorio x2, enfermería x3), M14 (talleres y estaciones), M16 (casinos y garitos), M12 (fortalezas, prisión), M2 (descanso), M17 (museo, sala de trofeos), M8 (puentes, caminos, piedras de paso) |
+| **Lo usan** | M9 (cada etapa de ciudad es una obra; graneros y murallas sostienen los medidores), M7 (dormitorio x2, enfermería x3), M14 (talleres y estaciones), M16 (casinos y garitos), M12 (fortalezas, prisión), M2 (descanso), M17 (museo, sala de trofeos), M8 (puentes, caminos y postas) |
 | **Eventos que publica** | Propuestos: `ObraTerminada`, `AccidenteDeObra` (Salud crea la herida), `ConstruccionAtacada`, `DefensaResuelta` |
 | **Eventos que escucha** | `PisoAbierto` (`FloorOpened`): obra del asentamiento nuevo. Propuestos: `IncursionLanzada` (M9), `PoblacionCambiada` (incursiones a casas y granjas), `EtapaDeCiudadCambiada` |
 | **Datos de los que es dueño** | Obras y etapas, planos, calidad y durabilidad de lo construido, habitaciones y estaciones de casa, defensas y reglas de los guardias, protecciones (escudo, horas protegidas, bóveda). Propuesta (§6.1): seguidores de la casa |
@@ -751,7 +759,7 @@ flowchart LR
 |---|---|
 | **Para qué sirve** | Los lugares escasos y el crédito: puestos, locales, parcelas, licencias y concesiones, con subastas, tasas, impuestos e intereses |
 | **Documentos de diseño** | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §2 (Banco y Lonja), [Casa propia](../09-construccion/casa-propia.md) §7 |
-| **Depende de** | M13 (oro, custodia); M9 (etapas de ciudad, plazas nuevas por piso, licencias y tasa de la casa que fija cada gobierno); M8 (lugares y rutas); M12 (territorios para vetas exclusivas; recompensas por deudores); M1 (cobro semanal) |
+| **Depende de** | M13 (oro, custodia); M9 (etapas de ciudad, plazas nuevas por región, licencias y tasa de la casa que fija cada gobierno); M8 (lugares y rutas); M12 (territorios para vetas exclusivas; recompensas por deudores); M1 (cobro semanal) |
 | **Lo usan** | M24 (parcelas para construir), M16 (licencias de casino y corredor), M13 (los puestos bajan el impuesto y dan visibilidad), M7 (consulta médica en la plaza), M8 (peajes de las concesiones de ruta), M9 (lo recaudado va al tesoro de la ciudad) |
 | **Eventos que publica** | Propuestos: `SubastaCerrada`, `PropiedadTransferida`, `TasaImpagada`, `GarantiaEmbargada`, `LicenciaOtorgada` |
 | **Eventos que escucha** | Propuestos: `EtapaDeCiudadCambiada` (plazas nuevas), `TemporadaIniciada` (licencias), `NuevaSemana` (cobro), `ContratoIncumplido`, `LeyAprobada` (tasa de la casa) |
@@ -791,7 +799,7 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 
 ### C-03 · La velocidad de la Esencia
 
-**Dónde está:** se gana matando y completando contenido ([Economía](../07-economia/economia.md) §2); se gasta en mejoras, maestrías y Tesoro Semanal ([Equipamiento](../03-personaje/equipamiento.md) §3 y §8); la no depositada queda en la mancha al caer ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1). **Dueño:** M13.
+**Dónde está:** se gana matando y completando contenido ([Economía](../07-economia/economia.md) §2); se gasta en mejoras, maestrías y Tesoro Semanal ([Equipamiento](../03-personaje/equipamiento.md) §3 y §9); la no depositada queda en la mancha al caer ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1). **Dueño:** M13.
 
 **Cadena:** cambia el ritmo de mejoras de equipo (M4) → cambia el Poder de Objeto medio de cada tramo → cambian los objetivos de los jefes (el grupo que juega bien tiene que ganar sin mejoras) y del simulador (M6, M21) → cambia cuánto se arriesga al cargar Esencia sin depositar y cuánto vale volver a la mancha (M8) → cambia el valor del Tesoro Semanal y del carril de mazmorras, que lidera en Esencia (M11) → cambia la demanda de materiales para mejoras (M14, M13).
 
@@ -807,14 +815,14 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 **También:** siempre en porcentaje (D-27). El descuento Premium en impuestos que menciona [Economía](../07-economia/economia.md) §5 choca con D-43 (ver §6.2).
 **Medir:** oro quemado por impuestos, volumen de comercio, diferencia de precios entre ciudades.
 
-### C-05 · El ritmo de apertura de pisos
+### C-05 · El ritmo de avance de la Frontera (antes: apertura de pisos)
 
-**Dónde está:** un piso cada 1-2 semanas; descubrimiento 2-5 días; esfuerzo de guerra 3-7 días ([Torre y pisos](../02-mundo/torre-y-pisos.md) §4.1). **Dueño:** M9.
+**Dónde está:** con D-58, cada región nueva pasa por las cuatro fases que tenía un piso: descubrimiento, esfuerzo de guerra, asalto al Guardián y asentamiento ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)). Hasta que ese documento fije sus números, sirven de referencia los de [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.1: descubrimiento 2-5 días, esfuerzo de guerra 3-7 días, un paso cada 1-2 semanas. **Dueño:** M9.
 
-**Cadena:** cambia el Frente y con él el nivel máximo práctico (Frente + 5, M2) → cambia cuándo llegan los talentos de héroe (nivel 50) y Ápice (90) (M3) → cambia la duración de la primera era (2 a 4 años) y el calendario de contenido → cambia la oferta de plazas y parcelas nuevas, que es el contrapeso para quien llega tarde (M25) → cambia cuántos pisos tienen Viento de Cola y cuánto bajan los materiales viejos (M13) → cambia la demanda masiva del Esfuerzo de Guerra (M14) y de obras de servidor (M24) → cambia cuándo hay entrenadores de rango Maestro (Castillo del piso 80 o más, M14).
+**Cadena:** cambia la Frontera y con ella el nivel máximo práctico (Techo de la Frontera, M2) → cambia cuándo llegan los talentos de héroe (nivel 50) y Ápice (90) (M3) → cambia la duración de la primera era (2 a 4 años) y el calendario de contenido → cambia la oferta de plazas y parcelas nuevas, que es el contrapeso para quien llega tarde (M25) → cambia cuántas zonas quedan con Viento de Cola y cuánto bajan los materiales viejos (M13) → cambia la demanda masiva del Esfuerzo de Guerra (M14) y de obras de servidor (M24) → cambia cuándo hay entrenadores de rango Maestro (antes, en el Castillo del piso 80 o más; con D-58, por definir) (M14).
 
-**También:** mercados nuevos (M13), avisos escalonados (M19), carreras de Pioneros (M18) y el mercado de predicciones (M16).
-**Medir:** días por fase, distancia media entre los jugadores y el Frente, precios por tramo.
+**También:** mercados nuevos (M13), avisos escalonados (M19), carreras de Pioneros (M18) y el mercado de predicciones (M16). Como viajar toma tiempo (D-58), cuanto más lejos queda la Frontera, más tardan en llegar la gente y la carga (C-15).
+**Medir:** días por fase, distancia media entre los jugadores y la Frontera, precios por tramo.
 
 ### C-06 · Las necesidades de comida de la ciudad
 
@@ -834,20 +842,20 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 **También:** la armadura de la zona frena la barra (C-01); las vacunas investigadas la frenan del todo (M10); el ganado y las monturas también enferman (M7); las peleas contra bestias del Foso (M12, M16). Límites que no se tocan: nada serio antes del nivel 10 y una enfermedad seria a la vez.
 **Medir:** enfermos activos, duración de los brotes, salud pública media de las ciudades, precio de remedios.
 
-### C-08 · El techo de nivel por piso
+### C-08 · El Techo de la Frontera (antes: techo de nivel por piso)
 
-**Dónde está:** la experiencia baja al 10 % cuando tu nivel supera en 5 el piso de tu último Sello ([Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4, [Progresión](../03-personaje/progresion.md) §2). **Dueño:** M2 (la curva), M9 (el Sello).
+**Dónde está:** con D-58, la experiencia baja cuando tu nivel supera por mucho al de la Frontera ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), propuesta, todavía sin números). Antes bajaba al 10 % con 5 niveles sobre el piso de tu último Sello, como todavía dicen [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4 y [Progresión](../03-personaje/progresion.md) §2. **Dueño:** M2 (la curva), M9 (la Frontera).
 
-**Cadena:** cambia la distancia entre veteranos y nuevos (M2) → cambia cuándo la experiencia se vuelve Renombre (carga M4, banco M13, viaje M8, Enfoque M14) → cambia lo que rinde un acelerador de experiencia, que "acelera, no salta" (M22) → cambia cuánto vale ganar Sellos y por lo tanto la demanda de las 6 pruebas (M10, M11, M12, M14) → cambia la relación "nivel ≈ piso" que usan jefes y escalado (M6, M21) → cambia cuánta gente farmea pisos bajos y la oferta de materiales viejos (M13).
+**Cadena:** cambia la distancia entre veteranos y nuevos (M2) → cambia cuándo la experiencia se vuelve Renombre (carga M4, banco M13, viaje M8, Enfoque M14) → cambia lo que rinde un acelerador de experiencia, que "acelera, no salta" (M22) → cambia la relación entre nivel y Lejanía que usan jefes y escalado (M6, M21) → cambia cuánta gente farmea zonas cercanas al Claro y la oferta de materiales viejos (M13).
 
-**También:** si se quita, va contra la recomendación de P-16, y los aceleradores pagados empezarían a comprar niveles por encima del Frente: eso **rompe** D-43.
-**Medir:** niveles frente a Sellos, Renombre ganado por semana.
+**También:** si se quita, los aceleradores pagados empezarían a comprar niveles por encima de la Frontera: eso **rompe** D-43. (P-16, el nivel ligado al piso, quedó sin efecto por D-58.)
+**Medir:** niveles frente a la Frontera, Renombre ganado por semana.
 
 ### C-09 · El cupo de puestos de mercado
 
 **Dónde está:** de 10 a 40 por lugar; tope de 2 por capital por jugador ([Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §1 y §6). **Dueño:** M25.
 
-**Cadena:** cambia la escasez y con ella el precio de subasta y el valor declarado (M25) → cambia el oro quemado en subastas y tasas (M20) → cambia cuántos vendedores pagan menos impuesto y tienen visibilidad, y por lo tanto el volumen y los precios (M13) → cambian la carrera de comerciante y la de artesano famoso → cambian la concentración de riqueza (M20) y la fuerza de los contrapesos (parcelas de novato, plazas nuevas con cada piso) → cambia la lista de puestos que muestran los tres clientes (§5).
+**Cadena:** cambia la escasez y con ella el precio de subasta y el valor declarado (M25) → cambia el oro quemado en subastas y tasas (M20) → cambia cuántos vendedores pagan menos impuesto y tienen visibilidad, y por lo tanto el volumen y los precios (M13) → cambian la carrera de comerciante y la de artesano famoso → cambian la concentración de riqueza (M20) y la fuerza de los contrapesos (parcelas de novato, plazas nuevas con cada región) → cambia la lista de puestos que muestran los tres clientes (§5).
 
 **Medir:** precio medio de un puesto, cuántos cambian de manos, concentración de propiedad.
 
@@ -869,14 +877,14 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 **También:** la misma tabla está en cuatro documentos: se cambian juntos. El Juramento de Hierro tiene sus propias reglas (M7). Con las mochilas de D-47, "la mochila" de la zona roja debe definirse otra vez (qué parte del inventario cae).
 **Medir:** jugadores por color de zona, objetos destruidos, precios de materiales de riesgo.
 
-### C-12 · El límite de oficios mayores
+### C-12 · El costo de aprender oficios (antes: límite de oficios mayores)
 
-**Dónde está:** 2 por personaje ([Profesiones](../07-economia/profesiones.md) §3; recomendación de P-37). **Dueño:** M14.
+**Dónde está:** D-57 (confirmada): no hay límite duro. El freno es el costo natural del conocimiento: el tiempo de investigar, materiales de zonas y estaciones distintas, la experiencia, la preparación (herramientas, estaciones) y los costos de cada oficio (entrenadores, exámenes, expedientes). Reemplaza el límite de 2 oficios mayores (P-37), que [Profesiones](../07-economia/profesiones.md) §3 todavía dice. La escalera por etapas está en [Investigación y maestría](../07-economia/investigacion-y-maestria.md) (D-54). **Dueño:** M14.
 
-**Cadena:** cambia cuánto se necesitan los jugadores entre sí ([Red de sistemas](../00-vision/red-de-sistemas.md)) → cambian el volumen del mercado y los pedidos de fabricación (M13) → cambia el valor de tener varios personajes → como Medicina y Construcción son oficios mayores, cambian cuántos médicos y constructores hay y cuánto cobran (M7, M24) → cambia la carga de entrenadores y exámenes (M9) → cambian cuántos roles cubren sus cuotas en la ciudad (M9) → cambia cuánto dura la carrera del artesano.
+**Cadena:** cambia cuánto se necesitan los jugadores entre sí ([Red de sistemas](../00-vision/red-de-sistemas.md)) → cambian el volumen del mercado y los pedidos de fabricación (M13) → cambia el valor de tener varios personajes → como Medicina y Construcción también se estudian (D-11), cambian cuántos médicos y constructores hay y cuánto cobran (M7, M24) → cambia la carga de entrenadores y exámenes (M9) → cambian cuántos roles cubren sus cuotas en la ciudad (M9) → cambia cuánto dura la carrera del artesano.
 
-**También:** D-49 hace de los oficios la fuente principal de diferencia entre jugadores: tocar este límite mueve esa diferencia.
-**Medir:** oficios por cuenta, precios de servicios, volumen de pedidos.
+**También:** D-49 hace de los oficios y el conocimiento la fuente principal de diferencia entre jugadores. Abaratar el conocimiento borra esa diferencia; encarecerlo hasta que nadie pueda llevar dos oficios crea un límite duro por la puerta de atrás, y eso **rompe** D-57.
+**Medir:** oficios por personaje, tiempo hasta cada rango, precios de servicios, volumen de pedidos.
 
 ### C-13 · La aparición de vetas
 
@@ -895,18 +903,18 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 
 **Medir:** participación por temporada, abandono al final de cada una.
 
-### C-15 · El costo de la piedra de paso por peso
+### C-15 · El tiempo de viaje (antes: costo de la piedra de paso por peso)
 
-**Dónde está:** [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md) §1, [Economía](../07-economia/economia.md) §4. **Dueño:** M8.
+**Dónde está:** D-58 (confirmada): moverse entre lugares toma tiempo real. Lo acortan los caminos, las monturas, los barcos y las postas que construyen y mantienen los jugadores; la piedra de paso se retira (propuesta de [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)). [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md) §1 y [Economía](../07-economia/economia.md) §4 todavía describen la piedra de paso. **Dueño:** M8.
 
-**Cadena:** cambia cuánto difieren los precios entre ciudades (M13) → cambia el negocio de comerciantes, transportistas y caravanas (M13) → cambian cuántas caravanas cruzan zonas rojas y con ellas los asaltos, escoltas y seguros (M12, M13) → cambia el valor de las concesiones de ruta y los puertos de caravanas (M25, M24) → cambia la especialidad de cada capital, que vive de mover artesanos y materiales (M14) → cambia lo que cuesta traer comida y sal a una ciudad que no las produce (M9).
+**Cadena:** cambia cuánto difieren los precios entre ciudades (M13) → cambia el negocio de comerciantes, transportistas y caravanas (M13) → cambian cuántas caravanas cruzan zonas rojas y con ellas los asaltos, escoltas y seguros (M12, M13) → cambia el valor de las concesiones de ruta, de los puertos de caravanas y de las obras que acortan el viaje: caminos, puentes y postas (M25, M24) → cambia la especialidad de cada capital, que vive de mover artesanos y materiales (M14) → cambia lo que cuesta traer comida y sal a una ciudad que no las produce (M9).
 
-**También:** si se vuelve gratis, se pierden los mercados locales (recomendación de P-32): todos los precios se igualan y el oficio de comerciante desaparece.
-**Medir:** diferencia de precios entre ciudades, carga movida por piedra frente a caravana.
+**También:** si el viaje se vuelve instantáneo, se **rompe** D-58 y se pierden los mercados locales (recomendación de P-32): todos los precios se igualan y el oficio de comerciante desaparece. También cambian de valor las monturas, el Vigor (P-45) y el correo.
+**Medir:** diferencia de precios entre ciudades, tiempo medio de viaje, carga movida por caravana y por correo.
 
 ### C-16 · El tope de golpe y la amortiguación en PvP
 
-**Dónde está:** ningún golpe quita más del 40 % de la vida máxima; desde la ronda 8, −5 % de curación por ronda ([Ronda y acciones](../04-combate/ronda-y-acciones.md) §7; repetida en otros tres documentos, §4.7). **Dueño:** M5.
+**Dónde está:** ningún golpe quita más del 40 % de la vida máxima; desde la ronda 8, −5 % de curación por ronda ([Ronda y acciones](../04-combate/ronda-y-acciones.md) §11; repetida en otros cuatro documentos, §4.7). **Dueño:** M5.
 
 **Cadena:** cambia qué specs de ráfaga dominan la arena (M3, M21) → cambian la duración de las peleas y el valor de los sanadores (M21) → cambian el Foso (M12, M16), los Límites y las técnicas combinadas en PvP ([Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §15) y lo que el entorno quita por ronda en PvP (M7) → cambian las victorias por spec (objetivo 47-53 %) y el riesgo para D-49.
 
@@ -916,7 +924,7 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 
 **Dónde está:** de +25 % a +50 %, uno por tipo ([Monetización](../07-economia/monetizacion.md) §3). **Dueño:** M22.
 
-**Cadena:** el acelerador de recursos mete más materiales al mundo (M14) → bajan sus precios (M13) → los sumideros en porcentaje y el informe mensual tienen que compensarlo (M20) → los materiales se venden por oro, y el oro se apuesta: es una conexión indirecta con el azar que conviene revisar con un abogado (M16, [Monetización](../07-economia/monetizacion.md) §6) → el de experiencia choca con el Techo del Piso (C-08) → más poder de compra puede atraer comercio con dinero real (M23).
+**Cadena:** el acelerador de recursos mete más materiales al mundo (M14) → bajan sus precios (M13) → los sumideros en porcentaje y el informe mensual tienen que compensarlo (M20) → los materiales se venden por oro, y el oro se apuesta: es una conexión indirecta con el azar que conviene revisar con un abogado (M16, [Monetización](../07-economia/monetizacion.md) §6) → el de experiencia choca con el Techo de la Frontera (C-08) → más poder de compra puede atraer comercio con dinero real (M23).
 
 **También:** no funcionan en lo competitivo (M18, M12). Que suban el botín de equipo está en discusión (P-65): si lo hicieran, tocarían el equipo, cosa que hoy prohíbe [Monetización](../07-economia/monetizacion.md) §3.
 **Medir:** materiales que entran por aceleradores, precios de esos materiales, gasto en Gemas.
@@ -952,13 +960,13 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 | Presupuesto de poder | 100 ± 3 en 6 ejes; cada eje entre 5 y 35 | [Balance](../03-personaje/balance.md) §2 | M3 | Toda spec, el simulador, D-49 |
 | Objetivos del simulador | ±3 % sostenido; ±5 % ráfaga; ±4 % tanques y sanadores; 47-53 % de victorias | [Balance](../03-personaje/balance.md) §3 | M21 | Qué cambio de balance se publica |
 | Aporte de grupo | ~3 %, no se suma | [Balance](../03-personaje/balance.md) §2 | M3 | Composición de grupos, apoyos |
-| Clamor | +30 % de iniciativa y una acción rápida extra durante 3 rondas, una vez por pelea | [Balance](../03-personaje/balance.md) §2 | M3 | Ráfagas, Tambores de Guerra (M14) |
+| Clamor | +30 % de iniciativa y enfriamientos al doble de velocidad durante 3 rondas, una vez por pelea | [Balance](../03-personaje/balance.md) §2 | M3 | Ráfagas, Tambores de Guerra (M14) |
 | Secundarias | Ninguna vale más de 1,3 veces otra | [Balance](../03-personaje/balance.md) §2 | M3, M4 | Afijos, valor de los objetos |
 | Botones de combate | 6: Atacar, 3 habilidades, Huir y Mochila; una elección por ronda | D-46 ([Decisiones](../00-vision/decisiones.md)) | M5, M3 | Pantalla de los tres clientes, kit de cada clase |
-| Aguante | 0 a 5; +1 por ronda, +2 sin acción ofensiva (en revisión por D-46) | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §2 | M5 | Reacciones, armaduras pesadas, calor y sed |
-| Firmeza | Llena = inmune al control 3 rondas | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §2 | M5 | Control en PvP y en jefes |
-| Derribado | 3 rondas antes de caer | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §6 | M5 | Resurrecciones, heridas, reloj de Mítica+ |
-| Tope de golpe y amortiguación en PvP | 40 % de la vida máxima; −5 % de curación por ronda desde la 8 | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §7 | M5 | Arena, Foso, entorno en PvP (C-16) |
+| Aguante | 0 a 5; −1 por respuesta (−2 un desvío); +1 al final de cada ronda sin respuesta; la carga pesada baja el máximo en 1 | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §5 | M5 | Reacciones, armaduras pesadas, calor y sed |
+| Firmeza | Llena = inmune al control 3 rondas | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §5 | M5 | Control en PvP y en jefes |
+| Derribado | 3 rondas antes de caer | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §10 | M5 | Resurrecciones, heridas, reloj de Mítica+ |
+| Tope de golpe y amortiguación en PvP | 40 % de la vida máxima; −5 % de curación por ronda desde la 8 | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §11 | M5 | Arena, Foso, entorno en PvP (C-16) |
 | Temporizador de ronda | 45 s en mazmorra y Foso; 60-90 s en banda; ninguno en solitario | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §1 | M5 | C-10 |
 | Avisos | 1 ronda antes (2 si es devastador); pista tras 3 vistas | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) §1-2 | M6, M17 | Dificultad real de los jefes |
 | Fases de jefe | Al 66 % y al 33 % de vida | [Jefes](../06-contenido/jefes.md) §2 | M6 | Duración y dificultad |
@@ -985,14 +993,14 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 | Rasgos adquiridos | 5 positivos y 5 negativos; ≤3 % en combate, ≤10 % en su oficio | [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md) §1 y §4 | M7 | Identidad sin poder |
 | Debilidad de Resurrección | 15 minutos tras caer en la Guarida | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1 | M7 | Ritmo de los asaltos |
 
-### 4.3 Torre, ciudades y tiempo
+### 4.3 Frontera, ciudades y tiempo
 
 | Número | Valor hoy | Definido en | Dueño | Qué mueve |
 |---|---|---|---|---|
-| Techo del Piso | +5 sobre el piso del último Sello; experiencia al 10 % | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4 | M2, M9 | C-08 |
-| Viento de Cola | Desde 5 pisos de distancia, 2 de 6 pruebas; desde 15, 1 de 6; Eco −10 % de vida cada 5 pisos (tope 30 %); +25 % de experiencia | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.3 | M9 | Puesta al día de quien llega tarde |
-| Ritmo de pisos | 1 cada 1-2 semanas; descubrimiento 2-5 días; esfuerzo de guerra 3-7 días | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.1 | M9 | C-05 |
-| Sello | Guardián + 3 de 6 pruebas | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.2 | M9 | Caminos de progreso |
+| Techo de la Frontera (antes, del Piso) | Por definir con D-58. Antes: +5 sobre el piso del último Sello y experiencia al 10 % | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4 | M2, M9 | C-08 |
+| Viento de Cola | Sigue con D-58 para las zonas que quedaron muy atrás de la Frontera; números por definir. Antes: Eco −10 % de vida cada 5 pisos (tope 30 %) y +25 % de experiencia | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.3 | M9 | Puesta al día de quien llega tarde |
+| Ritmo de la Frontera (antes, de pisos) | Referencia hasta que D-58 fije los suyos: descubrimiento 2-5 días; esfuerzo de guerra 3-7 días; un paso cada 1-2 semanas | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.1 | M9 | C-05 |
+| Sello | Se retira con D-58. Antes: Guardián + 3 de 6 pruebas | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.2 | M9 | Caminos de progreso |
 | Consumo de la ciudad | 1 ración por habitante al día real; guardia 1,5; enfermo 1,25; obrero +0,5 por jornada; invierno +0,2 y leña | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §4.2 | M9 | C-06 |
 | Umbrales de despensa | 14+ días Abundancia; 7-13 Holgada; 3-6 Justa; 1-2 Escasez; 0 Hambruna | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §3.2 | M9 | Obras, aldeanos, etapa (C-06) |
 | Amenaza base por etapa | Campamento 10, Aldea 15, Villa 20, Ciudad 25, Castillo 30 por día; x1,5 en invierno | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §6.1 | M9 | Incursiones, defensas, guardias |
@@ -1024,7 +1032,7 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 
 | Número | Valor hoy | Definido en | Dueño | Qué mueve |
 |---|---|---|---|---|
-| Oficios mayores | 2 por personaje; una recolección a 100 y las demás a 60 | [Profesiones](../07-economia/profesiones.md) §3 | M14 | C-12 |
+| Límite de oficios | Ninguno duro (D-57): el freno es el costo del conocimiento. [Profesiones](../07-economia/profesiones.md) §3 todavía dice 2 mayores y una recolección a 100 | D-57, [Profesiones](../07-economia/profesiones.md) §3 | M14 | C-12 |
 | Curva de rango | Gran Maestro en ~1 año de juego constante | [Profesiones](../07-economia/profesiones.md) §4 | M14 | Carrera del artesano |
 | Fabricación rápida | Techo de calidad: Notable | [Fabricación](../07-economia/fabricacion.md) §1 | M14 | Valor del minijuego |
 | Copias de plano | 10 usos | [Fabricación](../07-economia/fabricacion.md) §5 | M14 | Mercado de conocimiento |
@@ -1049,24 +1057,24 @@ Cuando cambian, se cambian **en todos** sus lugares en el mismo cambio. Si no, e
 |---|---|
 | Qué se pierde al caer por zona | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1, [PvP](../06-contenido/pvp.md) §1, [Torre y pisos](../02-mundo/torre-y-pisos.md) §3, [Peligros del entorno](../05-salud/peligros-del-entorno.md) §3.1 |
 | Mitigación de armadura | [Balance](../03-personaje/balance.md) §4, [Daño y estados](../04-combate/dano-y-estados.md) §1 |
-| Techo del Piso | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4, [Progresión](../03-personaje/progresion.md) §2, [Monetización](../07-economia/monetizacion.md) §3 |
+| Techo del Piso (con D-58, de la Frontera) | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.4, [Progresión](../03-personaje/progresion.md) §2, [Monetización](../07-economia/monetizacion.md) §3 |
 | Protección de novato (nivel 10) | [05 · Salud](../05-salud/README.md), [Heridas](../05-salud/heridas.md) §7, [Enfermedades](../05-salud/enfermedades.md) §6, [Peligros del entorno](../05-salud/peligros-del-entorno.md) §11, [Crimen y justicia](../06-contenido/crimen-y-justicia.md) §8, [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §9, [Defensa](../09-construccion/defensa-y-protecciones.md) §5, [Bestiario](../06-contenido/bestiario.md) §12 |
-| Tope de golpe en PvP (40 %) | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §7, [PvP](../06-contenido/pvp.md) §5, [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §3.1, [Peligros del entorno](../05-salud/peligros-del-entorno.md) §6, [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §15 |
-| Botones de combate (D-46: 6) | [Telegram](telegram.md) §3, [Balance](../03-personaje/balance.md) §1, [Clases](../03-personaje/clases-y-especializaciones.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §7, [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §1, [Ronda y acciones](../04-combate/ronda-y-acciones.md) §8. Los minijuegos de [Fabricación](../07-economia/fabricacion.md) §2 y de [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §4 copian el límite del combate |
+| Tope de golpe en PvP (40 %) | [Ronda y acciones](../04-combate/ronda-y-acciones.md) §11, [PvP](../06-contenido/pvp.md) §5, [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §3.1, [Peligros del entorno](../05-salud/peligros-del-entorno.md) §6, [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §15 |
+| Botones de combate (D-46: 6) | [Telegram](telegram.md) §3, [Balance](../03-personaje/balance.md) §1, [Clases](../03-personaje/clases-y-especializaciones.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §7, [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §1, [Ronda y acciones](../04-combate/ronda-y-acciones.md) §2. Los minijuegos de [Fabricación](../07-economia/fabricacion.md) §2 y de [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §4 copian el límite del combate |
 | Descanso x2 y x3 | [Heridas](../05-salud/heridas.md) §5, [Casa propia](../09-construccion/casa-propia.md) §2, [Curación](../05-salud/curacion-y-tratamientos.md) §5 |
 | Entrenadores y exámenes | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §3, [Profesiones](../07-economia/profesiones.md) §11, [Curación](../05-salud/curacion-y-tratamientos.md) §0, [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2 |
 | Sumideros en porcentaje | [Economía](../07-economia/economia.md) §1, [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §8.1, [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3 |
-| Tiradas a la vista (dado nativo → tirada pública auditable) | [Web y multiplataforma](web-y-multiplataforma.md) §6.1 (la regla que vale), [Telegram](telegram.md) §1 y §3, [Apuestas](../08-social/apuestas.md) §2, [Gremios y vida social](../08-social/gremios-y-social.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §8, [Clases](../03-personaje/clases-y-especializaciones.md) §2 (Pícaro Forajido) |
+| Tiradas a la vista (dado nativo → tirada pública auditable) | [Web y multiplataforma](web-y-multiplataforma.md) §6.1 (la regla que vale), [Telegram](telegram.md) §1 y §3, [Apuestas](../08-social/apuestas.md) §2, [Gremios y vida social](../08-social/gremios-y-social.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §9, [Clases](../03-personaje/clases-y-especializaciones.md) §2 (Pícaro Forajido) |
 | Necesidades y medidores de la ciudad | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2-3, [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §3 y §7, [Crisis](../02-mundo/crisis-problemas-y-soluciones.md) §1, [Red de sistemas](../00-vision/red-de-sistemas.md) §3 |
 | Gobernador y mandatos | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §4, [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md) §4 |
-| Sello y sus pruebas | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.2, [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) §5, [Profesiones](../07-economia/profesiones.md) §9 |
+| Sello y sus pruebas (se retira con D-58) | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.2, [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) §5, [Profesiones](../07-economia/profesiones.md) §9 |
 | Linajes y lo que resisten | [Creación de personaje](../03-personaje/creacion-de-personaje.md) §1, [Peligros del entorno](../05-salud/peligros-del-entorno.md) §9, [Bestiario](../06-contenido/bestiario.md) §5.1 |
 
 ---
 
 ## 5. Acople con los clientes: Telegram, web y app móvil
 
-Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mini App de Telegram es el mismo cliente web abierto dentro de Telegram, no un cliente aparte. El detalle de cómo se arma cada cliente está en [Web y multiplataforma](web-y-multiplataforma.md) §3 y en la regla 7 de la [arquitectura](arquitectura-modular.md) ("el motor devuelve vistas, no mensajes"); si esos documentos usan otros nombres para las piezas de abajo, mandan los suyos. Aquí solo va **qué cambio del motor obliga a tocar los clientes**.
+Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mini App de Telegram es el mismo cliente web abierto dentro de Telegram, no un cliente aparte. El detalle de cómo se arma cada cliente está en [Web y multiplataforma](web-y-multiplataforma.md) §3 y en la regla 7 de la [arquitectura](arquitectura-modular.md) ("el motor devuelve vistas, no mensajes"); si esos documentos usan otros nombres para las piezas de abajo, mandan los suyos. Entre el motor y los clientes están los servicios de juego (en el código, `engine/service/`): no tienen reglas propias, pero cambiar sus órdenes o sus vistas es cambiar el contrato de §5.2. Aquí solo va **qué cambio del motor obliga a tocar los clientes**.
 
 ### 5.1 Las tres piezas que comparten el motor y los clientes
 
@@ -1093,7 +1101,7 @@ Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mi
 | Una tirada al azar visible | Sí | Siempre la tirada pública auditable del motor: huella de la semilla antes, semilla revelada después, resultado a la vez en todos los clientes. El dado nativo de Telegram solo dibuja el número (M1, M16) |
 | Un dato que debe quedar oculto (tipo real de un aviso, enfermedad sin diagnosticar, acción del rival, solución de un caso, nombre detrás de un apodo) | Sí: cuidado | Nunca se manda al cliente, ni escondido en la página. Si se envía, la web lo deja leer y **rompe** la paridad (D-40) y la regla de los avisos que mienten (M6) |
 | La precisión de un dato (vida del jefe, postura, acumulaciones, Aguante) | Sí | La fija el motor y es igual para todos. Ningún cliente recibe un número más fino |
-| Algo que abre una competencia (piso, Guarida, veta excepcional, bestia legendaria, caso semanal) | Sí | Hora de apertura fija, anunciada antes. El aviso puede llegar escalonado; la apertura, nunca. El motor rechaza acciones antes de la hora |
+| Algo que abre una competencia (región, Guarida, veta excepcional, bestia legendaria, caso semanal) | Sí | Hora de apertura fija, anunciada antes. El aviso puede llegar escalonado; la apertura, nunca. El motor rechaza acciones antes de la hora |
 | Un desempate (iniciativa, "gana quien eligió primero", combos) | Sí: cuidado | Nunca por orden de llegada ni por milisegundos: por tramos gruesos del plazo y luego una tirada del motor. Si dependiera de la velocidad, el cliente más rápido tendría ventaja |
 | Un aviso urgente (te toca, te atacan, la despensa está en Justa) | Sí | Telegram: el bot solo escribe a quien le dio `/start`; app: notificación; web: aviso en pantalla. Las preferencias viven en M19 |
 | Un pago | Sí | Solo el adaptador de pago de ese cliente (M22). El catálogo y las Gemas son de la cuenta |
@@ -1105,7 +1113,7 @@ Cada una tiene una **regla neutral** que vale en los tres clientes; la forma de 
 
 | Mecánica de Telegram | Regla neutral | Módulos que la usan |
 |---|---|---|
-| Dados animados nativos | Tirada pública auditable | M15 (botín Necesidad o Codicia), M16 (taberna, Fortuna, lotería), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), M1 (semillas) |
+| Dados animados nativos | Tirada pública auditable | M5 (emboscada e iniciativa inicial), M15 (botín Necesidad o Codicia), M16 (taberna, Fortuna, lotería), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), M1 (semillas) |
 | Spoiler que tapa un resultado | Boleto sellado al comprarlo | M16 (rasca y gana) |
 | Encuestas nativas y en modo quiz | Votación y pregunta del motor, con censo, plazo y recuento auditable | M9 (gobernador, leyes, moción de censura, cisma, raciones), M12 (juicios, missio del Foso), M15 (votos de gremio), M16 (trivia) |
 | Reenvío como firma | Documento verificable con ID; firmar es una orden | M9 (carta de fundación, tratados), M13 (contratos), M12 (partes de guerra, informes), M17 (pruebas de hazañas) |
@@ -1178,7 +1186,7 @@ Lo que el mapa encontró al cruzar los documentos. No se corrige aquí: cada pun
 | Yacimientos únicos | [Geografía y recursos](../02-mundo/geografia-y-recursos.md) §3 | M8 (lugar), M14 (extracción), M9 (cuotas del Ecologista), M12 y M24 (reclamar con un puesto fortificado) | M8 |
 | Vivienda | La arquitectura la pone en M15 y las casas en M24 | M15, M24, M25 | M24 la obra y las habitaciones; M15 las visitas y los permisos sociales |
 | Laberinto, Laberinto Cambiante, Pruebas de Maestría, Pesadillas | [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) §5-8 | M9, M10, M11 | M11 |
-| Tesoro Semanal y protección contra mala racha | [Equipamiento](../03-personaje/equipamiento.md) §8 | M4, M6, M11, M12 | M11 cuenta las actividades; M4 entrega |
+| Tesoro Semanal y protección contra mala racha | [Equipamiento](../03-personaje/equipamiento.md) §9 | M4, M6, M11, M12 | M11 cuenta las actividades; M4 entrega |
 | Tácticas y Ecos | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) §3 | M5, M6 (invocar un Eco), M12 (arena asíncrona), M24 (guardias) | M5 |
 | Mancha de sangre | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1 | M8 (según la arquitectura), M5 (últimas 3 rondas), M13 (Esencia) | M8 |
 | Juramento de Hierro | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.2 | M2 (se elige al crear), M7, M12, M18 | M7 |
@@ -1192,21 +1200,30 @@ Lo que el mapa encontró al cruzar los documentos. No se corrige aquí: cada pun
 | Robo como oficio menor | [Crimen y justicia](../06-contenido/crimen-y-justicia.md) §2 | M12, M14 | M12 el delito; M14 la curva del oficio |
 | Gemas (moneda premium) | [Economía](../07-economia/economia.md) §2, [Monetización](../07-economia/monetizacion.md) | M13 la lista entre las monedas; M22 está aislado | M22: nunca se convierten en oro |
 | Mochilas e inventario (D-47) | Documento en redacción | M4, M14, M5 | M4 |
-| Comunidades PNJ del Colapso (D-45) | Documento en redacción | M9, M12, M25 | M9 |
+| Comunidades PNJ del Colapso (D-45) | [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) | M9, M12, M25 | M9 |
 | Museo | [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) §3 | M24 (edificio), M17 (colección) | Repartido |
+| Botín (D-52) | [Botín](../03-personaje/botin.md) | M6 (tablas), M4 (objetos), M11 (reparto en grupo), M13 (Mercado Negro) | M6 decide qué cae; M4 crea el objeto |
+| Investigación, maestría y escalera de conocimiento (D-53, D-54) | [Investigación y maestría](../07-economia/investigacion-y-maestria.md), [Investigación médica](../05-salud/investigacion-medica.md) | M14, M10 (investigaciones), M7 (medicina), M9 (árbol de la ciudad) | M14; la medicina, con M7 |
+| Elixires propios (D-55) | Documento en redacción | M14 (Alquimia), M7 (toxicidad y efectos) | M14 los crea; M7 aplica efectos y topes |
+| Pistas y Bitácora (D-56) | [Aprendizaje y pistas](../00-vision/aprendizaje-y-pistas.md) | Todos los módulos con actividades; M19 (la pista va en la vista) | Cada módulo da sus pistas como datos; M19 las entrega; la Bitácora, M17 |
+| Mapa sin borde y viaje (D-58) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) | M8, M9 (Frontera), M13 (transporte), M24 (caminos y postas) | M8 |
 
 ### 6.2 Contradicciones entre documentos
 
-1. **Botones de combate.** D-46 fija 6 botones y una sola elección por ronda, pero [Telegram](telegram.md) §3, [Balance](../03-personaje/balance.md) §1, [Clases](../03-personaje/clases-y-especializaciones.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §7, [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §1 y [Ronda y acciones](../04-combate/ronda-y-acciones.md) todavía hablan de la barra de 8, de la acción rápida y de la reacción preparada. Falta decidir dónde quedan las técnicas de equipo y el menú de acción rápida.
+1. **Botones de combate.** D-46 fija 6 botones y una sola elección por ronda. Ya lo aplican [Telegram](telegram.md) §3, [Balance](../03-personaje/balance.md) §1, [Clases](../03-personaje/clases-y-especializaciones.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §7 (las técnicas ocupan una casilla de habilidad), [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §1 y [Ronda y acciones](../04-combate/ronda-y-acciones.md) §2. Falta [Fabricación](../07-economia/fabricacion.md) §2, que dice "máximo 8 botones, como en el combate", y el minijuego de [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §4, que muestra 8.
 2. **Descuento Premium en impuestos.** [Economía](../07-economia/economia.md) §5 lo menciona, y D-43 solo permite cosméticos y aceleradores con dinero real.
 3. **Ficha de oro en las apuestas.** [Apuestas](../08-social/apuestas.md) §4 dice "si existe la ficha"; D-43 la descarta.
-4. **Pagos solo con Stars.** La [arquitectura](arquitectura-modular.md) describe M22 como "Telegram Stars", y D-41 y [Monetización](../07-economia/monetizacion.md) §4 suman la pasarela web y las tiendas.
+4. **Pagos solo con Stars.** La [arquitectura](arquitectura-modular.md) ya describe M22 con Telegram Stars, la pasarela web y las tiendas, como D-41 y [Monetización](../07-economia/monetizacion.md) §4. Queda [Economía](../07-economia/economia.md) §2, que todavía dice que las Gemas se compran con Telegram Stars.
 5. **Impuesto de la casa.** [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3 dice "tasa fija según la ubicación"; D-48 dice que la fija el gobierno del reino dentro de un rango.
-6. **Dificultades de las mazmorras.** [Torre y pisos](../02-mundo/torre-y-pisos.md) §2 dice que mazmorras y laberintos tienen Normal, Profundidades, Corrompido, Abismal y Pesadilla; [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §1 usa Normal, Heroica, Mítica y Mítica+.
+6. **Dificultades de las mazmorras.** [Torre y pisos](../02-mundo/torre-y-pisos.md) §2 dice que mazmorras y laberintos tienen Normal, Profundidades, Corrompido, Abismal y Pesadilla; [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §1 usa Normal, Heroica, Mítica y Mítica+. Se resuelve al retirar Torre y pisos (D-58); hasta entonces vale Mazmorras y bandas.
 7. **Vivienda en dos módulos.** La [arquitectura](arquitectura-modular.md) pone "vivienda" en M15 y "casas" en M24 (propuesta en §6.1).
-8. **Mensajería en la arquitectura y documentos con funciones de Telegram.** La [arquitectura](arquitectura-modular.md) §2 todavía pone en M19 la cola de ediciones y los límites de envío, y [Web y multiplataforma](web-y-multiplataforma.md) §14 los pasa al adaptador de Telegram (este mapa sigue a Web y multiplataforma). Esa misma tabla §14 lista los documentos que todavía describen mecánicas con funciones de Telegram (dado nativo, reenvío como firma, encuestas); mientras no se ajusten, vale la regla neutral.
-9. **Repositorio con 23 módulos.** La [arquitectura](arquitectura-modular.md) §6 habla de `motor/` con M1-M23, pero hay 25 módulos; las [Convenciones](convenciones-de-codigo.md) §7.1 ya proponen `engine/` con M1-M25 (salvo M21, en `simulator/`).
+8. **Documentos con funciones de Telegram.** La [arquitectura](arquitectura-modular.md) §2 ya deja la cola de ediciones y los límites de envío en el adaptador de Telegram, como [Web y multiplataforma](web-y-multiplataforma.md). La tabla §14 de ese documento lista los que todavía describen mecánicas con funciones de Telegram (dado nativo, reenvío como firma, encuestas); mientras no se ajusten, vale la regla neutral.
+9. **Carpetas del código en español o en inglés.** La [arquitectura](arquitectura-modular.md) §6 ya cuenta los 25 módulos, pero nombra las carpetas en español (`motor/`, `contenido/`, `adaptadores/`, `pruebas/`); las [Convenciones](convenciones-de-codigo.md) §7.1 las ponen en inglés (`engine/`, `content/`, `adapters/`, `tests/`), como pide D-42. Con D-59 el código empieza ya: hay que alinearlas antes del primer archivo.
 10. **Contagio por probabilidad o por barra.** [Enfermedades](../05-salud/enfermedades.md) §2 y [Heridas](../05-salud/heridas.md) §2 hablan de "riesgo" de contagio por mordida; el [Bestiario](../06-contenido/bestiario.md) §5.1 lo cambia por una barra que se acumula, "sin azar ciego".
+11. **Pisos (D-58).** D-58 quita la Torre y los pisos, pero la [arquitectura](arquitectura-modular.md) (M8, M9, M11, el evento `PisoAbierto` y la regla 4) y muchos documentos ([Torre y pisos](../02-mundo/torre-y-pisos.md), [Progresión](../03-personaje/progresion.md) §1-2, [Monetización](../07-economia/monetizacion.md) §3, [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md) §1, [Economía](../07-economia/economia.md) §4, [Jefes](../06-contenido/jefes.md) §4) todavía hablan de pisos, Frente, Sello y piedra de paso. Este mapa sigue D-58 (§1.5). Falta decidir qué evento reemplaza a `PisoAbierto` y si M9 cambia de nombre, sin cambiar de número.
+12. **Límite de oficios (D-57).** [Profesiones](../07-economia/profesiones.md) §3 y §13 todavía dicen 2 oficios mayores y una sola recolección a 100, y [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2 cuenta con "cambiar de oficio mayor". D-57 quita todo límite duro.
+13. **¿El nivel 10 todavía es de novato?** Casi todos los documentos dicen "hasta el nivel 10"; el [Bestiario](../06-contenido/bestiario.md) §12 dice "nivel 10 o menos" (el 10 incluido), y [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §9 deja entrar al Circuito desde el nivel 10. Hay que fijarlo y escribirlo igual en todos los documentos de §4.7. El ejemplo de las [Convenciones](convenciones-de-codigo.md) §5.3 toma el 10 como incluido.
+14. **"M10" no siempre es un módulo.** [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2 e [Investigación médica](../05-salud/investigacion-medica.md) llaman M10, M20… a los grados de Maestría. En este mapa y en el código, M1 a M25 son solo módulos. Propuesta: escribir "Maestría 10" en esos documentos.
 
 ---
 
