@@ -18,7 +18,7 @@
 
 ---
 
-> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78). La ficha del héroe cuenta igual que el resto del juego ("🎒 Mochila: 4/60", sin el cinturón). Recolectar con la mochila llena o en una zona agotada no empieza ni gasta energía; beber una poción o una venda con la vida llena tampoco se permite, para no gastarla en nada.
+> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78). La ficha del héroe cuenta igual que el resto del juego ("🎒 Mochila: 4/60", sin el cinturón). Recolectar con la mochila llena o en una zona agotada no empieza ni gasta energía; beber una poción o una venda con la vida llena tampoco se permite, para no gastarla en nada. **Mochila llena (D-90, provisional):** lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos de explorar entran aunque pase de 60, por ejemplo 63/60), pero con la mochila en 60 o más no se recolecta ni se compra en el mercader hasta vender o usar cosas. La mochila, la pantalla del mercader y el aviso al intentarlo lo dicen: "🎒 Mochila llena (63/60): vende o usa cosas para volver a recolectar o comprar."
 
 ## 1. Casillas y peso: dos números, una regla cada uno
 
@@ -166,6 +166,7 @@ La capa simple no pide ordenar nada (D-44):
 - **🏦 Depositar materiales.** En un banco o en tu casa, un toque manda todos los materiales al depósito. Los consumibles y el cinturón se quedan.
 - **💰 Vender lo sobrante.** En un mercader PNJ, un toque vende lo marcado "para vender" (el equipo que no te sirve, ver [Botín](botin.md)). Lo marcado con 🔒 nunca se vende ni se tira.
 - **Mochila llena.** El bot no pierde nada en silencio: ofrece cambiar lo nuevo por lo de menos valor, dejarlo o abrir la mochila.
+  - *En el juego hoy (D-90, provisional), en más simple:* lo encontrado entra siempre, aunque pase del espacio; lo que se frena es recolectar y comprar hasta que vendas o uses cosas.
 
 **Capa profunda (opcional):** reglas de recogida ("no recoger lo gris", "solo hierbas de calidad buena o mejor"), pestañas de banco con nombre y orden a mano.
 

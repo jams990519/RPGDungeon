@@ -434,6 +434,7 @@ bag:
   button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
   full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
+  full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90: lo que encuentras igual entra
 
 combat:
   title: "⚔️ Combate · Ronda {n}"
@@ -689,7 +690,7 @@ camps:
   grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."
   grow_option: "({x}, {y}) {items}"
   grow_more: "▶️ Ver más zonas"
-  stage_line: "🏰 Es un {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
+  stage_line: "🏰 Etapa: {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
   stage:
     campamento: "campamento"
     aldea: "aldea"
@@ -697,6 +698,9 @@ camps:
     ciudad: "ciudad"
     castillo: "castillo"
   grow_missing: "Para agrandarlo necesitas {items}."
+  chest_cost: "🪎 Cofre ×{n}"   # [ES] D-92: agrandar desde el nivel 6 también cuesta cofres
+  chests_have: "🪎 Tienes {n} {n|cofre|cofres}. Se arman en el Claro, en 💰 Monedas (/monedas)."
+  grow_missing_chests: "🪎 Te faltan cofres: tienes {n} de {need}. Se arman en el Claro, en 💰 Monedas (/monedas)."
   grow_blocked: "No queda espacio libre alrededor para crecer."
   grown: "⬆️ ¡El campamento creció! Ahora ocupa {zones} zonas (sumó ({x}, {y}))."
   land_line: "🏕️ Territorio de {name}"
@@ -843,16 +847,21 @@ wallet:
   coins: "Monedas: {coins}"
   coins_help: "🥉 Bronce, 🪙 Plata y 🥇 Oro se ganan jugando y se juntan solas: {rate} de bronce son 1 de plata y {rate} de plata son 1 de oro."
   bags: "💰 Bolsas: {n}"
-  bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para lo que venga."
+  bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para armar cofres."
+  chests: "🪎 Cofres: {n}"   # [ES] D-92 (provisional)
+  chests_help: "Se arman en el Claro con {bags} 💰 {bags|bolsa|bolsas} y {items}. Pagan el crecimiento de los campamentos grandes (desde el nivel {level})."
   gems: "💎 Diamantes: {n}"
   gems_help: "Los diamantes se compran. Dan comodidades y cosméticos, nunca poder."
   cards: "🪪 Credenciales de oficio: {n}"
   cards_help: "Tu carta de presentación de oficio: la muestras a otros jugadores para que sepan qué sabes hacer. Llegan con los oficios."
   boost_on: "⭐ Experiencia +50 % activa: quedan {time}."
   sew_button: "💰 Coser una bolsa"
-  sew_in_claro: "💰 Las bolsas se cosen en el Claro."
+  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro."
   sew_missing: "Para coser una bolsa necesitas {items} y {coins}."
   sewn: "💰 Cosiste una bolsa. Ahora tienes {n}."
+  chest_button: "🪎 Armar cofre"
+  chest_missing: "Para armar un cofre necesitas {bags} 💰 {bags|bolsa|bolsas} (tienes {have}) y {items}."
+  chest_built: "🪎 Armaste un cofre. Ahora tienes {n}."
   gems_button: "💎 Tienda de diamantes"
   gem_shop_title: "💎 Tienda de diamantes"
   gem_shop_intro: "Los diamantes se compran con dinero real (muy pronto). Solo dan comodidades y cosméticos."

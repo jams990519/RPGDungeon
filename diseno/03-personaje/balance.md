@@ -247,3 +247,22 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Una victoria contra un lobo deja en promedio 0,5 × 1,5 × 2 = 1,5 raciones. Con 40 de energía por día, quien pelea seguido gana muchas más raciones de las que come (1 por día): la comida no falta si los que pelean la llevan a la despensa. Lo que se pone a prueba es la **participación**, no la producción. Alimentarse solo con provisiones cuesta 15 🥉 por persona y día (unas tres peleas tempranas de monedas).
 
 **Lo que queda por mirar:** si la carne alcanza de sobra (bajar la probabilidad o el valor), el tope por semana de las provisiones (§15.8) y si hace falta un tope de capacidad antes de los graneros (§4.3). Medir en la beta cuántos días alcanza la despensa del Claro con la gente real.
+
+### Octubre de 2026: mochila llena y cofre (D-90 y D-92, provisionales)
+
+**Por qué.** El dueño aceptó por voz dos reglas. **Mochila llena (D-90):** lo que encuentras nunca se pierde, pero con la mochila llena no se recolecta ni se compra hasta vender o usar cosas. **Cofre (D-92, resuelve P-73):** el 🪎 cofre entra como moneda que se arma con bolsas y paga lo grande; el 💵 billete no entra. Son números **nuevos**, no movidos: los propuso Claude y todavía no se midieron con jugadores.
+
+**Lo que no cambia:** el espacio de la mochila sigue en 60 (`hero.backpack_capacity`). Cambia la regla: antes los hallazgos de explorar se perdían con la mochila llena y comprar no miraba el espacio; ahora los hallazgos entran siempre y comprar espera, como recolectar.
+
+**Números nuevos** (`content/balance.yaml`):
+
+| Número | Valor | De dónde sale |
+|---|---|---|
+| Receta del cofre (`currency.chest_recipe`) | 10 💰 bolsas + 10 de madera + 5 piezas de metal | P-73: "se arma con 10 bolsas, madera y metal" |
+| Agrandar con cofres desde (`camps.chests_from_level`) | nivel 6 (el paso de 6 a 7, hacia ciudad) | P-73: "paga lo grande (campamentos altos, castillos)" |
+| Cofres por nivel (`camps.chests_per_level`) | 1 × (nivel actual − 6 + 1): 1 de 6 a 7, 2 de 7 a 8, 3 de 8 a 9, y sigue subiendo de a 1 | Pedido del dueño: 1 + (nivel − 6) |
+| Icono (`currency.icons.chests`) | 🪎 | D-85: el icono que mostró el dueño |
+
+**Cuenta rápida.** Un cofre resume 10 bolsas (40 de fibra, 10 de metal y 10 🪙) más 10 de madera y 5 de metal: **40 de fibra, 15 de metal, 10 de madera y 10 🪙**. De nivel 6 a castillo (9) hacen falta 6 cofres: 240 de fibra, 90 de metal, 60 de madera y 60 🪙, además de los materiales de siempre (90 + 105 + 120 de madera, etc.). Los materiales de un cofre (65 unidades) caben en uno o dos días de energía de un jugador; lo que más pesa son las 10 🪙 (1.000 🥉), porque una pelea temprana deja unos 5 🥉. Entre los miembros de un campamento de nivel 6 (hasta 12 personas) se reparte rápido. Es el sumidero más grande del juego hoy, a propósito: frena a los campamentos grandes y saca plata del juego.
+
+**Lo que queda por mirar:** si los campamentos de nivel 6 se quedan trabados (bajar la receta o subir `chests_from_level`), si conviene que los miembros junten cofres entre todos (un almacén común, ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)) y si la mochila llena empuja a vender demasiado (más bronce entra al juego) o a aportar a la obra y la despensa. Medir en la beta.

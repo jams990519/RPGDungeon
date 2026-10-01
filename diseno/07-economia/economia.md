@@ -34,16 +34,17 @@ Pocas, para no repetir el problema de WoW, donde hay más de veinte monedas:
 | ⚔️ **Honor** | Recompensas de PvP | Arenas, campos, guerra de facciones | No |
 | 💎 **Gemas** | Cosméticos y comodidades (moneda premium) | Telegram Stars; algunas en eventos | No |
 
-**En el juego hoy (parches 0.7 y 0.7.3, D-80 y D-85):**
+**En el juego hoy (parches 0.7 y 0.7.3, D-80 y D-85; el 🪎 cofre, D-92 provisional):**
 
 | Moneda | Cómo se consigue | Para qué sirve hoy |
 |---|---|---|
 | 🥉 **Bronce**, 🪙 **Plata**, 🥇 **Oro** | Se ganan jugando (combates, exploración, misiones, ventas) y se juntan solas: 100 🥉 = 1 🪙 y 100 🪙 = 1 🥇. En el código es un solo número contado en bronce (`Hero.gold`) | Mercader, posada, reiniciar especialización, coser bolsas |
-| 💰 **Bolsas** | Se cosen en el Claro con 4 de fibra (hilo), 1 pieza de metal (el cierre) y 1 🪙. Es un sumidero de monedas y materiales | La doble especialización (desde 0.9.1, D-88) y lo que venga |
+| 💰 **Bolsas** | Se cosen en el Claro con 4 de fibra (hilo), 1 pieza de metal (el cierre) y 1 🪙. Es un sumidero de monedas y materiales | La doble especialización (desde 0.9.1, D-88) y armar cofres |
+| 🪎 **Cofres** (D-92, provisional) | Se arman en el Claro (💰 Monedas → 🪎 Armar cofre) con 10 💰 bolsas, 10 de madera y 5 piezas de metal (`currency.chest_recipe`). Un cofre resume 40 de fibra, 15 de metal, 10 de madera y 10 🪙: es el sumidero más grande del juego hoy (`Hero.chests`) | Pagar lo grande: agrandar un campamento desde el nivel 6 cuesta también 1 cofre de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9 (`camps.chests_from_level`, `chests_per_level`). Más adelante, castillos y obras grandes |
 | 💎 **Diamantes** | Se compran con dinero real (todavía no se venden: ver P-72) | Solo aceleradores y cosméticos (D-43): ⭐ experiencia +50 % por 7 días (100 💎) y 🚩 estandarte único al lado del nombre (150 💎) |
 | 🪪 **Credencial de oficio** | Llegará con los oficios | Tu carta de presentación de profesión ante otros jugadores |
 
-El estandarte que se compra durante la beta es el de **beta tester** (🚩[Beta]). Después de la beta, el mismo producto pasa a ser un estandarte premium normal (`balance.yaml` → `currency.banner_phase`). Las recetas y los precios los propuso Claude. El 💵 billete y el 🪎 cofre quedan como propuesta (P-73).
+El estandarte que se compra durante la beta es el de **beta tester** (🚩[Beta]). Después de la beta, el mismo producto pasa a ser un estandarte premium normal (`balance.yaml` → `currency.banner_phase`). Las recetas y los precios los propuso Claude. Desde D-92 (provisional, resuelve P-73) el 🪎 cofre está en el juego; el 💵 **billete no entra, por decisión**: con bronce, plata y oro alcanza, y más monedas confunden. La ficha del héroe muestra todas las monedas con su cantidad, también las que están en 0: 🥉 🪙 🥇 💰 🪎 💎.
 
 **Transferibles y no transferibles** (como en WoW): el **oro** es libre y se comercia entre jugadores. La **Esencia**, el **Honor**, la **reputación de castillo** y la **moneda de temporada** (que se gana en cada temporada y compra sus recompensas) **no se pueden transferir**: son de quien las ganó. Así lo que se gana jugando no se compra con oro ni con cuentas alternas.
 
