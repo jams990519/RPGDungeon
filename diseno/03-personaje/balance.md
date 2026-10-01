@@ -266,3 +266,15 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Un cofre resume 10 bolsas (40 de fibra, 10 de metal y 10 🪙) más 10 de madera y 5 de metal: **40 de fibra, 15 de metal, 10 de madera y 10 🪙**. De nivel 6 a castillo (9) hacen falta 6 cofres: 240 de fibra, 90 de metal, 60 de madera y 60 🪙, además de los materiales de siempre (90 + 105 + 120 de madera, etc.). Los materiales de un cofre (65 unidades) caben en uno o dos días de energía de un jugador; lo que más pesa son las 10 🪙 (1.000 🥉), porque una pelea temprana deja unos 5 🥉. Entre los miembros de un campamento de nivel 6 (hasta 12 personas) se reparte rápido. Es el sumidero más grande del juego hoy, a propósito: frena a los campamentos grandes y saca plata del juego.
 
 **Lo que queda por mirar:** si los campamentos de nivel 6 se quedan trabados (bajar la receta o subir `chests_from_level`), si conviene que los miembros junten cofres entre todos (un almacén común, ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)) y si la mochila llena empuja a vender demasiado (más bronce entra al juego) o a aportar a la obra y a la despensa de los campamentos. Medir en la beta.
+
+### Octubre de 2026: jugadores en la zona (D-96, provisional)
+
+**Por qué.** El dueño pidió por voz ver, al tocar 📍 Zona, a los otros jugadores que están en tu zona y lo que hacen, y toparte con ellos al explorar (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.13). Son números **nuevos** (`content/balance.yaml` → `presence`), propuestos por Claude. No tocan el combate, la economía ni la experiencia: solo deciden qué se muestra.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Presente si tocó un botón hace menos de | 15 minutos | Lo bastante corto para que la lista sea "quién está ahora"; quien explora, recolecta o duerme ahí cuenta aunque no toque botones |
+| Nombres en 📍 Zona | 5, y "… y N más" | Pantallas cortas (D-86): el bloque suma como mucho 7 líneas |
+| Cruce por vuelta de exploración o recolección | 15 % | Con alguien presente todo el lote, 10 vueltas dan en promedio 1,5 sorteos ganados; como a cada jugador te lo cruzas una sola vez por lote, el resumen suma pocas líneas |
+
+**Lo que queda por mirar:** en la beta, si el Claro se llena (más de 5 presentes seguido) y conviene mostrar primero a los que hacen algo, o subir el tope.

@@ -51,6 +51,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Poder de Objeto** | Número que resume lo bueno que es un objeto | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Postura** | Barra de los enemigos grandes; rota, abre golpes críticos | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
+| **Presente (en la zona) / cruzarse** | Un jugador está **presente** en una zona si su héroe está ahí y tocó un botón en los últimos 15 minutos, o explora, recolecta o duerme ahí. Los presentes salen en el bloque 👥 de 📍 Zona con lo que hacen; al explorar o recolectar, a veces **te cruzas** con uno (👋, solo un texto, sin premio ni pelea) (D-96, provisional) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.13 |
 | **Presupuesto de poder** | 100 puntos por spec en 6 ejes | [Balance](../03-personaje/balance.md) |
 | **Profundidades** | Contenido para 1 a 5 jugadores con compañero PNJ | [Misiones](../06-contenido/misiones-y-exploracion.md) |
 | **Ración** | La unidad de comida: lo que come un residente activo en un día real. 🍖 La carne vale 2 y 🥖 las provisiones, 1 (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4 |

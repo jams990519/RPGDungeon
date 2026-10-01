@@ -19,6 +19,8 @@ Si cambias esto, revisa:
       (engine/service/game.py _mark_seen; tests/test_pantry.py)
     - chests (D-92, provisional): 🪎 cofres que se arman en el Claro y pagan el crecimiento de los campamentos
       grandes (engine/service/game.py _build_chest, _grow_chests; tests/test_backpack.py)
+    - seen_at también dice quién aparece en la lista 👥 de 📍 Zona (D-96: tocó un botón en los últimos
+      presence.minutes; engine/service/game.py _zone_players; tests/test_zone_players.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -61,6 +63,7 @@ class Hero:
             empty means the automatic bar.
         seen_at: last time the player pressed a button (D-93); 0 for heroes saved before it.
             "Active" residents (they eat from the pantry) are those seen in the last 24 h.
+            Players seen in the last presence.minutes are also listed in their zone (D-96).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
