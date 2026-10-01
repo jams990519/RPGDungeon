@@ -81,6 +81,9 @@ hero:
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
+map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (pedido del dueño: tan ancho como el mensaje e igual de alto)
+  radius: 6                  # [ES] 6 → 13 × 13 cuadritos; más de 6 puede partir las filas en teléfonos chicos (375 puntos)
+
 resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
   per_page: 8                # [ES] cuántos recursos muestra cada página de 📦 Recursos en la mochila
   region_scale: {madera: 5, piedra: 4, fibra: 3, hierba_curativa: 3, pieza_metal: 6, arcilla: 4}   # [ES] tamaño base de las manchas de cada recurso

@@ -337,3 +337,12 @@ def test_falling_means_a_slow_recovery(service, clock):
     service.act("test:1", "hero")
     hero = service._load("test:1")
     assert hero.hp == max_hp and not hero.downed
+
+
+def test_the_map_is_a_square_as_wide_as_the_message(service):
+    make_hero(service)
+    body = service.act("test:1", "map").body
+    side = 2 * service.content.balance["map_view"]["radius"] + 1
+    rows = [line for line in body if line and " " not in line]              # the grid rows: cells only, no spaces
+    assert side == 13 and len(rows) == side
+    assert all(line.replace("\ufe0f", "").__len__() == side for line in rows)   # every row has 13 cells

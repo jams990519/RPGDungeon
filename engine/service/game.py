@@ -2501,8 +2501,17 @@ class GameService:
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
 
     def _map_view(self, hero: Hero) -> View:
+        """A square map around the hero: (2 × map_view.radius + 1) cells wide and as many tall.
+
+        [ES]
+        Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
+        igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
+        se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
+        La llaman: 🧭 Explorar → 🗺️ Mapa.
+        Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje.
+        """
         t = self.texts
-        radius = 3
+        radius = self.content.balance["map_view"]["radius"]
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
