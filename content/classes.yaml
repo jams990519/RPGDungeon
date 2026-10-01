@@ -432,7 +432,7 @@ sacerdote_sagrado:
 
 sacerdote:
   group: sacerdote
-  role: curacion
+  role: soporte
   name_key: class.sacerdote.name
   role_key: class.sacerdote.role
   resource: mana
