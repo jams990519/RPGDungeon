@@ -29,6 +29,8 @@ Reglas que nunca se rompen:
     3. La Toxicidad al máximo impide beber pociones (ronda §4).
     4. Un jefe cambia de fase solo al final de la ronda: el golpe ya avisado se cumple tal cual (D-82).
     5. Las fases solo avanzan, nunca vuelven atrás, aunque el jefe se cure.
+    6. Una habilidad que no es respuesta puede dar recurso (gain) y combos (combo, solo las que golpean);
+       los combos nunca pasan de 5 (D-79).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (vista de combate, recompensas, Guardián)
     - Números: balance.yaml combat.*; enemies.yaml phases (at, attack_mult, moves)
@@ -309,6 +311,9 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
             hs["resource"] -= ability.get("cost", 0)
             if ability.get("cooldown"):
                 hs["cooldowns"][ability["id"]] = ability["cooldown"] + 1
+            # Builders (D-79): optional resource gain and combo points on any non-response ability.
+            if ability.get("gain"):
+                hs["resource"] = min(class_def["resource_max"], hs["resource"] + ability["gain"])
             akind = ability["kind"]
             if akind in ("strike", "interrupt", "finisher"):
                 power = ability.get("power", 1.0)
@@ -318,6 +323,8 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
                 dmg, crit = _roll_damage(stats["attack"], power * hero_mult(), enemy["armor"], rng, bal)
                 enemy["hp"] -= dmg
                 lines.append(t.t("combat.hit_enemy", action=name_of(ability), dmg=dmg, crit=t.t("combat.crit") if crit else ""))
+                if ability.get("combo"):
+                    hs["combo"] = min(5, hs["combo"] + ability["combo"])
                 if ability.get("lifesteal"):
                     healed = min(stats["max_hp"] - hero.hp, round(dmg * ability["lifesteal"]))
                     if healed > 0:

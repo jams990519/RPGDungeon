@@ -49,6 +49,8 @@ class Hero:
         gear: worn pieces, slot -> item id (D-77); gear_started: starter gear already given.
         guardians: region Guardians fought, enemy id -> {"wins": n, "last": ts of the last win} (D-82).
         titles: title ids earned for ever, e.g. "pionero_raigambre" (first in the server to beat it).
+        bar: combat bar chosen by the player, 3 ability ids, slot 1 = a response (D-79);
+            empty means the automatic bar.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -97,6 +99,7 @@ class Hero:
     exploration: dict[str, int] = field(default_factory=dict)
     guardians: dict[str, dict[str, Any]] = field(default_factory=dict)
     titles: list[str] = field(default_factory=list)
+    bar: list[str] = field(default_factory=list)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

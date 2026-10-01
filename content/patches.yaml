@@ -144,3 +144,12 @@ v0_8_1:
     - "🪵🪨🧵🌿⚙️🏺 Seis recursos en regiones de distintos tamaños: cada zona tiene de 1 a 3. Si se recolecta mucho en un lugar, se agota por un tiempo."
     - "🎒 La mochila tiene espacio: 60. Llena, ya no recolectas."
     - "🏰 Al agrandar tu campamento eliges qué zona toma: en tu territorio recolectas un 50 % más. Crece de campamento a aldea, pueblo, ciudad y castillo."
+
+v0_9:
+  version: "0.9"
+  title: "🌟 Lost Realms 0.9: 8 habilidades por especialización"
+  notes:
+    - "🌟 Cada especialización tiene ahora 8 habilidades inspiradas en WoW. Se abren con tus puntos de talento a lo largo de los niveles (con 1, 3, 6, 10, 16, 24, 34 y 46 puntos)."
+    - "🎛️ Tú eliges tu barra de combate: casilla 1, tu respuesta (bloquear, esquivar o escudo); casillas 2 y 3, lo que quieras. Está en 🌟 Talentos → tu especialización → 🎛️ Barra de combate."
+    - "📖 Cada especialización muestra sus 8 habilidades, qué hace cada una y cuántos puntos te faltan para la siguiente."
+    - "⚖️ Los números son más bajos al inicio: cada punto suma alrededor de 1 %, para que crecer se note durante los 100 niveles."

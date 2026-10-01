@@ -36,15 +36,17 @@ invite:                      # [ES] invitar jugadores da energía (D-65): se pag
   reward_level: 1
   cap_factor: 2              # [ES] la energía extra puede llegar hasta 2 × el máximo
 
-talents:                     # [ES] talentos por nivel (D-68): 1 punto por nivel en una especialización de tu clase
-  unlock: [1, 3, 6]          # [ES] puntos en una especialización para desbloquear su habilidad 1, 2 y 3
-  passive_cap: 20            # [ES] cuántos puntos por especialización cuentan para la mejora pasiva
+talents:                     # [ES] talentos por nivel (D-68, D-79): 1 punto por nivel en una especialización de tu clase
+  # [ES] Puntos en una especialización para desbloquear sus 8 habilidades (D-79). Con todo en una sola,
+  # la 4.ª llega al nivel 11, la 5.ª al 17, la 6.ª al 25, la 7.ª al 35 y la 8.ª al 47 (de 100 niveles).
+  unlock: [1, 3, 6, 10, 16, 24, 34, 46]
+  passive_cap: 50            # [ES] cuántos puntos por especialización cuentan para la mejora pasiva (tope +50 %)
   respec_cost_per_level: 10  # [ES] reiniciar la especialización cuesta 10 💰 por nivel (D-74)
-  passive:                   # [ES] mejora por punto, según el rol de la especialización
-    ataque: {attack: 0.03}
-    defensa: {hp: 0.03}
-    curacion: {hp: 0.02, attack: 0.01}
-    soporte: {attack: 0.02, hp: 0.01}
+  passive:                   # [ES] mejora por punto, según el rol (D-79: ~1 % por punto; antes 3 %, era demasiado)
+    ataque: {attack: 0.01}               # [ES] +1 % de ataque por punto
+    defensa: {hp: 0.01}                  # [ES] +1 % de vida por punto
+    curacion: {hp: 0.006, attack: 0.004} # [ES] repartido: +0,6 % de vida y +0,4 % de ataque
+    soporte: {attack: 0.006, hp: 0.004}  # [ES] repartido: +0,6 % de ataque y +0,4 % de vida
 
 explore:
   minutes: 10
