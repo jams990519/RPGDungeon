@@ -21,7 +21,7 @@ Cada clase mantiene su recurso de WoW, adaptado a rondas. Además, **todas** com
 |---|---|---|
 | **Ira** | Guerrero, Druida (oso) | Se gana al pegar y al recibir golpes, y decae fuera de combate. Máximo 100 |
 | **Energía + Combos** | Pícaro, Druida (felino) | La energía sube 25 por ronda. Los golpes generan combos (hasta 5) y los remates los gastan |
-| **Maná** | Magos, sanadores, Chamán, Druida (lechuza) | Reserva grande con regeneración pequeña por ronda. Las pociones del cinturón y habilidades como *Meditar* recuperan más |
+| **Maná** | Magos, sanadores, Chamán, Druida (lechuza) | Reserva grande con regeneración pequeña por ronda. ⚔️ Atacar recupera un poco y las pociones del cinturón, más |
 | **Runas + Poder rúnico** | Caballero de la Muerte | 6 runas, se regeneran 2 por ronda. Las habilidades gastan runas y generan poder rúnico |
 | **Foco** | Cazador | Sube 20 por ronda. *Apuntar* (habilidad de Puntería) acumula foco extra |
 | **Poder Sagrado** | Paladín | De 0 a 5, con generadores y consumidores |
@@ -238,7 +238,7 @@ El único con los 4 roles, como en WoW.
 | Botón | Qué es |
 |---|---|
 | ⚔️ **Atacar** | El golpe básico de tu arma (o el hechizo básico de tu spec). Siempre está, genera recurso y cuenta como la primera de tus 4 "habilidades". Cuando cargas tu Límite, se transforma en él (ver [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md)) |
-| ✨ **Habilidad 1, 2 y 3** | Las 3 que elegiste del repertorio de tu spec. Una de ellas puede ser la **técnica de tu arma**: la espada larga da *Tajo Circular*, la lanza *Estocada Profunda*, el escudo torre *Muro* (propuesta P-68; lista en [Equipamiento](equipamiento.md)) |
+| ✨ **Habilidad 1, 2 y 3** | Las 3 que elegiste del repertorio de tu spec. Una de ellas puede ser la **técnica de tu arma o de tu armadura**: la espada larga da *Tajo Circular*, la lanza *Estocada Profunda*, el escudo torre *Muro* (propuesta P-68; lista en [Equipamiento](equipamiento.md)) |
 | 🏃 **Huir** | Se resuelve al final de la ronda. Donde no se puede huir (Guardianes, arena) se vuelve **🌀 Esquivar** (propuesta P-67) |
 | 🎒 **Mochila** | En combate abre solo el **cinturón** (abajo) |
 
@@ -246,10 +246,10 @@ El único con los 4 roles, como en WoW.
 - **Una sola elección por ronda.** No hay acción rápida ni reacción aparte: si respondes al aviso, esa es tu ronda. Elegir entre pegar o protegerte es la decisión que importa.
 - **Siempre hay con qué responder al aviso.** Cada clase tiene en su repertorio habilidades defensivas o de reposicionamiento (las "Respuestas al aviso" de cada clase, §2). La configuración inicial de cada spec trae una en la barra; quitarla es decisión del jugador. Y donde no se puede huir, Huir pasa a Esquivar.
 - **El resto del repertorio se cambia fuera de combate**, con las configuraciones guardadas de [Talentos](talentos.md) ("mazmorra", "solitario", "PvP"…).
-- **La técnica de armadura pasa a ser pasiva** (propuesta de este documento): ya no ocupa un botón. Se dispara sola una vez por pelea, cuando se cumple su condición: *Resistir* (pecho de placas) ignora el primer derribo, *Capa de Humo* (pecho de cuero) esquiva el primer golpe que te dejaría por debajo del 25 % de vida, *Carga* (botas de placas) hace que tu primer cambio de fila también golpee. Así el equipo sigue importando por lo que hace, sin sumar botones.
+- **Como máximo una técnica de equipo en la barra** (P-68), de arma o de armadura, en lugar de una habilidad de clase. Las técnicas defensivas de armadura (*Capa de Humo*, *Barrera Rúnica*, *Resistir*) cuentan como respuestas al aviso (ver [Equipamiento](equipamiento.md) §7). Así el equipo sigue importando por lo que hace, sin sumar botones.
 
 **El cinturón.**
-- Pocas casillas que llenas **antes** de pelear; cuántas, según el cinturón que lleves (ver D-47 en [Decisiones](../00-vision/decisiones.md)).
+- Pocas casillas que llenas **antes** de pelear; cuántas, según el cinturón que lleves (de 3 a 6; ver [Inventario y mochilas](inventario-y-mochilas.md), D-47).
 - Qué va: pociones de vida, **pociones de resistencia** (contra fuego, frío o veneno: sirven para responder al aviso), remedios para estados (antídoto para el veneno, venda para el sangrado, ungüento para la quemadura, tónico caliente para la congelación), bombas y comida rápida.
 - Usar un objeto **gasta la elección de la ronda**.
 - La **Toxicidad** limita cuántas pociones aguantas (ver [Condiciones](../05-salud/condiciones.md)).

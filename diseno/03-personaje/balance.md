@@ -52,10 +52,10 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
    |---|---|---|
    | ⚔ Ataque | Daño sostenido, Ráfaga, Autonomía | Utilidad de grupo |
    | 🛡 Defensa | Supervivencia, Control | Ráfaga, Autonomía |
-   | ✚ Curación | Utilidad de grupo (curas), Supervivencia | Daño, Autonomía |
+   | ✚ Curación | Utilidad de grupo (curas), Supervivencia | Daño sostenido, Ráfaga, Autonomía |
    | ✦ Soporte | Utilidad de grupo (potenciar y debilitar), Control | Ráfaga |
 
-3. **Kit mínimo garantizado.** Toda spec tiene en su repertorio una interrupción (o algo equivalente), un defensivo mayor, un defensivo menor o autocuración, un control, una forma de reposicionarse o escapar, y un aporte de grupo. En WoW hubo clases que pasaron expansiones enteras sin interrupción o sin defensivos. Con la barra de 6 (D-46) no todo cabe a la vez: elegir qué llevar es parte del juego, pero toda clase tiene al menos una habilidad que **responde a los avisos** (bloquear, esquivar, escudo, cambiar de fila), y la configuración inicial de cada spec la trae puesta.
+3. **Kit mínimo garantizado.** Toda spec tiene en su repertorio una interrupción (o algo equivalente), un defensivo mayor, un defensivo menor o autocuración, un control, una forma de reposicionarse o escapar, y un aporte de grupo. En WoW hubo clases que pasaron expansiones enteras sin interrupción o sin defensivos. Con la barra de 6 (D-46) no todo cabe a la vez: elegir qué llevar es parte del juego, pero toda spec tiene en su repertorio al menos una habilidad que **responde a los avisos** (bloquear, esquivar, escudo, cambiar de fila), y la configuración inicial de cada spec la trae puesta.
 
 4. **Autonomía por rol (D-50).** Toda spec puede hacer sola el contenido en solitario (misiones, encargos, Profundidades normales). Lo que cambia es **cuánto tarda**, medido contra la mediana de las specs de Ataque en los mismos escenarios:
 

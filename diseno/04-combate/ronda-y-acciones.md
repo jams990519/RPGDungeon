@@ -72,7 +72,7 @@ Una **respuesta** es una habilidad con etiqueta defensiva. Tiene tres reglas:
 
 1. **Va primero.** Se resuelve al principio de la ronda, antes que cualquier golpe, sin importar la iniciativa. Por eso sirve para contestar un aviso.
 2. **Cuesta Aguante:** 1 🔋, o 2 🔋 si es un desvío (la apuesta alta). Sin Aguante no hay respuesta.
-3. **Dura la ronda** y cubre todos los golpes de esa ronda. Las defensivas mayores duran 2 rondas y tienen enfriamiento largo.
+3. **Dura la ronda** y cubre todos los golpes de esa ronda. Las defensivas mayores protegen más y tienen enfriamiento largo.
 
 | Tipo | Qué hace | Contra qué sirve |
 |---|---|---|
@@ -86,24 +86,24 @@ Una **respuesta** es una habilidad con etiqueta defensiva. Tiene tres reglas:
 
 ### Una respuesta por clase, como mínimo
 
-Ejemplos de respuestas que comparten todas las specs de cada clase. Los specs de Defensa suman además la suya de firma. Las técnicas de armadura defensivas (*Capa de Humo*, *Muro*, *Barrera Rúnica*) también son respuestas.
+Ejemplos de respuestas que comparten todas las specs de cada clase. Los specs de Defensa suman además la suya de firma. Las técnicas de equipo defensivas (*Muro*, *Capa de Humo*, *Barrera Rúnica*; ver [Equipamiento](../03-personaje/equipamiento.md) §7) también son respuestas.
 
 | Clase | Respuestas de ejemplo |
 |---|---|
 | Guerrero | 🤺 *Parada* · 🔁 *Intervenir* (salta delante de un aliado y recibe su golpe). Protección suma 🛡 *Bloqueo con escudo*, que cubre la fila |
 | Paladín | 🛡 *Escudo Divino* · 🫧 *Bendición de Protección* (un aliado no recibe daño físico esa ronda) |
-| Cazador | 💨 *Separación* (salta a la retaguardia y esquiva) · 🔁 *Proteger al amo* (la mascota se pone delante) |
-| Pícaro | 💨 *Evasión* · 🤺 *Réplica* |
+| Cazador | 💨 *Destrabarse* (salta a la retaguardia y esquiva) · 🤺 *Aspecto de la Tortuga* |
+| Pícaro | 💨 *Evasión* · 🛡 *Capa de Sombras* (frena la magia) |
 | Sacerdote | 🫧 *Palabra de Poder: Escudo* · 💨 *Desvanecerse* |
-| Caballero de la Muerte | 🛡 *Caparazón Antimagia* (frena conjuros y alientos) · 🛡 *Entereza Helada* (mayor) |
-| Chamán | 🫧 *Escudo Astral* · 🛡 *Tótem de Piedra* (absorbe el siguiente golpe a su fila) |
+| Caballero de la Muerte | 🛡 *Caparazón Antimagia* (frena conjuros y alientos) · 🛡 *Entereza Ligada al Hielo* (mayor) |
+| Chamán | 🛡 *Cambio Astral* · 🔁 *Paso Espiritual* |
 | Mago | 💨 *Traslación* (cambia de fila y esquiva) · 🛡 *Bloque de Hielo* (mayor) |
-| Brujo | 🛡 *Resolución Inagotable* · 🔁 *Escudo Demoníaco* (su demonio recibe el golpe) |
-| Monje | 💨 *Rodar* · 🤺 *Toque del Karma* (devuelve parte del golpe) |
-| Druida | 🛡 *Piel de Corteza* · 💨 *Carrera Salvaje* |
-| Cazador de Demonios | 💨 *Salto Vil* (cambia de fila y esquiva) · 💨 *Desenfoque* |
+| Brujo | 🛡 *Resolución Inagotable* · 🔁 *Círculo Demoníaco* (vuelve al punto que marcó) |
+| Monje | 💨 *Rodar* · 🤺 *Toque de Karma* (devuelve parte del golpe) |
+| Druida | 🛡 *Piel de Corteza* · 💨 *Carrerilla Salvaje* |
+| Cazador de Demonios | 💨 *Desenfoque* · 🔁 *Retirada Vil* (salta a la retaguardia). Estrago suma *Salto Vil* (cambia de fila, golpea y esquiva) |
 | Evocador | 🛡 *Escamas Obsidianas* · 💨 *Planear* |
-| Nigromante | 🛡 *Muro de Huesos* (un esqueleto recibe el golpe) · 💨 *Paso Espectral* |
+| Nigromante | 🛡 *Hueso Protector* (un esqueleto recibe el golpe) · 💨 *Forma Espectral* |
 | Bardo | 💨 *Paso de Baile* (esquiva y cambia de fila) · 🫧 *Nota Sostenida* (escudo sonoro al grupo) |
 
 Los nombres y números finales viven en [Clases](../03-personaje/clases-y-especializaciones.md). El [Balance](../03-personaje/balance.md) exige a cada spec un defensivo mayor, uno menor (o autocuración) y una forma de reposicionarse o escapar: con eso, toda clase llega a cualquier aviso con algo que contestar.
@@ -181,7 +181,7 @@ Dos filas por bando:
 | **Retaguardia** | Distancia, Curación | No pega cuerpo a cuerpo (salvo lanzas y habilidades de alcance). Mientras haya alguien en vanguardia, los enemigos cuerpo a cuerpo no llegan a ella |
 
 - **No eliges fila.** Al empezar, el juego te pone en la que corresponde a tu rol y tu arma (§7).
-- **Cambias de fila solo con un efecto:** una respuesta 🔁 o 💨 que lo diga (*Separación*, *Traslación*, *Salto Vil*), una técnica como *Carga*, la esquiva perfecta, o un empujón enemigo. La *Flecha Clavadora* impide cambiar.
+- **Cambias de fila solo con un efecto:** una respuesta 🔁 o 💨 que lo diga (*Destrabarse*, *Traslación*, *Salto Vil*), una técnica como *Carga*, la esquiva perfecta, o un empujón enemigo. La *Flecha Clavadora* impide cambiar.
 - **Vanguardia vacía:** si nadie de tu bando queda en vanguardia (todos derribados, o juegas solo sin criatura), la retaguardia pasa a recibir los golpes cuerpo a cuerpo. Por eso un sanador solo pelea de frente, y por eso su modo en solitario lo ayuda.
 
 **Agruparse y dispersarse, sin formación.** Ya no hay una formación que elegir: todos cuentan como **agrupados**.

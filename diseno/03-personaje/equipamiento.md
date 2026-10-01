@@ -148,7 +148,7 @@ Dos ranuras de utilidad deciden qué llevas encima (D-47). El detalle de capacid
 
 | Ranura | Qué hace | Quién la fabrica |
 |---|---|---|
-| 🎒 **Mochila** | Lo que cargas fuera de combate. Su capacidad sube por niveles, y hay tipos según el oficio (herborista, minero, médico, comerciante…) | Peletería |
+| 🎒 **Mochila** | Lo que cargas fuera de combate. Su capacidad sube por niveles, y hay tipos según el oficio (herborista, minero, médico, comerciante…) | Peletería o Sastrería |
 | 🪢 **Cinturón** | Las pocas casillas de objetos que se pueden usar en combate con el botón 🎒 Mochila: pociones de vida y de resistencia, remedios, vendas, bombas, comida rápida. Un cinturón mejor tiene más casillas | Peletería |
 
 - **No confundir con la pieza de cintura.** La cintura es armadura y protege el abdomen; el cinturón es una ranura de utilidad: no protege, carga.

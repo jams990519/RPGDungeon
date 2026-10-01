@@ -1,6 +1,6 @@
 # Casa propia: construirla, fabricar en ella, vivir en ella
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Sistema de construcción](sistema-de-construccion.md) · **Se conecta con:** [Fabricación](../07-economia/fabricacion.md) (taller), [Curación](../05-salud/curacion-y-tratamientos.md) (enfermería), [Progresión](../03-personaje/progresion.md) (descanso), [Defensa](defensa-y-protecciones.md) · **Estado:** propuesta
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Sistema de construcción](sistema-de-construccion.md) · **Se conecta con:** [Fabricación](../07-economia/fabricacion.md) (taller), [Curación](../05-salud/curacion-y-tratamientos.md) (enfermería), [Progresión](../03-personaje/progresion.md) (descanso), [Defensa](defensa-y-protecciones.md), [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) (impuesto) · **Estado:** propuesta, con D-48 (impuesto de la casa) aplicada
 
 **De dónde sale.** La vivienda de WoW (*Midnight*, 2026: vecindarios de unas 50 parcelas, públicos o de hermandad), las islas personales de Albion (granjas, animales, trabajadores), la vivienda de *Final Fantasy XIV* y *Ultima Online*, y la fortaleza de WoW (*Warlords of Draenor*) con su mesa de misiones.
 
@@ -12,6 +12,7 @@
 2. **Plano:** una casa estándar se compra a los entrenadores de Construcción; una casa única la diseña un Arquitecto jugador.
 3. **Construcción:** si sabes el oficio, la construyes tú. Si no, **contratas constructores** (ver [Sistema de construcción](sistema-de-construccion.md)). También puedes mezclar: tú haces las etapas simples y contratas a un Oficial de obra para las difíciles.
 4. **Crecer:** la casa se amplía por habitaciones, cada una con su plano y su obra.
+5. **Impuesto:** la casa paga cada semana un **impuesto a la propiedad** al reino donde está, sea un castillo de jugadores o una comunidad PNJ (D-48). La tasa la fija su gobierno dentro de un rango y va a su tesoro. Por eso elegir dónde vivir también es elegir cuánto pagas y qué servicios recibes (ver [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3.1).
 
 ## 2. Habitaciones
 
@@ -71,6 +72,9 @@
 
 ## 7. Límites
 
-- Una casa por cuenta al principio (más adelante, una segunda como Premium de comodidad; ver [Monetización](../07-economia/monetizacion.md)).
-- **Mantenimiento semanal** en oro (sumidero). Si no se paga, la casa se cierra, pero no se pierde lo que hay dentro.
+- Una casa por cuenta al principio (más adelante, quizá una segunda; nunca a cambio de dinero real, que solo compra cosméticos y aceleradores: D-43, ver [Monetización](../07-economia/monetizacion.md)).
+- **Dos pagos semanales,** los dos en oro del juego:
+  - **Mantenimiento** (sumidero): el desgaste de la obra.
+  - **Impuesto a la propiedad** (D-48): al tesoro del reino donde está la casa, con la tasa que fija su gobierno dentro de un rango.
+- **Si no se paga:** una semana de gracia; después, la casa se cierra (sin taller, descanso ni trabajadores) hasta que pagues, sin intereses. **Nunca se pierde lo que hay dentro:** si sigue cerrada 8 semanas, la parcela vuelve a subasta y todo pasa a tu banco en ese asentamiento (ver [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3.1).
 - La casa nunca da poder de combate: da comodidad, curación más rápida, fabricación diaria y producción pasiva moderada.

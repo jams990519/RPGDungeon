@@ -1,6 +1,6 @@
 # Propiedad y concesiones: un mercado capitalista con lugares escasos
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Economía](economia.md), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) · **Se conecta con:** [Construcción](../09-construccion/README.md) (parcelas), [Apuestas](../08-social/apuestas.md) (licencias de casino), [Gremios](../08-social/gremios-y-social.md) · **Estado:** propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Economía](economia.md), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) · **Se conecta con:** [Construcción](../09-construccion/README.md) (parcelas), [Apuestas](../08-social/apuestas.md) (licencias de casino), [Gremios](../08-social/gremios-y-social.md) · **Estado:** propuesta, con D-48 (impuesto de la casa) aplicada
 
 **Qué pediste.** Un mercado "capitalista", donde haya **pocos lugares** (como en Albion Online), los jugadores tengan que **comprarlos**, **mantenerlos pagando tasas e intereses** y **pujar** para conseguirlos.
 
@@ -43,8 +43,21 @@ Cada lugar paga una **tasa semanal**:
   2. Paga cada semana un porcentaje de ese valor (por ejemplo, 2 %).
   3. **Cualquiera puede comprarle el lugar a ese valor declarado**, en cualquier momento. El dueño recibe el oro y tiene unos días para desalojar.
   - Así, el que lo declara barato para pagar poco se arriesga a que se lo quiten; el que lo declara caro paga mucho. El precio de cada lugar termina reflejando lo que de verdad vale.
-- **Tasa fija**, para las parcelas de vivienda (para que tu casa no te la compren sin querer): un impuesto semanal según la ubicación.
-- **Si no pagas:** una semana de gracia; después, el lugar vuelve a subasta. Lo que había dentro pasa a tu almacén: nunca se pierden los objetos.
+- **Impuesto a la propiedad** (D-48), para las parcelas de vivienda. Es una **tasa fija**, no autodeclarada, para que tu casa no te la compren sin querer (§3.1).
+- **Si no pagas** un puesto, un local o una parcela de gremio: una semana de gracia; después, el lugar vuelve a subasta. Lo que había dentro pasa a tu almacén: nunca se pierden los objetos. La casa tiene su propio camino (§3.1).
+
+### 3.1 El impuesto a la propiedad de la casa (D-48)
+
+- **A quién se paga:** al **reino donde está la casa**. Si está en un castillo o asentamiento de jugadores, a ese castillo; si está en una comunidad PNJ, a esa comunidad (ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md)).
+- **Cuánto:** cada semana, un porcentaje del **valor de catastro** de la parcela. Ese valor no lo declara el dueño: lo fija el bot según el tamaño de la parcela y su barrio.
+- **Quién fija la tasa:** el gobierno del reino, **dentro de un rango** (orientativo: del 1 % al 3 % semanal del valor de catastro). En un castillo de jugadores la fija el gobernador, igual que los demás impuestos locales (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md)); en una comunidad PNJ, su consejo, donde los PNJ votan según su cultura. Se puede cambiar una vez por temporada, con una semana de aviso. Para el dueño, la tasa es fija mientras no se cambie.
+- **A dónde va:** al **tesoro del reino**, que la gasta en obras, guardias y servicios. Así un reino con buenos servicios puede cobrar más, y uno que quiere atraer vecinos puede cobrar menos.
+- **Se descuenta solo** cada semana de tu oro del juego. El bot avisa dos días antes si no te alcanza.
+- **Si no pagas:**
+  1. **Una semana de gracia:** la casa funciona igual y la deuda queda a la vista.
+  2. **Cierre:** después de la gracia, la casa se cierra. No se usa el taller, ni el dormitorio, ni la enfermería, y los trabajadores paran. Puedes entrar solo para sacar tus cosas. Pagando la deuda (sin intereses) se reabre en el acto.
+  3. **Nunca se pierde lo de adentro.** Si la casa sigue cerrada 8 semanas, la parcela vuelve a subasta: los objetos, los muebles y las estaciones desmontadas pasan a tu banco en ese asentamiento.
+- **No se le aplica la tasa autodeclarada:** nadie puede comprarte la casa por pagar un precio.
 
 ## 4. Crédito e intereses
 
@@ -63,7 +76,7 @@ Quien controla un lugar cobra:
 - Una **concesión de ruta** cobra peaje a las caravanas.
 - Un **alcalde** electo fija una parte de los impuestos locales (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
 
-Encima de todo, la ciudad cobra su impuesto base. Parte se quema (sumidero) y parte financia las obras públicas del servidor.
+Encima de todo, la ciudad cobra su impuesto base. Parte se quema (sumidero) y parte financia las obras públicas del servidor. El impuesto a la propiedad de las casas va entero al tesoro del reino donde están (§3.1).
 
 ## 6. Contrapesos para que no gane siempre el más rico
 
