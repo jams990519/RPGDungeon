@@ -237,3 +237,10 @@ v0_13:
     - "🩺 Nuevo botón Salud en 👤 Héroe: tu vida, cómo está tu cuerpo, cuánto falta para curarte solo y con qué curarte. También con /salud."
     - "❤️ La vida vuelve completa en 4 horas fuera de combate (si caíste, tarda más)."
     - "🧭 Explorar ahora da experiencia: 3 por vuelta y 15 más al dejar una zona al 100 %."
+
+v0_13_1:
+  version: "0.13.1"
+  title: "🔭 Lost Realms 0.13.1: explorar sigue alrededor"
+  notes:
+    - "🔭 Al explorar eliges cuánta energía gastar, y el lote ya no se corta cuando tu zona llega al 100 %: sigue con las 8 zonas de alrededor, una por una, sin moverte. Sus recursos aparecen en tu 🗺️ Mapa."
+    - "🏕️ Las zonas que exploras desde al lado cuentan como conocidas para fundar un campamento."

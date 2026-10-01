@@ -307,6 +307,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Vida si caíste (`regen.downed_full_minutes`) | 500 min (0,2 % por minuto) | 500 min (mismo número, otra forma de escribirlo) | Sigue siendo mucho más lento que lo normal (D-83) |
 | Experiencia por vuelta de exploración (`explore.xp_per_step`) | 0 | **3** | Con 40 de energía al día, explorar da hasta 120 de experiencia diaria más los extras de zona: menos que pelear, pero sin riesgo |
 | Extra al dejar una zona al 100 % (`explore.xp_full_zone`) | 0 | **15** | Premia terminar zonas (unas 4-6 vueltas cada una) |
+| Casillas de alrededor que se exploran sin moverte (`explore.around_radius`) | 0 (solo tu zona) | **1** (las 8 vecinas), desde 0.13.1 (D-107) | Un lote grande ya no se corta al 100 %: sigue con las vecinas. Más experiencia por explorar en el mismo lugar (cada vecina da sus 15 al completarla) y más zonas conocidas para fundar campamento |
 
 **Lo que queda por mirar:** si explorar compite demasiado con pelear para subir de nivel (la meta de 100 niveles en 2-3 años, D-78).
 
