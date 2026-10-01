@@ -54,6 +54,7 @@ Lo que pidió el dueño: que, si le pide a la IA cambiar una sola línea, la IA 
 **Siempre:**
 - **Diseño y código se actualizan juntos.** Si no coinciden, es un error: se le avisa al dueño, que decide, y se corrigen los dos.
 - **IDs estables:** solo se agregan. Nunca se renombran, se borran ni se reutilizan; para retirar algo se marca `retired: true`.
+- **El progreso de los jugadores se guarda para siempre:** nunca subir `world.epoch` en `content/balance.yaml` ni borrar datos del juego sin permiso explícito del dueño (D-64).
 - **Credenciales nunca en el repositorio:** solo los nombres de las variables, en un archivo de ejemplo. Los valores, jamás.
 - **Antes de subir:** correr las pruebas **y** arrancar el motor con al menos un cliente.
 

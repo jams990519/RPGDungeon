@@ -39,7 +39,7 @@ hero:
   xp_formula: {base: 120, exponent: 2.2}
 
 world:
-  epoch: 2                   # [ES] subir este número REINICIA el juego al desplegar: borra héroes, combates y zonas, y crea un mundo nuevo
+  epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
