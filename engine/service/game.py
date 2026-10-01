@@ -422,11 +422,21 @@ class GameService:
             return View(kind="create_name", title=t.t("create.title"), body=[t.t("create.intro"), "", t.t("create.ask_name")], expects_text=True)
         group = pending.get("group")
         if not group:
-            body = [t.t("create.ask_class", name=pending["name"]), ""]
+            groups = self._class_groups()
+            per = 4
+            pages = max(1, (len(groups) + per - 1) // per)
+            page = min(max(0, int(pending.get("page", 0))), pages - 1)
+            body = [t.t("create.ask_class", name=pending["name"]), t.t("create.page", n=page + 1, total=pages), ""]
             actions = []
-            for gid in self._class_groups():
+            for gid in groups[page * per:(page + 1) * per]:
                 body.append(f"• {t.t(f'class_group.{gid}.name')} — {t.t(f'class_group.{gid}.desc')}")
                 actions.append(Action(id=f"grp:{gid}", label=t.t(f"class_group.{gid}.name")))
+            body += ["", t.t("create.rename_hint")]
+            if page > 0:
+                actions.append(Action(id=f"page:{page - 1}", label=t.t("create.prev")))
+            if page < pages - 1:
+                actions.append(Action(id=f"page:{page + 1}", label=t.t("create.next")))
+            return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions, expects_text=True)
         else:
             body = [t.t("create.ask_spec", group=t.t(f"class_group.{group}.name")), ""]
             actions = []
@@ -436,13 +446,16 @@ class GameService:
                 body.append(f"• {t.t(cdef['name_key'])} — {t.t('role.' + cdef.get('role', 'ataque'))}: {t.t(cdef['role_key'])}")
                 actions.append(Action(id=f"cls:{class_id}", label=t.t(cdef["name_key"])))
             actions.append(Action(id="grp:", label=t.t("create.other_class")))
-        actions.append(Action(id="rename", label=t.t("create.rename")))
         return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions)
 
     def _create_action(self, account_id: str, action_id: str) -> View:
         pending = self.store.get("pending", account_id) or {}
         if action_id == "rename":
             self.store.delete("pending", account_id)
+            return self._creation_view(account_id)
+        if action_id.startswith("page:") and pending.get("stage") == "class" and action_id[5:].isdigit():
+            pending["page"] = int(action_id[5:])
+            self.store.put("pending", account_id, pending)
             return self._creation_view(account_id)
         if action_id.startswith("grp:") and pending.get("stage") == "class":
             group = action_id[4:]

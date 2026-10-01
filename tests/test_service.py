@@ -261,3 +261,18 @@ def test_travel_costs_energy(service, clock):
     clock.advance(86400 / 20 + 5)
     view = service.act("test:1", "go:n")
     assert view.kind == "activity"
+
+
+def test_class_pages_have_at_most_six_buttons(service):
+    service.view("test:9")
+    view = service.text("test:9", "Pager")
+    seen = set()
+    for _ in range(6):
+        assert len(view.actions) <= 6
+        seen |= {a.id for a in view.actions if a.id.startswith("grp:")}
+        nxt = [a.id for a in view.actions if a.id.startswith("page:") and int(a.id[5:]) > 0 and a.id not in seen]
+        if not nxt:
+            break
+        seen.add(nxt[-1])
+        view = service.act("test:9", nxt[-1])
+    assert len(seen & {f"grp:{g}" for g in service._class_groups()}) == len(service._class_groups())

@@ -15,6 +15,10 @@ create:
   rename: "✏️ Cambiar nombre"
   ask_spec: "{group}: elige tu especialización. Define tu rol, solo y en grupo."
   other_class: "↩️ Otra clase"
+  page: "Clases (página {n} de {total}):"
+  prev: "◀️ Anteriores"
+  next: "▶️ Más clases"
+  rename_hint: "✏️ ¿Otro nombre? Escríbelo y lo cambio."
   welcome: "✨ Bienvenido, {name}. Explora los alrededores del Claro y abre camino hacia lo desconocido."
 
 role:
