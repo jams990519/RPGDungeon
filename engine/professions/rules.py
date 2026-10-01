@@ -22,6 +22,8 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - La curva (balance.yaml professions.rank_formula): cuánto tarda el rango 100 (~1 año dedicado, profesiones.md §4)
     - Servicio: engine/service/game.py (_prof_rank, _trade_gather, _trade_loot, _station_view, _recipe_view, _make)
+    - Beneficios (perks): una clave nueva va en PERK_KEYS, en el texto prof.perk.<clave> y donde el servicio la use. D-112:
+      "explore" (🧭 Explorador) son puntos de exploración por vuelta (game.py _explore_step usa la parte entera)
     - Pruebas: tests/test_professions.py
 """
 
@@ -141,7 +143,7 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
     return max(0, min(by_items, by_energy))
 
 
-PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell")
+PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "explore")
 
 
 def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, armor_type: str | None,
@@ -158,7 +160,8 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
     rango 50 la mitad del valor de la tabla, al 100 el valor entero. Los que dicen "armor", "weapon" o "role" solo
     valen si el héroe lleva esa armadura, pelea con esa arma o juega ese rol (la Herrería, solo con placas; la
     Medicina, solo a los sanadores). Devuelve attack, hp, armor (fracciones), regen, potion, bandage, heal (fracciones
-    de más), bag (espacio de mochila de más) y sell (monedas de más al vender, 💱 Comercio, D-116).
+    de más), bag (espacio de mochila de más), sell (monedas de más al vender, 💱 Comercio, D-116) y explore (puntos de
+    exploración de más por vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera).
     La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).
     """

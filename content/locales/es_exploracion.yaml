@@ -1,0 +1,109 @@
+# The 🧭 Explorador profession and the ⛺ enemy camps that move every day (D-112). Numbers live in content/balance.yaml
+# (blocks explorer and enemy_camps); the profession in content/professions.yaml.
+# [ES] Textos del oficio 🧭 Explorador y de los ⛺ campamentos enemigos de cada día: el menú de 🧭 Explorar en la zona de un
+# campamento, ⚔️ Asaltar, 🕵️ Infiltrarse, lo que se ve en 📍 Zona, en el 🗺️ Mapa y en 📒 Lugares, el cofre y lo que ve el
+# Explorador con cada rango. Se junta con es.yaml al cargar (engine/core/content.py: las claves que ya existen, como prof,
+# batch o story, se completan, no se pisan).
+# Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.14; diseno/07-economia/profesiones.md §0.2 y §0.4
+# Lo leen: engine/service/game.py (sección "enemy camps and the 🧭 Explorador": _ecamp_menu, _assault, _infiltrate,
+#     _ecamp_fight_done, _ecamp_destroyed, _ecamp_map_lines, _places_view, _professions_view) y engine/service/story.py
+#     (📔 Diario y el título).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Si cambias una clave, búscala en game.py: una clave que
+# falta se ve como [clave] (tests/test_enemy_camps.py revisa que no falte ninguna).
+
+ecamp:                        # [ES] D-112: ⛺ campamentos enemigos (cambian de lugar cada día; nunca en el Claro ni en tierra de campamentos)
+  arrive: "⛺ ¡Un campamento enemigo! Sus guardias no te dejan explorar ni recolectar aquí. 🧭 Explorar → ⚔️ Asaltar."
+  blocked: "⛺ Hay un campamento enemigo en esta zona: sus guardias no te dejan explorar ni recolectar hasta que caiga. No gastaste nada."
+  zone_line: "⛺ Campamento enemigo: aquí no se explora ni se recolecta hasta destruirlo (🧭 Explorar → ⚔️ Asaltar)."
+  ruins: "🔥 Aquí cayó hoy un campamento enemigo (lo terminó {name}). Mañana aparecerá otro en otro lado."
+  route_mark: " ⛺"
+  here: "⛺ Un campamento enemigo (nivel {level}) ocupa la zona: sus guardias no te dejan explorar ni recolectar hasta que caiga."
+  progress: "⚔️ Hoy ya vencieron a {n} de su guarnición entre todos."
+  untouched: "⚔️ Nadie lo atacó todavía hoy."
+  intel_hint: "🕵️ Cuántos quedan, quién es el jefe y qué guarda el cofre lo sabe un 🧭 Explorador de rango {rank} que se infiltre."
+  how: "⚔️ Asaltar: cada pelea (⚡ {energy}) vence a uno de la guarnición, para todos; el último es el jefe. Cuando cae, el cofre es de quien lo termina y cada uno que peleó hoy gana algo."
+  assault_button: "⚔️ Asaltar · ⚡{energy}"
+  again_button: "⚔️ Seguir asaltando · ⚡{energy}"
+  infiltrate_button: "🕵️ Infiltrarse · ⚡{energy}"
+  infiltrate_locked_button: "🕵️ Infiltrarse (rango {rank})"
+  none_here: "⛺ Aquí no hay un campamento enemigo en pie."
+  downed: "🤕 Estás malherido: cúrate antes de meterte con un campamento enemigo (👤 Héroe → 🩺 Salud)."
+  infiltrate_locked: "🕵️ Infiltrarse pide rango {need} de 🧭 Explorador (tienes {rank}). Sube explorando."
+  already_scouted: "🕵️ Ya te infiltraste hoy en este campamento: lo que sabes está arriba."
+  assault_fight: "⚔️ Asaltas el campamento: un {enemy} (nv {level}) sale a pelear."
+  detected_fight: "👀 ¡Te descubrieron! Un {enemy} (nv {level}) del campamento se te echa encima."
+  chief_fight: "👑 ¡Sale el jefe del campamento: {enemy} (nv {level}), más fuerte que los demás! Si cae, cae el campamento."
+  chief_badge: "👑 Jefe del campamento: más vida y más ataque."
+  intel_title: "🕵️ Te infiltraste"
+  infiltrated: "🕵️ Te metiste sin que te vieran y saliste con todo anotado. La zona ya está explorada al {pct} %."
+  infiltrate_xp: "{name} +{xp}"
+  guard_group: "{enemy} ×{n} (nv {level})"
+  intel_left: "👹 Quedan {n} de {total}: {guards} y el jefe."
+  intel_no_guards: "ningún guardia"
+  intel_chief: "👑 Jefe: {enemy} (nv {level}), élite: +{hp} % de vida y +{attack} % de ataque."
+  intel_chest: "🎁 Cofre: {items} · {pct} % de una pieza de equipo de nivel {level}."
+  gone: "⛺ El campamento ya no está: tu pelea no contó para él, pero lo que ganaste es tuyo."
+  late: "⛺ {name} ya había terminado el campamento: tu pelea no contó para él, pero lo que ganaste es tuyo."
+  guard_down: "⛺ Cayó un guardia del campamento: ya van {n}."
+  chief_next: "👑 Ya no quedan guardias: la próxima pelea es contra el jefe."
+  left: "👹 Quedan {n}, contando al jefe."
+  no_guards_left: "⛺ Ya no quedaban guardias: solo falta el jefe."
+  still_standing: "⛺ El campamento sigue en pie (van {n} vencidos hoy)."
+  destroyed: "🔥 ¡Destruiste el campamento enemigo de {name}! Mañana aparecerá otro en otro lado."
+  chest: "🎁 Su cofre es tuyo: {items} · ✨ {xp} de experiencia."
+  shared: "🤝 {n} {n|héroe más peleó|héroes más pelearon} aquí hoy: cada uno gana {gold} y algo de experiencia."
+  news_title: "⛺ Cayó un campamento enemigo"
+  news_body: "🔥 {hero} terminó el campamento enemigo de {name} ({x}, {y}), donde peleaste hoy."
+  share: "🤝 Tu parte: {gold} · ✨ {xp} de experiencia."
+  map_legend: "⛺ campamento enemigo de hoy: su zona no se explora ni se recolecta hasta que caiga"
+  map_line: "⛺ ({x}, {y}) · a {zones} zonas"
+  map_strength: " · 👹 {left} · nv {level} · jefe: {chief}"
+  map_more: "…y {n} más, más lejos."
+  map_sight_next: "🔭 Ves campamentos enemigos hasta {n} {n|zona|zonas} a la redonda. Con rango {rank} de 🧭 Explorador, más lejos."
+  map_sight_all: "🔭 Ves los campamentos enemigos de todo tu mapa."
+  go_button: "⛺ Ir al más cercano"
+  go_button_time: "⛺ Ir al más cercano · {time}"
+
+explorer:                     # [ES] D-112: lo que ve el 🧭 Explorador con cada rango (números en balance.yaml explorer)
+  opened: "🧭 Ahora {what}."
+  ranks_line: "   🗺️ {items}"
+  map_time: " · ⏱️ {time}"
+  time_lair: "⏱️ A la guarida del Guardián: {time}"
+  time_camp: "⏱️ A tu campamento {name}: {time}"
+  places_hint: "🧭 Con rango {rank} de Explorador, 📒 Lugares lista hasta {n} lugares con su tiempo."
+  what:
+    travel: "📒 Lugares lista hasta {places} lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca"
+    camps_near: "ves los ⛺ campamentos enemigos hasta {n} zonas a la redonda, aunque no las hayas pisado"
+    infiltrate: "puedes 🕵️ infiltrarte en los campamentos enemigos"
+    camps_all: "ves los ⛺ campamentos enemigos de todo tu mapa"
+    strength: "ves desde el mapa la fuerza de cada campamento: cuántos quedan, de qué nivel y su jefe"
+    master: "eres 🏅 Gran Explorador"
+  short:
+    travel: "{rank} ⏱️ tiempos"
+    camps_near: "{rank} ⛺ a {n} zonas"
+    infiltrate: "{rank} 🕵️ infiltrarse"
+    camps_all: "{rank} ⛺ todo el mapa"
+    strength: "{rank} 👹 su fuerza"
+    master: "{rank} 🏅 Gran Explorador"
+
+batch:
+  reason:
+    enemy_camp: "⛺ Un campamento enemigo se instaló en esta zona: ya no te dejan explorar ni recolectar aquí. La vuelta en curso volvió. 🧭 Explorar → ⚔️ Asaltar."
+
+prof:
+  perk:
+    explore: "+{v} de exploración por vuelta"
+  branch:
+    explore: "🧭 Exploración"
+
+profession:
+  explorador:
+    name: "Explorador"
+    how: "explora: cada vuelta suma, y más al dejar una zona al 100 %; con rango ves más en el mapa"
+
+story:
+  journal:
+    enemy_camp: "🔥 Destruyó un campamento enemigo en ({x}, {y})."
+    enemy_camp_help: "⛺ Ayudó a destruir un campamento enemigo en ({x}, {y})."
+  titles:
+    gran_explorador: "«Gran Explorador»"

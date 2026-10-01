@@ -433,6 +433,8 @@ class StoryMixin:
             return t.t("story.journal.guardian", name=t.t(edef["name_key"]) if edef else v.get("e", "?"))
         if key == "camp":
             return t.t("story.journal.camp", name=v.get("name", "?"))
+        if key == "enemy_camp":                                       # D-112: finished it (f=1) or fought there (f=0)
+            return t.t("story.journal.enemy_camp" if v.get("f") else "story.journal.enemy_camp_help", x=v.get("x"), y=v.get("y"))
         if key == "title":
             return t.t("story.journal.title", title=self._title_name(v.get("t", "")))
         if key == "rank":
@@ -455,7 +457,7 @@ class StoryMixin:
 
         Kinds and data: explore (x, y, lejania of where the hero stands), gather (items), win (enemy, biome, level,
         hunt, boss), craft (recipe, profession, n), sell (n, coins), visit (x, y, lejania, lair), camp (name),
-        feed (rations), build (n).
+        feed (rations), build (n), infiltrate (x, y, level) and enemy_camp (x, y, level, destroyed) (D-112).
 
         [ES]
         Qué hace: el único gancho de la historia. El juego lo llama cuando pasa algo (explorar, recolectar, ganar una
@@ -464,7 +466,8 @@ class StoryMixin:
         Guardián, el título de Pionero y el campamento fundado. Devuelve las líneas para mostrar (una vez: el lote las
         junta en su resumen; una pelea, en su final).
         La llaman: engine/service/game.py en _explore_step, _gather_step, _end_combat, _make, _sell, _camp_sell,
-        _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study.
+        _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study; y D-112: _infiltrate (🕵️ te
+        infiltraste) y _ecamp_destroyed (⛺ destruiste un campamento enemigo: queda en el 📔 Diario).
         Si cambia, afecta: todo el avance de la historia (tests/test_story.py).
         """
         lines: list[str] = []
@@ -476,7 +479,8 @@ class StoryMixin:
         return lines
 
     def _story_marks(self, hero: Hero, kind: str, data: dict[str, Any]) -> None:
-        """Journal milestones that other systems already announce: first Guardian win, Pioneer title, camp founded."""
+        """Journal milestones that other systems already announce: first Guardian win, Pioneer title, camp founded, enemy camp
+        destroyed (D-112)."""
         st = self._st(hero)
         if kind == "win" and data.get("boss"):
             enemy = data.get("enemy", "")
@@ -489,6 +493,8 @@ class StoryMixin:
                     self._journal(hero, "title", t=tid)
         elif kind == "camp":
             self._journal(hero, "camp", name=data.get("name", "?"))
+        elif kind == "enemy_camp" and data.get("destroyed"):          # D-112: you brought an enemy camp down
+            self._journal(hero, "enemy_camp", x=data.get("x"), y=data.get("y"), f=1)
 
     # ------------------------------------------------------------------ daily tasks (the Claro board)
 

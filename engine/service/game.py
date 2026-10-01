@@ -18,6 +18,7 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
     engine/service/story.py, StoryMixin, de la que GameService hereda)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
@@ -25,7 +26,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
     engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
     D-109), engine.service.story (StoryMixin: 📖 Historia, origen, misiones, facciones, encargos, diario y gestos, D-117;
-    usa engine.story), content/*
+    usa engine.story), engine.world.enemy_camps (dónde están los campamentos enemigos de cada día, su guarnición y su
+    cofre, D-112), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -56,6 +58,12 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     ({"won", "lost", "fled"}), "fight_xp", "fight_gold", "gold_lost", "loot" y "fight_trade" para el resumen del final.
     D-117 (provisional): Hero.origin, Hero.story, Hero.factions, Hero.journal y Hero.bio, y el espacio "camp_tasks"
     (encargos semanales de cada campamento, clave "x:y"); los maneja engine/service/story.py (ver su encabezado).
+    D-112: "enemy_camp" (lo que los jugadores le hicieron a un ⛺ campamento enemigo ese día, clave "<día>:<x>:<y>":
+    {"day", "x", "y", "beaten" (guardias vencidos entre todos), "destroyed" ({by, name, at} o None), "fighters" {héroe:
+    peleas ganadas o perdidas}, "scouted" [héroes que se infiltraron]}). Dónde hay campamento no se guarda: sale de la
+    semilla y el día. Al escribir el primero de un día se borran los de antes de ayer. Una pelea del campamento lleva
+    "enemy_camp" ({"day", "x", "y", "chief"}) en su estado de "combat"; la experiencia del 🧭 Explorador va en
+    Hero.professions["explorador"] y su título en Hero.titles.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -89,6 +97,10 @@ Reglas que nunca se rompen:
         lote, al final, aunque haya habido muchas peleas.
     16. La historia (D-117) nunca bloquea el juego ni da poder de combate: el origen se puede elegir después, el menú de
         abajo siempre funciona y los rasgos y premios son de oficio, precio, reputación, consumibles, materiales y títulos.
+    17. Los campamentos enemigos (D-112) son los mismos para todos (semilla + día), nunca en el Claro, la guarida ni el
+        territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Mientras uno está en pie, su zona
+        no se explora ni se recolecta (aviso, nada se cobra; un lote que se topa con uno devuelve la vuelta). Sus peleas
+        son siempre a mano (nunca automáticas, D-114); el jefe solo cae en su propia pelea y la caída se paga una sola vez.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -160,6 +172,19 @@ Si cambias esto, revisa:
       _create_action (el origen después de la clase), _claro_view (📜 Tablón en lugar de ↩️ Volver), _shop_view y _buy (descuento
       del origen), _prof_gain (experiencia de oficio del origen), _hero_view (origen, emblema, biografía y títulos de la
       historia), _zone_players (emblema junto al nombre) y tick() (relee el héroe: otro pudo pagarle un encargo de campamento)
+    - 🧭 Explorador y ⛺ campamentos enemigos (D-112): balance.yaml explorer (experiencia del oficio, umbrales del mapa) y
+      enemy_camps (densidad, guarnición, jefe, energía, cofre, parte, infiltración); content/professions.yaml (explorador,
+      rama explore, perk explore); engine/world/enemy_camps.py; textos ecamp.*, explorer.* y los de profession.explorador,
+      prof.perk.explore, prof.branch.explore, batch.reason.enemy_camp y story.journal.enemy_camp* en
+      content/locales/es_exploracion.yaml; tests/test_enemy_camps.py. Tocan _settle (un lote en la zona de un campamento se
+      corta y devuelve la vuelta), _arrive (aviso al llegar), _explore_target (salta zonas con campamento), _explore_step
+      (experiencia y beneficio del Explorador), _amount_view, _start_batch y _continue_batch (explorar y recolectar
+      bloqueados), _batch_summary (línea ⚒️ Oficios al explorar), _zone_view (línea y marca ⛺ en las rutas), _explore_menu
+      (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
+      un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (⛺, líneas y ⛺ Ir al más cercano),
+      _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
+      (marca del jefe), _prof_gain (umbrales del mapa y el título), _next_unlock, _professions_view y _perk_text. El gancho
+      _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
 """
 
 from __future__ import annotations
@@ -215,6 +240,7 @@ from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.world import raids as raid_rules
+from engine.world import enemy_camps as camp_rules
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
@@ -691,6 +717,10 @@ class GameService(StoryMixin):
                 activity.setdefault("left", 0)
                 activity.setdefault("got", {})
                 activity.setdefault("log", [])
+                if activity["kind"] in ("explore", "gather") and self._ecamp_standing(hero.x, hero.y):
+                    hero.energy += self._step_cost(activity["kind"])    # D-112: an enemy camp stands here now: round given back
+                    notices += self._batch_summary(hero, activity, "enemy_camp")
+                    continue
                 activity["done"] = activity.get("done", 0) + 1
                 if activity["kind"] == "explore":
                     fight = self._explore_step(hero, zone, rng, activity)
@@ -737,6 +767,8 @@ class GameService(StoryMixin):
         final = not path
         if final:
             notices.append(self.texts.t("travel.arrived", name=self._zone_name(zone), biome=self._biome_label(zone)))
+            if self._ecamp_standing(hero.x, hero.y):
+                notices.append(self.texts.t("ecamp.arrive"))      # D-112: an enemy camp stands here
         if self._discovered(hero.x, hero.y) is None:
             self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": activity["until"]})
             hero.zones_discovered += 1
@@ -798,13 +830,14 @@ class GameService(StoryMixin):
         Qué hace: dice qué zona estudia la próxima vuelta de exploración. Primero la tuya; cuando está al 100 %, la
         primera de alrededor (explore.around_radius casillas; primero norte, este, sur y oeste, después las diagonales)
         que no esté al 100 %. El héroe no se mueve: explora desde donde está. None si ya no queda nada cerca.
+        D-112: una zona con un ⛺ campamento enemigo en pie no se explora: se salta (la tuya y las de alrededor).
         La llaman: _explore_step, _amount_view, _start_batch, _continue_batch y _activity_view.
         Si cambia, afecta: qué zonas se completan al explorar en lote y cuándo se corta el lote (tests/test_service.py).
         """
-        if self._explored_pct(hero, hero.x, hero.y) < 100:
+        if self._explored_pct(hero, hero.x, hero.y) < 100 and not self._ecamp_standing(hero.x, hero.y):
             return hero.x, hero.y
         for x, y in self._explore_around(hero):
-            if self._explored_pct(hero, x, y) < 100:
+            if self._explored_pct(hero, x, y) < 100 and not self._ecamp_standing(x, y):
                 return x, y
         return None
 
@@ -821,6 +854,10 @@ class GameService(StoryMixin):
 
         The zone studied is yours until 100 %, then the ones around you, without moving (D-107). Fights, finds and
         coins come from the zone where the hero stands.
+
+        [ES] D-112: cada vuelta sube el oficio 🧭 Explorador (explorer.xp_per_step, más explorer.xp_full_zone al dejar una
+        zona al 100 %; va al resumen del lote en "trade") y su beneficio suma puntos de exploración (parte entera del perk
+        "explore": +1 cada 20 rangos, +5 al 100), sin otro sorteo: las vueltas de siempre dan lo mismo.
         """
         t = self.texts
         target = self._explore_target(hero) or (zone.x, zone.y)
@@ -834,6 +871,7 @@ class GameService(StoryMixin):
         before_pct = self._explored_pct(hero, studied.x, studied.y)
         low, high = self.content.balance["exploration"]["per_step"]
         step = int(rng.uniform(low, high + 1)) + int(self._camp_tech_bonus(hero, studied.x, studied.y, "explore_points"))   # D-101: Cartografía
+        step += int(self._perks(hero)["explore"])     # D-112: 🧭 Explorador, +1 point every 20 ranks (no extra draw)
         hero.exploration[key] = min(100, before_pct + step)
         if key not in hero.explored:
             hero.explored.append(key)
@@ -850,6 +888,11 @@ class GameService(StoryMixin):
                 xp += bal["xp_full_zone"]             # finishing a zone is worth more
         activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
         activity["log"] += self._give_xp(hero, xp)
+        ecfg = self._explorer_cfg()                   # D-112: every round raises the 🧭 Explorador, a full zone more
+        trade_xp = ecfg["xp_per_step"] + (ecfg["xp_full_zone"] if hero.exploration[key] >= 100 and before_pct < 100 else 0)
+        trade = activity.setdefault("trade", {})
+        trade[ecfg["profession"]] = trade.get(ecfg["profession"], 0) + trade_xp
+        activity["log"] += self._prof_gain(hero, ecfg["profession"], trade_xp)
         activity["log"] += self._story_event(hero, "explore", x=zone.x, y=zone.y, lejania=zone.lejania)     # D-117
         roll = rng.random()
         if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
@@ -1170,6 +1213,10 @@ class GameService(StoryMixin):
             return view
         if action_id == "boss":
             return self._challenge_guardian(hero)
+        if action_id == "assault":                      # D-112: ⚔️ Asaltar the enemy camp of this zone (a fight by hand)
+            return self._assault(hero)
+        if action_id == "infiltrate":                   # D-112: 🕵️ Infiltrarse (🧭 Explorador rank 30)
+            return self._infiltrate(hero)
         if action_id == "hunt":                         # D-106: 🧭 Explorar → 🏹 Cazar (the hunt screen)
             return self._hunt_view(hero)
         if action_id == "prey":                         # D-106: 🏹 Buscar presa / 🏹 Otra presa: a fight right away
@@ -1190,7 +1237,8 @@ class GameService(StoryMixin):
                 gx, gy = (int(v) for v in action_id[5:].split(":"))
             except ValueError:
                 return self._places_view(hero)
-            if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
+            # a remembered place, or an enemy camp the hero sees on its 🗺️ Mapa (D-112: ⛺ Ir al campamento)
+            if not (hero.remembers(gx, gy) or self._ecamp_visible(hero, gx, gy)) or (gx, gy) == (hero.x, hero.y):
                 return self._places_view(hero)
             if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
@@ -1236,13 +1284,17 @@ class GameService(StoryMixin):
         Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🪓 Recolectar y, con ⚔️ Peleas automáticas, de
         🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). Cada botón dice la energía y el tiempo
         estimado ("⚡ 10 · ⏱️ 1 h 40 min"); 4 botones como mucho, con ▶️ Más / ◀️ Volver. Dice además qué pasa si sale una
-        pelea (⚙️ Opciones).
+        pelea (⚙️ Opciones). Con un ⛺ campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
+        🧭 Explorar con el aviso, sin gastar nada.
         La llaman: los botones 🔎 Explorar, 🪓 Recolectar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
         Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y el tope de 4 botones.
         """
         t = self.texts
         if kind not in BATCH_KINDS:
             return self._explore_menu(hero)
+        camp_block = self._ecamp_block_line(hero) if kind in ("explore", "gather") else None
+        if camp_block:                                  # D-112: an enemy camp stands here (nothing is spent)
+            return self._explore_menu(hero, notice=camp_block)
         back = "hunt" if kind == "hunt" else "explore_menu"
         if kind == "hunt":
             blocked = self._hunt_batch_blocker(hero)
@@ -1298,13 +1350,16 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: empieza el lote elegido ("do:explore:10", "do:gather:max", "do:hunt:20"): cobra la energía de la primera
         vuelta (1 ⚡; una presa, hunt.energy) y deja el reloj; las demás vueltas se cobran al empezar cada una. Si algo lo
-        impide (mochila llena, zona agotada, nada por explorar, sin energía; para cazar: ✋ Manual, sin presas, malherido o
-        con la vida bajo el límite de ⚙️ Opciones) avisa y no cobra nada.
+        impide (mochila llena, zona agotada, nada por explorar, sin energía, un ⛺ campamento enemigo en pie en la zona (D-112);
+        para cazar: ✋ Manual, sin presas, malherido o con la vida bajo el límite de ⚙️ Opciones) avisa y no cobra nada.
         La llaman: los botones de cantidad de _amount_view. Si cambia, afecta: el gasto de energía de todos los lotes.
         """
         t = self.texts
         if kind not in BATCH_KINDS:
             return self._explore_menu(hero)
+        camp_block = self._ecamp_block_line(hero) if kind in ("explore", "gather") else None
+        if camp_block:                                  # D-112: an enemy camp stands here (nothing is spent)
+            return self._explore_menu(hero, notice=camp_block)
         if kind == "hunt":
             blocked = self._hunt_batch_blocker(hero)
             if blocked:
@@ -1378,6 +1433,8 @@ class GameService(StoryMixin):
                     lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
                 if activity.get("xp"):
                     lines.append(t.t("batch.xp", xp=activity["xp"]))
+                if activity.get("trade"):                 # D-112: what the 🧭 Explorador earned
+                    lines.append(self._trade_summary(activity["trade"]))
         lines += self._auto_summary(activity)           # D-114: ⚔️ N peleas automáticas: N ganadas...
         lines += activity.get("log", [])
         if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
@@ -1390,6 +1447,8 @@ class GameService(StoryMixin):
         zone = self._zone(hero.x, hero.y)
         if activity["left"] <= 0:
             return "done"
+        if kind in ("explore", "gather") and self._ecamp_standing(hero.x, hero.y):
+            return "enemy_camp"                         # D-112: a camp came up here (a new day): the next round waits
         if kind == "explore" and self._explore_target(hero) is None:
             return "full_explored"
         if kind == "gather" and self._bag_full(hero):
@@ -1545,6 +1604,7 @@ class GameService(StoryMixin):
         elif land:
             body.append(t.t("camps.land_line", name=land["name"]))
         body += self._lair_lines(zone)
+        body += self._ecamp_zone_lines(zone)            # D-112: ⛺ an enemy camp here (or its ruins today)
         body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
@@ -1560,6 +1620,8 @@ class GameService(StoryMixin):
                 where = t.t("zone.known_by_others")
             else:
                 where = t.t("zone.uncharted")
+            if self._ecamp_standing(dest.x, dest.y):     # D-112: everyone sees a camp next door
+                where += t.t("ecamp.route_mark")
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
@@ -2096,17 +2158,24 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: el menú de la zona: 🔎 Explorar, 🪓 Recolectar, 🏹 Cazar (D-106) y 🗺️ Mapa. 📒 Lugares se mudó adentro
         de 🗺️ Mapa para dejarle lugar a 🏹 Cazar. En la guarida del Guardián (D-82) ⚔️ Desafiar al Guardián toma el lugar
-        de recolectar y no hay 🏹 Cazar: quedan 3 botones.
+        de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un ⛺ campamento enemigo en pie en la zona (D-112) el menú es
+        el del campamento (_ecamp_menu: ⚔️ Asaltar y 🕵️ Infiltrarse en lugar de explorar y recolectar); si cayó hoy, una
+        línea lo dice.
         La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
-        Si cambia, afecta: tests/test_boss.py y tests/test_hunt.py (los botones), tests/test_buttons.py (tope de 4) y la
-        consola (adapters/cli/play.py numera estos botones).
+        Si cambia, afecta: tests/test_boss.py, tests/test_hunt.py y tests/test_enemy_camps.py (los botones),
+        tests/test_buttons.py (tope de 4) y la consola (adapters/cli/play.py numera estos botones).
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
+        camp = self._ecamp(zone.x, zone.y)
+        if camp and not camp["destroyed"]:
+            return self._ecamp_menu(hero, camp, notice=notice)
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
         gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
         body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro"),
                 self._resources_line(hero, zone.x, zone.y), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
+        if camp:                                        # D-112: the camp here fell today
+            body.append(t.t("ecamp.ruins", name=camp["destroyed"].get("name", "?")))
         body += self._tutorial_hint(hero)
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
@@ -4139,8 +4208,10 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: suma experiencia a un oficio y, si sube de rango, avisa el rango nuevo, las recetas que abre y el
-        material raro que empieza a aparecer. Nunca resta (el rango no baja).
-        La llaman: _trade_gather (recolectar), _trade_loot (botín de bestias) y _make (refinar y fabricar).
+        material raro que empieza a aparecer; para el 🧭 Explorador (D-112), lo que abre en el mapa y, al 100, el título.
+        Nunca resta (el rango no baja).
+        La llaman: _trade_gather (recolectar), _trade_loot (botín de bestias), _make (refinar y fabricar), _explore_step y
+        _infiltrate (🧭 Explorador) y _merchant_sale (💱 Comercio).
         Si cambia, afecta: el avance de todos los oficios y los avisos de subida.
         """
         if xp <= 0 or pid not in self._prof_catalog():
@@ -4161,6 +4232,7 @@ class GameService(StoryMixin):
         rare = self._prof_catalog()[pid].get("rare")
         if rare and before < int(rare["min_rank"]) <= after:
             lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
+        lines += self._explorer_unlocks(hero, pid, before, after)     # D-112: what the 🧭 Explorador sees now (and its title)
         return lines
 
     def _trade_gather(self, hero: Hero, got: dict[str, int], activity: dict[str, Any]) -> list[str]:
@@ -4299,6 +4371,8 @@ class GameService(StoryMixin):
     def _next_unlock(self, hero: Hero, pid: str) -> str | None:
         """🔓 What the next rank threshold of a profession opens: its rare find, or its next recipes."""
         t = self.texts
+        if pid == self._explorer_cfg()["profession"]:      # D-112: the 🧭 Explorador opens map info, not recipes
+            return self._explorer_next(hero)
         rank = self._prof_rank(hero, pid)
         rare = self._prof_catalog()[pid].get("rare")
         if rare and rank < int(rare["min_rank"]):
@@ -4343,7 +4417,7 @@ class GameService(StoryMixin):
         for key in profession_rules.PERK_KEYS:
             if key in perk:
                 value = float(perk[key]) * share
-                shown = round(value, 1) if key == "bag" else round(value * 100, 1)
+                shown = round(value, 1) if key == "bag" else (int(value) if key == "explore" else round(value * 100, 1))
                 parts.append(t.t(f"prof.perk.{key}", v=f"{shown:g}"))
         limit = perk.get("armor_type") or perk.get("weapon_type")
         if limit:
@@ -4359,7 +4433,8 @@ class GameService(StoryMixin):
         Qué hace: muestra los oficios que empezaste, agrupados en recolección, refinado y fabricación, cada uno con su
         rango (y título), la barra hasta el próximo, cómo se sube y qué abre el próximo umbral; después, los que faltan
         empezar (sin tope de oficios, D-57) y dónde están las estaciones. Con estaciones aquí (el Claro o tu
-        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. 3 botones como mucho (D-75).
+        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. 3 botones como mucho (D-75). El 🧭 Explorador
+        (D-112, rama 🧭 Exploración) muestra además qué abre cada rango en el mapa (✅ lo abierto) y el próximo umbral.
         La llaman: el atajo /oficios, ⚒️ Oficios del Claro, del 🧵 Taller y de los servicios del campamento.
         Si cambia, afecta: dónde ve el jugador sus oficios (tests/test_professions.py).
         """
@@ -4379,6 +4454,7 @@ class GameService(StoryMixin):
             perk = self._perk_text(pdef.get("perk"), rank)
             if perk:
                 body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
+            body += self._explorer_prof_lines(hero, pid)                 # D-112: what each 🧭 rank opens on the map
             unlock = self._next_unlock(hero, pid)
             if unlock:
                 body.append(unlock)
@@ -4786,9 +4862,12 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: 📒 Lugares: los 3 lugares que recuerdas más cerca (la guarida del Guardián siempre, D-82), con el tiempo
         del viaje; al elegir uno, el héroe va solo, zona por zona. Desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares
-        (su ↩️ Volver vuelve al mapa), para dejarle lugar a 🏹 Cazar en 🧭 Explorar.
+        (su ↩️ Volver vuelve al mapa), para dejarle lugar a 🏹 Cazar en 🧭 Explorar. D-112: desde el rango 10 de
+        🧭 Explorador (explorer.ranks.travel) la lista llega a explorer.places_listed lugares con su tiempo (los botones
+        siguen siendo 3), y un lugar con un ⛺ campamento enemigo en pie lo dice.
         La llaman: el botón 📒 Lugares del mapa y un "goto:" que ya no sirve.
-        Si cambia, afecta: tests/test_service.py y tests/test_boss.py (lugares y guarida), el paso use_places del tutorial.
+        Si cambia, afecta: tests/test_service.py, tests/test_boss.py y tests/test_enemy_camps.py (lugares y guarida), el
+        paso use_places del tutorial.
         """
         t = self.texts
         places = []
@@ -4796,28 +4875,33 @@ class GameService(StoryMixin):
             x, y = (int(v) for v in key.split(":"))
             if (x, y) == (hero.x, hero.y):
                 continue
-            seconds, cx, cy = 0.0, hero.x, hero.y
-            for nx, ny in self._path(hero.x, hero.y, x, y):
-                seconds += self._leg_seconds(hero, cx, cy, nx, ny)
-                cx, cy = nx, ny
-            places.append((seconds, x, y))
+            places.append((self._trip_seconds(hero, x, y), x, y))
         places.sort()
         shown = places[:3]
         lair = next((p for p in places if self._is_lair(p[1], p[2])), None)
         if lair and lair not in shown:
             shown = shown[:2] + [lair]          # the Guardian's lair is always offered (D-82)
+        count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
+        listed = places[:count]
+        if lair and lair not in listed:
+            listed = listed[:count - 1] + [lair]
         body = [t.t("places.intro", n=len(hero.known))]
+        for seconds, x, y in listed:
+            zone = self._zone(x, y)
+            mark = t.t("guardian.route_mark") if self._is_lair(x, y) else ""
+            mark += t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
+            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone) + mark,
+                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
         actions = []
         for seconds, x, y in shown:
             zone = self._zone(x, y)
-            mark = t.t("guardian.route_mark") if self._is_lair(x, y) else ""
-            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone) + mark,
-                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
         if not places:
             body.append(t.t("places.none"))
-        elif len(places) > 3:
-            body.append(t.t("places.more", n=len(places) - 3))
+        elif len(places) > len(listed):
+            body.append(t.t("places.more", n=len(places) - len(listed)))
+        if count == 3 and len(places) > 3:
+            body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
         actions.append(Action(id="map", label=t.t("menu.back")))
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
 
@@ -4828,11 +4912,18 @@ class GameService(StoryMixin):
         Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
         igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
         se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
-        La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106) y ↩️ Volver.
-        Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano.
+        D-112: ⛺ marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
+        rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
+        75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
+        La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), ⛺ Ir al campamento
+        enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él) y ↩️ Volver: 3.
+        Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano
+        (tests/test_enemy_camps.py, tests/test_boss.py).
         """
         t = self.texts
         radius = self.content.balance["map_view"]["radius"]
+        seen = self._ecamp_seen(hero)                   # D-112: the enemy camps this hero sees today
+        marks = {(camp["x"], camp["y"]) for camp in seen}
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
@@ -4841,6 +4932,8 @@ class GameService(StoryMixin):
                     row += "🧍"
                 elif self._is_lair(x, y) and (hero.remembers(x, y) or self._discovered(x, y) is not None):
                     row += "👑"
+                elif (x, y) in marks:
+                    row += "⛺"
                 elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
                     row += "🏕️"
                 elif self._explored_pct(hero, x, y) >= 100:
@@ -4856,8 +4949,15 @@ class GameService(StoryMixin):
         cfg = self._guardian_cfg()
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
-        return View(kind="map", title=t.t("map.title"), body=body,
-                    actions=[Action(id="places", label=t.t("menu.places")), Action(id="explore_menu", label=t.t("menu.back"))])
+        body += self._ecamp_map_lines(hero, seen)
+        actions = [Action(id="places", label=t.t("menu.places"))]
+        target = next((camp for camp in seen if (camp["x"], camp["y"]) != (hero.x, hero.y)), None)
+        if target and not hero.activity:               # D-112: ⛺ go to the nearest enemy camp you see
+            label = (t.t("ecamp.go_button_time", time=self._fmt_duration(self._trip_seconds(hero, target["x"], target["y"])))
+                     if self._explorer_has(hero, "travel") else t.t("ecamp.go_button"))
+            actions.append(Action(id=f"goto:{target['x']}:{target['y']}", label=label))
+        actions.append(Action(id="explore_menu", label=t.t("menu.back")))
+        return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
 
     def _hero_view(self, hero: Hero) -> View:
         """Hero sheet (D-76): level, xp, health, /stats, attack and defense, energy, resource, coins, /inv, /habilidades, status.
@@ -5543,6 +5643,468 @@ class GameService(StoryMixin):
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
         return self._item_view(hero, item_id, notice=t.t("guardian.memento_done", item=self._gear_name(item_id)))
 
+    # ------------------------------------------------------------------ enemy camps and the 🧭 Explorador (D-112)
+
+    def _explorer_cfg(self) -> dict[str, Any]:
+        return self.content.balance["explorer"]
+
+    def _ecamp_cfg(self) -> dict[str, Any]:
+        return self.content.balance["enemy_camps"]
+
+    def _today(self) -> int:
+        """Index of the real day: the same boundary as the pantry registry and the board's daily tasks (_day_seconds)."""
+        return int(self.clock.now() // self._day_seconds())
+
+    def _explorer_rank(self, hero: Hero) -> int:
+        """The hero's 🧭 Explorador rank (1 if never started)."""
+        return self._prof_rank(hero, self._explorer_cfg()["profession"])
+
+    def _explorer_has(self, hero: Hero, key: str) -> bool:
+        """True if the hero's 🧭 Explorador rank opens `key` (balance.yaml explorer.ranks: travel, camps_near, ...)."""
+        return self._explorer_rank(hero) >= int(self._explorer_cfg()["ranks"][key])
+
+    def _explorer_what(self, key: str) -> str:
+        """What a 🧭 Explorador rank threshold opens, in words (⚒️ Oficios and the rank-up line)."""
+        cfg = self._explorer_cfg()
+        return self.texts.t(f"explorer.what.{key}", n=cfg["near_radius"], places=cfg["places_listed"])
+
+    def _explorer_unlocks(self, hero: Hero, pid: str, before: int, after: int) -> list[str]:
+        """Lines of the 🧭 Explorador thresholds crossed by a rank-up; rank 100 also gives the title (once, for ever)."""
+        cfg = self._explorer_cfg()
+        if pid != cfg["profession"]:
+            return []
+        lines: list[str] = []
+        for key, rank in cfg["ranks"].items():
+            if before < int(rank) <= after:
+                lines.append(self.texts.t("explorer.opened", what=self._explorer_what(key)))
+                if key == "master":
+                    lines += self._grant_title(hero, cfg["title"])
+        return lines
+
+    def _explorer_prof_lines(self, hero: Hero, pid: str) -> list[str]:
+        """⚒️ Oficios, 🧭 Explorador only: what every rank threshold opens on the map, ✅ the ones already open."""
+        cfg = self._explorer_cfg()
+        if pid != cfg["profession"]:
+            return []
+        t = self.texts
+        rank = self._explorer_rank(hero)
+        parts = [("✅" if rank >= int(need) else "") + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"])
+                 for key, need in cfg["ranks"].items()]
+        return [t.t("explorer.ranks_line", items=" · ".join(parts))]
+
+    def _explorer_next(self, hero: Hero) -> str | None:
+        """🔓 The next 🧭 Explorador threshold and what it opens (None at the top)."""
+        rank = self._explorer_rank(hero)
+        later = sorted((int(need), key) for key, need in self._explorer_cfg()["ranks"].items() if int(need) > rank)
+        if not later:
+            return None
+        need, key = later[0]
+        return self.texts.t("prof.next", rank=need, items=self._explorer_what(key))
+
+    def _trip_seconds(self, hero: Hero, x: int, y: int) -> float:
+        """Estimated travel time from the hero to a zone, leg by leg (the path 📒 Lugares follows)."""
+        seconds, cx, cy = 0.0, hero.x, hero.y
+        for nx, ny in self._path(hero.x, hero.y, x, y):
+            seconds += self._leg_seconds(hero, cx, cy, nx, ny)
+            cx, cy = nx, ny
+        return seconds
+
+    def _ecamp_exists(self, x: int, y: int, day: int | None = None) -> bool:
+        """True if the zone holds an enemy camp that day (today by default), destroyed or not.
+
+        [ES]
+        Qué hace: dice si hay campamento enemigo en una zona ese día: el sorteo del día (engine/world/enemy_camps.py
+        has_camp: Lejanía 2 o más, nunca dos días seguidos en la misma zona) y nunca en el Claro, en la guarida del
+        Guardián, en el territorio de un campamento de jugadores ni donde el bioma no tiene peligro.
+        La llaman: _ecamp y todo lo de esta sección. Si cambia, afecta: dónde están los campamentos de todos.
+        """
+        cfg = self._ecamp_cfg()
+        day = self._today() if day is None else day
+        if not camp_rules.has_camp(self.world_seed, day, x, y, cfg["density"], cfg["min_lejania"]):
+            return False
+        if self._is_lair(x, y) or self._territory(x, y):
+            return False
+        return self.content.biomes[self._zone(x, y).biome]["danger"] > 0
+
+    def _ecamp(self, x: int, y: int, day: int | None = None) -> dict[str, Any] | None:
+        """The enemy camp of a zone on a day (today by default) with what players did to it that day; None if none.
+
+        [ES]
+        Qué hace: arma el campamento enemigo de una zona: su nivel (zona + enemy_camps.level_bonus), su guarnición (el
+        último es el jefe) y lo que guardó el almacén ese día: cuántos guardias vencieron entre todos ("beaten"), quién
+        peleó ("fighters", héroe → peleas ganadas o perdidas), quién se infiltró ("scouted") y si ya cayó ("destroyed":
+        quién lo terminó y cuándo). Sin registro, nadie lo tocó todavía.
+        La llaman: _ecamp_standing, _ecamp_fight_done, la pantalla 🧭 Explorar y 📍 Zona.
+        Si cambia, afecta: lo que comparten todos los que asaltan un campamento.
+        """
+        day = self._today() if day is None else day
+        if not self._ecamp_exists(x, y, day):
+            return None
+        cfg = self._ecamp_cfg()
+        zone = self._zone(x, y)
+        level = zone.level + int(cfg["level_bonus"])
+        record = self.store.get("enemy_camp", f"{day}:{x}:{y}") or {}
+        members = camp_rules.garrison(self.world_seed, day, x, y, self.content.enemies, zone.biome, level, cfg["garrison"])
+        return {"day": day, "x": x, "y": y, "level": level, "garrison": members,
+                "beaten": int(record.get("beaten", 0)), "destroyed": record.get("destroyed"),
+                "fighters": dict(record.get("fighters") or {}), "scouted": list(record.get("scouted") or [])}
+
+    def _ecamp_save(self, camp: dict[str, Any]) -> None:
+        """Keep what players did to a camp that day (shared by everyone); a day's first record drops the older ones."""
+        key = f"{camp['day']}:{camp['x']}:{camp['y']}"
+        if self.store.get("enemy_camp", key) is None:
+            for old, data in list(self.store.items("enemy_camp")):
+                if int(data.get("day", camp["day"])) < camp["day"] - 1:
+                    self.store.delete("enemy_camp", old)
+        self.store.put("enemy_camp", key, {"day": camp["day"], "x": camp["x"], "y": camp["y"], "beaten": camp["beaten"],
+                                           "destroyed": camp["destroyed"], "fighters": camp["fighters"],
+                                           "scouted": camp["scouted"]})
+
+    def _ecamp_standing(self, x: int, y: int) -> dict[str, Any] | None:
+        """Today's enemy camp of a zone if it still stands (not destroyed), else None."""
+        camp = self._ecamp(x, y)
+        return camp if camp and not camp["destroyed"] else None
+
+    @staticmethod
+    def _ecamp_left(camp: dict[str, Any]) -> int:
+        """How many of the garrison still stand: the guards not beaten and the chief."""
+        return 0 if camp["destroyed"] else len(camp["garrison"]) - camp["beaten"]
+
+    @staticmethod
+    def _ecamp_next(camp: dict[str, Any]) -> dict[str, Any]:
+        """The garrison member the next fight is against: the first guard not beaten, then the chief."""
+        return camp["garrison"][min(camp["beaten"], len(camp["garrison"]) - 1)]
+
+    def _ecamp_sight(self, hero: Hero) -> int:
+        """How many zones around it the hero sees enemy camps (1; 3 from 🧭 rank 25; the whole map from 50)."""
+        return camp_rules.sight(self._explorer_rank(hero), self._explorer_cfg(), self.content.balance["map_view"]["radius"])
+
+    def _ecamp_visible(self, hero: Hero, x: int, y: int) -> dict[str, Any] | None:
+        """The standing camp at (x, y) if the hero sees it (within its sight, or it scouted it today), else None."""
+        camp = self._ecamp_standing(x, y)
+        if camp and (max(abs(x - hero.x), abs(y - hero.y)) <= self._ecamp_sight(hero) or hero.id in camp["scouted"]):
+            return camp
+        return None
+
+    def _ecamp_seen(self, hero: Hero) -> list[dict[str, Any]]:
+        """Standing enemy camps the hero sees on its 🗺️ Mapa, nearest first."""
+        radius = self.content.balance["map_view"]["radius"]
+        found = [camp for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
+                 if (camp := self._ecamp_visible(hero, hero.x + dx, hero.y + dy))]
+        found.sort(key=lambda c: (abs(c["x"] - hero.x) + abs(c["y"] - hero.y), c["x"], c["y"]))
+        return found
+
+    def _ecamp_intel(self, hero: Hero, camp: dict[str, Any]) -> bool:
+        """True if the hero knows the camp's strength: it infiltrated it today, or its 🧭 rank is 75 or more."""
+        return hero.id in camp["scouted"] or self._explorer_has(hero, "strength")
+
+    def _ecamp_chest(self, camp: dict[str, Any]) -> dict[str, Any]:
+        """What the camp's chest holds (fixed for the day: what 🕵️ Infiltrarse shows is what the finisher gets)."""
+        resources = self._zone_resources(camp["x"], camp["y"])
+        return camp_rules.chest(self.world_seed, camp["day"], camp["x"], camp["y"], camp["level"], resources,
+                                self._ecamp_cfg()["chest"])
+
+    def _ecamp_enemy_name(self, member: dict[str, Any]) -> str:
+        return self.texts.t(self.content.enemies[member["id"]]["name_key"])
+
+    def _ecamp_intel_lines(self, camp: dict[str, Any]) -> list[str]:
+        """👹 who is left, 👑 the chief and 🎁 the chest of a camp (infiltration, or 🧭 rank 75 at the camp)."""
+        t = self.texts
+        cfg = self._ecamp_cfg()
+        groups: dict[tuple[str, int], int] = {}
+        for member in camp["garrison"][camp["beaten"]:-1]:
+            groups[(member["id"], member["level"])] = groups.get((member["id"], member["level"]), 0) + 1
+        names = ", ".join(t.t("ecamp.guard_group", enemy=self._ecamp_enemy_name({"id": eid}), n=n, level=level)
+                          for (eid, level), n in groups.items())
+        chief = camp["garrison"][-1]
+        lines = [t.t("ecamp.intel_left", n=self._ecamp_left(camp), total=len(camp["garrison"]),
+                     guards=names or t.t("ecamp.intel_no_guards")),
+                 t.t("ecamp.intel_chief", enemy=self._ecamp_enemy_name(chief), level=chief["level"],
+                     hp=round(100 * (cfg["chief_hp_mult"] - 1)), attack=round(100 * (cfg["chief_attack_mult"] - 1)))]
+        chest = self._ecamp_chest(camp)
+        items = [self._money(chest["coins"])] + ([self._item_list(chest["items"])] if chest["items"] else [])
+        lines.append(t.t("ecamp.intel_chest", items=" · ".join(items), pct=round(100 * chest["gear_chance"]),
+                         level=chest["gear_level"]))
+        return lines
+
+    def _ecamp_block_line(self, hero: Hero) -> str | None:
+        """Why exploring and gathering wait in the hero's zone (a standing enemy camp), else None."""
+        return self.texts.t("ecamp.blocked") if self._ecamp_standing(hero.x, hero.y) else None
+
+    def _ecamp_zone_lines(self, zone: Zone) -> list[str]:
+        """📍 Zona: a standing camp here (go to 🧭 Explorar → ⚔️ Asaltar), or the ruins of one that fell today."""
+        camp = self._ecamp(zone.x, zone.y)
+        if not camp:
+            return []
+        if camp["destroyed"]:
+            return [self.texts.t("ecamp.ruins", name=camp["destroyed"].get("name", "?"))]
+        return [self.texts.t("ecamp.zone_line")]
+
+    def _ecamp_menu(self, hero: Hero, camp: dict[str, Any], notice: str | None = None) -> View:
+        """🧭 Explorar in a zone with a standing enemy camp: [⚔️ Asaltar] [🕵️ Infiltrarse] [🏹 Cazar] [🗺️ Mapa].
+
+        [ES]
+        Qué hace: el menú de 🧭 Explorar cuando en tu zona hay un ⛺ campamento enemigo en pie (D-112): explorar y
+        recolectar no se pueden (los enemigos no te dejan), así que sus lugares los toman ⚔️ Asaltar (cada pelea cuesta
+        enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30;
+        con menos, el botón dice el rango que pide). Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o
+        tu rango de Explorador es 75 o más, quiénes quedan, el jefe y el cofre. 4 botones.
+        La llama: _explore_menu. Si cambia, afecta: tests/test_enemy_camps.py y el tope de 4 botones.
+        """
+        t = self.texts
+        zone = self._zone(hero.x, hero.y)
+        cfg = self._ecamp_cfg()
+        need = int(self._explorer_cfg()["ranks"]["infiltrate"])
+        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("ecamp.here", level=camp["level"])]
+        body.append(t.t("ecamp.progress", n=camp["beaten"]) if camp["beaten"] else t.t("ecamp.untouched"))
+        if self._ecamp_intel(hero, camp):
+            body += self._ecamp_intel_lines(camp)
+        else:
+            body.append(t.t("ecamp.intel_hint", rank=need))
+        body += [t.t("ecamp.how", energy=cfg["fight_energy"]), self._status_line(hero)]
+        body += self._tutorial_hint(hero)
+        infiltrate = (t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"]) if self._explorer_rank(hero) >= need
+                      else t.t("ecamp.infiltrate_locked_button", rank=need))
+        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=cfg["fight_energy"])),
+                   Action(id="infiltrate", label=infiltrate),
+                   Action(id="hunt", label=t.t("hunt.button")),
+                   Action(id="map", label=t.t("menu.map"))]
+        return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
+
+    def _ecamp_fight(self, hero: Hero, camp: dict[str, Any], how: str) -> str:
+        """Start a fight against the camp's next garrison member (the chief, an elite, comes last). Always by hand (D-114).
+
+        [ES]
+        Qué hace: empieza la pelea contra el siguiente de la guarnición (el primer guardia sin vencer; al final, el jefe,
+        con más vida y ataque: raids.scale_enemy). Marca la pelea con "enemy_camp" ({day, x, y, chief}) para que
+        _end_combat la cuente para el campamento. Nunca va sola: _batch_fight no toca estas peleas (D-114).
+        La llaman: _assault (⚔️ Asaltar) y _infiltrate (si te descubren). Devuelve el aviso de la pelea.
+        Si cambia, afecta: contra quién pelea cada uno y qué tan difícil es el jefe.
+        """
+        t = self.texts
+        member = self._ecamp_next(camp)
+        edef = self.content.enemies[member["id"]]
+        seed = int(hash_unit(self.world_seed, hero.id, "enemy_camp", camp["day"], camp["x"], camp["y"], self.clock.now()) * 2**31)
+        state = make_combat(member["id"], edef, member["level"], self._kit(hero), seed)
+        if member["chief"]:
+            cfg = self._ecamp_cfg()
+            raid_rules.scale_enemy(state, cfg["chief_hp_mult"], cfg["chief_attack_mult"])
+        state["enemy_camp"] = {"day": camp["day"], "x": camp["x"], "y": camp["y"], "chief": member["chief"]}
+        self.store.put("combat", hero.id, state)
+        hero.activity = None
+        self.bus.publish(CombatStarted(hero.id, member["id"], seed))
+        key = "ecamp.chief_fight" if member["chief"] else f"ecamp.{how}_fight"
+        return t.t(key, enemy=t.t(edef["name_key"]), level=member["level"])
+
+    def _assault(self, hero: Hero) -> View:
+        """⚔️ Asaltar: pay enemy_camps.fight_energy and fight the next of the camp's garrison right away (by hand).
+
+        [ES]
+        Qué hace: el botón ⚔️ Asaltar del menú del campamento enemigo: cobra la energía de una pelea (como una presa,
+        D-108) y empieza enseguida la pelea contra el siguiente de la guarnición. Se rechaza sin cobrar si no hay
+        campamento en pie aquí, si estás malherido o sin energía. Ocupado lo frena antes _idle_action.
+        La llaman: ⚔️ Asaltar (🧭 Explorar en la zona del campamento, la pantalla de la infiltración y el final de una
+        pelea ganada: ⚔️ Seguir asaltando). Si cambia, afecta: tests/test_enemy_camps.py.
+        """
+        t = self.texts
+        camp = self._ecamp_standing(hero.x, hero.y)
+        if not camp:
+            return self._explore_menu(hero, notice=t.t("ecamp.none_here"))
+        if hero.downed:
+            return self._explore_menu(hero, notice=t.t("ecamp.downed"))
+        if not self._spend_energy(hero, "assault", int(self._ecamp_cfg()["fight_energy"])):
+            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
+        notice = self._ecamp_fight(hero, camp, "assault")
+        return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
+
+    def _infiltrate(self, hero: Hero) -> View:
+        """🕵️ Infiltrarse (🧭 Explorador rank 30+): not a fight. Success reveals the camp; if they find you, a fight starts.
+
+        [ES]
+        Qué hace: el Explorador se mete al campamento sin pelear (D-112). Pide rango explorer.ranks.infiltrate (30) y
+        cuesta enemy_camps.infiltrate.energy (3 ⚡). Te descubren con detect_chance (45 % al rango 30, menos cada rango,
+        10 % al 100): entonces empieza una pelea, a mano, con el siguiente de la guarnición (cuenta como un asalto). Si sale
+        bien: quedas anotado para hoy ("scouted": ves su fuerza en 🧭 Explorar y en el mapa), ves quiénes quedan, el jefe y
+        el cofre, y ganas un poco de exploración de esa zona y experiencia de Explorador. Una vez por campamento y día.
+        Se rechaza sin cobrar sin campamento, con menos rango, ya infiltrado hoy, malherido o sin energía.
+        La llama: el botón 🕵️ Infiltrarse. Si cambia, afecta: tests/test_enemy_camps.py.
+        """
+        t = self.texts
+        camp = self._ecamp_standing(hero.x, hero.y)
+        if not camp:
+            return self._explore_menu(hero, notice=t.t("ecamp.none_here"))
+        ecfg = self._explorer_cfg()
+        need = int(ecfg["ranks"]["infiltrate"])
+        rank = self._explorer_rank(hero)
+        if rank < need:
+            return self._explore_menu(hero, notice=t.t("ecamp.infiltrate_locked", need=need, rank=rank))
+        if hero.id in camp["scouted"]:
+            return self._explore_menu(hero, notice=t.t("ecamp.already_scouted"))
+        if hero.downed:
+            return self._explore_menu(hero, notice=t.t("ecamp.downed"))
+        cfg = self._ecamp_cfg()["infiltrate"]
+        if not self._spend_energy(hero, "infiltrate", int(cfg["energy"])):
+            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "infiltrate", camp["x"], camp["y"], self.clock.now()) * 2**31))
+        if rng.chance(camp_rules.detect_chance(rank, cfg, need)):
+            notice = self._ecamp_fight(hero, camp, "detected")
+            return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
+        camp["scouted"].append(hero.id)
+        self._ecamp_save(camp)
+        x, y = camp["x"], camp["y"]
+        key = f"{x}:{y}"
+        before = self._known_resources(hero, x, y)
+        hero.exploration[key] = min(100, self._explored_pct(hero, x, y) + int(cfg["explore_points"]))
+        if key not in hero.explored:
+            hero.explored.append(key)
+        lines = [t.t("ecamp.infiltrated", pct=hero.exploration[key])]
+        new = [r for r in self._known_resources(hero, x, y) if r not in before]
+        if new:
+            lines.append(t.t("explore.revealed", items=", ".join(self._item_label(r) for r in new)))
+        lines += self._ecamp_intel_lines(camp)
+        lines.append(t.t("ecamp.infiltrate_xp", name=self._prof_name(ecfg["profession"]), xp=int(cfg["explorer_xp"])))
+        lines += self._prof_gain(hero, ecfg["profession"], int(cfg["explorer_xp"]))
+        lines += self._story_event(hero, "infiltrate", x=x, y=y, level=camp["level"])     # D-117 hook
+        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=self._ecamp_cfg()["fight_energy"])),
+                   Action(id="explore_menu", label=t.t("menu.back"))]
+        return View(kind="ecamp_intel", title=t.t("ecamp.intel_title"), body=lines + ["", self._status_line(hero)], actions=actions)
+
+    def _ecamp_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
+        """Count a finished garrison fight on its camp (for everyone): a guard beaten, or the chief and the camp down.
+
+        [ES]
+        Qué hace: al terminar una pelea del campamento enemigo la cuenta para todos: ganar contra un guardia suma uno a
+        "beaten" (nunca pasa de los guardias: el jefe solo cae en su propia pelea, aunque dos peleen a la vez); ganar
+        contra el jefe destruye el campamento (_ecamp_destroyed: cofre y premios). Ganar o perder te anota como alguien
+        que peleó ahí hoy (huir no). Si el campamento ya había caído, la pelea no cuenta para él (lo ganado es tuyo).
+        Marca state["ecamp_again"] para ofrecer ⚔️ Seguir asaltando. La llama: _end_combat.
+        Si cambia, afecta: la guarnición compartida y quién cobra al caer el jefe (tests/test_enemy_camps.py).
+        """
+        t = self.texts
+        ref = state["enemy_camp"]
+        camp = self._ecamp(ref["x"], ref["y"], ref["day"])
+        if camp is None:
+            return ["", t.t("ecamp.gone")]
+        if camp["destroyed"]:
+            return ["", t.t("ecamp.late", name=camp["destroyed"].get("name", "?"))]
+        outcome = state["outcome"]
+        if outcome in ("victory", "defeat"):
+            camp["fighters"][hero.id] = camp["fighters"].get(hero.id, 0) + 1
+        lines = [""]
+        last = len(camp["garrison"]) - 1
+        if outcome == "victory" and ref.get("chief"):
+            camp["destroyed"] = {"by": hero.id, "name": hero.name, "at": self.clock.now()}
+            self._ecamp_save(camp)
+            return lines + self._ecamp_destroyed(hero, camp)
+        if outcome == "victory":
+            if camp["beaten"] < last:
+                camp["beaten"] += 1
+                lines.append(t.t("ecamp.guard_down", n=camp["beaten"]))
+                if camp["beaten"] >= last:
+                    lines.append(t.t("ecamp.chief_next"))
+                elif self._ecamp_intel(hero, camp):
+                    lines.append(t.t("ecamp.left", n=self._ecamp_left(camp)))
+            else:
+                lines.append(t.t("ecamp.no_guards_left"))
+            state["ecamp_again"] = True
+        else:
+            lines.append(t.t("ecamp.still_standing", n=camp["beaten"]))
+        self._ecamp_save(camp)
+        return lines
+
+    def _ecamp_destroyed(self, hero: Hero, camp: dict[str, Any]) -> list[str]:
+        """The chief fell: the chest for the finisher and a share for everyone else who fought there that day (once).
+
+        [ES]
+        Qué hace: paga la caída del campamento enemigo, una sola vez (el que llega tarde ve "ya cayó"). Quien lo termina
+        se lleva el cofre: monedas, materiales de la zona, experiencia y la probabilidad de una pieza de equipo del nivel
+        del campamento (el sorteo de botín de siempre, roll_gear). Cada otro que peleó ahí ese día (ganó o perdió) gana
+        enemy_camps.share (monedas y experiencia), aunque no esté jugando, y le llega un aviso. Anota el hecho en el
+        📔 Diario (gancho _story_event "enemy_camp").
+        La llama: _ecamp_fight_done. Si cambia, afecta: cuántas monedas y equipo entran al juego por campamento.
+        """
+        t = self.texts
+        cfg = self._ecamp_cfg()
+        x, y = camp["x"], camp["y"]
+        name = self._zone_name(self._zone(x, y))
+        chest = self._ecamp_chest(camp)
+        hero.gold += chest["coins"]
+        for item_id, count in chest["items"].items():
+            self._bag_add(hero, item_id, count)               # a find: never lost (D-90)
+        xp = self._zone_xp(cfg["chest"]["xp"], camp["level"])
+        items = [self._money(chest["coins"])] + ([self._item_list(chest["items"])] if chest["items"] else [])
+        lines = [t.t("ecamp.destroyed", name=name), t.t("ecamp.chest", items=" · ".join(items), xp=int(xp * self._xp_mult(hero)))]
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "enemy_camp_gear", camp["day"], x, y) * 2**31))
+        dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, chest["gear_level"], rng,
+                            chance=chest["gear_chance"])
+        if dropped:
+            hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
+            lines.append(self._loot_line(hero, dropped))
+        lines += self._give_xp(hero, xp)
+        coins = int(camp["level"] * cfg["share"]["coins_per_level"])
+        share_xp = self._zone_xp(cfg["share"]["xp"], camp["level"])
+        others = [hid for hid in camp["fighters"] if hid != hero.id]
+        for hid in others:
+            target = self._load(hid)
+            if target is None:
+                continue
+            target.gold += coins
+            more = self._give_xp(target, share_xp)
+            self._journal(target, "enemy_camp", x=x, y=y, f=0)
+            self._save(target)
+            self._push(hid, View(kind="ecamp_news", title=t.t("ecamp.news_title"),
+                                 body=[t.t("ecamp.news_body", hero=hero.name, name=name, x=x, y=y),
+                                       t.t("ecamp.share", gold=self._money(coins), xp=int(share_xp * self._xp_mult(target)))] + more))
+        if others:
+            lines.append(t.t("ecamp.shared", n=len(others), gold=self._money(coins)))
+        lines += self._story_event(hero, "enemy_camp", x=x, y=y, level=camp["level"], destroyed=True)     # D-117: 📔 Diario
+        return lines
+
+    def _ecamp_again(self, hero: Hero, state: dict[str, Any]) -> list[Action]:
+        """⚔️ Seguir asaltando after a won guard fight: the camp still stands here and you can pay another fight."""
+        ref = state.get("enemy_camp") or {}
+        if not state.get("ecamp_again") or (hero.x, hero.y) != (ref.get("x"), ref.get("y")) or hero.downed:
+            return []
+        cost = int(self._ecamp_cfg()["fight_energy"])
+        if hero.energy < cost or not self._ecamp_standing(hero.x, hero.y):
+            return []
+        return [Action(id="assault", label=self.texts.t("ecamp.again_button", energy=cost))]
+
+    def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
+        """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75), how far you see,
+        and from rank 10 the time to the Guardian's lair and to your camp."""
+        t = self.texts
+        cfg = self._explorer_cfg()
+        travel = self._explorer_has(hero, "travel")
+        lines: list[str] = []
+        if seen:
+            lines.append(t.t("ecamp.map_legend"))
+            for camp in seen[:int(cfg["map_lines"])]:
+                x, y = camp["x"], camp["y"]
+                text = t.t("ecamp.map_line", x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y))
+                if travel:
+                    text += t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
+                if self._ecamp_intel(hero, camp):
+                    text += t.t("ecamp.map_strength", left=self._ecamp_left(camp), level=camp["level"],
+                                chief=self._ecamp_enemy_name(camp["garrison"][-1]))
+                lines.append(text)
+            if len(seen) > int(cfg["map_lines"]):
+                lines.append(t.t("ecamp.map_more", n=len(seen) - int(cfg["map_lines"])))
+        rank = self._explorer_rank(hero)
+        later = [int(cfg["ranks"][k]) for k in ("camps_near", "camps_all") if int(cfg["ranks"][k]) > rank]
+        sight = self._ecamp_sight(hero)
+        lines.append(t.t("ecamp.map_sight_next", n=sight, rank=later[0]) if later else t.t("ecamp.map_sight_all"))
+        if travel:
+            guardian = self._guardian_cfg()
+            if guardian and self._discovered(guardian["x"], guardian["y"]) is not None \
+                    and (hero.x, hero.y) != (guardian["x"], guardian["y"]):
+                lines.append(t.t("explorer.time_lair", time=self._fmt_duration(self._trip_seconds(hero, guardian["x"], guardian["y"]))))
+            camp = self.store.get("camp", hero.camp) if hero.camp else None
+            if camp and (hero.x, hero.y) != (camp["x"], camp["y"]):
+                lines.append(t.t("explorer.time_camp", name=camp["name"],
+                                 time=self._fmt_duration(self._trip_seconds(hero, camp["x"], camp["y"]))))
+        return lines
+
     # ------------------------------------------------------------------ ⚙️ Opciones and automatic fights (D-114)
 
     def _auto_cfg(self) -> dict[str, Any]:
@@ -5641,7 +6203,8 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: decide qué pasa con una pelea que sale en un lote (🔎 explorar, 🪓 recolectar o 🏹 cazar en lote).
-        Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento: nunca van solas), el lote
+        Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento, campamento enemigo de D-112:
+        nunca van solas), el lote
         se corta y la pelea te espera, como siempre. Con ⚔️ Automática el héroe la pelea ya (_auto_combat): si gana y su vida
         no quedó bajo el límite de 🩹 Retirarse, el lote sigue (devuelve None); si pierde, la deja o queda bajo el límite,
         el lote se corta con su motivo. Si la pelea sale con la vida ya bajo el límite, no pelea solo: el lote se corta y la
@@ -5651,7 +6214,8 @@ class GameService(StoryMixin):
         """
         state = self.store.get("combat", hero.id)
         edef = self.content.enemies.get(state["enemy"]["id"], {}) if state else {}
-        if state is None or not self._auto_on(hero) or edef.get("boss") or state.get("raid"):
+        # never alone: the Guardian, camp defences and enemy camps (D-112: their fights are always by hand)
+        if state is None or not self._auto_on(hero) or edef.get("boss") or state.get("raid") or state.get("enemy_camp"):
             return self._batch_summary(hero, activity, "fight") + [notice]
         pct = self._option(hero, "retreat")
         if self._below_retreat(hero):
@@ -5832,6 +6396,7 @@ class GameService(StoryMixin):
         body += [
             t.t("combat.enemy_line", enemy=t.t(edef["name_key"]), level=enemy["level"]),
             t.t("combat.enemy_hp", pct=pct, bar=self._bar(enemy["hp"], enemy["max_hp"])),
+            *([t.t("ecamp.chief_badge")] if (state.get("enemy_camp") or {}).get("chief") else []),     # D-112: the camp's chief
             *([t.t("combat.boss_phase", n=enemy.get("phase", 0) + 1, total=len(edef["phases"]) + 1)] if edef.get("phases") else []),
             "",
             t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
@@ -5964,6 +6529,8 @@ class GameService(StoryMixin):
             lines += self._raid_fight_done(hero, state)
         if party:                              # D-106: one more prey for the party's shared tally
             lines += self._hunt_fight_done(hero, party, bonus)
+        if state.get("enemy_camp"):            # D-112: a fight of an enemy camp's garrison counts for everyone
+            lines += self._ecamp_fight_done(hero, state)
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))
@@ -5971,6 +6538,7 @@ class GameService(StoryMixin):
         self.store.delete("combat", hero.id)
         if outcome == "victory" and state.get("hunt"):
             actions = self._hunt_end_actions(hero) + actions     # D-106: 🏹 Otra presa (and the party) before ▶️ Continuar
+        actions = self._ecamp_again(hero, state) + actions         # D-112: ⚔️ Seguir asaltando
         self.bus.publish(CombatEnded(hero.id, outcome))
         title = t.t(f"combat.end_title.{outcome}")
         return View(kind="combat_end", title=title, body=lines, actions=actions)

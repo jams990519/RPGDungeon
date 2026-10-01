@@ -24,7 +24,9 @@ Si cambias esto, revisa:
     - professions (D-109): experiencia de cada oficio (id de content/professions.yaml → experiencia); el rango sale
       de ahí (engine/professions/rules.py rank_of, balance.yaml professions.rank_formula). Vacío para los héroes
       guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
-      tests/test_professions.py)
+      tests/test_professions.py). D-112: el 🧭 Explorador guarda aquí su experiencia con el id "explorador" (sube
+      explorando; con el rango ve más en el mapa: engine/service/game.py sección "enemy camps"; tests/test_enemy_camps.py)
+    - titles: también guarda "gran_explorador", el título del rango 100 del 🧭 Explorador (D-112, para siempre)
     - options (D-114): ⚙️ Opciones del jugador ("fights": "manual" | "auto", "retreat": % de vida, "potions": sí/no).
       Vacío = lo de balance.yaml auto_fight.defaults (también para los héroes guardados antes: ✋ Manual, 50 %, sí).
       Solo se guarda lo que el jugador cambia (engine/service/game.py _option, _options_view, _set_option;
