@@ -290,3 +290,10 @@ v0_16:
     - "✨ Cada oficio te da su beneficio, y crece con tu rango: el Minero más vida, la Herrería armadura si llevas placas, la Peletería y la Sastrería ataque según tu armadura, la Alquimia pociones más fuertes, el Herbolario vida que vuelve más rápido, el Leñador más espacio en la mochila… Míralo en ⚒️ Oficios."
     - "🩺 Nuevo oficio: Medicina. Haz 🫙 ungüentos, 🧰 botiquines y 🩻 vendajes de maestro, que curan sin toxicidad. Si eres sanador, tus curaciones curan más con su rango."
     - "🦌 Las bestias nuevas también sueltan piel para el Desollador."
+
+v0_17:
+  version: "0.17"
+  title: "💱 Lost Realms 0.17: el Comercio"
+  notes:
+    - "💱 Nuevo oficio: Comercio. No te ayuda en la pelea, pero cobras más: hasta +20 % de monedas al vender al mercader, al trueque de tu campamento o tu equipo viejo. Sube vendiendo."
+    - "⚒️ No todos los oficios son para pelear: unos ayudarán a tu campamento o castillo, otros a ganar dinero y otros a fabricar piezas exclusivas. Irán llegando por partes."

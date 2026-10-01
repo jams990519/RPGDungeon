@@ -511,3 +511,26 @@ def test_medicina_makes_ointments_that_heal_more_with_its_rank(service):
     assert "Hiciste" in view.notice and hero.professions.get("medicina", 0) > 0
     assert hero.belt.get("unguento", 0) + hero.backpack.get("unguento", 0) == 2
 
+
+
+def test_comercio_earns_more_coins_and_rises_by_selling(service):
+    # D-116: not every perk is for combat: 💱 Comercio only gives coins (+20 % at rank 100) and rises by selling.
+    ready(service, backpack={"madera": 10})
+    hero = service._load("test:1")
+    hero.gold = 0
+    service._save(hero)
+    service.act("test:1", "shop")
+    service.act("test:1", "sell:all")
+    hero = service._load("test:1")
+    base = hero.gold
+    assert base > 0 and hero.professions.get("comercio", 0) == base         # 1 xp per coin, no perk at rank 1 yet
+    hero.professions["comercio"] = rank_xp(service, 100)
+    hero.backpack = {"madera": 10}
+    hero.gold = 0
+    service._save(hero)
+    service.act("test:1", "sell:all")
+    assert service._load("test:1").gold == round(base * 1.2)
+    kit = service._kit(service._load("test:1"))
+    assert kit["perk_bonus"] == {"attack": 0.0, "hp": 0.0, "armor": 0.0}   # nothing in battle
+    view = service.act("test:1", "oficios")
+    assert any("💱 Servicios" in line for line in view.body) and any("+20 % de monedas" in line for line in view.body)

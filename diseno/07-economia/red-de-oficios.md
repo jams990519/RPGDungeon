@@ -67,6 +67,8 @@
 | 🍲 **Cocina** | Comidas que dan mejoras, raciones mejores para la despensa, raciones de viaje | Todos, la despensa (D-93), Explorador | Desollador, Pescador, Agricultor, Ganadero, Herbolario, Leñador | Banquetes · Raciones · Alta cocina |
 | 🏗️ **Construcción** | Mejoras y defensas del campamento, reparaciones después de una oleada, casas | Los campamentos (D-101), todos sus miembros | Cantería, Aserradero, Herrería, Sastrería, Ingeniería | Vivienda · Fortificación · Obras públicas |
 
+**El beneficio de cada uno** (de combate, de campamento y castillo, de economía o de piezas exclusivas) está en [Profesiones](profesiones.md) §0.4 (D-116).
+
 **Y un oficio de servicio:** 💱 **Comercio**. Abre más órdenes en el mercado, paga menos impuesto y lleva caravanas entre el Claro y los campamentos. Necesita lo que hacen todos y les da salida a todos.
 
 ## 3. Las especializaciones

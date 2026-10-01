@@ -522,3 +522,12 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 
 **Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76.
 
+### Octubre de 2026: el Comercio, un oficio que no pelea (D-116)
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Beneficio del 💱 Comercio (`professions.yaml` → comercio.perk.sell) | +20 % de monedas al vender, al rango 100 (parejo con el rango) | Lo pidió el dueño: el comerciante cobra más, sin ventaja en combate |
+| Experiencia de Comercio (`professions.trade_xp_per_coin`) | 1 por cada 🥉 de la venta base | Quien vende ~240 🥉 al día llega al rango 100 en ~1 año, como los demás oficios |
+
+**Lo que queda por mirar:** el Comercio es una fuente de monedas (vender da hasta 20 % más). Si en la beta entra demasiado bronce, se compensa con el impuesto del mercado de órdenes (segunda tanda de la economía).
+

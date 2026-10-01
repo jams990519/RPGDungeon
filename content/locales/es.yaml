@@ -1854,12 +1854,14 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
     bandage: "vendas y ungüentos +{v} %"
     heal: "curaciones +{v} % (sanadores)"
     bag: "+{v} de espacio en la mochila"
+    sell: "+{v} % de monedas al vender"
     only_armor: "con {what}"
     only_weapon: "con {what}"
   branch:
     gather: "🪓 Recolección"
     refine: "🪚 Refinado"
     craft: "🛠️ Fabricación"
+    service: "💱 Servicios"
   rank:
     aprendiz: "Aprendiz"
     oficial: "Oficial"
@@ -1916,6 +1918,9 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   summary: "⚒️ Oficios: {items}"
 
 profession:                   # [ES] D-109: nombre de cada oficio y cómo se sube (ids en content/professions.yaml). Sin números: los da la receta
+  comercio:
+    name: "Comercio"
+    how: "vende al mercader del Claro, al 💱 trueque de tu campamento o tu equipo viejo"
   medicina:
     name: "Medicina"
     how: "haz 🫙 ungüentos y 🧰 botiquines (extracto y tela) en una estación"
