@@ -9,7 +9,7 @@ Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que 
 | [misiones-y-exploracion.md](misiones-y-exploracion.md) | Encargos, misiones, expediciones, Profundidades con compañero, Laberinto, roguelite semanal, Pruebas de Maestría, Pesadillas, cacerías y más |
 | [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | Mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
 | [jefes.md](jefes.md) | Tipos de jefe, las 10 reglas de Elden Ring en texto, invocaciones asíncronas, ejemplo completo (Wyrm de las Dunas) |
-| [cacerias.md](cacerias.md) | El bucle de una cacería, 11 formatos (presas, caza mayor, bestias legendarias, captura viva…), calidad de la pieza, herramientas, rangos de cazador |
+| [cacerias.md](cacerias.md) | **§0 en el juego (D-106, provisional): 🏹 Cazar en la zona y la 🏹 Partida de caza del campamento.** Propuesta: el bucle de una cacería, 11 formatos (presas, caza mayor, bestias legendarias, captura viva…), calidad de la pieza, herramientas, rangos de cazador |
 | [investigaciones.md](investigaciones.md) | Casos detectivescos con tablero de pistas e interrogatorios; investigación de curas, recetas, planos, idiomas y el Gran Misterio de la Lejanía |
 | [crimen-y-justicia.md](crimen-y-justicia.md) | Delitos, el oficio de ladrón, gremio de ladrones y perista, contrabando, guardia, tribunal por turnos, penas |
 | [peleas-clandestinas.md](peleas-clandestinas.md) | Peleas ilegales entre jugadores: el Circuito Clandestino y el Foso, cómo se entra, reglas de la casa, formatos (primera sangre, derribo, rendición, puño limpio, bestias, todo o nada, Duelo de Hierro), roles, ranking y rivalidades, amaños, redadas, economía y límites |

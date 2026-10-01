@@ -317,7 +317,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 |---|---|---|---|
 | Experiencia por recolección (`gather.xp_per_step`) | 0 | **14** × (1 + 0,15 × (nivel de la zona − 1)), solo si juntaste algo | Solo recolectando, el nivel 100 llega en ~2 años (con toda la energía y peleas ganadas); en tu territorio, sin peleas, ~2,9 |
 | Escala por nivel (`hero.xp_level_scale`) | 0,15 escrito en el código del combate | **0,15** en balance.yaml (mismo número) | Ahora lo comparten matar y recolectar: moverlo cambia el ritmo de todos los caminos a la vez |
-| Energía por presa al cazar (D-106, en camino) | — | se fija en **2 ⚡** al unir la cacería | Con 1 ⚡ por presa, cazar llevaría al 100 en 0,9 años: el doble de rápido que lo demás |
+| Energía por presa al cazar (`hunt.energy`, D-106) | — | **2 ⚡** (en el juego con la cacería) | Con 1 ⚡ por presa, cazar llevaría al 100 en 0,9 años: el doble de rápido que lo demás |
 
 **Lo que queda por mirar:** el ritmo real con viajes y derrotas (medir en la beta) y si recolectar en el territorio propio, sin riesgo, rinde demasiado.
 
@@ -346,3 +346,52 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida** (medida aparte con las funciones de `tools/sim.py`: la forma de jugar atenta, cinturón lleno, las 45 especializaciones activas, cada bioma). Contra el enemigo de la incursión semanal, un héroe del nivel de la zona gana casi siempre (99-100 %): la incursión pone a prueba la **participación**, no la fuerza, igual que la despensa. La Noche de prueba sí pesa: con el equipo inicial y el nivel de la zona gana cerca de la mitad de las veces (45-51 %, y muy poco contra el caimán del pantano o el oso cavernario de las colinas); con 3 a 5 niveles más y equipo poco común, entre el 86 % y el 100 %. Perder una incursión con 4 miembros activos y la despensa en 28 raciones cuesta 7 raciones: casi 2 días de comida.
 
 **Lo que queda por mirar:** si la incursión semanal es demasiado fácil cuando los miembros superan mucho el nivel de su zona (subir `enemy_level_bonus` hasta 2, el tope de §6.2), si 60 minutos alcanzan para los husos horarios de los miembros (el Eco de §6.5 lo resolvería), y si el mínimo de 2 victorias de la Noche de prueba deja trabado a un campamento de una sola persona (hoy sí lo traba: castillo pide al menos dos miembros activos).
+
+### Octubre de 2026: las mejoras del campamento (D-101, provisional)
+
+**Por qué.** El dueño pidió por voz "más división": que para llegar a castillo hagan falta unas 15 mejoras del campamento o más, y que, como llegan oleadas desde la fundación (D-105), haya que "reforzar las cosas en los alrededores" (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6). Son números **nuevos**, propuestos por Claude; ninguno se movió. Todavía no se midieron con jugadores.
+
+**Números nuevos** (`content/camp_upgrades.yaml` y `content/balance.yaml` → `upgrades`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Mejoras en total | 20, de los niveles 1 a 8 (2, 2, 4, 3, 3, 2, 2, 2) | Cada etapa abre algo; con el nivel 8 se elige cuáles 15 hacer |
+| Para castillo (`upgrades.castle_min_built`) | 15 construidas | Lo pidió el dueño ("unas 15 o más") |
+| Costo de las de nivel 1 (Fogón, Empalizada) | 35 y 40 materiales | Dos jugadores las levantan en un día |
+| Costo por nivel | ~70 (nivel 2), ~120 (3), ~200 (4), ~300 (5), ~330 (6), ~500 (7), ~580 (8) materiales | Sube como el costo de agrandar; la piedra pesa más en las defensas grandes |
+| Monedas | Puesto de trueque 1 🥈, Taller 2 🥈, Herrería 3 🥈, Enfermería 3 🥈, Biblioteca 5 🥈 (14 🥈 en total) | Sumidero de monedas en los servicios, que ahorran viajes al Claro |
+| Experiencia por material aportado (`upgrades.xp_per_unit`) | 1 (y 1 de mérito) | La mitad de lo que daba la obra del Claro (2): aportar no debe competir con pelear o explorar (D-78) |
+| Fogón / Enfermería | vida ×1,5 / vida tras caer ×1,5, solo miembros en el territorio | Descansar en casa ayuda, sin reemplazar pociones ni la posada |
+| Refugio | 2 🥉 y 5 minutos (la posada del Claro: 4 🥉) | Más barato por quedar lejos del mercader |
+| Puesto de trueque | mitad de precio, como el mercader; la comida nunca | Ahorra el viaje; no cambia el precio |
+| Granero / Ahumadero / Huerto | −10 % de consumo / +1 ración por carne / +1 ración por día | Ayudas chicas: la despensa sigue dependiendo de cazar |
+| Pozo | recursos del territorio ×1,5 más rápido (`stock.regen_per_hour` 2 % → 3 % por hora) | Un territorio agotado vuelve en ~33 horas en vez de ~50 |
+| Cabañas | +2 miembros de cupo | Ayuda a juntar los 10 del castillo |
+| 🛡️ Defensa | 11 puntos con las 8 defensas (12 de noche con los Braseros) | Escala de 0 a 11 que leen las oleadas |
+| Cuánto frena cada punto (`raids.defense_weaken_per_point`) | **4 %** menos de vida y de ataque a los atacantes; con 11 puntos, 44 % | Conectado en la 0.14: se nota desde la Empalizada sin volver trivial la pelea |
+| Tope (`raids.defense_floor`) | los atacantes nunca bajan de la **mitad** | Defender sigue siendo pelear |
+| Noche de los Braseros (`raids.night`) | de 19 a 6 h, hora UTC−5 | Provisional: el mundo todavía no tiene día y noche |
+| Conocimiento | Herramientas +10 % al recolectar, Cartografía +5 puntos por vuelta, Rastreo +10 % de carne; 200 a 230 materiales y 3 🥈 cada uno | Modestos a propósito: el territorio ya da +50 % al recolectar |
+
+**Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.
+
+**Lo que queda por mirar:** cuánto tarda de verdad un grupo en las 15 (si se traba en la piedra de la Muralla y el Foso, bajar esos costos), si la Perrera y el Rastreo, que piden carne, dejan la despensa corta, y si el 4 % por punto de 🛡️ Defensa (conectado en la 0.14) deja las oleadas demasiado fáciles para un campamento con las 8 defensas.
+
+### Octubre de 2026: la cacería en la zona y la partida de caza (D-106, provisional)
+
+**Por qué.** El dueño pidió por voz un formato de cacería en la misma zona, para pelear solo contra monstruos, y que los miembros de un campamento puedan ir juntos a cazar (ver [Cacerías](../06-contenido/cacerias.md) §0). Son números **nuevos**, no movidos: los 2 ⚡ por presa los fijó D-108 (confirmada) y los de la partida los propuso Claude. Todavía no se midieron con jugadores: se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `hunt`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Energía por presa (`hunt.energy`) | 2 | Lo fijó D-108 (confirmada): con 2, cazar da una experiencia por ⚡ parecida a explorar y recolectar; la pelea en sí no gasta (D-78) |
+| Duración de la partida (`party.minutes`) | 30 minutos | Una sesión corta de Telegram; la mitad de la ventana de una oleada |
+| Bono por compañero presente (`party.bonus_per_companion`) | +10 % de experiencia y de probabilidad de botín | Se nota sin obligar a jugar en grupo; nunca toca las monedas |
+| Tope del bono (`party.bonus_cap`) | +30 % (3 compañeros) | Que un grupo grande no multiplique el ritmo de subida |
+| Meta (`party.prey_per_hunter`, `min_hunters`) | 3 presas por cazador, contando al menos 2 | Crece con el grupo: lo mismo por cabeza en una partida de 2 o de 5 |
+| Premio (`party.reward`) | 40 de experiencia y 20 🥉 a cada cazador con al menos 1 presa | Chico: como una presa más; la mitad del premio de una oleada |
+
+**Cuenta rápida.** Explorar da por cada energía 3 de experiencia, más o menos media pelea y lo que se encuentra (D-104); cazar da una pelea entera cada 2 de energía: un lobo de nivel 1 vale 30 de experiencia, 15 por ⚡, casi lo mismo que explorar (~16). Es la cuenta de D-108: solo cazando, el nivel 100 llega en ~1,8 años, como los demás caminos (con 1 ⚡ por presa serían 0,9). Cazar no da exploración, objetos ni monedas sueltas, ni recursos, y gasta vida (vuelve en 4 horas, D-103) y pociones. El freno real es la vida, no la energía: tocando solo ⚔️ Atacar, un guerrero de nivel 1 pierde cerca de un tercio de su vida por presa al lado del Claro (medido con el motor en 40 mundos: gana 39 de 40), así que caza 2 o 3 presas seguidas antes de curarse. Con la partida al tope (+30 %), la experiencia de cada presa sube un 30 %: "un poco más rápido", como dice [Progresión](progresion.md) §1.2. Cada presa ganada cuenta también como victoria del gremio (D-97), así que los gremios que cazan juntan las victorias más rápido.
+
+**Lo que queda por mirar:** si la partida de caza al tope acelera demasiado la subida de nivel (D-108 pide caminos parejos; si pasa, bajar `bonus_cap`), si las victorias de la cacería hacen demasiado fácil el contador de victorias del gremio, y si 30 minutos alcanzan para juntar a los miembros. Medir en la beta cuántas presas caza un jugador por día y cuántas partidas llegan a la meta.

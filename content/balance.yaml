@@ -114,6 +114,16 @@ gather:                      # [ES] recolectar en la zona actual
   own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
   xp_per_step: 14            # [ES] D-108: experiencia por recolección (× nivel de la zona, como matar): solo recolectando también se llega al nivel 100, al ritmo de explorar y cazar
 
+hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0). Números orientativos: se ajustan en la beta
+  energy: 2                  # [ES] D-108 (confirmada): cada presa cuesta 2 de energía, así cazar da una experiencia por ⚡ parecida a explorar y recolectar (con 1, cazar llegaría al 100 el doble de rápido). La pelea en sí no gasta (D-78). No hay presas donde el bioma no tiene peligro (el Claro) ni en la guarida del Guardián
+  party:                     # [ES] la partida de caza de un campamento de jugadores: solo suma un bono y una cuenta de presas; el combate sigue de 1 contra 1
+    minutes: 30              # [ES] cuánto dura desde que se convoca (reloj perezoso: se cierra cuando un miembro del campamento juega después)
+    bonus_per_companion: 0.10   # [ES] +10 % de experiencia y de probabilidad de botín en cada presa por cada otro cazador de la partida presente en la zona...
+    bonus_cap: 0.30          # [ES] ...hasta +30 % (3 compañeros). Nunca toca las monedas
+    prey_per_hunter: 3       # [ES] meta de presas entre todos = 3 × cazadores que se unieron (contando al menos 2)
+    min_hunters: 2           # [ES] el premio del final pide al menos 2 cazadores: una partida de uno solo no lo da
+    reward: {xp: 40, gold: 20}   # [ES] si juntan la meta, cada cazador con al menos 1 presa gana 40 de experiencia y 20 🥉 (chico: como una presa más)
+
 settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables
   stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
     - {id: fogata, needs: {madera: 40, fibra: 30}}
@@ -166,6 +176,9 @@ raids:                       # [ES] D-99 (provisional): incursiones de los campa
   min_wins: 1                # [ES] ...y nunca menos de 1
   loss_share: 0.25           # [ES] si no alcanzan, la despensa pierde el 25 % de sus raciones y nada más (§7.2, §15)
   enemy_level_bonus: 1       # [ES] el enemigo es del bioma del campamento, con el nivel de su zona + 1 (§6.2: nunca más de + 2)
+  defense_weaken_per_point: 0.04   # [ES] D-101: cada punto de 🛡️ Defensa de las mejoras les quita 4 % de vida y de ataque a los atacantes (11 puntos: 44 % menos). Vale también para la Noche de prueba
+  defense_floor: 0.5         # [ES] nunca les quita más de la mitad: defender sigue siendo pelear
+  night: {from_hour: 19, to_hour: 6, utc_offset_hours: -5}   # [ES] horas de noche para los 🔥 Braseros (+1 de defensa si la oleada llega de noche). Hora de América (UTC−5), provisional hasta que haya día y noche en el mundo
   reward: {xp: 80, gold: 30} # [ES] si se defiende, cada defensor gana 80 de experiencia y 30 🥉, además del premio normal de su pelea
   trial:                     # [ES] Noche de prueba: la incursión grande antes de castillo (§7.2). Si se pierde no se pierde nada
     to_level: 9              # [ES] crecer a este nivel pide haberla ganado (tiene que coincidir con castillo en camps.stages)
@@ -263,3 +276,9 @@ guild:                       # [ES] D-97 (provisional): el gremio de un campamen
     - {capacity: 20, needs: {explorations: 420, victories: 210, gathered: 1050}} # [ES] nivel 6 → 7
     - {capacity: 25, needs: {explorations: 670, victories: 335, gathered: 1680}} # [ES] nivel 7 → 8
     - {capacity: 30, needs: {}}                                                  # [ES] nivel 8: el último por ahora. Solo se agregan niveles al final
+
+upgrades:                    # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo, costos y efectos en content/camp_upgrades.yaml). El Claro no tiene: no crece (D-98). Números orientativos: se ajustan en la beta
+  castle_min_built: 15       # [ES] para pasar del nivel 8 al 9 (castillo) el campamento necesita 15 mejoras construidas o más (hay 20). Se suma a la despensa, los 🪎 cofres y el gremio (D-97). Los castillos que ya existen siguen creciendo
+  xp_per_unit: 1             # [ES] experiencia por cada material aportado a una obra o a un estudio del 📚 Conocimiento (las monedas no dan). La obra del Claro daba 2
+  merit_per_unit: 1          # [ES] mérito por cada material aportado (como la obra común: 1 por material)
+  open_shown: 3              # [ES] cuántas obras abiertas, con su barra de avance, muestra la pantalla 🔨 Mejoras (todas se ven en 🔨 Obras, de a 2 o 3 por página)

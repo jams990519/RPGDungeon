@@ -1,0 +1,224 @@
+# Camp improvements and camp knowledge (D-101, provisional). Only for player camps: the Claro never grows (D-98).
+#
+# [ES]
+# Para qué sirve: el catálogo de 🔨 Mejoras de los campamentos de jugadores y del 📚 Conocimiento que se estudia
+#     con la Biblioteca. Agregar una mejora aquí la mete en el juego (con sus textos upgrade.<id>.name y .desc en
+#     content/locales/es.yaml); si su efecto es nuevo, también hay que programarlo en engine/service/game.py.
+# Documento de diseño: diseno/02-mundo/fundacion-y-cisma.md §2.5 y §3 (qué abre cada nivel);
+#     diseno/09-construccion/defensa-y-protecciones.md §0 (las defensas del campamento en el juego)
+# Lo leen: engine/core/content.py (Content.camp_upgrades) y engine/service/game.py (sección "camp improvements":
+#     _upgrade_catalog, _camp_effect, _camp_defense, _upgrades_view, _works_view, _knowledge_view...)
+# IDs: estables. Nunca se renombran, nunca se borran, nunca se reutilizan: los campamentos guardan los IDs de lo
+#     que construyeron (espacio "upgrades" del almacén). Para retirar una se marca retired: true; lo ya
+#     construido sigue contando para el castillo.
+# Campos de cada mejora:
+#     emoji, name_key, desc_key: lo que se muestra.
+#     level: nivel del campamento desde el que se puede construir (1 a 8; el castillo es el 9).
+#     cost: materiales de la mochila (ids de items.yaml) que juntan entre todos los miembros.
+#     coins: monedas (en 🥉 bronce) que también pide; 0 o ausente = ninguna.
+#     defense: puntos de 🛡️ Defensa que suma (refuerzan los alrededores contra las oleadas); ausente = 0.
+#     effect: modificadores que se SUMAN entre mejoras (los lee GameService._camp_effect).
+#     service: lo que abre para usar en el campamento (Refugio, Trueque, Taller, Herrería, Biblioteca).
+# Si cambias esto, revisa:
+#     - El castillo pide balance.yaml upgrades.castle_min_built mejoras construidas: con menos de esa cantidad en el
+#       catálogo, ningún campamento llega a castillo (tests/test_camp_upgrades.py lo comprueba).
+#     - Los costos mueven el ritmo de los campamentos hasta castillo y la demanda de cada material (registro de balance
+#       en diseno/03-personaje/balance.md §7, "las mejoras del campamento").
+#     - Los efectos tocan la vida que se recupera (fogon, enfermeria), la despensa (granero, ahumadero, huerto), la
+#       recolección y la exploración en el territorio (conocimiento), el cupo de miembros (cabanas) y las defensas
+#       que leerán las incursiones (GameService._camp_defense).
+#     - Pruebas: tests/test_camp_upgrades.py.
+
+upgrades:
+  # ---- Nivel 1 (campamento): lo primero, al alcance de 2 jugadores en un día o dos
+  fogon:
+    emoji: "🔥"
+    name_key: upgrade.fogon.name
+    desc_key: upgrade.fogon.desc
+    level: 1
+    cost: {madera: 20, piedra: 15}        # [ES] 35 unidades
+    effect: {regen_mult: 0.5}             # [ES] los miembros en el territorio recuperan vida un 50 % más rápido (×1,5)
+  empalizada:
+    emoji: "🪵"
+    name_key: upgrade.empalizada.name
+    desc_key: upgrade.empalizada.desc
+    level: 1
+    cost: {madera: 30, fibra: 10}         # [ES] 40 unidades
+    defense: 1                            # [ES] primera defensa: frena a las alimañas
+
+  # ---- Nivel 2
+  torre_vigia:
+    emoji: "🗼"
+    name_key: upgrade.torre_vigia.name
+    desc_key: upgrade.torre_vigia.desc
+    level: 2
+    cost: {madera: 50, piedra: 20, fibra: 10}   # [ES] 80 unidades
+    defense: 1
+    effect: {warning_hours: 2}            # [ES] la oleada se avisa 2 horas antes a los miembros activos (_raid_watch)
+  pozo:
+    emoji: "⛲"
+    name_key: upgrade.pozo.name
+    desc_key: upgrade.pozo.desc
+    level: 2
+    cost: {piedra: 50, arcilla: 20}       # [ES] 70 unidades
+    effect: {stock_regen: 0.5}            # [ES] los recursos de las zonas del territorio vuelven un 50 % más rápido (balance.yaml stock.regen_per_hour × 1,5)
+
+  # ---- Nivel 3 (aldea): servicios propios y la despensa
+  refugio:
+    emoji: "🛏️"
+    name_key: upgrade.refugio.name
+    desc_key: upgrade.refugio.desc
+    level: 3
+    cost: {madera: 70, fibra: 40, arcilla: 15}  # [ES] 125 unidades
+    service: {rest_price: 2, rest_minutes: 5}   # [ES] como la posada del Claro (balance.yaml inn: 4 🥉, 5 min) pero a 2 🥉
+  trueque:
+    emoji: "🏪"
+    name_key: upgrade.trueque.name
+    desc_key: upgrade.trueque.desc
+    level: 3
+    cost: {madera: 60, piedra: 40, fibra: 20}   # [ES] 120 unidades
+    coins: 100                            # [ES] 1 🥈: el puesto se arma con mercancía
+    service: {sell_ratio: 0.5}            # [ES] compra materiales a la mitad de su precio, como el mercader del Claro (shop.sell_ratio). La comida nunca
+  granero:
+    emoji: "🌾"
+    name_key: upgrade.granero.name
+    desc_key: upgrade.granero.desc
+    level: 3
+    cost: {madera: 80, piedra: 50}        # [ES] 130 unidades
+    effect: {ration_cut: 0.10}            # [ES] los miembros comen un 10 % menos de la despensa (0,9 raciones por día cada uno)
+  trampas:
+    emoji: "🪤"
+    name_key: upgrade.trampas.name
+    desc_key: upgrade.trampas.desc
+    level: 3
+    cost: {madera: 50, fibra: 40, pieza_metal: 15}   # [ES] 105 unidades
+    defense: 1
+
+  # ---- Nivel 4
+  ahumadero:
+    emoji: "🍖"
+    name_key: upgrade.ahumadero.name
+    desc_key: upgrade.ahumadero.desc
+    level: 4
+    cost: {madera: 100, piedra: 70, arcilla: 30}     # [ES] 200 unidades
+    effect: {meat_bonus: 1}               # [ES] cada 🍖 carne aportada a la despensa vale 1 ración más (3 en vez de 2)
+  perrera:
+    emoji: "🐕"
+    name_key: upgrade.perrera.name
+    desc_key: upgrade.perrera.desc
+    level: 4
+    cost: {madera: 100, fibra: 40, carne: 30}        # [ES] 170 unidades; la carne alimenta a los perros (compite con la despensa, a propósito)
+    defense: 1
+  cabanas:
+    emoji: "🛖"
+    name_key: upgrade.cabanas.name
+    desc_key: upgrade.cabanas.desc
+    level: 4
+    cost: {madera: 140, fibra: 60, arcilla: 30}      # [ES] 230 unidades
+    effect: {members: 2}                  # [ES] caben 2 miembros más (se suma al cupo de siempre o al del gremio)
+
+  # ---- Nivel 5 (pueblo)
+  taller:
+    emoji: "🧵"
+    name_key: upgrade.taller.name
+    desc_key: upgrade.taller.desc
+    level: 5
+    cost: {madera: 140, piedra: 80, fibra: 50, pieza_metal: 30}   # [ES] 300 unidades
+    coins: 200                            # [ES] 2 🥈
+    service: {craft: 1}                   # [ES] coser 💰 bolsas y armar 🪎 cofres en el campamento, con la misma receta que en el Claro
+  muralla:
+    emoji: "🧱"
+    name_key: upgrade.muralla.name
+    desc_key: upgrade.muralla.desc
+    level: 5
+    cost: {piedra: 260, madera: 60, arcilla: 40}     # [ES] 360 unidades
+    defense: 2
+  huerto:
+    emoji: "🥬"
+    name_key: upgrade.huerto.name
+    desc_key: upgrade.huerto.desc
+    level: 5
+    cost: {madera: 80, fibra: 60, hierba_curativa: 50, arcilla: 40}   # [ES] 230 unidades
+    effect: {rations_per_day: 1}          # [ES] suma 1 ración por día real a la despensa, juegue quien juegue
+
+  # ---- Nivel 6
+  braseros:
+    emoji: "🔥"
+    name_key: upgrade.braseros.name
+    desc_key: upgrade.braseros.desc
+    level: 6
+    cost: {madera: 120, piedra: 120, pieza_metal: 50}   # [ES] 290 unidades
+    defense: 1
+    effect: {night_defense: 1}            # [ES] de noche cuenta 1 punto más (GameService._camp_defense(camp, night=True))
+  herreria:
+    emoji: "🔨"
+    name_key: upgrade.herreria.name
+    desc_key: upgrade.herreria.desc
+    level: 6
+    cost: {piedra: 180, pieza_metal: 70, madera: 100, arcilla: 30}   # [ES] 380 unidades
+    coins: 300                            # [ES] 3 🥈
+    service: {sell_gear: 1}               # [ES] vender en el campamento el equipo que no usas, al mismo precio que en el Claro
+
+  # ---- Nivel 7 (ciudad)
+  enfermeria:
+    emoji: "🏥"
+    name_key: upgrade.enfermeria.name
+    desc_key: upgrade.enfermeria.desc
+    level: 7
+    cost: {madera: 180, fibra: 100, hierba_curativa: 100, piedra: 80}   # [ES] 460 unidades
+    coins: 300                            # [ES] 3 🥈
+    effect: {downed_regen_mult: 0.5}      # [ES] quien cayó se recupera un 50 % más rápido en el territorio (×1,5)
+  biblioteca:
+    emoji: "📚"
+    name_key: upgrade.biblioteca.name
+    desc_key: upgrade.biblioteca.desc
+    level: 7
+    cost: {madera: 220, piedra: 150, fibra: 100, arcilla: 60}   # [ES] 530 unidades
+    coins: 500                            # [ES] 5 🥈
+    service: {knowledge: 1}               # [ES] abre el 📚 Conocimiento (lista "knowledge" de abajo)
+
+  # ---- Nivel 8: las últimas defensas antes del castillo
+  torres_arqueros:
+    emoji: "🏹"
+    name_key: upgrade.torres_arqueros.name
+    desc_key: upgrade.torres_arqueros.desc
+    level: 8
+    cost: {madera: 280, piedra: 150, pieza_metal: 70, fibra: 60}   # [ES] 560 unidades
+    defense: 2
+  foso:
+    emoji: "🌊"
+    name_key: upgrade.foso.name
+    desc_key: upgrade.foso.desc
+    level: 8
+    cost: {piedra: 360, arcilla: 140, madera: 100}   # [ES] 600 unidades
+    defense: 2
+
+# Camp knowledge: needs the Biblioteca. One study at a time, paid by the members together.
+# [ES] El 📚 Conocimiento del campamento: se abre con la Biblioteca. Un estudio a la vez, lo pagan entre todos los
+# miembros y queda para siempre. Rige solo para los miembros y solo en el territorio del campamento (Rastreo, también
+# en las zonas que lo tocan: en el territorio no hay peleas, D-81). Números modestos a propósito.
+# effect: gather_bonus (+ fracción de lo recolectado), explore_points (+ puntos de exploración por vuelta),
+# loot_bonus (+ probabilidad de cada objeto del botín).
+knowledge:
+  herramientas:
+    emoji: "⚒️"
+    name_key: tech.herramientas.name
+    desc_key: tech.herramientas.desc
+    cost: {madera: 150, pieza_metal: 50}  # [ES] 200 unidades
+    coins: 300                            # [ES] 3 🥈
+    effect: {gather_bonus: 0.10}          # [ES] +10 % de recursos al recolectar en el territorio (encima del +50 % de gather.own_land_bonus)
+  cartografia:
+    emoji: "🗺️"
+    name_key: tech.cartografia.name
+    desc_key: tech.cartografia.desc
+    cost: {fibra: 150, arcilla: 80}       # [ES] 230 unidades
+    coins: 300
+    effect: {explore_points: 5}           # [ES] +5 puntos de exploración por vuelta en el territorio (balance.yaml exploration.per_step da 15-30)
+  rastreo:
+    emoji: "🐾"
+    name_key: tech.rastreo.name
+    desc_key: tech.rastreo.desc
+    cost: {fibra: 100, hierba_curativa: 60, carne: 40}   # [ES] 200 unidades
+    coins: 300
+    near: true                            # [ES] también en las zonas que tocan el territorio (en el territorio no hay peleas)
+    effect: {loot_bonus: {carne: 0.10}}   # [ES] +10 % de probabilidad de 🍖 carne en el botín (de 50 % a 60 %, por ejemplo)

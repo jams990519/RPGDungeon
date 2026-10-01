@@ -1,6 +1,6 @@
 # Defensa y protecciones de lo construido
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Sistema de construcción](sistema-de-construccion.md), [Combate](../04-combate/README.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) · **Se conecta con:** [PvP](../06-contenido/pvp.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (ecología), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Sistema de construcción](sistema-de-construccion.md), [Combate](../04-combate/README.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) · **Se conecta con:** [PvP](../06-contenido/pvp.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (ecología), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta; §0 está en el juego (D-101, provisional)
 
 **Interpretación.** Pediste "sistemas de protecciones controladas de enemigos". Aquí se entiende como **defender lo que construiste** (casa, granja, salón, fortaleza, asentamiento) de ataques de monstruos y de jugadores, con defensas y guardias que **tú configuras y controlas**, y con protecciones para que nadie pierda todo mientras duerme. Si la idea era otra, se ajusta.
 
@@ -12,6 +12,27 @@
 - *Final Fantasy XII*: las reglas automáticas (*gambits*) para que tus guardias actúen solos.
 
 ---
+
+## 0. En el juego: las defensas del campamento (D-101, provisional)
+
+**Qué pidió el dueño.** Que al fundar un campamento te avisen que llegarán oleadas y que "tienes que reforzar las cosas en los alrededores para poder protegerlo" (D-105). Las oleadas (incursiones, D-99) ya llegan cada semana desde la fundación; esta es su otra mitad: **reforzar los alrededores**.
+
+**Capa simple (D-44).** Las defensas son 8 de las 20 🔨 Mejoras del campamento ([Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6). Se construyen como obras que pagan los miembros entre todos con materiales de su mochila; todavía sin oficio de Construcción, sin jornadas, sin durabilidad ni reparación (eso sigue como propuesta, §2 a §5). Lo construido no se pierde nunca.
+
+| Defensa | Nivel del campamento | 🛡️ Defensa | Equivale en la propuesta (§2) |
+|---|---|---|---|
+| 🪵 Empalizada | 1 | +1 | Cerco y empalizada |
+| 🗼 Torre de vigía | 2 | +1 y aviso 2 horas antes de cada oleada a los miembros activos | Torre de vigía |
+| 🪤 Trampas | 3 | +1 | Trampas |
+| 🐕 Perrera | 4 | +1 | Perros y bestias de guardia |
+| 🧱 Muralla de piedra | 5 | +2 | Muralla |
+| 🔥 Braseros | 6 | +1, y +1 más de noche | Braseros de la muralla ([Supervivencia](../02-mundo/supervivencia-del-asentamiento.md) §6.3) |
+| 🏹 Torres de arqueros | 8 | +2 | Torre de arqueros o balista |
+| 🌊 Foso | 8 | +2 | Trampas (fosos) |
+
+- **Total: 11 puntos** (12 de noche). Los costos están en `content/camp_upgrades.yaml`; el número lo da `GameService._camp_defense(camp, night=False)`.
+- La 🛡️ Defensa **se ve** en la pantalla del campamento (también la ven los visitantes) y en 🔨 Mejoras, y **frena las oleadas**: al llegar una, se guarda la defensa del campamento y cada punto les quita a los atacantes un 4 % de vida y de ataque (nunca más de la mitad). La 🗼 Torre de vigía avisa a los miembros activos 2 horas antes; los 🔥 Braseros suman 1 de noche (19 a 6 h, UTC−5, provisional). Código: `_raid_weaken`, `_raid_watch`, `_is_night` en `engine/service/game.py`.
+- Lo que nunca cambia: en el territorio de los campamentos nadie es atacado al llegar, explorar ni recolectar (D-81). Las oleadas pelean con 🛡️ Defender, desde donde esté cada miembro.
 
 ## 1. Quién ataca y dónde
 

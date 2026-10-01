@@ -96,7 +96,9 @@ La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.
 - **Perdida:** no se pierde nada; se puede volver a convocar a los **2 días**.
 - Si la incursión semanal tocaba mientras duraba la Noche de prueba, la Noche cuenta como la de esa semana.
 
-**Botones.** La pantalla del campamento sigue con 4 botones como máximo: ⬆️ Agrandar · 🌾 Aportar comida (desde nivel 3) · 🛡️ Gremio · ↩️ Volver (cambiar el nombre y salir del campamento están dentro de 🛡️ Gremio). Mientras dura la incursión, **🛡️ Defender** ocupa el lugar de ↩️ Volver, que vuelve apenas ese miembro pelea o termina la incursión; el menú de abajo siempre lleva a otro lado. La Noche de prueba tiene su propia pantalla, con 2 botones como máximo.
+**Botones.** La pantalla del campamento sigue con 4 botones como máximo: ⬆️ Agrandar · 🌾 Aportar comida (desde nivel 3) · 🛡️ Gremio · 🔨 Mejoras (D-101), y ↩️ Volver si no hay despensa (cambiar el nombre y salir del campamento están dentro de 🛡️ Gremio). Mientras dura la incursión, **🛡️ Defender** ocupa el 4.º lugar (el de ↩️ Volver o, con despensa, el de 🔨 Mejoras), que vuelve apenas ese miembro pelea o termina la incursión; el menú de abajo siempre lleva a otro lado.
+
+**Reforzar los alrededores (D-101, provisional).** Las 8 defensas de las 🔨 Mejoras (Empalizada, Torre de vigía, Trampas, Perrera, Muralla de piedra, Braseros, Torres de arqueros y Foso) suman hasta **11 puntos de 🛡️ Defensa** (12 de noche). **Cada punto les quita a los atacantes un 4 % de vida y de ataque** (`raids.defense_weaken_per_point`; con las 11, un 44 % menos; nunca más de la mitad, `raids.defense_floor`), en la oleada semanal y en la Noche de prueba. La defensa se toma al llegar la oleada, y el aviso dice cuánto los frena. La **🗼 Torre de vigía** avisa a los miembros activos 2 horas antes, y en esas horas la pantalla dice cuánto falta. Los **🔥 Braseros** suman 1 si la oleada llega de noche (19 a 6 h, hora UTC−5, provisional hasta que el mundo tenga día y noche). Para pasar a castillo, además, hacen falta **15 mejoras construidas**, que se piden antes de convocar la Noche de prueba. Detalle: [Fundación y cisma](fundacion-y-cisma.md) §2.6 y [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) §0. La Noche de prueba tiene su propia pantalla, con 2 botones como máximo.
 
 **Lo que nunca pasa** (§15): perder una incursión nunca quita niveles, zonas ni miembros, y nadie pierde nada personal más allá de una derrota normal. El Claro nunca recibe incursiones.
 
@@ -312,6 +314,8 @@ La comida se guarda en edificios. Lo que no cabe **se pudre en el suelo** al dí
 | **Bodega fría** | Pueblo | 1.000 raciones frescas | La comida fresca dura el doble |
 | **Granero de piedra** | Pueblo | 5.000 raciones | Sin ratas; resiste incendios; las brechas se llevan la mitad de lo normal |
 | **Silos del Castillo** | Ciudad | 12.000 raciones | Parte de su contenido nunca se puede robar |
+
+> **En el juego (D-101, provisional):** los campamentos de jugadores ya tienen su capa simple: un **🌾 Granero** (nivel 3: los miembros comen un 10 % menos), un **🍖 Ahumadero** (nivel 4: cada carne aportada vale 1 ración más) y un **🥬 Huerto** (nivel 5: +1 ración por día). Uno de cada uno, sin capacidad ni comida que se pudra todavía. Ver [Fundación y cisma](fundacion-y-cisma.md) §2.6.
 
 Se pueden levantar **varios de cada uno**, cada uno con su obra. Así una ciudad de 500 jugadores en el Claro puede guardar los días de despensa que pide cada etapa (§7.1) con varios almacenes del fogón.
 
