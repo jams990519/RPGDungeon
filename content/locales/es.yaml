@@ -402,7 +402,7 @@ hero:
   resource_line: "🔷 {resource}: {max}/{max}"
   class_short: "{cls}"
   coins_line: "{coins}"
-  inv_link: "🎒 Mochila: {n} — /inv"
+  inv_link: "🎒 Mochila: {n}/{cap} — /inv"
   skills_link: "🌟 Habilidades: /habilidades"
   status_title: "Estado: {status}"
   stats_button: "📊 Estadísticas"
@@ -431,6 +431,7 @@ bag:
   use_button: "{emoji} Usar {item} (×{n})"
   button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
+  full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
 
 combat:
   title: "⚔️ Combate · Ronda {n}"
@@ -497,6 +498,7 @@ combat:
     no_flee: "Aquí no se puede huir."
     item: "No te quedan de esos."
     toxicity: "Tu Toxicidad está al máximo: no puedes beber más pociones."
+  busy: "⚔️ Estás en combate: termina la pelea primero."
 
 places:
   title: "📒 Lugares que recuerdas"
@@ -527,6 +529,7 @@ inn:
   started: "Pagas {price} y te acuestas junto al fuego. Despertarás en {time}."
   in_progress: "Duermes junto al fuego."
   rested: "🛏️ Despiertas descansado: tu vida está llena."
+  full_hp: "❤️ Ya tienes la vida llena: no hace falta dormir."
 
 gather:
   button: "🪓 Recolectar · {time}"
@@ -661,6 +664,7 @@ camps:
   grow_title: "⬆️ ¿Hacia dónde crece?"
   grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."
   grow_option: "({x}, {y}) {items}"
+  grow_more: "▶️ Ver más zonas"
   stage_line: "🏰 Es un {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
   stage:
     campamento: "campamento"
