@@ -7,7 +7,7 @@ En casi todos los MMORPG la vida es una barra que se llena sola. Aquí **el cuer
 | Documento | Qué contiene |
 |---|---|
 | [heridas.md](heridas.md) | El mapa de 7 zonas, 13 tipos de herida, gravedad y tiempos, cuándo aparecen, cómo se tratan, qué puede y qué no puede la magia |
-| [condiciones.md](condiciones.md) | Dolor, sangrado, fatiga, sustento (positivo primero), temperatura y aclimatación, toxicidad y dependencia |
+| [condiciones.md](condiciones.md) | Dolor, sangrado, fatiga, sustento (positivo primero), temperatura y aclimatación, toxicidad y dependencia; resumen de hidratación y contaminación |
 | [peligros-del-entorno.md](peligros-del-entorno.md) | **Peligros según la zona:** frío hasta la hipotermia, golpe de calor, **sed** (barra de Hidratación), **contaminación** (barra acumulable), altitud, oscuridad, agua profunda, arenas movedizas, tormentas, lava, insectos y nieve; etapas con aviso y retirada segura, efectos por ronda en combate, protección fabricada por oficios, refugios, linajes |
 | [enfermedades.md](enfermedades.md) | Carrera entre gravedad e inmunidad, contagio, catálogo de 14 enfermedades, epidemias de servidor, vampirismo y licantropía |
 | [mente.md](mente.md) | Estrés con aflicciones y virtudes, cordura, corrupción, quién cura la mente |
@@ -22,7 +22,7 @@ En casi todos los MMORPG la vida es una barra que se llena sola. Aquí **el cuer
 |---|---|---|
 | 1. **Vida** | El colchón del combate | Curación mágica, pociones, descanso |
 | 2. **Heridas** | Daño localizado en una de las 7 zonas | Tratamiento (vendas, férulas, cirugía) y tiempo |
-| 3. **Condiciones** | Dolor, sangrado activo, fatiga, sustento, temperatura | Analgésicos, comida, descanso, ropa |
+| 3. **Condiciones** | Dolor, sangrado activo, fatiga, sustento, temperatura, sed, contaminación | Analgésicos, comida, agua, descanso, ropa, máscaras |
 | 4. **Enfermedades** | Infecciones, fiebres, plagas, maldiciones | Inmunidad, tratamiento y reposo |
 | 5. **Mente** | Estrés, cordura, corrupción | Taberna, templo, bardos, descanso |
 | 6. **Toxicidad y dependencia** | Lo que dejan las pociones | Tiempo, desintoxicación |
@@ -47,6 +47,7 @@ En casi todos los MMORPG la vida es una barra que se llena sola. Aquí **el cuer
 | **Torn** (MMO de texto) | Hospital con tiempo real, reducible con objetos |
 | **Pathologic 2** | Plaga en la que solo se controlan síntomas |
 | **Red Dead Redemption 2 · Vintage Story** | Núcleos que bajan con el tiempo; variedad de la dieta |
+| **The Long Dark · DayZ · S.T.A.L.K.E.R.** | Frío por etapas con aviso; agua que hay que hervir o purificar; contaminación que se acumula y se mide |
 | **World of Warcraft** | La Sangre Corrupta (2005), que aquí se vuelve evento, y la cordura de las Visiones Horrendas |
 
 El detalle con fuentes está en [Investigación: WoW, salud y economía](../99-referencias/investigacion-wow-salud-economia.md).

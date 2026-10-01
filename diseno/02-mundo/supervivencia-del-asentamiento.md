@@ -1,6 +1,6 @@
 # Supervivencia del asentamiento: construir no alcanza
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (etapas y necesidades), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Ciudades y el Castillo](ciudades-y-castillo.md), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (etapas y necesidades), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Ciudades y el Castillo](ciudades-y-castillo.md), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Bestiario](../06-contenido/bestiario.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** propuesta
 
 **Qué pediste.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
 
@@ -269,7 +269,7 @@ La comida personal de los jugadores nunca se toca. La hambruna es de la ciudad.
 | **Estercolero** | Campamento | Saca la basura de las calles; da **abono** para los campos | Basura, ratas y carroñeros |
 | **Alcantarillado** | Villa | Higiene para un barrio de 100 | Las letrinas no alcanzan para una ciudad grande |
 | **Baños y lavadero** | Villa | +salud y +ánimo | La ciudad se ensucia |
-| **Cementerio** | Aldea (antes, una fosa fuera del campamento) | Los muertos se entierran lejos del agua | Cadáveres sin enterrar: brote (Podredumbre Gris) |
+| **Cementerio** | Aldea (antes, una fosa fuera del campamento) | Los muertos se entierran lejos del agua | Cadáveres sin enterrar: brote (Podredumbre Gris) y carroñeros que suben la amenaza (§6.1) |
 | **Enfermería** | Campamento | Camas para aldeanos enfermos; turnos médicos (§5.3) | Los enfermos contagian en sus casas |
 | **Sanatorio** | Villa | Diagnóstico exacto, cuarentena, cirugía (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Los brotes graves duran mucho más |
 | **Lazareto** | Aldea | Aislar enfermos fuera de los muros durante un brote | La cuarentena baja más el ánimo y el comercio |
@@ -314,8 +314,8 @@ La **Amenaza** es una barra de 0 a 100 %. Sube cada día con la **atracción** d
 | **Riqueza** (despensa, almacén común, tesoro, edificios), como en *RimWorld* | +5 por cada escalón: pobre, modesta, próspera, rica, opulenta |
 | **Tamaño** | +1 por cada 25 habitantes |
 | **Ruido**, como en *They Are Billions* | +2 por cada forja o fundición encendida, +1 por cada 10 jornadas de obra del día, +3 por cada mina activa cerca, +5 por un festival |
-| **Desequilibrio ecológico** (ver [Mundo vivo](mundo-vivo-y-viaje.md)) | +5 a +15 por cada especie que creció sin control cerca; +5 si se sobrecazó una presa y sus depredadores bajan a buscar el ganado |
-| **Basura y comida podrida** | +3 si se pudren más de 50 raciones por día: carroñeros |
+| **Desequilibrio ecológico** (ver [Mundo vivo](mundo-vivo-y-viaje.md) y la ecología del [Bestiario](../06-contenido/bestiario.md)) | +5 a +15 por cada especie *Abundante* o en *Plaga* cerca; +5 si se sobrecazó una presa y sus depredadores bajan a buscar el ganado (si faltan ciervos, el Lobo Gris baja a las granjas) |
+| **Basura, comida podrida y cadáveres** | +3 si se pudren más de 50 raciones por día o quedan cuerpos sin enterrar: carroñeros (Cuervo de Carroña, ratas, necrófagos) |
 | **Invierno** | Todo lo anterior ×1,5: las bestias tienen hambre |
 | **Luna llena y eclipse** (ver [Eventos](../06-contenido/eventos.md)) | +20 y +40 de una vez |
 
@@ -340,7 +340,7 @@ Los enemigos son de la **zona**: el piso, su tramo y su terreno (ver [Torre y pi
 |---|---|---|---|
 | **Claro** | Alimañas que roban del fogón. La **primera noche** es parte del tutorial: unos lobos rondan y la cazadora PNJ enseña a defender | 1 | Protección de fundación: no hay brechas reales |
 | **Campamento** | Jabalíes, alimañas, una manada chica de lobos | 1-2 | Primer ataque de verdad: empalizada y fogatas |
-| **Aldea** | Manadas grandes con su alfa, osos, **saqueadores PNJ** que salen de los campamentos de bandidos (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) | 2-3 | **Ataques nocturnos**; los saqueadores van directo al granero |
+| **Aldea** | Manadas grandes con su alfa, bestias grandes de la zona, **saqueadores PNJ** que salen de los campamentos de bandidos (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) | 2-3 | **Ataques nocturnos**; los saqueadores van directo al granero |
 | **Villa** | Bandas de saqueadores con jefe, bestias alfa, enjambres, incendiarios | 3 | Atacan por dos lados a la vez; algunos prenden fuego (cadena de cubos, ver [Crisis](crisis-problemas-y-soluciones.md)) |
 | **Ciudad** | Hordas mixtas, una **bestia mayor** con postura y partes rompibles, bandidos con escalas y ariete | 4 | Tres frentes a la vez; los enemigos buscan el punto más débil de la muralla |
 | **Castillo** | **Asedio de un monstruo grande** (§6.4) con su séquito, además de las incursiones normales | 5 + jefe | Se anuncia con días de anticipación y se juega a hora fija |
@@ -349,20 +349,24 @@ Los enemigos son de la **zona**: el piso, su tramo y su terreno (ver [Torre y pi
 
 Cada piso tiene de 2 a 4 terrenos (ver [Geografía y recursos](geografia-y-recursos.md)), y la ciudad recibe a los enemigos de los que tiene cerca.
 
-| Terreno | Incursiones típicas | Monstruo de asedio (etapa Castillo) |
+| Terreno | Incursiones típicas (nombres del [Bestiario](../06-contenido/bestiario.md)) | Monstruo de asedio (etapa Castillo) |
 |---|---|---|
-| 🌲 **Bosque** | Lobos, osos, jabalíes, arañas de noche | **Coloso de Corteza**: un árbol viejo y podrido que camina |
-| 🌾 **Llanura** | Manadas de pradera, langosta en los campos, bandidos de camino | **Toro de Tormenta** |
-| 🌊 **Costa y lagos** | Cangrejos gigantes, saqueadores en barca, serpientes de lago | **Cangrejo de Asedio** |
-| ⛰️ **Montaña** | Trasgos de mina, osos de cueva, grifos que se llevan el ganado | **Rey Trasgo** con su ariete |
-| 🐸 **Pantano** | Sapos gigantes, ahogados (no muertos), mosquitos que traen brotes | **Hidra del Lodo** |
-| 🏜️ **Desierto** | Escorpiones, gusanos de arena, nómadas saqueadores | **Gusano de las Dunas** |
-| ❄️ **Tundra** | Lobos de hielo, osos blancos; ataques con ventisca | **Yeti Anciano** |
-| 🕳️ **Cueva y subsuelo** | Arañas, murciélagos, trasgos ciegos que salen del suelo | **Madre de la Colmena** |
-| 🌋 **Tierras volcánicas** | Salamandras de fuego que provocan incendios | **Coloso de Magma** |
-| 🌸 **Tierras flotantes** | Aves de presa gigantes, elementales de viento | **Roc del Borde** |
+| 🌲 **Bosque** | Lobo Gris en manada con su alfa, Araña Tejedora, Cuervo de Carroña que roba del botín, Duendecillo Burlón | **Coloso de Corteza**: un árbol viejo y podrido que camina |
+| 🌾 **Llanura** | Lobo Gris, Jabalí Colmillo de Hierro, Langosta de Plaga en los campos (verano), Bandido de Camino, Espantapájaros Animado | **Toro de Tormenta** |
+| 🌊 **Costa y lagos** | Cangrejo Acorazado, Pez Colmillo en los vados, Corsario de Costa (saqueadores en barca) | **Cangrejo de Asedio** |
+| ⛰️ **Montaña** | Kóbold Minero que roba, Rata de Escoria que se come la comida, Cíclope de Cantera, Grifo de Montaña que se lleva el ganado | **Rey Kóbold** con su ariete |
+| 🐸 **Pantano** | Mosquitos de Ciénaga que traen brotes, Sapo Bilioso, Necrófago, Caimán de Lodo, Cultista de la Podredumbre | **Hidra del Lodo** |
+| 🏜️ **Desierto** | Escorpión de Vidrio, Tigre de Duna, Buitre de Hueso, Remolino de Arena | **Escorpión Rey** |
+| ❄️ **Tundra** | Ventisquero, Novia de Escarcha con ventisca, Licántropo Salvaje en luna llena | **Yeti Anciano** |
+| 🕳️ **Cueva y subsuelo** | Araña Nodriza, Murciélago Vampiro, Kóbold Minero, Micelio Andante | **Gran Gusano de Roca**, que sale del suelo dentro de los muros |
+| 🌋 **Tierras volcánicas** | Elemental de Magma, Sabueso Infernal, Masa de Escoria junto a las forjas | **Coloso de Magma** |
+| 🌸 **Tierras flotantes** | Mantarraya del Cielo, Céfiro, Polilla Lunar | **Roc del Borde** |
 
-**Los ataques nocturnos** traen además lo que solo sale de noche (ver [Mundo vivo](mundo-vivo-y-viaje.md)): arañas, ahogados, murciélagos y, en luna llena, licántropos salvajes. De noche, sin **braseros en la muralla** y **faroles** (Ingeniería y Destilación para el aceite), los defensores pierden precisión y los vigías ven tarde.
+- Cada especie pelea con su arquetipo del [Bestiario](../06-contenido/bestiario.md): la manada rodea y huye si cae el alfa, el ladrón va al granero, el carroñero remata a los derribados.
+- Los **monstruos de asedio** son nuevos: se proponen como únicos de asedio para el Bestiario, uno por terreno, siempre con los números del tramo donde está la ciudad.
+- Un alfa que creció porque nadie lo cazó (ver los monstruos que crecen en el [Bestiario](../06-contenido/bestiario.md)) puede **encabezar una incursión con su nombre**, y la Gaceta lo cuenta.
+
+**Los ataques nocturnos** traen además lo que solo sale de noche (ver [Mundo vivo](mundo-vivo-y-viaje.md)): Fuego Fatuo, Espantapájaros Animado, Necrófago, Murciélago Vampiro, Tigre de Duna y, en luna llena, Licántropo Salvaje. De noche, sin **braseros en la muralla** y **faroles** (Ingeniería y Destilación para el aceite), los defensores pierden precisión y los vigías ven tarde.
 
 ### 6.4 El asedio del monstruo grande
 

@@ -4,6 +4,8 @@
 
 Pediste corregir los problemas de calibración de WoW y que las clases queden igualadas. Este documento dice **qué está roto**, **qué reglas lo impiden aquí** y **cómo se mide** que las reglas se cumplan.
 
+> **Regla del dueño (D-49):** el sistema de clases tiene que estar **igualado**. Lo que hace la diferencia entre un jugador y otro son **sus oficios y el conocimiento extra que tenga**, no la clase que eligió (ver §5).
+
 ---
 
 ## 1. Qué está roto en WoW
@@ -94,7 +96,22 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 - Mitigación de armadura con la fórmula **`def / (def + K)`** (la misma que usa TowerWars, con K = 60), con una K que crece por tramo para que la armadura nunca se convierta en inmunidad.
 - Cada tramo sube los números alrededor de un 25 %, no un 100 %. Así el equipo de dos tramos atrás sigue sirviendo para algo: venderlo, desmontarlo o vestir a un alt.
 
-## 5. Lección de TowerWars: nada de puntos de estadística sueltos
+## 5. La diferencia la hacen los oficios y el conocimiento
+
+Si todas las clases rinden lo mismo, ¿qué separa a un jugador bueno de uno nuevo? Lo que **sabe** y lo que **sabe hacer**:
+
+| Fuente de ventaja | Cómo ayuda en combate y en el mundo | Tope para que no se desboque |
+|---|---|---|
+| **Conocimiento del bestiario** | Ver la pista de los avisos, las debilidades y las partes rompibles de cada monstruo y jefe (ver [Avisos](../04-combate/avisos-y-tacticas.md)) | La pista ayuda a decidir, no decide por ti |
+| **Oficios propios** | Fabricarte o mandarte a hacer mejor equipo; pociones, remedios y comidas de más calidad; curarte heridas tú mismo con Medicina | El equipo tiene techo por tramo; la toxicidad limita las pociones |
+| **Investigación** | Recetas, técnicas y mejoras que otros todavía no tienen (ver [Investigaciones](../06-contenido/investigaciones.md)) | El conocimiento se difunde con el tiempo; patentes que vencen |
+| **Conocimiento del mundo** | Saber dónde están las vetas buenas, los yacimientos únicos, los atajos y los secretos | Las vetas se mueven; los secretos se comparten |
+| **Maestrías y rasgos** | Pequeños bonos por constancia (ver [Progresión](progresion.md), [Rasgos](../05-salud/rasgos-adquiridos.md)) | Nunca más del 5 % en combate |
+| **Habilidad del jugador** | Leer los avisos, planificar las rondas, preparar el cinturón de la mochila | Ninguno: es lo que se quiere premiar |
+
+**Lo que nunca hace la diferencia:** la clase elegida, la raza, ni el dinero real (ver [Monetización](../07-economia/monetizacion.md)).
+
+## 6. Lección de TowerWars: nada de puntos de estadística sueltos
 
 TowerWars reparte un punto de personaje por nivel en ataque, defensa, vida o maná. Su propio documento de estado reconoce dos problemas:
 - +1 de vida no es una elección real al lado de +1 de ataque: uno mueve el 1 % y el otro el 20 %.
