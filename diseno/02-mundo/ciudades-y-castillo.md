@@ -1,66 +1,97 @@
 # Ciudades y el Castillo
 
-> **Módulo** [02 · Mundo](README.md) · **Se conecta con:** [Profesiones](../07-economia/profesiones.md) (entrenadores), [Apuestas](../08-social/apuestas.md) (la Fortuna), [Curación](../05-salud/curacion-y-tratamientos.md) (sanatorio), [Construcción](../09-construccion/gremios-y-organizaciones.md) (se construye entre todos), [Economía](../07-economia/propiedad-y-concesiones.md) (puestos y licencias), [El Colapso y las comunidades](el-colapso-y-las-comunidades.md) (comunidades PNJ) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (etapas del Claro y de los campamentos) · **Se conecta con:** [Profesiones](../07-economia/profesiones.md) (entrenadores), [Apuestas](../08-social/apuestas.md) (la Fortuna), [Curación](../05-salud/curacion-y-tratamientos.md) (sanatorio), [Construcción](../09-construccion/gremios-y-organizaciones.md) (obras entre todos), [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) (puestos y licencias), [El Colapso y las comunidades](el-colapso-y-las-comunidades.md) (comunidades PNJ) · **Estado:** §1 está en el juego (0.9.2); §2 en adelante es propuesta
 
-**De dónde sale.** Las capitales de WoW (Ventormenta, Orgrimmar), con entrenadores de cada oficio, banco, subasta y barrios; las ciudades reales de Albion, cada una con su especialidad y su mercado; el Gold Saucer de *Final Fantasy VII*; las ciudades de jugadores de *Star Wars Galaxies*.
+Una ciudad en Lost Realms no la pone el diseñador: **la levantan los jugadores**. Hoy hay dos clases de lugar: el Claro, que es de todos, y los campamentos que fundan los jugadores. Los dos crecen por las mismas etapas hasta **castillo**. Este documento dice qué hay hoy en cada uno y qué abriría cada etapa más adelante, hasta el Castillo con sus alas.
 
 ---
 
-## 1. Tres tamaños de lugar
+## 1. Los lugares de hoy (en el juego)
 
-> En el juego hoy: los lugares son el Claro y los campamentos que fundan los jugadores, que crecen por niveles hasta castillo (D-71, D-81, D-87). Detalle en la nota de [Fundación y cisma](fundacion-y-cisma.md) §3.
+| Lugar | Quién lo levanta | Cómo crece | Qué tiene hoy |
+|---|---|---|---|
+| **El Claro** (0, 0) | Todo el servidor, con la obra común | 6 etapas: fogata, campamento, aldea, pueblo, ciudad y castillo. 1 zona más por etapa | 🏪 Mercader, 🛏️ posada (más barata en cada etapa), 💰 costura de bolsas, venta de equipo, territorio seguro |
+| **Campamento de jugadores** | Su fundador y sus miembros | Por nivel: campamento (1), aldea (3), pueblo (5), ciudad (7) y castillo (9). 1 zona elegida por nivel, sin tope | Territorio seguro, +50 % al recolectar para sus miembros, ancla del viaje, cupo de miembros que crece |
 
-| Lugar | Dónde | Qué tiene |
+- Los números y las reglas están en [Fundación y cisma](fundacion-y-cisma.md) §1 y §2 (D-71, D-81, D-84, D-87).
+- **Cuando el Claro llega a castillo,** el juego dice: "¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes". Ese "lo que sigue" son las alas del Castillo (§3).
+- Un campamento de jugadores en castillo todavía no abre nada nuevo. Es el lugar donde esta propuesta suma más.
+
+**Además, las comunidades PNJ (propuesta, D-45).** Aparte de los lugares de jugadores habría **comunidades de supervivientes PNJ** ya pobladas al abrir: cuatro a una zona del Claro, dos un poco más lejos y más que se descubren explorando. Cada una tiene su cultura, sus reglas y **sus entrenadores de rangos bajos y medios**. No crecen ni tienen Castillo. Ver [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
+
+## 2. Qué abriría cada etapa (propuesta)
+
+La regla: **cada etapa abre algo que se usa**, y lo que se abre se nota en la pantalla del lugar. Así crecer no es solo cambiar de nombre. Todo respeta "amplio pero ligero" (D-44): un servicio nuevo entra con su capa simple.
+
+| Etapa | En el Claro | En un campamento de jugadores |
 |---|---|---|
-| **Campamento** | Nodos de zonas amarillas y rojas | Fogata, un mercader errante, a veces una posta |
-| **Asentamiento** | 1 a 3 por región pacificada (zona azul) | Posada, sanador PNJ, mercado local, estaciones públicas básicas, tablón, entrenadores de rango bajo, taberna, salón del azar si tiene licencia |
-| **Capital** | Una por región grande (capital regional, en un lugar clave), y cada castillo fundado por un cisma | Todo lo anterior en grande, más **el Castillo**, barrios de las facciones, mercado regional, banco, prisión, hipódromo, puerto de caravanas y parcelas de gremio |
+| **Fogata** | Lo de hoy: mercader, posada, costura | — |
+| **Campamento** | Descanso más barato | Descanso básico para sus miembros (vida llena más lenta que la posada, pero gratis) |
+| **Aldea** | Tablón de pedidos de la obra | **Almacén común**: los miembros guardan materiales para agrandar el campamento entre todos. Un servicio a elegir: posada o mercader |
+| **Pueblo** | Gobierno elegido (ver [Fundación y cisma](fundacion-y-cisma.md) §5), mercado entre jugadores | Consejo de miembros, taller público para los primeros oficios |
+| **Ciudad** | Estaciones públicas mejores, sanatorio, academia | Mercado propio con comisión baja para sus miembros, estación pública de un oficio |
+| **Castillo** | El Castillo, ala por ala (§3) | El Castillo, ala por ala, con menos alas que el del Claro (§3) |
 
-**Además, las comunidades PNJ.** Aparte de las ciudades de jugadores hay **comunidades de supervivientes PNJ** que ya están pobladas al abrir el servidor: cuatro a una zona del Claro, otras dos un poco más lejos y más que se descubren explorando el mapa. Cada una tiene su cultura y sus reglas, y **sus propios entrenadores de rangos bajos y medios** en los oficios de su cultura: hasta Oficial en las seis cercanas y hasta Experto en las lejanas. No crecen ni tienen Castillo. Ver [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
+**La especialidad sale del territorio.** Cada campamento elige sus zonas viendo sus recursos (D-87). La propuesta es que su **estación pública** sea del oficio que más le conviene a ese territorio:
 
-## 2. El Castillo
+| Recurso principal del territorio | Oficio con bono en ese lugar |
+|---|---|
+| 🪵 Madera | Carpintería |
+| 🪨 Piedra | Construcción y cantería |
+| 🧵 Fibra | Sastrería y costura de bolsas |
+| 🌿 Hierba curativa | Alquimia y Medicina |
+| ⚙️ Metal | Herrería |
+| 🏺 Arcilla | Alfarería y Joyería |
 
-El corazón de cada ciudad grande. **Al lanzar el juego no existe ninguno:** el primero lo construyen los jugadores desde cero junto al Claro (ver [Fundación y cisma](fundacion-y-cisma.md)); después se levantan uno en cada capital regional pacificada y uno por cada castillo que funda un cisma. **Cada ala es una obra aparte**, y el Castillo solo ofrece los servicios de las alas que sus residentes construyeron y mantienen (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
+Esto mueve a los artesanos entre campamentos y le da identidad a cada lugar, como las ciudades reales de Albion.
 
-| Ala | Qué hay | Para quién |
-|---|---|---|
-| **Ala de los Oficios** | Entrenadores de todos los oficios, estaciones maestras (hasta rango 100), sala de exámenes, biblioteca de recetas, tablón de pedidos de fabricación | Artesanos, constructores, médicos |
-| **La Fortuna** | El casino legal: mesas, lotería, hipódromo, arena de gladiadores, tienda de premios (ver [Apuestas](../08-social/apuestas.md)) | Tahúres y curiosos |
-| **Sanatorio** | Diagnóstico exacto, tratamientos, cirugía segura, cuarentena (ver [Curación](../05-salud/curacion-y-tratamientos.md)) | Enfermos y heridos |
-| **Templo** | Rituales, maldiciones, corrupción, Restauración | Todos |
-| **Banco y Lonja** | Banco personal y de gremio, subastas de puestos, parcelas y licencias (ver [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md)), préstamos | Comerciantes, gremios |
-| **Guardia y prisión** | Recompensas, multas de karma, prisión, licencias de cazarrecompensas | Cazadores de recompensas, forajidos que pagan su pena |
-| **Salón de Embajadas** | Embajadas de los otros castillos, órdenes de guerra, tratados, reputación | Todos |
-| **Academia** | Investigaciones de conocimiento, casos de la Agencia (ver [Investigaciones](../06-contenido/investigaciones.md)) | Eruditos, detectives |
-| **Salón de la Orden de Cazadores** | Contratos de caza mayor, trofeos de la Orden (ver [Cacerías](../06-contenido/cacerias.md)) | Cazadores |
+## 3. El Castillo (propuesta)
 
-## 3. Entrenadores: cómo se aprende un oficio
+**Al abrir el servidor no existe ninguno.** El primero llega cuando el Claro o un campamento alcanza la etapa castillo. Desde ahí, **cada ala es una obra aparte**: se paga y se levanta como hoy se levanta la obra común. Un Castillo solo ofrece los servicios de las alas que construyó y mantiene (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
 
-**De dónde sale.** Los entrenadores de profesión de WoW, que enseñan recetas y rangos en las capitales, y los exámenes de los gremios de artesanos de *Final Fantasy XIV*.
+| Ala | Qué hay | Para quién | Dónde |
+|---|---|---|---|
+| **Ala de los Oficios** | Entrenadores de todos los oficios, estaciones maestras, sala de exámenes, biblioteca de recetas, tablón de pedidos | Artesanos, constructores, médicos | Claro y campamentos |
+| **Sanatorio** | Diagnóstico exacto, tratamientos, cirugía segura, cuarentena (ver [Curación](../05-salud/curacion-y-tratamientos.md)) | Enfermos y heridos | Claro y campamentos |
+| **Banco y Lonja** | Banco personal y de grupo, subastas de puestos y licencias (ver [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md)) | Comerciantes | Claro y campamentos |
+| **Guardia y prisión** | Recompensas, multas de karma, prisión | Cazadores de recompensas | Claro y campamentos |
+| **Templo** | Rituales, maldiciones, corrupción, Restauración | Todos | Solo el Claro al principio |
+| **La Fortuna** | El casino legal, siempre con monedas del juego (ver [Apuestas](../08-social/apuestas.md), D-43) | Tahúres y curiosos | Solo el Claro al principio |
+| **Salón de Embajadas** | Tratados entre campamentos, relaciones, reputación (ver [Fundación y cisma](fundacion-y-cisma.md) §7) | Todos | Solo el Claro al principio |
+| **Academia** | Investigaciones y casos (ver [Investigaciones](../06-contenido/investigaciones.md)) | Eruditos, detectives | Solo el Claro al principio |
+| **Salón de la Orden de Cazadores** | Contratos de caza mayor, trofeos (ver [Cacerías](../06-contenido/cacerias.md)) | Cazadores | Solo el Claro al principio |
 
-**Pediste un sistema de fabricación en el Castillo con entrenadores para progresar en las profesiones.** Así funciona:
+**Por qué "menos alas" en los campamentos.** El Claro es la sede común y tiene que seguir siendo el lugar donde todos se cruzan. Si cada campamento tuviera todo, el servidor se partiría en islas. Las alas sociales (Fortuna, Embajadas, Academia) se quedan en el Claro hasta que haya muchos castillos activos.
 
-1. **Aprender.** El entrenador del oficio te enseña el rango inicial y las recetas básicas de cada anillo, a cambio de oro (sumidero).
-2. **Practicar.** Subes de nivel fabricando, recolectando, construyendo o curando.
-3. **Estudiar.** Cada semana el entrenador da **tareas de oficio** (fabricar algo concreto, tratar a cierto tipo de paciente, trabajar jornadas en una obra) que dan **conocimiento** para el árbol de especialización (ver [Profesiones](../07-economia/profesiones.md)).
-4. **Examinarte.** Para pasar de rango (de Aprendiz a Oficial, de Oficial a Experto…) hay que aprobar un **examen** en la sala del Castillo: una pieza, una cirugía o una obra, hecha con el minijuego y con una calidad mínima. Si no apruebas, lo intentas otra vez otro día.
-5. **Subir de capital.** Los entrenadores de rangos altos solo están en los Castillos de las capitales altas, y solo si su ala de Oficios está construida y abastecida. Para ser Maestro hay que llegar a un Castillo de una capital lejana (anillo VIII o más): la progresión del oficio va con la de la Frontera.
+## 4. Entrenadores: cómo se aprende un oficio (propuesta)
 
-**Antes del Castillo: los maestros de las comunidades PNJ.** Los rangos bajos y medios (Aprendiz y Oficial, y Experto en las comunidades lejanas) también se aprenden con los maestros de las [comunidades PNJ](el-colapso-y-las-comunidades.md), cada una con sus oficios y su examen. Los rangos altos (Artesano, Maestro y Gran Maestro) solo se enseñan en el Ala de los Oficios de un Castillo.
+**De dónde sale.** Los entrenadores de profesión de WoW y los exámenes de los gremios de artesanos de *Final Fantasy XIV*.
 
-**Maestros jugadores.** Un Gran Maestro puede tomar **aprendices**: les enseña recetas propias (las que descubrió), les da tareas y cobra por la enseñanza. El aprendiz sube más rápido y el maestro gana reputación. Es la versión artesana de la mentoría (ver [Gremios y social](../08-social/gremios-y-social.md)).
+1. **Aprender.** El entrenador te enseña el rango inicial y las recetas básicas, a cambio de monedas (un sumidero).
+2. **Practicar.** Subes fabricando, recolectando, construyendo o curando.
+3. **Estudiar.** Cada semana el entrenador da **tareas de oficio** que dan conocimiento para la especialización del oficio (ver [Profesiones](../07-economia/profesiones.md)).
+4. **Examinarte.** Para pasar de rango hay que aprobar un **examen** en la sala del Castillo: una pieza, una cirugía o una obra con una calidad mínima. Si no apruebas, vuelves a intentar otro día.
+5. **Ir más lejos.** Los entrenadores de rangos altos solo están en Castillos con su Ala de los Oficios construida y abastecida.
 
-## 4. Especialidad de cada capital
+- **Antes del Castillo:** los rangos bajos y medios también se aprenden con los maestros de las [comunidades PNJ](el-colapso-y-las-comunidades.md). Los rangos altos (Artesano, Maestro y Gran Maestro) solo en el Ala de los Oficios.
+- **Maestros jugadores:** un Gran Maestro puede tomar aprendices, enseñarles recetas propias y cobrar por la enseñanza (ver [Gremios y social](../08-social/gremios-y-social.md)).
+- **La 🪪 credencial de oficio** (D-85) es la carta de presentación del artesano ante otros jugadores. Hoy existe como moneda; se llenará cuando lleguen los oficios.
 
-Como las ciudades de Albion, cada capital tiene un bono de oficio:
+## 5. Capitales regionales (propuesta lejana)
 
-| Capital | Anillo | Especialidad |
-|---|---|---|
-| Capital del Bosque | I | Carpintería y Herboristería |
-| Capital de la Pradera | II | Cocina, Crianza y carreras |
-| Capital de Cristal | III | Joyería y Encantamiento |
-| Capital del Pantano | IV | Alquimia y Medicina |
-| Capital del Desierto | V | Herrería y Construcción |
-| (y así en cada anillo) | | |
+Cuando llegue la Frontera (ver [Mapa infinito y viaje](mapa-infinito-y-viaje.md) §2.1), cada región pacificada podría tener una **capital**: el campamento más grande de esa región, o una comunidad PNJ si nadie fundó. La capital tendría el mercado regional y el puerto de caravanas. Esto conecta los campamentos con la meta común del servidor sin quitarle el papel al Claro.
 
-Esto mueve a los artesanos y a los materiales entre capitales, y le da identidad a cada ciudad.
+## 6. De dónde sale
+
+- **World of Warcraft:** las capitales (Ventormenta, Orgrimmar) con entrenadores de cada oficio, banco, subasta y barrios.
+- **Albion Online:** ciudades con especialidad y mercado propio.
+- **Ashes of Creation:** nodos que abren servicios al crecer.
+- **Star Wars Galaxies:** ciudades de jugadores que abren edificios por rango.
+- **Final Fantasy VII:** el Gold Saucer, para la Fortuna.
+- **Final Fantasy XIV:** los exámenes de los gremios de artesanos.
+
+## 7. Preguntas
+
+- ¿Qué abre primero un campamento en aldea: posada o mercader? Recomendación: que el fundador elija uno, para que cada campamento sea distinto.
+- ¿Cuántas alas puede tener un Castillo de jugadores? Recomendación: las cuatro de oficio, salud, banco y guardia, hasta que haya muchos castillos activos.
+- P-55 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md): cuánto debería tardar el Claro en llegar a castillo.

@@ -14,7 +14,8 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Artefacto** | Material único que suelta un jefe, con el que se fabrica un arma o armadura única | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Aviso** | Texto con el que un enemigo anuncia su próximo golpe | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Bestiario / conocimiento** | Registro de criaturas y movimientos vistos; da pistas en los avisos | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
-| **Castillo** | Corazón de una ciudad grande, con alas que se construyen por separado | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
+| **Campamento (de jugadores)** | Lugar que funda un jugador lejos del Claro, con nombre único y miembros que acepta el fundador. Crece eligiendo zonas: aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9) (D-71, D-84, D-87) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2 |
+| **Castillo** | La última etapa del Claro y de un campamento (nivel 9). Propuesta: el corazón de una ciudad grande, con alas que se construyen por separado | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
 | **Cisma** | Cuando un grupo de residentes se separa y funda su propio castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | **Clamor** | El "lust": más iniciativa y acciones rápidas durante 3 rondas | [Balance](../03-personaje/balance.md) |
 | **Capital regional** | Asentamiento principal de una región, en un lugar clave (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
@@ -42,6 +43,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |
 | **Mercado Negro** | PNJ que compra equipo a los artesanos y lo pone en el botín de los monstruos | [Economía](../07-economia/economia.md) |
 | **Necesidades de la ciudad** | Comida, materiales, herramientas, defensa, salud, ánimo, orden y tesoro | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
+| **Obra común** | Lo que todo el servidor levanta junto en el Claro, aportando materiales: sube de fogata a campamento, aldea, pueblo, ciudad y castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §1 |
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Poder de Objeto** | Número que resume lo bueno que es un objeto | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Postura** | Barra de los enemigos grandes; rota, abre golpes críticos | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
@@ -55,7 +57,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Tácticas** | Reglas automáticas de combate que escribe el jugador | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Tasa autodeclarada** | El dueño declara el valor de su lugar, paga sobre él, y cualquiera puede comprarlo a ese precio | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) |
 | **Técnica de equipo** | Habilidad que da el arma o la armadura (idea de Albion) | [Equipamiento](../03-personaje/equipamiento.md) |
-| **Techo de la Frontera** | La experiencia baja cuando tu nivel supera por mucho al de la Frontera (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
+| **Techo de la Frontera** | Retirado: bajaba la experiencia cuando tu nivel superaba por mucho al de la Frontera. D-78 fijó 100 niveles lentos sin techo | [Progresión](../03-personaje/progresion.md) §9 |
 | **Tesoro Semanal** | Elegir una recompensa por semana según lo jugado | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Veta** | Fuente de recursos con calidad propia, que se mueve de lugar | [Fabricación](../07-economia/fabricacion.md) |
 | **Viento de Cola** | Más experiencia en las regiones que quedaron muy por detrás de la Frontera | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
