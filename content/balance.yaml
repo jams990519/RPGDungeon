@@ -129,16 +129,14 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
   grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
 
-pantry:                      # [ES] D-93 (provisional): la despensa, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §3.2, §7). Números orientativos: se ajustan en la beta
-  claro_from_stage: aldea    # [ES] el Claro tiene despensa desde esta etapa (id de settlement.stages); antes, subir es solo pagar (tutorial)
+pantry:                      # [ES] D-93 (provisional): la despensa de los campamentos de jugadores, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §7.2). El Claro no se mantiene: no tiene dueño (D-95). Números orientativos: se ajustan en la beta
   camp_from_level: 3         # [ES] los campamentos de jugadores, desde el nivel 3 (aldea): despensa chica, capa ligera (§7.2)
   ration_per_day: 1          # [ES] cada residente activo come 1 ración por día real (§4.2)
   active_hours: 24           # [ES] "activo" = tocó un botón en las últimas 24 horas; quien no juega no come (§15.3)
   active_refresh_minutes: 60 # [ES] cada cuánto se renueva la marca de "activo" de un héroe en el registro compartido (ahorra escrituras; margen de 1 hora)
-  start_days: 7              # [ES] una despensa nueva empieza con 7 días de comida para todos los que podrían comer de ella (también al llegar el parche: nadie empieza castigado)
-  states: {abundancia: 14, holgada: 7, justa: 3, escasez: 1, hambruna: 0}   # [ES] desde cuántos días enteros de comida rige cada estado; hambruna = menos de 1 día (la posada no cura, la obra no sube, el campamento no crece)
-  min_days_to_rise: {pueblo: 4, ciudad: 5, castillo: 7}   # [ES] el Claro pasa a esta etapa solo con la obra pagada Y estos días en la despensa; si faltan, espera y sube solo al aportar (§7.1)
-  xp_per_ration: 2           # [ES] experiencia por cada ración aportada (como settlement.xp_per_unit por material)
+  start_days: 7              # [ES] una despensa nueva empieza con 7 días de comida para todos los miembros del campamento (también al llegar el parche: nadie empieza castigado)
+  states: {abundancia: 14, holgada: 7, justa: 3, escasez: 1, hambruna: 0}   # [ES] desde cuántos días enteros de comida rige cada estado; hambruna = menos de 1 día (el campamento no crece)
+  xp_per_ration: 2           # [ES] experiencia por cada ración aportada a la despensa del campamento (como settlement.xp_per_unit por material)
   merit_per_ration: 1        # [ES] mérito por cada ración aportada (como la obra común: 1 por material)
 
 shop:                        # [ES] mercader del Claro
