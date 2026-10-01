@@ -290,6 +290,15 @@ class GameService:
         kit["armor_cap"] = self.content.balance["gear"]["armor_cap"]
         return kit
 
+    def _money(self, amount: int) -> str:
+        """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80): 100 bronze = 1 silver, 100 silver = 1 gold."""
+        cfg = self.content.balance["currency"]
+        rate = cfg["rate"]
+        gold, rest = divmod(max(0, int(amount)), rate * rate)
+        silver, bronze = divmod(rest, rate)
+        parts = [f"{cfg['icons'][k]}{v}" for k, v in (("gold", gold), ("silver", silver), ("bronze", bronze)) if v]
+        return " ".join(parts) or f"{cfg['icons']['bronze']}0"
+
     def _save(self, hero: Hero) -> None:
         self.store.put("hero", hero.id, hero.to_dict())
 
@@ -495,7 +504,7 @@ class GameService:
             return self.texts.t("explore.found_item", item=f"{item['emoji']} {self.texts.t(item['name_key'])}")
         gold = int(zone.level * rng.uniform(2, 5)) + 1
         hero.gold += gold
-        return self.texts.t("explore.found_gold", gold=gold)
+        return self.texts.t("explore.found_gold", gold=self._money(gold))
 
     # ------------------------------------------------------------------ creation
 
@@ -625,6 +634,14 @@ class GameService:
             return self._spec_view(hero, spec, notice=notice)
         if action_id == "bag":
             return self._bag_view(hero)
+        if action_id == "wallet":
+            return self._wallet_view(hero)
+        if action_id == "gems":
+            return self._gem_shop_view(hero)
+        if action_id.startswith("gem:"):
+            return self._buy_with_gems(hero, action_id[4:])
+        if action_id == "sew":
+            return self._sew_bag(hero)
         if action_id == "gear" or action_id.startswith("gear:"):
             page = action_id[5:]
             return self._gear_view(hero, int(page) if page.isdigit() else 0)
@@ -648,7 +665,7 @@ class GameService:
         if action_id == "claro":
             return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
                         actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
-                                 Action(id="inn", label=t.t("inn.button", price=self._inn_price())), Action(id="home", label=t.t("menu.back"))])
+                                 Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))])
         if action_id in ("camp", "donate"):
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
@@ -736,7 +753,7 @@ class GameService:
 
     def _status_line(self, hero: Hero) -> str:
         stats = hero_stats(self._kit(hero), hero.level)
-        return self.texts.t("hero.status_line", hp=hero.hp, max_hp=stats["max_hp"], gold=hero.gold, level=hero.level,
+        return self.texts.t("hero.status_line", hp=hero.hp, max_hp=stats["max_hp"], gold=self._money(hero.gold), level=hero.level,
                             energy=hero.energy, max_energy=self.content.balance["energy"]["max"])
 
     def _zone_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -847,7 +864,7 @@ class GameService:
                 body.append(t.t("camp.need_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=need, bar=self._bar(have, need, 8)))
         else:
             body.append(t.t("camp.complete"))
-        body.append(t.t("camp.bonus", price=self._inn_price()))
+        body.append(t.t("camp.bonus", price=self._money(self._inn_price())))
         top = sorted(data["merit"].items(), key=lambda kv: -kv[1])[:5]
         if top:
             body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
@@ -888,11 +905,17 @@ class GameService:
         lines += self._tutorial(hero, "donate")
         return self._camp_view(hero, notice="\n".join(lines))
 
+    def _xp_mult(self, hero: Hero) -> float:
+        """Experience accelerator bought with gems (D-43, D-80): ×1.5 while active."""
+        boost = self.content.balance["currency"]["gem_shop"]["xp_boost"]
+        return boost["xp_mult"] if hero.xp_boost_until > self.clock.now() else 1.0
+
     def _give_xp(self, hero: Hero, xp: int) -> list[str]:
-        hero.xp += xp
+        hero.xp += int(xp * self._xp_mult(hero))
         lines = []
-        formula = self.content.balance["hero"]["xp_formula"]
-        while hero.xp >= xp_for_level(formula, hero.level + 1):
+        hb = self.content.balance["hero"]
+        formula = hb["xp_formula"]
+        while hero.level < hb["max_level"] and hero.xp >= xp_for_level(formula, hero.level + 1):
             hero.level += 1
             hero.points += 1
             hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
@@ -924,7 +947,7 @@ class GameService:
             return []
         hero.tutorial += 1
         hero.gold += cfg["reward_gold"]
-        lines = [self.texts.t("tutorial.reward", gold=cfg["reward_gold"], xp=cfg["reward_xp"])]
+        lines = [self.texts.t("tutorial.reward", gold=self._money(cfg["reward_gold"]), xp=cfg["reward_xp"])]
         return lines + self._give_xp(hero, cfg["reward_xp"])
 
     def _tutorial_hint(self, hero: Hero) -> list[str]:
@@ -938,18 +961,18 @@ class GameService:
         """The Claro trader: buy belt items, sell materials (half price)."""
         t = self.texts
         shop = self.content.balance["shop"]
-        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=hero.gold), ""]
+        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), ""]
         actions = []
         for item_id in shop["sells"]:
             item = self.content.items[item_id]
-            body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=item["price"]))
-            actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=item["price"])))
+            body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=self._money(item["price"])))
+            actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(item["price"]))))
         sellable = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "material"}
         if sellable:
             total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
-            body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=total))
+            body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
             actions = actions[:2]
-            actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=total)))
+            actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=self._money(total))))
         actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
 
@@ -976,7 +999,7 @@ class GameService:
                     sold[i] = n
                     del hero.backpack[i]
             hero.gold += total
-            return self._shop_view(hero, notice=t.t("shop.sold_all", items=self._item_list(sold), total=total) if sold else None)
+            return self._shop_view(hero, notice=t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total)) if sold else None)
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
             return self._shop_view(hero)
@@ -985,7 +1008,7 @@ class GameService:
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
         hero.gold += price
-        return self._shop_view(hero, notice=t.t("shop.sold", item=t.t(item["name_key"]), price=price))
+        return self._shop_view(hero, notice=t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price)))
 
     def _rest(self, hero: Hero) -> View:
         """Inn: pay gold, sleep a few minutes, wake with full health."""
@@ -997,7 +1020,7 @@ class GameService:
         hero.gold -= price
         seconds = self._seconds(inn["minutes"])
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
-        return self._activity_view(hero, notice=t.t("inn.started", price=price, time=self._fmt_duration(seconds)))
+        return self._activity_view(hero, notice=t.t("inn.started", price=self._money(price), time=self._fmt_duration(seconds)))
 
     def _explore_menu(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -1133,7 +1156,7 @@ class GameService:
         hero.talents = {}
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         hero.unlocked = [base_response(self.content.classes, group)]
-        return self._talents_view(hero, notice=t.t("talents.respec_done", cost=cost, n=hero.points))
+        return self._talents_view(hero, notice=t.t("talents.respec_done", cost=self._money(cost), n=hero.points))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
         t = self.texts
@@ -1154,7 +1177,7 @@ class GameService:
         if hero.points > 0:
             actions.append(Action(id=f"pt:{spec}", label=t.t("talents.spend_button")))
         if hero.talents:
-            actions.append(Action(id="respec", label=t.t("talents.respec_button", cost=self._respec_cost(hero))))
+            actions.append(Action(id="respec", label=t.t("talents.respec_button", cost=self._money(self._respec_cost(hero)))))
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
@@ -1218,7 +1241,7 @@ class GameService:
         pct = 100.0 if top else min(100.0, max(0.0, 100 * (hero.xp - low) / max(1, high - low)))
         zone = self._zone(hero.x, hero.y)
         body = [
-            t.t("hero.top_line", icon=self._hero_icon(hero), name=hero.name, place=self._zone_name(zone)),
+            t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
             t.t("hero.class_line", cls=self._hero_title(hero), role=t.t("role." + cdef.get("role", "ataque")) if hero.talents else t.t("talents.no_role")),
             t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
             t.t("hero.xp_line", xp=hero.xp, next=high),
@@ -1227,7 +1250,7 @@ class GameService:
             t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
             t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
             t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_start", 0), max=cdef.get("resource_max", 100)),
-            t.t("hero.coins_line", gold=hero.gold, bags=hero.bags, gems=hero.gems),
+            t.t("hero.coins_line", gold=self._money(hero.gold), bags=hero.bags, gems=hero.gems),
             t.t("gear.hero_line", items=self._worn_list(hero)),
             t.t("hero.inv_link", n=sum(hero.backpack.values()) + sum(hero.belt.values())),
             t.t("hero.skills_link", n=hero.points, bar=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
@@ -1291,10 +1314,91 @@ class GameService:
             if item.get("heal"):
                 count = hero.backpack.get(item_id, 0) + hero.belt.get(item_id, 0)
                 actions.append(Action(id=f"use:{item_id}", label=t.t("bag.use_button", emoji=item["emoji"], item=t.t(item["name_key"]), n=count)))
-        actions = actions[:2]
+        actions = actions[:1]
         actions.append(Action(id="gear", label=t.t("gear.button")))
+        actions.append(Action(id="wallet", label=t.t("wallet.button")))
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
+
+    # ------------------------------------------------------------------ currencies (D-80)
+
+    def _banner(self, hero: Hero) -> str:
+        return self.texts.t(f"wallet.banner_tag.{hero.banner}") + " " if hero.banner else ""
+
+    def _wallet_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The five currencies: bronze, silver, gold (earned), bags (sewn), gems (bought)."""
+        t = self.texts
+        cfg = self.content.balance["currency"]
+        in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        body = [
+            t.t("wallet.coins", coins=self._money(hero.gold)),
+            t.t("wallet.coins_help", rate=cfg["rate"]),
+            "",
+            t.t("wallet.bags", n=hero.bags),
+            t.t("wallet.bags_help", items=self._item_list(cfg["bag_recipe"]), coins=self._money(cfg["bag_coins"])),
+            "",
+            t.t("wallet.gems", n=hero.gems),
+            t.t("wallet.gems_help"),
+        ]
+        if hero.xp_boost_until > self.clock.now():
+            body += ["", t.t("wallet.boost_on", time=self._fmt_duration(hero.xp_boost_until - self.clock.now()))]
+        actions = []
+        if in_claro:
+            actions.append(Action(id="sew", label=t.t("wallet.sew_button")))
+        else:
+            body.append(t.t("wallet.sew_in_claro"))
+        actions += [Action(id="gems", label=t.t("wallet.gems_button")), Action(id="bag", label=t.t("menu.back"))]
+        return View(kind="wallet", title=t.t("wallet.title"), body=body, actions=actions, notice=notice)
+
+    def _sew_bag(self, hero: Hero) -> View:
+        """Sew one bag in the Claro: thread, a metal clasp and coins (a sink for coins and materials)."""
+        t = self.texts
+        cfg = self.content.balance["currency"]
+        if not (hero.x == 0 and hero.y == 0 and not hero.activity):
+            return self._wallet_view(hero, notice=t.t("shop.only_in_claro"))
+        missing = {i: n for i, n in cfg["bag_recipe"].items() if hero.backpack.get(i, 0) < n}
+        if missing or hero.gold < cfg["bag_coins"]:
+            return self._wallet_view(hero, notice=t.t("wallet.sew_missing", items=self._item_list(cfg["bag_recipe"]), coins=self._money(cfg["bag_coins"])))
+        for item_id, n in cfg["bag_recipe"].items():
+            hero.backpack[item_id] -= n
+            if hero.backpack[item_id] <= 0:
+                del hero.backpack[item_id]
+        hero.gold -= cfg["bag_coins"]
+        hero.bags += 1
+        return self._wallet_view(hero, notice=t.t("wallet.sewn", n=hero.bags))
+
+    def _gem_shop_view(self, hero: Hero, notice: str | None = None) -> View:
+        t = self.texts
+        shop = self.content.balance["currency"]["gem_shop"]
+        phase = self.content.balance["currency"]["banner_phase"]
+        boost = shop["xp_boost"]
+        body = [t.t("wallet.gems", n=hero.gems), t.t("wallet.gem_shop_intro"), "",
+                t.t("wallet.xp_boost_line", pct=round((boost["xp_mult"] - 1) * 100), days=boost["days"], gems=boost["gems"]),
+                t.t(f"wallet.banner_line.{phase}", gems=shop["banner"]["gems"])]
+        if hero.banner:
+            body.append(t.t("wallet.banner_owned", tag=self._banner(hero).strip()))
+        actions = [Action(id="gem:xp_boost", label=t.t("wallet.xp_boost_button", gems=boost["gems"]))]
+        if not hero.banner:
+            actions.append(Action(id="gem:banner", label=t.t("wallet.banner_button", gems=shop["banner"]["gems"])))
+        actions.append(Action(id="wallet", label=t.t("menu.back")))
+        return View(kind="gems", title=t.t("wallet.gem_shop_title"), body=body, actions=actions, notice=notice)
+
+    def _buy_with_gems(self, hero: Hero, what: str) -> View:
+        t = self.texts
+        cfg = self.content.balance["currency"]
+        shop = cfg["gem_shop"]
+        if what not in shop or (what == "banner" and hero.banner):
+            return self._gem_shop_view(hero)
+        price = shop[what]["gems"]
+        if hero.gems < price:
+            return self._gem_shop_view(hero, notice=t.t("wallet.no_gems"))
+        hero.gems -= price
+        if what == "xp_boost":
+            start = max(self.clock.now(), hero.xp_boost_until)
+            hero.xp_boost_until = start + shop["xp_boost"]["days"] * 86400
+            return self._gem_shop_view(hero, notice=t.t("wallet.boost_bought"))
+        hero.banner = cfg["banner_phase"]
+        return self._gem_shop_view(hero, notice=t.t("wallet.banner_bought", tag=self._banner(hero).strip()))
 
     # ------------------------------------------------------------------ gear (D-77)
 
@@ -1416,9 +1520,9 @@ class GameService:
             if usable is None:
                 actions.append(Action(id=f"equip:{item_id}", label=t.t("gear.equip_button")))
             if in_claro:
-                actions.append(Action(id=f"sellg:{item_id}", label=t.t("gear.sell_button", price=price)))
+                actions.append(Action(id=f"sellg:{item_id}", label=t.t("gear.sell_button", price=self._money(price))))
             else:
-                body.append(t.t("gear.sell_in_claro", price=price))
+                body.append(t.t("gear.sell_in_claro", price=self._money(price)))
         actions.append(Action(id="gear", label=t.t("menu.back")))
         return View(kind="item", title=t.t("gear.item_title"), body=body, actions=actions, notice=notice)
 
@@ -1442,7 +1546,7 @@ class GameService:
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
         hero.gold += price
-        return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=price))
+        return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price)))
 
     # ------------------------------------------------------------------ combat
 
@@ -1566,14 +1670,14 @@ class GameService:
         rng = Rng(state["seed"], state["draws"])
         hb = self.content.balance["hero"]
         if outcome == "victory":
-            xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)))
+            xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)) * self._xp_mult(hero))
             low, high = edef.get("gold", [1, 3])
             gold = int(rng.uniform(low, high + 1) * (1 + 0.1 * (enemy["level"] - 1)))
             hero.xp += xp
             hero.gold += gold
             hero.kills += 1
             lines += self._tutorial(hero, "win_fight")
-            lines.append(t.t("combat.rewards", xp=xp, gold=gold))
+            lines.append(t.t("combat.rewards", xp=xp, gold=self._money(gold)))
             for item_id, chance in edef.get("loot", {}).items():
                 if item_id in self.content.items and rng.chance(chance):
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
@@ -1595,7 +1699,7 @@ class GameService:
             hero.gold -= lost
             hero.hp = 1
             self.bus.publish(HeroDowned(hero.id))
-            lines.append(t.t("combat.defeat_consequence", gold=lost))
+            lines.append(t.t("combat.defeat_consequence", gold=self._money(lost)))
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))

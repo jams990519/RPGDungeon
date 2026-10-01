@@ -80,3 +80,12 @@ v0_6_1:
     - "🧭 Viajes más cortos: las 2 primeras zonas desde el Claro o tu campamento toman 2 minutos, las 2 siguientes 3, y así. Tu campamento reinicia la cuenta."
     - "🎖 Hay 100 niveles. Subir es lento a propósito: cada nivel cuenta."
     - "⏳ En combate, usar algo de la mochila gasta tu turno."
+
+v0_7:
+  version: "0.7"
+  title: "💰 Lost Realms 0.7: cinco monedas"
+  notes:
+    - "🥉 Bronce, 🥈 Plata y 🥇 Oro: 100 de una son 1 de la siguiente. Tus monedas de antes ahora cuentan como bronce: no perdiste nada."
+    - "👝 Bolsas: se cosen en el Claro con 4 de fibra, 1 pieza de metal y 1 🥈. Pronto servirán para la doble especialización."
+    - "💎 Gemas: la tienda tiene ⭐ experiencia +50 % por 7 días y 🚩 un estandarte único de beta tester al lado de tu nombre. Las gemas se venderán muy pronto."
+    - "Míralo todo con /monedas o en 🎒 Mochila → 💰 Monedas."

@@ -32,7 +32,10 @@ class Hero:
         id: account id given by the client adapter (the engine does not parse it).
         name: hero name.
         class_id: id in content/classes.yaml.
-        level, xp, gold: progression.
+        level, xp: progression.
+        gold: ALL the hero's coins, counted in bronze (D-80: 100 bronze = 1 silver, 100 silver = 1 gold).
+        bags: sewn bags (a currency made in the Claro); gems: bought currency (D-43).
+        xp_boost_until: end of the gem experience accelerator; banner: unique banner bought with gems.
         hp: current health (max is derived).
         x, y: zone coordinates on the infinite map; (0, 0) is the Claro.
         activity: None or {"kind": "travel"|"explore", "until": ts, ...}.
@@ -80,6 +83,8 @@ class Hero:
     gear: dict[str, str] = field(default_factory=dict)
     gear_started: bool = False
     energy_version: int = 0
+    xp_boost_until: float = 0.0
+    banner: str | None = None
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

@@ -34,6 +34,16 @@ Pocas, para no repetir el problema de WoW, donde hay más de veinte monedas:
 | ⚔️ **Honor** | Recompensas de PvP | Arenas, campos, guerra de facciones | No |
 | 💎 **Gemas** | Cosméticos y comodidades (moneda premium) | Telegram Stars; algunas en eventos | No |
 
+**En el juego hoy (parche 0.7, D-80):** cinco monedas, más simples que la tabla de arriba:
+
+| Moneda | Cómo se consigue | Para qué sirve hoy |
+|---|---|---|
+| 🥉 **Bronce**, 🥈 **Plata**, 🥇 **Oro** | Se ganan jugando (combates, exploración, ventas) y se juntan solas: 100 🥉 = 1 🥈 y 100 🥈 = 1 🥇. En el código es un solo número contado en bronce (`Hero.gold`) | Mercader, posada, reiniciar especialización, coser bolsas |
+| 👝 **Bolsas** | Se cosen en el Claro con 4 de fibra (hilo), 1 pieza de metal (el cierre) y 1 🥈. Es un sumidero de monedas y materiales | Doble especialización (próximo parche) y lo que venga |
+| 💎 **Gemas** | Se compran con dinero real (todavía no se venden: ver P-72) | Solo aceleradores y cosméticos (D-43): ⭐ experiencia +50 % por 7 días (100 💎) y 🚩 estandarte único al lado del nombre (150 💎) |
+
+El estandarte que se compra durante la beta es el de **beta tester** (🚩[Beta]). Después de la beta, el mismo producto pasa a ser un estandarte premium normal (`balance.yaml` → `currency.banner_phase`). Las recetas y los precios los propuso Claude.
+
 **Transferibles y no transferibles** (como en WoW): el **oro** es libre y se comercia entre jugadores. La **Esencia**, el **Honor**, la **reputación de castillo** y la **moneda de temporada** (que se gana en cada temporada y compra sus recompensas) **no se pueden transferir**: son de quien las ganó. Así lo que se gana jugando no se compra con oro ni con cuentas alternas.
 
 La reputación, los títulos de Pionero y el conocimiento **no** son monedas: son progreso.
