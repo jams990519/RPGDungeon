@@ -177,6 +177,7 @@ Coordenadas 1, 2 · Lejanía 2
   - Nadie puede fundar otro campamento encima.
   - Para tu viaje, la distancia se cuenta desde la zona más cercana de tu campamento o del Claro (2, 2, 3, 3… minutos).
 - La línea "🏕️ Territorio de…" aparece en la pantalla de la zona.
+- **Nombre y miembros (D-84):** al fundarlo, el fundador escribe el nombre (único; puede cambiarlo). Otros jugadores piden unirse desde el campamento y el fundador acepta o rechaza con un botón. Caben 2 miembros al nivel 1 y 2 más por cada nivel. Cada jugador pertenece a un solo campamento, cuenta la distancia del viaje desde él y puede salir cuando quiera.
 - Lo pidió el dueño. Los costos y la seguridad al llegar los propuso Claude.
 
 ## 2. Lo que viene por parches (propuesta)

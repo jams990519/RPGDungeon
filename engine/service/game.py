@@ -65,6 +65,7 @@ from engine.world.territory import first_zones, next_zone
 
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
+CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 
 
 class GameService:
@@ -126,6 +127,10 @@ class GameService:
         """Handle free text (only used to name the hero). [ES] Qué hace: recibe texto escrito (el nombre del héroe). La llaman: los clientes. Si cambia, afecta: la creación de personaje."""
         self._seen(account_id)
         hero = self._load(account_id)
+        if hero is not None and self.store.get("camp_naming", account_id):
+            view = self._name_camp(hero, " ".join(text.split()))
+            self._save(hero)
+            return view
         if hero is not None:
             view = self.view(account_id)
             view.notice = self.texts.t("common.use_buttons")
@@ -152,6 +157,10 @@ class GameService:
         notices = self._settle(hero)
         if action_id.startswith("rel:"):
             view = self._answer_visitor(hero, action_id)
+            self._save(hero)
+            return view
+        if action_id.startswith("join:"):
+            view = self._answer_join(hero, action_id)
             self._save(hero)
             return view
         combat = self.store.get("combat", hero.id)
@@ -292,7 +301,7 @@ class GameService:
         return kit
 
     def _money(self, amount: int) -> str:
-        """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80): 100 bronze = 1 silver, 100 silver = 1 gold."""
+        """Coins as 🥇 gold · 🪙 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, int(amount)), rate * rate)
@@ -680,9 +689,18 @@ class GameService:
             return self._places_view(hero)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
-            return self._found_camp(hero)
+            return self._ask_camp_name(hero, "found")
+        if action_id == "rename":
+            return self._ask_camp_name(hero, "rename")
+        if action_id == "cancel_name":
+            self.store.delete("camp_naming", hero.id)
+            return self._camp_here_view(hero)
         if action_id == "grow":
             return self._grow_camp(hero)
+        if action_id == "askjoin":
+            return self._ask_join(hero)
+        if action_id == "leave":
+            return self._leave_camp(hero)
         if action_id == "claro" and not in_claro:
             return self._camp_here_view(hero)
         if action_id == "claro":
@@ -1091,14 +1109,23 @@ class GameService:
         if camp:
             level = camp.get("level", 1)
             body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
-                    t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]])))]
+                    t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]]))),
+                    t.t("camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
             actions = []
             if hero.id in camp["members"]:
                 body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._item_list(self._grow_cost(level)))]
                 actions.append(Action(id="grow", label=t.t("camps.grow_button")))
+                if camp.get("founder_id") == hero.id:
+                    actions.append(Action(id="rename", label=t.t("camps.rename_button")))
+                else:
+                    actions.append(Action(id="leave", label=t.t("camps.leave_button")))
             else:
                 rel = camp["relations"].get(hero.id)
                 body.append(t.t(f"camps.relation.{rel or 'unknown'}"))
+                if hero.id in camp.get("requests", []):
+                    body.append(t.t("camps.join_waiting"))
+                elif hero.camp is None and rel != "hostile":
+                    actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
             actions.append(Action(id="home", label=t.t("menu.back")))
             return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         reqs = self._camp_requirements(hero)
@@ -1107,7 +1134,46 @@ class GameService:
         actions.append(Action(id="home", label=t.t("menu.back")))
         return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
 
-    def _found_camp(self, hero: Hero) -> View:
+    def _ask_camp_name(self, hero: Hero, mode: str) -> View:
+        """Founding or renaming a camp: the next text the player writes is its name (D-84)."""
+        t = self.texts
+        camp = self.store.get("camp", f"{hero.x}:{hero.y}")
+        if mode == "found" and (camp or hero.activity or not all(ok for _, ok in self._camp_requirements(hero))):
+            return self._camp_here_view(hero, notice=t.t("camps.cannot"))
+        if mode == "rename" and (not camp or camp.get("founder_id") != hero.id):
+            return self._camp_here_view(hero)
+        self.store.put("camp_naming", hero.id, {"mode": mode, "x": hero.x, "y": hero.y})
+        return View(kind="name_camp", title=t.t("camps.title"), body=[t.t("camps.ask_name")], expects_text=True,
+                    actions=[Action(id="cancel_name", label=t.t("camps.cancel_name"))])
+
+    def _name_camp(self, hero: Hero, name: str) -> View:
+        t = self.texts
+        pending = self.store.get("camp_naming", hero.id)
+        if (pending["x"], pending["y"]) != (hero.x, hero.y):
+            self.store.delete("camp_naming", hero.id)
+            return self._camp_here_view(hero)
+        if not CAMP_NAME_RE.match(name):
+            return View(kind="name_camp", title=t.t("camps.title"), body=[t.t("camps.bad_name"), t.t("camps.ask_name")], expects_text=True,
+                        actions=[Action(id="cancel_name", label=t.t("camps.cancel_name"))])
+        taken = self.store.get("camp_name", self._name_key(name))
+        key = f"{hero.x}:{hero.y}"
+        if taken and taken.get("camp") != key:
+            return View(kind="name_camp", title=t.t("camps.title"), body=[t.t("camps.name_taken"), t.t("camps.ask_name")], expects_text=True,
+                        actions=[Action(id="cancel_name", label=t.t("camps.cancel_name"))])
+        self.store.delete("camp_naming", hero.id)
+        if pending["mode"] == "rename":
+            camp = self.store.get("camp", key)
+            if not camp or camp.get("founder_id") != hero.id:
+                return self._camp_here_view(hero)
+            old = camp["name"]
+            self.store.delete("camp_name", self._name_key(old))
+            camp["name"] = name
+            self.store.put("camp", key, camp)
+            self.store.put("camp_name", self._name_key(name), {"camp": key})
+            return self._camp_here_view(hero, notice=t.t("camps.renamed", name=name))
+        return self._found_camp(hero, name)
+
+    def _found_camp(self, hero: Hero, name: str) -> View:
         t = self.texts
         if hero.activity or not all(ok for _, ok in self._camp_requirements(hero)):
             return self._camp_here_view(hero, notice=t.t("camps.cannot"))
@@ -1116,12 +1182,70 @@ class GameService:
             if hero.backpack[item_id] <= 0:
                 del hero.backpack[item_id]
         key = f"{hero.x}:{hero.y}"
-        self.store.put("camp", key, {"name": t.t("camps.default_name", name=hero.name), "founder": hero.name, "founder_id": hero.id,
+        self.store.put("camp_name", self._name_key(name), {"camp": key})
+        self.store.put("camp", key, {"name": name, "founder": hero.name, "founder_id": hero.id,
                                       "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now(),
                                       "level": 1, "zones": [[hero.x, hero.y]]})
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
-        return self._camp_here_view(hero, notice=t.t("camps.founded", x=hero.x, y=hero.y))
+        return self._camp_here_view(hero, notice=t.t("camps.founded", name=name, x=hero.x, y=hero.y))
+
+    def _members_cap(self, camp: dict[str, Any]) -> int:
+        """More people fit as the camp grows (D-84): base + per level above 1."""
+        cfg = self.content.balance["camps"]
+        return cfg["members_base"] + (camp.get("level", 1) - 1) * cfg["members_per_level"]
+
+    def _ask_join(self, hero: Hero) -> View:
+        """Ask the founder to let you in; the founder decides with two buttons (D-84)."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id in camp["members"] or hero.camp is not None or camp["relations"].get(hero.id) == "hostile":
+            return self._camp_here_view(hero)
+        if len(camp["members"]) >= self._members_cap(camp):
+            return self._camp_here_view(hero, notice=t.t("camps.full"))
+        requests = camp.setdefault("requests", [])
+        if hero.id not in requests:
+            requests.append(hero.id)
+            self.store.put("camp", key, camp)
+            ask = View(kind="camp_join", title=t.t("camps.join_title"), body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
+                       actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
+                                Action(id=f"join:{key}:{hero.id}:n", label=t.t("camps.join_no"))])
+            self._push(camp["founder_id"], ask)
+        return self._camp_here_view(hero, notice=t.t("camps.join_sent"))
+
+    def _answer_join(self, hero: Hero, action_id: str) -> View:
+        t = self.texts
+        parts = action_id.split(":")
+        if len(parts) < 5 or parts[-1] not in ("y", "n"):
+            return self._main_view(hero)
+        key, visitor, choice = f"{parts[1]}:{parts[2]}", ":".join(parts[3:-1]), parts[-1]
+        camp = self.store.get("camp", key)
+        if not camp or camp.get("founder_id") != hero.id or visitor not in camp.get("requests", []):
+            return self._main_view(hero, notice=t.t("camps.already_answered"))
+        camp["requests"].remove(visitor)
+        data = self.store.get("hero", visitor)
+        accepted = choice == "y" and data is not None and data.get("camp") is None and len(camp["members"]) < self._members_cap(camp)
+        if accepted:
+            camp["members"].append(visitor)
+            data["camp"] = key
+            self.store.put("hero", visitor, data)
+        self.store.put("camp", key, camp)
+        result = "accepted" if accepted else "refused"
+        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.join_{result}", camp=camp["name"])]))
+        return self._main_view(hero, notice=t.t(f"camps.you_{result}"))
+
+    def _leave_camp(self, hero: Hero) -> View:
+        t = self.texts
+        key = hero.camp
+        camp = self.store.get("camp", key) if key else None
+        if not camp or camp.get("founder_id") == hero.id:
+            return self._camp_here_view(hero)
+        if hero.id in camp["members"]:
+            camp["members"].remove(hero.id)
+            self.store.put("camp", key, camp)
+        hero.camp = None
+        return self._camp_here_view(hero, notice=t.t("camps.left", camp=camp["name"]))
 
     def _grow_cost(self, level: int) -> dict[str, int]:
         return {i: n * level for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
@@ -1315,7 +1439,7 @@ class GameService:
             t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
             t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
             t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_start", 0), max=cdef.get("resource_max", 100)),
-            t.t("hero.coins_line", gold=self._money(hero.gold), bags=hero.bags, gems=hero.gems),
+            t.t("hero.coins_line", gold=self._money(hero.gold), bags=hero.bags, gems=hero.gems, cards=hero.cards),
             t.t("gear.hero_line", items=self._worn_list(hero)),
             t.t("hero.inv_link", n=sum(hero.backpack.values()) + sum(hero.belt.values())),
             t.t("hero.skills_link", n=hero.points, bar=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
@@ -1412,6 +1536,9 @@ class GameService:
             "",
             t.t("wallet.gems", n=hero.gems),
             t.t("wallet.gems_help"),
+            "",
+            t.t("wallet.cards", n=hero.cards),
+            t.t("wallet.cards_help"),
         ]
         if hero.xp_boost_until > self.clock.now():
             body += ["", t.t("wallet.boost_on", time=self._fmt_duration(hero.xp_boost_until - self.clock.now()))]

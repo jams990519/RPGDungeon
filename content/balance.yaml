@@ -95,15 +95,17 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   known_neighbors: 4         # [ES] zonas conocidas de las 8 de alrededor para poder fundar
   min_lejania: 2             # [ES] no se funda pegado al Claro
   min_distance: 2            # [ES] distancia mínima a otro campamento
+  members_base: 2             # [ES] D-84: miembros que caben en un campamento de nivel 1 (contando al fundador)
+  members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
   grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
 
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
 
-currency:                    # [ES] cinco monedas (D-80): 3 comunes que se ganan, bolsas que se cosen y gemas que se compran
-  rate: 100                  # [ES] 100 🥉 bronce = 1 🥈 plata; 100 🥈 = 1 🥇 oro. Hero.gold guarda TODO en bronce
-  icons: {bronze: "🥉", silver: "🥈", gold: "🥇", bags: "👝", gems: "💎"}
+currency:                    # [ES] monedas (D-80, D-85): 3 comunes que se ganan, bolsas que se cosen, diamantes que se compran y credenciales de oficio
+  rate: 100                  # [ES] 100 🥉 bronce = 1 🪙 plata; 100 🪙 = 1 🥇 oro. Hero.gold guarda TODO en bronce
+  icons: {bronze: "🥉", silver: "🪙", gold: "🥇", bags: "💰", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño
   bag_recipe: {fibra: 4, pieza_metal: 1}   # [ES] hilo (fibra) y un cierre de metal...
   bag_coins: 100             # [ES] ...más 1 🥈 de plata por bolsa: saca monedas y materiales del juego
   banner_phase: beta         # [ES] el estandarte que se compra ahora es el de beta tester; después de la beta pasar a "premium"
