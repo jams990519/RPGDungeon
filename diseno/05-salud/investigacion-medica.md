@@ -272,7 +272,7 @@ Los nodos I piden Medicina 21, el rango desde el que se puede investigar (ver [I
 | Manos, pies y ojos | Las **cicatrices-trofeo**: se quedan si el jugador quiere |
 | Brazos y piernas | La muerte del **Juramento de Hierro**: caer es caer |
 | Un nervio dañado o una fractura mal soldada, del todo | Nada en el momento: siempre hay cirugía, internación y rehabilitación |
-| Un mal crónico de órgano (*Pulmón manchado*, espasmos) | |
+| Un órgano dañado (*Pulmón dañado*, *Hígado castigado*) y males crónicos (*Pulmón manchado*, espasmos) | |
 
 ### 4.2 Qué pide investigarla
 
@@ -482,10 +482,10 @@ Junto con el orden de [Salud](README.md):
 
 No se hicieron: otros procesos están editando esos documentos.
 
-- [ ] **[Secuelas y muerte](secuelas-y-muerte.md)** §2: cambiar "*Regeneración: un ritual muy caro devuelve el miembro de carne*" por la Regeneración médica de este documento (§4), y aclarar que en el juego normal la secuela es definitiva (D-51) y que reponerla es la cima de la medicina (D-53). §3: "*médico maestro*" → nodos III de este árbol. §5: enlazar "regeneración" a §4.6.
-- [ ] **[Curación](curacion-y-tratamientos.md)**: §0, agregar qué investiga cada rango (nodos I a IV); §3, la fila Vacuna enlaza aquí; §5, sumar la mesa de investigación, la enfermería mayor y el Quirófano mayor; §7, en "Miembro perdido", cambiar "*ritual de regeneración*" por "Regeneración (investigación médica)"; §8, los ingredientes de temporada enlazan a §2.4; §9, sumar la carrera de investigador.
+- [x] **[Secuelas y muerte](secuelas-y-muerte.md)** §2: cambiar "*Regeneración: un ritual muy caro devuelve el miembro de carne*" por la Regeneración médica de este documento (§4), y aclarar que en el juego normal la secuela es definitiva (D-51) y que reponerla es la cima de la medicina (D-53). §3: "*médico maestro*" → nodos III de este árbol. §5: enlazar "regeneración" a §4.6.
+- [ ] **[Curación](curacion-y-tratamientos.md)**: §0, agregar qué investiga cada rango (nodos I a IV); §3, la fila Vacuna enlaza aquí; §5, sumar la mesa de investigación, la enfermería mayor y el Quirófano mayor; §7, "Miembro perdido" ya dice que se compensa y que reponerlo es la Regeneración médica (hecho); §8, los ingredientes de temporada enlazan a §2.4; §9, sumar la carrera de investigador.
 - [ ] **[Enfermedades](enfermedades.md)**: §1, decir que las curas completas salen de un protocolo; §3, nota de que cada enfermedad tiene expediente; §4 (Respuesta), enlazar a §5.4 (la cura comunitaria por etapas, sin patente).
-- [ ] **[README de Salud](README.md)**: fila nueva en la tabla de documentos; en "Las siete capas", Secuelas se cura con "Prótesis, adaptación y, en la cima de la medicina, Regeneración"; sumar esta línea al orden de construcción (§10) y a "A quién le da trabajo" (pacientes de estudio, exploradores, eruditos).
+- [x] **[README de Salud](README.md)**: fila nueva en la tabla de documentos; en "Las siete capas", Secuelas se cura con "Prótesis, adaptación y, en la cima de la medicina, Regeneración"; sumar esta línea al orden de construcción (§10) y a "A quién le da trabajo" (pacientes de estudio, exploradores, eruditos).
 - [ ] **[Investigación y maestría](../07-economia/investigacion-y-maestria.md)**: §5.2, enlazar aquí desde la fila "Remedio" y aclarar que un proyecto médico pide antes expediente ★★★, hipótesis e ingredientes; §4, decir que los puntos de caso del expediente son un contador aparte de los PI ⚕️; §6.2, en la cumbre Rehabilitación, sumar la rehabilitación después de una Regeneración; §7.1, el Anfiteatro anatómico tiene mesa de investigación médica.
 - [ ] **[Profesiones](../07-economia/profesiones.md)**: §2.3, en Medicina sumar "protocolos e investigación médica" y resolver si **Veterinaria** es especialización (la nombra [Animales y cultivos](animales-y-cultivos.md), no Profesiones); §5, los expedientes son el conocimiento de Medicina; §9, rol de investigador médico; §10, fila "Reponer una pierna"; §12, regalías de patentes y pago a pacientes de estudio.
 - [ ] **[Decisiones](../00-vision/decisiones.md)** D-53: enlazar este documento y [Investigación y maestría](../07-economia/investigacion-y-maestria.md), que ya existe, en lugar de "Investigación y maestría (en redacción)".

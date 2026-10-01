@@ -49,7 +49,7 @@
 | *Tembloroso* | Temblor Arcano o una dependencia | Fallan las acciones de precisión | Desintoxicación |
 | *Glotón* | Banquetes constantes | El Sustento baja más rápido | Dieta |
 | *Supersticioso* | Muchas maldiciones | Estrés en la oscuridad | Templo |
-| *Rodilla mala* | Fractura de pierna que soldó mal | Iniciativa −1. ⚠️ Si vuelves a romper esa pierna sin operarla, pasa a **rodilla destrozada** (definitiva) | Cirugía |
+| *Rodilla mala* | Fractura de pierna que soldó mal | Iniciativa −5 %. ⚠️ Si vuelves a romper esa pierna sin operarla, pasa a **rodilla destrozada** (definitiva) | Cirugía |
 | *Mala fama* | Deudas sin pagar, trampas descubiertas | Peores precios, menos crédito | Pagar, misiones de redención |
 | *Codicioso* | Perder mucho en el juego | El estrés sube al perder oro | Voto de Templanza, templo |
 | *Cicatriz visible* | Herida grave en la cara | Solo cosmético y de rol (es la secuela *cicatriz grave en la cara*) | Nada (es una historia) |

@@ -52,7 +52,7 @@ En la columna del desenlace: ⏳ temporal · 🔁 crónico (se trata y se cura) 
 | **Gripe de Escarcha** | Frío, tramo VI, invierno | Baja la iniciativa, tos | Reposo caliente, caldo | ⏳ Neumonía, más grave y más larga. ♾️ Si también se pierde la de la neumonía sin reposo: pulmón dañado | Resfriado (DayZ) |
 | **Disentería** | Agua sucia, carne cruda | El Sustento cae en picada | Carbón, agua hervida | ⏳ Varios días de debilidad | DayZ, *Oregon Trail* |
 | **Gangrena** | Herida infectada sin tratar | La zona empeora sola | Limpiar, cirugía | ♾️ **Miembro perdido** (pierna, brazo o dedos) si nadie opera antes del último aviso; un cirujano puede hacer una amputación limpia | Project Zomboid, RimWorld |
-| **Tétanos de Óxido** | Heridas de armas oxidadas | Rigidez: pierdes la acción rápida | Antitoxina | 🔁 Espasmos crónicos | — |
+| **Tétanos de Óxido** | Heridas de armas oxidadas | Rigidez: iniciativa −10 % y tus respuestas cuestan +1 🔋 | Antitoxina | 🔁 Espasmos crónicos | — |
 | **Podredumbre Gris** | Criaturas pútridas | Daño lento; la piel se cae | Ungüento de plata | 🔁 Llagas que piden ungüento. ♾️ Si no se tratan: piel marcada (cicatriz extensa) | Podredumbre escarlata (Elden Ring) |
 | **Tos del Minero** | **Oficio:** minar sin máscara mucho tiempo | Baja el Aguante máximo | Máscara, hierbas para el pulmón | 🔁 Crónica leve (*Pulmones de minero*). ♾️ Si sigues en gas o polvo sin máscara: pulmón dañado | Enfermedad laboral |
 | **Temblor Arcano** | **Oficio o clase:** abusar de la magia arcana | Los hechizos fallan | Reposo mágico | 🔁 Quemadura de Maná crónica | — |

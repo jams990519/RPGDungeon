@@ -551,7 +551,7 @@ En `/cuerpo`, el entorno ocupa una línea más: `🌡️ Acalorado · 💧 67 ·
 7. **Sin doble castigo.** Caer por el entorno sigue la regla de la zona y deja una sola herida. Como máximo dos peligros suben a la vez.
 8. **Prepararse gana.** Con la protección justa, cada peligro queda en cero. La dificultad está en preparar la mochila, no en la suerte.
 9. **Todo se lee en una línea.** En `/cuerpo` y en la cabecera de la expedición.
-10. **Nada arruina un personaje.** Fuera del Juramento de Hierro, lo peor que hace el entorno es una caída con las reglas de su zona y una herida que se cura. La Contaminación del Vacío no deja Corrupción permanente por sí sola.
+10. **Nada arruina un personaje, pero el cuerpo recuerda.** Fuera del Juramento de Hierro, lo peor que hace el entorno por sí solo es una caída con las reglas de su zona y una herida. Solo una congelación o un pulmón descuidados pese a todos los avisos pueden dejar una secuela definitiva, que se compensa (ver [Secuelas y muerte](secuelas-y-muerte.md) §5). La Contaminación del Vacío no deja Corrupción permanente por sí sola.
 
 ## 12. Cómo se conecta
 
