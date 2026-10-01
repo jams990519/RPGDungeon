@@ -368,7 +368,7 @@ class GameService:
         return kit
 
     def _money(self, amount: int) -> str:
-        """Coins as 🥇 gold · 🪙 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
+        """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, int(amount)), rate * rate)
@@ -2302,7 +2302,7 @@ class GameService:
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
 
     def _coins_line(self, hero: Hero) -> str:
-        """🥉 bronze · 🪙 silver · 🥇 gold · 💰 bags · 🪎 chests · 💎 diamonds, each with its amount, zeros included (D-86, D-92)."""
+        """🥉 bronze · 🥈 silver · 🥇 gold · 💰 bags · 🪎 chests · 💎 diamonds, each with its amount, zeros included (D-86, D-92)."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, hero.gold), rate * rate)

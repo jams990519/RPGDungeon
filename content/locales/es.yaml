@@ -865,7 +865,7 @@ wallet:
   title: "💰 Monedas"
   button: "💰 Monedas"
   coins: "Monedas: {coins}"
-  coins_help: "🥉 Bronce, 🪙 Plata y 🥇 Oro se ganan jugando y se juntan solas: {rate} de bronce son 1 de plata y {rate} de plata son 1 de oro."
+  coins_help: "🥉 Bronce, 🥈 Plata y 🥇 Oro se ganan jugando y se juntan solas: {rate} de bronce son 1 de plata y {rate} de plata son 1 de oro."
   bags: "💰 Bolsas: {n}"
   bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para armar cofres."
   chests: "🪎 Cofres: {n}"   # [ES] D-92 (provisional)

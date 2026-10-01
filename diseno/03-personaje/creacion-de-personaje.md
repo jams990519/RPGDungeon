@@ -103,7 +103,7 @@ Como el juego tendrá un sistema de salud profundo (D-09), la raza importa donde
 | Soldado desertor | Primeros auxilios, espada gastada | Tu antiguo capitán te busca |
 | Aprendiz de gremio | Un oficio a nivel 5 | Tu maestro desapareció en la Lejanía |
 | Huérfano de las Ruinas | Ganzúa, sigilo en la ciudad | Conoces los túneles bajo el Claro |
-| Noble caído | Unas monedas de 🪙 plata, anillo de familia | Tu casa perdió sus tierras en otra región |
+| Noble caído | Unas monedas de 🥈 plata, anillo de familia | Tu casa perdió sus tierras en otra región |
 | Curandero de aldea | Medicina a nivel 5, hierbas | Una plaga que no pudiste detener |
 | Minero de las vetas | Minería a nivel 5, pico | Algo despertó en la mina |
 | Juglar ambulante | Laúd, rumores | Sabes una canción que nadie más recuerda |

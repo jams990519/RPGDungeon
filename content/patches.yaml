@@ -212,3 +212,9 @@ v0_11:
     - "🪎 Nueva moneda: el cofre. Se arma en el Claro con 10 💰 bolsas, 10 de madera y 5 piezas de metal, y paga agrandar campamentos desde el nivel 6."
     - "👥 En 📍 Zona ves a los otros jugadores activos que están ahí y qué hacen. Al explorar o recolectar a veces te cruzas con ellos."
     - "🔥 El Claro es el campamento base y ya no crece: su obra común terminó. Todo el crecimiento es para tus campamentos. El tutorial ahora te pide vender lo que te sobra al mercader."
+
+v0_11_1:
+  version: "0.11.1"
+  title: "🥇 Lost Realms 0.11.1: monedas de medalla"
+  notes:
+    - "🥉🥈🥇 Las monedas ahora son medallas: bronce (tercer lugar), plata (segundo lugar) y oro (primer lugar). La plata deja de verse como 🪙."

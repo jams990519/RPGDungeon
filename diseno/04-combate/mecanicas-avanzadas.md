@@ -457,7 +457,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 
 ```
 🏳️ El Bandido Tuerto tira el hacha y pide cuartel.
-   Tiene precio: 120 🪙 (Guardia del Pantano Putrefacto)
+   Tiene precio: 120 🥈 (Guardia del Pantano Putrefacto)
 
 [⛓ Capturar (grilletes: 2)]  [🕊 Perdonar]
 [🗡 Rematar · ⚠️ Infamia]

@@ -629,7 +629,7 @@ Ver [Equipamiento](equipamiento.md), §9.
 🃏 NUEVO · carta Kóbold Minero (Mazo de Bestias)
 🧩 Fragmento de receta: Elixir de Cuarzo (2/5)
 🪨 Mineral de cristal ×12 · Piedra ×20 · Hueso ×6
-💰 12 objetos comunes vendidos automáticamente: +86 🪙
+💰 12 objetos comunes vendidos automáticamente: +86 🥈
 🔧 3 poco comunes desmontados: lingote T3 ×2, cuero T3 ×1
 ▸ Detalle (tocar para abrir)
 ```

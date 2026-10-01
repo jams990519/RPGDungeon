@@ -42,7 +42,7 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 
 - **🏪 Mercader:** vende pociones de vida, vendas y 🥖 provisiones (comida cara de emergencia, D-93), y compra materiales a la mitad de su precio (`shop`).
 - **🛏️ Posada:** pagas, duermes 5 minutos y despiertas con la vida llena. También cura al héroe malherido (D-83). Con la vida ya llena no cobra: te avisa que no hace falta.
-- **💰 Costura de bolsas:** 4 de fibra, 1 pieza de metal y 1 🪙 por bolsa (D-80).
+- **💰 Costura de bolsas:** 4 de fibra, 1 pieza de metal y 1 🥈 por bolsa (D-80).
 - **Venta de equipo** que no te sirve.
 - **Territorio seguro:** en las zonas del Claro no te atacan: ni al llegar, ni al explorar, ni al recolectar.
 - **Ancla del viaje:** la distancia de cada viaje se cuenta desde el borde del Claro o de tu campamento (D-78).
