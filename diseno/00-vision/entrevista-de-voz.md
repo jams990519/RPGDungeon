@@ -111,12 +111,12 @@ Todas van, junto con las dudas nuevas, en la **segunda tanda** de abajo.
 
 ## Segunda tanda (1-oct-2026)
 
-**Para qué sirve.** Junta en una sola charla lo que quedó sin responder (E-03, el tono de E-10 y los bloques 6 y 7: E-44 a E-54) y las dudas nuevas que salieron de la primera tanda (**E-55 a E-82**, registradas como P-78 a P-105 en [Preguntas abiertas](preguntas-abiertas.md)), más lo que quedó pendiente de la ampliación de diseño (**E-83 a E-91**, P-106 a P-114). E-73 y E-77 se quitaron porque la ampliación las respondió (D-168 y D-166), y E-58 se cambió a 10 etapas. Las preguntas que frenan trabajo son las de los bloques C, D y E: deciden cómo se programan el asentamiento por escalones, las razas, el día y la noche, y la economía entre jugadores.
+**Para qué sirve.** Junta en una sola charla lo que quedó sin responder (E-03, el tono de E-10 y los bloques 6 y 7: E-44 a E-54) y las dudas nuevas que salieron de la primera tanda (**E-55 a E-82**, registradas como P-78 a P-105 en [Preguntas abiertas](preguntas-abiertas.md)), más lo que quedó pendiente de la ampliación de diseño (**E-83 a E-91**, P-106 a P-114). E-73 y E-77 se quitaron porque la ampliación las respondió (D-168 y D-166), y E-58 se cambió a 10 etapas. **Versión final (1-oct-2026):** se sumaron 6 dudas nuevas (**E-92 a E-97**, P-115 a P-120), E-52 tiene las prioridades de hoy y el orden va de lo que frena trabajo a lo que puede esperar. Las preguntas que frenan trabajo son las de los bloques C, D y E: deciden cómo se programan el asentamiento por escalones, las razas, el día y la noche, y la economía entre jugadores.
 
 Todo lo que va dentro del bloque de abajo se copia tal cual.
 
 ```text
-Eres mi entrevistador para el diseño de "Lost Realms", un juego de rol (RPG) por turnos y en texto que se juega en Telegram (@LostRealmsbot). Yo soy el dueño del juego. Esta es la segunda parte de la entrevista: las preguntas que quedaron sin responder y las dudas que salieron de mis respuestas. Vamos a hablar por voz: tú preguntas y yo respondo.
+Eres mi entrevistador para el diseño de "Lost Realms", un juego de rol (RPG) por turnos y en texto que se juega en Telegram (@LostRealmsbot). Yo soy el dueño del juego. Esta es la segunda parte de la entrevista: las preguntas que quedaron sin responder y todas las dudas que salieron de mis respuestas y de la ampliación de diseño. Van primero las que frenan trabajo; si me canso, digo "termina" y se guarda lo respondido. Vamos a hablar por voz: tú preguntas y yo respondo.
 
 CÓMO TRABAJAS
 1. Haz UNA pregunta a la vez, en español, corta y clara. Lee el código de la pregunta (por ejemplo "E-55"), la frase de contexto y las opciones. Di cuál es la recomendada.
@@ -128,24 +128,12 @@ CÓMO TRABAJAS
 
 LAS PREGUNTAS
 
-BLOQUE A · LAS DOS QUE QUEDARON SIN RESPONDER
+BLOQUE A · LO QUE QUEDÓ SIN RESPONDER Y TUS PRIORIDADES
 E-03 (D-117) Elegiste dejar el nivel 100 en unos 2 años. ¿Entonces lo que hace largo al juego son las dos cosas: subir de nivel y también la historia, el rol, los oficios y el castillo? Sí, las dos (recomendado) / solo la historia y el rol, y que subir sea más rápido.
 E-10 Tono del mundo. Opciones: oscuro y serio / épico y heroico / oscuro pero con esperanza y algo de humor (recomendado).
+E-52 ¿Qué quieres primero de lo que falta? Ordena: asentamiento por etapas y castillo / razas y facciones nuevas / mazmorras de grupo y jefes de mundo / subasta entre jugadores y desgaste del equipo / enfermedades, médico y alquimista / PvP y bandidos / día, tarde y noche / eventos, temporadas y logros.
 
-BLOQUE B · COMUNIDAD, PLATAFORMA, DINERO Y PRIORIDADES
-E-44 (P-04) Idiomas. Opciones: solo español al principio (recomendado) / español e inglés desde ya.
-E-45 (P-05) ¿Cuántos jugadores esperas el primer año?
-E-46 (P-06) ¿Quieres avisar a los jugadores de TowerWars sobre Lost Realms? Ojo: TowerWars no se toca; el aviso lo publicarías tú. Sí / no.
-E-47 (P-72) Vender diamantes con Telegram Stars (los diamantes solo compran cosméticos y aceleradores). Opciones: al terminar la beta (recomendado) / ya / nunca.
-E-48 (P-64) ¿Se cobra algo durante la beta? No (recomendado) / sí.
-E-49 (P-65, P-66) El acelerador de experiencia hoy da +50 % durante 7 días. ¿Está bien? ¿También debería subir el botín de equipo? Recomendado: está bien, y solo experiencia y recursos, nunca equipo.
-E-50 (P-58, P-61) Versión web y app. Opciones: la web después de la beta, y la app como web instalable en el teléfono (recomendado) / todo ya / solo Telegram.
-E-51 (P-42) ¿Grupos de Telegram oficiales por castillo y por región? Sí (recomendado) / no.
-E-52 ¿Qué quieres primero de lo que falta? Opciones: historia y rol / explorador y campamentos enemigos / más oficios (cocina, pesca, construcción, encantamiento) / mercado entre jugadores / misiones y encargos / combate en grupo. Ordénalos.
-E-53 ¿Algo de lo que ya está en el juego que no te guste o quieras cambiar?
-E-54 ¿Alguna idea nueva que quieras agregar?
-
-BLOQUE C · ASENTAMIENTO, CASTILLO Y HORARIOS
+BLOQUE B · ASENTAMIENTO, CASTILLO Y HORARIOS
 E-55 (P-78) Mínimo de miembros para pedir castillo. Dijiste de 40 a 50, pero en la beta habrá pocos jugadores. Opciones: 15 durante la beta y 40 desde el lanzamiento (recomendado) / 40 desde ya / otro número.
 E-56 (P-79) Para aprobar el castillo, ¿cuántas oleadas seguidas hay que defender y cuántas victorias de cuántos miembros pide la Noche de prueba? Recomendado: 6 oleadas en dos semanas, ganando al menos 4, y una Noche de prueba con 10 victorias de al menos 5 miembros distintos. ¿Está bien o cambias los números?
 E-57 (P-80) La casa del inicio: ¿es el primer escalón del asentamiento (la casa crece y se vuelve campamento, aldea, ciudad...) o cada jugador tiene además su propia casa dentro del asentamiento? Opciones: la casa es el primer escalón, compartido por 3 a 5 jugadores (recomendado) / cada uno tiene su casa aparte / las dos cosas.
@@ -155,7 +143,7 @@ E-60 (P-83) Las oleadas contra los campamentos: ¿en días y horas fijas iguales
 E-61 (P-84) Hora de referencia para los eventos fijos (oleadas, asedios, jefes de mundo). Recomiendo la noche de América, de 7 a 11 de la noche en hora de Colombia, Perú o Ecuador (UTC−5). ¿Te sirve u otra?
 E-62 (P-85) Guerra de castillos: ¿quién puede atacar a quién? Recomendado: solo los castillos declaran la guerra; pueden atacar desde aldea para arriba, y un asentamiento recién fundado tiene 2 semanas de protección. Otras opciones: cualquiera contra cualquiera / solo castillo contra castillo.
 
-BLOQUE D · DÍA Y NOCHE, RAZAS Y FACCIONES
+BLOQUE C · DÍA Y NOCHE, RAZAS Y FACCIONES
 E-63 (P-86) Día, tarde y noche: ¿cuánto dura un día del mundo? Si dura justo un día real, quien juega siempre a la misma hora ve siempre la misma franja. Opciones: 4 días reales (recomendado: cada franja dura unas 32 horas y todos ven las tres) / 1 día real / otro.
 E-64 (P-87) ¿Las franjas cambian también el peligro? Por ejemplo, de noche salen enemigos más fuertes con mejor botín. Sí (recomendado) / no, solo cambian los recursos.
 E-65 (P-88) Razas: ¿clásicas de la fantasía con nombres e historia propios de este mundo (humanos, elfos, enanos, orcos, medianos, bestiales...) o razas inventadas desde cero? Clásicas con historia propia (recomendado) / inventadas.
@@ -163,25 +151,14 @@ E-66 (P-89) ¿Cuántas razas al empezar, y la raza limita qué clases puedes ele
 E-67 (P-90) Los héroes que ya existen, ¿eligen raza una vez gratis, como pasó con el origen? Sí (recomendado) / quedan como humanos.
 E-68 (P-91) ¿La facción de los ladrones es la casa de los bandidos (los que atacan jugadores y transportes)? Sí (recomendado) / no, son cosas separadas.
 
-BLOQUE E · ECONOMÍA Y OFICIOS
+BLOQUE D · ECONOMÍA Y OFICIOS
 E-69 (P-92) Subasta global con transportistas: ¿dónde recibes lo que compras y cuánto tarda? Recomendado: llega a tu asentamiento o al Claro, tarda según la distancia (de minutos a unas horas) y puedes pagar más para que llegue antes. Otras: llega al instante / otra idea.
 E-70 (P-93) Desgaste generoso del equipo. Recomendado: una pieza aguanta unas 3 semanas jugando todos los días antes de pedir reparación; cada reparación le baja un poco el máximo, y tras unas 5 reparaciones se rompe del todo (unos 4 meses de vida). ¿Bien, más o menos?
 E-71 (P-94) ¿Las obras maestras firmadas también se gastan? Recomendado: sí, pero aguantan el doble / no se gastan nunca / igual que las normales.
 E-72 (P-95) Hoy vender al mercader una obra maestra deja un poco más (un 3,7 %) de lo que valen sus materiales. ¿Lo bajo para que fabricar y vender al mercader no sea negocio? Bajarlo (recomendado: el dinero de verdad debe venir de venderle a otros jugadores) / dejarlo así.
 E-74 (P-97) Tope diario de recursos en tu territorio. Recomendado: cada zona da un total por día; pasado ese total, rinde la mitad, y por eso conviene salir a los alrededores. ¿Así?
 
-BLOQUE F · PVP, HERIDAS Y RIESGO
-E-75 (P-98) ¿Cómo se marcan las zonas de PvP? Recomendado: según la distancia al Claro: cerca, seguras; a media distancia se pierde el 10 % de la mochila; lejos, el 20 %; muy lejos, el 40 %. Los asentamientos siempre seguros. ¿Así u otra forma?
-E-76 (P-99) ¿Cuándo entra el PvP? Después de la beta, cuando haya suficientes jugadores (recomendado) / ya en la beta.
-E-78 (P-101) Los nodos especiales que descubren los expertos: ¿de quién hay que defenderlos? De monstruos que aparecen (recomendado al principio) / de otros jugadores, cuando haya PvP / de los dos.
-
-BLOQUE G · DETALLES DE LO QUE YA ESTÁ EN EL JUEGO
-E-79 (P-102) Explorador: los que ya exploraban antes de que existiera el oficio, ¿reciben experiencia de Explorador por lo que exploraron? Sí, una parte (recomendado) / no, todos empiezan desde cero.
-E-80 (P-103) Si fundas o agrandas tu asentamiento donde hay un campamento enemigo, ¿se prohíbe hasta destruirlo? Sí (recomendado) / no, el campamento enemigo desaparece.
-E-81 (P-104) Los jefes de los campamentos enemigos lejanos, ¿piden grupo? Sí, desde cierta distancia (recomendado) / no, siempre se pueden hacer solos.
-E-82 (P-105) Cambiar de especialización de oficio: dijiste que se puede pagando y empezando de cero en la nueva. ¿Cuánto cuesta? Recomendado: algo de monedas que sube con el rango, y lo aprendido en la vieja queda guardado por si vuelves. ¿Así?
-
-BLOQUE H · LO QUE QUEDÓ PENDIENTE DE LA AMPLIACIÓN DE DISEÑO
+BLOQUE E · MAZMORRAS, EVENTOS, ENFERMEDADES Y FUSIÓN
 E-83 (P-106) Arena: ¿una arena para pelear contra otros jugadores sin perder nada, desde el principio (también en la beta)? Sí (recomendado: se practica sin riesgo y ayuda a balancear las clases) / no / más adelante.
 E-84 (P-107) Eventos y temporadas. Recomendado: un evento corto cada mes (unas 2 semanas, con su historia y su botín) y temporadas de 3 meses con premios cosméticos y una tabla de clasificación; el progreso del héroe nunca se borra. ¿Así u otra idea?
 E-85 (P-108) Jefes de mundo. Recomendado: aparecen en lugares del mapa a horas avisadas (la hora de referencia de E-61) para muchos jugadores a la vez, y el botín se reparte según lo que hizo cada uno en su rol (daño, tanque o curación). ¿Así?
@@ -192,12 +169,42 @@ E-89 (P-112) Fusión de un campamento chico con un castillo. Recomendado: se anu
 E-90 (P-113) Vasallos, como en Ashes of Creation: ¿los asentamientos grandes pueden tener a los chicos como vasallos? Más adelante, junto con la guerra de castillos (recomendado) / no / sí, desde ya.
 E-91 (P-114) Enfermedades: ¿desde cuándo aparecen? Recomendado: las primeras, leves, desde el nivel 15 y lejos del Claro; las graves, y las que siguen después de morir, desde el nivel 40. ¿Así?
 
+BLOQUE F · DUDAS NUEVAS
+E-92 (P-115) Cuando el campamento defiende bien una oleada, hoy igual pierde 1 punto de defensa (y 2 si la pierde). Con 3 oleadas por semana el daño se junta rápido. Recomendado: defenderla bien no daña nada; solo dañan las que se pierden / dejarlo como está.
+E-93 (P-116) Beneficios de oficio del campamento (cocina, pesca, cantería, construcción): hoy cuenta el mejor miembro del grupo en cada oficio. Recomendado: así, el mejor del grupo / se suman los de varios miembros.
+E-94 (P-117) Mazmorras de grupo: dijiste que tanque y curador necesitan recompensa propia. Recomendado: todos ganan lo mismo por terminar, y el tanque y el curador se llevan además un cofre extra, porque son los roles que menos se eligen. ¿Así u otra forma?
+E-95 (P-118) ¿Cómo se arma un grupo? Recomendado: con los que están en tu misma zona, con un botón para formar grupo y otro para sumarse (como dijiste) / también invitando por nombre a alguien que está lejos.
+E-96 (P-119) Los nodos que mejora el carpintero: ¿para quién son? Recomendado: en zonas libres, la mejora sirve a todos; dentro del territorio de un campamento, solo a sus miembros. Duran unos días y hay que mantenerlas. ¿Así?
+E-97 (P-120) La información de enfermedades que cazadores e investigadores les pasan a médicos y alquimistas: ¿es un objeto que se puede vender? Recomendado: sí, un informe que se consigue al encontrar la enfermedad y que se vende o se regala / no, se comparte gratis y sin objeto.
+
+BLOQUE G · PVP Y NODOS
+E-75 (P-98) ¿Cómo se marcan las zonas de PvP? Recomendado: según la distancia al Claro: cerca, seguras; a media distancia se pierde el 10 % de la mochila; lejos, el 20 %; muy lejos, el 40 %. Los asentamientos siempre seguros. ¿Así u otra forma?
+E-76 (P-99) ¿Cuándo entra el PvP? Después de la beta, cuando haya suficientes jugadores (recomendado) / ya en la beta.
+E-78 (P-101) Los nodos especiales que descubren los expertos: ¿de quién hay que defenderlos? De monstruos que aparecen (recomendado al principio) / de otros jugadores, cuando haya PvP / de los dos.
+
+BLOQUE H · DETALLES DE LO QUE YA ESTÁ EN EL JUEGO
+E-79 (P-102) Explorador: los que ya exploraban antes de que existiera el oficio, ¿reciben experiencia de Explorador por lo que exploraron? Sí, una parte (recomendado) / no, todos empiezan desde cero.
+E-80 (P-103) Si fundas o agrandas tu asentamiento donde hay un campamento enemigo, ¿se prohíbe hasta destruirlo? Sí (recomendado) / no, el campamento enemigo desaparece.
+E-81 (P-104) Los jefes de los campamentos enemigos lejanos, ¿piden grupo? Sí, desde cierta distancia (recomendado) / no, siempre se pueden hacer solos.
+E-82 (P-105) Cambiar de especialización de oficio: dijiste que se puede pagando y empezando de cero en la nueva. ¿Cuánto cuesta? Recomendado: algo de monedas que sube con el rango, y lo aprendido en la vieja queda guardado por si vuelves. ¿Así?
+
+BLOQUE I · COMUNIDAD, PLATAFORMA Y DINERO
+E-44 (P-04) Idiomas. Opciones: solo español al principio (recomendado) / español e inglés desde ya.
+E-45 (P-05) ¿Cuántos jugadores esperas el primer año?
+E-46 (P-06) ¿Quieres avisar a los jugadores de TowerWars sobre Lost Realms? Ojo: TowerWars no se toca; el aviso lo publicarías tú. Sí / no.
+E-47 (P-72) Vender diamantes con Telegram Stars (los diamantes solo compran cosméticos y aceleradores). Opciones: al terminar la beta (recomendado) / ya / nunca.
+E-48 (P-64) ¿Se cobra algo durante la beta? No (recomendado) / sí.
+E-49 (P-65, P-66) El acelerador de experiencia hoy da +50 % durante 7 días. ¿Está bien? ¿También debería subir el botín de equipo? Recomendado: está bien, y solo experiencia y recursos, nunca equipo.
+E-50 (P-58, P-61) Versión web y app. Opciones: la web después de la beta, y la app como web instalable en el teléfono (recomendado) / todo ya / solo Telegram.
+E-51 (P-42) ¿Grupos de Telegram oficiales por castillo y por región? Sí (recomendado) / no.
+E-53 ¿Algo de lo que ya está en el juego que no te guste o quieras cambiar?
+E-54 ¿Alguna idea nueva que quieras agregar?
+
 FORMATO DEL RESUMEN FINAL (escríbelo así, sin nada más antes ni después):
 RESPUESTAS LOST REALMS · ENTREVISTA DE VOZ · SEGUNDA PARTE
 E-03: [opción elegida o respuesta corta] | [detalle o condición, si dijo algo más]
 E-10: ...
-E-44: ...
-(una línea por pregunta, en orden: E-03, E-10 y de E-44 a E-91, sin E-73 ni E-77; "sin respuesta" si se saltó; "recomendación" si dijo "lo que recomiendes")
+(una línea por pregunta, en este orden: E-03, E-10, E-52, E-55, E-56, E-57, E-58, E-59, E-60, E-61, E-62, E-63, E-64, E-65, E-66, E-67, E-68, E-69, E-70, E-71, E-72, E-74, E-83, E-84, E-85, E-86, E-87, E-88, E-89, E-90, E-91, E-92, E-93, E-94, E-95, E-96, E-97, E-75, E-76, E-78, E-79, E-80, E-81, E-82, E-44, E-45, E-46, E-47, E-48, E-49, E-50, E-51, E-53, E-54; "sin respuesta" si se saltó; "recomendación" si dijo "lo que recomiendes")
 DUDAS: [lo que preguntó y no supiste responder]
 IDEAS SUELTAS: [cualquier idea que dijo fuera de las preguntas]
 ```

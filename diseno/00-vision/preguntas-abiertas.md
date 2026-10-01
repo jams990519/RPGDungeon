@@ -130,7 +130,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 
 ## Dudas de la entrevista de voz (segunda tanda, 1-oct-2026)
 
-Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82). P-106 a P-114 salieron de la ampliación de diseño del dueño (D-164 a D-173) y van como E-83 a E-91.
+Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82). P-106 a P-114 salieron de la ampliación de diseño del dueño (D-164 a D-173) y van como E-83 a E-91. P-115 a P-120 son las últimas dudas (E-92 a E-97).
 
 | # | Pregunta | Recomendación |
 |---|---|---|
@@ -171,3 +171,9 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-112 | ¿Cómo se fusiona un campamento chico con un castillo? (D-173; entrevista E-89) | 7 días de aviso; lo que muden los miembros se conserva y el castillo recibe la mitad de lo que costaron las obras; lo demás se pierde |
 | P-113 | ¿Hay vasallos, como en Ashes of Creation? (D-173; entrevista E-90) | Más adelante, junto con la guerra de castillos |
 | P-114 | ¿Desde cuándo aparecen las enfermedades? (D-166; entrevista E-91) | Las leves desde el nivel 15 y lejos del Claro; las graves y las que siguen después de morir, desde el nivel 40 |
+| P-115 | ¿Una oleada bien defendida también daña la defensa del campamento? (D-163, D-154; entrevista E-92) | No: solo dañan las oleadas que se pierden |
+| P-116 | ¿Los beneficios de oficio del campamento usan al mejor miembro o se suman? (D-163; entrevista E-93) | El mejor miembro de cada oficio |
+| P-117 | ¿Cómo se premia al tanque y al curador en las mazmorras de grupo? (D-164; entrevista E-94) | Todos ganan lo mismo por terminar, y tanque y curador además un cofre extra |
+| P-118 | ¿Cómo se arma un grupo? (D-164; entrevista E-95) | Con los que están en tu zona: un botón para formar grupo y otro para sumarse |
+| P-119 | ¿Para quién son los nodos que mejora el carpintero? (D-168, D-171; entrevista E-96) | En zonas libres, para todos; en el territorio de un campamento, para sus miembros; duran unos días y se mantienen |
+| P-120 | ¿La información de enfermedades que pasan cazadores e investigadores es un objeto que se vende? (D-167; entrevista E-97) | Sí: un informe que se vende o se regala |
