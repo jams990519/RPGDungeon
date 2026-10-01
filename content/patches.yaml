@@ -336,3 +336,13 @@ v0_21:
     - "🪑 La Carpintería ahora es el oficio de las obras maestras: hasta un 15 % de probabilidad en sus arcos y bastones a rango 100 (los demás artesanos, hasta un 5 %). Ya no da ataque extra."
     - "🛏️ Muebles para tu campamento, solo de Carpintería: Literas de roble (rango 40, +1 plaza de miembro) y Armero de roble (rango 70, +1 de defensa). Se colocan en 🔨 Mejoras → 🔨 Obras → 🪑 Colocar."
     - "📜 La receta te muestra tu probabilidad de obra maestra con tu rango actual."
+
+v0_22:
+  version: "0.22"
+  title: "🧭 Lost Realms 0.22: el Explorador y los campamentos enemigos"
+  notes:
+    - "🧭 Explorar ahora es un oficio: el Explorador sube de rango explorando. Con más rango ves más del mapa: tiempos de viaje (10), campamentos enemigos cerca (25) y en todo el mapa (50), y su fuerza (75). Al 100, el título «Gran Explorador»."
+    - "⛺ Cada día aparecen campamentos enemigos en otros lugares del mapa. Mientras están en pie, en su zona no se explora ni se recolecta."
+    - "⚔️ Asáltalos desde 🧭 Explorar: cada pelea vence a uno de la guarnición para todos, y el último es el jefe. Quien lo termina se lleva el cofre (monedas, materiales y quizás una pieza de equipo); los demás que pelearon ese día también ganan algo."
+    - "🕵️ Desde el rango 30 de Explorador puedes infiltrarte: si no te descubren, sacas información de la zona sin pelear."
+    - "🗺️ El mapa marca los ⛺ campamentos que ves y tiene un botón para ir al más cercano. 📒 Lugares muestra hasta 8 lugares con su tiempo."
