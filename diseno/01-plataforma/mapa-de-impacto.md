@@ -564,6 +564,7 @@ flowchart LR
 | **Eventos que escucha** | `HeridaTratada` (`WoundTreated`): experiencia de Medicina. Propuestos: `EtapaDeCiudadCambiada` (entrenadores disponibles), `NuevaSemana` (conocimiento semanal), `InvestigacionCompletada` (recetas recuperadas) |
 | **Datos de los que es dueño** | Nivel y rango de cada oficio por personaje, conocimiento y especializaciones, maestrías por objeto, recetas aprendidas y descubiertas, planos y copias, vetas (lugar, atributos, duración), trabajadores, registro de obras maestras. Propuesta (§6.1): el Enfoque diario |
 | **Reglas que nunca se rompen** | Profesiones profundas (D-10). Construir y curar se estudian: sin rango no hay trabajo de alto nivel, no ayuda cualquiera (D-11). Sin límite duro de oficios: el freno es el costo natural del conocimiento (D-57; [Profesiones](../07-economia/profesiones.md) §3 todavía dice 2 mayores). Los oficios no se comparten entre personajes. Cada rango pide examen. El conocimiento semanal tiene tope. La fabricación rápida llega como mucho a Notable. La destreza de los dedos nunca decide la calidad real. Todo lo fabricado lleva firma |
+| **En el juego (fase 1, D-109)** | `engine/professions/` (rangos, quién produce cada material, cuentas de las recetas), `content/professions.yaml` (15 oficios, estaciones, 36 recetas), `content/balance.yaml` → `professions`, `Hero.professions` (experiencia por oficio) y la sección "professions" de `engine/service/game.py` (⚒️ Oficios, 🪚 Refinar, 🛠️ Fabricar, 📜 Receta, /oficios). Recolectar sube 🪓 ⛏️ 🌿 (`_trade_gather` en `_gather_step`); la carne y la piel de las bestias suben 🔪 (`_trade_loot` en `_end_combat`). Publica `ItemCrafted` y `ProfessionRankUp`. Todavía sin exámenes, especializaciones, calidad ni mercado (la segunda tanda) |
 
 **Si cambias esto, revisa:**
 - **El costo de aprender un oficio** (antes, el límite de oficios mayores) → C-12.
@@ -574,6 +575,7 @@ flowchart LR
 - **Las enfermedades laborales** → la demanda de máscaras y guantes (Sastrería, Peletería) y M7.
 - **Los entrenadores o exámenes** → dependen de que la ciudad haya construido y abastezca su ala (M9, M24); si se pueden saltar, **rompe** D-11.
 - **Algo que haga a un oficio obligatorio para ganar en combate** → choca con D-49 solo si crea una brecha imposible de alcanzar: la ventaja de oficio tiene techo por anillo ([Balance](../03-personaje/balance.md) §5).
+- **En el código de hoy (D-109):** la experiencia de héroe por ⚡ al refinar y fabricar (`professions.hero_xp_per_energy`) → C-20 y D-108. Una receta o un precio de `items.yaml` → la demanda de cada material y si refinar fabrica monedas. El equipo de artesano (`source: crafted`) → el valor del botín (M4) y del Recuerdo del Guardián. La piel en `enemies.yaml` → toda bestia nueva lleva carne **y** piel (tests/test_professions.py lo exige). Las estaciones del campamento dependen de los ids `taller` y `herreria` de `content/camp_upgrades.yaml` (M24).
 
 ---
 
@@ -991,6 +993,15 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 
 **Medir:** proporción de jugadores que ven día y noche, días de despensa al llegar el invierno.
 
+### C-20 · La experiencia de héroe de los oficios
+
+**Dónde está:** `content/balance.yaml` → `professions.hero_xp_per_energy` (20 por ⚡) y la regla del nivel de trabajo (el menor entre tu nivel y tu rango en el oficio), en `GameService._make_xp` (D-109). Se apoya en `hero.xp_level_scale`, el mismo número de matar y recolectar (D-108). **Dueño:** M14, con M2 (niveles).
+
+**Cadena:** cambia cuánto rinde refinar y fabricar frente a recolectar, cazar y explorar (D-108: todos al 100 en un tiempo parecido) → si rinde de más, conviene juntar en el Claro sin peligro y refinar sin parar, y se vacían las zonas de riesgo (M8, M12) → cambia la demanda de materiales y el precio de lo refinado (M13) → cambia cuánta energía va a los oficios y cuánta a pelear (cuántas bestias se vencen: carne para la despensa, M9) → cambia el ritmo de todo el servidor hasta el nivel 100 (M2, D-78).
+
+**También:** subirlo sin tocar `gather.xp_per_step` rompe la paridad de D-108; bajarlo hace que fabricar sea solo para el equipo y no para subir. Un oficio nuevo con otra energía por receta cambia su experiencia por ⚡ sin tocar este número.
+**Medir:** experiencia por ⚡ de cada camino en la beta, días hasta el nivel 100 de quien solo fabrica, ⚡ diaria gastada en estaciones.
+
 ---
 
 ## 4. Números sensibles
@@ -1081,7 +1092,9 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 | Número | Valor hoy | Definido en | Dueño | Qué mueve |
 |---|---|---|---|---|
 | Límite de oficios | Ninguno duro (D-57): el freno es el costo del conocimiento. [Profesiones](../07-economia/profesiones.md) §3 todavía dice 2 mayores y una recolección a 100 | D-57, [Profesiones](../07-economia/profesiones.md) §3 | M14 | C-12 |
-| Curva de rango | Gran Maestro en ~1 año de juego constante | [Profesiones](../07-economia/profesiones.md) §4 | M14 | Carrera del artesano |
+| Curva de rango | Gran Maestro en ~1 año de juego constante. En el juego (D-109): experiencia total = 9 × (rango − 1)², 6 por ⚡ al refinar o fabricar, 1 por unidad recolectada | [Profesiones](../07-economia/profesiones.md) §4 y §0.1, `balance.yaml` professions.rank_formula | M14 | Carrera del artesano |
+| Experiencia de héroe al refinar y fabricar | 20 por ⚡ × (1 + 0,15 × (nivel − 1)), nivel = el menor entre el del héroe y su rango en el oficio (D-109) | `balance.yaml` professions.hero_xp_per_energy | M14 | C-20, ritmo hasta el nivel 100 (D-108) |
+| Unidad extra y raros | 0,3 % por rango de una unidad más; raros desde el rango 10 (5 % + 0,15 % por rango); +10 % al refinar en el campamento | `balance.yaml` professions | M14 | Oferta de cada material y de gemas y flores |
 | Fabricación rápida | Techo de calidad: Notable | [Fabricación](../07-economia/fabricacion.md) §1 | M14 | Valor del minijuego |
 | Copias de plano | 10 usos | [Fabricación](../07-economia/fabricacion.md) §5 | M14 | Mercado de conocimiento |
 | Especialidad de capital | +15 % de retorno de material | [Fabricación](../07-economia/fabricacion.md) §6 | M14 | Movimiento entre capitales |

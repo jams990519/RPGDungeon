@@ -373,3 +373,44 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.
 
 **Lo que queda por mirar:** cuánto tarda de verdad un grupo en las 15 (si se traba en la piedra de la Muralla y el Foso, bajar esos costos), si la Perrera y el Rastreo, que piden carne, dejan la despensa corta, y cuánto debe bajar cada punto de 🛡️ Defensa la fuerza de una oleada cuando se conecte con D-99.
+
+### Octubre de 2026: los oficios encadenados, fase 1 (D-109)
+
+**Por qué.** El dueño pidió oficios "como en World of Warcraft": recolectar → refinar → fabricar, que avanzar no dependa de una sola cosa y que 50 jugadores tengan tareas distintas (ver [Profesiones](../07-economia/profesiones.md) §0). Son números **nuevos**, propuestos por Claude; solo se movió uno de antes (el cinturón). Todavía no se midieron con jugadores.
+
+**Números nuevos** (`content/balance.yaml` → `professions`, y `content/professions.yaml` para las recetas):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Curva de rango (`rank_formula`) | experiencia total = 9 × (rango − 1)²; rango 100 = 88.209 | Gran Maestro en ~1 año de juego constante (§4 de Profesiones, la referencia es el 99 de RuneScape) |
+| Rango máximo (`max_rank`) | 100 | §4 |
+| Experiencia de oficio al recolectar (`gather_xp_per_unit`) | 1 por unidad (también la carne y la piel del desollador) | Un recolector dedicado llega al 100 en 9 a 11 meses: junta más por vuelta a medida que sube de nivel |
+| Experiencia de oficio al refinar o fabricar (`xp` de cada receta) | 6 por vez al refinar (1 ⚡); 12 por pieza de equipo (2 ⚡); 6 vendas y poción de vida, 8 poción mayor | 6 por ⚡ en todos: con 40 ⚡ al día, 240 por día, rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año |
+| Unidad extra por rango (`rank_yield`) | 0,3 % por rango por unidad recolectada o por vez refinada (rango 50: 15 %; 100: 30 %) | "Los recolectores juntan un poco más con cada rango"; el especialista rinde más que quien hace de todo (D-57) |
+| Raros (`rare_chance`, `rare_per_rank`, `rare.min_rank`) | desde el rango 10: 5 % por vuelta con materiales del oficio, +0,15 % por rango (18,5 % en el 100) | 2 a 7 💠 gemas o 🌸 flores por día para un dedicado; la Joyería pide 1 a 3 por pieza |
+| Experiencia de héroe por ⚡ al refinar y fabricar (`hero_xp_per_energy`) | 20 × (1 + 0,15 × (nivel − 1)), nivel = el menor entre tu nivel y tu rango en ese oficio | D-108: ver la cuenta de abajo |
+| Bono del campamento (`camp_bonus`) | +10 % de sacar una unidad más al refinar en tu 🧵 Taller o 🔨 Herrería | "Con algo más de rendimiento" (§0); chico, para no vaciar el Claro |
+| Energía por receta (`energy`) | 1 ⚡ refinar, vendas, poción de vida y poción mayor; 2 ⚡ cada pieza de equipo y la tanda de pociones mayores | D-78: toda acción fuera del combate gasta energía |
+| Recetas por página (`per_page`) y botón de tanda (`make_batch`) | 2 por página si son más de 3; 🔨 Hacer 5 | 4 botones como mucho (D-75) |
+| Piel (`enemies.yaml` → `loot.piel`) | cada bestia, 10 puntos menos que su carne (30 a 50 %), 1 o 2 | La Curtiduría pide 2 por cuero; un cazador saca ~0,6 por bestia vencida |
+| Precios de lo refinado (`items.yaml`) | tablón 7, lingote 13, extracto 10, tela 7, cuero 7 (piel 3, gema 15, flor 12) | En el mercader, lo que sale vale lo que entra: refinar no fabrica monedas |
+| Equipo de artesano (`items.yaml`, `source: crafted`) | rango 1 = poco común del nivel 3; rango 25 = raro del nivel 5 + un bono; rango 50 = épico del nivel 8 + un bono | Como el botín de su nivel y algo más arriba, para que el artesano sea necesario; se vende al mercader por menos que sus materiales |
+| 🍷 Poción mayor | cura 60 %, toxicidad 60, precio 18 | Más eficiente que la de vida (35 % por 40) pero una por pelea |
+
+**Número movido:**
+
+| Número | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| Cinturón (`hero.belt_slots`) | poción de vida 3, venda 2 | + **1 🍷 poción mayor** | Quien la fabrica o la consigue puede llevar una al combate. La toxicidad (tope 100) sigue limitando: una mayor y una de vida por pelea |
+
+**Cuenta rápida: experiencia por ⚡ (D-108).** Con toda la energía cada día (40 ⚡) y la misma fórmula de niveles:
+
+| Camino | Experiencia por ⚡ | Hasta el nivel 100 |
+|---|---|---|
+| Recolectar en tu territorio, sin peleas | 14 × escala del nivel | ~2,9 años (D-108) |
+| Recolectar con sus peleas | ~20 × escala (14 + las peleas) | ~2,0 años (D-108) |
+| **Refinar o fabricar** (dedicado, rango ≥ nivel) | **20 × escala** | **~2,0 años** |
+
+Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 año, nivel ~47 en ese tiempo), así que su "nivel de trabajo" es siempre su nivel y no lo frena. Quien llega de nivel alto y empieza un oficio en rango 1 gana 20 por ⚡: un novato aprende poco. Refinar en el Claro con madera juntada ahí mismo (zona de nivel 1, sin peligro) rinde cerca del 70 % de recolectar en una zona de tu nivel: lo seguro rinde menos, como el territorio propio.
+
+**Lo que queda por mirar:** si 2 ⚡ por pieza de equipo es mucho o poco cuando llegue el mercado (y si conviene que la tanda cueste menos energía por pieza), si el rango 10 de los raros es demasiado pronto o tarde para la Joyería, cuánta piel entra al juego con la cacería (D-106), si los precios de lo refinado dejan algún hueco para ganar monedas, y el equipo de artesano cuando haya botín por encima del nivel 8 (el bestiario de nivel alto).
