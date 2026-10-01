@@ -1,6 +1,6 @@
 # El Colapso y las comunidades: empezar de cero entre ruinas
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Torre y pisos](torre-y-pisos.md) (premisa), [Fundación y cisma](fundacion-y-cisma.md) · **Se conecta con:** [Ciudades y el Castillo](ciudades-y-castillo.md) (entrenadores), [Facciones](facciones.md), [Crisis](crisis-problemas-y-soluciones.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Investigaciones](../06-contenido/investigaciones.md) (Gran Misterio, arqueología), [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md) (recetas y planos), [Creación de personaje](../03-personaje/creacion-de-personaje.md) (trasfondos) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Torre y pisos](torre-y-pisos.md) (premisa), [Fundación y cisma](fundacion-y-cisma.md) · **Se conecta con:** [Ciudades y el Castillo](ciudades-y-castillo.md) (entrenadores), [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) (hogar, aldeanos, cuota), [Facciones](facciones.md), [Crisis](crisis-problemas-y-soluciones.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Investigaciones](../06-contenido/investigaciones.md) (Gran Misterio, arqueología), [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md) (recetas y planos), [Creación de personaje](../03-personaje/creacion-de-personaje.md) (trasfondos) · **Estado:** propuesta
 
 **Qué pediste.** Que el juego empiece **cuando todo ya fue destruido** y la vida arranque desde cero. Que haya que **investigar primero para poder crear**. Que ya existan **zonas pobladas, pero solo por PNJ**, y que puedas **unirte a esas comunidades y aceptar sus reglas** o **irte a crear las tuyas propias** en otro lugar. Y vía libre para agregar lo que sume.
 
@@ -42,7 +42,7 @@
 
 No se dice. Es **la tercera pregunta del Gran Misterio de la Torre** (ver [Investigaciones](../06-contenido/investigaciones.md)), junto a qué hay en el Piso 100 y quién construyó la Torre.
 - **Cada comunidad PNJ tiene su versión** del Colapso (§2.1). Todas tienen una parte de verdad y ninguna está completa.
-- Las **Crónicas del Colapso** son fragmentos especiales escondidos en las ruinas de cada piso. Juntarlos, compararlos y discutirlos en los chats es trabajo de la comunidad durante años.
+- Las **Crónicas del Colapso** son fragmentos especiales escondidos en las ruinas de cada piso. Juntarlos, compararlos y discutirlos en los chats es trabajo de los jugadores durante años.
 
 **Encaja con lo que ya existe.** La premisa de la Torre no cambia: el mundo roto en cien pedazos *es* el Colapso. El Claro del Piso 1 sigue igual: es el lugar vacío donde se funda la primera ciudad de jugadores (ver [Fundación y cisma](fundacion-y-cisma.md)). Las comunidades PNJ no son castillos: no crecen, no tienen Castillo y no enseñan los rangos altos (§2.4). **El mundo de los jugadores sigue empezando de cero** (D-18).
 
@@ -69,7 +69,7 @@ Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.
 |---|---|---|---|---|
 | 🛡 **Bastión Gris** | La mejor protección, armería, patio de armas. Entrenadores de Herrería, Peletería, Construcción (Fortificación) y Primeros Auxilios | Un **turno de guardia** por semana; respetar el **toque de queda** | Duelos sin permiso, robo, beber de guardia, desertar en una incursión | Cepo: 12 horas sin servicios. Si se repite, bajas un rango. Desertar en una incursión: destierro de 2 semanas |
 | ⚖️ **Lonja del Vado** | El mercado más grande del Tramo I, caravanas, un banco pequeño. Entrenadores de Comercio, Sastrería, Joyería e Inscripción (Contratos) | Un **impuesto del 5 %** sobre lo que vendes en su mercado; pagar las deudas | Robo, estafa, falsificar firmas, deudas impagas | Multa del doble de lo robado o estafado y cierre de tu puesto. Con deudas, embargo hasta pagar |
-| ⛲ **Hospicio de la Fuente** | Sanación barata para todos, cuarentena, camas de enfermería. Entrenadores de Medicina, Primeros Auxilios, Herboristería y Alquimia (Pociones) | **Servicio semanal** en la enfermería, o una donación de vendas o hierbas | **Armas dentro** (se dejan en la portería), cualquier violencia, rechazar a un herido, sea quien sea | Expulsión de 4 semanas e Infamia (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) |
+| ⛲ **Hospicio de la Fuente** | Sanación barata para todos, cuarentena, camas de enfermería. Entrenadores de Medicina, Primeros Auxilios, Herboristería y Alquimia (Pociones) | **Servicio semanal** en la enfermería, o una donación de vendas o hierbas | **Armas dentro** (se dejan en la portería), cualquier violencia, rechazar a un herido, sea quien sea | Violencia: expulsión de 4 semanas e Infamia (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)). Lo demás: una penitencia en la enfermería |
 | 🐎 **Errantes del Viento** | Monturas y crías, rastreo, mapas de rutas, mercado itinerante. Entrenadores de Ganadería, Desuello y caza, Curtiduría, Cocina y Pesca | **Aporte a la manada:** una ración de comida por día; mudarte con ellos | Construir casas fijas en su campamento, cazar crías, talar árboles viejos, abandonar a un compañero en peligro | "Te dejan atrás": en la siguiente mudanza no te dicen adónde van y tienes que encontrarlos (una misión de rastreo) |
 | 🔥 **Santuario de la Llama** | Templo, bendiciones, levantar maldiciones menores, guardia sagrada contra el Vacío. Entrenadores de Inscripción (Pergaminos), Encantamiento y Destilación | Un **diezmo del 10 %** del oro que ganas (botín y ventas); jurar las tres leyes | Usar nigromancia o magia del Vacío dentro de sus muros (invocar esbirros, rituales), vender reliquias malditas, profanar tumbas | Penitencia: 3 encargos para el templo. Si se repite, destierro de 2 semanas |
 | 🪶 **Nido de Cuervos** | Acepta a cualquiera, incluso con Infamia alta. Perista PNJ, garito, matasanos y rumores. Entrenadores de Alquimia (Venenos) e Ingeniería (Explosivos). El maestro de Robo vive ahí, pero hay que encontrarlo siguiendo un rumor, como todo oficio secreto (ver [Mundo vivo](mundo-vivo-y-viaje.md)) | **La parte de la Reina:** el 10 % de lo que vendes en el Nido | Nada: no hay leyes | No hay reglas que romper. Pero quien le roba a la Reina o mata a su gente tiene precio sobre su cabeza en todo el Tramo I |
@@ -113,7 +113,7 @@ Se pueden sumar más en cada tramo: una comunidad es un conjunto de datos (Carta
 
 ### 2.5 La vida de una comunidad (ligera)
 
-- Cada comunidad tiene **tres barras**: 👥 Población, 🍞 Provisiones y 🛡 Seguridad. Se actualizan una vez por semana y se ven en `/comunidad`. Son menos que las ocho necesidades de una ciudad de jugadores, a propósito.
+- Cada comunidad tiene **tres barras**: 👥 Población, 🍞 Provisiones y 🛡 Seguridad. Se actualizan una vez por semana y se ven en `/comunidad`. Son menos que los medidores de una ciudad de jugadores (ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md)), a propósito.
 - **También consume:** publica pedidos semanales ("*faltan 60 flechas y 120 de carne*") que cualquiera puede cubrir a cambio de oro y reputación. Nada sale de la nada.
 - **Cuatro estados:** Próspera, Estable, En apuros y Al borde. Las crisis del mundo también la golpean: plagas, incursiones, hambrunas (ver [Crisis](crisis-problemas-y-soluciones.md)).
 - **Las del Tramo I nunca desaparecen.** En el peor caso quedan Al borde (menos servicios, precios más altos), pero sus entrenadores siguen ahí: el jugador nuevo siempre tiene un camino seguro. Las de pisos altos pueden ser absorbidas o caer en ruinas (§5.4).
@@ -185,6 +185,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 - **El bot avisa antes de que rompas una regla:** "*Esto rompe una ley del Hospicio. ¿Seguro?*". Nadie rompe una regla sin querer.
 - **Algunas reglas son imposibles de romper:** en el Hospicio tu arma queda en la portería; en el Santuario, los hechizos prohibidos aparecen apagados.
 - **Si no ganaste nada, no pagas nada.** Los deberes son porcentajes (D-27) y nunca dejan deuda.
+- Es la versión PNJ de la **cuota del residente** de las ciudades de jugadores (ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md)): algo pequeño que se cumple jugando normal.
 
 ### 3.6 Reputación
 
@@ -252,7 +253,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 2. **Si nadie ayuda**, baja un estado por cada semana sin atender.
 3. **Al borde**, una comunidad de pisos altos tiene tres salidas:
    - **Rescate:** se cubren sus pedidos y vuelve a Estable.
-   - **Absorción:** una ciudad de jugadores vecina vota acogerla. Su gente se muda (más población, más necesidades que cubrir) y sus entrenadores quedan como un **barrio con su cultura**. Por ejemplo, el *Barrio de los Velados* mantiene su cuarentena dentro del barrio.
+   - **Absorción:** una ciudad de jugadores vecina vota acogerla. Su gente se muda como aldeanos (más manos y más bocas; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md)) y sus entrenadores quedan como un **barrio con su cultura**. Por ejemplo, el *Barrio de los Velados* mantiene su cuarentena dentro del barrio.
    - **Ruinas:** se vacía. Su gente llega como refugiados a otras ciudades (ver la crisis *Migración de refugiados* en [Crisis](crisis-problemas-y-soluciones.md)) y el lugar queda como sitio libre, con ruinas para excavar.
 4. **Las del Tramo I no se absorben ni caen:** se quedan Al borde hasta que alguien las ayude.
 5. **El Nido** se puede asaltar: está en zona amarilla, así que hace falta la bandera. Una ciudad puede pagar por desalojarlo, pero a los tres días reaparece en otro barranco. Siempre hay un lugar para los que no tienen lugar.
@@ -284,7 +285,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 
 - **Mesa del Saber** desde la etapa Aldea: un proyecto a la vez. **Academia** desde la etapa Ciudad: dos a la vez y los proyectos grandes (ver [Fundación y cisma](fundacion-y-cisma.md) y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 - **Cómo funciona un proyecto:** el consejo propone, o los residentes votan con una encuesta nativa de Telegram, un saber del que ya se encontró al menos un fragmento. La meta queda a la vista (fragmentos, materiales y horas de estudio) y cada residente dona con un toque. Un proyecto lleva de una a dos semanas.
-- **Cada ciudad se vuelve distinta.** Como no se puede investigar todo a la vez, cada ciudad elige su orden: una va por el Acueducto y la Cirugía limpia; otra, por el Acero templado y la Muralla de sillar. Eso le da identidad y crea comercio entre ciudades.
+- **Cada ciudad se vuelve distinta.** Como no se puede investigar todo a la vez, cada ciudad elige su orden: una va por el Filtro de arena y la Cirugía limpia; otra, por el Acero de los Antiguos y la Muralla de sillar. Eso le da identidad y crea comercio entre ciudades.
 - **Nadie queda atrás para siempre.** Cuando un saber ya fue redescubierto en el servidor, otras ciudades lo completan con la mitad de los fragmentos (como el [Viento de Cola](torre-y-pisos.md)). También se puede comprar la copia del plano o intercambiarlo por tratado.
 - **Nada imprescindible queda escondido.** Lo redescubierto da variantes, mejoras y obras especiales. El camino simple, con lo que enseñan los maestros, siempre funciona (pilar 11).
 
@@ -305,18 +306,18 @@ Cada comunidad del Tramo I guarda un saber que solo enseña a sus ciudadanos. So
 
 | Saber perdido | Tipo | Dónde aparecen sus fragmentos | Qué abre |
 |---|---|---|---|
-| ⚙️ **Rueda de molino** | Obra | Molinos caídos (Tramo I) | El molino: más harina por cada grano, una ayuda contra la hambruna |
-| 🗡 **Acero templado** | Receta | Armerías en ruinas (Tramos I y II) | Una variante de lingote: armas que se gastan más despacio |
+| ⚙️ **Rueda doble** | Mejora de obra | Molinos caídos (Tramo I) | El molino de la ciudad muele el doble con la misma gente: una ayuda contra la hambruna |
+| 🗡 **Acero de los Antiguos** | Receta | Armerías en ruinas (Tramos I y II) | Una variante de lingote: armas que se gastan más despacio |
 | 🧼 **Cirugía limpia** | Técnica | Hospitales en ruinas (Tramos I a IV) | Menos infecciones después de una cirugía en esa ciudad |
-| 🚰 **Acueducto** | Obra | Ruinas de la Pradera (Tramo II) | Agua sin pozo: protege de la sequía |
+| 🚰 **Filtro de arena** | Técnica | Ruinas de la Pradera (Tramo II) | El agua del pozo y de la cisterna sale limpia: sube la salud pública |
 | 🧱 **Muralla de sillar** | Obra | Fortalezas caídas (Tramos II y III) | Murallas más duras ante las incursiones |
-| 🔍 **Lentes** | Receta | Talleres de cristal (Tramo III) | Lupa de tasador y catalejo (ves más lejos al explorar) |
+| 🔩 **Resortes de los Antiguos** | Receta | Talleres en ruinas (Tramo III) | Trampas de defensa que se rearman solas una vez por incursión (Ingeniería) |
 | 🖨 **Imprenta** | Obra | Archivo de los Custodios (Tramo VII) | Pergaminos y libros más baratos; una gaceta propia de la ciudad |
 | 🗣 **Lengua de los Antiguos** | Saber | Inscripciones de todas las ruinas | Leer fragmentos raros y Crónicas del Colapso (ver *Idiomas antiguos* en el [Catálogo ampliado](../00-vision/catalogo-ampliado.md)) |
 
 ### 6.6 La Gaceta
 
-La **primera vez que el servidor redescubre un saber**, sale en la Gaceta con el nombre de quien encontró el último fragmento y el de la ciudad o comunidad que lo completó. Quien lo completa gana un título permanente ("Redescubridora del Acueducto"). No da poder, da prestigio, como a los Pioneros (ver [Torre y pisos](torre-y-pisos.md)).
+La **primera vez que el servidor redescubre un saber**, sale en la Gaceta con el nombre de quien encontró el último fragmento y el de la ciudad o comunidad que lo completó. Quien lo completa gana un título permanente ("Redescubridora de la Imprenta"). No da poder, da prestigio, como a los Pioneros (ver [Torre y pisos](torre-y-pisos.md)).
 
 ## 7. Las primeras horas de un jugador
 
@@ -401,7 +402,7 @@ Humor con la Aldea del Claro: 🙂
 ```
 🏚 Molino caído · Piso 1
 Entre las piedras asoma un engranaje de bronce.
-📖 Códice · Rueda de molino ▓▓▓░ 3/4
+📖 Códice · Rueda doble ▓▓▓░ 3/4
 
 [🔦 Explorar]  [🔧 Estudiar el engranaje]
 [⛏ Excavar a fondo] (Arqueología)
@@ -411,10 +412,10 @@ Entre las piedras asoma un engranaje de bronce.
 ```
 🔧 Desmontas el engranaje pieza por pieza.
 Ahora entiendes cómo giraba.
-📖 Rueda de molino ▓▓▓▓ 4/4 · ¡Saber completo!
+📖 Rueda doble ▓▓▓▓ 4/4 · ¡Saber completo!
 
-[📖 Aprenderlo yo]     receta propia
-[🏛 Darlo a mi hogar]  todos la aprenden
+[📖 Aprenderlo yo]     solo tú lo sabes
+[🏛 Darlo a mi hogar]  lo aprenden todos
 ```
 
 ### 8.5 La Gaceta
@@ -422,10 +423,10 @@ Ahora entiendes cómo giraba.
 ```
 📰 Gaceta de la Torre
 🔁 Primer redescubrimiento del servidor:
-   la RUEDA DE MOLINO.
+   la RUEDA DOBLE.
 Último fragmento: Mira la Arqueóloga.
-La Aldea del Claro ya puede levantar
-el primer molino de la Torre.
+La Aldea del Claro ya puede mejorar
+su molino: muele el doble.
 ```
 
 ## 9. Ligero para el jugador y para el servidor
