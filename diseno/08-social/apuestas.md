@@ -25,7 +25,7 @@
 | **Salones del Azar** | En cada asentamiento con licencia | Mesas básicas: dados, cartas, tragaperras |
 | **Taberna** | En todos los asentamientos | Dados, dardos y cartas entre amigos, con apuestas chicas (ver [Minijuegos](minijuegos-y-formatos-telegram.md)) |
 | **Casa de apuestas** | En las capitales | Apuestas a eventos: arena, guerra de facciones, torneos, Pioneros, carreras |
-| **La Feria Errante** | Una semana al mes, cambia de piso | Juegos de feria (tiro al blanco, lanzar aros, derribar gnomos), rifas y premios cosméticos (estilo Luna Negra de WoW) |
+| **La Feria Errante** | Una semana al mes, cambia de región | Juegos de feria (tiro al blanco, lanzar aros, derribar gnomos), rifas y premios cosméticos (estilo Luna Negra de WoW) |
 | **Casinos de jugadores** | Donde un gremio construya uno con licencia (ver [Construcción](../09-construccion/README.md)) | Lo que el dueño ofrezca, dentro de las reglas |
 
 ### 1.2 Ilegal
@@ -63,14 +63,14 @@
 | **Dardos, canasta, penal, bolos** | Azar con estilo | 🎯🏀⚽🎳 nativos | Taberna, Feria |
 | **Ruleta** | Azar puro | Servidor, con semilla auditable; en la Mini App se ve la rueda | Castillo |
 | **Póker y blackjack** | Cartas | Tus cartas por privado, la mesa en el grupo (como @PokerBot) | Castillo, salones, garitos |
-| **Naipes de la Torre y Mazo de Bestias** | Cartas de habilidad | Juego de cartas del mundo (ver [Minijuegos](minijuegos-y-formatos-telegram.md)) | Taberna, torneos |
+| **Naipes del Claro y Mazo de Bestias** | Cartas de habilidad | Juego de cartas del mundo (ver [Minijuegos](minijuegos-y-formatos-telegram.md)) | Taberna, torneos |
 | **Lotería semanal** | Azar puro | Sorteo en el canal, con los números sacados por 🎰 | Castillo; se compra en cualquier asentamiento |
 | **Rasca y gana** | Azar puro | Spoiler de Telegram que tapa el resultado | Salones |
 | **Carreras de monturas** | Apuesta a un evento | Monturas **criadas por jugadores** (Crianza) o de PNJ; cada montura tiene estadísticas visibles, y la carrera se resuelve por rondas con algo de azar | Hipódromo del Castillo |
 | **Gladiadores** | Apuesta a un evento | Peleas de PNJ con estadísticas públicas | Arena del Castillo |
 | **Peleas de bestias** | Apuesta a un evento (ilegal) | Bestias **capturadas vivas en cacerías** | El Foso |
 | **Apuestas a jugadores** | Apuesta mutua (pozo) | Arena clasificada, torneos, Mítica+ de temporada, guerra de facciones | Casa de apuestas |
-| **Mercado de predicciones** | Apuesta mutua | "¿Qué gremio será Pionero del piso 23?", "¿Caerá el Muro del piso 25 este mes?" | Casa de apuestas |
+| **Mercado de predicciones** | Apuesta mutua | "¿Qué gremio será Pionero de la región del Coloso?", "¿Caerá la Gran Barrera este mes?" | Casa de apuestas |
 | **Duelo con apuesta** | Entre dos jugadores | Los dos ponen oro, el bot lo guarda y el ganador del duelo se lo lleva | Taberna (legal, con tope) o Foso (sin tope) |
 | **Cara o cruz** | Entre dos jugadores | 🎲 par o impar | Cualquier sitio |
 

@@ -19,7 +19,7 @@
 |---|---|---|
 | **Alimañas** (plagas, ladrones de cosecha) | Granjas y casas en zonas amarillas | Frecuente, poco daño |
 | **Incursión de monstruos** | Construcciones en zonas amarillas, rojas y negras | Cuando la población de una especie crece sin control (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)), en eclipses o en luna llena |
-| **Invasión del piso** | Asentamientos enteros | Evento de servidor (ver [Eventos](../06-contenido/eventos.md)) |
+| **Invasión de la región** | Asentamientos enteros | Evento de servidor (ver [Eventos](../06-contenido/eventos.md)) |
 | **Saqueadores** (jugadores) | Construcciones en zonas rojas | En cualquier momento, salvo protección activa |
 | **Asedio** (gremios) | Fortalezas en zonas negras | En la ventana de asedio que eligió el defensor |
 | **Redada de la guardia** | Garitos y casinos ilegales | Evento (ver [Apuestas](../08-social/apuestas.md)) |

@@ -49,4 +49,4 @@ Escalonadas y públicas en su criterio, no en su nombre: aviso → congelación 
 
 ## 7. Moderación de chats
 
-Los grupos oficiales (facción, pisos, taberna) necesitan moderación: filtro de palabras, límite de mensajes, moderadores voluntarios con herramientas del bot. Las notas en el suelo (ver [Jefes](../06-contenido/jefes.md)) usan **frases de plantilla** como en Elden Ring, justamente para que no se puedan usar para insultar.
+Los grupos oficiales (facción, regiones, taberna) necesitan moderación: filtro de palabras, límite de mensajes, moderadores voluntarios con herramientas del bot. Las notas en el suelo (ver [Jefes](../06-contenido/jefes.md)) usan **frases de plantilla** como en Elden Ring, justamente para que no se puedan usar para insultar.
