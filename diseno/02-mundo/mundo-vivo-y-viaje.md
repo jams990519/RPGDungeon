@@ -4,20 +4,9 @@
 
 ---
 
-## 1. Moverse por la Torre
+## 1. Moverse por el mapa
 
-| Medio | Cómo funciona | Costo | Riesgo |
-|---|---|---|---|
-| **A pie** | Nodo a nodo dentro del piso; cada tramo de camino consume poco tiempo real o Vigor | Vigor | El del color de la zona |
-| **Escalera** | Une el Laberinto de un piso con el asentamiento del siguiente; solo con Sello | Gratis | Ninguno (siempre azul) |
-| **Piedra de paso** | Teletransporte entre asentamientos ya visitados | Oro, **según el peso que llevas** | Ninguno |
-| **Caravana** | Mover mucha carga entre pisos por la ruta de las escaleras | Barato por kilo | Cruza zonas rojas: se puede emboscar |
-| **Correo** | Enviar objetos entre asentamientos | Tarifa más una demora de horas, o tarifa alta para que llegue ya | Ninguno |
-| **Ritual de Invocación** (Brujo) | Trae a un compañero a tu asentamiento | Un fragmento de alma | Ninguno |
-
-**Por qué el teletransporte cobra por peso.** Es la regla que hace funcionar los mercados locales (ver [Economía](../07-economia/economia.md)). Si mover 500 lingotes del piso 12 al 30 fuera gratis, todos los mercados tendrían el mismo precio y el oficio de comerciante no existiría. Origen: Albion, donde el teletransporte a ciudades no admite carga pesada, y las caravanas de Chat Wars.
-
-**Monturas.** Reducen el Vigor y el tiempo de viaje a pie, y algunas cargan peso (mulas, lagartos de carga). Se crían, se doman o se fabrican (ver [Profesiones](../07-economia/profesiones.md)).
+Ya no hay Torre ni pisos (D-58): el mundo es un mapa sin borde y moverse entre zonas toma tiempo real. Cómo funciona el viaje hoy (v0.1) y lo que viene por parches (caminos, monturas, postas, carga, eventos del camino, sin teletransporte) está en [El mapa infinito y el viaje](mapa-infinito-y-viaje.md).
 
 ## 2. Día y noche
 
