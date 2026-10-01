@@ -89,3 +89,12 @@ v0_7:
     - "👝 Bolsas: se cosen en el Claro con 4 de fibra, 1 pieza de metal y 1 🥈. Pronto servirán para la doble especialización."
     - "💎 Gemas: la tienda tiene ⭐ experiencia +50 % por 7 días y 🚩 un estandarte único de beta tester al lado de tu nombre. Las gemas se venderán muy pronto."
     - "Míralo todo con /monedas o en 🎒 Mochila → 💰 Monedas."
+
+v0_7_1:
+  version: "0.7.1"
+  title: "🏕️ Lost Realms 0.7.1: campamentos que crecen"
+  notes:
+    - "⬆️ Ya puedes agrandar tu campamento: al fundarlo ocupa 1 zona, y cada mejora suma otra (2, 3, 4…)."
+    - "🛡️ En el territorio de un campamento o del Claro no te atacan al llegar."
+    - "🧭 El viaje cuenta la distancia desde el borde de tu campamento: mientras más grande, más cerca queda todo."
+    - "🔥 El Claro también crece con cada etapa de la obra común."

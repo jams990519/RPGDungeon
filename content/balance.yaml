@@ -94,6 +94,7 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   known_neighbors: 4         # [ES] zonas conocidas de las 8 de alrededor para poder fundar
   min_lejania: 2             # [ES] no se funda pegado al Claro
   min_distance: 2            # [ES] distancia mínima a otro campamento
+  grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
 
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
