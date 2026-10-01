@@ -1,6 +1,6 @@
 # Cacerías
 
-> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md) (partes rompibles), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (ecología, día y noche, clima) · **Alimenta a:** [Fabricación](../07-economia/fabricacion.md) (materiales de partes), [Progresión](../03-personaje/progresion.md) (bestiario, trofeos), [Casa propia](../09-construccion/casa-propia.md) (sala de trofeos) · **Estado:** propuesta
+> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md) (partes rompibles), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (ecología, día y noche, clima) · **Alimenta a:** [Fabricación](../07-economia/fabricacion.md) (materiales de partes), [Progresión](../03-personaje/progresion.md) (bestiario, trofeos), [Casa propia](../09-construccion/casa-propia.md) (sala de trofeos) · **Estado:** §0 está en el juego (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, capa simple, D-106 provisional); lo demás es propuesta
 
 **De dónde sale.**
 - *Monster Hunter*: rastrear a la presa, romper sus partes, capturarla viva o matarla, y fabricar equipo con lo que rompiste.
@@ -11,6 +11,54 @@
 - *Pokémon* y *Monster Hunter*: capturar vivo en lugar de matar.
 
 **Por qué conviene.** La cacería es el puente entre explorar, pelear y fabricar. Da materiales que no salen de ningún otro lado, le da uso a la ecología del mundo y es una forma de jugar solo o en grupos chicos que no depende de horarios.
+
+---
+
+## 0. En el juego (D-106, provisional)
+
+**Qué pidió el dueño** (por voz, 1-oct-2026). "Agregar el formato de cacería en la misma zona: no solo misiones, sino un formato de cacería para atacar solo mobs". Y: "una vez creas el campamento y agregas más personas, esas personas pueden ir contigo a las misiones y a las cacerías".
+
+**Cómo se tomó** (D-106, provisional, en [decisiones.md](../00-vision/decisiones.md)). La **capa simple** de este documento (D-44): cazar es pelear en la zona donde estás, sin explorar ni recolectar; y la **partida de caza** junta a los miembros de un campamento que están en la misma zona, con un bono y una cuenta de presas común. La forma y los números son interpretación de Claude. Todo lo que sigue después de §0 (contratos, rastreo, acecho, partes, calidad de la pieza, captura viva, herramientas, Bestiario, ecología, rangos) **sigue siendo propuesta**: la capa profunda.
+
+### 0.1 🏹 Cazar en la zona
+
+- **Dónde está el botón:** 🧭 Explorar → **🏹 Cazar**. 🧭 Explorar sigue con 4 botones (D-75): 🔎 Explorar · 🪓 Recolectar · 🏹 Cazar · 🗺️ Mapa. Para hacerle lugar, **📒 Lugares se mudó adentro de 🗺️ Mapa** (🗺️ Mapa → 📒 Lugares, y su ↩️ Volver vuelve al mapa).
+- **La pantalla 🏹 Cazar** muestra qué enemigos rondan la zona (los mismos de los encuentros: del bioma y del nivel de la zona, nunca jefes), cuánto cuesta cada presa, que no suma exploración ni recursos, y tu vida y energía. Botones: **🏹 Buscar presa · ⚡2**, **🏹 Partida de caza** o **🏹 Unirme** (solo con campamento) y ↩️ Volver.
+- **🏹 Buscar presa** cobra **2 de energía** (`hunt.energy`; lo fijó D-108 para que cazar dé una experiencia por ⚡ parecida a explorar y recolectar; la pelea en sí no gasta, D-78) y empieza **enseguida** una pelea normal, de 1 contra 1, contra un enemigo común de la zona. Su nivel es el de la zona, +1 con 30 % de probabilidad, como en los encuentros.
+- **Qué da:** solo lo de la pelea: experiencia, monedas, botín (las bestias sueltan 🍖 carne para la despensa; equipo con la probabilidad de siempre) y la victoria cuenta para el gremio (D-97). **Nunca da exploración ni recursos.**
+- **Al ganar**, la pantalla final ofrece **🏹 Otra presa** (si te queda energía) antes de ▶️ Continuar, y 🏹 Partida de caza o 🏹 Unirme si corresponde: 3 botones como máximo. Al perder o huir, solo ▶️ Continuar.
+- **Dónde no se caza:** en el Claro (su bioma no tiene peligro: no hay presas) y en la guarida del Guardián (solo está él: ⚔️ Desafiar al Guardián sigue en 🧭 Explorar, que ahí queda con 3 botones). **Sí se caza en el territorio de un campamento**: la tierra protege de las emboscadas al llegar, explorar o recolectar (D-81), pero salir a buscar una presa es a propósito.
+- **Cuándo no:** malherido (🤕: primero hay que curarse, y el juego lo dice), ocupado (viajando, explorando, recolectando o durmiendo: una actividad a la vez) o sin energía. Se avisa y no se cobra nada.
+
+### 0.2 🏹 Partida de caza con tu campamento
+
+- **Quién la convoca:** cualquier miembro de un campamento de jugadores, desde 🏹 Cazar o desde el final de una presa, en una zona donde se pueda cazar y sin estar malherido. No gasta energía.
+- **A quién avisa:** solo a los miembros del campamento **presentes en esa misma zona**: los mismos que salen en 👥 de 📍 Zona (tocaron un botón en los últimos 15 minutos, o exploran, recolectan o duermen ahí, D-96). El aviso trae **🏹 Unirme**. A los que están en otra zona no les llega nada: no hay teletransporte. Quien llega después se une desde 🏹 Cazar.
+- **Una por campamento a la vez**, y dura **30 minutos** (`hunt.party.minutes`). Si ya hay una en tu zona, convocar te une.
+- **Unirse:** solo los miembros, y solo desde la zona de la partida. Se puede aunque estés explorando o recolectando ahí (para cazar, primero hay que terminar o parar).
+- **Bono de grupo:** cada presa que gana un cazador de la partida en esa zona da **+10 % de experiencia y de probabilidad de botín** (carne, equipo) **por cada otro cazador de la partida presente en la zona, hasta +30 %**. Nunca más monedas. Cazar solo rinde lo de siempre.
+- **Cuenta común:** la partida suma las presas de todos. La pantalla 🏹 Cazar y el final de cada presa la muestran ("🏹 Partida de caza: 4/6 presas entre todos · bono de esta presa +10 %").
+- **Cierre:** reloj perezoso, como las oleadas (D-99): cuando terminó la ventana y un miembro del campamento juega, la partida se cierra y **todos sus cazadores reciben un informe** (presas juntas y las de cada uno). Solo cuentan las presas ganadas antes de que termine la ventana.
+- **Premio:** si se unieron **al menos 2 cazadores** y juntaron **3 presas por cazador**, cada cazador con al menos 1 presa gana **40 de experiencia y 20 🥉**. Unirse sin cazar no cobra nada, y una partida de uno solo nunca da premio.
+- **Sin pelea compartida:** cada uno pelea su presa, de 1 contra 1. "Ir juntos" es cazar en la misma zona a la misma hora, con el bono y la cuenta común.
+
+| Número | Valor | Dónde |
+|---|---|---|
+| Energía por presa | 2 (D-108) | `hunt.energy` |
+| Duración de la partida | 30 minutos | `hunt.party.minutes` |
+| Bono por compañero presente | +10 % de experiencia y de probabilidad de botín | `hunt.party.bonus_per_companion` |
+| Tope del bono | +30 % | `hunt.party.bonus_cap` |
+| Meta | 3 presas por cazador (contando al menos 2) | `hunt.party.prey_per_hunter`, `min_hunters` |
+| Premio | 40 de experiencia y 20 🥉 a cada cazador con al menos 1 presa | `hunt.party.reward` |
+
+### 0.3 Lo que todavía no tiene
+
+- **Las misiones con los miembros del campamento** ("pueden ir contigo a las misiones") quedan para la tarea de misiones, que está en cola: la partida de caza solo cubre las cacerías.
+- La capa profunda de este documento (contratos, rastreo, acecho, partes rompibles, calidad de la pieza, captura viva, herramientas, Bestiario, ecología y rangos de cazador) sigue como propuesta.
+
+**Dónde está.** Código: `engine/service/game.py` (sección "hunting", y ganchos en `_explore_menu`, `_start_combat` y `_end_combat`) y `engine/social/hunting.py` (las cuentas de la partida). Números: `content/balance.yaml` → `hunt`. Textos: `hunt.*` en `content/locales/es.yaml`. Pruebas: `tests/test_hunt.py`. Registro de balance: [Balance](../03-personaje/balance.md) §7.
+
+**De dónde sale.** Cazar monstruos en la zona es el bucle más viejo de los juegos de rol en línea, también en los de texto de Telegram como *Chat Wars*. El bono por compañero viene de los MMORPG clásicos (*Lineage II*, *Ragnarok Online*) que dan más experiencia al cazar en grupo; la cuenta común, de las cacerías en grupo de *Monster Hunter*.
 
 ---
 

@@ -114,6 +114,16 @@ gather:                      # [ES] recolectar en la zona actual
   own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
   xp_per_step: 14            # [ES] D-108: experiencia por recolección (× nivel de la zona, como matar): solo recolectando también se llega al nivel 100, al ritmo de explorar y cazar
 
+hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0). Números orientativos: se ajustan en la beta
+  energy: 2                  # [ES] D-108 (confirmada): cada presa cuesta 2 de energía, así cazar da una experiencia por ⚡ parecida a explorar y recolectar (con 1, cazar llegaría al 100 el doble de rápido). La pelea en sí no gasta (D-78). No hay presas donde el bioma no tiene peligro (el Claro) ni en la guarida del Guardián
+  party:                     # [ES] la partida de caza de un campamento de jugadores: solo suma un bono y una cuenta de presas; el combate sigue de 1 contra 1
+    minutes: 30              # [ES] cuánto dura desde que se convoca (reloj perezoso: se cierra cuando un miembro del campamento juega después)
+    bonus_per_companion: 0.10   # [ES] +10 % de experiencia y de probabilidad de botín en cada presa por cada otro cazador de la partida presente en la zona...
+    bonus_cap: 0.30          # [ES] ...hasta +30 % (3 compañeros). Nunca toca las monedas
+    prey_per_hunter: 3       # [ES] meta de presas entre todos = 3 × cazadores que se unieron (contando al menos 2)
+    min_hunters: 2           # [ES] el premio del final pide al menos 2 cazadores: una partida de uno solo no lo da
+    reward: {xp: 40, gold: 20}   # [ES] si juntan la meta, cada cazador con al menos 1 presa gana 40 de experiencia y 20 🥉 (chico: como una presa más)
+
 settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables
   stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
     - {id: fogata, needs: {madera: 40, fibra: 30}}

@@ -161,12 +161,12 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M7 | Salud | Alto | Duraciones, contagio, qué cura la magia, protección de novato |
 | M8 | Mundo | Alto | Color de zona, tiempo de viaje (D-58), ecología, clima, cuántas casillas de alrededor se exploran sin moverse (`explore.around_radius`, D-107: también cuenta para las vecinas conocidas al fundar) |
 | M9 | Frontera y Fundación | Alto | Etapas del Claro (se guardan por posición), costo de crecer de los campamentos, territorio, despensa (`pantry.*`) e incursiones ("oleadas" para el jugador, desde la fundación, D-105) y Noche de prueba (`raids.*`, D-99), mejoras de los campamentos y el castillo que pide 15 (`content/camp_upgrades.yaml`, `upgrades.*`, D-101), y la 🛡️ Defensa que frena las oleadas (`raids.defense_weaken_per_point`, `raids.defense_floor`, `raids.night`). Propuesta: ritmo de la Frontera, medidores de la ciudad |
-| M10 | Misiones | Medio | Oro que pagan (inflación), rendimiento de expediciones, investigación |
+| M10 | Misiones | Medio | Oro que pagan (inflación), rendimiento de expediciones, investigación. En el juego: 🏹 Cazar en la zona y la 🏹 Partida de caza del campamento (`hunt.*`, D-106) |
 | M11 | Instancias | Medio | Carriles de recompensa, reloj de rondas |
 | M12 | PvP, crimen y justicia | Alto | Reglas de caída por zona, protección del Juramento de Hierro, karma |
 | M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles |
 | M14 | Oficios | Alto | Costo del conocimiento (D-57), vetas, rangos y exámenes |
-| M15 | Social | Medio | Cupo por nivel de gremio y requisito del castillo (en el juego, D-97); quién cuenta como presente en una zona (en el juego, D-96); tamaño de grupo, vales por reenvío |
+| M15 | Social | Medio | Cupo por nivel de gremio y requisito del castillo (en el juego, D-97); quién cuenta como presente en una zona (en el juego, D-96); bono, meta y premio de la partida de caza del campamento (en el juego, D-106: `hunt.party.*`); tamaño de grupo, vales por reenvío |
 | M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
 | M17 | Colecciones y logros | Bajo, salvo que dé poder | Regla de las 3 vistas, nunca poder |
 | M18 | Temporadas y rankings | Medio | Duración de la temporada (la usan M7, M9, M10, M25) |
@@ -461,6 +461,8 @@ flowchart LR
 ---
 
 #### M10 · Misiones · `engine/quests`
+
+> **Dónde está hoy el código** (D-106, provisional): el paquete `engine/quests` todavía no existe. Lo que ya funciona es la capa simple de [Cacerías](../06-contenido/cacerias.md) §0: **🏹 Cazar en la zona** (una pelea enseguida por 2 de energía, sin exploración ni recursos) y la **🏹 Partida de caza** de un campamento. Vive en `engine/service/game.py` (sección "hunting": `_hunt_view`, `_hunt`, `_call_hunt_party`, `_join_hunt_party`, `_hunt_party_settle`; ganchos en `_explore_menu`, `_start_combat`, `_end_combat`, `view()` y `act()`) y en `engine/social/hunting.py` (las cuentas de la partida, M15). Números: `content/balance.yaml` → `hunt`. Textos: `hunt.*` en `content/locales/es.yaml`. Pruebas: `tests/test_hunt.py`. **Si cambias esto, revisa:** `hunt.energy` mueve el ritmo de experiencia frente a explorar y recolectar (D-78, D-104; D-108 pide que los caminos lleguen al 100 a un ritmo parecido: con 2 ⚡ cazar va a la par) y cuántas victorias suma cada gremio (M15, D-97); quitar 🏹 Cazar o mover 📒 Lugares cambia los 4 botones de 🧭 Explorar (D-75) y lo que numera la consola; el bono de la partida (`hunt.party.*`) toca la experiencia y el botín (🍖 carne para la despensa, M9; equipo, M4), nunca las monedas; a quién avisa la partida sale de la presencia de D-96 (`presence.minutes`). Contratos, rastreo, partes, Bestiario y lo demás de esta ficha siguen siendo propuesta.
 
 | | |
 |---|---|

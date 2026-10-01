@@ -366,7 +366,7 @@ travel:
 
 explore:
   menu_title: "🧭 Explorar"
-  menu_intro: "Recorre la zona, junta materiales o revisa tus mapas."
+  menu_intro: "Recorre la zona, junta materiales, sal a cazar o revisa tu mapa."
   title: "🔎 Explorando"
   started: "🔎 Empiezas a recorrer la zona. Tardarás {time}."
   in_progress: "Recorres la zona con cuidado."
@@ -598,6 +598,44 @@ gather:
   found: "🪓 Recolectaste: {items}."
   ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
 
+hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0)
+  button: "🏹 Cazar"
+  title: "🏹 Cazar"
+  intro: "Sales a buscar presas: una pelea enseguida, sin explorar ni recolectar. Cada presa cuesta ⚡{energy}."
+  prey_line: "🐾 Por aquí rondan: {names}."
+  rewards_hint: "Da lo de cada pelea: experiencia, monedas y botín (las bestias sueltan 🍖 carne)."
+  go_button: "🏹 Buscar presa · ⚡{energy}"
+  again_button: "🏹 Otra presa"
+  found: "🏹 Sigues un rastro y das con un {enemy} (nv {level})."
+  no_prey: "🔥 En el Claro no hay presas. Sal a las zonas de alrededor para cazar."
+  lair: "👑 En la guarida solo está el Guardián: aquí no hay presas sueltas."
+  downed: "🤕 Estás malherido: cúrate antes de salir a cazar (👤 Héroe → 🩺 Salud)."
+  camp_hint: "🏕️ Con un campamento puedes convocar una 🏹 Partida de caza con sus miembros."
+  party_button: "🏹 Partida de caza"
+  join_button: "🏹 Unirme"
+  party_line: "🏹 Partida de caza de {camp} en {zone}: {n} {n|cazador|cazadores} · {prey}/{target} presas · quedan {time}"
+  party_bonus_line: "Tu bono ahora: +{pct} % ({k} {k|compañero|compañeros} en la zona)."
+  party_title: "🏹 Partida de caza en {zone}"
+  party_call: "{name} convoca a los de {camp} a cazar en {zone} durante {time}."
+  party_how: "Cada uno pelea su presa. Cada presa de la partida da +{per} % de experiencia y de probabilidad de botín por cada compañero en la zona (hasta +{cap} %)."
+  party_goal: "Meta: {per_hunter} presas por cazador. Si la juntan, cada cazador con al menos 1 presa gana +{xp} experiencia y +{gold}."
+  party_called: "🏹 Convocaste la partida de caza: avisé a {n} {n|miembro|miembros} de tu campamento en esta zona."
+  party_called_alone: "🏹 Convocaste la partida de caza. No hay otros miembros conectados en esta zona: quien llegue podrá unirse aquí."
+  party_joined: "🏹 Te uniste a la partida de caza de {camp}. ¡A cazar!"
+  party_already: "🏹 Ya hay una partida de caza de tu campamento en {zone}: quedan {time}."
+  party_member: "🏹 Ya estás en la partida de caza."
+  party_no_camp: "🏕️ La partida de caza es para los miembros de un campamento."
+  party_none: "🏹 Ahora no hay ninguna partida de caza de tu campamento."
+  party_wrong_zone: "🏹 La partida de caza está en {zone}: ve allá para unirte."
+  party_prey: "🏹 Partida de caza: {prey}/{target} presas entre todos · bono de esta presa +{pct} %."
+  party_end_title: "🏹 Fin de la partida de caza de {camp}"
+  party_end: "Cazaron {prey} {prey|presa|presas} entre {n} {n|cazador|cazadores} en {zone} (meta: {target})."
+  party_end_hunter: "{name} {prey}"
+  party_end_hunters: "🐾 {list}"
+  party_end_reward: "✅ ¡Meta cumplida! Cada cazador con al menos 1 presa gana +{xp} experiencia y +{gold}."
+  party_end_short: "No llegaron a la meta: esta vez no hay premio."
+  party_end_alone: "Para el premio hacen falta al menos {n} cazadores."
+
 camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
   stages:
@@ -692,7 +730,7 @@ raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde q
   trial_sent: "🌙 ¡Convocaste la Noche de prueba! Se avisó a los miembros conectados."
 
 energy:
-  empty: "⚡ Sin energía. Moverte, explorar y recolectar gastan 1. Recuperas 1 en {time} ({per_day} al día)."
+  empty: "⚡ Sin energía. Moverte, explorar y recolectar gastan 1; cazar, {hunt}. Recuperas 1 en {time} ({per_day} al día)."
   route_stopped: "⚡ Te quedaste sin energía: el viaje se detiene en {name}."
 
 invite:

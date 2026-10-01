@@ -317,7 +317,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 |---|---|---|---|
 | Experiencia por recolección (`gather.xp_per_step`) | 0 | **14** × (1 + 0,15 × (nivel de la zona − 1)), solo si juntaste algo | Solo recolectando, el nivel 100 llega en ~2 años (con toda la energía y peleas ganadas); en tu territorio, sin peleas, ~2,9 |
 | Escala por nivel (`hero.xp_level_scale`) | 0,15 escrito en el código del combate | **0,15** en balance.yaml (mismo número) | Ahora lo comparten matar y recolectar: moverlo cambia el ritmo de todos los caminos a la vez |
-| Energía por presa al cazar (D-106, en camino) | — | se fija en **2 ⚡** al unir la cacería | Con 1 ⚡ por presa, cazar llevaría al 100 en 0,9 años: el doble de rápido que lo demás |
+| Energía por presa al cazar (`hunt.energy`, D-106) | — | **2 ⚡** (en el juego con la cacería) | Con 1 ⚡ por presa, cazar llevaría al 100 en 0,9 años: el doble de rápido que lo demás |
 
 **Lo que queda por mirar:** el ritmo real con viajes y derrotas (medir en la beta) y si recolectar en el territorio propio, sin riesgo, rinde demasiado.
 
@@ -375,4 +375,23 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 **Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.
 
-**Lo que queda por mirar:** cuánto tarda de verdad un grupo en las 15 (si se traba en la piedra de la Muralla y el Foso, bajar esos costos), si la Perrera y el Rastreo, que piden carne, dejan la despensa corta, y cuánto debe bajar cada punto de 🛡️ Defensa la fuerza de una oleada cuando se conecte con D-99.
+**Lo que queda por mirar:** cuánto tarda de verdad un grupo en las 15 (si se traba en la piedra de la Muralla y el Foso, bajar esos costos), si la Perrera y el Rastreo, que piden carne, dejan la despensa corta, y si el 4 % por punto de 🛡️ Defensa (conectado en la 0.14) deja las oleadas demasiado fáciles para un campamento con las 8 defensas.
+
+### Octubre de 2026: la cacería en la zona y la partida de caza (D-106, provisional)
+
+**Por qué.** El dueño pidió por voz un formato de cacería en la misma zona, para pelear solo contra monstruos, y que los miembros de un campamento puedan ir juntos a cazar (ver [Cacerías](../06-contenido/cacerias.md) §0). Son números **nuevos**, no movidos: los 2 ⚡ por presa los fijó D-108 (confirmada) y los de la partida los propuso Claude. Todavía no se midieron con jugadores: se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `hunt`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Energía por presa (`hunt.energy`) | 2 | Lo fijó D-108 (confirmada): con 2, cazar da una experiencia por ⚡ parecida a explorar y recolectar; la pelea en sí no gasta (D-78) |
+| Duración de la partida (`party.minutes`) | 30 minutos | Una sesión corta de Telegram; la mitad de la ventana de una oleada |
+| Bono por compañero presente (`party.bonus_per_companion`) | +10 % de experiencia y de probabilidad de botín | Se nota sin obligar a jugar en grupo; nunca toca las monedas |
+| Tope del bono (`party.bonus_cap`) | +30 % (3 compañeros) | Que un grupo grande no multiplique el ritmo de subida |
+| Meta (`party.prey_per_hunter`, `min_hunters`) | 3 presas por cazador, contando al menos 2 | Crece con el grupo: lo mismo por cabeza en una partida de 2 o de 5 |
+| Premio (`party.reward`) | 40 de experiencia y 20 🥉 a cada cazador con al menos 1 presa | Chico: como una presa más; la mitad del premio de una oleada |
+
+**Cuenta rápida.** Explorar da por cada energía 3 de experiencia, más o menos media pelea y lo que se encuentra (D-104); cazar da una pelea entera cada 2 de energía: un lobo de nivel 1 vale 30 de experiencia, 15 por ⚡, casi lo mismo que explorar (~16). Es la cuenta de D-108: solo cazando, el nivel 100 llega en ~1,8 años, como los demás caminos (con 1 ⚡ por presa serían 0,9). Cazar no da exploración, objetos ni monedas sueltas, ni recursos, y gasta vida (vuelve en 4 horas, D-103) y pociones. El freno real es la vida, no la energía: tocando solo ⚔️ Atacar, un guerrero de nivel 1 pierde cerca de un tercio de su vida por presa al lado del Claro (medido con el motor en 40 mundos: gana 39 de 40), así que caza 2 o 3 presas seguidas antes de curarse. Con la partida al tope (+30 %), la experiencia de cada presa sube un 30 %: "un poco más rápido", como dice [Progresión](progresion.md) §1.2. Cada presa ganada cuenta también como victoria del gremio (D-97), así que los gremios que cazan juntan las victorias más rápido.
+
+**Lo que queda por mirar:** si la partida de caza al tope acelera demasiado la subida de nivel (D-108 pide caminos parejos; si pasa, bajar `bonus_cap`), si las victorias de la cacería hacen demasiado fácil el contador de victorias del gremio, y si 30 minutos alcanzan para juntar a los miembros. Medir en la beta cuántas presas caza un jugador por día y cuántas partidas llegan a la meta.

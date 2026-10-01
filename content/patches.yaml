@@ -253,10 +253,13 @@ v0_13_2:
 
 v0_14:
   version: "0.14"
-  title: "🔨 Lost Realms 0.14: mejoras y defensas del campamento"
+  title: "🔨 Lost Realms 0.14: mejoras del campamento y cacería"
   notes:
     - "🔨 Tu campamento tiene 20 mejoras para construir entre todos los miembros con materiales: 🔥 Fogón, 🛏️ Refugio, 🌾 Granero, 🧵 Taller, 🔨 Herrería, 🏥 Enfermería, 📚 Biblioteca y más. Cada nivel del campamento abre nuevas."
     - "🛡️ 8 de ellas son defensas (Empalizada, Torre de vigía, Trampas, Muralla, Foso…). Cada punto de defensa les quita vida y ataque a los enemigos de las oleadas, y la 🗼 Torre de vigía te avisa 2 horas antes de que lleguen."
     - "📚 La Biblioteca abre el conocimiento: herramientas (más recursos), cartografía (exploras más rápido) y rastreo (más carne)."
     - "🏰 Para llegar a castillo ahora hacen falta 15 mejoras construidas, además del gremio y la Noche de prueba."
     - "✨ Aportar materiales a una mejora te da experiencia y mérito."
+    - "🏹 Nuevo en 🧭 Explorar: Cazar. Buscas presa en la zona y peleas enseguida (2 ⚡ por presa): solo pelea y botín, sin explorar ni recolectar. Después de ganar, 🏹 Otra presa."
+    - "🏹 Partida de caza: si tienes campamento, llamas a los miembros que estén en tu misma zona. Durante 30 minutos, cada presa da más experiencia y botín por cada compañero, y si llegan a la meta todos ganan un premio."
+    - "📒 Lugares ahora está dentro de 🗺️ Mapa."
