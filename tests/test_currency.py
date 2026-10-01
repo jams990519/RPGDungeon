@@ -10,7 +10,7 @@ from conftest import make_hero
 def test_money_shows_gold_silver_bronze(service):
     assert service._money(0) == "🥉0"
     assert service._money(45) == "🥉45"
-    assert service._money(12345) == "🥇1 🥈23 🥉45"
+    assert service._money(12345) == "🥇1 🪙23 🥉45"
     assert service._money(10000) == "🥇1"
 
 
@@ -31,7 +31,7 @@ def test_sew_a_bag_in_the_claro(service):
 def test_gem_shop_boost_and_banner(service, clock):
     make_hero(service)
     view = service.act("test:1", "gem:xp_boost")
-    assert "gemas" in (view.notice or "").lower()
+    assert "diamantes" in (view.notice or "").lower()
     hero = service._load("test:1")
     hero.gems = 300
     service._save(hero)

@@ -107,3 +107,12 @@ v0_7_2:
     - "🛡️ El equipo ahora está en 👤 Héroe → 🛡️ Equipo. Ahí ves lo que te cayó (🆕), qué te da y si te sirve. El juego te aconseja, pero tú decides: puedes ponerte cualquier pieza de tu nivel; si no es de tu clase, rinde la mitad."
     - "🎁 Si cae una pieza y no llevabas nada en ese lugar, te la pones sola (aunque no sea la mejor para ti)."
     - "⛑️🧤👖🥾 Nuevas ranuras: cabeza, manos, piernas y pies."
+
+v0_7_3:
+  version: "0.7.3"
+  title: "🏕️ Lost Realms 0.7.3: tu campamento, tu gente"
+  notes:
+    - "✏️ Al fundar un campamento escribes su nombre. El fundador lo puede cambiar."
+    - "🙋 Otros jugadores pueden pedir unirse a tu campamento y tú decides si los aceptas. Al agrandarlo caben más personas."
+    - "🪙 La plata ahora tiene su moneda, las bolsas son 💰 y las gemas pasan a llamarse 💎 diamantes."
+    - "🪪 Llega la credencial de oficio: tu carta de presentación cuando lleguen las profesiones."

@@ -121,4 +121,5 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-65 | ¿Los aceleradores también suben el botín de equipo, o solo recursos y experiencia? | Solo recursos y experiencia; el equipo se gana o se fabrica |
 | P-66 | ¿De cuánto son los aceleradores (por ejemplo +25 % o +50 %) y cuánto duran? | +50 % durante 7 días, uno por tipo, sin efecto en lo competitivo |
 | P-72 | ¿Cómo y a qué precio se venden las gemas (D-80)? | Con Telegram Stars dentro del bot: un paquete chico (por ejemplo 100 💎) y uno grande con un poco de regalo. Antes de cobrar hay que confirmar los precios y el texto legal. Hasta entonces, la tienda muestra "muy pronto" |
+| P-73 | ¿Sumamos el 💵 billete y el 🪎 cofre como monedas (D-85)? | Cofre sí: se arma con 10 💰 bolsas, madera y metal, y paga lo grande (agrandar campamentos altos, castillos). Billete no por ahora: con bronce, plata y oro alcanza, y más monedas confunden |
 | P-63 | ¿Qué edad mínima tendrá el juego en las tiendas? | 17+/18+ si se mantienen las apuestas con moneda del juego; si no, más bajo |

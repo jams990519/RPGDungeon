@@ -21,11 +21,14 @@ def test_found_camp_needs_exploring_around(service):
     place(service, "test:1", 3, 0, backpack={"madera": 30, "piedra": 10}, known=known, explored=["3:0"])
     view = service.act("test:1", "claro")
     assert any(a.id == "found" for a in view.actions)
-    view = service.act("test:1", "found")
+    ask = service.act("test:1", "found")
+    assert ask.kind == "name_camp" and ask.expects_text
+    assert service.text("test:1", "x").kind == "name_camp"           # too short: asked again
+    view = service.text("test:1", "Roca Alta")
     camp = service.store.get("camp", "3:0")
-    assert camp["founder"] == "Lyra" and camp["members"] == ["test:1"]
+    assert camp["name"] == "Roca Alta" and camp["founder"] == "Lyra" and camp["members"] == ["test:1"]
     assert service.store.get("hero", "test:1")["backpack"] == {"madera": 10}
-    assert "(3, 0)" in view.notice
+    assert "(3, 0)" in view.notice and "Roca Alta" in view.notice
 
 
 def test_visitor_contacts_members_and_gets_answer(service, clock):
@@ -49,7 +52,8 @@ def test_visitor_contacts_members_and_gets_answer(service, clock):
 def found_at(service, account, x, y):
     known = ["0:0", f"{x}:{y}", f"{x-1}:{y}", f"{x+1}:{y}", f"{x}:{y+1}", f"{x}:{y-1}"]
     place(service, account, x, y, backpack={"madera": 200, "piedra": 200, "fibra": 100}, known=known, explored=[f"{x}:{y}"])
-    return service.act(account, "found")
+    service.act(account, "found")
+    return service.text(account, f"Campo {account[-1]} {x}")
 
 
 def test_camp_grows_one_zone_per_level(service):
@@ -86,3 +90,43 @@ def test_claro_grows_with_its_stage(service):
     service.store.put("settlement", "claro", data)
     assert service._claro_zones() == [[0, 0], [0, 1], [1, 0]]
     assert service._territory(1, 0) == {"claro": True}
+
+
+def test_founder_lets_players_join_and_cap_grows(service, clock):
+    make_hero(service, "test:1", "Lyra")
+    found_at(service, "test:1", 6, 0)
+    camp = service.store.get("camp", "6:0")
+    assert service._members_cap(camp) == 2
+    for n, name in ((2, "Bram"), (3, "Cora")):
+        make_hero(service, f"test:{n}", name)
+        place(service, f"test:{n}", 6, 0)
+    view = service.act("test:2", "claro")
+    assert any(a.id == "askjoin" for a in view.actions)
+    service.act("test:2", "askjoin")
+    asks = [v for acc, v in service.tick() if acc == "test:1" and v.kind == "camp_join"]
+    assert asks and all(len(a.id.encode()) <= 64 for a in asks[0].actions)
+    service.act("test:1", asks[0].actions[0].id)                       # accept
+    assert service.store.get("camp", "6:0")["members"] == ["test:1", "test:2"]
+    assert service.store.get("hero", "test:2")["camp"] == "6:0"
+    assert any(v.kind == "camp_answer" for acc, v in service.tick() if acc == "test:2")
+    view = service.act("test:3", "askjoin")                             # full at level 1
+    assert "lleno" in (view.notice or "")
+    service.act("test:1", "grow")
+    assert service._members_cap(service.store.get("camp", "6:0")) == 4
+    service.act("test:2", "leave")
+    assert service.store.get("hero", "test:2")["camp"] is None
+    assert service.store.get("camp", "6:0")["members"] == ["test:1"]
+
+
+def test_camp_names_are_unique_and_founder_can_rename(service):
+    make_hero(service, "test:1", "Lyra")
+    found_at(service, "test:1", 6, 0)
+    service.act("test:1", "rename")
+    service.text("test:1", "Bastion Norte")
+    assert service.store.get("camp", "6:0")["name"] == "Bastion Norte"
+    make_hero(service, "test:2", "Bram")
+    known = ["0:0", "-6:0", "-7:0", "-5:0", "-6:1", "-6:-1"]
+    place(service, "test:2", -6, 0, backpack={"madera": 50, "piedra": 50}, known=known, explored=["-6:0"])
+    service.act("test:2", "found")
+    view = service.text("test:2", "bastión norte")
+    assert view.kind == "name_camp" and service.store.get("camp", "-6:0") is None
