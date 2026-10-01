@@ -54,7 +54,7 @@ def test_batch_asks_amount_and_can_be_cancelled(service, clock):
     assert hero.energy == 50 and hero.activity is None                      # the step in progress gives it back
 
 
-def test_exploring_reaches_100_and_stops(service, clock):
+def test_exploring_reaches_100_then_goes_on_around_you_without_moving(service, clock):
     make_hero(service)
     service.act("test:1", "do:explore:10")
     for _ in range(12):
@@ -62,10 +62,44 @@ def test_exploring_reaches_100_and_stops(service, clock):
         service.view("test:1")
     hero = service._load("test:1")
     assert hero.exploration["0:0"] == 100
-    assert 50 - hero.energy < 10                                          # it stopped early, at 100 %
-    assert service.act("test:1", "explore").kind == "explore_menu"         # nothing left to explore
     assert service._known_resources(hero, 0, 0) == ["madera", "fibra"]
     assert "🟫" in "\n".join(service.act("test:1", "map").body)             # the Claro shows its colour
+    # D-107: the batch did not stop at 100 %: it went on with the zone to the north, and the hero never moved.
+    assert (hero.x, hero.y) == (0, 0) and hero.activity is None
+    assert hero.exploration.get("0:1", 0) > 0 and hero.remembers(0, 1)
+    view = service.act("test:1", "explore")
+    assert view.kind == "batch" and any("Alrededor: " in line for line in view.body)
+    tx, ty = service._explore_target(hero)                                  # the zone to the north, or the next one
+    assert (tx, ty) != (0, 0) and any(f"({tx}, {ty})" in line and "sin moverte" in line for line in view.body)
+
+
+def test_explore_around_order_and_the_end_of_it(service, clock):
+    make_hero(service)
+    hero = service._load("test:1")
+    assert service._explore_around(hero)[:4] == [(0, 1), (1, 0), (0, -1), (-1, 0)]   # N, E, S, W, then diagonals
+    assert len(service._explore_around(hero)) == 8                                  # explore.around_radius: 1
+    hero.exploration = {"0:0": 100, "0:1": 100}
+    service._save(hero)
+    assert service._explore_target(service._load("test:1")) == (1, 0)
+    hero.exploration = {f"{x}:{y}": 100 for x in (-1, 0, 1) for y in (-1, 0, 1)}
+    service._save(hero)
+    energy = hero.energy
+    view = service.act("test:1", "explore")                                        # nothing left from here
+    assert view.kind == "explore_menu" and "alrededor" in view.notice
+    service.act("test:1", "do:explore:5")
+    assert service._load("test:1").energy == energy and service._load("test:1").activity is None
+    hero = service._load("test:1")
+    hero.exploration["1:1"] = 40
+    service._save(hero)
+    service.act("test:1", "do:explore:20")                                         # one zone left: it stops when done
+    for _ in range(30):
+        clock.advance(3600)
+        service.view("test:1")
+    hero = service._load("test:1")
+    assert hero.exploration["1:1"] == 100 and hero.activity is None and (hero.x, hero.y) == (0, 0)
+    assert all(hero.exploration.get(f"{x}:{y}", 0) == 100 for x in (-1, 0, 1) for y in (-1, 0, 1))
+    assert not any(k for k in hero.exploration if k not in {f"{x}:{y}" for x in (-1, 0, 1) for y in (-1, 0, 1)})   # never further
+    assert not service.texts.missing
 
 
 def test_gathering_only_gives_the_zone_resources_and_depletes(service, clock):

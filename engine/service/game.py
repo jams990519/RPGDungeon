@@ -59,6 +59,8 @@ Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
+    - Explorar alrededor (D-107): con tu zona al 100 %, el lote sigue con las vecinas sin moverte (_explore_target,
+      explore.around_radius); las vecinas exploradas quedan en hero.known y cuentan para fundar (tests/test_resources.py)
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
       tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
       tests/test_backpack.py (mochila llena D-90 y cofre D-92)
@@ -630,24 +632,60 @@ class GameService:
         wait = self._energy_period() - (self.clock.now() - hero.energy_at)
         return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)), per_day=self.content.balance["energy"]["per_day"])
 
+    def _explore_target(self, hero: Hero) -> tuple[int, int] | None:
+        """The zone the next exploration studies: yours until 100 %, then the ones around you (D-107).
+
+        [ES]
+        Qué hace: dice qué zona estudia la próxima vuelta de exploración. Primero la tuya; cuando está al 100 %, la
+        primera de alrededor (explore.around_radius casillas; primero norte, este, sur y oeste, después las diagonales)
+        que no esté al 100 %. El héroe no se mueve: explora desde donde está. None si ya no queda nada cerca.
+        La llaman: _explore_step, _amount_view, _start_batch, _continue_batch y _activity_view.
+        Si cambia, afecta: qué zonas se completan al explorar en lote y cuándo se corta el lote (tests/test_service.py).
+        """
+        if self._explored_pct(hero, hero.x, hero.y) < 100:
+            return hero.x, hero.y
+        for x, y in self._explore_around(hero):
+            if self._explored_pct(hero, x, y) < 100:
+                return x, y
+        return None
+
+    def _explore_around(self, hero: Hero) -> list[tuple[int, int]]:
+        """The zones around the hero that exploring reaches without moving, nearest first, N E S W before diagonals."""
+        radius = self.content.balance["explore"]["around_radius"]
+        cells = [(dx, dy) for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1) if dx or dy]
+        # nearest ring first; in a ring, straight lines before diagonals; then clockwise from the north
+        cells.sort(key=lambda c: (max(abs(c[0]), abs(c[1])), abs(c[0]) + abs(c[1]), math.atan2(c[0], c[1]) % (2 * math.pi)))
+        return [(hero.x + dx, hero.y + dy) for dx, dy in cells]
+
     def _explore_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
-        """One exploration: +15-30 % of the zone, maybe a find; returns a combat notice if a fight starts (D-87)."""
+        """One exploration: +15-30 % of the zone studied, maybe a find; returns a combat notice if a fight starts (D-87).
+
+        The zone studied is yours until 100 %, then the ones around you, without moving (D-107). Fights, finds and
+        coins come from the zone where the hero stands.
+        """
         t = self.texts
-        key = f"{zone.x}:{zone.y}"
-        before = self._known_resources(hero, zone.x, zone.y)
-        before_pct = self._explored_pct(hero, zone.x, zone.y)
+        target = self._explore_target(hero) or (zone.x, zone.y)
+        studied = zone if target == (zone.x, zone.y) else self._zone(*target)
+        key = f"{studied.x}:{studied.y}"
+        if studied is not zone and activity.get("target") != key:
+            activity["log"].append(t.t("explore.around", name=self._zone_name(studied), x=studied.x, y=studied.y))
+        activity["target"] = key
+        hero.remember(studied.x, studied.y)           # it shows on your 🗺️ Mapa, like a zone you visited
+        before = self._known_resources(hero, studied.x, studied.y)
+        before_pct = self._explored_pct(hero, studied.x, studied.y)
         low, high = self.content.balance["exploration"]["per_step"]
-        hero.exploration[key] = min(100, self._explored_pct(hero, zone.x, zone.y) + int(rng.uniform(low, high + 1)))
+        hero.exploration[key] = min(100, before_pct + int(rng.uniform(low, high + 1)))
         if key not in hero.explored:
             hero.explored.append(key)
-        new = [r for r in self._known_resources(hero, zone.x, zone.y) if r not in before]
+        new = [r for r in self._known_resources(hero, studied.x, studied.y) if r not in before]
         if new:
             names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
-            activity["log"].append(t.t("explore.revealed", items=names))
+            activity["log"].append(t.t("explore.revealed", items=names) if studied is zone
+                                   else t.t("explore.revealed_there", name=self._zone_name(studied), items=names))
         bal = self.content.balance["explore"]
         xp = bal["xp_per_step"]                       # exploring teaches: experience every round (owner's request)
         if hero.exploration[key] >= 100:
-            activity["log"].append(t.t("explore.full", name=self._zone_name(zone)))
+            activity["log"].append(t.t("explore.full", name=self._zone_name(studied)))
             if before_pct < 100:
                 xp += bal["xp_full_zone"]             # finishing a zone is worth more
         activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
@@ -996,7 +1034,7 @@ class GameService:
         if kind not in ("gather", "explore"):
             return self._explore_menu(hero)
         zone = self._zone(hero.x, hero.y)
-        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+        if kind == "explore" and self._explore_target(hero) is None:
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
         blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
         if blocked:
@@ -1008,7 +1046,7 @@ class GameService:
         if kind == "gather":
             body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap()))
         else:
-            body.append(t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y)))
+            body += self._explore_progress_lines(hero)
         body.append(t.t("batch.cancel_hint"))
         options = [n for n in self.content.balance["energy"]["batch"] if n <= hero.energy]
         pages = [options[:2], options[2:]]
@@ -1038,7 +1076,7 @@ class GameService:
             return self._explore_menu(hero, notice=blocked)   # no energy spent for nothing
         if n < 1 or not self._spend_energy(hero, kind):
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
-        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+        if kind == "explore" and self._explore_target(hero) is None:
             hero.energy += self.content.balance["energy"][f"per_{kind}"]
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
         seconds = self._seconds(self.content.balance[kind]["minutes"])
@@ -1075,6 +1113,8 @@ class GameService:
             else:
                 zone = self._zone(hero.x, hero.y)
                 lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
+                if activity.get("target", f"{zone.x}:{zone.y}") != f"{zone.x}:{zone.y}":     # it went on around you (D-107)
+                    lines.append(self._around_line(hero))
                 if activity.get("got"):
                     lines.append(t.t("batch.found", items=self._item_list(activity["got"])))
                 if activity.get("coins"):
@@ -1092,7 +1132,7 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         if activity["left"] <= 0:
             return "done"
-        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+        if kind == "explore" and self._explore_target(hero) is None:
             return "full_explored"
         if kind == "gather" and self._bag_full(hero):
             return "bag_full"
@@ -1153,6 +1193,23 @@ class GameService:
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
+
+    def _around_line(self, hero: Hero) -> str:
+        """🔭 Alrededor: 3/8 zonas al 100 % (D-107)."""
+        around = self._explore_around(hero)
+        done = sum(1 for x, y in around if self._explored_pct(hero, x, y) >= 100)
+        return self.texts.t("batch.around", done=done, total=len(around))
+
+    def _explore_progress_lines(self, hero: Hero) -> list[str]:
+        """How far exploring goes from here: your zone's %, then the zone around you being studied (D-107)."""
+        t = self.texts
+        lines = [t.t("batch.explored", pct=self._explored_pct(hero, hero.x, hero.y))]
+        target = self._explore_target(hero)
+        if target and target != (hero.x, hero.y):
+            zone = self._zone(*target)
+            lines += [self._around_line(hero),
+                      t.t("batch.around_next", name=self._zone_name(zone), x=zone.x, y=zone.y, pct=self._explored_pct(hero, *target))]
+        return lines
 
     def _known_resources(self, hero: Hero, x: int, y: int) -> list[str]:
         """The resources this hero has found in a zone: more of them as it explores (D-87)."""
@@ -1275,7 +1332,7 @@ class GameService:
         else:
             zone = self._zone(hero.x, hero.y)
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
-                    t.t("travel.remaining", time=remaining), t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y))]
+                    t.t("travel.remaining", time=remaining)] + self._explore_progress_lines(hero)
             title = t.t("explore.title")
         if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
             body += self._zone_players_lines(hero, self._zone(hero.x, hero.y))

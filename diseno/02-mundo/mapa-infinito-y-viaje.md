@@ -187,11 +187,12 @@ Coordenadas 1, 2 · Lejanía 2
   - Antes de empezar puedes ❌ Cancelar sin gastar nada.
   - Ya en marcha, ❌ Detener corta el lote y devuelve la energía de la vuelta en curso.
   - Cada vuelta gasta 1 ⚡ al empezar.
-  - El lote se corta si te atacan, si se acaba la energía, si se llena la mochila o si la zona queda explorada al 100 %.
+  - El lote se corta si te atacan, si se acaba la energía, si se llena la mochila o, al explorar, si ya no queda nada por explorar desde donde estás (tu zona y las de alrededor al 100 %, D-107).
   - El bot te escribe una sola vez, al terminar, con el resumen.
 - **Explorar sube un porcentaje:** cada vuelta suma entre 15 % y 30 % de la zona (`exploration.per_step`).
   - Al 1 %, al 50 % y al 100 % descubres el primero, el segundo y el tercer recurso.
-  - Al 100 % ya no se puede explorar más: conoces todo lo que tiene y la zona aparece en tu mapa con el color de su recurso principal (🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla).
+  - Al 100 % la zona ya no se explora más: conoces todo lo que tiene y la zona aparece en tu mapa con el color de su recurso principal (🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla).
+  - **Desde 0.13.1 (D-107), explorar sigue alrededor sin moverte.** Con tu zona al 100 %, cada vuelta estudia la primera casilla vecina que no esté al 100 % (primero norte, este, sur y oeste; después las diagonales; `explore.around_radius` = 1, las 8 vecinas). El héroe no se mueve: los ataques, los hallazgos y las monedas son de la zona donde estás; lo que avanza es el porcentaje y los recursos de la vecina, que queda en tu memoria y en tu mapa. Así un lote grande completa tu zona y sigue con las de alrededor, en el mismo cuadro. Cuando tu zona y sus 8 vecinas están al 100 %, hay que moverse para seguir explorando.
   - Tu héroe recuerda los recursos de cada zona que exploró.
   - Fundar un campamento pide la zona explorada al 100 %.
 - **Regiones de recursos:** hay 6 recursos: madera, piedra, fibra, hierba curativa, metal y arcilla (nueva).

@@ -55,6 +55,7 @@ explore:
   item: 0.35                 # [ES] el resto es oro
   xp_per_step: 3             # [ES] pedido del dueño: explorar da experiencia en cada vuelta
   xp_full_zone: 15           # [ES] y un extra al dejar una zona explorada al 100 %
+  around_radius: 1           # [ES] D-107: con tu zona al 100 %, explorar sigue con las casillas de alrededor (1 = las 8 vecinas) sin moverte
   arrival_encounter_scale: 1.0
 
 presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
