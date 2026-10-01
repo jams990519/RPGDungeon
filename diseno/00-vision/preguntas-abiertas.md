@@ -81,7 +81,9 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-34 | ¿El equipo se gasta hasta romperse? | Sí |
 | P-35 | ¿Monetización: cosméticos y Premium de comodidad con Stars? ¿Ficha de oro? | ✅ **Decidido (D-43):** cosméticos y aceleradores (experiencia, recursos); todo lo demás con moneda del juego; sin ficha de oro |
 | P-36 | ¿Apuestas con oro en lugares legales? | ✅ **Decidido (D-43):** solo con oro del juego, nunca con dinero real |
-| P-37 | ¿Máximo de 2 oficios mayores por personaje? | Sí, y los menores sin límite |
+| P-37 | ¿Máximo de 2 oficios mayores por personaje? | ✅ **Reemplazada por D-57:** sin límite duro; cada oficio extra cuesta más tiempo |
+| P-69 | ¿Cómo se cobra el costo del conocimiento? | El primer oficio o disciplina avanza al 100 %, cada uno que agregas más lento (por ejemplo 80 %, 65 %, 50 %…) hasta un piso del 25 %; los oficios menores cuestan poco |
+| P-70 | ¿Lo que no usas se olvida poco a poco? | No: nada se pierde; el costo es solo el tiempo para seguir subiendo |
 | P-38 | ¿Minijuego de fabricación más fabricación rápida? | Sí |
 | P-39 | ¿Calidad de recursos por veta? | Sí, desde la beta |
 | P-40 | ¿Enfermedades laborales? | Sí, leves |

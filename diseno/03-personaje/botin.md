@@ -164,7 +164,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 **De dónde salen las piezas.** El Mercado Negro compra piezas **Normales y Buenas**, las que se hacen en cantidad con la fabricación rápida ([Fabricación](../07-economia/fabricacion.md), §1). Cuando una de esas piezas cae, la Torre la **despierta**: recibe una rareza y sus afijos, y conserva la firma del artesano. La rareza reemplaza a la calidad como bono.
 
 ```
-🔵 Hacha Dentada de la Roca   [PO 268]
+🔵 Hacha Dentada de la Roca   [PO 238]
 T3 · Raro · +0 · Mejoras 0/3
 Forjada por Tor el Fundidor ✒️ · despertada en el piso 23
 +22 Fuerza
@@ -324,7 +324,7 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 - **Nombre, historia y un efecto propio** que cambia cómo se juega, más 2 afijos fijos.
 - **Presupuesto parejo.** El efecto vale lo mismo que 2 afijos en el simulador ([Balance](balance.md), §3), y ningún único mueve un eje de la spec más de 3 puntos. Casi todos tienen un **precio**.
-- **Cada tramo tiene únicos para los cuatro roles y los cuatro tipos de armadura.** Ninguna spec se queda sin opciones.
+- **Cada tramo tiene únicos para todos los roles y los cuatro tipos de armadura.** Ninguna spec se queda sin opciones.
 - **Dos puestos a la vez**, como máximo.
 - **Ligado al equipar.** Hasta que alguien se lo pone, se comercia.
 - **En la arena clasificada** su efecto cuenta con peso limitado, como los afijos ([PvP](../06-contenido/pvp.md), §5).
@@ -488,7 +488,7 @@ Después de la tasación, el mismo mensaje pasa a:
 ```
 🔮 Tasación de Vael (Encantamiento · Experto) ✒️
 ❓ Yelmo desconocido → 🟣 Yelmo Certero del Ojo Abierto
-T3 · Épico · [PO 271]
+T3 · Épico · [PO 251]
 +20 Intelecto
 Certero: +2 % de crítico
 Presto: +1 % de celeridad
@@ -509,8 +509,8 @@ Todo botín de grupo tiene dos partes:
 
 | Modo | Para quién | Cómo funciona |
 |---|---|---|
-| **Personal** (por defecto) | Todos | El cofre tira por cada uno: con un artefacto cada 5 jugadores, cada uno tiene un 20 %. Lo que te toca, te toca, y tienes **2 horas** para regalarlo a alguien que estuvo |
-| **Necesidad / Codicia** | Grupos armados por el buscador | §7.2 |
+| **Personal** | Por defecto en grupos de amigos y de gremio | El cofre tira por cada uno: con un artefacto cada 5 jugadores, cada uno tiene un 20 %. Lo que te toca, te toca, y tienes **2 horas** para regalarlo a alguien que estuvo |
+| **Necesidad / Codicia** | Por defecto en grupos armados por el buscador | §7.2 |
 | **Maestro de botín** | Grupos de gremio | El líder asigna. Cada asignación queda en el tema #banda del gremio |
 | **Puntos de banda** | Gremios de banda | Los DKP de *EverQuest*: el bot suma puntos por asistir y los objetos se "compran" con puntos |
 | **Subasta del gremio** | Gremios | Se puja en oro. El oro se reparte entre los presentes y el bot quema un porcentaje (sumidero) |
@@ -620,7 +620,7 @@ Ver [Equipamiento](equipamiento.md), §8.
 9 rondas · 6 enemigos
 
 ✨ +214 Esencia (sin depositar: 1.380 ⚠️ zona roja)
-🟣 ÉPICO · Hacha Dentada de la Roca (T3) [PO 268]
+🟣 ÉPICO · Maza Quebrantadora del Oso (T3) [PO 251]
 ❓ Yelmo desconocido (T3) · ✦ brillo intenso
 🃏 NUEVO · carta Kóbold Minero (Mazo de Bestias)
 🧩 Fragmento de receta: Elixir de Cuarzo (2/5)
@@ -744,7 +744,7 @@ Empate. Vuelven a tirar Lyra y Ossian.
 - **Protección de novato (hasta el nivel 10).** Nada cae sin tasar ni maldito. Los cofres trampa solo tienen alarma. No se pueden equipar piezas malditas.
 - **Nada arruina un personaje.** Una pieza maldita siempre se quita con un ritual. Perder el botín en zona roja o negra es un riesgo que eliges. Ningún objeto quita progreso. La única excepción es el Juramento de Hierro, que es opcional.
 - **Números chicos.** Los afijos dan del 1 al 3 % o de 3 a 80 puntos. Ningún número de jugador en pantalla pasa de 4 dígitos.
-- **Presupuesto parejo entre las 46 specs.** Afijos, únicos y conjuntos pasan por el simulador ([Balance](balance.md), §3). Un único vale lo que 2 afijos; un bono de 4 piezas, lo que 4 afijos.
+- **Presupuesto parejo entre las 46 specs.** Afijos, únicos y conjuntos pasan por el simulador ([Balance](balance.md), §3). Un único vale lo que 2 afijos; los dos bonos de un conjunto completo, lo que los 4 afijos que le faltan a sus piezas.
 - **Nada se compra con dinero real.** Los aceleradores solo suben la cantidad de recursos. No tocan equipo, artefactos, Recuerdos, rareza, Constancia ni Dados de Fortuna ([Monetización](../07-economia/monetizacion.md)).
 - **Todo alimenta a otro sistema.** Si una categoría de botín no la compra nadie durante semanas, se le busca una salida: una receta nueva, un pedido de la ciudad, una sala del museo ([Red de sistemas](../00-vision/red-de-sistemas.md), §5).
 

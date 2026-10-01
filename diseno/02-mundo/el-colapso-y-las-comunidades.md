@@ -184,7 +184,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 
 - **El bot avisa antes de que rompas una regla:** "*Esto rompe una ley del Hospicio. ¿Seguro?*". Nadie rompe una regla sin querer.
 - **Algunas reglas son imposibles de romper:** en el Hospicio tu arma queda en la portería; en el Santuario, los hechizos prohibidos aparecen apagados.
-- **Si no ganaste nada, no pagas nada.** Los deberes son porcentajes (D-27) y nunca dejan deuda.
+- **Nunca dejan deuda.** Los que cobran oro son porcentajes (D-27): si no ganaste nada, no pagas nada. Los que piden una cosa (una ración, unas vendas) se saltan ese día si no la tienes y no hay oro para cubrirla.
 - Es la versión PNJ de la **cuota del residente** de las ciudades de jugadores (ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md)): algo pequeño que se cumple jugando normal.
 
 ### 3.6 Reputación
