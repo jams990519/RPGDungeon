@@ -221,3 +221,9 @@ v0_12:
     - "⬆️ El gremio sube de nivel con lo que hacen juntos: exploraciones, peleas ganadas y recursos recolectados. Cada nivel deja entrar a más gente."
     - "🏰 Para que un campamento llegue a castillo hace falta un gremio de nivel 5 con 10 miembros."
     - "🥉🥈🥇 Las monedas ahora son medallas: bronce, plata y oro. La plata deja de verse como 🪙."
+
+v0_12_1:
+  version: "0.12.1"
+  title: "🗺️ Lost Realms 0.12.1: mapa más grande"
+  notes:
+    - "🗺️ El mapa ahora es un cuadrado de 13 × 13: ocupa el ancho del mensaje y es igual de alto, así ves más mundo de una vez."
