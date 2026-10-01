@@ -1,12 +1,15 @@
-# Chained professions, phase 1 (D-109): gather -> refine -> craft. Only the simple layer; the deep layer is a proposal.
+# Chained professions, phase 1 (D-109): gather -> refine -> craft; phase 2, camp side (D-115). Only the simple layer.
 #
 # [ES]
-# Para qué sirve: el catálogo de los ⚒️ Oficios de la fase 1: los 15 oficios (4 de recolección, 5 de refinado y 6 de
-#     fabricación), los títulos de rango, dónde están las estaciones y las recetas (qué entra, qué sale, en qué
-#     estación, desde qué rango, cuánta energía cuesta y cuánta experiencia de oficio da). Agregar una receta aquí la
-#     mete en el juego; su resultado tiene que existir en content/items.yaml y los textos en content/locales/es.yaml
-#     (profession.<id>.name y .how para cada oficio; item.<id> para cada objeto).
-# Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109) y §4 (rangos)
+# Para qué sirve: el catálogo de los ⚒️ Oficios: los 15 de la fase 1 (4 de recolección, 5 de refinado y 6 de
+#     fabricación), la 🩺 Medicina, el 🧭 Explorador y el 💱 Comercio, y los 4 de la fase 2 del lado del campamento (D-115:
+#     🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción), los títulos de rango, dónde están las estaciones y las
+#     recetas (qué entra, qué sale, en qué estación, desde qué rango, cuánta energía cuesta y cuánta experiencia de oficio
+#     da). Agregar una receta aquí la mete en el juego; su resultado tiene que existir en content/items.yaml y los textos
+#     en content/locales/es.yaml o en un es_*.yaml (profession.<id>.name y .how para cada oficio; item.<id> para cada
+#     objeto; los de la fase 2 están en es_oficios_campamento.yaml).
+# Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.4 (beneficios que no son de combate,
+#     D-116) y §4 (rangos); diseno/07-economia/red-de-oficios.md §5 (en qué orden entran, fase 2)
 # Lo leen: engine/core/content.py (Content.professions), engine/professions/rules.py y engine/service/game.py
 #     (sección "professions": _trade_gather, _trade_loot, _professions_view, _station_view, _recipe_view, _make)
 # IDs: estables. Nunca se renombran, nunca se borran, nunca se reutilizan: los héroes guardan la experiencia de cada
@@ -34,6 +37,12 @@
 #       motor al cargar (engine/professions/rules.py masterwork_items; números en balance.yaml masterwork). La probabilidad
 #       sale del rango del oficio que fabrica: la 🪑 Carpintería usa su perk {masterwork}; los demás, masterwork.base_chance.
 #       Las recetas de 🪑 muebles (literas_roble, armero_roble) dan objetos kind: furniture que se colocan en el campamento.
+#     - D-115 fase 2, lado del campamento (sección propia al final de cada bloque): 🎣 Pescador (junta 🐟 pescado en las
+#       zonas con agua), 🍲 Cocina (raciones para la despensa: items.yaml "cooked"), Cantería (🧱 sillar) y 🏗️
+#       Construcción (oficio de servicio: sube aportando a las obras y reparando las defensas). Sus beneficios son de
+#       campamento o castillo (fish_food, cook_food, stone_cost, build_cost, repair_cost): valen para el campamento con el
+#       MEJOR rango entre sus miembros (engine/professions/rules.py camp_perks; balance.yaml camp_professions).
+#       La 🍲 Cocina se hace en el Claro y en el 🔥 Fogón del campamento; la Cantería, en el Claro y en el 🧵 Taller.
 
 # Rank titles (design §4). [ES] Títulos de rango: desde qué rango rige cada uno (profesiones.md §4).
 ranks:
@@ -163,16 +172,46 @@ professions:
     branch: service                            # [ES] D-116: oficio de servicio: no da nada en combate, da dinero
     perk: {sell: 0.20}                         # [ES] D-116: +20 % de monedas al vender al mercader, al trueque o el equipo, al rango 100
 
+  # ---- D-115 phase 2, camp side. [ES] Fase 2, lado del campamento: sus beneficios son de campamento o castillo (D-116):
+  # valen para el campamento donde eres miembro y rige el MEJOR rango entre sus miembros (no se suman).
+  pescador:
+    emoji: "🎣"
+    name_key: profession.pescador.name
+    how_key: profession.pescador.how
+    branch: gather
+    gathers: [pescado]                         # [ES] 🐟 en las zonas con agua (content/biomes.yaml "water"): 1 de experiencia por unidad
+    perk: {fish_food: 0.30}                    # [ES] el 🐟 pescado crudo rinde 30 % más en la despensa del campamento al rango 100
+  cocina:
+    emoji: "🍲"
+    name_key: profession.cocina.name
+    how_key: profession.cocina.how
+    branch: craft
+    perk: {cook_food: 0.30}                    # [ES] lo cocinado (items.yaml "cooked") rinde 30 % más en la despensa del campamento al rango 100
+  canteria:
+    emoji: "🗿"
+    name_key: profession.canteria.name
+    how_key: profession.canteria.how
+    branch: refine                             # [ES] 🪨 piedra → 🧱 sillar; como todo refinado, hasta 30 % de una unidad más por el rango
+    perk: {stone_cost: 0.15}                   # [ES] 🏰 las obras del campamento piden 15 % menos piedra y sillar al rango 100
+  construccion:
+    emoji: "🏗️"
+    name_key: profession.construccion.name
+    how_key: profession.construccion.how
+    branch: service                            # [ES] sube aportando a las 🔨 obras y a la reparación de las defensas (balance.yaml camp_professions.build_xp_per_unit)
+    perk: {build_cost: 0.20, repair_cost: 0.50}   # [ES] 🏰 las mejoras piden 20 % menos materiales y reparar las defensas cuesta la mitad al rango 100
+
 # Where the stations are. [ES] Dónde están las estaciones (en la fase 1, una por oficio de refinado y fabricación).
 stations:
   # [ES] El Claro tiene todas las estaciones básicas (no crece, D-98, pero es donde empiezan todos)
-  claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria, medicina]
+  claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria, medicina,
+          cocina, canteria]                    # [ES] D-115 fase 2: 🍲 Cocina y Cantería
   # [ES] En tu campamento, cada mejora construida (ids de content/camp_upgrades.yaml) abre las suyas, con algo más de
   # rendimiento al refinar (balance.yaml professions.camp_bonus). No hay alambique todavía: destilar y la alquimia van
   # en el 🧵 Taller hasta que exista una mejora propia.
   camp:
-    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia, medicina]
+    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia, medicina, canteria]   # [ES] D-115: + Cantería
     herreria: [fundicion, herreria, joyeria]
+    fogon: [cocina]                            # [ES] D-115 fase 2: el 🔥 Fogón (nivel 1) ya sirve para cocinar en el campamento
 
 recipes:
   # ---- Refinado (1 ⚡, 6 de experiencia de oficio). [ES] Lo que sale vale como lo que entra en el mercader:
@@ -1114,6 +1153,62 @@ recipes:
     profession: joyeria
     inputs: {lingote: 8, gema_bruta: 11, flor_luna: 3}
     output: {artesano_joya_13: 1}
+    min_rank: 100
+    energy: 2
+    xp: 12
+
+  # ---- D-115 phase 2, camp side: Cantería and 🍲 Cocina. [ES] Fase 2, lado del campamento.
+  # Cantería (refinado, 1 ⚡, 6 de experiencia de oficio): 3 piedras → 1 sillar. Lo piden las mejoras desde el nivel 7
+  # (content/camp_upgrades.yaml) y la reparación de las defensas (balance.yaml camp_professions.repair_per_point).
+  sillar:
+    profession: canteria
+    inputs: {piedra: 3}
+    output: {sillar: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  # 🍲 Cocina (fabricación): carne, pescado y hierbas → raciones para la despensa del campamento (items.yaml "cooked"; el
+  # mercader no las compra). Cada plato vale más raciones que lo crudo que lleva: ×1,5 en el rango 1, ×1,75 en el 25, ×2 en
+  # el 50, ×2,25 en el 75 y ×2,5 en el 100. 6 de experiencia de oficio por ⚡, como las demás. Toda receta pide 2 oficios o más.
+  racion_campamento:
+    profession: cocina
+    inputs: {carne: 1, hierba_curativa: 1}                     # [ES] desollador + herbolario: 2 raciones crudas → 3
+    output: {racion_campamento: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  pescado_asado:
+    profession: cocina
+    inputs: {pescado: 2, madera: 1}                            # [ES] pescador + leñador (la leña): 2 raciones crudas → 3
+    output: {pescado_asado: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  guiso_cazador:
+    profession: cocina
+    inputs: {carne: 2, pescado: 2, hierba_curativa: 1}         # [ES] 6 raciones crudas → 10
+    output: {guiso_cazador: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  conserva:
+    profession: cocina
+    inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}    # [ES] + minero (el tarro) y destilación (la salmuera): 9 → 18
+    output: {conserva: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+  festin:
+    profession: cocina
+    inputs: {carne: 4, pescado: 4, hierba_curativa: 2, flor_luna: 1}   # [ES] 12 → 27
+    output: {festin: 1}
+    min_rank: 75
+    energy: 2
+    xp: 12
+  banquete:
+    profession: cocina
+    inputs: {carne: 6, pescado: 6, extracto: 2, flor_luna: 2}  # [ES] 18 → 45
+    output: {banquete: 1}
     min_rank: 100
     energy: 2
     xp: 12

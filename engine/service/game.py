@@ -16,7 +16,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
-    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
+    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109); §0.4 y red-de-oficios.md §5 (fase 2, lado
+    del campamento: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería, 🏗️ Construcción y las defensas que dañan las oleadas, D-115/D-116)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
@@ -52,6 +53,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     con lo aportado, "tech" conocimiento aprendido, el estudio en curso y su avance). Lo construido nunca se borra.
     D-116: en "upgrades" también "furniture" (🪑 muebles colocados: id del mueble → {"by", "id", "at"}; uno de cada uno,
     nunca se borra) y Hero.gear_signatures (firma de cada ✒️ obra maestra que lleva el héroe).
+    D-115: en "upgrades" también "damage" (puntos de 🛡️ Defensa que dañaron las oleadas semanales, hasta repararlos; 0 en
+    los guardados de antes) y "repair" (lo aportado a 🛠️ Reparar defensas). Los beneficios de campamento no se guardan: se
+    calculan al leer con el mejor rango entre los miembros (_camp_perks).
     D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
     at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
     en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
@@ -103,6 +107,10 @@ Reglas que nunca se rompen:
         territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Mientras uno está en pie, su zona
         no se explora ni se recolecta (aviso, nada se cobra; un lote que se topa con uno devuelve la vuelta). Sus peleas
         son siempre a mano (nunca automáticas, D-114); el jefe solo cae en su propia pelea y la caída se paga una sola vez.
+    18. Los beneficios de campamento y castillo (D-115, D-116: 🎣 🍲 🗿 🏗️) valen solo para el campamento donde eres miembro y
+        nunca se suman entre miembros: rige el mejor rango de cada oficio entre los miembros de ahora. Una obra nunca pide
+        menos de 1 de cada cosa y las monedas no bajan. Lo ya construido nunca se pierde: las oleadas solo dañan puntos de
+        🛡️ Defensa (nunca más que lo construido; la Noche de prueba no daña) hasta que los miembros los reparan.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -182,6 +190,18 @@ Si cambias esto, revisa:
       _create_action (el origen después de la clase), _claro_view (📜 Tablón en lugar de ↩️ Volver), _shop_view y _buy (descuento
       del origen), _prof_gain (experiencia de oficio del origen), _hero_view (origen, emblema, biografía y títulos de la
       historia), _zone_players (emblema junto al nombre) y tick() (relee el héroe: otro pudo pagarle un encargo de campamento)
+    - Oficios fase 2, lado del campamento (D-115, D-116): content/professions.yaml (pescador, cocina, canteria, construccion,
+      estaciones del Claro, del 🔥 Fogón y del 🧵 Taller, recetas sillar y de cocina), balance.yaml camp_professions (el
+      pescado, la piedra de la Cantería, la experiencia de 🏗️, el daño de las oleadas y lo que pide reparar),
+      content/biomes.yaml "water", content/items.yaml (pescado, comidas "cooked", sillar), content/camp_upgrades.yaml (desde
+      el nivel 7 piden sillar y tablón), engine/professions/rules.py (CAMP_PERK_KEYS, camp_best_ranks, camp_perks,
+      scaled_cost, refined_from), engine/world/resources.py (water_resources); textos camp_prof.* y los de los oficios en
+      content/locales/es_oficios_campamento.yaml; tests/test_oficios_campamento.py. Tocan _zone_resources (+ pescado),
+      _camp_feed (_food_perk_bonus), _pantry_lines, _camp_here_view (daño y línea 🏰), _camp_defense (menos el daño:
+      _defense_built, _camp_damage), _resolve_raid (_raid_damage), _upgrades (damage, repair), _upgrades_view, _works_view,
+      _works_entries ("fix"), _give_to_work (_upgrade_need, _credit_raw, _build_gain), _upgrade_action ("uprep" →
+      _repair_defenses), _services_view (⚒️ Oficios con cualquier estación sin 🧵 Taller), _professions_view (BRANCH_ORDER y
+      la línea 🏰) y _recipe_view (lo que vale una comida en la despensa)
     - 🧭 Explorador y ⛺ campamentos enemigos (D-112): balance.yaml explorer (experiencia del oficio, umbrales del mapa) y
       enemy_camps (densidad, guarnición, jefe, energía, cofre, parte, infiltración); content/professions.yaml (explorador,
       rama explore, perk explore); engine/world/enemy_camps.py; textos ecamp.*, explorer.* y los de profession.explorador,
@@ -253,7 +273,7 @@ from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import main_resource, zone_resources
+from engine.world.resources import main_resource, water_resources, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
@@ -270,7 +290,10 @@ PRESENT_BUSY = ("explore", "gather", "rest", "hunt")
 BATCH_KINDS = ("explore", "gather", "hunt")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive",
-                   "upf:")       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
+                   "upf:",       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
+                   "uprep")      # D-115: 🛠️ Reparar defensas after a raid (from 🔨 Obras)
+# Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
+BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
 
@@ -1510,8 +1533,13 @@ class GameService(StoryMixin):
         return count
 
     def _zone_resources(self, x: int, y: int) -> dict[str, float]:
+        """The zone's land resources (D-87) plus 🐟 fish where it has water (D-115), land ones first. [ES] Qué hace: junta los
+        recursos de tierra y el pescado de las zonas con agua. La llaman: recolectar, el agotamiento, explorar, el mapa y el
+        cofre de los campamentos enemigos. Si cambia, afecta: qué se consigue en cada zona."""
         zone = self._zone(x, y)
-        return zone_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes)
+        found = zone_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes)
+        found.update(water_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes))
+        return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
         """How much is left of each resource in a zone (1.0 = full), regenerating with time (faster with a camp's ⛲ Pozo, D-101)."""
@@ -1961,7 +1989,7 @@ class GameService(StoryMixin):
             lines.append(t.t("upgrades.granary_line", pct=round(pantry["cut"] * 100)))
         if pantry.get("produce"):                               # D-101: 🥬 Huerto
             lines.append(t.t("upgrades.garden_line", n=int(pantry["produce"])))
-        return lines + [t.t("pantry.how")]
+        return lines + [t.t("pantry.how"), t.t("camp_prof.pantry_how")]     # D-115: 🐟 fish and 🍲 cooking
 
     def _take_food(self, hero: Hero) -> tuple[dict[str, int], int]:
         """Take every food item out of the backpack; returns what was taken and its rations."""
@@ -1989,7 +2017,9 @@ class GameService(StoryMixin):
         """🌾 Aportar comida in your own camp (from level 3): the food goes to the camp's pantry (D-93).
 
         [ES]
-        Qué hace: pasa toda la comida de la mochila a la despensa de tu campamento (hay que estar en él).
+        Qué hace: pasa toda la comida de la mochila a la despensa de tu campamento (hay que estar en él). D-115: el 🐟
+        pescado crudo rinde más con el mejor 🎣 Pescador del campamento y lo cocinado (items.yaml "cooked") con la mejor 🍲
+        Cocina (_camp_perks, _food_perk_bonus); se suman al 🍖 Ahumadero.
         La llaman: el botón 🌾 Aportar comida de la pantalla del campamento (miembros, desde nivel 3).
         Si cambia, afecta: si el campamento puede crecer (con la despensa vacía no crece).
         """
@@ -2004,10 +2034,16 @@ class GameService(StoryMixin):
         if not rations:
             return self._camp_here_view(hero, notice=t.t("pantry.no_food"))
         smoked = int(self._camp_effect(camp, "meat_bonus")) * given.get("carne", 0)   # D-101: 🍖 Ahumadero
-        rations += smoked
+        perks = self._camp_perks(camp, hero)                       # D-115: the camp's best 🎣 Pescador and 🍲 Cocina
+        fish_bonus, cook_bonus = self._food_perk_bonus(given, perks)
+        rations += smoked + fish_bonus + cook_bonus
         self._add_rations(f"{camp['x']}:{camp['y']}", rations)
         lines, _ = self._food_reward(hero, given, rations)
         lines += self._story_event(hero, "feed", rations=rations)     # D-117: camp tasks
+        if cook_bonus:
+            lines.insert(1, t.t("camp_prof.cook_bonus", n=cook_bonus, name=perks["cook_food"][1]))
+        if fish_bonus:
+            lines.insert(1, t.t("camp_prof.fish_bonus", n=fish_bonus, name=perks["fish_food"][1]))
         if smoked:
             lines.insert(1, t.t("upgrades.smoked", n=smoked))
         return self._camp_here_view(hero, notice="\n".join(lines))
@@ -2225,7 +2261,8 @@ class GameService(StoryMixin):
         Qué hace: muestra el campamento de la zona. Botones de un miembro (_camp_member_actions, 4 como máximo):
         ⬆️ Agrandar, 🌾 Aportar comida (desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir,
         D-97) y 🔨 Mejoras (D-101); sin despensa, también ↩️ Volver. Muestra las mejoras construidas y la 🛡️ Defensa
-        (también a los visitantes).
+        (también a los visitantes). D-115: a los miembros, las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de
+        campamento de los oficios (el mejor rango entre los miembros, y quién lo da).
         La llaman: el botón 🏕️ Campamento fuera del Claro y casi todas las acciones de campamento.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py y tests/test_camp_upgrades.py
         (orden de los botones).
@@ -2246,9 +2283,13 @@ class GameService(StoryMixin):
             if hero.id in camp["members"]:
                 body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
                          t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
+                damage = self._camp_damage(camp)          # D-115: 🛠️ what the last raids damaged, until it is repaired
+                if damage:
+                    body.append(t.t("camp_prof.damage_line", n=damage))
                 pantry = self._camp_pantry(camp)          # D-93: from level 3 (aldea), a small pantry
                 if pantry:
                     body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
+                body += self._camp_perk_lines(camp, hero)  # D-115: 🏰 the camp perks and who gives them
                 body += self._raid_lines(camp)            # D-99: the next raid, or the one going on
                 # D-97: 🛡️ Gremio holds the members, rename and leave; D-99: 🛡️ Defender; D-101: 🔨 Mejoras (4 at most)
                 actions = self._camp_member_actions(camp, hero, pantry)
@@ -3277,6 +3318,8 @@ class GameService(StoryMixin):
         Qué hace: cierra la incursión. Defendida (victorias ≥ necesarias): premio chico a cada defensor (raids.reward
         o trial.reward). Perdida: la incursión semanal se lleva raids.loss_share de la despensa (si tiene) y nada más;
         la Noche de prueba no se lleva nada y se reintenta a los trial.retry_days. Agenda la próxima incursión semanal.
+        D-115: la oleada semanal (defendida o perdida) daña las defensas unos puntos hasta que las reparen (_raid_damage;
+        la Noche de prueba no daña). Las mejoras construidas nunca se pierden: solo baja la 🛡️ Defensa hasta reparar.
         Nunca toca niveles, zonas ni miembros (§15). El llamador guarda el campamento.
         La llama: _raid_settle.
         Si cambia, afecta: la despensa, la experiencia y las monedas de los defensores, y si el campamento puede ser castillo.
@@ -3310,6 +3353,9 @@ class GameService(StoryMixin):
                 lost = self._raid_food_loss(camp)
                 body += [t.t("raids.lost", camp=name, **score),
                          t.t("raids.lost_food", rations=lost) if lost else t.t("raids.lost_nothing")]
+            damaged = self._raid_damage(camp, won)            # D-115: 🛠️ the wave damages the defenses until repaired
+            if damaged:
+                body.append(t.t("camp_prof.raid_damage", n=damaged, defense=self._camp_defense(camp)))
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
             body.append(t.t("raids.next", n=self._days_until(camp["next_raid_at"])))
         view = View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name), body=body)
@@ -3482,6 +3528,8 @@ class GameService(StoryMixin):
         ("built": id → hora en que se terminó), las obras a medias ("works": id → lo aportado, monedas en "coins")
         y su conocimiento ("tech": "done" aprendidos, "current" el que estudian y "progress" lo aportado). D-116: también
         los 🪑 muebles colocados ("furniture": id del mueble → {"by": nombre, "id": cuenta, "at": hora}), uno de cada uno.
+        D-115: "damage" (puntos de 🛡️ Defensa que dañaron las oleadas, 0 en los guardados de antes) y "repair" (lo aportado
+        a 🛠️ Reparar defensas).
         La llaman: las pantallas y acciones de 🔨 Mejoras y los efectos (_built_at, _furniture_effect).
         Si cambia, afecta: todo lo guardado de las mejoras; los campos solo se agregan (nunca se borra lo construido).
         """
@@ -3490,6 +3538,8 @@ class GameService(StoryMixin):
         data.setdefault("works", {})
         data.setdefault("tech", {})
         data.setdefault("furniture", {})        # D-116: 🪑 camp furniture placed (one of each piece)
+        data.setdefault("damage", 0)            # D-115: 🛡️ Defensa points the raids damaged, until repaired
+        data.setdefault("repair", {})           # D-115: what the members gave to 🛠️ Reparar defensas
         return data
 
     def _built_at(self, key: str | None) -> list[str]:
@@ -3570,8 +3620,13 @@ class GameService(StoryMixin):
         noche). El Claro y quien no tiene campamento: 0.
         La llaman: la pantalla del campamento, la de 🔨 Mejoras y _open_raid, que la guarda al llegar la oleada para
         debilitar a los atacantes (_raid_weaken: 4 % menos de vida y ataque por punto).
+        D-115: menos los puntos que dañaron las oleadas hasta que los reparen (_camp_damage); nunca menos de 0.
         Si cambia, afecta: cuánto protegen los alrededores de cada campamento cuando lleguen las oleadas.
         """
+        return max(0, self._defense_built(camp, night) - self._camp_damage(camp))
+
+    def _defense_built(self, camp: dict[str, Any] | None, night: bool = False) -> int:
+        """🛡️ Defensa of what the camp built and placed, without the raid damage (D-115: the cap of that damage)."""
         catalog = self._upgrade_catalog()
         built = self._built(camp)
         points = sum(int(catalog[uid].get("defense", 0)) for uid in built)
@@ -3766,6 +3821,8 @@ class GameService(StoryMixin):
             return self._workshop_view(hero)
         if action_id.startswith("upf:"):
             return self._place_furniture(hero, action_id[4:])
+        if action_id == "uprep":                    # D-115: 🛠️ Reparar defensas
+            return self._repair_defenses(hero)
         if action_id.startswith("kstart:"):
             return self._start_study(hero, action_id[7:])
         if action_id == "kgive":
@@ -3803,8 +3860,10 @@ class GameService(StoryMixin):
         Qué hace: muestra las mejoras del campamento: cuántas construyeron de cuántas (y cuántas pide el castillo), la
         🛡️ Defensa, la lista de lo construido, las próximas obras abiertas con su barra de avance y qué se abre en el
         nivel siguiente. D-116: también los 🪑 muebles colocados (con quién los puso) y, si llevas un mueble que el
-        campamento no tiene, el aviso de colocarlo en 🔨 Obras. Botones (4 como máximo): 🔨 Obras (obras abiertas y
-        muebles para colocar), 🏘️ Servicios (si construyeron alguno), 📚 Conocimiento (con la Biblioteca) y ↩️ Volver.
+        campamento no tiene, el aviso de colocarlo en 🔨 Obras. D-115: las 🛠️ defensas dañadas, lo que piden las obras con
+        los beneficios de la 🗿 Cantería y la 🏗️ Construcción del campamento (_upgrade_need) y quién los da. Botones (4 como
+        máximo): 🔨 Obras (obras abiertas, la reparación y muebles para colocar), 🏘️ Servicios (si construyeron alguno o
+        hay una estación de oficio, como el 🔥 Fogón), 📚 Conocimiento (con la Biblioteca) y ↩️ Volver.
         Solo para miembros, estando en el campamento; el Claro no tiene (D-98).
         La llaman: el botón 🔨 Mejoras del campamento y los ↩️ Volver de Obras, Servicios y Conocimiento.
         Si cambia, afecta: tests/test_camp_upgrades.py y el recorrido de botones (tope de 4).
@@ -3817,11 +3876,14 @@ class GameService(StoryMixin):
         cfg = self.content.balance["upgrades"]
         catalog = self._upgrade_catalog()
         record = self._upgrades(key)
+        perks = self._camp_perks(camp, hero)                   # D-115: 🗿 Cantería and 🏗️ Construcción lower the works
         built = [uid for uid in catalog if uid in record["built"]]
         total = sum(1 for uid, udef in catalog.items() if not udef.get("retired") or uid in record["built"])
         body = [t.t("upgrades.header", camp=camp["name"]),
                 t.t("upgrades.count", n=len(built), total=total, need=cfg["castle_min_built"]),
                 t.t("upgrades.defense", n=self._camp_defense(camp)), t.t("upgrades.defense_help"), ""]
+        if record["damage"]:                                   # D-115: 🛠️ repaired from 🔨 Obras
+            body.insert(3, t.t("camp_prof.damage_line", n=record["damage"]))
         body.append(t.t("upgrades.built_line", names=" · ".join(self._upgrade_name(uid) for uid in built)) if built
                     else t.t("upgrades.none_built"))
         placed = [(fid, info) for fid, info in record["furniture"].items() if fid in self.content.items]
@@ -3836,8 +3898,9 @@ class GameService(StoryMixin):
             body += ["", t.t("upgrades.open_title")]
             shown = max(1, int(cfg.get("open_shown", 3)))
             for uid in works[:shown]:
-                need = self._work_need(catalog[uid])
-                progress = record["works"].get(uid, {})
+                need = self._upgrade_need(catalog[uid], perks)
+                progress = dict(record["works"].get(uid, {}))
+                self._credit_raw(need, progress)
                 have = sum(min(n, int(progress.get(k, 0))) for k, n in need.items())
                 full = max(1, sum(need.values()))
                 body.append(t.t("upgrades.open_line", name=self._upgrade_name(uid), bar=self._bar(have, full, 8), pct=int(100 * have / full)))
@@ -3850,12 +3913,14 @@ class GameService(StoryMixin):
             next_level = min(int(catalog[uid].get("level", 1)) for uid in locked)
             names = [self._upgrade_name(uid) for uid in locked if int(catalog[uid].get("level", 1)) == next_level]
             body.append(t.t("upgrades.locked_line", level=next_level, names=" · ".join(names), n=len(names)))
+        body += self._camp_perk_lines(camp, hero, perks, only=("stone_cost", "build_cost", "repair_cost"))     # D-115
         services = {name for uid in built for name in (catalog[uid].get("service") or {})}
         actions = []
-        if works or to_place:
-            actions.append(Action(id="upw", label=t.t("upgrades.works_button", n=len(works) + len(to_place))))
-        if services & {"rest_price", "sell_ratio", "craft", "sell_gear"}:
-            actions.append(Action(id="upsvc", label=t.t("upgrades.services_button")))
+        entries = self._works_entries(hero, camp, record)       # works, 🛠️ the repair (D-115) and 🪑 furniture (D-116)
+        if entries:
+            actions.append(Action(id="upw", label=t.t("upgrades.works_button", n=len(entries))))
+        if services & {"rest_price", "sell_ratio", "craft", "sell_gear"} or self._stations_here(hero)[0]:
+            actions.append(Action(id="upsvc", label=t.t("upgrades.services_button")))      # D-115: 🔥 Fogón's 🍲 Cocina too
         if "knowledge" in services:
             actions.append(Action(id="know", label=t.t("knowledge.button")))
         else:
@@ -3870,9 +3935,11 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: lista las obras abiertas (por el nivel del campamento) con lo que pide cada una y lo aportado. Cada
-        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). Al final, los 🪑 muebles que
-        llevas y el campamento no tiene, cada uno con su botón 🪑 Colocar (D-116). De a 3, o de a 2 con ➡️ Ver más si
-        son más (4 botones como máximo, D-75).
+        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). D-115: primero, si las oleadas
+        dañaron las defensas, 🛠️ Reparar defensas (se aporta igual que una obra); lo que piden las obras ya tiene los
+        beneficios de la 🗿 Cantería y la 🏗️ Construcción del campamento. Al final, los 🪑 muebles que llevas y el
+        campamento no tiene, cada uno con su botón 🪑 Colocar (D-116). De a 3, o de a 2 con ➡️ Ver más si son más (4
+        botones como máximo, D-75).
         La llaman: 🔨 Obras de la pantalla de mejoras, cada aporte (vuelve a la página de esa obra) y _place_furniture.
         Si cambia, afecta: cómo aportan los miembros (tests/test_camp_upgrades.py).
         """
@@ -3886,16 +3953,23 @@ class GameService(StoryMixin):
         entries = self._works_entries(hero, camp, record)
         if not entries:
             return self._upgrades_view(hero, notice=notice or t.t("upgrades.no_works"))
+        perks = self._camp_perks(camp, hero)                   # D-115: what the camp's 🗿 and 🏗️ take off each work
         per = 3 if len(entries) <= 3 else 2
         pages = (len(entries) + per - 1) // per
         page %= pages
         body = [t.t("upgrades.works_intro")]
+        body += self._camp_perk_lines(camp, hero, perks, only=("stone_cost", "build_cost", "repair_cost"))
         if any(kind == "furn" for kind, _ in entries):
             body.append(t.t("upgrades.furniture_intro"))
         if pages > 1:
             body.append(t.t("upgrades.page", n=page + 1, total=pages))
         actions = []
         for kind, uid in entries[page * per: page * per + per]:
+            if kind == "fix":                       # D-115: 🛠️ repair what the raids damaged, like a work
+                body += ["", t.t("camp_prof.repair_entry", n=record["damage"]), t.t("camp_prof.repair_desc")]
+                body += self._need_lines(self._repair_need(record["damage"], perks), record["repair"])
+                actions.append(Action(id="uprep", label=t.t("camp_prof.repair_button")))
+                continue
             if kind == "furn":                      # D-116: 🪑 a furniture piece you carry, ready to place
                 name = self._item_label(uid)
                 body += ["", t.t("upgrades.furniture_entry", name=name, desc=t.t(self.content.items[uid]["desc_key"]))]
@@ -3905,7 +3979,10 @@ class GameService(StoryMixin):
             defense = int(udef.get("defense", 0))
             title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
             body += ["", title + (t.t("upgrades.defense_mark", n=defense) if defense else ""), t.t(udef["desc_key"])]
-            body += self._need_lines(self._work_need(udef), record["works"].get(uid, {}))
+            need = self._upgrade_need(udef, perks)              # D-115: with the camp's perks
+            progress = dict(record["works"].get(uid, {}))
+            self._credit_raw(need, progress)                    # D-115: raw given before counts as refined
+            body += self._need_lines(need, progress)
             actions.append(Action(id=f"upg:{uid}", label=t.t("upgrades.give_button", name=self._upgrade_name(uid))))
         if pages > 1:
             actions.append(Action(id=f"upw:{(page + 1) % pages}", label=t.t("upgrades.more")))
@@ -3919,6 +3996,9 @@ class GameService(StoryMixin):
         Qué hace: el miembro aporta a la obra lo que lleva de lo que pide (_contribute) y gana experiencia y mérito por
         material. Si con eso se completa, la mejora queda construida para siempre y se avisa a los demás miembros.
         Si no lleva nada de lo que pide, avisa qué falta y no toca nada. Ocupado (viajando, explorando...) no aporta.
+        D-115: lo que pide sale de _upgrade_need (con la 🗿 Cantería y la 🏗️ Construcción del campamento); lo crudo que
+        la obra ya tenía de más cuenta como refinado (_credit_raw); cada material aportado sube la 🏗️ Construcción
+        (_build_gain); si los beneficios ya cubren la obra, el próximo 🤲 la termina aunque no lleves nada.
         La llaman: los botones 🤲 de 🔨 Obras (upg:<id>).
         Si cambia, afecta: el ritmo de las mejoras y el castillo (upgrades.castle_min_built).
         """
@@ -3937,15 +4017,18 @@ class GameService(StoryMixin):
         per = 3 if len(entries) <= 3 else 2
         page = entries.index(("work", uid)) // per
         udef = self._upgrade_catalog()[uid]
-        need = self._work_need(udef)
+        need = self._upgrade_need(udef, self._camp_perks(camp, hero))     # D-115: 🗿 Cantería and 🏗️ Construcción
         progress = record["works"].setdefault(uid, {})
+        self._credit_raw(need, progress)                     # D-115: raw given before the work asked refined counts as refined
         given = self._contribute(hero, need, progress)
         name = self._upgrade_name(uid)
-        if not given:
+        complete = all(int(progress.get(k, 0)) >= n for k, n in need.items())
+        if not given and not complete:      # D-115: a work the perks already cover is finished by the next 🤲, empty-handed
             return self._works_view(hero, page, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
-        lines = self._contribution_lines(hero, given, name)
-        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins"))     # D-117: camp tasks
-        if all(int(progress.get(k, 0)) >= n for k, n in need.items()):
+        lines = self._contribution_lines(hero, given, name) if given else []
+        lines += self._build_gain(hero, given)                # D-115: 🏗️ Construcción rises with every material given
+        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins")) if given else []     # D-117
+        if complete:
             record["built"][uid] = self.clock.now()
             record["works"].pop(uid, None)
             lines.append(t.t("upgrades.built", name=name))
@@ -3965,9 +4048,11 @@ class GameService(StoryMixin):
                 if item.get("kind") == "furniture" and hero.backpack.get(fid, 0) > 0 and fid not in placed]
 
     def _works_entries(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str]]:
-        """What 🔨 Obras lists, in order: ("work", improvement id) for the open works, then ("furn", item id) for the
-        🪑 furniture the hero can place (D-116). One list, so the pages of the screen and of each 🤲 match."""
-        return [("work", uid) for uid in self._open_works(camp, record)] + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
+        """What 🔨 Obras lists, in order: ("fix", "defense") when the raids damaged the defenses (D-115), ("work",
+        improvement id) for the open works, then ("furn", item id) for the 🪑 furniture the hero can place (D-116). One
+        list, so the pages of the screen and of each 🤲 match."""
+        fix = [("fix", "defense")] if record.get("damage") else []      # D-115: 🛠️ repair the defenses first
+        return fix + [("work", uid) for uid in self._open_works(camp, record)] + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
 
     def _place_furniture(self, hero: Hero, fid: str) -> View:
         """🪑 Colocar: a member places a furniture piece in their camp, for ever; one of each piece per camp (D-116).
@@ -4031,7 +4116,8 @@ class GameService(StoryMixin):
         Qué hace: junta los servicios construidos: 🛏️ Refugio (curarse como en la posada del Claro, más barato),
         💱 Vender materiales (Puesto de trueque; la comida nunca), 🧵 Taller (bolsas y cofres) y la nota de la
         🔨 Herrería (vender equipo desde 🛡️ Equipo). 4 botones como máximo: Refugio, Vender, Taller y ↩️ Volver.
-        Las estaciones de oficio (D-109) se abren desde el 🧵 Taller; sin Taller y con 🔨 Herrería, ⚒️ Oficios toma su lugar.
+        Las estaciones de oficio (D-109) se abren desde el 🧵 Taller; sin Taller y con otra estación (🔨 Herrería o, D-115,
+        el 🔥 Fogón de la 🍲 Cocina), ⚒️ Oficios toma su lugar.
         La llama: 🏘️ Servicios de 🔨 Mejoras, y cada servicio al terminar.
         Si cambia, afecta: qué se puede hacer en el campamento sin volver al Claro.
         """
@@ -4063,8 +4149,9 @@ class GameService(StoryMixin):
             actions.append(Action(id="ctaller", label=t.t("upgrades.workshop_button")))
         if self._camp_service(camp, "sell_gear"):
             body.append(t.t("upgrades.smithy_line"))
-            if not self._camp_service(camp, "craft") and self._stations_here(hero)[0]:
-                actions.append(Action(id="oficios", label=t.t("prof.button")))   # D-109: no Taller: the Herrería's stations go here
+        if not self._camp_service(camp, "craft") and self._stations_here(hero)[0]:
+            body.append(t.t("prof.workshop_line"))       # D-109: no Taller: the Herrería's stations (D-115: the Fogón's) go here
+            actions.append(Action(id="oficios", label=t.t("prof.button")))
         if len(body) == 1:
             body.append(t.t("upgrades.no_services"))
         body += ["", self._status_line(hero)]
@@ -4565,13 +4652,19 @@ class GameService(StoryMixin):
         empezar (sin tope de oficios, D-57) y dónde están las estaciones. Con estaciones aquí (el Claro o tu
         campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. 3 botones como mucho (D-75). El 🧭 Explorador
         (D-112, rama 🧭 Exploración) muestra además qué abre cada rango en el mapa (✅ lo abierto) y el próximo umbral.
+        D-115: los oficios van agrupados por rama aunque se agreguen al final del catálogo (BRANCH_ORDER); los de beneficio
+        de campamento (🎣 🍲 🗿 🏗️) dicen que valen para el campamento con el mejor rango, y si eres miembro de uno, la
+        línea 🏰 de los beneficios de tu campamento y quién los da.
         La llaman: el atajo /oficios, ⚒️ Oficios del Claro, del 🧵 Taller y de los servicios del campamento.
         Si cambia, afecta: dónde ve el jugador sus oficios (tests/test_professions.py).
         """
         t = self.texts
         catalog = self._prof_catalog()
         body = [t.t("prof.intro")]
-        started = [pid for pid in catalog if hero.professions.get(pid, 0) > 0]
+        order = {b: i for i, b in enumerate(BRANCH_ORDER)}       # D-115: grouped by branch, catalog order inside each
+        ordered = sorted(catalog, key=lambda pid: order.get(catalog[pid].get("branch"), len(order)))
+        camp_pids = profession_rules.camp_perk_professions(catalog)
+        started = [pid for pid in ordered if hero.professions.get(pid, 0) > 0]
         branch = None
         for pid in started:
             pdef = catalog[pid]
@@ -4587,15 +4680,21 @@ class GameService(StoryMixin):
                 perk = " · ".join(part for part in (perk, t.t("prof.perk.masterwork", v=f"{shown:g}")) if part)
             if perk:
                 body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
+            if pid in camp_pids:
+                body.append(t.t("camp_prof.perk_note"))                  # D-115: 🏰 for the camp, the best member's rank
             body += self._explorer_prof_lines(hero, pid)                 # D-112: what each 🧭 rank opens on the map
             unlock = self._next_unlock(hero, pid)
             if unlock:
                 body.append(unlock)
         if not started:
             body += ["", t.t("prof.none")]
-        rest = [self._prof_name(pid) for pid in catalog if pid not in started]
+        rest = [self._prof_name(pid) for pid in ordered if pid not in started]
         if rest:
             body += ["", t.t("prof.not_started", items=", ".join(rest))]
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        if camp and hero.id in camp.get("members", []):
+            perk_lines = self._camp_perk_lines(camp, hero)             # D-115: 🏰 your camp's perks and who gives them
+            body += [""] + perk_lines if perk_lines else []
         stations, where = self._stations_here(hero)
         body += ["", self._stations_line(where, stations) if (where or not hero.activity) else t.t("activity.busy"),
                  t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"])]
@@ -4706,6 +4805,8 @@ class GameService(StoryMixin):
                 body.append(t.t("prof.masterwork_line", pct=f"{round(100 * self._masterwork_chance(hero, pid), 1):g}"))
         elif item.get("kind") == "furniture":                   # D-116: 🪑 camp furniture
             body.append(t.t("prof.furniture_out", desc=t.t(item["desc_key"])))
+        elif item.get("food"):                                  # D-115: 🍲 rations for the camp's pantry
+            body.append(t.t("camp_prof.food_out", rations=item["food"]))
         elif item.get("heal"):
             body.append(t.t("prof.heal_out", heal=round(item["heal"] * 100), tox=item.get("toxicity", 0)))
         elif t.has(f"resources.use.{out_id}"):
@@ -4819,6 +4920,205 @@ class GameService(StoryMixin):
         lines += self._prof_gain(hero, pid, prof_xp)
         lines += self._story_event(hero, "craft", recipe=rid, profession=pid, item=out_id, n=times)     # D-117
         return self._recipe_view(hero, rid, page, notice="\n".join(lines))
+
+    # ------------------------------------------------------------------ camp professions, phase 2 (D-115, D-116)
+
+    def _camp_prof_cfg(self) -> dict[str, Any]:
+        return self.content.balance.get("camp_professions") or {}
+
+    def _camp_perks(self, camp: dict[str, Any] | None, actor: Hero | None = None) -> dict[str, tuple[float, str | None]]:
+        """The camp perks of a player camp (D-115, D-116): for each one, the best rank among its current members.
+
+        [ES]
+        Qué hace: junta los beneficios de campamento y castillo del campamento (🎣 el pescado rinde más en la despensa, 🍲
+        lo cocinado también, 🗿 las obras piden menos piedra, 🏗️ menos materiales y reparar cuesta menos): para cada oficio
+        rige el MEJOR rango entre los miembros de ahora (no se suman). Lee la experiencia de oficio de cada miembro del
+        almacén; el héroe que está jugando (actor) cuenta con lo que tiene en memoria (pudo subir de rango en esta misma
+        acción). El Claro y quien no tiene campamento: nada. Devuelve clave → (valor, nombre de quien lo da).
+        La llaman: _camp_feed (despensa), _upgrades_view, _works_view, _give_to_work y _repair_defenses (obras y
+        reparación), _camp_perk_lines (pantallas).
+        Si cambia, afecta: cuánto rinden la despensa y las obras de cada campamento (profesiones.md §0.4).
+        """
+        catalog = self._prof_catalog()
+        cfg = self._prof_cfg()
+        if not camp or "x" not in camp:
+            return profession_rules.camp_perks(catalog, {}, cfg["max_rank"])
+        pids = profession_rules.camp_perk_professions(catalog)
+        members: dict[str, dict[str, int]] = {}
+        for member in camp.get("members", []):
+            if actor is not None and member == actor.id:
+                name, profs = actor.name, actor.professions
+            else:
+                data = self.store.get("hero", member) or {}
+                name, profs = data.get("name", "?"), data.get("professions") or {}
+            members[name] = {pid: rank_of(int(profs.get(pid, 0)), cfg["rank_formula"], cfg["max_rank"])
+                             for pid in pids if int(profs.get(pid, 0)) > 0}
+        best = profession_rules.camp_best_ranks(catalog, members)
+        return profession_rules.camp_perks(catalog, best, cfg["max_rank"])
+
+    def _camp_perk_lines(self, camp: dict[str, Any], actor: Hero | None = None,
+                         perks: dict[str, tuple[float, str | None]] | None = None, only: tuple[str, ...] | None = None) -> list[str]:
+        """🏰 One line with the camp perks in force and who gives each (empty if nobody gives any). [ES] Qué hace: arma la
+        línea de los beneficios de campamento (solo los de `only`, si se pasa). La llaman: la pantalla del campamento,
+        ⚒️ Oficios, 🔨 Mejoras y 🔨 Obras. Si cambia, afecta: solo lo que se muestra."""
+        t = self.texts
+        perks = perks if perks is not None else self._camp_perks(camp, actor)
+        catalog = self._prof_catalog()
+        parts = []
+        for pid in profession_rules.camp_perk_professions(catalog):
+            keys = [k for k in profession_rules.CAMP_PERK_KEYS if k in catalog[pid]["perk"] and (only is None or k in only)]
+            if not keys or not perks[keys[0]][1]:
+                continue
+            text = " · ".join(t.t(f"prof.perk.{k}", v=f"{round(perks[k][0] * 100, 1):g}") for k in keys)
+            parts.append(t.t("camp_prof.perk_part", prof=self._prof_name(pid), perk=text, name=perks[keys[0]][1]))
+        return [t.t("camp_prof.perks_line", items=" · ".join(parts))] if parts else []
+
+    def _food_perk_bonus(self, given: dict[str, int], perks: dict[str, tuple[float, str | None]]) -> tuple[int, int]:
+        """(fish, cooked) extra rations of food given to a camp's pantry: 🎣 on the raw fish, 🍲 on what was cooked (D-115).
+
+        [ES]
+        Qué hace: calcula las raciones de más que suman los beneficios de campamento al aportar comida: el 🎣 Pescador sobre
+        el pescado crudo (lo que junta su oficio) y la 🍲 Cocina sobre lo cocinado (items.yaml "cooked"). Redondea hacia
+        abajo, como el 🍖 Ahumadero.
+        La llama: _camp_feed.
+        Si cambia, afecta: cuánto dura la despensa de los campamentos con esos oficios.
+        """
+        catalog = self._prof_catalog()
+        items = self.content.items
+        fish_items = {item for pdef in catalog.values() if "fish_food" in (pdef.get("perk") or {}) for item in (pdef.get("gathers") or [])}
+        fish = sum(int(items[i].get("food", 0)) * n for i, n in given.items() if i in fish_items)
+        cooked = sum(int(items[i].get("food", 0)) * n for i, n in given.items() if items[i].get("cooked"))
+        return int(fish * perks["fish_food"][0] + 1e-9), int(cooked * perks["cook_food"][0] + 1e-9)
+
+    def _upgrade_need(self, udef: dict[str, Any], perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
+        """What an improvement asks after the camp perks (D-115): 🏗️ −20 % of every material, 🗿 −15 % of the stone ones.
+
+        [ES]
+        Qué hace: lo que pide una mejora (materiales y monedas) con los beneficios del campamento: la 🏗️ Construcción le baja
+        todos los materiales y la 🗿 Cantería, además, la piedra y el sillar (balance.yaml camp_professions.stone_items).
+        Las monedas no bajan. Redondea hacia arriba, nunca menos de 1 (profession_rules.scaled_cost).
+        La llaman: _upgrades_view, _works_view y _give_to_work.
+        Si cambia, afecta: cuánto cuesta cada mejora a los campamentos con esos oficios (y lo que muestran las barras).
+        """
+        stone = tuple(self._camp_prof_cfg().get("stone_items") or ())
+        return profession_rules.scaled_cost(self._work_need(udef), perks["build_cost"][0], perks["stone_cost"][0], stone)
+
+    def _repair_need(self, damage: int, perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
+        """What repairing `damage` points asks: camp_professions.repair_per_point × damage, halved by 🏗️ at rank 100 (D-115)."""
+        per = self._camp_prof_cfg().get("repair_per_point") or {}
+        return profession_rules.scaled_cost({k: int(n) * max(0, damage) for k, n in per.items()}, perks["repair_cost"][0])
+
+    def _camp_damage(self, camp: dict[str, Any] | None) -> int:
+        """🛡️ Defensa points the raids damaged in this player camp, until the members repair them (D-115; 0 before)."""
+        if not camp or "x" not in camp:
+            return 0
+        return int((self.store.get("upgrades", f"{camp['x']}:{camp['y']}") or {}).get("damage", 0))
+
+    def _raid_damage(self, camp: dict[str, Any], won: bool) -> int:
+        """A weekly raid damages the camp's defenses (D-115): camp_professions.damage won/lost, never past what was built.
+
+        [ES]
+        Qué hace: al cerrar la oleada semanal, baja la 🛡️ Defensa del campamento unos puntos (defendida 1, perdida 2) hasta
+        que la reparen; nunca más que la defensa construida (un campamento sin defensas no se daña) y las mejoras nunca se
+        pierden. Guarda el daño en las mejoras del campamento ("damage") y devuelve los puntos nuevos.
+        La llama: _resolve_raid (solo la oleada semanal; la Noche de prueba no daña).
+        Si cambia, afecta: la 🛡️ Defensa de la próxima oleada y el trabajo de reparar (🗿 Cantería, Aserradero, 🏗️).
+        """
+        hit = int((self._camp_prof_cfg().get("damage") or {}).get("won" if won else "lost", 0))
+        if hit <= 0 or "x" not in camp:
+            return 0
+        key = f"{camp['x']}:{camp['y']}"
+        record = self._upgrades(key)
+        current = int(record["damage"])
+        new = min(self._defense_built(camp), current + hit)
+        if new <= current:
+            return 0
+        record["damage"] = new
+        self.store.put("upgrades", key, record)
+        return new - current
+
+    def _credit_raw(self, need: dict[str, int], progress: dict[str, int]) -> None:
+        """Raw material a work already holds beyond what it asks now counts for its refined material (D-115: 3 🪨 = 1 🧱).
+
+        [ES]
+        Qué hace: si una obra tiene aportado de más un material crudo (porque desde D-115 pide refinados, o porque los
+        beneficios del campamento bajaron lo que pide) y le falta su refinado, pasa lo crudo de sobra a refinado con la
+        receta (3 piedras = 1 sillar, 3 maderas = 1 tablón). Así nada de lo que ya aportaron los miembros se pierde.
+        Cambia `progress` en el lugar (las pantallas le pasan una copia; _give_to_work lo guarda).
+        La llaman: _upgrades_view, _works_view y _give_to_work.
+        Si cambia, afecta: el avance de las obras abiertas antes del cambio de costos.
+        """
+        for item, (raw, ratio) in profession_rules.refined_from(self._prof_catalog(), self._recipes()).items():
+            want = int(need.get(item, 0)) - int(progress.get(item, 0))
+            extra = int(progress.get(raw, 0)) - int(need.get(raw, 0))
+            if want <= 0 or ratio <= 0 or extra < ratio:
+                continue
+            credit = min(want, extra // ratio)
+            progress[item] = int(progress.get(item, 0)) + credit
+            progress[raw] = int(progress[raw]) - credit * ratio
+
+    def _build_gain(self, hero: Hero, given: dict[str, int]) -> list[str]:
+        """🏗️ Construcción rises with every material given to a camp work or repair (D-115): a refined one counts its raw.
+
+        [ES]
+        Qué hace: da experiencia de 🏗️ Construcción por lo aportado (camp_professions.build_xp_per_unit por material crudo;
+        un tablón o un sillar vale lo crudo que lleva, 3). Las monedas no cuentan. Devuelve la línea "🏗️ Construcción +N" y
+        las de subida de rango. La experiencia de héroe ya la da el aporte (upgrades.xp_per_unit).
+        La llaman: _give_to_work y _repair_defenses.
+        Si cambia, afecta: el ritmo de la 🏗️ Construcción.
+        """
+        cfg = self._camp_prof_cfg()
+        pid = cfg.get("build_profession", "construccion")
+        refined = profession_rules.refined_from(self._prof_catalog(), self._recipes())
+        per = int(cfg.get("build_xp_per_unit", 1))
+        xp = sum(int(n) * per * (refined[k][1] if k in refined else 1) for k, n in given.items() if k != "coins")
+        if xp <= 0 or pid not in self._prof_catalog():
+            return []
+        return [self.texts.t("prof.summary", items=f"{self._prof_name(pid)} +{xp}")] + self._prof_gain(hero, pid, xp)
+
+    def _repair_defenses(self, hero: Hero) -> View:
+        """🛠️ Reparar defensas: any member at the camp gives what the repair still asks; when complete the damage is gone.
+
+        [ES]
+        Qué hace: como una obra (D-101), el miembro aporta lo que lleva de lo que pide la reparación (🟫 tablones y 🧱
+        sillares por punto dañado, balance.yaml camp_professions.repair_per_point; la mitad con la 🏗️ Construcción del
+        campamento al rango 100). Gana experiencia y mérito por material y sube la 🏗️ Construcción. Cuando se completa, la
+        🛡️ Defensa vuelve entera y se avisa a los demás miembros. Si no lleva nada de lo que pide, avisa qué falta y no
+        toca nada; ocupado no aporta.
+        La llama: el botón 🛠️ Reparar defensas de 🔨 Obras ("uprep").
+        Si cambia, afecta: la 🛡️ Defensa de la próxima oleada y la demanda de tablones y sillares.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        if hero.activity:
+            return self._works_view(hero, notice=t.t("activity.busy"))
+        record = self._upgrades(key)
+        damage = int(record["damage"])
+        if damage <= 0:
+            return self._works_view(hero, notice=t.t("camp_prof.repair_none"))
+        need = self._repair_need(damage, self._camp_perks(camp, hero))
+        progress = record["repair"]
+        given = self._contribute(hero, need, progress)
+        name = t.t("camp_prof.repair_name")
+        complete = all(int(progress.get(k, 0)) >= n for k, n in need.items())
+        if not given and not complete:
+            return self._works_view(hero, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
+        lines = self._contribution_lines(hero, given, name) if given else []
+        lines += self._build_gain(hero, given)
+        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins")) if given else []     # D-117
+        if complete:
+            record["damage"], record["repair"] = 0, {}
+            lines.append(t.t("camp_prof.repaired", n=damage))
+            news = View(kind="camp_news", title=t.t("camp_prof.repaired_push_title"),
+                        body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)])
+            for member in camp["members"]:
+                if member != hero.id:
+                    self._push(member, news)
+        self.store.put("upgrades", key, record)
+        return self._works_view(hero, notice="\n".join(lines))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts

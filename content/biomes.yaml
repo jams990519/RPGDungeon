@@ -3,7 +3,10 @@
 # (D-78, balance.yaml travel). danger: probabilidad base de un encuentro al llegar.
 # Lo usan: engine/world (generación y viaje), engine/service (encuentros).
 # gather: qué se recolecta en ese bioma (material: peso).
-# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; danger mueve cuántas peleas hay.
+# water (D-115, fase 2 de los oficios): qué parte de las zonas de ese bioma tiene agua (1.0 = todas): ahí también se pesca
+#   🐟 pescado (engine/world/resources.py water_resources; su peso en balance.yaml camp_professions.fish). Sin "water", 0.
+# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; danger mueve cuántas peleas hay; water mueve dónde
+#   se pesca (y cuánta comida llega a las despensas: 🎣 Pescador y 🍲 Cocina, tests/test_oficios_campamento.py).
 
 claro:
   name_key: biome.claro
@@ -13,11 +16,13 @@ claro:
 pradera:
   name_key: biome.pradera
   gather: {fibra: 4, hierba_curativa: 2, piedra: 1}
+  water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un río o una laguna (🐟 pescado)
   emoji: "🌾"
   danger: 0.25
 bosque:
   name_key: biome.bosque
   gather: {madera: 5, hierba_curativa: 2, fibra: 1}
+  water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un arroyo (🐟 pescado)
   emoji: "🌲"
   danger: 0.35
 colinas:
@@ -28,6 +33,7 @@ colinas:
 pantano:
   name_key: biome.pantano
   gather: {hierba_curativa: 4, fibra: 2}
+  water: 1.0            # [ES] D-115: todo el pantano es agua: en cada zona se pesca
   emoji: "🐸"
   danger: 0.45
 montana:

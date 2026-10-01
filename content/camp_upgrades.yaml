@@ -30,7 +30,13 @@
 #     - D-116: los 🪑 muebles de la Carpintería (content/items.yaml, kind: furniture) usan los mismos nombres de efecto
 #       ("members", y "defense" para la 🛡️ Defensa) y se suman a los de las mejoras (GameService._furniture_effect). No
 #       cuentan como mejoras construidas para el castillo.
-#     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles).
+#     - D-115 (fase 2 de los oficios): desde el nivel 7 (ciudad) las mejoras piden también refinados (🧱 sillar de la
+#       Cantería, 🟫 tablón del Aserradero) en lugar de una parte de lo crudo, con el mismo valor en crudo (1 sillar = 3
+#       piedras, 1 tablón = 3 maderas) más la energía de refinar. Lo ya construido no cambia; lo crudo que una obra ya
+#       tenía de más cuenta como refinado (GameService._credit_raw). Los beneficios de campamento de la Cantería (−15 % de
+#       piedra y sillar) y de la 🏗️ Construcción (−20 % de todo) bajan lo que pide cada obra (GameService._upgrade_need);
+#       las monedas no. Las defensas que dañan las oleadas se reparan aparte (balance.yaml camp_professions).
+#     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles), tests/test_oficios_campamento.py.
 
 upgrades:
   # ---- Nivel 1 (campamento): lo primero, al alcance de 2 jugadores en un día o dos
@@ -162,13 +168,13 @@ upgrades:
     coins: 300                            # [ES] 3 🥈
     service: {sell_gear: 1}               # [ES] vender en el campamento el equipo que no usas, al mismo precio que en el Claro
 
-  # ---- Nivel 7 (ciudad)
+  # ---- Nivel 7 (ciudad). [ES] D-115: desde aquí piden también refinados (🧱 sillar = 3 piedras, 🟫 tablón = 3 maderas)
   enfermeria:
     emoji: "🏥"
     name_key: upgrade.enfermeria.name
     desc_key: upgrade.enfermeria.desc
     level: 7
-    cost: {madera: 180, fibra: 100, hierba_curativa: 100, piedra: 80}   # [ES] 460 unidades
+    cost: {tablon: 40, madera: 60, fibra: 100, hierba_curativa: 100, sillar: 20, piedra: 20}   # [ES] 460 en crudo (antes: madera 180, fibra 100, hierba 100, piedra 80)
     coins: 300                            # [ES] 3 🥈
     effect: {downed_regen_mult: 0.5}      # [ES] quien cayó se recupera un 50 % más rápido en el territorio (×1,5)
   biblioteca:
@@ -176,7 +182,7 @@ upgrades:
     name_key: upgrade.biblioteca.name
     desc_key: upgrade.biblioteca.desc
     level: 7
-    cost: {madera: 220, piedra: 150, fibra: 100, arcilla: 60}   # [ES] 530 unidades
+    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, fibra: 100, arcilla: 60}   # [ES] 530 en crudo (antes: madera 220, piedra 150, fibra 100, arcilla 60)
     coins: 500                            # [ES] 5 🥈
     service: {knowledge: 1}               # [ES] abre el 📚 Conocimiento (lista "knowledge" de abajo)
 
@@ -186,14 +192,14 @@ upgrades:
     name_key: upgrade.torres_arqueros.name
     desc_key: upgrade.torres_arqueros.desc
     level: 8
-    cost: {madera: 280, piedra: 150, pieza_metal: 70, fibra: 60}   # [ES] 560 unidades
+    cost: {tablon: 80, madera: 40, sillar: 40, piedra: 30, pieza_metal: 70, fibra: 60}   # [ES] 560 en crudo (antes: madera 280, piedra 150, metal 70, fibra 60)
     defense: 2
   foso:
     emoji: "🌊"
     name_key: upgrade.foso.name
     desc_key: upgrade.foso.desc
     level: 8
-    cost: {piedra: 360, arcilla: 140, madera: 100}   # [ES] 600 unidades
+    cost: {sillar: 100, piedra: 60, arcilla: 140, tablon: 25, madera: 25}   # [ES] 600 en crudo (antes: piedra 360, arcilla 140, madera 100)
     defense: 2
 
 # Camp knowledge: needs the Biblioteca. One study at a time, paid by the members together.
