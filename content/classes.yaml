@@ -8,7 +8,7 @@
 # Lo usan: engine/combat, engine/hero, engine/service (creación del héroe).
 # Textos: content/locales/es.yaml (guerrero, picaro, sacerdote) y content/locales/es_clases.yaml (el resto).
 # Si cambias esto, revisa: los IDs (de spec y de habilidad) son estables, nunca se renombran;
-# cambiar números mueve el balance (anotarlo en el registro de balance).
+# cambiar números mueve el balance (anotarlo en el registro de balance: diseno/03-personaje/balance.md §7; medir con tools/sim.py --summary --real y --boss).
 # IDs viejos: guerrero = Guerrero Protección, picaro = Pícaro Asesinato, sacerdote = Sacerdote Disciplina.
 # Campos de habilidad: kind =
 #   strike (power; lifesteal opcional: parte del daño que te cura) | finisher (power + per_combo; gasta combos)
@@ -28,14 +28,14 @@ guerrero_furia:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 125, attack: 13, armor: 0.20, initiative: 10}
+  base: {hp: 165, attack: 15, armor: 0.25, initiative: 10}
   per_level: {hp: 13, attack: 1.7}
   attack: {power: 1.0, gain: 18}
   abilities:
     - id: golpe_colosal
       kind: expose
       cost: 20
-      value: 0.4
+      value: 0.6
       rounds: 4
       cooldown: 3
     - id: ejecutar
@@ -86,7 +86,7 @@ guerrero:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 135, attack: 11, armor: 0.20, initiative: 9}
+  base: {hp: 161, attack: 11, armor: 0.20, initiative: 9}
   per_level: {hp: 15, attack: 1.4}
   attack: {power: 1.0, gain: 15}
   abilities:
@@ -142,9 +142,9 @@ guerrero_senor_guerra:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 130, attack: 13, armor: 0.20, initiative: 9}
+  base: {hp: 169, attack: 16, armor: 0.20, initiative: 9}
   per_level: {hp: 14, attack: 1.5}
-  attack: {power: 1.0, gain: 18}
+  attack: {power: 1.2, gain: 18}
   abilities:
     - id: estandarte_de_guerra
       kind: empower
@@ -155,7 +155,7 @@ guerrero_senor_guerra:
     - id: estandarte_de_muralla
       kind: weaken
       cost: 25
-      value: 0.35
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: intervenir
@@ -202,7 +202,7 @@ paladin_reprension:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 125, attack: 13, armor: 0.18, initiative: 9}
+  base: {hp: 139, attack: 13, armor: 0.18, initiative: 9}
   per_level: {hp: 14, attack: 1.6}
   attack: {power: 1.0, gain: 20}
   abilities:
@@ -259,7 +259,7 @@ paladin_proteccion:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 135, attack: 11, armor: 0.22, initiative: 9}
+  base: {hp: 112, attack: 11, armor: 0.17, initiative: 9}
   per_level: {hp: 15, attack: 1.4}
   attack: {power: 1.0, gain: 20}
   abilities:
@@ -267,7 +267,7 @@ paladin_proteccion:
       kind: interrupt
       cost: 30
       power: 1.3
-      cooldown: 3
+      cooldown: 5
     - id: bendicion_de_proteccion
       kind: response
       response: shield
@@ -318,19 +318,19 @@ paladin_sagrado:
   resource: mana
   resource_start: 60
   resource_max: 100
-  resource_regen: 4
-  base: {hp: 115, attack: 10, armor: 0.18, initiative: 9}
+  resource_regen: 2
+  base: {hp: 105, attack: 10, armor: 0.14, initiative: 9}
   per_level: {hp: 13, attack: 1.3}
   attack: {power: 0.95, gain: 9}
   abilities:
     - id: destello_de_luz
       kind: heal
       cost: 30
-      value: 0.3
+      value: 0.22
     - id: faro_de_luz
       kind: hot
       cost: 25
-      value: 0.08
+      value: 0.05
       rounds: 4
       cooldown: 4
     - id: escudo_divino_sagrado
@@ -377,7 +377,7 @@ cazador_punteria:
   resource_start: 60
   resource_max: 100
   resource_regen: 15
-  base: {hp: 110, attack: 13, armor: 0.12, initiative: 12}
+  base: {hp: 122, attack: 13, armor: 0.12, initiative: 12}
   per_level: {hp: 12, attack: 1.7}
   attack: {power: 1.0, gain: 5}
   abilities:
@@ -385,7 +385,7 @@ cazador_punteria:
       kind: empower
       cost: 20
       value: 0.5
-      rounds: 2
+      rounds: 3
       cooldown: 3
     - id: disparo_certero
       kind: strike
@@ -488,7 +488,7 @@ cazador_supervivencia:
   resource_start: 60
   resource_max: 100
   resource_regen: 15
-  base: {hp: 115, attack: 12, armor: 0.14, initiative: 11}
+  base: {hp: 150, attack: 12, armor: 0.14, initiative: 11}
   per_level: {hp: 13, attack: 1.5}
   attack: {power: 1.0, gain: 5}
   abilities:
@@ -546,7 +546,7 @@ picaro:
   resource_start: 100
   resource_max: 100
   resource_regen: 20
-  base: {hp: 105, attack: 13, armor: 0.10, initiative: 14}
+  base: {hp: 134, attack: 13, armor: 0.10, initiative: 14}
   per_level: {hp: 12, attack: 1.7}
   attack: {power: 1.0, gain: 0, combo: 1}
   abilities:
@@ -601,7 +601,7 @@ picaro_sutileza:
   resource_start: 100
   resource_max: 100
   resource_regen: 20
-  base: {hp: 105, attack: 12, armor: 0.10, initiative: 14}
+  base: {hp: 110, attack: 12, armor: 0.10, initiative: 14}
   per_level: {hp: 14, attack: 1.5}
   attack: {power: 1.0, gain: 0}
   abilities:
@@ -613,7 +613,7 @@ picaro_sutileza:
     - id: contraataque
       kind: strike
       cost: 35
-      power: 1.7
+      power: 1.6
     - id: provocacion_burlona
       kind: weaken
       cost: 25
@@ -659,7 +659,7 @@ picaro_forajido:
   resource_start: 100
   resource_max: 100
   resource_regen: 20
-  base: {hp: 110, attack: 12, armor: 0.10, initiative: 14}
+  base: {hp: 143, attack: 12, armor: 0.10, initiative: 14}
   per_level: {hp: 13, attack: 1.5}
   attack: {power: 1.0, gain: 0}
   abilities:
@@ -716,7 +716,7 @@ sacerdote_sombra:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 100, attack: 13, armor: 0.05, initiative: 10}
+  base: {hp: 122, attack: 13, armor: 0.05, initiative: 10}
   per_level: {hp: 11, attack: 1.7}
   attack: {power: 1.0, gain: 15}
   abilities:
@@ -779,11 +779,11 @@ sacerdote_sagrado:
     - id: plegaria_de_sanacion
       kind: heal
       cost: 30
-      value: 0.32
+      value: 0.28
     - id: renovar
       kind: hot
       cost: 20
-      value: 0.08
+      value: 0.05
       rounds: 4
       cooldown: 4
     - id: palabra_de_poder_escudo
@@ -838,7 +838,7 @@ sacerdote:
     - id: escudo_de_luz
       kind: response
       response: shield
-      value: 0.3
+      value: 0.23
       stamina: 1
     - id: dolor
       kind: weaken
@@ -896,7 +896,7 @@ caballero_muerte_escarcha:
       kind: interrupt
       cost: 20
       power: 0.5
-      cooldown: 3
+      cooldown: 5
     - id: entereza_ligada_al_hielo
       kind: response
       response: block
@@ -999,7 +999,7 @@ caballero_muerte_profano:
   resource_start: 60
   resource_max: 100
   resource_regen: 15
-  base: {hp: 125, attack: 12, armor: 0.18, initiative: 9}
+  base: {hp: 162, attack: 12, armor: 0.18, initiative: 9}
   per_level: {hp: 14, attack: 1.5}
   attack: {power: 1.0, gain: 10}
   abilities:
@@ -1110,7 +1110,7 @@ chaman_restauracion:
   resource: mana
   resource_start: 60
   resource_max: 100
-  resource_regen: 4
+  resource_regen: 3
   base: {hp: 110, attack: 10, armor: 0.12, initiative: 10}
   per_level: {hp: 12, attack: 1.3}
   attack: {power: 0.95, gain: 9}
@@ -1118,11 +1118,11 @@ chaman_restauracion:
     - id: sanacion_en_cadena
       kind: heal
       cost: 30
-      value: 0.32
+      value: 0.26
     - id: totem_de_marea
       kind: hot
       cost: 25
-      value: 0.08
+      value: 0.05
       rounds: 4
       cooldown: 4
     - id: cambio_astral
@@ -1167,7 +1167,7 @@ chaman_totems:
   resource_start: 0
   resource_max: 100
   resource_regen: 5
-  base: {hp: 115, attack: 12, armor: 0.14, initiative: 10}
+  base: {hp: 150, attack: 13, armor: 0.14, initiative: 10}
   per_level: {hp: 13, attack: 1.5}
   attack: {power: 1.0, gain: 15}
   abilities:
@@ -1225,7 +1225,7 @@ mago_fuego:
   resource_start: 60
   resource_max: 100
   resource_regen: 4
-  base: {hp: 100, attack: 14, armor: 0.05, initiative: 11}
+  base: {hp: 130, attack: 14, armor: 0.05, initiative: 11}
   per_level: {hp: 11, attack: 1.9}
   attack: {power: 1.0, gain: 9}
   abilities:
@@ -1280,7 +1280,7 @@ mago_escarcha:
   resource_start: 60
   resource_max: 100
   resource_regen: 4
-  base: {hp: 100, attack: 11, armor: 0.06, initiative: 11}
+  base: {hp: 121, attack: 11, armor: 0.06, initiative: 11}
   per_level: {hp: 14, attack: 1.4}
   attack: {power: 1.0, gain: 9}
   abilities:
@@ -1338,7 +1338,7 @@ mago_arcano:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 110, attack: 13, armor: 0.05, initiative: 11}
+  base: {hp: 143, attack: 16, armor: 0.05, initiative: 11}
   per_level: {hp: 11, attack: 1.6}
   attack: {power: 1.0, gain: 25}
   abilities:
@@ -1404,7 +1404,7 @@ brujo_destruccion:
       power: 2.4
     - id: inmolar
       kind: dot
-      power: 0.6
+      power: 0.5
       rounds: 4
       cooldown: 3
     - id: resolucion_inagotable
@@ -1450,7 +1450,7 @@ brujo_demonologia:
   resource_start: 20
   resource_max: 100
   resource_regen: 0
-  base: {hp: 120, attack: 11, armor: 0.12, initiative: 10}
+  base: {hp: 144, attack: 11, armor: 0.12, initiative: 10}
   per_level: {hp: 14, attack: 1.4}
   attack: {power: 1.0, gain: 20}
   abilities:
@@ -1507,7 +1507,7 @@ brujo_afliccion:
   resource_start: 60
   resource_max: 100
   resource_regen: 4
-  base: {hp: 110, attack: 12, armor: 0.05, initiative: 10}
+  base: {hp: 124, attack: 12, armor: 0.05, initiative: 10}
   per_level: {hp: 11, attack: 1.6}
   attack: {power: 1.0, gain: 9}
   abilities:
@@ -1564,7 +1564,7 @@ monje_viajero_viento:
   resource_start: 20
   resource_max: 100
   resource_regen: 10
-  base: {hp: 110, attack: 13, armor: 0.10, initiative: 13}
+  base: {hp: 137, attack: 13, armor: 0.10, initiative: 13}
   per_level: {hp: 12, attack: 1.7}
   attack: {power: 1.0, gain: 15}
   abilities:
@@ -1675,20 +1675,20 @@ monje_tejedor_niebla:
   resource_start: 60
   resource_max: 100
   resource_regen: 4
-  base: {hp: 105, attack: 10, armor: 0.10, initiative: 12}
+  base: {hp: 112, attack: 10, armor: 0.10, initiative: 12}
   per_level: {hp: 12, attack: 1.3}
   attack: {power: 0.95, gain: 9}
   abilities:
     - id: niebla_envolvente
       kind: hot
       cost: 25
-      value: 0.08
+      value: 0.07
       rounds: 4
       cooldown: 4
     - id: vivificar
       kind: heal
       cost: 30
-      value: 0.3
+      value: 0.2
     - id: capullo_de_vida
       kind: response
       response: shield
@@ -1744,7 +1744,7 @@ druida_feral:
     - id: desgarrar
       kind: dot
       cost: 30
-      power: 0.6
+      power: 0.4
       rounds: 4
     - id: piel_de_corteza
       kind: response
@@ -1800,7 +1800,7 @@ druida_guardian:
     - id: pelaje_de_hierro
       kind: response
       response: block
-      value: 0.7
+      value: 0.65
       stamina: 1
       gain: 10
     - id: regeneracion_frenetica
@@ -1852,13 +1852,13 @@ druida_restauracion:
     - id: rejuvenecimiento
       kind: hot
       cost: 25
-      value: 0.08
+      value: 0.06
       rounds: 4
       cooldown: 4
     - id: alivio_presto
       kind: heal
       cost: 30
-      value: 0.3
+      value: 0.2
     - id: corteza_de_hierro
       kind: response
       response: shield
@@ -1931,7 +1931,7 @@ cazador_demonios_estrago:
   resource_start: 0
   resource_max: 100
   resource_regen: 0
-  base: {hp: 120, attack: 14, armor: 0.10, initiative: 13}
+  base: {hp: 137, attack: 14, armor: 0.10, initiative: 13}
   per_level: {hp: 12, attack: 1.7}
   attack: {power: 1.0, gain: 25}
   abilities:
@@ -1999,7 +1999,7 @@ cazador_demonios_venganza:
     - id: puas_demoniacas
       kind: response
       response: block
-      value: 0.7
+      value: 0.6
       stamina: 1
       gain: 10
     - id: sigilo_de_miseria
@@ -2046,7 +2046,7 @@ cazador_demonios_devorador:
   resource_start: 20
   resource_max: 100
   resource_regen: 0
-  base: {hp: 120, attack: 12, armor: 0.12, initiative: 12}
+  base: {hp: 156, attack: 15, armor: 0.12, initiative: 12}
   per_level: {hp: 13, attack: 1.5}
   attack: {power: 1.0, gain: 20}
   abilities:
@@ -2157,7 +2157,7 @@ evocador_preservacion:
   resource: esencia
   resource_start: 60
   resource_max: 100
-  resource_regen: 10
+  resource_regen: 6
   base: {hp: 110, attack: 10, armor: 0.12, initiative: 10}
   per_level: {hp: 12, attack: 1.3}
   attack: {power: 0.95, gain: 5}
@@ -2165,13 +2165,13 @@ evocador_preservacion:
     - id: eco
       kind: hot
       cost: 25
-      value: 0.08
+      value: 0.06
       rounds: 4
       cooldown: 4
     - id: rebobinar
       kind: heal
       cost: 30
-      value: 0.32
+      value: 0.21
     - id: escamas_obsidianas
       kind: response
       response: shield
@@ -2214,7 +2214,7 @@ evocador_aumentacion:
   resource_start: 60
   resource_max: 100
   resource_regen: 10
-  base: {hp: 115, attack: 12, armor: 0.14, initiative: 10}
+  base: {hp: 150, attack: 15, armor: 0.14, initiative: 10}
   per_level: {hp: 12, attack: 1.5}
   attack: {power: 1.0, gain: 5}
   abilities:
@@ -2227,7 +2227,7 @@ evocador_aumentacion:
     - id: presciencia
       kind: expose
       cost: 20
-      value: 0.5
+      value: 0.7
       rounds: 5
       cooldown: 4
     - id: salto_temporal
@@ -2273,7 +2273,7 @@ nigromante_plaga:
   resource_start: 0
   resource_max: 100
   resource_regen: 5
-  base: {hp: 105, attack: 14, armor: 0.05, initiative: 10}
+  base: {hp: 110, attack: 14, armor: 0.05, initiative: 10}
   per_level: {hp: 11, attack: 1.8}
   attack: {power: 1.0, gain: 15}
   abilities:
@@ -2341,7 +2341,7 @@ nigromante_legion:
     - id: levantar_esqueletos
       kind: dot
       cost: 30
-      power: 0.7
+      power: 0.6
       rounds: 3
     - id: grito_del_sepulcro
       kind: interrupt
@@ -2386,7 +2386,7 @@ nigromante_drenaje:
   resource_start: 0
   resource_max: 100
   resource_regen: 5
-  base: {hp: 100, attack: 10, armor: 0.05, initiative: 10}
+  base: {hp: 118, attack: 10, armor: 0.05, initiative: 10}
   per_level: {hp: 11, attack: 1.3}
   attack: {power: 0.95, gain: 15}
   abilities:
@@ -2498,21 +2498,21 @@ bardo_trovador:
   resource: compas
   resource_start: 0
   resource_max: 100
-  resource_regen: 10
-  base: {hp: 105, attack: 10, armor: 0.10, initiative: 12}
+  resource_regen: 6
+  base: {hp: 107, attack: 10, armor: 0.10, initiative: 12}
   per_level: {hp: 12, attack: 1.3}
   attack: {power: 0.95, gain: 10}
   abilities:
     - id: balada_curativa
       kind: hot
       cost: 30
-      value: 0.08
+      value: 0.06
       rounds: 5
       cooldown: 5
     - id: nota_curativa
       kind: heal
       cost: 30
-      value: 0.3
+      value: 0.2
     - id: nota_sostenida
       kind: response
       response: shield
@@ -2554,7 +2554,7 @@ bardo_estratega:
   resource_start: 0
   resource_max: 100
   resource_regen: 10
-  base: {hp: 110, attack: 12, armor: 0.10, initiative: 13}
+  base: {hp: 143, attack: 15, armor: 0.10, initiative: 13}
   per_level: {hp: 13, attack: 1.5}
   attack: {power: 1.0, gain: 10}
   abilities:

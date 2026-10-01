@@ -5,7 +5,7 @@
 # Etiquetas de los ataques: blockable (se bloquea entero), dodgeable (se esquiva),
 # interruptible (se corta con una interrupción si actúas antes).
 # kind: hit (golpe, por defecto) | channel (no pega esta ronda; el siguiente golpe vale buff veces más).
-# Si cambias esto, revisa: los IDs son estables; los números mueven el balance.
+# Si cambias esto, revisa: los IDs son estables; los números mueven el balance (registro en diseno/03-personaje/balance.md §7; medir con tools/sim.py).
 
 lobo_ceniciento:
   name_key: enemy.lobo_ceniciento.name
@@ -69,14 +69,14 @@ oso_de_las_cumbres:
   biomes: [montana, tundra]
   level_min: 3
   level_max: 16
-  base: {hp: 120, attack: 11, armor: 0.2, initiative: 6}
+  base: {hp: 110, attack: 11, armor: 0.2, initiative: 6}
   per_level: {hp: 18, attack: 1.6}
   xp: 60
   gold: [3, 9]
   loot: {hierba_curativa: 0.1}
   moves:
     - {id: zarpazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
-    - {id: aplastar, weight: 1, power: 2.3, tags: [blockable, interruptible]}
+    - {id: aplastar, weight: 1, power: 2.0, tags: [blockable, interruptible]}
 
 escorpion_de_arena:
   name_key: enemy.escorpion_de_arena.name

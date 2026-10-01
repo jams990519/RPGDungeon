@@ -9,6 +9,9 @@ Usage (from the repository root):
         Every valid combat bar (slot 1 = a response, slots 2-3 = two other unlocked abilities) of every spec,
         with all points in that spec, against every enemy scaled to that level. Shows the automatic bar,
         the best and the worst bar of each spec, and flags bars clearly above the rest.
+    python3 tools/sim.py --boss [--level=6] [--tier=2] [--seeds=100] [--only=...]
+        Every spec against the region Guardian (D-82) with level - 1 points in the spec, attentive play, a full belt
+        and, in every slot, the best normal piece of its type for its level up to that piece tier (2 = poco común).
     python3 tools/sim.py [enemy_id ...]
         Win rate of every spec against each enemy at its minimum level.
 
@@ -28,6 +31,8 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Que la forma de jugar (choose) siga entendiendo todos los "kind" de content/classes.yaml
     - Objetivos de D-79: victorias ≥ 95 % contra enemigos de nivel 1-3 (curadores ≥ 80 %) y ninguna barra muy por encima
+    - Objetivos del ajuste de octubre de 2026 (diseno/03-personaje/balance.md §7): con --real, ≥ 90 % (curadores ≥ 85 %)
+      contra cada enemigo de nivel 1-3; con --boss, cada especialización entre 45 % y 90 % contra el Guardián al nivel 6
 """
 
 from __future__ import annotations
@@ -39,7 +44,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from engine.classes import bar_choices, bar_slots, base_response, kit, specs_of, spend_point  # noqa: E402
-from engine.combat import CombatContext, make_combat, resolve_round, validate_choice  # noqa: E402
+from engine.combat import CombatContext, find_move, make_combat, resolve_round, validate_choice  # noqa: E402
 from engine.core import Texts, load_content  # noqa: E402
 from engine.hero import Hero, hero_stats  # noqa: E402
 from engine.hero.gear import gear_bonus, starter_gear  # noqa: E402
@@ -53,13 +58,15 @@ def ok(state, hero, cdef, choice) -> bool:
     return validate_choice(state, hero, cdef, choice, CTX) is None
 
 
-def choose(state, hero, cdef, max_hp, enemy_id, stats):
+def choose(state, hero, cdef, max_hp, enemy_id, stats, attentive=False):
     """Basic play: read the warning, heal when low, keep buffs and debuffs up, otherwise hit.
 
-    [ES] Qué hace: elige la acción de la ronda como lo haría un jugador básico. La llaman: play. Si cambia, afecta: todos los números del simulador.
+    attentive=True (boss mode) also uses the bandage when very low and the basic dodge against very big unanswered hits.
+
+    [ES] Qué hace: elige la acción de la ronda como lo haría un jugador básico (o atento, en el modo --boss). La llaman: play y boss_play. Si cambia, afecta: todos los números del simulador.
     """
     enemy, hs = state["enemy"], state["hero"]
-    move = [m for m in C.enemies[enemy_id]["moves"] if m["id"] == enemy["next_move"]][0]
+    move = find_move(C.enemies[enemy_id], enemy["next_move"])
     tags = move.get("tags", [])
     abilities = list(enumerate(cdef["abilities"]))
 
@@ -76,6 +83,8 @@ def choose(state, hero, cdef, max_hp, enemy_id, stats):
                 return use(i)
     if frac < 0.35 and hero.belt.get("pocion_vida") and ok(state, hero, cdef, {"type": "item", "item_id": "pocion_vida"}):
         return {"type": "item", "item_id": "pocion_vida"}
+    if attentive and frac < 0.3 and hero.belt.get("venda") and ok(state, hero, cdef, {"type": "item", "item_id": "venda"}):
+        return {"type": "item", "item_id": "venda"}
     first = stats["initiative"] >= enemy["initiative"]
     channel = move.get("kind") == "channel"
     big = (not channel) and move.get("power", 1) * enemy.get("buff", 1.0) > 1.5
@@ -100,6 +109,8 @@ def choose(state, hero, cdef, max_hp, enemy_id, stats):
         for _, i in sorted(prefs):
             if can(i):
                 return use(i)
+        if attentive and move.get("power", 1) * enemy.get("buff", 1.0) >= 2.0 and ok(state, hero, cdef, {"type": "dodge"}):
+            return {"type": "dodge"}
         for i, a in abilities:
             if a["kind"] == "weaken" and not enemy.get("weakened") and can(i):
                 return use(i)
@@ -155,7 +166,7 @@ def real_kit(hero):
     """The hero's combat kit as the game builds it: talents (bar + passives) and the starter gear (D-77). [ES] Qué hace: arma el kit real del héroe de prueba, con el equipo inicial. La llaman: --real y --bars. Si cambia, afecta: solo el simulador."""
     starter_gear(C.items, C.classes, C.balance, hero)
     out = kit(C.classes, C.balance, hero)
-    out["gear_bonus"] = gear_bonus(C.items, hero)
+    out["gear_bonus"] = gear_bonus(C.items, hero, C.classes, C.balance)
     out["armor_cap"] = C.balance["gear"]["armor_cap"]
     return out
 
@@ -258,13 +269,61 @@ def bars_mode(only, level, seeds):
         print(f"Barras muy por encima de su rol (+12): {', '.join(flagged) or 'ninguna'}")
 
 
+def level_gear(hero, level, max_tier):
+    """Wear, in every slot, the best non-unique piece of the hero's type for its level, up to a tier. [ES] Qué hace: viste al héroe de prueba con el mejor equipo normal de su tipo para su nivel (hasta un nivel de pieza). La llama: el modo --boss. Si cambia, afecta: solo el simulador."""
+    cfg = C.balance["gear"]
+    group = C.classes[hero.class_id].get("group", hero.class_id)
+    for slot in cfg["slots"]:
+        typ = cfg["weapons_by_group"][group][0] if slot == "arma" else "joya" if slot == "joya" else cfg["armor_by_group"][group]
+        pieces = [(it.get("tier", 1), iid) for iid, it in C.items.items() if it.get("kind") == "gear" and not it.get("source")
+                  and not it.get("retired") and it.get("slot") == slot and it.get("type") == typ
+                  and it.get("req_level", 1) <= level and it.get("tier", 1) <= max_tier]
+        if pieces:
+            hero.gear[slot] = max(pieces)[1]
+    out = kit(C.classes, C.balance, hero)
+    out["gear_bonus"] = gear_bonus(C.items, hero, C.classes, C.balance)
+    out["armor_cap"] = cfg["armor_cap"]
+    return out
+
+
+def boss_play(cdef, level, seed):
+    """One fight against the region Guardian with a full belt (3 potions, 2 bandages) and attentive play. [ES] Qué hace: juega una pelea contra el Guardián. La llama: el modo --boss. Si cambia, afecta: solo el simulador."""
+    boss = C.balance["guardian"]["enemy"]
+    edef = C.enemies[boss]
+    stats = hero_stats(cdef, level)
+    hero = Hero(id="t", name="T", class_id="x", level=level, hp=stats["max_hp"], belt={"pocion_vida": 3, "venda": 2})
+    state = make_combat(boss, edef, edef["level_min"], cdef, seed)
+    for _ in range(120):
+        if state["outcome"]:
+            break
+        resolve_round(state, hero, cdef, choose(state, hero, cdef, stats["max_hp"], boss, stats, attentive=True), CTX)
+    return state["outcome"] == "victory", state["round"]
+
+
+def boss_mode(only, level, seeds, max_tier):
+    """Win rate of every spec against the Guardian (D-82): level - 1 points in the spec, gear for the level. [ES] Qué hace: mide cada especialización contra el Guardián. La llama: main. Si cambia, afecta: solo el simulador."""
+    print(f"Guardián, héroe de nivel {level} ({level - 1} puntos), equipo de su tipo hasta nivel de pieza {max_tier} "
+          f"en las {len(C.balance['gear']['slots'])} ranuras, {seeds} peleas")
+    print(f"{'spec':30s} {'rol':9s} gana%  rondas")
+    for cid in active_specs(only):
+        cdef = level_gear(spec_hero(cid, level), level, max_tier)
+        results = [boss_play(cdef, level, s * 7919 + level) for s in range(seeds)]
+        win = 100 * sum(r[0] for r in results) / seeds
+        flag = "" if 45 <= win <= 90 else "  <- fuera de 45-90 %"
+        print(f"{cid:30s} {C.classes[cid]['role']:9s} {win:4.0f}  {sum(r[1] for r in results) / seeds:6.1f}{flag}")
+
+
 def main():
     args = sys.argv[1:]
     only = [a[7:].split(",") for a in args if a.startswith("--only=")]
     only = only[0] if only else None
     level = int(next((a[8:] for a in args if a.startswith("--level=")), 25))
     seeds = int(next((a[8:] for a in args if a.startswith("--seeds=")), 12))
-    if "--bars" in args:
+    if "--boss" in args:
+        tier = int(next((a[7:] for a in args if a.startswith("--tier=")), 2))
+        boss_mode(only, int(next((a[8:] for a in args if a.startswith("--level=")), 6)),
+                  int(next((a[8:] for a in args if a.startswith("--seeds=")), 100)), tier)
+    elif "--bars" in args:
         bars_mode(only, level, seeds)
     elif "--summary" in args:
         summary(only, "--real" in args)
