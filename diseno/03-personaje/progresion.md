@@ -52,7 +52,7 @@ Cuenta con toda la energía cada día (40 ⚡), ganando las peleas y en zonas de
 | Recolectar en tu territorio (sin peleas) | 14 × nivel de la zona | ~2,9 años: es seguro, rinde menos |
 | Cazar (en camino, D-106) | una pelea cada 2 ⚡ | ~1,8 años; en partida de caza, un poco más rápido |
 
-**Que no aburra:** además del nivel, cada camino tendrá su propia escalera de oficio, con rangos de 1 a 100: los oficios encadenados de D-109 (leñador, minero, herbolario y desollador para recolectar; refinado; carpintería, herrería, alquimia, sastrería, peletería y joyería para fabricar; ver [Profesiones](../07-economia/profesiones.md) §0). Están en la cola de trabajo, antes de las misiones. Y hacen falta enemigos de nivel alto: hoy casi todos llegan hasta el nivel 16 (el bandido errante llega al 99); para que pelear y cazar sigan teniendo variedad, hay que sumar bestiario por niveles.
+**Que no aburra:** además del nivel, cada camino tendrá su propia escalera de oficio, con rangos de 1 a 100: los oficios encadenados de D-109 (leñador, minero, herbolario y desollador para recolectar; refinado; carpintería, herrería, alquimia, sastrería, peletería y joyería para fabricar; ver [Profesiones](../07-economia/profesiones.md) §0). Están en la cola de trabajo, antes de las misiones. Y pelear y cazar tienen variedad hasta el nivel 100: cada bioma con peligro tiene al menos 2 enemigos propios en cada nivel, en 7 franjas que se pisan (ver [Bestiario](../06-contenido/bestiario.md), «En el juego»), sin cambiar el ritmo de esta tabla: cazar sigue en ~1,8 años (registro de [Balance](balance.md) §7).
 
 ## 2. Talentos: 1 punto por nivel (en el juego)
 

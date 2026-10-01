@@ -178,6 +178,504 @@ enemy:
     moves:
       garrazo: {name: "Garrazo", warn: "El oso gruñe y se balancea."}
       abrazo: {name: "Abrazo", warn: "El oso abre los brazos para ATRAPARTE en un abrazo. (No se puede bloquear del todo)"}
+  cabra_montes:
+    name: "Cabra montés"
+    moves:
+      topetazo: {name: "Topetazo", warn: "La cabra baja los cuernos y raspa la roca con la pezuña."}
+      salto_de_roca: {name: "Salto de roca", warn: "La cabra trepa a una roca sobre ti… va a SALTARTE encima. (Se puede esquivar; no se puede bloquear del todo)"}
+      balido: {name: "Balido", warn: "La cabra lanza un BALIDO que retumba en toda la montaña. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  zorro_polar:
+    name: "Zorro polar"
+    moves:
+      dentellada_rapida: {name: "Dentellada rápida", warn: "El zorro blanco se escurre entre la nieve, buscando tu tobillo."}
+      brinco_helado: {name: "Brinco helado", warn: "El zorro se hunde en la nieve… va a SALTAR desde abajo. (Se puede esquivar; no se puede bloquear del todo)"}
+      aullido_corto: {name: "Aullido corto", warn: "El zorro levanta el hocico y AÚLLA para llamar a su pareja. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  kobold_minero:
+    name: "Kóbold minero"
+    moves:
+      golpe_de_pico: {name: "Golpe de pico", warn: "El kóbold levanta su pico viejo y mellado."}
+      pedrada: {name: "Pedrada", warn: "El kóbold recoge una PIEDRA grande y apunta a tu cabeza. (Se puede bloquear; no se puede esquivar)"}
+      mecha_encendida: {name: "Mecha encendida", warn: "El kóbold enciende una MECHA con su vela y se ríe por lo bajo. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  chacal_del_desierto:
+    name: "Chacal del desierto"
+    moves:
+      mordisco_seco: {name: "Mordisco seco", warn: "El chacal da vueltas a tu alrededor, con la lengua afuera."}
+      acometida: {name: "Acometida", warn: "El chacal se agacha detrás de una duna… va a LANZARSE sobre ti. (Se puede esquivar; no se puede bloquear del todo)"}
+      llamada_de_la_jauria: {name: "Llamada de la jauría", warn: "El chacal levanta la cabeza para LLAMAR a la jauría. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  escarabajo_de_duna:
+    name: "Escarabajo de duna"
+    moves:
+      pinzada: {name: "Pinzada", warn: "El escarabajo abre las mandíbulas y avanza sobre la arena."}
+      bola_de_arena: {name: "Bola de arena", warn: "El escarabajo empuja una BOLA de arena dura hacia ti. (Se puede bloquear; no se puede esquivar)"}
+  murcielago_de_cripta:
+    name: "Murciélago de cripta"
+    moves:
+      mordisco_de_murcielago: {name: "Mordisco", warn: "Un murciélago chilla y baja desde el techo roto."}
+      nube_de_alas: {name: "Nube de alas", warn: "Toda la cripta se llena de ALAS que van hacia tu cara. (Se puede bloquear; no se puede esquivar)"}
+  buho_nival:
+    name: "Búho nival"
+    moves:
+      garra_silenciosa: {name: "Garra silenciosa", warn: "El búho planea sin ruido sobre tu cabeza."}
+      picado_nocturno: {name: "Picado", warn: "El búho sube muy alto… va a caer en PICADO sobre ti. (Se puede esquivar; no se puede bloquear del todo)"}
+  lobo_gris:
+    name: "Lobo gris"
+    moves:
+      colmillazo: {name: "Colmillazo", warn: "El lobo gris gruñe y muestra los colmillos."}
+      rodeo: {name: "Rodeo", warn: "La manada se abre en abanico: el lobo gris va a SALTAR por tu espalda. (Se puede esquivar; no se puede bloquear del todo)"}
+      llamada_de_la_manada: {name: "Llamada de la manada", warn: "El lobo gris levanta la cabeza para AULLAR a la manada. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  jabali_colmillo_hierro:
+    name: "Jabalí colmillo de hierro"
+    moves:
+      colmillo_de_hierro: {name: "Colmillo de hierro", warn: "El jabalí sacude la cabeza: sus colmillos suenan como metal."}
+      carga_de_hierro: {name: "Carga", warn: "El jabalí escarba la tierra y resopla… va a CARGAR en línea recta. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  espantapajaros_animado:
+    name: "Espantapájaros animado"
+    moves:
+      hoz_de_paja: {name: "Hoz oxidada", warn: "El espantapájaros levanta una hoz oxidada."}
+      cosecha: {name: "Cosecha", warn: "El espantapájaros gira la hoz sobre su cabeza… va a SEGAR. (Se puede bloquear; no se puede esquivar)"}
+      bandada_de_cuervos: {name: "Bandada de cuervos", warn: "El espantapájaros abre los brazos y los CUERVOS se juntan a su alrededor. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  enredadera_estranguladora:
+    name: "Enredadera estranguladora"
+    moves:
+      latigo_de_espinas: {name: "Látigo de espinas", warn: "La enredadera agita sus ramas llenas de espinas."}
+      estrangular: {name: "Estrangular", warn: "Las raíces se enroscan en tu pierna… van a APRETAR. (Se puede esquivar; no se puede bloquear del todo)"}
+  fuego_fatuo:
+    name: "Fuego fatuo"
+    moves:
+      chispa_fatua: {name: "Chispa fatua", warn: "La lucecita baila delante de tus ojos y te quema la piel. (No se puede bloquear del todo)"}
+      llamarada_fria: {name: "Llamarada fría", warn: "El fuego fatuo crece y se pone AZUL: va a estallar en llamas frías. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      parpadeo: {name: "Parpadeo", warn: "El fuego fatuo se apaga y se enciende… está JUNTANDO luz. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  lobo_de_las_nieves:
+    name: "Lobo de las nieves"
+    moves:
+      mordisco_helado: {name: "Mordisco helado", warn: "El lobo blanco avanza agachado sobre la nieve."}
+      salto_en_la_ventisca: {name: "Salto en la ventisca", warn: "El lobo desaparece en la ventisca… va a SALTAR desde donde no miras. (Se puede esquivar; no se puede bloquear del todo)"}
+      aullido_de_escarcha: {name: "Aullido de escarcha", warn: "El lobo levanta el hocico al viento helado para AULLAR. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  ogro_del_puente:
+    name: "Ogro del puente"
+    moves:
+      garrotazo: {name: "Garrotazo", warn: "El ogro balancea su garrote, que es un tronco entero."}
+      cobrar_peaje: {name: "Cobrar peaje", warn: "El ogro levanta el garrote con las dos manos: viene a COBRAR el peaje. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  langosta_de_plaga:
+    name: "Langosta de plaga"
+    moves:
+      nube_mordiente: {name: "Nube mordiente", warn: "Una nube de langostas zumba a tu alrededor."}
+      plaga: {name: "Plaga", warn: "El cielo se oscurece: la nube entera va a CAER sobre ti. (Se puede bloquear; no se puede esquivar)"}
+  chispa_errante:
+    name: "Chispa errante"
+    moves:
+      descarga: {name: "Descarga", warn: "La chispa crepita y salta hacia ti. (No se puede bloquear del todo)"}
+      rayo_en_cadena: {name: "Rayo en cadena", warn: "El aire huele a tormenta: la chispa va a soltar un RAYO. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      carga_estatica: {name: "Carga estática", warn: "La chispa crece y zumba: está CARGANDO la tormenta. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  lobo_bicefalo:
+    name: "Lobo bicéfalo"
+    moves:
+      doble_mordisco: {name: "Doble mordisco", warn: "Las dos cabezas del lobo gruñen a la vez."}
+      salto_doble: {name: "Salto doble", warn: "Las dos cabezas se agachan juntas… el lobo va a SALTAR. (Se puede esquivar; no se puede bloquear del todo)"}
+      aullido_doble: {name: "Aullido doble", warn: "Las dos cabezas AÚLLAN a dos voces. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  ciclope_de_cantera:
+    name: "Cíclope de cantera"
+    moves:
+      punetazo: {name: "Puñetazo", warn: "El cíclope cierra un puño grande como una roca."}
+      roca_lanzada: {name: "Roca lanzada", warn: "El cíclope arranca una ROCA de la cantera y la levanta sobre su cabeza. (Se puede esquivar; no se puede bloquear del todo)"}
+  arana_nodriza:
+    name: "Araña nodriza"
+    moves:
+      picadura_nodriza: {name: "Picadura", warn: "La araña nodriza baja de su tela, enorme y peluda."}
+      puesta: {name: "Puesta", warn: "El abdomen de la araña late: va a soltar sus CRÍAS sobre ti. (Se puede esquivar; no se puede bloquear del todo)"}
+  hada_de_espinas:
+    name: "Hada de espinas"
+    moves:
+      espina_voladora: {name: "Espina voladora", warn: "El hada ríe y te lanza una espina desde el aire. (No se puede bloquear del todo)"}
+      circulo_de_hongos: {name: "Círculo de hongos", warn: "El hada dibuja un CÍRCULO de hongos a tus pies. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      polvo_de_hada: {name: "Polvo de hada", warn: "El hada sacude las alas y junta un POLVO brillante. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  sanguijuela_gigante:
+    name: "Sanguijuela gigante"
+    moves:
+      chupar: {name: "Chupar", warn: "La sanguijuela se arrastra hacia ti, abriendo su boca redonda."}
+      abrazo_viscoso: {name: "Abrazo viscoso", warn: "La sanguijuela se enrosca… va a PEGARSE a tu cuerpo. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  enjambre_de_mosquitos:
+    name: "Enjambre de mosquitos"
+    moves:
+      picaduras: {name: "Picaduras", warn: "Un zumbido agudo te rodea."}
+      nube_de_fiebre: {name: "Nube de fiebre", warn: "El enjambre se espesa y se lanza a tu CARA. (Se puede bloquear; no se puede esquivar)"}
+  elemental_de_piedra:
+    name: "Elemental de piedra"
+    moves:
+      puno_de_piedra: {name: "Puño de piedra", warn: "El elemental cruje y levanta un brazo de roca."}
+      derrumbe: {name: "Derrumbe", warn: "El elemental golpea el suelo: va a caer un DERRUMBE. (Se puede bloquear; no se puede esquivar)"}
+  uro_lanudo:
+    name: "Uro lanudo"
+    moves:
+      cornada: {name: "Cornada", warn: "El uro sacude su lana cubierta de escarcha."}
+      estampida: {name: "Estampida", warn: "El uro escarba la nieve… va a ARRASAR contigo. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  gloton_de_las_nieves:
+    name: "Glotón de las nieves"
+    moves:
+      zarpa_voraz: {name: "Zarpa voraz", warn: "El glotón gruñe, con el hocico lleno de nieve."}
+      frenesi: {name: "Frenesí", warn: "El glotón se encrespa entero… va a SALTARTE encima, furioso. (Se puede esquivar; no se puede bloquear del todo)"}
+      grunido: {name: "Gruñido", warn: "El glotón se planta y GRUÑE, juntando rabia. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  buitre_de_hueso:
+    name: "Buitre de hueso"
+    moves:
+      picotazo_de_hueso: {name: "Picotazo", warn: "El buitre baja en círculos sobre ti."}
+      caida_en_picado: {name: "Caída en picado", warn: "El buitre sube hasta tapar el sol… va a CAER en picado. (Se puede esquivar; no se puede bloquear del todo)"}
+  hiena_rayada:
+    name: "Hiena rayada"
+    moves:
+      mordisco_de_hiena: {name: "Mordisco", warn: "La hiena ríe entre dientes y te rodea."}
+      tiron: {name: "Tirón", warn: "La hiena se agacha… va a MORDERTE y tirar con todo. (Se puede esquivar; no se puede bloquear del todo)"}
+      carcajada: {name: "Carcajada", warn: "La hiena suelta una CARCAJADA que eriza la piel. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  momia_de_arena:
+    name: "Momia de arena"
+    moves:
+      golpe_vendado: {name: "Golpe vendado", warn: "La momia arrastra los pies y levanta un brazo vendado."}
+      abrazo_de_la_tumba: {name: "Abrazo de la tumba", warn: "La momia abre los brazos… va a ATRAPARTE. (Se puede bloquear; no se puede esquivar)"}
+      polvo_de_tumba: {name: "Polvo de tumba", warn: "La momia sopla un POLVO gris de siglos a su alrededor. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  gargola_de_ruinas:
+    name: "Gárgola de ruinas"
+    moves:
+      garra_de_piedra: {name: "Garra de piedra", warn: "La gárgola despliega sus alas de piedra."}
+      caida_de_la_cornisa: {name: "Caída de la cornisa", warn: "La gárgola trepa a una columna… va a DEJARSE CAER sobre ti. (Se puede esquivar; no se puede bloquear del todo)"}
+  saqueador_de_tumbas:
+    name: "Saqueador de tumbas"
+    moves:
+      cuchillada: {name: "Cuchillada", warn: "El saqueador saca un cuchillo curvo."}
+      bomba_de_polvora: {name: "Bomba de pólvora", warn: "El saqueador enciende una BOMBA y te la arroja. (Se puede esquivar; no se puede bloquear del todo)"}
+      trampa: {name: "Trampa", warn: "El saqueador se agacha a ARMAR una trampa entre las piedras. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  leon_de_la_estepa:
+    name: "León de la estepa"
+    moves:
+      zarpazo_de_leon: {name: "Zarpazo", warn: "El león avanza despacio entre la hierba alta."}
+      salto_de_caza: {name: "Salto de caza", warn: "El león se aplasta contra el suelo… va a SALTARTE al cuello. (Se puede esquivar; no se puede bloquear del todo)"}
+      rugido_de_leon: {name: "Rugido", warn: "El león abre las fauces para RUGIR. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  centauro_salvaje:
+    name: "Centauro salvaje"
+    moves:
+      lanzazo: {name: "Lanzazo", warn: "El centauro gira a tu alrededor con la lanza baja."}
+      galope: {name: "Galope", warn: "El centauro toma distancia… va a CARGAR al galope. (Se puede bloquear; no se puede esquivar)"}
+      tensar_el_arco: {name: "Tensar el arco", warn: "El centauro se detiene y TENSA el arco, apuntándote. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  trol_de_colina:
+    name: "Trol de las colinas"
+    moves:
+      manotazo: {name: "Manotazo", warn: "El trol arrastra los nudillos por el suelo."}
+      aplastamiento: {name: "Aplastamiento", warn: "El trol levanta las dos manos juntas… va a APLASTARTE. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  pantera_sombria:
+    name: "Pantera sombría"
+    moves:
+      zarpa_sombria: {name: "Zarpa", warn: "Algo negro se mueve entre los troncos."}
+      emboscada: {name: "Emboscada", warn: "La pantera desaparece entre las sombras… va a SALTAR desde arriba. (Se puede esquivar; no se puede bloquear del todo)"}
+      acecho: {name: "Acecho", warn: "La pantera se queda quieta y te MIRA, preparando el salto. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  micelio_andante:
+    name: "Micelio andante"
+    moves:
+      golpe_de_moho: {name: "Golpe de moho", warn: "El micelio se arrastra y deja moho a su paso."}
+      nube_de_esporas: {name: "Nube de esporas", warn: "El micelio se hincha… va a soltar una NUBE de esporas. (Se puede esquivar; no se puede bloquear del todo)"}
+  basilisco_de_pantano:
+    name: "Basilisco de pantano"
+    moves:
+      mordida_de_basilisco: {name: "Mordida", warn: "El basilisco sisea y se arrastra por el lodo."}
+      mirada_petrea: {name: "Mirada pétrea", warn: "Los ojos del basilisco se encienden: no le sostengas la MIRADA. (Se puede esquivar; no se puede bloquear del todo)"}
+  necrofago:
+    name: "Necrófago"
+    moves:
+      zarpa_sucia: {name: "Zarpa sucia", warn: "El necrófago olfatea el aire y se acerca a cuatro patas."}
+      remate: {name: "Remate", warn: "El necrófago se agazapa junto a ti… va a buscar tu HERIDA. (Se puede bloquear; no se puede esquivar)"}
+      festin: {name: "Festín", warn: "El necrófago se arrastra hacia un cadáver para COMER. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  grifo_de_montana:
+    name: "Grifo de montaña"
+    moves:
+      garra_de_grifo: {name: "Garra", warn: "El grifo abre las alas y chilla."}
+      picado_de_grifo: {name: "Picado", warn: "El grifo sube en espiral… va a caer en PICADO y levantarte. (Se puede esquivar; no se puede bloquear del todo)"}
+      grito_del_nido: {name: "Grito del nido", warn: "El grifo se posa sobre su nido y GRITA. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  oso_polar:
+    name: "Oso polar"
+    moves:
+      zarpazo_polar: {name: "Zarpazo", warn: "El oso blanco se levanta en dos patas sobre el hielo."}
+      golpe_sobre_el_hielo: {name: "Golpe sobre el hielo", warn: "El oso alza los brazos… va a APLASTARTE contra el hielo. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  ventisquero:
+    name: "Ventisquero"
+    moves:
+      azote_helado: {name: "Azote helado", warn: "El ventisquero gira y te azota con nieve. (No se puede bloquear del todo)"}
+      nova_de_hielo: {name: "Nova de hielo", warn: "El ventisquero se encoge y BRILLA: va a estallar en hielo. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      remolino_helado: {name: "Remolino", warn: "El ventisquero GIRA cada vez más rápido. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  tigre_de_duna:
+    name: "Tigre de duna"
+    moves:
+      zarpazo_de_tigre: {name: "Zarpazo", warn: "Un lomo rayado asoma entre la arena."}
+      salto_bajo_la_arena: {name: "Salto bajo la arena", warn: "La arena se mueve sin viento… el tigre va a SALIR de abajo. (Se puede esquivar; no se puede bloquear del todo)"}
+      rugido_del_desierto: {name: "Rugido", warn: "El tigre RUGE y la arena tiembla. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  escorpion_de_vidrio:
+    name: "Escorpión de vidrio"
+    moves:
+      pinza_de_vidrio: {name: "Pinza de vidrio", warn: "El escorpión brilla al sol y abre las pinzas."}
+      aguijon_de_vidrio: {name: "Aguijón de vidrio", warn: "La cola transparente se curva… viene el AGUIJÓN. (Se puede esquivar; no se puede bloquear del todo)"}
+  planidera:
+    name: "Plañidera"
+    moves:
+      toque_de_luto: {name: "Toque de luto", warn: "La plañidera flota hacia ti, cubierta por un velo. (No se puede bloquear del todo)"}
+      lamento_eterno: {name: "Lamento eterno", warn: "La plañidera levanta el velo para LLORAR: su lamento hiela la sangre. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      sollozo: {name: "Sollozo", warn: "La plañidera SOLLOZA y el aire se enfría. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  bisonte_de_trueno:
+    name: "Bisonte de trueno"
+    moves:
+      cabezazo: {name: "Cabezazo", warn: "El bisonte resopla y baja la testuz."}
+      estampida_de_trueno: {name: "Estampida", warn: "El suelo retumba como un trueno: el bisonte va a ARROLLARTE. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  asaltante_de_caravanas:
+    name: "Asaltante de caravanas"
+    moves:
+      sablazo: {name: "Sablazo", warn: "El asaltante sonríe y hace girar el sable."}
+      golpe_de_escudo: {name: "Golpe de escudo", warn: "El asaltante se cubre y embiste con el ESCUDO. (Se puede bloquear; no se puede esquivar)"}
+      silbido: {name: "Silbido", warn: "El asaltante SILBA: algo se mueve detrás de las rocas. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  wyvern_de_penasco:
+    name: "Wyvern de peñasco"
+    moves:
+      mordida_de_wyvern: {name: "Mordida", warn: "El wyvern se cuelga de un peñasco y te mira."}
+      cola_venenosa: {name: "Cola venenosa", warn: "El wyvern arquea la cola sobre la cabeza… viene el AGUIJÓN. (Se puede esquivar; no se puede bloquear del todo)"}
+  licantropo_salvaje:
+    name: "Licántropo salvaje"
+    moves:
+      desgarro: {name: "Desgarro", warn: "El licántropo jadea y muestra las garras."}
+      salto_lunar: {name: "Salto lunar", warn: "El licántropo se encoge, con los ojos amarillos… va a SALTAR. (Se puede esquivar; no se puede bloquear del todo)"}
+      aullido_a_la_luna: {name: "Aullido a la luna", warn: "El licántropo levanta el hocico hacia la luna para AULLAR. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  driade_marchita:
+    name: "Dríade marchita"
+    moves:
+      latigo_de_raiz: {name: "Látigo de raíz", warn: "La dríade estira un brazo de corteza seca. (No se puede bloquear del todo)"}
+      raices_del_sueno: {name: "Raíces del sueño", warn: "La dríade canta y las RAÍCES salen del suelo a tus pies. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      polen: {name: "Polen", warn: "La dríade sacude su pelo de hojas: un POLEN dorado llena el aire. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  gigante_del_fango:
+    name: "Gigante del fango"
+    moves:
+      puno_de_fango: {name: "Puño de fango", warn: "El gigante se levanta del pantano chorreando barro."}
+      hundir: {name: "Hundir", warn: "El gigante levanta un pie enorme… va a HUNDIRTE en el fango. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+  cultista_de_la_podredumbre:
+    name: "Cultista de la podredumbre"
+    moves:
+      rayo_podrido: {name: "Rayo podrido", warn: "El cultista te señala con un dedo podrido. (No se puede bloquear del todo)"}
+      ofrenda: {name: "Ofrenda", warn: "El cultista alza los brazos para ofrecer tu SANGRE a la podredumbre. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      rezo: {name: "Rezo", warn: "El cultista REZA en una lengua que no entiendes. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  gigante_de_escarcha:
+    name: "Gigante de escarcha"
+    moves:
+      hachazo_helado: {name: "Hachazo helado", warn: "El gigante levanta un hacha de hielo."}
+      meteoro_de_hielo: {name: "Meteoro de hielo", warn: "El gigante arranca un bloque de hielo… va a ARROJARLO sobre ti. (Se puede esquivar; no se puede bloquear del todo)"}
+  remolino_de_arena:
+    name: "Remolino de arena"
+    moves:
+      arena_cortante: {name: "Arena cortante", warn: "El remolino silba y te llena de arena."}
+      tormenta_de_arena: {name: "Tormenta de arena", warn: "El remolino crece hasta tapar el cielo: va a ENVOLVERTE. (Se puede bloquear; no se puede esquivar)"}
+  wyrm_joven_de_las_dunas:
+    name: "Wyrm joven de las dunas"
+    moves:
+      mordida_de_wyrm: {name: "Mordida", warn: "El wyrm asoma la cabeza entre la arena."}
+      aliento_de_vidrio: {name: "Aliento de vidrio", warn: "El wyrm toma aire y la garganta se le pone al rojo: va a soplar ARENA ardiente. (Se puede esquivar, o interrumpir si eres más rápido; no se bloquea del todo)"}
+  caballero_hueco:
+    name: "Caballero hueco"
+    moves:
+      espadazo_hueco: {name: "Espadazo", warn: "El caballero hueco alza una espada mellada."}
+      golpe_retrasado: {name: "Golpe retrasado", warn: "El caballero se queda quieto con la espada en alto… va a DESCARGARLA. (Se puede bloquear; no se puede esquivar)"}
+      guardia: {name: "Guardia", warn: "El caballero levanta el escudo y ESTUDIA tu guardia. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  manticora:
+    name: "Mantícora"
+    moves:
+      zarpazo_de_manticora: {name: "Zarpazo", warn: "La mantícora agita su melena y su cola de púas."}
+      lluvia_de_puas: {name: "Lluvia de púas", warn: "La mantícora sacude la cola: van a volar las PÚAS. (Se puede esquivar; no se puede bloquear del todo)"}
+      golpe_de_cola: {name: "Golpe de cola", warn: "La mantícora gira y la cola de púas viene de lado… va a GOLPEARTE. (Se puede bloquear; no se puede esquivar)"}
+  gigante_de_tormenta:
+    name: "Gigante de tormenta"
+    moves:
+      mazazo: {name: "Mazazo", warn: "El gigante levanta un mazo que chisporrotea."}
+      trueno: {name: "Trueno", warn: "El gigante golpea el suelo con el mazo: va a estallar un TRUENO. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      rayo_del_cielo: {name: "Rayo del cielo", warn: "El gigante señala al cielo: un RAYO va a caer donde estás. (Se puede esquivar; no se puede bloquear del todo)"}
+  golem_de_granito:
+    name: "Gólem de granito"
+    moves:
+      puno_de_granito: {name: "Puño de granito", warn: "El gólem avanza con pasos que hacen temblar el suelo."}
+      aplastar_granito: {name: "Aplastar", warn: "El gólem junta los puños sobre su cabeza… va a DESCARGARLOS. (Se puede bloquear; no se puede esquivar)"}
+      runa_brillante: {name: "Runa brillante", warn: "La runa del pecho del gólem se enciende: está JUNTANDO fuerza. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  arbol_hueco:
+    name: "Árbol hueco"
+    moves:
+      ramazo_hueco: {name: "Ramazo", warn: "El árbol hueco cruje y mueve una rama gruesa."}
+      tronco_que_cae: {name: "Tronco que cae", warn: "El árbol se arranca del suelo con un crujido: va a APLASTARTE con todo el tronco. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      enjambre_del_tronco: {name: "Enjambre del tronco", warn: "Del hueco del tronco sale un ENJAMBRE furioso. (Se puede esquivar; no se puede bloquear del todo)"}
+  osolechuza:
+    name: "Osolechuza"
+    moves:
+      picotazo_de_osolechuza: {name: "Picotazo", warn: "La osolechuza ulula y abre su pico enorme."}
+      abrazo_emplumado: {name: "Abrazo", warn: "La osolechuza abre los brazos emplumados… va a ESTRUJARTE. (Se puede bloquear; no se puede esquivar)"}
+      ulular: {name: "Ulular", warn: "La osolechuza ULULA y eriza todas sus plumas. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  hidra_del_pantano:
+    name: "Hidra del pantano"
+    moves:
+      mordida_de_hidra: {name: "Mordida", warn: "Tres cabezas salen del agua y te miran."}
+      tres_mordiscos: {name: "Tres mordiscos", warn: "Las tres cabezas se echan atrás a la vez… van a MORDER juntas. (Se puede esquivar; no se puede bloquear del todo)"}
+      cabeza_escondida: {name: "Cabeza escondida", warn: "Una cabeza que no habías visto sale del agua a tu lado… va a MORDER. (Se puede bloquear; no se puede esquivar)"}
+  draco_de_escarcha:
+    name: "Draco de escarcha"
+    moves:
+      zarpa_helada: {name: "Zarpa helada", warn: "El draco bate las alas y el aire se congela."}
+      aliento_de_escarcha: {name: "Aliento de escarcha", warn: "El draco toma aire y le brilla la garganta: va a soplar ESCARCHA. (Se puede esquivar, o interrumpir si eres más rápido; no se bloquea del todo)"}
+      coletazo_de_draco: {name: "Coletazo", warn: "El draco gira en el aire… va a barrerte con la COLA. (Se puede bloquear; no se puede esquivar)"}
+  novia_de_escarcha:
+    name: "Novia de escarcha"
+    moves:
+      caricia_helada: {name: "Caricia helada", warn: "Una mujer de hielo flota hacia ti, con el velo al viento. (No se puede bloquear del todo)"}
+      beso_de_hielo: {name: "Beso de hielo", warn: "La novia se inclina hacia ti… su BESO congela. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      canto_de_cuna: {name: "Canto de cuna", warn: "La novia CANTA bajito y te pesan los ojos. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  centinela_de_vidrio:
+    name: "Centinela de vidrio"
+    moves:
+      filo_de_vidrio: {name: "Filo de vidrio", warn: "El centinela brilla y levanta un brazo afilado."}
+      descarga_de_vidrio: {name: "Descarga", warn: "El vidrio del centinela se llena de luz: va a soltar un RAYO. (Se puede esquivar; no se puede bloquear del todo)"}
+      luz_del_sol: {name: "Luz del sol", warn: "El centinela ZUMBA y junta la luz del sol. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  soldado_fantasma:
+    name: "Soldado fantasma"
+    moves:
+      tajo_fantasma: {name: "Tajo fantasma", warn: "Un soldado transparente repite una batalla que ya perdió. (No se puede bloquear del todo)"}
+      carga_fantasma: {name: "Carga", warn: "El fantasma grita una orden vieja… va a CARGAR contra ti. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      toque_de_corneta: {name: "Toque de corneta", warn: "Se oye una CORNETA lejana: el fantasma se prepara. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  automata_de_ruinas:
+    name: "Autómata de ruinas"
+    moves:
+      golpe_mecanico: {name: "Golpe mecánico", warn: "Los engranajes del autómata chirrían."}
+      martillo_de_vapor: {name: "Martillo de vapor", warn: "El autómata suelta VAPOR y levanta su brazo-martillo. (Se puede bloquear; no se puede esquivar)"}
+      alarma: {name: "Alarma", warn: "Una luz roja gira en la cabeza del autómata: da la ALARMA. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  behemot_de_la_estepa:
+    name: "Behemot de la estepa"
+    moves:
+      pisoton_de_behemot: {name: "Pisotón", warn: "El behemot avanza y la tierra se hunde bajo sus patas."}
+      embestida_colosal: {name: "Embestida colosal", warn: "El behemot baja los cuernos y toma carrera: va a ARROLLARTE. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      bramido: {name: "Bramido", warn: "El behemot lanza un BRAMIDO que se oye a leguas. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  jinete_espectral:
+    name: "Jinete espectral"
+    moves:
+      guadana_espectral: {name: "Guadaña", warn: "Un jinete sin rostro cabalga a tu alrededor. (No se puede bloquear del todo)"}
+      carga_nocturna: {name: "Carga nocturna", warn: "El caballo fantasma se encabrita… el jinete va a CARGAR. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      cuerno_de_caza: {name: "Cuerno de caza", warn: "El jinete hace sonar un CUERNO helado. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  roc_de_las_alturas:
+    name: "Roc de las alturas"
+    moves:
+      garra_de_roc: {name: "Garra", warn: "Una sombra enorme pasa sobre ti."}
+      picado_del_roc: {name: "Picado", warn: "El roc pliega las alas… va a caer en PICADO. (Se puede esquivar; no se puede bloquear del todo)"}
+      vendaval: {name: "Vendaval", warn: "El roc bate las alas y levanta un VENDAVAL. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  sierpe_esmeralda:
+    name: "Sierpe esmeralda"
+    moves:
+      mordida_esmeralda: {name: "Mordida", warn: "Una sierpe de escamas verdes se desliza entre las raíces."}
+      aliento_toxico: {name: "Aliento tóxico", warn: "La sierpe hincha el cuello: va a escupir VENENO. (Se puede esquivar; no se puede bloquear del todo)"}
+      coletazo_esmeralda: {name: "Coletazo", warn: "La sierpe gira entre las raíces… va a barrerte con la COLA. (Se puede bloquear; no se puede esquivar)"}
+  caballero_de_la_corte_marchita:
+    name: "Caballero de la corte marchita"
+    moves:
+      estocada_feerica: {name: "Estocada", warn: "Un caballero de armadura de espinas te saluda con la espada."}
+      duelo: {name: "Duelo", warn: "El caballero te señala con la espada: te desafía a DUELO. (Se puede bloquear; no se puede esquivar)"}
+      corona_de_espinas: {name: "Corona de espinas", warn: "La armadura del caballero se cubre de ESPINAS. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  abominacion_del_cieno:
+    name: "Abominación del cieno"
+    moves:
+      golpe_podrido: {name: "Golpe podrido", warn: "Una masa de barro y huesos se arrastra hacia ti."}
+      devorar: {name: "Devorar", warn: "La abominación abre una boca enorme… va a TRAGARTE. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      vomito_de_cieno: {name: "Vómito de cieno", warn: "La abominación se infla… va a escupir CIENO. (Se puede esquivar; no se puede bloquear del todo)"}
+  salamandra_de_lava:
+    name: "Salamandra de lava"
+    moves:
+      mordida_ardiente: {name: "Mordida ardiente", warn: "Una salamandra al rojo vivo deja huellas de fuego."}
+      escupitajo_de_lava: {name: "Escupitajo de lava", warn: "La salamandra abre la boca: va a escupir LAVA. (Se puede esquivar; no se puede bloquear del todo)"}
+      zarpazo_de_brasa: {name: "Zarpazo de brasa", warn: "La salamandra se para en dos patas… va a GOLPEAR con las garras encendidas. (Se puede bloquear; no se puede esquivar)"}
+  mamut_de_guerra:
+    name: "Mamut de guerra"
+    moves:
+      colmillazo_de_mamut: {name: "Colmillazo", warn: "El mamut sacude la trompa y los colmillos."}
+      embestida_de_mamut: {name: "Embestida", warn: "El mamut levanta la trompa y BRAMA: va a embestir. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      pisoton_de_mamut: {name: "Pisotón", warn: "El mamut se alza sobre las patas traseras… va a PISAR. (Se puede esquivar; no se puede bloquear del todo)"}
+  espectro_glacial:
+    name: "Espectro glacial"
+    moves:
+      toque_glacial: {name: "Toque glacial", warn: "Una figura de hielo se forma en la ventisca. (No se puede bloquear del todo)"}
+      tumba_de_hielo: {name: "Tumba de hielo", warn: "El espectro alza las manos: el hielo va a CERRARSE sobre ti. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      viento_helado: {name: "Viento helado", warn: "El espectro sopla y el VIENTO se vuelve cuchillas. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  gusano_de_las_arenas:
+    name: "Gusano de las arenas"
+    moves:
+      mordida_del_gusano: {name: "Mordida", warn: "La arena tiembla bajo tus pies."}
+      tragar: {name: "Tragar", warn: "El suelo se abre: el gusano va a SALIR con la boca abierta. (Se puede esquivar; no se puede bloquear del todo)"}
+      hundirse: {name: "Hundirse", warn: "El gusano se HUNDE en la arena y desaparece. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  centinela_runico:
+    name: "Centinela rúnico"
+    moves:
+      golpe_runico: {name: "Golpe rúnico", warn: "Las runas del centinela brillan al moverse."}
+      rayo_runico: {name: "Rayo rúnico", warn: "El centinela junta un RAYO entre sus runas. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      runa_de_poder: {name: "Runa de poder", warn: "Una runa se enciende en el pecho del centinela: está JUNTANDO poder. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  quimera:
+    name: "Quimera"
+    moves:
+      zarpazo_de_quimera: {name: "Zarpazo", warn: "La quimera ruge con sus tres cabezas: león, cabra y serpiente."}
+      llamarada: {name: "Llamarada", warn: "La cabeza de cabra abre la boca: va a escupir FUEGO. (Se puede esquivar; no se puede bloquear del todo)"}
+      mordida_de_serpiente: {name: "Mordida de serpiente", warn: "La cola de serpiente se levanta… va a MORDER. (Se puede bloquear; no se puede esquivar)"}
+      rugido_triple: {name: "Rugido triple", warn: "Las tres cabezas RUGEN a la vez. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  titan_de_las_llanuras:
+    name: "Titán de las llanuras"
+    moves:
+      golpe_de_titan: {name: "Golpe de titán", warn: "El titán da un paso y tapa el sol."}
+      terremoto: {name: "Terremoto", warn: "El titán levanta los dos puños: va a partir el SUELO. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      roca_del_cielo: {name: "Roca del cielo", warn: "El titán arranca media colina… va a ARROJARLA. (Se puede esquivar; no se puede bloquear del todo)"}
+  gigante_de_las_nubes:
+    name: "Gigante de las nubes"
+    moves:
+      palmada: {name: "Palmada", warn: "El gigante baja de entre las nubes."}
+      soplido: {name: "Soplido", warn: "El gigante infla los cachetes: va a SOPLAR un huracán. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      granizo: {name: "Granizo", warn: "El gigante sacude su manto: va a caer GRANIZO. (Se puede esquivar; no se puede bloquear del todo)"}
+  licantropo_alfa:
+    name: "Licántropo alfa"
+    moves:
+      desgarro_alfa: {name: "Desgarro", warn: "El alfa camina erguido, más alto que un hombre."}
+      salto_del_alfa: {name: "Salto del alfa", warn: "El alfa se encoge, con los músculos tensos… va a SALTAR. (Se puede esquivar; no se puede bloquear del todo)"}
+      mordida_maldita: {name: "Mordida maldita", warn: "El alfa abre las fauces babeando… va a MORDER. (Se puede bloquear; no se puede esquivar)"}
+      llamada_del_alfa: {name: "Llamada del alfa", warn: "El alfa AÚLLA y toda la manada le responde. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  polilla_lunar:
+    name: "Polilla lunar"
+    moves:
+      aleteo: {name: "Aleteo", warn: "Una polilla enorme, pálida como la luna, revolotea."}
+      polvo_lunar: {name: "Polvo lunar", warn: "La polilla sacude las alas: un POLVO plateado cae sobre ti. (Se puede bloquear; no se puede esquivar)"}
+      vuelo_rasante: {name: "Vuelo rasante", warn: "La polilla baja de golpe en vuelo RASANTE. (Se puede esquivar; no se puede bloquear del todo)"}
+  leviatan_del_cieno:
+    name: "Leviatán del cieno"
+    moves:
+      coletazo_del_leviatan: {name: "Coletazo", warn: "El agua negra se agita: algo enorme nada debajo."}
+      arrastre_al_fondo: {name: "Arrastre al fondo", warn: "El leviatán abre la boca bajo tus pies: va a ARRASTRARTE al fondo. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      ola_de_cieno: {name: "Ola de cieno", warn: "El leviatán se sumerge… va a levantar una OLA. (Se puede esquivar; no se puede bloquear del todo)"}
+  fenix_de_ceniza:
+    name: "Fénix de ceniza"
+    moves:
+      ala_ardiente: {name: "Ala ardiente", warn: "Un ave de fuego cruza el cielo dejando ceniza. (No se puede bloquear del todo)"}
+      lluvia_de_fuego: {name: "Lluvia de fuego", warn: "El fénix se eleva y abre las alas: va a llover FUEGO. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      renacer: {name: "Renacer", warn: "El fénix arde más fuerte, renaciendo de sus CENIZAS. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  wyrm_de_hielo:
+    name: "Wyrm de hielo"
+    moves:
+      mordida_de_hielo: {name: "Mordida de hielo", warn: "Un wyrm blanco sale de una grieta del glaciar."}
+      aliento_glacial: {name: "Aliento glacial", warn: "El wyrm toma aire y el frío te muerde la cara: va a soplar HIELO. (Se puede esquivar, o interrumpir si eres más rápido; no se bloquea del todo)"}
+      coletazo_de_hielo: {name: "Coletazo", warn: "El wyrm gira sobre sí mismo… va a barrerte con la COLA. (Se puede bloquear; no se puede esquivar)"}
+  escorpion_emperador:
+    name: "Escorpión emperador"
+    moves:
+      tenaza_imperial: {name: "Tenaza", warn: "Un escorpión negro del tamaño de un carro abre las pinzas."}
+      aguijon_imperial: {name: "Aguijón imperial", warn: "La cola se curva sobre la coraza… viene el AGUIJÓN. (Se puede esquivar; no se puede bloquear del todo)"}
+      cerrar_la_coraza: {name: "Cerrar la coraza", warn: "El escorpión se cierra en su coraza y JUNTA fuerza. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  liche_errante:
+    name: "Liche errante"
+    moves:
+      rayo_necrotico: {name: "Rayo necrótico", warn: "Un esqueleto con corona levanta un bastón negro. (No se puede bloquear del todo)"}
+      palabra_de_muerte: {name: "Palabra de muerte", warn: "El liche pronuncia una PALABRA prohibida. (Muy fuerte. Se puede interrumpir si eres más rápido; no se esquiva ni se bloquea del todo)"}
+      filacteria: {name: "Filacteria", warn: "El liche aprieta su filacteria y JUNTA almas. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  engendro_del_umbral:
+    name: "Engendro del umbral"
+    moves:
+      tentaculo: {name: "Tentáculo", warn: "Algo sin forma sale de una grieta del suelo."}
+      grito_del_umbral: {name: "Grito del umbral", warn: "El engendro abre bocas por todo el cuerpo: va a GRITAR. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      zarpa_del_vacio: {name: "Zarpa del vacío", warn: "El engendro estira un brazo que antes no estaba… va a GOLPEAR. (Se puede esquivar; no se puede bloquear del todo)"}
 
 biome:
   claro: "Claro"
