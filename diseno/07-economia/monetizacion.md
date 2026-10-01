@@ -24,6 +24,8 @@
 4. **Las Gemas jamás se apuestan**, y lo que se gana apostando nunca se convierte en dinero real (ver [Apuestas](../08-social/apuestas.md)).
 5. **Nada de criptomonedas, tokens ni promesas de "ganar dinero".**
 
+> En el juego hoy: la moneda que se compra se llama 💎 Diamantes (antes "Gemas"). Solo da aceleradores y cosméticos: ⭐ experiencia +50 % por 7 días (100 💎) y 🚩 un estandarte único (150 💎). Todavía no se venden (D-80, D-85, P-72).
+
 ## 2. Qué se puede comprar con Gemas
 
 | Producto | Qué es | Límites |

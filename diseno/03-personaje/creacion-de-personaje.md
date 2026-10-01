@@ -4,6 +4,8 @@
 
 Se crea en **el Claro** (Lejanía 0), en este orden: linaje → trasfondo → apariencia → castillo donde vivir (nivel 5; al principio hay uno solo, ver [Facciones](../02-mundo/facciones.md)) → clase (nivel 10).
 
+> En el juego hoy: al crear el héroe se elige solo la clase, con un paso de confirmación, y es para siempre. La especialización se gana con puntos de talento (1 por nivel) y se puede cambiar. Linaje, trasfondo, apariencia y castillo todavía no existen (D-68, D-74).
+
 ---
 
 ## 1. Linajes: 12 razas que cambian el cuerpo, no el daño

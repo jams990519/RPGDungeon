@@ -37,7 +37,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-13 | ¿Cuántos botones en combate? | ✅ **Decidido (D-46):** 6: Atacar, 3 habilidades, Huir y Mochila |
 | P-67 | ¿Donde no se puede huir (Guardianes, arena), el botón Huir se vuelve Esquivar? | Sí |
 | P-68 | ¿La técnica del arma (idea de Albion) ocupa una de las 3 casillas de habilidad, o se elimina? | Que pueda ocupar una de las 3 casillas, a elección del jugador |
-| P-71 | ¿El equipo de la 0.6 (3 ranuras: arma, armadura y joya; 4 tipos de armadura como en WoW; requisito de nivel y de tipo; botín "para ti" el 70 % de las veces) queda así, o se suma ya la libertad de ponerse otra armadura con castigo de peso? | Que quede así en la capa simple; las 10 ranuras, la carga y la durabilidad llegan con la fabricación (D-44, D-77) |
+| P-71 | ¿El equipo de la 0.6 (3 ranuras: arma, armadura y joya; 4 tipos de armadura como en WoW; requisito de nivel y de tipo; botín "para ti" el 70 % de las veces) queda así, o se suma ya la libertad de ponerse otra armadura con castigo de peso? | Que quede así en la capa simple; las 10 ranuras, la carga y la durabilidad llegan con la fabricación (D-44, D-77). **En el juego hoy:** 7 ranuras, y solo el nivel impide ponerse una pieza (D-83) |
 | P-14 | ¿Armadura libre con penalización de peso? | Sí |
 | P-15 | ¿Cualquier linaje con cualquier clase? | Sí |
 | P-16 | ¿Nivel ligado al piso (Techo del Piso)? | ✅ **Sin efecto (D-58):** ya no hay pisos. La idea sigue como Techo de la Frontera (propuesta, ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)) |

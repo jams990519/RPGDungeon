@@ -4,6 +4,8 @@
 
 **Reglas fijas:** no se escribe código hasta que el dueño lo diga (D-04). No se toca Railway (D-03). No se toca TowerWars (D-01). El juego se monta en @LostRealmsbot (D-02).
 
+> En el juego hoy: el código ya está autorizado (D-59, reemplaza a D-04) y Lost Realms corre en @LostRealmsbot, en el servicio RPGDungeon, que se despliega solo con cada parche probado (D-60, D-63). Ya hay 15 clases con 45 especializaciones de 8 habilidades y doble especialización (D-79, D-88), mapa infinito con energía y viajes por distancia (D-78), exploración por porcentaje y 6 recursos (D-87), campamentos que crecen hasta castillo (D-81, D-87) y el Guardián Raigambre (D-82). Las fases de abajo son el plan anterior al código.
+
 ---
 
 ## 0. El alcance es enorme: cómo no ahogarse
