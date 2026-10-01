@@ -40,7 +40,7 @@ class Hero:
         exploration: how well the hero knows each zone, "x:y" -> 0-100 % (D-87).
         cards: profession ID cards, shown to other players (D-85; earned with professions, still to come).
         xp_boost_until: end of the gem experience accelerator; banner: unique banner bought with gems.
-        downed: fell in combat; health comes back much slower until full (D-83).
+        downed: fell in combat; health comes back much slower until full, a potion or the inn (D-83).
         gear_new: gear pieces not looked at yet (shown with 🆕 in the equipment screen).
         hp: current health (max is derived).
         x, y: zone coordinates on the infinite map; (0, 0) is the Claro.

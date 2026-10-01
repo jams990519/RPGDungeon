@@ -38,7 +38,7 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 ### 1.2 Lo que ofrece el Claro
 
 - **🏪 Mercader:** vende pociones de vida y vendas, y compra materiales a la mitad de su precio (`shop`).
-- **🛏️ Posada:** pagas, duermes 5 minutos y despiertas con la vida llena. También cura al héroe malherido (D-83).
+- **🛏️ Posada:** pagas, duermes 5 minutos y despiertas con la vida llena. También cura al héroe malherido (D-83). Con la vida ya llena no cobra: te avisa que no hace falta.
 - **💰 Costura de bolsas:** 4 de fibra, 1 pieza de metal y 1 🪙 por bolsa (D-80).
 - **Venta de equipo** que no te sirve.
 - **Territorio seguro:** en las zonas del Claro no te atacan: ni al llegar, ni al explorar, ni al recolectar.
@@ -61,7 +61,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | Costo | 20 de madera y 10 de piedra | `camps.found_cost` |
 | Un solo campamento | No pertenecer a otro | — |
 
-- Al fundar, **escribes el nombre** del campamento: de 3 a 24 caracteres, **único en el mundo**. El fundador lo puede cambiar cuando quiera (D-84).
+- Al fundar, **escribes el nombre** del campamento: de 3 a 24 caracteres, **único en el mundo**. El fundador lo puede cambiar cuando quiera (D-84). Si en vez de escribirlo tocas otro botón, la pregunta se cancela: un texto escrito más tarde ya no funda nada.
 - Al fundarlo, el campamento ocupa 1 zona y su fundador es su primer miembro.
 
 ### 2.2 Miembros

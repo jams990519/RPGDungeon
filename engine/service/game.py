@@ -28,10 +28,14 @@ Reglas que nunca se rompen:
     3. Ningún texto visible se escribe aquí: todo sale de content/locales (Texts).
     4. El servicio no sabe qué cliente lo llama: el id de cuenta lo arma el adaptador.
     5. El Pionero de un Guardián se escribe una sola vez y nunca se pisa; el aviso al servidor sale una sola vez.
+    6. Nada se cobra a cambio de nada: un remedio con la vida llena, la posada sin heridas o recolectar con la
+       mochila llena o la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
 Si cambias esto, revisa:
-    - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista)
+    - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
+      adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
-    - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79)
+    - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
+      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2)
 """
 
 from __future__ import annotations
@@ -79,6 +83,9 @@ from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
+# Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
+COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
+            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -171,6 +178,8 @@ class GameService:
         if hero is None:
             return self._create_action(account_id, action_id)
         notices = self._settle(hero)
+        if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
+            self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
             view = self._answer_visitor(hero, action_id)
             self._save(hero)
@@ -245,6 +254,17 @@ class GameService:
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
                 Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero"))]
+
+    def commands(self) -> dict[str, str]:
+        """Typed shortcuts (/stats, /inv, /doble...) -> action id; some screens only link to them.
+
+        [ES]
+        Qué hace: da los atajos escritos que nombran los textos (/stats, /inv, /habilidades, /doble...) y a qué
+        botón equivalen. La 🔀 Doble especialización solo se abre con /doble, así que todo cliente debe ofrecerlos.
+        La llaman: los adaptadores (Telegram y la consola).
+        Si cambia, afecta: qué escribe el jugador en cada cliente y los textos que nombran los atajos (es.yaml).
+        """
+        return dict(COMMANDS)
 
     def tick(self) -> list[tuple[str, View]]:
         """Finish every timer that is due; return (account_id, view) notifications.
@@ -820,9 +840,7 @@ class GameService:
         if action_id == "claro" and not in_claro:
             return self._camp_here_view(hero)
         if action_id == "claro":
-            return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
-                        actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
-                                 Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))])
+            return self._claro_view(hero)
         if action_id in ("camp", "donate"):
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
@@ -900,6 +918,8 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
+        if kind == "gather" and self._gather_blocked(hero, zone):
+            return self._explore_menu(hero, notice=t.t(self._gather_blocked(hero, zone)))
         if hero.energy < 1:
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         minutes = self.content.balance[kind]["minutes"]
@@ -932,6 +952,8 @@ class GameService:
         n = hero.energy if amount == "max" else (int(amount) if amount.isdigit() else 0)
         n = min(n, hero.energy)
         zone = self._zone(hero.x, hero.y)
+        if kind == "gather" and self._gather_blocked(hero, zone):
+            return self._explore_menu(hero, notice=t.t(self._gather_blocked(hero, zone)))   # no energy spent for nothing
         if n < 1 or not self._spend_energy(hero, kind):
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
@@ -940,6 +962,15 @@ class GameService:
         seconds = self._seconds(self.content.balance[kind]["minutes"])
         hero.activity = {"kind": kind, "until": self.clock.now() + seconds, "left": n - 1, "total": n, "done": 0, "got": {}, "log": []}
         return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=n, time=self._fmt_duration(seconds * n)))
+
+    def _gather_blocked(self, hero: Hero, zone: Zone) -> str | None:
+        """Text key of why gathering here would give nothing (full backpack or depleted zone), else None."""
+        if self._bag_used(hero) >= self._bag_cap():
+            return "batch.reason.bag_full"
+        stock = self._stock(zone.x, zone.y)
+        if all(level < self.content.balance["stock"]["min_yield"] for level in stock.values()):
+            return "batch.reason.depleted"
+        return None
 
     def _stop_batch(self, hero: Hero) -> View:
         """Cancel the batch: the step in progress gives its energy back (D-87)."""
@@ -1050,11 +1081,15 @@ class GameService:
         if source.get(item_id, 0) <= 0:
             return self._potions_view(hero, notice=t.t("combat.err.item"))
         stats = hero_stats(self._kit(hero), hero.level)
+        if hero.hp >= stats["max_hp"]:
+            return self._potions_view(hero, notice=t.t("bag.full_hp"))      # never waste a remedy for 0 health
         healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item["heal"]))
         source[item_id] -= 1
         if source[item_id] <= 0:
             del source[item_id]
         hero.hp += healed
+        if item.get("kind") == "potion":
+            hero.downed = False             # D-83: drinking a potion ends the slow recovery
         return self._potions_view(hero, notice=self._join([t.t("bag.used", item=t.t(item["name_key"]), amount=healed)] + self._tutorial(hero, "heal")))
 
     # ------------------------------------------------------------------ views
@@ -1163,6 +1198,14 @@ class GameService:
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
         return self.texts.t("gather.found", items=self._item_list(found))
 
+    def _claro_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The Claro's camp screen: the common work, the trader and the inn."""
+        t = self.texts
+        return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
+                    actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
+                             Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))],
+                    notice=notice)
+
     def _settlement(self) -> dict[str, Any]:
         data = self.store.get("settlement", "claro")
         return data or {"stage": 0, "progress": {}, "merit": {}}
@@ -1218,7 +1261,7 @@ class GameService:
         xp = units * cfg["xp_per_unit"]
         hero.merit += units
         data["merit"][hero.name] = data["merit"].get(hero.name, 0) + units
-        lines = [t.t("camp.donated", items=self._item_list(given), xp=xp, merit=units)]
+        lines = [t.t("camp.donated", items=self._item_list(given), xp=int(xp * self._xp_mult(hero)), merit=units)]   # the xp really given
         lines += self._give_xp(hero, xp)
         if all(data["progress"].get(i, 0) >= n for i, n in stage["needs"].items()):
             data["stage"] += 1
@@ -1270,7 +1313,7 @@ class GameService:
             return []
         hero.tutorial += 1
         hero.gold += cfg["reward_gold"]
-        lines = [self.texts.t("tutorial.reward", gold=self._money(cfg["reward_gold"]), xp=cfg["reward_xp"])]
+        lines = [self.texts.t("tutorial.reward", gold=self._money(cfg["reward_gold"]), xp=int(cfg["reward_xp"] * self._xp_mult(hero)))]
         return lines + self._give_xp(hero, cfg["reward_xp"])
 
     def _tutorial_hint(self, hero: Hero) -> list[str]:
@@ -1338,6 +1381,8 @@ class GameService:
         t = self.texts
         inn = self.content.balance["inn"]
         price = self._inn_price()
+        if hero.hp >= hero_stats(self._kit(hero), hero.level)["max_hp"]:
+            return self._claro_view(hero, notice=t.t("inn.full_hp"))       # do not charge for a useless night
         if hero.gold < price:
             return self._zone_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
@@ -1566,7 +1611,7 @@ class GameService:
             body.append(t.t("camps.grow_option", x=cx, y=cy, items=icons))
             actions.append(Action(id=f"claim:{cx}:{cy}", label=t.t("camps.grow_option", x=cx, y=cy, items=icons)))
         if pages > 1:
-            actions.append(Action(id=f"grow:{page + 1}", label=t.t("gear.more")))
+            actions.append(Action(id=f"grow:{page + 1}", label=t.t("camps.grow_more")))
         actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body, actions=actions)
 
@@ -1920,7 +1965,7 @@ class GameService:
             t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
             t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100)),
             self._coins_line(hero),
-            t.t("hero.inv_link", n=sum(hero.backpack.values()) + sum(hero.belt.values())),
+            t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap()),     # same count as "space in the backpack" (D-87)
             "",
             t.t("hero.status_title", status=self._status_text(hero)),
         ]
@@ -2598,7 +2643,8 @@ class GameService:
         elif action_id.startswith("use:"):
             choice = {"type": "item", "item_id": action_id[4:]}
         if choice is None:
-            return self._combat_view(hero, state)
+            busy = None if action_id in ("back", "home", "refresh") else t.t("combat.busy")   # menu buttons do nothing mid-fight: say why
+            return self._combat_view(hero, state, notice=busy)
         reason = validate_choice(state, hero, cdef, choice, self.ctx)
         if reason:
             return self._combat_view(hero, state, notice=reason)

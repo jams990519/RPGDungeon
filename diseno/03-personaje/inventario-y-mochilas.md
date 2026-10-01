@@ -18,7 +18,7 @@
 
 ---
 
-> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78).
+> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78). La ficha del héroe cuenta igual que el resto del juego ("🎒 Mochila: 4/60", sin el cinturón). Recolectar con la mochila llena o en una zona agotada no empieza ni gasta energía; beber una poción o una venda con la vida llena tampoco se permite, para no gastarla en nada.
 
 ## 1. Casillas y peso: dos números, una regla cada uno
 
