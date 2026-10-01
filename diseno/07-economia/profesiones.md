@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5); el resto, propuesta
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -57,6 +57,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 | Exploración (D-112) | 🧭 Explorador | 5 por cada vuelta de 🔎 exploración y 6 más al dejar una zona al 100 %; 15 por cada 🕵️ infiltración. Con el rango ve más en el mapa ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) |
 | Refinado | 🪚 Aserradero · 🔥 Fundición · 💧 Destilación · 🧶 Tejeduría · 🪣 Curtiduría | 6 por cada vez que refinas en una estación |
 | Fabricación | 🪑 Carpintería · 🔨 Herrería · ⚗️ Alquimia · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería | 12 por cada pieza de equipo (6 por las vendas y la poción de vida, 8 por la poción mayor) |
+| Artes arcanas (fase 2 de D-115) | ✨ Encantamiento | 6 por cada pieza que desencantas (1 ⚡) y 12 por cada encantamiento (2 ⚡). Sin estación: desde 🛡️ Equipo → una pieza → ✨ Encantamiento, o con /encantar (§0.5) |
 
 **Rangos.** Experiencia de oficio total para el rango R = 9 × (R − 1)². Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209. Quien dedica toda su energía a un oficio de refinado o fabricación junta unos 240 por día: rango 25 en ~3 semanas, 50 en ~3 meses, **100 en ~1 año** (§4). Un recolector dedicado llega al 100 en 9 a 11 meses (junta más unidades por vuelta a medida que sube de nivel). Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81), Gran Maestro (96). Los exámenes del §4 son capa profunda.
 
@@ -102,7 +103,20 @@ Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las es
 
 En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea llega a tener 13).
 
-**El equipo de artesano** usa el sistema de equipo de siempre (ranuras, tipos, rarezas, nivel) y es **lo mejor de cada nivel** en arma, pecho y joya (D-113): rango 1 = como el botín poco común del nivel 3 y un bono chico (+1 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas; desde D-113); rango 25 = como el raro del nivel 5 y un bono más (+2 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas); rango 50 = como el épico del nivel 8 y algo más (+3 % de vida en las armas, +2 % de ataque en las armaduras, +2 % de defensa en las joyas); rangos 55 a 100 = 🟣 épicas con ~10 % más que el botín de su nivel (que llega como mucho a 🔵 raro) y un bono que crece (+3 a +5 % de vida en las armas, +2 a +4 % de ataque en las armaduras, +2 a +3 % de defensa en las joyas). Nunca sale en el botín al azar ni en el equipo inicial: solo de una receta. Se vende al mercader por menos que sus materiales. La armadura de artesano es solo de pecho; cabeza, manos, piernas y pies son de botín por ahora, y los escudos esperan su ranura (ver [Equipamiento](../03-personaje/equipamiento.md) §11).
+**Cabeza, manos, piernas y pies (fase 2 de D-115).** La pasada de balance dejó lo mejor de cada nivel en manos de los artesanos solo en arma, pecho y joya. Ahora las otras cuatro ranuras también tienen equipo de artesano: **una pieza por tipo de armadura y por nivel de pieza** (3, 5, 8 y del 10 al 100), con los mismos rangos que el pecho de su tipo (nivel 3 → rango 1, 5 → 25, 8 → 50, y del 10 al 100 → rangos 55 a 100). Son **208 piezas y 208 recetas** (cada receta tiene el mismo id que la pieza que sale, por ejemplo `artesano_cabeza_placas_4`):
+
+| Tipo | Oficio | Piezas (cabeza · manos · piernas · pies) | Materiales |
+|---|---|---|---|
+| Tela | 🪡 Sastrería | Tocado · Manguitos · Faldones · Zapatillas | 🧣 tela con 🟤 cuero (nivel 3) o 🧴 extracto (desde el 5), y 🌸 flor de luna desde el 8 |
+| Cuero | 🦺 Peletería | Caperuza · Brazales · Zahones · Polainas | 🟤 cuero, 🧣 tela, 🧴 extracto desde el nivel 8 y 💠 gema desde el 40 |
+| Malla | 🦺 Peletería | Almófar · Muñequeras · Perneras · Botines | 🔩 lingote, 🟤 cuero, 🧣 tela desde el nivel 8 y 💠 gema desde el 40 |
+| Placas | 🔨 Herrería | Celada · Avambrazos · Musleras · Sabatones | 🔩 lingote, 🟤 cuero, 🧣 tela desde el nivel 8 y 💠 gema desde el 40 |
+
+- **Nombres:** "de aprendiz" (nivel 3), "de oficial" (5), "del artesano" (8) y, del 10 al 100, los mismos lugares que el resto del equipo (de la frontera, del páramo … del alba eterna).
+- **Bonos:** en los niveles 3, 5 y 8, los del botín de su nivel y un bono chico; del 10 al 100, 🟣 épicas con cada bono del botín de su nivel × 1,1 (redondeado) y un bono que el botín no tiene: **+1 % de ataque** en cabeza, piernas y pies (+2 % desde el nivel 60) y **+1 de defensa** en las manos. Siempre superan al botín de su nivel.
+- **Materiales:** los del pecho de artesano de su tipo y nivel, en proporción al precio de la pieza (cada pieza chica vale ~75 % del pecho), con al menos 1 de cada uno. Por ejemplo, la celada del nivel 100 pide lingote ×15, cuero ×7, tela ×4 y gema ×2 (el peto, ×20, ×9, ×5 y ×3). Como el resto, se venden al mercader por menos que sus materiales y tienen su ✒️ obra maestra (con +1 % de ataque de más en cabeza, piernas y pies y +1 de defensa en las manos).
+
+**El equipo de artesano** usa el sistema de equipo de siempre (ranuras, tipos, rarezas, nivel) y es **lo mejor de cada nivel** en arma, pecho y joya (D-113): rango 1 = como el botín poco común del nivel 3 y un bono chico (+1 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas; desde D-113); rango 25 = como el raro del nivel 5 y un bono más (+2 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas); rango 50 = como el épico del nivel 8 y algo más (+3 % de vida en las armas, +2 % de ataque en las armaduras, +2 % de defensa en las joyas); rangos 55 a 100 = 🟣 épicas con ~10 % más que el botín de su nivel (que llega como mucho a 🔵 raro) y un bono que crece (+3 a +5 % de vida en las armas, +2 a +4 % de ataque en las armaduras, +2 a +3 % de defensa en las joyas). Nunca sale en el botín al azar ni en el equipo inicial: solo de una receta. Se vende al mercader por menos que sus materiales. Desde la fase 2 de D-115 también hay artesano de cabeza, manos, piernas y pies (arriba); los escudos esperan su ranura (ver [Equipamiento](../03-personaje/equipamiento.md) §11).
 
 **La 🍷 poción mayor** cura el 60 % de la vida, con 60 de toxicidad (una por pelea, junto con una de vida) y tiene 1 lugar en el cinturón. Solo la hace la Alquimia: el mercader no la vende.
 
@@ -140,6 +154,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | ⚗️ Alquimia | Todos | Las pociones curan un **30 %** más | Mixología |
 | 💍 Joyería | Todos | **+3 %** de vida y de ataque | Gemas de joyero |
 | 🩺 Medicina | Sanadores (rol de curación) | Tus curaciones curan un **15 %** más; las vendas, un **30 %** más | Primeros auxilios |
+| ✨ Encantamiento (fase 2 de D-115, en el juego) | Artesanos y quien mejora su equipo (no es de combate) | Desencantar da hasta **30 %** más esencias (§0.5). Lo que da en combate son los encantamientos que pone en las piezas, no el beneficio | Desencantamiento |
 
 - **En el juego desde la 0.16.** Cada oficio empezado da su beneficio según su rango; ⚒️ Oficios muestra "✨ Beneficio ahora" en cada uno. Los de ataque, vida y armadura entran en tus estadísticas; el de la Medicina, en tus curaciones (si eres sanador) y en vendas, ungüentos y botiquines; el de la Alquimia, en las pociones (en combate y fuera); el del Herbolario, en la vida que vuelve sola; el del Leñador, en el espacio de la mochila. Datos: `perk` de cada oficio en `content/professions.yaml`; cuentas en `engine/professions/rules.py` (`perks`).
 - **🩺 Medicina** es oficio de fabricación: sube haciendo 🫙 ungüentos (extracto + tela; cura 22 %, rango 1), 🧰 botiquines (extracto, tela y cuero; cura 35 %, rango 25) y 🩻 vendajes de maestro (con 🌸 flor de luna; cura 50 %, rango 50), sin toxicidad. Más adelante crece hacia el médico de §2.3 (diagnósticos, cirugías).
@@ -375,7 +390,7 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | ⚗️ Alquimia | ⚔️ Combate | Pociones +30 % | en el juego |
 | 💍 Joyería | ⚔️ Combate | +3 % de vida y de ataque | en el juego |
 | 🩺 Medicina | ⚔️ Combate | Curaciones +15 % (sanadores); vendas y ungüentos +30 % | en el juego |
-| ✨ Encantamiento | 🛠️ Oficio | Desencantar da 30 % más esencias | fase 2 |
+| ✨ Encantamiento | 🛠️ Oficio | Desencantar da hasta **30 %** más esencias (parejo con el rango: 15 % al 50) | **en el juego** (fase 2 de D-115; ver §0.5) |
 | 📜 Inscripción | 💰 Economía | Mapas y contratos valen 20 % más; una orden más en el mercado | fase 3 |
 | ⚙️ Ingeniería | 🏰 Castillo | Cada trampa o torreta del campamento da +1 de defensa | fase 3 |
 | 🍲 Cocina | 🏰 Campamento | Las raciones que cocinas rinden 30 % más en la despensa | fase 2 |
@@ -414,3 +429,29 @@ El dueño lo dijo así: "ser carpintero te permite hacer piezas más exclusivas"
 
 **De dónde sale:** *World of Warcraft* (las piezas firmadas por el artesano y los procs de fabricación de más calidad), *Albion Online* (la calidad "obra maestra" de lo fabricado) y *Ultima Online* (los objetos con el nombre de su artesano, que se buscaban por quién los hacía).
 
+
+### 0.5 El ✨ Encantamiento en el juego (fase 2 de D-115, lado del equipo)
+
+El dueño pidió (1-oct-2026) **tantos oficios como hagan falta, que dependan unos de otros y mantengan el sistema** (D-115). En la [Red de oficios](red-de-oficios.md) el Encantamiento cierra el ciclo del equipo: **el encantador desencanta lo viejo**, el gran sumidero de equipo, y con eso mejora lo nuevo. Esta es la capa simple (D-44); lo que está programado:
+
+- **Un oficio de rama propia (✨ Artes arcanas).** No tiene estación ni recetas: se hace desde 👤 Héroe → 🎒 Mochila → 🛡️ Equipo → 🔁 Equipar → una pieza → **✨ Encantamiento**, o con **/encantar** (la pantalla general: tu rango, tus esencias, qué encantamiento lleva cada ranura y qué cuesta). No suma un botón a ⚒️ Oficios: ahí aparece con su rango, cómo se sube, su beneficio y el próximo umbral. Se puede hacer en cualquier lado, mientras no estés ocupado (una actividad a la vez).
+- **💨 Desencantar** (1 ⚡, 6 de experiencia de oficio y experiencia de héroe como al refinar, D-108): destruye **una** pieza de la mochila (nunca una puesta) y da **✨ esencias arcanas**: ⚪ común 1, 🟢 poco común 2, 🔵 rara 3, 🟣 épica 4, **+1 cada 20 niveles** de la pieza (una rara del nivel 100 da 8). Las 🟣 épicas (el artesano desde el nivel 8, las ✒️ obras maestras y las piezas del Guardián) dan además **🔮 1 esencia mayor**. Una ✒️ obra maestra pide confirmación ("💨 Sí, desencantar"). Con la última copia de una pieza se van su firma y su encantamiento.
+- **El beneficio del oficio:** desencantar da **hasta 30 % más esencias** al rango 100, parejo con el rango (la parte entera siempre y una más con la probabilidad de la fracción).
+- **✨ Encantar** (2 ⚡, 12 de experiencia de oficio): le pone a una pieza (puesta o en la mochila) **un** encantamiento; la ranura decide cuál:
+
+| Encantamiento | Ranuras | Bono (según tu rango al encantar) | Desde | Material |
+|---|---|---|---|---|
+| ⚔️ Filo | arma, manos | +1 % de ataque (rangos 1-25) · +2 % (26-75) · +3 % (76-100) | rango 1 | 🔩 lingote (Fundición) |
+| ❤️ Vigor | pecho, cabeza, piernas | +1 % de vida · +2 % · +3 % (mismos rangos) | rango 1 | 🧴 extracto (Destilación) |
+| 🛡️ Guarda | pies, joya | +1 de defensa (rangos 25-50) · +2 (51-100) | rango 25 | 💠 gema en bruto (Minero) |
+
+- **Qué pide encantar:** ✨ **3 esencias y 1 más cada 10 niveles** de la pieza (nivel 50: 8; nivel 100: 13), **🔮 1 esencia mayor** si la pieza es de nivel 50 o más, y su material: **1, y 1 más cada 50 niveles** (nivel 100: 3). Si falta algo, la energía o el rango, no se gasta nada.
+- **Uno por pieza.** Encantar otra vez **reemplaza** al anterior (nunca se suman) y solo se puede cuando el número sube (por ejemplo, de +1 % a +2 % al llegar al rango 26). El valor queda guardado en la pieza: subir de rango después no lo cambia solo.
+- **Cuánto pesa:** con las 7 ranuras encantadas al rango 100, **+6 % de ataque, +9 % de vida y +4 de defensa** (la defensa sigue sin pasar el 60 %). Es chico a propósito, como los beneficios de §0.2: ayuda, pero no reemplaza al equipo.
+- **Quién necesita a quién.** El encantador necesita equipo para desencantar (botín y, para las esencias mayores, piezas 🟣 de los artesanos) y los materiales de la Fundición, la Destilación y el Minero; a cambio, mejora el equipo de todos y saca del juego el equipo viejo.
+- **Nunca fabrica monedas:** las esencias valen poco en el mercader (✨ 1 🥉, 🔮 3 🥉, y 💱 Vender todo no las vende): desencantar y vender las esencias siempre paga menos que vender la pieza, aun con el beneficio del rango 100 (`tests/test_oficios_equipo.py` lo comprueba con cada pieza).
+- **Dónde se ve:** ✨ junto al nombre de la pieza en 🛡️ Equipo y en 🔁 Equipar; en la pieza, "✨ Encantamiento: ⚔️ Filo +2% ataque"; en /encantar, lo que llevas encantado.
+- **Datos y código:** números en `content/balance.yaml` → `enchanting`; el oficio en `content/professions.yaml` (`encantamiento`, `branch: enchant`, `perk: {disenchant: 0.30}`); las esencias en `content/items.yaml` (`esencia`, `esencia_mayor`); las cuentas en `engine/professions/rules.py` (`disenchant_yield`, `disenchant_amount`, `enchant_for_slot`, `enchant_value`, `enchant_cost`); el encantamiento de cada pieza en `Hero.gear_enchants` (vacío para los héroes de antes) y su bono en `engine/hero/gear.py` (`real_stats`, `gear_bonus`); las pantallas en `engine/service/game.py` (sección "enchanting"). Pruebas: `tests/test_oficios_equipo.py`.
+- **Lo que queda para después (capa profunda):** elegir el encantamiento (más de uno por ranura), encantamientos más fuertes con esencias mayores, runas para las defensas del campamento (Construcción), las especializaciones (Armas · Armaduras · Desencantar, red-de-oficios.md §3) y vender esencias entre jugadores en el mercado. Como la firma de la obra maestra, hoy el encantamiento se guarda por héroe y por tipo de pieza (todas las copias del mismo id lo comparten): cuando exista el mercado, tiene que viajar con cada pieza.
+
+**De dónde sale:** *World of Warcraft* (el encantador desencanta lo que otros fabrican en polvos y esencias, y encanta una ranura por pieza) y *Albion Online* (el encantamiento como el gran sumidero de equipo y materiales).

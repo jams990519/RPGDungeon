@@ -801,3 +801,30 @@ Las cinco con poca vida del informe del bestiario (Mago Arcano, Druida Feral, Ba
 - **Monedas que entran:** ~30 🥉 por día en encargos al nivel 1; los premios de rango son cosas que ya existen (consumibles, materiales) y algo de monedas en la Cofradía (50, 150 y 500 🥉, una sola vez).
 
 **Lo que queda por mirar:** si el +15 % diario de los encargos acelera demasiado la subida (D-108 pide caminos parejos; si pasa, bajar `task_xp_per_energy`); si las misiones de "ganar peleas" de los orígenes y del capítulo son muy duras al nivel que piden; si Apreciado llega demasiado pronto o tarde con un encargo por facción al día; y si los premios de rango de la Cofradía (monedas) pesan más que los de las otras dos.
+
+### Octubre de 2026: ✨ Encantamiento, la pieza mejor y el artesano de cabeza, manos, piernas y pies (fase 2 de D-115, provisional)
+
+**Por qué.** El dueño pidió tantos oficios como hagan falta, conectados entre sí (D-115). La fase 2, lado del equipo, cierra el ciclo del equipo de la [Red de oficios](../07-economia/red-de-oficios.md) §4: el artesano hace todas las ranuras y el encantador desencanta lo viejo y mejora lo nuevo. La pasada de balance (D-110, D-113) había dejado cabeza, manos, piernas y pies solo con botín. Números **nuevos** (nada movido), propuestos por Claude y a ajustar en la beta.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| ✨ Esencias al desencantar (`enchanting.disenchant`) | ⚪ 1 · 🟢 2 · 🔵 3 · 🟣 4, +1 cada 20 niveles de la pieza; 🔮 1 esencia mayor de las 🟣 épicas; 1 ⚡ y 6 de experiencia de oficio | Una pieza vieja rinde más cuanto mejor era; la esencia mayor obliga a pasar por el artesano (las épicas son suyas desde el nivel 10) |
+| Beneficio del ✨ Encantamiento (`professions.yaml` → encantamiento.perk) | hasta **+30 %** de esencias al rango 100, parejo con el rango | La fila de §0.4 de [Profesiones](../07-economia/profesiones.md) |
+| Costo de encantar (`enchanting.enchant`) | ✨ 3 + 1 cada 10 niveles de la pieza; 🔮 1 desde el nivel 50; material 1 + 1 cada 50 niveles; 2 ⚡ y 12 de experiencia | Encantar lo mejor del juego gasta ~1,5 piezas raras del 100 y una épica: el sumidero crece con el nivel. Material de otros tres oficios (🔩 Fundición, 🧴 Destilación, 💠 Minero) |
+| Valor de cada encantamiento (`enchanting.enchants`) | ⚔️ Filo (arma, manos) y ❤️ Vigor (pecho, cabeza, piernas): +1 % (rangos 1-25), +2 % (26-75), +3 % (76-100). 🛡️ Guarda (pies, joya): +1 de defensa (25-50), +2 (51-100) | Uno por pieza, la ranura decide. Con las 7 ranuras al rango 100: **+6 % de ataque, +9 % de vida y +4 de defensa**, algo así como dos beneficios de oficio (la Peletería da +4 % y +3 %; la Herrería, +3 de defensa) |
+| Precio de las esencias (`items.yaml`) | ✨ 2 (el mercader paga 1 🥉), 🔮 6 (paga 3 🥉); 💱 Vender todo no las vende | Desencantar y vender nunca paga más que vender la pieza, ni con el beneficio al 100 (`tests/test_oficios_equipo.py`, pieza por pieza) |
+| Puntaje de una pieza (`gear.score`) | ataque % + vida % + 2 × defensa | El que ya usaba la comparación ⬆️/⬇️; decide el aviso "⬆️ Tienes una pieza mejor" |
+| Artesano de cabeza, manos, piernas y pies (`items.yaml`, 208 piezas) | Niveles 3, 5 y 8: el botín de su nivel y un bono chico; del 10 al 100: 🟣 épica, cada bono del botín × 1,1 (redondeado) y +1 % de ataque en cabeza, piernas y pies (+2 % desde el 60) o +1 de defensa en las manos. Precio: botín × 1,11 (5 y 8) y × 1,15 (10 a 100) | La curva del pecho de artesano (~10 % más que el botín y un bono), en chico |
+| Sus recetas (`professions.yaml`, 208) | Los materiales del pecho de su tipo y nivel × su precio / el del pecho (~75 %), al menos 1 de cada uno, y siempre más valiosos que lo que paga el mercader por la pieza (también con la obra maestra); rangos 1, 25, 50 y 55 a 100 | Fabricar nunca fabrica monedas (D-113, D-116) |
+| Obra maestra de esas ranuras (`masterwork.extra`) | cabeza, piernas y pies +1 % de ataque; manos +1 de defensa | La mitad del bono del pecho: son piezas chicas |
+
+**Cómo se midió.** `tools/balance_report.py --scenarios=b,c --levels=10,50,100 --roles` (6 peleas por enemigo) con el contenido nuevo y con el de antes (`--content`). El escenario **b** (botín de su nivel) no cambia. El **c** (artesano donde lo hay + oficios al 100) ahora pone artesano en las 7 ranuras (mediana de vida al terminar, ataque / defensa / curación / soporte; antes → ahora):
+
+| Escenario c | Nivel 10 | Nivel 50 | Nivel 100 |
+|---|---|---|---|
+| Vida al terminar | 76/75/84/76 → **77/76/85/77** | 70/81/79/74 → **72/83/80/76** | 70/82/82/73 → **72/83/83/75** |
+| Rondas | 6,2/8,5/12,7/10,4 → **6,1/8,3/12,1/10,1** | 5,8/10,5/11,0/7,6 → **5,7/10,3/10,6/7,5** | 6,1/10,8/12,3/9,7 → **6,0/10,4/11,8/9,2** |
+
+El artesano de las cuatro ranuras suma **+1 a +2 puntos** de vida al terminar y mata algo más rápido; el orden de los roles no cambia y todas ganan el 100 %. Los encantamientos no entran en el informe (son por pieza y opcionales); su tope (+6 % de ataque, +9 % de vida y +4 de defensa con todo encantado al rango 100) es del tamaño de dos beneficios de oficio. Si se los quiere medir, agregarlos al escenario c.
+
+**Lo que queda por mirar:** si los encantadores encuentran equipo para desencantar (en la beta, contar cuántas piezas se desencantan y cuántas se venden); si la demanda de 💠 gemas y 🌸 flores de luna del artesano de las cuatro ranuras nuevas deja sin material a la Joyería y la Alquimia (subir `professions.rare_chance` o bajar las recetas); y si el aviso ⬆️ con su botón hace que nadie mire 🛡️ Equipo (eso está bien: es para eso).

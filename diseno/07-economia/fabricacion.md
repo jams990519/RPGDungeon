@@ -114,7 +114,7 @@ Condición: ✨ EXCELENTE
 ## 9. Desmontar y reciclar
 
 - **Desmontar** equipo roto o viejo devuelve parte del material.
-- **Desencantar** (Encantamiento) convierte objetos mágicos en esencias.
+- **Desencantar** (Encantamiento) convierte objetos mágicos en esencias. **Ya está en el juego** (capa simple, fase 2 de D-115): cualquier pieza de equipo de la mochila se desencanta en ✨ esencias (más con la rareza y el nivel; las 🟣 épicas dan también 🔮 una esencia mayor), que sirven para encantar otras piezas. Ver [Profesiones](profesiones.md) §0.5.
 - **Reciclar** es también un sumidero: se devuelve menos de lo que costó.
 
 ## 10. Ejemplo completo: una espada larga T5
