@@ -1,6 +1,6 @@
 # Fundación y cisma: el mundo empieza de cero y los jugadores deciden si se divide
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md), [Construcción](../09-construccion/README.md), [Profesiones](../07-economia/profesiones.md) · **Alimenta a:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Supervivencia del asentamiento](supervivencia-del-asentamiento.md), [Facciones](facciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §3 en adelante es propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md), [Construcción](../09-construccion/README.md), [Profesiones](../07-economia/profesiones.md), [Gremios y vida social](../08-social/gremios-y-social.md) §0 (el castillo pide gremio, D-97) · **Alimenta a:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Supervivencia del asentamiento](supervivencia-del-asentamiento.md), [Facciones](facciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §3 en adelante es propuesta
 
 **Qué pidió el dueño.** Que no exista un castillo al empezar: que todo arranque **desde cero** y la gente **construya el mundo** (D-45). Que el Claro sea la sede común y que los jugadores **funden sus propios campamentos**, que crezcan hasta ciudades y castillos (D-71, D-81, D-87). Que el mundo se pueda **dividir** por decisión de los jugadores, con desventajas para quien queda. Y que haya gente dedicada a todo: agricultores, cazadores, expertos en cada cosa.
 
@@ -68,8 +68,9 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 ### 2.2 Miembros
 
 - Otro jugador que llega al campamento toca **🙋 Pedir unirme**. El fundador recibe un aviso y decide con **✅ Aceptar** o **❌ Rechazar** (D-84).
-- **Cupo:** caben 2 miembros al nivel 1 y 2 más por cada nivel (`camps.members_base`, `camps.members_per_level`). En castillo (nivel 9) caben 18.
-- Cada jugador pertenece a **un solo campamento**. Un miembro puede salir con **🚪 Salir del campamento**. El fundador no puede salir.
+- **Cupo sin gremio:** caben 2 miembros al nivel 1 y 2 más por cada nivel (`camps.members_base`, `camps.members_per_level`).
+- **Cupo con gremio** (D-97, provisional): el fundador puede crear el **gremio** del campamento, y desde ese momento el cupo lo da el nivel del gremio: 4 al nivel 1, 6, 8, 12, 16, 20, 25 y 30 al nivel 8 (`guild.levels`). El gremio sube con lo que hacen sus miembros juntos (exploraciones, peleas ganadas y recursos recolectados). Nadie sale si el cupo baja. Los miembros del gremio son los del campamento. Detalle: [Gremios y vida social](../08-social/gremios-y-social.md) §0.
+- Cada jugador pertenece a **un solo campamento**. Un miembro puede salir con **🚪 Salir del campamento** (dentro de 🛡️ Gremio). El fundador no puede salir.
 - Para cada miembro, el viaje cuenta la distancia desde el campamento (D-78).
 
 ### 2.3 Visitantes
@@ -83,14 +84,15 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 - Cualquier miembro toca **⬆️ Agrandar campamento** y paga de su mochila **15 de madera, 10 de piedra y 5 de fibra, por el nivel actual** (`camps.grow_cost_per_level`, D-81).
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
+- **El castillo pide gremio** (D-97, provisional): para pasar del nivel 8 al 9 hace falta un gremio de nivel 5 o más con 10 miembros o más (`guild.castle_min_level`, `guild.castle_min_members`). Sin gremio, el campamento se queda en ciudad. La pantalla de agrandar lo muestra con ✅ y ▫️.
 
-| Nivel | Nombre | Zonas | Cupo de miembros | Costo de llegar desde el nivel anterior |
+| Nivel | Nombre | Zonas | Cupo sin gremio | Costo de llegar desde el nivel anterior |
 |---|---|---|---|---|
 | 1 | Campamento | 1 | 2 | Fundar: 20 de madera y 10 de piedra |
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
 | 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra y 30 de fibra |
-| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra y 40 de fibra |
+| 9 | Castillo | 9 | — (pide gremio: el cupo es el del gremio) | 120 de madera, 80 de piedra y 40 de fibra, y un gremio de nivel 5 con 10 miembros |
 
 Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra y 180 de fibra**. Los nombres por nivel están en `camps.stages`.
 
@@ -102,7 +104,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4), y para ser castillo hace falta un **gremio** listo (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0). El gremio todavía no tiene rangos, banco ni salón. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 

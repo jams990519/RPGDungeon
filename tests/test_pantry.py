@@ -127,7 +127,7 @@ def test_camp_cannot_grow_with_an_empty_pantry(service):
     camp = service.store.get("camp", "6:0")
     assert camp["level"] == 3
     assert any("Despensa" in line for line in view.body)
-    assert [a.id for a in view.actions] == ["grow", "campfeed", "rename", "home"]   # 4 buttons at most
+    assert [a.id for a in view.actions] == ["grow", "campfeed", "guild", "home"]    # 4 buttons at most (rename: in 🛡️ Gremio, D-97)
     assert rations(service, "6:0") == 7                             # a new pantry starts with 7 days
     set_rations(service, "6:0", 0)
     view = service.act("test:1", "grow")

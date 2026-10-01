@@ -1,6 +1,6 @@
 # Tunable numbers. Every change here goes to the balance log with its reason.
 # [ES] Números de balance ajustables. Cada cambio se anota en el registro de balance con su motivo.
-# Lo usan: engine/combat, engine/world, engine/service.
+# Lo usan: engine/combat, engine/world, engine/service, engine/social (guild, D-97).
 
 combat:
   stamina_max: 5          # [ES] Aguante máximo (fichas)
@@ -208,3 +208,17 @@ guardian:                    # [ES] D-82: el primer Guardián de región (capa s
   cooldown_hours: 24         # [ES] después de vencerlo, cada héroe espera esto para volver a desafiarlo (horas reales)
   repeat_gear_chance: 0.5    # [ES] victorias repetidas: probabilidad de una pieza de botín normal (en peleas comunes: gear.drop_chance)
   memento_source: guardian   # [ES] el Recuerdo se cambia por una pieza con este "source" en items.yaml
+
+guild:                       # [ES] D-97 (provisional): el gremio de un campamento de jugadores (capa simple). Sus miembros son los del campamento. Números orientativos: se ajustan en la beta
+  found_coins: 50            # [ES] crear el gremio cuesta 50 🥉 al fundador del campamento (sumidero chico)
+  castle_min_level: 5        # [ES] para que el campamento pase a castillo (nivel 8 → 9) su gremio tiene que ser de nivel 5 o más...
+  castle_min_members: 10     # [ES] ...y tener 10 miembros o más. Sin gremio, un campamento no llega a castillo
+  levels:                    # [ES] cupo de miembros de cada nivel y lo que tienen que hacer entre todos, después de entrar, para subir al siguiente (~×1,6 por nivel). Lo que sobra pasa al nivel siguiente
+    - {capacity: 4, needs: {explorations: 40, victories: 20, gathered: 100}}     # [ES] nivel 1 → 2
+    - {capacity: 6, needs: {explorations: 65, victories: 32, gathered: 160}}     # [ES] nivel 2 → 3
+    - {capacity: 8, needs: {explorations: 100, victories: 50, gathered: 260}}    # [ES] nivel 3 → 4
+    - {capacity: 12, needs: {explorations: 165, victories: 80, gathered: 410}}   # [ES] nivel 4 → 5 (el mínimo para castillo)
+    - {capacity: 16, needs: {explorations: 260, victories: 130, gathered: 650}}  # [ES] nivel 5 → 6
+    - {capacity: 20, needs: {explorations: 420, victories: 210, gathered: 1050}} # [ES] nivel 6 → 7
+    - {capacity: 25, needs: {explorations: 670, victories: 335, gathered: 1680}} # [ES] nivel 7 → 8
+    - {capacity: 30, needs: {}}                                                  # [ES] nivel 8: el último por ahora. Solo se agregan niveles al final
