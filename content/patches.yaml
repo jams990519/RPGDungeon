@@ -213,8 +213,11 @@ v0_11:
     - "👥 En 📍 Zona ves a los otros jugadores activos que están ahí y qué hacen. Al explorar o recolectar a veces te cruzas con ellos."
     - "🔥 El Claro es el campamento base y ya no crece: su obra común terminó. Todo el crecimiento es para tus campamentos. El tutorial ahora te pide vender lo que te sobra al mercader."
 
-v0_11_1:
-  version: "0.11.1"
-  title: "🥇 Lost Realms 0.11.1: monedas de medalla"
+v0_12:
+  version: "0.12"
+  title: "🛡️ Lost Realms 0.12: gremios y monedas de medalla"
   notes:
-    - "🥉🥈🥇 Las monedas ahora son medallas: bronce (tercer lugar), plata (segundo lugar) y oro (primer lugar). La plata deja de verse como 🪙."
+    - "🛡️ Gremios: si fundaste un campamento, ahí puedes crear tu gremio (🏕️ Campamento → 🛡️ Gremio). Sus miembros son los del campamento."
+    - "⬆️ El gremio sube de nivel con lo que hacen juntos: exploraciones, peleas ganadas y recursos recolectados. Cada nivel deja entrar a más gente."
+    - "🏰 Para que un campamento llegue a castillo hace falta un gremio de nivel 5 con 10 miembros."
+    - "🥉🥈🥇 Las monedas ahora son medallas: bronce, plata y oro. La plata deja de verse como 🪙."
