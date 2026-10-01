@@ -25,10 +25,12 @@ def test_level_grows_with_distance():
 
 
 def test_travel_takes_time(content):
-    origin, dest = zone_at(5, 0, 0), zone_at(5, 0, 1)
-    known = travel_minutes(origin, dest, content.biomes, content.balance, True)
-    unknown = travel_minutes(origin, dest, content.biomes, content.balance, False)
-    assert known >= 1 and unknown > known
+    claro = [(0, 0, 0)]
+    minutes = [travel_minutes(0, d, claro, content.balance) for d in range(0, 9)]
+    assert minutes == [2, 2, 2, 3, 3, 4, 4, 5, 5]          # D-78: 2, 2, 3, 3, 4, 4...
+    assert travel_minutes(0, 500, claro, content.balance) == content.balance["travel"]["max_minutes"]
+    camp = claro + [(20, 0, 0)]
+    assert travel_minutes(21, 0, camp, content.balance) == 2   # the count restarts at your camp
 
 
 def test_biome_variety(content):
