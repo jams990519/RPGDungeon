@@ -97,7 +97,7 @@ El minijuego de fabricación (ver [Fabricación](fabricacion.md)) con acciones p
 ### 2.8 Legado
 
 - **Obras maestras con nombre** en el registro público.
-- **Tu firma** en las vigas del castillo ("*Talló estas vigas Ansel el Paciente, piso 1, año 1*"), visible para cualquiera que lo recorra.
+- **Tu firma** en las vigas del castillo ("*Talló estas vigas Ansel el Paciente, el Claro, año 1*"), visible para cualquiera que lo recorra.
 - **Aprendices** a los que enseñas tus técnicas.
 
 ### 2.9 Un mes de carpintero (ejemplo)

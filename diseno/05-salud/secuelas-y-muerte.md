@@ -20,9 +20,9 @@ Pediste que algunas enfermedades y problemas **duren mucho o sean para siempre**
 ## 1. Cicatrices
 
 Toda herida grave o crítica deja una **cicatriz**. Es definitiva, y casi siempre es solo historia.
-- Casi siempre es cosmética: se agrega sola a tu descripción ("*cicatriz de garra en el pecho, del Wyrm de las Dunas, piso 45*").
+- Casi siempre es cosmética: se agrega sola a tu descripción ("*cicatriz de garra en el pecho, del Wyrm de las Dunas, Lejanía 14*").
 - Algunas dan un rasgo pequeño: una cicatriz de quemadura da un poco de resistencia al fuego.
-- Son **trofeos**: el perfil lista tus cicatrices con el jefe y el piso donde las ganaste.
+- Son **trofeos**: el perfil lista tus cicatrices con el jefe y la región donde las ganaste.
 - Como no penalizan, no piden cadena de fallas. Las que sí penalizan están en §2.2.
 
 ## 2. Secuelas: temporales, crónicas y definitivas
@@ -57,7 +57,7 @@ Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§2
 | 🦴 **Rodilla destrozada** | Pierna rota → pelear sin entablillar → suelda mal (*Rodilla mala*, crónica) → no operarla y volver a romper la misma pierna | Iniciativa −10 %. 🌀 Esquivar y las respuestas 💨 cuestan +1 🔋 | A pie, +10 % de Vigor. Trepar y saltar grietas piden cuerda o un rodeo |
 | 〰️ **Nervio cortado** (temblor) | Nervio dañado → no hacer el tratamiento largo y seguir peleando con ese brazo → el nervio se corta | Temblor: precisión −10 % con ese brazo. Las respuestas 🤺 de desvío cuestan +1 🔋 | Cirugía, Joyería e Inscripción −15 % de calidad |
 | 🔥 **Piel marcada** (quemadura o podredumbre extensa) | Quemadura de grado 3 → sin injerto → infección. O perder la carrera de la Podredumbre Gris y no tratar las llagas | Resistencia al fuego +5 %: la cicatriz endurece. El calor del entorno te pega una etapa antes: esa piel no suda | El calor te pega una etapa antes. Tu descripción lo cuenta |
-| 😶 **Cicatriz grave en la cara** | Herida grave o crítica de corte o quemadura en la cabeza. Sale sola, como toda cicatriz (§1) | Ninguno | Solo rol: unos PNJ te temen y otros te respetan. Se suma a tu descripción con el jefe y el piso |
+| 😶 **Cicatriz grave en la cara** | Herida grave o crítica de corte o quemadura en la cabeza. Sale sola, como toda cicatriz (§1) | Ninguno | Solo rol: unos PNJ te temen y otros te respetan. Se suma a tu descripción con el jefe y la región |
 | 🌑 **Marca del Vacío** (corrupción permanente leve) | Perder una Fiebre del Vacío → Corrupción menor → no limpiarla en el templo → perder otra Fiebre del Vacío | Resistencia al Vacío +5 %. La curación sagrada te rinde un 10 % menos. Contra enemigos del Vacío, el estrés sube 1 por ronda | Voces en tu registro. Los PNJ de las ciudades de luz desconfían; algunas misiones solo se abren a los marcados (ver [Mente](mente.md)) |
 | 🍺 **Hígado castigado** | Dependencia sin tratar → beber por encima del 75 % de Toxicidad pese al aviso, varias veces → el hígado ya no se recupera | Pierdes vida desde el 60 % de Toxicidad (no desde el 75 %) y no puedes beber más al 85 %: te caben menos pociones del cinturón | La Toxicidad baja un 25 % más lento (ver [Condiciones](condiciones.md)) |
 
@@ -77,7 +77,7 @@ Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§2
 | Rodilla destrozada | **Rodillera articulada** (Ingeniería y Curtido). Desde Excelente, 🌀 Esquivar y las respuestas 💨 vuelven a su costo | *Cojo veterano* | Montura; bastón de combate | `♾️ Rodilla der. destrozada · 🦿 Rodillera Normal · Inic. −8 % · 💨 +1🔋` |
 | Nervio cortado | **Guante estabilizador** (Ingeniería y Sastrería): desde Notable, el desvío vuelve a su costo. **Calmante** (Alquimia): quita el temblor durante un combate y suma Toxicidad | *Mano quieta* | Pasar el arma a la otra mano; habilidades que no piden precisión | `♾️ Nervio cortado (brazo der.) · 〰️ Precisión −10 %` |
 | Piel marcada | **Capa fresca** (Sastrería): desde Excelente, la etapa extra de calor solo cuenta con ☀️☀️☀️ | *Piel curtida* | Evitar el sol del mediodía; pociones de frescor | `♾️ Piel marcada (torso) · ☀️ una etapa antes · 🔥 +5 %` |
-| Cicatriz grave en la cara | Máscara o velo (Sastrería), si quieres ocultarla | — | — | `♾️ Cicatriz en la cara · Coloso de Cristal, piso 23` |
+| Cicatriz grave en la cara | Máscara o velo (Sastrería), si quieres ocultarla | — | — | `♾️ Cicatriz en la cara · Coloso de Cristal, Lejanía 7` |
 | Marca del Vacío | **Amuleto bendito** (Joyería y templo): baja el estrés extra según su calidad | *Mente templada* | Un Sacerdote en el grupo; luz sagrada | `♾️ Marca del Vacío · ✨ −10 % · 🌑 +5 %` |
 | Hígado castigado | No hay prótesis. **Dieta de hígado** (Cocina): el umbral sube 5 puntos mientras dura | *Sobrio por fuerza* | Preparar bien el cinturón; pedir curas al sanador en lugar de beber | `♾️ Hígado castigado · 🧪 pierdes vida desde 60 %` |
 
@@ -162,7 +162,7 @@ Las enfermedades cuya carrera se pierde y las heridas que sueldan mal dejan male
 ### 4.2 Juramento de Hierro: muerte permanente opcional
 
 - Se elige al crear el personaje. No se puede activar después; sí abandonar: el personaje pasa a normal y pierde las recompensas del modo.
-- Si cae, **cae para siempre.** Queda en el **Salón de los Caídos** con su historia, sus cicatrices, sus secuelas, el piso donde murió y quién lo mató, y la Gaceta publica la caída.
+- Si cae, **cae para siempre.** Queda en el **Salón de los Caídos** con su historia, sus cicatrices, sus secuelas, el lugar donde murió y quién lo mató, y la Gaceta publica la caída.
 - Tiene **ranking propio**, y títulos y cosméticos que solo se ganan así.
 - Deja un **legado**: tu siguiente personaje hereda un recuerdo cosmético y una pequeña ventaja de inicio, que nunca es poder.
 - Variante opcional **Autosuficiente**, sin mercado ni comercio, como el *Self-Found* de WoW.
@@ -195,7 +195,7 @@ Una secuela definitiva **nunca** sale de un golpe ni de una tirada. Pide una **c
 ### 5.3 Cuándo se salta un peldaño
 
 - **Caer** con un miembro en estado crítico lo sube un peldaño.
-- Algunos **Guardianes** de pisos altos (tramo VII en adelante) tienen golpes avisados que dejan un miembro inutilizado: entra directo en el peldaño 2. El aviso del jefe fue la primera oportunidad (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
+- Algunos **Guardianes** de regiones lejanas (anillo VII en adelante) tienen golpes avisados que dejan un miembro inutilizado: entra directo en el peldaño 2. El aviso del jefe fue la primera oportunidad (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 - **Si la cirugía del último aviso fracasa**, el cirujano puede pasar a una amputación limpia en la misma operación.
 
 ### 5.4 Salvar, amputar limpio o perderlo solo
@@ -233,7 +233,7 @@ Una línea por secuela. El detalle se pide tocando la línea.
 ♾️ Sin pierna izq. · 🦿 Notable 74/100 · Cojo veterano · Inic. −8 % · 🏃 1🔋
 🔁 Dolor fantasma · brote leve hoy · se va en ~2 semanas
 🔁 Pulmones de minero · 🔋 máx. −1 · ⚠️ 4 pasos en gas sin máscara = pulmón dañado
-♾️ Cicatriz en la cara · Coloso de Cristal, piso 23
+♾️ Cicatriz en la cara · Coloso de Cristal, Lejanía 7
 ```
 
 Al tocar la primera línea:
@@ -252,7 +252,7 @@ Queda 55 % de la penalización → 40 % con Cojo veterano
 La secuela ocupa una línea en tu bloque, y su costo se ve en el botón que toca (los 6 botones de [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 
 ```
-⚔️ Ronda 3 · Guardián del Piso 31 — Matriarca del Fango
+⚔️ Ronda 3 · Guardián de la región — Matriarca del Fango
 
 🟥 Tú — Guerrero Protección 🛡 · Vanguardia
 ❤️ 910/1.150   💢 Ira 40   🔋 Aguante ●●●○
@@ -287,6 +287,6 @@ Turnos: MATRIARCA → Lyra → Tú → Bram
 7. **Compensar nunca lo borra del todo.** Con prótesis y adaptación queda al menos un 25 %.
 8. **Siempre hay una versión barata.** Muleta, gancho y parche del PNJ; prótesis Normal en el sanatorio.
 9. **Se lee en una línea.** En `/cuerpo` y en tu bloque del combate; el costo, en el botón.
-10. **Es tu historia.** Toda secuela definitiva se agrega a tu descripción y a tu perfil, con el jefe y el piso.
+10. **Es tu historia.** Toda secuela definitiva se agrega a tu descripción y a tu perfil, con el jefe y la región.
 
 Fuera del Juramento de Hierro, ninguna secuela arruina un personaje: lo cambia.

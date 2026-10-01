@@ -23,8 +23,8 @@ CONTRATO ──> RASTREO ──> ACECHO ──> COMBATE ──> DESPIECE ──>
  avistamiento) clima)      emboscada) capturar)   pieza)      trofeos)
 ```
 
-1. **Contrato.** Del tablón del asentamiento, de un rumor en la taberna, de un avistamiento en el chat del piso o de un encargo de otro jugador.
-2. **Rastreo.** Recorres los nodos del piso siguiendo **rastros**: huellas, sangre, restos de comida, ramas rotas, olor. Cada rastro dice algo: hacia dónde fue, hace cuánto, si está herida. El clima borra rastros (la lluvia los borra rápido) y la noche los esconde.
+1. **Contrato.** Del tablón del asentamiento, de un rumor en la taberna, de un avistamiento en el chat de la región o de un encargo de otro jugador.
+2. **Rastreo.** Recorres los nodos de la región siguiendo **rastros**: huellas, sangre, restos de comida, ramas rotas, olor. Cada rastro dice algo: hacia dónde fue, hace cuánto, si está herida. El clima borra rastros (la lluvia los borra rápido) y la noche los esconde.
 3. **Acecho.** Cuando la encuentras, eliges cómo empezar: **emboscada** (ataque sorpresa, si tu sigilo gana), **cebo** (la atraes a un nodo que tú elegiste), **trampa** (colocada antes) o **de frente**.
 4. **Combate.** Con el combate normal (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)), pero la presa **huye** si se asusta o si está herida, y hay que seguirla. Romper partes cambia qué deja.
 5. **Despiece.** Desuello y caza (ver [Profesiones](../07-economia/profesiones.md)) decide cuánto se aprovecha y con qué calidad.
@@ -37,7 +37,7 @@ CONTRATO ──> RASTREO ──> ACECHO ──> COMBATE ──> DESPIECE ──>
 | **Contrato del tablón** | Solo o grupo de 2 a 4 | Presa concreta con recompensa en oro y reputación. Rotan cada día | Oro, reputación, materiales |
 | **Presa (estilo Prey)** | Solo | Un objetivo marcado en tres dificultades: Normal, Difícil y Pesadilla. En Pesadilla la presa **también te caza a ti**: puede emboscarte mientras exploras | Materiales raros, cosméticos de cazador |
 | **Caza mayor** | Grupo de 2 a 5 | Monstruos grandes con muchas partes rompibles, estilo Monster Hunter | Materiales de partes para equipo temático |
-| **Bestia legendaria** | Grupo; a veces el servidor entero la persigue | Una por tramo y por temporada: una criatura única con nombre ("el Ciervo de Ceniza del piso 57"). Aparece, se mueve por el piso, deja rastros y desaparece si nadie la caza | Un trofeo único en el servidor y un título |
+| **Bestia legendaria** | Grupo; a veces el servidor entero la persigue | Una por anillo y por temporada: una criatura única con nombre ("el Ciervo de Ceniza de Lejanía 17"). Aparece, se mueve por la región, deja rastros y desaparece si nadie la caza | Un trofeo único en el servidor y un título |
 | **Caza nocturna** | Solo o grupo | Presas que solo salen de noche (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)); con farol o con un Elfo Sombrío en el grupo | Materiales nocturnos |
 | **Trampero** | Solo, juego pasivo | Colocas trampas en nodos y vuelves horas después a ver qué cayó. A veces cae algo que no esperabas, y a veces un jugador te roba la trampa en zona roja | Pieles y materiales básicos |
 | **Captura viva** | Solo o grupo | Debilitar sin matar, y usar red, sedante o jaula. La presa capturada sirve para **doma** (monturas, mascotas de combate) o se vende a un criador | Monturas, mascotas, cría |
@@ -79,7 +79,7 @@ El Cazador (la clase) y los linajes Licántropo (olfato, rastreo) y Elfo Sombrí
 
 ## 6. Ecología: cazar cambia el mundo
 
-- Cazar baja la población de una especie en el piso (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)). Si se sobrecaza, escasea y su material sube de precio. Si nadie la caza, crece e invade zonas seguras.
+- Cazar baja la población de una especie en la región (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)). Si se sobrecaza, escasea y su material sube de precio. Si nadie la caza, crece e invade zonas seguras.
 - Los depredadores siguen a sus presas: sobrecazar ciervos hace que los lobos bajen al asentamiento (y eso se convierte en evento).
 - **El tablón paga más por las especies que sobran** y deja de pagar por las que escasean.
 
@@ -93,13 +93,13 @@ Un camino de reputación propio con la **Orden de Cazadores**:
 | Montero | Caza mayor, cebos avanzados |
 | Batidor | Presas en dificultad Difícil, captura viva |
 | Cazador Mayor | Presas en Pesadilla, bestias legendarias |
-| Leyenda de la Torre | Título, apariencia de cazador, tu nombre en la sala de trofeos de la Orden |
+| Leyenda de la Lejanía | Título, apariencia de cazador, tu nombre en la sala de trofeos de la Orden |
 
 ## 8. Cómo se ve en Telegram
 
 ```
 🐾 Cacería — Wyrm Joven de las Dunas (Difícil)
-Piso 44 · Desierto Ardiente · 🌙 Noche · Viento del sur
+Lejanía 13 · Desierto Ardiente · 🌙 Noche · Viento del sur
 
 Rastro: surcos profundos en la arena, todavía tibios.
 Fue hacia el Oasis Seco hace menos de una hora.

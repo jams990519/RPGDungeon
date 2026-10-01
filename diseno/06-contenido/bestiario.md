@@ -1,8 +1,8 @@
 # Bestiario
 
-> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Daño y estados](../04-combate/dano-y-estados.md), [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Torre y pisos](../02-mundo/torre-y-pisos.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Enfermedades](../05-salud/enfermedades.md) · **Se conecta con:** [Cacerías](cacerias.md), [Jefes](jefes.md), [Heridas](../05-salud/heridas.md), [Mente](../05-salud/mente.md), [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) · **Estado:** propuesta
+> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Daño y estados](../04-combate/dano-y-estados.md), [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Enfermedades](../05-salud/enfermedades.md) · **Se conecta con:** [Cacerías](cacerias.md), [Jefes](jefes.md), [Heridas](../05-salud/heridas.md), [Mente](../05-salud/mente.md), [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) · **Estado:** propuesta
 
-> **Nota (D-58 y D-46).** Este documento se escribió con la Torre de pisos, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) (I a X) y *piso N* como un lugar de ese anillo. El combate usa la barra de 6 botones de D-46: no hay acción rápida ni formación que elegir.
+> **Nota (D-58 y D-46).** Los anillos (I a X) y las Lejanías son los del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md). El combate usa la barra de 6 botones de D-46: no hay acción rápida ni formación que elegir.
 
 Pediste una **alta variedad de monstruos**, incluso con la posibilidad de pegarte enfermedades o cualquier otro efecto. Este documento arma el bestiario completo: cómo se describe un monstruo, cómo se comporta por turnos, qué contagia, qué deja y cómo cambia el mundo según se lo cace o no. Los jefes están en [Jefes](jefes.md); aquí están todos los demás.
 
@@ -40,7 +40,7 @@ Todo monstruo se describe con los mismos campos. El jugador los va descubriendo 
 |---|---|---|
 | **Familia** | Una de las 19 (§4). Decide debilidades, fobia y remedio de caza | No-muertos |
 | **Talla** | Diminuta a Enorme (§1.2). Decide filas, Postura y partes | Mediana |
-| **Hábitat** | Terreno, tramo y color de zona | 🐸 Pantano · tramo IV · zonas 🟡🔴 |
+| **Hábitat** | Terreno, anillo y color de zona | 🐸 Pantano · anillo IV · zonas 🟡🔴 |
 | **Horario** | Día, noche, clima o estación en que sale | Noche y niebla |
 | **Comportamiento** | Su arquetipo (§2) | Carroñero |
 | **Repertorio** | 2 a 4 movimientos, con sus avisos (§1.3) | Zarpa sucia, Festín, Remate |
@@ -59,7 +59,7 @@ Así se ve la ficha con `/bestiario`:
 ```
 📖 Bestiario — Necrófago           Conocimiento ★★★☆☆
 No-muertos · Mediana · Terror ●●○
-🐸 Pantano · tramo IV (pisos 31-40) · 🟡🔴
+🐸 Pantano · anillo IV (Lejanía 10-12) · 🟡🔴
 🌙 Noche y niebla · Carroñero
 
 Repertorio
@@ -85,7 +85,7 @@ Remedio: Aceite de necrófagos (Alquimia)
 
 El bando enemigo también tiene **vanguardia y retaguardia** (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)). La talla decide cuánto ocupa y cuánto aguanta.
 
-| Talla | Ejemplos | Ocupa | Postura | Partes rompibles | Vida (en vidas de un jugador del mismo tramo) |
+| Talla | Ejemplos | Ocupa | Postura | Partes rompibles | Vida (en vidas de un jugador del mismo anillo) |
 |---|---|---|---|---|---|
 | **Diminuta** | Mosquitos, ratas, murciélagos | Van en **enjambre**: el enjambre ocupa un hueco | No | No | ×0,1 cada uno; enjambre de 6 a 10 |
 | **Pequeña** | Zorro, kóbold, limo | 1 hueco | No | No | ×0,3 |
@@ -94,7 +94,7 @@ El bando enemigo también tiene **vanguardia y retaguardia** (ver [Ronda y accio
 | **Enorme** | Gigante, forjado, tortuga volcán | Toda su fila | Sí, alta | 2 a 4 | ×5 a ×8, con tope de 9.999 |
 | **Colosal** | Solo jefes (ver [Jefes](jefes.md)) | Las dos filas | Muy alta | Muchas | 5 o 6 dígitos |
 
-**Ejemplo de números.** En el tramo V un jugador tiene unos 900 de vida. Un lobo tiene unos 600; un gigante, unos 6.000. Ningún monstruo común pasa de 4 dígitos, tampoco con modificadores (§7).
+**Ejemplo de números.** En el anillo V un jugador tiene unos 900 de vida. Un lobo tiene unos 600; un gigante, unos 6.000. Ningún monstruo común pasa de 4 dígitos, tampoco con modificadores (§7).
 
 ### 1.3 Repertorio y avisos
 
@@ -125,7 +125,7 @@ Saber de un monstruo es progresión (ver [Progresión](../03-personaje/progresio
 | ★★ **Vencido** | Vencer a 1 | Debilidades, resistencias y partes rompibles |
 | ★★★ **Estudiado** | Vencer a 10, o leer su ficha | Qué contagia y cómo. Los avisos traen la pista: "*(lo conoces: esquivar la mordida evita el contagio)*" |
 | ★★★★ **Experto** | Vencer a 50, o despiezar 3 piezas de tres estrellas | Qué deja cada parte. Ves cuándo va a huir. Puedes sacarle **materiales raros** que otros no ven, como los ingredientes de *The Witcher* |
-| ★★★★★ **Maestro** | Vencer a 200 y una investigación (ver [Investigaciones](investigaciones.md)) | Sus modificadores posibles, su población en cada piso y sus migraciones |
+| ★★★★★ **Maestro** | Vencer a 200 y una investigación (ver [Investigaciones](investigaciones.md)) | Sus modificadores posibles, su población en cada región y sus migraciones |
 
 - El conocimiento es de la cuenta, como el Bestiario de [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md).
 - Las **fichas** se escriben con Inscripción y las vende el **Informante** (ver [Profesiones](../07-economia/profesiones.md)). Leer una ficha sube a ★★★, nunca más arriba: lo demás hay que vivirlo.
@@ -170,7 +170,7 @@ El mímico no es una trampa de azar. Todo mimético deja **una pista en el texto
 - **Linajes:** el Goblin ve el precio de los objetos, y un mímico **no tiene precio**. El Licántropo lo huele.
 
 ```
-🧰 Sala del fondo · Ruinas del piso 63
+🧰 Sala del fondo · Ruinas de Lejanía 19
 Un cofre de roble con remaches de bronce.
 La cerradura está cubierta de algo húmedo.
 
@@ -221,7 +221,7 @@ Como los aceites de *The Witcher 3*, cada familia tiene su remedio. Son **consum
 
 | # | Familia | Dónde abunda | Débil a | Resiste | Terror | Fobia que puede dejar |
 |---|---|---|---|---|---|---|
-| 1 | **Bestias** | Tramos I a VI · bosque, llanura, cueva, desierto, tundra | Perforación, fuego | — | ● | *Miedo a las bestias* |
+| 1 | **Bestias** | Anillos I a VI · bosque, llanura, cueva, desierto, tundra | Perforación, fuego | — | ● | *Miedo a las bestias* |
 | 2 | **Insectos y arácnidos** | I a V · bosque, llanura, cueva, pantano, desierto | Fuego, contundente | Naturaleza | ● | *Aracnofobia* |
 | 3 | **Reptiles y dracónidos** | I a VI · bosque, llanura, pantano, desierto, montaña | Escarcha | Fuego, corte | ●● | *Miedo a los reptiles* |
 | 4 | **No-muertos** | II a VII · llanura, pantano, desierto, ruinas | Sagrado, fuego, contundente | Naturaleza, sombra; no sangran | ●● | *Miedo a los muertos* |
@@ -241,15 +241,15 @@ Como los aceites de *The Witcher 3*, cada familia tiene su remedio. Son **consum
 | 18 | **Criaturas de cristal** | III y V · cueva, montaña, desierto | Contundente | Corte, perforación | ○ | — |
 | 19 | **Bestias volcánicas** | VIII · volcánico, ciudadela | Escarcha, agua | Fuego; no se queman | ● | *Miedo al fuego* |
 
-**Cómo leer las tablas que siguen:** tramo en números romanos (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)) y terreno con su icono (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)). Los estados por acumulación van con su icono; las enfermedades, con 🦠.
+**Cómo leer las tablas que siguen:** anillo en números romanos (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)) y terreno con su icono (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)). Los estados por acumulación van con su icono; las enfermedades, con 🦠.
 
 ### 4.1 Bestias
 
 Las más comunes. Enseñan las reglas básicas: manada, huida y partes. Su carne se cocina y su piel es la base de la Peletería.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
-| **Lobo Gris** | I-II · 🌲 Bosque, 🌾 Llanura | **Manada** de 3 a 6. Rodea al que queda solo. Si cae el alfa, huyen | 🩸 Sangrado. En manadas enfermas, 🦠 **Mal de Espuma** (desde el tramo II) | Colmillos → colmillos (flechas, collares) · piel de lobo |
+| **Lobo Gris** | I-II · 🌲 Bosque, 🌾 Llanura | **Manada** de 3 a 6. Rodea al que queda solo. Si cae el alfa, huyen | 🩸 Sangrado. En manadas enfermas, 🦠 **Mal de Espuma** (desde el anillo II) | Colmillos → colmillos (flechas, collares) · piel de lobo |
 | **Jabalí Colmillo de Hierro** | II · 🌾 Llanura | **Territorial**. Carga en línea recta contra la vanguardia: "*escarba la tierra*" | Derribo, contusión | Colmillos (pierde *Carga*) → marfil (mangos, Carpintería) · carne · cuero |
 | **Zorro Espumoso** | II · 🌲 Bosque | **Huidizo**. Muerde a la retaguardia y escapa | 🦠 **Mal de Espuma** por mordida | Cola → cola de zorro (cebo, cosmético). Su carne no se come |
 | **Oso Cavernario** | III · 🕳️ Cueva, ⛰️ Montaña | Grande, con Postura. *Abrazo*: inmoviliza a uno 2 rondas | Fractura, contusión | Garras (pierde *Zarpazo doble*) → garras · grasa (velas, Cocina) · piel gruesa |
@@ -260,11 +260,11 @@ Las más comunes. Enseñan las reglas básicas: manada, huida y partes. Su carne
 
 Poca vida y mucha cantidad. Castigan a quien no tiene daño en área.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Araña Tejedora** | I · 🌲 Bosque | **Emboscadora**. Telaraña: el objetivo actúa último en la cola 2 rondas | 🟢 Veneno leve | Glándula → seda cruda (Tejeduría) · glándula de veneno |
 | **Mantis Segadora** | II · 🌾 Llanura | Combo de dos golpes; el segundo llega retrasado | 🩸 Sangrado | Brazos-guadaña (pierde el combo) → hojas curvas (dagas) |
-| **Langosta de Plaga** | II · 🌾 Llanura · verano | **Enjambre** que **devora cultivos**: si nadie lo frena, arrasa los campos del piso (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md)) | Se come la comida de la mochila | Sin partes → quitina (abono) · cebo para peces |
+| **Langosta de Plaga** | II · 🌾 Llanura · verano | **Enjambre** que **devora cultivos**: si nadie lo frena, arrasa los campos de la región (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md)) | Se come la comida de la mochila | Sin partes → quitina (abono) · cebo para peces |
 | **Araña Nodriza** | III · 🕳️ Cueva | **Invocadora**: pone huevos que se abren en 2 rondas | 🦠 **Puesta de Araña** en heridas abiertas · 🟢 Veneno | Abdomen (romperlo cancela la puesta) → saco de huevos (Alquimia) · seda fina |
 | **Mosquitos de Ciénaga** | IV · 🐸 Pantano · lluvia | **Enjambre** diminuto. El humo y el área lo deshacen | 🦠 **Fiebre del Pantano** por picadura | Sin partes → alas de mosquito (reactivo menor) |
 | **Escorpión de Vidrio** | V · 🏜️ Desierto | Blindado. El aguijón llena el veneno rápido | 🟢 Veneno fuerte | Aguijón (pierde *Picadura*) → aguijón · caparazón (placas ligeras) |
@@ -273,7 +273,7 @@ Poca vida y mucha cantidad. Castigan a quien no tiene daño en área.
 
 Escamas que frenan el corte. Con frío se vuelven lentos. Los dracónidos son la caza mayor clásica.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Tortuga Musgosa** | I · 🌲 Bosque, 🌊 lagos | Blindada: resiste todo menos el contundente. Apuntar a las piernas la da vuelta y queda expuesta | — | Caparazón → escudo ligero (Carpintería) · musgo (Herboristería) |
 | **Víbora de Hierba** | II · 🌾 Llanura | **Emboscadora**. Muerde a quien recolecta en la hierba alta | 🟢 Veneno (se llena rápido) | Colmillos → veneno de víbora (antídotos) · piel |
@@ -286,11 +286,11 @@ Escamas que frenan el corte. Con frío se vuelven lentos. Los dracónidos son la
 
 No sangran, no se envenenan y no tienen miedo. Suben el estrés. Son los grandes portadores de podredumbre.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Esqueleto Soldado** | II · 🌾 viejos campos de batalla | Se vuelve a armar una vez si no se le rompe el cráneo con contundente | 🦠 **Tétanos de Óxido** (armas oxidadas) | Cráneo → polvo de hueso (abono, Alquimia) · chatarra (Fundición) |
 | **Necrófago** | IV · 🐸 Pantano · noche | **Carroñero**: remata derribados y come cadáveres para curarse | 🟤 Podredumbre · 🦠 **Podredumbre Gris** por zarpa | Garras, mandíbula → uñas de necrófago (aceite de necrófagos) · bilis negra |
-| **Portador de la Plaga** | Cualquier tramo y terreno, solo en una epidemia | **Kamikaze**: al morir revienta, la ronda siguiente y con aviso 🦠, en una nube que llena el Contagio de toda su fila | 🦠 **Plaga Pálida** (en el evento) | Vientre → bilis de plaga (muestras para la cura; ver [Eventos](eventos.md)) |
+| **Portador de la Plaga** | Cualquier anillo y terreno, solo en una epidemia | **Kamikaze**: al morir revienta, la ronda siguiente y con aviso 🦠, en una nube que llena el Contagio de toda su fila | 🦠 **Plaga Pálida** (en el evento) | Vientre → bilis de plaga (muestras para la cura; ver [Eventos](eventos.md)) |
 | **Momia de Arena** | V · 🏜️ Desierto · tumbas | Las vendas arden: el fuego la daña de más | ☠️ *Polvo de tumba*: no recibe curación 2 rondas | Vendas → lino antiguo (Arqueología) · amuleto funerario |
 | **Caballero Hueco** | VII · 🏛️ Ruinas | Mediano con Postura. Bloquea, contraataca y usa golpes retrasados | Fractura, laceración | Yelmo → acero antiguo (variante de Fundición) · a veces un plano antiguo |
 | **Engendro Vampírico** | VII · 🏛️ Ruinas · noche | Roba vida. Al 30 % se vuelve niebla y huye | 🦠 **Fiebre de Sangre** → vampirismo | Colmillos → colmillo de vampiro · ceniza de vampiro (reactivo de templo) |
@@ -299,7 +299,7 @@ No sangran, no se envenenan y no tienen miedo. Suben el estrés. Son los grandes
 
 Incorpóreos: resisten la física, salvo en la ronda en que **se condensan** para atacar. Esa ronda el aviso lo dice y la física les pega como si fueran débiles. Con plata o aceite de espectros, siempre.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Fuego Fatuo** | I · 🌲 Bosque · noche | **Huidizo**. En exploración, aleja al grupo del camino hacia un nodo peligroso | — (engaña) | Sin partes → luz fatua (faroles, Encantamiento) |
 | **Poltergeist** | II · 🌾 granjas abandonadas | **Ladrón**: arranca un consumible de la mochila y lo lanza contra el grupo | Contusión | Sin partes → polvo de éter (Encantamiento) |
@@ -312,9 +312,9 @@ Incorpóreos: resisten la física, salvo en la ronda en que **se condensan** par
 
 Se mueven poco: el peligro es quedarse en su fila. Muchas se esconden entre las plantas que busca un herborista.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
-| **Hongo Esporón** | I · 🌲 Bosque | **Kamikaze** menor: revienta en esporas | Tos 2 rondas (Aguante −1). En el tramo I, nada más | Sombrero → setas (Cocina, Alquimia) |
+| **Hongo Esporón** | I · 🌲 Bosque | **Kamikaze** menor: revienta en esporas | Tos 2 rondas (Aguante −1). En el anillo I, nada más | Sombrero → setas (Cocina, Alquimia) |
 | **Enredadera Estranguladora** | II · 🌲 Bosque, IV · 🐸 | **Parásito**: agarra una pierna y aprieta cada ronda | Inmoviliza · contusión | Raíz → fibra (cuerda, Tejeduría) · savia |
 | **Micelio Andante** | III · 🕳️ Cueva | **Corrompe el terreno**: cubre de moho una fila | 🦠 **Pulmón de Moho** por esporas | Núcleo → hongos luminosos · corazón de micelio (cultivar hongos, Agricultura) |
 | **Mandrágora** | IV · 🐸 Pantano | Parece una hierba. Arrancada sin tapones, grita | 💤 Sueño a todo el grupo | Raíz → raíz de mandrágora (sedantes de caza, Alquimia) |
@@ -325,11 +325,11 @@ Se mueven poco: el peligro es quedarse en su fila. Muchas se esconden entre las 
 
 El corte y la perforación los dividen. El fuego y la escarcha los rompen. Los parásitos se pegan y hay que arrancarlos (§2.1).
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Limo Verde** | I · 🌲 Bosque, 🐸 | Se divide en dos al recibir corte. Gasta la durabilidad del arma | 🟢 Veneno leve | Núcleo → gelatina (cola de Carpintería) |
 | **Limo Metálico** | II-III · 🕳️ Cueva | **Huidizo**: durísimo, escapa en 3 rondas. Da mucha Esencia | — | Núcleo → gota de mercurio (Encantamiento) |
-| **Mímico** | Todos los tramos · mazmorras, ruinas | **Mimético**: parece un cofre (§2.2) | Herida profunda · 🟢 Veneno (saliva) | Lengua → pegamento de mímico (Ingeniería) · el botín que se tragó |
+| **Mímico** | Todos los anillos · mazmorras, ruinas | **Mimético**: parece un cofre (§2.2) | Herida profunda · 🟢 Veneno (saliva) | Lengua → pegamento de mímico (Ingeniería) · el botín que se tragó |
 | **Sanguijuela Gigante** | IV · 🐸 Pantano | **Parásito**: chupa vida cada ronda y se cura con ella | 🩸 Sangrado · anemia (vida máxima −5 % una hora) | Boca → saliva anticoagulante (ungüento para contusiones, Medicina) |
 | **Cieno Ácido** | VIII · 🌋 Volcánico | Cada golpe baja la durabilidad y la defensa de la zona que toca | 🔥 Quemadura (ácido) | Núcleo → ácido fuerte (grabado de Joyería) |
 
@@ -337,7 +337,7 @@ El corte y la perforación los dividen. El fuego y la escarcha los rompen. Los p
 
 Débiles al elemento contrario y resistentes al propio. Llegan con el clima (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)).
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Chispa Errante** | II · 🌾 Llanura · tormenta | Salta en cadena por el grupo; solo se libra quien usó una respuesta 💨 | 🔥 Quemadura (rayo) · llena la Firmeza | Sin partes → chispa embotellada (Ingeniería) |
 | **Elemental de Piedra** | III · ⛰️ Montaña, 🕳️ | Blindado y lento | Fractura | Núcleo → gema en bruto · piedra rúnica |
@@ -350,7 +350,7 @@ Débiles al elemento contrario y resistentes al propio. Llegan con el clima (ver
 
 No sienten dolor ni miedo. Casi todos tienen un núcleo o una runa que, rota, los apaga.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Espantapájaros Animado** | II · 🌾 Llanura · noche | Solo se anima de noche en los campos. Muy débil al fuego | Estrés | Sin partes → semillas encantadas (variedades raras, Agricultura) |
 | **Gólem de Barro** | IV · 🐸 Pantano | Se cura cada ronda mientras pise lodo. La escarcha lo seca | Contusión | Núcleo → arcilla fina (ladrillo de calidad, Construcción) |
@@ -363,7 +363,7 @@ No sienten dolor ni miedo. Casi todos tienen un núcleo o una runa que, rota, lo
 
 Piensan: beben pociones, huyen para avisar, ponen trampas y se rinden. Sueltan equipo del Mercado Negro, oro y papeles. Conectan con [Crimen y justicia](crimen-y-justicia.md).
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Kóbold Minero** | I · 🕳️ Cueva, ⛰️ | **Ladrón**: roba de la mochila y huye por un túnel | — | Sin partes → lo robado · velas · pico viejo |
 | **Bandido de Camino** | II · 🌾 rutas de caravana | Embosca caravanas. Si pierde la mitad del grupo, **se rinde** | 🩸 Sangrado | Equipo del Mercado Negro · oro · cartel de recompensa (se cobra en la guardia) |
@@ -376,7 +376,7 @@ Piensan: beben pociones, huyen para avisar, ponen trampas y se rinden. Sueltan e
 
 Enormes, con Postura. Romperles las piernas los tira al suelo. Algunos negocian.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Ogro del Puente** | II · 🌾 Llanura, ríos | **Territorial**. Cobra peaje: si pagas, no hay pelea | Fractura · derribo | Cinturón → cuero de ogro · el oro de los peajes |
 | **Cíclope de Cantera** | III · ⛰️ Montaña | Lanza rocas a la retaguardia. Con el ojo roto, pega al azar | Fractura · conmoción | Ojo → lente de cíclope (catalejos, Ingeniería) |
@@ -389,7 +389,7 @@ Enormes, con Postura. Romperles las piernas los tira al suelo. Algunos negocian.
 
 Esperan en vados, costas y pantanos. Muchas arrastran al agua (ver agua profunda en [Peligros del entorno](../05-salud/peligros-del-entorno.md)). Su carne cruda enferma.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Pez Colmillo** | I · 🌊 lagos y vados | **Enjambre** en los vados: muerde a quien cruza | 🩸 Sangrado. Comido crudo, 🦠 **Parásito de Río** (desde el nivel 11) | Sin partes → pescado (Cocina) |
 | **Cangrejo Acorazado** | II · 🌊 Costa | Blindado. *Tenaza*: desarma 1 ronda | Contusión · desarme | Pinzas (pierde *Tenaza*) → carne de cangrejo · caparazón |
@@ -402,7 +402,7 @@ Esperan en vados, costas y pantanos. Muchas arrastran al agua (ver agua profunda
 
 En vuelo solo las alcanzan armas a distancia, lanzas y hechizos. La ronda en que bajan a atacar, todos. Romperles las alas o la *Flecha Clavadora* las dejan en tierra.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Cuervo de Carroña** | I · 🌲 Bosque | **Carroñero y ladrón**: se lleva objetos brillantes del botín antes de que lo recojas | Arañazo | Plumas negras (plumas de escribir, flechas) |
 | **Murciélago Vampiro** | III · 🕳️ Cueva · noche | **Enjambre**. Muerde y se va | 🩸 Sangrado · 🦠 **Mal de Espuma** | Alas (reactivo) · guano (abono, Agricultura) |
@@ -415,12 +415,12 @@ En vuelo solo las alcanzan armas a distancia, lanzas y hechizos. La ronda en que
 
 Suben el estrés y pueden dejar Corrupción (ver [Mente](../05-salud/mente.md)). Los demonios arden; las criaturas del Vacío apagan la luz.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Diablillo** | VIII · 🔥 Ciudadela | **Ladrón e invocador**: roba una poción y se la bebe; si no muere en 3 rondas, llama a otro | 🔥 Quemadura | Cuerno → cuerno de diablillo (Alquimia) |
 | **Sabueso Infernal** | VIII · 🌋, 🔥 | **Manada** de 3. En dificultad Pesadilla, **te caza** por el mapa | 🔥 Quemadura · **Frenesí** (§6.3) | Colmillos ígneos · glándula de azufre |
 | **Señor de la Fosa** | VIII · 🔥 Ciudadela | Enorme. Abre grietas que **corrompen el terreno** e invoca diablillos | 🔥 Quemadura · Corrupción leve | Cuernos → sangre de demonio (Encantamiento); artefacto menor |
-| **Peregrino Falso** | IX · 🌑 Abismo y caminos de pisos altos | **Mimético**: parece un PNJ perdido que pide ayuda | 🌀 Locura · estrés | Máscara → polvo de ecos · la carta que llevaba (pista de un caso) |
+| **Peregrino Falso** | IX · 🌑 Abismo y caminos de tierras lejanas | **Mimético**: parece un PNJ perdido que pide ayuda | 🌀 Locura · estrés | Máscara → polvo de ecos · la carta que llevaba (pista de un caso) |
 | **Tragaluz** | IX · 🌑 Abismo | *Presencia*: cada ronda baja la cordura del grupo | 🦠 **Fiebre del Vacío** (solo en su pulso avisado, cada 3 rondas) · 🌀 Locura | Ojo negro (Encantamiento de sombra) |
 | **Larva del Vacío** | IX · 🌑 Abismo | **Parásito**: se pega a la espalda y susurra | 🦠 **Fiebre del Vacío** | Larva seca (reactivo, Alquimia) |
 
@@ -428,9 +428,9 @@ Suben el estrés y pueden dejar Corrupción (ver [Mente](../05-salud/mente.md)).
 
 Engañan más de lo que pegan. Viven en el Bosque Susurrante y en los Jardines Flotantes.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
-| **Duendecillo Burlón** | I · 🌲 Bosque | **Ladrón** travieso: roba un objeto y lo **esconde** en otro nodo del piso | — | Polvo de hada (Encantamiento) |
+| **Duendecillo Burlón** | I · 🌲 Bosque | **Ladrón** travieso: roba un objeto y lo **esconde** en otro nodo de la región | — | Polvo de hada (Encantamiento) |
 | **Hada de Espinas** | I-II · 🌲 Bosque | **Emboscadora** en círculos de hongos: quien entra, se duerme | 💤 Sueño | Alas → ala de hada (cosméticos) |
 | **Niño Cambiado** | VII · 🏛️, 🌲 | **Mimético**: parece un niño perdido. Si lo llevas al asentamiento, roba y escapa | 🦠 **Sopor Feérico** | Hilo de plata (Sastrería) |
 | **Dríade Marchita** | VII · 🌲 Bosque | **Sanadora de su grupo** y **corruptora**: sus raíces atrapan una fila | 💤 Sueño · 🦠 **Sopor Feérico** por polen | Corazón → semilla de dríade (variedad mágica, Agricultura) |
@@ -439,22 +439,22 @@ Engañan más de lo que pegan. Viven en el Bosque Susurrante y en los Jardines F
 
 ### 4.16 Mutantes de la contaminación
 
-Nacen en los nodos con ☣️ Contaminación (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)) y donde la actividad de los jugadores ensucia el piso (§10.6).
+Nacen en los nodos con ☣️ Contaminación (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)) y donde la actividad de los jugadores ensucia la región (§10.6).
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Rata de Escoria** | II-III · ⛰️ minas y fundiciones | **Enjambre** que roe la mochila y se come la comida | 🦠 **Mal de Escoria** · 🦠 **Disentería** | Cola → cebo · grasa rancia (jabón) |
 | **Lobo Bicéfalo** | III · ⛰️ Montaña | Dos mordidas por ronda. Romper una cabeza le quita un ataque | 🩸 Sangrado | Cabeza → trofeo · piel manchada |
 | **Sapo Bilioso** | IV · 🐸 Pantano | Escupe bilis a la retaguardia. **Explota al morir** | 🟢 Veneno · 🦠 **Mal de Escoria** | Glándula → bilis (venenos de caza) |
 | **Carpa de Tres Ojos** | IV · 🌊 ríos contaminados | Se pesca, no se pelea. Comerla enferma | 🦠 **Mal de Escoria** (al comerla) | Ojo extra (Alquimia) |
-| **Abominación de Vertedero** | VII · pisos con contaminación alta | Élite. Come cadáveres de monstruos y crece una talla | 🟤 Podredumbre · 🦠 **Mal de Escoria** | Glándula mutágena (transmutación, Alquimia) |
+| **Abominación de Vertedero** | VII · regiones con contaminación alta | Élite. Come cadáveres de monstruos y crece una talla | 🟤 Podredumbre · 🦠 **Mal de Escoria** | Glándula mutágena (transmutación, Alquimia) |
 | **Masa de Escoria** | VIII · 🌋, junto a forjas | **Se come las armas** sueltas del botín y la chatarra, y se vuelve más dura. Nunca el equipo de un jugador: un arma desarmada solo pierde durabilidad | 🦠 **Tétanos de Óxido** | Núcleo → chatarra fundida (metal de calidad al azar, Fundición) |
 
 ### 4.17 Aberraciones del Abismo
 
-Solo en el tramo IX y en las Pesadillas (ver [Misiones y exploración](misiones-y-exploracion.md)). Terror máximo, bajan la cordura y **sí mienten** en sus avisos.
+Solo en el anillo IX y en las Pesadillas (ver [Misiones y exploración](misiones-y-exploracion.md)). Terror máximo, bajan la cordura y **sí mienten** en sus avisos.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Ojo Flotante** | IX · 🌑 | Retaguardia. Revela al grupo (anula el sigilo) y llama a otros | 🌀 Locura | Cristalino → lente del abismo (Joyería) |
 | **Tejedor de Carne** | IX · 🌑 | **Invocador**: cose cadáveres de monstruos en engendros | 🟤 Podredumbre · 🦠 **Podredumbre Gris** | Hilo de tendón (las mejores suturas, Medicina) |
@@ -467,12 +467,12 @@ Solo en el tramo IX y en las Pesadillas (ver [Misiones y exploración](misiones-
 
 Frágiles al contundente. Sus esquirlas se clavan y cristalizan la piel. Son la mejor fuente de **Resonancia**, el atributo de material de varitas e instrumentos (ver [Fabricación](../07-economia/fabricacion.md)).
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Lagartija de Cuarzo** | III · 🕳️ Cueva | **Huidiza**. Muerta de un golpe contundente, deja la gema entera | — | Gema en bruto (Joyería) |
 | **Eriza de Cuarzo** | III · 🕳️ | Púas: quien la golpea cuerpo a cuerpo recibe un corte | 🩸 Sangrado | Púas de cuarzo (puntas de flecha) |
 | **Polilla Prisma** | III · 🕳️ | Refleja la luz: ciega y desvía un hechizo por ronda | Ceguera | Polvo prismático (tinta) |
-| **Gusano de Vetas** | III · ⛰️, 🕳️ | Se come las vetas: si nadie lo caza, **agota las vetas del piso** | 🦠 **Cristalosis** | Buche → las gemas que se comió |
+| **Gusano de Vetas** | III · ⛰️, 🕳️ | Se come las vetas: si nadie lo caza, **agota las vetas de la región** | 🦠 **Cristalosis** | Buche → las gemas que se comió |
 | **Gólem de Cristal** | III · 🕳️ | Grande. Resuena: el contundente le baja más Postura | 🦠 **Cristalosis** por esquirlas · laceración | Núcleo resonante (Resonancia alta) |
 | **Centinela de Vidrio** | V · 🏜️ Desierto · tras tormentas | Nace donde cae un rayo en la arena. Descarga en cadena | 🔥 Quemadura (rayo) · 🦠 **Cristalosis** | Vidrio de rayo (Joyería) |
 
@@ -480,7 +480,7 @@ Frágiles al contundente. Sus esquirlas se clavan y cristalizan la piel. Son la 
 
 Resisten el fuego y no se queman. Un frasco de agua helada o un golpe de escarcha las "templa", y el siguiente golpe contundente les rompe la piel. Es una combinación entre dos jugadores.
 
-| Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
+| Monstruo | Anillo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
 | **Salamandra de Lava** | VIII · 🌋 | Nada en la lava. **Corrompe el terreno**: brasas en una fila | 🔥 Quemadura | Piel ignífuga (capas contra el calor) |
 | **Perro de Ceniza** | VIII · 🌋 | **Manada**. Jadea ceniza | 🔥 Quemadura · 🦠 **Fiebre de Ceniza** | Pelaje de ceniza (Curtiduría) |
@@ -489,7 +489,7 @@ Resisten el fuego y no se queman. Un frasco de agua helada o un golpe de escarch
 | **Tortuga Volcán** | VIII · 🌋 | Enorme y lenta. Erupción avisada cada 3 rondas | 🔥 Quemadura · 🦠 **Fiebre de Ceniza** | Caparazón → azufre · teja ígnea (Construcción) |
 | **Fénix de Ceniza** | VIII · 🔥 Ciudadela | **Renace** una vez de sus cenizas si no se apagan (agua o escarcha) en la ronda siguiente | 🔥 Quemadura | Pluma de fénix (Sales de Reanimación de calidad, Medicina) |
 
-**Total: 113 monstruos en 19 familias**, con todos los tramos y todos los terrenos cubiertos. A esto se suman los modificadores (§7) y los únicos con nombre (§8).
+**Total: 113 monstruos en 19 familias**, con todos los anillos y todos los terrenos cubiertos. A esto se suman los modificadores (§7) y los únicos con nombre (§8).
 
 ## 5. El contagio
 
@@ -532,7 +532,7 @@ El contagio funciona como los estados por acumulación (ver [Daño y estados](..
 | Enfermedad (ver [Enfermedades](../05-salud/enfermedades.md)) | Monstruos que la contagian | Vía | Cómo se previene | Cómo se trata |
 |---|---|---|---|---|
 | **Fiebre del Pantano** | Mosquitos de Ciénaga | Picadura | Repelente, ropa cerrada, humo, máscara contra la miasma | Corteza amarga (Alquimia) |
-| **Gripe de Escarcha** | Novia de Escarcha, Ventisquero, y el frío del tramo VI | Aliento helado y frío | Capa de piel (Peletería), fogata | Reposo caliente, caldo (Cocina) |
+| **Gripe de Escarcha** | Novia de Escarcha, Ventisquero, y el frío del anillo VI | Aliento helado y frío | Capa de piel (Peletería), fogata | Reposo caliente, caldo (Cocina) |
 | **Disentería** | Rata de Escoria; agua donde vive un Sapo Bilioso; carne cruda de cualquier bestia | Comer, beber | Cocinar, hervir el agua, filtro | Carbón, agua hervida |
 | **Gangrena** | Caimán de Lodo, Gigante del Fango; cualquier mordida sin limpiar | Herida sucia | Limpiar en la primera hora; vendas de lino limpio (Sastrería) | Limpiar, cirugía (Medicina) |
 | **Tétanos de Óxido** | Esqueleto Soldado, Saqueador de Tumbas, Masa de Escoria | Armas oxidadas | Armadura de la zona; antitoxina preventiva | Antitoxina (Alquimia) |
@@ -542,7 +542,7 @@ El contagio funciona como los estados por acumulación (ver [Daño y estados](..
 | **Parásito de Río** | Pez Colmillo, Carpa de Tres Ojos | Comer crudo | Cocinar el pescado | Purga (Alquimia) |
 | **Fiebre de Sangre** | Engendro Vampírico | Mordida | Protección de cuello, no quedar derribado cerca de él | Ritual antes de 3 días (templo) |
 | **Mordida del Lobo Lunar** | Licántropo Salvaje | Mordida en luna llena | Baño de plata para matarlo rápido; no cazar solo en luna llena | Ritual antes de la luna llena |
-| **Tos del Minero, Temblor Arcano, Mal del Piso** | Ningún monstruo: son de oficio, de clase o de clima | — | — | Ver [Enfermedades](../05-salud/enfermedades.md) |
+| **Tos del Minero, Temblor Arcano, Mal del Viajero** | Ningún monstruo: son de oficio, de clase o de clima | — | — | Ver [Enfermedades](../05-salud/enfermedades.md) |
 
 ### 6.2 Enfermedades nuevas, propias de monstruos
 
@@ -553,12 +553,12 @@ Siguen el modelo de siempre: **carrera entre gravedad e inmunidad**, incubación
 | Enfermedad | Vector | Incubación y carrera | Síntomas | Prevención | Tratamiento | Si se pierde la carrera |
 |---|---|---|---|---|---|---|
 | **Mal de Espuma** | Zorro Espumoso, Murciélago Vampiro, lobos enfermos | 3 h · rápida | Irritable: a veces actúa solo, como *Temerario*. Tragar cuesta: las pociones curan la mitad | Esquivar la mordida avisada; **suero de espuma** antes de los síntomas (Alquimia y Medicina) | Suero y sedantes (Médico) | Rasgo *Irascible* una semana: el estrés sube más al recibir críticos |
-| **Pulmón de Moho** | Micelio Andante, Hongo Esporón (desde el tramo III) | 1 h · lenta · **se contagia al resto del grupo** | Tos: Aguante máximo −1. Al toser delatas al grupo (sin sigilo) | Máscara de lino fino (Sastrería) | Vapor de hierbas (Herboristería y Alquimia), reposo | *Pulmón manchado*, crónico leve, como la Tos del Minero |
+| **Pulmón de Moho** | Micelio Andante, Hongo Esporón (desde el anillo III) | 1 h · lenta · **se contagia al resto del grupo** | Tos: Aguante máximo −1. Al toser delatas al grupo (sin sigilo) | Máscara de lino fino (Sastrería) | Vapor de hierbas (Herboristería y Alquimia), reposo | *Pulmón manchado*, crónico leve, como la Tos del Minero |
 | **Puesta de Araña** | Araña Nodriza, la Reina Araña | 12 h · media | Picor; el Sustento baja más rápido. En el pico, **eclosión**: en tu próximo combate aparecen 2 crías del lado enemigo | Romper el abdomen de la Nodriza antes de la puesta; limpiar la herida | **Cirugía menor** (extraer parásitos) o purga fuerte (Alquimia) | Cicatrices. Si eclosiona dos veces, *Aracnofobia* |
 | **Cristalosis** | Gólem de Cristal, Gusano de Vetas, Centinela de Vidrio | 6 h · lenta | La piel de la zona herida se vuelve cristal: resiste mejor el corte, pero se fractura más fácil. Iniciativa −1 | Armadura de la zona; esquivar las esquirlas | Baños de sal de roca y disolvente (Alquimia) | *Vetas de cristal*: marcas que brillan de noche, sin efecto |
 | **Fiebre de Ceniza** | Perro de Ceniza, Titán de Ceniza, Tortuga Volcán | 2 h · media | Calor por dentro: la Hidratación baja el doble y, en zonas calientes, Aguante máximo −1 | Máscara húmeda, agua de sobra | Tónico refrescante (Alquimia), reposo en un lugar fresco | *Voz de ceniza* (cosmético) y una semana con menos tolerancia al calor |
 | **Sopor Feérico** | Polilla Lunar, Dríade Marchita, Niño Cambiado | 4 h · lenta | La barra de 💤 Sueño se llena el doble. A veces un aviso llega con el texto confuso | Amuleto de hierro frío (Joyería), tapones de cera | Infusión despertadora (Cocina), campana del templo | *Tocado por las hadas*: un sueño con un rumor por semana (cosmético) y unos días de *Insomne* |
-| **Mal de Escoria** | Rata de Escoria, Sapo Bilioso, Carpa de Tres Ojos, Abominación de Vertedero | 6 h · media | Manchas en la piel. La **Toxicidad máxima baja**: aguantas menos pociones (ver [Condiciones](../05-salud/condiciones.md)) | Máscara y guantes; no comer lo que vive en aguas sucias; bajar la contaminación del piso | Quelante (Alquimia) y depuración (Médico) | *Mutación menor* temporal: una marca, algo de resistencia al veneno y el Sustento baja más rápido. Se va con tratamiento |
+| **Mal de Escoria** | Rata de Escoria, Sapo Bilioso, Carpa de Tres Ojos, Abominación de Vertedero | 6 h · media | Manchas en la piel. La **Toxicidad máxima baja**: aguantas menos pociones (ver [Condiciones](../05-salud/condiciones.md)) | Máscara y guantes; no comer lo que vive en aguas sucias; bajar la contaminación de la región | Quelante (Alquimia) y depuración (Médico) | *Mutación menor* temporal: una marca, algo de resistencia al veneno y el Sustento baja más rápido. Se va con tratamiento |
 | **Ojo del Abismo** | Gusano Susurrante, El Que Imita | 1 día · lenta | **Con ventaja:** ves lo invisible y las fintas de los avisos se marcan. **Con costo:** el estrés sube un 50 % más | Arrancar al gusano antes de 3 rondas; luz | Templo o bardo. **Se puede conservar** a propósito | *Visionario*: pesadillas y estrés en la oscuridad; se quita en el templo |
 
 - **Ojo del Abismo** imita el Frenesí de *Monster Hunter* y la licantropía de *Skyrim*: una enfermedad que algunos quieren tener. Sus ventajas **no cuentan** en contenido clasificado (Mítica+, arena); el costo sí.
@@ -613,35 +613,35 @@ Duran un solo combate. No son enfermedades: no cuentan para el tope.
 **De dónde sale.** Los monstruos únicos con nombre de *Diablo*, los élites raros de *World of Warcraft* y el jefe errante de *Darkest Dungeon*.
 
 **Reglas:**
-- **No son Guardianes:** no dan Sello ni Recuerdo (ver [Jefes](jefes.md)).
+- **No son Guardianes:** no dan Recuerdo ni título de Pionero (ver [Jefes](jefes.md)).
 - **Aparecen poco:** una ventana de 1 a 3 horas cada varios días, en un grupo de nodos. Antes hay una señal: un rumor en la taberna, huellas enormes, ganado muerto.
-- **Dos tipos:** el **raro errante**, que vuelve a aparecer (cada personaje cobra su botín una vez por semana), y la **bestia legendaria de temporada**, una por tramo y temporada (ver [Cacerías](cacerias.md)).
+- **Dos tipos:** el **raro errante**, que vuelve a aparecer (cada personaje cobra su botín una vez por semana), y la **bestia legendaria de temporada**, una por anillo y temporada (ver [Cacerías](cacerias.md)).
 - **Vida de 5 dígitos como mucho:** entre un monstruo común y un jefe de campo.
 - **Primera muerte del servidor:** el nombre del grupo va al Registro de descubridores y a la Gaceta.
 - **Botín:** trofeo único, material exclusivo, probabilidad de **artefacto menor** con protección contra mala racha, y una casilla en el **Tesoro Semanal** (ver [Equipamiento](../03-personaje/equipamiento.md)).
 
-| Nombre | Tramo y lugar | Qué es | Cuándo aparece | Qué lo hace especial | Qué deja |
+| Nombre | Anillo y lugar | Qué es | Cuándo aparece | Qué lo hace especial | Qué deja |
 |---|---|---|---|---|---|
-| **Colmillo Viejo** | I · piso 4 · 🌲 | Lobo Gris alfa que sobrevivió a muchos cazadores | Noches con muchos lobos en el piso | Rodea desde la primera ronda y llama a la manada cada 3 rondas | Piel de Colmillo Viejo (capa cosmética) · colmillo de alfa (arcos) |
-| **La Madre de las Setas** | I · piso 7 · 🌲 | Hongo gigante | Tras dos días de lluvia | Esporas que duermen; en el tramo I, sin enfermedad | Micelio madre (cultivar setas raras, Agricultura) |
-| **Rompecercas** | II · piso 13 · 🌾 | Jabalí enorme | Otoño, con cosechas en pie | Si nadie lo caza, arrasa los campos de los jugadores del piso | Colmillo de Rompecercas (maza única) · título *Salvador de la cosecha* |
-| **El Espantajo de los Siete Campos** | II · piso 18 · 🌾 | Espantapájaros único | Luna nueva | Se esconde entre espantapájaros normales: hay que encontrar al verdadero | Semillas del Espantajo (variedad de cultivo única) |
-| **El Cantor de Cuarzo** | III · piso 22 · 🕳️ | Gólem de cristal que canta | Si nadie mina en su galería durante 3 días | Su canto rompe gemas de la mochila si no lo interrumpes | Núcleo cantor (la mayor Resonancia: laúdes y varitas) |
-| **La Reina Araña** | III · piso 27 · 🕳️ | Araña Nodriza gigantesca | Con mucha población de arañas | Puesta de Araña en área. Si vive, sus crías invaden los nodos vecinos | Seda real (Sastrería). Puede dejar *Aracnofobia* (ver [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md)) |
-| **Vieja Bilis** | IV · piso 34 · 🐸 | Sapo mutante enorme | Cuando sube la contaminación del piso | Si vive, ensucia el agua: sube la Disentería en el asentamiento | Bilis madre (Alquimia). Matarla baja la contaminación del piso |
-| **El Barquero Ahogado** | IV · piso 38 · 🐸 🌊 | Espectro en una barca | Niebla | Cobra un objeto por cruzar. Si no pagas, pelea; si pagas, a veces devuelve algo mejor | Remo del barquero (bastón único) · moneda del barquero |
-| **El Sediento** | V · piso 46 · 🏜️ | Momia errante | Ola de calor | Roba el agua de las mochilas: la Hidratación del grupo baja cada ronda | Vendas del Sediento (cosmético) · amuleto de la tumba |
-| **Espejismo** | V · piso 49 · 🏜️ | Sirena del desierto | Mediodía | Aparece en el mapa como un oasis | Escama del Espejismo (Joyería) |
-| **La Novia del Paso** | VI · piso 53 · ⛰️ | Novia de Escarcha única | Ventisca | Duerme a las caravanas que cruzan el paso | Velo de la Novia (capa de frío única) |
-| **El Ciervo de Ceniza** | VI · piso 57 · ⛰️ | Bestia legendaria de temporada (ver [Cacerías](cacerias.md)) | Toda la temporada, moviéndose por el piso | Huye de nodo en nodo y deja rastros; no pelea hasta que lo acorralan | Asta de ceniza (trofeo único del servidor) · título |
-| **El Anticuario** | VII · piso 64 · 🏛️ | Autómata que colecciona | Cuando alguien excava (Arqueología) | Roba piezas de arqueología y las guarda en su cámara | Lo robado · llave de su cámara (tesoro) |
-| **El Rey sin Corona** | VII · piso 68 · 🏛️ | Caballero Hueco único | Eclipse | Duelo de honor: si lo atacan varios a la vez, llama a su guardia | Corona rota (Arqueología) · acero antiguo puro |
-| **Brasaviva** | VIII · piso 73 · 🔥 | Fénix de Ceniza | Tras una erupción | Renace tres veces: cada vez hay que apagar sus cenizas | Pluma de Brasaviva (ingrediente de artefacto) |
-| **Mandíbula de Forja** | VIII · piso 78 · 🌋 | Masa de Escoria gigante | Si las forjas del piso ensuciaron mucho en la semana | Se come las armas sueltas y la chatarra del campo de batalla (nunca el equipo de un jugador) | Corazón de escoria (metal de calidad excepcional al azar) |
-| **El Que Imita** | IX · piso 84 · 🌑 | Horror Sin Rostro único | Solo ante grupos | Imita el registro de combate y la voz de los aliados | 🦠 *Ojo del Abismo* · máscara de ecos (cosmético) |
-| **El Ojo del Pozo** | IX · piso 89 · 🕳️ | Ojo Flotante colosal | Cuando la cordura del piso está baja (evento) | Mira a una fila por ronda: Locura acumulada | Cristalino del Pozo (lente mayor, Joyería) |
-| **El Jardinero Primero** | X · piso 93 · 🌸 | Autómata antiguo | Primavera | Repara a todos los constructos del piso mientras viva | Tijeras del Primero (apariencia de herramienta) · aceite antiguo |
-| **La Polilla de la Última Luna** | X · piso 98 · 🌸 | Polilla Lunar gigante | La última noche de cada estación | Sopor Feérico en área | Polvo de la Última Luna (tinta que revela textos ocultos, [Investigaciones](investigaciones.md)) |
+| **Colmillo Viejo** | I · Lejanía 1 · 🌲 | Lobo Gris alfa que sobrevivió a muchos cazadores | Noches con muchos lobos en la región | Rodea desde la primera ronda y llama a la manada cada 3 rondas | Piel de Colmillo Viejo (capa cosmética) · colmillo de alfa (arcos) |
+| **La Madre de las Setas** | I · Lejanía 2 · 🌲 | Hongo gigante | Tras dos días de lluvia | Esporas que duermen; en el anillo I, sin enfermedad | Micelio madre (cultivar setas raras, Agricultura) |
+| **Rompecercas** | II · Lejanía 4 · 🌾 | Jabalí enorme | Otoño, con cosechas en pie | Si nadie lo caza, arrasa los campos de los jugadores de la región | Colmillo de Rompecercas (maza única) · título *Salvador de la cosecha* |
+| **El Espantajo de los Siete Campos** | II · Lejanía 5 · 🌾 | Espantapájaros único | Luna nueva | Se esconde entre espantapájaros normales: hay que encontrar al verdadero | Semillas del Espantajo (variedad de cultivo única) |
+| **El Cantor de Cuarzo** | III · Lejanía 7 · 🕳️ | Gólem de cristal que canta | Si nadie mina en su galería durante 3 días | Su canto rompe gemas de la mochila si no lo interrumpes | Núcleo cantor (la mayor Resonancia: laúdes y varitas) |
+| **La Reina Araña** | III · Lejanía 8 · 🕳️ | Araña Nodriza gigantesca | Con mucha población de arañas | Puesta de Araña en área. Si vive, sus crías invaden los nodos vecinos | Seda real (Sastrería). Puede dejar *Aracnofobia* (ver [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md)) |
+| **Vieja Bilis** | IV · Lejanía 10 · 🐸 | Sapo mutante enorme | Cuando sube la contaminación de la región | Si vive, ensucia el agua: sube la Disentería en el asentamiento | Bilis madre (Alquimia). Matarla baja la contaminación de la región |
+| **El Barquero Ahogado** | IV · Lejanía 11 · 🐸 🌊 | Espectro en una barca | Niebla | Cobra un objeto por cruzar. Si no pagas, pelea; si pagas, a veces devuelve algo mejor | Remo del barquero (bastón único) · moneda del barquero |
+| **El Sediento** | V · Lejanía 14 · 🏜️ | Momia errante | Ola de calor | Roba el agua de las mochilas: la Hidratación del grupo baja cada ronda | Vendas del Sediento (cosmético) · amuleto de la tumba |
+| **Espejismo** | V · Lejanía 15 · 🏜️ | Sirena del desierto | Mediodía | Aparece en el mapa como un oasis | Escama del Espejismo (Joyería) |
+| **La Novia del Paso** | VI · Lejanía 16 · ⛰️ | Novia de Escarcha única | Ventisca | Duerme a las caravanas que cruzan el paso | Velo de la Novia (capa de frío única) |
+| **El Ciervo de Ceniza** | VI · Lejanía 17 · ⛰️ | Bestia legendaria de temporada (ver [Cacerías](cacerias.md)) | Toda la temporada, moviéndose por la región | Huye de nodo en nodo y deja rastros; no pelea hasta que lo acorralan | Asta de ceniza (trofeo único del servidor) · título |
+| **El Anticuario** | VII · Lejanía 19 · 🏛️ | Autómata que colecciona | Cuando alguien excava (Arqueología) | Roba piezas de arqueología y las guarda en su cámara | Lo robado · llave de su cámara (tesoro) |
+| **El Rey sin Corona** | VII · Lejanía 20 · 🏛️ | Caballero Hueco único | Eclipse | Duelo de honor: si lo atacan varios a la vez, llama a su guardia | Corona rota (Arqueología) · acero antiguo puro |
+| **Brasaviva** | VIII · Lejanía 22 · 🔥 | Fénix de Ceniza | Tras una erupción | Renace tres veces: cada vez hay que apagar sus cenizas | Pluma de Brasaviva (ingrediente de artefacto) |
+| **Mandíbula de Forja** | VIII · Lejanía 23 · 🌋 | Masa de Escoria gigante | Si las forjas de la región ensuciaron mucho en la semana | Se come las armas sueltas y la chatarra del campo de batalla (nunca el equipo de un jugador) | Corazón de escoria (metal de calidad excepcional al azar) |
+| **El Que Imita** | IX · Lejanía 25 · 🌑 | Horror Sin Rostro único | Solo ante grupos | Imita el registro de combate y la voz de los aliados | 🦠 *Ojo del Abismo* · máscara de ecos (cosmético) |
+| **El Ojo del Pozo** | IX · Lejanía 27 · 🕳️ | Ojo Flotante colosal | Cuando la cordura de la región está baja (evento) | Mira a una fila por ronda: Locura acumulada | Cristalino del Pozo (lente mayor, Joyería) |
+| **El Jardinero Primero** | X · Lejanía 28 · 🌸 | Autómata antiguo | Primavera | Repara a todos los constructos de la región mientras viva | Tijeras del Primero (apariencia de herramienta) · aceite antiguo |
+| **La Polilla de la Última Luna** | X · Lejanía 29 · 🌸 | Polilla Lunar gigante | La última noche de cada estación | Sopor Feérico en área | Polvo de la Última Luna (tinta que revela textos ocultos, [Investigaciones](investigaciones.md)) |
 
 ## 9. Qué deja un monstruo
 
@@ -667,11 +667,11 @@ Duran un solo combate. No son enfermedades: no cuentan para el tope.
 
 ### 10.1 Poblaciones
 
-Cada especie tiene una **población por piso** (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)).
+Cada especie tiene una **población por región** (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)).
 
 | Población | Qué pasa | Precio de sus materiales | Tablón |
 |---|---|---|---|
-| **Escasa** | Casi no aparece. Si se sigue cazando, desaparece del piso hasta la próxima estación | Sube | No paga. El Ecologista puede poner veda (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md)) |
+| **Escasa** | Casi no aparece. Si se sigue cazando, desaparece de la región hasta la próxima estación | Sube | No paga. El Ecologista puede poner veda (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md)) |
 | **Normal** | — | Normal | Normal |
 | **Abundante** | Aparecen alfas y élites | Baja | Paga más |
 | **Plaga** | Invade zonas azules y amarillas: invasión o ataque a casas (ver [Defensa](../09-construccion/defensa-y-protecciones.md)) | Muy bajo | Paga el doble |
@@ -686,12 +686,12 @@ Cada especie tiene una **población por piso** (ver [Mundo vivo](../02-mundo/mun
 | Grifo de Montaña | Cabras de montaña | Ataca caravanas y monturas | Las cabras pelan los pastos |
 | Necrófago | **Cadáveres que dejan los jugadores** | Si se despieza o se quema todo, el necrófago escasea | Si nadie despieza, crecen y sube la Podredumbre Gris |
 | Buitre de Hueso | Restos de combate | Menos combates, menos buitres | Más carroña sin limpiar, más necrófagos |
-| Gusano de Vetas | Vetas de mineral | — | Si nadie lo caza, agota las vetas del piso |
+| Gusano de Vetas | Vetas de mineral | — | Si nadie lo caza, agota las vetas de la región |
 
 ### 10.3 Migraciones
 
-- En **primavera** vuelven las migraciones, y el evento *Migración* lleva una especie por varios pisos (ver [Eventos](eventos.md)).
-- Ejemplos: los grifos bajan del tramo VI al V en invierno; la langosta sube en verano por la Pradera Dorada; los murciélagos salen de las cuevas en otoño.
+- En **primavera** vuelven las migraciones, y el evento *Migración* lleva una especie por varias regiones (ver [Eventos](eventos.md)).
+- Ejemplos: los grifos bajan del anillo VI al V en invierno; la langosta sube en verano por la Pradera Dorada; los murciélagos salen de las cuevas en otoño.
 - **Siguen a los jugadores:** los carroñeros van detrás de las batallas, los mutantes detrás de la contaminación y las criaturas del Vacío detrás de la corrupción.
 
 ### 10.4 Monstruos que crecen si nadie los caza
@@ -704,10 +704,10 @@ Cada especie tiene una **población por piso** (ver [Mundo vivo](../02-mundo/mun
 | **Adulto** | Sobrevive un día de juego | Lo normal |
 | **Veterano** | Derriba a un jugador y huye, o sobrevive 3 días | El modificador **Templado**. Recuerda: resiste el tipo de daño que más recibió (siempre dentro del −30 %) |
 | **Alfa** | Veterano en una población Abundante | Lidera una manada (**Alfa de manada**) |
-| **Con nombre** | Alfa que sobrevive una semana o que derribó a 5 jugadores | Se vuelve **único temporal**: el servidor le pone nombre ("el Tuerto del Piso 16") y sale en la Gaceta |
+| **Con nombre** | Alfa que sobrevive una semana o que derribó a 5 jugadores | Se vuelve **único temporal**: el servidor le pone nombre ("el Tuerto de la Pradera Dorada") y sale en la Gaceta |
 
 - **"Te recuerda".** Si un monstruo te derribó, su ficha lo dice. Cazarlo da *Venganza*: un trofeo y Esencia extra.
-- **Límites:** un monstruo con nombre temporal por piso a la vez. Solo en zonas amarilla, roja y negra. Nunca pasa los números de su tramo.
+- **Límites:** un monstruo con nombre temporal por región a la vez. Solo en zonas amarilla, roja y negra. Nunca pasa los números de su anillo.
 
 ### 10.5 Peleas de territorio
 
@@ -724,7 +724,7 @@ Cada especie tiene una **población por piso** (ver [Mundo vivo](../02-mundo/mun
 - **Contaminación.** Además de las fuentes naturales (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)), se propone que la actividad intensa de los jugadores suba el rigor ☣️ de un nodo: fundiciones y destilerías grandes, vertidos de alquimia, vetas sobreexplotadas.
   - Con ☣️1 aparecen ratas y sapos; con ☣️2, lobos bicéfalos; con ☣️3, Abominaciones de Vertedero, y a veces un único como Vieja Bilis o Mandíbula de Forja.
   - Se baja con cuotas del Ecologista, estaciones de filtrado (Construcción, Ingeniería y Alquimia) y cazando a los mutantes.
-- **Corrupción del Vacío.** Desde las grietas del tramo IX se extiende a los nodos vecinos si nadie mata a los monstruos que la abren (Señor de la Fosa, Engendro del Umbral). Los monstruos de un nodo corrupto ganan el modificador **Corrupto**.
+- **Corrupción del Vacío.** Desde las grietas del anillo IX se extiende a los nodos vecinos si nadie mata a los monstruos que la abren (Señor de la Fosa, Engendro del Umbral). Los monstruos de un nodo corrupto ganan el modificador **Corrupto**.
 - **Terreno corrupto** fuera de combate: las hierbas se marchitan y las vetas rinden menos. Los herboristas y mineros pagan para que alguien lo limpie.
 
 ### 10.7 Brotes en la fauna
@@ -736,12 +736,12 @@ Cada especie tiene una **población por piso** (ver [Mundo vivo](../02-mundo/mun
 
 ## 11. Cómo se ve en Telegram: una manada con un lobo enfermo
 
-Piso 16, Pradera Dorada, de noche. Tú (Guerrero Protección), Lyra (Druida Restauración) y Ossian (Cazador Puntería) se cruzan con una manada de Lobos Grises. Uno está enfermo de Mal de Espuma.
+Lejanía 5, Pradera Dorada, de noche. Tú (Guerrero Protección), Lyra (Druida Restauración) y Ossian (Cazador Puntería) se cruzan con una manada de Lobos Grises. Uno está enfermo de Mal de Espuma.
 
 **El mensaje vivo de la ronda 2:**
 
 ```
-⚔️ Ronda 2 · Piso 16 · Pradera Dorada · 🌙 Noche
+⚔️ Ronda 2 · Lejanía 5 · Pradera Dorada · 🌙 Noche
 Manada de Lobos Grises (4)
 
 🐺 Alfa Tuerto 👑   ❤️ ▓▓▓▓▓▓▓▓░░ 80%
@@ -835,11 +835,11 @@ Si no la limpiaba y otra mordida llenaba la barra en esa hora, Lyra entraba en i
 
 ### Protección de novato (hasta el nivel 10)
 
-- En los pisos 1 a 10 ningún monstruo lleva enfermedades serias en su repertorio.
+- En el anillo I ningún monstruo lleva enfermedades serias en su repertorio.
 - Hasta el nivel 10 ninguna barra de enfermedad seria se llena: el golpe deja un **arañazo sucio** que enseña a limpiar heridas.
 - No aparecen los modificadores Enfermo ni Corrupto.
 - Los carroñeros no rematan derribados de nivel 10 o menos. Los ladrones no les roban.
-- Los mímicos del tramo I solo asustan: muerden poco y guardan un cofre de verdad.
+- Los mímicos del anillo I solo asustan: muerden poco y guardan un cofre de verdad.
 
 ### Presupuesto de poder parejo
 
@@ -851,7 +851,7 @@ Si no la limpiaba y otra mordida llenaba la barra en esa hora, Lyra entraba en i
 
 ### Números chicos
 
-- La vida de los monstruos va en múltiplos de la vida de un jugador del mismo tramo (§1.2).
+- La vida de los monstruos va en múltiplos de la vida de un jugador del mismo anillo (§1.2).
 - Ningún monstruo común pasa de 4 dígitos, tampoco con modificadores. Los únicos, de 5 como mucho. Los jefes, de 5 o 6.
 
 ### Economía y dinero real
@@ -892,7 +892,7 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 | **Cocina** | Carne, cebos, infusiones |
 | **Sastrería** | Máscaras, vendas limpias, seda real, algodón de nube |
 
-**Qué se lanza primero.** Para el lanzamiento bastan las familias de los tramos I a III (unas 40 especies), con la barra de Contagio y tres enfermedades nuevas: Mal de Espuma, Pulmón de Moho y Puesta de Araña. El resto llega con cada piso nuevo.
+**Qué se lanza primero.** Para el lanzamiento bastan las familias de los anillos I a III (unas 40 especies), con la barra de Contagio y tres enfermedades nuevas: Mal de Espuma, Pulmón de Moho y Puesta de Araña. El resto llega con cada anillo nuevo.
 
 **Queda abierto (para el dueño):**
 - ¿Los mímicos pueden aparecer también fuera de las mazmorras, por ejemplo en ruinas de zona amarilla?

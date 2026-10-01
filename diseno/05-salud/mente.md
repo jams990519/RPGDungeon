@@ -19,11 +19,11 @@
 
 ## 2. Cordura (solo en contenido específico)
 
-En las **Pesadillas** (ver [Misiones y exploración](../06-contenido/misiones-y-exploracion.md)) y en el tramo IX (Abismo Umbrío), una barra de cordura baja cada ronda. Al llegar a 0, la expedición termina. Se recupera con orbes, luz y ciertos objetos. Es el sistema de las Visiones Horrendas, que en WoW funcionó.
+En las **Pesadillas** (ver [Misiones y exploración](../06-contenido/misiones-y-exploracion.md)) y en el anillo IX (Abismo Umbrío), una barra de cordura baja cada ronda. Al llegar a 0, la expedición termina. Se recupera con orbes, luz y ciertos objetos. Es el sistema de las Visiones Horrendas, que en WoW funcionó.
 
 ## 3. Corrupción (permanente y lenta)
 
-El poder del Vacío deja **Corrupción**: la usan el Sacerdote Sombra y el Devorador, y también ciertos objetos y pisos.
+El poder del Vacío deja **Corrupción**: la usan el Sacerdote Sombra y el Devorador, y también ciertos objetos y regiones.
 - Poca da beneficios oscuros.
 - Mucha trae efectos raros: voces en el registro de combate, PNJ que te temen, misiones que solo un corrupto puede hacer.
 - Se limpia con misiones largas, o no se limpia.
@@ -41,4 +41,4 @@ Es una **elección** de personaje, no un castigo al azar.
 | **Gremio** | Jugar en grupo con tu gremio baja el estrés que sube en combate |
 | **Orco** | Su grito de guerra baja el estrés del grupo fuera de combate |
 
-**Por qué conviene.** Hace que la taberna, el bardo y el gremio tengan una función mecánica, y que los pisos altos se sientan opresivos sin subirles solo los números.
+**Por qué conviene.** Hace que la taberna, el bardo y el gremio tengan una función mecánica, y que las tierras lejanas se sientan opresivas sin subirles solo los números.

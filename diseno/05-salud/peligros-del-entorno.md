@@ -1,6 +1,6 @@
 # Peligros del entorno
 
-> **Módulo** [05 · Salud](README.md) · **Depende de:** [Condiciones](condiciones.md), [Enfermedades](enfermedades.md), [Heridas](heridas.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md) (terrenos), [Torre y pisos](../02-mundo/torre-y-pisos.md) (tramos), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (clima) · **Se conecta con:** [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Secuelas y muerte](secuelas-y-muerte.md), [Curación](curacion-y-tratamientos.md), [Profesiones](../07-economia/profesiones.md), [Sistema de construcción](../09-construccion/sistema-de-construccion.md) (refugios), [PvP](../06-contenido/pvp.md) (zonas) · **Estado:** propuesta
+> **Módulo** [05 · Salud](README.md) · **Depende de:** [Condiciones](condiciones.md), [Enfermedades](enfermedades.md), [Heridas](heridas.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md) (terrenos), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (anillos), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (clima) · **Se conecta con:** [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Secuelas y muerte](secuelas-y-muerte.md), [Curación](curacion-y-tratamientos.md), [Profesiones](../07-economia/profesiones.md), [Sistema de construcción](../09-construccion/sistema-de-construccion.md) (refugios), [PvP](../06-contenido/pvp.md) (zonas) · **Estado:** propuesta
 
 Pediste que la salud, el combate y las heridas tengan **problemas propios de la zona donde estás**: contaminarte, morir hasta cierto punto por el frío, morir por falta de agua. Este documento lo arma. Cada terreno tiene sus peligros. Todos avisan antes, todos tienen retirada y todos se evitan con equipo que fabrica otro jugador. Es la decisión D-36 (ver [Decisiones](../00-vision/decisiones.md)).
 
@@ -37,7 +37,7 @@ Cada nodo muestra el **rigor** de sus peligros, de 0 a 3. Tu equipo da **protecc
 | ❄️ Frío | ❄️ a ❄️❄️❄️ | **Abrigo**: capa, ropa, pociones, fuego |
 | ☀️ Calor | ☀️ a ☀️☀️☀️ | **Frescor**: ropa ligera, sombra, pociones |
 | 🌑 Oscuridad | Penumbra, oscuridad, oscuridad total | **Luz**: antorcha, farol, cristal |
-| ⛰️ Altitud | Aire fino 1 a 3 | **Aclimatación**: tiempo en el piso |
+| ⛰️ Altitud | Aire fino 1 a 3 | **Aclimatación**: tiempo en la región |
 
 **La cuenta.** Si tu protección iguala o supera el rigor, no pasa nada. Si falta, el peligro sube de etapa:
 
@@ -87,11 +87,11 @@ En etapa grave aparece **[🏃 Retirada segura]**. Te lleva por el camino más c
 - Lo que recolectaste viaja contigo. Solo pierdes el resto de la expedición.
 - En etapa crítica también puedes retirarte, pero el peligro sigue actuando.
 
-## 4. Peligros por terreno y tramo
+## 4. Peligros por terreno y anillo
 
 ### 4.1 Por terreno
 
-Cada piso tiene de 2 a 4 terrenos (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)).
+Cada región tiene de 2 a 4 terrenos (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)).
 
 | Terreno | Peligros propios | ¿Hay agua? | Rigor típico |
 |---|---|---|---|
@@ -106,22 +106,22 @@ Cada piso tiene de 2 a 4 terrenos (ver [Geografía y recursos](../02-mundo/geogr
 | 🌋 **Tierras volcánicas** | Calor extremo, **lava**, gases de azufre, erupciones | **No** | Muy alto |
 | 🌸 **Tierras flotantes** | Aire fino, vientos que empujan al borde, tormentas de rayos | Lluvia, hay que juntarla | Medio |
 
-### 4.2 Por tramo
+### 4.2 Por anillo
 
-El bioma del tramo marca el rigor máximo (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)). Un parche de desierto en el tramo II tiene rigor 1; el Mar de Dunas del tramo V, rigor 3.
+El anillo marca el rigor máximo (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)). Un parche de desierto en el anillo II tiene rigor 1; el Mar de Dunas del anillo V, rigor 3. La columna Bioma dice el bioma que más pesa en ese anillo.
 
-| Tramo | Bioma | Peligro estrella | Rigor máximo | Qué pide |
+| Anillo (Lejanía) | Bioma | Peligro estrella | Rigor máximo | Qué pide |
 |---|---|---|---|---|
-| I · 1-10 | Bosque Susurrante | Picaduras, noche | 1, y nada pasa de leve (protección de novato) | Nada especial |
-| II · 11-20 | Pradera Dorada | Tormentas, primer calor | 1 | Capa encerada |
-| III · 21-30 | Cueva de Cristal | **Oscuridad**, **resonancia de cristal**, gas | 2 | Luz, forro de plomo |
-| IV · 31-40 | Pantano Putrefacto | **Miasma**, mosquitos, agua sucia | 2 | Máscara de carbón, pastillas, repelente |
-| V · 41-50 | Desierto Ardiente | **Sed** y calor | 3 | Agua, capa de lino blanco |
-| VI · 51-60 | Picos Helados | **Frío**, altitud, avalanchas | 3 | Abrigo de piel, raquetas |
-| VII · 61-70 | Ruinas Olvidadas | Polvo de maldición, derrumbes, trampas antiguas; cada piso con su regla rara | 3 | Según el piso |
-| VIII · 71-80 | Ciudadela en Llamas | **Lava**, calor, gases de azufre | 3 | Resistencia al fuego, máscara |
-| IX · 81-90 | Abismo Umbrío | **Corrupción del Vacío**, oscuridad mágica | 3 | Filtro bendito, luz sagrada |
-| X · 91-100 | Jardines Flotantes | Aire fino, vientos del borde, rayos | 3 | Aclimatación, cuerda |
+| I · 1-3 | Bosque Susurrante | Picaduras, noche | 1, y nada pasa de leve (protección de novato) | Nada especial |
+| II · 4-6 | Pradera Dorada | Tormentas, primer calor | 1 | Capa encerada |
+| III · 7-9 | Cueva de Cristal | **Oscuridad**, **resonancia de cristal**, gas | 2 | Luz, forro de plomo |
+| IV · 10-12 | Pantano Putrefacto | **Miasma**, mosquitos, agua sucia | 2 | Máscara de carbón, pastillas, repelente |
+| V · 13-15 | Desierto Ardiente | **Sed** y calor | 3 | Agua, capa de lino blanco |
+| VI · 16-18 | Picos Helados | **Frío**, altitud, avalanchas | 3 | Abrigo de piel, raquetas |
+| VII · 19-21 | Ruinas Olvidadas | Polvo de maldición, derrumbes, trampas antiguas; cada región con su regla rara | 3 | Según la región |
+| VIII · 22-24 | Ciudadela en Llamas | **Lava**, calor, gases de azufre | 3 | Resistencia al fuego, máscara |
+| IX · 25-27 | Abismo Umbrío | **Corrupción del Vacío**, oscuridad mágica | 3 | Filtro bendito, luz sagrada |
+| X · 28 y más | Jardines Flotantes | Aire fino, vientos del borde, rayos | 3 | Aclimatación, cuerda |
 
 ### 4.3 El clima y las estaciones suman
 
@@ -134,8 +134,8 @@ Ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md). El rigor nunca pasa de 3.
 | Lluvia | Te deja **Mojado**: el frío cuenta 1 punto más. Sube la miasma |
 | Tormenta | Rayos en terreno abierto |
 | Niebla | Menos luz: cuenta como penumbra |
-| Invierno | +1 ❄️ en los pisos que ya tienen frío |
-| Verano | +1 ☀️ en los pisos que ya tienen calor; algunos oasis se secan |
+| Invierno | +1 ❄️ en las regiones que ya tienen frío |
+| Verano | +1 ☀️ en las regiones que ya tienen calor; algunos oasis se secan |
 
 ## 5. Catálogo de peligros
 
@@ -148,7 +148,7 @@ Ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md). El rigor nunca pasa de 3.
 | 🔴 Crítico | **Hipotermia** | −5 % de vida por paso. No puedes recolectar | Iniciativa −30 %, −3 % de vida por ronda |
 | 💀 | **Derribado** | Caes en la nieve | — |
 
-- **Dónde:** tramo VI, tundra, cumbres, cuevas de hielo, ventiscas y **las noches del desierto** (❄️1).
+- **Dónde:** anillo VI, tundra, cumbres, cuevas de hielo, ventiscas y **las noches del desierto** (❄️1).
 - **Mojado:** por lluvia, ríos, pantano o caer al agua. Mientras dura, el frío cuenta 1 punto más. Se seca junto al fuego o después de unos pasos en un nodo seco.
 - **Agua helada:** caer por el hielo fino te deja Mojado y sube el frío dos etapas de golpe. Siempre avisa antes: "*el hielo cruje bajo tus botas*".
 - **Calor gradual** (como dice [Heridas](heridas.md)): junto a una fogata, el frío baja una etapa por paso, no todo de golpe.
@@ -244,20 +244,20 @@ Sin beber, en el desierto de día pasas de 100 a sed en unos 12 pasos. Una canti
 
 | Fuente | Dónde | Filtro que sirve | Enfermedad que puede dejar | Nota |
 |---|---|---|---|---|
-| 🐸 **Miasma** | Pantano (tramo IV), agua estancada | Carbón | Fiebre del Pantano | Sube con la lluvia y en verano |
+| 🐸 **Miasma** | Pantano (anillo IV), agua estancada | Carbón | Fiebre del Pantano | Sube con la lluvia y en verano |
 | ⛏️ **Gas de mina** | Cuevas, minas profundas | Carbón | Tos del Minero | **Explota con llama abierta**: antorcha + gas = quemaduras a todo el grupo. Se usa farol de seguridad |
 | 🍄 **Esporas** | Cuevas, bosque podrido, pantano | Lino fino | — | Alucinaciones: el estrés sube 2 por paso |
-| 💎 **Resonancia de cristal** | Cueva de Cristal (tramo III), vetas crudas | Ninguno: **forro de plomo** o distancia | Temblor Arcano | Un **péndulo de resonancia** avisa, como un contador Geiger |
-| 🌋 **Gases de azufre** | Tierras volcánicas, tramo VIII | Carbón | — | Se juntan en las hondonadas; el mapa marca los nodos bajos |
-| 🌑 **Corrupción del Vacío** | Abismo Umbrío (tramo IX), grietas | **Bendito** | Fiebre del Vacío | Sube el estrés. **No** se vuelve Corrupción permanente por sí sola: esa es una elección (ver [Mente](mente.md)). Si se pierde la carrera de una Fiebre del Vacío contraída aquí, deja Corrupción menor, que el templo limpia |
+| 💎 **Resonancia de cristal** | Cueva de Cristal (anillo III), vetas crudas | Ninguno: **forro de plomo** o distancia | Temblor Arcano | Un **péndulo de resonancia** avisa, como un contador Geiger |
+| 🌋 **Gases de azufre** | Tierras volcánicas, anillo VIII | Carbón | — | Se juntan en las hondonadas; el mapa marca los nodos bajos |
+| 🌑 **Corrupción del Vacío** | Abismo Umbrío (anillo IX), grietas | **Bendito** | Fiebre del Vacío | Sube el estrés. **No** se vuelve Corrupción permanente por sí sola: esa es una elección (ver [Mente](mente.md)). Si se pierde la carrera de una Fiebre del Vacío contraída aquí, deja Corrupción menor, que el templo limpia |
 | 🐀 **Plaga** | Nodos en brote durante una epidemia | Lino fino o bendito | Plaga Pálida | Solo durante eventos (ver [Enfermedades](enfermedades.md)) |
-| 🏛️ **Polvo de maldición** | Ruinas Olvidadas (tramo VII), criptas | Bendito | Maldición menor | Se levanta con un ritual del templo |
+| 🏛️ **Polvo de maldición** | Ruinas Olvidadas (anillo VII), criptas | Bendito | Maldición menor | Se levanta con un ritual del templo |
 
 ### 5.5 Los demás peligros
 
 | Peligro | Dónde | Cómo sube (leve → grave → crítico) | Salida | Protección |
 |---|---|---|---|---|
-| ⛰️ **Altitud** (aire fino) | Cumbres de los Picos Helados, Jardines Flotantes | Fatiga al doble → Aguante máximo −1 y dolor de cabeza → confusión y −5 % de vida por paso | Bajar un nodo baja una etapa | Aclimatación: +1 por cada hora real en el piso, también fuera de línea (tope 3). Té de altura. El **Mal del Piso** ([Enfermedades](enfermedades.md)) es la versión suave al llegar |
+| ⛰️ **Altitud** (aire fino) | Cumbres de los Picos Helados, Jardines Flotantes | Fatiga al doble → Aguante máximo −1 y dolor de cabeza → confusión y −5 % de vida por paso | Bajar un nodo baja una etapa | Aclimatación: +1 por cada hora real en la región, también fuera de línea (tope 3). Té de altura. El **Mal del Viajero** ([Enfermedades](enfermedades.md)) es la versión suave al llegar |
 | 🌑 **Oscuridad** | Cuevas, subsuelo, noche en la espesura, Abismo | Penumbra: precisión −10 %, no ves los nodos vecinos → Oscuridad: precisión −25 %, trampas invisibles, estrés +2 por paso → Oscuridad total: **algo te muerde** en cada paso | Encender luz o volver a un nodo iluminado | Antorcha, farol, cristal luminoso, luz sagrada (§7) |
 | 🌊 **Agua profunda** | Costa, lagos, ríos crecidos, cuevas inundadas | Barra 🫧 **Aire** de 3 pasos bajo el agua → sin aire: −10 % de vida por paso → ahogándote | [⬆️ Subir] siempre visible: una acción | Vejiga de aire, casco de buzo, poción de respirar bajo el agua. **Las placas hunden**: con armadura pesada no se nada, se cruza por puente o en barca |
 | 🏜️ **Arenas movedizas y lodo** | Desierto, pantano | Hasta la rodilla → hasta la cintura (no puedes huir) → hasta el pecho | Quedarte quieto frena el hundimiento; soltar peso; que un aliado tire una cuerda | Vara de sondeo para detectarlas, cuerda, mapa de peligros |
@@ -267,7 +267,7 @@ Sin beber, en el desierto de día pasas de 100 a sed en unos 12 pasos. Una canti
 | 🦟 **Picaduras e insectos** | Pantano, bosque, desierto (escorpiones), cuevas (arañas) | Picazón → las picaduras suman a la barra de **Veneno** (ver [Daño y estados](../04-combate/dano-y-estados.md)) → la enfermedad que traen (mosquitos: Fiebre del Pantano) | Un enjambre se espanta con humo o fuego | Repelente, mosquitero para acampar |
 | 🌨️ **Nieve profunda y avalanchas** | Tundra, Picos Helados | Moverte cuesta el doble de Vigor → no puedes huir → avalancha avisada ("*la nieve cruje sobre ti*"): si no te apartas, quedas enterrado, Mojado y con frío | Un aliado te desentierra, o sales solo en 3 rondas | Raquetas de nieve, pala plegable |
 | 🌬️ **Vientos del borde** | Tierras flotantes, Jardines Flotantes | Aviso de ráfaga 1 paso antes → si no te agarras (reacción), te arrastra a un nodo más bajo con una fractura. Nunca al vacío | Agarrarse, alejarse del borde | Cuerda con ancla, botas con clavos |
-| ☔ **Lluvia ácida** | Rara, tramos IV y VIII | Gasta la durabilidad del equipo expuesto y suma ☣️1 | Techo | Capa encerada |
+| ☔ **Lluvia ácida** | Rara, anillos IV y VIII | Gasta la durabilidad del equipo expuesto y suma ☣️1 | Techo | Capa encerada |
 
 **Combinaciones que conviene conocer:**
 - Antorcha + gas de mina = explosión.
@@ -397,7 +397,7 @@ Los refugios **cobran peaje** (lo decide el dueño) y necesitan **mantenimiento*
 
 | Quién | Qué vende |
 |---|---|
-| **Guía de piso** (ver [Roles](../00-vision/roles-y-caminos-de-juego.md)) | Conoce los oasis, las arenas y las bolsas de gas; cobra por cruzar a un grupo |
+| **Guía de región** (ver [Roles](../00-vision/roles-y-caminos-de-juego.md)) | Conoce los oasis, las arenas y las bolsas de gas; cobra por cruzar a un grupo |
 | **Cartógrafo** (Inscripción) | **Mapas de peligros**: rigor, fuentes de agua y arenas movedizas antes de pisar |
 | **Aguador** (Comercio) | Agua en la puerta del desierto; contratos para llenar cisternas |
 | **Rescatista** | Toma los contratos de las bengalas de rescate |
@@ -429,11 +429,11 @@ Descansar en una posada, en casa o en un refugio devuelve todas las barras del e
 
 ## 9. Linajes: quién resiste qué
 
-Todo sale del rasgo de cuerpo que cada linaje ya tiene (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)). Ninguno ignora un peligro entero: arriba del tramo V, el equipo sigue haciendo falta.
+Todo sale del rasgo de cuerpo que cada linaje ya tiene (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)). Ninguno ignora un peligro entero: más allá del anillo V, el equipo sigue haciendo falta.
 
 | Linaje | Rasgo que ya tiene | En el entorno |
 |---|---|---|
-| **Humano** | Se aclimata en la mitad del tiempo | Altitud y Mal del Piso: la mitad |
+| **Humano** | Se aclimata en la mitad del tiempo | Altitud y Mal del Viajero: la mitad |
 | **Enano** | Resiste enfermedades de mina y de frío | Tos del Minero a la mitad por gas y polvo; le cuesta más contraer la Gripe de Escarcha |
 | **Gnomo** | Cabe por pasadizos que otros no | Atajos que esquivan nodos de peligro en cuevas y laberintos |
 | **Elfo del Alba** | Resiste la Quemadura de Maná | La resonancia de cristal le sube a la mitad |
@@ -453,7 +453,7 @@ Un solo mensaje vivo que se edita en cada paso. Mira lleva una capa de lino blan
 **La salida:**
 
 ```
-🏜️ Expedición · Piso 44 · Mar de Dunas
+🏜️ Expedición · Lejanía 13 · Mar de Dunas
 Zona 🔴 roja · Mediodía ☀️☀️☀️
 Tu frescor: ☀️☀️ (capa de lino blanco)
 💧 Hidratación ▓▓▓▓▓▓▓▓▓▓ 100 · Refrescado
@@ -559,7 +559,7 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 
 | Consume | Produce | Depende del farmeo | Depende de la fabricación | Depende de la progresión |
 |---|---|---|---|---|
-| Ropa de clima, cantimploras, máscaras, filtros, luz, pociones, comida, leña, refugios | Demanda constante para más de diez oficios, pacientes para los médicos, valor para los materiales de zonas hostiles, contratos de guía y de rescate | Pieles, lino, lana, grasa, carbón, obsidiana, hierbas | Todo el equipo de protección | Tramo del equipo, rango de los artesanos, aclimatación |
+| Ropa de clima, cantimploras, máscaras, filtros, luz, pociones, comida, leña, refugios | Demanda constante para más de diez oficios, pacientes para los médicos, valor para los materiales de zonas hostiles, contratos de guía y de rescate | Pieles, lino, lana, grasa, carbón, obsidiana, hierbas | Todo el equipo de protección | Anillo del equipo, rango de los artesanos, aclimatación |
 
 **A quién le da trabajo:**
 

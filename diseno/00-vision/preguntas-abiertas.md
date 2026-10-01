@@ -21,7 +21,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 
 | # | Pregunta | Recomendación |
 |---|---|---|
-| P-07 | ¿100 pisos? ¿Con cuántos se lanza? | 100 en total; lanzar con los pisos 1-10 y publicar 1 cada 1-2 semanas |
+| P-07 | ¿100 pisos? ¿Con cuántos se lanza? | ✅ **Decidido (D-58):** ya no hay pisos. El mapa es infinito y se abre por parches (D-60) |
 | P-08 | ¿Un solo servidor para todos o varios? | Uno solo (español e inglés juntos) mientras quepa |
 | P-09 | ¿Los Pioneros suman a su castillo? | Sí |
 | P-10 | ¿Los castillos nacen solo por cisma, o se puede fundar un segundo castillo desde el principio? | Solo por cisma: da historia |
@@ -39,7 +39,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-68 | ¿La técnica del arma (idea de Albion) ocupa una de las 3 casillas de habilidad, o se elimina? | Que pueda ocupar una de las 3 casillas, a elección del jugador |
 | P-14 | ¿Armadura libre con penalización de peso? | Sí |
 | P-15 | ¿Cualquier linaje con cualquier clase? | Sí |
-| P-16 | ¿Nivel ligado al piso (Techo del Piso)? | Sí |
+| P-16 | ¿Nivel ligado al piso (Techo del Piso)? | ✅ **Sin efecto (D-58):** ya no hay pisos. La idea sigue como Techo de la Frontera (propuesta, ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)) |
 
 ## Combate
 
@@ -104,7 +104,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-41 | ¿Qué minijuegos primero? | Dados de taberna, trivia de lore, rezar en el santuario |
-| P-42 | ¿Grupos de Telegram oficiales por castillo y por piso? | Sí |
+| P-42 | ¿Grupos de Telegram oficiales por castillo y por región? | Sí |
 | P-43 | ¿Casa propia desde el principio? | Sí: es parte de la fundación |
 | P-44 | ¿Mini App o solo chat? | Solo chat primero; Mini App después para mapa, talentos y mercado |
 | P-45 | ¿Vigor (energía) para las acciones de mundo abierto? | Sí, generoso; las instancias, con bloqueos semanales |

@@ -1,6 +1,6 @@
 # Aprender jugando: pistas, no instrucciones
 
-> **Módulo** [00 · Visión](README.md) · **Depende de:** [Decisiones](decisiones.md) (D-44 amplio pero ligero, D-49 la diferencia la hacen los oficios y el conocimiento, D-56 aprender con pistas), [Visión y pilares](vision-y-pilares.md) (pilares 5 y 11) · **Se conecta con:** [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) (conocimiento), [Bestiario](../06-contenido/bestiario.md), [Jefes](../06-contenido/jefes.md) (notas en el suelo, manchas de sangre), [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) (la mancha), [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) (maestros PNJ, primeras horas), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) (entrenadores), [Profesiones](../07-economia/profesiones.md) (Informante, guía de piso), [Fabricación](../07-economia/fabricacion.md), [Investigaciones](../06-contenido/investigaciones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md), [Gremios y social](../08-social/gremios-y-social.md) (mentoría), [Telegram](../01-plataforma/telegram.md), [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) · **Estado:** propuesta
+> **Módulo** [00 · Visión](README.md) · **Depende de:** [Decisiones](decisiones.md) (D-44 amplio pero ligero, D-49 la diferencia la hacen los oficios y el conocimiento, D-56 aprender con pistas), [Visión y pilares](vision-y-pilares.md) (pilares 5 y 11) · **Se conecta con:** [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) (conocimiento), [Bestiario](../06-contenido/bestiario.md), [Jefes](../06-contenido/jefes.md) (notas en el suelo, manchas de sangre), [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) (la mancha), [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) (maestros PNJ, primeras horas), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) (entrenadores), [Profesiones](../07-economia/profesiones.md) (Informante, guía de región), [Fabricación](../07-economia/fabricacion.md), [Investigaciones](../06-contenido/investigaciones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md), [Gremios y social](../08-social/gremios-y-social.md) (mentoría), [Telegram](../01-plataforma/telegram.md), [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) · **Estado:** propuesta
 
 **Qué pediste.** Un tutorial amplio dentro de cada cosa. Antes de empezar cada actividad, el juego te guía poco a poco con notas. Pero no te guía al cien por ciento: te da pistas para que tengas que aprender. El sistema no te resuelve todo; tienes que aprender tú (D-56).
 
@@ -31,12 +31,12 @@
 | Qué hace cada botón, en una línea (la ayuda de cada acción ya viene en la vista: ver [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) §3.3) | Cómo responder a un aviso concreto de un jefe |
 | Dónde aprender más: un maestro, un libro, el Bestiario, una mancha | Quién es el culpable de un caso |
 | Las reglas que, si no las sabes, te hacen perder algo sin aprender nada (§3.4) | Qué ingredientes combinar para un elixir |
-| Qué hay para hacer en el piso y dónde empieza (§2.3) | Dónde está el jefe oculto o la próxima pieza del Gran Misterio |
+| Qué hay para hacer en la región y dónde empieza (§2.3) | Dónde está el jefe oculto o la próxima pieza del Gran Misterio |
 
 ### 1.2 Cuatro reglas
 
 1. **Qué y dónde, nunca el cómo completo.** La pista más fuerte señala dónde está la respuesta. No la da.
-2. **Saber es progreso.** Las clases están igualadas (D-49): lo que separa a un jugador de otro son sus oficios y lo que sabe. Si el juego regalara las soluciones, esa diferencia desaparecería. Lo mismo pasaría con los oficios que venden conocimiento: el Informante, el guía de piso, el escritor de libros (ver [Profesiones](../07-economia/profesiones.md)).
+2. **Saber es progreso.** Las clases están igualadas (D-49): lo que separa a un jugador de otro son sus oficios y lo que sabe. Si el juego regalara las soluciones, esa diferencia desaparecería. Lo mismo pasaría con los oficios que venden conocimiento: el Informante, el guía de región, el escritor de libros (ver [Profesiones](../07-economia/profesiones.md)).
 3. **Difícil pero justo** (pilar 5). Toda respuesta se puede encontrar dentro del mundo. Si la pista de nivel 3 de un tema no tiene adónde apuntar, el contenido está mal hecho y se corrige antes de publicarlo.
 4. **Ligero** (D-44). Una pista ocupa una o dos líneas al pie de la pantalla. Una nota de bienvenida, tres como mucho. Nunca una ventana que tapa, nunca un mensaje aparte, nunca más de una por pantalla.
 
@@ -65,7 +65,7 @@
 | 🩺 **Medicina** | Tu primer paciente | La Abadesa del Hospicio | "El paciente es otro jugador. Su Estabilidad nunca debe llegar a 0. Observar no cura, pero enseña." |
 | 💰 **Mercado** | Tu primera orden | Un mercader de la Lonja | "Aquí venden y compran jugadores, no la tienda. Cada objeto tiene un precio mínimo y uno máximo. Los precios cambian de una ciudad a otra." |
 | 🏹 **Cacerías** | Tu primer contrato | Una anciana de los Errantes | "La presa no te espera: deja rastros, y la lluvia los borra. Cómo empieza la pelea importa tanto como la pelea." |
-| 🔍 **Investigaciones** | Tu primer caso | El guardia del piso | "Las pistas van a tu Tablero. Alguien te va a mentir. Acusar a un inocente cuesta caro." |
+| 🔍 **Investigaciones** | Tu primer caso | El guardia de la región | "Las pistas van a tu Tablero. Alguien te va a mentir. Acusar a un inocente cuesta caro." |
 | 🏚 **Ruinas** | Tu primera ruina | La cazadora del Claro | "Lo que se perdió en el Colapso quedó en pedazos. Los que encuentres van a tu Códice." |
 | 🧭 **Expediciones** | Tu primer paso fuera | El vigía de la puerta | "Cada paso trae algo. Solo está a salvo lo que traes de vuelta. La pregunta es siempre la misma: ¿sigues o vuelves?" |
 | 🐉 **Jefes** | Tu primera guarida | La Bitácora (tu héroe) | "Anoto: aquí todo golpe grande se avisa. Si caigo, mi mancha quedará en la entrada, junto a la de otros." |
@@ -74,19 +74,19 @@
 | 🎲 **Apuestas** | Primera vez en la Fortuna | El crupier | "Aquí se apuesta solo oro del juego. Hay un tope diario de pérdidas. Si quieres cerrarte el acceso, existe el Voto de Templanza." *(regla clara: §3.4)* |
 | ⚙️ **Tácticas** | Al abrirlas por primera vez | El instructor del patio | "Tus Tácticas pelean cuando no miras. Se leen de arriba abajo: actúa la primera regla que se cumple." *(regla básica: §3.4)* |
 
-Son ejemplos. Cada actividad nueva (de una expansión o de un piso nuevo) trae su nota como un dato más, no como un sistema nuevo.
+Son ejemplos. Cada actividad nueva (de una expansión o de una región nueva) trae su nota como un dato más, no como un sistema nuevo.
 
-### 2.3 Tareas del piso: qué hay y dónde
+### 2.3 Tareas de la región: qué hay y dónde
 
 **De dónde sale.** Los diarios de logros de *Old School RuneScape*.
 
-Cada piso tiene una lista corta de **tareas** en tres niveles (fácil, media y difícil) que muestran qué se puede hacer y dónde empieza. Nunca dicen cómo. Se marcan solas al cumplirlas y se ven con `/piso`.
+Cada región tiene una lista corta de **tareas** en tres niveles (fácil, media y difícil) que muestran qué se puede hacer y dónde empieza. Nunca dicen cómo. Se marcan solas al cumplirlas y se ven con `/region`.
 
-| Nivel | Ejemplos del Piso 1 | Al completar el nivel |
+| Nivel | Ejemplos junto al Claro | Al completar el nivel |
 |---|---|---|
-| **Fácil** | Vendar una herida con una venda limpia (Hospicio) · Vender algo en la Lonja del Vado · Leer una mancha de sangre · Seguir un rastro hasta el final (Errantes) | Un cosmético del piso |
+| **Fácil** | Vendar una herida con una venda limpia (Hospicio) · Vender algo en la Lonja del Vado · Leer una mancha de sangre · Seguir un rastro hasta el final (Errantes) | Un cosmético de la región |
 | **Media** | Fabricar una pieza de calidad Buena o mejor · Descubrir un efecto de una hierba · Resolver un caso rápido sin acusar a un inocente · Dejar una nota en el suelo que reciba 5 👍 | Una comodidad (por ejemplo, un viaje gratis por semana) |
-| **Difícil** | Vencer al Guardián sin caer · Completar un saber perdido · Llegar a Amistoso con dos comunidades | Título "Conocedor del Piso 1" |
+| **Difícil** | Vencer al Guardián sin caer · Completar un saber perdido · Llegar a Amistoso con dos comunidades | Título "Conocedor del Claro" |
 
 Las tareas enseñan que algo existe ("¿una venda limpia?", "¿se pueden leer las manchas?") sin explicar cómo funciona. Las recompensas son de comodidad o cosméticas, nunca poder.
 
@@ -101,7 +101,7 @@ Las tareas enseñan que algo existe ("¿una venda limpia?", "¿se pueden leer la
 | **3 · Dónde** | Señala la fuente donde está la respuesta: un maestro, un libro, el Bestiario, una mancha. No la da | "La maestra herrera del Bastión enseña esto en su tarea de esta semana." | "En la entrada hay 7 manchas de quienes cayeron por el Aliento. Lee una." |
 
 - **No hay nivel 4.** Si sigues sin lograrlo, la pista de nivel 3 se repite, como mucho una vez por día.
-- **La pista de nivel 3 apunta a una fuente que puedes usar:** un maestro de tu hogar o de una comunidad donde tienes reputación, un libro que está en tu ciudad, una mancha del mismo piso. Nunca a un lugar donde no te dejan entrar.
+- **La pista de nivel 3 apunta a una fuente que puedes usar:** un maestro de tu hogar o de una comunidad donde tienes reputación, un libro que está en tu ciudad, una mancha de la misma región. Nunca a un lugar donde no te dejan entrar.
 - **Al lograrlo, las pistas de ese tema se apagan** y lo que aprendiste queda en la Bitácora.
 
 ### 3.2 Cuándo sale cada nivel
@@ -255,7 +255,7 @@ Solo cuenta lo que logras con el modo sin ayuda activo y **sin haber visto ningu
 | **Autodidacta** | Vencer a un Guardián | Título |
 | **Mano propia** | Fabricar tu primera pieza Notable | Logro y marco de firma |
 | **Ojo clínico** | Tu primera cirugía limpia | Logro |
-| **Sabueso solitario** | Resolver un caso del piso | Logro |
+| **Sabueso solitario** | Resolver un caso de la región | Logro |
 
 Solo cosméticos. Apagar las pistas nunca da poder: daría una razón para apagarlas que no es aprender.
 
@@ -303,7 +303,7 @@ hint:                        # [ES] Opcional. Una sola por vista. Nunca en la vi
 ### 9.1 Primera vez en el alambique
 
 ```
-⚗️ Alambique del Hospicio · Piso 1
+⚗️ Alambique del Hospicio · El Claro
 Tienes: Raíz de sauce ×4 · Musgo de cueva ×3
         Flor de ceniza ×2
 Sabes: Tónico de raíz (T1)
@@ -429,7 +429,7 @@ Encaja con las primeras horas que ya describe [El Colapso y las comunidades](../
 | **Minuto 0** | Despiertas entre ruinas | Ninguna: tres líneas de historia |
 | **Minutos 1 a 10** | Buscar entre los escombros, una pelea fácil, vendarte | Tres notas cortas, una por cosa (ruinas, combate, heridas). Ninguna dice qué botón tocar |
 | **Minuto 10: el cruce** | La cazadora te ofrece comunidad o Claro | Ninguna: la propia escena explica las dos opciones |
-| **Primera hora** | El rito, una cama, tu primer entrenador, o tu primer cobertizo en el Claro. La primera noche, los lobos del Claro (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md)) | Una nota por actividad nueva, y aparecen las Tareas del piso (`/piso`) |
+| **Primera hora** | El rito, una cama, tu primer entrenador, o tu primer cobertizo en el Claro. La primera noche, los lobos del Claro (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md)) | Una nota por actividad nueva, y aparecen las Tareas de la región (`/region`) |
 | **Primeros días** | Oficios, mercado, cacerías, casos | Cada nota sale cuando llegas a la actividad. Las pistas empiezan con los primeros tropiezos |
 
 **Regla:** como mucho una nota nueva cada pocos minutos de juego. Si hay dos, la segunda espera en la Bitácora.
@@ -440,7 +440,7 @@ Como pide la [red de sistemas](red-de-sistemas.md), aprender también consume y 
 
 | Sistema | Consume (entradas) | Produce (salidas) | Depende del farmeo | Depende de la fabricación | Depende de la progresión |
 |---|---|---|---|---|---|
-| **Aprendizaje y pistas** | Los tropiezos y descubrimientos de todos los sistemas; manchas y notas de otros jugadores; libros, fichas y consejos de maestros | Entradas de la Bitácora; demanda de conocimiento (fichas del Informante, libros de jugadores, guías de piso, mentores, consejos pagados a maestros); títulos del modo sin ayuda | Tinta y papel de los libros y las fichas | Inscripción (libros, pergaminos, fichas) | Estrellas del Bestiario, rangos de oficio, reputación con las comunidades (qué maestro te aconseja) |
+| **Aprendizaje y pistas** | Los tropiezos y descubrimientos de todos los sistemas; manchas y notas de otros jugadores; libros, fichas y consejos de maestros | Entradas de la Bitácora; demanda de conocimiento (fichas del Informante, libros de jugadores, guías de región, mentores, consejos pagados a maestros); títulos del modo sin ayuda | Tinta y papel de los libros y las fichas | Inscripción (libros, pergaminos, fichas) | Estrellas del Bestiario, rangos de oficio, reputación con las comunidades (qué maestro te aconseja) |
 
 ## 12. Ligero de un vistazo
 
@@ -471,7 +471,7 @@ Para conectar este documento con el resto del diseño. **No están hechas.**
 |---|---|
 | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) | §2 Conocimiento: enlazar aquí y aclarar que la nota del Bestiario dentro del aviso es **conocimiento ganado**, no una pista, así que sigue en el modo sin ayuda. Proponer que describa y no ordene: "(Ya lo viste: golpe retrasado)" en lugar de "(… espera una ronda)". Agregar que las pistas nunca salen durante una ronda, solo en el resultado o en la antesala. §3 Tácticas: nota de bienvenida al abrirlas por primera vez |
 | [Fabricación](../07-economia/fabricacion.md) | §2 El minijuego: la pista a mano va dentro del panel [📜 Receta], fuera de los exámenes, sin sumar botones. §4 Descubrimiento: las mezclas sin efecto se anotan solas en la Bitácora; temas de pista por oficio (durabilidad a 0, calidad estancada, mezcla sin efecto) |
-| [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) | §6.1 Maestros PNJ: agregar [💬 Consejo] y su personalidad (enlazar a §5.2 de este documento). §7 Las primeras horas: el tutorial corto usa notas de bienvenida, no pasos guiados; la cazadora del Claro dice las primeras notas; aparecen las Tareas del piso. §3.2 Ritos: la columna "Qué te enseña de paso" ya es aprendizaje sin instrucciones; enlazar aquí |
+| [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) | §6.1 Maestros PNJ: agregar [💬 Consejo] y su personalidad (enlazar a §5.2 de este documento). §7 Las primeras horas: el tutorial corto usa notas de bienvenida, no pasos guiados; la cazadora del Claro dice las primeras notas; aparecen las Tareas de la región. §3.2 Ritos: la columna "Qué te enseña de paso" ya es aprendizaje sin instrucciones; enlazar aquí |
 | [Gremios y social](../08-social/gremios-y-social.md) | §5 Mentoría: el mentor ve el tema en que se atasca su aprendiz (si este lo permite), deja una nota de mentor por día con frases de plantilla y gana moneda de mentoría cuando el aprendiz lo supera |
 | [README de 00 · Visión](README.md) | Agregar la fila: "[aprendizaje-y-pistas.md](aprendizaje-y-pistas.md) · Notas de bienvenida, pistas en tres niveles, fuentes dentro del mundo, la Bitácora y el modo sin ayuda" |
 
@@ -481,7 +481,7 @@ También convendría, más adelante:
 |---|---|
 | [Decisiones](decisiones.md) | D-56: cambiar "Aprendizaje y pistas (en redacción)" por el enlace a este documento |
 | [Red de sistemas](red-de-sistemas.md) | §3: agregar la fila "Aprendizaje y pistas" del §11 de este documento |
-| [Glosario](glosario.md) | Términos nuevos: **Bitácora**, **Nota de bienvenida**, **Pista** (niveles 1 a 3), **Tareas del piso**, **Modo sin ayuda** |
+| [Glosario](glosario.md) | Términos nuevos: **Bitácora**, **Nota de bienvenida**, **Pista** (niveles 1 a 3), **Tareas de la región**, **Modo sin ayuda** |
 | [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) | §3: el campo opcional `hint` en las vistas, y que nunca va en la vista de una ronda |
 | [Telegram](../01-plataforma/telegram.md) | §3 Principios: "la pista va al pie del mensaje vivo, nunca en un mensaje aparte" |
 | [Bestiario](../06-contenido/bestiario.md) | §1.5: la Bitácora anota los movimientos vistos y enlaza a la ficha de la especie |

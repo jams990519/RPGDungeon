@@ -32,12 +32,12 @@
 5. **El veredicto.**
    - Acertar las tres da la recompensa completa.
    - Acertar parte da una recompensa parcial.
-   - Acusar a un inocente tiene consecuencias en la historia del piso: el culpable escapa, o el pueblo desconfía de ti.
+   - Acusar a un inocente tiene consecuencias en la historia de la región: el culpable escapa, o el pueblo desconfía de ti.
 
 ### 1.2 El Tablero de corcho
 
 ```
-🧷 Tablero — El pozo envenenado (Ribera Seca, piso 12)
+🧷 Tablero — El pozo envenenado (Ribera Seca, Lejanía 4)
 Pistas (5/8):
  • Frasco roto con olor a almendra amarga (junto al pozo)
  • Huellas de bota pequeña en el barro
@@ -54,7 +54,7 @@ Pistas (5/8):
 | Formato | Duración | Qué es |
 |---|---|---|
 | **Caso rápido** | 5-10 minutos | Del tablón diario, con 3 o 4 pistas |
-| **Caso del piso** | Una sesión | Parte de la campaña del piso; su final cambia el asentamiento |
+| **Caso de la región** | Una sesión | Parte de la campaña de la región; su final cambia el asentamiento |
 | **Caso semanal del servidor** | Una semana | El mismo caso para todos; quien lo resuelve primero sale en la Gaceta, y las pistas se pueden intercambiar o vender |
 | **Caso de gremio** | Varios días | Las pistas están repartidas: cada miembro ve solo algunas y tienen que juntarlas en el chat del gremio |
 | **Caso de jugadores** | Varía | Crímenes reales entre jugadores (quién mató a un verde en zona roja, quién robó una trampa): el sistema de karma deja rastros que un investigador puede seguir para cobrar una recompensa (ver [PvP](pvp.md)) |
@@ -63,7 +63,7 @@ Pistas (5/8):
 
 ### 1.4 Rangos de investigador
 
-Reputación con la **Guardia del Piso** o con una **Agencia de Investigadores**: Curioso, Sabueso, Inspector, Detective, Maestro Detective. Los rangos altos abren casos más complejos, pistas ocultas y el título.
+Reputación con la **Guardia de la Región** o con una **Agencia de Investigadores**: Curioso, Sabueso, Inspector, Detective, Maestro Detective. Los rangos altos abren casos más complejos, pistas ocultas y el título.
 
 ## 2. Investigación de conocimiento
 
@@ -74,11 +74,11 @@ Reputación con la **Guardia del Piso** o con una **Agencia de Investigadores**:
 | **Investigación de la cura** | Una enfermedad nueva durante una epidemia | Médicos y alquimistas estudian muestras de pacientes (jugadores enfermos), prueban combinaciones y comparten avances; la cura se descubre entre todos (ver [Enfermedades](../05-salud/enfermedades.md)) | La receta de la cura, título para quien más aportó |
 | **Investigación de recetas** | Combinaciones nuevas de alquimia y cocina | Descubrimiento por experimentación (ver [Fabricación](../07-economia/fabricacion.md)) | Recetas con tu nombre como descubridor |
 | **Investigación de planos** | Mejorar un plano | Días de estudio en una estación (estilo EVE) | Planos más eficientes y copias vendibles |
-| **Arqueología** | Ruinas de la Torre | Excavar, catalogar fragmentos, completar piezas | Lore, curiosidades, monturas, historias del mundo antes de la Torre |
+| **Arqueología** | Ruinas del mundo viejo | Excavar, catalogar fragmentos, completar piezas | Lore, curiosidades, monturas, historias del mundo antes del Colapso |
 | **Estudio de monstruos** | Debilidades y movimientos de jefes | Observar peleas, leer manchas de sangre, disecar partes | Pistas en los avisos (ver [Avisos](../04-combate/avisos-y-tacticas.md)), fichas vendibles |
 | **Gabinete de ideas** | Tu propio héroe | Estilo *Disco Elysium*: "piensas" una idea durante horas reales (por ejemplo, "El peso de la armadura") y al terminar te da un rasgo pequeño y permanente, con pros y contras | Rasgos de personaje (identidad, no poder) |
-| **Secretos del piso** | Jefes ocultos, pasadizos, finales alternativos | Pistas repartidas en textos, inscripciones, notas y conversaciones del piso | Acceso al jefe oculto, logros |
-| **Gran Misterio de la Torre** | ¿Qué hay en el piso 100? ¿Quién construyó la Torre? | Un misterio de años para toda la comunidad, estilo *Destiny* o los secretos de *Elden Ring*: cada piso esconde una pieza, y la comunidad la une en sus chats | Historia, títulos únicos para quienes descubren piezas clave |
+| **Secretos de la región** | Jefes ocultos, pasadizos, finales alternativos | Pistas repartidas en textos, inscripciones, notas y conversaciones de la región | Acceso al jefe oculto, logros |
+| **Gran Misterio de la Lejanía** | ¿Qué causó el Colapso? ¿Qué hay muy lejos del Claro? | Un misterio de años para toda la comunidad, estilo *Destiny* o los secretos de *Elden Ring*: cada región esconde una pieza, y la comunidad la une en sus chats | Historia, títulos únicos para quienes descubren piezas clave |
 
 ### 2.2 El Erudito
 

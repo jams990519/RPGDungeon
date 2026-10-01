@@ -16,12 +16,12 @@
 
 1. **La economía la mueven los jugadores.** Casi todo el equipo lo fabrican ellos; los jefes dan artefactos y materiales, no el objeto terminado (ver [Equipamiento](../03-personaje/equipamiento.md)).
 2. **Todo se gasta.** Durabilidad máxima que baja, botín completo en zonas negras, consumibles, Mercado Negro. Si nada se destruye, dentro de un año nadie compra nada.
-3. **Los mercados son locales.** El precio del hierro en el piso 12 no es el del piso 30. Mover mercancía es un oficio.
+3. **Los mercados son locales.** El precio del hierro en Lejanía 4 no es el de Lejanía 9. Mover mercancía es un oficio.
 4. **El oro que entra tiene que salir.** Cada fuente de oro tiene un sumidero equivalente, y se mide todos los meses.
 5. **Riesgo = recompensa.** Los mejores materiales están en las zonas peligrosas (ver [PvP](../06-contenido/pvp.md)).
 6. **Todo se hace con la moneda del juego.** Con dinero real solo se compran cosméticos y aceleradores (experiencia, recursos); nunca oro, equipo, Esencia ni nada que se pueda apostar (ver [Monetización](monetizacion.md)).
 7. **Los sumideros son porcentajes, nunca montos fijos.** Una tasa de 100 de oro no significa nada para quien tiene millones; un impuesto del 5 % funciona igual toda la vida del juego. Impuestos, comisiones, reparaciones, tasas de parcelas y de viaje se calculan siempre como porcentaje del valor.
-8. **Cada piso produce cosas distintas.** Si cada zona tiene recursos propios, el comercio nace solo (§3.1).
+8. **Cada región produce cosas distintas.** Si cada zona tiene recursos propios, el comercio nace solo (§3.1).
 
 ## 2. Monedas
 
@@ -36,12 +36,12 @@ Pocas, para no repetir el problema de WoW, donde hay más de veinte monedas:
 
 **Transferibles y no transferibles** (como en WoW): el **oro** es libre y se comercia entre jugadores. La **Esencia**, el **Honor**, la **reputación de castillo** y la **moneda de temporada** (que se gana en cada temporada y compra sus recompensas) **no se pueden transferir**: son de quien las ganó. Así lo que se gana jugando no se compra con oro ni con cuentas alternas.
 
-La reputación, los Sellos y el conocimiento **no** son monedas: son progreso.
+La reputación, los títulos de Pionero y el conocimiento **no** son monedas: son progreso.
 
 ## 3. Mercados
 
 - **Libro de órdenes** en cada asentamiento: órdenes de compra y de venta con custodia, cruzadas por precio y antigüedad. Es el formato de Albion y EVE, y el que TowerWars ya usa para sus recursos.
-- **Mercados regionales grandes** en las capitales (cada 10 pisos), con más volumen y más productos.
+- **Mercados regionales grandes** en las capitales regionales, con más volumen y más productos.
 - **Mercados locales chicos** en los asentamientos, con menos variedad.
 - **Los precios difieren por ciudad.** El Goblin ve el precio medio en otras ciudades; los demás lo ven en el canal del Mercado, con un día de retraso.
 - **Vencimiento de las órdenes:** 7 días (como en TowerWars), renovables pagando la tasa otra vez.
@@ -51,14 +51,14 @@ La reputación, los Sellos y el conocimiento **no** son monedas: son progreso.
 ### 3.1 Recursos regionales
 
 - Cada terreno produce lo suyo y carece de lo demás (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)), y hay **yacimientos únicos** en puntos concretos del mapa.
-- Cada tramo tiene **materiales que solo existen ahí** (la madera liviana de los Jardines Flotantes, el cristal de la Cueva de Cristal, las especias del Desierto), y cada piso tiene su especialidad dentro del tramo.
-- Las ciudades necesitan cosas que no producen: el piso helado necesita comida del piso de la pradera, y la pradera necesita el metal de las cuevas.
+- Cada anillo tiene **materiales que solo existen ahí** (la madera liviana de los Jardines Flotantes, el cristal de la Cueva de Cristal, las especias del Desierto), y cada región tiene su especialidad dentro del anillo.
+- Las ciudades necesitan cosas que no producen: la región helada necesita comida de la región de la pradera, y la pradera necesita el metal de las cuevas.
 - Resultado: **siempre hay algo que llevar de un lado a otro**, y los precios difieren por ciudad sin que nadie lo fuerce.
 
 ## 4. Transporte
 
 Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
-- **La piedra de paso cobra por peso**, así que mover cargas grandes rápido es caro.
+- **No hay teletransporte:** viajar toma tiempo real y la carga pesada lo alarga (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)), así que mover cargas grandes rápido es caro.
 - **Las caravanas** son baratas por kilo, pero cruzan zonas rojas y se pueden emboscar. Hay escoltas contratables (jugadores) y seguros (§7).
 - **El correo** es seguro y lento, o seguro y caro.
 
@@ -91,7 +91,7 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 - Un PNJ en cada capital compra equipo fabricado a precio de demanda.
 - Ese equipo aparece después en el botín de los monstruos y cofres del mundo.
 - Si nadie vende al Mercado Negro, los monstruos sueltan menos equipo.
-- También saca del juego equipo viejo de tramos bajos.
+- También saca del juego equipo viejo de los anillos cercanos al Claro.
 
 **Por qué conviene.** Hasta el jugador que solo pelea y nunca fabrica depende de los artesanos, y los artesanos siempre tienen a quién vender.
 

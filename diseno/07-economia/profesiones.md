@@ -100,12 +100,12 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 
 | Rango | Niveles | Qué abre |
 |---|---|---|
-| Aprendiz | 1-20 | Tramos I y II |
-| Oficial | 21-40 | Tramos III y IV |
-| Experto | 41-60 | Tramos V y VI |
-| Artesano | 61-80 | Tramos VII y VIII |
-| Maestro | 81-95 | Tramo IX, obras maestras |
-| Gran Maestro | 96-100 | Tramo X, firma dorada, el título |
+| Aprendiz | 1-20 | Anillos I y II |
+| Oficial | 21-40 | Anillos III y IV |
+| Experto | 41-60 | Anillos V y VI |
+| Artesano | 61-80 | Anillos VII y VIII |
+| Maestro | 81-95 | Anillo IX, obras maestras |
+| Gran Maestro | 96-100 | Anillo X, firma dorada, el título |
 
 - La curva es larga a propósito: llegar a Gran Maestro en un oficio debería tomar **alrededor de un año** de juego constante. La referencia es el 99 de RuneScape.
 - Cada rango pide pasar un **examen**: fabricar una pieza para el gremio de artesanos del asentamiento.
@@ -151,13 +151,13 @@ En SAO, algunos de los personajes más recordados eran artesanos o comerciantes:
 
 | Rol | Cómo gana | Con qué |
 |---|---|---|
-| **Cartógrafo** | Vende mapas de pisos (sirven para la prueba de Cartografía del Sello) y ubicaciones de vetas buenas | Inscripción |
+| **Cartógrafo** | Vende mapas de regiones (quien los lee conoce los lugares y las rutas sin haber ido) y ubicaciones de vetas buenas | Inscripción |
 | **Informante** | Vende fichas de jefes con los movimientos del Bestiario | Inscripción + conocimiento |
 | **Médico** | Cobra por cirugías y tratamientos | Medicina |
 | **Transportista y escolta** | Contratos de transporte, peajes | Comercio, combate |
 | **Posadero** | Alquila camas con enfermería | Construcción, casa propia |
 | **Artesano famoso** | Su firma vale más en el mercado | Maestría |
-| **Guía de piso** | Lleva novatos por un piso a cambio de oro | Conocimiento, combate |
+| **Guía de región** | Lleva novatos por una región a cambio de oro | Conocimiento, combate |
 
 ## 10. Quién necesita a quién
 
@@ -176,7 +176,7 @@ Si hace falta más de un oficio para casi todo lo importante, el mercado nunca s
 ## 11. Estudiar un oficio: entrenadores y exámenes
 
 Ningún oficio se sabe solo. **Construir, curar, forjar o cultivar se estudia**, igual que en la vida real:
-- **Entrenadores** en las alas de Oficios de los Castillos (ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)): enseñan el rango inicial, las recetas de cada tramo y dan tareas semanales de conocimiento.
+- **Entrenadores** en las alas de Oficios de los Castillos (ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)): enseñan el rango inicial, las recetas de cada anillo y dan tareas semanales de conocimiento.
 - **Exámenes** para cada rango: una pieza, una cirugía o una jornada de obra hecha con el minijuego, con una calidad mínima.
 - **Maestros jugadores**: un Gran Maestro puede tomar aprendices y enseñarles sus recetas propias, cobrando por ello.
 - **Sin rango, no hay trabajo de alto nivel:** en una obra de castillo solo trabajan constructores con el rango que pide cada etapa, y las enfermedades serias solo las trata alguien que estudió Medicina. **No ayuda cualquiera.**

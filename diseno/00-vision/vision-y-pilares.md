@@ -4,9 +4,9 @@
 
 ## En una frase
 
-**Un MMORPG completo por turnos, en texto, dentro de Telegram:** las clases y los sistemas de World of Warcraft (corregidos para que las clases valgan lo mismo), una Torre de 100 pisos al estilo Sword Art Online que los jugadores **fundan desde cero** y conquistan juntos, jefes con la dificultad de Elden Ring, un cuerpo que se hiere y se enferma, y una economía de jugadores al estilo Albion donde cada persona tiene un rol.
+**Un MMORPG completo por turnos, en texto, dentro de Telegram:** las clases y los sistemas de World of Warcraft (corregidos para que las clases valgan lo mismo), un mapa infinito por explorar, donde viajar toma tiempo real y los jugadores **fundan desde cero** y pacifican región por región, jefes con la dificultad de Elden Ring, un cuerpo que se hiere y se enferma, y una economía de jugadores al estilo Albion donde cada persona tiene un rol.
 
-**Nombre:** *Lost Realms* (D-62). **Bot:** [@thetowerwarbot](https://t.me/thetowerwarbot), separado de TowerWars.
+**Nombre:** *Lost Realms* (D-62). **Bot:** [@LostRealmsbot](https://t.me/LostRealmsbot), separado de TowerWars.
 
 ---
 
@@ -20,7 +20,7 @@
 | 4 | **Clases parejas y medibles** | 15 clases y 46 specs con presupuesto de poder, simulador y objetivos numéricos | [Balance](../03-personaje/balance.md) |
 | 5 | **Difícil pero justo** | Jefes que se aprenden: todo golpe grande se avisa, y la dificultad está en leer y planificar | [Jefes](../06-contenido/jefes.md), [Avisos](../04-combate/avisos-y-tacticas.md) |
 | 6 | **El cuerpo recuerda** | Heridas por zona, enfermedades, mente y secuelas, que curan profesionales que estudiaron | [05 · Salud](../05-salud/README.md) |
-| 7 | **La Torre es el calendario** | 100 pisos que se abren entre todos; cada piso es una actualización | [Torre y pisos](../02-mundo/torre-y-pisos.md) |
+| 7 | **La Frontera es el calendario** | Un mapa sin fin que se abre entre todos, región por región; cada parche abre algo nuevo (D-60) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | 8 | **Economía de verdad** | Casi todo lo fabrican jugadores, el equipo se gasta, los lugares son escasos y se pujan | [07 · Economía](../07-economia/README.md) |
 | 9 | **Dos años de caminos** | Muchas escaleras paralelas y muchos roles; ninguna obligatoria | [Progresión](../03-personaje/progresion.md), [Roles](roles-y-caminos-de-juego.md) |
 | 10 | **Respeta el tiempo** | Juego de toque, de sesión y de cita; tácticas automáticas; el tiempo fuera de línea cura y descansa | [Telegram](../01-plataforma/telegram.md), [Tácticas](../04-combate/avisos-y-tacticas.md) |
@@ -32,7 +32,7 @@
 - **El jugador de grupo:** mazmorras, Mítica+, bandas y asaltos a Guardianes a hora fija.
 - **El artesano, el constructor, el médico, el comerciante:** carreras completas sin obligación de pelear.
 - **El competitivo:** arenas, guerra de castillos, territorios, temporadas.
-- **El que quiere historia:** campañas, investigaciones, el Gran Misterio de la Torre, roleplay con roles de verdad.
+- **El que quiere historia:** campañas, investigaciones, el Gran Misterio de la Lejanía, roleplay con roles de verdad.
 - **El que busca riesgo:** zonas negras, el Foso, garitos, Juramento de Hierro.
 
 ## Qué lo hace distinto

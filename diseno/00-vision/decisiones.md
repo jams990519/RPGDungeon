@@ -16,7 +16,7 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 | D-04 | ~~Todavía no se escribe código: primero el diseño completo, con preguntas~~ **Reemplazada por D-59 (1-oct-2026)** | Todo |
 | D-05 | **Todo en texto y por turnos** | [Pilares](vision-y-pilares.md) |
 | D-06 | Base en las **clases y los sistemas de World of Warcraft**, corrigiendo la calibración para que las clases queden parejas | [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) |
-| D-07 | ~~Torre de pisos al estilo Sword Art Online, con tareas entre piso y piso y un jefe de mundo por piso~~ **Reemplazada por D-58 (1-oct-2026):** ya no hay pisos | [Torre y pisos](../02-mundo/torre-y-pisos.md) (se retira) |
+| D-07 | ~~Torre de pisos al estilo Sword Art Online, con tareas entre piso y piso y un jefe de mundo por piso~~ **Reemplazada por D-58 (1-oct-2026):** ya no hay pisos | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | D-08 | **Dificultad de Elden Ring** en los jefes de mundo | [Jefes](../06-contenido/jefes.md) |
 | D-09 | **Salud profunda:** heridas por partes del cuerpo, enfermedades a largo plazo, y un sistema de **curación** | [05 · Salud](../05-salud/README.md) |
 | D-10 | **Profesiones profundas**, al punto de que alguien se pierda meses siendo carpintero | [Profesiones](../07-economia/profesiones.md), [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md) |
