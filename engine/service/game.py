@@ -16,7 +16,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
-    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
+    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109; §0.5, el ✨ Encantamiento de la fase 2, D-115)
+    diseno/03-personaje/equipamiento.md §11 (✨ encantamientos y el aviso "⬆️ Tienes una pieza mejor", fase 2 de D-115)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
@@ -52,6 +53,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     con lo aportado, "tech" conocimiento aprendido, el estudio en curso y su avance). Lo construido nunca se borra.
     D-116: en "upgrades" también "furniture" (🪑 muebles colocados: id del mueble → {"by", "id", "at"}; uno de cada uno,
     nunca se borra) y Hero.gear_signatures (firma de cada ✒️ obra maestra que lleva el héroe).
+    D-115 (fase 2, lado del equipo): Hero.gear_enchants (el ✨ encantamiento de cada pieza: id de la pieza → {"id", "value"});
+    se borra con la última copia de la pieza (_forget_piece). La experiencia del ✨ Encantamiento va en
+    Hero.professions["encantamiento"].
     D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
     at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
     en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
@@ -114,6 +118,16 @@ Si cambias esto, revisa:
       masterwork.base_chance), la firma en Hero.gear_signatures, la marca ✒️ en _gear_name, _worn_view y _gear_view, la
       firma en _item_view (_masterwork_note), la línea ✒️ en _recipe_view y ⚒️ Oficios, y _sell_gear (paga su precio, más
       alto, y borra la firma con la última copia). Pruebas: tests/test_masterwork.py
+    - ✨ Encantamiento (D-115, fase 2): sección "enchanting" (_ench_view con /encantar, _enchant_view desde el botón ✨ de
+      _item_view, _enchant, _disenchant; botones "ench", "ench:<pieza>", "enc:<pieza>", "dis:<pieza>", "dis!:<pieza>" en
+      ENCHANT_ACTIONS). Números en balance.yaml enchanting; cuentas en engine/professions/rules.py; el bono entra al kit por
+      engine/hero/gear.py gear_bonus (real_stats). No suma botón a ⚒️ Oficios (sus 4 lugares quedan para las estaciones):
+      ahí sale con su rango, su beneficio (prof.perk.disenchant) y el próximo umbral (_ench_next, _ench_unlocks en _prof_gain).
+      Desencantar nunca fabrica monedas (precios de esencia y esencia_mayor en items.yaml). Pruebas: tests/test_oficios_equipo.py
+    - ⬆️ Pieza mejor (D-115, fase 2): _better_piece mira lo que entró a la mochila en _end_combat (botín, cofre, Guardián) y en
+      _make; _better_line + _better_action (🔁 Equipar = "equip:<id>", primero, sin pasar 4 botones); en las peleas automáticas
+      la línea va al resumen del lote (_auto_combat). La marca ⬆️ en _gear_view sale de engine/hero/gear.py is_better
+      (balance.yaml gear.score). Nunca pone nada solo
     - 🪑 Muebles del campamento (D-116): items.yaml kind: furniture (effect), recetas de la Carpintería; _furniture_effect
       entra en _effect_at/_camp_effect (members → _members_cap) y en _camp_defense (defense → oleadas); se colocan desde
       🔨 Obras (_works_entries, _place_furniture, botón "upf:<id>"); 📦 Recursos los lista (tests/test_masterwork.py)
@@ -239,8 +253,9 @@ from engine.core import (
     hash_unit,
 )
 from engine.hero import Hero, hero_stats, xp_for_level
-from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, piece_stats, roll_gear, source_choices,
+from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, roll_gear, source_choices,
                               starter_gear, suits, unequip)
+from engine.hero.gear import gear_score, is_better, piece_score, real_stats     # D-115 (fase 2): ✨ encantamientos y ⬆️ pieza mejor
 from engine.professions import gatherer_of, masterwork_chance, masterwork_id, max_times, missing_for, rank_of, rank_title, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
@@ -260,7 +275,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health",
             "/oficios": "oficios", "/opciones": "options",
             "/historia": "story", "/diario": "journal", "/bio": "bio", "/encargos": "board",     # D-117: story and roleplay
-            "/saludar": "gesture:saludar", "/brindar": "gesture:brindar"}
+            "/saludar": "gesture:saludar", "/brindar": "gesture:brindar",
+            "/encantar": "ench"}                                                               # D-115: ✨ Encantamiento
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -273,6 +289,8 @@ UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctalle
                    "upf:")       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
+# Button ids (or prefixes) of ✨ Encantamiento (D-115, phase 2): the hub, a piece's screen, enchant, disenchant (and confirm it).
+ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 
 
 class GameService(StoryMixin):
@@ -1147,6 +1165,8 @@ class GameService(StoryMixin):
             if not item_id:
                 return self._gear_view(hero)
             return self._item_view(hero, item_id, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))
+        if action_id.startswith(ENCHANT_ACTIONS):       # D-115: ✨ Encantamiento (the screens work while busy; doing it, not)
+            return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
         if action_id == "memento":
@@ -4344,6 +4364,7 @@ class GameService(StoryMixin):
         if rare and before < int(rare["min_rank"]) <= after:
             lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
         lines += self._explorer_unlocks(hero, pid, before, after)     # D-112: what the 🧭 Explorador sees now (and its title)
+        lines += self._ench_unlocks(pid, before, after)               # D-115: the ✨ enchantments a new rank opens
         return lines
 
     def _trade_gather(self, hero: Hero, got: dict[str, int], activity: dict[str, Any]) -> list[str]:
@@ -4503,6 +4524,8 @@ class GameService(StoryMixin):
         t = self.texts
         if pid == self._explorer_cfg()["profession"]:      # D-112: the 🧭 Explorador opens map info, not recipes
             return self._explorer_next(hero)
+        if pid == self._ench_cfg().get("profession"):      # D-115: ✨ Encantamiento opens enchantments, not recipes
+            return self._ench_next(hero)
         rank = self._prof_rank(hero, pid)
         rare = self._prof_catalog()[pid].get("rare")
         if rare and rank < int(rare["min_rank"]):
@@ -4771,6 +4794,7 @@ class GameService(StoryMixin):
         if hero.energy < cost:
             return self._recipe_view(hero, rid, page, notice=self._no_energy_notice(hero))
         self._pay_energy(hero, cost)
+        bag_before = dict(hero.backpack)                    # D-115: to tell a ⬆️ better piece among what comes out
         for item_id, n in rdef["inputs"].items():
             hero.backpack[item_id] -= int(n) * times
             if hero.backpack[item_id] <= 0:
@@ -4818,7 +4842,364 @@ class GameService(StoryMixin):
         lines += self._give_xp(hero, xp)
         lines += self._prof_gain(hero, pid, prof_xp)
         lines += self._story_event(hero, "craft", recipe=rid, profession=pid, item=out_id, n=times)     # D-117
-        return self._recipe_view(hero, rid, page, notice="\n".join(lines))
+        better = self._better_piece(hero, bag_before) if item.get("kind") == "gear" else None
+        if better:                                          # D-115: ⬆️ what you just made beats what you wear
+            lines.append(self._better_line(hero, better))
+        view = self._recipe_view(hero, rid, page, notice="\n".join(lines))
+        if better:                                          # 🔁 Equipar first; 4 buttons at most (D-75): it takes 🔨 Hacer todo's place
+            view.actions.insert(0, self._better_action(better))
+            while len(view.actions) > 4:
+                view.actions.pop(-2)
+        return view
+
+    # ------------------------------------------------------------------ ✨ enchanting and the ⬆️ better piece (D-115, phase 2)
+
+    def _ench_cfg(self) -> dict[str, Any]:
+        """balance.yaml "enchanting" ({} if missing: then nothing can be enchanted and the game works the same)."""
+        return self.content.balance.get("enchanting") or {}
+
+    def _ench_defs(self) -> dict[str, dict[str, Any]]:
+        """The enchantments (balance.yaml enchanting.enchants): id -> stat, slots, min, max, min_rank, material."""
+        return self._ench_cfg().get("enchants") or {}
+
+    def _ench_pid(self) -> str:
+        return self._ench_cfg().get("profession", "encantamiento")
+
+    def _ench_rank(self, hero: Hero) -> int:
+        return self._prof_rank(hero, self._ench_pid())
+
+    def _ench_label(self, eid: str) -> str:
+        """"⚔️ Filo", "❤️ Vigor", "🛡️ Guarda" (ench.name.<id>)."""
+        return self.texts.t(f"ench.name.{eid}")
+
+    def _enchant_slot(self, item: dict[str, Any] | None) -> str | None:
+        """Id of the enchantment a gear piece takes by its slot (one per slot in the simple layer), or None."""
+        if not item or item.get("kind") != "gear":
+            return None
+        return profession_rules.enchant_for_slot(item.get("slot", ""), self._ench_defs())
+
+    def _enchant_text(self, hero: Hero, item_id: str) -> str:
+        """"⚔️ Filo +2% ataque": the enchantment on a piece the hero holds (Hero.gear_enchants); "" if none."""
+        record = (hero.gear_enchants or {}).get(item_id) or {}
+        edef = self._ench_defs().get(record.get("id", ""))
+        if not edef:
+            return ""
+        return f"{self._ench_label(record['id'])} {self._gear_stats_text({edef['stat']: float(record.get('value', 0.0))})}"
+
+    def _enchant_mark(self, hero: Hero, item_id: str) -> str:
+        """" ✨" after the name of an enchanted piece, "" otherwise."""
+        return self.texts.t("ench.mark") if (hero.gear_enchants or {}).get(item_id) else ""
+
+    def _is_better(self, hero: Hero, item_id: str) -> bool:
+        """⬆️ A piece the hero is not wearing, usable now, of its type and with a higher score (engine/hero/gear.py is_better)."""
+        return is_better(self.content.items, item_id, hero, self.content.classes, self.content.balance)
+
+    def _better_mark(self, hero: Hero, item_id: str) -> str:
+        """" ⬆️" after a piece that is better than what the hero wears in its slot, "" otherwise."""
+        return self.texts.t("gear.better_mark") if self._is_better(hero, item_id) else ""
+
+    def _better_piece(self, hero: Hero, before: dict[str, int]) -> str | None:
+        """The best ⬆️ better gear piece among those that came into the backpack since `before`, or None.
+
+        [ES]
+        Qué hace: mira qué piezas de equipo entraron a la mochila (botín, cofre, fabricar, obra maestra) y devuelve la mejor de
+        las que son "⬆️ mejores" que lo que llevas (engine/hero/gear.py is_better: tu nivel, tu tipo y más puntaje). Una pieza
+        que se puso sola (ranura vacía) ya no está en la mochila: no cuenta.
+        La llaman: _end_combat (y por ahí las peleas automáticas) y _make.
+        Si cambia, afecta: cuándo sale el aviso "⬆️ Tienes una pieza mejor" con su botón 🔁 Equipar.
+        """
+        new = [i for i, n in hero.backpack.items() if n > before.get(i, 0) and self.content.items.get(i, {}).get("kind") == "gear"]
+        better = [i for i in new if self._is_better(hero, i)]
+        if not better:
+            return None
+        return max(better, key=lambda i: (piece_score(self.content.items, i, hero, self.content.classes, self.content.balance), i))
+
+    def _better_line(self, hero: Hero, item_id: str) -> str:
+        """"⬆️ ¡Tienes una pieza mejor! … supera a lo que llevas en ⛑️ Cabeza: +2% vida" (what it adds over the worn piece)."""
+        diff, _ = self._gear_diff(hero, item_id)
+        return self.texts.t("gear.better_notice", item=self._gear_name(item_id),
+                            slot=self.texts.t(f"gear.slot.{self.content.items[item_id]['slot']}"), stats=self._gear_stats_text(diff))
+
+    def _better_action(self, item_id: str) -> Action:
+        """🔁 Equipar <piece>: one tap puts the better piece on (the same "equip:<id>" as the piece's ✅ Equipar)."""
+        item = self.content.items[item_id]
+        return Action(id=f"equip:{item_id}", label=self.texts.t("gear.better_button", item=f"{item['emoji']} {self.texts.t(item['name_key'])}"))
+
+    def _forget_piece(self, hero: Hero, item_id: str) -> None:
+        """When the last copy of a piece leaves the hero, its ✒️ signature (D-116), ✨ enchantment (D-115) and 🆕 mark go too."""
+        if hero.backpack.get(item_id, 0) > 0 or item_id in hero.gear.values():
+            return
+        hero.gear_signatures.pop(item_id, None)
+        hero.gear_enchants.pop(item_id, None)
+        if item_id in hero.gear_new:
+            hero.gear_new.remove(item_id)
+
+    def _ench_unlocks(self, pid: str, before: int, after: int) -> list[str]:
+        """"🔓 Nuevo encantamiento: 🛡️ Guarda." when a new ✨ Encantamiento rank opens one (for _prof_gain)."""
+        if pid != self._ench_pid():
+            return []
+        opened = [self._ench_label(eid) for eid, edef in self._ench_defs().items() if before < int(edef.get("min_rank", 1)) <= after]
+        return [self.texts.t("ench.unlocked", items=", ".join(opened))] if opened else []
+
+    def _ench_next(self, hero: Hero) -> str | None:
+        """🔓 The next ✨ Encantamiento rank that opens an enchantment (for ⚒️ Oficios), or None."""
+        rank = self._ench_rank(hero)
+        later = [(int(edef.get("min_rank", 1)), eid) for eid, edef in self._ench_defs().items() if int(edef.get("min_rank", 1)) > rank]
+        if not later:
+            return None
+        need = min(r for r, _ in later)
+        return self.texts.t("prof.next", rank=need, items=", ".join(self._ench_label(eid) for r, eid in later if r == need))
+
+    def _ench_need_text(self, hero: Hero, cost: dict[str, int]) -> str:
+        """"✅ ✨ Esencia arcana: 5/3 · ❌ 🔩 Lingote: 0/1" (what a ✨ action asks, with what you carry)."""
+        t = self.texts
+        return " · ".join(t.t("prof.have_line" if hero.backpack.get(i, 0) >= n else "prof.lack_line", item=self._item_label(i),
+                              have=hero.backpack.get(i, 0), need=n) for i, n in cost.items())
+
+    def _enchant_plan(self, hero: Hero, item_id: str) -> dict[str, Any]:
+        """What enchanting this piece would do now: the enchantment, its value at your rank, its cost and what stops it.
+
+        [ES]
+        Qué hace: arma el plan de encantar una pieza: qué encantamiento le toca por su ranura, cuánto suma con tu rango, qué
+        pide (engine/professions/rules.py enchant_cost) y qué lo impide ("no_slot", "rank", "not_better" si ya tiene ese o uno
+        mejor, "missing", "energy" o "busy"). No cambia nada.
+        La llaman: _enchant_view (lo que muestra) y _enchant (lo que hace): siempre dicen lo mismo.
+        Si cambia, afecta: cuándo se puede encantar.
+        """
+        eid = self._enchant_slot(self.content.items.get(item_id))
+        if not eid:
+            return {"problem": "no_slot"}
+        cfg = self._ench_cfg()
+        enc = cfg.get("enchant") or {}
+        edef = self._ench_defs()[eid]
+        rank = self._ench_rank(hero)
+        value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"])
+        cost = profession_rules.enchant_cost(self.content.items[item_id], edef, enc, cfg.get("essence", "esencia"),
+                                             cfg.get("major_essence", "esencia_mayor"))
+        energy = int(enc.get("energy", 2))
+        missing = {i: n - hero.backpack.get(i, 0) for i, n in cost.items() if hero.backpack.get(i, 0) < n}
+        current = (hero.gear_enchants or {}).get(item_id) or {}
+        problem = None
+        if rank < int(edef.get("min_rank", 1)):
+            problem = "rank"
+        elif current.get("id") == eid and float(current.get("value", 0.0)) >= value - 1e-9:
+            problem = "not_better"
+        elif missing:
+            problem = "missing"
+        elif hero.energy < energy:
+            problem = "energy"
+        elif hero.activity:
+            problem = "busy"
+        return {"eid": eid, "edef": edef, "rank": rank, "value": value, "cost": cost, "energy": energy, "missing": missing,
+                "problem": problem, "current": current}
+
+    def _disenchant_gives(self, item: dict[str, Any]) -> dict[str, int]:
+        """Essences a piece gives when disenchanted, before the perk (engine/professions/rules.py disenchant_yield)."""
+        cfg = self._ench_cfg()
+        return profession_rules.disenchant_yield(item, cfg.get("disenchant") or {}, cfg.get("essence", "esencia"),
+                                                 cfg.get("major_essence", "esencia_mayor"))
+
+    def _enchant_action(self, hero: Hero, action_id: str) -> View:
+        """Route the ✨ buttons (D-115): "ench" (hub, /encantar), "ench:<piece>", "enc:<piece>", "dis:<piece>", "dis!:<piece>".
+        [ES] Qué hace: reparte los botones del ✨ Encantamiento. La llama: _idle_action. Si cambia, afecta: los IDs de botón."""
+        if action_id.startswith("ench:"):
+            return self._enchant_view(hero, action_id[5:])
+        if action_id.startswith("enc:"):
+            return self._enchant(hero, action_id[4:])
+        if action_id.startswith("dis!:"):
+            return self._disenchant(hero, action_id[5:], confirmed=True)
+        if action_id.startswith("dis:"):
+            return self._disenchant(hero, action_id[4:])
+        return self._ench_view(hero)
+
+    def _ench_view(self, hero: Hero, notice: str | None = None) -> View:
+        """✨ Encantamiento (/encantar): your rank and perk, your essences, the three enchantments, the costs and how to start.
+
+        [ES]
+        Qué hace: explica el ✨ Encantamiento en una pantalla: tu rango (con su barra) y su beneficio, las esencias que llevas,
+        qué encantamiento lleva cada ranura y cuánto suma con tu rango (🔒 si todavía no llegas), qué pide encantar y qué da
+        desencantar, y lo que llevas encantado. Botones: 🛡️ Elegir pieza (🔁 Equipar) y ↩️ Volver a ⚒️ Oficios. No tiene
+        botón en ⚒️ Oficios (sus 4 lugares quedan para las estaciones): se llega con /encantar o desde una pieza.
+        La llaman: el atajo /encantar.
+        Si cambia, afecta: cómo entiende el jugador el oficio (tests/test_oficios_equipo.py).
+        """
+        t = self.texts
+        cfg = self._ench_cfg()
+        pid = self._ench_pid()
+        rank = self._ench_rank(hero)
+        body = [t.t("ench.intro"), "", t.t("ench.rank_line", rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid))]
+        perk = self._perk_text(self._prof_catalog().get(pid, {}).get("perk"), rank)
+        if perk:
+            body.append(t.t("prof.perk_line", perk=perk))
+        essences = {i: hero.backpack[i] for i in (cfg.get("essence"), cfg.get("major_essence")) if i and hero.backpack.get(i)}
+        body.append(t.t("ench.essences_line", items=self._item_list(essences)) if essences else t.t("ench.essences_none"))
+        body += ["", t.t("ench.table_title")]
+        for eid, edef in self._ench_defs().items():
+            value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"])
+            lock = "" if rank >= int(edef.get("min_rank", 1)) else t.t("ench.lock", rank=edef.get("min_rank", 1))
+            body.append(t.t("ench.table_line", name=self._ench_label(eid), slots=", ".join(t.t(f"gear.slot.{s}") for s in edef.get("slots", [])),
+                            stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=lock))
+        enc, dis = cfg.get("enchant") or {}, cfg.get("disenchant") or {}
+        by_rarity = dis.get("by_rarity") or {}
+        body += ["", t.t("ench.cost_rule", base=enc.get("essences", 3), per=enc.get("essences_per_levels", 10),
+                         major=enc.get("major_from_level", 50), mat_per=enc.get("material_per_levels", 50), energy=enc.get("energy", 2)),
+                 t.t("ench.disenchant_rule", comun=by_rarity.get("comun", 1), poco_comun=by_rarity.get("poco_comun", 2),
+                     raro=by_rarity.get("raro", 3), epico=by_rarity.get("epico", 4), per=dis.get("per_levels", 20), energy=dis.get("energy", 1))]
+        worn = [f"{self._gear_name(i)} ({self._enchant_text(hero, i)})" for i in hero.gear.values() if self._enchant_text(hero, i)]
+        body += ["", t.t("ench.worn_title", items=" · ".join(worn)) if worn else t.t("ench.worn_none"), t.t("ench.how"),
+                 t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"])]
+        actions = [Action(id="gear:0", label=t.t("ench.pick_button")), Action(id="oficios", label=t.t("menu.back"))]
+        return View(kind="enchanting", title=t.t("ench.title"), body=body, actions=actions, notice=notice)
+
+    def _enchant_view(self, hero: Hero, item_id: str, notice: str | None = None) -> View:
+        """✨ One piece: its enchantment now, the one you can give it (value, cost, what is missing) and what disenchanting gives.
+
+        [ES]
+        Qué hace: la pantalla ✨ de una pieza (desde ✨ Encantamiento en la pieza): el encantamiento que tiene, el que le toca
+        por su ranura con tu rango (o 🔒 el rango que pide, o que ya tiene el mejor que puedes hacer), qué pide (✅/❌ con lo
+        que llevas) y la energía; si está en la mochila, cuánto da desencantarla (con tu beneficio); puesta, que hay que
+        quitársela primero. Botones: ✨ Encantar (si se puede), 💨 Desencantar (solo de la mochila) y ↩️ Volver a la pieza: 3.
+        La llaman: el botón ✨ Encantamiento de _item_view, y _enchant / _disenchant al terminar.
+        Si cambia, afecta: tests/test_oficios_equipo.py.
+        """
+        t = self.texts
+        item = self.content.items.get(item_id)
+        worn = item_id in hero.gear.values()
+        if not item or item.get("kind") != "gear" or (not worn and hero.backpack.get(item_id, 0) <= 0):
+            return self._gear_view(hero, notice=notice)
+        rank = self._ench_rank(hero)
+        body = [self._gear_name(item_id), t.t("ench.rank_line", rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, self._ench_pid()))]
+        note = self._masterwork_note(hero, item_id)
+        if note:
+            body.append(note)
+        current = self._enchant_text(hero, item_id)
+        body += ["", t.t("ench.current", enchant=current) if current else t.t("ench.current_none")]
+        actions = []
+        plan = self._enchant_plan(hero, item_id)
+        problem = plan["problem"]
+        if problem == "no_slot":
+            body.append(t.t("ench.no_slot"))
+        else:
+            name, stats = self._ench_label(plan["eid"]), self._gear_stats_text({plan["edef"]["stat"]: plan["value"]})
+            if problem == "rank":
+                body.append(t.t("ench.locked", name=name, need=plan["edef"].get("min_rank", 1), rank=rank))
+            elif problem == "not_better":
+                body.append(t.t("ench.offer_best"))
+            else:
+                body.append(t.t("ench.offer_replace" if current else "ench.offer", name=name, stats=stats))
+                body.append(t.t("ench.needs", items=self._ench_need_text(hero, plan["cost"]), energy=plan["energy"]))
+                if problem == "missing":
+                    body.append(t.t("prof.missing_line", items=self._item_list(plan["missing"])))
+                elif problem == "energy":
+                    body.append(self._no_energy_notice(hero))
+                elif problem == "busy":
+                    body.append(t.t("activity.busy"))
+                else:
+                    actions.append(Action(id=f"enc:{item_id}", label=t.t("ench.enchant_button", stats=stats)))
+        body.append("")
+        if worn and hero.backpack.get(item_id, 0) <= 0:
+            body.append(t.t("ench.worn_cant"))
+        else:
+            energy = int((self._ench_cfg().get("disenchant") or {}).get("energy", 1))
+            pct = round(100 * self._perks(hero)["disenchant"])
+            body.append(t.t("ench.disenchant_line", items=self._item_list(self._disenchant_gives(item)),
+                            bonus=t.t("ench.disenchant_bonus", pct=pct) if pct else "", energy=energy))
+            if not hero.activity and hero.energy >= energy:
+                actions.append(Action(id=f"dis:{item_id}", label=t.t("ench.disenchant_button")))
+        body.append(t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"]))
+        actions.append(Action(id=f"item:{item_id}", label=t.t("menu.back")))
+        return View(kind="enchant", title=t.t("ench.piece_title"), body=body, actions=actions, notice=notice)
+
+    def _enchant(self, hero: Hero, item_id: str) -> View:
+        """✨ Encantar: spend the essences, the material and the energy and put the enchantment on the piece; all or nothing.
+
+        [ES]
+        Qué hace: encanta la pieza (puesta o en la mochila) si el plan no tiene problemas: gasta las esencias, el material y la
+        energía, guarda el encantamiento en Hero.gear_enchants (reemplaza al anterior: uno por pieza) con el valor de tu rango,
+        y da experiencia de héroe (D-108, como fabricar) y de ✨ Encantamiento. Si algo falta, avisa y no gasta nada (regla 6).
+        La llama: el botón ✨ Encantar.
+        Si cambia, afecta: las estadísticas en combate (gear_bonus) y cuánto se gasta al encantar.
+        """
+        t = self.texts
+        item = self.content.items.get(item_id)
+        if not item or item.get("kind") != "gear" or (item_id not in hero.gear.values() and hero.backpack.get(item_id, 0) <= 0):
+            return self._gear_view(hero)
+        plan = self._enchant_plan(hero, item_id)
+        problem = plan["problem"]
+        if problem:
+            notices = {"no_slot": t.t("ench.no_slot"), "not_better": t.t("ench.not_better"), "busy": t.t("activity.busy"),
+                       "missing": t.t("prof.missing", items=self._item_list(plan.get("missing") or {})),
+                       "energy": self._no_energy_notice(hero)}
+            if problem == "rank":
+                notices["rank"] = t.t("ench.locked", name=self._ench_label(plan["eid"]), need=plan["edef"].get("min_rank", 1), rank=plan["rank"])
+            return self._enchant_view(hero, item_id, notice=notices[problem])
+        pid = self._ench_pid()
+        self._pay_energy(hero, plan["energy"])
+        for material, n in plan["cost"].items():
+            hero.backpack[material] -= n
+            if hero.backpack[material] <= 0:
+                del hero.backpack[material]
+        hero.gear_enchants[item_id] = {"id": plan["eid"], "value": plan["value"]}
+        lines = [t.t("ench.enchanted", item=self._gear_name(item_id), enchant=self._enchant_text(hero, item_id), energy=plan["energy"])]
+        xp = self._make_xp(hero, {"energy": plan["energy"]}, plan["rank"])
+        prof_xp = int((self._ench_cfg().get("enchant") or {}).get("xp", 12))
+        lines.append(t.t("prof.gained", xp=int(xp * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=prof_xp))
+        lines += self._give_xp(hero, xp)
+        lines += self._prof_gain(hero, pid, prof_xp)
+        return self._enchant_view(hero, item_id, notice="\n".join(lines))
+
+    def _disenchant(self, hero: Hero, item_id: str, confirmed: bool = False) -> View:
+        """💨 Desencantar: destroy one copy of a piece from the backpack for essences (a ✒️ masterwork asks first).
+
+        [ES]
+        Qué hace: destruye una pieza de la mochila (nunca una puesta) y da sus ✨ esencias (disenchant_yield) con el beneficio
+        del oficio (hasta +30 % al rango 100, sorteo propio por pieza: disenchant_amount). Una ✒️ obra maestra pide
+        confirmación antes. Gasta energía, da experiencia de héroe y de ✨ Encantamiento, y con la última copia se van su firma,
+        su encantamiento y su 🆕 (_forget_piece). Las esencias valen en el mercader menos que la pieza: desencantar nunca
+        fabrica monedas (tests/test_oficios_equipo.py). Si falta energía o estás ocupado, no hace nada.
+        La llaman: los botones 💨 Desencantar y 💨 Sí, desencantar.
+        Si cambia, afecta: cuánto equipo sale del juego y cuántas esencias entran.
+        """
+        t = self.texts
+        item = self.content.items.get(item_id)
+        if not item or item.get("kind") != "gear":
+            return self._gear_view(hero)
+        if hero.backpack.get(item_id, 0) <= 0:
+            if item_id in hero.gear.values():
+                return self._enchant_view(hero, item_id, notice=t.t("ench.worn_no"))
+            return self._gear_view(hero)
+        if item.get("masterwork") and not confirmed:           # D-116: a ✒️ masterwork is not lost by one tap
+            who = (hero.gear_signatures or {}).get(item_id)
+            body = [self._gear_name(item_id), t.t("ench.confirm", by=t.t("ench.confirm_by", name=who) if who else "")]
+            actions = [Action(id=f"dis!:{item_id}", label=t.t("ench.confirm_button")), Action(id=f"ench:{item_id}", label=t.t("ench.cancel_button"))]
+            return View(kind="disenchant_confirm", title=t.t("ench.confirm_title"), body=body, actions=actions)
+        if hero.activity:
+            return self._enchant_view(hero, item_id, notice=t.t("activity.busy"))
+        cfg = self._ench_cfg().get("disenchant") or {}
+        energy = int(cfg.get("energy", 1))
+        if hero.energy < energy:
+            return self._enchant_view(hero, item_id, notice=self._no_energy_notice(hero))
+        pid = self._ench_pid()
+        rank = self._ench_rank(hero)
+        self._pay_energy(hero, energy)
+        hero.backpack[item_id] -= 1
+        if hero.backpack[item_id] <= 0:
+            del hero.backpack[item_id]
+        perk = self._perks(hero)["disenchant"]
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "disenchant", item_id, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
+        got = {i: profession_rules.disenchant_amount(n, perk, rng.random()) for i, n in self._disenchant_gives(item).items()}
+        for essence, n in got.items():
+            self._bag_add(hero, essence, n)                   # what you get is never lost (D-90)
+        self._forget_piece(hero, item_id)
+        lines = [t.t("ench.disenchanted", item=self._gear_name(item_id), items=self._item_list(got), energy=energy)]
+        xp = self._make_xp(hero, {"energy": energy}, rank)
+        prof_xp = int(cfg.get("xp", 6))
+        lines.append(t.t("prof.gained", xp=int(xp * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=prof_xp))
+        lines += self._give_xp(hero, xp)
+        lines += self._prof_gain(hero, pid, prof_xp)
+        if hero.backpack.get(item_id, 0) > 0 or item_id in hero.gear.values():
+            return self._enchant_view(hero, item_id, notice="\n".join(lines))
+        return self._gear_view(hero, notice="\n".join(lines))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -5497,16 +5878,17 @@ class GameService(StoryMixin):
         return t.t("gear.for_you") if fits else t.t("gear.not_for_you", type=t.t(f"gear.type.{item['type']}"))
 
     def _real_stats(self, hero: Hero, item_id: str) -> dict[str, float]:
-        return piece_stats(self.content.items[item_id], hero, self.content.classes, self.content.balance)
+        """What a piece gives this hero: half if off type, plus its ✨ enchantment (D-115; engine/hero/gear.py real_stats)."""
+        return real_stats(self.content.items, item_id, hero, self.content.classes, self.content.balance)
 
     def _gear_diff(self, hero: Hero, item_id: str) -> tuple[dict[str, float], float]:
-        """Stats of a piece minus the piece worn in its slot, and a single score (>0 = better)."""
+        """Stats of a piece minus the piece worn in its slot, and a single score (>0 = better; gear_score, balance gear.score)."""
         item = self.content.items[item_id]
         mine = self._real_stats(hero, item_id)
         worn_id = hero.gear.get(item["slot"], "")
         worn = self._real_stats(hero, worn_id) if worn_id in self.content.items else {}
         diff = {k: mine.get(k, 0.0) - worn.get(k, 0.0) for k in sorted(set(mine) | set(worn))}
-        return diff, diff.get("attack", 0.0) + diff.get("hp", 0.0) + 2 * diff.get("armor", 0.0)
+        return diff, gear_score(diff, self.content.balance)
 
     def _loot_line(self, hero: Hero, item_id: str) -> str:
         """A gear drop: put on by itself only if that slot was empty (D-83); the details live in 👤 Héroe → 🛡️ Equipo."""
@@ -5529,7 +5911,8 @@ class GameService(StoryMixin):
             if item_id in self.content.items:
                 item = self.content.items[item_id]
                 body.append(t.t("gear.simple_line", emoji=item["emoji"],
-                                item=t.t(item["name_key"]) + self._masterwork_mark(item_id) + self._new_mark(hero, item_id),
+                                item=t.t(item["name_key"]) + self._masterwork_mark(item_id) + self._enchant_mark(hero, item_id)
+                                + self._new_mark(hero, item_id),
                                 stats=self._gear_stats_text(self._real_stats(hero, item_id))))
         if not body:
             body.append(t.t("gear.nothing_worn"))
@@ -5549,16 +5932,21 @@ class GameService(StoryMixin):
         slots = self.content.balance["gear"]["slots"]
         body = []
         loose = [i for i in hero.backpack if self.content.items.get(i, {}).get("kind") == "gear"]
-        loose.sort(key=lambda i: (i not in hero.gear_new, can_use(self.content.items[i], hero, self.content.classes, self.content.balance) is not None,
+        better = {i for i in loose if self._is_better(hero, i)}           # D-115: ⬆️ better than what you wear (and usable)
+        loose.sort(key=lambda i: (i not in hero.gear_new, i not in better,
+                                  can_use(self.content.items[i], hero, self.content.classes, self.content.balance) is not None,
                                   not suits(self.content.items[i], hero, self.content.classes, self.content.balance), -self.content.items[i].get("tier", 1), i))
         if loose:
             body.append(t.t("gear.backpack_title", n=sum(hero.backpack[i] for i in loose)))
             for item_id in loose[:15]:
                 count = hero.backpack[item_id]
                 note = self._masterwork_note(hero, item_id)                     # D-116: ✒️ Obra maestra de Lyra
-                body.append(t.t("gear.backpack_line", item=self._gear_name(item_id) + self._new_mark(hero, item_id), n=f" ×{count}" if count > 1 else "",
+                body.append(t.t("gear.backpack_line", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id)
+                                + self._better_mark(hero, item_id) + self._new_mark(hero, item_id), n=f" ×{count}" if count > 1 else "",
                                 status=self._gear_status(hero, self.content.items[item_id]) + (f" · {note}" if note else "")))
             body.append(t.t("gear.hint"))
+            if better:
+                body.append(t.t("gear.better_hint"))
         else:
             body.append(t.t("gear.backpack_empty"))
         worn_names = [self._gear_name(hero.gear[slot]) for slot in slots if hero.gear.get(slot) in self.content.items]
@@ -5575,7 +5963,8 @@ class GameService(StoryMixin):
             page %= pages
             shown = pieces[page * 2: page * 2 + 2]
         for item_id, worn in shown:
-            label = t.t("gear.piece_worn" if worn else "gear.piece_button", item=self._gear_name(item_id) + self._new_mark(hero, item_id))
+            label = t.t("gear.piece_worn" if worn else "gear.piece_button", item=self._gear_name(item_id)
+                        + ("" if worn else self._better_mark(hero, item_id)) + self._new_mark(hero, item_id))
             actions.append(Action(id=f"item:{item_id}", label=label))
         if len(pieces) > 3:
             actions.append(Action(id=f"gear:{page + 1}", label=t.t("gear.more")))
@@ -5608,6 +5997,9 @@ class GameService(StoryMixin):
         if note:                                    # D-116: ✒️ who made it, and why it is better
             body.insert(1, note)
             body.insert(2, t.t("gear.masterwork_help", pct=round(100 * float((self.content.balance.get("masterwork") or {}).get("stat_bonus", 0)))))
+        enchant = self._enchant_text(hero, item_id)
+        if enchant:                                 # D-115: ✨ its enchantment
+            body.append(t.t("ench.item_line", enchant=enchant))
         if item_id in hero.gear_new:
             hero.gear_new.remove(item_id)
         actions = []
@@ -5628,8 +6020,10 @@ class GameService(StoryMixin):
                 actions.append(Action(id=f"sellg:{item_id}", label=t.t("gear.sell_button", price=self._money(price))))
             else:
                 body.append(t.t("gear.sell_in_claro", price=self._money(price)))
+        if self._enchant_slot(item):                # D-115: ✨ Encantamiento (enchant it, or disenchant it from the backpack)
+            actions.append(Action(id=f"ench:{item_id}", label=t.t("ench.item_button")))
         actions.append(Action(id="gear:0", label=t.t("menu.back")))
-        return View(kind="item", title=t.t("gear.item_title"), body=body, actions=actions, notice=notice)
+        return View(kind="item", title=t.t("gear.item_title"), body=body, actions=actions, notice=notice)    # 4 at most: equip, sell, ✨, back
 
     def _equip(self, hero: Hero, item_id: str) -> View:
         t = self.texts
@@ -5652,8 +6046,7 @@ class GameService(StoryMixin):
             del hero.backpack[item_id]
         price, _trade = self._merchant_sale(hero, price)       # D-116: 💱 Comercio
         hero.gold += price
-        if item_id in hero.gear_signatures and not hero.backpack.get(item_id) and item_id not in hero.gear.values():
-            del hero.gear_signatures[item_id]                   # D-116: the last copy of that masterwork is gone
+        self._forget_piece(hero, item_id)                       # D-116 / D-115: the last copy takes its signature and enchantment
         story = self._story_event(hero, "sell", n=1, coins=price)                                    # D-117
         return self._gear_view(hero, notice=self._join([t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price))] + story))
 
@@ -6459,6 +6852,10 @@ class GameService(StoryMixin):
                     activity["log"].append(t.t("prof.rank_up", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank)))
         for new_level in range(level + 1, hero.level + 1):
             activity["log"] += [t.t("combat.level_up", level=new_level), t.t("talents.new_point")]
+        if state.get("better") and self._is_better(hero, state["better"]):     # D-115: ⬆️ said once in the batch summary
+            line = t.t("gear.better_batch", item=self._gear_name(state["better"]))
+            if line not in activity["log"]:
+                activity["log"].append(line)
         return outcome
 
     def _auto_summary(self, activity: dict[str, Any]) -> list[str]:
@@ -6659,6 +7056,7 @@ class GameService(StoryMixin):
         rng = Rng(state["seed"], state["draws"])
         hb = self.content.balance["hero"]
         actions = [Action(id="home", label=t.t("menu.continue"))]
+        bag_before = dict(hero.backpack)                # D-115: to tell a ⬆️ better piece that came in this fight
         # D-106: a hunt won while your camp's hunting party lasts in that zone gets the group bonus (0 otherwise)
         party = self._hunt_party_of_fight(hero, state) if outcome == "victory" else None
         bonus = self._hunt_bonus(hero, party) if party else 0.0
@@ -6725,6 +7123,12 @@ class GameService(StoryMixin):
         if outcome == "victory" and state.get("hunt"):
             actions = self._hunt_end_actions(hero) + actions     # D-106: 🏹 Otra presa (and the party) before ▶️ Continuar
         actions = self._ecamp_again(hero, state) + actions         # D-112: ⚔️ Seguir asaltando
+        better = self._better_piece(hero, bag_before)              # D-115: ⬆️ a piece from this fight beats what you wear
+        if better:
+            state["better"] = better                               # automatic fights put the line in the batch summary
+            lines.append(self._better_line(hero, better))
+            if len(actions) < 4:                                   # 4 buttons at most (D-75): 🔁 Equipar first
+                actions.insert(0, self._better_action(better))
         self.bus.publish(CombatEnded(hero.id, outcome))
         title = t.t(f"combat.end_title.{outcome}")
         return View(kind="combat_end", title=title, body=lines, actions=actions)

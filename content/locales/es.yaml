@@ -2351,16 +2351,16 @@ profession:                   # [ES] D-109: nombre de cada oficio y cómo se sub
     how: "arcos y bastones (🟫 tablones con 🧣 tela o 🟤 cuero) y, desde el rango 40, 🪑 muebles para el campamento"
   herreria:
     name: "Herrería"
-    how: "espadas, dagas y petos: 🔩 lingotes con 🟤 cuero"
+    how: "espadas, dagas, petos y piezas de placas (cabeza, manos, piernas y pies): 🔩 lingotes con 🟤 cuero"
   alquimia:
     name: "Alquimia"
     how: "pociones: 🧴 extracto con 🏺 arcilla (las mayores, con 🌸 flor de luna)"
   sastreria:
     name: "Sastrería"
-    how: "vendas y túnicas: 🧣 tela con 🌿 hierba, 🟤 cuero o 🧴 extracto"
+    how: "vendas, túnicas y piezas de tela (cabeza, manos, piernas y pies): 🧣 tela con 🌿 hierba, 🟤 cuero o 🧴 extracto"
   peleteria:
     name: "Peletería"
-    how: "armaduras de cuero y de malla: 🟤 cuero con 🧣 tela o 🔩 lingotes"
+    how: "armaduras de cuero y de malla, también de cabeza, manos, piernas y pies: 🟤 cuero con 🧣 tela o 🔩 lingotes"
   joyeria:
     name: "Joyería"
     how: "anillos y amuletos: 🔩 lingotes con 💠 gemas en bruto"
