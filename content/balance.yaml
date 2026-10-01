@@ -424,3 +424,16 @@ enchanting:                  # [ES] D-115 (fase 2 de la red de oficios, lado del
     filo: {stat: attack, slots: [arma, manos], min: 0.01, max: 0.03, min_rank: 1, material: lingote}               # [ES] ⚔️ Filo: +1 % de ataque (rangos 1-25), +2 % (26-75), +3 % (76-100); pide 🔩 lingote (Fundición)
     vigor: {stat: hp, slots: [armadura, cabeza, piernas], min: 0.01, max: 0.03, min_rank: 1, material: extracto}   # [ES] ❤️ Vigor: +1 % de vida (1-25), +2 % (26-75), +3 % (76-100); pide 🧴 extracto (Destilación)
     guarda: {stat: armor, slots: [pies, joya], min: 0.01, max: 0.02, min_rank: 25, material: gema_bruta}           # [ES] 🛡️ Guarda: +1 de defensa (rangos 25-50), +2 (51-100); pide 💠 gema en bruto (Minero)
+
+camp_professions:            # [ES] D-115/D-116 (confirmadas): oficios de la fase 2, lado del campamento (red-de-oficios.md §5; profesiones.md §0.4): 🎣 Pescador, 🍲 Cocina, Cantería y 🏗️ Construcción. Sus beneficios (content/professions.yaml "perk") valen para el campamento donde eres miembro, con el MEJOR rango entre sus miembros (no se suman). Números propuestos por Claude: se ajustan en la beta
+  fish:                      # [ES] 🐟 el pescado de las zonas con agua (content/biomes.yaml "water": todo el pantano, 3 de cada 10 zonas de bosque y de pradera)
+    resource: pescado        # [ES] id del pescado (items.yaml; lo junta el 🎣 Pescador, content/professions.yaml)
+    richness: 0.5            # [ES] su peso en la zona (los recursos de tierra van de 0,3 a 1,0): en el pantano, ~1 de cada 4 unidades de una vuelta es pescado. Se agota y vuelve como los demás (stock)
+  stone_items: [piedra, sillar]   # [ES] lo que cuenta como "piedra" para el beneficio de la Cantería (las obras piden 15 % menos al rango 100)
+  build_profession: construccion  # [ES] id del oficio 🏗️ Construcción (estable: los héroes guardan su experiencia con este id)
+  build_xp_per_unit: 1       # [ES] 🏗️ Construcción: experiencia de oficio por cada material crudo aportado a una obra o a la reparación de las defensas; un refinado (🟫 tablón, 🧱 sillar) vale lo crudo que lleva (3).
+                             # [ES] Quien junta y aporta todo lo de un día (~150-300 unidades según su nivel) llega al rango 100 en ~1 a 1,5 años, como los demás oficios
+  damage:                    # [ES] 🛠️ cada oleada semanal daña las defensas del campamento hasta que las reparen (nunca más que la 🛡️ Defensa construida; la Noche de prueba no daña)
+    won: 1                   # [ES] defendida: −1 de 🛡️ Defensa
+    lost: 2                  # [ES] perdida: −2 (además de la comida de raids.loss_share)
+  repair_per_point: {tablon: 2, sillar: 2}   # [ES] reparar cada punto dañado pide 2 🟫 tablones y 2 🧱 sillares (Aserradero + Cantería: 12 de lo crudo y 4 ⚡ de refinar). Se aporta entre todos como una obra (🔨 Mejoras → 🔨 Obras → 🛠️ Reparar defensas); 🏗️ Construcción lo baja a la mitad al rango 100

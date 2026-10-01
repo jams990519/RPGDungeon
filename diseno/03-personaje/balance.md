@@ -841,3 +841,30 @@ Las cinco con poca vida del informe del bestiario (Mago Arcano, Druida Feral, Ba
 El artesano de las cuatro ranuras suma **+1 a +2 puntos** de vida al terminar y mata algo más rápido; el orden de los roles no cambia y todas ganan el 100 %. Los encantamientos no entran en el informe (son por pieza y opcionales); su tope (+6 % de ataque, +9 % de vida y +4 de defensa con todo encantado al rango 100) es del tamaño de dos beneficios de oficio. Si se los quiere medir, agregarlos al escenario c.
 
 **Lo que queda por mirar:** si los encantadores encuentran equipo para desencantar (en la beta, contar cuántas piezas se desencantan y cuántas se venden); si la demanda de 💠 gemas y 🌸 flores de luna del artesano de las cuatro ranuras nuevas deja sin material a la Joyería y la Alquimia (subir `professions.rare_chance` o bajar las recetas); y si el aviso ⬆️ con su botón hace que nadie mire 🛡️ Equipo (eso está bien: es para eso).
+
+### Octubre de 2026: los oficios del campamento, fase 2 (D-115, D-116)
+
+**Por qué.** El dueño pidió muchos oficios que dependan unos de otros y mantengan el sistema (D-115), y beneficios que sean solo del campamento o del castillo (D-116). Entran los cuatro del lado del campamento de la fase 2 ([Red de oficios](../07-economia/red-de-oficios.md) §5; [Profesiones](../07-economia/profesiones.md) §0.4): 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción. Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `camp_professions`; beneficios en `content/professions.yaml`; agua en `content/biomes.yaml`; comidas en `content/items.yaml`). Los únicos números de antes que se movieron son los **costos de las 4 mejoras del nivel 7 y 8** (con el mismo valor en crudo). No se tocó `hero.xp_formula` (P-77).
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Zonas con agua (`biomes.yaml` → `water`) | — | pantano 1,0 · bosque 0,3 · pradera 0,3 | El pescado necesita agua: todo el pantano, y los ríos y lagunas de 3 de cada 10 zonas de bosque y de pradera. Con la semilla 12345, ~22 % de las zonas cerca del Claro |
+| Peso del pescado (`camp_professions.fish.richness`) | — | 0,5 | Se suma a los recursos de tierra sin quitar ninguno; en el pantano es ~1 de cada 4 unidades de una vuelta (la hierba y la fibra rinden ~25 % menos ahí). Experiencia de Pescador: 1 por unidad, como todo recolector |
+| Raciones del pescado (`items.yaml` → pescado.food) | — | 1 (la carne, 2) | Se junta más fácil que la carne (sale recolectando, sin pelear) |
+| Platos de la 🍲 Cocina (`items.yaml` → `food`) | — | ×1,5 lo crudo en el rango 1, ×1,75 en el 25, ×2 en el 50, ×2,25 en el 75, ×2,5 en el 100 (3, 3, 10, 18, 27 y 45 raciones) | Cocinar vale la energía: el rango 1 suma 1 ración por ⚡; el 100, ~13 por ⚡. Nunca se venden (son `kind: food`): no fabrican monedas |
+| 🧱 Sillar (receta `sillar`, `items.yaml`) | — | 3 piedras → 1 sillar, 1 ⚡, 6 de experiencia; precio 7 | Como el tablón: refinar no fabrica monedas (se vende a 3, lo que valen sus 3 piedras) |
+| Costos del nivel 7 y 8 (`camp_upgrades.yaml`: enfermería, biblioteca, torres de arqueros, foso) | solo crudo | parte en 🧱 sillar y 🟫 tablón, mismo valor en crudo (460, 530, 560 y 600) | Que las mejoras grandes necesiten a la Cantería y al Aserradero. Cuestan además la energía de refinar (60 a 125 ⚡ entre todos). Lo crudo ya aportado de más cuenta como refinado |
+| Beneficio del 🎣 Pescador (`pescador.perk.fish_food`) | — | +30 % de raciones del pescado crudo en la despensa, al rango 100 | Tabla de §0.4 de Profesiones |
+| Beneficio de la 🍲 Cocina (`cocina.perk.cook_food`) | — | +30 % de raciones de lo cocinado, al rango 100 | Tabla de §0.4 |
+| Beneficio de la 🗿 Cantería (`canteria.perk.stone_cost`) | — | −15 % de piedra y sillar en las obras, al rango 100 | Tabla de §0.4 (`camp_professions.stone_items`) |
+| Beneficio de la 🏗️ Construcción (`construccion.perk`) | — | −20 % de materiales en las mejoras y −50 % al reparar, al rango 100 | Tabla de §0.4. Las monedas de las obras no bajan |
+| Cómo suman los beneficios de campamento | — | rige **el mejor rango** entre los miembros de ahora (no se suman) | Simple y justo: un campamento grande no rinde más por tener diez cocineros. Decisión de Claude, provisional |
+| Experiencia de 🏗️ Construcción (`camp_professions.build_xp_per_unit`) | — | 1 por material crudo aportado; un refinado, 3 | Quien junta y aporta todo lo de un día (150 a 300 unidades según su nivel) llega al rango 100 en ~1 a 1,5 años |
+| Daño de las oleadas (`camp_professions.damage`) | — | −1 de 🛡️ Defensa si se defiende, −2 si se pierde; nunca más que lo construido; la Noche de prueba no daña | Que las defensas se gasten y haya trabajo para el Aserradero, la Cantería y la Construcción todas las semanas (red de oficios, regla 2: todo se gasta) |
+| Reparar (`camp_professions.repair_per_point`) | — | 2 🟫 tablones y 2 🧱 sillares por punto (12 de lo crudo y 4 ⚡ de refinar) | Más barato que construir la defensa de nuevo (la Empalizada, 40 de lo crudo por 1 punto); la Construcción al 100 lo deja en la mitad |
+
+**Cuenta rápida.**
+- **Despensa:** un campamento de 10 miembros come 10 raciones por día. Un pescador dedicado en el pantano junta ~1 pescado por ⚡ (≈40 raciones al día); cocinadas en 🥫 conservas valen el doble. La comida deja de ser el freno para quien se organiza, y la despensa sigue comiendo todos los días (el sumidero).
+- **Defensas:** con una oleada por semana, un campamento con defensas repara 1 o 2 puntos por semana: 4 a 8 refinados de cada uno (24 a 48 de lo crudo y 8 a 16 ⚡ de refinar), la mitad con un constructor de rango 100.
+
+**Lo que queda por mirar:** si el pescado en el bosque y la pradera baja demasiado la madera y la hierba de esas zonas (bajar `fish.richness` o `water`); si las comidas grandes llenan la despensa tanto que el 🍖 Ahumadero y el 🥬 Huerto dejan de importar; si el daño de una oleada defendida (−1) se siente como castigo (se puede dejar en 0); y si "el mejor rango" debería sumar algo por un segundo especialista cuando haya especializaciones.

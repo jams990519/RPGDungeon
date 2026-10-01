@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; fase 2 del lado del campamento, D-115: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción, ver §0.4; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5); el resto, propuesta
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -46,7 +46,7 @@ Esta es la **capa simple** que se programa primero, con los recursos que ya hay 
 
 Lo que ya está programado. El catálogo vive en `content/professions.yaml` (oficios, estaciones y recetas), los números en `content/balance.yaml` → `professions` y las cuentas en `engine/professions/`. Cada héroe guarda la experiencia de cada oficio (`Hero.professions`); los héroes de antes empiezan todos los oficios en rango 1.
 
-**Los 15 oficios.** No hay tope: cualquiera puede subirlos todos (D-57).
+**Los oficios.** Los 15 de la fase 1, la 🩺 Medicina, el 🧭 Explorador, el 💱 Comercio y los 4 de la fase 2 del lado del campamento (D-115, marcados "fase 2"). No hay tope: cualquiera puede subirlos todos (D-57).
 
 | Rama | Oficio | Cómo sube |
 |---|---|---|
@@ -54,10 +54,12 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 | | ⛏️ Minero | 1 por cada 🪨 piedra, ⚙️ metal o 🏺 arcilla; desde el rango 10, 💠 gemas en bruto |
 | | 🌿 Herbolario | 1 por cada 🌿 hierba curativa o 🧵 fibra; desde el rango 10, 🌸 flores de luna |
 | | 🔪 Desollador | 1 por cada 🍖 carne o 🦌 piel que sueltan las bestias al vencerlas |
+| | 🎣 Pescador (fase 2) | 1 por cada 🐟 pescado, que sale en las zonas con agua: todo el 🐸 pantano y 3 de cada 10 zonas de 🌲 bosque y de 🌾 pradera (ríos y lagunas) |
 | Exploración (D-112) | 🧭 Explorador | 5 por cada vuelta de 🔎 exploración y 6 más al dejar una zona al 100 %; 15 por cada 🕵️ infiltración. Con el rango ve más en el mapa ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) |
-| Refinado | 🪚 Aserradero · 🔥 Fundición · 💧 Destilación · 🧶 Tejeduría · 🪣 Curtiduría | 6 por cada vez que refinas en una estación |
-| Fabricación | 🪑 Carpintería · 🔨 Herrería · ⚗️ Alquimia · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería | 12 por cada pieza de equipo (6 por las vendas y la poción de vida, 8 por la poción mayor) |
+| Refinado | 🪚 Aserradero · 🔥 Fundición · 💧 Destilación · 🧶 Tejeduría · 🪣 Curtiduría · 🗿 Cantería (fase 2) | 6 por cada vez que refinas en una estación |
+| Fabricación | 🪑 Carpintería · 🔨 Herrería · ⚗️ Alquimia · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería · 🩺 Medicina · 🍲 Cocina (fase 2) | 12 por cada pieza de equipo (6 por las vendas y la poción de vida, 8 por la poción mayor); la Cocina, 6 por cada ⚡ |
 | Artes arcanas (fase 2 de D-115) | ✨ Encantamiento | 6 por cada pieza que desencantas (1 ⚡) y 12 por cada encantamiento (2 ⚡). Sin estación: desde 🛡️ Equipo → una pieza → ✨ Encantamiento, o con /encantar (§0.5) |
+| Servicio | 💱 Comercio (D-116) · 🏗️ Construcción (fase 2) | El Comercio, 1 por cada 🥉 que cobras vendiendo; la Construcción, 1 por cada material que aportas a una obra de tu campamento o a reparar sus defensas (un 🟫 tablón o un 🧱 sillar, 3: lo crudo que lleva) |
 
 **Rangos.** Experiencia de oficio total para el rango R = 9 × (R − 1)². Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209. Quien dedica toda su energía a un oficio de refinado o fabricación junta unos 240 por día: rango 25 en ~3 semanas, 50 en ~3 meses, **100 en ~1 año** (§4). Un recolector dedicado llega al 100 en 9 a 11 meses (junta más unidades por vuelta a medida que sube de nivel). Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81), Gran Maestro (96). Los exámenes del §4 son capa profunda.
 
@@ -74,6 +76,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 | Destilación | 🌿 hierba curativa ×3 | 🧴 extracto |
 | Tejeduría | 🧵 fibra ×3 | 🧣 tela |
 | Curtiduría | 🦌 piel ×2 | 🟤 cuero |
+| 🗿 Cantería (fase 2) | 🪨 piedra ×3 | 🧱 sillar |
 
 Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las estaciones de tu campamento, +10 %.
 
@@ -87,6 +90,7 @@ Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las es
 | 🪡 Sastrería | Vendas ×3 (tela, hierba curativa) · Túnica de viajero (tela ×4, cuero) | Túnica teñida (tela ×6, extracto) | Túnica del artesano (tela ×9, extracto ×2, flor de luna) |
 | 🦺 Peletería | Jubón de cuero (cuero ×4, tela) · Cota ligera (cuero ×2, lingote ×2) | Jubón reforzado (cuero ×6, tela ×2) · Cota remachada (cuero ×3, lingote ×4) | Jubón del artesano (cuero ×9, tela ×3, extracto) · Cota del artesano (cuero ×5, lingote ×7, tela ×2) |
 | 💍 Joyería | Anillo engarzado (lingote, gema) | Collar de gemas (lingote ×2, gema ×2) | Amuleto del artesano (lingote ×3, gema ×3) |
+| 🍲 Cocina (fase 2; también rangos 75 y 100, ver §0.4) | 🍱 Ración del campamento (carne, hierba) · 🍢 Pescado asado (pescado ×2, madera) | 🥘 Guiso del cazador (carne ×2, pescado ×2, hierba) | 🥫 Conservas en tarro (carne ×3, pescado ×3, arcilla, extracto) |
 
 **Rangos 55 a 100: el equipo hasta el nivel 100 (D-110, D-113).** Cada línea de equipo (bastón y arco en la Carpintería; espada, daga y peto en la Herrería; túnica en la Sastrería; jubón y cota en la Peletería; joya en la Joyería) suma una receta por nivel de pieza, del nivel 10 al 100, una cada 5 rangos: **nivel de pieza 10 → rango 55, 20 → 60 … 100 → rango 100** (90 recetas). Piden lo refinado de 2 ramas o más, y más 💠 gemas y 🌸 flores de luna en los niveles altos; cuestan 2 ⚡ y dan 12 de experiencia de oficio, como las demás piezas (el ritmo de D-108 no cambia):
 
@@ -124,7 +128,7 @@ En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea l
 
 **Estaciones y pantallas** (4 botones como mucho):
 - **El Claro** tiene todas las estaciones básicas: 🏕️ Campamento → ⚒️ Oficios (su 3.er botón).
-- **Tu campamento:** el 🧵 Taller abre aserradero, tejeduría, curtiduría, destilación, carpintería, sastrería, peletería y alquimia; la 🔨 Herrería, fundición, herrería y joyería (D-101). Se llega desde 🔨 Mejoras → 🏘️ Servicios → 🧵 Taller → ⚒️ Oficios (o ⚒️ Oficios en los servicios si hay Herrería y no Taller). Al refinar ahí, +10 % de sacar una unidad más. Todavía no hay alambique: destilar y la alquimia van en el Taller.
+- **Tu campamento:** el 🧵 Taller abre aserradero, tejeduría, curtiduría, destilación, carpintería, sastrería, peletería, alquimia, medicina y 🗿 cantería; la 🔨 Herrería, fundición, herrería y joyería (D-101); el 🔥 Fogón, la 🍲 cocina (fase 2: desde el nivel 1). Se llega desde 🔨 Mejoras → 🏘️ Servicios → 🧵 Taller → ⚒️ Oficios (o ⚒️ Oficios en los servicios si hay otra estación y no Taller: la Herrería o el Fogón). Al refinar ahí, +10 % de sacar una unidad más. Todavía no hay alambique: destilar y la alquimia van en el Taller.
 - **⚒️ Oficios** (también con **/oficios** desde cualquier lado, y la ficha del héroe lo nombra): tus rangos, con su barra, cómo subir cada uno y qué abre el próximo umbral; los oficios sin empezar; dónde están las estaciones. Botones: 🪚 Refinar · 🛠️ Fabricar · ↩️ Volver.
 - **🪚 Refinar / 🛠️ Fabricar:** las recetas que tu rango abre en las estaciones de aquí, primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las demás; de a 2 por página si son más de 3.
 - **📜 Receta:** lo que pide (✅ o ❌ con lo que llevas), lo que sale, la energía y lo que ganas. Botones: 🔨 Hacer 1 · 🔨 Hacer 5 (o lo que alcance) · 🔨 Hacer todo · ↩️ Volver. Si falta un material, la energía, la estación o el rango, no se gasta nada.
@@ -155,6 +159,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 💍 Joyería | Todos | **+3 %** de vida y de ataque | Gemas de joyero |
 | 🩺 Medicina | Sanadores (rol de curación) | Tus curaciones curan un **15 %** más; las vendas, un **30 %** más | Primeros auxilios |
 | ✨ Encantamiento (fase 2 de D-115, en el juego) | Artesanos y quien mejora su equipo (no es de combate) | Desencantar da hasta **30 %** más esencias (§0.5). Lo que da en combate son los encantamientos que pone en las piezas, no el beneficio | Desencantamiento |
+| 🎣 Pescador · 🍲 Cocina · 🗿 Cantería · 🏗️ Construcción (fase 2) | Tu campamento (no tu héroe) | La despensa y las obras del campamento rinden más; rige el mejor rango entre sus miembros (ver §0.4) | — |
 
 - **En el juego desde la 0.16.** Cada oficio empezado da su beneficio según su rango; ⚒️ Oficios muestra "✨ Beneficio ahora" en cada uno. Los de ataque, vida y armadura entran en tus estadísticas; el de la Medicina, en tus curaciones (si eres sanador) y en vendas, ungüentos y botiquines; el de la Alquimia, en las pociones (en combate y fuera); el del Herbolario, en la vida que vuelve sola; el del Leñador, en el espacio de la mochila. Datos: `perk` de cada oficio en `content/professions.yaml`; cuentas en `engine/professions/rules.py` (`perks`).
 - **🩺 Medicina** es oficio de fabricación: sube haciendo 🫙 ungüentos (extracto + tela; cura 22 %, rango 1), 🧰 botiquines (extracto, tela y cuero; cura 35 %, rango 25) y 🩻 vendajes de maestro (con 🌸 flor de luna; cura 50 %, rango 50), sin toxicidad. Más adelante crece hacia el médico de §2.3 (diagnósticos, cirugías).
@@ -379,12 +384,12 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | ⛏️ Minero | ⚔️ Combate | +5 % de vida | en el juego |
 | 🌿 Herbolario | 🌿 Fuera de combate | La vida vuelve sola 20 % más rápido | en el juego |
 | 🔪 Desollador | ⚔️ Combate | +4 % de ataque | en el juego |
-| 🎣 Pescador | 🏰 Campamento | El pescado rinde 30 % más en la despensa | fase 2 |
+| 🎣 Pescador | 🏰 Campamento | El 🐟 pescado crudo rinde **30 %** más en la despensa del campamento | **en el juego** (fase 2, ver abajo) |
 | 🌾 Agricultor | 🏰 Campamento | El huerto del campamento da 1 ración más al día por cada agricultor de rango 50 o más | fase 3 |
 | 🐑 Ganadero | 🐎 Viaje | Viajes 15 % más rápidos (monturas) | fase 3 |
 | 🧭 Explorador | 🧭 Mapa | Ve más en el mapa (tiempos, ⛺ campamentos enemigos, su fuerza), 🕵️ se infiltra desde el rango 30 y +5 puntos de exploración por vuelta (D-112; [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | **en el juego** |
 | Refinado (5 oficios) | 🛠️ Oficio | Hasta 30 % de sacar una unidad más al refinar | en el juego |
-| Cantería | 🏰 Castillo | Las obras de piedra del campamento piden 15 % menos piedra | fase 2 |
+| 🗿 Cantería | 🏰 Castillo | Las obras del campamento piden **15 %** menos 🪨 piedra y 🧱 sillar (y, como todo refinado, hasta 30 % de sacar un sillar más) | **en el juego** (fase 2) |
 | 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | **en el juego** (reemplazó al +4 % de ataque con arco o bastón; ver "La obra maestra en el juego", abajo) |
 | 🔨 Herrería | ⚔️ Combate + 🛠️ | +3 de armadura con placas (en el juego); reparar cuesta 30 % menos cuando exista el desgaste | en el juego / con el desgaste |
 | 🦺 Peletería | ⚔️ Combate | +4 % de ataque y +3 % de vida con cuero o malla | en el juego |
@@ -395,13 +400,37 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | ✨ Encantamiento | 🛠️ Oficio | Desencantar da hasta **30 %** más esencias (parejo con el rango: 15 % al 50) | **en el juego** (fase 2 de D-115; ver §0.5) |
 | 📜 Inscripción | 💰 Economía | Mapas y contratos valen 20 % más; una orden más en el mercado | fase 3 |
 | ⚙️ Ingeniería | 🏰 Castillo | Cada trampa o torreta del campamento da +1 de defensa | fase 3 |
-| 🍲 Cocina | 🏰 Campamento | Las raciones que cocinas rinden 30 % más en la despensa | fase 2 |
-| 🏗️ Construcción | 🏰 Castillo | Las mejoras del campamento piden 20 % menos materiales y reparar las defensas después de una oleada cuesta la mitad | fase 2 |
+| 🍲 Cocina | 🏰 Campamento | Lo cocinado rinde **30 %** más en la despensa del campamento | **en el juego** (fase 2) |
+| 🏗️ Construcción | 🏰 Castillo | Las mejoras del campamento piden **20 %** menos materiales y reparar las defensas después de una oleada cuesta **la mitad** | **en el juego** (fase 2) |
 | 💱 **Comercio** | 💰 Economía | **+20 % de monedas** al vender al mercader, al 💱 trueque del campamento o tu equipo viejo; sube vendiendo (1 de experiencia por 🥉). Cuando exista el mercado de órdenes, también paga menos impuesto. **No da nada en combate** | **en el juego desde la 0.17** |
 
-- **Los de campamento y castillo** valen para el campamento donde eres miembro: el que se dedica a construir o cocinar hace más fuerte a su grupo sin ser el que más pelea.
+- **Los de campamento y castillo** valen para el campamento donde eres miembro: el que se dedica a construir o cocinar hace más fuerte a su grupo sin ser el que más pelea. **Rige el mejor rango entre los miembros de ahora** (no se suman): un campamento grande no rinde más por tener diez cocineros, y si el mejor se va, su beneficio se va con él (decisión de Claude, provisional: ver "Los oficios del campamento en el juego", abajo).
 - **Los de economía** no tocan el combate: el comerciante gana su lugar con dinero, comprando y vendiendo para los demás.
 - **Los exclusivos** hacen que el artesano sea buscado: una obra maestra firmada vale más en el mercado.
+
+#### Los oficios del campamento en el juego (fase 2, D-115 y D-116)
+
+El dueño pidió "tantas profesiones y especializaciones como hagan falta, que tengan que ver una con la otra y en conjunto mantengan el sistema" (D-115) y que haya beneficios "solo para el campamento o el castillo" (D-116). Esto es lo que ya está programado (capa simple, D-44; las especializaciones llegan después):
+
+- **🎣 Pescador** (recolección). En las zonas con agua sale 🐟 **pescado**: todo el 🐸 pantano y **3 de cada 10** zonas de 🌲 bosque y de 🌾 pradera (sale de la semilla: siempre las mismas). Es un recurso más de la zona, que se suma a los de tierra **sin quitar ninguno**, con peso 0,5 (en el pantano, ~1 de cada 4 unidades de una vuelta); se agota y vuelve como los demás. Cada pescado da 1 de experiencia de Pescador y, con el rango, a veces uno más (como todo recolector). Vale **1 ración** en la despensa (la carne, 2).
+- **🍲 Cocina** (fabricación). Vuelve carne, pescado y hierbas **raciones que valen más que lo crudo**: ×1,5 en el rango 1, ×1,75 en el 25, ×2 en el 50, ×2,25 en el 75 y ×2,5 en el 100. Se cocina en el Claro o en el 🔥 **Fogón** del campamento (nivel 1). Lo cocinado es comida: el mercader y el trueque no lo compran, va a la despensa.
+
+| Rango | Plato | Lleva | Raciones (crudo → cocinado) | ⚡ |
+|---|---|---|---|---|
+| 1 | 🍱 Ración del campamento | carne, hierba curativa | 2 → 3 | 1 |
+| 1 | 🍢 Pescado asado | pescado ×2, madera | 2 → 3 | 1 |
+| 25 | 🥘 Guiso del cazador | carne ×2, pescado ×2, hierba | 6 → 10 | 2 |
+| 50 | 🥫 Conservas en tarro | carne ×3, pescado ×3, arcilla, extracto | 9 → 18 | 2 |
+| 75 | 🍗 Festín de la frontera | carne ×4, pescado ×4, hierba ×2, flor de luna | 12 → 27 | 2 |
+| 100 | 🍽️ Banquete del castillo | carne ×6, pescado ×6, extracto ×2, flor de luna ×2 | 18 → 45 | 2 |
+
+- **🗿 Cantería** (refinado). 🪨 piedra ×3 → 🧱 **sillar** (1 ⚡, 6 de experiencia de oficio), en el Claro o en el 🧵 Taller del campamento. Como todo refinado, hasta 30 % de sacar uno más con el rango (+10 % en el campamento).
+- **Las mejoras grandes piden refinados.** Desde el **nivel 7** (ciudad), la 🏥 Enfermería, la 📚 Biblioteca, las 🏹 Torres de arqueros y el 🌊 Foso piden 🧱 sillar y 🟫 tablón en lugar de una parte de lo crudo, **con el mismo valor en crudo** (1 sillar = 3 piedras, 1 tablón = 3 maderas) más la energía de refinar. Lo ya construido no cambia, y **lo crudo que una obra ya tenía de más cuenta como refinado** (3 piedras = 1 sillar): nada de lo aportado se pierde.
+- **🏗️ Construcción** (servicio). Sube **aportando**: 1 de experiencia por cada material que das a una obra de tu campamento o a la reparación de sus defensas (un tablón o un sillar, 3). Quien junta y aporta todo lo de un día llega al rango 100 en ~1 a 1,5 años, como los demás oficios. La experiencia de héroe la da el aporte (1 por material, como siempre).
+- **🛠️ Las oleadas dañan las defensas.** Cada oleada semanal baja la 🛡️ Defensa del campamento: **−1 si la defienden, −2 si la pierden**, nunca más que la defensa construida (un campamento sin defensas no se daña) y la Noche de prueba no daña. Lo construido **nunca se pierde**: solo baja la Defensa (la próxima oleada llega más fuerte) hasta que la reparen. La pantalla del campamento y 🔨 Mejoras lo muestran ("🛠️ Defensas dañadas: −2 🛡️"). Se repara entre todos como una obra: 🔨 Mejoras → 🔨 Obras → **🛠️ Reparar defensas** (primera de la lista), con **2 🟫 tablones y 2 🧱 sillares por punto** (Aserradero + Cantería). Reloj perezoso: no hay tareas de fondo.
+- **Cómo valen los beneficios de campamento.** Para cada oficio rige **el mejor rango entre los miembros de ahora**, y crece parejo con el rango (rango 50 = la mitad): 🎣 el pescado crudo rinde hasta +30 % en la despensa; 🍲 lo cocinado, hasta +30 %; 🗿 las obras piden hasta −15 % de piedra y sillar; 🏗️ las mejoras piden hasta −20 % de materiales (las monedas no) y reparar cuesta hasta la mitad. Las raciones de más se redondean hacia abajo (como el 🍖 Ahumadero) y lo que piden las obras, hacia arriba, nunca menos de 1. Si los beneficios ya cubren una obra, el próximo 🤲 la termina aunque no lleves nada. La pantalla del campamento, ⚒️ Oficios, 🔨 Mejoras y 🔨 Obras muestran la línea "🏰 Oficios del campamento" con cada beneficio y **quién lo da**.
+- **Datos y código.** Oficios, estaciones y recetas en `content/professions.yaml`; números en `content/balance.yaml` → `camp_professions`; agua en `content/biomes.yaml` (`water`); el pescado, las comidas (`cooked`) y el sillar en `content/items.yaml`; las cuentas en `engine/professions/rules.py` (`camp_best_ranks`, `camp_perks`, `scaled_cost`) y `engine/world/resources.py` (`water_resources`); el daño y lo aportado a la reparación se guardan en las mejoras del campamento (`damage`, `repair`; 0 en los guardados de antes). Textos en `content/locales/es_oficios_campamento.yaml`. Pruebas: `tests/test_oficios_campamento.py`.
+- **De dónde sale:** *World of Warcraft* (Pesca y Cocina como oficios secundarios que se alimentan entre sí), *Albion Online* (las construcciones que piden refinados y las comidas que hace un jugador para otros) y *Star Wars Galaxies* (el arquitecto que necesita al minero, y los oficios que solo funcionan juntos).
 
 #### La obra maestra en el juego (D-116)
 

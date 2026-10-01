@@ -1,5 +1,5 @@
 """Chained professions, phase 1 (D-109): ranks from profession xp, who produces each material, recipe checks,
-perks (D-111) and masterworks (D-116).
+perks (D-111), masterworks (D-116) and the camp perks of phase 2 (D-115, D-116).
 
 Pure helpers over content/professions.yaml and balance.yaml "professions" / "masterwork". They never touch the store:
 the service keeps every hero's profession xp in Hero.professions (profession id -> xp) and calls these functions.
@@ -13,14 +13,18 @@ las piezas gemelas "obra maestra" que se arman al cargar el contenido (masterwor
 una pieza fabricada salga así (masterwork_chance). D-115 (fase 2, lado del equipo): las cuentas del ✨ Encantamiento:
 cuántas esencias da desencantar una pieza (disenchant_yield, disenchant_amount con el beneficio del oficio), qué
 encantamiento lleva cada ranura (enchant_for_slot), cuánto suma con tu rango (enchant_value) y qué pide (enchant_cost).
+Fase 2, lado del campamento (D-115, D-116): los beneficios de campamento y castillo (🎣 Pescador, 🍲 Cocina, Cantería,
+🏗️ Construcción) no son de cada héroe: valen para el campamento donde es miembro, con el MEJOR rango entre sus miembros
+(camp_best_ranks, camp_perks), y bajan lo que piden las obras (scaled_cost).
 No guarda nada: el servicio lee Hero.professions y llama a estas funciones.
-Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra),
-    §0.5 (✨ Encantamiento, D-115 fase 2) y §4
+Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra y
+    beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2) y §4; diseno/07-economia/red-de-oficios.md §5 (fase 2)
 Módulo: M14 Oficios
 Depende de: ninguno (los datos llegan de content/professions.yaml y de content/balance.yaml, bloques professions,
     masterwork y enchanting)
-Lo usan: engine/service/game.py (secciones "professions" y "enchanting"), engine/core/content.py (masterwork_items, al
-    cargar los objetos), tests/test_professions.py, tests/test_masterwork.py y tests/test_oficios_equipo.py
+Lo usan: engine/service/game.py (secciones "professions", "enchanting" y "camp professions, phase 2"),
+    engine/core/content.py (masterwork_items, al cargar los objetos), tests/test_professions.py, tests/test_masterwork.py,
+    tests/test_oficios_equipo.py y tests/test_oficios_campamento.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -30,6 +34,8 @@ Reglas que nunca se rompen:
     3. Una receta se hace entera o no se hace: nunca se gasta la mitad de los materiales.
     4. Los ids de obra maestra son el id de la pieza + MASTERWORK_SUFFIX ("_obra") y quedan guardados en las mochilas:
        el sufijo nunca cambia (IDs estables). Una obra maestra nunca sale en el botín al azar (source: masterwork).
+    5. Un beneficio de campamento (CAMP_PERK_KEYS) nunca se suma entre miembros: rige el mejor rango de cada oficio, así
+       un campamento grande no rinde más por tener muchos cocineros. Una obra nunca pide menos de 1 de cada cosa.
 Si cambias esto, revisa:
     - La curva (balance.yaml professions.rank_formula): cuánto tarda el rango 100 (~1 año dedicado, profesiones.md §4)
     - Servicio: engine/service/game.py (_prof_rank, _trade_gather, _trade_loot, _station_view, _recipe_view, _make)
@@ -40,7 +46,10 @@ Si cambias esto, revisa:
     - ✨ Encantamiento (D-115, fase 2): balance.yaml enchanting (esencias por rareza y nivel, costo por nivel de la pieza,
       un encantamiento por ranura con su valor de min a max); los precios de las esencias en items.yaml tienen que dejar
       que desencantar y vender las esencias pague siempre menos que vender la pieza (tests/test_oficios_equipo.py)
-    - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py
+    - D-115 fase 2: las claves de campamento (CAMP_PERK_KEYS: fish_food, cook_food, stone_cost, build_cost, repair_cost)
+      las usa el servicio en _camp_feed (despensa), _upgrade_need (obras) y _repair_need (reparar las defensas)
+    - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py,
+      tests/test_oficios_campamento.py
 """
 
 from __future__ import annotations
@@ -161,7 +170,12 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
 
 
 PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "masterwork", "explore",
-             "disenchant")      # [ES] D-115 (fase 2): ✨ Encantamiento, esencias de más al desencantar
+             "disenchant",      # [ES] D-115 (fase 2): ✨ Encantamiento, esencias de más al desencantar
+             "fish_food", "cook_food", "stone_cost", "build_cost", "repair_cost")      # D-115 phase 2: the camp perks (last 5)
+# [ES] D-115/D-116: los beneficios de campamento y castillo. No son del héroe: rige el mejor rango entre los miembros del
+# campamento (camp_perks). fish_food y cook_food = raciones de más en la despensa (fracción); stone_cost, build_cost y
+# repair_cost = cuánto menos piden las obras de piedra, todas las obras y la reparación de las defensas (fracción).
+CAMP_PERK_KEYS = ("fish_food", "cook_food", "stone_cost", "build_cost", "repair_cost")
 
 
 def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, armor_type: str | None,
@@ -182,7 +196,8 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
     informativo: la probabilidad de obra maestra de la 🪑 Carpintería; la que vale para cada receta la da
     masterwork_chance, porque es del oficio que fabrica, D-116), explore (puntos de exploración de más por
     vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera) y disenchant (fracción de esencias de más al
-    desencantar, ✨ Encantamiento, D-115 fase 2: disenchant_amount).
+    desencantar, ✨ Encantamiento, D-115 fase 2: disenchant_amount). D-115: también las claves de campamento
+    (CAMP_PERK_KEYS) con el rango propio, solo para mostrarlas: las que valen son las del mejor miembro (camp_perks).
     La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).
     """
@@ -202,6 +217,105 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
             if key == "heal" and "heal_role" in perk and role not in _as_list(perk["heal_role"]):
                 continue
             out[key] += float(perk[key]) * share
+    return out
+
+
+def camp_perk_professions(professions: dict[str, Any]) -> list[str]:
+    """Ids of the professions whose perk is a camp perk (D-115 phase 2), in catalog order. [ES] Qué hace: dice qué oficios
+    dan un beneficio de campamento o castillo (🎣 Pescador, 🍲 Cocina, Cantería, 🏗️ Construcción). La llaman: el servicio
+    (_camp_perks, ⚒️ Oficios) y camp_best_ranks. Si cambia, afecta: qué oficios cuentan para el campamento."""
+    return [pid for pid, pdef in professions.items() if any(key in (pdef.get("perk") or {}) for key in CAMP_PERK_KEYS)]
+
+
+def camp_best_ranks(professions: dict[str, Any], members: dict[str, dict[str, int]]) -> dict[str, tuple[int, str]]:
+    """For every camp-perk profession, the best rank among the camp's members and who holds it (D-115 phase 2).
+
+    Args:
+        professions: content/professions.yaml "professions".
+        members: member name -> {profession id: rank}, ONLY for professions the member has started.
+
+    Returns:
+        profession id -> (best rank, member name); professions nobody started are left out. On a tie, the first member
+        in the given order keeps it (the service passes the members in camp order: the founder first).
+
+    [ES]
+    Qué hace: para cada oficio con beneficio de campamento, busca el mejor rango entre los miembros y quién lo tiene. Los
+    beneficios de campamento no se suman entre miembros: rige el mejor (simple y justo: un campamento grande no rinde más
+    por tener diez cocineros, y el que se dedica es el que hace la diferencia).
+    La llaman: GameService._camp_perks y las pruebas.
+    Si cambia, afecta: cuánto rinden la despensa y las obras de cada campamento.
+    """
+    best: dict[str, tuple[int, str]] = {}
+    for pid in camp_perk_professions(professions):
+        for name, ranks in members.items():
+            rank = int(ranks.get(pid, 0))
+            if rank > 0 and (pid not in best or rank > best[pid][0]):
+                best[pid] = (rank, name)
+    return best
+
+
+def camp_perks(professions: dict[str, Any], best: dict[str, tuple[int, str]], max_rank: int) -> dict[str, tuple[float, str | None]]:
+    """The camp perks from the best ranks (camp_best_ranks): key -> (value, member who gives it), growing evenly with rank.
+
+    [ES]
+    Qué hace: convierte los mejores rangos en los beneficios de campamento (CAMP_PERK_KEYS): cada uno crece parejo con el
+    rango, como los demás beneficios (rango 50 = la mitad del valor de content/professions.yaml). Devuelve también quién lo
+    da, para mostrarlo en el campamento. Una clave sin nadie que la dé vale (0.0, None).
+    La llaman: GameService._camp_perks (despensa, obras, reparación, pantallas) y las pruebas.
+    Si cambia, afecta: cuánto rinden la despensa y las obras de cada campamento.
+    """
+    out: dict[str, tuple[float, str | None]] = {key: (0.0, None) for key in CAMP_PERK_KEYS}
+    for pid, (rank, name) in best.items():
+        perk = (professions.get(pid) or {}).get("perk") or {}
+        share = min(rank, max_rank) / max_rank
+        for key in CAMP_PERK_KEYS:
+            if key in perk and float(perk[key]) * share > out[key][0]:
+                out[key] = (float(perk[key]) * share, name)
+    return out
+
+
+def scaled_cost(cost: dict[str, int], cut: float, stone_cut: float = 0.0,
+                stone_items: tuple[str, ...] | list[str] = ()) -> dict[str, int]:
+    """A materials cost after the camp perks: every material × (1 − cut), stone ones also × (1 − stone_cut), rounded up,
+    never below 1. "coins" are never cut (they are not a material).
+
+    [ES]
+    Qué hace: baja lo que pide una obra (o una reparación) con los beneficios del campamento: todo × (1 − cut) (🏗️
+    Construcción) y lo de piedra (stone_items: piedra y sillar) además × (1 − stone_cut) (Cantería). Redondea hacia arriba
+    y nunca deja menos de 1 de cada cosa; las monedas no se tocan.
+    La llaman: GameService._upgrade_need y _repair_need, y las pruebas.
+    Si cambia, afecta: cuánto cuestan las mejoras y las reparaciones de los campamentos con esos oficios.
+    """
+    out: dict[str, int] = {}
+    for key, n in cost.items():
+        n = int(n)
+        if key == "coins" or n <= 0:
+            out[key] = n
+            continue
+        mult = max(0.0, 1.0 - cut) * (max(0.0, 1.0 - stone_cut) if key in stone_items else 1.0)
+        out[key] = max(1, math.ceil(n * mult - 1e-9))
+    return out
+
+
+def refined_from(professions: dict[str, Any], recipes: dict[str, Any]) -> dict[str, tuple[str, int]]:
+    """Refined material -> (raw material, units per refined unit), from the refining recipes with one input and one
+    output (🧱 sillar ← 🪨 piedra ×3, 🟫 tablón ← 🪵 madera ×3).
+
+    [ES]
+    Qué hace: dice de qué material crudo sale cada refinado simple y cuántas unidades lleva (sillar = 3 piedras). El
+    servicio lo usa para que lo crudo que ya se aportó de más a una obra (porque la obra ahora pide refinados, D-115)
+    cuente como refinado, y para la experiencia de 🏗️ Construcción (un refinado vale lo que lleva).
+    La llaman: GameService._credit_raw y _build_xp.
+    Si cambia, afecta: solo esas dos cuentas.
+    """
+    out: dict[str, tuple[str, int]] = {}
+    for rdef in recipes.values():
+        if rdef.get("retired") or (professions.get(rdef.get("profession")) or {}).get("branch") != "refine":
+            continue
+        inputs, output = rdef.get("inputs") or {}, rdef.get("output") or {}
+        if len(inputs) == 1 and len(output) == 1 and int(next(iter(output.values()))) == 1:
+            raw, n = next(iter(inputs.items()))
+            out.setdefault(next(iter(output)), (raw, int(n)))
     return out
 
 

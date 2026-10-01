@@ -1,6 +1,7 @@
 """Chained professions, phase 1 (D-109): gather -> refine -> craft.
 
-[ES] Pruebas de los ⚒️ Oficios: el catálogo (15 oficios, recetas que piden materiales de 2 oficios o más, equipo de
+[ES] Pruebas de los ⚒️ Oficios: el catálogo (los 15 oficios de la fase 1 y los que se suman después: los del campamento
+de la fase 2, D-115, se prueban en tests/test_oficios_campamento.py; recetas que piden materiales de 2 oficios o más, equipo de
 artesano que vale algo más que el botín de su nivel, D-113, y nunca sale al azar), el rango que sale de la experiencia de oficio, la
 experiencia de oficio al recolectar y al vencer bestias (carne y piel, solo de bestias), el material raro solo desde su
 rango, refinar y fabricar en una estación (gasta materiales y energía, da experiencia de héroe y de oficio, todo o
@@ -51,9 +52,10 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
     profs, recipes = data["professions"], data["recipes"]
     t = GameService(content, MemoryStore(), FixedClock(), world_seed=7).texts
     by_branch = {b: [p for p, d in profs.items() if d["branch"] == b] for b in ("gather", "refine", "craft")}
-    assert set(by_branch["gather"]) == {"lenador", "minero", "herbolario", "desollador"}
-    assert set(by_branch["refine"]) == {"aserradero", "fundicion", "destilacion", "tejeduria", "curtiduria"}
-    assert set(by_branch["craft"]) == {"carpinteria", "herreria", "alquimia", "sastreria", "peleteria", "joyeria", "medicina"}   # + D-111
+    # phase 1 (+ D-111); D-115 phase 2 adds more (the camp side: tests/test_oficios_campamento.py)
+    assert set(by_branch["gather"]) >= {"lenador", "minero", "herbolario", "desollador"}
+    assert set(by_branch["refine"]) >= {"aserradero", "fundicion", "destilacion", "tejeduria", "curtiduria"}
+    assert set(by_branch["craft"]) >= {"carpinteria", "herreria", "alquimia", "sastreria", "peleteria", "joyeria", "medicina"}
     for pid, pdef in profs.items():
         assert pdef["emoji"] and t.has(pdef["name_key"]) and t.has(pdef["how_key"]), pid
     for rid, rdef in recipes.items():
@@ -69,7 +71,7 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
                                  and content.items[next(iter(r["output"]))].get("kind") == "gear"})   # D-116: 🪑 furniture apart
             assert gear_ranks == [1, 25, 50] + list(range(55, 101, 5)), pid
         elif pid in by_branch["craft"]:
-            assert ranks == [1, 25, 50], pid                            # recipes at increasing ranks
+            assert ranks[:3] == [1, 25, 50], pid                        # recipes at increasing ranks (D-115: 🍲 up to 100)
     stations = data["stations"]
     assert set(stations["claro"]) == set(by_branch["refine"] + by_branch["craft"])
     assert set(stations["camp"]) <= set(content.camp_upgrades["upgrades"])
@@ -353,14 +355,14 @@ def test_station_lists_what_you_can_make_first_two_per_page(service):
     assert view.actions[1].id == "rec:baston_roble:0" and not view.actions[1].label.startswith("✅")
     assert view.actions[2].id == "est:craft:1" and view.actions[3].id == "oficios"
     assert any("Falta" in line and "Tablón ×2" in line and "Tela ×1" in line for line in view.body)
-    assert any("Página 1 de 14" in line for line in view.body)         # 27 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet)
+    assert any("Página 1 de 15" in line for line in view.body)         # 29 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2)
     refine = service.act("test:1", "est:refine:0")
-    assert refine.kind == "station" and len(refine.actions) == 4      # 5 refining recipes: 2 per page
+    assert refine.kind == "station" and len(refine.actions) == 4      # 6 refining recipes (D-115: + 🧱 sillar): 2 per page
     assert any("Página 1 de 3" in line for line in refine.body)
     seen = set()
     for page in range(3):
         seen |= {a.id for a in service.act("test:1", f"est:refine:{page}").actions if a.id.startswith("rec:")}
-    assert seen == {"rec:tablon:0", "rec:lingote:0", "rec:extracto:1", "rec:tela:1", "rec:cuero:2"}
+    assert seen == {"rec:tablon:0", "rec:lingote:0", "rec:extracto:1", "rec:tela:1", "rec:cuero:2", "rec:sillar:2"}
     set_hero(service, "test:1", x=3, y=0)
     assert service.act("test:1", "est:craft:0").kind == "professions"   # no station here
 

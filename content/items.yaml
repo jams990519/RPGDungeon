@@ -72,6 +72,69 @@ provisiones:
   food: 1
   price: 15                  # [ES] cara a propósito: comida de emergencia del mercader (15 🥉 por ración; la carne se vende a 1)
 
+# Professions phase 2, camp side (D-115): fish, cooked rations and the refined stone.
+# [ES] Oficios, fase 2, lado del campamento (D-115): el 🐟 pescado (lo junta el 🎣 Pescador en las zonas con agua), las
+# raciones que hace la 🍲 Cocina y el 🧱 sillar de la Cantería (content/professions.yaml).
+# cooked: true = lo hizo la 🍲 Cocina: rinde más en la despensa con el beneficio de la Cocina del campamento (el pescado
+# crudo, con el del 🎣 Pescador). Lo cocinado es kind: food: el mercader y el trueque no lo compran (va a la despensa).
+# Lo usan: engine/service/game.py (_camp_feed, _recipe_view, _resources_view, obras y reparación de las defensas).
+# Si cambias esto, revisa: food mueve cuánto dura la despensa (balance.yaml pantry); cada plato tiene que valer más
+# raciones que lo crudo que lleva (tests/test_oficios_campamento.py); el sillar no debe dejar ganar monedas refinando.
+pescado:
+  name_key: item.pescado
+  emoji: "🐟"
+  kind: material             # [ES] como la carne: es comida (food), va a la despensa o a la 🍲 Cocina; 💱 Vender todo no la vende
+  food: 1                    # [ES] 1 ración cruda (la carne, 2); el 🎣 Pescador del campamento le suma hasta 30 %
+  price: 2
+racion_campamento:
+  name_key: item.racion_campamento
+  emoji: "🍱"
+  kind: food
+  cooked: true
+  food: 3                    # [ES] carne (2) + hierba → 3
+  price: 3
+pescado_asado:
+  name_key: item.pescado_asado
+  emoji: "🍢"
+  kind: food
+  cooked: true
+  food: 3                    # [ES] 2 pescados (2) + leña → 3
+  price: 3
+guiso_cazador:
+  name_key: item.guiso_cazador
+  emoji: "🥘"
+  kind: food
+  cooked: true
+  food: 10                   # [ES] 2 carnes y 2 pescados (6) + hierba → 10 (rango 25)
+  price: 10
+conserva:
+  name_key: item.conserva
+  emoji: "🥫"
+  kind: food
+  cooked: true
+  food: 18                   # [ES] 3 carnes y 3 pescados (9) + tarro y salmuera → 18 (rango 50)
+  price: 18
+festin:
+  name_key: item.festin
+  emoji: "🍗"
+  kind: food
+  cooked: true
+  food: 27                   # [ES] 4 carnes y 4 pescados (12) + hierbas y flor de luna → 27 (rango 75)
+  price: 27
+banquete:
+  name_key: item.banquete
+  emoji: "🍽️"
+  kind: food
+  cooked: true
+  food: 45                   # [ES] 6 carnes y 6 pescados (18) + extracto y flores de luna → 45 (rango 100)
+  price: 45
+sillar:
+  name_key: item.sillar
+  emoji: "🧱"
+  kind: material
+  keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio (se vende de a uno)
+  price: 7                   # [ES] 3 piedras (2 c/u) + el trabajo, como el tablón
+
 # Camp furniture (D-116): only 🪑 Carpentry makes it (content/professions.yaml). A member places it in their camp
 # (🔨 Mejoras → 🔨 Obras → 🪑 Colocar); one of each piece per camp, for ever.
 # [ES] Muebles del campamento (D-116): solo la 🪑 Carpintería los hace. Un miembro lo coloca en su campamento y queda para
