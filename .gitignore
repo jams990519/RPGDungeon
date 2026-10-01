@@ -163,3 +163,4 @@ cython_debug/
 
 # Game local data (SQLite saves)
 data/
+.claude/worktrees/

@@ -76,6 +76,6 @@ Vender oro por dinero real (como la ficha de WoW) **queda descartado** por la re
 
 | Fase | Qué se vende |
 |---|---|
-| **Alfa y beta** | Nada (recomendado). Solo recompensas de fundador gratuitas para quienes prueban (ver P-64) |
+| **Alfa y beta** | **Decidido por el dueño (D-80):** con gemas, el acelerador de experiencia y un estandarte único de beta tester. Fuera de la beta, ese estandarte pasa a ser premium normal. Nada que dé poder |
 | **Lanzamiento** | Cosméticos, comodidad y aceleradores |
 | **Más adelante** | Pase de temporada |

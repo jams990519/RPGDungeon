@@ -99,6 +99,16 @@ shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
 
+currency:                    # [ES] cinco monedas (D-80): 3 comunes que se ganan, bolsas que se cosen y gemas que se compran
+  rate: 100                  # [ES] 100 🥉 bronce = 1 🥈 plata; 100 🥈 = 1 🥇 oro. Hero.gold guarda TODO en bronce
+  icons: {bronze: "🥉", silver: "🥈", gold: "🥇", bags: "👝", gems: "💎"}
+  bag_recipe: {fibra: 4, pieza_metal: 1}   # [ES] hilo (fibra) y un cierre de metal...
+  bag_coins: 100             # [ES] ...más 1 🥈 de plata por bolsa: saca monedas y materiales del juego
+  banner_phase: beta         # [ES] el estandarte que se compra ahora es el de beta tester; después de la beta pasar a "premium"
+  gem_shop:                  # [ES] D-43: con gemas solo cosméticos y aceleradores, nunca poder
+    xp_boost: {gems: 100, xp_mult: 1.5, days: 7}   # [ES] +50 % de experiencia por 7 días (P-66)
+    banner: {gems: 150}      # [ES] estandarte único al lado de tu nombre
+
 gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranuras, 4 tipos de armadura, 4 de arma
   slots: [arma, armadura, joya]
   armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
