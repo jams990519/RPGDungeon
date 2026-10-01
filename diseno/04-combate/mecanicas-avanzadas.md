@@ -68,7 +68,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 
 | Etiqueta | Qué habilidades la llevan |
 |---|---|
-| 💥 Pesado | Golpes que bajan Postura: *Golpe Colosal*, *Quebrantahuesos* |
+| 💥 Pesado | Golpes que bajan Postura: *Rompecorazas*, *Quebrantahuesos* |
 | 🛡 Guardia | Bloqueos, provocaciones, muros |
 | ✚ Cura | Curas directas y escudos de sanador |
 | 🎯 Marca | Marcar, revelar, apuntar a una parte |
@@ -89,7 +89,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 
 **Cómo funciona.**
 - Casi todo enemigo tiene **🔰 Escudo** (fichas) y de 1 a 4 **debilidades**, entre tipos de daño y partes del cuerpo.
-- Las debilidades empiezan como ❓. Se revelan al pegarlas, con el Bestiario (al vencer a uno de su especie, ★★; ver [Bestiario](../06-contenido/bestiario.md) §1.5), con la Marca del Cazador o con una ficha del Informante (ver [Avisos y tácticas](avisos-y-tacticas.md)).
+- Las debilidades empiezan como ❓. Se revelan al pegarlas, con el Bestiario (al vencer a uno de su especie, ★★; ver [Bestiario](../06-contenido/bestiario.md) §1.5), con el Ojo del Rastreador o con una ficha del Informante (ver [Avisos y tácticas](avisos-y-tacticas.md)).
 - Cada impacto que pega una debilidad quita 1 🔰. **Apuntar** a una parte débil (opción dentro de ⚔️ Atacar, o efecto de ciertas habilidades) también cuenta: el vientre expuesto del Wyrm de las Dunas es débil a perforación.
 - Las habilidades de varios impactos quitan 1 por impacto, con tope de 2 por acción. Las técnicas combinadas y el Límite quitan 2.
 - Con 🔰 en 0, el enemigo queda **💫 Roto**:
@@ -319,7 +319,7 @@ Dos capas, sin repetir reglas:
 | ❄️ **Nieve profunda** | Tundra, anillo VI (Picos Helados), ventisca | Además de lo que dice Peligros del entorno (cambiar de fila cuesta la acción entera, huir falla el doble, esquivar cuesta +1 🔋): la Congelación acumula +25 % | Raquetas de nieve (Carpintería y Peletería) |
 | 🐸 **Pantano** | Anillo IV (Pantano Putrefacto) | Las dos vanguardias empiezan en 💧 Agua. Cada 3 rondas aparece un 🟩 charco tóxico (avisado). Las picaduras suman Veneno y pueden traer la Fiebre del Pantano (ver [Enfermedades](../05-salud/enfermedades.md)) | Repelente (Herboristería y Alquimia), máscara con filtro contra la miasma |
 | 🌑 **Oscuridad** | Cuevas (anillo III), noche sin luz, anillo IX (Abismo Umbrío) | La precisión baja según la etapa de oscuridad (ver Peligros del entorno). Además: los avisos llegan con menos detalle y +2 al sigilo | Antorcha (Carpintería) o farol (Herrería): quita la penalización en tu fila, pero te delata y los enemigos te eligen primero |
-| ⛰️ **Altura** | Montaña, anillo VII (Ruinas Olvidadas), tierras flotantes, murallas | El bando alto tiene +10 % de precisión a distancia y sus golpes 💥 derriban. El bajo necesita una Carga o una ronda para subir | *Carga* (botas de placas), *Salto Vil* |
+| ⛰️ **Altura** | Montaña, anillo VII (Ruinas Olvidadas), tierras flotantes, murallas | El bando alto tiene +10 % de precisión a distancia y sus golpes 💥 derriban. El bajo necesita una Carga o una ronda para subir | *Carga* (botas de placas), *Brinco de Azufre* |
 | 🌧 **Lluvia** | Clima | Las filas a cielo abierto quedan 💧 Mojadas (el mismo estado de Peligros del entorno: además, el frío cuenta un punto más). Quemadura ×0,5. Arcos −10 % de precisión | Capa encerada (Sastrería): nunca quedas Mojado. Cuerdas enceradas (Carpintería) para los arcos |
 | 🌫 **Niebla** | Clima | 🌫 en todas las filas: precisión a distancia −25 % (reemplaza la penumbra de Peligros del entorno; no se suman), +2 al sigilo | — (es de los dos bandos) |
 | ⛈ **Tormenta** | Clima, terreno abierto | El rayo avisado de Peligros del entorno busca a quien lleve más metal. Si cae en una fila 💧 Mojada, salta a todos los mojados de esa fila | Capa encerada; soltar el arma de metal |
@@ -494,19 +494,19 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 
 | Clase · spec | Límite | Efecto |
 |---|---|---|
-| Guerrero · Furia | **Golpe del Titán** | Golpe 💥 que abre la ventana de *Golpe Colosal* 3 rondas y le quita al enemigo la mitad de la Postura que le queda |
+| Guerrero · Furia | **Golpe del Titán** | Golpe 💥 que abre la ventana de *Rompecorazas* 3 rondas y le quita al enemigo la mitad de la Postura que le queda |
 | Guerrero · Protección | **Última Muralla** | 2 rondas: recibe todos los golpes dirigidos a la vanguardia, con la mitad de daño |
 | Paladín · Sagrado | **Amanecer** | Levanta a todos los derribados con 30 % de vida y cura al grupo |
 | Cazador · Puntería | **Disparo Imposible** | Rompe al instante la parte apuntada (contra una Gran Barrera, la deja a un golpe) |
 | Pícaro · Asesinato | **Veneno Maestro** | Todas las barras de acumulación del objetivo suben al 90 % |
 | Sacerdote · Disciplina | **Égida** | Escudo al grupo que absorbe entero el siguiente golpe avisado, con tope |
-| Caballero de la Muerte · Sangre | **Festín Carmesí** | *Golpe de Muerte* que cura el daño recibido en las últimas 4 rondas, no en 2 |
+| Caballero de la Muerte · Sangre | **Festín Carmesí** | *Cobro de Sangre* que cura el daño recibido en las últimas 4 rondas, no en 2 |
 | Chamán · Elemental | **Ojo de la Tormenta** | Llena la Vorágine y deja 3 rondas de rayos en la fila enemiga; a los mojados los aturde |
 | Mago · Escarcha | **Invierno Eterno** | Congelación llena en toda la fila enemiga; en jefes, +50 % a la barra |
 | Brujo · Destrucción | **Lluvia de Caos** | 3 *Descargas del Caos* de crítico garantizado, repartidas |
 | Monje · Maestro Cervecero | **Purga Total** | Purga todo el *Tambaleo* y lo devuelve como daño al enemigo |
 | Druida · Restauración | **Florecer** | Todas sus curas en el tiempo se aplican de golpe al grupo |
-| Cazador de Demonios · Venganza | **Sello Infernal** | Sigilo en las dos filas enemigas que se activa esta misma ronda, sin retraso, y silencia |
+| Cazador de Demonios · Venganza | **Sello Infernal** | Glifo en las dos filas enemigas que se activa esta misma ronda, sin retraso, y silencia |
 | Evocador · Preservación | **Rebobinado Total** | La vida de todo el grupo vuelve a la de hace 2 rondas (solo si era más alta) |
 | Nigromante · Legión | **Marea de Huesos** | Llena la vanguardia de esqueletos durante 3 rondas; cada uno bloquea un golpe |
 | Bardo · Estratega | **Gran Final** | Ordena a su gusto la cola de iniciativa de la ronda siguiente (menos los golpes Inevitables) |
@@ -614,7 +614,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 ```
 
 **Cómo se equilibra.**
-- Guardar no crea daño: lo **mueve** a la ventana buena (una ruptura, una postura rota, el *Golpe Colosal*). Cada carga cuesta una ronda sin atacar y Aguante. El simulador compara el daño en 20 rondas con y sin guardar: **+5 % como máximo**.
+- Guardar no crea daño: lo **mueve** a la ventana buena (una ruptura, una postura rota, el *Rompecorazas*). Cada carga cuesta una ronda sin atacar y Aguante. El simulador compara el daño en 20 rondas con y sin guardar: **+5 % como máximo**.
 - La ráfaga en 3 rondas sigue dentro de ±5 % entre specs, aunque desaten.
 - No existe en PvP: los jugadores no tienen escudo ni Postura.
 - Eje del presupuesto: **Ráfaga**.
@@ -701,19 +701,19 @@ Elegido: Lyra ❄️→Wyrm · Ossian 💨 respuesta
 Turnos: Lyra → Tú → WYRM → Ossian → Bram → Mirra
 ⏱ 45 s
 
-[⚔️ Atacar]             [💥 Golpe Colosal 🔗]
+[⚔️ Atacar]             [💥 Rompecorazas 🔗]
 [✋ Zurrar]              [🤺 Parada]
 [🌀 Esquivar]           [🎒 Mochila]
 ```
 
-Es un Guardián: no se huye, así que el quinto botón es 🌀 Esquivar. Ossian y Bram usan una respuesta aunque el aliento cae la próxima ronda: pierden Aguante, pero guardan una carga para cuando el Wyrm esté roto (§12). Elegiste *Golpe Colosal* contra el Wyrm. Al resolverse, el mismo mensaje se edita con el resumen:
+Es un Guardián: no se huye, así que el quinto botón es 🌀 Esquivar. Ossian y Bram usan una respuesta aunque el aliento cae la próxima ronda: pierden Aguante, pero guardan una carga para cuando el Wyrm esté roto (§12). Elegiste *Rompecorazas* contra el Wyrm. Al resolverse, el mismo mensaje se edita con el resumen:
 
 ```
 Ronda 9 — resumen
 ❄️ Lyra: Lanza de Escarcha → DEBILIDAD · 🔰 3→2
    💧 El Wyrm estaba Mojado: ❄️ Congelación ▓▓▓▓▓▓▓░░░
 🔗 TÉMPANO QUEBRADO (Lyra ❄️ + Tú 💥)
-   Tu Golpe Colosal parte la escarcha: 540 · 🔰 2→0 · 🟫 −260
+   Tu Rompecorazas parte la escarcha: 540 · 🔰 2→0 · 🟫 −260
 💫 ¡RUPTURA! El Wyrm queda ROTO hasta el final de la ronda 10
    ✖ Aliento de Vidrio: cancelado
    Recibe +30 % de daño · no puede reaccionar
@@ -734,7 +734,7 @@ Y la cabecera de la ronda siguiente ya cuenta la oportunidad:
 🌟 Bram: Límite 88 %
 ```
 
-La última línea del resumen es una cita plegable con cada número, como en [Ronda y acciones](ronda-y-acciones.md). El *Golpe Colosal* sigue siendo de corte, que el Wyrm resiste. La técnica combinada es lo que le permite a un Guerrero Furia romper a un enemigo que le resiste: eso es lo que hace interesante elegir con quién atacar.
+La última línea del resumen es una cita plegable con cada número, como en [Ronda y acciones](ronda-y-acciones.md). El *Rompecorazas* sigue siendo de corte, que el Wyrm resiste. La técnica combinada es lo que le permite a un Guerrero Furia romper a un enemigo que le resiste: eso es lo que hace interesante elegir con quién atacar.
 
 ---
 

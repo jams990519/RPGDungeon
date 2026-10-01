@@ -5,6 +5,7 @@
 **De dónde sale.**
 - Las 13 clases y 40 especializaciones de *World of Warcraft* a septiembre de 2026 (expansión *Midnight*, con la tercera spec del Cazador de Demonios, **Devorador**, ya en vivo). Se suman dos clases propias que WoW nunca tuvo y que un juego por turnos pide: **Nigromante** y **Bardo**.
 - De *Albion Online*, la idea de que **el equipo aporta habilidades**.
+- **Los nombres son propios (D-135).** De WoW salen la estructura de clases y specs y la idea de cada habilidad, no sus nombres: en octubre de 2026 se cambiaron los nombres visibles de 241 habilidades y 23 ataques básicos que copiaban la traducción oficial de WoW o la traducían palabra por palabra (revisión C-150 del cuestionario de beta). Los IDs no cambiaron. La tabla está en §8.
 - **Los roles se reparten distinto que en WoW (D-50).** Allí el Mago, el Brujo o el Cazador solo pueden hacer daño. Aquí **cada clase tiene 3 specs de roles distintos** (el Druida, las 4). Que una clase vieja estrene rol ya se probó en *Season of Discovery* (WoW Clásico, 2023-2024): con runas, el Pícaro y el Brujo pasaron a tanquear y el Mago a curar. El Señor de la Guerra sale del Capitán de *El Señor de los Anillos Online*, que lidera con estandartes y gritos.
 
 Total: **15 clases y 46 especializaciones**. La clase se elige al nivel 10; antes, el héroe es un aventurero sin clase con un kit básico.
@@ -58,41 +59,41 @@ Cómo leer cada clase:
 ### Guerrero · Placas · Ira
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
-| Furia | ⚔ Ataque | Vanguardia | Doble empuñadura. **Golpe Colosal** abre una ventana de 2 rondas en la que el objetivo recibe más daño; al critar entra en **Enfurecido** y su ⚔️ Atacar golpea dos veces. Todo el juego es preparar y aprovechar esa ventana. Ejecuta por debajo del 20 % de vida. Absorbe a la spec Armas de WoW |
+| Furia | ⚔ Ataque | Vanguardia | Doble empuñadura. **Rompecorazas** abre una ventana de 2 rondas en la que el objetivo recibe más daño; al critar entra en **Enfurecido** y su ⚔️ Atacar golpea dos veces. Todo el juego es preparar y aprovechar esa ventana. Ejecuta por debajo del 20 % de vida. Absorbe a la spec Armas de WoW |
 | Protección | 🛡 Defensa | Vanguardia | **Bloqueo con escudo** como respuesta al aviso: anula el golpe físico que se ve venir y le baja la postura al enemigo. Es el tanque que lee el aviso |
 | Señor de la Guerra | ✦ Soporte | Vanguardia | **Estandartes y gritos.** Planta un estandarte en su fila que dura 3 rondas: *de Guerra* (más daño) o *de Muralla* (menos daño recibido). Sus **gritos** cambian el estandarte sin plantar otro o lo extienden a la otra fila. Es el capitán: decide qué necesita el grupo esta ronda |
 
-**Respuestas al aviso:** bloquear con *Bloqueo con escudo* (si lleva escudo) · desviar con *Parada* · interrumpir con *Zurrar* · cambiar de fila con *Intervenir* (salta junto a un aliado y recibe el golpe por él).
-**Aporte de grupo:** **Grito de Batalla** (+poder de ataque del grupo).
+**Respuestas al aviso:** bloquear con *Bloqueo con escudo* (si lleva escudo) · desviar con *Parada* · interrumpir con *Zurrar* · cambiar de fila con *Interponerse* (salta junto a un aliado y recibe el golpe por él).
+**Aporte de grupo:** **Arenga de Guerra** (+poder de ataque del grupo).
 
 ### Paladín · Placas · Poder Sagrado + maná
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Reprensión | ⚔ Ataque | Vanguardia | Construye y gasta Poder Sagrado. **Juicio** marca al enemigo para que reciba más daño sagrado |
-| Protección | 🛡 Defensa | Vanguardia | **Escudo del Vengador**, que rebota entre enemigos y silencia; **auras** que protegen a toda su fila. El tanque contra la magia |
-| Sagrado | ✚ Curación | Vanguardia | **Faro de Luz**: parte de lo que cura se copia en un aliado marcado. Cura desde la vanguardia |
+| Protección | 🛡 Defensa | Vanguardia | **Escudo Acallador**, que rebota entre enemigos y silencia; **auras** que protegen a toda su fila. El tanque contra la magia |
+| Sagrado | ✚ Curación | Vanguardia | **Candil del Alba**: parte de lo que cura se copia en un aliado marcado. Cura desde la vanguardia |
 
-**Respuestas al aviso:** bloquear con *Escudo Divino* (inmune una ronda, enfriamiento largo) · proteger a otro con *Bendición de Protección* (el aliado ignora el golpe físico avisado) · interrumpir con *Reprimenda*.
+**Respuestas al aviso:** bloquear con *Amparo Celestial* (inmune una ronda, enfriamiento largo) · proteger a otro con *Gracia Protectora* (el aliado ignora el golpe físico avisado) · interrumpir con *Reprimenda*.
 **Aporte de grupo:** **Bendición** (mitigación del grupo). Resurrección en combate.
 
 ### Cazador · Malla · Foco
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Puntería | ⚔ Ataque | Retaguardia | **Apuntar** es su habilidad: una ronda de puntería y el disparo siguiente impacta seguro en la parte del cuerpo elegida, sin penalización. La mejor spec para romper partes de jefes |
-| Bestias | ✦ Soporte | Retaguardia (la mascota, en vanguardia) | **La bestia marca la presa** (*Presa Marcada*): el enemigo recibe más daño de todos durante 5 rondas. *Orden de Matar* la lanza al ataque y *Aspecto de la Tortuga* frena el golpe avisado (D-72) |
-| Supervivencia | ✦ Soporte | Vanguardia o retaguardia | **Trampas y control del campo.** Pone trampas en las filas enemigas que se activan en rondas siguientes (*Red* inmoviliza, *Alquitrán* quita iniciativa, *Escarcha* congela) y usa bombas. *Señuelo* desvía el siguiente golpe de un enemigo hacia un muñeco. Gana quitándole opciones al enemigo |
+| Bestias | ✦ Soporte | Retaguardia (la mascota, en vanguardia) | **La bestia marca la presa** (*Presa Marcada*): el enemigo recibe más daño de todos durante 5 rondas. *Zarpazo a la Orden* la lanza al ataque y *Concha Cerrada* frena el golpe avisado (D-72) |
+| Supervivencia | ✦ Soporte | Vanguardia o retaguardia | **Trampas y control del campo.** Pone trampas en las filas enemigas que se activan en rondas siguientes (*Red* inmoviliza, *Brea* quita iniciativa, *Escarcha* congela) y usa bombas. *Señuelo* desvía el siguiente golpe de un enemigo hacia un muñeco. Gana quitándole opciones al enemigo |
 
-**Respuestas al aviso:** esquivar con *Destrabarse* (salta a la retaguardia) · desviar con *Aspecto de la Tortuga* · interrumpir con *Disparo de Supresión*.
-**Aporte de grupo:** **Marca del Cazador** (revela debilidades y sube el crítico del grupo contra ese objetivo). Clamor.
+**Respuestas al aviso:** esquivar con *Salto Atrás* (salta a la retaguardia) · desviar con *Concha Cerrada* · interrumpir con *Disparo de Supresión*.
+**Aporte de grupo:** **Ojo del Rastreador** (revela debilidades y sube el crítico del grupo contra ese objetivo). Clamor.
 
 ### Pícaro · Cuero · Energía + Combos
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Asesinato | ⚔ Ataque | Vanguardia | Venenos por **acumulación**: llena las barras de veneno y sangrado hasta que revientan |
-| Sutileza | ✦ Soporte | Vanguardia | **Golpea desde las sombras y ciega.** *Polvo Cegador* hace que el enemigo pegue más flojo 5 rondas; *Danza de las Sombras* esquiva el golpe avisado y *Contraataque* castiga (D-72) |
+| Sutileza | ✦ Soporte | Vanguardia | **Golpea desde las sombras y ciega.** *Polvo Cegador* hace que el enemigo pegue más flojo 5 rondas; *Vals de Penumbra* esquiva el golpe avisado y *Contraataque* castiga (D-72) |
 | Forajido | ✦ Soporte | Vanguardia | **Dados del Destino para el grupo**: tira un 🎲 nativo de Telegram en el chat y el resultado decide qué bonificación recibe todo el grupo durante 3 rondas (crítico, iniciativa, Aguante o botín extra). *Distracción* le baja la precisión a un enemigo 2 rondas y *Robar* le quita un efecto beneficioso. Azar visible y divertido |
 
-**Respuestas al aviso:** esquivar con *Evasión* · bloquear magia con *Capa de Sombras* · interrumpir con *Patada*.
+**Respuestas al aviso:** esquivar con *Evasión* · bloquear magia con *Capote Negro* · interrumpir con *Patada*.
 **Aporte de grupo:** **Veneno Debilitante** (el objetivo pega menos). **Secretos del Oficio** (pasa amenaza al tanque).
 
 ### Sacerdote · Tela · Maná
@@ -100,49 +101,49 @@ Cómo leer cada clase:
 |---|---|---|---|
 | Sombra | ⚔ Ataque | Retaguardia | Daño en el tiempo y Locura. La Forma del Vacío sube su Corrupción: riesgo a cambio de recompensa |
 | Sagrado | ✚ Curación | Retaguardia | Curas masivas. Es el único sanador que puede **estabilizar heridas leves en combate**, con enfriamiento largo (ver [Heridas](../05-salud/heridas.md)) |
-| Disciplina | ✦ Soporte | Retaguardia | **Previene el daño.** Escudos de luz que absorben el golpe avisado, *Sanar* de apoyo y *Penitencia*, que hace que el enemigo pegue más flojo (D-76) |
+| Disciplina | ✦ Soporte | Retaguardia | **Previene el daño.** Escudos de luz que absorben el golpe avisado, *Sanar* de apoyo y *Remordimiento*, que hace que el enemigo pegue más flojo (D-76) |
 
-**Respuestas al aviso:** bloquear con *Palabra de Poder: Escudo* (sobre sí o sobre un aliado) · esquivar con *Desvanecerse* (*Dispersión* en Sombra) · interrumpir con *Silencio*.
+**Respuestas al aviso:** bloquear con *Verbo Protector* (sobre sí o sobre un aliado) · esquivar con *Desvanecerse* (*Cuerpo de Humo* en Sombra) · interrumpir con *Silencio*.
 **Aporte de grupo:** **Palabra de Poder: Entereza** (+vida máxima del grupo).
 
 ### Caballero de la Muerte · Placas · Runas + Poder rúnico
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Escarcha | ⚔ Ataque | Vanguardia | Acumula **Congelación** en el objetivo; al llenarse, el enemigo pierde su siguiente turno |
-| Sangre | 🛡 Defensa | Vanguardia | **Golpe de Muerte** cura una parte del daño recibido en las **últimas 2 rondas**: es el tanque que quiere recibir el golpe para devolverlo |
-| Profano | ✦ Soporte | Vanguardia | **Plagas que debilitan.** *Peste* baja el daño y la curación del objetivo, y *Brote* la extiende de una vez a toda su fila. Su **Ejército de los muertos** ocupa filas unas rondas y, cada esbirro que cae, suelta una nube de plaga. Hace que el enemigo rinda menos en vez de matarlo antes |
+| Sangre | 🛡 Defensa | Vanguardia | **Cobro de Sangre** cura una parte del daño recibido en las **últimas 2 rondas**: es el tanque que quiere recibir el golpe para devolverlo |
+| Profano | ✦ Soporte | Vanguardia | **Plagas que debilitan.** *Peste* baja el daño y la curación del objetivo, y *Brote* la extiende de una vez a toda su fila. Su **Leva de Difuntos** ocupa filas unas rondas y, cada esbirro que cae, suelta una nube de plaga. Hace que el enemigo rinda menos en vez de matarlo antes |
 
-**Respuestas al aviso:** bloquear magia con *Caparazón Antimagia* · resistir un golpe físico con *Entereza Ligada al Hielo* · interrumpir con *Helada Mental* · mover al enemigo con *Agarre Mortal* (lo trae a la vanguardia).
+**Respuestas al aviso:** bloquear magia con *Velo Negador* · resistir un golpe físico con *Piel de Témpano* · interrumpir con *Silencio Helado* · mover al enemigo con *Agarre Mortal* (lo trae a la vanguardia).
 **Aporte de grupo:** **Zona Antimagia** (menos daño mágico al grupo durante 2 rondas). Resurrección en combate.
 
 ### Chamán · Malla · Maná + Vorágine
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
-| Elemental | ⚔ Ataque | Retaguardia | **Sobrecarga**: a veces el hechizo se repite solo. La Vorágine llena vuelve instantánea y gratis su próxima *Descarga de Lava* |
-| Restauración | ✚ Curación | Retaguardia | **Sanación en Cadena**, que rebota por la fila; *Tótem de Marea*, que cura solo durante unas rondas |
-| Tótems | ✦ Soporte | Vanguardia o retaguardia | Planta **tótems** que ocupan un lugar en la fila y actúan solos varias rondas: *Viento Furioso* (+iniciativa del grupo), *Piel de Piedra* (menos daño recibido), *Captura* (atrae el siguiente hechizo enemigo), *Temblor* (quita el miedo y el sueño). Como máximo 2 a la vez, y los enemigos pueden romperlos: hay que elegir dónde plantarlos y cuándo reponerlos. Antes era Mejora |
+| Elemental | ⚔ Ataque | Retaguardia | **Sobrecarga**: a veces el hechizo se repite solo. La Vorágine llena vuelve instantáneo y gratis su próximo *Chorro de Magma* |
+| Restauración | ✚ Curación | Retaguardia | **Cura Saltarina**, que rebota por la fila; *Tótem de Oleaje*, que cura solo durante unas rondas |
+| Tótems | ✦ Soporte | Vanguardia o retaguardia | Planta **tótems** que ocupan un lugar en la fila y actúan solos varias rondas: *Ventarrón* (+iniciativa del grupo), *Granito* (menos daño recibido), *Captura* (atrae el siguiente hechizo enemigo), *Temblor* (quita el miedo y el sueño). Como máximo 2 a la vez, y los enemigos pueden romperlos: hay que elegir dónde plantarlos y cuándo reponerlos. Antes era Mejora |
 
-**Respuestas al aviso:** resistir con *Cambio Astral* · cambiar de fila con *Paso Espiritual* · interrumpir con *Sacudida de Viento*.
+**Respuestas al aviso:** resistir con *Forma de Ánima* · cambiar de fila con *Andar Etéreo* · interrumpir con *Sacudida de Viento*.
 **Aporte de grupo:** Clamor (**Clamor Ancestral**). *Purgar* (le quita un efecto beneficioso al enemigo).
 
 ### Mago · Tela · Maná
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
-| Fuego | ⚔ Ataque | Retaguardia | **Calentamiento**: dos críticos seguidos dan una Piroexplosión instantánea. Combustión como ráfaga |
-| Escarcha | ✦ Soporte | Vanguardia | **Control con hielo.** *Escarcha Paralizante* hace que el enemigo pegue más flojo 5 rondas; *Barrera de Hielo* absorbe el golpe avisado y *Lanza de Hielo* remata (D-72) |
+| Fuego | ⚔ Ataque | Retaguardia | **Calentamiento**: dos críticos seguidos dan un Estallido Ígneo instantáneo. Ardor Desatado como ráfaga |
+| Escarcha | ✦ Soporte | Vanguardia | **Control con hielo.** *Escarcha Paralizante* hace que el enemigo pegue más flojo 5 rondas; *Escudo de Cellisca* absorbe el golpe avisado y *Picahielos* remata (D-72) |
 | Arcano | ✦ Soporte | Retaguardia | **Cargas Arcanas para el grupo.** Las acumula y decide si las quema o se las **pasa a un aliado**: cada carga potencia la siguiente habilidad de ese aliado. *Fuente de Maná* devuelve recurso al grupo. Fuera de combate abre **portales** a asentamientos ya visitados, con las mismas reglas de peso que la Piedra de paso (ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md)): un servicio que puede cobrar |
 
-**Respuestas al aviso:** bloquear con *Bloque de Hielo* (inmune una ronda, enfriamiento largo) · cambiar de fila con *Traslación* · interrumpir con *Contrahechizo*.
-**Aporte de grupo:** **Intelecto Arcano** (+maná y poder de hechizo del grupo). Clamor (**Distorsión Temporal**). **Mesa de Conjuración**: comida y agua que cuentan para el Sustento (ver [Condiciones](../05-salud/condiciones.md)).
+**Respuestas al aviso:** bloquear con *Encierro Helado* (inmune una ronda, enfriamiento largo) · cambiar de fila con *Traslación* · interrumpir con *Contrahechizo*.
+**Aporte de grupo:** **Intelecto Arcano** (+maná y poder de hechizo del grupo). Clamor (**Tiempo Torcido**). **Mesa de Conjuración**: comida y agua que cuentan para el Sustento (ver [Condiciones](../05-salud/condiciones.md)).
 
 ### Brujo · Tela · Maná + Fragmentos de alma
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
-| Destrucción | ⚔ Ataque | Retaguardia | Guarda fragmentos para la **Descarga del Caos**, de crítico garantizado |
-| Demonología | 🛡 Defensa | Retaguardia (el demonio, en vanguardia) | **Un demonio guardián tanquea.** El *Guardia Vil* ocupa la vanguardia, provoca y recibe los golpes. Con *Vínculo Demoníaco*, el daño que recibe el demonio se reparte con el brujo, y los fragmentos de alma lo curan o lo potencian. *Sacrificio* lo hace estallar para darle al brujo un escudo grande cuando todo va mal, a cambio de 2 rondas sin tanque hasta invocarlo otra vez |
-| Aflicción | ✦ Soporte | Retaguardia | **Maldiciones que debilitan.** Una maldición por enemigo y varias activas a la vez: *Debilidad* (pega menos), *Lenguas* (pierde iniciativa), *Agonía* (se cura menos). El valor está en lo que el enemigo deja de hacer. *Drenar Alma* lo sostiene y remata |
+| Destrucción | ⚔ Ataque | Retaguardia | Guarda fragmentos para el **Bólido Infernal**, de crítico garantizado |
+| Demonología | 🛡 Defensa | Retaguardia (el demonio, en vanguardia) | **Un demonio guardián tanquea.** Ocupa la vanguardia, provoca y recibe los golpes. Con *Vínculo Demoníaco*, el daño que recibe el demonio se reparte con el brujo, y los fragmentos de alma lo curan o lo potencian. *Sacrificio* lo hace estallar para darle al brujo un escudo grande cuando todo va mal, a cambio de 2 rondas sin tanque hasta invocarlo otra vez |
+| Aflicción | ✦ Soporte | Retaguardia | **Maldiciones que debilitan.** Una maldición por enemigo y varias activas a la vez: *Enclenque* (pega menos), *Lenguas* (pierde iniciativa), *Agonía* (se cura menos). El valor está en lo que el enemigo deja de hacer. *Sorbo de Alma* lo sostiene y remata |
 
-**Respuestas al aviso:** resistir con *Resolución Inagotable* · cambiar de fila con *Círculo Demoníaco* (vuelve al punto que marcó) · interrumpir con *Bloqueo de Hechizo* (lo hace su demonio).
+**Respuestas al aviso:** resistir con *Terquedad Oscura* · cambiar de fila con *Círculo de Regreso* (vuelve al punto que marcó) · interrumpir con *Bloqueo de Hechizo* (lo hace su demonio).
 **Aporte de grupo:** **Piedra de Salud** (una curación de un uso para cada miembro). **Piedra de Alma** (resurrección). **Ritual de Invocación** (trae a un compañero al asentamiento).
 
 ### Monje · Cuero · Chi + Energía/Maná
@@ -152,8 +153,8 @@ Cómo leer cada clase:
 | Maestro Cervecero | 🛡 Defensa | Vanguardia | **Tambaleo**: el daño recibido **se reparte en las 3 rondas siguientes** y se puede purgar. Un tanque pensado de verdad para turnos |
 | Tejedor de Niebla | ✚ Curación | Retaguardia | Curas **canalizadas**: cada ronda seguida que mantiene la misma, cura más; si lo interrumpen o cambia de acción, se corta. También cura al pegar |
 
-**Respuestas al aviso:** esquivar con *Rodar* (también cambia de fila) · desviar con *Toque de Karma* · interrumpir con *Golpe de Mano de Lanza*.
-**Aporte de grupo:** **Palma Mística** (el objetivo recibe más daño físico). **Parálisis**.
+**Respuestas al aviso:** esquivar con *Rodar* (también cambia de fila) · desviar con *Karma Instantáneo* · interrumpir con *Golpe a la Garganta*.
+**Aporte de grupo:** **Palma Quebrantadora** (el objetivo recibe más daño físico). **Parálisis**.
 
 ### Druida · Cuero · según la forma
 El único con los 4 roles, como en WoW.
@@ -161,31 +162,31 @@ El único con los 4 roles, como en WoW.
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Feral | ⚔ Ataque | Vanguardia | Sangrados y combos. **Acecho** para abrir desde sigilo |
-| Guardián | 🛡 Defensa | Vanguardia | Forma de oso con Ira. **Regeneración Frenética** convierte ira en vida |
+| Guardián | 🛡 Defensa | Vanguardia | Forma de oso con Ira. **Lamerse las Heridas** convierte ira en vida |
 | Restauración | ✚ Curación | Retaguardia | **Curas en el tiempo** que actúan cada ronda: el sanador que planifica por adelantado |
-| Equilibrio | ✦ Soporte | Retaguardia | **Eclipse que potencia al grupo.** Alterna solar y lunar cada 3 hechizos: el Eclipse Solar sube el daño de los aliados de su fila y el Lunar alarga sus controles. *Raíces Enredadoras* impide cambiar de fila y *Ciclón* saca a un enemigo de la pelea una ronda. Hay que planificar el ciclo con la fase del jefe |
+| Equilibrio | ✦ Soporte | Retaguardia | **Eclipse que potencia al grupo.** Alterna solar y lunar cada 3 hechizos: el Eclipse Solar sube el daño de los aliados de su fila y el Lunar alarga sus controles. *Maraña de Raíces* impide cambiar de fila y *Ciclón* saca a un enemigo de la pelea una ronda. Hay que planificar el ciclo con la fase del jefe |
 
-**Respuestas al aviso:** resistir con *Piel de Corteza* · cambiar de fila con *Carrerilla Salvaje* · interrumpir con *Golpe de Cráneo* (*Rayo Solar* a distancia).
+**Respuestas al aviso:** resistir con *Piel de Roble* · cambiar de fila con *Salto de Ciervo* · interrumpir con *Golpe de Cráneo* (*Rayo Solar* a distancia).
 **Aporte de grupo:** **Marca de lo Salvaje** (+estadísticas). **Renacer** (resurrección en combate).
 
 ### Cazador de Demonios · Cuero · Furia
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
-| Estrago | ⚔ Ataque | Vanguardia | **Salto Vil**: cambia de fila y golpea en la misma elección; si lo usa en la ronda del golpe avisado, además lo esquiva. Metamorfosis como ráfaga |
-| Venganza | 🛡 Defensa | Vanguardia | **Sigilos** que se activan con una ronda de retraso en la fila elegida: el tanque que predice |
+| Estrago | ⚔ Ataque | Vanguardia | **Brinco de Azufre**: cambia de fila y golpea en la misma elección; si lo usa en la ronda del golpe avisado, además lo esquiva. Metamorfosis como ráfaga |
+| Venganza | 🛡 Defensa | Vanguardia | **Glifos** que se activan con una ronda de retraso en la fila elegida: el tanque que predice |
 | Devorador | ✦ Soporte | Retaguardia | **Reparte el poder de las almas.** Consume las almas de los enemigos caídos (fragmentos de alma) y las **entrega** a sus aliados: a quien la recibe, cada alma le da recurso, más daño o un escudo pequeño. Usa Intelecto, y el Vacío sube su Corrupción |
 
 **Respuestas al aviso:** esquivar con *Desenfoque* · cambiar de fila con *Retirada Vil* (salta a la retaguardia) · interrumpir con *Alteración*.
-**Aporte de grupo:** **Marca del Caos** (el objetivo recibe más daño mágico). **Visión Espectral** (revela lo invisible y lo que está en sigilo).
+**Aporte de grupo:** **Estigma Infernal** (el objetivo recibe más daño mágico). **Visión Espectral** (revela lo invisible y lo que está en sigilo).
 
 ### Evocador · Malla · Esencia
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Devastación | ⚔ Ataque | Retaguardia | Hechizos **Potenciados** de 1 a 3 rondas de carga |
 | Preservación | ✚ Curación | Retaguardia | **Eco** duplica la próxima cura, y **Rebobinar** devuelve al grupo parte del daño recibido en las últimas 2 rondas. Magia del tiempo hecha para turnos |
-| Aumentación | ✦ Soporte | Retaguardia | **Potencia a un aliado** directamente: *Poder de Ébano* le presta una parte de sus estadísticas y *Presciencia* le asegura el crítico de su siguiente golpe. Sigue la regla de familias: no se suma con otra potenciación sobre el mismo aliado (ver [Balance](balance.md)) |
+| Aumentación | ✦ Soporte | Retaguardia | **Potencia a un aliado** directamente: *Fuerza Prestada* le presta una parte de sus estadísticas y *Corazonada* le asegura el crítico de su siguiente golpe. Sigue la regla de familias: no se suma con otra potenciación sobre el mismo aliado (ver [Balance](balance.md)) |
 
-**Respuestas al aviso:** resistir con *Escamas Obsidianas* · cambiar de fila con *Planear* · interrumpir con *Sofocar*.
+**Respuestas al aviso:** resistir con *Escamas de Basalto* · cambiar de fila con *Planear* · interrumpir con *Sofocar*.
 **Aporte de grupo:** Clamor (**Furia del Vuelo**).
 
 ### Nigromante · Tela · Almas cosechadas *(clase propia)*
@@ -231,7 +232,7 @@ El único con los 4 roles, como en WoW.
 
 - **Toda clase tiene una spec de Ataque:** cualquiera puede elegir el camino más cómodo para jugar solo y cambiar de spec gratis en un asentamiento para ir en grupo (ver [Talentos](talentos.md)).
 - 11 clases pueden tanquear, 8 pueden curar y 12 pueden hacer de Soporte.
-- **Qué cambió respecto a WoW:** pasan a Defensa Cazador Bestias, Pícaro Sutileza, Mago Escarcha y Brujo Demonología; pasan a Soporte Cazador Supervivencia, Pícaro Forajido, Sacerdote Disciplina, Caballero Profano, Mago Arcano, Brujo Aflicción, Druida Equilibrio y Cazador de Demonios Devorador. Son nuevas el Señor de la Guerra (Furia se queda con el Golpe Colosal de Armas) y Tótems (antes Mejora).
+- **Qué cambió respecto a WoW:** pasan a Defensa Cazador Bestias, Pícaro Sutileza, Mago Escarcha y Brujo Demonología; pasan a Soporte Cazador Supervivencia, Pícaro Forajido, Sacerdote Disciplina, Caballero Profano, Mago Arcano, Brujo Aflicción, Druida Equilibrio y Cazador de Demonios Devorador. Son nuevas el Señor de la Guerra (Furia se queda con el Rompecorazas de Armas) y Tótems (antes Mejora).
 
 ## 4. La barra de 6: clase + equipo (D-46)
 
@@ -341,7 +342,7 @@ Cada clase nueva llega con su evento, su zona de inicio especial y una cadena de
 
 ## 7. Lo que ya está en el juego: 8 habilidades por especialización (D-79)
 
-Las secciones de arriba son el diseño completo. En la versión jugable, cada una de las 45 especializaciones tiene **8 habilidades**: las 3 de siempre y 5 nuevas inspiradas en las habilidades emblemáticas de esa especialización en World of Warcraft (las del Nigromante y el Bardo, clases propias, siguen la misma idea). Cada especialización conserva su rol (D-72) y cada clase sigue cubriendo al menos dos roles.
+Las secciones de arriba son el diseño completo. En la versión jugable, cada una de las 45 especializaciones tiene **8 habilidades**: las 3 de siempre y 5 nuevas inspiradas en las habilidades emblemáticas de esa especialización en World of Warcraft (las del Nigromante y el Bardo, clases propias, siguen la misma idea). La idea viene de WoW, pero **el nombre es propio** (D-135; tabla de cambios en §8). Cada especialización conserva su rol (D-72) y cada clase sigue cubriendo al menos dos roles.
 
 **Desbloqueo** (puntos de talento en esa especialización; ver [Talentos](talentos.md) §5):
 
@@ -355,58 +356,121 @@ Las secciones de arriba son el diseño completo. En la versión jugable, cada un
 - **Casillas 2 y 3:** cualquier otra habilidad que abriste, de cualquier especialización de tu clase.
 - **Si no eliges,** la barra se arma sola: tu respuesta más nueva, tu golpe más nuevo y tu otra habilidad más nueva.
 
-**Números bajos al inicio.** Las primeras habilidades tienen valores modestos (las mejoras de daño de las 3 primeras bajaron de 60 % a 50 %) y las nuevas se mueven en el mismo rango: golpes de ×1 a ×2,8 el ataque, mejoras de daño de 30 a 35 %, debilitamientos de 25 a 50 % (los más altos duran solo 2 o 3 rondas), curas de 20 a 45 % de la vida. Las tardías son un poco más fuertes, pero con más costo o más rondas de espera. Hay dos piezas nuevas en el combate: habilidades que **dan recurso** (como *Sed de Sangre*, +15 de Ira) y golpes que **suman combos** (como *Mutilar*, +2), para que Pícaro, Druida Feral y Bardo Duelista armen sus remates como en WoW.
+**Números bajos al inicio.** Las primeras habilidades tienen valores modestos (las mejoras de daño de las 3 primeras bajaron de 60 % a 50 %) y las nuevas se mueven en el mismo rango: golpes de ×1 a ×2,8 el ataque, mejoras de daño de 30 a 35 %, debilitamientos de 25 a 50 % (los más altos duran solo 2 o 3 rondas), curas de 20 a 45 % de la vida. Las tardías son un poco más fuertes, pero con más costo o más rondas de espera. Hay dos piezas nuevas en el combate: habilidades que **dan recurso** (como *Acero Sediento*, +15 de Ira) y golpes que **suman combos** (como *Mutilar*, +2), para que Pícaro, Druida Feral y Bardo Duelista armen sus remates como en WoW.
 
 **Las 45 especializaciones:**
 
 | Especialización | Rol | 1 a 3 (1, 3 y 6 puntos) | 4 a 8 (10, 16, 24, 34 y 46 puntos) |
 |---|---|---|---|
-| 💢 Guerrero · Furia | ⚔ Ataque | Golpe Colosal, Ejecutar, Parada | Sed de Sangre, Reflejo de Hechizos, Temeridad, Regeneración Enfurecida, Desenfreno |
-| 🏰 Guerrero · Protección | 🛡 Defensa | Golpe heroico, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Grito Desmoralizador, Venganza, Muro de Escudo, Última Resistencia |
-| 🚩 Guerrero · Señor de la Guerra | ✦ Soporte | Estandarte de Guerra, Estandarte de Muralla, Intervenir | Grito de Batalla, Lanzamiento Heroico, Golpe Mortal, Grito de Reunión, Grito Intimidador |
-| ⚖️ Paladín · Reprensión | ⚔ Ataque | Juicio, Veredicto del Templario, Escudo Divino | Hoja de Justicia, Palabra de Gloria, Cólera Vengativa, Estela de Cenizas, Sentencia de Ejecución |
-| 🔰 Paladín · Protección | 🛡 Defensa | Escudo del Vengador, Bendición de Protección, Aura de Devoción | Consagración, Escudo de los Justos, Defensor Ardiente, Guardián de los Reyes Ancestrales, Imposición de Manos |
-| 🌅 Paladín · Sagrado | ✚ Curación | Destello de Luz, Faro de Luz, Escudo Divino | Juicio de Luz, Luz Sagrada, Bendición de Sacrificio, Luz del Alba, Prisma Sagrado |
-| 🎯 Cazador · Puntería | ⚔ Ataque | Apuntar, Disparo Certero, Destrabarse | Disparo Arcano, Disparo de Contención, Supervivencia del Más Apto, Fuego Rápido, Disparo Mortal |
-| 🐺 Cazador · Bestias | ✦ Soporte | Orden de Matar, Aspecto de la Tortuga, Presa Marcada | Disparo de Púas, Intimidación, Cólera de las Bestias, Euforia, Llamada de lo Salvaje |
-| 🪤 Cazador · Supervivencia | ✦ Soporte | Trampa de Alquitrán, Marca del Cazador, Señuelo | Bomba de Fuego Salvaje, Bozal, Golpe de Raptor, Trampa Congelante, Asalto Coordinado |
-| 🐍 Pícaro · Asesinato | ⚔ Ataque | Eviscerar, Evasión, Patada | Mutilar, Garrote, Vial Carmesí, Marca de la Muerte, Envenenar |
-| 🌑 Pícaro · Sutileza | ✦ Soporte | Danza de las Sombras, Contraataque, Polvo Cegador | Golpe en los Riñones, Amago, Ceguera, Símbolos de Muerte, Técnica Secreta |
-| 🏴‍☠️ Pícaro · Forajido | ✦ Soporte | Dados del Destino, Distracción, Capa de Sombras | Disparo de Pistola, Gubia, Riposte, Golpe Fantasmal, Ola de Asesinatos |
-| 👁️ Sacerdote · Sombra | ⚔ Ataque | Toque Vampírico, Tortura Mental, Dispersión | Palabra de las Sombras: Dolor, Silencio, Peste Devoradora, Alarido Psíquico, Palabra de las Sombras: Muerte |
-| 😇 Sacerdote · Sagrado | ✚ Curación | Plegaria de Sanación, Renovar, Palabra de Poder: Escudo | Sanación Relámpago, Palabra Sagrada: Castigo, Rezo de Alivio, Espíritu Guardián, Palabra Sagrada: Serenidad |
-| 📿 Sacerdote · Disciplina | ✦ Soporte | Sanar, Escudo de luz, Penitencia | Purgar al Malvado, Supresión de Dolor, Infusión de Poder, Palabra de Poder: Resplandor, Cisma |
-| 🧊 Caballero de la Muerte · Escarcha | ⚔ Ataque | Golpe de Escarcha, Helada Mental, Entereza Ligada al Hielo | Explosión Aullante, Pilar de Escarcha, Arrasar, Invierno Despiadado, Furia del Vermis de Escarcha |
-| 🫀 Caballero de la Muerte · Sangre | 🛡 Defensa | Golpe de Muerte, Escudo de Huesos, Hervor de Sangre | Desgarro de Médula, Sangre Vampírica, Arma de Runas Danzante, Muerte y Descomposición, Bebesangre |
-| ☣️ Caballero de la Muerte · Profano | ✦ Soporte | Peste, Ejército de los muertos, Caparazón Antimagia | Espiral de la Muerte, Atracción Letal, Transformación Oscura, Brote, Apocalipsis |
-| 🌩️ Chamán · Elemental | ⚔ Ataque | Descarga de Lava, Choque de Llamas, Paso Espiritual | Descarga de Relámpagos, Corte de Viento, Guardián de Tormentas, Choque de Tierra, Elemental de Fuego |
-| 🌊 Chamán · Restauración | ✚ Curación | Sanación en Cadena, Tótem de Marea, Cambio Astral | Mareas Vivas, Choque de Escarcha, Escudo de Tierra, Ola de Sanación, Ascensión |
-| 🗿 Chamán · Tótems | ✦ Soporte | Tótem Viento Furioso, Tótem Piel de Piedra, Tótem de Captura | Golpe de Tormenta, Tótem de Condensador, Tótem de Corriente Sanadora, Latigazo de Lava, Espíritu Feral |
-| ☄️ Mago · Fuego | ⚔ Ataque | Piroexplosión, Combustión, Bloque de Hielo | Explosión de Fuego, Contrahechizo, Bomba Viviente, Barrera Ardiente, Meteorito |
-| 🌨️ Mago · Escarcha | ✦ Soporte | Barrera de Hielo, Lanza de Hielo, Escarcha Paralizante | Nova de Escarcha, Venas Heladas, Ventisca, Orbe Congelado, Púa Glacial |
-| 💠 Mago · Arcano | ✦ Soporte | Poder Arcano, Ralentizar, Barrera Prismática | Misiles Arcanos, Supernova, Imagen Reflejada, Toque del Magi, Tromba Arcana |
-| 🌋 Brujo · Destrucción | ⚔ Ataque | Descarga del Caos, Inmolar, Resolución Inagotable | Incinerar, Espiral Mortal, Conflagrar, Pacto Oscuro, Invocar Infernal |
-| 👹 Brujo · Demonología | 🛡 Defensa | Hachazo Vil, Vínculo Demoníaco, Sacrificio | Descarga Demoníaca, Furia de las Sombras, Armadura Demoníaca, Drenar Vida, Tirano Demoníaco |
-| 🕸️ Brujo · Aflicción | ✦ Soporte | Maldición de Debilidad, Drenar Alma, Círculo Demoníaco | Corrupción, Miedo, Atormentar, Putrefacción de Alma, Éxtasis Maléfico |
-| 🌪️ Monje · Viajero del Viento | ⚔ Ataque | Patada del Sol Naciente, Palma Mística, Rodar | Palma del Tigre, Golpe de Mano de Lanza, Puños de Furia, Tormenta, Tierra y Fuego, Toque de la Muerte |
-| 🍺 Monje · Maestro Cervecero | 🛡 Defensa | Golpe de Barril, Toque de Karma, Brebaje Purificador | Soplo de Fuego, Barrido de Pierna, Brebaje Celestial, Barril Explosivo, Invocar a Niuzao |
-| 🌫️ Monje · Tejedor de Niebla | ✚ Curación | Niebla Envolvente, Vivificar, Capullo de Vida | Parálisis, Niebla Renovadora, Té de Enfoque Atronador, Regalo de Sheilun, Revivir |
-| 🐆 Druida · Feral | ⚔ Ataque | Mordedura Feroz, Desgarrar, Piel de Corteza | Triturar, Testarazo, Furia del Tigre, Instintos de Supervivencia, Ira Primigenia |
-| 🐻 Druida · Guardián | 🛡 Defensa | Destrozar, Pelaje de Hierro, Regeneración Frenética | Vapulear, Rugido Incapacitador, Magullar, Furia del Durmiente, Encarnación de Ursoc |
-| 🌸 Druida · Restauración | ✚ Curación | Rejuvenecimiento, Alivio Presto, Corteza de Hierro | Fuego Lunar, Recrecimiento, Flor de Vida, Crecimiento Salvaje, Tranquilidad |
-| 🦇 Cazador de demonios · Estrago | ⚔ Ataque | Golpe del Caos, Metamorfosis, Salto Vil | Mordisco Demoníaco, Disrupción, Desdibujar, Rayo Ocular, La Cacería |
-| 👺 Cazador de demonios · Venganza | 🛡 Defensa | Sigilo de Llamas, Púas Demoníacas, Sigilo de Miseria | Cizallar, Sigilo de Silencio, Hendidura de Alma, Marca Ígnea, Devastación Vil |
-| 🕳️ Cazador de demonios · Devorador | ✦ Soporte | Entregar Alma, Marca del Caos, Escudo de Almas | Consumir, Rayo del Vacío, Cambio de Fase, Cosecha de Almas, Estrella Colapsante |
-| 🐲 Evocador · Devastación | ⚔ Ataque | Aliento de Fuego, Desintegrar, Planear | Llama Viva, Sofocar, Furia Dragontina, Estrella Destrozadora, Oleada de Eternidad |
-| ⏳ Evocador · Preservación | ✚ Curación | Eco, Rebobinar, Escamas Obsidianas | Flor Esmeralda, Dilatación Temporal, Aliento Onírico, Anomalía Temporal, Flor Espiritual |
-| 🔆 Evocador · Aumentación | ✦ Soporte | Poder de Ébano, Presciencia, Salto Temporal | Erupción, Distorsión Temporal, Escamas Abrasadoras, Sublevación, Aliento de Eones |
+| 💢 Guerrero · Furia | ⚔ Ataque | Rompecorazas, Tajo Final, Parada | Acero Sediento, Espejo de Acero, A Tumba Abierta, Aliento de Rabia, Vendaval de Tajos |
+| 🏰 Guerrero · Protección | 🛡 Defensa | Golpe valeroso, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Bramido Desalentador, Venganza, Baluarte Cerrado, Todavía en Pie |
+| 🚩 Guerrero · Señor de la Guerra | ✦ Soporte | Estandarte de Guerra, Estandarte de Muralla, Interponerse | Arenga de Guerra, Hacha Voladora, Tajo Funesto, Llamada a Filas, Alarido de Espanto |
+| ⚖️ Paladín · Reprensión | ⚔ Ataque | Juicio, Condena Radiante, Amparo Celestial | Filo Justiciero, Aliento de Fe, Furor Sagrado, Rastro de Brasas, Fallo Inapelable |
+| 🔰 Paladín · Protección | 🛡 Defensa | Escudo Acallador, Gracia Protectora, Aura de Constancia | Suelo Ungido, Égida Firme, Llama Tenaz, Centinela de Antaño, Milagro a Tiempo |
+| 🌅 Paladín · Sagrado | ✚ Curación | Fulgor Sanador, Candil del Alba, Amparo Celestial | Luz Delatora, Claridad Sanadora, Carga Compartida, Amanecer Tibio, Vitral Radiante |
+| 🎯 Cazador · Puntería | ⚔ Ataque | Apuntar, Disparo Certero, Salto Atrás | Flecha Rúnica, Flecha Mordaza, Pellejo Duro, Ráfaga de Flechas, Tiro de Remate |
+| 🐺 Cazador · Bestias | ✦ Soporte | Zarpazo a la Orden, Concha Cerrada, Presa Marcada | Flecha Dentada, Intimidación, Rabia de Manada, Euforia, Aullido de la Jauría |
+| 🪤 Cazador · Supervivencia | ✦ Soporte | Charco de Brea, Ojo del Rastreador, Señuelo | Bomba Incendiaria, Bozal, Lanzada Feroz, Cepo de Escarcha, Caza en Pareja |
+| 🐍 Pícaro · Asesinato | ⚔ Ataque | Eviscerar, Evasión, Patada | Mutilar, Garrote, Tónico de Bolsillo, Señal Fatal, Envenenar |
+| 🌑 Pícaro · Sutileza | ✦ Soporte | Vals de Penumbra, Contraataque, Polvo Cegador | Codazo Bajo, Amago, Ceguera, Marcas del Verdugo, Truco del Gremio |
+| 🏴‍☠️ Pícaro · Forajido | ✦ Soporte | Dados del Destino, Distracción, Capote Negro | Disparo de Pistola, Dedo en el Ojo, Riposte, Puñal de Niebla, Juerga de Puñales |
+| 👁️ Sacerdote · Sombra | ⚔ Ataque | Beso Vampírico, Suplicio Mental, Cuerpo de Humo | Susurro Doliente, Silencio, Hambre Negra, Chillido Mental, Susurro Final |
+| 😇 Sacerdote · Sagrado | ✚ Curación | Súplica Curativa, Bálsamo Lento, Verbo Protector | Remedio Rápido, Voz de Reproche, Oración Viajera, Abrigo del Alma, Voz de Calma |
+| 📿 Sacerdote · Disciplina | ✦ Soporte | Sanar, Escudo de luz, Remordimiento | Llama Expiatoria, Dolor Adormecido, Fervor Compartido, Verbo Radiante, Fisura del Alma |
+| 🧊 Caballero de la Muerte · Escarcha | ⚔ Ataque | Filo Gélido, Silencio Helado, Piel de Témpano | Lamento del Norte, Corazón de Hielo, Arrasar, Frío de Tumba, Rugido Glacial |
+| 🫀 Caballero de la Muerte · Sangre | 🛡 Defensa | Cobro de Sangre, Coraza Osaria, Fiebre Carmesí | Tajo al Tuétano, Sangre Tozuda, Hoja Espectral, Tierra Podrida, Brindis de Sangre |
+| ☣️ Caballero de la Muerte · Profano | ✦ Soporte | Peste, Leva de Difuntos, Velo Negador | Dardo Funesto, Garfio Sombrío, Gul Enfurecido, Brote, Apocalipsis |
+| 🌩️ Chamán · Elemental | ⚔ Ataque | Chorro de Magma, Ascua Persistente, Andar Etéreo | Centella, Ráfaga Cortante, Tormenta Guardada, Puño de Roca, Elemental de Fuego |
+| 🌊 Chamán · Restauración | ✚ Curación | Cura Saltarina, Tótem de Oleaje, Forma de Ánima | Rocío Sanador, Escarcha Mordaz, Coraza de Barro, Torrente Vital, Ascensión |
+| 🗿 Chamán · Tótems | ✦ Soporte | Tótem de Ventarrón, Tótem de Granito, Tótem de Captura | Mazazo de Trueno, Tótem de Chispas, Tótem de Manantial, Puño de Brasa, Jauría Espiritual |
+| ☄️ Mago · Fuego | ⚔ Ataque | Estallido Ígneo, Ardor Desatado, Encierro Helado | Fogonazo, Contrahechizo, Bomba de Relojería, Cortina de Fuego, Meteorito |
+| 🌨️ Mago · Escarcha | ✦ Soporte | Escudo de Cellisca, Picahielos, Escarcha Paralizante | Estallido Helado, Pulso Helado, Ventisca, Bola de Nieve, Estaca de Hielo |
+| 💠 Mago · Arcano | ✦ Soporte | Desborde Arcano, Ralentizar, Cúpula Irisada | Chispas Errantes, Supernova, Reflejo Burlón, Sello del Erudito, Aguacero Arcano |
+| 🌋 Brujo · Destrucción | ⚔ Ataque | Bólido Infernal, Inmolar, Terquedad Oscura | Incinerar, Lazo de Pavor, Avivar Llamas, Trato Sombrío, Coloso de Azufre |
+| 👹 Brujo · Demonología | 🛡 Defensa | Hachazo Demoníaco, Vínculo Demoníaco, Sacrificio | Dardo de Azufre, Sacudida Umbría, Escamas de Diablo, Sanguijuela Sombría, Señor de Diablillos |
+| 🕸️ Brujo · Aflicción | ✦ Soporte | Maldición Enclenque, Sorbo de Alma, Círculo de Regreso | Corrupción, Miedo, Atormentar, Alma Rancia, Delirio Maldito |
+| 🌪️ Monje · Viajero del Viento | ⚔ Ataque | Patada Ascendente, Palma Quebrantadora, Rodar | Palmada Rápida, Golpe a la Garganta, Lluvia de Puños, Ecos del Puño, Punto Final |
+| 🍺 Monje · Maestro Cervecero | 🛡 Defensa | Barrilazo, Karma Instantáneo, Trago Limpio | Eructo Ardiente, Zancadilla, Cerveza de Nubes, Tonel Reventón, Embestida del Buey |
+| 🌫️ Monje · Tejedor de Niebla | ✚ Curación | Manto de Bruma, Soplo Vital, Crisálida | Parálisis, Bruma Fresca, Té Bien Cargado, Don de las Nubes, Revivir |
+| 🐆 Druida · Feral | ⚔ Ataque | Dentellada Final, Desgarrar, Piel de Roble | Triturar, Testarazo, Arrebato Felino, Lomo Erizado, Zarpazo Salvaje |
+| 🐻 Druida · Guardián | 🛡 Defensa | Destrozar, Pelambre Espesa, Lamerse las Heridas | Vapulear, Bramido de Oso, Magullar, Despertar del Oso, Oso Ancestral |
+| 🌸 Druida · Restauración | ✚ Curación | Savia Nueva, Hoja Curativa, Abrazo del Roble | Quemadura Lunar, Retoño, Flor Paciente, Maleza Sanadora, Calma del Bosque |
+| 🦇 Cazador de demonios · Estrago | ⚔ Ataque | Desgarro Infernal, Metamorfosis, Brinco de Azufre | Dentellada Oscura, Disrupción, Desdibujar, Mirada Ardiente, Presa Sin Escape |
+| 👺 Cazador de demonios · Venganza | 🛡 Defensa | Glifo de Llamas, Piel Espinosa, Glifo de Angustia | Cizallar, Glifo Mudo, Partealmas, Hierro al Rojo, Aliento de Azufre |
+| 🕳️ Cazador de demonios · Devorador | ✦ Soporte | Entregar Alma, Estigma Infernal, Escudo de Almas | Consumir, Haz del Abismo, Paso Entre Mundos, Banquete de Almas, Sol Hundido |
+| 🐲 Evocador · Devastación | ⚔ Ataque | Aliento de Fuego, Desintegrar, Planear | Llama Hambrienta, Sofocar, Cólera de Escamas, Astro Quebrado, Marea de Siglos |
+| ⏳ Evocador · Preservación | ✚ Curación | Eco, Rebobinar, Escamas de Basalto | Pétalo Sanador, Instante Eterno, Suspiro del Sueño, Grieta del Tiempo, Floración Tardía |
+| 🔆 Evocador · Aumentación | ✦ Soporte | Fuerza Prestada, Corazonada, Atajo del Tiempo | Erupción, Tiempo Torcido, Escamas Hirvientes, Tierra Rebelde, Bocanada Eterna |
 | 🪦 Nigromante · Plaga | ⚔ Ataque | Plaga Reptante, Estallido Pútrido, Forma Espectral | Toque de Putrefacción, Enjambre de Moscas, Contagio, Ola de Pestilencia, Epidemia |
 | 🧟 Nigromante · Legión | 🛡 Defensa | Hueso Protector, Levantar Esqueletos, Grito del Sepulcro | Golpe de Hueso, Muro de Cadáveres, Coloso de Huesos, Festín de Cadáveres, Legión Inmortal |
-| 🧛 Nigromante · Drenaje | ✚ Curación | Sifón Vital, Pacto de Sangre, Velo de Almas | Mano de la Tumba, Marchitar, Transfusión, Cosecha Vital, Segador de Almas |
+| 🧛 Nigromante · Drenaje | ✚ Curación | Sifón Vital, Pacto de Sangre, Velo de Almas | Mano de la Tumba, Marchitar, Transfusión, Cosecha Vital, Guadaña de Almas |
 | 🤺 Bardo · Duelista | ⚔ Ataque | Floritura Final, Estocada Rítmica, Paso de Baile | Estocada Doble, Contrapunto, Finta, Crescendo, Gran Final |
-| 🎶 Bardo · Trovador | ✚ Curación | Balada Curativa, Nota Curativa, Nota Sostenida | Canción de Cuna, Himno de Esperanza, Acorde Disonante, Coro Celestial, Réquiem de Vida |
+| 🎶 Bardo · Trovador | ✚ Curación | Balada Curativa, Nota Curativa, Nota Sostenida | Canción de Cuna, Copla del Mañana, Acorde Disonante, Coro Celestial, Réquiem de Vida |
 | 🥁 Bardo · Estratega | ✦ Soporte | Allegro, Contratiempo, Calderón | Staccato, Síncopa, Compás de Espera, Fortissimo, Sinfonía de Guerra |
 
 Datos: `content/classes.yaml` (habilidades y números), `content/locales/es_clases.yaml` (nombres), `content/balance.yaml` (`talents`). Balance medido con `tools/sim.py`.
 
 Ver P-12, P-14, P-67 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md). La barra de 6 está decidida (D-46) y el reparto de roles responde a D-50.
+
+## 8. Nombres propios: qué nombres cambiaron (D-135)
+
+**De dónde sale.** El dueño decidió que el mundo use **nombres propios y originales, no los de World of Warcraft** (D-135, entrevista E-19). La revisión del cuestionario de beta (C-150) encontró que muchas habilidades usaban la traducción oficial de WoW (*Sed de Sangre*, *Temeridad*, *Imposición de Manos*, *Toque de la Muerte*…). Se cambió **solo el nombre que ve el jugador**: los IDs (`sed_de_sangre`, `temeridad`…), los números y lo que hace cada habilidad siguen igual, así que nada guardado se rompe.
+
+**Cómo se eligieron.**
+- **Se cambia** todo nombre que copia uno de WoW, en inglés o en español, o lo traduce palabra por palabra, y las palabras raras que solo se entienden como traducción de WoW (*Temeridad*, *Vivificar*, *Presciencia*, *Penitencia*).
+- **Se queda** la palabra común que cualquier juego usaría para esa acción, aunque WoW también la use: *Parada*, *Patada*, *Evasión*, *Juicio*, *Apuntar*, *Señuelo*, *Silencio*, *Miedo*, *Peste*, *Ventisca*, *Meteorito*, *Contrahechizo*, *Bola de fuego*, *Eviscerar*, *Mutilar*, *Drenar*… También se quedan *Bloqueo con escudo*, *Segundo aliento*, *Aliento de Fuego*, *Elemental de Fuego* y *Disparo de Pistola*, que son descripciones.
+- **El nombre nuevo** dice lo mismo que hace la habilidad, cabe en un botón (2 o 3 palabras) y sigue el tono del mundo, oscuro pero con esperanza y algo de humor (D-161): *A Tumba Abierta*, *Milagro a Tiempo*, *Eructo Ardiente*, *Candil del Alba*. Lo demoníaco huele a **azufre** (antes era "vil", la palabra de WoW). No repite otro nombre del juego.
+- **Clases, especializaciones y recursos no cambiaron.** Algunos son propios de WoW (*Caballero de la Muerte*, *Cazador de demonios*, *Evocador*, *Viajero del Viento*, *Maestro Cervecero*, *Tejedor de Niebla*, *Reprensión*, *Vorágine*, *Poder Astral*…), pero las 15 clases las confirmó el dueño (D-151): cambiarlos es pregunta para él.
+- **Lo que todavía no está en el juego** (§1 a §6: *Zurrar*, *Reprimenda*, *Desvanecerse*, *Agarre Mortal*, *Traslación*, *Retirada Vil*, *Forma del Vacío*, las maldiciones *Lenguas* y *Agonía*…) conserva su nombre de diseño. Cada uno se renombra con esta misma regla cuando entre al juego.
+
+<details>
+<summary>Tabla completa: antes → ahora, por especialización (⚔️ = ataque básico)</summary>
+
+| Especialización | Antes → ahora |
+|---|---|
+| 💢 Guerrero · Furia | Golpe Colosal → Rompecorazas · Ejecutar → Tajo Final · Sed de Sangre → Acero Sediento · Reflejo de Hechizos → Espejo de Acero · Temeridad → A Tumba Abierta · Regeneración Enfurecida → Aliento de Rabia · Desenfreno → Vendaval de Tajos |
+| 🏰 Guerrero · Protección | Golpe heroico → Golpe valeroso · Grito Desmoralizador → Bramido Desalentador · Muro de Escudo → Baluarte Cerrado · Última Resistencia → Todavía en Pie |
+| 🚩 Guerrero · Señor de la Guerra | Intervenir → Interponerse · Grito de Batalla → Arenga de Guerra · Lanzamiento Heroico → Hacha Voladora · Golpe Mortal → Tajo Funesto · Grito de Reunión → Llamada a Filas · Grito Intimidador → Alarido de Espanto |
+| ⚖️ Paladín · Reprensión | ⚔️ Golpe de cruzado → Mandoble justo · Veredicto del Templario → Condena Radiante · Escudo Divino → Amparo Celestial · Hoja de Justicia → Filo Justiciero · Palabra de Gloria → Aliento de Fe · Cólera Vengativa → Furor Sagrado · Estela de Cenizas → Rastro de Brasas · Sentencia de Ejecución → Fallo Inapelable |
+| 🔰 Paladín · Protección | ⚔️ Martillo del justo → Martillazo firme · Escudo del Vengador → Escudo Acallador · Bendición de Protección → Gracia Protectora · Aura de Devoción → Aura de Constancia · Consagración → Suelo Ungido · Escudo de los Justos → Égida Firme · Defensor Ardiente → Llama Tenaz · Guardián de los Reyes Ancestrales → Centinela de Antaño · Imposición de Manos → Milagro a Tiempo |
+| 🌅 Paladín · Sagrado | ⚔️ Choque sagrado → Golpe de alba · Destello de Luz → Fulgor Sanador · Faro de Luz → Candil del Alba · Escudo Divino → Amparo Celestial · Juicio de Luz → Luz Delatora · Luz Sagrada → Claridad Sanadora · Bendición de Sacrificio → Carga Compartida · Luz del Alba → Amanecer Tibio · Prisma Sagrado → Vitral Radiante |
+| 🎯 Cazador · Puntería | ⚔️ Disparo firme → Tiro sereno · Destrabarse → Salto Atrás · Disparo Arcano → Flecha Rúnica · Disparo de Contención → Flecha Mordaza · Supervivencia del Más Apto → Pellejo Duro · Fuego Rápido → Ráfaga de Flechas · Disparo Mortal → Tiro de Remate |
+| 🐺 Cazador · Bestias | ⚔️ Disparo de cobra → Flecha rápida · Orden de Matar → Zarpazo a la Orden · Aspecto de la Tortuga → Concha Cerrada · Disparo de Púas → Flecha Dentada · Cólera de las Bestias → Rabia de Manada · Llamada de lo Salvaje → Aullido de la Jauría |
+| 🪤 Cazador · Supervivencia | Trampa de Alquitrán → Charco de Brea · Marca del Cazador → Ojo del Rastreador · Bomba de Fuego Salvaje → Bomba Incendiaria · Golpe de Raptor → Lanzada Feroz · Trampa Congelante → Cepo de Escarcha · Asalto Coordinado → Caza en Pareja |
+| 🐍 Pícaro · Asesinato | Vial Carmesí → Tónico de Bolsillo · Marca de la Muerte → Señal Fatal |
+| 🌑 Pícaro · Sutileza | Danza de las Sombras → Vals de Penumbra · Golpe en los Riñones → Codazo Bajo · Símbolos de Muerte → Marcas del Verdugo · Técnica Secreta → Truco del Gremio |
+| 🏴‍☠️ Pícaro · Forajido | ⚔️ Golpe siniestro → Navajazo · Capa de Sombras → Capote Negro · Gubia → Dedo en el Ojo · Golpe Fantasmal → Puñal de Niebla · Ola de Asesinatos → Juerga de Puñales |
+| 👁️ Sacerdote · Sombra | ⚔️ Explosión mental → Punzada mental · Toque Vampírico → Beso Vampírico · Tortura Mental → Suplicio Mental · Dispersión → Cuerpo de Humo · Palabra de las Sombras: Dolor → Susurro Doliente · Peste Devoradora → Hambre Negra · Alarido Psíquico → Chillido Mental · Palabra de las Sombras: Muerte → Susurro Final |
+| 😇 Sacerdote · Sagrado | ⚔️ Fuego sagrado → Lumbre bendita · Plegaria de Sanación → Súplica Curativa · Renovar → Bálsamo Lento · Palabra de Poder: Escudo → Verbo Protector · Sanación Relámpago → Remedio Rápido · Palabra Sagrada: Castigo → Voz de Reproche · Rezo de Alivio → Oración Viajera · Espíritu Guardián → Abrigo del Alma · Palabra Sagrada: Serenidad → Voz de Calma |
+| 📿 Sacerdote · Disciplina | Penitencia → Remordimiento · Purgar al Malvado → Llama Expiatoria · Supresión de Dolor → Dolor Adormecido · Infusión de Poder → Fervor Compartido · Palabra de Poder: Resplandor → Verbo Radiante · Cisma → Fisura del Alma |
+| 🧊 Caballero de la Muerte · Escarcha | Golpe de Escarcha → Filo Gélido · Helada Mental → Silencio Helado · Entereza Ligada al Hielo → Piel de Témpano · Explosión Aullante → Lamento del Norte · Pilar de Escarcha → Corazón de Hielo · Invierno Despiadado → Frío de Tumba · Furia del Vermis de Escarcha → Rugido Glacial |
+| 🫀 Caballero de la Muerte · Sangre | ⚔️ Golpe de corazón → Tajo carmesí · Golpe de Muerte → Cobro de Sangre · Escudo de Huesos → Coraza Osaria · Hervor de Sangre → Fiebre Carmesí · Desgarro de Médula → Tajo al Tuétano · Sangre Vampírica → Sangre Tozuda · Arma de Runas Danzante → Hoja Espectral · Muerte y Descomposición → Tierra Podrida · Bebesangre → Brindis de Sangre |
+| ☣️ Caballero de la Muerte · Profano | ⚔️ Golpe de plaga → Mordida pútrida · Ejército de los muertos → Leva de Difuntos · Caparazón Antimagia → Velo Negador · Espiral de la Muerte → Dardo Funesto · Atracción Letal → Garfio Sombrío · Transformación Oscura → Gul Enfurecido |
+| 🌩️ Chamán · Elemental | ⚔️ Descarga de rayo → Chispazo · Descarga de Lava → Chorro de Magma · Choque de Llamas → Ascua Persistente · Paso Espiritual → Andar Etéreo · Descarga de Relámpagos → Centella · Corte de Viento → Ráfaga Cortante · Guardián de Tormentas → Tormenta Guardada · Choque de Tierra → Puño de Roca |
+| 🌊 Chamán · Restauración | ⚔️ Choque de tierra → Salpicón · Sanación en Cadena → Cura Saltarina · Tótem de Marea → Tótem de Oleaje · Cambio Astral → Forma de Ánima · Mareas Vivas → Rocío Sanador · Choque de Escarcha → Escarcha Mordaz · Escudo de Tierra → Coraza de Barro · Ola de Sanación → Torrente Vital |
+| 🗿 Chamán · Tótems | ⚔️ Golpe de tormenta → Golpe de chubasco · Tótem Viento Furioso → Tótem de Ventarrón · Tótem Piel de Piedra → Tótem de Granito · Golpe de Tormenta → Mazazo de Trueno · Tótem de Condensador → Tótem de Chispas · Tótem de Corriente Sanadora → Tótem de Manantial · Latigazo de Lava → Puño de Brasa · Espíritu Feral → Jauría Espiritual |
+| ☄️ Mago · Fuego | Piroexplosión → Estallido Ígneo · Combustión → Ardor Desatado · Bloque de Hielo → Encierro Helado · Explosión de Fuego → Fogonazo · Bomba Viviente → Bomba de Relojería · Barrera Ardiente → Cortina de Fuego |
+| 🌨️ Mago · Escarcha | ⚔️ Descarga de escarcha → Dardo de hielo · Barrera de Hielo → Escudo de Cellisca · Lanza de Hielo → Picahielos · Nova de Escarcha → Estallido Helado · Venas Heladas → Pulso Helado · Orbe Congelado → Bola de Nieve · Púa Glacial → Estaca de Hielo |
+| 💠 Mago · Arcano | ⚔️ Misil arcano → Chispa arcana · Poder Arcano → Desborde Arcano · Barrera Prismática → Cúpula Irisada · Misiles Arcanos → Chispas Errantes · Imagen Reflejada → Reflejo Burlón · Toque del Magi → Sello del Erudito · Tromba Arcana → Aguacero Arcano |
+| 🌋 Brujo · Destrucción | Descarga del Caos → Bólido Infernal · Resolución Inagotable → Terquedad Oscura · Espiral Mortal → Lazo de Pavor · Conflagrar → Avivar Llamas · Pacto Oscuro → Trato Sombrío · Invocar Infernal → Coloso de Azufre |
+| 👹 Brujo · Demonología | ⚔️ Descarga de sombras → Dardo umbrío · Hachazo Vil → Hachazo Demoníaco · Descarga Demoníaca → Dardo de Azufre · Furia de las Sombras → Sacudida Umbría · Armadura Demoníaca → Escamas de Diablo · Drenar Vida → Sanguijuela Sombría · Tirano Demoníaco → Señor de Diablillos |
+| 🕸️ Brujo · Aflicción | Maldición de Debilidad → Maldición Enclenque · Drenar Alma → Sorbo de Alma · Círculo Demoníaco → Círculo de Regreso · Putrefacción de Alma → Alma Rancia · Éxtasis Maléfico → Delirio Maldito |
+| 🌪️ Monje · Viajero del Viento | ⚔️ Palma del tigre → Palmada rápida · Patada del Sol Naciente → Patada Ascendente · Palma Mística → Palma Quebrantadora · Palma del Tigre → Palmada Rápida · Golpe de Mano de Lanza → Golpe a la Garganta · Puños de Furia → Lluvia de Puños · Tormenta, Tierra y Fuego → Ecos del Puño · Toque de la Muerte → Punto Final |
+| 🍺 Monje · Maestro Cervecero | ⚔️ Palma del tigre → Palmada rápida · Golpe de Barril → Barrilazo · Toque de Karma → Karma Instantáneo · Brebaje Purificador → Trago Limpio · Soplo de Fuego → Eructo Ardiente · Barrido de Pierna → Zancadilla · Brebaje Celestial → Cerveza de Nubes · Barril Explosivo → Tonel Reventón · Invocar a Niuzao → Embestida del Buey |
+| 🌫️ Monje · Tejedor de Niebla | Niebla Envolvente → Manto de Bruma · Vivificar → Soplo Vital · Capullo de Vida → Crisálida · Niebla Renovadora → Bruma Fresca · Té de Enfoque Atronador → Té Bien Cargado · Regalo de Sheilun → Don de las Nubes |
+| 🐆 Druida · Feral | Mordedura Feroz → Dentellada Final · Piel de Corteza → Piel de Roble · Furia del Tigre → Arrebato Felino · Instintos de Supervivencia → Lomo Erizado · Ira Primigenia → Zarpazo Salvaje |
+| 🐻 Druida · Guardián | Pelaje de Hierro → Pelambre Espesa · Regeneración Frenética → Lamerse las Heridas · Rugido Incapacitador → Bramido de Oso · Furia del Durmiente → Despertar del Oso · Encarnación de Ursoc → Oso Ancestral |
+| 🌸 Druida · Restauración | Rejuvenecimiento → Savia Nueva · Alivio Presto → Hoja Curativa · Corteza de Hierro → Abrazo del Roble · Fuego Lunar → Quemadura Lunar · Recrecimiento → Retoño · Flor de Vida → Flor Paciente · Crecimiento Salvaje → Maleza Sanadora · Tranquilidad → Calma del Bosque |
+| 🌿 Druida · Equilibrio | ⚔️ Fuego estelar → Lumbre estelar · Raíces Enredadoras → Maraña de Raíces · Carrerilla Salvaje → Salto de Ciervo |
+| 🦇 Cazador de demonios · Estrago | ⚔️ Mordisco del demonio → Garra de azufre · Golpe del Caos → Desgarro Infernal · Salto Vil → Brinco de Azufre · Mordisco Demoníaco → Dentellada Oscura · Rayo Ocular → Mirada Ardiente · La Cacería → Presa Sin Escape |
+| 👺 Cazador de demonios · Venganza | Sigilo de Llamas → Glifo de Llamas · Púas Demoníacas → Piel Espinosa · Sigilo de Miseria → Glifo de Angustia · Sigilo de Silencio → Glifo Mudo · Hendidura de Alma → Partealmas · Marca Ígnea → Hierro al Rojo · Devastación Vil → Aliento de Azufre |
+| 🕳️ Cazador de demonios · Devorador | ⚔️ Rayo del vacío → Destello del abismo · Marca del Caos → Estigma Infernal · Rayo del Vacío → Haz del Abismo · Cambio de Fase → Paso Entre Mundos · Cosecha de Almas → Banquete de Almas · Estrella Colapsante → Sol Hundido |
+| 🐲 Evocador · Devastación | ⚔️ Llama viva → Llama hambrienta · Llama Viva → Llama Hambrienta · Furia Dragontina → Cólera de Escamas · Estrella Destrozadora → Astro Quebrado · Oleada de Eternidad → Marea de Siglos |
+| ⏳ Evocador · Preservación | ⚔️ Llama viva → Llama hambrienta · Escamas Obsidianas → Escamas de Basalto · Flor Esmeralda → Pétalo Sanador · Dilatación Temporal → Instante Eterno · Aliento Onírico → Suspiro del Sueño · Anomalía Temporal → Grieta del Tiempo · Flor Espiritual → Floración Tardía |
+| 🔆 Evocador · Aumentación | Poder de Ébano → Fuerza Prestada · Presciencia → Corazonada · Salto Temporal → Atajo del Tiempo · Distorsión Temporal → Tiempo Torcido · Escamas Abrasadoras → Escamas Hirvientes · Sublevación → Tierra Rebelde · Aliento de Eones → Bocanada Eterna |
+| 🧛 Nigromante · Drenaje | Segador de Almas → Guadaña de Almas |
+| 🎶 Bardo · Trovador | Himno de Esperanza → Copla del Mañana |
+
+</details>
+
+Datos: `content/locales/es.yaml` y `content/locales/es_clases.yaml` (`ability.<id>.name` y `class.<id>.attack_name`).

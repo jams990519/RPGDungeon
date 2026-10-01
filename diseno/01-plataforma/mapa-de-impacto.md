@@ -274,7 +274,7 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **Una habilidad** (daño, costo, enfriamiento) → el presupuesto de su spec y los objetivos del simulador (M21); el ajuste PvP y el tope del 40 % (M12, M5); la Prueba de Maestría de esa spec; las Tácticas guardadas que la usan (M5) y los Ecos que pelean con ellas (M6, M12); su texto en ES y EN.
-- **Quitar o renombrar una habilidad** → **rompe** configuraciones guardadas, Tácticas, registros de combate y radiografías (M20) y botones ya enviados en Telegram. Nunca se borra: se marca retirada y la nueva lleva otro ID (C-18).
+- **Quitar o renombrar una habilidad** → **rompe** configuraciones guardadas, Tácticas, registros de combate y radiografías (M20) y botones ya enviados en Telegram. Nunca se borra: se marca retirada y la nueva lleva otro ID (C-18). Cambiar **solo el nombre visible** (`ability.<id>.name` o `class.<id>.attack_name` en `content/locales/`) no rompe nada guardado, porque todo usa el ID: cambia lo que el jugador reconoce, los documentos que lo nombran y las notas del parche. El nombre nuevo no copia uno de WoW (D-135) ni repite otro del juego (tabla de cambios en [Clases](../03-personaje/clases-y-especializaciones.md) §8).
 - **Un recurso de clase** (por ejemplo, la Energía que sube 25 por ronda) → todas las specs de esa clase, sus rotaciones y el simulador.
 - **Clamor, resurrección en combate o disipar** → los consumibles equivalentes (Tambores de Guerra, Sales de Reanimación, Desfibrilador: M14), su precio (M13) y la regla de "4 clases + consumible".
 - **Un aporte de grupo o un apoyo** (Aumentación, Estratega) → la regla de no sumar y el tope de un apoyo por grupo en contenido clasificado (M11, M18).
