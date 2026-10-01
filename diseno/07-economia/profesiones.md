@@ -42,6 +42,31 @@ Esta es la **capa simple** que se programa primero, con los recursos que ya hay 
 
 **De dónde sale:** *World of Warcraft* (oficios primarios que se necesitan entre sí), *Albion Online* (el paso de refinado) y *Dofus* (oficios dentro de un juego por turnos).
 
+### 0.1 El beneficio de cada oficio (D-111)
+
+El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un tipo de jugador**, que crece con la experiencia en ese oficio, como en World of Warcraft (la Herboristería cura, la Minería da aguante, el Desuello da crítico…). El ejemplo del dueño: **la medicina les da a los sanadores un porcentaje extra de sanación**.
+
+**Regla:** el beneficio crece parejo con el rango, del 1 al 100: al rango 50 se tiene la mitad del valor de la tabla y al 100 el valor completo. Es chico a propósito: ayuda, pero no reemplaza al equipo ni a los talentos (D-110). Vale solo mientras haces aquello que el oficio mejora (por ejemplo, el de Herrería solo si llevas placas).
+
+| Oficio | Para quién | Beneficio al rango 100 | Como en WoW |
+|---|---|---|---|
+| 🌿 Herbolario | Todos, sobre todo quien explora | La vida vuelve sola un **20 %** más rápido fuera de combate | Sangre de vida |
+| ⛏️ Minero | Tanques | **+5 %** de vida máxima | Dureza |
+| 🪓 Leñador | Recolectores | **+10** de espacio en la mochila | — |
+| 🔪 Desollador | Ataque | **+4 %** de ataque | Maestro de anatomía |
+| Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **15 %** de sacar una unidad extra al refinar | El retorno de *Albion* |
+| 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
+| 🧶 Peletería | Quien usa cuero o malla (pícaro, druida, monje, cazador de demonios, bardo, cazador, chamán, evocador) | **+4 %** de ataque y **+3 %** de vida | Refuerzo de brazales |
+| 🧵 Sastrería | Quien usa tela (sacerdote, mago, brujo, nigromante) | **+5 %** de ataque (poder de hechizos) | Bordado de capa |
+| 🪵 Carpintería | Quien pelea con arco o bastón | **+4 %** de ataque | — |
+| ⚗️ Alquimia | Todos | Las pociones curan un **30 %** más | Mixología |
+| 💍 Joyería | Todos | **+3 %** de vida y de ataque | Gemas de joyero |
+| 🩺 Medicina | Sanadores (rol de curación) | Tus curaciones curan un **15 %** más; las vendas, un **30 %** más | Primeros auxilios |
+
+- **🩺 Medicina entra en la fase 1** como oficio de fabricación: sube haciendo vendas y ungüentos (tela + hierba o extracto) y sus productos curan en combate. Más adelante crece hacia el médico de §2.3 (diagnósticos, cirugías).
+- **Se suman todos los que tengas** (D-57: sin tope de oficios); el freno es el tiempo de subir cada uno al 100. Si en la beta pesa demasiado, se decide en P-76.
+- Los números son propuesta de Claude y se comprueban en la pasada de balance de D-110, con la simulación del 1 al 100.
+
 ---
 
 ## 1. Tres capas y un anillo de servicios
