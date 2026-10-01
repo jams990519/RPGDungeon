@@ -294,6 +294,9 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
   for_you_chance: 0.7        # [ES] de las piezas que caen, cuántas son de tu tipo (botín "para ti")
   level_window: [4, 1]       # [ES] piezas con nivel requerido entre (nivel del enemigo − 4) y (+1); si la ventana cae entre dos niveles de pieza (van cada 10 desde el 10, D-110), salen las del nivel de pieza más cercano por debajo (engine/hero/gear.py roll_gear)
   start_tier: 1              # [ES] equipo inicial: arma y armadura de tu tipo, nivel 1, ya puestas
+  score: {attack: 1, hp: 1, armor: 2}   # [ES] D-115 (fase 2): el puntaje de una pieza para decir si es "⬆️ mejor" que la que llevas: ataque % + vida % + 2 × defensa
+                             # [ES] (lo que la pieza te da de verdad: la mitad si no es de tu tipo, más su ✨ encantamiento). La defensa pesa doble: 1 punto de defensa
+                             # [ES] quita daño en cada golpe. Es el mismo puntaje que ya usaba la comparación "⬆️/⬇️ Frente a lo que llevas" (engine/hero/gear.py gear_score)
 
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4
@@ -354,6 +357,10 @@ masterwork:                  # [ES] D-116 (confirmada): ✒️ obra maestra. Al 
     arma: {armor: 0.01}      # [ES] +1 de defensa
     armadura: {attack: 0.02} # [ES] +2 % de ataque
     joya: {hp: 0.02}         # [ES] +2 % de vida
+    cabeza: {attack: 0.01}   # [ES] D-115 (fase 2): cabeza, piernas y pies de artesano ganan +1 % de ataque (la mitad que el pecho: son piezas chicas)...
+    piernas: {attack: 0.01}
+    pies: {attack: 0.01}
+    manos: {armor: 0.01}     # [ES] ...y las manos, que ya dan ataque y vida, +1 de defensa
   price_mult: 1.25           # [ES] el mercader paga 25 % más por una obra maestra que por la pieza normal. Con la probabilidad más alta (15 %) vender
                              # [ES] todo lo fabricado rinde en promedio ~3,7 % más; la pieza normal ya vale casi lo mismo que sus materiales (tests/test_masterwork.py)
 
@@ -394,3 +401,26 @@ story:                       # [ES] D-117 (provisional): historia y rol, capa si
   emblem_min_rank: 5         # [ES] desde qué rango de oficio aparece el emblema del oficio junto a tu nombre (🩺 Lyra)
   npc_page: 3                # [ES] personajes por página en 🧑 Personajes (4 botones como mucho, D-75)
   origin_page: 3             # [ES] orígenes por página al elegir el tuyo (4 botones como mucho)
+
+enchanting:                  # [ES] D-115 (fase 2 de la red de oficios, lado del equipo; provisional): ✨ Encantamiento (profesiones.md §0.5). Desencantar destruye una pieza de equipo y da esencias (el gran sumidero de equipo); encantar gasta esencias y un material de otro oficio para darle a una pieza un bono chico. Números propuestos por Claude: se ajustan en la beta
+  profession: encantamiento  # [ES] id del oficio en content/professions.yaml (su experiencia va en Hero.professions; su beneficio {disenchant} da hasta +30 % de esencias al rango 100)
+  essence: esencia           # [ES] id de la ✨ esencia (content/items.yaml): sale de toda pieza desencantada
+  major_essence: esencia_mayor   # [ES] id de la 🔮 esencia mayor: sale solo de piezas 🟣 épicas
+  disenchant:
+    energy: 1                # [ES] ⚡ por pieza desencantada (D-78: toda acción fuera del combate gasta energía), como refinar
+    xp: 6                    # [ES] experiencia de oficio por pieza (6 por ⚡, como los demás oficios)
+    by_rarity: {comun: 1, poco_comun: 2, raro: 3, epico: 4}   # [ES] ✨ esencias por pieza según su rareza...
+    per_levels: 20           # [ES] ...+1 por cada 20 niveles de la pieza (una 🔵 rara del nivel 100 da 8; una 🟣 épica del nivel 100, 9)
+    major_rarities: [epico]  # [ES] las piezas 🟣 épicas (artesano desde el nivel 8, ✒️ obras maestras, las del Guardián) dan además 1 🔮 esencia mayor
+  enchant:
+    energy: 2                # [ES] ⚡ por encantamiento, como fabricar una pieza
+    xp: 12                   # [ES] experiencia de oficio por encantamiento
+    essences: 3              # [ES] ✨ esencias que pide encantar una pieza...
+    essences_per_levels: 10  # [ES] ...+1 por cada 10 niveles de la pieza (nivel 1: 3; nivel 50: 8; nivel 100: 13)
+    major_from_level: 50     # [ES] las piezas de nivel 50 o más piden también 1 🔮 esencia mayor (sale solo de piezas épicas: el encantador necesita al artesano)
+    material_per_levels: 50  # [ES] del material de cada encantamiento pide 1, +1 por cada 50 niveles de la pieza (nivel 100: 3)
+  enchants:                  # [ES] uno por ranura (capa simple: la ranura decide cuál, el jugador no elige). El valor sale de tu rango al encantar, parejo de min (rango 1) a max (rango 100) en puntos enteros, y queda guardado
+                             # [ES] en la pieza (Hero.gear_enchants). Con las 7 ranuras encantadas al rango 100: +6 % de ataque, +9 % de vida y +4 de defensa (la defensa nunca pasa gear.armor_cap)
+    filo: {stat: attack, slots: [arma, manos], min: 0.01, max: 0.03, min_rank: 1, material: lingote}               # [ES] ⚔️ Filo: +1 % de ataque (rangos 1-25), +2 % (26-75), +3 % (76-100); pide 🔩 lingote (Fundición)
+    vigor: {stat: hp, slots: [armadura, cabeza, piernas], min: 0.01, max: 0.03, min_rank: 1, material: extracto}   # [ES] ❤️ Vigor: +1 % de vida (1-25), +2 % (26-75), +3 % (76-100); pide 🧴 extracto (Destilación)
+    guarda: {stat: armor, slots: [pies, joya], min: 0.01, max: 0.02, min_rank: 25, material: gema_bruta}           # [ES] 🛡️ Guarda: +1 de defensa (rangos 25-50), +2 (51-100); pide 💠 gema en bruto (Minero)

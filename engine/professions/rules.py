@@ -10,14 +10,17 @@ sale de la experiencia de cada oficio, su título (Aprendiz, Oficial...), qué o
 comprobar que casi toda receta pide materiales de dos oficios o más), qué falta para una receta y cuántas veces
 alcanza con lo que llevas y tu energía. También el beneficio de cada oficio (D-111) y la ✒️ obra maestra (D-116):
 las piezas gemelas "obra maestra" que se arman al cargar el contenido (masterwork_items) y la probabilidad de que
-una pieza fabricada salga así (masterwork_chance). No guarda nada: el servicio lee Hero.professions y llama a estas
-funciones.
-Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra) y §4
+una pieza fabricada salga así (masterwork_chance). D-115 (fase 2, lado del equipo): las cuentas del ✨ Encantamiento:
+cuántas esencias da desencantar una pieza (disenchant_yield, disenchant_amount con el beneficio del oficio), qué
+encantamiento lleva cada ranura (enchant_for_slot), cuánto suma con tu rango (enchant_value) y qué pide (enchant_cost).
+No guarda nada: el servicio lee Hero.professions y llama a estas funciones.
+Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra),
+    §0.5 (✨ Encantamiento, D-115 fase 2) y §4
 Módulo: M14 Oficios
-Depende de: ninguno (los datos llegan de content/professions.yaml y de content/balance.yaml, bloques professions y
-    masterwork)
-Lo usan: engine/service/game.py (sección "professions"), engine/core/content.py (masterwork_items, al cargar los
-    objetos), tests/test_professions.py y tests/test_masterwork.py
+Depende de: ninguno (los datos llegan de content/professions.yaml y de content/balance.yaml, bloques professions,
+    masterwork y enchanting)
+Lo usan: engine/service/game.py (secciones "professions" y "enchanting"), engine/core/content.py (masterwork_items, al
+    cargar los objetos), tests/test_professions.py, tests/test_masterwork.py y tests/test_oficios_equipo.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -34,11 +37,15 @@ Si cambias esto, revisa:
       perk {masterwork} de la 🪑 Carpintería en content/professions.yaml; el servicio la sortea en _make
     - Beneficios (perks): una clave nueva va en PERK_KEYS, en el texto prof.perk.<clave> y donde el servicio la use. D-112:
       "explore" (🧭 Explorador) son puntos de exploración por vuelta (game.py _explore_step usa la parte entera)
-    - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py
+    - ✨ Encantamiento (D-115, fase 2): balance.yaml enchanting (esencias por rareza y nivel, costo por nivel de la pieza,
+      un encantamiento por ranura con su valor de min a max); los precios de las esencias en items.yaml tienen que dejar
+      que desencantar y vender las esencias pague siempre menos que vender la pieza (tests/test_oficios_equipo.py)
+    - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py
 """
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 
@@ -153,7 +160,8 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
     return max(0, min(by_items, by_energy))
 
 
-PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "masterwork", "explore")
+PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "masterwork", "explore",
+             "disenchant")      # [ES] D-115 (fase 2): ✨ Encantamiento, esencias de más al desencantar
 
 
 def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, armor_type: str | None,
@@ -172,8 +180,9 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
     Medicina, solo a los sanadores). Devuelve attack, hp, armor (fracciones), regen, potion, bandage, heal (fracciones
     de más), bag (espacio de mochila de más), sell (monedas de más al vender, 💱 Comercio, D-116), masterwork (solo
     informativo: la probabilidad de obra maestra de la 🪑 Carpintería; la que vale para cada receta la da
-    masterwork_chance, porque es del oficio que fabrica, D-116) y explore (puntos de exploración de más por
-    vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera).
+    masterwork_chance, porque es del oficio que fabrica, D-116), explore (puntos de exploración de más por
+    vuelta, 🧭 Explorador, D-112: el servicio usa la parte entera) y disenchant (fracción de esencias de más al
+    desencantar, ✨ Encantamiento, D-115 fase 2: disenchant_amount).
     La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).
     """
@@ -266,6 +275,105 @@ def masterwork_chance(profession: dict[str, Any], rank: int, max_rank: int, base
     perk = profession.get("perk") or {}
     top = float(perk["masterwork"]) if "masterwork" in perk else float(base_chance)
     return top * min(max(rank, 0), max_rank) / max_rank
+
+
+def disenchant_yield(item: dict[str, Any], cfg: dict[str, Any], essence: str = "esencia",
+                     major: str = "esencia_mayor") -> dict[str, int]:
+    """Essences a gear piece gives when disenchanted, before the Enchanting perk (D-115, phase 2).
+
+    Args:
+        item: the gear piece (content/items.yaml; a masterwork twin counts as its rarity).
+        cfg: balance.yaml "enchanting" → "disenchant" (by_rarity, per_levels, major_rarities).
+
+    [ES]
+    Qué hace: dice cuántas ✨ esencias da una pieza al desencantarla: las de su rareza (común 1 … épica 4) más 1 por cada
+    per_levels niveles de la pieza; las 🟣 épicas dan además 1 🔮 esencia mayor. Sin el beneficio del oficio (eso lo
+    suma disenchant_amount).
+    La llaman: GameService (_disenchant_preview, _disenchant) y las pruebas (la trampa de monedas: lo que dan las esencias
+    en el mercader nunca pasa lo que paga por la pieza).
+    Si cambia, afecta: cuántas esencias entran al juego (balance.yaml enchanting.disenchant).
+    """
+    level = int(item.get("req_level", 1))
+    count = int((cfg.get("by_rarity") or {}).get(item.get("rarity", "comun"), 1)) + level // max(1, int(cfg.get("per_levels", 20)))
+    out = {essence: max(0, count)}
+    if item.get("rarity") in (cfg.get("major_rarities") or []):
+        out[major] = 1
+    return {k: v for k, v in out.items() if v > 0}
+
+
+def disenchant_amount(base: int, perk: float, roll: float) -> int:
+    """Base essences × (1 + perk): the whole part always, one more with the chance of the fraction (roll in [0, 1)).
+
+    [ES]
+    Qué hace: aplica el beneficio del ✨ Encantamiento (hasta +30 % al rango 100) a una cantidad de esencias: la parte
+    entera siempre y una más con la probabilidad de la fracción (con 3 esencias y +15 %: 3, y 45 % de que sean 4). Así
+    el beneficio crece parejo aunque se desencante de a una pieza.
+    La llama: GameService._disenchant (un sorteo propio por pieza).
+    Si cambia, afecta: cuántas esencias da desencantar con rango.
+    """
+    total = max(0, base) * (1.0 + max(0.0, perk))
+    whole = int(total + 1e-9)
+    return whole + (1 if roll < total - whole - 1e-9 else 0)
+
+
+def enchant_for_slot(slot: str, enchants: dict[str, Any]) -> str | None:
+    """Id of the enchantment a gear slot takes (one per slot in the simple layer), or None.
+
+    [ES]
+    Qué hace: dice qué encantamiento lleva cada ranura (⚔️ Filo en arma y manos, ❤️ Vigor en pecho, cabeza y piernas,
+    🛡️ Guarda en pies y joya; balance.yaml enchanting.enchants "slots"). En la capa simple el jugador no elige.
+    La llaman: GameService (_enchant_view, _enchant) y las pruebas.
+    Si cambia, afecta: qué bono puede tener cada pieza.
+    """
+    for eid, edef in enchants.items():
+        if slot in (edef.get("slots") or []):
+            return eid
+    return None
+
+
+def enchant_value(edef: dict[str, Any], rank: int, max_rank: int) -> float:
+    """The enchantment's value at an Enchanting rank: evenly from "min" (rank 1) to "max" (max_rank), in whole points.
+
+    The value is rounded half up to a whole point (0.01 = 1 % or 1 of armor), so what the player sees is what it gives and a
+    new enchantment is only "better" when it shows a higher number.
+
+    [ES]
+    Qué hace: da cuánto suma un encantamiento hecho con tu rango: parejo desde "min" en el rango 1 hasta "max" en el 100,
+    redondeado a puntos enteros (⚔️ Filo y ❤️ Vigor: +1 % hasta el rango 25, +2 % del 26 al 75 y +3 % del 76 al 100;
+    🛡️ Guarda: +1 de defensa hasta el 50 y +2 desde el 51). El valor queda guardado en la pieza al encantar: subir de rango
+    después no lo cambia (se puede volver a encantar para mejorarlo, cuando el número sube).
+    La llaman: GameService (_enchant_view, _enchant) y las pruebas.
+    Si cambia, afecta: cuánto ayuda cada encantamiento (balance.yaml enchanting.enchants).
+    """
+    low, high = float(edef.get("min", 0.0)), float(edef.get("max", 0.0))
+    share = (min(max(rank, 1), max_rank) - 1) / max(1, max_rank - 1)
+    return math.floor((low + (high - low) * share) * 100 + 0.5 + 1e-9) / 100
+
+
+def enchant_cost(item: dict[str, Any], edef: dict[str, Any], cfg: dict[str, Any], essence: str = "esencia",
+                 major: str = "esencia_mayor") -> dict[str, int]:
+    """What enchanting this piece takes: essences by the piece's level, a major essence from a level and the material.
+
+    Args:
+        item: the gear piece to enchant.
+        edef: the enchantment (balance.yaml enchanting.enchants.<id>: its "material").
+        cfg: balance.yaml "enchanting" → "enchant" (essences, essences_per_levels, major_from_level, material_per_levels).
+
+    [ES]
+    Qué hace: dice qué pide encantar una pieza: ✨ esencias (3 y 1 más cada 10 niveles de la pieza), 🔮 1 esencia mayor si la
+    pieza es de nivel 50 o más, y el material del encantamiento (🔩 lingote, 🧴 extracto o 💠 gema: 1 y 1 más cada 50
+    niveles). Así encantar lo mejor del juego gasta mucho equipo viejo (el sumidero) y pide a otros oficios.
+    La llaman: GameService (_enchant_view, _enchant) y las pruebas.
+    Si cambia, afecta: cuánto equipo y material se gasta al encantar (balance.yaml enchanting.enchant).
+    """
+    level = int(item.get("req_level", 1))
+    cost = {essence: int(cfg.get("essences", 3)) + level // max(1, int(cfg.get("essences_per_levels", 10)))}
+    if level >= int(cfg.get("major_from_level", 10 ** 9)):
+        cost[major] = 1
+    material = edef.get("material")
+    if material:
+        cost[material] = cost.get(material, 0) + 1 + level // max(1, int(cfg.get("material_per_levels", 50)))
+    return cost
 
 
 def _as_list(value: Any) -> list[Any]:

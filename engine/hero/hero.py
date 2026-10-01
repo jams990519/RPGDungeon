@@ -40,6 +40,10 @@ Si cambias esto, revisa:
       de quien la fabricó). Vacío por defecto: los héroes guardados antes cargan igual. Hoy solo firma uno mismo (no hay
       mercado entre jugadores); cuando exista, la firma tiene que viajar con la pieza (engine/service/game.py _make,
       _masterwork_note, _sell_gear; tests/test_masterwork.py)
+    - gear_enchants (D-115, fase 2): el ✨ encantamiento de cada pieza (id de la pieza → {"id": filo | vigor | guarda, "value":
+      el bono que quedó al encantar}). Vacío por defecto: los héroes guardados antes cargan igual. engine/hero/gear.py lo suma a
+      lo que da la pieza (real_stats, gear_bonus); se borra con la última copia de la pieza (engine/service/game.py
+      _forget_piece, al vender o desencantar; tests/test_oficios_equipo.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -102,6 +106,9 @@ class Hero:
         gear_signatures: who made each ✒️ masterwork the hero holds (D-116), "<piece>_obra" -> crafter's hero name.
             Empty for heroes saved before it. All copies of one masterwork id share one signature: fine while only the
             crafter holds its own masterworks; a player market will need the signature to travel with each piece.
+        gear_enchants: the ✨ enchantment on each gear piece the hero holds (D-115, phase 2), item id -> {"id": enchant id
+            from balance.yaml enchanting.enchants, "value": its bonus, fixed when it was made}. Empty for heroes saved before
+            it. Like gear_signatures, all copies of one item id share it; it goes away with the last copy.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -164,6 +171,7 @@ class Hero:
     journal: list[dict[str, Any]] = field(default_factory=list)
     bio: str = ""
     gear_signatures: dict[str, str] = field(default_factory=dict)
+    gear_enchants: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
@@ -194,7 +202,8 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
 
     [ES]
     Qué hace: calcula vida máxima, ataque, armadura e iniciativa, con los bonos de
-    talentos (talent_bonus), de equipo (gear_bonus) y de oficios (perk_bonus, D-111) que trae el kit del servicio.
+    talentos (talent_bonus), de equipo (gear_bonus, con los ✨ encantamientos de las piezas, D-115) y de oficios
+    (perk_bonus, D-111) que trae el kit del servicio.
     La armadura suma la base, el equipo, los oficios y los talentos (D-110: los puntos de Defensa también dan
     armadura, balance.yaml talents.passive.defensa.armor), sin pasar armor_cap (60 %).
     La llaman: el servicio (vista del héroe) y el combate.

@@ -5,14 +5,17 @@ Para qué sirve: el equipo del héroe. Dice si una pieza te sirve (tipo de tu cl
 el nivel, suma los bonos de lo que llevas puesto, sortea el botín de equipo al ganar y pone o quita
 piezas. Desde D-83 juegas como quieras: el nivel es lo único que impide ponerse algo; una pieza que no
 es de tu clase se puede llevar, pero rinde la mitad (gear.off_type_factor). La primera pieza de una
-ranura vacía se pone sola.
+ranura vacía se pone sola. D-115 (fase 2): suma el ✨ encantamiento de cada pieza (real_stats) y dice con un solo
+puntaje (gear_score: ataque + vida + 2 × defensa, balance.yaml gear.score) si una pieza que no llevas es "⬆️ mejor"
+(is_better): tu nivel la permite, es de tu tipo y su puntaje pasa al de lo que llevas en esa ranura.
 Documento de diseño: diseno/03-personaje/equipamiento.md §6 (Recuerdos del Guardián) y §11 (lo que ya está en el juego)
 Módulo: M2 Héroe (equipo)
-Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear), content/classes.yaml (group)
+Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear; enchanting.enchants para el encantamiento),
+    content/classes.yaml (group)
 Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial, Recuerdo del Guardián), engine/hero/hero.py (bonos vía el kit)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
-Datos de los que es dueño: Hero.gear (ranura -> id de objeto)
+Datos de los que es dueño: Hero.gear (ranura -> id de objeto); lee Hero.gear_enchants (lo escribe el servicio)
 Reglas que nunca se rompen:
     1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde.
     2. Solo el nivel impide ponerse una pieza (D-83). El tipo es una referencia: fuera de tu clase rinde menos.
@@ -28,7 +31,11 @@ Si cambias esto, revisa:
       raro; lo mejor de cada nivel es el equipo de artesano (tests/test_balance_d110.py)
     - El equipo inicial toma la primera pieza de tier gear.start_tier (1) de su tipo: el de artesano empieza en tier 2
       y va al final de items.yaml, así nunca se elige (tests/test_professions.py)
-    - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano), tests/test_balance_d110.py
+    - D-115 (fase 2): gear_bonus suma los encantamientos (Hero.gear_enchants) con real_stats; gear_score/is_better deciden el
+      aviso "⬆️ Tienes una pieza mejor" y la marca ⬆️ del servicio (engine/service/game.py _better_piece, _gear_view). Cambiar
+      gear.score cambia qué pieza se ofrece; is_better nunca pone nada solo (no hay opción de equipar solo)
+    - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano), tests/test_balance_d110.py,
+      tests/test_oficios_equipo.py (encantamientos y pieza mejor)
 """
 
 from __future__ import annotations
@@ -75,20 +82,98 @@ def piece_stats(item: dict[str, Any], hero: Hero, classes: dict[str, Any], balan
     return {stat: float(value) * factor for stat, value in item.get("stats", {}).items()}
 
 
-def gear_bonus(items: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> dict[str, float]:
-    """Sum of what everything worn gives: {"attack": +frac, "hp": +frac, "armor": +flat}.
+def enchant_stats(hero: Hero, item_id: str, balance: dict[str, Any]) -> dict[str, float]:
+    """The ✨ enchantment the hero put on a piece (D-115, phase 2), as stats; {} if none (or its id is unknown).
 
     [ES]
-    Qué hace: suma los bonos de lo que llevas puesto (las piezas que no son de tu clase rinden la mitad).
-    La llaman: el servicio al armar el kit; hero_stats los aplica.
+    Qué hace: da el bono del ✨ encantamiento guardado en Hero.gear_enchants para esa pieza (⚔️ Filo = ataque, ❤️ Vigor =
+    vida, 🛡️ Guarda = defensa; balance.yaml enchanting.enchants). Un encantamiento rinde entero aunque la pieza no sea
+    de tu tipo.
+    La llaman: real_stats (y por ahí gear_bonus) y el servicio (vistas de equipo).
+    Si cambia, afecta: cuánto suma cada encantamiento en combate.
+    """
+    record = (getattr(hero, "gear_enchants", None) or {}).get(item_id)
+    if not record:
+        return {}
+    edef = ((balance.get("enchanting") or {}).get("enchants") or {}).get(record.get("id"))
+    if not edef:
+        return {}
+    return {edef["stat"]: float(record.get("value", 0.0))}
+
+
+def real_stats(items: dict[str, Any], item_id: str, hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> dict[str, float]:
+    """What a piece gives this hero for real: piece_stats (half if off type) plus its enchantment (D-115).
+
+    [ES]
+    Qué hace: lo que una pieza te da de verdad: sus bonos (la mitad si no es de tu tipo) más su ✨ encantamiento.
+    La llaman: gear_bonus, piece_score, is_better y el servicio (vistas y comparaciones).
+    Si cambia, afecta: las estadísticas en combate y qué pieza se marca ⬆️ mejor.
+    """
+    item = items.get(item_id)
+    if not item:
+        return {}
+    stats = piece_stats(item, hero, classes, balance)
+    for stat, value in enchant_stats(hero, item_id, balance).items():
+        stats[stat] = stats.get(stat, 0.0) + value
+    return stats
+
+
+def gear_bonus(items: dict[str, Any], hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> dict[str, float]:
+    """Sum of what everything worn gives: {"attack": +frac, "hp": +frac, "armor": +flat}, enchantments included.
+
+    [ES]
+    Qué hace: suma los bonos de lo que llevas puesto (las piezas que no son de tu clase rinden la mitad) y sus ✨
+    encantamientos (D-115, fase 2).
+    La llaman: el servicio al armar el kit; hero_stats los aplica (la defensa nunca pasa gear.armor_cap).
     Si cambia, afecta: vida, ataque y defensa en combate.
     """
     total: dict[str, float] = {}
     for item_id in hero.gear.values():
         if item_id in items:
-            for stat, value in piece_stats(items[item_id], hero, classes, balance).items():
+            for stat, value in real_stats(items, item_id, hero, classes, balance).items():
                 total[stat] = total.get(stat, 0.0) + value
     return total
+
+
+def gear_score(stats: dict[str, float], balance: dict[str, Any]) -> float:
+    """One number for "how good" some stats are: attack + hp + 2 × armor (balance.yaml gear.score).
+
+    [ES]
+    Qué hace: resume en un número lo que da una pieza: ataque % + vida % + 2 × defensa (balance.yaml gear.score; la
+    defensa pesa doble porque quita daño en cada golpe). Es el puntaje que dice si una pieza es "⬆️ mejor".
+    La llaman: piece_score, is_better y el servicio (_gear_diff).
+    Si cambia, afecta: qué pieza se marca ⬆️ mejor y el aviso "⬆️ Tienes una pieza mejor".
+    """
+    weights = (balance.get("gear") or {}).get("score") or {"attack": 1.0, "hp": 1.0, "armor": 2.0}
+    return sum(float(weights.get(stat, 0.0)) * value for stat, value in stats.items())
+
+
+def piece_score(items: dict[str, Any], item_id: str, hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> float:
+    """gear_score of what a piece really gives this hero (0 for no piece). [ES] Qué hace: el puntaje de una pieza para ti
+    (con la mitad si no es de tu tipo y su encantamiento). La llaman: is_better y el servicio. Si cambia, afecta: el aviso ⬆️."""
+    return gear_score(real_stats(items, item_id, hero, classes, balance), balance) if item_id in items else 0.0
+
+
+def is_better(items: dict[str, Any], item_id: str, hero: Hero, classes: dict[str, Any], balance: dict[str, Any]) -> bool:
+    """True if a piece the hero is NOT wearing is usable now, of its class's type, and scores more than the worn one.
+
+    "Better" (D-115, phase 2): the hero's level allows it (can_use), it suits the class (suits: its own armor or weapon
+    type, or a jewel) and piece_score(new) > piece_score(worn in that slot); an empty slot scores 0.
+
+    [ES]
+    Qué hace: dice si una pieza que NO llevas puesta es "⬆️ mejor" para ti: ya tienes el nivel, es de tu tipo (tu armadura,
+    tu arma o una joya) y su puntaje (gear_score de lo que te da de verdad, con su encantamiento) pasa al de la pieza que
+    llevas en esa ranura (sin nada puesto, cuenta 0). No la pone sola: el servicio avisa y ofrece 🔁 Equipar.
+    La llaman: el servicio (aviso al recibir una pieza, marca ⬆️ en 🔁 Equipar).
+    Si cambia, afecta: cuándo sale el aviso "⬆️ Tienes una pieza mejor" y la marca ⬆️.
+    """
+    item = items.get(item_id)
+    if not item or item.get("kind") != "gear" or item_id in hero.gear.values():
+        return False
+    if can_use(item, hero, classes, balance) is not None or not suits(item, hero, classes, balance):
+        return False
+    worn = hero.gear.get(item.get("slot", ""), "")
+    return piece_score(items, item_id, hero, classes, balance) > piece_score(items, worn, hero, classes, balance) + 1e-9
 
 
 def drop_chance_for(balance: dict[str, Any], enemy_level: int) -> float:
