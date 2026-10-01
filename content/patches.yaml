@@ -327,3 +327,12 @@ v0_20:
     - "⚜️ Tres facciones: la Llama Común, el Círculo del Umbral y la Cofradía de los Restos. Sube tu reputación para ganar títulos y premios."
     - "📜 Encargos diarios en el tablón del Claro (/encargos) y encargos semanales para hacer con los miembros de tu campamento."
     - "📔 Tu diario de héroe (/diario), que puedes mostrar a otros. Escribe tu biografía con /bio y saluda o brinda con quien esté en tu zona: /saludar, /brindar."
+
+v0_21:
+  version: "0.21"
+  title: "✒️ Lost Realms 0.21: obras maestras y muebles del campamento"
+  notes:
+    - "✒️ Al fabricar armas, armaduras o joyas puede salir una obra maestra: +10 % en todo, un bono más según la ranura y tu firma de artesano. El mercader la paga un 25 % más."
+    - "🪑 La Carpintería ahora es el oficio de las obras maestras: hasta un 15 % de probabilidad en sus arcos y bastones a rango 100 (los demás artesanos, hasta un 5 %). Ya no da ataque extra."
+    - "🛏️ Muebles para tu campamento, solo de Carpintería: Literas de roble (rango 40, +1 plaza de miembro) y Armero de roble (rango 70, +1 de defensa). Se colocan en 🔨 Mejoras → 🔨 Obras → 🪑 Colocar."
+    - "📜 La receta te muestra tu probabilidad de obra maestra con tu rango actual."
