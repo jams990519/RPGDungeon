@@ -48,6 +48,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     Una pelea de defensa lleva "raid" ({"camp", "at"}) en su estado de "combat". Diseño: §0.5 del mismo documento
     D-101 (provisional): "upgrades" (mejoras de un campamento, clave "x:y": "built" id → hora, "works" obras a medias
     con lo aportado, "tech" conocimiento aprendido, el estudio en curso y su avance). Lo construido nunca se borra.
+    D-116: en "upgrades" también "furniture" (🪑 muebles colocados: id del mueble → {"by", "id", "at"}; uno de cada uno,
+    nunca se borra) y Hero.gear_signatures (firma de cada ✒️ obra maestra que lleva el héroe).
     D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
     at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
     en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
@@ -95,6 +97,14 @@ Si cambias esto, revisa:
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
     - Comercio (D-116): _merchant_sale suma su beneficio (+20 % al rango 100) y su experiencia en _sell, _camp_sell y
       _sell_gear; no toca el combate (professions.trade_xp_per_coin)
+    - ✒️ Obra maestra (D-116): balance.yaml masterwork; las piezas "<id>_obra" que arma engine/professions/rules.py
+      masterwork_items al cargar; el sorteo en _make (_masterwork_chance: la 🪑 Carpintería con su perk, los demás con
+      masterwork.base_chance), la firma en Hero.gear_signatures, la marca ✒️ en _gear_name, _worn_view y _gear_view, la
+      firma en _item_view (_masterwork_note), la línea ✒️ en _recipe_view y ⚒️ Oficios, y _sell_gear (paga su precio, más
+      alto, y borra la firma con la última copia). Pruebas: tests/test_masterwork.py
+    - 🪑 Muebles del campamento (D-116): items.yaml kind: furniture (effect), recetas de la Carpintería; _furniture_effect
+      entra en _effect_at/_camp_effect (members → _members_cap) y en _camp_defense (defense → oleadas); se colocan desde
+      🔨 Obras (_works_entries, _place_furniture, botón "upf:<id>"); 📦 Recursos los lista (tests/test_masterwork.py)
     - Beneficio de cada oficio (D-111): _perks (content/professions.yaml "perk", engine/professions/rules.py perks) entra en
       _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_cap
       (Leñador); hero_stats y el combate lo leen del kit (tests/test_professions.py)
@@ -206,7 +216,7 @@ from engine.core import (
 from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, piece_stats, roll_gear, source_choices,
                               starter_gear, suits, unequip)
-from engine.professions import gatherer_of, max_times, missing_for, rank_of, rank_title, xp_for_rank
+from engine.professions import gatherer_of, masterwork_chance, masterwork_id, max_times, missing_for, rank_of, rank_title, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
@@ -233,7 +243,8 @@ PRESENT_BUSY = ("explore", "gather", "rest", "hunt")
 # Activities that go in batches of energy (D-87); "hunt" only with ⚔️ automatic fights (D-114).
 BATCH_KINDS = ("explore", "gather", "hunt")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
-UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive")
+UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive",
+                   "upf:")       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
 
@@ -3400,14 +3411,16 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: lee del almacén (espacio "upgrades", clave "x:y" del campamento) lo que el campamento construyó
         ("built": id → hora en que se terminó), las obras a medias ("works": id → lo aportado, monedas en "coins")
-        y su conocimiento ("tech": "done" aprendidos, "current" el que estudian y "progress" lo aportado).
-        La llaman: las pantallas y acciones de 🔨 Mejoras y los efectos (_built_at).
+        y su conocimiento ("tech": "done" aprendidos, "current" el que estudian y "progress" lo aportado). D-116: también
+        los 🪑 muebles colocados ("furniture": id del mueble → {"by": nombre, "id": cuenta, "at": hora}), uno de cada uno.
+        La llaman: las pantallas y acciones de 🔨 Mejoras y los efectos (_built_at, _furniture_effect).
         Si cambia, afecta: todo lo guardado de las mejoras; los campos solo se agregan (nunca se borra lo construido).
         """
         data = self.store.get("upgrades", key) or {}
         data.setdefault("built", {})
         data.setdefault("works", {})
         data.setdefault("tech", {})
+        data.setdefault("furniture", {})        # D-116: 🪑 camp furniture placed (one of each piece)
         return data
 
     def _built_at(self, key: str | None) -> list[str]:
@@ -3424,8 +3437,32 @@ class GameService(StoryMixin):
         return self._built_at(f"{camp['x']}:{camp['y']}")
 
     def _effect_at(self, key: str | None, name: str) -> float:
+        """Sum of one effect over the camp's built improvements and its 🪑 furniture (D-116) at `key` ("x:y")."""
+        if not key:
+            return 0.0
+        record = self.store.get("upgrades", key) or {}           # one read for both (_stock calls this per zone)
+        built = record.get("built") or {}
         catalog = self._upgrade_catalog()
-        return float(sum(catalog[uid].get("effect", {}).get(name, 0) for uid in self._built_at(key)))
+        total = float(sum(udef.get("effect", {}).get(name, 0) for uid, udef in catalog.items() if uid in built))
+        return total + self._furniture_sum(record, name)
+
+    def _furniture_effect(self, key: str | None, name: str) -> float:
+        """Sum of one effect over the 🪑 furniture placed in the camp at `key` (D-116): one of each piece, never more.
+
+        [ES]
+        Qué hace: suma un efecto ("members", "defense"...) de los muebles colocados en el campamento (items.yaml "effect").
+        Como se guardan por id de mueble, cada mueble cuenta una sola vez aunque alguien haga otro igual.
+        La llaman: _effect_at (y por ahí _camp_effect: cupo de miembros, vida, despensa...) y _camp_defense ("defense").
+        Si cambia, afecta: lo que suman los muebles de la 🪑 Carpintería a cada campamento.
+        """
+        if not key:
+            return 0.0
+        return self._furniture_sum(self.store.get("upgrades", key) or {}, name)
+
+    def _furniture_sum(self, record: dict[str, Any], name: str) -> float:
+        """Sum of one effect over the furniture of an "upgrades" record (D-116); unknown ids count 0."""
+        placed = record.get("furniture") or {}
+        return float(sum(self.content.items.get(fid, {}).get("effect", {}).get(name, 0) for fid in placed))
 
     def _camp_effect(self, camp: dict[str, Any] | None, name: str) -> float:
         """Sum of one effect over the improvements the camp built (0 for the Claro or no camp).
@@ -3434,8 +3471,9 @@ class GameService(StoryMixin):
         Qué hace: suma un efecto ("regen_mult", "ration_cut", "members", "stock_regen"...) de todas las mejoras
         construidas. Las mejoras sin ese efecto suman 0.
         La llaman: la vida (_camp_regen_mult), la despensa (_camp_pantry, _camp_feed), el cupo (_members_cap) y
-        las oleadas ("warning_hours" de la Torre de vigía: _raid_watch y _raid_lines).
-        Si cambia, afecta: todos los efectos de las mejoras.
+        las oleadas ("warning_hours" de la Torre de vigía: _raid_watch y _raid_lines). Suma también los 🪑 muebles
+        colocados (D-116: las 🛏️ Literas de roble dan "members": 1).
+        Si cambia, afecta: todos los efectos de las mejoras y de los muebles.
         """
         if not camp or "x" not in camp:
             return 0.0
@@ -3458,8 +3496,9 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: suma los puntos de 🛡️ Defensa de las mejoras construidas (Empalizada 1, Torre de vigía 1, Trampas 1,
-        Perrera 1, Muralla de piedra 2, Braseros 1, Torres de arqueros 2, Foso 2: 11 en total). Con night=True suma
-        también "night_defense" (los Braseros: +1 de noche). El Claro y quien no tiene campamento: 0.
+        Perrera 1, Muralla de piedra 2, Braseros 1, Torres de arqueros 2, Foso 2: 11 en total) y la de los 🪑 muebles
+        colocados (D-116: el 🗄️ Armero de roble, +1). Con night=True suma también "night_defense" (los Braseros: +1 de
+        noche). El Claro y quien no tiene campamento: 0.
         La llaman: la pantalla del campamento, la de 🔨 Mejoras y _open_raid, que la guarda al llegar la oleada para
         debilitar a los atacantes (_raid_weaken: 4 % menos de vida y ataque por punto).
         Si cambia, afecta: cuánto protegen los alrededores de cada campamento cuando lleguen las oleadas.
@@ -3467,6 +3506,8 @@ class GameService(StoryMixin):
         catalog = self._upgrade_catalog()
         built = self._built(camp)
         points = sum(int(catalog[uid].get("defense", 0)) for uid in built)
+        if camp and "x" in camp:                # D-116: 🗄️ the furniture's defense (one of each piece)
+            points += int(self._furniture_effect(f"{camp['x']}:{camp['y']}", "defense"))
         if night:
             points += int(sum(catalog[uid].get("effect", {}).get("night_defense", 0) for uid in built))
         return points
@@ -3654,6 +3695,8 @@ class GameService(StoryMixin):
             return self._workshop_view(hero, notice=view.notice)
         if action_id == "ctaller":
             return self._workshop_view(hero)
+        if action_id.startswith("upf:"):
+            return self._place_furniture(hero, action_id[4:])
         if action_id.startswith("kstart:"):
             return self._start_study(hero, action_id[7:])
         if action_id == "kgive":
@@ -3690,8 +3733,10 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: muestra las mejoras del campamento: cuántas construyeron de cuántas (y cuántas pide el castillo), la
         🛡️ Defensa, la lista de lo construido, las próximas obras abiertas con su barra de avance y qué se abre en el
-        nivel siguiente. Botones (4 como máximo): 🔨 Obras, 🏘️ Servicios (si construyeron alguno), 📚 Conocimiento
-        (con la Biblioteca) y ↩️ Volver. Solo para miembros, estando en el campamento; el Claro no tiene (D-98).
+        nivel siguiente. D-116: también los 🪑 muebles colocados (con quién los puso) y, si llevas un mueble que el
+        campamento no tiene, el aviso de colocarlo en 🔨 Obras. Botones (4 como máximo): 🔨 Obras (obras abiertas y
+        muebles para colocar), 🏘️ Servicios (si construyeron alguno), 📚 Conocimiento (con la Biblioteca) y ↩️ Volver.
+        Solo para miembros, estando en el campamento; el Claro no tiene (D-98).
         La llaman: el botón 🔨 Mejoras del campamento y los ↩️ Volver de Obras, Servicios y Conocimiento.
         Si cambia, afecta: tests/test_camp_upgrades.py y el recorrido de botones (tope de 4).
         """
@@ -3710,6 +3755,13 @@ class GameService(StoryMixin):
                 t.t("upgrades.defense", n=self._camp_defense(camp)), t.t("upgrades.defense_help"), ""]
         body.append(t.t("upgrades.built_line", names=" · ".join(self._upgrade_name(uid) for uid in built)) if built
                     else t.t("upgrades.none_built"))
+        placed = [(fid, info) for fid, info in record["furniture"].items() if fid in self.content.items]
+        if placed:                                  # D-116: 🪑 the camp's furniture, with who placed it
+            body.append(t.t("upgrades.furniture_line", names=" · ".join(
+                t.t("upgrades.furniture_by", name=self._item_label(fid), hero=info.get("by", "?")) for fid, info in placed)))
+        to_place = self._furniture_to_place(hero, record)
+        if to_place:
+            body.append(t.t("upgrades.furniture_hint", names=" · ".join(self._item_label(fid) for fid in to_place)))
         works = self._open_works(camp, record)
         if works:
             body += ["", t.t("upgrades.open_title")]
@@ -3731,8 +3783,8 @@ class GameService(StoryMixin):
             body.append(t.t("upgrades.locked_line", level=next_level, names=" · ".join(names), n=len(names)))
         services = {name for uid in built for name in (catalog[uid].get("service") or {})}
         actions = []
-        if works:
-            actions.append(Action(id="upw", label=t.t("upgrades.works_button", n=len(works))))
+        if works or to_place:
+            actions.append(Action(id="upw", label=t.t("upgrades.works_button", n=len(works) + len(to_place))))
         if services & {"rest_price", "sell_ratio", "craft", "sell_gear"}:
             actions.append(Action(id="upsvc", label=t.t("upgrades.services_button")))
         if "knowledge" in services:
@@ -3749,9 +3801,10 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: lista las obras abiertas (por el nivel del campamento) con lo que pide cada una y lo aportado. Cada
-        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). De a 3 obras, o de a 2 con
-        ➡️ Ver más si son más (4 botones como máximo, D-75).
-        La llaman: 🔨 Obras de la pantalla de mejoras y cada aporte (vuelve a la página de esa obra).
+        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). Al final, los 🪑 muebles que
+        llevas y el campamento no tiene, cada uno con su botón 🪑 Colocar (D-116). De a 3, o de a 2 con ➡️ Ver más si
+        son más (4 botones como máximo, D-75).
+        La llaman: 🔨 Obras de la pantalla de mejoras, cada aporte (vuelve a la página de esa obra) y _place_furniture.
         Si cambia, afecta: cómo aportan los miembros (tests/test_camp_upgrades.py).
         """
         here = self._upgrades_here(hero)
@@ -3761,17 +3814,24 @@ class GameService(StoryMixin):
         t = self.texts
         catalog = self._upgrade_catalog()
         record = self._upgrades(key)
-        works = self._open_works(camp, record)
-        if not works:
+        entries = self._works_entries(hero, camp, record)
+        if not entries:
             return self._upgrades_view(hero, notice=notice or t.t("upgrades.no_works"))
-        per = 3 if len(works) <= 3 else 2
-        pages = (len(works) + per - 1) // per
+        per = 3 if len(entries) <= 3 else 2
+        pages = (len(entries) + per - 1) // per
         page %= pages
         body = [t.t("upgrades.works_intro")]
+        if any(kind == "furn" for kind, _ in entries):
+            body.append(t.t("upgrades.furniture_intro"))
         if pages > 1:
             body.append(t.t("upgrades.page", n=page + 1, total=pages))
         actions = []
-        for uid in works[page * per: page * per + per]:
+        for kind, uid in entries[page * per: page * per + per]:
+            if kind == "furn":                      # D-116: 🪑 a furniture piece you carry, ready to place
+                name = self._item_label(uid)
+                body += ["", t.t("upgrades.furniture_entry", name=name, desc=t.t(self.content.items[uid]["desc_key"]))]
+                actions.append(Action(id=f"upf:{uid}", label=t.t("upgrades.furniture_button", name=name)))
+                continue
             udef = catalog[uid]
             defense = int(udef.get("defense", 0))
             title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
@@ -3804,8 +3864,9 @@ class GameService(StoryMixin):
         works = self._open_works(camp, record)
         if uid not in works:
             return self._works_view(hero)
-        per = 3 if len(works) <= 3 else 2
-        page = works.index(uid) // per
+        entries = self._works_entries(hero, camp, record)
+        per = 3 if len(entries) <= 3 else 2
+        page = entries.index(("work", uid)) // per
         udef = self._upgrade_catalog()[uid]
         need = self._work_need(udef)
         progress = record["works"].setdefault(uid, {})
@@ -3827,6 +3888,56 @@ class GameService(StoryMixin):
             page = 0
         self.store.put("upgrades", key, record)
         return self._works_view(hero, page, notice="\n".join(lines))
+
+    def _furniture_to_place(self, hero: Hero, record: dict[str, Any]) -> list[str]:
+        """🪑 Furniture pieces the hero carries that this camp does not have yet (D-116), in items.yaml order."""
+        placed = record.get("furniture") or {}
+        return [fid for fid, item in self.content.items.items()
+                if item.get("kind") == "furniture" and hero.backpack.get(fid, 0) > 0 and fid not in placed]
+
+    def _works_entries(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str]]:
+        """What 🔨 Obras lists, in order: ("work", improvement id) for the open works, then ("furn", item id) for the
+        🪑 furniture the hero can place (D-116). One list, so the pages of the screen and of each 🤲 match."""
+        return [("work", uid) for uid in self._open_works(camp, record)] + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
+
+    def _place_furniture(self, hero: Hero, fid: str) -> View:
+        """🪑 Colocar: a member places a furniture piece in their camp, for ever; one of each piece per camp (D-116).
+
+        [ES]
+        Qué hace: el miembro, en el centro de su campamento, coloca un mueble de la 🪑 Carpintería que lleva en la
+        mochila: sale de la mochila, queda en el campamento para siempre con el nombre de quien lo puso y su bono
+        (items.yaml "effect": 🛏️ Literas +1 miembro, 🗄️ Armero +1 de 🛡️ Defensa) vale para todos los miembros. Si el
+        campamento ya tiene ese mueble, avisa y no gasta nada (uno de cada uno: un segundo igual no suma). Ocupado
+        (viajando, explorando...) no se coloca. Avisa a los demás miembros.
+        La llaman: los botones 🪑 Colocar de 🔨 Obras (upf:<id>).
+        Si cambia, afecta: el cupo de miembros (_members_cap) y la 🛡️ Defensa (_camp_defense, oleadas).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        item = self.content.items.get(fid, {})
+        if item.get("kind") != "furniture" or hero.backpack.get(fid, 0) <= 0:
+            return self._works_view(hero)
+        if hero.activity:
+            return self._works_view(hero, notice=t.t("activity.busy"))
+        record = self._upgrades(key)
+        name = self._item_label(fid)
+        if fid in record["furniture"]:
+            return self._works_view(hero, notice=t.t("upgrades.furniture_already", name=name, camp=camp["name"]))
+        hero.backpack[fid] -= 1
+        if hero.backpack[fid] <= 0:
+            del hero.backpack[fid]
+        record["furniture"][fid] = {"by": hero.name, "id": hero.id, "at": self.clock.now()}
+        self.store.put("upgrades", key, record)
+        desc = t.t(item["desc_key"])
+        news = View(kind="camp_news", title=t.t("upgrades.furniture_push_title"),
+                    body=[t.t("upgrades.furniture_push", hero=hero.name, name=name, camp=camp["name"], desc=desc)])
+        for member in camp["members"]:
+            if member != hero.id:
+                self._push(member, news)
+        return self._works_view(hero, notice=t.t("upgrades.furniture_placed", name=name, camp=camp["name"], desc=desc))
 
     def _castle_upgrades(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
         """D-101: on the step to castle (8 → 9) the camp needs upgrades.castle_min_built improvements built; else [].
@@ -4275,6 +4386,25 @@ class GameService(StoryMixin):
         cfg = self._prof_cfg()
         return rank * cfg["rank_yield"] + (cfg["camp_bonus"] if where == "camp" else 0.0)
 
+    def _makes_masterworks(self, pid: str) -> bool:
+        """True if the profession has a recipe whose output has a ✒️ masterwork twin (gear pieces, D-116)."""
+        return any(rdef["profession"] == pid and masterwork_id(out) in self.content.items
+                   for rdef in self._recipes().values() for out in rdef["output"])
+
+    def _masterwork_chance(self, hero: Hero, pid: str) -> float:
+        """Chance that one gear piece made now with this profession comes out a ✒️ masterwork (D-116).
+
+        [ES]
+        Qué hace: da la probabilidad de obra maestra por pieza con el rango del héroe en ese oficio: la 🪑 Carpintería
+        con su beneficio (hasta 15 %), los demás oficios que hacen equipo con balance.yaml masterwork.base_chance
+        (hasta 5 %); parejo con el rango (profession_rules.masterwork_chance).
+        La llaman: _make (el sorteo), _recipe_view (la línea ✒️) y _professions_view (el beneficio de cada oficio).
+        Si cambia, afecta: cuántas obras maestras salen.
+        """
+        cfg = self.content.balance.get("masterwork") or {}
+        return masterwork_chance(self._prof_catalog().get(pid, {}), self._prof_rank(hero, pid), self._prof_cfg()["max_rank"],
+                                 float(cfg.get("base_chance", 0.0)))
+
     def _make_xp(self, hero: Hero, recipe: dict[str, Any], rank: int) -> int:
         """Hero xp of making a recipe once (D-108): hero_xp_per_energy × energy, scaled like a zone of level
         min(hero level, profession rank) — a novice crafter learns little; a dedicated one keeps pace with the others."""
@@ -4343,7 +4473,7 @@ class GameService(StoryMixin):
         for key in profession_rules.PERK_KEYS:
             if key in perk:
                 value = float(perk[key]) * share
-                shown = round(value, 1) if key == "bag" else round(value * 100, 1)
+                shown = round(value, 1) if key == "bag" else round(value * 100, 1)       # masterwork: "+15 % de obra maestra"
                 parts.append(t.t(f"prof.perk.{key}", v=f"{shown:g}"))
         limit = perk.get("armor_type") or perk.get("weapon_type")
         if limit:
@@ -4377,6 +4507,9 @@ class GameService(StoryMixin):
             body.append(t.t("prof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid)))
             body.append(t.t("prof.how_line", how=t.t(pdef.get("how_key", f"profession.{pid}.how"))))
             perk = self._perk_text(pdef.get("perk"), rank)
+            if "masterwork" not in (pdef.get("perk") or {}) and self._makes_masterworks(pid):    # D-116: ✒️ the base chance
+                shown = round(100 * self._masterwork_chance(hero, pid), 1)
+                perk = " · ".join(part for part in (perk, t.t("prof.perk.masterwork", v=f"{shown:g}")) if part)
             if perk:
                 body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
             unlock = self._next_unlock(hero, pid)
@@ -4493,6 +4626,10 @@ class GameService(StoryMixin):
             body.append(t.t("prof.gear_out", slot=t.t(f"gear.slot.{item['slot']}"), type=t.t(f"gear.type.{item['type']}"),
                             level=item.get("req_level", 1), stats=self._gear_stats_text(item.get("stats", {}))))
             body.append(self._gear_status(hero, item))
+            if masterwork_id(out_id) in self.content.items:     # D-116: ✒️ the chance that it comes out a masterwork
+                body.append(t.t("prof.masterwork_line", pct=f"{round(100 * self._masterwork_chance(hero, pid), 1):g}"))
+        elif item.get("kind") == "furniture":                   # D-116: 🪑 camp furniture
+            body.append(t.t("prof.furniture_out", desc=t.t(item["desc_key"])))
         elif item.get("heal"):
             body.append(t.t("prof.heal_out", heal=round(item["heal"] * 100), tox=item.get("toxicity", 0)))
         elif t.has(f"resources.use.{out_id}"):
@@ -4531,7 +4668,10 @@ class GameService(StoryMixin):
         rango, los materiales y la energía de TODAS las veces; si algo falta, avisa y no gasta nada (regla 6). Si
         alcanza: gasta la energía y los materiales, guarda lo que sale (al refinar, a veces una unidad más por el rango y
         el campamento), da experiencia de héroe (D-108) y de oficio, pone el equipo nuevo si esa ranura estaba vacía y
-        llena el cinturón con las pociones. Publica ItemCrafted (y ProfessionRankUp si sube de rango).
+        llena el cinturón con las pociones. D-116: cada pieza de equipo puede salir ✒️ obra maestra (sorteo propio, con
+        la probabilidad de _masterwork_chance): va a la mochila como "<id>_obra" con la firma del héroe
+        (Hero.gear_signatures) y, si la ranura estaba vacía, es la que se pone. Los 🪑 muebles avisan dónde colocarlos.
+        Publica ItemCrafted con la pieza normal y el total hecho (y ProfessionRankUp si sube de rango).
         La llaman: los botones 🔨 Hacer de la receta.
         Si cambia, afecta: la economía de los oficios (balance.yaml professions; content/professions.yaml).
         """
@@ -4566,18 +4706,33 @@ class GameService(StoryMixin):
             chance = self._make_bonus(rank, where)
             extra = sum(1 for _ in range(times) if rng.chance(chance))
         made = int(out_n) * times + extra
-        hero.backpack[out_id] = hero.backpack.get(out_id, 0) + made
+        item = self.content.items[out_id]
+        twin = masterwork_id(out_id)
+        masters = 0
+        if item.get("kind") == "gear" and twin in self.content.items:      # D-116: ✒️ own draw, never changes the rest
+            mw_rng = Rng(int(hash_unit(self.world_seed, hero.id, "masterwork", rid, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
+            chance = self._masterwork_chance(hero, pid)
+            masters = sum(1 for _ in range(made) if mw_rng.chance(chance))
+        if made > masters:
+            hero.backpack[out_id] = hero.backpack.get(out_id, 0) + made - masters
+        if masters:
+            hero.backpack[twin] = hero.backpack.get(twin, 0) + masters
+            hero.gear_signatures[twin] = hero.name                          # the crafter's signature
         lines = [t.t("prof.made", items=self._item_list({out_id: made}), energy=cost)]
         if extra:
             lines.append(t.t("prof.made_extra", n=extra))
-        item = self.content.items[out_id]
+        if masters:
+            lines.append(t.t("prof.masterwork_made", n=masters, item=self._gear_name(twin), name=hero.name))
         if item.get("kind") == "gear":
-            if out_id not in hero.gear_new:
-                hero.gear_new.append(out_id)
-            worn = auto_equip(hero, out_id, self.content.items, self.content.classes, self.content.balance)
+            for new_id in ([out_id] if made > masters else []) + ([twin] if masters else []):
+                if new_id not in hero.gear_new:
+                    hero.gear_new.append(new_id)
+            worn = auto_equip(hero, twin if masters else out_id, self.content.items, self.content.classes, self.content.balance)
             if worn:
                 self._clamp_hp(hero)
             lines.append(t.t("prof.gear_worn" if worn else "prof.gear_made"))
+        elif item.get("kind") == "furniture":                               # D-116: 🪑 where to place it
+            lines.append(t.t("prof.furniture_made"))
         if item.get("belt"):
             self._refill_belt(hero)
         self.bus.publish(ItemCrafted(hero.id, rid, out_id, made))
@@ -5017,14 +5172,15 @@ class GameService(StoryMixin):
         """📦 Recursos: materials and food you carry, how many and what they are for, a page at a time.
 
         [ES]
-        Qué hace: lista los materiales y la comida de la mochila (no el equipo, que está en 🛡️ Equipo, ni las
-        pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve cada uno.
+        Qué hace: lista los materiales, la comida y los 🪑 muebles (D-116) de la mochila (no el equipo, que está en
+        🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve
+        cada uno.
         La llaman: el botón 📦 Recursos de la mochila.
         Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
         """
         t = self.texts
         per = self.content.balance["resources"].get("per_page", 8)
-        kinds = ("material", "food")
+        kinds = ("material", "food", "furniture")       # D-116: 🪑 furniture waits here until it is placed
         owned = sorted(((i, n) for i, n in hero.backpack.items() if n > 0 and self.content.items.get(i, {}).get("kind") in kinds),
                        key=lambda kv: (-kv[1], kv[0]))
         pages = max(1, (len(owned) + per - 1) // per)
@@ -5197,9 +5353,28 @@ class GameService(StoryMixin):
     # ------------------------------------------------------------------ gear (D-77)
 
     def _gear_name(self, item_id: str) -> str:
+        """"🟣🏹 Arco del artesano" (rarity, emoji, name), with the ✒️ mark when it is a masterwork (D-116)."""
         item = self.content.items[item_id]
         icon = self.content.balance["gear"]["rarity_icon"].get(item.get("rarity", "comun"), "")
-        return f"{icon}{item['emoji']} {self.texts.t(item['name_key'])}"
+        return f"{icon}{item['emoji']} {self.texts.t(item['name_key'])}" + self._masterwork_mark(item_id)
+
+    def _masterwork_mark(self, item_id: str) -> str:
+        """" ✒️" after the name of a masterwork piece (D-116), "" for any other item."""
+        return self.texts.t("gear.masterwork_mark") if self.content.items.get(item_id, {}).get("masterwork") else ""
+
+    def _masterwork_note(self, hero: Hero, item_id: str) -> str:
+        """"✒️ Obra maestra de Lyra" for a masterwork the hero holds (D-116); "" for any other piece.
+
+        [ES]
+        Qué hace: da la firma de una ✒️ obra maestra (quién la hizo, de Hero.gear_signatures); sin firma guardada,
+        solo "✒️ Obra maestra". Para cualquier otra pieza, vacío.
+        La llaman: 🔁 Equipar (_gear_view) y la pieza (_item_view).
+        Si cambia, afecta: cómo se ve la firma del artesano.
+        """
+        if not self.content.items.get(item_id, {}).get("masterwork"):
+            return ""
+        who = (hero.gear_signatures or {}).get(item_id)
+        return self.texts.t("gear.masterwork_by", name=who) if who else self.texts.t("gear.masterwork_unsigned")
 
     def _gear_stats_text(self, stats: dict[str, float]) -> str:
         t = self.texts
@@ -5253,7 +5428,8 @@ class GameService(StoryMixin):
             item_id = hero.gear.get(slot)
             if item_id in self.content.items:
                 item = self.content.items[item_id]
-                body.append(t.t("gear.simple_line", emoji=item["emoji"], item=t.t(item["name_key"]) + self._new_mark(hero, item_id),
+                body.append(t.t("gear.simple_line", emoji=item["emoji"],
+                                item=t.t(item["name_key"]) + self._masterwork_mark(item_id) + self._new_mark(hero, item_id),
                                 stats=self._gear_stats_text(self._real_stats(hero, item_id))))
         if not body:
             body.append(t.t("gear.nothing_worn"))
@@ -5267,7 +5443,8 @@ class GameService(StoryMixin):
         return View(kind="gear_worn", title=t.t("gear.title"), body=body, actions=actions, notice=notice)
 
     def _gear_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
-        """Worn pieces, gear in the backpack marked for you / later / not for you, one button per piece."""
+        """Worn pieces, gear in the backpack marked for you / later / not for you, one button per piece; a ✒️ masterwork
+        also says who made it (D-116)."""
         t = self.texts
         slots = self.content.balance["gear"]["slots"]
         body = []
@@ -5278,8 +5455,9 @@ class GameService(StoryMixin):
             body.append(t.t("gear.backpack_title", n=sum(hero.backpack[i] for i in loose)))
             for item_id in loose[:15]:
                 count = hero.backpack[item_id]
+                note = self._masterwork_note(hero, item_id)                     # D-116: ✒️ Obra maestra de Lyra
                 body.append(t.t("gear.backpack_line", item=self._gear_name(item_id) + self._new_mark(hero, item_id), n=f" ×{count}" if count > 1 else "",
-                                status=self._gear_status(hero, self.content.items[item_id])))
+                                status=self._gear_status(hero, self.content.items[item_id]) + (f" · {note}" if note else "")))
             body.append(t.t("gear.hint"))
         else:
             body.append(t.t("gear.backpack_empty"))
@@ -5309,7 +5487,9 @@ class GameService(StoryMixin):
 
     def _item_view(self, hero: Hero, item_id: str, notice: str | None = None) -> View:
         """One piece: slot, type, level, stats, for you or not, compared with what you wear; equip, take off or sell
-        (sell in the Claro, or at your camp with its 🔨 Herrería, D-101)."""
+        (sell in the Claro, or at your camp with its 🔨 Herrería, D-101). A ✒️ masterwork shows who made it (D-116).
+        [ES] Qué hace: muestra una pieza; si es obra maestra, su firma ("✒️ Obra maestra de Lyra") y por qué es mejor.
+        La llaman: los botones de 🔁 Equipar. Si cambia, afecta: tests/test_gear.py y tests/test_masterwork.py."""
         t = self.texts
         item = self.content.items.get(item_id)
         worn_slot = next((slot for slot, iid in hero.gear.items() if iid == item_id), None)
@@ -5324,6 +5504,10 @@ class GameService(StoryMixin):
                else " " + t.t("gear.detail_real", stats=self._gear_stats_text(self._real_stats(hero, item_id)))),
             self._gear_status(hero, item),
         ]
+        note = self._masterwork_note(hero, item_id)
+        if note:                                    # D-116: ✒️ who made it, and why it is better
+            body.insert(1, note)
+            body.insert(2, t.t("gear.masterwork_help", pct=round(100 * float((self.content.balance.get("masterwork") or {}).get("stat_bonus", 0)))))
         if item_id in hero.gear_new:
             hero.gear_new.remove(item_id)
         actions = []
@@ -5368,6 +5552,8 @@ class GameService(StoryMixin):
             del hero.backpack[item_id]
         price, _trade = self._merchant_sale(hero, price)       # D-116: 💱 Comercio
         hero.gold += price
+        if item_id in hero.gear_signatures and not hero.backpack.get(item_id) and item_id not in hero.gear.values():
+            del hero.gear_signatures[item_id]                   # D-116: the last copy of that masterwork is gone
         story = self._story_event(hero, "sell", n=1, coins=price)                                    # D-117
         return self._gear_view(hero, notice=self._join([t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price))] + story))
 

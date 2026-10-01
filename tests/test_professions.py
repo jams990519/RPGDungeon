@@ -65,7 +65,9 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
         ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid})
         assert ranks[0] == 1, pid                                       # everyone can start every profession
         if pid in gear_crafts:                                          # D-110/D-113: a gear tier every 5 ranks from 55 to 100
-            assert ranks == [1, 25, 50] + list(range(55, 101, 5)), pid
+            gear_ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid
+                                 and content.items[next(iter(r["output"]))].get("kind") == "gear"})   # D-116: 🪑 furniture apart
+            assert gear_ranks == [1, 25, 50] + list(range(55, 101, 5)), pid
         elif pid in by_branch["craft"]:
             assert ranks == [1, 25, 50], pid                            # recipes at increasing ranks
     stations = data["stations"]
