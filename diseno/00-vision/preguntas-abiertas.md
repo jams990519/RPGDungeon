@@ -85,6 +85,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-37 | ¿Máximo de 2 oficios mayores por personaje? | ✅ **Reemplazada por D-57:** sin límite duro; cada oficio extra cuesta más tiempo |
 | P-69 | ¿El costo del conocimiento es solo natural (tiempo, recursos, preparación, costos de cada oficio) o se suma un freno extra para quien acumula muchos oficios? | Solo natural, como dijiste; si en la beta se ve que alguien lo domina todo demasiado rápido, se agrega un freno suave |
 | P-76 | ¿Los beneficios de oficio (D-111) se suman todos, o solo cuentan los de tus 2 oficios de fabricación más altos? | Que se sumen todos, como pide D-57 (sin tope de oficios), porque subir cada uno al 100 lleva mucho tiempo. Si en la beta alguien con todo al 100 queda muy por encima, contar solo los 2 más altos |
+| P-77 | ¿A qué velocidad se llega al nivel 100 ahora que lo largo es la historia y el rol (D-117)? Hoy (D-78): unos 2 años jugando todos los días con toda la energía | **Unos 8 meses** (la experiencia por nivel baja a un tercio; nivel 10 en unos 4 días, 50 en unos 3 meses), con el mismo ritmo para todos los caminos (D-108). Lo que dura años queda en la campaña, los oficios, el castillo, las facciones y el rol |
 | P-70 | ¿Lo que no usas se olvida poco a poco? | No: nada se pierde; el costo es solo el tiempo para seguir subiendo |
 | P-38 | ¿Minijuego de fabricación más fabricación rápida? | Sí |
 | P-39 | ¿Calidad de recursos por veta? | Sí, desde la beta |
