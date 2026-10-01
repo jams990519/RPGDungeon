@@ -48,3 +48,16 @@ def test_retired_spec_is_migrated(service):
 def test_every_spec_has_a_unique_icon(content):
     icons = [c["icon"] for c in content.classes.values() if not c.get("retired")]
     assert all(icons) and len(icons) == len(set(icons))
+
+
+def test_respec_refunds_points_for_gold(service):
+    make_hero(service, class_id="guerrero")
+    hero = service.store.get("hero", "test:1")
+    hero.update({"level": 3, "points": 2, "gold": 100})
+    service.store.put("hero", "test:1", hero)
+    service.act("test:1", "pt:guerrero_furia")
+    service.act("test:1", "pt:guerrero")
+    view = service.act("test:1", "respec")
+    hero = service._load("test:1")
+    assert hero.talents == {} and hero.points == 2 and hero.gold == 100 - 30
+    assert "🔄" in (view.notice or "")

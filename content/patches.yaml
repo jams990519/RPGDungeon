@@ -34,3 +34,11 @@ v0_5_1:
     - "🐺 Cazador · Bestias ahora es de Soporte: su bestia marca la presa y todos pegan más fuerte."
     - "🌨️ Mago · Escarcha ahora es de Soporte: Escarcha Paralizante hace que el enemigo pegue más flojo."
     - "📿 Sacerdote · Disciplina vuelve a ser de Curación."
+
+v0_5_2:
+  version: "0.5.2"
+  title: "🔧 Lost Realms 0.5.2: arreglos de botones y cambio de especialización"
+  notes:
+    - "Al elegir clase ahora ves su descripción y sus especializaciones, con ↩️ Volver a las clases por si quieres mirar otra."
+    - "🔄 Puedes cambiar de especialización: en 👤 Héroe → 🌟 Talentos, reinicia tus puntos por oro y repártelos de nuevo. La clase es para siempre."
+    - "Revisamos que todos los botones funcionen. Más adelante llegará la doble especialización."

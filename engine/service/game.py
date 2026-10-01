@@ -506,14 +506,15 @@ class GameService:
                 actions.append(Action(id=f"page:{page + 1}", label=t.t("create.next")))
             return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions, expects_text=True)
         else:
-            body = [t.t("create.ask_spec", group=t.t(f"class_group.{group}.name")), ""]
-            actions = []
-            for class_id, cdef in self.content.classes.items():
-                if cdef.get("group", class_id) != group:
-                    continue
+            # Confirmation step: show the class and its specs, then choose it or go back (D-74).
+            body = [t.t("create.confirm_class", group=t.t(f"class_group.{group}.name"), desc=t.t(f"class_group.{group}.desc")), "",
+                    t.t("create.its_specs")]
+            for class_id in specs_of(self.content.classes, group):
+                cdef = self.content.classes[class_id]
                 body.append(f"• {t.t(cdef['name_key'])} — {t.t('role.' + cdef.get('role', 'ataque'))}: {t.t(cdef['role_key'])}")
-                actions.append(Action(id=f"cls:{class_id}", label=t.t(cdef["name_key"])))
-            actions.append(Action(id="grp:", label=t.t("create.other_class")))
+            body += ["", t.t("create.spec_later")]
+            actions = [Action(id=f"cls:{default_spec(self.content.classes, group)}", label=t.t("create.choose_class", group=t.t(f"class_group.{group}.name"))),
+                       Action(id="grp:", label=t.t("create.back_to_classes"))]
         return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions)
 
     def _create_action(self, account_id: str, action_id: str) -> View:
@@ -527,9 +528,12 @@ class GameService:
             return self._creation_view(account_id)
         if action_id.startswith("grp:") and pending.get("stage") == "class":
             group = action_id[4:]
-            if group not in self._class_groups():
-                return self._creation_view(account_id)
-            action_id = "cls:" + default_spec(self.content.classes, group)
+            groups = self._class_groups()
+            pending["group"] = group if group in groups else None
+            if group in groups:
+                pending["page"] = groups.index(group) // 4   # "back" returns to this class's page
+            self.store.put("pending", account_id, pending)
+            return self._creation_view(account_id)
         if not action_id.startswith("cls:") or pending.get("stage") != "class":
             return self._creation_view(account_id)
         class_id = action_id[4:]
@@ -579,6 +583,8 @@ class GameService:
             return self._explore_menu(hero)
         if action_id == "talents":
             return self._talents_view(hero)
+        if action_id == "respec":
+            return self._respec(hero)
         if action_id.startswith("tal:"):
             return self._spec_view(hero, action_id[4:])
         if action_id.startswith("pt:"):
@@ -1051,8 +1057,28 @@ class GameService:
             mark = " ⭐" if spec == hero.class_id and pts else ""
             body.append(t.t("talents.spec_line", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque")), n=pts) + mark)
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
+        if hero.talents:
+            actions.append(Action(id="respec", label=t.t("talents.respec_button", cost=self._respec_cost(hero))))
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
+    def _respec_cost(self, hero: Hero) -> int:
+        return int(self.content.balance["talents"]["respec_cost_per_level"] * hero.level)
+
+    def _respec(self, hero: Hero) -> View:
+        """Change specialization: refund every talent point for gold (D-74). The class never changes."""
+        t = self.texts
+        cost = self._respec_cost(hero)
+        if not hero.talents:
+            return self._talents_view(hero)
+        if hero.gold < cost:
+            return self._talents_view(hero, notice=t.t("shop.no_gold"))
+        hero.gold -= cost
+        hero.points += sum(hero.talents.values())
+        hero.talents = {}
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        hero.unlocked = [base_response(self.content.classes, group)]
+        return self._talents_view(hero, notice=t.t("talents.respec_done", cost=cost, n=hero.points))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
         t = self.texts

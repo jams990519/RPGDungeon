@@ -34,6 +34,7 @@ invite:                      # [ES] invitar jugadores da energía (D-65): se pag
 talents:                     # [ES] talentos por nivel (D-68): 1 punto por nivel en una especialización de tu clase
   unlock: [1, 3, 6]          # [ES] puntos en una especialización para desbloquear su habilidad 1, 2 y 3
   passive_cap: 20            # [ES] cuántos puntos por especialización cuentan para la mejora pasiva
+  respec_cost_per_level: 10  # [ES] reiniciar la especialización cuesta 10 💰 por nivel (D-74)
   passive:                   # [ES] mejora por punto, según el rol de la especialización
     ataque: {attack: 0.03}
     defensa: {hp: 0.03}

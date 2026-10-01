@@ -19,6 +19,11 @@ create:
   prev: "◀️ Anteriores"
   next: "▶️ Más clases"
   rename_hint: "✏️ ¿Otro nombre? Escríbelo y lo cambio."
+  confirm_class: "{group}: {desc}."
+  its_specs: "Sus especializaciones (las vas ganando con puntos de talento):"
+  spec_later: "La clase es para siempre. La especialización la vas eligiendo nivel a nivel y la puedes cambiar más adelante."
+  choose_class: "✅ Elegir {group}"
+  back_to_classes: "↩️ Volver a las clases"
   welcome: "✨ Bienvenido, {name}. Explora los alrededores del Claro y abre camino hacia lo desconocido."
 
 role:
@@ -436,6 +441,8 @@ talents:
   unlocked: "Desbloqueaste: {names}."
   new_point: "🌟 Ganaste 1 punto de talento: 👤 Héroe → 🌟 Talentos."
   bar: "Barra de combate: {abilities}"
+  respec_button: "🔄 Reiniciar especialización · {cost} 💰"
+  respec_done: "🔄 Pagaste {cost} 💰: tus puntos volvieron. Tienes {n} para repartir."
 
 camps:
   title: "🏕️ Campamentos"
