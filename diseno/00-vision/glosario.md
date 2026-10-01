@@ -36,7 +36,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Juramento de Hierro** | Modo opcional de muerte permanente | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Karma (verde, naranja, rojo)** | Estado de un jugador según si atacó o mató a inocentes | [PvP](../06-contenido/pvp.md) |
 | **Laberinto** | Instancia que lleva al Guardián de cada región | [Misiones](../06-contenido/misiones-y-exploracion.md) |
-| **Llave del Piso / reloj de rondas** | La Mítica+ adaptada a turnos | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) |
+| **Llave de Mazmorra / reloj de rondas** | La Mítica+ adaptada a turnos | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) |
 | **Lejanía** | Distancia en anillos cuadrados desde el Claro: la mayor de las dos coordenadas, sin signo. Más Lejanía, más peligro. Más allá del anillo X está la **Lejanía profunda** | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Mancha** | Lugar donde caíste; guarda tu Esencia y muestra tus últimas rondas | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |

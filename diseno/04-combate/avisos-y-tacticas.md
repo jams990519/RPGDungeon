@@ -46,7 +46,7 @@ Elden Ring es difícil porque sus jefes **retrasan** los golpes. Aquí pasa lo m
 Un combo en un Guardián (no se puede huir, así que el quinto botón es 🌀 Esquivar). El jugador gasta esta ronda en la poción de resistencia y ataca libre las tres siguientes.
 
 ```
-⚔️ Ronda 4 · Guardián del Piso 12 — Reina Ceniza
+⚔️ Ronda 4 · Guardián de la Hondonada Gris — Reina Ceniza
 
 ⚠️ La Reina Ceniza alza las alas: TRES oleadas de fuego
 caerán sobre la RETAGUARDIA en las próximas rondas.
@@ -65,7 +65,7 @@ caerán sobre la RETAGUARDIA en las próximas rondas.
 - La primera vez que ves un movimiento, solo tienes el texto.
 - Después de verlo 3 veces, el **Bestiario** lo registra y el aviso incluye una pista: *"(Ya conoces este movimiento: golpe retrasado, espera una ronda)"*. También dice su forma (estocada, barrido, aplastamiento…), que indica qué respuesta conviene (ver [Mecánicas avanzadas](mecanicas-avanzadas.md)).
 - El Bestiario también guarda debilidades, resistencias y partes rompibles de cada criatura vencida (origen: el bestiario de *Monster Hunter*). Saber qué poción de resistencia llevar es conocimiento puro.
-- El conocimiento se puede **comprar y compartir**: el Informante vende fichas de jefes (ver [Profesiones](../07-economia/profesiones.md)), como el informante de SAO que vendía guías de cada piso.
+- El conocimiento se puede **comprar y compartir**: el Informante vende fichas de jefes (ver [Profesiones](../07-economia/profesiones.md)), como el informante de SAO que vendía guías de cada piso de su torre.
 
 **Por qué conviene.** Convierte el "aprender el jefe muriendo" de Souls en algo que queda registrado. Además, crea un oficio social: vender información. Y es justo la ventaja que pide D-49: el que sabe más rinde más, con cualquier clase (ver [Balance](../03-personaje/balance.md)).
 
@@ -90,6 +90,6 @@ Cada héroe tiene una lista de reglas en orden. Solo pueden usar lo que hay en t
 - **Resolución rápida:** las peleas contra enemigos comunes en misiones, encargos y expediciones se pueden simular enteras, y te llega solo el resultado. Rinde un poco menos que jugar a mano (menos botín, más desgaste), para premiar la atención sin obligarla.
 - **Tu Eco:** la copia de tu héroe que otros invocan cuando no estás conectado (ver [Jefes](../06-contenido/jefes.md)) y la que te defiende en la arena asíncrona (ver [PvP](../06-contenido/pvp.md)) pelean con tus Tácticas.
 
-**Dónde no valen:** el asalto al Guardián de un piso y la arena clasificada en vivo. Ahí, si se acaba el tiempo, tu héroe usa 🌀 Esquivar si hay un aviso sobre él o su fila, y ⚔️ Atacar si no.
+**Dónde no valen:** el asalto al Guardián de una región y la arena clasificada en vivo. Ahí, si se acaba el tiempo, tu héroe usa 🌀 Esquivar si hay un aviso sobre él o su fila, y ⚔️ Atacar si no.
 
 **Por qué conviene.** En Telegram la gente juega entre otras cosas. Las Tácticas hacen que el juego respete su tiempo sin quitarle valor a jugar con atención, y además quitan toda razón para usar un bot pirata (ver [Seguridad](../01-plataforma/seguridad-y-anti-trampas.md)).

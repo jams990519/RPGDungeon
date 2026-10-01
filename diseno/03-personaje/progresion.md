@@ -43,7 +43,7 @@ Cuando llegas al techo que permite la Frontera, la experiencia se convierte en *
 
 ## 5. Reputaciones
 
-- Una por asentamiento (sirve para el Sello), una por facción y varias de órdenes especiales (cazadores, eruditos, sanadores, mercaderes).
+- Una por asentamiento, una por facción y varias de órdenes especiales (cazadores, eruditos, sanadores, mercaderes).
 - Niveles: Hostil, Neutral, Amistoso, Honorable, Reverenciado, Exaltado.
 - Dan recetas, monturas, apariencias y misiones.
 - **Progreso de cuenta:** la reputación se comparte entre tus personajes (como las *Warbands* de WoW desde 2024).

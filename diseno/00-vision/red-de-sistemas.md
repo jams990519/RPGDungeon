@@ -24,7 +24,7 @@ flowchart LR
   C --> CO[Construcción]
   EQ --> CB[Combate y contenido]
   CB --> F
-  CB --> P[Progresión<br>niveles, Sellos,<br>maestrías]
+  CB --> P[Progresión<br>niveles, Frontera,<br>maestrías]
   P --> CB
   P --> C
   CO --> CI[Ciudades y Castillo]

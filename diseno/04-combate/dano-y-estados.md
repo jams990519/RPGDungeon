@@ -14,7 +14,7 @@
 | **Elemental** | Fuego · Escarcha · Naturaleza · Rayo | Fuego: quemaduras. Escarcha: congelación. Naturaleza: veneno |
 | **Mística** | Arcano · Sombra · Sagrado · Vacío | Sombra y Vacío: estrés y corrupción. Arcano: Quemadura de Maná en quien lo abusa |
 
-Cada tipo de armadura resiste distinto. Las placas frenan el corte pero no el contundente; el cuero frena la perforación a medias y deja pasar el fuego. **Elegir la armadura según el jefe del piso** es parte de la preparación, igual que llevar en el cinturón la **poción de resistencia** del tipo que más pega (ver [Ronda y acciones](ronda-y-acciones.md)). Los jefes tienen debilidades y resistencias por tipo, que el Bestiario va revelando (ver [Avisos y tácticas](avisos-y-tacticas.md)).
+Cada tipo de armadura resiste distinto. Las placas frenan el corte pero no el contundente; el cuero frena la perforación a medias y deja pasar el fuego. **Elegir la armadura según el jefe de la región** es parte de la preparación, igual que llevar en el cinturón la **poción de resistencia** del tipo que más pega (ver [Ronda y acciones](ronda-y-acciones.md)). Los jefes tienen debilidades y resistencias por tipo, que el Bestiario va revelando (ver [Avisos y tácticas](avisos-y-tacticas.md)).
 
 **Mitigación.** La armadura absorbe `def / (def + K)`, un porcentaje y no una resta (ver [Balance](../03-personaje/balance.md)).
 
@@ -30,12 +30,12 @@ En lugar de "35 % de probabilidad de envenenar", cada golpe **suma** a una barra
 | 🟢 **Veneno** | Daño por ronda durante 5 rondas y menos curación recibida | 💊 Antídoto; habilidades que curan veneno | El principio |
 | 🔥 **Quemadura** | Daño por ronda, y puede dejar una quemadura en una zona del cuerpo | 💊 Ungüento para quemaduras | El principio |
 | ❄️ **Congelación** | Pierde su siguiente turno y recibe más daño físico | 💊 Tónico caliente; recibir fuego | El principio |
-| 🟤 **Podredumbre** | Daño por ronda grande y largo, que necesita una cura específica. Alto riesgo de secuela | Solo su remedio propio (Alquimia de nivel alto) o una cura de enfermedad | Pisos altos |
-| 🌀 **Locura** | Pierde recurso y le sube el estrés. Un enemigo con locura ataca al azar durante una ronda | 💊 Sales de calma; habilidades que disipan | Pisos altos |
-| 💤 **Sueño** | Se salta turnos hasta que recibe daño | Recibir daño; un aliado lo despierta con Levantar | Pisos altos |
+| 🟤 **Podredumbre** | Daño por ronda grande y largo, que necesita una cura específica. Alto riesgo de secuela | Solo su remedio propio (Alquimia de nivel alto) o una cura de enfermedad | Anillos lejanos |
+| 🌀 **Locura** | Pierde recurso y le sube el estrés. Un enemigo con locura ataca al azar durante una ronda | 💊 Sales de calma; habilidades que disipan | Anillos lejanos |
+| 💤 **Sueño** | Se salta turnos hasta que recibe daño | Recibir daño; un aliado lo despierta con Levantar | Anillos lejanos |
 | ☠️ **Maldición** | Efecto propio de cada jefe, por ejemplo "muere en 5 rondas si no se disipa" | Disipar (habilidad de clase) o un pergamino de purificación (Inscripción) | Jefes |
 
-- **Capa simple primero.** En los primeros pisos solo aparecen los cuatro de arriba (sangrado, veneno, quemadura y congelación), que son los que se curan con lo que ya llevas en el cinturón. Los otros llegan con los pisos altos y los jefes.
+- **Capa simple primero.** En los primeros anillos solo aparecen los cuatro de arriba (sangrado, veneno, quemadura y congelación), que son los que se curan con lo que ya llevas en el cinturón. Los otros llegan con los anillos lejanos y los jefes.
 - **Quitar un estado gasta la ronda**, sea con un remedio de la 🎒 Mochila o con una habilidad. Por eso conviene vaciarlo antes de que reviente, no después.
 - **Disipar** magia, curar veneno y curar enfermedad lo tienen al menos 4 clases cada uno, y siempre hay un consumible fabricado que hace lo mismo (ver [Balance](../03-personaje/balance.md)).
 - La resistencia a los estados sale del equipo, los consumibles y el linaje (el Goblin resiste veneno).

@@ -2,7 +2,7 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Equipamiento](equipamiento.md), [Economía](../07-economia/economia.md) (Mercado Negro, monedas), [Jefes](../06-contenido/jefes.md), [Bestiario](../06-contenido/bestiario.md) · **Se conecta con:** [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Cacerías](../06-contenido/cacerias.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Gremios y social](../08-social/gremios-y-social.md), [Descubrimiento y colecciones](descubrimiento-y-colecciones.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Balance](balance.md) · **Estado:** propuesta
 
-> **Nota (D-58).** Los ejemplos todavía nombran pisos, tramos y Guardianes de piso, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) (el tier T1 a T10 sigue igual) y el Guardián como un jefe de mundo de ese anillo.
+> **Nota (D-58).** Ya no hay pisos ni tramos: los ejemplos usan la Lejanía y el anillo del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md). El tier de los objetos (T1 a T10) sigue igual y va con el anillo donde cae; el Guardián es el jefe de mundo de una región.
 
 Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra cosa. Este documento dice qué puede caer, de dónde, con qué probabilidad, cómo se reparte en grupo, cómo se muestra en un chat y cómo se evita que el mundo se llene de objetos sin valor.
 
@@ -33,7 +33,7 @@ Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra
    - Los jefes sueltan **artefactos**, que forja un artesano.
    - Las reliquias antiguas salen **rotas**, y las restaura un artesano.
 2. **Lo importante es seguro; lo divertido, al azar.** El Recuerdo, la Constancia (protección contra mala racha) y el Tesoro Semanal garantizan el progreso. El azar decide las sorpresas: una carta, una curiosidad, un afijo raro.
-3. **La rareza ensancha, no sube.** Un objeto raro cambia **cómo** juegas, no cuánto pegas. Dentro de un tramo, el mejor botín y la mejor fabricación tienen el mismo techo de Poder de Objeto (§4.1).
+3. **La rareza ensancha, no sube.** Un objeto raro cambia **cómo** juegas, no cuánto pegas. Dentro de un anillo, el mejor botín y la mejor fabricación tienen el mismo techo de Poder de Objeto (§4.1).
 4. **Todo se gasta, se desmonta o se dona.** Ningún objeto vive para siempre en el mercado (§9).
 
 **Amplio pero ligero** (D-44, en [Decisiones](../00-vision/decisiones.md)). La capa simple es ver el resumen del combate y seguir: el filtro por defecto vende lo común y muestra lo importante. Tasar, filtros propios, piezas malditas, conjuntos y restaurar reliquias son capas opcionales para quien las quiera.
@@ -54,11 +54,11 @@ Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra
 | 🔮 **Runas y esencias** | Runa de infusión, esencia de fuego, polvo arcano | Desencantar, élites Corruptos, cofres, jefes | Encantamiento de +1 a +4; también moneda de trueque | Encantamiento, Extracción de Esencias | Libre |
 | 🧪 **Consumibles** | Pociones, vendas, aceites de caza, cebos, comida | Cofres, mochilas de humanoides, pesca | Usarlos | Todos | Libre |
 | 🪙 **Oro** y ✨ **Esencia** | — | Oro: humanoides y contratos. Esencia: todo lo que se vence | Comerciar; mejorar equipo y maestrías | Todos | Oro libre; Esencia intransferible |
-| 🗝️ **Llaves y mapas del tesoro** | Llave de cripta, mapa rasgado del piso 33, Llave del Piso | Campeones, cofres, pesca, humanoides | Abrir cofres sellados, desenterrar tesoros, Mítica+ | Cartógrafo (descifra mapas), explorador | Libre; las Llaves del Piso, ligadas |
+| 🗝️ **Llaves y mapas del tesoro** | Llave de cripta, mapa rasgado de Lejanía 10, Llave de Mazmorra | Campeones, cofres, pesca, humanoides | Abrir cofres sellados, desenterrar tesoros, Mítica+ | Cartógrafo (descifra mapas), explorador | Libre; las Llaves de Mazmorra, ligadas |
 | 🃏 **Cartas del Mazo de Bestias** | Carta del Necrófago, carta dorada de un jefe | Cualquier monstruo (poco), jefes (más) | Duelos de cartas en la taberna, colección ([Minijuegos](../08-social/minijuegos-y-formatos-telegram.md)) | Coleccionistas, tahúres | Libre |
 | 🥚 **Mascotas y huevos de montura** | Huevo de wyrm, cría de lobo, mascota de duelo | Nidos, captura viva, jefes ocultos, pesca rara | Criar, domar, duelos de mascotas | Ganadería | Libre hasta que se doma |
 | 🎨 **Apariencias y tintes** | Apariencia de Pesadilla, tinte Azul Abismo, pigmento de cristal | Jefes en dificultades altas, cofres, plantas y criaturas raras | Transfiguración y moda | Sastrería (tintes) | Apariencias ligadas a la cuenta; tintes libres |
-| 🏺 **Piezas de arqueología** | Fragmento de vasija, sello antiguo | Excavaciones; el Anticuario del piso 64 | Completar objetos, colección, museo | Arqueología, Erudito | Libre |
+| 🏺 **Piezas de arqueología** | Fragmento de vasija, sello antiguo | Excavaciones; el Anticuario de Lejanía 19 | Completar objetos, colección, museo | Arqueología, Erudito | Libre |
 | 📜 **Libros y pergaminos de lore** | *Diario del Primer Superviviente, tomo II* | Humanoides cultos, bibliotecas en ruinas, cofres | Leer (colección de Libros), pistas del Gran Misterio, idiomas antiguos | Erudito, Inscripción | Libre |
 | 🔍 **Pistas de investigación** | Carta manchada, llave sin cerradura, muestra de sangre | Escenas de casos, humanoides, monstruos Enfermos (muestras) | Tablero de corcho, curas, jefes ocultos ([Investigaciones](../06-contenido/investigaciones.md)) | Detective, Médico, Erudito | Según el caso |
 | ☠️ **Reliquias malditas** | Hacha del Hambriento, Anillo del Avaro | Criptas, cofres de zona negra, piezas sin tasar | Poder con precio (§4.5) | Quien acepte el riesgo; sacerdotes | Libre; contrabando donde la ciudad lo prohíbe |
@@ -91,10 +91,10 @@ Probabilidades orientativas para zona amarilla y dificultad base. Las cambia el 
 | ⭐ **Élite** | Esencia ×2; despiece ×2 | Equipo hasta Épico (25 %) | Artefacto menor (2 %, con Constancia); gema o runa (10 %) | Fragmento de receta (2 %); carta rara (1 %) | — |
 | 🔷 **Campeones** (grupo de 3 a 5) | Lo de cada uno, más una **bolsa de grupo** | Bolsa: equipo hasta Épico (50 %) | Bolsa: llave o mapa del tesoro (5 %) | Bolsa: pieza sin tasar de brillo intenso (2 %) | — |
 | 🏷 **Único con nombre** ([Bestiario](../06-contenido/bestiario.md), §8) | Trofeo; material exclusivo | Equipo Épico (50 %) | Artefacto menor (15 %, con Constancia) | Huevo o cría (1 %, si es bestia) | 1 vez por semana y personaje |
-| 🐗 **Jefe de campo** | Esencia ×5; materiales del tramo; partes rotas | Una pieza hasta Épico por personaje | Artefacto menor (20 %); plano (5 %) | Reliquia dañada (1 %); apariencia (2 %) | 1 vez por día y personaje |
-| 🐉 **Guardián del piso** | Esencia ×10; partes rotas; **Recuerdo** y **Sello** la primera vez | **Cofre del grupo:** un artefacto del Guardián cada 5 jugadores, y equipo del tramo | Plano del Guardián (10 %); carta de jefe (5 %) | Apariencia del Guardián (2 %) | Semanal |
+| 🐗 **Jefe de campo** | Esencia ×5; materiales del anillo; partes rotas | Una pieza hasta Épico por personaje | Artefacto menor (20 %); plano (5 %) | Reliquia dañada (1 %); apariencia (2 %) | 1 vez por día y personaje |
+| 🐉 **Guardián de región** | Esencia ×10; partes rotas; **Recuerdo** la primera vez | **Cofre del grupo:** un artefacto del Guardián cada 5 jugadores, y equipo del anillo | Plano del Guardián (10 %); carta de jefe (5 %) | Apariencia del Guardián (2 %) | Semanal |
 | 👁 **Jefe oculto** | Esencia ×10; título la primera vez | Artefacto propio del jefe (30 %, con Constancia) | Reliquia dañada (10 %); libro de lore (25 %) | Huevo de montura o mascota (2 %) | Semanal |
-| 🧱 **Muro** (pisos 25, 50 y 75) | Lo del Guardián ×2; Recuerdo de Muro (eliges entre 3) | Dos artefactos cada 5 jugadores | Plano de **conjunto** (15 %) | Apariencia y título únicos en Pesadilla | Semanal |
+| 🧱 **Gran Barrera** (propuesta) | Lo del Guardián ×2; Recuerdo de la Barrera (eliges entre 3) | Dos artefactos cada 5 jugadores | Plano de **conjunto** (15 %) | Apariencia y título únicos en Pesadilla | Semanal |
 
 **Los artefactos mayores solo los sueltan jefes**; los menores, también élites, Templados y únicos con nombre. Ninguno es un objeto terminado: es el ingrediente de un arma o armadura con técnica propia (ver [Equipamiento](equipamiento.md), §6).
 
@@ -105,8 +105,8 @@ Probabilidades orientativas para zona amarilla y dificultad base. Las cambia el 
 | 🪵 **De madera** | Campos 🟡 y tierras salvajes 🔴 | Consumibles, materiales, algo de oro | Ninguno |
 | ⛓ **De hierro** | Tierras salvajes 🔴 y laberintos | Equipo hasta Raro, gemas en bruto | Puede tener trampa |
 | 🥈 **De plata** | Tierras salvajes 🔴 y zonas negras ⚫ | Runas, esencias, gemas talladas, mapa del tesoro (5 %) | Trampa o mímico |
-| 🥇 **De oro** | Solo 🔴 y ⚫, uno por piso y día | Equipo hasta Legendario, pieza sin tasar (30 %), fragmento de receta (10 %) | Otros jugadores también lo buscan |
-| 🏰 **De mazmorra** | Tras cada jefe y al final | Equipo de temporada, Esencia, Llave del Piso | Ninguno |
+| 🥇 **De oro** | Solo 🔴 y ⚫, uno por región y día | Equipo hasta Legendario, pieza sin tasar (30 %), fragmento de receta (10 %) | Otros jugadores también lo buscan |
+| 🏰 **De mazmorra** | Tras cada jefe y al final | Equipo de temporada, Esencia, Llave de Mazmorra | Ninguno |
 | ⏱ **De reloj** (Mítica+) | Al terminar a tiempo | Una pieza más por cada nivel que sube la llave | Ninguno |
 | 🗝 **Sellado** | Se abre con su llave o se desentierra con un mapa | Botín de cofre de oro y una curiosidad garantizada | Suele estar en 🔴 o ⚫ |
 | 🪤 **Trampa** | Cualquier cofre de hierro o mejor | **Trampa:** aguja envenenada, gas, explosivo o alarma que llama a una patrulla. **Mímico:** un monstruo ([Bestiario](../06-contenido/bestiario.md), §2.2) | Siempre hay una pista en el texto |
@@ -129,7 +129,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 | 🎣 **Pesca** | Pescado | Algas, sal, perlas, conchas | Botella con mensaje (pista o mapa); cofre hundido (sin tasar) | Huevo de criatura acuática; reliquia dañada |
 | 🏺 **Arqueología** | Fragmentos | Pieza común completa | Pieza rara (monturas de hueso, juguetes antiguos) | Reliquia dañada; pieza del Gran Misterio |
 | 📯 **Jefe errante** ([Jefes](../06-contenido/jefes.md)) | **Una caja por participante** que hizo al menos una acción útil | Consumibles, Esencia, cartas comunes | Tintes y apariencias del jefe errante | Carta dorada del jefe errante |
-| 🌍 **Jefe semanal de servidor** | Según la contribución | Materiales del tramo | Artefacto (con Constancia) | Título de temporada para el gremio que más aportó |
+| 🌍 **Jefe semanal de servidor** | Según la contribución | Materiales del anillo | Artefacto (con Constancia) | Título de temporada para el gremio que más aportó |
 
 **Las cajas del jefe errante** se abren en el chat, a la vista: cada participante toca la suya y el resultado se edita en el mismo mensaje. Quien no hizo nada no recibe caja, así el chat no se llena de mirones.
 
@@ -137,7 +137,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 
 | Factor | Qué cambia | Ejemplo |
 |---|---|---|
-| **Tramo** | El tier de todo lo que cae (T1 a T10). Nunca cae algo de un tramo superior | Un lobo del piso 12 suelta pieles T2 |
+| **Anillo** | El tier de todo lo que cae (T1 a T10). Nunca cae algo de un anillo superior | Un lobo de Lejanía 4 (anillo II) suelta pieles T2 |
 | **Dificultad** | Cada escalón (Normal → Profundidades → Corrompido → Abismal → Pesadilla; en mazmorras, Heroica, Mítica y cada nivel de Mítica+) sube un 20 % la probabilidad de rareza y abre una rareza más | Legendario solo desde Abismal o Mítica, o en zonas 🔴 y ⚫ |
 | **Color de zona** | 🔵 no hay combate · 🟡 ×1 · 🔴 ×1,5 a la rareza y mejor calidad de material · ⚫ ×2 y **materiales que solo existen ahí** | El mismo élite da más en ⚫, pero ahí puedes perderlo todo ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md)) |
 | **Modificadores del monstruo** | Los del [Bestiario](../06-contenido/bestiario.md), §7: Élite, Templado, Enfermo (muestras), Blindado… | Un Blindado da más escamas |
@@ -170,7 +170,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 ```
 🔵 Hacha Dentada de la Roca   [PO 238]
 T3 · Raro · +0 · Mejoras 0/3
-Forjada por Tor el Fundidor ✒️ · despertada en el piso 23
+Forjada por Tor el Fundidor ✒️ · despertada en Lejanía 7
 +22 Fuerza
 Dentada: +10 % de acumulación de 🩸 Sangrado
 de la Roca: tu ⚓ Firmeza se llena un 15 % más rápido
@@ -184,7 +184,7 @@ Un objeto de botín se nombra **tipo + prefijo + sufijo**: "Hacha **Dentada** **
 - **Prefijos** (un adjetivo, que concuerda con el objeto): ofensivos.
 - **Sufijos** ("de…"): defensa y utilidad.
 - Como mucho, **2 prefijos y 2 sufijos**. Si hay dos, el nombre muestra el más fuerte.
-- Cada afijo sale con un valor dentro de su rango por tramo. Los números son chicos a propósito ([Balance](balance.md), §4).
+- Cada afijo sale con un valor dentro de su rango por anillo. Los números son chicos a propósito ([Balance](balance.md), §4).
 
 **Prefijos**
 
@@ -255,7 +255,7 @@ Solo salen en **herramientas** y **ropa de oficio** ([Profesiones](../07-economi
 ```
 🟢 Pico Paciente
 T4 · Poco común · Herramienta de Minería
-Forjado por Hilda ✒️ · despertado en el piso 36
+Forjado por Hilda ✒️ · despertado en Lejanía 11
 Paciente: +5 % de gemas en bruto por veta
 Durabilidad 60/60 · 2,8 kg · Libre
 ```
@@ -303,14 +303,14 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 | Material | De dónde | Qué le da al arma | Precio |
 |---|---|---|---|
-| **Hierro Negro** | Yacimiento único del piso 14 | +daño a la Postura | +15 % de peso |
-| **Cristal de cueva** | Tramo III, Cueva de Cristal | +Crítico | −20 % de durabilidad máxima |
-| **Acero Estelar** | Mineral estelar del tramo V | Equilibrado | Caro: sin precio en combate |
-| **Obsidiana** | Tierras volcánicas, tramo VIII | +acumulación de Sangrado | Cada reparación baja más la máxima |
-| **Roble Cantor** | Yacimiento único del piso 3 | Bastones y laúdes: +Celeridad | El fuego enemigo le quita durabilidad |
+| **Hierro Negro** | Yacimiento único de la Garganta de Hierro (Lejanía 4) | +daño a la Postura | +15 % de peso |
+| **Cristal de cueva** | Anillo III, Cueva de Cristal | +Crítico | −20 % de durabilidad máxima |
+| **Acero Estelar** | Mineral estelar del anillo V | Equilibrado | Caro: sin precio en combate |
+| **Obsidiana** | Tierras volcánicas, anillo VIII | +acumulación de Sangrado | Cada reparación baja más la máxima |
+| **Roble Cantor** | Yacimiento único de Lejanía 1 | Bastones y laúdes: +Celeridad | El fuego enemigo le quita durabilidad |
 | **Hueso de bestia** | Tundra | −20 % de peso | −5 % de daño base |
 
-**La cuenta.** Unos 20 tipos de arma, cada uno con su técnica, por 10 tramos, varios materiales, 24 afijos y 6 rarezas. Salen **millones** de combinaciones antes de contar encantamientos, gemas y únicos. Dos hachas T3 casi nunca son iguales.
+**La cuenta.** Unos 20 tipos de arma, cada uno con su técnica, por 10 anillos, varios materiales, 24 afijos y 6 rarezas. Salen **millones** de combinaciones antes de contar encantamientos, gemas y únicos. Dos hachas T3 casi nunca son iguales.
 
 ## 5. Únicos con historia y conjuntos
 
@@ -322,13 +322,13 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
   | Camino | Qué cae | Quién lo termina |
   |---|---|---|
-  | **Artefacto** | Un artefacto de jefe o de único con nombre | Un artesano con el rango del tramo |
-  | **Reliquia dañada** | Un objeto antiguo roto y sin tasar (arqueología, pesca, cofres sellados, jefes ocultos) | Un erudito lo identifica (§6) y un artesano lo restaura con materiales del tramo |
+  | **Artefacto** | Un artefacto de jefe o de único con nombre | Un artesano con el rango del anillo |
+  | **Reliquia dañada** | Un objeto antiguo roto y sin tasar (arqueología, pesca, cofres sellados, jefes ocultos) | Un erudito lo identifica (§6) y un artesano lo restaura con materiales del anillo |
   | **Recuerdo** | El Recuerdo de un Guardián (§7.5) | El Castillo, o un artesano |
 
 - **Nombre, historia y un efecto propio** que cambia cómo se juega, más 2 afijos fijos.
 - **Presupuesto parejo.** El efecto vale lo mismo que 2 afijos en el simulador ([Balance](balance.md), §3), y ningún único mueve un eje de la spec más de 3 puntos. Casi todos tienen un **precio**.
-- **Cada tramo tiene únicos para todos los roles y los cuatro tipos de armadura.** Ninguna spec se queda sin opciones.
+- **Cada anillo tiene únicos para todos los roles y los cuatro tipos de armadura.** Ninguna spec se queda sin opciones.
 - **Dos puestos a la vez**, como máximo.
 - **Ligado al equipar.** Hasta que alguien se lo pone, se comercia.
 - **En la arena clasificada** su efecto cuenta con peso limitado, como los afijos ([PvP](../06-contenido/pvp.md), §5).
@@ -337,73 +337,73 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 ### 5.2 Doce únicos
 
-**1. Arco de Colmillo Viejo** · T1 · Arco largo · Artefacto de Colmillo Viejo (piso 4) → Carpintería
+**1. Arco de Colmillo Viejo** · T1 · Arco largo · Artefacto de Colmillo Viejo (Lejanía 1) → Carpintería
 > *"Colmillo Viejo sobrevivió a cuarenta cazadores. El arco que hicieron con su colmillo todavía tira hacia la presa que huye."*
 - **Efecto:** apuntar a las piernas no tiene penalización de precisión.
 - **Precio:** no puedes apuntar a la cabeza.
 - **Cambia el juego:** eres quien no deja huir y quien atrasa al enemigo en la cola de iniciativa.
 
-**2. Caña de la Primera Lluvia** · T1 · Herramienta de Pesca · Reliquia dañada, pescada en el lago del piso 6 → Carpintería
+**2. Caña de la Primera Lluvia** · T1 · Herramienta de Pesca · Reliquia dañada, pescada en un lago de Lejanía 2 → Carpintería
 > *"Alguien pescaba en el Claro antes de que existiera el Claro. La caña sigue mojada, aunque no llueva."*
-- **Efecto:** con lluvia, 1 de cada 10 capturas es un cofre hundido del piso (sin tasar).
+- **Efecto:** con lluvia, 1 de cada 10 capturas es un cofre hundido de la zona (sin tasar).
 - **Precio:** con lluvia no sacas peces de tres estrellas.
 - **Cambia el juego:** el pescador sale justo cuando nadie más sale.
 
-**3. Rompecercas** · T2 · Maza a dos manos · Artefacto de Rompecercas (piso 13) → Herrería
+**3. Rompecercas** · T2 · Maza a dos manos · Artefacto de Rompecercas (Lejanía 4) → Herrería
 > *"Arrasó tres cosechas y once cercas. Dicen que la maza todavía huele a trigo pisado."*
 - **Efecto:** cada golpe a las piernas de un enemigo Grande o Enorme le baja también la Postura, como un golpe pesado.
 - **Precio:** −1 🔋 Aguante máximo.
 - **Cambia el juego:** sin ser tanque, abres la ventana de golpes críticos para todo el grupo.
 
-**4. Diapasón del Cantor** · T3 · Abalorio · Artefacto del Cantor de Cuarzo (piso 22) → Joyería
+**4. Diapasón del Cantor** · T3 · Abalorio · Artefacto del Cantor de Cuarzo (Lejanía 7) → Joyería
 > *"El gólem cantaba solo cuando nadie minaba. Si acercas el diapasón al oído, se oye una galería vacía."*
 - **Efecto:** una vez por combate, repites al 50 % la acción del aliado que actuó justo antes que tú en la cola.
 - **Precio:** usarlo es tu jugada de esa ronda y cuesta 1 🔋 Aguante.
 - **Cambia el juego:** premia mirar la cola de iniciativa ([Ronda y acciones](../04-combate/ronda-y-acciones.md), §6) y combinar con el grupo.
 
-**5. Remo del Barquero** · T4 · Bastón · Artefacto del Barquero Ahogado (piso 38) → Carpintería
+**5. Remo del Barquero** · T4 · Bastón · Artefacto del Barquero Ahogado (Lejanía 11) → Carpintería
 > *"Cobraba un objeto por cruzar. A los que no podían pagar, los cruzaba igual. Nunca dijo hacia qué orilla."*
 - **Efecto:** levantas a un aliado derribado **desde cualquier fila** y cambias de lugar con él: él pasa a tu fila y tú a la suya.
 - **Precio:** te llevas la herida que le tocaba por caer.
 - **Cambia el juego:** el que salva a otros con su propio cuerpo. El médico del grupo tendrá trabajo.
 
-**6. Amuleto del Sediento** · T5 · Cuello · Reliquia dañada de un cofre sellado de la tumba del piso 46 (puede salir maldita) → Joyería
+**6. Amuleto del Sediento** · T5 · Cuello · Reliquia dañada de un cofre sellado de una tumba de Lejanía 14 (puede salir maldita) → Joyería
 > *"Lo enterraron con el rey para que nunca le faltara agua. El rey se levantó igual, a buscarla."*
 - **Efecto:** cada vez que muere un enemigo en combate contigo, recuperas 1 🔋 Aguante.
 - **Precio:** tu Hidratación baja el doble ([Condiciones](../05-salud/condiciones.md)).
 - **Cambia el juego:** contra grupos esquivas mucho más, pero dependes del agua.
 
-**7. Garra de las Dunas** · T5 · Arma de una mano · **Recuerdo** del Guardián del Piso 45 ([Jefes](../06-contenido/jefes.md), §4)
+**7. Garra de las Dunas** · T5 · Arma de una mano · **Recuerdo** del Guardián del Mar de Dunas ([Jefes](../06-contenido/jefes.md), §4)
 > *"El Wyrm no tenía nido. Dormía bajo la arena que él mismo había vuelto vidrio."*
 - **Efecto:** técnica propia, *Barrido de Dunas*: arena que ciega a la vanguardia enemiga 2 rondas (−30 % de precisión).
 - **Precio:** reemplaza la técnica del arma, y la ronda siguiente tu fila no puede apuntar a partes (la arena tapa todo).
 - **Cambia el juego:** control defensivo para cualquier spec de vanguardia.
 
-**8. Velo de la Novia** · T6 · Capa · Artefacto de la Novia del Paso (piso 53) → Sastrería
+**8. Velo de la Novia** · T6 · Capa · Artefacto de la Novia del Paso (Lejanía 16) → Sastrería
 > *"Esperó en el paso cuarenta inviernos. El velo aprendió a esperar con ella."*
 - **Efecto:** si usas una respuesta y el golpe no llega, no pierdes el Aguante: lo recuperas la ronda siguiente. +2 de abrigo.
 - **Precio:** mientras lo llevas, solo puedes usar respuestas de esquivar y 🌀 Esquivar; nunca bloquear, desviar ni interrumpir.
 - **Cambia el juego:** perdona leer mal un aviso, pero te quita las reacciones que ayudan al grupo.
 
-**9. Corona Rota del Rey sin Corona** · T7 · Cabeza · Reliquia dañada (corona rota del Rey sin Corona, piso 68) → Arqueología la identifica, Joyería la restaura
+**9. Corona Rota del Rey sin Corona** · T7 · Cabeza · Reliquia dañada (corona rota del Rey sin Corona, Lejanía 20) → Arqueología la identifica, Joyería la restaura
 > *"Perdió el reino, el nombre y la cabeza. La corona perdió solo una punta, y todavía no lo perdona."*
 - **Efecto:** marcas a un enemigo para un **duelo de honor**. Mientras nadie más lo ataque, tú y él se hacen un 20 % más de daño.
 - **Precio:** si un aliado lo ataca, el duelo se rompe y haces un 10 % menos de daño durante 2 rondas.
 - **Cambia el juego:** en grupo, alguien se ocupa aparte de un invocado o de un adepto; solo, peleas cortas y arriesgadas.
 
-**10. Manto de Brasaviva** · T8 · Pecho de tela · Artefacto de Brasaviva (piso 73) → Sastrería
+**10. Manto de Brasaviva** · T8 · Pecho de tela · Artefacto de Brasaviva (Lejanía 22) → Sastrería
 > *"Renació tres veces. A la cuarta, alguien guardó una pluma antes de que el fuego terminara."*
 - **Efecto:** la primera vez por combate que quedas derribado, al final de la ronda renaces con el 20 % de vida, en llamas.
 - **Precio:** mientras ardes pierdes un 3 % de vida por ronda, hasta que un aliado gaste su ronda (🎒 Mochila) en apagar tus cenizas. En esa pelea no te pueden levantar con resurrección en combate.
 - **Cambia el juego:** una segunda oportunidad que obliga al grupo a cuidarte.
 
-**11. Cristalino del Pozo** · T9 · Abalorio · Artefacto del Ojo del Pozo (piso 89) → Joyería
+**11. Cristalino del Pozo** · T9 · Abalorio · Artefacto del Ojo del Pozo (Lejanía 26) → Joyería
 > *"El Ojo miraba hacia abajo. Nadie se atrevió a preguntar qué veía en el fondo."*
 - **Efecto:** ves también la **segunda** acción de cada enemigo en la cola, y la Locura no distorsiona sus avisos para ti.
 - **Precio:** +2 de estrés por cada ronda de combate.
 - **Cambia el juego:** guías al grupo en el Abismo Umbrío, y el bardo y el templo trabajan para ti.
 
-**12. Rama de la Dríade Sin Nombre** · T10 · Bastón · Artefacto del jefe oculto del piso 99 → Carpintería
+**12. Rama de la Dríade Sin Nombre** · T10 · Bastón · Artefacto del jefe oculto de Lejanía 29 → Carpintería
 > *"No tenía nombre porque nadie la había visto. Cuando la vieron, ya no quedaba nadie para ponérselo."*
 - **Efecto:** como tu jugada de la ronda, pasas a tu barra la mitad de un estado acumulado de un aliado (Sangrado, Veneno, Podredumbre…).
 - **Precio:** mientras la llevas no puedes beber pociones.
@@ -415,16 +415,16 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 - **Cuatro piezas** por conjunto, con un bono a las 2 y otro a las 4.
 - **Cada pieza tiene un afijo menos.** El bono paga esa diferencia: el presupuesto queda parejo.
-- **Se fabrican** con un **plano de conjunto** (Muros, bandas, reputación) y artefactos del tramo. Cada pieza la puede hacer un artesano distinto.
+- **Se fabrican** con un **plano de conjunto** (Grandes Barreras, bandas, reputación) y artefactos del anillo. Cada pieza la puede hacer un artesano distinto.
 - **Abiertos a cualquier spec** que use ese tipo de armadura. El bono premia una mecánica común (leer avisos, emboscar, bloquear), no una spec concreta.
 - Puedes llevar **dos bonos de 2 piezas** de conjuntos distintos, o **uno de 4**.
 
-| Conjunto | Tipo · tramo | Origen | 2 piezas | 4 piezas |
+| Conjunto | Tipo · anillo | Origen | 2 piezas | 4 piezas |
 |---|---|---|---|---|
-| **Atuendo del Cartógrafo Perdido** | Tela · T3 | Plano del Primer Muro (piso 25) | Los avisos enemigos te llegan con una pista más, como si tu conocimiento tuviera una ★ más | Cuando una respuesta tuya acierta, tu siguiente habilidad cuesta un 30 % menos de recurso |
+| **Atuendo del Cartógrafo Perdido** | Tela · T3 | Plano de la primera Gran Barrera | Los avisos enemigos te llegan con una pista más, como si tu conocimiento tuviera una ★ más | Cuando una respuesta tuya acierta, tu siguiente habilidad cuesta un 30 % menos de recurso |
 | **Pieles del Rastro** | Cuero · T2 | Plano de la Orden de Cazadores (rango Batidor) y artefactos menores de alfas | +10 % de piezas de tres estrellas al despiezar | Tu primera acción contra un enemigo que no te vio es crítica y lo **marca**: tu grupo ve su próxima acción |
-| **Baluarte del Primer Muro** | Placas · T3 | Plano del Primer Muro (piso 25) | La ⚓ Firmeza se llena un 15 % más rápido | Cuando bloqueas un golpe avisado, tu fila entera recibe un 20 % menos de ese golpe |
-| **Ajuar del Minero Viejo** | Ropa de oficio y pico · T4 | Plano de Herrería de herramientas (rango Experto) | Inmune a la Tos del Minero | Una vez por día "presientes" una veta: el mapa marca la mejor veta del piso durante 1 hora |
+| **Baluarte de la Primera Barrera** | Placas · T3 | Plano de la primera Gran Barrera | La ⚓ Firmeza se llena un 15 % más rápido | Cuando bloqueas un golpe avisado, tu fila entera recibe un 20 % menos de ese golpe |
+| **Ajuar del Minero Viejo** | Ropa de oficio y pico · T4 | Plano de Herrería de herramientas (rango Experto) | Inmune a la Tos del Minero | Una vez por día "presientes" una veta: el mapa marca la mejor veta de la región durante 1 hora |
 
 ## 6. Objetos sin identificar
 
@@ -437,7 +437,7 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 - **Nunca** lo común: no vale la pena tasarlo.
 - **Hasta el nivel 10**, nada cae sin tasar.
 
-Sin tasar ves el tipo, la ranura, el tramo, el peso y un **brillo**:
+Sin tasar ves el tipo, la ranura, el anillo, el peso y un **brillo**:
 
 | Brillo | Qué puede ser |
 |---|---|
@@ -473,14 +473,14 @@ Sin tasar ves el tipo, la ranura, el tramo, el peso y un **brillo**:
 | **Imitación** | 5 % | No sirve para pelear, pero es una **curiosidad** para el museo |
 | **Reliquia dañada** | 1 % | El comienzo de un único (§5) |
 
-- **Se puede vender sin tasar.** Comprar a ciegas es especular. Las bandas de precio por tramo y brillo ([Economía](../07-economia/economia.md), §3) impiden estafas y lavado de oro.
+- **Se puede vender sin tasar.** Comprar a ciegas es especular. Las bandas de precio por anillo y brillo ([Economía](../07-economia/economia.md), §3) impiden estafas y lavado de oro.
 - **Llevarla sin tasar a una zona negra** es arriesgado: si caes, otro se queda con la sorpresa.
 
 ### 6.5 Cómo se ve
 
 ```
 ❓ Yelmo desconocido   T3 · Cabeza · 2,1 kg
-✦ Brillo intenso · Cofre de oro, piso 27 (🔴)
+✦ Brillo intenso · Cofre de oro, Lejanía 8 (🔴)
 
 [📜 Usar pergamino (1)]   [🔮 Buscar tasador]
 [🏛 Tasador del Castillo] [🎲 Ponérmelo así]
@@ -508,7 +508,7 @@ No está maldito.
 ### 7.1 Lo personal y el cofre del grupo
 
 Todo botín de grupo tiene dos partes:
-- **Personal, siempre:** Esencia, despiece, el material de **cada parte rota por el grupo** (como en *Monster Hunter*, todos lo reciben), Recuerdo, Sello, lo nuevo para tus colecciones y tu tirada de Constancia.
+- **Personal, siempre:** Esencia, despiece, el material de **cada parte rota por el grupo** (como en *Monster Hunter*, todos lo reciben), Recuerdo, lo nuevo para tus colecciones y tu tirada de Constancia.
 - **Cofre del grupo:** el equipo comerciable y los artefactos de jefe. Se reparte según el modo del grupo:
 
 | Modo | Para quién | Cómo funciona |
@@ -556,8 +556,8 @@ Ver [Equipamiento](equipamiento.md), §9.
 
 | Fila | Qué la abre | Casillas 1 · 2 · 3 | Qué ofrece |
 |---|---|---|---|
-| ⚔️ **Grupo** | Mazmorras y Mítica+ | 1 · 4 · 8 completadas | Equipo de tu tramo, con la rareza de lo más difícil que hiciste |
-| 🐉 **Banda** | Jefes de banda, Guardianes y Muros | 2 · 4 · 6 jefes | Artefactos y planos |
+| ⚔️ **Grupo** | Mazmorras y Mítica+ | 1 · 4 · 8 completadas | Equipo de tu anillo, con la rareza de lo más difícil que hiciste |
+| 🐉 **Banda** | Jefes de banda, Guardianes y Grandes Barreras | 2 · 4 · 6 jefes | Artefactos y planos |
 | 🌍 **Mundo y oficio** | Profundidades, cacerías, expediciones, PvP, jefes de campo, **pedidos de la ciudad y exámenes de oficio** | 3 · 6 · 9 actividades | Materiales raros, tratados de conocimiento de oficio, aceleradores |
 
 - Cada casilla abierta muestra una recompensa. **Eliges una** de hasta 9.
@@ -567,7 +567,7 @@ Ver [Equipamiento](equipamiento.md), §9.
 ### 7.5 Recuerdos: lo determinista
 
 - La **primera victoria** de cada personaje contra cada Guardián da su **Recuerdo**, en el asalto o en el Eco. Siempre, sin tirada.
-- Se cambia por **una de dos piezas** icónicas del Guardián; en un Muro, por una de tres. Se puede guardar y elegir después.
+- Se cambia por **una de dos piezas** icónicas del Guardián; en una Gran Barrera, por una de tres. Se puede guardar y elegir después.
 - **Dos formas de cambiarlo:**
   - en el Castillo, al instante, en calidad Buena;
   - con un artesano, que lo usa como artefacto y forja la pieza con su calidad (puede salir Obra Maestra).
@@ -578,7 +578,7 @@ Ver [Equipamiento](equipamiento.md), §9.
 
 **De dónde sale.** Las tiradas extra de WoW.
 
-- Ganas **uno por semana** con la misión semanal del piso, y a veces en el Tesoro. Guardas 3 como mucho.
+- Ganas **uno por semana** con la misión semanal de la región, y a veces en el Tesoro. Guardas 3 como mucho.
 - Después de vencer a un jefe puedes gastar uno para **tirar otra vez** tu parte personal y tu parte del cofre en modo personal.
 - Si no sale nada útil, te devuelve Esencia y suma Constancia.
 - Es ligado y no se compra.
@@ -620,7 +620,7 @@ Ver [Equipamiento](equipamiento.md), §9.
 - **Un mensaje nuevo solo si importa.** El resumen va en el mismo mensaje vivo del combate. Solo un Legendario, una Reliquia o un artefacto mandan un mensaje aparte, para que suene la notificación.
 
 ```
-✅ Victoria · Campamento kóbold (piso 23 · 🔴)
+✅ Victoria · Campamento kóbold (Lejanía 7 · 🔴)
 9 rondas · 6 enemigos
 
 ✨ +214 Esencia (sin depositar: 1.380 ⚠️ zona roja)
@@ -660,13 +660,13 @@ Ver [Equipamiento](equipamiento.md), §9.
 | **Zonas negras** | Lo que llevas puesto | Al caer, cada objeto puede destruirse en lugar de quedar en el suelo |
 | **Desmontar** | Equipo viejo o repetido | Devuelve entre el 30 y el 50 % del material |
 | **Desencantar** | Objetos mágicos | Los convierte en esencias |
-| **Mercado Negro** | Equipo de tramos viejos | Tiene una **reserva por tramo**. Los monstruos solo sueltan equipo de esa reserva: si se vacía, sueltan más materiales; si sobra, retira lo más viejo y lo destruye |
+| **Mercado Negro** | Equipo de anillos viejos | Tiene una **reserva por anillo**. Los monstruos solo sueltan equipo de esa reserva: si se vacía, sueltan más materiales; si sobra, retira lo más viejo y lo destruye |
 | **Venta automática a PNJ** | Comunes | Se destruyen al venderse |
 | **Fabricar** | Artefactos, gemas, runas, fragmentos | Se consumen |
 | **Museo y sala de trofeos** | Curiosidades, Reliquias rotas, trofeos | Salen del mercado para siempre |
 | **Rituales** | Piezas malditas | Purificar cuesta un porcentaje del valor |
 
-**Se mide.** El informe económico mensual ([Economía](../07-economia/economia.md), §9) cuenta, por tramo y por rareza, cuántos objetos se crearon y cuántos se destruyeron. Si durante dos meses se crean más Épicos de los que se destruyen en un tramo, baja la tasa de rareza de sus tablas. Nunca se toca lo que ya tienen los jugadores.
+**Se mide.** El informe económico mensual ([Economía](../07-economia/economia.md), §9) cuenta, por anillo y por rareza, cuántos objetos se crearon y cuántos se destruyeron. Si durante dos meses se crean más Épicos de los que se destruyen en un anillo, baja la tasa de rareza de sus tablas. Nunca se toca lo que ya tienen los jugadores.
 
 ### 9.2 Por qué lo raro sigue valiendo
 
@@ -674,20 +674,20 @@ Ver [Equipamiento](equipamiento.md), §9.
   ```
   🟡 Garra de las Dunas · n.º 37 del servidor
   Forjada por Lisbeth la Herrera ✒️ con el Recuerdo de Bram
-  Portadores: Bram (pisos 45-52) · Kira (desde el 53)
-  Venció a 3 Guardianes · Cayó en ⚫ en el piso 51; la recuperó Kira
+  Portadores: Bram (Lejanía 13-15) · Kira (desde Lejanía 16)
+  Venció a 3 Guardianes · Cayó en ⚫ en Lejanía 15; la recuperó Kira
   ```
-- **Lo raro ensancha.** Un Legendario no te vuelve intocable: te da opciones. Por eso sigue sirviendo cuando subes de tramo: para un personaje alterno, para la sala de trofeos, para el museo.
+- **Lo raro ensancha.** Un Legendario no te vuelve intocable: te da opciones. Por eso sigue sirviendo cuando pasas de anillo: para un personaje alterno, para la sala de trofeos, para el museo.
 - **Nada de mejoras al azar** sobre objetos ya ganados, por la lección del forjado de titanes. Un objeto sale como sale, y se mejora con Mejoras y Encantamiento, que cuestan.
 - **Bandas de precio** ([Economía](../07-economia/economia.md), §3): nadie vende un Legendario a 1 de oro a su cuenta alterna.
-- **Primeros del servidor.** El primer Legendario de cada tramo y la primera restauración de cada Reliquia salen en la Gaceta y en el Registro de descubridores ([Descubrimiento y colecciones](descubrimiento-y-colecciones.md), §1).
+- **Primeros del servidor.** El primer Legendario de cada anillo y la primera restauración de cada Reliquia salen en la Gaceta y en el Registro de descubridores ([Descubrimiento y colecciones](descubrimiento-y-colecciones.md), §1).
 
 ## 10. Cómo se ve en Telegram: el botín de un Guardián
 
-Grupo de 5 armado por el buscador. Acaban de vencer al **Guardián del Piso 45, Wyrm de las Dunas** ([Jefes](../06-contenido/jefes.md), §4), con la cola y las alas rotas. Cada uno recibe su parte personal por privado; el cofre del grupo se reparte en la sala.
+Grupo de 5 armado por el buscador. Acaban de vencer al **Wyrm de las Dunas, Guardián del Mar de Dunas** ([Jefes](../06-contenido/jefes.md), §4), con la cola y las alas rotas. Cada uno recibe su parte personal por privado; el cofre del grupo se reparte en la sala.
 
 ```
-🏆 Guardián del Piso 45 · Wyrm de las Dunas · VENCIDO
+🏆 Guardián del Mar de Dunas · Wyrm de las Dunas · VENCIDO
 Asalto · 5 jugadores · 23 rondas · partes rotas: cola, alas
 
 Tu parte (Ossian)
@@ -754,7 +754,7 @@ Empate. Vuelven a tirar Lyra y Ossian.
 
 ## Preguntas para el dueño
 
-1. ¿Se puede vender un objeto sin tasar (especular a ciegas)? **Propuesta:** sí, con bandas de precio por tramo y brillo.
+1. ¿Se puede vender un objeto sin tasar (especular a ciegas)? **Propuesta:** sí, con bandas de precio por anillo y brillo.
 2. ¿Dos únicos equipados a la vez, o uno? **Propuesta:** dos.
 3. ¿Se permite la subasta de gremio en oro? Puede servir para lavar oro. **Propuesta:** sí, con porcentaje quemado y bandas de precio.
 4. ¿Una Reliquia rota se puede reforjar, o solo va al museo? **Propuesta:** se puede reforjar con un artefacto nuevo del mismo origen.
