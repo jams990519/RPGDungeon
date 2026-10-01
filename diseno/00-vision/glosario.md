@@ -21,7 +21,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Capital regional** | Asentamiento principal de una región, en un lugar clave (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Claro** | El lugar vacío donde empieza cada fundación. **El Claro** (con mayúscula) es la zona `(0, 0)`, Lejanía 0, donde despiertan los Errantes | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Derribado / caído** | 0 de vida: 3 rondas para ser levantado, y después cae | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
-| **Despensa** | La comida guardada de un asentamiento: la del Claro desde aldea y la de cada campamento desde el nivel 3. Se llena con **🌾 Aportar comida** (🍖 carne de las bestias, 🥖 provisiones del mercader) y la comen cada día sus residentes activos. Se mide en días que alcanza: abundancia, holgada, justa, escasez y hambruna (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 |
+| **Despensa** | La comida guardada de un campamento de jugadores desde el nivel 3 (el Claro no tiene: no tiene dueño, D-95). Se llena con **🌾 Aportar comida** (🍖 carne de las bestias, 🥖 provisiones del mercader) y la comen cada día sus residentes activos. Se mide en días que alcanza: abundancia, holgada, justa, escasez y hambruna (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 |
 | **Eco** | Copia de un héroe manejada por sus Tácticas (para invocaciones y arena asíncrona) | [Jefes](../06-contenido/jefes.md) |
 | **Eco del Guardián** | El Guardián de una región ya pacificada, en instancia para quien llega después | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Encargo** | Misión con temporizador que se encola | [Misiones](../06-contenido/misiones-y-exploracion.md) |
@@ -34,7 +34,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Frontera (la)** | Hasta dónde llega el mundo explorado y pacificado del servidor; cada región nueva pasa por cuatro fases | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Grandes Barreras** | Propuesta: ciertos anillos que piden un Guardián mayor y una obra común para seguir | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Guardián** | El jefe de mundo de cada región (D-08) | [Jefes](../06-contenido/jefes.md) |
-| **Hambruna** | El estado de una despensa con menos de 1 día de comida: en el Claro la posada no cura y la obra no sube; un campamento no puede crecer. Nunca quita etapas, niveles ni zonas (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4.7 |
+| **Hambruna** | El estado de una despensa con menos de 1 día de comida: el campamento no puede crecer. Nunca quita etapas, niveles ni zonas (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4.7 |
 | **Jornada** | Sesión de trabajo en una obra, con minijuego | [Sistema de construcción](../09-construccion/sistema-de-construccion.md) |
 | **Juramento de Hierro** | Modo opcional de muerte permanente | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Karma (verde, naranja, rojo)** | Estado de un jugador según si atacó o mató a inocentes | [PvP](../06-contenido/pvp.md) |

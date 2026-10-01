@@ -34,7 +34,7 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 - **Cada etapa baja 1 🥉 el precio de la posada,** hasta un mínimo de 1 (`settlement.inn_discount_per_stage`).
 - **El Claro ocupa 1 zona más por etapa** (D-81). Crece en una espiral fija: norte, este, sur, oeste y las diagonales.
 - **Una etapa ganada no se pierde.** Hoy el Claro nunca baja.
-- **Desde aldea, también hace falta comida** (D-93, provisional): para pasar a pueblo, ciudad y castillo, la despensa del Claro tiene que alcanzar 4, 5 y 7 días; si la obra está completa y falta comida, la etapa espera y sube sola al aportar. En hambruna la posada no cura. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
+- **El Claro no se mantiene** (D-95, confirmada por el dueño): es el campamento principal del mapa y no tiene dueño, así que no tiene despensa ni otros mínimos; sube solo con la obra común pagada. La comida (D-93) es solo para los campamentos de jugadores. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
 
 ### 1.2 Lo que ofrece el Claro
 
