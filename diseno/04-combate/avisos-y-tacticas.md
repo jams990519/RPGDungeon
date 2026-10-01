@@ -37,8 +37,8 @@ Defenderse cuesta la ronda (esa vez no atacas) y Aguante. Por eso no conviene de
 ### Los avisos que mienten (a propósito)
 
 Elden Ring es difícil porque sus jefes **retrasan** los golpes. Aquí pasa lo mismo:
-- **Retraso.** "*Levanta el hacha… y la sostiene.*" Si usas tu respuesta en esta ronda, gastas la ronda y el Aguante, y el golpe cae en la siguiente, cuando ya no te queda. Hay que esperar.
-- **Combo.** El mismo aviso anuncia tres golpes en tres rondas. Contestar los tres con respuestas cuesta 3 🔋 y tres rondas sin atacar; una poción de resistencia los cubre con una sola ronda. Quien esquiva el primero y se relaja, cae en el segundo.
+- **Retraso.** "*Levanta el hacha… y la sostiene.*" Si usas tu respuesta en esta ronda, gastas la ronda y el Aguante en vano, y el golpe cae en la siguiente: hay que volver a pagar, con menos 🔋. Hay que esperar.
+- **Combo.** El mismo aviso anuncia tres golpes en tres rondas. Contestar los tres con respuestas cuesta 3 🔋 y tres rondas sin atacar; una poción de resistencia baja el daño de los tres y solo cuesta una ronda. Quien esquiva el primero y se relaja, cae en el segundo.
 - **Finta.** En las fases avanzadas, el jefe amaga y cambia de objetivo. Siempre deja una pista en el texto para quien lee con atención.
 
 ### Cómo se ve

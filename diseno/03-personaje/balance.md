@@ -15,10 +15,10 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 | # | Problema | Evidencia | Qué hacemos aquí |
 |---|---|---|---|
 | 1 | **Specs que dominan el meta** | Temporada 1 de *Midnight*: Reprensión y Mago de Escarcha arriba en M+; Mago de Fuego al fondo | Presupuesto de poder por spec, simulador y objetivos numéricos (§2 y §3) |
-| 2 | **Tanques desiguales** | Temporada 1 de *Midnight*: en llaves altas dominó el Maestro Cervecero y el resto casi no aparecía | Mismos objetivos de mitigación y autonomía para los 6 tanques |
-| 3 | **"Impuesto híbrido"** | Durante años las clases puras pegaron más por diseño; en *Icecrown Citadel* el Sacerdote Sombra rendía un 6 % menos a propósito | La unidad de balance es la **spec**, no la clase: mismo rol, mismo objetivo |
+| 2 | **Tanques desiguales** | Temporada 1 de *Midnight*: en llaves altas dominó el Maestro Cervecero y el resto casi no aparecía | Mismos objetivos de mitigación y autonomía para las 11 specs de Defensa |
+| 3 | **"Impuesto híbrido"** | Durante años las clases puras pegaron más por diseño; en *Icecrown Citadel* el Sacerdote Sombra rendía un 6 % menos a propósito | La unidad de balance es la **spec**, no la clase: mismo rol, mismo objetivo. Además, aquí todas las clases son híbridas (3 roles cada una, 4 el Druida) |
 | 4 | **Utilidades obligatorias** | Ansia de Sangre fue exclusiva del Chamán hasta 2010, y hoy los grupos siguen buscando "lust" y resurrección en combate | Cada utilidad clave la tienen 4 o más clases **y** un consumible fabricado. Ninguna clase es obligatoria |
-| 5 | **Apoyo que se apila** | El Evocador de Aumentación apilado permitió matar un jefe Mítico en unos 30 s. Blizzard admitió que "su contribución es demasiado impactante" | Los efectos de apoyo del mismo tipo **no se suman**, con tope de un apoyo por grupo en contenido clasificado |
+| 5 | **Apoyo que se apila** | El Evocador de Aumentación apilado permitió matar un jefe Mítico en unos 30 s. Blizzard admitió que "su contribución es demasiado impactante" | Los efectos de Soporte de la **misma familia** no se suman sobre el mismo objetivo: queda el más fuerte (regla 5) |
 | 6 | **Control encadenado en PvP** | El sistema de rendimientos decrecientes se reescribió en 12.0 para dar inmunidad tras 2 aplicaciones | **Firmeza** desde el primer día (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)) |
 | 7 | **Sanadores inmortales o inútiles en arena** | WoW baja la curación a medida que avanza la partida ("dampening") | Amortiguación de curación por ronda en PvP |
 | 8 | **Inflación de números** | En *Shadowlands* hubo que comprimirlo todo (nivel 120 → 50) porque el daño iba camino a los miles de millones | Números chicos desde el diseño (§4) |
@@ -26,11 +26,11 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 | 10 | **Raciales de combate** | Humano, Orco y No-muerto en PvP (ver [Creación](creacion-de-personaje.md)) | Ninguna racial toca el combate |
 | 11 | **Suerte con el botín** | Semanas sin el objeto que necesitas; el Gran Tesoro semanal nació para paliarlo | Protección contra mala racha y recompensas deterministas de jefe (ver [Equipamiento](equipamiento.md)) |
 | 12 | **Apilar clases en banda** | *Sunwell* (TBC) y los Evocadores de Aumentación | Aportes de grupo que no se suman y jefes diseñados para composiciones libres |
-| 13 | **Botoneras enormes** | Rotaciones de más de 20 habilidades, que *Midnight* tuvo que podar | **8 botones por combate**, nunca más |
+| 13 | **Botoneras enormes** | Rotaciones de más de 20 habilidades, que *Midnight* tuvo que podar | **6 botones por combate** (D-46): Atacar, 3 habilidades, Huir y Mochila. Nunca más |
 
 ## 2. Las reglas que no se negocian
 
-1. **La spec es la unidad de balance.** Se compara Protección con Sangre y con Venganza, no Guerrero con Caballero de la Muerte.
+1. **La spec es la unidad de balance, y se compara dentro de su rol.** Hay cuatro roles: ⚔ Ataque (15 specs), 🛡 Defensa (11), ✚ Curación (8) y ✦ Soporte (12) (ver [Clases](clases-y-especializaciones.md)). Se compara Protección con Sangre, Bestias y Legión, no Guerrero con Caballero de la Muerte. Entre roles distintos no se comparan números sueltos: se compara el grupo completo (§3).
 
 2. **Presupuesto de poder de 100 puntos por spec**, repartido en seis ejes:
 
@@ -40,21 +40,44 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
    | Ráfaga | Daño en una ventana corta (3 rondas) |
    | Supervivencia | Mitigación, autocuración, defensivos |
    | Control | Aturdir, silenciar, interrumpir, retrasar iniciativa |
-   | Utilidad de grupo | Aportes, curas externas, resurrección, disipar |
+   | Utilidad de grupo | Aportes, curas externas, escudos, potenciar aliados, debilitar enemigos, resurrección, disipar |
    | Autonomía | Qué tan bien juega en solitario (misiones, Profundidades, expediciones) |
 
    - Cada spec suma 100 ± 3.
    - Ningún eje pasa de 35 ni baja de 5.
    - El perfil de cada spec se publica en la guía del juego como un gráfico de radar: el jugador sabe qué eligió.
+   - El reparto cambia según el rol, pero la suma es la misma para todos:
 
-3. **Kit mínimo garantizado.** Toda spec tiene una interrupción (o algo equivalente), un defensivo mayor, un defensivo menor o autocuración, un control, una forma de reposicionarse o escapar, y un aporte de grupo. En WoW hubo clases que pasaron expansiones enteras sin interrupción o sin defensivos.
+   | Rol | Ejes altos | Ejes bajos |
+   |---|---|---|
+   | ⚔ Ataque | Daño sostenido, Ráfaga, Autonomía | Utilidad de grupo |
+   | 🛡 Defensa | Supervivencia, Control | Ráfaga, Autonomía |
+   | ✚ Curación | Utilidad de grupo (curas), Supervivencia | Daño, Autonomía |
+   | ✦ Soporte | Utilidad de grupo (potenciar y debilitar), Control | Ráfaga |
 
-4. **Autonomía mínima.** Toda spec puede hacer sola el contenido en solitario (misiones, encargos, Profundidades normales). Sanadores y tanques tienen un **modo en solitario** automático que convierte parte de su curación o mitigación en daño cuando juegan solos. Es crítico en Telegram, donde mucha gente juega sola a la hora que puede.
+3. **Kit mínimo garantizado.** Toda spec tiene en su repertorio una interrupción (o algo equivalente), un defensivo mayor, un defensivo menor o autocuración, un control, una forma de reposicionarse o escapar, y un aporte de grupo. En WoW hubo clases que pasaron expansiones enteras sin interrupción o sin defensivos. Con la barra de 6 (D-46) no todo cabe a la vez: elegir qué llevar es parte del juego, pero toda clase tiene al menos una habilidad que **responde a los avisos** (bloquear, esquivar, escudo, cambiar de fila), y la configuración inicial de cada spec la trae puesta.
+
+4. **Autonomía por rol (D-50).** Toda spec puede hacer sola el contenido en solitario (misiones, encargos, Profundidades normales). Lo que cambia es **cuánto tarda**, medido contra la mediana de las specs de Ataque en los mismos escenarios:
+
+   | Rol | Tiempo para terminar (objetivo) | Margen aceptado | Cómo se sostiene solo |
+   |---|---|---|---|
+   | ⚔ Ataque | 1× (la referencia) | 0,9× a 1,1× | Mata rápido; se cubre con su respuesta al aviso y el cinturón |
+   | ✦ Soporte | ~1,25× (algo más lento) | 1,15× a 1,35× | Sus potenciaciones también cuentan para él y su compañero |
+   | 🛡 Defensa | ~1,5× | 1,4× a 1,6× | Casi no cae; el modo en solitario devuelve parte de lo que bloquea como daño |
+   | ✚ Curación | ~2× (el doble) | 1,8× a 2,2× | Se cura a sí mismo; el modo en solitario pasa parte de la curación a daño |
+
+   - **Siempre posible:** con juego básico (las Tácticas por defecto), toda spec gana al menos el 90 % de las peleas del contenido en solitario de su tramo. Un rol puede tardar más; nunca puede quedarse atascado.
+   - **Modo en solitario:** se enciende solo cuando no hay otro jugador en la pelea (con compañero PNJ o sin él) y se apaga en cuanto entra uno. No existe en grupo ni en PvP. Es crítico en Telegram, donde mucha gente juega sola a la hora que puede.
+   - **La compensación está en el grupo:** Defensa y Curación son los roles más buscados, y el buscador les da una recompensa extra cuando faltan (la *Llamada a las armas*, ver [Clases](clases-y-especializaciones.md)).
+   - Como toda clase tiene una spec de Ataque y cambiar de spec es gratis en un asentamiento, **ninguna clase** queda atada a un rol lento en solitario.
 
 5. **Aportes de grupo equivalentes y no acumulables.** Cada clase aporta un efecto de grupo de valor parecido (alrededor del 3 % del rendimiento del grupo), y dos del mismo tipo no se suman.
+   - **Los efectos de Soporte van aparte**, porque son el trabajo de un rol entero, y siguen la **regla de familias**: cada efecto pertenece a una familia (Potenciar, Proteger, Debilitar, Controlar o Reabastecer) y dos de la misma familia **no se suman sobre el mismo objetivo**: queda el más fuerte.
+   - Así, dos Evocadores de Aumentación no pueden apilarse sobre el mismo atacante (el problema 5 de WoW), pero un Pícaro Forajido (Potenciar) y un Brujo de Aflicción (Debilitar) sí trabajan juntos.
+   - No hay tope de soportes por grupo: el simulador comprueba que un grupo con 3 soportes rinde menos que uno equilibrado, porque el soporte multiplica un daño que tiene que existir.
 
 6. **Utilidades clave compartidas, más un consumible fabricado:**
-   - **Clamor** (el "lust"): +30 % de iniciativa y una acción rápida extra durante 3 rondas, una vez por pelea. Lo tienen Chamán, Mago, Cazador, Evocador y Bardo, y también los Tambores de Guerra (Peletería).
+   - **Clamor** (el "lust"): +30 % de iniciativa y enfriamientos al doble de velocidad durante 3 rondas, una vez por pelea. Lo tienen Chamán, Mago, Cazador, Evocador y Bardo, y también los Tambores de Guerra (Peletería).
    - **Resurrección en combate** (cargas compartidas por pelea): Caballero de la Muerte, Druida, Brujo, Paladín y Nigromante, más las Sales de Reanimación (Medicina) y el Desfibrilador (Ingeniería).
    - **Disipar magia, curar veneno, curar enfermedad**: cada una la tienen al menos 4 clases.
 

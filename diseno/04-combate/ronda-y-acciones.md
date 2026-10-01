@@ -90,7 +90,7 @@ Ejemplos de respuestas que comparten todas las specs de cada clase. Los specs de
 
 | Clase | Respuestas de ejemplo |
 |---|---|
-| Guerrero | 🛡 *Bloqueo con escudo* (cubre la fila) · 🔁 *Intervenir* (salta delante de un aliado y recibe su golpe) |
+| Guerrero | 🤺 *Parada* · 🔁 *Intervenir* (salta delante de un aliado y recibe su golpe). Protección suma 🛡 *Bloqueo con escudo*, que cubre la fila |
 | Paladín | 🛡 *Escudo Divino* · 🫧 *Bendición de Protección* (un aliado no recibe daño físico esa ronda) |
 | Cazador | 💨 *Separación* (salta a la retaguardia y esquiva) · 🔁 *Proteger al amo* (la mascota se pone delante) |
 | Pícaro | 💨 *Evasión* · 🤺 *Réplica* |
@@ -106,7 +106,7 @@ Ejemplos de respuestas que comparten todas las specs de cada clase. Los specs de
 | Nigromante | 🛡 *Muro de Huesos* (un esqueleto recibe el golpe) · 💨 *Paso Espectral* |
 | Bardo | 💨 *Paso de Baile* (esquiva y cambia de fila) · 🫧 *Nota Sostenida* (escudo sonoro al grupo) |
 
-Los nombres y números finales viven en [Clases](../03-personaje/clases-y-especializaciones.md). El [Balance](../03-personaje/balance.md) exige a cada spec un defensivo mayor, uno menor y una forma de reposicionarse: con eso, toda clase llega a cualquier aviso con algo que contestar.
+Los nombres y números finales viven en [Clases](../03-personaje/clases-y-especializaciones.md). El [Balance](../03-personaje/balance.md) exige a cada spec un defensivo mayor, uno menor (o autocuración) y una forma de reposicionarse o escapar: con eso, toda clase llega a cualquier aviso con algo que contestar.
 
 ## 4. El cinturón: la Mochila en combate
 
