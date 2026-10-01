@@ -1,0 +1,88 @@
+# Classes playable in version 0.1 (three roles: defense, attack, healing).
+# [ES] Clases de la versión 0.1. Cada una tiene Atacar + 3 habilidades (D-46),
+# al menos una "respuesta" defensiva, y un recurso propio.
+# Para qué sirve: definir las clases como datos; agregar una clase no requiere programar.
+# Lo usan: engine/classes, engine/combat, engine/hero.
+# Si cambias esto, revisa: los IDs son estables (nunca se renombran);
+# cambiar números mueve el balance (anotarlo en el registro de balance).
+# Campos de habilidad: kind = strike | heal | response | dot | interrupt | finisher.
+#   response: block (frena value del golpe) | dodge (evita golpes esquivables) | shield (escudo de value × vida máx.)
+
+guerrero:
+  name_key: class.guerrero.name
+  role_key: class.guerrero.role
+  resource: ira
+  resource_start: 0
+  resource_max: 100
+  resource_regen: 0
+  base: {hp: 135, attack: 11, armor: 0.20, initiative: 9}
+  per_level: {hp: 15, attack: 1.4}
+  attack: {power: 1.0, gain: 15}
+  abilities:
+    - id: golpe_heroico
+      kind: strike
+      cost: 30
+      power: 1.9
+    - id: bloqueo_escudo
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+      gain: 10
+    - id: segundo_aliento
+      kind: heal
+      cost: 40
+      value: 0.25
+      cooldown: 4
+
+picaro:
+  name_key: class.picaro.name
+  role_key: class.picaro.role
+  resource: energia
+  resource_start: 100
+  resource_max: 100
+  resource_regen: 20
+  base: {hp: 105, attack: 13, armor: 0.10, initiative: 14}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {power: 1.0, gain: 0, combo: 1}
+  abilities:
+    - id: eviscerar
+      kind: finisher
+      cost: 35
+      power: 0.6
+      per_combo: 0.55
+    - id: evasion
+      kind: response
+      response: dodge
+      stamina: 1
+    - id: patada
+      kind: interrupt
+      cost: 25
+      power: 0.4
+      cooldown: 3
+
+sacerdote:
+  name_key: class.sacerdote.name
+  role_key: class.sacerdote.role
+  resource: mana
+  resource_start: 60
+  resource_max: 100
+  resource_regen: 4
+  base: {hp: 100, attack: 10, armor: 0.05, initiative: 10}
+  per_level: {hp: 11, attack: 1.3}
+  attack: {power: 0.95, gain: 9}
+  abilities:
+    - id: sanar
+      kind: heal
+      cost: 30
+      value: 0.32
+    - id: escudo_de_luz
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+    - id: dolor
+      kind: dot
+      cost: 20
+      power: 0.55
+      rounds: 3

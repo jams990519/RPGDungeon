@@ -1,0 +1,38 @@
+# Tunable numbers. Every change here goes to the balance log with its reason.
+# [ES] Números de balance ajustables. Cada cambio se anota en el registro de balance con su motivo.
+# Lo usan: engine/combat, engine/world, engine/service.
+
+combat:
+  stamina_max: 5          # [ES] Aguante máximo (fichas)
+  crit_chance: 0.10
+  crit_mult: 1.5
+  damage_spread: [0.9, 1.1]
+  partial_block: 0.3      # [ES] bloquear un golpe no bloqueable frena solo esto
+  dodge_basic: 0.5        # [ES] 🌀 Esquivar básico: la mitad del daño
+  flee_base: 0.55
+  flee_per_initiative: 0.03
+  flee_min: 0.2
+  flee_max: 0.9
+  toxicity_max: 100
+
+travel:
+  near_claro_factor: 0.6     # [ES] alrededor del Claro hay senderos: se viaja más rápido
+  unknown_zone_factor: 1.25  # [ES] ir a una zona que nadie descubrió tarda más
+  level_per_lejania: 0.9     # [ES] nivel de la zona = 1 + Lejanía × esto
+
+explore:
+  minutes: 10
+  encounter: 0.45
+  item: 0.35                 # [ES] el resto es oro
+  arrival_encounter_scale: 1.0
+
+regen:
+  hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola
+
+hero:
+  start_gold: 10
+  belt_slots: {pocion_vida: 3, venda: 2}     # [ES] cuánto cabe en el cinturón de cada cosa
+  start_belt: {pocion_vida: 2, venda: 1}
+  start_backpack: {pocion_vida: 2, venda: 2}
+  defeat_gold_loss: 0.1
+  xp_curve: [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000]

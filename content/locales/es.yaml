@@ -1,0 +1,250 @@
+# Player-facing texts in Spanish. The engine only uses the keys.
+# [ES] Todos los textos que ve el jugador. El motor solo usa las claves.
+# Si cambias una clave, búscala en engine/ antes: una clave que falta se ve como [clave].
+
+common:
+  use_buttons: "Usa los botones de abajo."
+
+create:
+  title: "🌅 El despertar"
+  intro: "El mundo se rompió en el Colapso. Despiertas junto a una fogata en el Claro, sin recuerdos y sin nada. Más allá, la tierra no tiene borde: nadie sabe qué hay lejos, y cada paso toma su tiempo."
+  ask_name: "✍️ Escribe el nombre de tu héroe (de 2 a 16 letras)."
+  bad_name: "⚠️ El nombre debe tener de 2 a 16 caracteres y empezar con una letra."
+  name_taken: "⚠️ Ese nombre ya lo usa otro héroe. Prueba con otro."
+  ask_class: "{name}, ¿cómo peleas? La clase define tu forma de combatir. Todas valen lo mismo: la diferencia la hacen tus oficios y lo que aprendas."
+  rename: "✏️ Cambiar nombre"
+  welcome: "✨ Bienvenido, {name}. Explora los alrededores del Claro y abre camino hacia lo desconocido."
+
+class:
+  guerrero:
+    name: "🛡 Guerrero"
+    role: "aguanta golpes, bloquea y castiga"
+    attack_name: "Tajo"
+  picaro:
+    name: "🗡️ Pícaro"
+    role: "rápido, esquiva y remata con combos"
+    attack_name: "Puñalada"
+  sacerdote:
+    name: "✨ Sacerdote"
+    role: "se cura, se escuda y desgasta"
+    attack_name: "Castigo"
+
+ability:
+  golpe_heroico:
+    name: "Golpe heroico"
+  bloqueo_escudo:
+    name: "Bloqueo con escudo"
+  segundo_aliento:
+    name: "Segundo aliento"
+  eviscerar:
+    name: "Eviscerar"
+  evasion:
+    name: "Evasión"
+  patada:
+    name: "Patada"
+  sanar:
+    name: "Sanar"
+  escudo_de_luz:
+    name: "Escudo de luz"
+  dolor:
+    name: "Dolor"
+
+resource:
+  ira: "Ira"
+  energia: "Energía"
+  mana: "Maná"
+
+enemy:
+  lobo_ceniciento:
+    name: "Lobo ceniciento"
+    moves:
+      mordisco: {name: "Mordisco", warn: "El lobo enseña los dientes y busca tu pierna."}
+      salto: {name: "Salto", warn: "El lobo se agazapa… va a SALTAR sobre ti. (No se puede bloquear del todo)"}
+      aullido: {name: "Aullido", warn: "El lobo levanta el hocico para AULLAR. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+  jabali_espinoso:
+    name: "Jabalí espinoso"
+    moves:
+      corneo: {name: "Corneo", warn: "El jabalí baja la cabeza y resopla."}
+      embestida: {name: "Embestida", warn: "El jabalí escarba la tierra… va a EMBESTIR. (No se puede esquivar)"}
+  rata_del_pantano:
+    name: "Rata del pantano"
+    moves:
+      mordida: {name: "Mordida", warn: "La rata se acerca entre el barro."}
+      chillido: {name: "Chillido", warn: "La rata infla el pecho para CHILLAR y llamar a la manada. (Se puede interrumpir)"}
+  espectro_de_ruinas:
+    name: "Espectro de las ruinas"
+    moves:
+      toque_helado: {name: "Toque helado", warn: "El espectro alarga una mano helada. (No se puede bloquear del todo)"}
+      lamento: {name: "Lamento", warn: "El espectro abre la boca para un LAMENTO que hiela la sangre. (Se puede interrumpir; no se esquiva)"}
+  oso_de_las_cumbres:
+    name: "Oso de las cumbres"
+    moves:
+      zarpazo: {name: "Zarpazo", warn: "El oso se levanta en dos patas."}
+      aplastar: {name: "Aplastar", warn: "El oso alza ambos brazos para APLASTARTE. (No se puede esquivar)"}
+  escorpion_de_arena:
+    name: "Escorpión de arena"
+    moves:
+      pinza: {name: "Pinza", warn: "El escorpión abre las pinzas."}
+      aguijon: {name: "Aguijón", warn: "La cola del escorpión se curva… viene el AGUIJÓN. (No se puede bloquear del todo)"}
+  bandido_errante:
+    name: "Bandido errante"
+    moves:
+      tajo: {name: "Tajo", warn: "El bandido gira el cuchillo."}
+      estocada: {name: "Estocada", warn: "El bandido toma impulso para una ESTOCADA. (No se puede esquivar)"}
+      apuntar: {name: "Apuntar", warn: "El bandido estudia tu guardia, buscando un hueco. (Se puede interrumpir)"}
+
+biome:
+  claro: "Claro"
+  pradera: "Pradera"
+  bosque: "Bosque"
+  colinas: "Colinas"
+  pantano: "Pantano"
+  montana: "Montaña"
+  desierto: "Desierto"
+  tundra: "Tundra"
+  ruinas: "Ruinas"
+
+item:
+  pocion_vida: "Poción de vida"
+  venda: "Venda"
+  hierba_curativa: "Hierba curativa"
+  pieza_metal: "Pieza de metal"
+
+world:
+  claro_name: "El Claro"
+  name_first: ["Vado", "Cerro", "Hondonada", "Llano", "Paso", "Loma", "Fuente", "Cañada", "Risco", "Valle", "Hoya", "Collado"]
+  name_second: ["Gris", "de las Cenizas", "Quebrado", "del Cuervo", "Hundido", "Callado", "de Hierro", "Viejo", "Rojo", "del Eco", "Ahogado", "de los Huesos"]
+
+dir:
+  n: "⬆️ Norte"
+  s: "⬇️ Sur"
+  e: "➡️ Este"
+  w: "⬅️ Oeste"
+
+time:
+  seconds: "{n} s"
+  minutes: "{n} min"
+  hours: "{h} h {m} min"
+
+menu:
+  map: "🗺️ Mapa"
+  hero: "👤 Héroe"
+  bag: "🎒 Mochila"
+  refresh: "🔄 Actualizar"
+  back: "↩️ Volver"
+  continue: "▶️ Continuar"
+
+zone:
+  title: "📍 Dónde estás"
+  header: "{name} — {biome}"
+  distance: "Lejanía {lejania} · Anillo {ring} · Peligro de nivel {level}"
+  discovered_by: "🧭 La descubrió {name}"
+  routes: "Rutas:"
+  uncharted: "❔ Tierra sin cartografiar"
+  route_line: "{dir}: {where} · {time}"
+  go_button: "{dir} · {time}"
+  explore_button: "🔎 Explorar · {time}"
+
+travel:
+  title: "🚶 De viaje"
+  started: "🚶 Te pones en marcha. Tardarás {time}."
+  on_the_way: "Vas hacia {where} ({dir})."
+  remaining: "⏳ Faltan {time}."
+  arrived: "📍 Llegaste a {name} ({biome})."
+  discovered: "🧭 ¡Nadie había pisado esta zona! Queda en el mapa con tu nombre."
+
+explore:
+  title: "🔎 Explorando"
+  started: "🔎 Empiezas a recorrer la zona. Tardarás {time}."
+  in_progress: "Recorres la zona con cuidado."
+  found_item: "🔎 Encontraste: {item}."
+  found_gold: "🔎 Encontraste {gold} 💰 entre los restos de antes del Colapso."
+
+encounter:
+  ambush: "⚠️ Al llegar, un {enemy} (nv {level}) te sale al paso."
+  found: "⚠️ Mientras explorabas, un {enemy} (nv {level}) te descubrió."
+
+activity:
+  busy: "⏳ Ya estás ocupado. Espera a terminar."
+  offline_ok: "Puedes cerrar el chat: te aviso cuando termine."
+
+map:
+  title: "🗺️ Mapa de los alrededores"
+  legend: "🧍 tú · ▫️ sin descubrir · el norte está arriba"
+  position: "Coordenadas {x}, {y} · Lejanía {lejania}"
+
+hero:
+  title: "👤 Tu héroe"
+  status_line: "❤️ {hp}/{max_hp} · 💰 {gold} · Nivel {level}"
+  name_line: "{name} — {cls} ({role})"
+  level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
+  hp_line: "❤️ Vida {hp}/{max_hp}"
+  stats_line: "⚔️ Ataque {attack} · 🛡 Armadura {armor}% · ⚡ Iniciativa {initiative}"
+  gold_line: "💰 Oro {gold}"
+  record_line: "☠️ Enemigos vencidos {kills} · 🧭 Zonas descubiertas {zones}"
+
+bag:
+  title: "🎒 Mochila"
+  belt: "Cinturón: {items}"
+  backpack: "Mochila: {items}"
+  empty: "vacío"
+  use_button: "{emoji} Usar {item} (×{n})"
+  used: "Usaste {item}: recuperas {amount} de vida."
+
+combat:
+  title: "⚔️ Combate · Ronda {n}"
+  last_round: "— Ronda {n} —"
+  enemy_line: "{enemy} · nivel {level}"
+  enemy_hp: "❤️ {pct}% {bar}"
+  warning: "⚠️ {text}"
+  hero_line: "🟥 {name} — {cls}"
+  hero_bars: "❤️ {hp}/{max_hp} · 🔷 {resource} {value} · 🔋 {stamina}"
+  combo: "🎯 Combo {n}/5"
+  toxicity: "☠️ Toxicidad {n}%"
+  belt: "🎒 Cinturón: {items}"
+  attack_button: "⚔️ Atacar"
+  flee_button: "🏃 Huir"
+  dodge_button: "🌀 Esquivar"
+  bag_button: "🎒 Mochila"
+  belt_title: "🎒 Cinturón"
+  belt_help: "Usar un objeto gasta tu ronda, pero va antes que los golpes."
+  dodge_name: "Esquivar"
+  crit: " (¡crítico!)"
+  hit_enemy: "⚔️ {action}: {dmg} de daño{crit}"
+  enemy_hits: "💥 {enemy} — {move}: te quita {dmg}{crit}"
+  blocked: "🛡 Bloqueaste: el golpe pierde el {pct}%"
+  partial_block: "🛡 No se puede bloquear del todo: solo frenas el {pct}%"
+  dodged: "💨 Esquivaste {move}"
+  cannot_dodge: "💨 {move} no se puede esquivar"
+  basic_dodge: "🌀 Te apartas a medias de {move}"
+  shield: "🫧 El escudo absorbe {amount}"
+  interrupted: "✋ Cortaste {move}"
+  interrupt_late: "✋ Llegaste tarde: {move} ya había empezado"
+  not_interruptible: "✋ {move} no se puede cortar"
+  channel: "🌀 {enemy} prepara {move}: su próximo golpe será más fuerte"
+  heal: "💚 {action}: recuperas {amount}"
+  dot_applied: "🩸 {action}: sufrirá {rounds} rondas"
+  dot_tick: "🩸 {enemy} sufre {dmg}"
+  item_used: "🎒 {item}: recuperas {amount}"
+  flee_ok: "🏃 Lograste huir."
+  flee_fail: "🏃 No pudiste escapar."
+  victory: "🏆 {enemy} cae."
+  defeat: "💀 Caes al suelo."
+  rewards: "⭐ +{xp} experiencia · 💰 +{gold} oro"
+  loot: "🎁 Botín: {item}"
+  level_up: "🎉 ¡Subiste a nivel {level}! Tu vida se recupera."
+  defeat_consequence: "Despiertas horas después, malherido. Perdiste {gold} 💰. Descansa antes de seguir."
+  belt_refilled: "🎒 Rellenaste el cinturón desde la mochila."
+  end_title:
+    victory: "🏆 Victoria"
+    defeat: "💀 Derrota"
+    fled: "🏃 Huiste"
+  err:
+    unknown: "Esa acción no existe."
+    cooldown: "{action} vuelve en {n} rondas."
+    cost: "Te falta {resource}."
+    stamina: "Sin Aguante 🔋: descansa una ronda sin defenderte."
+    combo: "Necesitas puntos de combo: usa Atacar primero."
+    no_flee: "Aquí no se puede huir."
+    item: "No te quedan de esos."
+    toxicity: "Tu Toxicidad está al máximo: no puedes beber más pociones."

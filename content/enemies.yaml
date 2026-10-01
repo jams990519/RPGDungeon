@@ -1,0 +1,108 @@
+# Enemies of version 0.1. Each move is announced one round before (the "aviso").
+# [ES] Enemigos de la versión 0.1. Cada ataque se anuncia una ronda antes (el aviso),
+# para que el jugador conteste con la respuesta justa.
+# Lo usan: engine/enemies, engine/combat, engine/service (encuentros por bioma y nivel).
+# Etiquetas de los ataques: blockable (se bloquea entero), dodgeable (se esquiva),
+# interruptible (se corta con una interrupción si actúas antes).
+# kind: hit (golpe, por defecto) | channel (no pega esta ronda; el siguiente golpe vale buff veces más).
+# Si cambias esto, revisa: los IDs son estables; los números mueven el balance.
+
+lobo_ceniciento:
+  name_key: enemy.lobo_ceniciento.name
+  biomes: [pradera, bosque, colinas]
+  level_min: 1
+  level_max: 6
+  base: {hp: 55, attack: 8, armor: 0.05, initiative: 12}
+  per_level: {hp: 11, attack: 1.2}
+  xp: 30
+  gold: [2, 6]
+  loot: {hierba_curativa: 0.2}
+  moves:
+    - {id: mordisco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: aullido, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+jabali_espinoso:
+  name_key: enemy.jabali_espinoso.name
+  biomes: [bosque, colinas, pradera]
+  level_min: 2
+  level_max: 8
+  base: {hp: 80, attack: 9, armor: 0.15, initiative: 7}
+  per_level: {hp: 14, attack: 1.3}
+  xp: 40
+  gold: [3, 8]
+  loot: {pieza_metal: 0.1, hierba_curativa: 0.15}
+  moves:
+    - {id: corneo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: embestida, weight: 1, power: 2.2, tags: [blockable]}
+
+rata_del_pantano:
+  name_key: enemy.rata_del_pantano.name
+  biomes: [pantano]
+  level_min: 1
+  level_max: 10
+  base: {hp: 50, attack: 9, armor: 0.0, initiative: 13}
+  per_level: {hp: 10, attack: 1.3}
+  xp: 32
+  gold: [1, 5]
+  loot: {hierba_curativa: 0.3}
+  moves:
+    - {id: mordida, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: chillido, weight: 1, kind: channel, buff: 1.8, tags: [interruptible]}
+
+espectro_de_ruinas:
+  name_key: enemy.espectro_de_ruinas.name
+  biomes: [ruinas]
+  level_min: 2
+  level_max: 14
+  base: {hp: 70, attack: 10, armor: 0.0, initiative: 11}
+  per_level: {hp: 12, attack: 1.5}
+  xp: 50
+  gold: [4, 10]
+  loot: {pieza_metal: 0.25}
+  moves:
+    - {id: toque_helado, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: lamento, weight: 1, power: 2.4, tags: [interruptible]}
+
+oso_de_las_cumbres:
+  name_key: enemy.oso_de_las_cumbres.name
+  biomes: [montana, tundra]
+  level_min: 3
+  level_max: 16
+  base: {hp: 120, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 18, attack: 1.6}
+  xp: 60
+  gold: [3, 9]
+  loot: {hierba_curativa: 0.1}
+  moves:
+    - {id: zarpazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aplastar, weight: 1, power: 2.3, tags: [blockable]}
+
+escorpion_de_arena:
+  name_key: enemy.escorpion_de_arena.name
+  biomes: [desierto]
+  level_min: 2
+  level_max: 14
+  base: {hp: 65, attack: 10, armor: 0.25, initiative: 10}
+  per_level: {hp: 12, attack: 1.5}
+  xp: 45
+  gold: [3, 9]
+  loot: {pieza_metal: 0.15}
+  moves:
+    - {id: pinza, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aguijon, weight: 1, power: 2.0, tags: [dodgeable]}
+
+bandido_errante:
+  name_key: enemy.bandido_errante.name
+  biomes: [pradera, bosque, colinas, ruinas, desierto, pantano, montana, tundra]
+  level_min: 3
+  level_max: 99
+  base: {hp: 75, attack: 10, armor: 0.12, initiative: 11}
+  per_level: {hp: 13, attack: 1.5}
+  xp: 45
+  gold: [6, 15]
+  loot: {pocion_vida: 0.2}
+  moves:
+    - {id: tajo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: estocada, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: apuntar, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
