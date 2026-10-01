@@ -45,10 +45,10 @@ En lugar de "35 % de probabilidad de envenenar", cada golpe **suma** a una barra
 
 Apuntar ya **no es un botón ni una acción aparte** (D-46). Se hace de dos formas, las dos sin sumar botones:
 
-1. **Dentro de ⚔️ Atacar.** Contra enemigos con partes (monstruos grandes, jefes, y jugadores en PvP), al tocar Atacar aparece el teclado de objetivos con sus partes: `Coloso · torso`, `Coloso · brazo der.`, `Coloso · cola`. La última parte que elegiste sale primero, así que repetir cuesta un toque. Contra enemigos comunes, Atacar va al torso sin preguntar.
-2. **Como efecto de habilidades.** Algunas pegan siempre a una parte (*Tajo a las Piernas*, *Golpe a la Cabeza*) y otras dejan elegir la parte sin penalización (el *Disparo Apuntado* del Cazador de Puntería).
+1. **Como efecto de habilidades** (la forma normal). Algunas pegan siempre a una parte (*Golpe de Escudo* a la cabeza, *Tajo a las Corvas* a las piernas, *Desarmar* a los brazos) y otras dejan elegir la parte sin penalización (*Apuntar*, del Cazador de Puntería).
+2. **Dentro de ⚔️ Atacar (opcional, capa profunda).** Por defecto, Atacar va al torso sin preguntar. Si activas "apuntar con Atacar" en tus opciones, contra enemigos con partes (monstruos grandes, jefes, y jugadores en PvP) al tocar Atacar aparece el teclado con sus partes: `Coloso · torso`, `Coloso · brazo der.`, `Coloso · cola`. La parte elegida se recuerda, así que repetir cuesta un toque.
 
-**Por qué así.** Es la forma más ligera: con enemigos comunes no agrega ningún paso, y con un jefe es el mismo paso de elegir objetivo, que igual había que dar. Las [Tácticas](avisos-y-tacticas.md) también pueden apuntar ("mientras la cola esté entera, Atacar a la cola").
+**Por qué así.** Es la forma más ligera (D-44): el jugador nuevo nunca ve el menú de partes, y quien quiere romper partes lo tiene a un ajuste de distancia, sin sumar botones (ver [Clases](../03-personaje/clases-y-especializaciones.md) §4). Las [Tácticas](avisos-y-tacticas.md) también pueden apuntar ("mientras la cola esté entera, Atacar a la cola").
 
 | Parte (humanoides) | Precisión | Si impacta | Si la rompes (monstruos grandes) |
 |---|---|---|---|

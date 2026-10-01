@@ -1,0 +1,32 @@
+# Items of version 0.1.
+# [ES] Objetos de la versión 0.1. belt: true = puede ir en el cinturón (botón 🎒 Mochila en combate).
+# heal = fracción de la vida máxima que cura. toxicity = cuánto suma a la Toxicidad (tope en balance.yaml).
+# Lo usan: engine/combat (cinturón), engine/service (exploración, botín, mochila).
+# Si cambias esto, revisa: IDs estables; la curación y la toxicidad mueven el balance del combate.
+
+pocion_vida:
+  name_key: item.pocion_vida
+  emoji: "🧪"
+  kind: potion
+  heal: 0.35
+  toxicity: 40
+  belt: true
+  price: 12
+venda:
+  name_key: item.venda
+  emoji: "🩹"
+  kind: bandage
+  heal: 0.15
+  toxicity: 0
+  belt: true
+  price: 5
+hierba_curativa:
+  name_key: item.hierba_curativa
+  emoji: "🌿"
+  kind: material
+  price: 3
+pieza_metal:
+  name_key: item.pieza_metal
+  emoji: "⚙️"
+  kind: material
+  price: 6

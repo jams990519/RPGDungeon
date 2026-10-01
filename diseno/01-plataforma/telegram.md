@@ -24,13 +24,13 @@ Ver decisiones D-01 a D-03 en [Decisiones](../00-vision/decisiones.md).
 | Teclados inline + edición de mensajes | Un solo mensaje que se actualiza en lugar de mandar cien | UNO, Chessy, Chat Wars | Combate, mapa, crafteo: **un mensaje vivo por actividad** |
 | Menú persistente (reply keyboard) | Botonera fija abajo | Chat Wars, TowerWars | Navegación principal |
 | Modo inline | Información privada dentro de un grupo | UNO (tu mano solo la ves tú) | Cartas de taberna, fichas, inventario sin spam |
-| Plataforma de juegos HTML5 | Minijuego con récord por chat (`setGameScore`) | @gamebot, GAMEE | Minijuegos de destreza (forja, pesca, ganzúa) |
+| Plataforma de juegos HTML5 | Minijuego con récord por chat (`setGameScore`) | @gamebot, GAMEE | Minijuegos de destreza (forja, pesca, ganzúa) que solo dan récords y cosméticos; el récord vive en el motor |
 | Mini Apps (WebApp) | Pantalla web completa dentro de Telegram | Hamster Kombat, Catizen, Not Pixel | Solo lo que el texto no aguanta: mapa, árbol de talentos, gráfico del mercado |
-| Dados animados nativos 🎲🎯🏀⚽🎳🎰 | Valor aleatorio decidido **por el servidor de Telegram**, visible para todos | Bots de apuestas y de rol | Tiradas de botín, dados de taberna, "Necesidad/Codicia" a la vista |
+| Dados animados nativos 🎲🎯🏀⚽🎳🎰 | Valor aleatorio decidido **por el servidor de Telegram**, visible para todos | Bots de apuestas y de rol | Nada que cuente: el bot no puede elegir su valor. Las tiradas (botín, taberna, "Necesidad/Codicia") son del motor y se muestran con la cara del dado (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.1) |
 | Telegram Stars | Pagos digitales compatibles con Apple y Google | Catizen y casi todas las Mini Apps | Monetización (ver [Monetización](../07-economia/monetizacion.md)) |
-| Encuestas en modo quiz | Preguntas con respuesta correcta, tiempo y ranking | @QuizBot oficial | Trivia de lore, votaciones de gremio |
+| Encuestas en modo quiz | Preguntas con respuesta correcta, tiempo y ranking | @QuizBot oficial | Trivia de lore. Las votaciones y los puntos los lleva el motor; la encuesta es solo un espejo |
 | Spoilers y citas plegables | Ocultar o plegar texto largo | Varios | Registro de combate plegado: resumen visible, detalle al tocar |
-| Reenvío con cabecera "reenviado de @bot" | La cabecera funciona casi como una firma | Chat Wars (informes), TowerWars (vales del gremio) | Pruebas de hazañas, contratos, vales, informes de batalla |
+| Reenvío con cabecera "reenviado de @bot" | La cabecera funciona casi como una firma | Chat Wars (informes), TowerWars (vales del gremio) | Atajo para compartir hazañas, contratos, vales e informes. La prueba es el ID del documento en el motor, no la cabecera |
 | Temas (topics) en grupos | Canales internos dentro de un grupo | Comunidades grandes | Chat de gremio con #órdenes, #banda, #mercado, #taberna |
 | Canales | Difusión de una vía | Chat Wars (partes de batalla) | Gaceta de la Torre, precios, Salón de los Caídos |
 
@@ -59,9 +59,9 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
    - **Cita** (a hora fija): guerra de facciones, bandas, asaltos a Guardianes, torneos.
 4. **Resumen arriba, detalle plegado.** Cinco líneas cuentan qué pasó; quien quiera cada número abre la cita plegable o pide el parte en `.txt`.
 5. **Lo privado va al privado.** Mano de cartas, rol secreto, inventario: por mensaje directo o modo inline, nunca en el grupo.
-6. **Ocho botones de combate como máximo.** Más no cabe ni se lee (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
-7. **El azar importante se ve.** Si una tirada decide quién se lleva el botín, se tira con el dado nativo en el chat del grupo.
-8. **El reenvío es una firma.** Un informe reenviado prueba una hazaña; un vale reenviado mueve objetos.
+6. **Seis botones de combate como máximo** (D-46): Atacar, 3 habilidades, Huir y Mochila. Es una regla de balance del motor, igual en todos los clientes (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
+7. **El azar importante se ve.** Si una tirada decide quién se lleva el botín, el motor la publica a la vez para todos, con la huella de su semilla para comprobarla. El dado nativo no decide nada, porque su valor no lo elige el bot (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.1).
+8. **El reenvío es un atajo, no una firma.** Firmar y mover objetos son órdenes del motor. Reenviar un informe o un vale del bot es una forma cómoda de dar esa orden: el bot lee el ID del documento o del vale (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.2).
 9. **Mini App solo donde el texto no alcanza.** El juego completo tiene que poder jugarse sin abrirla.
 10. **Nada que se gane pulsando lo mismo.** Es lo que atrae bots y granjas de multicuentas (ver [Seguridad](seguridad-y-anti-trampas.md)). Lo repetitivo se automatiza de forma oficial (cola de encargos, [Tácticas](../04-combate/avisos-y-tacticas.md)) para que un bot pirata no tenga nada que ganar.
 
@@ -83,5 +83,5 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
 
 - Los eventos de combate se agrupan y se aplican **una vez por ronda**, no por acción.
 - Las ediciones se limitan a una cada 3-5 s por chat, con cola.
-- Los avisos masivos (evento de servidor, apertura de piso) se escalonan en minutos y se anuncian primero en el canal.
+- Los avisos masivos (evento de servidor, apertura de piso) se escalonan en minutos y se anuncian primero en el canal. La apertura misma es a una hora fija, igual para todos los clientes (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.6).
 - Todo temporizador vive en el servidor con cálculo perezoso: si el bot se reinicia, nada se pierde.

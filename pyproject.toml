@@ -1,0 +1,15 @@
+[project]
+name = "lost-realms"
+version = "0.1.0"
+description = "Turn-based text MMORPG engine (Telegram, web and mobile clients share one engine)"
+requires-python = ">=3.11"
+dependencies = [
+    "aiogram>=3.13,<4",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
