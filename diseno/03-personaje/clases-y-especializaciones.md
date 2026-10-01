@@ -77,7 +77,7 @@ Cómo leer cada clase:
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Puntería | ⚔ Ataque | Retaguardia | **Apuntar** es su habilidad: una ronda de puntería y el disparo siguiente impacta seguro en la parte del cuerpo elegida, sin penalización. La mejor spec para romper partes de jefes |
-| Bestias | 🛡 Defensa | Retaguardia (la mascota, en vanguardia) | **La mascota es el tanque**: una segunda unidad en vanguardia, con vida propia, que provoca y recibe los golpes. El cazador elige su postura (*Proteger*, *Provocar* o *Flanquear*) y la cura con *Aliviar Mascota*. Si cae, puede llamar a otra una vez por pelea |
+| Bestias | ✦ Soporte | Retaguardia (la mascota, en vanguardia) | **La bestia marca la presa** (*Presa Marcada*): el enemigo recibe más daño de todos durante 5 rondas. *Orden de Matar* la lanza al ataque y *Aspecto de la Tortuga* frena el golpe avisado (D-72) |
 | Supervivencia | ✦ Soporte | Vanguardia o retaguardia | **Trampas y control del campo.** Pone trampas en las filas enemigas que se activan en rondas siguientes (*Red* inmoviliza, *Alquitrán* quita iniciativa, *Escarcha* congela) y usa bombas. *Señuelo* desvía el siguiente golpe de un enemigo hacia un muñeco. Gana quitándole opciones al enemigo |
 
 **Respuestas al aviso:** esquivar con *Destrabarse* (salta a la retaguardia) · desviar con *Aspecto de la Tortuga* · interrumpir con *Disparo de Supresión*.
@@ -87,7 +87,7 @@ Cómo leer cada clase:
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Asesinato | ⚔ Ataque | Vanguardia | Venenos por **acumulación**: llena las barras de veneno y sangrado hasta que revientan |
-| Sutileza | 🛡 Defensa | Vanguardia | **Tanque de evasión**: no bloquea, esquiva. *Danza de las Sombras* le da cargas de **Evasión** (hasta 3); cada golpe esquivado le devuelve energía y un combo, y su contraataque va a una parte del cuerpo (a la cabeza, para aturdir). *Provocación Burlona* atrae al enemigo. Si lee mal el aviso, recibe el golpe entero: el tanque de más riesgo y más premio |
+| Sutileza | ✦ Soporte | Vanguardia | **Golpea desde las sombras y ciega.** *Polvo Cegador* hace que el enemigo pegue más flojo 5 rondas; *Danza de las Sombras* esquiva el golpe avisado y *Contraataque* castiga (D-72) |
 | Forajido | ✦ Soporte | Vanguardia | **Dados del Destino para el grupo**: tira un 🎲 nativo de Telegram en el chat y el resultado decide qué bonificación recibe todo el grupo durante 3 rondas (crítico, iniciativa, Aguante o botín extra). *Distracción* le baja la precisión a un enemigo 2 rondas y *Robar* le quita un efecto beneficioso. Azar visible y divertido |
 
 **Respuestas al aviso:** esquivar con *Evasión* · bloquear magia con *Capa de Sombras* · interrumpir con *Patada*.
@@ -98,7 +98,7 @@ Cómo leer cada clase:
 |---|---|---|---|
 | Sombra | ⚔ Ataque | Retaguardia | Daño en el tiempo y Locura. La Forma del Vacío sube su Corrupción: riesgo a cambio de recompensa |
 | Sagrado | ✚ Curación | Retaguardia | Curas masivas. Es el único sanador que puede **estabilizar heridas leves en combate**, con enfriamiento largo (ver [Heridas](../05-salud/heridas.md)) |
-| Disciplina | ✦ Soporte | Retaguardia | **Evita el daño en vez de curarlo.** Pone **escudos preventivos** leyendo el aviso (premia adivinar el siguiente golpe del jefe) y con *Infusión de Poder* potencia a un aliado 2 rondas. Con *Expiación*, parte de su daño se vuelve escudos |
+| Disciplina | ✚ Curación | Retaguardia | **Cura y previene.** *Sanar* y escudos de luz que absorben el golpe avisado; *Dolor* desgasta al enemigo mientras cura (D-72) |
 
 **Respuestas al aviso:** bloquear con *Palabra de Poder: Escudo* (sobre sí o sobre un aliado) · esquivar con *Desvanecerse* (*Dispersión* en Sombra) · interrumpir con *Silencio*.
 **Aporte de grupo:** **Palabra de Poder: Entereza** (+vida máxima del grupo).
@@ -127,7 +127,7 @@ Cómo leer cada clase:
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Fuego | ⚔ Ataque | Retaguardia | **Calentamiento**: dos críticos seguidos dan una Piroexplosión instantánea. Combustión como ráfaga |
-| Escarcha | 🛡 Defensa | Vanguardia | **Tanque de hielo y control.** *Barrera de Hielo* absorbe daño y se refuerza cada ronda que no se rompe; *Muro de Hielo* impide que la fila enemiga avance o cambie de fila una ronda; *Mirada Gélida* provoca. No aguanta a golpes: retiene al enemigo **congelándolo** (con Dedos de Escarcha, el siguiente golpe cuenta como si estuviera congelado) y deja que el hielo reciba el daño |
+| Escarcha | ✦ Soporte | Vanguardia | **Control con hielo.** *Escarcha Paralizante* hace que el enemigo pegue más flojo 5 rondas; *Barrera de Hielo* absorbe el golpe avisado y *Lanza de Hielo* remata (D-72) |
 | Arcano | ✦ Soporte | Retaguardia | **Cargas Arcanas para el grupo.** Las acumula y decide si las quema o se las **pasa a un aliado**: cada carga potencia la siguiente habilidad de ese aliado. *Fuente de Maná* devuelve recurso al grupo. Fuera de combate abre **portales** a asentamientos ya visitados, con las mismas reglas de peso que la Piedra de paso (ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md)): un servicio que puede cobrar |
 
 **Respuestas al aviso:** bloquear con *Bloque de Hielo* (inmune una ronda, enfriamiento largo) · cambiar de fila con *Traslación* · interrumpir con *Contrahechizo*.

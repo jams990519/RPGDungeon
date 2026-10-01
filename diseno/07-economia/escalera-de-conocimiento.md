@@ -29,9 +29,9 @@ Eso ya quedó registrado como **D-54** en [Decisiones](../00-vision/decisiones.m
 4. **Tiempo real, también sin conectarse.** Las cosechas de ensayo crecen, las crías maduran, la madera se seca y los proyectos avanzan aunque el jugador no esté. Lo que se juega a mano tiene tope semanal o diario.
 5. **Usa las piezas que ya existen.** Cada técnica nueva es un **proyecto** de [Investigación y maestría](investigacion-y-maestria.md) §5, que se paga con **Puntos de Investigación** de su campo (§4 de ese documento). Lo que agrega este documento es lo que va antes del proyecto (expediente, hipótesis, materiales) y la escalera hasta la cima de cada oficio.
 6. **Nada se compra con dinero real** (D-43). Los aceleradores de oficio suben la experiencia del 1 al 100, como siempre. **No tocan** los expedientes, las observaciones, la hipótesis, los experimentos, los PI, los proyectos, el crecimiento de un cultivo o de una cría, ni la estación del año. El acelerador de recursos no se aplica a los materiales de temporada ni de yacimiento único (§2.4).
-7. **Lo básico ya se sabe.** Las recetas de entrenador, los cultivos comunes y los planos básicos están desde el primer día. La escalera abre lo demás: variedades nuevas, linajes, aceros únicos, estructuras mayores, construir en terreno difícil. Después del Colapso todo hay que volver a descubrirlo (ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md)), y la escalera es la forma en que el mundo vuelve a saber.
+7. **Lo básico ya se sabe.** Las recetas de entrenador, los cultivos comunes y los planos básicos están desde el primer día. La escalera abre lo demás: variedades resistentes, linajes registrados, aceros únicos, estructuras mayores, construir en terreno difícil. Cruzar plantas o animales por tu cuenta (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md) §2 y §4) y los proyectos de rango 60 siguen abiertos como siempre; la escalera es el camino largo hacia lo que nadie más sabe hacer. Después del Colapso todo hay que volver a descubrirlo (ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md)), y la escalera es la forma en que el mundo vuelve a saber.
 8. **Variantes, no escalones.** Ninguna técnica sube el techo de un objeto ni da poder de combate. La Obra Maestra, el Encantamiento +4 y el Poder de Objeto del Tramo son iguales para todos (ver [Investigación y maestría](investigacion-y-maestria.md) §10). Lo que da la escalera es eficiencia, variedad, acceso a lo raro, servicios que nadie más ofrece, prestigio y oro. Las clases siguen igualadas (D-49): la diferencia la hace el conocimiento, no un número más grande.
-9. **Puedes estudiarlo todo, pero no a la vez** (D-57). No hay límite de oficios. El freno es natural: cada oficio tiene su tope semanal de observaciones, los PI se comparten (300 por semana entre todos los campos) y solo hay 1 proyecto a la vez (2 con M20 o con el grado de Licenciado). Quien estudia diez oficios avanza en cada uno mucho más lento que el especialista.
+9. **Puedes estudiarlo todo, pero no a la vez** (D-57). No hay límite de oficios. El freno es natural: cada oficio tiene su tope semanal de observaciones, los PI se comparten (300 por semana entre todos los campos) y solo hay 1 proyecto a la vez (2 con M20 o con el grado de Licenciado). Quien estudia diez oficios avanza en cada uno mucho más lento que el especialista. Esto reemplaza los límites viejos de [Profesiones](profesiones.md) §3 (2 oficios mayores, recolección a 60), que todavía figuran allí (ver §13).
 
 ### 1.1 Ligero: capa simple y capa profunda (D-44)
 
@@ -77,7 +77,7 @@ El rango dice **cuánto has hecho**. El expediente dice **cuánto sabes**. Hacen
 
 ### 2.1 Estudiar: de dónde salen las observaciones
 
-Una observación es una oportunidad de mirar algo de cerca. Cada una suma puntos al expediente de esa cosa, y además da los PI que dice [Investigación y maestría](investigacion-y-maestria.md) §4.1. Las observaciones solo sirven para su expediente; los PI pagan los proyectos.
+Una observación es una oportunidad de mirar algo de cerca. Cada una suma puntos al expediente de esa cosa. Si la acción ya daba PI (las fuentes de [Investigación y maestría](investigacion-y-maestria.md) §4.1), los sigue dando igual; observar no da PI extra. Las observaciones solo sirven para su expediente; los PI pagan los proyectos.
 
 | Fuente | Ejemplo | Puntos | Nota |
 |---|---|---|---|
@@ -176,7 +176,7 @@ Con la hipótesis elegida y los materiales en el cofre, el artesano abre el **pr
 | Encantamiento, Inscripción | **Mesa de runas o escritorio** | Algunas runas solo se prueban de noche, con luna llena o en un eclipse |
 
 - **Modo rápido:** un botón. El resultado sale de tu rango, tu expediente, la calidad de los materiales y el banco.
-- **Modo manual:** el minijuego de tu oficio con tres barras: **Avance**, **Riesgo** y **Muestra** (la muestra se gasta en cada prueba). Da más avance y más descubrimientos.
+- **Modo manual:** el minijuego de ensayo de la medicina, con tres barras: **Avance**, **Riesgo** y **Muestra** (la muestra se gasta en cada prueba), y las acciones propias de tu oficio (templar, sembrar, apuntalar…). Da más avance y más descubrimientos.
 - **Tope diario: 3 ensayos por oficio.** Por eso la etapa dura días, no minutos.
 
 | Resultado | Qué pasa |
@@ -201,6 +201,8 @@ Lo que se puede hacer con ella depende de **qué produce**:
 | **Una acción nueva del minijuego** | *Templar en aceite*, *Medir la veta*, *Apuntalar en arco* | Usarla y **enseñarla** a tus aprendices o en un tratado. **No se patenta:** se enseña (§8.2 y §9 de ese documento) |
 | **Un servicio** | Cimentar en pantano, registrar un linaje, cosechar sin matar la planta | Ofrecerlo por encargo. Es tuyo mientras lo sepas; otros pueden llegar a lo mismo con su propia escalera |
 
+**Las acciones nuevas del minijuego piden M10 en la rama** ([Investigación y maestría](investigacion-y-maestria.md) §2.3 y §5.2). Por eso solo aparecen en la cima o después; las técnicas de los escalones I a IV (§2.7) son recetas, variedades, planos o servicios.
+
 Cuando una técnica se vuelve pública (porque venció la patente o porque se donó), los entrenadores de la ciudad la enseñan, como pasa con los protocolos médicos en el sanatorio.
 
 ### 2.7 Dominar: el árbol de técnicas de cada oficio
@@ -213,7 +215,9 @@ Cada oficio tiene un **árbol de técnicas** con sus ramas (las de [Profundidad 
 | **II** | Experto (41) · 2 expedientes ★★★ | 2 a 3 semanas |
 | **III** | Artesano (61) · 2 expedientes ★★★★ | 1 a 2 meses |
 | **IV** | Maestro (81) · 1 expediente ★★★★★ y otro ★★★★ | 2 a 3 meses |
-| **Cima** | Gran Maestro (96) · M10 en la rama · varios expedientes ★★★★★ · materiales de las cuatro estaciones | 4 a 7 meses para el primero del servidor |
+| **Cima** | Gran Maestro (96) para empezar; la rama a 100 y M10 para terminarla, como la Regeneración médica · varios expedientes ★★★★★ · materiales de las cuatro estaciones | 4 a 7 meses para el primero del servidor (la M10 corre a la par) |
+
+En Construcción los mismos números tienen sus nombres propios (ver [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2): Albañil (21), Oficial de obra (41), Maestro de obras (61), Arquitecto (81) y Gran Arquitecto (96).
 
 La **cima** es la técnica maestra del oficio: lo que en la medicina es la Regeneración. Durante buena parte del primer año, es probable que nadie la tenga.
 
@@ -232,8 +236,8 @@ Cada ficha dice qué se estudia, qué se descubre, qué materiales piden los des
 | **Qué se descubre** | Qué suelo y qué estación prefiere, con qué rota mejor, qué plagas le pegan y cuándo, qué rasgos pasan a la semilla |
 | **Materiales de los descubrimientos altos** | **Semillas encantadas** del Espantapájaros Animado (🌾 Llanura, anillo II, solo de noche) · **Guano** del Murciélago Vampiro (🕳️ Cueva, anillo III, en otoño, cuando salen los enjambres) · **Semilla de dríade** de la Dríade Marchita (🌲 Bosque, anillo VII) · la prueba de frío se hace en **invierno** en los Picos Helados (anillo VI) |
 | **Experimentos** | Siembras en la parcela de ensayo; cruces de dos variedades; tres generaciones para que una semilla quede estable |
-| **Técnicas en el camino** | I · Rotación propia (+5 % de cosecha en tus campos) · II · Abono de guano · III · Injerto de frutales · IV · Semilla de dos estaciones |
-| **Cima** | **Hibridación de variedades resistentes:** semillas estables con nombre que resisten el tizón, la helada o la sequía, o que crecen fuera de su estación (un trigo que aguanta el invierno del anillo VI). Se hace con el proyecto *Variante de planta* (ver [Investigación y maestría](investigacion-y-maestria.md) §5.2) y se cruza con *Sanidad del campo* de la medicina (ver [Investigación médica](../05-salud/investigacion-medica.md) §3.5) |
+| **Técnicas en el camino** | I · Rotación propia (+5 % de cosecha en tus campos) · II · Abono de guano · III · Injerto de frutales, o una *Variante de planta* propia (el proyecto de rango 60) · IV · Semilla de dos estaciones |
+| **Cima** | **Hibridación de variedades resistentes:** semillas estables con nombre que resisten el tizón, la helada o la sequía, o que crecen fuera de su estación (un trigo que aguanta el invierno del anillo VI). Va más allá de la *Variante de planta* de rango 60 (ver [Investigación y maestría](investigacion-y-maestria.md) §5.2): pide tres generaciones estables y la prueba de frío, y se cruza con *Sanidad del campo* de la medicina (ver [Investigación médica](../05-salud/investigacion-medica.md) §3.5) |
 
 #### 🐑 Ganadería
 
@@ -318,8 +322,8 @@ Cada ficha dice qué se estudia, qué se descubre, qué materiales piden los des
 | **Qué se descubre** | Cómo se reparten las cargas, cómo se asienta cada terreno, qué la deteriora (humedad, helada, arena), qué material conviene en cada lugar |
 | **Materiales de los descubrimientos altos** | **Arcilla fina** del Gólem de Barro para ladrillo (🐸 Pantano, anillo IV); en el pantano solo se cimienta en **verano**, cuando baja el agua · **Ceniza volcánica** para un mortero que fragua bajo el agua (🌋 Tierras volcánicas, anillo VIII) · en la ❄️ Tundra solo se cimienta en **verano**, cuando la tierra se deshiela · **teja ígnea** de la Tortuga Volcán (🌋, anillo VIII) |
 | **Experimentos** | Obras de ensayo: una maqueta o un tramo de prueba en el terreno real, que tiene que pasar un clima real (una tormenta, una semana de helada) |
-| **Técnicas en el camino** | I · Muro de piedra seca · II · Arco de medio punto · III · Bóveda de cañón · IV · Cimentar en terreno difícil |
-| **Cima** | **Cúpulas, arcos y murallas mayores, y construir donde nadie puede:** dirigir cúpulas y bóvedas grandes, murallas mayores y puentes largos, y levantar obras en pantano, montaña, tundra y tierras volcánicas. Los nodos de la ciudad *Arcos de piedra*, *Murallas mayores* y *Bóvedas y cúpulas* (ver [Investigación y maestría](investigacion-y-maestria.md) §6.2) dan el plano y el bono a la ciudad; la técnica personal es lo que permite **dirigir** esa obra. Una ciudad con el nodo y sin un constructor que domine la técnica tiene el plano y tiene que contratar a alguien de fuera |
+| **Técnicas en el camino** | I · Muro de piedra seca · II · Arco de medio punto · III · Bóveda de cañón · IV · Cúpula de piedra (pide arco ★★★★★ y bóveda ★★★★) o Cimentar en terreno difícil |
+| **Cima** | **Obras mayores y construir donde nadie puede:** dirigir cúpulas y bóvedas monumentales, murallas mayores y puentes largos, y levantar obras en pantano, montaña, tundra y tierras volcánicas. Los nodos de la ciudad *Arcos de piedra*, *Murallas mayores* y *Bóvedas y cúpulas* (ver [Investigación y maestría](investigacion-y-maestria.md) §6.2) dan el plano y el bono a la ciudad; la técnica personal es lo que permite **dirigir** esa obra. Una ciudad con el nodo y sin un constructor que domine la técnica tiene el plano y tiene que contratar a alguien de fuera |
 
 ### 3.3 Fabricación
 
@@ -332,8 +336,8 @@ Cada ficha dice qué se estudia, qué se descubre, qué materiales piden los des
 | **Qué se descubre** | A qué calor se trabaja cada metal, cómo se templa (agua, aceite, salmuera, nieve), qué impurezas lo arruinan |
 | **Materiales de los descubrimientos altos** | **Hierro Negro** (Garganta de Hierro, Lejanía 4) · **brasa eterna** del Titán de Ceniza (🌋 Tierras volcánicas, anillo VIII) · **nieve de ventisca** para templar, solo en **invierno** en los Picos Helados (anillo VI), y se derrite en horas |
 | **Experimentos** | Probetas en la forja de pruebas: temples, aleaciones, pliegues |
-| **Técnicas en el camino** | I · Temple en agua medido · II · Acero plegado · III · *Templado en aceite* (la técnica del minijuego de [Investigación y maestría](investigacion-y-maestria.md) §5.2) · IV · Aleación propia |
-| **Cima** | **Aceros y templados únicos:** el maestro crea aleaciones y temples con su nombre (*Temple de nieve de Lisbeth*) que reparten las propiedades de forma propia (más filo y menos durabilidad, menos peso y menos protección) y es de los pocos que trabajan el acero feérico y el Hierro Negro sin perder material |
+| **Técnicas en el camino** | I · Temple en agua medido · II · Acero plegado · III · Temple en salmuera · IV · Aleación propia |
+| **Cima** | **Aceros y templados únicos:** con M10 abre las acciones del minijuego como *Templado en aceite* ([Investigación y maestría](investigacion-y-maestria.md) §5.2), y el maestro crea aleaciones y temples con su nombre (*Temple de nieve de Lisbeth*) que reparten las propiedades de forma propia (más filo y menos durabilidad, menos peso y menos protección) y es de los pocos que trabajan el acero feérico y el Hierro Negro sin perder material |
 
 #### 🪚 Carpintería
 
@@ -344,7 +348,7 @@ Cada ficha dice qué se estudia, qué se descubre, qué materiales piden los des
 | **Qué se descubre** | Qué madera sirve para qué, cómo se comporta seca y verde, qué ensamble aguanta cada carga |
 | **Materiales de los descubrimientos altos** | **Roble Cantor** para instrumentos (Lejanía 1) · **madera de corazón** del Árbol Hueco (anillo VII) · **gelatina** del Limo Verde para cola fina (🌲 Bosque y 🐸 Pantano, anillo I) · maderas livianas de los Jardines Flotantes (anillo X) |
 | **Experimentos** | Probetas de ensamble; curvado de prueba; secado |
-| **Técnicas en el camino** | I · Medir dos veces (ya en el minijuego, ver [Profundidad de un oficio](profundidad-de-un-oficio.md) §2.4) · II · Ensamble oculto · III · Curvado al vapor · IV · Laúd de Roble Cantor |
+| **Técnicas en el camino** | I · Caja y espiga firme · II · Ensamble oculto · III · Curvado al vapor · IV · Laúd de Roble Cantor |
 | **Cima** | **Curvado y ensambles maestros:** cascos de barco, arcos compuestos, instrumentos de concierto y vigas largas que aguantan sin clavos. El carpintero del castillo de [Profundidad de un oficio](profundidad-de-un-oficio.md) §2 llega aquí después de meses |
 
 #### 🧥 Peletería (con Curtiduría)
@@ -416,7 +420,7 @@ Cada ficha dice qué se estudia, qué se descubre, qué materiales piden los des
 | **Qué se descubre** | Qué esencia combina con qué runa, en qué momento prende mejor un encantamiento |
 | **Materiales de los descubrimientos altos** | **Runa antigua** del Centinela Rúnico (🏛️ Ruinas, anillo VII) · **luz fatua** del Fuego Fatuo (🌲 Bosque, anillo I, solo de **noche**) · **esencia de viento** del Céfiro (🌸 Tierras flotantes, anillo X) · encantar con **luna llena** o en un **eclipse** |
 | **Experimentos** | Runas de prueba en la mesa; algunas solo se prueban de noche |
-| **Técnicas en el camino** | I · Desencantado fino · II · Runa de protección propia · III · Encantar herramientas · IV · Runa de eclipse |
+| **Técnicas en el camino** | I · Desencantado fino · II · Runa de protección propia · III · Encantar herramientas (donde la ciudad tiene el nodo *Encantamientos mayores*) · IV · Runa de eclipse |
 | **Cima** | **Runas propias:** runas con nombre que reparten el encantamiento de forma propia, y encantamientos de estaciones y herramientas. El techo sigue siendo +4 en armas y armaduras |
 
 #### 📜 Inscripción
@@ -458,7 +462,7 @@ La Medicina es el modelo de todo esto. Su escalera completa, con sus expedientes
 | **Maestro** | Rango Maestro (81-95) · 1 expediente ★★★★★ · una técnica IV | 9 a 12 meses | 1,5 a 2 años |
 | **Gran Maestro con la cima** | Rango 96-100 · M10 · varios ★★★★★ · la técnica cumbre | 14 a 20 meses (el primero del servidor) | 2 a 3 años |
 
-Estas cifras van junto a las de [Profesiones](profesiones.md) §4 (alrededor de un año hasta Gran Maestro) y a las de la [Investigación médica](../05-salud/investigacion-medica.md) §6.
+Las cifras son para un artesano que comparte expediente en un gremio de oficio chico (§5). Un gremio grande acorta los expedientes hasta la mitad, pero no el rango, los ensayos, el crecimiento ni las estaciones. Estas cifras van junto a las de [Profesiones](profesiones.md) §4 (alrededor de un año hasta Gran Maestro) y a las de la [Investigación médica](../05-salud/investigacion-medica.md) §6.
 
 ### 4.2 Por qué no se puede comprimir
 
@@ -469,7 +473,7 @@ Estas cifras van junto a las de [Profesiones](profesiones.md) §4 (alrededor de 
 | **Los materiales escasos** | Yacimientos con cuota, materiales de temporada, cosas que caducan | El Cristal de Resonancia rinde 1 por día; la Flor de Ciénaga se marchita en 12 horas |
 | **El conocimiento se acumula** | Cada técnica pide expedientes con estrellas y técnicas anteriores | La cúpula pide el arco ★★★★★ y la bóveda ★★★★ |
 | **Los topes** | 40 observaciones por oficio y semana, 3 ensayos por oficio y día, 300 PI por semana, 1 proyecto a la vez | El que juega 8 horas no llega 8 veces antes |
-| **D-43** | Nada de esto se vende ni se acelera con dinero real | Ni Gemas ni aceleradores tocan los expedientes ni las estaciones |
+| **D-43** | Nada de esto se vende ni se acelera con dinero real | Ni Gemas ni aceleradores tocan los expedientes ni las estaciones. El acelerador de oficio acorta solo el rango, que no es el freno principal |
 
 ### 4.3 Cómo convive con quien entra a ratos
 
@@ -479,7 +483,7 @@ El jugador de Telegram entra unos minutos varias veces al día. La escalera est�
 - **Lo largo corre solo.** Las cosechas de ensayo, las crías, el secado, los curtidos y los proyectos avanzan sin estar conectado, como el entrenamiento de EVE. El bot avisa cuando algo termina.
 - **Revisar las notas es un toque.** Una vez cada 8 horas, el proyecto ofrece *ir seguro* o *apurar* (ver [Investigación y maestría](investigacion-y-maestria.md) §5.3).
 - **La Maestría descansada** guarda hasta 3 días de experiencia doble (ver [Investigación y maestría](investigacion-y-maestria.md) §2.2).
-- **Los topes protegen al que juega poco.** Como el que juega todo el día choca con el tope, la distancia entre los dos queda acotada.
+- **Los topes protegen al que juega poco.** Como el que juega todo el día choca con el tope, la distancia entre los dos queda acotada. Donde más se nota la diferencia es en el rango, que sube haciendo.
 - **El calendario avisa.** Cuando empieza la estación que espera un expediente, llega un aviso: "*📅 Empieza el invierno: tu prueba de frío ya se puede hacer*". Se puede silenciar.
 
 **Un día de quince minutos de una agricultora:**
@@ -493,7 +497,7 @@ El jugador de Telegram entra unos minutos varias veces al día. La escalera est�
 |---|---|---|
 | **Gremio de oficio** | Expediente común, bancos de ensayo, biblioteca, almacén de materiales | Es la institución de cada oficio que nombra [Profundidad de un oficio](profundidad-de-un-oficio.md) §3 (Cooperativa de Agricultores, Sociedad de Criadores, Logia de Constructores, Gremio de Herreros…). Se registra en la Academia, como la orden de médicos (ver [Investigación médica](../05-salud/investigacion-medica.md) §5.2) |
 | **Proyecto de grupo** | Los PI de 2 a 5 artesanos | Ver [Investigación y maestría](investigacion-y-maestria.md) §5.2 |
-| **Maestro y aprendices** | El maestro guía; el aprendiz observa | Contrato de 4 semanas (ver [Investigación y maestría](investigacion-y-maestria.md) §9.1). Las observaciones del aprendiz suman la mitad al expediente de su maestro, y el aprendiz ve las fichas del maestro hasta ★★ |
+| **Maestro y aprendices** | El maestro guía; el aprendiz observa | Contrato de 4 semanas (ver [Investigación y maestría](investigacion-y-maestria.md) §9.1). Las observaciones del aprendiz suman la mitad al expediente de su maestro, dentro del tope semanal del maestro, y el aprendiz ve las fichas del maestro hasta ★★. Tus otros personajes no cuentan como aprendices |
 | **Bibliotecas** | Libros, expedientes copiados, tratados | Leer da PI y lleva un expediente hasta ★★. Biblioteca de casa, de gremio o pública |
 | **La ciudad** | El árbol de conocimiento de la Academia | Una técnica donada pasa a la Biblioteca pública y suma Saber a su rama (ver [Investigación y maestría](investigacion-y-maestria.md) §6) |
 | **Expedición de temporada** | Un viaje juntos a buscar materiales | Un herborista, un cazador, un minero y un escolta van al anillo VI en invierno y vuelven con lo de todos. El viaje toma tiempo (D-58), así que se planea |
@@ -526,7 +530,7 @@ Todo es prestigio, eficiencia y oro. Nada da poder de combate.
 ```
 🧭 Tus oficios
 🌾 Agricultura 47 · Trigo ★★★ · Lino ★★ · Vid ★
-🧱 Construcción 78 · Cúpula de piedra 7/10
+🧱 Construcción 84 · Cúpula de piedra 7/10
 Observaciones esta semana
  Agricultura 26/40 · Construcción 12/40
 📅 El invierno empieza en 4 días
@@ -559,7 +563,7 @@ Cooperativa del Vado (expediente común +40 %)
 
 ```
 🏗️ Técnica — Cúpula de piedra
-Hedda la Albañila · Construcción 78 · Maestra de obras
+Hedda la Albañila · Construcción 84 · Arquitecta
 Arco ★★★★★ · Bóveda ★★★★ · Montaña ★★★
 💡 Cúpula de anillos con mortero de ceniza
 
@@ -629,12 +633,12 @@ No se hicieron: este proceso solo escribe este documento.
 - [ ] **[Profundidad de un oficio](profundidad-de-un-oficio.md)**: §1, en la capa 3 (Conocimiento del material) enlazar a §2.2 (expediente) y en la capa 10 (Legado) a §6; §2.2, la madera tiene expediente y el secado es un ensayo; §3, sumar una columna "Cima de la escalera" con la técnica cumbre de cada oficio (§3) y sumar las filas que faltan (Caza, Pesca, Minería, Tala, Herboristería, Peletería, Joyería, Encantamiento, Ingeniería).
 - [ ] **[Fabricación](fabricacion.md)**: §4, el descubrimiento al combinar sigue existiendo, pero las recetas deliberadas salen de la escalera; §5, la investigación de planos pide antes expediente ★★★ del material; nuevo apartado corto "Banco de ensayo" que enlace a §2.5.
 - [ ] **[Sistema de construcción](../09-construccion/sistema-de-construccion.md)**: §2, cada rango pide expedientes de estructura y de terreno; §3 (Plano), los planos avanzados salen de técnicas (§3.2 de este documento); nueva fila en §7 o nuevo apartado: cimentar en terreno difícil (pantano, tundra, montaña, volcánico) pide la técnica IV; §8, enlazar aquí.
-- [ ] **[Animales y cultivos](../05-salud/animales-y-cultivos.md)**: §2 (Cría selectiva), enlazar a la ficha de Ganadería y a los linajes como cima; §3, cada plaga es una observación para el expediente del cultivo; §4 (Hibridación), decir que la hibridación es la cima de la Agricultura y pasa por las siete etapas.
-- [ ] **[Investigación y maestría](investigacion-y-maestria.md)**: §1, sumar el expediente a la tabla de piezas; §4.1, aclarar que las observaciones son un contador aparte de los PI; §5.2, las filas *Variante de planta*, *Técnica del minijuego*, *Receta nueva* y *Estudio de especie* piden antes expediente ★★★ e hipótesis; §6.2, los nodos *Arcos de piedra*, *Murallas mayores* y *Bóvedas y cúpulas* dan el plano, y dirigir la obra pide la técnica personal (si el dueño lo confirma); §11, la pantalla `/investigar` enlaza con `/oficio` para que no haya dos pantallas que digan lo mismo.
+- [ ] **[Animales y cultivos](../05-salud/animales-y-cultivos.md)**: §2 (Cría selectiva), enlazar a la ficha de Ganadería y a los linajes como cima; §3, cada plaga es una observación para el expediente del cultivo; §4 (Hibridación), decir que cruzar plantas sigue abierto para cualquier agricultor y que la hibridación de variedades resistentes es la cima de la Agricultura y pasa por las siete etapas.
+- [ ] **[Investigación y maestría](investigacion-y-maestria.md)**: §1, sumar el expediente a la tabla de piezas; §4.1, aclarar que las observaciones son un contador aparte de los PI; §5.2, las filas *Variante de planta*, *Técnica del minijuego*, *Receta nueva* y *Estudio de especie* piden antes expediente ★★★ e hipótesis; §6.2, los nodos *Arcos de piedra*, *Murallas mayores* y *Bóvedas y cúpulas* dan el plano, y dirigir la obra pide la técnica personal (si el dueño lo confirma); §9.1, las observaciones del aprendiz suman la mitad al expediente del maestro, dentro de su tope semanal; §11, la pantalla `/investigar` enlaza con `/oficio` para que no haya dos pantallas que digan lo mismo.
 - [ ] **[README de 07 · Economía](README.md)**: sumar la fila de este documento y la de [Investigación y maestría](investigacion-y-maestria.md), que tampoco está en la tabla.
 - [ ] **[Decisiones](../00-vision/decisiones.md)** D-54: cambiar "Escalera de conocimiento (en redacción)" por el enlace a este documento.
 - [ ] **[Investigación médica](../05-salud/investigacion-medica.md)** §11: marcar como hecha la línea de D-54 y enlazar aquí desde §1 regla 5.
-- [ ] **[Bestiario](../06-contenido/bestiario.md)** §1.5: decir que es el expediente de especie de la Caza; sumar como materiales de escalera la semilla encantada, el guano, la arcilla fina, la teja ígnea y la nieve de ventisca.
+- [ ] **[Bestiario](../06-contenido/bestiario.md)** §1.5: decir que es el expediente de especie de la Caza; sumar como materiales de escalera la semilla encantada, el guano, la arcilla fina, la teja ígnea y la nieve de ventisca; y las condiciones nuevas que pide este documento: guano de otoño del Murciélago Vampiro, huevo de grifo en primavera y la Anguila de Tormenta solo con tormenta.
 - [ ] **[Cacerías](../06-contenido/cacerias.md)** §5 y §7: enlazar la ficha de Caza; el Rastreador Mayor como título de la cima.
 - [ ] **[Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)** §4: en cada estación, nombrar qué materiales de oficio salen solo entonces (nieve de ventisca y piel de invierno; mandrágora y huevo de grifo; cimentar en tundra y pantano; guano y miel negra).
 - [ ] **[Geografía y recursos](../02-mundo/geografia-y-recursos.md)** §1: nombrar en cada terreno qué expedientes se estudian mejor ahí.
