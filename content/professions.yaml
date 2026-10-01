@@ -142,6 +142,12 @@ professions:
     how_key: profession.joyeria.how
     branch: craft
     perk: {hp: 0.03, attack: 0.03}           # [ES] D-111: +3 % de vida y de ataque
+  comercio:
+    emoji: "💱"
+    name_key: profession.comercio.name
+    how_key: profession.comercio.how
+    branch: service                            # [ES] D-116: oficio de servicio: no da nada en combate, da dinero
+    perk: {sell: 0.20}                         # [ES] D-116: +20 % de monedas al vender al mercader, al trueque o el equipo, al rango 100
 
 # Where the stations are. [ES] Dónde están las estaciones (en la fase 1, una por oficio de refinado y fabricación).
 stations:

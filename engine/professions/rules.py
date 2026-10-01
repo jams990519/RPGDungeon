@@ -141,7 +141,7 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
     return max(0, min(by_items, by_energy))
 
 
-PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag")
+PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell")
 
 
 def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, armor_type: str | None,
@@ -158,7 +158,7 @@ def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, arm
     rango 50 la mitad del valor de la tabla, al 100 el valor entero. Los que dicen "armor", "weapon" o "role" solo
     valen si el héroe lleva esa armadura, pelea con esa arma o juega ese rol (la Herrería, solo con placas; la
     Medicina, solo a los sanadores). Devuelve attack, hp, armor (fracciones), regen, potion, bandage, heal (fracciones
-    de más) y bag (espacio de mochila de más).
+    de más), bag (espacio de mochila de más) y sell (monedas de más al vender, 💱 Comercio, D-116).
     La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).
     """

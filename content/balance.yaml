@@ -289,6 +289,7 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.
   rank_formula: {base: 9, exponent: 2.0}
   max_rank: 100              # [ES] rango máximo de cada oficio (profesiones.md §4)
+  trade_xp_per_coin: 1       # [ES] D-116: 💱 Comercio sube 1 de experiencia por cada 🥉 que cobras vendiendo (la venta base, sin el beneficio)
   gather_xp_per_unit: 1      # [ES] experiencia de oficio por unidad recolectada (o sacada de una bestia, el desollador)
   rank_yield: 0.003          # [ES] cada rango suma 0,3 % de sacar 1 unidad más por unidad recolectada o por vez refinada: rango 50 = 15 %, rango 100 = 30 %
   rare_chance: 0.05          # [ES] desde su rango (professions.yaml "rare", hoy 10), probabilidad por vuelta de recolección con materiales del oficio de encontrar el raro...

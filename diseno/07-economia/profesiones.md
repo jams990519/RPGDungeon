@@ -334,3 +334,38 @@ Cada oficio es también un **trabajo pagado**:
 Un jugador dedicado a los oficios tiene, por personaje: 2 mayores a 100, una recolección a 100, las demás a 60, los oficios menores, 3 o 4 árboles de especialización y decenas de maestrías por objeto. Con 2 o 3 personajes artesanos, son **años** de progreso sin tocar el PvP.
 
 Ver P-37 a P-40 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
+
+### 0.4 Beneficios que no son de combate (D-116)
+
+El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo para la batalla**: hay oficios que benefician solo al campamento o al castillo, oficios que te hacen ganar más dinero (ser comerciante no te ayuda en la pelea, pero cobras más) y oficios que te dejan fabricar piezas más exclusivas (el carpintero). Así cada tipo de jugador encuentra su oficio, pelee o no. La tabla completa, con el tipo de cada beneficio (los números son propuesta de Claude y crecen parejos con el rango, como en §0.2):
+
+| Oficio | Tipo | Beneficio al rango 100 | Estado |
+|---|---|---|---|
+| 🪓 Leñador | 🎒 Recolección | +10 de espacio en la mochila | en el juego |
+| ⛏️ Minero | ⚔️ Combate | +5 % de vida | en el juego |
+| 🌿 Herbolario | 🌿 Fuera de combate | La vida vuelve sola 20 % más rápido | en el juego |
+| 🔪 Desollador | ⚔️ Combate | +4 % de ataque | en el juego |
+| 🎣 Pescador | 🏰 Campamento | El pescado rinde 30 % más en la despensa | fase 2 |
+| 🌾 Agricultor | 🏰 Campamento | El huerto del campamento da 1 ración más al día por cada agricultor de rango 50 o más | fase 3 |
+| 🐑 Ganadero | 🐎 Viaje | Viajes 15 % más rápidos (monturas) | fase 3 |
+| 🧭 Explorador | 🧭 Mapa | Ve más en el mapa y +5 puntos de exploración por vuelta (D-112) | en la cola |
+| Refinado (5 oficios) | 🛠️ Oficio | Hasta 30 % de sacar una unidad más al refinar | en el juego |
+| Cantería | 🏰 Castillo | Las obras de piedra del campamento piden 15 % menos piedra | fase 2 |
+| 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | en la cola (hoy da +4 % de ataque con arco o bastón: pasa a esto cuando exista la obra maestra) |
+| 🔨 Herrería | ⚔️ Combate + 🛠️ | +3 de armadura con placas (en el juego); reparar cuesta 30 % menos cuando exista el desgaste | en el juego / con el desgaste |
+| 🦺 Peletería | ⚔️ Combate | +4 % de ataque y +3 % de vida con cuero o malla | en el juego |
+| 🪡 Sastrería | ⚔️ Combate | +5 % de ataque con tela | en el juego |
+| ⚗️ Alquimia | ⚔️ Combate | Pociones +30 % | en el juego |
+| 💍 Joyería | ⚔️ Combate | +3 % de vida y de ataque | en el juego |
+| 🩺 Medicina | ⚔️ Combate | Curaciones +15 % (sanadores); vendas y ungüentos +30 % | en el juego |
+| ✨ Encantamiento | 🛠️ Oficio | Desencantar da 30 % más esencias | fase 2 |
+| 📜 Inscripción | 💰 Economía | Mapas y contratos valen 20 % más; una orden más en el mercado | fase 3 |
+| ⚙️ Ingeniería | 🏰 Castillo | Cada trampa o torreta del campamento da +1 de defensa | fase 3 |
+| 🍲 Cocina | 🏰 Campamento | Las raciones que cocinas rinden 30 % más en la despensa | fase 2 |
+| 🏗️ Construcción | 🏰 Castillo | Las mejoras del campamento piden 20 % menos materiales y reparar las defensas después de una oleada cuesta la mitad | fase 2 |
+| 💱 **Comercio** | 💰 Economía | **+20 % de monedas** al vender al mercader, al 💱 trueque del campamento o tu equipo viejo; sube vendiendo (1 de experiencia por 🥉). Cuando exista el mercado de órdenes, también paga menos impuesto. **No da nada en combate** | **en el juego desde la 0.17** |
+
+- **Los de campamento y castillo** valen para el campamento donde eres miembro: el que se dedica a construir o cocinar hace más fuerte a su grupo sin ser el que más pelea.
+- **Los de economía** no tocan el combate: el comerciante gana su lugar con dinero, comprando y vendiendo para los demás.
+- **Los exclusivos** hacen que el artesano sea buscado: una obra maestra firmada vale más en el mercado.
+

@@ -76,6 +76,8 @@ Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
+    - Comercio (D-116): _merchant_sale suma su beneficio (+20 % al rango 100) y su experiencia en _sell, _camp_sell y
+      _sell_gear; no toca el combate (professions.trade_xp_per_coin)
     - Beneficio de cada oficio (D-111): _perks (content/professions.yaml "perk", engine/professions/rules.py perks) entra en
       _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_cap
       (Leñador); hero_stats y el combate lo leen del kit (tests/test_professions.py)
@@ -1899,10 +1901,11 @@ class GameService:
                     total += max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"])) * n
                     sold[i] = n
                     del hero.backpack[i]
-            hero.gold += total
             if not sold:
                 return self._shop_view(hero)
-            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + self._tutorial(hero, "sell")
+            total, trade = self._merchant_sale(hero, total)     # D-116: 💱 Comercio
+            hero.gold += total
+            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
             return self._shop_view(hero, notice="\n".join(lines))
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
@@ -1911,8 +1914,9 @@ class GameService:
         hero.backpack[item_id] -= 1
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
+        price, trade = self._merchant_sale(hero, price)         # D-116: 💱 Comercio
         hero.gold += price
-        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
+        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + trade + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
         return self._shop_view(hero, notice="\n".join(lines))
 
     def _rest(self, hero: Hero) -> View:
@@ -3731,8 +3735,9 @@ class GameService:
                 del hero.backpack[item_id]
         if not sold:
             return self._services_view(hero, notice=t.t("upgrades.nothing_to_sell"))
+        total, trade = self._merchant_sale(hero, total)         # D-116: 💱 Comercio
         hero.gold += total
-        lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + self._tutorial(hero, "sell")
+        lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
         return self._services_view(hero, notice="\n".join(lines))
 
     def _can_craft(self, hero: Hero) -> bool:
@@ -3915,6 +3920,20 @@ class GameService:
         out_id, count = next(iter(self._recipes()[rid]["output"].items()))
         name = self._gear_name(out_id) if self.content.items[out_id].get("kind") == "gear" else self._item_label(out_id)
         return name + (f" ×{count}" if count > 1 else "")
+
+    def _merchant_sale(self, hero: Hero, base: int) -> tuple[int, list[str]]:
+        """A sale to the merchant or a camp barter: the 💱 Comercio perk adds coins and the sale raises Comercio (D-116).
+
+        [ES]
+        Qué hace: a lo que pagan por una venta (al mercader del Claro, al 💱 Puesto de trueque del campamento o al
+        vender equipo) le suma el beneficio del 💱 Comercio (hasta +20 % al rango 100) y le da al oficio 1 de
+        experiencia por cada 🥉 de la venta. Devuelve el total a pagar y las líneas de subida de rango.
+        La llaman: _sell, _camp_sell y _sell_gear.
+        Si cambia, afecta: cuántas monedas entran al juego por ventas (sumidero/fuente, balance.yaml professions.trade_xp_per_coin).
+        """
+        total = int(round(base * (1 + self._perks(hero)["sell"])))
+        lines = self._prof_gain(hero, "comercio", int(base * self.content.balance["professions"]["trade_xp_per_coin"]))
+        return total, lines
 
     def _prof_gain(self, hero: Hero, pid: str, xp: int) -> list[str]:
         """Add profession xp; on a new rank, a line (and ProfessionRankUp) plus the recipes or rare find it opens.
@@ -5137,6 +5156,7 @@ class GameService:
         hero.backpack[item_id] -= 1
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
+        price, _trade = self._merchant_sale(hero, price)       # D-116: 💱 Comercio
         hero.gold += price
         return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price)))
 
