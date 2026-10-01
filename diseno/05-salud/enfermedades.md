@@ -2,6 +2,8 @@
 
 > **Módulo** [05 · Salud](README.md) · **Depende de:** [Heridas](heridas.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (clima, estaciones) · **Alimenta a:** [Profesiones](../07-economia/profesiones.md) (Medicina, Alquimia), [Eventos](../06-contenido/eventos.md) · **Estado:** propuesta
 
+> ⚠️ **Lo que decidió el dueño (1-oct-2026) manda sobre lo de abajo:** las enfermedades las transmiten los enemigos, se agravan con el tiempo y no se curan solas; se acumulan con las heridas; morir cuesta las 4 horas de siempre, pero algunas siguen después de morir; no entran al principio y aparecen poco a poco (D-166, desde qué nivel en P-114). Lo físico lo cura el 🩺 médico y lo químico el ⚗️ alquimista, sin cubrir lo del otro (D-167).
+
 **De dónde sale.**
 - *RimWorld*: enfermedad como **carrera entre gravedad e inmunidad**.
 - *Crusader Kings III*: epidemias con intensidad menor, mayor o apocalíptica, y el médico de corte que se dedica a controlarlas.

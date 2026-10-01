@@ -111,7 +111,7 @@ Todas van, junto con las dudas nuevas, en la **segunda tanda** de abajo.
 
 ## Segunda tanda (1-oct-2026)
 
-**Para qué sirve.** Junta en una sola charla lo que quedó sin responder (E-03, el tono de E-10 y los bloques 6 y 7: E-44 a E-54) y las dudas nuevas que salieron de la primera tanda (**E-55 a E-82**, registradas como P-78 a P-105 en [Preguntas abiertas](preguntas-abiertas.md)). Las preguntas que frenan trabajo son las de los bloques C, D y E: deciden cómo se programan el asentamiento por escalones, las razas, el día y la noche, y la economía entre jugadores.
+**Para qué sirve.** Junta en una sola charla lo que quedó sin responder (E-03, el tono de E-10 y los bloques 6 y 7: E-44 a E-54) y las dudas nuevas que salieron de la primera tanda (**E-55 a E-82**, registradas como P-78 a P-105 en [Preguntas abiertas](preguntas-abiertas.md)), más lo que quedó pendiente de la ampliación de diseño (**E-83 a E-91**, P-106 a P-114). E-73 y E-77 se quitaron porque la ampliación las respondió (D-168 y D-166), y E-58 se cambió a 10 etapas. Las preguntas que frenan trabajo son las de los bloques C, D y E: deciden cómo se programan el asentamiento por escalones, las razas, el día y la noche, y la economía entre jugadores.
 
 Todo lo que va dentro del bloque de abajo se copia tal cual.
 
@@ -149,7 +149,7 @@ BLOQUE C · ASENTAMIENTO, CASTILLO Y HORARIOS
 E-55 (P-78) Mínimo de miembros para pedir castillo. Dijiste de 40 a 50, pero en la beta habrá pocos jugadores. Opciones: 15 durante la beta y 40 desde el lanzamiento (recomendado) / 40 desde ya / otro número.
 E-56 (P-79) Para aprobar el castillo, ¿cuántas oleadas seguidas hay que defender y cuántas victorias de cuántos miembros pide la Noche de prueba? Recomendado: 6 oleadas en dos semanas, ganando al menos 4, y una Noche de prueba con 10 victorias de al menos 5 miembros distintos. ¿Está bien o cambias los números?
 E-57 (P-80) La casa del inicio: ¿es el primer escalón del asentamiento (la casa crece y se vuelve campamento, aldea, ciudad...) o cada jugador tiene además su propia casa dentro del asentamiento? Opciones: la casa es el primer escalón, compartido por 3 a 5 jugadores (recomendado) / cada uno tiene su casa aparte / las dos cosas.
-E-58 (P-81) Escalones del asentamiento: dijiste de 10 a 15. Propongo 12: casa, campamento, aldea, pueblo, villa, ciudad, gran ciudad, fortaleza, castillo, ciudadela, ducado y reino (monarquía). ¿Te sirven esos nombres o cuáles cambias?
+E-58 (P-81) Etapas del asentamiento: quieres más de 7 (Ashes of Creation tiene 7). Propongo 10: casa, campamento, aldea, pueblo, villa, ciudad, fortaleza, castillo, ciudadela y reino; las primeras rápidas y las últimas lentas. ¿Te sirven 10 y esos nombres, o cuántas y cuáles?
 E-59 (P-82) Monarquía y votación: si en el castillo todo se vota, ¿qué decide solo el monarca? Recomendado: el fundador es el monarca y decide el nombre, la bandera, declarar la guerra y aceptar o echar miembros; todo lo demás se vota. ¿Así u otra idea?
 E-60 (P-83) Las oleadas contra los campamentos: ¿en días y horas fijas iguales para todos (por ejemplo lunes, miércoles y viernes a las 8 de la noche) o cada campamento con su propio ritmo desde que se fundó? Opciones: días y horas fijas, avisadas (recomendado, como pediste para combates y eventos) / cada uno su ritmo.
 E-61 (P-84) Hora de referencia para los eventos fijos (oleadas, asedios, jefes de mundo). Recomiendo la noche de América, de 7 a 11 de la noche en hora de Colombia, Perú o Ecuador (UTC−5). ¿Te sirve u otra?
@@ -168,13 +168,11 @@ E-69 (P-92) Subasta global con transportistas: ¿dónde recibes lo que compras y
 E-70 (P-93) Desgaste generoso del equipo. Recomendado: una pieza aguanta unas 3 semanas jugando todos los días antes de pedir reparación; cada reparación le baja un poco el máximo, y tras unas 5 reparaciones se rompe del todo (unos 4 meses de vida). ¿Bien, más o menos?
 E-71 (P-94) ¿Las obras maestras firmadas también se gastan? Recomendado: sí, pero aguantan el doble / no se gastan nunca / igual que las normales.
 E-72 (P-95) Hoy vender al mercader una obra maestra deja un poco más (un 3,7 %) de lo que valen sus materiales. ¿Lo bajo para que fabricar y vender al mercader no sea negocio? Bajarlo (recomendado: el dinero de verdad debe venir de venderle a otros jugadores) / dejarlo así.
-E-73 (P-96) Dijiste que otros jugadores pueden darte beneficios de sus oficios. Recomendado: con objetos y servicios que duran unas horas (la comida del cocinero, el encantamiento, el tratamiento del médico) y que el que los da puede cobrar. ¿Así u otra forma?
 E-74 (P-97) Tope diario de recursos en tu territorio. Recomendado: cada zona da un total por día; pasado ese total, rinde la mitad, y por eso conviene salir a los alrededores. ¿Así?
 
 BLOQUE F · PVP, HERIDAS Y RIESGO
 E-75 (P-98) ¿Cómo se marcan las zonas de PvP? Recomendado: según la distancia al Claro: cerca, seguras; a media distancia se pierde el 10 % de la mochila; lejos, el 20 %; muy lejos, el 40 %. Los asentamientos siempre seguros. ¿Así u otra forma?
 E-76 (P-99) ¿Cuándo entra el PvP? Después de la beta, cuando haya suficientes jugadores (recomendado) / ya en la beta.
-E-77 (P-100) Heridas duras: ¿hasta dónde? Recomendado: nunca dejan al héroe sin poder jugar; pelea peor hasta que un médico lo trata, y el tratamiento tarda de 1 a 3 días reales. Opciones: así / más duro / más suave.
 E-78 (P-101) Los nodos especiales que descubren los expertos: ¿de quién hay que defenderlos? De monstruos que aparecen (recomendado al principio) / de otros jugadores, cuando haya PvP / de los dos.
 
 BLOQUE G · DETALLES DE LO QUE YA ESTÁ EN EL JUEGO
@@ -183,14 +181,100 @@ E-80 (P-103) Si fundas o agrandas tu asentamiento donde hay un campamento enemig
 E-81 (P-104) Los jefes de los campamentos enemigos lejanos, ¿piden grupo? Sí, desde cierta distancia (recomendado) / no, siempre se pueden hacer solos.
 E-82 (P-105) Cambiar de especialización de oficio: dijiste que se puede pagando y empezando de cero en la nueva. ¿Cuánto cuesta? Recomendado: algo de monedas que sube con el rango, y lo aprendido en la vieja queda guardado por si vuelves. ¿Así?
 
+BLOQUE H · LO QUE QUEDÓ PENDIENTE DE LA AMPLIACIÓN DE DISEÑO
+E-83 (P-106) Arena: ¿una arena para pelear contra otros jugadores sin perder nada, desde el principio (también en la beta)? Sí (recomendado: se practica sin riesgo y ayuda a balancear las clases) / no / más adelante.
+E-84 (P-107) Eventos y temporadas. Recomendado: un evento corto cada mes (unas 2 semanas, con su historia y su botín) y temporadas de 3 meses con premios cosméticos y una tabla de clasificación; el progreso del héroe nunca se borra. ¿Así u otra idea?
+E-85 (P-108) Jefes de mundo. Recomendado: aparecen en lugares del mapa a horas avisadas (la hora de referencia de E-61) para muchos jugadores a la vez, y el botín se reparte según lo que hizo cada uno en su rol (daño, tanque o curación). ¿Así?
+E-86 (P-109) Logros y rangos. Recomendado: logros de todo (combate, oficios, exploración, historia, campamento) que dan títulos, marcos y emblemas sin poder de combate, y rangos por temporada. ¿Así?
+E-87 (P-110) PvP dentro de las mazmorras: no, las mazmorras son siempre contra monstruos (recomendado) / sí, en algunas mazmorras marcadas / sí, en todas.
+E-88 (P-111) Botín no cortado a tu medida: hoy el 70 % de las piezas que caen son de tu tipo. Recomendado: bajarlo al 40 % cuando exista la subasta, para que el resto lo vendas a quien lo necesite / bajarlo ya / otro número.
+E-89 (P-112) Fusión de un campamento chico con un castillo. Recomendado: se anuncia con 7 días de aviso; lo que muden los miembros en esos días se conserva, y el castillo recibe la mitad de lo que costaron las obras del campamento; lo que no se mudó se pierde. ¿Así?
+E-90 (P-113) Vasallos, como en Ashes of Creation: ¿los asentamientos grandes pueden tener a los chicos como vasallos? Más adelante, junto con la guerra de castillos (recomendado) / no / sí, desde ya.
+E-91 (P-114) Enfermedades: ¿desde cuándo aparecen? Recomendado: las primeras, leves, desde el nivel 15 y lejos del Claro; las graves, y las que siguen después de morir, desde el nivel 40. ¿Así?
+
 FORMATO DEL RESUMEN FINAL (escríbelo así, sin nada más antes ni después):
 RESPUESTAS LOST REALMS · ENTREVISTA DE VOZ · SEGUNDA PARTE
 E-03: [opción elegida o respuesta corta] | [detalle o condición, si dijo algo más]
 E-10: ...
 E-44: ...
-(una línea por pregunta, en orden: E-03, E-10 y de E-44 a E-82; "sin respuesta" si se saltó; "recomendación" si dijo "lo que recomiendes")
+(una línea por pregunta, en orden: E-03, E-10 y de E-44 a E-91, sin E-73 ni E-77; "sin respuesta" si se saltó; "recomendación" si dijo "lo que recomiendes")
 DUDAS: [lo que preguntó y no supiste responder]
 IDEAS SUELTAS: [cualquier idea que dijo fuera de las preguntas]
 ```
 
 **Cuando vuelva el resumen:** igual que la primera tanda: cada línea es una decisión confirmada (D-xx) y su P-xx se marca decidida. Las que digan "recomendación" se toman con lo recomendado.
+
+## Ampliación de diseño (sesión del dueño después de la entrevista, 1-oct-2026)
+
+El dueño trajo este resumen de otra charla. Quedó registrado como decisiones confirmadas **D-164 a D-173**; sus pendientes pasaron a la segunda tanda (E-83 a E-91, y E-58 para el número de etapas).
+
+```text
+LOST REALMS · AMPLIACIÓN DE DISEÑO (sesión posterior a la entrevista E-01 a E-54)
+
+MAZMORRAS
+- Estructura fija: misma cantidad de enemigos y de jefes en cada entrada.
+- Se reinician a diario. Cambia la facción que la rellena, el jefe concreto, el camino y el botín (hoy duendes, mañana slimes, pasado dragones).
+- Todo tipo de enemigo tiene su propio jefe (lobos, osos, todo). Ninguna mazmorra está atada a una temática.
+- La misma mazmorra se corre con 5, 10, 20 o más de 25 jugadores. A mayor grupo, mayor dificultad y mayor recompensa.
+- Un jugador solo en la zona puede ser invitado o unirse a otros que estén ahí.
+- Recordatorio de diseño: si solo se premia el daño, nadie quiere ser tanque ni curador. Esos roles necesitan recompensa propia.
+
+BOTÍN
+- Variable, no cortado a la medida del jugador. Caen piezas y materiales de otras clases y oficios para venderlos a quien los necesite. Alimenta el mercado.
+
+ENFERMEDADES Y ESTADOS
+- Los enemigos transmiten enfermedades y efectos.
+- Estados tipo putrefacción (estilo Dark Souls) que se agravan con el tiempo y obligan a ir al médico. No se curan solos.
+- Los estados son acumulables (ej. putrefacción + pierna perdida por una herida a largo plazo, a la vez).
+- Morir por enfermedad cuesta las 4 horas normales, pero hay enfermedades que NO se quitan al morir: se resucita infectado hasta ser curado.
+- No entran al principio del juego (sería injusto). Aparecen progresivamente, cada vez más complicadas.
+
+MÉDICO Y ALQUIMISTA
+- Médico: lo físico (heridas, fracturas, partes del cuerpo perdidas).
+- Alquimista: lo químico (venenos, enfermedades, putrefacción) con pociones y antídotos.
+- Ninguno cubre lo del otro.
+- Aprenden por dos vías: práctica con pacientes, e información que les pasan cazadores e investigadores sobre las enfermedades que encontraron. En niveles avanzados se necesitan ambas.
+- El peso de estos oficios depende de la variedad de enfermedades, problemas y situaciones que existan.
+
+PRINCIPIO GENERAL DE PROFESIONES
+- El modelo médico/alquimista se aplica a TODOS los oficios: cada uno cubre un pedazo, ninguno cubre todo, siempre se depende de otro jugador.
+- Los oficios se encadenan: el sastre básico trabaja con lo que consigue, pero para escalar necesita fibras y pieles de agricultura y ganadería. Igual con el resto.
+- Carpintero: fabrica y mejora herramientas e instrumentos de farmeo, y es el encargado de subir el nivel de farmeo de los propios nodos.
+
+MATERIALES
+- Fuentes exclusivas: unos solo de ganadería o agricultura, otros solo de investigación, otros solo de matar cierto tipo de monstruo, otros solo de eventos. También caen en el entorno exterior cazando y recolectando.
+- Cada vía tiene su beneficio propio; ninguna reemplaza a otra.
+- En lo complicado, cada vía necesita de una o dos vías más. Lo básico se hace solo.
+- También hay tareas básicas que cualquiera puede hacer pero que se comercian porque a otro le conviene comprarlas. Ingreso constante para jugadores nuevos.
+
+JUGADOR EN SOLITARIO (las tres vías)
+- Mazmorras pequeñas para uno solo con recompensa modesta (modelo delves de Elder Scrolls Online).
+- Mazmorras profundas de pisos donde se baja hasta donde se aguante (modelo Deep Dungeon de Final Fantasy XIV).
+- Camino de profesiones: cazar, recolectar, investigar, abastecer y comerciar sin pelear.
+
+MAPA Y NODOS
+- Mapa infinito: al avanzar en cualquier eje aparece contenido distinto.
+- En cada tramo se muestran 2-3 iconos de nodos y 1-2 mazmorras. Se sabe que hay algo, pero no qué es hasta ir a investigar.
+- Los nodos cambian y se mejoran con las profesiones.
+- Los monstruos se restablecen o incluso suben de dificultad.
+
+EXPLORADOR
+- Aprende sigilo y habilidades para obtener información de un lugar antes de llegar.
+- Gana experiencia y recompensas propias por el reconocimiento.
+
+ETAPAS DE ASENTAMIENTO
+- Referencia: Ashes of Creation tiene 7 etapas (Yermo, Expedición, Campamento, Aldea, Pueblo, Ciudad, Metrópolis). La Aldea es el gran salto (edificios permanentes, alcalde, casas, edificio único por tipo de nodo: militar, económico, divino o científico). Metrópolis: máximo 5 por servidor, abre mazmorras raras y final de juego. Los grandes someten a los pequeños como vasallos.
+- Jams quiere MÁS de 7 para que el progreso se sienta más fluido. Propuesta: 10 etapas (POR CONFIRMAR).
+- Las primeras etapas rápidas; luego cada vez más lentas.
+- Cada etapa sube capacidad de aldeanos, casillas del mapa y permisos. Contenido nuevo (mercado, templo, taller avanzado) solo cada 2-3 etapas.
+- Para avanzar de etapa hay que tener construidas ciertas estructuras.
+- Las etapas tempranas son jugables para grupos pequeños que no caben en un castillo.
+- Fusión: un grupo pequeño puede desmantelar su campamento y unirse a un castillo, aportando parte de sus recursos a la estructura nueva. Hay que mover las cosas con anticipación; lo que no se traslade a tiempo se pierde y se destruye.
+- Los campamentos pequeños también pueden ser atacados (aplican las reglas de asedio ya definidas: aviso anticipado y mínimo de atacantes según tamaño).
+
+PENDIENTES
+- Confirmar número exacto de etapas de asentamiento.
+- E-03 sigue sin respuesta.
+- Arena sin pérdidas desde el principio (E-32): sin respuesta.
+- Temas sin tocar: eventos y temporadas, world bosses, logros y rangos, PvP en mazmorras.
+```

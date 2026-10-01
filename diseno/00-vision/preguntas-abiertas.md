@@ -130,14 +130,14 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 
 ## Dudas de la entrevista de voz (segunda tanda, 1-oct-2026)
 
-Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82).
+Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82). P-106 a P-114 salieron de la ampliación de diseño del dueño (D-164 a D-173) y van como E-83 a E-91.
 
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-78 | ¿Cuántos miembros pide un castillo (D-122)? El dueño dijo de 40 a 50, pero en la beta habrá pocos jugadores (D-122, D-155; entrevista E-55) | 15 durante la beta y 40 desde el lanzamiento |
 | P-79 | ¿Cuántas oleadas crecientes hay que defender para aprobar el castillo, y cuántas victorias de cuántos miembros pide la Noche de prueba (D-122)? (D-122; entrevista E-56) | 6 oleadas en dos semanas, ganando al menos 4; Noche de prueba con 10 victorias de al menos 5 miembros distintos |
 | P-80 | La casa del inicio (D-158), ¿es el primer escalón del asentamiento o una casa propia de cada jugador dentro de él? (D-158; entrevista E-57) | Es el primer escalón, compartido por 3 a 5 jugadores; los campamentos que ya existen conservan su nivel |
-| P-81 | ¿Cuántos escalones tiene el asentamiento y cómo se llaman (D-136, D-155)? (D-136, D-155; entrevista E-58) | 12: casa, campamento, aldea, pueblo, villa, ciudad, gran ciudad, fortaleza, castillo, ciudadela, ducado y reino |
+| P-81 | ¿Cuántos escalones tiene el asentamiento y cómo se llaman (D-136, D-155)? (D-136, D-155; entrevista E-58) | 10 etapas: casa, campamento, aldea, pueblo, villa, ciudad, fortaleza, castillo, ciudadela y reino; las primeras rápidas y las últimas lentas (el dueño quiere más de 7, D-173) |
 | P-82 | Si en el castillo todo se vota (D-157), ¿qué decide solo el fundador o monarca? (D-155, D-157; entrevista E-59) | El nombre, la bandera, declarar la guerra y aceptar o echar miembros; todo lo demás se vota |
 | P-83 | ¿Las oleadas llegan en días y horas fijas para todos o cada campamento tiene su ritmo (D-154, D-124)? (D-154, D-124; entrevista E-60) | Días y horas fijas para todos, avisadas con anticipación |
 | P-84 | ¿En qué hora de referencia caen los eventos fijos: oleadas, asedios y jefes de mundo (D-124)? (D-124; entrevista E-61) | La noche de América: de 19:00 a 23:00 en UTC−5 |
@@ -152,13 +152,22 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-93 | ¿Cuánto dura el equipo antes de repararse y de romperse (D-139)? (D-139; entrevista E-70) | Unas 3 semanas de juego diario por reparación; se rompe tras unas 5 reparaciones (unos 4 meses) |
 | P-94 | ¿Las obras maestras se gastan igual que el equipo normal (D-139)? (D-139, D-116; entrevista E-71) | Se gastan, pero aguantan el doble |
 | P-95 | ¿Bajamos lo que paga el mercader por una obra maestra para que fabricar y venderle no deje ganancia (D-116)? (D-116; entrevista E-72) | Sí: el negocio debe ser venderle a otros jugadores |
-| P-96 | ¿Cómo te da otro jugador los beneficios de su oficio (D-121)? (D-121; entrevista E-73) | Con objetos y servicios que duran unas horas, y el que los da puede cobrarlos |
+| P-96 | ¿Cómo te da otro jugador los beneficios de su oficio (D-121)? (D-121; entrevista E-73) | ✅ **Decidido (D-168):** con objetos y servicios que se cobran; cada oficio cubre un pedazo y siempre se depende de otro jugador |
 | P-97 | ¿Cómo funciona el tope diario de recursos de una zona (D-123)? (D-123; entrevista E-74) | Cada zona da un total por día; pasado ese total rinde la mitad |
 | P-98 | ¿Cómo se reparten las zonas seguras y las de 10, 20 y 40 % de pérdida (D-148)? (D-148; entrevista E-75) | Por distancia al Claro: cerca seguras, luego 10 %, 20 % y 40 %; los asentamientos siempre seguros |
 | P-99 | ¿Cuándo entra el PvP (D-148)? (D-148; entrevista E-76) | Después de la beta |
-| P-100 | ¿Qué tan duras son las heridas y cuánto tarda curarlas (D-152)? (D-152; entrevista E-77) | Nunca dejan sin jugar; el héroe pelea peor hasta que un médico lo trata, de 1 a 3 días reales |
+| P-100 | ¿Qué tan duras son las heridas y cuánto tarda curarlas (D-152)? (D-152; entrevista E-77) | ✅ **Decidido (D-166):** se agravan con el tiempo, no se curan solos, se acumulan y algunas siguen después de morir; morir cuesta las 4 horas de siempre |
 | P-101 | ¿De quién se defienden los nodos especiales (D-160)? (D-160; entrevista E-78) | De monstruos al principio; de jugadores cuando haya PvP |
 | P-102 | ¿Los veteranos reciben experiencia de Explorador por lo que exploraron antes de la 0.22 (D-112)? (D-112; entrevista E-79) | Sí, una parte |
 | P-103 | ¿Se puede fundar o agrandar un asentamiento encima de un campamento enemigo (D-112)? (D-112; entrevista E-80) | No: primero hay que destruirlo |
 | P-104 | ¿Los jefes de campamentos enemigos lejanos piden grupo (D-112)? (D-112, D-150; entrevista E-81) | Sí, desde cierta distancia del Claro |
 | P-105 | ¿Cuánto cuesta cambiar de especialización de oficio (D-141)? (D-141; entrevista E-82) | Monedas que suben con el rango; lo aprendido en la vieja queda guardado |
+| P-106 | ¿Hay una arena sin pérdidas desde el principio, también en la beta? (D-148; entrevista E-83) | Sí: se practica sin riesgo y ayuda a balancear las clases |
+| P-107 | ¿Cómo son los eventos y las temporadas? (entrevista E-84) | Un evento corto cada mes (unas 2 semanas) y temporadas de 3 meses con premios cosméticos y clasificación; el progreso del héroe nunca se borra (D-64) |
+| P-108 | ¿Cómo funcionan los jefes de mundo? (D-150; entrevista E-85) | En lugares del mapa a horas avisadas, para muchos jugadores a la vez; el botín según lo que hizo cada uno en su rol |
+| P-109 | ¿Qué dan los logros y los rangos? (entrevista E-86) | Títulos, marcos y emblemas sin poder de combate; rangos por temporada |
+| P-110 | ¿Hay PvP dentro de las mazmorras? (D-164; entrevista E-87) | No: las mazmorras son siempre contra monstruos |
+| P-111 | ¿Qué parte de las piezas que caen es de tu tipo, ahora que el botín no se corta a tu medida? (D-165; entrevista E-88) | 40 % cuando exista la subasta (hoy 70 %, D-77) |
+| P-112 | ¿Cómo se fusiona un campamento chico con un castillo? (D-173; entrevista E-89) | 7 días de aviso; lo que muden los miembros se conserva y el castillo recibe la mitad de lo que costaron las obras; lo demás se pierde |
+| P-113 | ¿Hay vasallos, como en Ashes of Creation? (D-173; entrevista E-90) | Más adelante, junto con la guerra de castillos |
+| P-114 | ¿Desde cuándo aparecen las enfermedades? (D-166; entrevista E-91) | Las leves desde el nivel 15 y lejos del Claro; las graves y las que siguen después de morir, desde el nivel 40 |

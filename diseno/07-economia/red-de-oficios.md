@@ -2,6 +2,8 @@
 
 > **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115). En el juego: las fases 1 y 1.5 y el lado del campamento de la fase 2 (§5)
 
+> ⚠️ **Lo que decidió el dueño (1-oct-2026):** cada oficio cubre un pedazo y siempre se depende de otro jugador; los oficios se encadenan (el sastre necesita fibras y pieles de agricultura y ganadería para subir); el 🪑 carpintero hace y mejora las herramientas de farmeo y sube el nivel de los nodos (D-168). Los materiales tienen fuentes exclusivas (ganadería, agricultura, investigación, monstruos, eventos) y lo complicado pide una o dos vías más (D-169).
+
 **De dónde sale.**
 - *World of Warcraft*: oficios que se piden materiales entre sí (el herrero necesita al minero, el encantador desencanta lo que otros fabrican) y especializaciones por oficio desde *Dragonflight*.
 - *Albion Online*: el paso de refinado, el equipo que se gasta y una economía donde casi todo lo hacen los jugadores (D-113).
