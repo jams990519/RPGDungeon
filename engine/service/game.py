@@ -14,10 +14,11 @@ act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
     diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3;
     diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
-    diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99)
-Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M15 y M19)
+    diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
+    diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
+Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging,
-    engine.social (cuentas del gremio, D-97), content/*
+    engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated
@@ -38,6 +39,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     "raid" (la incursión abierta: kind "raid" o "trial", at, until, required, wins, fights {héroe: fighting, won,
     lost o fled}, enemy, level), "raids" ({"won", "lost"}), "trial_won" y "trial_retry_at" (Noche de prueba).
     Una pelea de defensa lleva "raid" ({"camp", "at"}) en su estado de "combat". Diseño: §0.5 del mismo documento
+    D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
+    at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
+    en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -55,6 +59,9 @@ Reglas que nunca se rompen:
        lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
     10. El gremio (D-97) nunca saca a nadie: si el cupo baja, los que ya están se quedan.
     11. Una incursión perdida (D-99) solo quita parte de la despensa: nunca niveles, zonas ni miembros.
+    12. Cazar (D-106) solo da la pelea y su botín: nunca exploración ni recursos. No hay presas donde el bioma no tiene
+        peligro (el Claro) ni en la guarida del Guardián. La partida de caza no junta a nadie en una pelea (el combate
+        sigue de 1 contra 1) y solo avisa a los miembros presentes en la misma zona (sin teletransporte).
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -78,6 +85,12 @@ Si cambias esto, revisa:
       tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
       🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _grow_view/_grow_camp (castillo pide la prueba ganada)
+      tests/test_hunt.py (cacería en la zona y partida de caza, D-106)
+    - Cacería (D-106): balance.yaml hunt; engine/social/hunting.py; textos hunt.* en es.yaml; los botones
+      🏹 Cazar ("hunt"), 🏹 Buscar presa y 🏹 Otra presa ("prey"), 🏹 Partida de caza ("huntparty") y 🏹 Unirme
+      ("huntjoin"); _explore_menu (4 botones: 📒 Lugares se mudó a 🗺️ Mapa, que es la vuelta de _places_view),
+      _start_combat (marca "hunt" en el combate), _end_combat (bono, cuenta de presas y 🏹 Otra presa) y la presencia
+      de D-96 (_zone_players decide a quién avisa la partida y quién da bono); _spend_energy recibe el costo de cazar
 """
 
 from __future__ import annotations
@@ -125,6 +138,7 @@ from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
+from engine.social import hunting as hunt_rules
 from engine.world import raids as raid_rules
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
@@ -192,6 +206,7 @@ class GameService:
             return self._creation_view(account_id)
         notices = self._settle(hero)
         self._raid_settle(hero)
+        self._hunt_party_settle(hero)       # D-106: the camp's hunting party closes lazily too
         self._save(hero)
         return self._main_view(hero, notice=self._join(notices))
 
@@ -230,6 +245,7 @@ class GameService:
         notices = self._settle(hero)
         self._presence_note(hero)                       # D-96: others see you in 📍 Zona
         self._raid_settle(hero)             # D-99: the camp's raid clock is lazy too
+        self._hunt_party_settle(hero)       # D-106: and so is its hunting party
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
@@ -620,9 +636,9 @@ class GameService:
             hero.energy = min(cfg["max"], hero.energy + gained)
             hero.energy_at = now if hero.energy >= cfg["max"] else hero.energy_at + gained * self._energy_period()
 
-    def _spend_energy(self, hero: Hero, kind: str) -> bool:
-        """Pay the energy of a non-combat action: move, explore or gather (D-78)."""
-        cost = self.content.balance["energy"][f"per_{kind}"]
+    def _spend_energy(self, hero: Hero, kind: str, cost: int | None = None) -> bool:
+        """Pay the energy of a non-combat action: move, explore or gather (D-78); hunting passes its own cost (D-106)."""
+        cost = self.content.balance["energy"][f"per_{kind}"] if cost is None else cost
         if hero.energy < cost:
             return False
         if hero.energy >= self.content.balance["energy"]["max"]:
@@ -632,7 +648,8 @@ class GameService:
 
     def _no_energy_notice(self, hero: Hero) -> str:
         wait = self._energy_period() - (self.clock.now() - hero.energy_at)
-        return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)), per_day=self.content.balance["energy"]["per_day"])
+        return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)), per_day=self.content.balance["energy"]["per_day"],
+                            hunt=self.content.balance["hunt"]["energy"])
 
     def _explore_target(self, hero: Hero) -> tuple[int, int] | None:
         """The zone the next exploration studies: yours until 100 %, then the ones around you (D-107).
@@ -951,6 +968,8 @@ class GameService:
             return self._defend(hero)
         if action_id == "trial":                        # D-99: call the Noche de prueba (grow screen, level 8)
             return self._start_trial(hero)
+        if action_id == "huntjoin":                     # D-106: from the party notice; joining works while busy too
+            return self._join_hunt_party(hero)
         if action_id == "askjoin":
             return self._ask_join(hero)
         if action_id == "leave":
@@ -993,6 +1012,12 @@ class GameService:
             return view
         if action_id == "boss":
             return self._challenge_guardian(hero)
+        if action_id == "hunt":                         # D-106: 🧭 Explorar → 🏹 Cazar (the hunt screen)
+            return self._hunt_view(hero)
+        if action_id == "prey":                         # D-106: 🏹 Buscar presa / 🏹 Otra presa: a fight right away
+            return self._hunt(hero)
+        if action_id == "huntparty":                    # D-106: call your camp's hunting party here
+            return self._call_hunt_party(hero)
         if action_id.startswith("go:") and action_id[3:] in DIRECTIONS:
             if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
@@ -1791,6 +1816,16 @@ class GameService:
         return self._activity_view(hero, notice=t.t("inn.started", price=self._money(price), time=self._fmt_duration(seconds)))
 
     def _explore_menu(self, hero: Hero, notice: str | None = None) -> View:
+        """🧭 Explorar: explore, gather, hunt and the map (4 buttons at most, D-75).
+
+        [ES]
+        Qué hace: el menú de la zona: 🔎 Explorar, 🪓 Recolectar, 🏹 Cazar (D-106) y 🗺️ Mapa. 📒 Lugares se mudó adentro
+        de 🗺️ Mapa para dejarle lugar a 🏹 Cazar. En la guarida del Guardián (D-82) ⚔️ Desafiar al Guardián toma el lugar
+        de recolectar y no hay 🏹 Cazar: quedan 3 botones.
+        La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
+        Si cambia, afecta: tests/test_boss.py y tests/test_hunt.py (los botones), tests/test_buttons.py (tope de 4) y la
+        consola (adapters/cli/play.py numera estos botones).
+        """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
@@ -1800,11 +1835,12 @@ class GameService:
         body += self._tutorial_hint(hero)
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
-                   Action(id="map", label=t.t("menu.map")), Action(id="places", label=t.t("menu.places"))]
+                   Action(id="hunt", label=t.t("hunt.button")),          # D-106; 📒 Lugares lives in 🗺️ Mapa now
+                   Action(id="map", label=t.t("menu.map"))]
         if self._is_lair(zone.x, zone.y):
-            # The lair (D-82): the challenge takes the gather slot (4 buttons at most, D-75).
+            # The lair (D-82): the challenge takes the gather slot and there is no prey but the Guardian (D-106).
             body += ["", self._guardian_ready_line(hero), t.t("guardian.no_gather")]
-            actions[1] = Action(id="boss", label=t.t("guardian.button"))
+            actions = [actions[0], Action(id="boss", label=t.t("guardian.button")), actions[3]]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ player camps (D-71)
@@ -2175,6 +2211,288 @@ class GameService:
         self.store.put("camp", key, camp)
         self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
         return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
+
+    # ------------------------------------------------------------------ hunting (D-106, provisional)
+
+    def _hunt_cfg(self) -> dict[str, Any]:
+        return self.content.balance["hunt"]
+
+    def _hunt_zone_blocker(self, hero: Hero) -> str | None:
+        """Why nobody hunts in the hero's zone (no prey where the biome has no danger, the Guardian's lair), else None.
+
+        [ES] Qué hace: dice por qué no se caza en esta zona: en el Claro (bioma sin peligro) no hay presas, y en la guarida
+        solo está el Guardián (D-82). En el territorio de un campamento sí se caza: la tierra protege de las emboscadas, pero
+        salir a buscar una presa es a propósito. La llaman: _hunt_view, _hunt, _call_hunt_party y _hunt_end_actions.
+        Si cambia, afecta: dónde se puede cazar y dónde se puede convocar una partida de caza.
+        """
+        zone = self._zone(hero.x, hero.y)
+        if self.content.biomes[zone.biome]["danger"] <= 0:
+            return self.texts.t("hunt.no_prey")
+        if self._is_lair(zone.x, zone.y):
+            return self.texts.t("hunt.lair")
+        return None
+
+    def _hunt_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🏹 Cazar: what roams here, what a prey costs, the party of your camp; [Buscar presa] [Partida/Unirme] [Volver].
+
+        [ES]
+        Qué hace: la pantalla de cacería de la zona (D-106): qué enemigos rondan, cuánta energía cuesta cada presa, que no
+        suma exploración ni recursos, tu vida y energía, y la partida de caza de tu campamento si hay una (o la pista para
+        tener una). Botones: 🏹 Buscar presa, 🏹 Partida de caza o 🏹 Unirme (si tienes campamento) y ↩️ Volver: 3 como máximo.
+        Donde no hay presas vuelve a 🧭 Explorar con el aviso. Si estás malherido, lo avisa de entrada.
+        La llaman: 🧭 Explorar → 🏹 Cazar, y las acciones de cacería cuando rechazan algo.
+        Si cambia, afecta: tests/test_hunt.py y el tope de 4 botones.
+        """
+        t = self.texts
+        blocked = self._hunt_zone_blocker(hero)
+        if blocked:
+            return self._explore_menu(hero, notice=blocked)
+        zone = self._zone(hero.x, hero.y)
+        cost = self._hunt_cfg()["energy"]
+        names: list[str] = []
+        for _, edef in self._zone_enemies(zone):
+            name = t.t(edef["name_key"])
+            if name not in names:
+                names.append(name)
+        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("hunt.intro", energy=cost),
+                t.t("hunt.prey_line", names=", ".join(names[:5])), t.t("hunt.rewards_hint"), self._status_line(hero)]
+        body += self._hunt_party_lines(hero)
+        actions = [Action(id="prey", label=t.t("hunt.go_button", energy=cost))]
+        party_action = self._hunt_party_action(hero)
+        if party_action:
+            actions.append(party_action)
+        actions.append(Action(id="explore_menu", label=t.t("menu.back")))
+        if notice is None and hero.downed:
+            notice = t.t("hunt.downed")
+        return View(kind="hunt", title=t.t("hunt.title"), body=body, actions=actions, notice=notice)
+
+    def _hunt(self, hero: Hero) -> View:
+        """🏹 Buscar presa / 🏹 Otra presa: pay the energy and fight a common enemy of the zone right away.
+
+        [ES]
+        Qué hace: sale a cazar (D-106): cobra hunt.energy y empieza enseguida una pelea contra un enemigo común del bioma y
+        el nivel de la zona (el mismo sorteo de los encuentros). No suma exploración ni recursos: da solo lo de la pelea.
+        No se puede en el Claro ni en la guarida, malherido ni sin energía (se avisa y no se cobra). Ocupado (viajando,
+        explorando, recolectando o durmiendo) lo frena antes _idle_action.
+        La llaman: los botones 🏹 Buscar presa (pantalla 🏹 Cazar) y 🏹 Otra presa (al ganar una presa), acción "prey".
+        Si cambia, afecta: el gasto de energía y el ritmo de experiencia (balance.yaml hunt.energy), tests/test_hunt.py.
+        """
+        t = self.texts
+        blocked = self._hunt_zone_blocker(hero)
+        if blocked:
+            return self._explore_menu(hero, notice=blocked)
+        if hero.downed:
+            return self._hunt_view(hero, notice=t.t("hunt.downed"))
+        if not self._spend_energy(hero, "hunt", self._hunt_cfg()["energy"]):
+            return self._hunt_view(hero, notice=self._no_energy_notice(hero))
+        zone = self._zone(hero.x, hero.y)
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "hunt", self.clock.now(), hero.kills) * 2**31))
+        notice = self._start_combat(hero, zone, rng, "hunt.found", mark={"hunt": {"x": zone.x, "y": zone.y}})
+        return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
+
+    def _hunt_end_actions(self, hero: Hero) -> list[Action]:
+        """Buttons a won hunt adds before ▶️ Continuar: 🏹 Otra presa (with energy, not downed) and the party button."""
+        t = self.texts
+        actions = []
+        if not hero.downed and hero.energy >= self._hunt_cfg()["energy"] and not self._hunt_zone_blocker(hero):
+            actions.append(Action(id="prey", label=t.t("hunt.again_button")))
+        party_action = self._hunt_party_action(hero)
+        if party_action:
+            actions.append(party_action)
+        return actions
+
+    def _hunt_party(self, key: str) -> dict[str, Any] | None:
+        """The camp's hunting party if one is open now (its window has not ended), else None."""
+        party = self.store.get("hunt_party", key)
+        return party if party and self.clock.now() < party["until"] else None
+
+    def _hunt_target(self, party: dict[str, Any]) -> int:
+        cfg = self._hunt_cfg()["party"]
+        return hunt_rules.party_target(len(party.get("members", {})), cfg["prey_per_hunter"], cfg["min_hunters"])
+
+    def _hunt_camp(self, hero: Hero) -> dict[str, Any] | None:
+        """The hero's camp record if the hero is one of its members (who can call or join a hunting party)."""
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        return camp if camp and hero.id in camp.get("members", []) else None
+
+    def _hunt_party_action(self, hero: Hero) -> Action | None:
+        """🏹 Partida de caza (no party open) or 🏹 Unirme (one open in this zone, not joined yet); None otherwise."""
+        if self._hunt_camp(hero) is None:
+            return None
+        party = self._hunt_party(hero.camp)
+        if party is None:
+            return Action(id="huntparty", label=self.texts.t("hunt.party_button"))
+        if hero.id not in party["members"] and (hero.x, hero.y) == (party["x"], party["y"]):
+            return Action(id="huntjoin", label=self.texts.t("hunt.join_button"))
+        return None
+
+    def _hunt_companions(self, hero: Hero, party: dict[str, Any]) -> int:
+        """Other party members present now in the party's zone (D-96 presence: pressed a button lately or busy there)."""
+        present = {p["id"] for p in self._zone_players(party["x"], party["y"], exclude=hero.id)}
+        return sum(1 for member in party["members"] if member != hero.id and member in present)
+
+    def _hunt_bonus(self, hero: Hero, party: dict[str, Any]) -> float:
+        """Group bonus of a hunt victory: +per companion present, capped (balance hunt.party)."""
+        cfg = self._hunt_cfg()["party"]
+        return hunt_rules.party_bonus(self._hunt_companions(hero, party), cfg["bonus_per_companion"], cfg["bonus_cap"])
+
+    def _hunt_party_of_fight(self, hero: Hero, state: dict[str, Any]) -> dict[str, Any] | None:
+        """The open party a finished hunt counts for: the hero's camp party, joined, in the zone of that hunt."""
+        ref = state.get("hunt")
+        if not ref or self._hunt_camp(hero) is None:
+            return None
+        party = self._hunt_party(hero.camp)
+        if not party or hero.id not in party["members"] or (party["x"], party["y"]) != (ref["x"], ref["y"]):
+            return None
+        return party
+
+    def _hunt_fight_done(self, hero: Hero, party: dict[str, Any], bonus: float) -> list[str]:
+        """Count a won hunt for the party (saved now) and say how the tally goes."""
+        hunt_rules.add_prey(party, hero.id)
+        self.store.put("hunt_party", hero.camp, party)
+        return [self.texts.t("hunt.party_prey", prey=party["prey"], target=self._hunt_target(party), pct=round(100 * bonus))]
+
+    def _hunt_party_lines(self, hero: Hero) -> list[str]:
+        """The hunt screen's party lines: the open party of your camp and your bonus now, or the hint to have a camp."""
+        t = self.texts
+        if not hero.camp:
+            return [t.t("hunt.camp_hint")]
+        party = self._hunt_party(hero.camp)
+        camp = self._hunt_camp(hero)
+        if not party or camp is None:
+            return []
+        zone = self._zone_name(self._zone(party["x"], party["y"]))
+        lines = [t.t("hunt.party_line", camp=camp["name"], zone=zone, n=len(party["members"]), prey=party["prey"],
+                     target=self._hunt_target(party), time=self._fmt_duration(party["until"] - self.clock.now()))]
+        if hero.id in party["members"] and (hero.x, hero.y) == (party["x"], party["y"]):
+            companions = self._hunt_companions(hero, party)
+            lines.append(t.t("hunt.party_bonus_line", pct=round(100 * self._hunt_bonus(hero, party)), k=companions))
+        return lines
+
+    def _hunt_party_notice(self, hero: Hero, camp: dict[str, Any], party: dict[str, Any]) -> View:
+        """The push the camp members present in the zone get: who calls, where, for how long, bonus and goal, [🏹 Unirme]."""
+        t = self.texts
+        cfg = self._hunt_cfg()["party"]
+        zone = self._zone_name(self._zone(party["x"], party["y"]))
+        body = [t.t("hunt.party_call", name=hero.name, camp=camp["name"], zone=zone, time=self._fmt_duration(party["until"] - party["at"])),
+                t.t("hunt.party_how", per=round(100 * cfg["bonus_per_companion"]), cap=round(100 * cfg["bonus_cap"])),
+                t.t("hunt.party_goal", per_hunter=cfg["prey_per_hunter"], xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"]))]
+        return View(kind="hunt_party", title=t.t("hunt.party_title", zone=zone), body=body,
+                    actions=[Action(id="huntjoin", label=t.t("hunt.join_button"))])
+
+    def _call_hunt_party(self, hero: Hero) -> View:
+        """🏹 Partida de caza: open your camp's hunting party in this zone and tell the members present here.
+
+        [ES]
+        Qué hace: un miembro de un campamento convoca la partida de caza en la zona donde está (D-106). Dura
+        hunt.party.minutes y avisa (con 🏹 Unirme) solo a los miembros del campamento presentes en esta zona: tocaron un botón
+        en los últimos presence.minutes o exploran, recolectan o duermen aquí (D-96). Los que están en otra zona no reciben
+        nada (sin teletransporte). Una partida por campamento a la vez; si ya hay una aquí, te une. No gasta energía; no se
+        puede donde no hay presas ni malherido.
+        La llaman: el botón 🏹 Partida de caza (pantalla 🏹 Cazar o al ganar una presa), acción "huntparty".
+        Si cambia, afecta: a quién llegan los avisos (tick() los entrega) y tests/test_hunt.py.
+        """
+        t = self.texts
+        camp = self._hunt_camp(hero)
+        if camp is None:
+            return self._hunt_view(hero, notice=t.t("hunt.party_no_camp"))
+        blocked = self._hunt_zone_blocker(hero)
+        if blocked:
+            return self._explore_menu(hero, notice=blocked)
+        if hero.downed:
+            return self._hunt_view(hero, notice=t.t("hunt.downed"))
+        self._hunt_party_settle(hero)             # an ended party is closed (and reported) before a new one starts
+        party = self._hunt_party(hero.camp)
+        if party:
+            here = (hero.x, hero.y) == (party["x"], party["y"])
+            if here and hero.id not in party["members"]:
+                return self._join_hunt_party(hero)
+            if here:
+                return self._hunt_view(hero, notice=t.t("hunt.party_member"))
+            return self._hunt_view(hero, notice=t.t("hunt.party_already", zone=self._zone_name(self._zone(party["x"], party["y"])),
+                                                    time=self._fmt_duration(party["until"] - self.clock.now())))
+        now = self.clock.now()
+        party = {"x": hero.x, "y": hero.y, "at": now, "until": now + self._seconds(self._hunt_cfg()["party"]["minutes"]),
+                 "caller": hero.id, "members": {hero.id: 0}, "prey": 0}
+        self.store.put("hunt_party", hero.camp, party)
+        present = {p["id"] for p in self._zone_players(hero.x, hero.y, exclude=hero.id)}
+        invited = [member for member in camp["members"] if member != hero.id and member in present]
+        notice = self._hunt_party_notice(hero, camp, party)
+        for member in invited:
+            self._push(member, notice)
+        return self._hunt_view(hero, notice=t.t("hunt.party_called" if invited else "hunt.party_called_alone", n=len(invited)))
+
+    def _join_hunt_party(self, hero: Hero) -> View:
+        """🏹 Unirme: join your camp's open hunting party, only from its zone (works while busy, D-106).
+
+        [ES]
+        Qué hace: te suma a la partida de caza abierta de tu campamento si estás en su zona. Se puede aunque estés
+        explorando o recolectando (luego, para cazar, hay que terminar o parar). Si no hay partida, terminó o estás en otra
+        zona, lo dice y no hace nada.
+        La llaman: el botón 🏹 Unirme del aviso de la partida, de la pantalla 🏹 Cazar o del final de una presa ("huntjoin").
+        Si cambia, afecta: quién suma bono y presas en la partida, tests/test_hunt.py.
+        """
+        t = self.texts
+        camp = self._hunt_camp(hero)
+        party = self._hunt_party(hero.camp) if camp else None
+        if camp is None:
+            return self._main_view(hero, notice=t.t("hunt.party_no_camp"))
+        if party is None:
+            return self._main_view(hero, notice=t.t("hunt.party_none"))
+        if (hero.x, hero.y) != (party["x"], party["y"]):
+            return self._main_view(hero, notice=t.t("hunt.party_wrong_zone", zone=self._zone_name(self._zone(party["x"], party["y"]))))
+        if hero.id in party["members"]:
+            notice = t.t("hunt.party_member")
+        else:
+            party["members"][hero.id] = 0
+            self.store.put("hunt_party", hero.camp, party)
+            notice = t.t("hunt.party_joined", camp=camp["name"])
+        if hero.activity:
+            return self._main_view(hero, notice=notice)
+        return self._hunt_view(hero, notice=notice)
+
+    def _hunt_party_settle(self, hero: Hero) -> None:
+        """Close the hero's camp hunting party once its window ended (lazy clock, like raids, D-106).
+
+        [ES]
+        Qué hace: el reloj perezoso de la partida de caza (sin reloj de fondo): cuando un miembro del campamento juega
+        después de que terminó la ventana, la cierra, manda el informe a los cazadores y paga el premio si llegaron a la meta.
+        La llaman: view() y act(), después de _settle y _raid_settle; y _call_hunt_party antes de abrir otra.
+        Si cambia, afecta: cuándo llega el informe y el premio de las partidas de todos los campamentos.
+        """
+        if not hero.camp:
+            return
+        party = self.store.get("hunt_party", hero.camp)
+        if not party or self.clock.now() < party["until"]:
+            return
+        self.store.delete("hunt_party", hero.camp)
+        self._resolve_hunt_party(hero.camp, party, hero)
+
+    def _resolve_hunt_party(self, key: str, party: dict[str, Any], actor: Hero) -> None:
+        """Report to every hunter of the party (prey together, each one's count) and pay the reward if they reached the goal."""
+        t = self.texts
+        cfg = self._hunt_cfg()["party"]
+        camp = self.store.get("camp", key) or {}
+        members = party.get("members", {})
+        body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members), zone=self._zone_name(self._zone(party["x"], party["y"])),
+                    target=self._hunt_target(party))]
+        hunters = []
+        for hero_id, prey in sorted(members.items(), key=lambda row: -row[1]):
+            name = actor.name if hero_id == actor.id else (self.store.get("hero", hero_id) or {}).get("name", "?")
+            hunters.append(t.t("hunt.party_end_hunter", name=name, prey=prey))
+        if hunters:
+            body.append(t.t("hunt.party_end_hunters", list=" · ".join(hunters)))
+        if hunt_rules.reward_earned(party, cfg["prey_per_hunter"], cfg["min_hunters"]):
+            for hero_id in hunt_rules.rewarded(party):
+                self._raid_reward(hero_id, cfg["reward"], actor)        # pays online or not, the actor in memory
+            body.append(t.t("hunt.party_end_reward", xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"])))
+        elif len(members) < cfg["min_hunters"]:
+            body.append(t.t("hunt.party_end_alone", n=cfg["min_hunters"]))
+        else:
+            body.append(t.t("hunt.party_end_short"))
+        view = View(kind="hunt_party_end", title=t.t("hunt.party_end_title", camp=camp.get("name", "?")), body=body)
+        for hero_id in members:
+            self._push(hero_id, view)
 
     # ------------------------------------------------------------------ guilds (D-97, provisional)
 
@@ -2592,7 +2910,10 @@ class GameService:
             self._push(member, view)
 
     def _raid_reward(self, hero_id: str, reward: dict[str, int], actor: Hero) -> None:
-        """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it."""
+        """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it.
+
+        Also pays the hunters of a hunting party that reached its goal (D-106).
+        """
         target = actor if actor.id == hero_id else self._load(hero_id)
         if target is None:
             return
@@ -2880,7 +3201,15 @@ class GameService:
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
     def _places_view(self, hero: Hero) -> View:
-        """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""
+        """Places this hero remembers, nearest first, with an estimated trip time (D-61).
+
+        [ES]
+        Qué hace: 📒 Lugares: los 3 lugares que recuerdas más cerca (la guarida del Guardián siempre, D-82), con el tiempo
+        del viaje; al elegir uno, el héroe va solo, zona por zona. Desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares
+        (su ↩️ Volver vuelve al mapa), para dejarle lugar a 🏹 Cazar en 🧭 Explorar.
+        La llaman: el botón 📒 Lugares del mapa y un "goto:" que ya no sirve.
+        Si cambia, afecta: tests/test_service.py y tests/test_boss.py (lugares y guarida), el paso use_places del tutorial.
+        """
         t = self.texts
         places = []
         for key in hero.known:
@@ -2909,7 +3238,7 @@ class GameService:
             body.append(t.t("places.none"))
         elif len(places) > 3:
             body.append(t.t("places.more", n=len(places) - 3))
-        actions.append(Action(id="explore_menu", label=t.t("menu.back")))
+        actions.append(Action(id="map", label=t.t("menu.back")))
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
 
     def _map_view(self, hero: Hero) -> View:
@@ -2919,8 +3248,8 @@ class GameService:
         Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
         igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
         se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
-        La llaman: 🧭 Explorar → 🗺️ Mapa.
-        Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje.
+        La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106) y ↩️ Volver.
+        Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano.
         """
         t = self.texts
         radius = self.content.balance["map_view"]["radius"]
@@ -2947,7 +3276,8 @@ class GameService:
         cfg = self._guardian_cfg()
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
-        return View(kind="map", title=t.t("map.title"), body=body, actions=[Action(id="explore_menu", label=t.t("menu.back"))])
+        return View(kind="map", title=t.t("map.title"), body=body,
+                    actions=[Action(id="places", label=t.t("menu.places")), Action(id="explore_menu", label=t.t("menu.back"))])
 
     def _hero_view(self, hero: Hero) -> View:
         """Hero sheet (D-76): level, xp, health, /stats, attack and defense, energy, resource, coins, /inv, /habilidades, status."""
@@ -3621,15 +3951,26 @@ class GameService:
 
     # ------------------------------------------------------------------ combat
 
-    def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str) -> str:
+    def _zone_enemies(self, zone: Zone) -> list[tuple[str, dict[str, Any]]]:
+        """Enemies that can show up in a zone: its biome and level; if none fit, its biome; if none, every common one.
+
+        [ES] Qué hace: los enemigos que salen en una zona (nunca jefes ni retirados). La llaman: _start_combat (encuentros,
+        emboscadas y cacería) y la pantalla 🏹 Cazar (🐾 Por aquí rondan). Si cambia, afecta: qué enemigos salen en todo el mapa.
+        """
         common = [(eid, e) for eid, e in self.content.enemies.items() if not e.get("boss") and not e.get("retired")]
         candidates = [(eid, e) for eid, e in common if zone.biome in e.get("biomes", [])]
         fitting = [(eid, e) for eid, e in candidates if e["level_min"] <= zone.level <= e["level_max"]]
-        pool = fitting or candidates or common
+        return fitting or candidates or common
+
+    def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str, mark: dict[str, Any] | None = None) -> str:
+        """Start a fight against a common enemy of the zone; `mark` adds keys to the fight state (a hunt, D-106)."""
+        pool = self._zone_enemies(zone)
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
         level = max(enemy_def["level_min"], min(enemy_def["level_max"], zone.level + (1 if rng.chance(0.3) else 0)))
         seed = int(rng.random() * 2**31)
         state = make_combat(enemy_id, enemy_def, level, self._kit(hero), seed)
+        if mark:
+            state.update(mark)
         self.store.put("combat", hero.id, state)
         hero.activity = None
         self.bus.publish(CombatStarted(hero.id, enemy_id, seed))
@@ -3791,12 +4132,15 @@ class GameService:
         rng = Rng(state["seed"], state["draws"])
         hb = self.content.balance["hero"]
         actions = [Action(id="home", label=t.t("menu.continue"))]
+        # D-106: a hunt won while your camp's hunting party lasts in that zone gets the group bonus (0 otherwise)
+        party = self._hunt_party_of_fight(hero, state) if outcome == "victory" else None
+        bonus = self._hunt_bonus(hero, party) if party else 0.0
         if outcome == "victory" and edef.get("boss"):
             lines += self._guardian_rewards(hero, state, rng)
             if self._has_memento(hero):
                 actions.insert(0, Action(id="memento", label=t.t("guardian.memento_button")))
         elif outcome == "victory":
-            xp = int(self._zone_xp(edef["xp"], enemy["level"]) * self._xp_mult(hero))
+            xp = int(self._zone_xp(edef["xp"], enemy["level"]) * self._xp_mult(hero) * (1 + bonus))   # D-106: party bonus
             low, high = edef.get("gold", [1, 3])
             gold = int(rng.uniform(low, high + 1) * (1 + 0.1 * (enemy["level"] - 1)))
             hero.xp += xp
@@ -3805,14 +4149,15 @@ class GameService:
             lines += self._tutorial(hero, "win_fight")
             lines.append(t.t("combat.rewards", xp=xp, gold=self._money(gold)))
             for item_id, chance in edef.get("loot", {}).items():
-                if item_id in self.content.items and rng.chance(chance):
+                if item_id in self.content.items and rng.chance(min(1.0, chance * (1 + bonus))):
                     item = self.content.items[item_id]
                     low, high = item.get("loot_amount", [1, 1])      # D-93: 🍖 carne comes in 1-2
                     count = low if high <= low else min(high, int(rng.uniform(low, high + 1)))
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
                     label = f"{item['emoji']} {t.t(item['name_key'])}" if count == 1 else self._item_list({item_id: count})
                     lines.append(t.t("combat.loot", item=label))
-            dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng)
+            drop = self.content.balance["gear"]["drop_chance"] * (1 + bonus) if bonus else None    # D-106: party bonus
+            dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng, chance=drop)
             if dropped:
                 hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
                 lines.append(self._loot_line(hero, dropped))
@@ -3834,11 +4179,15 @@ class GameService:
             lines.append(t.t("combat.defeat_consequence", gold=self._money(lost)))
         if state.get("raid"):                  # D-99: a defender's fight counts for the camp's raid
             lines += self._raid_fight_done(hero, state)
+        if party:                              # D-106: one more prey for the party's shared tally
+            lines += self._hunt_fight_done(hero, party, bonus)
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))
         hero.last_regen_at = self.clock.now()
         self.store.delete("combat", hero.id)
+        if outcome == "victory" and state.get("hunt"):
+            actions = self._hunt_end_actions(hero) + actions     # D-106: 🏹 Otra presa (and the party) before ▶️ Continuar
         self.bus.publish(CombatEnded(hero.id, outcome))
         title = t.t(f"combat.end_title.{outcome}")
         return View(kind="combat_end", title=title, body=lines, actions=actions)
