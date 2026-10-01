@@ -14,7 +14,7 @@ Reglas que nunca se rompen:
        para que los héroes ya guardados sigan cargando.
 Si cambias esto, revisa:
     - Almacén: héroes guardados en SQLite (campos nuevos con valor por defecto)
-    - Números: classes.yaml base/per_level, balance.yaml hero.xp_curve
+    - Números: classes.yaml base/per_level, balance.yaml hero.xp_curve y talents.passive (la Defensa suma armadura por punto, D-110)
     - seen_at (D-93): dice quién está activo y por lo tanto quién come de cada despensa
       (engine/service/game.py _mark_seen; tests/test_pantry.py)
     - chests (D-92, provisional): 🪎 cofres que se arman en el Claro y pagan el crecimiento de los campamentos
@@ -166,6 +166,8 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
     [ES]
     Qué hace: calcula vida máxima, ataque, armadura e iniciativa, con los bonos de
     talentos (talent_bonus), de equipo (gear_bonus) y de oficios (perk_bonus, D-111) que trae el kit del servicio.
+    La armadura suma la base, el equipo, los oficios y los talentos (D-110: los puntos de Defensa también dan
+    armadura, balance.yaml talents.passive.defensa.armor), sin pasar armor_cap (60 %).
     La llaman: el servicio (vista del héroe) y el combate.
     Si cambia, afecta: el balance de todas las clases.
     """
@@ -180,7 +182,8 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
                       * (1 + perk.get("hp", 0.0))),
         "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0)) * (1 + gear.get("attack", 0.0))
                         * (1 + perk.get("attack", 0.0))),
-        "armor": min(float(class_def.get("armor_cap", 0.6)), float(base.get("armor", 0.0)) + gear.get("armor", 0.0) + perk.get("armor", 0.0)),
+        "armor": min(float(class_def.get("armor_cap", 0.6)), float(base.get("armor", 0.0)) + gear.get("armor", 0.0) + perk.get("armor", 0.0)
+                     + bonus.get("armor", 0.0)),      # D-110: Defensa talent points also give armor
         "initiative": float(base.get("initiative", 10)),
     }
 

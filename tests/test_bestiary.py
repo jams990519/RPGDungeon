@@ -115,13 +115,15 @@ def _fight(cdef, enemy_id, level, seed):
 
 @pytest.mark.parametrize("level,biome", [(20, "colinas"), (50, "pantano"), (90, "tundra")])
 def test_a_fight_of_each_band_is_winnable_but_not_free(level, biome):
-    """A hero of the zone's level (all points in one spec, poco común gear, attentive play, full belt) wins most fights
-    against the toughest and the weakest enemy of the band, and still loses some life (balance.md §7, D-108)."""
+    """A hero of the zone's level (all points in one spec, the best loot gear of its level, attentive play, full belt)
+    wins most fights against the toughest and the weakest enemy of the band, and still loses some life (balance.md §7,
+    D-108). Since D-110 the gear goes up to level 100 and the enemies hit harder: poco común gear no longer fits a
+    level 90 hero, so the check uses the loot gear of its level (sim.level_gear with no tier cap)."""
     pool = encounter_pool(sim.C.enemies, biome, level)
     hardest = max(pool, key=lambda pair: raid_rules.power(pair[1], level))[0]
     softest = min(pool, key=lambda pair: raid_rules.power(pair[1], level))[0]
     for spec in ("guerrero", "mago_fuego", "druida_restauracion", "bardo_estratega"):
-        cdef = sim.level_gear(sim.spec_hero(spec, level), level, 2)
+        cdef = sim.level_gear(sim.spec_hero(spec, level), level, 99)
         for enemy_id in {hardest, softest}:
             results = [_fight(cdef, enemy_id, level, seed) for seed in range(8)]
             wins = sum(r[0] for r in results)

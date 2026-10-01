@@ -12,14 +12,19 @@
 # la Curtiduría convierte en cuero; ninguna otra la suelta. Una bestia nueva lleva las dos (tests/test_professions.py).
 # Si cambias esto, revisa: los IDs son estables; los números mueven el balance (registro en diseno/03-personaje/balance.md §7; medir con tools/sim.py).
 # La probabilidad de 🍖 carne mueve cuánta comida entra a las despensas (balance.yaml pantry; tests/test_pantry.py).
+# [ES] D-110 (pasada de balance de clases y roles, octubre de 2026): todo enemigo común (no el Guardián) es más fuerte desde el
+# nivel 3: cada nivel suma 1.3 veces la vida y 1.8 veces el ataque que sumaba antes, y su base baja lo justo para que
+# al nivel 3 quede igual (nivel 1-2 algo más fácil). Por qué: el equipo ahora mejora hasta el nivel 100 (items.yaml) y las
+# peleas con el equipo de su nivel dejaban ~80 % de vida a todo nivel; ahora dejan ~55-65 % (algo de riesgo, D-110).
+# Cada línea per_level dice los números de antes. Medir con tools/balance_report.py (registro en diseno/03-personaje/balance.md §7).
 
 lobo_ceniciento:
   name_key: enemy.lobo_ceniciento.name
   biomes: [pradera, bosque, colinas]
   level_min: 1
   level_max: 6
-  base: {hp: 55, attack: 8, armor: 0.05, initiative: 12}
-  per_level: {hp: 11, attack: 1.2}
+  base: {hp: 48, attack: 6.1, armor: 0.05, initiative: 12}
+  per_level: {hp: 14.3, attack: 2.16}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 55 + 11, ataque 8 + 1.2 por nivel
   xp: 30
   gold: [2, 6]
   loot: {hierba_curativa: 0.2, carne: 0.5, piel: 0.4}
@@ -33,8 +38,8 @@ jabali_espinoso:
   biomes: [bosque, colinas, pradera]
   level_min: 2
   level_max: 8
-  base: {hp: 80, attack: 9, armor: 0.15, initiative: 7}
-  per_level: {hp: 14, attack: 1.3}
+  base: {hp: 72, attack: 6.9, armor: 0.15, initiative: 7}
+  per_level: {hp: 18.2, attack: 2.34}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 80 + 14, ataque 9 + 1.3 por nivel
   xp: 40
   gold: [3, 8]
   loot: {pieza_metal: 0.1, hierba_curativa: 0.15, carne: 0.6, piel: 0.5}
@@ -47,8 +52,8 @@ rata_del_pantano:
   biomes: [pantano]
   level_min: 1
   level_max: 10
-  base: {hp: 50, attack: 9, armor: 0.0, initiative: 13}
-  per_level: {hp: 10, attack: 1.3}
+  base: {hp: 44, attack: 6.9, armor: 0.0, initiative: 13}
+  per_level: {hp: 13, attack: 2.34}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 50 + 10, ataque 9 + 1.3 por nivel
   xp: 32
   gold: [1, 5]
   loot: {hierba_curativa: 0.3, carne: 0.4, piel: 0.3}
@@ -61,8 +66,8 @@ espectro_de_ruinas:
   biomes: [ruinas]
   level_min: 2
   level_max: 14
-  base: {hp: 70, attack: 10, armor: 0.0, initiative: 11}
-  per_level: {hp: 12, attack: 1.5}
+  base: {hp: 63, attack: 7.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 15.6, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 70 + 12, ataque 10 + 1.5 por nivel
   xp: 50
   gold: [4, 10]
   loot: {pieza_metal: 0.25}
@@ -75,8 +80,8 @@ oso_de_las_cumbres:
   biomes: [montana, tundra]
   level_min: 3
   level_max: 16
-  base: {hp: 110, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 18, attack: 1.6}
+  base: {hp: 99, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 110 + 18, ataque 11 + 1.6 por nivel
   xp: 60
   gold: [3, 9]
   loot: {hierba_curativa: 0.1, carne: 0.6, piel: 0.5}
@@ -89,8 +94,8 @@ escorpion_de_arena:
   biomes: [desierto]
   level_min: 2
   level_max: 14
-  base: {hp: 65, attack: 10, armor: 0.25, initiative: 10}
-  per_level: {hp: 12, attack: 1.5}
+  base: {hp: 58, attack: 7.6, armor: 0.25, initiative: 10}
+  per_level: {hp: 15.6, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 65 + 12, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [3, 9]
   loot: {pieza_metal: 0.15, carne: 0.4, piel: 0.3}
@@ -103,8 +108,8 @@ bandido_errante:
   biomes: [pradera, bosque, colinas, ruinas, desierto, pantano, montana, tundra]
   level_min: 3
   level_max: 99
-  base: {hp: 75, attack: 10, armor: 0.12, initiative: 11}
-  per_level: {hp: 13, attack: 1.5}
+  base: {hp: 67, attack: 7.6, armor: 0.12, initiative: 11}
+  per_level: {hp: 16.9, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 75 + 13, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [6, 15]
   loot: {pocion_vida: 0.2}
@@ -121,8 +126,8 @@ arana_tejedora:
   biomes: [bosque]
   level_min: 1
   level_max: 6
-  base: {hp: 45, attack: 8, armor: 0.0, initiative: 13}
-  per_level: {hp: 9, attack: 1.2}
+  base: {hp: 4, attack: 6.1, armor: 0.0, initiative: 13}
+  per_level: {hp: 11.7, attack: 2.16}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 45 + 9, ataque 8 + 1.2 por nivel
   xp: 28
   gold: [1, 4]
   loot: {hierba_curativa: 0.15, carne: 0.4, piel: 0.3}
@@ -135,8 +140,8 @@ tortuga_musgosa:
   biomes: [bosque, pantano]
   level_min: 1
   level_max: 7
-  base: {hp: 70, attack: 7, armor: 0.45, initiative: 4}
-  per_level: {hp: 13, attack: 1.0}
+  base: {hp: 62, attack: 5.4, armor: 0.45, initiative: 4}
+  per_level: {hp: 16.9, attack: 1.8}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 70 + 13, ataque 7 + 1 por nivel
   xp: 35
   gold: [2, 6]
   loot: {hierba_curativa: 0.3, carne: 0.5, piel: 0.4}
@@ -149,8 +154,8 @@ hongo_esporon:
   biomes: [bosque, pantano]
   level_min: 1
   level_max: 5
-  base: {hp: 35, attack: 9, armor: 0.0, initiative: 5}
-  per_level: {hp: 8, attack: 1.2}
+  base: {hp: 3, attack: 7.1, armor: 0.0, initiative: 5}
+  per_level: {hp: 10.4, attack: 2.16}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 35 + 8, ataque 9 + 1.2 por nivel
   xp: 22
   gold: [1, 3]
   loot: {hierba_curativa: 0.4}
@@ -163,8 +168,8 @@ limo_verde:
   biomes: [bosque, pantano]
   level_min: 1
   level_max: 7
-  base: {hp: 60, attack: 7, armor: 0.1, initiative: 6}
-  per_level: {hp: 12, attack: 1.1}
+  base: {hp: 53, attack: 5.2, armor: 0.1, initiative: 6}
+  per_level: {hp: 15.6, attack: 1.98}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 60 + 12, ataque 7 + 1.1 por nivel
   xp: 30
   gold: [1, 5]
   loot: {pieza_metal: 0.1}
@@ -177,8 +182,8 @@ vibora_de_hierba:
   biomes: [pradera, colinas]
   level_min: 2
   level_max: 8
-  base: {hp: 45, attack: 10, armor: 0.05, initiative: 15}
-  per_level: {hp: 9, attack: 1.4}
+  base: {hp: 4, attack: 7.8, armor: 0.05, initiative: 15}
+  per_level: {hp: 11.7, attack: 2.52}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 45 + 9, ataque 10 + 1.4 por nivel
   xp: 34
   gold: [2, 6]
   loot: {hierba_curativa: 0.2, carne: 0.4, piel: 0.3}
@@ -191,8 +196,8 @@ mantis_segadora:
   biomes: [pradera, colinas]
   level_min: 3
   level_max: 9
-  base: {hp: 60, attack: 11, armor: 0.1, initiative: 12}
-  per_level: {hp: 11, attack: 1.5}
+  base: {hp: 53, attack: 8.6, armor: 0.1, initiative: 12}
+  per_level: {hp: 14.3, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 60 + 11, ataque 11 + 1.5 por nivel
   xp: 42
   gold: [3, 8]
   loot: {pieza_metal: 0.15, carne: 0.4, piel: 0.3}
@@ -205,8 +210,8 @@ esqueleto_soldado:
   biomes: [ruinas, pradera]
   level_min: 2
   level_max: 10
-  base: {hp: 65, attack: 10, armor: 0.2, initiative: 8}
-  per_level: {hp: 12, attack: 1.4}
+  base: {hp: 58, attack: 7.8, armor: 0.2, initiative: 8}
+  per_level: {hp: 15.6, attack: 2.52}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 65 + 12, ataque 10 + 1.4 por nivel
   xp: 40
   gold: [3, 9]
   loot: {pieza_metal: 0.3}
@@ -219,8 +224,8 @@ poltergeist:
   biomes: [ruinas]
   level_min: 2
   level_max: 10
-  base: {hp: 50, attack: 10, armor: 0.0, initiative: 14}
-  per_level: {hp: 10, attack: 1.4}
+  base: {hp: 44, attack: 7.8, armor: 0.0, initiative: 14}
+  per_level: {hp: 13, attack: 2.52}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 50 + 10, ataque 10 + 1.4 por nivel
   xp: 38
   gold: [3, 8]
   loot: {pocion_vida: 0.1}
@@ -233,8 +238,8 @@ caiman_de_lodo:
   biomes: [pantano]
   level_min: 4
   level_max: 14
-  base: {hp: 110, attack: 11, armor: 0.25, initiative: 7}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 1, attack: 8.4, armor: 0.25, initiative: 7}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 110 + 17, ataque 11 + 1.6 por nivel
   xp: 58
   gold: [4, 10]
   loot: {pieza_metal: 0.1, carne: 0.6, piel: 0.5}
@@ -247,8 +252,8 @@ oso_cavernario:
   biomes: [montana, colinas]
   level_min: 3
   level_max: 12
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 105, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 17, ataque 11 + 1.6 por nivel
   xp: 58
   gold: [3, 9]
   loot: {hierba_curativa: 0.1, carne: 0.6, piel: 0.5}
@@ -331,8 +336,8 @@ cabra_montes:
   biomes: [montana, colinas]
   level_min: 1
   level_max: 9
-  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
-  per_level: {hp: 15, attack: 1.5}
+  base: {hp: 77, attack: 7.6, armor: 0.05, initiative: 13}
+  per_level: {hp: 19.5, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 10 + 1.5 por nivel
   xp: 34
   gold: [1, 4]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.2}
@@ -346,8 +351,8 @@ zorro_polar:
   biomes: [tundra]
   level_min: 1
   level_max: 9
-  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
-  per_level: {hp: 15, attack: 1.5}
+  base: {hp: 77, attack: 7.6, armor: 0.05, initiative: 13}
+  per_level: {hp: 19.5, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 10 + 1.5 por nivel
   xp: 34
   gold: [1, 4]
   loot: {carne: 0.4, piel: 0.3, hierba_curativa: 0.2}
@@ -361,8 +366,8 @@ kobold_minero:
   biomes: [montana, colinas]
   level_min: 2
   level_max: 12
-  base: {hp: 86, attack: 9, armor: 0.2, initiative: 9}
-  per_level: {hp: 15, attack: 1.4}
+  base: {hp: 77, attack: 6.8, armor: 0.2, initiative: 9}
+  per_level: {hp: 19.5, attack: 2.52}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 9 + 1.4 por nivel
   xp: 36
   gold: [4, 9]
   loot: {pieza_metal: 0.2, piedra: 0.08}
@@ -376,8 +381,8 @@ chacal_del_desierto:
   biomes: [desierto]
   level_min: 1
   level_max: 9
-  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
-  per_level: {hp: 15, attack: 1.5}
+  base: {hp: 77, attack: 7.6, armor: 0.05, initiative: 13}
+  per_level: {hp: 19.5, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 10 + 1.5 por nivel
   xp: 34
   gold: [1, 4]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.2}
@@ -391,8 +396,8 @@ escarabajo_de_duna:
   biomes: [desierto]
   level_min: 2
   level_max: 12
-  base: {hp: 78, attack: 8, armor: 0.38, initiative: 5}
-  per_level: {hp: 13, attack: 1.3}
+  base: {hp: 7, attack: 5.9, armor: 0.38, initiative: 5}
+  per_level: {hp: 16.9, attack: 2.34}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 78 + 13, ataque 8 + 1.3 por nivel
   xp: 37
   gold: [1, 4]
   loot: {carne: 0.4, piel: 0.3, piedra: 0.2}
@@ -405,8 +410,8 @@ murcielago_de_cripta:
   biomes: [ruinas]
   level_min: 1
   level_max: 8
-  base: {hp: 61, attack: 10, armor: 0.0, initiative: 15}
-  per_level: {hp: 10, attack: 1.5}
+  base: {hp: 55, attack: 7.6, armor: 0.0, initiative: 15}
+  per_level: {hp: 13, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 61 + 10, ataque 10 + 1.5 por nivel
   xp: 31
   gold: [2, 6]
   loot: {pieza_metal: 0.2}
@@ -419,8 +424,8 @@ buho_nival:
   biomes: [tundra, montana]
   level_min: 2
   level_max: 11
-  base: {hp: 67, attack: 10, armor: 0.12, initiative: 12}
-  per_level: {hp: 12, attack: 1.5}
+  base: {hp: 6, attack: 7.6, armor: 0.12, initiative: 12}
+  per_level: {hp: 15.6, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 67 + 12, ataque 10 + 1.5 por nivel
   xp: 33
   gold: [1, 4]
   loot: {carne: 0.4, piel: 0.3, fibra: 0.2}
@@ -434,8 +439,8 @@ lobo_gris:
   biomes: [bosque, pradera]
   level_min: 6
   level_max: 16
-  base: {hp: 96, attack: 11, armor: 0.05, initiative: 13}
-  per_level: {hp: 17, attack: 1.7}
+  base: {hp: 86, attack: 8.3, armor: 0.05, initiative: 13}
+  per_level: {hp: 22.1, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 11 + 1.7 por nivel
   xp: 40
   gold: [2, 6]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.2}
@@ -449,8 +454,8 @@ jabali_colmillo_hierro:
   biomes: [pradera, colinas]
   level_min: 7
   level_max: 17
-  base: {hp: 101, attack: 10, armor: 0.2, initiative: 6}
-  per_level: {hp: 18, attack: 1.5}
+  base: {hp: 9, attack: 7.6, armor: 0.2, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [2, 6]
   loot: {carne: 0.6, piel: 0.5, pieza_metal: 0.08}
@@ -463,8 +468,8 @@ espantapajaros_animado:
   biomes: [pradera]
   level_min: 6
   level_max: 16
-  base: {hp: 96, attack: 10, armor: 0.2, initiative: 9}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 86, attack: 7.4, armor: 0.2, initiative: 9}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 10 + 1.6 por nivel
   xp: 42
   gold: [3, 8]
   loot: {fibra: 0.2, madera: 0.08}
@@ -478,8 +483,8 @@ enredadera_estranguladora:
   biomes: [bosque, pantano]
   level_min: 6
   level_max: 16
-  base: {hp: 87, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 15, attack: 1.4}
+  base: {hp: 78, attack: 7.8, armor: 0.38, initiative: 5}
+  per_level: {hp: 19.5, attack: 2.52}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 87 + 15, ataque 10 + 1.4 por nivel
   xp: 43
   gold: [3, 8]
   loot: {fibra: 0.2, madera: 0.08}
@@ -492,8 +497,8 @@ fuego_fatuo:
   biomes: [ruinas, bosque]
   level_min: 6
   level_max: 16
-  base: {hp: 81, attack: 13, armor: 0.0, initiative: 11}
-  per_level: {hp: 14, attack: 1.9}
+  base: {hp: 73, attack: 10, armor: 0.0, initiative: 11}
+  per_level: {hp: 18.2, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 81 + 14, ataque 13 + 1.9 por nivel
   xp: 39
   gold: [3, 8]
   loot: {pocion_vida: 0.08, pieza_metal: 0.08}
@@ -507,8 +512,8 @@ lobo_de_las_nieves:
   biomes: [tundra, montana]
   level_min: 6
   level_max: 16
-  base: {hp: 96, attack: 11, armor: 0.05, initiative: 13}
-  per_level: {hp: 17, attack: 1.7}
+  base: {hp: 86, attack: 8.3, armor: 0.05, initiative: 13}
+  per_level: {hp: 22.1, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 11 + 1.7 por nivel
   xp: 40
   gold: [2, 6]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.2}
@@ -523,8 +528,8 @@ ogro_del_puente:
   biomes: [pradera, colinas]
   level_min: 12
   level_max: 30
-  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
-  per_level: {hp: 18, attack: 1.6}
+  base: {hp: 95, attack: 7.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 106 + 18, ataque 10 + 1.6 por nivel
   xp: 47
   gold: [5, 12]
   loot: {piedra: 0.25, madera: 0.13}
@@ -537,8 +542,8 @@ langosta_de_plaga:
   biomes: [pradera]
   level_min: 12
   level_max: 30
-  base: {hp: 71, attack: 12, armor: 0.0, initiative: 15}
-  per_level: {hp: 12, attack: 1.8}
+  base: {hp: 64, attack: 9.1, armor: 0.0, initiative: 15}
+  per_level: {hp: 15.6, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 71 + 12, ataque 12 + 1.8 por nivel
   xp: 38
   gold: [2, 7]
   loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
@@ -551,8 +556,8 @@ chispa_errante:
   biomes: [pradera]
   level_min: 13
   level_max: 30
-  base: {hp: 85, attack: 13, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.0}
+  base: {hp: 76, attack: 9.8, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.6}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 85 + 15, ataque 13 + 2 por nivel
   xp: 41
   gold: [3, 9]
   loot: {pieza_metal: 0.25}
@@ -566,8 +571,8 @@ lobo_bicefalo:
   biomes: [colinas, montana]
   level_min: 12
   level_max: 30
-  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 9, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [2, 7]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.25}
@@ -581,8 +586,8 @@ ciclope_de_cantera:
   biomes: [colinas, montana]
   level_min: 14
   level_max: 30
-  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
-  per_level: {hp: 18, attack: 1.6}
+  base: {hp: 95, attack: 7.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 106 + 18, ataque 10 + 1.6 por nivel
   xp: 47
   gold: [5, 12]
   loot: {piedra: 0.25, pieza_metal: 0.13}
@@ -595,8 +600,8 @@ arana_nodriza:
   biomes: [bosque, pantano]
   level_min: 12
   level_max: 30
-  base: {hp: 79, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.8}
+  base: {hp: 71, attack: 9.1, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 79 + 14, ataque 12 + 1.8 por nivel
   xp: 41
   gold: [2, 7]
   loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
@@ -609,8 +614,8 @@ hada_de_espinas:
   biomes: [bosque]
   level_min: 12
   level_max: 30
-  base: {hp: 85, attack: 13, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.0}
+  base: {hp: 76, attack: 9.8, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.6}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 85 + 15, ataque 13 + 2 por nivel
   xp: 41
   gold: [3, 9]
   loot: {hierba_curativa: 0.25, pocion_vida: 0.09}
@@ -624,8 +629,8 @@ sanguijuela_gigante:
   biomes: [pantano]
   level_min: 12
   level_max: 30
-  base: {hp: 106, attack: 10, armor: 0.1, initiative: 6}
-  per_level: {hp: 18, attack: 1.6}
+  base: {hp: 95, attack: 7.4, armor: 0.1, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 106 + 18, ataque 10 + 1.6 por nivel
   xp: 47
   gold: [3, 9]
   loot: {hierba_curativa: 0.25}
@@ -638,8 +643,8 @@ enjambre_de_mosquitos:
   biomes: [pantano]
   level_min: 12
   level_max: 28
-  base: {hp: 71, attack: 12, armor: 0.0, initiative: 15}
-  per_level: {hp: 12, attack: 1.8}
+  base: {hp: 64, attack: 9.1, armor: 0.0, initiative: 15}
+  per_level: {hp: 15.6, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 71 + 12, ataque 12 + 1.8 por nivel
   xp: 38
   gold: [3, 9]
   loot: {hierba_curativa: 0.25}
@@ -652,8 +657,8 @@ elemental_de_piedra:
   biomes: [montana, tundra]
   level_min: 13
   level_max: 30
-  base: {hp: 92, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 16, attack: 1.5}
+  base: {hp: 82, attack: 7.6, armor: 0.38, initiative: 5}
+  per_level: {hp: 20.8, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 92 + 16, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [3, 9]
   loot: {piedra: 0.25, pieza_metal: 0.13}
@@ -666,8 +671,8 @@ uro_lanudo:
   biomes: [tundra]
   level_min: 12
   level_max: 30
-  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
-  per_level: {hp: 18, attack: 1.6}
+  base: {hp: 95, attack: 7.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 23.4, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 106 + 18, ataque 10 + 1.6 por nivel
   xp: 47
   gold: [2, 7]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.25}
@@ -680,8 +685,8 @@ gloton_de_las_nieves:
   biomes: [tundra]
   level_min: 12
   level_max: 30
-  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 9, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [2, 7]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.25}
@@ -695,8 +700,8 @@ buitre_de_hueso:
   biomes: [desierto]
   level_min: 12
   level_max: 30
-  base: {hp: 79, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.8}
+  base: {hp: 71, attack: 9.1, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 79 + 14, ataque 12 + 1.8 por nivel
   xp: 41
   gold: [2, 7]
   loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
@@ -709,8 +714,8 @@ hiena_rayada:
   biomes: [desierto]
   level_min: 14
   level_max: 30
-  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 9, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [2, 7]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.25}
@@ -724,8 +729,8 @@ momia_de_arena:
   biomes: [desierto, ruinas]
   level_min: 13
   level_max: 30
-  base: {hp: 101, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 9, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 11 + 1.7 por nivel
   xp: 44
   gold: [3, 9]
   loot: {fibra: 0.25, venda: 0.09}
@@ -739,8 +744,8 @@ gargola_de_ruinas:
   biomes: [ruinas]
   level_min: 12
   level_max: 30
-  base: {hp: 92, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 16, attack: 1.5}
+  base: {hp: 82, attack: 7.6, armor: 0.38, initiative: 5}
+  per_level: {hp: 20.8, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 92 + 16, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [3, 9]
   loot: {piedra: 0.25, pieza_metal: 0.13}
@@ -753,8 +758,8 @@ saqueador_de_tumbas:
   biomes: [ruinas]
   level_min: 14
   level_max: 30
-  base: {hp: 101, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 9, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 101 + 18, ataque 11 + 1.7 por nivel
   xp: 44
   gold: [5, 12]
   loot: {pieza_metal: 0.25, pocion_vida: 0.09}
@@ -769,8 +774,8 @@ leon_de_la_estepa:
   biomes: [pradera, colinas]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [3, 8]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.3}
@@ -784,8 +789,8 @@ centauro_salvaje:
   biomes: [pradera]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 92, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 11 + 1.7 por nivel
   xp: 44
   gold: [6, 13]
   loot: {pieza_metal: 0.3, madera: 0.18, pocion_vida: 0.11}
@@ -799,8 +804,8 @@ trol_de_colina:
   biomes: [colinas, montana]
   level_min: 25
   level_max: 45
-  base: {hp: 109, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 98, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 109 + 19, ataque 11 + 1.6 por nivel
   xp: 47
   gold: [6, 13]
   loot: {piedra: 0.3, madera: 0.18}
@@ -813,8 +818,8 @@ pantera_sombria:
   biomes: [bosque]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [3, 8]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.3}
@@ -828,8 +833,8 @@ micelio_andante:
   biomes: [bosque, pantano]
   level_min: 25
   level_max: 45
-  base: {hp: 93, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 16, attack: 1.5}
+  base: {hp: 83, attack: 7.6, armor: 0.38, initiative: 5}
+  per_level: {hp: 20.8, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 93 + 16, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [4, 10]
   loot: {hierba_curativa: 0.3, fibra: 0.18}
@@ -842,8 +847,8 @@ basilisco_de_pantano:
   biomes: [pantano]
   level_min: 26
   level_max: 45
-  base: {hp: 80, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.8}
+  base: {hp: 72, attack: 9.1, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 80 + 14, ataque 12 + 1.8 por nivel
   xp: 41
   gold: [3, 8]
   loot: {carne: 0.4, piel: 0.3, hierba_curativa: 0.3}
@@ -856,8 +861,8 @@ necrofago:
   biomes: [pantano, ruinas]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 92, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 11 + 1.7 por nivel
   xp: 44
   gold: [4, 10]
   loot: {pieza_metal: 0.3, hierba_curativa: 0.18}
@@ -871,8 +876,8 @@ grifo_de_montana:
   biomes: [montana]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [3, 8]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.3}
@@ -886,8 +891,8 @@ oso_polar:
   biomes: [tundra]
   level_min: 25
   level_max: 45
-  base: {hp: 109, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 98, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 109 + 19, ataque 11 + 1.6 por nivel
   xp: 47
   gold: [3, 8]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.3}
@@ -900,8 +905,8 @@ ventisquero:
   biomes: [tundra, montana]
   level_min: 27
   level_max: 45
-  base: {hp: 86, attack: 13, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.0}
+  base: {hp: 77, attack: 9.8, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.6}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 13 + 2 por nivel
   xp: 41
   gold: [4, 10]
   loot: {pieza_metal: 0.3, piedra: 0.18}
@@ -915,8 +920,8 @@ tigre_de_duna:
   biomes: [desierto]
   level_min: 25
   level_max: 45
-  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.8}
+  base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 103 + 18, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [3, 8]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.3}
@@ -930,8 +935,8 @@ escorpion_de_vidrio:
   biomes: [desierto]
   level_min: 26
   level_max: 45
-  base: {hp: 93, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 16, attack: 1.5}
+  base: {hp: 83, attack: 7.6, armor: 0.38, initiative: 5}
+  per_level: {hp: 20.8, attack: 2.7}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 93 + 16, ataque 10 + 1.5 por nivel
   xp: 45
   gold: [3, 8]
   loot: {carne: 0.4, piel: 0.3, pieza_metal: 0.18}
@@ -944,8 +949,8 @@ planidera:
   biomes: [ruinas]
   level_min: 25
   level_max: 45
-  base: {hp: 86, attack: 13, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.0}
+  base: {hp: 77, attack: 9.8, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.6}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 86 + 15, ataque 13 + 2 por nivel
   xp: 41
   gold: [4, 10]
   loot: {pieza_metal: 0.3, pocion_vida: 0.11}
@@ -960,8 +965,8 @@ bisonte_de_trueno:
   biomes: [pradera, colinas]
   level_min: 40
   level_max: 60
-  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 111 + 19, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [3, 9]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.35}
@@ -974,8 +979,8 @@ asaltante_de_caravanas:
   biomes: [pradera, desierto]
   level_min: 40
   level_max: 60
-  base: {hp: 105, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 94, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 105 + 18, ataque 11 + 1.7 por nivel
   xp: 45
   gold: [6, 14]
   loot: {pieza_metal: 0.35, fibra: 0.23, pocion_vida: 0.13}
@@ -989,8 +994,8 @@ wyvern_de_penasco:
   biomes: [colinas, montana]
   level_min: 41
   level_max: 60
-  base: {hp: 82, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.8}
+  base: {hp: 74, attack: 9.1, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.24}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 82 + 14, ataque 12 + 1.8 por nivel
   xp: 42
   gold: [3, 9]
   loot: {carne: 0.4, piel: 0.3, piedra: 0.35}
@@ -1003,8 +1008,8 @@ licantropo_salvaje:
   biomes: [bosque, tundra]
   level_min: 40
   level_max: 60
-  base: {hp: 105, attack: 12, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.9}
+  base: {hp: 94, attack: 9, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 105 + 18, ataque 12 + 1.9 por nivel
   xp: 43
   gold: [4, 11]
   loot: {hierba_curativa: 0.35, fibra: 0.23}
@@ -1018,8 +1023,8 @@ driade_marchita:
   biomes: [bosque]
   level_min: 41
   level_max: 60
-  base: {hp: 88, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.1}
+  base: {hp: 79, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 88 + 15, ataque 14 + 2.1 por nivel
   xp: 42
   gold: [4, 11]
   loot: {madera: 0.35, hierba_curativa: 0.23}
@@ -1033,8 +1038,8 @@ gigante_del_fango:
   biomes: [pantano]
   level_min: 40
   level_max: 60
-  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 111 + 19, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [6, 14]
   loot: {arcilla: 0.35, hierba_curativa: 0.23}
@@ -1047,8 +1052,8 @@ cultista_de_la_podredumbre:
   biomes: [pantano, ruinas]
   level_min: 40
   level_max: 60
-  base: {hp: 88, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.1}
+  base: {hp: 79, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 88 + 15, ataque 14 + 2.1 por nivel
   xp: 42
   gold: [6, 14]
   loot: {hierba_curativa: 0.35, pocion_vida: 0.13}
@@ -1062,8 +1067,8 @@ gigante_de_escarcha:
   biomes: [montana, tundra]
   level_min: 42
   level_max: 60
-  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 111 + 19, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [6, 14]
   loot: {piedra: 0.35, pieza_metal: 0.23}
@@ -1076,8 +1081,8 @@ remolino_de_arena:
   biomes: [desierto]
   level_min: 40
   level_max: 60
-  base: {hp: 74, attack: 12, armor: 0.0, initiative: 15}
-  per_level: {hp: 13, attack: 1.9}
+  base: {hp: 66, attack: 9, armor: 0.0, initiative: 15}
+  per_level: {hp: 16.9, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 74 + 13, ataque 12 + 1.9 por nivel
   xp: 39
   gold: [4, 11]
   loot: {piedra: 0.35, pieza_metal: 0.23}
@@ -1090,8 +1095,8 @@ wyrm_joven_de_las_dunas:
   biomes: [desierto]
   level_min: 43
   level_max: 60
-  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.6}
+  base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 111 + 19, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [3, 9]
   loot: {carne: 0.6, piel: 0.5, pieza_metal: 0.23}
@@ -1104,8 +1109,8 @@ caballero_hueco:
   biomes: [ruinas]
   level_min: 40
   level_max: 60
-  base: {hp: 105, attack: 11, armor: 0.2, initiative: 9}
-  per_level: {hp: 18, attack: 1.7}
+  base: {hp: 94, attack: 8.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 23.4, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 105 + 18, ataque 11 + 1.7 por nivel
   xp: 45
   gold: [4, 11]
   loot: {pieza_metal: 0.35, piedra: 0.23, venda: 0.13}
@@ -1120,8 +1125,8 @@ manticora:
   biomes: [pradera, desierto]
   level_min: 55
   level_max: 75
-  base: {hp: 83, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.9}
+  base: {hp: 75, attack: 9, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 83 + 14, ataque 12 + 1.9 por nivel
   xp: 42
   gold: [4, 10]
   loot: {carne: 0.5, piel: 0.4, fibra: 0.4}
@@ -1135,8 +1140,8 @@ gigante_de_tormenta:
   biomes: [pradera, colinas]
   level_min: 56
   level_max: 75
-  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 112 + 19, ataque 11 + 1.7 por nivel
   xp: 48
   gold: [7, 15]
   loot: {pieza_metal: 0.4, piedra: 0.28}
@@ -1150,8 +1155,8 @@ golem_de_granito:
   biomes: [colinas, montana]
   level_min: 55
   level_max: 75
-  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 86, attack: 7.4, armor: 0.38, initiative: 5}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 10 + 1.6 por nivel
   xp: 46
   gold: [5, 12]
   loot: {piedra: 0.4, pieza_metal: 0.28}
@@ -1165,8 +1170,8 @@ arbol_hueco:
   biomes: [bosque, pantano]
   level_min: 55
   level_max: 75
-  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 112 + 19, ataque 11 + 1.7 por nivel
   xp: 48
   gold: [5, 12]
   loot: {madera: 0.4, hierba_curativa: 0.28}
@@ -1180,8 +1185,8 @@ osolechuza:
   biomes: [bosque]
   level_min: 56
   level_max: 75
-  base: {hp: 106, attack: 13, armor: 0.05, initiative: 13}
-  per_level: {hp: 18, attack: 1.9}
+  base: {hp: 95, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 23.4, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 106 + 18, ataque 13 + 1.9 por nivel
   xp: 43
   gold: [4, 10]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.4}
@@ -1195,8 +1200,8 @@ hidra_del_pantano:
   biomes: [pantano]
   level_min: 55
   level_max: 75
-  base: {hp: 83, attack: 12, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.9}
+  base: {hp: 75, attack: 9, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 83 + 14, ataque 12 + 1.9 por nivel
   xp: 42
   gold: [4, 10]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.4}
@@ -1210,8 +1215,8 @@ draco_de_escarcha:
   biomes: [montana, tundra]
   level_min: 56
   level_max: 75
-  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 19, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 24.7, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 112 + 19, ataque 11 + 1.7 por nivel
   xp: 48
   gold: [4, 10]
   loot: {carne: 0.5, piel: 0.4, pieza_metal: 0.28}
@@ -1225,8 +1230,8 @@ novia_de_escarcha:
   biomes: [tundra]
   level_min: 55
   level_max: 75
-  base: {hp: 89, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.1}
+  base: {hp: 8, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 89 + 15, ataque 14 + 2.1 por nivel
   xp: 42
   gold: [5, 12]
   loot: {pieza_metal: 0.4, pocion_vida: 0.15}
@@ -1240,8 +1245,8 @@ centinela_de_vidrio:
   biomes: [desierto]
   level_min: 56
   level_max: 75
-  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 86, attack: 7.4, armor: 0.38, initiative: 5}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 10 + 1.6 por nivel
   xp: 46
   gold: [5, 12]
   loot: {pieza_metal: 0.4, piedra: 0.28}
@@ -1255,8 +1260,8 @@ soldado_fantasma:
   biomes: [ruinas]
   level_min: 55
   level_max: 75
-  base: {hp: 89, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 15, attack: 2.1}
+  base: {hp: 8, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 19.5, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 89 + 15, ataque 14 + 2.1 por nivel
   xp: 42
   gold: [5, 12]
   loot: {pieza_metal: 0.4, pocion_vida: 0.15}
@@ -1270,8 +1275,8 @@ automata_de_ruinas:
   biomes: [ruinas]
   level_min: 56
   level_max: 75
-  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 86, attack: 7.4, armor: 0.38, initiative: 5}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 96 + 17, ataque 10 + 1.6 por nivel
   xp: 46
   gold: [5, 12]
   loot: {pieza_metal: 0.4, piedra: 0.28}
@@ -1286,8 +1291,8 @@ behemot_de_la_estepa:
   biomes: [pradera, colinas]
   level_min: 70
   level_max: 90
-  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 113 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [4, 11]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
@@ -1301,8 +1306,8 @@ jinete_espectral:
   biomes: [pradera, ruinas]
   level_min: 71
   level_max: 90
-  base: {hp: 90, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 16, attack: 2.1}
+  base: {hp: 8, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 20.8, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 90 + 16, ataque 14 + 2.1 por nivel
   xp: 43
   gold: [5, 13]
   loot: {pieza_metal: 0.45, pocion_vida: 0.17}
@@ -1316,8 +1321,8 @@ roc_de_las_alturas:
   biomes: [colinas, montana]
   level_min: 70
   level_max: 90
-  base: {hp: 107, attack: 13, armor: 0.05, initiative: 13}
-  per_level: {hp: 19, attack: 1.9}
+  base: {hp: 96, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 24.7, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 107 + 19, ataque 13 + 1.9 por nivel
   xp: 44
   gold: [4, 11]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
@@ -1331,8 +1336,8 @@ sierpe_esmeralda:
   biomes: [bosque, pantano]
   level_min: 70
   level_max: 90
-  base: {hp: 83, attack: 13, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.9}
+  base: {hp: 75, attack: 10, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 83 + 14, ataque 13 + 1.9 por nivel
   xp: 43
   gold: [4, 11]
   loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.45}
@@ -1346,8 +1351,8 @@ caballero_de_la_corte_marchita:
   biomes: [bosque]
   level_min: 71
   level_max: 90
-  base: {hp: 107, attack: 12, armor: 0.2, initiative: 9}
-  per_level: {hp: 19, attack: 1.7}
+  base: {hp: 96, attack: 9.3, armor: 0.2, initiative: 9}
+  per_level: {hp: 24.7, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 107 + 19, ataque 12 + 1.7 por nivel
   xp: 46
   gold: [7, 16]
   loot: {pieza_metal: 0.45, madera: 0.33, pocion_vida: 0.17}
@@ -1361,8 +1366,8 @@ abominacion_del_cieno:
   biomes: [pantano]
   level_min: 70
   level_max: 90
-  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 113 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [5, 13]
   loot: {hierba_curativa: 0.45, arcilla: 0.33}
@@ -1376,8 +1381,8 @@ salamandra_de_lava:
   biomes: [montana, desierto]
   level_min: 70
   level_max: 90
-  base: {hp: 83, attack: 13, armor: 0.12, initiative: 12}
-  per_level: {hp: 14, attack: 1.9}
+  base: {hp: 75, attack: 10, armor: 0.12, initiative: 12}
+  per_level: {hp: 18.2, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 83 + 14, ataque 13 + 1.9 por nivel
   xp: 43
   gold: [4, 11]
   loot: {carne: 0.4, piel: 0.3, piedra: 0.45}
@@ -1391,8 +1396,8 @@ mamut_de_guerra:
   biomes: [tundra]
   level_min: 70
   level_max: 90
-  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 113 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [4, 11]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
@@ -1406,8 +1411,8 @@ espectro_glacial:
   biomes: [tundra]
   level_min: 71
   level_max: 90
-  base: {hp: 90, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 16, attack: 2.1}
+  base: {hp: 8, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 20.8, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 90 + 16, ataque 14 + 2.1 por nivel
   xp: 43
   gold: [5, 13]
   loot: {pieza_metal: 0.45, pocion_vida: 0.17}
@@ -1421,8 +1426,8 @@ gusano_de_las_arenas:
   biomes: [desierto]
   level_min: 71
   level_max: 90
-  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 113 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [4, 11]
   loot: {carne: 0.6, piel: 0.5, piedra: 0.45}
@@ -1436,8 +1441,8 @@ centinela_runico:
   biomes: [ruinas]
   level_min: 70
   level_max: 90
-  base: {hp: 97, attack: 11, armor: 0.38, initiative: 5}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 87, attack: 8.4, armor: 0.38, initiative: 5}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 97 + 17, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [5, 13]
   loot: {pieza_metal: 0.45, piedra: 0.33}
@@ -1452,8 +1457,8 @@ quimera:
   biomes: [pradera, colinas]
   level_min: 85
   level_max: 100
-  base: {hp: 109, attack: 13, armor: 0.05, initiative: 13}
-  per_level: {hp: 19, attack: 1.9}
+  base: {hp: 98, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 24.7, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 109 + 19, ataque 13 + 1.9 por nivel
   xp: 44
   gold: [5, 12]
   loot: {carne: 0.6, piel: 0.5, fibra: 0.5}
@@ -1468,8 +1473,8 @@ titan_de_las_llanuras:
   biomes: [pradera]
   level_min: 86
   level_max: 100
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [8, 17]
   loot: {piedra: 0.5, pieza_metal: 0.38}
@@ -1483,8 +1488,8 @@ gigante_de_las_nubes:
   biomes: [colinas, montana]
   level_min: 85
   level_max: 100
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [8, 17]
   loot: {fibra: 0.5, pieza_metal: 0.38}
@@ -1498,8 +1503,8 @@ licantropo_alfa:
   biomes: [bosque, tundra]
   level_min: 85
   level_max: 100
-  base: {hp: 109, attack: 13, armor: 0.05, initiative: 13}
-  per_level: {hp: 19, attack: 1.9}
+  base: {hp: 98, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 24.7, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 109 + 19, ataque 13 + 1.9 por nivel
   xp: 44
   gold: [6, 14]
   loot: {hierba_curativa: 0.5, pocion_vida: 0.19}
@@ -1514,8 +1519,8 @@ polilla_lunar:
   biomes: [bosque, pantano]
   level_min: 86
   level_max: 100
-  base: {hp: 77, attack: 13, armor: 0.0, initiative: 15}
-  per_level: {hp: 13, attack: 1.9}
+  base: {hp: 69, attack: 10, armor: 0.0, initiative: 15}
+  per_level: {hp: 16.9, attack: 3.42}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 77 + 13, ataque 13 + 1.9 por nivel
   xp: 40
   gold: [6, 14]
   loot: {fibra: 0.5, hierba_curativa: 0.38}
@@ -1529,8 +1534,8 @@ leviatan_del_cieno:
   biomes: [pantano]
   level_min: 85
   level_max: 100
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [5, 12]
   loot: {carne: 0.6, piel: 0.5, arcilla: 0.5}
@@ -1544,8 +1549,8 @@ fenix_de_ceniza:
   biomes: [montana, desierto]
   level_min: 86
   level_max: 100
-  base: {hp: 92, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 16, attack: 2.1}
+  base: {hp: 82, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 20.8, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 92 + 16, ataque 14 + 2.1 por nivel
   xp: 43
   gold: [6, 14]
   loot: {pieza_metal: 0.5, pocion_vida: 0.19}
@@ -1559,8 +1564,8 @@ wyrm_de_hielo:
   biomes: [tundra, montana]
   level_min: 85
   level_max: 100
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [5, 12]
   loot: {carne: 0.5, piel: 0.4, pieza_metal: 0.38}
@@ -1574,8 +1579,8 @@ escorpion_emperador:
   biomes: [desierto]
   level_min: 85
   level_max: 100
-  base: {hp: 99, attack: 11, armor: 0.38, initiative: 5}
-  per_level: {hp: 17, attack: 1.6}
+  base: {hp: 89, attack: 8.4, armor: 0.38, initiative: 5}
+  per_level: {hp: 22.1, attack: 2.88}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 99 + 17, ataque 11 + 1.6 por nivel
   xp: 48
   gold: [5, 12]
   loot: {carne: 0.4, piel: 0.3, pieza_metal: 0.38}
@@ -1589,8 +1594,8 @@ liche_errante:
   biomes: [ruinas]
   level_min: 85
   level_max: 100
-  base: {hp: 92, attack: 14, armor: 0.0, initiative: 11}
-  per_level: {hp: 16, attack: 2.1}
+  base: {hp: 82, attack: 10.6, armor: 0.0, initiative: 11}
+  per_level: {hp: 20.8, attack: 3.78}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 92 + 16, ataque 14 + 2.1 por nivel
   xp: 43
   gold: [6, 14]
   loot: {pieza_metal: 0.5, pocion_vida: 0.19}
@@ -1604,8 +1609,8 @@ engendro_del_umbral:
   biomes: [ruinas]
   level_min: 86
   level_max: 100
-  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
-  per_level: {hp: 20, attack: 1.7}
+  base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
+  per_level: {hp: 26, attack: 3.06}   # [ES] D-110, más fuerte desde el nivel 3 (ver arriba); antes: vida 115 + 20, ataque 11 + 1.7 por nivel
   xp: 49
   gold: [6, 14]
   loot: {pieza_metal: 0.5, piedra: 0.38}
