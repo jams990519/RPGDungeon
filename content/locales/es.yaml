@@ -502,7 +502,7 @@ combat:
 
 places:
   title: "📒 Lugares que recuerdas"
-  intro: "Recuerdas {n} lugares. Elige uno y tu héroe irá solo, zona por zona."
+  intro: "Recuerdas {n} {n|lugar|lugares}. Elige uno y tu héroe irá solo, zona por zona."
   line: "{biome} {name} · a {zones} zonas · {time}"
   go_button: "{name} · {time}"
   none: "Todavía no recuerdas otros lugares. Sal a explorar."
@@ -594,7 +594,7 @@ talents:
   title: "🌟 Talentos"
   intro: "Cada nivel te da 1 punto. Ponlo en una especialización de tu clase: cada una tiene 8 habilidades que se abren con más y más puntos, y cada punto te hace un poco más fuerte en su rol. Tu especialización principal ⭐ es la que tiene más puntos."
   points: "Puntos sin usar: {n}"
-  spec_line: "{name} — {role}: {n} puntos"
+  spec_line: "{name} — {role}: {n} {n|punto|puntos}"
   spec_title: "{name} · {role}"
   spec_points: "Puntos aquí: {n} · Sin usar: {free}"
   spend_button: "➕ Poner 1 punto aquí"
@@ -610,7 +610,7 @@ talents:
   bar_line: "🎛️ Tu barra: {abilities}"
   ability_open: "🔓 {ability} — {effect}"
   ability_locked: "🔒 {need} pts · {ability} — {effect}"
-  next_unlock: "Siguiente: {name} con {need} puntos (te faltan {left})."
+  next_unlock: "Siguiente: {name} con {need} {need|punto|puntos} (te {left|falta|faltan} {left})."
   all_unlocked: "Ya abriste las 8 habilidades de esta especialización."
   legend: "×2 = el doble de tu ataque · (20) = lo que cuesta · 🔋 = Aguante"
 
@@ -655,7 +655,7 @@ ability_effect:              # [ES] línea corta de qué hace cada habilidad; sa
 
 camps:
   title: "🏕️ Campamentos"
-  zone_line: "🏕️ Aquí está {name} ({n} miembros)"
+  zone_line: "🏕️ Aquí está {name} ({n} {n|miembro|miembros})"
   info: "🏕️ {name}, fundado por {founder}, en las coordenadas ({x}, {y}). Miembros: {n}."
   you_member: "Eres parte de este campamento."
   size: "📐 Nivel {level} · ocupa {zones} zona(s). En su territorio no te atacan al llegar, y el viaje cuenta la distancia desde su borde."
@@ -681,7 +681,7 @@ camps:
   req_far: "Estar lejos del Claro (Lejanía {n} o más)"
   req_explored: "Haber explorado esta zona al 100 % (vas en {pct} %)"
   req_known: "Conocer los alrededores: {n} de {need} zonas vecinas pisadas"
-  req_alone: "Que no haya otro campamento a {n} zonas o menos"
+  req_alone: "Que no haya otro campamento a {n} {n|zona|zonas} o menos"
   req_cost: "Llevar {items}"
   req_one: "No pertenecer a otro campamento"
   found_button: "🏕️ Fundar campamento aquí"
@@ -895,11 +895,11 @@ batch:
   back: "◀️ Volver"
   cancel: "❌ Cancelar"
   stop: "❌ Detener"
-  started_gather: "🪓 Vas a recolectar {n} veces (hasta {time}). Puedes detenerte cuando quieras."
-  started_explore: "🔎 Vas a explorar {n} veces (hasta {time}). Puedes detenerte cuando quieras."
+  started_gather: "🪓 Vas a recolectar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
+  started_explore: "🔎 Vas a explorar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
   progress: "Vuelta {done} de {total}"
-  gathered: "🪓 Recolectaste {n} veces: {items}."
-  explored_done: "🔎 Exploraste {n} veces: la zona va al {pct} %."
+  gathered: "🪓 Recolectaste {n} {n|vez|veces}: {items}."
+  explored_done: "🔎 Exploraste {n} {n|vez|veces}: la zona va al {pct} %."
   found: "🔎 Encontraste: {items}."
   coins: "🔎 Encontraste {coins} entre los restos."
   reason:

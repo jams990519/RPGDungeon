@@ -179,3 +179,9 @@ v0_9_3:
     - "🎒 La mochila cuenta igual en todas las pantallas."
     - "🏕️ Tocar otro botón mientras te piden el nombre del campamento cancela la fundación (ya no se funda sin querer)."
     - "⚔️ En combate, el menú de abajo te avisa que termines la pelea primero."
+
+v0_9_4:
+  version: "0.9.4"
+  title: "✍️ Lost Realms 0.9.4: textos más cuidados"
+  notes:
+    - "✍️ Los textos ponen singular o plural según el número: ahora dice \"Exploraste 1 vez\" en vez de \"1 veces\"."

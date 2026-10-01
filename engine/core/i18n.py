@@ -12,6 +12,7 @@ Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
 Reglas que nunca se rompen:
     1. Una clave que falta no rompe el juego: se muestra la clave entre corchetes.
+    2. Singular y plural: en el texto, {n|vez|veces} pone "vez" si n vale 1 y "veces" si no (D-89).
 Si cambias esto, revisa:
     - Textos: content/locales/es.yaml
     - Pruebas: tests/test_content.py (comprueba que las claves usadas existan)
@@ -19,7 +20,11 @@ Si cambias esto, revisa:
 
 from __future__ import annotations
 
+import re
 from typing import Any
+
+# "{n|vez|veces}" -> "vez" when n == 1, else "veces" (singular and plural, D-89).
+PLURAL = re.compile(r"\{(\w+)\|([^|{}]*)\|([^|{}]*)\}")
 
 
 class Texts:
@@ -67,6 +72,7 @@ class Texts:
         if not isinstance(text, str):
             self.missing.add(key)
             return f"[{key}]"
+        text = PLURAL.sub(lambda m: m.group(2) if values.get(m.group(1)) == 1 else m.group(3), text)
         try:
             return text.format(**values)
         except (KeyError, IndexError):

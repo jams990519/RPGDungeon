@@ -33,3 +33,11 @@ def test_every_biome_has_enemies(content):
         if biome == "claro":
             continue
         assert any(biome in e["biomes"] for e in content.enemies.values()), biome
+
+
+def test_plural_forms():
+    from engine.core import Texts
+    texts = Texts({"a": "Exploraste {n} {n|vez|veces}", "b": "te {left|falta|faltan} {left}"})
+    assert texts.t("a", n=1) == "Exploraste 1 vez"
+    assert texts.t("a", n=3) == "Exploraste 3 veces"
+    assert texts.t("b", left=1) == "te falta 1" and texts.t("b", left=0) == "te faltan 0"
