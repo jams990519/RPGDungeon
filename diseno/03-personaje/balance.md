@@ -364,8 +364,8 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Efecto en las incursiones (D-99).** La Noche de prueba trae al más fuerte del bioma, y antes, arriba del nivel 16, ese era siempre el bandido: con equipo inicial se ganaba el 83-93 % de las veces. Ahora es un monstruo de la franja (un bruto casi siempre) y se gana el 37-57 % con equipo inicial y el 58-74 % con equipo poco común, al nivel de la zona: vuelve a parecerse a lo que pedía D-99 («cerca de la mitad»). En las zonas de nivel 10 se volvió más fácil (54 % contra 23 % antes), porque ya no trae al caimán o al oso cavernario sino otro de la misma franja. La incursión semanal sigue ganándose casi siempre.
 
 **Lo que queda por mirar:**
-- **Equipo de nivel alto:** las piezas llegan solo hasta el nivel requerido 8, y el botín elige piezas entre el nivel del enemigo − 4 y + 1 (`gear.level_window`): los enemigos de nivel 13 o más no sueltan equipo. Hace falta equipo por franjas (va con la pasada de clases de D-110, porque mueve el poder de todos).
-- **Especializaciones con poca vida** a niveles altos con el equipo inicial (lista de arriba): para la pasada de clases de D-110.
+- **Equipo de nivel alto:** ~~las piezas llegan solo hasta el nivel requerido 8~~ **hecho** en la pasada de D-110: piezas cada 10 niveles hasta el 100, y si la ventana de nivel cae entre dos, el botín usa la más cercana por debajo. Desde esa pasada los enemigos comunes son más fuertes desde el nivel 3 (vida por nivel × 1,3 y ataque por nivel × 1,8): los números de esta sección (vida que queda, "con equipo poco común deja el 67-75 %") son de antes.
+- **Especializaciones con poca vida** a niveles altos con el equipo inicial (lista de arriba): **revisadas** en la pasada de D-110 (con el equipo de su nivel quedan cerca de la mediana de su rol).
 - **La piel de los oficios (D-109):** cuando entren los oficios, sumar la piel a las bestias nuevas (las que sueltan 🍖 carne).
 - `tools/sim.py --bars` y el modo sin opciones recorren ahora 104 enemigos: tardan más. Si molesta, filtrar por los enemigos que caben en el nivel medido.
 
@@ -459,7 +459,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 3. **Las peleas normales con equipo son demasiado fáciles a todo nivel** (100 % y ~80 % de vida): falta riesgo; el bestiario de nivel alto (en camino) y el equipo por niveles tienen que mover esto juntos.
 4. **Lo que sí funciona:** los talentos suman de verdad (sin puntos, al nivel 30: 76-95 % de victorias y 34-50 % de vida; con puntos: 99-100 % y 60-69 %) y el equipo también (solo el inicial: ~63 % de vida; con el de su nivel: ~80 %).
 
-**Lo que sigue:** una pasada de balance con estos objetivos, apenas se unan los oficios (el equipo de artesano) y el bestiario de nivel alto: piezas de equipo por niveles hasta el 100 (botín y oficios), tanques que terminan con más vida que el ataque, curadores que se sostienen y peleas normales con algo de riesgo.
+**Lo que sigue:** ~~una pasada de balance con estos objetivos~~ **hecho** en la pasada de balance de clases y roles (más abajo, "pasada de balance de clases y roles (D-110)"): equipo de botín y de artesano cada 10 niveles hasta el 100 (lo mejor de cada nivel es de artesano, D-113), cada tanque con más armadura base que el ataque de su clase y con armadura que crece con sus puntos, la defensa que termina con 7 a 19 puntos más de vida que el ataque desde el nivel 50, la curación que es la que más vida deja, y peleas normales que dejan ~55-65 % de vida con el equipo de su nivel. Se mide con `tools/balance_report.py`.
 
 ### Octubre de 2026: los oficios encadenados, fase 1 (D-109)
 
@@ -500,7 +500,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 año, nivel ~47 en ese tiempo), así que su "nivel de trabajo" es siempre su nivel y no lo frena. Quien llega de nivel alto y empieza un oficio en rango 1 gana 20 por ⚡: un novato aprende poco. Refinar en el Claro con madera juntada ahí mismo (zona de nivel 1, sin peligro) rinde cerca del 70 % de recolectar en una zona de tu nivel: lo seguro rinde menos, como el territorio propio.
 
-**Lo que queda por mirar:** si 2 ⚡ por pieza de equipo es mucho o poco cuando llegue el mercado (y si conviene que la tanda cueste menos energía por pieza), si el rango 10 de los raros es demasiado pronto o tarde para la Joyería, cuánta piel entra al juego con la cacería (D-106), si los precios de lo refinado dejan algún hueco para ganar monedas, y el equipo de artesano cuando haya botín por encima del nivel 8 (el bestiario de nivel alto).
+**Lo que queda por mirar:** si 2 ⚡ por pieza de equipo es mucho o poco cuando llegue el mercado (y si conviene que la tanda cueste menos energía por pieza), si el rango 10 de los raros es demasiado pronto o tarde para la Joyería, cuánta piel entra al juego con la cacería (D-106), si los precios de lo refinado dejan algún hueco para ganar monedas, y el equipo de artesano cuando haya botín por encima del nivel 8 (**hecho** en la pasada de D-110: artesano cada 10 niveles hasta el 100, siempre algo mejor que el botín de su nivel).
 
 ### Octubre de 2026: el beneficio de cada oficio (D-111)
 
@@ -520,7 +520,7 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 | 💍 Joyería | +3 % de vida y de ataque | — |
 | 🩺 Medicina | curaciones +15 %; vendas, ungüentos y botiquines +30 % | lo primero, si eres sanador |
 
-**Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76.
+**Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76. **Medido en la pasada de D-110:** con todos los que le sirven al rango 100, de +1 a +7 puntos de vida al terminar las peleas comunes (escenario c de `tools/balance_report.py`): se nota sin reemplazar al equipo.
 
 ### Octubre de 2026: el Comercio, un oficio que no pelea (D-116)
 
@@ -566,3 +566,164 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 **Cuenta rápida.** Pelear solo da lo mismo que pelear a mano (mismas reglas, sorteo y final), así que la experiencia por ⚡ de cada camino (D-108) no cambia. Lo que cambia es el ritmo con el chat cerrado: con 50 %, un lote largo se corta pronto porque cada pelea quita cerca de un tercio de la vida y la vida tarda 4 horas en volver. Cazar en lote a 16 min por presa y 2 ⚡ (40 ⚡ = 20 presas = 5 h 20 min) no sube la experiencia por día: la energía sigue siendo el tope.
 
 **Lo que queda por mirar:** si 50 % por defecto corta los lotes demasiado pronto para el que sale y vuelve (con 30 % casi todo el lote se juega y las derrotas siguen bajo 1 %: si los jugadores se quejan de lotes cortos, bajar el valor por defecto a 30 %); si las peleas automáticas hacen que nadie juegue a mano (medir en la beta qué porcentaje elige ⚔️ Automática); y si 16 minutos por presa es mucho o poco frente a cazar a mano.
+
+### Octubre de 2026: pasada de balance de clases y roles (D-110)
+
+**Por qué.** El dueño pidió (D-110, confirmada) que las clases funcionen de verdad y no "para bonito": cada especialización rinde según sus estadísticas y su rol, y todo lo que se mejora suma (niveles, talentos, equipo, mejoras del campamento y oficios). Con D-113 (provisional), lo mejor de cada nivel lo fabrican los jugadores y el botín suelta menos y peor. D-108 (confirmada) no se toca: cada camino llega al nivel 100 en ~2 años con toda la energía. La corrida de diagnóstico de arriba dijo qué no cumplía; esta pasada lo corrige.
+
+**Cómo se midió.** Con `tools/balance_report.py` (nuevo; usa la forma de jugar del motor, la misma de las peleas automáticas de D-114): las 45 especializaciones, a los niveles 1, 10, 25, 50, 75 y 100, contra **todos** los enemigos comunes que caben en ese nivel (de cualquier bioma), al mismo nivel, con juego atento y cinturón lleno (3 🧪 y 2 🩹; la toxicidad deja beber 2 pociones por pelea), 8 peleas por enemigo. Escenarios:
+- **a** = equipo inicial (arma y pecho de nivel 1) y sin puntos de talento.
+- **b** = el kit de verdad: nivel − 1 puntos en la especialización (barra automática y pasivas) y, en las 7 ranuras, la mejor pieza de **botín** de su tipo para su nivel. Es la referencia.
+- **c** = b + la mejor pieza de **artesano** de su nivel donde la hay (arma, pecho y joya) + todos los beneficios de oficio que le sirven, al rango 100 (D-111).
+- **b3** = b contra los enemigos de 3 niveles más.
+
+Además: `--boss` (el Guardián al nivel 6, como siempre), `--trial` (la Noche de prueba por bioma y nivel de zona), `--sources` (qué suma cada mejora) y `--pace` (el ritmo de D-108). Para comparar se puede medir otra copia del contenido con `--content=<carpeta>`. Al nivel 1 nadie tiene especialización todavía (D-68): esa columna mide las estadísticas base de cada una.
+
+**Resultado (escenario b, mediana de cada rol: gana % / vida al terminar % / rondas):**
+
+| Rol | Nivel 10 | Nivel 25 | Nivel 50 | Nivel 75 | Nivel 100 |
+|---|---|---|---|---|---|
+| ⚔ Ataque | 100/75/7,0 → **100/67/7,4** | 100/69/8,1 → **100/51/9,2** | 100/72/6,2 → **100/59/6,6** | 100/66/8,0 → **100/57/8,4** | 100/64/7,2 → **100/59/7,5** |
+| 🛡 Defensa | 100/72/9,4 → **100/65/9,6** | 100/64/12,1 → **100/60/12,2** | 100/72/11,1 → **100/73/11,6** | 100/69/13,5 → **100/72/13,7** | 100/67/13,5 → **100/72/12,7** |
+| ✚ Curación | 100/84/14,7 → **100/78/16,0** | 100/81/16,4 → **100/64/19,6** | 100/79/11,6 → **100/76/13,1** | 100/79/13,9 → **100/78/15,2** | 100/79/14,5 → **100/77/15,0** |
+| ✦ Soporte | 100/74/11,5 → **100/68/12,8** | 100/67/8,8 → **100/55/10,4** | 100/73/7,9 → **100/64/9,0** | 100/67/9,7 → **100/62/10,6** | 100/65/10,4 → **100/63/11,0** |
+
+- **Orden de los roles, desde el nivel 25:** el ataque mata en menos rondas y termina con menos vida; el soporte queda en medio; la defensa termina con más vida que el ataque aunque tarde ~1,3-1,8 veces más; la curación es la que más vida deja y la que más tarda (~2 veces). Al nivel 10 (3 habilidades) la defensa todavía queda pareja con el ataque: subirla ahí haría trivial al Guardián del nivel 6 (ver abajo).
+- **Algo de riesgo:** con el equipo de su nivel, el ataque termina con 51-59 % de vida (antes 64-72 %); la peor especialización gana el 98 % (Nigromante Plaga al nivel 25) y todas las demás el 98-100 %. Gana casi siempre porque las 2 pociones y 2 vendas devuelven ~100 % de vida: para bajar a 90-97 % de victorias habría que dejar ~40 % de vida por pelea, demasiado con la vida que vuelve en 4 horas (D-103). El riesgo se ve en la vida y en b3.
+- **Más difícil 3 niveles arriba (b3):** al 10, 25 y 50 el ataque baja a 47-55 % de vida (antes 61-69 %), con la peor especialización entre el 92 y el 100 %.
+
+**La defensa contra el ataque de su clase** (vida al terminar, escenario b, puntos de diferencia; antes → ahora):
+
+| Clase: defensa − ataque | L10 | L25 | L50 | L75 | L100 |
+|---|---|---|---|---|---|
+| guerrero − guerrero_furia | −1 → **+4** | −19 → **+5** | −10 → **+12** | −14 → **+11** | −14 → **+15** |
+| paladin_proteccion − paladin_reprension | −4 → **−1** | −2 → **+12** | −7 → **+7** | −8 → **+9** | −2 → **+9** |
+| caballero_muerte_sangre − caballero_muerte_escarcha | −1 → **−1** | −4 → **+6** | +10 → **+15** | +12 → **+17** | +15 → **+12** |
+| brujo_demonologia − brujo_destruccion | −4 → **−1** | −13 → **+3** | −5 → **+14** | −12 → **+9** | −12 → **+8** |
+| monje_maestro_cervecero − monje_viajero_viento | −1 → **0** | −1 → **+12** | +3 → **+9** | +9 → **+19** | +3 → **+8** |
+| druida_guardian − druida_feral | −4 → **−3** | −2 → **+2** | +13 → **+18** | +11 → **+15** | +13 → **+18** |
+| cazador_demonios_venganza − cazador_demonios_estrago | −6 → **−4** | +6 → **+13** | −9 → **+9** | −9 → **+10** | −17 → **+7** |
+| nigromante_legion − nigromante_plaga | −3 → **−4** | +6 → **+4** | +15 → **+17** | +19 → **+16** | +19 → **+16** |
+
+**Los otros escenarios (mediana de vida al terminar, ataque / defensa / curación / soporte):**
+
+| Escenario | Nivel 10 | Nivel 50 | Nivel 100 |
+|---|---|---|---|
+| a: equipo inicial, sin puntos | 45/47/30/48 → **30/33/12/31** (gana 78-86 %, curación 38 %) | 24/27/9/24 → **1/3/0/2** (gana ≤10 %) | 10/12/2/9 → **0/0/0/0** |
+| b: botín de su nivel y sus puntos | 75/72/84/74 → **67/65/78/68** | 72/72/79/73 → **59/73/76/64** | 64/67/79/65 → **59/72/77/63** |
+| c: + artesano + oficios al 100 | 81/79/89/80 → **76/75/85/76** | 78/79/84/79 → **71/82/79/74** | 73/72/83/73 → **71/82/82/74** |
+
+**¿Suma todo? (`--sources`, mediana del rol: gana / vida, ataque · defensa · curación · soporte)**
+
+| Variante | Nivel 10 | Nivel 50 |
+|---|---|---|
+| Sin puntos, sin equipo | 68/25 · 77/28 · 28/9 · 75/27 | 3/1 · 6/2 · 0/0 · 6/1 |
+| Sin puntos, equipo inicial | 80/30 · 88/34 · 39/12 · 88/33 | 6/1 · 11/3 · 1/0 · 6/2 |
+| Con puntos, equipo inicial | 96/44 · 99/45 · 95/54 · 100/45 | 33/9 · 100/49 · 70/27 · 81/27 |
+| Con puntos, botín de su nivel | 100/68 · 100/66 · 100/78 · 100/68 | 100/59 · 100/73 · 100/77 · 100/64 |
+| Con puntos, artesano | 100/70 · 100/69 · 100/79 · 100/71 | 100/65 · 100/77 · 100/78 · 100/69 |
+| Con puntos, artesano y oficios al 100 | 100/76 · 100/76 · 100/84 · 100/76 | 100/71 · 100/82 · 100/79 · 100/75 |
+
+Cada mejora suma: los puntos de talento (y sus habilidades), el equipo inicial, el botín de su nivel, el de artesano (+1 a +6 puntos de vida al terminar) y los beneficios de oficio (+1 a +7). Las defensas del campamento suman en las oleadas (tabla de la Noche de prueba). Antes, al nivel 50, el botín de su nivel y el artesano casi no se distinguían (era el mismo equipo del nivel 8).
+
+**Números movidos.**
+
+*Enemigos* (`content/enemies.yaml`, los 104 comunes; el Guardián no cambia):
+
+| Número | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| Vida que suma cada nivel | `per_level.hp` | × **1,3** desde el nivel 3 (la base baja 0,6 × lo de antes para que al nivel 3 quede igual) | Peleas algo más largas desde el nivel 4; los niveles 1 y 2, algo más fáciles |
+| Ataque que suma cada nivel | `per_level.attack` | × **1,8** desde el nivel 3 (la base baja 1,6 × lo de antes) | Con el equipo de su nivel, ~55-65 % de vida al terminar en vez de ~80 %. Al nivel 50 un bruto pega ~1,7 veces más que antes y tiene ~1,3 veces más vida; al 100, igual |
+| Experiencia, monedas, botín, golpes | — | sin cambios | El ritmo de D-108 solo cambia por las derrotas (cuenta abajo) |
+
+*Talentos* (`content/balance.yaml` → `talents.passive`, por punto, hasta 50 puntos):
+
+| Rol | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| 🛡 Defensa | +1 % de vida | **+1,25 % de vida y +0,2 de armadura** (nuevo: `armor`, que `hero_stats` suma a la armadura sin pasar el tope de 60 %) | La defensa aguanta más a medida que sube (al 50: +62 % de vida y +10 de armadura); al nivel 6 suma solo +1 de armadura, así el Guardián casi no cambia |
+| ✚ Curación | +0,6 % de vida y +0,4 % de ataque | **+0,85 %** de vida y +0,4 % de ataque | La curación es el rol que más vida deja. Sigue en 1,25 % por punto (`tests/test_spec_abilities.py`: talentos chicos al nivel 5) |
+| ✦ Soporte | +0,6 % de ataque y +0,4 % de vida | **+0,5 % de ataque y +0,6 % de vida** | El soporte queda entre el ataque y la defensa también en la vida |
+| ⚔ Ataque | +1 % de ataque | sin cambios | — |
+
+*Barra automática* (`engine/classes/talents.py`): en las especializaciones de 🛡 Defensa, la casilla 3 es su **curación más nueva**, si ya abrió alguna (antes, "la otra habilidad más nueva", que al nivel 25 sacaba la curación de 5 de los 8 tanques). Quien eligió su barra no cambia. El texto de 🎛️ Barra de combate lo dice.
+
+*Equipo* (`content/items.yaml`, `content/balance.yaml` → `gear`):
+
+| Número | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| Niveles de pieza del botín | 4, hasta el nivel 8 (común → épico) | **14**: 1-4 como antes y del 5 al 14 en los niveles 10, 20 … 100, en las 7 ranuras y los 4 tipos de armadura y de arma (250 piezas nuevas) | El equipo sigue mejorando hasta el 100. Del nivel 8 al 100, el arma pasa de +17 % a +35 % de ataque, el pecho de +20 % a +40 % de vida (y +4 → +6 de armadura), la joya de +11/+8 % a +21/+16 %; con las 7 ranuras, de +29 % de ataque, +61 % de vida y +10 de armadura a +61 %, +124 % y +15 (con arma, pecho y joya de artesano: +71 %, +135 % y +19) |
+| Rareza del botín desde el nivel 10 | — | como mucho **🔵 raro** (D-113) | Se ve que el botín es "de menos calidad" |
+| Equipo de artesano | 3 niveles (3, 5, 8), solo arma, pecho y joya | **13**: +10 niveles (10 … 100), 🟣 épicos, con ~10 % más que el botín de su nivel y un bono (vida en las armas, ataque en el pecho, defensa en la joya). 90 piezas nuevas | En cada nivel, desde el 3, la mejor arma, pecho y joya son de artesano (`tests/test_balance_d110.py`) |
+| Equipo de artesano del rango 1 | igual que el botín poco común del nivel 3 | **+1** de vida (armas), de ataque (pecho) o de defensa (joya) | Lo mejor de cada nivel lo fabrican los jugadores también al empezar (D-113) |
+| Precios | botín 8 / 20 / 45 / 90 | botín de los niveles nuevos: **90 + 40 por nivel de pieza** en arma, pecho y joya (68 + 30 en las demás); artesano **+15 %** | Al mercader se vende a la mitad; el de artesano siempre por menos que sus materiales |
+| Probabilidad de soltar equipo (`gear.high_level_drop`) | 15 % siempre | 15 % hasta el nivel 9, **10 %** desde el 10 (también la base del bono de la partida de caza) | El botín suelta menos (D-113) |
+| Ventana de nivel del botín (`gear.level_window`) | −4 a +1; sin piezas, nada (desde el nivel 13 no caía equipo) | igual, y si cae entre dos niveles de pieza, **el más cercano por debajo** (`roll_gear`) | Las franjas altas vuelven a soltar equipo de su nivel |
+
+*Oficios* (`content/professions.yaml`): **90 recetas nuevas**, una por nivel de pieza y línea (bastón, arco, espada, daga, peto, túnica, jubón, cota, joya), en los rangos **55, 60 … 100** (un nivel de pieza cada 5 rangos: nivel 10 → rango 55 … nivel 100 → rango 100). Piden lo refinado de 2 ramas o más y, en los niveles altos, más 💠 gemas y 🌸 flores de luna (ver [Profesiones](../07-economia/profesiones.md) §0.1). 2 ⚡ y 12 de experiencia de oficio, como las demás piezas: el ritmo de D-108 de quien fabrica no cambia. En 🛠️ Fabricar, las recetas de rango más alto salen primero.
+
+*Especializaciones* (`content/classes.yaml`, 31 de 45). Criterio: la **armadura base** de cada tanque supera la del ataque de su clase; la **vida por nivel** acerca a cada especialización al objetivo de su rol (ataque ~55 %, soporte ~61 %, defensa ~69 %, curación ~74 % de vida al terminar, de los niveles 25 al 100) y el **ataque por nivel** de tanques y sanadores muy lentos los acerca a ~1,5 y ~2 veces las rondas del ataque. Cuando cambia lo que suma cada nivel, la base se mueve para que al nivel 6 (el Guardián) quede igual (al 3, en las de curación y soporte que perdían contra el Oso de las cumbres): solo cambian los niveles altos. Cada número lleva su nota `[ES]` en el archivo.
+
+| Especialización | Rol | Cambios |
+|---|---|---|
+| guerrero_furia | Ataque | vida base 165 → 188; ataque base 15 → 16,5; armadura base 0,25 → 0,21; vida por nivel 13 → 8,5; `regeneracion_enfurecida` 0,25 → 0,15 |
+| guerrero | Defensa | vida base 161 → 141; ataque base 11 → 10,5; armadura base 0,20 → 0,22; vida por nivel 15 → 19; ataque por nivel 1,4 → 1,5 |
+| paladin_reprension | Ataque | vida base 139 → 154; armadura base 0,18 → 0,16; vida por nivel 14 → 11 |
+| paladin_sagrado | Curación | vida base 105 → 100; vida por nivel 13 → 14 |
+| cazador_punteria | Ataque | vida base 122 → 142; ataque base 13 → 13,5; vida por nivel 12 → 8; ataque por nivel 1,7 → 1,6 |
+| picaro_sutileza | Soporte | vida base 110 → 104; vida por nivel 14 → 17 |
+| picaro_forajido | Soporte | vida base 143 → 140; vida por nivel 13 → 14,5 |
+| sacerdote_sombra | Ataque | vida base 122 → 107; vida por nivel 11 → 14 |
+| sacerdote_sagrado | Curación | vida base 100 → 105; ataque base 10 → 9,2; vida por nivel 11 → 10; ataque por nivel 1,3 → 1,45 |
+| caballero_muerte_sangre | Defensa | vida base 135 → 145; vida por nivel 15 → 13 |
+| caballero_muerte_profano | Soporte | vida base 162 → 172; vida por nivel 14 → 12 |
+| chaman_restauracion | Curación | vida base 110 → 125; ataque base 10 → 9,2; vida por nivel 12 → 9; ataque por nivel 1,3 → 1,45 |
+| chaman_totems | Soporte | vida base 150 → 160; vida por nivel 13 → 11 |
+| mago_fuego | Ataque | vida base 130 → 140; vida por nivel 11 → 9 |
+| mago_escarcha | Soporte | vida base 121 → 119; vida por nivel 14 → 15 |
+| mago_arcano | Soporte | vida base 143 → 135; vida por nivel 11 → 15 |
+| brujo_destruccion | Ataque | vida base 100 → 105; vida por nivel 11 → 10 |
+| brujo_demonologia | Defensa | vida base 144 → 119; ataque base 11 → 10,2; vida por nivel 14 → 19; ataque por nivel 1,4 → 1,55 |
+| brujo_afliccion | Soporte | vida base 124 → 120; vida por nivel 11 → 13 |
+| monje_maestro_cervecero | Defensa | vida base 125 → 140; ataque base 11 → 10; vida por nivel 14 → 11; ataque por nivel 1,4 → 1,6 |
+| monje_tejedor_niebla | Curación | ataque base 10 → 9,8; ataque por nivel 1,3 → 1,4 |
+| druida_feral | Ataque | vida base 110 → 95; vida por nivel 12 → 15 |
+| druida_guardian | Defensa | vida base 135 → 125; ataque base 11 → 10,5; vida por nivel 15 → 17; ataque por nivel 1,4 → 1,5 |
+| cazador_demonios_venganza | Defensa | vida base 125 → 105; ataque base 11 → 9,5; vida por nivel 14 → 18; ataque por nivel 1,4 → 1,7 |
+| evocador_preservacion | Curación | vida base 110 → 108; vida por nivel 12 → 13 |
+| evocador_aumentacion | Soporte | vida base 150 → 143; vida por nivel 12 → 15,5 |
+| nigromante_plaga | Ataque | vida base 110 → 102; vida por nivel 11 → 12,5 |
+| nigromante_legion | Defensa | vida base 125 → 142; vida por nivel 14 → 10,5 |
+| bardo_duelista | Ataque | vida base 110 → 98; vida por nivel 12 → 14,5 |
+| bardo_trovador | Curación | vida base 107 → 105; vida por nivel 12 → 13 |
+| bardo_estratega | Soporte | vida base 143 → 140; vida por nivel 13 → 14,5 |
+
+Las cinco con poca vida del informe del bestiario (Mago Arcano, Druida Feral, Bardo Duelista, Nigromante Plaga y Pícaro) quedan cerca de la mediana de su rol con el equipo de su nivel (43-60 % de vida del 25 al 100, 98-100 % de victorias; antes, con equipo de nivel 1, ganaban solo el 30-55 % contra los brutos de las franjas altas). Con equipo de nivel 1 en las 7 ranuras a nivel alto ahora **todos** pierden mucho (escenario `p1`: al nivel 50, el ataque gana el 58 %; al 100, el 14 %): con el equipo por niveles, quedarse con el equipo del comienzo ya no alcanza.
+
+**Lo que no cambió (y se comprobó):**
+- **El Guardián** (`--boss`, nivel 6, equipo hasta poco común, 100 peleas): todas entre el **53 %** (Guerrero Furia) y el **89 %** (Paladín Protección); antes, 54-84 %. Sigue en 45-90 %.
+- **Las primeras peleas** (`tools/sim.py --summary --real`, enemigos de nivel 1 a 3): la peor sigue en **90 %** (Bardo Trovador contra el Oso de las cumbres); las de curación, 90 % o más.
+- **El ritmo de D-108** (`--pace`): solo con la experiencia, el nivel 100 llega en **1,82 años** (la experiencia de los enemigos no cambió); con las derrotas del escenario b, 1,82 (la media) y 1,85 (la peor especialización). `tests/test_bestiary.py` lo mantiene entre 1,7 y 2,1. Lo que no entra en la cuenta: con ~55-65 % de vida por pelea, hace falta curarse más seguido (pociones, la posada, la vida que vuelve en 4 h); las peleas automáticas de D-114 cortan el lote por debajo del 50 %.
+
+**La Noche de prueba** (`--trial`: el enemigo más fuerte del bioma al nivel de la zona + 2, con vida × 2 y ataque × 1,3; media de los 8 biomas, % de victorias de las 45 especializaciones; antes → ahora). `raids.trial` no cambió:
+
+| Zona | Equipo | Sin defensa | 🛡️ 4 puntos | 🛡️ 11 puntos |
+|---|---|---|---|---|
+| 5 | inicial (1) | 34 → **11** | 61 → **35** | 100 → **99** |
+| 5 | poco común | 48 → **24** | 85 → **55** | 100 → **99** |
+| 5 | botín de su nivel | 72 → **44** | 96 → **81** | 100 → **100** |
+| 15 | inicial (1) | 48 → **3** | 87 → **15** | 100 → **92** |
+| 15 | botín de su nivel | 98 → **54** | 100 → **87** | 100 → **100** |
+| 30 | botín de su nivel | 97 → **69** | 100 → **94** | 100 → **100** |
+| 60 | botín de su nivel | 97 → **82** | 100 → **99** | 100 → **100** |
+| 90 | inicial (1) | 43 → **2** | 76 → **10** | 100 → **80** |
+| 90 | botín de su nivel | 94 → **87** | 100 → **99** | 100 → **100** |
+
+"Cerca de la mitad" (D-99) vale ahora para quien defiende con el equipo de su nivel en las zonas de 5 a 15 (44-54 %; antes lo daba el equipo inicial, 34-48 %, porque el equipo no crecía). En zonas de nivel 30 o más se gana el 69-87 %, y con las defensas del campamento casi siempre. Con el equipo inicial ya casi no se gana.
+
+**Lo que queda por mirar (o por decidir):**
+- **Victorias:** con juego atento y el cinturón lleno se gana el 98-100 % de las peleas comunes; el riesgo está en la vida que queda. Si el dueño quiere 90-97 % de victorias, hay que dejar ~40 % de vida por pelea (más duro con la vida en 4 h). Propuesta: dejarlo así.
+- **Quien nunca se cambia el equipo:** con el equipo inicial, desde el nivel ~20 pierde mucho. D-83 dice que lo nuevo solo se pone solo en una ranura vacía; conviene avisar "tienes una pieza mejor" (o que el dueño decida si lo mejor se pone solo).
+- **La Noche de prueba en zonas altas** queda más fácil que en las bajas con el equipo de su nivel: si molesta, que `raids.trial` crezca con el nivel de la zona.
+- **Artesano en cabeza, manos, piernas y pies:** todavía solo hay botín en esas 4 ranuras; lo mejor de cada nivel es de artesano en arma, pecho y joya. Van con la segunda tanda de la economía (D-113: durabilidad y pedidos).
+- **El nivel 10:** la defensa queda pareja con el ataque (−4 a +4 puntos) porque el Guardián del nivel 6 frena subirla antes.
+- `tools/balance_report.py` tarda ~20 s el informe completo con 4 procesos; el modo `--trial`, ~1 minuto.
