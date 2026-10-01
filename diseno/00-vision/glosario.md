@@ -20,6 +20,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Clamor** | El "lust": más iniciativa y acciones rápidas durante 3 rondas | [Balance](../03-personaje/balance.md) |
 | **Capital regional** | Asentamiento principal de una región, en un lugar clave (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Claro** | El lugar vacío donde empieza cada fundación. **El Claro** (con mayúscula) es la zona `(0, 0)`, Lejanía 0, donde despiertan los Errantes | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
+| **Cofre (🪎)** | Moneda que se arma en el Claro (💰 Monedas → 🪎 Armar cofre) con 10 💰 bolsas, 10 de madera y 5 piezas de metal. Paga lo grande: agrandar un campamento desde el nivel 6 cuesta 1, 2 y 3 cofres (de 6 a 7, de 7 a 8 y de 8 a 9). El 💵 billete no entra como moneda (D-92, provisional) | [Economía](../07-economia/economia.md) §2, [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.4 |
 | **Derribado / caído** | 0 de vida: 3 rondas para ser levantado, y después cae | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
 | **Despensa** | La comida guardada de un campamento de jugadores desde el nivel 3 (el Claro no tiene: no tiene dueño, D-95). Se llena con **🌾 Aportar comida** (🍖 carne de las bestias, 🥖 provisiones del mercader) y la comen cada día sus residentes activos. Se mide en días que alcanza: abundancia, holgada, justa, escasez y hambruna (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 |
 | **Eco** | Copia de un héroe manejada por sus Tácticas (para invocaciones y arena asíncrona) | [Jefes](../06-contenido/jefes.md) |
@@ -44,6 +45,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Mancha** | Lugar donde caíste; guarda tu Esencia y muestra tus últimas rondas | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |
 | **Mercado Negro** | PNJ que compra equipo a los artesanos y lo pone en el botín de los monstruos | [Economía](../07-economia/economia.md) |
+| **Mochila llena** | La mochila en su espacio (60) o más. Lo que encuentras igual entra (botín, equipo, carne, hallazgos), pero no se recolecta ni se compra hasta vender o usar cosas (D-90, provisional) | [Inventario y mochilas](../03-personaje/inventario-y-mochilas.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12 |
 | **Necesidades de la ciudad** | Comida, materiales, herramientas, defensa, salud, ánimo, orden y tesoro | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | **Obra común** | Lo que todo el servidor levanta junto en el Claro, aportando materiales: sube de fogata a campamento, aldea, pueblo, ciudad y castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §1 |
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |

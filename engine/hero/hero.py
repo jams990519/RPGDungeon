@@ -17,6 +17,8 @@ Si cambias esto, revisa:
     - Números: classes.yaml base/per_level, balance.yaml hero.xp_curve
     - seen_at (D-93): dice quién está activo y por lo tanto quién come de cada despensa
       (engine/service/game.py _mark_seen; tests/test_pantry.py)
+    - chests (D-92, provisional): 🪎 cofres que se arman en el Claro y pagan el crecimiento de los campamentos
+      grandes (engine/service/game.py _build_chest, _grow_chests; tests/test_backpack.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -37,6 +39,8 @@ class Hero:
         level, xp: progression.
         gold: ALL the hero's coins, counted in bronze (D-80: 100 bronze = 1 silver, 100 silver = 1 gold).
         bags: sewn bags (a currency made in the Claro); gems: bought diamonds (D-43, D-85).
+        chests: 🪎 chests assembled in the Claro from 10 bags, wood and metal; they pay for growing
+            big camps (D-92, provisional). 0 for heroes saved before it.
         dual_unlocked, profile, profiles: double specialization (D-88): two talent setups, the
             inactive one saved in profiles["1"|"2"] (talents, unlocked, class_id, bar).
         exploration: how well the hero knows each zone, "x:y" -> 0-100 % (D-87).
@@ -71,6 +75,7 @@ class Hero:
     xp: int = 0
     gold: int = 0
     bags: int = 0
+    chests: int = 0
     gems: int = 0
     hp: int = 1
     x: int = 0

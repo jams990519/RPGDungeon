@@ -64,7 +64,9 @@ hero:
   belt_slots: {pocion_vida: 3, venda: 2}     # [ES] cuánto cabe en el cinturón de cada cosa
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
-  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan)
+  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan).
+                             # [ES] D-90 (provisional): lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos entran aunque pase de 60),
+                             # [ES] pero con la mochila en 60 o más no se recolecta ni se compra hasta vender o usar cosas
   defeat_gold_loss: 0.1
   # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent (D-78). Con toda la energía
   # cada día, el nivel 100 llega en unos 2,5 años; quien juega menos tarda más. Nivel 10 en ~18 días, 20 en ~70.
@@ -128,6 +130,9 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   members_base: 2             # [ES] D-84: miembros que caben en un campamento de nivel 1 (contando al fundador)
   members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
   grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
+  chests_from_level: 6       # [ES] D-92 (provisional): agrandar DESDE este nivel también cuesta 🪎 cofres (6→7 es el primero; ciudad y castillo)
+  chests_per_level: 1        # [ES] cofres = esto × (nivel actual − chests_from_level + 1): 6→7 pide 1, 7→8 pide 2, 8→9 pide 3 (6 hasta castillo).
+                             # [ES] Los paga de sus cofres (hero.chests) el miembro que agranda. Subirlo encarece mucho los campamentos grandes (cada cofre = 10 bolsas)
 
 pantry:                      # [ES] D-93 (provisional): la despensa de los campamentos de jugadores, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §7.2). El Claro no se mantiene: no tiene dueño (D-95). Números orientativos: se ajustan en la beta
   camp_from_level: 3         # [ES] los campamentos de jugadores, desde el nivel 3 (aldea): despensa chica, capa ligera (§7.2)
@@ -143,11 +148,14 @@ shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda, provisiones]   # [ES] D-93: 🥖 provisiones, comida de emergencia cara (sumidero de monedas, §15.8)
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
 
-currency:                    # [ES] monedas (D-80, D-85): 3 comunes que se ganan, bolsas que se cosen, diamantes que se compran y credenciales de oficio
+currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se ganan, bolsas que se cosen, cofres que se arman, diamantes que se compran y credenciales de oficio
   rate: 100                  # [ES] 100 🥉 bronce = 1 🪙 plata; 100 🪙 = 1 🥇 oro. Hero.gold guarda TODO en bronce
-  icons: {bronze: "🥉", silver: "🪙", gold: "🥇", bags: "💰", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño
+  icons: {bronze: "🥉", silver: "🪙", gold: "🥇", bags: "💰", chests: "🪎", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño (🪎 cofre desde D-92; el 💵 billete no entra, P-73)
   bag_recipe: {fibra: 4, pieza_metal: 1}   # [ES] hilo (fibra) y un cierre de metal...
   bag_coins: 100             # [ES] ...más 1 🥈 de plata por bolsa: saca monedas y materiales del juego
+  chest_recipe: {bags: 10, madera: 10, pieza_metal: 5}   # [ES] D-92 (provisional): un 🪎 cofre se arma en el Claro con 10 💰 bolsas (salen de hero.bags)
+                             # [ES] y madera y metal de la mochila. Paga el crecimiento de los campamentos grandes (camps.chests_from_level). Sumidero grande:
+                             # [ES] 1 cofre = 40 de fibra, 15 de metal, 10 de madera y 10 🪙 de plata
   banner_phase: beta         # [ES] el estandarte que se compra ahora es el de beta tester; después de la beta pasar a "premium"
   gem_shop:                  # [ES] D-43: con gemas solo cosméticos y aceleradores, nunca poder
     xp_boost: {gems: 100, xp_mult: 1.5, days: 7}   # [ES] +50 % de experiencia por 7 días (P-66)

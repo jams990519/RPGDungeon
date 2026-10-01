@@ -6,8 +6,8 @@ camps from level 3 keep a pantry. Consumption is lazy, like the zone stock: the 
 These helpers are pure: the service reads the store, counts active residents and calls them.
 
 [ES]
-Para qué sirve: las cuentas de la despensa de un asentamiento (el Claro desde aldea y los
-campamentos desde el nivel 3): cuánta comida queda después de que comieron los residentes
+Para qué sirve: las cuentas de la despensa de un campamento de jugadores (desde el nivel 3; el Claro
+no tiene, D-95): cuánta comida queda después de que comieron los miembros
 activos, cuántos días alcanza y en qué estado está (abundancia, holgada, justa, escasez, hambruna).
 Documento de diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.4, §3.1-3.2, §4.2, §7 (D-93, provisional)
 Módulo: M9 Frontera y Fundación (vive en engine/world hasta que exista engine/front)

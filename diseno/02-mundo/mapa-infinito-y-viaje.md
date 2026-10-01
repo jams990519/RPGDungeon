@@ -169,7 +169,7 @@ Coordenadas 1, 2 · Lejanía 2
 
 ### 1.11 Campamentos que crecen (D-81)
 
-- **Al fundarlo, un campamento ocupa 1 zona.** Cada vez que sus miembros lo agrandan (⬆️ Agrandar campamento), suma 1 zona más: 2, 3, 4… El costo es 15 de madera, 10 de piedra y 5 de fibra, multiplicado por el nivel actual (`camps.grow_cost_per_level`).
+- **Al fundarlo, un campamento ocupa 1 zona.** Cada vez que sus miembros lo agrandan (⬆️ Agrandar campamento), suma 1 zona más: 2, 3, 4… El costo es 15 de madera, 10 de piedra y 5 de fibra, multiplicado por el nivel actual (`camps.grow_cost_per_level`). Desde el nivel 6 también cuesta 🪎 cofres: 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9 (D-92, provisional; ver [Fundación y cisma](fundacion-y-cisma.md) §2.4).
 - **Hacia dónde crece:** desde 0.8.1 (D-87) tú eliges qué zona vecina toma tu campamento, viendo los recursos que conoces de cada una; no puede tomar zonas de otro campamento ni del Claro. La espiral fija (norte, este, sur, oeste, diagonales, anillo siguiente; `engine/world/territory.py`) queda solo para el Claro.
 - **El Claro también crece:** ocupa 1 zona por cada etapa de su obra común (fogata 1, campamento 2, aldea 3…).
 - **Qué da el territorio:**
@@ -199,6 +199,8 @@ Coordenadas 1, 2 · Lejanía 2
   - Recolectar solo da lo que esa zona tiene.
 - **Los recursos se agotan:** cada unidad recolectada baja un 2 % el recurso de esa zona, para todos los jugadores, y vuelve un 2 % por hora (`stock`). Si se recolecta mucho en un lugar, da menos; por debajo del 15 % no da nada hasta que se recupere. La pantalla muestra cuánto queda (▰▰▰▱▱).
 - **Espacio en la mochila:** 60 unidades (`hero.backpack_capacity`). El cinturón y lo puesto no cuentan. Con la mochila llena, recolectar se detiene.
+  - **Lo que encuentras nunca se pierde (D-90, provisional):** el botín, el equipo, la carne y los hallazgos de explorar entran aunque la mochila pase de 60 (se ve, por ejemplo, 63/60).
+  - Con la mochila en 60 o más **no se recolecta ni se compra** en el mercader hasta vender o usar cosas: "🎒 Mochila llena (63/60): vende o usa cosas para volver a recolectar o comprar." No se gasta energía ni monedas.
 - **El territorio vale:** al agrandar tu campamento eliges qué zona vecina toma, viendo los recursos que conoces de cada una. En tu territorio recolectas un 50 % más. El campamento cambia de nombre al crecer: campamento, aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9).
 - Lo pidió el dueño. Los números los propuso Claude.
 - **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.

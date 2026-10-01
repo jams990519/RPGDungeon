@@ -81,6 +81,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 ### 2.4 Crecer eligiendo zonas
 
 - Cualquier miembro toca **⬆️ Agrandar campamento** y paga de su mochila **15 de madera, 10 de piedra y 5 de fibra, por el nivel actual** (`camps.grow_cost_per_level`, D-81).
+- **Desde el nivel 6, también 🪎 cofres** (D-92, provisional): 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9; la fórmula es `camps.chests_per_level` × (nivel actual − `chests_from_level` + 1), y sigue igual después del castillo. Los paga el miembro que agranda. Un cofre se arma en el Claro con 10 💰 bolsas, 10 de madera y 5 piezas de metal (ver [Economía](../07-economia/economia.md) §2). La pantalla de agrandar muestra el costo en cofres y cuántos tienes; si faltan, no se cobra nada.
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
 
@@ -89,10 +90,10 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | 1 | Campamento | 1 | 2 | Fundar: 20 de madera y 10 de piedra |
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
-| 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra y 30 de fibra |
-| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra y 40 de fibra |
+| 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra, 30 de fibra y 1 🪎 cofre |
+| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra, 40 de fibra y 3 🪎 cofres |
 
-Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra y 180 de fibra**. Los nombres por nivel están en `camps.stages`.
+Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra, 180 de fibra y 6 🪎 cofres** (1 + 2 + 3, de 6 a 9). Los nombres por nivel están en `camps.stages`.
 
 **Qué da el territorio:**
 - En cualquier territorio (de tu campamento, de otro o del Claro) no te atacan: ni al llegar, ni al explorar, ni al recolectar.
@@ -102,7 +103,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales (y, desde el nivel 6, 🪎 cofres, D-92); desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 
