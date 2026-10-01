@@ -95,7 +95,7 @@
 | Fase | Oficios | Por qué en este orden |
 |---|---|---|
 | **1 (en curso)** | Leñador, Minero, Herbolario, Desollador · Aserradero, Fundición, Destilación, Tejeduría, Curtiduría · Carpintería, Herrería, Alquimia, Sastrería, Peletería, Joyería | Usan los recursos que ya están en el juego y hacen el equipo |
-| **1.5** | 🩺 Medicina (D-111) · 🧭 Explorador (D-112) | Ya están decididos y conectados con los sanadores y el mapa |
+| **1.5** | 🩺 Medicina (D-111, en el juego) · 🧭 Explorador (D-112, en el juego: [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | Ya están decididos y conectados con los sanadores y el mapa |
 | **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde cierto nivel, y las defensas se reparan después de las oleadas) · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
 | **3** | 🌾 Agricultor y 🐑 Ganadero (granero, huerto y corral) · 📜 Inscripción · ⚙️ Ingeniería · 💱 Comercio | Profundizan; necesitan el mercado de órdenes de la segunda tanda de la economía |
 

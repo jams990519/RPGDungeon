@@ -58,6 +58,47 @@ explore:
   around_radius: 1           # [ES] D-107: con tu zona al 100 %, explorar sigue con las casillas de alrededor (1 = las 8 vecinas) sin moverte
   arrival_encounter_scale: 1.0
 
+explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorador (sube explorando) y lo que ve de más en el mapa según su rango (mapa-infinito-y-viaje.md §1.14). Su beneficio (+5 de exploración por vuelta al rango 100) está en content/professions.yaml. Números propuestos por Claude: se ajustan en la beta
+  profession: explorador     # [ES] id del oficio en content/professions.yaml (estable: los héroes guardan su experiencia con este id)
+  xp_per_step: 5             # [ES] experiencia de Explorador por cada vuelta de exploración...
+  xp_full_zone: 6            # [ES] ...y un extra al dejar una zona al 100 %. Unos 6 por ⚡ en total, como refinar (6): rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año dedicado (la curva es la de todos los oficios)
+  ranks:                     # [ES] desde qué rango de Explorador se abre cada cosa (⚒️ Oficios muestra la lista)
+    travel: 10               # [ES] ⏱️ 📒 Lugares lista hasta places_listed lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca (campamentos, guarida, tu campamento)
+    camps_near: 25           # [ES] ⛺ ve los campamentos enemigos hasta near_radius zonas, aunque no los haya pisado
+    infiltrate: 30           # [ES] 🕵️ Infiltrarse en un campamento enemigo
+    camps_all: 50            # [ES] ⛺ ve los campamentos enemigos de todo su mapa (13 × 13, map_view.radius)
+    strength: 75             # [ES] 👹 ve desde el mapa la fuerza de cada campamento: cuántos enemigos quedan, de qué nivel y su jefe
+    master: 100              # [ES] 🏅 título Gran Explorador
+  base_sight: 1              # [ES] cualquiera ve los campamentos de su zona y de las 8 vecinas
+  near_radius: 3             # [ES] desde el rango camps_near: hasta 3 zonas a la redonda (7 × 7)
+  places_listed: 8           # [ES] desde el rango travel, 📒 Lugares lista hasta 8 lugares con su tiempo (sin ese rango, 3; los botones siguen siendo 3)
+  map_lines: 4               # [ES] cuántos campamentos enemigos lista el mapa debajo de los cuadritos (los más cercanos)
+  title: gran_explorador     # [ES] id del título del rango 100 (estable; se guarda en Hero.titles)
+
+enemy_camps:                 # [ES] D-112 (confirmada): ⛺ campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
+  density: 0.03              # [ES] cada día, ~3 % de las zonas de Lejanía 2 o más tienen uno (en un mapa de 13 × 13, unos 4 o 5). Nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Cambiarlo mueve los campamentos del día
+  min_lejania: 2             # [ES] desde qué Lejanía pueden salir
+  garrison: [4, 8]           # [ES] cuántos enemigos tiene cada uno, contando al jefe (el último)
+  level_bonus: 1             # [ES] la guarnición es del nivel de la zona + 1 (§6.2 de supervivencia: nunca más de + 2)
+  chief_hp_mult: 1.8         # [ES] el jefe es el más fuerte del bioma, con 80 % más de vida...
+  chief_attack_mult: 1.2     # [ES] ...y 20 % más de ataque: una versión élite, solo en esa pelea (la Noche de prueba usa 2,0 y 1,3, pensada para varios)
+  fight_energy: 2            # [ES] cada pelea del asalto cuesta 2 ⚡, como una presa (D-108): ~22 de experiencia por ⚡ con el nivel + 1, y el cofre una vez por campamento. Nunca es automática (D-114)
+  chest:                     # [ES] el cofre del que termina al jefe
+    coins_per_level: 25      # [ES] monedas = nivel del campamento × 25 🥉 (nivel 4: 1 🥈; unas 15 peleas comunes)
+    materials: [3, 5]        # [ES] unidades de los materiales que tiene la zona (según su peso)
+    gear_chance: 0.5         # [ES] probabilidad de una pieza de equipo del nivel del campamento (el sorteo de botín de siempre, nunca equipo de artesano; las peleas comunes dan 15 %, y 10 % desde el nivel 10)
+    xp: 60                   # [ES] experiencia del cofre, × (1 + 0,15 × (nivel − 1)) como matar (D-108)
+  share:                     # [ES] lo que gana cada uno que peleó ahí ese día (ganó o perdió; huir no cuenta) cuando el campamento cae, menos el que lo termina (se lleva el cofre)
+    coins_per_level: 8       # [ES] nivel × 8 🥉
+    xp: 30                   # [ES] × (1 + 0,15 × (nivel − 1)): como una pelea más
+  infiltrate:                # [ES] 🕵️ Infiltrarse (Explorador de rango explorer.ranks.infiltrate o más): no es una pelea
+    energy: 3                # [ES] cuesta 3 ⚡
+    detect_base: 0.45        # [ES] probabilidad de que te descubran en el rango 30...
+    detect_per_rank: 0.005   # [ES] ...menos 0,5 puntos por cada rango más (rango 100: 10 %)...
+    detect_min: 0.05         # [ES] ...y nunca menos de 5 %. Si te descubren, peleas con un guardia (a mano)
+    explore_points: 10       # [ES] si sale bien, +10 % de exploración de esa zona (la única forma de explorarla mientras el campamento siga en pie)...
+    explorer_xp: 15          # [ES] ...y 15 de experiencia de Explorador (5 por ⚡, como explorar). Una vez por campamento y día
+
 presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
   minutes: 15                # [ES] un jugador "está" en la zona si tocó un botón en los últimos 15 min (o si su héroe explora, recolecta o duerme ahí, aunque tenga el chat cerrado)
   max_listed: 5              # [ES] cuántos nombres muestra 📍 Zona como mucho; el resto sale como "… y N más" (pantallas cortas, D-86)

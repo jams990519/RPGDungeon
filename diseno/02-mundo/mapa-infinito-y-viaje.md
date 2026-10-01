@@ -1,6 +1,6 @@
 # El mapa infinito y el viaje
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13), [Profesiones](../07-economia/profesiones.md) (🧭 Explorador, §1.14) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
 
 **La regla del dueño (D-58, confirmada):** "Quita los pisos, deja un mapa infinito por investigar, pero que tome tiempo moverte entre lugares."
 
@@ -126,7 +126,7 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-El botón 🗺️ Mapa dibuja 7 × 7 zonas (3 a cada lado). 🧍 eres tú, el emoji del bioma marca lo que **tu héroe recuerda**, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
+El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca ⛺ los campamentos enemigos que ves (§1.14). 🧍 eres tú, el emoji del bioma marca lo que **tu héroe recuerda**, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
 
 ### 1.10 Pantalla de ejemplo
 
@@ -248,32 +248,38 @@ El dueño pidió (1-oct-2026):
 
 **De dónde sale.** Las listas de "quién está en esta sala" de los MUD de texto (el comando `who` y la línea "Aquí también están…"), los jugadores que se ven pasar en las zonas de WoW y los fantasmas de otros jugadores de *Dark Souls* y *Journey*, que dan compañía sin mecánica.
 
-### 1.14 El Explorador y los campamentos enemigos (D-112, para programar)
+### 1.14 El Explorador y los campamentos enemigos (D-112, en el juego)
 
-El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una profesión**, y que haya **zonas que no se dejan explorar** porque hay enemigos acampados. Esta es la capa simple para programar; los números son propuesta de Claude.
+El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una profesión**, y que haya **zonas que no se dejan explorar** porque hay enemigos acampados. Esta es la capa simple, **ya en el juego**. Los números son propuesta de Claude (se ajustan en la beta) y viven en `content/balance.yaml` → `explorer` y `enemy_camps`; el oficio, en `content/professions.yaml`; las cuentas de los campamentos, en `engine/world/enemy_camps.py`; las pantallas, en `engine/service/game.py` (sección "enemy camps and the 🧭 Explorador"); los textos, en `content/locales/es_exploracion.yaml`. Pruebas: `tests/test_enemy_camps.py`.
 
-**🧭 El oficio de Explorador** (va con los oficios de D-109, rango 1 a 100):
-- Sube explorando: cada vuelta de exploración da experiencia de Explorador, y más al dejar una zona al 100 %.
-- **Los más avanzados ven más en el mapa.** Lo que se abre con el rango:
+**🧭 El oficio de Explorador** (con los oficios de D-109, rango 1 a 100; en ⚒️ Oficios sale en su propia rama, 🧭 Exploración):
+- **Sube explorando:** cada vuelta de exploración da **5** de experiencia de Explorador, y **6** más al dejar una zona al 100 % (también las de alrededor, D-107). Son unos 6 por ⚡, como refinar: rango 10 en ~3 días de toda la energía, 25 en ~3 semanas, 50 en ~3 meses y 100 en ~1 año dedicado (la curva es la de todos los oficios, 9 × (R − 1)²). El resumen del lote lo dice ("⚒️ Oficios: 🧭 Explorador +40") y avisa cada umbral nuevo.
+- **Los más avanzados ven más en el mapa.** Lo que se abre con el rango (⚒️ Oficios muestra la lista, con ✅ en lo que ya tienes, y el próximo umbral):
 
 | Rango | Qué ves de más |
 |---|---|
-| 1 | Lo de siempre: tus zonas, su porcentaje y su color |
-| 10 | Cuánto tardas en llegar a cada lugar de 📒 Lugares y a las zonas que el mapa marca |
-| 25 | Los ⛺ campamentos enemigos hasta 3 zonas de distancia, aunque no los hayas pisado |
+| 1 | Lo de siempre: tus zonas, su porcentaje y su color, y los ⛺ campamentos de tu zona y de las 8 vecinas |
+| 10 | ⏱️ 📒 Lugares lista hasta **8** lugares con su tiempo (sin rango, 3; los botones siguen siendo 3), y el 🗺️ Mapa dice cuánto tardas a cada campamento que ve, a la guarida del Guardián y a tu campamento |
+| 25 | Los ⛺ campamentos enemigos hasta **3** zonas a la redonda (7 × 7), aunque no las hayas pisado |
 | 30 | **🕵️ Infiltrarse** en un campamento enemigo |
 | 50 | Los campamentos enemigos de todo tu mapa (13 × 13) |
-| 75 | La fuerza de cada campamento desde el mapa: cuántos enemigos quedan, de qué nivel y su jefe |
-| 100 | Gran Explorador: título y un poco más de porcentaje por vuelta |
+| 75 | 👹 La fuerza de cada campamento desde el mapa y en su zona: cuántos enemigos quedan, de qué nivel, su jefe y su cofre |
+| 100 | 🏅 Título «Gran Explorador» (para siempre, en la ficha y el 📔 Diario) |
 
-- Como todo oficio (D-111), tiene su beneficio parejo con el rango: hasta **+5 puntos** de porcentaje por vuelta de exploración al rango 100.
+- **Su beneficio** (como todo oficio, D-111): **+1 punto de exploración por vuelta cada 20 rangos**, hasta **+5** al rango 100 (`perk: {explore: 5}`; se usa la parte entera, sin otro sorteo).
 
 **⛺ Campamentos enemigos:**
-- **Aparecen al azar por el mapa y cambian cada día.** Cada día real salen en zonas distintas (de Lejanía 2 o más; nunca en el Claro ni en el territorio de un campamento de jugadores). No hay un punto fijo: el lugar sale de la semilla del mundo y del día, así que todos los jugadores ven los mismos.
-- **Mientras el campamento está en pie, su zona no se deja explorar ni recolectar:** los enemigos no te dejan. Al llegar a esa zona ves el campamento.
-- **Hay que destruirlo todo:** cada campamento tiene una guarnición de enemigos del bioma (unos 4 a 8, del nivel de la zona + 1) y un jefe al final. Cada pelea gana a uno, para todos: varios jugadores pueden ir bajándolo juntos el mismo día. Al caer el jefe, el campamento queda destruido hasta que reaparece en otro lado al día siguiente, y suelta un cofre de botín (monedas, materiales y una probabilidad de equipo) para quien lo termina, y algo para cada uno que peleó.
-- **🕵️ Infiltrarse (solo Exploradores de rango 30 o más):** cuesta energía y no es una pelea. Si sale bien, te dice cuántos enemigos quedan, de qué tipo y nivel, quién es el jefe y qué botín guarda, y te suma un poco de porcentaje de exploración de esa zona. Si te descubren (menos probable cuanto más rango tienes), empieza una pelea con un enemigo de la guarnición.
+- **Dónde y cuándo:** cada día real (el mismo corte de día que la despensa y el 📜 Tablón) unas **3 %** de las zonas de **Lejanía 2 o más** tienen uno: en un mapa de 13 × 13, unos 4 o 5. El lugar sale solo de la semilla del mundo, el día y las coordenadas: **todos los jugadores ven los mismos** y no hay un reloj que los mueva. Nunca salen en el Claro, en la guarida del Guardián ni en el territorio de un campamento de jugadores, y **nunca dos días seguidos en la misma zona**: al otro día aparecen en otro lado.
+- **Mientras está en pie, su zona no se explora ni se recolecta.** 🔎 Explorar y 🪓 Recolectar se rechazan con un aviso y **sin gastar energía**; explorar alrededor (D-107) se salta esa zona. Si un lote cruza la medianoche y aparece un campamento donde estás, se corta y devuelve la energía de la vuelta. Al llegar a la zona lo dice ("⛺ ¡Un campamento enemigo!"), 📍 Zona lo muestra y las rutas vecinas llevan ⛺. 🏹 Cazar sigue abierto (sus presas son las comunes de la zona).
+- **🧭 Explorar en esa zona:** el menú cambia a **⚔️ Asaltar · ⚡2**, **🕵️ Infiltrarse · ⚡3** (o "🕵️ Infiltrarse (rango 30)"), **🏹 Cazar** y **🗺️ Mapa**: 4 botones. Dice cuántos vencieron hoy entre todos y, si te infiltraste o eres Explorador de rango 75, quiénes quedan, el jefe y el cofre.
+- **La guarnición:** de **4 a 8** enemigos (contando al jefe), del bioma de la zona y del **nivel de la zona + 1**. El último es el **jefe**: el más fuerte de los que salen ahí, en versión élite (**+80 % de vida y +20 % de ataque**, solo en esa pelea).
+- **⚔️ Asaltar:** cada pelea cuesta **2 ⚡** (como una presa, D-108) y es contra el siguiente de la guarnición. **Cada victoria vence a uno, para todos** (se guarda por día y zona en el almacén): varios jugadores lo bajan juntos el mismo día. El jefe solo cae en su propia pelea, aunque dos peleen a la vez. Ganar o perder te anota como alguien que peleó ahí (huir no). Tras ganar sale **⚔️ Seguir asaltando**. Malherido o sin energía, no se puede (aviso, nada se cobra). **Nunca es automática** (D-114): ni en un lote ni con ⚔️ Peleas automáticas.
+- **Cuando cae el jefe:** el campamento queda destruido hasta el día siguiente (la zona vuelve a explorarse y 📍 Zona dice quién lo terminó). **Quien lo termina** se lleva el cofre: **nivel × 25 🥉**, **3 a 5** materiales de la zona, **60 × (1 + 0,15 × (nivel − 1))** de experiencia y **50 %** de una pieza de equipo del nivel del campamento (el sorteo de botín de siempre). **Cada otro que peleó ahí ese día** gana **nivel × 8 🥉** y **30 × (1 + 0,15 × (nivel − 1))** de experiencia, aunque no esté jugando, con un aviso. Se paga **una sola vez**: el que termina una pelea después ve "ya había caído" (lo que ganó en su pelea es suyo). Queda en el 📔 Diario.
+- **🕵️ Infiltrarse (Exploradores de rango 30 o más):** cuesta **3 ⚡** y no es una pelea. Te descubren con **45 %** al rango 30, 0,5 puntos menos por rango (**10 %** al 100, nunca menos de 5 %): entonces empieza una pelea, a mano, con el siguiente de la guarnición (cuenta como un asalto). Si sale bien ves cuántos quedan y quiénes, el jefe y lo que guarda el cofre (es justo lo que se gana), ganas **+10 %** de exploración de esa zona (la única forma de explorarla mientras siga en pie) y **15** de experiencia de Explorador, y ese día ves su fuerza en 🧭 Explorar y en el mapa. Una vez por campamento y día.
+- **🗺️ Mapa:** ⛺ marca los campamentos que ves; debajo, los más cercanos (hasta 4) con su distancia, su tiempo desde el rango 10 y su fuerza desde el 75, y hasta dónde ves. El botón **⛺ Ir al más cercano** te lleva zona por zona, como 📒 Lugares (3 botones en el mapa).
+- **Cuánto da** (registro de [Balance](../03-personaje/balance.md) §7): una pelea del asalto da ~10 % más experiencia por ⚡ que cazar en la misma zona (~22 contra ~20 con un lobo en una zona de nivel 3, D-108), porque es del nivel + 1; un campamento entero en solitario (6 peleas y el cofre) da ~29 por ⚡, y ~22 contando el viaje para llegar. El jefe se gana 85-97 % de las veces con el equipo y los puntos de su nivel (37 % al nivel 3 sin nada); los guardias, ~100 %, dejando ~65 % de vida.
 - **Para qué sirve:** le da trabajo a cada uno. El Explorador encuentra y estudia los campamentos, los que pelean los destruyen, y todos ganan botín. Y cambia el mapa cada día.
+- **Lo que queda abierto:** si un Explorador veterano debería empezar con experiencia por lo que ya exploró antes de este parche (hoy todos empiezan en rango 1); si fundar o agrandar un campamento de jugadores sobre un campamento enemigo en pie debería esperar a destruirlo (hoy el territorio nuevo lo hace desaparecer); si el jefe debería pedir grupo en los anillos lejanos.
 
 ## 2. Lo que viene por parches (propuesta)
 
