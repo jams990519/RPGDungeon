@@ -21,8 +21,9 @@ Módulo: M8 Mundo (dónde están los campamentos) con datos de M6 (content/enemi
 Depende de: engine.core.rng (hash_unit), engine/world/encounters.py (qué enemigos caben en el bioma y el nivel, D-108),
     engine/world/raids.py (power: quién es el más fuerte); los números llegan de content/balance.yaml, bloques
     enemy_camps y explorer
-Lo usan: engine/service/game.py (sección "enemy camps and the explorer": _ecamp, _assault, _infiltrate, mapa, Lugares),
-    tests/test_enemy_camps.py
+Lo usan: engine/service/game.py (sección "enemy camps and the explorer": _ecamp, _assault, _infiltrate, mapa, Lugares;
+    D-172: el 🔭 Reconocer de lejos muestra la misma guarnición y el mismo jefe, sin el cofre), tests/test_enemy_camps.py,
+    tests/test_reconocimiento.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (el servicio guarda lo que pasó con cada campamento en el espacio "enemy_camp" del

@@ -1,0 +1,66 @@
+# 🔭 Reconnaissance from afar and 🥷 stealth of the 🧭 Explorador (D-172). Numbers live in content/balance.yaml (blocks recon
+# and explorer: ranks recon, recon_far, recon_wide and stealth_max); the stealth perk in content/professions.yaml.
+# [ES] Textos del 🔭 Reconocer de lejos (la pantalla /reconocer, el informe de cada lugar, las líneas del 🗺️ Mapa, de
+# 🧭 Explorar y de 📍 Zona) y del 🥷 Sigilo (evitar peleas al azar al explorar con ✋ Manual y al viajar). También lo que abre
+# cada rango del Explorador para el reconocimiento (explorer.what y explorer.short) y el beneficio prof.perk.stealth. Se junta
+# con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py: las claves que ya existen, como explorer o prof, se
+# completan, no se pisan).
+# Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 ("Reconocer y sigilo"); diseno/07-economia/profesiones.md
+# Lo leen: engine/service/game.py (sección "reconnaissance and stealth": _recon_view, _recon, _recon_map_lines,
+#     _recon_hint_lines, _recon_route_mark, _stealth_chance; y _arrive, _explore_step, _batch_summary, _options_view,
+#     _explorer_what y _explorer_prof_lines).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Si cambias una clave, búscala en game.py: una clave que
+# falta se ve como [clave] (tests/test_reconocimiento.py revisa que no falte ninguna).
+
+recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explorador desde el rango 10)
+  title: "🔭 Reconocer"
+  intro: "🔭 Miras de lejos qué hay en una ❓ mazmorra o en un ⛺ campamento enemigo, sin ir: lo mismo que vería cualquiera que llegue hoy. Cada uno cuesta ⚡{energy}, da experiencia de 🧭 Explorador y unas monedas. Uno por lugar al día."
+  locked: "🔒 Reconocer pide rango {rank} de 🧭 Explorador (tienes {have}). Sube explorando."
+  reach: "🔭 Llegas hasta {n} {n|zona|zonas} a la redonda (tu propia zona no: ahí se entra o se infiltra)."
+  line: "{mark} ({x}, {y}) · a {zones} {zones|zona|zonas}"
+  line_done_dungeon: "✅ {mark} ({x}, {y}) · hoy {family} · 👑 {boss}"
+  line_done_camp: "✅ ⛺ ({x}, {y}) · 👹 quedan {left} de {total} · 👑 {chief}"
+  more: "…y {n} más, más lejos."
+  none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: el 🗺️ Mapa marca ❓ las mazmorras y ⛺ los campamentos enemigos."
+  next: "🔓 Con rango {rank} de 🧭 Explorador, hasta {n} {n|zona|zonas}."
+  button: "🔭 {mark} ({x}, {y}) · ⚡{energy}"
+  out_of_reach: "🔭 Ese lugar no está a tu alcance o ya no hay nada que ver ahí. No gastaste nada."
+  already: "🔭 Ya reconociste ese lugar hoy: lo que sabes está en la lista. Mañana puede haber otra cosa."
+  report_title: "🔭 Reconocimiento"
+  done: "🔭 Miraste de lejos {name} ({x}, {y}), a {zones} {zones|zona|zonas}, sin moverte:"
+  dungeon_small: "🕳️ Una mazmorra chica · nivel {level}: {rooms} salas y su jefe."
+  dungeon_deep: "🌀 Una mazmorra profunda · nivel {level}: pisos hacia abajo, cada uno más duro."
+  top: "🏆 El récord de hoy aquí: {name}, piso {floor}. ¿Lo superas?"
+  top_none: "🏆 Hoy nadie bajó todavía aquí: el primer récord del día puede ser tuyo."
+  camp: "⛺ Un campamento enemigo · nivel {level} · guarnición de {total}."
+  covers_small: "🕳️ Debajo, la entrada de una mazmorra chica: se abre cuando caiga el campamento."
+  covers_deep: "🌀 Debajo, la entrada de una mazmorra profunda: se abre cuando caiga el campamento."
+  reward: "{name} +{xp} · ✨ {hero_xp} de experiencia · {gold}"
+  go_button: "🧭 Ir allá · ⏱️ {time}"
+  again_button: "🔭 Reconocer otro"
+  map_button: "🔭 Reconocer"
+  map_line: "🔭 /reconocer: {n} {n|lugar|lugares} sin reconocer hoy, hasta {zones} {zones|zona|zonas} de aquí."
+  map_line_none: "🔭 /reconocer: hoy no te queda nada nuevo a tu alcance (hasta {zones} {zones|zona|zonas})."
+  map_locked: "🔭 Desde el rango {rank} de 🧭 Explorador puedes reconocer de lejos lo que marca el mapa."
+  map_today: " · 🔭 hoy {family}"
+  hint: "🔭 {n} {n|lugar|lugares} para reconocer de lejos: /reconocer"
+  route_mark: " {mark}{emoji}"
+
+stealth:                      # [ES] D-172: 🥷 Sigilo del 🧭 Explorador (beneficio "stealth")
+  travel: "🥷 Pasaste por {name} sin que nada te viera."
+  batch: "🥷 Sigilo: {n} {n|pelea evitada|peleas evitadas} sin que te vieran."
+  options: "🥷 Tu sigilo ({pct} %) evita peleas al azar con ✋ Manual y al viajar. Con ⚔️ Automática peleas todas las que salen."
+
+explorer:                     # [ES] D-172: lo que abre cada rango del 🧭 Explorador para el reconocimiento (balance.yaml explorer.ranks y recon.range)
+  what:
+    recon: "puedes 🔭 reconocer de lejos (/reconocer) las ❓ mazmorras y los ⛺ campamentos hasta {zones} {zones|zona|zonas} a la redonda: qué hay hoy, sin ir"
+    recon_far: "🔭 reconoces de lejos hasta {zones} zonas a la redonda"
+    recon_wide: "🔭 reconoces de lejos hasta {zones} zonas a la redonda"
+  short:
+    recon: "{rank} 🔭 a {zones} {zones|zona|zonas}"
+    recon_far: "{rank} 🔭 a {zones} zonas"
+    recon_wide: "{rank} 🔭 a {zones} zonas"
+
+prof:
+  perk:
+    stealth: "🥷 {v} % de evitar peleas al azar (al explorar con ✋ Manual y al viajar)"
