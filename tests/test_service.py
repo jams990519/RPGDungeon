@@ -20,6 +20,11 @@ def test_creation_flow(service):
     view = service.text("test:1", "Lyra")
     assert view.kind == "create_class"
     view = service.act("test:1", "grp:guerrero")
+    assert view.kind == "create_class" and any(a.id == "grp:" for a in view.actions)
+    view = service.act("test:1", "grp:")                # back to the class list
+    assert any(a.id.startswith("page:") for a in view.actions)
+    service.act("test:1", "grp:guerrero")
+    view = service.act("test:1", [a.id for a in service.act("test:1", "grp:guerrero").actions if a.id.startswith("cls:")][0])
     assert view.kind == "zone"
 
 

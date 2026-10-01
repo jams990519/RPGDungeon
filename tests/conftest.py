@@ -30,4 +30,6 @@ def make_hero(service, account="test:1", name="Lyra", class_id="guerrero"):
     service.view(account)
     service.text(account, name)
     group = service.content.classes[class_id].get("group", class_id)
-    return service.act(account, f"grp:{group}")
+    service.act(account, f"grp:{group}")
+    from engine.classes import default_spec
+    return service.act(account, f"cls:{default_spec(service.content.classes, group)}")

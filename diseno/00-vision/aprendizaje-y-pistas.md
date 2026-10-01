@@ -50,6 +50,7 @@
 - **No bloquea nada.** La actividad ya se puede usar; la nota está debajo y se va sola con tu primera acción.
 - **La dice alguien del mundo**: el maestro de la comunidad donde estás, el entrenador del oficio o la cazadora del Claro. Cada uno habla con su personalidad (§5.2). Si no hay ningún PNJ cerca (por ejemplo, en una ciudad de jugadores sin maestros), la nota la escribe tu héroe en su Bitácora, en primera persona.
 - **Sale una vez por cuenta.** Se puede releer cuando quieras en la Bitácora (§6).
+- **Y después, poco a poco.** Dentro de la actividad, la primera vez que aparece una parte nueva (una barra, un estado, una acción que acabas de desbloquear), una sola línea al pie dice **qué es**. Nunca cuándo ni cómo usarla. Ejemplo en la forja: "📌 Condición: cómo está el metal ahora. Cambia sola."
 - **Los sistemas aparecen de a poco** (pilar 11). La nota sale cuando llegas a la actividad, no antes. Nadie recibe veinte notas el primer día.
 
 ### 2.2 Ejemplos por actividad
@@ -102,6 +103,7 @@ Las tareas enseñan que algo existe ("¿una venda limpia?", "¿se pueden leer la
 
 - **No hay nivel 4.** Si sigues sin lograrlo, la pista de nivel 3 se repite, como mucho una vez por día.
 - **La pista de nivel 3 apunta a una fuente que puedes usar:** un maestro de tu hogar o de una comunidad donde tienes reputación, un libro que está en tu ciudad, una mancha de la misma región. Nunca a un lugar donde no te dejan entrar.
+- **Si esa fuente todavía no existe** (nadie cayó aún ante ese jefe, no tienes hogar, no hay libro), apunta a una que siempre está: tu propia Bitácora, el Bestiario, el Informante o tu mentor. Nadie queda sin saber dónde buscar.
 - **Al lograrlo, las pistas de ese tema se apagan** y lo que aprendiste queda en la Bitácora.
 
 ### 3.2 Cuándo sale cada nivel
@@ -136,19 +138,21 @@ Cada pista pertenece a un **tema** (un movimiento de un jefe, perder materiales 
 | **Casos** | Que dos pistas no encajan entre sí; a qué testigo conviene volver | El culpable, el cómo y el porqué |
 | **Cacerías** | Qué tipo de rastro mirar y qué borra el clima | Dónde está la presa |
 
+La nota del Bestiario que traen los avisos desde ★★★ (ver [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) §2 y [Bestiario](../06-contenido/bestiario.md) §1.5) no es una pista: es conocimiento ganado, y sale también en el modo sin ayuda. Hoy esa nota dice qué hacer ("espera una ronda"); la propuesta es que solo describa (ver Preguntas abiertas).
+
 ### 3.4 Excepciones: lo que se explica claro
 
 Algunas cosas no se aprenden a golpes. Perderlas por no saber no enseña nada: solo frustra o hace daño. Esas se explican **completas, claras y siempre**, también en el modo sin ayuda.
 
 | Tema | Qué se explica | Cómo |
 |---|---|---|
-| **Reglas básicas** | Qué hace cada botón, cómo se gana y se pierde, los colores de zona, qué pierdes al caer en cada una, cómo funcionan las Tácticas | La ayuda de cada acción y `/ayuda`, en lenguaje de resultado |
+| **Reglas básicas** | Qué hace cada botón, cómo se gana y se pierde, los colores de zona, qué pierdes al caer en cada una, la energía y el tiempo de viaje (D-58, D-65), cómo funcionan las Tácticas | La ayuda de cada acción y `/ayuda`, en lenguaje de resultado |
 | **Riesgos que no tienen vuelta atrás** | Entrar en zona roja o negra, jurar el Juramento de Hierro, romper una ley de tu comunidad, una amputación | Aviso antes de hacerlo, con confirmación. El Juramento pide confirmar dos veces |
 | **Pagos con dinero real** (D-43) | Qué compras, cuánto cuesta y qué no compras nunca | Una línea clara y una confirmación. Nada de pistas ni de misterio con el dinero |
 | **Apuestas** | Que solo se apuesta oro del juego, el tope diario y el Voto de Templanza (ver [Apuestas](../08-social/apuestas.md) §4) | En la nota de bienvenida y en `/ayuda` |
 | **Seguridad de la cuenta** | Vincular clientes, sesiones, qué nunca pide el juego (contraseñas, códigos) | Pantalla de cuenta |
 | **Normas de convivencia** | Qué está prohibido en los chats, en las notas y en los libros, y qué pasa si se rompe (ver [Seguridad](../01-plataforma/seguridad-y-anti-trampas.md) §7) | `/normas` |
-| **Cambios de una actualización** | Qué cambió y cómo te afecta | Canal de Novedades, en lenguaje de resultado (ver [Gremios y social](../08-social/gremios-y-social.md) §7) |
+| **Cambios de una actualización** | Qué cambió y cómo te afecta | La nota de cada parche, que el bot manda una sola vez a cada jugador (D-67), y el canal de Novedades, en lenguaje de resultado (ver [Gremios y social](../08-social/gremios-y-social.md) §7) |
 
 ## 4. Las pistas que se piden a mano
 
@@ -163,7 +167,7 @@ Además de las pistas que salen solas, puedes **pedir una**. Siempre en un lugar
 | **En la antesala de una guarida** | [💡 Pista] antes de entrar. Nunca dentro de la pelea |
 | **En la Bitácora** | En la sección 💡 Pistas, por tema |
 
-**Dónde no:** en las rondas de combate, en los exámenes de rango, en el PvP, la arena y el Foso, y en los casos semanales del servidor (que tienen ranking).
+**Dónde no:** en las rondas de combate, en los exámenes de rango, en el PvP, la arena y el Foso, y en el caso semanal del servidor (se compite por resolverlo primero; ver [Investigaciones](../06-contenido/investigaciones.md) §1.3).
 
 **Límite:** cada pedido adelanta un nivel, como si hubieras tropezado una vez más, y se puede pedir **una vez por tema por día**. Así no se salta al nivel 3 en tres toques.
 
@@ -227,7 +231,7 @@ La Bitácora anota **lo que viste y viviste**, sin que hagas nada. Está escrita
 ### 6.2 Tres reglas de la Bitácora
 
 1. **Anota hechos, no conclusiones.** Escribe "aviso en la ronda 8, golpe en la 9", nunca "hay que esperar una ronda". Los datos son tuyos; la deducción también, como en *Obra Dinn*.
-2. **Es la puerta, no el archivo.** La Bitácora es una pantalla corta con lo último que aprendiste. El detalle vive en su colección: el [Bestiario](../06-contenido/bestiario.md), el Recetario y el Herbario (ver [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md)), el Códice de fragmentos (ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) §6.2), el Tablero de cada caso y el **expediente de cada oficio**: tu ficha de lo que sabes de un oficio (rango, técnicas, ingredientes, maestrías), que forma parte de la Escalera de conocimiento (D-54, en redacción). La Bitácora no copia nada: enlaza.
+2. **Es la puerta, no el archivo.** La Bitácora es una pantalla corta con lo último que aprendiste. El detalle vive en su colección: el [Bestiario](../06-contenido/bestiario.md), el Recetario y el Herbario (ver [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md)), el Códice de fragmentos (ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) §6.2), el Tablero de cada caso y el **expediente de cada oficio**: tu ficha de lo que sabes de un oficio (rango, técnicas, ingredientes, maestrías), que forma parte de la [Escalera de conocimiento](../07-economia/escalera-de-conocimiento.md) (D-54) y se ve con `/oficio`. La Bitácora no copia nada: enlaza.
 3. **Es tu memoria, no una ayuda.** Se llena igual en el modo sin ayuda.
 
 **De quién es.** La Bitácora es de cada personaje, porque los oficios y las técnicas son de cada personaje. Lo que viene del Bestiario y del Herbario se comparte por cuenta, como ya dicen esas colecciones.
@@ -242,7 +246,7 @@ La Bitácora anota **lo que viste y viviste**, sin que hagas nada. Está escrita
 | 🕯 **Pocas** | Notas de bienvenida y, de las automáticas, solo la de nivel 1 (la vaga). Las demás, solo si las pides a mano (§4) | Quien quiere descubrir casi todo solo |
 | 🌑 **Sin ayuda** | Ni notas ni pistas, tampoco a mano | Quien quiere aprender todo solo, y que se note |
 
-- Lo que **siempre** se ve, en cualquier modo: la ayuda de cada botón, las reglas claras del §3.4 y los avisos de seguridad.
+- Lo que **siempre** se ve, en cualquier modo: la ayuda de cada botón, las reglas claras del §3.4 (también las notas de bienvenida que las explican, como la de la Fortuna) y los avisos de seguridad.
 - Se cambia en cualquier momento en `/ajustes`. Si vuelves de "sin ayuda" a "normal", conservas lo que ya ganaste.
 - **Capa profunda:** elegir el modo por actividad (por ejemplo, sin ayuda en jefes y normal en oficios).
 
@@ -341,12 +345,13 @@ Primera caída. Pista de nivel 1:
 Te alcanzó: Aliento de Vidrio (ronda 9)
 Tu mancha queda en la entrada.
 
-[🔁 Otra vez]  [↩️ Salir]
+[🔁 Otra vez]   [🩸 Manchas de la entrada]
+[📖 Bestiario]  [↩️ Salir]
 ──────────
 💡 Algunos golpes no caen cuando parece.
 ```
 
-En la segunda caída llega el nivel 2: "Lee bien el aviso del Aliento de Vidrio: *inhala… y retiene el aire*". Tercera caída. Pista de nivel 3, que te manda a las manchas y al Bestiario:
+En la segunda caída llega el nivel 2: "Lee bien el aviso del Aliento de Vidrio: *inhala… y retiene el aire*". Tercera caída. Pista de nivel 3, que te manda a las manchas y al Bestiario (los botones son de la pantalla de caída, siempre están; la pista no trae botón propio):
 
 ```
 💀 Caíste otra vez · Wyrm de las Dunas (3.ª)
@@ -368,7 +373,7 @@ R7  Lyra ataca · Wyrm 41 %
 R8  ⚠️ «El Wyrm inhala… y retiene el aire»
     Lyra usa 🛡 Muro de escudos
     El Wyrm no suelta nada
-R9  🔥 Aliento de Vidrio · Muro en recarga
+R9  🔥 Aliento de Vidrio · Muro en enfriamiento
     Lyra cae
 
 [↩️ Volver]
@@ -460,7 +465,7 @@ Pendientes de número en [Preguntas abiertas](preguntas-abiertas.md).
 - ¿La pista pedida a mano tiene límite? *Propuesta: una por tema por día.*
 - ¿El modo sin ayuda da un título? *Propuesta: sí, "Autodidacta", solo cosmético.*
 - ¿El mentor puede ver en qué tema está atascado su aprendiz? *Propuesta: sí, si el aprendiz lo permite.*
-- ¿La nota del Bestiario dentro de los avisos debe describir el movimiento en lugar de decir qué hacer? *Propuesta: sí (ver la tabla siguiente, Avisos y tácticas).*
+- ¿La nota del Bestiario dentro de los avisos debe describir el movimiento en lugar de decir qué hacer? *Propuesta: sí, "(Ya lo viste: golpe retrasado)" en lugar de "(… espera una ronda)"; lo mismo para la nota de ★★★ del Bestiario (ver Ediciones pendientes, Avisos y tácticas y Bestiario).*
 - ¿Los nombres de los PNJ de los ejemplos (Hermana Ilsa, Maestra Brenna) sirven? *Propuesta: provisionales.*
 
 ## Ediciones pendientes en otros documentos
