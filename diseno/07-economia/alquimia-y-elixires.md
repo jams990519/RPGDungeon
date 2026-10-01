@@ -45,9 +45,9 @@ Eso quedó registrado como **D-55** en [Decisiones](../00-vision/decisiones.md):
 ```
 ⚗️ Recetas conocidas (Alquimia 47 · Experta)
 
-🧪 Poción de vida · ❤️ 35 % · 🧪 40
+🧪 Poción de vida · ❤️ 35 % · ☠️ 40
 🍷 Trago de Caravana · 💧 Sales · ☀️ Frescor
-🍷 Aliento de Brasa de Ilse · licencia, regalía 4 %
+🍷 Aliento de Cumbre de Mara · licencia, regalía 4 %
 
 Tienes ingredientes para: 🧪 ×6 · 🍷 Trago ×3
 
@@ -75,7 +75,7 @@ Hay cuatro clases de propiedad:
 | Propiedad | Qué hace en el elixir |
 |---|---|
 | 💠 **Pura** | +1 nivel de estabilidad (dura más tiempo fresco, §6.9) |
-| 🍬 **Dulce** | −5 de Toxicidad por cada ingrediente dulce, hasta −10 |
+| 🍬 **Dulce** | −5 de Toxicidad por cada ingrediente dulce, hasta −10, sin bajar más del 15 % la Toxicidad del elixir (§6.7) |
 | 🧊 **Conservante** | +50 % de días fresco |
 | 🕸️ **Pegajosa** | +1 ronda (o +10 pasos fuera de combate) a los efectos con duración |
 | 🐾 **Salvaje** | ×1,1 de potencia, pero −1 nivel de estabilidad y el doble de tolerancia (§6.8) |
@@ -94,7 +94,7 @@ Hay cuatro clases de propiedad:
 
 ### 3.2 Potencia: la veta, la zona y la estación
 
-Cada lote de ingrediente tiene **Potencia** y **Pureza**, como cualquier material (ver [Fabricación](fabricacion.md) §3 y [Investigación médica](../05-salud/investigacion-medica.md) §2.4). La Potencia mueve la fuerza del elixir; la Pureza, su estabilidad.
+Cada lote de ingrediente tiene **Potencia** y **Pureza**, como dice la [Investigación médica](../05-salud/investigacion-medica.md) §2.4. La Potencia mueve la fuerza del elixir; la Pureza, su estabilidad. Aquí se leen con **100 = normal**. [Fabricación](fabricacion.md) §3 todavía no nombra la Potencia entre sus atributos y usa otra escala (pureza 870), así que hay que igualarlos (§14).
 
 | Qué la mueve | Cómo | Ejemplo |
 |---|---|---|
@@ -111,7 +111,7 @@ La propiedad en **negrita** es la que se ve al recogerlo. Las demás se descubre
 
 | Ingrediente | Propiedades | Dónde | Cuándo | Quién lo trae |
 |---|---|---|---|---|
-| 🌿 **Hierba curativa** | **Cicatrizante** · Vivificante · Creciente · Amarga | 🌾 Llanura y 🌲 bosque, cualquier anillo | Siempre; poca en invierno | Herborista; cualquiera al explorar |
+| 🌿 **Hierba curativa** | **Cicatrizante** · Vivificante · Creciente · Amarga | 🌾 Llanura, 🌲 bosque y 🐸 pantano (donde más hay), cualquier anillo, como ya hace el código | Siempre; poca en invierno | Herborista; cualquiera al explorar |
 | 🌺 **Cardo rojo** | **Coagulante** · Cicatrizante · Aguda · Nerviosa | 🌾 Llanura, anillos I a III | Primavera y verano | Herborista |
 | 🌊 **Alga de costa** | **Acuática** · Coagulante · Mineral · Emoliente | 🌊 Costa y lagos | Siempre; con marea baja rinde el doble | Herborista o pescador |
 | ⬛ **Carbón de montaña** | **Pulmonar** · Purificante · Pétrea · Amarga | ⛰️ Montaña | Siempre | Minero |
@@ -211,7 +211,7 @@ La **regeneración por ronda** es la 💗 Regeneración de la tabla de curación
 
 | Efecto | Propiedad | Valor base | Tope | Duración | Toxicidad |
 |---|---|---|---|---|---|
-| 👁 **Visión nocturna** | Sombría | Sin castigo en oscuridad leve y media; en oscuridad total, el castigo baja de −40 % a −15 % | Igual | 30 pasos / 10 rondas | 15 |
+| 👁 **Visión nocturna** | Sombría | Sin castigo en penumbra ni en oscuridad; en oscuridad total, el castigo baja de −40 % a −15 % | Igual | 30 pasos / 10 rondas | 15 |
 | 🫧 **Respirar bajo el agua** | Acuática | Aire sin límite | 15 pasos | 10 pasos | 15 |
 | 🧠 **Calma** 🔁 | Calmante | −15 de estrés (ver [Mente](../05-salud/mente.md)) | −20 | Al instante | 20 |
 | 💊 **Analgesia** 🔁 | Sedante | −1 nivel de Dolor (ver [Condiciones](../05-salud/condiciones.md) §1) | −2 niveles | 1 hora real | 20 |
@@ -227,7 +227,7 @@ Salen de las propiedades **negativas** que comparten dos o más ingredientes. No
 | 🤢 **Náusea** | Amarga | La próxima comida o poción rinde la mitad durante 3 rondas | La comida no sube el Sustento durante 10 minutos |
 | 🫨 **Temblor** | Nerviosa | −8 % de precisión durante 3 rondas | La condición del próximo minijuego de fabricación empieza en Pobre |
 | 😴 **Somnolencia** | Adormecedora | −10 % de iniciativa durante 3 rondas | +1 nivel de Fatiga durante 30 minutos |
-| 🧪 **Más toxicidad** | Tóxica | +15 de Toxicidad | +15 de Toxicidad |
+| ☠️ **Más toxicidad** | Tóxica | +15 de Toxicidad | +15 de Toxicidad |
 
 **Quitar un secundario** pide la técnica *Destilado limpio* (escalón I de la Alquimia, ver [Escalera de conocimiento](escalera-de-conocimiento.md) §3.3): un paso más del minijuego que borra **un** secundario y gasta durabilidad. Los alquimistas novatos venden elixires con náusea más baratos; los buenos, limpios.
 
@@ -280,7 +280,7 @@ Y las de siempre: **Progreso**, **Durabilidad**, **PA** y la **Condición**, que
 
 | Opción | Qué pasa |
 |---|---|
-| ⚖️ **Patentar** | Se publica en el Registro de patentes: cualquiera puede aprenderla y paga una regalía (del 1 % al 10 %) cada vez que la fabrica, durante 12 semanas. Después es pública. Cuesta 20 PI y 200 de oro, con un máximo de 5 patentes activas por personaje |
+| ⚖️ **Patentar** | Se publica en el Registro de patentes: cualquiera puede aprenderla y paga una regalía (del 1 % al 10 % del precio de referencia) cada vez que la fabrica, durante 12 semanas, renovables una vez por 6. Después es pública. Cuesta 20 PI y 200 de oro, con un máximo de 5 patentes activas por personaje |
 | 🔒 **Secreto de taller** | Solo la fabricas tú. Otro puede llegar a la misma combinación probando; si lo logra, la fabrica sin pagarte |
 | 📖 **Publicar gratis** | Pasa a la Biblioteca pública. Da prestigio y Saber a tu ciudad |
 | 📜 **Vender copias** | Copia de receta con usos limitados, hecha con Inscripción. Quien la compra la fabrica, pero no aprende las propiedades |
@@ -304,6 +304,8 @@ Y las de siempre: **Progreso**, **Durabilidad**, **PA** y la **Condición**, que
 | Gran Maestro | 96-100 | 3 | Firma dorada |
 | Gran Maestro con M10 en Elixires | 100 y Maestría 10 | **4**, si el cuarto es de oficio o de entorno (Rendimiento, Frescor, Sales, Pulmón limpio, Visión nocturna, Respirar bajo el agua) | El cuarto efecto nunca es de combate |
 
+**El límite vale también para fabricar.** Una receta comprada, con licencia o aprendida de un maestro pide el rango que permite sus efectos: un Experto no fabrica un elixir de tres efectos aunque tenga la receta. Lo puede comprar ya hecho y beberlo, eso sí.
+
 ### 6.2 El reparto de la potencia
 
 Cuantos más efectos, menos rinde cada uno:
@@ -315,7 +317,7 @@ Cuantos más efectos, menos rinde cada uno:
 | 3 | 50 % | 150 % |
 | 4 | 40 % | 160 % |
 
-El total sube un poco para que valga la pena combinar, pero un elixir de tres efectos **nunca cura tanto** como una poción de vida sola.
+El total sube un poco para que valga la pena combinar, pero la **curación al instante** de un elixir de tres efectos nunca llega a la de una poción de vida sola (como máximo 35 % × 0,5 × 1,3 = 23 %). Si suma Regeneración, el total puede igualarla, pero repartido en 4 rondas y siempre bajo el tope de §6.4.
 
 ### 6.3 La potencia final
 
@@ -323,6 +325,7 @@ El total sube un poco para que valga la pena combinar, pero un elixir de tres ef
 
 - El multiplicador de calidad × lotes × Salvaje **nunca pasa de ×1,3**.
 - Después de la cuenta manda el **tope** de cada efecto (§4.1).
+- **Efectos fijos.** Lo que no se puede partir (+1 ficha de Aguante, una etapa de sed, un nivel de Dolor, el aire sin límite, quitar el castigo de la oscuridad, vaciar la barra de un estado) se da **entero**. En ellos, la potencia mueve solo la duración o la protección posterior, y nunca baja de 1 ronda o 5 pasos. Para que no salgan gratis, la Toxicidad de **Aguante, Sales y Analgesia** entra entera en la cuenta de §6.7, sin reparto.
 
 ### 6.4 Topes
 
@@ -344,21 +347,23 @@ Usar un elixir gasta tu elección de la ronda, como cualquier objeto del cintur�
 
 Cada elixir suma Toxicidad (ver [Condiciones](../05-salud/condiciones.md) §4: por encima de 75 se pierde vida, y si un trago la llevaría por encima de 100, no se puede beber).
 
-**Toxicidad del elixir** = (suma de la Toxicidad de cada efecto) × reparto × calidad × lotes × Salvaje · + 5 por cada efecto después del primero · + 15 si tiene el secundario 🧪 · − 5 por cada ingrediente Dulce (hasta −10) · mínimo 10 · se redondea hacia abajo.
+**Toxicidad del elixir** = (suma de la Toxicidad de cada efecto) × reparto × calidad × lotes × Salvaje · + 5 por cada efecto después del primero · + 15 si tiene el secundario ☠️ · − 5 por cada ingrediente Dulce (hasta −10) · mínimo 10 · se redondea hacia abajo. Aguante, Sales y Analgesia suman su Toxicidad entera, fuera del reparto (§6.3).
+
+**Las rebajas tienen techo.** La Dulce y la *Farmacología* juntas bajan como máximo un **15 %** la Toxicidad del elixir. Sin ese techo, una poción de vida casera con dos ingredientes Dulce (35 % por 30 de Toxicidad) dejaría beber tres por pelea en lugar de dos: un 50 % más de curación por pelea. Con el techo queda en 34, y tres ya no caben.
 
 | Ejemplo | Cuenta | Toxicidad |
 |---|---|---|
 | Poción de vida (1 efecto, Notable) | 40 × 1 | **40** |
 | Curación + Antídoto (2 efectos, Notable) | (40 + 20) × 0,65 + 5 | **44** |
 | Curación + Regeneración + Resistencia al fuego, con Dulce (Notable) | (40 + 30 + 25) × 0,5 + 10 − 5 | **52** |
-| Iniciativa + Precisión, con el secundario 🧪 (Notable) | (25 + 25) × 0,65 + 5 + 15 | **52** |
+| Iniciativa + Precisión, con el secundario ☠️ (Notable) | (25 + 25) × 0,65 + 5 + 15 | **52** |
 | El mismo de tres efectos, Excelente y con Salvaje (§10) | (40 + 30 + 25) × 0,5 × 1,27 + 10 − 5 | **65** |
 
 **Por qué la potencia también sube la Toxicidad.** La Toxicidad es el **presupuesto de la pelea**: con 100 de tope, nadie toma más de dos o tres tragos fuertes por combate. Si la calidad subiera la potencia sin subir la Toxicidad, el mejor alquimista daría más curación por pelea, y eso sí rompería el balance. Así, la calidad decide **cuánto rinde cada ronda** (menos rondas gastadas en beber), no cuánto rinde la pelea entera.
 
-**Por qué un elixir de varios efectos no es mejor que las pociones sueltas.** Tres pociones de un efecto dan el 300 % de efecto por 95 de Toxicidad; el elixir de tres efectos da el 150 % por 52. Rinde algo menos por cada punto de Toxicidad, y a cambio ahorra dos rondas y dos casillas.
+**Por qué un elixir de varios efectos no es mejor que las pociones sueltas.** Tres pociones de un efecto dan el 300 % de efecto por 95 de Toxicidad; el elixir de tres efectos da el 150 % por 57 (52 con un ingrediente Dulce). Rinde algo menos por cada punto de Toxicidad, y a cambio ahorra dos rondas y dos casillas.
 
-La técnica combinada *Farmacología* (Medicina + Alquimia, ver [Investigación y maestría](investigacion-y-maestria.md) §3) baja un 10 % la Toxicidad de los elixires que fabricas.
+La técnica combinada *Farmacología* (Medicina + Alquimia, ver [Investigación y maestría](investigacion-y-maestria.md) §3) baja un 10 % la Toxicidad de los elixires que fabricas, dentro del techo de rebajas del 15 %.
 
 ### 6.8 Tolerancia y dependencia
 
@@ -388,7 +393,7 @@ Los elixires **caducan**, como los remedios (ver [Curación](../05-salud/curacio
 | Dónde | Qué vale | Por qué |
 |---|---|---|
 | 🏟️ **Arena clasificada** | **Solo la lista normalizada.** El cinturón de arena es igual para todos (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md) §11): poción de vida, una poción de resistencia a elección, un remedio de estados y una poción de recurso, todos a calidad Notable. **Ningún elixir propio** | En la clasificatoria decide la habilidad, igual que con el equipo normalizado (ver [PvP](../06-contenido/pvp.md) §5). Si entraran los elixires propios, ganaría quien tiene al mejor alquimista |
-| 🏰 **Guerra de castillos, asedios y territorios** | Elixires propios con **potencia de guerra:** como máximo **2 efectos**, calculados a calidad Notable, lotes 100 y sin Salvaje (multiplicador ×1). Un elixir de más efectos se puede llevar, pero en la batalla rinde como si tuviera solo sus 2 primeros | La guerra premia la preparación y la economía del gremio, y el alquimista del castillo es parte del ejército. El tope impide que la gane solo quien tiene más oro para Obras Maestras |
+| 🏰 **Guerra de castillos, asedios y territorios** | Elixires propios con **potencia de guerra:** como máximo **2 efectos**, calculados a calidad Notable, lotes 100 y sin Salvaje (multiplicador ×1). Un elixir de más efectos se puede llevar, pero en la batalla rinde como un elixir de solo sus 2 primeros efectos (reparto 65 %, con su Toxicidad calculada igual) | La guerra premia la preparación y la economía del gremio, y el alquimista del castillo es parte del ejército. El tope impide que la gane solo quien tiene más oro para Obras Maestras |
 | ⚔️ **Mundo abierto y zonas rojas y negras** | Todo, como en PvE | Prepararse para la zona es parte del riesgo. Ya rigen el **tope de golpe del 40 %** y la **amortiguación de curación** desde la ronda 8, que también se aplica a la curación de los elixires |
 
 ## 7. En combate
@@ -397,38 +402,38 @@ Los elixires **caducan**, como los remedios (ver [Curación](../05-salud/curacio
 
 - Los elixires van en el **cinturón** (ver [Inventario y mochilas](../03-personaje/inventario-y-mochilas.md) §4): una casilla por elixir del mismo nombre y calidad, hasta 3 unidades. El cinturón tiene de 3 a 6 casillas.
 - **Usarlo gasta la elección de la ronda** y se resuelve primero, antes de los golpes, como cualquier objeto (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md) §4 y §6). Por eso un elixir con Resistencia al fuego contesta un aliento avisado.
-- La Mochila muestra **3 objetos por página** y "▶️ Ver más" si hay más (D-75). El jugador ordena su cinturón: las tres primeras casillas son las que salen primero.
+- La Mochila muestra **3 objetos por página** (D-75). Con 3 objetos o menos, el cuarto botón es ↩️ Volver, como ya hace el código. Con más, el cuarto botón pasa a ser "▶️ Ver más" y ↩️ Volver queda en la última página; **esto falta en el código**, que hoy muestra solo las 3 primeras casillas y deja las demás sin botón. El jugador ordena su cinturón: las tres primeras casillas son las que salen primero.
 - Las **configuraciones guardadas** del cinturón ("solitario", "mazmorra", "PvP") recuerdan qué elixires lleva cada una.
 
 ### 7.2 Cómo se ve
 
-Ronda 3 contra la Salamandra Madre. Avisa un aliento de fuego, y el Guerrero ya tiene la barra de Quemadura por la mitad:
+Ronda 3 contra la Salamandra Madre. Avisa un aliento de fuego, y el Guerrero Furia ya tiene la barra de Quemadura por la mitad:
 
 ```
 ⚔️ Ronda 3 · Salamandra Madre (jefa de campo)
 ⚠️ Toma aire: ALIENTO DE FUEGO a toda la vanguardia
    en esta ronda.
 
-🟥 Tú — Guerrero Armas · Vanguardia
+🟥 Tú — 💢 Guerrero Furia · Vanguardia
 ❤️ 540/1.120   💢 Ira 30   🔋 ●●○○○
 🔥▓▓▓▓▓▓░░░░ Quemadura
-🧪 Toxicidad 0/100
+☠️ Toxicidad 0/100
 ⏱ 45 s
 
-[⚔️ Atacar]        [✨ Golpe Mortal]
-[🤺 Parada]        [✨ Grito de Batalla]
+[⚔️ Atacar]        [✨ Golpe Colosal]
+[🤺 Parada]        [✨ Ejecutar]
 [🏃 Huir]          [🎒 Mochila]
 ```
 
 Toca 🎒 **Mochila**:
 
 ```
-🎒 Cinturón (5 casillas) · 🧪 Toxicidad 0/100
+🎒 Cinturón (5 casillas) · ☠️ Toxicidad 0/100
 
 1. 🍷 Aliento de Brasa de Ilse ×1 · Excelente
-   ❤️ 22 % · 💗 3 %×4 · 🔥 −19 % ×3 · 🧪 65
-2. 🧪 Poción de vida ×2 · ❤️ 35 % · 🧪 40
-3. 💊 Ungüento para quemaduras ×2 · 🧪 15
+   ❤️ 22 % · 💗 3 %×4 · 🔥 −19 % ×3 · ☠️ 65
+2. 🧪 Poción de vida ×2 · ❤️ 35 % · ☠️ 40
+3. 💊 Ungüento para quemaduras ×2 · ☠️ 15
 4. 🩹 Venda ×3
 5. —
 
@@ -441,13 +446,13 @@ Toca 🎒 **Mochila**:
 ```
 📜 Ronda 3
 🍷 Bebes Aliento de Brasa de Ilse:
-   ❤️ +246 · 💗 +36 por ronda (4 rondas)
+   ❤️ +249 · 💗 +36 por ronda (4 rondas)
    🔥 −19 % de fuego (3 rondas)
 🔥 La Salamandra Madre lanza ALIENTO DE FUEGO: −248 (−19 %)
    🔥▓▓▓▓▓▓▓▓░░ Quemadura
 ⚔️ Bram (Protección) golpea con el escudo: −160
 💗 Regeneras +36
-❤️ 574/1.120 · 🧪 Toxicidad 65/100
+❤️ 577/1.120 · ☠️ Toxicidad 65/100
 ```
 
 Con 65 de Toxicidad ya no le cabe otra poción de vida (65 + 40 pasa de 100). Sí le cabe el ungüento (15), pero con 80 empezaría a perder vida. La Toxicidad sigue siendo el freno.
@@ -472,7 +477,7 @@ Los elixires de entorno son los que más se venden a exploradores, caravanas y g
 | *Trago de Caravana* (Experto) | 💧 Sales · ☀️ Frescor | Cruzar el desierto de día |
 | *Aliento de Cumbre* (Experto) | ❄️ Calor interno · ☣️ Pulmón limpio | Minas altas con gas y frío |
 | *Ojo de Ciénaga* (Maestro) | 👁 Visión nocturna · 🟢 Antídoto · ☣️ Pulmón limpio | Pantano de noche, con miasma y sapos venenosos |
-| *Buzo del Lago Negro* (Gran Maestro, M10) | 🫧 Respirar bajo el agua · 👁 Visión nocturna · ❄️ Calor interno · ⛏️ Rendimiento | Recolectar en el fondo de un lago helado |
+| *Buzo de Arrecife* (Gran Maestro, M10) | 🔥 Bálsamo · 🫧 Respirar bajo el agua · 💧 Sales · ☀️ Frescor | Bucear de día en costas cálidas, entre corales que queman. Sale de Alga de costa, Glándula de sapo, Pulpa de cactus y Lágrima helada |
 
 ### 8.2 Oficios
 
@@ -526,7 +531,7 @@ Comparten:
  ✅ Renovadora (1·2)   → 💗 Regeneración
  ✅ Ignífuga (2·3)     → 🔥 Resistencia al fuego
  ❔ algo en común (2·3)
-Modificadoras: 🍬 Dulce (−5 🧪) · 🐾 Salvaje (×1,1, −estabilidad)
+Modificadoras: 🍬 Dulce (−5 ☠️) · 🐾 Salvaje (×1,1, −estabilidad)
 Secundarios: ninguno
 Toxicidad estimada: 59 si sale Notable
 
@@ -561,7 +566,7 @@ Con la condición Excelente, 🥄 Remover pasó a ser ⚗️ Destilar. Ilse dest
    (fresco 10 días)
 ❤️ Curación 22 % · 💗 Regeneración 3 %/ronda ×4
 🔥 Resistencia al fuego −19 % ×3 rondas
-🧪 Toxicidad 65
+☠️ Toxicidad 65
 🔎 Descubriste: Flor de Ceniza → Cálida
 
 ✍️ Escribe su nombre (hasta 32 letras):
@@ -614,9 +619,9 @@ La alquimia entra en el juego como un parche de contenido nuevo (D-60, avisado a
 No se hicieron: este proceso solo escribe este documento.
 
 - [ ] **[Profesiones](profesiones.md)**: §2.3, en la fila de Alquimia, enlazar aquí y nombrar los elixires propios; §8, sumar a la Alquimia el riesgo de dependencia y la Toxicidad por probar ingredientes; §9, sumar el rol "Alquimista con fama" (botica, recetas con nombre); §10, sumar la fila "Un elixir con nombre: Herborista + Cazador + Joyero (frascos) → Alquimista".
-- [ ] **[Fabricación](fabricacion.md)**: §2, decir que el alambique usa la versión corta del minijuego (4 botones, barra de Estabilidad, Destilar como forma de Remover con condición Excelente) y enlazar §5.3; §4, el descubrimiento de alquimia sigue la regla de las propiedades compartidas y enlaza aquí; §6, el alambique como estación con Tramo y calidad; §8, los elixires con nombre Obra Maestra van al registro de obras maestras. **Aviso de contradicción:** §2 dice "máximo 8 botones" y su pantalla tiene 8, pero D-75 (confirmada) pone máximo 4 botones en el mensaje fuera de la barra de combate. Manda D-75: hay que recortar el minijuego de todos los oficios a 4 botones (o 3 y "▶️ Ver más"); este documento ya lo hace para el alambique.
+- [ ] **[Fabricación](fabricacion.md)**: §2, decir que el alambique usa la versión corta del minijuego (4 botones, barra de Estabilidad, Destilar como forma de Remover con condición Excelente) y enlazar §5.3; §4, el descubrimiento de alquimia sigue la regla de las propiedades compartidas y enlaza aquí; §3, sumar la Potencia a los atributos de los materiales y decir cómo se lee su escala frente a la de 100 = normal que usan este documento y la investigación médica; §6, el alambique como estación con Tramo y calidad; §8, los elixires con nombre Obra Maestra van al registro de obras maestras. **Aviso de contradicción:** §2 dice "máximo 8 botones" y su pantalla tiene 8, pero D-75 (confirmada) pone máximo 4 botones en el mensaje fuera de la barra de combate. Manda D-75: hay que recortar el minijuego de todos los oficios a 4 botones (o 3 y "▶️ Ver más"); este documento ya lo hace para el alambique.
 - [ ] **[Condiciones](../05-salud/condiciones.md)**: §4, enlazar aquí la fórmula de Toxicidad por efecto y por potencia (§6.7), los efectos 🔁 y los números de tolerancia y dependencia (§6.8).
-- [ ] **[Ronda y acciones](../04-combate/ronda-y-acciones.md)**: §4, en la tabla del cinturón sumar la fila "🍷 Elixir con nombre: varios efectos en una ronda; solo para quien lo bebe"; decir que la Mochila muestra 3 objetos y "▶️ Ver más" (D-75, como ya hace el código); §11, nombrar la lista normalizada del cinturón de arena (§6.10).
+- [ ] **[Ronda y acciones](../04-combate/ronda-y-acciones.md)**: §4, en la tabla del cinturón sumar la fila "🍷 Elixir con nombre: varios efectos en una ronda; solo para quien lo bebe"; decir que la Mochila muestra 3 objetos y "▶️ Ver más" (D-75; el código muestra 3 y ↩️ Volver, pero aún no tiene la página siguiente); §11, nombrar la lista normalizada del cinturón de arena (§6.10).
 - [ ] **[Daño y estados](../04-combate/dano-y-estados.md)**: §2, decir que los cuatro estados básicos también se curan con elixires (Antídoto, Coagulante, Bálsamo, Calor interno) y que estos dejan una protección posterior.
 - [ ] **[Inventario y mochilas](../03-personaje/inventario-y-mochilas.md)**: §4, decir que dos elixires del mismo nombre con distinta calidad van en casillas distintas, y que el orden del cinturón decide qué sale en la primera página.
 - [ ] **[PvP](../06-contenido/pvp.md)**: §5, la arena clasificada usa el cinturón normalizado; §8, sumar la potencia de guerra de los elixires en asedios y territorios (§6.10).
@@ -626,7 +631,7 @@ No se hicieron: este proceso solo escribe este documento.
 - [ ] **[Peligros del entorno](../05-salud/peligros-del-entorno.md)**: §7.2, decir que las pociones de entorno se pueden combinar en un elixir (§8.1).
 - [ ] **[Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)**: §4, nombrar los ingredientes de alquimia de cada estación (§9).
 - [ ] **[Geografía y recursos](../02-mundo/geografia-y-recursos.md)**: §1, en las filas de cada terreno, nombrar los ingredientes de §3.3.
-- [ ] **[Investigación y maestría](investigacion-y-maestria.md)**: §8.2, aclarar que un elixir con nombre se patenta por su combinación de ingredientes.
+- [ ] **[Investigación y maestría](investigacion-y-maestria.md)**: §8.2, aclarar que un elixir con nombre se patenta por su combinación de ingredientes; §5.2 (fila "Técnica del minijuego"), cambiar "entra en tu barra de 8" por la regla de D-75 (4 botones; la técnica ocupa uno existente, como en §5.3 de este documento); §3, decir que *Farmacología* baja la Toxicidad un 10 % dentro del techo de rebajas del 15 % (§6.7).
 - [ ] **[README de 07 · Economía](README.md)**: sumar la fila de este documento (y, de paso, las de la escalera de conocimiento y de investigación y maestría, que tampoco están).
 - [ ] **[Decisiones](../00-vision/decisiones.md)** D-55: cambiar "Alquimia y elixires (en redacción)" por el enlace a este documento.
 - [ ] **[Red de sistemas](../00-vision/red-de-sistemas.md)** §3: sumar la fila de §11.
