@@ -379,3 +379,13 @@ v0_24:
     - "🛠️ Cada oficio tiene 3 especializaciones: más rendimiento en su línea, hallazgos raros, más obras maestras o más monedas, según el oficio."
     - "📜 Los artesanos especializados abren recetas exclusivas: piezas mejores que las normales, la mejor de su línea al nivel 100, y dos muebles nuevos para el campamento."
     - "🔄 Elegir es gratis; cambiar una por otra cuesta monedas que suben con el rango."
+
+v0_25:
+  version: "0.25"
+  title: "🕳️ Lost Realms 0.25: mazmorras para jugar solo"
+  notes:
+    - "❓ En el mapa aparecen marcas de algo escondido cerca de las zonas que conoces. Al llegar o estudiar la zona sabes qué es: una 🕳️ mazmorra chica o una 🌀 mazmorra profunda."
+    - "🕳️ Mazmorra chica: 4 salas y un jefe. Cada día la llena otra familia de enemigos, con su propio jefe, otras salas y otro botín. Al terminarla, un cofre una vez al día (monedas, materiales y a veces una pieza de equipo de cualquier clase, para usar o vender)."
+    - "🌀 Mazmorra profunda: baja piso por piso hasta donde aguantes. Cada piso es más difícil y cada 5 hay un jefe. Entre pisos no hay curación: solo lo de tu cinturón. Después de cada piso eliges ⬇️ Bajar o 🚪 Salir con lo ganado; si caes, te quedas con la mitad."
+    - "🏆 La mazmorra profunda guarda tu récord y muestra los 3 que más bajaron en el día."
+    - "🧭 En una zona con mazmorra, Explorar muestra 🕳️ Entrar o 🌀 Descender, y la cacería pasa adentro de la mazmorra."
