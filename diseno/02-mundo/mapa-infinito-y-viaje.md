@@ -1,6 +1,6 @@
 # El mapa infinito y el viaje
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13), [Profesiones](../07-economia/profesiones.md) (🧭 Explorador, §1.14) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13), [Profesiones](../07-economia/profesiones.md) (🧭 Explorador, §1.14), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) (entradas de mazmorra, §1.15) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
 
 **La regla del dueño (D-58, confirmada):** "Quita los pisos, deja un mapa infinito por investigar, pero que tome tiempo moverte entre lugares."
 
@@ -126,7 +126,7 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca ⛺ los campamentos enemigos que ves (§1.14). 🧍 eres tú, el emoji del bioma marca lo que **tu héroe recuerda**, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
+El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca ⛺ los campamentos enemigos que ves (§1.14); desde D-171, ❓ las entradas de mazmorra que tienes cerca y 🕳️ / 🌀 las que ya conoces (§1.15). 🧍 eres tú, el emoji del bioma marca lo que **tu héroe recuerda**, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
 
 ### 1.10 Pantalla de ejemplo
 
@@ -280,6 +280,18 @@ El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una
 - **Cuánto da** (registro de [Balance](../03-personaje/balance.md) §7): una pelea del asalto da ~10 % más experiencia por ⚡ que cazar en la misma zona (~22 contra ~20 con un lobo en una zona de nivel 3, D-108), porque es del nivel + 1; un campamento entero en solitario (6 peleas y el cofre) da ~29 por ⚡, y ~22 contando el viaje para llegar. El jefe se gana 85-97 % de las veces con el equipo y los puntos de su nivel (37 % al nivel 3 sin nada); los guardias, ~100 %, dejando ~65 % de vida.
 - **Para qué sirve:** le da trabajo a cada uno. El Explorador encuentra y estudia los campamentos, los que pelean los destruyen, y todos ganan botín. Y cambia el mapa cada día.
 - **Lo que queda abierto:** si un Explorador veterano debería empezar con experiencia por lo que ya exploró antes de este parche (hoy todos empiezan en rango 1); si fundar o agrandar un campamento de jugadores sobre un campamento enemigo en pie debería esperar a destruirlo (hoy el territorio nuevo lo hace desaparecer); si el jefe debería pedir grupo en los anillos lejanos.
+
+### 1.15 Las entradas de mazmorra en el mapa: hay algo, no se sabe qué (D-171, en el juego)
+
+El dueño pidió (1-oct-2026) que **el mapa muestre que hay algo, no qué es**: en cada tramo, 1 o 2 mazmorras que no se sabe qué son hasta ir a investigar. Esta es la parte de las **mazmorras para uno** ([Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §0, D-164 y D-170); los nodos de oficio de D-171 vienen después. Números en `content/balance.yaml` → `dungeons`; cuentas en `engine/world/dungeons.py`; pantallas en `engine/service/game.py` (sección "solo dungeons"). Pruebas: `tests/test_mazmorras.py`.
+
+- **Dónde:** el mapa se parte en **tramos de 6 × 6 zonas**, y cada tramo tiene **1 entrada, o 2 con 50 %**, desde **Lejanía 2**, nunca pegadas dentro del tramo; **1 de cada 4 es 🌀 profunda**, las demás 🕳️ chicas. Sale solo de la semilla del mundo y las coordenadas: **nunca se mueven** y son las mismas para todos (lo que cambia cada día es lo de adentro). Nunca en el Claro ni en la guarida; el **territorio de un campamento de jugadores** la tapa mientras exista, y un **⛺ campamento enemigo** en pie sobre su zona tapa la entrada ese día.
+- **❓ Hay algo:** el 🗺️ Mapa marca **❓** una entrada si anduviste cerca: si recuerdas (pisaste o estudiaste) alguna zona a **2 zonas o menos** de ella (`dungeons.hint_radius`). No dice qué es.
+- **🕳️ / 🌀 Ya sabes qué es:** al **pisar su zona**, o al **estudiarla desde la de al lado** (explorar alrededor, D-107: la zona queda en tu memoria), el ❓ pasa a 🕳️ (chica) o 🌀 (profunda). Al llegar a su zona sale el aviso "🕳️ ¡La entrada de una mazmorra chica!" y 📍 Zona dice qué familia de enemigos la ocupa hoy.
+- **Debajo del mapa:** las **3 más cercanas** que ves ("❓ (3, -5) · a 4 zonas: algo hay, ve a investigar"; "🌀 (-1, -5) · a 2 zonas: mazmorra profunda"), con el tiempo de viaje desde el rango 10 del 🧭 Explorador. El botón **❓ Ir a investigar** (o **🕳️ / 🌀 Ir a la mazmorra**) te lleva a la más cercana zona por zona, como 📒 Lugares; con el de ⛺ son 4 botones como mucho.
+- **En el cuadrito**, la marca de la mazmorra va debajo de 🧍 tú, 👑 la guarida, ⛺ un campamento enemigo y 🏕️ un campamento de jugadores, y encima del color o el bioma.
+- **En la zona:** 🧭 Explorar cambia 🏹 Cazar por **🕳️ Entrar** o **🌀 Descender** (siguen 4 botones); 🏹 Cazar queda dentro de la pantalla de la mazmorra.
+- **Lo que queda abierto:** si el ❓ también debería mostrar los nodos de oficio de D-171 cuando existan; si un 🧭 Explorador de rango alto debería ver qué es (🕳️ o 🌀) sin pisarla (D-172: reconocimiento).
 
 ## 2. Lo que viene por parches (propuesta)
 

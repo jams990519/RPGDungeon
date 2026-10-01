@@ -7,7 +7,7 @@ Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que 
 | Documento | Qué contiene |
 |---|---|
 | [misiones-y-exploracion.md](misiones-y-exploracion.md) | Encargos, misiones, expediciones, Profundidades con compañero, Laberinto, roguelite semanal, Pruebas de Maestría, Pesadillas, cacerías y más |
-| [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | Mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
+| [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | **§0 en el juego (D-164, D-165, D-170, D-171): mazmorras para uno**, la 🕳️ chica (4 salas y su jefe, cofre modesto una vez por día) y la 🌀 profunda (pisos hasta donde aguantes, la bolsa, tu récord), en el mismo lugar siempre y con otra familia de enemigos cada día. Propuesta: mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
 | [jefes.md](jefes.md) | Tipos de jefe, las 10 reglas de Elden Ring en texto, invocaciones asíncronas, ejemplo completo (Wyrm de las Dunas) |
 | [bestiario.md](bestiario.md) | Las 19 familias de monstruos, avisos, contagio, modificadores, únicos con nombre y ecología (propuesta). **En el juego:** los enemigos de cada bioma por franjas de nivel, del 1 al 100 (D-108) |
 | [historia-y-rol.md](historia-y-rol.md) | **Lo que hace largo al juego (D-117, provisional):** origen del héroe con su cadena de misiones, campaña principal por capítulos con decisiones, personajes con nombre, facciones y reputación, encargos del tablón y del campamento, diario del héroe y rol entre jugadores; el ritmo de los niveles (P-77) |
