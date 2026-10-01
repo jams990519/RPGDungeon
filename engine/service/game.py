@@ -1589,7 +1589,8 @@ class GameService:
             body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=self._money(item["price"])))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(item["price"]))))
         actions = actions[:3]
-        sellable = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "material"}
+        sellable = {i: n for i, n in hero.backpack.items()      # food stays: it feeds the pantry (D-93)
+                    if self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")}
         if sellable:
             total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
             body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
@@ -1616,7 +1617,7 @@ class GameService:
             total, sold = 0, {}
             for i, n in list(hero.backpack.items()):
                 item = self.content.items.get(i, {})
-                if item.get("kind") == "material" and n > 0:
+                if item.get("kind") == "material" and not item.get("food") and n > 0:
                     total += max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"])) * n
                     sold[i] = n
                     del hero.backpack[i]

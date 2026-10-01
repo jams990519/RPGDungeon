@@ -228,7 +228,7 @@ def test_merchant_sells_provisions_without_losing_buttons(service):
     assert hero.backpack["provisiones"] == 1 and hero.gold == 100 - price
     service.act("test:1", "sell:all")
     hero = service._load("test:1")
-    assert "madera" not in hero.backpack and "carne" not in hero.backpack   # carne is a cheap material
+    assert "madera" not in hero.backpack and hero.backpack["carne"] == 1    # food is kept: it feeds the pantry
     assert hero.backpack["provisiones"] == 1                         # bought food is never sold back by mistake
     hero.backpack = {}
     service._save(hero)
