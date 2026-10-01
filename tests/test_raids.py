@@ -17,6 +17,7 @@ from test_camps import found_at, place
 
 DAY = 24 * 3600
 HOUR = 3600
+RAID_GAP = 7 * DAY / 3          # D-154: 3 raids per real week (balance.yaml raids.per_week)
 KEY = "6:0"
 
 
@@ -105,16 +106,16 @@ def test_pure_rules(content):
 def test_waves_start_when_the_camp_is_founded_and_never_in_the_claro(service, clock):
     make_hero(service, "test:1", "Lyra")
     view = found_at(service, "test:1", 6, 0)                        # D-105: from the very first level, with a warning
-    assert "oleada" in view.notice and "Refuerza" in view.notice and "7 días" in view.notice
-    assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + 7 * DAY)
-    assert any("Próxima oleada en 7 días" in line for line in view.body)
-    clock.advance(7 * DAY)
+    assert "oleada" in view.notice and "Refuerza" in view.notice and "3 veces por semana" in view.notice
+    assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + RAID_GAP)
+    assert any("Próxima oleada en 3 días" in line for line in view.body)
+    clock.advance(RAID_GAP)
     view = service.act("test:1", "claro")
     assert camp(service)["raid"]["required"] == 1 and "defend" in [a.id for a in view.actions]   # a camp of one can defend it
     # The Claro is the base camp: it is not a "camp" record, so it never has raids (D-95, D-98).
     make_hero(service, "test:2", "Bram")
     for _ in range(3):
-        clock.advance(7 * DAY)
+        clock.advance(RAID_GAP)
         for screen in ("claro", "camp"):
             view = service.act("test:2", screen)
             assert not any("leada" in line for line in view.body) and "defend" not in [a.id for a in view.actions]
@@ -127,9 +128,9 @@ def test_raid_arrives_after_the_interval(service, clock):
     make_hero(service, "test:1", "Lyra")
     camp_at_level(service, 5)
     view = service.act("test:1", "claro")
-    assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + 7 * DAY)   # existing camp: scheduled lazily
-    assert any("Próxima oleada en 7 días" in line for line in view.body)
-    clock.advance(7 * DAY - 60)
+    assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + RAID_GAP)   # existing camp: scheduled lazily
+    assert any("Próxima oleada en 3 días" in line for line in view.body)
+    clock.advance(RAID_GAP - 60)
     view = service.act("test:1", "claro")
     assert not camp(service).get("raid") and any("en 1 día" in line for line in view.body)
     assert not pushes(service, "camp_raid")
@@ -182,7 +183,7 @@ def test_defenders_wins_are_counted_and_a_defended_raid_pays_them(service, clock
     service.act("test:1", "claro")
     after = camp(service)
     assert not after.get("raid") and after["raids"] == {"won": 1, "lost": 0}
-    assert after["next_raid_at"] == pytest.approx(until + 7 * DAY)
+    assert after["next_raid_at"] == pytest.approx(until + RAID_GAP)
     assert after["level"] == 5 and after["members"] == list(members) and len(after["zones"]) == 1
     ends = pushes(service, "camp_raid_end")
     assert sorted(acc for acc, _ in ends) == list(members) and "resistió" in ends[0][1].body[0]
@@ -208,7 +209,7 @@ def test_a_lost_raid_takes_part_of_the_pantry_and_nothing_else(service, clock):
     assert service.store.get("pantry", KEY)["rations"] == pytest.approx((20 - eaten) * 0.75)
     after = camp(service)
     assert after["level"] == 6 and after["members"] == ["test:1"] and len(after["zones"]) == 1
-    assert after["raids"] == {"won": 0, "lost": 1} and after["next_raid_at"] == pytest.approx(until + 7 * DAY)
+    assert after["raids"] == {"won": 0, "lost": 1} and after["next_raid_at"] == pytest.approx(until + RAID_GAP)
     hero = service._load("test:1")
     assert (hero.gold, hero.level, hero.xp) == (gold, level, xp)         # nothing personal is lost
     ends = pushes(service, "camp_raid_end")
@@ -331,7 +332,7 @@ def test_the_noche_de_prueba_counts_as_that_weeks_raid(service, clock):
     clock.advance(HOUR + 1)
     service.act("test:1", "claro")
     after = camp(service)
-    assert not after.get("raid") and after["next_raid_at"] == pytest.approx(until + 7 * DAY)
+    assert not after.get("raid") and after["next_raid_at"] == pytest.approx(until + RAID_GAP)
 
 
 def build_all(service, ids):

@@ -260,3 +260,27 @@ def test_existing_camp_starts_with_a_week_for_its_members(service):
     view = service.act("test:1", "claro")
     assert rations(service, "6:0") == 7 * 3
     assert any("Abundancia" in line for line in view.body)          # 21 rations for the 1 who plays today
+
+
+def test_merchant_sells_at_most_20_provisions_a_week(service, clock):
+    """D-125 (entrevista E-09): 20 🥖 provisiones por jugador por semana; la despensa la llenan los oficios."""
+    make_hero(service)
+    hero = service._load("test:1")
+    hero.gold = 100_000
+    service._save(hero)
+    cap = service.content.balance["shop"]["weekly_cap"]["provisiones"]
+    assert cap == 20
+    assert "Te quedan 20 de 20" in "\n".join(service.act("test:1", "shop").body)
+    for _ in range(cap):
+        hero = service._load("test:1")
+        hero.backpack = {}                                           # keep room in the backpack
+        service._save(hero)
+        service.act("test:1", "buy:provisiones")
+    gold = service._load("test:1").gold
+    view = service.act("test:1", "buy:provisiones")
+    assert "esta semana" in view.notice and service._load("test:1").gold == gold    # refused, never charged
+    assert "Te quedan 0 de 20" in "\n".join(view.body)
+    clock.advance(7 * 24 * 3600)                                     # a new week starts from zero
+    service.act("test:1", "buy:provisiones")
+    assert service._load("test:1").backpack.get("provisiones") == 2          # the 20th one plus the new week's first
+    assert not service.texts.missing

@@ -1505,6 +1505,8 @@ shop:
   bought: "Compraste: {item}."
   sold: "Vendiste {item} por {price}."
   no_gold: "No te alcanzan las monedas."
+  weekly_cap: "🥖 El mercader ya no te vende más {item} esta semana (máximo {n}). La comida del campamento la dan la caza, la pesca y la cocina."
+  cap_line: "   Te quedan {left} de {n} esta semana."
   only_in_claro: "El mercader y la posada están en el Claro."
 
 inn:
@@ -1618,8 +1620,8 @@ pantry:                       # [ES] D-93 (provisional): la despensa de los camp
     hambruna: "🔴 Hambruna"
 
 raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde que se funda el campamento; en el diseño, "incursiones") y Noche de prueba (antes de castillo) de los campamentos de jugadores. El Claro nunca tiene
-  founded_warning: "🌊 Aviso: cada {n} {n|día|días} llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
-  soon_line: "👁 Al llegar a pueblo (nivel {level}) empiezan las oleadas: una por semana."
+  founded_warning: "🌊 Aviso: {n} {n|vez|veces} por semana llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
+  soon_line: "👁 Al llegar a pueblo (nivel {level}) empiezan las oleadas: 3 por semana."
   next_line: "👁 Próxima oleada en {n} {n|día|días}. La defienden los miembros conectados."
   open_line: "🔔 ¡Oleada! Defensores: {n} · victorias {wins}/{need} · quedan {time}"
   trial_line: "🌙 ¡Noche de prueba! Defensores: {n} · victorias {wins}/{need} · quedan {time}"

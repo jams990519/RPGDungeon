@@ -346,3 +346,12 @@ v0_22:
     - "⚔️ Asáltalos desde 🧭 Explorar: cada pelea vence a uno de la guarnición para todos, y el último es el jefe. Quien lo termina se lleva el cofre (monedas, materiales y quizás una pieza de equipo); los demás que pelearon ese día también ganan algo."
     - "🕵️ Desde el rango 30 de Explorador puedes infiltrarte: si no te descubren, sacas información de la zona sin pelear."
     - "🗺️ El mapa marca los ⛺ campamentos que ves y tiene un botón para ir al más cercano. 📒 Lugares muestra hasta 8 lugares con su tiempo."
+
+v0_22_1:
+  version: "0.22.1"
+  title: "🛠️ Lost Realms 0.22.1: ajustes pedidos por el dueño"
+  notes:
+    - "🌊 Las oleadas contra los campamentos llegan 3 veces por semana (antes, una cada 7 días). Refuerza tus defensas y llena la despensa."
+    - "🩹 En las peleas automáticas, tu héroe se retira por defecto con menos de 30 % de vida (antes 50 %): el lote se corta menos. Lo cambias en ⚙️ Opciones."
+    - "🥖 El mercader vende como mucho 20 provisiones por semana a cada jugador. La comida del campamento la dan la caza, la pesca y la cocina."
+    - "🌀 El Círculo del Umbral ahora estudia el poder del Colapso, para que no vuelva a pasar. La Lejanía es solo qué tan lejos del Claro estás."
