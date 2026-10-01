@@ -68,7 +68,8 @@ def test_the_claro_never_has_a_pantry(service):
     for stage in range(len(service.content.balance["settlement"]["stages"])):
         set_stage(service, stage)
         view = service.act("test:1", "claro")
-        assert [a.id for a in view.actions] == ["shop", "inn", "home"], stage
+        # D-109: the Claro has the basic profession stations, so ⚒️ Oficios ("oficios") is its 3rd button (4 in all)
+        assert [a.id for a in view.actions] == ["shop", "inn", "oficios", "home"], stage
         assert not any("Despensa" in line for line in view.body)
         assert service.act("test:1", "feed").kind == "claro"         # an old 0.10 button lands on the Claro
     assert service.store.get("pantry", "claro") is None
@@ -203,7 +204,8 @@ def test_merchant_sells_provisions_without_losing_buttons(service):
 def test_claro_screens_keep_four_buttons(service):
     set_stage(service, ALDEA)
     make_hero(service)
-    assert [a.id for a in service.act("test:1", "claro").actions] == ["shop", "inn", "home"]
+    # D-109: ⚒️ Oficios ("oficios") joined the Claro; still 4 buttons at most (D-75)
+    assert [a.id for a in service.act("test:1", "claro").actions] == ["shop", "inn", "oficios", "home"]
 
 
 def test_every_claro_button_works_from_aldea(content):

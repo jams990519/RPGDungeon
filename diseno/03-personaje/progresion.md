@@ -35,6 +35,7 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 | **Explorar** (D-104) | 3 de experiencia por vuelta y 15 al dejar una zona al 100 % | `explore.xp_per_step`, `explore.xp_full_zone` |
 | **Aportar a una mejora de tu campamento** (D-101) | 1 de experiencia (y 1 de mérito) por cada material aportado; las monedas no dan | `upgrades` en balance.yaml |
 | **Recolectar** (D-108) | 14 de experiencia por vuelta en que juntas algo, +15 % por cada nivel de la zona sobre el 1 (la misma regla que las peleas) | `gather.xp_per_step`, `hero.xp_level_scale` |
+| **Refinar y fabricar** (D-109) | 20 por cada ⚡, +15 % por cada nivel sobre el 1, con nivel = el menor entre el tuyo y tu rango en ese oficio | `professions.hero_xp_per_energy` |
 | **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |
 
@@ -52,8 +53,9 @@ Cuenta con toda la energía cada día (40 ⚡), ganando las peleas y en zonas de
 | Recolectar | 14 × nivel de la zona por vuelta y alguna pelea (según el peligro del bioma) | ~2,0 años |
 | Recolectar en tu territorio (sin peleas) | 14 × nivel de la zona | ~2,9 años: es seguro, rinde menos |
 | Cazar (🏹 Cazar, en el juego desde D-106) | una pelea cada 2 ⚡ | ~1,8 años; en partida de caza, un poco más rápido |
+| Refinar y fabricar (D-109) | 20 × escala por ⚡ (el nivel es el menor entre el tuyo y tu rango en el oficio; quien se dedica sube el rango más rápido que el nivel) | ~2,0 años, si consigue los materiales |
 
-**Que no aburra:** además del nivel, cada camino tendrá su propia escalera de oficio, con rangos de 1 a 100: los oficios encadenados de D-109 (leñador, minero, herbolario y desollador para recolectar; refinado; carpintería, herrería, alquimia, sastrería, peletería y joyería para fabricar; ver [Profesiones](../07-economia/profesiones.md) §0). Están en la cola de trabajo, antes de las misiones. Y hacen falta enemigos de nivel alto: hoy casi todos llegan hasta el nivel 16 (el bandido errante llega al 99); para que pelear y cazar sigan teniendo variedad, hay que sumar bestiario por niveles.
+**Que no aburra:** además del nivel, cada camino tiene su propia escalera de oficio, con rangos de 1 a 100: los oficios encadenados de D-109 (leñador, minero, herbolario y desollador para recolectar; refinado; carpintería, herrería, alquimia, sastrería, peletería y joyería para fabricar; ver [Profesiones](../07-economia/profesiones.md) §0.1). La fase 1 ya está en el juego; el mercado entre jugadores viene después. Y hacen falta enemigos de nivel alto: hoy casi todos llegan hasta el nivel 16 (el bandido errante llega al 99); para que pelear y cazar sigan teniendo variedad, hay que sumar bestiario por niveles.
 
 ## 2. Talentos: 1 punto por nivel (en el juego)
 
@@ -73,7 +75,7 @@ Cuenta con toda la energía cada día (40 ⚡), ganando las peleas y en zonas de
 | **Equipo** | 7 ranuras, 4 rarezas, piezas con nivel (D-77, D-83) | Se renueva con cada anillo | En el juego (capa simple) | WoW, Albion |
 | **Campamento** | Nivel del campamento y zonas de territorio | Castillo al nivel 9, y sigue creciendo (D-87) | En el juego | Ashes of Creation |
 | **Maestría de armas y armaduras** | Bonos pequeños por usar cada tipo | Muy largo, con rendimientos decrecientes | Propuesta | Albion |
-| **Oficios** | 1 a 100 por oficio, especializaciones, maestrías | Años (ver [Profesiones](../07-economia/profesiones.md)) | Propuesta | RuneScape, Albion, WoW |
+| **Oficios** | 1 a 100 por oficio, especializaciones, maestrías | Años (ver [Profesiones](../07-economia/profesiones.md)) | En el juego la fase 1: 15 oficios con rango 1-100 (D-109); especializaciones y maestrías, propuesta | RuneScape, Albion, WoW |
 | **Renombre** | Puntos después del nivel máximo, para bonos horizontales | Sin techo, con rendimientos decrecientes | Propuesta | Diablo (Paragon) |
 | **Reputaciones** | Con campamentos, comunidades y órdenes | Por facción | Propuesta | WoW |
 | **Conocimiento** | Bestiario: movimientos de jefes, debilidades, partes | Todo el bestiario | Propuesta | Monster Hunter, Souls |

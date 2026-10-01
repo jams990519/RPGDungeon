@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** propuesta; fase 1 aceptada para programar (D-109)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1); el resto, propuesta
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -42,9 +42,68 @@ Esta es la **capa simple** que se programa primero, con los recursos que ya hay 
 
 **De dónde sale:** *World of Warcraft* (oficios primarios que se necesitan entre sí), *Albion Online* (el paso de refinado) y *Dofus* (oficios dentro de un juego por turnos).
 
+### 0.1 En el juego (fase 1)
+
+Lo que ya está programado. El catálogo vive en `content/professions.yaml` (oficios, estaciones y recetas), los números en `content/balance.yaml` → `professions` y las cuentas en `engine/professions/`. Cada héroe guarda la experiencia de cada oficio (`Hero.professions`); los héroes de antes empiezan todos los oficios en rango 1.
+
+**Los 15 oficios.** No hay tope: cualquiera puede subirlos todos (D-57).
+
+| Rama | Oficio | Cómo sube |
+|---|---|---|
+| Recolección | 🪓 Leñador | 1 de experiencia de oficio por cada 🪵 madera recolectada |
+| | ⛏️ Minero | 1 por cada 🪨 piedra, ⚙️ metal o 🏺 arcilla; desde el rango 10, 💠 gemas en bruto |
+| | 🌿 Herbolario | 1 por cada 🌿 hierba curativa o 🧵 fibra; desde el rango 10, 🌸 flores de luna |
+| | 🔪 Desollador | 1 por cada 🍖 carne o 🦌 piel que sueltan las bestias al vencerlas |
+| Refinado | 🪚 Aserradero · 🔥 Fundición · 💧 Destilación · 🧶 Tejeduría · 🪣 Curtiduría | 6 por cada vez que refinas en una estación |
+| Fabricación | 🪑 Carpintería · 🔨 Herrería · ⚗️ Alquimia · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería | 12 por cada pieza de equipo (6 por las vendas y la poción de vida, 8 por la poción mayor) |
+
+**Rangos.** Experiencia de oficio total para el rango R = 9 × (R − 1)². Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209. Quien dedica toda su energía a un oficio de refinado o fabricación junta unos 240 por día: rango 25 en ~3 semanas, 50 en ~3 meses, **100 en ~1 año** (§4). Un recolector dedicado llega al 100 en 9 a 11 meses (junta más unidades por vuelta a medida que sube de nivel). Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81), Gran Maestro (96). Los exámenes del §4 son capa profunda.
+
+**Recolectar con oficio.** Cada rango suma 0,3 % de sacar una unidad más por unidad recolectada (rango 50: 15 %; rango 100: 30 %), sin pasar el espacio de la mochila (D-90). Desde el rango 10, cada vuelta en la que el minero junta algo de lo suyo tiene 5 % de dar una 💠 gema en bruto, +0,15 % por rango (18,5 % en el 100); lo mismo el herbolario con la 🌸 flor de luna. El desollador saca carne y piel del botín de las bestias, con la misma unidad extra por rango. Las unidades extra y los raros usan su propio sorteo: no cambian lo que la vuelta o la pelea dan.
+
+**🦌 Piel.** Toda bestia que suelta carne suelta también piel, con 10 puntos menos de probabilidad que su carne (30 a 50 %, 1 o 2). Humanoides, no muertos, hongos y limos, nunca.
+
+**Refinar** (1 ⚡ por vez; lo que sale vale en el mercader lo mismo que lo que entra, así refinar no fabrica monedas):
+
+| Receta | Entra | Sale |
+|---|---|---|
+| Aserradero | 🪵 madera ×3 | 🟫 tablón |
+| Fundición | ⚙️ pieza de metal ×2 | 🔩 lingote |
+| Destilación | 🌿 hierba curativa ×3 | 🧴 extracto |
+| Tejeduría | 🧵 fibra ×3 | 🧣 tela |
+| Curtiduría | 🦌 piel ×2 | 🟤 cuero |
+
+Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las estaciones de tu campamento, +10 %.
+
+**Fabricar** (2 ⚡ por pieza de equipo; 1 ⚡ las vendas, la poción de vida y la poción mayor; 2 ⚡ la tanda de pociones mayores). Toda receta pide materiales de **dos oficios o más**; cada oficio de fabricación tiene recetas en los rangos 1, 25 y 50:
+
+| Oficio | Rango 1 | Rango 25 | Rango 50 |
+|---|---|---|---|
+| 🪑 Carpintería | Bastón de roble (tablón ×3, tela) · Arco de olmo (tablón ×3, cuero) | Bastón labrado (tablón ×5, tela ×2) · Arco reforzado (tablón ×5, cuero ×2) | Báculo del artesano (tablón ×8, tela ×3, gema) · Arco del artesano (tablón ×8, cuero ×3, tela) |
+| 🔨 Herrería | Espada forjada (lingote ×3, cuero) · Daga forjada (lingote ×2, cuero) · Peto forjado (lingote ×4, cuero ×2) | Espada, daga y peto templados (lingote ×5/×4/×7, cuero ×2/×2/×3) | Espada y daga del artesano (lingote ×8/×6, cuero ×3, gema) · Coraza del artesano (lingote ×10, cuero ×4, tela ×2) |
+| ⚗️ Alquimia | Poción de vida ×2 (extracto, arcilla) | 🍷 Poción mayor (extracto ×2, arcilla, flor de luna) | Poción mayor ×2 (extracto ×3, arcilla ×2, flor de luna) |
+| 🪡 Sastrería | Vendas ×3 (tela, hierba curativa) · Túnica de viajero (tela ×4, cuero) | Túnica teñida (tela ×6, extracto) | Túnica del artesano (tela ×9, extracto ×2, flor de luna) |
+| 🦺 Peletería | Jubón de cuero (cuero ×4, tela) · Cota ligera (cuero ×2, lingote ×2) | Jubón reforzado (cuero ×6, tela ×2) · Cota remachada (cuero ×3, lingote ×4) | Jubón del artesano (cuero ×9, tela ×3, extracto) · Cota del artesano (cuero ×5, lingote ×7, tela ×2) |
+| 💍 Joyería | Anillo engarzado (lingote, gema) | Collar de gemas (lingote ×2, gema ×2) | Amuleto del artesano (lingote ×3, gema ×3) |
+
+**El equipo de artesano** usa el sistema de equipo de siempre (ranuras, tipos, rarezas, nivel): rango 1 = como el botín poco común del nivel 3; rango 25 = como el raro del nivel 5 y un bono más (+2 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas); rango 50 = como el épico del nivel 8 y algo más (+3 % de vida en las armas, +2 % de ataque en las armaduras, +2 % de defensa en las joyas). Nunca sale en el botín al azar ni en el equipo inicial: solo de una receta. Hoy el botín no tiene piezas por encima del nivel 8, así que el equipo de rango 50 es el mejor del juego. La armadura de artesano es solo de pecho; los escudos esperan su ranura.
+
+**La 🍷 poción mayor** cura el 60 % de la vida, con 60 de toxicidad (una por pelea, junto con una de vida) y tiene 1 lugar en el cinturón. Solo la hace la Alquimia: el mercader no la vende.
+
+**Experiencia de héroe (D-108).** Refinar y fabricar dan 20 de experiencia por cada ⚡, × (1 + 0,15 × (nivel − 1)), con nivel = el menor entre tu nivel y tu rango en ese oficio. Recolectar da 14 por ⚡ más sus peleas; en promedio, unos 20. Así quien solo fabrica llega al nivel 100 en ~2 años, como los otros caminos; un artesano novato aprende poco aunque sea de nivel alto (ver [Balance](../03-personaje/balance.md) §7).
+
+**Estaciones y pantallas** (4 botones como mucho):
+- **El Claro** tiene todas las estaciones básicas: 🏕️ Campamento → ⚒️ Oficios (su 3.er botón).
+- **Tu campamento:** el 🧵 Taller abre aserradero, tejeduría, curtiduría, destilación, carpintería, sastrería, peletería y alquimia; la 🔨 Herrería, fundición, herrería y joyería (D-101). Se llega desde 🔨 Mejoras → 🏘️ Servicios → 🧵 Taller → ⚒️ Oficios (o ⚒️ Oficios en los servicios si hay Herrería y no Taller). Al refinar ahí, +10 % de sacar una unidad más. Todavía no hay alambique: destilar y la alquimia van en el Taller.
+- **⚒️ Oficios** (también con **/oficios** desde cualquier lado, y la ficha del héroe lo nombra): tus rangos, con su barra, cómo subir cada uno y qué abre el próximo umbral; los oficios sin empezar; dónde están las estaciones. Botones: 🪚 Refinar · 🛠️ Fabricar · ↩️ Volver.
+- **🪚 Refinar / 🛠️ Fabricar:** las recetas que tu rango abre en las estaciones de aquí, primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las demás; de a 2 por página si son más de 3.
+- **📜 Receta:** lo que pide (✅ o ❌ con lo que llevas), lo que sale, la energía y lo que ganas. Botones: 🔨 Hacer 1 · 🔨 Hacer 5 (o lo que alcance) · 🔨 Hacer todo · ↩️ Volver. Si falta un material, la energía, la estación o el rango, no se gasta nada.
+
+**Lo que falta (segunda tanda):** el **mercado entre jugadores** para venderse lo que cada uno hace. Mientras tanto cada jugador puede hacer toda la cadena él solo, más lento que el especialista, y vender lo que le sobre al mercader del Claro. Lo profundo (especializaciones, maestría por objeto, exámenes, calidad, herramientas, enfermedades laborales) sigue siendo propuesta.
+
 **La red completa**, con los 26 oficios, sus especializaciones y en qué orden entran, está en [Red de oficios](red-de-oficios.md) (D-115). La fase 1 de arriba es su primera parte.
 
-### 0.1 El beneficio de cada oficio (D-111)
+### 0.2 El beneficio de cada oficio (D-111)
 
 El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un tipo de jugador**, que crece con la experiencia en ese oficio, como en World of Warcraft (la Herboristería cura, la Minería da aguante, el Desuello da crítico…). El ejemplo del dueño: **la medicina les da a los sanadores un porcentaje extra de sanación**.
 
@@ -70,17 +129,17 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 - **Se suman todos los que tengas** (D-57: sin tope de oficios); el freno es el tiempo de subir cada uno al 100. Si en la beta pesa demasiado, se decide en P-76.
 - Los números son propuesta de Claude y se comprueban en la pasada de balance de D-110, con la simulación del 1 al 100.
 
-### 0.2 Dos sistemas mezclados: World of Warcraft y Albion Online (D-113, provisional)
+### 0.3 Dos sistemas mezclados: World of Warcraft y Albion Online (D-113, provisional)
 
 El dueño pidió (1-oct-2026) **mezclar el sistema de oficios de World of Warcraft con el de Albion Online**, para que la economía dependa de los jugadores **directamente, por sus oficios**, y no solo de forma indirecta (recolectar y vender). En la transcripción de voz dijo "algo online"; se tomó como *Albion Online*.
 
 | De World of Warcraft | De Albion Online |
 |---|---|
 | Rango de oficio 1-100 que sube haciendo recetas; recetas que se abren por rango | **Casi todo el buen equipo lo fabrican los jugadores**: los monstruos sueltan sobre todo materiales y monedas, y equipo de menos calidad |
-| El beneficio propio de cada oficio (§0.1, D-111) | **Aprender haciendo cada línea de objetos:** fabricar una línea (por ejemplo, espadas) sube su maestría; dominar un nivel de pieza abre el siguiente de esa línea, y la maestría mejora la calidad (§6) |
+| El beneficio propio de cada oficio (§0.2, D-111) | **Aprender haciendo cada línea de objetos:** fabricar una línea (por ejemplo, espadas) sube su maestría; dominar un nivel de pieza abre el siguiente de esa línea, y la maestría mejora la calidad (§6) |
 | **Pedidos de fabricación:** mandas materiales y una comisión a un artesano y él fabrica con su rango y su firma ([Economía](economia.md) §7) | **El equipo se gasta:** cada pieza tiene durabilidad que baja al pelear; repararla cuesta y la deja un poco más gastada, hasta que se rompe. Siempre hay demanda de artesanos ([Equipamiento](../03-personaje/equipamiento.md) §4) |
 | | **Mercado de órdenes:** órdenes de compra y de venta en el Claro (y en los campamentos que lo construyan), con un pequeño impuesto que saca monedas del juego ([Economía](economia.md)) |
-| | **Refinar con retorno:** quien refina recupera una parte del material (el beneficio del refinado en §0.1), más en una estación de su campamento |
+| | **Refinar con retorno:** quien refina recupera una parte del material (el beneficio del refinado en §0.2), más en una estación de su campamento |
 
 **Cómo queda la economía:** el recolector vende materia, el refinador la convierte, el artesano fabrica el equipo que todos necesitan y que se gasta, el comerciante compra y revende en el mercado, y los que pelean consumen equipo y pociones. Cada uno depende de otros.
 

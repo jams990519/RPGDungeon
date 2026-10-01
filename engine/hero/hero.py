@@ -21,6 +21,10 @@ Si cambias esto, revisa:
       grandes (engine/service/game.py _build_chest, _grow_chests; tests/test_backpack.py)
     - seen_at también dice quién aparece en la lista 👥 de 📍 Zona (D-96: tocó un botón en los últimos
       presence.minutes; engine/service/game.py _zone_players; tests/test_zone_players.py)
+    - professions (D-109): experiencia de cada oficio (id de content/professions.yaml → experiencia); el rango sale
+      de ahí (engine/professions/rules.py rank_of, balance.yaml professions.rank_formula). Vacío para los héroes
+      guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
+      tests/test_professions.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -64,6 +68,8 @@ class Hero:
         seen_at: last time the player pressed a button (D-93); 0 for heroes saved before it.
             "Active" residents (they eat from the pantry) are those seen in the last 24 h.
             Players seen in the last presence.minutes are also listed in their zone (D-96).
+        professions: profession xp, profession id (content/professions.yaml) -> xp (D-109). The rank (1-100)
+            is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -118,6 +124,7 @@ class Hero:
     titles: list[str] = field(default_factory=list)
     bar: list[str] = field(default_factory=list)
     seen_at: float = 0.0
+    professions: dict[str, int] = field(default_factory=dict)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

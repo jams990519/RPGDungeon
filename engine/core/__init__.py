@@ -27,6 +27,8 @@ from engine.core.events import (
     HeroCreated,
     HeroDowned,
     HitReceived,
+    ItemCrafted,
+    ProfessionRankUp,
     TravelArrived,
     TravelStarted,
     ZoneDiscovered,
@@ -37,7 +39,7 @@ from engine.core.store import MemoryStore, Store
 
 __all__ = [
     "BossDefeated", "Clock", "FixedClock", "SystemClock", "Content", "load_content", "Event", "EventBus",
-    "HeroCreated", "HeroDowned", "HitReceived", "TravelArrived", "TravelStarted",
+    "HeroCreated", "HeroDowned", "HitReceived", "ItemCrafted", "ProfessionRankUp", "TravelArrived", "TravelStarted",
     "ZoneDiscovered", "CombatStarted", "CombatEnded", "Texts", "Rng", "hash_unit",
     "MemoryStore", "Store",
 ]
