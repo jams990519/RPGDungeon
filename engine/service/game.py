@@ -91,6 +91,10 @@ Si cambias esto, revisa:
     - Beneficio de cada oficio (D-111): _perks (content/professions.yaml "perk", engine/professions/rules.py perks) entra en
       _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_cap
       (Leñador); hero_stats y el combate lo leen del kit (tests/test_professions.py)
+    - Pasada de balance de clases y roles (D-110, D-113): _stats_view muestra la armadura que dan los puntos de Defensa
+      (stats.talents_armor); _station_view pone primero las recetas de rango más alto (equipo de artesano hasta el nivel
+      100); el bono de botín de la partida de caza parte de gear.drop_chance_for (menos botín desde el nivel 10).
+      Medir con tools/balance_report.py (tests/test_balance_d110.py)
     - Experiencia por camino (D-108): _zone_xp escala matar y recolectar con hero.xp_level_scale; gather.xp_per_step.
       Todos los caminos tienen que llegar al 100 a un ritmo parecido (diseno/03-personaje/progresion.md §1.2)
     - Explorar alrededor (D-107): con tu zona al 100 %, el lote sigue con las vecinas sin moverte (_explore_target,
@@ -183,7 +187,8 @@ from engine.core import (
     hash_unit,
 )
 from engine.hero import Hero, hero_stats, xp_for_level
-from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, source_choices, starter_gear, suits, unequip
+from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, piece_stats, roll_gear, source_choices,
+                              starter_gear, suits, unequip)
 from engine.professions import gatherer_of, max_times, missing_for, rank_of, rank_title, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
@@ -4333,7 +4338,8 @@ class GameService:
         [ES]
         Qué hace: lista las recetas de refinado o de fabricación de las estaciones de aquí que tu rango ya abre:
         primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las
-        demás. Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
+        demás; dentro de cada grupo, las de rango más alto primero (D-110: cada línea tiene equipo hasta el nivel 100 y la
+        más nueva es la que sirve). Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
         ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios.
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, ➡️ Ver más y ↩️ Volver de cada receta.
         Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py).
@@ -4360,7 +4366,9 @@ class GameService:
             missing = missing_for(rdef, hero.backpack)
             carried = any(hero.backpack.get(item, 0) > 0 for item in rdef["inputs"])
             entries.append((0 if not missing else 1 if carried else 2, rid, missing))
-        entries.sort(key=lambda entry: entry[0])           # stable: file order inside each group
+        # Stable: inside each group the highest rank first (D-110: up to 13 tiers per line, the newest is the useful one),
+        # then file order.
+        entries.sort(key=lambda entry: (entry[0], -int(recipes[entry[1]].get("min_rank", 1))))
         per = int(self._prof_cfg()["per_page"])
         pages = 1 if len(entries) <= 3 else (len(entries) + per - 1) // per
         page %= pages
@@ -4898,7 +4906,8 @@ class GameService:
             t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100)),
             t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"], per_day=self.content.balance["energy"]["per_day"]),
             t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
-            t.t("stats.talents", attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100)),
+            t.t("stats.talents_armor" if round(bonus.get("armor", 0) * 100) else "stats.talents",   # D-110: Defensa points add armor
+                attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100), armor=round(bonus.get("armor", 0) * 100)),
             t.t("stats.gear", **self._gear_numbers(cdef.get("gear_bonus", {}))),
         ]
         return View(kind="stats", title=t.t("stats.title"), body=body, actions=[Action(id="hero", label=t.t("menu.back"))])
@@ -5851,7 +5860,7 @@ class GameService:
                     count += self._trade_loot(hero, item_id, count, lines, state["seed"])     # D-109: 🔪 Desollador (carne, piel)
                     label = f"{item['emoji']} {t.t(item['name_key'])}" if count == 1 else self._item_list({item_id: count})
                     lines.append(t.t("combat.loot", item=label))
-            drop = self.content.balance["gear"]["drop_chance"] * (1 + bonus) if bonus else None    # D-106: party bonus
+            drop = drop_chance_for(self.content.balance, enemy["level"]) * (1 + bonus) if bonus else None    # D-106: party bonus (D-113: less from level 10)
             dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng, chance=drop)
             if dropped:
                 hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1

@@ -75,7 +75,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 
 Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las estaciones de tu campamento, +10 %.
 
-**Fabricar** (2 ⚡ por pieza de equipo; 1 ⚡ las vendas, la poción de vida y la poción mayor; 2 ⚡ la tanda de pociones mayores). Toda receta pide materiales de **dos oficios o más**; cada oficio de fabricación tiene recetas en los rangos 1, 25 y 50:
+**Fabricar** (2 ⚡ por pieza de equipo; 1 ⚡ las vendas, la poción de vida y la poción mayor; 2 ⚡ la tanda de pociones mayores). Toda receta pide materiales de **dos oficios o más**; cada oficio de fabricación tiene recetas en los rangos 1, 25 y 50 (y los de equipo, también del 55 al 100: más abajo):
 
 | Oficio | Rango 1 | Rango 25 | Rango 50 |
 |---|---|---|---|
@@ -86,7 +86,22 @@ Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las es
 | 🦺 Peletería | Jubón de cuero (cuero ×4, tela) · Cota ligera (cuero ×2, lingote ×2) | Jubón reforzado (cuero ×6, tela ×2) · Cota remachada (cuero ×3, lingote ×4) | Jubón del artesano (cuero ×9, tela ×3, extracto) · Cota del artesano (cuero ×5, lingote ×7, tela ×2) |
 | 💍 Joyería | Anillo engarzado (lingote, gema) | Collar de gemas (lingote ×2, gema ×2) | Amuleto del artesano (lingote ×3, gema ×3) |
 
-**El equipo de artesano** usa el sistema de equipo de siempre (ranuras, tipos, rarezas, nivel): rango 1 = como el botín poco común del nivel 3; rango 25 = como el raro del nivel 5 y un bono más (+2 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas); rango 50 = como el épico del nivel 8 y algo más (+3 % de vida en las armas, +2 % de ataque en las armaduras, +2 % de defensa en las joyas). Nunca sale en el botín al azar ni en el equipo inicial: solo de una receta. Hoy el botín no tiene piezas por encima del nivel 8, así que el equipo de rango 50 es el mejor del juego. La armadura de artesano es solo de pecho; los escudos esperan su ranura.
+**Rangos 55 a 100: el equipo hasta el nivel 100 (D-110, D-113).** Cada línea de equipo (bastón y arco en la Carpintería; espada, daga y peto en la Herrería; túnica en la Sastrería; jubón y cota en la Peletería; joya en la Joyería) suma una receta por nivel de pieza, del nivel 10 al 100, una cada 5 rangos: **nivel de pieza 10 → rango 55, 20 → 60 … 100 → rango 100** (90 recetas). Piden lo refinado de 2 ramas o más, y más 💠 gemas y 🌸 flores de luna en los niveles altos; cuestan 2 ⚡ y dan 12 de experiencia de oficio, como las demás piezas (el ritmo de D-108 no cambia):
+
+| Línea | Nivel 10 (rango 55) | Nivel 50 (rango 75) | Nivel 100 (rango 100) |
+|---|---|---|---|
+| 🪑 Bastón | tablón ×9, tela ×3, gema | tablón ×13, tela ×5, gema ×2, flor de luna | tablón ×21, tela ×8, gema ×4, flor de luna ×2 |
+| 🪑 Arco | tablón ×9, cuero ×3, tela | tablón ×15, cuero ×5, tela ×2, gema | tablón ×22, cuero ×8, tela ×4, gema ×3 |
+| 🔨 Espada · Daga | lingote ×9 / ×7, cuero ×3, gema | lingote ×13 / ×11, cuero ×5, gema ×2 | lingote ×18 / ×16, cuero ×8, gema ×4 |
+| 🔨 Peto (placas) | lingote ×11, cuero ×4, tela ×2 | lingote ×15, cuero ×6, tela ×3, gema | lingote ×20, cuero ×9, tela ×5, gema ×3 |
+| 🪡 Túnica (tela) | tela ×10, extracto ×2, flor de luna | tela ×15, extracto ×4, flor de luna ×2 | tela ×24, extracto ×7, flor de luna ×4 |
+| 🦺 Jubón (cuero) | cuero ×10, tela ×3, extracto | cuero ×14, tela ×5, extracto ×2, gema | cuero ×21, tela ×8, extracto ×4, gema ×3 |
+| 🦺 Cota (malla) | lingote ×8, cuero ×5, tela ×2 | lingote ×12, cuero ×7, tela ×3, gema | lingote ×17, cuero ×10, tela ×5, gema ×3 |
+| 💍 Joya | lingote ×3, gema ×3 | lingote ×6, gema ×6, flor de luna | lingote ×8, gema ×11, flor de luna ×3 |
+
+En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea llega a tener 13).
+
+**El equipo de artesano** usa el sistema de equipo de siempre (ranuras, tipos, rarezas, nivel) y es **lo mejor de cada nivel** en arma, pecho y joya (D-113): rango 1 = como el botín poco común del nivel 3 y un bono chico (+1 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas; desde D-113); rango 25 = como el raro del nivel 5 y un bono más (+2 % de vida en las armas, +1 % de ataque en las armaduras, +1 % de defensa en las joyas); rango 50 = como el épico del nivel 8 y algo más (+3 % de vida en las armas, +2 % de ataque en las armaduras, +2 % de defensa en las joyas); rangos 55 a 100 = 🟣 épicas con ~10 % más que el botín de su nivel (que llega como mucho a 🔵 raro) y un bono que crece (+3 a +5 % de vida en las armas, +2 a +4 % de ataque en las armaduras, +2 a +3 % de defensa en las joyas). Nunca sale en el botín al azar ni en el equipo inicial: solo de una receta. Se vende al mercader por menos que sus materiales. La armadura de artesano es solo de pecho; cabeza, manos, piernas y pies son de botín por ahora, y los escudos esperan su ranura (ver [Equipamiento](../03-personaje/equipamiento.md) §11).
 
 **La 🍷 poción mayor** cura el 60 % de la vida, con 60 de toxicidad (una por pelea, junto con una de vida) y tiene 1 lugar en el cinturón. Solo la hace la Alquimia: el mercader no la vende.
 
@@ -147,7 +162,7 @@ El dueño pidió (1-oct-2026) **mezclar el sistema de oficios de World of Warcra
 **Cómo entra al juego, por partes:**
 1. Oficios fase 1 (en curso): rangos, refinado y recetas de varias ramas.
 2. Beneficios de oficio (D-111).
-3. Pasada de balance (D-110): equipo por niveles hasta el 100, donde **lo mejor de cada nivel lo fabrican los jugadores** y el botín suelta menos y peor.
+3. Pasada de balance (D-110), **hecha**: equipo por niveles hasta el 100, donde **lo mejor de cada nivel lo fabrican los jugadores** (arma, pecho y joya; recetas de los rangos 55 a 100) y el botín suelta menos (10 % desde el nivel 10) y peor (como mucho 🔵 raro). Ver §0.1 y [Balance](../03-personaje/balance.md) §7.
 4. Mercado de órdenes, pedidos de fabricación, durabilidad y reparación: la segunda tanda de la economía de jugadores.
 
 ---

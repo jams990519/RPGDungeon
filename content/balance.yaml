@@ -44,9 +44,9 @@ talents:                     # [ES] talentos por nivel (D-68, D-79): 1 punto por
   respec_cost_per_level: 10  # [ES] reiniciar la especialización cuesta 10 💰 por nivel (D-74)
   passive:                   # [ES] mejora por punto, según el rol (D-79: ~1 % por punto; antes 3 %, era demasiado)
     ataque: {attack: 0.01}               # [ES] +1 % de ataque por punto
-    defensa: {hp: 0.01}                  # [ES] +1 % de vida por punto
-    curacion: {hp: 0.006, attack: 0.004} # [ES] repartido: +0,6 % de vida y +0,4 % de ataque
-    soporte: {attack: 0.006, hp: 0.004}  # [ES] repartido: +0,6 % de ataque y +0,4 % de vida
+    defensa: {hp: 0.0125, armor: 0.002}  # [ES] D-110: +1,25 % de vida por punto (antes 1 %) y +0,2 puntos de armadura por punto (nuevo) (+10 con 50 puntos, sin pasar gear.armor_cap). La defensa aguanta más a medida que sube; al nivel 6 (el Guardián) suma solo +1
+    curacion: {hp: 0.0085, attack: 0.004} # [ES] repartido: +0,85 % de vida (D-110, antes 0,6 %) y +0,4 % de ataque: la curación es la que más vida deja al terminar
+    soporte: {attack: 0.005, hp: 0.006}  # [ES] repartido: +0,5 % de ataque y +0,6 % de vida (D-110, antes 0,6 % y 0,4 %): el soporte queda entre el ataque y la defensa, también en la vida que le queda
   dual: {min_points: 10, cost_bags: 3}   # [ES] D-88: doble especialización: 10 puntos en tu especialización principal y 3 💰 bolsas
 
 explore:
@@ -209,7 +209,7 @@ currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se
     xp_boost: {gems: 100, xp_mult: 1.5, days: 7}   # [ES] +50 % de experiencia por 7 días (P-66)
     banner: {gems: 150}      # [ES] estandarte único al lado de tu nombre
 
-gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranuras, 4 tipos de armadura, 4 de arma
+gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranuras, 4 tipos de armadura, 4 de arma; piezas cada 10 niveles hasta el 100 (D-110)
   slots: [arma, cabeza, armadura, manos, piernas, pies, joya]   # [ES] D-83: armadura = pecho
   off_type_factor: 0.5       # [ES] D-83: puedes ponerte lo que quieras; si no es de tu clase rinde la mitad
   armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
@@ -248,8 +248,9 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranur
   rarity_icon: {comun: "⚪", poco_comun: "🟢", raro: "🔵", epico: "🟣"}
   rarity_weight: {comun: 6, poco_comun: 3, raro: 1.2, epico: 0.4}   # [ES] lo raro sale menos
   drop_chance: 0.15          # [ES] probabilidad de soltar una pieza en cada victoria
+  high_level_drop: {from_level: 10, chance: 0.10}   # [ES] D-110/D-113 (nuevo): contra enemigos desde el nivel 10 el botín suelta menos (10 % en vez de 15 %) y como mucho 🔵 raro; lo mejor de cada nivel lo fabrican los jugadores (items.yaml, equipo de artesano). Hasta el 9 sigue en 15 %: el artesano todavía no llega
   for_you_chance: 0.7        # [ES] de las piezas que caen, cuántas son de tu tipo (botín "para ti")
-  level_window: [4, 1]       # [ES] piezas con nivel requerido entre (nivel del enemigo − 4) y (+1)
+  level_window: [4, 1]       # [ES] piezas con nivel requerido entre (nivel del enemigo − 4) y (+1); si la ventana cae entre dos niveles de pieza (van cada 10 desde el 10, D-110), salen las del nivel de pieza más cercano por debajo (engine/hero/gear.py roll_gear)
   start_tier: 1              # [ES] equipo inicial: arma y armadura de tu tipo, nivel 1, ya puestas
 
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena

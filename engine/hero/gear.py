@@ -19,11 +19,15 @@ Reglas que nunca se rompen:
     3. Las piezas con "source" (por ejemplo las del Guardián, D-82, o el equipo de artesano, source: crafted, D-109)
        nunca salen en el botín al azar: solo se consiguen por su fuente (el Recuerdo, una receta de oficio).
 Si cambias esto, revisa:
-    - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat)
-    - Números: balance.yaml gear.*, items.yaml stats (mueven el balance de todas las clases)
+    - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat; drop_chance_for en el bono de la partida de caza)
+    - Números: balance.yaml gear.* (drop_chance, high_level_drop, level_window), items.yaml stats (mueven el balance de
+      todas las clases; medir con tools/balance_report.py)
+    - D-110/D-113: el equipo va cada 10 niveles desde el 10 hasta el 100; si la ventana de nivel cae entre dos niveles de
+      pieza, roll_gear usa el nivel de pieza más cercano por debajo. Desde el nivel 10 el botín sale menos y como mucho
+      raro; lo mejor de cada nivel es el equipo de artesano (tests/test_balance_d110.py)
     - El equipo inicial toma la primera pieza de tier gear.start_tier (1) de su tipo: el de artesano empieza en tier 2
       y va al final de items.yaml, así nunca se elige (tests/test_professions.py)
-    - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano)
+    - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano), tests/test_balance_d110.py
 """
 
 from __future__ import annotations
@@ -86,25 +90,50 @@ def gear_bonus(items: dict[str, Any], hero: Hero, classes: dict[str, Any], balan
     return total
 
 
+def drop_chance_for(balance: dict[str, Any], enemy_level: int) -> float:
+    """Chance that a common victory drops a gear piece: gear.drop_chance, lower from gear.high_level_drop.from_level (D-113).
+
+    [ES]
+    Qué hace: dice la probabilidad de que una victoria común suelte una pieza: gear.drop_chance (15 %) y, contra
+    enemigos desde gear.high_level_drop.from_level (nivel 10), la más baja de high_level_drop.chance (D-113: el botín
+    suelta menos y peor; lo mejor de cada nivel lo fabrican los jugadores).
+    La llaman: roll_gear (sin probabilidad propia) y el servicio (bono de la partida de caza, D-106).
+    Si cambia, afecta: cuánto equipo entra al juego en cada nivel.
+    """
+    cfg = balance["gear"]
+    high = cfg.get("high_level_drop") or {}
+    if high and enemy_level >= int(high.get("from_level", 10 ** 9)):
+        return float(high["chance"])
+    return float(cfg["drop_chance"])
+
+
 def roll_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any], hero: Hero,
               enemy_level: int, rng: Rng, chance: float | None = None) -> str | None:
     """Maybe drop a gear piece after a victory: level window, rarity weights, mostly "for you".
 
     Args:
-        chance: drop chance for this roll; None uses balance gear.drop_chance (bosses pass their own).
+        chance: drop chance for this roll; None uses drop_chance_for (bosses pass their own).
+
+    The pieces come from the level window (gear.level_window: enemy level − 4 .. + 1). Since the gear goes every 10
+    levels above level 8 (D-110), a window can fall between two tiers: then the pieces of the nearest tier below are used,
+    so a level 15 enemy drops level 10 gear instead of nothing.
 
     [ES]
     Qué hace: sortea si cae una pieza y cuál. Casi siempre es de tu tipo (botín "para ti"),
-    a veces de otra clase (para vender). Lo raro sale menos.
+    a veces de otra clase (para vender). Lo raro sale menos. Si no hay piezas en la ventana de nivel (el equipo va
+    cada 10 niveles desde el 10, D-110), salen las del nivel de pieza más cercano por debajo.
     La llama: el servicio al ganar un combate.
-    Si cambia, afecta: cuánto equipo entra al juego (balance.yaml gear.drop_chance).
+    Si cambia, afecta: cuánto equipo entra al juego (balance.yaml gear.drop_chance y gear.high_level_drop).
     """
     cfg = balance["gear"]
-    if not rng.chance(cfg["drop_chance"] if chance is None else chance):
+    if not rng.chance(drop_chance_for(balance, enemy_level) if chance is None else chance):
         return None
     below, above = cfg["level_window"]
-    pool = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")
-            and enemy_level - below <= it.get("req_level", 1) <= enemy_level + above]
+    lootable = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")]
+    pool = [(iid, it) for iid, it in lootable if enemy_level - below <= it.get("req_level", 1) <= enemy_level + above]
+    if not pool:
+        lower = [it.get("req_level", 1) for _, it in lootable if it.get("req_level", 1) <= enemy_level + above]
+        pool = [(iid, it) for iid, it in lootable if lower and it.get("req_level", 1) == max(lower)]
     if not pool:
         return None
     mine = allowed_types(classes, balance, hero)
