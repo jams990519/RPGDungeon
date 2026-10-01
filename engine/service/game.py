@@ -734,6 +734,12 @@ class GameService:
             return self._talents_view(hero)
         if action_id == "respec":
             return self._respec(hero)
+        if action_id == "dual":
+            return self._dual_view(hero)
+        if action_id == "dual_unlock":
+            return self._dual_unlock(hero)
+        if action_id == "dual_switch":
+            return self._dual_switch(hero)
         if action_id.startswith("tal:"):
             return self._spec_view(hero, action_id[4:])
         if action_id.startswith("pt:"):
@@ -1642,6 +1648,7 @@ class GameService:
         body = [t.t("talents.intro"), t.t("talents.points", n=hero.points), ""]
         if not hero.talents:
             body[:0] = [t.t("talents.choose_first"), ""]
+        body.append(t.t("dual.link_on" if hero.dual_unlocked else "dual.link", n=hero.profile))
         actions = []
         for spec in specs_of(self.content.classes, group):
             sdef = self.content.classes[spec]
@@ -1736,6 +1743,59 @@ class GameService:
         hero.unlocked = [base_response(self.content.classes, group)]
         hero.bar = []
         return self._talents_view(hero, notice=t.t("talents.respec_done", cost=self._money(cost), n=hero.points))
+
+    # ------------------------------------------------------------------ double specialization (D-88)
+
+    def _dual_view(self, hero: Hero, notice: str | None = None) -> View:
+        """Two talent setups: unlock the second after dedicating yourself to your spec, paying bags."""
+        t = self.texts
+        cfg = self.content.balance["talents"]["dual"]
+        main_points = hero.talents.get(hero.class_id, 0)
+        body = [t.t("dual.intro")]
+        actions = []
+        if not hero.dual_unlocked:
+            ok_points = main_points >= cfg["min_points"]
+            ok_bags = hero.bags >= cfg["cost_bags"]
+            body += ["", ("✅ " if ok_points else "▫️ ") + t.t("dual.req_points", need=cfg["min_points"], n=main_points),
+                     ("✅ " if ok_bags else "▫️ ") + t.t("dual.req_bags", need=cfg["cost_bags"], n=hero.bags)]
+            if ok_points and ok_bags:
+                actions.append(Action(id="dual_unlock", label=t.t("dual.unlock_button", n=cfg["cost_bags"])))
+        else:
+            other = 2 if hero.profile == 1 else 1
+            saved = hero.profiles.get(str(other), {})
+            other_name = t.t(self.content.classes[saved["class_id"]]["name_key"]) if saved.get("talents") else t.t("dual.empty")
+            body += ["", t.t("dual.active", n=hero.profile, name=self._hero_title(hero)), t.t("dual.other", n=other, name=other_name)]
+            actions.append(Action(id="dual_switch", label=t.t("dual.switch_button", n=other)))
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="dual", title=t.t("dual.title"), body=body, actions=actions, notice=notice)
+
+    def _dual_unlock(self, hero: Hero) -> View:
+        t = self.texts
+        cfg = self.content.balance["talents"]["dual"]
+        if hero.dual_unlocked or hero.talents.get(hero.class_id, 0) < cfg["min_points"] or hero.bags < cfg["cost_bags"]:
+            return self._dual_view(hero)
+        hero.bags -= cfg["cost_bags"]
+        hero.dual_unlocked = True
+        hero.profile = 1
+        return self._dual_view(hero, notice=t.t("dual.unlocked", n=cfg["cost_bags"]))
+
+    def _dual_switch(self, hero: Hero) -> View:
+        """Swap to the other setup: each keeps its own points, abilities and bar (points come from your level)."""
+        t = self.texts
+        if not hero.dual_unlocked or hero.activity:
+            return self._dual_view(hero, notice=t.t("activity.busy") if hero.activity else None)
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        hero.profiles[str(hero.profile)] = {"talents": dict(hero.talents), "unlocked": list(hero.unlocked),
+                                            "class_id": hero.class_id, "bar": list(hero.bar)}
+        hero.profile = 2 if hero.profile == 1 else 1
+        saved = hero.profiles.get(str(hero.profile)) or {}
+        hero.talents = dict(saved.get("talents", {}))
+        hero.unlocked = list(saved.get("unlocked") or [base_response(self.content.classes, group)])
+        hero.class_id = saved.get("class_id") or default_spec(self.content.classes, group)
+        hero.bar = list(saved.get("bar", []))
+        hero.points = max(0, hero.level - 1 - sum(hero.talents.values()))
+        self._clamp_hp(hero)
+        return self._dual_view(hero, notice=t.t("dual.switched", n=hero.profile))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
         t = self.texts

@@ -61,3 +61,33 @@ def test_respec_refunds_points_for_gold(service):
     hero = service._load("test:1")
     assert hero.talents == {} and hero.points == 2 and hero.gold == 100 - 30
     assert "🔄" in (view.notice or "")
+
+
+def test_double_spec_after_dedication_paid_with_bags(service):
+    from conftest import make_hero
+    make_hero(service, "test:1", "Lyra", "guerrero")
+    hero = service._load("test:1")
+    hero.level, hero.points = 12, 11
+    service._save(hero)
+    view = service.act("test:1", "dual")
+    assert view.kind == "dual" and not any(a.id == "dual_unlock" for a in view.actions)
+    for _ in range(10):
+        service.act("test:1", f"pt:{hero.class_id}")
+    hero = service._load("test:1")
+    hero.bags = 3
+    service._save(hero)
+    view = service.act("test:1", "dual_unlock")
+    hero = service._load("test:1")
+    assert hero.dual_unlocked and hero.bags == 0 and len(view.actions) <= 4
+    first = (hero.class_id, dict(hero.talents))
+    service.act("test:1", "dual_switch")
+    hero = service._load("test:1")
+    assert hero.profile == 2 and hero.talents == {} and hero.points == 11
+    other = [s for s in service.content.classes if service.content.classes[s].get("group") == "guerrero" and s != first[0]][0]
+    service.act("test:1", f"pt:{other}")
+    service.act("test:1", "dual_switch")
+    hero = service._load("test:1")
+    assert (hero.class_id, hero.talents) == first and hero.points == 1
+    service.act("test:1", "dual_switch")
+    hero = service._load("test:1")
+    assert hero.talents == {other: 1} and hero.points == 10

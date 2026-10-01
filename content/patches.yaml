@@ -153,3 +153,10 @@ v0_9:
     - "🎛️ Tú eliges tu barra de combate: casilla 1, tu respuesta (bloquear, esquivar o escudo); casillas 2 y 3, lo que quieras. Está en 🌟 Talentos → tu especialización → 🎛️ Barra de combate."
     - "📖 Cada especialización muestra sus 8 habilidades, qué hace cada una y cuántos puntos te faltan para la siguiente."
     - "⚖️ Los números son más bajos al inicio: cada punto suma alrededor de 1 %, para que crecer se note durante los 100 niveles."
+
+v0_9_1:
+  version: "0.9.1"
+  title: "🔀 Lost Realms 0.9.1: doble especialización"
+  notes:
+    - "🔀 Cuando tengas 10 puntos en tu especialización, puedes desbloquear la doble especialización pagando 3 💰 bolsas."
+    - "Tendrás dos configuraciones de talentos, cada una con sus puntos, habilidades y barra. Cambias entre ellas con /doble."

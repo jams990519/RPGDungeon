@@ -906,3 +906,18 @@ batch:
     depleted: "🪫 Esta zona está agotada por ahora: sus recursos vuelven con el tiempo."
     full_explored: "✅ Ya no queda nada por explorar aquí."
 
+dual:
+  title: "🔀 Doble especialización"
+  intro: "Con la doble especialización tienes dos configuraciones de talentos y cambias entre ellas cuando quieras (fuera de combate). Cada una guarda sus puntos, sus habilidades y su barra."
+  req_points: "Dedicarte a tu especialización: {need} puntos en ella (tienes {n})"
+  req_bags: "Pagar {need} 💰 bolsas (tienes {n}). Se cosen en el Claro."
+  unlock_button: "🔓 Desbloquear · {n} 💰"
+  unlocked: "🔀 ¡Desbloqueaste la doble especialización! Pagaste {n} 💰. Tu segunda configuración empieza con todos tus puntos libres."
+  active: "▶️ En uso: configuración {n} — {name}"
+  other: "⏸️ Guardada: configuración {n} — {name}"
+  empty: "vacía, con todos tus puntos libres"
+  switch_button: "🔀 Cambiar a la configuración {n}"
+  switched: "🔀 Ahora usas la configuración {n}."
+  link: "🔀 Doble especialización: /doble"
+  link_on: "🔀 Doble especialización: usas la configuración {n} — /doble"
+
