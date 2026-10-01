@@ -297,3 +297,13 @@ v0_17:
   notes:
     - "💱 Nuevo oficio: Comercio. No te ayuda en la pelea, pero cobras más: hasta +20 % de monedas al vender al mercader, al trueque de tu campamento o tu equipo viejo. Sube vendiendo."
     - "⚒️ No todos los oficios son para pelear: unos ayudarán a tu campamento o castillo, otros a ganar dinero y otros a fabricar piezas exclusivas. Irán llegando por partes."
+
+v0_18:
+  version: "0.18"
+  title: "⚙️ Lost Realms 0.18: opciones y peleas automáticas"
+  notes:
+    - "⚙️ Nuevo botón Opciones en el menú de abajo (también /opciones). Si no ves el botón, toca /start."
+    - "⚔️ Elige qué pasa si sale una pelea en medio de un lote: ✋ Manual (el lote se corta y peleas tú) o ⚔️ Automática (tu héroe pelea solo y el lote sigue si gana)."
+    - "🩹 Elige con cuánta vida se retira tu héroe de las peleas automáticas (30, 50 o 70 %) y si usa las pociones del cinturón."
+    - "🏹 Con las peleas automáticas puedes cazar en lote: varias presas seguidas, con el tiempo estimado en cada botón."
+    - "📜 Al volver, un solo mensaje te cuenta cuántas peleas ganó tu héroe y qué consiguió."
