@@ -129,7 +129,7 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 ## 7. Herramientas y ropa de oficio
 
 - Las ranuras de herramienta (ver [Equipamiento](../03-personaje/equipamiento.md)) llevan la herramienta de cada oficio: pico, hoz, martillo, alambique, bisturí.
-- Tienen tramo, calidad y durabilidad, y las fabrican otros artesanos.
+- Tienen Tramo de objeto, calidad y durabilidad, y las fabrican otros artesanos.
 - La **ropa de oficio** (delantal de herrero, máscara de minero, guantes de alquimista) protege de las enfermedades laborales y mejora el rendimiento.
 
 ## 8. Enfermedades laborales
