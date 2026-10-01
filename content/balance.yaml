@@ -166,6 +166,9 @@ raids:                       # [ES] D-99 (provisional): incursiones de los campa
   min_wins: 1                # [ES] ...y nunca menos de 1
   loss_share: 0.25           # [ES] si no alcanzan, la despensa pierde el 25 % de sus raciones y nada más (§7.2, §15)
   enemy_level_bonus: 1       # [ES] el enemigo es del bioma del campamento, con el nivel de su zona + 1 (§6.2: nunca más de + 2)
+  defense_weaken_per_point: 0.04   # [ES] D-101: cada punto de 🛡️ Defensa de las mejoras les quita 4 % de vida y de ataque a los atacantes (11 puntos: 44 % menos). Vale también para la Noche de prueba
+  defense_floor: 0.5         # [ES] nunca les quita más de la mitad: defender sigue siendo pelear
+  night: {from_hour: 19, to_hour: 6, utc_offset_hours: -5}   # [ES] horas de noche para los 🔥 Braseros (+1 de defensa si la oleada llega de noche). Hora de América (UTC−5), provisional hasta que haya día y noche en el mundo
   reward: {xp: 80, gold: 30} # [ES] si se defiende, cada defensor gana 80 de experiencia y 30 🥉, además del premio normal de su pelea
   trial:                     # [ES] Noche de prueba: la incursión grande antes de castillo (§7.2). Si se pierde no se pierde nada
     to_level: 9              # [ES] crecer a este nivel pide haberla ganado (tiene que coincidir con castillo en camps.stages)

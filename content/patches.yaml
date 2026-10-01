@@ -250,3 +250,13 @@ v0_13_2:
   title: "⛏️ Lost Realms 0.13.2: recolectar también te hace subir"
   notes:
     - "⛏️ Recolectar ahora da experiencia: 14 por vuelta, y más cuanto más alto el nivel de la zona. Cada camino (explorar, recolectar, pelear y pronto cazar) alcanza por sí solo para llegar al nivel 100."
+
+v0_14:
+  version: "0.14"
+  title: "🔨 Lost Realms 0.14: mejoras y defensas del campamento"
+  notes:
+    - "🔨 Tu campamento tiene 20 mejoras para construir entre todos los miembros con materiales: 🔥 Fogón, 🛏️ Refugio, 🌾 Granero, 🧵 Taller, 🔨 Herrería, 🏥 Enfermería, 📚 Biblioteca y más. Cada nivel del campamento abre nuevas."
+    - "🛡️ 8 de ellas son defensas (Empalizada, Torre de vigía, Trampas, Muralla, Foso…). Cada punto de defensa les quita vida y ataque a los enemigos de las oleadas, y la 🗼 Torre de vigía te avisa 2 horas antes de que lleguen."
+    - "📚 La Biblioteca abre el conocimiento: herramientas (más recursos), cartografía (exploras más rápido) y rastreo (más carne)."
+    - "🏰 Para llegar a castillo ahora hacen falta 15 mejoras construidas, además del gremio y la Noche de prueba."
+    - "✨ Aportar materiales a una mejora te da experiencia y mérito."

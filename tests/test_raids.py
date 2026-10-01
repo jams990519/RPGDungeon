@@ -268,8 +268,10 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     state = service.store.get("combat", "test:1")
     normal = make_combat(raid["enemy"], service.content.enemies[raid["enemy"]], raid["level"], service._kit(service._load("test:1")), 1)
     trial = service.content.balance["raids"]["trial"]
-    assert state["enemy"]["max_hp"] == round(normal["enemy"]["max_hp"] * trial["enemy_hp_mult"])
-    assert state["enemy"]["attack"] == pytest.approx(normal["enemy"]["attack"] * trial["enemy_attack_mult"])
+    weaken = service._raid_weaken(raid)                              # D-101: the 15 improvements include defenses
+    assert raid["defense"] > 0 and weaken < 1
+    assert state["enemy"]["max_hp"] == round(round(normal["enemy"]["max_hp"] * trial["enemy_hp_mult"]) * weaken)
+    assert state["enemy"]["attack"] == pytest.approx(normal["enemy"]["attack"] * trial["enemy_attack_mult"] * weaken)
     win(service, "test:1")                                           # 1 of 2: Bram never comes
     clock.advance(HOUR + 1)
     service.act("test:1", "claro")
@@ -330,3 +332,59 @@ def test_the_noche_de_prueba_counts_as_that_weeks_raid(service, clock):
     service.act("test:1", "claro")
     after = camp(service)
     assert not after.get("raid") and after["next_raid_at"] == pytest.approx(until + 7 * DAY)
+
+
+def build_all(service, ids):
+    """Mark camp improvements as built straight in the store (building them is tested in test_camp_upgrades.py)."""
+    service.store.put("upgrades", KEY, {"built": {uid: 0.0 for uid in ids}, "works": {}, "tech": {}})
+
+
+def test_defenses_weaken_the_wave_and_the_watchtower_warns(service, clock):
+    # D-101: every 🛡️ Defensa point takes raids.defense_weaken_per_point of the attackers' life and attack.
+    make_hero(service, "test:1", "Lyra")
+    camp_at_level(service, 5)
+    service.act("test:1", "claro")
+    catalog = service._upgrade_catalog()
+    walls = [uid for uid, u in catalog.items() if u.get("defense")]
+    build_all(service, walls)
+    defense = service._camp_defense(camp(service))
+    assert defense == sum(catalog[uid]["defense"] for uid in walls)
+    cfg = service.content.balance["raids"]
+    # 🗼 the watchtower: one heads-up to the active members in the last warning hours, then the hours on screen
+    due = camp(service)["next_raid_at"]
+    clock.advance(due - clock.now() - 3 * HOUR)
+    service.act("test:1", "claro")
+    assert not pushes(service, "camp_watch")
+    clock.advance(2 * HOUR)
+    view = service.act("test:1", "claro")
+    watch = pushes(service, "camp_watch")
+    assert [acc for acc, _ in watch] == ["test:1"] and "torre" in watch[0][1].body[0]
+    assert any(line.startswith("🗼") for line in view.body)
+    service.act("test:1", "claro")
+    assert not pushes(service, "camp_watch")                         # only once per raid
+    clock.advance(HOUR)
+    service.act("test:1", "claro")
+    raid = camp(service)["raid"]
+    night = service._is_night(raid["at"])
+    assert raid["defense"] == service._camp_defense(camp(service), night=night)
+    weaken = max(cfg["defense_floor"], 1 - cfg["defense_weaken_per_point"] * raid["defense"])
+    assert service._raid_weaken(raid) == pytest.approx(weaken) and weaken < 1
+    notice = pushes(service, "camp_raid")[0][1]
+    assert any("Defensa" in line and "%" in line for line in notice.body)
+    service.act("test:1", "defend")
+    state = service.store.get("combat", "test:1")
+    normal = make_combat(raid["enemy"], service.content.enemies[raid["enemy"]], raid["level"], service._kit(service._load("test:1")), 1)
+    assert state["enemy"]["max_hp"] == max(1, round(normal["enemy"]["max_hp"] * weaken))
+    assert not service.texts.missing
+
+
+def test_braseros_count_only_at_night(service):
+    make_hero(service, "test:1", "Lyra")
+    camp_at_level(service, 6)
+    braseros = [uid for uid, u in service._upgrade_catalog().items() if u.get("effect", {}).get("night_defense")]
+    build_all(service, braseros)
+    day, night = service._camp_defense(camp(service)), service._camp_defense(camp(service), night=True)
+    assert braseros and night == day + 1
+    offset = service.content.balance["raids"]["night"]["utc_offset_hours"]
+    noon, midnight = (12 - offset) * HOUR, (24 - offset) * HOUR
+    assert not service._is_night(noon) and service._is_night(midnight)

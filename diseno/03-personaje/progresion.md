@@ -33,6 +33,7 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 | ~~Aportar a la obra común del Claro~~ | Quitado en la 0.11 (D-98): el Claro no crece | — |
 | **Aportar comida a la despensa de tu campamento** | 2 de experiencia por ración | `pantry.xp_per_ration` |
 | **Explorar** (D-104) | 3 de experiencia por vuelta y 15 al dejar una zona al 100 % | `explore.xp_per_step`, `explore.xp_full_zone` |
+| **Aportar a una mejora de tu campamento** (D-101) | 1 de experiencia (y 1 de mérito) por cada material aportado; las monedas no dan | `upgrades` en balance.yaml |
 | **Recolectar** (D-108) | 14 de experiencia por vuelta en que juntas algo, +15 % por cada nivel de la zona sobre el 1 (la misma regla que las peleas) | `gather.xp_per_step`, `hero.xp_level_scale` |
 | **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |

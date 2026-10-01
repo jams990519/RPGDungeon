@@ -22,7 +22,7 @@
 | Defensa | Nivel del campamento | 🛡️ Defensa | Equivale en la propuesta (§2) |
 |---|---|---|---|
 | 🪵 Empalizada | 1 | +1 | Cerco y empalizada |
-| 🗼 Torre de vigía | 2 | +1 (y 2 horas de aviso anticipado guardadas para las oleadas) | Torre de vigía |
+| 🗼 Torre de vigía | 2 | +1 y aviso 2 horas antes de cada oleada a los miembros activos | Torre de vigía |
 | 🪤 Trampas | 3 | +1 | Trampas |
 | 🐕 Perrera | 4 | +1 | Perros y bestias de guardia |
 | 🧱 Muralla de piedra | 5 | +2 | Muralla |
@@ -31,7 +31,7 @@
 | 🌊 Foso | 8 | +2 | Trampas (fosos) |
 
 - **Total: 11 puntos** (12 de noche). Los costos están en `content/camp_upgrades.yaml`; el número lo da `GameService._camp_defense(camp, night=False)`.
-- Hoy la 🛡️ Defensa **se ve** en la pantalla del campamento (también la ven los visitantes) y en 🔨 Mejoras, pero **todavía no cambia las oleadas**: queda lista para que cada punto baje su fuerza o las victorias que piden. Conectarla es el paso siguiente de D-99.
+- La 🛡️ Defensa **se ve** en la pantalla del campamento (también la ven los visitantes) y en 🔨 Mejoras, y **frena las oleadas**: al llegar una, se guarda la defensa del campamento y cada punto les quita a los atacantes un 4 % de vida y de ataque (nunca más de la mitad). La 🗼 Torre de vigía avisa a los miembros activos 2 horas antes; los 🔥 Braseros suman 1 de noche (19 a 6 h, UTC−5, provisional). Código: `_raid_weaken`, `_raid_watch`, `_is_night` en `engine/service/game.py`.
 - Lo que nunca cambia: en el territorio de los campamentos nadie es atacado al llegar, explorar ni recolectar (D-81). Las oleadas pelean con 🛡️ Defender, desde donde esté cada miembro.
 
 ## 1. Quién ataca y dónde

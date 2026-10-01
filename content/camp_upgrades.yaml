@@ -54,7 +54,7 @@ upgrades:
     level: 2
     cost: {madera: 50, piedra: 20, fibra: 10}   # [ES] 80 unidades
     defense: 1
-    effect: {warning_hours: 2}            # [ES] las incursiones avisan 2 horas antes (lo usan las incursiones cuando existan)
+    effect: {warning_hours: 2}            # [ES] la oleada se avisa 2 horas antes a los miembros activos (_raid_watch)
   pozo:
     emoji: "⛲"
     name_key: upgrade.pozo.name

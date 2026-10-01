@@ -367,7 +367,10 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Granero / Ahumadero / Huerto | −10 % de consumo / +1 ración por carne / +1 ración por día | Ayudas chicas: la despensa sigue dependiendo de cazar |
 | Pozo | recursos del territorio ×1,5 más rápido (`stock.regen_per_hour` 2 % → 3 % por hora) | Un territorio agotado vuelve en ~33 horas en vez de ~50 |
 | Cabañas | +2 miembros de cupo | Ayuda a juntar los 10 del castillo |
-| 🛡️ Defensa | 11 puntos con las 8 defensas (12 de noche con los Braseros) | Escala de 0 a 11 para que las incursiones la usen cuando se conecte |
+| 🛡️ Defensa | 11 puntos con las 8 defensas (12 de noche con los Braseros) | Escala de 0 a 11 que leen las oleadas |
+| Cuánto frena cada punto (`raids.defense_weaken_per_point`) | **4 %** menos de vida y de ataque a los atacantes; con 11 puntos, 44 % | Conectado en la 0.14: se nota desde la Empalizada sin volver trivial la pelea |
+| Tope (`raids.defense_floor`) | los atacantes nunca bajan de la **mitad** | Defender sigue siendo pelear |
+| Noche de los Braseros (`raids.night`) | de 19 a 6 h, hora UTC−5 | Provisional: el mundo todavía no tiene día y noche |
 | Conocimiento | Herramientas +10 % al recolectar, Cartografía +5 puntos por vuelta, Rastreo +10 % de carne; 200 a 230 materiales y 3 🥈 cada uno | Modestos a propósito: el territorio ya da +50 % al recolectar |
 
 **Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.

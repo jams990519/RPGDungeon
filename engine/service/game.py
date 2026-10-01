@@ -2487,6 +2487,8 @@ class GameService:
             elif not camp.get("raid") and now >= camp["next_raid_at"]:
                 self._open_raid(camp, "raid", hero.id)
                 changed = True
+            elif self._raid_watch(camp):                  # D-101: the watchtower sees it coming
+                changed = True
         if changed:
             self.store.put("camp", hero.camp, camp)
 
@@ -2522,7 +2524,8 @@ class GameService:
         enemy_id, level = self._raid_enemy(camp, kind, now)
         raid = {"kind": kind, "at": now, "until": now + self._seconds(self._raid_cfg()["window_minutes"]),
                 "required": raid_rules.required_wins(len(told), sub["required_share"], sub["min_wins"]),
-                "wins": 0, "fights": {}, "enemy": enemy_id, "level": level}
+                "wins": 0, "fights": {}, "enemy": enemy_id, "level": level,
+                "defense": self._camp_defense(camp, night=self._is_night(now))}     # D-101: what the improvements hold back
         camp["raid"] = raid
         notice = self._raid_notice(camp, raid)
         for member in told:
@@ -2535,6 +2538,8 @@ class GameService:
         body = [t.t("raids.trial_arrive" if trial else "raids.arrive", enemy=enemy, level=raid["level"]),
                 t.t("raids.need", need=raid["required"], time=self._fmt_duration(raid["until"] - raid["at"])),
                 t.t("raids.trial_stakes", days=self._raid_cfg()["trial"]["retry_days"]) if trial else t.t("raids.stakes")]
+        if raid.get("defense"):
+            body.insert(1, t.t("raids.defense_line", defense=raid["defense"], pct=round(100 * (1 - self._raid_weaken(raid)))))
         return View(kind="camp_raid", title=t.t("raids.trial_title" if trial else "raids.title", camp=camp["name"]), body=body,
                     actions=[Action(id="defend", label=t.t("raids.defend_button"))])
 
@@ -2572,6 +2577,9 @@ class GameService:
         if trial:
             sub = self._raid_sub("trial")
             raid_rules.scale_enemy(state, sub["enemy_hp_mult"], sub["enemy_attack_mult"])
+        weaken = self._raid_weaken(raid)
+        if weaken < 1:                                  # D-101: walls, traps and towers hold part of the wave back
+            raid_rules.scale_enemy(state, weaken, weaken)
         state["raid"] = {"camp": key, "at": raid["at"]}
         self.store.put("combat", hero.id, state)
         raid["fights"][hero.id] = "fighting"
@@ -2651,6 +2659,44 @@ class GameService:
         if target is not actor:
             self._save(target)
 
+    def _raid_weaken(self, raid: dict[str, Any]) -> float:
+        """How much life and attack the raid's attackers keep after the camp's 🛡️ Defensa (1.0 = all, D-101).
+
+        [ES]
+        Qué hace: cada punto de 🛡️ Defensa que tenía el campamento al llegar la oleada les quita a los atacantes
+        raids.defense_weaken_per_point de vida y de ataque (4 %: con las 8 defensas, 11 puntos, un 44 % menos; 12 de
+        noche con los Braseros). Nunca baja de raids.defense_floor. Vale para la oleada semanal y la Noche de prueba.
+        La llaman: _defend (la pelea de cada defensor) y _raid_notice (el aviso dice cuánto los frena).
+        Si cambia, afecta: qué tan difícil es defender un campamento con mejoras (tests/test_raids.py).
+        """
+        cfg = self._raid_cfg()
+        return max(cfg["defense_floor"], 1 - cfg["defense_weaken_per_point"] * raid.get("defense", 0))
+
+    def _is_night(self, when: float) -> bool:
+        """True if `when` falls in the night hours of raids.night (used by the Braseros' night defense, D-101)."""
+        night = self._raid_cfg()["night"]
+        hour = (when / 3600 + night["utc_offset_hours"]) % 24
+        return hour >= night["from_hour"] or hour < night["to_hour"]
+
+    def _raid_watch(self, camp: dict[str, Any]) -> bool:
+        """🗼 Torre de vigía: tell the active members once, a few hours before the weekly raid. True if it told them."""
+        hours = self._camp_effect(camp, "warning_hours")
+        nxt = camp.get("next_raid_at")
+        now = self.clock.now()
+        if not hours or nxt is None or camp.get("raid") or camp.get("watched") == nxt:
+            return False
+        if not nxt - self._seconds(hours * 60) <= now < nxt:
+            return False
+        camp["watched"] = nxt
+        t = self.texts
+        view = View(kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
+                    body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), defense=self._camp_defense(camp))])
+        active = self._active()
+        for member in camp["members"]:
+            if member in active:
+                self._push(member, view)
+        return True
+
     def _raid_food_loss(self, camp: dict[str, Any]) -> int:
         """A lost raid takes raids.loss_share of the camp's pantry, if it has one; returns the rations taken."""
         if self._camp_pantry(camp) is None:              # also settles the consumption up to now
@@ -2674,6 +2720,9 @@ class GameService:
         level = camp.get("level", 1)
         if level >= cfg["from_level"]:
             nxt = camp.get("next_raid_at")
+            hours = self._camp_effect(camp, "warning_hours")
+            if nxt is not None and hours and 0 < nxt - self.clock.now() <= self._seconds(hours * 60):
+                return [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()))]     # 🗼 Torre de vigía
             return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else cfg["interval_days"])]
         if level == cfg["from_level"] - 1:
             return [t.t("raids.soon_line", level=cfg["from_level"])]
@@ -2795,7 +2844,7 @@ class GameService:
         Qué hace: suma un efecto ("regen_mult", "ration_cut", "members", "stock_regen"...) de todas las mejoras
         construidas. Las mejoras sin ese efecto suman 0.
         La llaman: la vida (_camp_regen_mult), la despensa (_camp_pantry, _camp_feed), el cupo (_members_cap) y
-        las incursiones cuando existan ("warning_hours" de la Torre de vigía).
+        las oleadas ("warning_hours" de la Torre de vigía: _raid_watch y _raid_lines).
         Si cambia, afecta: todos los efectos de las mejoras.
         """
         if not camp or "x" not in camp:
@@ -2821,8 +2870,8 @@ class GameService:
         Qué hace: suma los puntos de 🛡️ Defensa de las mejoras construidas (Empalizada 1, Torre de vigía 1, Trampas 1,
         Perrera 1, Muralla de piedra 2, Braseros 1, Torres de arqueros 2, Foso 2: 11 en total). Con night=True suma
         también "night_defense" (los Braseros: +1 de noche). El Claro y quien no tiene campamento: 0.
-        La llaman: la pantalla del campamento y la de 🔨 Mejoras. Las incursiones de los campamentos la usarán para
-        bajar su fuerza o las victorias que piden (lo conecta la sesión principal).
+        La llaman: la pantalla del campamento, la de 🔨 Mejoras y _open_raid, que la guarda al llegar la oleada para
+        debilitar a los atacantes (_raid_weaken: 4 % menos de vida y ataque por punto).
         Si cambia, afecta: cuánto protegen los alrededores de cada campamento cuando lleguen las oleadas.
         """
         catalog = self._upgrade_catalog()
@@ -3741,7 +3790,7 @@ class GameService:
         if hero.hp >= max_hp:
             return []
         regen = self.content.balance["regen"]
-        full = regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"]
+        full = (regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"]) / self._camp_regen_mult(hero)   # D-101
         seconds = (max_hp - hero.hp) / max_hp * full * 60 * self.time_scale
         key = "hero.downed_line" if hero.downed else "hero.regen_line"
         return [self.texts.t(key, full=self._fmt_duration(full * 60), time=self._fmt_duration(seconds))]
