@@ -185,3 +185,13 @@ v0_9_4:
   title: "✍️ Lost Realms 0.9.4: textos más cuidados"
   notes:
     - "✍️ Los textos ponen singular o plural según el número: ahora dice \"Exploraste 1 vez\" en vez de \"1 veces\"."
+
+v0_10:
+  version: "0.10"
+  title: "🌾 Lost Realms 0.10: la despensa"
+  notes:
+    - "🌾 Desde aldea, el Claro necesita comida: cada jugador activo come 1 ración por día."
+    - "🍖 Las bestias sueltan carne (2 raciones) y el mercader vende 🥖 provisiones (1 ración, caras). Llévalas a 🔥 Obra → 🌾 Aportar comida."
+    - "😟 Sin comida, la posada no cura y la obra no sube. Si la obra está pagada pero falta comida, la etapa espera y sube sola cuando llega."
+    - "🏕️ Los campamentos de nivel 3 o más tienen su propia despensa y no pueden agrandarse si está vacía. Nunca pierden niveles ni zonas."
+    - "💱 \"Vender materiales\" ya no vende la carne: es comida."
