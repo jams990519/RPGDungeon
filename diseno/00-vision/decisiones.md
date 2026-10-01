@@ -91,6 +91,7 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 | D-23 | El diseño vive en `RPGDungeon/diseno/` | **Confirmado por el dueño (1-oct-2026):** el repositorio RPGDungeon se dedica por completo al juego nuevo; los archivos viejos `RPG-0.x` se quitaron (quedan en el historial) | P-02 |
 | D-24 | ~~Nombre provisional *Ascendentes*~~ | **Reemplazada por D-62 (1-oct-2026)** | P-01 |
 | D-25 | "Protecciones controladas de enemigos" = defensa de construcciones con guardias y torres controladas por el jugador | Interpretación del mensaje de voz | P-52 |
+| D-77 | **Equipo y botín con requisitos (0.6).** Capa simple de [Equipamiento](../03-personaje/equipamiento.md) §11: 3 ranuras (⚔️ arma, 🛡️ armadura, 💍 joya); cada clase usa un tipo de armadura (tela, cuero, malla, placas) y una o dos armas (espada, daga, arco, bastón); cada pieza pide nivel y tipo, y la pantalla dice si es ✅ para ti, 🔒 para ti más adelante o ❌ no es para tu clase; 4 rarezas (⚪ 🟢 🔵 🟣); el 15 % de las victorias suelta una pieza y el 70 % de ellas es de tu tipo; todos empiezan con arma y armadura básicas de su clase, también los héroes que ya existían | Pedido del dueño: botín con requisitos, "para ti o no". Los números y las ranuras los eligió Claude siguiendo D-44 (capa simple) y WoW (tipos de armadura). Código: `engine/hero/gear.py`, `content/items.yaml`, `content/balance.yaml` (`gear`) | P-71 |
 
 ## Propuestas principales (esperan respuesta)
 

@@ -14,7 +14,7 @@ act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
     diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8 y M19)
-Depende de: engine.core, engine.hero, engine.world, engine.combat, engine.messaging, content/*
+Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging, content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded
@@ -58,6 +58,7 @@ from engine.core import (
     hash_unit,
 )
 from engine.hero import Hero, hero_stats, xp_for_level
+from engine.hero.gear import can_use, equip, gear_bonus, roll_gear, starter_gear, unequip
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 
@@ -259,6 +260,9 @@ class GameService:
             return None
         hero = Hero.from_dict(data)
         ensure_talents(self.content.classes, self.content.balance, hero)
+        if not hero.gear_started:          # 0.6: every hero gets its starter gear once (D-77)
+            starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
+            hero.gear_started = True
         return hero
 
     def _hero_icon(self, hero: Hero) -> str:
@@ -276,8 +280,11 @@ class GameService:
         return self.texts.t(f"class_group.{group}.name") + " · " + self.texts.t("talents.no_spec")
 
     def _kit(self, hero: Hero) -> dict[str, Any]:
-        """The hero's effective class (main spec + bar of 3 + talent bonuses), D-68."""
-        return talent_kit(self.content.classes, self.content.balance, hero)
+        """The hero's effective class (main spec + bar of 3 + talent bonuses, D-68) plus worn gear (D-77)."""
+        kit = talent_kit(self.content.classes, self.content.balance, hero)
+        kit["gear_bonus"] = gear_bonus(self.content.items, hero)
+        kit["armor_cap"] = self.content.balance["gear"]["armor_cap"]
+        return kit
 
     def _save(self, hero: Hero) -> None:
         self.store.put("hero", hero.id, hero.to_dict())
@@ -556,6 +563,9 @@ class GameService:
                     energy=self.content.balance["energy"]["max"], energy_at=self.clock.now(),
                     belt=dict(hb["start_belt"]), backpack=dict(hb["start_backpack"]), last_regen_at=self.clock.now())
         hero.unlocked = [base_response(self.content.classes, group)]
+        starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
+        hero.gear_started = True
+        hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
         referral = self.store.get("referral", account_id)
         if referral:
             hero.referred_by = referral["referrer"]
@@ -602,6 +612,19 @@ class GameService:
             return self._spec_view(hero, spec, notice=notice)
         if action_id == "bag":
             return self._bag_view(hero)
+        if action_id == "gear" or action_id.startswith("gear:"):
+            page = action_id[5:]
+            return self._gear_view(hero, int(page) if page.isdigit() else 0)
+        if action_id.startswith("item:"):
+            return self._item_view(hero, action_id[5:])
+        if action_id.startswith("equip:"):
+            return self._equip(hero, action_id[6:])
+        if action_id.startswith("unequip:"):
+            item_id = unequip(hero, action_id[8:])
+            self._clamp_hp(hero)
+            if not item_id:
+                return self._gear_view(hero)
+            return self._item_view(hero, item_id, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))
         if action_id == "places":
             return self._places_view(hero)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
@@ -617,6 +640,8 @@ class GameService:
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
             return self._donate(hero) if action_id == "donate" else self._camp_view(hero)
+        if action_id.startswith("sellg:"):
+            return self._sell_gear(hero, action_id[6:], in_claro)
         if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
@@ -1187,6 +1212,7 @@ class GameService:
             t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
             t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_start", 0), max=cdef.get("resource_max", 100)),
             t.t("hero.coins_line", gold=hero.gold, bags=hero.bags, gems=hero.gems),
+            t.t("gear.hero_line", items=self._worn_list(hero)),
             t.t("hero.inv_link", n=sum(hero.backpack.values()) + sum(hero.belt.values())),
             t.t("hero.skills_link", n=hero.points, bar=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
             "",
@@ -1223,6 +1249,7 @@ class GameService:
             t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"]),
             t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
             t.t("stats.talents", attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100)),
+            t.t("stats.gear", **self._gear_numbers(cdef.get("gear_bonus", {}))),
         ]
         return View(kind="stats", title=t.t("stats.title"), body=body, actions=[Action(id="hero", label=t.t("menu.back"))])
 
@@ -1238,16 +1265,168 @@ class GameService:
 
     def _bag_view(self, hero: Hero) -> View:
         t = self.texts
-        body = [t.t("bag.belt", items=self._item_list(hero.belt)), t.t("bag.backpack", items=self._item_list(hero.backpack)), "", self._status_line(hero)]
+        loose = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") != "gear"}
+        pieces = sum(n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "gear")
+        body = [t.t("bag.belt", items=self._item_list(hero.belt)), t.t("bag.backpack", items=self._item_list(loose)),
+                t.t("gear.bag_line", n=pieces, worn=len(hero.gear)), "", self._status_line(hero)]
         actions = []
         for item_id in sorted(set(hero.backpack) | set(hero.belt)):
             item = self.content.items.get(item_id, {})
             if item.get("heal"):
                 count = hero.backpack.get(item_id, 0) + hero.belt.get(item_id, 0)
                 actions.append(Action(id=f"use:{item_id}", label=t.t("bag.use_button", emoji=item["emoji"], item=t.t(item["name_key"]), n=count)))
-        actions = actions[:3]
+        actions = actions[:2]
+        actions.append(Action(id="gear", label=t.t("gear.button")))
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
+
+    # ------------------------------------------------------------------ gear (D-77)
+
+    def _gear_name(self, item_id: str) -> str:
+        item = self.content.items[item_id]
+        icon = self.content.balance["gear"]["rarity_icon"].get(item.get("rarity", "comun"), "")
+        return f"{icon}{item['emoji']} {self.texts.t(item['name_key'])}"
+
+    def _gear_stats_text(self, stats: dict[str, float]) -> str:
+        t = self.texts
+        parts = [t.t(f"gear.stat.{k}", value=f"{'+' if v >= 0 else '−'}{abs(round(v * 100))}") for k, v in stats.items() if round(v * 100)]
+        return " · ".join(parts) or t.t("gear.no_stats")
+
+    def _gear_numbers(self, bonus: dict[str, float]) -> dict[str, int]:
+        return {k: round(bonus.get(k, 0.0) * 100) for k in ("attack", "hp", "armor")}
+
+    def _worn_list(self, hero: Hero) -> str:
+        names = [self._gear_name(hero.gear[slot]) for slot in self.content.balance["gear"]["slots"] if hero.gear.get(slot) in self.content.items]
+        return " · ".join(names) or self.texts.t("bag.empty")
+
+    def _gear_status(self, hero: Hero, item: dict[str, Any]) -> str:
+        """For you now, for you later (level) or not for your class."""
+        t = self.texts
+        reason = can_use(item, hero, self.content.classes, self.content.balance)
+        if reason == "type":
+            return t.t("gear.not_for_you", type=t.t(f"gear.type.{item['type']}"))
+        if reason == "level":
+            return t.t("gear.for_you_later", level=item["req_level"])
+        return t.t("gear.for_you")
+
+    def _gear_diff(self, hero: Hero, item_id: str) -> tuple[dict[str, float], float]:
+        """Stats of a piece minus the piece worn in its slot, and a single score (>0 = better)."""
+        item = self.content.items[item_id]
+        worn = self.content.items.get(hero.gear.get(item["slot"], ""), {})
+        keys = set(item.get("stats", {})) | set(worn.get("stats", {}))
+        diff = {k: item.get("stats", {}).get(k, 0.0) - worn.get("stats", {}).get(k, 0.0) for k in sorted(keys)}
+        return diff, diff.get("attack", 0.0) + diff.get("hp", 0.0) + 2 * diff.get("armor", 0.0)
+
+    def _loot_line(self, hero: Hero, item_id: str) -> str:
+        t = self.texts
+        item = self.content.items[item_id]
+        line = t.t("gear.loot", item=self._gear_name(item_id), status=self._gear_status(hero, item))
+        if can_use(item, hero, self.content.classes, self.content.balance) is None and self._gear_diff(hero, item_id)[1] > 0:
+            line += " " + t.t("gear.better")
+        return line
+
+    def _clamp_hp(self, hero: Hero) -> None:
+        hero.hp = min(hero.hp, hero_stats(self._kit(hero), hero.level)["max_hp"])
+
+    def _gear_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """Worn pieces, gear in the backpack marked for you / later / not for you, one button per piece."""
+        t = self.texts
+        slots = self.content.balance["gear"]["slots"]
+        body = []
+        for slot in slots:
+            item_id = hero.gear.get(slot)
+            if item_id in self.content.items:
+                body.append(t.t("gear.worn_line", slot=t.t(f"gear.slot.{slot}"), item=self._gear_name(item_id),
+                                stats=self._gear_stats_text(self.content.items[item_id].get("stats", {}))))
+            else:
+                body.append(t.t("gear.empty_slot", slot=t.t(f"gear.slot.{slot}")))
+        body.append(t.t("gear.total", stats=self._gear_stats_text(gear_bonus(self.content.items, hero))))
+        order = {"": 0, "level": 1, "type": 2}
+        loose = [i for i in hero.backpack if self.content.items.get(i, {}).get("kind") == "gear"]
+        loose.sort(key=lambda i: (order[can_use(self.content.items[i], hero, self.content.classes, self.content.balance) or ""],
+                                  -self.content.items[i].get("tier", 1), i))
+        body.append("")
+        if loose:
+            body.append(t.t("gear.backpack_title", n=sum(hero.backpack[i] for i in loose)))
+            for item_id in loose[:15]:
+                count = hero.backpack[item_id]
+                body.append(t.t("gear.backpack_line", item=self._gear_name(item_id), n=f" ×{count}" if count > 1 else "",
+                                status=self._gear_status(hero, self.content.items[item_id])))
+            body.append(t.t("gear.hint"))
+        else:
+            body.append(t.t("gear.backpack_empty"))
+        pieces = [(hero.gear[slot], True) for slot in slots if hero.gear.get(slot) in self.content.items] + [(i, False) for i in loose]
+        actions = []
+        if len(pieces) <= 3:
+            shown = pieces
+        else:
+            pages = (len(pieces) + 1) // 2
+            page %= pages
+            shown = pieces[page * 2: page * 2 + 2]
+        for item_id, worn in shown:
+            label = t.t("gear.piece_worn" if worn else "gear.piece_button", item=self._gear_name(item_id))
+            actions.append(Action(id=f"item:{item_id}", label=label))
+        if len(pieces) > 3:
+            actions.append(Action(id=f"gear:{page + 1}", label=t.t("gear.more")))
+        actions.append(Action(id="bag", label=t.t("menu.back")))
+        return View(kind="gear", title=t.t("gear.title"), body=body, actions=actions, notice=notice)
+
+    def _item_view(self, hero: Hero, item_id: str, notice: str | None = None) -> View:
+        """One piece: slot, type, level, stats, for you or not, compared with what you wear; equip, take off or sell."""
+        t = self.texts
+        item = self.content.items.get(item_id)
+        worn_slot = next((slot for slot, iid in hero.gear.items() if iid == item_id), None)
+        if not item or item.get("kind") != "gear" or (not worn_slot and hero.backpack.get(item_id, 0) <= 0):
+            return self._gear_view(hero, notice=notice)
+        body = [
+            self._gear_name(item_id),
+            t.t("gear.detail_line", slot=t.t(f"gear.slot.{item['slot']}"), type=t.t(f"gear.type.{item['type']}"),
+                rarity=t.t(f"gear.rarity.{item.get('rarity', 'comun')}"), level=item.get("req_level", 1)),
+            t.t("gear.detail_stats", stats=self._gear_stats_text(item.get("stats", {}))),
+            self._gear_status(hero, item),
+        ]
+        actions = []
+        in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        price = max(1, int(item.get("price", 1) * self.content.balance["shop"]["sell_ratio"]))
+        if worn_slot:
+            body.append(t.t("gear.is_worn"))
+            actions.append(Action(id=f"unequip:{worn_slot}", label=t.t("gear.unequip_button")))
+        else:
+            usable = can_use(item, hero, self.content.classes, self.content.balance)
+            if hero.gear.get(item["slot"]) and usable != "type":
+                diff, score = self._gear_diff(hero, item_id)
+                key = "gear.compare_better" if score > 0 else "gear.compare_worse" if score < 0 else "gear.compare_same"
+                body.append(t.t(key, stats=self._gear_stats_text(diff)))
+            if usable is None:
+                actions.append(Action(id=f"equip:{item_id}", label=t.t("gear.equip_button")))
+            if in_claro:
+                actions.append(Action(id=f"sellg:{item_id}", label=t.t("gear.sell_button", price=price)))
+            else:
+                body.append(t.t("gear.sell_in_claro", price=price))
+        actions.append(Action(id="gear", label=t.t("menu.back")))
+        return View(kind="item", title=t.t("gear.item_title"), body=body, actions=actions, notice=notice)
+
+    def _equip(self, hero: Hero, item_id: str) -> View:
+        t = self.texts
+        error = equip(hero, item_id, self.content.items, self.content.classes, self.content.balance)
+        if error:
+            return self._gear_view(hero, notice=t.t(f"gear.err.{error}"))
+        self._clamp_hp(hero)
+        return self._gear_view(hero, notice=t.t("gear.equipped", item=self._gear_name(item_id)))
+
+    def _sell_gear(self, hero: Hero, item_id: str, in_claro: bool) -> View:
+        t = self.texts
+        item = self.content.items.get(item_id, {})
+        if not in_claro:
+            return self._gear_view(hero, notice=t.t("shop.only_in_claro"))
+        if item.get("kind") != "gear" or hero.backpack.get(item_id, 0) <= 0:
+            return self._gear_view(hero)
+        price = max(1, int(item.get("price", 1) * self.content.balance["shop"]["sell_ratio"]))
+        hero.backpack[item_id] -= 1
+        if hero.backpack[item_id] <= 0:
+            del hero.backpack[item_id]
+        hero.gold += price
+        return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=price))
 
     # ------------------------------------------------------------------ combat
 
@@ -1384,6 +1563,10 @@ class GameService:
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
                     item = self.content.items[item_id]
                     lines.append(t.t("combat.loot", item=f"{item['emoji']} {t.t(item['name_key'])}"))
+            dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng)
+            if dropped:
+                hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
+                lines.append(self._loot_line(hero, dropped))
             while hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
                 hero.points += 1
