@@ -1,6 +1,6 @@
 # Creación de personaje
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §3 a §6 son propuesta
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §4 en el juego como **origen** (capa simple, D-117, provisional); §3, §5 y §6 son propuesta
 
 Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre → clase → confirmación**. La especialización no se elige al crear: se gana con el primer punto de talento (D-68, D-74). Linaje, trasfondo y apariencia quedan como capa profunda opcional para más adelante (D-44).
 
@@ -92,6 +92,8 @@ Como el juego tendrá un sistema de salud profundo (D-09), la raza importa donde
 **Héroes que ya existen.** Si los linajes llegan, cada héroe guardado elige el suyo una vez, gratis, la próxima vez que entra. Nadie pierde nada (D-64).
 
 ## 4. Trasfondos (propuesta): de dónde viene tu héroe
+
+> **En el juego (D-117, provisional):** se llama **🎭 origen** y se elige después de confirmar la clase (o después, en 📖 Historia; nunca bloquea). Entraron 6 de los 8 (todos menos el Juglar y el Cazador de recompensas), cada uno con una cadena de **3** misiones, un **rasgo chico que no es de combate** y un regalo de una sola vez. El "oficio a nivel 5" se cambió por +10 a +15 % de experiencia de oficio, y las armas y herramientas por consumibles o materiales (D-49). Detalle y números: [Historia y rol](../06-contenido/historia-y-rol.md) §0.2.
 
 **Cómo entraría.** Como paso optativo después del linaje, también con "elegir después". Cada trasfondo da:
 - una **cadena corta de misiones propia** cerca del Claro (5-6 misiones);

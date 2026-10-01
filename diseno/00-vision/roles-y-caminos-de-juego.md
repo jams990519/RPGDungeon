@@ -114,6 +114,8 @@ Veterinario, tintorero, vinatero y maestro cervecero, bañero de termas, sacerdo
 
 ## 3. Herramientas para el roleplay
 
+> **En el juego (D-117, provisional):** el **emblema** (el emoji del mejor oficio desde el rango 5, junto al nombre: "🩺 Lyra"; sin la palabra "Médica" porque el héroe no guarda género), la **tarjeta** (📔 Diario → 📣 Mostrar y /diario Nombre), la **biografía** (/bio) y los gestos **/saludar** y **/brindar**, que llegan a los presentes en tu zona (uno por minuto). /pregonar, el buscador, los lugares y la reputación por rol siguen como propuesta. Detalle: [Historia y rol](../06-contenido/historia-y-rol.md) §0.8.
+
 - **Emblema de rol** en el perfil y junto al nombre en los chats del juego ("⚕️ Lyra, Cirujana").
 - **Buscador de roles:** `/buscar medico`, `/buscar constructor maestro`.
 - **Tarjeta de presentación** reenviable: tu rol, rango, reputación y dónde encontrarte.
