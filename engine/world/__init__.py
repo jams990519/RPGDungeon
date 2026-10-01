@@ -14,7 +14,7 @@ Reglas que nunca se rompen:
     1. La misma semilla da siempre el mismo mapa (D-58, arquitectura regla 6).
     2. Moverse entre zonas toma tiempo; no hay teletransporte (D-58).
 Si cambias esto, revisa:
-    - Servicio: engine/service/game.py — viaje, exploración y encuentros
+    - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Pruebas: tests/test_world.py
 """
 

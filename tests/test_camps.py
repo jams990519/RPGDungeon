@@ -44,3 +44,45 @@ def test_visitor_contacts_members_and_gets_answer(service, clock):
     replies = [v for acc, v in service.tick() if acc == "test:2"]
     assert replies and replies[0].kind == "camp_answer"
     assert all(len(a.id.encode()) <= 64 for a in pushes[0].actions)
+
+
+def found_at(service, account, x, y):
+    known = ["0:0", f"{x}:{y}", f"{x-1}:{y}", f"{x+1}:{y}", f"{x}:{y+1}", f"{x}:{y-1}"]
+    place(service, account, x, y, backpack={"madera": 200, "piedra": 200, "fibra": 100}, known=known, explored=[f"{x}:{y}"])
+    return service.act(account, "found")
+
+
+def test_camp_grows_one_zone_per_level(service):
+    make_hero(service, "test:1", "Lyra")
+    found_at(service, "test:1", 6, 0)
+    for expected in (2, 3, 4):
+        view = service.act("test:1", "grow")
+        assert view.kind == "player_camp" and len(view.actions) <= 4
+        camp = service.store.get("camp", "6:0")
+        assert camp["level"] == expected and len(camp["zones"]) == expected
+    assert camp["zones"] == [[6, 0], [6, 1], [7, 0], [6, -1]]
+    hero = service.store.get("hero", "test:1")
+    assert hero["backpack"]["madera"] == 200 - 20 - 15 * (1 + 2 + 3)
+
+
+def test_land_blocks_other_camps_and_counts_for_travel(service):
+    from engine.world import travel_minutes
+    make_hero(service, "test:1", "Lyra")
+    found_at(service, "test:1", 6, 0)
+    service.act("test:1", "grow")
+    service.act("test:1", "grow")                       # zones (6,0), (6,1), (7,0)
+    make_hero(service, "test:2", "Bram")
+    place(service, "test:2", 7, 0, backpack={"madera": 50, "piedra": 50}, known=["7:0", "6:0", "8:0", "7:1", "7:-1"], explored=["7:0"])
+    assert not any(a.id == "found" for a in service.act("test:2", "claro").actions)
+    hero = service._load("test:1")
+    anchors = service._anchors(hero)
+    assert travel_minutes(8, 0, anchors, service.content.balance) == 2   # one step past the camp's edge
+
+
+def test_claro_grows_with_its_stage(service):
+    assert service._claro_zones() == [[0, 0]]
+    data = service._settlement()
+    data["stage"] = 2
+    service.store.put("settlement", "claro", data)
+    assert service._claro_zones() == [[0, 0], [0, 1], [1, 0]]
+    assert service._territory(1, 0) == {"claro": True}

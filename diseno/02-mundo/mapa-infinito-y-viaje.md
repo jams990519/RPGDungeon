@@ -167,6 +167,18 @@ Coordenadas 1, 2 · Lejanía 2
 
 ---
 
+### 1.11 Campamentos que crecen (D-81)
+
+- **Al fundarlo, un campamento ocupa 1 zona.** Cada vez que sus miembros lo agrandan (⬆️ Agrandar campamento), suma 1 zona más: 2, 3, 4… El costo es 15 de madera, 10 de piedra y 5 de fibra, multiplicado por el nivel actual (`camps.grow_cost_per_level`).
+- **Hacia dónde crece:** en una espiral fija alrededor del centro: norte, este, sur, oeste, las diagonales y después el anillo siguiente. Salta las zonas que ya son de otro campamento o del Claro (`engine/world/territory.py`).
+- **El Claro también crece:** ocupa 1 zona por cada etapa de su obra común (fogata 1, campamento 2, aldea 3…).
+- **Qué da el territorio:**
+  - Al llegar a una zona del territorio no te atacan.
+  - Nadie puede fundar otro campamento encima.
+  - Para tu viaje, la distancia se cuenta desde la zona más cercana de tu campamento o del Claro (2, 2, 3, 3… minutos).
+- La línea "🏕️ Territorio de…" aparece en la pantalla de la zona.
+- Lo pidió el dueño. Los costos y la seguridad al llegar los propuso Claude.
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).

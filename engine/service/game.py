@@ -61,6 +61,7 @@ from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import can_use, equip, gear_bonus, roll_gear, starter_gear, unequip
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
+from engine.world.territory import first_zones, next_zone
 
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
@@ -371,11 +372,22 @@ class GameService:
 
     def _anchors(self, hero: Hero) -> list[tuple[int, int, int]]:
         """Where travel distance is counted from (D-78): the Claro and the hero's own camp."""
-        anchors = [(0, 0, 0)]
-        if hero.camp:
-            cx, cy = (int(v) for v in hero.camp.split(":"))
-            anchors.append((cx, cy, 0))
+        anchors = [(x, y, 0) for x, y in self._claro_zones()]
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        if camp:
+            anchors += [(x, y, 0) for x, y in camp.get("zones", [[camp["x"], camp["y"]]])]
         return anchors
+
+    def _claro_zones(self) -> list[list[int]]:
+        """The Claro covers one more zone per settlement stage (D-81)."""
+        return first_zones(0, 0, self._settlement()["stage"] + 1)
+
+    def _territory(self, x: int, y: int) -> dict[str, Any] | None:
+        """Whose land a zone is: {"claro": True} or the camp record, or None (D-81)."""
+        if [x, y] in self._claro_zones():
+            return {"claro": True}
+        ref = self.store.get("territory", f"{x}:{y}")
+        return self.store.get("camp", ref["camp"]) if ref else None
 
     @staticmethod
     def _path(x: int, y: int, tx: int, ty: int) -> list[list[int]]:
@@ -447,6 +459,8 @@ class GameService:
             self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
             notices.append(self.texts.t("travel.discovered_named", name=self._zone_name(zone)))
         danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
+        if self._territory(hero.x, hero.y):
+            danger = 0.0                      # camps and the Claro protect their land (D-81)
         if rng.chance(danger):
             if not final:
                 notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
@@ -660,6 +674,8 @@ class GameService:
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
             return self._found_camp(hero)
+        if action_id == "grow":
+            return self._grow_camp(hero)
         if action_id == "claro" and not in_claro:
             return self._camp_here_view(hero)
         if action_id == "claro":
@@ -767,8 +783,14 @@ class GameService:
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
         camp = self.store.get("camp", f"{zone.x}:{zone.y}")
+        land = self._territory(zone.x, zone.y)
         if camp:
             body.append(t.t("camps.zone_line", name=camp["name"], n=len(camp["members"])))
+        elif land and land.get("claro"):
+            if (zone.x, zone.y) != (0, 0):
+                body.append(t.t("camps.claro_land"))
+        elif land:
+            body.append(t.t("camps.land_line", name=land["name"]))
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
@@ -1049,7 +1071,7 @@ class GameService:
             (t.t("camps.req_far", n=cfg["min_lejania"]), zone.lejania >= cfg["min_lejania"]),
             (t.t("camps.req_explored"), f"{zone.x}:{zone.y}" in hero.explored),
             (t.t("camps.req_known", n=known, need=cfg["known_neighbors"]), known >= cfg["known_neighbors"]),
-            (t.t("camps.req_alone", n=cfg["min_distance"]), not near),
+            (t.t("camps.req_alone", n=cfg["min_distance"]), not near and not self._territory(zone.x, zone.y)),
             (t.t("camps.req_cost", items=self._item_list(cfg["found_cost"])), cost_ok),
             (t.t("camps.req_one"), hero.camp is None),
         ]
@@ -1060,13 +1082,18 @@ class GameService:
         key = f"{zone.x}:{zone.y}"
         camp = self.store.get("camp", key)
         if camp:
-            body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"]))]
+            level = camp.get("level", 1)
+            body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
+                    t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]])))]
+            actions = []
             if hero.id in camp["members"]:
-                body.append(t.t("camps.you_member"))
+                body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._item_list(self._grow_cost(level)))]
+                actions.append(Action(id="grow", label=t.t("camps.grow_button")))
             else:
                 rel = camp["relations"].get(hero.id)
                 body.append(t.t(f"camps.relation.{rel or 'unknown'}"))
-            return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=[Action(id="home", label=t.t("menu.back"))], notice=notice)
+            actions.append(Action(id="home", label=t.t("menu.back")))
+            return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         reqs = self._camp_requirements(hero)
         body = [t.t("camps.found_intro", x=zone.x, y=zone.y), ""] + [("✅ " if ok else "▫️ ") + text for text, ok in reqs]
         actions = [Action(id="found", label=t.t("camps.found_button"))] if all(ok for _, ok in reqs) else []
@@ -1083,9 +1110,39 @@ class GameService:
                 del hero.backpack[item_id]
         key = f"{hero.x}:{hero.y}"
         self.store.put("camp", key, {"name": t.t("camps.default_name", name=hero.name), "founder": hero.name, "founder_id": hero.id,
-                                      "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now()})
+                                      "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now(),
+                                      "level": 1, "zones": [[hero.x, hero.y]]})
+        self.store.put("territory", key, {"camp": key})
         hero.camp = key
         return self._camp_here_view(hero, notice=t.t("camps.founded", x=hero.x, y=hero.y))
+
+    def _grow_cost(self, level: int) -> dict[str, int]:
+        return {i: n * level for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
+
+    def _grow_camp(self, hero: Hero) -> View:
+        """Make the camp bigger: pay materials, take the next free zone of the spiral (1, 2, 3, 4... zones)."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id not in camp["members"] or hero.activity:
+            return self._camp_here_view(hero)
+        level = camp.get("level", 1)
+        cost = self._grow_cost(level)
+        if any(hero.backpack.get(i, 0) < n for i, n in cost.items()):
+            return self._camp_here_view(hero, notice=t.t("camps.grow_missing", items=self._item_list(cost)))
+        zones = camp.get("zones", [[camp["x"], camp["y"]]])
+        new = next_zone(camp["x"], camp["y"], zones, lambda x, y: self._territory(x, y) is None)
+        if new is None:
+            return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
+        for item_id, n in cost.items():
+            hero.backpack[item_id] -= n
+            if hero.backpack[item_id] <= 0:
+                del hero.backpack[item_id]
+        camp["zones"] = zones + [new]
+        camp["level"] = level + 1
+        self.store.put("camp", key, camp)
+        self.store.put("territory", f"{new[0]}:{new[1]}", {"camp": key})
+        return self._camp_here_view(hero, notice=t.t("camps.grown", zones=len(camp["zones"]), x=new[0], y=new[1]))
 
     def _visit_camp(self, hero: Hero) -> list[str]:
         """Arriving at someone's camp: tell the visitor and ask its members friendly or hostile (once)."""
