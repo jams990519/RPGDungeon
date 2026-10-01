@@ -70,3 +70,11 @@ Lo de arriba es el diseño completo, para más adelante. La versión jugable usa
 | *Distracción* (Forajido) | 35 % | 40 % | Compensa la baja de *Dados del Destino* (el simulador bajó a 92 % de victorias contra el Oso de las cumbres; con 40 % vuelve a 98 %) |
 
 Medición: `python3 tools/sim.py --summary` (todas las especializaciones ≥ 95 % de victorias contra los enemigos de nivel 1 a 3 con sus 3 primeras habilidades) y `python3 tools/sim.py --bars --level=11|25|47` (todas las barras posibles de cada especialización: ninguna queda más de 12 puntos de vida restante por encima de la mediana de su rol).
+
+## Doble especialización (en el juego desde 0.9.1, D-88)
+
+- **Cuándo:** cuando tienes 10 puntos en tu especialización principal ("te dedicaste a ella") y pagas 3 💰 bolsas (`talents.dual`).
+- **Qué da:** dos configuraciones de talentos. Cada una guarda sus puntos, sus habilidades abiertas, su especialización principal y su barra. Cambias entre ellas con /doble fuera de combate y sin estar haciendo nada.
+- **Puntos:** salen de tu nivel. Cada configuración tiene nivel − 1 puntos para repartir. La segunda empieza con todos libres.
+- **Reiniciar** (🔄) solo afecta a la configuración que estás usando.
+

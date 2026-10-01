@@ -35,6 +35,8 @@ class Hero:
         level, xp: progression.
         gold: ALL the hero's coins, counted in bronze (D-80: 100 bronze = 1 silver, 100 silver = 1 gold).
         bags: sewn bags (a currency made in the Claro); gems: bought diamonds (D-43, D-85).
+        dual_unlocked, profile, profiles: double specialization (D-88): two talent setups, the
+            inactive one saved in profiles["1"|"2"] (talents, unlocked, class_id, bar).
         exploration: how well the hero knows each zone, "x:y" -> 0-100 % (D-87).
         cards: profession ID cards, shown to other players (D-85; earned with professions, still to come).
         xp_boost_until: end of the gem experience accelerator; banner: unique banner bought with gems.
@@ -97,6 +99,9 @@ class Hero:
     gear_new: list[str] = field(default_factory=list)
     cards: int = 0
     exploration: dict[str, int] = field(default_factory=dict)
+    dual_unlocked: bool = False
+    profile: int = 1
+    profiles: dict[str, dict[str, Any]] = field(default_factory=dict)
     guardians: dict[str, dict[str, Any]] = field(default_factory=dict)
     titles: list[str] = field(default_factory=list)
     bar: list[str] = field(default_factory=list)

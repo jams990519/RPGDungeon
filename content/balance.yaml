@@ -47,6 +47,7 @@ talents:                     # [ES] talentos por nivel (D-68, D-79): 1 punto por
     defensa: {hp: 0.01}                  # [ES] +1 % de vida por punto
     curacion: {hp: 0.006, attack: 0.004} # [ES] repartido: +0,6 % de vida y +0,4 % de ataque
     soporte: {attack: 0.006, hp: 0.004}  # [ES] repartido: +0,6 % de ataque y +0,4 % de vida
+  dual: {min_points: 10, cost_bags: 3}   # [ES] D-88: doble especialización: 10 puntos en tu especialización principal y 3 💰 bolsas
 
 explore:
   minutes: 10
