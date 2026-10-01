@@ -35,7 +35,11 @@ hero:
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
   defeat_gold_loss: 0.1
-  xp_curve: [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000]
+  # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent. Lenta y sin tope (niveles infinitos).
+  xp_formula: {base: 120, exponent: 2.2}
+
+world:
+  epoch: 2                   # [ES] subir este número REINICIA el juego al desplegar: borra héroes, combates y zonas, y crea un mundo nuevo
 
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]

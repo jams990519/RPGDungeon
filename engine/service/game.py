@@ -88,7 +88,15 @@ class GameService:
         self.bus = bus or EventBus()
         self.texts = Texts(content.texts)
         meta = store.get("meta", "world") or {}
-        if "seed" not in meta:
+        epoch = int(content.balance.get("world", {}).get("epoch", 1))
+        if meta and meta.get("epoch", 1) != epoch:
+            # A new epoch restarts the game: wipe player data and create a new world (D-64).
+            for namespace in ("hero", "combat", "zone", "pending"):
+                for key, _ in list(store.items(namespace)):
+                    store.delete(namespace, key)
+            meta = {}
+        if "seed" not in meta or "epoch" not in meta:
+            meta["epoch"] = epoch
             meta["seed"] = world_seed if world_seed is not None else int(hash_unit("world", clock.now()) * 2**31)
             store.put("meta", "world", meta)
         self.world_seed = int(meta["seed"])
@@ -643,7 +651,7 @@ class GameService:
         t = self.texts
         cdef = self.content.classes[hero.class_id]
         stats = hero_stats(cdef, hero.level)
-        curve = self.content.balance["hero"]["xp_curve"]
+        curve = self.content.balance["hero"]["xp_formula"]
         body = [
             t.t("hero.name_line", name=hero.name, cls=t.t(cdef["name_key"]), role=t.t(cdef["role_key"])),
             t.t("hero.level_line", level=hero.level, xp=hero.xp, next=xp_for_level(curve, hero.level + 1)),
@@ -810,7 +818,7 @@ class GameService:
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
                     item = self.content.items[item_id]
                     lines.append(t.t("combat.loot", item=f"{item['emoji']} {t.t(item['name_key'])}"))
-            while hero.xp >= xp_for_level(hb["xp_curve"], hero.level + 1):
+            while hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
                 hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
                 lines.append(t.t("combat.level_up", level=hero.level))

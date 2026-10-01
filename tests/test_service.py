@@ -164,3 +164,26 @@ def test_shop_only_in_claro(service, clock):
         service.act("test:1", "atk")
     view = service.act("test:1", "buy:pocion_vida")
     assert view.notice and "Claro" in view.notice
+
+
+def test_new_epoch_restarts_the_game(content, clock):
+    from engine.core import MemoryStore
+    from engine.service import GameService
+    store = MemoryStore()
+    store.put("meta", "world", {"seed": 1, "epoch": 1})
+    store.put("hero", "tg:1", {"name": "Viejo"})
+    store.put("zone", "1:0", {"discovered_by": "Viejo"})
+    service = GameService(content, store, clock)
+    assert store.get("hero", "tg:1") is None and store.get("zone", "1:0") is None
+    assert store.get("meta", "world")["epoch"] == content.balance["world"]["epoch"]
+    store.put("hero", "tg:2", {"name": "Nuevo"})
+    GameService(content, store, clock)  # same epoch: nothing is wiped
+    assert store.get("hero", "tg:2") is not None
+
+
+def test_xp_is_slow_and_infinite(content):
+    from engine.hero import xp_for_level
+    f = content.balance["hero"]["xp_formula"]
+    needs = [xp_for_level(f, lv + 1) - xp_for_level(f, lv) for lv in range(1, 200)]
+    assert all(b > a for a, b in zip(needs, needs[1:]))  # every level costs more than the last
+    assert xp_for_level(f, 1000) > xp_for_level(f, 999) > 0
