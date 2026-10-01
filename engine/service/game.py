@@ -13,8 +13,9 @@ Para qué sirve: es el juego visto desde afuera. Cada cliente llama a view(), te
 act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
     diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3;
-    diseno/06-contenido/jefes.md (el Guardián, D-82)
-Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8 y M19)
+    diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5
+    (despensa e incursiones de los campamentos, D-93 y D-99, provisionales)
+Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging, content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
@@ -26,6 +27,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     no tiene dueño, D-95):
     {"rations", "at"}, consumo perezoso) y "active" (registro de quién jugó hoy y ayer, claves "0" y "1"
     según el día; se pisa solo, nunca crece). Diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.4
+    D-99 (provisional): en cada "camp/<x:y>" de nivel 5 o más, "next_raid_at" (hora de la próxima incursión),
+    "raid" (la incursión abierta: kind "raid" o "trial", at, until, required, wins, fights {héroe: fighting, won,
+    lost o fled}, enemy, level), "raids" ({"won", "lost"}), "trial_won" y "trial_retry_at" (Noche de prueba).
+    Una pelea de defensa lleva "raid" ({"camp", "at"}) en su estado de "combat". Diseño: §0.5 del mismo documento
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -36,17 +41,24 @@ Reglas que nunca se rompen:
        mochila llena o la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
     7. La despensa (D-93) solo recibe lo que un jugador aporta: nunca toma comida de la mochila de nadie, y el
        hambre nunca baja la etapa del Claro ni quita niveles, zonas o miembros a un campamento.
+    8. Las incursiones (D-99) son solo de los campamentos de jugadores: el Claro nunca tiene (D-95, D-98). Perder una
+       solo quita parte de la despensa; nunca niveles, zonas, miembros ni nada personal (la pelea perdida sigue las
+       reglas normales de derrota). Cada miembro pelea una sola vez por incursión.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
-      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93)
+      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
+      tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
+    - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
+      🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _grow_view/_grow_camp (castillo pide la prueba ganada)
 """
 
 from __future__ import annotations
 
+import math
 import re
 import unicodedata
 from dataclasses import asdict, replace
@@ -88,6 +100,7 @@ from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
+from engine.world import raids as raid_rules
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
@@ -151,6 +164,7 @@ class GameService:
         if hero is None:
             return self._creation_view(account_id)
         notices = self._settle(hero)
+        self._raid_settle(hero)
         self._save(hero)
         return self._main_view(hero, notice=self._join(notices))
 
@@ -187,6 +201,7 @@ class GameService:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
         notices = self._settle(hero)
+        self._raid_settle(hero)             # D-99: the camp's raid clock is lazy too
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
@@ -844,6 +859,10 @@ class GameService:
             return self._grow_camp(hero, cx, cy)
         if action_id == "campfeed":
             return self._camp_feed(hero)
+        if action_id == "defend":                       # D-99: from the raid notice or the camp screen
+            return self._defend(hero)
+        if action_id == "trial":                        # D-99: call the Noche de prueba (grow screen, level 8)
+            return self._start_trial(hero)
         if action_id == "askjoin":
             return self._ask_join(hero)
         if action_id == "leave":
@@ -1620,7 +1639,11 @@ class GameService:
                 if pantry:
                     body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
                     actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
-                if camp.get("founder_id") == hero.id:
+                body += self._raid_lines(camp)            # D-99: the next raid, or the one going on
+                defend = self._defend_action(camp, hero)  # D-99: while it lasts, 🛡️ Defender takes the rename/leave slot
+                if defend:
+                    actions.append(defend)
+                elif camp.get("founder_id") == hero.id:
                     actions.append(Action(id="rename", label=t.t("camps.rename_button")))
                 else:
                     actions.append(Action(id="leave", label=t.t("camps.leave_button")))
@@ -1776,6 +1799,8 @@ class GameService:
             return self._camp_here_view(hero)
         if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
+        if self._trial_needed(camp):           # D-99: castillo needs a won Noche de prueba
+            return self._trial_view(hero, camp)
         level = camp.get("level", 1)
         candidates = self._grow_candidates(camp)
         body = [t.t("camps.grow_intro", items=self._item_list(self._grow_cost(level)))]
@@ -1812,6 +1837,8 @@ class GameService:
             return self._camp_here_view(hero)
         if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
+        if self._trial_needed(camp):           # D-99: castillo needs a won Noche de prueba
+            return self._trial_view(hero, camp)
         level = camp.get("level", 1)
         cost = self._grow_cost(level)
         if any(hero.backpack.get(i, 0) < n for i, n in cost.items()):
@@ -1868,6 +1895,303 @@ class GameService:
         self.store.put("camp", key, camp)
         self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
         return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
+
+    # ------------------------------------------------------------------ camp raids and the Noche de prueba (D-99, provisional)
+
+    def _raid_cfg(self) -> dict[str, Any]:
+        return self.content.balance["raids"]
+
+    def _raid_sub(self, kind: str) -> dict[str, Any]:
+        """The numbers of a raid kind: the weekly raid ("raid") or the Noche de prueba ("trial")."""
+        cfg = self._raid_cfg()
+        return cfg["trial"] if kind == "trial" else cfg
+
+    def _raid_interval(self) -> float:
+        return self._seconds(self._raid_cfg()["interval_days"] * 24 * 60)
+
+    def _days_until(self, when: float) -> int:
+        return max(0, math.ceil((when - self.clock.now()) / self._day_seconds()))
+
+    def _raid_settle(self, hero: Hero) -> None:
+        """The lazy raid clock of the hero's camp (D-99): schedule it, open it when due, close it when its window ended.
+
+        [ES]
+        Qué hace: el reloj perezoso de las incursiones del campamento del héroe (sin reloj de fondo). La primera vez
+        que un miembro juega en un campamento de nivel raids.from_level o más, agenda la próxima (raids.interval_days).
+        Cuando un miembro juega después de esa hora, llega la incursión: aviso con 🛡️ Defender a los miembros activos.
+        Cuando su ventana terminó, la cierra (defendida o perdida). Solo campamentos de jugadores: el Claro no es un
+        campamento guardado en "camp", así que nunca tiene incursiones (D-95, D-98).
+        La llaman: view() y act(), después de _settle.
+        Si cambia, afecta: cuándo llegan y cuándo terminan las incursiones de todos los campamentos.
+        """
+        if not hero.camp:
+            return
+        camp = self.store.get("camp", hero.camp)
+        if not camp or hero.id not in camp.get("members", []):
+            return
+        now = self.clock.now()
+        changed = False
+        raid = camp.get("raid")
+        if raid and self._raid_over(raid):
+            self._resolve_raid(camp, raid, hero)
+            changed = True
+        if camp.get("level", 1) >= self._raid_cfg()["from_level"]:
+            if camp.get("next_raid_at") is None:          # reached pueblo, or a camp from before the patch
+                camp["next_raid_at"] = now + self._raid_interval()
+                changed = True
+            elif not camp.get("raid") and now >= camp["next_raid_at"]:
+                self._open_raid(camp, "raid", hero.id)
+                changed = True
+        if changed:
+            self.store.put("camp", hero.camp, camp)
+
+    def _raid_over(self, raid: dict[str, Any]) -> bool:
+        """True when the window closed and nobody is still fighting for it (or the grace time is over too)."""
+        now = self.clock.now()
+        if now < raid["until"]:
+            return False
+        if now >= raid["until"] + self._seconds(self._raid_cfg()["grace_minutes"]):
+            return True
+        return not any(result == "fighting" and self.store.get("combat", hid) for hid, result in raid["fights"].items())
+
+    def _raid_enemy(self, camp: dict[str, Any], kind: str, at: float) -> tuple[str, int]:
+        """The enemy of a raid: from the biome and level of the camp's zone; the strongest one for the Noche de prueba."""
+        zone = self._zone(camp["x"], camp["y"])
+        roll = hash_unit(self.world_seed, "raid", camp["x"], camp["y"], at)
+        return raid_rules.pick_enemy(self.content.enemies, zone.biome, zone.level + self._raid_sub(kind)["enemy_level_bonus"],
+                                     strongest=kind == "trial", roll=roll)
+
+    def _open_raid(self, camp: dict[str, Any], kind: str, opener: str) -> None:
+        """Start a raid (or the Noche de prueba) and tell the active members, with the 🛡️ Defender button (D-99).
+
+        [ES]
+        Qué hace: abre la incursión en el campamento (enemigo, ventana, victorias necesarias según los miembros activos)
+        y les manda el aviso con 🛡️ Defender. Quien la abrió cuenta como activo. El llamador guarda el campamento.
+        La llaman: _raid_settle (la semanal) y _start_trial (la Noche de prueba).
+        Si cambia, afecta: a quién le llega el aviso y cuántas victorias hacen falta.
+        """
+        now = self.clock.now()
+        sub = self._raid_sub(kind)
+        active = self._active()
+        told = [member for member in camp["members"] if member in active or member == opener]
+        enemy_id, level = self._raid_enemy(camp, kind, now)
+        raid = {"kind": kind, "at": now, "until": now + self._seconds(self._raid_cfg()["window_minutes"]),
+                "required": raid_rules.required_wins(len(told), sub["required_share"], sub["min_wins"]),
+                "wins": 0, "fights": {}, "enemy": enemy_id, "level": level}
+        camp["raid"] = raid
+        notice = self._raid_notice(camp, raid)
+        for member in told:
+            self._push(member, notice)
+
+    def _raid_notice(self, camp: dict[str, Any], raid: dict[str, Any]) -> View:
+        t = self.texts
+        trial = raid["kind"] == "trial"
+        enemy = t.t(self.content.enemies[raid["enemy"]]["name_key"])
+        body = [t.t("raids.trial_arrive" if trial else "raids.arrive", enemy=enemy, level=raid["level"]),
+                t.t("raids.need", need=raid["required"], time=self._fmt_duration(raid["until"] - raid["at"])),
+                t.t("raids.trial_stakes", days=self._raid_cfg()["trial"]["retry_days"]) if trial else t.t("raids.stakes")]
+        return View(kind="camp_raid", title=t.t("raids.trial_title" if trial else "raids.title", camp=camp["name"]), body=body,
+                    actions=[Action(id="defend", label=t.t("raids.defend_button"))])
+
+    def _defend_action(self, camp: dict[str, Any], hero: Hero) -> Action | None:
+        """🛡️ Defender while the camp's raid window is open and this member has not fought yet."""
+        raid = camp.get("raid")
+        if not raid or hero.id in raid["fights"] or self.clock.now() >= raid["until"]:
+            return None
+        return Action(id="defend", label=self.texts.t("raids.defend_button"))
+
+    def _defend(self, hero: Hero) -> View:
+        """🛡️ Defender: fight ONE combat for your camp's open raid, wherever you are (D-99).
+
+        [ES]
+        Qué hace: el miembro sale a defender su campamento: UNA pelea con el motor de combate normal contra el enemigo
+        de la incursión (en la Noche de prueba, su versión élite). Se puede desde cualquier zona, sin energía, si no
+        estás ocupado. Perder sigue las reglas normales de derrota: no hay castigo extra.
+        La llaman: el botón 🛡️ Defender del aviso, de la pantalla del campamento o de la Noche de prueba.
+        Si cambia, afecta: las victorias de la incursión (_raid_fight_done) y tests/test_raids.py.
+        """
+        t = self.texts
+        key = hero.camp
+        camp = self.store.get("camp", key) if key else None
+        raid = camp.get("raid") if camp else None
+        if not raid or hero.id not in camp["members"] or self.clock.now() >= raid["until"]:
+            return self._main_view(hero, notice=t.t("raids.none"))
+        if hero.id in raid["fights"]:
+            return self._main_view(hero, notice=t.t("raids.already"))
+        if hero.activity:
+            return self._activity_view(hero, notice=t.t("raids.busy"))
+        trial = raid["kind"] == "trial"
+        edef = self.content.enemies[raid["enemy"]]
+        seed = int(hash_unit(self.world_seed, hero.id, "raid", raid["at"]) * 2**31)
+        state = make_combat(raid["enemy"], edef, raid["level"], self._kit(hero), seed)
+        if trial:
+            sub = self._raid_sub("trial")
+            raid_rules.scale_enemy(state, sub["enemy_hp_mult"], sub["enemy_attack_mult"])
+        state["raid"] = {"camp": key, "at": raid["at"]}
+        self.store.put("combat", hero.id, state)
+        raid["fights"][hero.id] = "fighting"
+        self.store.put("camp", key, camp)
+        self.bus.publish(CombatStarted(hero.id, raid["enemy"], seed))
+        notice = t.t("raids.trial_started" if trial else "raids.started", camp=camp["name"], enemy=t.t(edef["name_key"]), level=raid["level"])
+        return self._combat_view(hero, state, notice=notice)
+
+    def _raid_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
+        """Count a defender's finished fight on the camp's raid (a win only if it is still the same raid)."""
+        t = self.texts
+        ref = state["raid"]
+        camp = self.store.get("camp", ref["camp"])
+        raid = camp.get("raid") if camp else None
+        if not raid or raid.get("at") != ref["at"]:
+            return ["", t.t("raids.fight_late")]
+        won = state["outcome"] == "victory"
+        raid["fights"][hero.id] = "won" if won else ("lost" if state["outcome"] == "defeat" else "fled")
+        if won:
+            raid["wins"] += 1
+        self.store.put("camp", ref["camp"], camp)
+        return ["", t.t("raids.fight_won" if won else "raids.fight_lost", camp=camp["name"], wins=raid["wins"], need=raid["required"])]
+
+    def _resolve_raid(self, camp: dict[str, Any], raid: dict[str, Any], actor: Hero) -> None:
+        """Close a raid whose window ended: defended or lost, and tell every member (D-99).
+
+        [ES]
+        Qué hace: cierra la incursión. Defendida (victorias ≥ necesarias): premio chico a cada defensor (raids.reward
+        o trial.reward). Perdida: la incursión semanal se lleva raids.loss_share de la despensa (si tiene) y nada más;
+        la Noche de prueba no se lleva nada y se reintenta a los trial.retry_days. Agenda la próxima incursión semanal.
+        Nunca toca niveles, zonas ni miembros (§15). El llamador guarda el campamento.
+        La llama: _raid_settle.
+        Si cambia, afecta: la despensa, la experiencia y las monedas de los defensores, y si el campamento puede ser castillo.
+        """
+        t = self.texts
+        now = self.clock.now()
+        trial = raid["kind"] == "trial"
+        sub = self._raid_sub(raid["kind"])
+        won = raid["wins"] >= raid["required"]
+        camp.pop("raid", None)
+        name, score = camp["name"], {"wins": raid["wins"], "need": raid["required"]}
+        body: list[str] = []
+        if won:
+            body.append(t.t("raids.trial_won" if trial else "raids.defended", camp=name, **score))
+            for hero_id in raid["fights"]:
+                self._raid_reward(hero_id, sub["reward"], actor)
+            if raid["fights"]:
+                body.append(t.t("raids.reward", xp=sub["reward"]["xp"], gold=self._money(sub["reward"]["gold"])))
+        if trial and camp.get("next_raid_at") is not None and camp["next_raid_at"] <= raid["until"]:
+            # the weekly raid came due during the Noche de prueba: the trial was that week's raid
+            camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
+        if trial and won:
+            camp["trial_won"] = True
+        elif trial:
+            camp["trial_retry_at"] = raid["until"] + self._seconds(sub["retry_days"] * 24 * 60)
+            body.append(t.t("raids.trial_lost", camp=name, time=self._fmt_duration(camp["trial_retry_at"] - now), **score))
+        else:
+            record = camp.setdefault("raids", {"won": 0, "lost": 0})
+            record["won" if won else "lost"] += 1
+            if not won:
+                lost = self._raid_food_loss(camp)
+                body += [t.t("raids.lost", camp=name, **score),
+                         t.t("raids.lost_food", rations=lost) if lost else t.t("raids.lost_nothing")]
+            camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
+            body.append(t.t("raids.next", n=self._days_until(camp["next_raid_at"])))
+        view = View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name), body=body)
+        for member in camp["members"]:
+            self._push(member, view)
+
+    def _raid_reward(self, hero_id: str, reward: dict[str, int], actor: Hero) -> None:
+        """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it."""
+        target = actor if actor.id == hero_id else self._load(hero_id)
+        if target is None:
+            return
+        target.gold += reward["gold"]
+        self._give_xp(target, reward["xp"])
+        if target is not actor:
+            self._save(target)
+
+    def _raid_food_loss(self, camp: dict[str, Any]) -> int:
+        """A lost raid takes raids.loss_share of the camp's pantry, if it has one; returns the rations taken."""
+        if self._camp_pantry(camp) is None:              # also settles the consumption up to now
+            return 0
+        key = f"{camp['x']}:{camp['y']}"
+        data = self.store.get("pantry", key)
+        lost = raid_rules.food_lost(data["rations"], self._raid_cfg()["loss_share"])
+        data["rations"] = max(0.0, data["rations"] - lost)
+        self.store.put("pantry", key, data)
+        return int(round(lost))
+
+    def _raid_lines(self, camp: dict[str, Any]) -> list[str]:
+        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before."""
+        t = self.texts
+        cfg = self._raid_cfg()
+        raid = camp.get("raid")
+        if raid:
+            left = self._fmt_duration(max(0.0, raid["until"] - self.clock.now()))
+            return [t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
+                        n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)]
+        level = camp.get("level", 1)
+        if level >= cfg["from_level"]:
+            nxt = camp.get("next_raid_at")
+            return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else cfg["interval_days"])]
+        if level == cfg["from_level"] - 1:
+            return [t.t("raids.soon_line", level=cfg["from_level"])]
+        return []
+
+    def _trial_needed(self, camp: dict[str, Any]) -> bool:
+        """True if growing one level needs a Noche de prueba the camp has not won yet (8 → 9, castillo)."""
+        return camp.get("level", 1) + 1 == self._raid_sub("trial")["to_level"] and not camp.get("trial_won")
+
+    def _trial_blocker(self, camp: dict[str, Any]) -> str | None:
+        """Why the Noche de prueba cannot be called right now (a notice), or None."""
+        t = self.texts
+        if camp.get("raid"):
+            return t.t("raids.trial_busy")
+        wait = camp.get("trial_retry_at", 0.0) - self.clock.now()
+        if wait > 0:
+            return t.t("raids.trial_wait", time=self._fmt_duration(wait))
+        if self._camp_starving(camp):
+            return t.t("raids.trial_famine")
+        return None
+
+    def _trial_view(self, hero: Hero, camp: dict[str, Any], notice: str | None = None) -> View:
+        """The grow screen at level 8: castillo needs a won Noche de prueba; call it or defend it here (D-99).
+
+        [ES]
+        Qué hace: en lugar de las zonas para crecer, muestra que castillo pide ganar la Noche de prueba, contra qué
+        enemigo y cuántas victorias hacen falta. Botones: 🌙 Noche de prueba (si se puede convocar) o 🛡️ Defender
+        (si ya empezó), y ↩️ Volver. Como mucho 2 botones.
+        La llaman: _grow_view y _grow_camp (nivel 8 sin la prueba ganada) y _start_trial.
+        Si cambia, afecta: cómo se llega a castillo.
+        """
+        t = self.texts
+        sub = self._raid_sub("trial")
+        enemy_id, level = self._raid_enemy(camp, "trial", 0.0)
+        required = raid_rules.required_wins(self._camp_active(camp), sub["required_share"], sub["min_wins"])
+        body = [t.t("raids.trial_intro", camp=camp["name"], enemy=t.t(self.content.enemies[enemy_id]["name_key"]), level=level),
+                t.t("raids.trial_how", need=required, days=sub["retry_days"],
+                    time=self._fmt_duration(self._seconds(self._raid_cfg()["window_minutes"])))]
+        actions: list[Action] = []
+        defend = self._defend_action(camp, hero)
+        if camp.get("raid"):
+            body += self._raid_lines(camp) + ([] if camp["raid"]["kind"] == "trial" else [t.t("raids.trial_busy")])
+        else:
+            blocker = self._trial_blocker(camp)
+            body += [blocker] if blocker and blocker != notice else []
+            actions += [] if blocker else [Action(id="trial", label=t.t("raids.trial_button"))]
+        actions += [defend] if defend else []
+        actions.append(Action(id="claro", label=t.t("menu.back")))
+        return View(kind="camp_trial", title=t.t("raids.trial_screen"), body=body, actions=actions, notice=notice)
+
+    def _start_trial(self, hero: Hero) -> View:
+        """🌙 Noche de prueba: a member at the camp calls it (level 8, pantry not empty, no raid on, after the retry wait)."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id not in camp["members"] or hero.activity or not self._trial_needed(camp):
+            return self._camp_here_view(hero)
+        blocker = self._trial_blocker(camp)
+        if blocker:
+            return self._trial_view(hero, camp, notice=blocker)
+        self._open_raid(camp, "trial", hero.id)
+        self.store.put("camp", key, camp)
+        return self._trial_view(hero, camp, notice=t.t("raids.trial_sent"))
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2888,6 +3212,8 @@ class GameService:
             hero.downed = True                 # D-83: falling means a long recovery
             self.bus.publish(HeroDowned(hero.id))
             lines.append(t.t("combat.defeat_consequence", gold=self._money(lost)))
+        if state.get("raid"):                  # D-99: a defender's fight counts for the camp's raid
+            lines += self._raid_fight_done(hero, state)
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))

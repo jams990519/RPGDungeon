@@ -83,6 +83,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 - Cualquier miembro toca **⬆️ Agrandar campamento** y paga de su mochila **15 de madera, 10 de piedra y 5 de fibra, por el nivel actual** (`camps.grow_cost_per_level`, D-81).
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).
 - Cada mejora suma **1 nivel y 1 zona**. No hay nivel máximo: después del 9 sigue creciendo como castillo.
+- **Para pasar del nivel 8 al 9 (castillo)** hay que ganar antes la **🌙 Noche de prueba** (D-99, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.5). Los materiales se pagan igual.
 
 | Nivel | Nombre | Zonas | Cupo de miembros | Costo de llegar desde el nivel anterior |
 |---|---|---|---|---|
@@ -90,7 +91,7 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 | 3 | Aldea | 3 | 6 | 30 de madera, 20 de piedra y 10 de fibra |
 | 5 | Pueblo | 5 | 10 | 60 de madera, 40 de piedra y 20 de fibra |
 | 7 | Ciudad | 7 | 14 | 90 de madera, 60 de piedra y 30 de fibra |
-| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra y 40 de fibra |
+| 9 | Castillo | 9 | 18 | 120 de madera, 80 de piedra y 40 de fibra, y la Noche de prueba ganada |
 
 Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de piedra y 180 de fibra**. Los nombres por nivel están en `camps.stages`.
 
@@ -102,7 +103,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Desde el nivel 5 (pueblo) llega **una incursión por semana**: los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no alcanzan las victorias, la despensa pierde una parte y nada más. Y castillo pide ganar la **Noche de prueba** (D-99, provisional; §0.5 del mismo documento). El Claro nunca tiene despensa ni incursiones: es el campamento base (D-95, D-98). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 

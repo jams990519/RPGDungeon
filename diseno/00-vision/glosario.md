@@ -35,6 +35,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Grandes Barreras** | Propuesta: ciertos anillos que piden un Guardián mayor y una obra común para seguir | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Guardián** | El jefe de mundo de cada región (D-08) | [Jefes](../06-contenido/jefes.md) |
 | **Hambruna** | El estado de una despensa con menos de 1 día de comida: el campamento no puede crecer. Nunca quita etapas, niveles ni zonas (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4.7 |
+| **Incursión** | Ataque de enemigos a un campamento de jugadores desde el nivel 5 (pueblo), una vez por semana. Los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no suman las victorias necesarias, la despensa pierde una parte y nada más. El Claro nunca recibe incursiones (D-99, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §6 |
 | **Jornada** | Sesión de trabajo en una obra, con minijuego | [Sistema de construcción](../09-construccion/sistema-de-construccion.md) |
 | **Juramento de Hierro** | Modo opcional de muerte permanente | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Karma (verde, naranja, rojo)** | Estado de un jugador según si atacó o mató a inocentes | [PvP](../06-contenido/pvp.md) |
@@ -45,6 +46,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Mensaje vivo** | Un mensaje que se edita en lugar de mandar muchos | [Telegram](../01-plataforma/telegram.md) |
 | **Mercado Negro** | PNJ que compra equipo a los artesanos y lo pone en el botín de los monstruos | [Economía](../07-economia/economia.md) |
 | **Necesidades de la ciudad** | Comida, materiales, herramientas, defensa, salud, ánimo, orden y tesoro | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
+| **Noche de prueba** | La incursión grande que un campamento tiene que ganar para pasar del nivel 8 al 9 (castillo): el enemigo más fuerte de su bioma en versión élite y al menos 2 victorias de miembros distintos. Si se pierde, se reintenta a los 2 días y no se pierde nada (D-99, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §7.2 |
 | **Obra común** | Lo que todo el servidor levanta junto en el Claro, aportando materiales: sube de fogata a campamento, aldea, pueblo, ciudad y castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §1 |
 | **Pionero de la región** | Quien participa en la primera muerte del Guardián de una región | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Poder de Objeto** | Número que resume lo bueno que es un objeto | [Equipamiento](../03-personaje/equipamiento.md) |
