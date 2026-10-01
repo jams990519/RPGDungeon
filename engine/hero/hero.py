@@ -38,6 +38,7 @@ class Hero:
         activity: None or {"kind": "travel"|"explore", "until": ts, ...}.
         belt, backpack: item id -> count.
         last_regen_at: timestamp of the last passive health regeneration.
+        known: zones this hero has visited, as "x:y" (its own map memory, D-61).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -60,6 +61,17 @@ class Hero:
     last_regen_at: float = 0.0
     kills: int = 0
     zones_discovered: int = 0
+    known: list[str] = field(default_factory=lambda: ["0:0"])
+
+    def remembers(self, x: int, y: int) -> bool:
+        """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
+        return f"{x}:{y}" in self.known
+
+    def remember(self, x: int, y: int) -> None:
+        """Add zone (x, y) to the hero's memory. [ES] Qué hace: el héroe anota la zona en su memoria. La llaman: el servicio al llegar. Si cambia, afecta: el mapa personal."""
+        key = f"{x}:{y}"
+        if key not in self.known:
+            self.known.append(key)
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize for storage. [ES] Qué hace: lo convierte en datos guardables. La llaman: el servicio. Si cambia, afecta: el guardado."""

@@ -133,6 +133,7 @@ menu:
   refresh: "🔄 Actualizar"
   back: "↩️ Volver"
   continue: "▶️ Continuar"
+  places: "📒 Lugares"
 
 zone:
   title: "📍 Dónde estás"
@@ -141,6 +142,7 @@ zone:
   discovered_by: "🧭 La descubrió {name}"
   routes: "Rutas:"
   uncharted: "❔ Tierra sin cartografiar"
+  known_by_others: "▪️ Otro la descubrió, pero tú no la conoces"
   route_line: "{dir}: {where} · {time}"
   go_button: "{dir} · {time}"
   explore_button: "🔎 Explorar · {time}"
@@ -152,6 +154,10 @@ travel:
   remaining: "⏳ Faltan {time}."
   arrived: "📍 Llegaste a {name} ({biome})."
   discovered: "🧭 ¡Nadie había pisado esta zona! Queda en el mapa con tu nombre."
+  discovered_named: "🧭 ¡Nadie había pisado {name}! Queda en el mapa con tu nombre."
+  interrupted: "⛔ Tu viaje se corta en {name}."
+  started_route: "🚶 Sales hacia {name}. Irás zona por zona; te aviso al llegar."
+  goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
 
 explore:
   title: "🔎 Explorando"
@@ -169,8 +175,8 @@ activity:
   offline_ok: "Puedes cerrar el chat: te aviso cuando termine."
 
 map:
-  title: "🗺️ Mapa de los alrededores"
-  legend: "🧍 tú · ▫️ sin descubrir · el norte está arriba"
+  title: "🗺️ Tu mapa"
+  legend: "🧍 tú · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba"
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
 
 hero:
@@ -248,3 +254,11 @@ combat:
     no_flee: "Aquí no se puede huir."
     item: "No te quedan de esos."
     toxicity: "Tu Toxicidad está al máximo: no puedes beber más pociones."
+
+places:
+  title: "📒 Lugares que recuerdas"
+  intro: "Recuerdas {n} lugares. Elige uno y tu héroe irá solo, zona por zona."
+  line: "{biome} {name} · a {zones} zonas · {time}"
+  go_button: "{name} · {time}"
+  none: "Todavía no recuerdas otros lugares. Sal a explorar."
+  more: "…y {n} más, más lejos."

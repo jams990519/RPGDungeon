@@ -220,9 +220,26 @@ class GameService:
         dx, dy = DIRECTIONS[direction]
         origin = self._zone(hero.x, hero.y)
         dest = self._zone(hero.x + dx, hero.y + dy)
-        known = self._discovered(dest.x, dest.y) is not None
+        known = hero.remembers(dest.x, dest.y)
         minutes = travel_minutes(origin, dest, self.content.biomes, self.content.balance, known)
         return dest, self._seconds(minutes), known
+
+    def _leg_seconds(self, hero: Hero, x: int, y: int, nx: int, ny: int) -> float:
+        origin, dest = self._zone(x, y), self._zone(nx, ny)
+        minutes = travel_minutes(origin, dest, self.content.biomes, self.content.balance, hero.remembers(nx, ny))
+        return self._seconds(minutes)
+
+    @staticmethod
+    def _path(x: int, y: int, tx: int, ty: int) -> list[list[int]]:
+        """Zone-by-zone path: first along x, then along y."""
+        path = []
+        while x != tx:
+            x += 1 if tx > x else -1
+            path.append([x, y])
+        while y != ty:
+            y += 1 if ty > y else -1
+            path.append([x, y])
+        return path
 
     # ------------------------------------------------------------------ settle (lazy timers)
 
@@ -238,27 +255,44 @@ class GameService:
             hero.hp = min(stats["max_hp"], hero.hp + int(stats["max_hp"] * pct * minutes))
         if not in_combat:
             hero.last_regen_at = now
-        activity = hero.activity
-        if not activity or activity["until"] > now or in_combat:
-            return notices
-        hero.activity = None
-        rng = Rng(int(hash_unit(self.world_seed, hero.id, activity["until"]) * 2**31))
-        if activity["kind"] == "travel":
-            hero.x, hero.y = activity["to"]
-            zone = self._zone(hero.x, hero.y)
-            self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
+        while hero.activity and hero.activity["until"] <= now and self.store.get("combat", hero.id) is None:
+            activity = hero.activity
+            hero.activity = None
+            rng = Rng(int(hash_unit(self.world_seed, hero.id, activity["until"]) * 2**31))
+            if activity["kind"] == "travel":
+                notices += self._arrive(hero, activity, rng)
+            elif activity["kind"] == "explore":
+                zone = self._zone(hero.x, hero.y)
+                notices.append(self._explore_outcome(hero, zone, rng))
+        return notices
+
+    def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
+        """Finish one travel leg; chain the next leg of a multi-zone trip if any."""
+        notices: list[str] = []
+        hero.x, hero.y = activity["to"]
+        zone = self._zone(hero.x, hero.y)
+        hero.remember(hero.x, hero.y)
+        self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
+        path = [list(p) for p in activity.get("path", [])]
+        final = not path
+        if final:
             notices.append(self.texts.t("travel.arrived", name=self._zone_name(zone), biome=self._biome_label(zone)))
-            if self._discovered(hero.x, hero.y) is None:
-                self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": now})
-                hero.zones_discovered += 1
-                self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
-                notices.append(self.texts.t("travel.discovered"))
-            danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
-            if rng.chance(danger):
-                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
-        elif activity["kind"] == "explore":
-            zone = self._zone(hero.x, hero.y)
-            notices.append(self._explore_outcome(hero, zone, rng))
+        if self._discovered(hero.x, hero.y) is None:
+            self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": activity["until"]})
+            hero.zones_discovered += 1
+            self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
+            notices.append(self.texts.t("travel.discovered_named", name=self._zone_name(zone)))
+        danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
+        if rng.chance(danger):
+            if not final:
+                notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
+            notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
+            return notices
+        if path:
+            nx, ny = path.pop(0)
+            seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+            hero.activity = {"kind": "travel", "to": [nx, ny], "until": activity["until"] + seconds,
+                             "dir": activity.get("dir", "n"), "path": path, "goal": activity.get("goal")}
         return notices
 
     def _explore_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
@@ -334,6 +368,8 @@ class GameService:
             return self._hero_view(hero)
         if action_id == "bag":
             return self._bag_view(hero)
+        if action_id == "places":
+            return self._places_view(hero)
         if action_id.startswith("use:"):
             return self._use_out_of_combat(hero, action_id[4:])
         if action_id in ("home", "refresh"):
@@ -349,6 +385,21 @@ class GameService:
             hero.activity = {"kind": "travel", "to": [dest.x, dest.y], "until": until, "dir": direction}
             self.bus.publish(TravelStarted(hero.id, dest.x, dest.y, until))
             return self._activity_view(hero, notice=t.t("travel.started", time=self._fmt_duration(seconds)))
+        if action_id.startswith("goto:"):
+            try:
+                gx, gy = (int(v) for v in action_id[5:].split(":"))
+            except ValueError:
+                return self._places_view(hero)
+            if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
+                return self._places_view(hero)
+            path = self._path(hero.x, hero.y, gx, gy)
+            nx, ny = path.pop(0)
+            seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+            dx, dy = gx - hero.x, gy - hero.y
+            direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
+            hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
+                             "path": path, "goal": [gx, gy]}
+            return self._activity_view(hero, notice=t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy))))
         if action_id == "explore":
             seconds = self._seconds(self.content.balance["explore"]["minutes"])
             hero.activity = {"kind": "explore", "until": self.clock.now() + seconds}
@@ -395,12 +446,18 @@ class GameService:
         actions: list[Action] = []
         for direction in ("n", "s", "e", "w"):
             dest, seconds, known = self._route_seconds(hero, direction)
-            where = f"{self._biome_label(dest)} {self._zone_name(dest)}" if known else t.t("zone.uncharted")
+            if known:
+                where = f"{self._biome_label(dest)} {self._zone_name(dest)}"
+            elif self._discovered(dest.x, dest.y) is not None:
+                where = t.t("zone.known_by_others")
+            else:
+                where = t.t("zone.uncharted")
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
         actions += [
             Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
+            Action(id="places", label=t.t("menu.places")),
             Action(id="map", label=t.t("menu.map")),
             Action(id="hero", label=t.t("menu.hero")),
             Action(id="bag", label=t.t("menu.bag")),
@@ -414,9 +471,17 @@ class GameService:
         if activity.get("kind") == "travel":
             x, y = activity["to"]
             dest = self._zone(x, y)
-            known = self._discovered(x, y) is not None
+            known = hero.remembers(x, y)
             where = self._zone_name(dest) if known else t.t("zone.uncharted")
             body = [t.t("travel.on_the_way", where=where, dir=t.t(f"dir.{activity.get('dir', 'n')}")), t.t("travel.remaining", time=remaining)]
+            if activity.get("goal"):
+                gx, gy = activity["goal"]
+                total = (activity.get("until", 0) - self.clock.now())
+                cx, cy = x, y
+                for nx, ny in activity.get("path", []):
+                    total += self._leg_seconds(hero, cx, cy, nx, ny)
+                    cx, cy = nx, ny
+                body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         else:
             body = [t.t("explore.in_progress"), t.t("travel.remaining", time=remaining)]
@@ -430,6 +495,34 @@ class GameService:
         ]
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
+    def _places_view(self, hero: Hero) -> View:
+        """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""
+        t = self.texts
+        places = []
+        for key in hero.known:
+            x, y = (int(v) for v in key.split(":"))
+            if (x, y) == (hero.x, hero.y):
+                continue
+            seconds, cx, cy = 0.0, hero.x, hero.y
+            for nx, ny in self._path(hero.x, hero.y, x, y):
+                seconds += self._leg_seconds(hero, cx, cy, nx, ny)
+                cx, cy = nx, ny
+            places.append((seconds, x, y))
+        places.sort()
+        body = [t.t("places.intro", n=len(hero.known))]
+        actions = []
+        for seconds, x, y in places[:8]:
+            zone = self._zone(x, y)
+            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone),
+                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
+            actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
+        if not places:
+            body.append(t.t("places.none"))
+        elif len(places) > 8:
+            body.append(t.t("places.more", n=len(places) - 8))
+        actions.append(Action(id="home", label=t.t("menu.back")))
+        return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
+
     def _map_view(self, hero: Hero) -> View:
         t = self.texts
         radius = 3
@@ -439,8 +532,10 @@ class GameService:
             for x in range(hero.x - radius, hero.x + radius + 1):
                 if x == hero.x and y == hero.y:
                     row += "🧍"
-                elif self._discovered(x, y) is not None:
+                elif hero.remembers(x, y):
                     row += self.content.biomes[self._zone(x, y).biome]["emoji"]
+                elif self._discovered(x, y) is not None:
+                    row += "▪️"
                 else:
                     row += "▫️"
             rows.append(row)

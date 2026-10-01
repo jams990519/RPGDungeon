@@ -91,3 +91,41 @@ def test_no_missing_texts(service, clock):
         clock.advance(3600)
         finish_combat(service, "test:1")
     assert service.texts.missing == set()
+
+
+def test_hero_remembers_places_and_routes_back(service, clock):
+    make_hero(service)
+    service.act("test:1", "go:e")
+    clock.advance(3 * 3600)
+    view = service.view("test:1")
+    while view.kind == "combat":
+        view = service.act("test:1", "atk")
+    hero = service.store.get("hero", "test:1")
+    assert "1:0" in hero["known"] and "0:0" in hero["known"]
+    places = service.act("test:1", "places")
+    assert any(a.id == "goto:0:0" for a in places.actions)
+    view = service.act("test:1", "goto:0:0")
+    if view.kind == "activity":
+        clock.advance(3 * 3600)
+        service.view("test:1")
+        hero = service.store.get("hero", "test:1")
+        assert (hero["x"], hero["y"]) == (0, 0) or service.store.get("combat", "test:1")
+
+
+def test_multi_leg_route_chains(service, clock):
+    make_hero(service)
+    from engine.hero import Hero
+    hero = Hero.from_dict(service.store.get("hero", "test:1"))
+    hero.known += ["3:0"]
+    service.store.put("hero", "test:1", hero.to_dict())
+    view = service.act("test:1", "goto:3:0")
+    assert view.kind == "activity"
+    for _ in range(10):
+        clock.advance(3 * 3600)
+        v = service.view("test:1")
+        while v.kind == "combat":
+            v = service.act("test:1", "atk")
+        hero = service.store.get("hero", "test:1")
+        if (hero["x"], hero["y"]) == (3, 0) or hero["activity"] is None:
+            break
+    assert hero["x"] >= 1
