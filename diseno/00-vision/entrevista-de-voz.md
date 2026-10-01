@@ -186,7 +186,7 @@ BLOQUE H · DETALLES DE LO QUE YA ESTÁ EN EL JUEGO
 E-79 (P-102) Explorador: los que ya exploraban antes de que existiera el oficio, ¿reciben experiencia de Explorador por lo que exploraron? Sí, una parte (recomendado) / no, todos empiezan desde cero.
 E-80 (P-103) Si fundas o agrandas tu asentamiento donde hay un campamento enemigo, ¿se prohíbe hasta destruirlo? Sí (recomendado) / no, el campamento enemigo desaparece.
 E-81 (P-104) Los jefes de los campamentos enemigos lejanos, ¿piden grupo? Sí, desde cierta distancia (recomendado) / no, siempre se pueden hacer solos.
-E-82 (P-105) Cambiar de especialización de oficio: dijiste que se puede pagando y empezando de cero en la nueva. ¿Cuánto cuesta? Recomendado: algo de monedas que sube con el rango, y lo aprendido en la vieja queda guardado por si vuelves. ¿Así?
+E-82 (P-105) Cambiar de especialización de oficio: dijiste que se puede pagando y empezando de cero en la nueva. Lo dejé así: elegir la primera y la segunda es gratis; cambiar cuesta 1 de plata más 20 de bronce por rango (unas 6 de plata al rango 25 y 21 al rango 100), y lo aprendido en la vieja queda guardado por si vuelves. ¿Está bien o lo cambias?
 
 BLOQUE I · COMUNIDAD, PLATAFORMA Y DINERO
 E-44 (P-04) Idiomas. Opciones: solo español al principio (recomendado) / español e inglés desde ya.
