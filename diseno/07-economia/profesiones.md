@@ -68,6 +68,26 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 - **Se suman todos los que tengas** (D-57: sin tope de oficios); el freno es el tiempo de subir cada uno al 100. Si en la beta pesa demasiado, se decide en P-76.
 - Los números son propuesta de Claude y se comprueban en la pasada de balance de D-110, con la simulación del 1 al 100.
 
+### 0.2 Dos sistemas mezclados: World of Warcraft y Albion Online (D-113, provisional)
+
+El dueño pidió (1-oct-2026) **mezclar el sistema de oficios de World of Warcraft con el de Albion Online**, para que la economía dependa de los jugadores **directamente, por sus oficios**, y no solo de forma indirecta (recolectar y vender). En la transcripción de voz dijo "algo online"; se tomó como *Albion Online*.
+
+| De World of Warcraft | De Albion Online |
+|---|---|
+| Rango de oficio 1-100 que sube haciendo recetas; recetas que se abren por rango | **Casi todo el buen equipo lo fabrican los jugadores**: los monstruos sueltan sobre todo materiales y monedas, y equipo de menos calidad |
+| El beneficio propio de cada oficio (§0.1, D-111) | **Aprender haciendo cada línea de objetos:** fabricar una línea (por ejemplo, espadas) sube su maestría; dominar un nivel de pieza abre el siguiente de esa línea, y la maestría mejora la calidad (§6) |
+| **Pedidos de fabricación:** mandas materiales y una comisión a un artesano y él fabrica con su rango y su firma ([Economía](economia.md) §7) | **El equipo se gasta:** cada pieza tiene durabilidad que baja al pelear; repararla cuesta y la deja un poco más gastada, hasta que se rompe. Siempre hay demanda de artesanos ([Equipamiento](../03-personaje/equipamiento.md) §4) |
+| | **Mercado de órdenes:** órdenes de compra y de venta en el Claro (y en los campamentos que lo construyan), con un pequeño impuesto que saca monedas del juego ([Economía](economia.md)) |
+| | **Refinar con retorno:** quien refina recupera una parte del material (el beneficio del refinado en §0.1), más en una estación de su campamento |
+
+**Cómo queda la economía:** el recolector vende materia, el refinador la convierte, el artesano fabrica el equipo que todos necesitan y que se gasta, el comerciante compra y revende en el mercado, y los que pelean consumen equipo y pociones. Cada uno depende de otros.
+
+**Cómo entra al juego, por partes:**
+1. Oficios fase 1 (en curso): rangos, refinado y recetas de varias ramas.
+2. Beneficios de oficio (D-111).
+3. Pasada de balance (D-110): equipo por niveles hasta el 100, donde **lo mejor de cada nivel lo fabrican los jugadores** y el botín suelta menos y peor.
+4. Mercado de órdenes, pedidos de fabricación, durabilidad y reparación: la segunda tanda de la economía de jugadores.
+
 ---
 
 ## 1. Tres capas y un anillo de servicios
