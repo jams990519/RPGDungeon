@@ -264,6 +264,9 @@ class GameService:
             elif activity["kind"] == "explore":
                 zone = self._zone(hero.x, hero.y)
                 notices.append(self._explore_outcome(hero, zone, rng))
+            elif activity["kind"] == "rest":
+                hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
+                notices.append(self.texts.t("inn.rested"))
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
@@ -370,6 +373,17 @@ class GameService:
             return self._bag_view(hero)
         if action_id == "places":
             return self._places_view(hero)
+        in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
+            if not in_claro:
+                return self._main_view(hero, notice=t.t("shop.only_in_claro"))
+            if action_id == "shop":
+                return self._shop_view(hero)
+            if action_id.startswith("buy:"):
+                return self._buy(hero, action_id[4:])
+            if action_id.startswith("sell:"):
+                return self._sell(hero, action_id[5:])
+            return self._rest(hero)
         if action_id.startswith("use:"):
             return self._use_out_of_combat(hero, action_id[4:])
         if action_id in ("home", "refresh"):
@@ -455,6 +469,8 @@ class GameService:
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
+        if zone.x == 0 and zone.y == 0:
+            actions += [Action(id="shop", label=t.t("shop.button")), Action(id="inn", label=t.t("inn.button"))]
         actions += [
             Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
             Action(id="places", label=t.t("menu.places")),
@@ -483,6 +499,9 @@ class GameService:
                     cx, cy = nx, ny
                 body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
+        elif activity.get("kind") == "rest":
+            body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
+            title = t.t("inn.title")
         else:
             body = [t.t("explore.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("explore.title")
@@ -494,6 +513,59 @@ class GameService:
             Action(id="bag", label=t.t("menu.bag")),
         ]
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
+
+    def _shop_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The Claro trader: buy belt items, sell materials (half price)."""
+        t = self.texts
+        shop = self.content.balance["shop"]
+        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=hero.gold), ""]
+        actions = []
+        for item_id in shop["sells"]:
+            item = self.content.items[item_id]
+            body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=item["price"]))
+            actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=item["price"])))
+        for item_id, count in sorted(hero.backpack.items()):
+            item = self.content.items.get(item_id, {})
+            if item.get("kind") == "material":
+                price = max(1, int(item["price"] * shop["sell_ratio"]))
+                actions.append(Action(id=f"sell:{item_id}", label=t.t("shop.sell_button", emoji=item["emoji"], n=count, price=price)))
+        actions.append(Action(id="home", label=t.t("menu.back")))
+        return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
+
+    def _buy(self, hero: Hero, item_id: str) -> View:
+        t = self.texts
+        if item_id not in self.content.balance["shop"]["sells"]:
+            return self._shop_view(hero)
+        item = self.content.items[item_id]
+        if hero.gold < item["price"]:
+            return self._shop_view(hero, notice=t.t("shop.no_gold"))
+        hero.gold -= item["price"]
+        hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        self._refill_belt(hero)
+        return self._shop_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
+
+    def _sell(self, hero: Hero, item_id: str) -> View:
+        t = self.texts
+        item = self.content.items.get(item_id, {})
+        if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
+            return self._shop_view(hero)
+        price = max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"]))
+        hero.backpack[item_id] -= 1
+        if hero.backpack[item_id] <= 0:
+            del hero.backpack[item_id]
+        hero.gold += price
+        return self._shop_view(hero, notice=t.t("shop.sold", item=t.t(item["name_key"]), price=price))
+
+    def _rest(self, hero: Hero) -> View:
+        """Inn: pay gold, sleep a few minutes, wake with full health."""
+        t = self.texts
+        inn = self.content.balance["inn"]
+        if hero.gold < inn["price"]:
+            return self._zone_view(hero, notice=t.t("shop.no_gold"))
+        hero.gold -= inn["price"]
+        seconds = self._seconds(inn["minutes"])
+        hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
+        return self._activity_view(hero, notice=t.t("inn.started", price=inn["price"], time=self._fmt_duration(seconds)))
 
     def _places_view(self, hero: Hero) -> View:
         """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""

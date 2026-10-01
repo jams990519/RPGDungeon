@@ -36,3 +36,11 @@ hero:
   start_backpack: {pocion_vida: 2, venda: 2}
   defeat_gold_loss: 0.1
   xp_curve: [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200, 4000]
+
+shop:                        # [ES] mercader del Claro
+  sells: [pocion_vida, venda]
+  sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
+
+inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
+  price: 4
+  minutes: 5
