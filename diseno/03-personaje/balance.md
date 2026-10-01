@@ -937,3 +937,24 @@ La chica queda **a la par de cazar en experiencia** (×0,99 a ×1,07: el nivel +
 El jefe de la chica se gana como el de un ⛺ campamento enemigo (85-97 %), con un bache en la zona 30 para dos especializaciones de curación (el mismo bache de esos niveles en la pasada de D-110). En la profunda, el que juega su nivel baja 3 o 4 pisos y las defensas, que aguantan sin curarse, bajan mucho más en los niveles altos: el récord y la lista 🏆 lo premian.
 
 **Lo que queda por mirar:** si 1 o 2 entradas por tramo de 6 × 6 son muchas o pocas en la beta; si el cofre de la chica (1,5 peleas de monedas, 20 % de equipo) se siente demasiado modesto; si la profunda debería tener un tope de nivel por piso para que las defensas no bajen 30 pisos en los niveles altos; si huir abajo debería costar menos que caer; y cuánto equipo de otras clases entra por día (D-165) cuando exista el mercado (D-137).
+
+### Octubre de 2026: 🔭 Reconocer y 🥷 Sigilo del Explorador (D-172)
+
+**Por qué.** El dueño pidió que el 🧭 Explorador aprenda sigilo y reconocimiento: saber qué hay en un lugar antes de llegar, con experiencia y recompensas propias (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14, "🔭 Reconocer y 🥷 Sigilo"). Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `recon` y `explorer.ranks.recon`, `recon_far`, `recon_wide`, `stealth_max`; el sigilo, en `content/professions.yaml` → explorador.perk y explorador_infiltrado). No se movió ningún número de antes; `hero.xp_formula` y `world.epoch` no se tocaron (D-118, D-64).
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Alcance de 🔭 (`recon.range` con `explorer.ranks.recon`, `recon_far`, `recon_wide`) | 1 zona a la redonda al rango 10, 2 al 30, 3 al 50; nunca tu propia zona | Usa los umbrales que ya existían (10, 30, 50), así el Explorador no suma escalones nuevos; el alcance nunca pasa de lo que ya ve del mapa (la vista de campamentos es 1, 3 y todo el mapa) |
+| Energía (`recon.energy`) | 2 ⚡ | Como una pelea de asalto o una presa: algo que se piensa, no que se repite sin mirar |
+| Experiencia de Explorador (`recon.explorer_xp`) | 12 | 6 por ⚡, lo mismo que explorar (5 por vuelta y 6 al completar una zona) y algo más que infiltrarse (15 por 3 ⚡): reconocer no acelera el oficio, lo acompaña |
+| Experiencia de héroe (`recon.hero_xp`) | 6 | La de 2 vueltas de explorar (`explore.xp_per_step` × 2): el ⚡ no rinde menos que explorando sin peleas (D-108) |
+| Monedas (`recon.coins_per_level`) | nivel del lugar × 2 🥉 (nivel 4: 8 🥉; nivel 40: 80 🥉) | ~1 × nivel por ⚡; explorar da ~0,7 × nivel por ⚡ en monedas (20 % de las vueltas, nivel × 2 a 5) más hallazgos y el botín de sus peleas. Sin objeto que se vende (P-120 sigue abierta) |
+| Uno por lugar y día | — | Con la semilla de prueba hay, en promedio, 0,5 lugares para reconocer a 1 zona, 1,7 a 2 y 3,2 a 3 (todas las entradas y campamentos, antes de mirar el mapa del héroe): unos 2 a 8 ⚡ por día, un rato y no un camino entero |
+| Lugares listados (`recon.listed`) | 6, con 3 botones | La pantalla corta (D-86) y el tope de 4 botones |
+| Sigilo del oficio (`perk: {stealth: 0.25}`) | 0,25 % por rango: 2,5 % al 10, 12,5 % al 50, 25 % al 100 | Parejo con el rango como todo beneficio (D-111); 1 de cada 4 peleas al azar al rango 100 |
+| Sigilo de la 🕵️ Infiltrado (efecto `perk` `stealth`) | +10 puntos con todo el dominio | La especialización de "moverse como una sombra" (D-141); con el rango 100, 35 % |
+| Tope (`explorer.stealth_max`) | 50 % | Que ningún beneficio futuro deje explorar sin peleas |
+
+**Cuánto cambia el sigilo.** Explorar da una pelea al azar en el 45 % de las vueltas (`explore.encounter`). Con ✋ Manual, cada pelea corta el lote: sin sigilo, un lote dura en promedio ~2,2 vueltas antes de cortarse; con 12,5 % (rango 50), ~2,5; con 25 % (rango 100), ~3,0; con la Infiltrado (35 %), ~3,4. La vuelta evitada no da hallazgo ni monedas (sí la exploración y la experiencia de explorar). Al llegar de un viaje, la emboscada sale con la probabilidad del bioma (25 % a 50 %); el sigilo evita 1 de cada 4 al rango 100. Con ⚔️ Automática el sigilo no se usa: el jugador eligió pelear, y la experiencia por ⚡ de esos lotes queda igual que antes (D-108).
+
+**Lo que queda por mirar:** si los jugadores reconocen tanto que dejan de explorar (medir ⚡ por día en cada cosa); si 2 ⚡ es caro para saber la familia de una mazmorra (si nadie reconoce, bajar a 1); si recolectar con ✋ Manual también debería usar el sigilo; si el sigilo debería poder apagarse en ⚙️ Opciones para quien quiere todas las peleas sin pasar a ⚔️ Automática; y, si se decide P-120, si el reconocimiento debería dar un 📜 informe que se vende en vez de monedas.
