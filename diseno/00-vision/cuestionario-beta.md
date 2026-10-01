@@ -1380,7 +1380,7 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 
 **C-150. ¿Cambiamos los nombres visibles que son idénticos a la traducción oficial de WoW, como 'Golpe de Muerte'?** · 🟠 antes de la beta
 
-✅ Respondida por D-135: nombres propios en todo el contenido. Queda como tarea cambiar los nombres visibles de habilidades idénticos a la traducción de WoW (los IDs no cambian).
+✅ Respondida por D-135: las habilidades se renombraron en la 0.25.1; los nombres de clases, especializaciones y recursos se preguntan en E-122.
 
 - *Por qué importa:* Varios nombres de habilidades son la traducción oficial de WoW. Los IDs del código no se tocan, pero el nombre que ve el jugador sí, y cambiarlo es más barato antes de que 500 lo aprendan.
 - *Opciones:* Renombrar ahora · Dejarlos

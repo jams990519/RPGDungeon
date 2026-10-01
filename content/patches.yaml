@@ -389,3 +389,11 @@ v0_25:
     - "🌀 Mazmorra profunda: baja piso por piso hasta donde aguantes. Cada piso es más difícil y cada 5 hay un jefe. Entre pisos no hay curación: solo lo de tu cinturón. Después de cada piso eliges ⬇️ Bajar o 🚪 Salir con lo ganado; si caes, te quedas con la mitad."
     - "🏆 La mazmorra profunda guarda tu récord y muestra los 3 que más bajaron en el día."
     - "🧭 En una zona con mazmorra, Explorar muestra 🕳️ Entrar o 🌀 Descender, y la cacería pasa adentro de la mazmorra."
+
+v0_25_1:
+  version: "0.25.1"
+  title: "✍️ Lost Realms 0.25.1: nombres propios para las habilidades"
+  notes:
+    - "✍️ Las habilidades de todas las clases tienen nombres nuevos, propios de este mundo. Hacen exactamente lo mismo que antes: solo cambia el nombre del botón."
+    - "🔥 Por ejemplo: Sed de Sangre ahora es Acero Sediento, Imposición de Manos es Milagro a Tiempo y Toque Vampírico es Beso Vampírico."
+    - "😈 Lo demoníaco ahora huele a azufre: los Cazadores de demonios tienen glifos y brincos de azufre."
