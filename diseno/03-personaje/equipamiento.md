@@ -188,5 +188,6 @@ La capa simple (D-44). Todo lo de arriba sigue siendo el plan; esto es lo que ho
 | **Botín** | El 15 % de las victorias suelta una pieza de nivel cercano al del enemigo (de −4 a +1). El 70 % de las piezas es de tu tipo; lo raro sale menos | `gear.drop_chance`, `gear.for_you_chance`, `gear.rarity_weight` |
 | **Equipo inicial** | Arma y armadura básicas de tu clase, ya puestas. Los héroes que existían antes de la 0.6 las recibieron una vez | `starter_gear` |
 | **Dónde se ve** | Línea 🛡️ Equipo en la ficha, /equipo, 🎒 Mochila → 🛡️ Equipo y una línea en /stats | Cliente de Telegram |
+| **Recuerdo del Guardián (D-82)** | La primera victoria de cada héroe contra Raigambre, el primer Guardián, da un 🌰 Recuerdo garantizado (§6). Se cambia en 🎒 Mochila por **una** de dos piezas 🟣 únicas "para ti": el arma de tu tipo principal o la armadura de tu tipo, desde nivel 5 (+15 % de ataque, o +17 % de vida y +4 % de defensa). Esas 8 piezas llevan `source: guardian` y nunca salen en el botín al azar | `items.yaml` → `recuerdo_raigambre`, `guardian_*`; `gear.py` → `source_choices`; [Jefes](../06-contenido/jefes.md) §6 |
 
-**Falta, en este orden:** fabricar equipo (herrería y sastrería), más ranuras, durabilidad y reparación, afijos, la carga y el Recuerdo del Guardián cuando llegue el primer jefe de región.
+**Falta, en este orden:** fabricar equipo (herrería y sastrería), más ranuras, durabilidad y reparación, afijos y la carga.

@@ -3,20 +3,22 @@
 [ES]
 Para qué sirve: el equipo del héroe. Dice si una pieza es "para ti" (tipo de tu clase y nivel),
 suma los bonos de lo que llevas puesto, sortea el botín de equipo al ganar y pone o quita piezas.
-Documento de diseño: diseno/03-personaje/equipamiento.md §11 (lo que ya está en el juego)
+Documento de diseño: diseno/03-personaje/equipamiento.md §6 (Recuerdos del Guardián) y §11 (lo que ya está en el juego)
 Módulo: M2 Héroe (equipo)
 Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear), content/classes.yaml (group)
-Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial), engine/hero/hero.py (bonos vía el kit)
+Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial, Recuerdo del Guardián), engine/hero/hero.py (bonos vía el kit)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: Hero.gear (ranura -> id de objeto)
 Reglas que nunca se rompen:
     1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde.
     2. Solo se pone lo que es de tu tipo y de tu nivel o menos.
+    3. Las piezas con "source" (por ejemplo las del Guardián, D-82) nunca salen en el botín al azar:
+       solo se consiguen por su fuente (el Recuerdo).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat)
     - Números: balance.yaml gear.*, items.yaml stats (mueven el balance de todas las clases)
-    - Pruebas: tests/test_gear.py
+    - Pruebas: tests/test_gear.py, tests/test_boss.py
 """
 
 from __future__ import annotations
@@ -70,8 +72,11 @@ def gear_bonus(items: dict[str, Any], hero: Hero) -> dict[str, float]:
 
 
 def roll_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any], hero: Hero,
-              enemy_level: int, rng: Rng) -> str | None:
+              enemy_level: int, rng: Rng, chance: float | None = None) -> str | None:
     """Maybe drop a gear piece after a victory: level window, rarity weights, mostly "for you".
+
+    Args:
+        chance: drop chance for this roll; None uses balance gear.drop_chance (bosses pass their own).
 
     [ES]
     Qué hace: sortea si cae una pieza y cuál. Casi siempre es de tu tipo (botín "para ti"),
@@ -80,10 +85,10 @@ def roll_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str,
     Si cambia, afecta: cuánto equipo entra al juego (balance.yaml gear.drop_chance).
     """
     cfg = balance["gear"]
-    if not rng.chance(cfg["drop_chance"]):
+    if not rng.chance(cfg["drop_chance"] if chance is None else chance):
         return None
     below, above = cfg["level_window"]
-    pool = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired")
+    pool = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")
             and enemy_level - below <= it.get("req_level", 1) <= enemy_level + above]
     if not pool:
         return None
@@ -98,6 +103,27 @@ def roll_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str,
         if pick <= 0:
             return iid
     return pool[-1][0]
+
+
+def source_choices(items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any], hero: Hero, source: str) -> list[str]:
+    """The pieces of a source (e.g. "guardian") made for this hero: its main weapon type, then its armor type.
+
+    [ES]
+    Qué hace: da las dos piezas que el Recuerdo del Guardián ofrece a este héroe: el arma de su
+    tipo principal y la armadura de su tipo (siempre "para ti").
+    La llama: el servicio (pantalla del Recuerdo).
+    Si cambia, afecta: qué puede elegir cada clase con su Recuerdo.
+    """
+    cfg = balance["gear"]
+    group = group_of(classes, hero)
+    wanted = [(cfg["weapons_by_group"].get(group) or [None])[0], cfg["armor_by_group"].get(group)]
+    out = []
+    for typ in wanted:
+        for iid, it in items.items():
+            if it.get("kind") == "gear" and it.get("source") == source and it.get("type") == typ and not it.get("retired"):
+                out.append(iid)
+                break
+    return out
 
 
 def equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any]) -> str | None:

@@ -77,6 +77,19 @@ resource:
   mana: "Maná"
 
 enemy:
+  raigambre:
+    name: "Raigambre, el Guardián del Claro"
+    moves:
+      ramazo: {name: "Ramazo", warn: "Raigambre levanta un brazo de rama y lo deja caer sobre ti."}
+      pisoton: {name: "Pisotón", warn: "Raigambre alza una pata de raíz enorme… va a PISAR con fuerza. (No se puede esquivar; se puede bloquear o interrumpir si eres más rápido)"}
+      canto_del_bosque: {name: "Canto del bosque", warn: "Raigambre cierra los ojos y el bosque CANTA con él. Si lo dejas, su próximo golpe será feroz. (Se puede interrumpir)"}
+      raices_atrapantes: {name: "Raíces atrapantes", warn: "El suelo tiembla bajo tus pies: las RAÍCES van a salir. (Se puede esquivar; no se puede bloquear del todo)"}
+      lluvia_de_astillas: {name: "Lluvia de astillas", warn: "Raigambre sacude la copa: van a llover ASTILLAS. (Se puede bloquear; no se puede esquivar)"}
+      golpe_de_ambar: {name: "Golpe de ámbar", warn: "El corazón de ámbar brilla en su puño… va a GOLPEAR con todo. (Se puede bloquear; no se puede esquivar)"}
+      furia_del_bosque: {name: "Furia del bosque", warn: "Raigambre ruge y todo el bosque se inclina hacia ti: ¡FURIA DEL BOSQUE! (Muy fuerte. Se puede esquivar, o interrumpir si eres más rápido)"}
+    phases:
+      raices: "🌱 Raigambre hunde los brazos en la tierra y la tierra responde: las raíces despiertan a su alrededor."
+      corazon: "🔥 La corteza de Raigambre se abre y deja ver un corazón de ámbar encendido. ¡Se enfurece y pega más fuerte!"
   lobo_ceniciento:
     name: "Lobo ceniciento"
     moves:
@@ -221,6 +234,15 @@ item:
   joya_2: "Anillo de plata"
   joya_3: "Amuleto de ámbar"
   joya_4: "Amuleto del Claro"
+  recuerdo_raigambre: "Recuerdo de Raigambre"
+  guardian_espada: "Espada de Raíz Viva"
+  guardian_daga: "Espina de Raigambre"
+  guardian_arco: "Arco de Rama Madre"
+  guardian_baston: "Bastón de Corazón de Ámbar"
+  guardian_tela: "Manto de Hojas Eternas"
+  guardian_cuero: "Coraza de Corteza Viva"
+  guardian_malla: "Cota de Anillos de Raíz"
+  guardian_placas: "Placas de Corteza Pétrea"
 
 world:
   claro_name: "El Claro"
@@ -294,7 +316,7 @@ activity:
 
 map:
   title: "🗺️ Tu mapa"
-  legend: "🧍 tú · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba"
+  legend: "🧍 tú · 👑 guarida del Guardián · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba"
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
 
 hero:
@@ -340,6 +362,8 @@ combat:
   last_round: "— Ronda {n} —"
   enemy_line: "{enemy} · nivel {level}"
   enemy_hp: "❤️ {pct}% {bar}"
+  boss_phase: "👑 Guardián · fase {n} de {total}"
+  phase_change: "👑 Empieza la fase {n} de {total}: mira bien el próximo aviso."
   warning: "⚠️ {text}"
   hero_line: "{icon} {name} — {cls}"
   hero_bars: "❤️ {hp}/{max_hp} · 🔷 {resource} {value} · 🔋 {stamina}"
@@ -651,3 +675,29 @@ wallet:
   boost_bought: "⭐ ¡Listo! Ganas +50 % de experiencia durante 7 días."
   banner_bought: "🚩 ¡Listo! Tu estandarte {tag} ya va al lado de tu nombre."
 
+guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), su Recuerdo y el Pionero
+  button: "⚔️ Desafiar al Guardián"
+  lair_name: "Guarida de Raigambre"
+  route_mark: " 👑"
+  zone_line: "👑 Aquí vive {name} (nivel {level}). Desafíalo desde 🧭 Explorar."
+  pioneer_line: "🏅 Lo venció primero {name}: Pionero del Claro para siempre."
+  nobody_yet: "🏅 Nadie lo ha vencido todavía. El primero será Pionero del Claro."
+  ready: "⚔️ Puedes desafiarlo ahora. Ojo: de un Guardián no se huye, solo se esquiva."
+  no_gather: "🚫 En la guarida no se puede recolectar: el Guardián no lo permite."
+  wait: "⏳ {name} se recupera de tu última pelea. Vuelve en {time}."
+  not_here: "👑 El Guardián no está aquí. Su guarida aparece en 🗺️ Mapa cuando alguien la descubre."
+  started: "👑 Te plantas frente a {name}. El suelo tiembla: aquí no hay huida, solo esquivar."
+  map_line: "👑 Guarida del Guardián: ({x}, {y}) · Lejanía {lejania}"
+  rewards_first: "⭐ +{xp} experiencia"
+  first_win: "🎁 ¡Primera victoria! Recibes el {item}: cámbialo por una pieza única hecha para ti."
+  again_in: "⏳ Podrás volver a desafiar a {name} en {time}. Las próximas victorias dan monedas y a veces equipo."
+  pioneer_title: "🏅 ¡Eres el primero del mundo en vencerlo! Ganas el título {title} para siempre."
+  news_title: "📣 Noticia del mundo"
+  news_body: "🏅 {hero} venció a {boss} por primera vez en el mundo y gana el título {title}. La guarida sigue abierta para todos: cada héroe que lo vence se lleva su Recuerdo."
+  titles_line: "🏅 Títulos: {titles}"
+  title:
+    pionero_raigambre: "«Pionero del Claro»"
+  memento_button: "🌰 Usar el Recuerdo"
+  memento_intro: "Una semilla de ámbar que todavía late. Elige UNA de estas dos piezas, hechas para ti; la otra se pierde."
+  memento_option: "{item} · {slot} · {stats} · desde nivel {level}"
+  memento_done: "🌰 La semilla se abre y te deja {item}."

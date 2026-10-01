@@ -155,3 +155,12 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranur
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4
   minutes: 5
+
+guardian:                    # [ES] D-82: el primer Guardián de región (capa simple, en solitario por ahora)
+  enemy: raigambre           # [ES] id en enemies.yaml (vida, golpes y fases)
+  x: 5                       # [ES] su guarida: Lejanía 5, anillo II (mapa-infinito-y-viaje.md recomienda Lejanía 4-6)
+  y: 2
+  biome: bosque              # [ES] la guarida siempre es bosque, sea cual sea la semilla del mundo
+  cooldown_hours: 24         # [ES] después de vencerlo, cada héroe espera esto para volver a desafiarlo (horas reales)
+  repeat_gear_chance: 0.5    # [ES] victorias repetidas: probabilidad de una pieza de botín normal (en peleas comunes: gear.drop_chance)
+  memento_source: guardian   # [ES] el Recuerdo se cambia por una pieza con este "source" en items.yaml
