@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** propuesta; fase 1 aceptada para programar (D-109)
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -14,6 +14,33 @@
 - *Dofus*: oficios de recolección y fabricación dentro de un MMO por turnos.
 
 **Por qué conviene.** Quien no quiera pelear tiene que poder jugar dos años siendo herrero, médico o comerciante, y ser **necesario** para los demás.
+
+---
+
+## 0. Fase 1 para programar (D-109)
+
+El dueño pidió (1-oct-2026) preparar los oficios **como en World of Warcraft**: para que un carpintero avance hace falta un recolector y alguien que refine; para crear pociones hace falta herbología y alquimia; los joyeros y los guerreros necesitan lo que hacen otros. **Que avanzar no dependa de una sola cosa y que 50 jugadores tengan tareas distintas, con mucha variedad.** Sigue valiendo D-57: no hay tope duro de oficios; quien quiere serlo todo avanza mucho más lento que el especialista, porque cada oficio pide su tiempo, sus materiales y su estación.
+
+Esta es la **capa simple** que se programa primero, con los recursos que ya hay en el juego. El resto de este documento (especializaciones, maestría por objeto, exámenes, enfermedades laborales) queda como capa profunda, para después.
+
+**Las tres capas, en chico:**
+
+| Recolección (sube al recolectar) | Refinado (en una estación) | Fabricación (pide materiales de 2 o más ramas) |
+|---|---|---|
+| 🪓 **Leñador:** 🪵 madera | **Aserradero:** madera → tablón | **Carpintería:** arcos, bastones y escudos (tablones + tela o cuero) |
+| ⛏️ **Minero:** piedra, metal, arcilla; desde un rango, gemas en bruto | **Fundición:** metal → lingote | **Herrería:** armas y placas (lingotes + cuero para el mango) |
+| 🌿 **Herbolario:** hierba curativa, fibra; desde un rango, flores raras | **Destilación:** hierbas → extracto · **Tejeduría:** fibra → tela | **Alquimia:** pociones (extracto + arcilla para el frasco) · **Sastrería:** túnicas y vendas (tela) |
+| 🔪 **Desollador:** carne y piel de las bestias | **Curtiduría:** piel → cuero | **Peletería:** armaduras de cuero (cuero + tela) · **Joyería:** anillos y joyas (lingote + gema) |
+
+**Reglas de la fase 1:**
+- **Cada oficio tiene su rango, de 1 a 100,** que sube haciéndolo. Los rangos abren recetas y materiales mejores (Aprendiz, Oficial, Experto, Artesano, Maestro, Gran Maestro, como en el §4). Los recolectores juntan un poco más con cada rango.
+- **Nadie es autosuficiente por diseño:** casi toda receta útil pide materiales de dos ramas o más. El herrero necesita al curtidor; el alquimista, al herbolario y al minero (arcilla); el joyero, al minero y al fundidor.
+- **Refinar y fabricar gastan energía** como toda acción fuera del combate (D-78), y dan experiencia de héroe a un ritmo parecido al de los otros caminos (D-108): un artesano también llega al nivel 100.
+- **Lo fabricado compite con el botín:** el equipo de artesano de rango alto es tan bueno como el de los jefes de su nivel, o mejor en algo. Así el artesano es necesario.
+- **Comerciar entre jugadores** es la pieza que hace que se necesiten: un mercado sencillo en el Claro (y en los campamentos que lo construyan) donde cada uno pone a la venta lo que hace y otros lo compran con 🥉. Va en una segunda tanda, apenas esté la cadena.
+- **Las estaciones:** el Claro tiene las básicas; las mejoras del campamento (D-101) suman las suyas (taller, fragua, alambique), con algo más de rendimiento.
+
+**De dónde sale:** *World of Warcraft* (oficios primarios que se necesitan entre sí), *Albion Online* (el paso de refinado) y *Dofus* (oficios dentro de un juego por turnos).
 
 ---
 
