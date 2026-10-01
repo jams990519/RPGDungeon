@@ -255,6 +255,9 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     cfg = service.content.balance["guild"]
     castle = next(s["from_level"] for s in service.content.balance["camps"]["stages"] if s["id"] == "castillo")
     set_level(service, castle - 1)
+    camp = service.store.get("camp", "6:0")
+    camp["trial_won"] = True                                       # the Noche de prueba is its own gate (D-99, test_raids.py)
+    service.store.put("camp", "6:0", camp)
     place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # 🪎 chests pay from level 6 (D-92)
     view = service.act("test:1", "grow")                           # no guild: blocked, and the screen says why
     assert view.kind == "camp_grow" and not any(a.id.startswith("claim:") for a in view.actions)

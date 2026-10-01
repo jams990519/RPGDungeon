@@ -13,7 +13,8 @@ Datos de los que es dueño: espacio "zone" del almacén (solo zonas que cambiaro
 Reglas que nunca se rompen:
     1. La misma semilla da siempre el mismo mapa (D-58, arquitectura regla 6).
     2. Moverse entre zonas toma tiempo; no hay teletransporte (D-58).
-Aquí también vive, mientras no exista engine/front, pantry.py: las cuentas de la despensa de M9 (D-93, provisional).
+Aquí también viven, mientras no exista engine/front, pantry.py: las cuentas de la despensa de M9 (D-93, provisional),
+y raids.py: las cuentas de las incursiones y de la Noche de prueba de los campamentos (D-99, provisional).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Pruebas: tests/test_world.py

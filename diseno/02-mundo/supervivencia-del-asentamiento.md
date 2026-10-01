@@ -1,10 +1,10 @@
 # Supervivencia del asentamiento: construir no alcanza
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (el Claro, los campamentos y sus etapas), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Bestiario](../06-contenido/bestiario.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** §0 está en el juego: la obra y los campamentos desde la 0.9.2 y **la despensa de los campamentos (§0.4)** como primera parte de esta propuesta (D-93, provisional). **El Claro no se mantiene** (D-95, confirmada por el dueño): no tiene dueño. Todo lo demás es propuesta (capa profunda) para los campamentos de jugadores
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (el Claro, los campamentos y sus etapas), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Bestiario](../06-contenido/bestiario.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** §0 está en el juego: la obra y los campamentos desde la 0.9.2, **la despensa de los campamentos (§0.4)** como primera parte de esta propuesta (D-93, provisional) y **las incursiones semanales y la Noche de prueba antes de castillo (§0.5)** como segunda parte (D-99, provisional). **El Claro no se mantiene** (D-95, confirmada por el dueño): no tiene dueño. Todo lo demás es propuesta (capa profunda) para los campamentos de jugadores
 
 **Qué pidió el dueño.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
 
-**Cómo leer este documento.** El dueño aceptó por voz que, desde aldea, crecer pida algo más que pagar (D-93, provisional), y se programa por partes (§16): **la primera, la despensa, ya está en el juego (§0.4)**. Después aclaró que **el Claro no se mantiene**: es el campamento principal del mapa y no tiene dueño, así que no hay a quién pedirle que lo sostenga (D-95). Todo este documento aplica entonces a los **campamentos de jugadores**: el Claro sube solo con la obra común pagada, como siempre. Lo demás (población, salud, ánimo, amenaza, incursiones, rachas) es la **capa profunda** que se sumaría encima en los campamentos; todavía no está programado. Donde el texto de abajo dice "el Claro" como ciudad que se sostiene, léase "un campamento grande".
+**Cómo leer este documento.** El dueño aceptó por voz que, desde aldea, crecer pida algo más que pagar (D-93, provisional), y se programa por partes (§16): **la primera, la despensa, ya está en el juego (§0.4)**. Después aclaró que **el Claro no se mantiene**: es el campamento principal del mapa y no tiene dueño, así que no hay a quién pedirle que lo sostenga (D-95). Todo este documento aplica entonces a los **campamentos de jugadores**: el Claro sube solo con la obra común pagada, como siempre. **La segunda parte, las incursiones, también está en el juego (§0.5)** en su capa simple: una por semana desde pueblo y la Noche de prueba antes de castillo. Lo demás (población, salud, ánimo, medidor de amenaza, oleadas, rachas) es la **capa profunda** que se sumaría encima en los campamentos; todavía no está programado. Donde el texto de abajo dice "el Claro" como ciudad que se sostiene, léase "un campamento grande".
 
 **Palabras.** Aquí "ciudad" o "asentamiento" quiere decir el Claro o un campamento de jugadores. Las etapas son las del juego: **fogata, campamento, aldea, pueblo, ciudad y castillo**. Los documentos viejos decían "Claro" para la primera etapa y "Villa" para la cuarta.
 
@@ -32,11 +32,11 @@
 
 ### 0.3 Lo que falta para "construir no alcanza"
 
-Hoy no hay población, salud pública, amenaza ni incursiones. La comida llegó con la despensa de los campamentos (§0.4), en su capa simple. Todo lo de abajo es la propuesta para que, además de pagar, haya que **sostener**.
+Hoy no hay población, salud pública ni medidor de amenaza. La comida llegó con la despensa de los campamentos (§0.4) y las incursiones con §0.5, las dos en su capa simple. Todo lo de abajo es la propuesta para que, además de pagar, haya que **sostener**.
 
 ### 0.4 La despensa de los campamentos (en el juego, D-93 provisional y D-95)
 
-La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y §7.2. Sin aldeanos, sin medidores de salud ni ánimo, sin rachas y sin incursiones. **Solo en los campamentos de jugadores:** el Claro no tiene despensa (D-95). La 0.10 la puso también en el Claro desde aldea; la 0.10.1 la quitó por pedido del dueño.
+La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y §7.2. Sin aldeanos, sin medidores de salud ni ánimo, sin rachas y sin incursiones (llegaron después, §0.5). **Solo en los campamentos de jugadores:** el Claro no tiene despensa (D-95). La 0.10 la puso también en el Claro desde aldea; la 0.10.1 la quitó por pedido del dueño.
 
 **La comida.**
 - 🍖 **Carne** (vale 2 raciones): la sueltan las **bestias** al perder (lobos, jabalíes, ratas, osos, arañas, escorpiones, tortugas, víboras, mantis y caimanes), con un 40 a 60 % de probabilidad, 1 o 2 piezas. Los humanoides, los no muertos, los hongos y los limos no sueltan carne. Es un material: el mercader la compra barata (1 🥉).
@@ -73,6 +73,35 @@ La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y 
 
 **Los números** están en `content/balance.yaml` (`pantry`), la comida en `content/items.yaml` (`food`) y la carne en el botín de `content/enemies.yaml`. Son orientativos y se ajustan en la beta. Pruebas: `tests/test_pantry.py`.
 
+### 0.5 Incursiones de los campamentos (en el juego, D-99 provisional)
+
+La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.2: una incursión por semana desde pueblo y la Noche de prueba antes de castillo. Sin medidor de amenaza, sin oleadas, sin tablero y sin Eco: cada defensor pelea una pelea normal. **Solo en los campamentos de jugadores:** el Claro es el campamento base y nunca recibe incursiones (D-95, D-98).
+
+**La incursión semanal (desde el nivel 5, pueblo).**
+- **Cuándo llega.** Sin reloj de fondo, como la despensa: el campamento guarda la hora de la próxima. La primera vez que un miembro juega con el campamento en nivel 5 o más, la próxima queda a **7 días**. Cuando un miembro juega después de esa hora, la incursión llega.
+- **El aviso** les llega a los **miembros activos** (tocaron un botón en las últimas 24 horas) con el botón **🛡️ Defender**, y dura **60 minutos**. La pantalla del campamento muestra "👁 Próxima incursión en X días" y, mientras dura, "🔔 ¡Incursión! Defensores · victorias · quedan X min". Un nivel antes (nivel 4) avisa que en pueblo empiezan.
+- **Defender.** Cada miembro que toca 🛡️ Defender pelea **una pelea** con el combate normal, **desde la zona donde esté**, sin gastar energía, si no está viajando, explorando o recolectando. El enemigo es del **bioma de la zona del campamento**, con el **nivel de la zona + 1** (§6.2: nunca más de + 2). Ganar suma una victoria. Perder sigue las reglas normales de derrota, sin castigo extra, y no suma.
+- **Victorias necesarias:** la mitad de los miembros activos al llegar, redondeado hacia arriba, y al menos 1. Así la fuerza escala con los que juegan.
+- **Si alguien sigue peleando** cuando se cierra la ventana, se lo espera hasta 15 minutos para que su pelea cuente.
+- **Defendida:** cada defensor (el que peleó, ganara o no) gana **80 de experiencia y 30 🥉**, además del premio normal de su pelea.
+- **Perdida:** la despensa pierde el **25 % de sus raciones**. Nada más: ni niveles, ni zonas, ni miembros, ni nada personal (§11, §15).
+- **El parte** les llega a todos los miembros, con la próxima incursión: una semana después de la anterior. Si el campamento estuvo quieto más de una semana, la semana se cuenta desde que vuelve alguien, para que nadie vuelva y se encuentre otra encima.
+
+**La Noche de prueba (para pasar del nivel 8 al 9, castillo).**
+- En el nivel 8, **⬆️ Agrandar campamento** muestra que castillo pide ganar la Noche de prueba, contra qué enemigo y cuántas victorias hacen falta.
+- Un miembro **en el campamento** la convoca con **🌙 Noche de prueba**, si la despensa no está vacía y no hay otra incursión en curso. Funciona como una incursión: aviso a los activos, 60 minutos, una pelea por miembro.
+- **El enemigo** es el **más fuerte del bioma** del campamento, con el nivel de la zona + 2, en versión **élite**: el doble de vida y un 30 % más de ataque, solo en esa pelea.
+- **Victorias necesarias:** la mitad de los miembros activos, redondeado hacia arriba, y **al menos 2**: el castillo se gana en conjunto.
+- **Ganada:** el campamento ya puede crecer a castillo, pagando los materiales de siempre. Cada defensor gana **200 de experiencia y 100 🥉**.
+- **Perdida:** no se pierde nada; se puede volver a convocar a los **2 días**.
+- Si la incursión semanal tocaba mientras duraba la Noche de prueba, la Noche cuenta como la de esa semana.
+
+**Botones.** La pantalla del campamento sigue con 4 botones como máximo. Mientras dura la incursión, **🛡️ Defender** ocupa el lugar de ✏️ Cambiar nombre (fundador) o de 🚪 Salir del campamento (miembros), que vuelven apenas ese miembro pelea o termina la incursión: ninguno de los dos es urgente durante una hora, y ⬆️ Agrandar y 🌾 Aportar comida siguen a mano. La Noche de prueba tiene su propia pantalla, con 2 botones como máximo.
+
+**Lo que nunca pasa** (§15): perder una incursión nunca quita niveles, zonas ni miembros, y nadie pierde nada personal más allá de una derrota normal. El Claro nunca recibe incursiones.
+
+**Los números** están en `content/balance.yaml` (`raids`). Son orientativos y se ajustan en la beta (registro en [Balance](../03-personaje/balance.md) §7). Las cuentas puras están en `engine/world/raids.py`. Pruebas: `tests/test_raids.py`.
+
 ## De dónde sale
 
 - *Frostpunk*: la **esperanza** y el **descontento** como medidores de la ciudad; las **raciones**; el **libro de leyes**, donde cada ley resuelve un problema y crea otro.
@@ -93,7 +122,7 @@ La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y 
 | Lugar | Capa | Desde qué etapa | Por qué |
 |---|---|---|---|
 | ~~El Claro~~ | **Ninguna (D-95):** no se mantiene | — | Es el campamento principal del mapa y no tiene dueño: no hay a quién pedirle que lo sostenga. Además no crece (D-98) |
-| **Campamentos de jugadores** | Ligera (§7.2): despensa chica, incursiones a la medida de sus miembros, una Noche de prueba antes de castillo. Los campamentos grandes podrían tomar después partes de la capa completa | Desde aldea (nivel 3) | Tienen dueño y miembros que lo sostienen |
+| **Campamentos de jugadores** | Ligera (§7.2): despensa chica, incursiones a la medida de sus miembros, una Noche de prueba antes de castillo (las tres en el juego: §0.4 y §0.5). Los campamentos grandes podrían tomar después partes de la capa completa | Desde aldea (nivel 3) | Tienen dueño y miembros que lo sostienen |
 
 ## 1. El bucle de la ciudad
 
@@ -521,15 +550,17 @@ Para que el Claro suba a aldea o más harían falta tres cosas:
 
 ### 7.2 En los campamentos de jugadores (capa ligera)
 
+> **En el juego:** la despensa de los niveles 3-4 (§0.4, D-93), la incursión semanal desde el nivel 5 y la Noche de prueba antes del nivel 9 (§0.5, D-99), todas provisionales y en su capa simple: sin Eco (solo pelean los miembros conectados) y sin jefe de zona propio (la Noche de prueba trae la versión élite del enemigo más fuerte del bioma). El medidor de salud de los niveles 7-8 sigue como propuesta.
+
 Un campamento tiene de 2 a 18 miembros. La capa ligera mide todo **por miembro** y nunca le quita lo ganado:
 
 | Nivel | Qué se suma a pagar los materiales de hoy |
 |---|---|
 | **1-2 (campamento)** | Nada. Fundar y crecer siguen como hoy |
-| **3-4 (aldea)** | **Despensa chica** en el almacén común: 1 ración por miembro activo por día. Si se vacía, el campamento no puede agrandarse hasta llenarla. Nunca pierde zonas ni niveles |
-| **5-6 (pueblo)** | **Una incursión por semana**, con la fuerza escalada a los miembros activos. La juegan los miembros conectados; los demás pelean con su Eco. Si se pierde, se pierde parte de la despensa y nada más |
+| **3-4 (aldea)** | **Despensa chica** en el almacén común: 1 ración por miembro activo por día. Si se vacía, el campamento no puede agrandarse hasta llenarla. Nunca pierde zonas ni niveles (**en el juego**, §0.4) |
+| **5-6 (pueblo)** | **Una incursión por semana**, con la fuerza escalada a los miembros activos. La juegan los miembros conectados; los demás pelean con su Eco (el Eco todavía no existe). Si se pierde, se pierde parte de la despensa y nada más (**en el juego**, §0.5; sigue también en los niveles siguientes) |
 | **7-8 (ciudad)** | Un medidor de **salud** simple: con la despensa llena y una enfermería, se mantiene solo. Si baja, la recolección extra del territorio (+50 %) se apaga hasta que suba |
-| **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días |
+| **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días (**en el juego**, §0.5, con la versión élite del enemigo más fuerte del bioma) |
 
 - **Lo que nunca pasa:** un campamento activo nunca pierde niveles, zonas ni miembros por fallar. Lo que se apaga son servicios, hasta que se recuperen.
 - **El campamento abandonado** es otra cosa: sin miembros activos durante semanas, decae (ver [Fundación y cisma](fundacion-y-cisma.md) §4.1).
@@ -785,7 +816,7 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 
 ## 16. Para decidir
 
-- **Lo principal, para el dueño:** ¿subir de etapa debe pedir algo más que pagar materiales? Recomendación: sí, pero solo en el Claro desde aldea y con la capa ligera en los campamentos desde aldea (§7), porque así se cumple "que no sea construir y ya" sin trabar a los grupos chicos. Si dice que sí, se registra como decisión y se programa por partes: primero la despensa, después las incursiones. **Respuesta:** el dueño dijo que sí por voz (D-93, provisional) y después aclaró que **el Claro no se mantiene, porque no tiene dueño** (D-95): la despensa queda solo en los campamentos de jugadores (§0.4). Siguen las incursiones, también solo en los campamentos.
+- **Lo principal, para el dueño:** ¿subir de etapa debe pedir algo más que pagar materiales? Recomendación: sí, pero solo en el Claro desde aldea y con la capa ligera en los campamentos desde aldea (§7), porque así se cumple "que no sea construir y ya" sin trabar a los grupos chicos. Si dice que sí, se registra como decisión y se programa por partes: primero la despensa, después las incursiones. **Respuesta:** el dueño dijo que sí por voz (D-93, provisional) y después aclaró que **el Claro no se mantiene, porque no tiene dueño** (D-95): la despensa queda solo en los campamentos de jugadores (§0.4). Las incursiones siguieron, también solo en los campamentos, y ya están en el juego en su capa simple (§0.5, D-99, provisional).
 - **Para confirmar con el dueño (despensa, P-75):** el tope por semana de las provisiones (§15.8, todavía sin tope) y si la despensa necesita un tope de capacidad antes de los graneros (§4.3).
 - Los números exactos de consumo, producción, amenaza y requisitos (se ajustan en la beta).
 - Si se acepta la excepción a la zona segura (§6.5): que las incursiones ataquen lo común del asentamiento, nunca las casas ni a las personas.

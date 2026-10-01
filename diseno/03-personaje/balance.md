@@ -309,3 +309,27 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Extra al dejar una zona al 100 % (`explore.xp_full_zone`) | 0 | **15** | Premia terminar zonas (unas 4-6 vueltas cada una) |
 
 **Lo que queda por mirar:** si explorar compite demasiado con pelear para subir de nivel (la meta de 100 niveles en 2-3 años, D-78).
+
+### Octubre de 2026: las incursiones de los campamentos (D-99, provisional)
+
+**Por qué.** Segunda parte de "construir no alcanza", después de la despensa: desde pueblo (nivel 5) los campamentos de jugadores reciben una incursión por semana, y pasar a castillo pide ganar la Noche de prueba (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §7.2). El Claro nunca tiene incursiones: es el campamento base (D-95, D-98). Son números **nuevos**, no movidos, y se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `raids`):
+
+| Número | Valor | De dónde sale |
+|---|---|---|
+| Desde qué nivel | 5 (pueblo) | §7.2, capa ligera |
+| Cada cuánto | 7 días reales (reloj perezoso: llega cuando un miembro juega después de esa hora) | §7.2: "una incursión por semana" |
+| Ventana del aviso | 60 minutos, más 15 de espera para una pelea que ya empezó | Que dé tiempo a los conectados sin trabar la semana |
+| Victorias necesarias | la mitad de los miembros activos al llegar, hacia arriba; al menos 1 | §7.2: fuerza escalada a los miembros activos |
+| Si se pierde | la despensa pierde el 25 % de sus raciones; nada más | §6.5 (entre la brecha parcial, 15 %, y la derrota, 30 %) y §15 |
+| Enemigo | del bioma del campamento, nivel de la zona + 1 | §6.2: nunca más de + 2 |
+| Premio por defender | 80 de experiencia y 30 🥉 a cada defensor, además del premio de su pelea | Chico: como una pelea más y dos 🥖 provisiones |
+| Noche de prueba: victorias | la mitad de los activos, hacia arriba; al menos 2 | El castillo se gana en conjunto |
+| Noche de prueba: enemigo | el más fuerte del bioma (vida × ataque), nivel de la zona + 2, con vida × 2 y ataque × 1,3 | §6.4 en chico: un jefe de la zona sin fases |
+| Noche de prueba: si se pierde | nada; se reintenta a los 2 días | §7.1 y §7.2 |
+| Noche de prueba: premio | 200 de experiencia y 100 🥉 (1 🥈) a cada defensor | Una vez por campamento |
+
+**Cuenta rápida** (medida aparte con las funciones de `tools/sim.py`: la forma de jugar atenta, cinturón lleno, las 45 especializaciones activas, cada bioma). Contra el enemigo de la incursión semanal, un héroe del nivel de la zona gana casi siempre (99-100 %): la incursión pone a prueba la **participación**, no la fuerza, igual que la despensa. La Noche de prueba sí pesa: con el equipo inicial y el nivel de la zona gana cerca de la mitad de las veces (45-51 %, y muy poco contra el caimán del pantano o el oso cavernario de las colinas); con 3 a 5 niveles más y equipo poco común, entre el 86 % y el 100 %. Perder una incursión con 4 miembros activos y la despensa en 28 raciones cuesta 7 raciones: casi 2 días de comida.
+
+**Lo que queda por mirar:** si la incursión semanal es demasiado fácil cuando los miembros superan mucho el nivel de su zona (subir `enemy_level_bonus` hasta 2, el tope de §6.2), si 60 minutos alcanzan para los husos horarios de los miembros (el Eco de §6.5 lo resolvería), y si el mínimo de 2 victorias de la Noche de prueba deja trabado a un campamento de una sola persona (hoy sí lo traba: castillo pide al menos dos miembros activos).
