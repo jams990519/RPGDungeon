@@ -32,6 +32,7 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 | **Vencer a Raigambre** | Su experiencia, con la misma regla | `content/enemies.yaml` (`raigambre`) |
 | ~~Aportar a la obra común del Claro~~ | Quitado en la 0.11 (D-98): el Claro no crece | — |
 | **Aportar comida a la despensa de tu campamento** | 2 de experiencia por ración | `pantry.xp_per_ration` |
+| **Explorar** (D-104) | 3 de experiencia por vuelta y 15 al dejar una zona al 100 % | `explore.xp_per_step`, `explore.xp_full_zone` |
 | **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |
 

@@ -116,7 +116,7 @@ from engine.world.resources import main_resource, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
-            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild"}
+            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -500,7 +500,7 @@ class GameService:
         stats = hero_stats(self._kit(hero), hero.level)
         if not in_combat and hero.hp < stats["max_hp"] and hero.last_regen_at:
             regen = self.content.balance["regen"]
-            pct = (regen["downed_percent_per_minute"] if hero.downed else regen["hp_percent_per_minute"]) / 100
+            pct = 1 / (regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"])      # share of max hp per minute
             per_second = stats["max_hp"] * pct / (60 * self.time_scale)
             gained = int((now - hero.last_regen_at) * per_second)
             if gained > 0:
@@ -622,6 +622,7 @@ class GameService:
         t = self.texts
         key = f"{zone.x}:{zone.y}"
         before = self._known_resources(hero, zone.x, zone.y)
+        before_pct = self._explored_pct(hero, zone.x, zone.y)
         low, high = self.content.balance["exploration"]["per_step"]
         hero.exploration[key] = min(100, self._explored_pct(hero, zone.x, zone.y) + int(rng.uniform(low, high + 1)))
         if key not in hero.explored:
@@ -630,9 +631,14 @@ class GameService:
         if new:
             names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
             activity["log"].append(t.t("explore.revealed", items=names))
+        bal = self.content.balance["explore"]
+        xp = bal["xp_per_step"]                       # exploring teaches: experience every round (owner's request)
         if hero.exploration[key] >= 100:
             activity["log"].append(t.t("explore.full", name=self._zone_name(zone)))
-        bal = self.content.balance["explore"]
+            if before_pct < 100:
+                xp += bal["xp_full_zone"]             # finishing a zone is worth more
+        activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
+        activity["log"] += self._give_xp(hero, xp)
         roll = rng.random()
         if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
             return self._start_combat(hero, zone, rng, "encounter.found")
@@ -790,6 +796,8 @@ class GameService:
             return self._hero_view(hero)
         if action_id == "stats":
             return self._stats_view(hero)
+        if action_id == "health":
+            return self._health_view(hero)
         if action_id == "explore_menu":
             return self._explore_menu(hero)
         if action_id == "talents":
@@ -1054,6 +1062,8 @@ class GameService:
                     lines.append(t.t("batch.found", items=self._item_list(activity["got"])))
                 if activity.get("coins"):
                     lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
+                if activity.get("xp"):
+                    lines.append(t.t("batch.xp", xp=activity["xp"]))
         lines += activity.get("log", [])
         if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
             lines.append(t.t(f"batch.reason.{reason}"))
@@ -2571,7 +2581,7 @@ class GameService:
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
         body += self._tutorial_hint(hero)
         actions = [Action(id="bag", label=t.t("bag.button_new" if hero.gear_new else "menu.bag")), Action(id="talents", label=t.t("talents.button", n=hero.points)),
-                   Action(id="stats", label=t.t("hero.stats_button")), Action(id="home", label=t.t("menu.back"))]
+                   Action(id="stats", label=t.t("hero.stats_button")), Action(id="health", label=t.t("health.button"))]   # 4 buttons (D-75): back with the menu
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
 
     def _coins_line(self, hero: Hero) -> str:
@@ -2590,10 +2600,10 @@ class GameService:
         if hero.hp >= max_hp:
             return []
         regen = self.content.balance["regen"]
-        pct = regen["downed_percent_per_minute"] if hero.downed else regen["hp_percent_per_minute"]
-        seconds = (max_hp - hero.hp) / (max_hp * pct / 100) * 60 * self.time_scale
+        full = regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"]
+        seconds = (max_hp - hero.hp) / max_hp * full * 60 * self.time_scale
         key = "hero.downed_line" if hero.downed else "hero.regen_line"
-        return [self.texts.t(key, pct=f"{pct:g}", time=self._fmt_duration(seconds))]
+        return [self.texts.t(key, full=self._fmt_duration(full * 60), time=self._fmt_duration(seconds))]
 
     def _status_text(self, hero: Hero) -> str:
         t = self.texts
@@ -2601,6 +2611,38 @@ class GameService:
             return t.t("hero.status.combat")
         kind = (hero.activity or {}).get("kind")
         return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+
+    def _health_view(self, hero: Hero) -> View:
+        """🩺 Salud: how your body is right now, how it recovers and what can cure it (owner's request).
+
+        [ES]
+        Qué hace: junta todo lo de la salud del héroe en una pantalla: vida, cómo está el cuerpo (sano, magullado,
+        herido, muy herido o 🤕 malherido), cuánto falta para curarse solo, las enfermedades (hoy ninguna: llegan
+        con la capa de salud, D-09) y con qué curarse. Aquí aparecerán las heridas por partes y las enfermedades.
+        La llaman: el botón 🩺 Salud de la ficha del héroe y el atajo /salud.
+        Si cambia, afecta: dónde ve el jugador su estado; los números salen de balance.yaml regen.
+        """
+        t = self.texts
+        max_hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
+        pct = round(100 * hero.hp / max(1, max_hp))
+        if hero.downed:
+            body_state = "downed"
+        else:
+            body_state = next(name for name, low in (("healthy", 100), ("bruised", 60), ("hurt", 25), ("badly_hurt", 0)) if pct >= low)
+        regen = self.content.balance["regen"]
+        body = [t.t("health.hp", hp=hero.hp, max_hp=max_hp, pct=pct, bar=self._bar(hero.hp, max_hp, 10)),
+                t.t("health.body", state=t.t(f"health.state.{body_state}")),
+                *self._recovery_lines(hero, max_hp),
+                t.t("health.recovery", full=self._fmt_duration(regen["hp_full_minutes"] * 60),
+                    downed=self._fmt_duration(regen["downed_full_minutes"] * 60)),
+                "",
+                t.t("health.diseases"),
+                t.t("health.toxicity"),
+                "",
+                t.t("health.cures"),
+                t.t("health.coming")]
+        actions = [Action(id="potions", label=t.t("potions.button")), Action(id="hero", label=t.t("menu.back"))]
+        return View(kind="health", title=t.t("health.title"), body=body, actions=actions)
 
     def _stats_view(self, hero: Hero) -> View:
         """Every characteristic with a short explanation of what it does (D-76)."""

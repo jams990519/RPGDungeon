@@ -136,7 +136,7 @@ def test_first_piece_of_an_empty_slot_is_worn_by_itself(content):
 def test_equipment_lives_in_hero_then_bag(service):
     make_hero(service, class_id="guerrero")
     hero_view = service.act("test:1", "hero")
-    assert [a.id for a in hero_view.actions] == ["bag", "talents", "stats", "home"]
+    assert [a.id for a in hero_view.actions] == ["bag", "talents", "stats", "health"]   # back with the menu (D-75)
     body = "\n".join(hero_view.body)
     assert "Espada" not in body and "al empezar cada combate" not in body       # short card (D-86)
     bag = service.act("test:1", "bag")

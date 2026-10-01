@@ -346,3 +346,40 @@ def test_the_map_is_a_square_as_wide_as_the_message(service):
     rows = [line for line in body if line and " " not in line]              # the grid rows: cells only, no spaces
     assert side == 13 and len(rows) == side
     assert all(line.replace("\ufe0f", "").__len__() == side for line in rows)   # every row has 13 cells
+
+
+def test_health_screen_shows_the_body_and_how_it_heals(service):
+    make_hero(service)
+    hero = service._load("test:1")
+    max_hp = hero.hp
+    hero.hp, hero.last_regen_at = max_hp // 3, service.clock.now()
+    service._save(hero)
+    assert service.commands()["/salud"] == "health"
+    view = service.act("test:1", "health")
+    body = "\n".join(view.body)
+    assert view.kind == "health" and [a.id for a in view.actions] == ["potions", "hero"]
+    assert "herido" in body and "4 h" in body and "Enfermedades: ninguna" in body
+    assert not service.texts.missing
+
+
+def test_full_health_comes_back_in_four_hours(service, clock):
+    make_hero(service)
+    hero = service._load("test:1")
+    max_hp = hero.hp
+    hero.hp, hero.last_regen_at = 1, clock.now()
+    service._save(hero)
+    clock.advance(2 * 3600)
+    service.view("test:1")
+    assert abs(service._load("test:1").hp - max_hp / 2) <= 2            # half in 2 hours
+    clock.advance(2 * 3600)
+    service.view("test:1")
+    assert service._load("test:1").hp == max_hp
+
+
+def test_exploring_gives_experience(service, clock):
+    make_hero(service)
+    service.act("test:1", "do:explore:5")
+    clock.advance(3600)
+    view = service.view("test:1")
+    hero = service._load("test:1")
+    assert hero.xp > 0

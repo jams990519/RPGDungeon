@@ -296,3 +296,16 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Cada exploración y cada recolección gastan 1 de energía (40 por día). Un miembro que reparte su energía entre explorar y recolectar suma por día unas 20 exploraciones, 6 a 8 peleas ganadas y 50 a 60 recursos (con el 50 % extra de su territorio). Llegar al nivel 5 pide en total 370 exploraciones, 182 victorias y 930 recursos: un grupo activo de 4 a 6 miembros lo logra en una semana. Lo que más frena al castillo es juntar 10 miembros, no los contadores, y eso es a propósito.
 
 **Lo que queda por mirar:** si las victorias frenan más que lo demás (en el territorio no hay peleas), si conviene que la comida aportada a la despensa cuente, y qué pedirán las misiones cuando existan. Medir en la beta cuántos días tarda un gremio real en cada nivel.
+
+### Octubre de 2026: vida en 4 horas y experiencia por explorar (D-103 y D-104)
+
+**Por qué.** El dueño pidió que la vida vuelva cada 4 horas y que explorar dé experiencia.
+
+| Número | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| Vida de 0 a llena fuera de combate (`regen.hp_full_minutes`) | 100 min (1 % por minuto) | **240 min** | Las pociones y la posada pesan más; entre peleas hay que esperar o curarse. El combate no cambia |
+| Vida si caíste (`regen.downed_full_minutes`) | 500 min (0,2 % por minuto) | 500 min (mismo número, otra forma de escribirlo) | Sigue siendo mucho más lento que lo normal (D-83) |
+| Experiencia por vuelta de exploración (`explore.xp_per_step`) | 0 | **3** | Con 40 de energía al día, explorar da hasta 120 de experiencia diaria más los extras de zona: menos que pelear, pero sin riesgo |
+| Extra al dejar una zona al 100 % (`explore.xp_full_zone`) | 0 | **15** | Premia terminar zonas (unas 4-6 vueltas cada una) |
+
+**Lo que queda por mirar:** si explorar compite demasiado con pelear para subir de nivel (la meta de 100 niveles en 2-3 años, D-78).

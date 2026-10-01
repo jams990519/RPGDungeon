@@ -432,8 +432,8 @@ hero:
   name_line: "{icon} {name} — {cls} ({role})"
   level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
   hp_line: "❤️ HP: {hp}/{max_hp}"
-  regen_line: "💗 Tu vida vuelve sola: {pct}% por minuto, llena en {time}."
-  downed_line: "🤕 Malherido: caíste y te recuperas despacio ({pct}% por minuto, llena en {time}). Una poción o la posada lo arreglan antes."
+  regen_line: "💗 Tu vida vuelve sola (de 0 a llena en {full}): estará llena en {time}."
+  downed_line: "🤕 Malherido: caíste y te recuperas despacio (de 0 a llena en {full}): estará llena en {time}. Una poción o la posada lo arreglan antes."
   stats_line: "⚔️ Ataque {attack} · 🛡 Armadura {armor}% · ⚡ Iniciativa {initiative}"
   gold_line: "💰 Tus monedas: {gold}"
   record_line: "☠️ Enemigos vencidos {kills} · 🧭 Zonas descubiertas {zones}"
@@ -453,6 +453,23 @@ bag:
   used: "Usaste {item}: recuperas {amount} de vida."
   full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
   full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90: lo que encuentras igual entra
+
+health:                       # [ES] pantalla 🩺 Salud del héroe (pedido del dueño): el estado del cuerpo y cómo se cura
+  button: "🩺 Salud"
+  title: "🩺 Salud"
+  hp: "❤️ Vida: {hp}/{max_hp} ({pct} %) {bar}"
+  body: "🧍 Tu cuerpo: {state}"
+  state:
+    healthy: "🟢 sano"
+    bruised: "🟡 magullado"
+    hurt: "🟠 herido"
+    badly_hurt: "🔴 muy herido"
+    downed: "🤕 malherido: caíste en combate"
+  recovery: "💗 Fuera de combate la vida vuelve sola: de 0 a llena en {full}. Si caes (🤕 malherido), tarda {downed}."
+  diseases: "🦠 Enfermedades: ninguna."
+  toxicity: "☠️ Toxicidad: sube en combate al usar pociones seguidas y se va al terminar la pelea."
+  cures: "🧪 Para curarte antes: las pociones de 🎒 Mochila → 🧪 Pociones, o dormir en la posada del Claro."
+  coming: "📋 Aquí verás también las heridas por partes del cuerpo y las enfermedades cuando lleguen al juego."
 
 resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedido del dueño): materiales y comida, de a páginas
   button: "📦 Recursos"
@@ -955,6 +972,7 @@ batch:
   explored_done: "🔎 Exploraste {n} {n|vez|veces}: la zona va al {pct} %."
   found: "🔎 Encontraste: {items}."
   coins: "🔎 Encontraste {coins} entre los restos."
+  xp: "✨ Explorar te enseñó: +{xp} experiencia."
   reason:
     stopped: "❌ Te detuviste: la energía de la vuelta en curso volvió."
     fight: "⚔️ Algo te interrumpió."

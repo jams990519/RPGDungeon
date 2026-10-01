@@ -53,6 +53,8 @@ explore:
   minutes: 10
   encounter: 0.45
   item: 0.35                 # [ES] el resto es oro
+  xp_per_step: 3             # [ES] pedido del dueño: explorar da experiencia en cada vuelta
+  xp_full_zone: 15           # [ES] y un extra al dejar una zona explorada al 100 %
   arrival_encounter_scale: 1.0
 
 presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
@@ -61,8 +63,8 @@ presence:                    # [ES] D-96 (provisional): ver a los otros jugadore
   cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
 
 regen:
-  hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola (de 0 a lleno: 100 minutos)
-  downed_percent_per_minute: 0.2  # [ES] D-83: si caíste, te recuperas mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
+  hp_full_minutes: 240        # [ES] pedido del dueño: fuera de combate la vida vuelve sola, de 0 a llena en 4 horas
+  downed_full_minutes: 500    # [ES] D-83: si caíste, mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
 
 hero:
   start_gold: 10
