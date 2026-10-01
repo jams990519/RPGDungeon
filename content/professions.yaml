@@ -47,6 +47,7 @@ professions:
     how_key: profession.lenador.how
     branch: gather
     gathers: [madera]
+    perk: {bag: 10}                          # [ES] D-111: +10 de espacio en la mochila al rango 100 (crece parejo con el rango)
   minero:
     emoji: "⛏️"
     name_key: profession.minero.name
@@ -54,6 +55,7 @@ professions:
     branch: gather
     gathers: [piedra, pieza_metal, arcilla]
     rare: {item: gema_bruta, min_rank: 10}     # [ES] desde el rango 10 aparecen gemas en bruto al minar (las pide la Joyería)
+    perk: {hp: 0.05}                         # [ES] D-111: +5 % de vida máxima al rango 100 (tanques)
   herbolario:
     emoji: "🌿"
     name_key: profession.herbolario.name
@@ -61,12 +63,14 @@ professions:
     branch: gather
     gathers: [hierba_curativa, fibra]
     rare: {item: flor_luna, min_rank: 10}      # [ES] desde el rango 10 aparecen flores de luna (pociones mayores, túnicas finas)
+    perk: {regen: 0.20}                      # [ES] D-111: la vida vuelve sola un 20 % más rápido al rango 100
   desollador:
     emoji: "🔪"
     name_key: profession.desollador.name
     how_key: profession.desollador.how
     branch: gather
     skins: [carne, piel]                       # [ES] del botín de las bestias (las que sueltan carne, enemies.yaml)
+    perk: {attack: 0.04}                     # [ES] D-111: +4 % de ataque al rango 100
 
   # ---- Refinado: en una estación, gasta energía
   aserradero:
@@ -101,41 +105,53 @@ professions:
     name_key: profession.carpinteria.name
     how_key: profession.carpinteria.how
     branch: craft
+    perk: {attack: 0.04, weapon_type: [arco, baston]}   # [ES] D-111: +4 % de ataque peleando con arco o bastón
   herreria:
     emoji: "🔨"
     name_key: profession.herreria.name
     how_key: profession.herreria.how
     branch: craft
+    perk: {armor: 0.03, armor_type: placas}            # [ES] D-111: +3 puntos de armadura con placas (sin pasar el tope)
   alquimia:
     emoji: "⚗️"
     name_key: profession.alquimia.name
     how_key: profession.alquimia.how
     branch: craft
+    perk: {potion: 0.30}                     # [ES] D-111: las pociones curan un 30 % más
   sastreria:
     emoji: "🪡"
     name_key: profession.sastreria.name
     how_key: profession.sastreria.how
     branch: craft
+    perk: {attack: 0.05, armor_type: tela}             # [ES] D-111: +5 % de ataque (poder de hechizos) con tela
   peleteria:
     emoji: "🦺"
     name_key: profession.peleteria.name
     how_key: profession.peleteria.how
     branch: craft
+    perk: {attack: 0.04, hp: 0.03, armor_type: [cuero, malla]}   # [ES] D-111: +4 % de ataque y +3 % de vida con cuero o malla
+  medicina:
+    emoji: "🩺"
+    name_key: profession.medicina.name
+    how_key: profession.medicina.how
+    branch: craft
+    perk: {heal: 0.15, heal_role: curacion, bandage: 0.30}   # [ES] D-111: tus curaciones curan 15 % más si eres sanador; las vendas, 30 % más para todos
   joyeria:
     emoji: "💍"
     name_key: profession.joyeria.name
     how_key: profession.joyeria.how
     branch: craft
+    perk: {hp: 0.03, attack: 0.03}           # [ES] D-111: +3 % de vida y de ataque
 
 # Where the stations are. [ES] Dónde están las estaciones (en la fase 1, una por oficio de refinado y fabricación).
 stations:
   # [ES] El Claro tiene todas las estaciones básicas (no crece, D-98, pero es donde empiezan todos)
-  claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria]
+  claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria, medicina]
   # [ES] En tu campamento, cada mejora construida (ids de content/camp_upgrades.yaml) abre las suyas, con algo más de
   # rendimiento al refinar (balance.yaml professions.camp_bonus). No hay alambique todavía: destilar y la alquimia van
   # en el 🧵 Taller hasta que exista una mejora propia.
   camp:
-    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia]
+    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia, medicina]
     herreria: [fundicion, herreria, joyeria]
 
 recipes:
@@ -405,3 +421,27 @@ recipes:
     min_rank: 50
     energy: 2
     xp: 12
+
+  # ---- Medicina (D-111): ungüentos y botiquines (extracto + tela o cuero: dos ramas o más)
+  unguento:
+    profession: medicina
+    inputs: {extracto: 1, tela_tejida: 1}
+    output: {unguento: 2}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  botiquin:
+    profession: medicina
+    inputs: {extracto: 2, tela_tejida: 1, cuero_curtido: 1}
+    output: {botiquin: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  vendaje_maestro:
+    profession: medicina
+    inputs: {extracto: 2, tela_tejida: 2, flor_luna: 1}
+    output: {vendaje_maestro: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+

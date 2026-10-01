@@ -76,10 +76,15 @@ Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
+    - Beneficio de cada oficio (D-111): _perks (content/professions.yaml "perk", engine/professions/rules.py perks) entra en
+      _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_cap
+      (Leñador); hero_stats y el combate lo leen del kit (tests/test_professions.py)
     - Experiencia por camino (D-108): _zone_xp escala matar y recolectar con hero.xp_level_scale; gather.xp_per_step.
       Todos los caminos tienen que llegar al 100 a un ritmo parecido (diseno/03-personaje/progresion.md §1.2)
     - Explorar alrededor (D-107): con tu zona al 100 %, el lote sigue con las vecinas sin moverte (_explore_target,
       explore.around_radius); las vecinas exploradas quedan en hero.known y cuentan para fundar (tests/test_resources.py)
+    - Encuentros (D-108): _start_combat elige el enemigo con engine/world/encounters.py (bioma de la zona y franja de
+      nivel de content/enemies.yaml; más allá de la última franja, la más cercana). Pruebas: tests/test_bestiary.py
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
       tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
       tests/test_backpack.py (mochila llena D-90 y cofre D-92)
@@ -161,12 +166,14 @@ from engine.core import (
 from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, source_choices, starter_gear, suits, unequip
 from engine.professions import gatherer_of, max_times, missing_for, rank_of, rank_title, xp_for_rank
+from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.world import raids as raid_rules
+from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
@@ -437,7 +444,29 @@ class GameService:
         kit = talent_kit(self.content.classes, self.content.balance, hero)
         kit["gear_bonus"] = gear_bonus(self.content.items, hero, self.content.classes, self.content.balance)
         kit["armor_cap"] = self.content.balance["gear"]["armor_cap"]
+        perk = self._perks(hero)                  # D-111: each profession's own benefit, growing with its rank
+        kit["perk_bonus"] = {k: perk[k] for k in ("attack", "hp", "armor")}
+        kit["heal_bonus"] = perk["heal"]
+        kit["item_bonus"] = {"potion": perk["potion"], "bandage": perk["bandage"]}
         return kit
+
+    def _perks(self, hero: Hero) -> dict[str, float]:
+        """The benefits of the hero's professions (D-111), each growing evenly with its rank (profession_rules.perks).
+
+        [ES]
+        Qué hace: junta los beneficios de los oficios que el héroe empezó (rango de cada uno), sabiendo qué armadura
+        usa su clase, con qué arma pelea y qué rol juega (la Herrería solo con placas, la Medicina solo a sanadores).
+        La llaman: _kit (ataque, vida, armadura, curación, pociones y vendas), _settle (vida que vuelve), _bag_cap.
+        Si cambia, afecta: cuánto ayuda cada oficio (content/professions.yaml "perk"; profesiones.md §0.2).
+        """
+        catalog = (self.content.professions or {}).get("professions") or {}
+        ranks = {pid: self._prof_rank(hero, pid) for pid, xp in (hero.professions or {}).items() if xp > 0 and pid in catalog}
+        cdef = self.content.classes.get(hero.class_id, {})
+        group = cdef.get("group", hero.class_id)
+        gear_cfg = self.content.balance["gear"]
+        weapon = self.content.items.get(hero.gear.get("arma", ""), {})
+        return profession_rules.perks(catalog, ranks, self.content.balance["professions"]["max_rank"],
+                                      gear_cfg["armor_by_group"].get(group), weapon.get("type"), cdef.get("role"))
 
     def _money(self, amount: int) -> str:
         """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
@@ -567,6 +596,7 @@ class GameService:
             regen = self.content.balance["regen"]
             pct = 1 / (regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"])      # share of max hp per minute
             pct *= self._camp_regen_mult(hero)          # D-101: 🔥 Fogón / 🏥 Enfermería in your camp's territory
+            pct *= 1 + self._perks(hero)["regen"]       # D-111: 🌿 Herbolario
             per_second = stats["max_hp"] * pct / (60 * self.time_scale)
             gained = int((now - hero.last_regen_at) * per_second)
             if gained > 0:
@@ -1121,7 +1151,7 @@ class GameService:
         body = [t.t(f"batch.ask_{kind}", minutes=minutes), t.t("batch.energy", energy=hero.energy),
                 t.t("batch.estimate", step=total(1), n=hero.energy, total=total(hero.energy))]
         if kind == "gather":
-            body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap()))
+            body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero)))
         else:
             body += self._explore_progress_lines(hero)
         body.append(t.t("batch.cancel_hint"))
@@ -1227,8 +1257,10 @@ class GameService:
 
     # ------------------------------------------------------------------ zone resources and exploration (D-87)
 
-    def _bag_cap(self) -> int:
-        return self.content.balance["hero"]["backpack_capacity"]
+    def _bag_cap(self, hero: Hero | None = None) -> int:
+        """Backpack space: the base, plus the 🪓 Leñador's perk (D-111) when a hero is given."""
+        base = self.content.balance["hero"]["backpack_capacity"]
+        return base + (int(self._perks(hero)["bag"]) if hero is not None else 0)
 
     def _bag_used(self, hero: Hero) -> int:
         return sum(hero.backpack.values())
@@ -1242,11 +1274,11 @@ class GameService:
         La llaman: _gather_blocked, _continue_batch, _gather_step, _buy, _shop_view y _bag_view.
         Si cambia, afecta: cuándo se corta recolectar y cuándo el mercader no vende (balance.yaml hero.backpack_capacity).
         """
-        return self._bag_used(hero) >= self._bag_cap()
+        return self._bag_used(hero) >= self._bag_cap(hero)
 
     def _bag_full_line(self, hero: Hero) -> str:
         """🎒 Mochila llena (63/60): sell or use things to gather or buy again (D-90)."""
-        return self.texts.t("bag.full_line", used=self._bag_used(hero), cap=self._bag_cap())
+        return self.texts.t("bag.full_line", used=self._bag_used(hero), cap=self._bag_cap(hero))
 
     def _bag_add(self, hero: Hero, item_id: str, count: int) -> int:
         """Put found items in the backpack, even beyond its space: what you find is never lost (D-90).
@@ -1329,7 +1361,8 @@ class GameService:
         stats = hero_stats(self._kit(hero), hero.level)
         if hero.hp >= stats["max_hp"]:
             return self._potions_view(hero, notice=t.t("bag.full_hp"))      # never waste a remedy for 0 health
-        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item["heal"]))
+        boost = self._perks(hero)["potion" if item.get("kind") == "potion" else "bandage"] if item.get("kind") in ("potion", "bandage") else 0.0
+        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item["heal"] * (1 + boost)))     # D-111
         source[item_id] -= 1
         if source[item_id] <= 0:
             del source[item_id]
@@ -1408,7 +1441,7 @@ class GameService:
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
             body = [t.t("gather.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
-                    t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())]
+                    t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
             title = t.t("gather.title")
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
@@ -1912,7 +1945,7 @@ class GameService:
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
         gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
         body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro"),
-                self._resources_line(hero, zone.x, zone.y), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())]
+                self._resources_line(hero, zone.x, zone.y), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
         body += self._tutorial_hint(hero)
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
@@ -3937,7 +3970,7 @@ class GameService:
                 continue
             rank = self._prof_rank(hero, pid)
             extra = sum(1 for _ in range(got[res]) if rng.chance(rank * cfg["rank_yield"]))
-            extra = min(extra, max(0, self._bag_cap() - self._bag_used(hero)))     # gathering stops at the space (D-90)
+            extra = min(extra, max(0, self._bag_cap(hero) - self._bag_used(hero)))     # gathering stops at the space (D-90)
             if extra:
                 self._bag_add(hero, res, extra)
                 got[res] += extra
@@ -4081,6 +4114,24 @@ class GameService:
             return self._make(hero, parts[1], int(parts[2]), int(parts[3]) if len(parts) > 3 and parts[3].isdigit() else 0)
         return self._professions_view(hero)
 
+    def _perk_text(self, perk: dict[str, Any] | None, rank: int) -> str:
+        """"+2 % de ataque con placas": a profession's benefit at a rank, in words (D-111). Empty without a perk."""
+        if not perk:
+            return ""
+        t = self.texts
+        share = min(rank, self.content.balance["professions"]["max_rank"]) / self.content.balance["professions"]["max_rank"]
+        parts = []
+        for key in profession_rules.PERK_KEYS:
+            if key in perk:
+                value = float(perk[key]) * share
+                shown = round(value, 1) if key == "bag" else round(value * 100, 1)
+                parts.append(t.t(f"prof.perk.{key}", v=f"{shown:g}"))
+        limit = perk.get("armor_type") or perk.get("weapon_type")
+        if limit:
+            names = limit if isinstance(limit, list) else [limit]
+            parts.append(t.t("prof.perk.only_armor" if "armor_type" in perk else "prof.perk.only_weapon", what="/".join(names)))
+        return " · ".join(parts)
+
     def _professions_view(self, hero: Hero, notice: str | None = None) -> View:
         """⚒️ Oficios: your rank in every profession you started, how to raise it and what the next rank opens;
         the professions not started yet; the stations where you stand. Buttons: 🪚 Refinar, 🛠️ Fabricar, ↩️ Volver.
@@ -4106,6 +4157,9 @@ class GameService:
             rank = self._prof_rank(hero, pid)
             body.append(t.t("prof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid)))
             body.append(t.t("prof.how_line", how=t.t(pdef.get("how_key", f"profession.{pid}.how"))))
+            perk = self._perk_text(pdef.get("perk"), rank)
+            if perk:
+                body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
             unlock = self._next_unlock(hero, pid)
             if unlock:
                 body.append(unlock)
@@ -4609,7 +4663,7 @@ class GameService:
             t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
             t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100)),
             self._coins_line(hero),
-            t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap()),     # same count as "space in the backpack" (D-87)
+            t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap(hero)),     # same count as "space in the backpack" (D-87)
             "",
             t.t("hero.status_title", status=self._status_text(hero)),
         ]
@@ -4721,7 +4775,7 @@ class GameService:
         Si cambia, afecta: cómo llega el jugador a su equipo, pociones, monedas y recursos.
         """
         t = self.texts
-        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
+        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))
         body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources"),
                 "", space, self._status_line(hero)]
         body += self._recovery_lines(hero, hero_stats(self._kit(hero), hero.level)["max_hp"])
@@ -4755,7 +4809,7 @@ class GameService:
             body.append(t.t("resources.none"))
         if pages > 1:
             body.append(t.t("resources.page", n=page + 1, total=pages))
-        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
+        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))
         body += ["", space]
         actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
         actions.append(Action(id="bag", label=t.t("menu.back")))
@@ -5261,21 +5315,18 @@ class GameService:
     # ------------------------------------------------------------------ combat
 
     def _zone_enemies(self, zone: Zone) -> list[tuple[str, dict[str, Any]]]:
-        """Enemies that can show up in a zone: its biome and level; if none fit, its biome; if none, every common one.
+        """Enemies that can show up in a zone: its biome and level; if none fit, the closest band of its biome (D-108).
 
         [ES] Qué hace: los enemigos que salen en una zona (nunca jefes ni retirados). La llaman: _start_combat (encuentros,
         emboscadas y cacería) y la pantalla 🏹 Cazar (🐾 Por aquí rondan). Si cambia, afecta: qué enemigos salen en todo el mapa.
         """
-        common = [(eid, e) for eid, e in self.content.enemies.items() if not e.get("boss") and not e.get("retired")]
-        candidates = [(eid, e) for eid, e in common if zone.biome in e.get("biomes", [])]
-        fitting = [(eid, e) for eid, e in candidates if e["level_min"] <= zone.level <= e["level_max"]]
-        return fitting or candidates or common
+        return encounter_pool(self.content.enemies, zone.biome, zone.level)     # D-108: the biome's band, or the closest one
 
     def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str, mark: dict[str, Any] | None = None) -> str:
         """Start a fight against a common enemy of the zone; `mark` adds keys to the fight state (a hunt, D-106)."""
         pool = self._zone_enemies(zone)
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
-        level = max(enemy_def["level_min"], min(enemy_def["level_max"], zone.level + (1 if rng.chance(0.3) else 0)))
+        level = clamp_level(enemy_def, zone.level + (1 if rng.chance(0.3) else 0))
         seed = int(rng.random() * 2**31)
         state = make_combat(enemy_id, enemy_def, level, self._kit(hero), seed)
         if mark:

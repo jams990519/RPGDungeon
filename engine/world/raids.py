@@ -12,7 +12,8 @@ de la Noche de prueba antes de castillo: cuántas victorias hacen falta, cuándo
 enemigo ataca (y su versión élite) y cuánta comida se pierde si no alcanzan.
 Documento de diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.5, §6.1-6.2, §7.2 y §15 (D-99, provisional)
 Módulo: M9 Frontera y Fundación (vive en engine/world hasta que exista engine/front)
-Depende de: ninguno (los números llegan de content/balance.yaml, bloque raids; los enemigos de content/enemies.yaml)
+Depende de: engine/world/encounters.py (qué enemigos caben en el bioma y el nivel, D-108); los números llegan de
+    content/balance.yaml, bloque raids; los enemigos de content/enemies.yaml
 Lo usan: engine/service/game.py (_raid_settle, _open_raid, _defend, _resolve_raid, _trial_view)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
@@ -33,6 +34,8 @@ from __future__ import annotations
 
 import math
 from typing import Any
+
+from engine.world.encounters import clamp_level, encounter_pool
 
 
 def required_wins(active: int, share: float, minimum: int) -> int:
@@ -86,13 +89,10 @@ def pick_enemy(enemies: dict[str, Any], biome: str, level: int, strongest: bool 
     La llama: el servicio al abrir una incursión o al mostrar la Noche de prueba.
     Si cambia, afecta: contra qué pelean los defensores.
     """
-    common = [(eid, e) for eid, e in enemies.items() if not e.get("boss") and not e.get("retired")]
-    candidates = [(eid, e) for eid, e in common if biome in e.get("biomes", [])]
-    fitting = [(eid, e) for eid, e in candidates if e["level_min"] <= level <= e["level_max"]]
-    pool = fitting or candidates or common
+    pool = encounter_pool(enemies, biome, level)        # D-108: same rule as the normal encounters
 
     def clamp(e: dict[str, Any]) -> int:
-        return max(e["level_min"], min(e["level_max"], level))
+        return clamp_level(e, level)
 
     if strongest:
         enemy_id, enemy_def = max(pool, key=lambda pair: (power(pair[1], clamp(pair[1])), pair[0]))

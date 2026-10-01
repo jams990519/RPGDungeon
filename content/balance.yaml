@@ -69,7 +69,7 @@ regen:
 
 hero:
   start_gold: 10
-  belt_slots: {pocion_vida: 3, venda: 2, pocion_mayor: 1}     # [ES] cuánto cabe en el cinturón de cada cosa (D-109: 1 🍷 poción mayor, la hace la Alquimia)
+  belt_slots: {pocion_vida: 3, venda: 2, pocion_mayor: 1, unguento: 2, botiquin: 1, vendaje_maestro: 1}     # [ES] cuánto cabe en el cinturón de cada cosa (D-109: 1 🍷 poción mayor, la hace la Alquimia; D-111: ungüentos, botiquín y vendaje de la Medicina)
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
   backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan).

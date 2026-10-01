@@ -289,7 +289,8 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
         hero.belt[item_id] -= 1
         if hero.belt[item_id] <= 0:
             del hero.belt[item_id]
-        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item.get("heal", 0.0)))
+        boost = class_def.get("item_bonus", {}).get(item.get("kind"), 0.0)      # D-111: Alquimia (potions), Medicina (bandages)
+        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item.get("heal", 0.0) * (1 + boost)))
         hero.hp += healed
         hs["toxicity"] += item.get("toxicity", 0)
         lines.append(t.t("combat.item_used", item=t.t(item["name_key"]), amount=healed))
@@ -338,8 +339,8 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
                         lines.append(t.t("combat.interrupted", move=move_name))
                     else:
                         lines.append(t.t("combat.not_interruptible", move=move_name))
-            elif akind == "heal":
-                healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * ability.get("value", 0.0)))
+            elif akind == "heal":                       # D-111: 🩺 Medicina heals more for healers (heal_bonus)
+                healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * ability.get("value", 0.0) * (1 + class_def.get("heal_bonus", 0.0))))
                 hero.hp += healed
                 lines.append(t.t("combat.heal", action=name_of(ability), amount=healed))
             elif akind == "dot":
@@ -404,7 +405,7 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
             enemy["dot"] = None
 
     if hs.get("hot") and hero.hp > 0:
-        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * hs["hot"]["value"]))
+        healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * hs["hot"]["value"] * (1 + class_def.get("heal_bonus", 0.0))))
         if healed > 0:
             hero.hp += healed
             lines.append(t.t("combat.hot_tick", amount=healed))

@@ -1355,6 +1355,32 @@ pocion_mayor:
   belt: true
   price: 18                  # [ES] solo la hace la Alquimia (rango 25): el mercader no la vende
 
+unguento:
+  name_key: item.unguento
+  emoji: "🫙"
+  kind: bandage              # [ES] D-111: cura como una venda mejor; la 🩺 Medicina (vendas +30 %) lo potencia. Sin toxicidad
+  heal: 0.22
+  toxicity: 0
+  belt: true
+  price: 8                   # [ES] solo lo hace la Medicina: el mercader no lo vende
+botiquin:
+  name_key: item.botiquin
+  emoji: "🧰"
+  kind: bandage              # [ES] D-111: la cura grande sin toxicidad (Medicina rango 25)
+  heal: 0.35
+  toxicity: 0
+  belt: true
+  price: 16
+
+vendaje_maestro:
+  name_key: item.vendaje_maestro
+  emoji: "🩻"
+  kind: bandage              # [ES] D-111: la mejor cura sin toxicidad (Medicina rango 50, pide 🌸 flor de luna del herbolario)
+  heal: 0.5
+  toxicity: 0
+  belt: true
+  price: 30
+
 # Crafted gear (D-109). source: crafted -> never in random loot (engine/hero/gear.py); only from a recipe.
 # [ES] Equipo de artesano (D-109): rango 1 = como el botín poco común del nivel 3; rango 25 = como el raro del nivel 5
 # y algo más; rango 50 = como el épico del nivel 8 y algo más (lo que hace necesario al artesano). Con source: crafted

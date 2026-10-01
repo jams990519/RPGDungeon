@@ -116,7 +116,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 🪓 Leñador | Recolectores | **+10** de espacio en la mochila | — |
 | 🧭 Explorador (D-112) | Quien explora | Hasta **+5 puntos** de porcentaje por vuelta, y con el rango ve más en el mapa (campamentos enemigos, distancias, su fuerza) e infiltra campamentos ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | — |
 | 🔪 Desollador | Ataque | **+4 %** de ataque | Maestro de anatomía |
-| Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **15 %** de sacar una unidad extra al refinar | El retorno de *Albion* |
+| Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **30 %** de sacar una unidad extra al refinar (0,3 % por rango, ya en la fase 1; +10 % en una estación del campamento) | El retorno de *Albion* |
 | 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
 | 🧶 Peletería | Quien usa cuero o malla (pícaro, druida, monje, cazador de demonios, bardo, cazador, chamán, evocador) | **+4 %** de ataque y **+3 %** de vida | Refuerzo de brazales |
 | 🧵 Sastrería | Quien usa tela (sacerdote, mago, brujo, nigromante) | **+5 %** de ataque (poder de hechizos) | Bordado de capa |
@@ -125,7 +125,8 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 💍 Joyería | Todos | **+3 %** de vida y de ataque | Gemas de joyero |
 | 🩺 Medicina | Sanadores (rol de curación) | Tus curaciones curan un **15 %** más; las vendas, un **30 %** más | Primeros auxilios |
 
-- **🩺 Medicina entra en la fase 1** como oficio de fabricación: sube haciendo vendas y ungüentos (tela + hierba o extracto) y sus productos curan en combate. Más adelante crece hacia el médico de §2.3 (diagnósticos, cirugías).
+- **En el juego desde la 0.16.** Cada oficio empezado da su beneficio según su rango; ⚒️ Oficios muestra "✨ Beneficio ahora" en cada uno. Los de ataque, vida y armadura entran en tus estadísticas; el de la Medicina, en tus curaciones (si eres sanador) y en vendas, ungüentos y botiquines; el de la Alquimia, en las pociones (en combate y fuera); el del Herbolario, en la vida que vuelve sola; el del Leñador, en el espacio de la mochila. Datos: `perk` de cada oficio en `content/professions.yaml`; cuentas en `engine/professions/rules.py` (`perks`).
+- **🩺 Medicina** es oficio de fabricación: sube haciendo 🫙 ungüentos (extracto + tela; cura 22 %, rango 1), 🧰 botiquines (extracto, tela y cuero; cura 35 %, rango 25) y 🩻 vendajes de maestro (con 🌸 flor de luna; cura 50 %, rango 50), sin toxicidad. Más adelante crece hacia el médico de §2.3 (diagnósticos, cirugías).
 - **Se suman todos los que tengas** (D-57: sin tope de oficios); el freno es el tiempo de subir cada uno al 100. Si en la beta pesa demasiado, se decide en P-76.
 - Los números son propuesta de Claude y se comprueban en la pasada de balance de D-110, con la simulación del 1 al 100.
 

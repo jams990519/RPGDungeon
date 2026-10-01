@@ -323,6 +323,52 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 **Lo que queda por mirar:** si explorar compite demasiado con pelear para subir de nivel (la meta de 100 niveles en 2-3 años, D-78).
 
+### Octubre de 2026: el bestiario por niveles (D-108)
+
+**Por qué.** El dueño pidió que cada camino llegue al nivel 100 sin aburrir (D-108, confirmada). Antes casi todos los enemigos llegaban hasta el nivel 16: más arriba, pelear y cazar era el bandido errante una y otra vez. Se sumaron **87 enemigos** en `content/enemies.yaml` (sección D-108, al final del archivo), con sus textos en `content/locales/es.yaml`. Son números **nuevos**: ningún enemigo que ya estaba cambió, ni `balance.yaml`. La lista por bioma está en [Bestiario](../06-contenido/bestiario.md), «En el juego».
+
+**Números nuevos:**
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Franjas | 1-15, 12-30, 25-45, 40-60, 55-75, 70-90, 85-100, que se pisan | Cada bioma con peligro tiene al menos 2 enemigos propios en cada nivel del 2 al 100, sin contar al bandido (`tests/test_bestiary.py`) |
+| Curva de base | vida 75 + 13 por nivel; ataque 10 + 1,5 por nivel | La del bandido errante, que ya escalaba parejo del 3 al 99: con equipo poco común deja el 67-75 % de la vida a cualquier nivel |
+| Moldes (vida × ataque, defensa, iniciativa) | fiera 1,35 × 1,2, 5 %, 13 · bruto 1,42 × 1,05, 20 %, 6 · coraza 1,22 × 1,0, 38 %, 5 · veneno 1,05 × 1,18, 12 %, 12 · espectro 1,13 × 1,32, 0 %, 11 · soldado 1,35 × 1,1, 20 %, 9 · enjambre 0,95 × 1,2, 0 %, 15 | Ajustados con el simulador para que cada molde deje entre el 52 % y el 67 % de la vida: se gana casi siempre, pero cuesta |
+| Franja (multiplica vida y ataque) | 0,85 (zonas bajas de montaña, tundra, desierto y ruinas) · 0,95 (niveles 6-17) · 1,0 · 1,02 · 1,04 · 1,05 · 1,06 · 1,08 (franjas 2 a 7) | El mundo se pone un poco más duro a medida que te alejas, sin cambiar el ritmo |
+| Experiencia de base | 34 · 40 · 42 · 42 · 43 · 43 · 44 · 44 según la franja, × molde (bruto 1,12, coraza 1,08, soldado 1,05, fiera 1,0, veneno y espectro 0,97, enjambre 0,9) | Crece poco con la franja para que el ritmo de D-108 no cambie (cuenta abajo) |
+| Monedas | de 2-6 (franja 1) a 6-14 (franja 7); las bestias, 1-2 menos; la gente y los gigantes, 2-3 más | Como antes, `gold` se multiplica por 1 + 0,1 × (nivel − 1) |
+| Botín | material principal del 20 % (franja 1) al 50 % (franja 7), el segundo 12 puntos menos; pociones o vendas del 9 % al 19 % en la gente y los espectros; 🍖 carne 40-60 % en las bestias que se comen (D-93) | El botín crece con la franja |
+| Golpes | sin mecánicas nuevas; desde la franja 5, 3 golpes o más: brutos, venenosos y enjambres suman un segundo golpe grande (1,7 a 1,8); los demás, una carga | Variedad: hay que leer el aviso para elegir la respuesta |
+
+**Cómo se midió.** Con las funciones de `tools/sim.py` (las del modo `--boss`): cada enemigo nuevo a su nivel mínimo, medio y máximo, contra un héroe del mismo nivel con sus nivel − 1 puntos en la especialización (barra automática y pasivas), juego atento, cinturón lleno (3 🧪 y 2 🩹) y, en las 7 ranuras, la mejor pieza normal de su tipo hasta el nivel de pieza indicado. Las 45 especializaciones, 20 peleas por punto. La referencia es **equipo poco común (nivel de pieza 2)**, lo que tiene casi cualquier héroe después del nivel 3.
+
+| Franja | Enemigos | Victorias (media) | Peor especialización | Vida que queda | Rondas |
+|---|---|---|---|---|---|
+| 1-15 (relleno) | 13 | 100 % | 95 % (Nigromante Plaga contra el Jabalí colmillo de hierro, nivel 17) | 55-76 % | 11,7 |
+| 12-30 | 17 | 100 % | 95 % (Nigromante Plaga contra el Ogro del puente, nivel 21) | 52-62 % | 12,4 |
+| 25-45 | 13 | 99,9 % | 85 % (Nigromante Plaga contra el Trol de las colinas, nivel 25) | 53-65 % | 12,9 |
+| 40-60 | 11 | 99,9 % | 85 % (Bardo Duelista contra el Wyrm joven de las dunas, nivel 43) | 55-67 % | 10,9 |
+| 55-75 | 11 | 99,9 % | 80 % (Druida Feral contra el Draco de escarcha, nivel 65) | 55-65 % | 12,2 |
+| 70-90 | 11 | 99,8 % | 75 % (Mago Arcano contra la Abominación del cieno, nivel 90) | 54-66 % | 12,5 |
+| 85-100 | 11 | 99,8 % | 80 % (Mago Arcano contra el Titán de las llanuras, nivel 100) | 54-64 % | 12,9 |
+
+- Con el mismo juego, los enemigos de antes dejan: bandido errante 67-75 %, lobo ceniciento 87 %, oso de las cumbres y caimán de lodo 53 %. Los nuevos quedan entre el bandido y el oso.
+- Con equipo raro (nivel de pieza 3): 100 % de media, la peor especialización 90 % o más, 56-80 % de vida.
+- Con el equipo inicial (nivel de pieza 1): 98-100 % de media, pero las especializaciones con poca vida (Mago Arcano, Druida Feral, Bardo Duelista, Nigromante Plaga, Pícaro) ganan solo el 30-55 % contra los brutos de las franjas altas.
+- `tools/sim.py --summary --real` (enemigos de nivel 1 a 3, juego básico) no cambia: la peor sigue siendo 90 % contra el Oso de las cumbres; los 7 enemigos nuevos de nivel bajo no bajan a nadie.
+
+**El ritmo de D-108.** Con una pelea ganada cada 2 ⚡ (20 por día) en zonas de tu nivel, promediando los 8 biomas con peligro y el 30 % de enemigos con un nivel más, el nivel 100 llega en **1,81 años** (antes, con el bandido solo arriba del 16, en 1,80). Experiencia por pelea: al nivel 50, 376 (antes 378); al nivel 90, 654 (antes 648). `tests/test_bestiary.py` comprueba que el ritmo quede entre 1,7 y 2,1 años.
+
+**Qué enemigo sale (arreglo).** La regla de los encuentros pasó a `engine/world/encounters.py` y la usan también las incursiones. Antes, en una zona sin enemigo para su nivel salía cualquiera del bioma con su nivel tope (en una zona de nivel 120, un lobo de nivel 6). Ahora salen los de la franja más cercana.
+
+**Efecto en las incursiones (D-99).** La Noche de prueba trae al más fuerte del bioma, y antes, arriba del nivel 16, ese era siempre el bandido: con equipo inicial se ganaba el 83-93 % de las veces. Ahora es un monstruo de la franja (un bruto casi siempre) y se gana el 37-57 % con equipo inicial y el 58-74 % con equipo poco común, al nivel de la zona: vuelve a parecerse a lo que pedía D-99 («cerca de la mitad»). En las zonas de nivel 10 se volvió más fácil (54 % contra 23 % antes), porque ya no trae al caimán o al oso cavernario sino otro de la misma franja. La incursión semanal sigue ganándose casi siempre.
+
+**Lo que queda por mirar:**
+- **Equipo de nivel alto:** las piezas llegan solo hasta el nivel requerido 8, y el botín elige piezas entre el nivel del enemigo − 4 y + 1 (`gear.level_window`): los enemigos de nivel 13 o más no sueltan equipo. Hace falta equipo por franjas (va con la pasada de clases de D-110, porque mueve el poder de todos).
+- **Especializaciones con poca vida** a niveles altos con el equipo inicial (lista de arriba): para la pasada de clases de D-110.
+- **La piel de los oficios (D-109):** cuando entren los oficios, sumar la piel a las bestias nuevas (las que sueltan 🍖 carne).
+- `tools/sim.py --bars` y el modo sin opciones recorren ahora 104 enemigos: tardan más. Si molesta, filtrar por los enemigos que caben en el nivel medido.
+
 ### Octubre de 2026: las incursiones de los campamentos (D-99, provisional)
 
 **Por qué.** Segunda parte de "construir no alcanza", después de la despensa: desde que se fundan (D-105; antes desde pueblo, nivel 5) los campamentos de jugadores reciben una incursión ("oleada") por semana, y pasar a castillo pide ganar la Noche de prueba (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §7.2). El Claro nunca tiene incursiones: es el campamento base (D-95, D-98). Son números **nuevos**, no movidos, y se ajustan en la beta.
@@ -455,3 +501,24 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 año, nivel ~47 en ese tiempo), así que su "nivel de trabajo" es siempre su nivel y no lo frena. Quien llega de nivel alto y empieza un oficio en rango 1 gana 20 por ⚡: un novato aprende poco. Refinar en el Claro con madera juntada ahí mismo (zona de nivel 1, sin peligro) rinde cerca del 70 % de recolectar en una zona de tu nivel: lo seguro rinde menos, como el territorio propio.
 
 **Lo que queda por mirar:** si 2 ⚡ por pieza de equipo es mucho o poco cuando llegue el mercado (y si conviene que la tanda cueste menos energía por pieza), si el rango 10 de los raros es demasiado pronto o tarde para la Joyería, cuánta piel entra al juego con la cacería (D-106), si los precios de lo refinado dejan algún hueco para ganar monedas, y el equipo de artesano cuando haya botín por encima del nivel 8 (el bestiario de nivel alto).
+
+### Octubre de 2026: el beneficio de cada oficio (D-111)
+
+**Por qué.** El dueño pidió que cada oficio dé un beneficio propio a un tipo de jugador, que crezca con la experiencia, como en World of Warcraft. Son números **nuevos** (`content/professions.yaml` → `perk` de cada oficio) y crecen parejos con el rango: al 50, la mitad; al 100, el valor entero.
+
+| Oficio | Al rango 100 | Solo si |
+|---|---|---|
+| 🪓 Leñador | +10 de espacio en la mochila | — |
+| ⛏️ Minero | +5 % de vida | — |
+| 🌿 Herbolario | vida que vuelve sola 20 % más rápido | — |
+| 🔪 Desollador | +4 % de ataque | — |
+| 🪑 Carpintería | +4 % de ataque | peleas con arco o bastón |
+| 🔨 Herrería | +3 puntos de armadura (tope 60 %) | llevas placas |
+| 🦺 Peletería | +4 % de ataque y +3 % de vida | llevas cuero o malla |
+| 🪡 Sastrería | +5 % de ataque | llevas tela |
+| ⚗️ Alquimia | pociones +30 % | — |
+| 💍 Joyería | +3 % de vida y de ataque | — |
+| 🩺 Medicina | curaciones +15 %; vendas, ungüentos y botiquines +30 % | lo primero, si eres sanador |
+
+**Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76.
+

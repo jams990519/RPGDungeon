@@ -1,6 +1,6 @@
 # Bestiario
 
-> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Daño y estados](../04-combate/dano-y-estados.md), [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Enfermedades](../05-salud/enfermedades.md) · **Se conecta con:** [Cacerías](cacerias.md), [Jefes](jefes.md), [Heridas](../05-salud/heridas.md), [Mente](../05-salud/mente.md), [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) · **Estado:** propuesta
+> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Daño y estados](../04-combate/dano-y-estados.md), [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Enfermedades](../05-salud/enfermedades.md) · **Se conecta con:** [Cacerías](cacerias.md), [Jefes](jefes.md), [Heridas](../05-salud/heridas.md), [Mente](../05-salud/mente.md), [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) · **Estado:** propuesta; la sección «En el juego» (franjas por nivel, D-108) ya está en el juego
 
 > **Nota (D-58 y D-46).** Los anillos (I a X) y las Lejanías son los del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md). El combate usa la barra de 6 botones de D-46: no hay acción rápida ni formación que elegir.
 
@@ -27,6 +27,63 @@ Pediste una **alta variedad de monstruos**, incluso con la posibilidad de pegart
 - Cada familia pide otra cosa (fuego, plata, luz, máscaras, apuntar a las piernas) y **cada cosa la fabrica un oficio**.
 - Las enfermedades de monstruo le dan trabajo a médicos y alquimistas.
 - Las poblaciones hacen que el mundo cambie según lo que cazan los jugadores.
+
+---
+
+## En el juego: el bestiario por niveles (D-108)
+
+> Esto es lo que ya está en el juego. El resto del documento (partes, contagio, conocimiento, modificadores, ecología, únicos con nombre) sigue siendo propuesta.
+
+El dueño pidió (D-108, confirmada) que cada camino, también pelear y cazar, lleve al nivel 100 sin aburrir. Antes casi todos los enemigos llegaban hasta el nivel 16, y más arriba solo quedaba el bandido errante. Ahora:
+
+- **Cada bioma con peligro tiene al menos 2 enemigos propios en cada nivel del 2 al 100**, sin contar al bandido errante (que sale en todos, del nivel 3 al 99). Van en **7 franjas que se pisan**: 1-15, 12-30, 25-45, 40-60, 55-75, 70-90 y 85-100. En casi todos los niveles hay 3 o más para encontrarse.
+- **Qué enemigo sale:** uno al azar entre los del bioma de la zona cuya franja tiene el nivel de la zona (`level_min` a `level_max` en `content/enemies.yaml`). El nivel de la zona es 1 + 0,9 × Lejanía, así que el nivel 100 queda cerca de la Lejanía 110. El enemigo sale con el nivel de la zona, o con uno más (30 %), sin pasarse de su franja. Más allá de la última franja (zonas de nivel 101 o más) salen los de la franja más alta, con su nivel máximo: nunca un lobo de nivel 6 lejos del Claro. Las incursiones de los campamentos usan la misma regla (`engine/world/encounters.py`).
+- **Cómo pelean:** sin mecánicas nuevas. Usan lo que el combate ya tiene: golpes que se bloquean, se esquivan o se interrumpen, golpes grandes con aviso y cargas (si no las cortas, el golpe siguiente pega más). Desde la franja 5 todos tienen 3 golpes o más: los brutos, los venenosos y los enjambres suman un segundo golpe grande que pide otra respuesta; los demás, una carga.
+- **Sus números salen de un molde** (su familia) y de su franja, sobre la curva del bandido errante (vida 75 + 13 por nivel; ataque 10 + 1,5 por nivel). Así, sumar un enemigo nuevo no pide medir todo de nuevo:
+
+| Molde | Vida | Ataque | Defensa | Iniciativa | Familias de §4 |
+|---|---|---|---|---|---|
+| Fiera | × 1,35 | × 1,2 | 5 % | 13 | Bestias rápidas, aves de presa, licántropos |
+| Bruto | × 1,42 | × 1,05 | 20 % | 6 | Bestias grandes, gigantes, dracónidos grandes, aberraciones |
+| Coraza | × 1,22 | × 1,0 | 38 % | 5 | Gólems y constructos, criaturas de cristal, plantas, escarabajos y escorpiones |
+| Veneno | × 1,05 | × 1,18 | 12 % | 12 | Reptiles, arácnidos, aves carroñeras, salamandras |
+| Espectro | × 1,13 | × 1,32 | 0 % | 11 | Espectros, elementales, feéricos, cultistas, liches, fénix |
+| Soldado | × 1,35 | × 1,1 | 20 % | 9 | Humanoides, no muertos armados, centauros, caballeros |
+| Enjambre | × 0,95 | × 1,2 | 0 % | 15 | Langostas, mosquitos, murciélagos, polillas, remolinos |
+
+La franja multiplica vida y ataque: × 0,85 en las zonas bajas de montaña, tundra, desierto y ruinas; × 0,95 en los niveles 6 a 17; y de × 1,0 a × 1,08 de la franja 2 a la 7 (el mundo se pone un poco más duro a medida que te alejas).
+
+- **Experiencia:** de 42 a 44 de base según la franja (34 y 40 en la franja 1), por el molde (los brutos dan 12 % más; los enjambres, 10 % menos), y +15 % por cada nivel del enemigo (`hero.xp_level_scale`). Con una pelea ganada cada 2 ⚡ (20 por día) en zonas de tu nivel, el nivel 100 llega en **~1,8 años**, el ritmo de D-108 (ver [Progresión](../03-personaje/progresion.md) §1.2 y el registro de [Balance](../03-personaje/balance.md) §7).
+- **Botín:** las monedas y la probabilidad de materiales crecen con la franja (el material principal, del 20 % al 50 %; pociones o vendas, del 9 % al 19 % en la gente y los espectros). Las bestias que se comen sueltan 🍖 carne (40-60 %, 1 o 2 piezas, D-93) y menos monedas; la gente y los gigantes, más monedas. El equipo cae como siempre, según el nivel del enemigo; pero hoy las piezas llegan solo hasta el nivel requerido 8, así que los enemigos de nivel 13 o más no sueltan equipo hasta que se sumen piezas de nivel alto (queda anotado en el registro de [Balance](../03-personaje/balance.md) §7).
+- **Medido con el simulador** (`tools/sim.py`: juego atento, cinturón lleno, equipo poco común): un héroe del nivel de la franja gana el 99,8 % de las peleas de media, ninguna especialización baja del 75 % y termina con 52-67 % de la vida. Se gana casi siempre, pero cuesta.
+
+### Los enemigos de cada bioma
+
+🍖 = suelta carne. Entre paréntesis, sus niveles. El bandido errante (3-99) sale además en todos.
+
+| Franja | 🌾 Pradera | 🌲 Bosque | ⛰️ Colinas | 🐸 Pantano |
+|---|---|---|---|---|
+| **1-15** | Lobo ceniciento 🍖 (1-6)<br>Jabalí espinoso 🍖 (2-8)<br>Víbora de hierba 🍖 (2-8)<br>Mantis segadora 🍖 (3-9)<br>Esqueleto soldado (2-10)<br>Lobo gris 🍖 (6-16)<br>Jabalí colmillo de hierro 🍖 (7-17)<br>Espantapájaros animado (6-16) | Lobo ceniciento 🍖 (1-6)<br>Jabalí espinoso 🍖 (2-8)<br>Araña tejedora 🍖 (1-6)<br>Tortuga musgosa 🍖 (1-7)<br>Hongo esporón (1-5)<br>Limo verde (1-7)<br>Lobo gris 🍖 (6-16)<br>Enredadera estranguladora (6-16)<br>Fuego fatuo (6-16) | Lobo ceniciento 🍖 (1-6)<br>Jabalí espinoso 🍖 (2-8)<br>Víbora de hierba 🍖 (2-8)<br>Mantis segadora 🍖 (3-9)<br>Oso cavernario 🍖 (3-12)<br>Cabra montés 🍖 (1-9)<br>Kóbold minero (2-12)<br>Jabalí colmillo de hierro 🍖 (7-17) | Rata del pantano 🍖 (1-10)<br>Tortuga musgosa 🍖 (1-7)<br>Hongo esporón (1-5)<br>Limo verde (1-7)<br>Caimán de lodo 🍖 (4-14)<br>Enredadera estranguladora (6-16) |
+| **12-30** | Ogro del puente (12-30)<br>Langosta de plaga 🍖 (12-30)<br>Chispa errante (13-30) | Araña nodriza 🍖 (12-30)<br>Hada de espinas (12-30) | Ogro del puente (12-30)<br>Lobo bicéfalo 🍖 (12-30)<br>Cíclope de cantera (14-30) | Araña nodriza 🍖 (12-30)<br>Sanguijuela gigante (12-30)<br>Enjambre de mosquitos (12-28) |
+| **25-45** | León de la estepa 🍖 (25-45)<br>Centauro salvaje (25-45) | Pantera sombría 🍖 (25-45)<br>Micelio andante (25-45) | León de la estepa 🍖 (25-45)<br>Trol de las colinas (25-45) | Micelio andante (25-45)<br>Basilisco de pantano 🍖 (26-45)<br>Necrófago (25-45) |
+| **40-60** | Bisonte de trueno 🍖 (40-60)<br>Asaltante de caravanas (40-60) | Licántropo salvaje (40-60)<br>Dríade marchita (41-60) | Bisonte de trueno 🍖 (40-60)<br>Wyvern de peñasco 🍖 (41-60) | Gigante del fango (40-60)<br>Cultista de la podredumbre (40-60) |
+| **55-75** | Mantícora 🍖 (55-75)<br>Gigante de tormenta (56-75) | Árbol hueco (55-75)<br>Osolechuza 🍖 (56-75) | Gigante de tormenta (56-75)<br>Gólem de granito (55-75) | Árbol hueco (55-75)<br>Hidra del pantano 🍖 (55-75) |
+| **70-90** | Behemot de la estepa 🍖 (70-90)<br>Jinete espectral (71-90) | Sierpe esmeralda 🍖 (70-90)<br>Caballero de la corte marchita (71-90) | Behemot de la estepa 🍖 (70-90)<br>Roc de las alturas 🍖 (70-90) | Sierpe esmeralda 🍖 (70-90)<br>Abominación del cieno (70-90) |
+| **85-100** | Quimera 🍖 (85-100)<br>Titán de las llanuras (86-100) | Licántropo alfa (85-100)<br>Polilla lunar (86-100) | Quimera 🍖 (85-100)<br>Gigante de las nubes (85-100) | Polilla lunar (86-100)<br>Leviatán del cieno 🍖 (85-100) |
+
+| Franja | 🏔️ Montaña | 🏜️ Desierto | ❄️ Tundra | 🏚️ Ruinas |
+|---|---|---|---|---|
+| **1-15** | Oso de las cumbres 🍖 (3-16)<br>Oso cavernario 🍖 (3-12)<br>Cabra montés 🍖 (1-9)<br>Kóbold minero (2-12)<br>Búho nival 🍖 (2-11)<br>Lobo de las nieves 🍖 (6-16) | Escorpión de arena 🍖 (2-14)<br>Chacal del desierto 🍖 (1-9)<br>Escarabajo de duna 🍖 (2-12) | Oso de las cumbres 🍖 (3-16)<br>Zorro polar 🍖 (1-9)<br>Búho nival 🍖 (2-11)<br>Lobo de las nieves 🍖 (6-16) | Espectro de las ruinas (2-14)<br>Esqueleto soldado (2-10)<br>Poltergeist (2-10)<br>Murciélago de cripta (1-8)<br>Fuego fatuo (6-16) |
+| **12-30** | Lobo bicéfalo 🍖 (12-30)<br>Cíclope de cantera (14-30)<br>Elemental de piedra (13-30) | Buitre de hueso 🍖 (12-30)<br>Hiena rayada 🍖 (14-30)<br>Momia de arena (13-30) | Elemental de piedra (13-30)<br>Uro lanudo 🍖 (12-30)<br>Glotón de las nieves 🍖 (12-30) | Momia de arena (13-30)<br>Gárgola de ruinas (12-30)<br>Saqueador de tumbas (14-30) |
+| **25-45** | Trol de las colinas (25-45)<br>Grifo de montaña 🍖 (25-45)<br>Ventisquero (27-45) | Tigre de duna 🍖 (25-45)<br>Escorpión de vidrio 🍖 (26-45) | Oso polar 🍖 (25-45)<br>Ventisquero (27-45) | Necrófago (25-45)<br>Plañidera (25-45) |
+| **40-60** | Wyvern de peñasco 🍖 (41-60)<br>Gigante de escarcha (42-60) | Asaltante de caravanas (40-60)<br>Remolino de arena (40-60)<br>Wyrm joven de las dunas 🍖 (43-60) | Licántropo salvaje (40-60)<br>Gigante de escarcha (42-60) | Cultista de la podredumbre (40-60)<br>Caballero hueco (40-60) |
+| **55-75** | Gólem de granito (55-75)<br>Draco de escarcha 🍖 (56-75) | Mantícora 🍖 (55-75)<br>Centinela de vidrio (56-75) | Draco de escarcha 🍖 (56-75)<br>Novia de escarcha (55-75) | Soldado fantasma (55-75)<br>Autómata de ruinas (56-75) |
+| **70-90** | Roc de las alturas 🍖 (70-90)<br>Salamandra de lava 🍖 (70-90) | Salamandra de lava 🍖 (70-90)<br>Gusano de las arenas 🍖 (71-90) | Mamut de guerra 🍖 (70-90)<br>Espectro glacial (71-90) | Jinete espectral (71-90)<br>Centinela rúnico (70-90) |
+| **85-100** | Gigante de las nubes (85-100)<br>Fénix de ceniza (86-100)<br>Wyrm de hielo 🍖 (85-100) | Fénix de ceniza (86-100)<br>Escorpión emperador 🍖 (85-100) | Licántropo alfa (85-100)<br>Wyrm de hielo 🍖 (85-100) | Liche errante (85-100)<br>Engendro del umbral (86-100) |
+
+**De dónde sale.** Casi todos los nombres salen de las familias de §4 de este documento (Ogro del puente, Cíclope de cantera, Necrófago, Basilisco de pantano, Tigre de duna, Licántropo salvaje, Dríade marchita, Caballero hueco, Draco de escarcha, Novia de escarcha, Soldado fantasma, Autómata de ruinas, Árbol hueco, Centinela rúnico, Polilla lunar, Fénix de ceniza…), pasados de anillo a franja de nivel. Los demás vienen de mitos y juegos de rol clásicos: la Mantícora, la Quimera, la Hidra y el Roc (mitos antiguos), el Behemot y el Leviatán (la Biblia), la Osolechuza y el Liche (*Dungeons & Dragons*), el Kóbold (folclore alemán) y el Gusano de las arenas (*Dune*).
+
+**Anillos y franjas.** Las tablas de §4 ubican a cada monstruo por anillo (I a X). En el juego, el nivel de la zona sigue a la Lejanía (1 + 0,9 × Lejanía): el anillo X empieza cerca del nivel 26 y el nivel 100 está hacia la Lejanía 110. Por eso el juego ordena a los monstruos por franja de nivel y no por anillo: un monstruo del anillo II en §4 puede estar en la franja 12-30.
 
 ---
 
