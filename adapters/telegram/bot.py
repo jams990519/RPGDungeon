@@ -113,8 +113,12 @@ def register(dp: Dispatcher, service: GameService) -> None:
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
         menu_ids = {a.label: a.id for a in service.menu()}
+        commands = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home"}
+        word = (message.text or "").split("@")[0].strip().lower()
         if message.text in menu_ids:
             view = service.act(account, menu_ids[message.text])
+        elif word in commands:
+            view = service.act(account, commands[word])
         elif message.text == MENU_LABEL or message.text.startswith("/"):
             if message.text == MENU_LABEL:
                 await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))

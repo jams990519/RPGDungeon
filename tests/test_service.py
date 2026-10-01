@@ -147,16 +147,16 @@ def test_shop_and_inn_in_claro(service, clock):
     hero["hp"] = 10
     service.store.put("hero", "test:1", hero)
     view = service.act("test:1", "buy:pocion_vida")
-    assert service.store.get("hero", "test:1")["gold"] == 38 and view.notice
+    assert service.store.get("hero", "test:1")["gold"] == 44 and view.notice
     service.act("test:1", "sell:all")
-    assert service.store.get("hero", "test:1")["gold"] == 38 + 2   # 2 herbs x 1
+    assert service.store.get("hero", "test:1")["gold"] == 44 + 2   # 2 herbs x 1
     view = service.act("test:1", "inn")
     assert view.kind == "activity"
     clock.advance(600)
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
     from engine.hero import hero_stats
-    assert hero["hp"] == hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] and hero["gold"] == 36
+    assert hero["hp"] == hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] and hero["gold"] == 42
 
 
 def test_shop_only_in_claro(service, clock):

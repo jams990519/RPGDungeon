@@ -11,7 +11,7 @@ pocion_vida:
   heal: 0.35
   toxicity: 40
   belt: true
-  price: 12
+  price: 6
 venda:
   name_key: item.venda
   emoji: "🩹"
@@ -19,7 +19,7 @@ venda:
   heal: 0.15
   toxicity: 0
   belt: true
-  price: 5
+  price: 3
 hierba_curativa:
   name_key: item.hierba_curativa
   emoji: "🌿"

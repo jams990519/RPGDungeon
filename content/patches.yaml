@@ -51,3 +51,12 @@ v0_5_3:
     - "Las clases se ven de a 3, con ▶️ Ver más clases. El botón ↩️ para volver a las clases funciona."
     - "💱 El mercader compra todos tus materiales de una vez."
     - "🔄 Reiniciar especialización está dentro de cada especialización, en 🌟 Talentos."
+
+v0_5_4:
+  version: "0.5.4"
+  title: "👤 Lost Realms 0.5.4: tu ficha de héroe"
+  notes:
+    - "👤 Nueva ficha de héroe: nivel con porcentaje, experiencia, vida, ataque y defensa, energía, tu recurso de combate y tus monedas (💰 Oro · 👝 Bolsas · 💎 Gemas)."
+    - "📊 /stats explica para qué sirve cada característica. /inv abre tu mochila y /habilidades tus talentos."
+    - "🧪 Pociones más baratas en el mercader del campamento: poción de vida 6 💰 y venda 3 💰."
+    - "📿 Sacerdote: Sombra es daño, Sagrado es curación y Disciplina vuelve a ser soporte, con Penitencia."

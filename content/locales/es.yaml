@@ -48,7 +48,7 @@ class:
     attack_name: "Puñalada"
   sacerdote:
     name: "📿 Sacerdote · Disciplina"
-    role: "se cura, se escuda y desgasta"
+    role: "previene el daño: escuda y debilita al enemigo"
     attack_name: "Castigo"
 
 ability:
@@ -69,7 +69,7 @@ ability:
   escudo_de_luz:
     name: "Escudo de luz"
   dolor:
-    name: "Dolor"
+    name: "Penitencia"
 
 resource:
   ira: "Ira"
@@ -263,10 +263,30 @@ map:
 
 hero:
   title: "👤 Tu héroe"
+  top_line: "{icon} {name} — 📍 {place}"
+  class_line: "{cls} · {role}"
+  level_pct: "🎖 Nivel {level} ({pct}%)"
+  xp_line: "🔥 Exp: {xp}/{next}"
+  stats_link: "📊 Estadísticas: /stats"
+  atk_def: "⚔️ Atk: {attack}  🛡 Def: {armor}%"
+  energy_line: "⚡ Energía: {energy}/{max_energy}"
+  resource_line: "🔷 {resource}: {value}/{max} (al empezar cada combate)"
+  coins_line: "💰 Oro: {gold}   👝 Bolsas: {bags}   💎 Gemas: {gems}"
+  inv_link: "🎒 Equipo y mochila: {n} — /inv"
+  skills_link: "🌟 Habilidades: /habilidades ({n} puntos sin usar) · En uso: {bar}"
+  status_title: "Estado:"
+  stats_button: "📊 Estadísticas"
+  status:
+    idle: "🧍 Libre"
+    travel: "🚶 De viaje"
+    explore: "🔎 Explorando"
+    gather: "🪓 Recolectando"
+    rest: "🛌 Descansando"
+    combat: "⚔️ En combate"
   status_line: "❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · 💰 {gold} · Nivel {level}"
   name_line: "{icon} {name} — {cls} ({role})"
   level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
-  hp_line: "❤️ Vida {hp}/{max_hp}"
+  hp_line: "❤️ HP: {hp}/{max_hp}"
   stats_line: "⚔️ Ataque {attack} · 🛡 Armadura {armor}% · ⚡ Iniciativa {initiative}"
   gold_line: "💰 Oro {gold}"
   record_line: "☠️ Enemigos vencidos {kills} · 🧭 Zonas descubiertas {zones}"
@@ -445,6 +465,8 @@ talents:
   new_point: "🌟 Ganaste 1 punto de talento: 👤 Héroe → 🌟 Talentos."
   bar: "Barra de combate: {abilities}"
   respec_button: "🔄 Reiniciar especialización · {cost} 💰"
+  no_spec: "sin especialización todavía"
+  no_role: "ganas tu primer punto de talento al subir de nivel"
   respec_done: "🔄 Pagaste {cost} 💰: tus puntos volvieron. Tienes {n} para repartir."
 
 camps:
@@ -478,3 +500,15 @@ camps:
     friendly: "🤝 Amistoso"
     hostile: "⚔️ Hostil"
     unknown: "❔ Todavía no respondieron si eres bienvenido."
+
+stats:
+  title: "📊 Estadísticas"
+  hp: "❤️ Vida máxima: {value} — si llega a 0, caes."
+  attack: "⚔️ Ataque: {value} — la base del daño de Atacar y de tus habilidades."
+  defense: "🛡 Defensa: {value}% — cuánto daño te ahorras de cada golpe."
+  initiative: "💨 Iniciativa: {value} — quién actúa antes en la ronda; actuar antes te deja interrumpir."
+  stamina: "🔋 Aguante: {value} — lo gastan las respuestas (bloquear, esquivar, escudos); vuelve 1 por ronda en que no respondes."
+  resource: "🔷 {resource}: hasta {value} — lo gastan tus habilidades; ⚔️ Atacar lo recupera."
+  energy: "⚡ Energía: {value}/{max} — 1 por cada viaje a una zona vecina; se recuperan 20 al día."
+  toxicity: "☠️ Toxicidad: máximo {value}% por combate — cada poción suma; llena, no puedes beber más."
+  talents: "🌟 Talentos: +{attack}% ataque · +{hp}% vida."
