@@ -5,8 +5,9 @@ from engine.core import Texts
 
 def test_classes_have_six_button_bar(content):
     for cid, cdef in content.classes.items():
-        assert len(cdef["abilities"]) == 3, cid  # Atacar + 3 habilidades (D-46)
-        assert any(a["kind"] == "response" for a in cdef["abilities"]), cid
+        # 8 abilities per active spec (D-79); the bar still shows Atacar + 3 (D-46). Retired specs keep their 3.
+        assert len(cdef["abilities"]) == (3 if cdef.get("retired") else 8), cid
+        assert any(a["kind"] == "response" for a in cdef["abilities"][:3]), cid
 
 
 def test_texts_exist_for_content(content):

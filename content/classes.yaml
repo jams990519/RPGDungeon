@@ -1,7 +1,9 @@
 # Classes and specializations: 15 classes, 46 specs (diseno/03-personaje/clases-y-especializaciones.md).
 # [ES] Clases y especializaciones. Cada entrada es una spec; "group" es su clase.
 # El orden del archivo es el orden en que se muestran las clases y sus specs (el del diseño).
-# Cada spec tiene Atacar + 3 habilidades (D-46), al menos una "respuesta" al aviso, y un recurso.
+# Cada spec tiene 8 habilidades (D-79): se desbloquean con puntos de talento (balance.yaml talents.unlock)
+# y el jugador lleva 3 en su barra de combate (Atacar + 3, D-46), siempre con una "respuesta" al aviso.
+# Las 3 primeras son las de siempre; las 5 nuevas se inspiran en World of Warcraft y son algo más fuertes.
 # Para qué sirve: definir las clases como datos; agregar una clase no requiere programar.
 # Lo usan: engine/combat, engine/hero, engine/service (creación del héroe).
 # Textos: content/locales/es.yaml (guerrero, picaro, sacerdote) y content/locales/es_clases.yaml (el resto).
@@ -10,6 +12,7 @@
 # IDs viejos: guerrero = Guerrero Protección, picaro = Pícaro Asesinato, sacerdote = Sacerdote Disciplina.
 # Campos de habilidad: kind =
 #   strike (power; lifesteal opcional: parte del daño que te cura) | finisher (power + per_combo; gasta combos)
+#   (las que no son respuesta aceptan también gain = recurso que dan; las que golpean, combo = combos que suman)
 #   heal (value × vida máx.) | dot (power, rounds) | interrupt (power; corta un golpe interruptible si actúas antes)
 #   response: block (frena value del golpe) | dodge (evita golpes esquivables) | shield (escudo de value × vida máx.)
 #   empower (pegas más) | expose (el enemigo recibe más) | weaken (el enemigo pega menos) | hot (cura por ronda): value, rounds
@@ -45,6 +48,33 @@ guerrero_furia:
       value: 0.6
       stamina: 1
       gain: 10
+    - id: sed_de_sangre
+      kind: strike
+      power: 1.3
+      lifesteal: 0.15
+      gain: 15
+      cooldown: 2
+    - id: reflejo_de_hechizos
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+    - id: temeridad
+      kind: empower
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: regeneracion_enfurecida
+      kind: heal
+      cost: 30
+      value: 0.25
+      cooldown: 5
+    - id: desenfreno
+      kind: strike
+      cost: 50
+      power: 2.5
+      cooldown: 3
 
 guerrero:
   group: guerrero
@@ -75,6 +105,32 @@ guerrero:
       cost: 40
       value: 0.25
       cooldown: 4
+    - id: golpe_con_escudo
+      kind: strike
+      power: 1.3
+      gain: 15
+      cooldown: 2
+    - id: grito_desmoralizador
+      kind: weaken
+      cost: 20
+      value: 0.25
+      rounds: 4
+      cooldown: 4
+    - id: venganza
+      kind: strike
+      cost: 30
+      power: 1.8
+    - id: muro_de_escudo
+      kind: response
+      response: block
+      value: 0.8
+      gain: 15
+      stamina: 2
+    - id: ultima_resistencia
+      kind: heal
+      cost: 30
+      value: 0.35
+      cooldown: 6
 
 guerrero_senor_guerra:
   group: guerrero
@@ -93,7 +149,7 @@ guerrero_senor_guerra:
     - id: estandarte_de_guerra
       kind: empower
       cost: 25
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: estandarte_de_muralla
@@ -108,6 +164,33 @@ guerrero_senor_guerra:
       value: 0.7
       stamina: 1
       gain: 10
+    - id: grito_de_batalla
+      kind: empower
+      cost: 20
+      value: 0.3
+      rounds: 5
+      cooldown: 5
+    - id: lanzamiento_heroico
+      kind: interrupt
+      cost: 15
+      power: 0.8
+      cooldown: 3
+    - id: golpe_mortal
+      kind: strike
+      cost: 30
+      power: 2.0
+      cooldown: 2
+    - id: grito_de_reunion
+      kind: heal
+      cost: 30
+      value: 0.25
+      cooldown: 5
+    - id: grito_intimidador
+      kind: weaken
+      cost: 30
+      value: 0.4
+      rounds: 3
+      cooldown: 5
 
 paladin_reprension:
   group: paladin
@@ -138,6 +221,33 @@ paladin_reprension:
       response: shield
       value: 0.35
       stamina: 1
+    - id: hoja_de_justicia
+      kind: strike
+      power: 1.3
+      gain: 20
+      cooldown: 2
+    - id: palabra_de_gloria
+      kind: heal
+      cost: 35
+      value: 0.25
+      cooldown: 4
+    - id: colera_vengativa
+      kind: empower
+      cost: 25
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: estela_de_cenizas
+      kind: dot
+      cost: 30
+      power: 0.7
+      rounds: 3
+      cooldown: 4
+    - id: sentencia_de_ejecucion
+      kind: strike
+      cost: 50
+      power: 2.5
+      cooldown: 3
 
 paladin_proteccion:
   group: paladin
@@ -170,6 +280,34 @@ paladin_proteccion:
       value: 0.35
       rounds: 4
       cooldown: 3
+    - id: consagracion
+      kind: dot
+      cost: 20
+      power: 0.5
+      rounds: 4
+      cooldown: 4
+    - id: escudo_de_los_justos
+      kind: response
+      response: block
+      value: 0.7
+      gain: 15
+      stamina: 1
+    - id: defensor_ardiente
+      kind: heal
+      cost: 35
+      value: 0.25
+      cooldown: 5
+    - id: guardian_de_los_reyes
+      kind: weaken
+      cost: 30
+      value: 0.4
+      rounds: 3
+      cooldown: 5
+    - id: imposicion_de_manos
+      kind: heal
+      cost: 40
+      value: 0.4
+      cooldown: 8
 
 paladin_sagrado:
   group: paladin
@@ -200,6 +338,34 @@ paladin_sagrado:
       response: shield
       value: 0.3
       stamina: 1
+    - id: juicio_de_luz
+      kind: expose
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 4
+    - id: luz_sagrada
+      kind: heal
+      cost: 35
+      value: 0.33
+      cooldown: 2
+    - id: bendicion_de_sacrificio
+      kind: response
+      response: block
+      value: 0.6
+      stamina: 1
+    - id: luz_del_alba
+      kind: hot
+      cost: 30
+      value: 0.08
+      rounds: 4
+      cooldown: 5
+    - id: prisma_sagrado
+      kind: strike
+      cost: 30
+      power: 1.6
+      lifesteal: 0.3
+      cooldown: 3
 
 cazador_punteria:
   group: cazador
@@ -218,7 +384,7 @@ cazador_punteria:
     - id: apuntar
       kind: empower
       cost: 20
-      value: 0.6
+      value: 0.5
       rounds: 2
       cooldown: 3
     - id: disparo_certero
@@ -229,6 +395,31 @@ cazador_punteria:
       kind: response
       response: dodge
       stamina: 1
+    - id: disparo_arcano
+      kind: strike
+      cost: 20
+      power: 1.4
+    - id: disparo_de_contencion
+      kind: interrupt
+      cost: 10
+      power: 0.6
+      cooldown: 3
+    - id: supervivencia_del_mas_apto
+      kind: response
+      response: shield
+      value: 0.3
+      stamina: 1
+    - id: fuego_rapido
+      kind: dot
+      cost: 30
+      power: 0.7
+      rounds: 3
+      cooldown: 4
+    - id: disparo_mortal
+      kind: strike
+      cost: 45
+      power: 2.5
+      cooldown: 3
 
 cazador_bestias:
   group: cazador
@@ -260,6 +451,32 @@ cazador_bestias:
       value: 0.5
       rounds: 5
       cooldown: 4
+    - id: disparo_de_puas
+      kind: dot
+      cost: 20
+      power: 0.5
+      rounds: 4
+    - id: intimidacion
+      kind: interrupt
+      cost: 20
+      power: 0.6
+      cooldown: 3
+    - id: colera_de_las_bestias
+      kind: empower
+      cost: 30
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: euforia
+      kind: heal
+      cost: 30
+      value: 0.25
+      cooldown: 5
+    - id: llamada_de_lo_salvaje
+      kind: strike
+      cost: 40
+      power: 2.2
+      cooldown: 3
 
 cazador_supervivencia:
   group: cazador
@@ -292,6 +509,32 @@ cazador_supervivencia:
       response: shield
       value: 0.3
       stamina: 1
+    - id: bomba_de_fuego_salvaje
+      kind: dot
+      cost: 25
+      power: 0.6
+      rounds: 3
+    - id: bozal
+      kind: interrupt
+      cost: 10
+      power: 0.5
+      cooldown: 3
+    - id: golpe_de_raptor
+      kind: strike
+      cost: 30
+      power: 1.7
+    - id: trampa_congelante
+      kind: weaken
+      cost: 25
+      value: 0.45
+      rounds: 2
+      cooldown: 5
+    - id: asalto_coordinado
+      kind: empower
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 5
 
 picaro:
   group: picaro
@@ -321,6 +564,32 @@ picaro:
       cost: 25
       power: 0.4
       cooldown: 3
+    - id: mutilar
+      kind: strike
+      cost: 40
+      power: 1.1
+      combo: 2
+    - id: garrote
+      kind: dot
+      cost: 30
+      power: 0.6
+      rounds: 4
+    - id: vial_carmesi
+      kind: heal
+      cost: 25
+      value: 0.2
+      cooldown: 5
+    - id: marca_de_la_muerte
+      kind: expose
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: envenenar
+      kind: finisher
+      cost: 35
+      power: 0.8
+      per_combo: 0.6
 
 picaro_sutileza:
   group: picaro
@@ -351,6 +620,34 @@ picaro_sutileza:
       value: 0.35
       rounds: 5
       cooldown: 4
+    - id: golpe_en_los_rinones
+      kind: interrupt
+      cost: 25
+      power: 0.5
+      cooldown: 3
+    - id: amago
+      kind: response
+      response: block
+      value: 0.6
+      gain: 15
+      stamina: 1
+    - id: ceguera
+      kind: weaken
+      cost: 30
+      value: 0.5
+      rounds: 2
+      cooldown: 5
+    - id: simbolos_de_muerte
+      kind: empower
+      cost: 20
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: tecnica_secreta
+      kind: strike
+      cost: 40
+      power: 2.4
+      cooldown: 3
 
 picaro_forajido:
   group: picaro
@@ -369,13 +666,13 @@ picaro_forajido:
     - id: dados_del_destino
       kind: empower
       cost: 25
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: distraccion
       kind: weaken
       cost: 20
-      value: 0.35
+      value: 0.4
       rounds: 5
       cooldown: 4
     - id: capa_de_sombras
@@ -383,6 +680,31 @@ picaro_forajido:
       response: shield
       value: 0.3
       stamina: 1
+    - id: disparo_de_pistola
+      kind: strike
+      cost: 20
+      power: 1.3
+    - id: gubia
+      kind: interrupt
+      cost: 20
+      power: 0.4
+      cooldown: 3
+    - id: riposte
+      kind: response
+      response: dodge
+      gain: 20
+      stamina: 1
+    - id: golpe_fantasmal
+      kind: expose
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 4
+    - id: ola_de_asesinatos
+      kind: strike
+      cost: 45
+      power: 2.3
+      cooldown: 3
 
 sacerdote_sombra:
   group: sacerdote
@@ -413,6 +735,32 @@ sacerdote_sombra:
       response: shield
       value: 0.3
       stamina: 1
+    - id: palabra_sombria_dolor
+      kind: dot
+      cost: 15
+      power: 0.5
+      rounds: 5
+    - id: silencio
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: peste_devoradora
+      kind: strike
+      cost: 45
+      power: 2.0
+      lifesteal: 0.25
+    - id: alarido_psiquico
+      kind: weaken
+      cost: 20
+      value: 0.4
+      rounds: 2
+      cooldown: 5
+    - id: palabra_sombria_muerte
+      kind: strike
+      cost: 50
+      power: 2.5
+      cooldown: 3
 
 sacerdote_sagrado:
   group: sacerdote
@@ -443,6 +791,31 @@ sacerdote_sagrado:
       response: shield
       value: 0.3
       stamina: 1
+    - id: sanacion_relampago
+      kind: heal
+      cost: 20
+      value: 0.22
+    - id: palabra_sagrada_castigo
+      kind: interrupt
+      cost: 15
+      power: 0.6
+      cooldown: 3
+    - id: rezo_de_alivio
+      kind: hot
+      cost: 25
+      value: 0.07
+      rounds: 5
+      cooldown: 5
+    - id: espiritu_guardian
+      kind: response
+      response: shield
+      value: 0.4
+      stamina: 1
+    - id: palabra_sagrada_serenidad
+      kind: heal
+      cost: 35
+      value: 0.4
+      cooldown: 5
 
 sacerdote:
   group: sacerdote
@@ -473,6 +846,33 @@ sacerdote:
       value: 0.35
       rounds: 5
       cooldown: 4
+    - id: purgar_al_malvado
+      kind: dot
+      cost: 15
+      power: 0.5
+      rounds: 4
+    - id: supresion_de_dolor
+      kind: response
+      response: shield
+      value: 0.4
+      stamina: 1
+    - id: infusion_de_poder
+      kind: empower
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: resplandor
+      kind: heal
+      cost: 35
+      value: 0.35
+      cooldown: 4
+    - id: cisma
+      kind: strike
+      cost: 35
+      power: 2.2
+      lifesteal: 0.3
+      cooldown: 3
 
 caballero_muerte_escarcha:
   group: caballero_muerte
@@ -502,6 +902,33 @@ caballero_muerte_escarcha:
       response: block
       value: 0.6
       stamina: 1
+    - id: explosion_aullante
+      kind: dot
+      cost: 20
+      power: 0.6
+      rounds: 3
+    - id: pilar_de_escarcha
+      kind: empower
+      cost: 20
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: arrasar
+      kind: strike
+      cost: 45
+      power: 2.2
+      cooldown: 2
+    - id: invierno_despiadado
+      kind: weaken
+      cost: 25
+      value: 0.3
+      rounds: 4
+      cooldown: 4
+    - id: furia_del_vermis
+      kind: strike
+      cost: 50
+      power: 2.6
+      cooldown: 4
 
 caballero_muerte_sangre:
   group: caballero_muerte
@@ -533,6 +960,34 @@ caballero_muerte_sangre:
       cost: 20
       power: 0.4
       rounds: 3
+    - id: desgarro_de_medula
+      kind: strike
+      power: 1.3
+      gain: 15
+      cooldown: 2
+    - id: sangre_vampirica
+      kind: heal
+      cost: 30
+      value: 0.25
+      cooldown: 5
+    - id: arma_de_runas_danzante
+      kind: response
+      response: block
+      value: 0.8
+      gain: 10
+      stamina: 2
+    - id: muerte_y_descomposicion
+      kind: dot
+      cost: 25
+      power: 0.6
+      rounds: 4
+      cooldown: 3
+    - id: bebesangre
+      kind: strike
+      cost: 40
+      power: 1.8
+      lifesteal: 0.4
+      cooldown: 3
 
 caballero_muerte_profano:
   group: caballero_muerte
@@ -565,6 +1020,32 @@ caballero_muerte_profano:
       response: shield
       value: 0.3
       stamina: 1
+    - id: espiral_de_la_muerte
+      kind: strike
+      cost: 25
+      power: 1.5
+    - id: atraccion_letal
+      kind: interrupt
+      cost: 15
+      power: 0.5
+      cooldown: 3
+    - id: transformacion_oscura
+      kind: empower
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: brote
+      kind: expose
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 4
+    - id: apocalipsis
+      kind: strike
+      cost: 50
+      power: 2.4
+      cooldown: 3
 
 chaman_elemental:
   group: chaman
@@ -593,6 +1074,32 @@ chaman_elemental:
       kind: response
       response: dodge
       stamina: 1
+    - id: descarga_de_relampagos
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: corte_de_viento
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: guardian_de_tormentas
+      kind: empower
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: choque_de_tierra
+      kind: strike
+      cost: 40
+      power: 2.0
+    - id: elemental_de_fuego
+      kind: dot
+      cost: 40
+      power: 0.9
+      rounds: 4
+      cooldown: 5
 
 chaman_restauracion:
   group: chaman
@@ -623,6 +1130,32 @@ chaman_restauracion:
       response: shield
       value: 0.3
       stamina: 1
+    - id: mareas_vivas
+      kind: heal
+      cost: 20
+      value: 0.22
+    - id: choque_de_escarcha
+      kind: weaken
+      cost: 15
+      value: 0.3
+      rounds: 3
+      cooldown: 4
+    - id: escudo_de_tierra
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: ola_de_sanacion
+      kind: heal
+      cost: 40
+      value: 0.38
+      cooldown: 3
+    - id: ascension
+      kind: hot
+      cost: 35
+      value: 0.08
+      rounds: 5
+      cooldown: 6
 
 chaman_totems:
   group: chaman
@@ -641,7 +1174,7 @@ chaman_totems:
     - id: totem_viento_furioso
       kind: empower
       cost: 25
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: totem_piel_de_piedra
@@ -655,6 +1188,32 @@ chaman_totems:
       response: shield
       value: 0.3
       stamina: 1
+    - id: golpe_de_tormenta
+      kind: strike
+      power: 1.3
+      gain: 15
+      cooldown: 2
+    - id: totem_de_condensador
+      kind: interrupt
+      cost: 15
+      power: 0.5
+      cooldown: 3
+    - id: totem_corriente_sanadora
+      kind: hot
+      cost: 25
+      value: 0.05
+      rounds: 4
+      cooldown: 5
+    - id: latigazo_de_lava
+      kind: strike
+      cost: 35
+      power: 1.9
+    - id: espiritu_feral
+      kind: dot
+      cost: 40
+      power: 0.8
+      rounds: 4
+      cooldown: 5
 
 mago_fuego:
   group: mago
@@ -685,6 +1244,31 @@ mago_fuego:
       response: shield
       value: 0.4
       stamina: 1
+    - id: explosion_de_fuego
+      kind: strike
+      cost: 10
+      power: 1.3
+      cooldown: 2
+    - id: contrahechizo
+      kind: interrupt
+      cost: 10
+      power: 0.3
+      cooldown: 3
+    - id: bomba_viviente
+      kind: dot
+      cost: 20
+      power: 0.6
+      rounds: 4
+    - id: barrera_ardiente
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: meteorito
+      kind: strike
+      cost: 40
+      power: 2.6
+      cooldown: 4
 
 mago_escarcha:
   group: mago
@@ -715,6 +1299,34 @@ mago_escarcha:
       value: 0.35
       rounds: 5
       cooldown: 4
+    - id: nova_de_escarcha
+      kind: weaken
+      cost: 15
+      value: 0.4
+      rounds: 2
+      cooldown: 4
+    - id: venas_heladas
+      kind: empower
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: ventisca
+      kind: dot
+      cost: 25
+      power: 0.5
+      rounds: 4
+    - id: orbe_congelado
+      kind: expose
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 4
+    - id: pua_glacial
+      kind: strike
+      cost: 35
+      power: 2.4
+      cooldown: 3
 
 mago_arcano:
   group: mago
@@ -733,7 +1345,7 @@ mago_arcano:
     - id: poder_arcano
       kind: empower
       cost: 40
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: ralentizar
@@ -747,6 +1359,30 @@ mago_arcano:
       response: shield
       value: 0.35
       stamina: 1
+    - id: misiles_arcanos
+      kind: strike
+      cost: 20
+      power: 1.3
+    - id: supernova
+      kind: interrupt
+      cost: 20
+      power: 0.6
+      cooldown: 3
+    - id: imagen_reflejada
+      kind: response
+      response: dodge
+      stamina: 1
+    - id: toque_del_magi
+      kind: expose
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: tromba_arcana
+      kind: strike
+      cost: 60
+      power: 2.4
+      cooldown: 3
 
 brujo_destruccion:
   group: brujo
@@ -776,6 +1412,33 @@ brujo_destruccion:
       response: shield
       value: 0.3
       stamina: 1
+    - id: incinerar
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: espiral_mortal
+      kind: interrupt
+      cost: 20
+      power: 0.6
+      lifesteal: 0.5
+      cooldown: 3
+    - id: conflagrar
+      kind: strike
+      cost: 30
+      power: 1.9
+      cooldown: 2
+    - id: pacto_oscuro
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: invocar_infernal
+      kind: dot
+      cost: 40
+      power: 1.0
+      rounds: 3
+      cooldown: 5
 
 brujo_demonologia:
   group: brujo
@@ -806,6 +1469,33 @@ brujo_demonologia:
       response: shield
       value: 0.35
       stamina: 1
+    - id: descarga_demoniaca
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: furia_de_las_sombras
+      kind: interrupt
+      cost: 15
+      power: 0.5
+      cooldown: 3
+    - id: armadura_demoniaca
+      kind: response
+      response: block
+      value: 0.7
+      gain: 10
+      stamina: 1
+    - id: drenar_vida
+      kind: strike
+      cost: 20
+      power: 1.0
+      lifesteal: 0.6
+    - id: tirano_demoniaco
+      kind: empower
+      cost: 40
+      value: 0.35
+      rounds: 4
+      cooldown: 5
 
 brujo_afliccion:
   group: brujo
@@ -836,6 +1526,33 @@ brujo_afliccion:
       kind: response
       response: dodge
       stamina: 1
+    - id: corrupcion
+      kind: dot
+      cost: 15
+      power: 0.5
+      rounds: 5
+    - id: miedo
+      kind: interrupt
+      cost: 15
+      power: 0.3
+      cooldown: 3
+    - id: atormentar
+      kind: expose
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 4
+    - id: putrefaccion_de_alma
+      kind: dot
+      cost: 30
+      power: 0.8
+      rounds: 3
+      cooldown: 4
+    - id: extasis_malefico
+      kind: strike
+      cost: 40
+      power: 2.3
+      cooldown: 3
 
 monje_viajero_viento:
   group: monje
@@ -865,6 +1582,32 @@ monje_viajero_viento:
       kind: response
       response: dodge
       stamina: 1
+    - id: palma_del_tigre
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: golpe_de_mano_lanza
+      kind: interrupt
+      cost: 10
+      power: 0.5
+      cooldown: 3
+    - id: punos_de_furia
+      kind: strike
+      cost: 35
+      power: 2.1
+      cooldown: 2
+    - id: tormenta_tierra_fuego
+      kind: empower
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: toque_de_la_muerte
+      kind: strike
+      cost: 40
+      power: 2.8
+      cooldown: 5
 
 monje_maestro_cervecero:
   group: monje
@@ -894,6 +1637,32 @@ monje_maestro_cervecero:
       kind: heal
       cost: 30
       value: 0.2
+      cooldown: 3
+    - id: soplo_de_fuego
+      kind: dot
+      cost: 20
+      power: 0.5
+      rounds: 4
+    - id: barrido_de_pierna
+      kind: interrupt
+      cost: 15
+      power: 0.5
+      cooldown: 3
+    - id: brebaje_celestial
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: barril_explosivo
+      kind: weaken
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 4
+    - id: invocar_a_niuzao
+      kind: strike
+      cost: 40
+      power: 2.2
       cooldown: 3
 
 monje_tejedor_niebla:
@@ -925,6 +1694,33 @@ monje_tejedor_niebla:
       response: shield
       value: 0.3
       stamina: 1
+    - id: paralisis
+      kind: interrupt
+      cost: 10
+      power: 0.3
+      cooldown: 3
+    - id: niebla_renovadora
+      kind: hot
+      cost: 20
+      value: 0.06
+      rounds: 5
+      cooldown: 5
+    - id: te_de_enfoque_atronador
+      kind: empower
+      cost: 15
+      value: 0.3
+      rounds: 3
+      cooldown: 5
+    - id: regalo_de_sheilun
+      kind: heal
+      cost: 25
+      value: 0.28
+      cooldown: 3
+    - id: revivir
+      kind: heal
+      cost: 45
+      value: 0.45
+      cooldown: 7
 
 druida_feral:
   group: druida
@@ -955,6 +1751,33 @@ druida_feral:
       response: shield
       value: 0.3
       stamina: 1
+    - id: triturar
+      kind: strike
+      cost: 40
+      power: 1.1
+      combo: 2
+    - id: testarazo
+      kind: interrupt
+      cost: 15
+      power: 0.4
+      cooldown: 3
+    - id: furia_del_tigre
+      kind: empower
+      value: 0.3
+      rounds: 4
+      gain: 30
+      cooldown: 5
+    - id: instintos_de_supervivencia
+      kind: response
+      response: block
+      value: 0.7
+      stamina: 1
+    - id: ira_primigenia
+      kind: finisher
+      cost: 35
+      power: 0.8
+      per_combo: 0.65
+      cooldown: 2
 
 druida_guardian:
   group: druida
@@ -985,6 +1808,32 @@ druida_guardian:
       cost: 40
       value: 0.25
       cooldown: 4
+    - id: vapulear
+      kind: dot
+      cost: 15
+      power: 0.5
+      rounds: 4
+    - id: rugido_incapacitador
+      kind: weaken
+      cost: 20
+      value: 0.35
+      rounds: 3
+      cooldown: 4
+    - id: magullar
+      kind: strike
+      cost: 40
+      power: 2.0
+    - id: furia_del_durmiente
+      kind: response
+      response: block
+      value: 0.8
+      gain: 15
+      stamina: 2
+    - id: encarnacion_de_ursoc
+      kind: heal
+      cost: 40
+      value: 0.35
+      cooldown: 6
 
 druida_restauracion:
   group: druida
@@ -1015,6 +1864,31 @@ druida_restauracion:
       response: shield
       value: 0.3
       stamina: 1
+    - id: fuego_lunar
+      kind: dot
+      cost: 10
+      power: 0.4
+      rounds: 5
+    - id: recrecimiento
+      kind: heal
+      cost: 25
+      value: 0.25
+    - id: flor_de_vida
+      kind: hot
+      cost: 20
+      value: 0.07
+      rounds: 5
+      cooldown: 5
+    - id: crecimiento_salvaje
+      kind: heal
+      cost: 30
+      value: 0.3
+      cooldown: 3
+    - id: tranquilidad
+      kind: heal
+      cost: 45
+      value: 0.45
+      cooldown: 7
 
 druida_equilibrio:
   retired: true            # [ES] D-69: máximo 3 especializaciones por clase
@@ -1075,6 +1949,33 @@ cazador_demonios_estrago:
       kind: response
       response: dodge
       stamina: 1
+    - id: mordisco_demoniaco
+      kind: strike
+      power: 1.2
+      gain: 20
+      cooldown: 2
+    - id: disrupcion
+      kind: interrupt
+      cost: 10
+      power: 0.5
+      cooldown: 3
+    - id: desdibujar
+      kind: response
+      response: block
+      value: 0.6
+      gain: 10
+      stamina: 1
+    - id: rayo_ocular
+      kind: strike
+      cost: 35
+      power: 2.1
+      cooldown: 2
+    - id: la_caceria
+      kind: strike
+      cost: 40
+      power: 2.6
+      lifesteal: 0.1
+      cooldown: 4
 
 cazador_demonios_venganza:
   group: cazador_demonios
@@ -1107,6 +2008,33 @@ cazador_demonios_venganza:
       value: 0.35
       rounds: 4
       cooldown: 3
+    - id: cizallar
+      kind: strike
+      power: 1.2
+      gain: 20
+      cooldown: 2
+    - id: sigilo_de_silencio
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: hendidura_de_alma
+      kind: strike
+      cost: 35
+      power: 1.5
+      lifesteal: 0.35
+    - id: marca_ignea
+      kind: weaken
+      cost: 25
+      value: 0.4
+      rounds: 3
+      cooldown: 5
+    - id: devastacion_vil
+      kind: strike
+      cost: 50
+      power: 1.8
+      lifesteal: 0.5
+      cooldown: 4
 
 cazador_demonios_devorador:
   group: cazador_demonios
@@ -1125,7 +2053,7 @@ cazador_demonios_devorador:
     - id: entregar_alma
       kind: empower
       cost: 40
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: marca_del_caos
@@ -1139,6 +2067,31 @@ cazador_demonios_devorador:
       response: shield
       value: 0.3
       stamina: 1
+    - id: consumir
+      kind: strike
+      power: 1.2
+      lifesteal: 0.2
+      gain: 20
+      cooldown: 2
+    - id: rayo_del_vacio
+      kind: dot
+      cost: 25
+      power: 0.6
+      rounds: 4
+    - id: cambio_de_fase
+      kind: response
+      response: dodge
+      stamina: 1
+    - id: cosecha_de_almas
+      kind: heal
+      cost: 30
+      value: 0.25
+      cooldown: 4
+    - id: estrella_colapsante
+      kind: strike
+      cost: 50
+      power: 2.4
+      cooldown: 3
 
 evocador_devastacion:
   group: evocador
@@ -1167,6 +2120,33 @@ evocador_devastacion:
       kind: response
       response: dodge
       stamina: 1
+    - id: llama_viva
+      kind: strike
+      cost: 15
+      power: 1.3
+      lifesteal: 0.2
+    - id: sofocar
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: furia_dragontina
+      kind: empower
+      cost: 30
+      value: 0.35
+      rounds: 4
+      cooldown: 5
+    - id: estrella_destrozadora
+      kind: expose
+      cost: 20
+      value: 0.35
+      rounds: 3
+      cooldown: 4
+    - id: oleada_de_eternidad
+      kind: strike
+      cost: 45
+      power: 2.6
+      cooldown: 3
 
 evocador_preservacion:
   group: evocador
@@ -1197,6 +2177,32 @@ evocador_preservacion:
       response: shield
       value: 0.3
       stamina: 1
+    - id: flor_esmeralda
+      kind: heal
+      cost: 20
+      value: 0.22
+    - id: dilatacion_temporal
+      kind: response
+      response: block
+      value: 0.6
+      stamina: 1
+    - id: aliento_onirico
+      kind: hot
+      cost: 30
+      value: 0.08
+      rounds: 4
+      cooldown: 5
+    - id: anomalia_temporal
+      kind: strike
+      cost: 25
+      power: 1.5
+      lifesteal: 0.4
+      cooldown: 2
+    - id: flor_espiritual
+      kind: heal
+      cost: 40
+      value: 0.42
+      cooldown: 5
 
 evocador_aumentacion:
   group: evocador
@@ -1215,7 +2221,7 @@ evocador_aumentacion:
     - id: poder_de_ebano
       kind: empower
       cost: 40
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: presciencia
@@ -1229,6 +2235,33 @@ evocador_aumentacion:
       response: shield
       value: 0.3
       stamina: 1
+    - id: erupcion
+      kind: strike
+      cost: 25
+      power: 1.6
+    - id: distorsion_temporal
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: escamas_abrasadoras
+      kind: response
+      response: block
+      value: 0.65
+      gain: 10
+      stamina: 1
+    - id: sublevacion
+      kind: weaken
+      cost: 25
+      value: 0.35
+      rounds: 3
+      cooldown: 4
+    - id: aliento_de_eones
+      kind: dot
+      cost: 40
+      power: 0.8
+      rounds: 3
+      cooldown: 5
 
 nigromante_plaga:
   group: nigromante
@@ -1257,6 +2290,33 @@ nigromante_plaga:
       kind: response
       response: dodge
       stamina: 1
+    - id: toque_de_putrefaccion
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: enjambre_de_moscas
+      kind: weaken
+      cost: 20
+      value: 0.3
+      rounds: 3
+      cooldown: 4
+    - id: contagio
+      kind: expose
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 4
+    - id: ola_de_pestilencia
+      kind: strike
+      cost: 40
+      power: 2.2
+      cooldown: 2
+    - id: epidemia
+      kind: strike
+      cost: 50
+      power: 2.6
+      cooldown: 3
 
 nigromante_legion:
   group: nigromante
@@ -1288,6 +2348,33 @@ nigromante_legion:
       cost: 15
       power: 0.4
       cooldown: 3
+    - id: golpe_de_hueso
+      kind: strike
+      power: 1.2
+      gain: 15
+      cooldown: 2
+    - id: muro_de_cadaveres
+      kind: response
+      response: shield
+      value: 0.35
+      stamina: 1
+    - id: coloso_de_huesos
+      kind: weaken
+      cost: 30
+      value: 0.4
+      rounds: 3
+      cooldown: 5
+    - id: festin_de_cadaveres
+      kind: heal
+      cost: 35
+      value: 0.3
+      cooldown: 5
+    - id: legion_inmortal
+      kind: strike
+      cost: 45
+      power: 2.0
+      lifesteal: 0.3
+      cooldown: 3
 
 nigromante_drenaje:
   group: nigromante
@@ -1317,6 +2404,34 @@ nigromante_drenaje:
       response: shield
       value: 0.3
       stamina: 1
+    - id: mano_de_la_tumba
+      kind: interrupt
+      cost: 10
+      power: 0.4
+      cooldown: 3
+    - id: marchitar
+      kind: weaken
+      cost: 20
+      value: 0.3
+      rounds: 4
+      cooldown: 4
+    - id: transfusion
+      kind: hot
+      cost: 20
+      value: 0.07
+      rounds: 4
+      cooldown: 4
+    - id: cosecha_vital
+      kind: heal
+      cost: 35
+      value: 0.38
+      cooldown: 4
+    - id: segador_de_almas
+      kind: strike
+      cost: 40
+      power: 1.8
+      lifesteal: 0.6
+      cooldown: 3
 
 bardo_duelista:
   group: bardo
@@ -1345,6 +2460,34 @@ bardo_duelista:
       kind: response
       response: dodge
       stamina: 1
+    - id: estocada_doble
+      kind: strike
+      cost: 25
+      power: 1.0
+      combo: 2
+    - id: contrapunto
+      kind: interrupt
+      cost: 15
+      power: 0.5
+      cooldown: 3
+    - id: finta
+      kind: response
+      response: block
+      value: 0.6
+      gain: 10
+      stamina: 1
+    - id: crescendo
+      kind: empower
+      cost: 25
+      value: 0.3
+      rounds: 4
+      cooldown: 5
+    - id: gran_final
+      kind: finisher
+      cost: 40
+      power: 0.9
+      per_combo: 0.65
+      cooldown: 3
 
 bardo_trovador:
   group: bardo
@@ -1375,6 +2518,31 @@ bardo_trovador:
       response: shield
       value: 0.3
       stamina: 1
+    - id: cancion_de_cuna
+      kind: interrupt
+      cost: 15
+      power: 0.3
+      cooldown: 3
+    - id: himno_de_esperanza
+      kind: heal
+      cost: 25
+      value: 0.25
+    - id: acorde_disonante
+      kind: strike
+      cost: 25
+      power: 1.5
+      lifesteal: 0.3
+    - id: coro_celestial
+      kind: hot
+      cost: 30
+      value: 0.09
+      rounds: 4
+      cooldown: 5
+    - id: requiem_de_vida
+      kind: heal
+      cost: 45
+      value: 0.42
+      cooldown: 6
 
 bardo_estratega:
   group: bardo
@@ -1393,7 +2561,7 @@ bardo_estratega:
     - id: allegro
       kind: empower
       cost: 25
-      value: 0.6
+      value: 0.5
       rounds: 5
       cooldown: 4
     - id: contratiempo
@@ -1407,3 +2575,27 @@ bardo_estratega:
       response: shield
       value: 0.3
       stamina: 1
+    - id: staccato
+      kind: strike
+      cost: 20
+      power: 1.3
+    - id: sincopa
+      kind: interrupt
+      cost: 15
+      power: 0.4
+      cooldown: 3
+    - id: compas_de_espera
+      kind: response
+      response: dodge
+      stamina: 1
+    - id: fortissimo
+      kind: expose
+      cost: 25
+      value: 0.35
+      rounds: 4
+      cooldown: 4
+    - id: sinfonia_de_guerra
+      kind: strike
+      cost: 45
+      power: 2.3
+      cooldown: 3

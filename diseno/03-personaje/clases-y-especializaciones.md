@@ -1,6 +1,6 @@
 # Clases y especializaciones
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Balance](balance.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Talentos](talentos.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) · **Estado:** propuesta (la barra de 6 está decidida en D-46 y el reparto de roles responde a D-50)
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Balance](balance.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Talentos](talentos.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) · **Estado:** propuesta (la barra de 6 está decidida en D-46, el reparto de roles responde a D-50 y la capa jugable de §7 a D-79)
 
 **De dónde sale.**
 - Las 13 clases y 40 especializaciones de *World of Warcraft* a septiembre de 2026 (expansión *Midnight*, con la tercera spec del Cazador de Demonios, **Devorador**, ya en vivo). Se suman dos clases propias que WoW nunca tuvo y que un juego por turnos pide: **Nigromante** y **Bardo**.
@@ -335,5 +335,76 @@ Lanzar 15 clases a la vez es imposible de equilibrar y de producir. Se propone r
 Desde el lanzamiento ya están los 4 roles: 28 specs, de ellas 9 de Ataque, 7 de Defensa, 4 de Curación y 8 de Soporte.
 
 Cada clase nueva llega con su evento, su zona de inicio especial y una cadena de historia. Ver [Hoja de ruta](../00-vision/hoja-de-ruta.md).
+
+
+## 7. Lo que ya está en el juego: 8 habilidades por especialización (D-79)
+
+Las secciones de arriba son el diseño completo. En la versión jugable, cada una de las 45 especializaciones tiene **8 habilidades**: las 3 de siempre y 5 nuevas inspiradas en las habilidades emblemáticas de esa especialización en World of Warcraft (las del Nigromante y el Bardo, clases propias, siguen la misma idea). Cada especialización conserva su rol (D-72) y cada clase sigue cubriendo al menos dos roles.
+
+**Desbloqueo** (puntos de talento en esa especialización; ver [Talentos](talentos.md) §5):
+
+| Habilidad | 1.ª | 2.ª | 3.ª | 4.ª | 5.ª | 6.ª | 7.ª | 8.ª |
+|---|---|---|---|---|---|---|---|---|
+| Puntos | 1 | 3 | 6 | 10 | 16 | 24 | 34 | 46 |
+| Nivel, con todo en una sola | 2 | 4 | 7 | 11 | 17 | 25 | 35 | 47 |
+
+**La barra sigue siendo de 6 botones (D-46):** ⚔️ Atacar, 3 habilidades, 🎒 Mochila y 🏃 Huir (o 🌀 Esquivar). Las 3 habilidades se eligen en 🌟 Talentos → 🎛️ Barra de combate:
+- **Casilla 1:** una respuesta al aviso (🛡 bloquear, 💨 esquivar o 🫧 escudo), elegida entre las que abriste.
+- **Casillas 2 y 3:** cualquier otra habilidad que abriste, de cualquier especialización de tu clase.
+- **Si no eliges,** la barra se arma sola: tu respuesta más nueva, tu golpe más nuevo y tu otra habilidad más nueva.
+
+**Números bajos al inicio.** Las primeras habilidades tienen valores modestos (las mejoras de daño de las 3 primeras bajaron de 60 % a 50 %) y las nuevas se mueven en el mismo rango: golpes de ×1 a ×2,8 el ataque, mejoras de daño de 30 a 35 %, debilitamientos de 25 a 50 % (los más altos duran solo 2 o 3 rondas), curas de 20 a 45 % de la vida. Las tardías son un poco más fuertes, pero con más costo o más rondas de espera. Hay dos piezas nuevas en el combate: habilidades que **dan recurso** (como *Sed de Sangre*, +15 de Ira) y golpes que **suman combos** (como *Mutilar*, +2), para que Pícaro, Druida Feral y Bardo Duelista armen sus remates como en WoW.
+
+**Las 45 especializaciones:**
+
+| Especialización | Rol | 1 a 3 (1, 3 y 6 puntos) | 4 a 8 (10, 16, 24, 34 y 46 puntos) |
+|---|---|---|---|
+| 💢 Guerrero · Furia | ⚔ Ataque | Golpe Colosal, Ejecutar, Parada | Sed de Sangre, Reflejo de Hechizos, Temeridad, Regeneración Enfurecida, Desenfreno |
+| 🏰 Guerrero · Protección | 🛡 Defensa | Golpe heroico, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Grito Desmoralizador, Venganza, Muro de Escudo, Última Resistencia |
+| 🚩 Guerrero · Señor de la Guerra | ✦ Soporte | Estandarte de Guerra, Estandarte de Muralla, Intervenir | Grito de Batalla, Lanzamiento Heroico, Golpe Mortal, Grito de Reunión, Grito Intimidador |
+| ⚖️ Paladín · Reprensión | ⚔ Ataque | Juicio, Veredicto del Templario, Escudo Divino | Hoja de Justicia, Palabra de Gloria, Cólera Vengativa, Estela de Cenizas, Sentencia de Ejecución |
+| 🔰 Paladín · Protección | 🛡 Defensa | Escudo del Vengador, Bendición de Protección, Aura de Devoción | Consagración, Escudo de los Justos, Defensor Ardiente, Guardián de los Reyes Ancestrales, Imposición de Manos |
+| 🌅 Paladín · Sagrado | ✚ Curación | Destello de Luz, Faro de Luz, Escudo Divino | Juicio de Luz, Luz Sagrada, Bendición de Sacrificio, Luz del Alba, Prisma Sagrado |
+| 🎯 Cazador · Puntería | ⚔ Ataque | Apuntar, Disparo Certero, Destrabarse | Disparo Arcano, Disparo de Contención, Supervivencia del Más Apto, Fuego Rápido, Disparo Mortal |
+| 🐺 Cazador · Bestias | ✦ Soporte | Orden de Matar, Aspecto de la Tortuga, Presa Marcada | Disparo de Púas, Intimidación, Cólera de las Bestias, Euforia, Llamada de lo Salvaje |
+| 🪤 Cazador · Supervivencia | ✦ Soporte | Trampa de Alquitrán, Marca del Cazador, Señuelo | Bomba de Fuego Salvaje, Bozal, Golpe de Raptor, Trampa Congelante, Asalto Coordinado |
+| 🐍 Pícaro · Asesinato | ⚔ Ataque | Eviscerar, Evasión, Patada | Mutilar, Garrote, Vial Carmesí, Marca de la Muerte, Envenenar |
+| 🌑 Pícaro · Sutileza | ✦ Soporte | Danza de las Sombras, Contraataque, Polvo Cegador | Golpe en los Riñones, Amago, Ceguera, Símbolos de Muerte, Técnica Secreta |
+| 🏴‍☠️ Pícaro · Forajido | ✦ Soporte | Dados del Destino, Distracción, Capa de Sombras | Disparo de Pistola, Gubia, Riposte, Golpe Fantasmal, Ola de Asesinatos |
+| 👁️ Sacerdote · Sombra | ⚔ Ataque | Toque Vampírico, Tortura Mental, Dispersión | Palabra de las Sombras: Dolor, Silencio, Peste Devoradora, Alarido Psíquico, Palabra de las Sombras: Muerte |
+| 😇 Sacerdote · Sagrado | ✚ Curación | Plegaria de Sanación, Renovar, Palabra de Poder: Escudo | Sanación Relámpago, Palabra Sagrada: Castigo, Rezo de Alivio, Espíritu Guardián, Palabra Sagrada: Serenidad |
+| 📿 Sacerdote · Disciplina | ✦ Soporte | Sanar, Escudo de luz, Penitencia | Purgar al Malvado, Supresión de Dolor, Infusión de Poder, Palabra de Poder: Resplandor, Cisma |
+| 🧊 Caballero de la Muerte · Escarcha | ⚔ Ataque | Golpe de Escarcha, Helada Mental, Entereza Ligada al Hielo | Explosión Aullante, Pilar de Escarcha, Arrasar, Invierno Despiadado, Furia del Vermis de Escarcha |
+| 🫀 Caballero de la Muerte · Sangre | 🛡 Defensa | Golpe de Muerte, Escudo de Huesos, Hervor de Sangre | Desgarro de Médula, Sangre Vampírica, Arma de Runas Danzante, Muerte y Descomposición, Bebesangre |
+| ☣️ Caballero de la Muerte · Profano | ✦ Soporte | Peste, Ejército de los muertos, Caparazón Antimagia | Espiral de la Muerte, Atracción Letal, Transformación Oscura, Brote, Apocalipsis |
+| 🌩️ Chamán · Elemental | ⚔ Ataque | Descarga de Lava, Choque de Llamas, Paso Espiritual | Descarga de Relámpagos, Corte de Viento, Guardián de Tormentas, Choque de Tierra, Elemental de Fuego |
+| 🌊 Chamán · Restauración | ✚ Curación | Sanación en Cadena, Tótem de Marea, Cambio Astral | Mareas Vivas, Choque de Escarcha, Escudo de Tierra, Ola de Sanación, Ascensión |
+| 🗿 Chamán · Tótems | ✦ Soporte | Tótem Viento Furioso, Tótem Piel de Piedra, Tótem de Captura | Golpe de Tormenta, Tótem de Condensador, Tótem de Corriente Sanadora, Latigazo de Lava, Espíritu Feral |
+| ☄️ Mago · Fuego | ⚔ Ataque | Piroexplosión, Combustión, Bloque de Hielo | Explosión de Fuego, Contrahechizo, Bomba Viviente, Barrera Ardiente, Meteorito |
+| 🌨️ Mago · Escarcha | ✦ Soporte | Barrera de Hielo, Lanza de Hielo, Escarcha Paralizante | Nova de Escarcha, Venas Heladas, Ventisca, Orbe Congelado, Púa Glacial |
+| 💠 Mago · Arcano | ✦ Soporte | Poder Arcano, Ralentizar, Barrera Prismática | Misiles Arcanos, Supernova, Imagen Reflejada, Toque del Magi, Tromba Arcana |
+| 🌋 Brujo · Destrucción | ⚔ Ataque | Descarga del Caos, Inmolar, Resolución Inagotable | Incinerar, Espiral Mortal, Conflagrar, Pacto Oscuro, Invocar Infernal |
+| 👹 Brujo · Demonología | 🛡 Defensa | Hachazo Vil, Vínculo Demoníaco, Sacrificio | Descarga Demoníaca, Furia de las Sombras, Armadura Demoníaca, Drenar Vida, Tirano Demoníaco |
+| 🕸️ Brujo · Aflicción | ✦ Soporte | Maldición de Debilidad, Drenar Alma, Círculo Demoníaco | Corrupción, Miedo, Atormentar, Putrefacción de Alma, Éxtasis Maléfico |
+| 🌪️ Monje · Viajero del Viento | ⚔ Ataque | Patada del Sol Naciente, Palma Mística, Rodar | Palma del Tigre, Golpe de Mano de Lanza, Puños de Furia, Tormenta, Tierra y Fuego, Toque de la Muerte |
+| 🍺 Monje · Maestro Cervecero | 🛡 Defensa | Golpe de Barril, Toque de Karma, Brebaje Purificador | Soplo de Fuego, Barrido de Pierna, Brebaje Celestial, Barril Explosivo, Invocar a Niuzao |
+| 🌫️ Monje · Tejedor de Niebla | ✚ Curación | Niebla Envolvente, Vivificar, Capullo de Vida | Parálisis, Niebla Renovadora, Té de Enfoque Atronador, Regalo de Sheilun, Revivir |
+| 🐆 Druida · Feral | ⚔ Ataque | Mordedura Feroz, Desgarrar, Piel de Corteza | Triturar, Testarazo, Furia del Tigre, Instintos de Supervivencia, Ira Primigenia |
+| 🐻 Druida · Guardián | 🛡 Defensa | Destrozar, Pelaje de Hierro, Regeneración Frenética | Vapulear, Rugido Incapacitador, Magullar, Furia del Durmiente, Encarnación de Ursoc |
+| 🌸 Druida · Restauración | ✚ Curación | Rejuvenecimiento, Alivio Presto, Corteza de Hierro | Fuego Lunar, Recrecimiento, Flor de Vida, Crecimiento Salvaje, Tranquilidad |
+| 🦇 Cazador de demonios · Estrago | ⚔ Ataque | Golpe del Caos, Metamorfosis, Salto Vil | Mordisco Demoníaco, Disrupción, Desdibujar, Rayo Ocular, La Cacería |
+| 👺 Cazador de demonios · Venganza | 🛡 Defensa | Sigilo de Llamas, Púas Demoníacas, Sigilo de Miseria | Cizallar, Sigilo de Silencio, Hendidura de Alma, Marca Ígnea, Devastación Vil |
+| 🕳️ Cazador de demonios · Devorador | ✦ Soporte | Entregar Alma, Marca del Caos, Escudo de Almas | Consumir, Rayo del Vacío, Cambio de Fase, Cosecha de Almas, Estrella Colapsante |
+| 🐲 Evocador · Devastación | ⚔ Ataque | Aliento de Fuego, Desintegrar, Planear | Llama Viva, Sofocar, Furia Dragontina, Estrella Destrozadora, Oleada de Eternidad |
+| ⏳ Evocador · Preservación | ✚ Curación | Eco, Rebobinar, Escamas Obsidianas | Flor Esmeralda, Dilatación Temporal, Aliento Onírico, Anomalía Temporal, Flor Espiritual |
+| 🔆 Evocador · Aumentación | ✦ Soporte | Poder de Ébano, Presciencia, Salto Temporal | Erupción, Distorsión Temporal, Escamas Abrasadoras, Sublevación, Aliento de Eones |
+| 🪦 Nigromante · Plaga | ⚔ Ataque | Plaga Reptante, Estallido Pútrido, Forma Espectral | Toque de Putrefacción, Enjambre de Moscas, Contagio, Ola de Pestilencia, Epidemia |
+| 🧟 Nigromante · Legión | 🛡 Defensa | Hueso Protector, Levantar Esqueletos, Grito del Sepulcro | Golpe de Hueso, Muro de Cadáveres, Coloso de Huesos, Festín de Cadáveres, Legión Inmortal |
+| 🧛 Nigromante · Drenaje | ✚ Curación | Sifón Vital, Pacto de Sangre, Velo de Almas | Mano de la Tumba, Marchitar, Transfusión, Cosecha Vital, Segador de Almas |
+| 🤺 Bardo · Duelista | ⚔ Ataque | Floritura Final, Estocada Rítmica, Paso de Baile | Estocada Doble, Contrapunto, Finta, Crescendo, Gran Final |
+| 🎶 Bardo · Trovador | ✚ Curación | Balada Curativa, Nota Curativa, Nota Sostenida | Canción de Cuna, Himno de Esperanza, Acorde Disonante, Coro Celestial, Réquiem de Vida |
+| 🥁 Bardo · Estratega | ✦ Soporte | Allegro, Contratiempo, Calderón | Staccato, Síncopa, Compás de Espera, Fortissimo, Sinfonía de Guerra |
+
+Datos: `content/classes.yaml` (habilidades y números), `content/locales/es_clases.yaml` (nombres), `content/balance.yaml` (`talents`). Balance medido con `tools/sim.py`.
 
 Ver P-12, P-14, P-67 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md). La barra de 6 está decidida (D-46) y el reparto de roles responde a D-50.

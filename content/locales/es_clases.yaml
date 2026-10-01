@@ -454,6 +454,502 @@ ability:
   calderon:
     name: "Calderón"
 
+  # guerrero_furia: habilidades 4 a 8
+  sed_de_sangre:
+    name: "Sed de Sangre"
+  reflejo_de_hechizos:
+    name: "Reflejo de Hechizos"
+  temeridad:
+    name: "Temeridad"
+  regeneracion_enfurecida:
+    name: "Regeneración Enfurecida"
+  desenfreno:
+    name: "Desenfreno"
+  # guerrero: habilidades 4 a 8
+  golpe_con_escudo:
+    name: "Golpe con Escudo"
+  grito_desmoralizador:
+    name: "Grito Desmoralizador"
+  venganza:
+    name: "Venganza"
+  muro_de_escudo:
+    name: "Muro de Escudo"
+  ultima_resistencia:
+    name: "Última Resistencia"
+  # guerrero_senor_guerra: habilidades 4 a 8
+  grito_de_batalla:
+    name: "Grito de Batalla"
+  lanzamiento_heroico:
+    name: "Lanzamiento Heroico"
+  golpe_mortal:
+    name: "Golpe Mortal"
+  grito_de_reunion:
+    name: "Grito de Reunión"
+  grito_intimidador:
+    name: "Grito Intimidador"
+  # paladin_reprension: habilidades 4 a 8
+  hoja_de_justicia:
+    name: "Hoja de Justicia"
+  palabra_de_gloria:
+    name: "Palabra de Gloria"
+  colera_vengativa:
+    name: "Cólera Vengativa"
+  estela_de_cenizas:
+    name: "Estela de Cenizas"
+  sentencia_de_ejecucion:
+    name: "Sentencia de Ejecución"
+  # paladin_proteccion: habilidades 4 a 8
+  consagracion:
+    name: "Consagración"
+  escudo_de_los_justos:
+    name: "Escudo de los Justos"
+  defensor_ardiente:
+    name: "Defensor Ardiente"
+  guardian_de_los_reyes:
+    name: "Guardián de los Reyes Ancestrales"
+  imposicion_de_manos:
+    name: "Imposición de Manos"
+  # paladin_sagrado: habilidades 4 a 8
+  juicio_de_luz:
+    name: "Juicio de Luz"
+  luz_sagrada:
+    name: "Luz Sagrada"
+  bendicion_de_sacrificio:
+    name: "Bendición de Sacrificio"
+  luz_del_alba:
+    name: "Luz del Alba"
+  prisma_sagrado:
+    name: "Prisma Sagrado"
+  # cazador_punteria: habilidades 4 a 8
+  disparo_arcano:
+    name: "Disparo Arcano"
+  disparo_de_contencion:
+    name: "Disparo de Contención"
+  supervivencia_del_mas_apto:
+    name: "Supervivencia del Más Apto"
+  fuego_rapido:
+    name: "Fuego Rápido"
+  disparo_mortal:
+    name: "Disparo Mortal"
+  # cazador_bestias: habilidades 4 a 8
+  disparo_de_puas:
+    name: "Disparo de Púas"
+  intimidacion:
+    name: "Intimidación"
+  colera_de_las_bestias:
+    name: "Cólera de las Bestias"
+  euforia:
+    name: "Euforia"
+  llamada_de_lo_salvaje:
+    name: "Llamada de lo Salvaje"
+  # cazador_supervivencia: habilidades 4 a 8
+  bomba_de_fuego_salvaje:
+    name: "Bomba de Fuego Salvaje"
+  bozal:
+    name: "Bozal"
+  golpe_de_raptor:
+    name: "Golpe de Raptor"
+  trampa_congelante:
+    name: "Trampa Congelante"
+  asalto_coordinado:
+    name: "Asalto Coordinado"
+  # picaro: habilidades 4 a 8
+  mutilar:
+    name: "Mutilar"
+  garrote:
+    name: "Garrote"
+  vial_carmesi:
+    name: "Vial Carmesí"
+  marca_de_la_muerte:
+    name: "Marca de la Muerte"
+  envenenar:
+    name: "Envenenar"
+  # picaro_sutileza: habilidades 4 a 8
+  golpe_en_los_rinones:
+    name: "Golpe en los Riñones"
+  amago:
+    name: "Amago"
+  ceguera:
+    name: "Ceguera"
+  simbolos_de_muerte:
+    name: "Símbolos de Muerte"
+  tecnica_secreta:
+    name: "Técnica Secreta"
+  # picaro_forajido: habilidades 4 a 8
+  disparo_de_pistola:
+    name: "Disparo de Pistola"
+  gubia:
+    name: "Gubia"
+  riposte:
+    name: "Riposte"
+  golpe_fantasmal:
+    name: "Golpe Fantasmal"
+  ola_de_asesinatos:
+    name: "Ola de Asesinatos"
+  # sacerdote_sombra: habilidades 4 a 8
+  palabra_sombria_dolor:
+    name: "Palabra de las Sombras: Dolor"
+  silencio:
+    name: "Silencio"
+  peste_devoradora:
+    name: "Peste Devoradora"
+  alarido_psiquico:
+    name: "Alarido Psíquico"
+  palabra_sombria_muerte:
+    name: "Palabra de las Sombras: Muerte"
+  # sacerdote_sagrado: habilidades 4 a 8
+  sanacion_relampago:
+    name: "Sanación Relámpago"
+  palabra_sagrada_castigo:
+    name: "Palabra Sagrada: Castigo"
+  rezo_de_alivio:
+    name: "Rezo de Alivio"
+  espiritu_guardian:
+    name: "Espíritu Guardián"
+  palabra_sagrada_serenidad:
+    name: "Palabra Sagrada: Serenidad"
+  # sacerdote: habilidades 4 a 8
+  purgar_al_malvado:
+    name: "Purgar al Malvado"
+  supresion_de_dolor:
+    name: "Supresión de Dolor"
+  infusion_de_poder:
+    name: "Infusión de Poder"
+  resplandor:
+    name: "Palabra de Poder: Resplandor"
+  cisma:
+    name: "Cisma"
+  # caballero_muerte_escarcha: habilidades 4 a 8
+  explosion_aullante:
+    name: "Explosión Aullante"
+  pilar_de_escarcha:
+    name: "Pilar de Escarcha"
+  arrasar:
+    name: "Arrasar"
+  invierno_despiadado:
+    name: "Invierno Despiadado"
+  furia_del_vermis:
+    name: "Furia del Vermis de Escarcha"
+  # caballero_muerte_sangre: habilidades 4 a 8
+  desgarro_de_medula:
+    name: "Desgarro de Médula"
+  sangre_vampirica:
+    name: "Sangre Vampírica"
+  arma_de_runas_danzante:
+    name: "Arma de Runas Danzante"
+  muerte_y_descomposicion:
+    name: "Muerte y Descomposición"
+  bebesangre:
+    name: "Bebesangre"
+  # caballero_muerte_profano: habilidades 4 a 8
+  espiral_de_la_muerte:
+    name: "Espiral de la Muerte"
+  atraccion_letal:
+    name: "Atracción Letal"
+  transformacion_oscura:
+    name: "Transformación Oscura"
+  brote:
+    name: "Brote"
+  apocalipsis:
+    name: "Apocalipsis"
+  # chaman_elemental: habilidades 4 a 8
+  descarga_de_relampagos:
+    name: "Descarga de Relámpagos"
+  corte_de_viento:
+    name: "Corte de Viento"
+  guardian_de_tormentas:
+    name: "Guardián de Tormentas"
+  choque_de_tierra:
+    name: "Choque de Tierra"
+  elemental_de_fuego:
+    name: "Elemental de Fuego"
+  # chaman_restauracion: habilidades 4 a 8
+  mareas_vivas:
+    name: "Mareas Vivas"
+  choque_de_escarcha:
+    name: "Choque de Escarcha"
+  escudo_de_tierra:
+    name: "Escudo de Tierra"
+  ola_de_sanacion:
+    name: "Ola de Sanación"
+  ascension:
+    name: "Ascensión"
+  # chaman_totems: habilidades 4 a 8
+  golpe_de_tormenta:
+    name: "Golpe de Tormenta"
+  totem_de_condensador:
+    name: "Tótem de Condensador"
+  totem_corriente_sanadora:
+    name: "Tótem de Corriente Sanadora"
+  latigazo_de_lava:
+    name: "Latigazo de Lava"
+  espiritu_feral:
+    name: "Espíritu Feral"
+  # mago_fuego: habilidades 4 a 8
+  explosion_de_fuego:
+    name: "Explosión de Fuego"
+  contrahechizo:
+    name: "Contrahechizo"
+  bomba_viviente:
+    name: "Bomba Viviente"
+  barrera_ardiente:
+    name: "Barrera Ardiente"
+  meteorito:
+    name: "Meteorito"
+  # mago_escarcha: habilidades 4 a 8
+  nova_de_escarcha:
+    name: "Nova de Escarcha"
+  venas_heladas:
+    name: "Venas Heladas"
+  ventisca:
+    name: "Ventisca"
+  orbe_congelado:
+    name: "Orbe Congelado"
+  pua_glacial:
+    name: "Púa Glacial"
+  # mago_arcano: habilidades 4 a 8
+  misiles_arcanos:
+    name: "Misiles Arcanos"
+  supernova:
+    name: "Supernova"
+  imagen_reflejada:
+    name: "Imagen Reflejada"
+  toque_del_magi:
+    name: "Toque del Magi"
+  tromba_arcana:
+    name: "Tromba Arcana"
+  # brujo_destruccion: habilidades 4 a 8
+  incinerar:
+    name: "Incinerar"
+  espiral_mortal:
+    name: "Espiral Mortal"
+  conflagrar:
+    name: "Conflagrar"
+  pacto_oscuro:
+    name: "Pacto Oscuro"
+  invocar_infernal:
+    name: "Invocar Infernal"
+  # brujo_demonologia: habilidades 4 a 8
+  descarga_demoniaca:
+    name: "Descarga Demoníaca"
+  furia_de_las_sombras:
+    name: "Furia de las Sombras"
+  armadura_demoniaca:
+    name: "Armadura Demoníaca"
+  drenar_vida:
+    name: "Drenar Vida"
+  tirano_demoniaco:
+    name: "Tirano Demoníaco"
+  # brujo_afliccion: habilidades 4 a 8
+  corrupcion:
+    name: "Corrupción"
+  miedo:
+    name: "Miedo"
+  atormentar:
+    name: "Atormentar"
+  putrefaccion_de_alma:
+    name: "Putrefacción de Alma"
+  extasis_malefico:
+    name: "Éxtasis Maléfico"
+  # monje_viajero_viento: habilidades 4 a 8
+  palma_del_tigre:
+    name: "Palma del Tigre"
+  golpe_de_mano_lanza:
+    name: "Golpe de Mano de Lanza"
+  punos_de_furia:
+    name: "Puños de Furia"
+  tormenta_tierra_fuego:
+    name: "Tormenta, Tierra y Fuego"
+  toque_de_la_muerte:
+    name: "Toque de la Muerte"
+  # monje_maestro_cervecero: habilidades 4 a 8
+  soplo_de_fuego:
+    name: "Soplo de Fuego"
+  barrido_de_pierna:
+    name: "Barrido de Pierna"
+  brebaje_celestial:
+    name: "Brebaje Celestial"
+  barril_explosivo:
+    name: "Barril Explosivo"
+  invocar_a_niuzao:
+    name: "Invocar a Niuzao"
+  # monje_tejedor_niebla: habilidades 4 a 8
+  paralisis:
+    name: "Parálisis"
+  niebla_renovadora:
+    name: "Niebla Renovadora"
+  te_de_enfoque_atronador:
+    name: "Té de Enfoque Atronador"
+  regalo_de_sheilun:
+    name: "Regalo de Sheilun"
+  revivir:
+    name: "Revivir"
+  # druida_feral: habilidades 4 a 8
+  triturar:
+    name: "Triturar"
+  testarazo:
+    name: "Testarazo"
+  furia_del_tigre:
+    name: "Furia del Tigre"
+  instintos_de_supervivencia:
+    name: "Instintos de Supervivencia"
+  ira_primigenia:
+    name: "Ira Primigenia"
+  # druida_guardian: habilidades 4 a 8
+  vapulear:
+    name: "Vapulear"
+  rugido_incapacitador:
+    name: "Rugido Incapacitador"
+  magullar:
+    name: "Magullar"
+  furia_del_durmiente:
+    name: "Furia del Durmiente"
+  encarnacion_de_ursoc:
+    name: "Encarnación de Ursoc"
+  # druida_restauracion: habilidades 4 a 8
+  fuego_lunar:
+    name: "Fuego Lunar"
+  recrecimiento:
+    name: "Recrecimiento"
+  flor_de_vida:
+    name: "Flor de Vida"
+  crecimiento_salvaje:
+    name: "Crecimiento Salvaje"
+  tranquilidad:
+    name: "Tranquilidad"
+  # cazador_demonios_estrago: habilidades 4 a 8
+  mordisco_demoniaco:
+    name: "Mordisco Demoníaco"
+  disrupcion:
+    name: "Disrupción"
+  desdibujar:
+    name: "Desdibujar"
+  rayo_ocular:
+    name: "Rayo Ocular"
+  la_caceria:
+    name: "La Cacería"
+  # cazador_demonios_venganza: habilidades 4 a 8
+  cizallar:
+    name: "Cizallar"
+  sigilo_de_silencio:
+    name: "Sigilo de Silencio"
+  hendidura_de_alma:
+    name: "Hendidura de Alma"
+  marca_ignea:
+    name: "Marca Ígnea"
+  devastacion_vil:
+    name: "Devastación Vil"
+  # cazador_demonios_devorador: habilidades 4 a 8
+  consumir:
+    name: "Consumir"
+  rayo_del_vacio:
+    name: "Rayo del Vacío"
+  cambio_de_fase:
+    name: "Cambio de Fase"
+  cosecha_de_almas:
+    name: "Cosecha de Almas"
+  estrella_colapsante:
+    name: "Estrella Colapsante"
+  # evocador_devastacion: habilidades 4 a 8
+  llama_viva:
+    name: "Llama Viva"
+  sofocar:
+    name: "Sofocar"
+  furia_dragontina:
+    name: "Furia Dragontina"
+  estrella_destrozadora:
+    name: "Estrella Destrozadora"
+  oleada_de_eternidad:
+    name: "Oleada de Eternidad"
+  # evocador_preservacion: habilidades 4 a 8
+  flor_esmeralda:
+    name: "Flor Esmeralda"
+  dilatacion_temporal:
+    name: "Dilatación Temporal"
+  aliento_onirico:
+    name: "Aliento Onírico"
+  anomalia_temporal:
+    name: "Anomalía Temporal"
+  flor_espiritual:
+    name: "Flor Espiritual"
+  # evocador_aumentacion: habilidades 4 a 8
+  erupcion:
+    name: "Erupción"
+  distorsion_temporal:
+    name: "Distorsión Temporal"
+  escamas_abrasadoras:
+    name: "Escamas Abrasadoras"
+  sublevacion:
+    name: "Sublevación"
+  aliento_de_eones:
+    name: "Aliento de Eones"
+  # nigromante_plaga: habilidades 4 a 8
+  toque_de_putrefaccion:
+    name: "Toque de Putrefacción"
+  enjambre_de_moscas:
+    name: "Enjambre de Moscas"
+  contagio:
+    name: "Contagio"
+  ola_de_pestilencia:
+    name: "Ola de Pestilencia"
+  epidemia:
+    name: "Epidemia"
+  # nigromante_legion: habilidades 4 a 8
+  golpe_de_hueso:
+    name: "Golpe de Hueso"
+  muro_de_cadaveres:
+    name: "Muro de Cadáveres"
+  coloso_de_huesos:
+    name: "Coloso de Huesos"
+  festin_de_cadaveres:
+    name: "Festín de Cadáveres"
+  legion_inmortal:
+    name: "Legión Inmortal"
+  # nigromante_drenaje: habilidades 4 a 8
+  mano_de_la_tumba:
+    name: "Mano de la Tumba"
+  marchitar:
+    name: "Marchitar"
+  transfusion:
+    name: "Transfusión"
+  cosecha_vital:
+    name: "Cosecha Vital"
+  segador_de_almas:
+    name: "Segador de Almas"
+  # bardo_duelista: habilidades 4 a 8
+  estocada_doble:
+    name: "Estocada Doble"
+  contrapunto:
+    name: "Contrapunto"
+  finta:
+    name: "Finta"
+  crescendo:
+    name: "Crescendo"
+  gran_final:
+    name: "Gran Final"
+  # bardo_trovador: habilidades 4 a 8
+  cancion_de_cuna:
+    name: "Canción de Cuna"
+  himno_de_esperanza:
+    name: "Himno de Esperanza"
+  acorde_disonante:
+    name: "Acorde Disonante"
+  coro_celestial:
+    name: "Coro Celestial"
+  requiem_de_vida:
+    name: "Réquiem de Vida"
+  # bardo_estratega: habilidades 4 a 8
+  staccato:
+    name: "Staccato"
+  sincopa:
+    name: "Síncopa"
+  compas_de_espera:
+    name: "Compás de Espera"
+  fortissimo:
+    name: "Fortissimo"
+  sinfonia_de_guerra:
+    name: "Sinfonía de Guerra"
+
 resource:
   poder_sagrado: "Poder Sagrado"
   foco: "Foco"
