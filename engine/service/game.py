@@ -22,7 +22,8 @@ Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, 
 Eventos que escucha: ninguno
 Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta" del almacén
     (en "meta", "guardian:<id>" guarda para siempre al primer héroe que venció a cada Guardián, D-82)
-    D-93 (provisional): "pantry" (despensa del Claro, clave "claro", y de cada campamento, clave "x:y":
+    D-93 (provisional) y D-95: "pantry" (despensa de cada campamento de jugadores, clave "x:y"; el Claro no tiene:
+    no tiene dueño, D-95):
     {"rations", "at"}, consumo perezoso) y "active" (registro de quién jugó hoy y ayer, claves "0" y "1"
     según el día; se pisa solo, nunca crece). Diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.4
 Reglas que nunca se rompen:
@@ -851,11 +852,9 @@ class GameService:
             return self._camp_here_view(hero)
         if action_id == "claro":
             return self._claro_view(hero)
-        if action_id in ("camp", "donate", "feed"):
+        if action_id in ("camp", "donate", "feed"):     # "feed": old 0.10 button, the Claro has no pantry now (D-95)
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
-            if action_id == "feed":
-                return self._feed(hero)
             return self._donate(hero) if action_id == "donate" else self._camp_view(hero)
         if action_id.startswith("sellg:"):
             return self._sell_gear(hero, action_id[6:], in_claro)
@@ -1211,12 +1210,9 @@ class GameService:
         return self.texts.t("gather.found", items=self._item_list(found))
 
     def _claro_view(self, hero: Hero, notice: str | None = None) -> View:
-        """The Claro's camp screen: the common work, the trader and the inn (from aldea, also its pantry line, D-93)."""
+        """The Claro's camp screen: the common work, the trader and the inn (no pantry: it has no owner, D-95)."""
         t = self.texts
         body = [t.t("claro.intro"), self._status_line(hero)]
-        pantry = self._claro_pantry()
-        if pantry:
-            body.insert(1, self._pantry_line(pantry))
         return View(kind="claro", title=t.t("claro.title"), body=body + self._tutorial_hint(hero),
                     actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
                              Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))],
@@ -1247,27 +1243,12 @@ class GameService:
         else:
             body.append(t.t("camp.complete"))
         body.append(t.t("camp.bonus", price=self._money(self._inn_price())))
-        pantry = self._claro_pantry(data["stage"])
-        if pantry:                                   # D-93: from aldea on, the stage also asks for food
-            body += [""] + self._pantry_lines(pantry)
-            if stage["needs"]:
-                nxt = stages[data["stage"] + 1]["id"]
-                need = self._rise_days(nxt)
-                if self._work_paid(data) and pantry["days"] < need:
-                    body.append(t.t("pantry.rise_waits", next=t.t(f"camp.stages.{nxt}"), need=need, days=pantry["days"]))
-                else:
-                    body.append(t.t("pantry.rise_needs", next=t.t(f"camp.stages.{nxt}"), need=need))
-            if pantry["state"] == "hambruna":
-                body.append(t.t("pantry.famine_claro"))
         top = sorted(data["merit"].items(), key=lambda kv: -kv[1])[:5]
         if top:
             body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
         body += ["", t.t("camp.your_merit", merit=hero.merit)]
         body += self._tutorial_hint(hero)
-        actions = [Action(id="donate", label=t.t("camp.donate_button"))]
-        if pantry:
-            actions.append(Action(id="feed", label=t.t("pantry.feed_button")))
-        actions.append(Action(id="claro", label=t.t("menu.back")))
+        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="camp", title=t.t("camp.title"), body=body, actions=actions, notice=notice)
 
     def _donate(self, hero: Hero) -> View:
@@ -1287,14 +1268,7 @@ class GameService:
                 if hero.backpack[item_id] <= 0:
                     del hero.backpack[item_id]
         if not given:
-            before = data["stage"]
-            rose = self._claro_rise(data)               # D-93: a stage waiting for food may be ready now
-            if data["stage"] == before:
-                return self._camp_view(hero, notice=t.t("camp.nothing"))
-            self.store.put("settlement", "claro", data)
-            return self._camp_view(hero, notice="\n".join(rose))
-        if hero.camp:
-            self._mark_seen(hero, helper=True)          # D-93: camp members who help the Claro also eat there
+            return self._camp_view(hero, notice=t.t("camp.nothing"))
         units = sum(given.values())
         xp = units * cfg["xp_per_unit"]
         hero.merit += units
@@ -1312,13 +1286,12 @@ class GameService:
         return bool(stage["needs"]) and all(data["progress"].get(i, 0) >= n for i, n in stage["needs"].items())
 
     def _claro_rise(self, data: dict[str, Any]) -> list[str]:
-        """Raise the Claro one stage if its work is paid and, from aldea on, its pantry holds the minimum days.
+        """Raise the Claro one stage when its work is paid (it never goes down and has no pantry, D-95).
 
         [ES]
-        Qué hace: sube el Claro de etapa cuando la obra está pagada; desde aldea, además, la despensa debe
-        alcanzar los días de pantry.min_days_to_rise (y nunca sube en hambruna). Si faltan, la etapa espera
-        con la obra completa y sube sola en el próximo aporte de comida o de materiales (D-93, provisional).
-        La llaman: _donate y _feed. Nunca baja la etapa.
+        Qué hace: sube el Claro de etapa cuando la obra común está pagada. El Claro no se mantiene: no tiene
+        dueño, así que no tiene despensa (D-95); solo los campamentos de jugadores comen (D-93).
+        La llama: _donate. Nunca baja la etapa.
         Si cambia, afecta: el ritmo del Claro hasta castillo (P-55), su territorio y la posada.
         """
         t = self.texts
@@ -1326,9 +1299,6 @@ class GameService:
         if not self._work_paid(data):
             return []
         nxt = stages[data["stage"] + 1]["id"]
-        pantry = self._claro_pantry(data["stage"])
-        if pantry and pantry["days"] < self._rise_days(nxt):
-            return [t.t("pantry.rise_waits", next=t.t(f"camp.stages.{nxt}"), need=self._rise_days(nxt), days=pantry["days"])]
         data["stage"] += 1
         data["progress"] = {}
         return [t.t("camp.stage_up", stage=t.t(f"camp.stages.{nxt}"))]
@@ -1338,21 +1308,21 @@ class GameService:
     def _day_seconds(self) -> float:
         return self._seconds(24 * 60)
 
-    def _mark_seen(self, hero: Hero, helper: bool = False) -> None:
+    def _mark_seen(self, hero: Hero) -> None:
         """Note that this hero is playing now (D-93).
 
         Hero.seen_at changes on every button; the shared registry ("active", two keys that alternate
         by day) is written only once per refresh slot, so counting active residents never scans heroes.
 
         [ES]
-        Qué hace: anota que el héroe jugó ahora. El registro "active" guarda, para hoy y ayer, a quién se vio
-        y cuándo aportó al Claro por última vez (helper). Se escribe como mucho una vez por hora por héroe.
-        La llaman: act() en cada botón; _donate y _feed con helper=True cuando un miembro de campamento aporta al Claro.
+        Qué hace: anota que el héroe jugó ahora. El registro "active" guarda, para hoy y ayer, a quién se vio.
+        Se escribe como mucho una vez por hora por héroe.
+        La llama: act() en cada botón.
         Si cambia, afecta: cuántos comen de cada despensa.
         """
         now = self.clock.now()
         slot = self._seconds(self.content.balance["pantry"]["active_refresh_minutes"])
-        if helper or int(now // slot) != int(hero.seen_at // slot):
+        if int(now // slot) != int(hero.seen_at // slot):
             day = int(now // self._day_seconds())
             key = str(day % 2)
             record = self.store.get("active", key) or {}
@@ -1360,8 +1330,6 @@ class GameService:
                 record = {"day": day, "seen": {}}          # the slot held the day before yesterday: start it again
             entry = record["seen"].get(hero.id, {})
             entry["t"] = now
-            if helper:
-                entry["h"] = now
             record["seen"][hero.id] = entry
             self.store.put("active", key, record)
         hero.seen_at = now
@@ -1370,7 +1338,7 @@ class GameService:
         return self.clock.now() - self._seconds(self.content.balance["pantry"]["active_hours"] * 60)
 
     def _active(self) -> dict[str, dict[str, float]]:
-        """Heroes seen in the last pantry.active_hours: account -> {"t": last seen, "h": last help to the Claro}."""
+        """Heroes seen in the last pantry.active_hours: account -> {"t": last seen}."""
         day = int(self.clock.now() // self._day_seconds())
         merged: dict[str, dict[str, float]] = {}
         for key in ("0", "1"):
@@ -1378,28 +1346,15 @@ class GameService:
             if record.get("day") not in (day, day - 1):
                 continue
             for account, entry in record.get("seen", {}).items():
-                row = merged.setdefault(account, {"t": 0.0, "h": 0.0})
+                row = merged.setdefault(account, {"t": 0.0})
                 row["t"] = max(row["t"], entry.get("t", 0.0))
-                row["h"] = max(row["h"], entry.get("h", 0.0))
         cutoff = self._active_cutoff()
         return {account: row for account, row in merged.items() if row["t"] >= cutoff}
-
-    def _claro_residents(self) -> int:
-        """Who eats from the Claro's pantry: active players who are not in a camp, plus camp members who
-        helped the Claro (materials or food) in the same window. Camps are few, so their members are read fresh."""
-        active = self._active()
-        cutoff = self._active_cutoff()
-        in_camps = {m for _, camp in self.store.items("camp") for m in camp.get("members", [])}
-        return sum(1 for account, row in active.items() if account not in in_camps or row["h"] >= cutoff)
 
     def _camp_active(self, camp: dict[str, Any]) -> int:
         """Active members of a camp (they eat from its pantry)."""
         active = self._active()
         return sum(1 for member in camp.get("members", []) if member in active)
-
-    def _claro_population(self) -> int:
-        """Every hero without a camp: only used once, to size the Claro's first pantry (nobody starts punished)."""
-        return sum(1 for _, data in self.store.items("hero") if not data.get("camp"))
 
     def _pantry(self, key: str, active: int, eaters: Callable[[], int]) -> dict[str, float]:
         """Read a pantry after the lazy consumption and save it. A new one starts with pantry.start_days of food
@@ -1423,15 +1378,6 @@ class GameService:
         return {"key": key, "rations": data["rations"], "active": active, "days": days,
                 "state": pantry_rules.state(days, cfg["states"])}
 
-    def _claro_pantry(self, stage: int | None = None) -> dict[str, Any] | None:
-        """The Claro's pantry from pantry.claro_from_stage on (None before: until then rising is only paying)."""
-        ids = [s["id"] for s in self.content.balance["settlement"]["stages"]]
-        start = self.content.balance["pantry"]["claro_from_stage"]
-        stage = self._settlement()["stage"] if stage is None else stage
-        if start not in ids or stage < ids.index(start):
-            return None
-        return self._pantry_status("claro", self._claro_residents(), self._claro_population)
-
     def _camp_pantry(self, camp: dict[str, Any]) -> dict[str, Any] | None:
         """A player camp's small pantry from pantry.camp_from_level on (None before)."""
         if camp.get("level", 1) < self.content.balance["pantry"]["camp_from_level"]:
@@ -1442,10 +1388,6 @@ class GameService:
         """True if the camp has a pantry and it is empty (hambruna): then it cannot grow."""
         pantry = self._camp_pantry(camp)
         return pantry is not None and pantry["state"] == "hambruna"
-
-    def _rise_days(self, next_stage: str) -> int:
-        """Days of food the Claro's pantry needs to rise to a stage (at least 1: never in hambruna)."""
-        return max(1, int(self.content.balance["pantry"]["min_days_to_rise"].get(next_stage, 0)))
 
     def _pantry_line(self, pantry: dict[str, Any]) -> str:
         t = self.texts
@@ -1475,31 +1417,6 @@ class GameService:
         hero.merit += merit
         lines = [self.texts.t("pantry.fed", items=self._item_list(given), rations=rations, xp=int(xp * self._xp_mult(hero)), merit=merit)]
         return lines + self._give_xp(hero, xp), merit
-
-    def _feed(self, hero: Hero) -> View:
-        """🌾 Aportar comida in the Claro: all the food in the backpack goes to its pantry (D-93).
-
-        [ES]
-        Qué hace: pasa toda la comida de la mochila (🍖 carne, 🥖 provisiones) a la despensa del Claro; da
-        experiencia y mérito por ración; si la obra está pagada y la despensa ya alcanza, el Claro sube.
-        La llaman: el botón 🌾 Aportar comida de la obra común (solo en el Claro y desde aldea).
-        Si cambia, afecta: la despensa, el ranking de mérito y la subida de etapa.
-        """
-        t = self.texts
-        data = self._settlement()
-        if self._claro_pantry(data["stage"]) is None:     # also settles the pantry up to now
-            return self._camp_view(hero, notice=t.t("pantry.not_yet_claro"))
-        given, rations = self._take_food(hero)
-        if not rations:
-            return self._camp_view(hero, notice=t.t("pantry.no_food"))
-        self._add_rations("claro", rations)
-        if hero.camp:
-            self._mark_seen(hero, helper=True)
-        lines, merit = self._food_reward(hero, given, rations)
-        data["merit"][hero.name] = data["merit"].get(hero.name, 0) + merit
-        lines += self._claro_rise(data)
-        self.store.put("settlement", "claro", data)
-        return self._camp_view(hero, notice="\n".join(lines))
 
     def _camp_feed(self, hero: Hero) -> View:
         """🌾 Aportar comida in your own camp (from level 3): the food goes to the camp's pantry (D-93).
@@ -1640,9 +1557,6 @@ class GameService:
         price = self._inn_price()
         if hero.hp >= hero_stats(self._kit(hero), hero.level)["max_hp"]:
             return self._claro_view(hero, notice=t.t("inn.full_hp"))       # do not charge for a useless night
-        pantry = self._claro_pantry()
-        if pantry and pantry["state"] == "hambruna":
-            return self._claro_view(hero, notice=t.t("pantry.inn_famine"))  # D-93: no food, no healing (never charged)
         if hero.gold < price:
             return self._zone_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price

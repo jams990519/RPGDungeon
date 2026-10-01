@@ -233,17 +233,17 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 | Número | Valor | De dónde sale |
 |---|---|---|
-| Despensa del Claro desde | aldea | §7.1: hasta campamento, subir es solo pagar (tutorial) |
+| Despensa del Claro | ~~desde aldea~~ **nunca** (D-95, 0.10.1) | El Claro no tiene dueño: no se mantiene |
 | Despensa de los campamentos desde | nivel 3 | §7.2, capa ligera |
 | Consumo | 1 ración por residente activo por día real | §4.2 |
 | Activo | tocó un botón en las últimas 24 h (marca renovada cada 60 min) | §2.1 y §15.3: quien no juega no come |
-| Despensa nueva | 7 días para todos los que podrían comer de ella | §15: nadie empieza castigado |
+| Despensa nueva | 7 días para todos los miembros del campamento | §15: nadie empieza castigado |
 | Estados (días) | abundancia 14 · holgada 7 · justa 3 · escasez 1 · hambruna 0 | §3.2 |
-| Días para subir el Claro | pueblo 4 · ciudad 5 · castillo 7 | "Despensa sostenida" de §7.1 corrida una etapa (la despensa se abre en aldea) |
+| ~~Días para subir el Claro~~ | ~~pueblo 4 · ciudad 5 · castillo 7~~ | Quitados en la 0.10.1 (D-95) |
 | Experiencia y mérito por ración | 2 y 1 | Como un material de la obra común (`settlement.xp_per_unit`) |
 | 🍖 Carne | 2 raciones; 40-60 % por victoria contra bestias; 1-2 piezas; se vende a 1 🥉 | §4.1 (caza), en chico |
 | 🥖 Provisiones | 1 ración; 15 🥉 en el mercader; no se revenden | §15.8: comida de emergencia cara |
 
 **Cuenta rápida.** Una victoria contra un lobo deja en promedio 0,5 × 1,5 × 2 = 1,5 raciones. Con 40 de energía por día, quien pelea seguido gana muchas más raciones de las que come (1 por día): la comida no falta si los que pelean la llevan a la despensa. Lo que se pone a prueba es la **participación**, no la producción. Alimentarse solo con provisiones cuesta 15 🥉 por persona y día (unas tres peleas tempranas de monedas).
 
-**Lo que queda por mirar:** si la carne alcanza de sobra (bajar la probabilidad o el valor), el tope por semana de las provisiones (§15.8) y si hace falta un tope de capacidad antes de los graneros (§4.3). Medir en la beta cuántos días alcanza la despensa del Claro con la gente real.
+**Lo que queda por mirar:** si la carne alcanza de sobra (bajar la probabilidad o el valor), el tope por semana de las provisiones (§15.8) y si hace falta un tope de capacidad antes de los graneros (§4.3). Medir en la beta cuántos días alcanza la despensa de un campamento con sus miembros reales.
