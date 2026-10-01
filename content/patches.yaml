@@ -160,3 +160,12 @@ v0_9_1:
   notes:
     - "🔀 Cuando tengas 10 puntos en tu especialización, puedes desbloquear la doble especialización pagando 3 💰 bolsas."
     - "Tendrás dos configuraciones de talentos, cada una con sus puntos, habilidades y barra. Cambias entre ellas con /doble."
+
+v0_9_2:
+  version: "0.9.2"
+  title: "⚖️ Lost Realms 0.9.2: clases más parejas"
+  notes:
+    - "⚖️ Ajustamos las 45 especializaciones para que todas puedan con los primeros enemigos y tengan opciones reales contra Raigambre al nivel 6."
+    - "💪 Las que sufrían (Cazador · Puntería, Guerrero Señor de la Guerra, Bardo Estratega y otras) tienen más vida y algunas, más golpe."
+    - "✚ Las de curación curan un poco menos: seguían ganando casi todo sin esfuerzo."
+    - "🐻 El Oso de las cumbres pega un poco menos fuerte con Aplastar."
