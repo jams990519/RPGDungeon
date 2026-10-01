@@ -26,6 +26,11 @@ Si cambias esto, revisa:
       guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
       tests/test_professions.py). D-112: el 🧭 Explorador guarda aquí su experiencia con el id "explorador" (sube
       explorando; con el rango ve más en el mapa: engine/service/game.py sección "enemy camps"; tests/test_enemy_camps.py)
+    - prof_specs y spec_xp (D-115, D-141): las 🎓 especializaciones de oficio (id de oficio → ids de especialización de
+      content/professions.yaml "specs", en el orden elegido: la 1.ª desde el rango 25, la 2.ª desde el 75, nunca tres) y el
+      dominio de cada una (id de especialización → experiencia de oficio ganada mientras la tenía). El dominio de una
+      especialización que se cambia queda guardado por si vuelve. Vacíos por defecto: los héroes guardados antes cargan
+      igual (engine/service/game.py sección "profession specializations"; tests/test_especializaciones.py)
     - titles: también guarda "gran_explorador", el título del rango 100 del 🧭 Explorador (D-112, para siempre)
     - options (D-114): ⚙️ Opciones del jugador ("fights": "manual" | "auto", "retreat": % de vida, "potions": sí/no).
       Vacío = lo de balance.yaml auto_fight.defaults (también para los héroes guardados antes: ✋ Manual, 50 %, sí).
@@ -90,6 +95,10 @@ class Hero:
             Players seen in the last presence.minutes are also listed in their zone (D-96).
         professions: profession xp, profession id (content/professions.yaml) -> xp (D-109). The rank (1-100)
             is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
+        prof_specs: the 🎓 specializations the hero holds (D-115, D-141), profession id -> spec ids in the order chosen (the
+            first from rank 25, the second from rank 75; never three). Empty for heroes saved before it.
+        spec_xp: mastery of each specialization, spec id -> profession xp earned in its profession while holding it. Kept
+            when the specialization is switched away (coming back resumes it). Empty for heroes saved before it.
         options: the player's ⚙️ Opciones (D-114): "fights" ("manual" or "auto": what happens when a fight comes up during
             a batch), "retreat" (auto fights: the batch stops below this % of life) and "potions" (auto fights may use
             the belt). Only what the player changed is saved; missing keys use balance.yaml auto_fight.defaults, so
@@ -164,6 +173,8 @@ class Hero:
     bar: list[str] = field(default_factory=list)
     seen_at: float = 0.0
     professions: dict[str, int] = field(default_factory=dict)
+    prof_specs: dict[str, list[str]] = field(default_factory=dict)      # D-141: 🎓 specializations held per profession
+    spec_xp: dict[str, int] = field(default_factory=dict)               # D-141: mastery of every specialization ever held
     options: dict[str, Any] = field(default_factory=dict)
     origin: str | None = None
     story: dict[str, Any] = field(default_factory=dict)

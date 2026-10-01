@@ -1734,6 +1734,37 @@ artesano_joya_3:
   stats: {hp: 0.11, attack: 0.08, armor: 0.02}
   price: 100
 
+# --- D-115 / D-141: pieces only a 🎓 specialization makes ---
+# Exclusive crafted gear: the crafted piece of the same slot, type and level (artesano_<type>_2 at level 5 and _13 at level 100)
+# with every bonus × 1.05 (rounded to whole points) and one signature point; "spec" names the specialization whose recipe makes it.
+# [ES] Equipo exclusivo de las 🎓 especializaciones (red-de-oficios.md §3: "recetas que solo ella hace"). Dos por especialización
+# de equipo: una del nivel 5 (receta de rango 25, para usar apenas la eliges) y otra del nivel 100 (rango 100: lo mejor del juego en
+# su línea, "para placas, ve con el Armero"). Cada una es la pieza de artesano de su ranura, tipo y nivel con cada bono × 1,05
+# (redondeado a puntos enteros) y un punto propio (arco, espada, cuero y tela: +1 % de ataque; placas, malla y el sello de orfebre:
+# +1 de defensa; el collar de gemas: +1 % de vida). Precio: el del artesano × 1,05; sus materiales siempre valen más que lo que paga
+# el mercader (D-113). source: crafted, así tienen su ✒️ obra maestra (la arma el motor) y nunca salen en el botín. "spec" es
+# informativo (la receta es la que decide quién la hace: content/professions.yaml, recetas con spec). IDs estables.
+espec_arco_1: {name_key: item.espec_arco_1, emoji: "🏹", kind: gear, slot: arma, type: arco, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: carpinteria_arqueria, stats: {attack: 0.14, hp: 0.02}, price: 52}
+espec_arco_2: {name_key: item.espec_arco_2, emoji: "🏹", kind: gear, slot: arma, type: arco, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: carpinteria_arqueria, stats: {attack: 0.42, hp: 0.05}, price: 592}
+espec_espada_1: {name_key: item.espec_espada_1, emoji: "🗡️", kind: gear, slot: arma, type: espada, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: herreria_armas, stats: {attack: 0.14, hp: 0.02}, price: 52}
+espec_espada_2: {name_key: item.espec_espada_2, emoji: "🗡️", kind: gear, slot: arma, type: espada, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: herreria_armas, stats: {attack: 0.42, hp: 0.05}, price: 592}
+espec_placas_1: {name_key: item.espec_placas_1, emoji: "🛡️", kind: gear, slot: armadura, type: placas, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: herreria_armero, stats: {hp: 0.15, armor: 0.04, attack: 0.01}, price: 52}
+espec_placas_2: {name_key: item.espec_placas_2, emoji: "🛡️", kind: gear, slot: armadura, type: placas, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: herreria_armero, stats: {hp: 0.46, armor: 0.08, attack: 0.04}, price: 592}
+espec_cuero_1: {name_key: item.espec_cuero_1, emoji: "🦺", kind: gear, slot: armadura, type: cuero, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: peleteria_cuero, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 52}
+espec_cuero_2: {name_key: item.espec_cuero_2, emoji: "🦺", kind: gear, slot: armadura, type: cuero, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: peleteria_cuero, stats: {hp: 0.46, armor: 0.07, attack: 0.05}, price: 592}
+espec_malla_1: {name_key: item.espec_malla_1, emoji: "⛓️", kind: gear, slot: armadura, type: malla, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: peleteria_malla, stats: {hp: 0.15, armor: 0.04, attack: 0.01}, price: 52}
+espec_malla_2: {name_key: item.espec_malla_2, emoji: "⛓️", kind: gear, slot: armadura, type: malla, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: peleteria_malla, stats: {hp: 0.46, armor: 0.08, attack: 0.04}, price: 592}
+espec_tela_1: {name_key: item.espec_tela_1, emoji: "👘", kind: gear, slot: armadura, type: tela, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: sastreria_tunicas, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 52}
+espec_tela_2: {name_key: item.espec_tela_2, emoji: "👘", kind: gear, slot: armadura, type: tela, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: sastreria_tunicas, stats: {hp: 0.46, armor: 0.07, attack: 0.05}, price: 592}
+espec_joya_gemas_1: {name_key: item.espec_joya_gemas_1, emoji: "💍", kind: gear, slot: joya, type: joya, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: joyeria_gemas, stats: {hp: 0.09, attack: 0.06, armor: 0.01}, price: 52}
+espec_joya_gemas_2: {name_key: item.espec_joya_gemas_2, emoji: "📿", kind: gear, slot: joya, type: joya, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: joyeria_gemas, stats: {hp: 0.25, attack: 0.19, armor: 0.03}, price: 592}
+espec_joya_oro_1: {name_key: item.espec_joya_oro_1, emoji: "💍", kind: gear, slot: joya, type: joya, tier: 3, rarity: raro, req_level: 5, source: crafted, spec: joyeria_orfebreria, stats: {hp: 0.08, attack: 0.06, armor: 0.02}, price: 52}
+espec_joya_oro_2: {name_key: item.espec_joya_oro_2, emoji: "📿", kind: gear, slot: joya, type: joya, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: joyeria_orfebreria, stats: {hp: 0.24, attack: 0.19, armor: 0.04}, price: 592}
+# [ES] Muebles exclusivos de la 🪑 Carpintería especializada (mismas reglas que los otros muebles: uno de cada uno por campamento,
+# "effect" con los nombres de content/camp_upgrades.yaml). 🛡️ Escudos hace los paveses; 🛒 Mobiliario y carros, el carro.
+paveses_roble: {name_key: item.paveses_roble, desc_key: furniture.paveses_roble, emoji: "🛡️", kind: furniture, effect: {defense: 1}, price: 90}    # [ES] +1 de 🛡️ Defensa contra las oleadas (con el armero, +2 de muebles)
+carro_viveres: {name_key: item.carro_viveres, desc_key: furniture.carro_viveres, emoji: "🛒", kind: furniture, effect: {ration_cut: 0.05}, price: 70}   # [ES] los miembros comen 5 % menos de la despensa (se suma al 🌾 Granero; el tope sigue en 90 %)
+
 # --- D-110 / D-113: gear tiers up to level 100 ---
 # Loot pieces every 10 levels (tier 5 = level 10 ... tier 14 = level 100), one per slot and type, and crafted pieces of
 # the same levels (artesano_<type>_4 ... _13). Crafted beats loot of its level; loot from level 10 is at most "raro".

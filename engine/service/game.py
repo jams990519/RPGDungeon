@@ -17,6 +17,7 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109; §0.5, el ✨ Encantamiento de la fase 2, D-115)
+    diseno/07-economia/red-de-oficios.md §3 (las 🎓 especializaciones de oficio, D-115 y D-141)
     diseno/03-personaje/equipamiento.md §11 (✨ encantamientos y el aviso "⬆️ Tienes una pieza mejor", fase 2 de D-115)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
@@ -57,6 +58,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-115 (fase 2, lado del equipo): Hero.gear_enchants (el ✨ encantamiento de cada pieza: id de la pieza → {"id", "value"});
     se borra con la última copia de la pieza (_forget_piece). La experiencia del ✨ Encantamiento va en
     Hero.professions["encantamiento"].
+    D-141: Hero.prof_specs (las 🎓 especializaciones de cada oficio, en el orden elegido) y Hero.spec_xp (el dominio de cada
+    una, que nunca se borra: queda guardado aunque la cambies).
     D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
     at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
     en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
@@ -125,6 +128,16 @@ Si cambias esto, revisa:
       engine/hero/gear.py gear_bonus (real_stats). No suma botón a ⚒️ Oficios (sus 4 lugares quedan para las estaciones):
       ahí sale con su rango, su beneficio (prof.perk.disenchant) y el próximo umbral (_ench_next, _ench_unlocks en _prof_gain).
       Desencantar nunca fabrica monedas (precios de esencia y esencia_mayor en items.yaml). Pruebas: tests/test_oficios_equipo.py
+    - 🎓 Especializaciones de oficio (D-115, D-141): sección "profession specializations" (_pspecs_view con /especialidad y el
+      botón 🎓 Especialización de ⚒️ Oficios, _pspec_prof_view, _pspec_view, _pspec_switch_view, _pspec_pick, _pspec_switch;
+      botones "pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:" en SPEC_ACTIONS). Datos en content/professions.yaml "specs"
+      (y recetas con "spec"), números en balance.yaml specs, cuentas en engine/professions/rules.py (spec_*), textos en
+      content/locales/es_especializaciones.yaml. Sus efectos entran por _pspec_bonus/_pspec_finds en _perks (perk), _merchant_sale
+      (coins: goods, barter, gear), _trade_gather y _trade_loot (yield, find), _make y _recipe_view (yield, find, masterwork y la
+      receta exclusiva: _pspec_recipe_ok), _station_view, _next_unlock y _prof_gain (recetas exclusivas; _pspec_gain sube el
+      dominio y avisa al rango 25 y 75), _enchant_plan y _ench_view (enchant), _infiltrate (detect) y _ecamp_destroyed (coins:
+      ecamp). Ojo: _spec_view es la pantalla de la especialización de CLASE (talentos); la de oficio es _pspec_view.
+      Pruebas: tests/test_especializaciones.py
     - ⬆️ Pieza mejor (D-115, fase 2): _better_piece mira lo que entró a la mochila en _end_combat (botín, cofre, Guardián) y en
       _make; _better_line + _better_action (🔁 Equipar = "equip:<id>", primero, sin pasar 4 botones); en las peleas automáticas
       la línea va al resumen del lote (_auto_combat). La marca ⬆️ en _gear_view sale de engine/hero/gear.py is_better
@@ -277,7 +290,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/oficios": "oficios", "/opciones": "options",
             "/historia": "story", "/diario": "journal", "/bio": "bio", "/encargos": "board",     # D-117: story and roleplay
             "/saludar": "gesture:saludar", "/brindar": "gesture:brindar",
-            "/encantar": "ench"}                                                               # D-115: ✨ Encantamiento
+            "/encantar": "ench",                                                               # D-115: ✨ Encantamiento
+            "/especialidad": "pspecs"}                                                         # D-141: 🎓 Especialización
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -292,6 +306,9 @@ UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctalle
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
 # Button ids (or prefixes) of ✨ Encantamiento (D-115, phase 2): the hub, a piece's screen, enchant, disenchant (and confirm it).
 ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
+# Button ids (or prefixes) of 🎓 Especialización (D-141): the hub (and its pages), a profession, a specialization, pick it, switch
+# (asks first) and switch confirmed. _pspec_action routes them.
+SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 
 
 class GameService(StoryMixin):
@@ -583,8 +600,11 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: junta los beneficios de los oficios que el héroe empezó (rango de cada uno), sabiendo qué armadura
         usa su clase, con qué arma pelea y qué rol juega (la Herrería solo con placas, la Medicina solo a sanadores).
+        D-141: les suma los efectos "perk" de las 🎓 especializaciones que tiene (por su dominio): 🍷 Elixires (pociones),
+        🩹 Primeros auxilios (vendas), 🩺 Cirugía (curaciones, solo sanadores), ☠️ Venenos (ataque), 🎒 Talabartería y 🛒 Mobiliario
+        (mochila), 🗺️ Cartógrafo, 📜 Papel y Pergamino (exploración) y 💨 Desencantar (esencias).
         La llaman: _kit (ataque, vida, armadura, curación, pociones y vendas), _settle (vida que vuelve), _bag_cap.
-        Si cambia, afecta: cuánto ayuda cada oficio (content/professions.yaml "perk"; profesiones.md §0.2).
+        Si cambia, afecta: cuánto ayuda cada oficio (content/professions.yaml "perk" y "specs"; profesiones.md §0.2).
         """
         catalog = (self.content.professions or {}).get("professions") or {}
         ranks = {pid: self._prof_rank(hero, pid) for pid, xp in (hero.professions or {}).items() if xp > 0 and pid in catalog}
@@ -592,8 +612,12 @@ class GameService(StoryMixin):
         group = cdef.get("group", hero.class_id)
         gear_cfg = self.content.balance["gear"]
         weapon = self.content.items.get(hero.gear.get("arma", ""), {})
-        return profession_rules.perks(catalog, ranks, self.content.balance["professions"]["max_rank"],
-                                      gear_cfg["armor_by_group"].get(group), weapon.get("type"), cdef.get("role"))
+        out = profession_rules.perks(catalog, ranks, self.content.balance["professions"]["max_rank"],
+                                     gear_cfg["armor_by_group"].get(group), weapon.get("type"), cdef.get("role"))
+        if hero.prof_specs:                             # D-141: the 🎓 specializations' perk effects, by their mastery
+            for key in profession_rules.PERK_KEYS:
+                out[key] += self._pspec_bonus(hero, "perk", key=key, role=cdef.get("role"))
+        return out
 
     def _money(self, amount: int) -> str:
         """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
@@ -1176,6 +1200,8 @@ class GameService(StoryMixin):
             return self._use_memento(hero, action_id[4:])
         if action_id.startswith(PROF_ACTIONS):          # D-109: ⚒️ Oficios, its stations, recipes and 🔨 Hacer
             return self._prof_action(hero, action_id)
+        if action_id.startswith(SPEC_ACTIONS):          # D-141: 🎓 Especialización (choosing works while busy: it is a menu)
+            return self._pspec_action(hero, action_id)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
             return self._ask_camp_name(hero, "found")
@@ -4156,7 +4182,7 @@ class GameService(StoryMixin):
                 del hero.backpack[item_id]
         if not sold:
             return self._services_view(hero, notice=t.t("upgrades.nothing_to_sell"))
-        total, trade = self._merchant_sale(hero, total)         # D-116: 💱 Comercio
+        total, trade = self._merchant_sale(hero, total, "barter")   # D-116: 💱 Comercio (D-141: 🐪 Caravanero)
         hero.gold += total
         lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
         lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)              # D-117
@@ -4344,17 +4370,19 @@ class GameService(StoryMixin):
         name = self._gear_name(out_id) if self.content.items[out_id].get("kind") == "gear" else self._item_label(out_id)
         return name + (f" ×{count}" if count > 1 else "")
 
-    def _merchant_sale(self, hero: Hero, base: int) -> tuple[int, list[str]]:
+    def _merchant_sale(self, hero: Hero, base: int, sale: str = "goods") -> tuple[int, list[str]]:
         """A sale to the merchant or a camp barter: the 💱 Comercio perk adds coins and the sale raises Comercio (D-116).
 
         [ES]
         Qué hace: a lo que pagan por una venta (al mercader del Claro, al 💱 Puesto de trueque del campamento o al
         vender equipo) le suma el beneficio del 💱 Comercio (hasta +20 % al rango 100) y le da al oficio 1 de
-        experiencia por cada 🥉 de la venta. Devuelve el total a pagar y las líneas de subida de rango.
+        experiencia por cada 🥉 de la venta. Devuelve el total a pagar y las líneas de subida de rango. D-141: "sale" dice
+        qué venta es ("goods" materiales al mercader, "barter" el trueque del campamento, "gear" equipo) y suma el efecto
+        "coins" de la 🎓 especialización del Comercio que coincide (📦 Abastecedor, 🐪 Caravanero, 🛡️ Tratante de equipo).
         La llaman: _sell, _camp_sell y _sell_gear.
         Si cambia, afecta: cuántas monedas entran al juego por ventas (sumidero/fuente, balance.yaml professions.trade_xp_per_coin).
         """
-        total = int(round(base * (1 + self._perks(hero)["sell"])))
+        total = int(round(base * (1 + self._perks(hero)["sell"] + self._pspec_bonus(hero, "coins", sale=sale))))   # D-141
         lines = self._prof_gain(hero, "comercio", int(base * self.content.balance["professions"]["trade_xp_per_coin"]))
         return total, lines
 
@@ -4367,6 +4395,9 @@ class GameService(StoryMixin):
         Nunca resta (el rango no baja).
         La llaman: _trade_gather (recolectar), _trade_loot (botín de bestias), _make (refinar y fabricar), _explore_step y
         _infiltrate (🧭 Explorador) y _merchant_sale (💱 Comercio).
+        D-141: la misma experiencia sube el dominio de las 🎓 especializaciones que tienes en ese oficio, y avisa cuando el
+        oficio llega al 25 o al 75 (ya puedes elegir) o una especialización abre su receta exclusiva (_pspec_gain). Las recetas
+        exclusivas que no puedes hacer no se anuncian.
         Si cambia, afecta: el avance de todos los oficios y los avisos de subida.
         """
         if xp <= 0 or pid not in self._prof_catalog():
@@ -4375,13 +4406,14 @@ class GameService(StoryMixin):
         before = self._prof_rank(hero, pid)
         hero.professions[pid] = hero.professions.get(pid, 0) + int(xp)
         after = self._prof_rank(hero, pid)
+        spec_lines = self._pspec_gain(hero, pid, int(xp), before, after)     # D-141: 🎓 mastery, "you can choose" and exclusive recipes
         if after <= before:
-            return []
+            return spec_lines
         self.bus.publish(ProfessionRankUp(hero.id, pid, after))
         t = self.texts
         lines = [t.t("prof.rank_up", name=self._prof_name(pid), rank=after, title=self._rank_title(after))]
         opened = [self._recipe_name(rid) for rid, rdef in self._recipes().items()
-                  if rdef["profession"] == pid and before < int(rdef.get("min_rank", 1)) <= after]
+                  if rdef["profession"] == pid and before < int(rdef.get("min_rank", 1)) <= after and self._pspec_recipe_ok(hero, rdef)]
         if opened:
             lines.append(t.t("prof.unlocked", items=", ".join(opened)))
         rare = self._prof_catalog()[pid].get("rare")
@@ -4389,7 +4421,7 @@ class GameService(StoryMixin):
             lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
         lines += self._explorer_unlocks(hero, pid, before, after)     # D-112: what the 🧭 Explorador sees now (and its title)
         lines += self._ench_unlocks(pid, before, after)               # D-115: the ✨ enchantments a new rank opens
-        return lines
+        return lines + spec_lines
 
     def _trade_gather(self, hero: Hero, got: dict[str, int], activity: dict[str, Any]) -> list[str]:
         """One gathering round raises its gathering professions (🪓 ⛏️ 🌿): profession xp per unit, an extra unit
@@ -4402,6 +4434,8 @@ class GameService(StoryMixin):
         junta (madera → leñador; piedra, metal y arcilla → minero; hierba y fibra → herbolario), sortea una unidad más
         por unidad según el rango (professions.rank_yield, sin pasar el espacio de la mochila) y, desde el rango del
         raro, la 💠 gema en bruto o la 🌸 flor de luna. Agrega lo extra a `got` (cuenta para el resumen y el gremio).
+        D-141: la 🎓 especialización suma a la unidad de más ("yield": ⚙️ Metales, 🪓 Tala rápida...) y sus hallazgos ("find":
+        💠 Gemas, 🌸 Flores raras) se sortean aparte, una vez por vuelta del oficio.
         La llama: _gather_step.
         Si cambia, afecta: el ritmo de los oficios de recolección y cuánto material raro entra al juego.
         """
@@ -4416,7 +4450,8 @@ class GameService(StoryMixin):
             if not pid:
                 continue
             rank = self._prof_rank(hero, pid)
-            extra = sum(1 for _ in range(got[res]) if rng.chance(rank * cfg["rank_yield"]))
+            chance = rank * cfg["rank_yield"] + self._pspec_bonus(hero, "yield", item=res)   # D-141: 🎓 e.g. ⚙️ Metales +20 %
+            extra = sum(1 for _ in range(got[res]) if rng.chance(chance))
             extra = min(extra, max(0, self._bag_cap(hero) - self._bag_used(hero)))     # gathering stops at the space (D-90)
             if extra:
                 self._bag_add(hero, res, extra)
@@ -4431,6 +4466,12 @@ class GameService(StoryMixin):
                 if rng.chance(cfg["rare_chance"] + cfg["rare_per_rank"] * (rank - int(rare["min_rank"]))):
                     self._bag_add(hero, rare["item"], 1)          # a find: never lost (D-90)
                     got[rare["item"]] = got.get(rare["item"], 0) + 1
+            for item_id, chance in self._pspec_finds(hero, pid).items():     # D-141: 💠 Gemas, 🌸 Flores raras (own draw)
+                find_rng = Rng(int(hash_unit(self.world_seed, hero.id, "spec_find", pid, item_id, activity.get("until", 0),
+                                             activity.get("done", 0)) * 2**31))
+                if find_rng.chance(chance):
+                    self._bag_add(hero, item_id, 1)               # a find: never lost (D-90)
+                    got[item_id] = got.get(item_id, 0) + 1
             trade[pid] = trade.get(pid, 0) + xp
             lines += self._prof_gain(hero, pid, xp)
         return lines
@@ -4447,7 +4488,8 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: cuando una bestia suelta 🍖 carne o 🦌 piel, suma 1 de experiencia de Desollador por unidad y, según
-        el rango, a veces una unidad más (el botín nunca se pierde, D-90). Los avisos de rango van a `lines`.
+        el rango, a veces una unidad más (el botín nunca se pierde, D-90). Los avisos de rango van a `lines`. D-141: la
+        🎓 especialización suma a esa unidad de más (🦌 Pieles finas, 🍖 Carnicería) y 🦴 Trofeos sortea una 💠 gema por unidad.
         La llama: _end_combat (botín de cada victoria).
         Si cambia, afecta: cuánta carne y piel entra al juego (despensa y Curtiduría).
         """
@@ -4458,9 +4500,18 @@ class GameService(StoryMixin):
         cfg = self._prof_cfg()
         rank = self._prof_rank(hero, pid)
         rng = Rng(int(hash_unit(self.world_seed, hero.id, "skin", seed, item_id) * 2**31))
-        extra = sum(1 for _ in range(count) if rng.chance(rank * cfg["rank_yield"]))
+        chance = rank * cfg["rank_yield"] + self._pspec_bonus(hero, "yield", item=item_id)    # D-141: 🦌 Pieles finas, 🍖 Carnicería
+        extra = sum(1 for _ in range(count) if rng.chance(chance))
         if extra:
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + extra
+        finds = self._pspec_finds(hero, pid)                  # D-141: 🦴 Trofeos, per unit skinned (own draw)
+        if finds:
+            find_rng = Rng(int(hash_unit(self.world_seed, hero.id, "spec_find", seed, item_id) * 2**31))
+            found = {f: n for f, chance in finds.items() if (n := sum(1 for _ in range(count + extra) if find_rng.chance(chance)))}
+            for found_id, n in found.items():
+                hero.backpack[found_id] = hero.backpack.get(found_id, 0) + n      # a find: never lost (D-90)
+            if found:
+                lines.append(self.texts.t("spec.found", items=self._item_list(found)))
         lines += self._prof_gain(hero, pid, (count + extra) * cfg["gather_xp_per_unit"])
         return extra
 
@@ -4555,7 +4606,7 @@ class GameService(StoryMixin):
         if rare and rank < int(rare["min_rank"]):
             return t.t("prof.next", rank=rare["min_rank"], items=self._item_label(rare["item"]))
         later = [(int(rdef.get("min_rank", 1)), rid) for rid, rdef in self._recipes().items()
-                 if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) > rank]
+                 if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) > rank and self._pspec_recipe_ok(hero, rdef)]   # D-141
         if not later:
             return None
         need = min(r for r, _ in later)
@@ -4610,8 +4661,10 @@ class GameService(StoryMixin):
         Qué hace: muestra los oficios que empezaste, agrupados en recolección, refinado y fabricación, cada uno con su
         rango (y título), la barra hasta el próximo, cómo se sube y qué abre el próximo umbral; después, los que faltan
         empezar (sin tope de oficios, D-57) y dónde están las estaciones. Con estaciones aquí (el Claro o tu
-        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. 3 botones como mucho (D-75). El 🧭 Explorador
+        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. El 🧭 Explorador
         (D-112, rama 🧭 Exploración) muestra además qué abre cada rango en el mapa (✅ lo abierto) y el próximo umbral.
+        D-141: bajo cada oficio, sus 🎓 especializaciones con su dominio (o "puedes elegir") y, desde que un oficio llega al
+        rango 25, el botón 🎓 Especialización. 4 botones como mucho (D-75).
         La llaman: el atajo /oficios, ⚒️ Oficios del Claro, del 🧵 Taller y de los servicios del campamento.
         Si cambia, afecta: dónde ve el jugador sus oficios (tests/test_professions.py).
         """
@@ -4634,6 +4687,7 @@ class GameService(StoryMixin):
                 perk = " · ".join(part for part in (perk, t.t("prof.perk.masterwork", v=f"{shown:g}")) if part)
             if perk:
                 body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
+            body += self._pspec_prof_lines(hero, pid)                     # D-141: 🎓 your specializations here (or "you can choose")
             body += self._explorer_prof_lines(hero, pid)                 # D-112: what each 🧭 rank opens on the map
             unlock = self._next_unlock(hero, pid)
             if unlock:
@@ -4649,6 +4703,8 @@ class GameService(StoryMixin):
         actions = []
         if stations:
             actions = [Action(id="est:refine:0", label=t.t("prof.refine_button")), Action(id="est:craft:0", label=t.t("prof.craft_button"))]
+        if self._pspec_any(hero):                                         # D-141: 🎓 Especialización, from rank 25 (4 buttons at most)
+            actions.append(Action(id="pspecs", label=t.t("spec.button")))
         actions.append(Action(id=self._prof_back(hero), label=t.t("menu.back")))
         return View(kind="professions", title=t.t("prof.title"), body=body, actions=actions, notice=notice)
 
@@ -4661,7 +4717,8 @@ class GameService(StoryMixin):
         primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las
         demás; dentro de cada grupo, las de rango más alto primero (D-110: cada línea tiene equipo hasta el nivel 100 y la
         más nueva es la que sirve). Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
-        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios.
+        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios. D-141: las recetas
+        exclusivas de una 🎓 especialización solo aparecen (con 🎓 delante) para quien la tiene con el dominio que piden.
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, ➡️ Ver más y ↩️ Volver de cada receta.
         Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py).
         """
@@ -4681,6 +4738,8 @@ class GameService(StoryMixin):
             pid = rdef["profession"]
             if catalog.get(pid, {}).get("branch") != branch or self._prof_rank(hero, pid) < int(rdef.get("min_rank", 1)):
                 continue
+            if not self._pspec_recipe_ok(hero, rdef):                     # D-141: 🎓 exclusive recipes, only for their specialization
+                continue
             if pid not in stations:
                 elsewhere = True
                 continue
@@ -4699,12 +4758,13 @@ class GameService(StoryMixin):
         actions = []
         for _, rid, missing in shown:
             rdef = recipes[rid]
-            body.append(t.t("prof.entry_ok" if not missing else "prof.entry", item=self._recipe_name(rid),
+            name = self._pspec_mark(rdef) + self._recipe_name(rid)         # D-141: "🎓 " before an exclusive recipe
+            body.append(t.t("prof.entry_ok" if not missing else "prof.entry", item=name,
                             inputs=self._item_list(rdef["inputs"]), energy=rdef["energy"]))
             if missing:
                 body.append(t.t("prof.entry_missing", items=self._item_list(missing)))
             actions.append(Action(id=f"rec:{rid}:{page}", label=t.t("prof.entry_button_ok" if not missing else "prof.entry_button",
-                                                                     item=self._recipe_name(rid))))
+                                                                     item=name)))
         if not entries:
             body.append(t.t("prof.station_empty"))
         if pages > 1:
@@ -4722,7 +4782,8 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: muestra una receta: los materiales que pide con lo que llevas (✅ o ❌), lo que sale (con los bonos si
         es equipo, o cuánto cura si es poción), la energía por vez, la experiencia de héroe y de oficio que da, y la
-        probabilidad de una unidad más al refinar. Botones: 🔨 Hacer 1, 🔨 Hacer 5 (o lo que alcance), 🔨 Hacer todo
+        probabilidad de una unidad más al refinar. D-141: la de una 🎓 especialización dice de cuál es y, si no la tienes o te
+        falta dominio, lo dice y no hay botón de hacer; la ✒️ obra maestra y la unidad de más suman lo de tus especializaciones. Botones: 🔨 Hacer 1, 🔨 Hacer 5 (o lo que alcance), 🔨 Hacer todo
         (si alcanza para más de 5) y ↩️ Volver a la estación: 4 como mucho (D-75). Si falta algo, lo dice y no hay botón.
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
@@ -4736,9 +4797,11 @@ class GameService(StoryMixin):
         rank = self._prof_rank(hero, pid)
         need_rank = int(rdef.get("min_rank", 1))
         stations, where = self._stations_here(hero)
-        body = [self._recipe_name(rid),
-                t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank), "",
-                t.t("prof.recipe_needs")]
+        body = [self._pspec_mark(rdef) + self._recipe_name(rid),
+                t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank)]
+        if rdef.get("spec"):                                    # D-141: 🎓 whose exclusive recipe it is
+            body.append(t.t("spec.recipe_line", spec=self._pspec_name(rdef["spec"])))
+        body += ["", t.t("prof.recipe_needs")]
         for item_id, n in rdef["inputs"].items():
             have = hero.backpack.get(item_id, 0)
             body.append(t.t("prof.have_line" if have >= n else "prof.lack_line", item=self._item_label(item_id), have=have, need=n))
@@ -4749,8 +4812,9 @@ class GameService(StoryMixin):
             body.append(t.t("prof.gear_out", slot=t.t(f"gear.slot.{item['slot']}"), type=t.t(f"gear.type.{item['type']}"),
                             level=item.get("req_level", 1), stats=self._gear_stats_text(item.get("stats", {}))))
             body.append(self._gear_status(hero, item))
-            if masterwork_id(out_id) in self.content.items:     # D-116: ✒️ the chance that it comes out a masterwork
-                body.append(t.t("prof.masterwork_line", pct=f"{round(100 * self._masterwork_chance(hero, pid), 1):g}"))
+            if masterwork_id(out_id) in self.content.items:     # D-116: ✒️ the chance that it comes out a masterwork (+ D-141 🎓)
+                chance = self._masterwork_chance(hero, pid) + self._pspec_masterwork(hero, item)
+                body.append(t.t("prof.masterwork_line", pct=f"{round(100 * chance, 1):g}"))
         elif item.get("kind") == "furniture":                   # D-116: 🪑 camp furniture
             body.append(t.t("prof.furniture_out", desc=t.t(item["desc_key"])))
         elif item.get("heal"):
@@ -4759,11 +4823,16 @@ class GameService(StoryMixin):
             body.append(t.t("prof.material_out", use=t.t(f"resources.use.{out_id}")))
         body.append(t.t("prof.energy_cost", energy=rdef["energy"], have=hero.energy))
         body.append(t.t("prof.gains", xp=int(self._make_xp(hero, rdef, rank) * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=rdef["xp"]))
-        if branch == "refine" and round(100 * self._make_bonus(rank, where)):
-            body.append(t.t("prof.yield_line", pct=round(100 * self._make_bonus(rank, where))))
+        spec_yield = self._pspec_bonus(hero, "yield", item=out_id) if item.get("kind") != "gear" else 0.0     # D-141: 🎓
+        if branch == "refine" and round(100 * (self._make_bonus(rank, where) + spec_yield)):
+            body.append(t.t("prof.yield_line", pct=round(100 * (self._make_bonus(rank, where) + spec_yield))))
+        elif branch != "refine" and round(100 * spec_yield):
+            body.append(t.t("spec.yield_line", pct=round(100 * spec_yield)))
         actions = []
         if rank < need_rank:
             body.append(t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
+        elif not self._pspec_recipe_ok(hero, rdef):              # D-141: only its 🎓 specialization, with enough mastery
+            body.append(self._pspec_recipe_lock(hero, rdef))
         elif pid not in stations:
             body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
         else:
@@ -4794,6 +4863,9 @@ class GameService(StoryMixin):
         llena el cinturón con las pociones. D-116: cada pieza de equipo puede salir ✒️ obra maestra (sorteo propio, con
         la probabilidad de _masterwork_chance): va a la mochila como "<id>_obra" con la firma del héroe
         (Hero.gear_signatures) y, si la ranura estaba vacía, es la que se pone. Los 🪑 muebles avisan dónde colocarlos.
+        D-141: una receta exclusiva de otra 🎓 especialización se rechaza sin gastar nada; tus especializaciones suman a la
+        unidad de más (al refinar, y en los remedios con su propio sorteo), a la ✒️ obra maestra de su línea y a sus hallazgos
+        por vez (🪙 Metales preciosos).
         Publica ItemCrafted con la pieza normal y el total hecho (y ProfessionRankUp si sube de rango).
         La llaman: los botones 🔨 Hacer de la receta.
         Si cambia, afecta: la economía de los oficios (balance.yaml professions; content/professions.yaml).
@@ -4811,6 +4883,8 @@ class GameService(StoryMixin):
         rank = self._prof_rank(hero, pid)
         if rank < int(rdef.get("min_rank", 1)):
             return self._recipe_view(hero, rid, page, notice=t.t("prof.locked", need=rdef["min_rank"], name=self._prof_name(pid), rank=rank))
+        if not self._pspec_recipe_ok(hero, rdef):                # D-141: 🎓 exclusive recipe of another specialization (nothing spent)
+            return self._recipe_view(hero, rid, page, notice=self._pspec_recipe_lock(hero, rdef))
         missing = missing_for(rdef, hero.backpack, times)
         if missing:
             return self._recipe_view(hero, rid, page, notice=t.t("prof.missing", items=self._item_list(missing)))
@@ -4824,18 +4898,30 @@ class GameService(StoryMixin):
             if hero.backpack[item_id] <= 0:
                 del hero.backpack[item_id]
         out_id, out_n = next(iter(rdef["output"].items()))
+        item = self.content.items[out_id]
         extra = 0
         if self._prof_catalog()[pid].get("branch") == "refine":       # specialists and camps get more out (D-101)
             rng = Rng(int(hash_unit(self.world_seed, hero.id, "make", rid, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
-            chance = self._make_bonus(rank, where)
+            chance = self._make_bonus(rank, where) + self._pspec_bonus(hero, "yield", item=out_id)     # D-141: 🎓 e.g. 🔩 Hierro
             extra = sum(1 for _ in range(times) if rng.chance(chance))
+        elif item.get("kind") != "gear":                              # D-141: 🎓 more remedies (🧪 Pociones, 💊 Farmacia, own draw)
+            bonus = self._pspec_bonus(hero, "yield", item=out_id)
+            if bonus > 0:
+                spec_rng = Rng(int(hash_unit(self.world_seed, hero.id, "make_spec", rid, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
+                extra = sum(1 for _ in range(times) if spec_rng.chance(bonus))
+        found: dict[str, int] = {}
+        for find_id, chance in self._pspec_finds(hero, pid).items():   # D-141: 🪙 Metales preciosos, per time made (own draw)
+            find_rng = Rng(int(hash_unit(self.world_seed, hero.id, "spec_find", rid, find_id, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
+            n = sum(1 for _ in range(times) if find_rng.chance(chance))
+            if n:
+                self._bag_add(hero, find_id, n)                         # a find: never lost (D-90)
+                found[find_id] = n
         made = int(out_n) * times + extra
-        item = self.content.items[out_id]
         twin = masterwork_id(out_id)
         masters = 0
         if item.get("kind") == "gear" and twin in self.content.items:      # D-116: ✒️ own draw, never changes the rest
             mw_rng = Rng(int(hash_unit(self.world_seed, hero.id, "masterwork", rid, self.clock.now(), hero.professions.get(pid, 0)) * 2**31))
-            chance = self._masterwork_chance(hero, pid)
+            chance = self._masterwork_chance(hero, pid) + self._pspec_masterwork(hero, item)      # D-141: + 🎓 in its line
             masters = sum(1 for _ in range(made) if mw_rng.chance(chance))
         if made > masters:
             hero.backpack[out_id] = hero.backpack.get(out_id, 0) + made - masters
@@ -4845,6 +4931,8 @@ class GameService(StoryMixin):
         lines = [t.t("prof.made", items=self._item_list({out_id: made}), energy=cost)]
         if extra:
             lines.append(t.t("prof.made_extra", n=extra))
+        if found:
+            lines.append(t.t("spec.found", items=self._item_list(found)))
         if masters:
             lines.append(t.t("prof.masterwork_made", n=masters, item=self._gear_name(twin), name=hero.name))
         if item.get("kind") == "gear":
@@ -4986,7 +5074,8 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: arma el plan de encantar una pieza: qué encantamiento le toca por su ranura, cuánto suma con tu rango, qué
         pide (engine/professions/rules.py enchant_cost) y qué lo impide ("no_slot", "rank", "not_better" si ya tiene ese o uno
-        mejor, "missing", "energy" o "busy"). No cambia nada.
+        mejor, "missing", "energy" o "busy"). No cambia nada. D-141: el valor suma lo de tu 🎓 especialización ⚔️ Armas
+        (Filo) o 🛡️ Armaduras (Vigor y Guarda), por su dominio.
         La llaman: _enchant_view (lo que muestra) y _enchant (lo que hace): siempre dicen lo mismo.
         Si cambia, afecta: cuándo se puede encantar.
         """
@@ -4997,7 +5086,8 @@ class GameService(StoryMixin):
         enc = cfg.get("enchant") or {}
         edef = self._ench_defs()[eid]
         rank = self._ench_rank(hero)
-        value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"])
+        value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"],
+                                               self._pspec_bonus(hero, "enchant", enchant=eid))     # D-141: 🎓 Armas / Armaduras
         cost = profession_rules.enchant_cost(self.content.items[item_id], edef, enc, cfg.get("essence", "esencia"),
                                              cfg.get("major_essence", "esencia_mayor"))
         energy = int(enc.get("energy", 2))
@@ -5059,7 +5149,8 @@ class GameService(StoryMixin):
         body.append(t.t("ench.essences_line", items=self._item_list(essences)) if essences else t.t("ench.essences_none"))
         body += ["", t.t("ench.table_title")]
         for eid, edef in self._ench_defs().items():
-            value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"])
+            value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"],
+                                                   self._pspec_bonus(hero, "enchant", enchant=eid))     # D-141: 🎓
             lock = "" if rank >= int(edef.get("min_rank", 1)) else t.t("ench.lock", rank=edef.get("min_rank", 1))
             body.append(t.t("ench.table_line", name=self._ench_label(eid), slots=", ".join(t.t(f"gear.slot.{s}") for s in edef.get("slots", [])),
                             stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=lock))
@@ -5326,6 +5417,430 @@ class GameService(StoryMixin):
         hero.unlocked = [base_response(self.content.classes, group)]
         hero.bar = []
         return self._talents_view(hero, notice=t.t("talents.respec_done", cost=self._money(cost), n=hero.points))
+
+    # ------------------------------------------------------------------ 🎓 profession specializations (D-115, D-141)
+    # [ES] Especializaciones de oficio (red-de-oficios.md §3): 3 por oficio (content/professions.yaml "specs"); una al rango 25,
+    # otra al 75, nunca las tres. Cada una suma un efecto chico en su línea que crece con su dominio (la experiencia de ese oficio
+    # ganada mientras la tienes) y algunas tienen recetas exclusivas. Cambiar una por otra cuesta monedas (balance.yaml specs) y
+    # empieza de cero en la nueva; el dominio de la vieja queda guardado (Hero.spec_xp). Pantallas: ⚒️ Oficios → 🎓 Especialización
+    # (o /especialidad) → un oficio → una especialización → 🎓 Elegir o 🔄 Dejar otra (pide confirmación).
+
+    def _pspec_cfg(self) -> dict[str, Any]:
+        """balance.yaml "specs" ({} if missing: nobody can specialize and the game works the same)."""
+        return self.content.balance.get("specs") or {}
+
+    def _pspec_catalog(self) -> dict[str, list[dict[str, Any]]]:
+        """content/professions.yaml "specs": profession id -> its specializations (in file order)."""
+        return (self.content.professions or {}).get("specs") or {}
+
+    def _pspec_slots_at(self) -> list[int]:
+        """The profession ranks that open the first and the second specialization (balance.yaml specs.slots_at: 25, 75)."""
+        return [int(rank) for rank in self._pspec_cfg().get("slots_at") or []]
+
+    def _pspec_mastery_xp(self) -> int:
+        return int(self._pspec_cfg().get("mastery_xp", 1))
+
+    def _pspec_held(self, hero: Hero, pid: str) -> list[str]:
+        """The specializations the hero holds in a profession, in the order chosen (unknown or retired ones ignored)."""
+        return profession_rules.spec_held(self._pspec_catalog(), hero.prof_specs or {}, pid)
+
+    def _pspec_share(self, hero: Hero, sid: str) -> float:
+        """Mastery 0..1 of a specialization (held now or saved from before)."""
+        return profession_rules.spec_share((hero.spec_xp or {}).get(sid, 0), self._pspec_mastery_xp())
+
+    def _pspec_bonus(self, hero: Hero, kind: str, key: str | None = None, **ctx: Any) -> float:
+        """What the hero's specializations add to one kind of effect here (engine/professions/rules.py spec_bonus).
+
+        [ES]
+        Qué hace: suma un tipo de efecto (yield, masterwork, perk, coins, enchant, detect) de las 🎓 especializaciones que el héroe
+        tiene, por su dominio y solo si coincide con lo que pasa (ctx: item, slot, type, sale, enchant, role). Sin especializaciones,
+        0 (los héroes de antes juegan igual).
+        La llaman: _perks, _merchant_sale, _trade_gather, _trade_loot, _make, _recipe_view, _pspec_masterwork, _enchant_plan,
+        _ench_view, _infiltrate y _ecamp_destroyed.
+        Si cambia, afecta: todo lo que dan las especializaciones (content/professions.yaml "specs").
+        """
+        if not hero.prof_specs:
+            return 0.0
+        return profession_rules.spec_bonus(self._pspec_catalog(), hero.prof_specs, hero.spec_xp or {}, self._pspec_mastery_xp(),
+                                           kind, key, **ctx)
+
+    def _pspec_finds(self, hero: Hero, pid: str) -> dict[str, float]:
+        """item -> chance of the "find" effects of the hero's specializations in this profession (items that exist only)."""
+        if not hero.prof_specs:
+            return {}
+        finds = profession_rules.spec_finds(self._pspec_catalog(), hero.prof_specs, hero.spec_xp or {}, self._pspec_mastery_xp(), pid)
+        return {item: chance for item, chance in finds.items() if item in self.content.items}
+
+    def _pspec_masterwork(self, hero: Hero, item: dict[str, Any]) -> float:
+        """✒️ masterwork chance the hero's specializations add to a gear piece of this slot and type (D-141)."""
+        return self._pspec_bonus(hero, "masterwork", slot=item.get("slot"), type=item.get("type"))
+
+    def _pspec_name(self, sid: str) -> str:
+        """"⚙️ Metales": a specialization's emoji and name (spec.<id>.name)."""
+        _, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        return f"{(sdef or {}).get('emoji', '')} {self.texts.t(f'spec.{sid}.name')}".strip()
+
+    def _pspec_mark(self, rdef: dict[str, Any]) -> str:
+        """"🎓 " before the name of an exclusive recipe, "" otherwise."""
+        return self.texts.t("spec.mark") if rdef.get("spec") else ""
+
+    def _pspec_bar(self, hero: Hero, sid: str) -> str:
+        """▓▓░░░░░░ 25 % of mastery."""
+        pct = int(100 * self._pspec_share(hero, sid) + 1e-9)
+        return f"{self._bar(pct, 100, 8)} {pct} %"
+
+    def _pspec_cost(self, hero: Hero, pid: str) -> int:
+        """Coins to switch a specialization of this profession now (P-105: they grow with the rank)."""
+        return profession_rules.switch_cost(self._prof_rank(hero, pid), self._pspec_cfg().get("switch_cost") or {})
+
+    def _pspec_choice(self, hero: Hero, pid: str, sid: str) -> str:
+        """"held", "locked", "pick" (free) or "switch" (paid) for this specialization now (rules.spec_choice)."""
+        return profession_rules.spec_choice(self._pspec_catalog(), hero.prof_specs or {}, pid, sid, self._prof_rank(hero, pid),
+                                            self._pspec_slots_at())
+
+    def _pspec_exclusives(self, sid: str) -> list[str]:
+        """The recipe ids only this specialization makes (recipes with spec: <id>), in file order."""
+        return [rid for rid, rdef in self._recipes().items() if rdef.get("spec") == sid]
+
+    def _pspec_recipe_ok(self, hero: Hero, rdef: dict[str, Any]) -> bool:
+        """True if the recipe is not exclusive, or the hero holds its specialization with recipe_mastery of mastery (D-141).
+
+        [ES]
+        Qué hace: dice si el héroe puede ver y hacer una receta por su especialización: las normales siempre; las exclusivas
+        (spec: <id>) solo si tiene esa 🎓 especialización con balance.yaml specs.recipe_mastery de dominio (25 %). El rango lo
+        miran aparte quienes llaman.
+        La llaman: _prof_gain, _next_unlock, _station_view, _recipe_view, _make y _spec_view.
+        Si cambia, afecta: quién hace las piezas exclusivas.
+        """
+        sid = rdef.get("spec")
+        if not sid:
+            return True
+        pid, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        if not sdef or sid not in self._pspec_held(hero, pid):
+            return False
+        return self._pspec_share(hero, sid) >= float(self._pspec_cfg().get("recipe_mastery", 0.0)) - 1e-9
+
+    def _pspec_recipe_lock(self, hero: Hero, rdef: dict[str, Any]) -> str:
+        """Why an exclusive recipe is closed: you do not hold its specialization, or not enough mastery yet."""
+        t = self.texts
+        sid = rdef.get("spec", "")
+        pid, _ = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        need = int(100 * float(self._pspec_cfg().get("recipe_mastery", 0.0)) + 1e-9)
+        if pid and sid in self._pspec_held(hero, pid):
+            return t.t("spec.recipe_locked", spec=self._pspec_name(sid), pct=need, have=int(100 * self._pspec_share(hero, sid) + 1e-9))
+        return t.t("spec.recipe_not_held", spec=self._pspec_name(sid), prof=self._prof_name(pid or rdef.get("profession", "")))
+
+    def _pspec_value_text(self, kind: str, key: str | None, value: float) -> str:
+        """A value as the texts show it: percent points for most, whole points for 🧭 exploration, units for 🎒 space."""
+        if kind == "perk" and key == "explore":
+            return f"{int(value + 1e-9)}"
+        if kind == "perk" and key == "bag":
+            return f"{round(value, 1):g}"
+        return f"{round(value * 100, 1):g}"
+
+    def _pspec_effect_text(self, sdef: dict[str, Any], share: float) -> str:
+        """"+5 % de sacar una unidad más de ⚙️ Pieza de metal": a specialization's effects at a mastery (1.0 = all of it).
+
+        [ES]
+        Qué hace: escribe los efectos de una especialización con su valor a ese dominio (0 a 1), con los textos spec.effect.<tipo>
+        (o prof.perk.<clave> para los beneficios). La llaman: _pspec_prof_view, _spec_view y _pspec_prof_lines.
+        Si cambia, afecta: solo cómo se ven los efectos.
+        """
+        t = self.texts
+        parts = []
+        for effect in sdef.get("effects") or []:
+            kind, key = effect.get("kind"), effect.get("key")
+            v = self._pspec_value_text(kind, key, float(effect.get("value", 0.0)) * share)
+            if kind == "perk":
+                parts.append(t.t(f"prof.perk.{key}", v=v))
+            elif kind in ("yield", "find"):
+                what = ", ".join(self._item_label(i) for i in effect.get("items") or [] if i in self.content.items)
+                parts.append(t.t(f"spec.effect.{kind}", v=v, what=what))
+            elif kind == "masterwork":
+                what = "/".join(t.t(f"gear.type.{typ}") for typ in effect.get("types") or [])
+                if effect.get("slots"):
+                    what = t.t("spec.slots_of", types=what, slots=", ".join(t.t(f"gear.slot.{slot}") for slot in effect["slots"]))
+                parts.append(t.t("spec.effect.masterwork", v=v, what=what))
+            elif kind == "coins":
+                parts.append(t.t("spec.effect.coins", v=v, what=" · ".join(t.t(f"spec.sale.{sale}") for sale in effect.get("sales") or [])))
+            elif kind == "enchant":
+                parts.append(t.t("spec.effect.enchant", v=v, what=t.t("spec.and").join(self._ench_label(e) for e in effect.get("enchants") or [])))
+            elif kind == "detect":
+                parts.append(t.t("spec.effect.detect", v=v))
+        return " · ".join(parts)
+
+    def _pspec_any(self, hero: Hero) -> bool:
+        """True if some profession with specializations reached the first threshold, or the hero holds one (🎓 button)."""
+        slots_at = self._pspec_slots_at()
+        if not slots_at:
+            return False
+        specs = self._pspec_catalog()
+        if any((hero.prof_specs or {}).values()):
+            return True
+        return any(specs.get(pid) and self._prof_rank(hero, pid) >= slots_at[0] for pid, xp in (hero.professions or {}).items() if xp > 0)
+
+    def _pspec_prof_lines(self, hero: Hero, pid: str) -> list[str]:
+        """⚒️ Oficios, under a profession: "🎓 ⚙️ Metales (25 %)" for each one held, or "🎓 puedes elegir" with a free slot."""
+        slots_at = self._pspec_slots_at()
+        if not slots_at or not profession_rules.spec_list(self._pspec_catalog(), pid):
+            return []
+        t = self.texts
+        held = self._pspec_held(hero, pid)
+        lines = []
+        if held:
+            lines.append(t.t("spec.prof_line", items=", ".join(
+                t.t("spec.prof_line_item", name=self._pspec_name(sid), pct=int(100 * self._pspec_share(hero, sid) + 1e-9)) for sid in held)))
+        if len(held) < profession_rules.spec_slots(self._prof_rank(hero, pid), slots_at):
+            lines.append(t.t("spec.prof_free"))
+        return lines
+
+    def _pspec_gain(self, hero: Hero, pid: str, xp: int, before: int, after: int) -> list[str]:
+        """Profession xp also raises the mastery of the specializations held there; lines for what it opens (D-141).
+
+        [ES]
+        Qué hace: la experiencia que gana un oficio sube también el dominio de cada 🎓 especialización que el héroe tiene en él
+        (Hero.spec_xp). Avisa cuando una abre su receta exclusiva (25 % de dominio, si el rango ya alcanza), cuando queda
+        dominada (100 %) y cuando el oficio llega al rango 25 ("ya puedes elegir") o al 75 ("puedes sumar una segunda").
+        La llama: _prof_gain (siempre, suba o no de rango).
+        Si cambia, afecta: el ritmo de las especializaciones y sus avisos.
+        """
+        slots_at = self._pspec_slots_at()
+        if not slots_at or not profession_rules.spec_list(self._pspec_catalog(), pid):
+            return []
+        t = self.texts
+        lines: list[str] = []
+        need = float(self._pspec_cfg().get("recipe_mastery", 0.0))
+        full = self._pspec_mastery_xp()
+        for sid in self._pspec_held(hero, pid):
+            old = int((hero.spec_xp or {}).get(sid, 0))
+            hero.spec_xp[sid] = old + max(0, int(xp))
+            old_share = profession_rules.spec_share(old, full)
+            new_share = profession_rules.spec_share(old + max(0, int(xp)), full)
+            if old_share + 1e-9 < need <= new_share + 1e-9:
+                opened = [self._recipe_name(rid) for rid in self._pspec_exclusives(sid)
+                          if int(self._recipes()[rid].get("min_rank", 1)) <= before]   # the ones a rank-up opens are told there
+                if opened:
+                    lines.append(t.t("spec.recipe_unlocked", spec=self._pspec_name(sid), items=", ".join(opened)))
+            if old_share < 1.0 <= new_share:
+                lines.append(t.t("spec.mastered", spec=self._pspec_name(sid)))
+        for index, rank in enumerate(slots_at[:2]):
+            if before < rank <= after:
+                lines.append(t.t("spec.unlock_first" if index == 0 else "spec.unlock_second", prof=self._prof_name(pid)))
+        return lines
+
+    def _pspec_action(self, hero: Hero, action_id: str) -> View:
+        """Route the 🎓 buttons (D-141): "pspecs[:page]", "pspec:<profession>", "pspv:<spec>", "pspp:<spec>",
+        "pspx:<spec>:<old>" (asks) and "pspx!:<spec>:<old>" (switches). [ES] Qué hace: reparte los botones de las
+        especializaciones. La llama: _idle_action. Si cambia, afecta: los IDs de botón (los clientes solo los reenvían)."""
+        if action_id.startswith("pspec:"):
+            return self._pspec_prof_view(hero, action_id[6:])
+        if action_id.startswith("pspv:"):
+            return self._pspec_view(hero, action_id[5:])
+        if action_id.startswith("pspp:"):
+            return self._pspec_pick(hero, action_id[5:])
+        if action_id.startswith("pspx!:"):
+            sid, _, old = action_id[6:].partition(":")
+            return self._pspec_switch(hero, sid, old)
+        if action_id.startswith("pspx:"):
+            sid, _, old = action_id[5:].partition(":")
+            return self._pspec_switch_view(hero, sid, old)
+        page = action_id.partition(":")[2]
+        return self._pspecs_view(hero, int(page) if page.isdigit() else 0)
+
+    def _pspecs_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """🎓 Especialización: how it works and every profession that can specialize, with what you hold; one button each.
+
+        [ES]
+        Qué hace: explica las especializaciones (una al rango 25, otra al 75, nunca las tres; el dominio; cambiar cuesta y
+        empieza de cero) y lista los oficios que ya llegaron al 25, con las que tienes o "puedes elegir"; después, los oficios
+        empezados que todavía no llegan. Un botón por oficio (de a 2 por página si son más de 3, ➡️ Ver más) y ↩️ Volver a
+        ⚒️ Oficios: 4 como mucho (D-75).
+        La llaman: 🎓 Especialización de ⚒️ Oficios, /especialidad y ↩️ Volver de un oficio.
+        Si cambia, afecta: tests/test_especializaciones.py.
+        """
+        t = self.texts
+        slots_at = self._pspec_slots_at() or [25, 75]
+        first, second = slots_at[0], slots_at[-1]
+        specs = self._pspec_catalog()
+        catalog = self._prof_catalog()
+        body = [t.t("spec.intro", first=first, second=second), t.t("spec.mastery_rule", full=self._pspec_mastery_xp()), ""]
+        ready = [pid for pid in catalog if profession_rules.spec_list(specs, pid) and self._prof_rank(hero, pid) >= first]
+        for pid in ready:
+            held = self._pspec_held(hero, pid)
+            free = len(held) < profession_rules.spec_slots(self._prof_rank(hero, pid), slots_at)
+            names = ", ".join(self._pspec_name(sid) for sid in held)
+            state = (t.t("spec.state_held_free", names=names) if held and free else t.t("spec.state_held", names=names) if held
+                     else t.t("spec.state_free"))
+            body.append(t.t("spec.hub_line", name=self._prof_name(pid), rank=self._prof_rank(hero, pid), state=state))
+        if not ready:
+            body.append(t.t("spec.none", rank=first))
+        later = [self._prof_name(pid) for pid in catalog if profession_rules.spec_list(specs, pid)
+                 and hero.professions.get(pid, 0) > 0 and self._prof_rank(hero, pid) < first]
+        if later:
+            body += ["", t.t("spec.locked_list", rank=first, items=", ".join(later))]
+        per = int(self._pspec_cfg().get("per_page", 2))
+        pages = 1 if len(ready) <= 3 else (len(ready) + per - 1) // per
+        page %= pages
+        shown = ready if pages == 1 else ready[page * per: page * per + per]
+        actions = [Action(id=f"pspec:{pid}", label=self._prof_name(pid)) for pid in shown]
+        if pages > 1:
+            body.append(t.t("prof.page", n=page + 1, total=pages))
+            actions.append(Action(id=f"pspecs:{(page + 1) % pages}", label=t.t("prof.more")))
+        actions.append(Action(id="oficios", label=t.t("menu.back")))
+        return View(kind="specs", title=t.t("spec.title"), body=body, actions=actions[:4], notice=notice)
+
+    def _pspec_prof_view(self, hero: Hero, pid: str, notice: str | None = None) -> View:
+        """🎓 One profession: its three specializations with their full effect, which you hold (mastery) or saved, and its
+        exclusive recipes. A button per specialization and ↩️ Volver (4).
+
+        [ES]
+        Qué hace: la pantalla de las especializaciones de un oficio: tu rango, cuántos lugares tienes (0 antes del 25, 1 hasta el
+        74, 2 desde el 75), cada especialización con su efecto completo, si la tienes (✅ con su dominio), si la tuviste (💾 dominio
+        guardado) y sus recetas exclusivas. Un botón por especialización (abre su detalle) y ↩️ Volver a 🎓 Especialización.
+        La llaman: los botones de oficio de 🎓 Especialización, y elegir o cambiar al terminar.
+        Si cambia, afecta: tests/test_especializaciones.py.
+        """
+        t = self.texts
+        specs = profession_rules.spec_list(self._pspec_catalog(), pid)
+        if not specs or pid not in self._prof_catalog():
+            return self._pspecs_view(hero, notice=notice)
+        slots_at = self._pspec_slots_at()
+        rank = self._prof_rank(hero, pid)
+        held = self._pspec_held(hero, pid)
+        slots = profession_rules.spec_slots(rank, slots_at)
+        body = [t.t("spec.prof_intro", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), used=len(held), slots=slots)]
+        if slots < len(slots_at):
+            body.append(t.t("spec.next_first" if slots == 0 else "spec.next_second", rank=slots_at[slots]))
+        body.append("")
+        for sdef in specs:
+            sid = sdef["id"]
+            if sid in held:
+                body.append(t.t("spec.line_held", name=self._pspec_name(sid), bar=self._pspec_bar(hero, sid)))
+            elif self._pspec_share(hero, sid) > 0:
+                body.append(t.t("spec.line_saved", name=self._pspec_name(sid), pct=int(100 * self._pspec_share(hero, sid) + 1e-9)))
+            else:
+                body.append(t.t("spec.line_other", name=self._pspec_name(sid)))
+            body.append(t.t("spec.effect_line", effect=self._pspec_effect_text(sdef, 1.0)))
+            exclusive = self._pspec_exclusives(sid)
+            if exclusive:
+                body.append(t.t("spec.exclusive_line", items=", ".join(self._recipe_name(rid) for rid in exclusive)))
+        actions = [Action(id=f"pspv:{sdef['id']}", label=(t.t("spec.held_mark") if sdef["id"] in held else "") + self._pspec_name(sdef["id"]))
+                   for sdef in specs[:3]]
+        actions.append(Action(id="pspecs", label=t.t("menu.back")))
+        return View(kind="prof_specs", title=t.t("spec.prof_title", name=self._prof_name(pid)), body=body, actions=actions, notice=notice)
+
+    def _pspec_view(self, hero: Hero, sid: str, notice: str | None = None) -> View:
+        """🎓 One specialization: what it does now and with all its mastery, its exclusive recipes and how to get it.
+
+        [ES]
+        Qué hace: el detalle de una especialización: de qué oficio es, qué hace, tu dominio (barra), su efecto ahora y con todo el
+        dominio, sus recetas exclusivas (✅ abierta o 🔒 con el rango y el dominio que piden) y qué puedes hacer: nada si ya la
+        tienes; 🔒 si tu rango no abre lugar; 🎓 Elegir si tienes un lugar libre (gratis); o 🔄 Dejar <otra> (cuesta monedas, una por
+        cada una que tienes, y pide confirmación). Botones: 3 como mucho más ↩️ Volver al oficio.
+        La llaman: los botones de especialización de la pantalla del oficio, y _pspec_switch_view al cancelar.
+        Si cambia, afecta: tests/test_especializaciones.py.
+        """
+        t = self.texts
+        pid, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        if not sdef or pid not in self._prof_catalog():
+            return self._pspecs_view(hero, notice=notice)
+        rank = self._prof_rank(hero, pid)
+        share = self._pspec_share(hero, sid)
+        held = self._pspec_held(hero, pid)
+        body = [self._pspec_name(sid), t.t("spec.of_prof", prof=self._prof_name(pid), rank=rank, title=self._rank_title(rank)),
+                t.t(f"spec.{sid}.desc"), "", t.t("spec.mastery_line", bar=self._pspec_bar(hero, sid)),
+                t.t("spec.effect_now", effect=self._pspec_effect_text(sdef, share)),
+                t.t("spec.effect_full", effect=self._pspec_effect_text(sdef, 1.0)), ""]
+        exclusive = self._pspec_exclusives(sid)
+        need = int(100 * float(self._pspec_cfg().get("recipe_mastery", 0.0)) + 1e-9)
+        if exclusive:
+            body.append(t.t("spec.exclusive_title"))
+            for rid in exclusive:
+                rdef = self._recipes()[rid]
+                ok = self._pspec_recipe_ok(hero, rdef) and rank >= int(rdef.get("min_rank", 1))
+                body.append(t.t("spec.exclusive_entry", mark="✅" if ok else "🔒", item=self._recipe_name(rid),
+                                rank=rdef.get("min_rank", 1), pct=need))
+        else:
+            body.append(t.t("spec.exclusive_none"))
+        body.append("")
+        choice = self._pspec_choice(hero, pid, sid)
+        actions = []
+        if choice == "held":
+            body.append(t.t("spec.held_note", prof=self._prof_name(pid)))
+        elif choice == "locked":
+            body.append(t.t("spec.locked_note", rank=(self._pspec_slots_at() or [25])[0], prof=self._prof_name(pid), have=rank))
+        elif choice == "pick":
+            body.append(t.t("spec.pick_note", n=len(held) + 1, prof=self._prof_name(pid)))
+            actions.append(Action(id=f"pspp:{sid}", label=t.t("spec.pick_button", name=t.t(f"spec.{sid}.name"))))
+        else:
+            cost = self._money(self._pspec_cost(hero, pid))
+            body.append(t.t("spec.switch_note", cost=cost, pct=int(100 * share + 1e-9)))
+            for old in held[:2]:
+                actions.append(Action(id=f"pspx:{sid}:{old}", label=t.t("spec.switch_button", name=t.t(f"spec.{old}.name"), cost=cost)))
+        actions.append(Action(id=f"pspec:{pid}", label=t.t("menu.back")))
+        return View(kind="spec", title=t.t("spec.view_title"), body=body, actions=actions, notice=notice)
+
+    def _pspec_switch_view(self, hero: Hero, sid: str, old: str) -> View:
+        """🔄 Asks before switching: what you leave (its mastery stays saved), what you take (its saved mastery) and the price."""
+        t = self.texts
+        pid, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        if not sdef or self._pspec_choice(hero, pid, sid) != "switch" or old not in self._pspec_held(hero, pid):
+            return self._pspec_view(hero, sid) if sdef else self._pspecs_view(hero)
+        cost = self._pspec_cost(hero, pid)
+        body = [t.t("spec.confirm_body", old=self._pspec_name(old), new=self._pspec_name(sid), cost=self._money(cost)),
+                t.t("spec.confirm_lose", pct=int(100 * self._pspec_share(hero, old) + 1e-9)),
+                t.t("spec.confirm_start", new=self._pspec_name(sid), pct=int(100 * self._pspec_share(hero, sid) + 1e-9)),
+                t.t("spec.gold_line", have=self._money(hero.gold))]
+        actions = [Action(id=f"pspx!:{sid}:{old}", label=t.t("spec.confirm_button", cost=self._money(cost))),
+                   Action(id=f"pspv:{sid}", label=t.t("menu.back"))]
+        return View(kind="spec_switch", title=t.t("spec.confirm_title"), body=body, actions=actions)
+
+    def _pspec_pick(self, hero: Hero, sid: str) -> View:
+        """🎓 Elegir: take a specialization in a free slot (the first from rank 25, the second from 75), for free.
+
+        [ES]
+        Qué hace: suma la especialización a las del oficio si hay lugar libre (gratis). Si ya la tienes, tu rango no alcanza o
+        tus lugares están llenos, avisa y no cambia nada. Su dominio empieza donde quedó (0 si nunca la tuviste).
+        La llama: el botón 🎓 Elegir. Si cambia, afecta: Hero.prof_specs.
+        """
+        t = self.texts
+        pid, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        if not sdef:
+            return self._pspecs_view(hero)
+        choice = self._pspec_choice(hero, pid, sid)
+        if choice != "pick":
+            notices = {"held": t.t("spec.err_held"), "switch": t.t("spec.err_full"),
+                       "locked": t.t("spec.err_locked", rank=(self._pspec_slots_at() or [25])[0], prof=self._prof_name(pid))}
+            return self._pspec_view(hero, sid, notice=notices[choice])
+        hero.prof_specs[pid] = self._pspec_held(hero, pid) + [sid]
+        hero.spec_xp.setdefault(sid, 0)
+        return self._pspec_prof_view(hero, pid, notice=t.t("spec.picked", name=self._pspec_name(sid), prof=self._prof_name(pid)))
+
+    def _pspec_switch(self, hero: Hero, sid: str, old: str) -> View:
+        """🔄 Switch: pay the coins and put `sid` in the place of `old`; old's mastery stays saved (all or nothing).
+
+        [ES]
+        Qué hace: cambia una especialización por otra del mismo oficio: cobra balance.yaml specs.switch_cost (sube con el rango,
+        P-105) y pone la nueva en el lugar de la vieja. La vieja deja de dar su efecto y sus recetas exclusivas, pero su dominio
+        queda guardado (Hero.spec_xp) por si vuelves; la nueva empieza con el dominio que tenía guardado (0 si nunca la tuviste).
+        Sin monedas, sin lugar lleno o con algo que no cuadra, avisa y no cobra nada (regla 6).
+        La llama: el botón ✅ Sí, cambiar. Si cambia, afecta: Hero.prof_specs y las monedas (un sumidero).
+        """
+        t = self.texts
+        pid, sdef = profession_rules.spec_owner(self._pspec_catalog(), sid)
+        if not sdef:
+            return self._pspecs_view(hero)
+        held = self._pspec_held(hero, pid)
+        if self._pspec_choice(hero, pid, sid) != "switch" or old not in held:
+            return self._pspec_view(hero, sid, notice=t.t("spec.err_switch"))
+        cost = self._pspec_cost(hero, pid)
+        if hero.gold < cost:
+            return self._pspec_view(hero, sid, notice=t.t("spec.no_gold", cost=self._money(cost), have=self._money(hero.gold)))
+        hero.gold -= cost
+        hero.prof_specs[pid] = [sid if s == old else s for s in held]
+        hero.spec_xp.setdefault(sid, 0)
+        return self._pspec_prof_view(hero, pid, notice=t.t("spec.switched", old=self._pspec_name(old), new=self._pspec_name(sid),
+                                                             cost=self._money(cost)))
 
     # ------------------------------------------------------------------ double specialization (D-88)
 
@@ -6068,7 +6583,7 @@ class GameService(StoryMixin):
         hero.backpack[item_id] -= 1
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
-        price, _trade = self._merchant_sale(hero, price)       # D-116: 💱 Comercio
+        price, _trade = self._merchant_sale(hero, price, "gear")   # D-116: 💱 Comercio (D-141: 🛡️ Tratante de equipo)
         hero.gold += price
         self._forget_piece(hero, item_id)                       # D-116 / D-115: the last copy takes its signature and enchantment
         story = self._story_event(hero, "sell", n=1, coins=price)                                    # D-117
@@ -6529,7 +7044,8 @@ class GameService(StoryMixin):
         10 % al 100): entonces empieza una pelea, a mano, con el siguiente de la guarnición (cuenta como un asalto). Si sale
         bien: quedas anotado para hoy ("scouted": ves su fuerza en 🧭 Explorar y en el mapa), ves quiénes quedan, el jefe y
         el cofre, y ganas un poco de exploración de esa zona y experiencia de Explorador. Una vez por campamento y día.
-        Se rechaza sin cobrar sin campamento, con menos rango, ya infiltrado hoy, malherido o sin energía.
+        Se rechaza sin cobrar sin campamento, con menos rango, ya infiltrado hoy, malherido o sin energía. D-141: la
+        🎓 especialización 🕵️ Infiltrado baja la probabilidad de que te descubran (sin bajar de detect_min).
         La llama: el botón 🕵️ Infiltrarse. Si cambia, afecta: tests/test_enemy_camps.py.
         """
         t = self.texts
@@ -6549,7 +7065,8 @@ class GameService(StoryMixin):
         if not self._spend_energy(hero, "infiltrate", int(cfg["energy"])):
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         rng = Rng(int(hash_unit(self.world_seed, hero.id, "infiltrate", camp["x"], camp["y"], self.clock.now()) * 2**31))
-        if rng.chance(camp_rules.detect_chance(rank, cfg, need)):
+        detect = max(float(cfg["detect_min"]), camp_rules.detect_chance(rank, cfg, need) - self._pspec_bonus(hero, "detect"))   # D-141
+        if rng.chance(detect):
             notice = self._ecamp_fight(hero, camp, "detected")
             return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
         camp["scouted"].append(hero.id)
@@ -6623,7 +7140,8 @@ class GameService(StoryMixin):
         se lleva el cofre: monedas, materiales de la zona, experiencia y la probabilidad de una pieza de equipo del nivel
         del campamento (el sorteo de botín de siempre, roll_gear). Cada otro que peleó ahí ese día (ganó o perdió) gana
         enemy_camps.share (monedas y experiencia), aunque no esté jugando, y le llega un aviso. Anota el hecho en el
-        📔 Diario (gancho _story_event "enemy_camp").
+        📔 Diario (gancho _story_event "enemy_camp"). D-141: la 🎓 especialización 🐾 Rastreador del Explorador suma monedas
+        al cofre y a la parte de quien la tiene.
         La llama: _ecamp_fight_done. Si cambia, afecta: cuántas monedas y equipo entran al juego por campamento.
         """
         t = self.texts
@@ -6631,6 +7149,7 @@ class GameService(StoryMixin):
         x, y = camp["x"], camp["y"]
         name = self._zone_name(self._zone(x, y))
         chest = self._ecamp_chest(camp)
+        chest["coins"] = int(round(chest["coins"] * (1 + self._pspec_bonus(hero, "coins", sale="ecamp"))))   # D-141: 🐾 Rastreador
         hero.gold += chest["coins"]
         for item_id, count in chest["items"].items():
             self._bag_add(hero, item_id, count)               # a find: never lost (D-90)
@@ -6651,13 +7170,14 @@ class GameService(StoryMixin):
             target = self._load(hid)
             if target is None:
                 continue
-            target.gold += coins
+            their_coins = int(round(coins * (1 + self._pspec_bonus(target, "coins", sale="ecamp"))))   # D-141: 🐾 Rastreador
+            target.gold += their_coins
             more = self._give_xp(target, share_xp)
             self._journal(target, "enemy_camp", x=x, y=y, f=0)
             self._save(target)
             self._push(hid, View(kind="ecamp_news", title=t.t("ecamp.news_title"),
                                  body=[t.t("ecamp.news_body", hero=hero.name, name=name, x=x, y=y),
-                                       t.t("ecamp.share", gold=self._money(coins), xp=int(share_xp * self._xp_mult(target)))] + more))
+                                       t.t("ecamp.share", gold=self._money(their_coins), xp=int(share_xp * self._xp_mult(target)))] + more))
         if others:
             lines.append(t.t("ecamp.shared", n=len(others), gold=self._money(coins)))
         lines += self._story_event(hero, "enemy_camp", x=x, y=y, level=camp["level"], destroyed=True)     # D-117: 📔 Diario
