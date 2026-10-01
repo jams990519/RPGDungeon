@@ -395,3 +395,22 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Explorar da por cada energía 3 de experiencia, más o menos media pelea y lo que se encuentra (D-104); cazar da una pelea entera cada 2 de energía: un lobo de nivel 1 vale 30 de experiencia, 15 por ⚡, casi lo mismo que explorar (~16). Es la cuenta de D-108: solo cazando, el nivel 100 llega en ~1,8 años, como los demás caminos (con 1 ⚡ por presa serían 0,9). Cazar no da exploración, objetos ni monedas sueltas, ni recursos, y gasta vida (vuelve en 4 horas, D-103) y pociones. El freno real es la vida, no la energía: tocando solo ⚔️ Atacar, un guerrero de nivel 1 pierde cerca de un tercio de su vida por presa al lado del Claro (medido con el motor en 40 mundos: gana 39 de 40), así que caza 2 o 3 presas seguidas antes de curarse. Con la partida al tope (+30 %), la experiencia de cada presa sube un 30 %: "un poco más rápido", como dice [Progresión](progresion.md) §1.2. Cada presa ganada cuenta también como victoria del gremio (D-97), así que los gremios que cazan juntan las victorias más rápido.
 
 **Lo que queda por mirar:** si la partida de caza al tope acelera demasiado la subida de nivel (D-108 pide caminos parejos; si pasa, bajar `bonus_cap`), si las victorias de la cacería hacen demasiado fácil el contador de victorias del gremio, y si 30 minutos alcanzan para juntar a los miembros. Medir en la beta cuántas presas caza un jugador por día y cuántas partidas llegan a la meta.
+
+### Octubre de 2026: corrida de diagnóstico de clases y roles (D-110)
+
+**Qué se midió.** Las 45 especializaciones, con todos sus puntos en la especialización, jugando de forma básica contra todos los enemigos normales llevados a su mismo nivel (niveles 10, 30, 60 y 100), con el mejor equipo normal de su tipo para su nivel (`tools/sim.py`, `level_gear`) y también sin puntos o solo con el equipo inicial.
+
+| Rol | Gana | Vida al terminar | Rondas |
+|---|---|---|---|
+| Ataque | 100 % | ~81 % | ~5 |
+| Defensa | 100 % | ~78-83 % | ~9 |
+| Curación | 100 % | ~85 % | ~10-12 |
+| Soporte | 100 % | ~81 % | ~6-10 |
+
+**Lo que no cumple D-110:**
+1. **La defensa no aguanta más que el ataque:** recibe menos daño por ronda, pero tarda casi el doble en matar y termina con la misma vida o menos. En una pelea solo, un tanque hoy es un ataque más lento. Además, dos tanques tienen menos armadura base que su hermano de ataque (Guerrero 0,20 contra Furia 0,25; Protección 0,17 contra Reprensión 0,18).
+2. **El equipo deja de mejorar en el nivel 8:** las piezas normales llegan al nivel de pieza 4 (pide nivel 8). Del 9 al 100 no hay equipo mejor que buscar; el bono del equipo es el mismo al 30 que al 100.
+3. **Las peleas normales con equipo son demasiado fáciles a todo nivel** (100 % y ~80 % de vida): falta riesgo; el bestiario de nivel alto (en camino) y el equipo por niveles tienen que mover esto juntos.
+4. **Lo que sí funciona:** los talentos suman de verdad (sin puntos, al nivel 30: 76-95 % de victorias y 34-50 % de vida; con puntos: 99-100 % y 60-69 %) y el equipo también (solo el inicial: ~63 % de vida; con el de su nivel: ~80 %).
+
+**Lo que sigue:** una pasada de balance con estos objetivos, apenas se unan los oficios (el equipo de artesano) y el bestiario de nivel alto: piezas de equipo por niveles hasta el 100 (botín y oficios), tanques que terminan con más vida que el ataque, curadores que se sostienen y peleas normales con algo de riesgo.
