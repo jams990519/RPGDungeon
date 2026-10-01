@@ -5,6 +5,8 @@
 Pediste corregir los problemas de calibración de WoW y que las clases queden igualadas. Este documento dice **qué está roto**, **qué reglas lo impiden aquí** y **cómo se mide** que las reglas se cumplan.
 
 > **Regla del dueño (D-49):** el sistema de clases tiene que estar **igualado**. Lo que hace la diferencia entre un jugador y otro son **sus oficios y el conocimiento extra que tenga**, no la clase que eligió (ver §5).
+>
+> **Regla del dueño (D-50):** cada clase tiene varios roles en sus specs (Ataque, Defensa, Curación y Soporte; ver [Clases](clases-y-especializaciones.md)) y todos pueden jugar solos. Cuesta distinto según el rol, pero siempre es posible (ver la regla 4).
 
 ---
 

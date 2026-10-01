@@ -43,9 +43,11 @@ Elden Ring es difícil porque sus jefes **retrasan** los golpes. Aquí pasa lo m
 
 ### Cómo se ve
 
-Un combo: el jugador decide gastar esta ronda en una poción para atacar libre las tres siguientes.
+Un combo en un Guardián (no se puede huir, así que el quinto botón es 🌀 Esquivar). El jugador gasta esta ronda en la poción de resistencia y ataca libre las tres siguientes.
 
 ```
+⚔️ Ronda 4 · Guardián del Piso 12 — Reina Ceniza
+
 ⚠️ La Reina Ceniza alza las alas: TRES oleadas de fuego
 caerán sobre la RETAGUARDIA en las próximas rondas.
 
