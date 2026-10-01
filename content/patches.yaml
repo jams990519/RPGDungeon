@@ -202,3 +202,13 @@ v0_10_1:
   notes:
     - "🔥 El Claro es de todos y no tiene dueño: ya no necesita comida. Su posada siempre cura y la obra sube apenas se paga."
     - "🌾 La despensa queda solo para los campamentos de jugadores de nivel 3 o más: ahí sí hay que llevar 🍖 carne o 🥖 provisiones para poder agrandarlos."
+
+v0_11:
+  version: "0.11"
+  title: "🎒 Lost Realms 0.11: mochila, cofres y jugadores a la vista"
+  notes:
+    - "🎒 La mochila ya no lista todo: te explica qué hay en cada botón. Nuevo botón 📦 Recursos con tus materiales y comida, de a páginas, y para qué sirve cada uno. Para volver usa 👤 Héroe del menú de abajo."
+    - "🎁 Lo que encuentras nunca se pierde, aunque la mochila esté llena. Con la mochila llena no puedes recolectar ni comprar hasta vender o usar cosas."
+    - "🪎 Nueva moneda: el cofre. Se arma en el Claro con 10 💰 bolsas, 10 de madera y 5 piezas de metal, y paga agrandar campamentos desde el nivel 6."
+    - "👥 En 📍 Zona ves a los otros jugadores activos que están ahí y qué hacen. Al explorar o recolectar a veces te cruzas con ellos."
+    - "🔥 El Claro es el campamento base y ya no crece: su obra común terminó. Todo el crecimiento es para tus campamentos. El tutorial ahora te pide vender lo que te sobra al mercader."
