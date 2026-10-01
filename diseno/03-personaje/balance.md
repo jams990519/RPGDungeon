@@ -522,6 +522,19 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 
 **Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76. **Medido en la pasada de D-110:** con todos los que le sirven al rango 100, de +1 a +7 puntos de vida al terminar las peleas comunes (escenario c de `tools/balance_report.py`): se nota sin reemplazar al equipo.
 
+### Octubre de 2026: lo que respondió el dueño en la entrevista de voz (D-118, D-119, D-125, D-154)
+
+**Por qué.** Respuestas del dueño (E-01, E-02, E-09, E-38). Números **confirmados**.
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Ritmo al nivel 100 (`hero.xp_formula`) | ~2 años con toda la energía (1,8 medido) | **sin cambios** | El dueño eligió no acelerar (D-118); cierra P-77 |
+| Retirada de las peleas automáticas (`auto_fight.defaults.retreat`) | 50 % | **30 %** | Con 50 % el lote se cortaba después de unas 4 peleas; con 30 % sigue casi entero y pierde menos del 1 % de las peleas (§ de ⚙️ Opciones, abajo) |
+| Oleadas (`raids.per_week`, antes `interval_days: 7`) | 1 cada 7 días | **3 por semana** (cada ~2 días y 8 horas) | Más presión sobre el campamento: la despensa pierde el 25 % en cada oleada perdida, así que las defensas y la comida importan más (D-154; quizás 5 por semana más adelante) |
+| Provisiones del mercader (`shop.weekly_cap`) | sin tope | **20 por jugador por semana** | La despensa la llenan los oficios (caza, pesca, cocina; D-125): el mercader es un salvavidas |
+
+**Lo que queda por mirar:** con 3 oleadas por semana, cuántas pierde un campamento chico (1 o 2 activos) y si la despensa aguanta; si hace falta bajar `raids.loss_share` (25 %) para los campamentos que recién empiezan.
+
 ### Octubre de 2026: el Comercio, un oficio que no pelea (D-116)
 
 | Número | Valor | Por qué |

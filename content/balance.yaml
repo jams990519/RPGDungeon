@@ -212,7 +212,7 @@ pantry:                      # [ES] D-93 (provisional): la despensa de los campa
 
 raids:                       # [ES] D-99 (provisional): incursiones de los campamentos de jugadores, 2.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.5, §7.2). El Claro nunca tiene: es el campamento base (D-95, D-98). Números orientativos: se ajustan en la beta
   from_level: 1              # [ES] D-105: desde que fundas el campamento (nivel 1) llega una oleada por semana, con aviso al fundarlo (antes: desde pueblo, nivel 5)
-  interval_days: 7           # [ES] días reales entre incursiones. Reloj perezoso: llega cuando un miembro juega después de esa hora
+  per_week: 3                # [ES] D-154 (confirmada, entrevista E-38): oleadas por semana real (antes 1 cada 7 días; quizás 5 más adelante). El intervalo es 7 / per_week días (~2 días y 8 horas). Reloj perezoso: llega cuando un miembro juega después de esa hora
   window_minutes: 60         # [ES] cuánto dura el aviso: en ese tiempo cada miembro puede tocar 🛡️ Defender y pelear UNA vez
   grace_minutes: 15          # [ES] si al cerrar la ventana alguien sigue peleando, se lo espera hasta esto para que su pelea cuente
   required_share: 0.5        # [ES] victorias necesarias = la mitad de los miembros activos al llegar, redondeado hacia arriba...
@@ -236,6 +236,7 @@ raids:                       # [ES] D-99 (provisional): incursiones de los campa
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda, provisiones]   # [ES] D-93: 🥖 provisiones, comida de emergencia cara (sumidero de monedas, §15.8)
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
+  weekly_cap: {provisiones: 20}   # [ES] D-125 (confirmada, entrevista E-09): cada jugador compra como mucho 20 🥖 provisiones por semana real; la despensa la llenan los oficios (cocina, caza, pesca). Se cuenta en el store "shop_week"
 
 currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se ganan, bolsas que se cosen, cofres que se arman, diamantes que se compran y credenciales de oficio
   rate: 100                  # [ES] 100 🥉 bronce = 1 🥈 plata; 100 🥈 = 1 🥇 oro. Hero.gold guarda TODO en bronce
@@ -357,7 +358,7 @@ masterwork:                  # [ES] D-116 (confirmada): ✒️ obra maestra. Al 
                              # [ES] todo lo fabricado rinde en promedio ~3,7 % más; la pieza normal ya vale casi lo mismo que sus materiales (tests/test_masterwork.py)
 
 auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
-  defaults: {fights: manual, retreat: 50, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 50 % de vida, sí usar pociones
+  defaults: {fights: manual, retreat: 30, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 30 % de vida (D-119, entrevista E-02; antes 50), sí usar pociones
   retreat_choices: [30, 50, 70]   # [ES] 🩹 Retirarse con menos de: el botón va pasando por estos % de vida. Al terminar una pelea automática por debajo, el lote se corta; si una pelea sale con la vida ya por debajo, el héroe no pelea solo y la pelea te espera
   max_rounds: 60             # [ES] una pelea automática que no termina en 60 rondas se deja (sin premio ni castigo); el simulador juega 60 (120 contra el Guardián)
   policy:                    # [ES] la forma de jugar "básica pero atenta" (engine/combat/auto.py). La usa también tools/sim.py: cambiar un número cambia todos los números del simulador

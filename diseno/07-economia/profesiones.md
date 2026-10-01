@@ -237,6 +237,8 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 
 ## 3. Límites: por qué no puedes serlo todo
 
+> ⚠️ **Lo de abajo quedó viejo.** El dueño decidió (D-146, entrevista de voz E-30) que **no hay límite de oficios**: cualquiera puede aprenderlos todos, nada se olvida, y el juego solo recomienda especializarse en uno antes de pasar al siguiente. Abandonar un oficio es empezar de cero. Lo que sigue limitando es el tiempo y las especializaciones (una al rango 25 y otra al 75, D-141). Los beneficios se suman todos, y otros jugadores pueden darte los de sus oficios (D-121).
+
 **De dónde sale.** WoW limita a 2 profesiones primarias; Ultima Online tenía un tope total de habilidades.
 
 - **2 oficios mayores** por personaje.

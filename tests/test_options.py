@@ -78,11 +78,11 @@ def test_options_screen_has_four_buttons_and_toggles_persist(service):
     view = service.act("test:1", "options")
     assert view.kind == "options" and len(view.actions) <= 4
     assert ids(view) == ["opt:fights", "opt:retreat", "opt:potions", "home"]
-    assert "✋ Manual" in view.actions[0].label and "50 %" in view.actions[1].label and "sí" in view.actions[2].label
+    assert "✋ Manual" in view.actions[0].label and "30 %" in view.actions[1].label and "sí" in view.actions[2].label
     view = service.act("test:1", "opt:fights")
     assert "⚔️ Auto" in view.actions[0].label and view.notice
     assert service.store.get("hero", "test:1")["options"]["fights"] == "auto"
-    for expected in (70, 30, 50):                       # 50 → 70 → 30 → 50
+    for expected in (50, 70, 30):                       # 30 → 50 → 70 → 30 (D-119: 30 by default)
         view = service.act("test:1", "opt:retreat")
         assert f"{expected} %" in view.actions[1].label
         assert service.store.get("hero", "test:1")["options"]["retreat"] == expected
@@ -129,10 +129,10 @@ def test_old_heroes_load_with_the_default_options(service):
     service.store.put("hero", "test:1", data)
     hero = service._load("test:1")
     assert hero.options == {}
-    assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 50
+    assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 30
     assert service._option(hero, "potions") is True
     hero.options = {"fights": "???", "retreat": 42}         # a value that no longer exists falls back too
-    assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 50
+    assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 30
     view = service.act("test:1", "options")
     assert "✋ Manual" in view.actions[0].label
     assert Hero.from_dict(service.store.get("hero", "test:1")).options == {}
@@ -200,6 +200,7 @@ def test_auto_batch_stops_on_defeat(service, clock, monkeypatch):
 def test_auto_batch_stops_when_life_drops_under_the_limit(service, clock, monkeypatch):
     monkeypatch.setattr("engine.service.game.play_out", fake_play_out("victory", hp=0.4))
     ready(service)
+    service.act("test:1", "opt:retreat")                    # 30 → 50 (D-119: 30 by default)
     service.act("test:1", "do:hunt:10")
     pushes = run_batch(service, clock, "test:1", 16, 6)
     hero = service._load("test:1")
@@ -374,7 +375,7 @@ def test_hunting_batch_stops_properly(service, clock):
     hero.hp = 1
     service._save(hero)
     low = service.act("test:1", "do:hunt:4")                # under the limit: it does not go out alone
-    assert "por debajo del 50 %" in low.notice and service._load("test:1").energy == 10
+    assert "por debajo del 30 %" in low.notice and service._load("test:1").energy == 10
     assert not service.texts.missing
 
 

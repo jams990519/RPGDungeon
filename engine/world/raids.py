@@ -26,7 +26,7 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (pantalla del campamento, botón 🛡️ Defender, crecer a castillo)
     - Combate: engine/combat/engine.py make_combat (scale_enemy depende de las claves hp, max_hp, attack, base_attack)
-    - Números: balance.yaml raids (required_share, min_wins, interval_days, loss_share, trial.*)
+    - Números: balance.yaml raids (required_share, min_wins, per_week, loss_share, trial.*)
     - Pruebas: tests/test_raids.py
 """
 

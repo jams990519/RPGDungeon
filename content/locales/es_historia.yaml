@@ -188,7 +188,7 @@ story:
     llama_heroe: "«Corazón de la Llama Común»"
     umbral_conocido: "«Mirada del Umbral»"
     umbral_honrado: "«Voz del Umbral»"
-    umbral_heroe: "«Testigo de la Lejanía»"
+    umbral_heroe: "«Testigo del Colapso»"
     restos_conocido: "«De la Cofradía»"
     restos_honrado: "«Mano de los Restos»"
     restos_heroe: "«Leyenda de los Restos»"
@@ -233,7 +233,7 @@ story:
       desc: "Guardan la fogata del Claro y quieren levantar de nuevo lo que el Colapso rompió: casas, caminos, gente."
     umbral:
       name: "🌀 El Círculo del Umbral"
-      desc: "Miran hacia la Lejanía. Creen que allí está la respuesta del Colapso, y su poder."
+      desc: "Estudian el Colapso y su poder. Creen que entenderlo es la única forma de que no vuelva a pasar."
     restos:
       name: "⚙️ La Cofradía de los Restos"
       desc: "Chatarreros, mercaderes y gente de los túneles: viven de lo que quedó. Lo viejo se vende; lo roto se arregla."
@@ -271,7 +271,7 @@ story:
       lines:
         first: "Te estaba esperando. No me preguntes cómo lo supe."
         default: "Las hierbas de lejos curan más. Y a veces hacen soñar cosas que no viviste."
-        known: "Las hojas que me trajiste siguen brillando de noche. La Lejanía está viva."
+        known: "Las hojas que me trajiste siguen brillando de noche. El Colapso dejó algo vivo allá afuera."
         friend: "El Círculo te tiene en cuenta. Pocos miran tan lejos como tú."
         ambar_kept: "La astilla canta de noche. Creo que repite una palabra: corazón."
         ambar_melted: "Brena fundió algo que no entendía. Ojalá no lo lamentemos."
@@ -282,7 +282,7 @@ story:
       role: "el viejo explorador"
       lines:
         first: "Fui más lejos que nadie y volví. Casi entero. Siéntate, que la historia es larga."
-        default: "Mi mapa tiene más agujeros que papel. La Lejanía no se deja dibujar."
+        default: "Mi mapa tiene más agujeros que papel. Cuanto más lejos del Claro, menos sabemos."
         roots: "Raíces que se arrastran… Raigambre despertó. Hay que vigilar el bosque."
         lair: "La guarida está marcada. Cuando estés en condiciones, ve. No antes."
         friend: "Te mostraría mi mapa entero, si lo tuviera entero."
@@ -310,7 +310,7 @@ story:
       gift: "2 🩹 vendas de tu antiguo morral."
     aprendiz:
       name: "🛠️ Aprendiz de gremio"
-      intro: "Recuerdas el olor de un taller, las manos de tu maestro guiando las tuyas y el día que partió hacia la Lejanía."
+      intro: "Recuerdas el olor de un taller, las manos de tu maestro guiando las tuyas y el día que partió lejos del Claro."
       trait: "aprendiste en un taller: +10 % de experiencia en los oficios de refinado y de fabricación."
       gift: "1 🟫 tablón y 1 🔩 lingote del taller de tu maestro."
     huerfano:
@@ -375,7 +375,7 @@ story:
       hablar: "En una tienda que huele a humo dulce, una mujer joven muele hojas en silencio. Es Iria, la sanadora. Levanta la vista antes de que digas nada."
       hierbas: "Iria: «Las hierbas del Claro ya no alcanzan. Las que crecen más lejos curan más… y a veces hacen soñar cosas que no viviste. Tráeme cuatro manojos de 🌿 hierba curativa.»\n🌿 Crece en praderas, bosques y pantanos, fuera del Claro."
       entregar: "Ya tienes las hierbas. Algunas brillan apenas cuando cae la tarde, como si guardaran luz. Llévale tres a Iria."
-      done: "Iria huele las hojas y cierra los ojos. «Vienen de la Lejanía: tienen un brillo que el Claro no tiene. El Colapso no solo rompió el mundo; dejó algo suelto allá afuera. El Círculo del Umbral quiere entender qué.»"
+      done: "Iria huele las hojas y cierra los ojos. «Vienen de lejos: tienen un brillo que el Claro no tiene. El Colapso no solo rompió el mundo; dejó algo suelto allá afuera. El Círculo del Umbral quiere entender qué.»"
     c1_m4:
       title: "Huellas al este"
       hablar: "Un viejo de barba gris remienda un mapa lleno de agujeros junto al fuego. Cojea al levantarse. «Anselmo», se presenta. «Fui más lejos que nadie y volví. Casi entero.»"
@@ -446,7 +446,7 @@ story:
       hablar: "Brena te ve mirar el yunque. «Tienes manos de taller», gruñe. «¿De quién aprendiste?» No recuerdas su nombre, pero sí sus manos."
       hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → ⚒️ Oficios."
       mostrar: "Ya hiciste algo con tus manos. Muéstraselo a Brena."
-      done: "Brena da vuelta tu trabajo y se queda quieta. «Esta forma de cerrar la juntura solo la enseñaba un maestro: Teodoro el Alto. Partió hacia la Lejanía hace dos inviernos. No volvió.»"
+      done: "Brena da vuelta tu trabajo y se queda quieta. «Esta forma de cerrar la juntura solo la enseñaba un maestro: Teodoro el Alto. Partió lejos del Claro hace dos inviernos. No volvió.»"
     o_aprendiz_2:
       title: "Las herramientas del maestro"
       hablar: "Anselmo recuerda a Teodoro. «Iba con un carro lleno de herramientas. Lo vi pasar hacia el este, por los caminos rotos.»"
@@ -482,7 +482,7 @@ story:
       hablar: "Odo muerde tu moneda de plata y levanta una ceja. «Sello de casa noble. Hace años que no veía uno. ¿Sabías que tu casa le debía a medio Claro?»"
       vender: "Odo: «Tranquilidad: las deudas murieron con el Colapso. Pero si quieres que te traten bien, empieza a hacer negocios como todos: véndeme dos cosas.»"
       volver: "Odo te espera con una sonrisa de mercader."
-      done: "Odo: «Tu casa tenía tierras al norte, junto a un río. El Colapso las movió lejos, a la Lejanía. Dicen que tu escudo sigue en pie en algún lado.»"
+      done: "Odo: «Tu casa tenía tierras al norte, junto a un río. El Colapso las dejó lejos del Claro. Dicen que tu escudo sigue en pie en algún lado.»"
     o_noble_2:
       title: "Tierras que se fueron"
       hablar: "Anselmo conoce tu escudo. «Lo vi tallado en una piedra, en un cerro. Las tierras se van, pero las piedras se quedan.»"
@@ -508,7 +508,7 @@ story:
       done: "Al frotar las hojas grises, el olor te devuelve un recuerdo entero: tu aldea, tu maestra, la cura que no llegó a tiempo. No fue tu culpa. Pero aprendiste."
     o_curandero_3:
       title: "La cura que faltó"
-      hablar: "Iria examina las hojas grises. «La fiebre y la flor vienen del mismo lugar», dice. «La Lejanía enferma y cura. Como el Colapso.»"
+      hablar: "Iria examina las hojas grises. «La fiebre y la flor vienen del mismo lugar», dice. «Lo que dejó el Colapso enferma y cura.»"
       remedio: "Iria: «Preparemos remedios para el Claro, por si vuelve la fiebre. Haz algo en una estación: una venda, una poción, lo que sepas.»"
       marta: "Hiciste tu parte. Marta quiere agradecerte en nombre del Claro."
       done: "Marta guarda tus remedios en la posada, junto al fuego. «Si vuelve la fiebre, esta vez no nos agarra desprevenidos. Gracias a ti.»"

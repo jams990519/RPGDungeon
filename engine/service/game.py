@@ -34,6 +34,7 @@ Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, 
 Eventos que escucha: ninguno
 Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta" del almacén
     (en "meta", "guardian:<id>" guarda para siempre al primer héroe que venció a cada Guardián, D-82)
+    D-125: "shop_week" (compras con tope de la semana de cada héroe, clave su id: {"week", "bought"}; _shop_week)
     D-93 (provisional) y D-95: "pantry" (despensa de cada campamento de jugadores, clave "x:y"; el Claro no tiene:
     no tiene dueño, D-95):
     {"rations", "at"}, consumo perezoso) y "active" (registro de quién jugó hoy y ayer, claves "0" y "1"
@@ -2089,6 +2090,9 @@ class GameService(StoryMixin):
             item = self.content.items[item_id]
             price = self._shop_price(hero, item_id)              # D-117: 🕳️ Huérfano de las Ruinas pays 10 % less
             body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=self._money(price)))
+            cap = shop.get("weekly_cap", {}).get(item_id)
+            if cap is not None:                                  # D-125: 20 🥖 provisions a week
+                body.append(t.t("shop.cap_line", left=max(0, cap - self._shop_week(hero).get(item_id, 0)), n=cap))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(price))))
         actions = actions[:3]
         sellable = {i: n for i, n in hero.backpack.items()      # food stays: it feeds the pantry (D-93)
@@ -2111,13 +2115,32 @@ class GameService(StoryMixin):
         item = self.content.items[item_id]
         if self._bag_full(hero):
             return self._shop_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
+        cap = self.content.balance["shop"].get("weekly_cap", {}).get(item_id)
+        bought = self._shop_week(hero)
+        if cap is not None and bought.get(item_id, 0) >= cap:      # D-125: never charged once the week's cap is reached
+            return self._shop_view(hero, notice=t.t("shop.weekly_cap", item=t.t(item["name_key"]), n=cap))
         price = self._shop_price(hero, item_id)                  # D-117: the origin's discount, if any
         if hero.gold < price:
             return self._shop_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        if cap is not None:
+            bought[item_id] = bought.get(item_id, 0) + 1
+            self.store.put("shop_week", hero.id, {"week": self._today() // 7, "bought": bought})
         self._refill_belt(hero)
         return self._shop_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
+
+    def _shop_week(self, hero: Hero) -> dict[str, int]:
+        """What the hero bought this real week from the capped items (balance.yaml shop.weekly_cap), {item_id: n}.
+
+        [ES] D-125: cuenta las compras con tope de la semana (store "shop_week", clave el id del héroe). La semana es
+        _today() // 7 (el mismo corte de día que la despensa y el tablón); al cambiar de semana empieza de cero.
+        La usan _buy (rechaza sin cobrar al llegar al tope) y _shop_view (muestra cuántas quedan).
+        """
+        record = self.store.get("shop_week", hero.id) or {}
+        if record.get("week") != self._today() // 7:
+            return {}
+        return dict(record.get("bought", {}))
 
     def _sell(self, hero: Hero, item_id: str) -> View:
         t = self.texts
@@ -2329,7 +2352,7 @@ class GameService(StoryMixin):
         if story:
             notice += "\n" + "\n".join(story)
         if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
-            notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["interval_days"])
+            notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["per_week"])
         return self._camp_here_view(hero, notice=notice)
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
@@ -3119,7 +3142,8 @@ class GameService(StoryMixin):
         return cfg["trial"] if kind == "trial" else cfg
 
     def _raid_interval(self) -> float:
-        return self._seconds(self._raid_cfg()["interval_days"] * 24 * 60)
+        """Real seconds between two raids: 7 / raids.per_week days (D-154: 3 per week)."""
+        return self._seconds(7 / self._raid_cfg()["per_week"] * 24 * 60)
 
     def _days_until(self, when: float) -> int:
         return max(0, math.ceil((when - self.clock.now()) / self._day_seconds()))
@@ -3129,7 +3153,7 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: el reloj perezoso de las incursiones del campamento del héroe (sin reloj de fondo). La primera vez
-        que un miembro juega en un campamento de nivel raids.from_level o más, agenda la próxima (raids.interval_days).
+        que un miembro juega en un campamento de nivel raids.from_level o más, agenda la próxima (7 / raids.per_week días, D-154).
         Cuando un miembro juega después de esa hora, llega la incursión: aviso con 🛡️ Defender a los miembros activos.
         Cuando su ventana terminó, la cierra (defendida o perdida). Solo campamentos de jugadores: el Claro no es un
         campamento guardado en "camp", así que nunca tiene incursiones (D-95, D-98).
@@ -3393,7 +3417,7 @@ class GameService(StoryMixin):
             hours = self._camp_effect(camp, "warning_hours")
             if nxt is not None and hours and 0 < nxt - self.clock.now() <= self._seconds(hours * 60):
                 return [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()))]     # 🗼 Torre de vigía
-            return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else cfg["interval_days"])]
+            return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else math.ceil(7 / cfg["per_week"]))]
         if level == cfg["from_level"] - 1:
             return [t.t("raids.soon_line", level=cfg["from_level"])]
         return []

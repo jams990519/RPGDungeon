@@ -44,7 +44,7 @@
 # The three factions (historia-y-rol.md §1.4). [ES] Las tres facciones del Claro y su líder.
 factions:
   llama: {emoji: "🔥", leader: marta}      # [ES] La Llama Común: guardar el fuego y reconstruir
-  umbral: {emoji: "🌀", leader: iria}      # [ES] El Círculo del Umbral: el poder y la verdad de la Lejanía
+  umbral: {emoji: "🌀", leader: iria}      # [ES] El Círculo del Umbral: el poder y la verdad del Colapso, para que no vuelva a pasar (D-127, D-128: la Lejanía es solo distancia)
   restos: {emoji: "⚙️", leader: odo}       # [ES] La Cofradía de los Restos: vivir de lo que quedó
 
 # What each reputation rank gives, once, the first time it is reached (thresholds: balance.yaml story.ranks).

@@ -97,3 +97,12 @@ IDEAS SUELTAS: [cualquier idea que dijo fuera de las preguntas]
 ```
 
 **Cuando vuelva el resumen:** cada línea se registra como decisión confirmada (D-xx) o se marca la P-xx como decidida. Las que digan "recomendación" se toman con el número recomendado. Después se ajustan la cola de trabajo y los números del juego.
+
+## Estado de las respuestas
+
+**1-oct-2026, primera tanda (E-01 a E-43).** Registradas como decisiones confirmadas **D-118 a D-160** en [Decisiones](decisiones.md), y 22 preguntas abiertas quedaron decididas en [Preguntas abiertas](preguntas-abiertas.md). Las que cambiaban números del juego entraron en la **0.22.1**: oleadas 3 veces por semana (D-154), retirada automática al 30 % (D-119), tope de 20 provisiones por semana (D-125) y la Lejanía sin misterio en los textos (D-128).
+
+**Sin respuesta todavía:**
+- **E-03** (si lo largo es la historia y no un progreso lento): D-117 sigue provisional. El ritmo al nivel 100 no cambia (D-118).
+- **El tono de E-10:** sigue la propuesta (D-161, provisional).
+- **E-44 a E-54** (bloques 6 y 7: idiomas, jugadores esperados, aviso a TowerWars, diamantes, cobro en la beta, acelerador, web y app, grupos de Telegram, prioridades, qué no te gusta e ideas nuevas).

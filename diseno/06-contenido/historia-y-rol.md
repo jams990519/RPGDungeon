@@ -9,6 +9,15 @@
 - *The Witcher*: dilemas cuyas consecuencias se ven después.
 - *Chat Wars* y los MMO de rol en Telegram: el rol entre jugadores hace la comunidad.
 
+**Lo que respondió el dueño en la entrevista de voz (1-oct-2026).** Manda sobre lo que diga más abajo:
+- **El Colapso** fue un evento que hizo perder todo; puede volver a pasar, y prevenirlo es el hilo de fondo (D-127).
+- **La Lejanía es solo el tamaño del mapa**, sin misterio (D-128). Los textos del juego ya se corrigieron (0.22.1): el Círculo del Umbral estudia el poder del Colapso (interpretación de Claude, porque el dueño aceptó las tres facciones tal como estaban).
+- **Seis facciones:** las tres del juego más ladrones, constructores y comerciantes (D-129).
+- **Razas** al estilo de World of Warcraft, además de los orígenes, con beneficios de oficio y de arma (D-130).
+- Las decisiones cambian solo tu héroe, y las grandes se votan en el servidor (D-131). Los personajes importantes no mueren, salvo que se destruya su castillo (D-132). El romance, más adelante (D-133). El largo de cada texto depende del caso (D-134). Nombres propios (D-135).
+- **El campamento crece con misiones de grupo**, en 10 a 15 escalones (D-136).
+- El tono sigue provisional (D-161), y la pregunta E-03 (si lo largo es la historia y no un progreso lento) quedó sin respuesta: el ritmo al nivel 100 se queda en unos 2 años (D-118).
+
 **Qué pidió el dueño (1-oct-2026).** "No me interesa que el progreso sea lento. Quiero más bien que el juego sea un roleplay con RPG; o sea, debe ser largo." Se tomó así: **lo largo tiene que salir de la historia y del rol**, no de subir de nivel despacio. El progreso se siente seguido (siempre hay algo que ganar), y lo que dura años es todo lo que hay para vivir: la historia del mundo, el propio personaje, las facciones, los oficios, el campamento y el castillo.
 
 ---
@@ -45,7 +54,7 @@ Lo que ya se juega de §1. La historia es **datos**: misiones, personajes, facci
 | ⚕️ Curandero de aldea | +15 % de experiencia de 🌿 Herbolario | 3 🌿 hierbas curativas | «Manos que saben» → «Lo que trae el viento» → «La cura que faltó» | «Manos de hierba» |
 | ⛏️ Minero de las vetas | +15 % de experiencia de ⛏️ Minero | 3 ⚙️ piezas de metal | «Polvo de mina» → «El sonido en lo hondo» → «Una veta que late» | «Oído de la veta» |
 
-- El héroe despierta sin recuerdos (como siempre): el origen es **lo que recuerda**. Cada cadena presenta a los personajes del Claro y deja pistas del Colapso y de la Lejanía (el ámbar que late, la fiebre gris, los túneles que se mueven, los caminos de piedra).
+- El héroe despierta sin recuerdos (como siempre): el origen es **lo que recuerda**. Cada cadena presenta a los personajes del Claro y deja pistas del Colapso (el ámbar que late, la fiebre gris, los túneles que se mueven, los caminos de piedra).
 - De [Creación de personaje](../03-personaje/creacion-de-personaje.md) §4 se tomaron 6 de los 8 trasfondos; el Juglar y el Cazador de recompensas quedan para más adelante. El "oficio a nivel 5" de §4 se cambió por un bono de experiencia de oficio (más parejo y sin saltarse rangos).
 
 ### 0.3 📖 Capítulo 1 · Las brasas del Claro (niveles 1 a 8)
@@ -95,7 +104,7 @@ Siete misiones en el Claro y sus alrededores. Terminan venciendo a **Raigambre**
 
 ### 0.5 ⚜️ Facciones y reputación
 
-- 🔥 **La Llama Común** (guardar el fuego y reconstruir), 🌀 **El Círculo del Umbral** (la verdad y el poder de la Lejanía) y ⚙️ **La Cofradía de los Restos** (vivir de lo que quedó).
+- 🔥 **La Llama Común** (guardar el fuego y reconstruir), 🌀 **El Círculo del Umbral** (la verdad y el poder del Colapso, para que no vuelva a pasar; D-127, D-128) y ⚙️ **La Cofradía de los Restos** (vivir de lo que quedó).
 - La reputación sube y baja con las misiones, las decisiones y los encargos.
 
 | Rango | Desde | 🔥 La Llama Común | 🌀 El Círculo del Umbral | ⚙️ La Cofradía de los Restos |
@@ -105,7 +114,7 @@ Siete misiones en el Claro y sus alrededores. Terminan venciendo a **Raigambre**
 | Conocido | 100 | título «Al calor de la Llama» | título «Mirada del Umbral» | título «De la Cofradía» |
 | Apreciado | 300 | 2 🧪 pociones y 3 🩹 vendas | 2 🧴 extractos y 1 🌸 flor de luna | 2 🔩 lingotes y 50 🥉 |
 | Honrado | 700 | título «Guarda del Fuego», 1 🍷 poción mayor y 1 🧰 botiquín | título «Voz del Umbral», 2 🌸 y 2 🫙 ungüentos | título «Mano de los Restos», 1 💠 gema y 1 🥈 50 🥉 |
-| Héroe | 1.500 | título «Corazón de la Llama Común» y 1 🩻 vendaje maestro | título «Testigo de la Lejanía» y 2 💠 gemas | título «Leyenda de los Restos» y 5 🥈 |
+| Héroe | 1.500 | título «Corazón de la Llama Común» y 1 🩻 vendaje maestro | título «Testigo del Colapso» y 2 💠 gemas | título «Leyenda de los Restos» y 5 🥈 |
 
 - Cada rango paga **una sola vez para siempre**, aunque después bajes y vuelvas a subir. Bajar de rango se avisa y no quita nada.
 - Con el Capítulo 1 se llega a Conocido con la facción que más ayudaste; los rangos altos son metas de meses (encargos). Más adelante: recetas, equipo y lugares propios de cada facción, y campamentos y gremios alineados (§1.4).
@@ -160,11 +169,11 @@ Siete misiones en el Claro y sus alrededores. Terminan venciendo a **Raigambre**
 1. **🎭 El origen del héroe.** Al crearlo se elige de dónde viene, entre 5 o 6 trasfondos de [Creación de personaje](../03-personaje/creacion-de-personaje.md) §4: por ejemplo, superviviente del Colapso, hijo de artesanos, desertor o peregrino.
    - Cada origen da una frase de presentación, un rasgo chico (algo de oficio o de mundo, nunca de poder de combate) y su **cadena de misiones de origen**: 3 o 4 misiones narrativas que presentan el mundo y a sus personajes.
    - Los héroes ya creados lo eligen la primera vez que entran después del parche, sin perder nada.
-2. **📖 La campaña principal por capítulos.** La historia del Colapso y del misterio de la Lejanía.
+2. **📖 La campaña principal por capítulos.** La historia del Colapso: qué se perdió, cómo se reconstruye y cómo evitar que vuelva a pasar (D-127).
    - Cada capítulo tiene de 5 a 8 misiones narrativas con **decisiones que cambian algo**: la reputación con una facción, qué personaje te ayuda después, una recompensa u otra.
    - El capítulo 1 pasa en el Claro y sus alrededores, el 2 cuando se abre la región de Raigambre, y así con cada región y Guardián. Se escribe un capítulo por parche grande.
 3. **🧑 Personajes con nombre.** El mercader, la posadera, una sanadora, un viejo explorador y un herrero del Claro tienen nombre, voz y diálogos cortos. Dan misiones, recuerdan lo que elegiste y cambian lo que te dicen.
-4. **⚜️ Facciones y reputación.** Tres facciones al empezar (por ejemplo, los que quieren reconstruir, los que buscan el poder de la Lejanía y los que viven de lo que queda).
+4. **⚜️ Facciones y reputación.** Tres facciones al empezar (los que quieren reconstruir, los que buscan el poder del Colapso y los que viven de lo que queda), y tres más por programar: ladrones, constructores y comerciantes (D-129).
    - Las misiones, las decisiones y lo que haces suben o bajan tu reputación, por rangos: de Desconocido a Héroe.
    - Cada rango da algo: un título, una receta, una pieza de equipo o un lugar al que solo ellos te dejan entrar.
    - Más adelante, los campamentos y gremios se pueden alinear con una facción.
