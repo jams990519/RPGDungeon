@@ -1,5 +1,5 @@
 [project]
-name = "ascendentes"
+name = "lost-realms"
 version = "0.1.0"
 description = "Turn-based text MMORPG engine (Telegram, web and mobile clients share one engine)"
 requires-python = ">=3.11"

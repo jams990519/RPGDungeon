@@ -6,7 +6,7 @@ common:
   use_buttons: "Usa los botones de abajo."
 
 create:
-  title: "🌅 El despertar"
+  title: "🌅 Lost Realms · El despertar"
   intro: "El mundo se rompió en el Colapso. Despiertas junto a una fogata en el Claro, sin recuerdos y sin nada. Más allá, la tierra no tiene borde: nadie sabe qué hay lejos, y cada paso toma su tiempo."
   ask_name: "✍️ Escribe el nombre de tu héroe (de 2 a 16 letras)."
   bad_name: "⚠️ El nombre debe tener de 2 a 16 caracteres y empezar con una letra."

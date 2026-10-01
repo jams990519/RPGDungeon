@@ -1,4 +1,4 @@
-# Ascendentes (nombre provisional)
+# Lost Realms
 
 **Un MMORPG por turnos y en texto.** Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@thetowerwarbot**, la web y una app móvil de texto.
 
@@ -23,7 +23,7 @@ python -m adapters.cli.play --fast   # jugar en la consola, con el tiempo aceler
 1. **Borrar el juego viejo del bot:** en el proyecto de Railway donde corre hoy @thetowerwarbot, eliminar su servicio y su base de datos o volumen. **Solo el de @thetowerwarbot**, nunca el de TowerWars (@TowerWarsBot).
 2. **Servicio nuevo:** desde el repositorio `jams990519/RPGDungeon` (rama `main`). El comando de arranque ya está en `railway.json`.
 3. **Volumen:** montar uno en `/data` para que las partidas no se borren al reiniciar.
-4. **Variables:** `TELEGRAM_BOT_TOKEN` = el token de @thetowerwarbot; `RPG_DB_PATH` = `/data/ascendentes.sqlite3`. La lista completa está en `.env.example`.
+4. **Variables:** `TELEGRAM_BOT_TOKEN` = el token de @thetowerwarbot; `RPG_DB_PATH` = `/data/lostrealms.sqlite3`. La lista completa está en `.env.example`.
 
 ## Dónde está todo
 

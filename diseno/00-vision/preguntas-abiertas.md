@@ -10,7 +10,7 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 
 | # | Pregunta | Recomendación |
 |---|---|---|
-| P-01 | ¿Cómo se llama el juego? | *Ascendentes* como provisional; decidir antes de la beta |
+| P-01 | ¿Cómo se llama el juego? | ✅ Decidido (D-62): *Lost Realms* |
 | P-02 | ¿El diseño y el código viven en RPGDungeon o en un repositorio nuevo? | El diseño puede quedarse aquí; el código, en un repositorio nuevo dedicado cuando empiece |
 | P-03 | ¿Mundo propio con nombres originales, o nombres de WoW (solo uso privado, sin cobrar)? | Mundo propio: permite monetizar sin riesgo legal |
 | P-04 | ¿Idiomas desde el día uno? | Español e inglés |

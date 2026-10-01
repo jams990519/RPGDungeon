@@ -2,7 +2,7 @@
 
 Environment variables (names only in .env.example, never values in the repo):
   TELEGRAM_BOT_TOKEN  token of @thetowerwarbot
-  RPG_DB_PATH         SQLite file (default data/ascendentes.sqlite3)
+  RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
 
@@ -43,7 +43,7 @@ from engine.core import SystemClock, load_content
 from engine.messaging import View
 from engine.service import GameService
 
-log = logging.getLogger("ascendentes.telegram")
+log = logging.getLogger("lostrealms.telegram")
 
 MENU_LABEL = "📍 Juego"
 MENU = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text=MENU_LABEL)]], resize_keyboard=True, is_persistent=True)
@@ -60,7 +60,7 @@ def build_service() -> GameService:
     seed = os.environ.get("RPG_WORLD_SEED")
     return GameService(
         load_content(),
-        SqliteStore(os.environ.get("RPG_DB_PATH", "data/ascendentes.sqlite3")),
+        SqliteStore(os.environ.get("RPG_DB_PATH", "data/lostrealms.sqlite3")),
         SystemClock(),
         world_seed=int(seed) if seed else None,
         time_scale=float(os.environ.get("RPG_TIME_SCALE", "1.0")),

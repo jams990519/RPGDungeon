@@ -1,4 +1,4 @@
-# Diseño del juego: *Ascendentes* (nombre provisional)
+# Diseño del juego: *Lost Realms*
 
 **Un MMORPG completo por turnos, en texto, para Telegram.**
 - Las clases y los sistemas de World of Warcraft, corregidos para que las clases valgan lo mismo.

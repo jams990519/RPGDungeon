@@ -4,7 +4,7 @@ Toda sesión de IA que trabaje en este repositorio lee esto primero. Una orden n
 
 ## 1. Qué es y dónde está todo
 
-- ***Ascendentes*** (nombre provisional): un MMORPG **por turnos y en texto**. Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@thetowerwarbot**, la web y una app móvil de texto (D-40, D-41).
+- ***Lost Realms*** (D-62): un MMORPG **por turnos y en texto**. Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@thetowerwarbot**, la web y una app móvil de texto (D-40, D-41).
 - **Estado:** diseño casi completo y **código en marcha** (D-59): primero una versión jugable mínima.
 - **Punto de entrada:** [diseno/README.md](diseno/README.md), con el mapa de los módulos.
 - **Lo decidido:** [decisiones.md](diseno/00-vision/decisiones.md) (D-xx). Solo la tabla "Confirmadas por el dueño" es ley; lo demás es provisional o propuesta.

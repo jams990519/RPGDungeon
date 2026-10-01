@@ -6,7 +6,7 @@
 
 **Un MMORPG completo por turnos, en texto, dentro de Telegram:** las clases y los sistemas de World of Warcraft (corregidos para que las clases valgan lo mismo), una Torre de 100 pisos al estilo Sword Art Online que los jugadores **fundan desde cero** y conquistan juntos, jefes con la dificultad de Elden Ring, un cuerpo que se hiere y se enferma, y una economía de jugadores al estilo Albion donde cada persona tiene un rol.
 
-**Nombre provisional:** *Ascendentes* (P-01). **Bot:** [@thetowerwarbot](https://t.me/thetowerwarbot), separado de TowerWars.
+**Nombre:** *Lost Realms* (D-62). **Bot:** [@thetowerwarbot](https://t.me/thetowerwarbot), separado de TowerWars.
 
 ---
 
