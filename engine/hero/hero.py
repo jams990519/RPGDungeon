@@ -25,6 +25,10 @@ Si cambias esto, revisa:
       de ahí (engine/professions/rules.py rank_of, balance.yaml professions.rank_formula). Vacío para los héroes
       guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
       tests/test_professions.py)
+    - options (D-114): ⚙️ Opciones del jugador ("fights": "manual" | "auto", "retreat": % de vida, "potions": sí/no).
+      Vacío = lo de balance.yaml auto_fight.defaults (también para los héroes guardados antes: ✋ Manual, 50 %, sí).
+      Solo se guarda lo que el jugador cambia (engine/service/game.py _option, _options_view, _set_option;
+      tests/test_options.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -56,7 +60,8 @@ class Hero:
         gear_new: gear pieces not looked at yet (shown with 🆕 in the equipment screen).
         hp: current health (max is derived).
         x, y: zone coordinates on the infinite map; (0, 0) is the Claro.
-        activity: None or {"kind": "travel"|"explore", "until": ts, ...}.
+        activity: None or {"kind": "travel"|"explore"|"gather"|"hunt"|"rest", "until": ts, ...} ("hunt": a hunting
+            batch with automatic fights, D-114).
         belt, backpack: item id -> count.
         last_regen_at: timestamp of the last passive health regeneration.
         known: zones this hero has visited, as "x:y" (its own map memory, D-61).
@@ -70,6 +75,10 @@ class Hero:
             Players seen in the last presence.minutes are also listed in their zone (D-96).
         professions: profession xp, profession id (content/professions.yaml) -> xp (D-109). The rank (1-100)
             is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
+        options: the player's ⚙️ Opciones (D-114): "fights" ("manual" or "auto": what happens when a fight comes up during
+            a batch), "retreat" (auto fights: the batch stops below this % of life) and "potions" (auto fights may use
+            the belt). Only what the player changed is saved; missing keys use balance.yaml auto_fight.defaults, so
+            heroes saved before it load with ✋ Manual, 50 % and potions on.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -125,6 +134,7 @@ class Hero:
     bar: list[str] = field(default_factory=list)
     seen_at: float = 0.0
     professions: dict[str, int] = field(default_factory=dict)
+    options: dict[str, Any] = field(default_factory=dict)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

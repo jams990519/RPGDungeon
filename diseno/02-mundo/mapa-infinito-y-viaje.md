@@ -187,7 +187,7 @@ Coordenadas 1, 2 · Lejanía 2
   - Antes de empezar puedes ❌ Cancelar sin gastar nada.
   - Ya en marcha, ❌ Detener corta el lote y devuelve la energía de la vuelta en curso.
   - Cada vuelta gasta 1 ⚡ al empezar.
-  - El lote se corta si te atacan, si se acaba la energía, si se llena la mochila o, al explorar, si ya no queda nada por explorar desde donde estás (tu zona y las de alrededor al 100 %, D-107).
+  - El lote se corta si te atacan (con ✋ Manual; con ⚔️ Peleas automáticas el héroe pelea solo y sigue, §1.12.1), si se acaba la energía, si se llena la mochila o, al explorar, si ya no queda nada por explorar desde donde estás (tu zona y las de alrededor al 100 %, D-107).
   - El bot te escribe una sola vez, al terminar, con el resumen.
 - **Explorar sube un porcentaje:** cada vuelta suma entre 15 % y 30 % de la zona (`exploration.per_step`).
   - Al 1 %, al 50 % y al 100 % descubres el primero, el segundo y el tercer recurso.
@@ -211,12 +211,21 @@ Coordenadas 1, 2 · Lejanía 2
 
 El dueño pidió (1-oct-2026):
 - **Tiempo estimado (en el juego desde la 0.14.1):** cada cantidad de energía que se elige para un lote muestra cuánto tardará en total (por ejemplo, "⚡ 20 · ⏱️ 3 h 20 min"), y la pantalla dice cuánto tarda cada vuelta y cuánto tardaría con toda la energía. Las peleas que salgan lo alargan un poco.
-- **⚙️ Opciones (para programar):** un botón de opciones donde cada jugador elige qué pasa y qué no. La primera opción es qué hacer si sale una pelea en medio de un lote:
-  - **✋ Manual** (como hasta ahora): el lote se corta y peleas tú. Para el que está conectado.
-  - **⚔️ Automática:** el héroe pelea solo, con una forma de jugar básica pero atenta: lee el aviso, se defiende de los golpes grandes, usa sus habilidades y, si quieres, las pociones del cinturón. Si gana, el lote sigue; si pierde, o si su vida baja del límite que elegiste, el lote se corta. El resumen del final dice cuántas peleas ganó y perdió. Para el que sale y vuelve después.
-  - Otras opciones: el límite de vida para retirarse (30 %, 50 % o 70 %) y si se usan las pociones en las peleas automáticas.
-  - Con las peleas automáticas, la cacería también puede ir en lote (varias presas seguidas, 2 ⚡ cada una).
-  - El botón ⚙️ Opciones va en el menú de abajo (D-46 deja hasta 6) y con /opciones. Pelear en automático da lo mismo que pelear a mano: la diferencia es que el jugador atento juega mejor.
+- **⚙️ Opciones (en el juego):** "Si te sale una pelea durante un lote, el jugador puede elegir antes: automática, o manual si el jugador está activo. Agrega un botón de opciones donde eliges qué pasa y qué no."
+  - **Dónde:** **⚙️ Opciones** es el 5.º botón del menú de abajo (D-46 deja hasta 6; en Telegram quedan 3 filas: 2, 2 y 1) y también **/opciones**. Se puede abrir mientras exploras, recolectas o cazas (vale desde la próxima pelea); en combate no. La pantalla tiene un botón por opción, que la cambia, y ↩️ Volver: 4 botones.
+  - **⚔️ Peleas en un lote:** **✋ Manual** (por defecto, como hasta ahora): el lote se corta y peleas tú; para el que está conectado. **⚔️ Automática:** el héroe pelea solo y, si gana, el lote sigue; para el que sale y vuelve después.
+  - **🩹 Retirarse con menos de:** 30, 50 o 70 % de vida (por defecto 50 %; `auto_fight.retreat_choices`). Si al terminar una pelea automática la vida quedó por debajo, el lote se corta. Si una pelea sale cuando la vida ya está por debajo, el héroe no pelea solo: el lote se corta y la pelea te espera, como en manual.
+  - **🧪 Pociones en peleas automáticas:** sí (por defecto) o no: si el héroe bebe las pociones y usa las vendas del cinturón.
+  - Cada héroe empieza con ✋ Manual, 50 % y pociones sí (`auto_fight.defaults`), también los que ya existían; solo se guarda lo que cada uno cambia.
+- **Cómo pelea solo** (`engine/combat/auto.py`): una forma de jugar básica pero atenta. Con menos de 45 % de vida usa su habilidad de curar; con menos de 35 % bebe una poción (primero la que más cura sin pasarse); con menos de 30 %, una venda. Si el aviso es un golpe grande (potencia mayor que 1,5), lo corta si puede y llega antes, si no lo esquiva, lo bloquea o se escuda, y contra uno de 2 o más sin respuesta usa 🌀 Esquivar. Si no, mantiene sus mejoras y los debilitamientos del enemigo, remata con 3 combos y pega. Los umbrales están en `auto_fight.policy`.
+  - Es **la misma** forma de jugar que usa el simulador de balance (`tools/sim.py`): lo que dice el simulador es lo que hace un héroe que pelea solo. Al mudarla al motor, el simulador dio exactamente los mismos números.
+  - **Pelear solo da lo mismo que pelear a mano:** las mismas reglas, el mismo sorteo y el mismo final (experiencia, monedas, botín, equipo, victorias del gremio, presas de la partida de caza, 🔪 Desollador; y al perder, malherido y un 10 % de las monedas). La diferencia es que el jugador atento juega mejor.
+  - Una pelea que no termina en 60 rondas (`auto_fight.max_rounds`) se deja, sin premio ni castigo.
+  - **Solo pelean solos** los encuentros comunes que salen en un lote (🔎 explorar, 🪓 recolectar) y las presas de 🏹 Cazar en lote. **Nunca** el Guardián, las defensas del campamento (🛡️ Defender, Noche de prueba) ni las emboscadas del viaje.
+- **El resumen del final** dice, por ejemplo, "⚔️ 3 peleas automáticas: 3 ganadas", lo que dieron (experiencia y monedas), el botín, lo que subieron los oficios, las subidas de nivel y por qué terminó el lote. Con el chat cerrado pasa igual (el reloj del lote corre solo) y el bot escribe **una sola vez**, al final, aunque haya habido muchas peleas.
+- **🏹 Cazar en lote:** con ⚔️ Automática, el botón 🏹 Buscar presa pasa a ser **🏹 Cazar en lote**: eliges la energía (⚡ 4, 10, 20, 40 o todo; `hunt.batch`), con el tiempo estimado en cada botón ("⚡ 10 · ⏱️ 1 h 20 min"). Cada presa cuesta 2 ⚡ (D-108) y tarda 16 minutos (`hunt.batch_minutes`, 8 min por ⚡, como recolectar). El lote se corta al perder, con la vida bajo el límite, sin energía o con ❌ Detener (devuelve los 2 ⚡ de la presa en curso). No empieza malherido ni con la vida ya bajo el límite. Cada presa cuenta para la partida de caza del campamento (D-106), y quien caza en lote cuenta como presente en su zona ("🏹 cazando", D-96). Con ✋ Manual se caza como antes: una presa a la vez, enseguida.
+- **Cuántas peleas dura un lote** (medido con el motor, héroe de nivel 2 al lado del Claro, cinturón de inicio, la vida que vuelve sola en 4 horas, D-103): con el límite en 50 %, unas 4 o 5 peleas automáticas antes de que el lote se corte; con 30 %, casi todo el lote (~10 peleas al explorar 20 veces, ~16 de 20 presas), con menos de 1 % de derrotas; con 70 %, unas 2. Ver el registro de [Balance](../03-personaje/balance.md) §7.
+- Lo pidió el dueño. Los números (30/50/70 %, 16 minutos por presa, 60 rondas, los umbrales de la forma de jugar) los propuso Claude; los umbrales son los que ya usaba el simulador.
 
 ### 1.13 Otros jugadores en tu zona (D-96, provisional)
 

@@ -868,7 +868,7 @@ menu:
   zone: "📍 Zona"
   explore: "🧭 Explorar"
   camp: "🏕️ Campamento"
-  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe."
+  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · ⚙️ Opciones."
   map: "🗺️ Mapa"
   hero: "👤 Héroe"
   bag: "🎒 Mochila"
@@ -876,6 +876,41 @@ menu:
   back: "↩️ Volver"
   continue: "▶️ Continuar"
   places: "📒 Lugares"
+  options: "⚙️ Opciones"           # [ES] D-114: 5.º botón del menú de abajo (D-46 deja hasta 6)
+
+options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho
+  title: "⚙️ Opciones"
+  intro: "Elige qué pasa y qué no. Toca un botón para cambiarlo: queda guardado."
+  fights_manual: "⚔️ Peleas en un lote: ✋ Manual. Si sale una pelea mientras exploras o recolectas, el lote se corta y la peleas tú. Para cuando estás conectado."
+  fights_auto: "⚔️ Peleas en un lote: ⚔️ Automática. Tu héroe pelea solo, con una forma de jugar básica pero atenta: lee el aviso, se defiende de los golpes grandes y usa sus habilidades. Si gana, el lote sigue, y 🏹 Cazar también va en lote. Para cuando sales y vuelves después."
+  retreat: "🩹 Retirarse con menos de {pct} % de vida: en las peleas automáticas, si tu vida queda por debajo, el lote se corta. Si ya está por debajo cuando sale una pelea, no pelea solo: la pelea te espera."
+  potions_on: "🧪 Pociones en peleas automáticas: sí. Bebe las pociones y usa las vendas del cinturón cuando le hacen falta."
+  potions_off: "🧪 Pociones en peleas automáticas: no. No toca el cinturón: lo guardas para cuando pelees tú."
+  never_auto: "El Guardián y las defensas del campamento siempre las peleas tú. Pelear solo da lo mismo que pelear a mano: el jugador atento solo juega mejor."
+  fights_button: "⚔️ Peleas: {value}"
+  manual: "✋ Manual"
+  auto: "⚔️ Auto"
+  retreat_button: "🩹 Retirarse: {pct} %"
+  potions_button: "🧪 Pociones: {value}"
+  value_yes: "sí"
+  value_no: "no"
+  saved_auto: "⚔️ Listo: las peleas de tus lotes ahora son automáticas, y 🏹 Cazar va en lote."
+  saved_manual: "✋ Listo: si sale una pelea en un lote, el lote se corta y la peleas tú."
+  saved_retreat: "🩹 Listo: tu héroe se retira con menos de {pct} % de vida."
+  saved_potions_on: "🧪 Listo: en las peleas automáticas usa las pociones y las vendas del cinturón."
+  saved_potions_off: "🧪 Listo: en las peleas automáticas no toca el cinturón."
+
+auto:                         # [ES] D-114: peleas automáticas de los lotes (resumen del final y la línea de las pantallas de lote)
+  batch_manual: "⚔️ Si sale una pelea: ✋ el lote se corta y la peleas tú (⚙️ Opciones)."
+  batch_auto: "⚔️ Si sale una pelea, tu héroe la pelea solo · 🩹 se retira con menos de {pct} % · 🧪 pociones: {potions} (⚙️ Opciones)."
+  batch_hunt: "⚔️ Tu héroe pelea solo · 🩹 se retira con menos de {pct} % · 🧪 pociones: {potions} (⚙️ Opciones)."
+  summary: "⚔️ {n} {n|pelea automática|peleas automáticas}: {result}."
+  won: "{n} {n|ganada|ganadas}"
+  lost: "{n} {n|perdida|perdidas}"
+  fled: "{n} sin terminar"
+  rewards: "⭐ Las peleas dieron +{xp} experiencia · +{gold}."
+  loot: "🎁 Botín de las peleas: {items}."
+  gave_up: "🏳️ La pelea no terminaba: tu héroe la dejó, sin premio ni castigo."
 
 zone:
   title: "📍 Dónde estás"
@@ -943,6 +978,7 @@ presence:                     # [ES] D-96 (provisional): los otros jugadores de 
     rest: "🛌 descansando"
     travel: "🚶 de paso"
     idle: "🧍 por aquí"
+    hunt: "🏹 cazando"         # [ES] D-114: cazando en lote
 
 hero:
   title: "👤 Tu héroe"
@@ -1147,7 +1183,7 @@ gather:
 hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0)
   button: "🏹 Cazar"
   title: "🏹 Cazar"
-  intro: "Sales a buscar presas: una pelea enseguida, sin explorar ni recolectar. Cada presa cuesta ⚡{energy}."
+  intro: "Sales a buscar presas: solo pelear, sin explorar ni recolectar. Cada presa cuesta ⚡{energy}."
   prey_line: "🐾 Por aquí rondan: {names}."
   rewards_hint: "Da lo de cada pelea: experiencia, monedas y botín (las bestias sueltan 🍖 carne)."
   go_button: "🏹 Buscar presa · ⚡{energy}"
@@ -1181,6 +1217,13 @@ hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona 
   party_end_reward: "✅ ¡Meta cumplida! Cada cazador con al menos 1 presa gana +{xp} experiencia y +{gold}."
   party_end_short: "No llegaron a la meta: esta vez no hay premio."
   party_end_alone: "Para el premio hacen falta al menos {n} cazadores."
+  batch_button: "🏹 Cazar en lote"     # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), 🏹 Buscar presa pasa a ser esto
+  mode_manual: "✋ Cazas de a una presa: la pelea empieza enseguida y la peleas tú. Con ⚔️ Peleas automáticas (⚙️ Opciones) puedes cazar en lote."
+  mode_auto: "⚔️ Peleas automáticas: eliges cuánta energía gastar y tu héroe caza solo, presa tras presa (⚙️ Opciones)."
+  batch_manual: "✋ Para cazar en lote, elige ⚔️ Peleas automáticas en ⚙️ Opciones."
+  batch_low_hp: "🩹 Tu vida está por debajo del {pct} %: cúrate antes de cazar en lote (o cambia el límite en ⚙️ Opciones)."
+  batch_in_progress: "🏹 Sigues rastros y tu héroe pelea solo cada presa."
+  batch_progress: "Presa {done} de {total}"
 
 camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
@@ -1585,6 +1628,10 @@ guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), s
 batch:
   title_gather: "🪓 Recolectar"
   title_explore: "🔎 Explorar"
+  title_hunt: "🏹 Cazar en lote"
+  ask_hunt: "¿Cuánta energía quieres gastar cazando? Cada presa gasta ⚡{energy}, tarda {minutes} min y tu héroe la pelea solo."
+  estimate_hunt: "⏱️ Cada presa tarda {step}; con toda tu energía ({n} ⚡, {k} {k|presa|presas}), unas {total} en total."
+  started_hunt: "🏹 Vas a cazar {n} {n|presa|presas} (hasta {time}). Tu héroe pelea solo; puedes detenerte cuando quieras."
   ask_gather: "¿Cuánta energía quieres gastar recolectando? Cada vez gasta 1 ⚡ y tarda {minutes} min; sigue sola hasta terminar."
   ask_explore: "¿Cuánta energía quieres gastar explorando? Cada vez gasta 1 ⚡, tarda {minutes} min y suma entre 15 % y 30 % de la zona."
   energy: "⚡ Tienes {energy}."
@@ -1616,6 +1663,10 @@ batch:
     bag_full: "🎒 La mochila está llena: vende en el mercader o aporta a la obra del Claro."
     depleted: "🪫 Esta zona está agotada por ahora: sus recursos vuelven con el tiempo."
     full_explored: "✅ Ya no queda nada por explorar desde aquí: tu zona y las de alrededor están al 100 %."
+    auto_wait: "🩹 Tu vida estaba por debajo del {pct} %: tu héroe no pelea solo. La pelea te espera."     # [ES] D-114
+    auto_defeat: "💀 Un {enemy} (nv {level}) te venció en una pelea automática: el lote se cortó. Perdiste {gold} y estás malherido (👤 Héroe → 🩺 Salud)."
+    auto_fled: "🏳️ Una pelea no terminaba y tu héroe la dejó: el lote se cortó."
+    auto_low_hp: "🩹 Tu vida quedó por debajo del {pct} %: tu héroe se retiró y el lote se cortó."
 
 dual:
   title: "🔀 Doble especialización"

@@ -28,7 +28,7 @@ El diseño se escribió primero, como un juego de años. Desde D-59 se programa 
 | **Monedas** | 🥉 bronce, 🥈 plata, 🥇 oro, 💰 bolsas que se cosen y 💎 diamantes que se compran. Con diamantes solo hay aceleradores y cosméticos | D-43, D-80, D-85 | `content/balance.yaml` (`currency`) |
 | **Jefe** | Raigambre, el primer Guardián de región, en (5, 2). Pelea por fases, sin huida, con Recuerdo y título de Pionero | D-82 (provisional) | `content/enemies.yaml` |
 | **Comunidad** | Tutorial con pistas, enlace de invitación que da energía y avisos de parche a todos | D-56, D-65, D-67 | `content/patches.yaml` |
-| **Pantalla** | Máximo 4 botones arriba y 6 en el menú fijo de abajo: 📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe | D-66, D-75, D-86 | `engine/service/game.py` (`menu`) |
+| **Pantalla** | Máximo 4 botones arriba y 6 en el menú fijo de abajo: 📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · ⚙️ Opciones (D-114) | D-66, D-75, D-86, D-114 | `engine/service/game.py` (`menu`) |
 
 ### 1.2 Los parches publicados
 
