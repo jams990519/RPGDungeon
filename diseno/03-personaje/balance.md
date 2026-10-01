@@ -224,3 +224,26 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Resultado.** Tempranos: la peor es 90 % (Monje Tejedor de niebla, Evocador Preservación y Bardo Trovador, de curación, contra el Oso de las cumbres); las demás, 98 % o más. Guardián: entre 54 % (Caballero de la Muerte Sangre) y 84 % (Caballero de la Muerte Escarcha), media de 70 %. Barras al nivel 11 y al 25: ninguna queda más de 12 puntos por encima de su rol; la mediana de vida restante de Curación baja de 83 % a 79 % (seguía siendo el rol más alto) y las demás quedan entre 68 % y 70 %.
 
 **Lo que queda por mirar:** el Guardián premia mucho las respuestas de escudo y de esquiva (el escudo frena cualquier golpe y casi todos sus golpes grandes de la última fase se esquivan o se interrumpen), y castiga la falta de golpe en la barra. Eso se nota en la forma de los números, no en los porcentajes de hoy; si se agregan más jefes, conviene medir cada uno con `--boss`.
+
+### Octubre de 2026: la despensa del asentamiento (D-93, provisional)
+
+**Por qué.** El dueño aceptó por voz que subir de etapa pida algo más que pagar materiales. Primera parte: la despensa (ver [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4). Son números **nuevos**, no movidos: salen de las tablas de esa propuesta (§3.2, §4.2, §7) y todavía no se midieron con jugadores. Se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `pantry`, `content/items.yaml`, `content/enemies.yaml`):
+
+| Número | Valor | De dónde sale |
+|---|---|---|
+| Despensa del Claro desde | aldea | §7.1: hasta campamento, subir es solo pagar (tutorial) |
+| Despensa de los campamentos desde | nivel 3 | §7.2, capa ligera |
+| Consumo | 1 ración por residente activo por día real | §4.2 |
+| Activo | tocó un botón en las últimas 24 h (marca renovada cada 60 min) | §2.1 y §15.3: quien no juega no come |
+| Despensa nueva | 7 días para todos los que podrían comer de ella | §15: nadie empieza castigado |
+| Estados (días) | abundancia 14 · holgada 7 · justa 3 · escasez 1 · hambruna 0 | §3.2 |
+| Días para subir el Claro | pueblo 4 · ciudad 5 · castillo 7 | "Despensa sostenida" de §7.1 corrida una etapa (la despensa se abre en aldea) |
+| Experiencia y mérito por ración | 2 y 1 | Como un material de la obra común (`settlement.xp_per_unit`) |
+| 🍖 Carne | 2 raciones; 40-60 % por victoria contra bestias; 1-2 piezas; se vende a 1 🥉 | §4.1 (caza), en chico |
+| 🥖 Provisiones | 1 ración; 15 🥉 en el mercader; no se revenden | §15.8: comida de emergencia cara |
+
+**Cuenta rápida.** Una victoria contra un lobo deja en promedio 0,5 × 1,5 × 2 = 1,5 raciones. Con 40 de energía por día, quien pelea seguido gana muchas más raciones de las que come (1 por día): la comida no falta si los que pelean la llevan a la despensa. Lo que se pone a prueba es la **participación**, no la producción. Alimentarse solo con provisiones cuesta 15 🥉 por persona y día (unas tres peleas tempranas de monedas).
+
+**Lo que queda por mirar:** si la carne alcanza de sobra (bajar la probabilidad o el valor), el tope por semana de las provisiones (§15.8) y si hace falta un tope de capacidad antes de los graneros (§4.3). Medir en la beta cuántos días alcanza la despensa del Claro con la gente real.

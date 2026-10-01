@@ -199,6 +199,8 @@ item:
   venda: "Venda"
   hierba_curativa: "Hierba curativa"
   pieza_metal: "Pieza de metal"
+  carne: "Carne"
+  provisiones: "Provisiones"
   espada_1: "Espada oxidada"
   espada_2: "Espada de hierro"
   espada_3: "Espada de acero"
@@ -581,6 +583,28 @@ claro:
   title: "🏕️ Campamento del Claro"
   intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."
   far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
+
+pantry:                       # [ES] D-93 (provisional): la despensa del Claro (desde aldea) y de los campamentos (desde nivel 3)
+  line: "🌾 Despensa: {state} · {rations} {rations|ración|raciones} · alcanza {days} {days|día|días}"
+  eaters: "👥 Comen de ella {n} {n|residente activo|residentes activos}: 1 ración por día cada uno. Quien no juega, no come."
+  how: "🍖 La carne la sueltan las bestias; 🥖 las provisiones las vende el mercader del Claro."
+  feed_button: "🌾 Aportar comida"
+  fed: "🌾 Aportaste {items} = {rations} {rations|ración|raciones}: +{xp} experiencia y +{merit} de mérito."
+  no_food: "No llevas comida. 🍖 La carne la sueltan las bestias; 🥖 las provisiones las vende el mercader del Claro."
+  not_yet_claro: "La despensa del Claro se abre cuando sea una aldea."
+  not_yet_camp: "La despensa se abre cuando el campamento llegue a aldea (nivel {level})."
+  rise_needs: "🌾 Para pasar a {next}, además de la obra, la despensa debe alcanzar {need} {need|día|días}."
+  rise_waits: "⏳ La obra está completa, pero para pasar a {next} la despensa debe alcanzar {need} {need|día|días} (hoy alcanza {days}). Sube sola en cuanto llegue."
+  famine_claro: "🔴 Hambruna: la posada no cura y la obra no sube hasta que vuelva a haber comida."
+  famine_camp: "🔴 La despensa está vacía: el campamento no puede crecer hasta llenarla."
+  inn_famine: "🛏️ La posada no cura: el Claro está en 🔴 hambruna. Aporten comida en 🔥 Obra del campamento."
+  grow_famine: "🌾 Primero llenen la despensa: con la despensa vacía el campamento no crece."
+  state:
+    abundancia: "🟢 Abundancia"
+    holgada: "🟢 Holgada"
+    justa: "🟡 Justa"
+    escasez: "🟠 Escasez"
+    hambruna: "🔴 Hambruna"
 
 energy:
   empty: "⚡ Sin energía. Moverte, explorar y recolectar gastan 1. Recuperas 1 en {time} ({per_day} al día)."
