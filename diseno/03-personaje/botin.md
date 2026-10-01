@@ -34,6 +34,8 @@ Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra
 3. **La rareza ensancha, no sube.** Un objeto raro cambia **cómo** juegas, no cuánto pegas. Dentro de un tramo, el mejor botín y la mejor fabricación tienen el mismo techo de Poder de Objeto (§4.1).
 4. **Todo se gasta, se desmonta o se dona.** Ningún objeto vive para siempre en el mercado (§9).
 
+**Amplio pero ligero** (D-44, en [Decisiones](../00-vision/decisiones.md)). La capa simple es ver el resumen del combate y seguir: el filtro por defecto vende lo común y muestra lo importante. Tasar, filtros propios, piezas malditas, conjuntos y restaurar reliquias son capas opcionales para quien las quiera.
+
 ## 2. Qué puede caer: 20 categorías
 
 "Libre" se comercia; "Ligado" no (ver [Equipamiento](equipamiento.md), §5).

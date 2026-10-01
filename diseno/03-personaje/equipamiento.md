@@ -1,6 +1,6 @@
 # Equipamiento
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Estado:** propuesta
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada
 
 **De dónde sale.**
 - *World of Warcraft*: 16 ranuras, tipos de armadura, calidades por color, nivel de objeto, conjuntos, gemas, encantamientos, pistas de mejora y Gran Tesoro semanal.
@@ -26,7 +26,7 @@ Son las 16 de WoW, agrupadas para que se lean bien en un teléfono. Cada ranura 
 | | Espalda (capa) | Clima (frío, calor, lluvia) |
 | **Joyas** | Cuello · Anillo ×2 | — |
 | **Abalorios** | Abalorio ×2 | Efecto activable o pasivo |
-| **Utilidad** | Herramienta de oficio ×2 · Mochila · Montura | — |
+| **Utilidad** | Herramienta de oficio ×2 · Mochila · Cinturón · Montura | — (ver §8) |
 | **Cosmético** | Tabardo · Camisa · Apariencias | — |
 
 Se puede lanzar con 10 ranuras (armas, cabeza, hombros, pecho, manos, piernas, pies, capa, anillo, cuello) y llegar a las 16 en la beta.
@@ -46,10 +46,10 @@ Se puede lanzar con 10 ranuras (armas, cabeza, hombros, pecho, manos, piernas, p
 
   | Carga | Efecto |
   |---|---|
-  | Ligera (<30 %) | +iniciativa; esquivar cuesta menos Aguante |
+  | Ligera (<30 %) | +iniciativa; Huir falla menos |
   | Media (30-70 %) | Normal |
-  | Pesada (70-100 %) | −iniciativa; Aguante máximo −1 |
-  | Sobrecargado (>100 %) | No puedes esquivar |
+  | Pesada (70-100 %) | −iniciativa; Aguante máximo −1 (hay para una respuesta menos; ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)) |
+  | Sobrecargado (>100 %) | No puedes esquivar (ni con respuestas 💨 ni con 🌀 Esquivar) y Huir siempre falla |
 
 ## 3. Qué define a un objeto
 
@@ -76,7 +76,7 @@ Todo lo anterior se resume en un número, el **Poder de Objeto** (como el nivel 
 T5 · Excelente · +2 · Mejoras 1/3
 Forjada por Lisbeth la Herrera ✒️
 +38 Fuerza · +Crítico · +Protección de brazo
-Técnica: Tajo Circular (golpea a toda la vanguardia)
+Técnica: Tajo Circular ⚔ (golpea a toda la vanguardia)
 Durabilidad 84/100 (máx. 96) · 4,2 kg · Libre
 ```
 
@@ -112,30 +112,50 @@ La mayor parte del poder se **fabrica y se comercia**. El jefe no te da la espad
 
 ## 7. Técnicas de equipo
 
-Cada tipo de arma da **una técnica** y cada pecho o par de botas da **otra** (ver la barra de 8 en [Clases](clases-y-especializaciones.md)).
+Cada tipo de arma da **una técnica** y cada pecho o par de botas da **otra**. Con la barra de 6 botones (D-46), las técnicas ya no son botones fijos:
 
-| Pieza | Técnica |
-|---|---|
-| Espada larga | *Tajo Circular*: golpea a toda la vanguardia |
-| Lanza | *Estocada Profunda*: alcanza la retaguardia desde la vanguardia |
-| Maza | *Quebrantahuesos*: mucho daño a la postura y más probabilidad de fractura |
-| Hacha | *Hendidura*: abre una herida que sangra |
-| Dagas | *Puñalada Trapera*: crítico garantizado por la espalda (si el objetivo mira a otro) |
-| Arco largo | *Flecha Clavadora*: el objetivo no puede cambiar de fila |
-| Ballesta | *Virote Perforante*: ignora parte de la armadura |
-| Bastón | *Remanso*: recupera maná y baja el estrés propio |
-| Varita | *Chispa*: ataque a distancia gratis que acumula estado elemental |
-| Escudo torre | *Muro*: la fila entera recibe menos daño una ronda |
-| Pecho de placas | *Resistir*: ignora el siguiente derribo |
-| Pecho de malla | *Cota Tensa*: la próxima herida baja un nivel de gravedad |
-| Pecho de cuero | *Capa de Humo*: esquiva garantizada una ronda |
-| Túnica | *Barrera Rúnica*: escudo que absorbe magia |
-| Botas de placas | *Carga*: cambia de fila y pega en la misma acción |
-| Botas de cuero | *Paso Ligero*: +iniciativa durante 2 rondas |
+- **Una técnica puede ocupar una de tus 3 casillas de habilidad** (P-68), en lugar de una habilidad de clase. Solo una: la clase sigue siendo lo principal.
+- **Se elige fuera de combate**, junto con tus configuraciones de talentos (ver [Talentos](talentos.md)). Si cambias de arma o de armadura, la técnica cambia sola.
+- **Las técnicas marcadas 🛡 o 💨 son respuestas:** se resuelven antes que los golpes y cuestan Aguante, como las de clase. Le dan a cualquier clase otra forma de contestar un aviso (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
+- **Sin técnica en la barra, el arma igual cuenta:** decide el tipo de daño y el alcance de tu ⚔️ Atacar (con lanza, llegas a la retaguardia desde la vanguardia).
+
+| Pieza | Técnica | Tipo |
+|---|---|---|
+| Espada larga | *Tajo Circular*: golpea a toda la vanguardia | ⚔ Ataque |
+| Lanza | *Estocada Profunda*: alcanza la retaguardia desde la vanguardia | ⚔ Ataque |
+| Maza | *Quebrantahuesos*: mucho daño a la postura y más probabilidad de fractura | ⚔ Ataque |
+| Hacha | *Hendidura*: abre una herida que sangra | ⚔ Ataque |
+| Dagas | *Puñalada Trapera*: crítico garantizado por la espalda (si el objetivo mira a otro) | ⚔ Ataque |
+| Arco largo | *Flecha Clavadora*: el objetivo no puede cambiar de fila | ⚔ Ataque |
+| Ballesta | *Virote Perforante*: ignora parte de la armadura | ⚔ Ataque |
+| Bastón | *Remanso*: recupera maná y baja el estrés propio | ✦ Recurso |
+| Varita | *Chispa*: ataque a distancia gratis que acumula estado elemental | ⚔ Ataque |
+| Escudo torre | *Muro*: la fila entera recibe menos daño esa ronda | 🛡 Respuesta |
+| Pecho de placas | *Resistir*: ignoras derribos y empujones esa ronda | 🛡 Respuesta |
+| Pecho de malla | *Cota Tensa*: la próxima herida baja un nivel de gravedad | 🛡 Respuesta |
+| Pecho de cuero | *Capa de Humo*: esquiva garantizada esa ronda | 💨 Respuesta |
+| Túnica | *Barrera Rúnica*: escudo que absorbe magia | 🛡 Respuesta |
+| Botas de placas | *Carga*: cambia de fila y pega en la misma jugada | ⚔ Ataque y movimiento |
+| Botas de cuero | *Paso Ligero*: +iniciativa durante 2 rondas | ✦ Iniciativa |
 
 Las armas de artefacto tienen técnicas únicas. La Garra del Wyrm da *Barrido de Dunas*: arena que ciega a la vanguardia.
 
-## 8. Suerte, pero con red
+**Por qué conviene.** El equipo importa por lo que hace, no solo por sus números (Albion), y eso le da demanda a cada tipo de arma y armadura. Pero la técnica compite por una casilla con las habilidades de clase, así que nunca suma botones.
+
+## 8. Cinturón y mochila
+
+Dos ranuras de utilidad deciden qué llevas encima (D-47). El detalle de capacidades, tipos y niveles está en [Inventario y mochilas](inventario-y-mochilas.md).
+
+| Ranura | Qué hace | Quién la fabrica |
+|---|---|---|
+| 🎒 **Mochila** | Lo que cargas fuera de combate. Su capacidad sube por niveles, y hay tipos según el oficio (herborista, minero, médico, comerciante…) | Peletería |
+| 🪢 **Cinturón** | Las pocas casillas de objetos que se pueden usar en combate con el botón 🎒 Mochila: pociones de vida y de resistencia, remedios, vendas, bombas, comida rápida. Un cinturón mejor tiene más casillas | Peletería |
+
+- **No confundir con la pieza de cintura.** La cintura es armadura y protege el abdomen; el cinturón es una ranura de utilidad: no protege, carga.
+- **En combate solo se usa el cinturón.** Se prepara antes de salir y se rellena solo desde la mochila al terminar cada pelea (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
+- **Se fabrican y se mejoran con materiales y moneda del juego.** El dinero real no compra casillas ni capacidad (D-43; ver [Monetización](../07-economia/monetizacion.md)).
+
+## 9. Suerte, pero con red
 
 **El problema de WoW:** semanas sin el objeto que necesitas.
 
@@ -145,10 +165,10 @@ Las armas de artefacto tienen técnicas únicas. La Garra del Wyrm da *Barrido d
 4. **Mejoras con Esencia.** Lo que no sale, se mejora.
 5. **Tirada a la vista.** En grupo, "Necesidad / Codicia" se tira con el 🎲 nativo en el chat (ver [Gremios y social](../08-social/gremios-y-social.md)).
 
-## 9. Apariencias y colecciones
+## 10. Apariencias y colecciones
 
 - **Apariencias textuales.** Cada pieza tiene una descripción visual, y puedes ponerle a tu equipo la apariencia de otra pieza que hayas tenido (la transfiguración de WoW). Todo esto se ve en tu perfil y en las citas de combate.
 - **Colección de apariencias** compartida por toda la cuenta.
 - **Tarjeta de perfil** en imagen (fase tardía): tu equipo, tus cicatrices y tus títulos en una carta lista para reenviar.
 
-Ver P-14 y P-34 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
+Ver P-14, P-34 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
