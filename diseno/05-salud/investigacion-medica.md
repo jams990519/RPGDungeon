@@ -204,13 +204,15 @@ Cuando un protocolo es público, el **sanatorio** también lo usa, a su precio a
 
 Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una especialización, y expedientes con estrellas. Los rangos son los de [Curación](curacion-y-tratamientos.md) §0: **Enfermero** (1-30), **Médico** (31-70) y **Cirujano** (71-100); las especializaciones, las de [Profesiones](../07-economia/profesiones.md) §2.3. Un nodo es un **proyecto**: pasa por las siete etapas, con las cifras de su rango. Los **saberes combinados** de [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §3 ayudan: Farmacología a Venenos y toxinas, Ortopedia a Prótesis, Anatomía comparada a los casos de monstruos.
 
+Los nodos I piden Medicina 21, el rango desde el que se puede investigar (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §5). Antes de eso, un enfermero ya junta casos y estrellas de expediente.
+
 **Tiempos orientativos por nodo** (un médico solo): I, 3 a 5 días · II, 2 a 3 semanas · III, 1 a 2 meses · IV, 2 a 3 meses.
 
 ### 3.1 Fiebres y contagios (Epidemiología)
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Registro de síntomas | Medicina 15 | Diagnóstico por síntomas más preciso; expedientes de Gripe de Escarcha y Disentería con la mitad de casos |
+| I · Registro de síntomas | Medicina 21 | Diagnóstico por síntomas más preciso; expedientes de Gripe de Escarcha y Disentería con la mitad de casos |
 | II · Febrífugos | Medicina 40 · Fiebre del Pantano ★★★ | Cura completa de la Fiebre del Pantano crónica (con Flor de Ciénaga Tardía); caldos febrífugos con los cocineros |
 | III · Cuarentena y profilaxis | Medicina 60 · Epidemiología · 2 expedientes ★★★★ | Máscaras médicas mejores, pastillas preventivas; una cuarentena declarada baja el doble el contagio |
 | IV · Vacunas mayores | Medicina 80 · Epidemiología · 3 expedientes ★★★★★ | Vacunas de una temporada para las enfermedades investigadas; ver venir un brote en la Gaceta antes de que se propague |
@@ -219,7 +221,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Antídotos comunes | Medicina 20 | Reconocer la familia de un veneno; antídotos más baratos |
+| I · Antídotos comunes | Medicina 21 | Reconocer la familia de un veneno; antídotos más baratos |
 | II · Antitoxinas específicas | Medicina 40 · Farmacia | Tétanos de Óxido sin espasmos crónicos; veneno del Escorpión de Vidrio; quelante del Mal de Escoria |
 | III · Desintoxicación profunda | Medicina 65 · Farmacia | Baja la Toxicidad y la dependencia de una vez (ver [Condiciones](condiciones.md)) |
 | IV · Anestesia profunda y triaca | Medicina 85 · Farmacia | La **anestesia profunda** que pide la cirugía mayor (con raíz de mandrágora), y una triaca que cura cualquier veneno ya investigado |
@@ -228,7 +230,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Suturas finas | Medicina 20 | Menos infección después de suturar; cicatrices más pequeñas |
+| I · Suturas finas | Medicina 21 | Menos infección después de suturar; cicatrices más pequeñas |
 | II · Injertos de piel | Medicina 50 · Quemadura ★★★ | Injerto para quemaduras de grado 3 y la cicatriz extensa de la Podredumbre Gris (con miel negra o escama de salamandra) |
 | III · Cirugía de secuelas | Medicina 75 · Cirugía · Fractura y Nervio dañado ★★★★ | **Compensa a medias** una fractura mal soldada o un nervio dañado: la penalización baja a la mitad. Repararlos del todo es cosa de la Regeneración |
 | IV · Cirugía mayor | Medicina 90 · Cirugía | Operaciones de varias sesiones con **hasta 2 médicos asistentes**, cada uno a cargo de una barra. La pide la Regeneración |
@@ -237,7 +239,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Calmantes | Medicina 15 | Remedios que bajan un poco el estrés y dan sueño reparador |
+| I · Calmantes | Medicina 21 | Remedios que bajan un poco el estrés y dan sueño reparador |
 | II · Tratar aflicciones | Medicina 45 | Acortan las aflicciones (ver [Mente](mente.md)); trabajan junto al bardo y la taberna |
 | III · Terapia de fobias | Medicina 65 · 3 fobias ★★★ | Quitar una fobia o una manía con un tratamiento de varias sesiones (ver [Rasgos adquiridos](rasgos-adquiridos.md)), con Polen de Flor de Difuntos |
 | IV · Elixir de lucidez | Medicina 80 · Farmacia | Más cordura en el Abismo y en las Pesadillas (con Hongo del Eclipse). **La Corrupción no se cura con medicina:** es una elección, y la limpia el templo |
@@ -246,7 +248,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Veterinaria básica | Medicina 15 | Cojera, parásitos y heridas de montura (ver [Animales y cultivos](animales-y-cultivos.md)) |
+| I · Veterinaria básica | Medicina 21 | Cojera, parásitos y heridas de montura (ver [Animales y cultivos](animales-y-cultivos.md)) |
 | II · Fiebre del establo | Medicina 40 | Remedio y cuarentena de establo; vacuna para el ganado |
 | III · Sanidad del campo | Medicina 60 · trabajo junto a un agricultor y un alquimista | Tratamientos contra el tizón y la langosta; semillas resistentes junto con la hibridación |
 | IV · Brotes en la fauna | Medicina 80 · Epidemiología | Cebos medicados que frenan un brote en una especie de monstruo antes de que se vuelva epidemia (ver [Bestiario](../06-contenido/bestiario.md) §10.7) |
@@ -255,7 +257,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 
 | Nodo | Requisito | Desbloquea |
 |---|---|---|
-| I · Muletas y férulas | Medicina 20 | La muleta baja la penalización de una pierna perdida; férulas mejores |
+| I · Muletas y férulas | Medicina 21 | La muleta baja la penalización de una pierna perdida; férulas mejores |
 | II · Implante simple | Medicina 50 | Implantar prótesis simples con el minijuego (ver [Secuelas y muerte](secuelas-y-muerte.md) §2) |
 | III · Prótesis articulada | Medicina 75 · Cirugía | Menos tiempo de adaptación; prótesis de obra maestra con mejor implante |
 | IV · Prótesis con nervio | Medicina 90 · Cirugía · Nervio dañado ★★★★★ | La mejor prótesis posible, que se mueve con los nervios: compensa casi todo, **nunca del todo** (D-51) |
@@ -275,7 +277,7 @@ Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una es
 ### 4.2 Qué pide investigarla
 
 Cuatro nodos, uno sobre otro. El primero pide **todo esto**:
-- **Medicina muy alta:** Cirujano Gran Maestro (Medicina 96-100 con Cirugía). Equivale: un Gran Maestro de otra especialización que opera junto a un Maestro de Cirugía (81 o más).
+- **Medicina muy alta:** Gran Maestro de Medicina (96-100). Quien no es de Cirugía puede hacer R1 y R2 junto a un Maestro de Cirugía (81 o más); R3 y R4 piden la rama Cirugía en 100 y después su Maestría.
 - **Nodos IV** de Heridas y cirugía y de Venenos y toxinas (anestesia profunda), y al menos el nodo III de otras dos ramas.
 - **Expedientes ★★★★★** de Gangrena, Congelación, Fractura y Nervio dañado, y de al menos tres enfermedades más. Además, el expediente de **tejido que se regenera**, que solo se llena observando a trols, licántropos y limos (§2.1).
 - **Ingredientes de varias zonas y estaciones** (§2.4): glándula de licántropo (luna llena), corazón de micelio (cueva), lágrima helada (ventisca), cristal de resonancia profunda (Abismo, 1 por día), agua de fondo (verano), raíz de mandrágora (primavera) y miel negra (otoño). Las cuatro estaciones: como mínimo un año entero de la Torre (4 semanas reales), y en la práctica más.
@@ -361,7 +363,7 @@ Durante una epidemia de servidor (ver [Enfermedades](enfermedades.md) §4 y [Eve
 2. **Hipótesis votada:** los tres médicos que más aportaron proponen una; los demás médicos votan.
 3. **Ingredientes:** la hipótesis pide uno de temporada o de yacimiento (por ejemplo, Sal de Estrellas). Todo el servidor sale a buscarlo.
 4. **Experimentos:** cualquier médico con rango ensaya, y cada avance suma a la barra común.
-5. **Protocolo público:** las curas de una epidemia **no se patentan**. Pasan a todos los médicos y al sanatorio a la vez.
+5. **Protocolo público:** las curas de una epidemia **no se patentan** (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §8.2). Pasan a todos los médicos y al sanatorio a la vez.
 6. **Aplicación:** se fabrica en cadena (ver [Investigaciones](../06-contenido/investigaciones.md) §2.1) y llega la vacuna. Los que más aportaron ganan el título.
 
 ## 6. Ritmo: cuánto lleva y por qué no se salta
@@ -418,7 +420,7 @@ Casos esta semana: 22/40
 
 ```
 🧪 Mesa · Enfermería del gremio Arena Roja
-Ensayo 3/5 · Fiebre del Pantano · febrífugo
+Fiebre del Pantano · febrífugo · protocolo 3/5
 Avance  ▓▓▓▓▓▓░░░░ 60 %
 Riesgo  ▓▓░░░░░░░░ bajo
 Muestra ●●○
@@ -429,7 +431,7 @@ Paso 3: la mezcla se enturbia ⚠️
 [📝 Anotar]       [⛔ Parar]
 ```
 
-Al terminar: `✅ Avance (4/5). Descubriste: la Flor de Ciénaga es Fría.`
+Al terminar: `✅ Avance: protocolo 4/5. Descubriste: la Flor de Ciénaga es Fría.`
 
 ## 8. A quién le da trabajo
 
@@ -484,7 +486,7 @@ No se hicieron: otros procesos están editando esos documentos.
 - [ ] **[Curación](curacion-y-tratamientos.md)**: §0, agregar qué investiga cada rango (nodos I a IV); §3, la fila Vacuna enlaza aquí; §5, sumar la mesa de investigación, la enfermería mayor y el Quirófano mayor; §7, en "Miembro perdido", cambiar "*ritual de regeneración*" por "Regeneración (investigación médica)"; §8, los ingredientes de temporada enlazan a §2.4; §9, sumar la carrera de investigador.
 - [ ] **[Enfermedades](enfermedades.md)**: §1, decir que las curas completas salen de un protocolo; §3, nota de que cada enfermedad tiene expediente; §4 (Respuesta), enlazar a §5.4 (la cura comunitaria por etapas, sin patente).
 - [ ] **[README de Salud](README.md)**: fila nueva en la tabla de documentos; en "Las siete capas", Secuelas se cura con "Prótesis, adaptación y, en la cima de la medicina, Regeneración"; sumar esta línea al orden de construcción (§10) y a "A quién le da trabajo" (pacientes de estudio, exploradores, eruditos).
-- [ ] **[Investigación y maestría](../07-economia/investigacion-y-maestria.md)**: §5.2, enlazar aquí desde la fila "Remedio" y aclarar que un proyecto médico pide antes expediente ★★★, hipótesis e ingredientes; §4, decir que los puntos de caso del expediente son un contador aparte de los PI ⚕️; §6.2, en la cumbre Rehabilitación, sumar la rehabilitación después de una Regeneración; §7.1, el Anfiteatro anatómico tiene mesa de investigación médica; §8.2, sumar a "qué no se patenta" lo mismo que aquí (las curas de epidemia).
+- [ ] **[Investigación y maestría](../07-economia/investigacion-y-maestria.md)**: §5.2, enlazar aquí desde la fila "Remedio" y aclarar que un proyecto médico pide antes expediente ★★★, hipótesis e ingredientes; §4, decir que los puntos de caso del expediente son un contador aparte de los PI ⚕️; §6.2, en la cumbre Rehabilitación, sumar la rehabilitación después de una Regeneración; §7.1, el Anfiteatro anatómico tiene mesa de investigación médica.
 - [ ] **[Profesiones](../07-economia/profesiones.md)**: §2.3, en Medicina sumar "protocolos e investigación médica" y resolver si **Veterinaria** es especialización (la nombra [Animales y cultivos](animales-y-cultivos.md), no Profesiones); §5, los expedientes son el conocimiento de Medicina; §9, rol de investigador médico; §10, fila "Reponer una pierna"; §12, regalías de patentes y pago a pacientes de estudio.
 - [ ] **[Decisiones](../00-vision/decisiones.md)** D-53: enlazar este documento y [Investigación y maestría](../07-economia/investigacion-y-maestria.md), que ya existe, en lugar de "Investigación y maestría (en redacción)".
 - [ ] **[Creación de personaje](../03-personaje/creacion-de-personaje.md)**: el Trol recupera "*incluso un miembro perdido, muy despacio (semanas)*", lo que choca con D-51. Propuesta: el Trol regenera dedos y orejas, hace la rehabilitación en la mitad del tiempo y es el mejor caso de estudio, pero un brazo o una pierna también le piden la Regeneración médica.
@@ -496,7 +498,8 @@ No se hicieron: otros procesos están editando esos documentos.
 - [ ] **[Bestiario](../06-contenido/bestiario.md)**: Licántropo Salvaje deja glándula; Micelio Andante, corazón de micelio para la Regeneración; Novia de Escarcha, lágrimas heladas para la cámara fría.
 - [ ] **[Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)** y **[Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)**: Quirófano mayor (mejora del Sanatorio), mesa de investigación en la Academia, Enfermería mayor y Orden de médicos.
 - [ ] **[Monetización](../07-economia/monetizacion.md)** §3: sumar que los aceleradores no tocan expedientes, PI, proyectos ni investigación médica (ya lo dice [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2).
-- [ ] **[Preguntas abiertas](../00-vision/preguntas-abiertas.md)**: sumar las preguntas de abajo.
+- [ ] **[Glosario](../00-vision/glosario.md)**: expediente, puntos de caso, protocolo, mesa de investigación, orden de médicos, Enfermería mayor, Quirófano mayor, Regeneración y marca de regeneración.
+- [ ] **[Preguntas abiertas](../00-vision/preguntas-abiertas.md)**: sumar las preguntas de abajo, con el siguiente número P-xx libre.
 
 **Preguntas para el dueño:**
 1. ¿Una regeneración por personaje y por temporada es buen tope, o debería ser una sola vez por miembro?

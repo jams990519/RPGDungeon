@@ -31,10 +31,10 @@
 - **El dueño**, que puede leer cualquier archivo y entender su papel sin leer el código.
 - **La IA**, que antes de tocar algo lee la nota y sabe a quién más afecta. La nota no traduce el docstring: es el mapa de alrededor.
 
-**El marcador `[ES]`.** Siempre igual: `[ES]` en mayúsculas, entre corchetes, al principio de una línea. Nada más en el repositorio usa ese texto, así que buscarlo encuentra todas las notas:
+**El marcador `[ES]`.** Siempre igual: `[ES]` en mayúsculas, entre corchetes, al principio de una línea. Nada más en el código usa ese texto (los documentos de `diseno/` solo lo nombran), así que buscarlo en las carpetas de código encuentra todas las notas:
 
 ```
-grep -rn "\[ES\]" engine/ content/ adapters/ tests/
+grep -rn "\[ES\]" engine/ content/ adapters/ simulator/ tests/ tools/
 ```
 
 **Dónde va cada nota:**
@@ -295,6 +295,8 @@ class HitReceived:
 
     Attributes:
         combat_id: Id of the fight; replayable with its stored seed.
+        attacker_id: Hero or enemy that landed the hit. Health uses it to
+            look up what the attacker spreads (contagion bar).
         target_id: Hero or enemy that took the hit.
         zone: Body zone that was hit.
         damage_type: Damage family and type (slash, pierce, blunt, fire...).
@@ -305,8 +307,10 @@ class HitReceived:
 
     [ES]
     Qué es: el evento GolpeRecibido del diseño (arquitectura-modular.md §4).
-    Quién la usa: la crea engine/combat/round.py. La escuchan M7 Salud (¿hay herida?),
-        M4 Equipo (desgaste de durabilidad) y la mente en M7 (estrés por Sombra y Vacío).
+    Quién la usa: la crea engine/combat/round.py. La escuchan M7 Salud (¿hay herida?
+        y la barra de Contagio del monstruo que golpeó, bestiario.md §5.1),
+        M4 Equipo (desgaste de durabilidad) y la mente en M7 (estrés por críticos,
+        Sombra y Vacío).
     Si cambia, afecta: quitar o renombrar un campo rompe a todos los que escuchan.
         Agregar un campo con valor por defecto es seguro. Cambiar el significado de
         `damage` (antes o después de la armadura) o de hp_before/hp_after cambia
@@ -314,6 +318,7 @@ class HitReceived:
     """
 
     combat_id: str
+    attacker_id: str
     target_id: str
     zone: BodyZone
     damage_type: DamageType
@@ -381,7 +386,7 @@ Los dos últimos son los peligrosos: **no dan error**, solo cambian cómo se jue
 
 **Antes de editar:**
 1. **Leer el encabezado y las notas [ES]** del archivo y de cada función o clase que se va a tocar.
-2. **Consultar el mapa de impacto** (`diseno/01-plataforma/mapa-de-impacto.md`, documento aparte) para el módulo del archivo.
+2. **Consultar el [mapa de impacto](mapa-de-impacto.md)** para el módulo del archivo: su ficha, sus cascadas y sus números sensibles.
 3. **Comprobar en el código** quién lo usa de verdad: buscar el nombre de la función, el evento o el ID. La nota puede estar vieja. Si no coincide con el código, se le avisa al dueño y se corrige la nota.
 4. **Leer el documento de diseño enlazado.** Si el cambio contradice una regla del diseño o una decisión confirmada (D-xx), se detiene y se pregunta.
 5. **Darle al dueño el mensaje de impacto** en español (§6.3): "esto también afecta a…".
@@ -437,7 +442,7 @@ Esto también afecta a:
   4. Economía (M13): se venden más vendas y férulas, y se usa más el sanatorio (sumidero).
   5. Equipo (M4): cada punto de armadura vale menos; puede bajar el precio de las piezas pesadas.
   6. PvP (M12): los duelos y la guerra de castillos duran menos.
-  7. Simulador (M21): hay que volver a medir la mitigación de los 6 tanques (objetivo ±4 %).
+  7. Simulador (M21): hay que volver a medir la mitigación de las 11 specs de Defensa (objetivo ±4 %).
 Reglas que toca: ninguna. La armadura sigue contando siempre y nunca da inmunidad.
 Números de balance: K tramo 1: 60 → 70.
 Pruebas que voy a correr: tests/combat/, tests/health/test_wound_rules.py, simulador completo.

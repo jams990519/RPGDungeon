@@ -27,7 +27,7 @@ Pediste que quien cura enfermedades tenga que **estudiar**, como una profesión 
 |---|---|---|
 | **Enfermero** | 1-30 | Vendar y suturar bien, cuidar a pacientes internados (acelera su recuperación), dar remedios, diagnóstico básico |
 | **Médico** | 31-70 | Diagnóstico completo, tratamientos de enfermedades, heridas graves, desintoxicación |
-| **Cirujano** | 71-100 | Cirugía (minijuego), heridas críticas, prótesis, amputaciones limpias, vacunas (con Epidemiología) |
+| **Cirujano** | 71-100 | Cirugía (minijuego), heridas críticas, salvar miembros con gangrena, prótesis, amputaciones limpias, vacunas (con Epidemiología) |
 
 - Se estudia con los **entrenadores** del ala de Oficios del Castillo, con **exámenes** en cada rango (ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)).
 - Se **cobra** por cada consulta, tratamiento y cirugía (§6), y un gremio puede pagar un sueldo a su médico.
@@ -42,7 +42,7 @@ SÍNTOMA ──> DIAGNÓSTICO ──> TRATAMIENTO ──> RECUPERACIÓN ──> 
 2. **Diagnóstico.** Un médico (jugador o PNJ) examina y dice qué es, con qué seguridad y qué conviene. Un buen diagnóstico ahorra tratamientos inútiles.
 3. **Tratamiento.** Remedios, cirugía, magia, reposo o ritual, según el problema.
 4. **Recuperación.** El tiempo hace el resto, más rápido si descansas bien.
-5. **Alta o secuela.** Si todo sale bien, te vas sano (y a veces inmune). Si no, puede quedar un mal crónico (ver [Secuelas](secuelas-y-muerte.md)).
+5. **Alta o secuela.** Si todo sale bien, te vas sano (y a veces inmune). Si no, puede quedar un **mal crónico**, que se trata y se cura, o, si la cadena de descuidos llegó al final, una **secuela definitiva**, que no se cura: se compensa y se cuida (§7.1, y ver [Secuelas](secuelas-y-muerte.md)).
 
 ## 2. Diagnóstico
 
@@ -62,12 +62,12 @@ SÍNTOMA ──> DIAGNÓSTICO ──> TRATAMIENTO ──> RECUPERACIÓN ──> 
 | **Primeros auxilios** | Vendar, torniquete, limpiar, entablillar de emergencia | Frenar el sangrado, evitar infecciones, estabilizar | Cualquiera con el objeto |
 | **Remedios** (pociones, ungüentos, tinturas, píldoras) | Suben la inmunidad, frenan la gravedad, alivian síntomas, quitan el dolor | Enfermedades, dolor, toxicidad, venenos | Alquimistas y herboristas los fabrican; cualquiera los usa |
 | **Tratamiento médico** | Suturas, recolocar huesos, limpiar heridas infectadas, tratamientos largos | Heridas moderadas y graves, infecciones | Médico |
-| **Cirugía** (minijuego, §4) | Operar | Heridas críticas, hemorragia interna, amputación limpia, implantar prótesis, extraer parásitos | Médico con rango de cirujano |
+| **Cirugía** (minijuego, §4) | Operar | Heridas críticas, hemorragia interna, salvar un miembro con gangrena, amputación limpia, implantar prótesis, extraer parásitos | Médico con rango de cirujano |
 | **Magia sanadora** | Devuelve vida, frena el sangrado, estabiliza, baja un nivel a heridas leves y moderadas | Combate y emergencias (ver [Heridas](heridas.md)) | Sanadores |
-| **Restauración** | Cura una herida de cualquier gravedad | Lo irremediable | Sanadores, una vez al día, con reactivo raro |
+| **Restauración** | Cura una herida de cualquier gravedad. **No devuelve lo perdido:** ni miembros, ni ojos, ni órganos | Heridas que nada más cura | Sanadores, una vez al día, con reactivo raro |
 | **Reposo** | Sube la inmunidad y acelera toda curación | Todo | Posada, casa, enfermería |
 | **Dieta** | Comidas que suben la inmunidad o curan males digestivos | Enfermedades, parásitos | Cocineros |
-| **Ritual** | Purificar, levantar maldiciones, curar vampirismo y licantropía, limpiar corrupción | Maldiciones, corrupción | Templo, sacerdotes, misiones |
+| **Ritual** | Purificar, levantar maldiciones, curar vampirismo y licantropía, limpiar la corrupción menor. **No regenera miembros** | Maldiciones, corrupción | Templo, sacerdotes, misiones |
 | **Terapia de la mente** | Música, compañía, templo, descanso | Estrés, aflicciones, colapso | Bardos, taberna, templo, gremio |
 | **Desintoxicación** | Baja la toxicidad y la dependencia | Abuso de pociones, adicciones | Médico, alquimista, tiempo |
 | **Cuarentena** | Aísla para no contagiar; mientras dura, la inmunidad sube más rápido por reposo | Epidemias | El asentamiento o el gremio la declaran |
@@ -143,6 +143,7 @@ Concentración 140/220
 | Conmoción | Reposo sin combate | Tiempo; tratamiento del médico |
 | Hemorragia interna | Estabilizar (magia) | Cirugía |
 | Infección de herida | Limpiar | Antiséptico y tratamiento; cirugía si es gangrena |
+| Gangrena (aviso 🔴) | Volver; estabilizar (magia) para ganar tiempo | Cirugía para salvar el miembro; si ya no se puede, amputación limpia |
 | Fiebre del Pantano | Corteza amarga | Tratamiento completo, o seguirá volviendo |
 | Gripe, neumonía | Caldo y reposo | Remedios, reposo en cama |
 | Disentería, parásitos | Carbón, agua hervida | Purga, dieta |
@@ -155,11 +156,39 @@ Concentración 140/220
 | Licantropía | Ritual antes de la luna llena | El ritual mayor con su misión |
 | Dolor | Analgésico | Curar la herida que lo causa |
 | Estrés y aflicciones | Taberna, bardo | Descanso, templo |
-| Corrupción | — | Misiones largas del templo |
+| Corrupción | — | Misiones largas del templo. La **Marca del Vacío** ya no se limpia: se lleva (ver [Secuelas](secuelas-y-muerte.md)) |
 | Toxicidad | Esperar | Desintoxicación |
 | Dependencia | Dejar de consumir | Tratamiento del médico |
-| Miembro perdido | — | Prótesis, ritual de regeneración, o paciencia (Trol) |
-| Mal crónico | Tratamiento que alivia | Médico maestro o cadena de misiones |
+| Miembro perdido | Muleta, gancho o parche | **No se cura:** se compensa con prótesis y adaptación (§7.1). El Trol solo recupera dedos y orejas. Reponerlo: la Regeneración de [Investigación médica](investigacion-medica.md), la cima de la medicina |
+| Otra secuela definitiva (ojo, pulmón, rodilla, nervio, hígado) | — | **No se cura:** se compensa y se cuida (§7.1) |
+| Dolor fantasma | Analgésico, bardo | Tratamiento del médico o del templo; se va en semanas |
+| Prótesis gastada o rota | Kit de ajuste (cinturón) | Reparación del ingeniero; revisión del médico si el muñón se irrita |
+| Mal crónico | Tratamiento que alivia | Tratamiento largo del médico o cadena de misiones. Si se ignora y se sigue forzando, puede volverse definitivo |
+
+### 7.1 Lo que no se cura: las secuelas definitivas se compensan y se cuidan
+
+Algunas secuelas son para siempre (ver [Secuelas](secuelas-y-muerte.md) §2): una pierna perdida, un ojo, un pulmón dañado, un nervio cortado. **Ningún tratamiento, ritual ni milagro las cura.** La medicina hace tres trabajos con ellas.
+
+**1. Antes: cortar la cadena.** Una secuela definitiva siempre llega por una cadena de descuidos con avisos (ver [Secuelas](secuelas-y-muerte.md) §5). El trabajo más valioso del médico es cortarla: limpiar la infección, operar la gangrena, entablillar bien. **Salvar un miembro** en el último aviso es la cirugía más difícil del oficio. Si ya no se puede, una **amputación limpia** deja un muñón mejor que perderlo solo: la prótesis se adapta en la mitad del tiempo y el dolor fantasma es leve.
+
+**2. Compensar.** La secuela no se cura, pero su penalización baja mucho:
+- **Prótesis:** la fabrican Herrería, Ingeniería, Curtido y Joyería; la coloca un cirujano con el minijuego (acción *Implantar*). Su calidad decide cuánto compensa.
+- **Equipo:** lente de puntería, trompetilla, respirador, guante estabilizador.
+- **Adaptación:** con el tiempo llega un rasgo que baja la penalización un poco más (ver [Rasgos adquiridos](rasgos-adquiridos.md)).
+- Nada de eso la borra del todo: siempre queda al menos un 25 %.
+
+**3. Cuidar.** Una secuela definitiva pide cuidados mientras dure, y eso da trabajo constante:
+
+| Qué se cuida | Qué pasa si no | Quién lo cuida |
+|---|---|---|
+| **Dolor fantasma** o dolor crónico de la secuela | Brotes de Dolor leve algunos días (ver [Condiciones](condiciones.md)) | Analgésico (Alquimia), bardo, templo; tratamiento del médico |
+| **Mantenimiento de la prótesis** | Pierde durabilidad; rota, vuelve la penalización entera | Ingeniero (reparación); **Kit de ajuste** en el cinturón para la pelea |
+| **Muñón irritado** | Si caes con la prótesis puesta o la usas rota, rinde un nivel de calidad menos hasta la revisión | Médico: una revisión en la consulta `/medico` |
+| **Pulmón dañado** | La Contaminación te sube más | Respirador (Ingeniería y Sastrería), tónico de pulmón (Alquimia) |
+| **Hígado castigado** | Te caben menos pociones | Dieta de hígado (Cocina) |
+| **Marca del Vacío** | El estrés sube contra el Vacío | Amuleto bendito (Joyería y templo), templo |
+
+**La excepción: reponer.** El dueño confirmó que una secuela definitiva se puede llegar a reponer con medicina muy avanzada (D-53). No es un tratamiento: es la **Regeneración**, la cima de la [Investigación médica](investigacion-medica.md), meses de investigación de los mejores cirujanos del servidor, con ingredientes raros y una cirugía mayor.
 
 ## 8. Medicinas: calidad, caducidad y escasez
 

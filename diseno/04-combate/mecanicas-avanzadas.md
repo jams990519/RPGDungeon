@@ -12,7 +12,7 @@
 - *Battle Brothers*, *Persona 5*, *Undertale* y *Monster Hunter*: enemigos que huyen, se rinden o se enfurecen (§9).
 - *Final Fantasy VII* y *Final Fantasy X*: la barra de Límite (§10).
 - *Sekiro* y *Clair Obscur: Expedition 33*: el desvío perfecto y el contraataque (§11).
-- *Bravely Default*: defender para actuar varias veces después (§12).
+- *Bravely Default*: defender para guardar y soltarlo todo después (§12).
 
 **Por qué este documento.** El motor base (rondas simultáneas, avisos, barras, filas) ya hace que el combate sea de lectura y no de reflejos. Estas diez mecánicas le suman **decisiones en cada ronda**: a quién romper, con quién combinar, dónde prender el aceite, cuándo guardar y cuándo soltar. Ninguna suma botones ni rompe el presupuesto de poder.
 
@@ -20,7 +20,7 @@
 
 ## 1. Reglas para todas
 
-1. **Ningún botón nuevo.** La barra sigue siendo de 8 (ver [Clases](../03-personaje/clases-y-especializaciones.md)). Cada mecánica transforma un botón, usa el menú de acción rápida o se dispara sola.
+1. **Ningún botón nuevo y una sola elección por ronda.** La barra es de 6 botones (D-46, ver [Ronda y acciones](ronda-y-acciones.md)): no hay acción rápida, ni botón de Defender, ni menú de Más. Cada mecánica transforma un botón, usa una respuesta o un objeto de la 🎒 Mochila, o se dispara sola.
 2. **Leer, no apretar rápido.** Todo se decide al elegir la ronda, con lo que dice el aviso. Nada depende de la velocidad del pulgar.
 3. **Todo tiene tope**, por ronda o por pelea.
 4. **Todo pasa por el simulador** y cuenta en un eje del presupuesto de 100 puntos (ver [Balance](../03-personaje/balance.md)).
@@ -32,16 +32,16 @@
 
 | Mecánica | Dónde se elige | ¿Suma botones? |
 |---|---|---|
-| Ruptura | Sale sola al pegar debilidades, o con **Apuntar** a una parte débil | No |
-| Golpe extra | Ventana corta al final de la ronda, con las acciones rápidas de siempre | No |
+| Ruptura | Sale sola al pegar debilidades, o apuntando con **⚔️ Atacar** a una parte débil | No |
+| Golpe extra | Sale solo al final de la ronda; no se elige | No |
 | Técnicas combinadas | Se disparan solas si coinciden las etiquetas; el bot marca con 🔗 la habilidad que combina | No |
-| Elementos y superficies | Habilidades con elemento y lanzables del menú **Objetos** | No |
+| Elementos y superficies | Habilidades con elemento y lanzables del cinturón (**🎒 Mochila**) | No |
 | Terreno | Se aplica solo | No |
 | Emboscada | Antes del combate, en el mensaje de exploración | No (fuera del combate) |
 | Moral y rendición | Tres botones de decisión que reemplazan la botonera 15 s | No (reemplaza) |
 | Límite | **Atacar** se convierte en el Límite cuando la barra está llena | No (reemplaza) |
-| Reacciones avanzadas | El paso de reacción de siempre; lo nuevo es acertar la forma y la ronda | No |
-| Apostar turnos | **Defender** guarda una carga; **Desatar** es una acción rápida | No |
+| Reacciones avanzadas | Las respuestas de siempre, elegidas como la jugada de la ronda; lo nuevo es acertar la forma y la ronda | No |
+| Guardar y soltar | Usar una **respuesta** guarda una carga; las cargas se **desatan** solas contra un enemigo roto | No |
 
 ### Orden de aprendizaje y protección de novato
 
@@ -62,7 +62,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 
 **Tipos de daño** (para debilidades y resistencias, ver [Daño y estados](dano-y-estados.md)): 🪓 Corte · 🏹 Perforación · 🔨 Contundente · 🔥 Fuego · ❄️ Escarcha · 🌿 Naturaleza · ⚡ Rayo · 🔮 Arcano · 🌑 Sombra · ✨ Sagrado · 🕳 Vacío.
 
-**Etiquetas de técnica** (para las técnicas combinadas, §5). Cada habilidad de clase y cada técnica de equipo lleva **una sola** etiqueta, que se lee en su descripción y en el registro. Atacar y Defender no llevan etiqueta:
+**Etiquetas de técnica** (para las técnicas combinadas, §5). Cada habilidad de clase y cada técnica de equipo lleva **una sola** etiqueta, que se lee en su descripción y en el registro. ⚔️ Atacar y 🌀 Esquivar no llevan etiqueta:
 
 | Etiqueta | Qué habilidades la llevan |
 |---|---|
@@ -88,7 +88,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 **Cómo funciona.**
 - Casi todo enemigo tiene **🔰 Escudo** (fichas) y de 1 a 4 **debilidades**, entre tipos de daño y partes del cuerpo.
 - Las debilidades empiezan como ❓. Se revelan al pegarlas, con el Bestiario (3 victorias), con la Marca del Cazador o con una ficha del Informante (ver [Avisos y tácticas](avisos-y-tacticas.md)).
-- Cada impacto que pega una debilidad quita 1 🔰. **Apuntar** (acción rápida) a una parte débil también cuenta: el vientre expuesto del Wyrm de las Dunas es débil a perforación.
+- Cada impacto que pega una debilidad quita 1 🔰. **Apuntar** a una parte débil (opción dentro de ⚔️ Atacar, o efecto de ciertas habilidades) también cuenta: el vientre expuesto del Wyrm de las Dunas es débil a perforación.
 - Las habilidades de varios impactos quitan 1 por impacto, con tope de 2 por acción. Las técnicas combinadas y el Límite quitan 2.
 - Con 🔰 en 0, el enemigo queda **💫 Roto**:
   - pierde su acción de esta ronda (si todavía no actuó) y la de la ronda siguiente;
@@ -121,7 +121,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 
 Si las dos se rompen a la vez es un **Quiebre**: el enemigo no pierde más rondas, pero los premios se suman (crítico garantizado y +30 %). Es el momento de gastar el Límite (§10) y las cargas guardadas (§12).
 
-**Botón.** Ninguno nuevo. Se rompe con las habilidades de siempre, eligiendo bien el tipo de daño, o con **Apuntar** a la parte débil. Los **aceites de arma** (Alquimia) cambian el tipo de daño del arma durante 3 rondas, desde **Objetos**.
+**Botón.** Ninguno nuevo. Se rompe con las habilidades de siempre, eligiendo bien el tipo de daño, o con **Apuntar** a la parte débil. Los **aceites de arma** (Alquimia) cambian el tipo de daño del arma durante 3 rondas, desde la **🎒 Mochila** (gasta la ronda, como todo objeto).
 
 **Cómo se ve.**
 
@@ -150,37 +150,27 @@ Si las dos se rompen a la vez es un **Quiebre**: el enemigo no pierde más ronda
 
 **De dónde sale.** La saga *Persona* (desde *Persona 3*) y su origen, el sistema *Press Turn* de *Shin Megami Tensei III: Nocturne*. Pegar una debilidad o hacer un crítico tumba al enemigo y da un turno extra ("One More"). Si caen todos, llega el *All-Out Attack*. En *Persona 5*, el *Baton Pass* le pasa el turno extra a un aliado, con un bono.
 
-**Cómo funciona.**
-- Si tu acción pega una **debilidad** o hace un **crítico**, ganas un **✦ Golpe extra**: una acción rápida más, que se juega **al final de la misma ronda**.
-- Al terminar la resolución, el bot abre **una sola ventana de 15 s** para todos los que ganaron uno (en solitario, sin tiempo). Si no eliges, deciden tus [Tácticas](avisos-y-tacticas.md).
+**Cómo funciona.** Hay una sola elección por ronda (D-46), así que el golpe extra **no se elige**: sale solo.
+- Si tu acción pega una **debilidad** o hace un **crítico**, ganas un **✦ Golpe extra**: un ataque con tu arma al 50 %, que sale **al final de la misma ronda** contra el mismo objetivo (o el enemigo más cercano, si ese cayó). Suma acumulación y quita escudo si el arma es una debilidad.
+- **🤝 Relevo.** Si tu arma no pega ninguna debilidad del objetivo y la de un aliado sí, el golpe extra pasa solo a ese aliado (al que no tuvo uno esta ronda), con +25 %. Así el mago que rompe con escarcha le pasa el golpe al arquero que pega el vientre.
 - Las técnicas combinadas y el Límite **no** dan golpe extra. El golpe extra no genera otro.
-
-| Opción | Efecto |
-|---|---|
-| ⚔️ Golpe rápido | Ataque con el arma al 50 %. Suma acumulación y quita escudo si el arma es una debilidad |
-| 🧪 Objeto | Poción, lanzable o aceite (la Toxicidad cuenta como siempre) |
-| 🎯 Apuntar | Fija la parte de tu acción de la ronda siguiente |
-| 🔁 Fila / Formación | Cambias de fila o de formación |
-| 🤝 Relevo | Le pasas el golpe extra a un aliado que no tuvo uno esta ronda; su golpe rápido sale con +25 % |
-
 - **Tope:** 1 golpe extra por jugador por ronda.
 - **Asalto Total.** Si todos los enemigos quedan rotos a la vez (los que no tienen escudo no cuentan), cada jugador recibe un golpe rápido gratis. Si son humanoides, el grupo puede **intimidarlos** en lugar de pegar: se rinden (ver §9).
 - **Los enemigos también lo usan.** Los que tienen el rasgo *Oportunista* ganan golpe extra cuando critican o cuando pegan a un jugador mojado, congelado o derribado. El Bestiario lo anota.
 
-**Botón.** Ninguno nuevo: la ventana muestra las acciones rápidas de siempre.
+**Botón.** Ninguno: sale solo y aparece en el resumen de la ronda.
 
 **Cómo se ve.**
 
 ```
-✦ Golpe extra — Lyra (pegaste una debilidad)
-⏱ 15 s
-[⚔️ Golpe rápido]  [🧪 Objetos]
-[🎯 Apuntar]       [🤝 Relevo]
+✦ Golpe extra de Lyra (pegó una debilidad)
+   → 🤝 Relevo a Ossian: su arco pega el VIENTRE
+   🏹 Golpe rápido al VIENTRE: 118 · 🔰 1→0
 ```
 
 **Cómo se equilibra.**
-- Nunca hay más de **1 acción rápida extra por ronda**, venga de donde venga: Clamor, *Enfurecido* del Guerrero Furia o golpe extra. Si ya tienes una, el golpe extra se convierte en una porción fija de tu recurso de clase (+10 de Ira, +1 combo, +1 de Poder Sagrado…; la tabla va en el registro de balance). Así no castiga a las specs que ya juegan con acciones rápidas.
-- Una acción rápida vale poco a propósito: el golpe rápido es medio ataque. Lo que vale es la decisión (relevar al que rompe, beber a tiempo, apuntar).
+- Nunca hay más de **1 golpe extra por jugador y ronda**, venga de donde venga. Los efectos que antes daban una acción rápida extra (Clamor, *Enfurecido* del Guerrero Furia) ya dan iniciativa o potencia (ver [Ronda y acciones](ronda-y-acciones.md)), así que no se suman con este.
+- El golpe extra vale poco a propósito: es medio ataque. Lo que vale es la decisión previa: llevar variedad de daño y elegir quién pega cada debilidad.
 - El simulador mide el daño de los golpes extra: **no más del 8 %** del total de ninguna spec, y a ±2 puntos entre specs.
 - No existe en PvP: los jugadores no tienen debilidades, y un crítico en PvP no regala turnos.
 - Eje del presupuesto: **Daño sostenido**.
@@ -236,7 +226,7 @@ Las 15 clases aparecen al menos una vez. Las demás specs entran con las mismas 
 **Cómo se ve.**
 
 ```
-Elegido: Lyra ❄️→Wyrm · Bram ⏳ Guardia · Mirra ✚→vanguardia
+Elegido: Lyra ❄️→Wyrm · Bram 🛡 respuesta · Mirra ✚→vanguardia
 🔗 Posible: Témpano Quebrado (Lyra ❄️ + tu 💥)
 ```
 
@@ -258,14 +248,14 @@ Elegido: Lyra ❄️→Wyrm · Bram ⏳ Guardia · Mirra ✚→vanguardia
 - 1 **superficie** (en el suelo), que dura 3 rondas;
 - 1 **nube** (en el aire), que dura 2 rondas.
 
-Una superficie nueva que no reacciona con la anterior la reemplaza. Para salir de una, se cambia de fila (acción rápida), salvo que el suelo lo impida.
+Una superficie nueva que no reacciona con la anterior la reemplaza. Para salir de una, se cambia de fila con una respuesta 🔁 o 💨 (ver [Ronda y acciones](ronda-y-acciones.md) §8), salvo que el suelo lo impida.
 
 | Estado | De dónde sale | Qué le hace a quien está en esa fila |
 |---|---|---|
 | 💧 **Agua** | Lluvia, pantano, hechizos de agua, frascos | Queda **Mojado** 2 rondas: la Congelación acumula ×1,5 y la Quemadura ×0,5. Es el mismo Mojado de [Peligros del entorno](../05-salud/peligros-del-entorno.md); la capa encerada lo evita |
-| 🛢 **Aceite** | Frascos de Alquimia, babosas, gólems de brea | Pegajoso: cambiar de fila cuesta la acción entera. Muy inflamable |
+| 🛢 **Aceite** | Frascos de Alquimia, babosas, gólems de brea | Pegajoso: las respuestas 💨 y 🔁 cuestan +1 🔋. Muy inflamable |
 | 🔥 **Llamas** | Fuego sobre aceite, suelo volcánico | Daño pequeño por ronda y acumulación de Quemadura |
-| 🧊 **Hielo** | Escarcha sobre agua | Resbaladizo: esquivar cuesta +1 🔋, y quien recibe un golpe 💥 cae (pierde la reacción y la acción rápida de la ronda siguiente) |
+| 🧊 **Hielo** | Escarcha sobre agua | Resbaladizo: esquivar cuesta +1 🔋, y quien recibe un golpe 💥 cae (la ronda siguiente no puede usar respuestas) |
 | 🟩 **Charco tóxico** | Venenos, Nigromante Plaga, criaturas de pantano | Acumulación de Veneno cada ronda |
 | ☁️ **Vapor** | Fuego sobre agua | Precisión a distancia −15 % hacia y desde esa fila |
 | 🌫 **Niebla o humo** | Clima, bombas de humo (Ingeniería), tormentas de arena | Precisión a distancia −25 % hacia y desde esa fila; +2 al sigilo (§8) |
@@ -289,7 +279,7 @@ Una superficie nueva que no reacciona con la anterior la reemplaza. Para salir d
 - **Todo aturdimiento llena la Firmeza**, como cualquier control. El agua electrificada no sirve para dejar quieto a un jefe.
 - **Las vanguardias se tocan.** Un 💣 estallido en una vanguardia salpica a la otra a mitad de daño. Prender el aceite bajo el enemigo cuando tu tanque está pegado a él tiene precio.
 
-**Botón.** Las habilidades con elemento de siempre, la técnica *Chispa* de la varita (enciende) y los **lanzables** del menú **Objetos**: frascos de aceite, agua y veneno (Alquimia), bombas de humo y de escarcha (Ingeniería). Máximo **3 lanzables por pelea**.
+**Botón.** Las habilidades con elemento de siempre, la técnica *Chispa* de la varita (enciende) y los **lanzables** del cinturón (**🎒 Mochila**): frascos de aceite, agua y veneno (Alquimia), bombas de humo y de escarcha (Ingeniería). Máximo **3 lanzables por pelea**.
 
 **Cómo se ve.**
 
@@ -375,8 +365,8 @@ Cada lado suma un 🎲 nativo de Telegram, tirado a la vista de todos.
 
 | Diferencia | Resultado | Efecto |
 |---|---|---|
-| +5 o más | **Emboscada total** | Quien embosca tiene una **ronda gratis**: el otro no actúa ni reacciona. Las filas del sorprendido quedan **invertidas** esa ronda (la retaguardia, adelante). Si el nodo tiene altura, es de quien embosca |
-| +1 a +4 | **Ventaja** | En la primera ronda, quien embosca actúa entero antes en la cola, y el otro no puede preparar reacciones |
+| +5 o más | **Emboscada total** | Quien embosca tiene una **ronda gratis**: el otro no actúa ni usa respuestas. Las filas del sorprendido quedan **invertidas** esa ronda (la retaguardia, adelante). Si el nodo tiene altura, es de quien embosca |
+| +1 a +4 | **Ventaja** | En la primera ronda, quien embosca actúa entero antes en la cola, y el otro no puede usar respuestas |
 | 0 | **Encuentro** | Combate normal |
 | Negativa | **Al revés** | Si gana el que esperaba, la emboscada es suya, con la misma escala |
 
@@ -526,7 +516,7 @@ Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
 🟥 Bram — Guerrero Protección · Vanguardia
 🌟 Límite ▓▓▓▓▓▓▓▓▓▓ ¡LISTO!
 
-[🌟 Última Muralla]  [🛡 Defender]
+[🌟 Última Muralla]  [🛡 Bloqueo con escudo]
 ```
 
 **Cómo se equilibra.**
@@ -545,7 +535,7 @@ Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
 
 **Cómo funciona.**
 - Cada ataque enemigo tiene una **forma**, que se adivina en el texto del aviso. Cuando el Bestiario ya registró el movimiento (3 veces visto), el aviso la dice con su icono.
-- Una reacción es **perfecta** si es la correcta para esa forma **y** se preparó en la ronda en que cae el golpe. Con los golpes retrasados (ver [Avisos](avisos-y-tacticas.md)), reaccionar una ronda antes gasta el Aguante y no cuenta.
+- Una reacción es **perfecta** si es la respuesta correcta para esa forma **y** se eligió en la ronda en que cae el golpe. Con los golpes retrasados (ver [Avisos](avisos-y-tacticas.md)), reaccionar una ronda antes gasta el Aguante y no cuenta.
 
 | Forma | Pista típica en el aviso | Reacción perfecta | Otras reacciones |
 |---|---|---|---|
@@ -566,17 +556,18 @@ Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
 - Desviar cuesta **2 🔋**; las otras reacciones, 1. Es la apuesta alta: si fallas la forma, recibes el golpe entero.
 - Máximo **1 contraataque por jugador por ronda**.
 
-**Botón.** Ninguno nuevo. La reacción se elige como siempre, en el paso de reacción del turno, después de la acción. Lo nuevo es que acertar la forma y la ronda tiene premio.
+**Botón.** Ninguno nuevo. La reacción es una de tus **respuestas** (o una habilidad con ✋), elegida como tu jugada de la ronda: va primero y esa ronda no atacas (ver [Ronda y acciones](ronda-y-acciones.md) §3). Lo nuevo es que acertar la forma y la ronda tiene premio.
 
 **Cómo se ve.**
 
 ```
 ⚠️ El Caballero Hueco echa la lanza atrás y apunta a TI.
    (Bestiario: 🗡 estocada)
-Tu reacción:
-[💨 Esquivar] [🛡 Bloquear]
-[⚔️ Desviar · 2🔋] [✋ Interrumpir]
-[— Ninguna]
+🟨 Tú — Pícaro Sutileza · Vanguardia   🔋 ●●●○○
+
+[⚔️ Atacar]          [🤺 Réplica · 2🔋]
+[💨 Evasión]         [✋ Patada]
+[🏃 Huir]            [🎒 Mochila]
 ```
 
 ```
@@ -585,7 +576,7 @@ Tu reacción:
 ```
 
 **Cómo se equilibra.**
-- Todas las specs tienen Desviar, Esquivar e Interrumpir: no favorece a nadie. Los tanques suman su bloqueo de firma.
+- Toda clase tiene al menos una respuesta y toda spec una interrupción en su repertorio (ver [Ronda y acciones](ronda-y-acciones.md) §3 y [Daño y estados](dano-y-estados.md) §4). Quien no lleva la respuesta justa para una forma tiene 🌀 Esquivar o la poción de resistencia, que reducen el daño pero nunca son perfectas. Los tanques suman su bloqueo de firma.
 - El simulador supone **30 % de reacciones perfectas** en juego básico (con Tácticas) y **70 %** en juego óptimo. Esa diferencia entra en el margen del techo parejo (±3 % en juego óptimo).
 - El contraataque pega poco: vale por la Postura, el escudo y el Aguante que devuelve.
 - En PvP, las habilidades cargadas, apuntadas o potenciadas de los jugadores también muestran su forma al rival: se vuelve un juego de leer al otro. El contraataque respeta el tope del 40 %.
@@ -593,39 +584,36 @@ Tu reacción:
 
 ---
 
-## 12. Apostar turnos: Guardia y Desatar
+## 12. Guardar y soltar: Guardia y Desatar
 
-**De dónde sale.** *Bravely Default* (2012): *Default* defiende y guarda un punto; *Brave* los gasta para actuar hasta cuatro veces en un turno, incluso endeudándose, y quien queda en negativo pierde turnos hasta pagar. También el *Boost* de *Octopath Traveler*: guardar para soltarlo todo cuando el enemigo está roto.
+**De dónde sale.** *Bravely Default* (2012): *Default* defiende y guarda un punto; *Brave* los gasta para actuar hasta cuatro veces en un turno, incluso endeudándose. Aquí no puede haber varias acciones por ronda (D-46), así que se usa la forma del *Boost* de *Octopath Traveler*: los puntos guardados no dan más turnos, sino que hacen más fuerte una sola acción (más golpes o más potencia), y se sueltan cuando el enemigo está roto.
 
 **Cómo funciona.**
-- **🛡 Guardia** (el botón Defender) es tu acción de la ronda. Recibes −25 % de daño, recuperas Aguante como en una ronda sin ataque (+2) y ganas **1 ⏳ Carga**. Máximo 3.
-- **⏩ Desatar** es una acción rápida del menú: esta ronda haces **1 + N acciones** (N de 1 a 3), una tras otra en tu lugar de la cola. Gastas N cargas.
-- **Deuda.** Puedes desatar sin tener todas las cargas y quedar en negativo, hasta −2. Cada carga de deuda es **una ronda sin acción ni acción rápida**. Mientras debes, las reacciones cuestan +1 🔋 y los enemigos *Oportunistas* te buscan.
-- Reglas de la ráfaga:
-  - pagas el recurso de cada acción: sin maná no hay cuatro hechizos;
-  - una habilidad con enfriamiento no se repite dentro del mismo Desatar;
-  - el Límite no entra en una ráfaga;
-  - tus acciones no forman técnica combinada entre sí, pero sí con las de otros;
-  - mientras desatas, no ganas golpes extra.
+- **🛡 Guardia.** Cada ronda en que tu jugada es una **respuesta** (bloquear, esquivar, desviar, reposicionar, proteger) o 🌀 Esquivar, ganas **1 ⏳ Carga**. Máximo 3. No hay botón de Defender: guardar cuesta lo mismo que defenderse, una ronda sin atacar y el Aguante.
+- **⏩ Desatar.** No es un botón. Cuando tu objetivo está 💫 Roto (§3) o con la 🟫 Postura rota, tu siguiente ⚔️ Atacar o habilidad de daño contra él gasta todas tus cargas. Cada carga suma **un impacto más** a los ataques con arma y a las habilidades de varios impactos, o **+25 % de potencia** a las demás.
+- Si prefieres guardarlas para otro momento, se cambia en tus [Tácticas](avisos-y-tacticas.md), fuera de la pelea.
+- Reglas:
+  - los impactos de más no quitan más de 2 🔰 por acción (§3);
+  - el Límite no se desata;
+  - las cargas se pierden al terminar la pelea.
 
-**Botón.** Defender guarda la carga. Desatar es una acción rápida. Después eliges las acciones una tras otra con la misma barra de 8.
+**Botón.** Ninguno. Guardas al usar tus respuestas y sueltas con tu ataque de siempre.
 
 **Cómo se ve.**
 
 ```
 🟦 Ossian — Cazador Puntería · Retaguardia
-⏳ Cargas ●●○
+⏳ Cargas ●●○   El Wyrm está 💫 ROTO
 
-⏩ Ossian desata 2 acciones:
-   🏹 Disparo Apuntado → ALAS 380
-   🏹 Disparo Arcano 236
+⏩ Ossian desata 2 cargas:
+   🏹 Disparo Apuntado → VIENTRE 380 (+50 %)
 ⏳ Cargas 0
 ```
 
 **Cómo se equilibra.**
-- Guardar no crea daño: lo **mueve** a la ventana buena (una ruptura, una postura rota, el *Golpe Colosal*). El simulador compara el daño en 20 rondas con y sin apostar: **+5 % como máximo**.
+- Guardar no crea daño: lo **mueve** a la ventana buena (una ruptura, una postura rota, el *Golpe Colosal*). Cada carga cuesta una ronda sin atacar y Aguante. El simulador compara el daño en 20 rondas con y sin guardar: **+5 % como máximo**.
 - La ráfaga en 3 rondas sigue dentro de ±5 % entre specs, aunque desaten.
-- En PvP: máximo 2 cargas y 1 de deuda, y para quien desata el tope del 40 % se mide **por ronda**, no por acción.
+- No existe en PvP: los jugadores no tienen escudo ni Postura.
 - Eje del presupuesto: **Ráfaga**.
 
 ---
@@ -640,7 +628,7 @@ EMBOSCADA ──> SUPERFICIE ──> RUPTURA ──> GOLPE EXTRA ──> ASALTO 
  gratis)       fuego)         el aviso)   que rompe)                       perdonar)
 ```
 
-Un grupo de noche en el Pantano Putrefacto embosca a tres saqueadores. Lanza aceite a su vanguardia y lo prende con la *Chispa* de una varita. Rompe al líder con escarcha antes de que dé la orden, releva el golpe extra al Cazador para romper al segundo y, con todos rotos, los intimida. El líder tiene precio en el piso: grilletes y recompensa. Nadie apretó nada rápido.
+Un grupo de noche en el Pantano Putrefacto embosca a tres saqueadores. Lanza aceite a su vanguardia y lo prende con la *Chispa* de una varita. Rompe al líder con escarcha antes de que dé la orden; el golpe extra pasa solo al Cazador, que rompe al segundo, y con todos rotos los intimida. El líder tiene precio en el piso: grilletes y recompensa. Nadie apretó nada rápido.
 
 ---
 
@@ -679,9 +667,9 @@ El resto del equipo contra el entorno (abrigos, máscaras, filtros, repelente) e
 | **Moral** | Sí | No (los jugadores no tienen moral) | No (Guardianes y Muros); los jefes de campo huyen | Autonomía | Rondas por pelea común; botín y Esencia por ronda | −10 % a −20 % de rondas; botín por ronda ≤ sin moral |
 | **Límite** | Sí | Sí, a mitad de ritmo, con el tope del 40 % | Sí: es su momento | Ráfaga, Supervivencia o Utilidad | Ronda media de llenado; valor del Límite | Ronda 8-12, ±1 entre specs; valor = 3 acciones ±10 % |
 | **Reacciones avanzadas** | Sí | Sí: se lee la forma de las habilidades del rival | Sí: son la base de la lectura | Supervivencia | Rendimiento con 30 % y 70 % de reacciones perfectas | Dentro del techo parejo (±3 % en óptimo) |
-| **Apostar turnos** | Sí | Sí: 2 cargas, 1 de deuda, tope del 40 % por ronda | Sí: para las ventanas de ruptura | Ráfaga | Daño en 20 rondas con y sin apostar | ≤ +5 %; ráfaga ±5 % entre specs |
+| **Guardar y soltar** | Sí | No (los jugadores no tienen escudo ni Postura) | Sí: para las ventanas de ruptura | Ráfaga | Daño en 20 rondas con y sin guardar | ≤ +5 %; ráfaga ±5 % entre specs |
 
-Las Tácticas pueden usar todas las mecánicas con reglas propias ("si tengo 3 cargas y el jefe está roto → Desatar"; "si tengo golpe extra → Relevo a quien rompe"). El **juego básico** del simulador corre con las Tácticas por defecto; el **juego óptimo**, con el mejor plan. Todo cambio va al registro de balance (ver [Balance](../03-personaje/balance.md)).
+Las Tácticas pueden usar todas las mecánicas con reglas propias ("si el jefe no está roto, guardar las cargas"; "si el aviso es una estocada contra mí → 🤺 Réplica"). El **juego básico** del simulador corre con las Tácticas por defecto; el **juego óptimo**, con el mejor plan. Todo cambio va al registro de balance (ver [Balance](../03-personaje/balance.md)).
 
 ---
 
@@ -699,25 +687,23 @@ Filas del Wyrm: Vanguardia 💧 Agua (2)
 ⚠️ El Wyrm inhala… y retiene el aire.
    (Bestiario: ✨ aliento retrasado. Cae la PRÓXIMA ronda)
 
-🟥 Tú — Guerrero Armas · Vanguardia · Agrupado
+🟥 Tú — Guerrero Armas · Vanguardia
 ❤️ 1.140/1.480   💢 Ira 70   🔋 ●●●○○
 🌟 Límite 64%   ⏳ Cargas 1
 
-Elegido: Lyra ❄️→Wyrm · Ossian ⏳ Guardia
-         Bram ⏳ Guardia · Mirra ✚→vanguardia
+Elegido: Lyra ❄️→Wyrm · Ossian 💨 respuesta
+         Bram 🛡 respuesta · Mirra ✚→vanguardia
 🔗 Posible: Témpano Quebrado (Lyra ❄️ + tu 💥)
 
 Turnos: Lyra → Tú → WYRM → Ossian → Bram → Mirra
 ⏱ 45 s
 
-[⚔️ Atacar]             [🛡 Defender]
-[💥 Golpe Colosal 🔗]    [🩸 Golpe Mortal]
-[🌀 Golpe Atronador]    [🎯 Abrir Guardia]
-[🗡 Tajo Circular]      [👢 Carga]
-[☰ Más]
+[⚔️ Atacar]             [💥 Golpe Colosal 🔗]
+[🩸 Golpe Mortal]        [🤺 Parada]
+[🌀 Esquivar]           [🎒 Mochila]
 ```
 
-**☰ Más** abre el menú secundario de siempre (Objetos, Apuntar, Fila y Registro). Elegiste *Golpe Colosal* contra el Wyrm. Al resolverse, el mismo mensaje se edita con el resumen:
+Es un Guardián: no se huye, así que el quinto botón es 🌀 Esquivar. Ossian y Bram usan una respuesta aunque el aliento cae la próxima ronda: pierden Aguante, pero guardan una carga para cuando el Wyrm esté roto (§12). Elegiste *Golpe Colosal* contra el Wyrm. Al resolverse, el mismo mensaje se edita con el resumen:
 
 ```
 Ronda 9 — resumen
@@ -728,10 +714,10 @@ Ronda 9 — resumen
 💫 ¡RUPTURA! El Wyrm queda ROTO hasta el final de la ronda 10
    ✖ Aliento de Vidrio: cancelado
    Recibe +30 % de daño · no puede reaccionar
-⏳ Ossian y Bram se ponen en Guardia (Ossian 2 · Bram 1)
+⏳ Ossian y Bram usan su respuesta: +1 carga (Ossian 2 · Bram 1)
 ✚ Mirra: escudo preventivo a la vanguardia (180 c/u)
-✦ Golpe extra de Lyra → 🤝 Relevo a Ossian
-   🏹 Golpe rápido a las ALAS: 118
+✦ Golpe extra de Lyra → 🤝 Relevo a Ossian (su arco pega el VIENTRE)
+   🏹 Golpe rápido al VIENTRE: 118
 🌟 Límite: Tú 71% · Bram 88%
 ▸ Registro completo (tocar para abrir)
 ```
@@ -741,7 +727,7 @@ Y la cabecera de la ronda siguiente ya cuenta la oportunidad:
 ```
 ⚔️ Ronda 10 · Wyrm de las Dunas — 💫 ROTO (hasta el final de esta ronda)
 +30 % de daño · no reacciona   🟫 Postura ▓▓░░░░░░░░ (¡cerca del Quiebre!)
-⏳ Ossian: 2 cargas → puede ⏩ Desatar
+⏳ Ossian 2 · Bram 1: se ⏩ desatan en su próximo golpe al Wyrm roto
 🌟 Bram: Límite 88 %
 ```
 
@@ -756,4 +742,4 @@ Para sumar a [Preguntas abiertas](../00-vision/preguntas-abiertas.md) con su nú
 - ¿Quién decide una rendición en grupo: el primero que pulsa o una votación? Propuesta: el primero, y la Infamia es solo suya.
 - ¿Los jugadores pueden rendirse en zona roja (entregar la mochila a cambio de no caer)? Propuesta: dejarlo para después del lanzamiento.
 - ¿La barra de Límite se conserva entre las peleas de una misma mazmorra? Propuesta: no; el Límite es un momento de jefe.
-- ¿Deuda máxima de cargas en PvE: −2? Propuesta: sí, y medirla en la beta.
+- ¿Las cargas se desatan solas contra un enemigo roto o el jugador elige cuándo? Propuesta: solas, con la opción de guardarlas en las Tácticas, para no sumar botones (D-46).

@@ -60,7 +60,7 @@
 | 🩹 **Salud y heridas** | Tu primera herida | Una hermana del Hospicio | "Tu cuerpo recuerda cada golpe, y una herida sin tratar empeora. Míralo en /cuerpo. En el Hospicio enseñan Primeros Auxilios." |
 | ⚒️ **Oficios** (cualquier estación) | Primera vez en una estación | El entrenador del oficio | "Fabricar es paciencia: progreso, calidad y durabilidad. Si la durabilidad llega a 0, pierdes los materiales. Mis tareas de la semana enseñan técnicas." |
 | ⚗️ **Alquimia** | Primera vez en el alambique | La maestra de Alquimia | "Cada hierba esconde efectos. Mézclalas y lo sabrás. Lo que descubras queda en tu Bitácora." |
-| ⛏ **Recolección** | Tu primera veta | Un minero del Bastión | "No todo el hierro es igual, y la veta buena se mueve con las semanas. Prospectar te dice cuánto vale." |
+| ⛏ **Recolección** | Tu primera veta | Un minero viejo del Claro | "No todo el hierro es igual, y la veta buena se mueve con las semanas. Prospectar te dice cuánto vale." |
 | 🏗️ **Construcción** | Tu primera jornada de obra | El maestro de obras | "Una obra se levanta por jornadas. Si apuras, baja la Seguridad, y una caída es una herida de verdad." |
 | 🩺 **Medicina** | Tu primer paciente | La Abadesa del Hospicio | "El paciente es otro jugador. Su Estabilidad nunca debe llegar a 0. Observar no cura, pero enseña." |
 | 💰 **Mercado** | Tu primera orden | Un mercader de la Lonja | "Aquí venden y compran jugadores, no la tienda. Cada objeto tiene un precio mínimo y uno máximo. Los precios cambian de una ciudad a otra." |
@@ -68,7 +68,7 @@
 | 🔍 **Investigaciones** | Tu primer caso | El guardia del piso | "Las pistas van a tu Tablero. Alguien te va a mentir. Acusar a un inocente cuesta caro." |
 | 🏚 **Ruinas** | Tu primera ruina | La cazadora del Claro | "Lo que se perdió en el Colapso quedó en pedazos. Los que encuentres van a tu Códice." |
 | 🧭 **Expediciones** | Tu primer paso fuera | El vigía de la puerta | "Cada paso trae algo. Solo está a salvo lo que traes de vuelta. La pregunta es siempre la misma: ¿sigues o vuelves?" |
-| 🐉 **Jefes** | Tu primera guarida | La Bitácora (tu héroe) | "Anoto: todo golpe grande se avisa, pero no todos caen cuando parece. Los que cayeron antes dejaron sus manchas." |
+| 🐉 **Jefes** | Tu primera guarida | La Bitácora (tu héroe) | "Anoto: aquí todo golpe grande se avisa. Si caigo, mi mancha quedará en la entrada, junto a la de otros." |
 | 🛡 **Comunidades** | Tu primer rito | El portero de la comunidad | "Aquí hay tres leyes que no cambian. El bot te avisa antes de romper una. Lee la Carta." |
 | 🏛 **Gobierno** | Tu primera votación | El pregonero de la ciudad | "Se vota al gobernador y él nombra los cargos. Antes de votar una ley, mira cómo le va a la comunidad que ya la tiene." |
 | 🎲 **Apuestas** | Primera vez en la Fortuna | El crupier | "Aquí se apuesta solo oro del juego. Hay un tope diario de pérdidas. Si quieres cerrarte el acceso, existe el Voto de Templanza." *(regla clara: §3.4)* |
@@ -192,7 +192,7 @@ El mismo consejo suena distinto según quién lo da. Son textos de datos, uno po
 |---|---|---|
 | 🛡 Bastión Gris | Un instructor | "Una venda sucia es una baja más. Limpia, después venda. Es una orden." |
 | ⚖️ Lonja del Vado | Un mercader | "La venda barata sale cara. Pregunta de qué está hecha antes de pagarla." |
-| ⛲ Hospicio de la Fuente | Una hermana | "La herida quiere agua limpia antes que tela. Pregúntale a la hermana herborista qué hierva." |
+| ⛲ Hospicio de la Fuente | Una hermana | "La herida quiere agua limpia antes que tela. Pregúntale a la hermana herborista con qué lavarla." |
 | 🐎 Errantes del Viento | Una anciana | "El lobo se lame la herida antes de dormir. Tú tampoco te duermas con ella sucia." |
 | 🔥 Santuario de la Llama | Un custodio | "La Llama purifica. Lo que toca la herida debería conocer el fuego primero." |
 | 🪶 Nido de Cuervos | El matasanos | "¿Se te pudre el brazo? Te lo limpio por 10 de oro. ¿No tienes? Pues aprende a hacerlo." |
@@ -219,7 +219,7 @@ La Bitácora anota **lo que viste y viviste**, sin que hagas nada. Está escrita
 | ⚗️ **Ingredientes y recetas** | Efectos descubiertos de cada ingrediente, y las mezclas que no sirvieron | Fabricación. Conecta con el Recetario y el Herbario | "Raíz de sauce: calma el dolor · + Flor de ceniza → nada" |
 | 🔨 **Técnicas** | Lo que te enseñó un maestro o un libro, y la primera vez que te salió | Entrenadores, maestros, libros | "Primera pieza Notable: usé Observar antes de Toque preciso" |
 | 📜 **Comunidades** | Las tres leyes de cada comunidad que visitaste, sus deberes y sus castigos | Comunidades | "Hospicio: las armas se dejan en la portería" |
-| 🩹 **Cuerpo** | Las heridas y enfermedades que tuviste y qué las curó | Salud | "Fiebre del pantano: la curó una cataplasma de la Fuente" |
+| 🩹 **Cuerpo** | Las heridas y enfermedades que tuviste y qué las curó | Salud | "Fiebre del Pantano: la curó la corteza amarga (Alquimia)" |
 | 🗺 **Lugares y rumores** | Rumores que oíste y lugares donde hay algo que no entendiste | Mundo vivo | "El tabernero dice que el molinero sabe de un pasadizo" |
 | 💡 **Pistas** | Cada nota de bienvenida y cada pista que viste, por tema | Este sistema | — |
 | ✍️ **Mis notas** | Lo que tú quieras escribir: hasta 20 notas cortas, privadas | Tú | "No usar la defensiva en la ronda del aviso" |
@@ -239,7 +239,7 @@ La Bitácora anota **lo que viste y viviste**, sin que hagas nada. Está escrita
 | Modo | Qué ves | Para quién |
 |---|---|---|
 | 💡 **Normal** (por defecto) | Notas de bienvenida y pistas de los tres niveles | Casi todos |
-| 🕯 **Pocas** | Notas de bienvenida y solo la pista de nivel 1 (la vaga). Puedes seguir pidiendo pistas a mano | Quien quiere descubrir casi todo solo |
+| 🕯 **Pocas** | Notas de bienvenida y, de las automáticas, solo la de nivel 1 (la vaga). Las demás, solo si las pides a mano (§4) | Quien quiere descubrir casi todo solo |
 | 🌑 **Sin ayuda** | Ni notas ni pistas, tampoco a mano | Quien quiere aprender todo solo, y que se note |
 
 - Lo que **siempre** se ve, en cualquier modo: la ayuda de cada botón, las reglas claras del §3.4 y los avisos de seguridad.
@@ -304,8 +304,8 @@ hint:                        # [ES] Opcional. Una sola por vista. Nunca en la vi
 
 ```
 ⚗️ Alambique del Hospicio · Piso 1
-Hierbas: Raíz de sauce ×4 · Musgo de cueva ×3
-         Flor de ceniza ×2
+Tienes: Raíz de sauce ×4 · Musgo de cueva ×3
+        Flor de ceniza ×2
 Sabes: Tónico de raíz (T1)
 
 [🧪 Tónico de raíz]  [🔬 Experimentar]
@@ -316,12 +316,12 @@ Mézclalas y lo sabrás. Lo que descubras queda
 en tu Bitácora.»
 ```
 
-Pruebas dos mezclas y ninguna sirve. El segundo fracaso trae la pista de nivel 2 (en experimentos, el nivel 2 sale con la cuarta mezcla sin efecto; aquí se muestra antes para el ejemplo):
+Sigues probando mezclas y ninguna sirve. Con la segunda llegó la pista de nivel 1 ("Algunas hierbas no se llevan entre sí"). La cuarta trae la de nivel 2:
 
 ```
-🔬 Raíz de sauce + Flor de ceniza
-Resultado: lodo turbio. Pierdes las hierbas.
-📔 Anotado: Raíz de sauce + Flor de ceniza → nada
+🔬 Mezcla 4 · Musgo de cueva + Flor de ceniza
+Resultado: lodo turbio. Pierdes lo que usaste.
+📔 Anotado: Musgo + Flor de ceniza → nada
 
 [🔬 Otra mezcla]  [📜 Recetario]
 [↩️ Salir]
@@ -346,7 +346,7 @@ Tu mancha queda en la entrada.
 💡 Algunos golpes no caen cuando parece.
 ```
 
-Tercera caída. Pista de nivel 3, que te manda a las manchas y al Bestiario:
+En la segunda caída llega el nivel 2: "Lee bien el aviso del Aliento de Vidrio: *inhala… y retiene el aire*". Tercera caída. Pista de nivel 3, que te manda a las manchas y al Bestiario:
 
 ```
 💀 Caíste otra vez · Wyrm de las Dunas (3.ª)
@@ -364,11 +364,12 @@ Lees la mancha de otra jugadora:
 
 ```
 🩸 Mancha de Lyra · hace 2 días
-R8 ⚠️ «El Wyrm inhala… y retiene el aire»
-   Lyra usa 🛡 Muro de escudos
-R9 El Wyrm no suelta nada. Lyra ataca
-R10 🔥 Aliento de Vidrio · Muro en recarga
-   Lyra cae
+R7  Lyra ataca · Wyrm 41 %
+R8  ⚠️ «El Wyrm inhala… y retiene el aire»
+    Lyra usa 🛡 Muro de escudos
+    El Wyrm no suelta nada
+R9  🔥 Aliento de Vidrio · Muro en recarga
+    Lyra cae
 
 [↩️ Volver]
 ```
@@ -433,7 +434,15 @@ Encaja con las primeras horas que ya describe [El Colapso y las comunidades](../
 
 **Regla:** como mucho una nota nueva cada pocos minutos de juego. Si hay dos, la segunda espera en la Bitácora.
 
-## 11. Ligero de un vistazo
+## 11. Cómo se conecta con la red de sistemas
+
+Como pide la [red de sistemas](red-de-sistemas.md), aprender también consume y produce:
+
+| Sistema | Consume (entradas) | Produce (salidas) | Depende del farmeo | Depende de la fabricación | Depende de la progresión |
+|---|---|---|---|---|---|
+| **Aprendizaje y pistas** | Los tropiezos y descubrimientos de todos los sistemas; manchas y notas de otros jugadores; libros, fichas y consejos de maestros | Entradas de la Bitácora; demanda de conocimiento (fichas del Informante, libros de jugadores, guías de piso, mentores, consejos pagados a maestros); títulos del modo sin ayuda | Tinta y papel de los libros y las fichas | Inscripción (libros, pergaminos, fichas) | Estrellas del Bestiario, rangos de oficio, reputación con las comunidades (qué maestro te aconseja) |
+
+## 12. Ligero de un vistazo
 
 | Parte | Capa simple | Capa profunda (opcional) |
 |---|---|---|
@@ -471,6 +480,7 @@ También convendría, más adelante:
 | Documento | Qué |
 |---|---|
 | [Decisiones](decisiones.md) | D-56: cambiar "Aprendizaje y pistas (en redacción)" por el enlace a este documento |
+| [Red de sistemas](red-de-sistemas.md) | §3: agregar la fila "Aprendizaje y pistas" del §11 de este documento |
 | [Glosario](glosario.md) | Términos nuevos: **Bitácora**, **Nota de bienvenida**, **Pista** (niveles 1 a 3), **Tareas del piso**, **Modo sin ayuda** |
 | [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) | §3: el campo opcional `hint` en las vistas, y que nunca va en la vista de una ronda |
 | [Telegram](../01-plataforma/telegram.md) | §3 Principios: "la pista va al pie del mensaje vivo, nunca en un mensaje aparte" |

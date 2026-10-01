@@ -66,7 +66,7 @@ Siete zonas, como en Tarkov: pocas para leerlas de un vistazo, suficientes para 
 | **Nervio dañado** | Cortes graves en brazos o piernas | Temblor: fallan las acciones de precisión | Tratamiento y tiempo largo | Volverse crónico 🔁 | En un brazo, seguir peleando con él sin el tratamiento: nervio cortado |
 | **Miembro inutilizado** | Una zona recibe demasiado daño | La zona no funciona | Cirugía | Pasar a peligro de secuela (🔴) | Sin cirugía antes del último aviso: miembro perdido |
 
-**Hasta dónde puede llegar.** La última columna dice a qué secuela definitiva (♾️) puede llevar cada herida si se deja empeorar. Nunca pasa de golpe: hace falta la cadena entera (no tratarla, que se complique, ignorar el aviso 🔴 y el último aviso), con un aviso claro en cada paso y tiempo para volver a un médico. Los efectos de cada secuela en combate y fuera de él, y qué la compensa, están en [Secuelas y muerte](secuelas-y-muerte.md) (§3 y §5).
+**Hasta dónde puede llegar.** La última columna dice a qué secuela definitiva (♾️) puede llevar cada herida si se deja empeorar. Nunca pasa de golpe: hace falta la cadena entera (no tratarla, que se complique, ignorar el aviso 🔴 y el último aviso), con un aviso claro en cada paso y tiempo para volver a un médico. Los efectos de cada secuela en combate y fuera de él, y qué la compensa, están en [Secuelas y muerte](secuelas-y-muerte.md) (§2 y §5).
 
 ## 3. Gravedad y tiempos
 

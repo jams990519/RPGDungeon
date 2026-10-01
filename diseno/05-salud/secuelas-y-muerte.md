@@ -1,8 +1,8 @@
 # Secuelas y muerte
 
-> **Módulo** [05 · Salud](README.md) · **Depende de:** [Heridas](heridas.md), [Enfermedades](enfermedades.md), [Combate](../04-combate/ronda-y-acciones.md) (derribado y caído) · **Se conecta con:** [Curación](curacion-y-tratamientos.md), [Rasgos adquiridos](rasgos-adquiridos.md) (adaptación), [Equipamiento](../03-personaje/equipamiento.md) (carga y armas) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (penalizaciones), [Profesiones](../07-economia/profesiones.md) (prótesis), [PvP](../06-contenido/pvp.md) (botín), [Progresión](../03-personaje/progresion.md) (trofeos) · **Estado:** propuesta
+> **Módulo** [05 · Salud](README.md) · **Depende de:** [Heridas](heridas.md), [Enfermedades](enfermedades.md), [Combate](../04-combate/ronda-y-acciones.md) (derribado y caído) · **Se conecta con:** [Curación](curacion-y-tratamientos.md), [Investigación médica](investigacion-medica.md) (Regeneración), [Rasgos adquiridos](rasgos-adquiridos.md) (adaptación), [Equipamiento](../03-personaje/equipamiento.md) (carga y armas) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (penalizaciones), [Profesiones](../07-economia/profesiones.md) (prótesis), [PvP](../06-contenido/pvp.md) (botín), [Progresión](../03-personaje/progresion.md) (trofeos) · **Estado:** propuesta
 
-Pediste que algunas enfermedades y problemas **duren mucho o sean para siempre**: que perder una pierna por una infección te quite movimiento y se note incluso en el combate. Es la decisión D-51 (ver [Decisiones](../00-vision/decisiones.md)). Antes la regla era "siempre hay salida". Ahora es: **siempre se puede seguir jugando y siempre hay cómo compensar, pero algunas secuelas son para siempre.** Y ninguna llega por un solo mal dado.
+Pediste que algunas enfermedades y problemas **duren mucho o sean para siempre**: que perder una pierna por una infección te quite movimiento y se note incluso en el combate. Es la decisión D-51 (ver [Decisiones](../00-vision/decisiones.md)). Antes la regla era "siempre hay salida". Ahora es: **siempre se puede seguir jugando y siempre hay cómo compensar, pero algunas secuelas son para siempre.** Ninguna llega por un solo mal dado, y solo la medicina más avanzada del servidor puede llegar a reponerlas (D-53).
 
 **De dónde sale.**
 - *Kenshi*: pérdida de miembros y prótesis con estadísticas propias.
@@ -23,9 +23,11 @@ Toda herida grave o crítica deja una **cicatriz**. Es definitiva, y casi siempr
 - Casi siempre es cosmética: se agrega sola a tu descripción ("*cicatriz de garra en el pecho, del Wyrm de las Dunas, piso 45*").
 - Algunas dan un rasgo pequeño: una cicatriz de quemadura da un poco de resistencia al fuego.
 - Son **trofeos**: el perfil lista tus cicatrices con el jefe y el piso donde las ganaste.
-- Como no penalizan, no piden cadena de fallas. Las que sí penalizan están en §3.
+- Como no penalizan, no piden cadena de fallas. Las que sí penalizan están en §2.2.
 
-## 2. Tres duraciones: temporal, crónica y definitiva
+## 2. Secuelas: temporales, crónicas y definitivas
+
+### 2.1 Tres duraciones
 
 Todo lo que el cuerpo guarda después de una herida o una enfermedad tiene una de tres duraciones.
 
@@ -33,17 +35,15 @@ Todo lo que el cuerpo guarda después de una herida o una enfermedad tiene una d
 |---|---|---|---|
 | ⏳ **Temporal** | Horas o días | Heridas, la debilidad después de una enfermedad, el agotamiento, la neumonía | Se cura sola con el tiempo; tratarla lo acelera (ver [Heridas](heridas.md)) |
 | 🔁 **Crónica** | Semanas o meses reales | *Rodilla mala*, *Pulmones de minero*, la Fiebre del Pantano que vuelve, los espasmos del tétanos, la Quemadura de Maná, el dolor fantasma | **Se trata y se cura** con un tratamiento largo o una cadena de misiones. Mientras tanto, un remedio la alivia. Si la ignoras y la sigues forzando, puede volverse definitiva (§5) |
-| ♾️ **Definitiva** | Para siempre | Pierna, brazo, ojo o dedos perdidos, pulmón dañado, rodilla destrozada, nervio cortado, cicatrices, Marca del Vacío | **No se cura** con tratamiento, ritual ni magia. Se **compensa** (prótesis, rasgo de adaptación, equipo, otra forma de pelear) y se **cuida** (dolor, mantenimiento de la prótesis). Solo la medicina más avanzada puede llegar a reponerla (§4.5) |
+| ♾️ **Definitiva** | Para siempre | Pierna, brazo, ojo o dedos perdidos, pulmón dañado, rodilla destrozada, nervio cortado, cicatrices, Marca del Vacío | **No se cura** con tratamiento, ritual ni magia. Se **compensa** (prótesis, rasgo de adaptación, equipo, otra forma de pelear) y se **cuida** (dolor, mantenimiento de la prótesis). Solo la Regeneración médica, la cima de la investigación, puede llegar a reponerla (§2.8) |
 
 - **Siempre se puede seguir jugando.** Ninguna secuela te saca de tu clase ni de tu oficio. Cada clase tiene al menos una forma de pelear que funciona con cada secuela, y cada oficio, una herramienta adaptada.
-- **Siempre hay cómo compensar.** Toda secuela definitiva tiene una prótesis, un equipo o un rasgo que baja su penalización. Nunca la borra del todo (§4).
-- **Algunas son para siempre.** No hay ritual, poción ni milagro que devuelva una pierna (§4.4).
+- **Siempre hay cómo compensar.** Toda secuela definitiva tiene una prótesis, un equipo o un rasgo que baja su penalización. Nunca la borra del todo (§2.4).
+- **Algunas son para siempre.** No hay ritual, poción ni milagro que devuelva una pierna (§2.7).
 
-## 3. Tabla de secuelas definitivas
+### 2.2 Tabla de secuelas definitivas: qué cambian
 
-### 3.1 Qué cambian
-
-Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§4). La cadena completa de cada una, con sus avisos, sigue las reglas de §5.
+Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§2.4). La cadena completa de cada una, con sus avisos, sigue las reglas de §5.
 
 | Secuela | Cómo se llega (la cadena de fallas) | En combate | Fuera de combate |
 |---|---|---|---|
@@ -63,14 +63,14 @@ Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§4
 
 **Tope.** Sumadas todas tus secuelas definitivas, sin compensar, nunca te quitan más del 25 % de iniciativa, del 20 % de precisión ni 2 de Aguante máximo.
 
-### 3.2 Qué las compensa
+### 2.3 Qué las compensa
 
 | Secuela | Prótesis o equipo (quién lo fabrica) | Rasgo de adaptación (ver [Rasgos](rasgos-adquiridos.md)) | Lo que la rodea | Línea en `/cuerpo` |
 |---|---|---|---|---|
 | Pierna perdida | **Pierna de prótesis** (Herrería, Ingeniería, Curtido, Medicina). Desde Normal, 🏃 Huir vuelve a funcionar, pero gasta 1 🔋. Desde Excelente, 🌀 Esquivar y las respuestas 💨 vuelven a su costo | *Cojo veterano* | Montura (anula el Vigor extra al viajar), carga ligera (devuelve iniciativa), retaguardia, habilidades de alcance | `♾️ Sin pierna izq. · 🦿 Notable · Inic. −11 % · 🏃 1🔋` |
 | Brazo o mano perdida | **Gancho** (Herrería, barato): permite atar un escudo. **Brazo o mano articulada** (Ingeniería, Herrería, Joyería, Medicina): desde Notable, arma secundaria con −25 % de daño; con Obra Maestra, armas a dos manos con precisión −5 %. Una mano sola es más barata y más fácil de colocar que un brazo | *Una mano, mil mañas* | Estilos de una mano: arma y escudo, arma sola con foco, hechizos a una mano. En el taller, banco con tornillo (Carpintería) | `♾️ Sin mano izq. · 🪝 Gancho · escudo atado · sin arma secundaria` |
 | Ojo perdido | **Ojo de cristal** (Joyería): solo rol. **Lente de puntería** (Ingeniería y Joyería): baja la penalización según su calidad | *Tuerto certero* | Un vigía en el grupo y un perro de guardia (Alerta); habilidades de área, que no apuntan | `♾️ Sin ojo der. · 🔍 Lente Obra Maestra · Precisión −4 %` |
-| Dedos perdidos | **Dedos articulados** (Joyería e Ingeniería) o **guante relleno** (Sastrería y Curtido) | *Mano tozuda* | Armas cuerpo a cuerpo en lugar de arcos. Al Trol le vuelven a crecer (§4.4) | `♾️ Sin 2 dedos (mano der.) · 🧤 Guante Normal · Precisión −4 %` |
+| Dedos perdidos | **Dedos articulados** (Joyería e Ingeniería) o **guante relleno** (Sastrería y Curtido) | *Mano tozuda* | Armas cuerpo a cuerpo en lugar de arcos. Al Trol le vuelven a crecer (§2.7) | `♾️ Sin 2 dedos (mano der.) · 🧤 Guante Normal · Precisión −4 %` |
 | Oreja perdida | Oreja de cuero o de plata (Curtido o Joyería): solo rol | — | Al Trol le vuelve a crecer | `♾️ Sin oreja izq. · Alerta −1` |
 | Sordera parcial | **Trompetilla** (Ingeniería): devuelve Alerta y canciones según su calidad | *Lee los labios* | Un compañero con olfato (Licántropo) o un perro de guardia | `♾️ Sordera parcial · 📯 Trompetilla Buena · Alerta −1` |
 | Pulmón dañado | No hay prótesis. **Respirador** (Ingeniería y Sastrería, ranura de máscara): baja la Contaminación extra según su calidad. **Tónico de pulmón** (Alquimia): devuelve el Aguante máximo durante un combate y suma Toxicidad | *Aliento medido* | Armadura ligera (para no perder otro punto de Aguante), retaguardia, rodear los nodos de gas | `♾️ Pulmón dañado · 🔋 máx. −1 · ☣️ +50 %` |
@@ -81,9 +81,7 @@ Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§4
 | Marca del Vacío | **Amuleto bendito** (Joyería y templo): baja el estrés extra según su calidad | *Mente templada* | Un Sacerdote en el grupo; luz sagrada | `♾️ Marca del Vacío · ✨ −10 % · 🌑 +5 %` |
 | Hígado castigado | No hay prótesis. **Dieta de hígado** (Cocina): el umbral sube 5 puntos mientras dura | *Sobrio por fuerza* | Preparar bien el cinturón; pedir curas al sanador en lugar de beber | `♾️ Hígado castigado · 🧪 pierdes vida desde 60 %` |
 
-## 4. Compensar: prótesis, adaptación y equipo
-
-### 4.1 Cuánto compensa
+### 2.4 Cuánto compensa
 
 | Lo que tienes | Queda de la penalización |
 |---|---|
@@ -93,15 +91,17 @@ Los números son **sin compensar**. Con prótesis y adaptación bajan mucho (§4
 | **Notable** | 55 % |
 | **Excelente** | 45 % |
 | **Obra Maestra** | 40 % |
+| **Prótesis con nervio** (nodo IV de Prótesis en [Investigación médica](investigacion-medica.md)) | 30 % |
 | **+ rasgo de adaptación** | 15 puntos menos |
 | **Piso** | Nunca menos del 25 % |
 
 Ejemplo: la pierna perdida quita un 20 % de iniciativa. Con una prótesis Notable queda en −11 %; con el rasgo *Cojo veterano*, en −8 %. Con lo mejor posible (Obra Maestra y el rasgo), en −5 %. Nunca en 0.
 
+- La muleta mejorada que sale de la investigación médica (nodo I de Prótesis) cuenta como equipo Normal.
 - Los porcentajes (iniciativa, precisión, carga, Vigor, Contaminación, calidad de oficio) bajan con esta tabla y se redondean.
-- Los bloqueos y los costos en 🔋 se quitan por escalones, como dice cada fila de §3.2. Siempre queda al menos uno a la vista.
+- Los bloqueos y los costos en 🔋 se quitan por escalones, como dice cada fila de §2.3. Siempre queda al menos uno a la vista.
 
-### 4.2 Prótesis
+### 2.5 Prótesis
 
 - **Se fabrican entre varios oficios** (ver [Profesiones](../07-economia/profesiones.md)): Herrería (piezas), Ingeniería (mecanismo), Curtido (correas), Joyería (ojos, lentes y dedos finos) y Medicina (el implante, que un cirujano hace con el minijuego de [Curación](curacion-y-tratamientos.md)).
 - **Tienen calidad**, como cualquier objeto (ver [Fabricación](../07-economia/fabricacion.md)). Una Obra Maestra lleva nombre y firma.
@@ -113,24 +113,61 @@ Ejemplo: la pierna perdida quita un 20 % de iniciativa. Con una prótesis Notabl
 - **Renacido:** en lugar de una prótesis mecánica puede llevar un **miembro cosido** (Medicina o Nigromante). Rinde como una prótesis de su calidad y no es de metal, pero se pudre: hay que cambiarlo cada temporada.
 - **Siempre hay una versión barata.** El PNJ vende muleta, gancho y parche. El sanatorio coloca prótesis Normales, caras. Las mejores las fabrican los jugadores, y mantenerlas es demanda permanente para los ingenieros.
 
-### 4.3 Adaptación
+### 2.6 Adaptación
 
 Con el tiempo, el héroe aprende a vivir con lo que perdió. Tras **30 días reales** con la secuela (cuentan también fuera de línea) y **50 combates o trabajos de oficio** con ella, gana su **rasgo de adaptación** (ver [Rasgos adquiridos](rasgos-adquiridos.md)), que resta 15 puntos más a la penalización. El Trol lo gana en la mitad del tiempo.
 
-### 4.4 Sin regeneración de miembros
+### 2.7 Ninguna magia devuelve lo perdido
 
-- **Ningún ritual, poción ni milagro devuelve un miembro, un ojo o un órgano.** El ritual de regeneración de miembros **no existe**. *Restauración* cura una herida de cualquier gravedad, pero no devuelve lo perdido.
-- **El Trol** regenera solo las **pérdidas menores**: dedos, orejas y dientes le vuelven a crecer en unas semanas. Un brazo, una pierna, un ojo o un pulmón, no. A cambio, gana sus rasgos de adaptación en la mitad del tiempo. Esto cambia el rasgo de cuerpo del Trol que figura en [Creación de personaje](../03-personaje/creacion-de-personaje.md).
+- **Ningún ritual, poción ni milagro devuelve un miembro, un ojo o un órgano.** El ritual de regeneración de miembros **no existe**: la única Regeneración es la médica (§2.8). *Restauración* cura una herida de cualquier gravedad, pero no devuelve lo perdido.
+- **El Trol** regenera solo las **pérdidas menores**: dedos, orejas y dientes le vuelven a crecer en unas semanas. Un brazo, una pierna, un ojo o un pulmón, no. A cambio, gana sus rasgos de adaptación y hace la rehabilitación en la mitad del tiempo, y es el mejor caso de estudio para quien investiga la Regeneración. Un brazo o una pierna también le piden la Regeneración médica (§2.8). Esto cambia el rasgo de cuerpo del Trol que figura en [Creación de personaje](../03-personaje/creacion-de-personaje.md).
 - **Lo que sí hace el templo:** aliviar el dolor fantasma y bajar el estrés de perder un miembro. La Marca del Vacío no se limpia: se aprende a vivir con ella.
 
-### 4.5 Reponer con medicina avanzada (D-53)
+### 2.8 Regeneración médica: la cima de la medicina (D-53)
 
-El dueño confirmó que una pierna u otra secuela definitiva **se puede llegar a reponer**, pero solo al final de un camino muy largo:
-- una **cadena amplia de investigaciones médicas** que se abre con un nivel **muy alto de Medicina**;
-- **materiales raros**;
-- una **cirugía mayor**.
+El dueño confirmó que una pierna u otra secuela definitiva **se puede llegar a reponer**, pero solo con medicina muy avanzada. Es la **Regeneración** de [Investigación médica](investigacion-medica.md) (§4):
+- Pide una cadena larga de investigaciones que se abre con **Medicina muy alta** (Cirujano Gran Maestro), **ingredientes raros** de varias zonas y de las cuatro estaciones, una instalación propia y una **cirugía mayor**.
+- Va de menor a mayor: primero dedos, orejas y piel; después manos, pies y ojos; al final, brazos, piernas, nervios, huesos mal soldados y males de órgano (pulmón, hígado).
+- **No repone** la Marca del Vacío, porque la corrupción no es del cuerpo, ni borra las cicatrices-trofeo si quieres conservarlas.
+- El miembro nuevo empieza débil, con la mitad de la penalización, y la pierde en 2 a 4 semanas de uso. Cada personaje recibe como máximo una por temporada.
 
-No es una cura: es el proyecto de toda una carrera de médico, y vale para lo físico (miembros, ojo, pulmón, rodilla, nervio, hígado). Las cicatrices quedan, porque son tu historia, y la Marca del Vacío no es del cuerpo. El detalle de esa cadena vive en *Investigación y maestría* (en redacción).
+**Cómo encaja con las secuelas definitivas.** En el juego normal, la secuela es para siempre: ninguna poción, hechizo, PNJ ni oro la quita. La Regeneración no es un remedio: es la obra máxima de la medicina del servidor, un proyecto de meses que durante buena parte del primer año seguramente nadie podrá hacer. No borra la historia: el perfil guarda la cicatriz y suma una marca de regeneración (ver [Investigación médica](investigacion-medica.md) §4.6).
+
+## 3. Males crónicos
+
+Las enfermedades cuya carrera se pierde y las heridas que sueldan mal dejan males crónicos: tos, rodilla mala, brotes de fiebre, espasmos, y **dolor fantasma** después de perder un miembro.
+- Duran semanas o meses reales. Todos tienen un remedio que los alivia, y **todos se curan** con un tratamiento largo de un médico (las curas completas salen de la [Investigación médica](investigacion-medica.md), nodos III) o con una cadena de misiones.
+- Algunos pueden **volverse definitivos** si los sigues forzando. Su línea en `/cuerpo` dice cuánto falta: `🔁 Pulmones de minero · ⚠️ 4 pasos en gas sin máscara = pulmón dañado`.
+- **Dolor fantasma:** brotes de Dolor leve algunos días (ver [Condiciones](condiciones.md)). Lo calman un analgésico, el bardo o el templo, y se va en semanas.
+
+## 4. La muerte
+
+### 4.1 Qué pasa al caer
+
+| Zona o modo | Qué pierdes | Inspiración |
+|---|---|---|
+| 🔵 **Azul** (asentamientos) | No se puede caer | — |
+| 🟡 **Amarilla** | La **Esencia** que llevabas queda en tu **mancha**; si vuelves antes de caer otra vez, la recuperas. Herida moderada. −10 % de durabilidad | Elden Ring (runas), WoW (durabilidad) |
+| 🔴 **Roja** | Lo anterior, y además otros jugadores pueden saquear tu **mochila** (no lo que llevas puesto) | Albion (zona roja) |
+| ⚫ **Negra** | Lo anterior, más **botín completo**: también lo que llevas puesto. Cada objeto puede destruirse en lugar de quedar en el suelo | Albion (zona negra), EVE |
+| **Mazmorra o banda** | Nada material; herida moderada. Vuelves al inicio de la sala o te levanta el grupo | WoW |
+| **Guarida del Guardián** | Herida garantizada y **Debilidad de Resurrección** durante 15 minutos | WoW |
+
+- **Esencia:** la moneda de progreso que se gana matando y que se usa para mejorar equipo y maestrías (ver [Economía](../07-economia/economia.md)). Solo se pierde la que **llevas encima**; la que depositas en un asentamiento está a salvo. Adentrarse en tierras salvajes con mucha Esencia sin depositar es un riesgo que eliges tú.
+- **La mancha** queda en el nodo donde caíste. Los demás jugadores ven las "manchas de sangre" y pueden tocar una para leer las **últimas 3 rondas** de esa muerte, como en Elden Ring. Así se aprende de los errores ajenos.
+- **Caer siempre deja una herida.** Nunca es gratis. Si caes con un miembro en estado crítico, su cadena sube un peldaño (§5.3).
+- **Las prótesis no se pierden:** pierden durabilidad como el equipo, pero nunca se saquean ni se destruyen, tampoco en zona negra.
+
+### 4.2 Juramento de Hierro: muerte permanente opcional
+
+- Se elige al crear el personaje. No se puede activar después; sí abandonar: el personaje pasa a normal y pierde las recompensas del modo.
+- Si cae, **cae para siempre.** Queda en el **Salón de los Caídos** con su historia, sus cicatrices, sus secuelas, el piso donde murió y quién lo mató, y la Gaceta publica la caída.
+- Tiene **ranking propio**, y títulos y cosméticos que solo se ganan así.
+- Deja un **legado**: tu siguiente personaje hereda un recuerdo cosmético y una pequeña ventaja de inicio, que nunca es poder.
+- Variante opcional **Autosuficiente**, sin mercado ni comercio, como el *Self-Found* de WoW.
+- **Protección en PvP:** fuera de las zonas negras y las arenas, los personajes del Juramento no pueden ser atacados, y en la arena caer no los mata (ver [PvP](../06-contenido/pvp.md)).
+
+**Por qué opcional.** La muerte permanente obligatoria echa a casi todo el mundo. Opcional, es uno de los modos más queridos en cada juego que la ofrece, y le da al servidor su propia mitología.
 
 ## 5. Nunca por un solo mal dado: la cadena de fallas
 
@@ -144,7 +181,7 @@ Una secuela definitiva **nunca** sale de un golpe ni de una tirada. Pide una **c
 | 2 · **Complicación** | Infección, necrosis, un hueso que suelda mal, un nervio que no responde | "⚠️ *La mordida de tu pierna se infectó. Límpiala o ve a un médico.*" | Tratamiento del médico (ver [Curación](curacion-y-tratamientos.md)) |
 | 3 · **Peligro de secuela** | Gangrena, necrosis avanzada, la misma rodilla rota otra vez | "🔴 *Puedes perder la pierna izquierda. Quedan 12 pasos.*" y los botones [🩺 Buscar médico] [🏥 Sanatorio] [🏃 Volver] | Cirugía para salvarla. Si empiezas a volver aquí, **llegas siempre a tiempo** |
 | 4 · **Último aviso** | Quedan pocos pasos | "🔴 *ÚLTIMO AVISO: 3 pasos. Un cirujano todavía puede salvarla o amputar limpio.*" | Cirugía más difícil, o amputación limpia |
-| ♾️ · **Secuela** | Se pierde | "♾️ *Perdiste la pierna izquierda.*" y, en dos líneas, qué cambia y qué lo compensa | Prótesis y adaptación (§4) |
+| ♾️ · **Secuela** | Se pierde | "♾️ *Perdiste la pierna izquierda.*" y, en dos líneas, qué cambia y qué lo compensa | Prótesis y adaptación (§2.4 a §2.6) |
 
 ### 5.2 El reloj
 
@@ -168,12 +205,14 @@ Una secuela definitiva **nunca** sale de un golpe ni de una tirada. Pide una **c
 | **Amputación limpia** | Un cirujano, cuando ya no se puede salvar | La secuela, con muñón limpio: el período de adaptación de la prótesis dura la mitad y el dolor fantasma es leve y corto |
 | **Perderlo solo** | Nadie operó a tiempo | La secuela, una herida grave mientras sana y dolor fantasma durante semanas |
 
+En los dos últimos casos, lo único que puede devolver el miembro es la Regeneración médica (§2.8), meses después y a un costo alto.
+
 ### 5.5 Límites
 
 - **Protección de novato:** hasta el nivel 10 no hay secuelas crónicas ni definitivas. La cadena no pasa del peldaño 1.
 - **La primera vez** que llegas al peldaño 3, el bot te explica la cadena entera en un mensaje.
 - **Nunca los dos de un par.** No se pierden las dos piernas, los dos brazos ni los dos ojos. Si la cadena llega al segundo, se queda en un mal crónico (*herida antigua*).
-- **Tope de penalización** (§3.1).
+- **Tope de penalización** (§2.2).
 - **Juramento de Hierro:** las mismas reglas. Lo que cambia es que caer es caer.
 
 **Cadenas completas, como ejemplo:**
@@ -182,16 +221,9 @@ Una secuela definitiva **nunca** sale de un golpe ni de una tirada. Pide una **c
 - Tos del Minero → perder la carrera → *Pulmones de minero* (crónico) → seguir en el gas sin máscara pese al ⚠️ → **pulmón dañado**.
 - Pierna rota → pelear sin entablillar → suelda mal (*Rodilla mala*) → no operarla y volver a romperla → **rodilla destrozada**.
 
-## 6. Males crónicos
+## 6. Cómo se ve
 
-Las enfermedades cuya carrera se pierde y las heridas que sueldan mal dejan males crónicos: tos, rodilla mala, brotes de fiebre, espasmos, y **dolor fantasma** después de perder un miembro.
-- Duran semanas o meses reales. Todos tienen un remedio que los alivia, y **todos se curan** con un tratamiento largo de un médico o con una cadena de misiones.
-- Algunos pueden **volverse definitivos** si los sigues forzando. Su línea en `/cuerpo` dice cuánto falta: `🔁 Pulmones de minero · ⚠️ 4 pasos en gas sin máscara = pulmón dañado`.
-- **Dolor fantasma:** brotes de Dolor leve algunos días (ver [Condiciones](condiciones.md)). Lo calman un analgésico, el bardo o el templo, y se va en semanas.
-
-## 7. Cómo se ve
-
-### 7.1 En `/cuerpo`
+### 6.1 En `/cuerpo`
 
 Una línea por secuela. El detalle se pide tocando la línea.
 
@@ -214,7 +246,7 @@ Queda 55 % de la penalización → 40 % con Cojo veterano
 🧭 Carga −10 % · a pie +10 % de Vigor
 ```
 
-### 7.2 En el combate
+### 6.2 En el combate
 
 La secuela ocupa una línea en tu bloque, y su costo se ve en el botón que toca (los 6 botones de [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 
@@ -238,43 +270,14 @@ Turnos: MATRIARCA → Lyra → Tú → Bram
 - Donde se puede huir, el quinto botón dice [🏃 Huir · 1🔋].
 - El registro de la ronda explica cada número: "*La prótesis te frena: actúas después de la Matriarca (−8 % de iniciativa).*"
 
-## 8. La muerte
-
-### 8.1 Qué pasa al caer
-
-| Zona o modo | Qué pierdes | Inspiración |
-|---|---|---|
-| 🔵 **Azul** (asentamientos) | No se puede caer | — |
-| 🟡 **Amarilla** | La **Esencia** que llevabas queda en tu **mancha**; si vuelves antes de caer otra vez, la recuperas. Herida moderada. −10 % de durabilidad | Elden Ring (runas), WoW (durabilidad) |
-| 🔴 **Roja** | Lo anterior, y además otros jugadores pueden saquear tu **mochila** (no lo que llevas puesto) | Albion (zona roja) |
-| ⚫ **Negra** | Lo anterior, más **botín completo**: también lo que llevas puesto. Cada objeto puede destruirse en lugar de quedar en el suelo | Albion (zona negra), EVE |
-| **Mazmorra o banda** | Nada material; herida moderada. Vuelves al inicio de la sala o te levanta el grupo | WoW |
-| **Guarida del Guardián** | Herida garantizada y **Debilidad de Resurrección** durante 15 minutos | WoW |
-
-- **Esencia:** la moneda de progreso que se gana matando y que se usa para mejorar equipo y maestrías (ver [Economía](../07-economia/economia.md)). Solo se pierde la que **llevas encima**; la que depositas en un asentamiento está a salvo. Adentrarse en tierras salvajes con mucha Esencia sin depositar es un riesgo que eliges tú.
-- **La mancha** queda en el nodo donde caíste. Los demás jugadores ven las "manchas de sangre" y pueden tocar una para leer las **últimas 3 rondas** de esa muerte, como en Elden Ring. Así se aprende de los errores ajenos.
-- **Caer siempre deja una herida.** Nunca es gratis. Si caes con un miembro en estado crítico, su cadena sube un peldaño (§5.3).
-- **Las prótesis no se pierden:** pierden durabilidad como el equipo, pero nunca se saquean ni se destruyen, tampoco en zona negra.
-
-### 8.2 Juramento de Hierro: muerte permanente opcional
-
-- Se elige al crear el personaje. No se puede activar después; sí abandonar: el personaje pasa a normal y pierde las recompensas del modo.
-- Si cae, **cae para siempre.** Queda en el **Salón de los Caídos** con su historia, sus cicatrices, sus secuelas, el piso donde murió y quién lo mató, y la Gaceta publica la caída.
-- Tiene **ranking propio**, y títulos y cosméticos que solo se ganan así.
-- Deja un **legado**: tu siguiente personaje hereda un recuerdo cosmético y una pequeña ventaja de inicio, que nunca es poder.
-- Variante opcional **Autosuficiente**, sin mercado ni comercio, como el *Self-Found* de WoW.
-- **Protección en PvP:** fuera de las zonas negras y las arenas, los personajes del Juramento no pueden ser atacados, y en la arena caer no los mata (ver [PvP](../06-contenido/pvp.md)).
-
-**Por qué opcional.** La muerte permanente obligatoria echa a casi todo el mundo. Opcional, es uno de los modos más queridos en cada juego que la ofrece, y le da al servidor su propia mitología.
-
-## 9. Secuelas en PvP
+## 7. Secuelas en PvP
 
 - **Mundo abierto y peleas clandestinas:** las secuelas cuentan con su valor real. Por eso el médico del Foso certifica quién está apto (ver [Peleas clandestinas](../06-contenido/peleas-clandestinas.md)).
 - **Arena clasificada:** el equipo se normaliza (ver [PvP](../06-contenido/pvp.md)), y las secuelas también: cuentan siempre en su piso (25 %), como si tuvieras la mejor prótesis y el rasgo. La historia queda; la ventaja del oro, no.
 
-## 10. Principios de las secuelas
+## 8. Principios de las secuelas
 
-1. **Siempre se puede seguir jugando y siempre hay cómo compensar, pero algunas secuelas son para siempre.** Ninguna magia las borra; solo la medicina más avanzada puede llegar a reponerlas (§4.5).
+1. **Siempre se puede seguir jugando y siempre hay cómo compensar, pero algunas secuelas son para siempre.** Ninguna magia las borra; solo la Regeneración médica, la obra máxima de la medicina, puede llegar a reponerlas (§2.8).
 2. **Nunca por un solo mal dado.** Una secuela definitiva pide al menos tres fallas encadenadas, con aviso en cada paso (§5).
 3. **El reloj solo corre mientras juegas.** Fuera de línea y en zona azul, nada empeora.
 4. **Volver siempre llega.** Desde el 🔴 hay tiempo para buscar un cirujano.
