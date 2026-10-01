@@ -34,10 +34,11 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 - **Cada etapa baja 1 🥉 el precio de la posada,** hasta un mínimo de 1 (`settlement.inn_discount_per_stage`).
 - **El Claro ocupa 1 zona más por etapa** (D-81). Crece en una espiral fija: norte, este, sur, oeste y las diagonales.
 - **Una etapa ganada no se pierde.** Hoy el Claro nunca baja.
+- **Desde aldea, también hace falta comida** (D-93, provisional): para pasar a pueblo, ciudad y castillo, la despensa del Claro tiene que alcanzar 4, 5 y 7 días; si la obra está completa y falta comida, la etapa espera y sube sola al aportar. En hambruna la posada no cura. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
 
 ### 1.2 Lo que ofrece el Claro
 
-- **🏪 Mercader:** vende pociones de vida y vendas, y compra materiales a la mitad de su precio (`shop`).
+- **🏪 Mercader:** vende pociones de vida, vendas y 🥖 provisiones (comida cara de emergencia, D-93), y compra materiales a la mitad de su precio (`shop`).
 - **🛏️ Posada:** pagas, duermes 5 minutos y despiertas con la vida llena. También cura al héroe malherido (D-83). Con la vida ya llena no cobra: te avisa que no hace falta.
 - **💰 Costura de bolsas:** 4 de fibra, 1 pieza de metal y 1 🪙 por bolsa (D-80).
 - **Venta de equipo** que no te sirve.
@@ -101,7 +102,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 ### 2.5 Lo que todavía no tienen
 
-Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales. Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
+Hoy un campamento de jugadores **no tiene servicios** (ni mercader, ni posada, ni almacén común) ni una obra común propia. Crecer es pagar materiales; desde el nivel 3 (aldea), además, la **despensa** no puede estar vacía (D-93, provisional; ver [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4). Lo que viene después es propuesta (§3 a §7 y [Ciudades y el Castillo](ciudades-y-castillo.md)).
 
 **Por qué conviene así.** El Claro junta a todo el servidor en una meta común desde el primer día. Los campamentos dan a cada grupo un lugar propio, con decisiones reales: dónde fundar, a quién aceptar y qué zonas tomar.
 

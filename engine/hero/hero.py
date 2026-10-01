@@ -15,6 +15,8 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Almacén: héroes guardados en SQLite (campos nuevos con valor por defecto)
     - Números: classes.yaml base/per_level, balance.yaml hero.xp_curve
+    - seen_at (D-93): dice quién está activo y por lo tanto quién come de cada despensa
+      (engine/service/game.py _mark_seen; tests/test_pantry.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -53,6 +55,8 @@ class Hero:
         titles: title ids earned for ever, e.g. "pionero_raigambre" (first in the server to beat it).
         bar: combat bar chosen by the player, 3 ability ids, slot 1 = a response (D-79);
             empty means the automatic bar.
+        seen_at: last time the player pressed a button (D-93); 0 for heroes saved before it.
+            "Active" residents (they eat from the pantry) are those seen in the last 24 h.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -105,6 +109,7 @@ class Hero:
     guardians: dict[str, dict[str, Any]] = field(default_factory=dict)
     titles: list[str] = field(default_factory=list)
     bar: list[str] = field(default_factory=list)
+    seen_at: float = 0.0
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

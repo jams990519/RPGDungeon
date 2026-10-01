@@ -51,6 +51,27 @@ fibra:
   kind: material
   price: 2
 
+# Food (D-93, provisional): it goes to a settlement pantry. food = rations it is worth.
+# [ES] Comida (D-93, provisional): se aporta a la despensa del Claro (desde aldea) o de tu campamento (desde nivel 3).
+# food = cuántas raciones vale cada unidad (1 ración = lo que come un residente activo en un día real).
+# loot_amount = cuántas suelta un enemigo cuando sale en su botín (loot de enemies.yaml); sin esto, 1.
+# Lo usan: engine/service/game.py (botín, mercader, 🌾 Aportar comida), engine/world/pantry.py (food_in).
+# Si cambias esto, revisa: food mueve cuánto dura la despensa (balance.yaml pantry); el precio de las
+# provisiones es el sumidero de monedas de emergencia (supervivencia-del-asentamiento.md §15.8).
+carne:
+  name_key: item.carne
+  emoji: "🍖"
+  kind: material             # [ES] se vende barata con "Vender materiales"; vale más en la despensa
+  food: 2
+  loot_amount: [1, 2]
+  price: 2
+provisiones:
+  name_key: item.provisiones
+  emoji: "🥖"
+  kind: food                 # [ES] no es material: "Vender materiales" no la revende
+  food: 1
+  price: 15                  # [ES] cara a propósito: comida de emergencia del mercader (15 🥉 por ración; la carne se vende a 1)
+
 # Gear (D-77). slot: arma | armadura | joya. type decides who can use it (balance.yaml gear.*_by_group).
 # [ES] Equipo (D-77). stats en fracción: attack 0.04 = +4 % de ataque; hp igual con la vida; armor se SUMA a la defensa.
 # req_level: nivel mínimo para ponérselo. tier 1-4 = común, poco común, raro, épico. IDs estables: solo se agregan.
