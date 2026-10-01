@@ -19,17 +19,17 @@
 |---|---|---|---|
 | **Puestos de mercado** | Plazas de cada asentamiento y capital | 10-40 por lugar; los de la plaza principal son los mejores | Vender en persona con menos impuesto, visibilidad en la lista del mercado, tu cartel en la plaza |
 | **Locales comerciales** | Calles de las capitales | Pocos por capital | Abrir una tienda con nombre (herrería, botica, taberna de jugador) con estaciones y empleados |
-| **Parcelas de vivienda** | Barrios de los asentamientos | Limitadas por piso; más baratas en pisos altos nuevos | Construir casa (ver [Casa propia](../09-construccion/casa-propia.md)) |
+| **Parcelas de vivienda** | Barrios de los asentamientos | Limitadas por asentamiento; más baratas en las regiones nuevas de la Frontera | Construir casa (ver [Casa propia](../09-construccion/casa-propia.md)) |
 | **Parcelas de gremio** | Distritos de las capitales | Muy pocas | Salón y barrio de gremio |
 | **Licencias** | El Castillo de cada capital | Pocas por temporada | Operar un casino legal, un corredor de apuestas, una línea de caravanas, una consulta médica en la plaza, un puesto de guía |
-| **Concesiones de ruta** | Entre pisos | Una por ruta | Cobrar peaje o dar servicio de caravanas en una ruta |
+| **Concesiones de ruta** | Entre asentamientos | Una por ruta | Cobrar peaje o dar servicio de caravanas en una ruta |
 | **Vetas y jardines exclusivos** | Territorios de zona negra | Uno por territorio | Recolección exclusiva (se conquista, ver [PvP](../06-contenido/pvp.md)) |
 
 La escasez es **a propósito**. Si hubiera un puesto para cada uno, tener puesto no valdría nada.
 
 ## 2. Cómo se consiguen: pujas
 
-- **Subasta inicial:** cuando se abre un lugar nuevo (por ejemplo, las plazas del asentamiento de un piso recién conquistado), sus puestos y parcelas salen a **subasta** en la Lonja del Castillo durante 48 horas. Gana la puja más alta, y el oro de la subasta se quema (sumidero).
+- **Subasta inicial:** cuando se abre un lugar nuevo (por ejemplo, las plazas del asentamiento de una región recién pacificada), sus puestos y parcelas salen a **subasta** en la Lonja del Castillo durante 48 horas. Gana la puja más alta, y el oro de la subasta se quema (sumidero).
 - **Reventa:** un dueño puede vender o **subarrendar** su lugar a otro jugador, con custodia del bot.
 - **Licencias por temporada:** se subastan cada temporada; el ganador la tiene hasta la temporada siguiente.
 - **Pujar con préstamo:** se puede pujar con oro prestado (§4).
@@ -82,8 +82,8 @@ Encima de todo, la ciudad cobra su impuesto base. Parte se quema (sumidero) y pa
 
 1. **Tope de propiedad:** un jugador no puede tener más de 2 puestos por capital ni un gremio más de 1 parcela de gremio por capital.
 2. **La tasa autodeclarada** impide acaparar barato.
-3. **Lugares nuevos con cada piso:** cada piso conquistado abre plazas y parcelas nuevas, así que siempre hay una oportunidad para quien llega después.
-4. **Parcelas de novato:** en los pisos bajos hay parcelas pequeñas que solo pueden comprar jugadores de nivel bajo.
+3. **Lugares nuevos con cada región:** cada región pacificada abre plazas y parcelas nuevas, así que siempre hay una oportunidad para quien llega después.
+4. **Parcelas de novato:** cerca del Claro hay parcelas pequeñas que solo pueden comprar jugadores de nivel bajo.
 5. **El mercado de órdenes sigue abierto para todos:** tener puesto da ventaja (menos impuesto, visibilidad), pero cualquiera puede comprar y vender sin puesto.
 
 ## 7. Cómo se conecta con todo
@@ -91,7 +91,7 @@ Encima de todo, la ciudad cobra su impuesto base. Parte se quema (sumidero) y pa
 - Los **puestos** hacen del comercio un oficio con ubicación (ver [Roles](../00-vision/roles-y-caminos-de-juego.md)).
 - Las **parcelas** se construyen (ver [Construcción](../09-construccion/README.md)).
 - Las **licencias** abren carreras: dueño de casino, banquero, transportista, médico con consulta en la plaza.
-- Los **pisos nuevos** abren lugares nuevos: la conquista de la Torre mueve la economía de propiedades.
+- Las **regiones nuevas** abren lugares nuevos: el avance de la Frontera mueve la economía de propiedades.
 - Las **tasas, subastas e intereses** son sumideros de oro que se miden en el informe económico (ver [Economía](economia.md)).
 
 Ver P-53 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

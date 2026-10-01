@@ -31,11 +31,11 @@
 - **El conocimiento se perdió.** Los supervivientes recuerdan lo básico de cada oficio. Lo demás (técnicas, obras, curas) quedó en fragmentos entre las ruinas (§6).
 - **Los caminos se perdieron.** Los Guardianes dominan las regiones y los PNJ no se atreven a cruzarlas. Las comunidades lejanas quedaron aisladas, y cerca del Claro nadie sabe si siguen vivas.
 
-### 1.2 Los Ascendentes
+### 1.2 Los Errantes
 
 - Los jugadores **despiertan sin nada** junto a la fogata del Claro, entre restos de antes: con lo puesto, lo poco que les deja su trasfondo (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)) y una **marca en el pecho**.
 - Recuerdan poco: retazos de quiénes eran (su trasfondo), pero no cómo llegaron ni qué significa la marca.
-- La marca es lo que los hace distintos: **solo un Ascendente puede vencer a un Guardián y pacificar su región** (ver la Frontera en [Mapa infinito y viaje](mapa-infinito-y-viaje.md), §2.1). Para los supervivientes, son la primera esperanza en años. O una amenaza.
+- La marca es lo que los hace distintos: **solo un Errante puede vencer a un Guardián y pacificar su región** (ver la Frontera en [Mapa infinito y viaje](mapa-infinito-y-viaje.md), §2.1). Para los supervivientes, son la primera esperanza en años. O una amenaza.
 - Algunos PNJ juran que **antes hubo otros marcados**, que se fueron lejos y no volvieron. Es un gancho para las cadenas de trasfondo (el maestro que desapareció más allá de la Frontera, el capitán que te busca).
 
 ### 1.3 Qué causó el Colapso: el misterio
@@ -52,7 +52,7 @@ No se dice. Es una de las dos preguntas del **Gran Misterio de la Lejanía**, ju
 
 Al abrir el servidor ya hay **seis comunidades de supervivientes**, todas de PNJ. Cuatro están a una zona del Claro (Lejanía 1) y se pueden visitar desde el primer día. Las otras dos están más lejos y hay que encontrarlas explorando. Cada una ocupa un lugar fijo de su zona, sea cual sea el bioma que le toque a esa zona.
 
-| Comunidad | Dónde | Gobierno | Su cultura en una frase | Cómo ve a los Ascendentes | Su versión del Colapso |
+| Comunidad | Dónde | Gobierno | Su cultura en una frase | Cómo ve a los Errantes | Su versión del Colapso |
 |---|---|---|---|---|---|
 | 🛡 **Bastión Gris** | Lejanía 1, al norte del Claro | Campamento militar: la Mariscal Hedda y sus oficiales | "Primero el muro" | Reclutas | Una guerra que se perdió: "el enemigo sigue ahí afuera" |
 | ⚖️ **Lonja del Vado** | Lejanía 1, al oeste, en un vado | República de mercaderes: un consejo de siete casas | "Todo tiene precio, y el precio es justo" | Clientes y socios | Una quiebra: los antiguos firmaron una deuda que no pudieron pagar |
@@ -61,7 +61,7 @@ Al abrir el servidor ya hay **seis comunidades de supervivientes**, todas de PNJ
 | 🔥 **Santuario de la Llama** | Lejanía 3 (anillo I), en una isla de un lago | Teocracia: el Sumo Custodio de la Llama | "La Llama limpia lo que el Vacío ensucia" | Elegidos que deben probarse | Un castigo por la magia prohibida |
 | 🪶 **Nido de Cuervos** | Lejanía 5 (anillo II), en un barranco de zona amarilla | Ninguno: manda la Reina de los Cuervos, mientras pueda | "Aquí nadie pregunta" | Mano de obra | Los poderosos se salvaron lejos y dejaron al resto |
 
-Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.md)), los Errantes se mudan una vez por semana.
+Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.md)), los Errantes del Viento se mudan una vez por semana.
 
 ### 2.2 Qué ofrece, qué exige, qué prohíbe
 
@@ -84,7 +84,7 @@ Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.
 
 ### 2.3 Más lejos: las comunidades que se descubren
 
-Cuando un jugador llega por primera vez a una comunidad lejana, la Gaceta anuncia el **Primer contacto**, y el primer grupo que entra gana el título ("Primer contacto con la Comuna del Granero"). Esas comunidades llevan años aisladas: algunas reciben bien a los Ascendentes y otras desconfían.
+Cuando un jugador llega por primera vez a una comunidad lejana, la Gaceta anuncia el **Primer contacto**, y el primer grupo que entra gana el título ("Primer contacto con la Comuna del Granero"). Esas comunidades llevan años aisladas: algunas reciben bien a los Errantes y otras desconfían.
 
 | Comunidad | Dónde | Gobierno y cultura | Ofrece (entrenadores hasta Experto) | Su regla más fuerte |
 |---|---|---|---|---|
@@ -149,7 +149,7 @@ Cada comunidad pide una prueba corta: de 2 a 5 minutos y pocos toques. Si fallas
 | Aprendiz de gremio, Noble caído | Lonja del Vado |
 | Curandero de aldea | Hospicio de la Fuente |
 | Juglar ambulante, Cazador de recompensas | Errantes del Viento |
-| Huérfano de la Torre | Nido de Cuervos |
+| Huérfano de las Ruinas | Nido de Cuervos |
 | Soldado desertor | Ninguna. En el Bastión Gris te reconocen: tu rito es más duro, y tu antiguo capitán podría estar ahí |
 
 ### 3.3 Rangos dentro de la comunidad
@@ -179,8 +179,8 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 | **Diezmo** (Llama), **impuesto** (Lonja), **la parte de la Reina** (Nido) | Se descuenta solo, en porcentaje, cuando ganas o vendes. Nunca sale de lo que ya tenías | — |
 | **Turno de guardia** (Bastión) | Tu héroe hace la guardia mientras no juegas. Si llega una incursión, pelea con tus [Tácticas](../04-combate/avisos-y-tacticas.md) | Hacerla en vivo da más reputación |
 | **Servicio en la enfermería** (Hospicio) | Se donan solas unas vendas o hierbas de tu inventario, o su precio en oro | Una jornada con el minijuego de curación da más reputación |
-| **Aporte a la manada** (Errantes) | Sale sola una ración de tu inventario por día, o su precio en oro | Cazar para la manada da más reputación |
-| **Mudarse** (Errantes) | Tu cuarto se muda solo con el campamento | — |
+| **Aporte a la manada** (Errantes del Viento) | Sale sola una ración de tu inventario por día, o su precio en oro | Cazar para la manada da más reputación |
+| **Mudarse** (Errantes del Viento) | Tu cuarto se muda solo con el campamento | — |
 
 - **El bot avisa antes de que rompas una regla:** "*Esto rompe una ley del Hospicio. ¿Seguro?*". Nadie rompe una regla sin querer.
 - **Algunas reglas son imposibles de romper:** en el Hospicio tu arma queda en la portería; en el Santuario, los hechizos prohibidos aparecen apagados.

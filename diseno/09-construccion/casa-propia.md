@@ -8,7 +8,7 @@
 
 ## 1. Conseguir la casa
 
-1. **Parcela:** se compra en un barrio de un asentamiento (en los pisos bajos al principio y, más adelante, en los pisos conquistados) o en una isla de granja.
+1. **Parcela:** se compra en un barrio de un asentamiento (cerca del Claro al principio y, más adelante, en las regiones pacificadas) o en una isla de granja.
 2. **Plano:** una casa estándar se compra a los entrenadores de Construcción; una casa única la diseña un Arquitecto jugador.
 3. **Construcción:** si sabes el oficio, la construyes tú. Si no, **contratas constructores** (ver [Sistema de construcción](sistema-de-construccion.md)). También puedes mezclar: tú haces las etapas simples y contratas a un Oficial de obra para las difíciles.
 4. **Crecer:** la casa se amplía por habitaciones, cada una con su plano y su obra.
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **Costo de uso** | Gratis | Tasa por uso (sumidero) | Tasa alta |
 | **Nivel máximo de la estación** | Hasta rango Artesano (80), según la mejora | Hasta Oficial (40) | Hasta Gran Maestro (100) |
-| **Bono** | Estable, según la calidad de la estación | Ninguno | El más alto; necesario para las obras maestras de tramo alto |
+| **Bono** | Estable, según la calidad de la estación | Ninguno | El más alto; necesario para las obras maestras de los anillos lejanos |
 | **Privacidad** | Nadie ve lo que haces | Público | Público |
 | **Extras** | Trabajadores PNJ que producen mientras no juegas; almacén al lado | — | Entrenadores, exámenes, recetas maestras |
 

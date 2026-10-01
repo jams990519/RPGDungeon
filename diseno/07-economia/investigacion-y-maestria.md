@@ -2,7 +2,7 @@
 
 > **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Fabricación](fabricacion.md), [Profundidad de un oficio](profundidad-de-un-oficio.md), [Investigaciones](../06-contenido/investigaciones.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) · **Se conecta con:** [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md), [Propiedad y concesiones](propiedad-y-concesiones.md), [Progresión](../03-personaje/progresion.md), [Bestiario](../06-contenido/bestiario.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** propuesta
 
-> **Nota (D-57 y D-58).** No hay límite de oficios (D-57): este documento ya no usa los "2 oficios mayores". Los ejemplos todavía nombran pisos y tramos, que D-58 quitó; hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) y el Viento de Cola de §10 queda pendiente de rehacer sin el Frente de pisos.
+> **Nota (D-57 y D-58).** No hay límite de oficios (D-57): este documento ya no usa los "2 oficios mayores". Los anillos y las Lejanías son los del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) (D-58).
 
 **Qué pediste.** "Un sistema de crecimiento bajo las profesiones o la investigación sobre ciertas cosas bastante avanzado." Este documento sigue donde terminan [Profesiones](profesiones.md) (rangos del 1 al 100) e [Investigaciones](../06-contenido/investigaciones.md) (casos y conocimiento). Responde tres preguntas: qué hace un Gran Maestro después del 100, cómo se investiga algo nuevo y cómo avanza en conocimiento una ciudad entera.
 
@@ -166,15 +166,15 @@ Los PI son **personales**: no se comercian, no se compran y no los toca ningún 
 
 | Fuente | PI (orientativo) | Detalle |
 |---|---|---|
-| **Fabricar por primera vez** cada receta | 3-15, según el tramo | Una vez por receta. También da conocimiento de especialización (ver [Profesiones](profesiones.md) §5): son dos contadores distintos |
+| **Fabricar por primera vez** cada receta | 3-15, según el anillo | Una vez por receta. También da conocimiento de especialización (ver [Profesiones](profesiones.md) §5): son dos contadores distintos |
 | **Fabricar en calidad Excelente u Obra Maestra** | 1-3 | Gastando Enfoque |
 | **Estudiar un objeto** de otro artesano | 2-8 | El objeto no se pierde. Con **estudio a fondo** se destruye, da el doble y a veces una carta de idea (§5.1) |
 | **Desmontar** equipo viejo o roto | 1-4 | Además del material que devuelve (ver [Fabricación](fabricacion.md) §9) |
 | **Desencantar** | 1-4 🔮 | Además de las esencias |
 | **Leer en una biblioteca** | 1 por hora, hasta 8 horas al día | Pasivo, en la biblioteca de tu casa, de tu gremio o pública. El campo depende del libro |
 | **Resolver un caso** | 5-30 | El campo depende del caso: un envenenamiento da ⚕️; un robo de planos, ⚙️ (ver [Investigaciones](../06-contenido/investigaciones.md)) |
-| **Arqueología** | 3-15 🔮 | Catalogar fragmentos y completar piezas. Las ruinas del tramo VII (Ruinas Olvidadas) dan el doble |
-| **Disecar partes de monstruo** | 2-12 ⚕️ o 🌿 | Más si la parte es de tres estrellas, si es una parte rota (cola, alas, cuernos, núcleo) o si tu Bestiario de esa especie es ★★★★. Las criaturas del Vacío (tramo IX, Abismo Umbrío) dan 🔮. Las 10 primeras de cada especie dan el doble |
+| **Arqueología** | 3-15 🔮 | Catalogar fragmentos y completar piezas. Las ruinas del anillo VII (Ruinas Olvidadas) dan el doble |
+| **Disecar partes de monstruo** | 2-12 ⚕️ o 🌿 | Más si la parte es de tres estrellas, si es una parte rota (cola, alas, cuernos, núcleo) o si tu Bestiario de esa especie es ★★★★. Las criaturas del Vacío (anillo IX, Abismo Umbrío) dan 🔮. Las 10 primeras de cada especie dan el doble |
 | **Muestras de enfermos** | 3-10 ⚕️ | Sangre o tejido de un monstruo Enfermo (ver [Bestiario](../06-contenido/bestiario.md) §9), o el primer diagnóstico de cada enfermedad |
 | **Cosechar una variedad nueva** | 2-8 🌿 | Hibridación (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md) §4) |
 | **Prospectar una veta excepcional** | 3 ⚙️ | Pureza o dureza de 850 o más |
@@ -213,14 +213,14 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 | **Receta nueva** | "Ballesta de palanca" (Arquería): más iniciativa, menos daño | Rama 60 | 80 PI ⚙️ + materiales de prueba | 2 días | 50 % | La receta, con tu nombre. Se puede patentar (§8) |
 | **Mejora de plano** (estilo EVE) | Espada larga T5: −5 % de material por nivel, hasta 5 niveles | El plano original | 20-100 PI ⚙️ | 1 día por nivel | 90 % en el nivel 1, 50 % en el 5 | Plano mejorado; sus copias heredan la mejora |
 | **Invención** (estilo EVE) | De una copia, una **variante**: "Hacha de filo dentado", que llena más el 🩸 Sangrado y pega menos | Rama 80 + una copia del plano | 150 PI + la copia | 3 días | 35 % | Plano de variante con 5 usos. Si falla, la copia se pierde |
-| **Variante de planta** | "Corteza amarga doble", contra la Fiebre del Pantano (tramo IV) | Agricultura o Herboristería 60 | 60 PI 🌿 + semillas | Una cosecha (3-7 días) | 40 % | Semilla estable con nombre, en el Herbario |
+| **Variante de planta** | "Corteza amarga doble", contra la Fiebre del Pantano (anillo IV) | Agricultura o Herboristería 60 | 60 PI 🌿 + semillas | Una cosecha (3-7 días) | 40 % | Semilla estable con nombre, en el Herbario |
 | **Remedio** | "Suero de espuma rápido", contra el Mal de Espuma | Medicina o Alquimia 40 + muestras | 120 PI ⚕️ + 3 muestras | 30 horas | 40 % | Receta del remedio. Si cura una enfermedad nueva, los médicos pueden investigar después su vacuna (ver [Curación](../05-salud/curacion-y-tratamientos.md) §3) |
 | **Técnica del minijuego** | "Templado en aceite" (Herrería): una vez por pieza, convierte una condición Pobre en Normal | M10 en la rama | 200 PI + 10 fabricaciones de práctica | 3 días | 60 % | Una acción nueva. Entra en tu barra de 8 en lugar de otra: más opciones, no más botones |
 | **Estudio de especie** | Llevar al Lobo Lunar a ★★★★★ | ★★★★ y 200 vencidos (ver [Bestiario](../06-contenido/bestiario.md) §1.5) | 100 PI + 5 partes | 2 días | 70 % | Bestiario Maestro de esa especie |
-| **Ensayo de material** | Medir la Resonancia del Roble Cantor del piso 3 | Una muestra del yacimiento | 40 PI | 12 horas | 80 % | Ficha del material, que el Informante puede vender |
+| **Ensayo de material** | Medir la Resonancia del Roble Cantor de Lejanía 1 | Una muestra del yacimiento | 40 PI | 12 horas | 80 % | Ficha del material, que el Informante puede vender |
 | **Proyecto de grupo** | La cura de la Plaga Pálida | 2 a 5 investigadores | Se suman los PI de todos | Días | Según el caso | El resultado es de todos (ver [Enfermedades](../05-salud/enfermedades.md) §4) |
 
-**Una receta nueva es una variante, no un escalón.** Reparte el mismo poder de otra forma: más 🩸 Sangrado y menos daño, más daño a la 🟫 Postura y menos a la ❤️ Vida, menos peso y menos protección. O es un consumible de utilidad o un cosmético. Nunca un tramo nuevo ni un techo nuevo. El descubrimiento por azar al combinar ingredientes (ver [Fabricación](fabricacion.md) §4) sigue existiendo: los proyectos son el camino deliberado.
+**Una receta nueva es una variante, no un escalón.** Reparte el mismo poder de otra forma: más 🩸 Sangrado y menos daño, más daño a la 🟫 Postura y menos a la ❤️ Vida, menos peso y menos protección. O es un consumible de utilidad o un cosmético. Nunca un Tramo de objeto nuevo ni un techo nuevo. El descubrimiento por azar al combinar ingredientes (ver [Fabricación](fabricacion.md) §4) sigue existiendo: los proyectos son el camino deliberado.
 
 ### 5.3 Éxito, eurekas y fracaso
 
@@ -237,7 +237,7 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 - **En casa**, en la Biblioteca o en la estación de tu oficio (ver [Casa propia](../09-construccion/casa-propia.md)).
 - **En la Biblioteca de gremio** (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
 - **En las mesas públicas de la Academia**, pagando una tasa de uso (sumidero).
-- **Trabajo de campo:** algunos proyectos piden ir a un nodo a tomar una muestra o una medida. El ensayo del Hierro Negro pide bajar a la Garganta de Hierro del piso 14, en zona roja (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md) §3).
+- **Trabajo de campo:** algunos proyectos piden ir a un nodo a tomar una muestra o una medida. El ensayo del Hierro Negro pide bajar a la Garganta de Hierro de Lejanía 4, en zona roja (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md) §3).
 
 ## 6. Árbol de conocimiento de la ciudad
 
@@ -258,7 +258,7 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 - **Quién elige.** El **Rector de la Academia** (un cargo nuevo que se suma a los de [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §4 y que nombra el gobernador) propone 3 nodos disponibles. Los residentes votan con una encuesta nativa de Telegram de 24 horas. Si no hay Rector, propone el gobernador.
 - **Costo por nivel:** nivel 2, 300 de Saber · nivel 3, 800 · nivel 4, 1.800 · nivel 5, 3.500 · cumbre, 6.000.
 - **Cumbre: elige una.** El último nodo de cada rama es una elección entre dos que se excluyen. Se puede cambiar, pagando la otra entera y esperando 4 semanas. Así ninguna ciudad lo tiene todo.
-- **Nada bloquea un tramo.** Cualquier ciudad con entrenadores fabrica cualquier tramo. El árbol da eficiencia, variantes, edificios y servicios; nunca da acceso a un tramo ni poder de combate personal.
+- **Nada bloquea un anillo.** Cualquier ciudad con entrenadores fabrica las recetas de cualquier anillo. El árbol da eficiencia, variantes, edificios y servicios; nunca da acceso a un anillo ni poder de combate personal.
 - **Nodos dormidos.** Si cae o se deja de mantener el edificio que pide un nodo, o si está en rojo la necesidad de la que depende (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2), el nodo se duerme. No se pierde: despierta cuando se arregla.
 
 ◆ = nodo de fundación: se aprende al terminar la obra que indica y no cuesta Saber.
@@ -272,7 +272,7 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 | ◆ Huerto comunal | Campamento | Campos de la ciudad; cosechas básicas | Construir el huerto y el corral |
 | Rotación de cultivos | Aldea | Los campos de la ciudad y las granjas de residentes rotan solos: el suelo no se agota y hay +10 % de cosecha | 300 · 150 semillas de 3 cultivos |
 | Abonos | Villa | Otro +10 % de cosecha; el abono de corral (Ganadería) pasa a tener demanda | 800 · 200 de abono de corral |
-| Invernaderos | Ciudad | Plano de Invernadero para los constructores de la ciudad: cultivos fuera de estación y a salvo de la Helada (clave en los Picos Helados, tramo VI) | 1.800 · 300 de vidrio (Joyería) · 100 tablones |
+| Invernaderos | Ciudad | Plano de Invernadero para los constructores de la ciudad: cultivos fuera de estación y a salvo de la Helada (clave en los Picos Helados, anillo VI) | 1.800 · 300 de vidrio (Joyería) · 100 tablones |
 | Hibridación dirigida | Ciudad | Jardín botánico: los proyectos de variante de planta de los residentes tienen +15 % de éxito y tardan un 25 % menos | 3.500 · 20 variedades distintas donadas al Herbario de la ciudad |
 | Cumbre: **Gran Granero** o **Huertas finas** | Castillo | Granero: la necesidad de 🌾 Comida baja un 15 % y las conservas duran el doble. Huertas finas: la Enología y los Curados de los residentes suben de calidad con más facilidad | 6.000 · 500 sacos de grano y 100 de sal, o 300 cestos de uva y 100 toneles |
 
@@ -282,10 +282,10 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 |---|---|---|---|
 | ◆ Fragua | Aldea | Fundición y forja públicas | Construir la forja |
 | Alto horno | Aldea | +5 % de retorno de Fundición en la ciudad | 300 · 300 de piedra · 100 de carbón |
-| Acero de crisol | Villa | Los fundidores de la ciudad hacen lingotes de crisol, en cualquier tramo: +10 % de Dureza y Flexibilidad (ver [Fabricación](fabricacion.md) §3). La calidad máxima no cambia | 800 · 200 lingotes de hierro · 100 de carbón |
+| Acero de crisol | Villa | Los fundidores de la ciudad hacen lingotes de crisol, en cualquier anillo: +10 % de Dureza y Flexibilidad (ver [Fabricación](fabricacion.md) §3). La calidad máxima no cambia | 800 · 200 lingotes de hierro · 100 de carbón |
 | Acero estelar | Ciudad | Los herreros templan con polvo de estrella: toda pieza de metal forjada aquí tiene +15 % de durabilidad máxima y pierde la mitad al repararse | 1.800 · 120 lingotes de acero estelar (T5) |
 | Aleaciones de fuego | Ciudad | La obsidiana y los metales de fuego (🌋 Tierras volcánicas) se funden aquí con un 15 % menos de material; herramientas de oficio que no se dañan con el calor | 3.500 · 100 de azufre · 60 de metal de fuego |
-| Cumbre: **Fundición maestra** o **Herramientas maestras** | Castillo | Fundición maestra: +10 % de retorno en todo el refinado de metal. Herramientas maestras: las herramientas de oficio forjadas aquí duran un 30 % más y dan +5 % de PA | 6.000 · 300 lingotes de 3 tramos · un artefacto menor |
+| Cumbre: **Fundición maestra** o **Herramientas maestras** | Castillo | Fundición maestra: +10 % de retorno en todo el refinado de metal. Herramientas maestras: las herramientas de oficio forjadas aquí duran un 30 % más y dan +5 % de PA | 6.000 · 300 lingotes de 3 anillos · un artefacto menor |
 
 **⚕️ Medicina**
 
@@ -341,8 +341,8 @@ Cada arma de asedio tiene su respuesta en otra rama: el Trabuquete choca con las
 | Desencantamiento fino | Aldea | +10 % de esencias al desencantar en la ciudad | 300 · 100 polvos arcanos |
 | Runas de protección | Villa | La protección rúnica de los edificios de la ciudad absorbe un 50 % más; alarmas mágicas más baratas | 800 · 150 esencias · 50 pergaminos |
 | Encantamientos mayores | Ciudad | Se pueden encantar **herramientas y estaciones**: una forja encantada da +5 % de retorno; un alambique encantado, +5 % de calidad. El encantamiento de armas y armaduras (+0 a +4) no cambia | 1.800 · 300 esencias · 20 cristales arcanos |
-| Estudio del Vacío | Ciudad | El Templo trata la corrupción y la Fiebre del Vacío un 25 % más rápido; disecar criaturas del Vacío da +25 % de PI 🔮 | 3.500 · 30 partes de criaturas del Vacío (tramo IX) |
-| Cumbre: **Observatorio** o **Santuario de esencias** | Castillo | Observatorio: avisa con un día de anticipación de las lunas llenas, las plagas, las bestias legendarias del tramo y las vetas mágicas. Santuario: las runas cuestan un 10 % menos de esencias en la ciudad | 6.000 · 100 lentes (Óptica), o 500 esencias |
+| Estudio del Vacío | Ciudad | El Templo trata la corrupción y la Fiebre del Vacío un 25 % más rápido; disecar criaturas del Vacío da +25 % de PI 🔮 | 3.500 · 30 partes de criaturas del Vacío (anillo IX) |
+| Cumbre: **Observatorio** o **Santuario de esencias** | Castillo | Observatorio: avisa con un día de anticipación de las lunas llenas, las plagas, las bestias legendarias del anillo y las vetas mágicas. Santuario: las runas cuestan un 10 % menos de esencias en la ciudad | 6.000 · 100 lentes (Óptica), o 500 esencias |
 
 **⛵ Navegación** · Solo para ciudades con terreno 🌊 Costa y lagos. Llega con los barcos (ver [Catálogo ampliado](../00-vision/catalogo-ampliado.md)).
 
@@ -350,7 +350,7 @@ Cada arma de asedio tiene su respuesta en otra rama: el Trabuquete choca con las
 |---|---|---|---|
 | ◆ Muelle | Aldea | Pesca desde el muelle | Construir el muelle |
 | Botes | Aldea | Plano de bote de pesca: pesca en aguas profundas | 300 · 200 tablones |
-| Cartas de navegación | Villa | Las rutas de agua del piso aparecen en el mapa | 800 · 50 mapas (Inscripción) |
+| Cartas de navegación | Villa | Las rutas de agua de la región aparecen en el mapa | 800 · 50 mapas (Inscripción) |
 | Barcazas | Ciudad | Transporte por agua: más barato por kilo que la caravana y más lento | 1.800 · 400 tablones · 100 cuerdas · 50 velas (Sastrería) |
 | Astillero | Ciudad | Barcos de carga grandes y barcos de guerra (piratería en aguas de zona roja) | 3.500 · 800 tablones de roble · 100 lingotes |
 | Cumbre: **Puerto franco** o **Armada** | Castillo | Puerto franco: impuesto de mercado más bajo para lo que llega por agua, y un faro que evita naufragios. Armada: los barcos de guerra de la ciudad tienen +25 % de durabilidad, y hay escoltas navales contratables | 6.000 · 1 faro (obra) o 10 barcos de guerra |
@@ -377,7 +377,7 @@ Cada arma de asedio tiene su respuesta en otra rama: el Trabuquete choca con las
 | Invernaderos | La ciudad pasa una helada sin perder cosechas | +15 % |
 | Trabuquete | El castillo gana o defiende un asedio | +20 % |
 | Letras de cambio | 500 órdenes cruzadas en el mercado de la ciudad en una semana | +15 % |
-| Cartas de navegación | Visitar todos los nodos con agua del piso | +20 % |
+| Cartas de navegación | Visitar todos los nodos con agua de la región | +20 % |
 
 - **Terreno** (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md) §1): cada nodo de la rama de su terreno empieza con un 15 % hecho. ⛰️ Montaña: Metalurgia · 🌲 Bosque: Construcción · 🌾 Llanura fértil: Agricultura · 🌊 Costa y lagos: Navegación · 🐸 Pantano: Medicina · 🏜️ Desierto: Comercio · 🌋 Tierras volcánicas: Guerra · 🕳️ Cueva y subsuelo, 🌸 Tierras flotantes: Arcano · ❄️ Tundra: Letras (inviernos largos, mucho para leer).
 - **Capitales:** la rama más cercana a la especialidad de la capital (ver [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §4) cuesta un 25 % menos. Capital del Pantano: Medicina. Capital del Desierto: Metalurgia y Construcción. Capital de Cristal: Arcano.
@@ -466,7 +466,7 @@ Quien descubre algo primero en el servidor (una receta, una variante de plano, u
 - **Duración: 12 semanas**, más o menos una temporada. Después la receta es **pública**: se aprende gratis en la Biblioteca pública o con el entrenador, pagando una tasa chica.
 - **Renovación, una sola vez, por 6 semanas**, con tasa autodeclarada: el dueño declara cuánto vale su patente y paga cada semana el 2 % de ese valor, y cualquiera puede comprársela a ese precio. El máximo absoluto son 18 semanas.
 - **Tope:** 5 patentes activas por personaje.
-- **Se venden y se heredan:** una patente se puede vender a otro jugador con custodia del bot. Si cae un personaje de Juramento de Hierro, sus patentes pasan a ser públicas en el acto, con su nombre ("Receta de Mara, caída en el piso 44").
+- **Se venden y se heredan:** una patente se puede vender a otro jugador con custodia del bot. Si cae un personaje de Juramento de Hierro, sus patentes pasan a ser públicas en el acto, con su nombre ("Receta de Mara, caída en Lejanía 13").
 - **Descubrimiento simultáneo:** si dos personas terminan el mismo descubrimiento con menos de 24 horas de diferencia, la patente es de las dos.
 - **Qué no se patenta:** las recetas de entrenador; los nodos de ciudad, que son de la ciudad; las técnicas del minijuego, que se enseñan (§9); y la cura de una epidemia de servidor, que es pública siempre (quien más aportó recibe el título; ver [Enfermedades](../05-salud/enfermedades.md) §4).
 
@@ -514,12 +514,12 @@ Los jugadores escriben libros con **Inscripción** (ver libros de jugadores en [
 | Riesgo | Contrapeso |
 |---|---|
 | **Maestría infinita** | Rendimientos decrecientes: cada 10 grados se gana la mitad de lo que falta. Entre un Gran Maestro recién salido y uno de M50 hay unos puntos de eficiencia (como mucho −20 % de Enfoque y −10 % de material) |
-| **Objetos mejores** | Techo de poder: ni la Maestría, ni los saberes, ni el árbol suben el techo de un objeto. La Obra Maestra, el Encantamiento +4 y el Poder de Objeto del tramo son iguales para todos. Las variantes reparten poder, no lo suman, y el presupuesto de 100 puntos de cada una de las 46 specs (ver [Balance](../03-personaje/balance.md) §2) no se toca |
+| **Objetos mejores** | Techo de poder: ni la Maestría, ni los saberes, ni el árbol suben el techo de un objeto. La Obra Maestra, el Encantamiento +4 y el Poder de Objeto del Tramo son iguales para todos. Las variantes reparten poder, no lo suman, y el presupuesto de 100 puntos de cada una de las 46 specs (ver [Balance](../03-personaje/balance.md) §2) no se toca |
 | **Consumibles mejores** | Los remedios y consumibles nuevos siguen las reglas de [Balance](../03-personaje/balance.md): no se apilan con los de su tipo y no dan utilidades que nadie más tenga |
 | **Recetas exclusivas** | Patentes que vencen (18 semanas como máximo), secretos que se redescubren, ingeniería inversa |
 | **Ciudades viejas con todo** | Un nodo a la vez, tiempo mínimo, cumbres que se excluyen y difusión (−10 % por cada ciudad que ya lo tenga, hasta −40 %) |
 | **El que juega todo el día** | Tope semanal de 300 PI (400 como máximo absoluto), Enfoque diario, tiempo real en proyectos y nodos, 3 especialidades de Maestría a la vez |
-| **El que llega tarde** | Maestría descansada, libros de técnica, aprendices con +25 %, difusión de nodos, patentes viejas que ya son públicas. Además, cuando el Frente está 5 pisos o más por encima de un tramo, subir rango con recetas de ese tramo da +25 % de experiencia: el Viento de Cola de los oficios (ver [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.3) |
+| **El que llega tarde** | Maestría descansada, libros de técnica, aprendices con +25 %, difusión de nodos, patentes viejas que ya son públicas. Además, cuando la Frontera está 2 Lejanías o más por delante de un anillo, subir rango con recetas de ese anillo da +25 % de experiencia: el Viento de Cola de los oficios (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §2) |
 | **Pagar para ganar** | Los PI, la Maestría, los proyectos, el Saber de la ciudad y las patentes no se compran ni se aceleran con dinero real (ver [Monetización](monetizacion.md)) |
 | **Perderlo todo** | Nada de este sistema se pierde para siempre. Un fracaso cuesta materiales y la mitad de los PI; un nodo dormido despierta; la Maestría no se olvida. La única excepción es la de siempre: un personaje de Juramento de Hierro que cae |
 
@@ -531,7 +531,7 @@ Todo son **mensajes vivos** que se editan solos (ver [Telegram](../01-plataforma
 
 ```
 🏛 Academia de Ribera Alta
-Castillo · piso 47 · 64 residentes activos · ⛰️ Montaña
+Castillo · Lejanía 14 · 64 residentes activos · ⛰️ Montaña
 Rector: Ilse la Docta
 
 🔬 En curso: ⚒️ Metalurgia · Aleaciones de fuego

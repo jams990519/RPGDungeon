@@ -6,14 +6,14 @@
 
 ## 1. Mazmorras
 
-Grupos de 5: 1 tanque, 1 sanador y 3 de daño, o 1 apoyo y 2 de daño. Cada piso tiene 1 o 2 mazmorras, y cada tramo, 4 a 6 en rotación.
+Grupos de 5: 1 tanque, 1 sanador y 3 de daño, o 1 apoyo y 2 de daño. Cada región tiene 1 o 2 mazmorras, y cada anillo, 4 a 6 en rotación.
 
 | Dificultad | Qué cambia | Bloqueo |
 |---|---|---|
 | **Normal** | Para aprender la mazmorra | Sin bloqueo |
 | **Heroica** | Más daño y mecánicas extra | Diario |
 | **Mítica** | Jefes con una fase adicional | Semanal |
-| **Mítica+** (Llave del Piso) | Ver §2 | Sin bloqueo |
+| **Mítica+** (Llave de la Región) | Ver §2 | Sin bloqueo |
 
 **Buscador de grupos.** Te anotas por rol, el bot arma el grupo y abre una sala retransmitida (ver [Telegram](../01-plataforma/telegram.md)). Los grupos de gremio se arman en el chat del gremio.
 
@@ -38,13 +38,13 @@ Grupos de 5: 1 tanque, 1 sanador y 3 de daño, o 1 apoyo y 2 de daño. Cada piso
 | +12 | *Implacable:* cada caída cuesta el triple de rondas |
 
 - **Temporadas** de 3 a 4 meses con 8 mazmorras en rotación, como en WoW; puntuación por jugador y título para el 0,1 % superior.
-- Las Llaves del Piso también son **moneda social**: se ofrecen en el chat del gremio.
+- Las Llaves de la Región también son **moneda social**: se ofrecen en el chat del gremio.
 
 ## 3. Bandas
 
 **De dónde sale.** Las bandas de WoW, con sus dificultades Buscador, Normal, Heroica y Mítica. En 2026, *Midnight* estrenó la Mítica flexible de 15 a 25 jugadores.
 
-- **Una banda por tramo**, en su capital (la del Tramo I, en el piso 10), con 6 a 9 jefes.
+- **Una banda por anillo**, en su capital regional (la del anillo I, en Lejanía 3), con 6 a 9 jefes.
 - **Tamaño flexible de 10 a 25** en todas las dificultades. La vida y la postura de los jefes escalan con la cantidad de jugadores; las mecánicas no.
 - **Dificultades:** Buscador (armada por el bot, fácil, recompensa baja), Normal, Heroica y Mítica (para gremios organizados).
 - Bloqueo semanal por jefe.
@@ -63,5 +63,5 @@ Para que nadie esté obligado a hacer lo que no le gusta:
 | Bandas | Artefactos de jefe, planos, prestigio de gremio |
 | Profundidades | Equipo para el que juega solo, progreso del compañero |
 | Expediciones | Materiales de zona, vetas buenas |
-| Asaltos a Guardianes | Sellos, Recuerdos, títulos de Pionero |
+| Asaltos a Guardianes | Recuerdos, títulos de Pionero, avance de la Frontera |
 | PvP | Oro, recompensas de PvP, territorios |

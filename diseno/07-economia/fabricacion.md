@@ -61,7 +61,7 @@ Condición: ✨ EXCELENTE
 **Cómo funciona.**
 - Cada veta, planta o criatura da materiales con **atributos**: Pureza, Dureza, Flexibilidad, Conductividad, Resonancia.
 - Cada receta pondera atributos distintos. A una espada le importan la Dureza y la Flexibilidad; a una varita, la Conductividad y la Resonancia.
-- Las vetas **rotan** por los pisos cada semana (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)).
+- Las vetas **rotan** por las regiones cada semana (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)).
 - **Prospectar** muestra los atributos de una veta; el Enano los ve sin prospectar.
 - Los materiales conservan sus atributos al refinarse (un lingote de mineral de pureza 870 es un lingote de pureza 870).
 
@@ -71,7 +71,7 @@ Condición: ✨ EXCELENTE
 
 | Fuente | Ejemplo |
 |---|---|
-| Entrenador del asentamiento | Recetas básicas de cada tramo |
+| Entrenador del asentamiento | Recetas básicas de cada anillo |
 | Reputación | Recetas de facción y de órdenes |
 | Botín de jefes | Planos raros, piezas de artefacto |
 | **Descubrimiento** | Combinar ingredientes sin receta y descubrir el resultado |
@@ -118,7 +118,7 @@ Condición: ✨ EXCELENTE
 
 ## 10. Ejemplo completo: una espada larga T5
 
-1. **Minería.** La minera Kira encuentra una veta de mineral estelar con pureza 870 y dureza 790 en las tierras salvajes del piso 44. Arriesga una zona roja para sacarlo.
+1. **Minería.** La minera Kira encuentra una veta de mineral estelar con pureza 870 y dureza 790 en las tierras salvajes de Lejanía 13. Arriesga una zona roja para sacarlo.
 2. **Fundición.** Vende el mineral al fundidor Tor, que lo convierte en lingotes (conservan los atributos).
 3. **Curtiduría.** El curtidor Ansel vende cuero de wyrm para el mango.
 4. **Pedido de fabricación.** El guerrero Bram compra los lingotes y el cuero y le manda un pedido a Lisbeth, Gran Maestra herrera con maestría alta en espadas largas, con una comisión.

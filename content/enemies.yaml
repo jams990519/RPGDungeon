@@ -34,7 +34,7 @@ jabali_espinoso:
   loot: {pieza_metal: 0.1, hierba_curativa: 0.15}
   moves:
     - {id: corneo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
-    - {id: embestida, weight: 1, power: 2.2, tags: [blockable]}
+    - {id: embestida, weight: 1, power: 2.2, tags: [blockable, interruptible]}
 
 rata_del_pantano:
   name_key: enemy.rata_del_pantano.name
@@ -76,7 +76,7 @@ oso_de_las_cumbres:
   loot: {hierba_curativa: 0.1}
   moves:
     - {id: zarpazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
-    - {id: aplastar, weight: 1, power: 2.3, tags: [blockable]}
+    - {id: aplastar, weight: 1, power: 2.3, tags: [blockable, interruptible]}
 
 escorpion_de_arena:
   name_key: enemy.escorpion_de_arena.name
@@ -106,3 +106,146 @@ bandido_errante:
     - {id: tajo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
     - {id: estocada, weight: 1, power: 2.0, tags: [blockable]}
     - {id: apuntar, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+# --- v0.3: monsters from the bestiary (diseno/06-contenido/bestiario.md §4) ---
+# [ES] v0.3: monstruos del bestiario, anillos I a III.
+
+arana_tejedora:
+  name_key: enemy.arana_tejedora.name
+  biomes: [bosque]
+  level_min: 1
+  level_max: 6
+  base: {hp: 45, attack: 8, armor: 0.0, initiative: 13}
+  per_level: {hp: 9, attack: 1.2}
+  xp: 28
+  gold: [1, 4]
+  loot: {hierba_curativa: 0.15}
+  moves:
+    - {id: picadura, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: telarana, weight: 1, kind: channel, buff: 1.5, tags: [interruptible]}
+
+tortuga_musgosa:
+  name_key: enemy.tortuga_musgosa.name
+  biomes: [bosque, pantano]
+  level_min: 1
+  level_max: 7
+  base: {hp: 70, attack: 7, armor: 0.45, initiative: 4}
+  per_level: {hp: 13, attack: 1.0}
+  xp: 35
+  gold: [2, 6]
+  loot: {hierba_curativa: 0.3}
+  moves:
+    - {id: mordida_lenta, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: caparazonazo, weight: 1, power: 2.0, tags: [blockable]}
+
+hongo_esporon:
+  name_key: enemy.hongo_esporon.name
+  biomes: [bosque, pantano]
+  level_min: 1
+  level_max: 5
+  base: {hp: 35, attack: 9, armor: 0.0, initiative: 5}
+  per_level: {hp: 8, attack: 1.2}
+  xp: 22
+  gold: [1, 3]
+  loot: {hierba_curativa: 0.4}
+  moves:
+    - {id: latigazo, weight: 2, power: 0.9, tags: [blockable, dodgeable]}
+    - {id: estallido, weight: 1, power: 2.2, tags: [dodgeable]}
+
+limo_verde:
+  name_key: enemy.limo_verde.name
+  biomes: [bosque, pantano]
+  level_min: 1
+  level_max: 7
+  base: {hp: 60, attack: 7, armor: 0.1, initiative: 6}
+  per_level: {hp: 12, attack: 1.1}
+  xp: 30
+  gold: [1, 5]
+  loot: {pieza_metal: 0.1}
+  moves:
+    - {id: engullir, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: dividirse, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+vibora_de_hierba:
+  name_key: enemy.vibora_de_hierba.name
+  biomes: [pradera, colinas]
+  level_min: 2
+  level_max: 8
+  base: {hp: 45, attack: 10, armor: 0.05, initiative: 15}
+  per_level: {hp: 9, attack: 1.4}
+  xp: 34
+  gold: [2, 6]
+  loot: {hierba_curativa: 0.2}
+  moves:
+    - {id: mordisco_rapido, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: veneno, weight: 1, power: 2.0, tags: [dodgeable]}
+
+mantis_segadora:
+  name_key: enemy.mantis_segadora.name
+  biomes: [pradera, colinas]
+  level_min: 3
+  level_max: 9
+  base: {hp: 60, attack: 11, armor: 0.1, initiative: 12}
+  per_level: {hp: 11, attack: 1.5}
+  xp: 42
+  gold: [3, 8]
+  loot: {pieza_metal: 0.15}
+  moves:
+    - {id: guadana, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: doble_corte, weight: 1, power: 2.1, tags: [blockable]}
+
+esqueleto_soldado:
+  name_key: enemy.esqueleto_soldado.name
+  biomes: [ruinas, pradera]
+  level_min: 2
+  level_max: 10
+  base: {hp: 65, attack: 10, armor: 0.2, initiative: 8}
+  per_level: {hp: 12, attack: 1.4}
+  xp: 40
+  gold: [3, 9]
+  loot: {pieza_metal: 0.3}
+  moves:
+    - {id: espadazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: hoja_oxidada, weight: 1, power: 2.0, tags: [blockable]}
+
+poltergeist:
+  name_key: enemy.poltergeist.name
+  biomes: [ruinas]
+  level_min: 2
+  level_max: 10
+  base: {hp: 50, attack: 10, armor: 0.0, initiative: 14}
+  per_level: {hp: 10, attack: 1.4}
+  xp: 38
+  gold: [3, 8]
+  loot: {pocion_vida: 0.1}
+  moves:
+    - {id: lanzar_objeto, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: chirrido, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+caiman_de_lodo:
+  name_key: enemy.caiman_de_lodo.name
+  biomes: [pantano]
+  level_min: 4
+  level_max: 14
+  base: {hp: 110, attack: 11, armor: 0.25, initiative: 7}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 58
+  gold: [4, 10]
+  loot: {pieza_metal: 0.1}
+  moves:
+    - {id: dentellada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: arrastre, weight: 1, power: 2.3, tags: [blockable, interruptible]}
+
+oso_cavernario:
+  name_key: enemy.oso_cavernario.name
+  biomes: [montana, colinas]
+  level_min: 3
+  level_max: 12
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 58
+  gold: [3, 9]
+  loot: {hierba_curativa: 0.1}
+  moves:
+    - {id: garrazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: abrazo, weight: 1, power: 2.2, tags: [dodgeable]}

@@ -10,6 +10,6 @@ Construir tu casa, las sedes y fortalezas de gremios y alianzas, y los castillos
 | [defensa-y-protecciones.md](defensa-y-protecciones.md) | Quién ataca y dónde, defensas, guardias y torres controlados con Tácticas, cómo se resuelve un ataque, escudos y protecciones |
 
 **Depende de:** [Profesiones](../07-economia/profesiones.md) (Construcción y los oficios que proveen materiales), [Economía](../07-economia/README.md) (parcelas, presupuestos, mantenimiento).
-**Alimenta a:** [Mundo](../02-mundo/README.md) (asentamientos y castillos de pisos nuevos), [PvP](../06-contenido/pvp.md) (fortalezas), [Apuestas](../08-social/apuestas.md) (casinos), [Salud](../05-salud/curacion-y-tratamientos.md) (enfermerías).
+**Alimenta a:** [Mundo](../02-mundo/README.md) (asentamientos y castillos de regiones nuevas), [PvP](../06-contenido/pvp.md) (fortalezas), [Apuestas](../08-social/apuestas.md) (casinos), [Salud](../05-salud/curacion-y-tratamientos.md) (enfermerías).
 
 **Preguntas abiertas:** P-51 y P-52 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

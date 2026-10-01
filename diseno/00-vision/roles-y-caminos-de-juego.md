@@ -59,7 +59,7 @@ Se pueden tener **varios roles**, pero la profundidad obliga a elegir: nadie es 
 | **Sacerdote del templo** | Templo | Rituales, purificaciones, donaciones | [Curación](../05-salud/curacion-y-tratamientos.md) |
 | **Bardo y juglar** | Taberna, festivales | Propinas; baja el estrés de todos | [Mente](../05-salud/mente.md) |
 | **Posadero y tabernero** | Posada o taberna propia | Camas, comida, minijuegos | [Casa propia](../09-construccion/casa-propia.md), [Propiedad](../07-economia/propiedad-y-concesiones.md) |
-| **Guía de piso** | El piso que conoce | Llevar novatos por el piso | [Profesiones](../07-economia/profesiones.md) |
+| **Guía de región** | La región que conoce | Llevar novatos por la región | [Profesiones](../07-economia/profesiones.md) |
 | **Mentor** | Donde esté su aprendiz | Moneda de mentoría | [Gremios y social](../08-social/gremios-y-social.md) |
 | **Maestro artesano** | Ala de Oficios | Enseñar a aprendices | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
 
@@ -68,7 +68,7 @@ Se pueden tener **varios roles**, pero la profundidad obliga a elegir: nadie es 
 | Rol | Dónde | Cómo gana | Detalle |
 |---|---|---|---|
 | **Comerciante** | Puesto o local en la plaza | Comprar barato en una ciudad y vender caro en otra | [Economía](../07-economia/economia.md), [Propiedad](../07-economia/propiedad-y-concesiones.md) |
-| **Transportista y caravanero** | Rutas entre pisos | Contratos de transporte, concesiones de ruta | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) |
+| **Transportista y caravanero** | Rutas entre regiones | Contratos de transporte, concesiones de ruta | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) |
 | **Escolta** | Rutas | Proteger caravanas | [Economía](../07-economia/economia.md) |
 | **Banquero y prestamista** | Lonja, banco de gremio | Intereses de préstamos | [Propiedad](../07-economia/propiedad-y-concesiones.md) |
 | **Especulador** | La Lonja | Comprar y vender puestos, licencias y lotes de vetas buenas | [Propiedad](../07-economia/propiedad-y-concesiones.md) |
@@ -92,7 +92,7 @@ Se pueden tener **varios roles**, pero la profundidad obliga a elegir: nadie es 
 
 | Rol | Dónde | Cómo gana | Detalle |
 |---|---|---|---|
-| **Pionero** (los que despejan el frente) | El Frente | Títulos de Pionero, lo mejor del botín | [Torre y pisos](../02-mundo/torre-y-pisos.md) |
+| **Pionero** (los que abren la Frontera) | La Frontera | Títulos de Pionero de la región, lo mejor del botín | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Mercenario** | Contratos | Pagas por ayudar en mazmorras, bandas, asedios | [Economía](../07-economia/economia.md) |
 | **Defensor de la ciudad** | Murallas | Botín de las incursiones, reputación | [Defensa](../09-construccion/defensa-y-protecciones.md) |
 | **Gladiador** | Arenas | Rangos de temporada, apuestas | [PvP](../06-contenido/pvp.md) |
@@ -126,7 +126,7 @@ Veterinario, tintorero, vinatero y maestro cervecero, bañero de termas, sacerdo
 ## 4. Un día en la ciudad (ejemplo)
 
 - **Mara**, agricultora, cosecha trigo y lino y cubre el pedido semanal de la ciudad. Vende el lino a **Tomás**, sastre.
-- **Tomás** hace vendas limpias y se las vende a **Lyra**, cirujana, que opera a **Bram**, guerrero, herido contra el Guardián del piso.
+- **Tomás** hace vendas limpias y se las vende a **Lyra**, cirujana, que opera a **Bram**, guerrero, herido contra el Guardián de la región.
 - **Bram** paga con oro que ganó escoltando la caravana de **Nim**, comerciante, que tiene un puesto en la plaza ganado en subasta y financiado con un préstamo de **Orso**, banquero.
 - Esa noche, **Bram** pierde parte de su paga en la Fortuna, en una carrera donde corría la yegua de **Ansel**, criador. Una parte del oro apostado se quema como comisión.
 - **Kira**, detective, descubre un garito en el sótano del curtidor. La guardia hace una redada, y **Vael**, cronista, lo cuenta en la Gaceta.

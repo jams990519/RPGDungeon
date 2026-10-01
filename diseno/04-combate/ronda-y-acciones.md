@@ -203,7 +203,7 @@ Los jefes avisan qué viene. "*La bruja marca a tres objetivos con fuego que sal
 - **Levantar.** Cuando un aliado está derribado, la 🎒 Mochila muestra primero *"🤝 Levantar a Lyra"*. Gasta la ronda, no necesita objeto y lo deja con poca vida; con una 🩹 venda, con más. Si ya pasó el plazo, hace falta una resurrección en combate.
 - **Caído.** Si pasan las 3 rondas o recibes un golpe de remate, caes. Qué significa depende de la zona y del modo (ver [Secuelas y muerte](../05-salud/secuelas-y-muerte.md)). Caer siempre deja una herida.
 - **🏃 Huir.** Se resuelve al final de la ronda. Falla si tienes una pierna herida de gravedad o si te bloquea un enemigo más rápido; la carga ligera ayuda (ver [Equipamiento](../03-personaje/equipamiento.md)). En grupo, huyes tú solo y los demás siguen.
-- **🌀 Esquivar** (P-67). Donde no se puede huir (Guardianes de piso, arena, ciertos eventos), el botón Huir se vuelve una esquiva básica que tiene cualquier clase. Es una respuesta: va primero, cuesta 1 🔋 y reduce a la mitad el daño de los golpes que te alcancen esa ronda. No corta canalizaciones ni sirve contra los golpes que el aviso marca como imposibles de esquivar. Las respuestas de clase son mejores cuando aciertan la forma del golpe.
+- **🌀 Esquivar** (P-67). Donde no se puede huir (Guardianes de región, arena, ciertos eventos), el botón Huir se vuelve una esquiva básica que tiene cualquier clase. Es una respuesta: va primero, cuesta 1 🔋 y reduce a la mitad el daño de los golpes que te alcancen esa ronda. No corta canalizaciones ni sirve contra los golpes que el aviso marca como imposibles de esquivar. Las respuestas de clase son mejores cuando aciertan la forma del golpe.
 - A un Guardián no se le huye: si el grupo se rinde, abandona la instancia con un comando, fuera de la barra.
 
 ## 11. PvE y PvP no son el mismo combate
@@ -223,7 +223,7 @@ Los jefes avisan qué viene. "*La bruja marca a tres objetivos con fuego que sal
 Un Guardián: no se puede huir, así que el quinto botón es 🌀 Esquivar.
 
 ```
-⚔️ Ronda 7 · Guardián del Piso 23 — Coloso de Cristal
+⚔️ Ronda 7 · Guardián de la región — Coloso de Cristal
 Fase 2/3  ❤️ 61% ▓▓▓▓▓▓░░░░   🟫 Postura ▓▓▓▓▓▓▓▓░░
 
 ⚠️ El Coloso hunde los puños en el suelo… la tierra

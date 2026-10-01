@@ -2,7 +2,7 @@
 
 > **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md), [Facciones](../02-mundo/facciones.md), [Balance](../03-personaje/balance.md) · **Alimenta a:** [Economía](../07-economia/economia.md) (materiales de riesgo, botín), [Progresión](../03-personaje/progresion.md) (temporadas) · **Estado:** propuesta
 
-**Principio.** El PvP es **opcional para progresar**: hay una prueba de Sello para quien lo quiera (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)). Y es **necesario para la economía**, porque los mejores materiales están donde hay riesgo. Nadie está obligado a pelear contra jugadores; quien lo hace, gana más.
+**Principio.** El PvP es **opcional para progresar**: ninguna región pide pelear contra jugadores para avanzar (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)). Y es **necesario para la economía**, porque los mejores materiales están donde hay riesgo. Nadie está obligado a pelear contra jugadores; quien lo hace, gana más.
 
 ---
 
@@ -13,7 +13,7 @@
 | Zona | PvP | Al caer (ver [Secuelas y muerte](../05-salud/secuelas-y-muerte.md)) | Qué se consigue ahí |
 |---|---|---|---|
 | 🔵 **Azul** | No | No se cae | Servicios |
-| 🟡 **Amarilla** | Solo con **bandera** voluntaria | Esencia en la mancha; nadie te saquea | Recursos básicos del tramo |
+| 🟡 **Amarilla** | Solo con **bandera** voluntaria | Esencia en la mancha; nadie te saquea | Recursos básicos del anillo |
 | 🔴 **Roja** | Libre | Pueden saquear tu mochila | Recursos medios, jefes de campo |
 | ⚫ **Negra** | Libre | Botín completo, con destrucción | Los mejores recursos, territorios de gremio, jefes ocultos |
 
@@ -62,7 +62,7 @@ La bandera amarilla da un pequeño bono de botín mientras está activa: quien a
 | **Todos contra todos** | 6 jugadores; gana el último en pie | — |
 
 - **Clasificación Glicko-2**, mejor que Elo para jugadores que entran y salen, como es típico en Telegram.
-- **Temporadas** de 3 meses, con títulos para los mejores (*Gladiador de la Torre*) y cosméticos por rango.
+- **Temporadas** de 3 meses, con títulos para los mejores (*Gladiador de Lost Realms*) y cosméticos por rango.
 - **Equipo normalizado en clasificatoria.** Todos pelean con una plantilla de estadísticas según su spec; tu equipo aporta sus técnicas y sus afijos con peso limitado. Decide la habilidad, no quién farmeó más. WoW probó plantillas en *Legion*; aquí se usan desde el primer día en la clasificatoria, y en el mundo abierto cuenta el equipo completo.
 - Reglas de PvP (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)): Firmeza, amortiguación de curación desde la ronda 8, ningún golpe puede quitar más del 40 % de la vida, modificadores por spec.
 
@@ -89,10 +89,10 @@ Los campos de batalla de WoW (capturar la bandera, controlar bases) no funcionan
 - **Cada castillo es una facción** (ver [Facciones](../02-mundo/facciones.md)). La guerra empieza con el primer cisma: antes no hay contra quién pelear.
 - **Dos batallas al día** a hora fija, con aviso 15 minutos antes (horario por definir: P-31).
 - Antes de cada batalla, cada jugador elige: **atacar** un puesto enemigo, **defender** uno propio o **no participar**.
-- Las facciones controlan **puestos avanzados** en los pisos, al principio uno por tramo. Las batallas deciden quién los conquista o los defiende.
+- Las facciones controlan **puestos avanzados** en las regiones, al principio uno por anillo. Las batallas deciden quién los conquista o los defiende.
 - **Poder de guerra:** sale del mismo número de poder que usa todo el juego (clase, equipo y talentos), con una sola fuente de verdad. TowerWars tuvo un error serio porque la guerra calculaba el poder por su lado y el equipo no contaba.
 - **Reglas probadas en TowerWars:** quien ataca no defiende; solo cuentan los jugadores activos en los últimos 3 días; romper un puesto vacío no paga.
-- Controlar el puesto de un piso le da a tu facción un pequeño descuento en los impuestos de ese asentamiento, acceso a una veta especial y la posibilidad de cobrar peaje a las caravanas de otras facciones.
+- Controlar el puesto de una región le da a tu facción un pequeño descuento en los impuestos de ese asentamiento, acceso a una veta especial y la posibilidad de cobrar peaje a las caravanas de otras facciones.
 - **Parte narrado** en la Gaceta, que se puede reenviar.
 - Trofeos por jornada y por temporada, con bono del débil (ver [Facciones](../02-mundo/facciones.md)).
 
@@ -100,7 +100,7 @@ Los campos de batalla de WoW (capturar la bandera, controlar bases) no funcionan
 
 **De dónde sale.** Los territorios de Albion en zonas negras, los asedios de castillos de *Lineage 2*, la soberanía de EVE y *Bastion Siege* (estrategia de fortalezas por Telegram, hacia 2017).
 
-- Hay **territorios** en las Profundidades (zonas negras) de cada piso desde el tramo IV.
+- Hay **territorios** en las Profundidades (zonas negras) de cada región desde el anillo IV.
 - Un gremio, o una alianza de gremios, reclama un territorio con un **estandarte**. Para defenderlo construye y mantiene una **fortaleza** (con constructores de rango; ver [Construcción](../09-construccion/README.md)) y paga un mantenimiento semanal (sumidero).
 - **Ventanas de asedio** semanales a una hora fija que elige el defensor dentro de un rango, para que nadie ataque a las 4 de la mañana del defensor.
 - El asedio usa el tablero de nodos (§6), con murallas, puertas y armas de asedio fabricadas por ingenieros y carpinteros.

@@ -2,7 +2,7 @@
 
 > **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Daño y estados](dano-y-estados.md), [Avisos y tácticas](avisos-y-tacticas.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Se conecta con:** [Jefes](../06-contenido/jefes.md), [PvP](../06-contenido/pvp.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Cacerías](../06-contenido/cacerias.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Heridas](../05-salud/heridas.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta
 
-> **Nota (D-58).** Los ejemplos todavía nombran pisos, tramos y Guardianes de piso, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) y el Guardián como un jefe de mundo de ese anillo. Las reglas de combate no cambian.
+> **Nota (D-58).** Ya no hay pisos ni tramos: los ejemplos usan la Lejanía, el anillo y los Guardianes de región del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md). Las reglas de combate no cambian.
 
 **De dónde sale.** Cada mecánica dice su origen en su apartado. En resumen:
 - *Octopath Traveler*: escudos y debilidades que rompen al enemigo (§3), y guardar puntos para gastarlos juntos (§12).
@@ -104,7 +104,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 | Común | 2-3 | 1-2 | Escudo lleno |
 | Élite | 4-6 | 2-3 | Escudo lleno |
 | Jefe de campo y Guardián | 6-10 por fase | 3-4 | Escudo lleno +1, y **Recompuesto** 2 rondas (el escudo no baja) |
-| Muro | 10-14 por fase | 3-4, que cambian en cada fase | Igual que el Guardián |
+| Guardián de una Gran Barrera | 10-14 por fase | 3-4, que cambian en cada fase | Igual que el Guardián |
 | Enjambres e invocaciones menores | Sin escudo | — | Mueren rápido: no hace falta romperlos |
 
 - **Golpes Inevitables.** Cada jefe tiene 1 o 2 movimientos que la ruptura no cancela, por ejemplo las transiciones de fase. El aviso los marca con ‼️.
@@ -306,7 +306,7 @@ Tus filas:      Vanguardia —            · Retaguardia —
 
 **De dónde sale.** *Fire Emblem* (el bosque da evasión y cuesta movimiento), *XCOM* (la altura da puntería), *Darkest Dungeon* (la luz de la antorcha cambia el riesgo de cada sala) y *Divinity: Original Sin 2* (la lluvia moja a todos).
 
-**Cómo funciona.** Cada combate ocurre en un nodo del mapa, con el terreno de ese nodo (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)), el clima del piso y la hora (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)). La cabecera del combate lo dice, y **se sabe antes de entrar**: prepararse es parte del juego.
+**Cómo funciona.** Cada combate ocurre en un nodo del mapa, con el terreno de ese nodo (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)), el clima de la región y la hora (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)). La cabecera del combate lo dice, y **se sabe antes de entrar**: prepararse es parte del juego.
 
 Dos capas, sin repetir reglas:
 - **Peligros** (frío, calor, sed, gas, oscuridad, tormenta, lava). Sus efectos por ronda, sus etapas y su equipo están en [Peligros del entorno](../05-salud/peligros-del-entorno.md). Las criaturas nativas no los sufren; los visitantes sí.
@@ -316,16 +316,16 @@ Dos capas, sin repetir reglas:
 
 | Terreno o clima | Dónde | Efecto táctico en la ronda | Contra (y quién lo fabrica) |
 |---|---|---|---|
-| ❄️ **Nieve profunda** | Tundra, tramo VI (Picos Helados), ventisca | Además de lo que dice Peligros del entorno (cambiar de fila cuesta la acción entera, huir falla el doble, esquivar cuesta +1 🔋): la Congelación acumula +25 % | Raquetas de nieve (Carpintería y Peletería) |
-| 🐸 **Pantano** | Tramo IV (Pantano Putrefacto) | Las dos vanguardias empiezan en 💧 Agua. Cada 3 rondas aparece un 🟩 charco tóxico (avisado). Las picaduras suman Veneno y pueden traer la Fiebre del Pantano (ver [Enfermedades](../05-salud/enfermedades.md)) | Repelente (Herboristería y Alquimia), máscara con filtro contra la miasma |
-| 🌑 **Oscuridad** | Cuevas (tramo III), noche sin luz, tramo IX (Abismo Umbrío) | La precisión baja según la etapa de oscuridad (ver Peligros del entorno). Además: los avisos llegan con menos detalle y +2 al sigilo | Antorcha (Carpintería) o farol (Herrería): quita la penalización en tu fila, pero te delata y los enemigos te eligen primero |
-| ⛰️ **Altura** | Montaña, tramo VII (Ruinas Olvidadas), tierras flotantes, murallas | El bando alto tiene +10 % de precisión a distancia y sus golpes 💥 derriban. El bajo necesita una Carga o una ronda para subir | *Carga* (botas de placas), *Salto Vil* |
+| ❄️ **Nieve profunda** | Tundra, anillo VI (Picos Helados), ventisca | Además de lo que dice Peligros del entorno (cambiar de fila cuesta la acción entera, huir falla el doble, esquivar cuesta +1 🔋): la Congelación acumula +25 % | Raquetas de nieve (Carpintería y Peletería) |
+| 🐸 **Pantano** | Anillo IV (Pantano Putrefacto) | Las dos vanguardias empiezan en 💧 Agua. Cada 3 rondas aparece un 🟩 charco tóxico (avisado). Las picaduras suman Veneno y pueden traer la Fiebre del Pantano (ver [Enfermedades](../05-salud/enfermedades.md)) | Repelente (Herboristería y Alquimia), máscara con filtro contra la miasma |
+| 🌑 **Oscuridad** | Cuevas (anillo III), noche sin luz, anillo IX (Abismo Umbrío) | La precisión baja según la etapa de oscuridad (ver Peligros del entorno). Además: los avisos llegan con menos detalle y +2 al sigilo | Antorcha (Carpintería) o farol (Herrería): quita la penalización en tu fila, pero te delata y los enemigos te eligen primero |
+| ⛰️ **Altura** | Montaña, anillo VII (Ruinas Olvidadas), tierras flotantes, murallas | El bando alto tiene +10 % de precisión a distancia y sus golpes 💥 derriban. El bajo necesita una Carga o una ronda para subir | *Carga* (botas de placas), *Salto Vil* |
 | 🌧 **Lluvia** | Clima | Las filas a cielo abierto quedan 💧 Mojadas (el mismo estado de Peligros del entorno: además, el frío cuenta un punto más). Quemadura ×0,5. Arcos −10 % de precisión | Capa encerada (Sastrería): nunca quedas Mojado. Cuerdas enceradas (Carpintería) para los arcos |
 | 🌫 **Niebla** | Clima | 🌫 en todas las filas: precisión a distancia −25 % (reemplaza la penumbra de Peligros del entorno; no se suman), +2 al sigilo | — (es de los dos bandos) |
 | ⛈ **Tormenta** | Clima, terreno abierto | El rayo avisado de Peligros del entorno busca a quien lleve más metal. Si cae en una fila 💧 Mojada, salta a todos los mojados de esa fila | Capa encerada; soltar el arma de metal |
-| 🏜️ **Tormenta de arena** | Desierto, tramo V (Desierto Ardiente) | Las ráfagas dejan 🌫 en la vanguardia | Velo de desierto (Sastrería): ves en la tormenta |
-| 🌋 **Suelo volcánico** | Tierras volcánicas, tramo VIII (Ciudadela en Llamas) | Grietas avisadas dejan 🔥 Llamas en una fila. Un golpe 💥 cerca del borde de lava deja una quemadura grave | Botas de obsidiana (Herrería) |
-| 🌲 **Bosque espeso** | Bosque, tramo I (Bosque Susurrante) | La retaguardia tiene cobertura: −10 % de precisión a distancia contra ella. +1 al sigilo | — |
+| 🏜️ **Tormenta de arena** | Desierto, anillo V (Desierto Ardiente) | Las ráfagas dejan 🌫 en la vanguardia | Velo de desierto (Sastrería): ves en la tormenta |
+| 🌋 **Suelo volcánico** | Tierras volcánicas, anillo VIII (Ciudadela en Llamas) | Grietas avisadas dejan 🔥 Llamas en una fila. Un golpe 💥 cerca del borde de lava deja una quemadura grave | Botas de obsidiana (Herrería) |
+| 🌲 **Bosque espeso** | Bosque, anillo I (Bosque Susurrante) | La retaguardia tiene cobertura: −10 % de precisión a distancia contra ella. +1 al sigilo | — |
 | 🕳 **Pasillo estrecho** | Cuevas, laberintos, mazmorras | Caben como máximo 2 combatientes por vanguardia. Los golpes en área alcanzan a menos | — |
 
 **Botón.** Ninguno: se aplica solo. Los contras son el equipo de [Peligros del entorno](../05-salud/peligros-del-entorno.md) y se preparan antes de salir.
@@ -388,7 +388,7 @@ Después de la primera ronda, la iniciativa vuelve a ser la de siempre.
 **Cómo se ve.**
 
 ```
-👣 Piso 34 · Pantano Putrefacto · 🌫 Niebla · 🌙 Noche
+👣 Lejanía 10 · Pantano Putrefacto · 🌫 Niebla · 🌙 Noche
 Ves 3 Saqueadores de Turba junto a una fogata. No te vieron.
 Tu sigilo: 11 (niebla +2, noche +2, Bram en placas −3)
 Su alerta:  11 (un vigía +3, fogata −2)
@@ -436,7 +436,7 @@ Su alerta:  11 (un vigía +3, fogata −2)
 | Fanáticos y cultistas | Alta | Se enfurecen |
 | No-muertos, constructos, invocaciones | Sin moral | Pelean hasta el final |
 | Jefes de campo y bestias legendarias | Especial | Huyen a su guarida al 25 % de vida (ver [Cacerías](../06-contenido/cacerias.md)) |
-| Guardianes y Muros | Sin moral | Nunca huyen: tienen fases |
+| Guardianes y Grandes Barreras | Sin moral | Nunca huyen: tienen fases |
 
 ### La decisión
 
@@ -445,7 +445,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 | Opción | Requisito | Qué da | Qué cuesta |
 |---|---|---|---|
 | ⛓ **Capturar** | Grilletes (Herrería) para humanoides; red o jaula para bestias | Humanoide: entregarlo a la Guardia (cobras su recompensa, si tiene), interrogarlo (una pista para una [investigación](../06-contenido/investigaciones.md)) o pedir rescate. Bestia: doma o venta a un criador | Gasta los grilletes o la red. El prisionero pesa en la mochila hasta el asentamiento, y se escapa si caes |
-| 🕊 **Perdonar** | — | Reputación con el asentamiento o la facción del piso. A veces deja la bolsa (la mitad del botín) o un rumor (un campamento, un yacimiento) | Pierdes su Esencia y la otra mitad del botín. Puede volver: agradecido o con rencor |
+| 🕊 **Perdonar** | — | Reputación con el asentamiento o la facción de la región. A veces deja la bolsa (la mitad del botín) o un rumor (un campamento, un yacimiento) | Pierdes su Esencia y la otra mitad del botín. Puede volver: agradecido o con rencor |
 | 🗡 **Rematar** | — | Botín y Esencia completos | Humanoide: **Infamia** solo para quien remata (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)), y los demás enemigos de ese grupo dejan de rendirse. No da Infamia si tenía orden de busca "vivo o muerto". Bestia: nada |
 
 - Cada jugador vota; nadie gana por pulsar primero. Al cerrar el tiempo gana la opción más votada. Si hay empate o nadie vota, se **perdona** (la opción que no cuesta nada). Si gana Rematar, la Infamia es solo para quienes la votaron; si gana Capturar, se gastan los grilletes de uno de quienes la votaron.
@@ -457,7 +457,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 
 ```
 🏳️ El Bandido Tuerto tira el hacha y pide cuartel.
-   Tiene precio: 120 🪙 (Guardia del Piso 34)
+   Tiene precio: 120 🪙 (Guardia del Pantano Putrefacto)
 
 [⛓ Capturar (grilletes: 2)]  [🕊 Perdonar]
 [🗡 Rematar · ⚠️ Infamia]
@@ -466,7 +466,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 
 **Cómo se equilibra.**
 - La moral acorta las peleas comunes, pero quien huye o es perdonado da **menos**: si huye, sin botín y con media Esencia; si se perdona, la mitad. El simulador mide **botín y Esencia por ronda**: con moral nunca sale más que sin ella.
-- No toca a los jefes que importan: Guardianes y Muros no tienen moral, y su balance no cambia.
+- No toca a los jefes que importan: Guardianes y Grandes Barreras no tienen moral, y su balance no cambia.
 - No pertenece a ninguna spec. Toca la **Autonomía** (peleas en solitario un poco más cortas) y se mide como rondas por pelea común: objetivo, entre 10 % y 20 % menos.
 - La Infamia nunca llega por accidente: solo por rematar a quien se rindió.
 
@@ -497,7 +497,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 | Guerrero · Furia | **Golpe del Titán** | Golpe 💥 que abre la ventana de *Golpe Colosal* 3 rondas y le quita al enemigo la mitad de la Postura que le queda |
 | Guerrero · Protección | **Última Muralla** | 2 rondas: recibe todos los golpes dirigidos a la vanguardia, con la mitad de daño |
 | Paladín · Sagrado | **Amanecer** | Levanta a todos los derribados con 30 % de vida y cura al grupo |
-| Cazador · Puntería | **Disparo Imposible** | Rompe al instante la parte apuntada (en un Muro, la deja a un golpe) |
+| Cazador · Puntería | **Disparo Imposible** | Rompe al instante la parte apuntada (contra una Gran Barrera, la deja a un golpe) |
 | Pícaro · Asesinato | **Veneno Maestro** | Todas las barras de acumulación del objetivo suben al 90 % |
 | Sacerdote · Disciplina | **Égida** | Escudo al grupo que absorbe entero el siguiente golpe avisado, con tope |
 | Caballero de la Muerte · Sangre | **Festín Carmesí** | *Golpe de Muerte* que cura el daño recibido en las últimas 4 rondas, no en 2 |
@@ -631,7 +631,7 @@ EMBOSCADA ──> SUPERFICIE ──> RUPTURA ──> GOLPE EXTRA ──> ASALTO 
  gratis)       fuego)         el aviso)   que rompe)                       perdonar)
 ```
 
-Un grupo de noche en el Pantano Putrefacto embosca a tres saqueadores. Lanza aceite a su vanguardia y lo prende con la *Chispa* de una varita. Rompe al líder con escarcha antes de que dé la orden; el golpe extra pasa solo al Cazador, que rompe al segundo, y con todos rotos los intimida. El líder tiene precio en el piso: grilletes y recompensa. Nadie apretó nada rápido.
+Un grupo de noche en el Pantano Putrefacto embosca a tres saqueadores. Lanza aceite a su vanguardia y lo prende con la *Chispa* de una varita. Rompe al líder con escarcha antes de que dé la orden; el golpe extra pasa solo al Cazador, que rompe al segundo, y con todos rotos los intimida. El líder tiene precio en la región: grilletes y recompensa. Nadie apretó nada rápido.
 
 ---
 
@@ -667,7 +667,7 @@ El resto del equipo contra el entorno (abrigos, máscaras, filtros, repelente) e
 | **Superficies** | Sí | Sí | Sí: los jefes también las crean (avisadas) | Control y Daño sostenido | Daño de entorno; valor con y sin lanzables | ≤ 15 % del total; estallido ≤ 20 % de la vida de un jugador |
 | **Terreno** | Sí | Sí en mundo abierto y campos; la arena clasificada es neutra | Sí: guarida con terreno fijo | — (dispersión) | Rendimiento por spec en la rueda de terrenos | ±5 % de media; nunca −10 % con su contra |
 | **Emboscada** | Sí | Sí, solo en zonas rojas, negras, amarillas con bandera e invasiones | No contra Guardianes; sí jefes de campo y bestias legendarias | Autonomía | Encuentros que abren con ventaja | 15-25 % preparado, < 10 % sin preparar, ninguna composición > 30 % |
-| **Moral** | Sí | No (los jugadores no tienen moral) | No (Guardianes y Muros); los jefes de campo huyen | Autonomía | Rondas por pelea común; botín y Esencia por ronda | −10 % a −20 % de rondas; botín por ronda ≤ sin moral |
+| **Moral** | Sí | No (los jugadores no tienen moral) | No (Guardianes y Grandes Barreras); los jefes de campo huyen | Autonomía | Rondas por pelea común; botín y Esencia por ronda | −10 % a −20 % de rondas; botín por ronda ≤ sin moral |
 | **Límite** | Sí | Sí, a mitad de ritmo, con el tope del 40 % | Sí: es su momento | Ráfaga, Supervivencia o Utilidad | Ronda media de llenado; valor del Límite | Ronda 8-12, ±1 entre specs; valor = 3 acciones ±10 % |
 | **Reacciones avanzadas** | Sí | Sí: se lee la forma de las habilidades del rival | Sí: son la base de la lectura | Supervivencia | Rendimiento con 30 % y 70 % de reacciones perfectas | Dentro del techo parejo (±3 % en óptimo) |
 | **Guardar y soltar** | Sí | No (los jugadores no tienen escudo ni Postura) | Sí: para las ventanas de ruptura | Ráfaga | Daño en 20 rondas con y sin guardar | ≤ +5 %; ráfaga ±5 % entre specs |
@@ -678,10 +678,10 @@ Las Tácticas pueden usar todas las mecánicas con reglas propias ("si el jefe n
 
 ## 16. Cómo se ve en Telegram: una técnica combinada y una ruptura
 
-Guardián del Piso 45, el Wyrm de las Dunas (ver [Jefes](../06-contenido/jefes.md)). Es débil a escarcha y a perforación en el vientre, y resiste fuego y corte. En la ronda anterior, Mirra le lanzó un frasco de agua a su vanguardia. Ahora el Wyrm prepara su *Aliento de Vidrio*, un golpe retrasado.
+Guardián del Mar de Dunas, el Wyrm de las Dunas (ver [Jefes](../06-contenido/jefes.md)). Es débil a escarcha y a perforación en el vientre, y resiste fuego y corte. En la ronda anterior, Mirra le lanzó un frasco de agua a su vanguardia. Ahora el Wyrm prepara su *Aliento de Vidrio*, un golpe retrasado.
 
 ```
-⚔️ Ronda 9 · Guardián del Piso 45 — Wyrm de las Dunas
+⚔️ Ronda 9 · Guardián del Mar de Dunas — Wyrm de las Dunas
 📍 Desierto Ardiente · 🌙 Noche · 💨 Viento del sur
 Fase 1/3  ❤️ 72% ▓▓▓▓▓▓▓░░░   🟫 Postura ▓▓▓▓▓░░░░░
 🔰🔰🔰 3   Débil: ❄️ 🏹(vientre) ❓   Resiste: 🔥 🪓

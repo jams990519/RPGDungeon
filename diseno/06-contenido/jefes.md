@@ -1,6 +1,6 @@
 # Jefes: dificultad de Elden Ring, en texto y por turnos
 
-> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md) (avisos, postura, partes) · **Alimenta a:** [Torre y pisos](../02-mundo/torre-y-pisos.md) (Sellos, Pioneros), [Equipamiento](../03-personaje/equipamiento.md) (artefactos, Recuerdos) · **Estado:** propuesta
+> **Módulo** [06 · Contenido](README.md) · **Depende de:** [Combate](../04-combate/README.md) (avisos, postura, partes) · **Alimenta a:** [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (la Frontera, Pioneros), [Equipamiento](../03-personaje/equipamiento.md) (artefactos, Recuerdos) · **Estado:** propuesta
 
 **De dónde sale.**
 - *Elden Ring* y *Dark Souls*: jefes que se aprenden muriendo, golpes retrasados, fases con transformación, postura, invocación de otros jugadores, cenizas espirituales, mensajes en el suelo y manchas de sangre.
@@ -14,12 +14,12 @@
 
 | Tipo | Dónde | Cuántos | Dificultad | Recompensa |
 |---|---|---|---|---|
-| **De campo** | Tierras salvajes, a la vista | 2 o 3 por piso | Media-alta | Materiales, artefactos menores |
-| **Guardián del piso** | Su guarida | 1 por piso | Alta: es el que abre la escalera | Recuerdo, artefactos, Sello |
-| **Oculto** | En los secretos del piso (hay que encontrarlo) | 0 o 1 por piso | Muy alta | Artefactos únicos, título, historia |
-| **Muro** (pisos 25, 50 y 75) | Su piso | 3 | Extrema; varios grupos a la vez | Lo mejor del tramo |
+| **De campo** | Tierras salvajes, a la vista | 2 o 3 por región | Media-alta | Materiales, artefactos menores |
+| **Guardián de la región** (jefe de mundo, D-08) | Su guarida | 1 por región | Alta: su caída hace avanzar la Frontera | Recuerdo, artefactos, título de Pionero (solo el primer grupo) |
+| **Oculto** | En los secretos de la región (hay que encontrarlo) | 0 o 1 por región | Muy alta | Artefactos únicos, título, historia |
+| **Gran Barrera** (propuesta, en ciertos anillos) | Su Gran Barrera | 3 | Extrema; varios grupos a la vez | Lo mejor del anillo |
 | **Errante** | Se invoca en cualquier chat de grupo con un **Cuerno de Invocación** | Muchos | Media | Cajas de botín para el chat |
-| **Semanal de servidor** | Rota por los pisos | 1 por semana | Vida **compartida por todo el servidor** | Según la contribución; ranking por gremio |
+| **Semanal de servidor** | Rota por las regiones | 1 por semana | Vida **compartida por todo el servidor** | Según la contribución; ranking por gremio |
 
 El **Cuerno de Invocación** se fabrica (Inscripción y Joyería), así que el jefe errante también mueve la economía.
 
@@ -46,7 +46,7 @@ El **Cuerno de Invocación** se fabrica (Inscripción y Joyería), así que el j
 - **Escalado.** Cada ayudante sube la vida del jefe, aunque menos que en proporción, y hace que el jefe reparta la atención.
 - **Notas en el suelo.** Los jugadores dejan mensajes en los nodos con frases de plantilla ("*cuidado con el golpe retrasado*", "*tesoro adelante*", "*prueba a esquivar*"), y otros los valoran. Como en Elden Ring: humor, ayuda y trampas. Las plantillas impiden usar las notas para insultar.
 
-## 4. Ejemplo completo: el Guardián del Piso 45, Wyrm de las Dunas
+## 4. Ejemplo completo: el Guardián del Mar de Dunas, Wyrm de las Dunas
 
 **Datos:**
 - **Vida:** escala con los participantes. **Postura:** alta.
@@ -66,13 +66,13 @@ El **Cuerno de Invocación** se fabrica (Inscripción y Joyería), así que el j
 | **Fase 3 (33 %): Tormenta Perpetua** | "*el cielo se oscurece*" | — | Por el resto del combate hay poca visibilidad y los avisos llegan con menos detalle |
 
 **Recompensas:**
-- **Primera muerte del servidor:** título "Pionero del Piso 45" y un cosmético único.
+- **Primera muerte del servidor:** título "Pionero del Mar de Dunas" y un cosmético único.
 - **Recuerdo:** *Garra de las Dunas* (arma) o *Escamas del Wyrm* (pecho de malla).
 - **Artefactos posibles:** Colmillo de Vidrio, Glándula de Arena.
 
 ## 5. Cómo se prueba que un jefe es justo
 
 - Todo jefe nuevo pasa por el **simulador** con grupos de PNJ que juegan "bien" (siguen todos los avisos) y "mal" (ignoran los retrasados).
-- Un grupo que juega bien tiene que poder ganarle con equipo del tramo sin mejoras. Si no puede, el jefe está roto.
-- Un grupo que juega mal tiene que perder aunque tenga equipo de dos tramos más arriba. Si gana, el jefe es aburrido.
+- Un grupo que juega bien tiene que poder ganarle con equipo del anillo sin mejoras. Si no puede, el jefe está roto.
+- Un grupo que juega mal tiene que perder aunque tenga equipo de dos anillos más lejos. Si gana, el jefe es aburrido.
 - Los números de cada jefe y cada cambio van al registro de balance (ver [Balance](../03-personaje/balance.md)).

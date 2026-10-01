@@ -38,16 +38,16 @@ Nada de morirse de hambre por no entrar dos días.
 
 ## 3. Temperatura y aclimatación
 
-- **Por bioma:** los Picos Helados piden abrigo de piel; el Desierto Ardiente pide telas ligeras y agua. Un sastre que fabrica ropa de abrigo tiene mercado en el tramo VI.
+- **Por bioma:** los Picos Helados piden abrigo de piel; el Desierto Ardiente pide telas ligeras y agua. Un sastre que fabrica ropa de abrigo tiene mercado en el anillo VI.
 - **La capa** es la ranura de clima: una capa de piel contra el frío, una capa de lino blanco contra el sol (ver [Equipamiento](../03-personaje/equipamiento.md)).
-- **Aclimatación:** al subir a un piso con clima nuevo hay una penalización pequeña durante las primeras horas, el **Mal del Piso**. El Humano se aclimata en la mitad del tiempo. Es el mal de altura aplicado a la Torre.
+- **Aclimatación:** al llegar a una región con clima nuevo hay una penalización pequeña durante las primeras horas, el **Mal del Viajero**. El Humano se aclimata en la mitad del tiempo. Es el mal de altura aplicado al viaje.
 
 ## 4. Toxicidad y dependencia
 
 - Cada poción y elixir suma **Toxicidad**. Por encima del 75 % empiezas a perder vida; al 100 % no puedes beber más.
 - La toxicidad baja con el tiempo, más rápido descansando.
 - **Esto es lo que impide abusar de las pociones** en combate, un problema clásico del balance de los MMO. Las pociones pueden ser fuertes precisamente porque no puedes tomarte diez.
-- Algunas sustancias (analgésicos fuertes, elixires de furia, la "polvareda" de ciertos pisos) generan **tolerancia**: cada uso rinde menos. El uso continuo trae **dependencia**, con abstinencia (una penalización hasta que pasa). Un médico la trata, pero hay que querer.
+- Algunas sustancias (analgésicos fuertes, elixires de furia, la "polvareda" de ciertas regiones) generan **tolerancia**: cada uso rinde menos. El uso continuo trae **dependencia**, con abstinencia (una penalización hasta que pasa). Un médico la trata, pero hay que querer.
 - El Renacido tolera más toxicidad.
 
 ## 5. Principio

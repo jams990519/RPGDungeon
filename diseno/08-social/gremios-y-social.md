@@ -44,7 +44,7 @@
 
 - Los jugadores de nivel alto pueden anotarse como **mentores**.
 - A un novato se le asigna un mentor hasta el nivel 20.
-- El mentor gana una moneda de mentoría (cosméticos, títulos) cuando su aprendiz alcanza metas: su primer Sello, su primera mazmorra, su primer oficio a 20.
+- El mentor gana una moneda de mentoría (cosméticos, títulos) cuando su aprendiz alcanza metas: su primer Guardián vencido, su primera mazmorra, su primer oficio a 20.
 - **Por qué conviene:** en un juego tan grande, el mejor tutorial es otra persona.
 
 ## 6. Hermandad de armas
@@ -59,7 +59,7 @@ Dos jugadores pueden sellar una **hermandad** (una "amistad" formal, sin matrimo
 
 | Canal | Qué publica |
 |---|---|
-| **Gaceta de la Torre** | Pioneros, apertura de pisos, epidemias, caídas del Juramento de Hierro, recetas descubiertas, obras maestras, partes de guerra |
+| **Gaceta** | Pioneros, avance de la Frontera, epidemias, caídas del Juramento de Hierro, recetas descubiertas, obras maestras, partes de guerra |
 | **Mercado** | Precios de referencia, órdenes grandes, informe económico mensual |
 | **Salón de los Caídos** | Los personajes del Juramento de Hierro que cayeron, con su historia |
 | **Novedades** | Notas de versión (en lenguaje de resultado, sin fórmulas; así trabaja TowerWars) |

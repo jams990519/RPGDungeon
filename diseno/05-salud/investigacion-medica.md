@@ -25,7 +25,7 @@ Este documento arma eso. **Nadie cura lo que no conoce.** Toda cura nueva sale d
 
 1. **Cada mal tiene un expediente.** Cada enfermedad, herida que deja secuela y mal crónico tiene un expediente que se llena estudiando casos. Sin expediente no hay cura nueva.
 2. **Siete etapas, sin atajos.** Observación → Conocimiento → Hipótesis → Ingredientes → Experimentos → Protocolo → Aplicación. No se puede empezar una etapa sin terminar la anterior.
-3. **Los ingredientes están en un lugar y en un momento.** Las curas avanzadas piden materiales de un terreno, un piso, un yacimiento único, una hora o una estación del año. Ninguna ciudad los tiene todos (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)).
+3. **Los ingredientes están en un lugar y en un momento.** Las curas avanzadas piden materiales de un terreno, una región, un yacimiento único, una hora o una estación del año. Ninguna ciudad los tiene todos (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)).
 4. **Tiempo real.** Los estudios corren en tiempo real, también fuera de línea, como en EVE. Lo que se juega (casos, experimentos) tiene tope semanal.
 5. **Usa las piezas de [Investigación y maestría](../07-economia/investigacion-y-maestria.md).** Cada nodo del árbol médico es un **proyecto** (§5 de ese documento) que se paga con **Puntos de Investigación ⚕️** (§4). Lo que agrega este documento es lo que va antes del proyecto (casos, expediente, hipótesis, ingredientes) y la escalera que lleva hasta la Regeneración.
 6. **Nada se compra con dinero real** (D-43). Ni las Gemas ni el oro saltan una etapa. El acelerador de oficio (ver [Monetización](../07-economia/monetizacion.md)) sube la experiencia de Medicina del 1 al 100 como en cualquier oficio, pero **no toca nada de este documento**: ni los expedientes, ni los PI, ni los proyectos, ni los experimentos, ni la estación del año (igual que en [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2).
@@ -73,7 +73,7 @@ Un caso es una oportunidad de mirar un mal de cerca. Cada caso da **puntos de ca
 | **Regeneración natural** | Observar a un **Trol** que regenera, a un **Licántropo** en forma bestial o a un limo que se divide | Altos, solo para la rama Regeneración | El Trol cobra por dejarse estudiar |
 
 **Reglas de los casos:**
-- **Variedad:** el mismo paciente da poco la segunda vez en la misma fase. Pacientes de linajes, tramos y fases distintos valen más.
+- **Variedad:** el mismo paciente da poco la segunda vez en la misma fase. Pacientes de linajes, anillos y fases distintos valen más.
 - **Tope semanal** de puntos de caso por médico (40 casos orientativos), como el conocimiento semanal de los oficios (ver [Profesiones](../07-economia/profesiones.md) §5) y el tope de PI. Quien tiene tiempo infinito no se escapa.
 - **Contra las trampas:** los casos de tus propios personajes no cuentan (ver [Seguridad y anti-trampas](../01-plataforma/seguridad-y-anti-trampas.md)).
 
@@ -118,25 +118,25 @@ La hipótesis pide propiedades. Cada ingrediente tiene **cuatro propiedades ocul
 **Los relojes del mundo** (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)):
 - **Estación del año:** cambia cada semana real. Cada estación vuelve cada 4 semanas.
 - **Día y noche:** un día de juego dura 6 horas reales.
-- **Luna llena:** cada 7 días de juego, unos 2 días reales. **Eclipse:** una vez al mes en un tramo (ver [Eventos](../06-contenido/eventos.md)).
+- **Luna llena:** cada 7 días de juego, unos 2 días reales. **Eclipse:** una vez al mes en un anillo (ver [Eventos](../06-contenido/eventos.md)).
 - **Clima:** ventisca, tormenta, lluvia, ola de calor.
 
 | Ingrediente | Dónde | Cuándo | Quién lo trae | Propiedades | Sirve para |
 |---|---|---|---|---|---|
-| **Flor de Ciénaga Tardía** | 🐸 Pantano, tramo IV | Solo en **otoño**, de **noche** | Herborista con máscara de carbón | Fría, Amarga | Cura completa de la Fiebre del Pantano crónica |
-| **Musgo de Cumbre Blanca** | ⛰️ Cumbres, tramo VI | Solo en **invierno**, después de una ventisca | Herborista aclimatado, con abrigo 3 | Cálida, Pulmonar | Neumonía, *Pulmón manchado*, Tos del Minero |
-| **Glándula de Licántropo** | ❄️ Tundra y 🌲 bosque, tramo VI | Solo en **luna llena** | Cazador con Desuello y conocimiento ★★★★ del Licántropo Salvaje | Regenerativa, Salvaje | Rama Regeneración: el tejido que vuelve a crecer |
-| **Agua de fondo del Oasis Hondo** | 🏜️ Desierto, tramo V | Solo en **verano**: cuando el oasis baja, aflora el agua del fondo | Explorador o aguador, con frasco de vidrio de duna | Pura, Mineral | Base de sueros y vacunas |
-| **Cristal de Resonancia Profunda** | 🌑 Grietas del Abismo Umbrío, tramo IX · **yacimiento único** | Siempre, pero rinde **1 por día** | Minero con forro de plomo y filtro bendito | Resonante, Ordenadora | Nervios, Mente y el molde de la Regeneración |
-| **Raíz de mandrágora tierna** | 🐸 Pantano, tramo IV | **Primavera** | Herborista o cazador con tapones de cera | Sedante, Adormecedora | Anestesia profunda para la cirugía mayor |
-| **Lágrima helada** | ❄️ Tundra y pasos, tramo VI (Novia de Escarcha) | Con **ventisca** | Cazadores en grupo | Fría, Conservante | Cámara fría: mantiene vivo un tejido durante días |
-| **Corazón de micelio** | 🕳️ Cueva, tramo III (Micelio Andante) | Siempre; **cultivado** en casa rinde más | Cazador, y después Agricultor que lo cultiva | Creciente, Pegajosa | El andamio donde crece el tejido nuevo |
-| **Miel negra** | 🏛️ Ruinas y 🌲 bosque, tramo VII (Árbol Hueco) | **Otoño** | Cazador y herborista | Cicatrizante, Dulce | Injertos de piel, quemaduras de grado 3 |
-| **Escama de salamandra en muda** | 🌋 Tierras volcánicas, tramo VIII | **Verano**, época de muda | Cazador con capa ignífuga | Cálida, Renovadora | Piel nueva: quemaduras extensas, Podredumbre Gris |
-| **Polen de Flor de Difuntos** | 🌾 Llanuras de cualquier tramo | Solo durante el **festival de difuntos** (otoño) | Herborista o agricultor | Calmante, de Memoria | Rama Mente: fobias y pesadillas |
-| **Agua de rayo** | 🌸 Tierras flotantes, tramo X | Solo con **tormenta** | Explorador con pararrayos y cuerda | Vivificante, Nerviosa | Despertar un nervio dañado |
+| **Flor de Ciénaga Tardía** | 🐸 Pantano, anillo IV | Solo en **otoño**, de **noche** | Herborista con máscara de carbón | Fría, Amarga | Cura completa de la Fiebre del Pantano crónica |
+| **Musgo de Cumbre Blanca** | ⛰️ Cumbres, anillo VI | Solo en **invierno**, después de una ventisca | Herborista aclimatado, con abrigo 3 | Cálida, Pulmonar | Neumonía, *Pulmón manchado*, Tos del Minero |
+| **Glándula de Licántropo** | ❄️ Tundra y 🌲 bosque, anillo VI | Solo en **luna llena** | Cazador con Desuello y conocimiento ★★★★ del Licántropo Salvaje | Regenerativa, Salvaje | Rama Regeneración: el tejido que vuelve a crecer |
+| **Agua de fondo del Oasis Hondo** | 🏜️ Desierto, anillo V | Solo en **verano**: cuando el oasis baja, aflora el agua del fondo | Explorador o aguador, con frasco de vidrio de duna | Pura, Mineral | Base de sueros y vacunas |
+| **Cristal de Resonancia Profunda** | 🌑 Grietas del Abismo Umbrío, anillo IX · **yacimiento único** | Siempre, pero rinde **1 por día** | Minero con forro de plomo y filtro bendito | Resonante, Ordenadora | Nervios, Mente y el molde de la Regeneración |
+| **Raíz de mandrágora tierna** | 🐸 Pantano, anillo IV | **Primavera** | Herborista o cazador con tapones de cera | Sedante, Adormecedora | Anestesia profunda para la cirugía mayor |
+| **Lágrima helada** | ❄️ Tundra y pasos, anillo VI (Novia de Escarcha) | Con **ventisca** | Cazadores en grupo | Fría, Conservante | Cámara fría: mantiene vivo un tejido durante días |
+| **Corazón de micelio** | 🕳️ Cueva, anillo III (Micelio Andante) | Siempre; **cultivado** en casa rinde más | Cazador, y después Agricultor que lo cultiva | Creciente, Pegajosa | El andamio donde crece el tejido nuevo |
+| **Miel negra** | 🏛️ Ruinas y 🌲 bosque, anillo VII (Árbol Hueco) | **Otoño** | Cazador y herborista | Cicatrizante, Dulce | Injertos de piel, quemaduras de grado 3 |
+| **Escama de salamandra en muda** | 🌋 Tierras volcánicas, anillo VIII | **Verano**, época de muda | Cazador con capa ignífuga | Cálida, Renovadora | Piel nueva: quemaduras extensas, Podredumbre Gris |
+| **Polen de Flor de Difuntos** | 🌾 Llanuras de cualquier anillo | Solo durante el **festival de difuntos** (otoño) | Herborista o agricultor | Calmante, de Memoria | Rama Mente: fobias y pesadillas |
+| **Agua de rayo** | 🌸 Tierras flotantes, anillo X | Solo con **tormenta** | Explorador con pararrayos y cuerda | Vivificante, Nerviosa | Despertar un nervio dañado |
 | **Sal de Estrellas** | **Yacimiento único** (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md) §2) | De **noche**, con cielo despejado | Minero; quien controla el yacimiento pone la cuota | Purificante, Pura | Vacunas mayores y la cura de la Plaga |
-| **Hongo del Eclipse** | 🕳️ Cuevas del tramo en eclipse | Solo en **eclipse** | Herborista con luz | Sombría, Despertadora | Elixir de lucidez (cordura) |
+| **Hongo del Eclipse** | 🕳️ Cuevas del anillo en eclipse | Solo en **eclipse** | Herborista con luz | Sombría, Despertadora | Elixir de lucidez (cordura) |
 | **Bilis de plaga** | Portadores de la Plaga (ver [Bestiario](../06-contenido/bestiario.md)) | Solo durante una **epidemia** | Cazadores en una *Cacería de plaga* (ver [Cacerías](../06-contenido/cacerias.md)) | Contagiosa | La cura y la vacuna de la Plaga Pálida |
 
 **Reglas de los ingredientes:**
@@ -280,7 +280,7 @@ Cuatro nodos, uno sobre otro. El primero pide **todo esto**:
 - **Medicina muy alta:** Gran Maestro de Medicina (96-100). Quien no es de Cirugía puede hacer R1 y R2 junto a un Maestro de Cirugía (81 o más); R3 y R4 piden la rama Cirugía en 100 y después su Maestría.
 - **Nodos IV** de Heridas y cirugía y de Venenos y toxinas (anestesia profunda), y al menos el nodo III de otras dos ramas.
 - **Expedientes ★★★★★** de Gangrena, Congelación, Fractura y Nervio dañado, y de al menos tres enfermedades más. Además, el expediente de **tejido que se regenera**, que solo se llena observando a trols, licántropos y limos (§2.1).
-- **Ingredientes de varias zonas y estaciones** (§2.4): glándula de licántropo (luna llena), corazón de micelio (cueva), lágrima helada (ventisca), cristal de resonancia profunda (Abismo, 1 por día), agua de fondo (verano), raíz de mandrágora (primavera) y miel negra (otoño). Las cuatro estaciones: como mínimo un año entero de la Torre (4 semanas reales), y en la práctica más.
+- **Ingredientes de varias zonas y estaciones** (§2.4): glándula de licántropo (luna llena), corazón de micelio (cueva), lágrima helada (ventisca), cristal de resonancia profunda (Abismo, 1 por día), agua de fondo (verano), raíz de mandrágora (primavera) y miel negra (otoño). Las cuatro estaciones: como mínimo un año entero del mundo (4 semanas reales), y en la práctica más.
 - **Una instalación:** el **Quirófano mayor** del Sanatorio del Castillo, o una **Enfermería mayor** de gremio u orden. Es una obra que dirige un Maestro de obras (ver [Sistema de construcción](../09-construccion/sistema-de-construccion.md)), con mesa de cirugía de obra maestra (Herrería), cámara fría (Ingeniería y lágrimas heladas), luces de cristal (Joyería) y lienzos limpios (Sastrería).
 
 | Nodo | Requisito extra | Desbloquea | Tiempo (orden de médicos) |
@@ -328,7 +328,7 @@ Después viene la **rehabilitación**: el miembro nuevo empieza débil, con la m
 D-51 dice que las secuelas **perduran o son definitivas**, que se compensan en parte y nunca del todo. D-53 dice que se pueden **reponer** con medicina avanzada. Las dos se cumplen así:
 - **En el juego normal, la secuela es definitiva.** Ninguna poción, hechizo, PNJ, oro ni Gemas la quita. Lo que tiene el jugador a mano (prótesis, muletas, adaptación, cirugía de secuelas) compensa en parte, nunca del todo.
 - **La Regeneración no es un remedio: es la obra máxima de la medicina del servidor.** Solo existe cuando alguien la investigó durante meses, un Gran Maestro acepta el caso, se juntaron ingredientes de las cuatro estaciones, existe la instalación y la cirugía sale bien. Durante buena parte del primer año, seguramente nadie podrá hacerla: las secuelas serán definitivas de hecho.
-- **No borra la historia.** Las semanas con la secuela, el oro y los materiales ya se pagaron. El perfil guarda la cicatriz y suma una **marca de regeneración** ("*pierna regenerada por Mara de Ribera, piso 12*").
+- **No borra la historia.** Las semanas con la secuela, el oro y los materiales ya se pagaron. El perfil guarda la cicatriz y suma una **marca de regeneración** ("*pierna regenerada por Mara de Ribera, Lejanía 4*").
 - **No vuelve barato el descuido.** La cadena de descuidos que lleva a perder un miembro sigue costando caro. Reponerlo es un proyecto, casi una misión propia.
 
 ## 5. Investigar solo o en conjunto

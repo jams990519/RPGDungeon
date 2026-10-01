@@ -2,7 +2,7 @@
 
 **Un MMORPG completo por turnos, en texto, para Telegram.**
 - Las clases y los sistemas de World of Warcraft, corregidos para que las clases valgan lo mismo.
-- Una Torre de 100 pisos al estilo Sword Art Online, que los jugadores **fundan desde cero**, conquistan juntos y pueden dividir en castillos rivales.
+- Un mapa infinito por explorar, donde moverse toma tiempo real, que los jugadores **fundan desde cero**, conquistan juntos región por región y pueden dividir en castillos rivales.
 - Jefes con la dificultad de Elden Ring.
 - Un cuerpo que se hiere y se enferma, y que curan profesionales que estudiaron.
 - Una economía de jugadores al estilo Albion, con lugares escasos que se pujan.
@@ -10,7 +10,7 @@
 
 | | |
 |---|---|
-| **Bot** | [@thetowerwarbot](https://t.me/thetowerwarbot), un bot distinto de @TowerWarsBot. **TowerWars no se toca** |
+| **Bot** | [@LostRealmsbot](https://t.me/LostRealmsbot), un bot distinto de @TowerWarsBot. **TowerWars no se toca** |
 | **Estado** | Diseño. **Todavía no hay código** y **no se despliega nada en Railway** |
 | **Idioma** | Español (el juego, en español e inglés) |
 
@@ -28,7 +28,7 @@
 |---|---|---|
 | [00 · Visión](00-vision/README.md) | Qué es, qué está decidido, qué falta, cómo se conecta todo, en qué orden se construye | Pilares, roles, red de sistemas, catálogo ampliado, decisiones, preguntas, hoja de ruta, glosario |
 | [01 · Plataforma](01-plataforma/README.md) | Telegram, arquitectura modular (sin código), anti-trampas | 3 |
-| [02 · Mundo](02-mundo/README.md) | **Fundación desde cero, nodos y cismas**, ciudades y Castillo con entrenadores, crisis, **geografía y yacimientos únicos**, la Torre de 100 pisos, mundo vivo, rumores, facciones | 7 |
+| [02 · Mundo](02-mundo/README.md) | **Fundación desde cero, nodos y cismas**, ciudades y Castillo con entrenadores, crisis, **geografía y yacimientos únicos**, el mapa infinito y el viaje, mundo vivo, rumores, facciones | 7 |
 | [03 · Personaje](03-personaje/README.md) | Linajes, trasfondos, 15 clases y 46 specs, **balance**, talentos, equipo, descubrimiento y colecciones, progresión a dos años | 7 |
 | [04 · Combate](04-combate/README.md) | Rondas simultáneas, barras, filas, estados por acumulación, partes del cuerpo, avisos, tácticas automáticas | 3 |
 | [05 · Salud](05-salud/README.md) | Heridas por zona, condiciones, enfermedades y epidemias, mente, secuelas y muerte, **curación como oficio**, rasgos adquiridos, animales y cultivos | 8 |

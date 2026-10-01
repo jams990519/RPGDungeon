@@ -34,9 +34,9 @@ Si los jugadores se enferman, sus animales y sus campos también. Así el agricu
 | Problema | Causa | Efecto | Solución |
 |---|---|---|---|
 | **Tizón** | Humedad, monocultivo | La cosecha se pudre | Rotar cultivos, tratamiento alquímico, quemar lo infectado |
-| **Plaga de insectos** (langosta) | Clima cálido, a veces una criatura del piso | Pierdes parte de la cosecha | Pesticidas (Alquimia), cazar a la criatura origen |
+| **Plaga de insectos** (langosta) | Clima cálido, a veces una criatura de la región | Pierdes parte de la cosecha | Pesticidas (Alquimia), cazar a la criatura origen |
 | **Sequía** | Estación y clima | No crece nada sin agua | Riego, pozos, norias (Ingeniería, Construcción) |
-| **Helada** | Invierno, tramo VI | Mata lo sembrado fuera de estación | Invernaderos (Construcción), cultivos de frío |
+| **Helada** | Invierno, anillo VI | Mata lo sembrado fuera de estación | Invernaderos (Construcción), cultivos de frío |
 | **Suelo agotado** | Sembrar siempre lo mismo | Cosechas más pobres | Rotación, abono (de la Ganadería), dejar descansar la tierra |
 | **Malas hierbas** | Descuido | Menos rendimiento | Desbrozar (un toque diario) |
 | **Robo de cosecha** | Alimañas, jugadores en zonas rojas | Pérdidas | Cercos, espantapájaros, perros guardianes (ver [Defensa](../09-construccion/defensa-y-protecciones.md)) |

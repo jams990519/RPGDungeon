@@ -410,7 +410,7 @@ Un bot no puede crear grupos, así que el Foso es una **sala retransmitida** (ve
 **1. El reto** (por privado, a cada luchador):
 
 ```
-🥊 Reto en El Foso · Refugio de Brea Negra (piso 14, 🔴)
+🥊 Reto en El Foso · Refugio de Brea Negra (Lejanía 4, 🔴)
 «Ceniza» quiere pelear contigo. Lo arma Mordaz (promotor).
 
 Final: Hasta derribar · herida máxima: moderada

@@ -31,7 +31,7 @@
 - Ser **residente**: votar en sus elecciones y leyes (ver [Fundación y cisma](fundacion-y-cisma.md)).
 - Un **grupo de Telegram del castillo**, con las órdenes fijadas.
 - **Reputación del castillo**, con vendedor propio: cosméticos, monturas, recetas de estética.
-- **Crédito por Pioneros**: los Pioneros de cada piso suman para su castillo (ver [Torre y pisos](torre-y-pisos.md)).
+- **Crédito por Pioneros**: los Pioneros de cada región suman para su castillo (ver [Mapa infinito y viaje](mapa-infinito-y-viaje.md)).
 - Participar en la **guerra de castillos** (ver [PvP](../06-contenido/pvp.md)).
 - Los servicios, entrenadores y precios de **su** ciudad, que dependen de lo que construyeron y mantienen sus residentes.
 

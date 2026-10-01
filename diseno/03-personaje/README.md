@@ -13,7 +13,7 @@ Quién es tu héroe y cómo crece: linaje, trasfondo, clase, talentos, equipo y 
 | [descubrimiento-y-colecciones.md](descubrimiento-y-colecciones.md) | Ser el primero en descubrir (lugares, especies, recetas, secretos), registro de descubridores, 14 colecciones, el museo |
 | [progresion.md](progresion.md) | Las 12 escaleras paralelas, experiencia, maestrías, Renombre, reputaciones, colecciones, temporadas, metas de un día a dos años |
 
-**Depende de:** [Mundo](../02-mundo/README.md) (nivel ligado al piso), [Economía](../07-economia/README.md) (equipo fabricado).
+**Depende de:** [Mundo](../02-mundo/README.md) (Techo de la Frontera), [Economía](../07-economia/README.md) (equipo fabricado).
 **Alimenta a:** [Combate](../04-combate/README.md), [Salud](../05-salud/README.md), [Contenido](../06-contenido/README.md).
 
 **Preguntas abiertas:** P-12 a P-16 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

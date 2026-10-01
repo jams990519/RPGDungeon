@@ -338,7 +338,7 @@ La **Amenaza** es una barra de 0 a 100 %. Sube cada día con la **atracción** d
 
 ### 6.2 Qué ataca, por etapa
 
-Los enemigos son de la **zona**: el piso, su tramo y su terreno (ver [Torre y pisos](torre-y-pisos.md)). Su nivel nunca pasa del piso más 2; lo que crece es **cuántos son, cuántas oleadas traen y qué tan listos son**.
+Los enemigos son de la **zona**: su Lejanía, su anillo y su terreno (ver [Mapa infinito y viaje](mapa-infinito-y-viaje.md)). Su nivel nunca pasa del nivel de la zona más 2; lo que crece es **cuántos son, cuántas oleadas traen y qué tan listos son**.
 
 | Etapa | Qué llega | Oleadas | Novedad |
 |---|---|---|---|
@@ -351,7 +351,7 @@ Los enemigos son de la **zona**: el piso, su tramo y su terreno (ver [Torre y pi
 
 ### 6.3 Qué ataca, por terreno
 
-Cada piso tiene de 2 a 4 terrenos (ver [Geografía y recursos](geografia-y-recursos.md)), y la ciudad recibe a los enemigos de los que tiene cerca.
+Cada región tiene de 2 a 4 terrenos (ver [Geografía y recursos](geografia-y-recursos.md)), y la ciudad recibe a los enemigos de los que tiene cerca.
 
 | Terreno | Incursiones típicas (nombres del [Bestiario](../06-contenido/bestiario.md)) | Monstruo de asedio (etapa Castillo) |
 |---|---|---|
@@ -367,7 +367,7 @@ Cada piso tiene de 2 a 4 terrenos (ver [Geografía y recursos](geografia-y-recur
 | 🌸 **Tierras flotantes** | Mantarraya del Cielo, Céfiro, Polilla Lunar | **Roc del Borde** |
 
 - Cada especie pelea con su arquetipo del [Bestiario](../06-contenido/bestiario.md): la manada rodea y huye si cae el alfa, el ladrón va al granero, el carroñero remata a los derribados.
-- Los **monstruos de asedio** son nuevos: se proponen como únicos de asedio para el Bestiario, uno por terreno, siempre con los números del tramo donde está la ciudad.
+- Los **monstruos de asedio** son nuevos: se proponen como únicos de asedio para el Bestiario, uno por terreno, siempre con los números del anillo donde está la ciudad.
 - Un alfa que creció porque nadie lo cazó (ver los monstruos que crecen en el [Bestiario](../06-contenido/bestiario.md)) puede **encabezar una incursión con su nombre**, y la Gaceta lo cuenta.
 
 **Los ataques nocturnos** traen además lo que solo sale de noche (ver [Mundo vivo](mundo-vivo-y-viaje.md)): Fuego Fatuo, Espantapájaros Animado, Necrófago, Murciélago Vampiro, Tigre de Duna y, en luna llena, Licántropo Salvaje. De noche, sin **braseros en la muralla** y **faroles** (Ingeniería y Destilación para el aceite), los defensores pierden precisión y los vigías ven tarde.
@@ -408,7 +408,7 @@ La defensa usa las reglas de [Defensa y protecciones](../09-construccion/defensa
 - **Rondas de 60 segundos**, como en las bandas (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 - **Caer en la defensa.** La defensa es una instancia, como una mazmorra, así que caer sigue la regla de mazmorra de [Secuelas y muerte](../05-salud/secuelas-y-muerte.md): no se pierde nada material y queda una herida moderada (leve para los novatos hasta el nivel 10). En un asentamiento de **zona azul nadie cae para siempre**, tampoco los personajes del Juramento de Hierro: ahí caer no los mata, como en la arena. La zona azul protege a las personas; lo que se juega en la incursión son las cosas de la ciudad. En los asentamientos de zonas amarillas, rojas o negras rigen las reglas de caída de esa zona.
 
-**Una excepción a la zona azul.** [Defensa](../09-construccion/defensa-y-protecciones.md) dice que lo construido en zona azul nunca se ataca. Esta propuesta lo cambia solo para **lo común de los asentamientos que levantan los jugadores**, desde el Campamento y también después de llegar a Castillo: las incursiones de monstruos y de saqueadores PNJ **sí atacan** murallas, granero, corral, obras en curso y aldeanos. Ya hay base para esto: las especies que nadie caza "invaden las zonas azules" ([Mundo vivo](mundo-vivo-y-viaje.md), §5), la *Plaga* del [Bestiario](../06-contenido/bestiario.md) hace lo mismo, y Defensa ya incluye la *Invasión del piso* contra asentamientos enteros. Las **casas de los jugadores y lo que hay dentro nunca se atacan**, y en zona azul no hay saqueo entre jugadores. Falta anotar la excepción en Defensa y registrarla como decisión provisional.
+**Una excepción a la zona azul.** [Defensa](../09-construccion/defensa-y-protecciones.md) dice que lo construido en zona azul nunca se ataca. Esta propuesta lo cambia solo para **lo común de los asentamientos que levantan los jugadores**, desde el Campamento y también después de llegar a Castillo: las incursiones de monstruos y de saqueadores PNJ **sí atacan** murallas, granero, corral, obras en curso y aldeanos. Ya hay base para esto: las especies que nadie caza "invaden las zonas azules" ([Mundo vivo](mundo-vivo-y-viaje.md), §5), la *Plaga* del [Bestiario](../06-contenido/bestiario.md) hace lo mismo, y Defensa ya incluye la *Invasión de la región* contra asentamientos enteros. Las **casas de los jugadores y lo que hay dentro nunca se atacan**, y en zona azul no hay saqueo entre jugadores. Falta anotar la excepción en Defensa y registrarla como decisión provisional.
 
 | Resultado | Qué pasa |
 |---|---|
@@ -574,7 +574,7 @@ Con más de 500 jugadores listos para la beta (ver [Decisiones](../00-vision/dec
 Igual en Telegram, en la web y en la app: el mismo motor, los mismos números.
 
 ```
-🏘 Piedraclara · Aldea → Villa (Piso 1 · 🌲 Bosque, 🌾 Llanura)
+🏘 Piedraclara · Aldea → Villa (Lejanía 1 · 🌲 Bosque, 🌾 Llanura)
 Racha de etapa: ✅✅⬜ 2/3 días
 👥 Población 134/150 · 61 jugadores · 68 aldeanos · 5 guardias
 

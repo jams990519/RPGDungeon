@@ -21,7 +21,7 @@
 |---|---|---|---|
 | **Personal** | Casa, taller, granja, enfermería (ver [Casa propia](casa-propia.md)) | El jugador | El jugador, si sabe el oficio, o constructores contratados |
 | **Organización** | Salón de gremio, barrio de gremio, fortaleza de territorio, casino, hipódromo, mercado propio (ver [Gremios y organizaciones](gremios-y-organizaciones.md)) | El gremio o la alianza | Constructores con rango, contratados |
-| **Servidor** | El asentamiento del piso recién conquistado, el Castillo de la capital nueva, puentes, caminos, piedras de paso | Todo el servidor (Esfuerzo de Guerra) | Los mejores constructores, convocados por rango |
+| **Servidor** | El asentamiento de la región recién pacificada, el Castillo de la capital nueva, puentes, caminos, postas | Todo el servidor (Esfuerzo de Guerra) | Los mejores constructores, convocados por rango |
 
 ## 2. El oficio de Construcción
 
@@ -34,11 +34,11 @@ Construir es un **oficio mayor** (ver [Profesiones](../07-economia/profesiones.m
 | **Oficial de obra** | 41-60 | Casas completas, talleres, enfermerías, salones pequeños |
 | **Maestro de obras** | 61-80 | Dirigir una obra de gremio y coordinar a otros constructores. Fortificaciones |
 | **Arquitecto** | 81-95 | Diseñar **planos** propios, obras monumentales, casinos, hipódromos |
-| **Gran Arquitecto** | 96-100 | Dirigir las obras de servidor (el Castillo de una capital nueva, el asentamiento de un piso). Su nombre queda grabado en la obra |
+| **Gran Arquitecto** | 96-100 | Dirigir las obras de servidor (el Castillo de una capital nueva, el asentamiento de una región). Su nombre queda grabado en la obra |
 
-**Especializaciones:** Vivienda, Fortificación, Obras públicas (caminos, puentes, piedras de paso), Interiorismo (muebles y decoración).
+**Especializaciones:** Vivienda, Fortificación, Obras públicas (caminos, puentes, postas), Interiorismo (muebles y decoración).
 
-**Por qué un oficio y no un botón.** Si cualquiera pudiera construir un castillo, construir no valdría nada. Siendo oficio, nace el constructor como forma de jugar: alguien que quizá nunca pisa una mazmorra pero cuyo nombre está en la puerta de la capital del piso 30.
+**Por qué un oficio y no un botón.** Si cualquiera pudiera construir un castillo, construir no valdría nada. Siendo oficio, nace el constructor como forma de jugar: alguien que quizá nunca pisa una mazmorra pero cuyo nombre está en la puerta de una capital regional.
 
 ## 3. Cómo se construye una obra
 
@@ -85,7 +85,7 @@ Construir es un trabajo **pagado**:
 - **Contrato de obra:** el dueño (un jugador, un gremio, la ciudad) publica la obra con un presupuesto. Los constructores se anotan según su rango.
 - **Paga por jornada:** cada jornada trabajada se cobra del presupuesto, que queda en **custodia** del bot desde que se publica la obra. Paga más a más rango y a mejor resultado.
 - **Bono de inauguración:** al terminar, los constructores reparten un bono según la calidad final.
-- **Obras de servidor:** las paga el Esfuerzo de Guerra (lo que donó todo el servidor) y dan además reputación y títulos ("Constructor del Castillo del Piso 30").
+- **Obras de servidor:** las paga el Esfuerzo de Guerra (lo que donó todo el servidor) y dan además reputación y títulos ("Constructor del Castillo de Ribera Seca").
 - **Fama de constructor:** el perfil lista las obras en las que trabajaste. Los Arquitectos famosos cobran más.
 
 ## 6. Mantenimiento y deterioro
@@ -108,7 +108,7 @@ Construir es un trabajo **pagado**:
 
 - Da trabajo a Cantería, Aserradero, Fundición, Herrería, Joyería, Sastrería, Ingeniería y Carpintería.
 - Los **accidentes** de obra dan pacientes a los médicos.
-- Las **obras de servidor** son la última fase de la conquista de un piso (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)).
+- Las **obras de servidor** son la última fase de la conquista de una región (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)).
 - Las **fortalezas** hacen posible la guerra de territorios (ver [PvP](../06-contenido/pvp.md)).
 - Los **casinos y garitos** hacen posible la carrera del tahúr (ver [Apuestas](../08-social/apuestas.md)).
 - Las **enfermerías** aceleran la curación (ver [Curación](../05-salud/curacion-y-tratamientos.md)).

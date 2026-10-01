@@ -65,7 +65,7 @@ enemy:
     name: "Jabalí espinoso"
     moves:
       corneo: {name: "Corneo", warn: "El jabalí baja la cabeza y resopla."}
-      embestida: {name: "Embestida", warn: "El jabalí escarba la tierra… va a EMBESTIR. (No se puede esquivar)"}
+      embestida: {name: "Embestida", warn: "El jabalí escarba la tierra… va a EMBESTIR. (No se puede esquivar; se puede interrumpir si eres más rápido)"}
   rata_del_pantano:
     name: "Rata del pantano"
     moves:
@@ -80,7 +80,7 @@ enemy:
     name: "Oso de las cumbres"
     moves:
       zarpazo: {name: "Zarpazo", warn: "El oso se levanta en dos patas."}
-      aplastar: {name: "Aplastar", warn: "El oso alza ambos brazos para APLASTARTE. (No se puede esquivar)"}
+      aplastar: {name: "Aplastar", warn: "El oso alza ambos brazos para APLASTARTE. (No se puede esquivar; se puede interrumpir si eres más rápido)"}
   escorpion_de_arena:
     name: "Escorpión de arena"
     moves:
@@ -92,6 +92,57 @@ enemy:
       tajo: {name: "Tajo", warn: "El bandido gira el cuchillo."}
       estocada: {name: "Estocada", warn: "El bandido toma impulso para una ESTOCADA. (No se puede esquivar)"}
       apuntar: {name: "Apuntar", warn: "El bandido estudia tu guardia, buscando un hueco. (Se puede interrumpir)"}
+
+  arana_tejedora:
+    name: "Araña tejedora"
+    moves:
+      picadura: {name: "Picadura", warn: "La araña baja desde su hilo, con las patas delanteras abiertas."}
+      telarana: {name: "Telaraña", warn: "La araña teje a toda prisa una RED a tu alrededor. Si la dejas, su próximo golpe será peor. (Se puede interrumpir)"}
+  tortuga_musgosa:
+    name: "Tortuga musgosa"
+    moves:
+      mordida_lenta: {name: "Mordida lenta", warn: "La tortuga estira el cuello, despacio."}
+      caparazonazo: {name: "Caparazonazo", warn: "La tortuga se encoge y rueda hacia ti con todo su CAPARAZÓN. (No se puede esquivar)"}
+  hongo_esporon:
+    name: "Hongo esporón"
+    moves:
+      latigazo: {name: "Latigazo", warn: "El hongo agita sus filamentos."}
+      estallido: {name: "Estallido", warn: "El hongo se HINCHA como si fuera a reventar. (No se puede bloquear del todo)"}
+  limo_verde:
+    name: "Limo verde"
+    moves:
+      engullir: {name: "Engullir", warn: "El limo se arrastra hacia tus pies."}
+      dividirse: {name: "Dividirse", warn: "El limo tiembla y empieza a PARTIRSE en dos. (Se puede interrumpir)"}
+  vibora_de_hierba:
+    name: "Víbora de hierba"
+    moves:
+      mordisco_rapido: {name: "Mordisco rápido", warn: "La víbora silba entre la hierba alta."}
+      veneno: {name: "Mordida venenosa", warn: "La víbora se enrosca y echa la cabeza atrás para un MORDISCO profundo. (No se puede bloquear del todo)"}
+  mantis_segadora:
+    name: "Mantis segadora"
+    moves:
+      guadana: {name: "Guadaña", warn: "La mantis levanta un brazo afilado."}
+      doble_corte: {name: "Doble corte", warn: "La mantis cruza las DOS guadañas sobre la cabeza. (No se puede esquivar)"}
+  esqueleto_soldado:
+    name: "Esqueleto soldado"
+    moves:
+      espadazo: {name: "Espadazo", warn: "El esqueleto alza su espada mellada."}
+      hoja_oxidada: {name: "Hoja oxidada", warn: "El esqueleto se lanza con TODO su peso, la hoja por delante. (No se puede esquivar)"}
+  poltergeist:
+    name: "Poltergeist"
+    moves:
+      lanzar_objeto: {name: "Lanzar objeto", warn: "Algo flota en el aire y apunta hacia ti. (No se puede bloquear del todo)"}
+      chirrido: {name: "Chirrido", warn: "Las paredes CHIRRÍAN y todo empieza a temblar. (Se puede interrumpir)"}
+  caiman_de_lodo:
+    name: "Caimán de lodo"
+    moves:
+      dentellada: {name: "Dentellada", warn: "Dos ojos asoman sobre el barro."}
+      arrastre: {name: "Arrastre", warn: "El caimán abre las fauces para ARRASTRARTE al agua. (No se puede esquivar; se puede interrumpir si eres más rápido)"}
+  oso_cavernario:
+    name: "Oso cavernario"
+    moves:
+      garrazo: {name: "Garrazo", warn: "El oso gruñe y se balancea."}
+      abrazo: {name: "Abrazo", warn: "El oso abre los brazos para ATRAPARTE en un abrazo. (No se puede bloquear del todo)"}
 
 biome:
   claro: "Claro"

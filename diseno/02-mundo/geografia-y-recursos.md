@@ -1,6 +1,6 @@
 # Geografía y recursos: ninguna zona es autosuficiente
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Torre y pisos](torre-y-pisos.md) · **Alimenta a:** [Economía](../07-economia/economia.md) (recursos regionales, rutas), [Fabricación](../07-economia/fabricacion.md) (calidad de materiales), [PvP](../06-contenido/pvp.md) (yacimientos disputados), [Fundación y cisma](fundacion-y-cisma.md) (dónde conviene fundar) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Mapa infinito y viaje](mapa-infinito-y-viaje.md) · **Alimenta a:** [Economía](../07-economia/economia.md) (recursos regionales, rutas), [Fabricación](../07-economia/fabricacion.md) (calidad de materiales), [PvP](../06-contenido/pvp.md) (yacimientos disputados), [Fundación y cisma](fundacion-y-cisma.md) (dónde conviene fundar) · **Estado:** propuesta
 
 **De dónde sale.**
 - *Albion Online*: cada bioma da recursos distintos, y el comercio nace de eso.
@@ -15,13 +15,13 @@
 
 ## 1. Terrenos
 
-Cada piso tiene de 2 a 4 terrenos, además del bioma dominante de su tramo (ver [Torre y pisos](torre-y-pisos.md)).
+Cada región tiene de 2 a 4 terrenos, además de su bioma dominante (ver [Mapa infinito y viaje](mapa-infinito-y-viaje.md)).
 
 | Terreno | Produce | No tiene | Rol en el comercio |
 |---|---|---|---|
 | ⛰️ **Montaña** | Mineral, piedra, gemas en bruto, carbón | Comida, madera | Compra comida y madera; vende metal |
 | 🌲 **Bosque** | Madera, pieles, hierbas, caza, miel | Metal, piedra de construcción | Abastece a carpinteros, peleteros y herboristas |
-| 🌾 **Llanura fértil** | Grano, ganado, cuero, lino, lana | Metal, madera noble | El granero de la Torre; vende comida a todos |
+| 🌾 **Llanura fértil** | Grano, ganado, cuero, lino, lana | Metal, madera noble | El granero del mundo; vende comida a todos |
 | 🌊 **Costa y lagos** | Pescado, sal, perlas, algas, conchas | Metal, grano | Punto de comercio largo (puertos, barcos; ver [Catálogo ampliado](../00-vision/catalogo-ampliado.md)) |
 | 🐸 **Pantano** | Venenos, hongos, reactivos raros, turba | Piedra, grano | Abastece a alquimistas y médicos; zona de enfermedades |
 | 🏜️ **Desierto** | Cristal, arena para vidrio, especias, sal de roca | Agua, madera, comida | Vende especias y vidrio; compra casi todo |
@@ -41,11 +41,11 @@ Cada piso tiene de 2 a 4 terrenos, además del bioma dominante de su tramo (ver 
 |---|---|---|---|
 | **Del terreno** | Lo común de cada terreno | No | Madera de pino en cualquier bosque |
 | **Vetas** | Fuentes con calidad propia que aparecen, se agotan y reaparecen en otro nodo | Sí, cada semana (ver [Fabricación](../07-economia/fabricacion.md)) | Una veta de hierro de pureza 870 que dura 5 días |
-| **Yacimientos únicos** | Fuentes **fijas** en un punto concreto del mapa, con una calidad o una variante **que no existe en otro lugar** | **Nunca** | El Hierro Negro de la Garganta del piso 14; el Roble Cantor del piso 3, que da la mejor madera para laúdes de la Torre |
+| **Yacimientos únicos** | Fuentes **fijas** en un punto concreto del mapa, con una calidad o una variante **que no existe en otro lugar** | **Nunca** | El Hierro Negro de la Garganta de Hierro (Lejanía 4); el Roble Cantor de Lejanía 1, que da la mejor madera para laúdes del mundo |
 
 ## 3. Yacimientos únicos: se pelea por un lugar, no por una zona
 
-- Cada tramo tiene unos pocos **yacimientos únicos**, que se descubren explorando o siguiendo rumores (ver [Descubrimiento](../03-personaje/descubrimiento-y-colecciones.md)).
+- Cada anillo tiene unos pocos **yacimientos únicos**, que se descubren explorando o siguiendo rumores (ver [Descubrimiento](../03-personaje/descubrimiento-y-colecciones.md)).
 - Dan una **variante** de material (Hierro Negro, Roble Cantor, Sal de Estrellas) que algunas recetas de alto nivel piden y que no se consigue en otro lado.
 - **Rinden poco por día:** no se puede sacar todo de una vez. Quien lo controla decide quién extrae y cuánto cobra.
 - **Se disputan:**
@@ -56,7 +56,7 @@ Cada piso tiene de 2 a 4 terrenos, además del bioma dominante de su tramo (ver 
 ## 4. Cómo se ve
 
 ```
-🗺 Piso 14 · Garganta de Hierro (Pradera Dorada)
+🗺 Lejanía 4 · Garganta de Hierro (Pradera Dorada)
 Terrenos: ⛰️ Montaña · 🌾 Llanura · 🌲 Bosque (poco)
 Produce: mineral, piedra, grano, ganado
 Le falta: madera noble, pescado, hierbas raras

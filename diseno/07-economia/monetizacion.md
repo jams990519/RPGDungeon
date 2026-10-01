@@ -20,7 +20,7 @@
 
 1. **Dentro del juego, solo moneda del juego.** Oro, Esencia, Honor, reputación y moneda de temporada (ver [Economía](economia.md)).
 2. **El dinero real compra Gemas** (la moneda premium), y las Gemas compran **solo cosméticos y aceleradores** (§2).
-3. **Nunca se vende:** oro, equipo, materiales directos, Esencia, Sellos, saltarse pisos o bloqueos, ventajas en PvP clasificado, revivir en el Juramento de Hierro, ni nada que se pueda apostar.
+3. **Nunca se vende:** oro, equipo, materiales directos, Esencia, saltarse viajes o bloqueos, ventajas en PvP clasificado, revivir en el Juramento de Hierro, ni nada que se pueda apostar.
 4. **Las Gemas jamás se apuestan**, y lo que se gana apostando nunca se convierte en dinero real (ver [Apuestas](../08-social/apuestas.md)).
 5. **Nada de criptomonedas, tokens ni promesas de "ganar dinero".**
 
@@ -41,7 +41,7 @@
 
 Los aceleradores son la parte delicada: aceleran el progreso, y si se descontrolan se vuelven "pagar para ganar".
 
-1. **Aceleran, no saltan.** El Techo del Piso sigue mandando: nadie pasa de nivel Frente + 5 por mucho acelerador que tenga (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)).
+1. **Aceleran, no saltan.** El Techo de la Frontera sigue mandando: la experiencia baja cuando tu nivel supera por mucho al de la Frontera, por mucho acelerador que tengas (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)).
 2. **Uno por tipo.** No se suman dos aceleradores de experiencia.
 3. **Porcentajes moderados**, por ejemplo +25 % a +50 %, nunca el doble o el triple.
 4. **No funcionan en lo competitivo:** arena clasificada, guerra de castillos, rankings de temporada ni carreras de Pioneros.

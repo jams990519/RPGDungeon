@@ -215,7 +215,7 @@ Para qué sirve: convierte la armadura de quien recibe el golpe en el porcentaje
 Documento de diseño: diseno/04-combate/dano-y-estados.md §1 · diseno/03-personaje/balance.md §4
 Módulo: M5 Combate
 Depende de: ningún otro archivo. K llega como argumento: damage.py la lee de
-    content/balance/armor.yaml (un valor por tramo).
+    content/balance/armor.yaml (un valor por anillo).
 Lo usan: engine/combat/damage.py (cada golpe físico), engine/combat/buildup.py
     (la armadura frena la acumulación de estados), simulator/ (M21).
 Eventos que publica: ninguno (cálculo puro).
@@ -236,7 +236,7 @@ Si cambias esto, revisa:
     - M4 Equipo y M13 Economía: cuánto vale cada punto de armadura y el precio de las piezas.
     - M14 Oficios: demanda de herreros, peleteros y sastres; trabajo de Medicina si hay
       más o menos heridas.
-    - Números: K = 60 en el tramo 1, crece por tramo (content/balance/armor.yaml).
+    - Números: K = 60 en el anillo I, crece por anillo (content/balance/armor.yaml).
       Todo cambio va al registro de balance.
     - Pruebas: tests/combat/test_armor.py, tests/health/test_wound_rules.py,
       tests/simulator/test_tank_mitigation.py
@@ -436,7 +436,7 @@ Riesgo: <bajo | medio | alto> · ¿Sigo?
 **Ejemplo.** El dueño dice: "la armadura protege demasiado, bájala".
 
 ```
-Cambio: subir K de la armadura de 60 a 70 en el tramo 1, para que absorba menos.
+Cambio: subir K de la armadura de 60 a 70 en el anillo I, para que absorba menos.
 Dónde: content/balance/armor.yaml · M5 Combate · diseño: 03-personaje/balance.md §4
 Con 60 de armadura, lo absorbido pasa de 50 % a 46 % (el daño recibido sube cerca de 8 %).
 Esto también afecta a:
@@ -448,7 +448,7 @@ Esto también afecta a:
   6. PvP (M12): los duelos y la guerra de castillos duran menos.
   7. Simulador (M21): hay que volver a medir la mitigación de las 11 specs de Defensa (objetivo ±4 %).
 Reglas que toca: ninguna. La armadura sigue contando siempre y nunca da inmunidad.
-Números de balance: K tramo 1: 60 → 70.
+Números de balance: K anillo I: 60 → 70.
 Pruebas que voy a correr: tests/combat/, tests/health/test_wound_rules.py, simulador completo.
 Voy a actualizar: registro de balance y balance.md §4 (hoy dice K = 60).
 Riesgo: medio · ¿Sigo?
@@ -492,7 +492,7 @@ diseno/       design documents (Spanish)
 | M6 Enemigos y jefes | `engine/enemies` | M19 Mensajería | `engine/messaging` |
 | M7 Salud | `engine/health` | M20 Administración y telemetría | `engine/telemetry` |
 | M8 Mundo | `engine/world` | M21 Simulador de balance | `simulator/` |
-| M9 Frente, Sellos y Fundación | `engine/front` | M22 Pagos | `engine/payments` |
+| M9 Frontera y Fundación | `engine/front` | M22 Pagos | `engine/payments` |
 | M10 Misiones | `engine/quests` | M23 Anti-trampas | `engine/anticheat` |
 | M11 Instancias | `engine/instances` | M24 Construcción | `engine/construction` |
 | M12 PvP, crimen y justicia | `engine/pvp` | M25 Propiedad | `engine/property` |
@@ -514,9 +514,9 @@ El diseño usa nombres en español y el código en inglés. Este diccionario es 
 | `EnfermedadContagiada` | `DiseaseContracted` | Enfermedad | `disease` |
 | `ParteRota` | `PartBroken` | Aguante · Firmeza · Postura | `stamina` · `tenacity` · `poise` |
 | `JefeDerrotado` | `BossDefeated` | Esencia · Mancha | `essence` · `bloodstain` |
-| `PisoAbierto` (en revisión por D-58) | `FloorOpened` | Piso (se retira, D-58) · Jefe · Receta | `floor` · `boss` · `recipe` |
+| `RegionAbierta` (antes `PisoAbierto`, D-58) | `RegionOpened` | Región · Jefe · Receta (Piso se retira, D-58) | `region` · `boss` · `recipe` (`floor`: retirado) |
 | `ObjetoFabricado` | `ItemCrafted` | Oficio | `profession` |
-| `OrdenEjecutada` | `OrderFilled` | Tramo | `tier` |
+| `OrdenEjecutada` | `OrderFilled` | Anillo | `tier` |
 | `ObjetoDestruido` | `ItemDestroyed` | Sello (se retira, D-58) · Pionero | `seal` · `pioneer` |
 
 El diccionario crece en esta misma sección cada vez que el código necesita un término nuevo del diseño.

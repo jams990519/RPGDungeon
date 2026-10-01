@@ -10,7 +10,7 @@ Antes de diseñar un solo sistema hay que aceptar dónde vive el juego. Telegram
 
 ## 0. El bot
 
-- El juego se monta en **[@thetowerwarbot](https://t.me/thetowerwarbot)**.
+- El juego se monta en **[@LostRealmsbot](https://t.me/LostRealmsbot)**.
 - Es un bot **distinto** de **@TowerWarsBot** (TowerWars), que sigue su camino y no se toca.
 - El token del bot va en una variable de entorno del servidor (por ejemplo `TELEGRAM_BOT_TOKEN`), **nunca** en el repositorio.
 - No se despliega nada, en Railway ni en ningún otro lado, hasta que el dueño lo diga.
@@ -32,7 +32,7 @@ Ver decisiones D-01 a D-03 en [Decisiones](../00-vision/decisiones.md).
 | Spoilers y citas plegables | Ocultar o plegar texto largo | Varios | Registro de combate plegado: resumen visible, detalle al tocar |
 | Reenvío con cabecera "reenviado de @bot" | La cabecera funciona casi como una firma | Chat Wars (informes), TowerWars (vales del gremio) | Atajo para compartir hazañas, contratos, vales e informes. La prueba es el ID del documento en el motor, no la cabecera |
 | Temas (topics) en grupos | Canales internos dentro de un grupo | Comunidades grandes | Chat de gremio con #órdenes, #banda, #mercado, #taberna |
-| Canales | Difusión de una vía | Chat Wars (partes de batalla) | Gaceta de la Torre, precios, Salón de los Caídos |
+| Canales | Difusión de una vía | Chat Wars (partes de batalla) | la Gaceta, precios, Salón de los Caídos |
 
 ## 2. Lo que Telegram nos prohíbe
 
@@ -72,10 +72,10 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
 | **Privado con el bot** | Todo lo personal: héroe, inventario, cuerpo, crafteo, encargos, combate en solitario, mazmorras (en salas retransmitidas) |
 | **Grupo de facción** | Órdenes de guerra, anuncios, reclutamiento |
 | **Grupo del gremio** (con temas) | #órdenes (mensaje fijado), #banda, #mercado, #taberna, #rol |
-| **Grupos públicos por piso** | Chat de zona: comercio local, apariciones de criaturas y reliquias, jefes errantes |
-| **Canal Gaceta de la Torre** | Primeras muertes de jefes, avance del Frente, caídas del Juramento de Hierro, partes de guerra |
+| **Grupos públicos por región** | Chat de zona: comercio local, apariciones de criaturas y reliquias, jefes errantes |
+| **Canal de la Gaceta** | Primeras muertes de jefes, avance de la Frontera, caídas del Juramento de Hierro, partes de guerra |
 | **Canal del Mercado** | Precios de referencia por ciudad, órdenes grandes, informe económico mensual |
-| **Mini App** (fase tardía) | Mapa del piso, árbol de talentos, libro de órdenes con gráfico, vivienda |
+| **Mini App** (fase tardía) | Mapa de la región, árbol de talentos, libro de órdenes con gráfico, vivienda |
 
 **Salas retransmitidas.** Un bot no puede crear grupos. Por eso el contenido armado al azar (mazmorra por buscador) ocurre en privado: el bot envía a cada participante el mismo mensaje vivo y le reenvía el chat de los demás. TowerWars ya lo hace en su Torre de Gremio; aquí es el mecanismo de todo el contenido de grupo.
 
@@ -83,5 +83,5 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
 
 - Los eventos de combate se agrupan y se aplican **una vez por ronda**, no por acción.
 - Las ediciones se limitan a una cada 3-5 s por chat, con cola.
-- Los avisos masivos (evento de servidor, apertura de piso) se escalonan en minutos y se anuncian primero en el canal. La apertura misma es a una hora fija, igual para todos los clientes (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.6).
+- Los avisos masivos (evento de servidor, apertura de región) se escalonan en minutos y se anuncian primero en el canal. La apertura misma es a una hora fija, igual para todos los clientes (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.6).
 - Todo temporizador vive en el servidor con cálculo perezoso: si el bot se reinicia, nada se pierde.

@@ -19,11 +19,11 @@ Pediste buscar todos los formatos de juego que llevan años en Telegram, de cual
 
 | Minijuego | Formato original | Por qué duró | Cómo entra aquí | Qué da |
 |---|---|---|---|---|
-| **Naipes de la Torre** (cartas estilo UNO) | **@unobot** (2016, código abierto, sigue respondiendo en 2026) | No hay que instalar nada, dura 5-10 minutos y tu mano la ves solo tú, por modo inline | Partidas de 2 a 6 en la taberna o en el chat del gremio; tu mano llega por modo inline | Fichas de taberna, títulos |
+| **Naipes del Claro** (cartas estilo UNO) | **@unobot** (2016, código abierto, sigue respondiendo en 2026) | No hay que instalar nada, dura 5-10 minutos y tu mano la ves solo tú, por modo inline | Partidas de 2 a 6 en la taberna o en el chat del gremio; tu mano llega por modo inline | Fichas de taberna, títulos |
 | **Mazo de Bestias** (cartas coleccionables estilo Gwent) | **@unobot** + el Gwent de *The Witcher 3* y el Hearthstone de WoW | Un juego de cartas dentro del mundo da ganas de coleccionar | Cada monstruo vencido puede soltar su carta, y los jefes, cartas raras. Duelos 1v1 por turnos | Colección, torneos, cosméticos |
 | **Dados del Mentiroso y dardos** | **Dados animados nativos** 🎲🎯 (desde 2020; los decide el servidor de Telegram) | La tirada no se puede trucar y el grupo entero la ve | Apuestas de taberna con tope; dardos con 🎯 | Oro (con comisión de la casa) |
 | **Póker y blackjack** | **@PokerBot** (cartas por privado, mesa en el grupo) y **@BlackJackBot** | Reglas conocidas por todos | Noche de póker del gremio, con entrada en oro; el bote se reparte y no se crea oro nuevo | Oro, títulos. Ver la nota legal en [Monetización](../07-economia/monetizacion.md) |
-| **Juego de mesa del piso** | Bots regionales de juegos tradicionales, como **Hokm** o el Ludo iraní (@telehokmbot, @MenchoolBot) | No hace falta aprender reglas | Cada tramo tiene su propio juego de mesa en su taberna (dominó, damas, un juego inventado del lugar): una excusa para viajar | Reputación local, cosméticos |
+| **Juego de mesa de la región** | Bots regionales de juegos tradicionales, como **Hokm** o el Ludo iraní (@telehokmbot, @MenchoolBot) | No hace falta aprender reglas | Cada anillo tiene su propio juego de mesa en su taberna (dominó, damas, un juego inventado del lugar): una excusa para viajar | Reputación local, cosméticos |
 | **Justa de Bardos** | Juegos de fiesta como **Chat Against Humanity** y **@RatherGameBot** | Risas en grupo | Los jugadores completan versos con cartas y el "rey de la mesa" (rota) elige el mejor | Títulos, baja el estrés (ver [Mente](../05-salud/mente.md)) |
 | **Charadas del Juglar** | **Crocodile** (@Crocodile_Game_Bot, ruso): uno explica una palabra y los demás adivinan | Sencillo y social | Palabras del propio juego: monstruos, objetos, lugares | Reputación de taberna |
 
@@ -36,11 +36,11 @@ Pediste buscar todos los formatos de juego que llevan años en Telegram, de cual
 | **Estandarte vivo** | Bots de mascotas y **tamagotchi** (DinoGochi; Catizen en versión masiva) | Una mascota del gremio que todos alimentan con materiales; si se descuida, pierde sus bonos | Bonos de comodidad del gremio |
 | **Trivia de gremio contra gremio** | **Quizarium** (pistas progresivas y más puntos por rapidez) | Torneos semanales de preguntas de lore | Trofeos de gremio |
 
-## 4. En la plaza y en los chats de piso
+## 4. En la plaza y en los chats de región
 
 | Minijuego | Formato original | Cómo entra aquí | Qué da |
 |---|---|---|---|
-| **Criaturas y reliquias que aparecen** | Bots que hacen aparecer personajes en el chat, que se lleva el primero en nombrarlos, y **El Profesor Oak** (@ProfesorOak_bot, en español, época de Pokémon GO) | Tras un rato de actividad aparece una criatura o una reliquia en el chat del piso. Para quedártela hay que superar **un reto real** (una pregunta del Bestiario, un mini combate), no solo escribir rápido: así no sirven los bots | Mascotas, cartas, curiosidades |
+| **Criaturas y reliquias que aparecen** | Bots que hacen aparecer personajes en el chat, que se lleva el primero en nombrarlos, y **El Profesor Oak** (@ProfesorOak_bot, en español, época de Pokémon GO) | Tras un rato de actividad aparece una criatura o una reliquia en el chat de la región. Para quedártela hay que superar **un reto real** (una pregunta del Bestiario, un mini combate), no solo escribir rápido: así no sirven los bots | Mascotas, cartas, curiosidades |
 | **Pintar el mapa** | **Not Pixel** (lienzo colectivo de 1000×1000; torneo "Pixel Battle" con 1.024 comunidades en noviembre de 2024) | Mapa de conquista que los gremios pintan con sus colores, y un torneo por eliminatorias cada temporada | Prestigio de gremio (ver [Eventos](../06-contenido/eventos.md)) |
 
 ## 5. En el santuario y el diario
@@ -81,7 +81,7 @@ Pediste buscar todos los formatos de juego que llevan años en Telegram, de cual
 ## 9. Orden sugerido
 
 1. **Primero:** dados de taberna (🎲), trivia de lore y rezar en el santuario. Son baratos y rápidos de hacer.
-2. **Después:** Naipes de la Torre, La Máscara y el Jefe Errante.
+2. **Después:** Naipes del Claro, La Máscara y el Jefe Errante.
 3. **Más adelante:** Mazo de Bestias, duelos de mascotas, pintar el mapa, salón recreativo.
 
 Ver P-36 y P-41 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
