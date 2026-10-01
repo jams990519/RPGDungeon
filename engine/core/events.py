@@ -100,6 +100,15 @@ class CombatEnded(Event):
     outcome: str
 
 
+@dataclass(frozen=True)
+class BossDefeated(Event):
+    """A hero beat a region Guardian (D-82). first_in_server: nobody had beaten it before. [ES] JefeDerrotado."""
+    hero_id: str
+    enemy_id: str
+    first_win: bool
+    first_in_server: bool
+
+
 Handler = Callable[[Event], None]
 
 

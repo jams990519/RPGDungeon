@@ -47,6 +47,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Postura** | Barra de los enemigos grandes; rota, abre golpes críticos | [Ronda y acciones](../04-combate/ronda-y-acciones.md) |
 | **Presupuesto de poder** | 100 puntos por spec en 6 ejes | [Balance](../03-personaje/balance.md) |
 | **Profundidades** | Contenido para 1 a 5 jugadores con compañero PNJ | [Misiones](../06-contenido/misiones-y-exploracion.md) |
+| **Raigambre** | El primer Guardián del juego, "el Guardián del Claro": un árbol antiguo con corazón de ámbar que vive en (5, 2) (D-82) | [Jefes](../06-contenido/jefes.md) |
 | **Recuerdo** | Recompensa garantizada de un Guardián, que se cambia por una pieza icónica | [Equipamiento](../03-personaje/equipamiento.md) |
 | **Región** | Mancha de zonas del mismo bioma con su Guardián (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Rol** | Qué eres en el mundo (médico, constructor, tahúr…), aparte de la clase | [Roles](roles-y-caminos-de-juego.md) |

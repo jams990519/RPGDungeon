@@ -19,6 +19,7 @@ Si cambias esto, revisa:
 from engine.core.clock import Clock, FixedClock, SystemClock
 from engine.core.content import Content, load_content
 from engine.core.events import (
+    BossDefeated,
     CombatEnded,
     CombatStarted,
     Event,
@@ -35,7 +36,7 @@ from engine.core.rng import Rng, hash_unit
 from engine.core.store import MemoryStore, Store
 
 __all__ = [
-    "Clock", "FixedClock", "SystemClock", "Content", "load_content", "Event", "EventBus",
+    "BossDefeated", "Clock", "FixedClock", "SystemClock", "Content", "load_content", "Event", "EventBus",
     "HeroCreated", "HeroDowned", "HitReceived", "TravelArrived", "TravelStarted",
     "ZoneDiscovered", "CombatStarted", "CombatEnded", "Texts", "Rng", "hash_unit",
     "MemoryStore", "Store",
