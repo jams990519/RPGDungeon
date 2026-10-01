@@ -38,7 +38,7 @@
 | Elementos y superficies | Habilidades con elemento y lanzables del cinturón (**🎒 Mochila**) | No |
 | Terreno | Se aplica solo | No |
 | Emboscada | Antes del combate, en el mensaje de exploración | No (fuera del combate) |
-| Moral y rendición | Tres botones de decisión que reemplazan la botonera 15 s | No (reemplaza) |
+| Moral y rendición | Tres botones de voto que reemplazan la botonera mientras dura el temporizador de la ronda | No (reemplaza) |
 | Límite | **Atacar** se convierte en el Límite cuando la barra está llena | No (reemplaza) |
 | Reacciones avanzadas | Las respuestas de siempre, elegidas como la jugada de la ronda; lo nuevo es acertar la forma y la ronda | No |
 | Guardar y soltar | Usar una **respuesta** guarda una carga; las cargas se **desatan** solas contra un enemigo roto | No |
@@ -153,9 +153,9 @@ Si las dos se rompen a la vez es un **Quiebre**: el enemigo no pierde más ronda
 **Cómo funciona.** Hay una sola elección por ronda (D-46), así que el golpe extra **no se elige**: sale solo.
 - Si tu acción pega una **debilidad** o hace un **crítico**, ganas un **✦ Golpe extra**: un ataque con tu arma al 50 %, que sale **al final de la misma ronda** contra el mismo objetivo (o el enemigo más cercano, si ese cayó). Suma acumulación y quita escudo si el arma es una debilidad.
 - **🤝 Relevo.** Si tu arma no pega ninguna debilidad del objetivo y la de un aliado sí, el golpe extra pasa solo a ese aliado (al que no tuvo uno esta ronda), con +25 %. Así el mago que rompe con escarcha le pasa el golpe al arquero que pega el vientre.
-- Las técnicas combinadas y el Límite **no** dan golpe extra. El golpe extra no genera otro.
+- Las técnicas combinadas, el Límite y el contraataque de un desvío (§11) **no** dan golpe extra. El golpe extra no genera otro.
 - **Tope:** 1 golpe extra por jugador por ronda.
-- **Asalto Total.** Si todos los enemigos quedan rotos a la vez (los que no tienen escudo no cuentan), cada jugador recibe un golpe rápido gratis. Si son humanoides, el grupo puede **intimidarlos** en lugar de pegar: se rinden (ver §9).
+- **Asalto Total.** Si todos los enemigos quedan rotos a la vez (los que no tienen escudo no cuentan), cada jugador recibe un golpe rápido gratis, que cuenta como su golpe extra de esa ronda (no se suma a otro). Si son humanoides, el grupo puede **intimidarlos** en lugar de pegar: se rinden (ver §9).
 - **Los enemigos también lo usan.** Los que tienen el rasgo *Oportunista* ganan golpe extra cuando critican o cuando pegan a un jugador mojado, congelado o derribado. El Bestiario lo anota.
 
 **Botón.** Ninguno: sale solo y aparece en el resumen de la ronda.
@@ -197,7 +197,7 @@ Si las dos se rompen a la vez es un **Quiebre**: el enemigo no pierde más ronda
 
 | Técnica | Etiquetas | Pareja típica | Efecto |
 |---|---|---|---|
-| **Témpano Quebrado** | ❄️ + 💥 | Mago Escarcha + Guerrero Armas | El golpe pesado parte la escarcha: cuenta como debilidad doble (−2 🔰) y hace el doble de daño a la Postura. En humanoides, fractura segura |
+| **Témpano Quebrado** | ❄️ + 💥 | Mago Escarcha + Guerrero Armas | El golpe pesado parte la escarcha: cuenta como debilidad doble (−2 🔰) y hace el doble de daño a la Postura. En humanoides PNJ, fractura segura |
 | **Baluarte** | 🛡 + ✚ | Guerrero Protección + Sacerdote Disciplina | El bloqueo cubre a toda la vanguardia esa ronda, y el escudo preventivo pasa a toda la fila a mitad de valor |
 | **Crepúsculo** | ✨ + 🌑 | Paladín Reprensión + Sacerdote Sombra | Daño que ignora resistencias místicas y quita un beneficio del enemigo |
 | **Pira de Huesos** | 💀 + 🔥 | Nigromante Legión + Evocador Devastación | Los esqueletos de la vanguardia estallan en fuego: Quemadura en la fila de enfrente y la deja en 🔥 Llamas |
@@ -235,6 +235,7 @@ Elegido: Lyra ❄️→Wyrm · Bram 🛡 respuesta · Mirra ✚→vanguardia
 - Toda spec tiene habilidades con al menos 3 etiquetas distintas. El simulador comprueba que cada spec pueda entrar en un número parecido de técnicas (±1): no hay spec "de combos" ni spec sin combos.
 - Las técnicas piden etiquetas, no specs. Ninguna pelea pide "dos Chamanes" (ver [Balance](../03-personaje/balance.md), regla 10).
 - El simulador mide su aporte: **no más del 10 %** del daño o la curación del grupo, y ninguna composición rinde más de un **5 %** por encima de la media gracias a ellas.
+- **En PvP** (2v2, 3v3 y campos), los efectos de control de las técnicas (aturdir, inmovilizar, rodear) duran la mitad y llenan la Firmeza, no hay fractura segura y *Sentencia* revienta a mitad de efecto, como en jefes.
 - En solitario cuentan el compañero PNJ de las [Profundidades](../06-contenido/misiones-y-exploracion.md), los Espíritus y los Ecos (ver [Jefes](../06-contenido/jefes.md)). Nadie queda afuera por jugar solo.
 - Eje del presupuesto: **Utilidad de grupo**.
 
@@ -437,7 +438,7 @@ Su alerta:  11 (un vigía +3, fogata −2)
 
 ### La decisión
 
-Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
+Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botonera se reemplaza por tres botones de voto durante el temporizador normal de la ronda (45 s en grupo; sin límite en solitario):
 
 | Opción | Requisito | Qué da | Qué cuesta |
 |---|---|---|---|
@@ -445,10 +446,10 @@ Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
 | 🕊 **Perdonar** | — | Reputación con el asentamiento o la facción del piso. A veces deja la bolsa (la mitad del botín) o un rumor (un campamento, un yacimiento) | Pierdes su Esencia y la otra mitad del botín. Puede volver: agradecido o con rencor |
 | 🗡 **Rematar** | — | Botín y Esencia completos | Humanoide: **Infamia** solo para quien remata (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)), y los demás enemigos de ese grupo dejan de rendirse. No da Infamia si tenía orden de busca "vivo o muerto". Bestia: nada |
 
-- Cualquiera del grupo puede elegir. Decide el primero que pulsa, y la Infamia es solo suya. Si nadie elige en 15 s, se **perdona**.
+- Cada jugador vota; nadie gana por pulsar primero. Al cerrar el tiempo gana la opción más votada. Si hay empate o nadie vota, se **perdona** (la opción que no cuesta nada). Si gana Rematar, la Infamia es solo para quienes la votaron; si gana Capturar, se gastan los grilletes de uno de quienes la votaron.
 - Tras un Asalto Total contra humanoides (§4), la misma ventana ofrece **Intimidar**: se rinden todos a la vez.
 
-**Botón.** Ninguno en la botonera normal. La decisión la reemplaza solo 15 s.
+**Botón.** Ninguno en la botonera normal. La votación la reemplaza solo mientras dura el temporizador de esa ronda.
 
 **Cómo se ve.**
 
@@ -458,7 +459,7 @@ Cuando alguien se rinde, la botonera se reemplaza 15 s por tres botones:
 
 [⛓ Capturar (grilletes: 2)]  [🕊 Perdonar]
 [🗡 Rematar · ⚠️ Infamia]
-⏱ 15 s · Si nadie elige: Perdonar
+⏱ 45 s · Gana la más votada · Empate o nadie: Perdonar
 ```
 
 **Cómo se equilibra.**
@@ -739,7 +740,7 @@ La última línea del resumen es una cita plegable con cada número, como en [Ro
 
 Para sumar a [Preguntas abiertas](../00-vision/preguntas-abiertas.md) con su número:
 - ¿El mensaje vivo muestra la etiqueta y el objetivo de lo que eligió cada aliado antes de resolver? Propuesta: sí, sin decir la habilidad exacta.
-- ¿Quién decide una rendición en grupo: el primero que pulsa o una votación? Propuesta: el primero, y la Infamia es solo suya.
+- ¿Quién decide una rendición en grupo: el primero que pulsa o una votación? Propuesta: votación al cerrar el temporizador, para que no gane el más rápido (regla 2, §1); la Infamia, solo para quienes votaron Rematar.
 - ¿Los jugadores pueden rendirse en zona roja (entregar la mochila a cambio de no caer)? Propuesta: dejarlo para después del lanzamiento.
 - ¿La barra de Límite se conserva entre las peleas de una misma mazmorra? Propuesta: no; el Límite es un momento de jefe.
 - ¿Las cargas se desatan solas contra un enemigo roto o el jugador elige cuándo? Propuesta: solas, con la opción de guardarlas en las Tácticas, para no sumar botones (D-46).
