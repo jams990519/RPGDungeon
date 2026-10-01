@@ -17,7 +17,7 @@
 
 **Qué pidió el dueño.** Que al fundar un campamento te avisen que llegarán oleadas y que "tienes que reforzar las cosas en los alrededores para poder protegerlo" (D-105). Las oleadas (incursiones, D-99) ya llegan cada semana desde la fundación; esta es su otra mitad: **reforzar los alrededores**.
 
-**Capa simple (D-44).** Las defensas son 8 de las 20 🔨 Mejoras del campamento ([Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6). Se construyen como obras que pagan los miembros entre todos con materiales de su mochila; todavía sin oficio de Construcción, sin jornadas, sin durabilidad ni reparación (eso sigue como propuesta, §2 a §5). Lo construido no se pierde nunca.
+**Capa simple (D-44).** Las defensas son 8 de las 20 🔨 Mejoras del campamento ([Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6). Se construyen como obras que pagan los miembros entre todos con materiales de su mochila; sin jornadas (propuesta, §2 a §5); desde D-115 el oficio 🏗️ Construcción las abarata y las oleadas las dañan hasta repararlas (abajo). Lo construido no se pierde nunca.
 
 | Defensa | Nivel del campamento | 🛡️ Defensa | Equivale en la propuesta (§2) |
 |---|---|---|---|
@@ -33,6 +33,7 @@
 - **Total: 11 puntos** (12 de noche). Los costos están en `content/camp_upgrades.yaml`; el número lo da `GameService._camp_defense(camp, night=False)`.
 - La 🛡️ Defensa **se ve** en la pantalla del campamento (también la ven los visitantes) y en 🔨 Mejoras, y **frena las oleadas**: al llegar una, se guarda la defensa del campamento y cada punto les quita a los atacantes un 4 % de vida y de ataque (nunca más de la mitad). La 🗼 Torre de vigía avisa a los miembros activos 2 horas antes; los 🔥 Braseros suman 1 de noche (19 a 6 h, UTC−5, provisional). Código: `_raid_weaken`, `_raid_watch`, `_is_night` en `engine/service/game.py`.
 - Lo que nunca cambia: en el territorio de los campamentos nadie es atacado al llegar, explorar ni recolectar (D-81). Las oleadas pelean con 🛡️ Defender, desde donde esté cada miembro.
+- **🛠️ Daño y reparación (en el juego, D-115).** Cada oleada semanal daña las defensas: **−1** de 🛡️ Defensa si la defienden, **−2** si la pierden, nunca más que lo construido (la Noche de prueba no daña). Lo construido no se pierde: solo baja la Defensa (la oleada siguiente llega más fuerte) hasta que los miembros la reparan entre todos en 🔨 Mejoras → 🔨 Obras → 🛠️ Reparar defensas, con **2 🟫 tablones y 2 🧱 sillares por punto**; la 🏗️ Construcción del campamento lo deja en la mitad al rango 100. Es la capa simple de la durabilidad y la reparación de §2 a §5 (sin jornadas). Ver [Profesiones](../07-economia/profesiones.md) §0.4. Código: `_raid_damage`, `_repair_defenses`, `_camp_damage` en `engine/service/game.py`; números en `content/balance.yaml` → `camp_professions`.
 
 ## 1. Quién ataca y dónde
 

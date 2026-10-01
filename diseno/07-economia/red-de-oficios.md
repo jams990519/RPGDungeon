@@ -1,6 +1,6 @@
 # Red de oficios: quién necesita a quién
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115). En el juego: las fases 1 y 1.5 y el lado del campamento de la fase 2 (§5)
 
 **De dónde sale.**
 - *World of Warcraft*: oficios que se piden materiales entre sí (el herrero necesita al minero, el encantador desencanta lo que otros fabrican) y especializaciones por oficio desde *Dragonflight*.
@@ -84,9 +84,9 @@
 | Ciclo | Cómo gira |
 |---|---|
 | **Equipo** | Minero → Fundición → Herrería (+ Curtiduría) → el guerrero lo gasta peleando → reparación → se rompe → el Encantador desencanta lo viejo → vuelve a hacer falta equipo |
-| **Comida** | Desollador, Pescador, Agricultor y Ganadero → Cocina → la despensa del campamento y las mejoras del que pelea → se come todos los días |
+| **Comida** | Desollador, Pescador, Agricultor y Ganadero → Cocina → la despensa del campamento y las mejoras del que pelea → se come todos los días. **En el juego (fase 2):** Desollador y 🎣 Pescador (+ Herbolario, Leñador, Minero y Destilación en los platos grandes) → 🍲 Cocina → la despensa, que come todos los días |
 | **Curación** | Herbolario → Destilación → Alquimia y Medicina (+ Sastrería, vendas) → se gastan en cada pelea y en cada enfermedad |
-| **Campamento** | Minero y Leñador → Cantería y Aserradero → Construcción (+ Herrería e Ingeniería) → mejoras y defensas → las oleadas las dañan → se reparan |
+| **Campamento** | Minero y Leñador → Cantería y Aserradero → Construcción (+ Herrería e Ingeniería) → mejoras y defensas → las oleadas las dañan → se reparan. **En el juego (fase 2):** Minero y Leñador → 🗿 Cantería (🧱 sillar) y Aserradero (🟫 tablón) → las mejoras desde el nivel 7 y la 🛠️ reparación de las defensas que dañó cada oleada → 🏗️ Construcción abarata las dos |
 | **Herramientas** | Herrería y Carpintería hacen las herramientas de los recolectores → se gastan recolectando → vuelven a la fragua |
 | **Información** | Explorador → Inscripción (mapas) → Comercio los vende → los que pelean encuentran los campamentos enemigos → botín que vuelve al mercado |
 
@@ -96,7 +96,7 @@
 |---|---|---|
 | **1 (en curso)** | Leñador, Minero, Herbolario, Desollador · Aserradero, Fundición, Destilación, Tejeduría, Curtiduría · Carpintería, Herrería, Alquimia, Sastrería, Peletería, Joyería | Usan los recursos que ya están en el juego y hacen el equipo |
 | **1.5** | 🩺 Medicina (D-111, en el juego) · 🧭 Explorador (D-112, en el juego: [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | Ya están decididos y conectados con los sanadores y el mapa |
-| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde cierto nivel, y las defensas se reparan después de las oleadas) · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
+| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · 🗿 Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde el nivel 7, y las defensas se reparan después de las oleadas): **el lado del campamento, en el juego** (capa simple, ver [Profesiones](profesiones.md) §0.4, "Los oficios del campamento en el juego") · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
 | **3** | 🌾 Agricultor y 🐑 Ganadero (granero, huerto y corral) · 📜 Inscripción · ⚙️ Ingeniería · 💱 Comercio | Profundizan; necesitan el mercado de órdenes de la segunda tanda de la economía |
 
 Cada fase se programa en la capa simple primero (D-44): rango, recetas, beneficio propio (D-111) y una especialización. La capa profunda ([Profesiones](profesiones.md) §5 a §13: maestría por objeto, exámenes, enfermedades laborales) llega después.
