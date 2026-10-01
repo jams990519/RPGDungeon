@@ -9,6 +9,7 @@ Todo lo que hay para hacer, desde el encargo de cinco minutos hasta el jefe que 
 | [misiones-y-exploracion.md](misiones-y-exploracion.md) | Encargos, misiones, expediciones, Profundidades con compañero, Laberinto, roguelite semanal, Pruebas de Maestría, Pesadillas, cacerías y más |
 | [mazmorras-y-bandas.md](mazmorras-y-bandas.md) | Mazmorras de 5, Mítica+ con reloj de rondas y afijos, bandas flexibles de 10 a 25, botín |
 | [jefes.md](jefes.md) | Tipos de jefe, las 10 reglas de Elden Ring en texto, invocaciones asíncronas, ejemplo completo (Wyrm de las Dunas) |
+| [bestiario.md](bestiario.md) | Las 19 familias de monstruos, avisos, contagio, modificadores, únicos con nombre y ecología (propuesta). **En el juego:** los enemigos de cada bioma por franjas de nivel, del 1 al 100 (D-108) |
 | [cacerias.md](cacerias.md) | **§0 en el juego (D-106, provisional): 🏹 Cazar en la zona y la 🏹 Partida de caza del campamento.** Propuesta: el bucle de una cacería, 11 formatos (presas, caza mayor, bestias legendarias, captura viva…), calidad de la pieza, herramientas, rangos de cazador |
 | [investigaciones.md](investigaciones.md) | Casos detectivescos con tablero de pistas e interrogatorios; investigación de curas, recetas, planos, idiomas y el Gran Misterio de la Lejanía |
 | [crimen-y-justicia.md](crimen-y-justicia.md) | Delitos, el oficio de ladrón, gremio de ladrones y perista, contrabando, guardia, tribunal por turnos, penas |

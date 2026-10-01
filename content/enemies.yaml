@@ -298,3 +298,1318 @@ raigambre:
         - {id: ramazo, weight: 2, power: 1.0, tags: [blockable, dodgeable]}
         - {id: golpe_de_ambar, weight: 2, power: 1.6, tags: [blockable]}
         - {id: furia_del_bosque, weight: 2, power: 2.3, tags: [dodgeable, interruptible]}
+
+# --- D-108: the high-level bestiary (diseno/06-contenido/bestiario.md, "En el juego") ---
+# [ES] D-108 (confirmada): cada camino llega al nivel 100 sin aburrir. Antes casi todos los enemigos llegaban
+# hasta el nivel 16 y arriba solo quedaba el bandido errante. Desde aquí, cada bioma con peligro tiene al menos
+# 2 enemigos propios (sin contar al bandido) en cada nivel de 2 a 100, en 7 franjas que se pisan:
+# 1-15, 12-30, 25-45, 40-60, 55-75, 70-90 y 85-100 (tests/test_bestiary.py lo comprueba).
+# Qué enemigo sale lo decide engine/world/encounters.py: uno del bioma de la zona cuya franja tiene el nivel de la
+# zona (más allá de la última franja, los de la más cercana). Lo usan los encuentros y las incursiones.
+# De dónde salen los números (para sumar otro enemigo sin medir todo de nuevo):
+#   vida = 75 + 13 por nivel y ataque = 10 + 1,5 por nivel (la curva del bandido errante), por el molde de su
+#   familia y por su franja. Moldes (vida × ataque, defensa, iniciativa): fiera 1,35 × 1,2, 0,05, 13 ·
+#   bruto 1,42 × 1,05, 0,2, 6 · coraza 1,22 × 1,0, 0,38, 5 · veneno 1,05 × 1,18, 0,12, 12 ·
+#   espectro 1,13 × 1,32, 0, 11 · soldado 1,35 × 1,1, 0,2, 9 · enjambre 0,95 × 1,2, 0, 15.
+#   Franja: 1 (zonas bajas) 0,85 · 1 (niveles 6-17) 0,95 · 2: 1,0 · 3: 1,02 · 4: 1,04 · 5: 1,05 · 6: 1,06 · 7: 1,08.
+#   xp = 34 · 40 · 42 · 42 · 43 · 43 · 44 · 44 según la franja, por el molde (bruto 1,12, coraza 1,08,
+#   soldado 1,05, fiera 1,0, veneno y espectro 0,97, enjambre 0,9). Con hero.xp_level_scale, pelear y cazar
+#   siguen llevando al nivel 100 en ~1,8 años con toda la energía (D-108; cuenta en balance.md §7).
+#   gold y botín crecen con la franja; la gente (y los gigantes) suelta más monedas.
+#   🍖 carne (D-93, 40-60 %): las bestias que se comen (animales, insectos grandes, reptiles, aves y dracónidos),
+#   que a cambio sueltan menos monedas. No sueltan carne: gente, gigantes, no muertos, espectros, plantas,
+#   elementales, constructos, feéricos, licántropos, enjambres de mosquitos, sanguijuelas, murciélagos y polillas.
+#   Desde la franja 5 todos tienen 3 golpes o más: los brutos, los venenosos y los enjambres, un segundo golpe grande
+#   (1,7 a 1,8) que pide otra respuesta; los demás, una carga que se interrumpe (las fieras de la franja 7, las dos).
+# Medido con tools/sim.py (juego atento, cinturón lleno, equipo poco común): tabla en balance.md §7.
+# Si cambias esto, revisa: tests/test_bestiary.py (cobertura, textos, peleas que se ganan), tests/test_raids.py
+# (la Noche de prueba trae al más fuerte del bioma) y el ritmo de D-108 (progresion.md §1.2).
+
+# -- band 1: low zones of montana, tundra, desierto and ruinas (levels 1-12) --
+cabra_montes:
+  name_key: enemy.cabra_montes.name
+  biomes: [montana, colinas]
+  level_min: 1
+  level_max: 9
+  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 15, attack: 1.5}
+  xp: 34
+  gold: [1, 4]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.2}
+  moves:
+    - {id: topetazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_de_roca, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: balido, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+zorro_polar:
+  name_key: enemy.zorro_polar.name
+  biomes: [tundra]
+  level_min: 1
+  level_max: 9
+  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 15, attack: 1.5}
+  xp: 34
+  gold: [1, 4]
+  loot: {carne: 0.4, piel: 0.3, hierba_curativa: 0.2}
+  moves:
+    - {id: dentellada_rapida, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: brinco_helado, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: aullido_corto, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+kobold_minero:
+  name_key: enemy.kobold_minero.name
+  biomes: [montana, colinas]
+  level_min: 2
+  level_max: 12
+  base: {hp: 86, attack: 9, armor: 0.2, initiative: 9}
+  per_level: {hp: 15, attack: 1.4}
+  xp: 36
+  gold: [4, 9]
+  loot: {pieza_metal: 0.2, piedra: 0.08}
+  moves:
+    - {id: golpe_de_pico, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: pedrada, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: mecha_encendida, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+chacal_del_desierto:
+  name_key: enemy.chacal_del_desierto.name
+  biomes: [desierto]
+  level_min: 1
+  level_max: 9
+  base: {hp: 86, attack: 10, armor: 0.05, initiative: 13}
+  per_level: {hp: 15, attack: 1.5}
+  xp: 34
+  gold: [1, 4]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.2}
+  moves:
+    - {id: mordisco_seco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: acometida, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: llamada_de_la_jauria, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+escarabajo_de_duna:
+  name_key: enemy.escarabajo_de_duna.name
+  biomes: [desierto]
+  level_min: 2
+  level_max: 12
+  base: {hp: 78, attack: 8, armor: 0.38, initiative: 5}
+  per_level: {hp: 13, attack: 1.3}
+  xp: 37
+  gold: [1, 4]
+  loot: {carne: 0.4, piel: 0.3, piedra: 0.2}
+  moves:
+    - {id: pinzada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: bola_de_arena, weight: 1, power: 2.0, tags: [blockable]}
+
+murcielago_de_cripta:
+  name_key: enemy.murcielago_de_cripta.name
+  biomes: [ruinas]
+  level_min: 1
+  level_max: 8
+  base: {hp: 61, attack: 10, armor: 0.0, initiative: 15}
+  per_level: {hp: 10, attack: 1.5}
+  xp: 31
+  gold: [2, 6]
+  loot: {pieza_metal: 0.2}
+  moves:
+    - {id: mordisco_de_murcielago, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: nube_de_alas, weight: 1, power: 1.8, tags: [blockable]}
+
+buho_nival:
+  name_key: enemy.buho_nival.name
+  biomes: [tundra, montana]
+  level_min: 2
+  level_max: 11
+  base: {hp: 67, attack: 10, armor: 0.12, initiative: 12}
+  per_level: {hp: 12, attack: 1.5}
+  xp: 33
+  gold: [1, 4]
+  loot: {carne: 0.4, piel: 0.3, fibra: 0.2}
+  moves:
+    - {id: garra_silenciosa, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: picado_nocturno, weight: 1, power: 2.0, tags: [dodgeable]}
+
+# -- band 1, late: levels 6-17 where only the bandit was left --
+lobo_gris:
+  name_key: enemy.lobo_gris.name
+  biomes: [bosque, pradera]
+  level_min: 6
+  level_max: 16
+  base: {hp: 96, attack: 11, armor: 0.05, initiative: 13}
+  per_level: {hp: 17, attack: 1.7}
+  xp: 40
+  gold: [2, 6]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.2}
+  moves:
+    - {id: colmillazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: rodeo, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: llamada_de_la_manada, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+jabali_colmillo_hierro:
+  name_key: enemy.jabali_colmillo_hierro.name
+  biomes: [pradera, colinas]
+  level_min: 7
+  level_max: 17
+  base: {hp: 101, attack: 10, armor: 0.2, initiative: 6}
+  per_level: {hp: 18, attack: 1.5}
+  xp: 45
+  gold: [2, 6]
+  loot: {carne: 0.6, piel: 0.5, pieza_metal: 0.08}
+  moves:
+    - {id: colmillo_de_hierro, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: carga_de_hierro, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+espantapajaros_animado:
+  name_key: enemy.espantapajaros_animado.name
+  biomes: [pradera]
+  level_min: 6
+  level_max: 16
+  base: {hp: 96, attack: 10, armor: 0.2, initiative: 9}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 42
+  gold: [3, 8]
+  loot: {fibra: 0.2, madera: 0.08}
+  moves:
+    - {id: hoz_de_paja, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: cosecha, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: bandada_de_cuervos, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+enredadera_estranguladora:
+  name_key: enemy.enredadera_estranguladora.name
+  biomes: [bosque, pantano]
+  level_min: 6
+  level_max: 16
+  base: {hp: 87, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 15, attack: 1.4}
+  xp: 43
+  gold: [3, 8]
+  loot: {fibra: 0.2, madera: 0.08}
+  moves:
+    - {id: latigo_de_espinas, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: estrangular, weight: 1, power: 2.0, tags: [dodgeable]}
+
+fuego_fatuo:
+  name_key: enemy.fuego_fatuo.name
+  biomes: [ruinas, bosque]
+  level_min: 6
+  level_max: 16
+  base: {hp: 81, attack: 13, armor: 0.0, initiative: 11}
+  per_level: {hp: 14, attack: 1.9}
+  xp: 39
+  gold: [3, 8]
+  loot: {pocion_vida: 0.08, pieza_metal: 0.08}
+  moves:
+    - {id: chispa_fatua, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: llamarada_fria, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: parpadeo, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+lobo_de_las_nieves:
+  name_key: enemy.lobo_de_las_nieves.name
+  biomes: [tundra, montana]
+  level_min: 6
+  level_max: 16
+  base: {hp: 96, attack: 11, armor: 0.05, initiative: 13}
+  per_level: {hp: 17, attack: 1.7}
+  xp: 40
+  gold: [2, 6]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.2}
+  moves:
+    - {id: mordisco_helado, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_en_la_ventisca, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: aullido_de_escarcha, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+# -- band 2: levels 12-30 --
+ogro_del_puente:
+  name_key: enemy.ogro_del_puente.name
+  biomes: [pradera, colinas]
+  level_min: 12
+  level_max: 30
+  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
+  per_level: {hp: 18, attack: 1.6}
+  xp: 47
+  gold: [5, 12]
+  loot: {piedra: 0.25, madera: 0.13}
+  moves:
+    - {id: garrotazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: cobrar_peaje, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+langosta_de_plaga:
+  name_key: enemy.langosta_de_plaga.name
+  biomes: [pradera]
+  level_min: 12
+  level_max: 30
+  base: {hp: 71, attack: 12, armor: 0.0, initiative: 15}
+  per_level: {hp: 12, attack: 1.8}
+  xp: 38
+  gold: [2, 7]
+  loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
+  moves:
+    - {id: nube_mordiente, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: plaga, weight: 1, power: 1.8, tags: [blockable]}
+
+chispa_errante:
+  name_key: enemy.chispa_errante.name
+  biomes: [pradera]
+  level_min: 13
+  level_max: 30
+  base: {hp: 85, attack: 13, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.0}
+  xp: 41
+  gold: [3, 9]
+  loot: {pieza_metal: 0.25}
+  moves:
+    - {id: descarga, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: rayo_en_cadena, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: carga_estatica, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+lobo_bicefalo:
+  name_key: enemy.lobo_bicefalo.name
+  biomes: [colinas, montana]
+  level_min: 12
+  level_max: 30
+  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [2, 7]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.25}
+  moves:
+    - {id: doble_mordisco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_doble, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: aullido_doble, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+ciclope_de_cantera:
+  name_key: enemy.ciclope_de_cantera.name
+  biomes: [colinas, montana]
+  level_min: 14
+  level_max: 30
+  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
+  per_level: {hp: 18, attack: 1.6}
+  xp: 47
+  gold: [5, 12]
+  loot: {piedra: 0.25, pieza_metal: 0.13}
+  moves:
+    - {id: punetazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: roca_lanzada, weight: 1, power: 2.1, tags: [dodgeable]}
+
+arana_nodriza:
+  name_key: enemy.arana_nodriza.name
+  biomes: [bosque, pantano]
+  level_min: 12
+  level_max: 30
+  base: {hp: 79, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.8}
+  xp: 41
+  gold: [2, 7]
+  loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
+  moves:
+    - {id: picadura_nodriza, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: puesta, weight: 1, power: 2.0, tags: [dodgeable]}
+
+hada_de_espinas:
+  name_key: enemy.hada_de_espinas.name
+  biomes: [bosque]
+  level_min: 12
+  level_max: 30
+  base: {hp: 85, attack: 13, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.0}
+  xp: 41
+  gold: [3, 9]
+  loot: {hierba_curativa: 0.25, pocion_vida: 0.09}
+  moves:
+    - {id: espina_voladora, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: circulo_de_hongos, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: polvo_de_hada, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+sanguijuela_gigante:
+  name_key: enemy.sanguijuela_gigante.name
+  biomes: [pantano]
+  level_min: 12
+  level_max: 30
+  base: {hp: 106, attack: 10, armor: 0.1, initiative: 6}
+  per_level: {hp: 18, attack: 1.6}
+  xp: 47
+  gold: [3, 9]
+  loot: {hierba_curativa: 0.25}
+  moves:
+    - {id: chupar, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: abrazo_viscoso, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+enjambre_de_mosquitos:
+  name_key: enemy.enjambre_de_mosquitos.name
+  biomes: [pantano]
+  level_min: 12
+  level_max: 28
+  base: {hp: 71, attack: 12, armor: 0.0, initiative: 15}
+  per_level: {hp: 12, attack: 1.8}
+  xp: 38
+  gold: [3, 9]
+  loot: {hierba_curativa: 0.25}
+  moves:
+    - {id: picaduras, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: nube_de_fiebre, weight: 1, power: 1.8, tags: [blockable]}
+
+elemental_de_piedra:
+  name_key: enemy.elemental_de_piedra.name
+  biomes: [montana, tundra]
+  level_min: 13
+  level_max: 30
+  base: {hp: 92, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 16, attack: 1.5}
+  xp: 45
+  gold: [3, 9]
+  loot: {piedra: 0.25, pieza_metal: 0.13}
+  moves:
+    - {id: puno_de_piedra, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: derrumbe, weight: 1, power: 2.0, tags: [blockable]}
+
+uro_lanudo:
+  name_key: enemy.uro_lanudo.name
+  biomes: [tundra]
+  level_min: 12
+  level_max: 30
+  base: {hp: 106, attack: 10, armor: 0.2, initiative: 6}
+  per_level: {hp: 18, attack: 1.6}
+  xp: 47
+  gold: [2, 7]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.25}
+  moves:
+    - {id: cornada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: estampida, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+gloton_de_las_nieves:
+  name_key: enemy.gloton_de_las_nieves.name
+  biomes: [tundra]
+  level_min: 12
+  level_max: 30
+  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [2, 7]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.25}
+  moves:
+    - {id: zarpa_voraz, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: frenesi, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: grunido, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+buitre_de_hueso:
+  name_key: enemy.buitre_de_hueso.name
+  biomes: [desierto]
+  level_min: 12
+  level_max: 30
+  base: {hp: 79, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.8}
+  xp: 41
+  gold: [2, 7]
+  loot: {carne: 0.4, piel: 0.3, fibra: 0.25}
+  moves:
+    - {id: picotazo_de_hueso, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: caida_en_picado, weight: 1, power: 2.0, tags: [dodgeable]}
+
+hiena_rayada:
+  name_key: enemy.hiena_rayada.name
+  biomes: [desierto]
+  level_min: 14
+  level_max: 30
+  base: {hp: 101, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [2, 7]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.25}
+  moves:
+    - {id: mordisco_de_hiena, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: tiron, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: carcajada, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+momia_de_arena:
+  name_key: enemy.momia_de_arena.name
+  biomes: [desierto, ruinas]
+  level_min: 13
+  level_max: 30
+  base: {hp: 101, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 44
+  gold: [3, 9]
+  loot: {fibra: 0.25, venda: 0.09}
+  moves:
+    - {id: golpe_vendado, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: abrazo_de_la_tumba, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: polvo_de_tumba, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+gargola_de_ruinas:
+  name_key: enemy.gargola_de_ruinas.name
+  biomes: [ruinas]
+  level_min: 12
+  level_max: 30
+  base: {hp: 92, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 16, attack: 1.5}
+  xp: 45
+  gold: [3, 9]
+  loot: {piedra: 0.25, pieza_metal: 0.13}
+  moves:
+    - {id: garra_de_piedra, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: caida_de_la_cornisa, weight: 1, power: 2.0, tags: [dodgeable]}
+
+saqueador_de_tumbas:
+  name_key: enemy.saqueador_de_tumbas.name
+  biomes: [ruinas]
+  level_min: 14
+  level_max: 30
+  base: {hp: 101, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 44
+  gold: [5, 12]
+  loot: {pieza_metal: 0.25, pocion_vida: 0.09}
+  moves:
+    - {id: cuchillada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: bomba_de_polvora, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: trampa, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+# -- band 3: levels 25-45 --
+leon_de_la_estepa:
+  name_key: enemy.leon_de_la_estepa.name
+  biomes: [pradera, colinas]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [3, 8]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.3}
+  moves:
+    - {id: zarpazo_de_leon, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_de_caza, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: rugido_de_leon, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+centauro_salvaje:
+  name_key: enemy.centauro_salvaje.name
+  biomes: [pradera]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 44
+  gold: [6, 13]
+  loot: {pieza_metal: 0.3, madera: 0.18, pocion_vida: 0.11}
+  moves:
+    - {id: lanzazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: galope, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: tensar_el_arco, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+trol_de_colina:
+  name_key: enemy.trol_de_colina.name
+  biomes: [colinas, montana]
+  level_min: 25
+  level_max: 45
+  base: {hp: 109, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 47
+  gold: [6, 13]
+  loot: {piedra: 0.3, madera: 0.18}
+  moves:
+    - {id: manotazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aplastamiento, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+pantera_sombria:
+  name_key: enemy.pantera_sombria.name
+  biomes: [bosque]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [3, 8]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.3}
+  moves:
+    - {id: zarpa_sombria, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: emboscada, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: acecho, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+micelio_andante:
+  name_key: enemy.micelio_andante.name
+  biomes: [bosque, pantano]
+  level_min: 25
+  level_max: 45
+  base: {hp: 93, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 16, attack: 1.5}
+  xp: 45
+  gold: [4, 10]
+  loot: {hierba_curativa: 0.3, fibra: 0.18}
+  moves:
+    - {id: golpe_de_moho, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: nube_de_esporas, weight: 1, power: 2.0, tags: [dodgeable]}
+
+basilisco_de_pantano:
+  name_key: enemy.basilisco_de_pantano.name
+  biomes: [pantano]
+  level_min: 26
+  level_max: 45
+  base: {hp: 80, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.8}
+  xp: 41
+  gold: [3, 8]
+  loot: {carne: 0.4, piel: 0.3, hierba_curativa: 0.3}
+  moves:
+    - {id: mordida_de_basilisco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: mirada_petrea, weight: 1, power: 2.0, tags: [dodgeable]}
+
+necrofago:
+  name_key: enemy.necrofago.name
+  biomes: [pantano, ruinas]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 44
+  gold: [4, 10]
+  loot: {pieza_metal: 0.3, hierba_curativa: 0.18}
+  moves:
+    - {id: zarpa_sucia, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: remate, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: festin, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+grifo_de_montana:
+  name_key: enemy.grifo_de_montana.name
+  biomes: [montana]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [3, 8]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.3}
+  moves:
+    - {id: garra_de_grifo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: picado_de_grifo, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: grito_del_nido, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+oso_polar:
+  name_key: enemy.oso_polar.name
+  biomes: [tundra]
+  level_min: 25
+  level_max: 45
+  base: {hp: 109, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 47
+  gold: [3, 8]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.3}
+  moves:
+    - {id: zarpazo_polar, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: golpe_sobre_el_hielo, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+ventisquero:
+  name_key: enemy.ventisquero.name
+  biomes: [tundra, montana]
+  level_min: 27
+  level_max: 45
+  base: {hp: 86, attack: 13, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.0}
+  xp: 41
+  gold: [4, 10]
+  loot: {pieza_metal: 0.3, piedra: 0.18}
+  moves:
+    - {id: azote_helado, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: nova_de_hielo, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: remolino_helado, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+tigre_de_duna:
+  name_key: enemy.tigre_de_duna.name
+  biomes: [desierto]
+  level_min: 25
+  level_max: 45
+  base: {hp: 103, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.8}
+  xp: 42
+  gold: [3, 8]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.3}
+  moves:
+    - {id: zarpazo_de_tigre, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_bajo_la_arena, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: rugido_del_desierto, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+escorpion_de_vidrio:
+  name_key: enemy.escorpion_de_vidrio.name
+  biomes: [desierto]
+  level_min: 26
+  level_max: 45
+  base: {hp: 93, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 16, attack: 1.5}
+  xp: 45
+  gold: [3, 8]
+  loot: {carne: 0.4, piel: 0.3, pieza_metal: 0.18}
+  moves:
+    - {id: pinza_de_vidrio, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aguijon_de_vidrio, weight: 1, power: 2.0, tags: [dodgeable]}
+
+planidera:
+  name_key: enemy.planidera.name
+  biomes: [ruinas]
+  level_min: 25
+  level_max: 45
+  base: {hp: 86, attack: 13, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.0}
+  xp: 41
+  gold: [4, 10]
+  loot: {pieza_metal: 0.3, pocion_vida: 0.11}
+  moves:
+    - {id: toque_de_luto, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: lamento_eterno, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: sollozo, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+# -- band 4: levels 40-60 --
+bisonte_de_trueno:
+  name_key: enemy.bisonte_de_trueno.name
+  biomes: [pradera, colinas]
+  level_min: 40
+  level_max: 60
+  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 48
+  gold: [3, 9]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.35}
+  moves:
+    - {id: cabezazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: estampida_de_trueno, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+asaltante_de_caravanas:
+  name_key: enemy.asaltante_de_caravanas.name
+  biomes: [pradera, desierto]
+  level_min: 40
+  level_max: 60
+  base: {hp: 105, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 45
+  gold: [6, 14]
+  loot: {pieza_metal: 0.35, fibra: 0.23, pocion_vida: 0.13}
+  moves:
+    - {id: sablazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: golpe_de_escudo, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: silbido, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+wyvern_de_penasco:
+  name_key: enemy.wyvern_de_penasco.name
+  biomes: [colinas, montana]
+  level_min: 41
+  level_max: 60
+  base: {hp: 82, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.8}
+  xp: 42
+  gold: [3, 9]
+  loot: {carne: 0.4, piel: 0.3, piedra: 0.35}
+  moves:
+    - {id: mordida_de_wyvern, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: cola_venenosa, weight: 1, power: 2.0, tags: [dodgeable]}
+
+licantropo_salvaje:
+  name_key: enemy.licantropo_salvaje.name
+  biomes: [bosque, tundra]
+  level_min: 40
+  level_max: 60
+  base: {hp: 105, attack: 12, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.9}
+  xp: 43
+  gold: [4, 11]
+  loot: {hierba_curativa: 0.35, fibra: 0.23}
+  moves:
+    - {id: desgarro, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_lunar, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: aullido_a_la_luna, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+driade_marchita:
+  name_key: enemy.driade_marchita.name
+  biomes: [bosque]
+  level_min: 41
+  level_max: 60
+  base: {hp: 88, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.1}
+  xp: 42
+  gold: [4, 11]
+  loot: {madera: 0.35, hierba_curativa: 0.23}
+  moves:
+    - {id: latigo_de_raiz, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: raices_del_sueno, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: polen, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+gigante_del_fango:
+  name_key: enemy.gigante_del_fango.name
+  biomes: [pantano]
+  level_min: 40
+  level_max: 60
+  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 48
+  gold: [6, 14]
+  loot: {arcilla: 0.35, hierba_curativa: 0.23}
+  moves:
+    - {id: puno_de_fango, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: hundir, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+
+cultista_de_la_podredumbre:
+  name_key: enemy.cultista_de_la_podredumbre.name
+  biomes: [pantano, ruinas]
+  level_min: 40
+  level_max: 60
+  base: {hp: 88, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.1}
+  xp: 42
+  gold: [6, 14]
+  loot: {hierba_curativa: 0.35, pocion_vida: 0.13}
+  moves:
+    - {id: rayo_podrido, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: ofrenda, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: rezo, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+gigante_de_escarcha:
+  name_key: enemy.gigante_de_escarcha.name
+  biomes: [montana, tundra]
+  level_min: 42
+  level_max: 60
+  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 48
+  gold: [6, 14]
+  loot: {piedra: 0.35, pieza_metal: 0.23}
+  moves:
+    - {id: hachazo_helado, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: meteoro_de_hielo, weight: 1, power: 2.1, tags: [dodgeable]}
+
+remolino_de_arena:
+  name_key: enemy.remolino_de_arena.name
+  biomes: [desierto]
+  level_min: 40
+  level_max: 60
+  base: {hp: 74, attack: 12, armor: 0.0, initiative: 15}
+  per_level: {hp: 13, attack: 1.9}
+  xp: 39
+  gold: [4, 11]
+  loot: {piedra: 0.35, pieza_metal: 0.23}
+  moves:
+    - {id: arena_cortante, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: tormenta_de_arena, weight: 1, power: 1.8, tags: [blockable]}
+
+wyrm_joven_de_las_dunas:
+  name_key: enemy.wyrm_joven_de_las_dunas.name
+  biomes: [desierto]
+  level_min: 43
+  level_max: 60
+  base: {hp: 111, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.6}
+  xp: 48
+  gold: [3, 9]
+  loot: {carne: 0.6, piel: 0.5, pieza_metal: 0.23}
+  moves:
+    - {id: mordida_de_wyrm, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aliento_de_vidrio, weight: 1, power: 2.1, tags: [dodgeable, interruptible]}
+
+caballero_hueco:
+  name_key: enemy.caballero_hueco.name
+  biomes: [ruinas]
+  level_min: 40
+  level_max: 60
+  base: {hp: 105, attack: 11, armor: 0.2, initiative: 9}
+  per_level: {hp: 18, attack: 1.7}
+  xp: 45
+  gold: [4, 11]
+  loot: {pieza_metal: 0.35, piedra: 0.23, venda: 0.13}
+  moves:
+    - {id: espadazo_hueco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: golpe_retrasado, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: guardia, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+# -- band 5: levels 55-75 --
+manticora:
+  name_key: enemy.manticora.name
+  biomes: [pradera, desierto]
+  level_min: 55
+  level_max: 75
+  base: {hp: 83, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.9}
+  xp: 42
+  gold: [4, 10]
+  loot: {carne: 0.5, piel: 0.4, fibra: 0.4}
+  moves:
+    - {id: zarpazo_de_manticora, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: lluvia_de_puas, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: golpe_de_cola, weight: 1, power: 1.7, tags: [blockable]}
+
+gigante_de_tormenta:
+  name_key: enemy.gigante_de_tormenta.name
+  biomes: [pradera, colinas]
+  level_min: 56
+  level_max: 75
+  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.7}
+  xp: 48
+  gold: [7, 15]
+  loot: {pieza_metal: 0.4, piedra: 0.28}
+  moves:
+    - {id: mazazo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: trueno, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: rayo_del_cielo, weight: 1, power: 1.7, tags: [dodgeable]}
+
+golem_de_granito:
+  name_key: enemy.golem_de_granito.name
+  biomes: [colinas, montana]
+  level_min: 55
+  level_max: 75
+  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 46
+  gold: [5, 12]
+  loot: {piedra: 0.4, pieza_metal: 0.28}
+  moves:
+    - {id: puno_de_granito, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aplastar_granito, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: runa_brillante, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+arbol_hueco:
+  name_key: enemy.arbol_hueco.name
+  biomes: [bosque, pantano]
+  level_min: 55
+  level_max: 75
+  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.7}
+  xp: 48
+  gold: [5, 12]
+  loot: {madera: 0.4, hierba_curativa: 0.28}
+  moves:
+    - {id: ramazo_hueco, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: tronco_que_cae, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: enjambre_del_tronco, weight: 1, power: 1.7, tags: [dodgeable]}
+
+osolechuza:
+  name_key: enemy.osolechuza.name
+  biomes: [bosque]
+  level_min: 56
+  level_max: 75
+  base: {hp: 106, attack: 13, armor: 0.05, initiative: 13}
+  per_level: {hp: 18, attack: 1.9}
+  xp: 43
+  gold: [4, 10]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.4}
+  moves:
+    - {id: picotazo_de_osolechuza, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: abrazo_emplumado, weight: 1, power: 1.9, tags: [blockable]}
+    - {id: ulular, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+hidra_del_pantano:
+  name_key: enemy.hidra_del_pantano.name
+  biomes: [pantano]
+  level_min: 55
+  level_max: 75
+  base: {hp: 83, attack: 12, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.9}
+  xp: 42
+  gold: [4, 10]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.4}
+  moves:
+    - {id: mordida_de_hidra, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: tres_mordiscos, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: cabeza_escondida, weight: 1, power: 1.7, tags: [blockable]}
+
+draco_de_escarcha:
+  name_key: enemy.draco_de_escarcha.name
+  biomes: [montana, tundra]
+  level_min: 56
+  level_max: 75
+  base: {hp: 112, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 19, attack: 1.7}
+  xp: 48
+  gold: [4, 10]
+  loot: {carne: 0.5, piel: 0.4, pieza_metal: 0.28}
+  moves:
+    - {id: zarpa_helada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aliento_de_escarcha, weight: 1, power: 2.1, tags: [dodgeable, interruptible]}
+    - {id: coletazo_de_draco, weight: 1, power: 1.7, tags: [blockable]}
+
+novia_de_escarcha:
+  name_key: enemy.novia_de_escarcha.name
+  biomes: [tundra]
+  level_min: 55
+  level_max: 75
+  base: {hp: 89, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.1}
+  xp: 42
+  gold: [5, 12]
+  loot: {pieza_metal: 0.4, pocion_vida: 0.15}
+  moves:
+    - {id: caricia_helada, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: beso_de_hielo, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: canto_de_cuna, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+centinela_de_vidrio:
+  name_key: enemy.centinela_de_vidrio.name
+  biomes: [desierto]
+  level_min: 56
+  level_max: 75
+  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 46
+  gold: [5, 12]
+  loot: {pieza_metal: 0.4, piedra: 0.28}
+  moves:
+    - {id: filo_de_vidrio, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: descarga_de_vidrio, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: luz_del_sol, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+soldado_fantasma:
+  name_key: enemy.soldado_fantasma.name
+  biomes: [ruinas]
+  level_min: 55
+  level_max: 75
+  base: {hp: 89, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 15, attack: 2.1}
+  xp: 42
+  gold: [5, 12]
+  loot: {pieza_metal: 0.4, pocion_vida: 0.15}
+  moves:
+    - {id: tajo_fantasma, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: carga_fantasma, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: toque_de_corneta, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+automata_de_ruinas:
+  name_key: enemy.automata_de_ruinas.name
+  biomes: [ruinas]
+  level_min: 56
+  level_max: 75
+  base: {hp: 96, attack: 10, armor: 0.38, initiative: 5}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 46
+  gold: [5, 12]
+  loot: {pieza_metal: 0.4, piedra: 0.28}
+  moves:
+    - {id: golpe_mecanico, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: martillo_de_vapor, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: alarma, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+# -- band 6: levels 70-90 --
+behemot_de_la_estepa:
+  name_key: enemy.behemot_de_la_estepa.name
+  biomes: [pradera, colinas]
+  level_min: 70
+  level_max: 90
+  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [4, 11]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
+  moves:
+    - {id: pisoton_de_behemot, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: embestida_colosal, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: bramido, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+jinete_espectral:
+  name_key: enemy.jinete_espectral.name
+  biomes: [pradera, ruinas]
+  level_min: 71
+  level_max: 90
+  base: {hp: 90, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 16, attack: 2.1}
+  xp: 43
+  gold: [5, 13]
+  loot: {pieza_metal: 0.45, pocion_vida: 0.17}
+  moves:
+    - {id: guadana_espectral, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: carga_nocturna, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: cuerno_de_caza, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+roc_de_las_alturas:
+  name_key: enemy.roc_de_las_alturas.name
+  biomes: [colinas, montana]
+  level_min: 70
+  level_max: 90
+  base: {hp: 107, attack: 13, armor: 0.05, initiative: 13}
+  per_level: {hp: 19, attack: 1.9}
+  xp: 44
+  gold: [4, 11]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
+  moves:
+    - {id: garra_de_roc, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: picado_del_roc, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: vendaval, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+sierpe_esmeralda:
+  name_key: enemy.sierpe_esmeralda.name
+  biomes: [bosque, pantano]
+  level_min: 70
+  level_max: 90
+  base: {hp: 83, attack: 13, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.9}
+  xp: 43
+  gold: [4, 11]
+  loot: {carne: 0.5, piel: 0.4, hierba_curativa: 0.45}
+  moves:
+    - {id: mordida_esmeralda, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aliento_toxico, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: coletazo_esmeralda, weight: 1, power: 1.7, tags: [blockable]}
+
+caballero_de_la_corte_marchita:
+  name_key: enemy.caballero_de_la_corte_marchita.name
+  biomes: [bosque]
+  level_min: 71
+  level_max: 90
+  base: {hp: 107, attack: 12, armor: 0.2, initiative: 9}
+  per_level: {hp: 19, attack: 1.7}
+  xp: 46
+  gold: [7, 16]
+  loot: {pieza_metal: 0.45, madera: 0.33, pocion_vida: 0.17}
+  moves:
+    - {id: estocada_feerica, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: duelo, weight: 1, power: 2.0, tags: [blockable]}
+    - {id: corona_de_espinas, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+abominacion_del_cieno:
+  name_key: enemy.abominacion_del_cieno.name
+  biomes: [pantano]
+  level_min: 70
+  level_max: 90
+  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [5, 13]
+  loot: {hierba_curativa: 0.45, arcilla: 0.33}
+  moves:
+    - {id: golpe_podrido, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: devorar, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: vomito_de_cieno, weight: 1, power: 1.7, tags: [dodgeable]}
+
+salamandra_de_lava:
+  name_key: enemy.salamandra_de_lava.name
+  biomes: [montana, desierto]
+  level_min: 70
+  level_max: 90
+  base: {hp: 83, attack: 13, armor: 0.12, initiative: 12}
+  per_level: {hp: 14, attack: 1.9}
+  xp: 43
+  gold: [4, 11]
+  loot: {carne: 0.4, piel: 0.3, piedra: 0.45}
+  moves:
+    - {id: mordida_ardiente, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: escupitajo_de_lava, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: zarpazo_de_brasa, weight: 1, power: 1.7, tags: [blockable]}
+
+mamut_de_guerra:
+  name_key: enemy.mamut_de_guerra.name
+  biomes: [tundra]
+  level_min: 70
+  level_max: 90
+  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [4, 11]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.45}
+  moves:
+    - {id: colmillazo_de_mamut, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: embestida_de_mamut, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: pisoton_de_mamut, weight: 1, power: 1.7, tags: [dodgeable]}
+
+espectro_glacial:
+  name_key: enemy.espectro_glacial.name
+  biomes: [tundra]
+  level_min: 71
+  level_max: 90
+  base: {hp: 90, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 16, attack: 2.1}
+  xp: 43
+  gold: [5, 13]
+  loot: {pieza_metal: 0.45, pocion_vida: 0.17}
+  moves:
+    - {id: toque_glacial, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: tumba_de_hielo, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: viento_helado, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+gusano_de_las_arenas:
+  name_key: enemy.gusano_de_las_arenas.name
+  biomes: [desierto]
+  level_min: 71
+  level_max: 90
+  base: {hp: 113, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [4, 11]
+  loot: {carne: 0.6, piel: 0.5, piedra: 0.45}
+  moves:
+    - {id: mordida_del_gusano, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: tragar, weight: 1, power: 2.1, tags: [dodgeable]}
+    - {id: hundirse, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+centinela_runico:
+  name_key: enemy.centinela_runico.name
+  biomes: [ruinas]
+  level_min: 70
+  level_max: 90
+  base: {hp: 97, attack: 11, armor: 0.38, initiative: 5}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 48
+  gold: [5, 13]
+  loot: {pieza_metal: 0.45, piedra: 0.33}
+  moves:
+    - {id: golpe_runico, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: rayo_runico, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: runa_de_poder, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+# -- band 7: levels 85-100 --
+quimera:
+  name_key: enemy.quimera.name
+  biomes: [pradera, colinas]
+  level_min: 85
+  level_max: 100
+  base: {hp: 109, attack: 13, armor: 0.05, initiative: 13}
+  per_level: {hp: 19, attack: 1.9}
+  xp: 44
+  gold: [5, 12]
+  loot: {carne: 0.6, piel: 0.5, fibra: 0.5}
+  moves:
+    - {id: zarpazo_de_quimera, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: llamarada, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: mordida_de_serpiente, weight: 1, power: 1.8, tags: [blockable]}
+    - {id: rugido_triple, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+titan_de_las_llanuras:
+  name_key: enemy.titan_de_las_llanuras.name
+  biomes: [pradera]
+  level_min: 86
+  level_max: 100
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [8, 17]
+  loot: {piedra: 0.5, pieza_metal: 0.38}
+  moves:
+    - {id: golpe_de_titan, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: terremoto, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: roca_del_cielo, weight: 1, power: 1.7, tags: [dodgeable]}
+
+gigante_de_las_nubes:
+  name_key: enemy.gigante_de_las_nubes.name
+  biomes: [colinas, montana]
+  level_min: 85
+  level_max: 100
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [8, 17]
+  loot: {fibra: 0.5, pieza_metal: 0.38}
+  moves:
+    - {id: palmada, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: soplido, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: granizo, weight: 1, power: 1.7, tags: [dodgeable]}
+
+licantropo_alfa:
+  name_key: enemy.licantropo_alfa.name
+  biomes: [bosque, tundra]
+  level_min: 85
+  level_max: 100
+  base: {hp: 109, attack: 13, armor: 0.05, initiative: 13}
+  per_level: {hp: 19, attack: 1.9}
+  xp: 44
+  gold: [6, 14]
+  loot: {hierba_curativa: 0.5, pocion_vida: 0.19}
+  moves:
+    - {id: desgarro_alfa, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: salto_del_alfa, weight: 1, power: 1.9, tags: [dodgeable]}
+    - {id: mordida_maldita, weight: 1, power: 1.8, tags: [blockable]}
+    - {id: llamada_del_alfa, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+polilla_lunar:
+  name_key: enemy.polilla_lunar.name
+  biomes: [bosque, pantano]
+  level_min: 86
+  level_max: 100
+  base: {hp: 77, attack: 13, armor: 0.0, initiative: 15}
+  per_level: {hp: 13, attack: 1.9}
+  xp: 40
+  gold: [6, 14]
+  loot: {fibra: 0.5, hierba_curativa: 0.38}
+  moves:
+    - {id: aleteo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: polvo_lunar, weight: 1, power: 1.8, tags: [blockable]}
+    - {id: vuelo_rasante, weight: 1, power: 1.7, tags: [dodgeable]}
+
+leviatan_del_cieno:
+  name_key: enemy.leviatan_del_cieno.name
+  biomes: [pantano]
+  level_min: 85
+  level_max: 100
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [5, 12]
+  loot: {carne: 0.6, piel: 0.5, arcilla: 0.5}
+  moves:
+    - {id: coletazo_del_leviatan, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: arrastre_al_fondo, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: ola_de_cieno, weight: 1, power: 1.7, tags: [dodgeable]}
+
+fenix_de_ceniza:
+  name_key: enemy.fenix_de_ceniza.name
+  biomes: [montana, desierto]
+  level_min: 86
+  level_max: 100
+  base: {hp: 92, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 16, attack: 2.1}
+  xp: 43
+  gold: [6, 14]
+  loot: {pieza_metal: 0.5, pocion_vida: 0.19}
+  moves:
+    - {id: ala_ardiente, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: lluvia_de_fuego, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: renacer, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+wyrm_de_hielo:
+  name_key: enemy.wyrm_de_hielo.name
+  biomes: [tundra, montana]
+  level_min: 85
+  level_max: 100
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [5, 12]
+  loot: {carne: 0.5, piel: 0.4, pieza_metal: 0.38}
+  moves:
+    - {id: mordida_de_hielo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aliento_glacial, weight: 1, power: 2.1, tags: [dodgeable, interruptible]}
+    - {id: coletazo_de_hielo, weight: 1, power: 1.7, tags: [blockable]}
+
+escorpion_emperador:
+  name_key: enemy.escorpion_emperador.name
+  biomes: [desierto]
+  level_min: 85
+  level_max: 100
+  base: {hp: 99, attack: 11, armor: 0.38, initiative: 5}
+  per_level: {hp: 17, attack: 1.6}
+  xp: 48
+  gold: [5, 12]
+  loot: {carne: 0.4, piel: 0.3, pieza_metal: 0.38}
+  moves:
+    - {id: tenaza_imperial, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: aguijon_imperial, weight: 1, power: 2.0, tags: [dodgeable]}
+    - {id: cerrar_la_coraza, weight: 1, kind: channel, buff: 1.6, tags: [interruptible]}
+
+liche_errante:
+  name_key: enemy.liche_errante.name
+  biomes: [ruinas]
+  level_min: 85
+  level_max: 100
+  base: {hp: 92, attack: 14, armor: 0.0, initiative: 11}
+  per_level: {hp: 16, attack: 2.1}
+  xp: 43
+  gold: [6, 14]
+  loot: {pieza_metal: 0.5, pocion_vida: 0.19}
+  moves:
+    - {id: rayo_necrotico, weight: 3, power: 1.0, tags: [dodgeable]}
+    - {id: palabra_de_muerte, weight: 1, power: 2.3, tags: [interruptible]}
+    - {id: filacteria, weight: 1, kind: channel, buff: 1.7, tags: [interruptible]}
+
+engendro_del_umbral:
+  name_key: enemy.engendro_del_umbral.name
+  biomes: [ruinas]
+  level_min: 86
+  level_max: 100
+  base: {hp: 115, attack: 11, armor: 0.2, initiative: 6}
+  per_level: {hp: 20, attack: 1.7}
+  xp: 49
+  gold: [6, 14]
+  loot: {pieza_metal: 0.5, piedra: 0.38}
+  moves:
+    - {id: tentaculo, weight: 3, power: 1.0, tags: [blockable, dodgeable]}
+    - {id: grito_del_umbral, weight: 1, power: 2.1, tags: [blockable, interruptible]}
+    - {id: zarpa_del_vacio, weight: 1, power: 1.7, tags: [dodgeable]}

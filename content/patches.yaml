@@ -281,3 +281,12 @@ v0_15:
     - "🏕️ El 🧵 Taller y la 🔨 Herrería de tu campamento también son estaciones, y ahí refinas un poco mejor."
     - "💱 Vender todo ya no vende lo refinado ni los raros: esos se venden de a uno."
     - "✨ Refinar y fabricar también te suben de nivel, al mismo ritmo que los otros caminos."
+
+v0_16:
+  version: "0.16"
+  title: "🐉 Lost Realms 0.16: bichos hasta el nivel 100 y el beneficio de cada oficio"
+  notes:
+    - "🐉 87 bichos nuevos: cada bioma tiene enemigos propios en cada franja de nivel, del 1 al 100. Pelear y cazar ya no es siempre lo mismo a nivel alto."
+    - "✨ Cada oficio te da su beneficio, y crece con tu rango: el Minero más vida, la Herrería armadura si llevas placas, la Peletería y la Sastrería ataque según tu armadura, la Alquimia pociones más fuertes, el Herbolario vida que vuelve más rápido, el Leñador más espacio en la mochila… Míralo en ⚒️ Oficios."
+    - "🩺 Nuevo oficio: Medicina. Haz 🫙 ungüentos, 🧰 botiquines y 🩻 vendajes de maestro, que curan sin toxicidad. Si eres sanador, tus curaciones curan más con su rango."
+    - "🦌 Las bestias nuevas también sueltan piel para el Desollador."

@@ -83,6 +83,8 @@ Si cambias esto, revisa:
       Todos los caminos tienen que llegar al 100 a un ritmo parecido (diseno/03-personaje/progresion.md §1.2)
     - Explorar alrededor (D-107): con tu zona al 100 %, el lote sigue con las vecinas sin moverte (_explore_target,
       explore.around_radius); las vecinas exploradas quedan en hero.known y cuentan para fundar (tests/test_resources.py)
+    - Encuentros (D-108): _start_combat elige el enemigo con engine/world/encounters.py (bioma de la zona y franja de
+      nivel de content/enemies.yaml; más allá de la última franja, la más cercana). Pruebas: tests/test_bestiary.py
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
       tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
       tests/test_backpack.py (mochila llena D-90 y cofre D-92)
@@ -171,6 +173,7 @@ from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.world import raids as raid_rules
+from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
@@ -5312,21 +5315,18 @@ class GameService:
     # ------------------------------------------------------------------ combat
 
     def _zone_enemies(self, zone: Zone) -> list[tuple[str, dict[str, Any]]]:
-        """Enemies that can show up in a zone: its biome and level; if none fit, its biome; if none, every common one.
+        """Enemies that can show up in a zone: its biome and level; if none fit, the closest band of its biome (D-108).
 
         [ES] Qué hace: los enemigos que salen en una zona (nunca jefes ni retirados). La llaman: _start_combat (encuentros,
         emboscadas y cacería) y la pantalla 🏹 Cazar (🐾 Por aquí rondan). Si cambia, afecta: qué enemigos salen en todo el mapa.
         """
-        common = [(eid, e) for eid, e in self.content.enemies.items() if not e.get("boss") and not e.get("retired")]
-        candidates = [(eid, e) for eid, e in common if zone.biome in e.get("biomes", [])]
-        fitting = [(eid, e) for eid, e in candidates if e["level_min"] <= zone.level <= e["level_max"]]
-        return fitting or candidates or common
+        return encounter_pool(self.content.enemies, zone.biome, zone.level)     # D-108: the biome's band, or the closest one
 
     def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str, mark: dict[str, Any] | None = None) -> str:
         """Start a fight against a common enemy of the zone; `mark` adds keys to the fight state (a hunt, D-106)."""
         pool = self._zone_enemies(zone)
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
-        level = max(enemy_def["level_min"], min(enemy_def["level_max"], zone.level + (1 if rng.chance(0.3) else 0)))
+        level = clamp_level(enemy_def, zone.level + (1 if rng.chance(0.3) else 0))
         seed = int(rng.random() * 2**31)
         state = make_combat(enemy_id, enemy_def, level, self._kit(hero), seed)
         if mark:
