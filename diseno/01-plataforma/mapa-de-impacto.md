@@ -278,6 +278,7 @@ flowchart LR
 - **Una clase nueva** (expansión) → todos los escenarios del simulador, una Prueba de Maestría nueva, roles del buscador (M11), dominio de armadura (M4), arena (M12), textos y botones en los tres clientes.
 - **La barra de combate** → cualquier botón por encima de los 6 de D-46 **rompe** la decisión y el diseño de pantalla de los tres clientes (M19, §5). Quitar el botón de Defender obliga a que cada clase tenga una habilidad defensiva para responder a los avisos.
 - **Algo que haga a una clase más fuerte que otra** → **rompe** D-49 aunque el simulador diga que está "dentro del margen".
+- **Lo que ya está en el código (D-79):** 8 habilidades por spec en `content/classes.yaml`; `talents.unlock` (1, 3, 6, 10, 16, 24, 34, 46) y `talents.passive` en `content/balance.yaml`; la barra elegida en `Hero.bar` (casilla 1 = respuesta). Cambiar el **orden** de las habilidades de una spec cambia qué puntos pide cada una y la barra automática de los héroes que no eligieron; cambiar `talents.unlock` desbloquea más a los héroes guardados al entrar (nunca les quita); cambiar los campos `gain` o `combo` de una habilidad mueve el recurso y los remates de su clase. Medir con `python3 tools/sim.py --summary` y `--bars --level=N`.
 
 ---
 
@@ -687,6 +688,7 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **Un escenario** → las mediciones viejas dejan de compararse con las nuevas: se anota en el registro de balance.
+- **Lo que ya está en el código:** `tools/sim.py` (D-79), con la forma de jugar básica de un jugador; `--summary` mide las 3 primeras habilidades contra los enemigos de nivel 1 a 3, `--real` usa el kit real (talentos, barra automática, equipo inicial) y `--bars` prueba todas las barras posibles de cada spec a un nivel. Si el combate entiende un `kind` nuevo, hay que enseñárselo a su función `choose`.
 - **Un objetivo** → es un cambio de diseño, no de número: pasa por el dueño y por [Balance](../03-personaje/balance.md). Aflojarlo tanto que una clase quede por encima de otra **rompe** D-49.
 
 ---

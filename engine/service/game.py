@@ -28,7 +28,7 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista)
     - Números: balance.yaml (explore, regen, hero, travel)
-    - Pruebas: tests/test_service.py
+    - Pruebas: tests/test_service.py, tests/test_buttons.py (botones), tests/test_spec_abilities.py (barra, D-79)
 """
 
 from __future__ import annotations
@@ -38,7 +38,18 @@ import unicodedata
 from dataclasses import asdict
 from typing import Any
 
-from engine.classes import base_response, default_spec, ensure_talents, kit as talent_kit, spend_point, specs_of, unlock_points
+from engine.classes import (
+    bar_choices,
+    bar_slots,
+    base_response,
+    default_spec,
+    ensure_talents,
+    kit as talent_kit,
+    set_bar_slot,
+    spend_point,
+    specs_of,
+    unlock_points,
+)
 from engine.combat import CombatContext, make_combat, resolve_round, validate_choice
 from engine.core import (
     Clock,
@@ -622,7 +633,22 @@ class GameService:
             new = spend_point(self.content.classes, self.content.balance, hero, spec)
             names = ", ".join(t.t(f"ability.{a}.name") for a in new)
             notice = t.t("talents.spent") + (" " + t.t("talents.unlocked", names=names) if new else "")
+            if new and hero.bar:
+                notice += " " + t.t("bar.new_hint")
             return self._spec_view(hero, spec, notice=notice)
+        if action_id == "bar":
+            return self._bar_view(hero)
+        if action_id.startswith("barslot:"):
+            parts = action_id.split(":")
+            slot = int(parts[1]) if parts[1].isdigit() else 0
+            page = int(parts[2]) if len(parts) > 2 and parts[2].isdigit() else 0
+            return self._bar_slot_view(hero, slot, page)
+        if action_id.startswith("barset:"):
+            parts = action_id.split(":", 2)
+            slot = int(parts[1]) if len(parts) == 3 and parts[1].isdigit() else 0
+            if slot and set_bar_slot(self.content.classes, hero, slot, parts[2]):
+                return self._bar_view(hero, notice=t.t("bar.saved", name=t.t(f"ability.{parts[2]}.name"), n=slot))
+            return self._bar_view(hero)
         if action_id == "bag":
             return self._bag_view(hero)
         if action_id == "gear" or action_id.startswith("gear:"):
@@ -1114,8 +1140,76 @@ class GameService:
             mark = " ⭐" if spec == hero.class_id and pts else ""
             body.append(t.t("talents.spec_line", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque")), n=pts) + mark)
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
-        actions.append(Action(id="hero", label=t.t("menu.back")))
+        body += ["", t.t("talents.bar_line", abilities=self._bar_names(hero))]
+        # D-75: at most 4 buttons. The bar goes first; "back" only fits when the class has fewer than 3 specs
+        # (the fixed menu 👤 Héroe always takes the player back).
+        actions.insert(0, Action(id="bar", label=t.t("bar.button")))
+        if len(actions) < 4:
+            actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
+    def _bar_names(self, hero: Hero) -> str:
+        return ", ".join(self.texts.t(f"ability.{a}.name") for a in bar_slots(self.content.classes, hero)) or "—"
+
+    def _class_abilities(self, hero: Hero) -> dict[str, tuple[dict[str, Any], str]]:
+        """Every ability of the hero's class: id -> (ability, resource of its spec)."""
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        out = {}
+        for spec in specs_of(self.content.classes, group):
+            for ability in self.content.classes[spec]["abilities"]:
+                out[ability["id"]] = (ability, self.content.classes[spec]["resource"])
+        return out
+
+    def _bar_view(self, hero: Hero, notice: str | None = None) -> View:
+        """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability."""
+        t = self.texts
+        abilities = self._class_abilities(hero)
+        slots = bar_slots(self.content.classes, hero)
+        body = [t.t("bar.intro"), ""]
+        for index in range(3):
+            if index < len(slots):
+                ability, resource = abilities[slots[index]]
+                body.append(t.t("bar.slot_line", n=index + 1, ability=self._ability_label(ability, resource),
+                                effect=self._ability_effect(ability, resource)))
+            else:
+                body.append(t.t("bar.slot_empty", n=index + 1))
+        body += ["", t.t("bar.custom" if hero.bar else "bar.auto")]
+        actions = [Action(id=f"barslot:{index + 1}", label=t.t("bar.slot_button", n=index + 1))
+                   for index in range(min(3, max(1, len(slots))))]
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="bar", title=t.t("bar.title"), body=body, actions=actions, notice=notice)
+
+    def _bar_slot_view(self, hero: Hero, slot: int, page: int = 0) -> View:
+        """Pick what goes in one slot: unlocked abilities, a short line each, 4 buttons at most (D-75)."""
+        t = self.texts
+        if not 1 <= slot <= 3:
+            return self._bar_view(hero)
+        abilities = self._class_abilities(hero)
+        slots = bar_slots(self.content.classes, hero)
+        choices = bar_choices(self.content.classes, hero, slot)
+        current = slots[slot - 1] if slot <= len(slots) else None
+        body = [t.t("bar.pick_title", n=slot), t.t("bar.pick_rule_1" if slot == 1 else "bar.pick_rule_other")]
+        if current:
+            ability, resource = abilities[current]
+            body.append(t.t("bar.pick_current", ability=self._ability_label(ability, resource)))
+        body.append("")
+        if not choices:
+            body.append(t.t("bar.no_choices"))
+        per = 3 if len(choices) <= 3 else 2
+        pages = max(1, (len(choices) + per - 1) // per)
+        page %= pages
+        shown = choices[page * per:(page + 1) * per]
+        if pages > 1:
+            body.append(t.t("bar.page", n=page + 1, total=pages))
+        actions = []
+        for ability_id in shown:
+            ability, resource = abilities[ability_id]
+            body.append(t.t("bar.choice_line", ability=self._ability_label(ability, resource), effect=self._ability_effect(ability, resource)))
+            actions.append(Action(id=f"barset:{slot}:{ability_id}", label=self._ability_label(ability, resource)))
+        if pages > 1:
+            actions.append(Action(id=f"barslot:{slot}:{(page + 1) % pages}", label=t.t("bar.more")))
+        actions.append(Action(id="bar", label=t.t("menu.back")))
+        return View(kind="bar_slot", title=t.t("bar.title"), body=body, actions=actions)
 
     def _respec_cost(self, hero: Hero) -> int:
         return int(self.content.balance["talents"]["respec_cost_per_level"] * hero.level)
@@ -1133,6 +1227,7 @@ class GameService:
         hero.talents = {}
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         hero.unlocked = [base_response(self.content.classes, group)]
+        hero.bar = []
         return self._talents_view(hero, notice=t.t("talents.respec_done", cost=cost, n=hero.points))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
@@ -1144,12 +1239,24 @@ class GameService:
         pts = hero.talents.get(spec, 0)
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque"))),
                 t.t(sdef["role_key"]), t.t("talents.spec_points", n=pts, free=hero.points), ""]
+        following = None
         for index, need in enumerate(unlock_points(self.content.balance)):
             if index >= len(sdef["abilities"]):
                 break
             ability = sdef["abilities"][index]
-            state = "✅" if ability["id"] in hero.unlocked else f"🔒 {need}"
-            body.append(f"{state} {self._ability_label(ability, sdef['resource'])}")
+            label, effect = self._ability_label(ability, sdef["resource"]), self._ability_effect(ability, sdef["resource"])
+            if ability["id"] in hero.unlocked:
+                body.append(t.t("talents.ability_open", ability=label, effect=effect))
+            else:
+                body.append(t.t("talents.ability_locked", need=need, ability=label, effect=effect))
+                if following is None:
+                    following = (ability, need)
+        body += ["", t.t("talents.legend")]
+        if following:
+            body.append(t.t("talents.next_unlock", name=t.t(f"ability.{following[0]['id']}.name"), need=following[1],
+                            left=max(0, following[1] - pts)))
+        else:
+            body.append(t.t("talents.all_unlocked"))
         actions = []
         if hero.points > 0:
             actions.append(Action(id=f"pt:{spec}", label=t.t("talents.spend_button")))
@@ -1465,7 +1572,8 @@ class GameService:
 
     def _ability_label(self, ability: dict[str, Any], resource: str) -> str:
         t = self.texts
-        icon = {"strike": "✨", "finisher": "🗡️", "heal": "💚", "dot": "🩸", "interrupt": "✋"}.get(ability["kind"], "✨")
+        icon = {"strike": "✨", "finisher": "🗡️", "heal": "💚", "dot": "🩸", "interrupt": "✋", "empower": "💪",
+                "expose": "🎯", "weaken": "🔻", "hot": "💖"}.get(ability["kind"], "✨")
         if ability["kind"] == "response":
             icon = {"block": "🛡", "dodge": "💨", "shield": "🫧"}.get(ability.get("response"), "🛡")
         name = t.t("ability." + ability["id"] + ".name")
@@ -1474,7 +1582,53 @@ class GameService:
             label += f" ({ability['cost']})"
         elif ability["kind"] == "response":
             label += f" (🔋{ability.get('stamina', 1)})"
+        elif ability.get("gain"):
+            label += f" (+{ability['gain']})"
         return label
+
+    @staticmethod
+    def _num(value: float) -> str:
+        """Short number for players: 1.3 -> "1,3", 2.0 -> "2"."""
+        return f"{value:g}".replace(".", ",")
+
+    def _ability_effect(self, ability: dict[str, Any], resource: str) -> str:
+        """One short line of what an ability does, built from its numbers and the texts in ability_effect.*.
+
+        [ES]
+        Qué hace: explica en pocas palabras qué hace una habilidad (sale de sus números, así nunca miente).
+        La llaman: las pantallas de especialización y de 🎛️ Barra de combate.
+        Si cambia, afecta: solo lo que lee el jugador.
+        """
+        t = self.texts
+        kind = ability["kind"]
+
+        def pct(value: float) -> int:
+            return round(value * 100)
+
+        if kind == "response":
+            text = t.t(f"ability_effect.{ability.get('response', 'block')}", pct=pct(ability.get("value", 0.0)))
+        elif kind in ("strike", "interrupt"):
+            text = t.t(f"ability_effect.{kind}", power=self._num(ability.get("power", 1.0)))
+        elif kind == "finisher":
+            text = t.t("ability_effect.finisher", power=self._num(ability.get("power", 1.0)), per=self._num(ability.get("per_combo", 0.0)))
+        elif kind == "dot":
+            text = t.t("ability_effect.dot", power=self._num(ability.get("power", 0.5)), rounds=ability.get("rounds", 3))
+        elif kind == "heal":
+            text = t.t("ability_effect.heal", pct=pct(ability.get("value", 0.0)))
+        else:
+            text = t.t(f"ability_effect.{kind}", pct=pct(ability.get("value", 0.2)), rounds=ability.get("rounds", 3))
+        extras = []
+        if ability.get("lifesteal"):
+            extras.append(t.t("ability_effect.lifesteal", pct=pct(ability["lifesteal"])))
+        if ability.get("combo"):
+            extras.append(t.t("ability_effect.combo", n=ability["combo"]))
+        if ability.get("gain"):
+            extras.append(t.t("ability_effect.gain", n=ability["gain"], resource=t.t(f"resource.{resource}")))
+        if kind == "response" and ability.get("stamina", 1) > 1:
+            extras.append(t.t("ability_effect.stamina", n=ability["stamina"]))
+        if ability.get("cooldown"):
+            extras.append(t.t("ability_effect.cooldown", n=ability["cooldown"]))
+        return " · ".join([text] + extras)
 
     def _combat_view(self, hero: Hero, state: dict[str, Any], notice: str | None = None) -> View:
         t = self.texts
