@@ -230,7 +230,7 @@ Puedes **subir** de división para pelear contra gente más fuerte. **Nadie pued
 ### 5.3 La Pizarra
 
 - **Ranking por división** con Glicko-2, como la arena (ver [PvP](pvp.md) §5), pero aparte. Temporadas de 3 meses.
-- **Fama del Foso:** Carne fresca → Pendenciero → Rompehuesos → Campeón → Leyenda del Foso. Sube al ganar, al vencer a alguien mejor clasificado y con el Clamor del público. Abre bolsas más grandes, peleas estelares y locales de más nivel.
+- **Fama del Foso:** Carne fresca → Pendenciero → Rompehuesos → Campeón → Leyenda del Foso. Sube al ganar, al vencer a alguien mejor clasificado y con el Fervor del público (no es el Clamor del combate). Abre bolsas más grandes, peleas estelares y locales de más nivel.
 - **Missio:** si pierdes una pelea reñida, el público vota. Si gana la *missio*, no pierdes fama.
 
 ### 5.4 Títulos
@@ -458,7 +458,7 @@ Saldo: 3.250 oro · Si pierde, pierdes lo apostado.
 «Ceniza»     ❤️ 71 % ▓▓▓▓▓▓▓░░░  🔋 ●●●●○
 
 👁 Lectura: Ceniza baja el hombro derecho…
-📣 Clamor ▓▓▓▓▓▓▓░░░ · Espectáculo: 520
+📣 Fervor ▓▓▓▓▓▓▓░░░ · Espectáculo: 520
 ⏱ 45 s
 
 [🗡 Puñalada] [💨 Finta] [🦵 Patada baja]
@@ -474,7 +474,7 @@ El público ve el mismo mensaje con otros botones: `[📣 Aclamar al Tuerto · 1
 Ronda 4 — resumen
 💥 Ceniza carga el hombro: GOLPE PESADO
 🌀 El Tuerto lo leyó y lo esquiva (−2 🔋)
-🗡 Puñalada del Tuerto: Ceniza −14 %
+🗡 Puñalada del Tuerto: Ceniza −22 %
 🩸 Ceniza cruza el 50 %: corte en el brazo der. (leve)
 ▸ Registro completo (tocar para abrir)
 ```
@@ -492,7 +492,7 @@ Bolsa: Ceniza 2.000 · El Tuerto 800
 Espectáculo: Ceniza 420 · El Tuerto 220
 Pozo final 18.400 − casa 10 % = 16.560
    para quienes apostaron a Ceniza (cuota final 2,37)
-Tú: 500 → 1.182
+Tú: 500 → 1.185
 
 🏆 Ceniza sube al #5 · ⚔️ Rivalidad: Tuerto 1 – Ceniza 1
 

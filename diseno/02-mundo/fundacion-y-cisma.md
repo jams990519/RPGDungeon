@@ -41,6 +41,8 @@ Un asentamiento es como un organismo: **necesita cosas todos los días** y las c
 
 Cada necesidad tiene una **barra semanal** visible para todos en `/ciudad`. El asentamiento publica pedidos ("*faltan 400 de trigo y 60 vendas esta semana*") que cualquiera puede cubrir a cambio de oro y reputación.
 
+**No alcanza con cubrirlas una vez.** La comida, la salud, el ánimo, la defensa y el orden son **medidores con umbrales** que hay que sostener **día tras día**: la comida se come y se pudre, los inviernos cortan las cosechas, la falta de agua limpia y de higiene trae brotes, y los aldeanos PNJ llegan o se van según cómo esté la ciudad. Además, la riqueza, el tamaño y el ruido de la ciudad atraen **incursiones** de bestias y saqueadores cada vez más fuertes. Todo eso está en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md).
+
 **Por qué conviene.** Así **toda la infraestructura depende de farmear, fabricar y progresar**, y cada rol (agricultor, cazador, médico, bardo) es necesario de verdad. Ver [Red de sistemas](../00-vision/red-de-sistemas.md).
 
 ## 3. Crecer: del Claro al Castillo
@@ -55,6 +57,8 @@ Cada necesidad tiene una **barra semanal** visible para todos en `/ciudad`. El a
 | **Castillo** | El Castillo, con cada una de sus alas como obra aparte (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Entrenadores de rango alto, la Fortuna, prisión, salón de embajadas |
 
 Cada etapa es una **obra de servidor** (ver [Construcción](../09-construccion/gremios-y-organizaciones.md)). Pasar de Claro a Castillo debería llevar **semanas**, no días: es la primera temporada del juego.
+
+**Construir no alcanza.** Terminar las obras de una etapa no la sube. Además hay que **sostener durante varios días seguidos** la población, la despensa, la salud pública y el ánimo mínimos de la etapa, y **superar incursiones** de bestias y enemigos de la zona; en la etapa de Castillo, también el **asedio de un monstruo grande**. Cada subida termina con una Noche de prueba, y una ciudad que no se sostiene puede **bajar de etapa**, aunque la propiedad personal de los jugadores nunca se pierde. Los requisitos completos están en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md).
 
 ## 3.1 Nodos: los jugadores deciden dónde florece la civilización
 

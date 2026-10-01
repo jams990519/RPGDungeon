@@ -5,6 +5,7 @@ La Torre de 100 pisos es el mundo entero, y **empieza vacía**: los jugadores fu
 | Documento | Qué contiene |
 |---|---|
 | [fundacion-y-cisma.md](fundacion-y-cisma.md) | **El mundo empieza de cero:** el Claro, las necesidades de la ciudad, de Claro a Castillo, **nodos** que crecen con la actividad y limitan a sus vecinos, gobernador con cargos, el cisma y sus desventajas, relaciones entre castillos |
+| [supervivencia-del-asentamiento.md](supervivencia-del-asentamiento.md) | **Construir no alcanza:** población y aldeanos PNJ, medidores con umbrales (despensa, salud pública, ánimo, seguridad, orden), comida que se pudre e inviernos, **amenaza** que crece con la riqueza y el ruido, incursiones nocturnas y asedios, requisitos de etapa que hay que **sostener**, aportes por jugador, decisiones difíciles del gobierno |
 | [ciudades-y-castillo.md](ciudades-y-castillo.md) | Campamento, asentamiento y capital; las alas del Castillo; **entrenadores y exámenes de oficios**; especialidad de cada capital |
 | [crisis-problemas-y-soluciones.md](crisis-problemas-y-soluciones.md) | 16 crisis (hambruna, plagas, incendio, sequía, inflación, crimen, corrupción…), quién las resuelve y qué pasa si nadie lo hace |
 | [geografia-y-recursos.md](geografia-y-recursos.md) | 10 terrenos con lo que producen y lo que les falta; recursos del terreno, vetas móviles y **yacimientos únicos** que se disputan |

@@ -33,7 +33,7 @@
 | Lugar | Dónde | Cómo se entra | Qué hay |
 |---|---|---|---|
 | **Garito del callejón** | La trastienda de un asentamiento | Una **contraseña** que da un informante o que se descubre en una investigación. Cambia cada semana | Dados cargados, cartas marcadas, apuestas sin tope |
-| **El Foso** | Refugios de forajidos en zonas rojas | Karma naranja o rojo, o alguien que te avale | **Peleas de bestias** (capturadas en cacerías) y **peleas a primera sangre entre jugadores** con apuesta (ver [Peleas clandestinas](../06-contenido/peleas-clandestinas.md)) |
+| **El Foso** | Refugios de forajidos en zonas rojas | Karma naranja o rojo, o alguien que te avale | **Peleas de bestias** (capturadas en cacerías) y **peleas entre jugadores** con apuesta (a primera sangre, hasta derribar o a rendición) (ver [Peleas clandestinas](../06-contenido/peleas-clandestinas.md)) |
 | **Carreras clandestinas** | Caminos de zonas rojas, de noche | Invitación | Carreras sin reglas, donde se vale sabotear |
 | **Casinos ilegales de jugadores** | Construidos por gremios en zonas rojas o negras, sin licencia | Lo que decida el dueño | Sin impuestos, sin protección, sin límites |
 
