@@ -30,7 +30,8 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 |---|---|---|
 | **Ganar una pelea** | La experiencia del enemigo, +15 % por cada nivel del enemigo sobre el 1 | `content/enemies.yaml` (`xp`) |
 | **Vencer a Raigambre** | Su experiencia, con la misma regla | `content/enemies.yaml` (`raigambre`) |
-| **Aportar a la obra común del Claro** | 2 de experiencia por cada material | `settlement.xp_per_unit` |
+| ~~Aportar a la obra común del Claro~~ | Quitado en la 0.11 (D-98): el Claro no crece | — |
+| **Aportar comida a la despensa de tu campamento** | 2 de experiencia por ración | `pantry.xp_per_ration` |
 | **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |
 

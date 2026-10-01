@@ -12,7 +12,9 @@
 
 ## 0. Lo que ya existe (en el juego)
 
-### 0.1 La obra común del Claro
+### 0.1 La obra común del Claro (se quitó en la 0.11)
+
+> **D-98:** el Claro es el campamento base y no crece. Lo de abajo describe la obra que existió hasta la 0.10.1.
 
 - Todo el servidor aporta materiales a una sola obra. Cuando se completa la lista de la etapa, el Claro sube para todos: fogata → campamento → aldea → pueblo → ciudad → castillo (`settlement.stages`).
 - Cada material da 2 de experiencia y 1 de mérito. La obra muestra a los 5 que más aportaron.
@@ -65,7 +67,7 @@ La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y 
 | 1 a 2 | 🟠 Escasez | Normal |
 | 0 (menos de 1 día) | 🔴 Hambruna | El campamento **no puede crecer** hasta llenarla |
 
-**El Claro sube como siempre:** con la obra común pagada, sin días de comida ni posada que deje de curar (D-95).
+**El Claro no se mantiene ni crece** (D-95, D-98): es el campamento base, sin despensa, y su posada siempre cura.
 
 **Lo que nunca pasa** (§11, §15): un campamento nunca pierde niveles, zonas ni miembros por hambre. Al llegar la despensa, cada campamento de nivel 3 o más empezó con **7 días de comida para todos sus miembros**, para que nadie empiece castigado. Lo mismo vale cuando un campamento llega por primera vez al nivel 3.
 
@@ -90,7 +92,7 @@ La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y 
 
 | Lugar | Capa | Desde qué etapa | Por qué |
 |---|---|---|---|
-| ~~El Claro~~ | **Ninguna (D-95):** no se mantiene | — | Es el campamento principal del mapa y no tiene dueño: no hay a quién pedirle que lo sostenga. Sube solo con la obra común pagada |
+| ~~El Claro~~ | **Ninguna (D-95):** no se mantiene | — | Es el campamento principal del mapa y no tiene dueño: no hay a quién pedirle que lo sostenga. Además no crece (D-98) |
 | **Campamentos de jugadores** | Ligera (§7.2): despensa chica, incursiones a la medida de sus miembros, una Noche de prueba antes de castillo. Los campamentos grandes podrían tomar después partes de la capa completa | Desde aldea (nivel 3) | Tienen dueño y miembros que lo sostienen |
 
 ## 1. El bucle de la ciudad
@@ -108,7 +110,7 @@ Cada **día de juego** (6 horas reales; ver [Mundo vivo](mundo-vivo-y-viaje.md))
 
 Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) §3 siguen igual. Cinco se vuelven **medidores con umbrales** (§3): comida, salud, ánimo, defensa y orden. Las otras tres (materiales, herramientas y tesoro) alimentan las obras y el mantenimiento (§8). Los materiales ya existen: son los 6 recursos que hoy se recolectan (D-87).
 
-**Amplio pero ligero** (D-44). **Capa simple:** el jugador ve los cinco medidores en `/ciudad` y toca **📋 Aportar**, igual que hoy toca 🤲 Aportar en la obra común. **Capa profunda:** aldeanos, raciones, leyes y defensa por tramos, para el gobierno y para quien quiera meterse.
+**Amplio pero ligero** (D-44). **Capa simple:** el jugador ve los cinco medidores en `/ciudad` y toca **📋 Aportar**, igual que antes se tocaba 🤲 Aportar en la obra común del Claro. **Capa profunda:** aldeanos, raciones, leyes y defensa por tramos, para el gobierno y para quien quiera meterse.
 
 ## 2. La población
 
@@ -494,7 +496,7 @@ La defensa usa las reglas de [Defensa y protecciones](../09-construccion/defensa
 
 ### 7.1 En el Claro
 
-> **Ya no aplica (D-95):** el Claro no se mantiene porque no tiene dueño; sube solo con la obra común pagada. Esta tabla queda como referencia para los campamentos de jugadores más grandes.
+> **Ya no aplica (D-95):** el Claro no se mantiene porque no tiene dueño, y tampoco crece (D-98). Esta tabla queda como referencia para los campamentos de jugadores más grandes.
 
 Para que el Claro suba a aldea o más harían falta tres cosas:
 
@@ -778,7 +780,7 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 4. **Siempre hay aviso.** La amenaza se ve subir, la torre de vigía avisa antes del ataque, el invierno se anuncia con días y la despensa avisa en *Justa*.
 5. **Los tropiezos cortos no borran todo.** La racha se congela antes de volver a cero.
 6. **Cada rol cuenta.** Se puede sostener una ciudad sin pelear nunca: recolectando, cocinando, curando, construyendo o cantando en la taberna.
-7. **Los novatos aprenden sin miedo.** El Claro, donde empiezan todos, nunca se mantiene (D-95): sube solo con la obra común.
+7. **Los novatos aprenden sin miedo.** El Claro, donde empiezan todos, nunca se mantiene ni crece (D-95, D-98): es una base fija.
 8. **Siempre hay una salida cara.** El mercader del Claro vende comida de emergencia a precio alto (sumidero de monedas), con un tope por semana.
 
 ## 16. Para decidir

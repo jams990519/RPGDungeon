@@ -5,14 +5,16 @@
 **Qué pidió el dueño.** Que no exista un castillo al empezar: que todo arranque **desde cero** y la gente **construya el mundo** (D-45). Que el Claro sea la sede común y que los jugadores **funden sus propios campamentos**, que crezcan hasta ciudades y castillos (D-71, D-81, D-87). Que el mundo se pueda **dividir** por decisión de los jugadores, con desventajas para quien queda. Y que haya gente dedicada a todo: agricultores, cazadores, expertos en cada cosa.
 
 **Las dos piezas de hoy.**
-1. **El Claro:** la sede común de todo el servidor, con una **obra común** que sube por etapas, de fogata a castillo.
+1. **El Claro:** el **campamento base** de todo el servidor, con mercader y posada. **No crece** (D-98): la obra común que lo subía de fogata a castillo se quitó en la 0.11.
 2. **Los campamentos de jugadores:** cada uno se funda lejos del Claro, tiene nombre y miembros, y crece **eligiendo zonas** hasta castillo.
 
 Todo lo demás de este documento (necesidades, gobierno, cisma, relaciones entre castillos) es la capa profunda que se monta encima, como propuesta.
 
 ---
 
-## 1. El Claro: la obra común (en el juego)
+## 1. El Claro: la obra común (historia: se quitó en la 0.11)
+
+> **Ya no existe (D-98, confirmada por el dueño el 1-oct-2026):** el Claro es el **campamento base** y no crece. La obra común se quitó en la 0.11: ya no se aportan materiales al Claro y su etapa guardada queda fija (decide la posada y sus zonas). Todo el crecimiento (niveles, mejoras, conocimiento, castillo) es solo para los campamentos de los jugadores. Esta sección queda como historia de la 0.4 a la 0.10.1.
 
 Al abrir el servidor no hay ciudad. En el centro del mapa, en (0, 0), está **el Claro**: una fogata entre ruinas. Ahí despierta cada héroe nuevo.
 
@@ -34,7 +36,7 @@ Todos los jugadores levantan juntos el Claro. En **🏕️ Campamento → 🔥 O
 - **Cada etapa baja 1 🥉 el precio de la posada,** hasta un mínimo de 1 (`settlement.inn_discount_per_stage`).
 - **El Claro ocupa 1 zona más por etapa** (D-81). Crece en una espiral fija: norte, este, sur, oeste y las diagonales.
 - **Una etapa ganada no se pierde.** Hoy el Claro nunca baja.
-- **El Claro no se mantiene** (D-95, confirmada por el dueño): es el campamento principal del mapa y no tiene dueño, así que no tiene despensa ni otros mínimos; sube solo con la obra común pagada. La comida (D-93) es solo para los campamentos de jugadores. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
+- **El Claro no se mantiene** (D-95, confirmada por el dueño): es el campamento principal del mapa y no tiene dueño, así que no tiene despensa ni otros mínimos; y tampoco crece (D-98). La comida (D-93) es solo para los campamentos de jugadores. Detalle en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md) §0.4.
 
 ### 1.2 Lo que ofrece el Claro
 
@@ -218,7 +220,7 @@ Las etapas ya existen con sus nombres. Lo que falta es que cada una **abra algo*
 
 ## 8. Todo en texto y por turnos
 
-- **Hoy:** el menú fijo **🏕️ Campamento** abre la obra común, el mercader y la posada en el Claro, o la pantalla del campamento donde estás. La zona muestra "🏕️ Territorio de…".
+- **Hoy:** el menú fijo **🏕️ Campamento** abre el mercader y la posada en el Claro (sin obra común desde la 0.11, D-98), o la pantalla del campamento donde estás. La zona muestra "🏕️ Territorio de…".
 - **Propuesta:** `/ciudad` con la etapa, las barras de necesidades y los pedidos de la semana; elecciones con encuestas de Telegram; cartas de cisma firmadas reenviando el mensaje; todo lo importante en la Gaceta.
 
 ## 9. De dónde sale
