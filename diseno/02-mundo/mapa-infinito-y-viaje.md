@@ -228,6 +228,33 @@ Coordenadas 1, 2 · Lejanía 2
 
 **De dónde sale.** Las listas de "quién está en esta sala" de los MUD de texto (el comando `who` y la línea "Aquí también están…"), los jugadores que se ven pasar en las zonas de WoW y los fantasmas de otros jugadores de *Dark Souls* y *Journey*, que dan compañía sin mecánica.
 
+### 1.14 El Explorador y los campamentos enemigos (D-112, para programar)
+
+El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una profesión**, y que haya **zonas que no se dejan explorar** porque hay enemigos acampados. Esta es la capa simple para programar; los números son propuesta de Claude.
+
+**🧭 El oficio de Explorador** (va con los oficios de D-109, rango 1 a 100):
+- Sube explorando: cada vuelta de exploración da experiencia de Explorador, y más al dejar una zona al 100 %.
+- **Los más avanzados ven más en el mapa.** Lo que se abre con el rango:
+
+| Rango | Qué ves de más |
+|---|---|
+| 1 | Lo de siempre: tus zonas, su porcentaje y su color |
+| 10 | Cuánto tardas en llegar a cada lugar de 📒 Lugares y a las zonas que el mapa marca |
+| 25 | Los ⛺ campamentos enemigos hasta 3 zonas de distancia, aunque no los hayas pisado |
+| 30 | **🕵️ Infiltrarse** en un campamento enemigo |
+| 50 | Los campamentos enemigos de todo tu mapa (13 × 13) |
+| 75 | La fuerza de cada campamento desde el mapa: cuántos enemigos quedan, de qué nivel y su jefe |
+| 100 | Gran Explorador: título y un poco más de porcentaje por vuelta |
+
+- Como todo oficio (D-111), tiene su beneficio parejo con el rango: hasta **+5 puntos** de porcentaje por vuelta de exploración al rango 100.
+
+**⛺ Campamentos enemigos:**
+- **Aparecen al azar por el mapa y cambian cada día.** Cada día real salen en zonas distintas (de Lejanía 2 o más; nunca en el Claro ni en el territorio de un campamento de jugadores). No hay un punto fijo: el lugar sale de la semilla del mundo y del día, así que todos los jugadores ven los mismos.
+- **Mientras el campamento está en pie, su zona no se deja explorar ni recolectar:** los enemigos no te dejan. Al llegar a esa zona ves el campamento.
+- **Hay que destruirlo todo:** cada campamento tiene una guarnición de enemigos del bioma (unos 4 a 8, del nivel de la zona + 1) y un jefe al final. Cada pelea gana a uno, para todos: varios jugadores pueden ir bajándolo juntos el mismo día. Al caer el jefe, el campamento queda destruido hasta que reaparece en otro lado al día siguiente, y suelta un cofre de botín (monedas, materiales y una probabilidad de equipo) para quien lo termina, y algo para cada uno que peleó.
+- **🕵️ Infiltrarse (solo Exploradores de rango 30 o más):** cuesta energía y no es una pelea. Si sale bien, te dice cuántos enemigos quedan, de qué tipo y nivel, quién es el jefe y qué botín guarda, y te suma un poco de porcentaje de exploración de esa zona. Si te descubren (menos probable cuanto más rango tienes), empieza una pelea con un enemigo de la guarnición.
+- **Para qué sirve:** le da trabajo a cada uno. El Explorador encuentra y estudia los campamentos, los que pelean los destruyen, y todos ganan botín. Y cambia el mapa cada día.
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).

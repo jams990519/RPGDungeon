@@ -53,6 +53,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 🌿 Herbolario | Todos, sobre todo quien explora | La vida vuelve sola un **20 %** más rápido fuera de combate | Sangre de vida |
 | ⛏️ Minero | Tanques | **+5 %** de vida máxima | Dureza |
 | 🪓 Leñador | Recolectores | **+10** de espacio en la mochila | — |
+| 🧭 Explorador (D-112) | Quien explora | Hasta **+5 puntos** de porcentaje por vuelta, y con el rango ve más en el mapa (campamentos enemigos, distancias, su fuerza) e infiltra campamentos ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | — |
 | 🔪 Desollador | Ataque | **+4 %** de ataque | Maestro de anatomía |
 | Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **15 %** de sacar una unidad extra al refinar | El retorno de *Albion* |
 | 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
