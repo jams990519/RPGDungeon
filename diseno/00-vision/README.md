@@ -9,6 +9,7 @@ Qué es el juego, qué está decidido, qué falta decidir, cómo se conecta todo
 | [red-de-sistemas.md](red-de-sistemas.md) | Las tres reglas para que todo dependa de todo, el mapa, qué consume y produce cada sistema |
 | [catalogo-ampliado.md](catalogo-ampliado.md) | Más sistemas por fases: termas, dioses, idiomas antiguos, música compuesta, vino que se añeja, barcos, tribunal, liga de pelota, linaje… |
 | [decisiones.md](decisiones.md) | Lo confirmado por el dueño, lo provisional y lo propuesto |
-| [preguntas-abiertas.md](preguntas-abiertas.md) | 57 preguntas, cada una con recomendación |
+| [preguntas-abiertas.md](preguntas-abiertas.md) | Las preguntas abiertas (P-xx), cada una con recomendación |
+| [cuestionario-beta.md](cuestionario-beta.md) | 160 preguntas antes de abrir la beta a 500+ jugadores, con la primera tanda de 14 arriba (D-39) |
 | [hoja-de-ruta.md](hoja-de-ruta.md) | Fases, expansiones, producto mínimo, riesgos, reglas de trabajo |
 | [glosario.md](glosario.md) | Los términos propios del diseño |
