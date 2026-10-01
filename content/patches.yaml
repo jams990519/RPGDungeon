@@ -70,3 +70,13 @@ v0_6:
     - "✅ Cada pieza te dice si es para ti, 🔒 si es para ti más adelante (pide nivel) o ❌ si no es para tu clase. Al mirarla la comparas con lo que llevas."
     - "Cada clase usa su armadura (tela, cuero, malla o placas) y sus armas. Lo que no te sirve se vende en el Claro."
     - "Míralo con /equipo, en tu ficha o en 🎒 Mochila → 🛡️ Equipo."
+
+v0_6_1:
+  version: "0.6.1"
+  title: "⚡ Lost Realms 0.6.1: más energía, viajes más cortos"
+  notes:
+    - "⚡ La energía ahora llega a 50 y se recuperan 40 al día. ¡Todos empiezan con 50!"
+    - "Moverte, explorar y recolectar gastan 1 de energía cada uno. Pelear no gasta."
+    - "🧭 Viajes más cortos: las 2 primeras zonas desde el Claro o tu campamento toman 2 minutos, las 2 siguientes 3, y así. Tu campamento reinicia la cuenta."
+    - "🎖 Hay 100 niveles. Subir es lento a propósito: cada nivel cuenta."
+    - "⏳ En combate, usar algo de la mochila gasta tu turno."

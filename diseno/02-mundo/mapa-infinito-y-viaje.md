@@ -77,23 +77,28 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 ### 1.5 El viaje
 
 - Desde una zona se viaja **solo a las 4 vecinas** (norte, sur, este, oeste). No hay diagonales ni teletransporte.
-- Los minutos (de 5 a 10, D-66) dependen del **bioma de destino**, con estos ajustes:
-  - **Zona que no conoces (×1,2):** tu héroe nunca la pisó (aunque otro sí). Conocer la ruta acelera.
-  - **Energía (D-65):** cada viaje a una zona vecina gasta 1 ⚡ (máximo 20, se recuperan 20 al día). Un viaje de varias zonas gasta 1 por tramo y se detiene si se acaba.
-- Ningún viaje baja de 1 minuto. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
+- Los minutos dependen **solo de la distancia** al punto de partida más cercano: el Claro o tu campamento (D-78). Las 2 primeras zonas toman **2 minutos** cada una, las 2 siguientes 3, luego 4, y así (`travel.first_minutes`, `steps_per_minute`). El bioma ya no cambia el tiempo; sigue decidiendo el peligro y lo que se recolecta.
+  - **Tu campamento reinicia la cuenta:** al fundarlo, la distancia se mide desde él, igual que desde el Claro. Cuando el campamento crezca y ocupe más zonas, se medirá desde su borde.
+  - **Tope por tramo: 20 minutos** (`travel.max_minutes`), para que lo muy lejano no se vuelva eterno. Este tope lo propuso Claude; el dueño puede moverlo.
+  - **Energía (D-78):** moverse a una zona vecina, explorar y recolectar gastan 1 ⚡ cada uno. Máximo 50, se recuperan 40 al día (1 cada 36 minutos). Un viaje de varias zonas gasta 1 por tramo y se detiene si se acaba. El combate no gasta energía.
+- Ningún viaje baja de 2 minutos. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
 - La pantalla redondea hacia arriba al minuto.
 
-| Bioma | Peligro al llegar | Minutos a pie | Si tu héroe no la conoce (×1,2) |
-|---|---|---|---|
-| 🔥 Claro | 0 % | 5 | — |
-| 🌾 Pradera | 25 % | 5 | 6 |
-| 🌲 Bosque | 35 % | 7 | 8 |
-| ⛰️ Colinas | 30 % | 8 | 10 |
-| 🏚️ Ruinas | 50 % | 8 | 10 |
-| 🏜️ Desierto | 40 % | 9 | 11 |
-| 🐸 Pantano | 45 % | 10 | 12 |
-| ❄️ Tundra | 40 % | 10 | 12 |
-| 🏔️ Montaña | 40 % | 10 | 12 |
+| Zonas desde el Claro o tu campamento | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | … | 37 o más |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Minutos para entrar | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 5 | … | 20 (tope) |
+
+| Bioma | Peligro al llegar |
+|---|---|
+| 🔥 Claro | 0 % |
+| 🌾 Pradera | 25 % |
+| 🌲 Bosque | 35 % |
+| ⛰️ Colinas | 30 % |
+| 🏚️ Ruinas | 50 % |
+| 🏜️ Desierto | 40 % |
+| 🐸 Pantano | 45 % |
+| ❄️ Tundra | 40 % |
+| 🏔️ Montaña | 40 % |
 
 ### 1.6 Temporizadores, aviso y encuentro al llegar
 
@@ -259,7 +264,7 @@ Qué pasa con cada concepto de [Torre y pisos](torre-y-pisos.md):
 - C. Solo entre capitales, una vez al día.
 - *Recomiendo A,* porque es lo que pide D-58 y porque la distancia sostiene los mercados locales y el oficio de comerciante.
 
-**¿Cuánto debe tardar cruzar a una zona vecina a pie?**
+**¿Cuánto debe tardar cruzar a una zona vecina a pie?** ✅ Decidido por el dueño (D-78): 2, 2, 3, 3, 4, 4… minutos según la distancia al Claro o a tu campamento.
 - A. 5-10 minutos.
 - B. 15-50 minutos según el bioma (lo de v0.1).
 - C. 1-2 horas.

@@ -1,18 +1,22 @@
 """Travel time between neighbouring zones (D-58: moving takes time).
 
 [ES]
-Para qué sirve: calcular cuántos minutos reales tarda ir a una zona vecina.
+Para qué sirve: calcular cuántos minutos reales tarda ir a una zona vecina. Depende solo de
+la distancia al punto de partida más cercano (el Claro o tu campamento): las 2 primeras zonas
+toman 2 minutos, las 2 siguientes 3, luego 4, y así (D-78).
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md (el viaje)
 Módulo: M8 Mundo
-Depende de: content/biomes.yaml (travel_minutes), content/balance.yaml (travel.*)
+Depende de: content/balance.yaml (travel.first_minutes, steps_per_minute, max_minutes)
 Lo usan: engine/service/game.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
 Reglas que nunca se rompen:
-    1. Ningún viaje tarda 0: el mínimo es 1 minuto antes de la escala de tiempo (D-58).
+    1. Ningún viaje tarda 0: el mínimo es travel.first_minutes (D-58, D-78).
+    2. Al fundar o agrandar tu campamento, la cuenta vuelve a empezar desde su borde.
 Si cambias esto, revisa:
-    - Números: biomes.yaml travel_minutes, balance.yaml travel.* (ritmo de todo el juego)
+    - Números: balance.yaml travel.* (ritmo de todo el juego)
+    - Servicio: engine/service/game.py (_anchors: el Claro y el campamento del héroe)
     - Pruebas: tests/test_world.py
 """
 
@@ -20,31 +24,37 @@ from __future__ import annotations
 
 from typing import Any
 
-from engine.world.mapgen import Zone
+
+def anchor_distance(x: int, y: int, anchors: list[tuple[int, int, int]]) -> int:
+    """Rings from (x, y) to the nearest anchor (x, y, radius); 0 inside an anchor's area.
+
+    [ES]
+    Qué hace: cuántas zonas hay hasta el punto de partida más cercano (el Claro o tu campamento,
+    contando las zonas que ocupa el campamento).
+    La llama: travel_minutes y el servicio.
+    Si cambia, afecta: el tiempo de todos los viajes.
+    """
+    return min(max(0, max(abs(x - ax), abs(y - ay)) - radius) for ax, ay, radius in anchors)
 
 
-def travel_minutes(origin: Zone, destination: Zone, biomes: dict[str, Any], balance: dict[str, Any], discovered: bool) -> float:
-    """Minutes of real time to walk from origin into a neighbouring destination.
+def travel_minutes(x: int, y: int, anchors: list[tuple[int, int, int]], balance: dict[str, Any]) -> float:
+    """Minutes of real time to walk into zone (x, y): 2, 2, 3, 3, 4, 4... by distance to the nearest anchor.
 
     Args:
-        origin, destination: neighbouring zones.
-        biomes: content/biomes.yaml.
+        x, y: destination zone.
+        anchors: (x, y, radius) of the Claro and of the hero's camp.
         balance: content/balance.yaml.
-        discovered: whether anyone already discovered the destination.
 
     Returns:
         minutes (before the server time scale).
 
     [ES]
-    Qué hace: tiempo a pie hacia la zona vecina: depende del bioma de destino, de si
-    hay senderos cerca del Claro y de si la zona ya está descubierta.
+    Qué hace: tiempo a pie hacia la zona (x, y). Las 2 primeras zonas desde el Claro o tu
+    campamento toman 2 minutos, las 2 siguientes 3, luego 4, y así, hasta el tope.
     La llaman: el servicio al mostrar rutas y al empezar un viaje.
-    Si cambia, afecta: el ritmo del juego y el valor de los caminos futuros.
+    Si cambia, afecta: el ritmo del juego y el valor de fundar campamentos lejos.
     """
-    travel = balance.get("travel", {})
-    minutes = float(biomes[destination.biome]["travel_minutes"])
-    if origin.lejania <= 1 and destination.lejania <= 1:
-        minutes *= travel.get("near_claro_factor", 1.0)
-    if not discovered:
-        minutes *= travel.get("unknown_zone_factor", 1.0)
-    return max(1.0, minutes)
+    cfg = balance["travel"]
+    steps = max(1, anchor_distance(x, y, anchors))
+    minutes = cfg["first_minutes"] + (steps - 1) // cfg["steps_per_minute"]
+    return float(min(cfg["max_minutes"], minutes))

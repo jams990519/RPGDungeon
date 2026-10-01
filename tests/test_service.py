@@ -262,9 +262,33 @@ def test_travel_costs_energy(service, clock):
     service.store.put("hero", "test:1", hero)
     view = service.act("test:1", "go:n")
     assert view.kind == "zone" and "⚡" in (view.notice or "")
-    clock.advance(86400 / 20 + 5)
+    view = service.act("test:1", "explore_menu")
+    assert service.act("test:1", "explore").kind == "explore_menu"   # exploring costs energy too (D-78)
+    clock.advance(86400 / 40 + 5)
     view = service.act("test:1", "go:n")
     assert view.kind == "activity"
+
+
+def test_everyone_gets_fifty_energy_once(service):
+    make_hero(service)
+    hero = service.store.get("hero", "test:1")
+    assert hero["energy"] == 50
+    hero["energy"], hero["energy_version"] = 7, 1
+    service.store.put("hero", "test:1", hero)
+    service.act("test:1", "hero")
+    assert service.store.get("hero", "test:1")["energy"] == 50
+    hero = service.store.get("hero", "test:1")
+    hero["energy"] = 7
+    service.store.put("hero", "test:1", hero)
+    service.act("test:1", "hero")
+    assert service.store.get("hero", "test:1")["energy"] == 7      # only once
+
+
+def test_level_cap_is_100(content):
+    from engine.hero import xp_for_level
+    hb = content.balance["hero"]
+    assert hb["max_level"] == 100
+    assert xp_for_level(hb["xp_formula"], 100) > 5_000_000
 
 
 def test_class_pages_have_at_most_six_buttons(service):

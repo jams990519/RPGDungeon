@@ -79,6 +79,7 @@ class Hero:
     known: list[str] = field(default_factory=lambda: ["0:0"])
     gear: dict[str, str] = field(default_factory=dict)
     gear_started: bool = False
+    energy_version: int = 0
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

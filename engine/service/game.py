@@ -260,6 +260,10 @@ class GameService:
             return None
         hero = Hero.from_dict(data)
         ensure_talents(self.content.classes, self.content.balance, hero)
+        energy = self.content.balance["energy"]
+        if hero.energy_version < energy["version"]:   # 0.6.1: everyone starts again with full energy (D-78)
+            hero.energy = max(hero.energy, energy["max"])
+            hero.energy_version = energy["version"]
         if not hero.gear_started:          # 0.6: every hero gets its starter gear once (D-77)
             starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
             hero.gear_started = True
@@ -349,13 +353,20 @@ class GameService:
         origin = self._zone(hero.x, hero.y)
         dest = self._zone(hero.x + dx, hero.y + dy)
         known = hero.remembers(dest.x, dest.y)
-        minutes = travel_minutes(origin, dest, self.content.biomes, self.content.balance, known)
+        minutes = travel_minutes(dest.x, dest.y, self._anchors(hero), self.content.balance)
         return dest, self._seconds(minutes), known
 
     def _leg_seconds(self, hero: Hero, x: int, y: int, nx: int, ny: int) -> float:
-        origin, dest = self._zone(x, y), self._zone(nx, ny)
-        minutes = travel_minutes(origin, dest, self.content.biomes, self.content.balance, hero.remembers(nx, ny))
+        minutes = travel_minutes(nx, ny, self._anchors(hero), self.content.balance)
         return self._seconds(minutes)
+
+    def _anchors(self, hero: Hero) -> list[tuple[int, int, int]]:
+        """Where travel distance is counted from (D-78): the Claro and the hero's own camp."""
+        anchors = [(0, 0, 0)]
+        if hero.camp:
+            cx, cy = (int(v) for v in hero.camp.split(":"))
+            anchors.append((cx, cy, 0))
+        return anchors
 
     @staticmethod
     def _path(x: int, y: int, tx: int, ty: int) -> list[list[int]]:
@@ -432,7 +443,7 @@ class GameService:
                 notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
             notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
             return notices
-        if path and not self._spend_energy(hero):
+        if path and not self._spend_energy(hero, "move"):
             notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
             path = []
         if path:
@@ -457,8 +468,9 @@ class GameService:
             hero.energy = min(cfg["max"], hero.energy + gained)
             hero.energy_at = now if hero.energy >= cfg["max"] else hero.energy_at + gained * self._energy_period()
 
-    def _spend_energy(self, hero: Hero) -> bool:
-        cost = self.content.balance["energy"]["per_move"]
+    def _spend_energy(self, hero: Hero, kind: str) -> bool:
+        """Pay the energy of a non-combat action: move, explore or gather (D-78)."""
+        cost = self.content.balance["energy"][f"per_{kind}"]
         if hero.energy < cost:
             return False
         if hero.energy >= self.content.balance["energy"]["max"]:
@@ -468,7 +480,7 @@ class GameService:
 
     def _no_energy_notice(self, hero: Hero) -> str:
         wait = self._energy_period() - (self.clock.now() - hero.energy_at)
-        return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)))
+        return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)), per_day=self.content.balance["energy"]["per_day"])
 
     def _explore_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
         bal = self.content.balance["explore"]
@@ -566,6 +578,7 @@ class GameService:
         starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
         hero.gear_started = True
         hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
+        hero.energy_version = self.content.balance["energy"]["version"]
         referral = self.store.get("referral", account_id)
         if referral:
             hero.referred_by = referral["referrer"]
@@ -661,7 +674,7 @@ class GameService:
             view.notice = t.t("activity.busy")
             return view
         if action_id.startswith("go:") and action_id[3:] in DIRECTIONS:
-            if not self._spend_energy(hero):
+            if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
             direction = action_id[3:]
             dest, seconds, _ = self._route_seconds(hero, direction)
@@ -676,7 +689,7 @@ class GameService:
                 return self._places_view(hero)
             if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
                 return self._places_view(hero)
-            if not self._spend_energy(hero):
+            if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
             path = self._path(hero.x, hero.y, gx, gy)
             nx, ny = path.pop(0)
@@ -687,6 +700,8 @@ class GameService:
                              "path": path, "goal": [gx, gy]}
             notices = self._tutorial(hero, "use_places")
             return self._activity_view(hero, notice=self._join([t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))] + notices))
+        if action_id in ("gather", "explore") and not self._spend_energy(hero, action_id):
+            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         if action_id == "gather":
             seconds = self._seconds(self.content.balance["gather"]["minutes"])
             hero.activity = {"kind": "gather", "until": self.clock.now() + seconds}
@@ -1199,7 +1214,8 @@ class GameService:
         stats = hero_stats(cdef, hero.level)
         formula = self.content.balance["hero"]["xp_formula"]
         low, high = xp_for_level(formula, hero.level), xp_for_level(formula, hero.level + 1)
-        pct = 100 * (hero.xp - low) / max(1, high - low)
+        top = hero.level >= self.content.balance["hero"]["max_level"]
+        pct = 100.0 if top else min(100.0, max(0.0, 100 * (hero.xp - low) / max(1, high - low)))
         zone = self._zone(hero.x, hero.y)
         body = [
             t.t("hero.top_line", icon=self._hero_icon(hero), name=hero.name, place=self._zone_name(zone)),
@@ -1246,7 +1262,7 @@ class GameService:
             t.t("stats.initiative", value=round(stats["initiative"])),
             t.t("stats.stamina", value=self.content.balance["combat"]["stamina_max"]),
             t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100)),
-            t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"]),
+            t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"], per_day=self.content.balance["energy"]["per_day"]),
             t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
             t.t("stats.talents", attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100)),
             t.t("stats.gear", **self._gear_numbers(cdef.get("gear_bonus", {}))),
@@ -1567,7 +1583,7 @@ class GameService:
             if dropped:
                 hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
                 lines.append(self._loot_line(hero, dropped))
-            while hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
+            while hero.level < hb["max_level"] and hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
                 hero.points += 1
                 hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]

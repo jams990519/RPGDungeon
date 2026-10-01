@@ -16,14 +16,18 @@ combat:
   toxicity_max: 100
 
 travel:
-  near_claro_factor: 1.0     # [ES] senderos alrededor del Claro (1.0 = sin ventaja; los viajes ya son cortos)
-  unknown_zone_factor: 1.2   # [ES] ir a una zona que tu héroe no conoce tarda un poco más
+  first_minutes: 2           # [ES] D-78: las 2 primeras zonas desde el Claro o tu campamento toman 2 minutos
+  steps_per_minute: 2        # [ES] cada 2 zonas más lejos, 1 minuto más (2, 2, 3, 3, 4, 4...)
+  max_minutes: 20            # [ES] tope por tramo, para que lo muy lejano no se vuelva eterno
   level_per_lejania: 0.9     # [ES] nivel de la zona = 1 + Lejanía × esto
 
-energy:                      # [ES] energía para moverse entre zonas (D-65)
-  max: 20
-  per_day: 20                # [ES] se recupera de a 1, repartido en el día (1 cada 72 min)
-  per_move: 1                # [ES] cada viaje a una zona vecina gasta esto
+energy:                      # [ES] energía para toda acción fuera del combate (D-65, D-78)
+  max: 50
+  per_day: 40                # [ES] se recupera de a 1, repartido en el día (1 cada 36 min)
+  per_move: 1                # [ES] cada viaje a una zona vecina
+  per_explore: 1             # [ES] cada exploración
+  per_gather: 1              # [ES] cada recolección
+  version: 2                 # [ES] subirlo llena la energía de todos una vez (0.6.1: todos a 50). Nunca toca el progreso
 
 invite:                      # [ES] invitar jugadores da energía (D-65): se paga apenas el invitado entra con el enlace y crea su héroe
   bonus_referrer: 1
@@ -56,8 +60,10 @@ hero:
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
   defeat_gold_loss: 0.1
-  # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent. Lenta y sin tope (niveles infinitos).
-  xp_formula: {base: 120, exponent: 2.2}
+  # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent (D-78). Con toda la energía
+  # cada día, el nivel 100 llega en unos 2,5 años; quien juega menos tarda más. Nivel 10 en ~18 días, 20 en ~70.
+  xp_formula: {base: 120, exponent: 2.35}
+  max_level: 100             # [ES] D-78: 100 niveles por ahora
 
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
