@@ -20,7 +20,7 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 
 | # | Módulo | Responsabilidad | Documento de diseño |
 |---|---|---|---|
-| M1 | **Núcleo** | Identidad de jugador, tiempo del juego, azar con semilla, bus de eventos, idiomas | Este documento |
+| M1 | **Núcleo** | Cuenta del juego con identidades vinculadas (Telegram, web, app), tiempo del juego, azar con semilla, bus de eventos, idiomas | Este documento, [Web y multiplataforma](web-y-multiplataforma.md) §4 |
 | M2 | **Héroe** | Creación, raza, trasfondo, nivel, experiencia, perfil | [Creación de personaje](../03-personaje/creacion-de-personaje.md), [Progresión](../03-personaje/progresion.md) |
 | M3 | **Clases y talentos** | Specs, recursos, repertorios, árboles, configuraciones | [Clases](../03-personaje/clases-y-especializaciones.md), [Talentos](../03-personaje/talentos.md) |
 | M4 | **Equipo e inventario** | Objetos, ranuras, durabilidad, carga, técnicas de equipo | [Equipamiento](../03-personaje/equipamiento.md) |
@@ -34,14 +34,14 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 | M12 | **PvP, crimen y justicia** | Zonas, karma, invasiones, arenas, campos, guerra de castillos, territorios, delitos, tribunal | [PvP](../06-contenido/pvp.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md) |
 | M13 | **Economía** | Monedas, mercados, órdenes, correo, impuestos, Mercado Negro, contratos | [Economía](../07-economia/economia.md) |
 | M14 | **Oficios** | Recolección, refinado, fabricación, recetas, calidad, vetas | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md) |
-| M15 | **Social** | Gremios, alianzas, grupos, amigos, salas retransmitidas, vivienda | [08 · Social](../08-social/README.md) |
+| M15 | **Social** | Gremios, alianzas, grupos, amigos, salas (en Telegram, retransmitidas), vivienda | [08 · Social](../08-social/README.md) |
 | M16 | **Minijuegos y apuestas** | Cada minijuego es un complemento que se enchufa (taberna, dados, cartas…); apuestas legales e ilegales | [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md), [Apuestas](../08-social/apuestas.md) |
 | M17 | **Colecciones y logros** | Bestiario, apariencias, títulos, logros, cicatrices como trofeo | [Progresión](../03-personaje/progresion.md) |
 | M18 | **Temporadas y rankings** | Temporadas de M+, arena, ligas, tablas | [Progresión](../03-personaje/progresion.md) |
-| M19 | **Mensajería** | Mensaje vivo, cola de ediciones, límites de envío, avisos | [Telegram](telegram.md) |
+| M19 | **Mensajería** | Vistas vivas con versión y avisos con prioridad, iguales para todos los clientes. El mensaje vivo, la cola de ediciones y los límites de envío son del adaptador de Telegram | [Web y multiplataforma](web-y-multiplataforma.md) §3 y §8, [Telegram](telegram.md) |
 | M20 | **Administración y telemetría** | Radiografías, registro de balance, informe económico, clasificación de feedback | Este documento, §5 |
 | M21 | **Simulador de balance** | Corre specs contra escenarios fijos | [Balance](../03-personaje/balance.md) |
-| M22 | **Pagos** | Telegram Stars, aislado del resto | [Monetización](../07-economia/monetizacion.md) |
+| M22 | **Pagos** | Medios de pago enchufables (Telegram Stars, pasarela web, tiendas), aislados del resto: el motor solo recibe "compra confirmada" | [Monetización](../07-economia/monetizacion.md) |
 | M23 | **Anti-trampas** | Multicuentas, bots, comercio sospechoso | [Seguridad](seguridad-y-anti-trampas.md) |
 | M24 | **Construcción** | Parcelas, planos, obras por jornadas, casas, edificios de organizaciones, defensa | [09 · Construcción](../09-construccion/README.md) |
 | M25 | **Propiedad** | Puestos, locales, licencias, subastas, tasas, crédito | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) |
@@ -104,9 +104,9 @@ TowerWars aprendió que "un diagnóstico de segunda mano no es un hecho": varias
 ## 6. Cómo se vería el repositorio cuando empiece el código (propuesta)
 
 ```
-motor/          reglas puras, un subpaquete por módulo (M1-M23)
+motor/          reglas puras, un subpaquete por módulo (M1-M25, salvo el simulador M21)
 contenido/      datos: pisos, jefes, clases, recetas, enfermedades, misiones
-adaptadores/    telegram/, web/ (también la Mini App), api/, admin/
+adaptadores/    telegram/, web/ (también la Mini App), mobile/ (más adelante, P-61), api/, admin/
 simulador/      balance
 pruebas/        por módulo, sin Telegram
 diseno/         este documento
@@ -117,7 +117,7 @@ No se crea nada de esto hasta que se decida empezar a programar (ver [Hoja de ru
 ## 7. Decisiones técnicas abiertas
 
 - **Base de datos.** Un MMORPG con muchas escrituras simultáneas (combates en paralelo, mercado) necesita una base que las aguante; PostgreSQL es la opción natural. TowerWars usa SQLite, y agregarle una columna tocaba seis lugares del código: aquí conviene usar migraciones desde el día uno.
-- **Lenguaje y librería.** Python con aiogram permitiría reutilizar lo que ya se sabe de TowerWars (sin copiar su código).
+- **Lenguaje y librería.** Python con aiogram permitiría reutilizar lo que ya se sabe de TowerWars (sin copiar su código). aiogram va solo en el adaptador de Telegram, nunca en el motor.
 - **Colas y temporizadores.** Los temporizadores perezosos alcanzan al principio; con miles de jugadores hará falta una cola de trabajos.
 
 Ver preguntas P-46 y P-47 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).

@@ -159,7 +159,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles |
 | M14 | Oficios | Alto | Límite de oficios mayores, vetas, rangos y exámenes |
 | M15 | Social | Medio | Tamaño de grupo, vales por reenvío |
-| M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, dados nativos de Telegram |
+| M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
 | M17 | Colecciones y logros | Bajo, salvo que dé poder | Regla de las 3 vistas, nunca poder |
 | M18 | Temporadas y rankings | Medio | Duración de la temporada (la usan M7, M9, M10, M25) |
 | M19 | Mensajería | Alto para los clientes | Vistas, avisos, límites de Telegram |
@@ -211,7 +211,7 @@ flowchart LR
 | **Lo usan** | Todos |
 | **Eventos que publica** | Propuestos: `NuevoDiaDeJuego`, `NuevaSemana` (reinicios), `CuentaVinculada` (una cuenta de Telegram que se une a la web o a la app) |
 | **Eventos que escucha** | Ninguno: transporta los de los demás |
-| **Datos de los que es dueño** | Cuentas y vínculos entre clientes; reloj del juego; semillas de azar; el bus y el registro de eventos; el catálogo de textos por idioma (claves ES y EN); la lista de IDs usados y retirados |
+| **Datos de los que es dueño** | Cuentas con sus identidades vinculadas (Telegram, correo y otras) y el idioma de la cuenta; reloj del juego (horas en UTC); semillas de azar y sus huellas publicadas (tirada pública auditable); el bus y el registro de eventos; los archivos de idiomas (ES y EN); la lista de IDs usados y retirados |
 | **Reglas que nunca se rompen** | El motor no sabe que existen Telegram, la web ni la app. Todo azar usa una semilla guardada. Un ID nunca cambia ni se reutiliza. Los temporizadores se calculan de forma perezosa: si el servidor se reinicia, nada se pierde. Ningún texto visible se escribe en el código del motor: vive en los archivos de idiomas, y el motor entrega las vistas ya traducidas (regla 7) |
 
 **Si cambias esto, revisa:**
@@ -553,7 +553,7 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **El tamaño del grupo** → mazmorras (M11) y composición (M3).
-- **Los vales por reenvío** → son una mecánica de Telegram: la web y la app necesitan su propia forma de firmar (§5.3).
+- **Los vales** → son objetos del motor de un solo uso que cambian de dueño con una orden; reenviar el mensaje es solo un atajo de Telegram (§5.3). Cambiarlos toca el banco de gremio, el inventario (M4) y el lavado de oro (M23).
 - **Los límites del banco de gremio** → lavado de oro (M23) y economía de gremios (M13).
 - **El nivel de gremio** → si da poder, **rompe** su regla; si da más miembros, cambia la escala de guerras y territorios (M12).
 - **La mentoría** → retención de novatos y monedas de mentoría (cosméticos, M17).
@@ -576,7 +576,7 @@ flowchart LR
 **Si cambias esto, revisa:**
 - **La comisión de la casa** → oro quemado (M13, M20) y negocio de los casinos de jugadores (M24, M25).
 - **Los topes o el Voto de Templanza** → quitarlos **rompe** la regla de topes diarios y complica las tiendas de aplicaciones (P-62, P-63).
-- **El dado nativo de Telegram** → no existe en la web ni en la app: hace falta una tirada con la misma garantía (§5.3). También lo usan el Pícaro Forajido (M3) y el botín de grupo (M15).
+- **La tirada pública auditable** → el dado nativo de Telegram no decide ninguna tirada que cuente: la decide el motor con una semilla cuya huella se publica antes y que se revela después ([Web y multiplataforma](web-y-multiplataforma.md) §6.1). Cambiar ese mecanismo toca M1 (semillas), M15 (botín de grupo), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), la API pública y los tres clientes (§5.3).
 - **Agregar un minijuego** → recompensas con tope, un lugar en el mundo y nada de poder; si es de destreza, nunca decide calidad real (M14).
 - **Las reglas de lo ilegal** (garitos, redadas) → Infamia y guardia (M12), contraseñas (M10), orden de la ciudad (M9).
 
@@ -626,19 +626,20 @@ flowchart LR
 
 | | |
 |---|---|
-| **Para qué sirve** | Lleva lo que pasa en el motor a cada jugador: vistas, avisos, colas de envío y canales, respetando los límites de cada cliente |
-| **Documentos de diseño** | [Telegram](telegram.md), [Web y multiplataforma](web-y-multiplataforma.md) |
+| **Para qué sirve** | Lleva lo que pasa en el motor a cada jugador: vistas vivas, avisos con prioridad, bandeja de avisos y noticias, igual para los tres clientes. La forma de cada cliente (mensaje vivo, cola de ediciones, límites de envío de Telegram) vive en su adaptador |
+| **Documentos de diseño** | [Web y multiplataforma](web-y-multiplataforma.md) §3, §6.3, §6.6 y §8, [Telegram](telegram.md) |
 | **Depende de** | M1 (cuenta, idiomas) y los eventos de todos los módulos |
 | **Lo usan** | Los adaptadores de cada cliente (Telegram, web, app) y todos los módulos que necesitan avisar |
 | **Eventos que publica** | Propuesto: `AvisoFallido` (para reintentar o avisar por otro cliente) |
 | **Eventos que escucha** | `HeridaCreada` / `HeridaTratada` (`WoundCreated` / `WoundTreated`), `PisoAbierto` (`FloorOpened`: aviso escalonado), `HeroeDerribado` / `HeroeCaido` (`HeroDowned` / `HeroFallen`), `JefeDerrotado` (`BossDefeated`), `EnfermedadContagiada` (`DiseaseContracted`: Gaceta), y cualquier evento que pida atención del jugador |
-| **Datos de los que es dueño** | Colas de envío y edición, preferencias de aviso de cada jugador, plantillas de aviso (claves de idioma), la referencia al mensaje vivo de cada actividad, los canales (Gaceta, Mercado, Salón de los Caídos, Novedades) |
-| **Reglas que nunca se rompen** | Un mensaje vivo por actividad. En Telegram nada pasa de 4.096 caracteres: se pagina o se pliega. Una edición cada 3 a 5 segundos por chat. Los avisos masivos se escalonan. El costo nunca va en el botón; 2 o 3 botones por fila. Lo privado va al privado. Resumen arriba, detalle plegado. Lo propio de cada cliente vive en su adaptador, no en el motor |
+| **Datos de los que es dueño** | Preferencias de aviso de cada jugador, la bandeja de avisos (invitaciones, retos, avisos pendientes), las plantillas de aviso, el feed de noticias (Gaceta, Mercado, Salón de los Caídos, Novedades). En el adaptador de Telegram: la cola de ediciones, los límites de envío y la referencia al mensaje vivo |
+| **Reglas que nunca se rompen** | Lo que no se muestra no se envía: ningún dato oculto viaja al cliente. Cada dato con su precisión pública. Informes en dos capas: resumen corto y detalle completo. Lo que abre una competencia tiene hora fija igual para todos: el aviso puede llegar escalonado, la apertura nunca. Ningún plazo es tan corto que no recibir un aviso a tiempo sea una desventaja de cliente. En Telegram: un mensaje vivo por actividad, nada pasa de 4.096 caracteres, una edición cada 3 a 5 segundos por chat, el costo nunca va en el botón |
 
 **Si cambias esto, revisa:**
 - **El formato de una vista o de un aviso** → los tres clientes (§5).
-- **Los límites de envío o de edición** → la carga del servidor y el riesgo de que Telegram frene los envíos; combates en grupo y bandas (M5, M11).
-- **El aviso escalonado** → la apertura de pisos (M9) y los eventos de servidor.
+- **Los límites de envío o de edición** → solo el adaptador de Telegram: la carga del servidor y el riesgo de que Telegram frene los envíos en combates en grupo y bandas (M5, M11).
+- **El aviso escalonado** → la apertura de pisos (M9), la Guarida, las vetas excepcionales y los eventos de servidor; la hora de apertura tiene que seguir siendo la misma para todos.
+- **La precisión pública de un dato** (vida del jefe en %, Aguante en fichas) → lo que puede deducir un jugador en cada cliente; una precisión más fina en un cliente **rompe** D-40.
 - **Un canal** (Gaceta, Mercado) → lo que publican M9, M12, M14, M7 y M20.
 
 ---
@@ -1055,7 +1056,7 @@ Cuando cambian, se cambian **en todos** sus lugares en el mismo cambio. Si no, e
 | Descanso x2 y x3 | [Heridas](../05-salud/heridas.md) §5, [Casa propia](../09-construccion/casa-propia.md) §2, [Curación](../05-salud/curacion-y-tratamientos.md) §5 |
 | Entrenadores y exámenes | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §3, [Profesiones](../07-economia/profesiones.md) §11, [Curación](../05-salud/curacion-y-tratamientos.md) §0, [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2 |
 | Sumideros en porcentaje | [Economía](../07-economia/economia.md) §1, [Peleas clandestinas](../06-contenido/peleas-clandestinas.md) §8.1, [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3 |
-| Dados nativos a la vista | [Telegram](telegram.md) §1 y §3, [Apuestas](../08-social/apuestas.md) §2, [Gremios y vida social](../08-social/gremios-y-social.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §8, [Clases](../03-personaje/clases-y-especializaciones.md) §2 (Pícaro Forajido) |
+| Tiradas a la vista (dado nativo → tirada pública auditable) | [Web y multiplataforma](web-y-multiplataforma.md) §6.1 (la regla que vale), [Telegram](telegram.md) §1 y §3, [Apuestas](../08-social/apuestas.md) §2, [Gremios y vida social](../08-social/gremios-y-social.md) §4, [Equipamiento](../03-personaje/equipamiento.md) §8, [Clases](../03-personaje/clases-y-especializaciones.md) §2 (Pícaro Forajido) |
 | Necesidades y medidores de la ciudad | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2-3, [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §3 y §7, [Crisis](../02-mundo/crisis-problemas-y-soluciones.md) §1, [Red de sistemas](../00-vision/red-de-sistemas.md) §3 |
 | Gobernador y mandatos | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §4, [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md) §4 |
 | Sello y sus pruebas | [Torre y pisos](../02-mundo/torre-y-pisos.md) §4.2, [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) §5, [Profesiones](../07-economia/profesiones.md) §9 |
@@ -1089,25 +1090,35 @@ Un solo motor, un solo mundo y tres clientes de primer nivel (D-40, D-41). La Mi
 | Quitar o renombrar un campo de una vista | Sí: **rompe** | Sobre todo la app instalada que no se actualizó. Hace falta una versión nueva de la vista |
 | Un texto nuevo o cambiado | Sí, poco | El texto en ES y EN en los archivos de idiomas. En Telegram, que el mensaje no pase de 4.096 caracteres en el idioma más largo; en pantallas chicas, que el botón no se trunque |
 | Un temporizador | Sí, poco | El motor manda la hora de fin y cada cliente muestra la cuenta atrás. La misma duración en todos |
-| Una tirada al azar visible | Sí | En Telegram, dado nativo; en la web y la app no existe: tirada del servidor con semilla publicada después (M1, M16) |
+| Una tirada al azar visible | Sí | Siempre la tirada pública auditable del motor: huella de la semilla antes, semilla revelada después, resultado a la vez en todos los clientes. El dado nativo de Telegram solo dibuja el número (M1, M16) |
+| Un dato que debe quedar oculto (tipo real de un aviso, enfermedad sin diagnosticar, acción del rival, solución de un caso, nombre detrás de un apodo) | Sí: cuidado | Nunca se manda al cliente, ni escondido en la página. Si se envía, la web lo deja leer y **rompe** la paridad (D-40) y la regla de los avisos que mienten (M6) |
+| La precisión de un dato (vida del jefe, postura, acumulaciones, Aguante) | Sí | La fija el motor y es igual para todos. Ningún cliente recibe un número más fino |
+| Algo que abre una competencia (piso, Guarida, veta excepcional, bestia legendaria, caso semanal) | Sí | Hora de apertura fija, anunciada antes. El aviso puede llegar escalonado; la apertura, nunca. El motor rechaza acciones antes de la hora |
+| Un desempate (iniciativa, "gana quien eligió primero", combos) | Sí: cuidado | Nunca por orden de llegada ni por milisegundos: por tramos gruesos del plazo y luego una tirada del motor. Si dependiera de la velocidad, el cliente más rápido tendría ventaja |
 | Un aviso urgente (te toca, te atacan, la despensa está en Justa) | Sí | Telegram: el bot solo escribe a quien le dio `/start`; app: notificación; web: aviso en pantalla. Las preferencias viven en M19 |
 | Un pago | Sí | Solo el adaptador de pago de ese cliente (M22). El catálogo y las Gemas son de la cuenta |
 | El orden o la cantidad de botones de combate | Sí | Las tres pantallas de combate y las Tácticas que se muestran. D-46 fija el máximo |
 
-### 5.3 Mecánicas que hoy dependen de Telegram
+### 5.3 Mecánicas que nacieron en Telegram
 
-Cada una necesita un equivalente con **la misma garantía** en la web y la app, o algún cliente quedaría con ventaja o sin la mecánica.
+Cada una tiene una **regla neutral** que vale en los tres clientes; la forma de Telegram es solo una representación. La tabla completa, con cómo se ve en cada cliente, está en [Web y multiplataforma](web-y-multiplataforma.md) §6, y **manda ese documento**. Aquí va lo que le importa al mapa: qué módulos se tocan si cambia la regla neutral.
 
-| Mecánica de Telegram | Dónde se usa | Qué necesitan la web y la app |
+| Mecánica de Telegram | Regla neutral | Módulos que la usan |
 |---|---|---|
-| Dados animados nativos | Botín de grupo (M15), apuestas y taberna (M16), Dados del Destino del Pícaro Forajido (M3) | Tirada del servidor con semilla publicada después, a la vista de todos los de la sala |
-| Reenvío como firma | Vales de gremio (M15), cartas de fundación de un cisma (M9), contratos e informes (M13, M12), tratados entre castillos | Un botón de "firmar" con la misma prueba: quién, cuándo y qué |
-| Encuestas nativas | Elecciones, leyes y raciones (M9), quiz de lore (M16) | Votación propia. El recuento lo lleva el motor, para que el resultado sea uno solo |
-| Modo inline y mensajes privados | Mano de cartas (M16), rol secreto en La Máscara | Una vista privada para cada jugador |
-| Grupos, temas y salas retransmitidas | Chat de gremio (M15), mazmorras por buscador (M11), chats de piso y de ciudad | Chat propio o puente con el grupo de Telegram |
-| Canales | Gaceta, Mercado, Salón de los Caídos, Novedades (M19) | Una sección de noticias |
-| Juegos HTML5 con récord (`setGameScore`) | Salón recreativo (M16) | En la web es nativo |
-| Telegram Stars | Pagos (M22) | Pasarela web; pago de la tienda en la app (P-62) |
+| Dados animados nativos | Tirada pública auditable | M15 (botín Necesidad o Codicia), M16 (taberna, Fortuna, lotería), M3 (Dados del Destino del Pícaro Forajido), M12 (regla de la noche del Foso), M1 (semillas) |
+| Spoiler que tapa un resultado | Boleto sellado al comprarlo | M16 (rasca y gana) |
+| Encuestas nativas y en modo quiz | Votación y pregunta del motor, con censo, plazo y recuento auditable | M9 (gobernador, leyes, moción de censura, cisma, raciones), M12 (juicios, missio del Foso), M15 (votos de gremio), M16 (trivia) |
+| Reenvío como firma | Documento verificable con ID; firmar es una orden | M9 (carta de fundación, tratados), M13 (contratos), M12 (partes de guerra, informes), M17 (pruebas de hazañas) |
+| Reenvío para mover objetos | Vale: objeto del motor de un uso, que cambia de dueño con una orden | M15 (vales del almacén del gremio), M4 |
+| Mensaje vivo, citas plegables, `.txt` | Vista viva e informe en dos capas | M19 y todos los que muestran estado (M5, M14, M24, M9) |
+| Modo inline y privado del bot | Visibilidad de cada dato: pública, de grupo o privada | M16 (mano de cartas, La Máscara), M12 (lugar y hora del Foso), M4 (inventario) |
+| Grupos, temas y salas retransmitidas | Salas y espacios de comunidad del motor; el grupo de Telegram es un puente | M15 (gremio), M11 (buscador, bandas), M12 (Foso), M9 (ciudad, castillo), M6 (jefe errante con Cuerno) |
+| Canales | Feed de noticias del motor | M19 (Gaceta, Mercado, Salón de los Caídos, Novedades) |
+| El bot no escribe sin `/start` | Bandeja de avisos del motor | M19, M15 (invitaciones), M12 (retos), M7 (consultas médicas) |
+| "Conectado" (no existe en Telegram) | Estados explícitos: "disponible para ayudar", "presente" | M6 (signos de invocación), M24 (tomar el mando en la defensa), M12 (redadas, inactividad en el Foso) |
+| Juegos HTML5 y `setGameScore` | Minijuego como complemento; la puntuación la valida el servidor | M16 (salón recreativo) |
+| Telegram Stars | Pagos enchufables: el motor solo recibe "compra confirmada" | M22 |
+| ID de Telegram como identidad | Cuenta del juego con identidades vinculadas | M1, M23, M22 |
 
 ### 5.4 Cómo se ve en el código
 
@@ -1193,8 +1204,9 @@ Lo que el mapa encontró al cruzar los documentos. No se corrige aquí: cada pun
 5. **Impuesto de la casa.** [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3 dice "tasa fija según la ubicación"; D-48 dice que la fija el gobierno del reino dentro de un rango.
 6. **Dificultades de las mazmorras.** [Torre y pisos](../02-mundo/torre-y-pisos.md) §2 dice que mazmorras y laberintos tienen Normal, Profundidades, Corrompido, Abismal y Pesadilla; [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §1 usa Normal, Heroica, Mítica y Mítica+.
 7. **Vivienda en dos módulos.** La [arquitectura](arquitectura-modular.md) pone "vivienda" en M15 y "casas" en M24 (propuesta en §6.1).
-8. **Repositorio con 23 módulos.** La [arquitectura](arquitectura-modular.md) §6 habla de `motor/` con M1-M23, pero hay 25 módulos; las [Convenciones](convenciones-de-codigo.md) §7.1 ya proponen `engine/` con M1-M25 (salvo M21, en `simulator/`).
-9. **Contagio por probabilidad o por barra.** [Enfermedades](../05-salud/enfermedades.md) §2 y [Heridas](../05-salud/heridas.md) §2 hablan de "riesgo" de contagio por mordida; el [Bestiario](../06-contenido/bestiario.md) §5.1 lo cambia por una barra que se acumula, "sin azar ciego".
+8. **Mensajería en la arquitectura y documentos con funciones de Telegram.** La [arquitectura](arquitectura-modular.md) §2 todavía pone en M19 la cola de ediciones y los límites de envío, y [Web y multiplataforma](web-y-multiplataforma.md) §14 los pasa al adaptador de Telegram (este mapa sigue a Web y multiplataforma). Esa misma tabla §14 lista los documentos que todavía describen mecánicas con funciones de Telegram (dado nativo, reenvío como firma, encuestas); mientras no se ajusten, vale la regla neutral.
+9. **Repositorio con 23 módulos.** La [arquitectura](arquitectura-modular.md) §6 habla de `motor/` con M1-M23, pero hay 25 módulos; las [Convenciones](convenciones-de-codigo.md) §7.1 ya proponen `engine/` con M1-M25 (salvo M21, en `simulator/`).
+10. **Contagio por probabilidad o por barra.** [Enfermedades](../05-salud/enfermedades.md) §2 y [Heridas](../05-salud/heridas.md) §2 hablan de "riesgo" de contagio por mordida; el [Bestiario](../06-contenido/bestiario.md) §5.1 lo cambia por una barra que se acumula, "sin azar ciego".
 
 ---
 
