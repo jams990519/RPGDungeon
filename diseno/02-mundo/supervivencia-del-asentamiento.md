@@ -1,25 +1,58 @@
 # Supervivencia del asentamiento: construir no alcanza
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (etapas y necesidades), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Ciudades y el Castillo](ciudades-y-castillo.md), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Bestiario](../06-contenido/bestiario.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Fundación y cisma](fundacion-y-cisma.md) (el Claro, los campamentos y sus etapas), [Sistema de construcción](../09-construccion/sistema-de-construccion.md), [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) · **Se conecta con:** [Ciudades y el Castillo](ciudades-y-castillo.md), [Crisis](crisis-problemas-y-soluciones.md), [Geografía y recursos](geografia-y-recursos.md), [Mundo vivo](mundo-vivo-y-viaje.md) (estaciones, noche, ecología), [Enfermedades](../05-salud/enfermedades.md), [Condiciones](../05-salud/condiciones.md), [Mente](../05-salud/mente.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Animales y cultivos](../05-salud/animales-y-cultivos.md), [Cacerías](../06-contenido/cacerias.md), [Bestiario](../06-contenido/bestiario.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Eventos](../06-contenido/eventos.md), [Profesiones](../07-economia/profesiones.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** §0 está en el juego (0.9.2); todo lo demás es propuesta (capa profunda)
 
-**Qué pediste.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
+**Qué pidió el dueño.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
 
-> En el juego hoy: todavía no hay medidores de comida, salud ni incursiones. El Claro tiene su obra común, y cada campamento crece pagando materiales: fundarlo cuesta 20 de madera y 10 de piedra, y cada nivel más, 15 de madera, 10 de piedra y 5 de fibra multiplicados por el nivel, hasta llegar a castillo en el nivel 9 (D-81, D-87).
+**Cómo leer este documento.** Hoy subir de etapa es **pagar materiales** (§0). Lo que sigue es la **capa profunda** que se sumaría encima, primero en el Claro y después, más liviana, en los campamentos de jugadores. Nada de esto está programado. Antes de programarlo, el dueño decide si acepta que subir deje de ser solo pagar (§16).
 
-**De dónde sale.**
-- *Frostpunk*: la **esperanza** y el **descontento** como medidores de la ciudad; las **raciones**; el **libro de leyes**, donde cada ley resuelve un problema y crea otro; el frío que obliga a prepararse antes de que llegue.
-- *Banished*: la **despensa** que hay que llenar en otoño para pasar el invierno, la **hambruna**, las enfermedades por falta de higiene, el cementerio, y una población que **crece o muere** según cómo la cuides.
-- *RimWorld*: las **incursiones crecen con la riqueza** de la colonia. Cuanto más tienes, más fuerte viene el ataque.
-- *They Are Billions*: el **ruido** de los edificios atrae a las hordas.
-- *Valheim*: el **progreso** atrae ataques a la base; cuanto más avanzas, más duros son.
-- *Dwarf Fortress*: los **asedios** llegan atraídos por la riqueza de la fortaleza.
-- *Northgard*: los **inviernos** bajan la producción y suben el consumo; la comida y la **felicidad** deciden si la gente llega o se va.
-- *Don't Starve Together*: las **estaciones** cambian todo y cada una pide prepararse distinto.
-- *Anno*: las **necesidades suben con el nivel de la población**: un pueblo pide pan; una ciudad pide pan, baños y teatro.
-
-**La regla.** Terminar una obra no sube la etapa. La sube una ciudad que **come, está sana, está a salvo y trabaja junta** durante días seguidos. Construir es la mitad del trabajo; **sostener** es la otra mitad.
+**Palabras.** Aquí "ciudad" o "asentamiento" quiere decir el Claro o un campamento de jugadores. Las etapas son las del juego: **fogata, campamento, aldea, pueblo, ciudad y castillo**. Los documentos viejos decían "Claro" para la primera etapa y "Villa" para la cuarta.
 
 ---
+
+## 0. Lo que ya existe (en el juego)
+
+### 0.1 La obra común del Claro
+
+- Todo el servidor aporta materiales a una sola obra. Cuando se completa la lista de la etapa, el Claro sube para todos: fogata → campamento → aldea → pueblo → ciudad → castillo (`settlement.stages`).
+- Cada material da 2 de experiencia y 1 de mérito. La obra muestra a los 5 que más aportaron.
+- Cada etapa abarata la posada y suma 1 zona al territorio del Claro (D-81).
+- El Claro nunca baja de etapa.
+- El detalle y los números están en [Fundación y cisma](fundacion-y-cisma.md) §1.
+
+### 0.2 Los campamentos de jugadores
+
+- Se fundan lejos del Claro con 20 de madera y 10 de piedra, en una zona explorada al 100 % (D-71, D-87).
+- Tienen nombre único y miembros que acepta el fundador: 2 al nivel 1 y 2 más por nivel (D-84).
+- Crecen cuando un miembro paga 15 de madera, 10 de piedra y 5 de fibra por el nivel actual y elige qué zona vecina toman. Cambian de nombre en los niveles 3, 5, 7 y 9: aldea, pueblo, ciudad y castillo (D-81, D-87).
+- En su territorio nadie es atacado y sus miembros recolectan un 50 % más.
+- Hoy no tienen servicios, ni almacén, ni obra común propia. El detalle está en [Fundación y cisma](fundacion-y-cisma.md) §2.
+
+### 0.3 Lo que falta para "construir no alcanza"
+
+Hoy no hay comida, población, salud pública, amenaza ni incursiones. **Subir es pagar.** Todo lo de abajo es la propuesta para que, además de pagar, haya que **sostener**.
+
+## De dónde sale
+
+- *Frostpunk*: la **esperanza** y el **descontento** como medidores de la ciudad; las **raciones**; el **libro de leyes**, donde cada ley resuelve un problema y crea otro.
+- *Banished*: la **despensa** que hay que llenar en otoño para pasar el invierno, la **hambruna**, las enfermedades por falta de higiene y una población que **crece o muere** según cómo la cuides.
+- *RimWorld*: las **incursiones crecen con la riqueza** de la colonia.
+- *They Are Billions*: el **ruido** de los edificios atrae a las hordas.
+- *Valheim*: el **progreso** atrae ataques a la base.
+- *Dwarf Fortress*: los **asedios** llegan atraídos por la riqueza.
+- *Northgard*: los **inviernos** bajan la producción y suben el consumo.
+- *Don't Starve Together*: las **estaciones** cambian todo.
+- *Anno*: las **necesidades suben con el nivel de la población**.
+- *Ashes of Creation*: los nodos que crecen con la actividad de los jugadores.
+
+**La regla (propuesta).** Terminar una obra no sube la etapa. La sube una ciudad que **come, está sana, está a salvo y trabaja junta** durante días seguidos. Construir es la mitad del trabajo; **sostener** es la otra mitad.
+
+**Dónde se aplicaría.**
+
+| Lugar | Capa | Desde qué etapa | Por qué |
+|---|---|---|---|
+| **El Claro** | Completa: todo este documento | Al subir a aldea. Hasta campamento sigue siendo solo pagar, para que el tutorial no se trabe | Es la obra de todo el servidor: tiene la gente para sostenerla |
+| **Campamentos de jugadores** | Ligera (§7.2): despensa chica, incursiones a la medida de sus miembros, una Noche de prueba antes de castillo | Desde aldea (nivel 3) | Tienen pocos miembros (de 6 a 18). No pueden cargar con los mínimos del Claro |
 
 ## 1. El bucle de la ciudad
 
@@ -32,11 +65,11 @@ PRODUCIR ──> GUARDAR ──> CONSUMIR ──> CRECER ──> ATRAER AMENAZA 
    └──── la salud, el ánimo y el orden deciden cuánto rinde todo ─────────┘
 ```
 
-Cada **día de juego** (6 horas reales; ver [Mundo vivo](mundo-vivo-y-viaje.md)) la ciudad hace su **cuenta**: come, gasta, se ensucia, se enferma o se cura, y la amenaza sube. El resultado se ve en `/ciudad` y se resume una vez por día real en el grupo de la ciudad.
+Cada **día de juego** (6 horas reales; ver [Mundo vivo](mundo-vivo-y-viaje.md)) la ciudad hace su **cuenta**: come, gasta, se ensucia, se enferma o se cura, y la amenaza sube. El resultado se ve en `/ciudad` y se resume una vez por día real.
 
-Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) siguen igual. Cinco de ellas se vuelven **medidores con umbrales** (§3): comida, salud, ánimo, defensa y orden. Las otras tres (materiales, herramientas y tesoro) alimentan las obras y el mantenimiento (§8).
+Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) §3 siguen igual. Cinco se vuelven **medidores con umbrales** (§3): comida, salud, ánimo, defensa y orden. Las otras tres (materiales, herramientas y tesoro) alimentan las obras y el mantenimiento (§8). Los materiales ya existen: son los 6 recursos que hoy se recolectan (D-87).
 
-**Amplio pero ligero** (D-44 en [Decisiones](../00-vision/decisiones.md)). **Capa simple:** el jugador común ve los cinco medidores en `/ciudad` y toca **📋 Aportar**, que le propone el pedido más urgente para su oficio; con eso ya ayuda. **Capa profunda:** aldeanos, raciones, leyes y defensa por tramos, para el gobierno y para quien quiera meterse.
+**Amplio pero ligero** (D-44). **Capa simple:** el jugador ve los cinco medidores en `/ciudad` y toca **📋 Aportar**, igual que hoy toca 🤲 Aportar en la obra común. **Capa profunda:** aldeanos, raciones, leyes y defensa por tramos, para el gobierno y para quien quiera meterse.
 
 ## 2. La población
 
@@ -44,7 +77,7 @@ Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) siguen igual.
 
 | Habitante | Quién es | Cuenta para la etapa | Come (raciones por día real) | Qué aporta |
 |---|---|---|---|---|
-| 🧑 **Residente jugador** | Tiene casa o paga posada (antes de que exista la posada, eligió este Claro o Campamento como hogar y duerme en su fogata o en sus cabañas), y entró al juego en los últimos 7 días | Sí | 1, solo los días en que juega | Todo: oficios, obras, defensa, votos |
+| 🧑 **Residente jugador** | Es miembro del campamento (en el Claro, ver quién cuenta en §7.1) o tiene casa o paga posada, y entró al juego en los últimos 7 días | Sí | 1, solo los días en que juega | Todo: oficios, obras, defensa, votos |
 | 🧑‍🌾 **Aldeano PNJ** | Llega solo si hay vivienda y comida (§2.2) | Sí | 1 | Trabajo básico (§2.3) |
 | 💂 **Guardia PNJ** | Contratado con oro y equipado con equipo real (ver [Defensa](../09-construccion/defensa-y-protecciones.md)) | Sí | 1,5 | Defensa y orden |
 | 🤕 **Enfermo** (PNJ) | Un aldeano o guardia en cama | Sí | 1,25 (caldos) | Nada mientras está enfermo |
@@ -66,7 +99,7 @@ Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) siguen igual.
 | Llega cada día **1 por cada 5 camas libres** (mínimo 1), el doble durante un festival o si la Gaceta habla bien de la ciudad. Así lo que frena a la población es la vivienda, la comida y la salud, no la espera | Hay **hacinamiento** de más del 20 %: se van los que sobran |
 
 - Los aldeanos pueden **morir** en una brecha o en un brote grave. Es una pérdida de la ciudad, no de ningún jugador: queda en el cementerio y en la historia del lugar, y baja el ánimo.
-- Los tres PNJ supervivientes del Claro (la sanadora, el viejo constructor y la cazadora) son los primeros aldeanos y **nunca se van**.
+- Los PNJ del Claro (hoy, el viejo mercader y quien cuida la posada; como propuesta, también una sanadora y una cazadora) son los primeros aldeanos y **nunca se van**.
 
 ### 2.3 Qué hacen los aldeanos
 
@@ -83,7 +116,7 @@ Los aldeanos hacen el trabajo básico, **despacio y sin calidad**. Nunca reempla
 | **Ayudante de enfermería** | Cuida a los enfermos | Suma un poco al control de un brote |
 
 - **Tope:** los aldeanos nunca producen más del **35 %** de la comida que la ciudad necesita, ni más del **20 %** de las jornadas de una obra. El resto lo ponen los jugadores.
-- **Quién los reparte:** antes de la Villa, la asamblea de residentes (votación con una encuesta de Telegram); desde la Villa, el Maestro de Obras mayor y el gobernador (ver [Fundación y cisma](fundacion-y-cisma.md)).
+- **Quién los reparte:** antes del Pueblo, la asamblea de residentes (votación con una encuesta de Telegram); desde el Pueblo, el Maestro de Obras mayor y el gobernador (ver [Fundación y cisma](fundacion-y-cisma.md)).
 - Un aldeano enfermo, hambriento o descontento trabaja la mitad. Uno en huelga no trabaja (§3).
 
 ### 2.4 La población decide las necesidades
@@ -94,7 +127,7 @@ Como en *Anno*, cada etapa pide más que la anterior. Si falta algo de la lista,
 |---|---|
 | **Campamento** | Comida, agua del pozo, techo, fogón |
 | **Aldea** | Comida de **2 grupos** (ver la variedad en [Condiciones](../05-salud/condiciones.md)), letrinas, enfermería, granero |
-| **Villa** | Comida de **3 grupos**, taberna, templo, muralla, cementerio |
+| **Pueblo** | Comida de **3 grupos**, taberna, templo, muralla, cementerio |
 | **Ciudad** | Comida de **4 grupos**, baños y alcantarillado, sanatorio, guardia, mercado abastecido |
 | **Castillo** | Comida de **5 grupos**, un festival por estación, academia, agua de cisterna o acueducto |
 
@@ -203,14 +236,14 @@ La comida se guarda en edificios. Lo que no cabe **se pudre en el suelo** al dí
 
 | Edificio | Desde | Capacidad | Extra |
 |---|---|---|---|
-| **Almacén del fogón** | Claro | 200 raciones | Las ratas se llevan un poco cada día |
+| **Almacén del fogón** | Fogata | 200 raciones | Las ratas se llevan un poco cada día |
 | **Granero de madera** | Campamento | 1.500 raciones | Con gatos o trampas, sin ratas |
 | **Ahumadero y salazón** | Aldea | — | Convierte carne y pescado en conservas (§4.4) |
-| **Bodega fría** | Villa | 1.000 raciones frescas | La comida fresca dura el doble |
-| **Granero de piedra** | Villa | 5.000 raciones | Sin ratas; resiste incendios; las brechas se llevan la mitad de lo normal |
+| **Bodega fría** | Pueblo | 1.000 raciones frescas | La comida fresca dura el doble |
+| **Granero de piedra** | Pueblo | 5.000 raciones | Sin ratas; resiste incendios; las brechas se llevan la mitad de lo normal |
 | **Silos del Castillo** | Ciudad | 12.000 raciones | Parte de su contenido nunca se puede robar |
 
-Se pueden levantar **varios de cada uno**, cada uno con su obra. Así una ciudad de 500 jugadores en el Claro puede guardar los días de despensa que pide el Campamento (§7) con varios almacenes del fogón.
+Se pueden levantar **varios de cada uno**, cada uno con su obra. Así una ciudad de 500 jugadores en el Claro puede guardar los días de despensa que pide cada etapa (§7.1) con varios almacenes del fogón.
 
 ### 4.4 Comida que se echa a perder
 
@@ -258,7 +291,7 @@ Cambiar la ración es una decisión de gobierno (§10).
 | **Día 0** | La despensa llega a cero. Cierra el comedor común, la posada deja de curar y el bot avisa en el grupo |
 | **Día 1** | Se van aldeanos (1 de cada 10 por día). Las obras se paran. La racha de etapa vuelve a cero (§7). Se publican pedidos de comida con paga triple |
 | **Día 2** | −10 de salud y −15 de ánimo por día. Sube el riesgo de brote y de revuelta |
-| **Día 3** | Si sigue, la ciudad **baja de etapa** (§11) |
+| **Día 3** | Si sigue, se **apagan los servicios** de la etapa (§11). La etapa no se pierde |
 
 La comida personal de los jugadores nunca se toca. La hambruna es de la ciudad.
 
@@ -268,16 +301,16 @@ La comida personal de los jugadores nunca se toca. La hambruna es de la ciudad.
 
 | Obra o servicio | Desde | Qué cubre | Si falta |
 |---|---|---|---|
-| **Pozo** | Claro | Agua limpia para 25 habitantes | Se bebe agua sucia: disentería (ver [Enfermedades](../05-salud/enfermedades.md)) |
-| **Cisterna** | Villa | Guarda 5 días de agua para la sequía | En la sequía no hay agua (ver [Crisis](crisis-problemas-y-soluciones.md)) |
+| **Pozo** | Fogata | Agua limpia para 25 habitantes | Se bebe agua sucia: disentería (ver [Enfermedades](../05-salud/enfermedades.md)) |
+| **Cisterna** | Pueblo | Guarda 5 días de agua para la sequía | En la sequía no hay agua (ver [Crisis](crisis-problemas-y-soluciones.md)) |
 | **Acueducto** | Ciudad | Agua limpia para toda la ciudad (Ingeniería y Construcción) | Hay que seguir sumando pozos |
 | **Letrinas** | Campamento | Higiene para 15 habitantes cada una | −salud, sube el riesgo de brote |
 | **Estercolero** | Campamento | Saca la basura de las calles; da **abono** para los campos | Basura, ratas y carroñeros |
-| **Alcantarillado** | Villa | Higiene para un barrio de 100 | Las letrinas no alcanzan para una ciudad grande |
-| **Baños y lavadero** | Villa | +salud y +ánimo | La ciudad se ensucia |
+| **Alcantarillado** | Pueblo | Higiene para un barrio de 100 | Las letrinas no alcanzan para una ciudad grande |
+| **Baños y lavadero** | Pueblo | +salud y +ánimo | La ciudad se ensucia |
 | **Cementerio** | Aldea (antes, una fosa fuera del campamento) | Los muertos se entierran lejos del agua | Cadáveres sin enterrar: brote (Podredumbre Gris) y carroñeros que suben la amenaza (§6.1) |
 | **Enfermería** | Campamento | Camas para aldeanos enfermos; turnos médicos (§5.3) | Los enfermos contagian en sus casas |
-| **Sanatorio** | Villa | Diagnóstico exacto, cuarentena, cirugía (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Los brotes graves duran mucho más |
+| **Sanatorio** | Pueblo | Diagnóstico exacto, cuarentena, cirugía (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Los brotes graves duran mucho más |
 | **Lazareto** | Aldea | Aislar enfermos fuera de los muros durante un brote | La cuarentena baja más el ánimo y el comercio |
 
 Además: la **comida variada** sube la salud; el **hacinamiento**, la **comida podrida**, el **frío sin leña** y la **lluvia en el pantano** la bajan (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)).
@@ -305,7 +338,7 @@ Qué brote toca según el lugar: disentería con agua sucia, Gripe de Escarcha e
 ### 5.3 El papel de los médicos
 
 - **Turno de enfermería:** un jugador con Medicina trabaja un turno en la enfermería (una acción rápida o un minijuego corto). Cura a varios aldeanos, sube la salud pública y el control del brote, y cobra del tesoro con la garantía del bot. Es la mejor forma de que un **Enfermero** novato suba de rango (ver [Curación](../05-salud/curacion-y-tratamientos.md)).
-- **Médico de la ciudad:** desde la Villa, el gobernador puede pagar un sueldo semanal a uno o más médicos.
+- **Médico de la ciudad:** desde el Pueblo, el gobernador puede pagar un sueldo semanal a uno o más médicos.
 - **Después de cada incursión** hay heridos: los médicos los estabilizan en la misma defensa (§6.5) o los atienden después.
 
 ## 6. Amenaza: lo que crece atrae
@@ -316,7 +349,7 @@ La **Amenaza** es una barra de 0 a 100 %. Sube cada día con la **atracción** d
 
 | Atrae (puntos por día real, orientativo) | Cuánto |
 |---|---|
-| **Base de la etapa** | Campamento 10 · Aldea 15 · Villa 20 · Ciudad 25 · Castillo 30 |
+| **Base de la etapa** | Campamento 10 · Aldea 15 · Pueblo 20 · Ciudad 25 · Castillo 30 |
 | **Riqueza** (despensa, almacén común, tesoro, edificios), como en *RimWorld* | +5 por cada escalón: pobre, modesta, próspera, rica, opulenta |
 | **Tamaño** | +1 por cada 25 habitantes |
 | **Ruido**, como en *They Are Billions* | +2 por cada forja o fundición encendida, +1 por cada 10 jornadas de obra del día, +3 por cada mina activa cerca, +5 por un festival |
@@ -344,10 +377,10 @@ Los enemigos son de la **zona**: su Lejanía, su anillo y su terreno (ver [Mapa 
 
 | Etapa | Qué llega | Oleadas | Novedad |
 |---|---|---|---|
-| **Claro** | Alimañas que roban del fogón. La **primera noche** es parte del tutorial: unos lobos rondan y la cazadora PNJ enseña a defender | 1 | Protección de fundación: no hay brechas reales |
+| **Fogata** | Alimañas que roban del fogón. La **primera noche** es parte del tutorial: unos lobos rondan y la cazadora PNJ enseña a defender | 1 | Protección de fundación: no hay brechas reales |
 | **Campamento** | Jabalíes, alimañas, una manada chica de lobos | 1-2 | Primer ataque de verdad: empalizada y fogatas |
 | **Aldea** | Manadas grandes con su alfa, bestias grandes de la zona, **saqueadores PNJ** que salen de los campamentos de bandidos (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) | 2-3 | **Ataques nocturnos**; los saqueadores van directo al granero |
-| **Villa** | Bandas de saqueadores con jefe, bestias alfa, enjambres, incendiarios | 3 | Atacan por dos lados a la vez; algunos prenden fuego (cadena de cubos, ver [Crisis](crisis-problemas-y-soluciones.md)) |
+| **Pueblo** | Bandas de saqueadores con jefe, bestias alfa, enjambres, incendiarios | 3 | Atacan por dos lados a la vez; algunos prenden fuego (cadena de cubos, ver [Crisis](crisis-problemas-y-soluciones.md)) |
 | **Ciudad** | Hordas mixtas, una **bestia mayor** con postura y partes rompibles, bandidos con escalas y ariete | 4 | Tres frentes a la vez; los enemigos buscan el punto más débil de la muralla |
 | **Castillo** | **Asedio de un monstruo grande** (§6.4) con su séquito, además de las incursiones normales | 5 + jefe | Se anuncia con días de anticipación y se juega a hora fija |
 
@@ -410,7 +443,7 @@ La defensa usa las reglas de [Defensa y protecciones](../09-construccion/defensa
 - **Rondas de 60 segundos**, como en las bandas (ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)).
 - **Caer en la defensa.** La defensa es una instancia, como una mazmorra, así que caer sigue la regla de mazmorra de [Secuelas y muerte](../05-salud/secuelas-y-muerte.md): no se pierde nada material y queda una herida moderada (leve para los novatos hasta el nivel 10). En un asentamiento de **zona azul nadie cae para siempre**, tampoco los personajes del Juramento de Hierro: ahí caer no los mata, como en la arena. La zona azul protege a las personas; lo que se juega en la incursión son las cosas de la ciudad. En los asentamientos de zonas amarillas, rojas o negras rigen las reglas de caída de esa zona.
 
-**Una excepción a la zona azul.** [Defensa](../09-construccion/defensa-y-protecciones.md) dice que lo construido en zona azul nunca se ataca. Esta propuesta lo cambia solo para **lo común de los asentamientos que levantan los jugadores**, desde el Campamento y también después de llegar a Castillo: las incursiones de monstruos y de saqueadores PNJ **sí atacan** murallas, granero, corral, obras en curso y aldeanos. Ya hay base para esto: las especies que nadie caza "invaden las zonas azules" ([Mundo vivo](mundo-vivo-y-viaje.md), §5), la *Plaga* del [Bestiario](../06-contenido/bestiario.md) hace lo mismo, y Defensa ya incluye la *Invasión de la región* contra asentamientos enteros. Las **casas de los jugadores y lo que hay dentro nunca se atacan**, y en zona azul no hay saqueo entre jugadores. Falta anotar la excepción en Defensa y registrarla como decisión provisional.
+**Una excepción a la zona segura.** Hoy, en el territorio del Claro y de los campamentos nadie es atacado: ni al llegar, ni al explorar, ni al recolectar (D-81). Eso sigue igual para las personas. [Defensa](../09-construccion/defensa-y-protecciones.md) dice además que lo construido en zona azul nunca se ataca. Esta propuesta lo cambia solo para **lo común de los asentamientos que levantan los jugadores**, desde aldea y también después de llegar a castillo: las incursiones de monstruos y de saqueadores PNJ **sí atacan** murallas, granero, corral, obras en curso y aldeanos. Ya hay base para esto: las especies que nadie caza "invaden las zonas azules" ([Mundo vivo](mundo-vivo-y-viaje.md), §5), la *Plaga* del [Bestiario](../06-contenido/bestiario.md) hace lo mismo, y Defensa ya incluye la *Invasión de la región* contra asentamientos enteros. Las **casas de los jugadores y lo que hay dentro nunca se atacan**, y en zona azul no hay saqueo entre jugadores. Falta anotar la excepción en Defensa y registrarla como decisión provisional.
 
 | Resultado | Qué pasa |
 |---|---|
@@ -420,30 +453,49 @@ La defensa usa las reglas de [Defensa y protecciones](../09-construccion/defensa
 
 ## 7. Requisitos de etapa: sostener, no solo construir
 
-Para subir de etapa hacen falta tres cosas:
+### 7.1 En el Claro
 
-1. **Las obras de la etapa** terminadas (ver [Fundación y cisma](fundacion-y-cisma.md)).
-2. **La racha:** con las obras ya terminadas, todos los mínimos de la tabla cumplidos durante cierta cantidad de **días reales seguidos**. La racha no empieza a contar antes de terminar las obras: primero se construye y después se demuestra que se puede sostener.
-3. **La Noche de prueba:** al completar la racha, la subida hace ruido y llega una incursión especial esa misma noche. Si se defiende, la ciudad sube. Si no, la subida se aplaza 2 días y no se pierde nada de lo construido. Para subir a **Castillo**, la Noche de prueba es el **asedio del monstruo grande** (§6.4): se anuncia 3 días antes y, si se pierde, vuelve a la semana.
+Para que el Claro suba a aldea o más harían falta tres cosas:
 
-| Subir a | Obras (además de las de [Fundación](fundacion-y-cisma.md)) | Población mínima | Despensa sostenida | Salud | Ánimo · Orden · Seguridad | Incursiones superadas en la etapa | Aportes colectivos | Racha |
+1. **La obra de la etapa** pagada, como hoy (`settlement.stages`, ver [Fundación y cisma](fundacion-y-cisma.md) §1).
+2. **La racha:** con la obra ya pagada, todos los mínimos de la tabla cumplidos durante cierta cantidad de **días reales seguidos**. La racha no cuenta antes de pagar la obra: primero se construye y después se demuestra que se puede sostener.
+3. **La Noche de prueba:** al completar la racha, la subida hace ruido y llega una incursión especial esa noche. Si se defiende, el Claro sube. Si no, la subida se aplaza 2 días y no se pierde nada. Para subir a **castillo**, la Noche de prueba es el **asedio del monstruo grande** (§6.4).
+
+| Subir a | Obras extra (además de los materiales de hoy) | Población mínima | Despensa sostenida | Salud | Ánimo · Orden · Seguridad | Incursiones superadas en la etapa | Aportes colectivos | Racha |
 |---|---|---|---|---|---|---|---|---|
-| **Campamento** | Almacén del fogón, fosa fuera del campamento, una cabaña común | 10 (5 jugadores) | 2 días | 40 | — | La primera noche (tutorial) | 6 de cada 10 residentes aportaron algo | 1 día |
+| **Campamento** | — (hoy: solo materiales) | — | — | — | — | La primera noche, como tutorial y sin brechas reales | — | — |
 | **Aldea** | Granero, letrinas, empalizada, cabañas comunes | 40 (10 jugadores) | 4 días | 50 | Ánimo 40 | 1 | 4 de cada 10 residentes al día con su cuota (§9.2); 3 categorías de pedidos de la semana cubiertas (§9.1) | 2 días |
-| **Villa** | Ahumadero y salazón, segundo pozo, cementerio, lazareto, torre de vigía | 120 (15 jugadores) | 5 días | 60 | Ánimo 50 · Orden 40 | 2, una de noche | 5 de cada 10 al día; una semana con todos los pedidos cubiertos | 3 días |
+| **Pueblo** | Ahumadero y salazón, segundo pozo, cementerio, lazareto, torre de vigía | 120 (15 jugadores) | 5 días | 60 | Ánimo 50 · Orden 40 | 2, una de noche | 5 de cada 10 al día; una semana con todos los pedidos cubiertos | 3 días |
 | **Ciudad** | Granero de piedra, cisterna, alcantarillado, baños, torres en cada tramo de muralla | 300 (20 jugadores) | 7 días | 65 | Ánimo 55 · Orden 50 · Seguridad *Firme* | 3, una de saqueadores | 55 de cada 100 al día; **un invierno pasado sin hambruna** | 4 días |
 | **Castillo** | Silos, acueducto | 600 (30 jugadores) | 10 días | 70 | Ánimo 60 · Orden 60 · Seguridad *Firme* | 4 y el **asedio del monstruo grande** (§6.4) | 6 de cada 10 al día; las 7 categorías de pedidos cubiertas | 5 días |
 
-- **Población mínima:** el número entre paréntesis es cuántos jugadores tienen que estar entre los residentes como mínimo; el resto pueden ser aldeanos y guardias, a los que hay que alojar, alimentar y mantener sanos. Lo más que se pide, 30 jugadores, es el mínimo de firmantes de un cisma (ver [Fundación y cisma](fundacion-y-cisma.md), §5.1): así **cualquier grupo que se separa puede llegar a Castillo**, aunque le cueste más, y cada cisma sigue fundando su castillo como dice [Ciudades y el Castillo](ciudades-y-castillo.md).
-- **Quién cuenta para la participación** ("X de cada 10 al día"): solo los residentes que jugaron **3 días o más** en la semana. Quien juega menos no suma ni resta, así una ciudad con muchos jugadores ocasionales no queda trabada. En la primera semana de un asentamiento cuentan todos los que jugaron.
+- **Mientras el Claro es campamento** no hay mínimos: pagar sigue alcanzando, para que el tutorial nunca se trabe. La capa profunda empieza al subir a aldea.
+- **Población mínima:** el número entre paréntesis es cuántos jugadores tienen que estar entre los residentes. El resto pueden ser aldeanos y guardias, a los que hay que alojar, alimentar y mantener sanos. Lo más que se pide, 30 jugadores, es el mínimo de firmantes de un cisma en el Claro (ver [Fundación y cisma](fundacion-y-cisma.md) §6.1).
+- **Residentes del Claro:** los jugadores activos que no son miembros de un campamento, más los miembros de campamentos que aportaron al Claro esa semana. Así nadie tiene que elegir entre su campamento y la sede común.
+- **Quién cuenta para la participación** ("X de cada 10 al día"): solo los residentes que jugaron **3 días o más** en la semana.
 - **La racha es indulgente con los tropiezos cortos.** Si un mínimo falla, la racha se congela. Solo vuelve a cero si falla durante un día real entero.
-- Los números son orientativos y se ajustan en la beta. La meta es la de P-55: de **4 a 6 semanas** del Claro al Castillo (ver [Preguntas abiertas](../00-vision/preguntas-abiertas.md)).
+- Los números son orientativos y se ajustan en la beta. La meta es la de P-55: de **4 a 6 semanas** desde la fogata hasta castillo.
+
+### 7.2 En los campamentos de jugadores (capa ligera)
+
+Un campamento tiene de 2 a 18 miembros. La capa ligera mide todo **por miembro** y nunca le quita lo ganado:
+
+| Nivel | Qué se suma a pagar los materiales de hoy |
+|---|---|
+| **1-2 (campamento)** | Nada. Fundar y crecer siguen como hoy |
+| **3-4 (aldea)** | **Despensa chica** en el almacén común: 1 ración por miembro activo por día. Si se vacía, el campamento no puede agrandarse hasta llenarla. Nunca pierde zonas ni niveles |
+| **5-6 (pueblo)** | **Una incursión por semana**, con la fuerza escalada a los miembros activos. La juegan los miembros conectados; los demás pelean con su Eco. Si se pierde, se pierde parte de la despensa y nada más |
+| **7-8 (ciudad)** | Un medidor de **salud** simple: con la despensa llena y una enfermería, se mantiene solo. Si baja, la recolección extra del territorio (+50 %) se apaga hasta que suba |
+| **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días |
+
+- **Lo que nunca pasa:** un campamento activo nunca pierde niveles, zonas ni miembros por fallar. Lo que se apaga son servicios, hasta que se recuperen.
+- **El campamento abandonado** es otra cosa: sin miembros activos durante semanas, decae (ver [Fundación y cisma](fundacion-y-cisma.md) §4.1).
 
 ## 8. Los obreros también comen
 
 Una obra no es solo piedra y madera:
 
-- **Comida:** cada jornada de obra gasta **media ración extra** de la despensa (el comedor de los obreros). La muralla de la Villa pide unas 400 jornadas: son **200 raciones más** que hay que producir antes.
+- **Comida:** cada jornada de obra gasta **media ración extra** de la despensa (el comedor de los obreros). La muralla del Pueblo pide unas 400 jornadas: son **200 raciones más** que hay que producir antes.
 - **Herramientas:** cada jornada gasta durabilidad de las **herramientas comunes** del almacén (palas, martillos, sierras, picos). Las hacen y las reparan herreros y carpinteros.
 - **Agua y salud:** con la salud pública en *Enferma* hay más accidentes de obra (ver [Sistema de construcción](../09-construccion/sistema-de-construccion.md)).
 
@@ -508,7 +560,7 @@ Cada semana hay una o dos metas con nombre, con premio para toda la ciudad:
 
 ## 10. Decisiones difíciles
 
-Como en el libro de leyes de *Frostpunk*: cada decisión arregla un problema y crea otro. Antes de la Villa las vota la **asamblea** de residentes (encuesta de Telegram de 12 horas); desde la Villa las toma el **gobierno** (ver [Fundación y cisma](fundacion-y-cisma.md)).
+Como en el libro de leyes de *Frostpunk*: cada decisión arregla un problema y crea otro. Antes del Pueblo las vota la **asamblea** de residentes (encuesta de Telegram de 12 horas); desde el Pueblo las toma el **gobierno** (ver [Fundación y cisma](fundacion-y-cisma.md)).
 
 | Decisión | A favor | En contra | Duración |
 |---|---|---|---|
@@ -535,21 +587,23 @@ Como en el libro de leyes de *Frostpunk*: cada decisión arregla un problema y c
 
 ## 11. El fracaso: qué se pierde y qué no
 
+**La regla nueva:** hoy el Claro nunca baja de etapa y un campamento nunca pierde zonas ni niveles. La propuesta lo respeta: **las etapas, los niveles y las zonas ganadas no se pierden**. Lo que se apaga, mientras dura el problema, son **servicios**.
+
 | Qué pasa | Cuándo | Cómo se recupera |
 |---|---|---|
 | **La racha vuelve a cero** | Un mínimo falla durante un día real entero (la hambruna siempre lo provoca) | Sostener de nuevo |
 | **Edificios dañados** | Brechas, incendios, sabotajes | Jornadas de reparación de los constructores (trabajo pagado) |
 | **Obras que pierden avance** | Una derrota en una incursión (hasta un 10 %) | Más jornadas |
 | **Aldeanos que se van o mueren** | Hambruna, brotes, brechas, ánimo bajo | Vuelven a llegar cuando la ciudad mejora |
-| **Bajar de etapa** | Dos medidores en rojo durante 3 días reales seguidos, o hambruna de 3 días | Los edificios de la etapa **no se destruyen**: quedan apagados. Para recuperarla basta sostener la mitad de la racha y ganar la Noche de prueba |
-| **Ruinas** | Semanas sin residentes activos ni necesidades cubiertas (ver [Fundación y cisma](fundacion-y-cisma.md)) | Otro grupo puede refundar el nodo |
+| **Servicios apagados** | Dos medidores en rojo durante 3 días reales seguidos, o hambruna de 3 días | La etapa y sus zonas se quedan. Se apagan los servicios de la etapa (posada más barata, almacén, estaciones). Para encenderlos basta sostener la mitad de la racha y ganar una Noche de prueba |
+| **Ruinas** | Solo un campamento **abandonado**: semanas sin miembros activos (ver [Fundación y cisma](fundacion-y-cisma.md) §4.1) | Otro grupo puede refundarlo. El Claro nunca queda en ruinas |
 
 **Nunca se pierde, pase lo que pase con la ciudad:**
-- el inventario, el oro, la Esencia depositada, el equipo, los oficios, los niveles y los títulos de cada jugador. Si el banco o un almacén se apaga al bajar de etapa, lo guardado ahí se sigue pudiendo retirar en la posada o en cualquier otro asentamiento;
-- la **casa** de cada jugador y lo que hay dentro. Si la ciudad queda en ruinas, el dueño puede **trasladarla gratis y sin pérdida** a otro asentamiento (a diferencia del cisma, que es una decisión propia y sí cuesta una parte, y de la mudanza normal, que es cara; ver [Facciones](facciones.md)). Si no la traslada, por ejemplo porque no está jugando, sigue en su sitio intacta, también si otro grupo refunda el nodo;
-- el nombre de los **Fundadores** en cada edificio.
+- la mochila, las monedas, el equipo, los niveles, los talentos y los títulos de cada jugador. Si un almacén se apaga, lo guardado ahí se sigue pudiendo retirar;
+- la **casa** de cada jugador y lo que hay dentro (cuando existan las casas). Si un campamento queda en ruinas, el dueño puede **trasladarla gratis y sin pérdida** a otro asentamiento;
+- el mérito aportado y el nombre de los **Fundadores** en cada edificio.
 
-El fracaso es de la ciudad y deja historia. Nunca arruina a un personaje.
+El fracaso es de la ciudad y deja historia. Nunca arruina a un personaje (D-64: el progreso de los jugadores se guarda para siempre).
 
 ## 12. Escala: 500 jugadores no lo vuelven fácil
 
@@ -559,8 +613,8 @@ Con más de 500 jugadores listos para la beta (ver [Decisiones](../00-vision/dec
 - **La amenaza crece con la población y la riqueza:** más gente trae incursiones más fuertes y con **más frentes a la vez**, cada uno con sus puestos. La masa se reparte en lugar de amontonarse.
 - **Topes por persona:** las jornadas tienen Energía limitada y el mérito diario rinde menos después de cierto punto (§9.1).
 - **Participación mínima:** hace falta que una parte de los residentes esté al día (§7), no que unos pocos pongan todo.
-- **Un tiempo que no se compra con gente:** la racha empieza recién con las obras terminadas (15 días en total sumando las cinco etapas), la Ciudad pide haber pasado un invierno (el primero llega en la tercera semana, §4.5) y el asedio se anuncia 3 días antes. Ni con 500 jugadores perfectos se llega al Castillo antes de unas 4 semanas y media, dentro de la meta de 4 a 6.
-- **Tierra y vivienda limitadas:** cada nodo tiene una cantidad fija de parcelas de cultivo y de lugar para casas. Más gente pide más tierra, y eso empuja a fundar aldeas vasallas en los nodos vecinos y a comerciar entre ellas (ver los nodos en [Fundación y cisma](fundacion-y-cisma.md)).
+- **Un tiempo que no se compra con gente:** la racha empieza recién con las obras terminadas (14 días en total sumando las cuatro etapas, de aldea a castillo), la Ciudad pide haber pasado un invierno (el primero llega en la tercera semana, §4.5) y el asedio se anuncia 3 días antes. Ni con 500 jugadores perfectos se llega al Castillo antes de unas 4 semanas y media, dentro de la meta de 4 a 6.
+- **Tierra y vivienda limitadas:** cada nodo tiene una cantidad fija de parcelas de cultivo y de lugar para casas. Más gente pide más tierra, y eso empuja a fundar campamentos vasallos cerca y a comerciar entre ellos (ver [Fundación y cisma](fundacion-y-cisma.md) §4.1).
 
 | Población (jugadores + PNJ) | Consumo por día | Reserva para el invierno | Fuerza media de incursión | Frentes a la vez | Puestos de defensa |
 |---|---|---|---|---|---|
@@ -576,7 +630,7 @@ Con más de 500 jugadores listos para la beta (ver [Decisiones](../00-vision/dec
 Igual en Telegram, en la web y en la app: el mismo motor, los mismos números.
 
 ```
-🏘 Piedraclara · Aldea → Villa (Lejanía 1 · 🌲 Bosque, 🌾 Llanura)
+🔥 El Claro · Aldea → Pueblo (Lejanía 0 · 🌲 Bosque, 🌾 Pradera)
 Racha de etapa: ✅✅⬜ 2/3 días
 👥 Población 134/150 · 61 jugadores · 68 aldeanos · 5 guardias
 
@@ -611,7 +665,7 @@ Tú: ✅ al día · mérito de la semana 340 (🌾 Comida)
 **El aviso** (llega a los anotados y al grupo de la ciudad):
 
 ```
-🔔 Torre de vigía · Piedraclara
+🔔 Torre de vigía · El Claro
 🐺 Tres manadas de Lobo Gris (14 lobos) y su alfa bajan del Arroyo.
 Llegan en 25 minutos · 🌑 de noche · fuerza 420 · defensa 470
 Anotados: 23 defensores · 5 guardias y 2 torres con sus Tácticas
@@ -622,7 +676,7 @@ Anotados: 23 defensores · 5 guardias y 2 torres con sus Tácticas
 **Una ronda:**
 
 ```
-🌑 Defensa de Piedraclara · Oleada 1/3 · Ronda 2 · ⏱ 60 s
+🌑 Defensa del Claro · Oleada 1/3 · Ronda 2 · ⏱ 60 s
 Empalizada norte ▓▓▓▓▓▓▓░░░ 70 %   Puerta ▓▓▓▓▓▓▓▓▓░ 90 %
 Granero 🌾 a salvo · Corral 🐑 3 lobos dando vueltas
 Braseros 4/6 encendidos: precisión normal en la empalizada
@@ -641,7 +695,7 @@ Mientras tanto, Bram (constructor) repara la empalizada, Mara (médica) estabili
 **El parte** (reenviable, con los detalles plegados):
 
 ```
-📜 Parte · Noche 14 · Piedraclara
+📜 Parte · Noche 14 · El Claro
 ✅ Incursión superada (3/3 oleadas) · para la etapa: 2/2 ✅
 Enemigos: 14 lobos y el alfa (último golpe: Ilsa)
 Daños: empalizada norte −18 % · 2 ovejas perdidas · 1 aldeano herido
@@ -677,17 +731,19 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 
 ## 15. Principios anti-frustración
 
-1. **Nada personal se pierde.** Ni las cosas, ni la casa, ni el progreso del personaje, aunque la ciudad caiga.
-2. **No jugar no castiga.** Quien no entra deja de contar y deja de comer; no arrastra a la ciudad ni se arrastra a sí mismo.
-3. **Siempre hay aviso.** La amenaza se ve subir, la torre de vigía avisa antes del ataque, el invierno se anuncia con días y la despensa avisa en *Justa*.
-4. **Los tropiezos cortos no borran todo.** La racha se congela antes de volver a cero; bajar de etapa apaga los edificios, no los destruye.
-5. **Cada rol cuenta.** Se puede sostener una ciudad sin pelear nunca: cocinando, curando, construyendo o cantando en la taberna.
-6. **Los novatos aprenden sin miedo.** El Claro no tiene brechas reales y la primera noche es tutorial.
-7. **Siempre hay una salida cara.** Un mercader PNJ vende comida de emergencia a precio alto (sumidero de oro), con un tope por semana, para que una ciudad nunca quede sin salida.
+1. **Nada personal se pierde.** Ni las cosas, ni la casa, ni el progreso del personaje, aunque la ciudad falle.
+2. **Lo ganado entre todos tampoco.** Las etapas del Claro y los niveles y zonas de un campamento no bajan: se apagan servicios (§11).
+3. **No jugar no castiga.** Quien no entra deja de contar y deja de comer; no arrastra a la ciudad ni se arrastra a sí mismo.
+4. **Siempre hay aviso.** La amenaza se ve subir, la torre de vigía avisa antes del ataque, el invierno se anuncia con días y la despensa avisa en *Justa*.
+5. **Los tropiezos cortos no borran todo.** La racha se congela antes de volver a cero.
+6. **Cada rol cuenta.** Se puede sostener una ciudad sin pelear nunca: recolectando, cocinando, curando, construyendo o cantando en la taberna.
+7. **Los novatos aprenden sin miedo.** Hasta que el Claro es campamento, subir es solo pagar, y la primera noche es tutorial.
+8. **Siempre hay una salida cara.** El mercader del Claro vende comida de emergencia a precio alto (sumidero de monedas), con un tope por semana.
 
 ## 16. Para decidir
 
+- **Lo principal, para el dueño:** ¿subir de etapa debe pedir algo más que pagar materiales? Recomendación: sí, pero solo en el Claro desde aldea y con la capa ligera en los campamentos desde aldea (§7), porque así se cumple "que no sea construir y ya" sin trabar a los grupos chicos. Si dice que sí, se registra como decisión y se programa por partes: primero la despensa, después las incursiones.
 - Los números exactos de consumo, producción, amenaza y requisitos (se ajustan en la beta).
-- Si se acepta la excepción a la zona azul (§6.5): que las incursiones ataquen lo común de los asentamientos de jugadores, nunca las casas ni a las personas.
+- Si se acepta la excepción a la zona segura (§6.5): que las incursiones ataquen lo común del asentamiento, nunca las casas ni a las personas.
 - Si los aldeanos pueden morir o solo irse (la propuesta: pueden morir en brechas y brotes graves).
-- Si las ciudades de castillos fundados por un cisma empiezan con la misma curva o con una más corta, porque sus jugadores ya conocen el sistema.
+- Si los campamentos nacidos de un cisma empiezan con la misma curva o con una más corta.

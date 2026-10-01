@@ -11,5 +11,5 @@ Qué es el juego, qué está decidido, qué falta decidir, cómo se conecta todo
 | [decisiones.md](decisiones.md) | Lo confirmado por el dueño, lo provisional y lo propuesto |
 | [preguntas-abiertas.md](preguntas-abiertas.md) | Las preguntas abiertas (P-xx), cada una con recomendación |
 | [cuestionario-beta.md](cuestionario-beta.md) | 160 preguntas antes de abrir la beta a 500+ jugadores, con la primera tanda de 14 arriba (D-39) |
-| [hoja-de-ruta.md](hoja-de-ruta.md) | Fases, expansiones, producto mínimo, riesgos, reglas de trabajo |
+| [hoja-de-ruta.md](hoja-de-ruta.md) | Lo que ya está en el juego (0.9.2) y los parches 0.4 a 0.9.2; próximas fases en orden de prioridad (propuesta), expansiones por anillos, riesgos y reglas de trabajo |
 | [glosario.md](glosario.md) | Los términos propios del diseño |

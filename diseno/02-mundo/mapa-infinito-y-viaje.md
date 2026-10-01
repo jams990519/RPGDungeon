@@ -170,7 +170,7 @@ Coordenadas 1, 2 · Lejanía 2
 ### 1.11 Campamentos que crecen (D-81)
 
 - **Al fundarlo, un campamento ocupa 1 zona.** Cada vez que sus miembros lo agrandan (⬆️ Agrandar campamento), suma 1 zona más: 2, 3, 4… El costo es 15 de madera, 10 de piedra y 5 de fibra, multiplicado por el nivel actual (`camps.grow_cost_per_level`).
-- **Hacia dónde crece:** en una espiral fija alrededor del centro: norte, este, sur, oeste, las diagonales y después el anillo siguiente. Salta las zonas que ya son de otro campamento o del Claro (`engine/world/territory.py`).
+- **Hacia dónde crece:** desde 0.8.1 (D-87) tú eliges qué zona vecina toma tu campamento, viendo los recursos que conoces de cada una; no puede tomar zonas de otro campamento ni del Claro. La espiral fija (norte, este, sur, oeste, diagonales, anillo siguiente; `engine/world/territory.py`) queda solo para el Claro.
 - **El Claro también crece:** ocupa 1 zona por cada etapa de su obra común (fogata 1, campamento 2, aldea 3…).
 - **Qué da el territorio:**
   - Al llegar a una zona del territorio no te atacan.
