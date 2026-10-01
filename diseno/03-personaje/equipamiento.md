@@ -188,6 +188,6 @@ La capa simple (D-44). Todo lo de arriba sigue siendo el plan; esto es lo que ho
 | **Botín** | El 15 % de las victorias suelta una pieza de nivel cercano al del enemigo (de −4 a +1). El 70 % de las piezas es de tu tipo; lo raro sale menos. El aviso del combate solo dice que cayó algo; qué es, se mira en 👤 Héroe → 🛡️ Equipo, marcado con 🆕 (D-83) | `gear.drop_chance`, `gear.for_you_chance`, `gear.rarity_weight` |
 | **Equipo inicial** | Arma y pecho básicos de tu clase, ya puestos. Los héroes que existían antes de la 0.6 los recibieron una vez | `starter_gear` |
 | **Se pone solo** | Solo la primera pieza de una ranura vacía, aunque no sea la mejor para ti (si no tenías botas, te pone las que caen). Si ya llevas algo ahí, la pieza nueva va a la mochila (D-83) | `auto_equip` |
-| **Dónde se ve** | Solo en 👤 Héroe → 🛡️ Equipo (y su atajo /equipo). La ficha lo resume en una línea | Cliente de Telegram |
+| **Dónde se ve** | 👤 Héroe → 🎒 Mochila → 🛡️ Equipo: lo que llevas puesto, una línea por pieza (icono, nombre y lo que te da). Desde ahí, 🔁 Equipar lista lo que tienes en la mochila para ver sus bonos, el consejo y ponértelo, o quitarte lo puesto. La ficha del héroe ya no muestra el equipo (D-86) | Cliente de Telegram |
 
 **Falta, en este orden:** fabricar equipo (herrería y sastrería), más ranuras, durabilidad y reparación, afijos, la carga y el Recuerdo del Guardián cuando llegue el primer jefe de región.

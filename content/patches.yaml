@@ -116,3 +116,12 @@ v0_7_3:
     - "🙋 Otros jugadores pueden pedir unirse a tu campamento y tú decides si los aceptas. Al agrandarlo caben más personas."
     - "🪙 La plata ahora tiene su moneda, las bolsas son 💰 y las gemas pasan a llamarse 💎 diamantes."
     - "🪪 Llega la credencial de oficio: tu carta de presentación cuando lleguen las profesiones."
+
+v0_7_4:
+  version: "0.7.4"
+  title: "👤 Lost Realms 0.7.4: pantallas más simples"
+  notes:
+    - "👤 Tu ficha ahora es más corta y clara. Tus monedas se ven así: 🥉 · 🪙 · 🥇 · 💰 · 💎, cada una con su cantidad."
+    - "🎒 La Mochila tiene tres partes: 🛡️ Equipo, 🧪 Pociones (cada una con lo que cura) y 💰 Monedas."
+    - "🛡️ En Equipo ves lo que llevas puesto. Con 🔁 Equipar eliges qué ponerte o quitarte, viendo sus bonos y si te sirve."
+    - "🌟 En Talentos, lo primero es escoger tu especialización."
