@@ -2,6 +2,8 @@
 
 > **Módulo** [06 · Contenido](README.md) · **Depende de:** [Daño y estados](../04-combate/dano-y-estados.md), [Ronda y acciones](../04-combate/ronda-y-acciones.md), [Avisos y tácticas](../04-combate/avisos-y-tacticas.md), [Torre y pisos](../02-mundo/torre-y-pisos.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Enfermedades](../05-salud/enfermedades.md) · **Se conecta con:** [Cacerías](cacerias.md), [Jefes](jefes.md), [Heridas](../05-salud/heridas.md), [Mente](../05-salud/mente.md), [Rasgos adquiridos](../05-salud/rasgos-adquiridos.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md), [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) · **Estado:** propuesta
 
+> **Nota (D-58 y D-46).** Este documento se escribió con la Torre de pisos, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) (I a X) y *piso N* como un lugar de ese anillo. El combate usa la barra de 6 botones de D-46: no hay acción rápida ni formación que elegir.
+
 Pediste una **alta variedad de monstruos**, incluso con la posibilidad de pegarte enfermedades o cualquier otro efecto. Este documento arma el bestiario completo: cómo se describe un monstruo, cómo se comporta por turnos, qué contagia, qué deja y cómo cambia el mundo según se lo cace o no. Los jefes están en [Jefes](jefes.md); aquí están todos los demás.
 
 **De dónde sale.**
@@ -134,8 +136,8 @@ Cada monstruo tiene un arquetipo. El arquetipo decide qué hace en la ronda y c�
 
 | Arquetipo | Qué hace en la ronda | Aviso típico | Cómo se le gana | Ejemplos |
 |---|---|---|---|---|
-| **Manada que rodea** | Desde la ronda 2, si son más que el grupo, uno salta a la retaguardia aunque haya vanguardia. Más daño contra quien está solo en su fila | "*los lobos se abren en abanico…*" | Formación Agrupado, un tanque que provoque a todos, y **matar al alfa**: sin él, la manada huye | Lobo Gris, Sabueso Infernal, Perro de Ceniza |
-| **Emboscador** | Ataca primero: el grupo no actúa en la ronda 0, solo puede reaccionar | Una pista en el texto de exploración: "*la hierba se mueve sin viento*" | Avanzar **con cuidado** (más lento, anula la emboscada), farol, perro, el olfato del Licántropo, la *Visión Espectral* del Cazador de Demonios | Tigre de Duna, Víbora de Hierba, Caimán de Lodo |
+| **Manada que rodea** | Desde la ronda 2, si son más que el grupo, uno salta a la retaguardia aunque haya vanguardia. Más daño contra quien está solo en su fila | "*los lobos se abren en abanico…*" | Un tanque que provoque a todos, y **matar al alfa**: sin él, la manada huye | Lobo Gris, Sabueso Infernal, Perro de Ceniza |
+| **Emboscador** | Ataca primero: tira la emboscada con ventaja (ver [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §8) | Una pista en el texto de exploración: "*la hierba se mueve sin viento*" | Avanzar **con cuidado** (más lento, suma alerta), farol, perro, el olfato del Licántropo, la *Visión Espectral* del Cazador de Demonios | Tigre de Duna, Víbora de Hierba, Caimán de Lodo |
 | **Huidizo** | Huye en la ronda 2 o 3, o al primer golpe fuerte. Se lleva su botín | "*mira hacia la salida*" | Apuntar a las **piernas** (no puede huir), *Flecha Clavadora*, trampas, iniciativa alta | Limo Metálico, Zorro Espumoso, Lagartija de Cuarzo |
 | **Carroñero** | Va a por los **derribados** con un golpe de remate. Come cadáveres para curarse | Siempre: "*se agazapa junto a X, que está en el suelo*" | Levantar al derribado esa misma ronda, arrastrarse a la retaguardia, que el tanque lo cubra. Despiezar o quemar los cuerpos | Necrófago, Buitre de Hueso, Cuervo de Carroña |
 | **Territorial** | No pelea si no entras en su nodo. Te da una ronda de gruñido para irte. En su nido es más fuerte | En exploración: "*marcas de garras en los árboles*" | Retirarse a tiempo, o **atraerlo con cebo** fuera del nido, donde pierde Postura | Jabalí Colmillo de Hierro, Grifo, Ogro del Puente |
@@ -149,14 +151,14 @@ Cada monstruo tiene un arquetipo. El arquetipo decide qué hace en la ronda y c�
 | **Acechador** | Te sigue de nodo en nodo y ataca cuando estás herido o solo | "*sientes que algo te sigue*" | No separarse, descansar en un nodo seguro, ponerle una trampa en el camino | Buitre de Hueso, Sabueso Infernal (en Pesadilla) |
 | **Enjambre** | Muchos diminutos. Los golpes a un objetivo fallan la mitad | "*el zumbido sube*" | Daño en área, humo, fuego | Mosquitos de Ciénaga, Pez Colmillo, Murciélago Vampiro |
 
-**Moral.** Las bestias, los insectos y los humanoides **huyen** si cae su alfa o si les queda menos del 25 % de vida. Los no-muertos, los constructos y las aberraciones nunca huyen. Un monstruo que huye se lleva su botín, pero deja rastro (ver [Cacerías](cacerias.md)).
+**Moral.** Las bestias, los insectos y los humanoides **huyen** (los humanoides también se rinden; ver [Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §9) si cae su alfa o si les queda menos del 25 % de vida. Los no-muertos, los constructos y las aberraciones nunca huyen. Un monstruo que huye se lleva su botín, pero deja rastro (ver [Cacerías](cacerias.md)).
 
 ### 2.1 Parásitos: cómo se arrancan
 
 - Un parásito pegado **cuenta como enemigo** y como carga del jugador al que se pegó.
-- Pegarle sin apuntar le hace la mitad del daño **también al portador**. Con *Apuntar* (acción rápida) no hay daño al portador.
-- El portador puede **arrancárselo** con su acción entera. Un aliado puede hacerlo con su acción.
-- **Sal gruesa** o una **antorcha** lo hacen soltarse con una acción rápida.
+- Pegarle sin apuntar le hace la mitad del daño **también al portador**. Apuntándolo (opción dentro de ⚔️ Atacar) no hay daño al portador.
+- El portador puede **arrancárselo** con su jugada de la ronda. Un aliado puede hacerlo con la suya.
+- **Sal gruesa** o una **antorcha**, desde la 🎒 Mochila, lo hacen soltarse.
 - Un parásito cuenta para la **Firmeza**: nadie queda controlado por uno más de dos veces seguidas.
 
 ### 2.2 Miméticos: siempre hay una pista
@@ -208,11 +210,11 @@ Como los aceites de *The Witcher 3*, cada familia tiene su remedio. Son **consum
 | **Baño de hierro frío** | Feéricos corruptos | Cuentan como débiles (+30 %). Dura 5 combates | Herrería |
 | **Agua bendita** | No-muertos, demonios | Frasco arrojadizo: daño sagrado a una fila | Templo |
 | **Frasco de agua helada** | Bestias volcánicas | Las "templa": el siguiente golpe contundente les rompe la piel | Alquimia |
-| **Sal gruesa** | Limos, parásitos | Arranca un parásito como acción rápida; un limo no se divide esa ronda | Recolección en costa y desierto |
+| **Sal gruesa** | Limos, parásitos | Arranca un parásito desde la 🎒 Mochila; un limo no se divide esa ronda | Recolección en costa y desierto |
 | **Bengala** | Aberraciones, sombras | Luz: revela lo invisible y baja la ganancia de estrés 3 rondas | Ingeniería |
 | **Tapones de cera** | Mandrágora, sirenas, plañideras | Inmune a gritos y cantos. **Costo:** no oyes las pistas de voz de los avisos | Cera de abeja del bosque |
 
-- **Un aceite por arma.** Cambiarlo es una acción rápida.
+- **Un aceite por arma.** Cambiarlo gasta la ronda (🎒 Mochila).
 - Los aceites no suman Toxicidad: van en el arma, no en el cuerpo.
 
 ## 4. Las 19 familias
@@ -260,7 +262,7 @@ Poca vida y mucha cantidad. Castigan a quien no tiene daño en área.
 
 | Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
-| **Araña Tejedora** | I · 🌲 Bosque | **Emboscadora**. Telaraña: el objetivo pierde su acción rápida 2 rondas | 🟢 Veneno leve | Glándula → seda cruda (Tejeduría) · glándula de veneno |
+| **Araña Tejedora** | I · 🌲 Bosque | **Emboscadora**. Telaraña: el objetivo actúa último en la cola 2 rondas | 🟢 Veneno leve | Glándula → seda cruda (Tejeduría) · glándula de veneno |
 | **Mantis Segadora** | II · 🌾 Llanura | Combo de dos golpes; el segundo llega retrasado | 🩸 Sangrado | Brazos-guadaña (pierde el combo) → hojas curvas (dagas) |
 | **Langosta de Plaga** | II · 🌾 Llanura · verano | **Enjambre** que **devora cultivos**: si nadie lo frena, arrasa los campos del piso (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md)) | Se come la comida de la mochila | Sin partes → quitina (abono) · cebo para peces |
 | **Araña Nodriza** | III · 🕳️ Cueva | **Invocadora**: pone huevos que se abren en 2 rondas | 🦠 **Puesta de Araña** en heridas abiertas · 🟢 Veneno | Abdomen (romperlo cancela la puesta) → saco de huevos (Alquimia) · seda fina |
@@ -276,7 +278,7 @@ Escamas que frenan el corte. Con frío se vuelven lentos. Los dracónidos son la
 | **Tortuga Musgosa** | I · 🌲 Bosque, 🌊 lagos | Blindada: resiste todo menos el contundente. Apuntar a las piernas la da vuelta y queda expuesta | — | Caparazón → escudo ligero (Carpintería) · musgo (Herboristería) |
 | **Víbora de Hierba** | II · 🌾 Llanura | **Emboscadora**. Muerde a quien recolecta en la hierba alta | 🟢 Veneno (se llena rápido) | Colmillos → veneno de víbora (antídotos) · piel |
 | **Caimán de Lodo** | IV · 🐸 Pantano, 🌊 ríos | **Emboscador** del agua. *Arrastre*: lleva a uno al agua 2 rondas | Herida profunda; mordida sucia que sube el riesgo de 🦠 **Gangrena** | Cola (pierde *Coletazo*) → cuero de caimán (cuero pesado) |
-| **Basilisco de Pantano** | IV · 🐸 Pantano | *Mirada pétrea*. Se evita con *Apartar la vista* (acción rápida, −25 % de precisión) | ☠️ Maldición de piedra: pierde 2 turnos y recibe más contundente | Ojos → ojo de basilisco (tónico contra la piedra) |
+| **Basilisco de Pantano** | IV · 🐸 Pantano | *Mirada pétrea*, avisada. Se evita con una respuesta o con 🌀 Esquivar | ☠️ Maldición de piedra: pierde 2 turnos y recibe más contundente | Ojos → ojo de basilisco (tónico contra la piedra) |
 | **Wyrm Joven de las Dunas** | V · 🏜️ Desierto | Grande. Se hunde en la arena y sale por la retaguardia | 🔥 Quemadura (aliento de vidrio) | Alas, cola → escamas de wyrm · glándula de arena. Presa de [Cacerías](cacerias.md) |
 | **Draco de Escarcha** | VI · ⛰️ Montaña | Grande y volador. Aliento canalizado: hay que **interrumpir** | ❄️ Congelación · herida de congelación | Alas (lo bajan a tierra) → membrana de ala · escama helada |
 
@@ -337,12 +339,12 @@ Débiles al elemento contrario y resistentes al propio. Llegan con el clima (ver
 
 | Monstruo | Tramo / terreno | Rasgo principal | Contagia o aplica | Parte rompible → lo que deja |
 |---|---|---|---|---|
-| **Chispa Errante** | II · 🌾 Llanura · tormenta | Salta en cadena entre los **agrupados** | 🔥 Quemadura (rayo) · llena la Firmeza | Sin partes → chispa embotellada (Ingeniería) |
+| **Chispa Errante** | II · 🌾 Llanura · tormenta | Salta en cadena por el grupo; solo se libra quien usó una respuesta 💨 | 🔥 Quemadura (rayo) · llena la Firmeza | Sin partes → chispa embotellada (Ingeniería) |
 | **Elemental de Piedra** | III · ⛰️ Montaña, 🕳️ | Blindado y lento | Fractura | Núcleo → gema en bruto · piedra rúnica |
 | **Remolino de Arena** | V · 🏜️ Desierto · tormenta de arena | Veloz. Con tormenta se divide en dos | Ceguera (precisión −50 %) | Sin partes → arena de vidrio fino (Joyería) |
 | **Ventisquero** | VI · ❄️ Tundra · ventisca | **Explosivo al morir**: nova de hielo | ❄️ Congelación · herida de congelación | Núcleo → hielo eterno (conservar comida) |
 | **Elemental de Magma** | VIII · 🌋 Volcánico | **Corrompe el terreno**: lava en una fila | 🔥 Quemadura | Núcleo → obsidiana ígnea (Herrería T8) |
-| **Céfiro** | X · 🌸 Tierras flotantes | *Ráfaga*: cambia de fila a dos jugadores y les deshace la formación | Llena la Firmeza | Sin partes → esencia de viento (varitas) |
+| **Céfiro** | X · 🌸 Tierras flotantes | *Ráfaga*: cambia de fila a dos jugadores | Llena la Firmeza | Sin partes → esencia de viento (varitas) |
 
 ### 4.9 Gólems y constructos
 
@@ -394,7 +396,7 @@ Esperan en vados, costas y pantanos. Muchas arrastran al agua (ver agua profunda
 | **Anguila de Tormenta** | IV · 🐸 Pantano, 🌊 | Descarga en cadena si el grupo pelea en un nodo con agua | 🔥 Quemadura (rayo) · aturde | Órgano eléctrico → batería orgánica (**desfibriladores**, Ingeniería) |
 | **Sirena de Arrecife** | V · 🌊 Costa | Canto canalizado: arrastra a uno hacia el agua | 💤 Sueño · 🌀 Locura | Escamas iridiscentes (Joyería) · cuerdas vocales (instrumentos) |
 | **Pulpo de las Ruinas Hundidas** | VII · 🌊 ruinas sumergidas | Grande: cada tentáculo es un ataque. Tinta que ciega | Ceguera | Tentáculos → tinta de pulpo (la mejor tinta de Inscripción) |
-| **Medusa Flotante** | X · 🌸 lagos del cielo | Deriva sobre el grupo y toca a quien esté **disperso** | 🟢 Veneno paralizante · llena la Firmeza | Campana → gel anestésico (**cirugía**, Medicina) |
+| **Medusa Flotante** | X · 🌸 lagos del cielo | Deriva sobre el grupo y toca a la **retaguardia** | 🟢 Veneno paralizante · llena la Firmeza | Campana → gel anestésico (**cirugía**, Medicina) |
 
 ### 4.13 Aves y criaturas del aire
 
@@ -514,13 +516,13 @@ El contagio funciona como los estados por acumulación (ver [Daño y estados](..
 |---|---|---|
 | **Mordida o garra** | Zorro Espumoso, Necrófago | Esquivar el golpe avisado, armadura de la zona, limpiar la herida |
 | **Picadura** | Mosquitos de Ciénaga | Humo, repelente (Alquimia), ropa cerrada (Sastrería) |
-| **Esporas y nubes** | Micelio Andante, Portador de la Plaga | Máscara, formación Disperso, no quedarse en la fila |
+| **Esporas y nubes** | Micelio Andante, Portador de la Plaga | Máscara, una respuesta 💨 que te saque de la fila |
 | **Esquirlas** | Gólem de Cristal | Armadura de la zona, esquivar |
 | **Parásito** | Gusano Susurrante, Larva del Vacío | Arrancarlo antes de que llene la barra |
 | **Despiece** | Desollar un monstruo **Enfermo** sin guantes | Guantes de desuello (ver [Profesiones](../07-economia/profesiones.md)) |
 | **Comer** | Carne cruda, pescado crudo, carne de un monstruo Enfermo | Cocinar. El Licántropo huele la carne mala |
 | **Beber** | El río donde vive un Sapo Bilioso | Hervir, pastillas, filtro (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)) |
-| **Otros jugadores** | El Pulmón de Moho se pega con la tos al grupo **agrupado** | Máscara, cuarentena |
+| **Otros jugadores** | El Pulmón de Moho se pega con la tos al resto del grupo | Máscara, cuarentena |
 | **Ganado** | Una bestia enferma muerde a tu montura o a tu rebaño | Cercos, veterinario (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md)) |
 
 ## 6. Vectores de enfermedad
@@ -550,8 +552,8 @@ Siguen el modelo de siempre: **carrera entre gravedad e inmunidad**, incubación
 
 | Enfermedad | Vector | Incubación y carrera | Síntomas | Prevención | Tratamiento | Si se pierde la carrera |
 |---|---|---|---|---|---|---|
-| **Mal de Espuma** | Zorro Espumoso, Murciélago Vampiro, lobos enfermos | 3 h · rápida | Irritable: a veces actúa solo, como *Temerario*. Tragar cuesta: beber pociones gasta la acción entera | Esquivar la mordida avisada; **suero de espuma** antes de los síntomas (Alquimia y Medicina) | Suero y sedantes (Médico) | Rasgo *Irascible* una semana: el estrés sube más al recibir críticos |
-| **Pulmón de Moho** | Micelio Andante, Hongo Esporón (desde el tramo III) | 1 h · lenta · **se contagia al grupo agrupado** | Tos: Aguante máximo −1. Al toser delatas al grupo (sin sigilo) | Máscara de lino fino (Sastrería), formación Disperso | Vapor de hierbas (Herboristería y Alquimia), reposo | *Pulmón manchado*, crónico leve, como la Tos del Minero |
+| **Mal de Espuma** | Zorro Espumoso, Murciélago Vampiro, lobos enfermos | 3 h · rápida | Irritable: a veces actúa solo, como *Temerario*. Tragar cuesta: las pociones curan la mitad | Esquivar la mordida avisada; **suero de espuma** antes de los síntomas (Alquimia y Medicina) | Suero y sedantes (Médico) | Rasgo *Irascible* una semana: el estrés sube más al recibir críticos |
+| **Pulmón de Moho** | Micelio Andante, Hongo Esporón (desde el tramo III) | 1 h · lenta · **se contagia al resto del grupo** | Tos: Aguante máximo −1. Al toser delatas al grupo (sin sigilo) | Máscara de lino fino (Sastrería) | Vapor de hierbas (Herboristería y Alquimia), reposo | *Pulmón manchado*, crónico leve, como la Tos del Minero |
 | **Puesta de Araña** | Araña Nodriza, la Reina Araña | 12 h · media | Picor; el Sustento baja más rápido. En el pico, **eclosión**: en tu próximo combate aparecen 2 crías del lado enemigo | Romper el abdomen de la Nodriza antes de la puesta; limpiar la herida | **Cirugía menor** (extraer parásitos) o purga fuerte (Alquimia) | Cicatrices. Si eclosiona dos veces, *Aracnofobia* |
 | **Cristalosis** | Gólem de Cristal, Gusano de Vetas, Centinela de Vidrio | 6 h · lenta | La piel de la zona herida se vuelve cristal: resiste mejor el corte, pero se fractura más fácil. Iniciativa −1 | Armadura de la zona; esquivar las esquirlas | Baños de sal de roca y disolvente (Alquimia) | *Vetas de cristal*: marcas que brillan de noche, sin efecto |
 | **Fiebre de Ceniza** | Perro de Ceniza, Titán de Ceniza, Tortuga Volcán | 2 h · media | Calor por dentro: la Hidratación baja el doble y, en zonas calientes, Aguante máximo −1 | Máscara húmeda, agua de sobra | Tónico refrescante (Alquimia), reposo en un lugar fresco | *Voz de ceniza* (cosmético) y una semana con menos tolerancia al calor |
@@ -754,7 +756,7 @@ hacia la RETAGUARDIA.
 mirada en LYRA.
 (Lo conoces: esquivar la mordida evita el contagio)
 
-🟥 Tú — Guerrero Protección · Vanguardia · Agrupado
+🟥 Tú — Guerrero Protección · Vanguardia
 ❤️ 372/410   💢 Ira 40   🔋 Aguante ●●●○○
 Lyra   ❤️ 238/260 · 🦠 ▓▓▓░░░░░░░ 30%
 Ossian ❤️ 271/290 · 🦠 0%
@@ -763,10 +765,9 @@ Turnos: Ossian → LOBO ENFERMO → Tú → ALFA
         → Lyra → LOBO → LOBO
 ⏱ 45 s
 
-[🛡 Bloqueo con escudo] [⚔️ Golpe de escudo]
-[🗣 Grito desafiante]   [🌀 Torbellino]
-[🔁 Fila / Formación]   [🎯 Apuntar]
-[🧪 Objetos]            [📜 Registro]
+[⚔️ Atacar]            [🛡 Bloqueo con escudo]
+[🗣 Grito desafiante]  [💥 Golpe de escudo ✋]
+[🏃 Huir]              [🎒 Mochila]
 ```
 
 **El mismo mensaje, ya resuelto:**

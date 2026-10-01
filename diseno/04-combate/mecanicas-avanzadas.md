@@ -2,6 +2,8 @@
 
 > **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Daño y estados](dano-y-estados.md), [Avisos y tácticas](avisos-y-tacticas.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Se conecta con:** [Jefes](../06-contenido/jefes.md), [PvP](../06-contenido/pvp.md), [Geografía y recursos](../02-mundo/geografia-y-recursos.md), [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md), [Cacerías](../06-contenido/cacerias.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Heridas](../05-salud/heridas.md), [Peligros del entorno](../05-salud/peligros-del-entorno.md), [Profesiones](../07-economia/profesiones.md) · **Estado:** propuesta
 
+> **Nota (D-58).** Los ejemplos todavía nombran pisos, tramos y Guardianes de piso, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) y el Guardián como un jefe de mundo de ese anillo. Las reglas de combate no cambian.
+
 **De dónde sale.** Cada mecánica dice su origen en su apartado. En resumen:
 - *Octopath Traveler*: escudos y debilidades que rompen al enemigo (§3), y guardar puntos para gastarlos juntos (§12).
 - *Persona* y *Shin Megami Tensei III: Nocturne*: el turno extra por pegar una debilidad (§4).
@@ -87,7 +89,7 @@ Las mecánicas usan dos juegos de iconos que no se mezclan.
 
 **Cómo funciona.**
 - Casi todo enemigo tiene **🔰 Escudo** (fichas) y de 1 a 4 **debilidades**, entre tipos de daño y partes del cuerpo.
-- Las debilidades empiezan como ❓. Se revelan al pegarlas, con el Bestiario (3 victorias), con la Marca del Cazador o con una ficha del Informante (ver [Avisos y tácticas](avisos-y-tacticas.md)).
+- Las debilidades empiezan como ❓. Se revelan al pegarlas, con el Bestiario (al vencer a uno de su especie, ★★; ver [Bestiario](../06-contenido/bestiario.md) §1.5), con la Marca del Cazador o con una ficha del Informante (ver [Avisos y tácticas](avisos-y-tacticas.md)).
 - Cada impacto que pega una debilidad quita 1 🔰. **Apuntar** a una parte débil (opción dentro de ⚔️ Atacar, o efecto de ciertas habilidades) también cuenta: el vientre expuesto del Wyrm de las Dunas es débil a perforación.
 - Las habilidades de varios impactos quitan 1 por impacto, con tope de 2 por acción. Las técnicas combinadas y el Límite quitan 2.
 - Con 🔰 en 0, el enemigo queda **💫 Roto**:
@@ -197,7 +199,7 @@ Si las dos se rompen a la vez es un **Quiebre**: el enemigo no pierde más ronda
 
 | Técnica | Etiquetas | Pareja típica | Efecto |
 |---|---|---|---|
-| **Témpano Quebrado** | ❄️ + 💥 | Mago Escarcha + Guerrero Armas | El golpe pesado parte la escarcha: cuenta como debilidad doble (−2 🔰) y hace el doble de daño a la Postura. En humanoides PNJ, fractura segura |
+| **Témpano Quebrado** | ❄️ + 💥 | Mago Escarcha + Guerrero Furia | El golpe pesado parte la escarcha: cuenta como debilidad doble (−2 🔰) y hace el doble de daño a la Postura. En humanoides PNJ, fractura segura |
 | **Baluarte** | 🛡 + ✚ | Guerrero Protección + Sacerdote Disciplina | El bloqueo cubre a toda la vanguardia esa ronda, y el escudo preventivo pasa a toda la fila a mitad de valor |
 | **Crepúsculo** | ✨ + 🌑 | Paladín Reprensión + Sacerdote Sombra | Daño que ignora resistencias místicas y quita un beneficio del enemigo |
 | **Pira de Huesos** | 💀 + 🔥 | Nigromante Legión + Evocador Devastación | Los esqueletos de la vanguardia estallan en fuego: Quemadura en la fila de enfrente y la deja en 🔥 Llamas |
@@ -492,7 +494,7 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 
 | Clase · spec | Límite | Efecto |
 |---|---|---|
-| Guerrero · Armas | **Golpe del Titán** | Golpe 💥 que abre la ventana de *Golpe Colosal* 3 rondas y le quita al enemigo la mitad de la Postura que le queda |
+| Guerrero · Furia | **Golpe del Titán** | Golpe 💥 que abre la ventana de *Golpe Colosal* 3 rondas y le quita al enemigo la mitad de la Postura que le queda |
 | Guerrero · Protección | **Última Muralla** | 2 rondas: recibe todos los golpes dirigidos a la vanguardia, con la mitad de daño |
 | Paladín · Sagrado | **Amanecer** | Levanta a todos los derribados con 30 % de vida y cura al grupo |
 | Cazador · Puntería | **Disparo Imposible** | Rompe al instante la parte apuntada (en un Muro, la deja a un golpe) |
@@ -564,10 +566,10 @@ Cuando alguien se rinde, la pelea se pausa (los enemigos no actúan) y la botone
 ```
 ⚠️ El Caballero Hueco echa la lanza atrás y apunta a TI.
    (Bestiario: 🗡 estocada)
-🟨 Tú — Pícaro Sutileza · Vanguardia   🔋 ●●●○○
+🟥 Tú — Guerrero Protección · Vanguardia   🔋 ●●●○○
 
-[⚔️ Atacar]          [🤺 Réplica · 2🔋]
-[💨 Evasión]         [✋ Patada]
+[⚔️ Atacar]          [🤺 Parada · 2🔋]
+[🛡 Bloqueo con escudo] [✋ Zurrar]
 [🏃 Huir]            [🎒 Mochila]
 ```
 
@@ -670,7 +672,7 @@ El resto del equipo contra el entorno (abrigos, máscaras, filtros, repelente) e
 | **Reacciones avanzadas** | Sí | Sí: se lee la forma de las habilidades del rival | Sí: son la base de la lectura | Supervivencia | Rendimiento con 30 % y 70 % de reacciones perfectas | Dentro del techo parejo (±3 % en óptimo) |
 | **Guardar y soltar** | Sí | No (los jugadores no tienen escudo ni Postura) | Sí: para las ventanas de ruptura | Ráfaga | Daño en 20 rondas con y sin guardar | ≤ +5 %; ráfaga ±5 % entre specs |
 
-Las Tácticas pueden usar todas las mecánicas con reglas propias ("si el jefe no está roto, guardar las cargas"; "si el aviso es una estocada contra mí → 🤺 Réplica"). El **juego básico** del simulador corre con las Tácticas por defecto; el **juego óptimo**, con el mejor plan. Todo cambio va al registro de balance (ver [Balance](../03-personaje/balance.md)).
+Las Tácticas pueden usar todas las mecánicas con reglas propias ("si el jefe no está roto, guardar las cargas"; "si el aviso es una estocada contra mí → 🤺 Parada"). El **juego básico** del simulador corre con las Tácticas por defecto; el **juego óptimo**, con el mejor plan. Todo cambio va al registro de balance (ver [Balance](../03-personaje/balance.md)).
 
 ---
 
@@ -688,7 +690,7 @@ Filas del Wyrm: Vanguardia 💧 Agua (2)
 ⚠️ El Wyrm inhala… y retiene el aire.
    (Bestiario: ✨ aliento retrasado. Cae la PRÓXIMA ronda)
 
-🟥 Tú — Guerrero Armas · Vanguardia
+🟥 Tú — Guerrero Furia · Vanguardia
 ❤️ 1.140/1.480   💢 Ira 70   🔋 ●●●○○
 🌟 Límite 64%   ⏳ Cargas 1
 
@@ -700,7 +702,7 @@ Turnos: Lyra → Tú → WYRM → Ossian → Bram → Mirra
 ⏱ 45 s
 
 [⚔️ Atacar]             [💥 Golpe Colosal 🔗]
-[🩸 Golpe Mortal]        [🤺 Parada]
+[✋ Zurrar]              [🤺 Parada]
 [🌀 Esquivar]           [🎒 Mochila]
 ```
 
@@ -732,7 +734,7 @@ Y la cabecera de la ronda siguiente ya cuenta la oportunidad:
 🌟 Bram: Límite 88 %
 ```
 
-La última línea del resumen es una cita plegable con cada número, como en [Ronda y acciones](ronda-y-acciones.md). El *Golpe Colosal* sigue siendo de corte, que el Wyrm resiste. La técnica combinada es lo que le permite a un Guerrero Armas romper a un enemigo que le resiste: eso es lo que hace interesante elegir con quién atacar.
+La última línea del resumen es una cita plegable con cada número, como en [Ronda y acciones](ronda-y-acciones.md). El *Golpe Colosal* sigue siendo de corte, que el Wyrm resiste. La técnica combinada es lo que le permite a un Guerrero Furia romper a un enemigo que le resiste: eso es lo que hace interesante elegir con quién atacar.
 
 ---
 

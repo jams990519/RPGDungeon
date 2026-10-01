@@ -2,6 +2,8 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Equipamiento](equipamiento.md), [Economía](../07-economia/economia.md) (Mercado Negro, monedas), [Jefes](../06-contenido/jefes.md), [Bestiario](../06-contenido/bestiario.md) · **Se conecta con:** [Fabricación](../07-economia/fabricacion.md), [Profesiones](../07-economia/profesiones.md), [Cacerías](../06-contenido/cacerias.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Gremios y social](../08-social/gremios-y-social.md), [Descubrimiento y colecciones](descubrimiento-y-colecciones.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md), [Balance](balance.md) · **Estado:** propuesta
 
+> **Nota (D-58).** Los ejemplos todavía nombran pisos, tramos y Guardianes de piso, que D-58 quitó. Hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) (el tier T1 a T10 sigue igual) y el Guardián como un jefe de mundo de ese anillo.
+
 Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra cosa. Este documento dice qué puede caer, de dónde, con qué probabilidad, cómo se reparte en grupo, cómo se muestra en un chat y cómo se evita que el mundo se llene de objetos sin valor.
 
 **De dónde sale.**
@@ -57,7 +59,7 @@ Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra
 | 🥚 **Mascotas y huevos de montura** | Huevo de wyrm, cría de lobo, mascota de duelo | Nidos, captura viva, jefes ocultos, pesca rara | Criar, domar, duelos de mascotas | Ganadería | Libre hasta que se doma |
 | 🎨 **Apariencias y tintes** | Apariencia de Pesadilla, tinte Azul Abismo, pigmento de cristal | Jefes en dificultades altas, cofres, plantas y criaturas raras | Transfiguración y moda | Sastrería (tintes) | Apariencias ligadas a la cuenta; tintes libres |
 | 🏺 **Piezas de arqueología** | Fragmento de vasija, sello antiguo | Excavaciones; el Anticuario del piso 64 | Completar objetos, colección, museo | Arqueología, Erudito | Libre |
-| 📜 **Libros y pergaminos de lore** | *Diario del Primer Ascendente, tomo II* | Humanoides cultos, bibliotecas en ruinas, cofres | Leer (colección de Libros), pistas del Gran Misterio, idiomas antiguos | Erudito, Inscripción | Libre |
+| 📜 **Libros y pergaminos de lore** | *Diario del Primer Superviviente, tomo II* | Humanoides cultos, bibliotecas en ruinas, cofres | Leer (colección de Libros), pistas del Gran Misterio, idiomas antiguos | Erudito, Inscripción | Libre |
 | 🔍 **Pistas de investigación** | Carta manchada, llave sin cerradura, muestra de sangre | Escenas de casos, humanoides, monstruos Enfermos (muestras) | Tablero de corcho, curas, jefes ocultos ([Investigaciones](../06-contenido/investigaciones.md)) | Detective, Médico, Erudito | Según el caso |
 | ☠️ **Reliquias malditas** | Hacha del Hambriento, Anillo del Avaro | Criptas, cofres de zona negra, piezas sin tasar | Poder con precio (§4.5) | Quien acepte el riesgo; sacerdotes | Libre; contrabando donde la ciudad lo prohíbe |
 | 🏛️ **Curiosidades para el museo** | Fósil de cristal, moneda de un reino perdido, imitación antigua | Arqueología, pesca, apariciones en el chat, piezas falsas al tasar | Donar al museo, decorar la casa | Museo, coleccionistas | Libre |
@@ -136,7 +138,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 | Factor | Qué cambia | Ejemplo |
 |---|---|---|
 | **Tramo** | El tier de todo lo que cae (T1 a T10). Nunca cae algo de un tramo superior | Un lobo del piso 12 suelta pieles T2 |
-| **Dificultad** | Cada escalón (Normal → Profundidades → Corrompido → Abismal → Pesadilla; en mazmorras, Heroica, Mítica y cada nivel de Mítica+) sube un 20 % la probabilidad de rareza y abre una rareza más | Legendario solo desde Abismal o Mítica |
+| **Dificultad** | Cada escalón (Normal → Profundidades → Corrompido → Abismal → Pesadilla; en mazmorras, Heroica, Mítica y cada nivel de Mítica+) sube un 20 % la probabilidad de rareza y abre una rareza más | Legendario solo desde Abismal o Mítica, o en zonas 🔴 y ⚫ |
 | **Color de zona** | 🔵 no hay combate · 🟡 ×1 · 🔴 ×1,5 a la rareza y mejor calidad de material · ⚫ ×2 y **materiales que solo existen ahí** | El mismo élite da más en ⚫, pero ahí puedes perderlo todo ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md)) |
 | **Modificadores del monstruo** | Los del [Bestiario](../06-contenido/bestiario.md), §7: Élite, Templado, Enfermo (muestras), Blindado… | Un Blindado da más escamas |
 | **Partes rotas** | Cada parte rota da **su** material; la piel sale peor | Romper la cola del Wyrm da Escama de cola |
@@ -163,7 +165,7 @@ El mímico guarda lo que se tragó: si lo vences, deja botín de cofre de plata.
 
 **Rareza y Calidad valen lo mismo.** Un Épico de botín vale como un Excelente fabricado, y un Legendario como una Obra Maestra. El cazador de botín y el artesano llegan al mismo techo.
 
-**De dónde salen las piezas.** El Mercado Negro compra piezas **Normales y Buenas**, las que se hacen en cantidad con la fabricación rápida ([Fabricación](../07-economia/fabricacion.md), §1). Cuando una de esas piezas cae, la Torre la **despierta**: recibe una rareza y sus afijos, y conserva la firma del artesano. La rareza reemplaza a la calidad como bono.
+**De dónde salen las piezas.** El Mercado Negro compra piezas **Normales y Buenas**, las que se hacen en cantidad con la fabricación rápida ([Fabricación](../07-economia/fabricacion.md), §1). Cuando una de esas piezas cae, el botín la **despierta**: recibe una rareza y sus afijos, y conserva la firma del artesano. La rareza reemplaza a la calidad como bono.
 
 ```
 🔵 Hacha Dentada de la Roca   [PO 238]
@@ -171,7 +173,7 @@ T3 · Raro · +0 · Mejoras 0/3
 Forjada por Tor el Fundidor ✒️ · despertada en el piso 23
 +22 Fuerza
 Dentada: +10 % de acumulación de 🩸 Sangrado
-de la Roca: tu 🛡 Firmeza se llena un 15 % más rápido
+de la Roca: tu ⚓ Firmeza se llena un 15 % más rápido
 Técnica: Hendidura
 Durabilidad 88/88 · 3,4 kg · Libre
 ```
@@ -211,7 +213,7 @@ Un objeto de botín se nombra **tipo + prefijo + sufijo**: "Hacha **Dentada** **
 | **del Invierno** | Resistencia a la escarcha | +5 % | +8 % | +10 % |
 | **de la Víbora** | Acumulación de 🟢 Veneno recibida | −10 % | −15 % | −20 % |
 | **de la Calma** | Estrés recibido ([Mente](../05-salud/mente.md)) | −5 % | −8 % | −10 % |
-| **de la Roca** | La 🛡 Firmeza se llena más rápido | +10 % | +15 % | +20 % |
+| **de la Roca** | La ⚓ Firmeza se llena más rápido | +10 % | +15 % | +20 % |
 | **del Zorro** | La primera esquiva de cada combate cuesta 1 🔋 Aguante menos | Fijo | Fijo | Fijo |
 | **del Sanador** | Curación recibida | +2 % | +3 % | +4 % |
 | **del Viajero** | Peso del objeto | −5 % | −8 % | −10 % |
@@ -356,8 +358,8 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 **4. Diapasón del Cantor** · T3 · Abalorio · Artefacto del Cantor de Cuarzo (piso 22) → Joyería
 > *"El gólem cantaba solo cuando nadie minaba. Si acercas el diapasón al oído, se oye una galería vacía."*
 - **Efecto:** una vez por combate, repites al 50 % la acción del aliado que actuó justo antes que tú en la cola.
-- **Precio:** usarlo gasta tu acción y tu reacción de esa ronda.
-- **Cambia el juego:** premia mirar la cola de iniciativa ([Ronda y acciones](../04-combate/ronda-y-acciones.md), §3) y combinar con el grupo.
+- **Precio:** usarlo es tu jugada de esa ronda y cuesta 1 🔋 Aguante.
+- **Cambia el juego:** premia mirar la cola de iniciativa ([Ronda y acciones](../04-combate/ronda-y-acciones.md), §6) y combinar con el grupo.
 
 **5. Remo del Barquero** · T4 · Bastón · Artefacto del Barquero Ahogado (piso 38) → Carpintería
 > *"Cobraba un objeto por cruzar. A los que no podían pagar, los cruzaba igual. Nunca dijo hacia qué orilla."*
@@ -379,8 +381,8 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 **8. Velo de la Novia** · T6 · Capa · Artefacto de la Novia del Paso (piso 53) → Sastrería
 > *"Esperó en el paso cuarenta inviernos. El velo aprendió a esperar con ella."*
-- **Efecto:** si preparas una reacción y no se dispara, no pierdes el Aguante: lo recuperas la ronda siguiente. +2 de abrigo.
-- **Precio:** solo puedes preparar Esquivar; nunca Bloquear, Desviar ni Interrumpir.
+- **Efecto:** si usas una respuesta y el golpe no llega, no pierdes el Aguante: lo recuperas la ronda siguiente. +2 de abrigo.
+- **Precio:** mientras lo llevas, solo puedes usar respuestas de esquivar y 🌀 Esquivar; nunca bloquear, desviar ni interrumpir.
 - **Cambia el juego:** perdona leer mal un aviso, pero te quita las reacciones que ayudan al grupo.
 
 **9. Corona Rota del Rey sin Corona** · T7 · Cabeza · Reliquia dañada (corona rota del Rey sin Corona, piso 68) → Arqueología la identifica, Joyería la restaura
@@ -392,7 +394,7 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 **10. Manto de Brasaviva** · T8 · Pecho de tela · Artefacto de Brasaviva (piso 73) → Sastrería
 > *"Renació tres veces. A la cuarta, alguien guardó una pluma antes de que el fuego terminara."*
 - **Efecto:** la primera vez por combate que quedas derribado, al final de la ronda renaces con el 20 % de vida, en llamas.
-- **Precio:** mientras ardes pierdes un 3 % de vida por ronda, hasta que un aliado gaste su acción rápida en apagar tus cenizas. En esa pelea no te pueden levantar con resurrección en combate.
+- **Precio:** mientras ardes pierdes un 3 % de vida por ronda, hasta que un aliado gaste su ronda (🎒 Mochila) en apagar tus cenizas. En esa pelea no te pueden levantar con resurrección en combate.
 - **Cambia el juego:** una segunda oportunidad que obliga al grupo a cuidarte.
 
 **11. Cristalino del Pozo** · T9 · Abalorio · Artefacto del Ojo del Pozo (piso 89) → Joyería
@@ -403,7 +405,7 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 **12. Rama de la Dríade Sin Nombre** · T10 · Bastón · Artefacto del jefe oculto del piso 99 → Carpintería
 > *"No tenía nombre porque nadie la había visto. Cuando la vieron, ya no quedaba nadie para ponérselo."*
-- **Efecto:** como acción rápida, pasas a tu barra la mitad de un estado acumulado de un aliado (Sangrado, Veneno, Podredumbre…).
+- **Efecto:** como tu jugada de la ronda, pasas a tu barra la mitad de un estado acumulado de un aliado (Sangrado, Veneno, Podredumbre…).
 - **Precio:** mientras la llevas no puedes beber pociones.
 - **Cambia el juego:** un tanque o un sanador que absorbe estados en lugar de curarlos.
 
@@ -419,9 +421,9 @@ del Hambriento: +6 % de daño · 🍖 el Sustento baja al doble
 
 | Conjunto | Tipo · tramo | Origen | 2 piezas | 4 piezas |
 |---|---|---|---|---|
-| **Atuendo del Cartógrafo Perdido** | Tela · T3 | Plano del Primer Muro (piso 25) | Los avisos enemigos te llegan con una pista más, como si tu conocimiento tuviera una ★ más | Cuando tu reacción preparada se dispara, tu siguiente habilidad cuesta un 30 % menos de recurso |
+| **Atuendo del Cartógrafo Perdido** | Tela · T3 | Plano del Primer Muro (piso 25) | Los avisos enemigos te llegan con una pista más, como si tu conocimiento tuviera una ★ más | Cuando una respuesta tuya acierta, tu siguiente habilidad cuesta un 30 % menos de recurso |
 | **Pieles del Rastro** | Cuero · T2 | Plano de la Orden de Cazadores (rango Batidor) y artefactos menores de alfas | +10 % de piezas de tres estrellas al despiezar | Tu primera acción contra un enemigo que no te vio es crítica y lo **marca**: tu grupo ve su próxima acción |
-| **Baluarte del Primer Muro** | Placas · T3 | Plano del Primer Muro (piso 25) | La 🛡 Firmeza se llena un 15 % más rápido | Cuando bloqueas un golpe avisado, tu fila entera recibe un 20 % menos de ese golpe |
+| **Baluarte del Primer Muro** | Placas · T3 | Plano del Primer Muro (piso 25) | La ⚓ Firmeza se llena un 15 % más rápido | Cuando bloqueas un golpe avisado, tu fila entera recibe un 20 % menos de ese golpe |
 | **Ajuar del Minero Viejo** | Ropa de oficio y pico · T4 | Plano de Herrería de herramientas (rango Experto) | Inmune a la Tos del Minero | Una vez por día "presientes" una veta: el mapa marca la mejor veta del piso durante 1 hora |
 
 ## 6. Objetos sin identificar
@@ -550,7 +552,7 @@ WoW esconde su protección contra mala racha. Aquí se ve, y tiene nombre: **Con
 
 ### 7.4 Tesoro Semanal
 
-Ver [Equipamiento](equipamiento.md), §8.
+Ver [Equipamiento](equipamiento.md), §9.
 
 | Fila | Qué la abre | Casillas 1 · 2 · 3 | Qué ofrece |
 |---|---|---|---|
