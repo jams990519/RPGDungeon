@@ -307,3 +307,12 @@ v0_18:
     - "🩹 Elige con cuánta vida se retira tu héroe de las peleas automáticas (30, 50 o 70 %) y si usa las pociones del cinturón."
     - "🏹 Con las peleas automáticas puedes cazar en lote: varias presas seguidas, con el tiempo estimado en cada botón."
     - "📜 Al volver, un solo mensaje te cuenta cuántas peleas ganó tu héroe y qué consiguió."
+
+v0_19:
+  version: "0.19"
+  title: "⚖️ Lost Realms 0.19: equipo hasta el nivel 100 y clases que cumplen su rol"
+  notes:
+    - "🛡️ Equipo nuevo cada 10 niveles hasta el 100, en todas las ranuras: siempre hay algo mejor que buscar."
+    - "⚒️ Lo mejor de cada nivel lo fabrican los artesanos: 90 recetas nuevas de armas, armaduras y joyas épicas (rangos 55 a 100). El botín de nivel alto llega como mucho a raro."
+    - "🧱 Los tanques ahora aguantan más: terminan las peleas con más vida que los de ataque. Los sanadores se sostienen mejor y el ataque sigue matando más rápido."
+    - "⚔️ Los enemigos pegan más a medida que sube su nivel: las peleas normales tienen algo de riesgo. Revisa tu equipo si llevas tiempo sin cambiarlo."
