@@ -187,3 +187,14 @@ def test_xp_is_slow_and_infinite(content):
     needs = [xp_for_level(f, lv + 1) - xp_for_level(f, lv) for lv in range(1, 200)]
     assert all(b > a for a, b in zip(needs, needs[1:]))  # every level costs more than the last
     assert xp_for_level(f, 1000) > xp_for_level(f, 999) > 0
+
+
+def test_names_ignore_accents_spaces_and_reservations(service):
+    make_hero(service, "test:1", "José Luis")
+    service.view("test:2")
+    assert service.text("test:2", "jose luis").notice
+    assert service.text("test:2", "JoseLuis").notice
+    service.view("test:3")
+    service.text("test:3", "Aria")          # reserved while test:3 chooses a class
+    service.view("test:4")
+    assert service.text("test:4", "aria").notice

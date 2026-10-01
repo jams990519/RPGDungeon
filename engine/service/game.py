@@ -34,6 +34,7 @@ Si cambias esto, revisa:
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Any
 
 from engine.combat import CombatContext, make_combat, resolve_round, validate_choice
@@ -126,7 +127,7 @@ class GameService:
             view = self._creation_view(account_id)
             view.notice = self.texts.t("create.bad_name")
             return view
-        if self._name_taken(name):
+        if self._name_taken(name, account_id):
             view = self._creation_view(account_id)
             view.notice = self.texts.t("create.name_taken")
             return view
@@ -179,9 +180,19 @@ class GameService:
     def _save(self, hero: Hero) -> None:
         self.store.put("hero", hero.id, hero.to_dict())
 
-    def _name_taken(self, name: str) -> bool:
-        lowered = name.lower()
-        return any(d.get("name", "").lower() == lowered for _, d in self.store.items("hero"))
+    @staticmethod
+    def _name_key(name: str) -> str:
+        """Comparison key for names: no case, no accents, no spaces ("José Luis" == "joseluis")."""
+        plain = unicodedata.normalize("NFKD", name)
+        return "".join(ch for ch in plain if not unicodedata.combining(ch) and not ch.isspace()).casefold()
+
+    def _name_taken(self, name: str, account_id: str | None = None) -> bool:
+        """True if a hero, or another player still choosing a class, already uses this name."""
+        key = self._name_key(name)
+        if any(self._name_key(d.get("name", "")) == key for _, d in self.store.items("hero")):
+            return True
+        return any(acc != account_id and self._name_key(p.get("name", "")) == key
+                   for acc, p in self.store.items("pending") if p.get("stage") == "class")
 
     @staticmethod
     def _join(lines: list[str]) -> str | None:
@@ -372,7 +383,7 @@ class GameService:
         class_id = action_id[4:]
         if class_id not in self.content.classes:
             return self._creation_view(account_id)
-        if self._name_taken(pending["name"]):
+        if self._name_taken(pending["name"], account_id):
             self.store.delete("pending", account_id)
             view = self._creation_view(account_id)
             view.notice = self.texts.t("create.name_taken")
