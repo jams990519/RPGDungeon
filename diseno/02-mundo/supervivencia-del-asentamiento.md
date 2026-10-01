@@ -73,6 +73,8 @@ La primera parte de este documento: la **capa simple** de §3.1, §3.2, §4.2 y 
 
 **Los números** están en `content/balance.yaml` (`pantry`), la comida en `content/items.yaml` (`food`) y la carne en el botín de `content/enemies.yaml`. Son orientativos y se ajustan en la beta. Pruebas: `tests/test_pantry.py`.
 
+**Pescado y cocina (en el juego, D-115).** Además de la 🍖 carne y las 🥖 provisiones, entran a la despensa el 🐟 **pescado** (1 ración; lo junta el 🎣 Pescador en las zonas con agua) y las **comidas de la 🍲 Cocina**, que valen más raciones que lo crudo (de ×1,5 a ×2,5 según el rango; las conservas del rango 50, 18 raciones). Con un Pescador o un Cocinero entre los miembros, el pescado crudo y lo cocinado rinden hasta **30 % más** (rige el mejor rango del campamento; se suma al 🍖 Ahumadero). Ver [Profesiones](../07-economia/profesiones.md) §0.4.
+
 ### 0.5 Incursiones de los campamentos (en el juego, D-99 provisional)
 
 La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.2: una incursión por semana desde que se funda el campamento (D-105; el jugador las ve como "oleadas") y la Noche de prueba antes de castillo. Sin medidor de amenaza, sin oleadas, sin tablero y sin Eco: cada defensor pelea una pelea normal. **Solo en los campamentos de jugadores:** el Claro es el campamento base y nunca recibe incursiones (D-95, D-98).
@@ -103,6 +105,8 @@ La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.
 **Lo que nunca pasa** (§15): perder una incursión nunca quita niveles, zonas ni miembros, y nadie pierde nada personal más allá de una derrota normal. El Claro nunca recibe incursiones.
 
 **Los números** están en `content/balance.yaml` (`raids`). Son orientativos y se ajustan en la beta (registro en [Balance](../03-personaje/balance.md) §7). Las cuentas puras están en `engine/world/raids.py`. Pruebas: `tests/test_raids.py`.
+
+**Defensas dañadas (en el juego, D-115).** Cada oleada semanal también daña las defensas del campamento: −1 de 🛡️ Defensa si la defienden, −2 si la pierden (nunca más que lo construido; la Noche de prueba no daña). Ninguna mejora se pierde: solo baja la Defensa hasta que los miembros la reparan con 🟫 tablones y 🧱 sillares en 🔨 Obras (la 🏗️ Construcción del campamento lo abarata). Ver [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) §0.
 
 ## De dónde sale
 

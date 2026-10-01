@@ -1,0 +1,76 @@
+# Professions phase 2, camp side (D-115, D-116): 🎣 Pescador, 🍲 Cocina, 🗿 Cantería and 🏗️ Construcción, the fish of the
+# zones with water, the cooked rations, the refined stone, the camp perks and the raid damage with its repair.
+# [ES] Textos de la fase 2 de los oficios, lado del campamento: los cuatro oficios nuevos, el 🐟 pescado, las raciones de la
+# Cocina, el 🧱 sillar, los 🏰 beneficios de campamento (rige el mejor rango entre los miembros) y las 🛠️ defensas que dañan
+# las oleadas y se reparan desde 🔨 Obras. Se junta con es.yaml al cargar (engine/core/content.py: las claves que ya
+# existen, como item, profession, prof o resources, se completan, no se pisan).
+# Documento de diseño: diseno/07-economia/profesiones.md §0.4 y diseno/07-economia/red-de-oficios.md §5
+# Lo leen: engine/service/game.py (secciones "camp professions, phase 2", "settlement pantry", "camp raids" y "camp
+#     improvements": _camp_feed, _pantry_lines, _camp_here_view, _upgrades_view, _works_view, _repair_defenses,
+#     _resolve_raid, _professions_view, _recipe_view, _perk_text, _resources_view).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Los números los pone el motor, salvo las raciones de cada
+# comida en resources.use (como la carne en es.yaml): si cambias "food" en content/items.yaml, cámbialas aquí. Si cambias
+# una clave, búscala en game.py: una clave que falta se ve como [clave] (tests/test_oficios_campamento.py revisa que no
+# falte ninguna).
+
+item:
+  pescado: "Pescado"
+  racion_campamento: "Ración del campamento"
+  pescado_asado: "Pescado asado"
+  guiso_cazador: "Guiso del cazador"
+  conserva: "Conservas en tarro"
+  festin: "Festín de la frontera"
+  banquete: "Banquete del castillo"
+  sillar: "Sillar"
+
+profession:
+  pescador:
+    name: "Pescador"
+    how: "recolecta 🐟 pescado en las zonas con agua (todo el 🐸 pantano y algunos ríos del 🌲 bosque y la 🌾 pradera)"
+  cocina:
+    name: "Cocina"
+    how: "en una estación (el Claro o el 🔥 Fogón de tu campamento): 🍖 carne, 🐟 pescado y hierbas → raciones para la despensa"
+  canteria:
+    name: "Cantería"
+    how: "en una estación: 🪨 piedra → 🧱 sillar (lo piden las mejoras grandes y la reparación de las defensas)"
+  construccion:
+    name: "Construcción"
+    how: "aporta materiales a las 🔨 obras de tu campamento y repara sus defensas después de una oleada"
+
+prof:
+  perk:
+    fish_food: "el pescado rinde +{v} % en la despensa"
+    cook_food: "lo cocinado rinde +{v} % en la despensa"
+    stone_cost: "las obras piden −{v} % de piedra y sillar"
+    build_cost: "las mejoras piden −{v} % de materiales"
+    repair_cost: "reparar las defensas cuesta −{v} %"
+
+camp_prof:
+  perk_note: "   🏰 Es de campamento: vale para tu campamento y rige el mejor rango entre sus miembros."
+  perks_line: "🏰 Oficios del campamento (rige el mejor rango): {items}"
+  perk_part: "{prof}: {perk} ({name})"
+  pantry_how: "🐟 El pescado sale de las zonas con agua; la 🍲 Cocina vuelve la carne y el pescado raciones que rinden más."
+  fish_bonus: "🎣 El pescado rindió {n} {n|ración|raciones} más (Pescador: {name})."
+  cook_bonus: "🍲 Lo cocinado rindió {n} {n|ración|raciones} más (Cocina: {name})."
+  food_out: "Sale: 🌾 {rations} {rations|ración|raciones} para la despensa de tu campamento (más con la 🍲 Cocina del campamento)"
+  damage_line: "🛠️ Defensas dañadas: −{n} 🛡️ por las oleadas. Repárenlas en 🔨 Mejoras → 🔨 Obras."
+  raid_damage: "🛠️ La oleada dañó las defensas: −{n} 🛡️ (queda {defense}) hasta que las reparen en 🔨 Mejoras → 🔨 Obras."
+  repair_name: "🛠️ Reparar defensas"
+  repair_entry: "🛠️ Reparar defensas · −{n} 🛡️"
+  repair_desc: "Las oleadas dañaron las defensas. Entre todos se reparan con 🟫 tablones y 🧱 sillares; la 🏗️ Construcción del campamento lo abarata."
+  repair_button: "🛠️ Reparar defensas"
+  repair_none: "🛠️ Las defensas están enteras: no hay nada que reparar."
+  repaired: "🛠️ ¡Repararon las defensas! Vuelven los {n} {n|punto|puntos} de 🛡️ Defensa."
+  repaired_push_title: "🛠️ Defensas reparadas"
+  repaired_push: "🛠️ Con el aporte de {hero}, {camp} reparó sus defensas: +{n} 🛡️."
+
+resources:
+  use:
+    pescado: "comida: 1 ración en la despensa (más con un 🎣 Pescador en el campamento) o para la 🍲 Cocina"
+    sillar: "🗿 refinado: lo piden las mejoras grandes del campamento y la reparación de las defensas"
+    racion_campamento: "🍲 comida: 3 raciones en la despensa de tu campamento"
+    pescado_asado: "🍲 comida: 3 raciones en la despensa de tu campamento"
+    guiso_cazador: "🍲 comida: 10 raciones en la despensa de tu campamento"
+    conserva: "🍲 comida: 18 raciones en la despensa de tu campamento"
+    festin: "🍲 comida: 27 raciones en la despensa de tu campamento"
+    banquete: "🍲 comida: 45 raciones en la despensa de tu campamento"

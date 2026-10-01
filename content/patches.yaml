@@ -355,3 +355,17 @@ v0_22_1:
     - "🩹 En las peleas automáticas, tu héroe se retira por defecto con menos de 30 % de vida (antes 50 %): el lote se corta menos. Lo cambias en ⚙️ Opciones."
     - "🥖 El mercader vende como mucho 20 provisiones por semana a cada jugador. La comida del campamento la dan la caza, la pesca y la cocina."
     - "🌀 El Círculo del Umbral ahora estudia el poder del Colapso, para que no vuelva a pasar. La Lejanía es solo qué tan lejos del Claro estás."
+
+v0_23:
+  version: "0.23"
+  title: "🍲 Lost Realms 0.23: oficios nuevos para el campamento y el equipo"
+  notes:
+    - "✨ Nuevo oficio: Encantamiento. Desencanta el equipo viejo de tu mochila para sacar esencias arcanas, y úsalas para encantar tus piezas: ⚔️ Filo (ataque), ❤️ Vigor (vida) o 🛡️ Guarda (armadura), según la ranura. Entra desde una pieza en 🛡️ Equipo o con /encantar."
+    - "⬆️ Cuando consigues una pieza mejor que la que llevas (botín, cofre, Guardián o lo que fabricas), el juego te avisa y te ofrece 🔁 Equipar. En 🔁 Equipar, las mejores salen primero."
+    - "🛠️ Los artesanos ahora fabrican cabeza, manos, piernas y pies para todos los tipos de armadura, cada 10 niveles hasta el 100: 208 recetas nuevas en Sastrería, Peletería y Herrería."
+    - "🎣 Nuevo oficio: Pescador. Sale 🐟 pescado en las zonas con agua (todo el pantano y algunos ríos del bosque y la pradera), y llena la despensa del campamento."
+    - "🍲 Nuevo oficio: Cocina. Seis platos, del rango 1 al 100, que rinden mucho más en la despensa que la comida cruda. Se cocina en el Claro o en el 🔥 Fogón del campamento."
+    - "🗿 Nuevo oficio: Cantería. Convierte piedra en 🧱 sillares. Las obras más altas del campamento (nivel 7 y 8) ahora piden sillares y tablones; lo que ya aportaste no se pierde."
+    - "🏗️ Nuevo oficio: Construcción. Sube aportando a las obras de tu campamento, y con más rango las obras piden menos materiales y reparar cuesta la mitad."
+    - "🛡️ Las oleadas dañan las defensas del campamento (−1 si la defienden, −2 si se pierde). Repáralas entre todos en 🔨 Obras → 🛠️ Reparar defensas."
+    - "🏰 Los beneficios de campamento valen para todos sus miembros: rige el mejor rango del grupo en cada oficio. Los ves en la pantalla del campamento."

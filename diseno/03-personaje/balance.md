@@ -814,3 +814,57 @@ Las cinco con poca vida del informe del bestiario (Mago Arcano, Druida Feral, Ba
 - **Monedas que entran:** ~30 🥉 por día en encargos al nivel 1; los premios de rango son cosas que ya existen (consumibles, materiales) y algo de monedas en la Cofradía (50, 150 y 500 🥉, una sola vez).
 
 **Lo que queda por mirar:** si el +15 % diario de los encargos acelera demasiado la subida (D-108 pide caminos parejos; si pasa, bajar `task_xp_per_energy`); si las misiones de "ganar peleas" de los orígenes y del capítulo son muy duras al nivel que piden; si Apreciado llega demasiado pronto o tarde con un encargo por facción al día; y si los premios de rango de la Cofradía (monedas) pesan más que los de las otras dos.
+
+### Octubre de 2026: ✨ Encantamiento, la pieza mejor y el artesano de cabeza, manos, piernas y pies (fase 2 de D-115, provisional)
+
+**Por qué.** El dueño pidió tantos oficios como hagan falta, conectados entre sí (D-115). La fase 2, lado del equipo, cierra el ciclo del equipo de la [Red de oficios](../07-economia/red-de-oficios.md) §4: el artesano hace todas las ranuras y el encantador desencanta lo viejo y mejora lo nuevo. La pasada de balance (D-110, D-113) había dejado cabeza, manos, piernas y pies solo con botín. Números **nuevos** (nada movido), propuestos por Claude y a ajustar en la beta.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| ✨ Esencias al desencantar (`enchanting.disenchant`) | ⚪ 1 · 🟢 2 · 🔵 3 · 🟣 4, +1 cada 20 niveles de la pieza; 🔮 1 esencia mayor de las 🟣 épicas; 1 ⚡ y 6 de experiencia de oficio | Una pieza vieja rinde más cuanto mejor era; la esencia mayor obliga a pasar por el artesano (las épicas son suyas desde el nivel 10) |
+| Beneficio del ✨ Encantamiento (`professions.yaml` → encantamiento.perk) | hasta **+30 %** de esencias al rango 100, parejo con el rango | La fila de §0.4 de [Profesiones](../07-economia/profesiones.md) |
+| Costo de encantar (`enchanting.enchant`) | ✨ 3 + 1 cada 10 niveles de la pieza; 🔮 1 desde el nivel 50; material 1 + 1 cada 50 niveles; 2 ⚡ y 12 de experiencia | Encantar lo mejor del juego gasta ~1,5 piezas raras del 100 y una épica: el sumidero crece con el nivel. Material de otros tres oficios (🔩 Fundición, 🧴 Destilación, 💠 Minero) |
+| Valor de cada encantamiento (`enchanting.enchants`) | ⚔️ Filo (arma, manos) y ❤️ Vigor (pecho, cabeza, piernas): +1 % (rangos 1-25), +2 % (26-75), +3 % (76-100). 🛡️ Guarda (pies, joya): +1 de defensa (25-50), +2 (51-100) | Uno por pieza, la ranura decide. Con las 7 ranuras al rango 100: **+6 % de ataque, +9 % de vida y +4 de defensa**, algo así como dos beneficios de oficio (la Peletería da +4 % y +3 %; la Herrería, +3 de defensa) |
+| Precio de las esencias (`items.yaml`) | ✨ 2 (el mercader paga 1 🥉), 🔮 6 (paga 3 🥉); 💱 Vender todo no las vende | Desencantar y vender nunca paga más que vender la pieza, ni con el beneficio al 100 (`tests/test_oficios_equipo.py`, pieza por pieza) |
+| Puntaje de una pieza (`gear.score`) | ataque % + vida % + 2 × defensa | El que ya usaba la comparación ⬆️/⬇️; decide el aviso "⬆️ Tienes una pieza mejor" |
+| Artesano de cabeza, manos, piernas y pies (`items.yaml`, 208 piezas) | Niveles 3, 5 y 8: el botín de su nivel y un bono chico; del 10 al 100: 🟣 épica, cada bono del botín × 1,1 (redondeado) y +1 % de ataque en cabeza, piernas y pies (+2 % desde el 60) o +1 de defensa en las manos. Precio: botín × 1,11 (5 y 8) y × 1,15 (10 a 100) | La curva del pecho de artesano (~10 % más que el botín y un bono), en chico |
+| Sus recetas (`professions.yaml`, 208) | Los materiales del pecho de su tipo y nivel × su precio / el del pecho (~75 %), al menos 1 de cada uno, y siempre más valiosos que lo que paga el mercader por la pieza (también con la obra maestra); rangos 1, 25, 50 y 55 a 100 | Fabricar nunca fabrica monedas (D-113, D-116) |
+| Obra maestra de esas ranuras (`masterwork.extra`) | cabeza, piernas y pies +1 % de ataque; manos +1 de defensa | La mitad del bono del pecho: son piezas chicas |
+
+**Cómo se midió.** `tools/balance_report.py --scenarios=b,c --levels=10,50,100 --roles` (6 peleas por enemigo) con el contenido nuevo y con el de antes (`--content`). El escenario **b** (botín de su nivel) no cambia. El **c** (artesano donde lo hay + oficios al 100) ahora pone artesano en las 7 ranuras (mediana de vida al terminar, ataque / defensa / curación / soporte; antes → ahora):
+
+| Escenario c | Nivel 10 | Nivel 50 | Nivel 100 |
+|---|---|---|---|
+| Vida al terminar | 76/75/84/76 → **77/76/85/77** | 70/81/79/74 → **72/83/80/76** | 70/82/82/73 → **72/83/83/75** |
+| Rondas | 6,2/8,5/12,7/10,4 → **6,1/8,3/12,1/10,1** | 5,8/10,5/11,0/7,6 → **5,7/10,3/10,6/7,5** | 6,1/10,8/12,3/9,7 → **6,0/10,4/11,8/9,2** |
+
+El artesano de las cuatro ranuras suma **+1 a +2 puntos** de vida al terminar y mata algo más rápido; el orden de los roles no cambia y todas ganan el 100 %. Los encantamientos no entran en el informe (son por pieza y opcionales); su tope (+6 % de ataque, +9 % de vida y +4 de defensa con todo encantado al rango 100) es del tamaño de dos beneficios de oficio. Si se los quiere medir, agregarlos al escenario c.
+
+**Lo que queda por mirar:** si los encantadores encuentran equipo para desencantar (en la beta, contar cuántas piezas se desencantan y cuántas se venden); si la demanda de 💠 gemas y 🌸 flores de luna del artesano de las cuatro ranuras nuevas deja sin material a la Joyería y la Alquimia (subir `professions.rare_chance` o bajar las recetas); y si el aviso ⬆️ con su botón hace que nadie mire 🛡️ Equipo (eso está bien: es para eso).
+
+### Octubre de 2026: los oficios del campamento, fase 2 (D-115, D-116)
+
+**Por qué.** El dueño pidió muchos oficios que dependan unos de otros y mantengan el sistema (D-115), y beneficios que sean solo del campamento o del castillo (D-116). Entran los cuatro del lado del campamento de la fase 2 ([Red de oficios](../07-economia/red-de-oficios.md) §5; [Profesiones](../07-economia/profesiones.md) §0.4): 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción. Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `camp_professions`; beneficios en `content/professions.yaml`; agua en `content/biomes.yaml`; comidas en `content/items.yaml`). Los únicos números de antes que se movieron son los **costos de las 4 mejoras del nivel 7 y 8** (con el mismo valor en crudo). No se tocó `hero.xp_formula` (P-77).
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Zonas con agua (`biomes.yaml` → `water`) | — | pantano 1,0 · bosque 0,3 · pradera 0,3 | El pescado necesita agua: todo el pantano, y los ríos y lagunas de 3 de cada 10 zonas de bosque y de pradera. Con la semilla 12345, ~22 % de las zonas cerca del Claro |
+| Peso del pescado (`camp_professions.fish.richness`) | — | 0,5 | Se suma a los recursos de tierra sin quitar ninguno; en el pantano es ~1 de cada 4 unidades de una vuelta (la hierba y la fibra rinden ~25 % menos ahí). Experiencia de Pescador: 1 por unidad, como todo recolector |
+| Raciones del pescado (`items.yaml` → pescado.food) | — | 1 (la carne, 2) | Se junta más fácil que la carne (sale recolectando, sin pelear) |
+| Platos de la 🍲 Cocina (`items.yaml` → `food`) | — | ×1,5 lo crudo en el rango 1, ×1,75 en el 25, ×2 en el 50, ×2,25 en el 75, ×2,5 en el 100 (3, 3, 10, 18, 27 y 45 raciones) | Cocinar vale la energía: el rango 1 suma 1 ración por ⚡; el 100, ~13 por ⚡. Nunca se venden (son `kind: food`): no fabrican monedas |
+| 🧱 Sillar (receta `sillar`, `items.yaml`) | — | 3 piedras → 1 sillar, 1 ⚡, 6 de experiencia; precio 7 | Como el tablón: refinar no fabrica monedas (se vende a 3, lo que valen sus 3 piedras) |
+| Costos del nivel 7 y 8 (`camp_upgrades.yaml`: enfermería, biblioteca, torres de arqueros, foso) | solo crudo | parte en 🧱 sillar y 🟫 tablón, mismo valor en crudo (460, 530, 560 y 600) | Que las mejoras grandes necesiten a la Cantería y al Aserradero. Cuestan además la energía de refinar (60 a 125 ⚡ entre todos). Lo crudo ya aportado de más cuenta como refinado |
+| Beneficio del 🎣 Pescador (`pescador.perk.fish_food`) | — | +30 % de raciones del pescado crudo en la despensa, al rango 100 | Tabla de §0.4 de Profesiones |
+| Beneficio de la 🍲 Cocina (`cocina.perk.cook_food`) | — | +30 % de raciones de lo cocinado, al rango 100 | Tabla de §0.4 |
+| Beneficio de la 🗿 Cantería (`canteria.perk.stone_cost`) | — | −15 % de piedra y sillar en las obras, al rango 100 | Tabla de §0.4 (`camp_professions.stone_items`) |
+| Beneficio de la 🏗️ Construcción (`construccion.perk`) | — | −20 % de materiales en las mejoras y −50 % al reparar, al rango 100 | Tabla de §0.4. Las monedas de las obras no bajan |
+| Cómo suman los beneficios de campamento | — | rige **el mejor rango** entre los miembros de ahora (no se suman) | Simple y justo: un campamento grande no rinde más por tener diez cocineros. Decisión de Claude, provisional |
+| Experiencia de 🏗️ Construcción (`camp_professions.build_xp_per_unit`) | — | 1 por material crudo aportado; un refinado, 3 | Quien junta y aporta todo lo de un día (150 a 300 unidades según su nivel) llega al rango 100 en ~1 a 1,5 años |
+| Daño de las oleadas (`camp_professions.damage`) | — | −1 de 🛡️ Defensa si se defiende, −2 si se pierde; nunca más que lo construido; la Noche de prueba no daña | Que las defensas se gasten y haya trabajo para el Aserradero, la Cantería y la Construcción todas las semanas (red de oficios, regla 2: todo se gasta) |
+| Reparar (`camp_professions.repair_per_point`) | — | 2 🟫 tablones y 2 🧱 sillares por punto (12 de lo crudo y 4 ⚡ de refinar) | Más barato que construir la defensa de nuevo (la Empalizada, 40 de lo crudo por 1 punto); la Construcción al 100 lo deja en la mitad |
+
+**Cuenta rápida.**
+- **Despensa:** un campamento de 10 miembros come 10 raciones por día. Un pescador dedicado en el pantano junta ~1 pescado por ⚡ (≈40 raciones al día); cocinadas en 🥫 conservas valen el doble. La comida deja de ser el freno para quien se organiza, y la despensa sigue comiendo todos los días (el sumidero).
+- **Defensas:** con una oleada por semana, un campamento con defensas repara 1 o 2 puntos por semana: 4 a 8 refinados de cada uno (24 a 48 de lo crudo y 8 a 16 ⚡ de refinar), la mitad con un constructor de rango 100.
+
+**Lo que queda por mirar:** si el pescado en el bosque y la pradera baja demasiado la madera y la hierba de esas zonas (bajar `fish.richness` o `water`); si las comidas grandes llenan la despensa tanto que el 🍖 Ahumadero y el 🥬 Huerto dejan de importar; si el daño de una oleada defendida (−1) se siente como castigo (se puede dejar en 0); y si "el mejor rango" debería sumar algo por un segundo especialista cuando haya especializaciones.

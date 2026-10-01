@@ -72,6 +72,69 @@ provisiones:
   food: 1
   price: 15                  # [ES] cara a propósito: comida de emergencia del mercader (15 🥉 por ración; la carne se vende a 1)
 
+# Professions phase 2, camp side (D-115): fish, cooked rations and the refined stone.
+# [ES] Oficios, fase 2, lado del campamento (D-115): el 🐟 pescado (lo junta el 🎣 Pescador en las zonas con agua), las
+# raciones que hace la 🍲 Cocina y el 🧱 sillar de la Cantería (content/professions.yaml).
+# cooked: true = lo hizo la 🍲 Cocina: rinde más en la despensa con el beneficio de la Cocina del campamento (el pescado
+# crudo, con el del 🎣 Pescador). Lo cocinado es kind: food: el mercader y el trueque no lo compran (va a la despensa).
+# Lo usan: engine/service/game.py (_camp_feed, _recipe_view, _resources_view, obras y reparación de las defensas).
+# Si cambias esto, revisa: food mueve cuánto dura la despensa (balance.yaml pantry); cada plato tiene que valer más
+# raciones que lo crudo que lleva (tests/test_oficios_campamento.py); el sillar no debe dejar ganar monedas refinando.
+pescado:
+  name_key: item.pescado
+  emoji: "🐟"
+  kind: material             # [ES] como la carne: es comida (food), va a la despensa o a la 🍲 Cocina; 💱 Vender todo no la vende
+  food: 1                    # [ES] 1 ración cruda (la carne, 2); el 🎣 Pescador del campamento le suma hasta 30 %
+  price: 2
+racion_campamento:
+  name_key: item.racion_campamento
+  emoji: "🍱"
+  kind: food
+  cooked: true
+  food: 3                    # [ES] carne (2) + hierba → 3
+  price: 3
+pescado_asado:
+  name_key: item.pescado_asado
+  emoji: "🍢"
+  kind: food
+  cooked: true
+  food: 3                    # [ES] 2 pescados (2) + leña → 3
+  price: 3
+guiso_cazador:
+  name_key: item.guiso_cazador
+  emoji: "🥘"
+  kind: food
+  cooked: true
+  food: 10                   # [ES] 2 carnes y 2 pescados (6) + hierba → 10 (rango 25)
+  price: 10
+conserva:
+  name_key: item.conserva
+  emoji: "🥫"
+  kind: food
+  cooked: true
+  food: 18                   # [ES] 3 carnes y 3 pescados (9) + tarro y salmuera → 18 (rango 50)
+  price: 18
+festin:
+  name_key: item.festin
+  emoji: "🍗"
+  kind: food
+  cooked: true
+  food: 27                   # [ES] 4 carnes y 4 pescados (12) + hierbas y flor de luna → 27 (rango 75)
+  price: 27
+banquete:
+  name_key: item.banquete
+  emoji: "🍽️"
+  kind: food
+  cooked: true
+  food: 45                   # [ES] 6 carnes y 6 pescados (18) + extracto y flores de luna → 45 (rango 100)
+  price: 45
+sillar:
+  name_key: item.sillar
+  emoji: "🧱"
+  kind: material
+  keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio (se vende de a uno)
+  price: 7                   # [ES] 3 piedras (2 c/u) + el trabajo, como el tablón
+
 # Camp furniture (D-116): only 🪑 Carpentry makes it (content/professions.yaml). A member places it in their camp
 # (🔨 Mejoras → 🔨 Obras → 🪑 Colocar); one of each piece per camp, for ever.
 # [ES] Muebles del campamento (D-116): solo la 🪑 Carpintería los hace. Un miembro lo coloca en su campamento y queda para
@@ -1744,7 +1807,8 @@ artesano_joya_3:
 #   el botín llega como mucho a 🔵 raro (D-113: los monstruos sueltan equipo de menos calidad).
 # - Artesano: una pieza 🟣 épica por tier en arma, pecho y joya (las ranuras que hacen los oficios), con ~10 % más que el
 #   botín de su nivel y un bono (vida en las armas, ataque en el pecho, defensa en la joya): lo mejor de cada nivel lo
-#   fabrican los jugadores (D-113). Recetas en content/professions.yaml, rangos 55 a 100.
+#   fabrican los jugadores (D-113). Recetas en content/professions.yaml, rangos 55 a 100. Desde la fase 2 de la red de oficios
+#   (D-115) también hay artesano de cabeza, manos, piernas y pies: sección al final del archivo.
 # - Precio: botín 90 + 40 por tier en arma, pecho y joya (68 + 30 en las demás); artesano, 15 % más. Al mercader se vende a
 #   la mitad (shop.sell_ratio): el de artesano siempre por menos que sus materiales (tests/test_balance_d110.py).
 # Si cambias esto, revisa: tests/test_balance_d110.py y tests/test_gear.py; los números mueven el balance de todas las
@@ -5590,3 +5654,249 @@ artesano_joya_13:
   source: crafted
   stats: {hp: 0.23, attack: 0.18, armor: 0.03}
   price: 564
+
+# --- D-115, phase 2 (gear side): ✨ Enchanting essences ---
+# [ES] Fase 2 de la red de oficios (D-115), lado del equipo: las esencias del ✨ Encantamiento. Salen de DESENCANTAR una pieza
+# de equipo (la pieza se destruye: el gran sumidero de equipo de red-de-oficios.md §4) y se gastan al ENCANTAR una pieza.
+# Cuántas da cada pieza y cuántas pide cada encantamiento: balance.yaml enchanting. keep: true = 💱 Vender todo no las vende.
+# Precio bajo a propósito: desencantar nunca fabrica monedas (lo que dan las esencias en el mercader es siempre menos que lo
+# que paga por la pieza; tests/test_oficios_equipo.py lo comprueba para cada pieza, con el beneficio del rango 100).
+# Lo usan: engine/service/game.py (sección "enchanting": _disenchant, _enchant, _enchant_view), 📦 Recursos.
+# Si cambias esto, revisa: IDs estables (las guardan las mochilas); subir el precio puede abrir la trampa de monedas.
+esencia:
+  name_key: item.esencia
+  emoji: "✨"
+  kind: material
+  keep: true                 # [ES] 💱 Vender todo no la vende: es trabajo del ✨ Encantamiento
+  price: 2                   # [ES] el mercader paga 1 🥉 (la mitad, nunca menos de 1)
+esencia_mayor:
+  name_key: item.esencia_mayor
+  emoji: "🔮"
+  kind: material
+  keep: true                 # [ES] solo sale de piezas 🟣 épicas (las de artesano, las obras maestras, las del Guardián)
+  price: 6                   # [ES] el mercader paga 3 🥉
+
+# --- D-110 / D-113 / D-115: crafted head, hands, legs and feet ---
+# Crafted pieces for the slots that only had loot: one per armor type and per gear tier (level 3, 5, 8, then every 10 up to
+# 100), always better than loot of their level. Generated once from the loot pieces of the same slot, type and level.
+# [ES] Equipo de artesano de cabeza, manos, piernas y pies (antes solo había botín en esas ranuras; la pasada de balance D-110 y
+# D-113 dejó lo mejor de cada nivel en manos de los jugadores solo en arma, pecho y joya). Una pieza por tipo de armadura y por
+# nivel de pieza: 3, 5, 8 (rangos 1, 25 y 50) y del 10 al 100 (rangos 55 a 100), con la curva del pecho de artesano:
+#   - nivel 3, 5 y 8: lo mismo que el botín de su nivel y un bono chico;
+#   - nivel 10 a 100: 🟣 épica, cada bono del botín de su nivel × 1,1 (redondeado) y un bono que el botín no tiene;
+#   - el bono: +1 % de ataque en cabeza, piernas y pies (+2 % desde el nivel 60); +1 de defensa en las manos;
+#   - precio: el del botín (nivel 3), × 1,11 (5 y 8) y × 1,15 (10 a 100), como el pecho de artesano.
+# Telas → 🪡 Sastrería; cuero y malla → 🦺 Peletería; placas → 🔨 Herrería (recetas al final de content/professions.yaml).
+# Nombres en content/locales/es_oficios_equipo.yaml. Una línea por pieza para que el archivo no crezca de más. Sus ✒️ obras
+# maestras las arma el motor al cargar (engine/professions/rules.py masterwork_items; el bono de más por ranura está en
+# balance.yaml masterwork.extra).
+# Si cambias esto, revisa: tests/test_oficios_equipo.py (cada pieza tiene receta y supera al botín de su nivel),
+# tests/test_balance_d110.py y tests/test_masterwork.py; los números mueven el balance de todas las clases (C-21).
+artesano_cabeza_tela_1: {name_key: item.artesano_cabeza_tela_1, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.04, armor: 0.01, attack: 0.01}, price: 15}
+artesano_cabeza_tela_2: {name_key: item.artesano_cabeza_tela_2, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.06, armor: 0.01, attack: 0.01}, price: 38}
+artesano_cabeza_tela_3: {name_key: item.artesano_cabeza_tela_3, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 75}
+artesano_cabeza_tela_4: {name_key: item.artesano_cabeza_tela_4, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 113}
+artesano_cabeza_tela_5: {name_key: item.artesano_cabeza_tela_5, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 147}
+artesano_cabeza_tela_6: {name_key: item.artesano_cabeza_tela_6, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 182}
+artesano_cabeza_tela_7: {name_key: item.artesano_cabeza_tela_7, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 216}
+artesano_cabeza_tela_8: {name_key: item.artesano_cabeza_tela_8, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.01}, price: 251}
+artesano_cabeza_tela_9: {name_key: item.artesano_cabeza_tela_9, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 285}
+artesano_cabeza_tela_10: {name_key: item.artesano_cabeza_tela_10, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 320}
+artesano_cabeza_tela_11: {name_key: item.artesano_cabeza_tela_11, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 354}
+artesano_cabeza_tela_12: {name_key: item.artesano_cabeza_tela_12, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 389}
+artesano_cabeza_tela_13: {name_key: item.artesano_cabeza_tela_13, emoji: "⛑️", kind: gear, slot: cabeza, type: tela, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 423}
+artesano_cabeza_cuero_1: {name_key: item.artesano_cabeza_cuero_1, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.04, armor: 0.01, attack: 0.01}, price: 15}
+artesano_cabeza_cuero_2: {name_key: item.artesano_cabeza_cuero_2, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.06, armor: 0.01, attack: 0.01}, price: 38}
+artesano_cabeza_cuero_3: {name_key: item.artesano_cabeza_cuero_3, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 75}
+artesano_cabeza_cuero_4: {name_key: item.artesano_cabeza_cuero_4, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 113}
+artesano_cabeza_cuero_5: {name_key: item.artesano_cabeza_cuero_5, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 147}
+artesano_cabeza_cuero_6: {name_key: item.artesano_cabeza_cuero_6, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 182}
+artesano_cabeza_cuero_7: {name_key: item.artesano_cabeza_cuero_7, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 216}
+artesano_cabeza_cuero_8: {name_key: item.artesano_cabeza_cuero_8, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.01}, price: 251}
+artesano_cabeza_cuero_9: {name_key: item.artesano_cabeza_cuero_9, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 285}
+artesano_cabeza_cuero_10: {name_key: item.artesano_cabeza_cuero_10, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 320}
+artesano_cabeza_cuero_11: {name_key: item.artesano_cabeza_cuero_11, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 354}
+artesano_cabeza_cuero_12: {name_key: item.artesano_cabeza_cuero_12, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 389}
+artesano_cabeza_cuero_13: {name_key: item.artesano_cabeza_cuero_13, emoji: "⛑️", kind: gear, slot: cabeza, type: cuero, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 423}
+artesano_cabeza_malla_1: {name_key: item.artesano_cabeza_malla_1, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.04, armor: 0.01, attack: 0.01}, price: 15}
+artesano_cabeza_malla_2: {name_key: item.artesano_cabeza_malla_2, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.06, armor: 0.01, attack: 0.01}, price: 38}
+artesano_cabeza_malla_3: {name_key: item.artesano_cabeza_malla_3, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 75}
+artesano_cabeza_malla_4: {name_key: item.artesano_cabeza_malla_4, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 113}
+artesano_cabeza_malla_5: {name_key: item.artesano_cabeza_malla_5, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 147}
+artesano_cabeza_malla_6: {name_key: item.artesano_cabeza_malla_6, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 182}
+artesano_cabeza_malla_7: {name_key: item.artesano_cabeza_malla_7, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 216}
+artesano_cabeza_malla_8: {name_key: item.artesano_cabeza_malla_8, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.01}, price: 251}
+artesano_cabeza_malla_9: {name_key: item.artesano_cabeza_malla_9, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 285}
+artesano_cabeza_malla_10: {name_key: item.artesano_cabeza_malla_10, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 320}
+artesano_cabeza_malla_11: {name_key: item.artesano_cabeza_malla_11, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 354}
+artesano_cabeza_malla_12: {name_key: item.artesano_cabeza_malla_12, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 389}
+artesano_cabeza_malla_13: {name_key: item.artesano_cabeza_malla_13, emoji: "⛑️", kind: gear, slot: cabeza, type: malla, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 423}
+artesano_cabeza_placas_1: {name_key: item.artesano_cabeza_placas_1, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.04, armor: 0.01, attack: 0.01}, price: 15}
+artesano_cabeza_placas_2: {name_key: item.artesano_cabeza_placas_2, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.06, armor: 0.01, attack: 0.01}, price: 38}
+artesano_cabeza_placas_3: {name_key: item.artesano_cabeza_placas_3, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 75}
+artesano_cabeza_placas_4: {name_key: item.artesano_cabeza_placas_4, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 113}
+artesano_cabeza_placas_5: {name_key: item.artesano_cabeza_placas_5, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 147}
+artesano_cabeza_placas_6: {name_key: item.artesano_cabeza_placas_6, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 182}
+artesano_cabeza_placas_7: {name_key: item.artesano_cabeza_placas_7, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 216}
+artesano_cabeza_placas_8: {name_key: item.artesano_cabeza_placas_8, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.01}, price: 251}
+artesano_cabeza_placas_9: {name_key: item.artesano_cabeza_placas_9, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 285}
+artesano_cabeza_placas_10: {name_key: item.artesano_cabeza_placas_10, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 320}
+artesano_cabeza_placas_11: {name_key: item.artesano_cabeza_placas_11, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 354}
+artesano_cabeza_placas_12: {name_key: item.artesano_cabeza_placas_12, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 389}
+artesano_cabeza_placas_13: {name_key: item.artesano_cabeza_placas_13, emoji: "⛑️", kind: gear, slot: cabeza, type: placas, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 423}
+artesano_manos_tela_1: {name_key: item.artesano_manos_tela_1, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {attack: 0.02, hp: 0.02, armor: 0.01}, price: 15}
+artesano_manos_tela_2: {name_key: item.artesano_manos_tela_2, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {attack: 0.03, hp: 0.03, armor: 0.01}, price: 38}
+artesano_manos_tela_3: {name_key: item.artesano_manos_tela_3, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {attack: 0.04, hp: 0.04, armor: 0.01}, price: 75}
+artesano_manos_tela_4: {name_key: item.artesano_manos_tela_4, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {attack: 0.06, hp: 0.04, armor: 0.01}, price: 113}
+artesano_manos_tela_5: {name_key: item.artesano_manos_tela_5, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {attack: 0.06, hp: 0.06, armor: 0.01}, price: 147}
+artesano_manos_tela_6: {name_key: item.artesano_manos_tela_6, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {attack: 0.07, hp: 0.06, armor: 0.01}, price: 182}
+artesano_manos_tela_7: {name_key: item.artesano_manos_tela_7, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {attack: 0.07, hp: 0.07, armor: 0.01}, price: 216}
+artesano_manos_tela_8: {name_key: item.artesano_manos_tela_8, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {attack: 0.08, hp: 0.07, armor: 0.01}, price: 251}
+artesano_manos_tela_9: {name_key: item.artesano_manos_tela_9, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {attack: 0.08, hp: 0.08, armor: 0.01}, price: 285}
+artesano_manos_tela_10: {name_key: item.artesano_manos_tela_10, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {attack: 0.09, hp: 0.09, armor: 0.01}, price: 320}
+artesano_manos_tela_11: {name_key: item.artesano_manos_tela_11, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {attack: 0.1, hp: 0.09, armor: 0.01}, price: 354}
+artesano_manos_tela_12: {name_key: item.artesano_manos_tela_12, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {attack: 0.11, hp: 0.09, armor: 0.01}, price: 389}
+artesano_manos_tela_13: {name_key: item.artesano_manos_tela_13, emoji: "🧤", kind: gear, slot: manos, type: tela, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {attack: 0.11, hp: 0.1, armor: 0.01}, price: 423}
+artesano_manos_cuero_1: {name_key: item.artesano_manos_cuero_1, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {attack: 0.02, hp: 0.02, armor: 0.01}, price: 15}
+artesano_manos_cuero_2: {name_key: item.artesano_manos_cuero_2, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {attack: 0.03, hp: 0.03, armor: 0.01}, price: 38}
+artesano_manos_cuero_3: {name_key: item.artesano_manos_cuero_3, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {attack: 0.04, hp: 0.04, armor: 0.01}, price: 75}
+artesano_manos_cuero_4: {name_key: item.artesano_manos_cuero_4, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {attack: 0.06, hp: 0.04, armor: 0.01}, price: 113}
+artesano_manos_cuero_5: {name_key: item.artesano_manos_cuero_5, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {attack: 0.06, hp: 0.06, armor: 0.01}, price: 147}
+artesano_manos_cuero_6: {name_key: item.artesano_manos_cuero_6, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {attack: 0.07, hp: 0.06, armor: 0.01}, price: 182}
+artesano_manos_cuero_7: {name_key: item.artesano_manos_cuero_7, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {attack: 0.07, hp: 0.07, armor: 0.01}, price: 216}
+artesano_manos_cuero_8: {name_key: item.artesano_manos_cuero_8, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {attack: 0.08, hp: 0.07, armor: 0.01}, price: 251}
+artesano_manos_cuero_9: {name_key: item.artesano_manos_cuero_9, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {attack: 0.08, hp: 0.08, armor: 0.01}, price: 285}
+artesano_manos_cuero_10: {name_key: item.artesano_manos_cuero_10, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {attack: 0.09, hp: 0.09, armor: 0.01}, price: 320}
+artesano_manos_cuero_11: {name_key: item.artesano_manos_cuero_11, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {attack: 0.1, hp: 0.09, armor: 0.01}, price: 354}
+artesano_manos_cuero_12: {name_key: item.artesano_manos_cuero_12, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {attack: 0.11, hp: 0.09, armor: 0.01}, price: 389}
+artesano_manos_cuero_13: {name_key: item.artesano_manos_cuero_13, emoji: "🧤", kind: gear, slot: manos, type: cuero, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {attack: 0.11, hp: 0.1, armor: 0.01}, price: 423}
+artesano_manos_malla_1: {name_key: item.artesano_manos_malla_1, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {attack: 0.02, hp: 0.02, armor: 0.01}, price: 15}
+artesano_manos_malla_2: {name_key: item.artesano_manos_malla_2, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {attack: 0.03, hp: 0.03, armor: 0.01}, price: 38}
+artesano_manos_malla_3: {name_key: item.artesano_manos_malla_3, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {attack: 0.04, hp: 0.04, armor: 0.01}, price: 75}
+artesano_manos_malla_4: {name_key: item.artesano_manos_malla_4, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {attack: 0.06, hp: 0.04, armor: 0.01}, price: 113}
+artesano_manos_malla_5: {name_key: item.artesano_manos_malla_5, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {attack: 0.06, hp: 0.06, armor: 0.01}, price: 147}
+artesano_manos_malla_6: {name_key: item.artesano_manos_malla_6, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {attack: 0.07, hp: 0.06, armor: 0.01}, price: 182}
+artesano_manos_malla_7: {name_key: item.artesano_manos_malla_7, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {attack: 0.07, hp: 0.07, armor: 0.01}, price: 216}
+artesano_manos_malla_8: {name_key: item.artesano_manos_malla_8, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {attack: 0.08, hp: 0.07, armor: 0.01}, price: 251}
+artesano_manos_malla_9: {name_key: item.artesano_manos_malla_9, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {attack: 0.08, hp: 0.08, armor: 0.01}, price: 285}
+artesano_manos_malla_10: {name_key: item.artesano_manos_malla_10, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {attack: 0.09, hp: 0.09, armor: 0.01}, price: 320}
+artesano_manos_malla_11: {name_key: item.artesano_manos_malla_11, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {attack: 0.1, hp: 0.09, armor: 0.01}, price: 354}
+artesano_manos_malla_12: {name_key: item.artesano_manos_malla_12, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {attack: 0.11, hp: 0.09, armor: 0.01}, price: 389}
+artesano_manos_malla_13: {name_key: item.artesano_manos_malla_13, emoji: "🧤", kind: gear, slot: manos, type: malla, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {attack: 0.11, hp: 0.1, armor: 0.01}, price: 423}
+artesano_manos_placas_1: {name_key: item.artesano_manos_placas_1, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {attack: 0.02, hp: 0.02, armor: 0.01}, price: 15}
+artesano_manos_placas_2: {name_key: item.artesano_manos_placas_2, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {attack: 0.03, hp: 0.03, armor: 0.01}, price: 38}
+artesano_manos_placas_3: {name_key: item.artesano_manos_placas_3, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {attack: 0.04, hp: 0.04, armor: 0.01}, price: 75}
+artesano_manos_placas_4: {name_key: item.artesano_manos_placas_4, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {attack: 0.06, hp: 0.04, armor: 0.01}, price: 113}
+artesano_manos_placas_5: {name_key: item.artesano_manos_placas_5, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {attack: 0.06, hp: 0.06, armor: 0.01}, price: 147}
+artesano_manos_placas_6: {name_key: item.artesano_manos_placas_6, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {attack: 0.07, hp: 0.06, armor: 0.01}, price: 182}
+artesano_manos_placas_7: {name_key: item.artesano_manos_placas_7, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {attack: 0.07, hp: 0.07, armor: 0.01}, price: 216}
+artesano_manos_placas_8: {name_key: item.artesano_manos_placas_8, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {attack: 0.08, hp: 0.07, armor: 0.01}, price: 251}
+artesano_manos_placas_9: {name_key: item.artesano_manos_placas_9, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {attack: 0.08, hp: 0.08, armor: 0.01}, price: 285}
+artesano_manos_placas_10: {name_key: item.artesano_manos_placas_10, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {attack: 0.09, hp: 0.09, armor: 0.01}, price: 320}
+artesano_manos_placas_11: {name_key: item.artesano_manos_placas_11, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {attack: 0.1, hp: 0.09, armor: 0.01}, price: 354}
+artesano_manos_placas_12: {name_key: item.artesano_manos_placas_12, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {attack: 0.11, hp: 0.09, armor: 0.01}, price: 389}
+artesano_manos_placas_13: {name_key: item.artesano_manos_placas_13, emoji: "🧤", kind: gear, slot: manos, type: placas, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {attack: 0.11, hp: 0.1, armor: 0.01}, price: 423}
+artesano_piernas_tela_1: {name_key: item.artesano_piernas_tela_1, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 15}
+artesano_piernas_tela_2: {name_key: item.artesano_piernas_tela_2, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 38}
+artesano_piernas_tela_3: {name_key: item.artesano_piernas_tela_3, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 75}
+artesano_piernas_tela_4: {name_key: item.artesano_piernas_tela_4, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 113}
+artesano_piernas_tela_5: {name_key: item.artesano_piernas_tela_5, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.14, armor: 0.02, attack: 0.01}, price: 147}
+artesano_piernas_tela_6: {name_key: item.artesano_piernas_tela_6, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.15, armor: 0.02, attack: 0.01}, price: 182}
+artesano_piernas_tela_7: {name_key: item.artesano_piernas_tela_7, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.17, armor: 0.02, attack: 0.01}, price: 216}
+artesano_piernas_tela_8: {name_key: item.artesano_piernas_tela_8, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.01}, price: 251}
+artesano_piernas_tela_9: {name_key: item.artesano_piernas_tela_9, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 285}
+artesano_piernas_tela_10: {name_key: item.artesano_piernas_tela_10, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.2, armor: 0.03, attack: 0.02}, price: 320}
+artesano_piernas_tela_11: {name_key: item.artesano_piernas_tela_11, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.21, armor: 0.03, attack: 0.02}, price: 354}
+artesano_piernas_tela_12: {name_key: item.artesano_piernas_tela_12, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.22, armor: 0.03, attack: 0.02}, price: 389}
+artesano_piernas_tela_13: {name_key: item.artesano_piernas_tela_13, emoji: "👖", kind: gear, slot: piernas, type: tela, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.23, armor: 0.03, attack: 0.02}, price: 423}
+artesano_piernas_cuero_1: {name_key: item.artesano_piernas_cuero_1, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 15}
+artesano_piernas_cuero_2: {name_key: item.artesano_piernas_cuero_2, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 38}
+artesano_piernas_cuero_3: {name_key: item.artesano_piernas_cuero_3, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 75}
+artesano_piernas_cuero_4: {name_key: item.artesano_piernas_cuero_4, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 113}
+artesano_piernas_cuero_5: {name_key: item.artesano_piernas_cuero_5, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.14, armor: 0.02, attack: 0.01}, price: 147}
+artesano_piernas_cuero_6: {name_key: item.artesano_piernas_cuero_6, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.15, armor: 0.02, attack: 0.01}, price: 182}
+artesano_piernas_cuero_7: {name_key: item.artesano_piernas_cuero_7, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.17, armor: 0.02, attack: 0.01}, price: 216}
+artesano_piernas_cuero_8: {name_key: item.artesano_piernas_cuero_8, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.01}, price: 251}
+artesano_piernas_cuero_9: {name_key: item.artesano_piernas_cuero_9, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 285}
+artesano_piernas_cuero_10: {name_key: item.artesano_piernas_cuero_10, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.2, armor: 0.03, attack: 0.02}, price: 320}
+artesano_piernas_cuero_11: {name_key: item.artesano_piernas_cuero_11, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.21, armor: 0.03, attack: 0.02}, price: 354}
+artesano_piernas_cuero_12: {name_key: item.artesano_piernas_cuero_12, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.22, armor: 0.03, attack: 0.02}, price: 389}
+artesano_piernas_cuero_13: {name_key: item.artesano_piernas_cuero_13, emoji: "👖", kind: gear, slot: piernas, type: cuero, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.23, armor: 0.03, attack: 0.02}, price: 423}
+artesano_piernas_malla_1: {name_key: item.artesano_piernas_malla_1, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 15}
+artesano_piernas_malla_2: {name_key: item.artesano_piernas_malla_2, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 38}
+artesano_piernas_malla_3: {name_key: item.artesano_piernas_malla_3, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 75}
+artesano_piernas_malla_4: {name_key: item.artesano_piernas_malla_4, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 113}
+artesano_piernas_malla_5: {name_key: item.artesano_piernas_malla_5, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.14, armor: 0.02, attack: 0.01}, price: 147}
+artesano_piernas_malla_6: {name_key: item.artesano_piernas_malla_6, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.15, armor: 0.02, attack: 0.01}, price: 182}
+artesano_piernas_malla_7: {name_key: item.artesano_piernas_malla_7, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.17, armor: 0.02, attack: 0.01}, price: 216}
+artesano_piernas_malla_8: {name_key: item.artesano_piernas_malla_8, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.01}, price: 251}
+artesano_piernas_malla_9: {name_key: item.artesano_piernas_malla_9, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 285}
+artesano_piernas_malla_10: {name_key: item.artesano_piernas_malla_10, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.2, armor: 0.03, attack: 0.02}, price: 320}
+artesano_piernas_malla_11: {name_key: item.artesano_piernas_malla_11, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.21, armor: 0.03, attack: 0.02}, price: 354}
+artesano_piernas_malla_12: {name_key: item.artesano_piernas_malla_12, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.22, armor: 0.03, attack: 0.02}, price: 389}
+artesano_piernas_malla_13: {name_key: item.artesano_piernas_malla_13, emoji: "👖", kind: gear, slot: piernas, type: malla, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.23, armor: 0.03, attack: 0.02}, price: 423}
+artesano_piernas_placas_1: {name_key: item.artesano_piernas_placas_1, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 15}
+artesano_piernas_placas_2: {name_key: item.artesano_piernas_placas_2, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.08, armor: 0.02, attack: 0.01}, price: 38}
+artesano_piernas_placas_3: {name_key: item.artesano_piernas_placas_3, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 75}
+artesano_piernas_placas_4: {name_key: item.artesano_piernas_placas_4, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.13, armor: 0.02, attack: 0.01}, price: 113}
+artesano_piernas_placas_5: {name_key: item.artesano_piernas_placas_5, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.14, armor: 0.02, attack: 0.01}, price: 147}
+artesano_piernas_placas_6: {name_key: item.artesano_piernas_placas_6, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.15, armor: 0.02, attack: 0.01}, price: 182}
+artesano_piernas_placas_7: {name_key: item.artesano_piernas_placas_7, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.17, armor: 0.02, attack: 0.01}, price: 216}
+artesano_piernas_placas_8: {name_key: item.artesano_piernas_placas_8, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.01}, price: 251}
+artesano_piernas_placas_9: {name_key: item.artesano_piernas_placas_9, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.19, armor: 0.03, attack: 0.02}, price: 285}
+artesano_piernas_placas_10: {name_key: item.artesano_piernas_placas_10, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.2, armor: 0.03, attack: 0.02}, price: 320}
+artesano_piernas_placas_11: {name_key: item.artesano_piernas_placas_11, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.21, armor: 0.03, attack: 0.02}, price: 354}
+artesano_piernas_placas_12: {name_key: item.artesano_piernas_placas_12, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.22, armor: 0.03, attack: 0.02}, price: 389}
+artesano_piernas_placas_13: {name_key: item.artesano_piernas_placas_13, emoji: "👖", kind: gear, slot: piernas, type: placas, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.23, armor: 0.03, attack: 0.02}, price: 423}
+artesano_pies_tela_1: {name_key: item.artesano_pies_tela_1, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.03, armor: 0.01, attack: 0.01}, price: 15}
+artesano_pies_tela_2: {name_key: item.artesano_pies_tela_2, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 38}
+artesano_pies_tela_3: {name_key: item.artesano_pies_tela_3, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.07, armor: 0.02, attack: 0.01}, price: 75}
+artesano_pies_tela_4: {name_key: item.artesano_pies_tela_4, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.09, armor: 0.02, attack: 0.01}, price: 113}
+artesano_pies_tela_5: {name_key: item.artesano_pies_tela_5, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 147}
+artesano_pies_tela_6: {name_key: item.artesano_pies_tela_6, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 182}
+artesano_pies_tela_7: {name_key: item.artesano_pies_tela_7, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 216}
+artesano_pies_tela_8: {name_key: item.artesano_pies_tela_8, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.12, armor: 0.03, attack: 0.01}, price: 251}
+artesano_pies_tela_9: {name_key: item.artesano_pies_tela_9, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.02}, price: 285}
+artesano_pies_tela_10: {name_key: item.artesano_pies_tela_10, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 320}
+artesano_pies_tela_11: {name_key: item.artesano_pies_tela_11, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 354}
+artesano_pies_tela_12: {name_key: item.artesano_pies_tela_12, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 389}
+artesano_pies_tela_13: {name_key: item.artesano_pies_tela_13, emoji: "🥾", kind: gear, slot: pies, type: tela, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 423}
+artesano_pies_cuero_1: {name_key: item.artesano_pies_cuero_1, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.03, armor: 0.01, attack: 0.01}, price: 15}
+artesano_pies_cuero_2: {name_key: item.artesano_pies_cuero_2, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 38}
+artesano_pies_cuero_3: {name_key: item.artesano_pies_cuero_3, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.07, armor: 0.02, attack: 0.01}, price: 75}
+artesano_pies_cuero_4: {name_key: item.artesano_pies_cuero_4, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.09, armor: 0.02, attack: 0.01}, price: 113}
+artesano_pies_cuero_5: {name_key: item.artesano_pies_cuero_5, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 147}
+artesano_pies_cuero_6: {name_key: item.artesano_pies_cuero_6, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 182}
+artesano_pies_cuero_7: {name_key: item.artesano_pies_cuero_7, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 216}
+artesano_pies_cuero_8: {name_key: item.artesano_pies_cuero_8, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.12, armor: 0.03, attack: 0.01}, price: 251}
+artesano_pies_cuero_9: {name_key: item.artesano_pies_cuero_9, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.02}, price: 285}
+artesano_pies_cuero_10: {name_key: item.artesano_pies_cuero_10, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 320}
+artesano_pies_cuero_11: {name_key: item.artesano_pies_cuero_11, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 354}
+artesano_pies_cuero_12: {name_key: item.artesano_pies_cuero_12, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 389}
+artesano_pies_cuero_13: {name_key: item.artesano_pies_cuero_13, emoji: "🥾", kind: gear, slot: pies, type: cuero, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 423}
+artesano_pies_malla_1: {name_key: item.artesano_pies_malla_1, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.03, armor: 0.01, attack: 0.01}, price: 15}
+artesano_pies_malla_2: {name_key: item.artesano_pies_malla_2, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 38}
+artesano_pies_malla_3: {name_key: item.artesano_pies_malla_3, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.07, armor: 0.02, attack: 0.01}, price: 75}
+artesano_pies_malla_4: {name_key: item.artesano_pies_malla_4, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.09, armor: 0.02, attack: 0.01}, price: 113}
+artesano_pies_malla_5: {name_key: item.artesano_pies_malla_5, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 147}
+artesano_pies_malla_6: {name_key: item.artesano_pies_malla_6, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 182}
+artesano_pies_malla_7: {name_key: item.artesano_pies_malla_7, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 216}
+artesano_pies_malla_8: {name_key: item.artesano_pies_malla_8, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.12, armor: 0.03, attack: 0.01}, price: 251}
+artesano_pies_malla_9: {name_key: item.artesano_pies_malla_9, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.02}, price: 285}
+artesano_pies_malla_10: {name_key: item.artesano_pies_malla_10, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 320}
+artesano_pies_malla_11: {name_key: item.artesano_pies_malla_11, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 354}
+artesano_pies_malla_12: {name_key: item.artesano_pies_malla_12, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 389}
+artesano_pies_malla_13: {name_key: item.artesano_pies_malla_13, emoji: "🥾", kind: gear, slot: pies, type: malla, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 423}
+artesano_pies_placas_1: {name_key: item.artesano_pies_placas_1, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 2, rarity: poco_comun, req_level: 3, source: crafted, stats: {hp: 0.03, armor: 0.01, attack: 0.01}, price: 15}
+artesano_pies_placas_2: {name_key: item.artesano_pies_placas_2, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 3, rarity: raro, req_level: 5, source: crafted, stats: {hp: 0.05, armor: 0.01, attack: 0.01}, price: 38}
+artesano_pies_placas_3: {name_key: item.artesano_pies_placas_3, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 4, rarity: epico, req_level: 8, source: crafted, stats: {hp: 0.07, armor: 0.02, attack: 0.01}, price: 75}
+artesano_pies_placas_4: {name_key: item.artesano_pies_placas_4, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 5, rarity: epico, req_level: 10, source: crafted, stats: {hp: 0.09, armor: 0.02, attack: 0.01}, price: 113}
+artesano_pies_placas_5: {name_key: item.artesano_pies_placas_5, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 6, rarity: epico, req_level: 20, source: crafted, stats: {hp: 0.1, armor: 0.02, attack: 0.01}, price: 147}
+artesano_pies_placas_6: {name_key: item.artesano_pies_placas_6, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 7, rarity: epico, req_level: 30, source: crafted, stats: {hp: 0.11, armor: 0.02, attack: 0.01}, price: 182}
+artesano_pies_placas_7: {name_key: item.artesano_pies_placas_7, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 8, rarity: epico, req_level: 40, source: crafted, stats: {hp: 0.12, armor: 0.02, attack: 0.01}, price: 216}
+artesano_pies_placas_8: {name_key: item.artesano_pies_placas_8, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 9, rarity: epico, req_level: 50, source: crafted, stats: {hp: 0.12, armor: 0.03, attack: 0.01}, price: 251}
+artesano_pies_placas_9: {name_key: item.artesano_pies_placas_9, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 10, rarity: epico, req_level: 60, source: crafted, stats: {hp: 0.13, armor: 0.03, attack: 0.02}, price: 285}
+artesano_pies_placas_10: {name_key: item.artesano_pies_placas_10, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 11, rarity: epico, req_level: 70, source: crafted, stats: {hp: 0.14, armor: 0.03, attack: 0.02}, price: 320}
+artesano_pies_placas_11: {name_key: item.artesano_pies_placas_11, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 12, rarity: epico, req_level: 80, source: crafted, stats: {hp: 0.15, armor: 0.03, attack: 0.02}, price: 354}
+artesano_pies_placas_12: {name_key: item.artesano_pies_placas_12, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 13, rarity: epico, req_level: 90, source: crafted, stats: {hp: 0.17, armor: 0.03, attack: 0.02}, price: 389}
+artesano_pies_placas_13: {name_key: item.artesano_pies_placas_13, emoji: "🥾", kind: gear, slot: pies, type: placas, tier: 14, rarity: epico, req_level: 100, source: crafted, stats: {hp: 0.18, armor: 0.03, attack: 0.02}, price: 423}

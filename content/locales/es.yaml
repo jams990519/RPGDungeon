@@ -1401,7 +1401,7 @@ resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedid
   use_default: "se vende al mercader del Claro"
   use:
     madera: "fundar y agrandar campamentos, armar cofres; el 🪚 Aserradero la vuelve tablón"
-    piedra: "fundar y agrandar campamentos"
+    piedra: "fundar y agrandar campamentos; la 🗿 Cantería la vuelve sillar"
     fibra: "coser bolsas, agrandar campamentos; la 🧶 Tejeduría la vuelve tela"
     pieza_metal: "coser bolsas y armar cofres; la 🔥 Fundición la vuelve lingote"
     arcilla: "frascos de la ⚗️ Alquimia (pociones); mejoras del campamento"
@@ -2268,7 +2268,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
     gran_maestro: "Gran Maestro"
   stations_claro: "🏭 Aquí, en el Claro, están todas las estaciones básicas."
   stations_camp: "🏭 Estaciones de tu campamento: {items}. Al refinar aquí: +{pct} % de sacar una unidad más."
-  stations_none: "🏭 Para refinar y fabricar: el Claro, o el centro de tu campamento con 🧵 Taller o 🔨 Herrería."
+  stations_none: "🏭 Para refinar y fabricar: el Claro, o el centro de tu campamento con 🧵 Taller, 🔨 Herrería o 🔥 Fogón (🍲 Cocina)."
   workshop_line: "⚒️ Oficios: las estaciones de tu campamento para refinar y fabricar."
   energy: "⚡ Energía: {energy}/{max}"
   refine_button: "🪚 Refinar"
@@ -2299,7 +2299,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   gains: "Ganas por vez: ✨ {xp} de experiencia · {name} +{prof_xp}"
   yield_line: "⭐ {pct} % de sacar una unidad más (por tu rango y la estación)."
   locked: "🔒 Pide rango {need} de {name} (tienes {rank})."
-  no_station: "🏭 Esa estación no está aquí: ve al Claro o al centro de tu campamento con 🧵 Taller o 🔨 Herrería."
+  no_station: "🏭 Esa estación no está aquí: ve al Claro o al centro de tu campamento con 🧵 Taller, 🔨 Herrería o 🔥 Fogón (🍲 Cocina)."
   missing_line: "❌ Te falta: {items}"
   missing: "❌ Te falta: {items}. No gastaste nada."
   make_button: "🔨 Hacer {n}"
@@ -2353,16 +2353,16 @@ profession:                   # [ES] D-109: nombre de cada oficio y cómo se sub
     how: "arcos y bastones (🟫 tablones con 🧣 tela o 🟤 cuero) y, desde el rango 40, 🪑 muebles para el campamento"
   herreria:
     name: "Herrería"
-    how: "espadas, dagas y petos: 🔩 lingotes con 🟤 cuero"
+    how: "espadas, dagas, petos y piezas de placas (cabeza, manos, piernas y pies): 🔩 lingotes con 🟤 cuero"
   alquimia:
     name: "Alquimia"
     how: "pociones: 🧴 extracto con 🏺 arcilla (las mayores, con 🌸 flor de luna)"
   sastreria:
     name: "Sastrería"
-    how: "vendas y túnicas: 🧣 tela con 🌿 hierba, 🟤 cuero o 🧴 extracto"
+    how: "vendas, túnicas y piezas de tela (cabeza, manos, piernas y pies): 🧣 tela con 🌿 hierba, 🟤 cuero o 🧴 extracto"
   peleteria:
     name: "Peletería"
-    how: "armaduras de cuero y de malla: 🟤 cuero con 🧣 tela o 🔩 lingotes"
+    how: "armaduras de cuero y de malla, también de cabeza, manos, piernas y pies: 🟤 cuero con 🧣 tela o 🔩 lingotes"
   joyeria:
     name: "Joyería"
     how: "anillos y amuletos: 🔩 lingotes con 💠 gemas en bruto"

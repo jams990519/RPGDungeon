@@ -1,6 +1,6 @@
 # Red de oficios: quién necesita a quién
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115). En el juego: las fases 1 y 1.5 y el lado del campamento de la fase 2 (§5)
 
 **De dónde sale.**
 - *World of Warcraft*: oficios que se piden materiales entre sí (el herrero necesita al minero, el encantador desencanta lo que otros fabrican) y especializaciones por oficio desde *Dragonflight*.
@@ -60,7 +60,7 @@
 | 🧵 **Sastrería** | Túnicas, capas, ropa de clima, vendas limpias, toldos, 💰 bolsas | Los que pelean, Medicina, Construcción, todos (bolsas) | Tejeduría, Destilación (tintes) | Túnicas mágicas · Ropa de clima · Textil médico |
 | ⚗️ **Alquimia** | Pociones, elixires, antídotos, venenos para armas, pólvora, polvos | Los que pelean, Ingeniería, Encantamiento, Medicina | Destilación, Joyería o Minero (frascos), Pescador (aceite) | Pociones · Elixires · Venenos |
 | 💍 **Joyería** | Anillos, collares, gemas talladas, frascos y lentes de vidrio | Los que pelean, Encantamiento, Alquimia, Ingeniería | Fundición, Minero (gemas), Pescador (perlas) | Talla de gemas · Orfebrería · Vidriería |
-| ✨ **Encantamiento** | Encantamientos +1 a +4, runas; desencanta equipo en esencias | Los que pelean, Construcción (runas de defensa) | Equipo de todos los artesanos (lo desencanta), Alquimia (polvos), Joyería (gemas) | Armas · Armaduras · Desencantar |
+| ✨ **Encantamiento** | Encantamientos +1 a +4, runas; desencanta equipo en esencias (en el juego, fase 2: desencantar en ✨ esencias y 🔮 esencias mayores, y un encantamiento por pieza, ⚔️ Filo, ❤️ Vigor o 🛡️ Guarda, con 🔩 lingote, 🧴 extracto o 💠 gema; [Profesiones](profesiones.md) §0.5) | Los que pelean, Construcción (runas de defensa) | Equipo de todos los artesanos (lo desencanta), Alquimia (polvos), Joyería (gemas) (en el juego: el botín y los artesanos, Fundición, Destilación y Minero) | Armas · Armaduras · Desencantar |
 | 📜 **Inscripción** | Pergaminos de mejora, mapas, contratos, libros de técnica | Los que pelean, Explorador, Comercio | Destilación (tinta), Curtiduría o Aserradero (pergamino y papel), Explorador (apuntes) | Cartografía · Pergaminos · Contratos |
 | ⚙️ **Ingeniería** | Bombas, trampas y torretas para el campamento, artilugios, prótesis | Los que pelean, Construcción (defensas), Medicina (prótesis) | Fundición, Aserradero, Alquimia (pólvora), Joyería (lentes) | Explosivos · Artilugios · Defensas |
 | 🩺 **Medicina** | Ungüentos, curas de enfermedades, cuidado de heridos (D-111) | Sanadores y todos, la 🏥 Enfermería del campamento | Sastrería (vendas), Destilación o Alquimia, Herrería (agujas) | Primeros auxilios · Cirugía · Farmacia |
@@ -84,9 +84,9 @@
 | Ciclo | Cómo gira |
 |---|---|
 | **Equipo** | Minero → Fundición → Herrería (+ Curtiduría) → el guerrero lo gasta peleando → reparación → se rompe → el Encantador desencanta lo viejo → vuelve a hacer falta equipo |
-| **Comida** | Desollador, Pescador, Agricultor y Ganadero → Cocina → la despensa del campamento y las mejoras del que pelea → se come todos los días |
+| **Comida** | Desollador, Pescador, Agricultor y Ganadero → Cocina → la despensa del campamento y las mejoras del que pelea → se come todos los días. **En el juego (fase 2):** Desollador y 🎣 Pescador (+ Herbolario, Leñador, Minero y Destilación en los platos grandes) → 🍲 Cocina → la despensa, que come todos los días |
 | **Curación** | Herbolario → Destilación → Alquimia y Medicina (+ Sastrería, vendas) → se gastan en cada pelea y en cada enfermedad |
-| **Campamento** | Minero y Leñador → Cantería y Aserradero → Construcción (+ Herrería e Ingeniería) → mejoras y defensas → las oleadas las dañan → se reparan |
+| **Campamento** | Minero y Leñador → Cantería y Aserradero → Construcción (+ Herrería e Ingeniería) → mejoras y defensas → las oleadas las dañan → se reparan. **En el juego (fase 2):** Minero y Leñador → 🗿 Cantería (🧱 sillar) y Aserradero (🟫 tablón) → las mejoras desde el nivel 7 y la 🛠️ reparación de las defensas que dañó cada oleada → 🏗️ Construcción abarata las dos |
 | **Herramientas** | Herrería y Carpintería hacen las herramientas de los recolectores → se gastan recolectando → vuelven a la fragua |
 | **Información** | Explorador → Inscripción (mapas) → Comercio los vende → los que pelean encuentran los campamentos enemigos → botín que vuelve al mercado |
 
@@ -96,8 +96,10 @@
 |---|---|---|
 | **1 (en curso)** | Leñador, Minero, Herbolario, Desollador · Aserradero, Fundición, Destilación, Tejeduría, Curtiduría · Carpintería, Herrería, Alquimia, Sastrería, Peletería, Joyería | Usan los recursos que ya están en el juego y hacen el equipo |
 | **1.5** | 🩺 Medicina (D-111, en el juego) · 🧭 Explorador (D-112, en el juego: [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14) | Ya están decididos y conectados con los sanadores y el mapa |
-| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde cierto nivel, y las defensas se reparan después de las oleadas) · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
+| **2** | 🍲 Cocina y 🎣 Pescador (la despensa) · 🗿 Cantería y 🏗️ Construcción (las mejoras del campamento piden refinados desde el nivel 7, y las defensas se reparan después de las oleadas): **el lado del campamento, en el juego** (capa simple, ver [Profesiones](profesiones.md) §0.4, "Los oficios del campamento en el juego") · ✨ Encantamiento (desencantar es el gran sumidero de equipo) · las **especializaciones** | Cierran los ciclos de comida, campamento y equipo |
 | **3** | 🌾 Agricultor y 🐑 Ganadero (granero, huerto y corral) · 📜 Inscripción · ⚙️ Ingeniería · 💱 Comercio | Profundizan; necesitan el mercado de órdenes de la segunda tanda de la economía |
+
+**Fase 2, lado del equipo (en el juego):** ✨ Encantamiento (desencantar y encantar, con su beneficio de +30 % de esencias al rango 100; [Profesiones](profesiones.md) §0.5), el aviso "⬆️ Tienes una pieza mejor" y el equipo de artesano de cabeza, manos, piernas y pies (208 recetas de 🪡 Sastrería, 🦺 Peletería y 🔨 Herrería; [Profesiones](profesiones.md) §0.1). Así el ciclo del **Equipo** del §4 gira entero: el artesano hace todas las ranuras, el encantador desencanta lo viejo y mejora lo nuevo.
 
 Cada fase se programa en la capa simple primero (D-44): rango, recetas, beneficio propio (D-111) y una especialización. La capa profunda ([Profesiones](profesiones.md) §5 a §13: maestría por objeto, exámenes, enfermedades laborales) llega después.
 

@@ -127,3 +127,38 @@ Cada pregunta trae **mi recomendación**. Si estás de acuerdo con todas, basta 
 | P-74 | ¿Cómo se siembra para que una zona agotada vuelva a producir (D-87)? | ✅ **Decidido (D-145):** vuelve sola, pero lento; los oficios aceleran la regeneración |
 | P-75 | ¿Qué topes tiene la despensa de los campamentos (D-93, D-95): cuántas 🥖 provisiones se pueden comprar por semana y cuánta comida cabe antes de que existan los graneros? | ✅ **Decidido (D-125):** 20 provisiones por jugador por semana; la despensa la llenan los oficios |
 | P-63 | ¿Qué edad mínima tendrá el juego en las tiendas? | 17+/18+ si se mantienen las apuestas con moneda del juego; si no, más bajo |
+
+## Dudas de la entrevista de voz (segunda tanda, 1-oct-2026)
+
+Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en la [Entrevista de voz](entrevista-de-voz.md), segunda tanda (E-55 a E-82).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-78 | ¿Cuántos miembros pide un castillo (D-122)? El dueño dijo de 40 a 50, pero en la beta habrá pocos jugadores (D-122, D-155; entrevista E-55) | 15 durante la beta y 40 desde el lanzamiento |
+| P-79 | ¿Cuántas oleadas crecientes hay que defender para aprobar el castillo, y cuántas victorias de cuántos miembros pide la Noche de prueba (D-122)? (D-122; entrevista E-56) | 6 oleadas en dos semanas, ganando al menos 4; Noche de prueba con 10 victorias de al menos 5 miembros distintos |
+| P-80 | La casa del inicio (D-158), ¿es el primer escalón del asentamiento o una casa propia de cada jugador dentro de él? (D-158; entrevista E-57) | Es el primer escalón, compartido por 3 a 5 jugadores; los campamentos que ya existen conservan su nivel |
+| P-81 | ¿Cuántos escalones tiene el asentamiento y cómo se llaman (D-136, D-155)? (D-136, D-155; entrevista E-58) | 12: casa, campamento, aldea, pueblo, villa, ciudad, gran ciudad, fortaleza, castillo, ciudadela, ducado y reino |
+| P-82 | Si en el castillo todo se vota (D-157), ¿qué decide solo el fundador o monarca? (D-155, D-157; entrevista E-59) | El nombre, la bandera, declarar la guerra y aceptar o echar miembros; todo lo demás se vota |
+| P-83 | ¿Las oleadas llegan en días y horas fijas para todos o cada campamento tiene su ritmo (D-154, D-124)? (D-154, D-124; entrevista E-60) | Días y horas fijas para todos, avisadas con anticipación |
+| P-84 | ¿En qué hora de referencia caen los eventos fijos: oleadas, asedios y jefes de mundo (D-124)? (D-124; entrevista E-61) | La noche de América: de 19:00 a 23:00 en UTC−5 |
+| P-85 | ¿Quién puede declarar la guerra y a quién puede atacar (D-156)? (D-156; entrevista E-62) | Solo los castillos declaran; atacan desde aldea para arriba; 2 semanas de protección para lo recién fundado |
+| P-86 | ¿Cuánto dura un día del mundo con su día, tarde y noche (D-126)? (D-126; entrevista E-63) | 4 días reales: cada franja dura unas 32 horas y quien juega a la misma hora igual ve las tres |
+| P-87 | ¿El día, la tarde y la noche cambian también el peligro y el botín (D-126)? (D-126; entrevista E-64) | Sí: de noche, enemigos más fuertes con mejor botín |
+| P-88 | ¿Las razas son las clásicas de la fantasía con historia propia o inventadas (D-130)? (D-130; entrevista E-65) | Clásicas, con nombres e historia propios de este mundo |
+| P-89 | ¿Cuántas razas hay al empezar y limitan las clases (D-130)? (D-130; entrevista E-66) | 6 razas; todas las clases para todas; solo un beneficio chico de oficio y de arma |
+| P-90 | ¿Los héroes que ya existen eligen raza (D-130)? (D-130; entrevista E-67) | Sí, una vez y gratis, como el origen |
+| P-91 | ¿La facción de los ladrones es la de los bandidos (D-129, D-149)? (D-129, D-149; entrevista E-68) | Sí |
+| P-92 | En la subasta global (D-137), ¿dónde llega lo comprado y cuánto tarda el transportista? (D-137; entrevista E-69) | A tu asentamiento o al Claro, según la distancia (de minutos a unas horas), con opción de pagar más para que llegue antes |
+| P-93 | ¿Cuánto dura el equipo antes de repararse y de romperse (D-139)? (D-139; entrevista E-70) | Unas 3 semanas de juego diario por reparación; se rompe tras unas 5 reparaciones (unos 4 meses) |
+| P-94 | ¿Las obras maestras se gastan igual que el equipo normal (D-139)? (D-139, D-116; entrevista E-71) | Se gastan, pero aguantan el doble |
+| P-95 | ¿Bajamos lo que paga el mercader por una obra maestra para que fabricar y venderle no deje ganancia (D-116)? (D-116; entrevista E-72) | Sí: el negocio debe ser venderle a otros jugadores |
+| P-96 | ¿Cómo te da otro jugador los beneficios de su oficio (D-121)? (D-121; entrevista E-73) | Con objetos y servicios que duran unas horas, y el que los da puede cobrarlos |
+| P-97 | ¿Cómo funciona el tope diario de recursos de una zona (D-123)? (D-123; entrevista E-74) | Cada zona da un total por día; pasado ese total rinde la mitad |
+| P-98 | ¿Cómo se reparten las zonas seguras y las de 10, 20 y 40 % de pérdida (D-148)? (D-148; entrevista E-75) | Por distancia al Claro: cerca seguras, luego 10 %, 20 % y 40 %; los asentamientos siempre seguros |
+| P-99 | ¿Cuándo entra el PvP (D-148)? (D-148; entrevista E-76) | Después de la beta |
+| P-100 | ¿Qué tan duras son las heridas y cuánto tarda curarlas (D-152)? (D-152; entrevista E-77) | Nunca dejan sin jugar; el héroe pelea peor hasta que un médico lo trata, de 1 a 3 días reales |
+| P-101 | ¿De quién se defienden los nodos especiales (D-160)? (D-160; entrevista E-78) | De monstruos al principio; de jugadores cuando haya PvP |
+| P-102 | ¿Los veteranos reciben experiencia de Explorador por lo que exploraron antes de la 0.22 (D-112)? (D-112; entrevista E-79) | Sí, una parte |
+| P-103 | ¿Se puede fundar o agrandar un asentamiento encima de un campamento enemigo (D-112)? (D-112; entrevista E-80) | No: primero hay que destruirlo |
+| P-104 | ¿Los jefes de campamentos enemigos lejanos piden grupo (D-112)? (D-112, D-150; entrevista E-81) | Sí, desde cierta distancia del Claro |
+| P-105 | ¿Cuánto cuesta cambiar de especialización de oficio (D-141)? (D-141; entrevista E-82) | Monedas que suben con el rango; lo aprendido en la vieja queda guardado |
