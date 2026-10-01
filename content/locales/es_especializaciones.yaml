@@ -294,3 +294,41 @@ spec:
   yield_line: "⭐ {pct} % de sacar una unidad más (por tu especialización)."
   found: "🎓 Tu especialización halló {items}."
   mark: "🎓 "
+
+  # ---- Fase 2, lado del campamento (D-115): agregadas al unir las dos ramas
+  pescador_redes:
+    name: "Redes"
+    desc: "Pescas con red: más pescado en cada vuelta."
+  pescador_perlas:
+    name: "Perlas"
+    desc: "Abres cada concha: a veces sale una perla, que la Joyería paga como gema."
+  pescador_ahumado:
+    name: "Ahumado y salazón"
+    desc: "Tus platos de pescado y tus conservas rinden más en la despensa."
+  cocina_guisos:
+    name: "Guisos"
+    desc: "Raciones y guisos de cazador que rinden más."
+  cocina_conservas:
+    name: "Conservas"
+    desc: "Conservas y pescado asado que rinden más."
+  cocina_banquetes:
+    name: "Banquetes"
+    desc: "Festines y banquetes que rinden más."
+  canteria_sillares:
+    name: "Sillares"
+    desc: "Cortas la piedra con precisión: más sillares."
+  canteria_tallado:
+    name: "Tallado"
+    desc: "Tallas la piedra fina: algún sillar de más y, a veces, una gema escondida."
+  canteria_muros:
+    name: "Muros"
+    desc: "Conoces la cantera: algún sillar de más y más piedra al recolectar."
+  construccion_madera:
+    name: "Obras de madera"
+    desc: "Preparas mejor la madera de las obras: más tablones al aserrar."
+  construccion_piedra:
+    name: "Obras de piedra"
+    desc: "Preparas mejor la piedra de las obras: más sillares."
+  construccion_fortificaciones:
+    name: "Fortificaciones"
+    desc: "Herrajes y clavos para murallas y torres: más lingotes al fundir."

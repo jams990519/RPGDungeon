@@ -157,6 +157,26 @@ specs:
     - {id: encantamiento_armas, emoji: "⚔️", effects: [{kind: enchant, enchants: [filo], value: 0.01}]}           # [ES] +1 punto en ⚔️ Filo (antes de redondear)
     - {id: encantamiento_armaduras, emoji: "🛡️", effects: [{kind: enchant, enchants: [vigor, guarda], value: 0.01}]}
     - {id: encantamiento_desencantar, emoji: "💨", effects: [{kind: perk, key: disenchant, value: 0.20}]}
+  # ---- Fase 2, lado del campamento (D-115): las del 🎣 Pescador, la 🍲 Cocina, la 🗿 Cantería y la 🏗️ Construcción.
+  # [ES] Las agregó el líder al unir las dos ramas. Sus beneficios de campamento (mejor rango entre los miembros) no cambian;
+  # la especialización suma a lo que hace cada uno con sus manos. La Construcción todavía no tiene obras por especialización:
+  # hoy prepara mejor los materiales de su línea (efecto cercano, como Papel o Pergamino) y sumará lo suyo cuando lleguen.
+  pescador:
+    - {id: pescador_redes, emoji: "🕸️", effects: [{kind: yield, items: [pescado], value: 0.20}]}                       # [ES] +20 % de sacar 🐟 pescado de más
+    - {id: pescador_perlas, emoji: "🦪", effects: [{kind: find, items: [gema_bruta], value: 0.05}]}                    # [ES] perlas: a veces una 💠 gema al pescar
+    - {id: pescador_ahumado, emoji: "🔥", effects: [{kind: yield, items: [pescado_asado, conserva], value: 0.15}]}     # [ES] ahumado y salazón: tus platos de pescado rinden más
+  cocina:
+    - {id: cocina_guisos, emoji: "🍲", effects: [{kind: yield, items: [racion_campamento, guiso_cazador], value: 0.15}]}
+    - {id: cocina_conservas, emoji: "🫙", effects: [{kind: yield, items: [conserva, pescado_asado], value: 0.15}]}
+    - {id: cocina_banquetes, emoji: "🍗", effects: [{kind: yield, items: [festin, banquete], value: 0.15}]}
+  canteria:
+    - {id: canteria_sillares, emoji: "🧱", effects: [{kind: yield, items: [sillar], value: 0.15}]}
+    - {id: canteria_tallado, emoji: "💠", effects: [{kind: yield, items: [sillar], value: 0.05}, {kind: find, items: [gema_bruta], value: 0.03}]}
+    - {id: canteria_muros, emoji: "🏯", effects: [{kind: yield, items: [sillar], value: 0.05}, {kind: yield, items: [piedra], value: 0.10}]}
+  construccion:
+    - {id: construccion_madera, emoji: "🪵", effects: [{kind: yield, items: [tablon], value: 0.10}]}                   # [ES] obras de madera: tablones mejor preparados
+    - {id: construccion_piedra, emoji: "🧱", effects: [{kind: yield, items: [sillar], value: 0.10}]}                   # [ES] obras de piedra
+    - {id: construccion_fortificaciones, emoji: "🏰", effects: [{kind: yield, items: [lingote], value: 0.10}]}         # [ES] fortificaciones: herrajes y clavos
 
 professions:
   # ---- Recolección: sube al recolectar (o al vencer bestias, el desollador)
