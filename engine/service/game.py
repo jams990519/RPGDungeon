@@ -12,35 +12,39 @@ client can push arrival notices.
 Para qué sirve: es el juego visto desde afuera. Cada cliente llama a view(), text(),
 act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
-    diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3
+    diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3;
+    diseno/06-contenido/jefes.md (el Guardián, D-82)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging, content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
-    HitReceived, HeroDowned, CombatEnded
+    HitReceived, HeroDowned, CombatEnded, BossDefeated
 Eventos que escucha: ninguno
 Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta" del almacén
+    (en "meta", "guardian:<id>" guarda para siempre al primer héroe que venció a cada Guardián, D-82)
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
     3. Ningún texto visible se escribe aquí: todo sale de content/locales (Texts).
     4. El servicio no sabe qué cliente lo llama: el id de cuenta lo arma el adaptador.
+    5. El Pionero de un Guardián se escribe una sola vez y nunca se pisa; el aviso al servidor sale una sola vez.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista)
-    - Números: balance.yaml (explore, regen, hero, travel)
-    - Pruebas: tests/test_service.py
+    - Números: balance.yaml (explore, regen, hero, travel, guardian)
+    - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py
 """
 
 from __future__ import annotations
 
 import re
 import unicodedata
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from typing import Any
 
 from engine.classes import base_response, default_spec, ensure_talents, kit as talent_kit, spend_point, specs_of, unlock_points
 from engine.combat import CombatContext, make_combat, resolve_round, validate_choice
 from engine.core import (
+    BossDefeated,
     Clock,
     CombatEnded,
     CombatStarted,
@@ -58,7 +62,7 @@ from engine.core import (
     hash_unit,
 )
 from engine.hero import Hero, hero_stats, xp_for_level
-from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, starter_gear, suits, unequip
+from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, source_choices, starter_gear, suits, unequip
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world.territory import first_zones, next_zone
@@ -347,7 +351,11 @@ class GameService:
 
     def _zone(self, x: int, y: int) -> Zone:
         parts = (len(self.texts.list("world.name_first")) or 1, len(self.texts.list("world.name_second")) or 1)
-        return zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts)
+        zone = zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts)
+        cfg = self._guardian_cfg()
+        if cfg and (x, y) == (cfg["x"], cfg["y"]) and cfg.get("biome") in self.content.biomes:
+            zone = replace(zone, biome=cfg["biome"])     # the Guardian's lair has a fixed biome (D-82)
+        return zone
 
     def _discovered(self, x: int, y: int) -> dict[str, Any] | None:
         if x == 0 and y == 0:
@@ -357,6 +365,8 @@ class GameService:
     def _zone_name(self, zone: Zone) -> str:
         if zone.x == 0 and zone.y == 0:
             return self.texts.t("world.claro_name")
+        if self._is_lair(zone.x, zone.y):
+            return self.texts.t("guardian.lair_name")
         first = self.texts.list("world.name_first")
         second = self.texts.list("world.name_second")
         if not first or not second:
@@ -691,6 +701,10 @@ class GameService:
             return self._item_view(hero, item_id, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))
         if action_id == "places":
             return self._places_view(hero)
+        if action_id == "memento":
+            return self._memento_view(hero)
+        if action_id.startswith("mem:"):
+            return self._use_memento(hero, action_id[4:])
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
             return self._ask_camp_name(hero, "found")
@@ -735,6 +749,8 @@ class GameService:
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
             return view
+        if action_id == "boss":
+            return self._challenge_guardian(hero)
         if action_id.startswith("go:") and action_id[3:] in DIRECTIONS:
             if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
@@ -762,6 +778,8 @@ class GameService:
                              "path": path, "goal": [gx, gy]}
             notices = self._tutorial(hero, "use_places")
             return self._activity_view(hero, notice=self._join([t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))] + notices))
+        if action_id == "gather" and self._is_lair(hero.x, hero.y):
+            return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
         if action_id in ("gather", "explore") and not self._spend_energy(hero, action_id):
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         if action_id == "gather":
@@ -816,6 +834,7 @@ class GameService:
                 body.append(t.t("camps.claro_land"))
         elif land:
             body.append(t.t("camps.land_line", name=land["name"]))
+        body += self._lair_lines(zone)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
@@ -824,6 +843,8 @@ class GameService:
             dest, seconds, known = self._route_seconds(hero, direction)
             if known:
                 where = f"{self._biome_label(dest)} {self._zone_name(dest)}"
+                if self._is_lair(dest.x, dest.y):
+                    where += t.t("guardian.route_mark")
             elif self._discovered(dest.x, dest.y) is not None:
                 where = t.t("zone.known_by_others")
             else:
@@ -1079,6 +1100,10 @@ class GameService:
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
                    Action(id="map", label=t.t("menu.map")), Action(id="places", label=t.t("menu.places"))]
+        if self._is_lair(zone.x, zone.y):
+            # The lair (D-82): the challenge takes the gather slot (4 buttons at most, D-75).
+            body += ["", self._guardian_ready_line(hero), t.t("guardian.no_gather")]
+            actions[1] = Action(id="boss", label=t.t("guardian.button"))
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ player camps (D-71)
@@ -1385,11 +1410,16 @@ class GameService:
                 cx, cy = nx, ny
             places.append((seconds, x, y))
         places.sort()
+        shown = places[:3]
+        lair = next((p for p in places if self._is_lair(p[1], p[2])), None)
+        if lair and lair not in shown:
+            shown = shown[:2] + [lair]          # the Guardian's lair is always offered (D-82)
         body = [t.t("places.intro", n=len(hero.known))]
         actions = []
-        for seconds, x, y in places[:3]:
+        for seconds, x, y in shown:
             zone = self._zone(x, y)
-            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone),
+            mark = t.t("guardian.route_mark") if self._is_lair(x, y) else ""
+            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone) + mark,
                             zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
         if not places:
@@ -1408,6 +1438,8 @@ class GameService:
             for x in range(hero.x - radius, hero.x + radius + 1):
                 if x == hero.x and y == hero.y:
                     row += "🧍"
+                elif self._is_lair(x, y) and (hero.remembers(x, y) or self._discovered(x, y) is not None):
+                    row += "👑"
                 elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
                     row += "🏕️"
                 elif hero.remembers(x, y):
@@ -1418,6 +1450,9 @@ class GameService:
                     row += "▫️"
             rows.append(row)
         body = [t.t("map.legend")] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
+        cfg = self._guardian_cfg()
+        if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
+            body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
         return View(kind="map", title=t.t("map.title"), body=body, actions=[Action(id="explore_menu", label=t.t("menu.back"))])
 
     def _hero_view(self, hero: Hero) -> View:
@@ -1436,6 +1471,7 @@ class GameService:
             t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
             t.t("hero.class_short", icon=self._hero_icon(hero), cls=class_line),
             t.t("hero.skills_link", n=hero.points),
+            *([t.t("guardian.titles_line", titles=", ".join(t.t(f"guardian.title.{x}") for x in hero.titles))] if hero.titles else []),
             t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
             t.t("hero.xp_line", xp=hero.xp, next=high),
             t.t("hero.hp_line", hp=hero.hp, max_hp=stats["max_hp"]),
@@ -1694,8 +1730,10 @@ class GameService:
         body += ["", t.t("gear.total", stats=self._gear_stats_text(gear_bonus(self.content.items, hero, self.content.classes, self.content.balance)))]
         loose = sum(n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "gear")
         body.append(t.t("gear.in_bag", n=loose))
-        actions = [Action(id="gear:0", label=t.t("gear.equip_menu_new" if hero.gear_new else "gear.equip_menu")),
-                   Action(id="bag", label=t.t("menu.back"))]
+        actions = [Action(id="gear:0", label=t.t("gear.equip_menu_new" if hero.gear_new else "gear.equip_menu"))]
+        if self._has_memento(hero):
+            actions.append(Action(id="memento", label=t.t("guardian.memento_button")))
+        actions.append(Action(id="bag", label=t.t("menu.back")))
         return View(kind="gear_worn", title=t.t("gear.title"), body=body, actions=actions, notice=notice)
 
     def _gear_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
@@ -1800,12 +1838,185 @@ class GameService:
         hero.gold += price
         return self._gear_view(hero, notice=t.t("shop.sold", item=self._gear_name(item_id), price=self._money(price)))
 
+    # ------------------------------------------------------------------ the region Guardian (D-82)
+
+    def _guardian_cfg(self) -> dict[str, Any] | None:
+        """balance.yaml "guardian" if its enemy exists, else None (the game works without a Guardian)."""
+        cfg = self.content.balance.get("guardian")
+        return cfg if cfg and cfg.get("enemy") in self.content.enemies else None
+
+    def _is_lair(self, x: int, y: int) -> bool:
+        cfg = self._guardian_cfg()
+        return bool(cfg) and (x, y) == (cfg["x"], cfg["y"])
+
+    def _guardian_name(self) -> str:
+        cfg = self._guardian_cfg()
+        return self.texts.t(self.content.enemies[cfg["enemy"]]["name_key"]) if cfg else ""
+
+    def _pioneer(self) -> dict[str, Any] | None:
+        """The first hero of the server who beat the Guardian, saved for ever in "meta"."""
+        cfg = self._guardian_cfg()
+        return self.store.get("meta", f"guardian:{cfg['enemy']}") if cfg else None
+
+    def _lair_lines(self, zone: Zone) -> list[str]:
+        """Zone screen lines of the lair: who lives here and who beat it first."""
+        if not self._is_lair(zone.x, zone.y):
+            return []
+        t = self.texts
+        cfg = self._guardian_cfg()
+        edef = self.content.enemies[cfg["enemy"]]
+        pioneer = self._pioneer()
+        return [t.t("guardian.zone_line", name=self._guardian_name(), level=edef["level_min"]),
+                t.t("guardian.pioneer_line", name=pioneer["name"]) if pioneer else t.t("guardian.nobody_yet")]
+
+    def _guardian_wait(self, hero: Hero) -> float:
+        """Seconds until this hero may challenge the Guardian again (0 = now)."""
+        cfg = self._guardian_cfg()
+        record = hero.guardians.get(cfg["enemy"], {}) if cfg else {}
+        if not record.get("last"):
+            return 0.0
+        ready = record["last"] + cfg["cooldown_hours"] * 3600 * self.time_scale
+        return max(0.0, ready - self.clock.now())
+
+    def _guardian_ready_line(self, hero: Hero) -> str:
+        wait = self._guardian_wait(hero)
+        if wait > 0:
+            return self.texts.t("guardian.wait", name=self._guardian_name(), time=self._fmt_duration(wait))
+        return self.texts.t("guardian.ready")
+
+    def _challenge_guardian(self, hero: Hero) -> View:
+        """Start the fight against the Guardian: only in its lair, idle, and after the hero's wait.
+
+        [ES]
+        Qué hace: empieza la pelea contra el Guardián (botón ⚔️ Desafiar al Guardián). No gasta energía
+        (el combate no la usa, D-78); el Guardián tiene nivel fijo y no se puede huir.
+        La llama: _idle_action con la acción "boss".
+        Si cambia, afecta: tests/test_boss.py y la tabla del simulador (jefes.md §6).
+        """
+        t = self.texts
+        cfg = self._guardian_cfg()
+        if not cfg or not self._is_lair(hero.x, hero.y):
+            return self._zone_view(hero, notice=t.t("guardian.not_here"))
+        wait = self._guardian_wait(hero)
+        if wait > 0:
+            return self._explore_menu(hero, notice=t.t("guardian.wait", name=self._guardian_name(), time=self._fmt_duration(wait)))
+        edef = self.content.enemies[cfg["enemy"]]
+        seed = int(hash_unit(self.world_seed, hero.id, "guardian", self.clock.now()) * 2**31)
+        state = make_combat(cfg["enemy"], edef, edef["level_min"], self._kit(hero), seed)
+        self.store.put("combat", hero.id, state)
+        self.bus.publish(CombatStarted(hero.id, cfg["enemy"], seed))
+        return self._combat_view(hero, state, notice=t.t("guardian.started", name=self._guardian_name()))
+
+    def _guardian_rewards(self, hero: Hero, state: dict[str, Any], rng: Rng) -> list[str]:
+        """Victory against the Guardian: xp always; the first win gives the Memento, later wins coins and
+        a chance of normal loot; the first hero of the server becomes Pioneer and everyone is told (once).
+
+        [ES]
+        Qué hace: paga la victoria contra el Guardián. Primera victoria del héroe: el Recuerdo garantizado.
+        Siguientes: monedas (en bronce, enemies.yaml gold) y balance.yaml guardian.repeat_gear_chance de botín.
+        Primer vencedor del servidor: queda en "meta" para siempre, gana el título y se avisa a todos por _push.
+        La llama: _end_combat cuando el enemigo vencido tiene boss: true.
+        Si cambia, afecta: la economía (monedas y equipo que entran), los títulos y los avisos a todos.
+        """
+        t = self.texts
+        cfg = self._guardian_cfg()
+        enemy = state["enemy"]
+        edef = self.content.enemies[enemy["id"]]
+        record = dict(hero.guardians.get(enemy["id"], {}))
+        first_win = not record.get("wins")
+        record["wins"] = record.get("wins", 0) + 1
+        record["last"] = self.clock.now()
+        hero.guardians[enemy["id"]] = record
+        hero.kills += 1
+        xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)) * self._xp_mult(hero))
+        hero.xp += xp
+        lines: list[str] = []
+        if first_win:
+            memento = next((iid for iid, it in self.content.items.items()
+                            if it.get("kind") == "memento" and it.get("memento_of") == enemy["id"]), None)
+            lines.append(t.t("guardian.rewards_first", xp=xp))
+            if memento:
+                hero.backpack[memento] = hero.backpack.get(memento, 0) + 1
+                item = self.content.items[memento]
+                lines.append(t.t("guardian.first_win", item=f"{item['emoji']} {t.t(item['name_key'])}"))
+        else:
+            low, high = edef.get("gold", [1, 3])
+            gold = int(rng.uniform(low, high + 1))
+            hero.gold += gold
+            lines.append(t.t("combat.rewards", xp=xp, gold=self._money(gold)))
+            dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng,
+                                chance=cfg["repeat_gear_chance"])
+            if dropped:
+                hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
+                lines.append(self._loot_line(hero, dropped))
+        for item_id, chance in edef.get("loot", {}).items():
+            if item_id in self.content.items and rng.chance(chance):
+                hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+                item = self.content.items[item_id]
+                lines.append(t.t("combat.loot", item=f"{item['emoji']} {t.t(item['name_key'])}"))
+        first_in_server = self._pioneer() is None
+        if first_in_server:
+            self.store.put("meta", f"guardian:{enemy['id']}", {"name": hero.name, "hero_id": hero.id, "at": self.clock.now()})
+            title = f"pionero_{enemy['id']}"
+            if title not in hero.titles:
+                hero.titles.append(title)
+            lines.append(t.t("guardian.pioneer_title", title=t.t(f"guardian.title.{title}")))
+            news = View(kind="news", title=t.t("guardian.news_title"),
+                        body=[t.t("guardian.news_body", hero=hero.name, boss=self._guardian_name(),
+                                  title=t.t(f"guardian.title.{title}"))])
+            for account_id in self.players():
+                if account_id != hero.id:
+                    self._push(account_id, news)
+        lines.append(t.t("guardian.again_in", name=self._guardian_name(),
+                         time=self._fmt_duration(cfg["cooldown_hours"] * 3600 * self.time_scale)))
+        self.bus.publish(BossDefeated(hero.id, enemy["id"], first_win, first_in_server))
+        return lines
+
+    def _has_memento(self, hero: Hero) -> bool:
+        return any(self.content.items.get(i, {}).get("kind") == "memento" and n > 0 for i, n in hero.backpack.items())
+
+    def _memento_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The Memento: choose ONE of two unique pieces made for you (weapon or armor); the other is lost."""
+        t = self.texts
+        memento = next((i for i, n in hero.backpack.items() if n > 0 and self.content.items.get(i, {}).get("kind") == "memento"), None)
+        if not memento:
+            return self._bag_view(hero) if notice is None else self._main_view(hero, notice=notice)
+        cfg = self._guardian_cfg() or {}
+        options = source_choices(self.content.items, self.content.classes, self.content.balance, hero,
+                                 cfg.get("memento_source", "guardian"))
+        body = [t.t("guardian.memento_intro"), ""]
+        actions = []
+        for item_id in options:
+            item = self.content.items[item_id]
+            body.append(t.t("guardian.memento_option", item=self._gear_name(item_id), slot=t.t(f"gear.slot.{item['slot']}"),
+                            stats=self._gear_stats_text(item.get("stats", {})), level=item.get("req_level", 1)))
+            actions.append(Action(id=f"mem:{item_id}", label=self._gear_name(item_id)))
+        actions.append(Action(id="bag", label=t.t("menu.back")))
+        title = t.t(self.content.items[memento]["name_key"])
+        return View(kind="memento", title=f"{self.content.items[memento]['emoji']} {title}", body=body, actions=actions, notice=notice)
+
+    def _use_memento(self, hero: Hero, item_id: str) -> View:
+        """Trade the Memento for the chosen piece; it goes to the backpack (shown with its Equip button)."""
+        t = self.texts
+        memento = next((i for i, n in hero.backpack.items() if n > 0 and self.content.items.get(i, {}).get("kind") == "memento"), None)
+        cfg = self._guardian_cfg() or {}
+        options = source_choices(self.content.items, self.content.classes, self.content.balance, hero,
+                                 cfg.get("memento_source", "guardian"))
+        if not memento or item_id not in options:
+            return self._memento_view(hero)
+        hero.backpack[memento] -= 1
+        if hero.backpack[memento] <= 0:
+            del hero.backpack[memento]
+        hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        return self._item_view(hero, item_id, notice=t.t("guardian.memento_done", item=self._gear_name(item_id)))
+
     # ------------------------------------------------------------------ combat
 
     def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str) -> str:
-        candidates = [(eid, e) for eid, e in self.content.enemies.items() if zone.biome in e.get("biomes", [])]
+        common = [(eid, e) for eid, e in self.content.enemies.items() if not e.get("boss") and not e.get("retired")]
+        candidates = [(eid, e) for eid, e in common if zone.biome in e.get("biomes", [])]
         fitting = [(eid, e) for eid, e in candidates if e["level_min"] <= zone.level <= e["level_max"]]
-        pool = fitting or candidates or list(self.content.enemies.items())
+        pool = fitting or candidates or common
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
         level = max(enemy_def["level_min"], min(enemy_def["level_max"], zone.level + (1 if rng.chance(0.3) else 0)))
         seed = int(rng.random() * 2**31)
@@ -1848,6 +2059,7 @@ class GameService:
         body += [
             t.t("combat.enemy_line", enemy=t.t(edef["name_key"]), level=enemy["level"]),
             t.t("combat.enemy_hp", pct=pct, bar=self._bar(enemy["hp"], enemy["max_hp"])),
+            *([t.t("combat.boss_phase", n=enemy.get("phase", 0) + 1, total=len(edef["phases"]) + 1)] if edef.get("phases") else []),
             "",
             t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
             "",
@@ -1921,7 +2133,12 @@ class GameService:
         lines = list(state["log"]) + [""]
         rng = Rng(state["seed"], state["draws"])
         hb = self.content.balance["hero"]
-        if outcome == "victory":
+        actions = [Action(id="home", label=t.t("menu.continue"))]
+        if outcome == "victory" and edef.get("boss"):
+            lines += self._guardian_rewards(hero, state, rng)
+            if self._has_memento(hero):
+                actions.insert(0, Action(id="memento", label=t.t("guardian.memento_button")))
+        elif outcome == "victory":
             xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)) * self._xp_mult(hero))
             low, high = edef.get("gold", [1, 3])
             gold = int(rng.uniform(low, high + 1) * (1 + 0.1 * (enemy["level"] - 1)))
@@ -1939,6 +2156,7 @@ class GameService:
             if dropped:
                 hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
                 lines.append(self._loot_line(hero, dropped))
+        if outcome == "victory":
             while hero.level < hb["max_level"] and hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
                 hero.points += 1
@@ -1960,7 +2178,7 @@ class GameService:
         self.store.delete("combat", hero.id)
         self.bus.publish(CombatEnded(hero.id, outcome))
         title = t.t(f"combat.end_title.{outcome}")
-        return View(kind="combat_end", title=title, body=lines, actions=[Action(id="home", label=t.t("menu.continue"))])
+        return View(kind="combat_end", title=title, body=lines, actions=actions)
 
     def _refill_belt(self, hero: Hero) -> bool:
         changed = False

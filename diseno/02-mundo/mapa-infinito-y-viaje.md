@@ -302,3 +302,4 @@ Qué pasa con cada concepto de [Torre y pisos](torre-y-pisos.md):
 - B. En el anillo II (Lejanía 4-6).
 - C. Más lejos, para dar tiempo a explorar.
 - *Recomiendo B,* porque deja una o dos semanas de exploración y da una meta común temprana.
+- *Provisional (D-82):* Claude eligió B para el primer Guardián, Raigambre: su guarida está fija en (5, 2), Lejanía 5, y por ahora se pelea en solitario. Detalle en [Jefes](../06-contenido/jefes.md) §6.

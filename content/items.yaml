@@ -1155,3 +1155,111 @@ pies_placas_4:
   req_level: 8
   stats: {hp: 0.07, armor: 0.02}
   price: 68
+# --- D-82: the first region Guardian (Raigambre) ---
+# [ES] D-82: Recuerdo del Guardián y sus piezas únicas (equipamiento.md §6). La primera victoria de cada
+# héroe contra Raigambre da el Recuerdo; se cambia por UNA de dos piezas "para ti": el arma de tu tipo
+# principal o la armadura de tu tipo. source: guardian = nunca salen en el botín al azar (engine/hero/gear.py).
+# Valen entre el nivel 3 (raro) y el 4 (épico) del botín normal, y se ponen desde el nivel 5.
+# Si cambias esto, revisa: tests/test_boss.py; los números mueven el balance de quien venció al Guardián.
+recuerdo_raigambre:
+  name_key: item.recuerdo_raigambre
+  emoji: "🌰"
+  kind: memento
+  memento_of: raigambre
+  price: 0
+guardian_espada:
+  name_key: item.guardian_espada
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {attack: 0.15}
+  price: 120
+guardian_daga:
+  name_key: item.guardian_daga
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {attack: 0.15}
+  price: 120
+guardian_arco:
+  name_key: item.guardian_arco
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {attack: 0.15}
+  price: 120
+guardian_baston:
+  name_key: item.guardian_baston
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {attack: 0.15}
+  price: 120
+guardian_tela:
+  name_key: item.guardian_tela
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {hp: 0.17, armor: 0.04}
+  price: 120
+guardian_cuero:
+  name_key: item.guardian_cuero
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {hp: 0.17, armor: 0.04}
+  price: 120
+guardian_malla:
+  name_key: item.guardian_malla
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {hp: 0.17, armor: 0.04}
+  price: 120
+guardian_placas:
+  name_key: item.guardian_placas
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 5
+  source: guardian
+  stats: {hp: 0.17, armor: 0.04}
+  price: 120

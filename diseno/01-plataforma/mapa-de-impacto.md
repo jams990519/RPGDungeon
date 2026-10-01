@@ -329,6 +329,7 @@ flowchart LR
 - **Los datos de `GolpeRecibido`** → Salud (heridas y barra de Contagio), Equipo (durabilidad) y Mente (estrés) al mismo tiempo. Cambiar el significado de un campo (por ejemplo, el daño antes o después de la armadura) cambia cuántas heridas aparecen **sin dar ningún error** ([Convenciones](convenciones-de-codigo.md) §5.2).
 - **Una mecánica avanzada** (ruptura, golpe extra, técnicas combinadas, superficies, terreno, emboscada, moral, Límite, reacciones avanzadas, apostar turnos) → su eje en el presupuesto de poder y su objetivo en el simulador ([Mecánicas avanzadas](../04-combate/mecanicas-avanzadas.md) §15), los oficios que viven de ella (aceites, frascos, bombas, botas: §14 de ese documento), las Tácticas por defecto que la usan en la capa simple (D-44).
 - **El rendimiento de la resolución rápida** → el botín y el desgaste de quien no juega a mano (M10), el incentivo para usar bots (M23), la oferta de materiales comunes (M13).
+- **Las fases de jefe (ya en código, D-82)** → viven en `engine/combat/engine.py` (`phase_moves`, `phase_for`, `find_move`, `_update_phase`) y se leen de `enemies.yaml` → `phases`. El cambio de fase pasa al final de la ronda: si lo mueves antes, el golpe ya avisado deja de cumplirse y se rompe la regla "todo golpe grande se avisa". `choose_next_move` recibe la fase; quien la llame sin fase (el simulador viejo) elige de la lista base. Un golpe repetido en varias fases se busca por id: si le cambias `power` o `tags` en una sola fase, la otra fase lo resuelve con los números de la primera. Pruebas: `tests/test_boss.py`.
 
 ---
 
@@ -353,6 +354,7 @@ flowchart LR
 - **El botín de jefe** (artefactos, Recuerdos, planos) → recetas únicas (M14), precios (M13), protección contra mala racha (§6.1).
 - **A quién elige como objetivo** → la presión sobre sanadores y el balance de sanadores y tanques (M21).
 - **La regla de las 3 vistas** → vive en M17, pero cambia la dificultad real de todos los jefes.
+- **El primer Guardián (ya en código, D-82)** → `raigambre` en `enemies.yaml` (vida 400, ataque 21, nivel 6 fijo, 3 fases) y `balance.yaml` → `guardian` (guarida en 5, 2; espera de 24 h; 50 % de botín al repetir). Mover su vida, su ataque o sus `attack_mult` cambia la tabla del simulador de [Jefes](../06-contenido/jefes.md) §6: hay que medir otra vez. Mover `guardian.x`/`y` mueve la guarida para todos: los héroes que la recordaban siguen recordando la zona vieja, que deja de ser guarida (sin error). Las 8 piezas `guardian_*` de `items.yaml` llevan `source: guardian`: sin ese campo empezarían a salir en el botín al azar. El Pionero vive en el almacén `meta` → `guardian:raigambre` y en `Hero.titles`: renombrar el id del jefe deja sin Pionero al servidor. El aviso a todos sale por la cola de mensajes (`_push` y `tick()`) una sola vez. Pruebas: `tests/test_boss.py`.
 
 ---
 

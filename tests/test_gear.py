@@ -13,7 +13,8 @@ from engine.hero.gear import allowed_types, auto_equip, can_use, equip, gear_bon
 def test_every_class_has_gear(content):
     cfg = content.balance["gear"]
     groups = {c.get("group") for c in content.classes.values() if not c.get("retired")}
-    gear = [it for it in content.items.values() if it.get("kind") == "gear"]
+    # Guardian pieces (D-82) are extra: they never drop at random, so they do not count here.
+    gear = [it for it in content.items.values() if it.get("kind") == "gear" and not it.get("source")]
     for group in groups:
         armor = cfg["armor_by_group"][group]
         weapons = cfg["weapons_by_group"][group]

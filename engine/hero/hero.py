@@ -46,6 +46,8 @@ class Hero:
         last_regen_at: timestamp of the last passive health regeneration.
         known: zones this hero has visited, as "x:y" (its own map memory, D-61).
         gear: worn pieces, slot -> item id (D-77); gear_started: starter gear already given.
+        guardians: region Guardians fought, enemy id -> {"wins": n, "last": ts of the last win} (D-82).
+        titles: title ids earned for ever, e.g. "pionero_raigambre" (first in the server to beat it).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -91,6 +93,8 @@ class Hero:
     downed: bool = False
     gear_new: list[str] = field(default_factory=list)
     cards: int = 0
+    guardians: dict[str, dict[str, Any]] = field(default_factory=dict)
+    titles: list[str] = field(default_factory=list)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

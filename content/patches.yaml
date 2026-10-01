@@ -125,3 +125,12 @@ v0_7_4:
     - "🎒 La Mochila tiene tres partes: 🛡️ Equipo, 🧪 Pociones (cada una con lo que cura) y 💰 Monedas."
     - "🛡️ En Equipo ves lo que llevas puesto. Con 🔁 Equipar eliges qué ponerte o quitarte, viendo sus bonos y si te sirve."
     - "🌟 En Talentos, lo primero es escoger tu especialización."
+
+v0_8:
+  version: "0.8"
+  title: "👑 Lost Realms 0.8: el primer Guardián"
+  notes:
+    - "👑 Raigambre, el Guardián del Claro, despertó en su guarida, en las coordenadas (5, 2). Desafíalo desde 🧭 Explorar cuando estés allí."
+    - "🔥 Pelea por fases: a medida que pierde vida, cambia sus golpes y se enfurece. De un Guardián no se huye, solo se esquiva."
+    - "🌰 Tu primera victoria te da su Recuerdo: cámbialo en 🎒 Mochila → 🛡️ Equipo por una pieza 🟣 única hecha para ti."
+    - "🏅 El primero del mundo en vencerlo será Pionero del Claro para siempre, y todos se enterarán."

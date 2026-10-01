@@ -8,10 +8,16 @@ Order of a round (ronda-y-acciones.md §6):
 The enemy's next move is chosen at the end of each round and shown as the
 warning (aviso) of the next one.
 
+Bosses (D-82) may have "phases" in enemies.yaml: when their life drops to a
+phase's threshold ("at", a fraction of max life), at the end of that round they
+switch to the phase's move list and multiply their base attack ("attack_mult").
+The move already announced still lands; only the next warning changes.
+
 [ES]
 Para qué sirve: aplicar las reglas de una ronda y escribir el resumen.
-Documento de diseño: diseno/04-combate/ronda-y-acciones.md §1-§6 y §10; avisos-y-tacticas.md
-Módulo: M5 Combate
+Documento de diseño: diseno/04-combate/ronda-y-acciones.md §1-§6 y §10; avisos-y-tacticas.md;
+    diseno/06-contenido/jefes.md §2 regla 4 y §5 (fases de jefe, D-82)
+Módulo: M5 Combate (y las fases de jefe de M6)
 Depende de: engine.core (Rng, Texts), engine.hero.hero_stats, contenido (clases, enemigos, objetos, balance)
 Lo usan: engine/service/game.py
 Eventos que publica: ninguno (devuelve el resultado; el servicio publica)
@@ -21,10 +27,12 @@ Reglas que nunca se rompen:
     1. validate_choice se llama antes de resolve_round: una elección inválida no gasta la ronda.
     2. Una respuesta cuesta Aguante; el Aguante solo vuelve en rondas sin respuesta (ronda §3 y §5).
     3. La Toxicidad al máximo impide beber pociones (ronda §4).
+    4. Un jefe cambia de fase solo al final de la ronda: el golpe ya avisado se cumple tal cual (D-82).
+    5. Las fases solo avanzan, nunca vuelven atrás, aunque el jefe se cure.
 Si cambias esto, revisa:
-    - Servicio: engine/service/game.py (vista de combate, recompensas)
-    - Números: balance.yaml combat.*
-    - Pruebas: tests/test_combat.py
+    - Servicio: engine/service/game.py (vista de combate, recompensas, Guardián)
+    - Números: balance.yaml combat.*; enemies.yaml phases (at, attack_mult, moves)
+    - Pruebas: tests/test_combat.py, tests/test_boss.py
 """
 
 from __future__ import annotations
@@ -81,6 +89,8 @@ def make_combat(enemy_id: str, enemy_def: dict[str, Any], level: int, class_def:
             "buff": 1.0,
             "dot": None,
             "can_flee": bool(enemy_def.get("can_flee", True)),
+            "phase": 0,
+            "base_attack": float(base["attack"] + per.get("attack", 0) * lv),
         },
         "hero": {
             "resource": int(class_def.get("resource_start", 0)),
@@ -98,17 +108,66 @@ def make_combat(enemy_id: str, enemy_def: dict[str, Any], level: int, class_def:
     return state
 
 
-def choose_next_move(enemy_def: dict[str, Any], rng: Rng) -> str:
-    """Pick the enemy's next move by weight. [ES] Qué hace: elige el próximo ataque (el que se avisa). La llaman: el combate. Si cambia, afecta: la frecuencia de cada ataque."""
-    moves = enemy_def["moves"]
+def phase_moves(enemy_def: dict[str, Any], phase: int = 0) -> list[dict[str, Any]]:
+    """The move list in use at a phase (0 = no phase yet). A phase without "moves" keeps the previous list.
+
+    [ES]
+    Qué hace: da la lista de golpes que usa el enemigo en esa fase (0 = la normal).
+    La llaman: choose_next_move, el servicio y el simulador.
+    Si cambia, afecta: qué golpes avisa un jefe en cada fase.
+    """
+    phases = enemy_def.get("phases") or []
+    for index in range(min(phase, len(phases)), 0, -1):
+        if phases[index - 1].get("moves"):
+            return phases[index - 1]["moves"]
+    return enemy_def["moves"]
+
+
+def choose_next_move(enemy_def: dict[str, Any], rng: Rng, phase: int = 0) -> str:
+    """Pick the enemy's next move by weight, from the current phase's list.
+
+    [ES]
+    Qué hace: elige el próximo ataque (el que se avisa) entre los de la fase actual.
+    La llaman: el combate (y el simulador).
+    Si cambia, afecta: la frecuencia de cada ataque.
+    """
+    moves = phase_moves(enemy_def, phase)
     return rng.pick_weighted([m["id"] for m in moves], [m.get("weight", 1) for m in moves])
 
 
-def _move(enemy_def: dict[str, Any], move_id: str) -> dict[str, Any]:
-    for move in enemy_def["moves"]:
+def find_move(enemy_def: dict[str, Any], move_id: str) -> dict[str, Any]:
+    """A move by id, searched in the base list and in every phase (falls back to the first move).
+
+    [ES]
+    Qué hace: busca un golpe por su id en todas las fases (un golpe avisado antes del cambio de fase sigue valiendo).
+    La llaman: resolve_round y el simulador.
+    Si cambia, afecta: qué golpe se resuelve cada ronda.
+    """
+    for move in list(enemy_def["moves"]) + [m for p in enemy_def.get("phases") or [] for m in p.get("moves") or []]:
         if move["id"] == move_id:
             return move
     return enemy_def["moves"][0]
+
+
+def phase_for(enemy_def: dict[str, Any], hp: float, max_hp: float) -> int:
+    """How many phase thresholds this life fraction has crossed (0 = none). [ES] Qué hace: dice en qué fase debería estar un jefe según su vida. La llaman: el combate y las pruebas. Si cambia, afecta: cuándo cambia de fase."""
+    frac = hp / max_hp if max_hp else 0.0
+    return sum(1 for p in enemy_def.get("phases") or [] if frac <= p["at"])
+
+
+def _update_phase(state: dict[str, Any], enemy_def: dict[str, Any], ctx: "CombatContext", lines: list[str]) -> None:
+    """End of round: move a boss to a later phase if its life crossed a threshold; apply its rage."""
+    enemy = state["enemy"]
+    new = phase_for(enemy_def, enemy["hp"], enemy["max_hp"])
+    if new <= enemy.get("phase", 0):
+        return
+    enemy["phase"] = new
+    phase = enemy_def["phases"][new - 1]
+    enemy["attack"] = enemy.get("base_attack", enemy["attack"]) * phase.get("attack_mult", 1.0)
+    if "armor" in phase:
+        enemy["armor"] = float(phase["armor"])
+    lines.append(ctx.texts.t(f"enemy.{enemy['id']}.phases.{phase['id']}"))
+    lines.append(ctx.texts.t("combat.phase_change", n=new + 1, total=len(enemy_def["phases"]) + 1))
 
 
 def validate_choice(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], choice: dict[str, Any], ctx: CombatContext) -> str | None:
@@ -196,7 +255,7 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
     ability = class_def["abilities"][choice["index"]] if kind == "ability" else None
     used_response = False
     response: dict[str, Any] | None = None
-    move = _move(enemy_def, enemy["next_move"])
+    move = find_move(enemy_def, enemy["next_move"])
     move_name = t.t(f"enemy.{enemy['id']}.moves.{move['id']}.name")
 
     def name_of(a: dict[str, Any]) -> str:
@@ -376,7 +435,9 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
         if hs["cooldowns"][key] <= 0:
             del hs["cooldowns"][key]
     if state["outcome"] is None:
-        enemy["next_move"] = choose_next_move(enemy_def, rng)
+        if enemy_def.get("phases"):
+            _update_phase(state, enemy_def, ctx, lines)
+        enemy["next_move"] = choose_next_move(enemy_def, rng, enemy.get("phase", 0))
         state["round"] += 1
     state["draws"] = rng.draws
     state["log"] = lines
