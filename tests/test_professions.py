@@ -341,7 +341,8 @@ def test_oficios_command_and_screen(service):
     assert "En rango 10: 💠 Gema en bruto" in body and "En rango 50" in body
     set_hero(service, "test:1", x=4, y=0)
     view = service.act("test:1", "oficios")                            # anywhere: ranks yes, stations no
-    assert ids(view) == ["hero"] and any("🧵 Taller" in line for line in view.body)
+    # D-141: 🔨 Herrería is rank 25, so 🎓 Especialización shows up (it works anywhere: choosing is a menu, not a station)
+    assert ids(view) == ["pspecs", "hero"] and any("🧵 Taller" in line for line in view.body)
     assert any("/oficios" in line for line in service.act("test:1", "hero").body)
     assert not service.texts.missing
 

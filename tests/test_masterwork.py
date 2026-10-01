@@ -223,7 +223,8 @@ def test_old_heroes_without_signatures_load(service):
 def test_furniture_is_made_only_by_carpentry_from_its_rank(service):
     recipes = service.content.professions["recipes"]
     furniture = {rid: r for rid, r in recipes.items() if service.content.items[next(iter(r["output"]))].get("kind") == "furniture"}
-    assert set(furniture) == {"literas_roble", "armero_roble"}
+    # D-141: 🛡️ Escudos and 🛒 Mobiliario y carros add one exclusive piece each (recipes with "spec": tests/test_especializaciones.py)
+    assert {rid for rid, r in furniture.items() if not r.get("spec")} == {"literas_roble", "armero_roble"}
     assert {r["profession"] for r in furniture.values()} == {"carpinteria"}
     assert [furniture[r]["min_rank"] for r in ("literas_roble", "armero_roble")] == [40, 70]
     ready(service, backpack={"tablon": 12, "tela_tejida": 4, "cuero_curtido": 2}, energy=30)

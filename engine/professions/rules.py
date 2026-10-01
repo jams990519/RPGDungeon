@@ -16,15 +16,21 @@ encantamiento lleva cada ranura (enchant_for_slot), cuánto suma con tu rango (e
 Fase 2, lado del campamento (D-115, D-116): los beneficios de campamento y castillo (🎣 Pescador, 🍲 Cocina, Cantería,
 🏗️ Construcción) no son de cada héroe: valen para el campamento donde es miembro, con el MEJOR rango entre sus miembros
 (camp_best_ranks, camp_perks), y bajan lo que piden las obras (scaled_cost).
-No guarda nada: el servicio lee Hero.professions y llama a estas funciones.
+D-115 y D-141: las cuentas de las 🎓 especializaciones de oficio (3 por oficio; una al rango 25, otra al 75, nunca las tres):
+cuántas permite el rango (spec_slots), el dominio que crece con la experiencia de oficio ganada mientras la tienes
+(spec_share), lo que suma cada efecto según el contexto (spec_bonus, spec_finds), si elegirla es gratis o un cambio pagado
+(spec_choice) y cuánto cuesta cambiar (switch_cost).
+No guarda nada: el servicio lee Hero.professions (y Hero.prof_specs, Hero.spec_xp) y llama a estas funciones.
 Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra y
-    beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2) y §4; diseno/07-economia/red-de-oficios.md §5 (fase 2)
+    beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2) y §4; diseno/07-economia/red-de-oficios.md §3
+    (especializaciones, D-141) y §5 (fase 2)
 Módulo: M14 Oficios
-Depende de: ninguno (los datos llegan de content/professions.yaml y de content/balance.yaml, bloques professions,
-    masterwork y enchanting)
-Lo usan: engine/service/game.py (secciones "professions", "enchanting" y "camp professions, phase 2"),
-    engine/core/content.py (masterwork_items, al cargar los objetos), tests/test_professions.py, tests/test_masterwork.py,
-    tests/test_oficios_equipo.py y tests/test_oficios_campamento.py
+Depende de: ninguno (los datos llegan de content/professions.yaml, también su bloque specs, y de content/balance.yaml,
+    bloques professions, masterwork, enchanting, camp_professions y specs)
+Lo usan: engine/service/game.py (secciones "professions", "enchanting", "camp professions, phase 2" y "profession
+    specializations"), engine/core/content.py (masterwork_items, al cargar los objetos), tests/test_professions.py,
+    tests/test_masterwork.py, tests/test_oficios_equipo.py, tests/test_oficios_campamento.py y
+    tests/test_especializaciones.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -36,6 +42,8 @@ Reglas que nunca se rompen:
        el sufijo nunca cambia (IDs estables). Una obra maestra nunca sale en el botín al azar (source: masterwork).
     5. Un beneficio de campamento (CAMP_PERK_KEYS) nunca se suma entre miembros: rige el mejor rango de cada oficio, así
        un campamento grande no rinde más por tener muchos cocineros. Una obra nunca pide menos de 1 de cada cosa.
+    6. D-141: nunca más de dos especializaciones por oficio (spec_slots solo cuenta los umbrales de balance.yaml specs.slots_at,
+       que son dos) y el dominio nunca baja: cambiar de especialización guarda el de la vieja (Hero.spec_xp).
 Si cambias esto, revisa:
     - La curva (balance.yaml professions.rank_formula): cuánto tarda el rango 100 (~1 año dedicado, profesiones.md §4)
     - Servicio: engine/service/game.py (_prof_rank, _trade_gather, _trade_loot, _station_view, _recipe_view, _make)
@@ -48,8 +56,11 @@ Si cambias esto, revisa:
       que desencantar y vender las esencias pague siempre menos que vender la pieza (tests/test_oficios_equipo.py)
     - D-115 fase 2: las claves de campamento (CAMP_PERK_KEYS: fish_food, cook_food, stone_cost, build_cost, repair_cost)
       las usa el servicio en _camp_feed (despensa), _upgrade_need (obras) y _repair_need (reparar las defensas)
+    - 🎓 Especializaciones (D-141): content/professions.yaml "specs" (efectos con SPEC_KINDS y los filtros de SPEC_FILTERS: un
+      tipo de efecto nuevo va aquí, en el texto spec.effect.<tipo> y donde el servicio lo use) y balance.yaml specs (umbrales,
+      dominio, recetas exclusivas y costo de cambiar). enchant_value suma el efecto "enchant" antes de redondear
     - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py,
-      tests/test_oficios_campamento.py
+      tests/test_oficios_campamento.py, tests/test_especializaciones.py
 """
 
 from __future__ import annotations
@@ -445,23 +456,25 @@ def enchant_for_slot(slot: str, enchants: dict[str, Any]) -> str | None:
     return None
 
 
-def enchant_value(edef: dict[str, Any], rank: int, max_rank: int) -> float:
+def enchant_value(edef: dict[str, Any], rank: int, max_rank: int, bonus: float = 0.0) -> float:
     """The enchantment's value at an Enchanting rank: evenly from "min" (rank 1) to "max" (max_rank), in whole points.
 
     The value is rounded half up to a whole point (0.01 = 1 % or 1 of armor), so what the player sees is what it gives and a
-    new enchantment is only "better" when it shows a higher number.
+    new enchantment is only "better" when it shows a higher number. `bonus` (a 🎓 specialization's "enchant" effect, D-141)
+    is added before rounding.
 
     [ES]
     Qué hace: da cuánto suma un encantamiento hecho con tu rango: parejo desde "min" en el rango 1 hasta "max" en el 100,
     redondeado a puntos enteros (⚔️ Filo y ❤️ Vigor: +1 % hasta el rango 25, +2 % del 26 al 75 y +3 % del 76 al 100;
     🛡️ Guarda: +1 de defensa hasta el 50 y +2 desde el 51). El valor queda guardado en la pieza al encantar: subir de rango
-    después no lo cambia (se puede volver a encantar para mejorarlo, cuando el número sube).
-    La llaman: GameService (_enchant_view, _enchant) y las pruebas.
+    después no lo cambia (se puede volver a encantar para mejorarlo, cuando el número sube). D-141: "bonus" es lo que suma
+    la 🎓 especialización Armas o Armaduras del ✨ Encantamiento (hasta +1 punto con todo el dominio), antes de redondear.
+    La llaman: GameService (_enchant_plan, _ench_view) y las pruebas.
     Si cambia, afecta: cuánto ayuda cada encantamiento (balance.yaml enchanting.enchants).
     """
     low, high = float(edef.get("min", 0.0)), float(edef.get("max", 0.0))
     share = (min(max(rank, 1), max_rank) - 1) / max(1, max_rank - 1)
-    return math.floor((low + (high - low) * share) * 100 + 0.5 + 1e-9) / 100
+    return math.floor((low + (high - low) * share + max(0.0, bonus)) * 100 + 0.5 + 1e-9) / 100
 
 
 def enchant_cost(item: dict[str, Any], edef: dict[str, Any], cfg: dict[str, Any], essence: str = "esencia",
@@ -488,6 +501,167 @@ def enchant_cost(item: dict[str, Any], edef: dict[str, Any], cfg: dict[str, Any]
     if material:
         cost[material] = cost.get(material, 0) + 1 + level // max(1, int(cfg.get("material_per_levels", 50)))
     return cost
+
+
+# ---------------------------------------------------------------- 🎓 profession specializations (D-115, D-141)
+
+SPEC_KINDS = ("yield", "find", "masterwork", "perk", "coins", "enchant", "detect")   # [ES] tipos de efecto de una especialización
+# [ES] Filtros de un efecto → la clave del contexto que lo cumple (items → item, types → type...). Un efecto con filtro solo vale
+# cuando el contexto trae un valor de su lista; sin filtro, vale siempre.
+SPEC_FILTERS = {"items": "item", "slots": "slot", "types": "type", "sales": "sale", "enchants": "enchant", "roles": "role"}
+
+
+def spec_list(specs: dict[str, Any], pid: str) -> list[dict[str, Any]]:
+    """The specializations of a profession (content/professions.yaml "specs"), without the retired ones.
+
+    [ES]
+    Qué hace: da las especializaciones de un oficio, en el orden del archivo, sin las retiradas (retired: true).
+    La llaman: spec_held, spec_bonus, spec_finds y el servicio (pantallas 🎓 Especialización).
+    Si cambia, afecta: qué especializaciones se ven y se pueden elegir.
+    """
+    return [s for s in (specs.get(pid) or []) if not s.get("retired")]
+
+
+def spec_owner(specs: dict[str, Any], sid: str) -> tuple[str | None, dict[str, Any] | None]:
+    """(profession id, spec definition) of a specialization id, or (None, None).
+
+    [ES] Qué hace: dice de qué oficio es una especialización y cuál es su definición. La llaman: el servicio y las pruebas.
+    Si cambia, afecta: solo la búsqueda (los ids de especialización son únicos en todo el juego)."""
+    for pid in specs:
+        for sdef in spec_list(specs, pid):
+            if sdef.get("id") == sid:
+                return pid, sdef
+    return None, None
+
+
+def spec_slots(rank: int, slots_at: list[int]) -> int:
+    """How many specializations a profession rank allows: one per threshold reached (25 → 1, 75 → 2; never a third).
+
+    [ES]
+    Qué hace: cuántas especializaciones puede tener un oficio con ese rango: una por cada umbral de balance.yaml specs.slots_at
+    que alcanzó (antes del 25, ninguna; del 25 al 74, una; desde el 75, dos). Nunca tres (D-141).
+    La llaman: spec_choice y el servicio. Si cambia, afecta: cuándo se elige cada especialización.
+    """
+    return sum(1 for need in slots_at if rank >= int(need))
+
+
+def spec_share(xp: int, mastery_xp: int) -> float:
+    """Mastery of a specialization, 0..1: profession xp earned while holding it / mastery_xp (capped at 1).
+
+    [ES]
+    Qué hace: el dominio de una especialización, de 0 a 1: la experiencia de oficio que ganaste mientras la tenías, dividida
+    por balance.yaml specs.mastery_xp, sin pasar de 1. Su efecto crece parejo con esto: elegirla es empezar de cero (D-141) y
+    lo aprendido queda guardado aunque la cambies (Hero.spec_xp).
+    La llaman: spec_bonus, spec_finds y el servicio (barra de dominio, recetas exclusivas).
+    Si cambia, afecta: cuánto tarda en rendir una especialización nueva.
+    """
+    return min(1.0, max(0, int(xp)) / max(1, int(mastery_xp)))
+
+
+def spec_held(specs: dict[str, Any], held: dict[str, list[str]], pid: str) -> list[str]:
+    """The specialization ids a hero holds in a profession, in the order chosen, ignoring unknown or retired ones.
+
+    [ES] Qué hace: las especializaciones que el héroe tiene en un oficio (Hero.prof_specs), sin las que ya no existen o se
+    retiraron. La llaman: spec_bonus, spec_finds, spec_choice y el servicio. Si cambia, afecta: qué especializaciones cuentan."""
+    valid = {s["id"] for s in spec_list(specs, pid)}
+    return [sid for sid in (held.get(pid) or []) if sid in valid]
+
+
+def _spec_matches(effect: dict[str, Any], ctx: dict[str, Any]) -> bool:
+    for key, ctx_key in SPEC_FILTERS.items():
+        if key in effect and ctx.get(ctx_key) not in _as_list(effect[key]):
+            return False
+    return True
+
+
+def spec_bonus(specs: dict[str, Any], held: dict[str, list[str]], spec_xp: dict[str, int], mastery_xp: int, kind: str,
+               key: str | None = None, **ctx: Any) -> float:
+    """Sum of a kind of specialization effect over the specializations a hero holds, each × its mastery (D-141).
+
+    Args:
+        specs: content/professions.yaml "specs" (profession id -> list of specializations).
+        held: Hero.prof_specs (profession id -> spec ids). spec_xp: Hero.spec_xp (spec id -> xp earned while held).
+        kind: one of SPEC_KINDS. key: for kind "perk", the perk key (PERK_KEYS).
+        ctx: what is happening, matched against the effect's filters: item, slot, type, sale, enchant, role.
+
+    [ES]
+    Qué hace: suma los efectos de un tipo (yield, masterwork, perk, coins, enchant, detect) de las especializaciones que el héroe
+    tiene, cada uno por su dominio (spec_share): con 0 % no da nada; con 100 %, su valor entero. Un efecto con filtro (items,
+    slots, types, sales, enchants, roles) solo vale si el contexto coincide: la especialización de 🔩 Hierro no rinde en la madera.
+    La llaman: GameService._pspec_bonus (recolectar, desollar, refinar, fabricar, obra maestra, beneficios, ventas, encantar e
+    infiltrarse) y las pruebas.
+    Si cambia, afecta: cuánto da cada especialización (content/professions.yaml "specs").
+    """
+    total = 0.0
+    for pid in held:
+        sids = spec_held(specs, held, pid)
+        for sdef in spec_list(specs, pid):
+            if sdef["id"] not in sids:
+                continue
+            share = spec_share((spec_xp or {}).get(sdef["id"], 0), mastery_xp)
+            for effect in sdef.get("effects") or []:
+                if effect.get("kind") != kind or (key is not None and effect.get("key") != key):
+                    continue
+                if _spec_matches(effect, ctx):
+                    total += float(effect.get("value", 0.0)) * share
+    return total
+
+
+def spec_finds(specs: dict[str, Any], held: dict[str, list[str]], spec_xp: dict[str, int], mastery_xp: int,
+               pid: str) -> dict[str, float]:
+    """item -> chance of the "find" effects of the specializations a hero holds in ONE profession (× mastery).
+
+    [ES]
+    Qué hace: junta los hallazgos ("find") de las especializaciones que el héroe tiene en ese oficio: qué objeto y con qué
+    probabilidad (por su dominio). Valen solo cuando ese oficio trabaja: por vuelta de recolección (💠 Gemas del Minero, 🌸 Flores
+    raras del Herbolario), por unidad desollada (🦴 Trofeos) o por vez refinada (🪙 Metales preciosos de la Fundición).
+    La llama: GameService (_trade_gather, _trade_loot, _make), con un sorteo propio.
+    Si cambia, afecta: cuántas gemas y flores de luna entran al juego.
+    """
+    out: dict[str, float] = {}
+    sids = spec_held(specs, held, pid)
+    for sdef in spec_list(specs, pid):
+        if sdef["id"] not in sids:
+            continue
+        share = spec_share((spec_xp or {}).get(sdef["id"], 0), mastery_xp)
+        for effect in sdef.get("effects") or []:
+            if effect.get("kind") == "find":
+                for item in _as_list(effect.get("items") or []):
+                    out[item] = out.get(item, 0.0) + float(effect.get("value", 0.0)) * share
+    return {item: chance for item, chance in out.items() if chance > 0}
+
+
+def spec_choice(specs: dict[str, Any], held: dict[str, list[str]], pid: str, sid: str, rank: int, slots_at: list[int]) -> str:
+    """What choosing `sid` in profession `pid` would be: "held", "locked" (rank too low), "pick" (free) or "switch" (paid).
+
+    [ES]
+    Qué hace: dice qué pasa si eliges esa especialización: "held" si ya la tienes; "locked" si tu rango todavía no abre ningún
+    lugar (antes del 25); "pick" si tienes un lugar libre (la 1.ª al 25, la 2.ª al 75: gratis); "switch" si tus lugares están
+    llenos (hay que dejar una y pagar balance.yaml specs.switch_cost). Nunca deja tener tres (D-141).
+    La llaman: GameService (pantallas y acciones de 🎓 Especialización) y las pruebas.
+    Si cambia, afecta: las reglas de elegir y cambiar especialización.
+    """
+    if sid not in {s["id"] for s in spec_list(specs, pid)}:
+        return "locked"
+    have = spec_held(specs, held, pid)
+    if sid in have:
+        return "held"
+    slots = spec_slots(rank, slots_at)
+    if slots <= 0:
+        return "locked"
+    return "pick" if len(have) < slots else "switch"
+
+
+def switch_cost(rank: int, cfg: dict[str, Any]) -> int:
+    """Coins (bronze) to change one specialization for another at this profession rank: base + per_rank × rank (P-105).
+
+    [ES]
+    Qué hace: cuánto cuesta cambiar una especialización por otra: balance.yaml specs.switch_cost (100 🥉 + 20 🥉 por rango:
+    rango 25 → 6 🥈, 75 → 16 🥈, 100 → 21 🥈). Es la recomendación de P-105 (monedas que suben con el rango): un sumidero de
+    monedas que hace pensar antes de cambiar.
+    La llaman: GameService (_pspec_cost: _pspec_view, _pspec_switch_view, _pspec_switch) y las pruebas. Si cambia, afecta: cuánto sale cambiar de especialización.
+    """
+    return int(cfg.get("base", 0)) + int(round(float(cfg.get("per_rank", 0)) * max(0, rank)))
 
 
 def _as_list(value: Any) -> list[Any]:
