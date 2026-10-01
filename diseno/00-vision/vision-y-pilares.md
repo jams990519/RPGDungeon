@@ -10,7 +10,7 @@
 
 ---
 
-## Los diez pilares
+## Los once pilares
 
 | # | Pilar | Qué significa | Dónde se cumple |
 |---|---|---|---|
@@ -23,6 +23,7 @@
 | 7 | **La Torre es el calendario** | 100 pisos que se abren entre todos; cada piso es una actualización | [Torre y pisos](../02-mundo/torre-y-pisos.md) |
 | 8 | **Economía de verdad** | Casi todo lo fabrican jugadores, el equipo se gasta, los lugares son escasos y se pujan | [07 · Economía](../07-economia/README.md) |
 | 9 | **Dos años de caminos** | Muchas escaleras paralelas y muchos roles; ninguna obligatoria | [Progresión](../03-personaje/progresion.md), [Roles](roles-y-caminos-de-juego.md) |
+| 11 | **Amplio pero ligero** | Mucho para hacer, pero cada sistema tiene un camino simple de uno o dos toques; la profundidad es opcional, las pantallas son cortas, los sistemas aparecen de a poco y lo repetitivo se automatiza. Ligero también para el servidor | Auditoría de ligereza (en curso) |
 | 10 | **Respeta el tiempo** | Juego de toque, de sesión y de cita; tácticas automáticas; el tiempo fuera de línea cura y descansa | [Telegram](../01-plataforma/telegram.md), [Tácticas](../04-combate/avisos-y-tacticas.md) |
 
 ## Para quién es
