@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116); el resto, propuesta
 
 **De dónde sale.**
 - *World of Warcraft*: profesiones primarias (Minería, Herboristería, Desuello, Herrería, Peletería, Sastrería, Ingeniería, Alquimia, Encantamiento, Joyería, Inscripción) y secundarias (Cocina, Pesca, Arqueología, Primeros Auxilios). Desde *Dragonflight*: especializaciones, conocimiento semanal y pedidos de fabricación.
@@ -79,7 +79,7 @@ Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las es
 
 | Oficio | Rango 1 | Rango 25 | Rango 50 |
 |---|---|---|---|
-| 🪑 Carpintería | Bastón de roble (tablón ×3, tela) · Arco de olmo (tablón ×3, cuero) | Bastón labrado (tablón ×5, tela ×2) · Arco reforzado (tablón ×5, cuero ×2) | Báculo del artesano (tablón ×8, tela ×3, gema) · Arco del artesano (tablón ×8, cuero ×3, tela) |
+| 🪑 Carpintería (y sus 🪑 muebles, D-116: ver §0.4) | Bastón de roble (tablón ×3, tela) · Arco de olmo (tablón ×3, cuero) | Bastón labrado (tablón ×5, tela ×2) · Arco reforzado (tablón ×5, cuero ×2) | Báculo del artesano (tablón ×8, tela ×3, gema) · Arco del artesano (tablón ×8, cuero ×3, tela) |
 | 🔨 Herrería | Espada forjada (lingote ×3, cuero) · Daga forjada (lingote ×2, cuero) · Peto forjado (lingote ×4, cuero ×2) | Espada, daga y peto templados (lingote ×5/×4/×7, cuero ×2/×2/×3) | Espada y daga del artesano (lingote ×8/×6, cuero ×3, gema) · Coraza del artesano (lingote ×10, cuero ×4, tela ×2) |
 | ⚗️ Alquimia | Poción de vida ×2 (extracto, arcilla) | 🍷 Poción mayor (extracto ×2, arcilla, flor de luna) | Poción mayor ×2 (extracto ×3, arcilla ×2, flor de luna) |
 | 🪡 Sastrería | Vendas ×3 (tela, hierba curativa) · Túnica de viajero (tela ×4, cuero) | Túnica teñida (tela ×6, extracto) | Túnica del artesano (tela ×9, extracto ×2, flor de luna) |
@@ -135,7 +135,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
 | 🧶 Peletería | Quien usa cuero o malla (pícaro, druida, monje, cazador de demonios, bardo, cazador, chamán, evocador) | **+4 %** de ataque y **+3 %** de vida | Refuerzo de brazales |
 | 🧵 Sastrería | Quien usa tela (sacerdote, mago, brujo, nigromante) | **+5 %** de ataque (poder de hechizos) | Bordado de capa |
-| 🪵 Carpintería | Quien pelea con arco o bastón | **+4 %** de ataque | — |
+| 🪵 Carpintería | Artesanos (no es de combate desde D-116) | Hasta **15 %** de que cada arco o bastón que fabricas salga ✒️ **obra maestra**, y 🪑 muebles para el campamento (§0.4). Antes (0.16 a 0.20): +4 % de ataque con arco o bastón | — |
 | ⚗️ Alquimia | Todos | Las pociones curan un **30 %** más | Mixología |
 | 💍 Joyería | Todos | **+3 %** de vida y de ataque | Gemas de joyero |
 | 🩺 Medicina | Sanadores (rol de curación) | Tus curaciones curan un **15 %** más; las vendas, un **30 %** más | Primeros auxilios |
@@ -275,6 +275,7 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 - Fabricar un tipo de objeto sube su maestría: más probabilidad de buena calidad y menos Enfoque gastado.
 - Dos herreros Gran Maestro pueden ser muy distintos: uno el mejor en lanzas, otro en escudos.
 - **Por qué conviene:** nace la reputación del artesano ("para lanzas, ve con Lisbeth").
+- **Primer paso en el juego (D-116):** la ✒️ obra maestra con firma (§0.4). Hoy la probabilidad sale solo del rango del oficio (la Carpintería hasta 15 %, los demás oficios de equipo hasta 5 %); la maestría por objeto la subiría por línea.
 
 ## 7. Herramientas y ropa de oficio
 
@@ -366,7 +367,7 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | 🧭 Explorador | 🧭 Mapa | Ve más en el mapa y +5 puntos de exploración por vuelta (D-112) | en la cola |
 | Refinado (5 oficios) | 🛠️ Oficio | Hasta 30 % de sacar una unidad más al refinar | en el juego |
 | Cantería | 🏰 Castillo | Las obras de piedra del campamento piden 15 % menos piedra | fase 2 |
-| 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | en la cola (hoy da +4 % de ataque con arco o bastón: pasa a esto cuando exista la obra maestra) |
+| 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | **en el juego** (reemplazó al +4 % de ataque con arco o bastón; ver "La obra maestra en el juego", abajo) |
 | 🔨 Herrería | ⚔️ Combate + 🛠️ | +3 de armadura con placas (en el juego); reparar cuesta 30 % menos cuando exista el desgaste | en el juego / con el desgaste |
 | 🦺 Peletería | ⚔️ Combate | +4 % de ataque y +3 % de vida con cuero o malla | en el juego |
 | 🪡 Sastrería | ⚔️ Combate | +5 % de ataque con tela | en el juego |
@@ -383,4 +384,32 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 - **Los de campamento y castillo** valen para el campamento donde eres miembro: el que se dedica a construir o cocinar hace más fuerte a su grupo sin ser el que más pelea.
 - **Los de economía** no tocan el combate: el comerciante gana su lugar con dinero, comprando y vendiendo para los demás.
 - **Los exclusivos** hacen que el artesano sea buscado: una obra maestra firmada vale más en el mercado.
+
+#### La obra maestra en el juego (D-116)
+
+El dueño lo dijo así: "ser carpintero te permite hacer piezas más exclusivas". Esto es lo que ya está programado:
+
+- **Qué es.** Al fabricar una pieza de equipo (arma, pecho o joya de artesano) puede salir ✒️ **obra maestra**: la misma pieza con **+10 % en cada bono** y **un bono más** según la ranura (las armas, **+1 de defensa**, que no tienen; las armaduras, **+2 % de ataque**; las joyas, **+2 % de vida**). Lleva la **firma** de quien la hizo: en 🔁 Equipar y en la pieza se ve "✒️ Obra maestra de Lyra", y su nombre lleva la marca ✒️. Nunca sale en el botín al azar ni en el equipo inicial.
+- **Probabilidad por pieza**, pareja con el rango del oficio que fabrica (rango 50 = la mitad):
+
+| Oficio | Rango 1 | Rango 50 | Rango 100 |
+|---|---|---|---|
+| 🪑 Carpintería (arcos y bastones) | 0,15 % | 7,5 % | **15 %** |
+| 🔨 Herrería · 🪡 Sastrería · 🦺 Peletería · 💍 Joyería | 0,05 % | 2,5 % | **5 %** |
+| ⚗️ Alquimia · 🩺 Medicina (pociones y remedios) y los 🪑 muebles | — | — | nunca |
+
+  El carpintero es el especialista: su beneficio de oficio es justamente esto (`perk: {masterwork: 0.15}` en `content/professions.yaml`). La 📜 Receta muestra la probabilidad con tu rango y ⚒️ Oficios la pone en "✨ Beneficio ahora" de cada oficio que hace equipo.
+- **Vender.** El mercader paga **25 % más** por una obra maestra que por la pieza normal. Como la pieza normal ya se vende por casi lo mismo que sus materiales (D-113), quien fabrica para vender gana en promedio, con la probabilidad más alta, hasta ~4 % más que el valor de los materiales: se aceptó porque cuesta energía y el mercado entre jugadores la va a poner en su precio.
+- **🪑 Muebles exclusivos para el campamento** (solo la Carpintería, 4 ⚡ y 24 de experiencia de oficio cada uno):
+
+| Mueble | Rango | Materiales | Lo que da al campamento |
+|---|---|---|---|
+| 🛏️ Literas de roble | 40 | tablón ×12, tela ×4, cuero ×2 | **+1 lugar** para un miembro (se suma al cupo, al del gremio y a las 🛖 Cabañas) |
+| 🗄️ Armero de roble | 70 | tablón ×16, lingote ×6, cuero ×3 | **+1 de 🛡️ Defensa** contra las oleadas |
+
+  Un miembro, en el centro de su campamento, lo coloca desde 🔨 Mejoras → 🔨 Obras → 🪑 Colocar. Queda para siempre, con el nombre de quien lo puso, y vale para todos los miembros. **Uno de cada mueble por campamento:** un segundo igual no suma (se guarda en la mochila). Los muebles no cuentan como mejoras para el castillo. Mientras no se colocan, se ven en 🎒 Mochila → 📦 Recursos.
+- **Datos y código.** Números en `content/balance.yaml` → `masterwork`; las piezas gemelas `<id>_obra` las arma el motor al cargar (`engine/professions/rules.py`, `masterwork_items`); la firma se guarda en `Hero.gear_signatures` (vacío para los héroes de antes); los muebles son `kind: furniture` en `content/items.yaml` y se guardan en las mejoras del campamento (`furniture`). Pruebas: `tests/test_masterwork.py`.
+- **Lo que queda para después.** Hoy la firma se guarda por héroe y por tipo de pieza: todas las copias de un mismo arco firmado comparten la firma, y solo firma uno mismo, porque no hay mercado entre jugadores. **Cuando exista el mercado, la firma tiene que viajar con cada pieza** (un registro de obras maestras por pieza, como pide la ficha M14). La maestría por objeto (§6) podría subir la probabilidad de cada línea.
+
+**De dónde sale:** *World of Warcraft* (las piezas firmadas por el artesano y los procs de fabricación de más calidad), *Albion Online* (la calidad "obra maestra" de lo fabricado) y *Ultima Online* (los objetos con el nombre de su artesano, que se buscaban por quién los hacía).
 

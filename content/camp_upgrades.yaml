@@ -27,7 +27,10 @@
 #     - Los efectos tocan la vida que se recupera (fogon, enfermeria), la despensa (granero, ahumadero, huerto), la
 #       recolección y la exploración en el territorio (conocimiento), el cupo de miembros (cabanas) y las defensas
 #       que leerán las incursiones (GameService._camp_defense).
-#     - Pruebas: tests/test_camp_upgrades.py.
+#     - D-116: los 🪑 muebles de la Carpintería (content/items.yaml, kind: furniture) usan los mismos nombres de efecto
+#       ("members", y "defense" para la 🛡️ Defensa) y se suman a los de las mejoras (GameService._furniture_effect). No
+#       cuentan como mejoras construidas para el castillo.
+#     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles).
 
 upgrades:
   # ---- Nivel 1 (campamento): lo primero, al alcance de 2 jugadores en un día o dos

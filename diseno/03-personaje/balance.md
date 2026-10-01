@@ -512,7 +512,7 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 | ⛏️ Minero | +5 % de vida | — |
 | 🌿 Herbolario | vida que vuelve sola 20 % más rápido | — |
 | 🔪 Desollador | +4 % de ataque | — |
-| 🪑 Carpintería | +4 % de ataque | peleas con arco o bastón |
+| 🪑 Carpintería | +4 % de ataque (hasta la 0.20; desde D-116, la ✒️ obra maestra: ver el registro de abajo) | peleas con arco o bastón |
 | 🔨 Herrería | +3 puntos de armadura (tope 60 %) | llevas placas |
 | 🦺 Peletería | +4 % de ataque y +3 % de vida | llevas cuero o malla |
 | 🪡 Sastrería | +5 % de ataque | llevas tela |
@@ -530,6 +530,22 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 | Experiencia de Comercio (`professions.trade_xp_per_coin`) | 1 por cada 🥉 de la venta base | Quien vende ~240 🥉 al día llega al rango 100 en ~1 año, como los demás oficios |
 
 **Lo que queda por mirar:** el Comercio es una fuente de monedas (vender da hasta 20 % más). Si en la beta entra demasiado bronce, se compensa con el impuesto del mercado de órdenes (segunda tanda de la economía).
+
+### Octubre de 2026: la obra maestra y los muebles del campamento (D-116)
+
+**Por qué.** El dueño pidió que ser carpintero deje hacer piezas más exclusivas (D-116: los beneficios de oficio no son solo de combate). Números **nuevos** salvo el de la Carpintería, que cambia.
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Beneficio de la 🪑 Carpintería (`professions.yaml` → carpinteria.perk) | +4 % de ataque con arco o bastón al rango 100 | **hasta 15 %** de obra maestra en sus arcos y bastones (`masterwork: 0.15`), parejo con el rango | Pasa de combate a exclusivo, como pide la tabla de §0.4 de [Profesiones](../07-economia/profesiones.md) |
+| Obra maestra de los demás oficios de equipo (`masterwork.base_chance`) | — | hasta **5 %** por pieza al rango 100 (Herrería, Sastrería, Peletería, Joyería) | Que todo artesano pueda tener suerte, y el carpintero sea el especialista (3 veces más) |
+| Bono de la obra maestra (`masterwork.stat_bonus`) | — | **+10 %** en cada bono de la pieza | Se nota: una obra maestra vale más o menos lo que la pieza normal del nivel siguiente (el arco firmado del nivel 90 da +40 % de ataque; el normal del 100, +39 %), sin pasar a la obra maestra de ese nivel |
+| Bono de más (`masterwork.extra`) | — | arma +1 de defensa; pecho +2 % de ataque; joya +2 % de vida | "Un bono más", como dice la tabla del dueño |
+| Precio (`masterwork.price_mult`) | — | **×1,25** sobre la pieza normal | "Vale más". Vender todo lo fabricado, con 15 % de obras maestras, rinde en promedio ~3,7 % más que el precio de sus materiales (la pieza normal, ~99,5 %): se acepta (cuesta energía y el mercado entre jugadores la pondrá en su precio) |
+| 🛏️ Literas de roble (`items.yaml`, receta de rango 40) | — | **+1 lugar** de miembro; tablón ×12, tela ×4, cuero ×2; 4 ⚡ | Mueble exclusivo del carpintero; uno por campamento |
+| 🗄️ Armero de roble (receta de rango 70) | — | **+1 de 🛡️ Defensa** (11 → 12 con todas las mejoras); tablón ×16, lingote ×6, cuero ×3; 4 ⚡ | Cada punto debilita 4 % a los atacantes de la oleada (`raids.defense_weaken_per_point`) |
+
+**Cuenta rápida:** un carpintero de rango 100 que fabrica 20 arcos saca unos 3 firmados. Un cazador con un arco obra maestra del nivel 100 lleva +43 % de ataque en vez de +39 % y +1 de defensa: algo menos que el +4 % de ataque que daba antes el oficio, pero solo para quien tiene la pieza, y el carpintero puede venderla o regalarla cuando exista el mercado. **Lo que cambia en la medición de D-110:** en el escenario "c" de `tools/balance_report.py` (todos los oficios al 100) los que pelean con arco o bastón pierden el +4 % de ataque de la Carpintería (las obras maestras no entran en ese escenario). Medido con `tests/test_masterwork.py`: 200 piezas al rango 100 dan 32 obras maestras en la Carpintería (16 %) y 9 en la Herrería (4,5 %).
 
 ### Octubre de 2026: ⚙️ Opciones y peleas automáticas en los lotes (D-114)
 

@@ -109,6 +109,7 @@ Condición: ✨ EXCELENTE
 - Todo objeto fabricado lleva la **firma del artesano**: "Forjada por Lisbeth la Herrera".
 - Una **Obra Maestra** permite al artesano **ponerle nombre** al objeto ("*Susurro del Alba*"), y queda en un registro público de obras maestras del servidor.
 - Los artesanos con más obras maestras aparecen en un ranking.
+- **Lo que ya está en el juego (capa simple, D-116):** sin calidades todavía, una pieza de artesano puede salir ✒️ **obra maestra** (+10 % en cada bono, un bono más) con la firma de quien la hizo ("✒️ Obra maestra de Lyra"); la 🪑 Carpintería es la especialista (hasta 15 %; los demás oficios de equipo, hasta 5 %). Hoy solo firma en las piezas propias, sin nombre propio ni registro público. Ver [Profesiones](profesiones.md) §0.4.
 
 ## 9. Desmontar y reciclar
 

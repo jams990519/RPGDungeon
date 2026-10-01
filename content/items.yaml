@@ -72,6 +72,29 @@ provisiones:
   food: 1
   price: 15                  # [ES] cara a propósito: comida de emergencia del mercader (15 🥉 por ración; la carne se vende a 1)
 
+# Camp furniture (D-116): only 🪑 Carpentry makes it (content/professions.yaml). A member places it in their camp
+# (🔨 Mejoras → 🔨 Obras → 🪑 Colocar); one of each piece per camp, for ever.
+# [ES] Muebles del campamento (D-116): solo la 🪑 Carpintería los hace. Un miembro lo coloca en su campamento y queda para
+# siempre: uno de cada mueble por campamento (un segundo igual no suma). effect: lo que suma al campamento, con los mismos
+# nombres que las mejoras de content/camp_upgrades.yaml (members = lugares para miembros, defense = puntos de 🛡️ Defensa
+# que leen las oleadas). El mercader no los compra (no son material). desc_key: qué hace, en una frase.
+# Lo usan: engine/service/game.py (_furniture_effect, _works_view, _place_furniture, _resources_view).
+# Si cambias esto, revisa: members mueve el cupo (_members_cap) y defense las oleadas (_camp_defense, _raid_weaken).
+literas_roble:
+  name_key: item.literas_roble
+  desc_key: furniture.literas_roble
+  emoji: "🛏️"
+  kind: furniture
+  effect: {members: 1}       # [ES] +1 lugar para un miembro (se suma al cupo de siempre, al del gremio y a las 🛖 Cabañas)
+  price: 60
+armero_roble:
+  name_key: item.armero_roble
+  desc_key: furniture.armero_roble
+  emoji: "🗄️"
+  kind: furniture
+  effect: {defense: 1}       # [ES] +1 de 🛡️ Defensa (las 8 mejoras de defensa suman 11; con el armero, 12)
+  price: 110
+
 # Gear (D-77). slot: arma | armadura | joya. type decides who can use it (balance.yaml gear.*_by_group).
 # [ES] Equipo (D-77). stats en fracción: attack 0.04 = +4 % de ataque; hp igual con la vida; armor se SUMA a la defensa.
 # req_level: nivel mínimo para ponérselo. tier 1-4 = común, poco común, raro, épico (hasta el nivel 8); tier 5-14 = una pieza

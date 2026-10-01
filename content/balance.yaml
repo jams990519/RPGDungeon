@@ -303,6 +303,18 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   per_page: 2                # [ES] recetas por página en 🪚 Refinar y 🛠️ Fabricar cuando hay más de 3 (4 botones como mucho, D-75)
   make_batch: 5              # [ES] el botón 🔨 Hacer 5 de cada receta (y 🔨 Hacer todo, con lo que alcance)
 
+masterwork:                  # [ES] D-116 (confirmada): ✒️ obra maestra. Al fabricar una pieza de equipo puede salir exclusiva: mejor y con la firma de quien la hizo (profesiones.md §0.4). Números propuestos por Claude: se ajustan en la beta
+  # [ES] La probabilidad crece pareja con el rango del oficio que fabrica (rango 50 = la mitad). La 🪑 Carpintería usa su beneficio
+  # [ES] (content/professions.yaml perk {masterwork: 0.15}: hasta 15 % en sus arcos y bastones); los demás oficios que hacen equipo, esta base.
+  base_chance: 0.05          # [ES] Herrería, Sastrería, Peletería y Joyería: hasta 5 % por pieza al rango 100 (rango 50: 2,5 %). Las pociones y los muebles nunca
+  stat_bonus: 0.10           # [ES] la obra maestra da 10 % más en cada bono de la pieza (ataque 0,39 → 0,429)...
+  extra:                     # [ES] ...y un bono más según la ranura (se suma): las armas ganan defensa (no la tienen), las armaduras ataque y las joyas vida
+    arma: {armor: 0.01}      # [ES] +1 de defensa
+    armadura: {attack: 0.02} # [ES] +2 % de ataque
+    joya: {hp: 0.02}         # [ES] +2 % de vida
+  price_mult: 1.25           # [ES] el mercader paga 25 % más por una obra maestra que por la pieza normal. Con la probabilidad más alta (15 %) vender
+                             # [ES] todo lo fabricado rinde en promedio ~3,7 % más; la pieza normal ya vale casi lo mismo que sus materiales (tests/test_masterwork.py)
+
 auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
   defaults: {fights: manual, retreat: 50, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 50 % de vida, sí usar pociones
   retreat_choices: [30, 50, 70]   # [ES] 🩹 Retirarse con menos de: el botón va pasando por estos % de vida. Al terminar una pelea automática por debajo, el lote se corta; si una pelea sale con la vida ya por debajo, el héroe no pelea solo y la pelea te espera
