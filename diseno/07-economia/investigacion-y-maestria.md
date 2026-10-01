@@ -2,6 +2,8 @@
 
 > **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Fabricación](fabricacion.md), [Profundidad de un oficio](profundidad-de-un-oficio.md), [Investigaciones](../06-contenido/investigaciones.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) · **Se conecta con:** [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md), [Propiedad y concesiones](propiedad-y-concesiones.md), [Progresión](../03-personaje/progresion.md), [Bestiario](../06-contenido/bestiario.md), [Curación](../05-salud/curacion-y-tratamientos.md), [Red de sistemas](../00-vision/red-de-sistemas.md) · **Estado:** propuesta
 
+> **Nota (D-57 y D-58).** No hay límite de oficios (D-57): este documento ya no usa los "2 oficios mayores". Los ejemplos todavía nombran pisos y tramos, que D-58 quitó; hasta el barrido general, *tramo* se lee como *anillo* del [mapa infinito](../02-mundo/mapa-infinito-y-viaje.md) y el Viento de Cola de §10 queda pendiente de rehacer sin el Frente de pisos.
+
 **Qué pediste.** "Un sistema de crecimiento bajo las profesiones o la investigación sobre ciertas cosas bastante avanzado." Este documento sigue donde terminan [Profesiones](profesiones.md) (rangos del 1 al 100) e [Investigaciones](../06-contenido/investigaciones.md) (casos y conocimiento). Responde tres preguntas: qué hace un Gran Maestro después del 100, cómo se investiga algo nuevo y cómo avanza en conocimiento una ciudad entera.
 
 **De dónde sale.**
@@ -92,7 +94,7 @@ Cuando una rama llega a 100 (y su madre también), se abre su **Maestría**: un 
 **Lo que la Maestría nunca hace:** subir el techo de un objeto. La calidad máxima sigue siendo Obra Maestra, y el Poder de Objeto lo deciden el Tramo, la Calidad, el Encantamiento y las Mejoras (ver [Equipamiento](../03-personaje/equipamiento.md) §3). Los puntos de experimentación solo **reparten** (más daño y menos durabilidad), nunca suman. Un Gran Maestro recién salido y uno de M50 pueden hacer la misma espada; el veterano la hace más seguido, más barata y con la forma que quiere.
 
 - **Maestría descansada.** El tiempo fuera de línea acumula experiencia de maestría doble (hasta 3 días guardados), como la experiencia descansada de [Progresión](../03-personaje/progresion.md) §2. Quien entra poco no se queda atrás.
-- **No se pierde nunca.** No hay óxido ni olvido. Cambiar de oficio mayor congela la maestría igual que congela el oficio (ver [Profesiones](profesiones.md) §3).
+- **No se pierde nunca.** No hay óxido ni olvido. Dejar de practicar un oficio no la baja: queda guardada para cuando vuelvas.
 - **Los aceleradores de oficio** (ver [Monetización](monetizacion.md) §3) suben la experiencia del 1 al 100. **No tocan** la Maestría, los Puntos de Investigación, los proyectos ni el árbol de la ciudad.
 
 ### 2.3 Hitos y títulos de maestría
@@ -107,7 +109,7 @@ Cuando una rama llega a 100 (y su madre también), se abre su **Maestría**: un 
 | **Eminencia** | M40 | Retrato en el ala de Oficios del Castillo, con tus obras maestras |
 | **Leyenda del oficio** | La Maestría más alta del servidor en esa rama al cerrar cada temporada | Título único de esa temporada y tu nombre en la crónica del gremio de artesanos |
 | **Polímata** | 3 saberes combinados a 100 | Título |
-| **Maestro de dos mundos** | Los 2 oficios mayores a 100 | Título |
+| **Maestro de dos mundos** | Dos oficios mayores a 100 | Título |
 
 Todos son prestigio. Ninguno da poder.
 
@@ -118,12 +120,11 @@ Todos son prestigio. Ninguno da poder.
 Cuando un personaje sube dos oficios a cierto nivel, puede abrir un **saber combinado**: una habilidad nueva, del 1 al 100, con recetas y servicios que ninguno de los dos oficios tiene por separado.
 
 **Reglas.**
-- **Requisito:** los dos oficios a **60** (Experto). Con 60 alcanza aunque uno sea una recolección secundaria, que llega justo hasta 60 (ver [Profesiones](profesiones.md) §3).
+- **Requisito:** los dos oficios a **60** (Experto).
 - **Examen mixto:** una pieza que use los dos oficios. Para Relojería, un reloj de bolsillo; para Farmacología, una dosis exacta para un paciente real.
 - **Costo de entrada:** 50 PI de cualquier campo (§4).
-- **No ocupa un lugar de oficio mayor.** Pero como solo hay 2 mayores, un saber de dos mayores obliga a elegir: Medicina + Alquimia ya llena tus dos lugares.
+- **No es un oficio aparte:** nace de los dos que ya tienes. No hay límite de oficios (D-57); el freno es el tiempo y el costo de subir los dos a 60.
 - **Ocultos al principio.** La lista muestra "???" hasta que alguien del servidor abre cada saber. Esa persona sale en la Gaceta y en el Registro de descubridores (ver [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md) §1).
-- **Si se congela uno de los dos oficios**, el saber también se congela.
 - Al llegar a 100 abren su propia Maestría (§2).
 
 | Saber | Se abre con | Qué hace | A quién le sirve |
@@ -226,7 +227,7 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 - **Éxito** = base + tu rango o tu maestría en la rama (hasta +15) + la mesa (casa +0; Biblioteca o anexo de la Academia +5; mesas de la Academia +10) + eurekas. Como mucho 95 %.
 - **Eurekas** (estilo *Civilization VI*): mientras corre el proyecto, hacer algo relacionado suma. Diagnosticar un caso de Mal de Espuma mientras investigas su suero da +8 %. Cada proyecto muestra sus eurekas.
 - **Revisar notas:** una vez cada 8 horas, un toque con dos opciones: **ir seguro** (+3 % de éxito) o **apurar** (−20 % del tiempo que falta y −3 % de éxito). Es juego pasivo que se revisa en un toque.
-- **Fracaso normal:** recuperas la mitad de los PI y el próximo intento del mismo proyecto tiene +15 %, acumulable. Es la protección contra la mala racha de [Equipamiento](../03-personaje/equipamiento.md) §8.
+- **Fracaso normal:** recuperas la mitad de los PI y el próximo intento del mismo proyecto tiene +15 %, acumulable. Es la protección contra la mala racha de [Equipamiento](../03-personaje/equipamiento.md) §9.
 - **Fracaso grave**, solo en proyectos de riesgo (invención, venenos, pirotecnia): se pierden los materiales y puedes quemarte las manos, una herida leve (ver [Heridas](../05-salud/heridas.md)). Nada permanente.
 - **Novatos:** hasta el nivel 10 de personaje no hay fracasos graves, y los 3 primeros proyectos de cada personaje salen bien seguro: son el tutorial.
 - **Proyectos a la vez:** 1. Con M20 en cualquier rama, o con el grado de Licenciado en la Academia (§7), 2.
@@ -273,7 +274,7 @@ Un proyecto es una investigación con **costo, tiempo real y probabilidad de éx
 | Abonos | Villa | Otro +10 % de cosecha; el abono de corral (Ganadería) pasa a tener demanda | 800 · 200 de abono de corral |
 | Invernaderos | Ciudad | Plano de Invernadero para los constructores de la ciudad: cultivos fuera de estación y a salvo de la Helada (clave en los Picos Helados, tramo VI) | 1.800 · 300 de vidrio (Joyería) · 100 tablones |
 | Hibridación dirigida | Ciudad | Jardín botánico: los proyectos de variante de planta de los residentes tienen +15 % de éxito y tardan un 25 % menos | 3.500 · 20 variedades distintas donadas al Herbario de la ciudad |
-| Cumbre: **Granero de la Torre** o **Huertas finas** | Castillo | Granero: la necesidad de 🌾 Comida baja un 15 % y las conservas duran el doble. Huertas finas: la Enología y los Curados de los residentes suben de calidad con más facilidad | 6.000 · 500 sacos de grano y 100 de sal, o 300 cestos de uva y 100 toneles |
+| Cumbre: **Gran Granero** o **Huertas finas** | Castillo | Granero: la necesidad de 🌾 Comida baja un 15 % y las conservas duran el doble. Huertas finas: la Enología y los Curados de los residentes suben de calidad con más facilidad | 6.000 · 500 sacos de grano y 100 de sal, o 300 cestos de uva y 100 toneles |
 
 **⚒️ Metalurgia**
 
@@ -361,7 +362,7 @@ Cada arma de asedio tiene su respuesta en otra rama: el Trabuquete choca con las
 | ◆ Escribanía | Villa | Copiar documentos; archivo de la ciudad | Construir la casa del consejo |
 | Biblioteca pública | Villa | +25 % de PI al leer para los residentes; guarda los libros de jugadores y las patentes vencidas (§8) | 300 · 100 libros donados · 50 estanterías (Carpintería) |
 | Imprenta | Ciudad | Los escribas de la ciudad copian libros a mitad de costo y de tiempo | 800 · 50 juegos de tipos (Herrería) · 200 pliegos de papel |
-| Archivo de la Torre | Ciudad | +25 % de PI de arqueología; las piezas del Gran Misterio que encuentran los residentes se exponen y dan una pista más a la ciudad (ver [Investigaciones](../06-contenido/investigaciones.md) §2.1) | 1.800 · 30 piezas de arqueología completas |
+| Gran Archivo | Ciudad | +25 % de PI de arqueología; las piezas del Gran Misterio que encuentran los residentes se exponen y dan una pista más a la ciudad (ver [Investigaciones](../06-contenido/investigaciones.md) §2.1) | 1.800 · 30 piezas de arqueología completas |
 | Universidad | Castillo | Dos nodos a la vez; grado de Doctor y tribunales de tesis (§7) | 3.500 · construir la Universidad (obra) |
 | Cumbre: **Colegio de inventores** o **Escuela de maestros** | Castillo | Colegio: los proyectos personales de los residentes tienen +10 % de éxito. Escuela: los aprendices de maestros residentes ganan otro +25 % de experiencia y los exámenes cuestan la mitad | 6.000 · 50 tratados escritos por residentes |
 

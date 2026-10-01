@@ -91,7 +91,7 @@ El bando enemigo también tiene **vanguardia y retaguardia** (ver [Ronda y accio
 | **Pequeña** | Zorro, kóbold, limo | 1 hueco | No | No | ×0,3 |
 | **Mediana** | Lobo, necrófago, bandido | 1 hueco | Solo élites | Las humanoides: cabeza, brazos, piernas | ×0,6 a ×1 |
 | **Grande** | Oso, gólem, wyrm joven | 2 huecos | Sí | 1 o 2 especiales | ×2 a ×3 |
-| **Enorme** | Gigante, forjado, tortuga volcán | Toda su fila | Sí, alta | 2 a 4 | ×5 a ×8 |
+| **Enorme** | Gigante, forjado, tortuga volcán | Toda su fila | Sí, alta | 2 a 4 | ×5 a ×8, con tope de 9.999 |
 | **Colosal** | Solo jefes (ver [Jefes](jefes.md)) | Las dos filas | Muy alta | Muchas | 5 o 6 dígitos |
 
 **Ejemplo de números.** En el tramo V un jugador tiene unos 900 de vida. Un lobo tiene unos 600; un gigante, unos 6.000. Ningún monstruo común pasa de 4 dígitos, tampoco con modificadores (§7).
@@ -290,7 +290,7 @@ No sangran, no se envenenan y no tienen miedo. Suben el estrés. Son los grandes
 |---|---|---|---|---|
 | **Esqueleto Soldado** | II · 🌾 viejos campos de batalla | Se vuelve a armar una vez si no se le rompe el cráneo con contundente | 🦠 **Tétanos de Óxido** (armas oxidadas) | Cráneo → polvo de hueso (abono, Alquimia) · chatarra (Fundición) |
 | **Necrófago** | IV · 🐸 Pantano · noche | **Carroñero**: remata derribados y come cadáveres para curarse | 🟤 Podredumbre · 🦠 **Podredumbre Gris** por zarpa | Garras, mandíbula → uñas de necrófago (aceite de necrófagos) · bilis negra |
-| **Portador de la Plaga** | Cualquier tramo y terreno, solo en una epidemia | **Kamikaze**: al morir revienta en una nube que llena el Contagio de toda su fila | 🦠 **Plaga Pálida** (en el evento) | Vientre → bilis de plaga (muestras para la cura; ver [Eventos](eventos.md)) |
+| **Portador de la Plaga** | Cualquier tramo y terreno, solo en una epidemia | **Kamikaze**: al morir revienta, la ronda siguiente y con aviso 🦠, en una nube que llena el Contagio de toda su fila | 🦠 **Plaga Pálida** (en el evento) | Vientre → bilis de plaga (muestras para la cura; ver [Eventos](eventos.md)) |
 | **Momia de Arena** | V · 🏜️ Desierto · tumbas | Las vendas arden: el fuego la daña de más | ☠️ *Polvo de tumba*: no recibe curación 2 rondas | Vendas → lino antiguo (Arqueología) · amuleto funerario |
 | **Caballero Hueco** | VII · 🏛️ Ruinas | Mediano con Postura. Bloquea, contraataca y usa golpes retrasados | Fractura, laceración | Yelmo → acero antiguo (variante de Fundición) · a veces un plano antiguo |
 | **Engendro Vampírico** | VII · 🏛️ Ruinas · noche | Roba vida. Al 30 % se vuelve niebla y huye | 🦠 **Fiebre de Sangre** → vampirismo | Colmillos → colmillo de vampiro · ceniza de vampiro (reactivo de templo) |
@@ -381,7 +381,7 @@ Enormes, con Postura. Romperles las piernas los tira al suelo. Algunos negocian.
 | **Ogro del Puente** | II · 🌾 Llanura, ríos | **Territorial**. Cobra peaje: si pagas, no hay pelea | Fractura · derribo | Cinturón → cuero de ogro · el oro de los peajes |
 | **Cíclope de Cantera** | III · ⛰️ Montaña | Lanza rocas a la retaguardia. Con el ojo roto, pega al azar | Fractura · conmoción | Ojo → lente de cíclope (catalejos, Ingeniería) |
 | **Gigante del Fango** | IV · 🐸 Pantano | Se regenera, salvo la ronda en que recibe fuego o ácido | Mordida sucia: riesgo de 🦠 **Gangrena** | Hígado → sangre regenerativa (pociones, Alquimia) |
-| **Gigante de Escarcha** | VI · ⛰️ Montaña, ❄️ | *Meteoro de hielo*: hay que agruparse para repartirlo | ❄️ Congelación | Barba helada → hielo eterno · piel de mamut que viste |
+| **Gigante de Escarcha** | VI · ⛰️ Montaña, ❄️ | *Meteoro de hielo* avisado: se reparte entre la fila marcada, y quien lo esquiva deja más daño a los demás | ❄️ Congelación | Barba helada → hielo eterno · piel de mamut que viste |
 | **Titán de Ceniza** | VIII · 🌋 Volcánico | Cada paso deja fuego en una fila. La escarcha lo apaga una ronda | 🔥 Quemadura · 🦠 **Fiebre de Ceniza** | Corazón → brasa eterna (Herrería); en élites, artefacto menor |
 | **Gigante de las Nubes** | X · 🌸 Tierras flotantes | *Soplido*: saca a un jugador del combate 2 rondas | Llena la Firmeza | Manto → algodón de nube (tela livianísima, Sastrería) |
 
@@ -421,7 +421,7 @@ Suben el estrés y pueden dejar Corrupción (ver [Mente](../05-salud/mente.md)).
 | **Sabueso Infernal** | VIII · 🌋, 🔥 | **Manada** de 3. En dificultad Pesadilla, **te caza** por el mapa | 🔥 Quemadura · **Frenesí** (§6.3) | Colmillos ígneos · glándula de azufre |
 | **Señor de la Fosa** | VIII · 🔥 Ciudadela | Enorme. Abre grietas que **corrompen el terreno** e invoca diablillos | 🔥 Quemadura · Corrupción leve | Cuernos → sangre de demonio (Encantamiento); artefacto menor |
 | **Peregrino Falso** | IX · 🌑 Abismo y caminos de pisos altos | **Mimético**: parece un PNJ perdido que pide ayuda | 🌀 Locura · estrés | Máscara → polvo de ecos · la carta que llevaba (pista de un caso) |
-| **Tragaluz** | IX · 🌑 Abismo | *Presencia*: cada ronda baja la cordura del grupo | 🦠 **Fiebre del Vacío** · 🌀 Locura | Ojo negro (Encantamiento de sombra) |
+| **Tragaluz** | IX · 🌑 Abismo | *Presencia*: cada ronda baja la cordura del grupo | 🦠 **Fiebre del Vacío** (solo en su pulso avisado, cada 3 rondas) · 🌀 Locura | Ojo negro (Encantamiento de sombra) |
 | **Larva del Vacío** | IX · 🌑 Abismo | **Parásito**: se pega a la espalda y susurra | 🦠 **Fiebre del Vacío** | Larva seca (reactivo, Alquimia) |
 
 ### 4.15 Feéricos corruptos
@@ -448,7 +448,7 @@ Nacen en los nodos con ☣️ Contaminación (ver [Peligros del entorno](../05-s
 | **Sapo Bilioso** | IV · 🐸 Pantano | Escupe bilis a la retaguardia. **Explota al morir** | 🟢 Veneno · 🦠 **Mal de Escoria** | Glándula → bilis (venenos de caza) |
 | **Carpa de Tres Ojos** | IV · 🌊 ríos contaminados | Se pesca, no se pelea. Comerla enferma | 🦠 **Mal de Escoria** (al comerla) | Ojo extra (Alquimia) |
 | **Abominación de Vertedero** | VII · pisos con contaminación alta | Élite. Come cadáveres de monstruos y crece una talla | 🟤 Podredumbre · 🦠 **Mal de Escoria** | Glándula mutágena (transmutación, Alquimia) |
-| **Masa de Escoria** | VIII · 🌋, junto a forjas | **Se come las armas** que quedan en el suelo y se vuelve más dura | 🦠 **Tétanos de Óxido** | Núcleo → chatarra fundida (metal de calidad al azar, Fundición) |
+| **Masa de Escoria** | VIII · 🌋, junto a forjas | **Se come las armas** sueltas del botín y la chatarra, y se vuelve más dura. Nunca el equipo de un jugador: un arma desarmada solo pierde durabilidad | 🦠 **Tétanos de Óxido** | Núcleo → chatarra fundida (metal de calidad al azar, Fundición) |
 
 ### 4.17 Aberraciones del Abismo
 
@@ -637,7 +637,7 @@ Duran un solo combate. No son enfermedades: no cuentan para el tope.
 | **El Anticuario** | VII · piso 64 · 🏛️ | Autómata que colecciona | Cuando alguien excava (Arqueología) | Roba piezas de arqueología y las guarda en su cámara | Lo robado · llave de su cámara (tesoro) |
 | **El Rey sin Corona** | VII · piso 68 · 🏛️ | Caballero Hueco único | Eclipse | Duelo de honor: si lo atacan varios a la vez, llama a su guardia | Corona rota (Arqueología) · acero antiguo puro |
 | **Brasaviva** | VIII · piso 73 · 🔥 | Fénix de Ceniza | Tras una erupción | Renace tres veces: cada vez hay que apagar sus cenizas | Pluma de Brasaviva (ingrediente de artefacto) |
-| **Mandíbula de Forja** | VIII · piso 78 · 🌋 | Masa de Escoria gigante | Si las forjas del piso ensuciaron mucho en la semana | Se come las armas de los caídos | Corazón de escoria (metal de calidad excepcional al azar) |
+| **Mandíbula de Forja** | VIII · piso 78 · 🌋 | Masa de Escoria gigante | Si las forjas del piso ensuciaron mucho en la semana | Se come las armas sueltas y la chatarra del campo de batalla (nunca el equipo de un jugador) | Corazón de escoria (metal de calidad excepcional al azar) |
 | **El Que Imita** | IX · piso 84 · 🌑 | Horror Sin Rostro único | Solo ante grupos | Imita el registro de combate y la voz de los aliados | 🦠 *Ojo del Abismo* · máscara de ecos (cosmético) |
 | **El Ojo del Pozo** | IX · piso 89 · 🕳️ | Ojo Flotante colosal | Cuando la cordura del piso está baja (evento) | Mira a una fila por ronda: Locura acumulada | Cristalino del Pozo (lente mayor, Joyería) |
 | **El Jardinero Primero** | X · piso 93 · 🌸 | Autómata antiguo | Primavera | Repara a todos los constructos del piso mientras viva | Tijeras del Primero (apariencia de herramienta) · aceite antiguo |
