@@ -727,3 +727,26 @@ Las cinco con poca vida del informe del bestiario (Mago Arcano, Druida Feral, Ba
 - **Artesano en cabeza, manos, piernas y pies:** todavía solo hay botín en esas 4 ranuras; lo mejor de cada nivel es de artesano en arma, pecho y joya. Van con la segunda tanda de la economía (D-113: durabilidad y pedidos).
 - **El nivel 10:** la defensa queda pareja con el ataque (−4 a +4 puntos) porque el Guardián del nivel 6 frena subirla antes.
 - `tools/balance_report.py` tarda ~20 s el informe completo con 4 procesos; el modo `--trial`, ~1 minuto.
+
+### Octubre de 2026: historia, encargos y facciones (D-117, provisional)
+
+**Por qué.** El dueño pidió que el juego sea largo por su historia y su rol, no por subir despacio (ver [Historia y rol](../06-contenido/historia-y-rol.md) §0). La historia paga experiencia, monedas, reputación y cosas, así que sus números entran aquí. Son **nuevos**, propuestos por Claude; no se movió ningún número de antes (tampoco `hero.xp_formula`: la velocidad de los niveles sigue en P-77). Se ajustan en la beta.
+
+**Números nuevos** (`content/balance.yaml` → `story`; premios de cada misión y encargo en `content/story.yaml`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Experiencia de misión por ⚡ (`story.xp_per_energy`) | 20 × los ⚡ que pide la misión (`energy`) × (1 + 0,15 × (nivel de la misión − 1)) | Lo mismo que da explorar por ⚡ (D-104, D-108): mientras haces la historia rindes el doble, pero cada misión se cobra una sola vez. La escala es la de matar y recolectar (`hero.xp_level_scale`) |
+| Experiencia de encargo por ⚡ (`story.task_xp_per_energy`) | 10 × ⚡ del encargo × (1 + 0,15 × (nivel del héroe − 1)) | La mitad, porque se repiten cada día |
+| Monedas del encargo (`story.task_coins_per_level`) | 8 a 12 🥉 × (1 + 0,1 × (nivel − 1)) | Como el oro de las peleas (+10 % por nivel) |
+| Encargos de campamento (`story.camp_tasks`, premio en `story.yaml`) | 2 por semana; 60 exp y 30 🥉 a cada miembro que aportó | Algo más que el premio de la partida de caza (40 y 20): es una semana de trabajo entre todos |
+| Rangos de reputación (`story.ranks`) | Conocido 100 · Apreciado 300 · Honrado 700 · Héroe 1.500 | Conocido con el Capítulo 1; Apreciado en ~3-4 semanas de encargos; Héroe, meta de meses |
+| Rasgos de origen (`story.yaml` origins) | +15 % de experiencia de un oficio de recolección, +10 % en refinado y fabricación, −10 % en el mercader o +10 % de reputación | Chicos y nunca de combate (D-49) |
+
+**Cuenta rápida.**
+- **Capítulo 1:** 7 misiones, 57 ⚡ de actividades, ~1.500 de experiencia de premio (100, 80, 138, 229, 156, 348 y 448), 140 🥉 y las monedas de las decisiones (hasta 150). Un origen: 15 a 18 ⚡, 354 a 420 de experiencia y 35 🥉 (más su regalo).
+- Juntos, ~1.900 de experiencia: un 16 % de lo que pide el nivel 8 (11.618). La experiencia de las acciones mismas (explorar, recolectar, pelear) se cobra aparte, como siempre.
+- **Encargos:** 3 por día, de 2 a 6 ⚡ cada uno. Al nivel 1 pagan 20 a 60 de experiencia: unos 120 al día, contra ~800 de un día entero de energía (40 ⚡ × ~20). Es un +15 % al ritmo diario, igual para todos los caminos (cuentan explorar, recolectar, pelear, cazar, fabricar y vender).
+- **Monedas que entran:** ~30 🥉 por día en encargos al nivel 1; los premios de rango son cosas que ya existen (consumibles, materiales) y algo de monedas en la Cofradía (50, 150 y 500 🥉, una sola vez).
+
+**Lo que queda por mirar:** si el +15 % diario de los encargos acelera demasiado la subida (D-108 pide caminos parejos; si pasa, bajar `task_xp_per_energy`); si las misiones de "ganar peleas" de los orígenes y del capítulo son muy duras al nivel que piden; si Apreciado llega demasiado pronto o tarde con un encargo por facción al día; y si los premios de rango de la Cofradía (monedas) pesan más que los de las otras dos.

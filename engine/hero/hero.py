@@ -29,6 +29,11 @@ Si cambias esto, revisa:
       Vacío = lo de balance.yaml auto_fight.defaults (también para los héroes guardados antes: ✋ Manual, 50 %, sí).
       Solo se guarda lo que el jugador cambia (engine/service/game.py _option, _options_view, _set_option;
       tests/test_options.py)
+    - origin, story, factions, journal, bio (D-117, provisional): la historia y el rol. origin = id de origen de
+      content/story.yaml (None = sin elegir: los héroes guardados antes lo eligen la primera vez que abren 👤 Héroe o
+      📖 Historia, sin bloquear nada); story = misiones hechas, paso en curso, decisiones, encargos del día y premios
+      cobrados; factions = reputación por facción; journal = entradas del 📔 Diario; bio = biografía de /bio. Todos
+      vacíos por defecto, así los héroes viejos cargan igual (engine/service/story.py; tests/test_story.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -79,6 +84,15 @@ class Hero:
             a batch), "retreat" (auto fights: the batch stops below this % of life) and "potions" (auto fights may use
             the belt). Only what the player changed is saved; missing keys use balance.yaml auto_fight.defaults, so
             heroes saved before it load with ✋ Manual, 50 % and potions on.
+        origin: origin id from content/story.yaml (D-117); None until chosen (heroes saved before it choose it the first
+            time they open the hero sheet or 📖 Historia, never blocking play).
+        story: story progress (D-117): "offered" (the origin choice was shown), "q" {quest id: {"s": step, "n": count}},
+            "done" (quest ids), "c" {decision id: option}, "met" (characters talked to), "daily" {"day", "p", "done"},
+            "ranks" {faction: highest rank index rewarded}, "g_at" (last gesture), "tasks" (daily tasks done), "jg"/"jt"
+            (Guardians and titles already in the journal). Empty for heroes saved before it.
+        factions: reputation points per faction id (D-117); missing = 0 (Desconocido).
+        journal: 📔 Diario entries {"t": time, "k": text key, "v": values}, oldest first, capped (balance story.journal_max).
+        bio: the short biography written with /bio (D-117); "" = none.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -135,6 +149,11 @@ class Hero:
     seen_at: float = 0.0
     professions: dict[str, int] = field(default_factory=dict)
     options: dict[str, Any] = field(default_factory=dict)
+    origin: str | None = None
+    story: dict[str, Any] = field(default_factory=dict)
+    factions: dict[str, int] = field(default_factory=dict)
+    journal: list[dict[str, Any]] = field(default_factory=list)
+    bio: str = ""
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

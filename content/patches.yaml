@@ -316,3 +316,14 @@ v0_19:
     - "⚒️ Lo mejor de cada nivel lo fabrican los artesanos: 90 recetas nuevas de armas, armaduras y joyas épicas (rangos 55 a 100). El botín de nivel alto llega como mucho a raro."
     - "🧱 Los tanques ahora aguantan más: terminan las peleas con más vida que los de ataque. Los sanadores se sostienen mejor y el ataque sigue matando más rápido."
     - "⚔️ Los enemigos pegan más a medida que sube su nivel: las peleas normales tienen algo de riesgo. Revisa tu equipo si llevas tiempo sin cambiarlo."
+
+v0_20:
+  version: "0.20"
+  title: "📖 Lost Realms 0.20: historia y rol"
+  notes:
+    - "📖 Nuevo botón Historia en el menú de abajo (también /historia). Si no lo ves, toca /start."
+    - "🎭 Elige el origen de tu héroe: soldado desertor, aprendiz de gremio, huérfano de las Ruinas, noble caído, curandero de aldea o minero de las vetas. Cada uno tiene su propia historia de 3 misiones, un rasgo y un regalo."
+    - "🔥 Capítulo 1, «Las brasas del Claro»: 7 misiones con Marta, Odo, Iria, Anselmo y Brena, y decisiones que ellos recuerdan. Termina frente a Raigambre."
+    - "⚜️ Tres facciones: la Llama Común, el Círculo del Umbral y la Cofradía de los Restos. Sube tu reputación para ganar títulos y premios."
+    - "📜 Encargos diarios en el tablón del Claro (/encargos) y encargos semanales para hacer con los miembros de tu campamento."
+    - "📔 Tu diario de héroe (/diario), que puedes mostrar a otros. Escribe tu biografía con /bio y saluda o brinda con quien esté en tu zona: /saludar, /brindar."

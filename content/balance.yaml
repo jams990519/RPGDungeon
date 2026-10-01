@@ -316,3 +316,27 @@ auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada 
     hot_below: 0.8           # [ES] renueva su curación lenta con menos de 80 %
     heal_late_below: 0.6     # [ES] si no hay nada mejor que hacer, se cura con menos de 60 %
     finisher_combo: 3        # [ES] remata con 3 puntos de combo o más
+
+story:                       # [ES] D-117 (provisional): historia y rol, capa simple (historia-y-rol.md §1; misiones, personajes y encargos en content/story.yaml). Números propuestos por Claude: se ajustan en la beta
+  xp_per_energy: 20          # [ES] experiencia de una misión por cada ⚡ que pide (story.yaml "energy"), × (1 + 0,15 × (nivel de la misión − 1)), como matar (D-108).
+                             # [ES] Es lo mismo que da explorar por ⚡ (~20): mientras haces la historia rindes el doble, pero cada misión se cobra una sola vez.
+                             # [ES] El Capítulo 1 (57 ⚡, ~1.500 de experiencia) y un origen (15-18 ⚡, ~400) suman ~1.900: un 16 % de lo que pide el nivel 8 (no es un atajo)
+  task_xp_per_energy: 10     # [ES] los encargos del tablón pagan la mitad por ⚡ (se repiten cada día) y escalan con el nivel del héroe: 3 al día suman ~+15 % al ritmo de un día entero de juego
+  task_coins_per_level: 0.1  # [ES] las monedas del encargo suben 10 % por nivel del héroe (como el oro de las peleas)
+  camp_tasks: 2              # [ES] encargos de campamento por semana (entre todos los miembros); premio en story.yaml camp_tasks
+  ranks:                     # [ES] rangos de reputación con cada facción: desde cuántos puntos rige cada uno. Ids estables (los premios de rango los usan)
+    - {id: mal_visto, from: -1000000}   # [ES] menos de 0: la facción te mira con desconfianza (los personajes lo dicen); no quita nada
+    - {id: desconocido, from: 0}
+    - {id: conocido, from: 100}         # [ES] se llega en el Capítulo 1 con la facción que más ayudaste
+    - {id: apreciado, from: 300}        # [ES] encargos: +10 por encargo, uno por facción al día → ~3-4 semanas
+    - {id: honrado, from: 700}
+    - {id: heroe, from: 1500}           # [ES] meta larga: varios meses de encargos con esa facción (el juego es largo por la historia, D-117)
+  bio_max: 200               # [ES] largo máximo de la biografía que escribes con /bio (en caracteres)
+  toast_max: 80              # [ES] largo máximo del brindis de /brindar
+  journal_max: 200           # [ES] entradas que guarda el 📔 Diario de cada héroe (las más viejas se borran)
+  journal_shown: 12          # [ES] entradas que muestra 📔 Diario (las últimas)
+  card_shown: 5              # [ES] entradas en la tarjeta que ven los demás (/diario <nombre> y 📣 Mostrar)
+  gesture_seconds: 60        # [ES] /saludar, /brindar y 📣 Mostrar: una vez por minuto como mucho (no llenar el chat de nadie)
+  emblem_min_rank: 5         # [ES] desde qué rango de oficio aparece el emblema del oficio junto a tu nombre (🩺 Lyra)
+  npc_page: 3                # [ES] personajes por página en 🧑 Personajes (4 botones como mucho, D-75)
+  origin_page: 3             # [ES] orígenes por página al elegir el tuyo (4 botones como mucho)
