@@ -1,0 +1,470 @@
+# Player-facing texts for the classes added after version 0.1 (merged with es.yaml).
+# [ES] Textos de las clases y especializaciones nuevas. El motor mezcla este archivo con es.yaml.
+# Para qué sirve: nombres de clases, specs, ataques básicos, habilidades y recursos.
+# Lo usa: engine/core/content.py (_read_texts) y, por las claves, el servicio y el combate.
+# Si cambias esto, revisa: cada spec de content/classes.yaml necesita class.<id>.name, .role y .attack_name;
+# cada habilidad necesita ability.<id>.name; cada grupo, class_group.<id>.name y .desc.
+# Los de guerrero, picaro y sacerdote (los IDs viejos) siguen en es.yaml.
+
+class_group:
+  paladin: {name: "⚜️ Paladín", desc: "placas y Poder Sagrado: juzga, protege y cura desde el frente"}
+  cazador: {name: "🏹 Cazador", desc: "malla y foco: apunta, manda a su bestia y pone trampas"}
+  caballero_muerte: {name: "💀 Caballero de la Muerte", desc: "placas y runas: congela, drena vida y esparce plagas"}
+  chaman: {name: "⚡ Chamán", desc: "malla y Vorágine: rayos, mareas y tótems"}
+  mago: {name: "🔮 Mago", desc: "tela y maná: fuego, hielo y magia arcana"}
+  brujo: {name: "🕯️ Brujo", desc: "tela y fragmentos de alma: caos, demonios y maldiciones"}
+  monje: {name: "☯️ Monje", desc: "cuero y chi: combos, tambaleo y nieblas que curan"}
+  druida: {name: "🌿 Druida", desc: "cuero y formas: felino, oso, sanador o astral; el único con los 4 roles"}
+  cazador_demonios: {name: "😈 Cazador de demonios", desc: "cuero y Furia: saltos viles, sigilos y almas"}
+  evocador: {name: "🐉 Evocador", desc: "malla y Esencia: aliento de dragón y magia del tiempo"}
+  nigromante: {name: "🦴 Nigromante", desc: "tela y almas cosechadas: plagas, esqueletos y vida robada"}
+  bardo: {name: "🎻 Bardo", desc: "cuero y Compás: ritmo de espadas, baladas y tempo"}
+
+class:
+  guerrero_furia:
+    name: "🛡 Guerrero · Furia"
+    role: "abre una ventana con Golpe Colosal y la aprovecha"
+    attack_name: "Doble tajo"
+  guerrero_senor_guerra:
+    name: "🛡 Guerrero · Señor de la Guerra"
+    role: "planta estandartes: más daño o menos daño recibido"
+    attack_name: "Golpe de mando"
+  paladin_reprension:
+    name: "⚜️ Paladín · Reprensión"
+    role: "juzga al enemigo y lo castiga con luz"
+    attack_name: "Golpe de cruzado"
+  paladin_proteccion:
+    name: "⚜️ Paladín · Protección"
+    role: "escudo que silencia y auras que protegen"
+    attack_name: "Martillo del justo"
+  paladin_sagrado:
+    name: "⚜️ Paladín · Sagrado"
+    role: "cura desde la vanguardia con su Faro de Luz"
+    attack_name: "Choque sagrado"
+  cazador_punteria:
+    name: "🏹 Cazador · Puntería"
+    role: "apunta una ronda y el disparo siguiente no falla"
+    attack_name: "Disparo firme"
+  cazador_bestias:
+    name: "🏹 Cazador · Bestias"
+    role: "su mascota tanquea y él la dirige"
+    attack_name: "Disparo de cobra"
+  cazador_supervivencia:
+    name: "🏹 Cazador · Supervivencia"
+    role: "trampas y señuelos: le quita opciones al enemigo"
+    attack_name: "Lanza de supervivencia"
+  picaro_sutileza:
+    name: "🗡️ Pícaro · Sutileza"
+    role: "no bloquea, esquiva: tanque de riesgo y premio"
+    attack_name: "Puñalada sombría"
+  picaro_forajido:
+    name: "🗡️ Pícaro · Forajido"
+    role: "tira los dados del destino y distrae al enemigo"
+    attack_name: "Golpe siniestro"
+  sacerdote_sombra:
+    name: "✨ Sacerdote · Sombra"
+    role: "daño en el tiempo y Locura"
+    attack_name: "Explosión mental"
+  sacerdote_sagrado:
+    name: "✨ Sacerdote · Sagrado"
+    role: "curas grandes y curas que duran"
+    attack_name: "Fuego sagrado"
+  caballero_muerte_escarcha:
+    name: "💀 Caballero de la Muerte · Escarcha"
+    role: "acumula congelación hasta dejar al enemigo quieto"
+    attack_name: "Golpe helado"
+  caballero_muerte_sangre:
+    name: "💀 Caballero de la Muerte · Sangre"
+    role: "recibe el golpe para devolverlo como vida"
+    attack_name: "Golpe de corazón"
+  caballero_muerte_profano:
+    name: "💀 Caballero de la Muerte · Profano"
+    role: "plagas que hacen rendir menos al enemigo"
+    attack_name: "Golpe de plaga"
+  chaman_elemental:
+    name: "⚡ Chamán · Elemental"
+    role: "rayos y lava que a veces se repiten solos"
+    attack_name: "Descarga de rayo"
+  chaman_restauracion:
+    name: "⚡ Chamán · Restauración"
+    role: "cura en cadena y con tótems de marea"
+    attack_name: "Choque de tierra"
+  chaman_totems:
+    name: "⚡ Chamán · Tótems"
+    role: "planta tótems que ayudan y protegen solos"
+    attack_name: "Golpe de tormenta"
+  mago_fuego:
+    name: "🔮 Mago · Fuego"
+    role: "encadena críticos hasta la Piroexplosión"
+    attack_name: "Bola de fuego"
+  mago_escarcha:
+    name: "🔮 Mago · Escarcha"
+    role: "congela y deja que el hielo reciba el daño"
+    attack_name: "Descarga de escarcha"
+  mago_arcano:
+    name: "🔮 Mago · Arcano"
+    role: "acumula Cargas Arcanas y las reparte"
+    attack_name: "Misil arcano"
+  brujo_destruccion:
+    name: "🕯️ Brujo · Destrucción"
+    role: "guarda fragmentos para una Descarga del Caos"
+    attack_name: "Incinerar"
+  brujo_demonologia:
+    name: "🕯️ Brujo · Demonología"
+    role: "su Guardia Vil tanquea y él lo sostiene"
+    attack_name: "Descarga de sombras"
+  brujo_afliccion:
+    name: "🕯️ Brujo · Aflicción"
+    role: "maldiciones que debilitan y drenan"
+    attack_name: "Corrupción"
+  monje_viajero_viento:
+    name: "☯️ Monje · Viajero del Viento"
+    role: "golpes en combo que nunca se repiten"
+    attack_name: "Palma del tigre"
+  monje_maestro_cervecero:
+    name: "☯️ Monje · Maestro Cervecero"
+    role: "tambalea el daño en varias rondas y lo purga"
+    attack_name: "Palma del tigre"
+  monje_tejedor_niebla:
+    name: "☯️ Monje · Tejedor de Niebla"
+    role: "curas canalizadas que crecen si no se cortan"
+    attack_name: "Patada giratoria"
+  druida_feral:
+    name: "🌿 Druida · Feral"
+    role: "sangrados y combos en forma felina"
+    attack_name: "Arañazo"
+  druida_guardian:
+    name: "🌿 Druida · Guardián"
+    role: "oso que convierte la ira en vida"
+    attack_name: "Vapulear"
+  druida_restauracion:
+    name: "🌿 Druida · Restauración"
+    role: "curas en el tiempo: planifica por adelantado"
+    attack_name: "Cólera"
+  druida_equilibrio:
+    name: "🌿 Druida · Equilibrio"
+    role: "el Eclipse potencia y las raíces frenan"
+    attack_name: "Fuego estelar"
+  cazador_demonios_estrago:
+    name: "😈 Cazador de demonios · Estrago"
+    role: "salta, golpea y esquiva en la misma ronda"
+    attack_name: "Mordisco del demonio"
+  cazador_demonios_venganza:
+    name: "😈 Cazador de demonios · Venganza"
+    role: "sigilos que se activan una ronda después"
+    attack_name: "Cizalla"
+  cazador_demonios_devorador:
+    name: "😈 Cazador de demonios · Devorador"
+    role: "consume almas y reparte su poder"
+    attack_name: "Rayo del vacío"
+  evocador_devastacion:
+    name: "🐉 Evocador · Devastación"
+    role: "carga alientos de dragón de 1 a 3 rondas"
+    attack_name: "Llama viva"
+  evocador_preservacion:
+    name: "🐉 Evocador · Preservación"
+    role: "magia del tiempo: duplica curas y rebobina el daño"
+    attack_name: "Llama viva"
+  evocador_aumentacion:
+    name: "🐉 Evocador · Aumentación"
+    role: "presta su poder y asegura el crítico"
+    attack_name: "Erupción"
+  nigromante_plaga:
+    name: "🦴 Nigromante · Plaga"
+    role: "enfermedades que saltan de enemigo en enemigo"
+    attack_name: "Descarga necrótica"
+  nigromante_legion:
+    name: "🦴 Nigromante · Legión"
+    role: "un muro de esqueletos que se sacrifican por él"
+    attack_name: "Descarga necrótica"
+  nigromante_drenaje:
+    name: "🦴 Nigromante · Drenaje"
+    role: "cura con la vida que le roba al enemigo"
+    attack_name: "Toque marchito"
+  bardo_duelista:
+    name: "🎻 Bardo · Duelista"
+    role: "danza de espadas: combos con ritmo"
+    attack_name: "Estocada"
+  bardo_trovador:
+    name: "🎻 Bardo · Trovador"
+    role: "baladas que curan cada ronda mientras suenan"
+    attack_name: "Acorde cortante"
+  bardo_estratega:
+    name: "🎻 Bardo · Estratega"
+    role: "mueve la iniciativa: adelanta aliados y retrasa enemigos"
+    attack_name: "Golpe de compás"
+
+ability:
+  golpe_colosal:
+    name: "Golpe Colosal"
+  ejecutar:
+    name: "Ejecutar"
+  parada:
+    name: "Parada"
+  estandarte_de_guerra:
+    name: "Estandarte de Guerra"
+  estandarte_de_muralla:
+    name: "Estandarte de Muralla"
+  intervenir:
+    name: "Intervenir"
+  juicio:
+    name: "Juicio"
+  veredicto_templario:
+    name: "Veredicto del Templario"
+  escudo_divino:
+    name: "Escudo Divino"
+  escudo_del_vengador:
+    name: "Escudo del Vengador"
+  bendicion_de_proteccion:
+    name: "Bendición de Protección"
+  aura_de_devocion:
+    name: "Aura de Devoción"
+  destello_de_luz:
+    name: "Destello de Luz"
+  faro_de_luz:
+    name: "Faro de Luz"
+  escudo_divino_sagrado:
+    name: "Escudo Divino"
+  apuntar:
+    name: "Apuntar"
+  disparo_certero:
+    name: "Disparo Certero"
+  destrabarse:
+    name: "Destrabarse"
+  orden_de_matar:
+    name: "Orden de Matar"
+  aspecto_de_la_tortuga:
+    name: "Aspecto de la Tortuga"
+  postura_provocar:
+    name: "Postura: Provocar"
+  trampa_de_alquitran:
+    name: "Trampa de Alquitrán"
+  marca_del_cazador:
+    name: "Marca del Cazador"
+  senuelo:
+    name: "Señuelo"
+  danza_de_las_sombras:
+    name: "Danza de las Sombras"
+  contraataque:
+    name: "Contraataque"
+  provocacion_burlona:
+    name: "Provocación Burlona"
+  dados_del_destino:
+    name: "Dados del Destino"
+  distraccion:
+    name: "Distracción"
+  capa_de_sombras:
+    name: "Capa de Sombras"
+  toque_vampirico:
+    name: "Toque Vampírico"
+  tortura_mental:
+    name: "Tortura Mental"
+  dispersion:
+    name: "Dispersión"
+  plegaria_de_sanacion:
+    name: "Plegaria de Sanación"
+  renovar:
+    name: "Renovar"
+  palabra_de_poder_escudo:
+    name: "Palabra de Poder: Escudo"
+  golpe_de_escarcha:
+    name: "Golpe de Escarcha"
+  helada_mental:
+    name: "Helada Mental"
+  entereza_ligada_al_hielo:
+    name: "Entereza Ligada al Hielo"
+  golpe_de_muerte:
+    name: "Golpe de Muerte"
+  escudo_de_huesos:
+    name: "Escudo de Huesos"
+  hervor_de_sangre:
+    name: "Hervor de Sangre"
+  peste:
+    name: "Peste"
+  ejercito_de_los_muertos:
+    name: "Ejército de los muertos"
+  caparazon_antimagia:
+    name: "Caparazón Antimagia"
+  descarga_de_lava:
+    name: "Descarga de Lava"
+  choque_de_llamas:
+    name: "Choque de Llamas"
+  paso_espiritual:
+    name: "Paso Espiritual"
+  sanacion_en_cadena:
+    name: "Sanación en Cadena"
+  totem_de_marea:
+    name: "Tótem de Marea"
+  cambio_astral:
+    name: "Cambio Astral"
+  totem_viento_furioso:
+    name: "Tótem Viento Furioso"
+  totem_piel_de_piedra:
+    name: "Tótem Piel de Piedra"
+  totem_de_captura:
+    name: "Tótem de Captura"
+  piroexplosion:
+    name: "Piroexplosión"
+  combustion:
+    name: "Combustión"
+  bloque_de_hielo:
+    name: "Bloque de Hielo"
+  barrera_de_hielo:
+    name: "Barrera de Hielo"
+  lanza_de_hielo:
+    name: "Lanza de Hielo"
+  muro_de_hielo:
+    name: "Muro de Hielo"
+  poder_arcano:
+    name: "Poder Arcano"
+  ralentizar:
+    name: "Ralentizar"
+  barrera_prismatica:
+    name: "Barrera Prismática"
+  descarga_del_caos:
+    name: "Descarga del Caos"
+  inmolar:
+    name: "Inmolar"
+  resolucion_inagotable:
+    name: "Resolución Inagotable"
+  hachazo_vil:
+    name: "Hachazo Vil"
+  vinculo_demoniaco:
+    name: "Vínculo Demoníaco"
+  sacrificio:
+    name: "Sacrificio"
+  maldicion_de_debilidad:
+    name: "Maldición de Debilidad"
+  drenar_alma:
+    name: "Drenar Alma"
+  circulo_demoniaco:
+    name: "Círculo Demoníaco"
+  patada_del_sol_naciente:
+    name: "Patada del Sol Naciente"
+  palma_mistica:
+    name: "Palma Mística"
+  rodar:
+    name: "Rodar"
+  golpe_de_barril:
+    name: "Golpe de Barril"
+  toque_de_karma:
+    name: "Toque de Karma"
+  brebaje_purificador:
+    name: "Brebaje Purificador"
+  niebla_envolvente:
+    name: "Niebla Envolvente"
+  vivificar:
+    name: "Vivificar"
+  capullo_de_vida:
+    name: "Capullo de Vida"
+  mordedura_feroz:
+    name: "Mordedura Feroz"
+  desgarrar:
+    name: "Desgarrar"
+  piel_de_corteza:
+    name: "Piel de Corteza"
+  destrozar:
+    name: "Destrozar"
+  pelaje_de_hierro:
+    name: "Pelaje de Hierro"
+  regeneracion_frenetica:
+    name: "Regeneración Frenética"
+  rejuvenecimiento:
+    name: "Rejuvenecimiento"
+  alivio_presto:
+    name: "Alivio Presto"
+  corteza_de_hierro:
+    name: "Corteza de Hierro"
+  eclipse_solar:
+    name: "Eclipse Solar"
+  raices_enredadoras:
+    name: "Raíces Enredadoras"
+  carrerilla_salvaje:
+    name: "Carrerilla Salvaje"
+  golpe_del_caos:
+    name: "Golpe del Caos"
+  metamorfosis:
+    name: "Metamorfosis"
+  salto_vil:
+    name: "Salto Vil"
+  sigilo_de_llamas:
+    name: "Sigilo de Llamas"
+  puas_demoniacas:
+    name: "Púas Demoníacas"
+  sigilo_de_miseria:
+    name: "Sigilo de Miseria"
+  entregar_alma:
+    name: "Entregar Alma"
+  marca_del_caos:
+    name: "Marca del Caos"
+  escudo_de_almas:
+    name: "Escudo de Almas"
+  aliento_de_fuego:
+    name: "Aliento de Fuego"
+  desintegrar:
+    name: "Desintegrar"
+  planear:
+    name: "Planear"
+  eco:
+    name: "Eco"
+  rebobinar:
+    name: "Rebobinar"
+  escamas_obsidianas:
+    name: "Escamas Obsidianas"
+  poder_de_ebano:
+    name: "Poder de Ébano"
+  presciencia:
+    name: "Presciencia"
+  salto_temporal:
+    name: "Salto Temporal"
+  plaga_reptante:
+    name: "Plaga Reptante"
+  estallido_putrido:
+    name: "Estallido Pútrido"
+  forma_espectral:
+    name: "Forma Espectral"
+  hueso_protector:
+    name: "Hueso Protector"
+  levantar_esqueletos:
+    name: "Levantar Esqueletos"
+  grito_del_sepulcro:
+    name: "Grito del Sepulcro"
+  sifon_vital:
+    name: "Sifón Vital"
+  pacto_de_sangre:
+    name: "Pacto de Sangre"
+  velo_de_almas:
+    name: "Velo de Almas"
+  floritura_final:
+    name: "Floritura Final"
+  estocada_ritmica:
+    name: "Estocada Rítmica"
+  paso_de_baile:
+    name: "Paso de Baile"
+  balada_curativa:
+    name: "Balada Curativa"
+  nota_curativa:
+    name: "Nota Curativa"
+  nota_sostenida:
+    name: "Nota Sostenida"
+  allegro:
+    name: "Allegro"
+  contratiempo:
+    name: "Contratiempo"
+  calderon:
+    name: "Calderón"
+
+resource:
+  poder_sagrado: "Poder Sagrado"
+  foco: "Foco"
+  locura: "Locura"
+  runas: "Runas"
+  voragine: "Vorágine"
+  cargas_arcanas: "Cargas Arcanas"
+  fragmentos_alma: "Fragmentos de alma"
+  chi: "Chi"
+  poder_astral: "Poder Astral"
+  furia: "Furia"
+  esencia: "Esencia"
+  almas: "Almas cosechadas"
+  compas: "Compás"

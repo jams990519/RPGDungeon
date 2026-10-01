@@ -77,23 +77,23 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 ### 1.5 El viaje
 
 - Desde una zona se viaja **solo a las 4 vecinas** (norte, sur, este, oeste). No hay diagonales ni teletransporte.
-- Los minutos dependen del **bioma de destino**, con dos ajustes:
-  - **Senderos del Claro (×0,6):** si el origen y el destino tienen Lejanía ≤ 1 (las 9 zonas alrededor del Claro).
-  - **Zona que no conoces (×1,25):** tu héroe nunca la pisó (aunque otro sí). Conocer la ruta acelera.
+- Los minutos (de 5 a 10, D-66) dependen del **bioma de destino**, con estos ajustes:
+  - **Zona que no conoces (×1,2):** tu héroe nunca la pisó (aunque otro sí). Conocer la ruta acelera.
+  - **Energía (D-65):** cada viaje a una zona vecina gasta 1 ⚡ (máximo 20, se recuperan 20 al día). Un viaje de varias zonas gasta 1 por tramo y se detiene si se acaba.
 - Ningún viaje baja de 1 minuto. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
 - La pantalla redondea hacia arriba al minuto.
 
-| Bioma | Peligro al llegar | Base (min) | Cerca del Claro | Que no conoces | Cerca y que no conoces |
-|---|---|---|---|---|---|
-| 🔥 Claro | 0 % | 10 | 6 | — | — |
-| 🌾 Pradera | 25 % | 15 | 9 | 19 | 12 |
-| 🌲 Bosque | 35 % | 25 | 15 | 32 | 19 |
-| ⛰️ Colinas | 30 % | 30 | 18 | 38 | 23 |
-| 🏚️ Ruinas | 50 % | 30 | 18 | 38 | 23 |
-| 🏜️ Desierto | 40 % | 35 | 21 | 44 | 27 |
-| 🐸 Pantano | 45 % | 40 | 24 | 50 | 30 |
-| ❄️ Tundra | 40 % | 45 | 27 | 57 | 34 |
-| 🏔️ Montaña | 40 % | 50 | 30 | 63 | 38 |
+| Bioma | Peligro al llegar | Minutos a pie | Si tu héroe no la conoce (×1,2) |
+|---|---|---|---|
+| 🔥 Claro | 0 % | 5 | — |
+| 🌾 Pradera | 25 % | 5 | 6 |
+| 🌲 Bosque | 35 % | 7 | 8 |
+| ⛰️ Colinas | 30 % | 8 | 10 |
+| 🏚️ Ruinas | 50 % | 8 | 10 |
+| 🏜️ Desierto | 40 % | 9 | 11 |
+| 🐸 Pantano | 45 % | 10 | 12 |
+| ❄️ Tundra | 40 % | 10 | 12 |
+| 🏔️ Montaña | 40 % | 10 | 12 |
 
 ### 1.6 Temporizadores, aviso y encuentro al llegar
 

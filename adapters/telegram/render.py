@@ -27,6 +27,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from engine.messaging import View
 
 MAX_TEXT = 4096
+BOT_USERNAME: list[str] = [""]  # set by bot.py at startup (for invite links)
 MAX_CALLBACK = 64
 
 
@@ -38,6 +39,8 @@ def render_text(view: View) -> str:
         parts.append("")
     parts.append(f"<b>{html.escape(view.title)}</b>")
     parts.extend(html.escape(line) for line in view.body)
+    if view.meta.get("invite_code") and BOT_USERNAME[0]:
+        parts.append(f"🔗 https://t.me/{BOT_USERNAME[0]}?start=ref_{view.meta['invite_code']}")
     text = "\n".join(parts)
     if len(text) > MAX_TEXT:
         text = text[: MAX_TEXT - 1] + "…"

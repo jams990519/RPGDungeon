@@ -13,19 +13,36 @@ create:
   name_taken: "⚠️ Ese nombre ya lo usa otro héroe. Prueba con otro."
   ask_class: "{name}, ¿cómo peleas? La clase define tu forma de combatir. Todas valen lo mismo: la diferencia la hacen tus oficios y lo que aprendas."
   rename: "✏️ Cambiar nombre"
+  ask_spec: "{group}: elige tu especialización. Define tu rol, solo y en grupo."
+  other_class: "↩️ Otra clase"
+  page: "Clases (página {n} de {total}):"
+  prev: "◀️ Anteriores"
+  next: "▶️ Más clases"
+  rename_hint: "✏️ ¿Otro nombre? Escríbelo y lo cambio."
   welcome: "✨ Bienvenido, {name}. Explora los alrededores del Claro y abre camino hacia lo desconocido."
+
+role:
+  ataque: "⚔ Ataque"
+  defensa: "🛡 Defensa"
+  curacion: "✚ Curación"
+  soporte: "✦ Soporte"
+
+class_group:
+  guerrero: {name: "🛡 Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
+  picaro: {name: "🗡️ Pícaro", desc: "cuero, energía y combos: rápido y letal"}
+  sacerdote: {name: "✨ Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
 
 class:
   guerrero:
-    name: "🛡 Guerrero"
+    name: "🛡 Guerrero · Protección"
     role: "aguanta golpes, bloquea y castiga"
     attack_name: "Tajo"
   picaro:
-    name: "🗡️ Pícaro"
+    name: "🗡️ Pícaro · Asesinato"
     role: "rápido, esquiva y remata con combos"
     attack_name: "Puñalada"
   sacerdote:
-    name: "✨ Sacerdote"
+    name: "✨ Sacerdote · Disciplina"
     role: "se cura, se escuda y desgasta"
     attack_name: "Castigo"
 
@@ -156,6 +173,9 @@ biome:
   ruinas: "Ruinas"
 
 item:
+  madera: "Madera"
+  piedra: "Piedra"
+  fibra: "Fibra"
   pocion_vida: "Poción de vida"
   venda: "Venda"
   hierba_curativa: "Hierba curativa"
@@ -178,6 +198,10 @@ time:
   hours: "{h} h {m} min"
 
 menu:
+  zone: "📍 Zona"
+  explore: "🧭 Explorar"
+  camp: "🏕️ Campamento"
+  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe."
   map: "🗺️ Mapa"
   hero: "👤 Héroe"
   bag: "🎒 Mochila"
@@ -211,6 +235,8 @@ travel:
   goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
 
 explore:
+  menu_title: "🧭 Explorar"
+  menu_intro: "Recorre la zona, junta materiales o revisa tus mapas."
   title: "🔎 Explorando"
   started: "🔎 Empiezas a recorrer la zona. Tardarás {time}."
   in_progress: "Recorres la zona con cuidado."
@@ -232,7 +258,7 @@ map:
 
 hero:
   title: "👤 Tu héroe"
-  status_line: "❤️ {hp}/{max_hp} · 💰 {gold} · Nivel {level}"
+  status_line: "❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · 💰 {gold} · Nivel {level}"
   name_line: "{name} — {cls} ({role})"
   level_line: "⭐ Nivel {level} · Experiencia {xp}/{next}"
   hp_line: "❤️ Vida {hp}/{max_hp}"
@@ -282,6 +308,12 @@ combat:
   heal: "💚 {action}: recuperas {amount}"
   dot_applied: "🩸 {action}: sufrirá {rounds} rondas"
   dot_tick: "🩸 {enemy} sufre {dmg}"
+  lifesteal: "🩸 Robas {amount} de vida"
+  empower_applied: "🔥 {action}: pegas más fuerte durante {rounds} rondas"
+  hot_applied: "🌿 {action}: te curas un poco cada ronda durante {rounds} rondas"
+  hot_tick: "🌿 Recuperas {amount}"
+  expose_applied: "🎯 {action}: el enemigo recibe más daño durante {rounds} rondas"
+  weaken_applied: "🌀 {action}: el enemigo pega más flojo durante {rounds} rondas"
   item_used: "🎒 {item}: recuperas {amount}"
   flee_ok: "🏃 Lograste huir."
   flee_fail: "🏃 No pudiste escapar."
@@ -327,8 +359,66 @@ shop:
   only_in_claro: "El mercader y la posada están en el Claro."
 
 inn:
-  button: "🛏️ Posada"
+  button: "🛏️ Posada · {price} 💰"
   title: "🛏️ Posada del Claro"
   started: "Pagas {price} 💰 y te acuestas junto al fuego. Despertarás en {time}."
   in_progress: "Duermes junto al fuego."
   rested: "🛏️ Despiertas descansado: tu vida está llena."
+
+gather:
+  button: "🪓 Recolectar · {time}"
+  title: "🪓 Recolectando"
+  started: "🪓 Empiezas a juntar lo que da esta tierra. Tardarás {time}."
+  in_progress: "Juntas materiales con cuidado."
+  found: "🪓 Recolectaste: {items}."
+  ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
+
+camp:
+  button: "🔥 Obra del campamento"
+  title: "🔥 La obra del campamento"
+  intro: "Lo que todos levantan juntos. Cada etapa hace al Claro más seguro y útil."
+  stage: "Etapa: {stage} ({n}/{total})"
+  needs_title: "Para llegar a {next}:"
+  need_line: "{emoji} {item}: {have}/{need} {bar}"
+  complete: "🏰 ¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes."
+  top_title: "Quienes más aportaron:"
+  top_line: "{n}. {name} — {merit} de mérito"
+  your_merit: "Tu mérito: {merit}"
+  donate_button: "🤲 Aportar mis materiales"
+  nothing: "No llevas nada que el campamento necesite ahora. Recolecta afuera."
+  donated: "🤲 Aportaste {items}: +{xp} experiencia y +{merit} de mérito."
+  stage_up: "🎉 ¡Entre todos, el Claro pasó a ser {stage}!"
+  bonus: "Mejora actual: la posada cuesta {price} 💰."
+  stages:
+    fogata: "una fogata"
+    campamento: "un campamento"
+    aldea: "una aldea"
+    pueblo: "un pueblo"
+    ciudad: "una ciudad"
+    castillo: "un castillo"
+
+tutorial:
+  hint_title: "📜 Pista ({n}/{total}):"
+  done: "📜 Ya conoces lo básico. Lo demás lo descubrirás tú."
+  reward: "📜 ¡Aprendiste algo! +{gold} 💰 · +{xp} experiencia."
+  steps:
+    explore_claro: "Las ruinas alrededor de la fogata todavía esconden cosas. Nadie va a buscarlas por ti."
+    gather: "La tierra da lo que necesitas para levantar algo. Hay que agacharse y juntarlo."
+    donate: "Solo nadie sobrevive. Alguien cuida el fuego del Claro y acepta ayuda."
+    leave_claro: "Más allá del Claro hay tierras que nadie pisó. Cada paso cuesta tiempo."
+    win_fight: "Afuera hay criaturas. Mira lo que preparan antes de elegir qué hacer."
+    heal: "Las heridas no se van solas tan rápido. Hay quien vende remedio y hay donde dormir."
+    use_places: "Quien recuerda los caminos no se pierde. Tu memoria guarda los lugares que pisaste."
+
+claro:
+  button: "🏕️ Campamento"
+  title: "🏕️ Campamento del Claro"
+  intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."
+  far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
+
+energy:
+  empty: "⚡ Sin energía para viajar. Recuperas 1 en {time} (20 al día)."
+  route_stopped: "⚡ Te quedaste sin energía: el viaje se detiene en {name}."
+
+invite:
+  line: "👥 Invita amigos con tu enlace: por cada jugador nuevo que entre ganas +{bonus} ⚡ de energía extra. Invitados: {n}."

@@ -63,3 +63,4 @@ class View:
     actions: list[Action] = field(default_factory=list)
     notice: str | None = None
     expects_text: bool = False
+    meta: dict = field(default_factory=dict)

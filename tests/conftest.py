@@ -29,4 +29,6 @@ def service(content, clock):
 def make_hero(service, account="test:1", name="Lyra", class_id="guerrero"):
     service.view(account)
     service.text(account, name)
+    group = service.content.classes[class_id].get("group", class_id)
+    service.act(account, f"grp:{group}")
     return service.act(account, f"cls:{class_id}")

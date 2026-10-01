@@ -30,3 +30,18 @@ pieza_metal:
   emoji: "⚙️"
   kind: material
   price: 6
+madera:
+  name_key: item.madera
+  emoji: "🪵"
+  kind: material
+  price: 2
+piedra:
+  name_key: item.piedra
+  emoji: "🪨"
+  kind: material
+  price: 2
+fibra:
+  name_key: item.fibra
+  emoji: "🧵"
+  kind: material
+  price: 2

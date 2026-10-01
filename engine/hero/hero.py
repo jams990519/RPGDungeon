@@ -60,6 +60,13 @@ class Hero:
     backpack: dict[str, int] = field(default_factory=dict)
     last_regen_at: float = 0.0
     kills: int = 0
+    tutorial: int = 0
+    energy: int = 20
+    energy_at: float = 0.0
+    invites: int = 0
+    referred_by: str | None = None
+    referral_paid: bool = False
+    merit: int = 0
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])
 
@@ -106,15 +113,14 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
     }
 
 
-def xp_for_level(curve: list[int], level: int) -> int:
-    """Total xp needed to reach a level; extends the curve past its end.
+def xp_for_level(formula: dict[str, float], level: int) -> int:
+    """Total xp needed to reach a level: base × (level − 1) ^ exponent. No level cap.
 
     [ES]
-    Qué hace: dice cuánta experiencia total pide un nivel.
-    La llaman: el servicio al dar experiencia.
-    Si cambia, afecta: el ritmo de subida de nivel.
+    Qué hace: dice cuánta experiencia total pide un nivel; crece rápido y no tiene tope (niveles infinitos).
+    La llaman: el servicio al dar experiencia y en la vista del héroe.
+    Si cambia, afecta: el ritmo de subida de nivel de todo el juego (balance.yaml hero.xp_formula).
     """
-    if level - 1 < len(curve):
-        return curve[level - 1]
-    extra = level - len(curve)
-    return curve[-1] + extra * (curve[-1] - curve[-2] + 200)
+    if level <= 1:
+        return 0
+    return int(round(formula["base"] * (level - 1) ** formula["exponent"]))

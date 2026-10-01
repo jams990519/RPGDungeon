@@ -40,6 +40,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
 
 from adapters.storage import SqliteStore
+from adapters.telegram import render as render_module
 from adapters.telegram.render import render_keyboard, render_text
 from engine.core import SystemClock, load_content
 from engine.messaging import View
@@ -47,8 +48,14 @@ from engine.service import GameService
 
 log = logging.getLogger("lostrealms.telegram")
 
-MENU_LABEL = "📍 Juego"
-MENU = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text=MENU_LABEL)]], resize_keyboard=True, is_persistent=True)
+MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
+
+
+def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
+    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe). La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram."""
+    labels = [KeyboardButton(text=a.label) for a in service.menu()]
+    rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
+    return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
 TOKEN_RE = re.compile(r"^\d{6,12}:[A-Za-z0-9_-]{30,}$")
 
@@ -94,14 +101,23 @@ def register(dp: Dispatcher, service: GameService) -> None:
 
     @dp.message(CommandStart())
     async def on_start(message: Message) -> None:
-        await message.answer("🌅", reply_markup=MENU)
-        view = service.view(account_of(message.from_user.id))
+        account = account_of(message.from_user.id)
+        parts = (message.text or "").split(maxsplit=1)
+        if len(parts) == 2 and parts[1].startswith("ref_"):
+            service.register_referral(account, parts[1][4:])
+        await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+        view = service.view(account)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
 
     @dp.message(F.text)
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
-        if message.text == MENU_LABEL or message.text.startswith("/"):
+        menu_ids = {a.label: a.id for a in service.menu()}
+        if message.text in menu_ids:
+            view = service.act(account, menu_ids[message.text])
+        elif message.text == MENU_LABEL or message.text.startswith("/"):
+            if message.text == MENU_LABEL:
+                await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
             view = service.view(account)
         else:
             view = service.text(account, message.text)
@@ -135,6 +151,30 @@ async def notifier(bot: Bot, service: GameService) -> None:
         await asyncio.sleep(TICK_SECONDS)
 
 
+async def announce_patch(bot: Bot, service: GameService) -> None:
+    """Send the new patch notes to every Telegram player, once per version, slowly (Telegram limits).
+
+    [ES]
+    Qué hace: avisa a todos los jugadores lo nuevo de cada parche, una sola vez por versión.
+    La llaman: main, al arrancar.
+    Si cambia, afecta: los avisos de parches.
+    """
+    view = service.pending_announcement()
+    if view is None:
+        return
+    sent = 0
+    for account_id in service.players():
+        if not account_id.startswith("tg:"):
+            continue
+        try:
+            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service))
+            sent += 1
+        except Exception:  # blocked the bot, deleted account, etc.
+            log.info("could not announce to %s", account_id)
+        await asyncio.sleep(0.05)
+    log.info("patch announced to %d players", sent)
+
+
 async def main() -> None:
     """Start polling. [ES] Qué hace: arranca el bot. La llaman: python -m adapters.telegram.bot. Si cambia, afecta: el arranque del bot."""
     logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
@@ -149,7 +189,9 @@ async def main() -> None:
     register(dp, service)
     me = await bot.get_me()
     log.info("running as @%s", me.username)
+    render_module.BOT_USERNAME[0] = me.username or ""
     asyncio.create_task(notifier(bot, service))
+    asyncio.create_task(announce_patch(bot, service))
     await dp.start_polling(bot, drop_pending_updates=True)
 
 

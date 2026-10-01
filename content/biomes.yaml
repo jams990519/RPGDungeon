@@ -2,50 +2,60 @@
 # [ES] Biomas del mapa infinito. travel_minutes: minutos a pie para entrar a una zona
 # de ese bioma (sin caminos ni montura). danger: probabilidad base de un encuentro al llegar.
 # Lo usan: engine/world (generación y viaje), engine/service (encuentros).
+# gather: qué se recolecta en ese bioma (material: peso).
 # Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; los minutos mueven el ritmo del juego.
 
 claro:
   name_key: biome.claro
+  gather: {fibra: 3, madera: 2}
   emoji: "🔥"
-  travel_minutes: 10
+  travel_minutes: 5
   danger: 0.0
 pradera:
   name_key: biome.pradera
+  gather: {fibra: 4, hierba_curativa: 2, piedra: 1}
   emoji: "🌾"
-  travel_minutes: 15
+  travel_minutes: 5
   danger: 0.25
 bosque:
   name_key: biome.bosque
+  gather: {madera: 5, hierba_curativa: 2, fibra: 1}
   emoji: "🌲"
-  travel_minutes: 25
+  travel_minutes: 7
   danger: 0.35
 colinas:
   name_key: biome.colinas
+  gather: {piedra: 4, madera: 1, pieza_metal: 1}
   emoji: "⛰️"
-  travel_minutes: 30
+  travel_minutes: 8
   danger: 0.3
 pantano:
   name_key: biome.pantano
+  gather: {hierba_curativa: 4, fibra: 2}
   emoji: "🐸"
-  travel_minutes: 40
+  travel_minutes: 10
   danger: 0.45
 montana:
   name_key: biome.montana
+  gather: {piedra: 4, pieza_metal: 2}
   emoji: "🏔️"
-  travel_minutes: 50
+  travel_minutes: 10
   danger: 0.4
 desierto:
   name_key: biome.desierto
+  gather: {piedra: 2, pieza_metal: 1, fibra: 1}
   emoji: "🏜️"
-  travel_minutes: 35
+  travel_minutes: 9
   danger: 0.4
 tundra:
   name_key: biome.tundra
+  gather: {piedra: 2, madera: 1, pieza_metal: 1}
   emoji: "❄️"
-  travel_minutes: 45
+  travel_minutes: 10
   danger: 0.4
 ruinas:
   name_key: biome.ruinas
+  gather: {pieza_metal: 4, piedra: 2}
   emoji: "🏚️"
-  travel_minutes: 30
+  travel_minutes: 8
   danger: 0.5

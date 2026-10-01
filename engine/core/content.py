@@ -41,7 +41,7 @@ class Content:
         biomes: content/biomes.yaml keyed by biome id.
         items: content/items.yaml keyed by item id.
         balance: content/balance.yaml (tunable numbers).
-        texts: content/locales/<lang>.yaml (player-facing texts).
+        texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -55,6 +55,7 @@ class Content:
     items: dict[str, Any]
     balance: dict[str, Any]
     texts: dict[str, Any]
+    patches: dict[str, Any] | None = None
 
 
 def _read(path: Path) -> dict[str, Any]:
@@ -85,5 +86,22 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         biomes=_read(base / "biomes.yaml"),
         items=_read(base / "items.yaml"),
         balance=_read(base / "balance.yaml"),
-        texts=_read(base / "locales" / f"{lang}.yaml"),
+        texts=_read_texts(base / "locales", lang),
+        patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
     )
+
+
+def _merge(into: dict[str, Any], extra: dict[str, Any]) -> None:
+    for key, value in extra.items():
+        if isinstance(value, dict) and isinstance(into.get(key), dict):
+            _merge(into[key], value)
+        else:
+            into[key] = value
+
+
+def _read_texts(folder: Path, lang: str) -> dict[str, Any]:
+    """Merge locales/<lang>.yaml with every locales/<lang>_*.yaml (for example es_clases.yaml)."""
+    texts = _read(folder / f"{lang}.yaml")
+    for extra in sorted(folder.glob(f"{lang}_*.yaml")):
+        _merge(texts, _read(extra))
+    return texts
