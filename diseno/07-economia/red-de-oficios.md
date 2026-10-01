@@ -121,6 +121,8 @@ Lo que ya está programado (capa simple, D-44). Decisión del dueño: **una al r
 - **Los oficios que vengan** (Cocina, Pescador, Cantería, Construcción…) suman sus tres especializaciones solo con contenido, en `content/professions.yaml` → `specs`, sin tocar el motor.
 - **Datos y código:** `content/professions.yaml` (`specs` y las recetas con `spec`), `content/balance.yaml` → `specs`, `content/items.yaml` (`espec_*`, `paveses_roble`, `carro_viveres`), `engine/professions/rules.py` (`spec_*`, `switch_cost`), `Hero.prof_specs` y `Hero.spec_xp` (vacíos para los héroes de antes) y la sección "profession specializations" de `engine/service/game.py`. Textos: `content/locales/es_especializaciones.yaml`. Pruebas: `tests/test_especializaciones.py`.
 
+- **Los oficios del campamento (agregadas al unir las ramas, 0.24):** 🎣 Pescador — 🕸️ Redes (+20 % de pescado), 🦪 Perlas (a veces una gema al pescar) y 🔥 Ahumado y salazón (+15 % en pescado asado y conservas); 🍲 Cocina — 🍲 Guisos, 🫙 Conservas y 🍗 Banquetes (+15 % en sus platos); 🗿 Cantería — 🧱 Sillares (+15 %), 💠 Tallado (+5 % y gemas) y 🏯 Muros (+5 % y +10 % de piedra al recolectar); 🏗️ Construcción — 🪵 Obras de madera, 🧱 Obras de piedra y 🏰 Fortificaciones (+10 % de tablones, sillares o lingotes al refinar). La Construcción todavía no tiene obras por especialización: hoy prepara mejor los materiales de su línea y sumará lo suyo cuando lleguen. Sus beneficios de campamento (el mejor rango entre los miembros, D-163) no cambian.
+
 ## 4. Los ciclos que mantienen el sistema
 
 | Ciclo | Cómo gira |

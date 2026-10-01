@@ -369,3 +369,13 @@ v0_23:
     - "🏗️ Nuevo oficio: Construcción. Sube aportando a las obras de tu campamento, y con más rango las obras piden menos materiales y reparar cuesta la mitad."
     - "🛡️ Las oleadas dañan las defensas del campamento (−1 si la defienden, −2 si se pierde). Repáralas entre todos en 🔨 Obras → 🛠️ Reparar defensas."
     - "🏰 Los beneficios de campamento valen para todos sus miembros: rige el mejor rango del grupo en cada oficio. Los ves en la pantalla del campamento."
+
+v0_24:
+  version: "0.24"
+  title: "🎓 Lost Realms 0.24: especializaciones de oficio"
+  notes:
+    - "🎓 Al llegar al rango 25 en un oficio eliges tu primera especialización, y al rango 75 una segunda. Nunca las tres: siempre hará falta otro jugador. Entra por ⚒️ Oficios → 🎓 Especialización (o /especialidad)."
+    - "📈 Cada especialización crece con tu dominio: la experiencia que ganas en ese oficio mientras la tienes. Si la cambias, lo aprendido queda guardado por si vuelves."
+    - "🛠️ Cada oficio tiene 3 especializaciones: más rendimiento en su línea, hallazgos raros, más obras maestras o más monedas, según el oficio."
+    - "📜 Los artesanos especializados abren recetas exclusivas: piezas mejores que las normales, la mejor de su línea al nivel 100, y dos muebles nuevos para el campamento."
+    - "🔄 Elegir es gratis; cambiar una por otra cuesta monedas que suben con el rango."
