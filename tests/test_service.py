@@ -20,8 +20,6 @@ def test_creation_flow(service):
     view = service.text("test:1", "Lyra")
     assert view.kind == "create_class"
     view = service.act("test:1", "grp:guerrero")
-    assert any(a.id == "cls:guerrero" for a in view.actions)
-    view = service.act("test:1", "cls:guerrero")
     assert view.kind == "zone"
 
 
@@ -152,7 +150,8 @@ def test_shop_and_inn_in_claro(service, clock):
     clock.advance(600)
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
-    assert hero["hp"] == 135 and hero["gold"] == 35
+    from engine.hero import hero_stats
+    assert hero["hp"] == hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] and hero["gold"] == 35
 
 
 def test_shop_only_in_claro(service, clock):

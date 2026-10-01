@@ -37,6 +37,7 @@ import re
 import unicodedata
 from typing import Any
 
+from engine.classes import base_response, default_spec, ensure_talents, kit as talent_kit, spend_point, specs_of, unlock_points
 from engine.combat import CombatContext, make_combat, resolve_round, validate_choice
 from engine.core import (
     Clock,
@@ -228,6 +229,7 @@ class GameService:
             if not activity or activity.get("until", 0) > now:
                 continue
             hero = Hero.from_dict(data)
+            ensure_talents(self.content.classes, self.content.balance, hero)
             notices = self._settle(hero)
             self._save(hero)
             out.append((account_id, self._main_view(hero, notice=self._join(notices))))
@@ -237,7 +239,22 @@ class GameService:
 
     def _load(self, account_id: str) -> Hero | None:
         data = self.store.get("hero", account_id)
-        return Hero.from_dict(data) if data else None
+        if not data:
+            return None
+        hero = Hero.from_dict(data)
+        ensure_talents(self.content.classes, self.content.balance, hero)
+        return hero
+
+    def _hero_icon(self, hero: Hero) -> str:
+        """The hero's icon: its main spec's unique icon once it has points, else its class icon (D-70)."""
+        if hero.talents.get(hero.class_id):
+            return self.content.classes[hero.class_id].get("icon", "")
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        return self.texts.t(f"class_group.{group}.name").split(" ")[0]
+
+    def _kit(self, hero: Hero) -> dict[str, Any]:
+        """The hero's effective class (main spec + bar of 3 + talent bonuses), D-68."""
+        return talent_kit(self.content.classes, self.content.balance, hero)
 
     def _save(self, hero: Hero) -> None:
         self.store.put("hero", hero.id, hero.to_dict())
@@ -329,7 +346,7 @@ class GameService:
         now = self.clock.now()
         notices: list[str] = []
         in_combat = self.store.get("combat", hero.id) is not None
-        stats = hero_stats(self.content.classes[hero.class_id], hero.level)
+        stats = hero_stats(self._kit(hero), hero.level)
         if not in_combat and hero.hp < stats["max_hp"] and hero.last_regen_at:
             minutes = (now - hero.last_regen_at) / (60 * self.time_scale)
             pct = self.content.balance["regen"]["hp_percent_per_minute"] / 100
@@ -353,7 +370,7 @@ class GameService:
                 notices.append(self._gather_outcome(hero, zone, rng))
                 notices += self._tutorial(hero, "gather")
             elif activity["kind"] == "rest":
-                hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
+                hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 notices.append(self.texts.t("inn.rested"))
                 notices += self._tutorial(hero, "heal")
         return notices
@@ -442,7 +459,7 @@ class GameService:
         groups: list[str] = []
         for class_id, cdef in self.content.classes.items():
             group = cdef.get("group", class_id)
-            if group not in groups:
+            if group not in groups and not cdef.get("retired"):
                 groups.append(group)
         return groups
 
@@ -491,9 +508,9 @@ class GameService:
             return self._creation_view(account_id)
         if action_id.startswith("grp:") and pending.get("stage") == "class":
             group = action_id[4:]
-            pending["group"] = group if group in self._class_groups() else None
-            self.store.put("pending", account_id, pending)
-            return self._creation_view(account_id)
+            if group not in self._class_groups():
+                return self._creation_view(account_id)
+            action_id = "cls:" + default_spec(self.content.classes, group)
         if not action_id.startswith("cls:") or pending.get("stage") != "class":
             return self._creation_view(account_id)
         class_id = action_id[4:]
@@ -505,10 +522,12 @@ class GameService:
             view.notice = self.texts.t("create.name_taken")
             return view
         hb = self.content.balance["hero"]
+        group = self.content.classes[class_id].get("group", class_id)
         stats = hero_stats(self.content.classes[class_id], 1)
         hero = Hero(id=account_id, name=pending["name"], class_id=class_id, gold=hb["start_gold"], hp=stats["max_hp"],
                     energy=self.content.balance["energy"]["max"], energy_at=self.clock.now(),
                     belt=dict(hb["start_belt"]), backpack=dict(hb["start_backpack"]), last_regen_at=self.clock.now())
+        hero.unlocked = [base_response(self.content.classes, group)]
         referral = self.store.get("referral", account_id)
         if referral:
             hero.referred_by = referral["referrer"]
@@ -539,6 +558,16 @@ class GameService:
             return self._hero_view(hero)
         if action_id == "explore_menu":
             return self._explore_menu(hero)
+        if action_id == "talents":
+            return self._talents_view(hero)
+        if action_id.startswith("tal:"):
+            return self._spec_view(hero, action_id[4:])
+        if action_id.startswith("pt:"):
+            spec = action_id[3:]
+            new = spend_point(self.content.classes, self.content.balance, hero, spec)
+            names = ", ".join(t.t(f"ability.{a}.name") for a in new)
+            notice = t.t("talents.spent") + (" " + t.t("talents.unlocked", names=names) if new else "")
+            return self._spec_view(hero, spec, notice=notice)
         if action_id == "bag":
             return self._bag_view(hero)
         if action_id == "places":
@@ -619,7 +648,7 @@ class GameService:
             view = self._bag_view(hero)
             view.notice = t.t("combat.err.item")
             return view
-        stats = hero_stats(self.content.classes[hero.class_id], hero.level)
+        stats = hero_stats(self._kit(hero), hero.level)
         healed = min(stats["max_hp"] - hero.hp, round(stats["max_hp"] * item["heal"]))
         source[item_id] -= 1
         if source[item_id] <= 0:
@@ -632,7 +661,7 @@ class GameService:
     # ------------------------------------------------------------------ views
 
     def _status_line(self, hero: Hero) -> str:
-        stats = hero_stats(self.content.classes[hero.class_id], hero.level)
+        stats = hero_stats(self._kit(hero), hero.level)
         return self.texts.t("hero.status_line", hp=hero.hp, max_hp=stats["max_hp"], gold=hero.gold, level=hero.level,
                             energy=hero.energy, max_energy=self.content.balance["energy"]["max"])
 
@@ -788,8 +817,10 @@ class GameService:
         formula = self.content.balance["hero"]["xp_formula"]
         while hero.xp >= xp_for_level(formula, hero.level + 1):
             hero.level += 1
-            hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
+            hero.points += 1
+            hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
             lines.append(self.texts.t("combat.level_up", level=hero.level))
+            lines.append(self.texts.t("talents.new_point"))
         self._pay_referral(hero)
         return lines
 
@@ -893,6 +924,41 @@ class GameService:
                    Action(id="map", label=t.t("menu.map")), Action(id="places", label=t.t("menu.places"))]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
+    def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
+        t = self.texts
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        body = [t.t("talents.intro"), t.t("talents.points", n=hero.points), ""]
+        actions = []
+        for spec in specs_of(self.content.classes, group):
+            sdef = self.content.classes[spec]
+            pts = hero.talents.get(spec, 0)
+            mark = " ⭐" if spec == hero.class_id and pts else ""
+            body.append(t.t("talents.spec_line", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque")), n=pts) + mark)
+            actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
+        actions.append(Action(id="hero", label=t.t("menu.back")))
+        return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
+    def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
+        t = self.texts
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        if spec not in specs_of(self.content.classes, group):
+            return self._talents_view(hero)
+        sdef = self.content.classes[spec]
+        pts = hero.talents.get(spec, 0)
+        body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque"))),
+                t.t(sdef["role_key"]), t.t("talents.spec_points", n=pts, free=hero.points), ""]
+        for index, need in enumerate(unlock_points(self.content.balance)):
+            if index >= len(sdef["abilities"]):
+                break
+            ability = sdef["abilities"][index]
+            state = "✅" if ability["id"] in hero.unlocked else f"🔒 {need}"
+            body.append(f"{state} {self._ability_label(ability, sdef['resource'])}")
+        actions = []
+        if hero.points > 0:
+            actions.append(Action(id=f"pt:{spec}", label=t.t("talents.spend_button")))
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
     def _places_view(self, hero: Hero) -> View:
         """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""
         t = self.texts
@@ -942,21 +1008,22 @@ class GameService:
 
     def _hero_view(self, hero: Hero) -> View:
         t = self.texts
-        cdef = self.content.classes[hero.class_id]
+        cdef = self._kit(hero)
         stats = hero_stats(cdef, hero.level)
         curve = self.content.balance["hero"]["xp_formula"]
         body = [
-            t.t("hero.name_line", name=hero.name, cls=t.t(cdef["name_key"]), role=t.t(cdef["role_key"])),
+            t.t("hero.name_line", icon=self._hero_icon(hero), name=hero.name, cls=t.t(cdef["name_key"]), role=t.t(cdef["role_key"])),
             t.t("hero.level_line", level=hero.level, xp=hero.xp, next=xp_for_level(curve, hero.level + 1)),
             t.t("hero.hp_line", hp=hero.hp, max_hp=stats["max_hp"]),
             t.t("hero.stats_line", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100), initiative=round(stats["initiative"])),
             t.t("hero.gold_line", gold=hero.gold),
             t.t("hero.record_line", kills=hero.kills, zones=hero.zones_discovered),
+            t.t("talents.bar", abilities=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
         ]
         cfg = self.content.balance["invite"]
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
         body += self._tutorial_hint(hero)
-        return View(kind="hero", title=t.t("hero.title"), body=body, actions=[Action(id="bag", label=t.t("menu.bag")), Action(id="home", label=t.t("menu.back"))],
+        return View(kind="hero", title=t.t("hero.title"), body=body, actions=[Action(id="talents", label=t.t("talents.button", n=hero.points)), Action(id="bag", label=t.t("menu.bag")), Action(id="home", label=t.t("menu.back"))],
                     meta={"invite_code": self.invite_code(hero.id)})
 
     def _item_list(self, items: dict[str, int]) -> str:
@@ -991,7 +1058,7 @@ class GameService:
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
         level = max(enemy_def["level_min"], min(enemy_def["level_max"], zone.level + (1 if rng.chance(0.3) else 0)))
         seed = int(rng.random() * 2**31)
-        state = make_combat(enemy_id, enemy_def, level, self.content.classes[hero.class_id], seed)
+        state = make_combat(enemy_id, enemy_def, level, self._kit(hero), seed)
         self.store.put("combat", hero.id, state)
         hero.activity = None
         self.bus.publish(CombatStarted(hero.id, enemy_id, seed))
@@ -1016,7 +1083,7 @@ class GameService:
 
     def _combat_view(self, hero: Hero, state: dict[str, Any], notice: str | None = None) -> View:
         t = self.texts
-        cdef = self.content.classes[hero.class_id]
+        cdef = self._kit(hero)
         stats = hero_stats(cdef, hero.level)
         enemy = state["enemy"]
         edef = self.content.enemies[enemy["id"]]
@@ -1033,7 +1100,7 @@ class GameService:
             "",
             t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
             "",
-            t.t("combat.hero_line", name=hero.name, cls=t.t(cdef["name_key"])),
+            t.t("combat.hero_line", icon=self._hero_icon(hero), name=hero.name, cls=t.t(cdef["name_key"])),
             t.t("combat.hero_bars", hp=hero.hp, max_hp=stats["max_hp"], resource=t.t(f"resource.{cdef['resource']}"),
                 value=hs["resource"], stamina="●" * stamina + "○" * (stamina_max - stamina)),
         ]
@@ -1067,7 +1134,7 @@ class GameService:
 
     def _combat_action(self, hero: Hero, state: dict[str, Any], action_id: str) -> View:
         t = self.texts
-        cdef = self.content.classes[hero.class_id]
+        cdef = self._kit(hero)
         if action_id == "bag":
             return self._combat_bag_view(hero, state)
         choice: dict[str, Any] | None = None
@@ -1119,8 +1186,10 @@ class GameService:
                     lines.append(t.t("combat.loot", item=f"{item['emoji']} {t.t(item['name_key'])}"))
             while hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
-                hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
+                hero.points += 1
+                hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 lines.append(t.t("combat.level_up", level=hero.level))
+                lines.append(t.t("talents.new_point"))
             self._pay_referral(hero)
         elif outcome == "defeat":
             lost = int(hero.gold * hb["defeat_gold_loss"])

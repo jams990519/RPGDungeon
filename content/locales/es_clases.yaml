@@ -22,123 +22,123 @@ class_group:
 
 class:
   guerrero_furia:
-    name: "🛡 Guerrero · Furia"
+    name: "💢 Guerrero · Furia"
     role: "abre una ventana con Golpe Colosal y la aprovecha"
     attack_name: "Doble tajo"
   guerrero_senor_guerra:
-    name: "🛡 Guerrero · Señor de la Guerra"
+    name: "🚩 Guerrero · Señor de la Guerra"
     role: "planta estandartes: más daño o menos daño recibido"
     attack_name: "Golpe de mando"
   paladin_reprension:
-    name: "⚜️ Paladín · Reprensión"
+    name: "⚖️ Paladín · Reprensión"
     role: "juzga al enemigo y lo castiga con luz"
     attack_name: "Golpe de cruzado"
   paladin_proteccion:
-    name: "⚜️ Paladín · Protección"
+    name: "🔰 Paladín · Protección"
     role: "escudo que silencia y auras que protegen"
     attack_name: "Martillo del justo"
   paladin_sagrado:
-    name: "⚜️ Paladín · Sagrado"
+    name: "🌅 Paladín · Sagrado"
     role: "cura desde la vanguardia con su Faro de Luz"
     attack_name: "Choque sagrado"
   cazador_punteria:
-    name: "🏹 Cazador · Puntería"
+    name: "🎯 Cazador · Puntería"
     role: "apunta una ronda y el disparo siguiente no falla"
     attack_name: "Disparo firme"
   cazador_bestias:
-    name: "🏹 Cazador · Bestias"
+    name: "🐺 Cazador · Bestias"
     role: "su mascota tanquea y él la dirige"
     attack_name: "Disparo de cobra"
   cazador_supervivencia:
-    name: "🏹 Cazador · Supervivencia"
+    name: "🪤 Cazador · Supervivencia"
     role: "trampas y señuelos: le quita opciones al enemigo"
     attack_name: "Lanza de supervivencia"
   picaro_sutileza:
-    name: "🗡️ Pícaro · Sutileza"
+    name: "🌑 Pícaro · Sutileza"
     role: "no bloquea, esquiva: tanque de riesgo y premio"
     attack_name: "Puñalada sombría"
   picaro_forajido:
-    name: "🗡️ Pícaro · Forajido"
+    name: "🏴‍☠️ Pícaro · Forajido"
     role: "tira los dados del destino y distrae al enemigo"
     attack_name: "Golpe siniestro"
   sacerdote_sombra:
-    name: "✨ Sacerdote · Sombra"
+    name: "👁️ Sacerdote · Sombra"
     role: "daño en el tiempo y Locura"
     attack_name: "Explosión mental"
   sacerdote_sagrado:
-    name: "✨ Sacerdote · Sagrado"
+    name: "😇 Sacerdote · Sagrado"
     role: "curas grandes y curas que duran"
     attack_name: "Fuego sagrado"
   caballero_muerte_escarcha:
-    name: "💀 Caballero de la Muerte · Escarcha"
+    name: "🧊 Caballero de la Muerte · Escarcha"
     role: "acumula congelación hasta dejar al enemigo quieto"
     attack_name: "Golpe helado"
   caballero_muerte_sangre:
-    name: "💀 Caballero de la Muerte · Sangre"
+    name: "🫀 Caballero de la Muerte · Sangre"
     role: "recibe el golpe para devolverlo como vida"
     attack_name: "Golpe de corazón"
   caballero_muerte_profano:
-    name: "💀 Caballero de la Muerte · Profano"
+    name: "☣️ Caballero de la Muerte · Profano"
     role: "plagas que hacen rendir menos al enemigo"
     attack_name: "Golpe de plaga"
   chaman_elemental:
-    name: "⚡ Chamán · Elemental"
+    name: "🌩️ Chamán · Elemental"
     role: "rayos y lava que a veces se repiten solos"
     attack_name: "Descarga de rayo"
   chaman_restauracion:
-    name: "⚡ Chamán · Restauración"
+    name: "🌊 Chamán · Restauración"
     role: "cura en cadena y con tótems de marea"
     attack_name: "Choque de tierra"
   chaman_totems:
-    name: "⚡ Chamán · Tótems"
+    name: "🗿 Chamán · Tótems"
     role: "planta tótems que ayudan y protegen solos"
     attack_name: "Golpe de tormenta"
   mago_fuego:
-    name: "🔮 Mago · Fuego"
+    name: "☄️ Mago · Fuego"
     role: "encadena críticos hasta la Piroexplosión"
     attack_name: "Bola de fuego"
   mago_escarcha:
-    name: "🔮 Mago · Escarcha"
+    name: "🌨️ Mago · Escarcha"
     role: "congela y deja que el hielo reciba el daño"
     attack_name: "Descarga de escarcha"
   mago_arcano:
-    name: "🔮 Mago · Arcano"
+    name: "💠 Mago · Arcano"
     role: "acumula Cargas Arcanas y las reparte"
     attack_name: "Misil arcano"
   brujo_destruccion:
-    name: "🕯️ Brujo · Destrucción"
+    name: "🌋 Brujo · Destrucción"
     role: "guarda fragmentos para una Descarga del Caos"
     attack_name: "Incinerar"
   brujo_demonologia:
-    name: "🕯️ Brujo · Demonología"
+    name: "👹 Brujo · Demonología"
     role: "su Guardia Vil tanquea y él lo sostiene"
     attack_name: "Descarga de sombras"
   brujo_afliccion:
-    name: "🕯️ Brujo · Aflicción"
+    name: "🕸️ Brujo · Aflicción"
     role: "maldiciones que debilitan y drenan"
     attack_name: "Corrupción"
   monje_viajero_viento:
-    name: "☯️ Monje · Viajero del Viento"
+    name: "🌪️ Monje · Viajero del Viento"
     role: "golpes en combo que nunca se repiten"
     attack_name: "Palma del tigre"
   monje_maestro_cervecero:
-    name: "☯️ Monje · Maestro Cervecero"
+    name: "🍺 Monje · Maestro Cervecero"
     role: "tambalea el daño en varias rondas y lo purga"
     attack_name: "Palma del tigre"
   monje_tejedor_niebla:
-    name: "☯️ Monje · Tejedor de Niebla"
+    name: "🌫️ Monje · Tejedor de Niebla"
     role: "curas canalizadas que crecen si no se cortan"
     attack_name: "Patada giratoria"
   druida_feral:
-    name: "🌿 Druida · Feral"
+    name: "🐆 Druida · Feral"
     role: "sangrados y combos en forma felina"
     attack_name: "Arañazo"
   druida_guardian:
-    name: "🌿 Druida · Guardián"
+    name: "🐻 Druida · Guardián"
     role: "oso que convierte la ira en vida"
     attack_name: "Vapulear"
   druida_restauracion:
-    name: "🌿 Druida · Restauración"
+    name: "🌸 Druida · Restauración"
     role: "curas en el tiempo: planifica por adelantado"
     attack_name: "Cólera"
   druida_equilibrio:
@@ -146,51 +146,51 @@ class:
     role: "el Eclipse potencia y las raíces frenan"
     attack_name: "Fuego estelar"
   cazador_demonios_estrago:
-    name: "😈 Cazador de demonios · Estrago"
+    name: "🦇 Cazador de demonios · Estrago"
     role: "salta, golpea y esquiva en la misma ronda"
     attack_name: "Mordisco del demonio"
   cazador_demonios_venganza:
-    name: "😈 Cazador de demonios · Venganza"
+    name: "👺 Cazador de demonios · Venganza"
     role: "sigilos que se activan una ronda después"
     attack_name: "Cizalla"
   cazador_demonios_devorador:
-    name: "😈 Cazador de demonios · Devorador"
+    name: "🕳️ Cazador de demonios · Devorador"
     role: "consume almas y reparte su poder"
     attack_name: "Rayo del vacío"
   evocador_devastacion:
-    name: "🐉 Evocador · Devastación"
+    name: "🐲 Evocador · Devastación"
     role: "carga alientos de dragón de 1 a 3 rondas"
     attack_name: "Llama viva"
   evocador_preservacion:
-    name: "🐉 Evocador · Preservación"
+    name: "⏳ Evocador · Preservación"
     role: "magia del tiempo: duplica curas y rebobina el daño"
     attack_name: "Llama viva"
   evocador_aumentacion:
-    name: "🐉 Evocador · Aumentación"
+    name: "🔆 Evocador · Aumentación"
     role: "presta su poder y asegura el crítico"
     attack_name: "Erupción"
   nigromante_plaga:
-    name: "🦴 Nigromante · Plaga"
+    name: "🪦 Nigromante · Plaga"
     role: "enfermedades que saltan de enemigo en enemigo"
     attack_name: "Descarga necrótica"
   nigromante_legion:
-    name: "🦴 Nigromante · Legión"
+    name: "🧟 Nigromante · Legión"
     role: "un muro de esqueletos que se sacrifican por él"
     attack_name: "Descarga necrótica"
   nigromante_drenaje:
-    name: "🦴 Nigromante · Drenaje"
+    name: "🧛 Nigromante · Drenaje"
     role: "cura con la vida que le roba al enemigo"
     attack_name: "Toque marchito"
   bardo_duelista:
-    name: "🎻 Bardo · Duelista"
+    name: "🤺 Bardo · Duelista"
     role: "danza de espadas: combos con ritmo"
     attack_name: "Estocada"
   bardo_trovador:
-    name: "🎻 Bardo · Trovador"
+    name: "🎶 Bardo · Trovador"
     role: "baladas que curan cada ronda mientras suenan"
     attack_name: "Acorde cortante"
   bardo_estratega:
-    name: "🎻 Bardo · Estratega"
+    name: "🥁 Bardo · Estratega"
     role: "mueve la iniciativa: adelanta aliados y retrasa enemigos"
     attack_name: "Golpe de compás"
 

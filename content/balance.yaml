@@ -31,6 +31,15 @@ invite:                      # [ES] invitar jugadores da energía (D-65): se pag
   reward_level: 1
   cap_factor: 2              # [ES] la energía extra puede llegar hasta 2 × el máximo
 
+talents:                     # [ES] talentos por nivel (D-68): 1 punto por nivel en una especialización de tu clase
+  unlock: [1, 3, 6]          # [ES] puntos en una especialización para desbloquear su habilidad 1, 2 y 3
+  passive_cap: 20            # [ES] cuántos puntos por especialización cuentan para la mejora pasiva
+  passive:                   # [ES] mejora por punto, según el rol de la especialización
+    ataque: {attack: 0.03}
+    defensa: {hp: 0.03}
+    curacion: {hp: 0.02, attack: 0.01}
+    soporte: {attack: 0.02, hp: 0.01}
+
 explore:
   minutes: 10
   encounter: 0.45

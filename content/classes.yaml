@@ -17,6 +17,7 @@
 
 guerrero_furia:
   group: guerrero
+  icon: "💢"
   role: ataque
   name_key: class.guerrero_furia.name
   role_key: class.guerrero_furia.role
@@ -47,6 +48,7 @@ guerrero_furia:
 
 guerrero:
   group: guerrero
+  icon: "🏰"
   role: defensa
   name_key: class.guerrero.name
   role_key: class.guerrero.role
@@ -76,6 +78,7 @@ guerrero:
 
 guerrero_senor_guerra:
   group: guerrero
+  icon: "🚩"
   role: soporte
   name_key: class.guerrero_senor_guerra.name
   role_key: class.guerrero_senor_guerra.role
@@ -108,6 +111,7 @@ guerrero_senor_guerra:
 
 paladin_reprension:
   group: paladin
+  icon: "⚖️"
   role: ataque
   name_key: class.paladin_reprension.name
   role_key: class.paladin_reprension.role
@@ -137,6 +141,7 @@ paladin_reprension:
 
 paladin_proteccion:
   group: paladin
+  icon: "🔰"
   role: defensa
   name_key: class.paladin_proteccion.name
   role_key: class.paladin_proteccion.role
@@ -168,6 +173,7 @@ paladin_proteccion:
 
 paladin_sagrado:
   group: paladin
+  icon: "🌅"
   role: curacion
   name_key: class.paladin_sagrado.name
   role_key: class.paladin_sagrado.role
@@ -197,6 +203,7 @@ paladin_sagrado:
 
 cazador_punteria:
   group: cazador
+  icon: "🎯"
   role: ataque
   name_key: class.cazador_punteria.name
   role_key: class.cazador_punteria.role
@@ -225,6 +232,7 @@ cazador_punteria:
 
 cazador_bestias:
   group: cazador
+  icon: "🐺"
   role: defensa
   name_key: class.cazador_bestias.name
   role_key: class.cazador_bestias.role
@@ -255,6 +263,7 @@ cazador_bestias:
 
 cazador_supervivencia:
   group: cazador
+  icon: "🪤"
   role: soporte
   name_key: class.cazador_supervivencia.name
   role_key: class.cazador_supervivencia.role
@@ -286,6 +295,7 @@ cazador_supervivencia:
 
 picaro:
   group: picaro
+  icon: "🐍"
   role: ataque
   name_key: class.picaro.name
   role_key: class.picaro.role
@@ -314,6 +324,7 @@ picaro:
 
 picaro_sutileza:
   group: picaro
+  icon: "🌑"
   role: defensa
   name_key: class.picaro_sutileza.name
   role_key: class.picaro_sutileza.role
@@ -343,6 +354,7 @@ picaro_sutileza:
 
 picaro_forajido:
   group: picaro
+  icon: "🏴‍☠️"
   role: soporte
   name_key: class.picaro_forajido.name
   role_key: class.picaro_forajido.role
@@ -374,6 +386,7 @@ picaro_forajido:
 
 sacerdote_sombra:
   group: sacerdote
+  icon: "👁️"
   role: ataque
   name_key: class.sacerdote_sombra.name
   role_key: class.sacerdote_sombra.role
@@ -403,6 +416,7 @@ sacerdote_sombra:
 
 sacerdote_sagrado:
   group: sacerdote
+  icon: "😇"
   role: curacion
   name_key: class.sacerdote_sagrado.name
   role_key: class.sacerdote_sagrado.role
@@ -432,6 +446,7 @@ sacerdote_sagrado:
 
 sacerdote:
   group: sacerdote
+  icon: "📿"
   role: soporte
   name_key: class.sacerdote.name
   role_key: class.sacerdote.role
@@ -460,6 +475,7 @@ sacerdote:
 
 caballero_muerte_escarcha:
   group: caballero_muerte
+  icon: "🧊"
   role: ataque
   name_key: class.caballero_muerte_escarcha.name
   role_key: class.caballero_muerte_escarcha.role
@@ -488,6 +504,7 @@ caballero_muerte_escarcha:
 
 caballero_muerte_sangre:
   group: caballero_muerte
+  icon: "🫀"
   role: defensa
   name_key: class.caballero_muerte_sangre.name
   role_key: class.caballero_muerte_sangre.role
@@ -518,6 +535,7 @@ caballero_muerte_sangre:
 
 caballero_muerte_profano:
   group: caballero_muerte
+  icon: "☣️"
   role: soporte
   name_key: class.caballero_muerte_profano.name
   role_key: class.caballero_muerte_profano.role
@@ -549,6 +567,7 @@ caballero_muerte_profano:
 
 chaman_elemental:
   group: chaman
+  icon: "🌩️"
   role: ataque
   name_key: class.chaman_elemental.name
   role_key: class.chaman_elemental.role
@@ -576,6 +595,7 @@ chaman_elemental:
 
 chaman_restauracion:
   group: chaman
+  icon: "🌊"
   role: curacion
   name_key: class.chaman_restauracion.name
   role_key: class.chaman_restauracion.role
@@ -605,6 +625,7 @@ chaman_restauracion:
 
 chaman_totems:
   group: chaman
+  icon: "🗿"
   role: soporte
   name_key: class.chaman_totems.name
   role_key: class.chaman_totems.role
@@ -636,6 +657,7 @@ chaman_totems:
 
 mago_fuego:
   group: mago
+  icon: "☄️"
   role: ataque
   name_key: class.mago_fuego.name
   role_key: class.mago_fuego.role
@@ -665,6 +687,7 @@ mago_fuego:
 
 mago_escarcha:
   group: mago
+  icon: "🌨️"
   role: defensa
   name_key: class.mago_escarcha.name
   role_key: class.mago_escarcha.role
@@ -694,6 +717,7 @@ mago_escarcha:
 
 mago_arcano:
   group: mago
+  icon: "💠"
   role: soporte
   name_key: class.mago_arcano.name
   role_key: class.mago_arcano.role
@@ -725,6 +749,7 @@ mago_arcano:
 
 brujo_destruccion:
   group: brujo
+  icon: "🌋"
   role: ataque
   name_key: class.brujo_destruccion.name
   role_key: class.brujo_destruccion.role
@@ -753,6 +778,7 @@ brujo_destruccion:
 
 brujo_demonologia:
   group: brujo
+  icon: "👹"
   role: defensa
   name_key: class.brujo_demonologia.name
   role_key: class.brujo_demonologia.role
@@ -782,6 +808,7 @@ brujo_demonologia:
 
 brujo_afliccion:
   group: brujo
+  icon: "🕸️"
   role: soporte
   name_key: class.brujo_afliccion.name
   role_key: class.brujo_afliccion.role
@@ -811,6 +838,7 @@ brujo_afliccion:
 
 monje_viajero_viento:
   group: monje
+  icon: "🌪️"
   role: ataque
   name_key: class.monje_viajero_viento.name
   role_key: class.monje_viajero_viento.role
@@ -839,6 +867,7 @@ monje_viajero_viento:
 
 monje_maestro_cervecero:
   group: monje
+  icon: "🍺"
   role: defensa
   name_key: class.monje_maestro_cervecero.name
   role_key: class.monje_maestro_cervecero.role
@@ -868,6 +897,7 @@ monje_maestro_cervecero:
 
 monje_tejedor_niebla:
   group: monje
+  icon: "🌫️"
   role: curacion
   name_key: class.monje_tejedor_niebla.name
   role_key: class.monje_tejedor_niebla.role
@@ -897,6 +927,7 @@ monje_tejedor_niebla:
 
 druida_feral:
   group: druida
+  icon: "🐆"
   role: ataque
   name_key: class.druida_feral.name
   role_key: class.druida_feral.role
@@ -926,6 +957,7 @@ druida_feral:
 
 druida_guardian:
   group: druida
+  icon: "🐻"
   role: defensa
   name_key: class.druida_guardian.name
   role_key: class.druida_guardian.role
@@ -955,6 +987,7 @@ druida_guardian:
 
 druida_restauracion:
   group: druida
+  icon: "🌸"
   role: curacion
   name_key: class.druida_restauracion.name
   role_key: class.druida_restauracion.role
@@ -983,6 +1016,7 @@ druida_restauracion:
       stamina: 1
 
 druida_equilibrio:
+  retired: true            # [ES] D-69: máximo 3 especializaciones por clase
   group: druida
   role: soporte
   name_key: class.druida_equilibrio.name
@@ -1014,6 +1048,7 @@ druida_equilibrio:
 
 cazador_demonios_estrago:
   group: cazador_demonios
+  icon: "🦇"
   role: ataque
   name_key: class.cazador_demonios_estrago.name
   role_key: class.cazador_demonios_estrago.role
@@ -1042,6 +1077,7 @@ cazador_demonios_estrago:
 
 cazador_demonios_venganza:
   group: cazador_demonios
+  icon: "👺"
   role: defensa
   name_key: class.cazador_demonios_venganza.name
   role_key: class.cazador_demonios_venganza.role
@@ -1073,6 +1109,7 @@ cazador_demonios_venganza:
 
 cazador_demonios_devorador:
   group: cazador_demonios
+  icon: "🕳️"
   role: soporte
   name_key: class.cazador_demonios_devorador.name
   role_key: class.cazador_demonios_devorador.role
@@ -1104,6 +1141,7 @@ cazador_demonios_devorador:
 
 evocador_devastacion:
   group: evocador
+  icon: "🐲"
   role: ataque
   name_key: class.evocador_devastacion.name
   role_key: class.evocador_devastacion.role
@@ -1131,6 +1169,7 @@ evocador_devastacion:
 
 evocador_preservacion:
   group: evocador
+  icon: "⏳"
   role: curacion
   name_key: class.evocador_preservacion.name
   role_key: class.evocador_preservacion.role
@@ -1160,6 +1199,7 @@ evocador_preservacion:
 
 evocador_aumentacion:
   group: evocador
+  icon: "🔆"
   role: soporte
   name_key: class.evocador_aumentacion.name
   role_key: class.evocador_aumentacion.role
@@ -1191,6 +1231,7 @@ evocador_aumentacion:
 
 nigromante_plaga:
   group: nigromante
+  icon: "🪦"
   role: ataque
   name_key: class.nigromante_plaga.name
   role_key: class.nigromante_plaga.role
@@ -1218,6 +1259,7 @@ nigromante_plaga:
 
 nigromante_legion:
   group: nigromante
+  icon: "🧟"
   role: defensa
   name_key: class.nigromante_legion.name
   role_key: class.nigromante_legion.role
@@ -1248,6 +1290,7 @@ nigromante_legion:
 
 nigromante_drenaje:
   group: nigromante
+  icon: "🧛"
   role: curacion
   name_key: class.nigromante_drenaje.name
   role_key: class.nigromante_drenaje.role
@@ -1276,6 +1319,7 @@ nigromante_drenaje:
 
 bardo_duelista:
   group: bardo
+  icon: "🤺"
   role: ataque
   name_key: class.bardo_duelista.name
   role_key: class.bardo_duelista.role
@@ -1303,6 +1347,7 @@ bardo_duelista:
 
 bardo_trovador:
   group: bardo
+  icon: "🎶"
   role: curacion
   name_key: class.bardo_trovador.name
   role_key: class.bardo_trovador.role
@@ -1332,6 +1377,7 @@ bardo_trovador:
 
 bardo_estratega:
   group: bardo
+  icon: "🥁"
   role: soporte
   name_key: class.bardo_estratega.name
   role_key: class.bardo_estratega.role
