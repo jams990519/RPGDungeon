@@ -13,7 +13,7 @@ Pediste que la salud, el combate y las heridas tengan **problemas propios de la 
 - *Subnautica*: la barra de oxígeno bajo el agua. Un tanque más grande da más tiempo.
 - *Red Dead Redemption 2*: la ropa inadecuada para el frío o el calor gasta los núcleos.
 - *Frostpunk*: el frío amenaza a toda la ciudad. El pronóstico avisa las caídas de temperatura antes de que lleguen, y el calor sale de un generador que hay que mantener.
-- *Kenshi*: regiones con lluvia ácida que dañan a quien cruza sin techo. Y razas que viven el cuerpo distinto: los esqueletos no comen y se reparan en vez de curarse.
+- *Kenshi*: regiones con lluvia ácida que dañan a quien cruza sin protección. Y razas que viven el cuerpo distinto: los esqueletos no comen y se reparan en vez de curarse.
 - *Valheim*: cada bioma pide su preparación. En la montaña te congelas sin aguamiel de resistencia al frío o ropa de lobo. Mojado y con frío regeneras peor. Junto al fuego y bajo techo quedas **Descansado**. La niebla de las Mistlands pide una luz especial.
 
 ---
@@ -166,7 +166,7 @@ Ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md). El rigor nunca pasa de 3.
 - **Dónde:** desierto de día, tierras volcánicas, Ciudadela en Llamas, olas de calor, junto a la lava.
 - **El metal calienta:** la armadura de placas al sol del mediodía cuenta 1 ☀️ más. En el desierto, el guerrero pesado viaja de noche o se pone una sobrecapa de lino.
 - **Día y noche:** un día de juego dura 6 horas reales. De noche el desierto baja a ☀️0 y pasa a ❄️1. Quien viaja de noche necesita abrigo, no frescor.
-- Caer por calor deja una **quemadura de sol** leve (grado 1).
+- Caer por calor deja una **quemadura de sol** moderada (grado 2): caer siempre deja al menos una herida moderada (ver [Heridas](heridas.md)).
 
 ### 5.3 💧 Sed: la barra de Hidratación
 
@@ -249,7 +249,7 @@ Sin beber, en el desierto de día pasas de 100 a sed en unos 12 pasos. Una canti
 | 🍄 **Esporas** | Cuevas, bosque podrido, pantano | Lino fino | — | Alucinaciones: el estrés sube 2 por paso |
 | 💎 **Resonancia de cristal** | Cueva de Cristal (tramo III), vetas crudas | Ninguno: **forro de plomo** o distancia | Temblor Arcano | Un **péndulo de resonancia** avisa, como un contador Geiger |
 | 🌋 **Gases de azufre** | Tierras volcánicas, tramo VIII | Carbón | — | Se juntan en las hondonadas; el mapa marca los nodos bajos |
-| 🌑 **Corrupción del Vacío** | Abismo Umbrío (tramo IX), grietas | **Bendito** | Fiebre del Vacío | Sube el estrés. **No** se vuelve Corrupción permanente por sí sola: esa es una elección (ver [Mente](mente.md)) |
+| 🌑 **Corrupción del Vacío** | Abismo Umbrío (tramo IX), grietas | **Bendito** | Fiebre del Vacío | Sube el estrés. **No** se vuelve Corrupción permanente por sí sola: esa es una elección (ver [Mente](mente.md)). Si se pierde la carrera de una Fiebre del Vacío contraída aquí, deja Corrupción menor, que el templo limpia |
 | 🐀 **Plaga** | Nodos en brote durante una epidemia | Lino fino o bendito | Plaga Pálida | Solo durante eventos (ver [Enfermedades](enfermedades.md)) |
 | 🏛️ **Polvo de maldición** | Ruinas Olvidadas (tramo VII), criptas | Bendito | Maldición menor | Se levanta con un ritual del templo |
 

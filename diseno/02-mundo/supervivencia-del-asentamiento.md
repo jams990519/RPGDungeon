@@ -56,7 +56,7 @@ Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) siguen igual.
 | Llegan si… (cada día real) | Se van si… |
 |---|---|
 | Hay **vivienda libre** (cabañas comunes, barracones, cuartos de la posada) | La despensa está en **hambruna**: se va 1 de cada 10 por día |
-| La despensa tiene **5 días o más** | La salud pública baja de **30**: se va 1 de cada 20 por día |
+| La despensa tiene **7 días o más** | La salud pública baja de **30**: se va 1 de cada 20 por día |
 | La salud pública y el ánimo están en **50 o más** | El ánimo baja de **30**: se va 1 de cada 20 por día |
 | La seguridad no está en *Vulnerable* | Hubo una **brecha** en una incursión: se va 1 de cada 10 de golpe |
 | Llegan de 1 a 3 por día, el doble durante un festival o si la Gaceta habla bien de la ciudad | Hay **hacinamiento** de más del 20 %: se van los que sobran |
@@ -195,16 +195,16 @@ La geografía decide qué es fácil y qué hay que comprar: una ciudad en la lla
 
 ### 4.3 Graneros
 
-La comida se guarda en edificios. Lo que no cabe **se pudre en el suelo** al día siguiente.
+La comida se guarda en edificios. Lo que no cabe **se pudre en el suelo** al día siguiente. *Desde* es la etapa en la que ya se puede construir.
 
-| Edificio | Etapa | Capacidad | Extra |
+| Edificio | Desde | Capacidad | Extra |
 |---|---|---|---|
 | **Almacén del fogón** | Claro | 200 raciones | Las ratas se llevan un poco cada día |
-| **Granero de madera** | Aldea | 1.500 raciones | Con gatos o trampas, sin ratas |
+| **Granero de madera** | Campamento | 1.500 raciones | Con gatos o trampas, sin ratas |
 | **Ahumadero y salazón** | Aldea | — | Convierte carne y pescado en conservas (§4.4) |
 | **Bodega fría** | Villa | 1.000 raciones frescas | La comida fresca dura el doble |
-| **Granero de piedra** | Ciudad | 5.000 raciones | Sin ratas; resiste incendios; las incursiones no lo vacían |
-| **Silos del Castillo** | Castillo | 12.000 raciones | Parte de su contenido nunca se puede robar |
+| **Granero de piedra** | Villa | 5.000 raciones | Sin ratas; resiste incendios; las brechas se llevan la mitad de lo normal |
+| **Silos del Castillo** | Ciudad | 12.000 raciones | Parte de su contenido nunca se puede robar |
 
 ### 4.4 Comida que se echa a perder
 
@@ -232,7 +232,7 @@ Cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.md)).
 | 🍂 **Otoño** | **Cosecha grande** (campos ×3), festival de difuntos | Normal | **Llenar los graneros y conservar**: es la semana más importante del año |
 | ❄️ **Invierno** | Campos en cero, caza a la mitad, pesca −30 % | +20 % de comida y leña para todos; sube la gripe | Vivir de lo guardado; defenderse de las bestias hambrientas (§6.1) |
 
-**El primer invierno.** El servidor abre a fines del verano, así que el primer invierno llega en la segunda o tercera semana, cuando la aldea apenas se sostiene. Es la primera gran prueba del servidor, como en *Banished*: quien no guardó en otoño pasa hambre.
+**El primer invierno.** El servidor abre a fines del verano, así que el primer invierno llega en la tercera semana, después de un solo otoño para prepararse, cuando la aldea apenas se sostiene. Es la primera gran prueba del servidor, como en *Banished*: quien no guardó en otoño pasa hambre.
 
 ### 4.6 Raciones
 
@@ -250,9 +250,9 @@ Cambiar la ración es una decisión de gobierno (§10).
 | Momento | Qué pasa |
 |---|---|
 | **Día 0** | La despensa llega a cero. Cierra el comedor común, la posada deja de curar y el bot avisa en el grupo |
-| **Día 1** | Se van aldeanos (1 de cada 10 por día). Las obras se paran. Se publican pedidos de comida con paga triple |
+| **Día 1** | Se van aldeanos (1 de cada 10 por día). Las obras se paran. La racha de etapa vuelve a cero (§7). Se publican pedidos de comida con paga triple |
 | **Día 2** | −10 de salud y −15 de ánimo por día. Sube el riesgo de brote y de revuelta |
-| **Día 3** | La racha de etapa vuelve a cero (§7). Si sigue, la ciudad puede **bajar de etapa** (§11) |
+| **Día 3** | Si sigue, la ciudad **baja de etapa** (§11) |
 
 La comida personal de los jugadores nunca se toca. La hambruna es de la ciudad.
 
@@ -260,19 +260,19 @@ La comida personal de los jugadores nunca se toca. La hambruna es de la ciudad.
 
 ### 5.1 Lo que mantiene sana a la ciudad
 
-| Obra o servicio | Etapa | Qué cubre | Si falta |
+| Obra o servicio | Desde | Qué cubre | Si falta |
 |---|---|---|---|
 | **Pozo** | Claro | Agua limpia para 25 habitantes | Se bebe agua sucia: disentería (ver [Enfermedades](../05-salud/enfermedades.md)) |
 | **Cisterna** | Villa | Guarda 5 días de agua para la sequía | En la sequía no hay agua (ver [Crisis](crisis-problemas-y-soluciones.md)) |
-| **Acueducto** | Castillo | Agua limpia para toda la ciudad (Ingeniería y Construcción) | Hay que seguir sumando pozos |
-| **Letrinas** | Aldea | Higiene para 15 habitantes cada una | −salud, sube el riesgo de brote |
-| **Estercolero** | Aldea | Saca la basura de las calles; da **abono** para los campos | Basura, ratas y carroñeros |
-| **Alcantarillado** | Ciudad | Higiene para un barrio de 100 | Las letrinas no alcanzan para una ciudad grande |
-| **Baños y lavadero** | Ciudad | +salud y +ánimo | La ciudad se ensucia |
-| **Cementerio** | Villa (antes, una fosa fuera del campamento) | Los muertos se entierran lejos del agua | Cadáveres sin enterrar: brote (Podredumbre Gris) |
-| **Enfermería** | Aldea | Camas para aldeanos enfermos; turnos médicos (§5.3) | Los enfermos contagian en sus casas |
-| **Sanatorio** | Ciudad | Diagnóstico exacto, cuarentena, cirugía (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Los brotes graves duran mucho más |
-| **Lazareto** | Villa | Aislar enfermos fuera de los muros durante un brote | La cuarentena baja más el ánimo y el comercio |
+| **Acueducto** | Ciudad | Agua limpia para toda la ciudad (Ingeniería y Construcción) | Hay que seguir sumando pozos |
+| **Letrinas** | Campamento | Higiene para 15 habitantes cada una | −salud, sube el riesgo de brote |
+| **Estercolero** | Campamento | Saca la basura de las calles; da **abono** para los campos | Basura, ratas y carroñeros |
+| **Alcantarillado** | Villa | Higiene para un barrio de 100 | Las letrinas no alcanzan para una ciudad grande |
+| **Baños y lavadero** | Villa | +salud y +ánimo | La ciudad se ensucia |
+| **Cementerio** | Aldea (antes, una fosa fuera del campamento) | Los muertos se entierran lejos del agua | Cadáveres sin enterrar: brote (Podredumbre Gris) |
+| **Enfermería** | Campamento | Camas para aldeanos enfermos; turnos médicos (§5.3) | Los enfermos contagian en sus casas |
+| **Sanatorio** | Villa | Diagnóstico exacto, cuarentena, cirugía (ver [Ciudades y el Castillo](ciudades-y-castillo.md)) | Los brotes graves duran mucho más |
+| **Lazareto** | Aldea | Aislar enfermos fuera de los muros durante un brote | La cuarentena baja más el ánimo y el comercio |
 
 Además: la **comida variada** sube la salud; el **hacinamiento**, la **comida podrida**, el **frío sin leña** y la **lluvia en el pantano** la bajan (ver [Peligros del entorno](../05-salud/peligros-del-entorno.md)).
 
@@ -418,13 +418,13 @@ Para subir de etapa hacen falta tres cosas:
 
 | Subir a | Obras (además de las de [Fundación](fundacion-y-cisma.md)) | Población mínima | Despensa sostenida | Salud | Ánimo · Orden · Seguridad | Incursiones superadas en la etapa | Aportes colectivos | Racha |
 |---|---|---|---|---|---|---|---|---|
-| **Campamento** | Pozo, fogón con almacén, fosa fuera del campamento | 10 (5 jugadores) | 2 días | 40 | — | La primera noche (tutorial) | 6 de cada 10 residentes aportaron algo | 1 día |
+| **Campamento** | Almacén del fogón, fosa fuera del campamento, una cabaña común | 10 (5 jugadores) | 2 días | 40 | — | La primera noche (tutorial) | 6 de cada 10 residentes aportaron algo | 1 día |
 | **Aldea** | Granero, letrinas, empalizada, cabañas comunes | 40 (20 jugadores) | 4 días | 50 | Ánimo 40 | 1 | 4 de cada 10 residentes al día con su cuota (§9); 3 roles con cuota cubierta | 2 días |
 | **Villa** | Ahumadero y salazón, segundo pozo, cementerio, lazareto, torre de vigía | 120 (50 jugadores) | 5 días | 60 | Ánimo 50 · Orden 40 | 2, una de noche | 5 de cada 10 al día; una semana con todas las cuotas cubiertas | 3 días |
 | **Ciudad** | Granero de piedra, cisterna, alcantarillado, baños, torres en cada tramo de muralla | 300 (120 jugadores) | 7 días | 65 | Ánimo 55 · Orden 50 · Seguridad *Firme* | 3, una de saqueadores | 55 de cada 100 al día; **un invierno pasado sin hambruna** | 4 días |
-| **Castillo** | El Castillo con sus alas, silos, acueducto | 600 (250 jugadores) | 10 días | 70 | Ánimo 60 · Orden 60 · Seguridad *Firme* | 4 y el **asedio del monstruo grande** (§6.4) | 6 de cada 10 al día; 8 roles con cuota cubierta | 5 días |
+| **Castillo** | Silos, acueducto | 600 (250 jugadores) | 10 días | 70 | Ánimo 60 · Orden 60 · Seguridad *Firme* | 4 y el **asedio del monstruo grande** (§6.4) | 6 de cada 10 al día; 8 roles con cuota cubierta | 5 días |
 
-- **La racha es indulgente con los tropiezos cortos.** Si un mínimo falla, la racha se congela. Solo vuelve a cero si falla durante un día real entero, o si hay hambruna.
+- **La racha es indulgente con los tropiezos cortos.** Si un mínimo falla, la racha se congela. Solo vuelve a cero si falla durante un día real entero.
 - Los números son orientativos y se ajustan en la beta. La meta es la de P-55: de **4 a 6 semanas** del Claro al Castillo (ver [Preguntas abiertas](../00-vision/preguntas-abiertas.md)).
 
 ## 8. Los obreros también comen
@@ -525,7 +525,7 @@ Como en el libro de leyes de *Frostpunk*: cada decisión arregla un problema y c
 
 | Qué pasa | Cuándo | Cómo se recupera |
 |---|---|---|
-| **La racha vuelve a cero** | Un mínimo falla durante un día real entero, o hay hambruna | Sostener de nuevo |
+| **La racha vuelve a cero** | Un mínimo falla durante un día real entero (la hambruna siempre lo provoca) | Sostener de nuevo |
 | **Edificios dañados** | Brechas, incendios, sabotajes | Jornadas de reparación de los constructores (trabajo pagado) |
 | **Obras que pierden avance** | Una derrota en una incursión (hasta un 10 %) | Más jornadas |
 | **Aldeanos que se van o mueren** | Hambruna, brotes, brechas, ánimo bajo | Vuelven a llegar cuando la ciudad mejora |

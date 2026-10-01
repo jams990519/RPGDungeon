@@ -4,7 +4,7 @@
 
 **De dónde sale.**
 - *El club de la lucha* (novela de Chuck Palahniuk, 1996; película de David Fincher, 1999): peleas en un sótano, unas reglas que todos recitan (la primera: no se habla del club) y una pelea que termina cuando alguien dice basta.
-- *Kenshi*: perder una pelea no te mata, te deja inconsciente; y la Dureza sube a fuerza de recibir golpes. Perder también enseña.
+- *Kenshi*: perder una pelea casi siempre te deja inconsciente en vez de matarte; y la Dureza sube a fuerza de recibir golpes. Perder también enseña.
 - **Los gladiadores de Roma:** el *lanista*, dueño de la escuela, que entrenaba luchadores y los alquilaba; la *missio*, que dejaba salir vivo al que perdía peleando bien; la *venatio*, pelea contra fieras; y tipos de luchador con armas fijas (el reciario con red y tridente).
 - *Yakuza* (*Like a Dragon*): el coliseo clandestino escondido bajo Kamurocho, con torneos entre luchadores de estilos propios.
 - *Sleeping Dogs*: clubes de pelea clandestinos en Hong Kong, y un policía infiltrado en las tríadas que juega a los dos lados.
@@ -29,7 +29,7 @@
 | Local | Dónde | Quién lo opera | Público | Riesgo de redada |
 |---|---|---|---|---|
 | **El Foso** | Refugios de forajidos, en zonas rojas (ver [Crimen y justicia](crimen-y-justicia.md)) | Un Capataz PNJ, o el gremio que controla el refugio | Grande | Bajo: la guardia casi nunca llega |
-| **Sótano** | Una casa con sótano secreto (ver [Casa propia](../09-construccion/casa-propia.md)), en cualquier zona | El dueño de la casa | Chico (hasta 20) | Alto en zona azul, medio en amarilla, bajo en roja |
+| **Sótano** | Una casa con **sótano secreto**, una sala nueva que se agrega a la [casa propia](../09-construccion/casa-propia.md), en cualquier zona | El dueño de la casa | Chico (hasta 20) | Alto en zona azul, medio en amarilla, bajo en roja |
 | **Garito** | Un garito de gremio (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)) | El gremio | Mediano | Medio |
 | **La Ronda Nocturna** | Cambia de nodo cada noche y se anuncia como rumor (ver [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md)) | Un promotor | Mediano | Bajo: cuesta encontrarla |
 | **El Pozo Negro** | Profundidades, en zonas negras | Quien lo toma y lo defiende | Mediano | Ninguno, pero al salir eres presa |
@@ -204,7 +204,7 @@ El formato más extremo, y el único donde se puede morir.
 | **Matón de la casa** | Cuida la puerta, echa a quien molesta, cobra las deudas de la casa (con recompensa, nunca por la fuerza fuera del ring), vigila y cubre la fuga en una redada | Sueldo del local | Fama del local |
 | **Informante** | Vende contraseñas, el nombre real detrás de un apodo y la hora de una noche… a quien pague, incluso a la guardia | Lo que le paguen | Red de contactos. Si lo descubren: veto y recompensa por su cabeza |
 | **Guardia corrupto** | Cobra una "protección" semanal para avisar de las redadas o desviarlas | El soborno | Si un detective lo descubre: pierde el puesto, gana Infamia y va a prisión |
-| **Pregonero** (Bardo o Juglaría) | Narra la pelea en la sala y sube el Clamor del público | Propinas | El rasgo *Voz de bardo* |
+| **Pregonero** (Bardo o Juglaría) | Narra la pelea en la sala y sube el Fervor del público | Propinas | El rasgo *Voz de bardo* |
 | **Proveedor del Foso** | Captura bestias vivas para las peleas (ver [Cacerías](cacerias.md)) | Alquiler de la bestia | Fama en el Foso |
 
 El guardia corrupto y el informante son el guiño a *Sleeping Dogs*: gente que juega a los dos lados, y que un detective puede desenmascarar.
