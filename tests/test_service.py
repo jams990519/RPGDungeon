@@ -140,7 +140,7 @@ def test_shop_and_inn_in_claro(service, clock):
     make_hero(service)
     assert "claro" in [a.id for a in service.menu()]
     ids = [a.id for a in service.act("test:1", "claro").actions]
-    assert "shop" in ids and "inn" in ids and "camp" in ids
+    assert "shop" in ids and "inn" in ids and "camp" not in ids        # D-98: no common work in the Claro
     hero = service.store.get("hero", "test:1")
     hero["gold"] = 50
     hero["backpack"]["hierba_curativa"] = 2
@@ -204,7 +204,7 @@ def test_names_ignore_accents_spaces_and_reservations(service):
     assert service.text("test:4", "aria").notice
 
 
-def test_gather_in_claro_and_donate_to_camp(service, clock):
+def test_gather_in_claro_and_sell_to_the_trader(service, clock):
     make_hero(service)
     view = service.act("test:1", "explore")          # tutorial 1: explore the Claro (choose how much energy, D-87)
     assert view.kind == "batch" and any(a.id == "explore_menu" for a in view.actions)
@@ -218,25 +218,27 @@ def test_gather_in_claro_and_donate_to_camp(service, clock):
     hero = service.store.get("hero", "test:1")
     assert hero["tutorial"] == 2
     assert any(hero["backpack"].get(i, 0) for i in ("madera", "fibra"))
-    view = service.act("test:1", "donate")
+    gold = hero["gold"]
+    service.act("test:1", "shop")
+    view = service.act("test:1", "sell:all")         # tutorial 3: sell what you do not need (D-98 replaced donating)
     hero = service.store.get("hero", "test:1")
-    assert hero["merit"] > 0 and hero["tutorial"] == 3
-    camp = service.store.get("settlement", "claro")
-    assert sum(camp["progress"].values()) == hero["merit"]
-    assert view.kind == "camp"
+    assert hero["tutorial"] == 3 and hero["gold"] > gold and "📜" in view.notice
+    assert view.kind == "shop"
 
 
-def test_camp_levels_up_when_full(service, clock):
+def test_the_claro_never_grows(service, clock):
     make_hero(service)
     hero = service.store.get("hero", "test:1")
     hero["backpack"].update({"madera": 50, "fibra": 40})
     service.store.put("hero", "test:1", hero)
-    view = service.act("test:1", "donate")
-    camp = service.store.get("settlement", "claro")
-    assert camp["stage"] == 1 and camp["progress"] == {}
-    hero = service.store.get("hero", "test:1")
-    assert hero["backpack"].get("madera") == 10 and hero["level"] >= 2   # 70 units × 2 xp
-    assert "🎉" in (view.notice or "")
+    for old_button in ("camp", "donate", "feed"):                 # buttons of the old common work (D-98)
+        view = service.act("test:1", old_button)
+        assert view.kind == "claro" and "no crece" in view.notice
+    assert service._settlement()["stage"] == 0
+    assert service.store.get("hero", "test:1")["backpack"]["madera"] == 50   # nothing taken
+    view = service.act("test:1", "claro")
+    assert [a.id for a in view.actions] == ["shop", "inn", "home"]
+    assert any("funda tu propio campamento" in line for line in view.body)
 
 
 def test_tutorial_hint_shows_in_zone(service):

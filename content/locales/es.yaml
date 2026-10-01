@@ -429,12 +429,36 @@ bag:
   title: "🎒 Mochila"
   belt: "Cinturón: {items}"
   backpack: "Mochila: {items}"
+  intro: "Lo que llevas, ordenado por botones:"
+  help_gear: "🛡️ Equipo: lo que tienes puesto y las piezas que encontraste. Ahí ves si te sirven y te las equipas."
+  help_potions: "🧪 Pociones: cada poción y remedio con lo que cura. Ahí las usas."
+  help_wallet: "💰 Monedas: bronce, plata, oro, bolsas, cofres y diamantes. En el Claro coses bolsas y armas cofres."
+  help_resources: "📦 Recursos: los materiales y la comida que juntaste, cuántos tienes y para qué sirven."
   empty: "vacío"
   use_button: "{emoji} Usar {item} (×{n})"
   button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
   full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
   full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90: lo que encuentras igual entra
+
+resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedido del dueño): materiales y comida, de a páginas
+  button: "📦 Recursos"
+  title: "📦 Recursos"
+  intro: "Lo que juntaste y para qué sirve:"
+  line: "{emoji} {item} ×{n} — {use}"
+  none: "Todavía no juntaste nada. Recolecta en las zonas con 🪓 Recolectar."
+  page: "Página {n} de {total}"
+  more: "➡️ Ver más"
+  use_default: "se vende al mercader del Claro"
+  use:
+    madera: "fundar y agrandar campamentos, armar cofres"
+    piedra: "fundar y agrandar campamentos"
+    fibra: "coser bolsas, agrandar campamentos"
+    pieza_metal: "coser bolsas y armar cofres"
+    arcilla: "se vende al mercader; servirá para el abono y los oficios"
+    hierba_curativa: "se vende al mercader; servirá para remedios"
+    carne: "comida: 2 raciones para la despensa de tu campamento"
+    provisiones: "comida: 1 ración para la despensa de tu campamento"
 
 combat:
   title: "⚔️ Combate · Ronda {n}"
@@ -542,22 +566,8 @@ gather:
   found: "🪓 Recolectaste: {items}."
   ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
 
-camp:
-  button: "🔥 Obra del campamento"
-  title: "🔥 La obra del campamento"
-  intro: "Lo que todos levantan juntos. Cada etapa hace al Claro más seguro y útil."
-  stage: "Etapa: {stage} ({n}/{total})"
-  needs_title: "Para llegar a {next}:"
+camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
-  complete: "🏰 ¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes."
-  top_title: "Quienes más aportaron:"
-  top_line: "{n}. {name} — {merit} de mérito"
-  your_merit: "Tu mérito: {merit}"
-  donate_button: "🤲 Aportar mis materiales"
-  nothing: "No llevas nada que el campamento necesite ahora. Recolecta afuera."
-  donated: "🤲 Aportaste {items}: +{xp} experiencia y +{merit} de mérito."
-  stage_up: "🎉 ¡Entre todos, el Claro pasó a ser {stage}!"
-  bonus: "Mejora actual: la posada cuesta {price}."
   stages:
     fogata: "una fogata"
     campamento: "un campamento"
@@ -573,7 +583,7 @@ tutorial:
   steps:
     explore_claro: "Las ruinas alrededor de la fogata todavía esconden cosas. Nadie va a buscarlas por ti."
     gather: "La tierra da lo que necesitas para levantar algo. Hay que agacharse y juntarlo."
-    donate: "Solo nadie sobrevive. Alguien cuida el fuego del Claro y acepta ayuda."
+    sell: "Lo que juntas vale algo. Hay alguien en el Claro que compra lo que te sobra."
     leave_claro: "Más allá del Claro hay tierras que nadie pisó. Cada paso cuesta tiempo."
     win_fight: "Afuera hay criaturas. Mira lo que preparan antes de elegir qué hacer."
     heal: "Las heridas no se van solas tan rápido. Hay quien vende remedio y hay donde dormir."
@@ -582,7 +592,9 @@ tutorial:
 claro:
   button: "🏕️ Campamento"
   title: "🏕️ Campamento del Claro"
-  intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."
+  intro: "El campamento base, donde empiezan todos: la fogata, el mercader y un lugar para dormir."
+  grow_hint: "🏕️ El Claro no crece. Para crecer, funda tu propio campamento lejos de aquí: tus campamentos son los que suben de nivel, mejoran y llegan a castillo."
+  no_growth: "🔥 La obra del Claro terminó: el Claro es el campamento base y ya no crece. Lo que juntes sirve para fundar y agrandar tus campamentos, coser bolsas y armar cofres."
   far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
 
 pantry:                       # [ES] D-93 (provisional): la despensa de los campamentos de jugadores (desde nivel 3). El Claro no tiene: no tiene dueño (D-95)

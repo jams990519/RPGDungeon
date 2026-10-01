@@ -801,6 +801,9 @@ class GameService:
             return self._bag_view(hero)
         if action_id == "potions":
             return self._potions_view(hero)
+        if action_id == "resources" or action_id.startswith("res:"):
+            page = action_id[4:]
+            return self._resources_view(hero, int(page) if page.isdigit() else 0)
         if action_id == "wallet":
             return self._wallet_view(hero)
         if action_id == "gems":
@@ -859,10 +862,10 @@ class GameService:
             return self._camp_here_view(hero)
         if action_id == "claro":
             return self._claro_view(hero)
-        if action_id in ("camp", "donate", "feed"):     # "feed": old 0.10 button, the Claro has no pantry now (D-95)
+        if action_id in ("camp", "donate", "feed"):     # old buttons of the Claro's common work: it no longer grows (D-98)
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
-            return self._donate(hero) if action_id == "donate" else self._camp_view(hero)
+            return self._claro_view(hero, notice=t.t("claro.no_growth"))
         if action_id.startswith("sellg:"):
             return self._sell_gear(hero, action_id[6:], in_claro)
         if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
@@ -1220,31 +1223,19 @@ class GameService:
 
     # ------------------------------------------------------------------ gathering, camp, tutorial
 
-    def _gather_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
-        """Gather the zone's materials (biomes.yaml "gather"); dangerous zones may ambush."""
-        bal = self.content.balance["gather"]
-        danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
-        if danger > 0 and rng.chance(danger):
-            return self._start_combat(hero, zone, rng, "gather.ambush")
-        table = self.content.biomes[zone.biome].get("gather", {})
-        if not table:
-            return self.texts.t("camp.nothing")
-        low, high = bal["amount"]
-        amount = int(rng.uniform(low, high + 1)) + zone.level // 3
-        found: dict[str, int] = {}
-        for _ in range(max(1, amount)):
-            item_id = rng.pick_weighted(list(table), list(table.values()))
-            found[item_id] = found.get(item_id, 0) + 1
-        for item_id, count in found.items():
-            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
-        return self.texts.t("gather.found", items=self._item_list(found))
-
     def _claro_view(self, hero: Hero, notice: str | None = None) -> View:
-        """The Claro's camp screen: the common work, the trader and the inn (no pantry: it has no owner, D-95)."""
+        """The Claro: the fixed base camp with the trader and the inn. It never grows (D-98) nor eats (D-95).
+
+        [ES]
+        Qué hace: muestra el campamento base, donde empiezan todos: mercader, posada y la pista para crecer
+        fundando tu propio campamento. El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
+        La llaman: el botón 🏕️ Campamento estando en el Claro, y los botones viejos de la obra (camp, donate, feed).
+        Si cambia, afecta: la primera pantalla de todos los jugadores nuevos (tope de 4 botones, D-75).
+        """
         t = self.texts
-        body = [t.t("claro.intro"), self._status_line(hero)]
+        body = [t.t("claro.intro"), t.t("claro.grow_hint"), self._status_line(hero)]
         return View(kind="claro", title=t.t("claro.title"), body=body + self._tutorial_hint(hero),
-                    actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
+                    actions=[Action(id="shop", label=t.t("shop.button")),
                              Action(id="inn", label=t.t("inn.button", price=self._money(self._inn_price()))), Action(id="home", label=t.t("menu.back"))],
                     notice=notice)
 
@@ -1256,82 +1247,6 @@ class GameService:
         inn = self.content.balance["inn"]
         stage = self._settlement()["stage"]
         return max(1, inn["price"] - stage * self.content.balance["settlement"]["inn_discount_per_stage"])
-
-    def _camp_view(self, hero: Hero, notice: str | None = None) -> View:
-        t = self.texts
-        stages = self.content.balance["settlement"]["stages"]
-        data = self._settlement()
-        stage = stages[data["stage"]]
-        body = [t.t("camp.intro"), t.t("camp.stage", stage=t.t(f"camp.stages.{stage['id']}"), n=data["stage"] + 1, total=len(stages)), ""]
-        if stage["needs"]:
-            nxt = stages[data["stage"] + 1]["id"]
-            body.append(t.t("camp.needs_title", next=t.t(f"camp.stages.{nxt}")))
-            for item_id, need in stage["needs"].items():
-                have = min(need, data["progress"].get(item_id, 0))
-                item = self.content.items[item_id]
-                body.append(t.t("camp.need_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=need, bar=self._bar(have, need, 8)))
-        else:
-            body.append(t.t("camp.complete"))
-        body.append(t.t("camp.bonus", price=self._money(self._inn_price())))
-        top = sorted(data["merit"].items(), key=lambda kv: -kv[1])[:5]
-        if top:
-            body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
-        body += ["", t.t("camp.your_merit", merit=hero.merit)]
-        body += self._tutorial_hint(hero)
-        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="claro", label=t.t("menu.back"))]
-        return View(kind="camp", title=t.t("camp.title"), body=body, actions=actions, notice=notice)
-
-    def _donate(self, hero: Hero) -> View:
-        """Give every material the current stage still needs; earn xp and merit; maybe level up the camp."""
-        t = self.texts
-        cfg = self.content.balance["settlement"]
-        data = self._settlement()
-        stage = cfg["stages"][data["stage"]]
-        given: dict[str, int] = {}
-        for item_id, need in stage["needs"].items():
-            missing = need - data["progress"].get(item_id, 0)
-            count = min(missing, hero.backpack.get(item_id, 0))
-            if count > 0:
-                given[item_id] = count
-                data["progress"][item_id] = data["progress"].get(item_id, 0) + count
-                hero.backpack[item_id] -= count
-                if hero.backpack[item_id] <= 0:
-                    del hero.backpack[item_id]
-        if not given:
-            return self._camp_view(hero, notice=t.t("camp.nothing"))
-        units = sum(given.values())
-        xp = units * cfg["xp_per_unit"]
-        hero.merit += units
-        data["merit"][hero.name] = data["merit"].get(hero.name, 0) + units
-        lines = [t.t("camp.donated", items=self._item_list(given), xp=int(xp * self._xp_mult(hero)), merit=units)]   # the xp really given
-        lines += self._give_xp(hero, xp)
-        lines += self._claro_rise(data)
-        self.store.put("settlement", "claro", data)
-        lines += self._tutorial(hero, "donate")
-        return self._camp_view(hero, notice="\n".join(lines))
-
-    def _work_paid(self, data: dict[str, Any]) -> bool:
-        """True when every material of the Claro's current stage is in."""
-        stage = self.content.balance["settlement"]["stages"][data["stage"]]
-        return bool(stage["needs"]) and all(data["progress"].get(i, 0) >= n for i, n in stage["needs"].items())
-
-    def _claro_rise(self, data: dict[str, Any]) -> list[str]:
-        """Raise the Claro one stage when its work is paid (it never goes down and has no pantry, D-95).
-
-        [ES]
-        Qué hace: sube el Claro de etapa cuando la obra común está pagada. El Claro no se mantiene: no tiene
-        dueño, así que no tiene despensa (D-95); solo los campamentos de jugadores comen (D-93).
-        La llama: _donate. Nunca baja la etapa.
-        Si cambia, afecta: el ritmo del Claro hasta castillo (P-55), su territorio y la posada.
-        """
-        t = self.texts
-        stages = self.content.balance["settlement"]["stages"]
-        if not self._work_paid(data):
-            return []
-        nxt = stages[data["stage"] + 1]["id"]
-        data["stage"] += 1
-        data["progress"] = {}
-        return [t.t("camp.stage_up", stage=t.t(f"camp.stages.{nxt}"))]
 
     # ------------------------------------------------------------------ settlement pantry (D-93, provisional)
 
@@ -1574,7 +1489,10 @@ class GameService:
                     sold[i] = n
                     del hero.backpack[i]
             hero.gold += total
-            return self._shop_view(hero, notice=t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total)) if sold else None)
+            if not sold:
+                return self._shop_view(hero)
+            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + self._tutorial(hero, "sell")
+            return self._shop_view(hero, notice="\n".join(lines))
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
             return self._shop_view(hero)
@@ -1583,7 +1501,8 @@ class GameService:
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
         hero.gold += price
-        return self._shop_view(hero, notice=t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price)))
+        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
+        return self._shop_view(hero, notice="\n".join(lines))
 
     def _rest(self, hero: Hero) -> View:
         """Inn: pay gold, sleep a few minutes, wake with full health."""
@@ -2290,16 +2209,55 @@ class GameService:
         return " · ".join(parts)
 
     def _bag_view(self, hero: Hero) -> View:
-        """Belt, loose backpack items and the space line; at or over the space, the full-backpack line (D-90)."""
+        """The backpack hub: what each button holds (it never lists everything you carry), the space line, health.
+
+        [ES]
+        Qué hace: explica para qué sirve cada botón (🛡️ Equipo, 🧪 Pociones, 💰 Monedas, 📦 Recursos) en lugar de
+        listar todo lo que llevas: con miles de cosas no se podría leer (pedido del dueño). Muestra el espacio
+        (o la mochila llena, D-90). Son 4 botones (D-75): para volver al héroe está 👤 Héroe en el menú de abajo.
+        La llaman: el botón 🎒 Mochila de la ficha del héroe y el atajo /inv.
+        Si cambia, afecta: cómo llega el jugador a su equipo, pociones, monedas y recursos.
+        """
         t = self.texts
-        loose = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") != "gear"}
         space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
-        body = [t.t("bag.belt", items=self._item_list(hero.belt)), t.t("bag.backpack", items=self._item_list(loose)), space, "", self._status_line(hero)]
+        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources"),
+                "", space, self._status_line(hero)]
         body += self._recovery_lines(hero, hero_stats(self._kit(hero), hero.level)["max_hp"])
         actions = [Action(id="gear", label=t.t("gear.button_new" if hero.gear_new else "gear.button")),
                    Action(id="potions", label=t.t("potions.button")), Action(id="wallet", label=t.t("wallet.button")),
-                   Action(id="hero", label=t.t("menu.back"))]
+                   Action(id="resources", label=t.t("resources.button"))]
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
+
+    def _resources_view(self, hero: Hero, page: int = 0) -> View:
+        """📦 Recursos: materials and food you carry, how many and what they are for, a page at a time.
+
+        [ES]
+        Qué hace: lista los materiales y la comida de la mochila (no el equipo, que está en 🛡️ Equipo, ni las
+        pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve cada uno.
+        La llaman: el botón 📦 Recursos de la mochila.
+        Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
+        """
+        t = self.texts
+        per = self.content.balance["resources"].get("per_page", 8)
+        kinds = ("material", "food")
+        owned = sorted(((i, n) for i, n in hero.backpack.items() if n > 0 and self.content.items.get(i, {}).get("kind") in kinds),
+                       key=lambda kv: (-kv[1], kv[0]))
+        pages = max(1, (len(owned) + per - 1) // per)
+        page %= pages
+        body = [t.t("resources.intro")]
+        for item_id, n in owned[page * per: page * per + per]:
+            item = self.content.items[item_id]
+            use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
+            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n, use=use))
+        if not owned:
+            body.append(t.t("resources.none"))
+        if pages > 1:
+            body.append(t.t("resources.page", n=page + 1, total=pages))
+        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())
+        body += ["", space]
+        actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
+        actions.append(Action(id="bag", label=t.t("menu.back")))
+        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions)
 
     def _potions_view(self, hero: Hero, notice: str | None = None) -> View:
         """Every potion and remedy you carry, with what it does, and a button to use it (D-86)."""

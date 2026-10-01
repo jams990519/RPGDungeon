@@ -206,3 +206,39 @@ def test_camp_stage_line_reads_well(service):
     body = service.act("test:1", "claro").body
     assert "🏰 Etapa: campamento. Al crecer pasa a aldea, pueblo, ciudad y castillo." in body
     assert not any("Es un" in line for line in body)
+
+
+def test_the_backpack_explains_its_buttons_and_does_not_list_everything(service):
+    make_hero(service)
+    hero = service._load("test:1")
+    hero.backpack.update({"madera": 7, "fibra": 3, "carne": 2})
+    service._save(hero)
+    view = service.act("test:1", "bag")
+    body = "\n".join(view.body)
+    assert [a.id for a in view.actions] == ["gear", "potions", "wallet", "resources"]
+    for word in ("🛡️ Equipo", "🧪 Pociones", "💰 Monedas", "📦 Recursos"):
+        assert word in body
+    assert "Madera" not in body                                  # the hub never lists what you carry
+
+
+def test_resources_screen_lists_materials_and_food_by_pages(service):
+    make_hero(service)
+    hero = service._load("test:1")
+    hero.backpack.update({"madera": 7, "fibra": 3, "carne": 2, "pocion_vida": 1, "espada_2": 1})
+    service._save(hero)
+    view = service.act("test:1", "resources")
+    body = "\n".join(view.body)
+    assert view.kind == "resources" and [a.id for a in view.actions] == ["bag"]
+    assert "Madera ×7" in body and "agrandar campamentos" in body and "2 raciones" in body
+    assert "Poción" not in body and "Espada" not in body           # potions and gear have their own buttons
+    assert not service.texts.missing
+    per = service.content.balance["resources"]["per_page"]
+    many = [i for i, it in service.content.items.items() if it.get("kind") in ("material", "food")]
+    hero = service._load("test:1")
+    hero.backpack = {i: 1 for i in many}
+    service._save(hero)
+    first = service.act("test:1", "resources")
+    if len(many) > per:
+        assert [a.id for a in first.actions] == ["res:1", "bag"]
+        second = service.act("test:1", "res:1")
+        assert second.kind == "resources" and len(second.actions) <= 4

@@ -77,6 +77,7 @@ world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
 resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
+  per_page: 8                # [ES] cuántos recursos muestra cada página de 📦 Recursos en la mochila
   region_scale: {madera: 5, piedra: 4, fibra: 3, hierba_curativa: 3, pieza_metal: 6, arcilla: 4}   # [ES] tamaño base de las manchas de cada recurso
   biome_bonus: 0.25          # [ES] cuánto ayuda el bioma (más madera en el bosque)
   threshold: 0.62            # [ES] desde qué fuerza un recurso aparece en la zona
@@ -100,8 +101,7 @@ gather:                      # [ES] recolectar en la zona actual
   encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
   own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
 
-settlement:                  # [ES] el campamento del Claro: obra común de todo el servidor (D-45)
-  xp_per_unit: 2             # [ES] experiencia por cada material aportado
+settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables
   stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
     - {id: fogata, needs: {madera: 40, fibra: 30}}
     - {id: campamento, needs: {madera: 120, fibra: 80, piedra: 60}}
@@ -114,7 +114,7 @@ settlement:                  # [ES] el campamento del Claro: obra común de todo
 tutorial:
   reward_gold: 5
   reward_xp: 20
-  steps: [explore_claro, gather, donate, leave_claro, win_fight, heal, use_places]
+  steps: [explore_claro, gather, sell, leave_claro, win_fight, heal, use_places]   # [ES] D-98: "sell" (vender al mercader) reemplazó a "donate" (la obra del Claro ya no existe); el índice de cada héroe no cambia
 
 camps:                       # [ES] campamentos que fundan los jugadores lejos del Claro (D-71)
   found_cost: {madera: 20, piedra: 10}
