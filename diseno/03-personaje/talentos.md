@@ -71,6 +71,8 @@ Lo de arriba es el diseño completo, para más adelante. La versión jugable usa
 
 Medición: `python3 tools/sim.py --summary` (todas las especializaciones ≥ 95 % de victorias contra los enemigos de nivel 1 a 3 con sus 3 primeras habilidades) y `python3 tools/sim.py --bars --level=11|25|47` (todas las barras posibles de cada especialización: ninguna queda más de 12 puntos de vida restante por encima de la mediana de su rol).
 
+Ajustes posteriores de números por especialización (vida base, segunda habilidad, curación): ver el registro en [Balance](balance.md) §7.
+
 ## Doble especialización (en el juego desde 0.9.1, D-88)
 
 - **Cuándo:** cuando tienes 10 puntos en tu especialización principal ("te dedicaste a ella") y pagas 3 💰 bolsas (`talents.dual`).

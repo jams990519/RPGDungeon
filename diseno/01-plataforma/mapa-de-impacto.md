@@ -691,7 +691,7 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **Un escenario** → las mediciones viejas dejan de compararse con las nuevas: se anota en el registro de balance.
-- **Lo que ya está en el código:** `tools/sim.py` (D-79), con la forma de jugar básica de un jugador; `--summary` mide las 3 primeras habilidades contra los enemigos de nivel 1 a 3, `--real` usa el kit real (talentos, barra automática, equipo inicial) y `--bars` prueba todas las barras posibles de cada spec a un nivel. Si el combate entiende un `kind` nuevo, hay que enseñárselo a su función `choose`.
+- **Lo que ya está en el código:** `tools/sim.py` (D-79), con la forma de jugar básica de un jugador; `--summary` mide las 3 primeras habilidades contra los enemigos de nivel 1 a 3, `--real` usa el kit real (talentos, barra automática, equipo inicial) `--bars` prueba todas las barras posibles de cada spec a un nivel y `--boss` mide cada spec contra el Guardián (nivel 6, juego atento, equipo de su nivel). Los cambios de números y sus mediciones van al registro de [Balance](../03-personaje/balance.md) §7. Si el combate entiende un `kind` nuevo, hay que enseñárselo a su función `choose`.
 - **Un objetivo** → es un cambio de diseño, no de número: pasa por el dueño y por [Balance](../03-personaje/balance.md). Aflojarlo tanto que una clase quede por encima de otra **rompe** D-49.
 
 ---

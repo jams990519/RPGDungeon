@@ -154,3 +154,73 @@ TowerWars reparte un punto de personaje por nivel en ataque, defensa, vida o man
 Aquí las estadísticas salen del **equipo**, la raza no aporta combate y los puntos por nivel van a los **árboles de talentos** (ver [Talentos](talentos.md)). No hay elecciones falsas ni desigualdades por fecha.
 
 Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
+
+## 7. Registro de balance
+
+### Octubre de 2026: especializaciones débiles al inicio y frente al Guardián
+
+**Por qué.** Con el kit real (equipo inicial, pasiva de ~1 % por punto, barra automática), varias especializaciones perdían demasiado al nivel 2-3, sobre todo contra el Oso de las cumbres (Cazador · Puntería ganaba el 38 %), y frente al Guardián (Raigambre, nivel 6) el resultado iba del 0 % al 100 % según la especialización: las de soporte sin golpe temprano casi nunca ganaban y las de curación (y Paladín Protección) no perdían nunca.
+
+**Objetivo de este ajuste** (pedido de la sesión de balance; no es una decisión del dueño): con juego básico, al nivel mínimo de cada enemigo de nivel 1 a 3, todas ganan el 90 % o más (curación, el 85 %); contra el Guardián al nivel 6, todas entre el 45 % y el 90 %; y ninguna barra queda muy por encima de su rol (`--bars --level=25`, +12).
+
+**Cómo se midió** (todo con `tools/sim.py`):
+- Enemigos tempranos: `--summary --real` (40 peleas por enemigo; números de abajo). Se confirmó con 80 a 100 peleas y otras semillas.
+- Guardián: `--boss` (nuevo): nivel 6 con sus 5 puntos en la especialización, juego atento (lee el aviso, bloquea o esquiva, interrumpe, se cura, usa poción y venda), cinturón lleno (3 🧪 y 2 🩹) y, en las 7 ranuras, la mejor pieza normal de su tipo hasta **nivel de pieza 2 (poco común)**, que es lo que suele tener un héroe al nivel 6. 100 peleas por especialización; se confirmó con 300 y otras semillas.
+- Ojo: el resultado contra el Guardián depende mucho del equipo. Con estos mismos números, con equipo de nivel 1 en todas las ranuras se gana el 17 % de media, y con piezas raras (nivel 3) en todas, el 98 %.
+- La medición vieja de [Jefes](../06-contenido/jefes.md) §6 daba a cada héroe el doble de puntos de talento (un error del simulador de entonces) y solo 3 ranuras de equipo; por eso sus porcentajes no se comparan con estos.
+
+**Enemigos.** Oso de las cumbres (`content/enemies.yaml`): vida base 120 → 110 y *Aplastar* 2,3 → 2,0. Era un pico injusto al nivel 3 para todas las clases que esquivan (su golpe grande no se esquiva). El Guardián no cambió.
+
+**Especializaciones** (`content/classes.yaml`). Criterio: subir la **vida base** (y a veces el ataque base) de las débiles, porque pesa mucho al inicio y poco más tarde (al nivel 25, +30 de vida base es menos del 8 %); bajar la curación sostenida de las de curación (su segunda habilidad, que llega al nivel 4, y su recurso por ronda) y la segunda habilidad de las que ganaban siempre. "Peor % temprano" es la peor victoria contra un enemigo de nivel 1 a 3; "Guardián" es el % de victorias al nivel 6.
+
+| Especialización | Peor % temprano | Guardián nivel 6 | Cambios |
+|---|---|---|---|
+| guerrero_furia | 90 → 100 | 9 → 60 | vida base 125 → 165; ataque base 13 → 15; defensa base 0.2 → 0.25; `golpe_colosal` valor 0.4 → 0.6 |
+| guerrero | 100 → 100 | 27 → 68 | vida base 135 → 161 |
+| guerrero_senor_guerra | 95 → 100 | 0 → 67 | vida base 130 → 169; ataque base 13 → 16; golpe básico 1.0 → 1.2; `estandarte_de_muralla` valor 0.35 → 0.5 |
+| paladin_reprension | 100 → 100 | 45 → 64 | vida base 125 → 139 |
+| paladin_proteccion | 100 → 100 | 100 → 81 | vida base 135 → 112; defensa base 0.22 → 0.17; `escudo_del_vengador` enfriamiento 3 → 5 |
+| paladin_sagrado | 100 → 100 | 100 → 77 | vida base 115 → 105; defensa base 0.18 → 0.14; recurso por ronda 4 → 2; `destello_de_luz` valor 0.3 → 0.22; `faro_de_luz` valor 0.08 → 0.05 |
+| cazador_punteria | 38 → 98 | 20 → 64 | vida base 110 → 122; `apuntar` rondas 2 → 3 |
+| cazador_bestias | 100 → 100 | 77 → 77 | — |
+| cazador_supervivencia | 100 → 100 | 4 → 61 | vida base 115 → 150 |
+| picaro | 100 → 100 | 25 → 68 | vida base 105 → 134 |
+| picaro_sutileza | 65 → 98 | 75 → 74 | vida base 105 → 110; `contraataque` potencia 1.7 → 1.6 |
+| picaro_forajido | 85 → 100 | 16 → 59 | vida base 110 → 143 |
+| sacerdote_sombra | 100 → 100 | 28 → 68 | vida base 100 → 122 |
+| sacerdote_sagrado | 100 → 100 | 100 → 66 | `plegaria_de_sanacion` valor 0.32 → 0.28; `renovar` valor 0.08 → 0.05 |
+| sacerdote | 100 → 100 | 97 → 64 | `escudo_de_luz` valor 0.3 → 0.23 |
+| caballero_muerte_escarcha | 100 → 100 | 91 → 84 | `helada_mental` enfriamiento 3 → 5 |
+| caballero_muerte_sangre | 100 → 100 | 54 → 54 | — |
+| caballero_muerte_profano | 100 → 100 | 25 → 58 | vida base 125 → 162 |
+| chaman_elemental | 100 → 100 | 79 → 79 | — |
+| chaman_restauracion | 100 → 100 | 100 → 74 | recurso por ronda 4 → 3; `sanacion_en_cadena` valor 0.32 → 0.26; `totem_de_marea` valor 0.08 → 0.05 |
+| chaman_totems | 90 → 100 | 6 → 74 | vida base 115 → 150; ataque base 12 → 13 |
+| mago_fuego | 100 → 100 | 15 → 63 | vida base 100 → 130 |
+| mago_escarcha | 90 → 100 | 20 → 67 | vida base 100 → 121 |
+| mago_arcano | 100 → 100 | 0 → 67 | vida base 110 → 143; ataque base 13 → 16 |
+| brujo_destruccion | 100 → 100 | 92 → 81 | `inmolar` potencia 0.6 → 0.5 |
+| brujo_demonologia | 100 → 100 | 29 → 74 | vida base 120 → 144 |
+| brujo_afliccion | 100 → 100 | 46 → 65 | vida base 110 → 124 |
+| monje_viajero_viento | 100 → 100 | 28 → 70 | vida base 110 → 137 |
+| monje_maestro_cervecero | 100 → 100 | 75 → 75 | — |
+| monje_tejedor_niebla | 72 → 90 | 100 → 78 | vida base 105 → 112; `niebla_envolvente` valor 0.08 → 0.07; `vivificar` valor 0.3 → 0.2 |
+| druida_feral | 100 → 100 | 99 → 76 | `desgarrar` potencia 0.6 → 0.4 |
+| druida_guardian | 100 → 100 | 89 → 77 | `pelaje_de_hierro` valor 0.7 → 0.65 |
+| druida_restauracion | 100 → 100 | 100 → 73 | `rejuvenecimiento` valor 0.08 → 0.06; `alivio_presto` valor 0.3 → 0.2 |
+| cazador_demonios_estrago | 100 → 100 | 31 → 70 | vida base 120 → 137 |
+| cazador_demonios_venganza | 100 → 100 | 89 → 76 | `puas_demoniacas` valor 0.7 → 0.6 |
+| cazador_demonios_devorador | 92 → 100 | 2 → 61 | vida base 120 → 156; ataque base 12 → 15 |
+| evocador_devastacion | 100 → 100 | 83 → 83 | — |
+| evocador_preservacion | 85 → 90 | 100 → 72 | recurso por ronda 10 → 6; `eco` valor 0.08 → 0.06; `rebobinar` valor 0.32 → 0.21 |
+| evocador_aumentacion | 92 → 100 | 0 → 65 | vida base 115 → 150; ataque base 12 → 15; `presciencia` valor 0.5 → 0.7 |
+| nigromante_plaga | 98 → 100 | 53 → 67 | vida base 105 → 110 |
+| nigromante_legion | 98 → 100 | 89 → 78 | `levantar_esqueletos` potencia 0.7 → 0.6 |
+| nigromante_drenaje | 78 → 100 | 24 → 70 | vida base 100 → 118 |
+| bardo_duelista | 100 → 100 | 65 → 65 | — |
+| bardo_trovador | 82 → 90 | 100 → 62 | vida base 105 → 107; recurso por ronda 10 → 6; `balada_curativa` valor 0.08 → 0.06; `nota_curativa` valor 0.3 → 0.2 |
+| bardo_estratega | 78 → 100 | 1 → 61 | vida base 110 → 143; ataque base 12 → 15 |
+
+**Resultado.** Tempranos: la peor es 90 % (Monje Tejedor de niebla, Evocador Preservación y Bardo Trovador, de curación, contra el Oso de las cumbres); las demás, 98 % o más. Guardián: entre 54 % (Caballero de la Muerte Sangre) y 84 % (Caballero de la Muerte Escarcha), media de 70 %. Barras al nivel 11 y al 25: ninguna queda más de 12 puntos por encima de su rol; la mediana de vida restante de Curación baja de 83 % a 79 % (seguía siendo el rol más alto) y las demás quedan entre 68 % y 70 %.
+
+**Lo que queda por mirar:** el Guardián premia mucho las respuestas de escudo y de esquiva (el escudo frena cualquier golpe y casi todos sus golpes grandes de la última fase se esquivan o se interrumpen), y castiga la falta de golpe en la barra. Eso se nota en la forma de los números, no en los porcentajes de hoy; si se agregan más jefes, conviene medir cada uno con `--boss`.
