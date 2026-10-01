@@ -25,7 +25,7 @@ El diseño se escribió primero, como un juego de años. Desde D-59 se programa 
 | **Campamentos** | Los jugadores los fundan lejos del Claro, les ponen nombre, aceptan miembros y los agrandan zona por zona hasta castillo | D-71, D-81, D-84, D-87 | `content/balance.yaml` (`camps`), `engine/world/territory.py` |
 | **Equipo** | 7 ranuras y 4 rarezas. El juego dice si una pieza es para ti, pero puedes ponerte lo que quieras | D-77, D-83 | `engine/hero/gear.py`, `content/items.yaml` |
 | **Salud** | La vida vuelve sola. Si caes, vuelve mucho más lento, salvo con pociones o la posada | D-83 | `content/balance.yaml` (`regen`) |
-| **Monedas** | 🥉 bronce, 🪙 plata, 🥇 oro, 💰 bolsas que se cosen y 💎 diamantes que se compran. Con diamantes solo hay aceleradores y cosméticos | D-43, D-80, D-85 | `content/balance.yaml` (`currency`) |
+| **Monedas** | 🥉 bronce, 🥈 plata, 🥇 oro, 💰 bolsas que se cosen y 💎 diamantes que se compran. Con diamantes solo hay aceleradores y cosméticos | D-43, D-80, D-85 | `content/balance.yaml` (`currency`) |
 | **Jefe** | Raigambre, el primer Guardián de región, en (5, 2). Pelea por fases, sin huida, con Recuerdo y título de Pionero | D-82 (provisional) | `content/enemies.yaml` |
 | **Comunidad** | Tutorial con pistas, enlace de invitación que da energía y avisos de parche a todos | D-56, D-65, D-67 | `content/patches.yaml` |
 | **Pantalla** | Máximo 4 botones arriba y 6 en el menú fijo de abajo: 📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe | D-66, D-75, D-86 | `engine/service/game.py` (`menu`) |

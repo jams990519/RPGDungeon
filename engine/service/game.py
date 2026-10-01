@@ -13,9 +13,10 @@ Para qué sirve: es el juego visto desde afuera. Cada cliente llama a view(), te
 act() y tick(), y recibe pantallas listas para dibujar.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combate/ronda-y-acciones.md;
     diseno/03-personaje/creacion-de-personaje.md; diseno/01-plataforma/web-y-multiplataforma.md §3;
-    diseno/06-contenido/jefes.md (el Guardián, D-82)
-Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8 y M19)
-Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging, content/*
+    diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97)
+Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M15 y M19)
+Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging,
+    engine.social (cuentas del gremio, D-97), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated
@@ -30,6 +31,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     cada zona. Es solo un índice: si alguien cuenta como presente se decide al leer, con su ficha (sigue en esa zona
     y tocó un botón hace menos de presence.minutes, o explora, recolecta o duerme ahí). Se poda al leer.
     Diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.13
+    D-97 (provisional): "guild" (gremio de un campamento, clave "x:y" del campamento: nombre, nivel, contadores)
+    y "guild_name" (nombres de gremio tomados). Los miembros del gremio son los del campamento ("camp").
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -45,6 +48,7 @@ Reglas que nunca se rompen:
        aunque la mochila pase de su espacio; con la mochila en su espacio o más, solo se frenan recolectar y comprar.
     9. Ver a otros jugadores en la zona (D-96) es solo información: nunca da premio, pelea ni ventaja, nunca se
        lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
+    10. El gremio (D-97) nunca saca a nadie: si el cupo baja, los que ya están se quedan.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -59,6 +63,8 @@ Si cambias esto, revisa:
       tests/test_zone_players.py (jugadores en la zona, D-96)
     - Jugadores en la zona (D-96): balance.yaml presence; textos presence.* en es.yaml; Hero.seen_at (lo marca
       _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
+    - Gremio (D-97): balance.yaml guild; engine/social/guilds.py; textos guild.* en es.yaml; tests/test_guilds.py.
+      Sus contadores se suman en _settle (exploración y recolección) y en _end_combat (victoria)
 """
 
 from __future__ import annotations
@@ -104,12 +110,13 @@ from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
+from engine.social import guilds as guild_rules
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
-            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual"}
+            "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -368,7 +375,7 @@ class GameService:
         return kit
 
     def _money(self, amount: int) -> str:
-        """Coins as 🥇 gold · 🪙 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
+        """Coins as 🥇 gold · 🥈 silver · 🥉 bronze (D-80, D-85): 100 bronze = 1 silver, 100 silver = 1 gold."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, int(amount)), rate * rate)
@@ -505,6 +512,7 @@ class GameService:
         if hero.hp >= stats["max_hp"]:
             hero.downed = False
         self._regen_energy(hero, now)
+        tally: dict[str, int] = {}          # what this hero did for its guild (D-97), saved once below
         while hero.activity and hero.activity["until"] <= now and self.store.get("combat", hero.id) is None:
             activity = hero.activity
             hero.activity = None
@@ -519,10 +527,13 @@ class GameService:
                 activity["done"] = activity.get("done", 0) + 1
                 if activity["kind"] == "explore":
                     fight = self._explore_step(hero, zone, rng, activity)
+                    tally["explorations"] = tally.get("explorations", 0) + 1
                     if zone.x == 0 and zone.y == 0:
                         activity["log"] += self._tutorial(hero, "explore_claro")
                 else:
+                    before = sum(activity["got"].values())
                     fight = self._gather_step(hero, zone, rng, activity)
+                    tally["gathered"] = tally.get("gathered", 0) + sum(activity["got"].values()) - before
                     activity["log"] += self._tutorial(hero, "gather")
                 if fight:
                     notices += self._batch_summary(hero, activity, "fight") + [fight]
@@ -535,6 +546,7 @@ class GameService:
                 hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 notices.append(self.texts.t("inn.rested"))
                 notices += self._tutorial(hero, "heal")
+        self._guild_count(hero, tally)
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
@@ -874,6 +886,12 @@ class GameService:
             return self._ask_join(hero)
         if action_id == "leave":
             return self._leave_camp(hero)
+        if action_id == "guild":
+            return self._guild_view(hero)
+        if action_id == "guildnew":
+            return self._ask_guild_name(hero)
+        if action_id == "guildup":
+            return self._rise_guild(hero)
         if action_id == "claro" and not in_claro:
             return self._camp_here_view(hero)
         if action_id == "claro":
@@ -1707,16 +1725,27 @@ class GameService:
         ]
 
     def _camp_here_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The player camp in this zone (or what founding one here needs).
+
+        [ES]
+        Qué hace: muestra el campamento de la zona. Botones de un miembro: ⬆️ Agrandar, 🌾 Aportar comida (desde
+        nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97) y ↩️ Volver: 4 como máximo.
+        La llaman: el botón 🏕️ Campamento fuera del Claro y casi todas las acciones de campamento.
+        Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py y tests/test_guilds.py (orden de los botones).
+        """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
         key = f"{zone.x}:{zone.y}"
         camp = self.store.get("camp", key)
         if camp:
             level = camp.get("level", 1)
+            guild = self.store.get("guild", key)
             body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
                     t.t("camps.stage_line", stage=self._camp_stage(level)),
                     t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]]))),
-                    t.t("camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
+                    t.t("guild.members_cap" if guild else "camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
+            if guild:
+                body.append(t.t("guild.camp_line_visitor", name=guild["name"], level=guild["level"]))
             actions = []
             if hero.id in camp["members"]:
                 body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level))]
@@ -1725,10 +1754,8 @@ class GameService:
                 if pantry:
                     body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
                     actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
-                if camp.get("founder_id") == hero.id:
-                    actions.append(Action(id="rename", label=t.t("camps.rename_button")))
-                else:
-                    actions.append(Action(id="leave", label=t.t("camps.leave_button")))
+                # D-97: the guild screen holds the camp's members, rename (founder) and leave (members): 4 buttons at most
+                actions.append(Action(id="guild", label=t.t("guild.button")))
             else:
                 rel = camp["relations"].get(hero.id)
                 body.append(t.t(f"camps.relation.{rel or 'unknown'}"))
@@ -1759,6 +1786,8 @@ class GameService:
     def _name_camp(self, hero: Hero, name: str) -> View:
         t = self.texts
         pending = self.store.get("camp_naming", hero.id)
+        if pending.get("mode") == "guild":                 # the same prompt names a guild (D-97)
+            return self._name_guild(hero, name, pending)
         if (pending["x"], pending["y"]) != (hero.x, hero.y):
             self.store.delete("camp_naming", hero.id)
             return self._camp_here_view(hero)
@@ -1801,9 +1830,21 @@ class GameService:
         return self._camp_here_view(hero, notice=t.t("camps.founded", name=name, x=hero.x, y=hero.y))
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
-        """More people fit as the camp grows (D-84): base + per level above 1."""
+        """How many members fit: base + per level (D-84), or the guild's capacity if bigger (D-97).
+
+        [ES]
+        Qué hace: da el cupo del campamento: la cuenta de siempre (camps.members_base + members_per_level por
+        nivel) o, si tiene gremio y es mayor, el cupo del nivel del gremio (guild.levels). Crear el gremio nunca
+        baja el cupo, y nunca se saca a nadie.
+        La llaman: la pantalla del campamento y del gremio, _ask_join y _answer_join.
+        Si cambia, afecta: quién puede entrar a cada campamento y el mínimo de miembros para castillo.
+        """
         cfg = self.content.balance["camps"]
-        return cfg["members_base"] + (camp.get("level", 1) - 1) * cfg["members_per_level"]
+        base = cfg["members_base"] + (camp.get("level", 1) - 1) * cfg["members_per_level"]
+        guild = self.store.get("guild", f"{camp['x']}:{camp['y']}")
+        if guild:              # the guild only adds room: creating it never lowers the cap
+            return max(base, guild_rules.capacity(self.content.balance["guild"]["levels"], guild["level"]))
+        return base
 
     def _ask_join(self, hero: Hero) -> View:
         """Ask the founder to let you in; the founder decides with two buttons (D-84)."""
@@ -1813,7 +1854,7 @@ class GameService:
         if not camp or hero.id in camp["members"] or hero.camp is not None or camp["relations"].get(hero.id) == "hostile":
             return self._camp_here_view(hero)
         if len(camp["members"]) >= self._members_cap(camp):
-            return self._camp_here_view(hero, notice=t.t("camps.full"))
+            return self._camp_here_view(hero, notice=t.t("guild.full" if self.store.get("guild", key) else "camps.full"))
         requests = camp.setdefault("requests", [])
         if hero.id not in requests:
             requests.append(hero.id)
@@ -1908,6 +1949,12 @@ class GameService:
         body = [t.t("camps.grow_intro", items=self._grow_cost_text(level))]
         if self._grow_chests(level):     # D-92: from level 6 growing also costs chests
             body.append(t.t("camps.chests_have", n=hero.chests))
+        castle = self._castle_needs(camp)      # D-97: becoming a castle needs a guild that is ready
+        if castle:
+            body += ["", t.t("guild.castle_title")] + [("✅ " if ok else "▫️ ") + text for text, ok in castle]
+            if not all(ok for _, ok in castle):
+                return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body + ["", t.t("guild.castle_blocked")],
+                            actions=[Action(id="guild", label=t.t("guild.button")), Action(id="claro", label=t.t("menu.back"))])
         if not candidates:
             return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
         per = 3 if len(candidates) <= 3 else 2
@@ -1950,6 +1997,8 @@ class GameService:
             return self._camp_here_view(hero)
         if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
             return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
+        if not all(ok for _, ok in self._castle_needs(camp)):     # D-97: no castle without a guild that is ready
+            return self._grow_view(hero)
         level = camp.get("level", 1)
         cost = self._grow_cost(level)
         chests = self._grow_chests(level)          # D-92: paid from the chests of the member who grows
@@ -2011,6 +2060,221 @@ class GameService:
         self.store.put("camp", key, camp)
         self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
         return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
+
+    # ------------------------------------------------------------------ guilds (D-97, provisional)
+
+    def _guild_count(self, hero: Hero, amounts: dict[str, int]) -> None:
+        """Add what the hero just did (explorations, victories, gathered resources) to its camp's guild (D-97).
+
+        [ES]
+        Qué hace: suma a los contadores del gremio de tu campamento lo que acabas de hacer. Solo cuenta lo que haces
+        siendo miembro: el gremio es el de tu campamento de ahora. Como mucho una lectura y una escritura por orden.
+        La llaman: _settle (cada exploración y lo recolectado) y _end_combat (cada victoria, también contra el Guardián).
+        Si cambia, afecta: el ritmo de subida de todos los gremios. Las misiones contarán aquí cuando existan.
+        """
+        if not hero.camp or not any(n > 0 for n in amounts.values()):
+            return
+        guild = self.store.get("guild", hero.camp)
+        if guild and guild_rules.count(guild, amounts):
+            self.store.put("guild", hero.camp, guild)
+
+    def _ago(self, seen_at: float) -> str:
+        """'activo hace 5 min' from the last button press (Hero.seen_at, D-93); 0 means no data."""
+        t = self.texts
+        if not seen_at:
+            return t.t("guild.ago.never")
+        elapsed = max(0.0, self.clock.now() - seen_at)
+        if elapsed < 60:
+            return t.t("guild.ago.now")
+        if elapsed < 3600:
+            return t.t("guild.ago.minutes", n=int(elapsed // 60))
+        if elapsed < 86400:
+            return t.t("guild.ago.hours", n=int(elapsed // 3600))
+        return t.t("guild.ago.days", n=int(elapsed // 86400))
+
+    def _member_lines(self, hero: Hero, camp: dict[str, Any]) -> list[str]:
+        """One line per camp member: name, level and when they last played (founder first, then the most recent).
+
+        [ES]
+        Qué hace: lista a los miembros con su nivel y "activo hace X". Sirve para ver quién juega a las mismas
+        horas (el dueño lo dejó como comentario: no hay reglas que lo usen, D-97).
+        La llama: _guild_view.
+        Si cambia, afecta: solo lo que se muestra.
+        """
+        t = self.texts
+        rows = []
+        for member in camp["members"]:
+            if member == hero.id:
+                name, level, seen = hero.name, hero.level, hero.seen_at        # fresher than the stored copy
+            else:
+                data = self.store.get("hero", member) or {}
+                name, level, seen = data.get("name", "?"), data.get("level", 1), data.get("seen_at", 0.0)
+            rows.append((member == camp.get("founder_id"), seen, name, level))
+        rows.sort(key=lambda r: (not r[0], -r[1]))
+        return [t.t("guild.member_line", name=name, level=level, crown=t.t("guild.crown") if founder else "", ago=self._ago(seen))
+                for founder, seen, name, level in rows]
+
+    def _guild_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🛡️ Gremio: your camp's guild (or how to create it), its members and what it needs to rise (D-97).
+
+        [ES]
+        Qué hace: muestra el gremio de tu campamento: nombre, nivel, miembros (con nivel y "activo hace X") y el avance
+        de lo que pide su nivel, con barras como la obra del Claro. Sin gremio, explica qué es y cuánto cuesta.
+        Botones (3 como máximo): 🛡️ Crear gremio (fundador, sin gremio) o ⬆️ Subir el gremio (cuando cumplen),
+        ✏️ Renombrar campamento (fundador) o 🚪 Salir del campamento (miembros), y ↩️ Volver. Crear, subir, renombrar
+        y salir solo aparecen estando en el campamento; desde otro lugar (/gremio) solo se mira.
+        La llaman: el botón 🛡️ Gremio del campamento y el atajo /gremio.
+        Si cambia, afecta: tests/test_guilds.py y el recorrido de botones (4 como máximo).
+        """
+        t = self.texts
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        if not camp or hero.id not in camp["members"]:
+            return self._main_view(hero, notice=t.t("guild.no_camp"))
+        cfg = self.content.balance["guild"]
+        levels = cfg["levels"]
+        guild = self.store.get("guild", hero.camp)
+        here = (hero.x, hero.y) == (camp["x"], camp["y"])
+        founder = camp.get("founder_id") == hero.id
+        n, cap = len(camp["members"]), self._members_cap(camp)
+        actions = []
+        if guild is None:
+            body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what"),
+                    t.t("guild.castle_hint", level=cfg["castle_min_level"], members=cfg["castle_min_members"]),
+                    t.t("guild.cap_warning", cap=guild_rules.capacity(levels, 1)),
+                    t.t("guild.found_cost", coins=self._money(cfg["found_coins"])) if founder else t.t("guild.only_founder", founder=camp["founder"]),
+                    "", t.t("camps.members_cap", n=n, cap=cap)]
+            body += self._member_lines(hero, camp)
+            if founder and here:
+                actions.append(Action(id="guildnew", label=t.t("guild.found_button")))
+        else:
+            body = [t.t("guild.header", name=guild["name"], level=guild["level"]), t.t("guild.camp_line", camp=camp["name"]),
+                    "", t.t("guild.members", n=n, cap=cap)]
+            body += self._member_lines(hero, camp) + [""]
+            need = guild_rules.needs(levels, guild["level"])
+            if need:
+                body.append(t.t("guild.needs_title", next=guild["level"] + 1, cap=guild_rules.capacity(levels, guild["level"] + 1)))
+                progress = guild.get("progress", {})
+                order = list(guild_rules.COUNTERS)
+                for k in sorted(need, key=lambda c: order.index(c) if c in order else len(order)):
+                    have = min(need[k], progress.get(k, 0))
+                    body.append(t.t("guild.need_line", label=t.t(f"guild.counter.{k}"), have=have, need=need[k], bar=self._bar(have, need[k], 8)))
+                body.append(t.t("guild.how"))
+                if guild_rules.can_rise(guild, levels):
+                    body.append(t.t("guild.ready" if here else "guild.ready_away"))
+                    if here:
+                        actions.append(Action(id="guildup", label=t.t("guild.up_button")))
+            else:
+                body.append(t.t("guild.top"))
+        if here:
+            actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
+                           else Action(id="leave", label=t.t("camps.leave_button")))
+        actions.append(Action(id="claro" if here else "home", label=t.t("menu.back")))
+        return View(kind="guild", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
+
+    def _can_found_guild(self, hero: Hero) -> bool:
+        """The founder, standing at its camp, which has no guild yet (D-97)."""
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        return bool(camp) and camp.get("founder_id") == hero.id and hero.camp == key and not self.store.get("guild", key)
+
+    def _ask_guild_name(self, hero: Hero) -> View:
+        """🛡️ Crear gremio: check the rules and the fee, then the next text the founder writes is the guild's name."""
+        t = self.texts
+        cfg = self.content.balance["guild"]
+        if not self._can_found_guild(hero):
+            return self._guild_view(hero, notice=t.t("guild.cannot"))
+        if hero.gold < cfg["found_coins"]:
+            return self._guild_view(hero, notice=t.t("guild.no_coins", coins=self._money(cfg["found_coins"])))
+        self.store.put("camp_naming", hero.id, {"mode": "guild", "x": hero.x, "y": hero.y})
+        return View(kind="name_guild", title=t.t("guild.title"), body=[t.t("guild.ask_name")], expects_text=True,
+                    actions=[Action(id="guild", label=t.t("guild.cancel"))])
+
+    def _name_guild(self, hero: Hero, name: str, pending: dict[str, Any]) -> View:
+        """The founder wrote a guild name: same rules as camp names, unique among guilds (store "guild_name")."""
+        t = self.texts
+
+        def again(key: str) -> View:
+            return View(kind="name_guild", title=t.t("guild.title"), body=[t.t(key), t.t("guild.ask_name")], expects_text=True,
+                        actions=[Action(id="guild", label=t.t("guild.cancel"))])
+
+        if (pending["x"], pending["y"]) != (hero.x, hero.y):
+            self.store.delete("camp_naming", hero.id)
+            return self._guild_view(hero)
+        if not CAMP_NAME_RE.match(name):
+            return again("guild.bad_name")
+        if self.store.get("guild_name", self._name_key(name)):
+            return again("guild.name_taken")
+        self.store.delete("camp_naming", hero.id)
+        return self._found_guild(hero, name)
+
+    def _found_guild(self, hero: Hero, name: str) -> View:
+        """Create the guild of the founder's camp: pay guild.found_coins, level 1, counters at 0; tell the members.
+
+        [ES]
+        Qué hace: crea el gremio del campamento (uno por campamento, vive con él: clave "x:y"). Desde ahora el cupo
+        del campamento es el del gremio y lo que hacen sus miembros cuenta para subirlo.
+        La llama: _name_guild, cuando el fundador escribe un nombre libre.
+        Si cambia, afecta: el cupo del campamento, el castillo y el nombre único de los gremios.
+        """
+        t = self.texts
+        cfg = self.content.balance["guild"]
+        if not self._can_found_guild(hero):
+            return self._guild_view(hero, notice=t.t("guild.cannot"))
+        if hero.gold < cfg["found_coins"]:
+            return self._guild_view(hero, notice=t.t("guild.no_coins", coins=self._money(cfg["found_coins"])))
+        key = hero.camp
+        camp = self.store.get("camp", key)
+        hero.gold -= cfg["found_coins"]
+        self.store.put("guild_name", self._name_key(name), {"camp": key})
+        self.store.put("guild", key, {"name": name, "camp": key, "founder_id": hero.id, "level": 1,
+                                       "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": self.clock.now()})
+        news = View(kind="guild_news", title=t.t("guild.founded_title"),
+                    body=[t.t("guild.founded_push", founder=hero.name, name=name, camp=camp["name"])])
+        for member in camp["members"]:
+            if member != hero.id:
+                self._push(member, news)
+        return self._guild_view(hero, notice=t.t("guild.founded", name=name))
+
+    def _rise_guild(self, hero: Hero) -> View:
+        """⬆️ Subir el gremio: any member at the camp, once the counters cover the level's needs; tell the others."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        guild = self.store.get("guild", key)
+        if not camp or not guild or hero.id not in camp["members"]:
+            return self._guild_view(hero)
+        levels = self.content.balance["guild"]["levels"]
+        if not guild_rules.rise(guild, levels):
+            return self._guild_view(hero, notice=t.t("guild.not_ready"))
+        self.store.put("guild", key, guild)
+        text = t.t("guild.risen", name=guild["name"], level=guild["level"], cap=guild_rules.capacity(levels, guild["level"]))
+        for member in camp["members"]:
+            if member != hero.id:
+                self._push(member, View(kind="guild_news", title=t.t("guild.risen_title"), body=[text]))
+        return self._guild_view(hero, notice=text)
+
+    def _castle_needs(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
+        """What becoming a castle asks of the camp's guild (D-97); empty unless the next level is the castle.
+
+        [ES]
+        Qué hace: dice qué le falta al gremio para que el campamento pase a castillo (nivel 8 → 9): tener gremio,
+        de nivel guild.castle_min_level o más, con guild.castle_min_members miembros o más. Vacío en cualquier
+        otro nivel: después del castillo el campamento sigue creciendo sin pedir nada más.
+        La llaman: _grow_view (lo muestra) y _grow_camp (lo exige).
+        Si cambia, afecta: quién llega a castillo; los campamentos sin gremio se quedan en ciudad.
+        """
+        t = self.texts
+        cfg = self.content.balance["guild"]
+        castle = next((s["from_level"] for s in self.content.balance["camps"]["stages"] if s["id"] == "castillo"), None)
+        if castle is None or camp.get("level", 1) + 1 != castle:
+            return []
+        guild = self.store.get("guild", f"{camp['x']}:{camp['y']}")
+        n = len(camp["members"])
+        level_line = (t.t("guild.castle_level", need=cfg["castle_min_level"], level=guild["level"]) if guild
+                      else t.t("guild.castle_level_none", need=cfg["castle_min_level"]))
+        return [(t.t("guild.castle_has_guild"), guild is not None),
+                (level_line, bool(guild) and guild["level"] >= cfg["castle_min_level"]),
+                (t.t("guild.castle_members", need=cfg["castle_min_members"], n=n), n >= cfg["castle_min_members"])]
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2302,7 +2566,7 @@ class GameService:
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
 
     def _coins_line(self, hero: Hero) -> str:
-        """🥉 bronze · 🪙 silver · 🥇 gold · 💰 bags · 🪎 chests · 💎 diamonds, each with its amount, zeros included (D-86, D-92)."""
+        """🥉 bronze · 🥈 silver · 🥇 gold · 💰 bags · 🪎 chests · 💎 diamonds, each with its amount, zeros included (D-86, D-92)."""
         cfg = self.content.balance["currency"]
         rate = cfg["rate"]
         gold, rest = divmod(max(0, hero.gold), rate * rate)
@@ -3100,6 +3364,7 @@ class GameService:
                 hero.backpack[dropped] = hero.backpack.get(dropped, 0) + 1
                 lines.append(self._loot_line(hero, dropped))
         if outcome == "victory":
+            self._guild_count(hero, {"victories": 1})          # D-97: a win counts for the hero's guild
             while hero.level < hb["max_level"] and hero.xp >= xp_for_level(hb["xp_formula"], hero.level + 1):
                 hero.level += 1
                 hero.points += 1

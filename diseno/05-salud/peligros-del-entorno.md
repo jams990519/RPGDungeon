@@ -501,7 +501,7 @@ Tu frescor: ☀️☀️ (capa de lino blanco)
 
 ⚠️ TORMENTA DE ARENA en 2 pasos.
 Durante la tormenta: sed al doble y puedes perder el rumbo.
-🏚 Refugio de la Duna a 1 paso (peaje 10 🪙, cisterna 🟢 llena)
+🏚 Refugio de la Duna a 1 paso (peaje 10 🥈, cisterna 🟢 llena)
 
 [🏚 Ir al refugio] [➡️ Arriesgarte] [🏃 Volver]
 ```
@@ -528,12 +528,12 @@ Durante la tormenta: sed al doble y puedes perder el rumbo.
 
 ```
 🏚 Puesto del Pozo Hondo · a salvo
-🪣 Bebiste del pozo (peaje 10 🪙): 💧 19 → 100
+🪣 Bebiste del pozo (peaje 10 🥈): 💧 19 → 100
 🌡️ Calor 🟢 bien (sombra y descanso)
 🎒 Traes: Vidrio de duna ×11 · Sal de roca ×6
    · Escama de Escorpión de Vidrio ×2
 🌪 La tormenta pasa en unos 20 min.
-💡 Lisbeth publicó un mapa de verano: 40 🪙.
+💡 Lisbeth publicó un mapa de verano: 40 🥈.
 
 [➡️ Seguir la expedición] [🏠 Volver al asentamiento]
 ```

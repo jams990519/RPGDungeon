@@ -4,7 +4,7 @@ Gremios, alianzas, grupos, apuestas y los minijuegos que salen de los formatos l
 
 | Documento | Qué contiene |
 |---|---|
-| [gremios-y-social.md](gremios-y-social.md) | Gremios, alianzas, grupos y buscador, botín con dado nativo, mentoría, hermandad de armas, canales del juego, rol con máster, moderación |
+| [gremios-y-social.md](gremios-y-social.md) | **En el juego (§0):** el gremio de cada campamento, con cupo que crece por nivel y requisito para el castillo (D-97, provisional). Propuesta: gremios con rangos y banco, alianzas, grupos y buscador, botín con dado nativo, mentoría, hermandad de armas, canales del juego, rol con máster, moderación |
 | [apuestas.md](apuestas.md) | Apuestas **legales e ilegales**: la Fortuna del Castillo, salones, Feria Errante, garitos, el Foso; 16 formatos de juego; la carrera del tahúr; límites y protección; cómo se conecta con todo |
 | [minijuegos-y-formatos-telegram.md](minijuegos-y-formatos-telegram.md) | Dónde entra cada formato longevo de Telegram (UNO, Werewolf, Ragna, dados, trivia, Not Pixel, Chat Wars…) y qué da; lecciones de los que murieron |
 

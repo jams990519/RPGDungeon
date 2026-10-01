@@ -15,7 +15,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Aviso** | Texto con el que un enemigo anuncia su próximo golpe | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Bestiario / conocimiento** | Registro de criaturas y movimientos vistos; da pistas en los avisos | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Campamento (de jugadores)** | Lugar que funda un jugador lejos del Claro, con nombre único y miembros que acepta el fundador. Crece eligiendo zonas: aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9) (D-71, D-84, D-87) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2 |
-| **Castillo** | La última etapa del Claro y de un campamento (nivel 9). Propuesta: el corazón de una ciudad grande, con alas que se construyen por separado | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
+| **Castillo** | La última etapa del Claro y de un campamento (nivel 9; un campamento necesita un gremio listo para llegar, D-97). Propuesta: el corazón de una ciudad grande, con alas que se construyen por separado | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
 | **Cisma** | Cuando un grupo de residentes se separa y funda su propio castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | **Clamor** | El "lust": más iniciativa y acciones rápidas durante 3 rondas | [Balance](../03-personaje/balance.md) |
 | **Capital regional** | Asentamiento principal de una región, en un lugar clave (propuesta) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
@@ -34,6 +34,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Fortuna (la)** | Ala de juego legal del Castillo | [Apuestas](../08-social/apuestas.md) |
 | **Frontera (la)** | Hasta dónde llega el mundo explorado y pacificado del servidor; cada región nueva pasa por cuatro fases | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
 | **Grandes Barreras** | Propuesta: ciertos anillos que piden un Guardián mayor y una obra común para seguir | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) |
+| **Gremio (del campamento)** | El grupo de un campamento de jugadores: lo crea el fundador, sus miembros son los del campamento y sube de nivel con lo que hacen juntos (exploraciones, peleas ganadas, recursos recolectados). Su nivel da el cupo del campamento, y el castillo pide un gremio de nivel 5 con 10 miembros (D-97, provisional). La capa profunda (rangos, banco, salón, alianzas) es propuesta | [Gremios y vida social](../08-social/gremios-y-social.md) §0 |
 | **Guardián** | El jefe de mundo de cada región (D-08) | [Jefes](../06-contenido/jefes.md) |
 | **Hambruna** | El estado de una despensa con menos de 1 día de comida: el campamento no puede crecer. Nunca quita etapas, niveles ni zonas (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4.7 |
 | **Jornada** | Sesión de trabajo en una obra, con minijuego | [Sistema de construcción](../09-construccion/sistema-de-construccion.md) |

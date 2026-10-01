@@ -10,7 +10,7 @@ from conftest import make_hero
 def test_money_shows_gold_silver_bronze(service):
     assert service._money(0) == "🥉0"
     assert service._money(45) == "🥉45"
-    assert service._money(12345) == "🥇1 🪙23 🥉45"
+    assert service._money(12345) == "🥇1 🥈23 🥉45"
     assert service._money(10000) == "🥇1"
 
 

@@ -25,7 +25,7 @@
 ### 0.2 Los campamentos de jugadores
 
 - Se fundan lejos del Claro con 20 de madera y 10 de piedra, en una zona explorada al 100 % (D-71, D-87).
-- Tienen nombre único y miembros que acepta el fundador: 2 al nivel 1 y 2 más por nivel (D-84).
+- Tienen nombre único y miembros que acepta el fundador: 2 al nivel 1 y 2 más por nivel (D-84). Con **gremio**, el cupo puede crecer con el nivel del gremio, y para ser castillo hace falta un gremio de nivel 5 con 10 miembros (D-97, provisional; ver [Gremios y vida social](../08-social/gremios-y-social.md) §0).
 - Crecen cuando un miembro paga 15 de madera, 10 de piedra y 5 de fibra por el nivel actual y elige qué zona vecina toman; desde el nivel 6 también paga 🪎 cofres: 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9 (D-92, provisional). Cambian de nombre en los niveles 3, 5, 7 y 9: aldea, pueblo, ciudad y castillo (D-81, D-87).
 - En su territorio nadie es atacado y sus miembros recolectan un 50 % más.
 - Hoy no tienen servicios, ni almacén, ni obra común propia. El detalle está en [Fundación y cisma](fundacion-y-cisma.md) §2.
