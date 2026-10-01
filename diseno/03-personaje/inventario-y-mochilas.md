@@ -18,6 +18,8 @@
 
 ---
 
+> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78).
+
 ## 1. Casillas y peso: dos números, una regla cada uno
 
 | Número | Qué limita | Regla |

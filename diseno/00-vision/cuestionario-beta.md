@@ -662,6 +662,8 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 - *Recomiendo:* Que quede así. Las 10 ranuras, la carga y la durabilidad llegan con la fabricación (D-44, D-77).
 - *Relacionada con:* P-71
 
+> En el juego hoy: el equipo tiene 7 ranuras (arma, cabeza, pecho, manos, piernas, pies y joya) y solo el nivel impide ponerse una pieza; lo que no es de tu clase rinde la mitad (D-83).
+
 **C-090. ¿Cuántos jugadores pueden entrar a la vez contra el Guardián en la beta?** · 🟠 antes de la beta
 
 - *Por qué importa:* El diseño permite de 5 a 25. Una pelea de 25 en un solo mensaje de Telegram nunca se probó y puede romper el ritmo y los límites del bot.
@@ -766,6 +768,8 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 - *Por qué importa:* Sin pisos (D-58), los jefes están repartidos por el mapa. Si está lejos, con 20 de energía al día muchos no llegan; si está cerca, se vuelve la meta común de las primeras semanas.
 - *Opciones:* Cerca del Claro · En un lugar que hay que descubrir · En la Frontera, lejos
 - *Recomiendo:* Cerca del Claro, a 3 o 5 zonas. El siguiente tiene que estar listo y probado antes de que caiga el primero.
+
+> En el juego hoy: Raigambre, el primer Guardián, vive en (5, 2), a Lejanía 5 del Claro, y se pelea en solitario. La energía es de 50, con 40 al día (D-78, D-82).
 
 **C-106. ¿El primer Guardián se abre solo cuando el Claro llega a Aldea?** · 🟠 antes de la beta
 
@@ -877,6 +881,8 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 - *Opciones:* Solo jugando · Jugando y comprando · Solo comprando
 - *Recomiendo:* Solo jugando, muy escasas y para lo más valioso. Si algún día hay moneda de pago, que sea otra, con otro nombre.
 
+> En el juego hoy: las gemas pasaron a llamarse 💎 Diamantes y son la moneda que se compra con dinero real, solo para aceleradores y cosméticos (D-80, D-85).
+
 **C-124. Como no hay límite de oficios (D-57), ¿basta el costo de tiempo para que los jugadores se necesiten entre sí?** · 🟠 antes de la beta
 
 - *Por qué importa:* Si una persona puede aprenderlo todo, los 500 juegan cada uno por su lado y el mercado entre jugadores no arranca, que es justo lo que la beta tiene que probar.
@@ -987,6 +993,8 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 - *Por qué importa:* Hoy basta con que el invitado cree su héroe (D-65). Cualquiera puede crear cuentas falsas en segundos y juntar hasta 40 de energía.
 - *Opciones:* Al nivel 5 · Al crear el héroe, como hoy
 - *Recomiendo:* Sí, al nivel 5 del invitado. El resto de la D-65 queda igual.
+
+> En el juego hoy: el máximo de energía es 50 (D-78) y la extra por invitar puede llegar al doble, 100.
 
 **C-141. Si alguien encuentra un error que duplica oro u objetos, ¿se premia a quien lo reporta y se castiga a quien lo explota?** · 🟠 antes de la beta
 

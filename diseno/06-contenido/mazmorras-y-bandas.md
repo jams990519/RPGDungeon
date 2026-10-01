@@ -13,7 +13,7 @@ Grupos de 5: 1 tanque, 1 sanador y 3 de daño, o 1 apoyo y 2 de daño. Cada regi
 | **Normal** | Para aprender la mazmorra | Sin bloqueo |
 | **Heroica** | Más daño y mecánicas extra | Diario |
 | **Mítica** | Jefes con una fase adicional | Semanal |
-| **Mítica+** (Llave de la Región) | Ver §2 | Sin bloqueo |
+| **Mítica+** (Llave de Mazmorra) | Ver §2 | Sin bloqueo |
 
 **Buscador de grupos.** Te anotas por rol, el bot arma el grupo y abre una sala retransmitida (ver [Telegram](../01-plataforma/telegram.md)). Los grupos de gremio se arman en el chat del gremio.
 
@@ -38,7 +38,7 @@ Grupos de 5: 1 tanque, 1 sanador y 3 de daño, o 1 apoyo y 2 de daño. Cada regi
 | +12 | *Implacable:* cada caída cuesta el triple de rondas |
 
 - **Temporadas** de 3 a 4 meses con 8 mazmorras en rotación, como en WoW; puntuación por jugador y título para el 0,1 % superior.
-- Las Llaves de la Región también son **moneda social**: se ofrecen en el chat del gremio.
+- Las Llaves de Mazmorra también son **moneda social**: se ofrecen en el chat del gremio.
 
 ## 3. Bandas
 

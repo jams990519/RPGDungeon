@@ -47,6 +47,8 @@ Cada necesidad tiene una **barra semanal** visible para todos en `/ciudad`. El a
 
 ## 3. Crecer: del Claro al Castillo
 
+> En el juego hoy: el Claro es la sede común, con una obra común de todo el servidor, y los jugadores fundan sus propios campamentos lejos de él (D-71). Cada campamento tiene nombre y miembros que acepta su fundador (D-84), ocupa 1 zona más por nivel (D-81) y cambia de nombre al crecer: campamento, aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9) (D-87). Las etapas de abajo son la capa profunda, todavía propuesta.
+
 | Etapa | Qué hace falta | Qué se desbloquea |
 |---|---|---|
 | **Claro** | — | Fogata, pozo, tutorial |

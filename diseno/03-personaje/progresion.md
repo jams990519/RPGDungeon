@@ -4,6 +4,8 @@
 
 Pediste que el juego sea tan amplio que quien encuentre algo que le guste pueda avanzar **más de dos años**. Eso no se logra con un número de nivel alto; se logra con **varias escaleras paralelas**, cada una para un tipo de jugador, y ninguna obligatoria.
 
+> En el juego hoy: hay 100 niveles lentos y no hay Techo de la Frontera. Experiencia total = 120 × (nivel − 1)^2,35: con toda la energía cada día, el nivel 100 llega en unos 2,5 años (D-78). Cada nivel da 1 punto de talento (D-68).
+
 ---
 
 ## 1. Las escaleras

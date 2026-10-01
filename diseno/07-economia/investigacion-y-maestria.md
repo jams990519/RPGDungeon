@@ -91,7 +91,7 @@ Cuando una rama llega a 100 (y su madre también), se abre su **Maestría**: un 
 | Tiempo de los proyectos de esa rama (§5) | −25 % |
 | Puntos de experimentación (estilo SWG) | +1 en M10 y +1 en M30 |
 
-**Lo que la Maestría nunca hace:** subir el techo de un objeto. La calidad máxima sigue siendo Obra Maestra, y el Poder de Objeto lo deciden el Tramo, la Calidad, el Encantamiento y las Mejoras (ver [Equipamiento](../03-personaje/equipamiento.md) §3). Los puntos de experimentación solo **reparten** (más daño y menos durabilidad), nunca suman. Un Gran Maestro recién salido y uno de M50 pueden hacer la misma espada; el veterano la hace más seguido, más barata y con la forma que quiere.
+**Lo que la Maestría nunca hace:** subir el techo de un objeto. La calidad máxima sigue siendo Obra Maestra, y el Poder de Objeto lo deciden el anillo, la Calidad, el Encantamiento y las Mejoras (ver [Equipamiento](../03-personaje/equipamiento.md) §3). Los puntos de experimentación solo **reparten** (más daño y menos durabilidad), nunca suman. Un Gran Maestro recién salido y uno de M50 pueden hacer la misma espada; el veterano la hace más seguido, más barata y con la forma que quiere.
 
 - **Maestría descansada.** El tiempo fuera de línea acumula experiencia de maestría doble (hasta 3 días guardados), como la experiencia descansada de [Progresión](../03-personaje/progresion.md) §2. Quien entra poco no se queda atrás.
 - **No se pierde nunca.** No hay óxido ni olvido. Dejar de practicar un oficio no la baja: queda guardada para cuando vuelvas.
@@ -514,7 +514,7 @@ Los jugadores escriben libros con **Inscripción** (ver libros de jugadores en [
 | Riesgo | Contrapeso |
 |---|---|
 | **Maestría infinita** | Rendimientos decrecientes: cada 10 grados se gana la mitad de lo que falta. Entre un Gran Maestro recién salido y uno de M50 hay unos puntos de eficiencia (como mucho −20 % de Enfoque y −10 % de material) |
-| **Objetos mejores** | Techo de poder: ni la Maestría, ni los saberes, ni el árbol suben el techo de un objeto. La Obra Maestra, el Encantamiento +4 y el Poder de Objeto del Tramo son iguales para todos. Las variantes reparten poder, no lo suman, y el presupuesto de 100 puntos de cada una de las 46 specs (ver [Balance](../03-personaje/balance.md) §2) no se toca |
+| **Objetos mejores** | Techo de poder: ni la Maestría, ni los saberes, ni el árbol suben el techo de un objeto. La Obra Maestra, el Encantamiento +4 y el Poder de Objeto del anillo son iguales para todos. Las variantes reparten poder, no lo suman, y el presupuesto de 100 puntos de cada una de las 46 specs (ver [Balance](../03-personaje/balance.md) §2) no se toca |
 | **Consumibles mejores** | Los remedios y consumibles nuevos siguen las reglas de [Balance](../03-personaje/balance.md): no se apilan con los de su tipo y no dan utilidades que nadie más tenga |
 | **Recetas exclusivas** | Patentes que vencen (18 semanas como máximo), secretos que se redescubren, ingeniería inversa |
 | **Ciudades viejas con todo** | Un nodo a la vez, tiempo mínimo, cumbres que se excluyen y difusión (−10 % por cada ciudad que ya lo tenga, hasta −40 %) |

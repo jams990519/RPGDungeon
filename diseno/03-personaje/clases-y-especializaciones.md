@@ -297,7 +297,7 @@ La clase decide **cómo peleas** y **cómo te unes a la batalla**. Toda spec pue
 | ✚ Curación | Se cura a sí mismo y aguanta, pero hace poco daño | El doble: ~2× | **Autosostén:** parte de la curación que sobra pasa a daño contra el enemigo, y curarse a sí mismo cuesta menos |
 
 - **El modo en solitario se enciende solo** cuando no hay otro jugador en la pelea (con compañero PNJ o sin él) y se apaga en cuanto entra uno. No existe en grupo ni en PvP.
-- **Siempre posible:** el simulador comprueba que toda spec gana el contenido en solitario de su tramo con juego básico (ver [Balance](balance.md)).
+- **Siempre posible:** el simulador comprueba que toda spec gana el contenido en solitario de su anillo con juego básico (ver [Balance](balance.md)).
 - **Ayudas para el rol lento:** el compañero PNJ de las [Profundidades](../06-contenido/misiones-y-exploracion.md) cubre el rol que te falta (un sanador lleva un compañero de Ataque); la configuración guardada "solitario" pone en la barra lo que mejor rinde solo; y cambiar de spec es gratis en cualquier asentamiento.
 - **Por qué Defensa y Curación tardan más:** es el precio del rol que el grupo más necesita. A cambio, en grupo son los más buscados y los que más recompensa extra reciben (abajo).
 

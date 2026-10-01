@@ -53,7 +53,7 @@ Pediste un sistema de botín **bastante variado**, de equipo o de cualquier otra
 | 💎 **Gemas de joyería** | Rubí en bruto, Ojo de Tormenta | Minería, cofres de plata, criaturas de cristal | Tallarlas y engarzarlas | Joyería | Libre. No confundir con las 💎 Gemas premium |
 | 🔮 **Runas y esencias** | Runa de infusión, esencia de fuego, polvo arcano | Desencantar, élites Corruptos, cofres, jefes | Encantamiento de +1 a +4; también moneda de trueque | Encantamiento, Extracción de Esencias | Libre |
 | 🧪 **Consumibles** | Pociones, vendas, aceites de caza, cebos, comida | Cofres, mochilas de humanoides, pesca | Usarlos | Todos | Libre |
-| 🪙 **Oro** y ✨ **Esencia** | — | Oro: humanoides y contratos. Esencia: todo lo que se vence | Comerciar; mejorar equipo y maestrías | Todos | Oro libre; Esencia intransferible |
+| 🥇 **Oro** y ✨ **Esencia** | — | Oro: humanoides y contratos. Esencia: todo lo que se vence | Comerciar; mejorar equipo y maestrías | Todos | Oro libre; Esencia intransferible |
 | 🗝️ **Llaves y mapas del tesoro** | Llave de cripta, mapa rasgado de Lejanía 10, Llave de Mazmorra | Campeones, cofres, pesca, humanoides | Abrir cofres sellados, desenterrar tesoros, Mítica+ | Cartógrafo (descifra mapas), explorador | Libre; las Llaves de Mazmorra, ligadas |
 | 🃏 **Cartas del Mazo de Bestias** | Carta del Necrófago, carta dorada de un jefe | Cualquier monstruo (poco), jefes (más) | Duelos de cartas en la taberna, colección ([Minijuegos](../08-social/minijuegos-y-formatos-telegram.md)) | Coleccionistas, tahúres | Libre |
 | 🥚 **Mascotas y huevos de montura** | Huevo de wyrm, cría de lobo, mascota de duelo | Nidos, captura viva, jefes ocultos, pesca rara | Criar, domar, duelos de mascotas | Ganadería | Libre hasta que se doma |

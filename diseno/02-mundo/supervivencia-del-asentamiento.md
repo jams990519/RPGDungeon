@@ -4,6 +4,8 @@
 
 **Qué pediste.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
 
+> En el juego hoy: todavía no hay medidores de comida, salud ni incursiones. El Claro tiene su obra común, y cada campamento crece pagando materiales: fundarlo cuesta 20 de madera y 10 de piedra, y cada nivel más, 15 de madera, 10 de piedra y 5 de fibra multiplicados por el nivel, hasta llegar a castillo en el nivel 9 (D-81, D-87).
+
 **De dónde sale.**
 - *Frostpunk*: la **esperanza** y el **descontento** como medidores de la ciudad; las **raciones**; el **libro de leyes**, donde cada ley resuelve un problema y crea otro; el frío que obliga a prepararse antes de que llegue.
 - *Banished*: la **despensa** que hay que llenar en otoño para pasar el invierno, la **hambruna**, las enfermedades por falta de higiene, el cementerio, y una población que **crece o muere** según cómo la cuides.

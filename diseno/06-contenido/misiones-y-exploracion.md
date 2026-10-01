@@ -4,6 +4,8 @@
 
 Mucha gente en Telegram juega sola y a ratos. Este documento es para ellos, sin quitarle nada al que juega en grupo.
 
+> En el juego hoy: todavía no hay misiones ni encargos. 🧭 Explorar sube el porcentaje explorado de la zona (de 15 % a 30 % cada vez, hasta el 100 %) y puede traer una pelea, un objeto o monedas. Moverse, explorar y recolectar gastan 1 de energía (máximo 50, 40 al día); explorar y recolectar se eligen en lote: 5, 10, 20, 40 o toda (D-78, D-87).
+
 ---
 
 ## 1. Encargos: la cola de misiones con temporizador

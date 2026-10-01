@@ -35,6 +35,8 @@ Cada región tiene de 2 a 4 terrenos, además de su bioma dominante (ver [Mapa i
 - Las **caravanas**, los **bandidos**, los **peajes** y los **tratados comerciales** entre castillos nacen solos de esa dependencia (ver [Economía](../07-economia/economia.md)).
 - **Elegir dónde fundar** una ciudad es una decisión estratégica: cerca de la llanura hay comida fácil; cerca de la montaña, riqueza en metal y dependencia de la comida ajena.
 
+> En el juego hoy: hay 6 recursos (madera, piedra, fibra, hierba curativa, pieza de metal y arcilla) repartidos en regiones de distintos tamaños, y el bioma ayuda (más madera en el bosque). Cada zona tiene de 1 a 3; se conocen explorándola por porcentaje hasta el 100 %, y se agotan si se recolecta mucho y vuelven con las horas (D-87).
+
 ## 2. Tres niveles de recurso
 
 | Nivel | Qué es | Se mueve | Ejemplo |

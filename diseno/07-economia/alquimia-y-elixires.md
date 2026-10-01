@@ -236,7 +236,7 @@ Salen de las propiedades **negativas** que comparten dos o más ingredientes. No
 ### 5.1 El alambique
 
 - Es la estación de la Alquimia (ver [Fabricación](fabricacion.md) §6): hay alambiques públicos en los asentamientos (con tasa de uso), en las casas y en los salones de gremio. La capital con especialidad en alquimia devuelve más material.
-- El alambique tiene **Tramo y calidad**, como cualquier herramienta: uno mejor da más durabilidad en el minijuego.
+- El alambique tiene **anillo (T1 a T10) y calidad**, como cualquier herramienta: uno mejor da más durabilidad en el minijuego.
 - **Una mezcla lleva de 2 a 4 ingredientes**, una unidad de cada uno por tanda. Una tanda da 3 elixires; con alambique de calidad alta, 4.
 
 ### 5.2 Cómo se forma la mezcla
