@@ -4,7 +4,7 @@
 
 Mucha gente en Telegram juega sola y a ratos. Este documento es para ellos, sin quitarle nada al que juega en grupo.
 
-> En el juego hoy: todavía no hay misiones ni encargos. 🧭 Explorar sube el porcentaje explorado de la zona (de 15 % a 30 % cada vez, hasta el 100 %) y puede traer una pelea, un objeto o monedas. Moverse, explorar y recolectar gastan 1 de energía (máximo 50, 40 al día); explorar y recolectar se eligen en lote: 5, 10, 20, 40 o toda (D-78, D-87).
+> En el juego hoy (D-117, provisional): la capa simple de la historia ya está en el juego, con su propio documento, [Historia y rol](historia-y-rol.md) §0. De la tabla de §2 hay **campaña de la región** (Capítulo 1 en el Claro, 7 misiones con 2 decisiones), **misiones de trasfondo** (la cadena de cada origen), **diarias** (los encargos del 📜 Tablón, uno por facción) y **semanales** del campamento. La cola de Encargos con temporizador de §1 todavía no existe. 🧭 Explorar sube el porcentaje explorado de la zona (de 15 % a 30 % cada vez, hasta el 100 %) y puede traer una pelea, un objeto o monedas. Moverse, explorar y recolectar gastan 1 de energía (máximo 50, 40 al día); explorar y recolectar se eligen en lote: 5, 10, 20, 40 o toda (D-78, D-87).
 
 ---
 

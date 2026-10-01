@@ -11,13 +11,14 @@ Módulo: M1 Núcleo
 Depende de: content/*.yaml, PyYAML
 Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
+    (content/story.yaml → Content.story: orígenes, campaña, personajes, facciones y encargos, D-117)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
 Reglas que nunca se rompen:
     1. Los IDs de contenido son estables: solo se agregan; para retirar algo, retired: true.
 Si cambias esto, revisa:
-    - Todos los catálogos: engine/classes, engine/enemies, engine/world, engine/professions (D-109)
+    - Todos los catálogos: engine/classes, engine/enemies, engine/world, engine/professions (D-109), engine/story (D-117)
     - Pruebas: tests/test_content.py
 """
 
@@ -48,6 +49,8 @@ class Content:
             read with retired entries kept (a built improvement keeps counting).
         professions: content/professions.yaml (chained professions, phase 1, D-109: "ranks", "professions",
             "stations" and "recipes"), read with retired entries kept (the service hides retired recipes).
+        story: content/story.yaml (story and roleplay, D-117: "factions", "rank_rewards", "npcs", "origins",
+            "chapters", "quests", "daily" and "camp_tasks"), read with retired entries kept (the service hides them).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -64,6 +67,7 @@ class Content:
     patches: dict[str, Any] | None = None
     camp_upgrades: dict[str, Any] | None = None
     professions: dict[str, Any] | None = None
+    story: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -100,6 +104,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
         professions=_read(base / "professions.yaml", keep_retired=True) if (base / "professions.yaml").exists() else {},
+        story=_read(base / "story.yaml", keep_retired=True) if (base / "story.yaml").exists() else {},
     )
 
 
