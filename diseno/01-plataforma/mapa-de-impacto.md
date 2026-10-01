@@ -166,7 +166,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M12 | PvP, crimen y justicia | Alto | Reglas de caída por zona, protección del Juramento de Hierro, karma |
 | M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles |
 | M14 | Oficios | Alto | Costo del conocimiento (D-57), vetas, rangos y exámenes |
-| M15 | Social | Medio | Tamaño de grupo, vales por reenvío |
+| M15 | Social | Medio | Tamaño de grupo, vales por reenvío. En el juego: quién cuenta como presente en una zona (D-96) |
 | M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
 | M17 | Colecciones y logros | Bajo, salvo que dé poder | Regla de las 3 vistas, nunca poder |
 | M18 | Temporadas y rankings | Medio | Duración de la temporada (la usan M7, M9, M10, M25) |
@@ -401,6 +401,7 @@ flowchart LR
 **Si cambias esto, revisa:**
 - **El color de zona de un nodo** → qué se pierde al caer ahí (C-11), PvP e invasiones (M12), qué se puede construir (M24), recompensas de encargos (M10).
 - **El tiempo de viaje** → C-15.
+- **La llegada a una zona** (en el juego, `_arrive` en `engine/service/game.py`) → también mueve la presencia del héroe (M15, D-96): sale del registro `presence` de la zona que deja y entra en la nueva; de eso depende quién se ve en 📍 Zona.
 - **La ecología** (cuánto crece o baja cada población) → precios de materiales de monstruo (M13), amenaza e incursiones a la ciudad (M9) y a las construcciones (M24), el tablón de caza (M10), las migraciones y los brotes en la fauna (M7).
 - **El clima o las estaciones** → enfermedades de temporada (M7), rigor de peligros (+1 por clima, M7), cosechas, inviernos y despensa de la ciudad (M9, M14), jornadas de obra (M24), rastros de caza (M10).
 - **Los terrenos de una zona o región** → qué produce y qué le falta, y por lo tanto las rutas de comercio (M13), la sal y la comida que tiene que comprar una ciudad (M9) y dónde conviene fundar.
@@ -568,6 +569,8 @@ flowchart LR
 
 #### M15 · Social · `engine/social`
 
+> **Dónde está hoy el código:** el paquete `engine/social` todavía no existe. Lo que ya funciona es **ver a los jugadores de tu zona** (D-96, provisional): vive en `engine/service/game.py` (`_presence_note`, `_presence_move`, `_zone_players`, `_zone_players_lines`, `_cross_paths`; ganchos en `act()`, `_arrive`, `_settle`, `_zone_view` y `_activity_view`), con sus números en `content/balance.yaml` (`presence`) y sus textos en `content/locales/es.yaml` (`presence`). Prueba: `tests/test_zone_players.py`. Diseño: [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.13.
+
 | | |
 |---|---|
 | **Para qué sirve** | La gente junta: gremios, alianzas, grupos, amigos, hermandades, mentoría y salas retransmitidas |
@@ -576,8 +579,8 @@ flowchart LR
 | **Lo usan** | M11 (grupos), M12 (gremios y alianzas en territorios y guerras), M24 (salón y obras de organización), M16 (minijuegos de gremio), M7 (jugar con tu gremio baja el estrés), M10 (casos de gremio), M18 (ranking por gremio), M25 (parcelas de gremio) |
 | **Eventos que publica** | Propuestos: `GremioCreado`, `MiembroUnido` / `MiembroExpulsado`, `GrupoFormado`, `ValeEmitido` |
 | **Eventos que escucha** | Propuestos: `NivelSubido` (metas de mentoría; `SelloObtenido` se retira con D-58) |
-| **Datos de los que es dueño** | Gremios, rangos y permisos, banco de gremio y su registro, vales, nivel de gremio, alianzas, grupos, amistades y hermandades, mentorías, el indicador de buen compañero |
-| **Reglas que nunca se rompen** | El nivel de gremio da comodidad, nunca poder de combate. Los vales solo valen dentro del gremio y caducan rápido. No hay votos negativos entre compañeros. Grupo de hasta 5 |
+| **Datos de los que es dueño** | **En el juego:** `presence` (por zona `x:y`, a quién se anotó ahí; solo un índice que se poda al leer, D-96). **Propuesta:** gremios, rangos y permisos, banco de gremio y su registro, vales, nivel de gremio, alianzas, grupos, amistades y hermandades, mentorías, el indicador de buen compañero |
+| **Reglas que nunca se rompen** | **En el juego:** ver a otros en la zona es solo información (sin premio, pelea ni ventaja); nunca te ves a ti mismo; el mapa no muestra a nadie; el cruce al explorar usa su propio sorteo y no cambia ningún otro resultado (D-96). **Propuesta:** el nivel de gremio da comodidad, nunca poder de combate. Los vales solo valen dentro del gremio y caducan rápido. No hay votos negativos entre compañeros. Grupo de hasta 5 |
 
 **Si cambias esto, revisa:**
 - **El tamaño del grupo** → mazmorras (M11) y composición (M3).
@@ -585,6 +588,7 @@ flowchart LR
 - **Los límites del banco de gremio** → lavado de oro (M23) y economía de gremios (M13).
 - **El nivel de gremio** → si da poder, **rompe** su regla; si da más miembros, cambia la escala de guerras y territorios (M12).
 - **La mentoría** → retención de novatos y monedas de mentoría (cosméticos, M17).
+- **Jugadores en la zona (en el juego, D-96 provisional: `presence.minutes`, `max_listed`, `cross_chance`)** → quién aparece en 👥 de 📍 Zona y cuántas líneas suma esa pantalla en los tres clientes (M19, D-86). "Presente" sale de `Hero.seen_at` (lo marca `_mark_seen`, el mismo registro de activos de la despensa, M9): si cambia cuándo se marca, cambia quién se ve. La presencia se mueve en `_arrive` (M8): un viaje nuevo que cambie de zona sin pasar por ahí deja a alguien "apareciendo" donde ya no está, hasta que se pode. Mostrar a alguien en el mapa o dar algo por cruzarse **rompe** D-96 tal como está. El estandarte comprado con gemas sale al lado del nombre (M22: cosmético visible para los demás).
 
 ---
 

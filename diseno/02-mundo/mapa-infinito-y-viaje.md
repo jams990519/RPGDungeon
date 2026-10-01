@@ -1,6 +1,6 @@
 # El mapa infinito y el viaje
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
 
 **La regla del dueño (D-58, confirmada):** "Quita los pisos, deja un mapa infinito por investigar, pero que tome tiempo moverte entre lugares."
 
@@ -67,6 +67,7 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 | Semilla del mundo | espacio `meta` | Se crea una vez, al primer arranque |
 | Zona descubierta | espacio `zone`, clave `x:y` | Nombre del descubridor y la hora |
 | Posición y actividad del héroe | espacio `hero` | `x`, `y` y el viaje o la exploración en curso con su hora de fin |
+| Quién puede estar en cada zona (D-96, provisional) | espacio `presence`, clave `x:y` | Las cuentas anotadas en esa zona. Es solo un índice: quién cuenta como presente se decide al leer, con la ficha de cada héroe (§1.13) |
 
 **El mapa recuerda los lugares (D-61), en dos memorias:**
 - **La del mundo:** quién descubrió cada zona queda guardado para siempre ("🧭 La descubrió Aria").
@@ -203,6 +204,27 @@ Coordenadas 1, 2 · Lejanía 2
 - Lo pidió el dueño. Los números los propuso Claude.
 - **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
 
+### 1.13 Otros jugadores en tu zona (D-96, provisional)
+
+**Lo que pidió el dueño (por voz):** "Si un jugador coincide contigo en la zona, no en el mapa, sino que al darle a Zona vas a poder ver la lista de jugadores en esa zona, en cuanto a la actividad. Puede que te lo topes incluso en las misiones y demás." Interpretación tomada (provisional): se ven solo los que están **ahora** en tu zona y **activos**, cada uno con lo que está haciendo; el mapa no muestra a nadie.
+
+- **Dónde se ve:** en **📍 Zona**, debajo de los recursos, un bloque 👥 con una línea por jugador: nombre (con su estandarte, si compró uno), clase, nivel y qué hace. Si no hay nadie, no aparece nada (pantallas cortas, D-86). Si estás explorando, recolectando o durmiendo, 📍 Zona te muestra la pantalla de tu actividad, y ahí sale el mismo bloque. No agrega botones.
+- **Quién cuenta como presente:** su héroe está en esa zona **y**:
+  - tocó un botón en los últimos **15 minutos** (`presence.minutes`), **o**
+  - está explorando, recolectando o durmiendo ahí, aunque tenga el chat cerrado (un lote de exploración puede durar horas).
+  - Nunca te ves a ti mismo.
+  - Quien se fue, ya no existe o lleva más de 15 minutos sin jugar (y no está ocupado ahí) sale de la lista, y vuelve con su próximo botón.
+- **Qué está haciendo:** 🔎 explorando · 🪓 recolectando · ⚔️ peleando · 🛌 descansando · 🚶 de paso (salió de viaje desde aquí) · 🧍 por aquí (sin actividad).
+- **Tope:** se muestran **5** nombres (`presence.max_listed`), primero el que jugó hace menos; el resto sale como "… y N más".
+- **Cruzarse al explorar:** en cada vuelta de 🔎 exploración o 🪓 recolección que no termina en pelea, con probabilidad **15 %** (`presence.cross_chance`), si hay alguien presente en la zona, el resumen del lote dice "👋 Te cruzaste con Bram (🏰 Guerrero, nivel 2), que andaba 🪓 recolectando." A cada jugador te lo cruzas una sola vez por lote.
+  - Es **solo texto**: sin premio, sin pelea, sin PvP. Vale en cualquier zona, también en el Claro y en los campamentos.
+  - Usa su propio sorteo fijo (semilla del mundo, héroe y hora de la vuelta), así que no cambia ningún otro resultado de la vuelta (hallazgos, monedas, porcentaje explorado).
+- **Cómo se sabe quién está, sin revisar a todos los héroes:** el espacio `presence` guarda, por zona, a quién se anotó ahí. Se escribe al tocar un botón (solo si faltabas) y al llegar a una zona (sales de la que dejas y entras en la nueva, aunque tengas el chat cerrado). Al leer se poda: se vuelve a mirar la ficha de cada anotado y se quita a quien ya no está.
+- **Lo que falta (propuesta):** que el otro también reciba el aviso del cruce; un botón para saludar o invitar a un grupo cuando existan los grupos ([Gremios y vida social](../08-social/gremios-y-social.md) §3); cruzarse en las misiones cuando existan ([Misiones y exploración](../06-contenido/misiones-y-exploracion.md)).
+- Lo pidió el dueño. Los números (15 minutos, 5 nombres, 15 %) y las etiquetas los propuso Claude.
+
+**De dónde sale.** Las listas de "quién está en esta sala" de los MUD de texto (el comando `who` y la línea "Aquí también están…"), los jugadores que se ven pasar en las zonas de WoW y los fantasmas de otros jugadores de *Dark Souls* y *Journey*, que dan compañía sin mecánica.
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).
@@ -239,7 +261,7 @@ La **Frontera** es hasta dónde llega el mundo explorado y pacificado del servid
 Un mapa infinito vacío es el riesgo más grande de este diseño (la lección de No Man's Sky). Reglas:
 
 - **Densidad antes que tamaño:** lugares, eventos y rastros dentro de cada zona antes de abrir más tipos de bioma.
-- **Huellas de otros jugadores:** la zona muestra quién la descubrió, quién pasó hace poco, caminos, tumbas y carteles. El mundo cuenta lo que hizo la gente.
+- **Huellas de otros jugadores:** la zona muestra quién la descubrió, quién pasó hace poco, caminos, tumbas y carteles. El mundo cuenta lo que hizo la gente. Ya funciona: quién la descubrió (§1.4) y **quién está ahora** (§1.13, D-96 provisional).
 - **Razones para volver atrás:** vetas que se mueven, ecología y estaciones (ver [Mundo vivo](mundo-vivo-y-viaje.md)) hacen que una zona vieja cambie.
 - **La gente se junta en la Frontera:** las metas comunes (2.1) están en un solo lugar a la vez, no repartidas por un mapa sin fin.
 - **Lo lejano es raro, no solo difícil:** más allá del anillo X aparecen hallazgos únicos, no solo enemigos con más números.

@@ -247,3 +247,15 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida.** Una victoria contra un lobo deja en promedio 0,5 × 1,5 × 2 = 1,5 raciones. Con 40 de energía por día, quien pelea seguido gana muchas más raciones de las que come (1 por día): la comida no falta si los que pelean la llevan a la despensa. Lo que se pone a prueba es la **participación**, no la producción. Alimentarse solo con provisiones cuesta 15 🥉 por persona y día (unas tres peleas tempranas de monedas).
 
 **Lo que queda por mirar:** si la carne alcanza de sobra (bajar la probabilidad o el valor), el tope por semana de las provisiones (§15.8) y si hace falta un tope de capacidad antes de los graneros (§4.3). Medir en la beta cuántos días alcanza la despensa del Claro con la gente real.
+
+### Octubre de 2026: jugadores en la zona (D-96, provisional)
+
+**Por qué.** El dueño pidió por voz ver, al tocar 📍 Zona, a los otros jugadores que están en tu zona y lo que hacen, y toparte con ellos al explorar (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.13). Son números **nuevos** (`content/balance.yaml` → `presence`), propuestos por Claude. No tocan el combate, la economía ni la experiencia: solo deciden qué se muestra.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Presente si tocó un botón hace menos de | 15 minutos | Lo bastante corto para que la lista sea "quién está ahora"; quien explora, recolecta o duerme ahí cuenta aunque no toque botones |
+| Nombres en 📍 Zona | 5, y "… y N más" | Pantallas cortas (D-86): el bloque suma como mucho 7 líneas |
+| Cruce por vuelta de exploración o recolección | 15 % | Con alguien presente todo el lote, 10 vueltas dan en promedio 1,5 sorteos ganados; como a cada jugador te lo cruzas una sola vez por lote, el resumen suma pocas líneas |
+
+**Lo que queda por mirar:** en la beta, si el Claro se llena (más de 5 presentes seguido) y conviene mostrar primero a los que hacen algo, o subir el tope.

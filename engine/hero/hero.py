@@ -17,6 +17,8 @@ Si cambias esto, revisa:
     - Números: classes.yaml base/per_level, balance.yaml hero.xp_curve
     - seen_at (D-93): dice quién está activo y por lo tanto quién come de cada despensa
       (engine/service/game.py _mark_seen; tests/test_pantry.py)
+    - seen_at también dice quién aparece en la lista 👥 de 📍 Zona (D-96: tocó un botón en los últimos
+      presence.minutes; engine/service/game.py _zone_players; tests/test_zone_players.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -57,6 +59,7 @@ class Hero:
             empty means the automatic bar.
         seen_at: last time the player pressed a button (D-93); 0 for heroes saved before it.
             "Active" residents (they eat from the pantry) are those seen in the last 24 h.
+            Players seen in the last presence.minutes are also listed in their zone (D-96).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").

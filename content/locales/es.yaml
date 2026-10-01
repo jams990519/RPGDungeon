@@ -392,6 +392,19 @@ map:
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "Zonas exploradas al 100 %: 🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla"
 
+presence:                     # [ES] D-96 (provisional): los otros jugadores de tu zona (bloque 👥 de 📍 Zona) y los cruces al explorar o recolectar
+  title: "👥 También en esta zona ({n}):"
+  line: "• {name} · {cls} · nv {level} · {activity}"
+  more: "• … y {n} más"
+  crossed: "👋 Te cruzaste con {name} ({cls}, nivel {level}), que andaba {activity}."
+  activity:                   # [ES] lo que hace cada uno; el motor elige la clave según su actividad
+    explore: "🔎 explorando"
+    gather: "🪓 recolectando"
+    combat: "⚔️ peleando"
+    rest: "🛌 descansando"
+    travel: "🚶 de paso"
+    idle: "🧍 por aquí"
+
 hero:
   title: "👤 Tu héroe"
   top_line: "{icon} {name} — 📍 {place}"

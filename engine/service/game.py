@@ -25,6 +25,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-93 (provisional): "pantry" (despensa del Claro, clave "claro", y de cada campamento, clave "x:y":
     {"rations", "at"}, consumo perezoso) y "active" (registro de quién jugó hoy y ayer, claves "0" y "1"
     según el día; se pisa solo, nunca crece). Diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.4
+    D-96 (provisional): "presence" (clave "x:y": {"seen": {cuenta: hora en que se anotó}}): quién puede estar en
+    cada zona. Es solo un índice: si alguien cuenta como presente se decide al leer, con su ficha (sigue en esa zona
+    y tocó un botón hace menos de presence.minutes, o explora, recolecta o duerme ahí). Se poda al leer.
+    Diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.13
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -35,13 +39,18 @@ Reglas que nunca se rompen:
        mochila llena o la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
     7. La despensa (D-93) solo recibe lo que un jugador aporta: nunca toma comida de la mochila de nadie, y el
        hambre nunca baja la etapa del Claro ni quita niveles, zonas o miembros a un campamento.
+    8. Ver a otros jugadores en la zona (D-96) es solo información: nunca da premio, pelea ni ventaja, nunca se
+       lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
-      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93)
+      tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
+      tests/test_zone_players.py (jugadores en la zona, D-96)
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
+    - Jugadores en la zona (D-96): balance.yaml presence; textos presence.* en es.yaml; Hero.seen_at (lo marca
+      _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
 """
 
 from __future__ import annotations
@@ -96,6 +105,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
+# Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
+PRESENT_BUSY = ("explore", "gather", "rest")
 
 
 class GameService:
@@ -186,6 +197,7 @@ class GameService:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
         notices = self._settle(hero)
+        self._presence_note(hero)                       # D-96: others see you in 📍 Zona
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if action_id.startswith("rel:"):
@@ -507,6 +519,7 @@ class GameService:
                 if fight:
                     notices += self._batch_summary(hero, activity, "fight") + [fight]
                     continue
+                activity["log"] += self._cross_paths(hero, zone, activity)     # D-96: flavour only
                 reason = self._continue_batch(hero, activity, activity["until"])
                 if reason:
                     notices += self._batch_summary(hero, activity, reason)
@@ -519,7 +532,9 @@ class GameService:
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
         """Finish one travel leg; chain the next leg of a multi-zone trip if any."""
         notices: list[str] = []
+        left = (hero.x, hero.y)
         hero.x, hero.y = activity["to"]
+        self._presence_move(hero, *left)                # D-96: out of the zone it left, into the new one
         zone = self._zone(hero.x, hero.y)
         hero.remember(hero.x, hero.y)
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
@@ -1132,6 +1147,7 @@ class GameService:
         elif land:
             body.append(t.t("camps.land_line", name=land["name"]))
         body += self._lair_lines(zone)
+        body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
@@ -1183,11 +1199,145 @@ class GameService:
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining), t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y))]
             title = t.t("explore.title")
+        if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
+            body += self._zone_players_lines(hero, self._zone(hero.x, hero.y))
         body += ["", self._status_line(hero), t.t("activity.offline_ok")]
         actions = [Action(id="refresh", label=t.t("menu.refresh"))]
         if activity.get("kind") in ("gather", "explore"):
             actions.append(Action(id="stop", label=t.t("batch.stop")))
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
+
+    # ------------------------------------------------------------------ players in the zone (D-96, provisional)
+
+    def _presence_note(self, hero: Hero) -> None:
+        """Make sure the hero is listed in the presence record of its zone.
+
+        One read per button; a write only when the hero is missing (just arrived, or pruned after being idle).
+        Whether it really counts as present is decided on read, from the hero's own record.
+
+        [ES]
+        Qué hace: anota al héroe en el registro de presencia de su zona (espacio "presence", clave "x:y").
+        Lee una vez por botón y solo escribe si falta (acaba de llegar o se lo quitó por estar inactivo).
+        La llaman: act() en cada botón (después de _settle) y _presence_move al llegar a una zona.
+        Si cambia, afecta: quién aparece en 👥 de 📍 Zona y con quién te cruzas al explorar o recolectar.
+        """
+        key = f"{hero.x}:{hero.y}"
+        record = self.store.get("presence", key) or {"seen": {}}
+        if hero.id in record.get("seen", {}):
+            return
+        record.setdefault("seen", {})[hero.id] = self.clock.now()
+        self.store.put("presence", key, record)
+
+    def _presence_move(self, hero: Hero, old_x: int, old_y: int) -> None:
+        """On arrival: take the hero out of the zone it left and note it in the new one.
+
+        [ES]
+        Qué hace: al llegar a una zona, quita al héroe del registro de la zona que dejó y lo anota en la nueva
+        (aunque el jugador tenga el chat cerrado: los tramos de una ruta llegan solos). Un registro vacío se borra.
+        La llama: _arrive. Si cambia, afecta: que alguien siga "apareciendo" en una zona que ya dejó.
+        """
+        if (old_x, old_y) != (hero.x, hero.y):
+            key = f"{old_x}:{old_y}"
+            old = self.store.get("presence", key)
+            if old and old.get("seen", {}).pop(hero.id, None) is not None:
+                if old["seen"]:
+                    self.store.put("presence", key, old)
+                else:
+                    self.store.delete("presence", key)
+        self._presence_note(hero)
+
+    def _zone_players(self, x: int, y: int, exclude: str | None = None) -> list[dict[str, Any]]:
+        """Other players present in zone (x, y) now, most recently seen first; prunes the record on the way.
+
+        Present = the hero is in that zone AND (pressed a button in the last presence.minutes, OR is
+        exploring, gathering or sleeping there right now). Heroes who left, no longer exist or are idle
+        for longer are taken out of the record (they come back with their next button).
+
+        [ES]
+        Qué hace: lista a los otros jugadores que están ahora en la zona, con lo que hacen (nombre, clase, nivel,
+        actividad); el primero es el que jugó hace menos. "Está" = su héroe sigue en esa zona Y tocó un botón en
+        los últimos presence.minutes (Hero.seen_at, que marca _mark_seen) O está explorando, recolectando o
+        durmiendo ahí. Al leer, saca del registro a quien se fue, ya no existe o lleva más tiempo inactivo.
+        Nunca saca a "exclude" (quien mira): su ficha guardada todavía no tiene el botón de ahora.
+        La llaman: _zone_players_lines (📍 Zona y la pantalla de actividad) y _cross_paths.
+        Si cambia, afecta: quién ve a quién; nada de reglas (sin premio, sin pelea, D-96).
+        """
+        key = f"{x}:{y}"
+        record = self.store.get("presence", key)
+        if not record or not record.get("seen"):
+            return []
+        t = self.texts
+        cutoff = self.clock.now() - self._seconds(self.content.balance["presence"]["minutes"])
+        players: list[dict[str, Any]] = []
+        gone: list[str] = []
+        for account in list(record["seen"]):
+            if account == exclude:
+                continue
+            data = self.store.get("hero", account)
+            if not data or (data.get("x"), data.get("y")) != (x, y):
+                gone.append(account)
+                continue
+            kind = "combat" if self.store.get("combat", account) is not None else (data.get("activity") or {}).get("kind") or "idle"
+            if data.get("seen_at", 0.0) < cutoff and kind not in PRESENT_BUSY:
+                gone.append(account)
+                continue
+            other = Hero.from_dict(data)
+            group = self.content.classes.get(other.class_id, {}).get("group", other.class_id)
+            players.append({"id": account, "name": self._banner(other) + other.name, "cls": t.t(f"class_group.{group}.name"),
+                            "level": other.level, "activity": t.t(f"presence.activity.{kind}"), "seen": other.seen_at})
+        if gone:
+            for account in gone:
+                record["seen"].pop(account, None)
+            if record["seen"]:
+                self.store.put("presence", key, record)
+            else:
+                self.store.delete("presence", key)
+        players.sort(key=lambda p: -p["seen"])
+        return players
+
+    def _zone_players_lines(self, hero: Hero, zone: Zone) -> list[str]:
+        """👥 block of the zone screen: up to presence.max_listed players, then "… y N más". Empty if nobody.
+
+        [ES]
+        Qué hace: arma las líneas 👥 de 📍 Zona (una por jugador, con su actividad) y "… y N más" si pasan del
+        tope presence.max_listed. Si no hay nadie, no muestra nada (pantallas cortas, D-86). No agrega botones.
+        La llaman: _zone_view y _activity_view (explorando, recolectando o durmiendo).
+        Si cambia, afecta: el largo de 📍 Zona en los tres clientes.
+        """
+        players = self._zone_players(zone.x, zone.y, exclude=hero.id)
+        if not players:
+            return []
+        t = self.texts
+        cap = max(1, int(self.content.balance["presence"]["max_listed"]))
+        lines = [t.t("presence.title", n=len(players))]
+        lines += [t.t("presence.line", name=p["name"], cls=p["cls"], level=p["level"], activity=p["activity"]) for p in players[:cap]]
+        if len(players) > cap:
+            lines.append(t.t("presence.more", n=len(players) - cap))
+        return lines
+
+    def _cross_paths(self, hero: Hero, zone: Zone, activity: dict[str, Any]) -> list[str]:
+        """After an exploring or gathering step with no fight: maybe a "👋 you crossed X" line (flavour only).
+
+        Uses its own deterministic draw (hash of world seed, hero and step end), so the step's Rng and every
+        other result stay exactly as before. The same player is crossed at most once per batch.
+
+        [ES]
+        Qué hace: tras una vuelta de exploración o recolección sin pelea, con probabilidad presence.cross_chance,
+        agrega al resumen "👋 Te cruzaste con Bram (🏰 Guerrero, nivel 2), que andaba 🪓 recolectando." si hay
+        alguien en la zona. Solo texto: sin premio, sin pelea, sin PvP, en cualquier zona (también el Claro y los
+        campamentos). Usa su propio sorteo fijo, así no cambia ningún otro resultado de la vuelta; a cada jugador
+        te lo cruzas una sola vez por lote (activity["met"]).
+        La llama: _settle. Si cambia, afecta: solo el texto del resumen del lote.
+        """
+        if hash_unit(self.world_seed, hero.id, activity["until"], "cross") >= self.content.balance["presence"]["cross_chance"]:
+            return []
+        met = activity.setdefault("met", [])
+        others = [p for p in self._zone_players(zone.x, zone.y, exclude=hero.id) if p["id"] not in met]
+        if not others:
+            return []
+        pick = others[int(hash_unit(self.world_seed, hero.id, activity["until"], "who") * len(others)) % len(others)]
+        met.append(pick["id"])
+        return [self.texts.t("presence.crossed", name=pick["name"], cls=pick["cls"], level=pick["level"], activity=pick["activity"])]
 
     # ------------------------------------------------------------------ gathering, camp, tutorial
 

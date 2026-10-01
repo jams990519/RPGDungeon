@@ -55,6 +55,11 @@ explore:
   item: 0.35                 # [ES] el resto es oro
   arrival_encounter_scale: 1.0
 
+presence:                    # [ES] D-96 (provisional): ver a los otros jugadores de tu zona en 📍 Zona y cruzártelos al explorar o recolectar. Solo información: sin premio, sin pelea (mapa-infinito-y-viaje.md §1.13)
+  minutes: 15                # [ES] un jugador "está" en la zona si tocó un botón en los últimos 15 min (o si su héroe explora, recolecta o duerme ahí, aunque tenga el chat cerrado)
+  max_listed: 5              # [ES] cuántos nombres muestra 📍 Zona como mucho; el resto sale como "… y N más" (pantallas cortas, D-86)
+  cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
+
 regen:
   hp_percent_per_minute: 1.0  # [ES] fuera de combate se recupera vida sola (de 0 a lleno: 100 minutos)
   downed_percent_per_minute: 0.2  # [ES] D-83: si caíste, te recuperas mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
