@@ -263,3 +263,9 @@ v0_14:
     - "🏹 Nuevo en 🧭 Explorar: Cazar. Buscas presa en la zona y peleas enseguida (2 ⚡ por presa): solo pelea y botín, sin explorar ni recolectar. Después de ganar, 🏹 Otra presa."
     - "🏹 Partida de caza: si tienes campamento, llamas a los miembros que estén en tu misma zona. Durante 30 minutos, cada presa da más experiencia y botín por cada compañero, y si llegan a la meta todos ganan un premio."
     - "📒 Lugares ahora está dentro de 🗺️ Mapa."
+
+v0_14_1:
+  version: "0.14.1"
+  title: "⏱️ Lost Realms 0.14.1: tiempo estimado"
+  notes:
+    - "⏱️ Al elegir cuánta energía gastar explorando o recolectando, cada opción dice cuánto tardará en total, y la pantalla te dice cuánto tardarías con toda tu energía."

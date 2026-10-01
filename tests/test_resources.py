@@ -150,3 +150,17 @@ def test_gathering_gives_experience_scaled_by_the_zone_level(service, clock):
     assert service._zone_xp(step, 11) == int(step * 2.5)                   # 15 % more per level
     edef = service.content.enemies["lobo_ceniciento"]
     assert service._zone_xp(edef["xp"], 5) == int(edef["xp"] * 1.6)        # kills: the same scale as before
+
+
+def test_amount_choices_show_the_estimated_total_time(service):
+    # Owner's request: every amount shows its estimated total time, and the screen the time with all the energy.
+    make_hero(service)
+    view = service.act("test:1", "explore")
+    minutes = service.content.balance["explore"]["minutes"]
+    five = next(a for a in view.actions if a.id == "do:explore:5")
+    assert "⏱️" in five.label and service._fmt_duration(service._seconds(minutes * 5)) in five.label
+    energy = service._load("test:1").energy
+    assert any("⏱️" in line and service._fmt_duration(service._seconds(minutes * energy)) in line for line in view.body)
+    view = service.act("test:1", "amt:explore:1")
+    assert all("⏱️" in a.label for a in view.actions if a.id.startswith("do:"))
+    assert not service.texts.missing

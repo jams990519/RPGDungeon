@@ -207,6 +207,17 @@ Coordenadas 1, 2 · Lejanía 2
 - Lo pidió el dueño. Los números los propuso Claude.
 - **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
 
+### 1.12.1 Tiempo estimado y ⚙️ Opciones de pelea en los lotes (D-114)
+
+El dueño pidió (1-oct-2026):
+- **Tiempo estimado (en el juego desde la 0.14.1):** cada cantidad de energía que se elige para un lote muestra cuánto tardará en total (por ejemplo, "⚡ 20 · ⏱️ 3 h 20 min"), y la pantalla dice cuánto tarda cada vuelta y cuánto tardaría con toda la energía. Las peleas que salgan lo alargan un poco.
+- **⚙️ Opciones (para programar):** un botón de opciones donde cada jugador elige qué pasa y qué no. La primera opción es qué hacer si sale una pelea en medio de un lote:
+  - **✋ Manual** (como hasta ahora): el lote se corta y peleas tú. Para el que está conectado.
+  - **⚔️ Automática:** el héroe pelea solo, con una forma de jugar básica pero atenta: lee el aviso, se defiende de los golpes grandes, usa sus habilidades y, si quieres, las pociones del cinturón. Si gana, el lote sigue; si pierde, o si su vida baja del límite que elegiste, el lote se corta. El resumen del final dice cuántas peleas ganó y perdió. Para el que sale y vuelve después.
+  - Otras opciones: el límite de vida para retirarse (30 %, 50 % o 70 %) y si se usan las pociones en las peleas automáticas.
+  - Con las peleas automáticas, la cacería también puede ir en lote (varias presas seguidas, 2 ⚡ cada una).
+  - El botón ⚙️ Opciones va en el menú de abajo (D-46 deja hasta 6) y con /opciones. Pelear en automático da lo mismo que pelear a mano: la diferencia es que el jugador atento juega mejor.
+
 ### 1.13 Otros jugadores en tu zona (D-96, provisional)
 
 **Lo que pidió el dueño (por voz):** "Si un jugador coincide contigo en la zona, no en el mapa, sino que al darle a Zona vas a poder ver la lista de jugadores en esa zona, en cuanto a la actividad. Puede que te lo topes incluso en las misiones y demás." Interpretación tomada (provisional): se ven solo los que están **ahora** en tu zona y **activos**, cada uno con lo que está haciendo; el mapa no muestra a nadie.
