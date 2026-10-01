@@ -287,3 +287,26 @@ PENDIENTES
 - Arena sin pérdidas desde el principio (E-32): sin respuesta.
 - Temas sin tocar: eventos y temporadas, world bosses, logros y rangos, PvP en mazmorras.
 ```
+
+## Ideas sueltas del mapa y la interfaz (1-oct-2026)
+
+El dueño mandó estas ideas por el chat. Quedaron registradas como decisiones confirmadas **D-178 a D-181**; cómo se aplican, en D-182 (provisional). Sus dudas pasaron al [Sistema de preguntas](sistema-de-preguntas.md) (E-123 a E-126).
+
+```text
+LOST REALMS · IDEAS SUELTAS (mapa e interfaz)
+
+MENÚ DE OPCIONES
+- Cada interruptor muestra una palomita VERDE cuando está activo y una palomita GRIS cuando está desactivado.
+
+MAPA · TERRENOS Y RECURSOS
+- El mapa se define automáticamente con colores por tipo de terreno (ej. verde = pradera o campo normal). Se pueden agregar todos los colores que hagan falta.
+- Cada tipo de terreno tiene un catálogo de 10 a 15 recursos posibles.
+- Cada casilla o zona solo trae una parte de ese catálogo (ej. 4 o 6 de los 15), en cantidades variables.
+- El color no garantiza un recurso concreto: ver verde no significa que siempre haya madera o semillas. Hay que ir a investigar.
+
+MAPA · ICONOS
+- Icono de CUEVA: marca dónde hay una mazmorra. Dos o tres por zona, a distintas distancias y posiciones.
+- Icono propio para los CAMPAMENTOS DE MONSTRUOS.
+- NODOS DE RECURSOS: colocados al azar con un símbolo genérico. Solo al llegar se descubre qué tipo de nodo principal es.
+```
+

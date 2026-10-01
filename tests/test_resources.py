@@ -63,7 +63,11 @@ def test_exploring_reaches_100_then_goes_on_around_you_without_moving(service, c
     hero = service._load("test:1")
     assert hero.exploration["0:0"] == 100
     assert service._known_resources(hero, 0, 0) == ["madera", "fibra"]
-    assert "🟫" in "\n".join(service.act("test:1", "map").body)             # the Claro shows its colour
+    body = service.act("test:1", "map").body                                 # D-179: colours by terrain, legend built alone
+    assert "🟩 Pradera" in body[1] and "🟢 Bosque" in body[1] and "🔥 Claro" in body[1]
+    north = service.content.biomes[service._zone(0, 1).biome]
+    radius = service.content.balance["map_view"]["radius"]
+    assert north["color"] in body[2 + radius - 1]                            # the remembered zone to the north, painted
     # D-107: the batch did not stop at 100 %: it went on with the zone to the north, and the hero never moved.
     assert (hero.x, hero.y) == (0, 0) and hero.activity is None
     assert hero.exploration.get("0:1", 0) > 0 and hero.remembers(0, 1)

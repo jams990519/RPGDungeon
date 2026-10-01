@@ -178,3 +178,15 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-119 | ¿Para quién son los nodos que mejora el carpintero? (D-168, D-171; entrevista E-96) | En zonas libres, para todos; en el territorio de un campamento, para sus miembros; duran unos días y se mantienen |
 | P-120 | ¿La información de enfermedades que pasan cazadores e investigadores es un objeto que se vende? (D-167; entrevista E-97) | Sí: un informe que se vende o se regala |
 | P-121 | ¿Se cambian también los nombres de clases, especializaciones y recursos que vienen de World of Warcraft (Caballero de la Muerte, Cazador de demonios, Evocador, Reprensión, Sutileza, Poder Sagrado...)? (D-135, D-151; entrevista E-122) | Sí, por nombres propios, sin tocar lo que hace cada una; las habilidades ya se cambiaron en la 0.25.1 |
+
+## Dudas de las ideas sueltas del mapa (1-oct-2026)
+
+Salieron de las ideas sueltas del dueño sobre el mapa y la interfaz (D-178 a D-181). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 2 (E-123 a E-126). Mientras tanto se aplica lo recomendado como provisional (D-182 y lo que traiga la 0.27).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-122 | ¿Cómo se llega a 10-15 recursos por terreno? (D-180; E-123) | Los 6 de hoy siguen en las mismas zonas y cada terreno suma los suyos (resina, setas, bayas, juncos...), para la cocina, la alquimia y los oficios que vienen, y para vender |
+| P-123 | ¿Qué da un nodo de recursos? (D-181; E-124) | Su recurso rinde el doble y se agota más despacio, y a veces da un material raro de su terreno; lo usa cualquiera que llegue |
+| P-124 | ¿El 🔭 Reconocer del Explorador descubre los nodos de lejos? (D-172, D-181; E-125) | Sí, desde el rango 25 de Explorador |
+| P-125 | ¿"2 o 3 cuevas por zona" es por cada tramo de 6 × 6 zonas o en todo lo que muestra el mapa? (D-181, D-182; E-126) | Por tramo de 6 × 6 (unas 10 a 12 en el mapa de 13 × 13, aunque solo se ven las cercanas) |
+

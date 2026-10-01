@@ -1,8 +1,8 @@
-# Solo dungeons (D-164, D-165, D-170, D-171): the 🕳️ small dungeon, the 🌀 deep dungeon by floors and the ❓ marks of the map.
+# Solo dungeons (D-164, D-165, D-170, D-171): the 🕳️ small dungeon, the 🌀 deep dungeon by floors and the 🕳️ cave marks of the map (D-181).
 # Numbers live in content/balance.yaml (block dungeons); the enemy families in content/dungeons.yaml.
 # [ES] Textos de las mazmorras para uno: la 🕳️ chica (4 salas y el jefe, cofre modesto, una vez por día), la 🌀 profunda (pisos
 # hacia abajo, la bolsa, 🚪 Salir con lo ganado, tu récord y la lista 🏆 del día), lo que se ve en 📍 Zona, en 🧭 Explorar y en
-# el 🗺️ Mapa (❓ hay algo, no se sabe qué, D-171), y los nombres de las familias que las llenan. Se junta con es.yaml al cargar
+# el 🗺️ Mapa (🕳️ la cueva: hay una mazmorra, no se sabe cuál, D-171 y D-181), y los nombres de las familias que las llenan. Se junta con es.yaml al cargar
 # (engine/core/content.py: las claves que ya existen se completan, no se pisan).
 # Documento de diseño: diseno/06-contenido/mazmorras-y-bandas.md §0; diseno/02-mundo/mapa-infinito-y-viaje.md §1.15
 # Lo leen: engine/service/game.py (sección "solo dungeons": _dng_view, _dng_go, _dng_fight_done, _dng_close, _dng_map_lines,
@@ -13,7 +13,7 @@
 dungeon:                      # [ES] D-164, D-170, D-171: mazmorras para uno (lugar fijo; lo de adentro cambia cada día)
   icon_small: "🕳️"
   icon_deep: "🌀"
-  icon_unknown: "❓"
+  icon_unknown: "🕳️"           # [ES] D-181, D-182: la cueva marca que ahí hay una mazmorra, aunque no sepas cuál (antes ❓)
   title_small: "🕳️ Mazmorra chica"
   title_deep: "🌀 Mazmorra profunda"
   enter_small: "🕳️ Entrar"
@@ -75,7 +75,7 @@ dungeon:                      # [ES] D-164, D-170, D-171: mazmorras para uno (lu
   closed_fled: "🏃 Huiste hacia arriba (despejaste {floor}): en la carrera se perdió la mitad de la bolsa. Te queda: {items}."
   no_run: "🌀 No tienes una bajada abierta."
   none_here: "🕳️ Aquí no hay una mazmorra."
-  blocked: "⛺ Un campamento enemigo tapa la entrada de la mazmorra: hay que destruirlo primero (hoy)."
+  blocked: "👹 Un campamento enemigo tapa la entrada de la mazmorra: hay que destruirlo primero (hoy)."
   downed: "🤕 Estás malherido: cúrate antes de entrar a una mazmorra (👤 Héroe → 🩺 Salud)."
   zone_small: "🕳️ Mazmorra chica: hoy la ocupan {family}. 🧭 Explorar → 🕳️ Entrar."
   zone_deep: "🌀 Mazmorra profunda: hoy la ocupan {family}. 🧭 Explorar → 🌀 Descender."
@@ -83,12 +83,12 @@ dungeon:                      # [ES] D-164, D-170, D-171: mazmorras para uno (lu
   zone_blocked_deep: "🌀 Aquí hay una mazmorra profunda, pero un campamento enemigo tapa la entrada hasta que caiga."
   arrive_small: "🕳️ ¡La entrada de una mazmorra chica! 🧭 Explorar → 🕳️ Entrar."
   arrive_deep: "🌀 ¡La entrada de una mazmorra profunda! 🧭 Explorar → 🌀 Descender."
-  map_legend: "❓ hay algo, ve a investigar · 🕳️ mazmorra chica · 🌀 mazmorra profunda"
-  map_unknown: "❓ ({x}, {y}) · a {zones} zonas: algo hay, ve a investigar"
+  map_legend: "🕳️ cueva: una mazmorra (qué es, lo sabes al llegar) · 🌀 mazmorra profunda"
+  map_unknown: "🕳️ ({x}, {y}) · a {zones} zonas: una cueva, ve a ver qué mazmorra es"
   map_small: "🕳️ ({x}, {y}) · a {zones} zonas: mazmorra chica"
   map_deep: "🌀 ({x}, {y}) · a {zones} zonas: mazmorra profunda"
   go_button: "{mark} Ir a la mazmorra"
-  go_unknown: "❓ Ir a investigar"
+  go_unknown: "🕳️ Ir a la cueva"
   rooms:                      # [ES] nombres de sala del camino del día (se eligen 4 distintos cada día)
     - "🕯️ la galería de velas"
     - "💧 la cisterna"

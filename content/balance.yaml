@@ -64,11 +64,11 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   xp_full_zone: 6            # [ES] ...y un extra al dejar una zona al 100 %. Unos 6 por ⚡ en total, como refinar (6): rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año dedicado (la curva es la de todos los oficios)
   ranks:                     # [ES] desde qué rango de Explorador se abre cada cosa (⚒️ Oficios muestra la lista)
     travel: 10               # [ES] ⏱️ 📒 Lugares lista hasta places_listed lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca (campamentos, guarida, tu campamento)
-    recon: 10                # [ES] D-172: 🔭 Reconocer de lejos (/reconocer) las ❓ mazmorras y los ⛺ campamentos hasta recon.range.recon zonas (1: las 8 vecinas)
-    camps_near: 25           # [ES] ⛺ ve los campamentos enemigos hasta near_radius zonas, aunque no los haya pisado
+    recon: 10                # [ES] D-172: 🔭 Reconocer de lejos (/reconocer) las ❓ mazmorras y los 👹 campamentos hasta recon.range.recon zonas (1: las 8 vecinas)
+    camps_near: 25           # [ES] 👹 ve los campamentos enemigos hasta near_radius zonas, aunque no los haya pisado
     infiltrate: 30           # [ES] 🕵️ Infiltrarse en un campamento enemigo
     recon_far: 30            # [ES] D-172: 🔭 Reconocer hasta recon.range.recon_far zonas (2)
-    camps_all: 50            # [ES] ⛺ ve los campamentos enemigos de todo su mapa (13 × 13, map_view.radius)
+    camps_all: 50            # [ES] 👹 ve los campamentos enemigos de todo su mapa (13 × 13, map_view.radius)
     recon_wide: 50           # [ES] D-172: 🔭 Reconocer hasta recon.range.recon_wide zonas (3)
     strength: 75             # [ES] 👹 ve desde el mapa la fuerza de cada campamento: cuántos enemigos quedan, de qué nivel y su jefe
     master: 100              # [ES] 🏅 título Gran Explorador
@@ -79,7 +79,7 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   title: gran_explorador     # [ES] id del título del rango 100 (estable; se guarda en Hero.titles)
   stealth_max: 0.5           # [ES] D-172: 🥷 Sigilo nunca pasa de 50 % (el oficio da hasta 25 % al rango 100, perk stealth de content/professions.yaml, y la 🎓 🕵️ Infiltrado hasta 10 puntos más: 35 %)
 
-recon:                       # [ES] D-172 (confirmada; números propuestos por Claude, se ajustan en la beta): 🔭 Reconocer de lejos con el 🧭 Explorador (mapa-infinito-y-viaje.md §1.14). Ves lo que hay en una ❓ mazmorra o un ⛺ campamento enemigo sin ir: lo mismo que vería cualquiera que llegue ese día
+recon:                       # [ES] D-172 (confirmada; números propuestos por Claude, se ajustan en la beta): 🔭 Reconocer de lejos con el 🧭 Explorador (mapa-infinito-y-viaje.md §1.14). Ves lo que hay en una ❓ mazmorra o un 👹 campamento enemigo sin ir: lo mismo que vería cualquiera que llegue ese día
   energy: 2                  # [ES] cada reconocimiento cuesta 2 ⚡ (no es una pelea, no te mueve y se puede hacer en medio de un lote). Uno por lugar y día
   range: {recon: 1, recon_far: 2, recon_wide: 3}   # [ES] hasta cuántas zonas a la redonda llega según el umbral de explorer.ranks que alcanzaste (10 → 1, 30 → 2, 50 → 3). Nunca tu propia zona: eso es 🕵️ Infiltrarse o entrar
   explorer_xp: 12            # [ES] experiencia de Explorador por reconocimiento: 6 por ⚡, como explorar (explorer.xp_per_step + xp_full_zone)
@@ -87,7 +87,7 @@ recon:                       # [ES] D-172 (confirmada; números propuestos por C
   coins_per_level: 2         # [ES] premio en monedas: nivel del lugar × 2 🥉 (nivel 4: 8 🥉; nivel 40: 80 🥉), parecido a lo que dan 2 ⚡ de explorar en monedas. Sin objeto que se vende (P-120 sigue abierta)
   listed: 6                  # [ES] cuántos lugares lista la pantalla 🔭 (los más cercanos); botones: los 3 primeros sin reconocer hoy + ↩️ Volver
 
-enemy_camps:                 # [ES] D-112 (confirmada): ⛺ campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
+enemy_camps:                 # [ES] D-112 (confirmada): 👹 campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
   density: 0.03              # [ES] cada día, ~3 % de las zonas de Lejanía 2 o más tienen uno (en un mapa de 13 × 13, unos 4 o 5). Nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Cambiarlo mueve los campamentos del día
   min_lejania: 2             # [ES] desde qué Lejanía pueden salir
   garrison: [4, 8]           # [ES] cuántos enemigos tiene cada uno, contando al jefe (el último)
@@ -112,8 +112,9 @@ enemy_camps:                 # [ES] D-112 (confirmada): ⛺ campamentos enemigos
     explorer_xp: 15          # [ES] ...y 15 de experiencia de Explorador (5 por ⚡, como explorar). Una vez por campamento y día
 
 dungeons:                    # [ES] D-164, D-170, D-171 (confirmadas): mazmorras para uno (mazmorras-y-bandas.md §0). Lugar fijo (semilla del mundo); lo de adentro cambia cada día: la familia que la llena (content/dungeons.yaml), su jefe, el camino y el botín. Números propuestos por Claude: se ajustan en la beta
-  stretch: 6                 # [ES] el mapa se parte en tramos de 6 × 6 zonas; cada tramo tiene 1 o 2 entradas (en un mapa de 13 × 13, unas 6 a 9). Cambiarlo MUEVE las entradas (no borra nada: lo guardado es por héroe y por día)
-  second_chance: 0.5         # [ES] probabilidad de que un tramo tenga una 2.ª entrada
+  stretch: 6                 # [ES] el mapa se parte en tramos de 6 × 6 zonas; cada tramo tiene 2 o 3 entradas (D-181, D-182; en un mapa de 13 × 13, unas 10 a 12). Cambiarlo MUEVE las entradas (no borra nada: lo guardado es por héroe y por día)
+  second_chance: 1.0         # [ES] D-181: todo tramo tiene una 2.ª entrada (antes 0.5: 1 o 2). Subirla solo agrega entradas: las que había no se mueven
+  third_chance: 0.5          # [ES] D-181: probabilidad de una 3.ª entrada en el tramo ("2 o 3 por zona", entendido por tramo: E-126)
   min_lejania: 2             # [ES] desde qué Lejanía hay entradas (nunca en el Claro). Tampoco en la guarida ni en el territorio de un campamento de jugadores; un campamento enemigo en pie tapa la entrada ese día
   spacing: 1                 # [ES] dos entradas del mismo tramo nunca quedan pegadas (a 1 zona o menos)
   deep_share: 0.25           # [ES] 1 de cada 4 entradas es 🌀 profunda; las demás, 🕳️ chicas
@@ -186,11 +187,10 @@ resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar
   max_per_zone: 3            # [ES] una zona tiene de 1 a 3 tipos de recurso
   fixed:                     # [ES] zonas con recursos fijos
     "0:0": {madera: 1.0, fibra: 0.8}
-  colors: {madera: "🟫", piedra: "⬜", fibra: "🟨", hierba_curativa: "🟩", pieza_metal: "🟥", arcilla: "🟧"}   # [ES] color en el mapa al explorar una zona al 100 %
 
 exploration:                 # [ES] D-87: cada zona se explora por porcentaje
   per_step: [15, 30]         # [ES] cada exploración suma entre 15 % y 30 %
-  reveal_at: [1, 50, 100]    # [ES] con estos % se conoce el 1.º, 2.º y 3.º recurso; al 100 % se ve todo y el color en el mapa
+  reveal_at: [1, 50, 100]    # [ES] con estos % se conoce el 1.º, 2.º y 3.º recurso; al 100 % se ve todo (D-179: el mapa pinta el terreno, no el recurso)
 
 stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
   per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)

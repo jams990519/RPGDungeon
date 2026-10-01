@@ -1,4 +1,4 @@
-"""The 🧭 Explorador profession and the ⛺ enemy camps that move every day (D-112).
+"""The 🧭 Explorador profession and the 👹 enemy camps that move every day (D-112).
 
 [ES] Pruebas del Explorador y de los campamentos enemigos: los campamentos salen cada día en zonas fijas para todos (semilla
 del mundo + día), nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, y al otro día cambian. En su
@@ -234,7 +234,7 @@ def test_destroying_the_camp_pays_the_finisher_and_everyone_who_fought_once(serv
     menu = service.act("test:1", "explore_menu")
     assert "explore" in ids(menu) and any("cayó hoy" in line for line in menu.body)
     assert service._ecamp_fight_done(service._load("test:2"), {"enemy_camp": {"day": camp["day"], "x": x, "y": y, "chief": True},
-                                                                "outcome": "victory"})[-1].startswith("⛺ Lyra")
+                                                                "outcome": "victory"})[-1].startswith("👹 Lyra")
     assert service._load("test:2").gold == bram.gold + share
     assert not service.texts.missing
 
@@ -356,7 +356,7 @@ def test_the_map_shows_camps_by_explorer_rank(service):
         place(service, "test:1", cx + dx, cy, professions=profs)
         return service.act("test:1", "map").body
 
-    mark = f"⛺ ({cx}, {cy})"
+    mark = f"👹 ({cx}, {cy})"
     assert any(line.startswith(mark) for line in map_lines(1, 1))                         # next door: everyone sees it
     assert not any(line.startswith(mark) for line in map_lines(1, 3))                     # 3 zones away: not without rank
     assert not any(line.startswith(mark) and "⏱️" in line for line in map_lines(1, 1))
@@ -364,8 +364,8 @@ def test_the_map_shows_camps_by_explorer_rank(service):
     assert any(line.startswith(mark) for line in map_lines(25, 3))                        # rank 25: 3 zones
     assert not any(line.startswith(mark) for line in map_lines(25, 5))
     assert any(line.startswith(mark) for line in map_lines(50, 5))                        # rank 50: the whole map
-    assert not any(line.startswith(mark) and "👹" in line for line in map_lines(50, 5))
-    assert any(line.startswith(mark) and "👹" in line for line in map_lines(75, 5))        # rank 75: its strength
+    assert not any(line.startswith(mark) and "💪" in line for line in map_lines(50, 5))
+    assert any(line.startswith(mark) and "💪" in line for line in map_lines(75, 5))        # rank 75: its strength
     view = service.act("test:1", "map")
     assert len(view.actions) <= 4 and any(a.id == f"goto:{cx}:{cy}" for a in view.actions)
     service.act("test:1", f"goto:{cx}:{cy}")

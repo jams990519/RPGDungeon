@@ -1221,20 +1221,20 @@ menu:
   options: "⚙️ Opciones"           # [ES] D-114: 5.º botón del menú de abajo (D-46 deja hasta 6)
   story: "📖 Historia"            # [ES] D-117: 6.º botón del menú de abajo, antes de ⚙️ Opciones (D-46 deja hasta 6)
 
-options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho
+options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho. D-178: cada interruptor lleva palomita (✅ activo, ☑️ apagado)
   title: "⚙️ Opciones"
-  intro: "Elige qué pasa y qué no. Toca un botón para cambiarlo: queda guardado."
-  fights_manual: "⚔️ Peleas en un lote: ✋ Manual. Si sale una pelea mientras exploras o recolectas, el lote se corta y la peleas tú. Para cuando estás conectado."
-  fights_auto: "⚔️ Peleas en un lote: ⚔️ Automática. Tu héroe pelea solo, con una forma de jugar básica pero atenta: lee el aviso, se defiende de los golpes grandes y usa sus habilidades. Si gana, el lote sigue, y 🏹 Cazar también va en lote. Para cuando sales y vuelves después."
+  intro: "Elige qué pasa y qué no. Toca un botón para cambiarlo: queda guardado. ✅ activo · ☑️ apagado."
+  check_on: "✅"                # [ES] D-178 (confirmada): palomita verde de un interruptor activo
+  check_off: "☑️"               # [ES] D-178: palomita gris de un interruptor apagado
+  fights_manual: "☑️ ⚔️ Peleas automáticas: apagadas (✋ manual). Si sale una pelea mientras exploras o recolectas, el lote se corta y la peleas tú. Para cuando estás conectado."
+  fights_auto: "✅ ⚔️ Peleas automáticas: tu héroe pelea solo, con una forma de jugar básica pero atenta: lee el aviso, se defiende de los golpes grandes y usa sus habilidades. Si gana, el lote sigue, y 🏹 Cazar también va en lote. Para cuando sales y vuelves después."
   retreat: "🩹 Retirarse con menos de {pct} % de vida: en las peleas automáticas, si tu vida queda por debajo, el lote se corta. Si ya está por debajo cuando sale una pelea, no pelea solo: la pelea te espera."
-  potions_on: "🧪 Pociones en peleas automáticas: sí. Bebe las pociones y usa las vendas del cinturón cuando le hacen falta."
-  potions_off: "🧪 Pociones en peleas automáticas: no. No toca el cinturón: lo guardas para cuando pelees tú."
+  potions_on: "✅ 🧪 Pociones en peleas automáticas: bebe las pociones y usa las vendas del cinturón cuando le hacen falta."
+  potions_off: "☑️ 🧪 Pociones en peleas automáticas: apagadas. No toca el cinturón: lo guardas para cuando pelees tú."
   never_auto: "El Guardián y las defensas del campamento siempre las peleas tú. Pelear solo da lo mismo que pelear a mano: el jugador atento solo juega mejor."
-  fights_button: "⚔️ Peleas: {value}"
-  manual: "✋ Manual"
-  auto: "⚔️ Auto"
-  retreat_button: "🩹 Retirarse: {pct} %"
-  potions_button: "🧪 Pociones: {value}"
+  fights_button: "{check} Peleas automáticas"     # [ES] D-178: el interruptor con su palomita (✅ automáticas, ☑️ manual)
+  retreat_button: "🩹 Retirarse: {pct} %"          # [ES] no es un interruptor: elige entre 30, 50 y 70 %
+  potions_button: "{check} Pociones"               # [ES] D-178: el interruptor con su palomita
   value_yes: "sí"
   value_no: "no"
   saved_auto: "⚔️ Listo: las peleas de tus lotes ahora son automáticas, y 🏹 Cazar va en lote."
@@ -1307,7 +1307,7 @@ map:
   title: "🗺️ Tu mapa"
   legend: "🧍 tú · 👑 guarida del Guardián · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba"
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
-  colors: "Zonas exploradas al 100 %: 🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla"
+  colors: "🎨 Terrenos (el color no dice qué recursos hay: eso se sabe explorando): {items}"   # [ES] D-179: la leyenda se arma sola con los colores de content/biomes.yaml
 
 presence:                     # [ES] D-96 (provisional): los otros jugadores de tu zona (bloque 👥 de 📍 Zona) y los cruces al explorar o recolectar
   title: "👥 También en esta zona ({n}):"

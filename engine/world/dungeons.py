@@ -40,8 +40,9 @@ Reglas que nunca se rompen:
        (piezas con "source").
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (🧭 Explorar, 📍 Zona, 🗺️ Mapa, la pantalla de la mazmorra, _end_combat, _settle)
-    - Números: balance.yaml dungeons (stretch, second_chance, min_lejania, spacing, deep_share, level_bonus, small.*, deep.*)
-    - Cambiar stretch, second_chance, deep_share, spacing o los hash MUEVE las entradas de un mundo ya creado (no borra nada)
+    - Números: balance.yaml dungeons (stretch, second_chance, third_chance, min_lejania, spacing, deep_share, level_bonus, small.*, deep.*)
+    - Cambiar stretch, deep_share, spacing o los hash MUEVE las entradas de un mundo ya creado (no borra nada); subir
+      second_chance o third_chance solo agrega entradas (D-181), bajarlas las quita
     - Agregar o retirar una familia de content/dungeons.yaml cambia el orden de las familias desde ese día
     - Pruebas: tests/test_mazmorras.py
 """
@@ -66,10 +67,12 @@ def stretch_of(x: int, y: int, size: int) -> tuple[int, int]:
 
 @lru_cache(maxsize=8192)
 def _stretch_entrances(seed: int, bx: int, by: int, size: int, min_lejania: int, second_chance: float, deep_share: float,
-                       spacing: int, excluded: tuple[tuple[int, int], ...]) -> tuple[tuple[int, int, str], ...]:
+                       spacing: int, excluded: tuple[tuple[int, int], ...], third_chance: float = 0.0) -> tuple[tuple[int, int, str], ...]:
     cells = [(x, y) for x in range(bx * size, bx * size + size) for y in range(by * size, by * size + size)
              if lejania(x, y) >= min_lejania and (x, y) not in excluded]
     count = 2 if hash_unit(seed, "dungeon_count", bx, by) < second_chance else 1
+    # D-181: a 3rd entrance with its own draw. The greedy pick below keeps the first ones where they were: more only adds.
+    count += 1 if hash_unit(seed, "dungeon_count3", bx, by) < third_chance else 0
     cells.sort(key=lambda c: (hash_unit(seed, "dungeon_spot", c[0], c[1]), c))
     chosen: list[tuple[int, int, str]] = []
     for x, y in cells:
@@ -83,20 +86,21 @@ def _stretch_entrances(seed: int, bx: int, by: int, size: int, min_lejania: int,
 
 def entrances(seed: int, bx: int, by: int, cfg: dict[str, Any],
               excluded: tuple[tuple[int, int], ...] = ()) -> list[tuple[int, int, str]]:
-    """The dungeon entrances of one stretch: [(x, y, "small" | "deep")], 1 or 2, never side by side.
+    """The dungeon entrances of one stretch: [(x, y, "small" | "deep")], 1 to 3, never side by side.
 
     Args:
-        cfg: balance.yaml dungeons (stretch, min_lejania, second_chance, deep_share, spacing).
+        cfg: balance.yaml dungeons (stretch, min_lejania, second_chance, third_chance, deep_share, spacing).
         excluded: zones that never hold an entrance (the Guardian's lair); another zone of the stretch is used instead.
 
     [ES]
-    Qué hace: da las entradas de un tramo: 1, o 2 con second_chance; en zonas de Lejanía min_lejania o más, elegidas por
-    la semilla, nunca a spacing zonas o menos una de otra; cada una 🌀 profunda con deep_share, si no 🕳️ chica.
+    Qué hace: da las entradas de un tramo: 1, o 2 con second_chance, y una más con third_chance (D-181: con 1.0 y 0.5, 2 o 3
+    por tramo); en zonas de Lejanía min_lejania o más, elegidas por la semilla, nunca a spacing zonas o menos una de otra;
+    cada una 🌀 profunda con deep_share, si no 🕳️ chica. Las primeras quedan donde estaban: subir las cuentas solo agrega.
     La llama: entrance_at. Si cambia, afecta: dónde están las mazmorras de todos.
     """
     return list(_stretch_entrances(int(seed), int(bx), int(by), int(cfg["stretch"]), int(cfg["min_lejania"]),
                                    float(cfg["second_chance"]), float(cfg["deep_share"]), int(cfg["spacing"]),
-                                   tuple(sorted(tuple(e) for e in excluded))))
+                                   tuple(sorted(tuple(e) for e in excluded)), float(cfg.get("third_chance", 0.0))))
 
 
 def entrance_at(seed: int, x: int, y: int, cfg: dict[str, Any], excluded: tuple[tuple[int, int], ...] = ()) -> str | None:

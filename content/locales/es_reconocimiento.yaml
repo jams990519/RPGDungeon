@@ -14,14 +14,14 @@
 
 recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explorador desde el rango 10)
   title: "🔭 Reconocer"
-  intro: "🔭 Miras de lejos qué hay en una ❓ mazmorra o en un ⛺ campamento enemigo, sin ir: lo mismo que vería cualquiera que llegue hoy. Cada uno cuesta ⚡{energy}, da experiencia de 🧭 Explorador y unas monedas. Uno por lugar al día."
+  intro: "🔭 Miras de lejos qué hay en una 🕳️ mazmorra o en un 👹 campamento enemigo, sin ir: lo mismo que vería cualquiera que llegue hoy. Cada uno cuesta ⚡{energy}, da experiencia de 🧭 Explorador y unas monedas. Uno por lugar al día."
   locked: "🔒 Reconocer pide rango {rank} de 🧭 Explorador (tienes {have}). Sube explorando."
   reach: "🔭 Llegas hasta {n} {n|zona|zonas} a la redonda (tu propia zona no: ahí se entra o se infiltra)."
   line: "{mark} ({x}, {y}) · a {zones} {zones|zona|zonas}"
   line_done_dungeon: "✅ {mark} ({x}, {y}) · hoy {family} · 👑 {boss}"
-  line_done_camp: "✅ ⛺ ({x}, {y}) · 👹 quedan {left} de {total} · 👑 {chief}"
+  line_done_camp: "✅ 👹 ({x}, {y}) · 👹 quedan {left} de {total} · 👑 {chief}"
   more: "…y {n} más, más lejos."
-  none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: el 🗺️ Mapa marca ❓ las mazmorras y ⛺ los campamentos enemigos."
+  none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: el 🗺️ Mapa marca 🕳️ las mazmorras y 👹 los campamentos enemigos."
   next: "🔓 Con rango {rank} de 🧭 Explorador, hasta {n} {n|zona|zonas}."
   button: "🔭 {mark} ({x}, {y}) · ⚡{energy}"
   out_of_reach: "🔭 Ese lugar no está a tu alcance o ya no hay nada que ver ahí. No gastaste nada."
@@ -32,7 +32,7 @@ recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explor
   dungeon_deep: "🌀 Una mazmorra profunda · nivel {level}: pisos hacia abajo, cada uno más duro."
   top: "🏆 El récord de hoy aquí: {name}, piso {floor}. ¿Lo superas?"
   top_none: "🏆 Hoy nadie bajó todavía aquí: el primer récord del día puede ser tuyo."
-  camp: "⛺ Un campamento enemigo · nivel {level} · guarnición de {total}."
+  camp: "👹 Un campamento enemigo · nivel {level} · guarnición de {total}."
   covers_small: "🕳️ Debajo, la entrada de una mazmorra chica: se abre cuando caiga el campamento."
   covers_deep: "🌀 Debajo, la entrada de una mazmorra profunda: se abre cuando caiga el campamento."
   reward: "{name} +{xp} · ✨ {hero_xp} de experiencia · {gold}"
@@ -53,7 +53,7 @@ stealth:                      # [ES] D-172: 🥷 Sigilo del 🧭 Explorador (ben
 
 explorer:                     # [ES] D-172: lo que abre cada rango del 🧭 Explorador para el reconocimiento (balance.yaml explorer.ranks y recon.range)
   what:
-    recon: "puedes 🔭 reconocer de lejos (/reconocer) las ❓ mazmorras y los ⛺ campamentos hasta {zones} {zones|zona|zonas} a la redonda: qué hay hoy, sin ir"
+    recon: "puedes 🔭 reconocer de lejos (/reconocer) las 🕳️ mazmorras y los 👹 campamentos hasta {zones} {zones|zona|zonas} a la redonda: qué hay hoy, sin ir"
     recon_far: "🔭 reconoces de lejos hasta {zones} zonas a la redonda"
     recon_wide: "🔭 reconoces de lejos hasta {zones} zonas a la redonda"
   short:

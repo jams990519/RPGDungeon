@@ -229,7 +229,7 @@ spec:
     goods: "al venderle materiales al mercader"
     gear: "al vender equipo"
     barter: "en el 💱 trueque del campamento"
-    ecamp: "de los ⛺ campamentos enemigos (cofre y parte)"
+    ecamp: "de los 👹 campamentos enemigos (cofre y parte)"
   slots_of: "{types} ({slots})"
   and: " y "
 

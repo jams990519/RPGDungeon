@@ -78,18 +78,20 @@ def test_options_screen_has_four_buttons_and_toggles_persist(service):
     view = service.act("test:1", "options")
     assert view.kind == "options" and len(view.actions) <= 4
     assert ids(view) == ["opt:fights", "opt:retreat", "opt:potions", "home"]
-    assert "✋ Manual" in view.actions[0].label and "30 %" in view.actions[1].label and "sí" in view.actions[2].label
+    assert view.actions[0].label == "☑️ Peleas automáticas"            # D-178: gray check = off (✋ manual)
+    assert "30 %" in view.actions[1].label and view.actions[2].label == "✅ Pociones"   # green check = on
+    assert "✅ activo" in "\n".join(view.body)
     view = service.act("test:1", "opt:fights")
-    assert "⚔️ Auto" in view.actions[0].label and view.notice
+    assert view.actions[0].label == "✅ Peleas automáticas" and view.notice
     assert service.store.get("hero", "test:1")["options"]["fights"] == "auto"
     for expected in (50, 70, 30):                       # 30 → 50 → 70 → 30 (D-119: 30 by default)
         view = service.act("test:1", "opt:retreat")
         assert f"{expected} %" in view.actions[1].label
         assert service.store.get("hero", "test:1")["options"]["retreat"] == expected
     view = service.act("test:1", "opt:potions")
-    assert "no" in view.actions[2].label and service.store.get("hero", "test:1")["options"]["potions"] is False
+    assert view.actions[2].label == "☑️ Pociones" and service.store.get("hero", "test:1")["options"]["potions"] is False
     again = service.act("test:1", "options")               # saved: the screen reads it back
-    assert "⚔️ Auto" in again.actions[0].label and "no" in again.actions[2].label
+    assert again.actions[0].label == "✅ Peleas automáticas" and again.actions[2].label == "☑️ Pociones"
     assert service.act("test:1", "opt:nothing").kind == "options"      # an unknown option changes nothing
     assert service.act("test:1", "home").kind == "zone"
     assert not service.texts.missing
@@ -134,7 +136,7 @@ def test_old_heroes_load_with_the_default_options(service):
     hero.options = {"fights": "???", "retreat": 42}         # a value that no longer exists falls back too
     assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 30
     view = service.act("test:1", "options")
-    assert "✋ Manual" in view.actions[0].label
+    assert view.actions[0].label.startswith("☑️")
     assert Hero.from_dict(service.store.get("hero", "test:1")).options == {}
 
 

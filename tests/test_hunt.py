@@ -101,7 +101,10 @@ def test_explore_menu_keeps_four_buttons_and_places_moved_to_the_map(service):
     assert ids(menu) == ["explore", "gather", "hunt", "map"]
     assert "🏹 Cazar" in [a.label for a in menu.actions]
     mapv = service.act("test:1", "map")
-    assert ids(mapv) == ["places", "explore_menu"]
+    # 📒 Lugares first and ↩️ Volver last; in between, at most a "goto:" to the nearest 🕳️ cave or 👹 camp you see (D-181:
+    # with 2 or 3 entrances per stretch there can be one 2 zones from the Claro)
+    assert ids(mapv)[0] == "places" and ids(mapv)[-1] == "explore_menu" and len(mapv.actions) <= 4
+    assert all(i.startswith(("goto:", "recon")) for i in ids(mapv)[1:-1])
     places = service.act("test:1", "places")
     assert places.kind == "places" and ids(places)[-1] == "map"            # ↩️ Volver goes back to the map
     assert any(a.id == "goto:0:0" for a in places.actions)

@@ -406,3 +406,12 @@ v0_26:
     - "📏 Más rango, más alcance: 1 zona al rango 10, 2 al 30 y 3 al 50."
     - "🗺️ Lo que reconoces queda marcado en el mapa: la mazmorra deja de ser ❓ para siempre, y ese día ves qué la llena."
     - "🥷 Sigilo: con más rango de Explorador, a veces evitas las peleas al explorar a mano o al llegar de un viaje (hasta 25 % al rango 100). La especialización Infiltrado suma más."
+
+v0_26_1:
+  version: "0.26.1"
+  title: "🗺️ Lost Realms 0.26.1: el mapa se pinta por terreno"
+  notes:
+    - "🎨 El mapa ahora se pinta según el terreno: 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas. El color no dice qué recursos hay: eso solo lo sabes explorando."
+    - "🕳️ Las mazmorras se marcan con una cueva apenas andas cerca, y ahora hay más: 2 o 3 en cada parte del mapa. Las que ya conocías siguen en su lugar."
+    - "👹 Los campamentos de monstruos tienen su propio icono, para no confundirlos con los 🏕️ campamentos de los jugadores."
+    - "✅ En ⚙️ Opciones, cada interruptor muestra una palomita verde cuando está activo y una gris ☑️ cuando está apagado."
