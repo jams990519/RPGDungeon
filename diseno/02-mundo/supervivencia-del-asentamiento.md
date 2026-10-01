@@ -603,7 +603,7 @@ Tú: ✅ al día · mérito de la semana 340 (🌾 Comida)
 
 ```
 🔔 Torre de vigía · Piedraclara
-🐺 Una manada de lobos grises (14) y su alfa bajan del Arroyo.
+🐺 Tres manadas de Lobo Gris (14 lobos) y su alfa bajan del Arroyo.
 Llegan en 25 minutos · 🌑 de noche · fuerza 420 · defensa 470
 Anotados: 23 defensores · 5 guardias y 2 torres con sus Tácticas
 
