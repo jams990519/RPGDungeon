@@ -1,0 +1,407 @@
+# Chained professions, phase 1 (D-109): gather -> refine -> craft. Only the simple layer; the deep layer is a proposal.
+#
+# [ES]
+# Para qué sirve: el catálogo de los ⚒️ Oficios de la fase 1: los 15 oficios (4 de recolección, 5 de refinado y 6 de
+#     fabricación), los títulos de rango, dónde están las estaciones y las recetas (qué entra, qué sale, en qué
+#     estación, desde qué rango, cuánta energía cuesta y cuánta experiencia de oficio da). Agregar una receta aquí la
+#     mete en el juego; su resultado tiene que existir en content/items.yaml y los textos en content/locales/es.yaml
+#     (profession.<id>.name y .how para cada oficio; item.<id> para cada objeto).
+# Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109) y §4 (rangos)
+# Lo leen: engine/core/content.py (Content.professions), engine/professions/rules.py y engine/service/game.py
+#     (sección "professions": _trade_gather, _trade_loot, _professions_view, _station_view, _recipe_view, _make)
+# IDs: estables. Nunca se renombran, nunca se borran, nunca se reutilizan: los héroes guardan la experiencia de cada
+#     oficio con su id (Hero.professions). Para retirar una receta se marca retired: true (deja de mostrarse).
+# Campos de cada oficio:
+#     emoji, name_key, how_key: lo que se muestra (cómo se sube, en una frase).
+#     branch: gather (recolección), refine (refinado) o craft (fabricación).
+#     gathers: materiales que junta al recolectar (sube 1 de experiencia de oficio por unidad: balance.yaml professions).
+#     skins: materiales que saca de las bestias vencidas (el 🔪 Desollador: carne y piel del botín).
+#     rare: {item, min_rank}: el material raro que puede encontrar al recolectar desde ese rango.
+# Campos de cada receta:
+#     profession: el oficio que la hace (y su estación: en la fase 1 cada oficio de refinado y fabricación tiene la suya).
+#     inputs: materiales de la mochila por vez. output: lo que sale por vez (ids de items.yaml).
+#     min_rank: rango del oficio desde el que se puede hacer. energy: ⚡ por vez (D-78: toda acción fuera del combate
+#     gasta energía). xp: experiencia de oficio por vez. La experiencia de héroe sale de energy (balance.yaml professions).
+# Si cambias esto, revisa:
+#     - Casi toda receta de fabricación pide materiales de 2 oficios o más (D-109): tests/test_professions.py lo comprueba.
+#     - Las cantidades mueven la demanda de cada material y el valor de cada oficio (registro de balance en
+#       diseno/03-personaje/balance.md §7, "los oficios encadenados").
+#     - El equipo fabricado (items.yaml, source: crafted) tiene que valer como el botín de su nivel, o algo más en los
+#       rangos altos, para que el artesano sea necesario; nunca sale en el botín al azar (engine/hero/gear.py).
+#     - Las estaciones del campamento dependen de los ids de content/camp_upgrades.yaml (taller, herreria).
+
+# Rank titles (design §4). [ES] Títulos de rango: desde qué rango rige cada uno (profesiones.md §4).
+ranks:
+  - {id: aprendiz, from: 1}
+  - {id: oficial, from: 21}
+  - {id: experto, from: 41}
+  - {id: artesano, from: 61}
+  - {id: maestro, from: 81}
+  - {id: gran_maestro, from: 96}
+
+professions:
+  # ---- Recolección: sube al recolectar (o al vencer bestias, el desollador)
+  lenador:
+    emoji: "🪓"
+    name_key: profession.lenador.name
+    how_key: profession.lenador.how
+    branch: gather
+    gathers: [madera]
+  minero:
+    emoji: "⛏️"
+    name_key: profession.minero.name
+    how_key: profession.minero.how
+    branch: gather
+    gathers: [piedra, pieza_metal, arcilla]
+    rare: {item: gema_bruta, min_rank: 10}     # [ES] desde el rango 10 aparecen gemas en bruto al minar (las pide la Joyería)
+  herbolario:
+    emoji: "🌿"
+    name_key: profession.herbolario.name
+    how_key: profession.herbolario.how
+    branch: gather
+    gathers: [hierba_curativa, fibra]
+    rare: {item: flor_luna, min_rank: 10}      # [ES] desde el rango 10 aparecen flores de luna (pociones mayores, túnicas finas)
+  desollador:
+    emoji: "🔪"
+    name_key: profession.desollador.name
+    how_key: profession.desollador.how
+    branch: gather
+    skins: [carne, piel]                       # [ES] del botín de las bestias (las que sueltan carne, enemies.yaml)
+
+  # ---- Refinado: en una estación, gasta energía
+  aserradero:
+    emoji: "🪚"
+    name_key: profession.aserradero.name
+    how_key: profession.aserradero.how
+    branch: refine
+  fundicion:
+    emoji: "🔥"
+    name_key: profession.fundicion.name
+    how_key: profession.fundicion.how
+    branch: refine
+  destilacion:
+    emoji: "💧"
+    name_key: profession.destilacion.name
+    how_key: profession.destilacion.how
+    branch: refine
+  tejeduria:
+    emoji: "🧶"
+    name_key: profession.tejeduria.name
+    how_key: profession.tejeduria.how
+    branch: refine
+  curtiduria:
+    emoji: "🪣"
+    name_key: profession.curtiduria.name
+    how_key: profession.curtiduria.how
+    branch: refine
+
+  # ---- Fabricación: en una estación, gasta energía, pide materiales de 2 oficios o más
+  carpinteria:
+    emoji: "🪑"
+    name_key: profession.carpinteria.name
+    how_key: profession.carpinteria.how
+    branch: craft
+  herreria:
+    emoji: "🔨"
+    name_key: profession.herreria.name
+    how_key: profession.herreria.how
+    branch: craft
+  alquimia:
+    emoji: "⚗️"
+    name_key: profession.alquimia.name
+    how_key: profession.alquimia.how
+    branch: craft
+  sastreria:
+    emoji: "🪡"
+    name_key: profession.sastreria.name
+    how_key: profession.sastreria.how
+    branch: craft
+  peleteria:
+    emoji: "🦺"
+    name_key: profession.peleteria.name
+    how_key: profession.peleteria.how
+    branch: craft
+  joyeria:
+    emoji: "💍"
+    name_key: profession.joyeria.name
+    how_key: profession.joyeria.how
+    branch: craft
+
+# Where the stations are. [ES] Dónde están las estaciones (en la fase 1, una por oficio de refinado y fabricación).
+stations:
+  # [ES] El Claro tiene todas las estaciones básicas (no crece, D-98, pero es donde empiezan todos)
+  claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria]
+  # [ES] En tu campamento, cada mejora construida (ids de content/camp_upgrades.yaml) abre las suyas, con algo más de
+  # rendimiento al refinar (balance.yaml professions.camp_bonus). No hay alambique todavía: destilar y la alquimia van
+  # en el 🧵 Taller hasta que exista una mejora propia.
+  camp:
+    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia]
+    herreria: [fundicion, herreria, joyeria]
+
+recipes:
+  # ---- Refinado (1 ⚡, 6 de experiencia de oficio). [ES] Lo que sale vale como lo que entra en el mercader:
+  # refinar no fabrica monedas, abre la fabricación.
+  tablon:
+    profession: aserradero
+    inputs: {madera: 3}
+    output: {tablon: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  lingote:
+    profession: fundicion
+    inputs: {pieza_metal: 2}
+    output: {lingote: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  extracto:
+    profession: destilacion
+    inputs: {hierba_curativa: 3}
+    output: {extracto: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  tela:
+    profession: tejeduria
+    inputs: {fibra: 3}
+    output: {tela_tejida: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  cuero:
+    profession: curtiduria
+    inputs: {piel: 2}
+    output: {cuero_curtido: 1}
+    min_rank: 1
+    energy: 1
+    xp: 6
+
+  # ---- Carpintería: arcos y bastones (tablones + tela o cuero). [ES] Los escudos llegan cuando exista su ranura.
+  baston_roble:
+    profession: carpinteria
+    inputs: {tablon: 3, tela_tejida: 1}
+    output: {artesano_baston_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  arco_olmo:
+    profession: carpinteria
+    inputs: {tablon: 3, cuero_curtido: 1}
+    output: {artesano_arco_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  baston_labrado:
+    profession: carpinteria
+    inputs: {tablon: 5, tela_tejida: 2}
+    output: {artesano_baston_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  arco_reforzado:
+    profession: carpinteria
+    inputs: {tablon: 5, cuero_curtido: 2}
+    output: {artesano_arco_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  baculo_artesano:
+    profession: carpinteria
+    inputs: {tablon: 8, tela_tejida: 3, gema_bruta: 1}
+    output: {artesano_baston_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+  arco_artesano:
+    profession: carpinteria
+    inputs: {tablon: 8, cuero_curtido: 3, tela_tejida: 1}
+    output: {artesano_arco_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+
+  # ---- Herrería: armas y placas (lingotes + cuero para el mango y las correas)
+  espada_forjada:
+    profession: herreria
+    inputs: {lingote: 3, cuero_curtido: 1}
+    output: {artesano_espada_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  daga_forjada:
+    profession: herreria
+    inputs: {lingote: 2, cuero_curtido: 1}
+    output: {artesano_daga_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  peto_forjado:
+    profession: herreria
+    inputs: {lingote: 4, cuero_curtido: 2}
+    output: {artesano_placas_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  espada_templada:
+    profession: herreria
+    inputs: {lingote: 5, cuero_curtido: 2}
+    output: {artesano_espada_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  daga_templada:
+    profession: herreria
+    inputs: {lingote: 4, cuero_curtido: 2}
+    output: {artesano_daga_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  peto_templado:
+    profession: herreria
+    inputs: {lingote: 7, cuero_curtido: 3}
+    output: {artesano_placas_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  espada_artesano:
+    profession: herreria
+    inputs: {lingote: 8, cuero_curtido: 3, gema_bruta: 1}
+    output: {artesano_espada_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+  daga_artesano:
+    profession: herreria
+    inputs: {lingote: 6, cuero_curtido: 3, gema_bruta: 1}
+    output: {artesano_daga_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+  coraza_artesano:
+    profession: herreria
+    inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}
+    output: {artesano_placas_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+
+  # ---- Alquimia: pociones (extracto + arcilla para el frasco)
+  pocion_vida:
+    profession: alquimia
+    inputs: {extracto: 1, arcilla: 1}
+    output: {pocion_vida: 2}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  pocion_mayor:
+    profession: alquimia
+    inputs: {extracto: 2, arcilla: 1, flor_luna: 1}
+    output: {pocion_mayor: 1}
+    min_rank: 25
+    energy: 1
+    xp: 8
+  pociones_mayores:
+    profession: alquimia
+    inputs: {extracto: 3, arcilla: 2, flor_luna: 1}
+    output: {pocion_mayor: 2}
+    min_rank: 50
+    energy: 2
+    xp: 12
+
+  # ---- Sastrería: vendas y túnicas (tela + algo de otro oficio)
+  vendas:
+    profession: sastreria
+    inputs: {tela_tejida: 1, hierba_curativa: 1}
+    output: {venda: 3}
+    min_rank: 1
+    energy: 1
+    xp: 6
+  tunica_viajero:
+    profession: sastreria
+    inputs: {tela_tejida: 4, cuero_curtido: 1}
+    output: {artesano_tela_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  tunica_tenida:
+    profession: sastreria
+    inputs: {tela_tejida: 6, extracto: 1}
+    output: {artesano_tela_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  tunica_artesano:
+    profession: sastreria
+    inputs: {tela_tejida: 9, extracto: 2, flor_luna: 1}
+    output: {artesano_tela_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+
+  # ---- Peletería: armaduras de cuero (cuero + tela) y de malla ligera (cuero + lingotes)
+  jubon_cuero:
+    profession: peleteria
+    inputs: {cuero_curtido: 4, tela_tejida: 1}
+    output: {artesano_cuero_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  cota_ligera:
+    profession: peleteria
+    inputs: {cuero_curtido: 2, lingote: 2}
+    output: {artesano_malla_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  jubon_reforzado:
+    profession: peleteria
+    inputs: {cuero_curtido: 6, tela_tejida: 2}
+    output: {artesano_cuero_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  cota_remachada:
+    profession: peleteria
+    inputs: {cuero_curtido: 3, lingote: 4}
+    output: {artesano_malla_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  jubon_artesano:
+    profession: peleteria
+    inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 1}
+    output: {artesano_cuero_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+  cota_artesano:
+    profession: peleteria
+    inputs: {cuero_curtido: 5, lingote: 7, tela_tejida: 2}
+    output: {artesano_malla_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12
+
+  # ---- Joyería: anillos y amuletos para la ranura de joya (lingote + gema en bruto)
+  anillo_engarzado:
+    profession: joyeria
+    inputs: {lingote: 1, gema_bruta: 1}
+    output: {artesano_joya_1: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
+  collar_gemas:
+    profession: joyeria
+    inputs: {lingote: 2, gema_bruta: 2}
+    output: {artesano_joya_2: 1}
+    min_rank: 25
+    energy: 2
+    xp: 12
+  amuleto_artesano:
+    profession: joyeria
+    inputs: {lingote: 3, gema_bruta: 3}
+    output: {artesano_joya_3: 1}
+    min_rank: 50
+    energy: 2
+    xp: 12

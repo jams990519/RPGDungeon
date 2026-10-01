@@ -16,12 +16,14 @@ Datos de los que es dueño: Hero.gear (ranura -> id de objeto)
 Reglas que nunca se rompen:
     1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde.
     2. Solo el nivel impide ponerse una pieza (D-83). El tipo es una referencia: fuera de tu clase rinde menos.
-    3. Las piezas con "source" (por ejemplo las del Guardián, D-82) nunca salen en el botín al azar:
-       solo se consiguen por su fuente (el Recuerdo).
+    3. Las piezas con "source" (por ejemplo las del Guardián, D-82, o el equipo de artesano, source: crafted, D-109)
+       nunca salen en el botín al azar: solo se consiguen por su fuente (el Recuerdo, una receta de oficio).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat)
     - Números: balance.yaml gear.*, items.yaml stats (mueven el balance de todas las clases)
-    - Pruebas: tests/test_gear.py, tests/test_boss.py
+    - El equipo inicial toma la primera pieza de tier gear.start_tier (1) de su tipo: el de artesano empieza en tier 2
+      y va al final de items.yaml, así nunca se elige (tests/test_professions.py)
+    - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano)
 """
 
 from __future__ import annotations

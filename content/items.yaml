@@ -1289,3 +1289,390 @@ guardian_placas:
   source: guardian
   stats: {hp: 0.17, armor: 0.04}
   price: 120
+
+# Professions, phase 1 (D-109): materials gathered, skinned or refined, and what crafters make.
+# [ES] Oficios, fase 1 (D-109): materiales que se recolectan, se sacan de las bestias o se refinan, y lo que fabrican
+# los artesanos (catálogo de recetas en content/professions.yaml). Lo que sale de refinar vale en el mercader lo mismo
+# que lo que entra (o apenas más): refinar no fabrica monedas. piel: la sueltan las bestias, como la carne (enemies.yaml).
+# gema_bruta y flor_luna: raras, solo para el minero y el herbolario desde su rango (professions.yaml "rare").
+# Lo usan: engine/service/game.py (recolectar, botín, estaciones, mercader, 📦 Recursos).
+# Si cambias esto, revisa: IDs estables; los precios no deben dejar ganar monedas refinando (precio de salida × 0,5
+# ≈ precio de entrada × 0,5).
+piel:
+  name_key: item.piel
+  emoji: "🦌"
+  kind: material
+  loot_amount: [1, 2]        # [ES] como la carne: 1 o 2 cuando sale en el botín de una bestia
+  price: 3
+tablon:
+  name_key: item.tablon
+  emoji: "🟫"
+  kind: material
+  price: 7                   # [ES] 3 maderas (2 c/u) + el trabajo
+lingote:
+  name_key: item.lingote
+  emoji: "🔩"
+  kind: material
+  price: 13                  # [ES] 2 piezas de metal (6 c/u) + el trabajo
+extracto:
+  name_key: item.extracto
+  emoji: "🧴"
+  kind: material
+  price: 10                  # [ES] 3 hierbas curativas (3 c/u) + el trabajo
+tela_tejida:
+  name_key: item.tela_tejida
+  emoji: "🧣"
+  kind: material
+  price: 7                   # [ES] 3 fibras (2 c/u) + el trabajo
+cuero_curtido:
+  name_key: item.cuero_curtido
+  emoji: "🟤"
+  kind: material
+  price: 7                   # [ES] 2 pieles (3 c/u) + el trabajo
+gema_bruta:
+  name_key: item.gema_bruta
+  emoji: "💠"
+  kind: material
+  price: 15                  # [ES] rara: el minero la encuentra desde el rango 10
+flor_luna:
+  name_key: item.flor_luna
+  emoji: "🌸"
+  kind: material
+  price: 12                  # [ES] rara: el herbolario la encuentra desde el rango 10
+pocion_mayor:
+  name_key: item.pocion_mayor
+  emoji: "🍷"
+  kind: potion
+  heal: 0.6                  # [ES] cura el 60 % de la vida (la de vida, 35 %)
+  toxicity: 60               # [ES] una por pelea como mucho, junto con una de vida (tope de toxicidad 100)
+  belt: true
+  price: 18                  # [ES] solo la hace la Alquimia (rango 25): el mercader no la vende
+
+# Crafted gear (D-109). source: crafted -> never in random loot (engine/hero/gear.py); only from a recipe.
+# [ES] Equipo de artesano (D-109): rango 1 = como el botín poco común del nivel 3; rango 25 = como el raro del nivel 5
+# y algo más; rango 50 = como el épico del nivel 8 y algo más (lo que hace necesario al artesano). Con source: crafted
+# nunca sale en el botín al azar ni en el equipo inicial: solo de una receta (content/professions.yaml).
+artesano_espada_1:
+  name_key: item.artesano_espada_1
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {attack: 0.08}
+  price: 20
+artesano_espada_2:
+  name_key: item.artesano_espada_2
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {attack: 0.12, hp: 0.02}
+  price: 50
+artesano_espada_3:
+  name_key: item.artesano_espada_3
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {attack: 0.17, hp: 0.03}
+  price: 100
+artesano_daga_1:
+  name_key: item.artesano_daga_1
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {attack: 0.08}
+  price: 20
+artesano_daga_2:
+  name_key: item.artesano_daga_2
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {attack: 0.12, hp: 0.02}
+  price: 50
+artesano_daga_3:
+  name_key: item.artesano_daga_3
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {attack: 0.17, hp: 0.03}
+  price: 100
+artesano_arco_1:
+  name_key: item.artesano_arco_1
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {attack: 0.08}
+  price: 20
+artesano_arco_2:
+  name_key: item.artesano_arco_2
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {attack: 0.12, hp: 0.02}
+  price: 50
+artesano_arco_3:
+  name_key: item.artesano_arco_3
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {attack: 0.17, hp: 0.03}
+  price: 100
+artesano_baston_1:
+  name_key: item.artesano_baston_1
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {attack: 0.08}
+  price: 20
+artesano_baston_2:
+  name_key: item.artesano_baston_2
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {attack: 0.12, hp: 0.02}
+  price: 50
+artesano_baston_3:
+  name_key: item.artesano_baston_3
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {attack: 0.17, hp: 0.03}
+  price: 100
+artesano_tela_1:
+  name_key: item.artesano_tela_1
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+artesano_tela_2:
+  name_key: item.artesano_tela_2
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {hp: 0.14, armor: 0.03, attack: 0.01}
+  price: 50
+artesano_tela_3:
+  name_key: item.artesano_tela_3
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {hp: 0.2, armor: 0.04, attack: 0.02}
+  price: 100
+artesano_cuero_1:
+  name_key: item.artesano_cuero_1
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+artesano_cuero_2:
+  name_key: item.artesano_cuero_2
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {hp: 0.14, armor: 0.03, attack: 0.01}
+  price: 50
+artesano_cuero_3:
+  name_key: item.artesano_cuero_3
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {hp: 0.2, armor: 0.04, attack: 0.02}
+  price: 100
+artesano_malla_1:
+  name_key: item.artesano_malla_1
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+artesano_malla_2:
+  name_key: item.artesano_malla_2
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {hp: 0.14, armor: 0.03, attack: 0.01}
+  price: 50
+artesano_malla_3:
+  name_key: item.artesano_malla_3
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {hp: 0.2, armor: 0.04, attack: 0.02}
+  price: 100
+artesano_placas_1:
+  name_key: item.artesano_placas_1
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+artesano_placas_2:
+  name_key: item.artesano_placas_2
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {hp: 0.14, armor: 0.03, attack: 0.01}
+  price: 50
+artesano_placas_3:
+  name_key: item.artesano_placas_3
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {hp: 0.2, armor: 0.04, attack: 0.02}
+  price: 100
+artesano_joya_1:
+  name_key: item.artesano_joya_1
+  emoji: "💍"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  source: crafted
+  stats: {hp: 0.05, attack: 0.04}
+  price: 20
+artesano_joya_2:
+  name_key: item.artesano_joya_2
+  emoji: "💍"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 3
+  rarity: raro
+  req_level: 5
+  source: crafted
+  stats: {hp: 0.08, attack: 0.06, armor: 0.01}
+  price: 50
+artesano_joya_3:
+  name_key: item.artesano_joya_3
+  emoji: "💍"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 4
+  rarity: epico
+  req_level: 8
+  source: crafted
+  stats: {hp: 0.11, attack: 0.08, armor: 0.02}
+  price: 100

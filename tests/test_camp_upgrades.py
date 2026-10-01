@@ -209,7 +209,8 @@ def test_taller_sews_bags_and_builds_chests_at_the_camp(service):
     assert "sew" not in ids(service.act("test:1", "wallet"))
     build(service, "taller")
     view = service.act("test:1", "ctaller")
-    assert view.kind == "camp_workshop" and ids(view) == ["tsew", "tchest", "upsvc"]
+    # D-109: the Taller also opens the camp's profession stations, so ⚒️ Oficios ("oficios") is its 4th button
+    assert view.kind == "camp_workshop" and ids(view) == ["tsew", "tchest", "oficios", "upsvc"]
     view = service.act("test:1", "tsew")
     assert view.kind == "camp_workshop" and service._load("test:1").bags == 1
     bags, materials = service._chest_recipe()

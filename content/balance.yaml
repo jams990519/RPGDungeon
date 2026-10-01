@@ -69,7 +69,7 @@ regen:
 
 hero:
   start_gold: 10
-  belt_slots: {pocion_vida: 3, venda: 2}     # [ES] cuánto cabe en el cinturón de cada cosa
+  belt_slots: {pocion_vida: 3, venda: 2, pocion_mayor: 1}     # [ES] cuánto cabe en el cinturón de cada cosa (D-109: 1 🍷 poción mayor, la hace la Alquimia)
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
   backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan).
@@ -269,3 +269,19 @@ upgrades:                    # [ES] D-101 (provisional): las 🔨 Mejoras de los
   xp_per_unit: 1             # [ES] experiencia por cada material aportado a una obra o a un estudio del 📚 Conocimiento (las monedas no dan). La obra del Claro daba 2
   merit_per_unit: 1          # [ES] mérito por cada material aportado (como la obra común: 1 por material)
   open_shown: 3              # [ES] cuántas obras abiertas, con su barra de avance, muestra la pantalla 🔨 Mejoras (todas se ven en 🔨 Obras, de a 2 o 3 por página)
+
+professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
+  # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.
+  # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,
+  # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.
+  rank_formula: {base: 9, exponent: 2.0}
+  max_rank: 100              # [ES] rango máximo de cada oficio (profesiones.md §4)
+  gather_xp_per_unit: 1      # [ES] experiencia de oficio por unidad recolectada (o sacada de una bestia, el desollador)
+  rank_yield: 0.003          # [ES] cada rango suma 0,3 % de sacar 1 unidad más por unidad recolectada o por vez refinada: rango 50 = 15 %, rango 100 = 30 %
+  rare_chance: 0.05          # [ES] desde su rango (professions.yaml "rare", hoy 10), probabilidad por vuelta de recolección con materiales del oficio de encontrar el raro...
+  rare_per_rank: 0.0015      # [ES] ...más esto por cada rango arriba de ese: rango 10 = 5 %, 50 = 11 %, 100 = 18,5 %
+  hero_xp_per_energy: 20     # [ES] D-108: experiencia de héroe por cada ⚡ al refinar o fabricar, × (1 + 0,15 × (nivel − 1)), con nivel = el menor entre tu nivel
+                             # [ES] y tu rango en ese oficio. Recolectar da 14 por ⚡ más las peleas (~20 en promedio): fabricar lleva al 100 en ~2 años, como los otros caminos
+  camp_bonus: 0.10           # [ES] D-101: en las estaciones de tu campamento (🧵 Taller, 🔨 Herrería), +10 % de sacar 1 unidad más al refinar
+  per_page: 2                # [ES] recetas por página en 🪚 Refinar y 🛠️ Fabricar cuando hay más de 3 (4 botones como mucho, D-75)
+  make_batch: 5              # [ES] el botón 🔨 Hacer 5 de cada receta (y 🔨 Hacer todo, con lo que alcance)

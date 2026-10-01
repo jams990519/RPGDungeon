@@ -237,7 +237,8 @@ def test_the_claro_never_grows(service, clock):
     assert service._settlement()["stage"] == 0
     assert service.store.get("hero", "test:1")["backpack"]["madera"] == 50   # nothing taken
     view = service.act("test:1", "claro")
-    assert [a.id for a in view.actions] == ["shop", "inn", "home"]
+    # D-109: the Claro has the basic profession stations, so ⚒️ Oficios ("oficios") is its 3rd button
+    assert [a.id for a in view.actions] == ["shop", "inn", "oficios", "home"]
     assert any("funda tu propio campamento" in line for line in view.body)
 
 
