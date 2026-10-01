@@ -15,6 +15,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Aviso** | Texto con el que un enemigo anuncia su próximo golpe | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Bestiario / conocimiento** | Registro de criaturas y movimientos vistos; da pistas en los avisos | [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) |
 | **Campamento (de jugadores)** | Lugar que funda un jugador lejos del Claro, con nombre único y miembros que acepta el fundador. Crece eligiendo zonas: aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9) (D-71, D-84, D-87) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2 |
+| **Campamento enemigo** | ⛺ Enemigos acampados en una zona al azar, que cambian de lugar cada día; su zona no se explora ni se recolecta hasta destruir su guarnición y su jefe (D-112) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14 |
 | **Castillo** | La última etapa del Claro y de un campamento (nivel 9; un campamento necesita un gremio listo para llegar, D-97). Propuesta: el corazón de una ciudad grande, con alas que se construyen por separado | [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) |
 | **Cisma** | Cuando un grupo de residentes se separa y funda su propio castillo | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) |
 | **Clamor** | El "lust": más iniciativa y acciones rápidas durante 3 rondas | [Balance](../03-personaje/balance.md) |
@@ -40,6 +41,7 @@ Los términos propios del diseño, en orden alfabético, con el documento donde 
 | **Guardián** | El jefe de mundo de cada región (D-08) | [Jefes](../06-contenido/jefes.md) |
 | **Hambruna** | El estado de una despensa con menos de 1 día de comida: el campamento no puede crecer. Nunca quita etapas, niveles ni zonas (D-93, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.4 y §4.7 |
 | **Incursión** | Ataque de enemigos a un campamento de jugadores desde el nivel 5 (pueblo), una vez por semana. Los miembros conectados tocan **🛡️ Defender** y pelean una vez cada uno; si no suman las victorias necesarias, la despensa pierde una parte y nada más. El Claro nunca recibe incursiones (D-99, provisional) | [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) §0.5 y §6 |
+| **Infiltrarse** | 🕵️ Acción del Explorador (rango 30 o más) para sacar información de un campamento enemigo sin pelear, con riesgo de que lo descubran (D-112) | [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14 |
 | **Jornada** | Sesión de trabajo en una obra, con minijuego | [Sistema de construcción](../09-construccion/sistema-de-construccion.md) |
 | **Juramento de Hierro** | Modo opcional de muerte permanente | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) |
 | **Karma (verde, naranja, rojo)** | Estado de un jugador según si atacó o mató a inocentes | [PvP](../06-contenido/pvp.md) |
