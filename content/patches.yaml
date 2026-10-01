@@ -134,3 +134,13 @@ v0_8:
     - "🔥 Pelea por fases: a medida que pierde vida, cambia sus golpes y se enfurece. De un Guardián no se huye, solo se esquiva."
     - "🌰 Tu primera victoria te da su Recuerdo: cámbialo en 🎒 Mochila → 🛡️ Equipo por una pieza 🟣 única hecha para ti."
     - "🏅 El primero del mundo en vencerlo será Pionero del Claro para siempre, y todos se enterarán."
+
+v0_8_1:
+  version: "0.8.1"
+  title: "🔎 Lost Realms 0.8.1: explorar de verdad"
+  notes:
+    - "⚡ Al explorar o recolectar eliges cuánta energía gastar seguido: 5, 10, 20, 40 o toda. Si te equivocaste, ❌ Cancelar; y en marcha puedes ❌ Detener: la vuelta en curso te devuelve su energía."
+    - "🔎 Cada zona se explora por porcentaje hasta el 100 %. Así descubres qué recursos tiene, y en tu 🗺️ Mapa se pinta del color de su recurso principal."
+    - "🪵🪨🧵🌿⚙️🏺 Seis recursos en regiones de distintos tamaños: cada zona tiene de 1 a 3. Si se recolecta mucho en un lugar, se agota por un tiempo."
+    - "🎒 La mochila tiene espacio: 60. Llena, ya no recolectas."
+    - "🏰 Al agrandar tu campamento eliges qué zona toma: en tu territorio recolectas un 50 % más. Crece de campamento a aldea, pueblo, ciudad y castillo."

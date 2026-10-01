@@ -65,7 +65,8 @@ from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import auto_equip, can_use, equip, gear_bonus, piece_stats, roll_gear, source_choices, starter_gear, suits, unequip
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
-from engine.world.territory import first_zones, next_zone
+from engine.world.territory import first_zones
+from engine.world.resources import main_resource, zone_resources
 
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
@@ -252,7 +253,8 @@ class GameService:
             ensure_talents(self.content.classes, self.content.balance, hero)
             notices = self._settle(hero)
             self._save(hero)
-            out.append((account_id, self._main_view(hero, notice=self._join(notices))))
+            if notices:          # a batch step that simply goes on stays silent (D-87)
+                out.append((account_id, self._main_view(hero, notice=self._join(notices))))
         for account_id, box in list(self.store.items("outbox")):
             self.store.delete("outbox", account_id)
             for item in box.get("items", []):
@@ -278,6 +280,8 @@ class GameService:
         if hero.energy_version < energy["version"]:   # 0.6.1: everyone starts again with full energy (D-78)
             hero.energy = max(hero.energy, energy["max"])
             hero.energy_version = energy["version"]
+        if hero.explored and not hero.exploration:      # 0.8.1: one old exploration counts as 25 % (D-87)
+            hero.exploration = {key: 25 for key in hero.explored}
         if not hero.gear_started:          # 0.6: every hero gets its starter gear once (D-77)
             starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
             hero.gear_started = True
@@ -448,17 +452,25 @@ class GameService:
             rng = Rng(int(hash_unit(self.world_seed, hero.id, activity["until"]) * 2**31))
             if activity["kind"] == "travel":
                 notices += self._arrive(hero, activity, rng)
-            elif activity["kind"] == "explore":
+            elif activity["kind"] in ("explore", "gather"):
                 zone = self._zone(hero.x, hero.y)
-                if f"{zone.x}:{zone.y}" not in hero.explored:
-                    hero.explored.append(f"{zone.x}:{zone.y}")
-                notices.append(self._explore_outcome(hero, zone, rng))
-                if zone.x == 0 and zone.y == 0:
-                    notices += self._tutorial(hero, "explore_claro")
-            elif activity["kind"] == "gather":
-                zone = self._zone(hero.x, hero.y)
-                notices.append(self._gather_outcome(hero, zone, rng))
-                notices += self._tutorial(hero, "gather")
+                activity.setdefault("left", 0)
+                activity.setdefault("got", {})
+                activity.setdefault("log", [])
+                activity["done"] = activity.get("done", 0) + 1
+                if activity["kind"] == "explore":
+                    fight = self._explore_step(hero, zone, rng, activity)
+                    if zone.x == 0 and zone.y == 0:
+                        activity["log"] += self._tutorial(hero, "explore_claro")
+                else:
+                    fight = self._gather_step(hero, zone, rng, activity)
+                    activity["log"] += self._tutorial(hero, "gather")
+                if fight:
+                    notices += self._batch_summary(hero, activity, "fight") + [fight]
+                    continue
+                reason = self._continue_batch(hero, activity, activity["until"])
+                if reason:
+                    notices += self._batch_summary(hero, activity, reason)
             elif activity["kind"] == "rest":
                 hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 notices.append(self.texts.t("inn.rested"))
@@ -531,20 +543,67 @@ class GameService:
         wait = self._energy_period() - (self.clock.now() - hero.energy_at)
         return self.texts.t("energy.empty", time=self._fmt_duration(max(1, wait)), per_day=self.content.balance["energy"]["per_day"])
 
-    def _explore_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
+    def _explore_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
+        """One exploration: +15-30 % of the zone, maybe a find; returns a combat notice if a fight starts (D-87)."""
+        t = self.texts
+        key = f"{zone.x}:{zone.y}"
+        before = self._known_resources(hero, zone.x, zone.y)
+        low, high = self.content.balance["exploration"]["per_step"]
+        hero.exploration[key] = min(100, self._explored_pct(hero, zone.x, zone.y) + int(rng.uniform(low, high + 1)))
+        if key not in hero.explored:
+            hero.explored.append(key)
+        new = [r for r in self._known_resources(hero, zone.x, zone.y) if r not in before]
+        if new:
+            names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
+            activity["log"].append(t.t("explore.revealed", items=names))
+        if hero.exploration[key] >= 100:
+            activity["log"].append(t.t("explore.full", name=self._zone_name(zone)))
         bal = self.content.balance["explore"]
         roll = rng.random()
-        if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0:
+        if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
             return self._start_combat(hero, zone, rng, "encounter.found")
         if roll < bal["encounter"] + bal["item"]:
             options = ["hierba_curativa", "pieza_metal", "venda", "pocion_vida"]
             item_id = rng.pick_weighted(options, [5, 3, 2, 1])
-            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
-            item = self.content.items[item_id]
-            return self.texts.t("explore.found_item", item=f"{item['emoji']} {self.texts.t(item['name_key'])}")
-        gold = int(zone.level * rng.uniform(2, 5)) + 1
-        hero.gold += gold
-        return self.texts.t("explore.found_gold", gold=self._money(gold))
+            if self._bag_add(hero, item_id, 1):
+                activity["got"][item_id] = activity["got"].get(item_id, 0) + 1
+            return None
+        coins = int(zone.level * rng.uniform(2, 5)) + 1
+        hero.gold += coins
+        activity["coins"] = activity.get("coins", 0) + coins
+        return None
+
+    def _gather_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
+        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87)."""
+        bal = self.content.balance["gather"]
+        danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
+        land = self._territory(zone.x, zone.y)
+        if danger > 0 and not land and rng.chance(danger):
+            return self._start_combat(hero, zone, rng, "gather.ambush")
+        cfg = self.content.balance["stock"]
+        resources = self._zone_resources(zone.x, zone.y)
+        stock = self._stock(zone.x, zone.y)
+        low, high = bal["amount"]
+        amount = int(rng.uniform(low, high + 1)) + zone.level // 3
+        if land and not land.get("claro") and hero.id in land.get("members", []):
+            amount = int(amount * bal["own_land_bonus"] + 0.5)     # your camp's land gives more (D-87)
+        got: dict[str, int] = {}
+        for _ in range(max(1, amount)):
+            options = [r for r in resources if stock[r] >= cfg["min_yield"]]
+            if not options or self._bag_used(hero) >= self._bag_cap():
+                break
+            res = rng.pick_weighted(options, [resources[r] * stock[r] for r in options])
+            if not self._bag_add(hero, res, 1):
+                break
+            stock[res] = max(0.0, stock[res] - cfg["per_unit"])
+            got[res] = got.get(res, 0) + 1
+        self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
+        for res, n in got.items():
+            activity["got"][res] = activity["got"].get(res, 0) + n
+        if not got:
+            activity["left"] = 0
+            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_used(hero) >= self._bag_cap() else "batch.reason.depleted"))
+        return None
 
     # ------------------------------------------------------------------ creation
 
@@ -713,8 +772,15 @@ class GameService:
         if action_id == "cancel_name":
             self.store.delete("camp_naming", hero.id)
             return self._camp_here_view(hero)
-        if action_id == "grow":
-            return self._grow_camp(hero)
+        if action_id == "grow" or action_id.startswith("grow:"):
+            page = action_id[5:]
+            return self._grow_view(hero, int(page) if page.isdigit() else 0)
+        if action_id.startswith("claim:"):
+            try:
+                cx, cy = (int(v) for v in action_id[6:].split(":"))
+            except ValueError:
+                return self._camp_here_view(hero)
+            return self._grow_camp(hero, cx, cy)
         if action_id == "askjoin":
             return self._ask_join(hero)
         if action_id == "leave":
@@ -745,6 +811,8 @@ class GameService:
             return self._use_out_of_combat(hero, action_id[4:])
         if action_id in ("home", "refresh"):
             return self._main_view(hero)
+        if action_id == "stop":
+            return self._stop_batch(hero)
         if hero.activity:
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
@@ -780,17 +848,166 @@ class GameService:
             return self._activity_view(hero, notice=self._join([t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))] + notices))
         if action_id == "gather" and self._is_lair(hero.x, hero.y):
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
-        if action_id in ("gather", "explore") and not self._spend_energy(hero, action_id):
-            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
-        if action_id == "gather":
-            seconds = self._seconds(self.content.balance["gather"]["minutes"])
-            hero.activity = {"kind": "gather", "until": self.clock.now() + seconds}
-            return self._activity_view(hero, notice=t.t("gather.started", time=self._fmt_duration(seconds)))
-        if action_id == "explore":
-            seconds = self._seconds(self.content.balance["explore"]["minutes"])
-            hero.activity = {"kind": "explore", "until": self.clock.now() + seconds}
-            return self._activity_view(hero, notice=t.t("explore.started", time=self._fmt_duration(seconds)))
+        if action_id in ("gather", "explore"):
+            return self._amount_view(hero, action_id, 0)
+        if action_id.startswith("amt:"):
+            _, kind, page = action_id.split(":")
+            return self._amount_view(hero, kind, int(page) if page.isdigit() else 0)
+        if action_id.startswith("do:"):
+            _, kind, amount = action_id.split(":")
+            return self._start_batch(hero, kind, amount)
         return self._zone_view(hero)
+
+    # ------------------------------------------------------------------ batches of energy (D-87)
+
+    def _amount_view(self, hero: Hero, kind: str, page: int) -> View:
+        """Choose how much energy to spend in a row (5, 10, 20, 40 or all) — or cancel (D-87)."""
+        t = self.texts
+        if kind not in ("gather", "explore"):
+            return self._explore_menu(hero)
+        zone = self._zone(hero.x, hero.y)
+        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+            return self._explore_menu(hero, notice=t.t("explore.already_full"))
+        if hero.energy < 1:
+            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
+        minutes = self.content.balance[kind]["minutes"]
+        body = [t.t(f"batch.ask_{kind}", minutes=minutes), t.t("batch.energy", energy=hero.energy)]
+        if kind == "gather":
+            body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap()))
+        else:
+            body.append(t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y)))
+        body.append(t.t("batch.cancel_hint"))
+        options = [n for n in self.content.balance["energy"]["batch"] if n <= hero.energy]
+        pages = [options[:2], options[2:]]
+        page = page % 2
+        actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.button", n=n)) for n in pages[page]]
+        if page == 0:
+            if len(options) > 2 or hero.energy not in options:
+                actions.append(Action(id=f"amt:{kind}:1", label=t.t("batch.more")))
+            actions.append(Action(id="explore_menu", label=t.t("batch.cancel")))
+        else:
+            if hero.energy not in options:
+                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy)))
+            actions.append(Action(id=f"amt:{kind}:0", label=t.t("batch.back")))
+        if not options:
+            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy)), Action(id="explore_menu", label=t.t("batch.cancel"))]
+        return View(kind="batch", title=t.t(f"batch.title_{kind}"), body=body, actions=actions[:4])
+
+    def _start_batch(self, hero: Hero, kind: str, amount: str) -> View:
+        t = self.texts
+        if kind not in ("gather", "explore"):
+            return self._explore_menu(hero)
+        n = hero.energy if amount == "max" else (int(amount) if amount.isdigit() else 0)
+        n = min(n, hero.energy)
+        zone = self._zone(hero.x, hero.y)
+        if n < 1 or not self._spend_energy(hero, kind):
+            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
+        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+            hero.energy += self.content.balance["energy"][f"per_{kind}"]
+            return self._explore_menu(hero, notice=t.t("explore.already_full"))
+        seconds = self._seconds(self.content.balance[kind]["minutes"])
+        hero.activity = {"kind": kind, "until": self.clock.now() + seconds, "left": n - 1, "total": n, "done": 0, "got": {}, "log": []}
+        return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=n, time=self._fmt_duration(seconds * n)))
+
+    def _stop_batch(self, hero: Hero) -> View:
+        """Cancel the batch: the step in progress gives its energy back (D-87)."""
+        t = self.texts
+        activity = hero.activity or {}
+        if activity.get("kind") not in ("gather", "explore"):
+            return self._main_view(hero)
+        hero.energy += self.content.balance["energy"][f"per_{activity['kind']}"]
+        hero.activity = None
+        lines = self._batch_summary(hero, activity, "stopped")
+        return self._explore_menu(hero, notice=self._join(lines))
+
+    def _batch_summary(self, hero: Hero, activity: dict[str, Any], reason: str) -> list[str]:
+        t = self.texts
+        kind = activity["kind"]
+        lines = []
+        if activity.get("done"):
+            if kind == "gather":
+                lines.append(t.t("batch.gathered", n=activity["done"], items=self._item_list(activity.get("got", {}))))
+            else:
+                zone = self._zone(hero.x, hero.y)
+                lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
+                if activity.get("got"):
+                    lines.append(t.t("batch.found", items=self._item_list(activity["got"])))
+                if activity.get("coins"):
+                    lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
+        lines += activity.get("log", [])
+        if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
+            lines.append(t.t(f"batch.reason.{reason}"))
+        return lines
+
+    def _continue_batch(self, hero: Hero, activity: dict[str, Any], until: float) -> str | None:
+        """After a finished step: start the next one, or say why the batch stops."""
+        kind = activity["kind"]
+        zone = self._zone(hero.x, hero.y)
+        if activity["left"] <= 0:
+            return "done"
+        if kind == "explore" and self._explored_pct(hero, zone.x, zone.y) >= 100:
+            return "full_explored"
+        if kind == "gather" and self._bag_used(hero) >= self._bag_cap():
+            return "bag_full"
+        if not self._spend_energy(hero, kind):
+            return "energy"
+        activity["left"] -= 1
+        activity["until"] = until + self._seconds(self.content.balance[kind]["minutes"])
+        hero.activity = activity
+        return None
+
+    # ------------------------------------------------------------------ zone resources and exploration (D-87)
+
+    def _bag_cap(self) -> int:
+        return self.content.balance["hero"]["backpack_capacity"]
+
+    def _bag_used(self, hero: Hero) -> int:
+        return sum(hero.backpack.values())
+
+    def _bag_add(self, hero: Hero, item_id: str, count: int) -> int:
+        """Put items in the backpack up to its space; returns how many fit."""
+        fit = max(0, min(count, self._bag_cap() - self._bag_used(hero)))
+        if fit:
+            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + fit
+        return fit
+
+    def _zone_resources(self, x: int, y: int) -> dict[str, float]:
+        zone = self._zone(x, y)
+        return zone_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes)
+
+    def _stock(self, x: int, y: int) -> dict[str, float]:
+        """How much is left of each resource in a zone (1.0 = full), regenerating with time."""
+        cfg = self.content.balance["stock"]
+        data = self.store.get("stock", f"{x}:{y}") or {}
+        hours = (self.clock.now() - data.get("at", self.clock.now())) / (3600 * self.time_scale)
+        levels = data.get("levels", {})
+        return {res: min(1.0, levels.get(res, 1.0) + hours * cfg["regen_per_hour"]) for res in self._zone_resources(x, y)}
+
+    def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
+        return hero.exploration.get(f"{x}:{y}", 0)
+
+    def _known_resources(self, hero: Hero, x: int, y: int) -> list[str]:
+        """The resources this hero has found in a zone: more of them as it explores (D-87)."""
+        pct = self._explored_pct(hero, x, y)
+        ranked = list(self._zone_resources(x, y))
+        reveal = self.content.balance["exploration"]["reveal_at"]
+        count = len(ranked) if pct >= 100 else sum(1 for need in reveal if pct >= need)
+        return ranked[:count]
+
+    def _resources_line(self, hero: Hero, x: int, y: int) -> str:
+        t = self.texts
+        known = self._known_resources(hero, x, y)
+        pct = self._explored_pct(hero, x, y)
+        if not known:
+            return t.t("explore.resources_unknown", pct=pct)
+        stock = self._stock(x, y)
+        parts = []
+        for res in known:
+            item = self.content.items[res]
+            bars = round(stock[res] * 5)
+            parts.append(f"{item['emoji']} {t.t(item['name_key'])} {'▰' * bars}{'▱' * (5 - bars)}")
+        more = "" if pct >= 100 else " · ❔"
+        return t.t("explore.resources_line", pct=pct, items=" · ".join(parts) + more)
 
     def _use_out_of_combat(self, hero: Hero, item_id: str) -> View:
         t = self.texts
@@ -825,6 +1042,7 @@ class GameService:
         ]
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
+        body.append(self._resources_line(hero, zone.x, zone.y))
         camp = self.store.get("camp", f"{zone.x}:{zone.y}")
         land = self._territory(zone.x, zone.y)
         if camp:
@@ -875,16 +1093,21 @@ class GameService:
                 body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
-            body = [t.t("gather.in_progress"), t.t("travel.remaining", time=remaining)]
+            body = [t.t("gather.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
+                    t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())]
             title = t.t("gather.title")
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("inn.title")
         else:
-            body = [t.t("explore.in_progress"), t.t("travel.remaining", time=remaining)]
+            zone = self._zone(hero.x, hero.y)
+            body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
+                    t.t("travel.remaining", time=remaining), t.t("batch.explored", pct=self._explored_pct(hero, zone.x, zone.y))]
             title = t.t("explore.title")
         body += ["", self._status_line(hero), t.t("activity.offline_ok")]
         actions = [Action(id="refresh", label=t.t("menu.refresh"))]
+        if activity.get("kind") in ("gather", "explore"):
+            actions.append(Action(id="stop", label=t.t("batch.stop")))
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ gathering, camp, tutorial
@@ -1095,7 +1318,8 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
         gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
-        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro")]
+        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro"),
+                self._resources_line(hero, zone.x, zone.y), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap())]
         body += self._tutorial_hint(hero)
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
@@ -1119,7 +1343,7 @@ class GameService:
         cost_ok = all(hero.backpack.get(i, 0) >= n for i, n in cfg["found_cost"].items())
         return [
             (t.t("camps.req_far", n=cfg["min_lejania"]), zone.lejania >= cfg["min_lejania"]),
-            (t.t("camps.req_explored"), f"{zone.x}:{zone.y}" in hero.explored),
+            (t.t("camps.req_explored", pct=self._explored_pct(hero, zone.x, zone.y)), self._explored_pct(hero, zone.x, zone.y) >= 100),
             (t.t("camps.req_known", n=known, need=cfg["known_neighbors"]), known >= cfg["known_neighbors"]),
             (t.t("camps.req_alone", n=cfg["min_distance"]), not near and not self._territory(zone.x, zone.y)),
             (t.t("camps.req_cost", items=self._item_list(cfg["found_cost"])), cost_ok),
@@ -1134,6 +1358,7 @@ class GameService:
         if camp:
             level = camp.get("level", 1)
             body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
+                    t.t("camps.stage_line", stage=self._camp_stage(level)),
                     t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]]))),
                     t.t("camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
             actions = []
@@ -1275,8 +1500,54 @@ class GameService:
     def _grow_cost(self, level: int) -> dict[str, int]:
         return {i: n * level for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
 
-    def _grow_camp(self, hero: Hero) -> View:
-        """Make the camp bigger: pay materials, take the next free zone of the spiral (1, 2, 3, 4... zones)."""
+    def _grow_candidates(self, camp: dict[str, Any]) -> list[list[int]]:
+        """Free zones touching the camp's land: where it can grow next (D-87: you choose)."""
+        zones = camp.get("zones", [[camp["x"], camp["y"]]])
+        seen, out = {tuple(z) for z in zones}, []
+        for zx, zy in zones:
+            for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                c = (zx + dx, zy + dy)
+                if c not in seen and self._territory(*c) is None:
+                    seen.add(c)
+                    out.append(list(c))
+        out.sort(key=lambda c: (max(abs(c[0] - camp["x"]), abs(c[1] - camp["y"])), c[1] < camp["y"], c))
+        return out
+
+    def _grow_view(self, hero: Hero, page: int = 0) -> View:
+        """Pick which neighbouring zone the camp takes, seeing the resources you know there (D-87)."""
+        t = self.texts
+        camp = self.store.get("camp", f"{hero.x}:{hero.y}")
+        if not camp or hero.id not in camp["members"]:
+            return self._camp_here_view(hero)
+        level = camp.get("level", 1)
+        candidates = self._grow_candidates(camp)
+        body = [t.t("camps.grow_intro", items=self._item_list(self._grow_cost(level)))]
+        if not candidates:
+            return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
+        per = 3 if len(candidates) <= 3 else 2
+        pages = max(1, (len(candidates) + per - 1) // per)
+        page %= pages
+        actions = []
+        for cx, cy in candidates[page * per: page * per + per]:
+            known = self._known_resources(hero, cx, cy)
+            icons = "".join(self.content.items[r]["emoji"] for r in known) or "❔"
+            body.append(t.t("camps.grow_option", x=cx, y=cy, items=icons))
+            actions.append(Action(id=f"claim:{cx}:{cy}", label=t.t("camps.grow_option", x=cx, y=cy, items=icons)))
+        if pages > 1:
+            actions.append(Action(id=f"grow:{page + 1}", label=t.t("gear.more")))
+        actions.append(Action(id="claro", label=t.t("menu.back")))
+        return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body, actions=actions)
+
+    def _camp_stage(self, level: int) -> str:
+        stages = self.content.balance["camps"]["stages"]
+        name = stages[0]["id"]
+        for stage in stages:
+            if level >= stage["from_level"]:
+                name = stage["id"]
+        return self.texts.t(f"camps.stage.{name}")
+
+    def _grow_camp(self, hero: Hero, cx: int, cy: int) -> View:
+        """Make the camp bigger: pay materials and take the chosen free zone next to its land (1, 2, 3, 4... zones)."""
         t = self.texts
         key = f"{hero.x}:{hero.y}"
         camp = self.store.get("camp", key)
@@ -1287,9 +1558,9 @@ class GameService:
         if any(hero.backpack.get(i, 0) < n for i, n in cost.items()):
             return self._camp_here_view(hero, notice=t.t("camps.grow_missing", items=self._item_list(cost)))
         zones = camp.get("zones", [[camp["x"], camp["y"]]])
-        new = next_zone(camp["x"], camp["y"], zones, lambda x, y: self._territory(x, y) is None)
+        new = [cx, cy] if [cx, cy] in self._grow_candidates(camp) else None
         if new is None:
-            return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
+            return self._grow_view(hero)
         for item_id, n in cost.items():
             hero.backpack[item_id] -= n
             if hero.backpack[item_id] <= 0:
@@ -1442,6 +1713,8 @@ class GameService:
                     row += "👑"
                 elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
                     row += "🏕️"
+                elif self._explored_pct(hero, x, y) >= 100:
+                    row += self.content.balance["resources"]["colors"][main_resource(self._zone_resources(x, y))]
                 elif hero.remembers(x, y):
                     row += self.content.biomes[self._zone(x, y).biome]["emoji"]
                 elif self._discovered(x, y) is not None:
@@ -1449,7 +1722,7 @@ class GameService:
                 else:
                     row += "▫️"
             rows.append(row)
-        body = [t.t("map.legend")] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
+        body = [t.t("map.legend"), t.t("map.colors")] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
         cfg = self._guardian_cfg()
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))

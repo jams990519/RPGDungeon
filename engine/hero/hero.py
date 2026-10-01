@@ -35,6 +35,7 @@ class Hero:
         level, xp: progression.
         gold: ALL the hero's coins, counted in bronze (D-80: 100 bronze = 1 silver, 100 silver = 1 gold).
         bags: sewn bags (a currency made in the Claro); gems: bought diamonds (D-43, D-85).
+        exploration: how well the hero knows each zone, "x:y" -> 0-100 % (D-87).
         cards: profession ID cards, shown to other players (D-85; earned with professions, still to come).
         xp_boost_until: end of the gem experience accelerator; banner: unique banner bought with gems.
         downed: fell in combat; health comes back much slower until full (D-83).
@@ -93,6 +94,7 @@ class Hero:
     downed: bool = False
     gear_new: list[str] = field(default_factory=list)
     cards: int = 0
+    exploration: dict[str, int] = field(default_factory=dict)
     guardians: dict[str, dict[str, Any]] = field(default_factory=dict)
     titles: list[str] = field(default_factory=list)
 

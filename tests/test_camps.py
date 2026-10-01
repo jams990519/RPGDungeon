@@ -18,7 +18,7 @@ def test_found_camp_needs_exploring_around(service):
     view = service.act("test:1", "claro")
     assert view.kind == "found_camp" and not any(a.id == "found" for a in view.actions)
     known = ["0:0", "3:0", "2:0", "4:0", "3:1", "3:-1"]
-    place(service, "test:1", 3, 0, backpack={"madera": 30, "piedra": 10}, known=known, explored=["3:0"])
+    place(service, "test:1", 3, 0, backpack={"madera": 30, "piedra": 10}, known=known, exploration={"3:0": 100})
     view = service.act("test:1", "claro")
     assert any(a.id == "found" for a in view.actions)
     ask = service.act("test:1", "found")
@@ -51,7 +51,7 @@ def test_visitor_contacts_members_and_gets_answer(service, clock):
 
 def found_at(service, account, x, y):
     known = ["0:0", f"{x}:{y}", f"{x-1}:{y}", f"{x+1}:{y}", f"{x}:{y+1}", f"{x}:{y-1}"]
-    place(service, account, x, y, backpack={"madera": 200, "piedra": 200, "fibra": 100}, known=known, explored=[f"{x}:{y}"])
+    place(service, account, x, y, backpack={"madera": 200, "piedra": 200, "fibra": 100}, known=known, exploration={f"{x}:{y}": 100})
     service.act(account, "found")
     return service.text(account, f"Campo {account[-1]} {x}")
 
@@ -59,12 +59,15 @@ def found_at(service, account, x, y):
 def test_camp_grows_one_zone_per_level(service):
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
-    for expected in (2, 3, 4):
-        view = service.act("test:1", "grow")
+    for expected, pick in ((2, "claim:7:0"), (3, "claim:8:0"), (4, "claim:6:1")):
+        choose = service.act("test:1", "grow")                    # you choose where it grows (D-87)
+        assert choose.kind == "camp_grow" and len(choose.actions) <= 4
+        view = service.act("test:1", pick)
         assert view.kind == "player_camp" and len(view.actions) <= 4
         camp = service.store.get("camp", "6:0")
         assert camp["level"] == expected and len(camp["zones"]) == expected
-    assert camp["zones"] == [[6, 0], [6, 1], [7, 0], [6, -1]]
+    assert camp["zones"] == [[6, 0], [7, 0], [8, 0], [6, 1]]
+    assert service.act("test:1", "claim:20:20").kind == "camp_grow"   # not next to the land: refused
     hero = service.store.get("hero", "test:1")
     assert hero["backpack"]["madera"] == 200 - 20 - 15 * (1 + 2 + 3)
 
@@ -73,10 +76,10 @@ def test_land_blocks_other_camps_and_counts_for_travel(service):
     from engine.world import travel_minutes
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
-    service.act("test:1", "grow")
-    service.act("test:1", "grow")                       # zones (6,0), (6,1), (7,0)
+    service.act("test:1", "claim:6:1")
+    service.act("test:1", "claim:7:0")                   # zones (6,0), (6,1), (7,0)
     make_hero(service, "test:2", "Bram")
-    place(service, "test:2", 7, 0, backpack={"madera": 50, "piedra": 50}, known=["7:0", "6:0", "8:0", "7:1", "7:-1"], explored=["7:0"])
+    place(service, "test:2", 7, 0, backpack={"madera": 50, "piedra": 50}, known=["7:0", "6:0", "8:0", "7:1", "7:-1"], exploration={"7:0": 100})
     assert not any(a.id == "found" for a in service.act("test:2", "claro").actions)
     hero = service._load("test:1")
     anchors = service._anchors(hero)
@@ -111,7 +114,7 @@ def test_founder_lets_players_join_and_cap_grows(service, clock):
     assert any(v.kind == "camp_answer" for acc, v in service.tick() if acc == "test:2")
     view = service.act("test:3", "askjoin")                             # full at level 1
     assert "lleno" in (view.notice or "")
-    service.act("test:1", "grow")
+    service.act("test:1", "claim:7:0")
     assert service._members_cap(service.store.get("camp", "6:0")) == 4
     service.act("test:2", "leave")
     assert service.store.get("hero", "test:2")["camp"] is None
@@ -126,7 +129,7 @@ def test_camp_names_are_unique_and_founder_can_rename(service):
     assert service.store.get("camp", "6:0")["name"] == "Bastion Norte"
     make_hero(service, "test:2", "Bram")
     known = ["0:0", "-6:0", "-7:0", "-5:0", "-6:1", "-6:-1"]
-    place(service, "test:2", -6, 0, backpack={"madera": 50, "piedra": 50}, known=known, explored=["-6:0"])
+    place(service, "test:2", -6, 0, backpack={"madera": 50, "piedra": 50}, known=known, exploration={"-6:0": 100})
     service.act("test:2", "found")
     view = service.text("test:2", "bastión norte")
     assert view.kind == "name_camp" and service.store.get("camp", "-6:0") is None

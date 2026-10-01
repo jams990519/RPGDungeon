@@ -64,7 +64,7 @@ def test_explore_and_fight_until_end(service, clock):
     clock.advance(3 * 3600)
     finish_combat(service, "test:1")
     for _ in range(15):
-        service.act("test:1", "explore")
+        service.act("test:1", "do:explore:5")
         clock.advance(3600)
         view = service.view("test:1")
         if view.kind == "combat":
@@ -92,7 +92,7 @@ def test_no_missing_texts(service, clock):
     clock.advance(3 * 3600)
     finish_combat(service, "test:1")
     for _ in range(6):
-        service.act("test:1", "explore")
+        service.act("test:1", "do:explore:5")
         clock.advance(3600)
         finish_combat(service, "test:1")
     assert service.texts.missing == set()
@@ -206,11 +206,13 @@ def test_names_ignore_accents_spaces_and_reservations(service):
 
 def test_gather_in_claro_and_donate_to_camp(service, clock):
     make_hero(service)
-    view = service.act("test:1", "explore")          # tutorial 1: explore the Claro
+    view = service.act("test:1", "explore")          # tutorial 1: explore the Claro (choose how much energy, D-87)
+    assert view.kind == "batch" and any(a.id == "explore_menu" for a in view.actions)
+    service.act("test:1", "do:explore:5")
     clock.advance(3600)
     service.view("test:1")
     assert service.store.get("hero", "test:1")["tutorial"] == 1
-    service.act("test:1", "gather")
+    service.act("test:1", "do:gather:5")
     clock.advance(3600)
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
@@ -263,7 +265,7 @@ def test_travel_costs_energy(service, clock):
     view = service.act("test:1", "go:n")
     assert view.kind == "zone" and "⚡" in (view.notice or "")
     view = service.act("test:1", "explore_menu")
-    assert service.act("test:1", "explore").kind == "explore_menu"   # exploring costs energy too (D-78)
+    assert service.act("test:1", "do:explore:5").kind == "explore_menu"   # exploring costs energy too (D-78)
     clock.advance(86400 / 40 + 5)
     view = service.act("test:1", "go:n")
     assert view.kind == "activity"
