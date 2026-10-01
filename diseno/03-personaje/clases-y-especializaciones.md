@@ -98,7 +98,7 @@ Cómo leer cada clase:
 |---|---|---|---|
 | Sombra | ⚔ Ataque | Retaguardia | Daño en el tiempo y Locura. La Forma del Vacío sube su Corrupción: riesgo a cambio de recompensa |
 | Sagrado | ✚ Curación | Retaguardia | Curas masivas. Es el único sanador que puede **estabilizar heridas leves en combate**, con enfriamiento largo (ver [Heridas](../05-salud/heridas.md)) |
-| Disciplina | ✚ Curación | Retaguardia | **Cura y previene.** *Sanar* y escudos de luz que absorben el golpe avisado; *Dolor* desgasta al enemigo mientras cura (D-72) |
+| Disciplina | ✦ Soporte | Retaguardia | **Previene el daño.** Escudos de luz que absorben el golpe avisado, *Sanar* de apoyo y *Penitencia*, que hace que el enemigo pegue más flojo (D-76) |
 
 **Respuestas al aviso:** bloquear con *Palabra de Poder: Escudo* (sobre sí o sobre un aliado) · esquivar con *Desvanecerse* (*Dispersión* en Sombra) · interrumpir con *Silencio*.
 **Aporte de grupo:** **Palabra de Poder: Entereza** (+vida máxima del grupo).

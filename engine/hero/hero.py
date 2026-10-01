@@ -52,6 +52,8 @@ class Hero:
     level: int = 1
     xp: int = 0
     gold: int = 0
+    bags: int = 0
+    gems: int = 0
     hp: int = 1
     x: int = 0
     y: int = 0

@@ -268,6 +268,13 @@ class GameService:
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         return self.texts.t(f"class_group.{group}.name").split(" ")[0]
 
+    def _hero_title(self, hero: Hero) -> str:
+        """Class and spec name; before the first talent point, only the class (D-68)."""
+        if hero.talents.get(hero.class_id):
+            return self.texts.t(self.content.classes[hero.class_id]["name_key"])
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        return self.texts.t(f"class_group.{group}.name") + " · " + self.texts.t("talents.no_spec")
+
     def _kit(self, hero: Hero) -> dict[str, Any]:
         """The hero's effective class (main spec + bar of 3 + talent bonuses), D-68."""
         return talent_kit(self.content.classes, self.content.balance, hero)
@@ -577,6 +584,8 @@ class GameService:
             return self._map_view(hero)
         if action_id == "hero":
             return self._hero_view(hero)
+        if action_id == "stats":
+            return self._stats_view(hero)
         if action_id == "explore_menu":
             return self._explore_menu(hero)
         if action_id == "talents":
@@ -1159,24 +1168,63 @@ class GameService:
         return View(kind="map", title=t.t("map.title"), body=body, actions=[Action(id="explore_menu", label=t.t("menu.back"))])
 
     def _hero_view(self, hero: Hero) -> View:
+        """Hero sheet (D-76): level, xp, health, /stats, attack and defense, energy, resource, coins, /inv, /habilidades, status."""
         t = self.texts
         cdef = self._kit(hero)
         stats = hero_stats(cdef, hero.level)
-        curve = self.content.balance["hero"]["xp_formula"]
+        formula = self.content.balance["hero"]["xp_formula"]
+        low, high = xp_for_level(formula, hero.level), xp_for_level(formula, hero.level + 1)
+        pct = 100 * (hero.xp - low) / max(1, high - low)
+        zone = self._zone(hero.x, hero.y)
         body = [
-            t.t("hero.name_line", icon=self._hero_icon(hero), name=hero.name, cls=t.t(cdef["name_key"]), role=t.t(cdef["role_key"])),
-            t.t("hero.level_line", level=hero.level, xp=hero.xp, next=xp_for_level(curve, hero.level + 1)),
+            t.t("hero.top_line", icon=self._hero_icon(hero), name=hero.name, place=self._zone_name(zone)),
+            t.t("hero.class_line", cls=self._hero_title(hero), role=t.t("role." + cdef.get("role", "ataque")) if hero.talents else t.t("talents.no_role")),
+            t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
+            t.t("hero.xp_line", xp=hero.xp, next=high),
             t.t("hero.hp_line", hp=hero.hp, max_hp=stats["max_hp"]),
-            t.t("hero.stats_line", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100), initiative=round(stats["initiative"])),
-            t.t("hero.gold_line", gold=hero.gold),
-            t.t("hero.record_line", kills=hero.kills, zones=hero.zones_discovered),
-            t.t("talents.bar", abilities=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
+            t.t("hero.stats_link"),
+            t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
+            t.t("hero.energy_line", energy=hero.energy, max_energy=self.content.balance["energy"]["max"]),
+            t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_start", 0), max=cdef.get("resource_max", 100)),
+            t.t("hero.coins_line", gold=hero.gold, bags=hero.bags, gems=hero.gems),
+            t.t("hero.inv_link", n=sum(hero.backpack.values()) + sum(hero.belt.values())),
+            t.t("hero.skills_link", n=hero.points, bar=", ".join(t.t("ability." + a["id"] + ".name") for a in cdef["abilities"]) or "—"),
+            "",
+            t.t("hero.status_title"),
+            self._status_text(hero),
         ]
         cfg = self.content.balance["invite"]
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
         body += self._tutorial_hint(hero)
-        return View(kind="hero", title=t.t("hero.title"), body=body, actions=[Action(id="talents", label=t.t("talents.button", n=hero.points)), Action(id="bag", label=t.t("menu.bag")), Action(id="home", label=t.t("menu.back"))],
-                    meta={"invite_code": self.invite_code(hero.id)})
+        actions = [Action(id="stats", label=t.t("hero.stats_button")), Action(id="talents", label=t.t("talents.button", n=hero.points)),
+                   Action(id="bag", label=t.t("menu.bag")), Action(id="home", label=t.t("menu.back"))]
+        return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions, meta={"invite_code": self.invite_code(hero.id)})
+
+    def _status_text(self, hero: Hero) -> str:
+        t = self.texts
+        if self.store.get("combat", hero.id):
+            return t.t("hero.status.combat")
+        kind = (hero.activity or {}).get("kind")
+        return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+
+    def _stats_view(self, hero: Hero) -> View:
+        """Every characteristic with a short explanation of what it does (D-76)."""
+        t = self.texts
+        cdef = self._kit(hero)
+        stats = hero_stats(cdef, hero.level)
+        bonus = cdef.get("talent_bonus", {})
+        body = [
+            t.t("stats.hp", value=stats["max_hp"]),
+            t.t("stats.attack", value=round(stats["attack"], 1)),
+            t.t("stats.defense", value=round(stats["armor"] * 100)),
+            t.t("stats.initiative", value=round(stats["initiative"])),
+            t.t("stats.stamina", value=self.content.balance["combat"]["stamina_max"]),
+            t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100)),
+            t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"]),
+            t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
+            t.t("stats.talents", attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100)),
+        ]
+        return View(kind="stats", title=t.t("stats.title"), body=body, actions=[Action(id="hero", label=t.t("menu.back"))])
 
     def _item_list(self, items: dict[str, int]) -> str:
         if not items:
@@ -1252,7 +1300,7 @@ class GameService:
             "",
             t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
             "",
-            t.t("combat.hero_line", icon=self._hero_icon(hero), name=hero.name, cls=t.t(cdef["name_key"])),
+            t.t("combat.hero_line", icon=self._hero_icon(hero), name=hero.name, cls=self._hero_title(hero)),
             t.t("combat.hero_bars", hp=hero.hp, max_hp=stats["max_hp"], resource=t.t(f"resource.{cdef['resource']}"),
                 value=hs["resource"], stamina="●" * stamina + "○" * (stamina_max - stamina)),
         ]

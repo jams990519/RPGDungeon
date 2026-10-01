@@ -447,7 +447,7 @@ sacerdote_sagrado:
 sacerdote:
   group: sacerdote
   icon: "📿"
-  role: curacion
+  role: soporte
   name_key: class.sacerdote.name
   role_key: class.sacerdote.role
   resource: mana
@@ -468,10 +468,11 @@ sacerdote:
       value: 0.3
       stamina: 1
     - id: dolor
-      kind: dot
+      kind: weaken
       cost: 20
-      power: 0.55
-      rounds: 3
+      value: 0.35
+      rounds: 5
+      cooldown: 4
 
 caballero_muerte_escarcha:
   group: caballero_muerte
