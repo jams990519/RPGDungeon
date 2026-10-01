@@ -544,7 +544,7 @@ En `/cuerpo`, el entorno ocupa una línea más: `🌡️ Acalorado · 💧 67 ·
 
 1. **Nunca sin aviso.** Toda etapa se anuncia antes, con cuántos pasos quedan.
 2. **Siempre hay retirada.** La retirada segura que empieza en etapa grave llega siempre.
-3. **Azul es azul.** Asentamientos, escaleras y piedras de paso no tienen peligros del entorno.
+3. **Azul es azul.** Asentamientos, postas y caminos seguros no tienen peligros del entorno.
 4. **Solo cuenta lo que haces.** Pasos, no minutos. Fuera de línea todo se congela, y en un asentamiento o refugio todo se recupera, también fuera de línea.
 5. **Protección de novato.** Hasta el nivel 10 ningún peligro pasa de leve, y el entorno no contagia enfermedades.
 6. **Siempre hay una versión barata.** El PNJ vende cantimplora, antorcha y capa de lana. Son peores que las de un artesano, pero nadie queda fuera por falta de oro.

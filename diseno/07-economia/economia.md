@@ -72,7 +72,7 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 |---|---|
 | Misiones y encargos | **Impuesto de mercado** (tasa por publicar + impuesto sobre la venta) |
 | Venta a PNJ (recompra de materiales y equipo) | Reparaciones |
-| Botín de monstruos | Piedras de paso y correo |
+| Botín de monstruos | Postas, peajes de caminos y correo |
 | Recompensas de PvP y eventos | Sanatorio, templo, multas de karma |
 | Mercado Negro (compra equipo a los artesanos) | Mantenimiento de vivienda y territorios |
 | | Estaciones de oficio (tasa de uso) |

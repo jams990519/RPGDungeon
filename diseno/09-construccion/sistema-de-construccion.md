@@ -36,7 +36,7 @@ Construir es un **oficio mayor** (ver [Profesiones](../07-economia/profesiones.m
 | **Arquitecto** | 81-95 | Diseñar **planos** propios, obras monumentales, casinos, hipódromos |
 | **Gran Arquitecto** | 96-100 | Dirigir las obras de servidor (el Castillo de una capital nueva, el asentamiento de una región). Su nombre queda grabado en la obra |
 
-**Especializaciones:** Vivienda, Fortificación, Obras públicas (caminos, puentes, piedras de paso), Interiorismo (muebles y decoración).
+**Especializaciones:** Vivienda, Fortificación, Obras públicas (caminos, puentes, postas), Interiorismo (muebles y decoración).
 
 **Por qué un oficio y no un botón.** Si cualquiera pudiera construir un castillo, construir no valdría nada. Siendo oficio, nace el constructor como forma de jugar: alguien que quizá nunca pisa una mazmorra pero cuyo nombre está en la puerta de una capital regional.
 
