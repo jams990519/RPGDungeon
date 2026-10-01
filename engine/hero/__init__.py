@@ -2,7 +2,7 @@
 
 [ES]
 Para qué sirve: el personaje del jugador: nombre, clase, nivel, vida, oro, posición,
-cinturón y mochila, y la actividad en curso (viaje o exploración).
+cinturón, mochila y equipo (gear.py, D-77), y la actividad en curso (viaje o exploración).
 Documento de diseño: diseno/03-personaje/creacion-de-personaje.md, progresion.md
 Módulo: M2 Héroe
 Depende de: engine.core (contenido)
@@ -15,7 +15,8 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — crea y guarda héroes
     - Combate: engine/combat/engine.py — lee vida, ataque, armadura e iniciativa
-    - Pruebas: tests/test_service.py
+    - Equipo: engine/hero/gear.py — requisitos, bonos y botín de equipo
+    - Pruebas: tests/test_service.py, tests/test_gear.py
 """
 
 from engine.hero.hero import Hero, hero_stats, xp_for_level

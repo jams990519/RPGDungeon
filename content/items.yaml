@@ -45,3 +45,405 @@ fibra:
   emoji: "🧵"
   kind: material
   price: 2
+
+# Gear (D-77). slot: arma | armadura | joya. type decides who can use it (balance.yaml gear.*_by_group).
+# [ES] Equipo (D-77). stats en fracción: attack 0.04 = +4 % de ataque; hp igual con la vida; armor se SUMA a la defensa.
+# req_level: nivel mínimo para ponérselo. tier 1-4 = común, poco común, raro, épico. IDs estables: solo se agregan.
+# Lo usan: engine/hero/gear.py (requisitos, bonos, botín), engine/service (vistas de equipo y tienda).
+# Si cambias esto, revisa: los números mueven el balance de todas las clases (tests/test_gear.py).
+espada_1:
+  name_key: item.espada_1
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.04}
+  price: 8
+espada_2:
+  name_key: item.espada_2
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.08}
+  price: 20
+espada_3:
+  name_key: item.espada_3
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.12}
+  price: 45
+espada_4:
+  name_key: item.espada_4
+  emoji: "🗡️"
+  kind: gear
+  slot: arma
+  type: espada
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.17}
+  price: 90
+daga_1:
+  name_key: item.daga_1
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.04}
+  price: 8
+daga_2:
+  name_key: item.daga_2
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.08}
+  price: 20
+daga_3:
+  name_key: item.daga_3
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.12}
+  price: 45
+daga_4:
+  name_key: item.daga_4
+  emoji: "🔪"
+  kind: gear
+  slot: arma
+  type: daga
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.17}
+  price: 90
+arco_1:
+  name_key: item.arco_1
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.04}
+  price: 8
+arco_2:
+  name_key: item.arco_2
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.08}
+  price: 20
+arco_3:
+  name_key: item.arco_3
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.12}
+  price: 45
+arco_4:
+  name_key: item.arco_4
+  emoji: "🏹"
+  kind: gear
+  slot: arma
+  type: arco
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.17}
+  price: 90
+baston_1:
+  name_key: item.baston_1
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {attack: 0.04}
+  price: 8
+baston_2:
+  name_key: item.baston_2
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {attack: 0.08}
+  price: 20
+baston_3:
+  name_key: item.baston_3
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {attack: 0.12}
+  price: 45
+baston_4:
+  name_key: item.baston_4
+  emoji: "🪄"
+  kind: gear
+  slot: arma
+  type: baston
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {attack: 0.17}
+  price: 90
+tela_1:
+  name_key: item.tela_1
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.05, armor: 0.01}
+  price: 8
+tela_2:
+  name_key: item.tela_2
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+tela_3:
+  name_key: item.tela_3
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.14, armor: 0.03}
+  price: 45
+tela_4:
+  name_key: item.tela_4
+  emoji: "👘"
+  kind: gear
+  slot: armadura
+  type: tela
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.2, armor: 0.04}
+  price: 90
+cuero_1:
+  name_key: item.cuero_1
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.05, armor: 0.01}
+  price: 8
+cuero_2:
+  name_key: item.cuero_2
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+cuero_3:
+  name_key: item.cuero_3
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.14, armor: 0.03}
+  price: 45
+cuero_4:
+  name_key: item.cuero_4
+  emoji: "🦺"
+  kind: gear
+  slot: armadura
+  type: cuero
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.2, armor: 0.04}
+  price: 90
+malla_1:
+  name_key: item.malla_1
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.05, armor: 0.01}
+  price: 8
+malla_2:
+  name_key: item.malla_2
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+malla_3:
+  name_key: item.malla_3
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.14, armor: 0.03}
+  price: 45
+malla_4:
+  name_key: item.malla_4
+  emoji: "⛓️"
+  kind: gear
+  slot: armadura
+  type: malla
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.2, armor: 0.04}
+  price: 90
+placas_1:
+  name_key: item.placas_1
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.05, armor: 0.01}
+  price: 8
+placas_2:
+  name_key: item.placas_2
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.09, armor: 0.02}
+  price: 20
+placas_3:
+  name_key: item.placas_3
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.14, armor: 0.03}
+  price: 45
+placas_4:
+  name_key: item.placas_4
+  emoji: "🛡️"
+  kind: gear
+  slot: armadura
+  type: placas
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.2, armor: 0.04}
+  price: 90
+joya_1:
+  name_key: item.joya_1
+  emoji: "💍"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 1
+  rarity: comun
+  req_level: 1
+  stats: {hp: 0.03, attack: 0.02}
+  price: 8
+joya_2:
+  name_key: item.joya_2
+  emoji: "💍"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 2
+  rarity: poco_comun
+  req_level: 3
+  stats: {hp: 0.05, attack: 0.04}
+  price: 20
+joya_3:
+  name_key: item.joya_3
+  emoji: "📿"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 3
+  rarity: raro
+  req_level: 5
+  stats: {hp: 0.08, attack: 0.06}
+  price: 45
+joya_4:
+  name_key: item.joya_4
+  emoji: "📿"
+  kind: gear
+  slot: joya
+  type: joya
+  tier: 4
+  rarity: epico
+  req_level: 8
+  stats: {hp: 0.11, attack: 0.08}
+  price: 90

@@ -39,6 +39,7 @@ class Hero:
         belt, backpack: item id -> count.
         last_regen_at: timestamp of the last passive health regeneration.
         known: zones this hero has visited, as "x:y" (its own map memory, D-61).
+        gear: worn pieces, slot -> item id (D-77); gear_started: starter gear already given.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -76,6 +77,8 @@ class Hero:
     camp: str | None = None
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])
+    gear: dict[str, str] = field(default_factory=dict)
+    gear_started: bool = False
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
@@ -105,18 +108,20 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
         dict with max_hp, attack, armor and initiative.
 
     [ES]
-    Qué hace: calcula vida máxima, ataque, armadura e iniciativa.
+    Qué hace: calcula vida máxima, ataque, armadura e iniciativa, con los bonos de
+    talentos (talent_bonus) y de equipo (gear_bonus) que trae el kit del servicio.
     La llaman: el servicio (vista del héroe) y el combate.
     Si cambia, afecta: el balance de todas las clases.
     """
     base = class_def["base"]
     per = class_def.get("per_level", {})
     bonus = class_def.get("talent_bonus", {})
+    gear = class_def.get("gear_bonus", {})
     lv = max(1, level) - 1
     return {
-        "max_hp": int((base["hp"] + per.get("hp", 0) * lv) * (1 + bonus.get("hp", 0.0))),
-        "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0))),
-        "armor": float(base.get("armor", 0.0)),
+        "max_hp": int((base["hp"] + per.get("hp", 0) * lv) * (1 + bonus.get("hp", 0.0)) * (1 + gear.get("hp", 0.0))),
+        "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0)) * (1 + gear.get("attack", 0.0))),
+        "armor": min(float(class_def.get("armor_cap", 0.6)), float(base.get("armor", 0.0)) + gear.get("armor", 0.0)),
         "initiative": float(base.get("initiative", 10)),
     }
 

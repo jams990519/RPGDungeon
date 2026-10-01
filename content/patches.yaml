@@ -60,3 +60,13 @@ v0_5_4:
     - "📊 /stats explica para qué sirve cada característica. /inv abre tu mochila y /habilidades tus talentos."
     - "🧪 Pociones más baratas en el mercader del campamento: poción de vida 6 💰 y venda 3 💰."
     - "📿 Sacerdote: Sombra es daño, Sagrado es curación y Disciplina vuelve a ser soporte, con Penitencia."
+
+v0_6:
+  version: "0.6"
+  title: "🛡️ Lost Realms 0.6: equipo y botín"
+  notes:
+    - "🛡️ Llegó el equipo: arma, armadura y joya. Todos reciben gratis un arma y una armadura básicas de su clase, ya puestas."
+    - "🎁 Los enemigos a veces sueltan piezas al ganar: ⚪ común, 🟢 poco común, 🔵 rara y 🟣 épica."
+    - "✅ Cada pieza te dice si es para ti, 🔒 si es para ti más adelante (pide nivel) o ❌ si no es para tu clase. Al mirarla la comparas con lo que llevas."
+    - "Cada clase usa su armadura (tela, cuero, malla o placas) y sus armas. Lo que no te sirve se vende en el Claro."
+    - "Míralo con /equipo, en tu ficha o en 🎒 Mochila → 🛡️ Equipo."

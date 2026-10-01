@@ -93,6 +93,48 @@ shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
 
+gear:                        # [ES] equipo y botín (D-77). Capa simple: 3 ranuras, 4 tipos de armadura, 4 de arma
+  slots: [arma, armadura, joya]
+  armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
+  armor_by_group:            # [ES] qué armadura usa cada clase (como en WoW)
+    guerrero: placas
+    paladin: placas
+    caballero_muerte: placas
+    cazador: malla
+    chaman: malla
+    evocador: malla
+    picaro: cuero
+    druida: cuero
+    monje: cuero
+    cazador_demonios: cuero
+    bardo: cuero
+    sacerdote: tela
+    mago: tela
+    brujo: tela
+    nigromante: tela
+  weapons_by_group:          # [ES] qué armas usa cada clase; la primera es la del equipo inicial
+    guerrero: [espada]
+    paladin: [espada, baston]
+    caballero_muerte: [espada]
+    cazador: [arco, daga]
+    chaman: [baston]
+    evocador: [baston]
+    picaro: [daga, espada]
+    druida: [baston, daga]
+    monje: [baston, daga]
+    cazador_demonios: [espada, daga]
+    bardo: [espada, daga]
+    sacerdote: [baston]
+    mago: [baston]
+    brujo: [baston]
+    nigromante: [baston, daga]
+  rarity_icon: {comun: "⚪", poco_comun: "🟢", raro: "🔵", epico: "🟣"}
+  rarity_weight: {comun: 6, poco_comun: 3, raro: 1.2, epico: 0.4}   # [ES] lo raro sale menos
+  drop_chance: 0.15          # [ES] probabilidad de soltar una pieza en cada victoria
+  for_you_chance: 0.7        # [ES] de las piezas que caen, cuántas son de tu tipo (botín "para ti")
+  level_window: [4, 1]       # [ES] piezas con nivel requerido entre (nivel del enemigo − 4) y (+1)
+  start_tier: 1              # [ES] equipo inicial: arma y armadura de tu tipo, nivel 1, ya puestas
+
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4
   minutes: 5
