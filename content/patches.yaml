@@ -14,3 +14,13 @@ v0_4:
     - "🪓 Recolecta madera, piedra, fibra, hierbas y metal, y ayuda a levantar el campamento del Claro, de fogata a castillo."
     - "📜 Un tutorial con pistas te enseña lo básico, y 👥 tu enlace de invitación te da energía por cada amigo que entre."
     - "Toca /start para crear tu héroe."
+
+v0_5:
+  version: "0.5"
+  title: "🌟 Lost Realms 0.5: talentos y campamentos"
+  notes:
+    - "🌟 La especialización se gana con el tiempo: al crear tu héroe eliges la clase, y cada nivel te da 1 punto de talento para la especialización que quieras (👤 Héroe → 🌟 Talentos). Con 1, 3 y 6 puntos desbloqueas sus habilidades. Tu progreso se respeta: si ya tenías nivel, recibiste tus puntos."
+    - "🎭 Cada especialización tiene su ícono único, que te representa en todo el juego."
+    - "Cada clase tiene como máximo 3 especializaciones. Druida · Equilibrio se retiró; si la tenías, recuperaste tus puntos."
+    - "🏕️ Funda tu propio campamento lejos del Claro: explora la zona y conoce sus alrededores. Si alguien llega a tu campamento, te aviso para que decidas si es 🤝 amistoso o ⚔️ hostil."
+    - "📌 Cada lugar muestra sus coordenadas."

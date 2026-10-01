@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from dataclasses import asdict
 from typing import Any
 
 from engine.classes import base_response, default_spec, ensure_talents, kit as talent_kit, spend_point, specs_of, unlock_points
@@ -147,6 +148,10 @@ class GameService:
         if hero is None:
             return self._create_action(account_id, action_id)
         notices = self._settle(hero)
+        if action_id.startswith("rel:"):
+            view = self._answer_visitor(hero, action_id)
+            self._save(hero)
+            return view
         combat = self.store.get("combat", hero.id)
         if combat is not None:
             view = self._combat_action(hero, combat, action_id)
@@ -233,7 +238,18 @@ class GameService:
             notices = self._settle(hero)
             self._save(hero)
             out.append((account_id, self._main_view(hero, notice=self._join(notices))))
+        for account_id, box in list(self.store.items("outbox")):
+            self.store.delete("outbox", account_id)
+            for item in box.get("items", []):
+                actions = [Action(**a) for a in item.pop("actions", [])]
+                out.append((account_id, View(actions=actions, **item)))
         return out
+
+    def _push(self, account_id: str, view: View) -> None:
+        """Queue a message for another player; tick() delivers it (camp contacts, D-71)."""
+        box = self.store.get("outbox", account_id) or {"items": []}
+        box["items"].append(asdict(view))
+        self.store.put("outbox", account_id, box)
 
     # ------------------------------------------------------------------ storage helpers
 
@@ -362,6 +378,8 @@ class GameService:
                 notices += self._arrive(hero, activity, rng)
             elif activity["kind"] == "explore":
                 zone = self._zone(hero.x, hero.y)
+                if f"{zone.x}:{zone.y}" not in hero.explored:
+                    hero.explored.append(f"{zone.x}:{zone.y}")
                 notices.append(self._explore_outcome(hero, zone, rng))
                 if zone.x == 0 and zone.y == 0:
                     notices += self._tutorial(hero, "explore_claro")
@@ -382,6 +400,7 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         hero.remember(hero.x, hero.y)
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
+        notices += self._visit_camp(hero)
         if zone.lejania >= 1:
             notices += self._tutorial(hero, "leave_claro")
         path = [list(p) for p in activity.get("path", [])]
@@ -573,9 +592,11 @@ class GameService:
         if action_id == "places":
             return self._places_view(hero)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        if action_id == "found":
+            return self._found_camp(hero)
+        if action_id == "claro" and not in_claro:
+            return self._camp_here_view(hero)
         if action_id == "claro":
-            if not in_claro:
-                return self._main_view(hero, notice=t.t("claro.far"))
             return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
                         actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
                                  Action(id="inn", label=t.t("inn.button", price=self._inn_price())), Action(id="home", label=t.t("menu.back"))])
@@ -671,10 +692,13 @@ class GameService:
         record = self._discovered(zone.x, zone.y) or {}
         body = [
             t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)),
-            t.t("zone.distance", lejania=zone.lejania, ring=ROMAN[zone.ring], level=zone.level),
+            t.t("zone.distance", x=zone.x, y=zone.y, lejania=zone.lejania, ring=ROMAN[zone.ring], level=zone.level),
         ]
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
+        camp = self.store.get("camp", f"{zone.x}:{zone.y}")
+        if camp:
+            body.append(t.t("camps.zone_line", name=camp["name"], n=len(camp["members"])))
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
@@ -924,6 +948,98 @@ class GameService:
                    Action(id="map", label=t.t("menu.map")), Action(id="places", label=t.t("menu.places"))]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
+    # ------------------------------------------------------------------ player camps (D-71)
+
+    def _camp_requirements(self, hero: Hero) -> list[tuple[str, bool]]:
+        t = self.texts
+        cfg = self.content.balance["camps"]
+        zone = self._zone(hero.x, hero.y)
+        known = sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1) if (dx or dy) and hero.remembers(zone.x + dx, zone.y + dy))
+        near = any(self.store.get("camp", f"{zone.x + dx}:{zone.y + dy}")
+                   for dx in range(-cfg["min_distance"], cfg["min_distance"] + 1)
+                   for dy in range(-cfg["min_distance"], cfg["min_distance"] + 1))
+        cost_ok = all(hero.backpack.get(i, 0) >= n for i, n in cfg["found_cost"].items())
+        return [
+            (t.t("camps.req_far", n=cfg["min_lejania"]), zone.lejania >= cfg["min_lejania"]),
+            (t.t("camps.req_explored"), f"{zone.x}:{zone.y}" in hero.explored),
+            (t.t("camps.req_known", n=known, need=cfg["known_neighbors"]), known >= cfg["known_neighbors"]),
+            (t.t("camps.req_alone", n=cfg["min_distance"]), not near),
+            (t.t("camps.req_cost", items=self._item_list(cfg["found_cost"])), cost_ok),
+            (t.t("camps.req_one"), hero.camp is None),
+        ]
+
+    def _camp_here_view(self, hero: Hero, notice: str | None = None) -> View:
+        t = self.texts
+        zone = self._zone(hero.x, hero.y)
+        key = f"{zone.x}:{zone.y}"
+        camp = self.store.get("camp", key)
+        if camp:
+            body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"]))]
+            if hero.id in camp["members"]:
+                body.append(t.t("camps.you_member"))
+            else:
+                rel = camp["relations"].get(hero.id)
+                body.append(t.t(f"camps.relation.{rel or 'unknown'}"))
+            return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=[Action(id="home", label=t.t("menu.back"))], notice=notice)
+        reqs = self._camp_requirements(hero)
+        body = [t.t("camps.found_intro", x=zone.x, y=zone.y), ""] + [("✅ " if ok else "▫️ ") + text for text, ok in reqs]
+        actions = [Action(id="found", label=t.t("camps.found_button"))] if all(ok for _, ok in reqs) else []
+        actions.append(Action(id="home", label=t.t("menu.back")))
+        return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
+
+    def _found_camp(self, hero: Hero) -> View:
+        t = self.texts
+        if hero.activity or not all(ok for _, ok in self._camp_requirements(hero)):
+            return self._camp_here_view(hero, notice=t.t("camps.cannot"))
+        for item_id, n in self.content.balance["camps"]["found_cost"].items():
+            hero.backpack[item_id] -= n
+            if hero.backpack[item_id] <= 0:
+                del hero.backpack[item_id]
+        key = f"{hero.x}:{hero.y}"
+        self.store.put("camp", key, {"name": t.t("camps.default_name", name=hero.name), "founder": hero.name, "founder_id": hero.id,
+                                      "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now()})
+        hero.camp = key
+        return self._camp_here_view(hero, notice=t.t("camps.founded", x=hero.x, y=hero.y))
+
+    def _visit_camp(self, hero: Hero) -> list[str]:
+        """Arriving at someone's camp: tell the visitor and ask its members friendly or hostile (once)."""
+        t = self.texts
+        key = f"{hero.x}:{hero.y}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id in camp["members"]:
+            return []
+        lines = [t.t("camps.found_it", name=camp["name"], founder=camp["founder"])]
+        if hero.id not in camp["relations"] and hero.id not in camp["asked"]:
+            camp["asked"].append(hero.id)
+            self.store.put("camp", key, camp)
+            ask = View(kind="camp_visit", title=t.t("camps.visit_title"),
+                       body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
+                       actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
+                                Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))])
+            for member in camp["members"]:
+                self._push(member, ask)
+            lines.append(t.t("camps.members_told"))
+        else:
+            lines.append(t.t(f"camps.relation.{camp['relations'].get(hero.id, 'unknown')}"))
+        return lines
+
+    def _answer_visitor(self, hero: Hero, action_id: str) -> View:
+        t = self.texts
+        parts = action_id.split(":")
+        if len(parts) < 5 or parts[-1] not in ("f", "h"):
+            return self._main_view(hero)
+        key, visitor, choice = f"{parts[1]}:{parts[2]}", ":".join(parts[3:-1]), parts[-1]
+        camp = self.store.get("camp", key)
+        if not camp or hero.id not in camp["members"]:
+            return self._main_view(hero)
+        if visitor in camp["relations"]:
+            return self._main_view(hero, notice=t.t("camps.already_answered"))
+        relation = "friendly" if choice == "f" else "hostile"
+        camp["relations"][visitor] = relation
+        self.store.put("camp", key, camp)
+        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
+        return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
+
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
@@ -996,6 +1112,8 @@ class GameService:
             for x in range(hero.x - radius, hero.x + radius + 1):
                 if x == hero.x and y == hero.y:
                     row += "🧍"
+                elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
+                    row += "🏕️"
                 elif hero.remembers(x, y):
                     row += self.content.biomes[self._zone(x, y).biome]["emoji"]
                 elif self._discovered(x, y) is not None:

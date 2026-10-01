@@ -70,6 +70,8 @@ class Hero:
     talents: dict[str, int] = field(default_factory=dict)
     points: int = 0
     unlocked: list[str] = field(default_factory=list)
+    explored: list[str] = field(default_factory=list)
+    camp: str | None = None
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])
 

@@ -82,6 +82,12 @@ tutorial:
   reward_xp: 20
   steps: [explore_claro, gather, donate, leave_claro, win_fight, heal, use_places]
 
+camps:                       # [ES] campamentos que fundan los jugadores lejos del Claro (D-71)
+  found_cost: {madera: 20, piedra: 10}
+  known_neighbors: 4         # [ES] zonas conocidas de las 8 de alrededor para poder fundar
+  min_lejania: 2             # [ES] no se funda pegado al Claro
+  min_distance: 2            # [ES] distancia mínima a otro campamento
+
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
