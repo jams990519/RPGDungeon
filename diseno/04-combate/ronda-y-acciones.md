@@ -43,7 +43,7 @@ Elegir a la vez evita esperar uno por uno a otros cuatro jugadores, que en Teleg
 | 🏃 **Huir** | Intentas salir de la pelea (§10). Donde no se puede huir (Guardianes, arena), el botón es **🌀 Esquivar** (P-67) |
 | 🎒 **Mochila** | Abre tu **cinturón**: los pocos objetos que preparaste para pelear (§4). Usar uno gasta la ronda |
 
-El botón siempre dice "Atacar"; el resumen dice qué hiciste ("Golpe siniestro", "Disparo firme"). Así la barra se lee igual en las 46 specs.
+El botón siempre dice "Atacar"; el resumen dice qué hiciste ("Navajazo", "Tiro sereno"). Así la barra se lee igual en las 46 specs.
 
 **Cómo se eligen las 3 habilidades.** Fuera de combate, en tus configuraciones de talentos (hasta 5 guardadas por spec: "banda", "mazmorra", "solitario"…; ver [Talentos](../03-personaje/talentos.md)). Lo demás que aprendiste no se usa en esa pelea. Elegir según el enemigo es parte de prepararse: contra la Bruja llevas una interrupción; contra el Coloso, un bloqueo.
 
@@ -90,19 +90,19 @@ Ejemplos de respuestas que comparten todas las specs de cada clase. Los specs de
 
 | Clase | Respuestas de ejemplo |
 |---|---|
-| Guerrero | 🤺 *Parada* · 🔁 *Intervenir* (salta delante de un aliado y recibe su golpe). Protección suma 🛡 *Bloqueo con escudo*, que cubre la fila |
-| Paladín | 🛡 *Escudo Divino* · 🫧 *Bendición de Protección* (un aliado no recibe daño físico esa ronda) |
-| Cazador | 💨 *Destrabarse* (salta a la retaguardia y esquiva) · 🤺 *Aspecto de la Tortuga* |
-| Pícaro | 💨 *Evasión* · 🛡 *Capa de Sombras* (frena la magia) |
-| Sacerdote | 🫧 *Palabra de Poder: Escudo* · 💨 *Desvanecerse* |
-| Caballero de la Muerte | 🛡 *Caparazón Antimagia* (frena conjuros y alientos) · 🛡 *Entereza Ligada al Hielo* (mayor) |
-| Chamán | 🛡 *Cambio Astral* · 🔁 *Paso Espiritual* |
-| Mago | 💨 *Traslación* (cambia de fila y esquiva) · 🛡 *Bloque de Hielo* (mayor) |
-| Brujo | 🛡 *Resolución Inagotable* · 🔁 *Círculo Demoníaco* (vuelve al punto que marcó) |
-| Monje | 💨 *Rodar* · 🤺 *Toque de Karma* (devuelve parte del golpe) |
-| Druida | 🛡 *Piel de Corteza* · 💨 *Carrerilla Salvaje* |
-| Cazador de Demonios | 💨 *Desenfoque* · 🔁 *Retirada Vil* (salta a la retaguardia). Estrago suma *Salto Vil* (cambia de fila, golpea y esquiva) |
-| Evocador | 🛡 *Escamas Obsidianas* · 💨 *Planear* |
+| Guerrero | 🤺 *Parada* · 🔁 *Interponerse* (salta delante de un aliado y recibe su golpe). Protección suma 🛡 *Bloqueo con escudo*, que cubre la fila |
+| Paladín | 🛡 *Amparo Celestial* · 🫧 *Gracia Protectora* (un aliado no recibe daño físico esa ronda) |
+| Cazador | 💨 *Salto Atrás* (salta a la retaguardia y esquiva) · 🤺 *Concha Cerrada* |
+| Pícaro | 💨 *Evasión* · 🛡 *Capote Negro* (frena la magia) |
+| Sacerdote | 🫧 *Verbo Protector* · 💨 *Desvanecerse* |
+| Caballero de la Muerte | 🛡 *Velo Negador* (frena conjuros y alientos) · 🛡 *Piel de Témpano* (mayor) |
+| Chamán | 🛡 *Forma de Ánima* · 🔁 *Andar Etéreo* |
+| Mago | 💨 *Traslación* (cambia de fila y esquiva) · 🛡 *Encierro Helado* (mayor) |
+| Brujo | 🛡 *Terquedad Oscura* · 🔁 *Círculo de Regreso* (vuelve al punto que marcó) |
+| Monje | 💨 *Rodar* · 🤺 *Karma Instantáneo* (devuelve parte del golpe) |
+| Druida | 🛡 *Piel de Roble* · 💨 *Salto de Ciervo* |
+| Cazador de Demonios | 💨 *Desenfoque* · 🔁 *Retirada Vil* (salta a la retaguardia). Estrago suma *Brinco de Azufre* (cambia de fila, golpea y esquiva) |
+| Evocador | 🛡 *Escamas de Basalto* · 💨 *Planear* |
 | Nigromante | 🛡 *Hueso Protector* (un esqueleto recibe el golpe) · 💨 *Forma Espectral* |
 | Bardo | 💨 *Paso de Baile* (esquiva y cambia de fila) · 🫧 *Nota Sostenida* (escudo sonoro al grupo) |
 
@@ -181,7 +181,7 @@ Dos filas por bando:
 | **Retaguardia** | Distancia, Curación | No pega cuerpo a cuerpo (salvo lanzas y habilidades de alcance). Mientras haya alguien en vanguardia, los enemigos cuerpo a cuerpo no llegan a ella |
 
 - **No eliges fila.** Al empezar, el juego te pone en la que corresponde a tu rol y tu arma (§7).
-- **Cambias de fila solo con un efecto:** una respuesta 🔁 o 💨 que lo diga (*Destrabarse*, *Traslación*, *Salto Vil*), una técnica como *Carga*, la esquiva perfecta, o un empujón enemigo. La *Flecha Clavadora* impide cambiar.
+- **Cambias de fila solo con un efecto:** una respuesta 🔁 o 💨 que lo diga (*Salto Atrás*, *Traslación*, *Brinco de Azufre*), una técnica como *Carga*, la esquiva perfecta, o un empujón enemigo. La *Flecha Clavadora* impide cambiar.
 - **Vanguardia vacía:** si nadie de tu bando queda en vanguardia (todos derribados, o juegas solo sin criatura), la retaguardia pasa a recibir los golpes cuerpo a cuerpo. Por eso un sanador solo pelea de frente, y por eso su modo en solitario lo ayuda.
 
 **Agruparse y dispersarse, sin formación.** Ya no hay una formación que elegir: todos cuentan como **agrupados**.
@@ -267,7 +267,7 @@ En solitario, sin temporizador y con el modo en solitario activo. Aquí sí se p
 ❤️ 410/620   🔷 Maná 340/500   🔋 ●●●●○
 🎒 Cinturón: 🧪 Vida ×1 · 💊 Coagulante ×1 · 🍖 Pan de viaje ×2
 
-[⚔️ Atacar]         [✨ Fuego Sagrado]
-[✨ Renovar]        [🫧 Palabra de Poder: Escudo]
+[⚔️ Atacar]         [✨ Lumbre Bendita]
+[✨ Bálsamo Lento]        [🫧 Verbo Protector]
 [🏃 Huir]           [🎒 Mochila]
 ```

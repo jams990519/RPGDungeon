@@ -420,8 +420,8 @@ Ronda 3 contra la Salamandra Madre. Avisa un aliento de fuego, y el Guerrero Fur
 ☠️ Toxicidad 0/100
 ⏱ 45 s
 
-[⚔️ Atacar]        [✨ Golpe Colosal]
-[🤺 Parada]        [✨ Ejecutar]
+[⚔️ Atacar]        [✨ Rompecorazas]
+[🤺 Parada]        [✨ Tajo Final]
 [🏃 Huir]          [🎒 Mochila]
 ```
 

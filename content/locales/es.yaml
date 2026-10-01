@@ -51,9 +51,9 @@ class:
     role: "previene el daño: escuda y debilita al enemigo"
     attack_name: "Castigo"
 
-ability:
+ability:                      # [ES] D-135: nombres propios, no los de WoW (golpe_heroico se muestra "Golpe valeroso" y dolor, "Remordimiento"); los IDs no cambian
   golpe_heroico:
-    name: "Golpe heroico"
+    name: "Golpe valeroso"
   bloqueo_escudo:
     name: "Bloqueo con escudo"
   segundo_aliento:
@@ -69,7 +69,7 @@ ability:
   escudo_de_luz:
     name: "Escudo de luz"
   dolor:
-    name: "Penitencia"
+    name: "Remordimiento"
 
 resource:
   ira: "Ira"
