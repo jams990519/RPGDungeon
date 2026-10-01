@@ -27,6 +27,7 @@ energy:                      # [ES] energía para toda acción fuera del combate
   per_move: 1                # [ES] cada viaje a una zona vecina
   per_explore: 1             # [ES] cada exploración
   per_gather: 1              # [ES] cada recolección
+  batch: [5, 10, 20, 40]     # [ES] D-87: cuánta energía gastar seguido al explorar o recolectar (más "todo"); moverse no va en lote
   version: 2                 # [ES] subirlo llena la energía de todos una vez (0.6.1: todos a 50). Nunca toca el progreso
 
 invite:                      # [ES] invitar jugadores da energía (D-65): se paga apenas el invitado entra con el enlace y crea su héroe
@@ -60,6 +61,7 @@ hero:
   belt_slots: {pocion_vida: 3, venda: 2}     # [ES] cuánto cabe en el cinturón de cada cosa
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
+  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan)
   defeat_gold_loss: 0.1
   # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent (D-78). Con toda la energía
   # cada día, el nivel 100 llega en unos 2,5 años; quien juega menos tarda más. Nivel 10 en ~18 días, 20 en ~70.
@@ -69,10 +71,29 @@ hero:
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
+resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
+  region_scale: {madera: 5, piedra: 4, fibra: 3, hierba_curativa: 3, pieza_metal: 6, arcilla: 4}   # [ES] tamaño base de las manchas de cada recurso
+  biome_bonus: 0.25          # [ES] cuánto ayuda el bioma (más madera en el bosque)
+  threshold: 0.62            # [ES] desde qué fuerza un recurso aparece en la zona
+  max_per_zone: 3            # [ES] una zona tiene de 1 a 3 tipos de recurso
+  fixed:                     # [ES] zonas con recursos fijos
+    "0:0": {madera: 1.0, fibra: 0.8}
+  colors: {madera: "🟫", piedra: "⬜", fibra: "🟨", hierba_curativa: "🟩", pieza_metal: "🟥", arcilla: "🟧"}   # [ES] color en el mapa al explorar una zona al 100 %
+
+exploration:                 # [ES] D-87: cada zona se explora por porcentaje
+  per_step: [15, 30]         # [ES] cada exploración suma entre 15 % y 30 %
+  reveal_at: [1, 50, 100]    # [ES] con estos % se conoce el 1.º, 2.º y 3.º recurso; al 100 % se ve todo y el color en el mapa
+
+stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
+  per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)
+  regen_per_hour: 0.02       # [ES] y vuelve un 2 % por hora (de vacío a lleno: unas 50 horas)
+  min_yield: 0.15            # [ES] por debajo de esto, el recurso está agotado y no da nada
+
 gather:                      # [ES] recolectar en la zona actual
   minutes: 8
   amount: [1, 3]             # [ES] unidades por recolección (más 1 cada 3 niveles de zona)
   encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
+  own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
 
 settlement:                  # [ES] el campamento del Claro: obra común de todo el servidor (D-45)
   xp_per_unit: 2             # [ES] experiencia por cada material aportado
@@ -95,6 +116,12 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   known_neighbors: 4         # [ES] zonas conocidas de las 8 de alrededor para poder fundar
   min_lejania: 2             # [ES] no se funda pegado al Claro
   min_distance: 2            # [ES] distancia mínima a otro campamento
+  stages:                    # [ES] D-87: nombre del campamento según su nivel, hasta castillo
+    - {id: campamento, from_level: 1}
+    - {id: aldea, from_level: 3}
+    - {id: pueblo, from_level: 5}
+    - {id: ciudad, from_level: 7}
+    - {id: castillo, from_level: 9}
   members_base: 2             # [ES] D-84: miembros que caben en un campamento de nivel 1 (contando al fundador)
   members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
   grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona

@@ -40,6 +40,11 @@ piedra:
   emoji: "🪨"
   kind: material
   price: 2
+arcilla:
+  name_key: item.arcilla
+  emoji: "🏺"
+  kind: material
+  price: 2
 fibra:
   name_key: item.fibra
   emoji: "🧵"

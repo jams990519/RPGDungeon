@@ -180,6 +180,29 @@ Coordenadas 1, 2 · Lejanía 2
 - **Nombre y miembros (D-84):** al fundarlo, el fundador escribe el nombre (único; puede cambiarlo). Otros jugadores piden unirse desde el campamento y el fundador acepta o rechaza con un botón. Caben 2 miembros al nivel 1 y 2 más por cada nivel. Cada jugador pertenece a un solo campamento, cuenta la distancia del viaje desde él y puede salir cuando quiera.
 - Lo pidió el dueño. Los costos y la seguridad al llegar los propuso Claude.
 
+### 1.12 Exploración por porcentaje y recursos (D-87)
+
+- **Cada acción fuera del combate (salvo moverse) se hace en lote.** Al tocar 🔎 Explorar o 🪓 Recolectar, eliges cuánta energía gastar seguido: ⚡ 5, 10, 20, 40 o todo (`energy.batch`).
+  - Antes de empezar puedes ❌ Cancelar sin gastar nada.
+  - Ya en marcha, ❌ Detener corta el lote y devuelve la energía de la vuelta en curso.
+  - Cada vuelta gasta 1 ⚡ al empezar.
+  - El lote se corta si te atacan, si se acaba la energía, si se llena la mochila o si la zona queda explorada al 100 %.
+  - El bot te escribe una sola vez, al terminar, con el resumen.
+- **Explorar sube un porcentaje:** cada vuelta suma entre 15 % y 30 % de la zona (`exploration.per_step`).
+  - Al 1 %, al 50 % y al 100 % descubres el primero, el segundo y el tercer recurso.
+  - Al 100 % ya no se puede explorar más: conoces todo lo que tiene y la zona aparece en tu mapa con el color de su recurso principal (🟫 madera · ⬜ piedra · 🟨 fibra · 🟩 hierba · 🟥 metal · 🟧 arcilla).
+  - Tu héroe recuerda los recursos de cada zona que exploró.
+  - Fundar un campamento pide la zona explorada al 100 %.
+- **Regiones de recursos:** hay 6 recursos: madera, piedra, fibra, hierba curativa, metal y arcilla (nueva).
+  - Cada uno forma manchas de distinto tamaño: unas de 2 o 3 zonas, otras de 5×5 o más (`engine/world/resources.py`).
+  - Una zona tiene de 1 a 3 tipos. El bioma ayuda, pero no manda.
+  - Recolectar solo da lo que esa zona tiene.
+- **Los recursos se agotan:** cada unidad recolectada baja un 2 % el recurso de esa zona, para todos los jugadores, y vuelve un 2 % por hora (`stock`). Si se recolecta mucho en un lugar, da menos; por debajo del 15 % no da nada hasta que se recupere. La pantalla muestra cuánto queda (▰▰▰▱▱).
+- **Espacio en la mochila:** 60 unidades (`hero.backpack_capacity`). El cinturón y lo puesto no cuentan. Con la mochila llena, recolectar se detiene.
+- **El territorio vale:** al agrandar tu campamento eliges qué zona vecina toma, viendo los recursos que conoces de cada una. En tu territorio recolectas un 50 % más. El campamento cambia de nombre al crecer: campamento, aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9).
+- Lo pidió el dueño. Los números los propuso Claude.
+- **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).
