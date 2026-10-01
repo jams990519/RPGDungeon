@@ -397,3 +397,12 @@ v0_25_1:
     - "✍️ Las habilidades de todas las clases tienen nombres nuevos, propios de este mundo. Hacen exactamente lo mismo que antes: solo cambia el nombre del botón."
     - "🔥 Por ejemplo: Sed de Sangre ahora es Acero Sediento, Imposición de Manos es Milagro a Tiempo y Toque Vampírico es Beso Vampírico."
     - "😈 Lo demoníaco ahora huele a azufre: los Cazadores de demonios tienen glifos y brincos de azufre."
+
+v0_26:
+  version: "0.26"
+  title: "🔭 Lost Realms 0.26: el Explorador reconoce y se esconde"
+  notes:
+    - "🔭 Nuevo comando /reconocer (Explorador desde el rango 10): mira de lejos qué esconde una ❓ mazmorra o un ⛺ campamento enemigo sin ir. Ves la familia y el jefe del día, el récord a batir o cuántos guardias quedan. Cuesta 2 ⚡, da experiencia y monedas, y se hace una vez por lugar al día."
+    - "📏 Más rango, más alcance: 1 zona al rango 10, 2 al 30 y 3 al 50."
+    - "🗺️ Lo que reconoces queda marcado en el mapa: la mazmorra deja de ser ❓ para siempre, y ese día ves qué la llena."
+    - "🥷 Sigilo: con más rango de Explorador, a veces evitas las peleas al explorar a mano o al llegar de un viaje (hasta 25 % al rango 100). La especialización Infiltrado suma más."

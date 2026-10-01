@@ -22,7 +22,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109); §0.4 y red-de-oficios.md §5 (fase 2, lado
     del campamento: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería, 🏗️ Construcción y las defensas que dañan las oleadas, D-115/D-116)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
-    diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112;
+    🔭 Reconocer de lejos y 🥷 Sigilo, D-172)
     diseno/06-contenido/mazmorras-y-bandas.md §0 y mapa-infinito-y-viaje.md §1.15 (🕳️ 🌀 mazmorras para uno y los ❓ del
     mapa, D-164, D-165, D-170, D-171)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
@@ -89,6 +90,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     primero de un día se borran los de antes de ayer). Dónde hay mazmorras no se guarda: sale de la semilla. Una pelea
     de mazmorra lleva "dungeon" ({"kind", "day", "x", "y", "room" o "floor" y "fight", "boss"}) en su estado de
     "combat". Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
+    D-172: "recon" (el 🔭 reconocimiento de cada héroe, clave su id: {"day", "done" {"x:y": {"kind": "camp" o "dungeon",
+    "at"}} (se vacía solo al cambiar el día: uno por lugar y día), "kinds" ["x:y", ...] (entradas de mazmorra reconocidas
+    alguna vez: ya sabe si es 🕳️ o 🌀; nunca se borra)}). El 🥷 Sigilo no guarda nada: es el beneficio "stealth" del oficio.
+    Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -135,6 +140,10 @@ Reglas que nunca se rompen:
         enemigo en pie tapa la entrada. Sus peleas son siempre a mano (D-114); el cofre de la chica se abre una vez por
         mazmorra y día y nunca da experiencia extra; perder en la profunda deja la mitad de la bolsa, nunca menos; mientras
         hay una bajada abierta la vida no vuelve sola. Nada se cobra si la pelea no empieza.
+    20. El 🔭 reconocimiento (D-172) muestra lo mismo que vería cualquiera ese día (semilla + registro compartido), nunca el
+        cofre de un campamento ni tu propia zona, se cobra una vez por lugar y día y nunca es una pelea ni te mueve. El
+        🥷 Sigilo usa su propio sorteo y solo evita la pelea al azar de explorar con ✋ Manual y la emboscada al llegar de un
+        viaje: nunca lotes automáticos, cacerías, recolectar, asaltos, mazmorras, oleadas ni el Guardián.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -266,6 +275,16 @@ Si cambias esto, revisa:
       mapa), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar), _map_view
       (❓ 🕳️ 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
       _end_combat (_dng_fight_done y los botones de _dng_again)
+    - 🔭 Reconocer y 🥷 Sigilo (D-172): balance.yaml recon (energía, alcance por umbral, experiencia, monedas, cuántos lista) y
+      explorer (ranks recon, recon_far, recon_wide y stealth_max); content/professions.yaml (perk stealth del explorador y el
+      efecto perk stealth de la 🎓 🕵️ Infiltrado); PERK_KEYS en engine/professions/rules.py; textos recon.*, stealth.*,
+      explorer.what/short.recon* y prof.perk.stealth en content/locales/es_reconocimiento.yaml; tests/test_reconocimiento.py.
+      Sección "reconnaissance and stealth" (_recon_view, _recon, _recon_targets, _recon_range, _stealth_chance, _sneaks_past).
+      Tocan COMMANDS (/reconocer), _idle_action ("recon", "rcn:"; antes del freno de ocupado: es instantáneo), _arrive y
+      _explore_step (el sigilo), _batch_summary (línea 🥷), _options_view (línea 🥷), _explore_menu y _ecamp_menu (línea 🔭),
+      _map_view (línea y botón 🔭 si cabe), _ecamp_map_lines (fuerza de lo reconocido hoy), _dng_shown/_dng_seen (🕳️ / 🌀 de
+      lo reconocido), _dng_map_lines (familia de hoy), _zone_view (marca en la ruta), _ecamp_intel_lines (chest=False),
+      _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
 """
 
 from __future__ import annotations
@@ -335,7 +354,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/historia": "story", "/diario": "journal", "/bio": "bio", "/encargos": "board",     # D-117: story and roleplay
             "/saludar": "gesture:saludar", "/brindar": "gesture:brindar",
             "/encantar": "ench",                                                               # D-115: ✨ Encantamiento
-            "/especialidad": "pspecs"}                                                         # D-141: 🎓 Especialización
+            "/especialidad": "pspecs",                                                         # D-141: 🎓 Especialización
+            "/reconocer": "recon"}                                                             # D-172: 🔭 Reconocer
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -855,7 +875,12 @@ class GameService(StoryMixin):
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
-        """Finish one travel leg; chain the next leg of a multi-zone trip if any."""
+        """Finish one travel leg; chain the next leg of a multi-zone trip if any.
+
+        [ES] D-172: si sale la emboscada de la llegada, el 🥷 Sigilo del 🧭 Explorador (_sneaks_past, con su propio sorteo) puede
+        evitarla: el viaje sigue y una línea lo dice. La emboscada del viaje siempre es a mano (D-114), así que vale con
+        ✋ Manual y con ⚔️ Automática.
+        """
         notices: list[str] = []
         left = (hero.x, hero.y)
         hero.x, hero.y = activity["to"]
@@ -883,10 +908,13 @@ class GameService(StoryMixin):
         if self._territory(hero.x, hero.y):
             danger = 0.0                      # camps and the Claro protect their land (D-81)
         if rng.chance(danger):
-            if not final:
-                notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
-            notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
-            return notices
+            if self._sneaks_past(hero, "travel", activity["until"]):      # D-172: 🥷 Sigilo (its own draw)
+                notices.append(self.texts.t("stealth.travel", name=self._zone_name(zone)))
+            else:
+                if not final:
+                    notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
+                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
+                return notices
         if path and not self._spend_energy(hero, "move"):
             notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
             path = []
@@ -962,6 +990,9 @@ class GameService(StoryMixin):
         [ES] D-112: cada vuelta sube el oficio 🧭 Explorador (explorer.xp_per_step, más explorer.xp_full_zone al dejar una
         zona al 100 %; va al resumen del lote en "trade") y su beneficio suma puntos de exploración (parte entera del perk
         "explore": +1 cada 20 rangos, +5 al 100), sin otro sorteo: las vueltas de siempre dan lo mismo.
+        D-172: con ✋ Manual, si sale una pelea, el 🥷 Sigilo (_sneaks_past, sorteo propio) puede evitarla: la vuelta no da
+        nada más (ni hallazgo ni monedas) y se cuenta en activity["sneaked"] para el resumen. Con ⚔️ Automática el lote pelea
+        todas (el jugador eligió pelear); cazar y recolectar no usan el sigilo.
         """
         t = self.texts
         target = self._explore_target(hero) or (zone.x, zone.y)
@@ -1000,6 +1031,9 @@ class GameService(StoryMixin):
         activity["log"] += self._story_event(hero, "explore", x=zone.x, y=zone.y, lejania=zone.lejania)     # D-117
         roll = rng.random()
         if roll < bal["encounter"] and self.content.biomes[zone.biome]["danger"] > 0 and not self._territory(zone.x, zone.y):
+            if not self._auto_on(hero) and self._sneaks_past(hero, "explore", activity.get("until", 0)):
+                activity["sneaked"] = activity.get("sneaked", 0) + 1       # D-172: 🥷 Sigilo, nothing else this round
+                return None
             return self._start_combat(hero, zone, rng, "encounter.found")
         if roll < bal["encounter"] + bal["item"]:
             options = ["hierba_curativa", "pieza_metal", "venda", "pocion_vida"]
@@ -1246,6 +1280,10 @@ class GameService(StoryMixin):
             return self._places_view(hero)
         if action_id == "dungeon":                      # D-170: the dungeon screen of this zone (🕳️ Entrar / 🌀 Descender)
             return self._dng_view(hero)
+        if action_id == "recon":                        # D-172: 🔭 Reconocer (/reconocer); a menu, also while busy
+            return self._recon_view(hero)
+        if action_id.startswith("rcn:"):                # D-172: scout one place from afar: instant, never a fight, never moves you
+            return self._recon(hero, action_id[4:])
         if action_id == "memento":
             return self._memento_view(hero)
         if action_id.startswith("mem:"):
@@ -1548,6 +1586,8 @@ class GameService(StoryMixin):
                     lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
                 if activity.get("xp"):
                     lines.append(t.t("batch.xp", xp=activity["xp"]))
+                if activity.get("sneaked"):               # D-172: 🥷 fights avoided by stealth
+                    lines.append(t.t("stealth.batch", n=activity["sneaked"]))
                 if activity.get("trade"):                 # D-112: what the 🧭 Explorador earned
                     lines.append(self._trade_summary(activity["trade"]))
         lines += self._auto_summary(activity)           # D-114: ⚔️ N peleas automáticas: N ganadas...
@@ -1731,6 +1771,7 @@ class GameService(StoryMixin):
         body += self._tutorial_hint(hero)
         body += ["", t.t("zone.routes")]
         actions: list[Action] = []
+        scouted = self._recon_today(hero)               # D-172: 🔭 neighbours scouted today show what is there
         for direction in ("n", "s", "e", "w"):
             dest, seconds, known = self._route_seconds(hero, direction)
             if known:
@@ -1743,6 +1784,8 @@ class GameService(StoryMixin):
                 where = t.t("zone.uncharted")
             if self._ecamp_standing(dest.x, dest.y):     # D-112: everyone sees a camp next door
                 where += t.t("ecamp.route_mark")
+            elif f"{dest.x}:{dest.y}" in scouted:
+                where += self._recon_route_mark(dest.x, dest.y)
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
@@ -2312,7 +2355,8 @@ class GameService(StoryMixin):
         de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un ⛺ campamento enemigo en pie en la zona (D-112) el menú es
         el del campamento (_ecamp_menu: ⚔️ Asaltar y 🕵️ Infiltrarse en lugar de explorar y recolectar); si cayó hoy, una
         línea lo dice. Con una entrada de mazmorra en la zona (D-170) 🕳️ Entrar o 🌀 Descender toma el lugar de 🏹 Cazar (que
-        pasa adentro de la pantalla de la mazmorra) y una línea dice qué familia la ocupa hoy.
+        pasa adentro de la pantalla de la mazmorra) y una línea dice qué familia la ocupa hoy. D-172: si hay lugares para
+        🔭 reconocer de lejos hoy, una línea lo dice con /reconocer (sin botón: los 4 lugares están tomados).
         La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
         Si cambia, afecta: tests/test_boss.py, tests/test_hunt.py y tests/test_enemy_camps.py (los botones),
         tests/test_buttons.py (tope de 4) y la consola (adapters/cli/play.py numera estos botones).
@@ -2328,6 +2372,7 @@ class GameService(StoryMixin):
                 self._resources_line(hero, zone.x, zone.y), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
         if camp:                                        # D-112: the camp here fell today
             body.append(t.t("ecamp.ruins", name=camp["destroyed"].get("name", "?")))
+        body += self._recon_hint_lines(hero)            # D-172: 🔭 N places to scout from afar: /reconocer
         body += self._tutorial_hint(hero)
         actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
@@ -6332,9 +6377,12 @@ class GameService(StoryMixin):
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
         D-171: ❓ marca las entradas de mazmorra a 2 zonas o menos de lo que recuerdas (hay algo, no se sabe qué) y 🕳️ / 🌀
         las que ya conoces; debajo, las 3 más cercanas (_dng_map_lines).
+        D-172: una línea 🔭 dice cuántos lugares puedes reconocer de lejos hoy (/reconocer) o desde qué rango de 🧭 Explorador;
+        las mazmorras reconocidas se ven 🕳️ / 🌀 (no ❓) y, hoy, con su familia; los campamentos reconocidos hoy, con su fuerza.
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), ⛺ Ir al campamento
         enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él), ❓ Ir a investigar / 🕳️ Ir a la mazmorra
-        (D-171, la más cercana que ves) y ↩️ Volver: 4 como mucho.
+        (D-171, la más cercana que ves), 🔭 Reconocer (D-172, solo si queda lugar y hay algo para reconocer) y ↩️ Volver: 4
+        como mucho.
         Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano
         (tests/test_enemy_camps.py, tests/test_boss.py).
         """
@@ -6373,6 +6421,8 @@ class GameService(StoryMixin):
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
         body += self._ecamp_map_lines(hero, seen)
         body += self._dng_map_lines(hero, dungeons)     # D-171
+        pending = self._recon_pending(hero)             # D-172: 🔭 what you can scout from here today
+        body += self._recon_map_lines(hero, bool(seen or dungeons), pending)
         actions = [Action(id="places", label=t.t("menu.places"))]
         target = next((camp for camp in seen if (camp["x"], camp["y"]) != (hero.x, hero.y)), None)
         if target and not hero.activity:               # D-112: ⛺ go to the nearest enemy camp you see
@@ -6383,6 +6433,8 @@ class GameService(StoryMixin):
         if near and not hero.activity:                 # D-171: go to the nearest dungeon on your map (4 buttons at most)
             label = t.t("dungeon.go_unknown") if near[2] == t.t("dungeon.icon_unknown") else t.t("dungeon.go_button", mark=near[2])
             actions.append(Action(id=f"goto:{near[0]}:{near[1]}", label=label))
+        if pending and len(actions) < 3:                # D-172: 🔭 Reconocer only when it fits (4 buttons at most); /reconocer always
+            actions.append(Action(id="recon", label=t.t("recon.map_button")))
         actions.append(Action(id="explore_menu", label=t.t("menu.back")))
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
 
@@ -7134,9 +7186,9 @@ class GameService(StoryMixin):
         return self._explorer_rank(hero) >= int(self._explorer_cfg()["ranks"][key])
 
     def _explorer_what(self, key: str) -> str:
-        """What a 🧭 Explorador rank threshold opens, in words (⚒️ Oficios and the rank-up line)."""
+        """What a 🧭 Explorador rank threshold opens, in words (⚒️ Oficios and the rank-up line); D-172: zones for 🔭 recon."""
         cfg = self._explorer_cfg()
-        return self.texts.t(f"explorer.what.{key}", n=cfg["near_radius"], places=cfg["places_listed"])
+        return self.texts.t(f"explorer.what.{key}", n=cfg["near_radius"], places=cfg["places_listed"], zones=self._recon_range_of(key))
 
     def _explorer_unlocks(self, hero: Hero, pid: str, before: int, after: int) -> list[str]:
         """Lines of the 🧭 Explorador thresholds crossed by a rank-up; rank 100 also gives the title (once, for ever)."""
@@ -7158,18 +7210,21 @@ class GameService(StoryMixin):
             return []
         t = self.texts
         rank = self._explorer_rank(hero)
-        parts = [("✅" if rank >= int(need) else "") + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"])
+        parts = [("✅" if rank >= int(need) else "") + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"],
+                                                            zones=self._recon_range_of(key))     # D-172: 🔭 reach
                  for key, need in cfg["ranks"].items()]
         return [t.t("explorer.ranks_line", items=" · ".join(parts))]
 
     def _explorer_next(self, hero: Hero) -> str | None:
-        """🔓 The next 🧭 Explorador threshold and what it opens (None at the top)."""
+        """🔓 The next 🧭 Explorador threshold and everything it opens (None at the top). D-172: 10, 30 and 50 open two things."""
         rank = self._explorer_rank(hero)
-        later = sorted((int(need), key) for key, need in self._explorer_cfg()["ranks"].items() if int(need) > rank)
+        ranks = self._explorer_cfg()["ranks"]
+        later = [int(need) for need in ranks.values() if int(need) > rank]
         if not later:
             return None
-        need, key = later[0]
-        return self.texts.t("prof.next", rank=need, items=self._explorer_what(key))
+        need = min(later)
+        keys = [key for key, value in ranks.items() if int(value) == need]
+        return self.texts.t("prof.next", rank=need, items=" · ".join(self._explorer_what(key) for key in keys))
 
     def _trip_seconds(self, hero: Hero, x: int, y: int) -> float:
         """Estimated travel time from the hero to a zone, leg by leg (the path 📒 Lugares follows)."""
@@ -7277,8 +7332,11 @@ class GameService(StoryMixin):
     def _ecamp_enemy_name(self, member: dict[str, Any]) -> str:
         return self.texts.t(self.content.enemies[member["id"]]["name_key"])
 
-    def _ecamp_intel_lines(self, camp: dict[str, Any]) -> list[str]:
-        """👹 who is left, 👑 the chief and 🎁 the chest of a camp (infiltration, or 🧭 rank 75 at the camp)."""
+    def _ecamp_intel_lines(self, camp: dict[str, Any], chest: bool = True) -> list[str]:
+        """👹 who is left, 👑 the chief and 🎁 the chest of a camp (infiltration, or 🧭 rank 75 at the camp).
+
+        D-172: 🔭 Reconocer passes chest=False: from afar you see the garrison and the chief, never the chest.
+        """
         t = self.texts
         cfg = self._ecamp_cfg()
         groups: dict[tuple[str, int], int] = {}
@@ -7291,10 +7349,12 @@ class GameService(StoryMixin):
                      guards=names or t.t("ecamp.intel_no_guards")),
                  t.t("ecamp.intel_chief", enemy=self._ecamp_enemy_name(chief), level=chief["level"],
                      hp=round(100 * (cfg["chief_hp_mult"] - 1)), attack=round(100 * (cfg["chief_attack_mult"] - 1)))]
-        chest = self._ecamp_chest(camp)
-        items = [self._money(chest["coins"])] + ([self._item_list(chest["items"])] if chest["items"] else [])
-        lines.append(t.t("ecamp.intel_chest", items=" · ".join(items), pct=round(100 * chest["gear_chance"]),
-                         level=chest["gear_level"]))
+        if not chest:
+            return lines
+        box = self._ecamp_chest(camp)
+        items = [self._money(box["coins"])] + ([self._item_list(box["items"])] if box["items"] else [])
+        lines.append(t.t("ecamp.intel_chest", items=" · ".join(items), pct=round(100 * box["gear_chance"]),
+                         level=box["gear_level"]))
         return lines
 
     def _ecamp_block_line(self, hero: Hero) -> str | None:
@@ -7331,7 +7391,7 @@ class GameService(StoryMixin):
             body += self._ecamp_intel_lines(camp)
         else:
             body.append(t.t("ecamp.intel_hint", rank=need))
-        body += [t.t("ecamp.how", energy=cfg["fight_energy"]), self._status_line(hero)]
+        body += [t.t("ecamp.how", energy=cfg["fight_energy"])] + self._recon_hint_lines(hero) + [self._status_line(hero)]   # D-172
         body += self._tutorial_hint(hero)
         infiltrate = (t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"]) if self._explorer_rank(hero) >= need
                       else t.t("ecamp.infiltrate_locked_button", rank=need))
@@ -7546,11 +7606,12 @@ class GameService(StoryMixin):
         return [Action(id="assault", label=self.texts.t("ecamp.again_button", energy=cost))]
 
     def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
-        """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75), how far you see,
-        and from rank 10 the time to the Guardian's lair and to your camp."""
+        """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75 or after 🔭 scouting it
+        today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp."""
         t = self.texts
         cfg = self._explorer_cfg()
         travel = self._explorer_has(hero, "travel")
+        scouted = self._recon_today(hero)               # D-172: 🔭 what you scouted today shows its strength too
         lines: list[str] = []
         if seen:
             lines.append(t.t("ecamp.map_legend"))
@@ -7559,7 +7620,7 @@ class GameService(StoryMixin):
                 text = t.t("ecamp.map_line", x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y))
                 if travel:
                     text += t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
-                if self._ecamp_intel(hero, camp):
+                if self._ecamp_intel(hero, camp) or f"{x}:{y}" in scouted:
                     text += t.t("ecamp.map_strength", left=self._ecamp_left(camp), level=camp["level"],
                                 chief=self._ecamp_enemy_name(camp["garrison"][-1]))
                 lines.append(text)
@@ -7690,20 +7751,22 @@ class GameService(StoryMixin):
     def _dng_icon(self, kind: str) -> str:
         return self.texts.t(f"dungeon.icon_{kind}")
 
-    def _dng_shown(self, hero: Hero, x: int, y: int, known: set[str] | None = None) -> str | None:
+    def _dng_shown(self, hero: Hero, x: int, y: int, known: set[str] | None = None, kinds: set[str] | None = None) -> str | None:
         """The 🗺️ Mapa mark of a dungeon (D-171): 🕳️ / 🌀 if the hero knows it, ❓ if it only knows something is there, else None.
 
         [ES]
         Qué hace: dice qué ve el héroe de una entrada en su mapa: si pisó la zona (o la estudió desde la de al lado), sabe
         qué es (🕳️ chica o 🌀 profunda); si solo anduvo cerca (a dungeons.hint_radius zonas o menos de alguna que recuerda),
-        ve ❓: sabe que hay algo, no qué (D-171). Si no, nada. La llaman: _map_view, _dng_map_lines y "goto:".
+        ve ❓: sabe que hay algo, no qué (D-171). Si no, nada. D-172: si la 🔭 reconoció de lejos (alguna vez: la entrada no se
+        mueve), también sabe qué es; `kinds` son esas zonas (store "recon", clave "kinds"), para leerlas una vez por mapa.
+        La llaman: _map_view, _dng_map_lines, _recon_targets y "goto:".
         Si cambia, afecta: lo que cada uno ve en el 🗺️ Mapa.
         """
         kind = self._dng_kind(x, y)
         if not kind:
             return None
         known = set(hero.known) if known is None else known
-        if f"{x}:{y}" in known:
+        if f"{x}:{y}" in known or f"{x}:{y}" in (self._recon_kinds(hero) if kinds is None else kinds):
             return self._dng_icon(kind)
         radius = int(self._dng_cfg()["hint_radius"])
         near = any(f"{x + dx}:{y + dy}" in known for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1))
@@ -7713,24 +7776,29 @@ class GameService(StoryMixin):
         """The dungeons on the hero's 🗺️ Mapa (x, y, mark), nearest first."""
         radius = self.content.balance["map_view"]["radius"]
         known = set(hero.known)
+        kinds = self._recon_kinds(hero)                 # D-172: entrances scouted from afar
         found = [(hero.x + dx, hero.y + dy, mark) for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
-                 if (mark := self._dng_shown(hero, hero.x + dx, hero.y + dy, known))]
+                 if (mark := self._dng_shown(hero, hero.x + dx, hero.y + dy, known, kinds))]
         found.sort(key=lambda d: (abs(d[0] - hero.x) + abs(d[1] - hero.y), d[0], d[1]))
         return found
 
     def _dng_map_lines(self, hero: Hero, seen: list[tuple[int, int, str]]) -> list[str]:
-        """🗺️ Mapa lines: the nearest dungeons you know of (❓ unknown, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10."""
+        """🗺️ Mapa lines: the nearest dungeons you know of (❓ unknown, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10
+        and, D-172, today's family of those you scouted from afar today ("🔭 hoy 🐺 Manada")."""
         if not seen:
             return []
         t = self.texts
         unknown = t.t("dungeon.icon_unknown")
         lines = [t.t("dungeon.map_legend")]
         travel = self._explorer_has(hero, "travel")
+        scouted = self._recon_today(hero)
         for x, y, mark in seen[:int(self._dng_cfg()["map_lines"])]:
             key = "dungeon.map_unknown" if mark == unknown else f"dungeon.map_{self._dng_kind(x, y)}"
             text = t.t(key, x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y))
             if travel and (x, y) != (hero.x, hero.y):
                 text += t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
+            if f"{x}:{y}" in scouted and not self._dng_blocked(x, y):
+                text += t.t("recon.map_today", family=self._dng_family_label(self._dng_today(x, y)["family"]))
             lines.append(text)
         return lines
 
@@ -8152,6 +8220,293 @@ class GameService(StoryMixin):
             return [self.texts.t("dungeon.boss_badge")]
         return [self.texts.t("dungeon.floor_badge", floor=ref["floor"])] if ref.get("kind") == dungeon_rules.DEEP else []
 
+    # ------------------------------------------------------------------ 🔭 reconnaissance and 🥷 stealth (D-172)
+
+    def _recon_cfg(self) -> dict[str, Any]:
+        return self.content.balance["recon"]
+
+    def _recon_range_of(self, key: str) -> int:
+        """Zones a 🧭 rank threshold lets you scout (balance.yaml recon.range; 0 if `key` is not a recon threshold)."""
+        return int(self._recon_cfg()["range"].get(key, 0))
+
+    def _recon_range(self, hero: Hero) -> int:
+        """How many zones around it the hero scouts from afar: the widest 🔭 threshold its 🧭 rank reached (0 = not yet).
+
+        [ES]
+        Qué hace: dice hasta cuántas zonas a la redonda llega el 🔭 Reconocer del héroe: el mayor de balance.yaml recon.range
+        entre los umbrales de explorer.ranks que su rango de 🧭 Explorador alcanzó (rango 10 → 1, 30 → 2, 50 → 3); 0 antes del 10.
+        La llaman: _recon_view, _recon, _recon_targets y las líneas del 🗺️ Mapa. Si cambia, afecta: qué puede reconocer cada uno.
+        """
+        rank = self._explorer_rank(hero)
+        ranks = self._explorer_cfg()["ranks"]
+        return max((int(zones) for key, zones in self._recon_cfg()["range"].items() if rank >= int(ranks[key])), default=0)
+
+    def _recon_record(self, hero: Hero) -> dict[str, Any]:
+        """The hero's 🔭 record (store "recon"): what it scouted today and the dungeon entrances it learned from afar.
+
+        [ES]
+        Qué hace: lee lo que el héroe reconoció: "day" (el día de "done"), "done" (lugar "x:y" → {"kind": "camp" o "dungeon",
+        "at"}; se vacía solo al cambiar el día: uno por lugar y día) y "kinds" (las entradas de mazmorra que reconoció alguna
+        vez: ya sabe si es 🕳️ o 🌀, que nunca cambia). Sin registro (héroes de antes) empieza vacío: nada nuevo en Hero.
+        La llaman: _recon (para escribir). Para leer sin escribir: _recon_today y _recon_kinds.
+        Si cambia, afecta: el tope de uno por lugar y día y lo que muestra el 🗺️ Mapa.
+        """
+        record = dict(self.store.get("recon", hero.id) or {})
+        if record.get("day") != self._today():
+            record["day"] = self._today()
+            record["done"] = {}
+        record.setdefault("done", {})
+        record.setdefault("kinds", [])
+        return record
+
+    def _recon_today(self, hero: Hero) -> dict[str, Any]:
+        """What the hero scouted today: "x:y" -> {"kind", "at"} (empty on a new day). Read only."""
+        record = self.store.get("recon", hero.id) or {}
+        return dict(record.get("done") or {}) if record.get("day") == self._today() else {}
+
+    def _recon_kinds(self, hero: Hero) -> set[str]:
+        """Dungeon entrances ("x:y") whose kind the hero learned by 🔭 scouting them (for ever: an entrance never moves)."""
+        return set((self.store.get("recon", hero.id) or {}).get("kinds") or [])
+
+    def _recon_targets(self, hero: Hero) -> list[tuple[int, int, str]]:
+        """What the hero can scout from where it stands: (x, y, "camp" | "dungeon"), nearest first; never its own zone.
+
+        [ES]
+        Qué hace: lista lo que se puede 🔭 reconocer desde donde estás: en las zonas a 1..recon_range de distancia (el cuadrado
+        alrededor, como la vista de los campamentos), cada ⛺ campamento enemigo en pie que ves y cada entrada de mazmorra que
+        marca tu 🗺️ Mapa (❓, 🕳️ o 🌀). Si un campamento tapa una entrada, la zona cuenta como campamento. Nunca tu propia zona
+        (ahí se entra o se 🕵️ infiltra). Los más cercanos primero.
+        La llaman: _recon_view, _recon_pending y _recon_target. Si cambia, afecta: qué ofrece la pantalla 🔭.
+        """
+        radius = self._recon_range(hero)
+        if radius <= 0:
+            return []
+        known, kinds = set(hero.known), self._recon_kinds(hero)
+        found = []
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                if not (dx or dy):
+                    continue
+                x, y = hero.x + dx, hero.y + dy
+                if self._ecamp_visible(hero, x, y):
+                    found.append((x, y, "camp"))
+                elif self._dng_shown(hero, x, y, known, kinds):
+                    found.append((x, y, "dungeon"))
+        found.sort(key=lambda f: (abs(f[0] - hero.x) + abs(f[1] - hero.y), f[0], f[1]))
+        return found
+
+    def _recon_pending(self, hero: Hero) -> list[tuple[int, int, str]]:
+        """The targets within reach not scouted today, nearest first."""
+        done = self._recon_today(hero)
+        return [target for target in self._recon_targets(hero) if f"{target[0]}:{target[1]}" not in done]
+
+    def _recon_target(self, hero: Hero, x: int, y: int) -> str | None:
+        """"camp" or "dungeon" if (x, y) is a target the hero can scout right now, else None."""
+        return next((what for tx, ty, what in self._recon_targets(hero) if (tx, ty) == (x, y)), None)
+
+    def _recon_mark(self, hero: Hero, x: int, y: int, what: str) -> str:
+        """The mark of a target as the 🗺️ Mapa shows it: ⛺ a camp; ❓ / 🕳️ / 🌀 a dungeon."""
+        if what == "camp":
+            return "⛺"
+        return self._dng_shown(hero, x, y) or self.texts.t("dungeon.icon_unknown")
+
+    def _recon_route_mark(self, x: int, y: int) -> str:
+        """📍 Zona route mark of a neighbour dungeon scouted today: " 🕳️🐺" (its kind and today's family)."""
+        kind = self._dng_kind(x, y)
+        if not kind or self._dng_blocked(x, y):
+            return ""
+        family = self._dng_families().get(self._dng_today(x, y, kind)["family"], {})
+        return self.texts.t("recon.route_mark", mark=self._dng_icon(kind), emoji=family.get("emoji", ""))
+
+    def _recon_line(self, hero: Hero, x: int, y: int, what: str, scouted: bool) -> str:
+        """One line of the 🔭 list: where it is and how far; ✅ and what it holds today if you scouted it."""
+        t = self.texts
+        zones = abs(x - hero.x) + abs(y - hero.y)       # walking distance, as the 🗺️ Mapa lines say it
+        if scouted and what == "camp":
+            camp = self._ecamp_standing(x, y)
+            if camp:
+                return t.t("recon.line_done_camp", x=x, y=y, left=self._ecamp_left(camp), total=len(camp["garrison"]),
+                           chief=self._ecamp_enemy_name(camp["garrison"][-1]))
+        if scouted and what == "dungeon":
+            info = self._dng_today(x, y)
+            if info:
+                return t.t("recon.line_done_dungeon", mark=self._dng_icon(info["kind"]), x=x, y=y,
+                           family=self._dng_family_label(info["family"]), boss=self._dng_enemy(info["boss"]))
+        return t.t("recon.line", mark=self._recon_mark(hero, x, y, what), x=x, y=y, zones=zones)
+
+    def _recon_next(self, hero: Hero) -> str | None:
+        """🔓 The next 🔭 reach: "Con rango 30 de 🧭 Explorador, hasta 2 zonas" (None at the widest)."""
+        rank = self._explorer_rank(hero)
+        ranks = self._explorer_cfg()["ranks"]
+        later = sorted((int(ranks[key]), int(zones)) for key, zones in self._recon_cfg()["range"].items() if int(ranks[key]) > rank)
+        return self.texts.t("recon.next", rank=later[0][0], n=later[0][1]) if later else None
+
+    def _recon_hint_lines(self, hero: Hero) -> list[str]:
+        """🧭 Explorar: "🔭 2 lugares para reconocer de lejos: /reconocer", only when there is something to scout today."""
+        pending = self._recon_pending(hero)
+        return [self.texts.t("recon.hint", n=len(pending))] if pending else []
+
+    def _recon_map_lines(self, hero: Hero, marks: bool, pending: list[tuple[int, int, str]]) -> list[str]:
+        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer), or from which 🧭 rank (only if the map marks something)."""
+        t = self.texts
+        radius = self._recon_range(hero)
+        if radius <= 0:
+            return [t.t("recon.map_locked", rank=self._explorer_cfg()["ranks"]["recon"])] if marks else []
+        if pending:
+            return [t.t("recon.map_line", n=len(pending), zones=radius)]
+        return [t.t("recon.map_line_none", zones=radius)] if marks else []
+
+    def _recon_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🔭 Reconocer (/reconocer, 🗺️ Mapa): what you can scout from here, ✅ what you already scouted today. 4 buttons at most.
+
+        [ES]
+        Qué hace: la pantalla del reconocimiento de lejos (D-172). Dice cómo funciona (recon.energy ⚡ cada uno, experiencia de
+        🧭 Explorador y unas monedas; uno por lugar y día), hasta dónde llegas, y lista hasta recon.listed lugares a tu alcance
+        (los ⛺ y las ❓ / 🕳️ / 🌀 de tu mapa), con ✅ y lo que hay hoy en los que ya reconociste. Botones: hasta 3 lugares sin
+        reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Antes del rango 10 dice qué rango pide. Es un menú: se abre aunque
+        estés explorando, recolectando o viajando (no en combate).
+        La llaman: "recon" (/reconocer, el botón 🔭 del mapa, 🔭 Reconocer otro) y lo que _recon rechaza.
+        Si cambia, afecta: tests/test_reconocimiento.py y el tope de 4 botones.
+        """
+        t = self.texts
+        rcfg = self._recon_cfg()
+        body = [t.t("recon.intro", energy=rcfg["energy"])]
+        radius = self._recon_range(hero)
+        actions: list[Action] = []
+        if radius <= 0:
+            body += [t.t("recon.locked", rank=self._explorer_cfg()["ranks"]["recon"], have=self._explorer_rank(hero)),
+                     "", self._status_line(hero)]
+            return View(kind="recon", title=t.t("recon.title"), body=body,
+                        actions=[Action(id="map", label=t.t("menu.back"))], notice=notice)
+        body.append(t.t("recon.reach", n=radius))
+        done = self._recon_today(hero)
+        targets = self._recon_targets(hero)
+        listed = int(rcfg["listed"])
+        body += [self._recon_line(hero, x, y, what, f"{x}:{y}" in done) for x, y, what in targets[:listed]]
+        if len(targets) > listed:
+            body.append(t.t("recon.more", n=len(targets) - listed))
+        if not targets:
+            body.append(t.t("recon.none"))
+        nxt = self._recon_next(hero)
+        if nxt:
+            body.append(nxt)
+        body += ["", self._status_line(hero)]
+        for x, y, what in [target for target in targets if f"{target[0]}:{target[1]}" not in done][:3]:
+            actions.append(Action(id=f"rcn:{x}:{y}", label=t.t("recon.button", mark=self._recon_mark(hero, x, y, what), x=x, y=y,
+                                                              energy=rcfg["energy"])))
+        actions.append(Action(id="map", label=t.t("menu.back")))
+        return View(kind="recon", title=t.t("recon.title"), body=body, actions=actions, notice=notice)
+
+    def _recon_dungeon_lines(self, hero: Hero, info: dict[str, Any]) -> list[str]:
+        """What 🔭 shows of a dungeon: kind and level, today's family, its boss and, small, its chest; deep, today's 🏆 record."""
+        t = self.texts
+        cfg = self._dng_cfg()
+        kind = info["kind"]
+        lines = [t.t(f"recon.dungeon_{kind}", level=info["level"], rooms=cfg["small"]["rooms"]),
+                 t.t("dungeon.today", family=self._dng_family_label(info["family"]))]
+        if kind == dungeon_rules.SMALL:
+            scfg = cfg["small"]
+            lines.append(t.t("dungeon.boss_line", enemy=self._dng_enemy(info["boss"]), level=info["level"],
+                             hp=round(100 * (scfg["boss_hp_mult"] - 1)), attack=round(100 * (scfg["boss_attack_mult"] - 1))))
+            chest = self._dng_chest_of(info)
+            lines.append(t.t("dungeon.chest_line", items=self._dng_loot_text(chest["coins"], chest["items"]),
+                             pct=round(100 * chest["gear_chance"]), level=chest["gear_level"]))
+            return lines
+        lines.append(t.t("dungeon.boss_line_deep", enemy=self._dng_enemy(info["boss"]), every=cfg["deep"]["boss_every"]))
+        top = self._dng_top(info["x"], info["y"], info["day"])
+        lines.append(t.t("recon.top", name=top[0][1], floor=top[0][0]) if top else t.t("recon.top_none"))
+        best = self._dng_record(hero)["best"]
+        lines.append(t.t("dungeon.best", floor=best) if best else t.t("dungeon.best_none"))
+        return lines
+
+    def _recon(self, hero: Hero, where: str) -> View:
+        """🔭 Scout one place from afar ("rcn:x:y"): pay recon.energy, see what is there today, earn 🧭 xp, hero xp and coins.
+
+        [ES]
+        Qué hace: el reconocimiento de lejos (D-172). Cobra recon.energy (2 ⚡) y muestra lo que hay hoy en ese lugar, sin ir:
+        de una mazmorra, si es 🕳️ chica o 🌀 profunda, su nivel, la familia de hoy, su jefe y, la chica, su cofre; la profunda,
+        el récord de hoy (🏆) y el tuyo. De un ⛺ campamento enemigo, su nivel, cuántos quedan de su guarnición, quiénes y su jefe
+        (no el cofre: eso es 🕵️ Infiltrarse), y si tapa una entrada de mazmorra. Es lo mismo que vería cualquiera ese día (sale de
+        la semilla y del registro compartido del campamento). Da recon.explorer_xp de 🧭 Explorador, recon.hero_xp de héroe y
+        nivel × recon.coins_per_level monedas. Uno por lugar y día; la mazmorra queda 🕳️ / 🌀 en tu mapa para siempre y, hoy,
+        con su familia; el campamento, con su fuerza. Nunca es una pelea, nunca te mueve y se puede hacer en medio de un lote.
+        Se rechaza sin cobrar antes del rango 10, fuera de alcance, ya reconocido hoy o sin energía.
+        La llaman: los botones "rcn:x:y" de _recon_view. Si cambia, afecta: tests/test_reconocimiento.py.
+        """
+        t = self.texts
+        try:
+            x, y = (int(v) for v in where.split(":"))
+        except ValueError:
+            return self._recon_view(hero)
+        if self._recon_range(hero) <= 0:
+            return self._recon_view(hero)
+        what = self._recon_target(hero, x, y)
+        if what is None:
+            return self._recon_view(hero, notice=t.t("recon.out_of_reach"))
+        record = self._recon_record(hero)
+        key = f"{x}:{y}"
+        if key in record["done"]:
+            return self._recon_view(hero, notice=t.t("recon.already"))
+        rcfg = self._recon_cfg()
+        if not self._spend_energy(hero, "recon", int(rcfg["energy"])):
+            return self._recon_view(hero, notice=self._no_energy_notice(hero))
+        zones = abs(x - hero.x) + abs(y - hero.y)       # walking distance, as the 🗺️ Mapa lines say it
+        lines = [t.t("recon.done", name=self._zone_name(self._zone(x, y)), x=x, y=y, zones=zones)]
+        dkind = self._dng_kind(x, y)
+        if what == "camp":
+            camp = self._ecamp_standing(x, y)
+            level = camp["level"]
+            lines.append(t.t("recon.camp", level=level, total=len(camp["garrison"])))
+            lines += self._ecamp_intel_lines(camp, chest=False)
+            if dkind:
+                lines.append(t.t(f"recon.covers_{dkind}"))
+        else:
+            info = self._dng_today(x, y, dkind)
+            level = info["level"]
+            lines += self._recon_dungeon_lines(hero, info)
+        record["done"][key] = {"kind": what, "at": self.clock.now()}
+        if dkind and key not in record["kinds"]:
+            record["kinds"].append(key)                 # the entrance never moves: now you know what it is
+        self.store.put("recon", hero.id, record)
+        coins = int(level * float(rcfg["coins_per_level"]))
+        hero.gold += coins
+        ecfg = self._explorer_cfg()
+        lines.append(t.t("recon.reward", name=self._prof_name(ecfg["profession"]), xp=int(rcfg["explorer_xp"]),
+                         hero_xp=int(int(rcfg["hero_xp"]) * self._xp_mult(hero)), gold=self._money(coins)))
+        lines += self._prof_gain(hero, ecfg["profession"], int(rcfg["explorer_xp"]))
+        lines += self._give_xp(hero, int(rcfg["hero_xp"]))
+        actions: list[Action] = []
+        if not hero.activity:
+            actions.append(Action(id=f"goto:{x}:{y}", label=t.t("recon.go_button",
+                                                               time=self._fmt_duration(self._trip_seconds(hero, x, y)))))
+        if self._recon_pending(hero):
+            actions.append(Action(id="recon", label=t.t("recon.again_button")))
+        actions.append(Action(id="map", label=t.t("menu.back")))
+        return View(kind="recon_report", title=t.t("recon.report_title"), body=lines + ["", self._status_line(hero)], actions=actions)
+
+    def _stealth_chance(self, hero: Hero) -> float:
+        """🥷 Sigilo: the chance to avoid a random fight (perk "stealth": the 🧭 Explorador and 🕵️ Infiltrado), capped.
+
+        [ES]
+        Qué hace: la probabilidad de evitar una pelea al azar: el beneficio "stealth" del 🧭 Explorador (hasta 25 % al rango
+        100, parejo con el rango) más el de la 🎓 🕵️ Infiltrado (hasta 10 puntos con todo el dominio), sin pasar de
+        balance.yaml explorer.stealth_max. La llaman: _sneaks_past y ⚙️ Opciones. Si cambia, afecta: cuántas peleas se evitan.
+        """
+        return max(0.0, min(float(self._explorer_cfg()["stealth_max"]), float(self._perks(hero)["stealth"])))
+
+    def _sneaks_past(self, hero: Hero, *parts: Any) -> bool:
+        """True if 🥷 Sigilo avoids this random fight. Its own draw (world seed, hero and `parts`): nothing else changes.
+
+        [ES]
+        Qué hace: decide si el sigilo evita la pelea que acaba de salir, con un sorteo propio (semilla del mundo, héroe y el
+        momento), así no cambia ningún otro resultado de la vuelta ni del viaje. Solo lo llaman la pelea al azar de explorar
+        con ✋ Manual (_explore_step) y la emboscada al llegar de un viaje (_arrive): nunca cazar (es una pelea que eliges),
+        recolectar, ⚔️ Asaltar, las mazmorras, las oleadas ni el Guardián (D-172).
+        Si cambia, afecta: cuántas peleas al azar se evitan (tests/test_reconocimiento.py).
+        """
+        chance = self._stealth_chance(hero)
+        return chance > 0 and hash_unit(self.world_seed, hero.id, "stealth", *parts) < chance
+
     # ------------------------------------------------------------------ ⚙️ Opciones and automatic fights (D-114)
 
     def _auto_cfg(self) -> dict[str, Any]:
@@ -8207,6 +8562,9 @@ class GameService(StoryMixin):
                 t.t("options.retreat", pct=pct),
                 t.t("options.potions_on" if potions else "options.potions_off"),
                 "", t.t("options.never_auto")]
+        stealth = self._stealth_chance(hero)
+        if stealth > 0:                                 # D-172: 🥷 Sigilo only helps with ✋ Manual (and when travelling)
+            body.append(t.t("stealth.options", pct=f"{round(100 * stealth, 1):g}"))
         actions = [Action(id="opt:fights", label=t.t("options.fights_button", value=t.t("options.auto" if auto else "options.manual"))),
                    Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
                    Action(id="opt:potions", label=t.t("options.potions_button", value=yes_no)),

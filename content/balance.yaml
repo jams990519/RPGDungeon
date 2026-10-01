@@ -64,9 +64,12 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   xp_full_zone: 6            # [ES] ...y un extra al dejar una zona al 100 %. Unos 6 por ⚡ en total, como refinar (6): rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año dedicado (la curva es la de todos los oficios)
   ranks:                     # [ES] desde qué rango de Explorador se abre cada cosa (⚒️ Oficios muestra la lista)
     travel: 10               # [ES] ⏱️ 📒 Lugares lista hasta places_listed lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca (campamentos, guarida, tu campamento)
+    recon: 10                # [ES] D-172: 🔭 Reconocer de lejos (/reconocer) las ❓ mazmorras y los ⛺ campamentos hasta recon.range.recon zonas (1: las 8 vecinas)
     camps_near: 25           # [ES] ⛺ ve los campamentos enemigos hasta near_radius zonas, aunque no los haya pisado
     infiltrate: 30           # [ES] 🕵️ Infiltrarse en un campamento enemigo
+    recon_far: 30            # [ES] D-172: 🔭 Reconocer hasta recon.range.recon_far zonas (2)
     camps_all: 50            # [ES] ⛺ ve los campamentos enemigos de todo su mapa (13 × 13, map_view.radius)
+    recon_wide: 50           # [ES] D-172: 🔭 Reconocer hasta recon.range.recon_wide zonas (3)
     strength: 75             # [ES] 👹 ve desde el mapa la fuerza de cada campamento: cuántos enemigos quedan, de qué nivel y su jefe
     master: 100              # [ES] 🏅 título Gran Explorador
   base_sight: 1              # [ES] cualquiera ve los campamentos de su zona y de las 8 vecinas
@@ -74,6 +77,15 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   places_listed: 8           # [ES] desde el rango travel, 📒 Lugares lista hasta 8 lugares con su tiempo (sin ese rango, 3; los botones siguen siendo 3)
   map_lines: 4               # [ES] cuántos campamentos enemigos lista el mapa debajo de los cuadritos (los más cercanos)
   title: gran_explorador     # [ES] id del título del rango 100 (estable; se guarda en Hero.titles)
+  stealth_max: 0.5           # [ES] D-172: 🥷 Sigilo nunca pasa de 50 % (el oficio da hasta 25 % al rango 100, perk stealth de content/professions.yaml, y la 🎓 🕵️ Infiltrado hasta 10 puntos más: 35 %)
+
+recon:                       # [ES] D-172 (confirmada; números propuestos por Claude, se ajustan en la beta): 🔭 Reconocer de lejos con el 🧭 Explorador (mapa-infinito-y-viaje.md §1.14). Ves lo que hay en una ❓ mazmorra o un ⛺ campamento enemigo sin ir: lo mismo que vería cualquiera que llegue ese día
+  energy: 2                  # [ES] cada reconocimiento cuesta 2 ⚡ (no es una pelea, no te mueve y se puede hacer en medio de un lote). Uno por lugar y día
+  range: {recon: 1, recon_far: 2, recon_wide: 3}   # [ES] hasta cuántas zonas a la redonda llega según el umbral de explorer.ranks que alcanzaste (10 → 1, 30 → 2, 50 → 3). Nunca tu propia zona: eso es 🕵️ Infiltrarse o entrar
+  explorer_xp: 12            # [ES] experiencia de Explorador por reconocimiento: 6 por ⚡, como explorar (explorer.xp_per_step + xp_full_zone)
+  hero_xp: 6                 # [ES] experiencia de héroe: la de 2 vueltas de explorar (explore.xp_per_step × 2), para que el ⚡ no rinda menos que explorando
+  coins_per_level: 2         # [ES] premio en monedas: nivel del lugar × 2 🥉 (nivel 4: 8 🥉; nivel 40: 80 🥉), parecido a lo que dan 2 ⚡ de explorar en monedas. Sin objeto que se vende (P-120 sigue abierta)
+  listed: 6                  # [ES] cuántos lugares lista la pantalla 🔭 (los más cercanos); botones: los 3 primeros sin reconocer hoy + ↩️ Volver
 
 enemy_camps:                 # [ES] D-112 (confirmada): ⛺ campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
   density: 0.03              # [ES] cada día, ~3 % de las zonas de Lejanía 2 o más tienen uno (en un mapa de 13 × 13, unos 4 o 5). Nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Cambiarlo mueve los campamentos del día

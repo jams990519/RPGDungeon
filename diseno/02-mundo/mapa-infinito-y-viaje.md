@@ -259,14 +259,14 @@ El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una
 | Rango | Qué ves de más |
 |---|---|
 | 1 | Lo de siempre: tus zonas, su porcentaje y su color, y los ⛺ campamentos de tu zona y de las 8 vecinas |
-| 10 | ⏱️ 📒 Lugares lista hasta **8** lugares con su tiempo (sin rango, 3; los botones siguen siendo 3), y el 🗺️ Mapa dice cuánto tardas a cada campamento que ve, a la guarida del Guardián y a tu campamento |
+| 10 | ⏱️ 📒 Lugares lista hasta **8** lugares con su tiempo (sin rango, 3; los botones siguen siendo 3), y el 🗺️ Mapa dice cuánto tardas a cada campamento que ve, a la guarida del Guardián y a tu campamento. **🔭 Reconocer** de lejos a **1** zona (D-172, abajo) |
 | 25 | Los ⛺ campamentos enemigos hasta **3** zonas a la redonda (7 × 7), aunque no las hayas pisado |
-| 30 | **🕵️ Infiltrarse** en un campamento enemigo |
-| 50 | Los campamentos enemigos de todo tu mapa (13 × 13) |
+| 30 | **🕵️ Infiltrarse** en un campamento enemigo. 🔭 Reconocer hasta **2** zonas |
+| 50 | Los campamentos enemigos de todo tu mapa (13 × 13). 🔭 Reconocer hasta **3** zonas |
 | 75 | 👹 La fuerza de cada campamento desde el mapa y en su zona: cuántos enemigos quedan, de qué nivel, su jefe y su cofre |
 | 100 | 🏅 Título «Gran Explorador» (para siempre, en la ficha y el 📔 Diario) |
 
-- **Su beneficio** (como todo oficio, D-111): **+1 punto de exploración por vuelta cada 20 rangos**, hasta **+5** al rango 100 (`perk: {explore: 5}`; se usa la parte entera, sin otro sorteo).
+- **Su beneficio** (como todo oficio, D-111): **+1 punto de exploración por vuelta cada 20 rangos**, hasta **+5** al rango 100 (`perk: {explore: 5}`; se usa la parte entera, sin otro sorteo), y el **🥷 Sigilo** de D-172 (abajo): hasta **25 %** de evitar una pelea al azar (`perk: {stealth: 0.25}`).
 
 **⛺ Campamentos enemigos:**
 - **Dónde y cuándo:** cada día real (el mismo corte de día que la despensa y el 📜 Tablón) unas **3 %** de las zonas de **Lejanía 2 o más** tienen uno: en un mapa de 13 × 13, unos 4 o 5. El lugar sale solo de la semilla del mundo, el día y las coordenadas: **todos los jugadores ven los mismos** y no hay un reloj que los mueva. Nunca salen en el Claro, en la guarida del Guardián ni en el territorio de un campamento de jugadores, y **nunca dos días seguidos en la misma zona**: al otro día aparecen en otro lado.
@@ -281,6 +281,28 @@ El dueño pidió (1-oct-2026) que **explorar sea como una especialización o una
 - **Para qué sirve:** le da trabajo a cada uno. El Explorador encuentra y estudia los campamentos, los que pelean los destruyen, y todos ganan botín. Y cambia el mapa cada día.
 - **Lo que queda abierto:** si un Explorador veterano debería empezar con experiencia por lo que ya exploró antes de este parche (hoy todos empiezan en rango 1); si fundar o agrandar un campamento de jugadores sobre un campamento enemigo en pie debería esperar a destruirlo (hoy el territorio nuevo lo hace desaparecer); si el jefe debería pedir grupo en los anillos lejanos.
 
+#### 🔭 Reconocer y 🥷 Sigilo (D-172, en el juego)
+
+El dueño pidió (1-oct-2026) que **el Explorador aprenda sigilo y reconocimiento**: saber qué hay en un lugar **antes de llegar**, con experiencia y recompensas propias. Esta es la capa simple (D-44), **ya en el juego**. Los números son propuesta de Claude (se ajustan en la beta) y viven en `content/balance.yaml` → `recon` y `explorer` (`ranks.recon`, `recon_far`, `recon_wide` y `stealth_max`); el sigilo, en `content/professions.yaml` (el `perk` del explorador y la 🎓 🕵️ Infiltrado); las pantallas, en `engine/service/game.py` (sección "reconnaissance and stealth"); los textos, en `content/locales/es_reconocimiento.yaml`. Pruebas: `tests/test_reconocimiento.py`.
+
+**🔭 Reconocer de lejos** (desde el rango **10** del 🧭 Explorador):
+- **Qué se puede reconocer:** las entradas de mazmorra que marca tu 🗺️ Mapa (❓, 🕳️ o 🌀, §1.15) y los ⛺ campamentos enemigos en pie que ves, a **1 zona** a la redonda en el rango 10, **2** en el 30 y **3** en el 50 (el cuadrado alrededor, como la vista de los campamentos). Nunca tu propia zona: ahí se entra, se asalta o se 🕵️ infiltra. Si un campamento tapa una entrada, la zona cuenta como campamento.
+- **Dónde está:** el atajo **/reconocer** (en Telegram se toca en el texto). El 🗺️ Mapa dice cuántos lugares puedes reconocer hoy y suma el botón **🔭 Reconocer** cuando cabe (4 botones como mucho); 🧭 Explorar dice "🔭 N lugares para reconocer de lejos: /reconocer" cuando hay alguno (sus 4 lugares ya están tomados). La pantalla lista hasta **6** lugares a tu alcance, con ✅ y lo que hay hoy en los que ya reconociste, y ofrece los 3 más cercanos sin reconocer como botones (más ↩️ Volver).
+- **Cuánto cuesta y qué da:** **2 ⚡** cada uno. Da **12** de experiencia de Explorador (6 por ⚡, como explorar), **6** de experiencia de héroe (como 2 vueltas de explorar) y **nivel del lugar × 2 🥉** (nivel 4: 8 🥉; nivel 40: 80 🥉, parecido a lo que dan 2 ⚡ de explorar en monedas). Sin objeto que se venda: si la información debería ser un 📜 informe que se vende queda para cuando se decida P-120.
+- **Una vez por lugar y día.** No es una pelea, no te mueve y se puede hacer en medio de un lote (no en combate). Antes del rango 10, fuera de alcance, ya reconocido hoy o sin energía, se rechaza sin cobrar.
+- **Qué muestra** (lo mismo que vería cualquiera ese día: sale de la semilla del mundo y del registro compartido del campamento):
+  - De una **mazmorra:** si es 🕳️ chica o 🌀 profunda, su nivel, **la familia de hoy** y **su jefe**; de la chica, también su cofre de hoy; de la profunda, **el récord de hoy** (🏆 el más hondo del día, para superarlo) y el tuyo.
+  - De un **campamento enemigo:** su nivel, el tamaño de la guarnición, **cuántos quedan y quiénes** y **su jefe**. **No el cofre**: eso sigue siendo de 🕵️ Infiltrarse, que además da exploración de la zona. Reconocer no gasta la infiltración del día. Si tapa una entrada de mazmorra, lo dice.
+- **Lo que queda para el día:** en el 🗺️ Mapa, una mazmorra reconocida pasa de ❓ a 🕳️ / 🌀 (para siempre: la entrada nunca se mueve) y, ese día, su línea dice "🔭 hoy 🐺 Manada"; un campamento reconocido muestra su fuerza (👹 quedan · nivel · jefe) como al rango 75. En 📍 Zona, la ruta hacia una mazmorra vecina reconocida lleva su marca y la familia ("🌀🦅"). Al otro día, todo se puede reconocer de nuevo.
+- **Cuánto hay para reconocer:** con la semilla de prueba, desde una zona cualquiera de Lejanía 3 a 8 hay en promedio **0,5** lugares a 1 zona, **1,7** a 2 y **3,2** a 3 (contando todas las entradas y campamentos, antes de ver si están en tu mapa). Es un rato del día, no un camino entero: unos 2 a 8 ⚡.
+
+**🥷 Sigilo** (pasivo, crece con el rango):
+- **Qué hace:** cuando sale una **pelea al azar**, puedes pasar sin que te vean. La probabilidad sube **pareja con el rango**: **0,25 % por rango**, **25 %** al rango 100 (12,5 % al 50). La 🎓 especialización **🕵️ Infiltrado** suma hasta **10 puntos** más con todo el dominio (35 %), y nunca pasa de **50 %** (`explorer.stealth_max`). Usa su propio sorteo: no cambia nada más de la vuelta ni del viaje.
+- **Dónde vale:** en la pelea al azar de **🔎 explorar con ✋ Manual** (la vuelta sigue sin hallazgo ni monedas, y el resumen del lote dice "🥷 Sigilo: N peleas evitadas") y en la **emboscada al llegar de un viaje** (el viaje sigue y una línea lo dice; la emboscada es siempre a mano, así que vale con cualquier opción).
+- **Dónde no vale nunca:** con **⚔️ Automática** (elegiste pelear: el lote pelea todas), en **🏹 Cazar** y la caza en lote (es una pelea que eliges), al **🪓 recolectar**, al **⚔️ Asaltar** un campamento, en las **mazmorras**, en las **oleadas** del campamento ni contra el **Guardián**.
+- **Dónde se ve:** en ⚒️ Oficios, en la línea del beneficio del Explorador ("🥷 12,5 % de evitar peleas al azar..."), y en ⚙️ Opciones, que recuerda que con ⚔️ Automática no se usa.
+- **Lo que queda abierto:** si recolectar con ✋ Manual también debería usar el sigilo; si el sigilo debería poder apagarse (hoy, quien quiere pelear usa ⚔️ Automática o 🏹 Cazar); si el informe de reconocimiento debería ser un objeto que se vende (P-120).
+
 ### 1.15 Las entradas de mazmorra en el mapa: hay algo, no se sabe qué (D-171, en el juego)
 
 El dueño pidió (1-oct-2026) que **el mapa muestre que hay algo, no qué es**: en cada tramo, 1 o 2 mazmorras que no se sabe qué son hasta ir a investigar. Esta es la parte de las **mazmorras para uno** ([Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §0, D-164 y D-170); los nodos de oficio de D-171 vienen después. Números en `content/balance.yaml` → `dungeons`; cuentas en `engine/world/dungeons.py`; pantallas en `engine/service/game.py` (sección "solo dungeons"). Pruebas: `tests/test_mazmorras.py`.
@@ -291,7 +313,8 @@ El dueño pidió (1-oct-2026) que **el mapa muestre que hay algo, no qué es**: 
 - **Debajo del mapa:** las **3 más cercanas** que ves ("❓ (3, -5) · a 4 zonas: algo hay, ve a investigar"; "🌀 (-1, -5) · a 2 zonas: mazmorra profunda"), con el tiempo de viaje desde el rango 10 del 🧭 Explorador. El botón **❓ Ir a investigar** (o **🕳️ / 🌀 Ir a la mazmorra**) te lleva a la más cercana zona por zona, como 📒 Lugares; con el de ⛺ son 4 botones como mucho.
 - **En el cuadrito**, la marca de la mazmorra va debajo de 🧍 tú, 👑 la guarida, ⛺ un campamento enemigo y 🏕️ un campamento de jugadores, y encima del color o el bioma.
 - **En la zona:** 🧭 Explorar cambia 🏹 Cazar por **🕳️ Entrar** o **🌀 Descender** (siguen 4 botones); 🏹 Cazar queda dentro de la pantalla de la mazmorra.
-- **Lo que queda abierto:** si el ❓ también debería mostrar los nodos de oficio de D-171 cuando existan; si un 🧭 Explorador de rango alto debería ver qué es (🕳️ o 🌀) sin pisarla (D-172: reconocimiento).
+- **🔭 Reconocer (D-172):** desde el rango 10 del 🧭 Explorador, una entrada cercana se puede reconocer de lejos: el ❓ pasa a 🕳️ / 🌀 para siempre y, ese día, se ve su familia (§1.14, "🔭 Reconocer y 🥷 Sigilo").
+- **Lo que queda abierto:** si el ❓ también debería mostrar los nodos de oficio de D-171 cuando existan (P-101 / E-78 sigue abierta).
 
 ## 2. Lo que viene por parches (propuesta)
 
