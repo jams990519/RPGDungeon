@@ -586,13 +586,13 @@ Racha de etapa: ✅✅⬜ 2/3 días
 
 👁 Amenaza   ▓▓▓▓▓▓▓░░░ 72 % · llega: probablemente esta noche
    Por qué: 3 forjas encendidas, manada sin cazar en el Arroyo
-❄️ El invierno llega en 3 días · reserva de invierno: 38 %
+❄️ El invierno llega en 3 días · reserva de invierno: 810/1.000
 
 📋 Pedidos de la semana
-🌾 Grano o carne salada ...... 1.840/4.200
+🌾 Grano o carne salada ......  410/1.200
 🧂 Sal ........................   60/200
 🩹 Vendas .....................   41/60
-🪵 Leña para el invierno ......  900/2.000
+🪵 Leña para el invierno ......  380/1.000
 🔨 Herramientas reparadas .....   12/40
 🛡 Turnos de guardia nocturna .   18/42
 🏹 Contrato: el alfa del Arroyo     0/1
@@ -626,10 +626,12 @@ Braseros 4/6 encendidos: precisión normal en la empalizada
 ⚠️ El alfa olfatea el corral: la próxima ronda salta la cerca.
 
 Tú: Ilsa (cazadora) · empalizada norte · ❤️ 82 % · 🔋 4/5
-[🏹 Disparar al alfa]      [🔥 Flecha incendiaria]
-[🪤 Soltar el cepo del corral] [🏃 Correr al corral]
-[🩹 Atender a un herido]   [📢 Pedir refuerzos]
+[⚔️ Disparar al alfa]   [🔥 Flecha incendiaria]
+[🎯 Tiro a la pata]     [🌀 Rodar a cubierto]
+[🏃 Bajar al corral]    [🎒 Mochila]
 ```
+
+Son los 6 botones del combate (D-46 en [Decisiones](../00-vision/decisiones.md)): ⚔️ Atacar, tres habilidades y 🎒 Mochila. En la defensa, 🏃 Huir sirve para **cambiar de puesto** en el tablero. Los puestos de oficio también tienen como máximo 6 botones, con sus tareas: el constructor ve *Reparar tramo* y *Cerrar brecha*; el médico, *Estabilizar* y *Llevar a la enfermería*.
 
 Mientras tanto, Bram (constructor) repara la empalizada, Mara (médica) estabiliza a un aldeano mordido en la enfermería y dos aldeanos llevan carbón a los braseros que faltan.
 

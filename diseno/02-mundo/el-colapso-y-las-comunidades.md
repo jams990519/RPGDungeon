@@ -29,7 +29,7 @@
 - Nadie sabe cuánto tiempo pasó. Los más viejos hablan de una vida entera; las ruinas parecen mucho más antiguas.
 - **Hay ruinas por todas partes.** Cada piso está lleno de restos del mundo de antes: molinos caídos, armerías, hospitales, bibliotecas hundidas. Son peligrosas, pero guardan lo que se perdió.
 - **El conocimiento se perdió.** Los supervivientes recuerdan lo básico de cada oficio. Lo demás (técnicas, obras, curas) quedó en fragmentos entre las ruinas (§6).
-- **Las escaleras quedaron selladas.** Los Guardianes cierran cada piso y los PNJ no pueden pasar. Las comunidades de arriba quedaron aisladas, y abajo nadie sabe si siguen vivas.
+- **Las escaleras quedaron selladas.** Los Guardianes cierran cada piso y los PNJ no pueden pasar hasta que alguien abre la escalera. Las comunidades de arriba quedaron aisladas, y abajo nadie sabe si siguen vivas.
 
 ### 1.2 Los Ascendentes
 
@@ -71,14 +71,15 @@ Como cada semana real avanza una estación (ver [Mundo vivo](mundo-vivo-y-viaje.
 | ⚖️ **Lonja del Vado** | El mercado más grande del Tramo I, caravanas, un banco pequeño. Entrenadores de Comercio, Sastrería, Joyería e Inscripción (Contratos) | Un **impuesto del 5 %** sobre lo que vendes en su mercado; pagar las deudas | Robo, estafa, falsificar firmas, deudas impagas | Multa del doble de lo robado o estafado y cierre de tu puesto. Con deudas, embargo hasta pagar |
 | ⛲ **Hospicio de la Fuente** | Sanación barata para todos, cuarentena, camas de enfermería. Entrenadores de Medicina, Primeros Auxilios, Herboristería y Alquimia (Pociones) | **Servicio semanal** en la enfermería, o una donación de vendas o hierbas | **Armas dentro** (se dejan en la portería), cualquier violencia, rechazar a un herido, sea quien sea | Expulsión de 4 semanas e Infamia (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) |
 | 🐎 **Errantes del Viento** | Monturas y crías, rastreo, mapas de rutas, mercado itinerante. Entrenadores de Ganadería, Desuello y caza, Curtiduría, Cocina y Pesca | **Aporte a la manada:** una ración de comida por día; mudarte con ellos | Construir casas fijas en su campamento, cazar crías, talar árboles viejos, abandonar a un compañero en peligro | "Te dejan atrás": en la siguiente mudanza no te dicen adónde van y tienes que encontrarlos (una misión de rastreo) |
-| 🔥 **Santuario de la Llama** | Templo, bendiciones, levantar maldiciones menores, guardia sagrada contra el Vacío. Entrenadores de Inscripción (Pergaminos), Encantamiento y Destilación | Un **diezmo del 10 %** del oro que ganas (botín y ventas); jurar las tres leyes | Nigromancia y magia del Vacío dentro de sus muros, vender reliquias malditas, profanar tumbas | Penitencia: 3 encargos para el templo. Si se repite, destierro de 2 semanas |
-| 🪶 **Nido de Cuervos** | Acepta a cualquiera, incluso con Infamia alta. Perista PNJ, garito, matasanos, rumores y pistas de los oficios secretos (ver [Mundo vivo](mundo-vivo-y-viaje.md)). Entrenadores de Robo, Alquimia (Venenos) e Ingeniería (Explosivos) | **La parte de la Reina:** el 10 % de lo que vendes en el Nido | Nada: no hay leyes | No hay reglas que romper. Pero quien le roba a la Reina o mata a su gente tiene precio sobre su cabeza en todo el Tramo I |
+| 🔥 **Santuario de la Llama** | Templo, bendiciones, levantar maldiciones menores, guardia sagrada contra el Vacío. Entrenadores de Inscripción (Pergaminos), Encantamiento y Destilación | Un **diezmo del 10 %** del oro que ganas (botín y ventas); jurar las tres leyes | Usar nigromancia o magia del Vacío dentro de sus muros (invocar esbirros, rituales), vender reliquias malditas, profanar tumbas | Penitencia: 3 encargos para el templo. Si se repite, destierro de 2 semanas |
+| 🪶 **Nido de Cuervos** | Acepta a cualquiera, incluso con Infamia alta. Perista PNJ, garito, matasanos y rumores. Entrenadores de Alquimia (Venenos) e Ingeniería (Explosivos). El maestro de Robo vive ahí, pero hay que encontrarlo siguiendo un rumor, como todo oficio secreto (ver [Mundo vivo](mundo-vivo-y-viaje.md)) | **La parte de la Reina:** el 10 % de lo que vendes en el Nido | Nada: no hay leyes | No hay reglas que romper. Pero quien le roba a la Reina o mata a su gente tiene precio sobre su cabeza en todo el Tramo I |
 
 **Notas.**
 - **Entrenadores de rango bajo y medio.** Las comunidades del Tramo I enseñan hasta **Oficial**; las de pisos altos, hasta **Experto** (§2.3). Cada una enseña solo los oficios de su cultura, así que ninguna enseña todo. Los rangos altos (Artesano, Maestro, Gran Maestro) solo están en el Ala de los Oficios de un Castillo de jugadores (ver [Ciudades y el Castillo](ciudades-y-castillo.md)). Cada rango tiene su examen, igual que en el Castillo (ver [Profesiones](../07-economia/profesiones.md)).
 - **Mercado.** Los mercaderes PNJ venden solo lo básico (ver [Red de sistemas](../00-vision/red-de-sistemas.md), regla 1). Lo demás es mercado entre jugadores, con la tasa de la comunidad.
 - **Vivienda.** Un aspirante duerme en el dormitorio común; un residente tiene cuarto propio alquilado. Los dos cuentan como posada para descansar.
 - **Protección.** Las comunidades son zona azul y sus guardias PNJ las defienden de las incursiones. La excepción es el **Nido**, en zona amarilla: dentro, la bandera está siempre izada (ver [PvP](../06-contenido/pvp.md)). Se puede pelear, pero nadie saquea, y los personajes del Juramento de Hierro siguen protegidos. Más arriba, los jugadores con karma rojo levantan sus propios refugios (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)).
+- **Ninguna comunidad cierra el paso a una clase ni a un linaje.** Un Nigromante, un Brujo o un Sacerdote de Sombra puede unirse a la Llama: solo deja esa magia en la puerta. El Renacido paga algo más con los PNJ de la Llama, como ya dice su rasgo (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)).
 - **Toque de queda del Bastión.** De noche (la noche del juego) las puertas se cierran. Si llegas tarde, duermes fuera, sin el descanso de la posada, o le pagas al portero.
 
 ### 2.3 Más arriba: las comunidades que se descubren
@@ -121,8 +122,8 @@ Se pueden sumar más en cada tramo: una comunidad es un conjunto de datos (Carta
 
 ### 3.1 Un solo hogar
 
-- **Visitar es libre:** cualquiera puede entrar, comerciar y curarse, con precios según su reputación.
-- **Ser miembro es otra cosa.** Desde el nivel 5 eliges un **hogar** (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)): una comunidad PNJ o un asentamiento de jugadores. Ahí duermes, ahí tienes rango y voto, y ahí cumples deberes. Solo puedes tener uno.
+- **Visitar es libre:** cualquiera puede entrar, comerciar y curarse, con precios según su reputación. Con reputación **Honorable**, un visitante también puede usar sus entrenadores hasta Aprendiz, pagando el doble; si el consejo lo nombra **Amigo de la comunidad**, paga como un residente.
+- **Ser miembro es otra cosa.** Desde el nivel 5 eliges un **hogar** (ver [Creación de personaje](../03-personaje/creacion-de-personaje.md)): una comunidad PNJ o un asentamiento de jugadores. Ahí duermes, ahí tienes rango y voto, y ahí cumples deberes. Solo puedes tener uno. Puedes ser aspirante antes del nivel 5; desde residente, la comunidad tiene que ser tu hogar.
 - Elegir hogar es gratis la primera vez. Después, cambiarlo pide 7 días de espera: es más barato que mudarse de castillo (ver [Facciones](facciones.md)), porque una comunidad PNJ no es un bando.
 - Para pelear en la **guerra de castillos** hay que tener el hogar en un castillo. Las comunidades PNJ son neutrales.
 - La **reputación** con cada comunidad sigue contando aunque no vivas ahí. Usa la escala de siempre: Hostil, Neutral, Amistoso, Honorable, Reverenciado y Exaltado (ver [Progresión](../03-personaje/progresion.md)).
@@ -183,7 +184,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 
 - **El bot avisa antes de que rompas una regla:** "*Esto rompe una ley del Hospicio. ¿Seguro?*". Nadie rompe una regla sin querer.
 - **Algunas reglas son imposibles de romper:** en el Hospicio tu arma queda en la portería; en el Santuario, los hechizos prohibidos aparecen apagados.
-- **Si no ganaste nada, no pagas nada.** Los deberes en porcentaje nunca dejan deuda (D-27).
+- **Si no ganaste nada, no pagas nada.** Los deberes son porcentajes (D-27) y nunca dejan deuda.
 
 ### 3.6 Reputación
 
@@ -226,11 +227,11 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 
 | Relación | Qué implica | Cómo nace |
 |---|---|---|
-| **Comercio** | Ruta de caravanas, menos tasa entre los dos mercados | Sola, cuando la ciudad tiene reputación Amistoso con la comunidad |
+| **Comercio** | Ruta de caravanas, menos tasa entre los dos mercados | Sola, cuando el humor de la comunidad con la ciudad es 🙂 (ver abajo) |
 | **Hermandad** | Los residentes de cada lado usan los servicios del otro como si fueran residentes, entrenadores incluidos | Tratado que votan el consejo de la ciudad y los notables de la comunidad |
 | **Defensa mutua** | Los guardias PNJ ayudan en las incursiones de la ciudad, y la ciudad en las de la comunidad | Tratado |
-| **Protectorado** | Un asentamiento pequeño de jugadores (Campamento o Aldea) queda bajo la protección de la comunidad a cambio del 5 % de su tesoro. Se deja cuando quiera | Lo pide el asentamiento; como servir a un señor en *Mount & Blade* |
-| **Rivalidad** | Precios peores y misiones de una contra la otra. Nunca hay guerra abierta en zona azul | Romper un tratado, o chocar con sus leyes |
+| **Protectorado** | Un asentamiento pequeño de jugadores (Campamento o Aldea) queda bajo la protección de la comunidad a cambio del 5 % de sus impuestos. Lo deja cuando quiera | Lo pide el asentamiento; como servir a un señor en *Mount & Blade* |
+| **Rivalidad** | Precios peores y misiones de una contra la otra. Nunca hay guerra abierta en zona azul | Romper un tratado, o un humor 🙁 que dura varias semanas |
 | **Petición de ayuda** | En una crisis, la comunidad publica sus pedidos en las ciudades vecinas | Ver §5.4 |
 | **Absorción** | La comunidad se une a una ciudad de jugadores y queda como barrio con su cultura | Ver §5.4 |
 
@@ -240,7 +241,7 @@ Orientativo: residente en una semana, ciudadano en un mes y notable en dos o tre
 |---|---|---|
 | 🛡 Bastión Gris | Tiene murallas y guardia fuerte | Deja entrar las incursiones |
 | ⚖️ Lonja del Vado | Cobra impuestos bajos y comercia libre | Prohíbe mercancías o cierra su mercado |
-| ⛲ Hospicio de la Fuente | Ayuda a todos por igual (le cae bien cualquiera) | Nada: nunca toma partido |
+| ⛲ Hospicio de la Fuente | Cualquiera: atiende a todos por igual | Ninguna: nunca toma partido |
 | 🐎 Errantes del Viento | Tiene un Ecologista con vedas de caza | Sobreexplota la caza y la tala |
 | 🔥 Santuario de la Llama | Construye templos | Legaliza la nigromancia o las reliquias malditas |
 | 🪶 Nido de Cuervos | Legaliza el juego y tiene poca guardia | Hace redadas y paga recompensas |
@@ -328,7 +329,7 @@ Ligero de verdad: en diez minutos ya estás eligiendo tu camino.
 | **Minuto 10** | **El cruce.** La cazadora del Claro te encuentra y te da a elegir: una comunidad o el Claro. También puedes decidir después | 1 |
 | **Primera hora** | **Camino seguro:** el rito, una cama, tu primer entrenador, las primeras misiones de la comunidad. **Camino libre:** llegas al Claro, levantas tu primer cobertizo y cubres los pedidos de la fundación | — |
 | **Primeros días** | Niveles 1 a 5 con las misiones del piso. En el nivel 5 eliges tu hogar | — |
-| **Semanas** | Los caminos se juntan: Sello del Piso, Frente, oficios. Quien vive en una comunidad puede fundar (§5); quien fundó puede entrenar en una comunidad con su reputación | — |
+| **Semanas** | Los caminos se juntan: Sello del Piso, Frente, oficios. Quien vive en una comunidad puede fundar (§5); quien fundó puede entrenar en una comunidad si tiene buena reputación (§3.1) | — |
 
 **Los dos caminos llevan a lo mismo.** Ninguno da más poder. El seguro da comodidad, maestros y reglas claras. El libre da Fundadores, voz en el gobierno y libertad. A los pocos días, los dos jugadores están igual de fuertes y en el mismo Frente.
 
