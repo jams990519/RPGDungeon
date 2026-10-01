@@ -177,3 +177,4 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-118 | ¿Cómo se arma un grupo? (D-164; entrevista E-95) | Con los que están en tu zona: un botón para formar grupo y otro para sumarse |
 | P-119 | ¿Para quién son los nodos que mejora el carpintero? (D-168, D-171; entrevista E-96) | En zonas libres, para todos; en el territorio de un campamento, para sus miembros; duran unos días y se mantienen |
 | P-120 | ¿La información de enfermedades que pasan cazadores e investigadores es un objeto que se vende? (D-167; entrevista E-97) | Sí: un informe que se vende o se regala |
+| P-121 | ¿Se cambian también los nombres de clases, especializaciones y recursos que vienen de World of Warcraft (Caballero de la Muerte, Cazador de demonios, Evocador, Reprensión, Sutileza, Poder Sagrado...)? (D-135, D-151; entrevista E-122) | Sí, por nombres propios, sin tocar lo que hace cada una; las habilidades ya se cambiaron en la 0.25.1 |

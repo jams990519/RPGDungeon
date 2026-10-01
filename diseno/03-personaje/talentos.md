@@ -66,7 +66,7 @@ Lo de arriba es el diseño completo, para más adelante. La versión jugable usa
 | `talents.passive` (Ataque / Defensa) | 3 % por punto | 1 % por punto | El dueño pidió porcentajes bajos; con 100 niveles, 3 % daba hasta +60 % |
 | `talents.passive` (Curación / Soporte) | 2 % + 1 % | 0,6 % + 0,4 % | Igual, repartido |
 | `talents.passive_cap` | 20 puntos | 50 puntos | Tope de +50 % para 100 niveles |
-| "Pegas más" de las primeras habilidades: *Estandarte de Guerra*, *Dados del Destino*, *Tótem Viento Furioso*, *Poder Arcano*, *Entregar Alma*, *Poder de Ébano*, *Allegro* y *Apuntar* | 60 % | 50 % | Porcentajes más bajos al inicio; las nuevas van de 30 a 35 % |
+| "Pegas más" de las primeras habilidades: *Estandarte de Guerra*, *Dados del Destino*, *Tótem de Ventarrón*, *Desborde Arcano*, *Entregar Alma*, *Fuerza Prestada*, *Allegro* y *Apuntar* | 60 % | 50 % | Porcentajes más bajos al inicio; las nuevas van de 30 a 35 % |
 | *Distracción* (Forajido) | 35 % | 40 % | Compensa la baja de *Dados del Destino* (el simulador bajó a 92 % de victorias contra el Oso de las cumbres; con 40 % vuelve a 98 %) |
 
 Medición: `python3 tools/sim.py --summary` (todas las especializaciones ≥ 95 % de victorias contra los enemigos de nivel 1 a 3 con sus 3 primeras habilidades) y `python3 tools/sim.py --bars --level=11|25|47` (todas las barras posibles de cada especialización: ninguna queda más de 12 puntos de vida restante por encima de la mediana de su rol).

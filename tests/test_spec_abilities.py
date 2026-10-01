@@ -176,7 +176,8 @@ def test_spec_view_lists_eight_abilities_and_the_next_unlock(service):
         view = service.act("test:1", "pt:guerrero_furia")
     lines = [line for line in view.body if line.startswith(("🔓", "🔒"))]
     assert len(lines) == 8 and sum(line.startswith("🔓") for line in lines) == 4
-    assert any("16" in line and "Reflejo" in line for line in view.body if line.startswith("Siguiente"))
+    next_name = service.texts.t("ability.reflejo_de_hechizos.name")   # display text (D-135 renamed it); the ID is stable
+    assert any("16" in line and next_name in line for line in view.body if line.startswith("Siguiente"))
     assert not service.texts.missing
 
 

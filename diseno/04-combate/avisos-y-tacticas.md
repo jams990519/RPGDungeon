@@ -55,7 +55,7 @@ caerán sobre la RETAGUARDIA en las próximas rondas.
 ❤️ 590/880   🔷 Maná 410/700   🔋 ●●○○○
 🎒 Cinturón: 🧪 Vida ×2 · 🔥 Resist. fuego ×1 · 💊 Ungüento ×1
 
-[⚔️ Atacar]          [✨ Piroexplosión]
+[⚔️ Atacar]          [✨ Estallido Ígneo]
 [✨ Bola de Fuego]   [💨 Traslación]
 [🌀 Esquivar]        [🎒 Mochila]
 ```
