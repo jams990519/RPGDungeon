@@ -13,6 +13,7 @@ Depende de: content/*.yaml, PyYAML; engine/professions/rules.py (masterwork_item
 Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
     (content/story.yaml → Content.story: orígenes, campaña, personajes, facciones y encargos, D-117)
+    (content/dungeons.yaml → Content.dungeons: familias de enemigos que llenan las mazmorras para uno, D-164/D-170)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
@@ -57,6 +58,8 @@ class Content:
             "stations" and "recipes"), read with retired entries kept (the service hides retired recipes).
         story: content/story.yaml (story and roleplay, D-117: "factions", "rank_rewards", "npcs", "origins",
             "chapters", "quests", "daily" and "camp_tasks"), read with retired entries kept (the service hides them).
+        dungeons: content/dungeons.yaml (solo dungeons, D-164/D-170: "families" of enemies that fill a dungeon each day),
+            read with retired entries kept (the service leaves retired families out).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -74,6 +77,7 @@ class Content:
     camp_upgrades: dict[str, Any] | None = None
     professions: dict[str, Any] | None = None
     story: dict[str, Any] | None = None
+    dungeons: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -117,6 +121,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
         professions=_read(base / "professions.yaml", keep_retired=True) if (base / "professions.yaml").exists() else {},
         story=_read(base / "story.yaml", keep_retired=True) if (base / "story.yaml").exists() else {},
+        dungeons=_read(base / "dungeons.yaml", keep_retired=True) if (base / "dungeons.yaml").exists() else {},
     )
 
 

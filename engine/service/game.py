@@ -22,6 +22,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     del campamento: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería, 🏗️ Construcción y las defensas que dañan las oleadas, D-115/D-116)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112)
+    diseno/06-contenido/mazmorras-y-bandas.md §0 y mapa-infinito-y-viaje.md §1.15 (🕳️ 🌀 mazmorras para uno y los ❓ del
+    mapa, D-164, D-165, D-170, D-171)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
     engine/service/story.py, StoryMixin, de la que GameService hereda)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
@@ -30,7 +32,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
     D-109), engine.service.story (StoryMixin: 📖 Historia, origen, misiones, facciones, encargos, diario y gestos, D-117;
     usa engine.story), engine.world.enemy_camps (dónde están los campamentos enemigos de cada día, su guarnición y su
-    cofre, D-112), content/*
+    cofre, D-112), engine.world.dungeons (dónde están las mazmorras, qué las llena cada día, sus pisos y su botín,
+    D-164/D-170), content/* (content/dungeons.yaml: las familias de enemigos de las mazmorras)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -76,6 +79,13 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     semilla y el día. Al escribir el primero de un día se borran los de antes de ayer. Una pelea del campamento lleva
     "enemy_camp" ({"day", "x", "y", "chief"}) en su estado de "combat"; la experiencia del 🧭 Explorador va en
     Hero.professions["explorador"] y su título en Hero.titles.
+    D-164/D-170: "dungeon" (lo de cada héroe en las mazmorras, clave su id: {"day", "delves" {"x:y": {"cleared",
+    "done"}} (se borra solo al cambiar el día), "deep" (la bajada abierta o None: x, y, day, floor, fight, cleared, pot
+    {coins, items, gear}), "best" (el piso más hondo, para siempre)}) y "dungeon_top" (la lista 🏆 del día de cada
+    mazmorra profunda, clave "<día>:<x>:<y>": {"day", "x", "y", "best" {héroe: {"name", "floor"}}}; al escribir el
+    primero de un día se borran los de antes de ayer). Dónde hay mazmorras no se guarda: sale de la semilla. Una pelea
+    de mazmorra lleva "dungeon" ({"kind", "day", "x", "y", "room" o "floor" y "fight", "boss"}) en su estado de
+    "combat". Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -117,6 +127,11 @@ Reglas que nunca se rompen:
         nunca se suman entre miembros: rige el mejor rango de cada oficio entre los miembros de ahora. Una obra nunca pide
         menos de 1 de cada cosa y las monedas no bajan. Lo ya construido nunca se pierde: las oleadas solo dañan puntos de
         🛡️ Defensa (nunca más que lo construido; la Noche de prueba no daña) hasta que los miembros los reparan.
+    19. Las mazmorras (D-164, D-170) están siempre en el mismo lugar para todos (semilla del mundo) y lo de adentro es igual
+        para todos cada día; nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, y un campamento
+        enemigo en pie tapa la entrada. Sus peleas son siempre a mano (D-114); el cofre de la chica se abre una vez por
+        mazmorra y día y nunca da experiencia extra; perder en la profunda deja la mitad de la bolsa, nunca menos; mientras
+        hay una bajada abierta la vida no vuelve sola. Nada se cobra si la pelea no empieza.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -231,6 +246,13 @@ Si cambias esto, revisa:
       _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
       (marca del jefe), _prof_gain (umbrales del mapa y el título), _next_unlock, _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
+    - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
+      engine/world/dungeons.py; textos dungeon.* en content/locales/es_mazmorras.yaml; tests/test_mazmorras.py. Tocan
+      _settle (sin vida que vuelva mientras hay bajada abierta: _dng_paused; al final, _dng_settle cierra la bajada que
+      quedó atrás), _arrive (aviso al llegar), _idle_action ("dungeon", "dgo", "dout"; "goto:" acepta una entrada del
+      mapa), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar), _map_view
+      (❓ 🕳️ 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
+      _end_combat (_dng_fight_done y los botones de _dng_again)
 """
 
 from __future__ import annotations
@@ -288,6 +310,7 @@ from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
+from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
 from engine.world.resources import main_resource, water_resources, zone_resources
@@ -743,7 +766,8 @@ class GameService(StoryMixin):
         notices: list[str] = []
         in_combat = self.store.get("combat", hero.id) is not None
         stats = hero_stats(self._kit(hero), hero.level)
-        if not in_combat and hero.hp < stats["max_hp"] and hero.last_regen_at:
+        paused = in_combat or self._dng_paused(hero)    # D-170: no free healing between floors of a deep dungeon
+        if not paused and hero.hp < stats["max_hp"] and hero.last_regen_at:
             regen = self.content.balance["regen"]
             pct = 1 / (regen["downed_full_minutes"] if hero.downed else regen["hp_full_minutes"])      # share of max hp per minute
             pct *= self._camp_regen_mult(hero)          # D-101: 🔥 Fogón / 🏥 Enfermería in your camp's territory
@@ -803,6 +827,7 @@ class GameService(StoryMixin):
                 notices.append(self.texts.t("inn.rested"))
                 notices += self._tutorial(hero, "heal")
         self._guild_count(hero, tally)
+        notices += self._dng_settle(hero)               # D-170: a deep run left behind is closed (its pot paid in full)
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
@@ -823,6 +848,7 @@ class GameService(StoryMixin):
             notices.append(self.texts.t("travel.arrived", name=self._zone_name(zone), biome=self._biome_label(zone)))
             if self._ecamp_standing(hero.x, hero.y):
                 notices.append(self.texts.t("ecamp.arrive"))      # D-112: an enemy camp stands here
+            notices += self._dng_arrive_lines(hero)               # D-171: a dungeon entrance here (now you know what it is)
         if self._discovered(hero.x, hero.y) is None:
             self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": activity["until"]})
             hero.zones_discovered += 1
@@ -1194,6 +1220,8 @@ class GameService(StoryMixin):
             return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
+        if action_id == "dungeon":                      # D-170: the dungeon screen of this zone (🕳️ Entrar / 🌀 Descender)
+            return self._dng_view(hero)
         if action_id == "memento":
             return self._memento_view(hero)
         if action_id.startswith("mem:"):
@@ -1273,6 +1301,10 @@ class GameService(StoryMixin):
             return self._assault(hero)
         if action_id == "infiltrate":                   # D-112: 🕵️ Infiltrarse (🧭 Explorador rank 30)
             return self._infiltrate(hero)
+        if action_id == "dgo":                          # D-170: the dungeon's next fight (a room, the boss or a deep floor)
+            return self._dng_go(hero)
+        if action_id == "dout":                         # D-170: 🚪 Salir con lo ganado (deep dungeon)
+            return self._dng_out(hero)
         if action_id == "hunt":                         # D-106: 🧭 Explorar → 🏹 Cazar (the hunt screen)
             return self._hunt_view(hero)
         if action_id == "prey":                         # D-106: 🏹 Buscar presa / 🏹 Otra presa: a fight right away
@@ -1293,8 +1325,9 @@ class GameService(StoryMixin):
                 gx, gy = (int(v) for v in action_id[5:].split(":"))
             except ValueError:
                 return self._places_view(hero)
-            # a remembered place, or an enemy camp the hero sees on its 🗺️ Mapa (D-112: ⛺ Ir al campamento)
-            if not (hero.remembers(gx, gy) or self._ecamp_visible(hero, gx, gy)) or (gx, gy) == (hero.x, hero.y):
+            # a remembered place, an enemy camp the hero sees on its 🗺️ Mapa (D-112: ⛺ Ir al campamento) or a dungeon on it (D-171)
+            if not (hero.remembers(gx, gy) or self._ecamp_visible(hero, gx, gy) or self._dng_shown(hero, gx, gy)) \
+                    or (gx, gy) == (hero.x, hero.y):
                 return self._places_view(hero)
             if not self._spend_energy(hero, "move"):
                 return self._zone_view(hero, notice=self._no_energy_notice(hero))
@@ -1666,6 +1699,7 @@ class GameService(StoryMixin):
             body.append(t.t("camps.land_line", name=land["name"]))
         body += self._lair_lines(zone)
         body += self._ecamp_zone_lines(zone)            # D-112: ⛺ an enemy camp here (or its ruins today)
+        body += self._dng_zone_lines(hero, zone)        # D-170: 🕳️ / 🌀 a dungeon here (and today's family)
         body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
@@ -2251,7 +2285,8 @@ class GameService(StoryMixin):
         de 🗺️ Mapa para dejarle lugar a 🏹 Cazar. En la guarida del Guardián (D-82) ⚔️ Desafiar al Guardián toma el lugar
         de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un ⛺ campamento enemigo en pie en la zona (D-112) el menú es
         el del campamento (_ecamp_menu: ⚔️ Asaltar y 🕵️ Infiltrarse en lugar de explorar y recolectar); si cayó hoy, una
-        línea lo dice.
+        línea lo dice. Con una entrada de mazmorra en la zona (D-170) 🕳️ Entrar o 🌀 Descender toma el lugar de 🏹 Cazar (que
+        pasa adentro de la pantalla de la mazmorra) y una línea dice qué familia la ocupa hoy.
         La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
         Si cambia, afecta: tests/test_boss.py, tests/test_hunt.py y tests/test_enemy_camps.py (los botones),
         tests/test_buttons.py (tope de 4) y la consola (adapters/cli/play.py numera estos botones).
@@ -2272,6 +2307,10 @@ class GameService(StoryMixin):
                    Action(id="gather", label=t.t("gather.button", time=gather_time)),
                    Action(id="hunt", label=t.t("hunt.button")),          # D-106; 📒 Lugares lives in 🗺️ Mapa now
                    Action(id="map", label=t.t("menu.map"))]
+        dungeon = self._dng_explore_button(hero)
+        if dungeon:                                     # D-170: the dungeon takes 🏹 Cazar's place (its screen offers 🏹 Cazar)
+            body += self._dng_zone_lines(hero, zone)
+            actions[2] = dungeon
         if self._is_lair(zone.x, zone.y):
             # The lair (D-82): the challenge takes the gather slot and there is no prey but the Guardian (D-106).
             body += ["", self._guardian_ready_line(hero), t.t("guardian.no_gather")]
@@ -5776,8 +5815,11 @@ class GameService(StoryMixin):
         D-112: ⛺ marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
         rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
+        D-171: ❓ marca las entradas de mazmorra a 2 zonas o menos de lo que recuerdas (hay algo, no se sabe qué) y 🕳️ / 🌀
+        las que ya conoces; debajo, las 3 más cercanas (_dng_map_lines).
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), ⛺ Ir al campamento
-        enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él) y ↩️ Volver: 3.
+        enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él), ❓ Ir a investigar / 🕳️ Ir a la mazmorra
+        (D-171, la más cercana que ves) y ↩️ Volver: 4 como mucho.
         Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano
         (tests/test_enemy_camps.py, tests/test_boss.py).
         """
@@ -5785,6 +5827,8 @@ class GameService(StoryMixin):
         radius = self.content.balance["map_view"]["radius"]
         seen = self._ecamp_seen(hero)                   # D-112: the enemy camps this hero sees today
         marks = {(camp["x"], camp["y"]) for camp in seen}
+        dungeons = self._dng_seen(hero)                 # D-171: ❓ something is there; 🕳️ / 🌀 once you know
+        dmarks = {(x, y): mark for x, y, mark in dungeons}
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
@@ -5797,6 +5841,8 @@ class GameService(StoryMixin):
                     row += "⛺"
                 elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
                     row += "🏕️"
+                elif (x, y) in dmarks:
+                    row += dmarks[(x, y)]
                 elif self._explored_pct(hero, x, y) >= 100:
                     row += self.content.balance["resources"]["colors"][main_resource(self._zone_resources(x, y))]
                 elif hero.remembers(x, y):
@@ -5811,12 +5857,17 @@ class GameService(StoryMixin):
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
         body += self._ecamp_map_lines(hero, seen)
+        body += self._dng_map_lines(hero, dungeons)     # D-171
         actions = [Action(id="places", label=t.t("menu.places"))]
         target = next((camp for camp in seen if (camp["x"], camp["y"]) != (hero.x, hero.y)), None)
         if target and not hero.activity:               # D-112: ⛺ go to the nearest enemy camp you see
             label = (t.t("ecamp.go_button_time", time=self._fmt_duration(self._trip_seconds(hero, target["x"], target["y"])))
                      if self._explorer_has(hero, "travel") else t.t("ecamp.go_button"))
             actions.append(Action(id=f"goto:{target['x']}:{target['y']}", label=label))
+        near = next(((x, y, mark) for x, y, mark in dungeons if (x, y) != (hero.x, hero.y)), None)
+        if near and not hero.activity:                 # D-171: go to the nearest dungeon on your map (4 buttons at most)
+            label = t.t("dungeon.go_unknown") if near[2] == t.t("dungeon.icon_unknown") else t.t("dungeon.go_button", mark=near[2])
+            actions.append(Action(id=f"goto:{near[0]}:{near[1]}", label=label))
         actions.append(Action(id="explore_menu", label=t.t("menu.back")))
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
 
@@ -7009,6 +7060,578 @@ class GameService(StoryMixin):
                                  time=self._fmt_duration(self._trip_seconds(hero, camp["x"], camp["y"]))))
         return lines
 
+    # ------------------------------------------------------------------ solo dungeons (D-164, D-165, D-170, D-171)
+
+    def _dng_cfg(self) -> dict[str, Any]:
+        return self.content.balance["dungeons"]
+
+    def _dng_families(self) -> dict[str, dict[str, Any]]:
+        """The enemy families that can fill a dungeon (content/dungeons.yaml), without retired or empty ones, in file order."""
+        cached = getattr(self, "_dng_family_cache", None)        # content never changes while the service runs
+        if cached is None:
+            families = (self.content.dungeons or {}).get("families") or {}
+            cached = {fid: fdef for fid, fdef in families.items()
+                      if not fdef.get("retired") and dungeon_rules.level_pool(self.content.enemies, fdef.get("members", []), 1)}
+            self._dng_family_cache = cached
+        return cached
+
+    def _dng_kind(self, x: int, y: int) -> str | None:
+        """"small" or "deep" if the zone holds a dungeon entrance today, else None.
+
+        [ES]
+        Qué hace: dice si en una zona hay entrada de mazmorra y de qué tipo (🕳️ chica o 🌀 profunda). El lugar sale de la
+        semilla del mundo (engine/world/dungeons.py entrance_at: tramos de 6 × 6, Lejanía 2 o más, nunca en la guarida) y nunca
+        cambia; el territorio de un campamento de jugadores (y del Claro) la tapa mientras exista, y no hay mazmorras donde el
+        bioma no tiene peligro. Un campamento enemigo en pie no la saca: la bloquea ese día (_dng_blocked).
+        La llaman: todo lo de esta sección, 🧭 Explorar, 📍 Zona, 🗺️ Mapa y la llegada. Si cambia, afecta: dónde están las
+        mazmorras de todos (tests/test_mazmorras.py).
+        """
+        guardian = self._guardian_cfg()
+        excluded = ((int(guardian["x"]), int(guardian["y"])),) if guardian else ()
+        kind = dungeon_rules.entrance_at(self.world_seed, x, y, self._dng_cfg(), excluded)
+        if kind is None or self._territory(x, y) or not self._dng_families():
+            return None
+        return kind if self.content.biomes[self._zone(x, y).biome]["danger"] > 0 else None
+
+    def _dng_blocked(self, x: int, y: int) -> bool:
+        """True if a standing enemy camp (D-112) covers the dungeon's entrance today: it opens again when the camp falls."""
+        return self._ecamp_standing(x, y) is not None
+
+    def _dng_today(self, x: int, y: int, kind: str | None = None, day: int | None = None) -> dict[str, Any] | None:
+        """What a dungeon holds on a day (today by default): level, family, boss, path and, for a small one, its fights.
+
+        [ES]
+        Qué hace: arma lo de adentro de una mazmorra ese día: su nivel (zona + dungeons.level_bonus), la familia que la llena
+        (family_of_day: una por día, nunca la misma dos días seguidos, cualquiera, sin importar el bioma), el jefe y el camino
+        (nombres de sala de content/locales/es_mazmorras.yaml). La chica trae sus 4 salas y el jefe (delve_rooms); la profunda
+        arma cada piso al jugarlo (floor_plan). Igual para todos ese día. None si no hay mazmorra.
+        La llaman: la pantalla, _dng_go y _dng_fight_done. Si cambia, afecta: contra qué se pelea en cada mazmorra.
+        """
+        kind = kind or self._dng_kind(x, y)
+        families = self._dng_families()
+        if not kind or not families:
+            return None
+        cfg = self._dng_cfg()
+        day = self._today() if day is None else day
+        family = dungeon_rules.family_of_day(self.world_seed, day, x, y, list(families))
+        level = self._zone(x, y).level + int(cfg["level_bonus"])
+        members = list(families[family]["members"])
+        pool = dungeon_rules.level_pool(self.content.enemies, members, level)
+        info = {"x": x, "y": y, "kind": kind, "day": day, "level": level, "family": family, "members": members,
+                "boss": dungeon_rules.boss_of(pool, level)}
+        if kind == dungeon_rules.SMALL:
+            rooms = int(cfg["small"]["rooms"])
+            info["rooms"] = dungeon_rules.delve_rooms(self.world_seed, day, x, y, self.content.enemies, members, level, rooms)
+            names = self.texts.list("dungeon.rooms")
+            info["path"] = [names[i] for i in dungeon_rules.daily_path(self.world_seed, day, x, y, len(names), rooms)]
+            thrones = self.texts.list("dungeon.boss_rooms")
+            info["throne"] = thrones[dungeon_rules.boss_room(self.world_seed, day, x, y, len(thrones))] if thrones else ""
+        return info
+
+    def _dng_plan(self, info: dict[str, Any], floor: int) -> list[dict[str, Any]]:
+        """The fights of one floor of a deep dungeon on its day (engine/world/dungeons.py floor_plan)."""
+        return dungeon_rules.floor_plan(self.world_seed, info["day"], info["x"], info["y"], self.content.enemies, info["members"],
+                                        info["level"], floor, self._dng_cfg()["deep"])
+
+    def _dng_record(self, hero: Hero) -> dict[str, Any]:
+        """The hero's dungeon record (store "dungeon"): today's small dungeons, the open deep run and its best floor.
+
+        [ES]
+        Qué hace: lee lo que el héroe hizo en las mazmorras: "day" (el día de lo de abajo), "delves" (por mazmorra chica
+        "x:y": salas despejadas hoy y si ya la terminó: se borra solo al cambiar el día), "deep" (la bajada abierta o None:
+        x, y, day, floor, fight, cleared y la bolsa "pot") y "best" (el piso más hondo que despejó, para siempre). Sin
+        registro (héroes de antes) empieza vacío. La llaman: todo lo de esta sección.
+        Si cambia, afecta: el avance de todos en las mazmorras (tests/test_mazmorras.py).
+        """
+        record = dict(self.store.get("dungeon", hero.id) or {})
+        today = self._today()
+        if record.get("day") != today:
+            record["day"] = today
+            record["delves"] = {}
+        record.setdefault("delves", {})
+        record.setdefault("deep", None)
+        record.setdefault("best", 0)
+        return record
+
+    def _dng_save(self, hero: Hero, record: dict[str, Any]) -> None:
+        self.store.put("dungeon", hero.id, record)
+
+    def _dng_paused(self, hero: Hero) -> bool:
+        """True while the hero has an open deep run: no free healing between floors, only the belt (D-170)."""
+        return bool((self.store.get("dungeon", hero.id) or {}).get("deep"))
+
+    def _dng_family_label(self, family: str) -> str:
+        fdef = self._dng_families().get(family, {})
+        return f"{fdef.get('emoji', '')} {self.texts.t(fdef['name_key'])}" if fdef else family
+
+    def _dng_enemy(self, enemy_id: str) -> str:
+        return self.texts.t(self.content.enemies[enemy_id]["name_key"])
+
+    def _dng_icon(self, kind: str) -> str:
+        return self.texts.t(f"dungeon.icon_{kind}")
+
+    def _dng_shown(self, hero: Hero, x: int, y: int, known: set[str] | None = None) -> str | None:
+        """The 🗺️ Mapa mark of a dungeon (D-171): 🕳️ / 🌀 if the hero knows it, ❓ if it only knows something is there, else None.
+
+        [ES]
+        Qué hace: dice qué ve el héroe de una entrada en su mapa: si pisó la zona (o la estudió desde la de al lado), sabe
+        qué es (🕳️ chica o 🌀 profunda); si solo anduvo cerca (a dungeons.hint_radius zonas o menos de alguna que recuerda),
+        ve ❓: sabe que hay algo, no qué (D-171). Si no, nada. La llaman: _map_view, _dng_map_lines y "goto:".
+        Si cambia, afecta: lo que cada uno ve en el 🗺️ Mapa.
+        """
+        kind = self._dng_kind(x, y)
+        if not kind:
+            return None
+        known = set(hero.known) if known is None else known
+        if f"{x}:{y}" in known:
+            return self._dng_icon(kind)
+        radius = int(self._dng_cfg()["hint_radius"])
+        near = any(f"{x + dx}:{y + dy}" in known for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1))
+        return self.texts.t("dungeon.icon_unknown") if near else None
+
+    def _dng_seen(self, hero: Hero) -> list[tuple[int, int, str]]:
+        """The dungeons on the hero's 🗺️ Mapa (x, y, mark), nearest first."""
+        radius = self.content.balance["map_view"]["radius"]
+        known = set(hero.known)
+        found = [(hero.x + dx, hero.y + dy, mark) for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
+                 if (mark := self._dng_shown(hero, hero.x + dx, hero.y + dy, known))]
+        found.sort(key=lambda d: (abs(d[0] - hero.x) + abs(d[1] - hero.y), d[0], d[1]))
+        return found
+
+    def _dng_map_lines(self, hero: Hero, seen: list[tuple[int, int, str]]) -> list[str]:
+        """🗺️ Mapa lines: the nearest dungeons you know of (❓ unknown, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10."""
+        if not seen:
+            return []
+        t = self.texts
+        unknown = t.t("dungeon.icon_unknown")
+        lines = [t.t("dungeon.map_legend")]
+        travel = self._explorer_has(hero, "travel")
+        for x, y, mark in seen[:int(self._dng_cfg()["map_lines"])]:
+            key = "dungeon.map_unknown" if mark == unknown else f"dungeon.map_{self._dng_kind(x, y)}"
+            text = t.t(key, x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y))
+            if travel and (x, y) != (hero.x, hero.y):
+                text += t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
+            lines.append(text)
+        return lines
+
+    def _dng_zone_lines(self, hero: Hero, zone: Zone) -> list[str]:
+        """📍 Zona: the dungeon here (and today's family), or that an enemy camp covers its entrance today."""
+        kind = self._dng_kind(zone.x, zone.y)
+        if not kind:
+            return []
+        t = self.texts
+        if self._dng_blocked(zone.x, zone.y):
+            return [t.t(f"dungeon.zone_blocked_{kind}")]
+        info = self._dng_today(zone.x, zone.y, kind)
+        return [t.t(f"dungeon.zone_{kind}", family=self._dng_family_label(info["family"]))]
+
+    def _dng_arrive_lines(self, hero: Hero) -> list[str]:
+        """The arrival notice in a dungeon's zone (D-171: now you know what it is)."""
+        kind = self._dng_kind(hero.x, hero.y)
+        return [self.texts.t(f"dungeon.arrive_{kind}")] if kind else []
+
+    def _dng_explore_button(self, hero: Hero) -> Action | None:
+        """🧭 Explorar's button for the dungeon here (🕳️ Entrar / 🌀 Descender), or None. It takes 🏹 Cazar's place."""
+        kind = self._dng_kind(hero.x, hero.y)
+        if not kind or self._dng_blocked(hero.x, hero.y):
+            return None
+        return Action(id="dungeon", label=self.texts.t(f"dungeon.enter_{kind}"))
+
+    def _dng_chest_of(self, info: dict[str, Any]) -> dict[str, Any]:
+        """Today's chest of a small dungeon (fixed for the day: what its screen shows is what you get, but the gear roll)."""
+        cfg = self._dng_cfg()
+        materials = self._dng_families()[info["family"]].get("materials") or {}
+        return dungeon_rules.delve_chest(self.world_seed, info["day"], info["x"], info["y"], info["level"], materials,
+                                         cfg["small"]["chest"], cfg["coin_unit"], cfg["coin_level_scale"])
+
+    def _dng_loot_text(self, coins: int, items: dict[str, int], gear: list[str] | None = None) -> str:
+        parts = [self._money(coins)] + ([self._item_list(items)] if items else [])
+        parts += [self._gear_name(piece) for piece in gear or []]
+        return " · ".join(parts)
+
+    def _dng_progress(self, record: dict[str, Any], info: dict[str, Any]) -> dict[str, Any]:
+        return dict(record["delves"].get(f"{info['x']}:{info['y']}") or {"cleared": 0, "done": False})
+
+    def _dng_top(self, x: int, y: int, day: int) -> list[tuple[int, str]]:
+        """Today's 🏆 list of a deep dungeon: (deepest floor cleared, hero name), deepest first."""
+        data = self.store.get("dungeon_top", f"{day}:{x}:{y}") or {}
+        rows = [(int(v.get("floor", 0)), str(v.get("name", "?"))) for v in (data.get("best") or {}).values()]
+        return sorted(rows, key=lambda r: (-r[0], r[1]))
+
+    def _dng_top_save(self, hero: Hero, x: int, y: int, day: int, floor: int) -> None:
+        """Write the hero's floor in today's 🏆 list of that deep dungeon; a day's first write drops the older days."""
+        key = f"{day}:{x}:{y}"
+        data = self.store.get("dungeon_top", key)
+        if data is None:
+            for old, value in list(self.store.items("dungeon_top")):
+                if int(value.get("day", day)) < day - 1:
+                    self.store.delete("dungeon_top", old)
+            data = {"day": day, "x": x, "y": y, "best": {}}
+        if floor > int((data["best"].get(hero.id) or {}).get("floor", 0)):
+            data["best"][hero.id] = {"name": hero.name, "floor": floor}
+            self.store.put("dungeon_top", key, data)
+
+    def _dng_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The dungeon screen of the hero's zone: 🕳️ small (rooms and chest) or 🌀 deep (floors, pot, record, 🏆 of the day).
+
+        [ES]
+        Qué hace: la pantalla de la mazmorra (🧭 Explorar → 🕳️ Entrar / 🌀 Descender). Dice su nivel, qué familia la llena
+        hoy y su jefe (élite), y cómo se juega. La 🕳️ chica: el camino de hoy, las salas despejadas (✅) y el cofre; botones
+        [⚔️ Sala N · ⚡2 / 👑 Jefe · ⚡2] [🏹 Cazar] [↩️ Volver] (terminada hoy: sin el primero). La 🌀 profunda: cómo se
+        endurece cada piso, que entre pisos no hay curación (solo el cinturón), tu récord y la lista 🏆 de hoy; sin bajada
+        abierta, [🌀 Descender · ⚡4] [🏹 Cazar] [↩️ Volver]; con una abierta, el piso, la bolsa y [⬇️ Bajar / ⚔️ Seguir · ⚡2]
+        [🚪 Salir con lo ganado] [🧪 Pociones] [↩️ Volver]. Nunca más de 4 botones. 🏹 Cazar vive aquí porque la mazmorra tomó
+        su lugar en 🧭 Explorar.
+        La llaman: el botón "dungeon" y lo que rechazan _dng_go y _dng_out. Si cambia, afecta: tests/test_mazmorras.py.
+        """
+        t = self.texts
+        x, y = hero.x, hero.y
+        kind = self._dng_kind(x, y)
+        if not kind:
+            return self._explore_menu(hero, notice=t.t("dungeon.none_here"))
+        if self._dng_blocked(x, y):
+            return self._explore_menu(hero, notice=t.t("dungeon.blocked"))
+        cfg = self._dng_cfg()
+        info = self._dng_today(x, y, kind)
+        record = self._dng_record(hero)
+        zone = self._zone(x, y)
+        body = [t.t(f"dungeon.header_{kind}", name=self._zone_name(zone), level=info["level"]),
+                t.t("dungeon.today", family=self._dng_family_label(info["family"]))]
+        if kind == dungeon_rules.SMALL:
+            scfg = cfg["small"]
+            body.append(t.t("dungeon.boss_line", enemy=self._dng_enemy(info["boss"]), level=info["level"],
+                            hp=round(100 * (scfg["boss_hp_mult"] - 1)), attack=round(100 * (scfg["boss_attack_mult"] - 1))))
+            body.append(t.t("dungeon.path", rooms=" → ".join(info["path"] + [info["throne"]])))
+            prog = self._dng_progress(record, info)
+            rooms = len(info["rooms"]) - 1
+            marks = "".join("✅" if i < prog["cleared"] else "⬜" for i in range(rooms))
+            boss_mark = "✅" if prog["done"] else "⬜"
+            body.append(t.t("dungeon.progress", marks=marks, boss=boss_mark, n=min(prog["cleared"], rooms), total=rooms))
+            chest = self._dng_chest_of(info)
+            body.append(t.t("dungeon.chest_line", items=self._dng_loot_text(chest["coins"], chest["items"]),
+                            pct=round(100 * chest["gear_chance"]), level=chest["gear_level"]))
+            actions: list[Action] = []
+            if prog["done"]:
+                body.append(t.t("dungeon.done_today"))
+            else:
+                body.append(t.t("dungeon.small_how", energy=scfg["fight_energy"]))
+                actions.append(self._dng_small_button(prog, info))
+            body += ["", self._status_line(hero)]
+            actions += [Action(id="hunt", label=t.t("hunt.button")), Action(id="explore_menu", label=t.t("menu.back"))]
+            return View(kind="dungeon", title=t.t(f"dungeon.title_{kind}"), body=body, actions=actions, notice=notice)
+        dcfg = cfg["deep"]
+        body.append(t.t("dungeon.deep_how", level=dcfg["level_per_floor"], hp=round(100 * dcfg["hp_per_floor"]),
+                        attack=round(100 * dcfg["attack_per_floor"]), every=dcfg["boss_every"],
+                        enter=dcfg["enter_energy"], energy=dcfg["fight_energy"]))
+        body.append(t.t("dungeon.deep_rules", keep=round(100 * dcfg["defeat_keep"])))
+        body.append(t.t("dungeon.best", floor=record["best"]) if record["best"] else t.t("dungeon.best_none"))
+        top = self._dng_top(x, y, info["day"])[:int(dcfg["top_listed"])]
+        body.append(t.t("dungeon.top", items=" · ".join(t.t("dungeon.top_item", n=i + 1, name=name, floor=floor)
+                                                        for i, (floor, name) in enumerate(top)))
+                    if top else t.t("dungeon.top_empty"))
+        run = record["deep"]
+        if run and (run["x"], run["y"], run["day"]) == (x, y, info["day"]):
+            pot = run["pot"]
+            body.append(t.t("dungeon.run_line", cleared=run["cleared"], floor=run["floor"]))
+            body.append(t.t("dungeon.pot_line", items=self._dng_loot_text(pot.get("coins", 0), pot.get("items") or {}, pot.get("gear"))))
+            body.append(self._dng_next_line(info, run))
+            body += ["", self._status_line(hero)]
+            actions = [self._dng_deep_button(info, run), Action(id="dout", label=t.t("dungeon.out_button")),
+                       Action(id="potions", label=t.t("dungeon.potions_button")), Action(id="explore_menu", label=t.t("menu.back"))]
+            return View(kind="dungeon", title=t.t(f"dungeon.title_{kind}"), body=body, actions=actions, notice=notice)
+        body.append(t.t("dungeon.boss_line_deep", enemy=self._dng_enemy(info["boss"]), every=dcfg["boss_every"]))
+        body += ["", self._status_line(hero)]
+        actions = [Action(id="dgo", label=t.t("dungeon.descend_button", energy=int(dcfg["enter_energy"]) + int(dcfg["fight_energy"]))),
+                   Action(id="hunt", label=t.t("hunt.button")), Action(id="explore_menu", label=t.t("menu.back"))]
+        return View(kind="dungeon", title=t.t(f"dungeon.title_{kind}"), body=body, actions=actions, notice=notice)
+
+    def _dng_small_button(self, prog: dict[str, Any], info: dict[str, Any]) -> Action:
+        """⚔️ Sala N · ⚡2 for the next room, 👑 Jefe · ⚡2 when only the boss is left."""
+        energy = self._dng_cfg()["small"]["fight_energy"]
+        rooms = len(info["rooms"]) - 1
+        if prog["cleared"] >= rooms:
+            return Action(id="dgo", label=self.texts.t("dungeon.boss_button", energy=energy))
+        return Action(id="dgo", label=self.texts.t("dungeon.room_button", n=prog["cleared"] + 1, energy=energy))
+
+    def _dng_deep_button(self, info: dict[str, Any], run: dict[str, Any]) -> Action:
+        """⬇️ Bajar al piso N · ⚡2 at the start of a floor, ⚔️ Seguir en el piso N · ⚡2 for its second fight."""
+        energy = self._dng_cfg()["deep"]["fight_energy"]
+        key = "dungeon.on_button" if run["fight"] else "dungeon.down_button"
+        return Action(id="dgo", label=self.texts.t(key, floor=run["floor"], energy=energy))
+
+    def _dng_next_line(self, info: dict[str, Any], run: dict[str, Any]) -> str:
+        """What the next fight of the open run is: floor, fight n of m, and the boss on a boss floor."""
+        plan = self._dng_plan(info, run["floor"])
+        member = plan[min(run["fight"], len(plan) - 1)]
+        key = "dungeon.next_boss" if member["boss"] else "dungeon.next_fight"
+        return self.texts.t(key, floor=run["floor"], n=run["fight"] + 1, total=len(plan), level=member["level"])
+
+    def _dng_go(self, hero: Hero) -> View:
+        """⚔️ the next fight of the dungeon here: a small one's next room (or its boss), or the deep run's next fight.
+
+        [ES]
+        Qué hace: el botón de pelear de la mazmorra. En la 🕳️ chica cobra dungeons.small.fight_energy (2 ⚡) y empieza la
+        pelea de la siguiente sala sin despejar (al final, el jefe: élite); terminada hoy, avisa sin cobrar. En la 🌀 profunda,
+        sin bajada abierta cobra la entrada más la pelea (2 + 2 ⚡) y abre una bajada en el piso 1; con una abierta, cobra la
+        pelea y sigue con la que toca (cada piso más hondo: nivel +1, +5 % de vida, +3 % de ataque; cada 5 pisos, el jefe).
+        Se rechaza sin cobrar sin mazmorra aquí, con la entrada tapada por un campamento enemigo, malherido o sin energía.
+        Las peleas son siempre a mano (nunca automáticas, D-114); llevan "dungeon" en su estado de combate.
+        La llaman: el botón "dgo" (pantalla de la mazmorra y final de una pelea suya). Si cambia, afecta: tests/test_mazmorras.py.
+        """
+        t = self.texts
+        x, y = hero.x, hero.y
+        kind = self._dng_kind(x, y)
+        if not kind:
+            return self._explore_menu(hero, notice=t.t("dungeon.none_here"))
+        if self._dng_blocked(x, y):
+            return self._explore_menu(hero, notice=t.t("dungeon.blocked"))
+        if hero.downed:
+            return self._dng_view(hero, notice=t.t("dungeon.downed"))
+        cfg = self._dng_cfg()
+        info = self._dng_today(x, y, kind)
+        record = self._dng_record(hero)
+        if kind == dungeon_rules.SMALL:
+            prog = self._dng_progress(record, info)
+            if prog["done"]:
+                return self._dng_view(hero, notice=t.t("dungeon.done_today"))
+            if not self._spend_energy(hero, "dungeon", int(cfg["small"]["fight_energy"])):
+                return self._dng_view(hero, notice=self._no_energy_notice(hero))
+            rooms = len(info["rooms"]) - 1
+            member = info["rooms"][min(prog["cleared"], rooms)]
+            mults = (cfg["small"]["boss_hp_mult"], cfg["small"]["boss_attack_mult"]) if member["boss"] else (1.0, 1.0)
+            self._dng_fight(hero, member, mults, {"kind": kind, "day": info["day"], "x": x, "y": y,
+                                                  "room": prog["cleared"], "boss": member["boss"]})
+            if member["boss"]:
+                notice = t.t("dungeon.boss_fight", room=info["throne"], enemy=self._dng_enemy(member["id"]), level=member["level"])
+            else:
+                room = info["path"][prog["cleared"]] if prog["cleared"] < len(info["path"]) else ""
+                notice = t.t("dungeon.room_fight", n=prog["cleared"] + 1, total=rooms, room=room,
+                             enemy=self._dng_enemy(member["id"]), level=member["level"])
+            return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
+        dcfg = cfg["deep"]
+        run = record["deep"]
+        lines: list[str] = []
+        if run and (run["x"], run["y"], run["day"]) != (x, y, info["day"]):
+            lines += self._dng_close(hero, record, 1.0, "left")           # an old run (another day): paid in full first
+            run = None
+        cost = int(dcfg["fight_energy"]) + (0 if run else int(dcfg["enter_energy"]))
+        if not self._spend_energy(hero, "dungeon", cost):
+            return self._dng_view(hero, notice=self._join(lines + [self._no_energy_notice(hero)]))
+        if not run:
+            run = {"x": x, "y": y, "day": info["day"], "floor": 1, "fight": 0, "cleared": 0,
+                   "pot": {"coins": 0, "items": {}, "gear": []}}
+            record["deep"] = run
+            self._dng_save(hero, record)
+            lines.append(t.t("dungeon.run_start"))
+        plan = self._dng_plan(info, run["floor"])
+        member = plan[min(run["fight"], len(plan) - 1)]
+        self._dng_fight(hero, member, (member["hp_mult"], member["attack_mult"]),
+                        {"kind": kind, "day": info["day"], "x": x, "y": y, "floor": run["floor"], "fight": run["fight"],
+                         "boss": member["boss"]})
+        key = "dungeon.deep_boss_fight" if member["boss"] else "dungeon.deep_fight"
+        lines.append(t.t(key, floor=run["floor"], enemy=self._dng_enemy(member["id"]), level=member["level"]))
+        return self._combat_view(hero, self.store.get("combat", hero.id), notice=self._join(lines))
+
+    def _dng_fight(self, hero: Hero, member: dict[str, Any], mults: tuple[float, float], mark: dict[str, Any]) -> None:
+        """Start a dungeon fight (by hand, D-114): the member at its level, made tougher by `mults` (only this fight)."""
+        edef = self.content.enemies[member["id"]]
+        seed = int(hash_unit(self.world_seed, hero.id, "dungeon", mark["day"], mark["x"], mark["y"], self.clock.now()) * 2**31)
+        state = make_combat(member["id"], edef, int(member["level"]), self._kit(hero), seed)
+        if mults != (1.0, 1.0):
+            raid_rules.scale_enemy(state, float(mults[0]), float(mults[1]))
+        state["dungeon"] = mark
+        self.store.put("combat", hero.id, state)
+        hero.activity = None
+        self.bus.publish(CombatStarted(hero.id, member["id"], seed))
+
+    def _dng_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
+        """Count a finished dungeon fight: a room cleared (the chest after the boss), or a floor of the deep run.
+
+        [ES]
+        Qué hace: al terminar una pelea de mazmorra la cuenta (lo de la pelea misma, experiencia, monedas y botín, ya lo dio
+        _end_combat como en toda pelea). 🕳️ Chica: ganar despeja la sala (y tras el jefe abre el cofre, una vez por día);
+        perder o huir no borra lo despejado hoy. 🌀 Profunda: ganar suma la pelea; al despejar el piso suma su parte a la
+        bolsa, anota el récord y la lista 🏆 del día y ofrece ⬇️ Bajar o 🚪 Salir con lo ganado; perder o huir termina la
+        bajada con la mitad de la bolsa (dungeons.deep.defeat_keep). Una pelea de otro día o de una bajada que ya no está no
+        cuenta (lo ganado en ella es tuyo). La llama: _end_combat. Si cambia, afecta: tests/test_mazmorras.py.
+        """
+        t = self.texts
+        ref = state["dungeon"]
+        outcome = state["outcome"]
+        record = self._dng_record(hero)
+        lines = [""]
+        if ref["kind"] == dungeon_rules.SMALL:
+            if ref["day"] != self._today():
+                return lines + [t.t("dungeon.changed")]
+            info = self._dng_today(ref["x"], ref["y"], dungeon_rules.SMALL, ref["day"])
+            if info is None:
+                return lines + [t.t("dungeon.changed")]
+            key = f"{ref['x']}:{ref['y']}"
+            prog = self._dng_progress(record, info)
+            rooms = len(info["rooms"]) - 1
+            if outcome != "victory":
+                return lines + [t.t("dungeon.kept", n=min(prog["cleared"], rooms), total=rooms)]
+            if prog["done"] or int(ref.get("room", -1)) != prog["cleared"]:
+                return lines + [t.t("dungeon.no_count")]
+            prog["cleared"] += 1
+            if ref.get("boss"):
+                prog["done"] = True
+                lines += self._dng_open_chest(hero, info)
+            else:
+                lines.append(t.t("dungeon.room_cleared", n=prog["cleared"], total=rooms))
+                lines.append(t.t("dungeon.boss_next") if prog["cleared"] >= rooms else t.t("dungeon.rooms_left", n=rooms - prog["cleared"]))
+                state["dng_again"] = True
+            record["delves"][key] = prog
+            self._dng_save(hero, record)
+            return lines
+        run = record.get("deep")
+        same = run and all(run.get(k) == ref.get(k) for k in ("x", "y", "day", "floor", "fight"))
+        if not same:
+            return lines + [t.t("dungeon.run_gone")]
+        dcfg = self._dng_cfg()["deep"]
+        if outcome != "victory":
+            return lines + self._dng_close(hero, record, float(dcfg["defeat_keep"]), "defeat" if outcome == "defeat" else "fled")
+        info = self._dng_today(run["x"], run["y"], dungeon_rules.DEEP, run["day"])
+        plan = self._dng_plan(info, run["floor"])
+        run["fight"] += 1
+        if run["fight"] < len(plan):
+            lines.append(t.t("dungeon.floor_more", floor=run["floor"]))
+        else:
+            floor = run["floor"]
+            boss = any(m["boss"] for m in plan)
+            cfg = self._dng_cfg()
+            materials = self._dng_families()[info["family"]].get("materials") or {}
+            pot = dungeon_rules.floor_pot(self.world_seed, run["day"], run["x"], run["y"], floor, plan[0]["level"], materials,
+                                          dcfg["pot"], cfg["coin_unit"], cfg["coin_level_scale"], boss)
+            gear = None
+            if pot["gear_chance"] > 0:
+                rng = Rng(int(hash_unit(self.world_seed, hero.id, "dungeon_pot", run["day"], run["x"], run["y"], floor) * 2**31))
+                gear = dungeon_rules.chest_gear(self.content.items, self.content.balance["gear"], pot["gear_level"], rng,
+                                                pot["gear_chance"])
+            dungeon_rules.add_to_pot(run["pot"], pot["coins"], pot["items"], gear)
+            run["cleared"] = floor
+            run["floor"] = floor + 1
+            run["fight"] = 0
+            lines.append(t.t("dungeon.floor_cleared", floor=floor,
+                             items=self._dng_loot_text(pot["coins"], pot["items"], [gear] if gear else None)))
+            if floor > int(record.get("best", 0)):
+                record["best"] = floor
+                lines.append(t.t("dungeon.new_best", floor=floor))
+            self._dng_top_save(hero, run["x"], run["y"], run["day"], floor)
+            lines.append(t.t("dungeon.choose", floor=floor + 1))
+        state["dng_deep"] = True
+        self._dng_save(hero, record)
+        return lines
+
+    def _dng_open_chest(self, hero: Hero, info: dict[str, Any]) -> list[str]:
+        """The small dungeon's boss fell: its chest (coins, the family's materials, maybe a piece of any class), once a day."""
+        t = self.texts
+        chest = self._dng_chest_of(info)
+        hero.gold += chest["coins"]
+        for item_id, count in chest["items"].items():
+            self._bag_add(hero, item_id, count)                    # a find: never lost (D-90)
+        lines = [t.t("dungeon.cleared", family=self._dng_family_label(info["family"])),
+                 t.t("dungeon.chest", items=self._dng_loot_text(chest["coins"], chest["items"]))]
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "dungeon_chest", info["day"], info["x"], info["y"]) * 2**31))
+        piece = dungeon_rules.chest_gear(self.content.items, self.content.balance["gear"], chest["gear_level"], rng,
+                                         chest["gear_chance"])
+        if piece:
+            hero.backpack[piece] = hero.backpack.get(piece, 0) + 1
+            lines.append(self._dng_piece_line(hero, piece))
+        lines.append(t.t("dungeon.tomorrow"))
+        return lines
+
+    def _dng_piece_line(self, hero: Hero, piece: str) -> str:
+        """A dungeon gear piece: whose type it is (D-165: maybe another class's, to sell), then the usual drop line."""
+        item = self.content.items.get(piece, {})
+        mine = suits(item, hero, self.content.classes, self.content.balance)
+        key = "dungeon.piece_yours" if mine else "dungeon.piece_other"
+        return self.texts.t(key, item=self._gear_name(piece)) + " " + self._loot_line(hero, piece)
+
+    def _dng_close(self, hero: Hero, record: dict[str, Any], keep: float, reason: str) -> list[str]:
+        """End the open deep run and pay its pot: all of it when you leave, `keep` of it when you fall or flee.
+
+        [ES]
+        Qué hace: cierra la bajada abierta y cobra la bolsa: entera si sales (🚪 Salir con lo ganado, o si te vas de la zona,
+        haces otra cosa o cambia el día), la mitad si caes o huyes (defeat_share: monedas, cada material y las piezas,
+        redondeado hacia abajo). Lo de la bolsa nunca se pierde por la mochila llena (D-90).
+        La llaman: _dng_out, _dng_fight_done (derrota o huida), _dng_settle y _dng_go. Si cambia, afecta: lo que se lleva cada uno.
+        """
+        t = self.texts
+        run = record.get("deep")
+        if not run:
+            return []
+        pot = run.get("pot") or {}
+        if keep < 1.0:
+            pot = dungeon_rules.defeat_share(pot, keep)
+        hero.gold += int(pot.get("coins", 0))
+        for item_id, count in (pot.get("items") or {}).items():
+            self._bag_add(hero, item_id, count)
+        lines = [t.t(f"dungeon.closed_{reason}", floor=run.get("cleared", 0),
+                     items=self._dng_loot_text(int(pot.get("coins", 0)), pot.get("items") or {}, pot.get("gear")))]
+        for piece in pot.get("gear") or []:
+            hero.backpack[piece] = hero.backpack.get(piece, 0) + 1
+            lines.append(self._dng_piece_line(hero, piece))
+        record["deep"] = None
+        self._dng_save(hero, record)
+        return lines
+
+    def _dng_out(self, hero: Hero) -> View:
+        """🚪 Salir con lo ganado: end the open deep run between fights and take the whole pot."""
+        record = self._dng_record(hero)
+        if not record.get("deep"):
+            return self._dng_view(hero, notice=self.texts.t("dungeon.no_run"))
+        lines = self._dng_close(hero, record, 1.0, "out")
+        return self._dng_view(hero, notice=self._join(lines))
+
+    def _dng_settle(self, hero: Hero) -> list[str]:
+        """Close a deep run left behind (another zone, another activity, a new day, the entrance gone): the pot in full.
+
+        [ES]
+        Qué hace: si el héroe dejó una bajada abierta y se fue de la zona, se puso a hacer otra cosa (viajar, explorar,
+        recolectar, cazar en lote, dormir), cambió el día o la entrada ya no está (o la tapa un campamento enemigo), la cierra
+        como si saliera: cobra la bolsa entera y lo avisa una vez. Nunca en medio de una pelea. La llama: _settle (al final).
+        Si cambia, afecta: cuándo vuelve a curarse sola la vida (mientras hay bajada abierta, no: D-170).
+        """
+        run = (self.store.get("dungeon", hero.id) or {}).get("deep")
+        if not run or self.store.get("combat", hero.id) is not None:
+            return []
+        x, y = run["x"], run["y"]
+        if (run["day"] == self._today() and (hero.x, hero.y) == (x, y) and not hero.activity
+                and self._dng_kind(x, y) == dungeon_rules.DEEP and not self._dng_blocked(x, y)):
+            return []
+        return self._dng_close(hero, self._dng_record(hero), 1.0, "left")
+
+    def _dng_again(self, hero: Hero, state: dict[str, Any]) -> list[Action]:
+        """Buttons after a won dungeon fight: the next room (or the boss), or ⬇️ Bajar / ⚔️ Seguir and 🚪 Salir con lo ganado."""
+        ref = state.get("dungeon") or {}
+        if not ref or (hero.x, hero.y) != (ref.get("x"), ref.get("y")):
+            return []
+        cfg = self._dng_cfg()
+        record = self._dng_record(hero)
+        if state.get("dng_again"):
+            info = self._dng_today(hero.x, hero.y, dungeon_rules.SMALL)
+            if info is None or hero.downed or hero.energy < int(cfg["small"]["fight_energy"]):
+                return []
+            prog = self._dng_progress(record, info)
+            return [] if prog["done"] else [self._dng_small_button(prog, info)]
+        if state.get("dng_deep") and record.get("deep"):
+            info = self._dng_today(hero.x, hero.y, dungeon_rules.DEEP)
+            actions = []
+            if info is not None and not hero.downed and hero.energy >= int(cfg["deep"]["fight_energy"]):
+                actions.append(self._dng_deep_button(info, record["deep"]))
+            return actions + [Action(id="dout", label=self.texts.t("dungeon.out_button"))]
+        return []
+
+    def _dng_combat_lines(self, state: dict[str, Any]) -> list[str]:
+        """The combat screen line of a dungeon fight: the boss badge, or the deep floor."""
+        ref = state.get("dungeon") or {}
+        if not ref:
+            return []
+        if ref.get("boss"):
+            return [self.texts.t("dungeon.boss_badge")]
+        return [self.texts.t("dungeon.floor_badge", floor=ref["floor"])] if ref.get("kind") == dungeon_rules.DEEP else []
+
     # ------------------------------------------------------------------ ⚙️ Opciones and automatic fights (D-114)
 
     def _auto_cfg(self) -> dict[str, Any]:
@@ -7107,8 +7730,8 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: decide qué pasa con una pelea que sale en un lote (🔎 explorar, 🪓 recolectar o 🏹 cazar en lote).
-        Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento, campamento enemigo de D-112:
-        nunca van solas), el lote
+        Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento, campamento enemigo de D-112,
+        mazmorra de D-170: nunca van solas), el lote
         se corta y la pelea te espera, como siempre. Con ⚔️ Automática el héroe la pelea ya (_auto_combat): si gana y su vida
         no quedó bajo el límite de 🩹 Retirarse, el lote sigue (devuelve None); si pierde, la deja o queda bajo el límite,
         el lote se corta con su motivo. Si la pelea sale con la vida ya bajo el límite, no pelea solo: el lote se corta y la
@@ -7119,7 +7742,8 @@ class GameService(StoryMixin):
         state = self.store.get("combat", hero.id)
         edef = self.content.enemies.get(state["enemy"]["id"], {}) if state else {}
         # never alone: the Guardian, camp defences and enemy camps (D-112: their fights are always by hand)
-        if state is None or not self._auto_on(hero) or edef.get("boss") or state.get("raid") or state.get("enemy_camp"):
+        if state is None or not self._auto_on(hero) or edef.get("boss") or state.get("raid") or state.get("enemy_camp") \
+                or state.get("dungeon"):                # D-170: dungeon fights are always by hand too
             return self._batch_summary(hero, activity, "fight") + [notice]
         pct = self._option(hero, "retreat")
         if self._below_retreat(hero):
@@ -7305,6 +7929,7 @@ class GameService(StoryMixin):
             t.t("combat.enemy_line", enemy=t.t(edef["name_key"]), level=enemy["level"]),
             t.t("combat.enemy_hp", pct=pct, bar=self._bar(enemy["hp"], enemy["max_hp"])),
             *([t.t("ecamp.chief_badge")] if (state.get("enemy_camp") or {}).get("chief") else []),     # D-112: the camp's chief
+            *self._dng_combat_lines(state),                                                            # D-170: boss or floor
             *([t.t("combat.boss_phase", n=enemy.get("phase", 0) + 1, total=len(edef["phases"]) + 1)] if edef.get("phases") else []),
             "",
             t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
@@ -7440,6 +8065,8 @@ class GameService(StoryMixin):
             lines += self._hunt_fight_done(hero, party, bonus)
         if state.get("enemy_camp"):            # D-112: a fight of an enemy camp's garrison counts for everyone
             lines += self._ecamp_fight_done(hero, state)
+        if state.get("dungeon"):               # D-170: a dungeon fight clears a room or a floor (or ends the deep run)
+            lines += self._dng_fight_done(hero, state)
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))
@@ -7448,6 +8075,7 @@ class GameService(StoryMixin):
         if outcome == "victory" and state.get("hunt"):
             actions = self._hunt_end_actions(hero) + actions     # D-106: 🏹 Otra presa (and the party) before ▶️ Continuar
         actions = self._ecamp_again(hero, state) + actions         # D-112: ⚔️ Seguir asaltando
+        actions = self._dng_again(hero, state) + actions           # D-170: next room / ⬇️ Bajar and 🚪 Salir con lo ganado
         better = self._better_piece(hero, bag_before)              # D-115: ⬆️ a piece from this fight beats what you wear
         if better:
             state["better"] = better                               # automatic fights put the line in the batch summary
