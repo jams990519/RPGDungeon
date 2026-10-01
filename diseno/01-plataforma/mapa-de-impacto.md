@@ -241,7 +241,7 @@ flowchart LR
 | **Depende de** | M1; M9 (el Techo de la Frontera depende de hasta dónde llegó la Frontera) |
 | **Lo usan** | M3 (clase al nivel 10, puntos de talento por nivel), M4 (la capacidad de carga sale del linaje y el aguante), M7 (rasgo de cuerpo del linaje, nivel 10 de la protección de novato, Resolución), M10 (misiones de trasfondo), M12 y M16 (novatos fuera del PvP y del Circuito), M13 (rasgos de linaje con PNJ), M14 (rasgo de oficio, empujón del trasfondo), M15 (gremio desde el nivel 5, mentoría hasta el 20), M22 (aceleradores de experiencia), M23 (nivel mínimo para transferir) |
 | **Eventos que publica** | Propuestos: `HeroeCreado`, `NivelSubido` |
-| **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`), `ObjetoFabricado` (`ItemCrafted`), `HeridaTratada` (`WoundTreated`) para dar experiencia. Propuestos: `CombateTerminado`, `MisionCompletada`, `InstanciaCompletada`, `SelloObtenido` |
+| **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`), `ObjetoFabricado` (`ItemCrafted`), `HeridaTratada` (`WoundTreated`) para dar experiencia. Propuestos: `CombateTerminado`, `MisionCompletada`, `InstanciaCompletada` (`SelloObtenido` se retira con D-58) |
 | **Datos de los que es dueño** | Ficha del héroe (linaje, trasfondo, apariencia, nombre único), nivel, experiencia, experiencia descansada, Renombre, Resolución. Propuesta (§6.1): reputaciones y maestrías de armas y armaduras |
 | **Reglas que nunca se rompen** | Ninguna racial toca daño, curación ni control en combate, y todos los linajes tienen el mismo presupuesto. No hay puntos de estadística sueltos: los puntos por nivel van a los talentos. Nada depende de la fecha en que llegaste. El Renombre nunca da daño. Cualquier linaje puede ser cualquier clase |
 
@@ -349,7 +349,7 @@ flowchart LR
 
 **Si cambias esto, revisa:**
 - **Un movimiento o su aviso** → las Tácticas que reaccionan a avisos (M5), la pista del Bestiario (M17: la pista vieja ahora miente), las fichas del Informante que se venden (M14, M13), las manchas de sangre de ese jefe (M8), la prueba de justicia (M21), los retos contextuales de anti-trampas (M23) y el texto en ES y EN.
-- **La vida o el escalado** → la duración de las peleas, el reloj de Mítica+ (M11), la contribución mínima para el Sello (M9), el escalado con invocados y el jefe semanal compartido.
+- **La vida o el escalado** → la duración de las peleas, el reloj de Mítica+ (M11), la contribución mínima al esfuerzo de guerra de una región (M9), el escalado con invocados y el jefe semanal compartido.
 - **Las partes, las debilidades o lo que sueltan** → materiales exclusivos y recetas temáticas (M14, M13), la calidad de pieza en cacerías (M10), el valor del Cazador de Puntería (M3) y de los aceites que cambian el tipo de daño (M14).
 - **Lo que contagia un monstruo** → C-07.
 - **El botín de jefe** (artefactos, Recuerdos, planos) → recetas únicas (M14), precios (M13), protección contra mala racha (§6.1).
@@ -417,7 +417,7 @@ flowchart LR
 | **Depende de** | M8; M6 (Guardián, bestias de las incursiones); M10, M11, M12, M14 y M2 (las 6 pruebas del Sello, que se retira con D-58); M14 y M24 (las necesidades se cubren con oficios y las etapas son obras); M13 (tesoro e impuestos); M7 (brotes y epidemias); M5 y M24 (defensa de la ciudad por rondas) |
 | **Lo usan** | M2 (Techo de la Frontera); M8 (regiones nuevas); M12 (la guerra de castillos nace con el primer cisma; las leyes deciden qué es delito); M13 (mercados nuevos; impuestos locales); M14 (los entrenadores dependen del ala de Oficios construida y abastecida; especialidad de cada capital); M16 (leyes del juego, ala de la Fortuna); M24 (obras de servidor); M25 (plazas y parcelas nuevas, licencias del Castillo, impuesto de la casa); M18 (Pioneros por facción); M19 (aviso escalonado, Gaceta, `/ciudad`) |
 | **Eventos que publica** | `RegionAbierta` (`RegionOpened`: avance de la Frontera). Propuestos: `FaseDeRegionCambiada`, `EtapaDeCiudadCambiada`, `MedidorDeCiudadCambiado`, `IncursionLanzada`, `CrisisIniciada`, `LeyAprobada`, `CismaDeclarado`, `CastilloFundado` |
-| **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`) para Pioneros y Sellos; `EnfermedadContagiada` (`DiseaseContracted`) para brotes. Propuestos: `PoblacionCambiada` (amenaza e invasiones), `ObraTerminada`, `DefensaResuelta`, `TemporadaTerminada` (fin de mandatos), `NuevoDiaDeJuego` (la cuenta diaria de la ciudad) |
+| **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`) para los Pioneros (los Sellos se retiran con D-58); `EnfermedadContagiada` (`DiseaseContracted`) para brotes. Propuestos: `PoblacionCambiada` (amenaza e invasiones), `ObraTerminada`, `DefensaResuelta`, `TemporadaTerminada` (fin de mandatos), `NuevoDiaDeJuego` (la cuenta diaria de la ciudad) |
 | **Datos de los que es dueño** | La Frontera y la fase de cada región, el mapa del servidor, las metas del Esfuerzo de Guerra, los Pioneros; el estado de cada asentamiento (etapa, experiencia de nodo, vasallos, población de aldeanos, despensa y raciones, medidores, amenaza, racha de etapa, cuotas y registro de aportes, pedidos); gobierno (cargos, leyes, mandatos); castillos, comunidades y relaciones; crisis activas |
 | **Reglas que nunca se rompen** | Una región no se puebla hasta que cae su Guardián (D-58: cada región pasa por las cuatro fases de la Frontera). Los jefes de mundo siguen, repartidos por el mapa (D-08, D-58). Los Pioneros ganan prestigio, nunca poder. Gobernador electo con mandatos que vencen por temporada (D-29), máximo dos seguidos. Construir no alcanza: una etapa se sube sosteniendo sus mínimos y superando incursiones. Nada personal se pierde aunque la ciudad caiga; bajar de etapa apaga edificios, no los destruye. Cisma con mínimo de firmas y 7 días de plazo; tope de castillos. Antes del primer cisma no hay guerra de castillos. Ninguna crisis arruina a nadie para siempre |
 
@@ -441,7 +441,7 @@ flowchart LR
 | **Para qué sirve** | Lo que hay para hacer fuera de las instancias: campañas, encargos con temporizador, tablones, expediciones, cacerías e investigaciones |
 | **Documentos de diseño** | [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Cacerías](../06-contenido/cacerias.md), [Investigaciones](../06-contenido/investigaciones.md) |
 | **Depende de** | M5 (combates y resolución rápida); M8 (nodos, ecología, clima, noche); M6 (presas); M2 (trasfondo); M7 (el cuerpo se gasta en cada paso); M14 (desuello, herramientas de caza); M9 (casos que cambian el asentamiento, pedidos de la ciudad) |
-| **Lo usan** | M9 (pruebas del Sello: campaña y cartografía; contratos de caza de control que bajan la amenaza); M2 (experiencia); M13 (el oro de misiones es una fuente de oro); M14 y M24 (recetas y planos que se recuperan investigando tras el Colapso, D-45); M7 (curas y vacunas investigadas); M12 (casos de crímenes entre jugadores); M17 (Bestiario, trofeos, descubrimientos); M16 (bestias vivas para el Foso); M8 (cazar baja la población) |
+| **Lo usan** | M9 (campaña y cartografía, que eran pruebas del Sello, retirado con D-58; contratos de caza de control que bajan la amenaza); M2 (experiencia); M13 (el oro de misiones es una fuente de oro); M14 y M24 (recetas y planos que se recuperan investigando tras el Colapso, D-45); M7 (curas y vacunas investigadas); M12 (casos de crímenes entre jugadores); M17 (Bestiario, trofeos, descubrimientos); M16 (bestias vivas para el Foso); M8 (cazar baja la población) |
 | **Eventos que publica** | Propuestos: `MisionCompletada`, `EncargoTerminado`, `PresaCazada`, `CasoResuelto`, `CuraDescubierta`, `InvestigacionCompletada` |
 | **Eventos que escucha** | `HeroeCaido` (`HeroFallen`): se pierde lo de la expedición según la zona. `EnfermedadContagiada` (`DiseaseContracted`): cacería de plaga. Propuestos: `CrisisIniciada` (pedidos), `PoblacionCambiada` (el tablón paga más por lo que sobra) |
 | **Datos de los que es dueño** | Misiones, casos y contratos de caza (datos); progreso de cada héroe; colas de encargos; tableros de pistas; el generador de casos rápidos; rangos de cazador y de investigador |
@@ -463,7 +463,7 @@ flowchart LR
 | **Para qué sirve** | El contenido en instancia: mazmorras, Mítica+ con reloj de rondas, Profundidades con compañero, bandas y el buscador de grupos |
 | **Documentos de diseño** | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md) §4-8 |
 | **Depende de** | M5, M6, M15 (grupos), M3 (roles), M4 (Poder de Objeto mínimo), M1 (bloqueos semanales) |
-| **Lo usan** | M9 (el Laberinto es prueba del Sello), M18 (temporadas y puntuación de Mítica+), M4 (botín y Tesoro Semanal), M13 (Esencia, artefactos), M2 (las mazmorras lideran en experiencia), M17 (logros), M16 (apuestas a Mítica+) |
+| **Lo usan** | M9 (el Laberinto de la región; era prueba del Sello, retirado con D-58), M18 (temporadas y puntuación de Mítica+), M4 (botín y Tesoro Semanal), M13 (Esencia, artefactos), M2 (las mazmorras lideran en experiencia), M17 (logros), M16 (apuestas a Mítica+) |
 | **Eventos que publica** | Propuestos: `InstanciaCompletada` (nivel, rondas usadas), `LlaveCambiada`, `BotinRepartido` |
 | **Eventos que escucha** | `JefeDerrotado` (`BossDefeated`); `HeroeCaido` (`HeroFallen`): cada caída suma rondas al reloj |
 | **Datos de los que es dueño** | Mazmorras y bandas (datos), bloqueos de cada jugador, Llaves de Mazmorra, afijos de la semana, la cola del buscador, el compañero de Profundidades, el resultado de cada corrida. Propuesta (§6.1): Laberinto, Laberinto Cambiante, Pruebas de Maestría, Pesadillas y Tesoro Semanal |
@@ -533,7 +533,7 @@ flowchart LR
 | **Para qué sirve** | Cómo se produce todo: recolectar, refinar, fabricar (con minijuego o rápido), recetas, planos, calidad de las vetas, rangos con exámenes y especializaciones, incluidos Medicina y Construcción |
 | **Documentos de diseño** | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md), [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md), [Curación](../05-salud/curacion-y-tratamientos.md) §0 y §4 (Medicina), [Sistema de construcción](../09-construccion/sistema-de-construccion.md) §2 (rangos de Construcción), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) §3 (entrenadores), [Investigación y maestría](../07-economia/investigacion-y-maestria.md) (D-54) |
 | **Depende de** | M1; M2; M4 (crea los objetos); M8 (terrenos y nodos); M9 (entrenadores según el ala de Oficios; especialidad de la capital); M13 (mercado y pedidos); M24 (estaciones en casa y gremio); M10 (recetas y planos investigados) |
-| **Lo usan** | M4, M7, M24, M9 (comida, conservas, herramientas comunes; contribución artesanal del Sello), M13, M16 (dados, mazos y sus versiones trucadas), M12 (Dedos de Sangre, Grilletes, armas de asedio), M6 (Cuernos de Invocación), M5 (aceites, frascos y bombas de las mecánicas avanzadas), M3 (consumibles de utilidades clave), M17 (firma, obras maestras, recetario) |
+| **Lo usan** | M4, M7, M24, M9 (comida, conservas, herramientas comunes; contribución artesanal al esfuerzo de guerra), M13, M16 (dados, mazos y sus versiones trucadas), M12 (Dedos de Sangre, Grilletes, armas de asedio), M6 (Cuernos de Invocación), M5 (aceites, frascos y bombas de las mecánicas avanzadas), M3 (consumibles de utilidades clave), M17 (firma, obras maestras, recetario) |
 | **Eventos que publica** | `ObjetoFabricado` (`ItemCrafted`). Propuestos: `RecetaDescubierta`, `RangoDeOficioSubido`, `VetaAparecida` / `VetaAgotada` |
 | **Eventos que escucha** | `HeridaTratada` (`WoundTreated`): experiencia de Medicina. Propuestos: `EtapaDeCiudadCambiada` (entrenadores disponibles), `NuevaSemana` (conocimiento semanal), `InvestigacionCompletada` (recetas recuperadas) |
 | **Datos de los que es dueño** | Nivel y rango de cada oficio por personaje, conocimiento y especializaciones, maestrías por objeto, recetas aprendidas y descubiertas, planos y copias, vetas (lugar, atributos, duración), trabajadores, registro de obras maestras. Propuesta (§6.1): el Enfoque diario |
@@ -560,7 +560,7 @@ flowchart LR
 | **Depende de** | M1; M19 (chats y salas); M13 (banco de gremio, costo de crear); M2 (nivel 5 para crear un gremio) |
 | **Lo usan** | M11 (grupos), M12 (gremios y alianzas en territorios y guerras), M24 (salón y obras de organización), M16 (minijuegos de gremio), M7 (jugar con tu gremio baja el estrés), M10 (casos de gremio), M18 (ranking por gremio), M25 (parcelas de gremio) |
 | **Eventos que publica** | Propuestos: `GremioCreado`, `MiembroUnido` / `MiembroExpulsado`, `GrupoFormado`, `ValeEmitido` |
-| **Eventos que escucha** | Propuestos: `NivelSubido` y `SelloObtenido` (metas de mentoría) |
+| **Eventos que escucha** | Propuestos: `NivelSubido` (metas de mentoría; `SelloObtenido` se retira con D-58) |
 | **Datos de los que es dueño** | Gremios, rangos y permisos, banco de gremio y su registro, vales, nivel de gremio, alianzas, grupos, amistades y hermandades, mentorías, el indicador de buen compañero |
 | **Reglas que nunca se rompen** | El nivel de gremio da comodidad, nunca poder de combate. Los vales solo valen dentro del gremio y caducan rápido. No hay votos negativos entre compañeros. Grupo de hasta 5 |
 
@@ -1186,7 +1186,7 @@ Lo que el mapa encontró al cruzar los documentos. No se corrige aquí: cada pun
 
 | Responsabilidad | Dónde se describe | Quién la toca | Dueño propuesto |
 |---|---|---|---|
-| Reputaciones (asentamiento, facción, órdenes) | [Progresión](../03-personaje/progresion.md) §5 | M9 (prueba del Sello), M10 (Orden de Cazadores, Agencia), M14 (recetas) | M2 |
+| Reputaciones (asentamiento, facción, órdenes) | [Progresión](../03-personaje/progresion.md) §5 | M9 (Frontera: el Sello que pedía reputación se retira con D-58), M10 (Orden de Cazadores, Agencia), M14 (recetas) | M2 |
 | Maestrías de armas y armaduras | [Progresión](../03-personaje/progresion.md) §3 | M4, M5 | M2 |
 | Enfoque diario | [Economía](../07-economia/economia.md) §8 | M13, M14 | M14 |
 | Vetas | [Fabricación](../07-economia/fabricacion.md) §3, [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) §6 | M14 (según la arquitectura), M8 (nodos) | M14, con los nodos de M8 |

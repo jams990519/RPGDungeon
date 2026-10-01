@@ -27,7 +27,7 @@
 
 **Por qué el código va en inglés.** Es el estándar: las librerías, los mensajes de error y la documentación técnica están en inglés, y cualquier programador o IA lo lee sin traducir. Además evita mezclas como `calcular_damage()`.
 
-**Por qué va una nota en español.** La parte en inglés dice **qué hace y cómo**. La nota [ES] dice **para qué sirve, con qué se conecta y qué se rompe si cambia**, con las palabras del diseño (GolpeRecibido, Herida, Sello). Sirve para dos lectores:
+**Por qué va una nota en español.** La parte en inglés dice **qué hace y cómo**. La nota [ES] dice **para qué sirve, con qué se conecta y qué se rompe si cambia**, con las palabras del diseño (GolpeRecibido, Herida, Guardián). Sirve para dos lectores:
 - **El dueño**, que puede leer cualquier archivo y entender su papel sin leer el código.
 - **La IA**, que antes de tocar algo lee la nota y sabe a quién más afecta. La nota no traduce el docstring: es el mapa de alrededor.
 

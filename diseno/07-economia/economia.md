@@ -29,7 +29,7 @@ Pocas, para no repetir el problema de WoW, donde hay más de veinte monedas:
 
 | Moneda | Para qué | Cómo se gana | Se pierde al caer |
 |---|---|---|---|
-| 🪙 **Oro** | Todo el comercio, servicios, reparaciones, impuestos | Misiones, ventas, contratos, botín | La que llevas encima, solo en zonas rojas y negras |
+| 🥇 **Oro** | Todo el comercio, servicios, reparaciones, impuestos | Misiones, ventas, contratos, botín | La que llevas encima, solo en zonas rojas y negras |
 | ✨ **Esencia** | Mejorar equipo, maestrías, Tesoro Semanal | Matar, completar contenido | La no depositada queda en tu mancha (recuperable) |
 | ⚔️ **Honor** | Recompensas de PvP | Arenas, campos, guerra de facciones | No |
 | 💎 **Gemas** | Cosméticos y comodidades (moneda premium) | Telegram Stars; algunas en eventos | No |
@@ -39,7 +39,7 @@ Pocas, para no repetir el problema de WoW, donde hay más de veinte monedas:
 | Moneda | Cómo se consigue | Para qué sirve hoy |
 |---|---|---|
 | 🥉 **Bronce**, 🪙 **Plata**, 🥇 **Oro** | Se ganan jugando (combates, exploración, misiones, ventas) y se juntan solas: 100 🥉 = 1 🪙 y 100 🪙 = 1 🥇. En el código es un solo número contado en bronce (`Hero.gold`) | Mercader, posada, reiniciar especialización, coser bolsas |
-| 💰 **Bolsas** | Se cosen en el Claro con 4 de fibra (hilo), 1 pieza de metal (el cierre) y 1 🪙. Es un sumidero de monedas y materiales | La doble especialización (próximo parche) y lo que venga |
+| 💰 **Bolsas** | Se cosen en el Claro con 4 de fibra (hilo), 1 pieza de metal (el cierre) y 1 🪙. Es un sumidero de monedas y materiales | La doble especialización (desde 0.9.1, D-88) y lo que venga |
 | 💎 **Diamantes** | Se compran con dinero real (todavía no se venden: ver P-72) | Solo aceleradores y cosméticos (D-43): ⭐ experiencia +50 % por 7 días (100 💎) y 🚩 estandarte único al lado del nombre (150 💎) |
 | 🪪 **Credencial de oficio** | Llegará con los oficios | Tu carta de presentación de profesión ante otros jugadores |
 

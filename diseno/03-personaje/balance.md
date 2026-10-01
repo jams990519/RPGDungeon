@@ -66,7 +66,7 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
    | 🛡 Defensa | ~1,5× | 1,4× a 1,6× | Casi no cae; el modo en solitario devuelve parte de lo que bloquea como daño |
    | ✚ Curación | ~2× (el doble) | 1,8× a 2,2× | Se cura a sí mismo; el modo en solitario pasa parte de la curación a daño |
 
-   - **Siempre posible:** con juego básico (las Tácticas por defecto), toda spec gana al menos el 90 % de las peleas del contenido en solitario de su tramo. Un rol puede tardar más; nunca puede quedarse atascado.
+   - **Siempre posible:** con juego básico (las Tácticas por defecto), toda spec gana al menos el 90 % de las peleas del contenido en solitario de su anillo. Un rol puede tardar más; nunca puede quedarse atascado.
    - **Modo en solitario:** se enciende solo cuando no hay otro jugador en la pelea (con compañero PNJ o sin él) y se apaga en cuanto entra uno. No existe en grupo ni en PvP. Es crítico en Telegram, donde mucha gente juega sola a la hora que puede.
    - **La compensación está en el grupo:** Defensa y Curación son los roles más buscados, y el buscador les da una recompensa extra cuando faltan (la *Llamada a las armas*, ver [Clases](clases-y-especializaciones.md)).
    - Como toda clase tiene una spec de Ataque y cambiar de spec es gratis en un asentamiento, **ninguna clase** queda atada a un rol lento en solitario.
@@ -83,7 +83,7 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 
 7. **Estadísticas secundarias aplanadas.** Para ninguna spec una secundaria puede valer más de 1,3 veces otra, y todas tienen rendimientos decrecientes suaves. Se acaba el "esta spec solo quiere celeridad".
 
-8. **Mismo escalado con el equipo.** Todas las specs escalan igual con el Poder de Objeto. El simulador lo comprueba en cada tramo: ninguna spec puede "despertar" en el tramo 8 ni morirse en el 3.
+8. **Mismo escalado con el equipo.** Todas las specs escalan igual con el Poder de Objeto. El simulador lo comprueba en cada anillo: ninguna spec puede "despertar" en el anillo VIII ni morirse en el III.
 
 9. **Dificultad declarada, techo parejo.** Cada spec lleva una etiqueta de dificultad (★ a ★★★), y el simulador mide dos cosas:
    - **Juego básico**, con las [Tácticas](../04-combate/avisos-y-tacticas.md) automáticas por defecto: todas las specs a ±10 % de la mediana de su rol.
@@ -95,7 +95,7 @@ Pediste corregir los problemas de calibración de WoW y que las clases queden ig
 
 ## 3. Cómo se mide
 
-**Simulador de combate** (el equivalente a SimulationCraft, módulo M21). Corre cada spec contra un conjunto fijo de escenarios en cada tramo de equipo: un objetivo, varios objetivos, pelea con cambios de fila, pelea con fases, y PvP 1v1 contra cada una de las otras specs. Además corre:
+**Simulador de combate** (el equivalente a SimulationCraft, módulo M21). Corre cada spec contra un conjunto fijo de escenarios en cada anillo de equipo (T1 a T10): un objetivo, varios objetivos, pelea con cambios de fila, pelea con fases, y PvP 1v1 contra cada una de las otras specs. Además corre:
 - **Grupos de referencia** (1 🛡 + 1 ✚ + 3 de ⚔ o ✦, en todas las combinaciones), porque Defensa, Curación y Soporte solo se entienden en grupo.
 - **Escenarios en solitario** (misión, encargo, Profundidades normales) para medir la autonomía de la regla 4.
 
@@ -113,7 +113,7 @@ Corre con cada cambio de balance y **antes** de publicarlo.
 | Daño propio del Soporte | ✦ Soporte | Entre el 60 y el 75 % de la mediana de Ataque |
 | Soporte frente a Ataque (cruza roles) | ✦ y ⚔ | Un grupo con 2 de Ataque + 1 de Soporte rinde lo mismo que con 3 de Ataque (±3 %); con 3 de Soporte, rinde menos |
 | Tiempo en solitario (cruza roles) | Todas | El objetivo de su rol en la regla 4, y a ±10 % de la mediana de su rol |
-| Victorias en solitario (juego básico) | Todas | 90 % o más en el contenido en solitario de su tramo |
+| Victorias en solitario (juego básico) | Todas | 90 % o más en el contenido en solitario de su anillo |
 | Victorias por spec en arena clasificada | Todas | 47-53 % |
 | Popularidad en contenido alto (M+ 15 o más, top 500 de arena) | Todas, dentro de su rol | Ninguna spec por encima del doble del promedio de su rol |
 
@@ -127,8 +127,8 @@ Corre con cada cambio de balance y **antes** de publicarlo.
 - Vida de un héroe: 100 al nivel 1, y del orden de 1.500 a 3.000 al nivel 100 con buen equipo.
 - Golpes de un jugador: entre 20 y 400. Ningún número de jugador en pantalla pasa de 4 dígitos.
 - Jefes: vida de 5 o 6 dígitos, nunca más.
-- Mitigación de armadura con la fórmula **`def / (def + K)`** (la misma que usa TowerWars, con K = 60), con una K que crece por tramo para que la armadura nunca se convierta en inmunidad.
-- Cada tramo sube los números alrededor de un 25 %, no un 100 %. Así el equipo de dos tramos atrás sigue sirviendo para algo: venderlo, desmontarlo o vestir a un alt.
+- Mitigación de armadura con la fórmula **`def / (def + K)`** (la misma que usa TowerWars, con K = 60), con una K que crece por anillo para que la armadura nunca se convierta en inmunidad.
+- Cada anillo sube los números alrededor de un 25 %, no un 100 %. Así el equipo de dos anillos atrás sigue sirviendo para algo: venderlo, desmontarlo o vestir a un alt.
 
 ## 5. La diferencia la hacen los oficios y el conocimiento
 
@@ -137,7 +137,7 @@ Si todas las clases rinden lo mismo, ¿qué separa a un jugador bueno de uno nue
 | Fuente de ventaja | Cómo ayuda en combate y en el mundo | Tope para que no se desboque |
 |---|---|---|
 | **Conocimiento del bestiario** | Ver la pista de los avisos, las debilidades y las partes rompibles de cada monstruo y jefe (ver [Avisos](../04-combate/avisos-y-tacticas.md)) | La pista ayuda a decidir, no decide por ti |
-| **Oficios propios** | Fabricarte o mandarte a hacer mejor equipo; pociones, remedios y comidas de más calidad; curarte heridas tú mismo con Medicina | El equipo tiene techo por tramo; la toxicidad limita las pociones |
+| **Oficios propios** | Fabricarte o mandarte a hacer mejor equipo; pociones, remedios y comidas de más calidad; curarte heridas tú mismo con Medicina | El equipo tiene techo por anillo; la toxicidad limita las pociones |
 | **Investigación** | Recetas, técnicas y mejoras que otros todavía no tienen (ver [Investigaciones](../06-contenido/investigaciones.md)) | El conocimiento se difunde con el tiempo; patentes que vencen |
 | **Conocimiento del mundo** | Saber dónde están las vetas buenas, los yacimientos únicos, los atajos y los secretos | Las vetas se mueven; los secretos se comparten |
 | **Maestrías y rasgos** | Pequeños bonos por constancia (ver [Progresión](progresion.md), [Rasgos](../05-salud/rasgos-adquiridos.md)) | Nunca más del 5 % en combate |

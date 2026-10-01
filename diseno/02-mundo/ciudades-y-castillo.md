@@ -8,6 +8,8 @@
 
 ## 1. Tres tamaños de lugar
 
+> En el juego hoy: los lugares son el Claro y los campamentos que fundan los jugadores, que crecen por niveles hasta castillo (D-71, D-81, D-87). Detalle en la nota de [Fundación y cisma](fundacion-y-cisma.md) §3.
+
 | Lugar | Dónde | Qué tiene |
 |---|---|---|
 | **Campamento** | Nodos de zonas amarillas y rojas | Fogata, un mercader errante, a veces una posta |

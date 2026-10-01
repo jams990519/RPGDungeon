@@ -24,7 +24,7 @@ Hay **un solo mundo** y **un solo motor**. Telegram, la web y la app móvil son 
 | Los temporizadores y las horas de cierre | Cuántos toques o clics hacen falta para llegar a una acción |
 | La información que ve cada jugador y su precisión | Por dónde llegan los avisos (privado del bot, notificación del navegador, correo) |
 | Las acciones disponibles en cada momento | Cómo se pliegan y se paginan los textos largos |
-| La cuenta, los héroes, el inventario, el oro y las Gemas | Los atajos de navegación (menú fijo, barra lateral, teclas) |
+| La cuenta, los héroes, el inventario, las monedas y los 💎 Diamantes (antes "Gemas", D-85) | Los atajos de navegación (menú fijo, barra lateral, teclas) |
 
 **Reglas de paridad:**
 1. **Ningún cliente agrega reglas, información ni ventajas.** Solo traduce órdenes y vistas.
