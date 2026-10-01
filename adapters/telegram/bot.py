@@ -30,6 +30,8 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import re
+import sys
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
@@ -48,6 +50,21 @@ log = logging.getLogger("lostrealms.telegram")
 MENU_LABEL = "📍 Juego"
 MENU = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text=MENU_LABEL)]], resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
+TOKEN_RE = re.compile(r"^\d{6,12}:[A-Za-z0-9_-]{30,}$")
+
+
+def clean_token(raw: str) -> str:
+    """Remove spaces, quotes or a pasted "NAME=" prefix from the token.
+
+    [ES]
+    Qué hace: limpia el token si se pegó con espacios, comillas o con "TELEGRAM_BOT_TOKEN=" delante.
+    La llaman: main.
+    Si cambia, afecta: el arranque del bot.
+    """
+    token = raw.strip().strip("\"'").strip()
+    if token.startswith("TELEGRAM_BOT_TOKEN="):
+        token = token.split("=", 1)[1].strip().strip("\"'").strip()
+    return token
 
 
 def account_of(user_id: int) -> str:
@@ -120,10 +137,12 @@ async def notifier(bot: Bot, service: GameService) -> None:
 
 async def main() -> None:
     """Start polling. [ES] Qué hace: arranca el bot. La llaman: python -m adapters.telegram.bot. Si cambia, afecta: el arranque del bot."""
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    token = os.environ.get("TELEGRAM_BOT_TOKEN")
+    logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
+    token = clean_token(os.environ.get("TELEGRAM_BOT_TOKEN", ""))
     if not token:
         raise SystemExit("TELEGRAM_BOT_TOKEN is not set")
+    if not TOKEN_RE.match(token):
+        log.error("TELEGRAM_BOT_TOKEN has a wrong format (length %d); copy it again from @BotFather", len(token))
     bot = Bot(token, default=DefaultBotProperties(parse_mode="HTML"))
     dp = Dispatcher()
     service = build_service()

@@ -1,6 +1,6 @@
 # Lost Realms
 
-**Un MMORPG por turnos y en texto.** Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@thetowerwarbot**, la web y una app móvil de texto.
+**Un MMORPG por turnos y en texto.** Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@LostRealmsbot**, la web y una app móvil de texto.
 
 - El mundo empieza tras el **Colapso**: todo fue destruido, hay comunidades de PNJ con reglas propias y los jugadores fundan y sostienen sus propios asentamientos hasta construir un castillo.
 - Clases igualadas con roles variados (Ataque, Defensa, Curación, Soporte), combate de 6 botones y jefes difíciles pero justos.
@@ -18,12 +18,12 @@ python -m pytest            # pruebas del motor
 python -m adapters.cli.play --fast   # jugar en la consola, con el tiempo acelerado
 ```
 
-## Cómo desplegarlo en Railway (@thetowerwarbot)
+## Cómo desplegarlo en Railway (@LostRealmsbot)
 
 1. **Borrar el juego viejo del bot:** en el proyecto de Railway donde corre hoy @thetowerwarbot, eliminar su servicio y su base de datos o volumen. **Solo el de @thetowerwarbot**, nunca el de TowerWars (@TowerWarsBot).
 2. **Servicio nuevo:** desde el repositorio `jams990519/RPGDungeon` (rama `main`). El comando de arranque ya está en `railway.json`.
 3. **Volumen:** montar uno en `/data` para que las partidas no se borren al reiniciar.
-4. **Variables:** `TELEGRAM_BOT_TOKEN` = el token de @thetowerwarbot; `RPG_DB_PATH` = `/data/lostrealms.sqlite3`. La lista completa está en `.env.example`.
+4. **Variables:** `TELEGRAM_BOT_TOKEN` = el token de @LostRealmsbot; `RPG_DB_PATH` = `/data/lostrealms.sqlite3`. La lista completa está en `.env.example`.
 
 ## Dónde está todo
 

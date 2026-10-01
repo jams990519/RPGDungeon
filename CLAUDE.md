@@ -4,7 +4,7 @@ Toda sesión de IA que trabaje en este repositorio lee esto primero. Una orden n
 
 ## 1. Qué es y dónde está todo
 
-- ***Lost Realms*** (D-62): un MMORPG **por turnos y en texto**. Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@thetowerwarbot**, la web y una app móvil de texto (D-40, D-41).
+- ***Lost Realms*** (D-62): un MMORPG **por turnos y en texto**. Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@LostRealmsbot**, la web y una app móvil de texto (D-40, D-41).
 - **Estado:** diseño casi completo y **código en marcha** (D-59): primero una versión jugable mínima.
 - **Punto de entrada:** [diseno/README.md](diseno/README.md), con el mapa de los módulos.
 - **Lo decidido:** [decisiones.md](diseno/00-vision/decisiones.md) (D-xx). Solo la tabla "Confirmadas por el dueño" es ley; lo demás es provisional o propuesta.
@@ -19,8 +19,8 @@ Antes de proponer algo, buscar si ya está decidido o preguntado: `grep -rn "pal
 ## 2. Reglas fijas del dueño (no se negocian)
 
 1. **TowerWars no se toca.** Ni el bot @TowerWarsBot, ni el repositorio `jams990519/towerwars`, ni su carpeta local, ni su base de datos, ni sus servicios (D-01). De TowerWars solo se toman lecciones, y ya están resumidas en el diseño.
-2. **El juego se monta en @thetowerwarbot** (D-02), que es otro bot.
-3. **Nada en Railway ni ningún despliegue sin permiso explícito del dueño** (D-03). Ni crear servicios, ni cambiar variables, ni desplegar, ni volver a desplegar. Si la sesión tiene herramientas de Railway, no se usan hasta que el dueño lo pida.
+2. **El juego corre en @LostRealmsbot** (D-02), en Railway, servicio RPGDungeon del proyecto satisfied-balance. Ningún otro servicio se toca.
+3. **Railway solo en el servicio RPGDungeon** (D-60, D-63): los parches probados se unen a `main` y se despliegan solos. Nada más en Railway sin permiso explícito del dueño, y nunca borrar datos sin su confirmación.
 4. **Todo en texto y por turnos** (D-05).
 5. **Modular para Telegram, web y app móvil:** un solo motor y las mismas reglas para los tres. Ningún cliente da ventaja. El motor no sabe desde qué cliente juega cada jugador (D-40, D-41).
 6. **El código ya está autorizado** (D-59, reemplaza a D-04). Se construye primero lo más importante, y se trabaja con **uno o dos agentes a la vez**, en orden de prioridad, para no gastar créditos de más.

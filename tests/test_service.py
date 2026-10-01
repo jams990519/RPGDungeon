@@ -129,3 +129,36 @@ def test_multi_leg_route_chains(service, clock):
         if (hero["x"], hero["y"]) == (3, 0) or hero["activity"] is None:
             break
     assert hero["x"] >= 1
+
+
+def test_shop_and_inn_in_claro(service, clock):
+    make_hero(service)
+    zone = service.view("test:1")
+    ids = [a.id for a in zone.actions]
+    assert "shop" in ids and "inn" in ids
+    hero = service.store.get("hero", "test:1")
+    hero["gold"] = 50
+    hero["backpack"]["hierba_curativa"] = 2
+    hero["hp"] = 10
+    service.store.put("hero", "test:1", hero)
+    view = service.act("test:1", "buy:pocion_vida")
+    assert service.store.get("hero", "test:1")["gold"] == 38 and view.notice
+    service.act("test:1", "sell:hierba_curativa")
+    assert service.store.get("hero", "test:1")["gold"] == 39
+    view = service.act("test:1", "inn")
+    assert view.kind == "activity"
+    clock.advance(600)
+    service.view("test:1")
+    hero = service.store.get("hero", "test:1")
+    assert hero["hp"] == 135 and hero["gold"] == 35
+
+
+def test_shop_only_in_claro(service, clock):
+    make_hero(service)
+    service.act("test:1", "go:n")
+    clock.advance(3 * 3600)
+    service.view("test:1")
+    while service.store.get("combat", "test:1"):
+        service.act("test:1", "atk")
+    view = service.act("test:1", "buy:pocion_vida")
+    assert view.notice and "Claro" in view.notice
