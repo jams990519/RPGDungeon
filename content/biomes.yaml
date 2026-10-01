@@ -5,54 +5,66 @@
 # gather: qué se recolecta en ese bioma (material: peso).
 # water (D-115, fase 2 de los oficios): qué parte de las zonas de ese bioma tiene agua (1.0 = todas): ahí también se pesca
 #   🐟 pescado (engine/world/resources.py water_resources; su peso en balance.yaml camp_professions.fish). Sin "water", 0.
-# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; danger mueve cuántas peleas hay; water mueve dónde
+# color (D-179, confirmada): con qué color se pinta el terreno en el 🗺️ Mapa (D-182: colores elegidos por Claude). Un terreno
+#   nuevo solo agrega su color: la leyenda del mapa se arma sola. El color es el terreno, no promete recursos (D-180).
+#   Libres para terrenos nuevos: 🟧 🟥 (y los círculos 🔴 🟠 🟡 🔵 🟣 🟤 ⚫ ⚪).
+# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; color cambia cómo se ve el mapa (tests/test_resources.py); danger mueve cuántas peleas hay; water mueve dónde
 #   se pesca (y cuánta comida llega a las despensas: 🎣 Pescador y 🍲 Cocina, tests/test_oficios_campamento.py).
 
 claro:
   name_key: biome.claro
+  color: "🔥"            # [ES] D-179: color del terreno en el 🗺️ Mapa (el Claro es un lugar y sigue con su 🔥)
   gather: {fibra: 3, madera: 2}
   emoji: "🔥"
   danger: 0.0
 pradera:
   name_key: biome.pradera
+  color: "🟩"
   gather: {fibra: 4, hierba_curativa: 2, piedra: 1}
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un río o una laguna (🐟 pescado)
   emoji: "🌾"
   danger: 0.25
 bosque:
   name_key: biome.bosque
+  color: "🟢"
   gather: {madera: 5, hierba_curativa: 2, fibra: 1}
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un arroyo (🐟 pescado)
   emoji: "🌲"
   danger: 0.35
 colinas:
   name_key: biome.colinas
+  color: "🟫"
   gather: {piedra: 4, madera: 1, pieza_metal: 1}
   emoji: "⛰️"
   danger: 0.3
 pantano:
   name_key: biome.pantano
+  color: "🟪"
   gather: {hierba_curativa: 4, fibra: 2}
   water: 1.0            # [ES] D-115: todo el pantano es agua: en cada zona se pesca
   emoji: "🐸"
   danger: 0.45
 montana:
   name_key: biome.montana
+  color: "⬜"
   gather: {piedra: 4, pieza_metal: 2}
   emoji: "🏔️"
   danger: 0.4
 desierto:
   name_key: biome.desierto
+  color: "🟨"
   gather: {piedra: 2, pieza_metal: 1, fibra: 1}
   emoji: "🏜️"
   danger: 0.4
 tundra:
   name_key: biome.tundra
+  color: "🟦"
   gather: {piedra: 2, madera: 1, pieza_metal: 1}
   emoji: "❄️"
   danger: 0.4
 ruinas:
   name_key: biome.ruinas
+  color: "⬛"
   gather: {pieza_metal: 4, piedra: 2}
   emoji: "🏚️"
   danger: 0.5

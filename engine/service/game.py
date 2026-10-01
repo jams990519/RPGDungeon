@@ -22,9 +22,9 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109); §0.4 y red-de-oficios.md §5 (fase 2, lado
     del campamento: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería, 🏗️ Construcción y las defensas que dañan las oleadas, D-115/D-116)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
-    diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los ⛺ campamentos enemigos de cada día, D-112;
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 (el oficio 🧭 Explorador y los 👹 campamentos enemigos de cada día, D-112;
     🔭 Reconocer de lejos y 🥷 Sigilo, D-172)
-    diseno/06-contenido/mazmorras-y-bandas.md §0 y mapa-infinito-y-viaje.md §1.15 (🕳️ 🌀 mazmorras para uno y los ❓ del
+    diseno/06-contenido/mazmorras-y-bandas.md §0 y mapa-infinito-y-viaje.md §1.15 (🕳️ 🌀 mazmorras para uno y las 🕳️ cuevas del
     mapa, D-164, D-165, D-170, D-171)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
     engine/service/story.py, StoryMixin, de la que GameService hereda)
@@ -77,7 +77,7 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     ({"won", "lost", "fled"}), "fight_xp", "fight_gold", "gold_lost", "loot" y "fight_trade" para el resumen del final.
     D-117 (provisional): Hero.origin, Hero.story, Hero.factions, Hero.journal y Hero.bio, y el espacio "camp_tasks"
     (encargos semanales de cada campamento, clave "x:y"); los maneja engine/service/story.py (ver su encabezado).
-    D-112: "enemy_camp" (lo que los jugadores le hicieron a un ⛺ campamento enemigo ese día, clave "<día>:<x>:<y>":
+    D-112: "enemy_camp" (lo que los jugadores le hicieron a un 👹 campamento enemigo ese día, clave "<día>:<x>:<y>":
     {"day", "x", "y", "beaten" (guardias vencidos entre todos), "destroyed" ({by, name, at} o None), "fighters" {héroe:
     peleas ganadas o perdidas}, "scouted" [héroes que se infiltraron]}). Dónde hay campamento no se guarda: sale de la
     semilla y el día. Al escribir el primero de un día se borran los de antes de ayer. Una pelea del campamento lleva
@@ -255,16 +255,16 @@ Si cambias esto, revisa:
       _works_entries ("fix"), _give_to_work (_upgrade_need, _credit_raw, _build_gain), _upgrade_action ("uprep" →
       _repair_defenses), _services_view (⚒️ Oficios con cualquier estación sin 🧵 Taller), _professions_view (BRANCH_ORDER y
       la línea 🏰) y _recipe_view (lo que vale una comida en la despensa)
-    - 🧭 Explorador y ⛺ campamentos enemigos (D-112): balance.yaml explorer (experiencia del oficio, umbrales del mapa) y
+    - 🧭 Explorador y 👹 campamentos enemigos (D-112): balance.yaml explorer (experiencia del oficio, umbrales del mapa) y
       enemy_camps (densidad, guarnición, jefe, energía, cofre, parte, infiltración); content/professions.yaml (explorador,
       rama explore, perk explore); engine/world/enemy_camps.py; textos ecamp.*, explorer.* y los de profession.explorador,
       prof.perk.explore, prof.branch.explore, batch.reason.enemy_camp y story.journal.enemy_camp* en
       content/locales/es_exploracion.yaml; tests/test_enemy_camps.py. Tocan _settle (un lote en la zona de un campamento se
       corta y devuelve la vuelta), _arrive (aviso al llegar), _explore_target (salta zonas con campamento), _explore_step
       (experiencia y beneficio del Explorador), _amount_view, _start_batch y _continue_batch (explorar y recolectar
-      bloqueados), _batch_summary (línea ⚒️ Oficios al explorar), _zone_view (línea y marca ⛺ en las rutas), _explore_menu
+      bloqueados), _batch_summary (línea ⚒️ Oficios al explorar), _zone_view (línea y marca 👹 en las rutas), _explore_menu
       (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
-      un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (⛺, líneas y ⛺ Ir al más cercano),
+      un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (👹, líneas y 👹 Ir al más cercano),
       _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
       (marca del jefe), _prof_gain (umbrales del mapa y el título), _next_unlock, _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
@@ -273,7 +273,7 @@ Si cambias esto, revisa:
       _settle (sin vida que vuelva mientras hay bajada abierta: _dng_paused; al final, _dng_settle cierra la bajada que
       quedó atrás), _arrive (aviso al llegar), _idle_action ("dungeon", "dgo", "dout"; "goto:" acepta una entrada del
       mapa), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar), _map_view
-      (❓ 🕳️ 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
+      (🕳️ cueva y 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
       _end_combat (_dng_fight_done y los botones de _dng_again)
     - 🔭 Reconocer y 🥷 Sigilo (D-172): balance.yaml recon (energía, alcance por umbral, experiencia, monedas, cuántos lista) y
       explorer (ranks recon, recon_far, recon_wide y stealth_max); content/professions.yaml (perk stealth del explorador y el
@@ -345,7 +345,7 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import main_resource, water_resources, zone_resources
+from engine.world.resources import water_resources, zone_resources
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
@@ -962,7 +962,7 @@ class GameService(StoryMixin):
         Qué hace: dice qué zona estudia la próxima vuelta de exploración. Primero la tuya; cuando está al 100 %, la
         primera de alrededor (explore.around_radius casillas; primero norte, este, sur y oeste, después las diagonales)
         que no esté al 100 %. El héroe no se mueve: explora desde donde está. None si ya no queda nada cerca.
-        D-112: una zona con un ⛺ campamento enemigo en pie no se explora: se salta (la tuya y las de alrededor).
+        D-112: una zona con un 👹 campamento enemigo en pie no se explora: se salta (la tuya y las de alrededor).
         La llaman: _explore_step, _amount_view, _start_batch, _continue_batch y _activity_view.
         Si cambia, afecta: qué zonas se completan al explorar en lote y cuándo se corta el lote (tests/test_service.py).
         """
@@ -1389,7 +1389,7 @@ class GameService(StoryMixin):
                 gx, gy = (int(v) for v in action_id[5:].split(":"))
             except ValueError:
                 return self._places_view(hero)
-            # a remembered place, an enemy camp the hero sees on its 🗺️ Mapa (D-112: ⛺ Ir al campamento) or a dungeon on it (D-171)
+            # a remembered place, an enemy camp the hero sees on its 🗺️ Mapa (D-112: 👹 Ir al campamento) or a dungeon on it (D-171)
             if not (hero.remembers(gx, gy) or self._ecamp_visible(hero, gx, gy) or self._dng_shown(hero, gx, gy)) \
                     or (gx, gy) == (hero.x, hero.y):
                 return self._places_view(hero)
@@ -1437,7 +1437,7 @@ class GameService(StoryMixin):
         Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🪓 Recolectar y, con ⚔️ Peleas automáticas, de
         🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). Cada botón dice la energía y el tiempo
         estimado ("⚡ 10 · ⏱️ 1 h 40 min"); 4 botones como mucho, con ▶️ Más / ◀️ Volver. Dice además qué pasa si sale una
-        pelea (⚙️ Opciones). Con un ⛺ campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
+        pelea (⚙️ Opciones). Con un 👹 campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
         🧭 Explorar con el aviso, sin gastar nada.
         La llaman: los botones 🔎 Explorar, 🪓 Recolectar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
         Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y el tope de 4 botones.
@@ -1503,7 +1503,7 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: empieza el lote elegido ("do:explore:10", "do:gather:max", "do:hunt:20"): cobra la energía de la primera
         vuelta (1 ⚡; una presa, hunt.energy) y deja el reloj; las demás vueltas se cobran al empezar cada una. Si algo lo
-        impide (mochila llena, zona agotada, nada por explorar, sin energía, un ⛺ campamento enemigo en pie en la zona (D-112);
+        impide (mochila llena, zona agotada, nada por explorar, sin energía, un 👹 campamento enemigo en pie en la zona (D-112);
         para cazar: ✋ Manual, sin presas, malherido o con la vida bajo el límite de ⚙️ Opciones) avisa y no cobra nada.
         La llaman: los botones de cantidad de _amount_view. Si cambia, afecta: el gasto de energía de todos los lotes.
         """
@@ -1764,7 +1764,7 @@ class GameService(StoryMixin):
         elif land:
             body.append(t.t("camps.land_line", name=land["name"]))
         body += self._lair_lines(zone)
-        body += self._ecamp_zone_lines(zone)            # D-112: ⛺ an enemy camp here (or its ruins today)
+        body += self._ecamp_zone_lines(zone)            # D-112: 👹 an enemy camp here (or its ruins today)
         body += self._dng_zone_lines(hero, zone)        # D-170: 🕳️ / 🌀 a dungeon here (and today's family)
         body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
@@ -2352,7 +2352,7 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: el menú de la zona: 🔎 Explorar, 🪓 Recolectar, 🏹 Cazar (D-106) y 🗺️ Mapa. 📒 Lugares se mudó adentro
         de 🗺️ Mapa para dejarle lugar a 🏹 Cazar. En la guarida del Guardián (D-82) ⚔️ Desafiar al Guardián toma el lugar
-        de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un ⛺ campamento enemigo en pie en la zona (D-112) el menú es
+        de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un 👹 campamento enemigo en pie en la zona (D-112) el menú es
         el del campamento (_ecamp_menu: ⚔️ Asaltar y 🕵️ Infiltrarse en lugar de explorar y recolectar); si cayó hoy, una
         línea lo dice. Con una entrada de mazmorra en la zona (D-170) 🕳️ Entrar o 🌀 Descender toma el lugar de 🏹 Cazar (que
         pasa adentro de la pantalla de la mazmorra) y una línea dice qué familia la ocupa hoy. D-172: si hay lugares para
@@ -6324,7 +6324,7 @@ class GameService(StoryMixin):
         del viaje; al elegir uno, el héroe va solo, zona por zona. Desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares
         (su ↩️ Volver vuelve al mapa), para dejarle lugar a 🏹 Cazar en 🧭 Explorar. D-112: desde el rango 10 de
         🧭 Explorador (explorer.ranks.travel) la lista llega a explorer.places_listed lugares con su tiempo (los botones
-        siguen siendo 3), y un lugar con un ⛺ campamento enemigo en pie lo dice.
+        siguen siendo 3), y un lugar con un 👹 campamento enemigo en pie lo dice.
         La llaman: el botón 📒 Lugares del mapa y un "goto:" que ya no sirve.
         Si cambia, afecta: tests/test_service.py, tests/test_boss.py y tests/test_enemy_camps.py (lugares y guarida), el
         paso use_places del tutorial.
@@ -6372,15 +6372,18 @@ class GameService(StoryMixin):
         Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
         igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
         se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
-        D-112: ⛺ marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
+        D-179: lo que tu héroe recuerda se pinta con el color de su terreno (content/biomes.yaml "color"; la leyenda se arma
+        sola), también al 100 %: el color no dice qué recursos hay (antes, al 100 %, se pintaba el recurso principal, D-87).
+        D-112: 👹 marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
         rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
-        D-171: ❓ marca las entradas de mazmorra a 2 zonas o menos de lo que recuerdas (hay algo, no se sabe qué) y 🕳️ / 🌀
-        las que ya conoces; debajo, las 3 más cercanas (_dng_map_lines).
+        D-171: marca las entradas de mazmorra a 2 zonas o menos de lo que recuerdas; desde D-181 con la 🕳️ cueva (hay una
+        mazmorra, no se sabe cuál; antes ❓), que pasa a 🌀 cuando sabes que es profunda; debajo, las 3 más cercanas
+        (_dng_map_lines, que dicen si ya sabes qué es).
         D-172: una línea 🔭 dice cuántos lugares puedes reconocer de lejos hoy (/reconocer) o desde qué rango de 🧭 Explorador;
-        las mazmorras reconocidas se ven 🕳️ / 🌀 (no ❓) y, hoy, con su familia; los campamentos reconocidos hoy, con su fuerza.
-        La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), ⛺ Ir al campamento
-        enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él), ❓ Ir a investigar / 🕳️ Ir a la mazmorra
+        las mazmorras reconocidas se saben (🕳️ chica / 🌀 profunda) y, hoy, con su familia; los campamentos reconocidos hoy, con su fuerza.
+        La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), 👹 Ir al campamento
+        enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él), 🕳️ Ir a la cueva / 🕳️ 🌀 Ir a la mazmorra
         (D-171, la más cercana que ves), 🔭 Reconocer (D-172, solo si queda lugar y hay algo para reconocer) y ↩️ Volver: 4
         como mucho.
         Si cambia, afecta: cuánto del mundo ves de una vez y el largo del mensaje; que 📒 Lugares siga a mano
@@ -6390,8 +6393,8 @@ class GameService(StoryMixin):
         radius = self.content.balance["map_view"]["radius"]
         seen = self._ecamp_seen(hero)                   # D-112: the enemy camps this hero sees today
         marks = {(camp["x"], camp["y"]) for camp in seen}
-        dungeons = self._dng_seen(hero)                 # D-171: ❓ something is there; 🕳️ / 🌀 once you know
-        dmarks = {(x, y): mark for x, y, mark in dungeons}
+        dungeons = self._dng_seen(hero)                 # D-181: 🕳️ a dungeon is there; 🌀 once you know it is deep
+        dmarks = {(x, y): self._dng_icon(state) for x, y, state in dungeons}
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
@@ -6401,21 +6404,21 @@ class GameService(StoryMixin):
                 elif self._is_lair(x, y) and (hero.remembers(x, y) or self._discovered(x, y) is not None):
                     row += "👑"
                 elif (x, y) in marks:
-                    row += "⛺"
+                    row += t.t("ecamp.icon")
                 elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
                     row += "🏕️"
                 elif (x, y) in dmarks:
                     row += dmarks[(x, y)]
-                elif self._explored_pct(hero, x, y) >= 100:
-                    row += self.content.balance["resources"]["colors"][main_resource(self._zone_resources(x, y))]
-                elif hero.remembers(x, y):
-                    row += self.content.biomes[self._zone(x, y).biome]["emoji"]
+                elif hero.remembers(x, y):                  # D-179: the terrain's colour, never the resources'
+                    biome = self.content.biomes[self._zone(x, y).biome]
+                    row += biome.get("color", biome["emoji"])
                 elif self._discovered(x, y) is not None:
                     row += "▪️"
                 else:
                     row += "▫️"
             rows.append(row)
-        body = [t.t("map.legend"), t.t("map.colors")] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
+        terrains = " · ".join(f"{b.get('color', b['emoji'])} {t.t(b['name_key'])}" for b in self.content.biomes.values())
+        body = [t.t("map.legend"), t.t("map.colors", items=terrains)] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
         cfg = self._guardian_cfg()
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
@@ -6425,13 +6428,13 @@ class GameService(StoryMixin):
         body += self._recon_map_lines(hero, bool(seen or dungeons), pending)
         actions = [Action(id="places", label=t.t("menu.places"))]
         target = next((camp for camp in seen if (camp["x"], camp["y"]) != (hero.x, hero.y)), None)
-        if target and not hero.activity:               # D-112: ⛺ go to the nearest enemy camp you see
+        if target and not hero.activity:               # D-112: 👹 go to the nearest enemy camp you see
             label = (t.t("ecamp.go_button_time", time=self._fmt_duration(self._trip_seconds(hero, target["x"], target["y"])))
                      if self._explorer_has(hero, "travel") else t.t("ecamp.go_button"))
             actions.append(Action(id=f"goto:{target['x']}:{target['y']}", label=label))
-        near = next(((x, y, mark) for x, y, mark in dungeons if (x, y) != (hero.x, hero.y)), None)
+        near = next(((x, y, state) for x, y, state in dungeons if (x, y) != (hero.x, hero.y)), None)
         if near and not hero.activity:                 # D-171: go to the nearest dungeon on your map (4 buttons at most)
-            label = t.t("dungeon.go_unknown") if near[2] == t.t("dungeon.icon_unknown") else t.t("dungeon.go_button", mark=near[2])
+            label = t.t("dungeon.go_unknown") if near[2] == "unknown" else t.t("dungeon.go_button", mark=self._dng_icon(near[2]))
             actions.append(Action(id=f"goto:{near[0]}:{near[1]}", label=label))
         if pending and len(actions) < 3:                # D-172: 🔭 Reconocer only when it fits (4 buttons at most); /reconocer always
             actions.append(Action(id="recon", label=t.t("recon.map_button")))
@@ -7374,7 +7377,7 @@ class GameService(StoryMixin):
         """🧭 Explorar in a zone with a standing enemy camp: [⚔️ Asaltar] [🕵️ Infiltrarse] [🏹 Cazar] [🗺️ Mapa].
 
         [ES]
-        Qué hace: el menú de 🧭 Explorar cuando en tu zona hay un ⛺ campamento enemigo en pie (D-112): explorar y
+        Qué hace: el menú de 🧭 Explorar cuando en tu zona hay un 👹 campamento enemigo en pie (D-112): explorar y
         recolectar no se pueden (los enemigos no te dejan), así que sus lugares los toman ⚔️ Asaltar (cada pelea cuesta
         enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30;
         con menos, el botón dice el rango que pide). Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o
@@ -7751,15 +7754,17 @@ class GameService(StoryMixin):
     def _dng_icon(self, kind: str) -> str:
         return self.texts.t(f"dungeon.icon_{kind}")
 
-    def _dng_shown(self, hero: Hero, x: int, y: int, known: set[str] | None = None, kinds: set[str] | None = None) -> str | None:
-        """The 🗺️ Mapa mark of a dungeon (D-171): 🕳️ / 🌀 if the hero knows it, ❓ if it only knows something is there, else None.
+    def _dng_state(self, hero: Hero, x: int, y: int, known: set[str] | None = None, kinds: set[str] | None = None) -> str | None:
+        """What the hero knows of a dungeon entrance (D-171): "small" / "deep" if it knows which, "unknown" if it only knows a
+        dungeon is there, else None.
 
         [ES]
-        Qué hace: dice qué ve el héroe de una entrada en su mapa: si pisó la zona (o la estudió desde la de al lado), sabe
-        qué es (🕳️ chica o 🌀 profunda); si solo anduvo cerca (a dungeons.hint_radius zonas o menos de alguna que recuerda),
-        ve ❓: sabe que hay algo, no qué (D-171). Si no, nada. D-172: si la 🔭 reconoció de lejos (alguna vez: la entrada no se
-        mueve), también sabe qué es; `kinds` son esas zonas (store "recon", clave "kinds"), para leerlas una vez por mapa.
-        La llaman: _map_view, _dng_map_lines, _recon_targets y "goto:".
+        Qué hace: dice qué sabe el héroe de una entrada: si pisó la zona (o la estudió desde la de al lado), sabe qué es
+        ("small" chica o "deep" profunda); si solo anduvo cerca (a dungeons.hint_radius zonas o menos de alguna que recuerda),
+        "unknown": sabe que ahí hay una mazmorra, no cuál (D-171, D-181). Si no, nada. D-172: si la 🔭 reconoció de lejos
+        (alguna vez: la entrada no se mueve), también sabe qué es; `kinds` son esas zonas (store "recon", clave "kinds"), para
+        leerlas una vez por mapa. Va aparte de la marca porque, desde D-182, la cueva 🕳️ es la misma para "unknown" y "small".
+        La llaman: _dng_shown, _dng_seen y _recon_mark.
         Si cambia, afecta: lo que cada uno ve en el 🗺️ Mapa.
         """
         kind = self._dng_kind(x, y)
@@ -7767,33 +7772,43 @@ class GameService(StoryMixin):
             return None
         known = set(hero.known) if known is None else known
         if f"{x}:{y}" in known or f"{x}:{y}" in (self._recon_kinds(hero) if kinds is None else kinds):
-            return self._dng_icon(kind)
+            return kind
         radius = int(self._dng_cfg()["hint_radius"])
         near = any(f"{x + dx}:{y + dy}" in known for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1))
-        return self.texts.t("dungeon.icon_unknown") if near else None
+        return "unknown" if near else None
+
+    def _dng_shown(self, hero: Hero, x: int, y: int, known: set[str] | None = None, kinds: set[str] | None = None) -> str | None:
+        """The 🗺️ Mapa mark of a dungeon: the 🕳️ cave while you only know a dungeon is there (D-181) or it is small; 🌀 once
+        you know it is deep; None if you know nothing.
+
+        [ES]
+        Qué hace: la marca de una entrada en el mapa, según lo que sabe el héroe (_dng_state): 🕳️ cueva (D-181, D-182: antes
+        ❓) o 🕳️ chica, y 🌀 profunda. La llaman: _map_view, _recon_targets y "goto:". Si cambia, afecta: el 🗺️ Mapa.
+        """
+        state = self._dng_state(hero, x, y, known, kinds)
+        return self._dng_icon(state) if state else None
 
     def _dng_seen(self, hero: Hero) -> list[tuple[int, int, str]]:
-        """The dungeons on the hero's 🗺️ Mapa (x, y, mark), nearest first."""
+        """The dungeons on the hero's 🗺️ Mapa (x, y, state: "unknown" / "small" / "deep"), nearest first."""
         radius = self.content.balance["map_view"]["radius"]
         known = set(hero.known)
         kinds = self._recon_kinds(hero)                 # D-172: entrances scouted from afar
-        found = [(hero.x + dx, hero.y + dy, mark) for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
-                 if (mark := self._dng_shown(hero, hero.x + dx, hero.y + dy, known, kinds))]
+        found = [(hero.x + dx, hero.y + dy, state) for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
+                 if (state := self._dng_state(hero, hero.x + dx, hero.y + dy, known, kinds))]
         found.sort(key=lambda d: (abs(d[0] - hero.x) + abs(d[1] - hero.y), d[0], d[1]))
         return found
 
     def _dng_map_lines(self, hero: Hero, seen: list[tuple[int, int, str]]) -> list[str]:
-        """🗺️ Mapa lines: the nearest dungeons you know of (❓ unknown, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10
+        """🗺️ Mapa lines: the nearest dungeons you know of (🕳️ a cave, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10
         and, D-172, today's family of those you scouted from afar today ("🔭 hoy 🐺 Manada")."""
         if not seen:
             return []
         t = self.texts
-        unknown = t.t("dungeon.icon_unknown")
         lines = [t.t("dungeon.map_legend")]
         travel = self._explorer_has(hero, "travel")
         scouted = self._recon_today(hero)
-        for x, y, mark in seen[:int(self._dng_cfg()["map_lines"])]:
-            key = "dungeon.map_unknown" if mark == unknown else f"dungeon.map_{self._dng_kind(x, y)}"
+        for x, y, state in seen[:int(self._dng_cfg()["map_lines"])]:
+            key = f"dungeon.map_{state}"
             text = t.t(key, x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y))
             if travel and (x, y) != (hero.x, hero.y):
                 text += t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
@@ -8273,8 +8288,8 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: lista lo que se puede 🔭 reconocer desde donde estás: en las zonas a 1..recon_range de distancia (el cuadrado
-        alrededor, como la vista de los campamentos), cada ⛺ campamento enemigo en pie que ves y cada entrada de mazmorra que
-        marca tu 🗺️ Mapa (❓, 🕳️ o 🌀). Si un campamento tapa una entrada, la zona cuenta como campamento. Nunca tu propia zona
+        alrededor, como la vista de los campamentos), cada 👹 campamento enemigo en pie que ves y cada entrada de mazmorra que
+        marca tu 🗺️ Mapa (🕳️ o 🌀). Si un campamento tapa una entrada, la zona cuenta como campamento. Nunca tu propia zona
         (ahí se entra o se 🕵️ infiltra). Los más cercanos primero.
         La llaman: _recon_view, _recon_pending y _recon_target. Si cambia, afecta: qué ofrece la pantalla 🔭.
         """
@@ -8305,10 +8320,10 @@ class GameService(StoryMixin):
         return next((what for tx, ty, what in self._recon_targets(hero) if (tx, ty) == (x, y)), None)
 
     def _recon_mark(self, hero: Hero, x: int, y: int, what: str) -> str:
-        """The mark of a target as the 🗺️ Mapa shows it: ⛺ a camp; ❓ / 🕳️ / 🌀 a dungeon."""
+        """The mark of a target as the 🗺️ Mapa shows it: 👹 a camp; 🕳️ / 🌀 a dungeon."""
         if what == "camp":
-            return "⛺"
-        return self._dng_shown(hero, x, y) or self.texts.t("dungeon.icon_unknown")
+            return self.texts.t("ecamp.icon")
+        return self._dng_icon(self._dng_state(hero, x, y) or "unknown")
 
     def _recon_route_mark(self, x: int, y: int) -> str:
         """📍 Zona route mark of a neighbour dungeon scouted today: " 🕳️🐺" (its kind and today's family)."""
@@ -8362,7 +8377,7 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: la pantalla del reconocimiento de lejos (D-172). Dice cómo funciona (recon.energy ⚡ cada uno, experiencia de
         🧭 Explorador y unas monedas; uno por lugar y día), hasta dónde llegas, y lista hasta recon.listed lugares a tu alcance
-        (los ⛺ y las ❓ / 🕳️ / 🌀 de tu mapa), con ✅ y lo que hay hoy en los que ya reconociste. Botones: hasta 3 lugares sin
+        (los 👹 y las 🕳️ / 🌀 de tu mapa), con ✅ y lo que hay hoy en los que ya reconociste. Botones: hasta 3 lugares sin
         reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Antes del rango 10 dice qué rango pide. Es un menú: se abre aunque
         estés explorando, recolectando o viajando (no en combate).
         La llaman: "recon" (/reconocer, el botón 🔭 del mapa, 🔭 Reconocer otro) y lo que _recon rechaza.
@@ -8425,7 +8440,7 @@ class GameService(StoryMixin):
         [ES]
         Qué hace: el reconocimiento de lejos (D-172). Cobra recon.energy (2 ⚡) y muestra lo que hay hoy en ese lugar, sin ir:
         de una mazmorra, si es 🕳️ chica o 🌀 profunda, su nivel, la familia de hoy, su jefe y, la chica, su cofre; la profunda,
-        el récord de hoy (🏆) y el tuyo. De un ⛺ campamento enemigo, su nivel, cuántos quedan de su guarnición, quiénes y su jefe
+        el récord de hoy (🏆) y el tuyo. De un 👹 campamento enemigo, su nivel, cuántos quedan de su guarnición, quiénes y su jefe
         (no el cofre: eso es 🕵️ Infiltrarse), y si tapa una entrada de mazmorra. Es lo mismo que vería cualquiera ese día (sale de
         la semilla y del registro compartido del campamento). Da recon.explorer_xp de 🧭 Explorador, recon.hero_xp de héroe y
         nivel × recon.coins_per_level monedas. Uno por lugar y día; la mazmorra queda 🕳️ / 🌀 en tu mapa para siempre y, hoy,
@@ -8548,6 +8563,7 @@ class GameService(StoryMixin):
         Qué hace: la pantalla ⚙️ Opciones (menú de abajo y /opciones). Explica cada opción con su valor de ahora y tiene un
         botón por opción que la cambia: ⚔️ Peleas en un lote (✋ Manual / ⚔️ Automática), 🩹 Retirarse con menos de
         (30 / 50 / 70 % de vida, auto_fight.retreat_choices) y 🧪 Pociones en peleas automáticas (sí / no); más ↩️ Volver.
+        D-178: los dos interruptores (Peleas automáticas y Pociones) llevan palomita: ✅ activo, ☑️ apagado (options.check_*).
         Se puede abrir mientras exploras, recolectas o cazas (la opción vale desde la próxima pelea), no en combate.
         La llaman: el botón ⚙️ Opciones del menú fijo, /opciones y _set_option.
         Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75). Una opción nueva pide página o ciclo.
@@ -8556,7 +8572,7 @@ class GameService(StoryMixin):
         auto = self._auto_on(hero)
         pct = self._option(hero, "retreat")
         potions = self._option(hero, "potions")
-        yes_no = t.t("options.value_yes" if potions else "options.value_no")
+        check = lambda on: t.t("options.check_on" if on else "options.check_off")   # D-178: ✅ on, ☑️ off
         body = [t.t("options.intro"), "",
                 t.t("options.fights_auto" if auto else "options.fights_manual"),
                 t.t("options.retreat", pct=pct),
@@ -8565,9 +8581,9 @@ class GameService(StoryMixin):
         stealth = self._stealth_chance(hero)
         if stealth > 0:                                 # D-172: 🥷 Sigilo only helps with ✋ Manual (and when travelling)
             body.append(t.t("stealth.options", pct=f"{round(100 * stealth, 1):g}"))
-        actions = [Action(id="opt:fights", label=t.t("options.fights_button", value=t.t("options.auto" if auto else "options.manual"))),
+        actions = [Action(id="opt:fights", label=t.t("options.fights_button", check=check(auto))),
                    Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
-                   Action(id="opt:potions", label=t.t("options.potions_button", value=yes_no)),
+                   Action(id="opt:potions", label=t.t("options.potions_button", check=check(potions))),
                    Action(id="home", label=t.t("menu.back"))]
         return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice)
 

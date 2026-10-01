@@ -467,7 +467,7 @@ class StoryMixin:
         junta en su resumen; una pelea, en su final).
         La llaman: engine/service/game.py en _explore_step, _gather_step, _end_combat, _make, _sell, _camp_sell,
         _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study; y D-112: _infiltrate (🕵️ te
-        infiltraste) y _ecamp_destroyed (⛺ destruiste un campamento enemigo: queda en el 📔 Diario).
+        infiltraste) y _ecamp_destroyed (👹 destruiste un campamento enemigo: queda en el 📔 Diario).
         Si cambia, afecta: todo el avance de la historia (tests/test_story.py).
         """
         lines: list[str] = []

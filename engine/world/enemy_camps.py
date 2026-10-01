@@ -10,7 +10,7 @@ service also checks what these helpers cannot know: the Claro, the Guardian's la
 hold a camp.
 
 [ES]
-Para qué sirve: las cuentas de los ⛺ campamentos enemigos: si una zona tiene campamento hoy (semilla del mundo + día
+Para qué sirve: las cuentas de los 👹 campamentos enemigos: si una zona tiene campamento hoy (semilla del mundo + día
 + coordenadas: todos ven los mismos, y al otro día salen en otro lado), su guarnición (enemigos del bioma del nivel de
 la zona + 1, y el último es el jefe, el más fuerte), el cofre que suelta al caer (monedas, materiales de la zona y una
 probabilidad de equipo), qué tan lejos ve campamentos cada Explorador y la probabilidad de que lo descubran al

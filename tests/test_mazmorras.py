@@ -1,11 +1,11 @@
-"""Solo dungeons (D-164, D-165, D-170, D-171): the 🕳️ small dungeon, the 🌀 deep dungeon and the ❓ marks of the map.
+"""Solo dungeons (D-164, D-165, D-170, D-171): the 🕳️ small dungeon, the 🌀 deep dungeon and the 🕳️ cave marks of the map.
 
 [ES] Pruebas de las mazmorras para uno: las entradas salen siempre en el mismo lugar (semilla del mundo), desde Lejanía 2,
 nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, y un campamento enemigo en pie tapa la entrada
 ese día. Lo de adentro cambia cada día y es igual para todos: la familia (nunca la misma dos días seguidos), el jefe, el
 camino y el cofre. La chica tiene siempre 4 salas y el jefe, el cofre sale una vez por día, es modesto y puede traer equipo de
 otra clase (D-165); huir o caer no borra lo despejado. La profunda se endurece piso a piso, se elige ⬇️ Bajar o 🚪 Salir con
-lo ganado, caer deja la mitad de la bolsa, el récord queda y entre pisos la vida no vuelve sola. El mapa marca ❓ lo que está
+lo ganado, caer deja la mitad de la bolsa, el récord queda y entre pisos la vida no vuelve sola. El mapa marca 🕳️ (la cueva, D-181) lo que está
 cerca y 🕳️ / 🌀 lo que ya conoces. Las peleas automáticas nunca pelean una mazmorra (D-114). Ninguna pantalla pasa de 4 botones
 (6 en combate), ningún texto falta y los héroes de antes cargan.
 """
@@ -82,7 +82,7 @@ def test_entrances_are_fixed_spread_out_and_never_near_the_claro(content):
             assert here == dungeon_rules.entrances(SEED, bx, by, cfg)                  # always the same
             if any(lejania(x, y) >= cfg["min_lejania"] for x in range(bx * size, bx * size + size)
                    for y in range(by * size, by * size + size)):
-                assert 1 <= len(here) <= 2, (bx, by)                                    # 1 or 2 per stretch
+                assert 2 <= len(here) <= 3, (bx, by)                                    # D-181: 2 or 3 per stretch
             for i, (x, y, kind) in enumerate(here):
                 assert lejania(x, y) >= cfg["min_lejania"] and kind in ("small", "deep")
                 assert dungeon_rules.stretch_of(x, y, size) == (bx, by)
@@ -90,6 +90,11 @@ def test_entrances_are_fixed_spread_out_and_never_near_the_claro(content):
                 for x2, y2, _ in here[i + 1:]:
                     assert max(abs(x - x2), abs(y - y2)) > cfg["spacing"]               # never side by side
                 found[(x, y)] = kind
+    old = dict(cfg, second_chance=0.5, third_chance=0.0)                             # the counts before D-181
+    for bx in range(-4, 4):
+        for by in range(-4, 4):
+            before = dungeon_rules.entrances(SEED, bx, by, old)
+            assert dungeon_rules.entrances(SEED, bx, by, cfg)[:len(before)] == before    # nothing moved: only added
     kinds = list(found.values())
     assert kinds.count("deep") and kinds.count("small") > kinds.count("deep")         # deep ones are rarer
     # an excluded zone (the Guardian's lair) never holds one: another zone of its stretch is used
@@ -437,7 +442,7 @@ def test_the_map_shows_something_is_there_before_you_know_what(service):
     x, y = dungeon_zone(service, "deep")
     place(service, "test:1", x, y + 2, known=["0:0", f"{x}:{y + 2}"])                    # 2 zones away: within hint_radius
     view = service.act("test:1", "map")
-    assert any(line.startswith(f"❓ ({x}, {y})") for line in view.body)               # something is there
+    assert any(line.startswith(f"🕳️ ({x}, {y})") and "cueva" in line for line in view.body)   # D-181: a cave, not which
     assert not any(line.startswith(f"🌀 ({x}, {y})") for line in view.body)
     assert any(a.id == f"goto:{x}:{y}" for a in view.actions) and len(view.actions) <= 4
     service.act("test:1", f"goto:{x}:{y}")

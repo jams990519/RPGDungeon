@@ -560,7 +560,7 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 
 **Cuenta rápida:** un carpintero de rango 100 que fabrica 20 arcos saca unos 3 firmados. Un cazador con un arco obra maestra del nivel 100 lleva +43 % de ataque en vez de +39 % y +1 de defensa: algo menos que el +4 % de ataque que daba antes el oficio, pero solo para quien tiene la pieza, y el carpintero puede venderla o regalarla cuando exista el mercado. **Lo que cambia en la medición de D-110:** en el escenario "c" de `tools/balance_report.py` (todos los oficios al 100) los que pelean con arco o bastón pierden el +4 % de ataque de la Carpintería (las obras maestras no entran en ese escenario). Medido con `tests/test_masterwork.py`: 200 piezas al rango 100 dan 32 obras maestras en la Carpintería (16 %) y 9 en la Herrería (4,5 %).
 
-### Octubre de 2026: el 🧭 Explorador y los ⛺ campamentos enemigos (D-112)
+### Octubre de 2026: el 🧭 Explorador y los 👹 campamentos enemigos (D-112)
 
 **Por qué.** El dueño pidió que explorar sea un oficio que muestre más del mapa con el rango y que haya campamentos enemigos que cambien de lugar cada día y no dejen explorar su zona (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.14). Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `explorer` y `enemy_camps`; el beneficio, en `content/professions.yaml` → explorador.perk). No se movió ningún número de antes.
 
@@ -568,7 +568,7 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 |---|---|---|
 | Experiencia de Explorador (`explorer.xp_per_step`, `xp_full_zone`) | 5 por vuelta de exploración y 6 más al dejar una zona al 100 % | ~6 por ⚡ (una zona se completa en ~4 vueltas), como refinar (6): rango 100 en ~1 año dedicado, con la curva de todos los oficios |
 | Beneficio del Explorador (`perk.explore`) | +5 puntos de exploración por vuelta al rango 100 (+1 cada 20 rangos) | Como los demás beneficios (D-111): parejo con el rango y chico (una vuelta da 15 a 30) |
-| Umbrales del mapa (`explorer.ranks`) | ⏱️ 10 · ⛺ a 3 zonas 25 · 🕵️ 30 · ⛺ todo el mapa 50 · 👹 fuerza 75 · 🏅 título 100 | La tabla de §1.14; el 10 llega en ~3 días de toda la energía, el 30 en ~1 mes |
+| Umbrales del mapa (`explorer.ranks`) | ⏱️ 10 · 👹 a 3 zonas 25 · 🕵️ 30 · 👹 todo el mapa 50 · 👹 fuerza 75 · 🏅 título 100 | La tabla de §1.14; el 10 llega en ~3 días de toda la energía, el 30 en ~1 mes |
 | Lugares con su tiempo desde el rango 10 (`explorer.places_listed`) | 8 (sin rango, 3) | Lo que pidió el dueño ("qué tan lejos está"); los botones siguen en 3 |
 | Campamentos por día (`enemy_camps.density`, `min_lejania`) | ~3 % de las zonas de Lejanía 2 o más (4 o 5 en un mapa de 13 × 13) | Que cada uno tenga alguno cerca sin llenar el mapa de zonas bloqueadas |
 | Guarnición (`garrison`, `level_bonus`) | 4 a 8 enemigos contando al jefe, del nivel de la zona + 1 | Un día de trabajo para uno, una tarde para varios (§6.2 de supervivencia: nunca más de + 2) |
@@ -900,7 +900,7 @@ El artesano de las cuatro ranuras suma **+1 a +2 puntos** de vida al terminar y 
 | Entradas (`dungeons.stretch`, `second_chance`, `min_lejania`, `spacing`) | Tramos de 6 × 6 zonas con 1 entrada, o 2 con 50 %, desde Lejanía 2, nunca pegadas dentro del tramo | D-171: "1 o 2 mazmorras por tramo". En un mapa de 13 × 13 se ven unas 6 a 9 (con la semilla 12345, 24 en las 625 zonas a 12 del Claro: ~4 %) |
 | Profundas (`deep_share`) | 1 de cada 4 entradas | Que la profunda sea algo que se busca, y la chica lo de todos los días |
 | ❓ en el mapa (`hint_radius`) | A 2 zonas o menos de una zona que recuerdas | Lo que exploraste cerca te dice que hay algo; qué es lo sabes al pisarla o estudiarla desde al lado |
-| Nivel (`level_bonus`) | Zona + 1 | Como los ⛺ campamentos enemigos: algo más que cazar en la misma zona |
+| Nivel (`level_bonus`) | Zona + 1 | Como los 👹 campamentos enemigos: algo más que cazar en la misma zona |
 | Chica: estructura y energía (`small.rooms`, `fight_energy`) | 4 salas y el jefe; 2 ⚡ por pelea (10 ⚡ toda) | Estructura fija (D-164); 2 ⚡ como una presa o un asalto (D-108) |
 | Jefe (`small.boss_hp_mult`, `boss_attack_mult`; igual en `deep`) | El más fuerte de la familia en ese nivel, vida × 1,8 y ataque × 1,2 | Como el jefe de un campamento enemigo: más difícil sin pedir grupo |
 | Cofre de la chica (`small.chest`) | Monedas de 1,5 peleas comunes de su nivel (`coin_unit` 4 × (1 + 0,1 × (nivel − 1))), 1 a 3 materiales de la familia, 20 % de una pieza de su nivel de cualquier clase; sin experiencia | "Modesto" (D-170): el de un campamento enemigo da nivel × 25 🥉, 3 a 5 materiales, 50 % de equipo y experiencia. Una vez por mazmorra y día |
@@ -934,7 +934,7 @@ La chica queda **a la par de cazar en experiencia** (×0,99 a ×1,07: el nivel +
 | 60 | 97 % (79 % la peor) | 7,7 (1 a 26; las defensas, 11 a 17) |
 | 90 | 94 % (62 % la peor) | 9,7 (1 a 37; las defensas, 14 a 21) |
 
-El jefe de la chica se gana como el de un ⛺ campamento enemigo (85-97 %), con un bache en la zona 30 para dos especializaciones de curación (el mismo bache de esos niveles en la pasada de D-110). En la profunda, el que juega su nivel baja 3 o 4 pisos y las defensas, que aguantan sin curarse, bajan mucho más en los niveles altos: el récord y la lista 🏆 lo premian.
+El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con un bache en la zona 30 para dos especializaciones de curación (el mismo bache de esos niveles en la pasada de D-110). En la profunda, el que juega su nivel baja 3 o 4 pisos y las defensas, que aguantan sin curarse, bajan mucho más en los niveles altos: el récord y la lista 🏆 lo premian.
 
 **Lo que queda por mirar:** si 1 o 2 entradas por tramo de 6 × 6 son muchas o pocas en la beta; si el cofre de la chica (1,5 peleas de monedas, 20 % de equipo) se siente demasiado modesto; si la profunda debería tener un tope de nivel por piso para que las defensas no bajen 30 pisos en los niveles altos; si huir abajo debería costar menos que caer; y cuánto equipo de otras clases entra por día (D-165) cuando exista el mercado (D-137).
 

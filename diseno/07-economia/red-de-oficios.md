@@ -99,7 +99,7 @@ Lo que ya está programado (capa simple, D-44). Decisión del dueño: **una al r
 | ⛏️ Minero | ⚙️ Metales: +20 % de ⚙️ metal · 💠 Gemas: +8 % por vuelta de hallar una 💠 gema en bruto (aparte del raro de siempre) · 🪨 Cantera: +20 % de 🪨 piedra y 🏺 arcilla |
 | 🌿 Herbolario | 🌿 Medicinales: +20 % de 🌿 hierba curativa · 🌸 Flores raras: +8 % por vuelta de hallar una 🌸 flor de luna · 🧵 Fibras: +20 % de 🧵 fibra |
 | 🔪 Desollador | 🦌 Pieles finas: +20 % de 🦌 piel · 🍖 Carnicería: +20 % de 🍖 carne · 🦴 Trofeos: +3 % por cada carne o piel de hallar una 💠 gema |
-| 🧭 Explorador | 🗺️ Cartógrafo de campo: +3 de exploración por vuelta · 🐾 Rastreador: +30 % de monedas de los ⛺ campamentos enemigos (cofre y parte) · 🕵️ Infiltrado: −10 puntos de que te descubran y +10 puntos de 🥷 Sigilo (D-172: evitar peleas al azar al explorar con ✋ Manual y al viajar) |
+| 🧭 Explorador | 🗺️ Cartógrafo de campo: +3 de exploración por vuelta · 🐾 Rastreador: +30 % de monedas de los 👹 campamentos enemigos (cofre y parte) · 🕵️ Infiltrado: −10 puntos de que te descubran y +10 puntos de 🥷 Sigilo (D-172: evitar peleas al azar al explorar con ✋ Manual y al viajar) |
 | 🪚 Aserradero | 🟫 Tablones nobles: +15 % de tablón · 🔥 Carbón: +5 % de tablón y +10 % de lingote · 📜 Papel: +5 % de tablón y +1 de exploración |
 | 🔥 Fundición | 🔩 Hierro: +15 % de lingote · 🪙 Metales preciosos: +5 % de lingote y +3 % por vez de una 💠 gema · ⛓️ Aleaciones: +5 % de lingote y +2 % de ✒️ obra maestra en malla y placas |
 | 💧 Destilación | 🧴 Extractos: +15 % de extracto · 🎨 Tintes y tinta: +5 % de extracto y +2 % de obra maestra en tela y cuero · 🍶 Licores: +5 % de extracto y +10 % de pociones |

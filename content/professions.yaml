@@ -99,7 +99,7 @@ specs:
     - {id: desollador_trofeos, emoji: "🦴", effects: [{kind: find, items: [gema_bruta], value: 0.03}]}  # [ES] colmillos y cristales para la Joyería: por cada 🍖 o 🦌 que sacas
   explorador:
     - {id: explorador_cartografo, emoji: "🗺️", effects: [{kind: perk, key: explore, value: 3}]}        # [ES] +3 puntos de exploración por vuelta (la parte entera)
-    - {id: explorador_rastreador, emoji: "🐾", effects: [{kind: coins, sales: [ecamp], value: 0.30}]}  # [ES] +30 % de monedas de los ⛺ campamentos enemigos (cofre y parte)
+    - {id: explorador_rastreador, emoji: "🐾", effects: [{kind: coins, sales: [ecamp], value: 0.30}]}  # [ES] +30 % de monedas de los 👹 campamentos enemigos (cofre y parte)
     - {id: explorador_infiltrado, emoji: "🕵️", effects: [{kind: detect, value: 0.10}, {kind: perk, key: stealth, value: 0.10}]}   # [ES] −10 puntos de que te descubran al 🕵️ infiltrarte (sin bajar de detect_min) y, D-172, +10 puntos de 🥷 Sigilo (evitar peleas al explorar con ✋ Manual y al viajar; sin pasar balance.yaml explorer.stealth_max)
   # ---- Refinado: la del material principal rinde +15 %; las otras +5 % y algo de su línea
   aserradero:

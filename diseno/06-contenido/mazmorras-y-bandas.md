@@ -12,9 +12,9 @@ El dueño pidió (1-oct-2026) mazmorras con **estructura fija que cambian cada d
 
 ### 0.1 Dónde están
 
-- El mapa se parte en **tramos de 6 × 6 zonas**; cada tramo tiene **1 entrada, o 2 con 50 %**, en zonas de **Lejanía 2 o más**, nunca pegadas dentro del tramo. En un mapa de 13 × 13 se ven unas 6 a 9. **1 de cada 4 es 🌀 profunda**; las demás, 🕳️ chicas.
-- El lugar sale solo de la semilla del mundo y las coordenadas: **nunca se mueve** y es el mismo para todos. Nunca hay una en el Claro ni en la guarida del Guardián. El **territorio de un campamento de jugadores** la tapa mientras exista (como a los campamentos enemigos). Un **⛺ campamento enemigo** en pie sobre su zona tapa la entrada ese día: 🧭 Explorar muestra el menú del campamento y, cuando cae, la entrada se abre otra vez.
-- **En el 🗺️ Mapa** (D-171): ❓ si anduviste cerca (a 2 zonas o menos de una que recuerdas): sabes que hay algo, no qué. Al pisar la zona, o estudiarla desde la de al lado (explorar alrededor, D-107), sabes qué es: 🕳️ o 🌀. Debajo del mapa, las 3 más cercanas, y el botón **❓ Ir a investigar** o **🕳️ Ir a la mazmorra** te lleva zona por zona. Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.15.
+- El mapa se parte en **tramos de 6 × 6 zonas**; cada tramo tiene **2 entradas, o 3 con 50 %** (D-181, desde la 0.26.1; antes 1 o 2), en zonas de **Lejanía 2 o más**, nunca pegadas dentro del tramo. En un mapa de 13 × 13 hay unas 10 a 12 (solo ves las cercanas). **1 de cada 4 es 🌀 profunda**; las demás, 🕳️ chicas.
+- El lugar sale solo de la semilla del mundo y las coordenadas: **nunca se mueve** y es el mismo para todos. Nunca hay una en el Claro ni en la guarida del Guardián. El **territorio de un campamento de jugadores** la tapa mientras exista (como a los campamentos enemigos). Un **👹 campamento enemigo** en pie sobre su zona tapa la entrada ese día: 🧭 Explorar muestra el menú del campamento y, cuando cae, la entrada se abre otra vez.
+- **En el 🗺️ Mapa** (D-171, D-181): la 🕳️ cueva (hasta la 0.26, ❓) si anduviste cerca (a 2 zonas o menos de una que recuerdas): sabes que hay una mazmorra, no cuál. Al pisar la zona, o estudiarla desde la de al lado (explorar alrededor, D-107), sabes qué es: 🕳️ chica o 🌀 profunda. Debajo del mapa, las 3 más cercanas, y el botón **🕳️ Ir a la cueva** o **🕳️ Ir a la mazmorra** te lleva zona por zona. Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.15.
 - **En la zona:** al llegar lo dice ("🕳️ ¡La entrada de una mazmorra chica!"), 📍 Zona muestra qué familia la ocupa hoy y **🧭 Explorar** cambia 🏹 Cazar por **🕳️ Entrar** o **🌀 Descender** (siguen siendo 4 botones). 🏹 Cazar pasa adentro de la pantalla de la mazmorra.
 
 ### 0.2 Lo que cambia cada día y lo que no
@@ -77,7 +77,7 @@ La chica da lo de cazar más un poco (el nivel + 1 y el cofre: unas 1,5 peleas d
 
 ### 0.8 Decisiones de Claude (provisionales, para que el dueño las confirme)
 
-1. **Tramos de 6 × 6 con 1 o 2 entradas, 1 de cada 4 profunda.** D-171 dice "1 o 2 mazmorras por tramo"; el tamaño del tramo lo fijó Claude.
+1. **Tramos de 6 × 6 con 2 o 3 entradas, 1 de cada 4 profunda.** D-171 decía "1 o 2 mazmorras por tramo" y D-181 "2 o 3 por zona" (entendido por tramo, D-182; a confirmar en E-126); el tamaño del tramo lo fijó Claude.
 2. **La mazmorra toma el lugar de 🏹 Cazar en 🧭 Explorar** (en esa zona) para seguir en 4 botones; 🏹 Cazar queda dentro de la pantalla de la mazmorra.
 3. **El territorio de un campamento de jugadores tapa la entrada** y **un campamento enemigo en pie la bloquea ese día** (el lugar de las mazmorras es fijo y el de los campamentos enemigos cambia cada día).
 4. **El cofre no da experiencia** y vale unas 1,5 peleas de monedas, para que la chica quede "modesta" (D-170) y la experiencia por ⚡ a la par de cazar (D-118).

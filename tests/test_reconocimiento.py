@@ -55,7 +55,7 @@ def scout_at(service, x, y, rank, account="test:1", name="Lyra", known=None, **e
 
 def report_facts(view):
     """The lines of a 🔭 report that say what is there (not the header, the reward or the status line)."""
-    return [line for line in view.body if line.startswith(("Hoy la ocupan", "👑", "👹", "🕳️ Una", "🌀 Una", "⛺ Un", "🎁", "🏆 El", "🏆 Hoy"))]
+    return [line for line in view.body if line.startswith(("Hoy la ocupan", "👑", "👹", "🕳️ Una", "🌀 Una", "👹 Un", "🎁", "🏆 El", "🏆 Hoy"))]
 
 
 # ---------------------------------------------------------------- reach by rank
@@ -124,7 +124,7 @@ def test_once_per_place_and_day(service, clock):
     again = service.act("test:1", f"rcn:{cx}:{cy}")
     assert "Ya reconociste" in again.notice and service._load("test:1").energy == energy
     assert f"rcn:{cx}:{cy}" not in ids(service.act("test:1", "recon"))
-    assert any(line.startswith("✅ ⛺") for line in service.act("test:1", "recon").body)
+    assert any(line.startswith("✅ 👹") for line in service.act("test:1", "recon").body)
     # the next day the record is empty again (the camp moved: a dungeon can be scouted again)
     clock.advance(DAY)
     x, y = dungeon_zone(service, "small")
@@ -205,14 +205,15 @@ def test_a_camp_shows_garrison_and_chief_not_the_chest_and_infiltration_stays(se
     scout_at(service, cx, cy, 30, "test:1", "Lyra")
     inside = service.act("test:1", "infiltrate")                                    # recon never spends the infiltration
     assert inside.kind == "ecamp_intel"
-    assert [line for line in inside.body if line.startswith(("👹", "👑"))] == [line for line in one.body if line.startswith(("👹", "👑"))]
+    same = ("👹 Quedan", "👑")                                                        # the garrison and the chief (the 👹 header differs)
+    assert [line for line in inside.body if line.startswith(same)] == [line for line in one.body if line.startswith(same)]
 
 
 def test_scouted_places_show_on_the_map_and_on_the_routes(service):
     x, y = dungeon_zone(service, "deep")
-    scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])          # 2 zones away: ❓ on the map
+    scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])          # 2 zones away: the 🕳️ cave on the map
     view = service.act("test:1", "map")
-    assert any(line.startswith(f"❓ ({x}, {y})") for line in view.body)
+    assert any(line.startswith(f"🕳️ ({x}, {y})") and "cueva" in line for line in view.body)
     assert any("/reconocer" in line for line in view.body)
     service.act("test:1", f"rcn:{x}:{y}")
     view = service.act("test:1", "map")
@@ -220,7 +221,7 @@ def test_scouted_places_show_on_the_map_and_on_the_routes(service):
     assert any(line.startswith(f"🌀 ({x}, {y})") and family in line for line in view.body)   # 🌀 and today's family
     radius = service.content.balance["map_view"]["radius"]
     cells = re.findall(r".\ufe0f?", view.body[2 + radius + 2])                      # its row, 2 below you
-    assert cells[radius] == "🌀"                                                     # its square: 🌀, no longer ❓
+    assert cells[radius] == "🌀"                                                     # its square: 🌀, no longer the cave
     scout_at(service, x, y + 1, 30, known=["0:0", f"{x}:{y + 1}"])          # next door: the route says it too
     zone = service.act("test:1", "home")
     emoji = service._dng_families()[service._dng_today(x, y)["family"]]["emoji"]
@@ -236,10 +237,10 @@ def test_scouted_places_show_on_the_map_and_on_the_routes(service):
 def test_a_scouted_camp_shows_its_strength_on_the_map(service):
     cx, cy = camp_zone(service)
     scout_at(service, cx + 1, cy, 10)
-    mark = f"⛺ ({cx}, {cy})"
-    assert not any(line.startswith(mark) and "👹" in line for line in service.act("test:1", "map").body)
+    mark = f"👹 ({cx}, {cy})"
+    assert not any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "map").body)
     service.act("test:1", f"rcn:{cx}:{cy}")
-    assert any(line.startswith(mark) and "👹" in line for line in service.act("test:1", "map").body)
+    assert any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "map").body)
 
 
 def test_explore_menu_tells_what_you_can_scout(service):
