@@ -16,7 +16,7 @@
 
 ## 1. Día uno: el Claro
 
-Al abrir el servidor **no hay ciudad**. En el Piso 1 hay un **Claro** con una fogata, un pozo, unos pocos PNJ supervivientes (una sanadora, un viejo constructor, una cazadora) y un montón de restos. Es todo.
+Al abrir el servidor **no hay ciudad**. En el centro del mapa (Lejanía 0) está **el Claro**, con una fogata, un pozo, unos pocos PNJ supervivientes (una sanadora, un viejo constructor, una cazadora) y un montón de restos. Es todo.
 
 - El tutorial **es** la fundación: el PNJ constructor te enseña a levantar un cobertizo, la cazadora a rastrear, la sanadora a vendar.
 - Todo lo que después será una ciudad (posada, mercado, forja, sanatorio, el Castillo) **lo construyen los jugadores**, con materiales que **recolectan, cultivan, cazan y fabrican** ellos mismos.
@@ -64,9 +64,9 @@ Cada etapa es una **obra de servidor** (ver [Construcción](../09-construccion/g
 
 **De dónde sale.** *Ashes of Creation* y su sistema de **nodos**: la actividad de los jugadores en una zona la hace crecer (campamento, aldea, pueblo, ciudad), y al crecer desbloquea servicios, mercado, gobierno y contenido. Los nodos vecinos quedan limitados, así que la comunidad decide dónde florece la civilización.
 
-- **Cada piso tiene varios sitios de nodo** (5 a 10): lugares donde se puede fundar un asentamiento, cada uno con su geografía (ver [Geografía y recursos](geografia-y-recursos.md)).
+- **Cada región tiene varios sitios de nodo** (5 a 10): lugares donde se puede fundar un asentamiento, cada uno con su geografía (ver [Geografía y recursos](geografia-y-recursos.md)).
 - **Crecen con la actividad:** todo lo que hacen los jugadores en la zona de un nodo (misiones, recolección, fabricación, obras, comercio) suma **experiencia de nodo**. Con experiencia y con sus obras construidas, el nodo sube de etapa (§3).
-- **Zona de influencia:** un nodo que crece limita a sus vecinos, que no pueden pasar de cierta etapa mientras él exista y se convierten en sus **vasallos** (aldeas que le pagan una parte de sus impuestos y reciben su protección). En un piso no puede haber dos ciudades pegadas: hay que elegir.
+- **Zona de influencia:** un nodo que crece limita a sus vecinos, que no pueden pasar de cierta etapa mientras él exista y se convierten en sus **vasallos** (aldeas que le pagan una parte de sus impuestos y reciben su protección). En una región no puede haber dos ciudades pegadas: hay que elegir.
 - **Decadencia:** si nadie sostiene un nodo (sin residentes activos, sin sus necesidades cubiertas), pierde experiencia, baja de etapa y termina en **ruinas**. Otro grupo puede refundarlo.
 - **Destrucción:** los asentamientos en zonas rojas y negras se pueden **asediar y quemar** (ver [Defensa](../09-construccion/defensa-y-protecciones.md)). Al caer, los edificios quedan en ruinas y los vasallos quedan libres para crecer. Los campamentos de bandidos (ver [Crimen y justicia](../06-contenido/crimen-y-justicia.md)) son el primer ejemplo de asentamiento que se toma y se pierde; los gremios fundan asentamientos que crecen y que otros pueden quemar.
 
@@ -102,7 +102,7 @@ Cuando el asentamiento llega a Villa, los residentes pueden **gobernarse**:
 2. **Carta de fundación.** Un grupo redacta una carta (nombre, emblema y lugar del nuevo asentamiento) y la firma. Firmar es reenviar el mensaje de la carta al bot: el reenvío como firma (ver [Telegram](../01-plataforma/telegram.md)).
 3. **Mínimo.** Hace falta que firme una cantidad mínima de residentes activos, por ejemplo el 15 % de la ciudad o 30 jugadores, lo que sea mayor, con al menos un Maestro de obras entre ellos.
 4. **Anuncio.** El cisma se anuncia en la Gaceta y hay **7 días de plazo**: los que se van se preparan, los que se quedan pueden negociar para que no se vayan.
-5. **Salida.** Pasado el plazo, los firmantes dejan de ser residentes del castillo original y fundan un **Claro nuevo** en otro lugar de un piso ya conquistado.
+5. **Salida.** Pasado el plazo, los firmantes dejan de ser residentes del castillo original y fundan un **Claro nuevo** en otro lugar de una región ya pacificada.
 
 ### 5.2 Qué se llevan y qué dejan
 

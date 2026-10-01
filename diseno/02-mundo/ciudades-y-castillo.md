@@ -10,15 +10,15 @@
 
 | Lugar | Dónde | Qué tiene |
 |---|---|---|
-| **Campamento** | Nodos de zonas amarillas y rojas | Fogata, un mercader errante, a veces una piedra de paso |
-| **Asentamiento** | 1 a 3 por piso (zona azul) | Posada, sanador PNJ, mercado local, estaciones públicas básicas, tablón, entrenadores de rango bajo, taberna, salón del azar si tiene licencia |
-| **Capital** | Cada 10 pisos, y cada castillo fundado por un cisma | Todo lo anterior en grande, más **el Castillo**, barrios de las facciones, mercado regional, banco, prisión, hipódromo, puerto de caravanas y parcelas de gremio |
+| **Campamento** | Nodos de zonas amarillas y rojas | Fogata, un mercader errante, a veces una posta |
+| **Asentamiento** | 1 a 3 por región pacificada (zona azul) | Posada, sanador PNJ, mercado local, estaciones públicas básicas, tablón, entrenadores de rango bajo, taberna, salón del azar si tiene licencia |
+| **Capital** | Una por región grande (capital regional, en un lugar clave), y cada castillo fundado por un cisma | Todo lo anterior en grande, más **el Castillo**, barrios de las facciones, mercado regional, banco, prisión, hipódromo, puerto de caravanas y parcelas de gremio |
 
 **Además, las comunidades PNJ.** Aparte de las ciudades de jugadores hay **comunidades de supervivientes PNJ** que ya están pobladas al abrir el servidor: cuatro a una zona del Claro, otras dos un poco más lejos y más que se descubren explorando el mapa. Cada una tiene su cultura y sus reglas, y **sus propios entrenadores de rangos bajos y medios** en los oficios de su cultura: hasta Oficial en las seis cercanas y hasta Experto en las lejanas. No crecen ni tienen Castillo. Ver [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
 
 ## 2. El Castillo
 
-El corazón de cada ciudad grande. **Al lanzar el juego no existe ninguno:** el primero lo construyen los jugadores desde cero en el Piso 1 (ver [Fundación y cisma](fundacion-y-cisma.md)); después se levantan uno en cada piso capital conquistado y uno por cada castillo que funda un cisma. **Cada ala es una obra aparte**, y el Castillo solo ofrece los servicios de las alas que sus residentes construyeron y mantienen (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
+El corazón de cada ciudad grande. **Al lanzar el juego no existe ninguno:** el primero lo construyen los jugadores desde cero junto al Claro (ver [Fundación y cisma](fundacion-y-cisma.md)); después se levantan uno en cada capital regional pacificada y uno por cada castillo que funda un cisma. **Cada ala es una obra aparte**, y el Castillo solo ofrece los servicios de las alas que sus residentes construyeron y mantienen (ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)).
 
 | Ala | Qué hay | Para quién |
 |---|---|---|
@@ -38,11 +38,11 @@ El corazón de cada ciudad grande. **Al lanzar el juego no existe ninguno:** el 
 
 **Pediste un sistema de fabricación en el Castillo con entrenadores para progresar en las profesiones.** Así funciona:
 
-1. **Aprender.** El entrenador del oficio te enseña el rango inicial y las recetas básicas de cada tramo, a cambio de oro (sumidero).
+1. **Aprender.** El entrenador del oficio te enseña el rango inicial y las recetas básicas de cada anillo, a cambio de oro (sumidero).
 2. **Practicar.** Subes de nivel fabricando, recolectando, construyendo o curando.
 3. **Estudiar.** Cada semana el entrenador da **tareas de oficio** (fabricar algo concreto, tratar a cierto tipo de paciente, trabajar jornadas en una obra) que dan **conocimiento** para el árbol de especialización (ver [Profesiones](../07-economia/profesiones.md)).
 4. **Examinarte.** Para pasar de rango (de Aprendiz a Oficial, de Oficial a Experto…) hay que aprobar un **examen** en la sala del Castillo: una pieza, una cirugía o una obra, hecha con el minijuego y con una calidad mínima. Si no apruebas, lo intentas otra vez otro día.
-5. **Subir de capital.** Los entrenadores de rangos altos solo están en los Castillos de las capitales altas, y solo si su ala de Oficios está construida y abastecida. Para ser Maestro hay que llegar a un Castillo del piso 80 o más: la progresión del oficio va con la de la Torre.
+5. **Subir de capital.** Los entrenadores de rangos altos solo están en los Castillos de las capitales altas, y solo si su ala de Oficios está construida y abastecida. Para ser Maestro hay que llegar a un Castillo de una capital lejana (anillo VIII o más): la progresión del oficio va con la de la Frontera.
 
 **Antes del Castillo: los maestros de las comunidades PNJ.** Los rangos bajos y medios (Aprendiz y Oficial, y Experto en las comunidades lejanas) también se aprenden con los maestros de las [comunidades PNJ](el-colapso-y-las-comunidades.md), cada una con sus oficios y su examen. Los rangos altos (Artesano, Maestro y Gran Maestro) solo se enseñan en el Ala de los Oficios de un Castillo.
 
@@ -52,13 +52,13 @@ El corazón de cada ciudad grande. **Al lanzar el juego no existe ninguno:** el 
 
 Como las ciudades de Albion, cada capital tiene un bono de oficio:
 
-| Capital | Piso | Especialidad |
+| Capital | Anillo | Especialidad |
 |---|---|---|
-| Capital del Bosque | 10 | Carpintería y Herboristería |
-| Capital de la Pradera | 20 | Cocina, Crianza y carreras |
-| Capital de Cristal | 30 | Joyería y Encantamiento |
-| Capital del Pantano | 40 | Alquimia y Medicina |
-| Capital del Desierto | 50 | Herrería y Construcción |
-| (y así en cada tramo) | | |
+| Capital del Bosque | I | Carpintería y Herboristería |
+| Capital de la Pradera | II | Cocina, Crianza y carreras |
+| Capital de Cristal | III | Joyería y Encantamiento |
+| Capital del Pantano | IV | Alquimia y Medicina |
+| Capital del Desierto | V | Herrería y Construcción |
+| (y así en cada anillo) | | |
 
 Esto mueve a los artesanos y a los materiales entre capitales, y le da identidad a cada ciudad.

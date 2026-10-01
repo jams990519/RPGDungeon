@@ -15,7 +15,7 @@
 | **Héroe** | Nivel 50 | Dos caminos por spec. Por ejemplo, un Paladín Protección elige *Templario* o *Heraldo del Sol*, y cada camino lo comparten dos specs | 1 cada 2 niveles |
 | **Ápice** | Nivel 90 | Un nodo de 4 rangos que remata la identidad de la spec | 1 cada 2 niveles |
 
-Con nivel ligado al piso (ver [Torre y pisos](../02-mundo/torre-y-pisos.md)), los árboles crecen al ritmo del Frente: el árbol de héroe llega cuando el servidor cruza el Gran Muro del piso 50.
+Con el nivel ligado a la Frontera (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md)), los árboles crecen a su ritmo: el árbol de héroe llega cuando el servidor cruza la Gran Barrera del anillo V.
 
 ## 2. Reglas
 

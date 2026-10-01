@@ -57,11 +57,11 @@ Cada objeto tiene siete propiedades. En la pantalla se ven dos o tres; el resto 
 
 | Propiedad | Valores | De dónde sale | Qué decide |
 |---|---|---|---|
-| **Tramo** | T1 a T10, uno por tramo de 10 pisos | Albion (tiers) | La base de sus números y el material con que se hace |
+| **Anillo** | T1 a T10, uno por anillo (I a X) | Albion (tiers) | La base de sus números y el material con que se hace |
 | **Calidad** (si es fabricado) | Normal · Buena · Notable · Excelente · Obra Maestra | Albion (calidad al fabricar) | Bono sobre la base; sale de la [fabricación](../07-economia/fabricacion.md) |
 | **Rareza** (si es botín) | Común · Poco común · Raro · Épico · Legendario · Reliquia | WoW (colores) | Cuántos afijos tiene |
-| **Encantamiento** | +0 a +4 | Albion (.1 a .4) | Cada nivel sube el Poder de Objeto como un tramo parcial. Se hace infundiendo runas, almas y reliquias |
-| **Mejoras** | 0 a 3 | Pistas de mejora de WoW | Cada mejora cuesta Esencia y material, y nunca llega a la base del tramo siguiente |
+| **Encantamiento** | +0 a +4 | Albion (.1 a .4) | Cada nivel sube el Poder de Objeto como un anillo parcial. Se hace infundiendo runas, almas y reliquias |
+| **Mejoras** | 0 a 3 | Pistas de mejora de WoW | Cada mejora cuesta Esencia y material, y nunca llega a la base del anillo siguiente |
 | **Afijos** | 0 a 4 líneas | WoW (secundarias), Diablo | Crítico, Celeridad, Maestría, Versatilidad, resistencias, protección de zona, robo de vida… |
 | **Engarces** | 0 a 2 | WoW (gemas) | Gemas de joyería |
 
@@ -103,7 +103,7 @@ La mayor parte del poder se **fabrica y se comercia**. El jefe no te da la espad
 
 | Fuente | Qué da | Por qué |
 |---|---|---|
-| **Artesanos** | La mayoría de las piezas de todos los tramos | La economía gira alrededor de ellos (Albion) |
+| **Artesanos** | La mayoría de las piezas de todos los anillos | La economía gira alrededor de ellos (Albion) |
 | **Jefes** | **Artefactos** (la Garra del Wyrm, el Corazón del Coloso), que son ingredientes de armas y armaduras únicas con técnicas propias; **planos** raros; materiales de partes rotas (ver [Daño y estados](../04-combate/dano-y-estados.md)) | Une el botín de jefe de WoW con la fabricación de Albion: importa matar al jefe, y también el herrero |
 | **Recuerdos del Guardián** | La primera victoria contra cada Guardián da un Recuerdo **garantizado**, que se cambia por una de dos piezas icónicas de ese jefe | Elden Ring: recompensa determinista para lo más importante |
 | **Mercado Negro** | Las piezas que sueltan los monstruos comunes **las fabricaron jugadores** y el Mercado Negro las compró | Albion: hasta el botín del mundo depende de los artesanos (ver [Economía](../07-economia/economia.md)) |

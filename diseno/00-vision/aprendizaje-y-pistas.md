@@ -64,7 +64,7 @@
 | 🏗️ **Construcción** | Tu primera jornada de obra | El maestro de obras | "Una obra se levanta por jornadas. Si apuras, baja la Seguridad, y una caída es una herida de verdad." |
 | 🩺 **Medicina** | Tu primer paciente | La Abadesa del Hospicio | "El paciente es otro jugador. Su Estabilidad nunca debe llegar a 0. Observar no cura, pero enseña." |
 | 💰 **Mercado** | Tu primera orden | Un mercader de la Lonja | "Aquí venden y compran jugadores, no la tienda. Cada objeto tiene un precio mínimo y uno máximo. Los precios cambian de una ciudad a otra." |
-| 🏹 **Cacerías** | Tu primer contrato | Una anciana de los Errantes | "La presa no te espera: deja rastros, y la lluvia los borra. Cómo empieza la pelea importa tanto como la pelea." |
+| 🏹 **Cacerías** | Tu primer contrato | Una anciana de los Errantes del Viento | "La presa no te espera: deja rastros, y la lluvia los borra. Cómo empieza la pelea importa tanto como la pelea." |
 | 🔍 **Investigaciones** | Tu primer caso | El guardia de la región | "Las pistas van a tu Tablero. Alguien te va a mentir. Acusar a un inocente cuesta caro." |
 | 🏚 **Ruinas** | Tu primera ruina | La cazadora del Claro | "Lo que se perdió en el Colapso quedó en pedazos. Los que encuentres van a tu Códice." |
 | 🧭 **Expediciones** | Tu primer paso fuera | El vigía de la puerta | "Cada paso trae algo. Solo está a salvo lo que traes de vuelta. La pregunta es siempre la misma: ¿sigues o vuelves?" |
@@ -84,7 +84,7 @@ Cada región tiene una lista corta de **tareas** en tres niveles (fácil, media 
 
 | Nivel | Ejemplos junto al Claro | Al completar el nivel |
 |---|---|---|
-| **Fácil** | Vendar una herida con una venda limpia (Hospicio) · Vender algo en la Lonja del Vado · Leer una mancha de sangre · Seguir un rastro hasta el final (Errantes) | Un cosmético de la región |
+| **Fácil** | Vendar una herida con una venda limpia (Hospicio) · Vender algo en la Lonja del Vado · Leer una mancha de sangre · Seguir un rastro hasta el final (Errantes del Viento) | Un cosmético de la región |
 | **Media** | Fabricar una pieza de calidad Buena o mejor · Descubrir un efecto de una hierba · Resolver un caso rápido sin acusar a un inocente · Dejar una nota en el suelo que reciba 5 👍 | Una comodidad (por ejemplo, un viaje gratis por semana) |
 | **Difícil** | Vencer al Guardián sin caer · Completar un saber perdido · Llegar a Amistoso con dos comunidades | Título "Conocedor del Claro" |
 

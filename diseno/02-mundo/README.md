@@ -1,6 +1,6 @@
 # 02 · Mundo
 
-La Torre de 100 pisos es el mundo entero, y **empieza vacía**: los jugadores fundan las ciudades desde cero y pueden dividirse en castillos rivales. Este módulo define la fundación, cómo se sube de piso (el Frente del servidor y el Sello de cada héroe), las ciudades y su Castillo, las crisis, el viaje, el clima, la ecología y las facciones.
+El mundo es un mapa infinito por explorar, donde moverse toma tiempo real (D-58), y **empieza vacío**: los jugadores fundan las ciudades desde cero y pueden dividirse en castillos rivales. Este módulo define la fundación, cómo avanza el servidor (la Frontera, región por región), las ciudades y su Castillo, las crisis, el viaje, el clima, la ecología y las facciones.
 
 | Documento | Qué contiene |
 |---|---|
@@ -9,7 +9,7 @@ La Torre de 100 pisos es el mundo entero, y **empieza vacía**: los jugadores fu
 | [ciudades-y-castillo.md](ciudades-y-castillo.md) | Campamento, asentamiento y capital; las alas del Castillo; **entrenadores y exámenes de oficios**; especialidad de cada capital |
 | [crisis-problemas-y-soluciones.md](crisis-problemas-y-soluciones.md) | 16 crisis (hambruna, plagas, incendio, sequía, inflación, crimen, corrupción…), quién las resuelve y qué pasa si nadie lo hace |
 | [geografia-y-recursos.md](geografia-y-recursos.md) | 10 terrenos con lo que producen y lo que les falta; recursos del terreno, vetas móviles y **yacimientos únicos** que se disputan |
-| [torre-y-pisos.md](torre-y-pisos.md) | Premisa, 10 tramos, anatomía de un piso, **cómo se pasa de piso** (Frente, Sello, Viento de Cola), nivel ligado al piso, pisos especiales |
+| [torre-y-pisos.md](torre-y-pisos.md) | **Retirado por D-58.** Solo un aviso que lleva a [mapa-infinito-y-viaje.md](mapa-infinito-y-viaje.md) |
 | [mundo-vivo-y-viaje.md](mundo-vivo-y-viaje.md) | Viaje y transporte, día y noche, clima, estaciones, ecología, vetas que se mueven |
 | [facciones.md](facciones.md) | Las facciones nacen de los cismas: cada castillo fundado es una facción; reglas de equilibrio |
 
