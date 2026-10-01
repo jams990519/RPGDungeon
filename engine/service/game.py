@@ -1092,7 +1092,13 @@ class GameService:
         if hero.energy < 1:
             return self._explore_menu(hero, notice=self._no_energy_notice(hero))
         minutes = self.content.balance[kind]["minutes"]
-        body = [t.t(f"batch.ask_{kind}", minutes=minutes), t.t("batch.energy", energy=hero.energy)]
+        step = self._seconds(minutes)
+
+        def total(n: int) -> str:                    # owner's request: every choice shows its estimated total time
+            return self._fmt_duration(step * n)
+
+        body = [t.t(f"batch.ask_{kind}", minutes=minutes), t.t("batch.energy", energy=hero.energy),
+                t.t("batch.estimate", step=total(1), n=hero.energy, total=total(hero.energy))]
         if kind == "gather":
             body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap()))
         else:
@@ -1101,17 +1107,18 @@ class GameService:
         options = [n for n in self.content.balance["energy"]["batch"] if n <= hero.energy]
         pages = [options[:2], options[2:]]
         page = page % 2
-        actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.button", n=n)) for n in pages[page]]
+        actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.button", n=n, time=total(n))) for n in pages[page]]
         if page == 0:
             if len(options) > 2 or hero.energy not in options:
                 actions.append(Action(id=f"amt:{kind}:1", label=t.t("batch.more")))
             actions.append(Action(id="explore_menu", label=t.t("batch.cancel")))
         else:
             if hero.energy not in options:
-                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy)))
+                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy, time=total(hero.energy))))
             actions.append(Action(id=f"amt:{kind}:0", label=t.t("batch.back")))
         if not options:
-            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy)), Action(id="explore_menu", label=t.t("batch.cancel"))]
+            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy, time=total(hero.energy))),
+                       Action(id="explore_menu", label=t.t("batch.cancel"))]
         return View(kind="batch", title=t.t(f"batch.title_{kind}"), body=body, actions=actions[:4])
 
     def _start_batch(self, hero: Hero, kind: str, amount: str) -> View:
