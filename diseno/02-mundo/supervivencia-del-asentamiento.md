@@ -50,7 +50,7 @@ Las ocho necesidades de [Fundación y cisma](fundacion-y-cisma.md) siguen igual.
 | 🧳 **Visitante** | Jugador que pasa por la ciudad sin vivir en ella | No | 0 | Comercio |
 
 - **Un residente que deja de jugar no perjudica a nadie.** El día que no entra, no come de la despensa. Pasados 7 días sin entrar, deja de contar como población. Cuando vuelve, vuelve a contar. Su casa y sus cosas siguen intactas.
-- **El comedor común.** Mientras la despensa no esté en hambruna, el residente **al día** con su cuota (§9.2) que entra a la ciudad recupera su Sustento hasta *Normal* sin gastar su comida (ver [Condiciones](../05-salud/condiciones.md)). Los demás también comen ahí, pagando un plato barato. Los platos de cocinero siguen dando sus bonos aparte. La ciudad **nunca toma comida del inventario personal** de nadie.
+- **El comedor común.** Mientras la despensa no esté en hambruna, el residente **al día** con su cuota (§9.2) que entra a la ciudad recupera su Sustento hasta *Normal* sin gastar su comida (ver [Condiciones](../05-salud/condiciones.md)). Los demás también comen ahí, pagando un plato barato; los novatos hasta el nivel 10 comen gratis siempre. Los platos de cocinero siguen dando sus bonos aparte. La ciudad **nunca toma comida del inventario personal** de nadie.
 - **El ganado** come forraje, no raciones, y tiene su propia salud (ver [Animales y cultivos](../05-salud/animales-y-cultivos.md)).
 
 ### 2.2 Cómo llegan y cómo se van los aldeanos
@@ -433,7 +433,7 @@ Para subir de etapa hacen falta tres cosas:
 | **Castillo** | Silos, acueducto | 600 (30 jugadores) | 10 días | 70 | Ánimo 60 · Orden 60 · Seguridad *Firme* | 4 y el **asedio del monstruo grande** (§6.4) | 6 de cada 10 al día; las 7 categorías de pedidos cubiertas | 5 días |
 
 - **Población mínima:** el número entre paréntesis es cuántos jugadores tienen que estar entre los residentes como mínimo; el resto pueden ser aldeanos y guardias, a los que hay que alojar, alimentar y mantener sanos. Lo más que se pide, 30 jugadores, es el mínimo de firmantes de un cisma (ver [Fundación y cisma](fundacion-y-cisma.md), §5.1): así **cualquier grupo que se separa puede llegar a Castillo**, aunque le cueste más, y cada cisma sigue fundando su castillo como dice [Ciudades y el Castillo](ciudades-y-castillo.md).
-- **Quién cuenta para la participación** ("X de cada 10 al día"): solo los residentes que jugaron **3 días o más** en la semana. Quien juega menos no suma ni resta, así una ciudad con muchos jugadores ocasionales no queda trabada.
+- **Quién cuenta para la participación** ("X de cada 10 al día"): solo los residentes que jugaron **3 días o más** en la semana. Quien juega menos no suma ni resta, así una ciudad con muchos jugadores ocasionales no queda trabada. En la primera semana de un asentamiento cuentan todos los que jugaron.
 - **La racha es indulgente con los tropiezos cortos.** Si un mínimo falla, la racha se congela. Solo vuelve a cero si falla durante un día real entero.
 - Los números son orientativos y se ajustan en la beta. La meta es la de P-55: de **4 a 6 semanas** del Claro al Castillo (ver [Preguntas abiertas](../00-vision/preguntas-abiertas.md)).
 
@@ -557,6 +557,7 @@ Con más de 500 jugadores listos para la beta (ver [Decisiones](../00-vision/dec
 - **La amenaza crece con la población y la riqueza:** más gente trae incursiones más fuertes y con **más frentes a la vez**, cada uno con sus puestos. La masa se reparte en lugar de amontonarse.
 - **Topes por persona:** las jornadas tienen Energía limitada y el mérito diario rinde menos después de cierto punto (§9.1).
 - **Participación mínima:** hace falta que una parte de los residentes esté al día (§7), no que unos pocos pongan todo.
+- **Un tiempo que no se compra con gente:** la racha empieza recién con las obras terminadas (15 días en total sumando las cinco etapas), la Ciudad pide haber pasado un invierno (el primero llega en la tercera semana, §4.5) y el asedio se anuncia 3 días antes. Ni con 500 jugadores perfectos se llega al Castillo antes de unas 4 semanas y media, dentro de la meta de 4 a 6.
 - **Tierra y vivienda limitadas:** cada nodo tiene una cantidad fija de parcelas de cultivo y de lugar para casas. Más gente pide más tierra, y eso empuja a fundar aldeas vasallas en los nodos vecinos y a comerciar entre ellas (ver los nodos en [Fundación y cisma](fundacion-y-cisma.md)).
 
 | Población (jugadores + PNJ) | Consumo por día | Reserva para el invierno | Fuerza media de incursión | Frentes a la vez | Puestos de defensa |
@@ -685,5 +686,6 @@ Su fila en la [Red de sistemas](../00-vision/red-de-sistemas.md):
 ## 16. Para decidir
 
 - Los números exactos de consumo, producción, amenaza y requisitos (se ajustan en la beta).
+- Si se acepta la excepción a la zona azul (§6.5): que las incursiones ataquen lo común de los asentamientos de jugadores, nunca las casas ni a las personas.
 - Si los aldeanos pueden morir o solo irse (la propuesta: pueden morir en brechas y brotes graves).
 - Si las ciudades de castillos fundados por un cisma empiezan con la misma curva o con una más corta, porque sus jugadores ya conocen el sistema.

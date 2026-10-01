@@ -19,6 +19,8 @@
 
 Un mundo roto en cien pedazos quedó apilado en una torre que flota sobre la nada. Cada piso es un fragmento con su cielo, su clima y sus pueblos. Quien despierta en el Piso 1 es un **Ascendente**: lleva en el pecho una marca que solo se apaga en la Cima. Nadie sabe qué hay en el Piso 100. Los rumores dicen que quien llegue podrá rehacer el mundo, o salir de él.
 
+**El Colapso.** Los supervivientes llaman **el Colapso** al día en que el mundo se rompió. Desde entonces todo está en ruinas, el conocimiento de antes se perdió y los pocos que quedaron, todos PNJ, resisten en comunidades con sus propias reglas. Los Ascendentes despiertan sin nada entre esas ruinas: pueden unirse a una comunidad o fundar algo nuevo en el Claro. Qué causó el Colapso es parte del Gran Misterio de la Torre (ver [Investigaciones](../06-contenido/investigaciones.md)). Todo esto está en [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
+
 La premisa es original a propósito. Los **sistemas** de WoW, SAO y Elden Ring se pueden copiar; sus nombres, personajes, lugares y textos no (ver [Referencias, apartado legal](../99-referencias/referencias.md)).
 
 ## 2. Estructura: 100 pisos en 10 tramos

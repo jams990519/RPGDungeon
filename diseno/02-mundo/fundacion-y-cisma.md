@@ -58,7 +58,7 @@ Cada necesidad tiene una **barra semanal** visible para todos en `/ciudad`. El a
 
 Cada etapa es una **obra de servidor** (ver [Construcción](../09-construccion/gremios-y-organizaciones.md)). Pasar de Claro a Castillo debería llevar **semanas**, no días: es la primera temporada del juego.
 
-**Construir no alcanza.** Terminar las obras de una etapa no la sube. Además hay que **sostener durante varios días seguidos** la población, la despensa, la salud pública y el ánimo mínimos de la etapa, y **superar incursiones** de bestias y enemigos de la zona; en la etapa de Castillo, también el **asedio de un monstruo grande**. Cada subida termina con una Noche de prueba, y una ciudad que no se sostiene puede **bajar de etapa**, aunque la propiedad personal de los jugadores nunca se pierde. Los requisitos completos están en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md).
+**Construir no alcanza.** Terminar las obras de una etapa no la sube. Además, con las obras ya terminadas, hay que **sostener durante varios días seguidos** la población, la despensa, la salud pública, el ánimo, el orden y la participación de los residentes mínimos de la etapa, y **superar incursiones** de bestias y enemigos de la zona; en la etapa de Castillo, también el **asedio de un monstruo grande**. Cada subida termina con una Noche de prueba, y una ciudad que no se sostiene puede **bajar de etapa**, aunque la propiedad personal de los jugadores nunca se pierde. Los requisitos completos están en [Supervivencia del asentamiento](supervivencia-del-asentamiento.md).
 
 ## 3.1 Nodos: los jugadores deciden dónde florece la civilización
 
