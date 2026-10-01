@@ -29,6 +29,7 @@
 - **Al ganar**, la pantalla final ofrece **🏹 Otra presa** (si te queda energía) antes de ▶️ Continuar, y 🏹 Partida de caza o 🏹 Unirme si corresponde: 3 botones como máximo. Al perder o huir, solo ▶️ Continuar.
 - **Dónde no se caza:** en el Claro (su bioma no tiene peligro: no hay presas) y en la guarida del Guardián (solo está él: ⚔️ Desafiar al Guardián sigue en 🧭 Explorar, que ahí queda con 3 botones). **Sí se caza en el territorio de un campamento**: la tierra protege de las emboscadas al llegar, explorar o recolectar (D-81), pero salir a buscar una presa es a propósito.
 - **Cuándo no:** malherido (🤕: primero hay que curarse, y el juego lo dice), ocupado (viajando, explorando, recolectando o durmiendo: una actividad a la vez) o sin energía. Se avisa y no se cobra nada.
+- **🏹 Cazar en lote (D-114):** con ⚔️ Peleas automáticas en ⚙️ Opciones, 🏹 Buscar presa pasa a ser **🏹 Cazar en lote**: eliges cuánta energía gastar (⚡ 4, 10, 20, 40 o todo), cada presa cuesta 2 ⚡ y tarda 16 minutos, y el héroe pelea solo cada una. El lote se corta al perder, con la vida bajo el límite de 🩹 Retirarse, sin energía o con ❌ Detener; el bot avisa una sola vez, al final. Cada presa cuenta para la partida de caza como una a mano. Con ✋ Manual (lo de siempre) se caza de a una. Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.1.
 
 ### 0.2 🏹 Partida de caza con tu campamento
 

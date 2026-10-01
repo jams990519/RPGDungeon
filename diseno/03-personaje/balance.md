@@ -531,3 +531,38 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 
 **Lo que queda por mirar:** el Comercio es una fuente de monedas (vender da hasta 20 % más). Si en la beta entra demasiado bronce, se compensa con el impuesto del mercado de órdenes (segunda tanda de la economía).
 
+### Octubre de 2026: ⚙️ Opciones y peleas automáticas en los lotes (D-114)
+
+**Por qué.** El dueño pidió que, si sale una pelea en medio de un lote, el jugador pueda elegir antes si el héroe la pelea solo o si se corta para pelearla él, con un botón de opciones (ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.1). La forma de jugar sola se mudó del simulador al motor (`engine/combat/auto.py`), así hay **una sola**: la de las peleas automáticas es la que mide el simulador. Los números de las opciones y de la cacería en lote son **nuevos**, propuestos por Claude; los umbrales de la forma de jugar **no cambiaron**: son los que el simulador ya tenía escritos en su código y ahora viven en `balance.yaml`.
+
+**Números nuevos** (`content/balance.yaml` → `auto_fight` y `hunt`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Opciones por defecto (`auto_fight.defaults`) | ✋ Manual, 50 %, pociones sí | Nada cambia para quien no toca ⚙️ Opciones (también los héroes de antes) |
+| 🩹 Retirarse con menos de (`auto_fight.retreat_choices`) | 30, 50 o 70 % de vida | Tres escalones fáciles de entender: arriesgado, normal, prudente |
+| Tope de rondas (`auto_fight.max_rounds`) | 60, y la pelea se deja sin premio ni castigo | El mismo tope que el simulador; ninguna pelea medida llega ahí, es solo para que siempre termine |
+| Forma de jugar (`auto_fight.policy`) | curar < 45 % · poción < 35 % · venda < 30 % · golpe grande > 1,5 · 🌀 Esquivar ≥ 2 · curación lenta < 80 % · curar al final < 60 % · rematar con 3 combos | Los mismos de `tools/sim.py` desde D-79 (movidos, no cambiados) |
+| Energía de cazar en lote (`hunt.batch`) | ⚡ 4, 10, 20, 40 o todo (2, 5, 10 o 20 presas) | Las mismas cantidades que explorar y recolectar, en pares porque cada presa cuesta 2 (D-108) |
+| Tiempo por presa en lote (`hunt.batch_minutes`) | 16 minutos | 8 min por ⚡, como recolectar; cazar de a una, a mano, sigue siendo enseguida (el jugador atento va más rápido) |
+
+**Paridad del simulador.** Con la forma de jugar ya en el motor, `tools/sim.py --summary`, `--summary --real`, `--boss --seeds=30` y `--bars --level=10` dieron **exactamente** los mismos números que antes (comparado línea por línea). La única diferencia de la versión del motor es que con otras pociones en el cinturón (🍷 poción mayor) elige la que más cura sin pasarse de lo que falta; el simulador solo lleva 🧪 de vida y 🩹 vendas, así que no cambia.
+
+**Medido con el motor** (las especializaciones con el kit real, contra los enemigos de nivel 1 a 3 del bestiario por niveles, cinturón de inicio, 20 peleas cada una):
+
+| Forma de jugar | Gana | Vida al terminar (si gana) | Victorias que terminan bajo 50 % |
+|---|---|---|---|
+| Básica (el simulador de siempre) | 100 % | 66 % | 16 % |
+| Atenta (las peleas automáticas) | 99,9 % | 65 % | 17 % |
+
+**Cuántas peleas dura un lote** (héroe de nivel 2 al lado del Claro, la vida vuelve sola en 4 horas, D-103):
+
+| Límite de 🩹 Retirarse | Explorar 20 veces | Cazar 20 presas | Derrotas |
+|---|---|---|---|
+| 30 % | ~10 peleas (casi todo el lote) | ~16 presas | < 1 % |
+| 50 % (por defecto) | ~4 peleas | ~5 presas | 0 % |
+| 70 % | ~2 peleas | ~2 presas | 0 % |
+
+**Cuenta rápida.** Pelear solo da lo mismo que pelear a mano (mismas reglas, sorteo y final), así que la experiencia por ⚡ de cada camino (D-108) no cambia. Lo que cambia es el ritmo con el chat cerrado: con 50 %, un lote largo se corta pronto porque cada pelea quita cerca de un tercio de la vida y la vida tarda 4 horas en volver. Cazar en lote a 16 min por presa y 2 ⚡ (40 ⚡ = 20 presas = 5 h 20 min) no sube la experiencia por día: la energía sigue siendo el tope.
+
+**Lo que queda por mirar:** si 50 % por defecto corta los lotes demasiado pronto para el que sale y vuelve (con 30 % casi todo el lote se juega y las derrotas siguen bajo 1 %: si los jugadores se quejan de lotes cortos, bajar el valor por defecto a 30 %); si las peleas automáticas hacen que nadie juegue a mano (medir en la beta qué porcentaje elige ⚔️ Automática); y si 16 minutos por presa es mucho o poco frente a cazar a mano.
