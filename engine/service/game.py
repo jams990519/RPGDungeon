@@ -59,6 +59,8 @@ Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
     - Números: balance.yaml (explore, regen, hero, travel, guardian)
+    - Experiencia por camino (D-108): _zone_xp escala matar y recolectar con hero.xp_level_scale; gather.xp_per_step.
+      Todos los caminos tienen que llegar al 100 a un ritmo parecido (diseno/03-personaje/progresion.md §1.2)
     - Explorar alrededor (D-107): con tu zona al 100 %, el lote sigue con las vecinas sin moverte (_explore_target,
       explore.around_radius); las vecinas exploradas quedan en hero.known y cuentan para fundar (tests/test_resources.py)
     - Pruebas: tests/test_service.py, tests/test_boss.py, tests/test_buttons.py, tests/test_spec_abilities.py (barra, D-79),
@@ -730,6 +732,10 @@ class GameService:
         self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
         for res, n in got.items():
             activity["got"][res] = activity["got"].get(res, 0) + n
+        if got:                                       # D-108: gathering alone also reaches level 100
+            xp = self._zone_xp(bal["xp_per_step"], zone.level)
+            activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
+            activity["log"] += self._give_xp(hero, xp)
         if not got:
             activity["left"] = 0
             activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else "batch.reason.depleted"))
@@ -1110,6 +1116,8 @@ class GameService:
         if activity.get("done"):
             if kind == "gather":
                 lines.append(t.t("batch.gathered", n=activity["done"], items=self._item_list(activity.get("got", {}))))
+                if activity.get("xp"):
+                    lines.append(t.t("batch.xp_gather", xp=activity["xp"]))
             else:
                 zone = self._zone(hero.x, hero.y)
                 lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
@@ -1642,6 +1650,17 @@ class GameService:
         """Experience accelerator bought with gems (D-43, D-80): ×1.5 while active."""
         boost = self.content.balance["currency"]["gem_shop"]["xp_boost"]
         return boost["xp_mult"] if hero.xp_boost_until > self.clock.now() else 1.0
+
+    def _zone_xp(self, base: float, level: int) -> int:
+        """Experience of an action at a zone or enemy level: base × (1 + scale × (level − 1)), like every kill (D-108).
+
+        [ES]
+        Qué hace: escala la experiencia con el nivel, igual para matar bichos y para recolectar, así cada camino
+        sigue rindiendo en los niveles altos (hero.xp_level_scale, 15 % más por nivel).
+        La llaman: _gather_step, el combate (_end_combat y el Guardián).
+        Si cambia, afecta: el ritmo hasta el nivel 100 de todos los caminos (diseno/03-personaje/progresion.md).
+        """
+        return int(base * (1 + self.content.balance["hero"]["xp_level_scale"] * (level - 1)))
 
     def _give_xp(self, hero: Hero, xp: int) -> list[str]:
         hero.xp += int(xp * self._xp_mult(hero))
@@ -3518,7 +3537,7 @@ class GameService:
         record["last"] = self.clock.now()
         hero.guardians[enemy["id"]] = record
         hero.kills += 1
-        xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)) * self._xp_mult(hero))
+        xp = int(self._zone_xp(edef["xp"], enemy["level"]) * self._xp_mult(hero))
         hero.xp += xp
         lines: list[str] = []
         if first_win:
@@ -3777,7 +3796,7 @@ class GameService:
             if self._has_memento(hero):
                 actions.insert(0, Action(id="memento", label=t.t("guardian.memento_button")))
         elif outcome == "victory":
-            xp = int(edef["xp"] * (1 + 0.15 * (enemy["level"] - 1)) * self._xp_mult(hero))
+            xp = int(self._zone_xp(edef["xp"], enemy["level"]) * self._xp_mult(hero))
             low, high = edef.get("gold", [1, 3])
             gold = int(rng.uniform(low, high + 1) * (1 + 0.1 * (enemy["level"] - 1)))
             hero.xp += xp

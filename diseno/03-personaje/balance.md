@@ -309,6 +309,18 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Extra al dejar una zona al 100 % (`explore.xp_full_zone`) | 0 | **15** | Premia terminar zonas (unas 4-6 vueltas cada una) |
 | Casillas de alrededor que se exploran sin moverte (`explore.around_radius`) | 0 (solo tu zona) | **1** (las 8 vecinas), desde 0.13.1 (D-107) | Un lote grande ya no se corta al 100 %: sigue con las vecinas. Más experiencia por explorar en el mismo lugar (cada vecina da sus 15 al completarla) y más zonas conocidas para fundar campamento |
 
+### Octubre de 2026: cada camino llega al nivel 100 (D-108)
+
+**Por qué.** El dueño pidió que cada forma de jugar (recolectar, cazar, pelear, explorar) alcance por sí sola para llegar al nivel 100, sin aburrir. Antes, recolectar no daba experiencia directa: solo recolectando, el nivel 100 llegaba en unos 6,5 años, contra 1,9 explorando.
+
+| Número | Antes | Ahora | Qué mueve |
+|---|---|---|---|
+| Experiencia por recolección (`gather.xp_per_step`) | 0 | **14** × (1 + 0,15 × (nivel de la zona − 1)), solo si juntaste algo | Solo recolectando, el nivel 100 llega en ~2 años (con toda la energía y peleas ganadas); en tu territorio, sin peleas, ~2,9 |
+| Escala por nivel (`hero.xp_level_scale`) | 0,15 escrito en el código del combate | **0,15** en balance.yaml (mismo número) | Ahora lo comparten matar y recolectar: moverlo cambia el ritmo de todos los caminos a la vez |
+| Energía por presa al cazar (D-106, en camino) | — | se fija en **2 ⚡** al unir la cacería | Con 1 ⚡ por presa, cazar llevaría al 100 en 0,9 años: el doble de rápido que lo demás |
+
+**Lo que queda por mirar:** el ritmo real con viajes y derrotas (medir en la beta) y si recolectar en el territorio propio, sin riesgo, rinde demasiado.
+
 **Lo que queda por mirar:** si explorar compite demasiado con pelear para subir de nivel (la meta de 100 niveles en 2-3 años, D-78).
 
 ### Octubre de 2026: las incursiones de los campamentos (D-99, provisional)

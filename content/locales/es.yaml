@@ -1018,6 +1018,7 @@ batch:
   found: "🔎 Encontraste: {items}."
   coins: "🔎 Encontraste {coins} entre los restos."
   xp: "✨ Explorar te enseñó: +{xp} experiencia."
+  xp_gather: "✨ Recolectar te enseñó: +{xp} experiencia."
   reason:
     stopped: "❌ Te detuviste: la energía de la vuelta en curso volvió."
     fight: "⚔️ Algo te interrumpió."

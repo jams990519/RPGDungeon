@@ -130,3 +130,23 @@ def test_backpack_space_stops_gathering(service, clock):
     hero = service._load("test:1")
     assert service._bag_used(hero) == service._bag_cap() and hero.activity is None
     assert len(pushes) == 1 and "mochila" in (pushes[0].notice or "").lower()   # one message at the end, not one per step
+
+
+def test_gathering_gives_experience_scaled_by_the_zone_level(service, clock):
+    # D-108: every path reaches level 100 on its own; gathering pays xp_per_step × zone level, like a kill.
+    make_hero(service)
+    hero = service._load("test:1")
+    hero.tutorial = len(service.content.balance["tutorial"]["steps"])      # no tutorial reward in the way
+    service._save(hero)
+    service.act("test:1", "do:gather:3")
+    pushes = []
+    for _ in range(3):
+        clock.advance(3600)
+        pushes += [v for acc, v in service.tick() if acc == "test:1"]
+    hero = service._load("test:1")
+    step = service.content.balance["gather"]["xp_per_step"]
+    assert hero.xp == 3 * step                                             # the Claro is level 1: × 1
+    assert any(f"+{3 * step} experiencia" in line for v in pushes for line in (v.notice or "").split("\n"))
+    assert service._zone_xp(step, 11) == int(step * 2.5)                   # 15 % more per level
+    edef = service.content.enemies["lobo_ceniciento"]
+    assert service._zone_xp(edef["xp"], 5) == int(edef["xp"] * 1.6)        # kills: the same scale as before
