@@ -10,6 +10,7 @@ Documento de diseño: diseno/01-plataforma/arquitectura-modular.md §1 regla 4; 
 Módulo: M1 Núcleo
 Depende de: content/*.yaml, PyYAML
 Lo usan: engine/service/game.py, engine/core/i18n.py, tests
+    (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
@@ -42,6 +43,9 @@ class Content:
         items: content/items.yaml keyed by item id.
         balance: content/balance.yaml (tunable numbers).
         texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts).
+        patches: content/patches.yaml (patch notes, D-67).
+        camp_upgrades: content/camp_upgrades.yaml ("upgrades" and "knowledge" of player camps, D-101),
+            read with retired entries kept (a built improvement keeps counting).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -56,6 +60,7 @@ class Content:
     balance: dict[str, Any]
     texts: dict[str, Any]
     patches: dict[str, Any] | None = None
+    camp_upgrades: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -90,6 +95,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         balance=_read(base / "balance.yaml"),
         texts=_read_texts(base / "locales", lang),
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
+        camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
     )
 
 

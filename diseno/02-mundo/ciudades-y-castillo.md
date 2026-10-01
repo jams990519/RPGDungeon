@@ -11,17 +11,18 @@ Una ciudad en Lost Realms no la pone el diseñador: **la levantan los jugadores*
 | Lugar | Quién lo levanta | Cómo crece | Qué tiene hoy |
 |---|---|---|---|
 | **El Claro** (0, 0) | Todo el servidor, con la obra común | 6 etapas: fogata, campamento, aldea, pueblo, ciudad y castillo. 1 zona más por etapa | 🏪 Mercader, 🛏️ posada (más barata en cada etapa), 💰 costura de bolsas, venta de equipo, territorio seguro |
-| **Campamento de jugadores** | Su fundador y sus miembros | Por nivel: campamento (1), aldea (3), pueblo (5), ciudad (7) y castillo (9). 1 zona elegida por nivel, sin tope | Territorio seguro, +50 % al recolectar para sus miembros, ancla del viaje, cupo de miembros que crece |
+| **Campamento de jugadores** | Su fundador y sus miembros | Por nivel: campamento (1), aldea (3), pueblo (5), ciudad (7) y castillo (9). 1 zona elegida por nivel, sin tope | Territorio seguro, +50 % al recolectar para sus miembros, ancla del viaje, cupo de miembros que crece y **🔨 Mejoras** por nivel (D-101, provisional): servicios propios (refugio, puesto de trueque, taller, herrería), despensa mejor, defensas que suman 🛡️ Defensa y 📚 Conocimiento. Castillo pide 15 |
 
 - Los números y las reglas están en [Fundación y cisma](fundacion-y-cisma.md) §1 y §2 (D-71, D-81, D-84, D-87).
 - **Cuando el Claro llega a castillo,** el juego dice: "¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes". Ese "lo que sigue" son las alas del Castillo (§3).
-- Un campamento de jugadores en castillo todavía no abre nada nuevo. Es el lugar donde esta propuesta suma más.
+- **Cada nivel del 1 al 8 ya abre mejoras** en los campamentos de jugadores (D-101, provisional): la lista completa, con costos y efectos, está en [Fundación y cisma](fundacion-y-cisma.md) §2.6. Es la capa simple de §2: obras que pagan los miembros entre todos, sin rangos ni jornadas todavía.
+- Un campamento de jugadores en castillo todavía no abre nada nuevo. Es el lugar donde esta propuesta suma más (las alas de §3).
 
 **Además, las comunidades PNJ (propuesta, D-45).** Aparte de los lugares de jugadores habría **comunidades de supervivientes PNJ** ya pobladas al abrir: cuatro a una zona del Claro, dos un poco más lejos y más que se descubren explorando. Cada una tiene su cultura, sus reglas y **sus entrenadores de rangos bajos y medios**. No crecen ni tienen Castillo. Ver [El Colapso y las comunidades](el-colapso-y-las-comunidades.md).
 
 ## 2. Qué abriría cada etapa (propuesta)
 
-La regla: **cada etapa abre algo que se usa**, y lo que se abre se nota en la pantalla del lugar. Así crecer no es solo cambiar de nombre. Todo respeta "amplio pero ligero" (D-44): un servicio nuevo entra con su capa simple.
+La regla: **cada etapa abre algo que se usa**, y lo que se abre se nota en la pantalla del lugar. **En los campamentos de jugadores ya se cumple** con las 🔨 Mejoras (D-101; [Fundación y cisma](fundacion-y-cisma.md) §2.6): el descanso (Fogón y Refugio), un servicio propio (Puesto de trueque, Taller, Herrería) y la Biblioteca; la tabla de abajo queda como la capa profunda que viene después. Así crecer no es solo cambiar de nombre. Todo respeta "amplio pero ligero" (D-44): un servicio nuevo entra con su capa simple.
 
 | Etapa | En el Claro | En un campamento de jugadores |
 |---|---|---|

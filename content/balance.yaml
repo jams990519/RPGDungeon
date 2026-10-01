@@ -263,3 +263,9 @@ guild:                       # [ES] D-97 (provisional): el gremio de un campamen
     - {capacity: 20, needs: {explorations: 420, victories: 210, gathered: 1050}} # [ES] nivel 6 → 7
     - {capacity: 25, needs: {explorations: 670, victories: 335, gathered: 1680}} # [ES] nivel 7 → 8
     - {capacity: 30, needs: {}}                                                  # [ES] nivel 8: el último por ahora. Solo se agregan niveles al final
+
+upgrades:                    # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo, costos y efectos en content/camp_upgrades.yaml). El Claro no tiene: no crece (D-98). Números orientativos: se ajustan en la beta
+  castle_min_built: 15       # [ES] para pasar del nivel 8 al 9 (castillo) el campamento necesita 15 mejoras construidas o más (hay 20). Se suma a la despensa, los 🪎 cofres y el gremio (D-97). Los castillos que ya existen siguen creciendo
+  xp_per_unit: 1             # [ES] experiencia por cada material aportado a una obra o a un estudio del 📚 Conocimiento (las monedas no dan). La obra del Claro daba 2
+  merit_per_unit: 1          # [ES] mérito por cada material aportado (como la obra común: 1 por material)
+  open_shown: 3              # [ES] cuántas obras abiertas, con su barra de avance, muestra la pantalla 🔨 Mejoras (todas se ven en 🔨 Obras, de a 2 o 3 por página)

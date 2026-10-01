@@ -346,3 +346,30 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 **Cuenta rápida** (medida aparte con las funciones de `tools/sim.py`: la forma de jugar atenta, cinturón lleno, las 45 especializaciones activas, cada bioma). Contra el enemigo de la incursión semanal, un héroe del nivel de la zona gana casi siempre (99-100 %): la incursión pone a prueba la **participación**, no la fuerza, igual que la despensa. La Noche de prueba sí pesa: con el equipo inicial y el nivel de la zona gana cerca de la mitad de las veces (45-51 %, y muy poco contra el caimán del pantano o el oso cavernario de las colinas); con 3 a 5 niveles más y equipo poco común, entre el 86 % y el 100 %. Perder una incursión con 4 miembros activos y la despensa en 28 raciones cuesta 7 raciones: casi 2 días de comida.
 
 **Lo que queda por mirar:** si la incursión semanal es demasiado fácil cuando los miembros superan mucho el nivel de su zona (subir `enemy_level_bonus` hasta 2, el tope de §6.2), si 60 minutos alcanzan para los husos horarios de los miembros (el Eco de §6.5 lo resolvería), y si el mínimo de 2 victorias de la Noche de prueba deja trabado a un campamento de una sola persona (hoy sí lo traba: castillo pide al menos dos miembros activos).
+
+### Octubre de 2026: las mejoras del campamento (D-101, provisional)
+
+**Por qué.** El dueño pidió por voz "más división": que para llegar a castillo hagan falta unas 15 mejoras del campamento o más, y que, como llegan oleadas desde la fundación (D-105), haya que "reforzar las cosas en los alrededores" (ver [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6). Son números **nuevos**, propuestos por Claude; ninguno se movió. Todavía no se midieron con jugadores.
+
+**Números nuevos** (`content/camp_upgrades.yaml` y `content/balance.yaml` → `upgrades`):
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Mejoras en total | 20, de los niveles 1 a 8 (2, 2, 4, 3, 3, 2, 2, 2) | Cada etapa abre algo; con el nivel 8 se elige cuáles 15 hacer |
+| Para castillo (`upgrades.castle_min_built`) | 15 construidas | Lo pidió el dueño ("unas 15 o más") |
+| Costo de las de nivel 1 (Fogón, Empalizada) | 35 y 40 materiales | Dos jugadores las levantan en un día |
+| Costo por nivel | ~70 (nivel 2), ~120 (3), ~200 (4), ~300 (5), ~330 (6), ~500 (7), ~580 (8) materiales | Sube como el costo de agrandar; la piedra pesa más en las defensas grandes |
+| Monedas | Puesto de trueque 1 🥈, Taller 2 🥈, Herrería 3 🥈, Enfermería 3 🥈, Biblioteca 5 🥈 (14 🥈 en total) | Sumidero de monedas en los servicios, que ahorran viajes al Claro |
+| Experiencia por material aportado (`upgrades.xp_per_unit`) | 1 (y 1 de mérito) | La mitad de lo que daba la obra del Claro (2): aportar no debe competir con pelear o explorar (D-78) |
+| Fogón / Enfermería | vida ×1,5 / vida tras caer ×1,5, solo miembros en el territorio | Descansar en casa ayuda, sin reemplazar pociones ni la posada |
+| Refugio | 2 🥉 y 5 minutos (la posada del Claro: 4 🥉) | Más barato por quedar lejos del mercader |
+| Puesto de trueque | mitad de precio, como el mercader; la comida nunca | Ahorra el viaje; no cambia el precio |
+| Granero / Ahumadero / Huerto | −10 % de consumo / +1 ración por carne / +1 ración por día | Ayudas chicas: la despensa sigue dependiendo de cazar |
+| Pozo | recursos del territorio ×1,5 más rápido (`stock.regen_per_hour` 2 % → 3 % por hora) | Un territorio agotado vuelve en ~33 horas en vez de ~50 |
+| Cabañas | +2 miembros de cupo | Ayuda a juntar los 10 del castillo |
+| 🛡️ Defensa | 11 puntos con las 8 defensas (12 de noche con los Braseros) | Escala de 0 a 11 para que las incursiones la usen cuando se conecte |
+| Conocimiento | Herramientas +10 % al recolectar, Cartografía +5 puntos por vuelta, Rastreo +10 % de carne; 200 a 230 materiales y 3 🥈 cada uno | Modestos a propósito: el territorio ya da +50 % al recolectar |
+
+**Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.
+
+**Lo que queda por mirar:** cuánto tarda de verdad un grupo en las 15 (si se traba en la piedra de la Muralla y el Foso, bajar esos costos), si la Perrera y el Rastreo, que piden carne, dejan la despensa corta, y cuánto debe bajar cada punto de 🛡️ Defensa la fuerza de una oleada cuando se conecte con D-99.

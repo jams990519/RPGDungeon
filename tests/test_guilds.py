@@ -84,7 +84,7 @@ def test_founder_creates_the_guild_at_the_camp(service):
     join(service, "test:2")
     place(service, "test:2", 6, 0)
     view = service.act("test:1", "claro")
-    assert view.kind == "player_camp" and ids(view) == ["grow", "guild", "home"]
+    assert view.kind == "player_camp" and ids(view) == ["grow", "guild", "upgrades", "home"]   # D-101: 🔨 Mejoras
     screen = service.act("test:1", "guild")
     assert screen.kind == "guild" and ids(screen) == ["guildnew", "rename", "claro"]
     assert any("Lyra" in line and "activo" in line for line in screen.body)
@@ -278,6 +278,9 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     join(service, "test:99")
     camp = service.store.get("camp", "6:0")
     assert len(camp["members"]) == cfg["castle_min_members"] and all(ok for _, ok in service._castle_needs(camp))
+    need = service.content.balance["upgrades"]["castle_min_built"]     # D-101: the castle also asks 15 improvements
+    built = {uid: 0 for uid in list(service._upgrade_catalog())[:need]}
+    service.store.put("upgrades", "6:0", {"built": built, "works": {}, "tech": {}})
     view = service.act("test:1", "grow")
     claims = [a.id for a in view.actions if a.id.startswith("claim:")]
     assert claims

@@ -38,12 +38,16 @@ def camp(service):
 
 
 def guild_ready(service):
-    """D-97: castillo also needs a ready guild; give the camp one straight in the store (guilds: test_guilds.py)."""
+    """D-97: castillo also needs a ready guild; give the camp one straight in the store (guilds: test_guilds.py).
+    D-101: and 15 improvements built (tests/test_camp_upgrades.py), so only the Noche de prueba is left."""
     cfg = service.content.balance["guild"]
     cfg["castle_min_members"] = len(camp(service)["members"])
     service.store.put("guild", KEY, {"name": "Lobos Grises", "camp": KEY, "founder_id": "test:1",
                                      "level": cfg["castle_min_level"],
                                      "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": 0.0})
+    need = service.content.balance["upgrades"]["castle_min_built"]
+    built = {uid: 0.0 for uid in list(service._upgrade_catalog())[:need]}
+    service.store.put("upgrades", KEY, {"built": built, "works": {}, "tech": {}})
 
 
 def set_rations(service, rations):
@@ -172,7 +176,7 @@ def test_defenders_wins_are_counted_and_a_defended_raid_pays_them(service, clock
     raid = camp(service)["raid"]
     assert raid["wins"] == 2 and raid["fights"] == {"test:2": "won", "test:3": "lost", "test:4": "won"}
     member_view = service.act("test:4", "claro")
-    assert "defend" not in [a.id for a in member_view.actions] and "home" in [a.id for a in member_view.actions]
+    assert "defend" not in [a.id for a in member_view.actions] and "upgrades" in [a.id for a in member_view.actions]   # D-101: 🔨 Mejoras is back
     until = raid["until"]
     clock.advance(HOUR + 1)
     service.act("test:1", "claro")
