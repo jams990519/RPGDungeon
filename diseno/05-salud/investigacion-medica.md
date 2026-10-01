@@ -27,7 +27,7 @@ Este documento arma eso. **Nadie cura lo que no conoce.** Toda cura nueva sale d
 2. **Siete etapas, sin atajos.** Observación → Conocimiento → Hipótesis → Ingredientes → Experimentos → Protocolo → Aplicación. No se puede empezar una etapa sin terminar la anterior.
 3. **Los ingredientes están en un lugar y en un momento.** Las curas avanzadas piden materiales de un terreno, una región, un yacimiento único, una hora o una estación del año. Ninguna ciudad los tiene todos (ver [Geografía y recursos](../02-mundo/geografia-y-recursos.md)).
 4. **Tiempo real.** Los estudios corren en tiempo real, también fuera de línea, como en EVE. Lo que se juega (casos, experimentos) tiene tope semanal.
-5. **Usa las piezas de [Investigación y maestría](../07-economia/investigacion-y-maestria.md).** Cada nodo del árbol médico es un **proyecto** (§5 de ese documento) que se paga con **Puntos de Investigación ⚕️** (§4). Lo que agrega este documento es lo que va antes del proyecto (casos, expediente, hipótesis, ingredientes) y la escalera que lleva hasta la Regeneración.
+5. **Usa las piezas de [Investigación y maestría](../07-economia/investigacion-y-maestria.md).** Cada nodo del árbol médico es un **proyecto** (§5 de ese documento) que se paga con **Puntos de Investigación ⚕️** (§4). Lo que agrega este documento es lo que va antes del proyecto (casos, expediente, hipótesis, ingredientes) y la escalera que lleva hasta la Regeneración. La regla de novato de ese documento (§5.3: los 3 primeros proyectos salen bien seguro) asegura el éxito del proyecto, pero **no salta** el expediente, la hipótesis ni los ingredientes. Esta escalera es la misma que D-54 extiende a todos los oficios.
 6. **Nada se compra con dinero real** (D-43). Ni las Gemas ni el oro saltan una etapa. El acelerador de oficio (ver [Monetización](../07-economia/monetizacion.md)) sube la experiencia de Medicina del 1 al 100 como en cualquier oficio, pero **no toca nada de este documento**: ni los expedientes, ni los PI, ni los proyectos, ni los experimentos, ni la estación del año (igual que en [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2).
 7. **Lo básico ya se sabe.** Las enfermedades del catálogo tienen desde el primer día su tratamiento básico (ver [Curación](curacion-y-tratamientos.md) §7). La investigación abre las curas **completas**, las vacunas, las cirugías nuevas y, arriba de todo, la reparación de las secuelas.
 
@@ -66,7 +66,7 @@ Un caso es una oportunidad de mirar un mal de cerca. Cada caso da **puntos de ca
 |---|---|---|---|
 | **Paciente jugador** | Diagnosticarlo o tratarlo en una consulta (ver [Curación](curacion-y-tratamientos.md) §6), con su permiso | Altos | **Seguir el caso** da más: cada fase (incubación, síntomas, pico, recuperación) cuenta aparte |
 | **Paciente PNJ** | El sanatorio, los asentamientos y el tablón ("*un pastor con fiebre en Ribera Seca*") | Medios | Siempre hay alguno: nadie se queda sin casos |
-| **Paciente con secuela** | Un jugador con un miembro perdido, un nervio dañado o un mal crónico ofrece su caso | Altos, y los únicos que sirven para las secuelas | El médico le paga (ver §8). Las secuelas se vuelven valiosas para la ciencia |
+| **Paciente con secuela** | Un jugador con un miembro perdido, un nervio cortado o un mal crónico ofrece su caso | Altos, y los únicos que sirven para las secuelas | El médico le paga (ver §8). Las secuelas se vuelven valiosas para la ciencia |
 | **Animales** | Veterinaria: monturas, ganado y mascotas enfermas (ver [Animales y cultivos](animales-y-cultivos.md)) | Medios | Los primeros ensayos de Regeneración se hacen con monturas (§4.3) |
 | **Muestras de monstruos** | Sangre o tejido de un monstruo **Enfermo** (ver [Bestiario](../06-contenido/bestiario.md) §9), y disección con conocimiento ★★★ de la especie | Medios | Las traen los cazadores |
 | **Muestras del entorno** | Agua de pantano, esporas, polvo de cristal, aire de miasma, en frascos de muestra (Joyería) | Bajos | Las fuentes de contaminación de [Peligros del entorno](peligros-del-entorno.md) §5.4 |
@@ -124,7 +124,7 @@ La hipótesis pide propiedades. Cada ingrediente tiene **cuatro propiedades ocul
 | Ingrediente | Dónde | Cuándo | Quién lo trae | Propiedades | Sirve para |
 |---|---|---|---|---|---|
 | **Flor de Ciénaga Tardía** | 🐸 Pantano, anillo IV | Solo en **otoño**, de **noche** | Herborista con máscara de carbón | Fría, Amarga | Cura completa de la Fiebre del Pantano crónica |
-| **Musgo de Cumbre Blanca** | ⛰️ Cumbres, anillo VI | Solo en **invierno**, después de una ventisca | Herborista aclimatado, con abrigo 3 | Cálida, Pulmonar | Neumonía, *Pulmón manchado*, Tos del Minero |
+| **Musgo de Cumbre Blanca** | 🏔️ Montaña (Picos Helados), anillo VI | Solo en **invierno**, después de una ventisca | Herborista aclimatado, con abrigo 3 | Cálida, Pulmonar | Neumonía, *Pulmón manchado*, Tos del Minero |
 | **Glándula de Licántropo** | ❄️ Tundra y 🌲 bosque, anillo VI | Solo en **luna llena** | Cazador con Desuello y conocimiento ★★★★ del Licántropo Salvaje | Regenerativa, Salvaje | Rama Regeneración: el tejido que vuelve a crecer |
 | **Agua de fondo del Oasis Hondo** | 🏜️ Desierto, anillo V | Solo en **verano**: cuando el oasis baja, aflora el agua del fondo | Explorador o aguador, con frasco de vidrio de duna | Pura, Mineral | Base de sueros y vacunas |
 | **Cristal de Resonancia Profunda** | 🌑 Grietas del Abismo Umbrío, anillo IX · **yacimiento único** | Siempre, pero rinde **1 por día** | Minero con forro de plomo y filtro bendito | Resonante, Ordenadora | Nervios, Mente y el molde de la Regeneración |
@@ -202,7 +202,7 @@ Cuando un protocolo es público, el **sanatorio** también lo usa, a su precio a
                                                cultivos
 ```
 
-Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una especialización, y expedientes con estrellas. Los rangos son los de [Curación](curacion-y-tratamientos.md) §0: **Enfermero** (1-30), **Médico** (31-70) y **Cirujano** (71-100); las especializaciones, las de [Profesiones](../07-economia/profesiones.md) §2.3. Un nodo es un **proyecto**: pasa por las siete etapas, con las cifras de su rango. Los **saberes combinados** de [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §3 ayudan: Farmacología a Venenos y toxinas, Ortopedia a Prótesis, Anatomía comparada a los casos de monstruos.
+Cada rama tiene **4 nodos**. Cada nodo pide un nivel de Medicina, a veces una especialización, y expedientes con estrellas. Los rangos son los de [Curación](curacion-y-tratamientos.md) §0: **Enfermero** (1-30), **Médico** (31-70) y **Cirujano** (71-100); las especializaciones, las de [Profesiones](../07-economia/profesiones.md) §2.3, más **Veterinaria**, que figura como rama de Medicina en [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md) §3. Un nodo es un **proyecto**: pasa por las siete etapas, con las cifras de su rango. Los **saberes combinados** de [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §3 ayudan: Farmacología a Venenos y toxinas, Ortopedia a Prótesis, Anatomía comparada a los casos de monstruos.
 
 Los nodos I piden Medicina 21, el rango desde el que se puede investigar (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §5). Antes de eso, un enfermero ya junta casos y estrellas de expediente.
 
@@ -232,7 +232,7 @@ Los nodos I piden Medicina 21, el rango desde el que se puede investigar (ver [I
 |---|---|---|
 | I · Suturas finas | Medicina 21 | Menos infección después de suturar; cicatrices más pequeñas |
 | II · Injertos de piel | Medicina 50 · Quemadura ★★★ | Injerto para quemaduras de grado 3 y la cicatriz extensa de la Podredumbre Gris (con miel negra o escama de salamandra) |
-| III · Cirugía de secuelas | Medicina 75 · Cirugía · Fractura y Nervio dañado ★★★★ | **Compensa a medias** una fractura mal soldada o un nervio dañado: la penalización baja a la mitad. Repararlos del todo es cosa de la Regeneración |
+| III · Cirugía de secuelas | Medicina 75 · Cirugía · Fractura y Nervio dañado ★★★★ | Cura del todo los males crónicos de hueso y nervio (*Rodilla mala*, temblor que vuelve). **Compensa** una rodilla destrozada o un nervio cortado como un equipo Excelente (queda el 45 %, ver [Secuelas](secuelas-y-muerte.md) §2.4), sin pasar nunca el piso del 25 %. Repararlos del todo es cosa de la Regeneración |
 | IV · Cirugía mayor | Medicina 90 · Cirugía | Operaciones de varias sesiones con **hasta 2 médicos asistentes**, cada uno a cargo de una barra. La pide la Regeneración |
 
 ### 3.4 Mente (sin especialización; Farmacia ayuda)
@@ -271,8 +271,8 @@ Los nodos I piden Medicina 21, el rango desde el que se puede investigar (ver [I
 | Dedos, orejas y piel perdidos | La **Corrupción**: es una elección (ver [Mente](mente.md)) |
 | Manos, pies y ojos | Las **cicatrices-trofeo**: se quedan si el jugador quiere |
 | Brazos y piernas | La muerte del **Juramento de Hierro**: caer es caer |
-| Un nervio dañado o una fractura mal soldada, del todo | Nada en el momento: siempre hay cirugía, internación y rehabilitación |
-| Un órgano dañado (*Pulmón dañado*, *Hígado castigado*) y males crónicos (*Pulmón manchado*, espasmos) | |
+| Un **nervio cortado** o una **rodilla destrozada**, del todo | Nada en el momento: siempre hay cirugía, internación y rehabilitación |
+| Un órgano dañado (*Pulmón dañado*, *Hígado castigado*), la *Sordera parcial* y la *Piel marcada* | Los males **crónicos**: esos ya se curan con un tratamiento largo (nodos III, ver [Secuelas](secuelas-y-muerte.md) §3) |
 
 ### 4.2 Qué pide investigarla
 
@@ -288,7 +288,7 @@ Cuatro nodos, uno sobre otro. El primero pide **todo esto**:
 | R1 · Tejido vivo | Lo de arriba | Entender cómo vuelve a crecer un tejido; la cámara fría | 4 a 6 semanas |
 | R2 · Regeneración menor | R1 · ensayos en monturas | Dedos, orejas, piel | 4 a 6 semanas |
 | R3 · Regeneración mayor | R2 · Medicina 100 y la rama Cirugía en 100 | Manos, pies, ojos; nervios y huesos de una zona | 6 a 8 semanas |
-| R4 · Regeneración completa | R3 · **Maestría M10 en Cirugía** (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2) | Brazos, piernas, males crónicos de órgano | 8 a 10 semanas |
+| R4 · Regeneración completa | R3 · **Maestría M10 en Cirugía** (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2) | Brazos, piernas, órganos dañados | 8 a 10 semanas |
 
 **Total:** de **5 a 7 meses** para la primera orden de médicos del servidor que lo intente, y más para un médico solo. Esto se suma a los meses de llegar a Gran Maestro (alrededor de un año, ver [Profesiones](../07-economia/profesiones.md) §4). La M10 lleva unos 2 meses más, que corren a la par de R1 a R3.
 
@@ -307,7 +307,7 @@ Usa el minijuego de cirugía (ver [Curación](curacion-y-tratamientos.md) §4) c
 | Parte | Cómo es | Quién |
 |---|---|---|
 | **1. Preparación** | Una sesión de unas 10 rondas: anestesia profunda, limpiar, abrir | El cirujano y un asistente de Farmacia (lleva el Dolor y la Estabilidad) |
-| **2. Siembra** | Una sesión de 12 a 15 rondas con tres acciones nuevas: **Implantar el andamio** (corazón de micelio), **Infundir** (glándula de licántropo) y **Alinear** (cristal de resonancia) | El cirujano y dos asistentes; cada uno ve sus botones en el mismo mensaje vivo |
+| **2. Siembra** | Una sesión de 12 a 15 rondas con tres acciones nuevas: **Implantar el andamio** (corazón de micelio), **Infundir** (glándula de licántropo) y **Alinear** (cristal de resonancia). Ocupan el lugar de Incisión, Extraer e Implantar durante esa sesión: la pantalla no crece | El cirujano y dos asistentes; cada uno ve sus botones en el mismo mensaje vivo |
 | **3. Crecimiento** | El paciente queda internado de 7 a 14 días reales. Un enfermero hace una cura diaria (un toque). Saltarse una cura lo alarga, no lo arruina | Enfermero de la orden |
 
 Después viene la **rehabilitación**: el miembro nuevo empieza débil, con la mitad de la penalización de no tenerlo, y la pierde en 2 a 4 semanas de uso, como la aclimatación.
@@ -339,7 +339,7 @@ Avanza despacio: su tope semanal de casos, su mesa, sus propios ingredientes. Ll
 
 ### 5.2 Una orden de médicos
 
-Una **orden de médicos** es un gremio, o un grupo dentro de un gremio, que se registra como tal en la Academia del Castillo. Comparte:
+Una **orden de médicos** es un gremio, o un grupo dentro de un gremio, que se registra como tal en la Academia del Castillo. Es la institución de Medicina que nombra [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md) §3 (Orden de Médicos). Comparte:
 - un **expediente común**: los casos de cada miembro suman al mismo expediente;
 - las mesas, la biblioteca (la biblioteca de gremio ya acelera la investigación, ver [Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)) y el almacén de ingredientes;
 - los nodos, que corren como **proyecto de grupo** de 2 a 5 investigadores que suman sus PI (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §5.2);
@@ -361,7 +361,7 @@ Los médicos que no son de la ciudad aprovechan sus servicios pagando la tasa, c
 Durante una epidemia de servidor (ver [Enfermedades](enfermedades.md) §4 y [Eventos](../06-contenido/eventos.md)), la cura sigue las mismas siete etapas, pero **en una sola barra para todo el servidor**, como en Plague Inc.:
 1. **Observación:** cada caso, cada muestra de bilis de plaga y cada paciente que se deja estudiar suma al **expediente común del servidor**. La Gaceta publica el porcentaje.
 2. **Hipótesis votada:** los tres médicos que más aportaron proponen una; los demás médicos votan.
-3. **Ingredientes:** la hipótesis pide uno de temporada o de yacimiento (por ejemplo, Sal de Estrellas). Todo el servidor sale a buscarlo.
+3. **Ingredientes:** la hipótesis pide uno de yacimiento (por ejemplo, Sal de Estrellas), de la estación en curso o de la propia epidemia (bilis de plaga), **nunca uno fuera de estación**: la epidemia no espera un mes. Todo el servidor sale a buscarlo.
 4. **Experimentos:** cualquier médico con rango ensaya, y cada avance suma a la barra común.
 5. **Protocolo público:** las curas de una epidemia **no se patentan** (ver [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §8.2). Pasan a todos los médicos y al sanatorio a la vez.
 6. **Aplicación:** se fabrica en cadena (ver [Investigaciones](../06-contenido/investigaciones.md) §2.1) y llega la vacuna. Los que más aportaron ganan el título.
@@ -482,14 +482,18 @@ Junto con el orden de [Salud](README.md):
 
 No se hicieron: otros procesos están editando esos documentos.
 
-- [x] **[Secuelas y muerte](secuelas-y-muerte.md)** §2: cambiar "*Regeneración: un ritual muy caro devuelve el miembro de carne*" por la Regeneración médica de este documento (§4), y aclarar que en el juego normal la secuela es definitiva (D-51) y que reponerla es la cima de la medicina (D-53). §3: "*médico maestro*" → nodos III de este árbol. §5: enlazar "regeneración" a §4.6.
+- [x] **[Secuelas y muerte](secuelas-y-muerte.md)** §2.1, §2.7, §2.8, §3 y §5.4: la Regeneración médica, la secuela definitiva en el juego normal y los nodos III (hecho).
+- [ ] **[Secuelas y muerte](secuelas-y-muerte.md)** §2.4: sumar a la tabla la fila "Cirugía de secuelas (nodo III de Heridas y cirugía): rodilla destrozada y nervio cortado, 45 %", junto a la de la prótesis con nervio.
 - [ ] **[Curación](curacion-y-tratamientos.md)**: §0, agregar qué investiga cada rango (nodos I a IV); §3, la fila Vacuna enlaza aquí; §5, sumar la mesa de investigación, la enfermería mayor y el Quirófano mayor; §7, "Miembro perdido" ya dice que se compensa y que reponerlo es la Regeneración médica (hecho); §8, los ingredientes de temporada enlazan a §2.4; §9, sumar la carrera de investigador.
 - [ ] **[Enfermedades](enfermedades.md)**: §1, decir que las curas completas salen de un protocolo; §3, nota de que cada enfermedad tiene expediente; §4 (Respuesta), enlazar a §5.4 (la cura comunitaria por etapas, sin patente).
-- [x] **[README de Salud](README.md)**: fila nueva en la tabla de documentos; en "Las siete capas", Secuelas se cura con "Prótesis, adaptación y, en la cima de la medicina, Regeneración"; sumar esta línea al orden de construcción (§10) y a "A quién le da trabajo" (pacientes de estudio, exploradores, eruditos).
+- [ ] **[README de Salud](README.md)**: la fila en la tabla de documentos ya está (hecho). Falta: en "Las siete capas", Secuelas se cura con "Prótesis, adaptación y, en la cima de la medicina, Regeneración"; sumar esta línea al orden de construcción (§10) y a "A quién le da trabajo" (pacientes de estudio, exploradores, eruditos).
 - [ ] **[Investigación y maestría](../07-economia/investigacion-y-maestria.md)**: §5.2, enlazar aquí desde la fila "Remedio" y aclarar que un proyecto médico pide antes expediente ★★★, hipótesis e ingredientes; §4, decir que los puntos de caso del expediente son un contador aparte de los PI ⚕️; §6.2, en la cumbre Rehabilitación, sumar la rehabilitación después de una Regeneración; §7.1, el Anfiteatro anatómico tiene mesa de investigación médica.
-- [ ] **[Profesiones](../07-economia/profesiones.md)**: §2.3, en Medicina sumar "protocolos e investigación médica" y resolver si **Veterinaria** es especialización (la nombra [Animales y cultivos](animales-y-cultivos.md), no Profesiones); §5, los expedientes son el conocimiento de Medicina; §9, rol de investigador médico; §10, fila "Reponer una pierna"; §12, regalías de patentes y pago a pacientes de estudio.
+- [ ] **[Profesiones](../07-economia/profesiones.md)**: §2.3, en Medicina sumar "protocolos e investigación médica" y sumar **Veterinaria** a sus especializaciones, como ya dicen [Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md) §3 y [Animales y cultivos](animales-y-cultivos.md); §5, los expedientes son el conocimiento de Medicina; §9, rol de investigador médico; §10, fila "Reponer una pierna"; §12, regalías de patentes y pago a pacientes de estudio.
 - [ ] **[Decisiones](../00-vision/decisiones.md)** D-53: enlazar este documento y [Investigación y maestría](../07-economia/investigacion-y-maestria.md), que ya existe, en lugar de "Investigación y maestría (en redacción)".
-- [ ] **[Creación de personaje](../03-personaje/creacion-de-personaje.md)**: el Trol recupera "*incluso un miembro perdido, muy despacio (semanas)*", lo que choca con D-51. Propuesta: el Trol regenera dedos y orejas, hace la rehabilitación en la mitad del tiempo y es el mejor caso de estudio, pero un brazo o una pierna también le piden la Regeneración médica.
+- [ ] **[Creación de personaje](../03-personaje/creacion-de-personaje.md)**, tabla de razas (fila Trol) y "Por qué conviene": el Trol recupera "*incluso un miembro perdido, muy despacio (semanas)*" y "*lo recupera en semanas*", lo que choca con D-51. Dejarlo como ya propone [Secuelas](secuelas-y-muerte.md) §2.7: regenera dedos, orejas y dientes, hace la rehabilitación y la adaptación en la mitad del tiempo y es el mejor caso de estudio, pero un brazo, una pierna o un ojo le piden la Regeneración médica.
+- [ ] **[Profundidad de un oficio](../07-economia/profundidad-de-un-oficio.md)** §3, fila Medicina: en "Conocimiento del material", sumar "expedientes"; la Orden de Médicos enlaza a §5.2 de este documento.
+- [ ] **[Investigación y maestría](../07-economia/investigacion-y-maestria.md)** §11: la pantalla `/investigar` muestra también las líneas de los expedientes (§7 de este documento), para que haya una sola pantalla.
+- [ ] **[Decisiones](../00-vision/decisiones.md)** D-54: cuando exista el documento de la escalera de conocimiento, que cite esta escalera como su modelo médico.
 - [ ] **[Investigaciones](../06-contenido/investigaciones.md)** §2.1: sumar la fila "Investigación médica" y enlazar aquí desde "Investigación de la cura".
 - [ ] **[Red de sistemas](../00-vision/red-de-sistemas.md)** §3: sumar la fila de §8.
 - [ ] **[Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md)**: enlazar las **patentes** de [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §8, que usan su tasa autodeclarada en la renovación.
@@ -499,7 +503,7 @@ No se hicieron: otros procesos están editando esos documentos.
 - [ ] **[Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md)** y **[Gremios y organizaciones](../09-construccion/gremios-y-organizaciones.md)**: Quirófano mayor (mejora del Sanatorio), mesa de investigación en la Academia, Enfermería mayor y Orden de médicos.
 - [ ] **[Monetización](../07-economia/monetizacion.md)** §3: sumar que los aceleradores no tocan expedientes, PI, proyectos ni investigación médica (ya lo dice [Investigación y maestría](../07-economia/investigacion-y-maestria.md) §2.2).
 - [ ] **[Glosario](../00-vision/glosario.md)**: expediente, puntos de caso, protocolo, mesa de investigación, orden de médicos, Enfermería mayor, Quirófano mayor, Regeneración y marca de regeneración.
-- [ ] **[Preguntas abiertas](../00-vision/preguntas-abiertas.md)**: sumar las preguntas de abajo, con el siguiente número P-xx libre.
+- [ ] **[Preguntas abiertas](../00-vision/preguntas-abiertas.md)**: sumar las preguntas de abajo, con el siguiente número P-xx libre (hoy el más alto es P-70).
 
 **Preguntas para el dueño:**
 1. ¿Una regeneración por personaje y por temporada es buen tope, o debería ser una sola vez por miembro?
