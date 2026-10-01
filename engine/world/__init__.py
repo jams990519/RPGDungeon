@@ -19,10 +19,13 @@ encounters.py dice qué enemigos pueden salir en cada zona: los del bioma cuya f
 zona (D-108); lo usan los encuentros del servicio y las incursiones.
 enemy_camps.py dice dónde hay ⛺ campamentos enemigos cada día (semilla + día), su guarnición y su cofre, y hasta dónde
 los ve cada 🧭 Explorador (D-112).
+dungeons.py dice dónde están las 🕳️ 🌀 mazmorras para uno (semilla del mundo: nunca se mueven), qué familia de enemigos
+las llena cada día, sus salas, sus pisos, su cofre y su bolsa (D-164, D-165, D-170, D-171).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Encuentros: encounters.py (bioma y franja de nivel de content/enemies.yaml); tests/test_bestiary.py
     - Campamentos enemigos: enemy_camps.py (usa encounters.py y raids.power); tests/test_enemy_camps.py
+    - Mazmorras: dungeons.py (usa mapgen.lejania y raids.power; las familias en content/dungeons.yaml); tests/test_mazmorras.py
     - Pruebas: tests/test_world.py
 """
 

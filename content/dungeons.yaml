@@ -1,0 +1,104 @@
+# Enemy families that fill the solo dungeons (D-164, D-170). Every day each dungeon is filled by one family (any family,
+# never tied to the biome of its zone); the family's strongest enemy of the dungeon's level is its boss.
+# [ES] Familias de enemigos que llenan las mazmorras para uno (D-164, D-170). Cada día, cada mazmorra la llena una familia
+# (cualquiera, nunca atada al bioma de su zona): hoy duendes, mañana limos, pasado dragones. El jefe es el más fuerte de esa
+# familia que cabe en el nivel de la mazmorra, en versión élite. Todo tipo de enemigo tiene así su jefe (D-164).
+# Campos de cada familia:
+#   name_key: el nombre que ve el jugador (content/locales/es_mazmorras.yaml, dungeon.family.<id>).
+#   emoji: su icono en la pantalla de la mazmorra.
+#   members: ids de content/enemies.yaml (nunca jefes de mundo ni retirados: si uno se retira, la familia sigue con los demás).
+#     En cada sala sale uno de los que tienen el nivel de la mazmorra en su franja (o la franja más cercana, como D-108),
+#     pero con el nivel de la mazmorra: las franjas de enemies.yaml escalan parejo (D-110), así un lobo de nivel 30 es tan
+#     duro como cualquier enemigo común de nivel 30.
+#   materials: material de content/items.yaml → peso. Lo que suelta su cofre (🕳️) o su bolsa (🌀). D-165: hay materiales de
+#     otros oficios (💠 gema en bruto, 🌸 flor de luna, 🔩 lingote...) para vender a quien los use.
+# Documento de diseño: diseno/06-contenido/mazmorras-y-bandas.md §0 ("En el juego: mazmorras para uno")
+# Lo usan: engine/core/content.py (Content.dungeons), engine/service/game.py (sección "solo dungeons") con las cuentas de
+#     engine/world/dungeons.py (family_of_day, level_pool, delve_rooms, floor_plan, delve_chest, floor_pot)
+# Si cambias esto, revisa:
+#   - Los ids de familia son estables: solo se agregan; para retirar una, retired: true. Agregar o retirar una familia
+#     cambia el orden de las familias de cada mazmorra desde ese día (nada guardado se rompe: el día y la familia salen de
+#     la semilla).
+#   - Un enemigo nuevo puede sumarse a una familia; tests/test_mazmorras.py revisa que todo miembro exista y no sea jefe.
+#   - Los materiales mueven cuánto entra al juego por mazmorra (registro en diseno/03-personaje/balance.md §7).
+
+families:
+  manada:                       # [ES] lobos y otros cánidos
+    name_key: dungeon.family.manada
+    emoji: "🐺"
+    members: [lobo_ceniciento, chacal_del_desierto, zorro_polar, lobo_gris, lobo_de_las_nieves, lobo_bicefalo, hiena_rayada,
+              licantropo_salvaje, licantropo_alfa]
+    materials: {piel: 3, carne: 3, hierba_curativa: 1}
+  fieras:                       # [ES] osos y grandes felinos
+    name_key: dungeon.family.fieras
+    emoji: "🐻"
+    members: [oso_de_las_cumbres, oso_cavernario, gloton_de_las_nieves, oso_polar, leon_de_la_estepa, pantera_sombria,
+              tigre_de_duna, osolechuza, manticora, quimera]
+    materials: {piel: 3, carne: 2, pieza_metal: 1}
+  colmillos:                    # [ES] jabalíes, cabras y bestias de cuerno
+    name_key: dungeon.family.colmillos
+    emoji: "🐗"
+    members: [cabra_montes, jabali_espinoso, jabali_colmillo_hierro, uro_lanudo, bisonte_de_trueno, behemot_de_la_estepa,
+              mamut_de_guerra]
+    materials: {carne: 3, piel: 3, fibra: 1}
+  bichos:                       # [ES] arañas, escorpiones e insectos
+    name_key: dungeon.family.bichos
+    emoji: "🕷️"
+    members: [arana_tejedora, escarabajo_de_duna, escorpion_de_arena, mantis_segadora, arana_nodriza, langosta_de_plaga,
+              enjambre_de_mosquitos, escorpion_de_vidrio, escorpion_emperador, polilla_lunar]
+    materials: {fibra: 3, hierba_curativa: 2, piel: 1}
+  limos:                        # [ES] limos y cosas del cieno ("slimes")
+    name_key: dungeon.family.limos
+    emoji: "🟢"
+    members: [limo_verde, sanguijuela_gigante, gigante_del_fango, abominacion_del_cieno, leviatan_del_cieno]
+    materials: {arcilla: 3, hierba_curativa: 2, extracto: 1}
+  plantas:                      # [ES] hongos, enredaderas y espíritus del bosque
+    name_key: dungeon.family.plantas
+    emoji: "🍄"
+    members: [hongo_esporon, enredadera_estranguladora, hada_de_espinas, micelio_andante, driade_marchita, arbol_hueco]
+    materials: {hierba_curativa: 3, madera: 3, flor_luna: 1}
+  no_muertos:                   # [ES] esqueletos, momias y caballeros caídos
+    name_key: dungeon.family.no_muertos
+    emoji: "💀"
+    members: [esqueleto_soldado, momia_de_arena, necrofago, caballero_hueco, jinete_espectral, liche_errante,
+              engendro_del_umbral]
+    materials: {pieza_metal: 3, piedra: 2, esencia: 1}
+  espectros:                    # [ES] fantasmas y almas en pena
+    name_key: dungeon.family.espectros
+    emoji: "👻"
+    members: [espectro_de_ruinas, poltergeist, fuego_fatuo, planidera, soldado_fantasma, novia_de_escarcha, espectro_glacial]
+    materials: {esencia: 2, pieza_metal: 2, flor_luna: 1}
+  forajidos:                    # [ES] bandidos, saqueadores y cultistas
+    name_key: dungeon.family.forajidos
+    emoji: "🗡️"
+    members: [bandido_errante, saqueador_de_tumbas, centauro_salvaje, asaltante_de_caravanas, cultista_de_la_podredumbre,
+              caballero_de_la_corte_marchita]
+    materials: {pieza_metal: 3, fibra: 2, tela_tejida: 1, cuero_curtido: 1}
+  gigantes:                     # [ES] kobolds (los duendes), ogros, troles y gigantes
+    name_key: dungeon.family.gigantes
+    emoji: "👹"
+    members: [kobold_minero, ogro_del_puente, ciclope_de_cantera, trol_de_colina, gigante_de_escarcha, gigante_de_tormenta,
+              gigante_de_las_nubes, titan_de_las_llanuras]
+    materials: {piedra: 3, pieza_metal: 2, lingote: 1}
+  dragones:                     # [ES] víboras, caimanes, basiliscos, wyverns y dragones
+    name_key: dungeon.family.dragones
+    emoji: "🐉"
+    members: [vibora_de_hierba, caiman_de_lodo, basilisco_de_pantano, wyvern_de_penasco, wyrm_joven_de_las_dunas,
+              hidra_del_pantano, draco_de_escarcha, sierpe_esmeralda, salamandra_de_lava, wyrm_de_hielo]
+    materials: {piel: 2, pieza_metal: 2, gema_bruta: 1}
+  constructos:                  # [ES] gólems, gárgolas, autómatas y elementales
+    name_key: dungeon.family.constructos
+    emoji: "🗿"
+    members: [espantapajaros_animado, chispa_errante, elemental_de_piedra, gargola_de_ruinas, ventisquero, remolino_de_arena,
+              golem_de_granito, centinela_de_vidrio, automata_de_ruinas, centinela_runico]
+    materials: {piedra: 3, pieza_metal: 2, gema_bruta: 1}
+  alas:                         # [ES] búhos, murciélagos, buitres, grifos, rocs y el fénix
+    name_key: dungeon.family.alas
+    emoji: "🦅"
+    members: [murcielago_de_cripta, buho_nival, buitre_de_hueso, grifo_de_montana, roc_de_las_alturas, fenix_de_ceniza]
+    materials: {fibra: 2, carne: 2, piel: 2}
+  alimanas:                     # [ES] ratas, tortugas y gusanos
+    name_key: dungeon.family.alimanas
+    emoji: "🐀"
+    members: [rata_del_pantano, tortuga_musgosa, gusano_de_las_arenas]
+    materials: {carne: 2, piel: 2, arcilla: 2}

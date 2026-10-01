@@ -890,3 +890,50 @@ El artesano de las cuatro ranuras suma **+1 a +2 puntos** de vida al terminar y 
 **Cómo se midió.** Las cuentas puras y los efectos en su línea con `tests/test_especializaciones.py` (rendimiento, hallazgos, obra maestra, curación, monedas, encantar, infiltrarse; solo en su línea y parejo con el dominio). El informe de clases (`tools/balance_report.py`) toma las piezas exclusivas en el escenario **c** (artesano donde lo hay) en los niveles 5 y 100: suman a lo sumo un 5 % en arma, pecho y joya, menos de lo que mueve un nivel de pieza.
 
 **Lo que queda por mirar:** cuántos jugadores eligen cada especialización (si una nadie la toma, subir su efecto; si todos, bajarlo), cuántas veces se cambia (si nadie cambia, el costo es alto; si se cambia todos los días, bajo), cuánto material de más entra por día por especializaciones (meta: el especialista junta 15-20 % más, nunca el doble) y si las obras maestras se vuelven comunes en alguna línea.
+
+### Octubre de 2026: las mazmorras para uno (D-164, D-165, D-170, D-171)
+
+**Por qué.** El dueño pidió mazmorras con estructura fija que cambian cada día de facción, jefe, camino y botín (D-164), botín de otras clases para vender (D-165) y, para el que juega solo, mazmorras chicas de recompensa modesta y mazmorras profundas por pisos (D-170), con un mapa que muestra que hay algo sin decir qué (D-171). Ver [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) §0. Son números **nuevos**, propuestos por Claude (`content/balance.yaml` → `dungeons`; las familias, en `content/dungeons.yaml`). No se movió ningún número de antes; `hero.xp_formula` y `world.epoch` no se tocaron (D-118, D-64). El botín de las peleas sigue igual (70 % de tu tipo: P-111 sin decidir); solo el cofre y la bolsa de las mazmorras dan piezas de cualquier clase por igual.
+
+| Número | Valor | Por qué |
+|---|---|---|
+| Entradas (`dungeons.stretch`, `second_chance`, `min_lejania`, `spacing`) | Tramos de 6 × 6 zonas con 1 entrada, o 2 con 50 %, desde Lejanía 2, nunca pegadas dentro del tramo | D-171: "1 o 2 mazmorras por tramo". En un mapa de 13 × 13 se ven unas 6 a 9 (con la semilla 12345, 24 en las 625 zonas a 12 del Claro: ~4 %) |
+| Profundas (`deep_share`) | 1 de cada 4 entradas | Que la profunda sea algo que se busca, y la chica lo de todos los días |
+| ❓ en el mapa (`hint_radius`) | A 2 zonas o menos de una zona que recuerdas | Lo que exploraste cerca te dice que hay algo; qué es lo sabes al pisarla o estudiarla desde al lado |
+| Nivel (`level_bonus`) | Zona + 1 | Como los ⛺ campamentos enemigos: algo más que cazar en la misma zona |
+| Chica: estructura y energía (`small.rooms`, `fight_energy`) | 4 salas y el jefe; 2 ⚡ por pelea (10 ⚡ toda) | Estructura fija (D-164); 2 ⚡ como una presa o un asalto (D-108) |
+| Jefe (`small.boss_hp_mult`, `boss_attack_mult`; igual en `deep`) | El más fuerte de la familia en ese nivel, vida × 1,8 y ataque × 1,2 | Como el jefe de un campamento enemigo: más difícil sin pedir grupo |
+| Cofre de la chica (`small.chest`) | Monedas de 1,5 peleas comunes de su nivel (`coin_unit` 4 × (1 + 0,1 × (nivel − 1))), 1 a 3 materiales de la familia, 20 % de una pieza de su nivel de cualquier clase; sin experiencia | "Modesto" (D-170): el de un campamento enemigo da nivel × 25 🥉, 3 a 5 materiales, 50 % de equipo y experiencia. Una vez por mazmorra y día |
+| Profunda: entrada y peleas (`deep.enter_energy`, `fight_energy`) | 2 ⚡ para entrar y 2 ⚡ por pelea | La entrada hace que una bajada corta rinda algo menos que cazar |
+| Profunda: pisos (`two_fights_chance`, `level_per_floor`, `hp_per_floor`, `attack_per_floor`, `boss_every`) | Piso 1: 1 pelea; desde el 2, 1 o 2 (35 %); +1 nivel, +5 % de vida y +3 % de ataque por piso; jefe cada 5 | Que cada piso se sienta más duro y que, sin curarse, la bajada termine en algún lado |
+| Bolsa (`deep.pot`) | Por piso: media pelea de monedas y 1 material; en los pisos de jefe, 30 % de una pieza de cualquier clase | El premio por bajar más, que solo se cobra entero si sales a tiempo |
+| Perder abajo (`deep.defeat_keep`) | La mitad de la bolsa (huir, igual, pero sin quedar malherido) | El riesgo de seguir bajando; lo de cada pelea es tuyo igual |
+| Lista del día (`deep.top_listed`) | Los 3 más hondos de cada mazmorra profunda | Una razón social para bajar un piso más |
+
+**Experiencia y monedas por ⚡ frente a 🏹 Cazar** (promedio de las 14 familias frente al de los 8 biomas con peligro; cazar: el enemigo del nivel de la zona, o + 1 con 30 %; la profunda: 5 pisos con ~1,35 peleas por piso desde el 2 y la entrada):
+
+| Zona | Cazar | 🕳️ Chica | 🌀 Profunda, 5 pisos |
+|---|---|---|---|
+| 3 | 26 · 3,3 🥉 | 28 (×1,07) · 4,0 🥉 (×1,23) | 30 (×1,16) |
+| 6 | 36 · 4,1 🥉 | 38 (×1,07) · 5,2 🥉 (×1,26) | 40 (×1,11) |
+| 10 | 52 · 6,0 🥉 | 54 (×1,04) · 6,7 🥉 (×1,12) | 54 (×1,03) |
+| 20 | 85 · 10,3 🥉 | 85 (×0,99) · 10,4 🥉 (×1,01) | 79 (×0,93) |
+| 40 | 152 · 19,6 🥉 | 155 (×1,02) · 21,1 🥉 (×1,08) | 140 (×0,92) |
+| 60 | 222 · 29,8 🥉 | 228 (×1,03) · 32,3 🥉 (×1,09) | 204 (×0,92) |
+| 90 | 327 · 46,4 🥉 | 337 (×1,03) · 52,2 🥉 (×1,13) | 297 (×0,91) |
+
+La chica queda **a la par de cazar en experiencia** (×0,99 a ×1,07: el nivel + 1, sin experiencia extra en el cofre) y un poco arriba en monedas (×1,01 a ×1,26), más 1 a 3 materiales y 20 % de una pieza; el viaje hasta la entrada y las pociones comen la diferencia. La profunda de 5 pisos rinde algo menos por ⚡ (la entrada cuesta) y sube a medida que se baja (el nivel crece 1 por piso, como cazar en una zona más lejana, pero sin viajar y con los enemigos más duros): D-108 se mantiene.
+
+**Medido con el motor** (`tools/balance_report.py`: `kit_for` "b" —puntos y botín de su nivel— y `fight` con juego atento; el héroe es del nivel de la zona y la mazmorra del nivel + 1; 8 especializaciones, 2 por rol; las 14 familias):
+
+| Zona | Gana al jefe de la chica (vida llena) | Pisos de la profunda sin curarse (cinturón de 3 pociones y 2 vendas, y 3 + 3 de repuesto en la mochila) |
+|---|---|---|
+| 3 | 98 % (93 % la peor) | 2,9 en promedio (1 a 6) |
+| 10 | 100 % | 3,4 (2 a 9) |
+| 30 | 79 % (45 % el sacerdote y el paladín sagrado) | 3,4 (1 a 10) |
+| 60 | 97 % (79 % la peor) | 7,7 (1 a 26; las defensas, 11 a 17) |
+| 90 | 94 % (62 % la peor) | 9,7 (1 a 37; las defensas, 14 a 21) |
+
+El jefe de la chica se gana como el de un ⛺ campamento enemigo (85-97 %), con un bache en la zona 30 para dos especializaciones de curación (el mismo bache de esos niveles en la pasada de D-110). En la profunda, el que juega su nivel baja 3 o 4 pisos y las defensas, que aguantan sin curarse, bajan mucho más en los niveles altos: el récord y la lista 🏆 lo premian.
+
+**Lo que queda por mirar:** si 1 o 2 entradas por tramo de 6 × 6 son muchas o pocas en la beta; si el cofre de la chica (1,5 peleas de monedas, 20 % de equipo) se siente demasiado modesto; si la profunda debería tener un tope de nivel por piso para que las defensas no bajen 30 pisos en los niveles altos; si huir abajo debería costar menos que caer; y cuánto equipo de otras clases entra por día (D-165) cuando exista el mercado (D-137).
