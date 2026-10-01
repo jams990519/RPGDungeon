@@ -42,3 +42,12 @@ v0_5_2:
     - "Al elegir clase ahora ves su descripción y sus especializaciones, con ↩️ Volver a las clases por si quieres mirar otra."
     - "🔄 Puedes cambiar de especialización: en 👤 Héroe → 🌟 Talentos, reinicia tus puntos por oro y repártelos de nuevo. La clase es para siempre."
     - "Revisamos que todos los botones funcionen. Más adelante llegará la doble especialización."
+
+v0_5_3:
+  version: "0.5.3"
+  title: "🔧 Lost Realms 0.5.3: pantallas más limpias"
+  notes:
+    - "Como máximo 4 botones en cada mensaje (el combate mantiene sus 6) y hasta 6 en el menú de abajo."
+    - "Las clases se ven de a 3, con ▶️ Ver más clases. El botón ↩️ para volver a las clases funciona."
+    - "💱 El mercader compra todos tus materiales de una vez."
+    - "🔄 Reiniciar especialización está dentro de cada especialización, en 🌟 Talentos."

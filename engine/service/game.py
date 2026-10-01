@@ -491,19 +491,17 @@ class GameService:
         group = pending.get("group")
         if not group:
             groups = self._class_groups()
-            per = 4
+            per = 3
             pages = max(1, (len(groups) + per - 1) // per)
-            page = min(max(0, int(pending.get("page", 0))), pages - 1)
+            page = int(pending.get("page", 0)) % pages
             body = [t.t("create.ask_class", name=pending["name"]), t.t("create.page", n=page + 1, total=pages), ""]
             actions = []
             for gid in groups[page * per:(page + 1) * per]:
                 body.append(f"• {t.t(f'class_group.{gid}.name')} — {t.t(f'class_group.{gid}.desc')}")
                 actions.append(Action(id=f"grp:{gid}", label=t.t(f"class_group.{gid}.name")))
             body += ["", t.t("create.rename_hint")]
-            if page > 0:
-                actions.append(Action(id=f"page:{page - 1}", label=t.t("create.prev")))
-            if page < pages - 1:
-                actions.append(Action(id=f"page:{page + 1}", label=t.t("create.next")))
+            if pages > 1:
+                actions.append(Action(id=f"page:{(page + 1) % pages}", label=t.t("create.next")))
             return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions, expects_text=True)
         else:
             # Confirmation step: show the class and its specs, then choose it or go back (D-74).
@@ -531,7 +529,7 @@ class GameService:
             groups = self._class_groups()
             pending["group"] = group if group in groups else None
             if group in groups:
-                pending["page"] = groups.index(group) // 4   # "back" returns to this class's page
+                pending["page"] = groups.index(group) // 3   # "back" returns to this class's page
             self.store.put("pending", account_id, pending)
             return self._creation_view(account_id)
         if not action_id.startswith("cls:") or pending.get("stage") != "class":
@@ -897,12 +895,12 @@ class GameService:
             item = self.content.items[item_id]
             body.append(t.t("shop.buy_line", emoji=item["emoji"], item=t.t(item["name_key"]), price=item["price"]))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=item["price"])))
-        sellable = [(i, n) for i, n in sorted(hero.backpack.items()) if self.content.items.get(i, {}).get("kind") == "material"]
-        for item_id, count in sellable[:3]:
-            item = self.content.items.get(item_id, {})
-            if item.get("kind") == "material":
-                price = max(1, int(item["price"] * shop["sell_ratio"]))
-                actions.append(Action(id=f"sell:{item_id}", label=t.t("shop.sell_button", emoji=item["emoji"], n=count, price=price)))
+        sellable = {i: n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "material"}
+        if sellable:
+            total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
+            body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=total))
+            actions = actions[:2]
+            actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=total)))
         actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
 
@@ -920,6 +918,16 @@ class GameService:
 
     def _sell(self, hero: Hero, item_id: str) -> View:
         t = self.texts
+        if item_id == "all":
+            total, sold = 0, {}
+            for i, n in list(hero.backpack.items()):
+                item = self.content.items.get(i, {})
+                if item.get("kind") == "material" and n > 0:
+                    total += max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"])) * n
+                    sold[i] = n
+                    del hero.backpack[i]
+            hero.gold += total
+            return self._shop_view(hero, notice=t.t("shop.sold_all", items=self._item_list(sold), total=total) if sold else None)
         item = self.content.items.get(item_id, {})
         if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
             return self._shop_view(hero)
@@ -1057,8 +1065,6 @@ class GameService:
             mark = " ⭐" if spec == hero.class_id and pts else ""
             body.append(t.t("talents.spec_line", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque")), n=pts) + mark)
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
-        if hero.talents:
-            actions.append(Action(id="respec", label=t.t("talents.respec_button", cost=self._respec_cost(hero))))
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
@@ -1098,6 +1104,8 @@ class GameService:
         actions = []
         if hero.points > 0:
             actions.append(Action(id=f"pt:{spec}", label=t.t("talents.spend_button")))
+        if hero.talents:
+            actions.append(Action(id="respec", label=t.t("talents.respec_button", cost=self._respec_cost(hero))))
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
@@ -1117,15 +1125,15 @@ class GameService:
         places.sort()
         body = [t.t("places.intro", n=len(hero.known))]
         actions = []
-        for seconds, x, y in places[:5]:
+        for seconds, x, y in places[:3]:
             zone = self._zone(x, y)
             body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone),
                             zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
         if not places:
             body.append(t.t("places.none"))
-        elif len(places) > 5:
-            body.append(t.t("places.more", n=len(places) - 5))
+        elif len(places) > 3:
+            body.append(t.t("places.more", n=len(places) - 3))
         actions.append(Action(id="explore_menu", label=t.t("menu.back")))
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
 
@@ -1189,7 +1197,7 @@ class GameService:
             if item.get("heal"):
                 count = hero.backpack.get(item_id, 0) + hero.belt.get(item_id, 0)
                 actions.append(Action(id=f"use:{item_id}", label=t.t("bag.use_button", emoji=item["emoji"], item=t.t(item["name_key"]), n=count)))
-        actions = actions[:5]
+        actions = actions[:3]
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
 
@@ -1268,7 +1276,7 @@ class GameService:
     def _combat_bag_view(self, hero: Hero, state: dict[str, Any]) -> View:
         t = self.texts
         actions = []
-        for item_id, count in hero.belt.items():
+        for item_id, count in list(hero.belt.items())[:3]:
             item = self.content.items.get(item_id)
             if item and item.get("belt"):
                 actions.append(Action(id=f"use:{item_id}", label=f"{item['emoji']} {t.t(item['name_key'])} ×{count}"))

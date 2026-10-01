@@ -148,15 +148,15 @@ def test_shop_and_inn_in_claro(service, clock):
     service.store.put("hero", "test:1", hero)
     view = service.act("test:1", "buy:pocion_vida")
     assert service.store.get("hero", "test:1")["gold"] == 38 and view.notice
-    service.act("test:1", "sell:hierba_curativa")
-    assert service.store.get("hero", "test:1")["gold"] == 39
+    service.act("test:1", "sell:all")
+    assert service.store.get("hero", "test:1")["gold"] == 38 + 2   # 2 herbs x 1
     view = service.act("test:1", "inn")
     assert view.kind == "activity"
     clock.advance(600)
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
     from engine.hero import hero_stats
-    assert hero["hp"] == hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] and hero["gold"] == 35
+    assert hero["hp"] == hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] and hero["gold"] == 36
 
 
 def test_shop_only_in_claro(service, clock):
@@ -271,14 +271,11 @@ def test_class_pages_have_at_most_six_buttons(service):
     service.view("test:9")
     view = service.text("test:9", "Pager")
     seen = set()
-    for _ in range(6):
-        assert len(view.actions) <= 6
+    for _ in range(10):
+        assert len(view.actions) <= 4
         seen |= {a.id for a in view.actions if a.id.startswith("grp:")}
-        nxt = [a.id for a in view.actions if a.id.startswith("page:") and int(a.id[5:]) > 0 and a.id not in seen]
-        if not nxt:
-            break
-        seen.add(nxt[-1])
-        view = service.act("test:9", nxt[-1])
+        nxt = [a.id for a in view.actions if a.id.startswith("page:")]
+        view = service.act("test:9", nxt[0])
     assert len(seen & {f"grp:{g}" for g in service._class_groups()}) == len(service._class_groups())
 
 

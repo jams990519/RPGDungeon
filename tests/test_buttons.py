@@ -27,7 +27,9 @@ def test_every_button_works(content):
         path = queue.popleft()
         service, view = build(content, path)
         pressed += 1
-        assert len(view.actions) <= 6, (path, view.kind, len(view.actions))
+        limit = 6 if view.kind == "combat" else 4      # D-46 combat bar; 4 elsewhere (D-75)
+        assert len(view.actions) <= limit, (path, view.kind, len(view.actions))
+        assert len(service.menu()) <= 6
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(a.id for a in view.actions))
         if key in seen:
@@ -43,8 +45,8 @@ def test_creation_buttons_go_back(content):
     service = GameService(content, MemoryStore(), FixedClock(), world_seed=7)
     service.view("test:2")
     first = service.text("test:2", "Nadie")
+    assert len(first.actions) <= 4
     page2 = service.act("test:2", "page:1")
-    assert service.act("test:2", "page:0").actions == first.actions
     detail = service.act("test:2", page2.actions[0].id)
     assert any(a.id == "grp:" for a in detail.actions)
     back = service.act("test:2", "grp:")
