@@ -8,6 +8,7 @@ En casi todos los MMORPG la vida es una barra que se llena sola. Aquí **el cuer
 |---|---|
 | [heridas.md](heridas.md) | El mapa de 7 zonas, 13 tipos de herida, gravedad y tiempos, cuándo aparecen, cómo se tratan, qué puede y qué no puede la magia |
 | [condiciones.md](condiciones.md) | Dolor, sangrado, fatiga, sustento (positivo primero), temperatura y aclimatación, toxicidad y dependencia |
+| [peligros-del-entorno.md](peligros-del-entorno.md) | **Peligros según la zona:** frío hasta la hipotermia, golpe de calor, **sed** (barra de Hidratación), **contaminación** (barra acumulable), altitud, oscuridad, agua profunda, arenas movedizas, tormentas, lava, insectos y nieve; etapas con aviso y retirada segura, efectos por ronda en combate, protección fabricada por oficios, refugios, linajes |
 | [enfermedades.md](enfermedades.md) | Carrera entre gravedad e inmunidad, contagio, catálogo de 14 enfermedades, epidemias de servidor, vampirismo y licantropía |
 | [mente.md](mente.md) | Estrés con aflicciones y virtudes, cordura, corrupción, quién cura la mente |
 | [secuelas-y-muerte.md](secuelas-y-muerte.md) | Cicatrices, miembros perdidos y prótesis, males crónicos, qué se pierde al caer en cada zona, Juramento de Hierro |

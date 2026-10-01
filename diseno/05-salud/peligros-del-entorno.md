@@ -311,7 +311,7 @@ Sin beber, en el desierto de día pasas de 100 a sed en unos 12 pasos. Una canti
 
 🟥 Tú — Cazador Supervivencia · Retaguardia
 ❤️ 610/940   🔋 Aguante ●●●○○ (calor: −1 cada 2 rondas)
-Turnos: Tú → ESCORPIÓN → Mira → ESCORPIÓN
+Turnos: Tú → ESCORPIÓN → Bram → ESCORPIÓN
 ⏱ 60 s
 
 [🏹 Disparo]      [🪤 Trampa]
@@ -448,7 +448,7 @@ Todo sale del rasgo de cuerpo que cada linaje ya tiene (ver [Creación de person
 
 ## 10. Cómo se ve en Telegram: cruzar el Mar de Dunas
 
-Un solo mensaje vivo que se edita en cada paso.
+Un solo mensaje vivo que se edita en cada paso. Mira lleva una capa de lino blanco (le falta un punto de frescor) y una sola cantimplora de cuero.
 
 **La salida:**
 
@@ -458,14 +458,14 @@ Zona 🔴 roja · Mediodía ☀️☀️☀️
 Tu frescor: ☀️☀️ (capa de lino blanco)
 💧 Hidratación ▓▓▓▓▓▓▓▓▓▓ 100 · Refrescado
 🌡️ Calor 🟢 bien
-🎒 Cantimplora 4/4 · Odre 8/8
-🗺 Mapa de peligros de Lisbeth (cartógrafa)
+🎒 Cantimplora 4/4
+🗺 Mapa de peligros de Lisbeth (cartógrafa, primavera)
 📍 Paso 0/20
 
 [➡️ Avanzar] [🎒 Mochila] [🗺 Mapa] [🏃 Volver]
 ```
 
-**Paso 6:** te falta un punto de frescor, así que el calor ya subió.
+**Paso 6:** como le falta un punto de frescor, el calor ya subió.
 
 ```
 📍 Paso 6/20 · Dunas Rojas
@@ -474,29 +474,30 @@ Tu frescor: ☀️☀️ (capa de lino blanco)
    La sed baja un 50 % más rápido
 ⛏️ Encontraste: Vidrio de duna ×3
 
-⚠️ A este ritmo, sed en 3 pasos.
-💡 El Oasis de las Tres Palmas está a 2 pasos.
+⚠️ A este ritmo, sed en 4 pasos.
+💡 Según tu mapa, el Oasis de las Tres Palmas está a 2 pasos.
 
 [➡️ Avanzar] [💧 Beber (+25)] [🏃 Volver]
 ```
 
-**Paso 8:** el oasis.
+**Paso 8:** el oasis está seco. El mapa era de primavera.
 
 ```
 📍 Paso 8/20 · 🌴 Oasis de las Tres Palmas
-Agua 🟢 limpia · pozo de piedra del gremio Arena Roja
-Peaje: 5 🪙 por llenar
-🌴 Sombra: el calor baja una etapa mientras estés aquí
+💧 ▓▓▓▓▓░░░░░ 52
+🟤 SECO: el verano se llevó el agua.
+🌴 Queda la sombra: el calor baja una etapa (🟢 bien)
+🎒 Cantimplora 4/4
 
-[🪣 Llenar todo (5 🪙)] [💧 Beber hasta llenarte]
-[➡️ Seguir] [🏃 Volver]
+[➡️ Seguir] [💧 Beber (+25)] [🏃 Volver]
 ```
 
 **Paso 12:** el aviso.
 
 ```
 📍 Paso 12/20 · Llano de Sal
-💧 ▓▓▓▓▓░░░░░ 51 · 🌡️ 🟡 Acalorado
+💧 ▓▓▓▓▓▓░░░░ 57 · 🌡️ 🟡 Acalorado
+🎒 Cantimplora 3/4
 
 ⚠️ TORMENTA DE ARENA en 2 pasos.
 Durante la tormenta: sed al doble y puedes perder el rumbo.
@@ -505,32 +506,34 @@ Durante la tormenta: sed al doble y puedes perder el rumbo.
 [🏚 Ir al refugio] [➡️ Arriesgarte] [🏃 Volver]
 ```
 
-**Paso 15:** te arriesgaste, y la tormenta te gastó el agua.
+**Paso 19:** Mira se arriesgó. Con tormenta y calor, cada paso cuesta cuatro veces más agua.
 
 ```
-📍 Paso 15/20 · Hondonada Blanca · 🌪 tormenta
-💧 ▓▓░░░░░░░░ 16 · 🟠 SED GRAVE
+📍 Paso 19/20 · Hondonada Blanca · 🌪 tormenta
+💧 ▓▓░░░░░░░░ 19 · 🟠 SED GRAVE
 🌡️ 🟠 Agotado por calor
    La vida no se regenera · Aguante máx. −1
-🎒 Cantimplora 0/4 · Odre 0/8
+🎒 Cantimplora 0/4
 
-🟠 Te quedan unos 2 pasos antes de la deshidratación.
-🏚 Refugio de la Duna: 3 pasos de vuelta.
+🟠 1 paso para la deshidratación.
+🟠 1 paso para el golpe de calor.
+🏚 Puesto del Pozo Hondo (gremio Arena Roja): 2 pasos.
    Con la retirada segura llegas sí o sí.
 
-[🏃 Retirada segura al refugio]
+[🏃 Retirada segura al Pozo Hondo]
 [➡️ Seguir (peligro)] [🎒 Mochila]
 ```
 
 **La llegada:**
 
 ```
-🏚 Refugio de la Duna · a salvo
-🪣 Bebiste de la cisterna: 💧 16 → 100
+🏚 Puesto del Pozo Hondo · a salvo
+🪣 Bebiste del pozo (peaje 10 🪙): 💧 19 → 100
 🌡️ Calor 🟢 bien (sombra y descanso)
 🎒 Traes: Vidrio de duna ×11 · Sal de roca ×6
    · Escama de Escorpión de Vidrio ×2
 🌪 La tormenta pasa en unos 20 min.
+💡 Lisbeth publicó un mapa de verano: 40 🪙.
 
 [➡️ Seguir la expedición] [🏠 Volver al asentamiento]
 ```

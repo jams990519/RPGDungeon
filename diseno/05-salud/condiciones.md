@@ -22,6 +22,8 @@
 | 🍖 **Sustento** | Pasa el tiempo activo; comer lo sube | Ver §2 | Comida |
 | 🌡️ **Temperatura** | Bioma, clima, ropa | Frío: baja la iniciativa, riesgo de congelación y gripe. Calor: baja el Aguante, deshidratación, insolación | Ropa adecuada, fogatas, pociones |
 | 🧪 **Toxicidad** | Pociones y elixires | Ver §4 | El tiempo; más rápido descansando |
+| 💧 **Hidratación** | Beber: cantimploras, pozos, oasis, agua hervida o purificada | La sed existe **solo en zonas sin agua y mientras estás activo**: desierto (muy rápido de día), volcanes, cumbres, cuevas. Fuera de línea, en asentamientos y donde hay agua no baja. Bien hidratado tienes un pequeño bonus; con sed bajan la precisión y el Aguante, y al final se pierde vida hasta caer, siempre con aviso. El agua sucia da disentería. Ver [Peligros del entorno](peligros-del-entorno.md) | Estar activo en terrenos sin agua; el calor y las tormentas de arena la aceleran |
+| ☣️ **Contaminación** | Nodos contaminados: miasma del pantano, gas de mina, esporas, resonancia de cristal, azufre, Vacío, plaga | Barra que se acumula por etapas: tos, menos vida máxima, riesgo de la enfermedad de la fuente y, en crítico, pérdida de vida hasta caer. No es la Toxicidad de las pociones. Ver [Peligros del entorno](peligros-del-entorno.md) | Salir del nodo, máscara con el filtro correcto, reposo en un asentamiento, purgas (Alquimia), templo (Vacío) |
 
 ## 2. Sustento: positivo primero
 
