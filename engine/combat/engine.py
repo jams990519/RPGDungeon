@@ -19,7 +19,7 @@ Documento de diseño: diseno/04-combate/ronda-y-acciones.md §1-§6 y §10; avis
     diseno/06-contenido/jefes.md §2 regla 4 y §5 (fases de jefe, D-82)
 Módulo: M5 Combate (y las fases de jefe de M6)
 Depende de: engine.core (Rng, Texts), engine.hero.hero_stats, contenido (clases, enemigos, objetos, balance)
-Lo usan: engine/service/game.py
+Lo usan: engine/service/game.py; engine/combat/auto.py (peleas automáticas, D-114) y tools/sim.py juegan con resolve_round
 Eventos que publica: ninguno (devuelve el resultado; el servicio publica)
 Eventos que escucha: ninguno
 Datos de los que es dueño: el estado de combate (dict) que el servicio guarda en "combat"

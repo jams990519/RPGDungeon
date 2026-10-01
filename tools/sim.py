@@ -17,19 +17,22 @@ Usage (from the repository root):
 
 [ES]
 Para qué sirve: probar el balance del combate sin jugar a mano. Juega miles de peleas con una forma
-de jugar básica (lee el aviso, se cura si está bajo, mantiene mejoras y debilitamientos, y pega).
+de jugar básica (lee el aviso, se cura si está bajo, mantiene mejoras y debilitamientos, y pega). Desde D-114 esa
+forma de jugar es la del motor (engine/combat/auto.py choose_action), la misma de las peleas automáticas del juego.
 Documento de diseño: diseno/03-personaje/talentos.md (D-79); diseno/04-combate/ronda-y-acciones.md
 Módulo: herramienta (no es parte del juego; no lo usa ningún cliente)
-Depende de: engine.core, engine.combat, engine.hero, engine.classes, content/*
+Depende de: engine.core, engine.combat (también choose_action, la forma de jugar), engine.hero, engine.classes, content/*
 Lo usan: las personas e IAs que mueven números de balance (antes de cambiar classes.yaml o balance.yaml)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (no guarda nada)
 Reglas que nunca se rompen:
-    1. Usa las mismas funciones de combate que el juego (make_combat, validate_choice, resolve_round).
+    1. Usa las mismas funciones de combate que el juego (make_combat, resolve_round) y la misma forma de jugar que las
+       peleas automáticas (choose_action, D-114): no tiene una propia.
     2. Es determinista: las mismas semillas dan los mismos números.
 Si cambias esto, revisa:
-    - Que la forma de jugar (choose) siga entendiendo todos los "kind" de content/classes.yaml
+    - Que la forma de jugar (engine/combat/auto.py; umbrales en balance.yaml auto_fight.policy) siga entendiendo todos
+      los "kind" de content/classes.yaml
     - Objetivos de D-79: victorias ≥ 95 % contra enemigos de nivel 1-3 (curadores ≥ 80 %) y ninguna barra muy por encima
     - Objetivos del ajuste de octubre de 2026 (diseno/03-personaje/balance.md §7): con --real, ≥ 90 % (curadores ≥ 85 %)
       contra cada enemigo de nivel 1-3; con --boss, cada especialización entre 45 % y 90 % contra el Guardián al nivel 6
@@ -44,7 +47,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from engine.classes import bar_choices, bar_slots, base_response, kit, specs_of, spend_point  # noqa: E402
-from engine.combat import CombatContext, find_move, make_combat, resolve_round, validate_choice  # noqa: E402
+from engine.combat import CombatContext, choose_action, make_combat, resolve_round  # noqa: E402
 from engine.core import Texts, load_content  # noqa: E402
 from engine.hero import Hero, hero_stats  # noqa: E402
 from engine.hero.gear import gear_bonus, starter_gear  # noqa: E402
@@ -53,89 +56,18 @@ C = load_content()
 CTX = CombatContext(C.classes, C.enemies, C.items, C.balance, Texts(C.texts))
 
 
-def ok(state, hero, cdef, choice) -> bool:
-    """True if the choice is valid now. [ES] Qué hace: pregunta al combate si se puede usar. La llaman: choose. Si cambia, afecta: solo el simulador."""
-    return validate_choice(state, hero, cdef, choice, CTX) is None
-
-
 def choose(state, hero, cdef, max_hp, enemy_id, stats, attentive=False):
-    """Basic play: read the warning, heal when low, keep buffs and debuffs up, otherwise hit.
+    """Basic play (attentive=False) or attentive play (attentive=True, boss mode): the engine's policy (D-114).
 
-    attentive=True (boss mode) also uses the bandage when very low and the basic dodge against very big unanswered hits.
+    The policy lives in engine/combat/auto.py choose_action, the same one the game uses for automatic fights, so the
+    simulator measures exactly how a hero fights alone. max_hp, enemy_id and stats are kept for the callers: the policy
+    reads them from the state and the kit.
 
-    [ES] Qué hace: elige la acción de la ronda como lo haría un jugador básico (o atento, en el modo --boss). La llaman: play y boss_play. Si cambia, afecta: todos los números del simulador.
+    [ES] Qué hace: elige la acción de la ronda con la forma de jugar del motor (engine/combat/auto.py, la misma de las
+    peleas automáticas del juego): básica en --summary y --bars, atenta en --boss. La llaman: play y boss_play.
+    Si cambia, afecta: todos los números del simulador (y la forma de jugar vive en el motor: cambiarla allá cambia esto).
     """
-    enemy, hs = state["enemy"], state["hero"]
-    move = find_move(C.enemies[enemy_id], enemy["next_move"])
-    tags = move.get("tags", [])
-    abilities = list(enumerate(cdef["abilities"]))
-
-    def can(i):
-        return ok(state, hero, cdef, {"type": "ability", "index": i})
-
-    def use(i):
-        return {"type": "ability", "index": i}
-
-    frac = hero.hp / max_hp
-    if frac < 0.45:
-        for i, a in abilities:
-            if a["kind"] == "heal" and can(i):
-                return use(i)
-    if frac < 0.35 and hero.belt.get("pocion_vida") and ok(state, hero, cdef, {"type": "item", "item_id": "pocion_vida"}):
-        return {"type": "item", "item_id": "pocion_vida"}
-    if attentive and frac < 0.3 and hero.belt.get("venda") and ok(state, hero, cdef, {"type": "item", "item_id": "venda"}):
-        return {"type": "item", "item_id": "venda"}
-    first = stats["initiative"] >= enemy["initiative"]
-    channel = move.get("kind") == "channel"
-    big = (not channel) and move.get("power", 1) * enemy.get("buff", 1.0) > 1.5
-    if channel and "interruptible" in tags and first:
-        for i, a in abilities:
-            if a["kind"] == "interrupt" and can(i):
-                return use(i)
-    if big:
-        if "interruptible" in tags and first:
-            for i, a in abilities:
-                if a["kind"] == "interrupt" and can(i):
-                    return use(i)
-        prefs = []
-        for i, a in abilities:
-            r = a.get("response")
-            if r == "dodge" and "dodgeable" in tags:
-                prefs.append((0, i))
-            elif r == "block" and "blockable" in tags:
-                prefs.append((1, i))
-            elif r == "shield":
-                prefs.append((2, i))
-        for _, i in sorted(prefs):
-            if can(i):
-                return use(i)
-        if attentive and move.get("power", 1) * enemy.get("buff", 1.0) >= 2.0 and ok(state, hero, cdef, {"type": "dodge"}):
-            return {"type": "dodge"}
-        for i, a in abilities:
-            if a["kind"] == "weaken" and not enemy.get("weakened") and can(i):
-                return use(i)
-    for i, a in abilities:
-        if a["kind"] == "hot" and frac < 0.8 and not hs.get("hot") and can(i):
-            return use(i)
-    for i, a in abilities:
-        k = a["kind"]
-        if k == "empower" and not hs.get("empower") and can(i):
-            return use(i)
-        if k == "expose" and not enemy.get("exposed") and can(i):
-            return use(i)
-        if k == "weaken" and not enemy.get("weakened") and can(i):
-            return use(i)
-    for i, a in abilities:
-        k = a["kind"]
-        if k == "dot" and not enemy.get("dot") and can(i):
-            return use(i)
-        if k == "finisher" and hs["combo"] >= 3 and can(i):
-            return use(i)
-        if k == "strike" and can(i):
-            return use(i)
-        if k == "heal" and frac < 0.6 and can(i):
-            return use(i)
-    return {"type": "attack"}
+    return choose_action(state, hero, cdef, CTX, attentive=attentive)
 
 
 def play(cdef, enemy_id, hero_level, enemy_level, seed):

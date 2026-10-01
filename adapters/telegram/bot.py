@@ -21,7 +21,8 @@ Reglas que nunca se rompen:
     1. El id de cuenta es "tg:<id de usuario>"; el motor no lo interpreta.
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
 Si cambias esto, revisa:
-    - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble... salen del motor)
+    - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble, /opciones... salen
+      del motor; el menú fijo tiene 5 botones desde D-114)
     - Despliegue: railway.json (comando de arranque)
 """
 
@@ -52,7 +53,7 @@ MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
 def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe). La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram."""
+    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114: 2 por fila, así 5 botones son 3 filas cortas que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
     labels = [KeyboardButton(text=a.label) for a in service.menu()]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)

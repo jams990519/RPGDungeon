@@ -123,6 +123,8 @@ hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (
     prey_per_hunter: 3       # [ES] meta de presas entre todos = 3 × cazadores que se unieron (contando al menos 2)
     min_hunters: 2           # [ES] el premio del final pide al menos 2 cazadores: una partida de uno solo no lo da
     reward: {xp: 40, gold: 20}   # [ES] si juntan la meta, cada cazador con al menos 1 presa gana 40 de experiencia y 20 🥉 (chico: como una presa más)
+  batch: [4, 10, 20, 40]     # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), cuánta energía gastar cazando en lote (más "todo"); cada presa cuesta hunt.energy, así 4 = 2 presas y 40 = 20
+  batch_minutes: 16          # [ES] D-114: cuánto tarda cada presa del lote (8 min por ⚡, como recolectar). Cazar de a una presa, a mano, sigue siendo enseguida
 
 settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables
   stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
@@ -299,3 +301,17 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   camp_bonus: 0.10           # [ES] D-101: en las estaciones de tu campamento (🧵 Taller, 🔨 Herrería), +10 % de sacar 1 unidad más al refinar
   per_page: 2                # [ES] recetas por página en 🪚 Refinar y 🛠️ Fabricar cuando hay más de 3 (4 botones como mucho, D-75)
   make_batch: 5              # [ES] el botón 🔨 Hacer 5 de cada receta (y 🔨 Hacer todo, con lo que alcance)
+
+auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
+  defaults: {fights: manual, retreat: 50, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 50 % de vida, sí usar pociones
+  retreat_choices: [30, 50, 70]   # [ES] 🩹 Retirarse con menos de: el botón va pasando por estos % de vida. Al terminar una pelea automática por debajo, el lote se corta; si una pelea sale con la vida ya por debajo, el héroe no pelea solo y la pelea te espera
+  max_rounds: 60             # [ES] una pelea automática que no termina en 60 rondas se deja (sin premio ni castigo); el simulador juega 60 (120 contra el Guardián)
+  policy:                    # [ES] la forma de jugar "básica pero atenta" (engine/combat/auto.py). La usa también tools/sim.py: cambiar un número cambia todos los números del simulador
+    heal_below: 0.45         # [ES] con menos de 45 % de vida usa su habilidad de curar
+    potion_below: 0.35       # [ES] con menos de 35 % bebe una poción del cinturón (si 🧪 Pociones está en sí)
+    bandage_below: 0.30      # [ES] con menos de 30 % se pone una venda (solo jugando atento, como en las peleas automáticas)
+    big_hit: 1.5             # [ES] un golpe avisado con más de 1,5 de potencia es "grande": lo corta, lo esquiva, lo bloquea o se escuda
+    dodge_hit: 2.0           # [ES] contra un golpe de 2 o más sin respuesta en la barra, usa 🌀 Esquivar (atento)
+    hot_below: 0.8           # [ES] renueva su curación lenta con menos de 80 %
+    heal_late_below: 0.6     # [ES] si no hay nada mejor que hacer, se cura con menos de 60 %
+    finisher_combo: 3        # [ES] remata con 3 puntos de combo o más

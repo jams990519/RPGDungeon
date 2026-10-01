@@ -17,8 +17,10 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109)
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.1 (⚙️ Opciones y peleas automáticas en los lotes, D-114)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
-Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat, engine.messaging,
+Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
+    sola, engine/combat/auto.py play_out, D-114), engine.messaging,
     engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
     D-109), content/*
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
@@ -46,6 +48,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-106 (provisional): "hunt_party" (la partida de caza abierta de un campamento, clave "x:y" del campamento: x, y,
     at, until, caller, members {héroe: presas}, prey; se borra al cerrarla). Una pelea de cacería lleva "hunt" ({"x", "y"})
     en su estado de "combat". Diseño: diseno/06-contenido/cacerias.md §0
+    D-114: Hero.options (⚙️ Opciones; vacío = balance.yaml auto_fight.defaults) y la actividad "hunt" (🏹 Cazar en lote,
+    con las mismas claves que un lote de explorar). Un lote con peleas automáticas suma en su actividad "fights"
+    ({"won", "lost", "fled"}), "fight_xp", "fight_gold", "gold_lost", "loot" y "fight_trade" para el resumen del final.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -72,6 +77,11 @@ Reglas que nunca se rompen:
     14. Los oficios (D-109) no tienen tope (D-57). Refinar y fabricar se hacen enteros o no se hacen: si falta un
         material, energía, la estación o el rango, no se gasta nada. Las unidades extra y los raros de los oficios usan
         su propio sorteo: nunca cambian lo que la vuelta de recolección o la pelea dan por su cuenta.
+    15. Una pelea automática (D-114) es una pelea normal jugada por el motor: mismas reglas (resolve_round), mismo sorteo y
+        mismo final (_end_combat: botín, experiencia, gremio, partida de caza, oficios y derrota). Solo van solos los
+        encuentros comunes de un lote y las presas de la cacería en lote; nunca el Guardián, las defensas del campamento ni
+        las emboscadas del viaje. Con ✋ Manual (lo de siempre) el lote se corta en la pelea. El bot avisa una sola vez por
+        lote, al final, aunque haya habido muchas peleas.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -122,6 +132,13 @@ Si cambias esto, revisa:
       piel del 🔪 Desollador), _claro_view (⚒️ Oficios es su 3.er botón), _workshop_view (4.º botón) y _services_view
       (⚒️ Oficios si hay 🔨 Herrería sin 🧵 Taller), _hero_view (línea /oficios) y COMMANDS (/oficios). La experiencia de
       héroe al refinar y fabricar (_make_xp) sigue a D-108: tiene que quedar a la par de recolectar por cada ⚡
+    - ⚙️ Opciones y peleas automáticas (D-114): balance.yaml auto_fight (opciones por defecto, % de 🩹 Retirarse, tope de
+      rondas y umbrales de la forma de jugar) y hunt.batch / hunt.batch_minutes; engine/combat/auto.py (la forma de jugar,
+      la misma que usa tools/sim.py); Hero.options; textos options.*, auto.*, batch.*_hunt, batch.reason.auto_* y hunt.batch_*
+      y hunt.mode_* en es.yaml; tests/test_options.py. Tocan menu() (5.º botón), COMMANDS (/opciones), _idle_action ("options",
+      "opt:"), _settle (_batch_fight → _auto_combat → _end_combat), _amount_view, _start_batch, _stop_batch, _continue_batch,
+      _batch_summary (_auto_summary), _activity_view, _hunt_view y _hunt ("prey" abre 🏹 Cazar en lote en automático) y
+      PRESENT_BUSY (quien caza en lote cuenta como presente, D-96)
 """
 
 from __future__ import annotations
@@ -144,7 +161,7 @@ from engine.classes import (
     specs_of,
     unlock_points,
 )
-from engine.combat import CombatContext, make_combat, resolve_round, validate_choice
+from engine.combat import CombatContext, make_combat, play_out, resolve_round, validate_choice
 from engine.core import (
     BossDefeated,
     Clock,
@@ -182,12 +199,14 @@ from engine.world.resources import main_resource, zone_resources
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
             "/equipo": "gear", "/monedas": "wallet", "/doble": "dual", "/gremio": "guild", "/salud": "health",
-            "/oficios": "oficios"}
+            "/oficios": "oficios", "/opciones": "options"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
-PRESENT_BUSY = ("explore", "gather", "rest")
+PRESENT_BUSY = ("explore", "gather", "rest", "hunt")
+# Activities that go in batches of energy (D-87); "hunt" only with ⚔️ automatic fights (D-114).
+BATCH_KINDS = ("explore", "gather", "hunt")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
@@ -356,13 +375,15 @@ class GameService:
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard).
 
         [ES]
-        Qué hace: da el menú fijo (Zona, Explorar, Campamento, Héroe); cada cliente lo dibuja abajo o al costado.
-        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo).
-        Si cambia, afecta: la navegación de todos los clientes.
+        Qué hace: da el menú fijo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114); cada cliente lo dibuja abajo o
+        al costado. D-46 deja hasta 6.
+        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 5 quedan 3 filas).
+        Si cambia, afecta: la navegación de todos los clientes (tests/test_buttons.py y tests/test_options.py miran el tope).
         """
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
-                Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero"))]
+                Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero")),
+                Action(id="options", label=t.t("menu.options"))]
 
     def commands(self) -> dict[str, str]:
         """Typed shortcuts (/stats, /inv, /doble...) -> action id; some screens only link to them.
@@ -617,7 +638,7 @@ class GameService:
             rng = Rng(int(hash_unit(self.world_seed, hero.id, activity["until"]) * 2**31))
             if activity["kind"] == "travel":
                 notices += self._arrive(hero, activity, rng)
-            elif activity["kind"] in ("explore", "gather"):
+            elif activity["kind"] in BATCH_KINDS:
                 zone = self._zone(hero.x, hero.y)
                 activity.setdefault("left", 0)
                 activity.setdefault("got", {})
@@ -628,15 +649,20 @@ class GameService:
                     tally["explorations"] = tally.get("explorations", 0) + 1
                     if zone.x == 0 and zone.y == 0:
                         activity["log"] += self._tutorial(hero, "explore_claro")
-                else:
+                elif activity["kind"] == "gather":
                     before = sum(activity["got"].values())
                     fight = self._gather_step(hero, zone, rng, activity)
                     tally["gathered"] = tally.get("gathered", 0) + sum(activity["got"].values()) - before
                     activity["log"] += self._tutorial(hero, "gather")
+                else:                                   # D-114: a hunting batch, every prey is a fight
+                    fight = self._hunt_step(hero, zone, rng)
                 if fight:
-                    notices += self._batch_summary(hero, activity, "fight") + [fight]
-                    continue
-                activity["log"] += self._cross_paths(hero, zone, activity)     # D-96: flavour only
+                    stop = self._batch_fight(hero, activity, fight)    # D-114: ✋ the batch stops; ⚔️ the hero fights now
+                    if stop is not None:
+                        notices += stop
+                        continue
+                elif activity["kind"] != "hunt":
+                    activity["log"] += self._cross_paths(hero, zone, activity)     # D-96: flavour only
                 reason = self._continue_batch(hero, activity, activity["until"])
                 if reason:
                     notices += self._batch_summary(hero, activity, reason)
@@ -936,6 +962,10 @@ class GameService:
             return self._map_view(hero)
         if action_id == "hero":
             return self._hero_view(hero)
+        if action_id == "options":                      # D-114: ⚙️ Opciones (bottom menu, /opciones); works while busy too
+            return self._options_view(hero)
+        if action_id.startswith("opt:"):
+            return self._set_option(hero, action_id[4:])
         if action_id == "stats":
             return self._stats_view(hero)
         if action_id == "health":
@@ -1131,67 +1161,114 @@ class GameService:
 
     # ------------------------------------------------------------------ batches of energy (D-87)
 
+    def _step_cost(self, kind: str) -> int:
+        """Energy of one step of a batch: 1 to explore or gather (energy.per_*), hunt.energy for a prey (D-108, D-114)."""
+        if kind == "hunt":
+            return int(self._hunt_cfg()["energy"])
+        return int(self.content.balance["energy"][f"per_{kind}"])
+
+    def _step_minutes(self, kind: str) -> float:
+        """Minutes of one step of a batch: explore/gather minutes, hunt.batch_minutes for a prey (D-114)."""
+        if kind == "hunt":
+            return self._hunt_cfg()["batch_minutes"]
+        return self.content.balance[kind]["minutes"]
+
     def _amount_view(self, hero: Hero, kind: str, page: int) -> View:
-        """Choose how much energy to spend in a row (5, 10, 20, 40 or all) — or cancel (D-87)."""
+        """Choose how much energy to spend in a row (5, 10, 20, 40 or all) — or cancel (D-87).
+
+        [ES]
+        Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🪓 Recolectar y, con ⚔️ Peleas automáticas, de
+        🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). Cada botón dice la energía y el tiempo
+        estimado ("⚡ 10 · ⏱️ 1 h 40 min"); 4 botones como mucho, con ▶️ Más / ◀️ Volver. Dice además qué pasa si sale una
+        pelea (⚙️ Opciones).
+        La llaman: los botones 🔎 Explorar, 🪓 Recolectar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
+        Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y el tope de 4 botones.
+        """
         t = self.texts
-        if kind not in ("gather", "explore"):
+        if kind not in BATCH_KINDS:
             return self._explore_menu(hero)
+        back = "hunt" if kind == "hunt" else "explore_menu"
+        if kind == "hunt":
+            blocked = self._hunt_batch_blocker(hero)
+            if blocked:
+                return self._hunt_view(hero, notice=blocked)
         zone = self._zone(hero.x, hero.y)
         if kind == "explore" and self._explore_target(hero) is None:
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
         blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
         if blocked:
             return self._explore_menu(hero, notice=blocked)
-        if hero.energy < 1:
-            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
-        minutes = self.content.balance[kind]["minutes"]
+        per = self._step_cost(kind)
+        if hero.energy < per:
+            notice = self._no_energy_notice(hero)
+            return self._hunt_view(hero, notice=notice) if kind == "hunt" else self._explore_menu(hero, notice=notice)
+        minutes = self._step_minutes(kind)
         step = self._seconds(minutes)
+        top = hero.energy - hero.energy % per          # the most energy whole steps can use (all of it, but for a prey)
 
         def total(n: int) -> str:                    # owner's request: every choice shows its estimated total time
-            return self._fmt_duration(step * n)
+            return self._fmt_duration(step * (n // per))
 
-        body = [t.t(f"batch.ask_{kind}", minutes=minutes), t.t("batch.energy", energy=hero.energy),
-                t.t("batch.estimate", step=total(1), n=hero.energy, total=total(hero.energy))]
+        body = [t.t(f"batch.ask_{kind}", minutes=minutes, energy=per), t.t("batch.energy", energy=hero.energy),
+                t.t("batch.estimate_hunt" if kind == "hunt" else "batch.estimate", step=total(per), n=top, k=top // per,
+                    total=total(top))]
         if kind == "gather":
             body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero)))
-        else:
+        elif kind == "explore":
             body += self._explore_progress_lines(hero)
+        body += self._auto_lines(hero, kind)            # D-114: what happens if a fight comes up (⚙️ Opciones)
         body.append(t.t("batch.cancel_hint"))
-        options = [n for n in self.content.balance["energy"]["batch"] if n <= hero.energy]
+        batch = self._hunt_cfg()["batch"] if kind == "hunt" else self.content.balance["energy"]["batch"]
+        options = [n for n in batch if n <= hero.energy]
         pages = [options[:2], options[2:]]
         page = page % 2
         actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.button", n=n, time=total(n))) for n in pages[page]]
         if page == 0:
-            if len(options) > 2 or hero.energy not in options:
+            if len(options) > 2 or top not in options:
                 actions.append(Action(id=f"amt:{kind}:1", label=t.t("batch.more")))
-            actions.append(Action(id="explore_menu", label=t.t("batch.cancel")))
+            actions.append(Action(id=back, label=t.t("batch.cancel")))
         else:
-            if hero.energy not in options:
-                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy, time=total(hero.energy))))
+            if top not in options:
+                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=top, time=total(top))))
             actions.append(Action(id=f"amt:{kind}:0", label=t.t("batch.back")))
         if not options:
-            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=hero.energy, time=total(hero.energy))),
-                       Action(id="explore_menu", label=t.t("batch.cancel"))]
+            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=top, time=total(top))),
+                       Action(id=back, label=t.t("batch.cancel"))]
         return View(kind="batch", title=t.t(f"batch.title_{kind}"), body=body, actions=actions[:4])
 
     def _start_batch(self, hero: Hero, kind: str, amount: str) -> View:
+        """Start a batch: pay the first step and set the timer; a hunt batch only with ⚔️ automatic fights (D-114).
+
+        [ES]
+        Qué hace: empieza el lote elegido ("do:explore:10", "do:gather:max", "do:hunt:20"): cobra la energía de la primera
+        vuelta (1 ⚡; una presa, hunt.energy) y deja el reloj; las demás vueltas se cobran al empezar cada una. Si algo lo
+        impide (mochila llena, zona agotada, nada por explorar, sin energía; para cazar: ✋ Manual, sin presas, malherido o
+        con la vida bajo el límite de ⚙️ Opciones) avisa y no cobra nada.
+        La llaman: los botones de cantidad de _amount_view. Si cambia, afecta: el gasto de energía de todos los lotes.
+        """
         t = self.texts
-        if kind not in ("gather", "explore"):
+        if kind not in BATCH_KINDS:
             return self._explore_menu(hero)
+        if kind == "hunt":
+            blocked = self._hunt_batch_blocker(hero)
+            if blocked:
+                return self._hunt_view(hero, notice=blocked)
+        per = self._step_cost(kind)
         n = hero.energy if amount == "max" else (int(amount) if amount.isdigit() else 0)
-        n = min(n, hero.energy)
+        steps = min(n, hero.energy) // per
         zone = self._zone(hero.x, hero.y)
         blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
         if blocked:
             return self._explore_menu(hero, notice=blocked)   # no energy spent for nothing
-        if n < 1 or not self._spend_energy(hero, kind):
-            return self._explore_menu(hero, notice=self._no_energy_notice(hero))
+        if steps < 1 or not self._spend_energy(hero, kind, per):
+            notice = self._no_energy_notice(hero)
+            return self._hunt_view(hero, notice=notice) if kind == "hunt" else self._explore_menu(hero, notice=notice)
         if kind == "explore" and self._explore_target(hero) is None:
-            hero.energy += self.content.balance["energy"][f"per_{kind}"]
+            hero.energy += per
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
-        seconds = self._seconds(self.content.balance[kind]["minutes"])
-        hero.activity = {"kind": kind, "until": self.clock.now() + seconds, "left": n - 1, "total": n, "done": 0, "got": {}, "log": []}
-        return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=n, time=self._fmt_duration(seconds * n)))
+        seconds = self._seconds(self._step_minutes(kind))
+        hero.activity = {"kind": kind, "until": self.clock.now() + seconds, "left": steps - 1, "total": steps, "done": 0, "got": {}, "log": []}
+        return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=steps, time=self._fmt_duration(seconds * steps)))
 
     def _gather_blocked(self, hero: Hero, zone: Zone) -> str | None:
         """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None."""
@@ -1204,20 +1281,30 @@ class GameService:
 
     def _stop_batch(self, hero: Hero) -> View:
         """Cancel the batch: the step in progress gives its energy back (D-87)."""
-        t = self.texts
         activity = hero.activity or {}
-        if activity.get("kind") not in ("gather", "explore"):
+        if activity.get("kind") not in BATCH_KINDS:
             return self._main_view(hero)
-        hero.energy += self.content.balance["energy"][f"per_{activity['kind']}"]
+        hero.energy += self._step_cost(activity["kind"])
         hero.activity = None
         lines = self._batch_summary(hero, activity, "stopped")
+        if activity["kind"] == "hunt":
+            return self._hunt_view(hero, notice=self._join(lines))
         return self._explore_menu(hero, notice=self._join(lines))
 
-    def _batch_summary(self, hero: Hero, activity: dict[str, Any], reason: str) -> list[str]:
+    def _batch_summary(self, hero: Hero, activity: dict[str, Any], reason: str, **values: Any) -> list[str]:
+        """The one message at the end of a batch (D-87): what it gave, its automatic fights (D-114) and why it stopped.
+
+        [ES]
+        Qué hace: arma el resumen del final del lote: lo recolectado o explorado, la experiencia, las peleas automáticas
+        (cuántas ganó y perdió, lo que dieron y el botín, D-114), lo que pasó en el camino y por qué terminó. `values` va al
+        texto del motivo (por ejemplo, el % de vida de ⚙️ Opciones).
+        La llaman: _settle (al terminar o cortarse el lote) y _stop_batch.
+        Si cambia, afecta: el único aviso que manda el bot al terminar cada lote.
+        """
         t = self.texts
         kind = activity["kind"]
         lines = []
-        if activity.get("done"):
+        if activity.get("done") and kind != "hunt":     # D-114: a hunting batch is only its fights (the lines below)
             if kind == "gather":
                 lines.append(t.t("batch.gathered", n=activity["done"], items=self._item_list(activity.get("got", {}))))
                 if activity.get("xp"):
@@ -1235,9 +1322,10 @@ class GameService:
                     lines.append(t.t("batch.coins", coins=self._money(activity["coins"])))
                 if activity.get("xp"):
                     lines.append(t.t("batch.xp", xp=activity["xp"]))
+        lines += self._auto_summary(activity)           # D-114: ⚔️ N peleas automáticas: N ganadas...
         lines += activity.get("log", [])
         if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
-            lines.append(t.t(f"batch.reason.{reason}"))
+            lines.append(t.t(f"batch.reason.{reason}", **values))
         return lines
 
     def _continue_batch(self, hero: Hero, activity: dict[str, Any], until: float) -> str | None:
@@ -1250,10 +1338,10 @@ class GameService:
             return "full_explored"
         if kind == "gather" and self._bag_full(hero):
             return "bag_full"
-        if not self._spend_energy(hero, kind):
+        if not self._spend_energy(hero, kind, self._step_cost(kind)):
             return "energy"
         activity["left"] -= 1
-        activity["until"] = until + self._seconds(self.content.balance[kind]["minutes"])
+        activity["until"] = until + self._seconds(self._step_minutes(kind))
         hero.activity = activity
         return None
 
@@ -1448,16 +1536,22 @@ class GameService:
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("inn.title")
+        elif activity.get("kind") == "hunt":            # D-114: hunting batch, automatic fights
+            body = [t.t("hunt.batch_in_progress"), t.t("hunt.batch_progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
+                    t.t("travel.remaining", time=remaining)]
+            title = t.t("hunt.title")
         else:
             zone = self._zone(hero.x, hero.y)
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining)] + self._explore_progress_lines(hero)
             title = t.t("explore.title")
+        if activity.get("kind") in BATCH_KINDS:            # D-114: the automatic fights so far, and what happens if one comes up
+            body += self._auto_summary(activity)[:1] + self._auto_lines(hero, activity.get("kind"))
         if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
             body += self._zone_players_lines(hero, self._zone(hero.x, hero.y))
         body += ["", self._status_line(hero), t.t("activity.offline_ok")]
         actions = [Action(id="refresh", label=t.t("menu.refresh"))]
-        if activity.get("kind") in ("gather", "explore"):
+        if activity.get("kind") in BATCH_KINDS:
             actions.append(Action(id="stop", label=t.t("batch.stop")))
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
@@ -2361,10 +2455,11 @@ class GameService:
         [ES]
         Qué hace: la pantalla de cacería de la zona (D-106): qué enemigos rondan, cuánta energía cuesta cada presa, que no
         suma exploración ni recursos, tu vida y energía, y la partida de caza de tu campamento si hay una (o la pista para
-        tener una). Botones: 🏹 Buscar presa, 🏹 Partida de caza o 🏹 Unirme (si tienes campamento) y ↩️ Volver: 3 como máximo.
-        Donde no hay presas vuelve a 🧭 Explorar con el aviso. Si estás malherido, lo avisa de entrada.
+        tener una). Botones: 🏹 Buscar presa (con ✋ Manual; con ⚔️ Peleas automáticas es 🏹 Cazar en lote, D-114),
+        🏹 Partida de caza o 🏹 Unirme (si tienes campamento) y ↩️ Volver: 3 como máximo. Una línea dice cómo se pelea
+        (⚙️ Opciones). Donde no hay presas vuelve a 🧭 Explorar con el aviso. Si estás malherido, lo avisa de entrada.
         La llaman: 🧭 Explorar → 🏹 Cazar, y las acciones de cacería cuando rechazan algo.
-        Si cambia, afecta: tests/test_hunt.py y el tope de 4 botones.
+        Si cambia, afecta: tests/test_hunt.py, tests/test_options.py y el tope de 4 botones.
         """
         t = self.texts
         blocked = self._hunt_zone_blocker(hero)
@@ -2379,8 +2474,10 @@ class GameService:
                 names.append(name)
         body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("hunt.intro", energy=cost),
                 t.t("hunt.prey_line", names=", ".join(names[:5])), t.t("hunt.rewards_hint"), self._status_line(hero)]
+        body.append(t.t("hunt.mode_auto" if self._auto_on(hero) else "hunt.mode_manual"))     # D-114
         body += self._hunt_party_lines(hero)
-        actions = [Action(id="prey", label=t.t("hunt.go_button", energy=cost))]
+        go = t.t("hunt.batch_button") if self._auto_on(hero) else t.t("hunt.go_button", energy=cost)
+        actions = [Action(id="prey", label=go)]
         party_action = self._hunt_party_action(hero)
         if party_action:
             actions.append(party_action)
@@ -2397,6 +2494,7 @@ class GameService:
         el nivel de la zona (el mismo sorteo de los encuentros). No suma exploración ni recursos: da solo lo de la pelea.
         No se puede en el Claro ni en la guarida, malherido ni sin energía (se avisa y no se cobra). Ocupado (viajando,
         explorando, recolectando o durmiendo) lo frena antes _idle_action.
+        Con ⚔️ Peleas automáticas (⚙️ Opciones, D-114) no pelea una presa: abre la pantalla de cantidad de 🏹 Cazar en lote.
         La llaman: los botones 🏹 Buscar presa (pantalla 🏹 Cazar) y 🏹 Otra presa (al ganar una presa), acción "prey".
         Si cambia, afecta: el gasto de energía y el ritmo de experiencia (balance.yaml hunt.energy), tests/test_hunt.py.
         """
@@ -2404,6 +2502,8 @@ class GameService:
         blocked = self._hunt_zone_blocker(hero)
         if blocked:
             return self._explore_menu(hero, notice=blocked)
+        if self._auto_on(hero):                         # D-114: hunting in a batch, each prey fought alone
+            return self._amount_view(hero, "hunt", 0)
         if hero.downed:
             return self._hunt_view(hero, notice=t.t("hunt.downed"))
         if not self._spend_energy(hero, "hunt", self._hunt_cfg()["energy"]):
@@ -2412,6 +2512,36 @@ class GameService:
         rng = Rng(int(hash_unit(self.world_seed, hero.id, "hunt", self.clock.now(), hero.kills) * 2**31))
         notice = self._start_combat(hero, zone, rng, "hunt.found", mark={"hunt": {"x": zone.x, "y": zone.y}})
         return self._combat_view(hero, self.store.get("combat", hero.id), notice=notice)
+
+    def _hunt_batch_blocker(self, hero: Hero) -> str | None:
+        """Why a hunting batch cannot start now (D-114): ✋ manual fights, no prey here, downed or life under the limit.
+
+        [ES] Qué hace: dice por qué no se puede cazar en lote: con ✋ Manual se caza de a una presa; donde no hay presas
+        (Claro, guarida); malherido; o con la vida por debajo del límite de 🩹 Retirarse de ⚙️ Opciones (el héroe no sale a
+        pelear solo así). None si se puede. La llaman: _amount_view y _start_batch para "hunt".
+        Si cambia, afecta: cuándo se puede cazar en lote (tests/test_options.py).
+        """
+        t = self.texts
+        if not self._auto_on(hero):
+            return t.t("hunt.batch_manual")
+        blocked = self._hunt_zone_blocker(hero)
+        if blocked:
+            return blocked
+        if hero.downed:
+            return t.t("hunt.downed")
+        if self._below_retreat(hero):
+            return t.t("hunt.batch_low_hp", pct=self._option(hero, "retreat"))
+        return None
+
+    def _hunt_step(self, hero: Hero, zone: Zone, rng: Rng) -> str:
+        """One prey of a hunting batch (D-114): a fight right away against a common enemy of the zone, marked as a hunt.
+
+        [ES] Qué hace: cada vuelta de 🏹 Cazar en lote empieza una pelea contra un enemigo común de la zona (el mismo sorteo
+        de los encuentros), marcada como cacería: cuenta para la partida de caza y su bono (D-106). La energía ya se cobró
+        al empezar la vuelta (hunt.energy). Devuelve el aviso de la pelea; _batch_fight la pelea en automático.
+        La llama: _settle. Si cambia, afecta: qué se caza en lote.
+        """
+        return self._start_combat(hero, zone, rng, "hunt.found", mark={"hunt": {"x": zone.x, "y": zone.y}})
 
     def _hunt_end_actions(self, hero: Hero) -> list[Action]:
         """Buttons a won hunt adds before ▶️ Continuar: 🏹 Otra presa (with energy, not downed) and the party button."""
@@ -5331,6 +5461,189 @@ class GameService:
             del hero.backpack[memento]
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
         return self._item_view(hero, item_id, notice=t.t("guardian.memento_done", item=self._gear_name(item_id)))
+
+    # ------------------------------------------------------------------ ⚙️ Opciones and automatic fights (D-114)
+
+    def _auto_cfg(self) -> dict[str, Any]:
+        return self.content.balance["auto_fight"]
+
+    def _option(self, hero: Hero, key: str) -> Any:
+        """One of the player's ⚙️ Opciones: what the hero saved, else balance auto_fight.defaults (also for old heroes).
+
+        [ES]
+        Qué hace: lee una opción del jugador ("fights": "manual" o "auto"; "retreat": % de vida; "potions": sí/no). Si el
+        héroe nunca la cambió (o lo guardado ya no vale), da la de balance.yaml auto_fight.defaults: ✋ Manual, 50 %, sí.
+        La llaman: todo lo de esta sección, _hunt_view, _hunt y _hunt_batch_blocker.
+        Si cambia, afecta: qué pasa con las peleas de los lotes de todos los jugadores.
+        """
+        cfg = self._auto_cfg()
+        default = cfg["defaults"][key]
+        value = (hero.options or {}).get(key, default)
+        if key == "fights" and value not in ("manual", "auto"):
+            return default
+        if key == "retreat" and value not in cfg["retreat_choices"]:
+            return default
+        if key == "potions":
+            return bool(value)
+        return value
+
+    def _auto_on(self, hero: Hero) -> bool:
+        """True if the hero chose ⚔️ automatic fights in batches (D-114)."""
+        return self._option(hero, "fights") == "auto"
+
+    def _below_retreat(self, hero: Hero) -> bool:
+        """True if the hero's life is under its 🩹 Retirarse limit (⚙️ Opciones): automatic fights stop there (D-114)."""
+        max_hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
+        return hero.hp * 100 < self._option(hero, "retreat") * max_hp
+
+    def _options_view(self, hero: Hero, notice: str | None = None) -> View:
+        """⚙️ Opciones: what happens and what does not (D-114). 3 options, one button each, plus ↩️ Volver (4 at most).
+
+        [ES]
+        Qué hace: la pantalla ⚙️ Opciones (menú de abajo y /opciones). Explica cada opción con su valor de ahora y tiene un
+        botón por opción que la cambia: ⚔️ Peleas en un lote (✋ Manual / ⚔️ Automática), 🩹 Retirarse con menos de
+        (30 / 50 / 70 % de vida, auto_fight.retreat_choices) y 🧪 Pociones en peleas automáticas (sí / no); más ↩️ Volver.
+        Se puede abrir mientras exploras, recolectas o cazas (la opción vale desde la próxima pelea), no en combate.
+        La llaman: el botón ⚙️ Opciones del menú fijo, /opciones y _set_option.
+        Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75). Una opción nueva pide página o ciclo.
+        """
+        t = self.texts
+        auto = self._auto_on(hero)
+        pct = self._option(hero, "retreat")
+        potions = self._option(hero, "potions")
+        yes_no = t.t("options.value_yes" if potions else "options.value_no")
+        body = [t.t("options.intro"), "",
+                t.t("options.fights_auto" if auto else "options.fights_manual"),
+                t.t("options.retreat", pct=pct),
+                t.t("options.potions_on" if potions else "options.potions_off"),
+                "", t.t("options.never_auto")]
+        actions = [Action(id="opt:fights", label=t.t("options.fights_button", value=t.t("options.auto" if auto else "options.manual"))),
+                   Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
+                   Action(id="opt:potions", label=t.t("options.potions_button", value=yes_no)),
+                   Action(id="home", label=t.t("menu.back"))]
+        return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice)
+
+    def _set_option(self, hero: Hero, key: str) -> View:
+        """Change one option ("opt:fights" toggles, "opt:retreat" cycles 30 → 50 → 70, "opt:potions" toggles); saved now.
+
+        [ES]
+        Qué hace: cambia una opción con su botón y la guarda en Hero.options: ✋/⚔️ se alterna, el % de 🩹 Retirarse va
+        pasando por auto_fight.retreat_choices y 🧪 Pociones se alterna. Vuelve a ⚙️ Opciones con el aviso de lo guardado.
+        La llaman: los botones "opt:" de _options_view. Si cambia, afecta: lo que se guarda de cada jugador.
+        """
+        t = self.texts
+        if key == "fights":
+            hero.options["fights"] = "manual" if self._auto_on(hero) else "auto"
+            notice = t.t("options.saved_auto" if self._auto_on(hero) else "options.saved_manual")
+        elif key == "retreat":
+            choices = list(self._auto_cfg()["retreat_choices"])
+            hero.options["retreat"] = choices[(choices.index(self._option(hero, "retreat")) + 1) % len(choices)]
+            notice = t.t("options.saved_retreat", pct=hero.options["retreat"])
+        elif key == "potions":
+            hero.options["potions"] = not self._option(hero, "potions")
+            notice = t.t("options.saved_potions_on" if hero.options["potions"] else "options.saved_potions_off")
+        else:
+            return self._options_view(hero)
+        return self._options_view(hero, notice=notice)
+
+    def _auto_lines(self, hero: Hero, kind: str | None = None) -> list[str]:
+        """The batch screens' line: what happens if a fight comes up, as ⚙️ Opciones says (D-114); a hunt only says the limits."""
+        t = self.texts
+        if not self._auto_on(hero):
+            return [t.t("auto.batch_manual")]
+        yes_no = t.t("options.value_yes" if self._option(hero, "potions") else "options.value_no")
+        key = "auto.batch_hunt" if kind == "hunt" else "auto.batch_auto"
+        return [t.t(key, pct=self._option(hero, "retreat"), potions=yes_no)]
+
+    def _batch_fight(self, hero: Hero, activity: dict[str, Any], notice: str) -> list[str] | None:
+        """A fight came up in a batch step (D-114): returns the batch's end lines, or None if the batch goes on.
+
+        [ES]
+        Qué hace: decide qué pasa con una pelea que sale en un lote (🔎 explorar, 🪓 recolectar o 🏹 cazar en lote).
+        Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento: nunca van solas), el lote
+        se corta y la pelea te espera, como siempre. Con ⚔️ Automática el héroe la pelea ya (_auto_combat): si gana y su vida
+        no quedó bajo el límite de 🩹 Retirarse, el lote sigue (devuelve None); si pierde, la deja o queda bajo el límite,
+        el lote se corta con su motivo. Si la pelea sale con la vida ya bajo el límite, no pelea solo: el lote se corta y la
+        pelea te espera.
+        La llama: _settle (una vez por pelea, también con el chat cerrado: el aviso sale una sola vez, al final del lote).
+        Si cambia, afecta: todos los lotes con peleas (tests/test_options.py).
+        """
+        state = self.store.get("combat", hero.id)
+        edef = self.content.enemies.get(state["enemy"]["id"], {}) if state else {}
+        if state is None or not self._auto_on(hero) or edef.get("boss") or state.get("raid"):
+            return self._batch_summary(hero, activity, "fight") + [notice]
+        pct = self._option(hero, "retreat")
+        if self._below_retreat(hero):
+            return self._batch_summary(hero, activity, "auto_wait", pct=pct) + [notice]
+        outcome = self._auto_combat(hero, state, activity)
+        if outcome == "defeat":
+            return self._batch_summary(hero, activity, "auto_defeat", enemy=self.texts.t(edef["name_key"]),
+                                       level=state["enemy"]["level"], gold=self._money(activity.get("gold_lost", 0)))
+        if outcome != "victory":
+            return self._batch_summary(hero, activity, "auto_fled")
+        if self._below_retreat(hero):
+            return self._batch_summary(hero, activity, "auto_low_hp", pct=pct)
+        return None
+
+    def _auto_combat(self, hero: Hero, state: dict[str, Any], activity: dict[str, Any]) -> str:
+        """Fight the open fight alone now and close it as any fight (_end_combat); tally it in the batch. Returns the outcome.
+
+        [ES]
+        Qué hace: juega la pelea entera con la forma de jugar básica pero atenta del motor (engine/combat/auto.py play_out:
+        las mismas reglas y el mismo sorteo que a mano; 🧪 Pociones según ⚙️ Opciones) y la cierra con _end_combat, como
+        una pelea a mano: experiencia, monedas, botín, equipo, gremio, partida de caza, 🔪 Desollador, derrota (malherido y
+        monedas perdidas) y cinturón. Suma al lote cuántas ganó, perdió o dejó, lo que dieron y el botín, y anota las subidas
+        de nivel y de rango de oficio para el resumen. Publica HitReceived por cada golpe recibido.
+        La llama: _batch_fight. Si cambia, afecta: las recompensas de las peleas automáticas (tienen que ser las de a mano).
+        """
+        t = self.texts
+        level, xp, gold = hero.level, hero.xp, hero.gold
+        bag, profs = dict(hero.backpack), dict(hero.professions)
+        play_out(state, hero, self._kit(hero), self.ctx, use_items=self._option(hero, "potions"),
+                 on_hit=lambda dmg: self.bus.publish(HitReceived(hero.id, dmg, False)))
+        self._end_combat(hero, state)
+        outcome = state["outcome"]
+        fights = activity.setdefault("fights", {})
+        key = {"victory": "won", "defeat": "lost"}.get(outcome, "fled")
+        fights[key] = fights.get(key, 0) + 1
+        activity["fight_xp"] = activity.get("fight_xp", 0) + max(0, hero.xp - xp)
+        if hero.gold >= gold:
+            activity["fight_gold"] = activity.get("fight_gold", 0) + hero.gold - gold
+        else:
+            activity["gold_lost"] = activity.get("gold_lost", 0) + gold - hero.gold
+        loot = activity.setdefault("loot", {})
+        for item_id, count in hero.backpack.items():
+            extra = count - bag.get(item_id, 0)
+            if extra > 0:
+                loot[item_id] = loot.get(item_id, 0) + extra
+        cfg = self._prof_cfg()
+        trade = activity.setdefault("fight_trade", {})
+        for pid, now in hero.professions.items():
+            if now > profs.get(pid, 0):
+                trade[pid] = trade.get(pid, 0) + now - profs.get(pid, 0)
+                rank = self._prof_rank(hero, pid)
+                if rank > rank_of(profs.get(pid, 0), cfg["rank_formula"], cfg["max_rank"]):
+                    activity["log"].append(t.t("prof.rank_up", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank)))
+        for new_level in range(level + 1, hero.level + 1):
+            activity["log"] += [t.t("combat.level_up", level=new_level), t.t("talents.new_point")]
+        return outcome
+
+    def _auto_summary(self, activity: dict[str, Any]) -> list[str]:
+        """The batch summary's fight lines: "⚔️ 3 peleas automáticas: 3 ganadas", what they gave and their loot (D-114)."""
+        fights = activity.get("fights") or {}
+        total = sum(fights.values())
+        if not total:
+            return []
+        t = self.texts
+        parts = [t.t(f"auto.{key}", n=fights[key]) for key in ("won", "lost", "fled") if fights.get(key)]
+        lines = [t.t("auto.summary", n=total, result=", ".join(parts))]
+        if activity.get("fight_xp") or activity.get("fight_gold"):
+            lines.append(t.t("auto.rewards", xp=activity.get("fight_xp", 0), gold=self._money(activity.get("fight_gold", 0))))
+        if activity.get("loot"):
+            lines.append(t.t("auto.loot", items=self._item_list(activity["loot"])))
+        if activity.get("fight_trade"):
+            lines.append(self._trade_summary(activity["fight_trade"]))
+        return lines
 
     # ------------------------------------------------------------------ combat
 
