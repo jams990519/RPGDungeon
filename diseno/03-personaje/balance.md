@@ -455,3 +455,24 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 año, nivel ~47 en ese tiempo), así que su "nivel de trabajo" es siempre su nivel y no lo frena. Quien llega de nivel alto y empieza un oficio en rango 1 gana 20 por ⚡: un novato aprende poco. Refinar en el Claro con madera juntada ahí mismo (zona de nivel 1, sin peligro) rinde cerca del 70 % de recolectar en una zona de tu nivel: lo seguro rinde menos, como el territorio propio.
 
 **Lo que queda por mirar:** si 2 ⚡ por pieza de equipo es mucho o poco cuando llegue el mercado (y si conviene que la tanda cueste menos energía por pieza), si el rango 10 de los raros es demasiado pronto o tarde para la Joyería, cuánta piel entra al juego con la cacería (D-106), si los precios de lo refinado dejan algún hueco para ganar monedas, y el equipo de artesano cuando haya botín por encima del nivel 8 (el bestiario de nivel alto).
+
+### Octubre de 2026: el beneficio de cada oficio (D-111)
+
+**Por qué.** El dueño pidió que cada oficio dé un beneficio propio a un tipo de jugador, que crezca con la experiencia, como en World of Warcraft. Son números **nuevos** (`content/professions.yaml` → `perk` de cada oficio) y crecen parejos con el rango: al 50, la mitad; al 100, el valor entero.
+
+| Oficio | Al rango 100 | Solo si |
+|---|---|---|
+| 🪓 Leñador | +10 de espacio en la mochila | — |
+| ⛏️ Minero | +5 % de vida | — |
+| 🌿 Herbolario | vida que vuelve sola 20 % más rápido | — |
+| 🔪 Desollador | +4 % de ataque | — |
+| 🪑 Carpintería | +4 % de ataque | peleas con arco o bastón |
+| 🔨 Herrería | +3 puntos de armadura (tope 60 %) | llevas placas |
+| 🦺 Peletería | +4 % de ataque y +3 % de vida | llevas cuero o malla |
+| 🪡 Sastrería | +5 % de ataque | llevas tela |
+| ⚗️ Alquimia | pociones +30 % | — |
+| 💍 Joyería | +3 % de vida y de ataque | — |
+| 🩺 Medicina | curaciones +15 %; vendas, ungüentos y botiquines +30 % | lo primero, si eres sanador |
+
+**Cuenta rápida:** un guerrero de placas con Minero, Herrería y Joyería al 100 suma +8 % de vida, +3 % de ataque y +3 puntos de armadura: lo mismo que una pieza de equipo de nivel mediano. Con todos los oficios al 100 (años de juego, D-57) un personaje de tela suma +12 % de ataque y +11 % de vida. Se revisa en la pasada de balance de D-110 y en P-76.
+

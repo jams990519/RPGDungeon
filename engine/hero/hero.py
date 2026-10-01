@@ -155,7 +155,7 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
 
     [ES]
     Qué hace: calcula vida máxima, ataque, armadura e iniciativa, con los bonos de
-    talentos (talent_bonus) y de equipo (gear_bonus) que trae el kit del servicio.
+    talentos (talent_bonus), de equipo (gear_bonus) y de oficios (perk_bonus, D-111) que trae el kit del servicio.
     La llaman: el servicio (vista del héroe) y el combate.
     Si cambia, afecta: el balance de todas las clases.
     """
@@ -163,11 +163,14 @@ def hero_stats(class_def: dict[str, Any], level: int) -> dict[str, float]:
     per = class_def.get("per_level", {})
     bonus = class_def.get("talent_bonus", {})
     gear = class_def.get("gear_bonus", {})
+    perk = class_def.get("perk_bonus", {})          # D-111: what the hero's professions add
     lv = max(1, level) - 1
     return {
-        "max_hp": int((base["hp"] + per.get("hp", 0) * lv) * (1 + bonus.get("hp", 0.0)) * (1 + gear.get("hp", 0.0))),
-        "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0)) * (1 + gear.get("attack", 0.0))),
-        "armor": min(float(class_def.get("armor_cap", 0.6)), float(base.get("armor", 0.0)) + gear.get("armor", 0.0)),
+        "max_hp": int((base["hp"] + per.get("hp", 0) * lv) * (1 + bonus.get("hp", 0.0)) * (1 + gear.get("hp", 0.0))
+                      * (1 + perk.get("hp", 0.0))),
+        "attack": float((base["attack"] + per.get("attack", 0) * lv) * (1 + bonus.get("attack", 0.0)) * (1 + gear.get("attack", 0.0))
+                        * (1 + perk.get("attack", 0.0))),
+        "armor": min(float(class_def.get("armor_cap", 0.6)), float(base.get("armor", 0.0)) + gear.get("armor", 0.0) + perk.get("armor", 0.0)),
         "initiative": float(base.get("initiative", 10)),
     }
 

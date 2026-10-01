@@ -139,3 +139,48 @@ def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> i
     cost = int(recipe.get("energy", 1))
     by_energy = energy // cost if cost > 0 else by_items
     return max(0, min(by_items, by_energy))
+
+
+PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag")
+
+
+def perks(professions: dict[str, Any], ranks: dict[str, int], max_rank: int, armor_type: str | None,
+          weapon_type: str | None, role: str | None) -> dict[str, float]:
+    """The bonuses a hero gets from its professions (D-111): each perk grows evenly with the rank, up to its value at max_rank.
+
+    Args:
+        professions: content/professions.yaml "professions" (each may have a "perk" block).
+        ranks: profession id -> the hero's rank, ONLY for professions the hero has started.
+        armor_type, weapon_type, role: what the hero wears and plays, for perks limited by "armor", "weapon" or "role".
+
+    [ES]
+    Qué hace: suma los beneficios de los oficios del héroe (D-111). Cada beneficio crece parejo con el rango: al
+    rango 50 la mitad del valor de la tabla, al 100 el valor entero. Los que dicen "armor", "weapon" o "role" solo
+    valen si el héroe lleva esa armadura, pelea con esa arma o juega ese rol (la Herrería, solo con placas; la
+    Medicina, solo a los sanadores). Devuelve attack, hp, armor (fracciones), regen, potion, bandage, heal (fracciones
+    de más) y bag (espacio de mochila de más).
+    La llaman: GameService._perks (kit, vida que vuelve, pociones y vendas, mochila) y las pruebas.
+    Si cambia, afecta: cuánto ayuda cada oficio en el combate y fuera de él (diseno/07-economia/profesiones.md §0.2).
+    """
+    out = {k: 0.0 for k in PERK_KEYS}
+    for pid, rank in ranks.items():
+        perk = (professions.get(pid) or {}).get("perk")
+        if not perk or rank <= 0:
+            continue
+        if "armor_type" in perk and armor_type not in _as_list(perk["armor_type"]):
+            continue
+        if "weapon_type" in perk and weapon_type not in _as_list(perk["weapon_type"]):
+            continue
+        share = min(rank, max_rank) / max_rank
+        for key in PERK_KEYS:
+            if key not in perk:
+                continue
+            if key == "heal" and "heal_role" in perk and role not in _as_list(perk["heal_role"]):
+                continue
+            out[key] += float(perk[key]) * share
+    return out
+
+
+def _as_list(value: Any) -> list[Any]:
+    return list(value) if isinstance(value, (list, tuple)) else [value]
+

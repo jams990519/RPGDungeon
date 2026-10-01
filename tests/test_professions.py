@@ -8,6 +8,8 @@ nada), el equipo y la poción fabricados que se usan, las estaciones del Claro y
 /oficios, los héroes viejos sin oficios, el ritmo de experiencia por ⚡ de D-108 y el tope de 4 botones.
 """
 
+import pytest
+
 from collections import deque
 
 from conftest import make_hero
@@ -51,7 +53,7 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
     by_branch = {b: [p for p, d in profs.items() if d["branch"] == b] for b in ("gather", "refine", "craft")}
     assert set(by_branch["gather"]) == {"lenador", "minero", "herbolario", "desollador"}
     assert set(by_branch["refine"]) == {"aserradero", "fundicion", "destilacion", "tejeduria", "curtiduria"}
-    assert set(by_branch["craft"]) == {"carpinteria", "herreria", "alquimia", "sastreria", "peleteria", "joyeria"}
+    assert set(by_branch["craft"]) == {"carpinteria", "herreria", "alquimia", "sastreria", "peleteria", "joyeria", "medicina"}   # + D-111
     for pid, pdef in profs.items():
         assert pdef["emoji"] and t.has(pdef["name_key"]) and t.has(pdef["how_key"]), pid
     for rid, rdef in recipes.items():
@@ -288,7 +290,8 @@ def test_crafted_potions_fill_the_belt_and_can_be_drunk(service):
     set_hero(service, "test:1", hp=1)
     service.act("test:1", "use:pocion_mayor")
     hero = service._load("test:1")
-    assert hero.hp == 1 + round(max_hp * 0.6) and "pocion_mayor" not in hero.belt
+    boost = service._perks(hero)["potion"]                              # D-111: the ⚗️ Alquimia perk at rank 25
+    assert boost > 0 and hero.hp == 1 + round(max_hp * 0.6 * (1 + boost)) and "pocion_mayor" not in hero.belt
     set_hero(service, "test:1", backpack={"extracto": 1, "arcilla": 1})
     service.act("test:1", "mk:pocion_vida:1:0")                         # rank 1: 2 potions of life
     hero = service._load("test:1")
@@ -472,3 +475,39 @@ def test_sell_all_keeps_refined_goods_and_rares(service):
     hero = service._load("test:1")
     assert "madera" not in hero.backpack and hero.backpack["tablon"] == 2 and hero.backpack["gema_bruta"] == 1
     assert hero.backpack["carne"] == 1 and hero.gold > 0
+
+
+def test_profession_perks_grow_with_rank_and_need_the_right_gear(service, clock):
+    # D-111: each profession gives its own benefit, growing evenly with the rank; some only with their armor/role.
+    from engine.professions import rules as profession_rules
+    catalog = service.content.professions["professions"]
+    assert all("perk" in catalog[p] for p in ("lenador", "minero", "herbolario", "desollador", "carpinteria", "herreria",
+                                               "alquimia", "sastreria", "peleteria", "joyeria", "medicina"))
+    p = profession_rules.perks(catalog, {"minero": 50, "herreria": 100}, 100, "placas", "espada", "ataque")
+    assert p["hp"] == pytest.approx(0.025) and p["armor"] == pytest.approx(0.03)
+    assert profession_rules.perks(catalog, {"herreria": 100}, 100, "tela", "baston", "ataque")["armor"] == 0     # placas only
+    assert profession_rules.perks(catalog, {"medicina": 100}, 100, "tela", "baston", "ataque")["heal"] == 0      # healers only
+    assert profession_rules.perks(catalog, {"medicina": 100}, 100, "tela", "baston", "curacion")["heal"] == pytest.approx(0.15)
+    assert profession_rules.perks(catalog, {"medicina": 100}, 100, "tela", "baston", "ataque")["bandage"] == pytest.approx(0.30)
+    ready(service)
+    hero = service._load("test:1")
+    base = hero_stats(service._kit(hero), hero.level)["max_hp"]
+    cap = service._bag_cap(hero)
+    hero.professions = {"minero": rank_xp(service, 100), "lenador": rank_xp(service, 100)}
+    service._save(hero)
+    hero = service._load("test:1")
+    assert hero_stats(service._kit(hero), hero.level)["max_hp"] == int(base * 1.05) or \
+        abs(hero_stats(service._kit(hero), hero.level)["max_hp"] - base * 1.05) <= 1                  # ⛏️ +5 % de vida
+    assert service._bag_cap(hero) == cap + 10                                                          # 🪓 +10 de espacio
+    view = service.act("test:1", "oficios")
+    assert any("Beneficio ahora" in line and "+5 % de vida" in line for line in view.body)
+    assert not service.texts.missing
+
+
+def test_medicina_makes_ointments_that_heal_more_with_its_rank(service):
+    ready(service, backpack={"extracto": 1, "tela_tejida": 1}, energy=30)
+    view = service.act("test:1", "mk:unguento:1:0")
+    hero = service._load("test:1")
+    assert "Hiciste" in view.notice and hero.professions.get("medicina", 0) > 0
+    assert hero.belt.get("unguento", 0) + hero.backpack.get("unguento", 0) == 2
+

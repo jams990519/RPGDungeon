@@ -210,6 +210,9 @@ item:
   gema_bruta: "Gema en bruto"
   flor_luna: "Flor de luna"
   pocion_mayor: "Poción mayor"
+  unguento: "Ungüento"
+  botiquin: "Botiquín"
+  vendaje_maestro: "Vendaje de maestro"
   artesano_espada_1: "Espada forjada"
   artesano_espada_2: "Espada templada"
   artesano_espada_3: "Espada del artesano"
@@ -1341,8 +1344,20 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   none: "Todavía no empezaste ningún oficio: recolecta, refina o fabrica para empezar."
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
+  perk_line: "   ✨ Beneficio ahora: {perk}"
   next: "   🔓 En rango {rank}: {items}"
   not_started: "Sin empezar: {items}"
+  perk:
+    attack: "+{v} % de ataque"
+    hp: "+{v} % de vida"
+    armor: "+{v} de armadura"
+    regen: "la vida vuelve {v} % más rápido"
+    potion: "pociones +{v} %"
+    bandage: "vendas y ungüentos +{v} %"
+    heal: "curaciones +{v} % (sanadores)"
+    bag: "+{v} de espacio en la mochila"
+    only_armor: "con {what}"
+    only_weapon: "con {what}"
   branch:
     gather: "🪓 Recolección"
     refine: "🪚 Refinado"
@@ -1403,6 +1418,9 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   summary: "⚒️ Oficios: {items}"
 
 profession:                   # [ES] D-109: nombre de cada oficio y cómo se sube (ids en content/professions.yaml). Sin números: los da la receta
+  medicina:
+    name: "Medicina"
+    how: "haz 🫙 ungüentos y 🧰 botiquines (extracto y tela) en una estación"
   lenador:
     name: "Leñador"
     how: "recolecta 🪵 madera"
