@@ -153,7 +153,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | # | Módulo | Radio de impacto | Lo más delicado de tocar |
 |---|---|---|---|
 | M1 | Núcleo | Muy alto: lo usan todos | Semilla del azar, reinicios diarios y semanales, forma de los eventos, IDs, cuentas |
-| M2 | Héroe | Alto | Nivel 10 (protecciones de novato), Techo de la Frontera, rasgos de linaje |
+| M2 | Héroe | Alto | Nivel 10 (protecciones de novato), Techo de la Frontera, rasgos de linaje, experiencia por ⚡ de cada camino (`hero.xp_level_scale`, `gather.xp_per_step`, `explore.xp_*`: D-108 pide que todos lleguen al 100 a un ritmo parecido) |
 | M3 | Clases y talentos | Alto | Presupuesto de poder, IDs de habilidades, utilidades clave, la barra de 6 |
 | M4 | Equipo e inventario | Muy alto | Poder de Objeto (una sola fuente de verdad), durabilidad, zona que protege cada ranura, mochilas |
 | M5 | Combate | Muy alto | Mitigación, datos de `GolpeRecibido`, temporizador, tope de PvP |

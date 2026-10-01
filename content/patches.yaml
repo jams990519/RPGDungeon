@@ -244,3 +244,9 @@ v0_13_1:
   notes:
     - "🔭 Al explorar eliges cuánta energía gastar, y el lote ya no se corta cuando tu zona llega al 100 %: sigue con las 8 zonas de alrededor, una por una, sin moverte. Sus recursos aparecen en tu 🗺️ Mapa."
     - "🏕️ Las zonas que exploras desde al lado cuentan como conocidas para fundar un campamento."
+
+v0_13_2:
+  version: "0.13.2"
+  title: "⛏️ Lost Realms 0.13.2: recolectar también te hace subir"
+  notes:
+    - "⛏️ Recolectar ahora da experiencia: 14 por vuelta, y más cuanto más alto el nivel de la zona. Cada camino (explorar, recolectar, pelear y pronto cazar) alcanza por sí solo para llegar al nivel 100."

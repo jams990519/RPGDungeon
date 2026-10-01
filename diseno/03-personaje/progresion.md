@@ -33,10 +33,26 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 | ~~Aportar a la obra común del Claro~~ | Quitado en la 0.11 (D-98): el Claro no crece | — |
 | **Aportar comida a la despensa de tu campamento** | 2 de experiencia por ración | `pantry.xp_per_ration` |
 | **Explorar** (D-104) | 3 de experiencia por vuelta y 15 al dejar una zona al 100 % | `explore.xp_per_step`, `explore.xp_full_zone` |
+| **Recolectar** (D-108) | 14 de experiencia por vuelta en que juntas algo, +15 % por cada nivel de la zona sobre el 1 (la misma regla que las peleas) | `gather.xp_per_step`, `hero.xp_level_scale` |
 | **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |
 
-Explorar y recolectar no dan experiencia directa. Dan los encuentros que sí la dan, y los materiales que se aportan.
+Explorar y recolectar dan experiencia directa (D-104, D-108), además de los encuentros y los materiales.
+
+### 1.2 Cada camino llega al nivel 100 por sí solo (D-108)
+
+El dueño pidió que cada forma de jugar alcance para llegar al nivel 100 sin aburrirse: quien solo recolecta, solo caza, solo pelea o solo explora tiene que poder llegar. La regla: **la experiencia por cada ⚡ de energía es parecida en todos los caminos** y sube con el nivel de la zona, así ninguno se queda atrás en los niveles altos. Cada camino da además lo suyo: explorar da monedas, hallazgos y mapa; recolectar da materiales; cazar da botín y carne.
+
+Cuenta con toda la energía cada día (40 ⚡), ganando las peleas y en zonas de tu nivel (el ritmo real es más lento: viajes, derrotas, días sin jugar):
+
+| Camino | Experiencia por ⚡ | Hasta el nivel 100 |
+|---|---|---|
+| Explorar | 3 por vuelta (+15 por zona completa) y una pelea cada 2 vueltas, más o menos | ~1,9 años |
+| Recolectar | 14 × nivel de la zona por vuelta y alguna pelea (según el peligro del bioma) | ~2,0 años |
+| Recolectar en tu territorio (sin peleas) | 14 × nivel de la zona | ~2,9 años: es seguro, rinde menos |
+| Cazar (en camino, D-106) | una pelea cada 2 ⚡ | ~1,8 años; en partida de caza, un poco más rápido |
+
+**Que no aburra:** además del nivel, cada camino tendrá su propia escalera de oficio (Explorador, Recolector, Cazador), con rangos que dan bonos chicos y títulos. Está en la cola de trabajo, junto con las misiones. Y hacen falta enemigos de nivel alto: hoy casi todos llegan hasta el nivel 16 (el bandido errante llega al 99); para que pelear y cazar sigan teniendo variedad, hay que sumar bestiario por niveles.
 
 ## 2. Talentos: 1 punto por nivel (en el juego)
 
