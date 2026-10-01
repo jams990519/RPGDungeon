@@ -60,6 +60,8 @@ class Hero:
     backpack: dict[str, int] = field(default_factory=dict)
     last_regen_at: float = 0.0
     kills: int = 0
+    tutorial: int = 0
+    merit: int = 0
     zones_discovered: int = 0
     known: list[str] = field(default_factory=lambda: ["0:0"])
 

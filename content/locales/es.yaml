@@ -169,6 +169,9 @@ biome:
   ruinas: "Ruinas"
 
 item:
+  madera: "Madera"
+  piedra: "Piedra"
+  fibra: "Fibra"
   pocion_vida: "Poción de vida"
   venda: "Venda"
   hierba_curativa: "Hierba curativa"
@@ -346,8 +349,58 @@ shop:
   only_in_claro: "El mercader y la posada están en el Claro."
 
 inn:
-  button: "🛏️ Posada"
+  button: "🛏️ Posada · {price} 💰"
   title: "🛏️ Posada del Claro"
   started: "Pagas {price} 💰 y te acuestas junto al fuego. Despertarás en {time}."
   in_progress: "Duermes junto al fuego."
   rested: "🛏️ Despiertas descansado: tu vida está llena."
+
+gather:
+  button: "🪓 Recolectar · {time}"
+  title: "🪓 Recolectando"
+  started: "🪓 Empiezas a juntar lo que da esta tierra. Tardarás {time}."
+  in_progress: "Juntas materiales con cuidado."
+  found: "🪓 Recolectaste: {items}."
+  ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
+
+camp:
+  button: "🔥 Campamento"
+  title: "🔥 El campamento del Claro"
+  intro: "Lo que todos levantan juntos. Cada etapa hace al Claro más seguro y útil."
+  stage: "Etapa: {stage} ({n}/{total})"
+  needs_title: "Para llegar a {next}:"
+  need_line: "{emoji} {item}: {have}/{need} {bar}"
+  complete: "🏰 ¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes."
+  top_title: "Quienes más aportaron:"
+  top_line: "{n}. {name} — {merit} de mérito"
+  your_merit: "Tu mérito: {merit}"
+  donate_button: "🤲 Aportar mis materiales"
+  nothing: "No llevas nada que el campamento necesite ahora. Recolecta afuera."
+  donated: "🤲 Aportaste {items}: +{xp} experiencia y +{merit} de mérito."
+  stage_up: "🎉 ¡Entre todos, el Claro pasó a ser {stage}!"
+  bonus: "Mejora actual: la posada cuesta {price} 💰."
+  stages:
+    fogata: "una fogata"
+    campamento: "un campamento"
+    aldea: "una aldea"
+    pueblo: "un pueblo"
+    ciudad: "una ciudad"
+    castillo: "un castillo"
+
+tutorial:
+  hint_title: "📜 Pista ({n}/{total}):"
+  done: "📜 Ya conoces lo básico. Lo demás lo descubrirás tú."
+  reward: "📜 ¡Aprendiste algo! +{gold} 💰 · +{xp} experiencia."
+  steps:
+    explore_claro: "Las ruinas alrededor de la fogata todavía esconden cosas. Nadie va a buscarlas por ti."
+    gather: "La tierra da lo que necesitas para levantar algo. Hay que agacharse y juntarlo."
+    donate: "Solo nadie sobrevive. Alguien cuida el fuego del Claro y acepta ayuda."
+    leave_claro: "Más allá del Claro hay tierras que nadie pisó. Cada paso cuesta tiempo."
+    win_fight: "Afuera hay criaturas. Mira lo que preparan antes de elegir qué hacer."
+    heal: "Las heridas no se van solas tan rápido. Hay quien vende remedio y hay donde dormir."
+    use_places: "Quien recuerda los caminos no se pierde. Tu memoria guarda los lugares que pisaste."
+
+claro:
+  button: "🏘️ Servicios del Claro"
+  title: "🏘️ El Claro"
+  intro: "La fogata, el campamento que levantan entre todos, el mercader y un lugar para dormir."

@@ -283,9 +283,16 @@ class GameService:
             elif activity["kind"] == "explore":
                 zone = self._zone(hero.x, hero.y)
                 notices.append(self._explore_outcome(hero, zone, rng))
+                if zone.x == 0 and zone.y == 0:
+                    notices += self._tutorial(hero, "explore_claro")
+            elif activity["kind"] == "gather":
+                zone = self._zone(hero.x, hero.y)
+                notices.append(self._gather_outcome(hero, zone, rng))
+                notices += self._tutorial(hero, "gather")
             elif activity["kind"] == "rest":
                 hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
                 notices.append(self.texts.t("inn.rested"))
+                notices += self._tutorial(hero, "heal")
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:
@@ -295,6 +302,8 @@ class GameService:
         zone = self._zone(hero.x, hero.y)
         hero.remember(hero.x, hero.y)
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
+        if zone.lejania >= 1:
+            notices += self._tutorial(hero, "leave_claro")
         path = [list(p) for p in activity.get("path", [])]
         final = not path
         if final:
@@ -418,6 +427,16 @@ class GameService:
         if action_id == "places":
             return self._places_view(hero)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        if action_id == "claro":
+            if not in_claro:
+                return self._main_view(hero, notice=t.t("shop.only_in_claro"))
+            return View(kind="claro", title=t.t("claro.title"), body=[t.t("claro.intro"), self._status_line(hero)] + self._tutorial_hint(hero),
+                        actions=[Action(id="camp", label=t.t("camp.button")), Action(id="shop", label=t.t("shop.button")),
+                                 Action(id="inn", label=t.t("inn.button", price=self._inn_price())), Action(id="home", label=t.t("menu.back"))])
+        if action_id in ("camp", "donate"):
+            if not in_claro:
+                return self._main_view(hero, notice=t.t("shop.only_in_claro"))
+            return self._donate(hero) if action_id == "donate" else self._camp_view(hero)
         if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
@@ -457,7 +476,12 @@ class GameService:
             direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
             hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
                              "path": path, "goal": [gx, gy]}
-            return self._activity_view(hero, notice=t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy))))
+            notices = self._tutorial(hero, "use_places")
+            return self._activity_view(hero, notice=self._join([t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))] + notices))
+        if action_id == "gather":
+            seconds = self._seconds(self.content.balance["gather"]["minutes"])
+            hero.activity = {"kind": "gather", "until": self.clock.now() + seconds}
+            return self._activity_view(hero, notice=t.t("gather.started", time=self._fmt_duration(seconds)))
         if action_id == "explore":
             seconds = self._seconds(self.content.balance["explore"]["minutes"])
             hero.activity = {"kind": "explore", "until": self.clock.now() + seconds}
@@ -481,7 +505,7 @@ class GameService:
             del source[item_id]
         hero.hp += healed
         view = self._bag_view(hero)
-        view.notice = t.t("bag.used", item=t.t(item["name_key"]), amount=healed)
+        view.notice = self._join([t.t("bag.used", item=t.t(item["name_key"]), amount=healed)] + self._tutorial(hero, "heal"))
         return view
 
     # ------------------------------------------------------------------ views
@@ -500,7 +524,9 @@ class GameService:
         ]
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
-        body += [self._status_line(hero), "", t.t("zone.routes")]
+        body += [self._status_line(hero)]
+        body += self._tutorial_hint(hero)
+        body += ["", t.t("zone.routes")]
         actions: list[Action] = []
         for direction in ("n", "s", "e", "w"):
             dest, seconds, known = self._route_seconds(hero, direction)
@@ -513,8 +539,10 @@ class GameService:
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
+        gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
+        actions.append(Action(id="gather", label=t.t("gather.button", time=gather_time)))
         if zone.x == 0 and zone.y == 0:
-            actions += [Action(id="shop", label=t.t("shop.button")), Action(id="inn", label=t.t("inn.button"))]
+            actions.append(Action(id="claro", label=t.t("claro.button")))
         actions += [
             Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
             Action(id="places", label=t.t("menu.places")),
@@ -543,6 +571,9 @@ class GameService:
                     cx, cy = nx, ny
                 body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
+        elif activity.get("kind") == "gather":
+            body = [t.t("gather.in_progress"), t.t("travel.remaining", time=remaining)]
+            title = t.t("gather.title")
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("inn.title")
@@ -557,6 +588,120 @@ class GameService:
             Action(id="bag", label=t.t("menu.bag")),
         ]
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
+
+    # ------------------------------------------------------------------ gathering, camp, tutorial
+
+    def _gather_outcome(self, hero: Hero, zone: Zone, rng: Rng) -> str:
+        """Gather the zone's materials (biomes.yaml "gather"); dangerous zones may ambush."""
+        bal = self.content.balance["gather"]
+        danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
+        if danger > 0 and rng.chance(danger):
+            return self._start_combat(hero, zone, rng, "gather.ambush")
+        table = self.content.biomes[zone.biome].get("gather", {})
+        if not table:
+            return self.texts.t("camp.nothing")
+        low, high = bal["amount"]
+        amount = int(rng.uniform(low, high + 1)) + zone.level // 3
+        found: dict[str, int] = {}
+        for _ in range(max(1, amount)):
+            item_id = rng.pick_weighted(list(table), list(table.values()))
+            found[item_id] = found.get(item_id, 0) + 1
+        for item_id, count in found.items():
+            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
+        return self.texts.t("gather.found", items=self._item_list(found))
+
+    def _settlement(self) -> dict[str, Any]:
+        data = self.store.get("settlement", "claro")
+        return data or {"stage": 0, "progress": {}, "merit": {}}
+
+    def _inn_price(self) -> int:
+        inn = self.content.balance["inn"]
+        stage = self._settlement()["stage"]
+        return max(1, inn["price"] - stage * self.content.balance["settlement"]["inn_discount_per_stage"])
+
+    def _camp_view(self, hero: Hero, notice: str | None = None) -> View:
+        t = self.texts
+        stages = self.content.balance["settlement"]["stages"]
+        data = self._settlement()
+        stage = stages[data["stage"]]
+        body = [t.t("camp.intro"), t.t("camp.stage", stage=t.t(f"camp.stages.{stage['id']}"), n=data["stage"] + 1, total=len(stages)), ""]
+        if stage["needs"]:
+            nxt = stages[data["stage"] + 1]["id"]
+            body.append(t.t("camp.needs_title", next=t.t(f"camp.stages.{nxt}")))
+            for item_id, need in stage["needs"].items():
+                have = min(need, data["progress"].get(item_id, 0))
+                item = self.content.items[item_id]
+                body.append(t.t("camp.need_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=need, bar=self._bar(have, need, 8)))
+        else:
+            body.append(t.t("camp.complete"))
+        body.append(t.t("camp.bonus", price=self._inn_price()))
+        top = sorted(data["merit"].items(), key=lambda kv: -kv[1])[:5]
+        if top:
+            body += ["", t.t("camp.top_title")] + [t.t("camp.top_line", n=i + 1, name=name, merit=m) for i, (name, m) in enumerate(top)]
+        body += ["", t.t("camp.your_merit", merit=hero.merit)]
+        body += self._tutorial_hint(hero)
+        actions = [Action(id="donate", label=t.t("camp.donate_button")), Action(id="home", label=t.t("menu.back"))]
+        return View(kind="camp", title=t.t("camp.title"), body=body, actions=actions, notice=notice)
+
+    def _donate(self, hero: Hero) -> View:
+        """Give every material the current stage still needs; earn xp and merit; maybe level up the camp."""
+        t = self.texts
+        cfg = self.content.balance["settlement"]
+        data = self._settlement()
+        stage = cfg["stages"][data["stage"]]
+        given: dict[str, int] = {}
+        for item_id, need in stage["needs"].items():
+            missing = need - data["progress"].get(item_id, 0)
+            count = min(missing, hero.backpack.get(item_id, 0))
+            if count > 0:
+                given[item_id] = count
+                data["progress"][item_id] = data["progress"].get(item_id, 0) + count
+                hero.backpack[item_id] -= count
+                if hero.backpack[item_id] <= 0:
+                    del hero.backpack[item_id]
+        if not given:
+            return self._camp_view(hero, notice=t.t("camp.nothing"))
+        units = sum(given.values())
+        xp = units * cfg["xp_per_unit"]
+        hero.merit += units
+        data["merit"][hero.name] = data["merit"].get(hero.name, 0) + units
+        lines = [t.t("camp.donated", items=self._item_list(given), xp=xp, merit=units)]
+        lines += self._give_xp(hero, xp)
+        if all(data["progress"].get(i, 0) >= n for i, n in stage["needs"].items()):
+            data["stage"] += 1
+            data["progress"] = {}
+            lines.append(t.t("camp.stage_up", stage=t.t(f"camp.stages.{cfg['stages'][data['stage']]['id']}")))
+        self.store.put("settlement", "claro", data)
+        lines += self._tutorial(hero, "donate")
+        return self._camp_view(hero, notice="\n".join(lines))
+
+    def _give_xp(self, hero: Hero, xp: int) -> list[str]:
+        hero.xp += xp
+        lines = []
+        formula = self.content.balance["hero"]["xp_formula"]
+        while hero.xp >= xp_for_level(formula, hero.level + 1):
+            hero.level += 1
+            hero.hp = hero_stats(self.content.classes[hero.class_id], hero.level)["max_hp"]
+            lines.append(self.texts.t("combat.level_up", level=hero.level))
+        return lines
+
+    def _tutorial(self, hero: Hero, step: str) -> list[str]:
+        """Advance the tutorial if this is the current step; small reward (D-56: hints, not solutions)."""
+        cfg = self.content.balance["tutorial"]
+        steps = cfg["steps"]
+        if hero.tutorial >= len(steps) or steps[hero.tutorial] != step:
+            return []
+        hero.tutorial += 1
+        hero.gold += cfg["reward_gold"]
+        lines = [self.texts.t("tutorial.reward", gold=cfg["reward_gold"], xp=cfg["reward_xp"])]
+        return lines + self._give_xp(hero, cfg["reward_xp"])
+
+    def _tutorial_hint(self, hero: Hero) -> list[str]:
+        steps = self.content.balance["tutorial"]["steps"]
+        if hero.tutorial >= len(steps):
+            return []
+        return ["", self.texts.t("tutorial.hint_title", n=hero.tutorial + 1, total=len(steps)),
+                self.texts.t(f"tutorial.steps.{steps[hero.tutorial]}")]
 
     def _shop_view(self, hero: Hero, notice: str | None = None) -> View:
         """The Claro trader: buy belt items, sell materials (half price)."""
@@ -604,12 +749,13 @@ class GameService:
         """Inn: pay gold, sleep a few minutes, wake with full health."""
         t = self.texts
         inn = self.content.balance["inn"]
-        if hero.gold < inn["price"]:
+        price = self._inn_price()
+        if hero.gold < price:
             return self._zone_view(hero, notice=t.t("shop.no_gold"))
-        hero.gold -= inn["price"]
+        hero.gold -= price
         seconds = self._seconds(inn["minutes"])
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
-        return self._activity_view(hero, notice=t.t("inn.started", price=inn["price"], time=self._fmt_duration(seconds)))
+        return self._activity_view(hero, notice=t.t("inn.started", price=price, time=self._fmt_duration(seconds)))
 
     def _places_view(self, hero: Hero) -> View:
         """Places this hero remembers, nearest first, with an estimated trip time (D-61)."""
@@ -823,6 +969,7 @@ class GameService:
             hero.xp += xp
             hero.gold += gold
             hero.kills += 1
+            lines += self._tutorial(hero, "win_fight")
             lines.append(t.t("combat.rewards", xp=xp, gold=gold))
             for item_id, chance in edef.get("loot", {}).items():
                 if item_id in self.content.items and rng.chance(chance):

@@ -41,6 +41,27 @@ hero:
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
+gather:                      # [ES] recolectar en la zona actual
+  minutes: 8
+  amount: [1, 3]             # [ES] unidades por recolección (más 1 cada 3 niveles de zona)
+  encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
+
+settlement:                  # [ES] el campamento del Claro: obra común de todo el servidor (D-45)
+  xp_per_unit: 2             # [ES] experiencia por cada material aportado
+  stages:                    # [ES] lo que pide cada etapa para subir a la siguiente
+    - {id: fogata, needs: {madera: 40, fibra: 30}}
+    - {id: campamento, needs: {madera: 120, fibra: 80, piedra: 60}}
+    - {id: aldea, needs: {madera: 300, piedra: 250, fibra: 150, pieza_metal: 40}}
+    - {id: pueblo, needs: {madera: 700, piedra: 600, pieza_metal: 150, hierba_curativa: 100}}
+    - {id: ciudad, needs: {madera: 1500, piedra: 1500, pieza_metal: 400, fibra: 600}}
+    - {id: castillo, needs: {}}
+  inn_discount_per_stage: 1  # [ES] cada etapa baja 1 💰 la posada (mínimo 1)
+
+tutorial:
+  reward_gold: 5
+  reward_xp: 20
+  steps: [explore_claro, gather, donate, leave_claro, win_fight, heal, use_places]
+
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda]
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
