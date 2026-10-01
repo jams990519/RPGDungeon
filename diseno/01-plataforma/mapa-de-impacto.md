@@ -212,7 +212,7 @@ flowchart LR
 | **Eventos que publica** | Propuestos: `NuevoDiaDeJuego`, `NuevaSemana` (reinicios), `CuentaVinculada` (una cuenta de Telegram que se une a la web o a la app) |
 | **Eventos que escucha** | Ninguno: transporta los de los demás |
 | **Datos de los que es dueño** | Cuentas y vínculos entre clientes; reloj del juego; semillas de azar; el bus y el registro de eventos; el catálogo de textos por idioma (claves ES y EN); la lista de IDs usados y retirados |
-| **Reglas que nunca se rompen** | El motor no sabe que existen Telegram, la web ni la app. Todo azar usa una semilla guardada. Un ID nunca cambia ni se reutiliza. Los temporizadores se calculan de forma perezosa: si el servidor se reinicia, nada se pierde. Ningún texto visible vive en el motor: solo claves de idioma |
+| **Reglas que nunca se rompen** | El motor no sabe que existen Telegram, la web ni la app. Todo azar usa una semilla guardada. Un ID nunca cambia ni se reutiliza. Los temporizadores se calculan de forma perezosa: si el servidor se reinicia, nada se pierde. Ningún texto visible se escribe en el código del motor: vive en los archivos de idiomas, y el motor entrega las vistas ya traducidas (regla 7) |
 
 **Si cambias esto, revisa:**
 - **El generador de azar o cómo se guarda la semilla** → la radiografía de combate deja de repetir peleas viejas (M20); las manchas de sangre dejan de mostrar las últimas 3 rondas reales (M8, M7); el simulador pierde la comparación con mediciones anteriores (M21); las tiradas con semilla publicada dejan de poder verificarse (M16).

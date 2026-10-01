@@ -23,7 +23,7 @@ Antes de proponer algo, buscar si ya está decidido o preguntado: `grep -rn "pal
 4. **Todo en texto y por turnos** (D-05).
 5. **Modular para Telegram, web y app móvil:** un solo motor y las mismas reglas para los tres. Ningún cliente da ventaja. El motor no sabe desde qué cliente juega cada jugador (D-40, D-41).
 6. **No se escribe código del juego hasta que el dueño lo autorice** (D-04). Los ejemplos de código dentro del diseño sí se permiten.
-7. **Los archivos `RPG-0.1` a `RPG-0.9` de la raíz** son un proyecto viejo del dueño: no se editan, no se mueven y no se borran.
+7. **Los archivos `RPG-0.1` a `RPG-0.9`** eran un proyecto viejo del dueño. Por su pedido, el repositorio se dedicó por completo al juego nuevo y esos archivos se quitaron (siguen en el historial de git).
 
 ## 3. Cómo hablar con el dueño
 

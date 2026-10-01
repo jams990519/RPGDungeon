@@ -69,7 +69,7 @@ Qué está decidido y quién lo decidió. Una decisión **confirmada** solo camb
 
 | # | Decisión | Por qué | Pregunta |
 |---|---|---|---|
-| D-23 | El diseño vive en `RPGDungeon/diseno/` | Es el otro repositorio de juegos del dueño; no se tocó nada de lo que ya había ahí | P-02 |
+| D-23 | El diseño vive en `RPGDungeon/diseno/` | **Confirmado por el dueño (1-oct-2026):** el repositorio RPGDungeon se dedica por completo al juego nuevo; los archivos viejos `RPG-0.x` se quitaron (quedan en el historial) | P-02 |
 | D-24 | Nombre provisional *Ascendentes* | Hace falta un nombre para escribir | P-01 |
 | D-25 | "Protecciones controladas de enemigos" = defensa de construcciones con guardias y torres controladas por el jugador | Interpretación del mensaje de voz | P-52 |
 
