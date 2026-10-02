@@ -1,6 +1,6 @@
 # Red de oficios: quién necesita a quién
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115). En el juego: las fases 1 y 1.5, el lado del campamento de la fase 2 (§5) y las especializaciones (D-141, §3.1)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Economía](economia.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) (mejoras del campamento), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (despensa, defensas), [Balance](../03-personaje/balance.md) · **Estado:** propuesta; el principio es decisión del dueño (D-115). En el juego: las fases 1 y 1.5, el lado del campamento de la fase 2 (§5), las especializaciones (D-141, §3.1) y los recursos de cada terreno (D-180, D-183, §5.1)
 
 > ⚠️ **Lo que decidió el dueño (1-oct-2026):** cada oficio cubre un pedazo y siempre se depende de otro jugador; los oficios se encadenan (el sastre necesita fibras y pieles de agricultura y ganadería para subir); el 🪑 carpintero hace y mejora las herramientas de farmeo y sube el nivel de los nodos (D-168). Los materiales tienen fuentes exclusivas (ganadería, agricultura, investigación, monstruos, eventos) y lo complicado pide una o dos vías más (D-169).
 
@@ -146,6 +146,38 @@ Lo que ya está programado (capa simple, D-44). Decisión del dueño: **una al r
 **Fase 2, lado del equipo (en el juego):** ✨ Encantamiento (desencantar y encantar, con su beneficio de +30 % de esencias al rango 100; [Profesiones](profesiones.md) §0.5), el aviso "⬆️ Tienes una pieza mejor" y el equipo de artesano de cabeza, manos, piernas y pies (208 recetas de 🪡 Sastrería, 🦺 Peletería y 🔨 Herrería; [Profesiones](profesiones.md) §0.1). Así el ciclo del **Equipo** del §4 gira entero: el artesano hace todas las ranuras, el encantador desencanta lo viejo y mejora lo nuevo.
 
 Cada fase se programa en la capa simple primero (D-44): rango, recetas, beneficio propio (D-111) y una especialización. La capa profunda ([Profesiones](profesiones.md) §5 a §13: maestría por objeto, exámenes, enfermedades laborales) llega después.
+
+### 5.1 Los recursos de cada terreno (D-180, D-183, en el juego desde la 0.27)
+
+Desde la 0.27 cada terreno tiene su catálogo de 10 recursos (los de base que favorece y los suyos; [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.2) y cada zona trae de 4 a 6. Los **21 materiales nuevos** entran en la capa ligera (D-44): los junta un oficio de recolección que ya existe (con su beneficio, su unidad de más y su raro), se venden al mercader (D-169: un ingreso para cualquiera) y cada uno tiene **al menos una receta**, que es **otra forma de hacer lo de siempre** (el nombre de la receta lo dice: "🧪 Poción de vida ×2 · con ⏳ Arena fina"). Ninguno es comida por sí solo: la 🍲 Cocina los vuelve raciones junto con carne o pescado.
+
+| Material | Lo junta | Sale en | Lo usa |
+|---|---|---|---|
+| 🫐 Bayas | 🌿 Herbolario | pradera, bosque, colinas, tundra | 🍲 Ración (con carne) · 🍲 Festín (con miel) |
+| 🍄 Setas | 🌿 Herbolario | pradera, bosque, pantano, ruinas | 🍲 Ración (con carne) |
+| 🍯 Miel silvestre | 🌿 Herbolario | pradera, bosque | 🩺 Botiquín (rango 25) · 🍲 Festín (rango 75) |
+| 🌽 Mazorca silvestre | 🌿 Herbolario | pradera, colinas | 🍲 Pescado asado |
+| 🌼 Lino | 🌿 Herbolario | pradera, pantano | 🧶 Tela |
+| 🎋 Juncos | 🌿 Herbolario | pantano | 🧶 Tela (con fibra) |
+| 🪷 Nenúfar | 🌿 Herbolario | pantano | ⚗️ Poción mayor sin 🌸 flor de luna (rango 25) |
+| 🌵 Pulpa de cactus | 🌿 Herbolario | desierto | 🩺 Ungüento (con tela) |
+| 🌴 Dátiles | 🌿 Herbolario | desierto | 🍲 Guiso del cazador (rango 25) |
+| 💮 Flor de escarcha | 🌿 Herbolario | montaña, tundra | ⚗️ Poción mayor sin 🌸 flor de luna (con cuarzo, rango 25) |
+| 🌱 Musgo | 🌿 Herbolario | bosque, pantano, montaña, tundra, ruinas | 🩺 Ungüento (con extracto) |
+| 🥕 Raíz amarga | 🌿 Herbolario | pradera, bosque, pantano, ruinas | 💧 Extracto (con hierba) |
+| 🍃 Tomillo | 🌿 Herbolario | pradera, colinas, montaña, desierto | 🍲 Guiso del cazador (rango 25) |
+| 💧 Resina | 🪓 Leñador | bosque, pantano, montaña, tundra | ⚗️ Poción de vida (sella el frasco) |
+| 🍂 Corteza | 🪓 Leñador | bosque, colinas, pantano, tundra, ruinas | 🪣 Cuero: 3 pieles y corteza dan 2 |
+| 🌑 Carbón | ⛏️ Minero | colinas, montaña, tundra, ruinas | 🔥 Lingote: 3 piezas de metal y carbón dan 2 |
+| 🧂 Sal de roca | ⛏️ Minero | colinas, montaña, desierto | 🍲 Pescado asado · 🍲 Conservas (rango 50) |
+| 🔹 Cuarzo | ⛏️ Minero | colinas, montaña, desierto, ruinas | ⚗️ Poción mayor (el frasco, rango 25) |
+| ⏳ Arena fina | ⛏️ Minero | desierto, ruinas | ⚗️ Poción de vida (frasco de vidrio) · 🗿 Sillar con 2 piedras |
+| 🧊 Hielo eterno | ⛏️ Minero | montaña, tundra | 🍲 Conservas (rango 50) |
+| 🔧 Chatarra | ⛏️ Minero | desierto, ruinas | 🔥 Lingote |
+
+- **Las reglas de siempre siguen:** toda receta de fabricación pide materiales de 2 oficios o más (D-109); refinar y fabricar nunca dejan ganar monedas; lo cocinado vale más raciones que lo crudo. Las 22 recetas nuevas están al final de `content/professions.yaml` (campo `variant`).
+- **Los nodos de recursos** (D-184, [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.16) dan el doble de su recurso y a veces 💠 gema en bruto o 🌸 flor de luna: una fuente más de los raros que piden la 💍 Joyería, la ⚗️ Alquimia y el equipo de artesano.
+- **Lo que viene:** los nodos que sube de nivel el 🪑 carpintero (D-168, E-96) y los especiales de los expertos (D-160, E-78); el 🌾 Agricultor y el 🐑 Ganadero (fase 3) pueden cultivar o criar algunos de estos.
 
 ## 6. Cómo se comprueba que la red funciona
 

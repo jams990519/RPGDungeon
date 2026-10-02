@@ -1,6 +1,6 @@
 # El mapa infinito y el viaje
 
-> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13), [Profesiones](../07-economia/profesiones.md) (🧭 Explorador, §1.14), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) (entradas de mazmorra, §1.15) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
+> **Módulo** [02 · Mundo](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-58, D-59, D-60), [Jefes](../06-contenido/jefes.md) (D-08) · **Alimenta a:** [Economía](../07-economia/economia.md), [Fundación y cisma](fundacion-y-cisma.md), [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Heridas](../05-salud/heridas.md), [Social](../08-social/README.md) (jugadores en la zona, §1.13), [Profesiones](../07-economia/profesiones.md) (🧭 Explorador, §1.14), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) (entradas de mazmorra, §1.15), [Red de oficios](../07-economia/red-de-oficios.md) (recursos de cada terreno y nodos, §1.12.2 y §1.16) · **Reemplaza a:** [Torre y pisos](torre-y-pisos.md) (se retira) · **Estado:** v0.1 en código; el resto, propuesta
 
 **La regla del dueño (D-58, confirmada):** "Quita los pisos, deja un mapa infinito por investigar, pero que tome tiempo moverte entre lugares."
 
@@ -201,15 +201,16 @@ Coordenadas 1, 2 · Lejanía 2
   - El lote se corta si te atacan (con ✋ Manual; con ⚔️ Peleas automáticas el héroe pelea solo y sigue, §1.12.1), si se acaba la energía, si se llena la mochila o, al explorar, si ya no queda nada por explorar desde donde estás (tu zona y las de alrededor al 100 %, D-107).
   - El bot te escribe una sola vez, al terminar, con el resumen.
 - **Explorar sube un porcentaje:** cada vuelta suma entre 15 % y 30 % de la zona (`exploration.per_step`).
-  - Al 1 %, al 50 % y al 100 % descubres el primero, el segundo y el tercer recurso.
+  - Al 1 %, 20 %, 40 %, 60 % y 80 % descubres el primero, el segundo, el tercero, el cuarto y el quinto recurso; al 100 %, todos (`exploration.reveal_at`; hasta la 0.26.1 eran 1 %, 50 % y 100 % para 3 recursos: nadie conoce menos que antes).
   - Al 100 % la zona ya no se explora más: conoces todo lo que tiene. (Hasta la 0.26 la zona aparecía en tu mapa con el color de su recurso principal; desde la 0.26.1 el mapa pinta el terreno, §1.9.)
   - **Desde 0.13.1 (D-107), explorar sigue alrededor sin moverte.** Con tu zona al 100 %, cada vuelta estudia la primera casilla vecina que no esté al 100 % (primero norte, este, sur y oeste; después las diagonales; `explore.around_radius` = 1, las 8 vecinas). El héroe no se mueve: los ataques, los hallazgos y las monedas son de la zona donde estás; lo que avanza es el porcentaje y los recursos de la vecina, que queda en tu memoria y en tu mapa. Así un lote grande completa tu zona y sigue con las de alrededor, en el mismo cuadro. Cuando tu zona y sus 8 vecinas están al 100 %, hay que moverse para seguir explorando.
   - Tu héroe recuerda los recursos de cada zona que exploró.
   - Fundar un campamento pide la zona explorada al 100 %.
-- **Regiones de recursos:** hay 6 recursos: madera, piedra, fibra, hierba curativa, metal y arcilla (nueva).
+- **Regiones de recursos:** hay 6 recursos de base: madera, piedra, fibra, hierba curativa, metal y arcilla.
   - Cada uno forma manchas de distinto tamaño: unas de 2 o 3 zonas, otras de 5×5 o más (`engine/world/resources.py`).
-  - Una zona tiene de 1 a 3 tipos. El bioma ayuda, pero no manda.
-  - Recolectar solo da lo que esa zona tiene.
+  - Una zona tiene de 1 a 3 de base. El bioma ayuda, pero no manda.
+  - **Desde la 0.27 (D-180), cada terreno suma los suyos:** cada zona trae además 2 o 3 recursos propios de su terreno, hasta quedar con **4 a 6 recursos** (§1.12.2). Los de base siguen exactamente en las mismas zonas.
+  - Recolectar solo da lo que esa zona tiene. Una zona con un **nodo de recursos** da el doble de su recurso (§1.16).
 - **Los recursos se agotan:** cada unidad recolectada baja un 2 % el recurso de esa zona, para todos los jugadores, y vuelve un 2 % por hora (`stock`). Si se recolecta mucho en un lugar, da menos; por debajo del 15 % no da nada hasta que se recupere. La pantalla muestra cuánto queda (▰▰▰▱▱).
 - **Espacio en la mochila:** 60 unidades (`hero.backpack_capacity`). El cinturón y lo puesto no cuentan. Con la mochila llena, recolectar se detiene.
   - **Lo que encuentras nunca se pierde (D-90, provisional):** el botín, el equipo, la carne y los hallazgos de explorar entran aunque la mochila pase de 60 (se ve, por ejemplo, 63/60).
@@ -238,6 +239,32 @@ El dueño pidió (1-oct-2026):
 - **🏹 Cazar en lote:** con ⚔️ Automática, el botón 🏹 Buscar presa pasa a ser **🏹 Cazar en lote**: eliges la energía (⚡ 4, 10, 20, 40 o todo; `hunt.batch`), con el tiempo estimado en cada botón ("⚡ 10 · ⏱️ 1 h 20 min"). Cada presa cuesta 2 ⚡ (D-108) y tarda 16 minutos (`hunt.batch_minutes`, 8 min por ⚡, como recolectar). El lote se corta al perder, con la vida bajo el límite, sin energía o con ❌ Detener (devuelve los 2 ⚡ de la presa en curso). No empieza malherido ni con la vida ya bajo el límite. Cada presa cuenta para la partida de caza del campamento (D-106), y quien caza en lote cuenta como presente en su zona ("🏹 cazando", D-96). Con ✋ Manual se caza como antes: una presa a la vez, enseguida.
 - **Cuántas peleas dura un lote** (medido con el motor, héroe de nivel 2 al lado del Claro, cinturón de inicio, la vida que vuelve sola en 4 horas, D-103): con el límite en 50 %, unas 4 o 5 peleas automáticas antes de que el lote se corte; con 30 %, casi todo el lote (~10 peleas al explorar 20 veces, ~16 de 20 presas), con menos de 1 % de derrotas; con 70 %, unas 2. Ver el registro de [Balance](../03-personaje/balance.md) §7.
 - Lo pidió el dueño. Los números (30/50/70 %, 16 minutos por presa, 60 rondas, los umbrales de la forma de jugar) los propuso Claude; los umbrales son los que ya usaba el simulador.
+
+### 1.12.2 El catálogo de cada terreno (D-180, D-183, en el juego desde la 0.27)
+
+El dueño pidió (1-oct-2026): **cada tipo de terreno tiene un catálogo de 10 a 15 recursos posibles, y cada casilla trae solo una parte** (por ejemplo, 4 o 6 de los 15), en cantidades variables. **El color no garantiza un recurso**: ver verde no quiere decir que siempre haya madera o semillas; hay que ir a investigar (D-179). Cómo se aplicó (D-183, provisional, con la recomendación de E-123):
+
+- **Los 6 de base no se mueven.** Siguen en las mismas zonas, con la misma riqueza (`zone_resources` da lo mismo que antes). Así nadie pierde lo que ya sabía de sus zonas.
+- **Cada terreno suma los suyos** (`content/biomes.yaml` → `own`). Su catálogo son los de base que favorece (`gather`) más los propios: **10 por terreno** hoy.
+- **Cada zona suma 2 o 3 de los propios de su terreno** (`resources.terrain`), con su propio sorteo de la semilla y una riqueza de 0,3 a 1,0. Nunca pasa de 6 recursos de tierra ni queda con menos de 4 (con 1 de base suma 3). El 🐟 pescado de las zonas con agua va aparte, como antes. El Claro no suma nada.
+- **Pueden repetirse entre terrenos** (hay setas en el bosque y en el pantano).
+- **Bastante al azar (D-185):** cada propio que trae una zona tiene **3 de 10** (`resources.terrain.foreign_chance`) de salir del catálogo de **otro** terreno: puede haber resina en el desierto o sal en el bosque. Y los 6 de base siguen sus regiones de siempre, que no dependen del terreno que se ve (desde la 0.26.2, §1.2): el color nunca garantiza un recurso.
+
+| Terreno | De base que favorece | Propios |
+|---|---|---|
+| 🟩 Pradera | fibra, hierba, piedra | 🫐 bayas, 🍯 miel silvestre, 🌽 mazorca silvestre, 🌼 lino, 🍃 tomillo, 🍄 setas, 🥕 raíz amarga |
+| 🟢 Bosque | madera, hierba, fibra | 💧 resina, 🍂 corteza, 🍄 setas, 🫐 bayas, 🍯 miel, 🌱 musgo, 🥕 raíz amarga |
+| 🟫 Colinas | piedra, madera, metal | 🌑 carbón, 🧂 sal de roca, 🔹 cuarzo, 🍃 tomillo, 🌽 mazorca, 🍂 corteza, 🫐 bayas |
+| 🟪 Pantano | hierba, fibra | 🎋 juncos, 🪷 nenúfar, 🍄 setas, 🌱 musgo, 🥕 raíz amarga, 🌼 lino, 💧 resina, 🍂 corteza |
+| ⬜ Montaña | piedra, metal | 🌑 carbón, 🔹 cuarzo, 🧂 sal, 🧊 hielo eterno, 💮 flor de escarcha, 🌱 musgo, 🍃 tomillo, 💧 resina |
+| 🟨 Desierto | piedra, metal, fibra | ⏳ arena fina, 🧂 sal, 🌵 pulpa de cactus, 🌴 dátiles, 🔹 cuarzo, 🍃 tomillo, 🔧 chatarra |
+| 🟦 Tundra | piedra, madera, metal | 🧊 hielo, 💮 flor de escarcha, 🌱 musgo, 🫐 bayas, 💧 resina, 🍂 corteza, 🌑 carbón |
+| ⬛ Ruinas | metal, piedra | 🔧 chatarra, 🔹 cuarzo, 🌑 carbón, 🍄 setas, 🌱 musgo, ⏳ arena, 🍂 corteza, 🥕 raíz amarga |
+
+- **Para qué sirven (capa ligera, D-44):** cada uno tiene al menos una receta y se vende al mercader (💱 Vender todo los vende, como la madera). Son otra forma de hacer lo de siempre: la 🧶 Tejeduría hace tela con 🌼 lino o 🎋 juncos; la 🔥 Fundición, lingotes con 🌑 carbón (3 piezas dan 2) o 🔧 chatarra; la 🪣 Curtiduría, 2 cueros con 3 pieles y 🍂 corteza; la 💧 Destilación, extracto con 🥕 raíz amarga; la 🗿 Cantería, sillares con ⏳ arena y menos piedra; la ⚗️ Alquimia, pociones con ⏳ arena o 💧 resina en vez de arcilla, y pociones mayores con 🪷 nenúfar o 💮 flor de escarcha en vez de la 🌸 flor de luna; la 🩺 Medicina, ungüentos con 🌱 musgo o 🌵 cactus y botiquines con 🍯 miel; la 🍲 Cocina, raciones con 🍄 setas o 🫐 bayas, pescado asado con 🧂 sal o 🌽 mazorca, guisos con 🍃 tomillo o 🌴 dátiles, conservas con 🧊 hielo y sal, y festines con 🍯 miel y bayas. El detalle está en [Red de oficios](../07-economia/red-de-oficios.md) §5.1.
+- **Quién los junta:** lo leñoso (💧 resina, 🍂 corteza), el 🪓 Leñador; lo mineral (🌑 🧂 🔹 ⏳ 🧊 🔧), el ⛏️ Minero; las plantas, los hongos y la miel, el 🌿 Herbolario. Su beneficio, su unidad de más y su raro valen también para estos.
+- **Balance:** cada vuelta de recolección saca las mismas unidades que antes (se reparten entre más recursos: no se multiplican), y los precios quedan cerca de los de base (2 a 5 🥉), así recolectar rinde lo mismo en monedas.
+- **Lo que queda abierto:** si el dueño prefería que los recursos de cada terreno fueran variedades del material de siempre (roble, pino, granito...) que cuentan como madera o piedra (E-123, la otra opción).
 
 ### 1.13 Otros jugadores en tu zona (D-96, provisional)
 
@@ -326,7 +353,19 @@ El dueño pidió (1-oct-2026) que **el mapa muestre que hay algo, no qué es**: 
 - **En el cuadrito**, la marca de la mazmorra va debajo de 🧍 tú, 👑 la guarida, 👹 un campamento enemigo y 🏕️ un campamento de jugadores, y encima del color o el bioma.
 - **En la zona:** 🧭 Explorar cambia 🏹 Cazar por **🕳️ Entrar** o **🌀 Descender** (siguen 4 botones); 🏹 Cazar queda dentro de la pantalla de la mazmorra.
 - **🔭 Reconocer (D-172):** desde el rango 10 del 🧭 Explorador, una entrada cercana se puede reconocer de lejos: sabes para siempre si es 🕳️ chica o 🌀 profunda y, ese día, se ve su familia (§1.14, "🔭 Reconocer y 🥷 Sigilo").
-- **Lo que queda abierto:** si "2 o 3 por zona" era por tramo (como quedó) o en todo el mapa (P-125 / E-126). Los nodos de recursos de D-181 llevan su propio símbolo genérico (0.27).
+- **Lo que queda abierto:** si "2 o 3 por zona" era por tramo (como quedó) o en todo el mapa (P-125 / E-126). Los nodos de recursos de D-181 llevan su propio símbolo genérico, ✨ (0.27, §1.16).
+
+### 1.16 Nodos de recursos: un símbolo genérico que se descubre al llegar (D-171, D-181, D-184, en el juego desde la 0.27)
+
+El dueño pidió (1-oct-2026): **los nodos de recursos se colocan al azar con un símbolo genérico, y solo al llegar se descubre qué tipo de nodo principal es** (D-181); en cada tramo se ven 2 o 3 iconos de nodos (D-171). Cómo se aplicó (D-184, provisional, con la recomendación de E-124). Números en `content/balance.yaml` → `nodes`; cuentas en `engine/world/nodes.py`; pantallas en `engine/service/game.py` (sección "resource nodes"). Pruebas: `tests/test_nodos_y_terrenos.py`.
+
+- **Un nodo es parte de una zona.** El mapa se parte en **tramos de 6 × 6 zonas** (como las mazmorras) y cada tramo tiene **2 o 3 nodos** (`nodes.count`), desde **Lejanía 1**. Salen solo de la semilla del mundo: **nunca se mueven** y son los mismos para todos. Nunca en el Claro (ni en todo el territorio que podría tener), en la guarida del Guardián ni en la entrada de una mazmorra, y **nunca pegados** (tampoco entre tramos vecinos). **Sí pueden caer dentro del territorio de un campamento de jugadores**: al agrandar tu campamento puedes elegir zonas con buenos nodos (D-87); ⬆️ Agrandar campamento marca " ✨🪵" en las zonas cuyo nodo ya descubriste.
+- **Su recurso principal** es uno de los recursos de tierra de su zona: 6 de cada 10, uno propio del terreno (`nodes.own_share`); los demás, el más fuerte de la zona. Nunca el 🐟 pescado.
+- **Qué da (E-124):** su recurso **rinde el doble** en esa zona (cada unidad que recolectas vale 2, `nodes.yield_mult`), **se agota la mitad de rápido** (`nodes.stock_mult`) y **cada vuelta de recolección ahí tiene 5 % de dar un material raro de su terreno** (`nodes.rare_chance`; 💠 gema en bruto o 🌸 flor de luna según el terreno, `node_rare` en `content/biomes.yaml`). Las unidades de más y el raro usan su propio sorteo: la vuelta saca lo mismo que sin nodo. Lo usa **cualquiera que llegue**. Los nodos que mejora el carpintero (E-96, D-168) y los especiales de los expertos (E-78, D-160) vienen después.
+- **✨ En el mapa:** un nodo que no descubriste se ve con el símbolo genérico **✨** (`node.icon_unknown`) si recuerdas alguna zona a **2 o menos** de él (`nodes.hint_radius`), como las cuevas. En el cuadrito va debajo de 🧍 tú, 👑 la guarida, 👹 un campamento enemigo, 🏕️ un campamento de jugadores y las mazmorras, y encima del color del terreno. Debajo del mapa, los **2 más cercanos** ("✨ (-2, 0) · a 2 zonas: un nodo de recursos, llega para saber de qué es"). No hay botón nuevo: siguen 4 como mucho.
+- **Solo al llegar:** al **llegar a su zona** (al final de un tramo de viaje, o si ya estás parado ahí, por ejemplo cuando llegó el parche) lo descubres **para siempre** (se guarda por héroe en el espacio `nodes` del almacén). Sale el aviso "✨ ¡Encontraste un nodo de recursos! Es de 🪵 Madera: aquí su recurso rinde ×2 al recolectar y se agota más despacio, y a veces da 🌸 Flor de luna", 📍 Zona lo dice en una línea y el mapa muestra el emoji de su recurso (🪵) en lugar de ✨. **Explorar alrededor desde la zona de al lado (D-107) no lo descubre**, ni el 🔭 Reconocer del Explorador (E-125 sigue abierta).
+- **Al recolectar:** el resumen de 🪓 Recolectar dice lo que dio el nodo ("✨ El nodo de 🪵 Madera te dio +4 de más."; "✨ En el nodo encontraste 🌸 Flor de luna ×1.").
+- **Lo que queda abierto:** si el 🔭 Reconocer del Explorador debería descubrir los nodos de lejos desde el rango 25 (E-125); los nodos que sube de nivel el 🪑 carpintero (E-96) y los especiales de los expertos (E-78).
 
 ## 2. Lo que viene por parches (propuesta)
 
