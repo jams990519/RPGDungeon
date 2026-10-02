@@ -18,6 +18,7 @@ from engine.core import FixedClock, MemoryStore, Rng
 from engine.professions import branches_of, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.service import GameService
+from engine.service.game import HUB_BUTTONS, HUB_KINDS
 from engine.world import zone_at
 from engine.world.resources import water_resources, zone_resources
 from test_camp_upgrades import build, camp_at, set_hero
@@ -342,7 +343,7 @@ def test_raids_damage_the_defenses_and_the_members_repair_them(service, clock):
     assert service._camp_damage(camp) == 3
     service.tick()
     view = service.act("test:1", "claro")
-    assert any(line.startswith("🛠️") and "−3" in line for line in view.body) and len(view.actions) <= 4
+    assert any(line.startswith("🛠️") and "−3" in line for line in view.body) and len(view.actions) <= 8   # D-192: the hub
     up = service.act("test:1", "upgrades")
     assert any(line.startswith("🛠️") for line in up.body) and "upw" in ids(up)
     works = service.act("test:1", "upw")
@@ -422,7 +423,10 @@ def test_every_camp_screen_keeps_four_buttons_with_damage_and_perks(content):
     while queue and len(seen) < 150:
         path = queue.popleft()
         service, view = make(path)
-        assert len(view.actions) <= 4, (path, view.kind, ids(view))
+        if view.layout:                         # D-189: an amount picker
+            assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.layout)
+        else:
+            assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (path, view.kind, ids(view))   # D-192
         assert not service.texts.missing, (path, service.texts.missing)
         kinds.add(view.kind)
         key = (view.kind, tuple(ids(view)))

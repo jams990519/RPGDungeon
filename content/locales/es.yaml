@@ -1216,7 +1216,7 @@ menu:
   zone: "📍 Zona"
   explore: "🧭 Explorar"
   camp: "🏕️ Campamento"
-  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · 📖 Historia · ⚙️ Opciones."
+  hint: "Usa el menú de abajo: 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · ⚙️ Opciones. ¿Dudas? ❓ en 🏕️ Campamento o /dudas."
   map: "🗺️ Mapa"
   hero: "👤 Héroe"
   bag: "🎒 Mochila"
@@ -1224,8 +1224,8 @@ menu:
   back: "↩️ Volver"
   continue: "▶️ Continuar"
   places: "📒 Lugares"
-  options: "⚙️ Opciones"           # [ES] D-114: 5.º botón del menú de abajo (D-46 deja hasta 6)
-  story: "📖 Historia"            # [ES] D-117: 6.º botón del menú de abajo, antes de ⚙️ Opciones (D-46 deja hasta 6)
+  options: "⚙️ Opciones"           # [ES] D-114: último botón del menú de abajo (D-46 deja hasta 6; desde D-190 son 5)
+  story: "📖 Historia"            # [ES] D-190: ya no está en el menú de abajo; queda para entender el botón de un teclado viejo (GameService.text)
 
 options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho. D-178: cada interruptor lleva palomita (✅ activo, ☑️ apagado)
   title: "⚙️ Opciones"
@@ -1626,7 +1626,7 @@ pantry:                       # [ES] D-93 (provisional): la despensa de los camp
     hambruna: "🔴 Hambruna"
 
 raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde que se funda el campamento; en el diseño, "incursiones") y Noche de prueba (antes de castillo) de los campamentos de jugadores. El Claro nunca tiene
-  founded_warning: "🌊 Aviso: {n} {n|vez|veces} por semana llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
+  founded_warning: "🌊 Aviso: {n} {n|vez|veces} por semana llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🏰 Gestionar → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
   soon_line: "👁 Al llegar a pueblo (nivel {level}) empiezan las oleadas: 3 por semana."
   next_line: "👁 Próxima oleada en {n} {n|día|días}. La defienden los miembros conectados."
   open_line: "🔔 ¡Oleada! Defensores: {n} · victorias {wins}/{need} · quedan {time}"

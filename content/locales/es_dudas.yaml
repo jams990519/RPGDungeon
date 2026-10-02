@@ -1,0 +1,220 @@
+# Texts of ❓ Dudas (D-191, confirmed; layout D-192, provisional): the screens (dudas.*) and every question and answer (faq.*).
+# [ES] Textos del botón ❓ Dudas (🏕️ Campamento) y de /dudas: la pantalla principal, los temas, los resultados de una búsqueda y
+# cada pregunta (faq.<código>.q) con su respuesta (faq.<código>.a). Los códigos, temas, palabras clave y relacionadas están en
+# content/faq.yaml. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
+# Números: las respuestas usan marcadores como {energy_max} que el motor llena con content/balance.yaml (_faq_values en
+#     engine/service/game.py): nunca escribas un número de balance a mano en una respuesta.
+# Documento de diseño: diseno/01-plataforma/menus-campamento-y-heroe.md §4
+# Lo leen: engine/service/game.py (sección "❓ Dudas") y tests/test_menus_y_dudas.py (toda pregunta tiene q y a, y se llenan
+#     todos sus marcadores).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Las preguntas son cortas (sirven de botón): hasta unos 32
+#     caracteres.
+
+dudas:
+  button: "❓ Dudas"
+  title: "❓ Dudas"
+  intro: "Pregunta lo que quieras: escribe una palabra (por ejemplo «energía», «mapa» o «campamento») y te muestro las preguntas que ya tienen respuesta."
+  codes: "Cada pregunta tiene su código: toca o escribe /d07 para ver su respuesta."
+  popular: "⭐ Las más buscadas:"
+  topics: "📚 O elige un tema:"
+  topic_line: "{name}: {n} {n|pregunta|preguntas}"
+  line: "/{code} · {question}"
+  topic_title: "❓ Dudas · {name}"
+  results_title: "🔎 «{query}»"
+  results: "Encontré {n} {n|pregunta|preguntas}. Toca o escribe su código para ver la respuesta:"
+  results_more: "… y {n} más: prueba con otra palabra más precisa."
+  none: "🤔 No encontré nada con «{query}». Prueba con otra palabra (por ejemplo «energía», «oficios» o «mazmorra») o elige un tema."
+  unknown_code: "🤔 No existe la pregunta {code}. Los códigos van de /d01 en adelante."
+  answer_title: "❓ {question}"
+  related: "🔗 Relacionadas:"
+  again: "🔎 Escribe otra palabra para seguir buscando."
+  back_button: "❓ Dudas"
+  write_hint: "❓ ¿Una duda? Escribe /dudas y una palabra, o abre ❓ Dudas en 🏕️ Campamento."
+  stopwords: [que, como, cual, cuales, donde, cuando, cuanto, cuanta, para, por, con, sin, los, las, una, uno, unos, unas, del, mas,
+              hay, esto, eso, esta, este, puedo, puede, tengo, tiene, hago, sirve, sirven, quiero, mis, tus, sus, son, ser, the]
+  topic:
+    start: "🌱 Primeros pasos"
+    world: "🧭 Mapa y exploración"
+    fight: "⚔️ Peleas y salud"
+    hero: "👤 Tu héroe"
+    camp: "🏕️ Campamentos"
+    trades: "⚒️ Oficios"
+    money: "💰 Monedas y comercio"
+  value:                        # [ES] pedacitos que el motor arma con números de balance.yaml (_faq_values)
+    move_free: "no gasta energía"
+    move_cost: "cuesta {n} ⚡"
+    list_and: "{items} y {last}"
+
+faq:
+  # ---- 🌱 Primeros pasos
+  d01:
+    q: "🌱 ¿Qué hago al empezar?"
+    a: "Despiertas en el 🔥 Claro, el campamento base. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🪓 recolecta y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
+  d02:
+    q: "🧭 ¿Para qué sirve cada menú?"
+    a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, investigar, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
+  d03:
+    q: "📖 ¿Dónde quedó la Historia?"
+    a: "El botón 📖 Historia salió del menú: ahora la historia te guía paso a paso mientras juegas. Tu 📔 Diario, tus 🎯 Misiones y las ⚜️ Facciones están en 👤 Héroe → 📔 Diario. El 📜 Tablón de encargos y los personajes del Claro, en 🏕️ Campamento. /historia también te lleva al diario."
+  d04:
+    q: "⌨️ ¿Qué atajos puedo escribir?"
+    a: "Escribe /zona, /hero, /inv (mochila), /stats, /salud, /habilidades, /oficios, /opciones, /diario, /encargos, /reconocer o /dudas. Con /dudas y una palabra buscas respuestas, y cada respuesta tiene su código, como /d05."
+  d05:
+    q: "⏱️ ¿Por qué hay que esperar?"
+    a: "Viajar, explorar, recolectar y dormir toman minutos de verdad. Puedes cerrar el chat: tu héroe sigue y te aviso cuando termina. Nada se pierde mientras esperas."
+  d54:
+    q: "🆕 ¿Cómo sé qué hay de nuevo?"
+    a: "Cuando el juego trae algo nuevo te llega una vez el aviso con las notas del parche. Si no ves el menú de abajo nuevo, escribe /start. Tu progreso se guarda para siempre."
+  d55:
+    q: "⚙️ ¿Qué cambio en Opciones?"
+    a: "En ⚙️ Opciones eliges si en los lotes peleas a mano o en automático, con cuánta vida te retiras ({retreat} %) y si usas pociones solo. Queda guardado y lo cambias cuando quieras."
+  # ---- 🧭 Mapa y exploración
+  d06:
+    q: "🚶 ¿Cómo me muevo por el mapa?"
+    a: "En 📍 Zona toca una dirección. Cada viaje a una zona vecina toma de {travel_first} a {travel_max} min (más cuanto más lejos estés del Claro o de tu campamento) y {move_cost}. Al llegar puede salirte un monstruo. Con 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces."
+  d07:
+    q: "⚡ ¿Qué es la energía?"
+    a: "La ⚡ energía se gasta en lo que haces fuera de una pelea: explorar, recolectar, cazar, fabricar, cocinar y más. Tienes hasta {energy_max} y recuperas {energy_day} al día (1 cada {energy_every}). Pelear no gasta energía. Cada amigo que invitas te da más."
+  d08:
+    q: "🔎 ¿Qué es explorar?"
+    a: "🔎 Explorar busca en tu zona: cada vuelta toma {explore_min} min y 1 ⚡, suma de {explore_low} a {explore_high} % de la zona y puede darte cosas, monedas o una pelea. Al {reveal} % descubres sus recursos de a uno. Con la zona al 100 % sigues con las vecinas sin moverte."
+  d09:
+    q: "🪓 ¿Cómo recolecto?"
+    a: "🪓 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas. En el territorio de tu campamento juntas {own_bonus} % más."
+  d10:
+    q: "🔢 ¿Qué son los lotes?"
+    a: "Al explorar, recolectar o cazar eliges cuánta energía gastar seguido ({batches} o Todo). Tu héroe hace una vuelta tras otra y te aviso al final con el resumen. Con ✋ Manual el lote se corta si sale una pelea; con ⚔️ Peleas automáticas (⚙️ Opciones) pelea solo."
+  d11:
+    q: "🏹 ¿Cómo cazo?"
+    a: "🏹 Cazar (en 🧭 Explorar) busca una presa de la zona: cuesta {hunt_energy} ⚡ cada una y solo da la pelea y su botín (carne, piel, monedas, a veces equipo). En el Claro no hay presas. Con un campamento puedes llamar a una 🏹 Partida de caza con tus compañeros."
+  d12:
+    q: "🎨 ¿Qué dicen los colores del mapa?"
+    a: "En 🗺️ Mapa cada cuadrito tiene el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…); la leyenda está arriba. El color no dice qué recursos hay: eso solo se sabe explorando. 🧍 eres tú y el norte está arriba."
+  d13:
+    q: "🗺️ ¿Qué son 👑 👹 🏕️ 🕳️ 🌀 ✨?"
+    a: "En 🗺️ Mapa: 👑 la guarida del Guardián · 👹 un campamento enemigo de hoy · 🏕️ un campamento de jugadores · 🕳️ una cueva con mazmorra (todavía no sabes cuál) · 🌀 una mazmorra profunda · ✨ un nodo de recursos (al llegar ves de qué es) · 🧍 tú."
+  d14:
+    q: "✨ ¿Qué es un nodo de recursos?"
+    a: "Un ✨ nodo es una zona rica en un recurso. Al llegar a su zona sabes de qué es, para siempre. Ahí ese recurso rinde ×{node_yield}, se agota la mitad de rápido y a veces ({node_rare} %) da una 💠 gema en bruto o una 🌸 flor de luna. Lo puede usar cualquiera."
+  d15:
+    q: "🕳️ ¿Qué es una mazmorra?"
+    a: "Las mazmorras son para uno y están siempre en el mismo lugar; lo de adentro cambia cada día. 🕳️ La chica tiene 4 salas, su jefe y un cofre que abres una vez al día. 🌀 La profunda se baja piso a piso: juntas una bolsa de premios y eliges 🚪 Salir con lo ganado; si pierdes, te queda la mitad."
+  d16:
+    q: "👹 ¿Qué es un campamento enemigo?"
+    a: "Cada día aparecen 👹 campamentos enemigos en lugares distintos. Mientras uno sigue en pie, su zona no se explora ni se recolecta. Con ⚔️ Asaltar peleas contra sus guardias y al final su jefe, que suelta su cofre. Con 🕵️ Infiltrarse (🧭 Explorador rango {infiltrate_rank}) entras sin que te vean y anotas todo."
+  d17:
+    q: "👑 ¿Quién es el Guardián?"
+    a: "El Guardián del Claro espera en su guarida 👑. Ve hasta su zona y toca ⚔️ Desafiar al Guardián en 🧭 Explorar: es una pelea dura, para uno. El primero que lo vence queda para siempre como Pionero. Si pierdes, puedes volver a intentarlo."
+  d18:
+    q: "🔭 ¿Qué es reconocer de lejos?"
+    a: "Con el oficio 🧭 Explorador en rango {recon_rank} usas /reconocer: ves desde lejos qué hay en una mazmorra o en un 👹 campamento enemigo, sin ir ni pelear. Uno por lugar al día. El 🥷 Sigilo del Explorador a veces te evita una pelea al explorar a mano o al llegar de un viaje."
+  d19:
+    q: "🚫 ¿Por qué no puedo recolectar?"
+    a: "Puede ser por la mochila llena (vende o usa cosas), la zona agotada (vuelve en unas horas), un 👹 campamento enemigo en pie en la zona, la guarida del Guardián o que todavía no descubriste sus recursos (explora primero). Si no se puede, nunca se cobra energía."
+  d20:
+    q: "👥 ¿Veo a otros jugadores?"
+    a: "En 📍 Zona ves quién anda en tu zona y qué hace. Puedes saludar con /saludar o brindar con /brindar, y mostrar tu diario. Es solo para verse: no da premios ni peleas entre jugadores."
+  # ---- ⚔️ Peleas y salud
+  d21:
+    q: "⚔️ ¿Cómo funciona una pelea?"
+    a: "Las peleas son por rondas: eliges una acción de tu barra (⚔️ atacar, tus habilidades, 🌀 esquivar, 🎒 usar algo o 🏃 huir) y el enemigo responde. Pelear no gasta energía. Ganar da experiencia, monedas y a veces equipo."
+  d22:
+    q: "💀 ¿Qué pasa si pierdo?"
+    a: "Si caes, despiertas malherido: pierdes el {defeat_pct} % de tus monedas y tu vida vuelve muy despacio (de 0 a llena en {downed_full}). Una poción o la 🛏️ Posada lo arreglan antes. No pierdes niveles, equipo ni zonas."
+  d23:
+    q: "❤️ ¿Cómo recupero vida?"
+    a: "Fuera de pelea la vida vuelve sola: de 0 a llena en {hp_full}. Más rápido: 🧪 pociones y vendas (🎒 Mochila → 🧪 Pociones), la 🛏️ Posada del Claro o el 🛏️ Refugio de tu campamento. En 👤 Héroe → 🩺 Salud ves cuánto falta."
+  d24:
+    q: "🤖 ¿Qué son las peleas automáticas?"
+    a: "En ⚙️ Opciones prendes ⚔️ Peleas automáticas: en los lotes de explorar, recolectar o cazar tu héroe pelea solo, con las mismas reglas. 🩹 Retirarse corta el lote si tu vida baja de ese %. El Guardián, las mazmorras, las oleadas y los asaltos siempre se pelean a mano."
+  d25:
+    q: "📊 ¿Qué son ataque y defensa?"
+    a: "En 👤 Héroe → 📊 Estadísticas está cada número con lo que hace: ❤️ vida, ⚔️ ataque, 🛡 defensa (armadura), iniciativa, aguante y tu recurso. Suben con el nivel, los talentos y el equipo."
+  # ---- 👤 Tu héroe
+  d26:
+    q: "🎖 ¿Cómo subo de nivel?"
+    a: "Ganas experiencia explorando, recolectando, cazando, fabricando y con los encargos. Todos los caminos llegan al nivel {max_level}, despacio: es un juego largo. En 👤 Héroe ves tu nivel y cuánto falta."
+  d27:
+    q: "🌟 ¿Qué son los talentos?"
+    a: "Cada nivel te da 1 punto de talento para una especialización de tu clase (👤 Héroe → 🌟 Talentos). Con {talent_unlock} puntos se abren sus habilidades. Reiniciar cuesta {respec_cost} por nivel."
+  d28:
+    q: "🎛️ ¿Cómo elijo mis habilidades?"
+    a: "Tu barra de combate tiene 3 casillas además de atacar. Elige qué va en cada una en 👤 Héroe → 🎛️ Barra de combate. Las habilidades nuevas se abren con los puntos de 🌟 Talentos."
+  d29:
+    q: "🔀 ¿Qué es la doble especialización?"
+    a: "Con {dual_points} puntos en tu especialización principal y {dual_bags} 💰 bolsas abres una segunda configuración de talentos con /doble, y cambias entre las dos cuando quieras."
+  d30:
+    q: "🎒 ¿Cómo funciona la mochila?"
+    a: "La 🎒 mochila tiene {bag_cap} de espacio: cada unidad ocupa 1 (el cinturón y lo que llevas puesto no cuentan). Lo que encuentras nunca se pierde aunque pase del espacio, pero con la mochila llena no recolectas ni compras hasta vender o usar cosas."
+  d31:
+    q: "🛡️ ¿Cómo me equipo?"
+    a: "En 🎒 Mochila → 🛡️ Equipo ves lo que llevas y las piezas que encontraste, si te sirven y cuánto mejoran. ⬆️ marca una pieza mejor que la tuya: tócala y elige ✅ Equipar. Cada pieza pide un nivel y un tipo."
+  d32:
+    q: "🎭 ¿Qué es el origen?"
+    a: "El origen dice de dónde viene tu héroe: da un rasgo chico (nunca de combate), un regalo y su propia historia. Se elige una sola vez, cuando quieras, en 👤 Héroe → 🎭 Origen. Si ya lo elegiste, lo conservas."
+  d33:
+    q: "📔 ¿Qué es el diario?"
+    a: "En 👤 Héroe → 📔 Diario están tu tarjeta, lo último que hiciste, tus 🎯 Misiones y las ⚜️ Facciones. Escribe /bio y un texto para tu biografía, o /diario y un nombre para ver la tarjeta de otro héroe."
+  # ---- 🏕️ Campamentos
+  d34:
+    q: "🔥 ¿Qué hay en el Claro?"
+    a: "El 🔥 Claro es el campamento base de todos: 🛒 mercader, 🛏️ posada, las estaciones para 🍲 cocinar y 🛠️ fabricar, el 🧑‍🏫 entrenador, el 📜 tablón de encargos y estas ❓ Dudas. El Claro no crece: para crecer, funda tu propio campamento."
+  d35:
+    q: "🏕️ ¿Cómo fundo mi campamento?"
+    a: "Ve a una zona a Lejanía {camp_far} o más, explórala al 100 %, conoce {camp_known} de las 8 zonas de alrededor, que no haya otro campamento a {camp_gap} zonas o menos y lleva {found_cost}. Ahí toca 🏕️ Campamento → 🏕️ Fundar campamento aquí y escribe su nombre. Cada héroe tiene uno."
+  d36:
+    q: "⬆️ ¿Cómo agrando mi campamento?"
+    a: "En tu campamento: 🏰 Gestionar → ⬆️ Agrandar. Cada nivel suma una zona a tu territorio y cuesta materiales según el nivel; desde el nivel {chests_from}, también 🪎 cofres. Pasa de campamento a aldea, pueblo, ciudad y castillo."
+  d37:
+    q: "🙋 ¿Quién entra a mi campamento?"
+    a: "Otro jugador va a tu campamento y toca 🙋 Pedir unirme; tú decides. Caben {members_base} al empezar y {members_step} más por cada nivel. Los miembros comparten las mejoras, la despensa, las oleadas y el gremio."
+  d38:
+    q: "🌾 ¿Qué es la despensa?"
+    a: "Desde el nivel {pantry_level} tu campamento tiene 🌾 despensa: cada miembro que jugó en el día come 1 ración. Se llena con 🏰 Gestionar → 🌾 Aportar comida (carne, pescado, comida cocinada o 🥖 provisiones). Con hambruna el campamento no crece, pero nunca pierde niveles."
+  d39:
+    q: "🛡️ ¿Qué son las oleadas?"
+    a: "{raids_week} veces por semana llega una oleada a tu campamento. Tienen {raid_window} min para tocar 🛡️ Defender y pelear una vez cada uno; hace falta que gane la mitad de los miembros activos. Si no alcanza, la despensa pierde el {raid_loss} % y nada más. La 🛡️ Defensa de tus mejoras debilita a los atacantes."
+  d40:
+    q: "🔨 ¿Qué son las mejoras?"
+    a: "En 🏰 Gestionar → 🔨 Mejoras construyen entre todos las obras del campamento (🔥 Fogón, 🧵 Taller, 🔨 Herrería, 📚 Biblioteca, defensas…): cada uno aporta materiales hasta completarlas. Lo construido queda para siempre y da servicios y defensa."
+  d41:
+    q: "🔬 ¿Cómo investigo?"
+    a: "🔬 Investigar es el 📚 Conocimiento de tu campamento: con la 📚 Biblioteca (nivel {library_level}) estudian de a uno {studies}, y lo aprendido vale para siempre para todos los miembros. En el Claro no se investiga."
+  d42:
+    q: "🛡️ ¿Qué es el gremio?"
+    a: "El fundador crea el gremio en su campamento por {guild_cost} (🏰 Gestionar → 🛡️ Gremio). Sus miembros son los del campamento; sube de nivel con lo que exploran, ganan y juntan entre todos, y deja entrar a más gente. Para llegar a castillo hace falta un gremio de nivel {guild_castle}."
+  d43:
+    q: "📜 ¿Qué es el tablón?"
+    a: "En el 📜 Tablón (🏕️ Campamento) hay 3 encargos nuevos cada día, uno por facción: cumplirlos da experiencia, monedas y reputación. Si tienes campamento, ves también sus encargos de la semana, que se hacen entre todos."
+  # ---- ⚒️ Oficios
+  d44:
+    q: "⚒️ ¿Cómo aprendo un oficio?"
+    a: "Un oficio se aprende haciéndolo, sin pagar ni elegir, y puedes tenerlos todos. Recolectar sube los de recolección, explorar el 🧭 Explorador, y refinar o fabricar en una estación, los suyos. El 🧑‍🏫 Entrenador (🏕️ Campamento) te los presenta y /oficios muestra tus rangos."
+  d45:
+    q: "🛠️ ¿Cómo fabrico?"
+    a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."
+  d46:
+    q: "🍲 ¿Cómo cocino?"
+    a: "🍲 Cocinar (🏕️ Campamento) usa la estación de la 🍲 Cocina: carne, pescado y lo que da cada terreno se vuelven raciones y guisos que rinden más en la 🌾 despensa. En el Claro ya se cocina; en tu campamento, con el 🔥 Fogón. El 🎣 pescado sale de las zonas con agua."
+  d47:
+    q: "🎓 ¿Qué son las especializaciones?"
+    a: "Cuando un oficio llega al rango {spec_first} eliges su primera 🎓 especialización, y al {spec_second} la segunda (nunca las tres). Dan bonos y recetas propias que crecen con el dominio. Se eligen en ⚒️ Oficios → 🎓 Especialización o con /especialidad."
+  d48:
+    q: "✨ ¿Qué es el encantamiento?"
+    a: "Con /encantar desarmas equipo viejo en ✨ esencias y con ellas encantas una pieza para darle un bono chico. Es un oficio más: sube encantando y desencantando."
+  d49:
+    q: "✒️ ¿Qué es una obra maestra?"
+    a: "Al fabricar una pieza de equipo puede salir ✒️ obra maestra: más fuerte, única y con tu firma. Sale más seguido cuanto más rango tienes en ese oficio."
+  # ---- 💰 Monedas y comercio
+  d50:
+    q: "💰 ¿Cómo funcionan las monedas?"
+    a: "Hay 🥉 bronce, 🥈 plata y 🥇 oro: {rate} 🥉 = 1 🥈 y {rate} 🥈 = 1 🥇. También 💰 bolsas (se cosen), 🪎 cofres (se arman con bolsas) y 💎 diamantes. Todo está en 🎒 Mochila → 💰 Monedas."
+  d51:
+    q: "🛒 ¿Qué hago con el mercader?"
+    a: "El 🛒 Mercader del Claro vende pociones, vendas y 🥖 provisiones (hasta {provisions_cap} por semana) y te compra materiales al {sell_pct} % de su precio. El equipo que no usas se vende desde 🛡️ Equipo. La comida no se vende: es para la despensa."
+  d52:
+    q: "🪎 ¿Cómo hago bolsas y cofres?"
+    a: "Una 💰 bolsa se cose con {bag_recipe} y {bag_coins}. Un 🪎 cofre se arma con {chest_bags} bolsas y {chest_items}. Se hacen en 🎒 Mochila → 💰 Monedas (en el Claro) o en el 🧵 Taller de tu campamento. Los cofres pagan los niveles altos del campamento."
+  d53:
+    q: "🔗 ¿Para qué sirve invitar?"
+    a: "En 👤 Héroe está tu código de invitación. Cada amigo que entra con tu enlace y crea su héroe te da {invite_bonus} ⚡ extra."

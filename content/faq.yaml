@@ -1,0 +1,91 @@
+# Questions of ❓ Dudas (D-191, confirmed; layout D-192, provisional): keyword search, never a real AI (E-129).
+# Each question has a stable code (d01, d02...), the topic it is listed under, the keywords that find it and its related codes.
+#
+# [ES]
+# Para qué sirve: el catálogo de las preguntas ya respondidas del botón ❓ Dudas (🏕️ Campamento) y de /dudas. El jugador
+#     escribe una palabra ("energía", "mapa", "campamento") y salen las preguntas cuyas palabras clave coinciden, cada una
+#     con su código; /d07 (o tocar la pregunta) muestra la respuesta con sus preguntas relacionadas. Es un buscador por
+#     palabras (E-129, recomendado): no es una IA de verdad ni cuesta nada por mensaje.
+# Documento de diseño: diseno/01-plataforma/menus-campamento-y-heroe.md §4 (❓ Dudas)
+# Lo leen: engine/service/game.py (sección "❓ Dudas": _faq_entries, _faq_search, _dudas_view, _duda_view) y
+#     tests/test_menus_y_dudas.py. Los textos (la pregunta y la respuesta) van en content/locales/es_dudas.yaml como
+#     faq.<código>.q y faq.<código>.a; los temas, como dudas.topic.<tema>.
+# IDs: los códigos son estables (los jugadores los escriben y se comparten): nunca se renombran, se borran ni se reutilizan.
+#     Para retirar una pregunta se marca retired: true. Una pregunta nueva toma el siguiente código libre.
+# Números: las respuestas no escriben números a mano: los toman de content/balance.yaml al mostrarse (_faq_values), así
+#     un cambio de balance no deja una respuesta vieja. Si una respuesta pide un número nuevo, se agrega en _faq_values.
+# Regla: cada sistema nuevo del juego agrega aquí su pregunta en el mismo cambio (como las pistas de TowerWars).
+# Si cambias esto, revisa: content/locales/es_dudas.yaml (cada código con q y a; cada tema con su nombre) y
+#     tests/test_menus_y_dudas.py (todas las entradas tienen textos, temas existentes y relacionadas válidas).
+
+# Topics, in the order of the ❓ Dudas buttons (7 + ↩️ Volver = 8, D-192). [ES] Temas, en el orden de los botones.
+topics: [start, world, fight, hero, camp, trades, money]
+
+# Shown first on the ❓ Dudas screen. [ES] Las más buscadas, arriba de la pantalla de ❓ Dudas.
+popular: [d01, d06, d07, d35, d44, d22]
+
+# keywords: lowercase words without accents (the search also ignores accents and case). [ES] palabras clave en minúscula,
+# sin tildes; la búsqueda también ignora tildes y mayúsculas. related: códigos de preguntas parecidas (hasta 3).
+questions:
+  # ---- 🌱 Primeros pasos
+  d01: {topic: start, keywords: [empezar, comenzar, inicio, nuevo, novato, primeros, pasos, ayuda, tutorial, guia, que hago], related: [d02, d06, d34]}
+  d02: {topic: start, keywords: [menu, menus, botones, boton, abajo, zona, explorar, campamento, heroe, opciones], related: [d01, d04, d03]}
+  d03: {topic: start, keywords: [historia, misiones, mision, campana, capitulo, diario, personajes, facciones], related: [d33, d43, d32]}
+  d04: {topic: start, keywords: [atajos, atajo, comandos, comando, barra, escribir, codigo, codigos, slash], related: [d02, d05]}
+  d05: {topic: start, keywords: [tiempo, espera, esperar, minutos, real, reloj, temporizador, cerrar, chat, aviso], related: [d06, d10]}
+  d54: {topic: start, keywords: [parche, parches, novedades, version, actualizacion, start, teclado], related: [d02, d05]}
+  d55: {topic: start, keywords: [opciones, ajustes, configurar, configuracion, pociones, retirarse, retirada], related: [d24, d10]}
+  # ---- 🧭 Mapa y exploración
+  d06: {topic: world, keywords: [mover, moverse, movimiento, viajar, viaje, caminar, direccion, ir, zonas, norte, sur, lugares, volver], related: [d07, d12, d05]}
+  d07: {topic: world, keywords: [energia, cansado, recuperar, rayo, gastar, invitar], related: [d10, d53, d06]}
+  d08: {topic: world, keywords: [explorar, exploracion, porcentaje, descubrir, buscar, alrededor, vecinas], related: [d09, d10, d14]}
+  d09: {topic: world, keywords: [recolectar, recoleccion, juntar, madera, piedra, fibra, recursos, recurso, materiales, agotado], related: [d19, d14, d08]}
+  d10: {topic: world, keywords: [lote, lotes, cantidad, cantidades, varias, seguido, automatico, resumen], related: [d24, d07, d08]}
+  d11: {topic: world, keywords: [cazar, caza, presa, presas, bestias, carne, piel, partida], related: [d21, d10, d38]}
+  d12: {topic: world, keywords: [mapa, colores, color, terreno, terrenos, cuadros, cuadritos, leyenda, pradera, bosque], related: [d13, d06, d08]}
+  d13: {topic: world, keywords: [iconos, icono, simbolos, simbolo, emoji, corona, cueva, remolino, chispa, calavera, mapa], related: [d12, d15, d14]}
+  d14: {topic: world, keywords: [nodo, nodos, brillo, chispa, doble, gema, flor, luna], related: [d09, d13, d12]}
+  d15: {topic: world, keywords: [mazmorra, mazmorras, cueva, cuevas, dungeon, profunda, chica, pisos, piso, salas], related: [d13, d17, d18]}
+  d16: {topic: world, keywords: [enemigo, enemigos, asaltar, asalto, infiltrar, infiltrarse, guardias, guarnicion], related: [d13, d18, d19]}
+  d17: {topic: world, keywords: [guardian, guarida, jefe, pionero, corona, desafiar], related: [d13, d15, d21]}
+  d18: {topic: world, keywords: [reconocer, reconocimiento, espiar, lejos, sigilo, explorador], related: [d16, d15, d44]}
+  d19: {topic: world, keywords: [no puedo, no deja, bloqueado, bloqueada, agotada, agotado, llena, lleno, falta, rechaza], related: [d09, d30, d16]}
+  d20: {topic: world, keywords: [jugadores, jugador, otros, gente, amigos, saludar, brindar, gestos, compañeros], related: [d37, d33, d06]}
+  # ---- ⚔️ Peleas y salud
+  d21: {topic: fight, keywords: [pelea, peleas, combate, pelear, atacar, ataque, ronda, rondas, turnos, huir, esquivar], related: [d22, d28, d24]}
+  d22: {topic: fight, keywords: [perder, perdi, derrota, morir, muerte, muerto, caer, caido, malherido], related: [d23, d21, d24]}
+  d23: {topic: fight, keywords: [vida, curar, curarme, curacion, salud, sanar, regenerar, pocion, pociones, venda, posada, heridas], related: [d22, d51, d24]}
+  d24: {topic: fight, keywords: [automatico, automaticas, auto, solo, manual, retirarse, peleas], related: [d10, d55, d21]}
+  d25: {topic: fight, keywords: [estadisticas, estadistica, stats, defensa, armadura, iniciativa, aguante, numeros], related: [d31, d27, d21]}
+  # ---- 👤 Héroe
+  d26: {topic: hero, keywords: [nivel, niveles, experiencia, subir, xp, exp, progreso], related: [d27, d08, d09]}
+  d27: {topic: hero, keywords: [talentos, talento, puntos, especializacion, especializaciones, habilidades, reiniciar], related: [d28, d29, d26]}
+  d28: {topic: hero, keywords: [barra, habilidades, habilidad, casillas, casilla, elegir, hechizos], related: [d27, d21, d29]}
+  d29: {topic: hero, keywords: [doble, dual, segunda, configuracion, cambiar], related: [d27, d52, d28]}
+  d30: {topic: hero, keywords: [mochila, espacio, inventario, lleno, llena, cinturon, cargar, inv], related: [d19, d31, d51]}
+  d31: {topic: hero, keywords: [equipo, equipar, arma, armas, armadura, pieza, piezas, mejor, ropa], related: [d30, d25, d49]}
+  d32: {topic: hero, keywords: [origen, pasado, rasgo, soldado, desertor, huerfano, aprendiz, noble], related: [d33, d03, d26]}
+  d33: {topic: hero, keywords: [diario, cronica, tarjeta, bio, biografia, misiones, facciones, reputacion], related: [d03, d32, d43]}
+  # ---- 🏕️ Campamentos
+  d34: {topic: camp, keywords: [claro, base, fogata, antorcha, inicio, posada, dormir], related: [d35, d51, d01]}
+  d35: {topic: camp, keywords: [fundar, fundacion, crear, campamento, propio, casa, nombre], related: [d36, d37, d34]}
+  d36: {topic: camp, keywords: [agrandar, crecer, nivel, zonas, territorio, castillo, aldea, pueblo, ciudad, gestionar], related: [d35, d40, d52]}
+  d37: {topic: camp, keywords: [miembros, miembro, unirse, unirme, entrar, compañeros, invitar, pedir, aceptar], related: [d35, d42, d20]}
+  d38: {topic: camp, keywords: [despensa, comida, hambre, raciones, racion, alimentar, hambruna, provisiones], related: [d46, d39, d51]}
+  d39: {topic: camp, keywords: [oleada, oleadas, incursion, incursiones, defender, defensa, noche, prueba], related: [d40, d38, d37]}
+  d40: {topic: camp, keywords: [mejoras, mejora, obras, obra, construir, edificios, aportar, fogon, taller, herreria, biblioteca, muebles], related: [d41, d36, d39]}
+  d41: {topic: camp, keywords: [investigar, investigacion, conocimiento, estudio, estudios, biblioteca, estudiar], related: [d40, d36, d44]}
+  d42: {topic: camp, keywords: [gremio, gremios, guild, clan, grupo], related: [d37, d36, d40]}
+  d43: {topic: camp, keywords: [tablon, encargos, encargo, tareas, tarea, diarias, semana, facciones, personajes], related: [d03, d33, d42]}
+  # ---- ⚒️ Oficios
+  d44: {topic: trades, keywords: [oficio, oficios, aprender, profesion, profesiones, entrenador, maestro, rango, rangos], related: [d45, d47, d18]}
+  d45: {topic: trades, keywords: [fabricar, crear, hacer, receta, recetas, refinar, estacion, estaciones, craftear, forjar], related: [d44, d46, d49]}
+  d46: {topic: trades, keywords: [cocinar, cocina, comida, guiso, guisos, racion, fogon, pescado, pescar, pescador], related: [d38, d45, d44]}
+  d47: {topic: trades, keywords: [especializacion, especialidad, especialidades, maestria, dominio, 25, 75], related: [d44, d45, d27]}
+  d48: {topic: trades, keywords: [encantar, encantamiento, esencia, esencias, desencantar], related: [d31, d47, d45]}
+  d49: {topic: trades, keywords: [obra maestra, maestra, firma, exclusiva, unica], related: [d45, d31, d47]}
+  # ---- 💰 Monedas y comercio
+  d50: {topic: money, keywords: [monedas, moneda, dinero, oro, plata, bronce, diamantes, diamante], related: [d51, d52, d53]}
+  d51: {topic: money, keywords: [mercader, comprar, compra, vender, venta, tienda, precio, provisiones, comercio], related: [d50, d30, d38]}
+  d52: {topic: money, keywords: [bolsa, bolsas, cofre, cofres, coser, armar], related: [d50, d36, d29]}
+  d53: {topic: money, keywords: [invitar, invitacion, enlace, amigos, referido, codigo, compartir], related: [d07, d50, d20]}

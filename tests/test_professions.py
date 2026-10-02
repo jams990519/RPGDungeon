@@ -327,7 +327,7 @@ def test_oficios_command_and_screen(service):
     ready(service)
     assert service.commands()["/oficios"] == "oficios"
     view = service.act("test:1", "claro")
-    assert ids(view) == ["shop", "inn", "oficios", "board"]          # D-117: 📜 Tablón took the ↩️ Volver slot
+    assert ids(view) == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]          # D-192: 🛠️ Fabricar is ⚒️ Oficios
     view = service.act("test:1", "oficios")
     assert view.kind == "professions" and ids(view) == ["est:refine:0", "est:craft:0", "claro"]
     assert any("Todavía no empezaste" in line for line in view.body)
@@ -379,7 +379,7 @@ def test_camp_stations_come_with_the_taller_and_the_herreria(service):
     view = service.act("test:1", "ctaller")
     assert "oficios" in ids(view)
     view = service.act("test:1", "oficios")
-    assert ids(view) == ["est:refine:0", "est:craft:0", "ctaller"]
+    assert ids(view) == ["est:refine:0", "est:craft:0", "claro"]         # D-192: back to the camp hub (🛠️ Fabricar)
     assert any("Estaciones de tu campamento" in line for line in view.body)
     refine = service.act("test:1", "est:refine:0")
     listed = {a.id.split(":")[1] for p in range(2) for a in service.act("test:1", f"est:refine:{p}").actions if a.id.startswith("rec:")}
@@ -405,7 +405,7 @@ def test_herreria_without_taller_opens_its_stations_from_the_services(service):
     assert view.kind == "camp_services" and "oficios" in ids(view) and len(view.actions) <= 4
     stations, where = service._stations_here(service._load("test:1"))
     assert set(stations) == {"fundicion", "herreria", "joyeria"} and where == "camp"
-    assert ids(service.act("test:1", "oficios"))[-1] == "upsvc"
+    assert ids(service.act("test:1", "oficios"))[-1] == "claro"           # D-192: back to the camp hub
 
 
 def test_old_heroes_without_professions_load(service):

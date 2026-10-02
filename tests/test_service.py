@@ -25,8 +25,9 @@ def test_creation_flow(service):
     assert any(a.id.startswith("page:") for a in view.actions)
     service.act("test:1", "grp:guerrero")
     view = service.act("test:1", [a.id for a in service.act("test:1", "grp:guerrero").actions if a.id.startswith("cls:")][0])
-    assert view.kind == "origin" and len(view.actions) <= 4      # D-117: the origin comes right after the class...
-    assert service.act("test:1", "home").kind == "zone"          # ...but never blocks: the menu goes on playing
+    assert view.kind == "zone" and view.notice                 # D-190: name and class, then straight to the game
+    assert service._load("test:1").origin is None                # the origin is chosen later (👤 Héroe → 🎭 Origen, E-131)
+    assert service.act("test:1", "home").kind == "zone"
 
 
 def test_names_are_unique(service):
@@ -238,9 +239,8 @@ def test_the_claro_never_grows(service, clock):
     assert service._settlement()["stage"] == 0
     assert service.store.get("hero", "test:1")["backpack"]["madera"] == 50   # nothing taken
     view = service.act("test:1", "claro")
-    # D-109: the Claro has the basic profession stations, so ⚒️ Oficios ("oficios") is its 3rd button;
-    # D-117: 📜 Tablón ("board") took the ↩️ Volver slot (📍 Zona in the bottom menu goes back)
-    assert [a.id for a in view.actions] == ["shop", "inn", "oficios", "board"]
+    # D-192: the Claro hub: cook, research, make (⚒️ Oficios), trainer, shop, inn, 📜 Tablón and ❓ Dudas
+    assert [a.id for a in view.actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]
     assert any("funda tu propio campamento" in line for line in view.body)
 
 
