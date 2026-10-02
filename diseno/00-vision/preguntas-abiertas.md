@@ -260,7 +260,7 @@ Del pedido del dueño del 2-oct (D-208 a D-210); propuesta completa en [Estadís
 
 | # | Pregunta | Recomendación |
 |---|---|---|
-| P-169 | ¿La estadística principal de una pieza se adapta a quien la lleva o es fija? (E-170) | Se adapta, como en el WoW moderno: placa Fuerza o Intelecto, cuero Agilidad o Intelecto, tela Intelecto |
+| P-169 | ¿La estadística principal de una pieza se adapta a quien la lleva o es fija? (E-170) | ✅ **Decidido (D-218):** la principal se adapta a quien lleva la pieza |
 | P-170 | ¿A qué tipo de armadura pasan las clases que usaban malla? (E-171) | Cazador a cuero, Chamán a placa, Evocador a tela (4 en placa, 6 en cuero, 5 en tela) |
 | P-171 | ¿⚔️ Atacar cuenta como una de las 4 habilidades? (E-172) | Sí: Atacar y 3 habilidades, todas en la barra (D-46) |
 | P-172 | ¿Cuántas estadísticas? (E-173) | Capa simple de 9 (3 principales, Vitalidad, Armadura y 4 secundarias) y capa profunda (terciarias y resistencias) |
@@ -280,8 +280,22 @@ Del pedido del dueño del 2-oct (D-212 a D-214).
 | P-179 | ¿Cómo se le compra el mapa a un investigador? (D-213; E-180) | Pergamino de mapa del 🧭 Explorador con lo que exploró al 50 % de una región de 6 × 6, precio libre |
 | P-180 | ¿Cuenta lo que exploras alrededor sin moverte? (E-181) | Sí: una zona vecina estudiada al 50 % también se pinta |
 | P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | Claude propone 8 a 10 clases propias con 3 especializaciones; el dueño elige y cambia |
-| P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | 2 por clase y 1 por especialización, +10 % a lo que sumas en ellas |
-| P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | No: afinidades por clase; el jugador elige con equipo, gemas y filas de talentos |
-| P-184 | ¿Rendimiento decreciente en las secundarias? (E-185) | Sí, como el WoW: pasado un 30 %, cada punto rinde menos, con tope |
+| P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
+| P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |
+| P-184 | ¿Rendimiento decreciente en las secundarias? (E-185) | ✅ **Decidido (D-217):** sí, rendimiento decreciente con tope |
 | P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | Cambio de clase gratis una vez, conservando nivel, equipo y oficios |
+
+## Dudas de las estadísticas: puntos, afinidad, tope, armas y arquetipos (2-oct-2026)
+
+De lo que el dueño decidió en el chat de diseño (D-215 a D-219).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-186 | ¿Cuántos puntos de estadística principal por nivel? (D-215; E-187) | 1 por nivel, más una base de clase al crear el héroe |
+| P-187 | ¿Qué principales hay y qué da cada una? (D-216; E-188) | 5: Fuerza, Agilidad, Intelecto, Vitalidad y Voluntad, cada una con 3 o 4 beneficios chicos |
+| P-188 | ¿Cuánto más rinde la afinidad? (D-216; E-189) | ×1,5 en las 2 de la clase y la 1 de la especialización |
+| P-189 | ¿Qué fórmula de rendimiento decreciente? (D-217; E-190) | Secundarias completas hasta 30 %, a la mitad hasta 50 %, tope 50 %; principales completas hasta el doble del nivel |
+| P-190 | ¿Los puntos se reajustan? (E-191) | Sí, pagando como los talentos, y gratis una vez al llegar el sistema |
+| P-191 | ¿Las armas escalan con las principales, estilo Dark Souls? (E-192) | Sí: cada tipo con una o dos principales |
+| P-192 | ¿Qué combinación define a cada arquetipo? (D-219; E-193) | Ver E-193: vida o resistencia, poder o crítico, ráfaga o sostenido |
 

@@ -1,6 +1,6 @@
 # Estadísticas, armaduras y clases (la reforma del 2-oct-2026)
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-44, D-46, D-77, D-83, D-110, D-199, D-208 a D-211, D-214), [Clases y especializaciones](clases-y-especializaciones.md), [Equipamiento](equipamiento.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Botín](botin.md), [Talentos](talentos.md), los oficios que fabrican equipo ([Repaso de oficios](../07-economia/oficios-repaso-2-oct.md)) · **Estado:** lo que dijo el dueño es decisión confirmada (D-208 a D-210 y D-214); el resto es **propuesta de Claude** (D-211, provisional) que espera las preguntas E-170 a E-176 y E-182 a E-186. **Solo diseño: el código no se toca hasta que el dueño apruebe la propuesta.**
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-44, D-46, D-77, D-83, D-110, D-199, D-208 a D-211, D-214), [Clases y especializaciones](clases-y-especializaciones.md), [Equipamiento](equipamiento.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Botín](botin.md), [Talentos](talentos.md), los oficios que fabrican equipo ([Repaso de oficios](../07-economia/oficios-repaso-2-oct.md)) · **Estado:** lo que dijo el dueño es decisión confirmada (D-208 a D-210 y D-214 a D-219); el resto es **propuesta de Claude** (D-211, provisional) que espera las preguntas de los bloques A4, A5 y A6 del sistema de preguntas (E-171 a E-193). **Solo diseño: el código no se toca hasta que el dueño apruebe la propuesta.**
 
 ## 1. Lo que pidió el dueño
 
@@ -153,6 +153,29 @@ El dueño: "vamos a crear clases personalizadas; no va a ser específicamente la
 - **Quién decide:** el dueño elige y cambia antes de programar.
 - **Los jugadores de hoy:** conservan nivel, equipo y oficios, y cambian de clase gratis una vez cuando lleguen las nuevas (E-186).
 
+### 3.4 Lo que decidió el dueño en el chat de diseño (D-215 a D-219, 2-oct-2026)
+
+- **D-215, puntos al subir de nivel:** el jugador reparte **pocos puntos, solo en estadísticas principales**. Las secundarias vienen del equipo, las gemas y los talentos. Esto cambia la recomendación de §3.2, que decía no repartir puntos. Cuántos por nivel y si se reajustan: E-187 y E-191.
+- **D-216, reparto libre con afinidad:** cada principal da **varios beneficios pequeños**, así ninguna es inútil, pero la **afinidad** de la clase hace que sus estadísticas rindan **mucho más**. La guía es intuitiva y no prohíbe nada. Qué principales hay y cuánto rinde la afinidad: E-188 y E-189. La recomendación sube de +10 % a ×1,5, porque el dueño pidió "mucho más".
+- **D-217:** **todo** pasa por rendimiento decreciente con tope (40 puntos de crítico no son 40 %). Fórmula: E-190.
+- **D-218:** la principal de la armadura **se adapta a quien la lleva**. La identidad del equipo vive en **las secundarias, los bonos de conjunto y las gemas** (cierra E-170 y la parte de conjuntos de E-175).
+- **D-219, estilo Dark Souls:** cada jugador se siente distinto, con estadísticas de función clara y **arquetipos dentro de cada rol**:
+  - tanque de vida o tanque de resistencia;
+  - DPS de poder o DPS de crítico;
+  - sanador de ráfaga o sanador sostenido.
+
+  Las combinaciones propuestas están en E-193, y las armas que escalan con las principales en E-192.
+
+**La propuesta, ajustada a estas decisiones (E-188):** 5 principales.
+
+| Principal | Beneficios pequeños (la afinidad los agranda ×1,5) | Arquetipos que la buscan |
+|---|---|---|
+| 💪 Fuerza | Daño de golpes, parada y bloqueo | Tanque de resistencia, DPS de poder cuerpo a cuerpo |
+| 🏹 Agilidad | Daño de golpes, esquiva, algo de crítico e iniciativa | DPS de crítico, tanque que esquiva |
+| 🔮 Intelecto | Daño de hechizos, poder de curas y maná | DPS mágico, sanador de ráfaga |
+| ❤️ Vitalidad | Vida máxima, vida que vuelve sola y resistencia a enfermedades | Tanque de vida |
+| 🕊️ Voluntad | Recurso que vuelve cada ronda, curas por ronda y resistencia a estados (miedo, aturdimiento, veneno) | Sanador sostenido, el que pelea largo |
+
 ## 4. Las tres armaduras y las clases (D-208)
 
 **Sin malla, las clases que la usaban pasan a otro tipo.** Propuesta (E-171):
@@ -248,7 +271,7 @@ Cada fase con su parche, sus pruebas y su medición.
 
 ## 10. Preguntas para el dueño
 
-En el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloques A4 y A5 (**E-170 a E-176** y **E-182 a E-186**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-169 a P-175 y P-181 a P-185).
+En el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloques A4, A5 y A6 (**E-171 a E-193**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-170 a P-192).
 
 ## 11. De dónde sale
 

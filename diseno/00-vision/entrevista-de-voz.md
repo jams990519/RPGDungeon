@@ -398,3 +398,15 @@ Pedido del dueño por voz (transcripción tal como llegó):
 
 **Cómo se interpretó:** "no era haciendo nada" se tomó como "no programes nada todavía: mándame las preguntas". Se registraron D-212 (mapa en blanco hasta el 50 %), D-213 (la información del mapa se le compra a un investigador) y D-214 (clases personalizadas con afinidades), confirmadas; las dudas quedaron en E-177 a E-186. El ayudante que elegía 4 habilidades de las clases de hoy se detuvo, porque las clases se van a rehacer. Lo investigado sobre las estadísticas del WoW está en [Estadísticas](../03-personaje/estadisticas.md) §3.1.
 
+## 2-oct-2026 · Estadísticas y clases: contexto decidido en el chat de diseño
+
+El dueño pegó, desde el otro chat, el contexto ya decidido junto con 17 preguntas sobre cómo está el juego hoy:
+
+> - Al subir de nivel, el jugador reparte POCOS puntos, SOLO en estadísticas PRINCIPALES. Las secundarias vienen del equipo, gemas y talentos.
+> - El reparto es libre: cada estadística principal da varios beneficios pequeños, así que ninguna es inútil, pero la AFINIDAD de la clase hace que sus estadísticas rindan mucho más. La guía es intuitiva, sin prohibiciones.
+> - Todo pasa por rendimiento decreciente con tope, para que nada se rompa (ej.: 40 puntos en crítico NO es 40%).
+> - La estadística principal de cada pieza de armadura se ADAPTA a quien la lleva (placa/cuero/tela); la identidad del equipo vive en las secundarias, los bonos de conjunto y las gemas.
+> - Se busca que cada jugador se sienta distinto, estilo Dark Souls: estadísticas con función clara y arquetipos dentro de cada rol (tanque de vida vs. tanque de resistencia, DPS de poder vs. DPS de crítico, sanador de ráfaga vs. sanador sostenido).
+
+**Qué se registró:** D-215 a D-219, confirmadas. Cierran E-170, E-183, E-184, E-185 y la parte de conjuntos de E-175. Las 17 preguntas se respondieron con lo que hay hoy en el juego, y lo que falta decidir quedó en E-187 a E-193 (bloque A6). Detalle en [Estadísticas](../03-personaje/estadisticas.md) §3.4.
+
