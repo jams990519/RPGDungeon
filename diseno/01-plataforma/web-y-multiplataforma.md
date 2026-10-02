@@ -150,6 +150,7 @@ Los ejemplos **"Cómo se ve en Telegram"** de todo el diseño (combate, cirugía
 5. **Los textos vienen del motor, ya traducidos** al idioma de la cuenta desde los archivos de idiomas (M1). El cliente solo escribe los textos de su propia interfaz ("Cerrar sesión", "Cargando").
 6. **Cada vista tiene versión.** El cliente muestra siempre la última. Una orden enviada sobre una versión vieja se valida contra el estado actual.
 7. **La vista es un contrato:** se agregan campos, no se cambian ni se quitan (ver [Convenciones de código](convenciones-de-codigo.md) §6.1).
+8. **Filas de botones (D-189, campo `layout`, desde la 0.27.1).** La vista puede decir cuántos botones van en cada una de las primeras filas. Las pantallas que eligen una cantidad (explorar, recolectar, cazar en lote, fabricar) mandan `[n, 1]`: una fila de botoncitos con solo el número ("5", "10", "20", "40", "Todo") y abajo un botón ancho de volver o cancelar. Así se ven todas las cantidades a la vez, sin páginas. El tiempo o el detalle de cada cantidad va en el texto. Cada cliente las dibuja a su modo (Telegram: hasta 8 por fila), sin quitar ninguna.
 
 ### 3.4 Órdenes
 

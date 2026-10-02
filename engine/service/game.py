@@ -1506,12 +1506,15 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🪓 Recolectar y, con ⚔️ Peleas automáticas, de
-        🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). Cada botón dice la energía y el tiempo
-        estimado ("⚡ 10 · ⏱️ 1 h 40 min"); 4 botones como mucho, con ▶️ Más / ◀️ Volver. Dice además qué pasa si sale una
+        🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). D-189 (pedido del dueño): todas las cantidades a
+        la vez, como botoncitos uno al lado del otro con solo el número (5, 10, 20, 40 y "Todo" si alcanza para más), y un
+        botón ancho ❌ Cancelar abajo (View.layout = [n, 1]); el tiempo de cada cantidad va en una línea del texto ("⏱️ 5 → 50
+        min · 10 → 1 h 40 min..."). Ya no hay páginas (▶️ Más): "amt:" muestra lo mismo. Dice además qué pasa si sale una
         pelea (⚙️ Opciones). Con un 👹 campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
         🧭 Explorar con el aviso, sin gastar nada.
         La llaman: los botones 🔎 Explorar, 🪓 Recolectar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
-        Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y el tope de 4 botones.
+        Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y la excepción de D-189 al
+        tope de 4 botones (D-75).
         """
         t = self.texts
         if kind not in BATCH_KINDS:
@@ -1549,24 +1552,21 @@ class GameService(StoryMixin):
         elif kind == "explore":
             body += self._explore_progress_lines(hero)
         body += self._auto_lines(hero, kind)            # D-114: what happens if a fight comes up (⚙️ Opciones)
-        body.append(t.t("batch.cancel_hint"))
         batch = self._hunt_cfg()["batch"] if kind == "hunt" else self.content.balance["energy"]["batch"]
         options = [n for n in batch if n <= hero.energy]
-        pages = [options[:2], options[2:]]
-        page = page % 2
-        actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.button", n=n, time=total(n))) for n in pages[page]]
-        if page == 0:
-            if len(options) > 2 or top not in options:
-                actions.append(Action(id=f"amt:{kind}:1", label=t.t("batch.more")))
-            actions.append(Action(id=back, label=t.t("batch.cancel")))
-        else:
-            if top not in options:
-                actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.max", n=top, time=total(top))))
-            actions.append(Action(id=f"amt:{kind}:0", label=t.t("batch.back")))
-        if not options:
-            actions = [Action(id=f"do:{kind}:max", label=t.t("batch.max", n=top, time=total(top))),
-                       Action(id=back, label=t.t("batch.cancel"))]
-        return View(kind="batch", title=t.t(f"batch.title_{kind}"), body=body, actions=actions[:4])
+        # D-189 (owner): every amount at once, as small buttons side by side (just the number), and one wide ❌ Cancelar.
+        # The times the owner asked for (D-114) move to one line of the text: "⏱️ 5 → 50 min · 10 → 1 h 40 min · ...".
+        times = [t.t("batch.time_item", n=n, time=total(n)) for n in options]
+        if top not in options:
+            times.append(t.t("batch.time_all", n=top, time=total(top)))
+        body.append(t.t("batch.times", items=" · ".join(times)))
+        body.append(t.t("batch.cancel_hint"))
+        actions = [Action(id=f"do:{kind}:{n}", label=t.t("batch.amount", n=n)) for n in options]
+        if top not in options:
+            actions.append(Action(id=f"do:{kind}:max", label=t.t("batch.all")))
+        actions.append(Action(id=back, label=t.t("batch.cancel")))
+        return View(kind="batch", title=t.t(f"batch.title_{kind}"), body=body, actions=actions,
+                    layout=[len(actions) - 1, 1])
 
     def _start_batch(self, hero: Hero, kind: str, amount: str) -> View:
         """Start a batch: pay the first step and set the timer; a hunt batch only with ⚔️ automatic fights (D-114).
@@ -5076,14 +5076,16 @@ class GameService(StoryMixin):
         return View(kind="station", title=t.t(f"prof.station_title_{branch}"), body=body, actions=actions[:4], notice=notice)
 
     def _recipe_view(self, hero: Hero, rid: str, page: int = 0, notice: str | None = None) -> View:
-        """One recipe: what it needs (✅ / ❌ with have/need), what it makes, energy, what you earn, 🔨 Hacer 1 / 5 / todo.
+        """One recipe: what it needs (✅ / ❌ with have/need), what it makes, energy, what you earn, and how many to make.
 
         [ES]
         Qué hace: muestra una receta: los materiales que pide con lo que llevas (✅ o ❌), lo que sale (con los bonos si
         es equipo, o cuánto cura si es poción), la energía por vez, la experiencia de héroe y de oficio que da, y la
         probabilidad de una unidad más al refinar. D-141: la de una 🎓 especialización dice de cuál es y, si no la tienes o te
-        falta dominio, lo dice y no hay botón de hacer; la ✒️ obra maestra y la unidad de más suman lo de tus especializaciones. Botones: 🔨 Hacer 1, 🔨 Hacer 5 (o lo que alcance), 🔨 Hacer todo
-        (si alcanza para más de 5) y ↩️ Volver a la estación: 4 como mucho (D-75). Si falta algo, lo dice y no hay botón.
+        falta dominio, lo dice y no hay botón de hacer; la ✒️ obra maestra y la unidad de más suman lo de tus especializaciones.
+        Botones (D-189, pedido del dueño): botoncitos con solo la cantidad, uno al lado del otro (1, 5, 10, 20 hasta lo que
+        alcance, professions.make_amounts, y "Todo" si alcanza para más), y ↩️ Volver ancho abajo (View.layout). Si falta
+        algo, lo dice y no hay botón de hacer.
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
         """
@@ -5138,20 +5140,22 @@ class GameService(StoryMixin):
             body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
         else:
             times = max_times(rdef, hero.backpack, hero.energy)
-            batch = int(self._prof_cfg()["make_batch"])
+            # D-189 (owner): every amount at once, small buttons with just the number side by side, and a wide ↩️ Volver.
+            amounts = [n for n in self._prof_cfg().get("make_amounts", [1, 5]) if n <= times]
+            for n in amounts:
+                actions.append(Action(id=f"mk:{rid}:{n}:{page}", label=t.t("batch.amount", n=n)))
+            if times > (amounts[-1] if amounts else 0):
+                actions.append(Action(id=f"mk:{rid}:{times}:{page}", label=t.t("batch.all")))
             if times >= 1:
-                actions.append(Action(id=f"mk:{rid}:1:{page}", label=t.t("prof.make_button", n=1)))
-            if times >= 2:
-                actions.append(Action(id=f"mk:{rid}:{min(batch, times)}:{page}", label=t.t("prof.make_button", n=min(batch, times))))
-            if times > batch:
-                actions.append(Action(id=f"mk:{rid}:{times}:{page}", label=t.t("prof.make_all", n=times)))
+                body.append(t.t("prof.make_ask", n=times))
             missing = missing_for(rdef, hero.backpack)
             if missing:
                 body.append(t.t("prof.missing_line", items=self._item_list(missing)))
             elif not times:
                 body.append(self._no_energy_notice(hero))
+        layout = [len(actions), 1] if actions else []       # D-189: the amounts in one row, ↩️ Volver wide below
         actions.append(Action(id=f"est:{branch}:{page}" if stations else "oficios", label=t.t("menu.back")))
-        return View(kind="recipe", title=t.t("prof.recipe_title"), body=body, actions=actions[:4], notice=notice)
+        return View(kind="recipe", title=t.t("prof.recipe_title"), body=body, actions=actions, notice=notice, layout=layout)
 
     def _make(self, hero: Hero, rid: str, times: int, page: int = 0) -> View:
         """🔨 Hacer: refine or craft a recipe `times` times at a station; all or nothing.

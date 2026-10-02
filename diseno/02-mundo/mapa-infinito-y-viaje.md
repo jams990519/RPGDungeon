@@ -194,7 +194,7 @@ Coordenadas 1, 2 · Lejanía 2
 
 ### 1.12 Exploración por porcentaje y recursos (D-87)
 
-- **Cada acción fuera del combate (salvo moverse) se hace en lote.** Al tocar 🔎 Explorar o 🪓 Recolectar, eliges cuánta energía gastar seguido: ⚡ 5, 10, 20, 40 o todo (`energy.batch`).
+- **Cada acción fuera del combate (salvo moverse) se hace en lote.** Al tocar 🔎 Explorar o 🪓 Recolectar, eliges cuánta energía gastar seguido: ⚡ 5, 10, 20, 40 o todo (`energy.batch`). **Desde la 0.27.1 (D-189)** todas las cantidades salen a la vez, como botoncitos con solo el número en una fila ("5", "10", "20", "40", "Todo") y un botón ancho ❌ Cancelar abajo; el tiempo de cada una va en una línea del texto ("⏱️ 5 → 50 min · 10 → 1 h 40 min...").
   - Antes de empezar puedes ❌ Cancelar sin gastar nada.
   - Ya en marcha, ❌ Detener corta el lote y devuelve la energía de la vuelta en curso.
   - Cada vuelta gasta 1 ⚡ al empezar.
@@ -222,7 +222,7 @@ Coordenadas 1, 2 · Lejanía 2
 ### 1.12.1 Tiempo estimado y ⚙️ Opciones de pelea en los lotes (D-114)
 
 El dueño pidió (1-oct-2026):
-- **Tiempo estimado (en el juego desde la 0.14.1):** cada cantidad de energía que se elige para un lote muestra cuánto tardará en total (por ejemplo, "⚡ 20 · ⏱️ 3 h 20 min"), y la pantalla dice cuánto tarda cada vuelta y cuánto tardaría con toda la energía. Las peleas que salgan lo alargan un poco.
+- **Tiempo estimado (en el juego desde la 0.14.1):** cada cantidad de energía que se elige para un lote muestra cuánto tardará en total (hasta la 0.27 iba en el botón, "⚡ 20 · ⏱️ 3 h 20 min"; desde la 0.27.1, D-189, en una línea del texto: "⏱️ 5 → 50 min · 20 → 3 h 20 min..."), y la pantalla dice cuánto tarda cada vuelta y cuánto tardaría con toda la energía. Las peleas que salgan lo alargan un poco.
 - **⚙️ Opciones (en el juego):** "Si te sale una pelea durante un lote, el jugador puede elegir antes: automática, o manual si el jugador está activo. Agrega un botón de opciones donde eliges qué pasa y qué no."
   - **Dónde:** **⚙️ Opciones** es el 5.º botón del menú de abajo (D-46 deja hasta 6; en Telegram quedan 3 filas: 2, 2 y 1) y también **/opciones**. Se puede abrir mientras exploras, recolectas o cazas (vale desde la próxima pelea); en combate no. La pantalla tiene un botón por opción, que la cambia, y ↩️ Volver: 4 botones.
   - **Palomitas (D-178, desde la 0.26.1):** los dos interruptores (⚔️ Peleas automáticas y 🧪 Pociones) muestran ✅ verde cuando están activos y ☑️ gris cuando están apagados ("✅ Peleas automáticas", "☑️ Pociones"). 🩹 Retirarse no es un interruptor: elige entre 30, 50 y 70 %.

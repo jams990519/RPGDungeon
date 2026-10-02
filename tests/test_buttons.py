@@ -28,7 +28,10 @@ def test_every_button_works(content):
         service, view = build(content, path)
         pressed += 1
         limit = 6 if view.kind == "combat" else 4      # D-46 combat bar; 4 elsewhere (D-75)
-        assert len(view.actions) <= limit, (path, view.kind, len(view.actions))
+        if view.layout:                                 # D-189: amount pickers: a row of small amounts and one wide back
+            assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions) and max(view.layout) <= 8, (path, view.layout)
+        else:
+            assert len(view.actions) <= limit, (path, view.kind, len(view.actions))
         assert len(service.menu()) <= 6
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(a.id for a in view.actions))

@@ -42,8 +42,8 @@ def test_regions_have_one_to_three_of_six_resources(content):
 def test_batch_asks_amount_and_can_be_cancelled(service, clock):
     make_hero(service)
     view = service.act("test:1", "explore")
-    assert view.kind == "batch" and len(view.actions) <= 4
-    assert any(a.id == "explore_menu" for a in view.actions)              # cancel before starting: nothing spent
+    assert view.kind == "batch" and view.layout == [len(view.actions) - 1, 1]   # D-189: the amounts in one row, then cancel
+    assert view.actions[-1].id == "explore_menu"                            # cancel before starting: nothing spent
     assert service._load("test:1").energy == 50
     service.act("test:1", "do:explore:10")
     assert service._load("test:1").energy == 49                            # 1 per step, paid when it starts
@@ -157,16 +157,17 @@ def test_gathering_gives_experience_scaled_by_the_zone_level(service, clock):
 
 
 def test_amount_choices_show_the_estimated_total_time(service):
-    # Owner's request: every amount shows its estimated total time, and the screen the time with all the energy.
+    # Owner's requests: every amount shows its estimated total time (D-114) and, since D-189, all the amounts come at once as
+    # small buttons with just the number, side by side, with one wide ❌ Cancelar; the times go in one line of the text.
     make_hero(service)
     view = service.act("test:1", "explore")
     minutes = service.content.balance["explore"]["minutes"]
     five = next(a for a in view.actions if a.id == "do:explore:5")
-    assert "⏱️" in five.label and service._fmt_duration(service._seconds(minutes * 5)) in five.label
+    assert five.label == "5" and view.actions[-1].label == "❌ Cancelar" and view.layout == [len(view.actions) - 1, 1]
+    assert any(f"5 → {service._fmt_duration(service._seconds(minutes * 5))}" in line for line in view.body)
     energy = service._load("test:1").energy
     assert any("⏱️" in line and service._fmt_duration(service._seconds(minutes * energy)) in line for line in view.body)
-    view = service.act("test:1", "amt:explore:1")
-    assert all("⏱️" in a.label for a in view.actions if a.id.startswith("do:"))
+    assert [a.id for a in service.act("test:1", "amt:explore:1").actions] == [a.id for a in view.actions]
     assert not service.texts.missing
 
 

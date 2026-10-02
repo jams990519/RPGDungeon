@@ -416,7 +416,8 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
                              # [ES] y tu rango en ese oficio. Recolectar da 14 por ⚡ más las peleas (~20 en promedio): fabricar lleva al 100 en ~2 años, como los otros caminos
   camp_bonus: 0.10           # [ES] D-101: en las estaciones de tu campamento (🧵 Taller, 🔨 Herrería), +10 % de sacar 1 unidad más al refinar
   per_page: 2                # [ES] recetas por página en 🪚 Refinar y 🛠️ Fabricar cuando hay más de 3 (4 botones como mucho, D-75)
-  make_batch: 5              # [ES] el botón 🔨 Hacer 5 de cada receta (y 🔨 Hacer todo, con lo que alcance)
+  make_batch: 5              # [ES] ya no se usa en la receta (D-189: make_amounts); queda por compatibilidad
+  make_amounts: [1, 5, 10, 20]   # [ES] D-189 (confirmada): botoncitos de cantidad de cada receta, uno al lado del otro (más "Todo" si alcanza para más)
 
 masterwork:                  # [ES] D-116 (confirmada): ✒️ obra maestra. Al fabricar una pieza de equipo puede salir exclusiva: mejor y con la firma de quien la hizo (profesiones.md §0.4). Números propuestos por Claude: se ajustan en la beta
   # [ES] La probabilidad crece pareja con el rango del oficio que fabrica (rango 50 = la mitad). La 🪑 Carpintería usa su beneficio
