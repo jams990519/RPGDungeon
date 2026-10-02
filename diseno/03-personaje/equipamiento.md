@@ -1,6 +1,6 @@
 # Equipamiento
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1) y qué estadística da cada tipo de armadura (D-206, provisional, §2.1)
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1); tres tipos de armadura sin malla (D-208, confirmada, §2); las estadísticas se reforman según el WoW (D-210; propuesta en [Estadísticas](estadisticas.md))
 
 **De dónde sale.**
 - *World of Warcraft*: 16 ranuras, tipos de armadura, calidades por color, nivel de objeto, conjuntos, gemas, encantamientos, pistas de mejora y Gran Tesoro semanal.
@@ -33,12 +33,14 @@ Se puede lanzar con 10 ranuras (armas, cabeza, hombros, pecho, manos, piernas, p
 
 ## 2. Tipos de armadura y carga
 
+**Tres tipos, sin malla (D-208, confirmada el 2-oct-2026).** Las clases que usaban malla pasan a otro tipo; la propuesta (E-171) está en [Estadísticas](estadisticas.md) §4.
+
 | Tipo | Clases que la dominan | Protege mejor contra | Peso |
 |---|---|---|---|
-| **Tela** | Mago, Sacerdote, Brujo, Nigromante | Daño místico | Ligero |
-| **Cuero** | Pícaro, Druida, Monje, Cazador de Demonios, Bardo | Perforación; elemental a medias | Medio-ligero |
-| **Malla** | Cazador, Chamán, Evocador | Corte, perforación | Medio |
-| **Placas** | Guerrero, Paladín, Caballero de la Muerte | Corte (mucho), perforación | Pesado |
+| **Tela** | Mago, Sacerdote, Brujo, Nigromante; propuesta: + Evocador | Daño místico | Ligero |
+| **Cuero** | Pícaro, Druida, Monje, Cazador de Demonios, Bardo; propuesta: + Cazador | Perforación; elemental a medias | Medio |
+| **Placas** | Guerrero, Paladín, Caballero de la Muerte; propuesta: + Chamán | Corte (mucho), perforación | Pesado |
+| ~~Malla~~ | Ya no existe (D-208) | — | — |
 
 - **Dominio:** tu clase domina un tipo de armadura y recibe un bono si llevas todo el conjunto de ese tipo, como la especialización de armadura de WoW.
 - **Libertad con costo:** puedes ponerte cualquier armadura, pero sin dominio no recibes el bono y el **peso** te castiga. Un mago en placas es posible, y es lento.
@@ -51,7 +53,9 @@ Se puede lanzar con 10 ranuras (armas, cabeza, hombros, pecho, manos, piernas, p
   | Pesada (70-100 %) | −iniciativa; Aguante máximo −1 (hay para una respuesta menos; ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)) |
   | Sobrecargado (>100 %) | No puedes esquivar (ni con respuestas 💨 ni con 🌀 Esquivar) y Huir siempre falla |
 
-### 2.1 Qué estadística da cada tipo (D-206, provisional)
+### 2.1 Qué estadística da cada tipo (D-206, reemplazada)
+
+> **Reemplazada el 2-oct-2026.** El dueño quitó la malla (D-208) y pidió reformular las estadísticas según el WoW de todas sus versiones (D-210). La propuesta nueva (D-211: Fuerza, Agilidad, Intelecto, Vitalidad, Armadura y 4 secundarias; la principal se adapta a quien lleva la pieza) está en [Estadísticas](estadisticas.md). Lo de abajo queda como historia.
 
 El dueño pidió, el 2-oct-2026, la estadística principal de cada tipo, sus clases, su rol y qué mejora cada pieza. Lost Realms **no tiene fuerza, agilidad ni intelecto**: sus estadísticas de combate son ❤️ **vida**, ⚔️ **ataque** (un solo valor para lo físico y lo mágico), 🛡️ **armadura** (nunca más de 60 %) y ⚡ **iniciativa** (quién actúa primero). Las curaciones crecen con la vida máxima.
 

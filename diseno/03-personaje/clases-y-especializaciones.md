@@ -77,6 +77,8 @@ Cómo leer cada clase:
 **Aporte de grupo:** **Bendición** (mitigación del grupo). Resurrección en combate.
 
 ### Cazador · Malla · Foco
+
+> **2-oct-2026:** ya no hay malla (D-208). Propuesta: pasa a **cuero** con Agilidad (E-171; [Estadísticas](estadisticas.md) §4).
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Puntería | ⚔ Ataque | Retaguardia | **Apuntar** es su habilidad: una ronda de puntería y el disparo siguiente impacta seguro en la parte del cuerpo elegida, sin penalización. La mejor spec para romper partes de jefes |
@@ -117,6 +119,8 @@ Cómo leer cada clase:
 **Aporte de grupo:** **Zona Antimagia** (menos daño mágico al grupo durante 2 rondas). Resurrección en combate.
 
 ### Chamán · Malla · Maná + Vorágine
+
+> **2-oct-2026:** ya no hay malla (D-208). Propuesta: pasa a **placa** con Intelecto, como el Paladín Sagrado (E-171; [Estadísticas](estadisticas.md) §4).
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Elemental | ⚔ Ataque | Retaguardia | **Sobrecarga**: a veces el hechizo se repite solo. La Vorágine llena vuelve instantáneo y gratis su próximo *Chorro de Magma* |
@@ -180,6 +184,8 @@ El único con los 4 roles, como en WoW.
 **Aporte de grupo:** **Estigma Infernal** (el objetivo recibe más daño mágico). **Visión Espectral** (revela lo invisible y lo que está en sigilo).
 
 ### Evocador · Malla · Esencia
+
+> **2-oct-2026:** ya no hay malla (D-208). Propuesta: pasa a **tela** con Intelecto (E-171; [Estadísticas](estadisticas.md) §4).
 | Spec | Rol | Fila | Firma en turnos |
 |---|---|---|---|
 | Devastación | ⚔ Ataque | Retaguardia | Hechizos **Potenciados** de 1 a 3 rondas de carga |
@@ -341,6 +347,8 @@ Cada clase nueva llega con su evento, su zona de inicio especial y una cadena de
 
 
 ## 7. Lo que ya está en el juego: 8 habilidades por especialización (D-79)
+
+> **2-oct-2026:** el dueño las bajó a **4 por especialización** (D-209). La propuesta de cuáles quedan está en [Habilidades por especialización](habilidades-por-especializacion.md) y espera E-172 (si ⚔️ Atacar cuenta como una de las 4). Lo de abajo sigue siendo lo que hay hoy en el juego hasta que se programe.
 
 Las secciones de arriba son el diseño completo. En la versión jugable, cada una de las 45 especializaciones tiene **8 habilidades**: las 3 de siempre y 5 nuevas inspiradas en las habilidades emblemáticas de esa especialización en World of Warcraft (las del Nigromante y el Bardo, clases propias, siguen la misma idea). La idea viene de WoW, pero **el nombre es propio** (D-135; tabla de cambios en §8). Cada especialización conserva su rol (D-72) y cada clase sigue cubriendo al menos dos roles.
 

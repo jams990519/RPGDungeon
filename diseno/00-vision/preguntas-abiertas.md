@@ -219,7 +219,7 @@ Salieron del repaso de oficios del dueño (D-194) y de la ganadería y la cosech
 | P-139 | ¿Trabajar en una estructura es activo o pasivo? (E-140) | Activo, con energía; los empleados del reino, más adelante, trabajan solos |
 | P-140 | ¿El Ladrón es la casa de los bandidos y cuándo entra? (E-141) | Sí; entra ya robando a monstruos y cofres, y a jugadores con el PvP |
 | P-141 | ¿Cómo se paga a quien trabaja en una estructura? (E-142) | El reino paga por pieza desde su tesoro |
-| P-142 | ¿La malla la hace un oficio propio o el Herrero junto con la placa? (E-143; el 2-oct el dueño dijo "el Herrero hace placa y malla", y D-194 dice cuatro armaduras, cuatro oficios) | Un oficio propio, ⛓️ Mallero (D-194) |
+| P-142 | ¿La malla la hace un oficio propio o el Herrero junto con la placa? (E-143; el 2-oct el dueño dijo "el Herrero hace placa y malla", y D-194 dice cuatro armaduras, cuatro oficios) | ✅ **Decidido (D-208):** ya no hay malla; quedan placa, cuero y tela, y el ⛓️ Mallero no va |
 | P-143 | ¿Quién usa las estructuras de refinado? (E-144) | Los miembros gratis; los visitantes pagan una tarifa al asentamiento |
 | P-144 | ¿Cómo es la variedad de los recolectores? (E-145) | Tres niveles (común, del terreno, raro) y 1 a 3 especies por terreno |
 | P-145 | ¿Quién mejora los nodos? (E-146) | Cada recolector, los de su recurso |
@@ -251,5 +251,20 @@ Salieron de las decisiones de diseño que el dueño pegó el 2-oct-2026 (D-196 a
 | P-164 | ¿Cuánta energía cuesta farmear según el tamaño del nodo, y una caravana según su tamaño y la distancia? (D-197, D-202; E-165) | Nodo chico 1 ⚡ por vuelta, mediano 2 y grande 3; caravana: (10 ⚡ + 2 por cuadro) × 1, 2 o 3 según el tamaño, repartido entre los escoltas, con 2, 4 y 6 escoltas mínimos |
 | P-165 | ¿Cómo es el 5.º paso del tutorial, "Aportar al campamento", para quien todavía no tiene campamento? (D-204; E-166) | Volver al Claro y aportar parte de lo recolectado y cazado al 🔥 fogón común (aporte de práctica con el botón 🤲 Aportar); en tu propio campamento, ese botón alimenta a los aldeanos (D-205) |
 | P-166 | ¿Qué pasa con los pasos de hoy después de cazar (🗺️ Mapa, volver al Claro, 🏕️ Campamento, 🧑‍🏫 Entrenador, 👤 Héroe)? (D-204; E-167) | Pasan a ser avisos de una sola vez al abrir esas pantallas, y el camino queda con los 5 pasos y después fundar el campamento |
-| P-167 | ¿Te sirve el reparto de estadísticas por tipo de armadura? (D-206; E-168) | Sí: placa, armadura y vida; malla, ataque y armadura media; cuero, iniciativa y ataque; tela, ataque y vida |
+| P-167 | ¿Te sirve el reparto de estadísticas por tipo de armadura? (D-206; E-168) | Reemplazada: D-208 quitó la malla y D-210 pidió reformular las estadísticas; pasa a P-169 a P-175 (E-170 a E-176) |
 | P-168 | ¿Te sirven los números de la comida de los aldeanos? (D-207; E-169) | Sí: 1 ración por aldeano y día, 3 aldeanos por nivel, la granja cerca de la mitad; con hambre no mueren: no trabajan, no crece el asentamiento y tras 3 días se van de a uno |
+
+## Dudas de la reforma de estadísticas, armaduras y habilidades (2-oct-2026)
+
+Del pedido del dueño del 2-oct (D-208 a D-210); propuesta completa en [Estadísticas](../03-personaje/estadisticas.md) (D-211, provisional).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-169 | ¿La estadística principal de una pieza se adapta a quien la lleva o es fija? (E-170) | Se adapta, como en el WoW moderno: placa Fuerza o Intelecto, cuero Agilidad o Intelecto, tela Intelecto |
+| P-170 | ¿A qué tipo de armadura pasan las clases que usaban malla? (E-171) | Cazador a cuero, Chamán a placa, Evocador a tela (4 en placa, 6 en cuero, 5 en tela) |
+| P-171 | ¿⚔️ Atacar cuenta como una de las 4 habilidades? (E-172) | Sí: Atacar y 3 habilidades, todas en la barra (D-46) |
+| P-172 | ¿Cuántas estadísticas? (E-173) | Capa simple de 9 (3 principales, Vitalidad, Armadura y 4 secundarias) y capa profunda (terciarias y resistencias) |
+| P-173 | ¿Cómo se mejoran las habilidades sin sumar botones? (E-174) | Filas de talentos cada 15 niveles: 1 de 3 mejoras (WoW de Pandaria) |
+| P-174 | ¿Qué otras mejoras de clase del WoW entran? (E-175) | Bonos de conjunto y adornos de artesano; más adelante glifos y reforja |
+| P-175 | ¿Qué pasa con la malla, la especialización de malla y las habilidades que salen? (E-176) | La malla se vuelve el tipo nuevo de tu clase, la especialización se cambia gratis, nadie pierde poder |
+
