@@ -192,3 +192,15 @@ Salieron de las ideas sueltas del dueño sobre el mapa y la interfaz (D-178 a D-
 | P-126 | ¿Pasar por la zona de un nodo en medio de un viaje lo descubre, o solo la zona donde termina el viaje? (D-181, D-184; E-127) | Pasar por ahí lo descubre: el héroe pisó la zona (así quedó en la 0.27) |
 | P-127 | ¿Los 6 terrenos nuevos de la 0.28 y sus colores están bien, y al agregar terrenos solo cambian las piezas que pasan a ser de un terreno nuevo, o se revuelve todo el mapa? (D-185, D-186, D-188; E-128) | Así: solo cambian las piezas nuevas (unas 3 de cada 10), y las demás conservan sus recursos propios y sus nodos. **Aplicada como provisional en la 0.28 (D-188)** |
 
+## Dudas del camino guiado y los menús (2-oct-2026)
+
+Salieron del pedido del dueño de contar la historia como un camino guiado y ordenar el campamento y el héroe (D-190, D-191). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 2 (E-129 a E-133). Mientras tanto se aplica lo recomendado como provisional (0.29).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-128 | ¿❓ Dudas con un buscador por palabras o con una IA de verdad? (D-191; E-129) | El buscador ahora (gratis e instantáneo) y la IA después de la beta |
+| P-129 | ¿Qué pasa con lo que estaba en 📖 Historia: campaña, facciones y encargos, diario? (D-190; E-130) | La campaña sigue en el camino guiado; el tablón queda en el Campamento; el diario pasa al Héroe |
+| P-130 | ¿Dónde queda el origen del héroe, que se elegía al crearlo? (D-190; E-131) | Más adelante en el camino guiado, como paso opcional; quien ya lo eligió lo conserva |
+| P-131 | ¿El Campamento y el Héroe pueden tener hasta 8 botones de 2 en 2? (D-191, D-75; E-132) | Sí, para ver todas las opciones de una vez |
+| P-132 | ¿Los jugadores que ya existen hacen el camino guiado nuevo? (D-190; E-133) | Quien terminó el tutorial viejo se salta los primeros pasos y recibe los avisos nuevos; los demás empiezan el camino |
+
