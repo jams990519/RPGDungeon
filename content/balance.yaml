@@ -16,9 +16,9 @@ combat:
   toxicity_max: 100
 
 travel:
-  first_minutes: 2           # [ES] D-78: las 2 primeras zonas desde el Claro o tu campamento toman 2 minutos
-  steps_per_minute: 2        # [ES] cada 2 zonas más lejos, 1 minuto más (2, 2, 3, 3, 4, 4...)
-  max_minutes: 20            # [ES] tope por tramo, para que lo muy lejano no se vuelva eterno
+  first_minutes: 1           # [ES] D-197 (confirmada): 1 minuto real por cuadro (10 cuadros = 10 minutos). Antes (D-78) 2 minutos las 2 primeras zonas
+  steps_per_minute: 0        # [ES] D-197: 0 = cada zona tarda lo mismo, lejos o cerca. Con un número N, cada N zonas más lejos del Claro o de tu campamento sumaría 1 minuto (D-78 usaba 2: 2, 2, 3, 3, 4...)
+  max_minutes: 20            # [ES] tope por zona si steps_per_minute vuelve a sumar minutos (con 0 no influye)
   level_per_lejania: 0.9     # [ES] nivel de la zona = 1 + Lejanía × esto
 
 energy:                      # [ES] energía para toda acción fuera del combate (D-65, D-78)

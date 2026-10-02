@@ -997,3 +997,20 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 | Aviso de ⚙️ Opciones (`guide.options_kills`) | — | 3 peleas ganadas | Después del paso 🏹 Cazar, cuando ya peleó un poco |
 
 **Lo que queda por mirar:** en qué paso se queda la gente y cuánto tarda en terminar el camino básico (mapa de impacto, C-29). Si moverse pasa a no gastar energía (E-135), el texto cambia solo.
+
+### Octubre de 2026: 1 minuto por cuadro y toda la energía de entrada (D-196, D-197, confirmadas; 0.29.1)
+
+**Por qué.** El dueño decidió el 2-oct-2026: "moverse no cuesta energía; cuesta tiempo: 1 minuto real por cuadro" y "para empezar una acción, el jugador debe tener de entrada toda la energía que esa acción requiere".
+
+| Qué | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Minutos por zona (`travel.first_minutes`) | 2 las 2 primeras zonas desde el Claro o tu campamento (D-78) | 1, en cualquier zona | D-197: 10 cuadros = 10 minutos |
+| Aumento por lejanía (`travel.steps_per_minute`) | 2 (cada 2 zonas, 1 minuto más: 2, 2, 3, 3, 4…) | 0 (sin aumento) | D-197. La fórmula vieja vuelve si se sube a más de 0 |
+| Tope por zona (`travel.max_minutes`) | 20 | 20 (sin efecto con 0) | Se deja por si vuelve la regla vieja |
+| 🕳️ Mazmorra chica | Se entraba con 2 ⚡ y se cobraba pelea por pelea | Pide de entrada la energía de todas las peleas que faltan hoy (10 ⚡ al empezar); se cobra igual, pelea por pelea | D-196: nadie queda a medias |
+| 🌀 Mazmorra profunda | Cada pelea pedía 2 ⚡ (4 la primera, con la entrada) | Cada piso pide de entrada todas sus peleas (4 si tiene 2 peleas; 4 el piso 1 con la entrada) | D-196: el piso es la acción |
+
+**Cuánto cambia.** Un viaje de 10 zonas desde el Claro tardaba 2 + 2 + 3 + 3 + 4 + 4 + 5 + 5 + 6 + 6 = 40 minutos; ahora tarda 10. Lo lejano queda mucho más cerca: el valor de fundar un campamento lejos para viajar menos baja (ya no reinicia la cuenta), pero sigue el territorio, los recursos y la seguridad. La experiencia y el botín por ⚡ no cambian: la energía de las mazmorras es la misma, solo se pide antes.
+
+**Lo que queda por mirar:** si con viajes tan cortos la gente se junta en pocas zonas lejanas ricas (el agotamiento es para todos); si hace falta que las monturas o mejoras lo aceleren o, al revés, que el viaje largo cueste algo (E-161, E-162); el costo de energía por tamaño de nodo cuando existan los tamaños (E-165).
+

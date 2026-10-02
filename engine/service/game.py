@@ -8811,6 +8811,7 @@ class GameService(StoryMixin, GuideMixin):
                 body.append(t.t("dungeon.done_today"))
             else:
                 body.append(t.t("dungeon.small_how", energy=scfg["fight_energy"]))
+                body.append(t.t("dungeon.need_line", need=self._dng_need(info, prog=prog)))   # D-196
                 actions.append(self._dng_small_button(prog, info))
             body += ["", self._status_line(hero)]
             actions += [Action(id="hunt", label=t.t("hunt.button")), Action(id="explore_menu", label=t.t("menu.back"))]
@@ -8837,7 +8838,7 @@ class GameService(StoryMixin, GuideMixin):
             return View(kind="dungeon", title=t.t(f"dungeon.title_{kind}"), body=body, actions=actions, notice=notice)
         body.append(t.t("dungeon.boss_line_deep", enemy=self._dng_enemy(info["boss"]), every=dcfg["boss_every"]))
         body += ["", self._status_line(hero)]
-        actions = [Action(id="dgo", label=t.t("dungeon.descend_button", energy=int(dcfg["enter_energy"]) + int(dcfg["fight_energy"]))),
+        actions = [Action(id="dgo", label=t.t("dungeon.descend_button", energy=self._dng_need(info))),   # D-196: entry + floor 1
                    Action(id="hunt", label=t.t("hunt.button")), Action(id="explore_menu", label=t.t("menu.back"))]
         return View(kind="dungeon", title=t.t(f"dungeon.title_{kind}"), body=body, actions=actions, notice=notice)
 
@@ -8850,10 +8851,29 @@ class GameService(StoryMixin, GuideMixin):
         return Action(id="dgo", label=self.texts.t("dungeon.room_button", n=prog["cleared"] + 1, energy=energy))
 
     def _dng_deep_button(self, info: dict[str, Any], run: dict[str, Any]) -> Action:
-        """⬇️ Bajar al piso N · ⚡2 at the start of a floor, ⚔️ Seguir en el piso N · ⚡2 for its second fight."""
-        energy = self._dng_cfg()["deep"]["fight_energy"]
+        """⬇️ Bajar al piso N · ⚡ (all of that floor's fights, D-196) at the start of a floor, ⚔️ Seguir en el piso N · ⚡2 after."""
+        energy = self._dng_need(info, run)
         key = "dungeon.on_button" if run["fight"] else "dungeon.down_button"
         return Action(id="dgo", label=self.texts.t(key, floor=run["floor"], energy=energy))
+
+    def _dng_need(self, info: dict[str, Any], run: dict[str, Any] | None = None, prog: dict[str, Any] | None = None) -> int:
+        """Energy a dungeon asks for up front (D-196): a small one's remaining fights; a deep floor's remaining fights.
+
+        [ES]
+        Qué hace: D-196 (confirmada): para empezar una acción hay que tener de entrada toda la energía que pide; nadie se
+        queda a medias. En la 🕳️ chica (con prog), la acción es la mazmorra entera: pide la energía de TODAS las peleas que
+        faltan hoy (salas y jefe; 10 ⚡ al empezar). En la 🌀 profunda, la acción es un piso: pide las peleas que le faltan a
+        ese piso, más la entrada si no hay bajada abierta (run None: piso 1). Se sigue cobrando pelea por pelea.
+        La llaman: _dng_go (antes de cobrar), _dng_again y _dng_deep_button (botones y su número), _dng_view (la línea ⚡).
+        Si cambia, afecta: cuándo se puede entrar o seguir (tests/test_mazmorras.py).
+        """
+        cfg = self._dng_cfg()
+        if prog is not None:
+            return max(0, len(info["rooms"]) - prog["cleared"]) * int(cfg["small"]["fight_energy"])
+        dcfg = cfg["deep"]
+        floor, fight = (run["floor"], run["fight"]) if run else (1, 0)
+        left = max(1, len(self._dng_plan(info, floor)) - fight)
+        return left * int(dcfg["fight_energy"]) + (0 if run else int(dcfg["enter_energy"]))
 
     def _dng_next_line(self, info: dict[str, Any], run: dict[str, Any]) -> str:
         """What the next fight of the open run is: floor, fight n of m, and the boss on a boss floor."""
@@ -8871,6 +8891,8 @@ class GameService(StoryMixin, GuideMixin):
         sin bajada abierta cobra la entrada más la pelea (2 + 2 ⚡) y abre una bajada en el piso 1; con una abierta, cobra la
         pelea y sigue con la que toca (cada piso más hondo: nivel +1, +5 % de vida, +3 % de ataque; cada 5 pisos, el jefe).
         Se rechaza sin cobrar sin mazmorra aquí, con la entrada tapada por un campamento enemigo, malherido o sin energía.
+        D-196 (confirmada): antes de cobrar pide tener de entrada la energía de toda la acción (_dng_need): en la chica, todas
+        las peleas que faltan hoy; en la profunda, todas las peleas del piso (y la entrada si no hay bajada abierta).
         Las peleas son siempre a mano (nunca automáticas, D-114); llevan "dungeon" en su estado de combate.
         La llaman: el botón "dgo" (pantalla de la mazmorra y final de una pelea suya). Si cambia, afecta: tests/test_mazmorras.py.
         """
@@ -8890,6 +8912,10 @@ class GameService(StoryMixin, GuideMixin):
             prog = self._dng_progress(record, info)
             if prog["done"]:
                 return self._dng_view(hero, notice=t.t("dungeon.done_today"))
+            need = self._dng_need(info, prog=prog)                 # D-196: all of today's remaining fights, up front
+            if hero.energy < need:
+                return self._dng_view(hero, notice=self._join([t.t("dungeon.need_small", need=need, have=hero.energy),
+                                                                self._no_energy_notice(hero)]))
             if not self._spend_energy(hero, "dungeon", int(cfg["small"]["fight_energy"])):
                 return self._dng_view(hero, notice=self._no_energy_notice(hero))
             rooms = len(info["rooms"]) - 1
@@ -8911,6 +8937,10 @@ class GameService(StoryMixin, GuideMixin):
             lines += self._dng_close(hero, record, 1.0, "left")           # an old run (another day): paid in full first
             run = None
         cost = int(dcfg["fight_energy"]) + (0 if run else int(dcfg["enter_energy"]))
+        need = self._dng_need(info, run)                        # D-196: the whole floor (and the entry) up front
+        if hero.energy < need:
+            return self._dng_view(hero, notice=self._join(lines + [t.t("dungeon.need_deep", need=need, have=hero.energy),
+                                                                   self._no_energy_notice(hero)]))
         if not self._spend_energy(hero, "dungeon", cost):
             return self._dng_view(hero, notice=self._join(lines + [self._no_energy_notice(hero)]))
         if not run:
@@ -9107,14 +9137,16 @@ class GameService(StoryMixin, GuideMixin):
         record = self._dng_record(hero)
         if state.get("dng_again"):
             info = self._dng_today(hero.x, hero.y, dungeon_rules.SMALL)
-            if info is None or hero.downed or hero.energy < int(cfg["small"]["fight_energy"]):
+            if info is None or hero.downed:
                 return []
             prog = self._dng_progress(record, info)
-            return [] if prog["done"] else [self._dng_small_button(prog, info)]
+            if prog["done"] or hero.energy < self._dng_need(info, prog=prog):   # D-196: only if all that is left fits
+                return []
+            return [self._dng_small_button(prog, info)]
         if state.get("dng_deep") and record.get("deep"):
             info = self._dng_today(hero.x, hero.y, dungeon_rules.DEEP)
             actions = []
-            if info is not None and not hero.downed and hero.energy >= int(cfg["deep"]["fight_energy"]):
+            if info is not None and not hero.downed and hero.energy >= self._dng_need(info, record["deep"]):   # D-196
                 actions.append(self._dng_deep_button(info, record["deep"]))
             return actions + [Action(id="dout", label=self.texts.t("dungeon.out_button"))]
         return []

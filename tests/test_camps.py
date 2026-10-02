@@ -83,7 +83,9 @@ def test_land_blocks_other_camps_and_counts_for_travel(service):
     assert not any(a.id == "found" for a in service.act("test:2", "claro").actions)
     hero = service._load("test:1")
     anchors = service._anchors(hero)
-    assert travel_minutes(8, 0, anchors, service.content.balance) == 2   # one step past the camp's edge
+    assert travel_minutes(8, 0, anchors, service.content.balance) == 1   # D-197: 1 minute per zone everywhere
+    old = {**service.content.balance, "travel": {**service.content.balance["travel"], "first_minutes": 2, "steps_per_minute": 2}}
+    assert travel_minutes(8, 0, anchors, old) == 2          # with D-78's rule, the camp still restarts the count
 
 
 def test_claro_grows_with_its_stage(service):
