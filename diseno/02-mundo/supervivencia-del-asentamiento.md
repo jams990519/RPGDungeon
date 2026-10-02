@@ -4,6 +4,8 @@
 
 > ⚠️ **Lo que decidió el dueño (1-oct-2026) manda sobre lo de abajo:** el asentamiento crece en más de 7 etapas (se propusieron 10, P-81), primero rápidas y después lentas; cada etapa sube aldeanos, casillas y permisos, y algo nuevo llega cada 2 o 3 etapas; un grupo chico puede fusionarse con un castillo y los campamentos chicos también se pueden asediar (D-173). Antes: casa primero (D-158), misiones de grupo por nivel (D-136), castillo exigente (D-122), oleadas 3 por semana (D-154).
 
+> ⚠️ **Lo que decidió el dueño el 2-oct-2026 también manda sobre lo de abajo:** el número de etapas está en revisión y se define según los jugadores por asentamiento (D-200); **comen los aldeanos, no los jugadores**, la granja produce comida sola según la etapa, y los aldeanos hacen funcionar las estructuras y forman las caravanas (D-205). Ver §0.6 y [Caravanas y aldeanos](caravanas-y-aldeanos.md).
+
 **Qué pidió el dueño.** Que crear el castillo sea difícil de verdad: que haya que **mantener una cantidad de comida**, **mantener sana a la población**, **progresar en conjunto** y **defenderse de enemigos y bestias**. Que no sea "vamos a construir y ya".
 
 **Cómo leer este documento.** El dueño aceptó por voz que, desde aldea, crecer pida algo más que pagar (D-93, provisional), y se programa por partes (§16): **la primera, la despensa, ya está en el juego (§0.4)**. Después aclaró que **el Claro no se mantiene**: es el campamento principal del mapa y no tiene dueño, así que no hay a quién pedirle que lo sostenga (D-95). Todo este documento aplica entonces a los **campamentos de jugadores**: el Claro sube solo con la obra común pagada, como siempre. **La segunda parte, las incursiones (para el jugador, "oleadas"), también está en el juego (§0.5)** en su capa simple: una por semana desde que se funda el campamento (D-105) y la Noche de prueba antes de castillo. Lo demás (población, salud, ánimo, medidor de amenaza, oleadas, rachas) es la **capa profunda** que se sumaría encima en los campamentos; todavía no está programado. Donde el texto de abajo dice "el Claro" como ciudad que se sostiene, léase "un campamento grande".
@@ -110,6 +112,18 @@ La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.
 **Los números** están en `content/balance.yaml` (`raids`). Son orientativos y se ajustan en la beta (registro en [Balance](../03-personaje/balance.md) §7). Las cuentas puras están en `engine/world/raids.py`. Pruebas: `tests/test_raids.py`.
 
 **Defensas dañadas (en el juego, D-115).** Cada oleada semanal también daña las defensas del campamento: −1 de 🛡️ Defensa si la defienden, −2 si la pierden (nunca más que lo construido; la Noche de prueba no daña). Ninguna mejora se pierde: solo baja la Defensa hasta que los miembros la reparan con 🟫 tablones y 🧱 sillares en 🔨 Obras (la 🏗️ Construcción del campamento lo abarata). Ver [Defensa y protecciones](../09-construccion/defensa-y-protecciones.md) §0.
+
+### 0.6 Etapas, aldeanos y comida (decidido el 2-oct-2026, por programar)
+
+Lo decidió el dueño el 2-oct-2026. Cambia lo que se programe de aquí en adelante; lo que hoy está en el juego (§0.4 y §0.5) sigue igual hasta entonces.
+
+- **Etapas (D-200):** el número está en revisión (más o menos de 10) y se define según cuántos jugadores tenga cada asentamiento. Se pregunta en E-58 (P-81): cuántos jugadores se esperan en cada etapa.
+- **Quién come (D-205):** los **aldeanos PNJ**; **los jugadores no cuentan como población que come**. Cambia D-93 (hoy comen los miembros activos, §0.4) y la tabla de §2.1 (el residente jugador ya no come de la despensa). Se aplica cuando se programen las etapas.
+- **La granja (D-195, D-205):** produce comida sola según la etapa; el resto lo ponen los oficios de los jugadores (D-125).
+- **Qué hacen los aldeanos (D-205):** hacen funcionar las estructuras y forman las caravanas que van a los nodos externos (D-201, D-202).
+- **Los números (D-207, provisional):** 1 ración por aldeano y día; 3 aldeanos por nivel (27 en el castillo); la granja da cerca de la mitad (⌈1,5 × nivel⌉ raciones por día); con hambre no mueren: no trabajan, el asentamiento no crece ni pierde niveles, y tras 3 días seguidos de hambruna se va 1 por día hasta quedar 2. Se confirman en E-169. Reemplazan, cuando se programen, las reglas de llegada y salida de §2.2.
+
+El detalle (tabla por nivel, caravanas, encargado y energía) está en [Caravanas y aldeanos](caravanas-y-aldeanos.md).
 
 ## De dónde sale
 

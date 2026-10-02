@@ -1,6 +1,6 @@
 # Repaso de los oficios (2-oct-2026)
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-115, D-125, D-168, D-169, D-173, D-185, D-194, D-195), [Red de oficios](red-de-oficios.md), [Profesiones](profesiones.md) · **Alimenta a:** [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (estructuras y granja), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (variedades por terreno y nodos), [Equipamiento](../03-personaje/equipamiento.md) (cuatro armaduras, gemas) · **Estado:** propuesta. Lo que dijo el dueño es decisión confirmada (D-194, D-195); lo marcado con ❓ espera su respuesta en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md) (bloque "Oficios y granja", E-136 a E-160). **Solo diseño: el código no se toca hasta que el dueño lo pida.**
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-115, D-125, D-168, D-169, D-173, D-185, D-194, D-195, D-198, D-199, D-205), [Red de oficios](red-de-oficios.md), [Profesiones](profesiones.md) · **Alimenta a:** [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (estructuras y granja), [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md) (aldeanos que comen y trabajan), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (variedades por terreno y nodos), [Equipamiento](../03-personaje/equipamiento.md) (cuatro armaduras, gemas y ranuras) · **Estado:** propuesta. Lo que dijo el dueño es decisión confirmada (D-194, D-195 y, el 2-oct, D-198 gemas, D-199 ranuras y D-205 comida de los aldeanos); lo marcado con ❓ espera su respuesta en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md) (bloque "Oficios y granja", E-137 a E-160; E-136, E-149 y E-153 ya se respondieron y E-154 pasó a E-169). **Solo diseño: el código no se toca hasta que el dueño lo pida.**
 
 Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-2026. Reemplaza, cuando se programe, la lista de 23 oficios que hoy está en el juego. Lo que hoy existe sigue funcionando igual hasta entonces.
 
@@ -12,6 +12,9 @@ Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-20
 4. **Cuatro tipos de armadura, cuatro oficios:** placas, malla, cuero y tela (D-194).
 5. **Ganadería y cosecha en cada mejora del asentamiento.** Producen un mínimo para el asentamiento, no para los jugadores, y crecen con la población. Pueden servir a los otros oficios (D-195).
 6. **Todo servicio entre jugadores se paga** (D-140). **Cada oficio cubre un pedazo y siempre dependes de otro** (D-168).
+7. **Las gemas las refina el Joyero, desde la minería.** El Minero alimenta dos cadenas: metal para el Herrero y mena para que el Joyero refine gemas (D-198, 2-oct).
+8. **Ranuras para gemas en todas las armaduras y las armas, nunca en accesorios** (anillos, collares, amuletos): su valor está en los bonos con que los crea el Joyero o el Alquimista. Solo en piezas de buena calidad (D-199, 2-oct).
+9. **La comida de la granja la comen los aldeanos, no los jugadores.** Los aldeanos hacen funcionar las estructuras y forman las caravanas (D-205, 2-oct; ver [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md)).
 
 ## 2. Los oficios, por grupo
 
@@ -20,8 +23,8 @@ Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-20
 | Oficio | Qué hace | Estado |
 |---|---|---|
 | 🪓 Leñador | Madera (común, del terreno y rara), resina y corteza. **Mejora los nodos de madera** | Dicho por el dueño |
-| ⛏️ Minero | Metales y carbón (y ❓ la piedra de construcción). Mejora los nodos de mena. Hace menos cosas que hoy | Dicho por el dueño |
-| 💎 Gemólogo ❓ | Nuevo: busca piedras preciosas y cristales (rubí, zafiro, esmeralda, amatista, cuarzo, obsidiana); lee el terreno, ve vetas en el mapa con rango y mejora los nodos de gemas | Propuesta de Claude (el dueño pidió la idea, E-136) |
+| ⛏️ Minero | Metales y carbón, y la **mena de gemas** para el Joyero: alimenta dos cadenas (D-198). La piedra de construcción también (provisional). Mejora los nodos de mena. Hace menos cosas que hoy | Dicho por el dueño |
+| ~~💎 Gemólogo~~ | **Descartado por D-198:** no hay oficio aparte para las piedras; el 💍 Joyero refina las gemas desde la mena del Minero (tampoco hay 🪨 Picapedrero) | Era una propuesta de Claude (E-136, cerrada) |
 | 🌿 Herbolario | Sobre todo la variedad de hierbas de cada terreno. Mejora los nodos de hierbas | Dicho por el dueño |
 | 🔪 Desollador | Carne y piel de las bestias | Igual que hoy |
 | 🎣 Pescador | Pescado en zonas con agua | Igual que hoy |
@@ -32,7 +35,7 @@ Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-20
 
 ### 2.2 Refinar: estructuras del asentamiento
 
-Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada una necesita un trabajador: un jugador (contratado y pagado por el reino) o, más adelante, un empleado.
+Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada una necesita un trabajador: un jugador (contratado y pagado por el reino) o, más adelante, un empleado. **Desde el 2-oct, los aldeanos hacen funcionar las estructuras (D-205)**; cómo se combinan con el trabajador jugador queda en E-140 y E-142.
 
 | Estructura | Qué convierte | Estado |
 |---|---|---|
@@ -42,7 +45,7 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | 🧶 Taller | Fibra, lino, algodón y lana en hilo y tela (la antigua Tejeduría) | Dicho por el dueño |
 | 🪣 Curtiduría | Piel en cuero | Dicho por el dueño |
 | 🗿 Cantería | Piedra en sillares | Dicho por el dueño |
-| 💠 Lapidario ❓ | Nueva: talla las gemas en bruto | Propuesta de Claude (falta el eslabón de las gemas) |
+| ~~💠 Lapidario~~ | **Descartado por D-198:** no hace falta, porque las gemas las refina el 💍 Joyero | Era una propuesta de Claude |
 | 🌾 Molino ❓ | Nueva: granos en harina | Propuesta de Claude (falta el eslabón de los granos) |
 | 🕯️ Perista ❓ | Nueva: convierte lo robado en monedas | Propuesta de Claude (falta el eslabón del ladrón) |
 
@@ -51,16 +54,19 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | Oficio | Qué hace | Estado |
 |---|---|---|
 | 🔨 Herrería | Todo lo de placas, espadas y dagas | Dicho por el dueño |
-| ⛓️ Mallero ❓ | Nuevo: armaduras de malla (anillas de lingote con cuero) | Dicho por el dueño (el nombre, propuesta, E-143) |
+| ⛓️ Mallero ❓ | Nuevo: armaduras de malla (anillas de lingote con cuero) | Dicho por el dueño (D-194: cuatro armaduras, cuatro oficios). ❓ El 2-oct, en una pregunta, dijo "el Herrero hace placa y malla": se pregunta en E-143 si la malla tiene oficio propio (recomendado) o la hace el Herrero |
 | 🦺 Peletería | Solo cuero | Dicho por el dueño |
 | 🪡 Sastrería | Tela | Dicho por el dueño |
 | 🪑 Carpintería | Todo tipo de herramientas para recolectar, con bono de su tipo en los nodos o en cualquier lugar; muebles; la parte de madera de las obras | Dicho por el dueño |
 | 🏹 Arquería ❓ | Nueva: arcos y ballestas (hoy los hace la Carpintería) | Propuesta de Claude (E-137) |
-| 💍 Joyería | Anillos, collares y gemas; **las gemas mejoran directamente cualquier pieza** | Dicho por el dueño |
+| 💍 Joyería | Anillos y collares (su valor son los bonos con que los crea), y **refina las gemas desde la mena del Minero** (D-198); **las gemas mejoran directamente cualquier pieza** con ranura: armaduras y armas, nunca accesorios (D-199) | Dicho por el dueño |
 | ⚗️ Alquimia | Pociones de todo tipo y **amuletos** (pasan desde la Joyería) | Dicho por el dueño |
 | 🩺 Medicina | Lo físico: vendas, ungüentos, botiquines, cirugía (D-167) | Dicho por el dueño |
 | 🍲 Cocina | Raciones y comidas | Igual que hoy |
 | ✨ Encantamiento | Desencanta cosas para crear otras; otra mejora más de las piezas (sube de servicio a fabricación). ❓ También bastones y varitas (E-137) | Dicho por el dueño |
+
+- **Ranuras para gemas (D-199).** Todas las piezas de armadura y las armas pueden llevar ranura; nunca los anillos, collares, amuletos ni ningún accesorio, cuyo valor son los bonos con que los crea el Joyero o el Alquimista. Solo las piezas de buena calidad; las comunes no llevan. Cuántas (1 en las buenas, hasta 3 en las mejores) y que el encantamiento siga aparte quedan como recomendación. Detalle: [Equipamiento](../03-personaje/equipamiento.md) §3.1.
+- **Qué da cada tipo de armadura (D-206, provisional):** placa, armadura y vida; malla, ataque con armadura media; cuero, iniciativa y ataque; tela, ataque y vida. Detalle: [Equipamiento](../03-personaje/equipamiento.md) §2.1.
 
 ### 2.4 Servicios
 
@@ -74,13 +80,13 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | Línea | Recolecta | Refina (estructura) | Fabrica |
 |---|---|---|---|
 | Madera | Leñador | Aserradero | Carpintería, Arquería ❓, Construcción |
-| Metal | Minero | Fundición | Herrería, Mallero, Joyería, Carpintería (herrajes) |
-| Gemas | Gemólogo ❓ | Lapidario ❓ | Joyería (mejora de piezas) |
-| Piedra | Minero ❓ | Cantería | Construcción |
+| Metal | Minero | Fundición | Herrería, Mallero ❓ (o el Herrero, E-143), Joyería, Carpintería (herrajes) |
+| Gemas | Minero (mena, D-198) | Joyería (refina las gemas, D-198) | Las gemas van en las ranuras de armaduras y armas (D-199) |
+| Piedra | Minero (provisional) | Cantería | Construcción |
 | Hierbas | Herbolario, Agricultura | Destilería | Alquimia, Medicina |
 | Fibra, lino, algodón y lana | Herbolario, Agricultura, Ganadería | 🧶 Taller | Sastrería |
 | Piel y cuero | Desollador, Ganadería | Curtiduría | Peletería, Mallero |
-| Comida | Pescador, Desollador, Agricultura, Ganadería | Molino ❓ | Cocina |
+| Comida | Granja del asentamiento (sola, D-195), Pescador, Desollador, Agricultura, Ganadería | Molino ❓ | Cocina. **La comen los aldeanos**, no los jugadores (D-205) |
 | Esencias | Encantamiento (desencanta) | — | Encantamiento |
 | Botín robado | Ladrón | Perista ❓ | Ladrón (ganzúas, trampas, bombas de humo, disfraces) |
 
@@ -104,9 +110,9 @@ Cada recurso tiene **tres niveles**:
 
 - **Noble o rara:** solo en nodos mejorados o lejos del Claro.
 
-Las mejoras del asentamiento piden cada vez más: madera común en las primeras etapas, especies concretas en las del medio (por ejemplo, roble para la empalizada) y raras al final. Lo mismo con los metales (cobre, estaño, hierro, plata, oro, mithril), las gemas y las hierbas.
+Las mejoras del asentamiento piden cada vez más: madera común en las primeras etapas, especies concretas en las del medio (por ejemplo, roble para la empalizada) y raras al final. Lo mismo con los metales (cobre, estaño, hierro, plata, oro, mithril), las gemas (que el Joyero refina desde la mena, D-198) y las hierbas.
 
-## 5. La granja del asentamiento (D-195, propuesta)
+## 5. La granja del asentamiento (D-195 y D-205; números en D-207, provisional)
 
 Cada etapa del asentamiento trae su cosecha y su ganadería, que producen solas un mínimo para el asentamiento:
 
@@ -119,18 +125,20 @@ Cada etapa del asentamiento trae su cosecha y su ganadería, que producen solas 
 
 - **Qué produce:** raciones, granos, lino, lana, leche, huevos y cuero de ganado.
 - **Adónde va:** a la despensa y al almacén del asentamiento, para alimentar a la población, mantener las estructuras y pagar parte de las mejoras. **No es para los jugadores.**
-- **Cuánto produce:** crece con la población: más espacio, más gente, más campos y corrales.
+- **Quién come (D-205, 2-oct):** los **aldeanos PNJ**; los jugadores no cuentan como población que come. La granja **produce sola** según la etapa (cierra E-153); que los oficios de los jugadores la mejoren sigue como recomendación.
+- **Cuánto produce (D-207, provisional; se confirma en E-169):** cerca de la mitad de lo que come la población, un poco más al principio: ⌈1,5 × nivel⌉ raciones por día (2 en el nivel 1, 5 en la aldea, 8 en el pueblo, 11 en la ciudad y 14 en el castillo), con 3 aldeanos por nivel que comen 1 ración por día cada uno. Tabla completa y qué pasa con el hambre: [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md) §5.
 - **El resto lo ponen los jugadores** (Agricultor, Ganadero, cocineros, cazadores, pescadores): así crecer sigue pidiendo oficios (D-125).
 
 ## 6. Lo que cambia para los jugadores de hoy
 
 - Los rangos ya ganados en Aserradero, Fundición, Destilación, Tejeduría, Curtiduría y Cantería no se pierden (D-64). Propuesta: se vuelven experiencia de trabajador de esa estructura (E-139).
 - Los amuletos que ya fabricó la Joyería siguen siendo de quien los tiene.
-- Las piezas de malla que hoy hace la Peletería siguen sirviendo. Las nuevas las hará el Mallero.
+- Las piezas de malla que hoy hace la Peletería siguen sirviendo. Las nuevas las hará el Mallero (o el Herrero, según la respuesta a E-143).
+- Las 💠 gemas en bruto que hoy salen de los nodos y de los oficios siguen siendo de quien las tiene; cuando se programe D-198, las refinará el Joyero.
 
 ## 7. Preguntas para el dueño
 
-Están en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloque "Oficios y granja" (**E-136 a E-160**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-135 a P-159).
+Están en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloque "Oficios y granja" (**E-137 a E-160**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-136 a P-159). Ya respondidas el 2-oct: E-136 (D-198, gemas), E-149 (D-199, ranuras) y E-153 (D-205, la granja produce sola); E-154 pasó a E-169 (D-207). E-143 se reescribió: ¿la malla la hace un oficio propio, el ⛓️ Mallero (recomendado, D-194), o el Herrero junto con la placa?
 
 ## 8. De dónde sale
 

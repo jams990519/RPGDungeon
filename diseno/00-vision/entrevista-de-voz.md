@@ -319,3 +319,62 @@ Ok, la historia la vas a definir de otra manera. Vas a botar, borrar esa opción
 Y a medida que vas desbloqueando, por ejemplo, vas a comentarle al jugador en parte del tutorial: ahora aquí está el botón de mejora. Una vez estás en el campamento, que creas un campamento: no vas a darle un tutorial de cómo crear un campamento; primero tiene que moverse a otra zona que no es la antorcha principal. Una vez que lo has movido a otra zona, le vas a explicar o lo vas a mandar a hacer varios movimientos, uno o dos movimientos, y vas a decirle: mira, has encontrado un buen lugar para crear un campamento propio, y le vas a permitir a ese jugador darle nombre al campamento. Una vez ha creado el campamento le vas a dar un pequeño tutorial: mira, estas son todas las cosas que puedes hacer aquí: tienes un mercader, tienes un entrenador, un máster que te va a enseñar profesiones, y ahí empiezas a mostrarle lo que son las profesiones. Pero a medida que el jugador va desbloqueando contenido es que vas a irle dando los tutoriales, no todo de golpe. Entonces obviamente vas a comentarle al jugador que a medida que va avanzando en el juego va a ir aprendiendo profesiones de más y de más. Quiero que te fijes en el formato de Tower Wars actual, que está bien ampliado, detallado y separado. No es el mejor juego para guiarse, pero el sistema está bueno.
 ```
 
+## 2-oct-2026 · Decisiones de diseño (continuación)
+
+El dueño pegó este bloque en el chat, junto con dos preguntas. Quedó registrado como decisiones confirmadas **D-196 a D-205** en [Decisiones](decisiones.md) (D-205 sale de la segunda pregunta: comen los aldeanos, no los jugadores). Las dos respuestas de Claude quedaron como provisionales: **D-206** (armaduras) y **D-207** (comida de los aldeanos). Los pendientes de abajo y la confirmación de D-206 y D-207 pasaron al [Sistema de preguntas](sistema-de-preguntas.md), tanda 1, bloque A3 (**E-161 a E-169**). El detalle de nodos, caravanas, aldeanos y comida está en [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md). Texto tal cual llegó:
+
+```text
+DECISIONES DE DISEÑO · LOST REALMS (continuación)
+1. ENERGÍA
+- Una sola barra de energía compartida para todas las acciones (recolectar, combatir, escoltar). Así no se pueden hacer varias cosas a la vez.
+- Para empezar una acción, el jugador debe tener de entrada toda la energía que esa acción requiere. Si no le alcanza, no puede empezar. Nadie se queda a medias.
+2. MOVIMIENTO
+- Moverse por el mapa NO cuesta energía; cuesta TIEMPO: 1 minuto real por cuadro (10 cuadros = 10 minutos).
+- Farmear SÍ cuesta energía. El costo depende del tamaño del nodo.
+- Regla: desplazarse cuesta tiempo; trabajar (farmear solo o en caravana) cuesta energía.
+3. GEMAS
+- El Joyero refina las gemas a partir de los recursos de minería.
+- El Minero alimenta dos cadenas: metal para el Herrero y mena para que el Joyero refine gemas.
+4. RANURAS
+- Pueden llevar ranura TODAS las piezas de armadura y las armas.
+- NUNCA llevan ranura los anillos, collares, amuletos ni ningún accesorio. Su valor está en los bonos con que los crea el Joyero o el Alquimista.
+- Se mantiene: la ranura solo aparece en piezas de buena calidad; las comunes no llevan.
+5. ETAPAS DEL ASENTAMIENTO
+- Número de etapas EN REVISIÓN (puede ser más o menos de 10). Se definirá según la cantidad de jugadores por asentamiento.
+6. NODOS INTERNOS Y EXTERNOS
+- Nodos internos: dentro del territorio de la civilización. Se mejoran directamente y los farmean los miembros.
+- Nodos externos: fuera del territorio. Las mejoras de nodo aplican aquí. No se explotan directamente; requieren caravana.
+7. CARAVANAS (farmeo grupal)
+- La caravana es un farmeo grupal hacia un nodo externo. La civilización envía aldeanos (mano de obra que recolecta), y los jugadores deben escoltarla físicamente durante todo el trayecto.
+- Requisito: campamento mejorado. Se desbloquea a partir de la 2.ª o 3.ª mejora del asentamiento.
+- La cantidad de caravanas simultáneas sube con las etapas, porque a más etapas caben más jugadores disponibles para escoltar.
+- Las caravanas tienen distintos tamaños. Un nodo se puede traer en un solo viaje grande o en varios viajes más pequeños.
+- A mayor tamaño de caravana (más capacidad/carga), mayor es el mínimo obligatorio de jugadores escoltas.
+- Costo: la caravana SÍ cuesta energía, aunque moverse solo no la cueste, porque compromete el tiempo y la energía de los escoltas. El costo sube con el tamaño del nodo y con la distancia.
+- El costo de energía se reparte EQUITATIVAMENTE entre todos los escoltas (ej.: 20 de energía entre 4 jugadores = 5 cada uno).
+- Puede ser emboscada por monstruos (PvE) y por otros jugadores (PvP).
+- Si es derrotada: el atacante se lleva parte de la carga. Los aldeanos NO mueren; regresan al asentamiento, pero pierden gran parte del material. Al dueño le llega un mensaje: la caravana fue atacada, los aldeanos lograron volver, pero se perdió gran parte de lo recolectado.
+8. ENCARGADO Y JUGADORES DISPONIBLES
+- El jugador puede ponerse "disponible para el reino" en cierto momento.
+- Un encargado (por ejemplo, de caravanas o de agricultura) gasta la energía de los jugadores disponibles dirigiéndola a tareas y destinos específicos.
+- Pendiente de definir: si el encargado es un cargo asignado (alcalde, oficial del gremio) y si el jugador puede retirarse mientras está disponible.
+9. TUTORIAL INICIAL
+Orden exacto de los pasos del tutorial:
+1) Moverse de posición
+2) Explorar la zona
+3) Recolectar
+4) Cazar
+5) Aportar al campamento
+El jugador aprende primero a sostenerse solo y después entra a la capa Imperio.
+PENDIENTES QUE SALIERON DE ESTA PARTE
+- ¿El minuto por cuadro es fijo o habrá monturas/mejoras que lo aceleren?
+- ¿Mientras el jugador se mueve puede hacer otra cosa o queda ocupado?
+- Cargo del encargado y si el jugador disponible puede retirarse.
+- Recompensa por completar el tutorial.
+- Valores concretos de energía por tamaño de nodo y por distancia de caravana.
+```
+
+**Las dos preguntas del mismo mensaje** (resumidas):
+
+1. **Armaduras.** Para cada tipo de armadura (placa, malla, cuero y tela): qué estadística principal prevalece, qué clases de Lost Realms la usan, cuál es su rol y qué estadística debe mejorar cada pieza. En la pregunta dijo que "el Herrero hace placa y malla, el Peletero hace cuero y el Sastre hace tela". Eso choca con D-194, confirmada (cuatro armaduras, cuatro oficios: la malla con un oficio propio, el ⛓️ Mallero), así que no se decidió: quedó como pregunta en **E-143**. **Respuesta:** D-206 (provisional; se confirma en E-168). Este juego no tiene fuerza, agilidad ni intelecto, así que el reparto usa sus cuatro estadísticas: vida, ataque, armadura e iniciativa.
+2. **Comida.** Los aldeanos PNJ consumen comida (los jugadores no cuentan como población que come), la granja produce comida sola según la etapa, y los aldeanos hacen funcionar las estructuras y forman las caravanas (eso quedó como D-205). Preguntó cuánta comida come cada aldeano por día, cuánto produce la granja por etapa, cuántos aldeanos hay por etapa y qué pasa si hay déficit. **Respuesta:** D-207 (provisional; se confirma en E-169).

@@ -137,7 +137,7 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-78 | ¿Cuántos miembros pide un castillo (D-122)? El dueño dijo de 40 a 50, pero en la beta habrá pocos jugadores (D-122, D-155; entrevista E-55) | 15 durante la beta y 40 desde el lanzamiento |
 | P-79 | ¿Cuántas oleadas crecientes hay que defender para aprobar el castillo, y cuántas victorias de cuántos miembros pide la Noche de prueba (D-122)? (D-122; entrevista E-56) | 6 oleadas en dos semanas, ganando al menos 4; Noche de prueba con 10 victorias de al menos 5 miembros distintos |
 | P-80 | La casa del inicio (D-158), ¿es el primer escalón del asentamiento o una casa propia de cada jugador dentro de él? (D-158; entrevista E-57) | Es el primer escalón, compartido por 3 a 5 jugadores; los campamentos que ya existen conservan su nivel |
-| P-81 | ¿Cuántos escalones tiene el asentamiento y cómo se llaman (D-136, D-155)? (D-136, D-155; entrevista E-58) | 10 etapas: casa, campamento, aldea, pueblo, villa, ciudad, fortaleza, castillo, ciudadela y reino; las primeras rápidas y las últimas lentas (el dueño quiere más de 7, D-173) |
+| P-81 | ¿Cuántos escalones tiene el asentamiento y cómo se llaman (D-136, D-155)? **D-200: el número se decide según los jugadores por asentamiento**, así que E-58 pregunta cuántos jugadores se esperan en cada etapa (D-136, D-155, D-200; entrevista E-58) | Partir del cupo de hoy (2 al fundar y 2 más por nivel: 6 en la aldea, 10 en el pueblo, 14 en la ciudad y 18 en el castillo; con gremio, hasta 30) y una etapa cada vez que el grupo crece un tercio. Antes se propusieron 10: casa, campamento, aldea, pueblo, villa, ciudad, fortaleza, castillo, ciudadela y reino |
 | P-82 | Si en el castillo todo se vota (D-157), ¿qué decide solo el fundador o monarca? (D-155, D-157; entrevista E-59) | El nombre, la bandera, declarar la guerra y aceptar o echar miembros; todo lo demás se vota |
 | P-83 | ¿Las oleadas llegan en días y horas fijas para todos o cada campamento tiene su ritmo (D-154, D-124)? (D-154, D-124; entrevista E-60) | Días y horas fijas para todos, avisadas con anticipación |
 | P-84 | ¿En qué hora de referencia caen los eventos fijos: oleadas, asedios y jefes de mundo (D-124)? (D-124; entrevista E-61) | La noche de América: de 19:00 a 23:00 en UTC−5 |
@@ -175,7 +175,7 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 | P-116 | ¿Los beneficios de oficio del campamento usan al mejor miembro o se suman? (D-163; entrevista E-93) | El mejor miembro de cada oficio |
 | P-117 | ¿Cómo se premia al tanque y al curador en las mazmorras de grupo? (D-164; entrevista E-94) | Todos ganan lo mismo por terminar, y tanque y curador además un cofre extra |
 | P-118 | ¿Cómo se arma un grupo? (D-164; entrevista E-95) | Con los que están en tu zona: un botón para formar grupo y otro para sumarse |
-| P-119 | ¿Para quién son los nodos mejorados, por el carpintero o por cada recolector (D-168, D-171, D-194; P-145)? (entrevista E-96) | En zonas libres, para todos; en el territorio de un campamento, para sus miembros; duran unos días y se mantienen |
+| P-119 | ¿Para quién son los nodos mejorados, por el carpintero o por cada recolector? (D-168, D-171, D-194; entrevista E-96) | ✅ **Decidido (D-201):** los nodos internos (dentro del territorio) los mejoran y farmean los miembros; los externos se explotan solo con caravana (D-202), y las mejoras de nodo aplican ahí |
 | P-120 | ¿La información de enfermedades que pasan cazadores e investigadores es un objeto que se vende? (D-167; entrevista E-97) | Sí: un informe que se vende o se regala |
 | P-121 | ¿Se cambian también los nombres de clases, especializaciones y recursos que vienen de World of Warcraft (Caballero de la Muerte, Cazador de demonios, Evocador, Reprensión, Sutileza, Poder Sagrado...)? (D-135, D-151; entrevista E-122) | Sí, por nombres propios, sin tocar lo que hace cada una; las habilidades ya se cambiaron en la 0.25.1 |
 
@@ -212,28 +212,44 @@ Salieron del repaso de oficios del dueño (D-194) y de la ganadería y la cosech
 
 | # | Pregunta | Recomendación |
 |---|---|---|
-| P-135 | ¿Qué oficio se dedica a las piedras? (E-136) | 💎 Gemólogo: piedras preciosas y cristales, y mejora sus nodos |
+| P-135 | ¿Qué oficio se dedica a las piedras? (E-136) | ✅ **Decidido (D-198):** ninguno aparte: el 💍 Joyero refina las gemas desde la mena del ⛏️ Minero; no hay 💎 Gemólogo ni 🪨 Picapedrero, ni hace falta el 💠 Lapidario |
 | P-136 | ¿Quién hace arcos y bastones? (E-137) | 🏹 Arquería nueva para arcos y ballestas; bastones y varitas al Encantamiento |
 | P-137 | ¿Cómo se refina antes de la 3.ª o 4.ª etapa? (E-138) | El Claro conserva estaciones básicas; las variedades piden las estructuras |
 | P-138 | ¿Qué pasa con los rangos ya ganados en los oficios de refinado? (E-139) | Se vuelven experiencia de trabajador de esa estructura |
 | P-139 | ¿Trabajar en una estructura es activo o pasivo? (E-140) | Activo, con energía; los empleados del reino, más adelante, trabajan solos |
 | P-140 | ¿El Ladrón es la casa de los bandidos y cuándo entra? (E-141) | Sí; entra ya robando a monstruos y cofres, y a jugadores con el PvP |
 | P-141 | ¿Cómo se paga a quien trabaja en una estructura? (E-142) | El reino paga por pieza desde su tesoro |
-| P-142 | ¿Cómo se llama el oficio de la malla? (E-143) | ⛓️ Mallero |
+| P-142 | ¿La malla la hace un oficio propio o el Herrero junto con la placa? (E-143; el 2-oct el dueño dijo "el Herrero hace placa y malla", y D-194 dice cuatro armaduras, cuatro oficios) | Un oficio propio, ⛓️ Mallero (D-194) |
 | P-143 | ¿Quién usa las estructuras de refinado? (E-144) | Los miembros gratis; los visitantes pagan una tarifa al asentamiento |
 | P-144 | ¿Cómo es la variedad de los recolectores? (E-145) | Tres niveles (común, del terreno, raro) y 1 a 3 especies por terreno |
 | P-145 | ¿Quién mejora los nodos? (E-146) | Cada recolector, los de su recurso |
 | P-146 | ¿Qué hacen las herramientas del carpintero? (E-147) | Más rendimiento en lo común y necesarias para lo raro |
 | P-147 | ¿Las herramientas se gastan? (E-148) | Sí, como el equipo |
-| P-148 | ¿Cómo mejoran las piezas las gemas? (E-149) | Ranuras (1 a 3 según la pieza); el encantamiento sigue aparte |
+| P-148 | ¿Cómo mejoran las piezas las gemas? (E-149) | ✅ **Decidido (D-199):** ranuras en todas las armaduras y las armas, nunca en anillos, collares, amuletos ni accesorios, y solo en piezas de buena calidad. Cuántas (1 en las buenas, hasta 3 en las mejores) y el encantamiento aparte siguen como recomendación |
 | P-149 | ¿Qué se cultiva y dónde? (E-150) | Trigo, lino, algodón, hortalizas, frutas y hierbas; solo en tierras del asentamiento |
 | P-150 | ¿Qué animales se crían? (E-151) | Gallinas, ovejas, cabras, vacas y cerdos; caballos y monturas después |
 | P-151 | ¿Miel y cera son de la Ganadería o de la Agricultura? (E-152) | De la Ganadería |
-| P-152 | ¿La granja del asentamiento produce sola? (E-153) | Sí, según la etapa; los oficios la mejoran |
-| P-153 | ¿Cuánto cubre la granja? (E-154) | La mitad de lo que come la población |
+| P-152 | ¿La granja del asentamiento produce sola? (E-153) | ✅ **Decidido (D-205):** sí, según la etapa, y su comida la comen los aldeanos (los jugadores no cuentan como población que come). Que los oficios la mejoren sigue como recomendación |
+| P-153 | ¿Cuánto cubre la granja? (E-154) | ✅ **Pasa a E-169 (D-207):** cerca de la mitad de lo que come la población, junto con los demás números de la comida de los aldeanos |
 | P-154 | ¿Los jugadores pueden sacar lo que produce la granja? (E-155) | No: es del asentamiento; se obtiene trabajando o comprando |
 | P-155 | ¿Cómo son las tierras para cultivar y criar? (E-156) | Cada zona del territorio con fertilidad al azar |
 | P-156 | ¿Qué pasa con los amuletos? (E-157) | Los ya hechos quedan; desde el cambio los hace la Alquimia |
 | P-157 | ¿El Encantamiento crea objetos con esencias? (E-158) | Sí: bastones, varitas y runas |
 | P-158 | ¿Especializaciones de los oficios nuevos? (E-159) | 3 cada uno, propuestas por Claude |
 | P-159 | ¿En qué orden se trabaja? (E-160) | Primero etapas, estructuras y granja; después variedad y oficios nuevos |
+
+## Dudas de las decisiones de diseño del 2-oct (continuación)
+
+Salieron de las decisiones de diseño que el dueño pegó el 2-oct-2026 (D-196 a D-205) y de las dos respuestas de Claude a sus preguntas (D-206, armaduras, y D-207, comida de los aldeanos, provisionales). El detalle está en [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1, bloque A3 (E-161 a E-169).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-160 | ¿El minuto por cuadro es fijo o se acelera? (D-197; E-161) | Fijo por ahora; más adelante las monturas de la Ganadería (caballos, E-151) lo bajan a 30 segundos por cuadro, nunca a cero |
+| P-161 | ¿Mientras viajas puedes hacer otra cosa? (D-197; E-162) | Como hoy: puedes mirar todo (mochila, héroe, mapa, dudas) pero no trabajar (explorar, recolectar, cazar, fabricar) hasta llegar |
+| P-162 | ¿El encargado es un cargo y el jugador disponible puede retirarse? (D-203; E-163) | Un cargo que nombra el fundador (en el castillo se vota, D-157), uno por tarea; el disponible se retira cuando quiera, salvo en una caravana o tarea ya en marcha |
+| P-163 | ¿Qué premio da terminar el tutorial? (D-204; E-164) | Además de lo de cada paso (5 🥉 y 20 de experiencia), al terminar los 5 pasos 1 🥈 y una bolsa chica que agranda la mochila |
+| P-164 | ¿Cuánta energía cuesta farmear según el tamaño del nodo, y una caravana según su tamaño y la distancia? (D-197, D-202; E-165) | Nodo chico 1 ⚡ por vuelta, mediano 2 y grande 3; caravana: (10 ⚡ + 2 por cuadro) × 1, 2 o 3 según el tamaño, repartido entre los escoltas, con 2, 4 y 6 escoltas mínimos |
+| P-165 | ¿Cómo es el 5.º paso del tutorial, "Aportar al campamento", para quien todavía no tiene campamento? (D-204; E-166) | Volver al Claro y aportar parte de lo recolectado y cazado al 🔥 fogón común (aporte de práctica con el botón 🤲 Aportar); en tu propio campamento, ese botón alimenta a los aldeanos (D-205) |
+| P-166 | ¿Qué pasa con los pasos de hoy después de cazar (🗺️ Mapa, volver al Claro, 🏕️ Campamento, 🧑‍🏫 Entrenador, 👤 Héroe)? (D-204; E-167) | Pasan a ser avisos de una sola vez al abrir esas pantallas, y el camino queda con los 5 pasos y después fundar el campamento |
+| P-167 | ¿Te sirve el reparto de estadísticas por tipo de armadura? (D-206; E-168) | Sí: placa, armadura y vida; malla, ataque y armadura media; cuero, iniciativa y ataque; tela, ataque y vida |
+| P-168 | ¿Te sirven los números de la comida de los aldeanos? (D-207; E-169) | Sí: 1 ración por aldeano y día, 3 aldeanos por nivel, la granja cerca de la mitad; con hambre no mueren: no trabajan, no crece el asentamiento y tras 3 días se van de a uno |
