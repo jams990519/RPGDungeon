@@ -17,6 +17,11 @@
 # al nivel 3 quede igual (nivel 1-2 algo más fácil). Por qué: el equipo ahora mejora hasta el nivel 100 (items.yaml) y las
 # peleas con el equipo de su nivel dejaban ~80 % de vida a todo nivel; ahora dejan ~55-65 % (algo de riesgo, D-110).
 # Cada línea per_level dice los números de antes. Medir con tools/balance_report.py (registro en diseno/03-personaje/balance.md §7).
+# [ES] 0.28 (D-188, terrenos nuevos): los 6 terrenos nuevos (selva, sabana, volcan, canon, bosque_oscuro, lago) no traen
+# enemigos propios: se agregaron a "biomes" de los que les quedan (selva: bestias del bosque y del pantano; sabana: de la pradera
+# y el desierto; volcán: de montaña, colinas y ruinas que no son de hielo; cañón: de colinas y desierto; bosque oscuro: del
+# bosque y las ruinas; lago: del pantano y la pradera), con 2 o más en cada franja de nivel (tests/test_terrenos_nuevos.py).
+# Agregar un terreno al final de "biomes" no cambia qué sale en los terrenos que ya estaban (encounter_pool sigue el orden).
 
 lobo_ceniciento:
   name_key: enemy.lobo_ceniciento.name
@@ -35,7 +40,7 @@ lobo_ceniciento:
 
 jabali_espinoso:
   name_key: enemy.jabali_espinoso.name
-  biomes: [bosque, colinas, pradera]
+  biomes: [bosque, colinas, pradera, sabana]
   level_min: 2
   level_max: 8
   base: {hp: 72, attack: 6.9, armor: 0.15, initiative: 7}
@@ -49,7 +54,7 @@ jabali_espinoso:
 
 rata_del_pantano:
   name_key: enemy.rata_del_pantano.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 1
   level_max: 10
   base: {hp: 44, attack: 6.9, armor: 0.0, initiative: 13}
@@ -63,7 +68,7 @@ rata_del_pantano:
 
 espectro_de_ruinas:
   name_key: enemy.espectro_de_ruinas.name
-  biomes: [ruinas]
+  biomes: [ruinas, volcan, bosque_oscuro]
   level_min: 2
   level_max: 14
   base: {hp: 63, attack: 7.6, armor: 0.0, initiative: 11}
@@ -91,7 +96,7 @@ oso_de_las_cumbres:
 
 escorpion_de_arena:
   name_key: enemy.escorpion_de_arena.name
-  biomes: [desierto]
+  biomes: [desierto, sabana, volcan, canon]
   level_min: 2
   level_max: 14
   base: {hp: 58, attack: 7.6, armor: 0.25, initiative: 10}
@@ -105,7 +110,7 @@ escorpion_de_arena:
 
 bandido_errante:
   name_key: enemy.bandido_errante.name
-  biomes: [pradera, bosque, colinas, ruinas, desierto, pantano, montana, tundra]
+  biomes: [pradera, bosque, colinas, ruinas, desierto, pantano, montana, tundra, selva, sabana, volcan, canon, bosque_oscuro, lago]
   level_min: 3
   level_max: 99
   base: {hp: 67, attack: 7.6, armor: 0.12, initiative: 11}
@@ -123,7 +128,7 @@ bandido_errante:
 
 arana_tejedora:
   name_key: enemy.arana_tejedora.name
-  biomes: [bosque]
+  biomes: [bosque, selva, bosque_oscuro]
   level_min: 1
   level_max: 6
   base: {hp: 4, attack: 6.1, armor: 0.0, initiative: 13}
@@ -137,7 +142,7 @@ arana_tejedora:
 
 tortuga_musgosa:
   name_key: enemy.tortuga_musgosa.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, lago]
   level_min: 1
   level_max: 7
   base: {hp: 62, attack: 5.4, armor: 0.45, initiative: 4}
@@ -151,7 +156,7 @@ tortuga_musgosa:
 
 hongo_esporon:
   name_key: enemy.hongo_esporon.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, bosque_oscuro]
   level_min: 1
   level_max: 5
   base: {hp: 3, attack: 7.1, armor: 0.0, initiative: 5}
@@ -165,7 +170,7 @@ hongo_esporon:
 
 limo_verde:
   name_key: enemy.limo_verde.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, lago]
   level_min: 1
   level_max: 7
   base: {hp: 53, attack: 5.2, armor: 0.1, initiative: 6}
@@ -179,7 +184,7 @@ limo_verde:
 
 vibora_de_hierba:
   name_key: enemy.vibora_de_hierba.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana, canon, lago]
   level_min: 2
   level_max: 8
   base: {hp: 4, attack: 7.8, armor: 0.05, initiative: 15}
@@ -193,7 +198,7 @@ vibora_de_hierba:
 
 mantis_segadora:
   name_key: enemy.mantis_segadora.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana]
   level_min: 3
   level_max: 9
   base: {hp: 53, attack: 8.6, armor: 0.1, initiative: 12}
@@ -207,7 +212,7 @@ mantis_segadora:
 
 esqueleto_soldado:
   name_key: enemy.esqueleto_soldado.name
-  biomes: [ruinas, pradera]
+  biomes: [ruinas, pradera, bosque_oscuro]
   level_min: 2
   level_max: 10
   base: {hp: 58, attack: 7.8, armor: 0.2, initiative: 8}
@@ -221,7 +226,7 @@ esqueleto_soldado:
 
 poltergeist:
   name_key: enemy.poltergeist.name
-  biomes: [ruinas]
+  biomes: [ruinas, bosque_oscuro]
   level_min: 2
   level_max: 10
   base: {hp: 44, attack: 7.8, armor: 0.0, initiative: 14}
@@ -235,7 +240,7 @@ poltergeist:
 
 caiman_de_lodo:
   name_key: enemy.caiman_de_lodo.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 4
   level_max: 14
   base: {hp: 1, attack: 8.4, armor: 0.25, initiative: 7}
@@ -249,7 +254,7 @@ caiman_de_lodo:
 
 oso_cavernario:
   name_key: enemy.oso_cavernario.name
-  biomes: [montana, colinas]
+  biomes: [montana, colinas, canon]
   level_min: 3
   level_max: 12
   base: {hp: 105, attack: 8.4, armor: 0.2, initiative: 6}
@@ -333,7 +338,7 @@ raigambre:
 # -- band 1: low zones of montana, tundra, desierto and ruinas (levels 1-12) --
 cabra_montes:
   name_key: enemy.cabra_montes.name
-  biomes: [montana, colinas]
+  biomes: [montana, colinas, volcan, canon]
   level_min: 1
   level_max: 9
   base: {hp: 77, attack: 7.6, armor: 0.05, initiative: 13}
@@ -363,7 +368,7 @@ zorro_polar:
 
 kobold_minero:
   name_key: enemy.kobold_minero.name
-  biomes: [montana, colinas]
+  biomes: [montana, colinas, volcan, canon]
   level_min: 2
   level_max: 12
   base: {hp: 77, attack: 6.8, armor: 0.2, initiative: 9}
@@ -378,7 +383,7 @@ kobold_minero:
 
 chacal_del_desierto:
   name_key: enemy.chacal_del_desierto.name
-  biomes: [desierto]
+  biomes: [desierto, sabana, canon]
   level_min: 1
   level_max: 9
   base: {hp: 77, attack: 7.6, armor: 0.05, initiative: 13}
@@ -393,7 +398,7 @@ chacal_del_desierto:
 
 escarabajo_de_duna:
   name_key: enemy.escarabajo_de_duna.name
-  biomes: [desierto]
+  biomes: [desierto, sabana, canon]
   level_min: 2
   level_max: 12
   base: {hp: 7, attack: 5.9, armor: 0.38, initiative: 5}
@@ -407,7 +412,7 @@ escarabajo_de_duna:
 
 murcielago_de_cripta:
   name_key: enemy.murcielago_de_cripta.name
-  biomes: [ruinas]
+  biomes: [ruinas, volcan, bosque_oscuro]
   level_min: 1
   level_max: 8
   base: {hp: 55, attack: 7.6, armor: 0.0, initiative: 15}
@@ -436,7 +441,7 @@ buho_nival:
 # -- band 1, late: levels 6-17 where only the bandit was left --
 lobo_gris:
   name_key: enemy.lobo_gris.name
-  biomes: [bosque, pradera]
+  biomes: [bosque, pradera, bosque_oscuro]
   level_min: 6
   level_max: 16
   base: {hp: 86, attack: 8.3, armor: 0.05, initiative: 13}
@@ -451,7 +456,7 @@ lobo_gris:
 
 jabali_colmillo_hierro:
   name_key: enemy.jabali_colmillo_hierro.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana]
   level_min: 7
   level_max: 17
   base: {hp: 9, attack: 7.6, armor: 0.2, initiative: 6}
@@ -480,7 +485,7 @@ espantapajaros_animado:
 
 enredadera_estranguladora:
   name_key: enemy.enredadera_estranguladora.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, bosque_oscuro, lago]
   level_min: 6
   level_max: 16
   base: {hp: 78, attack: 7.8, armor: 0.38, initiative: 5}
@@ -494,7 +499,7 @@ enredadera_estranguladora:
 
 fuego_fatuo:
   name_key: enemy.fuego_fatuo.name
-  biomes: [ruinas, bosque]
+  biomes: [ruinas, bosque, volcan, bosque_oscuro]
   level_min: 6
   level_max: 16
   base: {hp: 73, attack: 10, armor: 0.0, initiative: 11}
@@ -525,7 +530,7 @@ lobo_de_las_nieves:
 # -- band 2: levels 12-30 --
 ogro_del_puente:
   name_key: enemy.ogro_del_puente.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, lago]
   level_min: 12
   level_max: 30
   base: {hp: 95, attack: 7.4, armor: 0.2, initiative: 6}
@@ -539,7 +544,7 @@ ogro_del_puente:
 
 langosta_de_plaga:
   name_key: enemy.langosta_de_plaga.name
-  biomes: [pradera]
+  biomes: [pradera, sabana]
   level_min: 12
   level_max: 30
   base: {hp: 64, attack: 9.1, armor: 0.0, initiative: 15}
@@ -553,7 +558,7 @@ langosta_de_plaga:
 
 chispa_errante:
   name_key: enemy.chispa_errante.name
-  biomes: [pradera]
+  biomes: [pradera, volcan]
   level_min: 13
   level_max: 30
   base: {hp: 76, attack: 9.8, armor: 0.0, initiative: 11}
@@ -568,7 +573,7 @@ chispa_errante:
 
 lobo_bicefalo:
   name_key: enemy.lobo_bicefalo.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, canon]
   level_min: 12
   level_max: 30
   base: {hp: 9, attack: 9.1, armor: 0.05, initiative: 13}
@@ -583,7 +588,7 @@ lobo_bicefalo:
 
 ciclope_de_cantera:
   name_key: enemy.ciclope_de_cantera.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, volcan, canon]
   level_min: 14
   level_max: 30
   base: {hp: 95, attack: 7.4, armor: 0.2, initiative: 6}
@@ -597,7 +602,7 @@ ciclope_de_cantera:
 
 arana_nodriza:
   name_key: enemy.arana_nodriza.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, bosque_oscuro]
   level_min: 12
   level_max: 30
   base: {hp: 71, attack: 9.1, armor: 0.12, initiative: 12}
@@ -611,7 +616,7 @@ arana_nodriza:
 
 hada_de_espinas:
   name_key: enemy.hada_de_espinas.name
-  biomes: [bosque]
+  biomes: [bosque, selva, bosque_oscuro]
   level_min: 12
   level_max: 30
   base: {hp: 76, attack: 9.8, armor: 0.0, initiative: 11}
@@ -626,7 +631,7 @@ hada_de_espinas:
 
 sanguijuela_gigante:
   name_key: enemy.sanguijuela_gigante.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 12
   level_max: 30
   base: {hp: 95, attack: 7.4, armor: 0.1, initiative: 6}
@@ -640,7 +645,7 @@ sanguijuela_gigante:
 
 enjambre_de_mosquitos:
   name_key: enemy.enjambre_de_mosquitos.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 12
   level_max: 28
   base: {hp: 64, attack: 9.1, armor: 0.0, initiative: 15}
@@ -654,7 +659,7 @@ enjambre_de_mosquitos:
 
 elemental_de_piedra:
   name_key: enemy.elemental_de_piedra.name
-  biomes: [montana, tundra]
+  biomes: [montana, tundra, volcan]
   level_min: 13
   level_max: 30
   base: {hp: 82, attack: 7.6, armor: 0.38, initiative: 5}
@@ -697,7 +702,7 @@ gloton_de_las_nieves:
 
 buitre_de_hueso:
   name_key: enemy.buitre_de_hueso.name
-  biomes: [desierto]
+  biomes: [desierto, sabana, canon]
   level_min: 12
   level_max: 30
   base: {hp: 71, attack: 9.1, armor: 0.12, initiative: 12}
@@ -711,7 +716,7 @@ buitre_de_hueso:
 
 hiena_rayada:
   name_key: enemy.hiena_rayada.name
-  biomes: [desierto]
+  biomes: [desierto, sabana, canon]
   level_min: 14
   level_max: 30
   base: {hp: 9, attack: 9.1, armor: 0.05, initiative: 13}
@@ -741,7 +746,7 @@ momia_de_arena:
 
 gargola_de_ruinas:
   name_key: enemy.gargola_de_ruinas.name
-  biomes: [ruinas]
+  biomes: [ruinas, volcan, bosque_oscuro]
   level_min: 12
   level_max: 30
   base: {hp: 82, attack: 7.6, armor: 0.38, initiative: 5}
@@ -771,7 +776,7 @@ saqueador_de_tumbas:
 # -- band 3: levels 25-45 --
 leon_de_la_estepa:
   name_key: enemy.leon_de_la_estepa.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana]
   level_min: 25
   level_max: 45
   base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
@@ -786,7 +791,7 @@ leon_de_la_estepa:
 
 centauro_salvaje:
   name_key: enemy.centauro_salvaje.name
-  biomes: [pradera]
+  biomes: [pradera, sabana, lago]
   level_min: 25
   level_max: 45
   base: {hp: 92, attack: 8.3, armor: 0.2, initiative: 9}
@@ -801,7 +806,7 @@ centauro_salvaje:
 
 trol_de_colina:
   name_key: enemy.trol_de_colina.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, volcan, canon]
   level_min: 25
   level_max: 45
   base: {hp: 98, attack: 8.4, armor: 0.2, initiative: 6}
@@ -815,7 +820,7 @@ trol_de_colina:
 
 pantera_sombria:
   name_key: enemy.pantera_sombria.name
-  biomes: [bosque]
+  biomes: [bosque, selva, bosque_oscuro]
   level_min: 25
   level_max: 45
   base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
@@ -830,7 +835,7 @@ pantera_sombria:
 
 micelio_andante:
   name_key: enemy.micelio_andante.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva]
   level_min: 25
   level_max: 45
   base: {hp: 83, attack: 7.6, armor: 0.38, initiative: 5}
@@ -844,7 +849,7 @@ micelio_andante:
 
 basilisco_de_pantano:
   name_key: enemy.basilisco_de_pantano.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 26
   level_max: 45
   base: {hp: 72, attack: 9.1, armor: 0.12, initiative: 12}
@@ -873,7 +878,7 @@ necrofago:
 
 grifo_de_montana:
   name_key: enemy.grifo_de_montana.name
-  biomes: [montana]
+  biomes: [montana, volcan]
   level_min: 25
   level_max: 45
   base: {hp: 92, attack: 9.1, armor: 0.05, initiative: 13}
@@ -932,7 +937,7 @@ tigre_de_duna:
 
 escorpion_de_vidrio:
   name_key: enemy.escorpion_de_vidrio.name
-  biomes: [desierto]
+  biomes: [desierto, canon]
   level_min: 26
   level_max: 45
   base: {hp: 83, attack: 7.6, armor: 0.38, initiative: 5}
@@ -946,7 +951,7 @@ escorpion_de_vidrio:
 
 planidera:
   name_key: enemy.planidera.name
-  biomes: [ruinas]
+  biomes: [ruinas, bosque_oscuro]
   level_min: 25
   level_max: 45
   base: {hp: 77, attack: 9.8, armor: 0.0, initiative: 11}
@@ -962,7 +967,7 @@ planidera:
 # -- band 4: levels 40-60 --
 bisonte_de_trueno:
   name_key: enemy.bisonte_de_trueno.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana, lago]
   level_min: 40
   level_max: 60
   base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
@@ -976,7 +981,7 @@ bisonte_de_trueno:
 
 asaltante_de_caravanas:
   name_key: enemy.asaltante_de_caravanas.name
-  biomes: [pradera, desierto]
+  biomes: [pradera, desierto, sabana, canon]
   level_min: 40
   level_max: 60
   base: {hp: 94, attack: 8.3, armor: 0.2, initiative: 9}
@@ -991,7 +996,7 @@ asaltante_de_caravanas:
 
 wyvern_de_penasco:
   name_key: enemy.wyvern_de_penasco.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, volcan, canon]
   level_min: 41
   level_max: 60
   base: {hp: 74, attack: 9.1, armor: 0.12, initiative: 12}
@@ -1005,7 +1010,7 @@ wyvern_de_penasco:
 
 licantropo_salvaje:
   name_key: enemy.licantropo_salvaje.name
-  biomes: [bosque, tundra]
+  biomes: [bosque, tundra, bosque_oscuro]
   level_min: 40
   level_max: 60
   base: {hp: 94, attack: 9, armor: 0.05, initiative: 13}
@@ -1020,7 +1025,7 @@ licantropo_salvaje:
 
 driade_marchita:
   name_key: enemy.driade_marchita.name
-  biomes: [bosque]
+  biomes: [bosque, selva, bosque_oscuro]
   level_min: 41
   level_max: 60
   base: {hp: 79, attack: 10.6, armor: 0.0, initiative: 11}
@@ -1035,7 +1040,7 @@ driade_marchita:
 
 gigante_del_fango:
   name_key: enemy.gigante_del_fango.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 40
   level_max: 60
   base: {hp: 1, attack: 8.4, armor: 0.2, initiative: 6}
@@ -1106,7 +1111,7 @@ wyrm_joven_de_las_dunas:
 
 caballero_hueco:
   name_key: enemy.caballero_hueco.name
-  biomes: [ruinas]
+  biomes: [ruinas, volcan]
   level_min: 40
   level_max: 60
   base: {hp: 94, attack: 8.3, armor: 0.2, initiative: 9}
@@ -1122,7 +1127,7 @@ caballero_hueco:
 # -- band 5: levels 55-75 --
 manticora:
   name_key: enemy.manticora.name
-  biomes: [pradera, desierto]
+  biomes: [pradera, desierto, sabana, canon]
   level_min: 55
   level_max: 75
   base: {hp: 75, attack: 9, armor: 0.12, initiative: 12}
@@ -1137,7 +1142,7 @@ manticora:
 
 gigante_de_tormenta:
   name_key: enemy.gigante_de_tormenta.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana, lago]
   level_min: 56
   level_max: 75
   base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1152,7 +1157,7 @@ gigante_de_tormenta:
 
 golem_de_granito:
   name_key: enemy.golem_de_granito.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, volcan, canon]
   level_min: 55
   level_max: 75
   base: {hp: 86, attack: 7.4, armor: 0.38, initiative: 5}
@@ -1167,7 +1172,7 @@ golem_de_granito:
 
 arbol_hueco:
   name_key: enemy.arbol_hueco.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, bosque_oscuro]
   level_min: 55
   level_max: 75
   base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1182,7 +1187,7 @@ arbol_hueco:
 
 osolechuza:
   name_key: enemy.osolechuza.name
-  biomes: [bosque]
+  biomes: [bosque, bosque_oscuro]
   level_min: 56
   level_max: 75
   base: {hp: 95, attack: 10, armor: 0.05, initiative: 13}
@@ -1197,7 +1202,7 @@ osolechuza:
 
 hidra_del_pantano:
   name_key: enemy.hidra_del_pantano.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 55
   level_max: 75
   base: {hp: 75, attack: 9, armor: 0.12, initiative: 12}
@@ -1242,7 +1247,7 @@ novia_de_escarcha:
 
 centinela_de_vidrio:
   name_key: enemy.centinela_de_vidrio.name
-  biomes: [desierto]
+  biomes: [desierto, volcan]
   level_min: 56
   level_max: 75
   base: {hp: 86, attack: 7.4, armor: 0.38, initiative: 5}
@@ -1288,7 +1293,7 @@ automata_de_ruinas:
 # -- band 6: levels 70-90 --
 behemot_de_la_estepa:
   name_key: enemy.behemot_de_la_estepa.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana]
   level_min: 70
   level_max: 90
   base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1303,7 +1308,7 @@ behemot_de_la_estepa:
 
 jinete_espectral:
   name_key: enemy.jinete_espectral.name
-  biomes: [pradera, ruinas]
+  biomes: [pradera, ruinas, sabana, bosque_oscuro]
   level_min: 71
   level_max: 90
   base: {hp: 8, attack: 10.6, armor: 0.0, initiative: 11}
@@ -1318,7 +1323,7 @@ jinete_espectral:
 
 roc_de_las_alturas:
   name_key: enemy.roc_de_las_alturas.name
-  biomes: [colinas, montana]
+  biomes: [colinas, montana, volcan, canon]
   level_min: 70
   level_max: 90
   base: {hp: 96, attack: 10, armor: 0.05, initiative: 13}
@@ -1333,7 +1338,7 @@ roc_de_las_alturas:
 
 sierpe_esmeralda:
   name_key: enemy.sierpe_esmeralda.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, lago]
   level_min: 70
   level_max: 90
   base: {hp: 75, attack: 10, armor: 0.12, initiative: 12}
@@ -1348,7 +1353,7 @@ sierpe_esmeralda:
 
 caballero_de_la_corte_marchita:
   name_key: enemy.caballero_de_la_corte_marchita.name
-  biomes: [bosque]
+  biomes: [bosque, bosque_oscuro]
   level_min: 71
   level_max: 90
   base: {hp: 96, attack: 9.3, armor: 0.2, initiative: 9}
@@ -1363,7 +1368,7 @@ caballero_de_la_corte_marchita:
 
 abominacion_del_cieno:
   name_key: enemy.abominacion_del_cieno.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 70
   level_max: 90
   base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1378,7 +1383,7 @@ abominacion_del_cieno:
 
 salamandra_de_lava:
   name_key: enemy.salamandra_de_lava.name
-  biomes: [montana, desierto]
+  biomes: [montana, desierto, volcan]
   level_min: 70
   level_max: 90
   base: {hp: 75, attack: 10, armor: 0.12, initiative: 12}
@@ -1423,7 +1428,7 @@ espectro_glacial:
 
 gusano_de_las_arenas:
   name_key: enemy.gusano_de_las_arenas.name
-  biomes: [desierto]
+  biomes: [desierto, canon]
   level_min: 71
   level_max: 90
   base: {hp: 101, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1454,7 +1459,7 @@ centinela_runico:
 # -- band 7: levels 85-100 --
 quimera:
   name_key: enemy.quimera.name
-  biomes: [pradera, colinas]
+  biomes: [pradera, colinas, sabana, canon]
   level_min: 85
   level_max: 100
   base: {hp: 98, attack: 10, armor: 0.05, initiative: 13}
@@ -1470,7 +1475,7 @@ quimera:
 
 titan_de_las_llanuras:
   name_key: enemy.titan_de_las_llanuras.name
-  biomes: [pradera]
+  biomes: [pradera, sabana]
   level_min: 86
   level_max: 100
   base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1500,7 +1505,7 @@ gigante_de_las_nubes:
 
 licantropo_alfa:
   name_key: enemy.licantropo_alfa.name
-  biomes: [bosque, tundra]
+  biomes: [bosque, tundra, bosque_oscuro]
   level_min: 85
   level_max: 100
   base: {hp: 98, attack: 10, armor: 0.05, initiative: 13}
@@ -1516,7 +1521,7 @@ licantropo_alfa:
 
 polilla_lunar:
   name_key: enemy.polilla_lunar.name
-  biomes: [bosque, pantano]
+  biomes: [bosque, pantano, selva, lago]
   level_min: 86
   level_max: 100
   base: {hp: 69, attack: 10, armor: 0.0, initiative: 15}
@@ -1531,7 +1536,7 @@ polilla_lunar:
 
 leviatan_del_cieno:
   name_key: enemy.leviatan_del_cieno.name
-  biomes: [pantano]
+  biomes: [pantano, selva, lago]
   level_min: 85
   level_max: 100
   base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}
@@ -1546,7 +1551,7 @@ leviatan_del_cieno:
 
 fenix_de_ceniza:
   name_key: enemy.fenix_de_ceniza.name
-  biomes: [montana, desierto]
+  biomes: [montana, desierto, volcan]
   level_min: 86
   level_max: 100
   base: {hp: 82, attack: 10.6, armor: 0.0, initiative: 11}
@@ -1576,7 +1581,7 @@ wyrm_de_hielo:
 
 escorpion_emperador:
   name_key: enemy.escorpion_emperador.name
-  biomes: [desierto]
+  biomes: [desierto, canon]
   level_min: 85
   level_max: 100
   base: {hp: 89, attack: 8.4, armor: 0.38, initiative: 5}
@@ -1591,7 +1596,7 @@ escorpion_emperador:
 
 liche_errante:
   name_key: enemy.liche_errante.name
-  biomes: [ruinas]
+  biomes: [ruinas, bosque_oscuro]
   level_min: 85
   level_max: 100
   base: {hp: 82, attack: 10.6, armor: 0.0, initiative: 11}
@@ -1606,7 +1611,7 @@ liche_errante:
 
 engendro_del_umbral:
   name_key: enemy.engendro_del_umbral.name
-  biomes: [ruinas]
+  biomes: [ruinas, volcan]
   level_min: 86
   level_max: 100
   base: {hp: 103, attack: 8.3, armor: 0.2, initiative: 6}

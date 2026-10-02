@@ -201,7 +201,7 @@ professions:
     name_key: profession.minero.name
     how_key: profession.minero.how
     branch: gather
-    gathers: [piedra, pieza_metal, arcilla, carbon, sal, cuarzo, arena, hielo, chatarra]   # [ES] D-183: también lo mineral de cada terreno
+    gathers: [piedra, pieza_metal, arcilla, carbon, sal, cuarzo, arena, hielo, chatarra, obsidiana]   # [ES] D-183: también lo mineral de cada terreno (0.28: 🖤 obsidiana del 🌋 volcán)
     rare: {item: gema_bruta, min_rank: 10}     # [ES] desde el rango 10 aparecen gemas en bruto al minar (las pide la Joyería)
     perk: {hp: 0.05}                         # [ES] D-111: +5 % de vida máxima al rango 100 (tanques)
   herbolario:
@@ -1624,3 +1624,5 @@ recipes:
   guiso_datiles: {profession: cocina, variant: datiles, inputs: {carne: 2, pescado: 2, datiles: 2}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 12}
   conserva_hielo: {profession: cocina, variant: hielo, inputs: {carne: 3, pescado: 3, sal: 1, hielo: 1}, output: {conserva: 1}, min_rank: 50, energy: 2, xp: 12}     # [ES] 9 → 18, sin tarro ni salmuera
   festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 12}          # [ES] 12 → 27, sin 🌸 flor de luna
+  # [ES] 0.28 (D-188): el material nuevo del 🌋 volcán. Bloques de vidrio de lava: 1 piedra y 1 obsidiana en vez de 3 piedras (7 → 3,5 al venderlo: no deja ganar).
+  sillar_obsidiana: {profession: canteria, variant: obsidiana, inputs: {piedra: 1, obsidiana: 1}, output: {sillar: 1}, min_rank: 1, energy: 1, xp: 6}

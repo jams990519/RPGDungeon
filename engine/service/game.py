@@ -295,6 +295,10 @@ Si cambias esto, revisa:
       _known_resources (un umbral por recurso), _gather_step (×2, se agota la mitad, el raro; activity["node"]),
       _batch_summary (línea ✨), _explore_step y _arrive (descubrir donde estás), _zone_view (aviso y línea ✨), _map_view
       (✨ / emoji y 2 líneas, sin botón) y _grow_view (marca ✨ en las zonas con nodo descubierto)
+    - 🎨 Terrenos nuevos (0.28, D-185, D-188): solo datos en content/biomes.yaml (terrain con weight, climate y tier; color,
+      emoji, danger, water, gather, own, node_rare), content/enemies.yaml ("biomes") y los nombres biome.* de es.yaml. Los lee
+      _terrain_cfg (la tanda "tier" pasa a mapgen._piece_terrain: un terreno nuevo solo cambia las piezas que pasan a ser suyas)
+      y la leyenda de _map_view, que se arma sola; tests/test_terrenos_nuevos.py (mapa de impacto M8, "Los terrenos del tablero")
     - 🔭 Reconocer y 🥷 Sigilo (D-172): balance.yaml recon (energía, alcance por umbral, experiencia, monedas, cuántos lista) y
       explorer (ranks recon, recon_far, recon_wide y stealth_max); content/professions.yaml (perk stealth del explorador y el
       efecto perk stealth de la 🎓 🕵️ Infiltrado); PERK_KEYS en engine/professions/rules.py; textos recon.*, stealth.*,
@@ -757,12 +761,15 @@ class GameService(StoryMixin):
 
         [ES]
         Qué hace: arma la tabla del tablero de terrenos (clima, peso de cada terreno en el sorteo de cada pieza de Tetris y los
-        sueltos, si hay) con lo que dicen balance.yaml terrain y cada bioma de content/biomes.yaml. La llama: _zone.
-        Si cambia, afecta: el terreno de todo el mapa (color, enemigos y peligro), no los recursos (D-185).
+        sueltos, si hay) con lo que dicen balance.yaml terrain y cada bioma de content/biomes.yaml. 0.28 (D-188): también la
+        tanda de cada terreno ("tier", 0 si no lo dice): los de una tanda nueva solo cambian las piezas que pasan a ser suyas
+        (mapgen._piece_terrain). La llama: _zone.
+        Si cambia, afecta: el terreno de todo el mapa (color, enemigos, peligro, recursos propios y nodos), no los recursos de
+        base (D-185).
         """
         if getattr(self, "_terrain_table", None) is None:
             cfg = self.content.balance.get("terrain", {})
-            kinds = tuple((b, float(d["terrain"]["weight"]), d["terrain"].get("climate", "any"))
+            kinds = tuple((b, float(d["terrain"]["weight"]), d["terrain"].get("climate", "any"), int(d["terrain"].get("tier", 0)))
                           for b, d in self.content.biomes.items() if d.get("terrain", {}).get("weight"))
             scattered = tuple((b, float(d["terrain"]["scatter"]))
                               for b, d in self.content.biomes.items() if d.get("terrain", {}).get("scatter"))

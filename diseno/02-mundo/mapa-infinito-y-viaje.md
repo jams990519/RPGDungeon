@@ -39,9 +39,33 @@ Código: [mapgen.py](../../engine/world/mapgen.py), [travel.py](../../engine/wor
 
 - El mapa se parte en **bloques de 4 × 4 zonas**; las filas impares de bloques van corridas 2 zonas, como ladrillos, para que no se vea una cuadrícula.
 - Cada bloque se llena con **piezas de Tetris de 4 zonas** (I, O, T, S, Z, J y L): una de las **117 formas** de cubrir un cuadrado de 4 × 4, elegida por la semilla (`block_tilings`).
-- Cada pieza **sortea su terreno por peso** (`content/biomes.yaml` → `terrain.weight`: pradera y bosque 3; colinas, pantano, montaña, desierto y tundra 2; ruinas 1). La **tundra** (`climate: cold`) sale más hacia el norte y el **desierto** (`hot`) más hacia el sur (`terrain.climate_slope` y `climate_strength`), pero los dos pueden salir en cualquier parte. Dos piezas vecinas del mismo terreno se ven como una mancha más grande.
+- Cada pieza **sortea su terreno por peso** (`content/biomes.yaml` → `terrain.weight`, tabla de abajo). Los fríos (`climate: cold`: tundra y bosque oscuro) salen más hacia el norte y los calientes (`hot`: desierto, selva y sabana) más hacia el sur (`terrain.climate_slope` y `climate_strength`: hasta 3 veces más en su lado y hasta 0,15 veces en el otro), pero todos pueden salir en cualquier parte. Dos piezas vecinas del mismo terreno se ven como una mancha más grande.
 - El **🔥 Claro** queda fijo en (0, 0). (En la 0.26.2 eran manchas de 3 a 12 zonas y las ruinas iban sueltas.)
-- Un terreno nuevo solo agrega su `terrain` y su `color` en `content/biomes.yaml` (D-185: se pueden agregar todos los que hagan falta).
+- Un terreno nuevo solo agrega su `terrain` y su `color` en `content/biomes.yaml` (D-185: se pueden agregar todos los que hagan falta), además de su nombre, su peligro, su agua, su catálogo y sus enemigos (abajo).
+- **Tandas (`terrain.tier`, desde la 0.28, D-188):** cada terreno dice en qué tanda se agregó (sin `tier`, la 0: los 8 de siempre). Cada pieza mira primero, con un sorteo propio de esa tanda (`terrain_tier:1`), si le toca un terreno de la tanda más nueva, con la parte del peso que les toca; si no, sortea entre los de antes **exactamente como antes**. La parte de cada terreno en todo el mapa es la misma que con un sorteo único, pero agregar terrenos solo cambia las piezas que pasan a ser de un terreno nuevo: en la 0.28, unas 3 de cada 10. Las demás conservan su terreno, sus enemigos, sus recursos propios (§1.12.2) y sus nodos (§1.16). Sin tandas, la 0.28 habría cambiado el terreno de 77 de cada 100 zonas, los recursos propios de 73 y el recurso de 1 de cada 3 nodos ya descubiertos. Un terreno nuevo va siempre en una tanda nueva.
+
+**Los terrenos del tablero (0.28):**
+
+| Terreno | Color en el 🗺️ Mapa | Peso | Clima | Tanda | Peligro al llegar | Zonas con agua (🐟) |
+|---|---|---|---|---|---|---|
+| 🌾 Pradera | 🟩 | 3 | cualquiera | 0 | 25 % | 3 de 10 |
+| 🌲 Bosque | 🟢 | 3 | cualquiera | 0 | 35 % | 3 de 10 |
+| ⛰️ Colinas | 🟫 | 2 | cualquiera | 0 | 30 % | — |
+| 🐸 Pantano | 🟪 | 2 | cualquiera | 0 | 45 % | todas |
+| 🏔️ Montaña | ⬜ | 2 | cualquiera | 0 | 40 % | — |
+| 🏜️ Desierto | 🟨 | 2 | caliente (sur) | 0 | 40 % | — |
+| ❄️ Tundra | 🟦 | 2 | frío (norte) | 0 | 40 % | — |
+| 🏚️ Ruinas | ⬛ | 1 | cualquiera | 0 | 50 % | — |
+| 🦜 Selva | 🟣 | 1,5 | caliente (sur) | 1 | 45 % | 5 de 10 |
+| 🦒 Sabana | 🟧 | 1,5 | caliente (sur) | 1 | 30 % | 2 de 10 |
+| 🌋 Volcán | 🟥 | 0,5 | cualquiera | 1 | 55 % | — |
+| 🏞️ Cañón | 🟤 | 1 | cualquiera | 1 | 35 % | 4 de 10 |
+| 🦉 Bosque oscuro | ⚫ | 1 | frío (norte) | 1 | 50 % | 3 de 10 |
+| 🦆 Lago | 🔵 | 1 | cualquiera | 1 | 25 % | todas |
+
+- **Los 6 de la 0.28 (D-188, provisional: cuáles, colores y números los propuso Claude).** Cada uno sale menos que los clásicos (peso 1 a 1,5; el 🌋 volcán, 0,5, es el más raro y el más peligroso). Cerca del Claro son unas 28 de cada 100 zonas. Los colores nuevos van en "primos" del terreno parecido cuando no queda un color propio (🟣 selva junto a 🟪 pantano, 🟤 cañón junto a 🟫 colinas, ⚫ bosque oscuro junto a ⬛ ruinas, como 🟢 bosque y 🟩 pradera); 🟧 sabana, 🟥 volcán y 🔵 lago tienen el suyo. Un color nunca se repite ni es el emoji de un recurso que puede tener nodo. Libres para más terrenos: 🔴 🟠 🟡 ⚪.
+- **Sus enemigos:** no hay enemigos nuevos; cada terreno nuevo se agregó a los de terrenos parecidos (`content/enemies.yaml` → `biomes`), con 2 o más en cada franja de nivel: 🦜 selva, bestias del bosque y del pantano (arañas, caimanes, pantera, sierpe esmeralda); 🦒 sabana, de la pradera y el desierto (chacal, hiena, león, mantícora); 🌋 volcán, de montaña, colinas y ruinas que no son de hielo (fuego fatuo, chispa errante, salamandra de lava, fénix de ceniza); 🏞️ cañón, de colinas y desierto (cabra, escorpiones, wyvern, roc); 🦉 bosque oscuro, del bosque y las ruinas (lobo gris, pantera sombría, licántropo, liche); 🦆 lago, del pantano y la pradera (tortuga, sanguijuela, hidra, leviatán). El 🗡️ bandido errante sale en todos. Los terrenos de antes siguen con los mismos enemigos, en el mismo orden.
+- **Lo que no tocan:** los 6 recursos de base (siguen al bioma clásico, que nunca da un terreno nuevo), la misión de la historia que pide ganar en 🌲 bosque o 🐸 pantano (los dos siguen saliendo) y las mazmorras (sus familias no dependen del terreno).
 - **El terreno no decide los recursos (D-185):** los recursos de tierra siguen las regiones de antes, calculadas con el bioma "clásico" de abajo (`classic_biome`), así que ninguna zona perdió lo que tenía. El terreno sí decide los enemigos y el peligro, y el agua: un 🟪 pantano siempre tiene agua para pescar.
 
 **El bioma clásico (hasta la 0.26.1 era el terreno; ahora solo cuenta para los recursos de tierra).** Cada zona sacaba su bioma de tres ruidos suaves (temperatura, humedad y altura), calculados con la semilla del mundo. El ruido forma **manchas**: zonas vecinas suelen compartir bioma.
@@ -109,6 +133,12 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 | 🐸 Pantano | 45 % |
 | ❄️ Tundra | 40 % |
 | 🏔️ Montaña | 40 % |
+| 🦜 Selva (0.28) | 45 % |
+| 🦒 Sabana (0.28) | 30 % |
+| 🌋 Volcán (0.28) | 55 % |
+| 🏞️ Cañón (0.28) | 35 % |
+| 🦉 Bosque oscuro (0.28) | 50 % |
+| 🦆 Lago (0.28) | 25 % |
 
 ### 1.6 Temporizadores, aviso y encuentro al llegar
 
@@ -245,7 +275,7 @@ El dueño pidió (1-oct-2026):
 El dueño pidió (1-oct-2026): **cada tipo de terreno tiene un catálogo de 10 a 15 recursos posibles, y cada casilla trae solo una parte** (por ejemplo, 4 o 6 de los 15), en cantidades variables. **El color no garantiza un recurso**: ver verde no quiere decir que siempre haya madera o semillas; hay que ir a investigar (D-179). Cómo se aplicó (D-183, provisional, con la recomendación de E-123):
 
 - **Los 6 de base no se mueven.** Siguen en las mismas zonas, con la misma riqueza (`zone_resources` da lo mismo que antes). Así nadie pierde lo que ya sabía de sus zonas.
-- **Cada terreno suma los suyos** (`content/biomes.yaml` → `own`). Su catálogo son los de base que favorece (`gather`) más los propios: **10 por terreno** hoy.
+- **Cada terreno suma los suyos** (`content/biomes.yaml` → `own`). Su catálogo son los de base que favorece (`gather`) más los propios: **10 u 11 por terreno** hoy (los de la 0.28, 10 u 11).
 - **Cada zona suma 2 o 3 de los propios de su terreno** (`resources.terrain`), con su propio sorteo de la semilla y una riqueza de 0,3 a 1,0. Nunca pasa de 6 recursos de tierra ni queda con menos de 4 (con 1 de base suma 3). El 🐟 pescado de las zonas con agua va aparte, como antes. El Claro no suma nada.
 - **Pueden repetirse entre terrenos** (hay setas en el bosque y en el pantano).
 - **Bastante al azar (D-185):** cada propio que trae una zona tiene **3 de 10** (`resources.terrain.foreign_chance`) de salir del catálogo de **otro** terreno: puede haber resina en el desierto o sal en el bosque. Y los 6 de base siguen sus regiones de siempre, que no dependen del terreno que se ve (desde la 0.26.2, §1.2): el color nunca garantiza un recurso.
@@ -260,9 +290,17 @@ El dueño pidió (1-oct-2026): **cada tipo de terreno tiene un catálogo de 10 a
 | 🟨 Desierto | piedra, metal, fibra | ⏳ arena fina, 🧂 sal, 🌵 pulpa de cactus, 🌴 dátiles, 🔹 cuarzo, 🍃 tomillo, 🔧 chatarra |
 | 🟦 Tundra | piedra, madera, metal | 🧊 hielo, 💮 flor de escarcha, 🌱 musgo, 🫐 bayas, 💧 resina, 🍂 corteza, 🌑 carbón |
 | ⬛ Ruinas | metal, piedra | 🔧 chatarra, 🔹 cuarzo, 🌑 carbón, 🍄 setas, 🌱 musgo, ⏳ arena, 🍂 corteza, 🥕 raíz amarga |
+| 🟣 Selva (0.28) | madera, hierba, fibra | 🌴 dátiles, 🫐 bayas, 🍯 miel, 🍄 setas, 💧 resina, 🍂 corteza, 🌱 musgo, 🥕 raíz amarga |
+| 🟧 Sabana (0.28) | fibra, madera, piedra | 🌽 mazorca, 🌼 lino, 🍯 miel, 🍃 tomillo, 🫐 bayas, 🌴 dátiles, 💧 resina, 🌵 cactus |
+| 🟥 Volcán (0.28) | piedra, metal | 🖤 obsidiana (nueva, solo aquí), 🌑 carbón, 🧂 sal, 🔹 cuarzo, ⏳ arena, 🌱 musgo, 🍃 tomillo, 💧 resina |
+| 🟤 Cañón (0.28) | piedra, metal, arcilla | ⏳ arena, 🧂 sal, 🔹 cuarzo, 🍃 tomillo, 🌵 cactus, 🌑 carbón, 🔧 chatarra, 🫐 bayas |
+| ⚫ Bosque oscuro (0.28) | madera, hierba, fibra | 🍄 setas, 🌱 musgo, 🥕 raíz amarga, 🍂 corteza, 💧 resina, 🫐 bayas, 🍯 miel, 🌑 carbón |
+| 🔵 Lago (0.28) | fibra, hierba, arcilla | 🎋 juncos, 🪷 nenúfar, 🌼 lino, 🌱 musgo, ⏳ arena, 🍄 setas, 🫐 bayas, 🥕 raíz amarga |
+
+- **Los terrenos de la 0.28 (D-188):** reusan los 21 recursos de la 0.27 y suman uno solo, la **🖤 obsidiana** del 🌋 volcán (⛏️ Minero, 5 🥉 en el mercader): la 🗿 Cantería hace un sillar con 1 piedra y 1 obsidiana en vez de 3 piedras. El raro de sus nodos (`node_rare`): 💠 gema en bruto en el volcán y el cañón; 🌸 flor de luna en los demás. Los de base que favorecen (`gather`) solo cuentan para su catálogo: en esas zonas los de base siguen al bioma clásico, como en todas.
 
 - **Para qué sirven (capa ligera, D-44):** cada uno tiene al menos una receta y se vende al mercader (💱 Vender todo los vende, como la madera). Son otra forma de hacer lo de siempre: la 🧶 Tejeduría hace tela con 🌼 lino o 🎋 juncos; la 🔥 Fundición, lingotes con 🌑 carbón (3 piezas dan 2) o 🔧 chatarra; la 🪣 Curtiduría, 2 cueros con 3 pieles y 🍂 corteza; la 💧 Destilación, extracto con 🥕 raíz amarga; la 🗿 Cantería, sillares con ⏳ arena y menos piedra; la ⚗️ Alquimia, pociones con ⏳ arena o 💧 resina en vez de arcilla, y pociones mayores con 🪷 nenúfar o 💮 flor de escarcha en vez de la 🌸 flor de luna; la 🩺 Medicina, ungüentos con 🌱 musgo o 🌵 cactus y botiquines con 🍯 miel; la 🍲 Cocina, raciones con 🍄 setas o 🫐 bayas, pescado asado con 🧂 sal o 🌽 mazorca, guisos con 🍃 tomillo o 🌴 dátiles, conservas con 🧊 hielo y sal, y festines con 🍯 miel y bayas. El detalle está en [Red de oficios](../07-economia/red-de-oficios.md) §5.1.
-- **Quién los junta:** lo leñoso (💧 resina, 🍂 corteza), el 🪓 Leñador; lo mineral (🌑 🧂 🔹 ⏳ 🧊 🔧), el ⛏️ Minero; las plantas, los hongos y la miel, el 🌿 Herbolario. Su beneficio, su unidad de más y su raro valen también para estos.
+- **Quién los junta:** lo leñoso (💧 resina, 🍂 corteza), el 🪓 Leñador; lo mineral (🌑 🧂 🔹 ⏳ 🧊 🔧 y, desde la 0.28, 🖤), el ⛏️ Minero; las plantas, los hongos y la miel, el 🌿 Herbolario. Su beneficio, su unidad de más y su raro valen también para estos.
 - **Balance:** cada vuelta de recolección saca las mismas unidades que antes (se reparten entre más recursos: no se multiplican), y los precios quedan cerca de los de base (2 a 5 🥉), así recolectar rinde lo mismo en monedas.
 - **Lo que queda abierto:** si el dueño prefería que los recursos de cada terreno fueran variedades del material de siempre (roble, pino, granito...) que cuentan como madera o piedra (E-123, la otra opción).
 

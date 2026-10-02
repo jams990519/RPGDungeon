@@ -83,7 +83,7 @@ def test_the_service_builds_the_terrain_from_content(service):
     """D-186: content/biomes.yaml "terrain" and balance.yaml terrain feed zone_at; every weighted biome shows up."""
     table = service._terrain_cfg()
     assert table[0] == service.content.balance["terrain"]["climate_slope"]
-    kinds = {b for b, _, _ in table[2]}
+    kinds = {kind[0] for kind in table[2]}                 # (biome, weight, climate, tier): 0.28 added the tier
     assert kinds == {b for b, d in service.content.biomes.items() if d.get("terrain", {}).get("weight")}
     found = {service._zone(x, y).biome for x in range(-20, 21) for y in range(-20, 21)}
     assert kinds | {"claro"} <= found
