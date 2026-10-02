@@ -28,6 +28,8 @@ Lo que ya se juega de §1. La historia es **datos**: misiones, personajes, facci
 
 ### 0.1 Dónde se juega
 
+> **Cambió en la 0.29 (D-190, D-192):** **📖 Historia ya no está en el menú de abajo** (la historia se cuenta como un camino guiado). Lo que mostraba ahora está en **👤 Héroe → 📔 Diario**: tu tarjeta, el origen y el capítulo, 🎯 Ahora, los encargos de hoy, las facciones y tus hechos, con 🎯 Misiones, ⚜️ Facciones y 📣 Mostrar. El botón viejo y /historia abren el diario con un aviso. El 📜 Tablón está en 🏕️ Campamento (en el Claro y en tu campamento) y desde ahí 🧑 Personajes. El origen ya no se ofrece al crear ni solo: se elige en 👤 Héroe → 🎭 Origen (E-131). Lo de abajo describe la 0.17 a la 0.28. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md).
+
 - **📖 Historia** es el 6.º botón del menú de abajo (D-46 deja hasta 6; ⚙️ Opciones sigue último) y también **/historia**. Muestra:
   - tu origen y el capítulo, con la misión en que vas (por ejemplo, "misión 2 de 7");
   - **🎯 Ahora:** qué hacer en cada misión en curso y cuánto llevas ("🪓 Recolecta 🌿 Hierba curativa (2/4)"), o desde qué nivel empieza la siguiente;
@@ -41,7 +43,8 @@ Lo que ya se juega de §1. La historia es **datos**: misiones, personajes, facci
 
 ### 0.2 🎭 El origen
 
-- **Héroes nuevos:** después de confirmar la clase, el bot muestra los orígenes (3 por página, con ▶️ Más). Al tocar uno se ve su detalle y se confirma con ✅ Elegir. **Nunca bloquea:** con el menú de abajo se sigue jugando, y se elige después en 📖 Historia.
+- **Desde la 0.29 (D-190; E-131, provisional; D-193):** el héroe nuevo ya no ve los orígenes al crearlo: al terminar el camino básico del [Camino guiado](../03-personaje/camino-guiado.md), un aviso 🎭 le ofrece elegirlo con **/origen** (opcional, cuando quiera). Quien ya lo eligió lo conserva. Lo de abajo describe la pantalla de elección, que sigue igual.
+- **Héroes nuevos (hasta la 0.28):** después de confirmar la clase, el bot muestra los orígenes (3 por página, con ▶️ Más). Al tocar uno se ve su detalle y se confirma con ✅ Elegir. **Nunca bloquea:** con el menú de abajo se sigue jugando, y se elige después en 📖 Historia.
 - **Héroes de antes:** la primera vez que abren 👤 Héroe o 📖 Historia después del parche, ven la elección una sola vez, sin perder nada; después, la ficha de siempre, y el origen queda en 📖 Historia → 🎭 Elegir origen.
 - Cada origen da un **rasgo chico que nunca es de combate** (D-49), un **regalo** de una sola vez, su **cadena de 3 misiones** (niveles 1, 2 y 3) y, al terminarla, un **título**.
 

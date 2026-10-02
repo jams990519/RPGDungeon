@@ -36,7 +36,7 @@ Quien juega menos tarda más, y está bien: cada nivel cuenta.
 | **Aportar a una mejora de tu campamento** (D-101) | 1 de experiencia (y 1 de mérito) por cada material aportado; las monedas no dan | `upgrades` en balance.yaml |
 | **Recolectar** (D-108) | 14 de experiencia por vuelta en que juntas algo, +15 % por cada nivel de la zona sobre el 1 (la misma regla que las peleas) | `gather.xp_per_step`, `hero.xp_level_scale` |
 | **Refinar y fabricar** (D-109) | 20 por cada ⚡, +15 % por cada nivel sobre el 1, con nivel = el menor entre el tuyo y tu rango en ese oficio | `professions.hero_xp_per_energy` |
-| **Tutorial** | 20 por cada paso cumplido | `tutorial.reward_xp` |
+| **Camino guiado** (D-193; antes, el tutorial) | 20 por cada paso cumplido (10 pasos con premio, una sola vez) | `guide.reward_xp` |
 | **⭐ Acelerador** (con 💎 diamantes) | +50 % de experiencia durante 7 días | `currency.gem_shop.xp_boost` (D-43, D-80) |
 
 Explorar y recolectar dan experiencia directa (D-104, D-108), además de los encuentros y los materiales.

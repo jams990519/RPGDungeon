@@ -9,8 +9,9 @@ GameService calls from the right places (explore, gather, fights won, craft, sel
 pantry, give to a work).
 
 [ES]
-Para qué sirve: las pantallas y las reglas guardadas de la historia y el rol: 📖 Historia (con 🎯 Misiones,
-🧑 Personajes, ⚜️ Facciones y 📔 Diario), el 📜 Tablón del Claro, la elección del 🎭 origen, hablar con los personajes,
+Para qué sirve: las pantallas y las reglas guardadas de la historia y el rol: 📔 Diario (desde D-190/D-192 es la pantalla de
+la historia, en 👤 Héroe, con 🎯 Misiones y ⚜️ Facciones; el botón 📖 Historia salió del menú de abajo), el 📜 Tablón del
+Claro (con 🧑 Personajes), la elección del 🎭 origen (👤 Héroe → 🎭 Origen) y su tarjeta, hablar con los personajes,
 las decisiones, la reputación y sus rangos, los encargos del día y del campamento, el diario y su tarjeta, /bio, los
 gestos y el emblema. Es parte de GameService (una "mezcla": GameService hereda de StoryMixin), separada en su propio
 archivo para no agrandar game.py; usa sus ayudas (_give_xp, _bag_add, _zone_players, _push, _main_view...).
@@ -26,7 +27,9 @@ Datos de los que es dueño: Hero.origin, Hero.story, Hero.factions, Hero.journal
     almacén (clave "x:y" del campamento: {"week", "p" {encargo: avance}, "by" {encargo: {héroe: aporte}}, "paid"}),
     que se renueva solo cada semana
 Reglas que nunca se rompen:
-    1. Nada bloquea el juego: el origen se puede elegir después y el menú de abajo siempre funciona.
+    1. Nada bloquea el juego: el origen se puede elegir después y el menú de abajo siempre funciona. Desde D-190 la
+       creación no ofrece el origen y nada lo ofrece solo: se elige en 👤 Héroe → 🎭 Origen (o lo ofrece el camino guiado
+       con _origin_offer, una sola vez).
     2. Cada misión, paso, premio de rango y encargo se paga una sola vez.
     3. Una cosa que pasa en el juego avanza como mucho un paso de cada misión (el paso siguiente cuenta desde ahí).
     4. La historia nunca da poder de combate por sí sola (rasgos de oficio, precio o reputación; premios de monedas,
@@ -35,7 +38,8 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (llamadas a _story_event en _explore_step, _gather_step, _end_combat y
       _auto_combat, _make, _sell, _camp_sell, _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study; el menú y
-      los atajos; _hero_view; _claro_view; text())
+      los atajos; _hero_view (botones 📔 Diario y 🎭 Origen, D-192); _claro_view y _camp_hub_lines (📜 Tablón y su línea);
+      text(), que entiende el texto "📖 Historia" de un teclado viejo)
     - Números: balance.yaml story (experiencia por ⚡, rangos, largo de la biografía, tope del diario, espera de gestos)
     - Datos: content/story.yaml y content/locales/es_historia.yaml
     - Pruebas: tests/test_story.py
@@ -64,7 +68,7 @@ class StoryMixin:
     [ES]
     Qué es: la parte de la historia y el rol del servicio del juego, en su propio archivo.
     Quién la usa: GameService (hereda de aquí).
-    Si cambia, afecta: 📖 Historia, el 📜 Tablón, los personajes, el origen, el diario y los gestos.
+    Si cambia, afecta: el 📔 Diario (antes 📖 Historia), el 📜 Tablón, los personajes, el origen, el diario y los gestos.
     """
 
     # ------------------------------------------------------------------ data
@@ -318,7 +322,7 @@ class StoryMixin:
         return lines
 
     def _story_check(self, hero: Hero) -> list[str]:
-        """Check the state goals of the current missions (a zone already explored, a camp, a level). [ES] Qué hace: cumple solos los pasos de estado que ya se cumplen. La llaman: 📖 Historia, elegir origen, hablar. Si cambia, afecta: los pasos de estado."""
+        """Check the state goals of the current missions (a zone already explored, a camp, a level). [ES] Qué hace: cumple solos los pasos de estado que ya se cumplen. La llaman: el 📔 Diario (antes 📖 Historia), elegir origen, hablar. Si cambia, afecta: los pasos de estado."""
         lines: list[str] = []
         for qid in self._active_quests(hero):
             lines += self._quest_progress(hero, qid, None, {})
@@ -639,7 +643,12 @@ class StoryMixin:
         return max(1, int(round(price * (1 - discount))))
 
     def _origin_offer(self, hero: Hero) -> View | None:
-        """Heroes without an origin get the choice once (new heroes at creation, old ones the first time they look)."""
+        """The origin choice once, for a hero without one; None if it has one or it was offered (D-117, E-131).
+
+        [ES] Qué hace: ofrece elegir el origen una sola vez. Desde D-190/D-192 nadie la llama sola (ni la creación, ni
+        👤 Héroe, ni el diario): queda para el camino guiado (E-131: un paso opcional más adelante). Si cambia, afecta: cuándo
+        ve un jugador la elección del origen sin pedirla.
+        """
         st = self._st(hero)
         if hero.origin or st.get("offered"):
             return None
@@ -652,12 +661,13 @@ class StoryMixin:
         [ES]
         Qué hace: la pantalla para elegir de dónde viene el héroe: 3 orígenes por página con su frase, ▶️ Más para los
         siguientes; al tocar uno se ve su detalle y se confirma. No bloquea: con el menú de abajo se sigue jugando y se
-        elige después en 📖 Historia.
-        La llaman: la creación del héroe (después de confirmar la clase), _origin_offer y el botón 🎭 Elegir origen.
-        Si cambia, afecta: tests/test_story.py y el tope de 4 botones.
+        elige después en 👤 Héroe → 🎭 Origen o con /origen. Con el origen ya elegido, muestra su tarjeta (_origin_card_view).
+        La llaman: el botón 🎭 Origen de 👤 Héroe (D-192), /origen (D-193: el aviso 🎭 del camino guiado lo ofrece al terminar el
+        camino básico; desde la 0.29 la creación del héroe ya no termina aquí, E-131), _origin_offer y ↩️ Volver del detalle.
+        Si cambia, afecta: tests/test_story.py, tests/test_menus_y_dudas.py y el tope de 4 botones.
         """
         if hero.origin:
-            return self._story_view(hero, notice=notice)
+            return self._origin_card_view(hero, notice=notice)
         t = self.texts
         ids = list(self._origin_defs())
         per = max(1, int(self._story_cfg()["origin_page"]))
@@ -672,6 +682,28 @@ class StoryMixin:
         if pages > 1:
             actions.append(Action(id=f"origin:{(page + 1) % pages}", label=t.t("story.button_more")))
         return View(kind="origin", title=t.t("story.origin_title"), body=body, actions=actions[:4], notice=notice)
+
+    def _origin_card_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🎭 Your origin, once chosen: its story, trait, gift and how far its missions went (D-192, E-131).
+
+        [ES]
+        Qué hace: la tarjeta del origen que ya elegiste (es para siempre): su frase, su rasgo, lo que te dio y cuánto llevas
+        de su historia; botones 🎯 Misiones y ↩️ Volver a 👤 Héroe. Quien ya lo tenía lo conserva (E-131).
+        La llaman: 🎭 Origen de 👤 Héroe (por _origin_view) y _pick_origin al elegirlo. Si cambia, afecta: tests/test_story.py.
+        """
+        t = self.texts
+        oid = hero.origin or ""
+        body = [t.t("origin_card.head", origin=self._origin_name(oid)), t.t(f"story.origin.{oid}.intro"), "",
+                t.t("story.origin_detail_trait", trait=t.t(f"story.origin.{oid}.trait")),
+                t.t("story.origin_detail_gift", gift=t.t(f"story.origin.{oid}.gift"))]
+        chain = next((qids for name, qids in self._chains(hero) if name == "origin"), [])
+        if chain:
+            done = sum(1 for q in chain if q in self._st(hero)["done"])
+            body.append(t.t("origin_card.chain_done") if done >= len(chain)
+                        else t.t("origin_card.chain", done=min(done + 1, len(chain)), total=len(chain)))
+        body += ["", t.t("origin_card.forever")]
+        actions = [Action(id="squests", label=t.t("story.button_quests")), Action(id="hero", label=t.t("menu.back"))]
+        return View(kind="origin_card", title=t.t("origin_card.title"), body=body, actions=actions, notice=notice)
 
     def _origin_detail(self, hero: Hero, oid: str) -> View:
         t = self.texts
@@ -693,7 +725,7 @@ class StoryMixin:
         """Choose the origin for ever: its gift, a journal entry and its first mission (if the hero has its level)."""
         t = self.texts
         if hero.origin:
-            return self._story_view(hero, notice=t.t("story.origin_already", origin=self._origin_name(hero.origin)))
+            return self._origin_card_view(hero, notice=t.t("story.origin_already", origin=self._origin_name(hero.origin)))
         odef = self._origin_defs().get(oid)
         if not odef:
             return self._origin_view(hero)
@@ -703,14 +735,14 @@ class StoryMixin:
         lines += self._apply_reward(hero, odef.get("gift") or {})
         self._journal(hero, "origin", o=oid)
         lines += self._story_check(hero)
-        return self._story_view(hero, notice=self._join(lines))
+        return self._origin_card_view(hero, notice=self._join(lines))
 
     # ------------------------------------------------------------------ routing
 
     def _story_action(self, hero: Hero, action_id: str) -> View:
-        """Route the story buttons (STORY_ACTIONS). [ES] Qué hace: reparte los botones de la historia. La llama: _idle_action (también ocupado: mirar la historia no interrumpe nada). Si cambia, afecta: todos los botones de la historia."""
+        """Route the story buttons (STORY_ACTIONS). [ES] Qué hace: reparte los botones de la historia. "story" (el botón 📖 Historia de un teclado viejo y /historia, D-190) abre el 📔 Diario con un aviso de dónde quedó todo. La llama: _idle_action (también ocupado: mirar la historia no interrumpe nada). Si cambia, afecta: todos los botones de la historia."""
         if action_id == "story":
-            return self._story_view(hero)
+            return self._journal_view(hero, notice=self.texts.t("story_moved"))
         if action_id == "squests":
             return self._quests_view(hero)
         if action_id == "board":
@@ -742,7 +774,7 @@ class StoryMixin:
             return self._bio_view(hero)
         if action_id.startswith("gesture:"):
             return self._gesture(hero, action_id[8:])
-        return self._story_view(hero)
+        return self._journal_view(hero)
 
     # ------------------------------------------------------------------ 📖 Historia and 🎯 Misiones
 
@@ -806,23 +838,24 @@ class StoryMixin:
         return self._goal_line(hero, self._goal(hero, step, qid), int(entry.get("n", 0)))
 
     def _story_view(self, hero: Hero, notice: str | None = None) -> View:
-        """📖 Historia: origin and chapter progress, what to do now, today's tasks, factions; 4 buttons.
+        """The old 📖 Historia screen: since D-190/D-192 it is the 📔 Diario (kept so every old caller still works).
 
-        [ES]
-        Qué hace: la pantalla principal de la historia (6.º botón del menú de abajo y /historia): tu origen y su avance,
-        el capítulo de la campaña, qué hacer ahora en cada misión, los encargos de hoy, tu rango con cada facción y los
-        atajos (/diario, /bio, /saludar, /brindar). Botones: 🎯 Misiones, 🧑 Personajes, ⚜️ Facciones y 📔 Diario (sin
-        origen, 🎭 Elegir origen en su lugar). Los héroes viejos sin origen ven primero la elección, una sola vez.
-        La llaman: el botón 📖 Historia, /historia y las vueltas de sus pantallas.
-        Si cambia, afecta: tests/test_story.py y el tope de 4 botones.
+        [ES] Qué hace: devuelve el 📔 Diario, que desde D-192 es la pantalla de la historia (origen, capítulo, qué hacer
+        ahora, encargos de hoy y facciones, más tu tarjeta y tus hechos). Ya no ofrece el origen sola. La llaman: el código
+        viejo y el camino guiado si lo necesita. Si cambia, afecta: tests/test_story.py.
         """
-        offer = self._origin_offer(hero)
-        if offer:
-            return offer
+        return self._journal_view(hero, notice=notice)
+
+    def _story_summary_lines(self, hero: Hero) -> list[str]:
+        """Origin and chapter progress, what to do now, today's tasks and factions (the old 📖 Historia body).
+
+        [ES] Qué hace: las líneas de resumen de la historia (antes la pantalla 📖 Historia): tu origen y su avance, el capítulo,
+        qué hacer ahora en cada misión, los encargos de hoy y tu rango con cada facción. La llama: _journal_view. Si cambia,
+        afecta: el 📔 Diario.
+        """
         t = self.texts
-        notice = self._join(self._story_check(hero) + ([notice] if notice else []))
         st = self._st(hero)
-        body = [t.t("story.intro"), ""]
+        body = []
         for chain, qids in self._chains(hero):
             done = sum(1 for q in qids if q in st["done"])
             if chain == "origin":
@@ -832,8 +865,8 @@ class StoryMixin:
                 key = "story.chapter_done_line" if done >= len(qids) else "story.chapter_line"
                 body.append(t.t(key, chapter=t.t(f"story.chapter.{chain}"), done=min(done + 1, len(qids)), total=len(qids)))
         if not hero.origin:
-            body.insert(2, t.t("story.origin_none"))
-        body += ["", t.t("story.now_title")]
+            body.insert(0, t.t("story.origin_none"))
+        body += [t.t("story.now_title")]
         now = []
         for _, qids in self._chains(hero):
             qid = self._current_quest(hero, qids)
@@ -848,14 +881,9 @@ class StoryMixin:
         daily = self._daily(hero)
         ids = self._daily_ids()
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
-        body += ["", t.t("story.tasks_line", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left))]
+        body.append(t.t("story.tasks_line", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left)))
         body.append(t.t("story.factions_line", list=self._factions_short(hero)))
-        body += ["", t.t("story.links")]
-        actions = [Action(id="squests", label=t.t("story.button_quests")), Action(id="npcs", label=t.t("story.button_npcs")),
-                   Action(id="factions", label=t.t("story.button_factions"))]
-        actions.append(Action(id="journal", label=t.t("story.button_journal")) if hero.origin
-                       else Action(id="origin", label=t.t("story.button_origin")))
-        return View(kind="story", title=t.t("story.title"), body=body, actions=actions, notice=notice)
+        return body
 
     def _factions_short(self, hero: Hero) -> str:
         t = self.texts
@@ -870,7 +898,7 @@ class StoryMixin:
         Qué hace: muestra la misión en curso de tu origen y del capítulo: el texto del paso (lo que pasa), qué hacer y
         cuánto llevas. Si un paso es una decisión, sus opciones son los botones (hasta 3, más ↩️ Volver); si no,
         📜 Encargos y ↩️ Volver.
-        La llaman: 🎯 Misiones de 📖 Historia y las decisiones. Si cambia, afecta: tests/test_story.py.
+        La llaman: 🎯 Misiones del 📔 Diario (y de la tarjeta del origen) y las decisiones. Si cambia, afecta: tests/test_story.py.
         """
         t = self.texts
         st = self._st(hero)
@@ -904,7 +932,7 @@ class StoryMixin:
                 actions.append(Action(id=f"ch:{qid}:{option}", label=t.t(f"story.quest.{qid}.opt_{option}")))
         else:
             actions.append(Action(id="board", label=t.t("story.button_tasks")))
-        actions.append(Action(id="story", label=t.t("menu.back")))
+        actions.append(Action(id="journal", label=t.t("menu.back")))         # D-192: the story lives in 📔 Diario
         return View(kind="story_quests", title=t.t("story.quests_title"), body=body, actions=actions[:4], notice=notice)
 
     def _quest_block(self, hero: Hero, qid: str) -> list[str]:
@@ -999,7 +1027,7 @@ class StoryMixin:
             else:
                 actions.append(Action(id=f"npcs:{page - 1}", label=t.t("story.button_prev")))
         if len(actions) < 4:
-            actions.append(Action(id="story", label=t.t("menu.back")))
+            actions.append(Action(id="board", label=t.t("menu.back")))       # D-192: 🧑 Personajes opens from 📜 Tablón
         return View(kind="npcs", title=t.t("story.npcs_title"), body=body, actions=actions[:4], notice=notice)
 
     def _npc_line(self, hero: Hero, nid: str) -> str:
@@ -1091,9 +1119,9 @@ class StoryMixin:
         [ES]
         Qué hace: el tablón de encargos del Claro (también desde 🎯 Misiones → 📜 Encargos y /encargos): los 3 encargos de
         hoy, quién los da, cuánto llevas y qué pagan; cuándo cambian; y, si tienes campamento, sus encargos de la semana
-        con lo que llevan entre todos y lo que aportaste tú. Botones: 🧑 Personajes, 📖 Historia y ↩️ Volver (al Claro si
-        estás ahí) — 3 como mucho.
-        La llaman: el botón 📜 Tablón del Claro y 📜 Encargos. Si cambia, afecta: tests/test_story.py.
+        con lo que llevan entre todos y lo que aportaste tú. Botones (D-192): 🧑 Personajes, 📔 Diario y ↩️ Volver al centro de
+        🏕️ Campamento (antes 📖 Historia y ↩️ Volver al Claro): 3 como mucho.
+        La llaman: el botón 📜 Tablón del centro de 🏕️ Campamento (el Claro o tu campamento, E-130), 📜 Encargos y /encargos. Si cambia, afecta: tests/test_story.py.
         """
         t = self.texts
         pool = self._story_data().get("daily") or {}
@@ -1113,11 +1141,8 @@ class StoryMixin:
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
         body += [t.t("story.board_reset", time=self._fmt_duration(left)), ""]
         body += self._camp_task_lines(hero)
-        actions = [Action(id="npcs", label=t.t("story.button_npcs"))]
-        if self._in_claro(hero) and not hero.activity:
-            actions += [Action(id="story", label=t.t("story.button_story")), Action(id="claro", label=t.t("menu.back"))]
-        else:
-            actions.append(Action(id="squests", label=t.t("menu.back")))
+        actions = [Action(id="npcs", label=t.t("story.button_npcs")), Action(id="journal", label=t.t("story.button_journal")),
+                   Action(id="claro", label=t.t("menu.back"))]                # D-192: the board is a button of 🏕️ Campamento
         return View(kind="board", title=t.t("story.board_title"), body=body, actions=actions, notice=notice)
 
     def _camp_task_lines(self, hero: Hero) -> list[str]:
@@ -1139,7 +1164,7 @@ class StoryMixin:
         return lines
 
     def _factions_view(self, hero: Hero) -> View:
-        """⚜️ Facciones: each faction, your rank and points, and what the next rank gives. [ES] Qué hace: muestra las tres facciones con tu rango, tus puntos y lo que da el rango siguiente. La llama: ⚜️ Facciones de 📖 Historia. Si cambia, afecta: solo lo que se muestra."""
+        """⚜️ Facciones: each faction, your rank and points, and what the next rank gives. [ES] Qué hace: muestra las tres facciones con tu rango, tus puntos y lo que da el rango siguiente. La llama: ⚜️ Facciones del 📔 Diario. Si cambia, afecta: solo lo que se muestra."""
         t = self.texts
         ranks = self._ranks()
         body = [t.t("story.factions_intro"), ""]
@@ -1163,7 +1188,7 @@ class StoryMixin:
             else:
                 body.append(t.t("story.faction_top"))
             body.append("")
-        return View(kind="factions", title=t.t("story.factions_title"), body=body, actions=[Action(id="story", label=t.t("menu.back"))])
+        return View(kind="factions", title=t.t("story.factions_title"), body=body, actions=[Action(id="journal", label=t.t("menu.back"))])
 
     # ------------------------------------------------------------------ 📔 Diario, tarjeta y /bio
 
@@ -1188,12 +1213,24 @@ class StoryMixin:
         return lines + ([""] + journal if journal else [])
 
     def _journal_view(self, hero: Hero, notice: str | None = None) -> View:
-        """📔 Diario: your card and your last deeds; [📣 Mostrar en la zona] [↩️ Volver]. [ES] Qué hace: tu diario (crónica de lo que hiciste) con tu tarjeta. La llaman: 📔 Diario de 📖 Historia y /diario. Si cambia, afecta: tests/test_story.py."""
+        """📔 Diario, the story's screen since D-190/D-192: your card, the story summary and your last deeds.
+
+        [ES]
+        Qué hace: tu diario y tu historia en una pantalla (E-130: el diario pasó a 👤 Héroe; D-190 borró 📖 Historia del
+        menú): tu tarjeta, el resumen de la historia (origen, capítulo, qué hacer ahora, encargos de hoy y facciones), tus
+        últimos hechos y los atajos (/bio, /saludar, /brindar). Revisa primero las misiones que se cumplen por estado
+        (_story_check). Botones: 🎯 Misiones, ⚜️ Facciones, 📣 Mostrar en la zona y ↩️ Volver a 👤 Héroe (4).
+        La llaman: 📔 Diario de 👤 Héroe, /diario, el botón viejo 📖 Historia y /historia (con un aviso) y los ↩️ Volver de
+        🎯 Misiones, ⚜️ Facciones y las tarjetas. Si cambia, afecta: tests/test_story.py y tests/test_menus_y_dudas.py.
+        """
         t = self.texts
+        notice = self._join(self._story_check(hero) + ([notice] if notice else []))
         body = self._card_lines(hero, 0)
+        body += ["", t.t("story.intro")] + self._story_summary_lines(hero)
         journal = self._journal_lines(hero, int(self._story_cfg()["journal_shown"]))
-        body += [""] + (journal or [t.t("story.journal_empty")]) + ["", t.t("story.journal_hint", name=hero.name)]
-        actions = [Action(id="jshow", label=t.t("story.button_show")), Action(id="story", label=t.t("menu.back"))]
+        body += [""] + (journal or [t.t("story.journal_empty")]) + ["", t.t("story.journal_hint", name=hero.name), t.t("story.links")]
+        actions = [Action(id="squests", label=t.t("story.button_quests")), Action(id="factions", label=t.t("story.button_factions")),
+                   Action(id="jshow", label=t.t("story.button_show")), Action(id="hero", label=t.t("menu.back"))]
         return View(kind="journal", title=t.t("story.journal_title", name=hero.name), body=body, actions=actions, notice=notice)
 
     def _find_hero(self, name: str) -> Hero | None:
@@ -1208,9 +1245,9 @@ class StoryMixin:
         t = self.texts
         other = hero if self._name_key(name) == self._name_key(hero.name) else self._find_hero(name)
         if other is None:
-            return self._story_view(hero, notice=t.t("story.card_not_found", name=story_rules.clean_text(name, 20)))
+            return self._journal_view(hero, notice=t.t("story.card_not_found", name=story_rules.clean_text(name, 20)))
         return View(kind="card", title=t.t("story.card_title", name=other.name), body=self._card_lines(other, int(self._story_cfg()["card_shown"])),
-                    actions=[Action(id="story", label=t.t("menu.back"))])
+                    actions=[Action(id="journal", label=t.t("menu.back"))])
 
     def _bio_view(self, hero: Hero, notice: str | None = None) -> View:
         """📝 Tu biografía: what you wrote with /bio and how to change it. [ES] Qué hace: muestra tu biografía y cómo escribirla. La llaman: /bio sin texto y después de guardarla. Si cambia, afecta: solo lo que se muestra."""

@@ -15,6 +15,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore, Rng
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
+from engine.service.game import HUB_BUTTONS, HUB_KINDS
 from test_camps import found_at, place
 from test_guilds import join, new_guild, set_level
 
@@ -170,7 +171,7 @@ def test_refugio_heals_at_the_camp_cheaper_than_the_inn(service, clock):
     build(service, "refugio")
     set_hero(service, "test:1", hp=5, gold=10, last_regen_at=clock.now())
     view = service.act("test:1", "upsvc")
-    assert view.kind == "camp_services" and ids(view) == ["crest", "upgrades"]
+    assert view.kind == "camp_services" and ids(view) == ["crest", "claro"]      # D-192: 🏘️ Servicios is a hub button
     view = service.act("test:1", "crest")
     price = service.content.camp_upgrades["upgrades"]["refugio"]["service"]["rest_price"]
     assert price < service.content.balance["inn"]["price"]
@@ -318,7 +319,7 @@ def test_castle_needs_fifteen_improvements(service):
     need = service.content.balance["upgrades"]["castle_min_built"]
     build(service, *list(service._upgrade_catalog())[:need - 1])
     view = service.act("test:1", "grow")                          # the guild is ready, 14 built: blocked
-    assert view.kind == "camp_grow" and ids(view) == ["upgrades", "claro"]
+    assert view.kind == "camp_grow" and ids(view) == ["upgrades", "campmgmt"]   # D-192: back to 🏰 Gestionar
     assert any("▫️" in line and f"{need} mejoras" in line and f"tienen {need - 1}" in line for line in view.body)
     service.act("test:1", "claim:7:0")
     assert service.store.get("camp", KEY)["level"] == castle - 1
@@ -407,7 +408,7 @@ def test_the_claro_has_no_improvements(service):
                    "kstart:rastreo", "kgive"):
         view = service.act("test:1", action)
         assert view.kind in ("claro", "activity", "zone"), (action, view.kind)
-        assert len(view.actions) <= 4
+        assert len(view.actions) <= (8 if view.kind == "claro" else 4)           # D-192: the Claro hub, up to 8
     assert list(service.store.items("upgrades")) == []
     hero = service._load("test:1")
     assert hero.backpack == {"madera": 50, "piedra": 50, "fibra": 4, "pieza_metal": 1} and hero.bags == 0 and hero.gold == 500
@@ -423,7 +424,8 @@ def test_camps_saved_before_the_patch_still_work(service):
     hero.camp, hero.x, hero.y = "0:3", 0, 3
     service.store.put("hero", "test:1", hero.to_dict())
     view = service.act("test:1", "claro")
-    assert view.kind == "player_camp" and ids(view) == ["grow", "guild", "upgrades", "home"]
+    assert view.kind == "player_camp" and ids(view) == ["cook", "research", "oficios", "trainer", "upsvc", "board", "campmgmt", "dudas"]   # D-192: the camp hub
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in view.body)
     assert service.act("test:1", "upgrades").kind == "camp_upgrades"
 
@@ -448,7 +450,10 @@ def test_every_upgrade_screen_keeps_four_buttons(content):
         while queue:
             path = queue.popleft()
             service, view = make(level, path)
-            assert len(view.actions) <= 4, (level, path, view.kind, ids(view))
+            if view.layout:                     # D-189: an amount picker (reached from 🛠️ Fabricar since D-192)
+                assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (level, path, view.layout)
+            else:
+                assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (level, path, view.kind, ids(view))   # D-192
             assert not service.texts.missing, (path, service.texts.missing)
             kinds.add(view.kind)
             key = (view.kind, tuple(ids(view)))

@@ -108,7 +108,7 @@ def test_bottom_menu_and_command(service):
 def test_telegram_bottom_keyboard_fits_six_buttons(service):
     from adapters.telegram.bot import menu_keyboard
     keyboard = menu_keyboard(service)
-    assert [len(row) for row in keyboard.keyboard] == [2, 2, 2]        # 3 short rows on a phone (D-117: 📖 Historia is the 6th)
+    assert [len(row) for row in keyboard.keyboard] == [2, 2, 1]        # D-190: 📖 Historia left, 5 buttons in 3 short rows
     assert keyboard.keyboard[-1][-1].text == "⚙️ Opciones"
 
 

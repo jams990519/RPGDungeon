@@ -13,7 +13,9 @@ Depende de: content/*.yaml, PyYAML; engine/professions/rules.py (masterwork_item
 Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
     (content/story.yaml → Content.story: orígenes, campaña, personajes, facciones y encargos, D-117)
+    (content/guide.yaml → Content.guide: pasos del 🧭 camino guiado y avisos de una sola vez, D-190/D-193)
     (content/dungeons.yaml → Content.dungeons: familias de enemigos que llenan las mazmorras para uno, D-164/D-170)
+    (content/faq.yaml → Content.faq: las preguntas de ❓ Dudas con su código, tema, palabras clave y relacionadas, D-191/D-192)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
@@ -51,6 +53,8 @@ class Content:
             source: masterwork, D-116), derived from balance.yaml "masterwork".
         balance: content/balance.yaml (tunable numbers).
         texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts).
+        guide: content/guide.yaml (the guided path, D-190/D-193: "steps" in order and one-time "tips"), read with retired
+            entries kept (engine/service/guide.py leaves retired ones out; heroes keep the ids they have done).
         patches: content/patches.yaml (patch notes, D-67).
         camp_upgrades: content/camp_upgrades.yaml ("upgrades" and "knowledge" of player camps, D-101),
             read with retired entries kept (a built improvement keeps counting).
@@ -60,6 +64,8 @@ class Content:
             "chapters", "quests", "daily" and "camp_tasks"), read with retired entries kept (the service hides them).
         dungeons: content/dungeons.yaml (solo dungeons, D-164/D-170: "families" of enemies that fill a dungeon each day),
             read with retired entries kept (the service leaves retired families out).
+        faq: content/faq.yaml (❓ Dudas, D-191/D-192: "topics", "popular" and "questions" with stable codes d01, d02...),
+            read with retired entries kept (the service hides retired questions).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -73,11 +79,13 @@ class Content:
     items: dict[str, Any]
     balance: dict[str, Any]
     texts: dict[str, Any]
+    guide: dict[str, Any] | None = None
     patches: dict[str, Any] | None = None
     camp_upgrades: dict[str, Any] | None = None
     professions: dict[str, Any] | None = None
     story: dict[str, Any] | None = None
     dungeons: dict[str, Any] | None = None
+    faq: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -117,11 +125,13 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         items=items,
         balance=balance,
         texts=_read_texts(base / "locales", lang),
+        guide=_read(base / "guide.yaml", keep_retired=True) if (base / "guide.yaml").exists() else {},
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
         professions=_read(base / "professions.yaml", keep_retired=True) if (base / "professions.yaml").exists() else {},
         story=_read(base / "story.yaml", keep_retired=True) if (base / "story.yaml").exists() else {},
         dungeons=_read(base / "dungeons.yaml", keep_retired=True) if (base / "dungeons.yaml").exists() else {},
+        faq=_read(base / "faq.yaml", keep_retired=True) if (base / "faq.yaml").exists() else {},
     )
 
 

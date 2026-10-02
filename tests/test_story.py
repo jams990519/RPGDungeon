@@ -15,6 +15,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
+from engine.service.game import HUB_BUTTONS, HUB_KINDS
 from test_camps import found_at, place
 
 MINUTE = 60
@@ -73,13 +74,14 @@ def gather_until(service, clock, account, item, n):
 
 def test_new_hero_chooses_origin_after_the_class_without_being_blocked(service):
     view = make_hero(service)
-    assert view.kind == "origin" and len(view.actions) <= 4 and "Bienvenido" in view.notice
+    assert view.kind == "guide" and len(view.actions) <= 4 and "Bienvenido" in view.notice   # D-193 / E-131: origin later (/origen)
     menu = service.menu()
-    assert len(menu) <= 6 and [m.id for m in menu][-2:] == ["story", "options"]
+    assert len(menu) <= 6 and "story" not in [m.id for m in menu] and [m.id for m in menu][-1] == "options"
     assert service.act("test:1", "home").kind == "zone"                       # the menu works: nothing is blocked
     assert service.act("test:1", "explore_menu").kind == "explore_menu"
-    story = service.act("test:1", "story")
-    assert story.kind == "story" and "origin" in ids(story) and len(story.actions) <= 4
+    assert "origin" in ids(service.act("test:1", "hero"))
+    story = service.act("test:1", "origin")
+    assert story.kind == "origin" and len(story.actions) <= 4
     page2 = service.act("test:1", "origin:1")
     assert page2.kind == "origin" and "orig:noble" in ids(page2) and len(page2.actions) <= 4
     detail = service.act("test:1", "orig:noble")
@@ -87,26 +89,30 @@ def test_new_hero_chooses_origin_after_the_class_without_being_blocked(service):
     gold = hero_of(service).gold
     done = service.act("test:1", "origpick:noble")
     hero = hero_of(service)
-    assert done.kind == "story" and hero.origin == "noble" and hero.gold == gold + 100     # the gift: 1 🥈
-    assert "journal" in ids(done) and "origin" not in ids(done)
+    assert done.kind == "origin_card" and hero.origin == "noble" and hero.gold == gold + 100     # the gift: 1 🥈
+    assert ids(done) == ["squests", "hero"]
     assert [e["k"] for e in hero.journal] == ["awoke", "origin"]
     again = service.act("test:1", "origpick:minero")                           # for ever: never changes
-    assert hero_of(service).origin == "noble" and again.kind == "story"
+    assert hero_of(service).origin == "noble" and again.kind == "origin_card"
+    assert service.act("test:1", "origin").kind == "origin_card"
 
 
 def test_old_heroes_get_the_origin_choice_once_from_the_hero_sheet_or_the_story(service):
-    for account, name, first in (("test:1", "Lyra", "hero"), ("test:2", "Bram", "story")):
+    # D-192: nothing offers the origin by itself any more (it never hijacks 👤 Héroe or the diary); it is the 🎭 Origen
+    # button of 👤 Héroe, for old heroes too, and _origin_offer stays for the guided path (once).
+    for account, name, first in (("test:1", "Lyra", "hero"), ("test:2", "Bram", "journal")):
         make_hero(service, account, name)
         data = service.store.get("hero", account)
         for key in ("origin", "story", "factions", "journal", "bio"):
             del data[key]                                                     # a hero saved before D-117
         service.store.put("hero", account, data)
-        offer = service.act(account, first)
-        assert offer.kind == "origin" and offer.notice and len(offer.actions) <= 4
-        assert service.act(account, first).kind == first                      # only once: then the screen itself
+        assert service.act(account, first).kind == first                      # the screen itself, never the offer
         assert service.act(account, "home").kind == "zone"
-    story = service.act("test:1", "story")
-    assert "origin" in ids(story)                                            # still choosable from 📖 Historia
+        choose = service.act(account, "origin")
+        assert choose.kind == "origin" and len(choose.actions) <= 4
+    hero = hero_of(service)
+    offer = service._origin_offer(hero)
+    assert offer.kind == "origin" and offer.notice and service._origin_offer(hero) is None    # once
     assert not service.texts.missing
 
 
@@ -210,7 +216,7 @@ def test_decisions_change_reputation_are_remembered_and_choose_who_helps(service
     place(service, "test:1", 0, 0, backpack={"madera": 3})
     service.act("test:1", "mk:tablon:1:0")
     quests = service.act("test:1", "squests")
-    assert quests.kind == "story_quests" and ids(quests) == ["ch:c1_m5:iria", "ch:c1_m5:brena", "ch:c1_m5:odo", "story"]
+    assert quests.kind == "story_quests" and ids(quests) == ["ch:c1_m5:iria", "ch:c1_m5:brena", "ch:c1_m5:odo", "journal"]
     view = service.act("test:1", "ch:c1_m5:iria")
     hero = hero_of(service)
     assert hero.story["c"]["ambar"] == "iria" and "c1_m5" in hero.story["done"]
@@ -378,7 +384,7 @@ def test_camp_tasks_count_every_member_and_pay_each_helper(service, clock):
     assert hero_of(service, "test:2").gold > bram_gold
     assert service.store.get("outbox", "test:1")                              # and told
     outsider = make_hero(service, "test:3", "Cora")
-    assert outsider.kind == "origin"
+    assert outsider.kind == "guide"                                           # D-193: creation ends in the guided path
     assert service._camp_event(hero_of(service, "test:3"), "explore", {"x": 0, "y": 0, "lejania": 0}) == []
 
 
@@ -394,7 +400,7 @@ def test_journal_lists_deeds_and_others_can_read_the_card(service):
     service._save(hero)
     journal = service.act("test:1", "journal")
     text = "\n".join(journal.body)
-    assert journal.kind == "journal" and ids(journal) == ["jshow", "story"]
+    assert journal.kind == "journal" and ids(journal) == ["squests", "factions", "jshow", "hero"]   # D-192: the story's screen
     assert "Despertó junto a la fogata" in text and "Curandero de aldea" in text and "Brasa del Claro" in text
     make_hero(service, "test:2", "Bram")
     card = service.text("test:2", "/diario lyra")
@@ -482,18 +488,19 @@ def test_every_story_screen_has_four_buttons_at_most_and_no_missing_text(content
         path = queue.popleft()
         service, view = build(path)
         pressed += 1
-        assert len(view.actions) <= (6 if view.kind == "combat" else 4), (path, view.kind)
+        assert len(view.actions) <= (6 if view.kind == "combat" else 8 if view.kind in HUB_KINDS else 4), (path, view.kind)
         assert len(service.menu()) <= 6
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(ids(view)))
         if key in seen:
             continue
         seen.add(key)
-        for action in ids(view):
-            if len(path) < 4 and not action.startswith(("go:", "explore", "gather", "inn", "do:")):
+        for action in ids(view):        # D-192: stay on the story's screens (the hero and camp hubs have their own crawls)
+            if len(path) < 4 and not action.startswith(("go:", "explore", "gather", "inn", "do:", "bag", "talents", "health",
+                                                        "stats", "bar", "oficios", "claro")):
                 queue.append(path + [action])
     kinds = {k for k, _ in seen}
-    assert {"story", "story_quests", "npcs", "npc", "factions", "origin", "origin_detail", "board"} <= kinds
+    assert {"journal", "story_quests", "npcs", "npc", "factions", "origin", "origin_detail", "board"} <= kinds
 
 
 def test_every_story_id_has_its_texts(service):
@@ -545,8 +552,8 @@ def test_old_saves_load_and_play_the_story(service):
     service.store.put("hero", "test:1", data)
     hero = Hero.from_dict(service.store.get("hero", "test:1"))
     assert hero.origin is None and hero.story == {} and hero.factions == {} and hero.journal == [] and hero.bio == ""
-    for action in ("story", "story", "squests", "npcs", "npc:odo", "board", "factions", "journal", "hero"):
+    for action in ("story", "story", "squests", "npcs", "npc:odo", "board", "factions", "journal", "hero", "origin"):
         view = service.act("test:1", action)
-        assert len(view.actions) <= 4
+        assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4)      # D-192: the hero hub, up to 8
     assert service.act("test:1", "journal").kind == "journal"
     assert not service.texts.missing

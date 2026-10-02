@@ -68,9 +68,8 @@ def test_the_claro_never_has_a_pantry(service):
     for stage in range(len(service.content.balance["settlement"]["stages"])):
         set_stage(service, stage)
         view = service.act("test:1", "claro")
-        # D-109: the Claro has the basic profession stations, so ⚒️ Oficios ("oficios") is its 3rd button (4 in all);
-        # D-117: 📜 Tablón ("board") took the ↩️ Volver slot (📍 Zona in the bottom menu goes back)
-        assert [a.id for a in view.actions] == ["shop", "inn", "oficios", "board"], stage
+        # D-192: the Claro hub (cook, research, make = ⚒️ Oficios, trainer, shop, inn, 📜 Tablón, ❓ Dudas), 8 at most
+        assert [a.id for a in view.actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"], stage
         assert not any("Despensa" in line for line in view.body)
         assert service.act("test:1", "feed").kind == "claro"         # an old 0.10 button lands on the Claro
     assert service.store.get("pantry", "claro") is None
@@ -128,7 +127,9 @@ def test_camp_cannot_grow_with_an_empty_pantry(service):
     camp = service.store.get("camp", "6:0")
     assert camp["level"] == 3
     assert any("Despensa" in line for line in view.body)
-    assert [a.id for a in view.actions] == ["grow", "campfeed", "guild", "upgrades"]    # 4 buttons at most (rename: in 🛡️ Gremio, D-97; D-101: 🔨 Mejoras)
+    assert [a.id for a in view.actions] == ["cook", "research", "oficios", "trainer", "upsvc", "board", "campmgmt", "dudas"]    # D-192: the camp hub
+    # D-192: ⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida and 🛡️ Gremio live in 🏰 Gestionar
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["grow", "upgrades", "campfeed", "guild", "claro"]
     assert rations(service, "6:0") == 7                             # a new pantry starts with 7 days
     set_rations(service, "6:0", 0)
     view = service.act("test:1", "grow")
@@ -205,8 +206,8 @@ def test_merchant_sells_provisions_without_losing_buttons(service):
 def test_claro_screens_keep_four_buttons(service):
     set_stage(service, ALDEA)
     make_hero(service)
-    # D-109: ⚒️ Oficios ("oficios") joined the Claro; D-117: 📜 Tablón ("board") instead of ↩️ Volver; still 4 at most (D-75)
-    assert [a.id for a in service.act("test:1", "claro").actions] == ["shop", "inn", "oficios", "board"]
+    # D-192 (E-132): the Claro hub shows its 8 options at once, 2 per row
+    assert [a.id for a in service.act("test:1", "claro").actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]
 
 
 def test_every_claro_button_works_from_aldea(content):
@@ -230,7 +231,7 @@ def test_every_claro_button_works_from_aldea(content):
     while queue:
         path = queue.popleft()
         service, view = build(path)
-        assert len(view.actions) <= 4, (path, view.kind)
+        assert len(view.actions) <= (8 if view.kind == "claro" else 4), (path, view.kind)     # D-192: the hub, up to 8
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(a.id for a in view.actions))
         if key in seen:

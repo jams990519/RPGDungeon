@@ -19,7 +19,8 @@ Reglas que nunca se rompen:
     1. No agrega reglas: solo dibuja vistas y manda acciones.
     2. Muestra también el menú fijo del motor (service.menu()) y acepta sus atajos
        (service.commands()), como Telegram: sin ellos, de la zona solo se podía viajar. Los atajos con texto
-       (/bio <texto>, /saludar <nombre>, D-117) van a service.text(), igual que en Telegram.
+       (/bio <texto>, /saludar <nombre>, D-117; /dudas <palabras> y /d07, D-192) van a service.text(), igual que en
+       Telegram; en las pantallas que esperan texto (❓ Dudas), lo escrito también.
 Si cambias esto, revisa:
     - Nada del juego depende de este archivo
     - Prueba: tests/test_playtest_fixes.py (la consola llega a Explorar)

@@ -2,6 +2,8 @@
 
 > **Módulo** [00 · Visión](README.md) · **Depende de:** [Decisiones](decisiones.md) (D-44 amplio pero ligero, D-49 la diferencia la hacen los oficios y el conocimiento, D-56 aprender con pistas), [Visión y pilares](vision-y-pilares.md) (pilares 5 y 11) · **Se conecta con:** [Avisos y tácticas](../04-combate/avisos-y-tacticas.md) (conocimiento), [Bestiario](../06-contenido/bestiario.md), [Jefes](../06-contenido/jefes.md) (notas en el suelo, manchas de sangre), [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) (la mancha), [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md) (maestros PNJ, primeras horas), [Ciudades y el Castillo](../02-mundo/ciudades-y-castillo.md) (entrenadores), [Profesiones](../07-economia/profesiones.md) (Informante, guía de región), [Fabricación](../07-economia/fabricacion.md), [Investigaciones](../06-contenido/investigaciones.md), [Descubrimiento y colecciones](../03-personaje/descubrimiento-y-colecciones.md), [Gremios y social](../08-social/gremios-y-social.md) (mentoría), [Telegram](../01-plataforma/telegram.md), [Web y multiplataforma](../01-plataforma/web-y-multiplataforma.md) · **Estado:** propuesta
 
+> **Cambio de la 0.29 (D-190, confirmada; D-193, provisional):** lo básico ya no se aprende con pistas sueltas sino con el [Camino guiado](../03-personaje/camino-guiado.md): un solo paso a la vez, con el botón exacto, y avisos de una sola vez cuando encuentras algo nuevo. Las pistas de este documento siguen valiendo para lo profundo (combate, oficios, jefes): el camino enseña dónde está cada cosa, no cómo dominarla.
+
 **Qué pediste.** Un tutorial amplio dentro de cada cosa. Antes de empezar cada actividad, el juego te guía poco a poco con notas. Pero no te guía al cien por ciento: te da pistas para que tengas que aprender. El sistema no te resuelve todo; tienes que aprender tú (D-56).
 
 **De dónde sale.**
@@ -170,6 +172,8 @@ Además de las pistas que salen solas, puedes **pedir una**. Siempre en un lugar
 **Dónde no:** en las rondas de combate, en los exámenes de rango, en el PvP, la arena y el Foso, y en el caso semanal del servidor (se compite por resolverlo primero; ver [Investigaciones](../06-contenido/investigaciones.md) §1.3).
 
 **Límite:** cada pedido adelanta un nivel, como si hubieras tropezado una vez más, y se puede pedir **una vez por tema por día**. Así no se salta al nivel 3 en tres toques.
+
+**En el juego desde la 0.29: ❓ Dudas** (D-191, D-192). Un botón de 🏕️ Campamento (y /dudas) con 55 preguntas ya respondidas sobre lo que existe hoy: escribes una palabra y salen las que coinciden, cada una con su código fijo (/d07) que muestra la respuesta y sus relacionadas. Es un buscador por palabras, no una IA (E-129). Explica cómo funciona cada sistema, nunca la solución de algo que es habilidad. Cada sistema nuevo suma su pregunta. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §5.
 
 ## 5. Dónde se aprende dentro del mundo
 

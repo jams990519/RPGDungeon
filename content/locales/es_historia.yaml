@@ -8,12 +8,12 @@
 # (tests/test_story.py revisa que toda misión, paso, opción, personaje, facción, encargo y título tenga su texto).
 
 story:
-  title: "📖 Historia"
+  title: "📖 Historia"            # [ES] D-190: ya no es un botón del menú; la pantalla de la historia es 📔 Diario (👤 Héroe)
   intro: "Lo que vives en el mundo roto: de dónde vienes, la campaña del Claro, quién te conoce y qué te deben."
-  claro_hint: "📜 En el tablón hay encargos nuevos cada día, y Marta, Odo, Iria, Anselmo y Brena viven junto a la fogata (📖 Historia)."
+  claro_hint: "📜 En el tablón hay encargos nuevos cada día, y Marta, Odo, Iria, Anselmo y Brena viven junto a la fogata (📜 Tablón → 🧑 Personajes)."
   origin_line: "🎭 Origen: {origin} · misión {done} de {total}"
   origin_line_done: "🎭 Origen: {origin} · ✅ su historia está completa"
-  origin_none: "🎭 Origen: sin elegir. Tócalo abajo: 🎭 Elegir origen."
+  origin_none: "🎭 Origen: sin elegir. Elígelo cuando quieras en 👤 Héroe → 🎭 Origen."
   chapter_line: "📖 {chapter} · misión {done} de {total}"
   chapter_done_line: "📖 {chapter} · ✅ completo. El próximo capítulo llega con un parche grande."
   now_title: "🎯 Ahora:"
@@ -42,7 +42,7 @@ story:
   # ---- 🎯 Misiones
   quests_title: "🎯 Misiones"
   chain_origin: "🎭 Tu origen · {origin} ({done}/{total})"
-  chain_origin_none: "🎭 Todavía no elegiste tu origen: tócalo en 📖 Historia (🎭 Elegir origen)."
+  chain_origin_none: "🎭 Todavía no elegiste tu origen: elígelo en 👤 Héroe → 🎭 Origen."
   chain_origin_done: "🎭 Tu origen · {origin}: ✅ su historia está completa."
   chain_chapter: "📖 {chapter} ({done}/{total})"
   chain_chapter_done: "📖 {chapter}: ✅ completo."
@@ -57,7 +57,7 @@ story:
   reward: "🎁 {items}"
   reward_xp: "+{xp} exp"
   rep_part: "{emoji} {points}"
-  next_quest: "📖 Nueva misión: «{title}». Mírala en 📖 Historia."
+  next_quest: "📖 Nueva misión: «{title}». Mírala en 👤 Héroe → 📔 Diario → 🎯 Misiones."
   next_locked: "📖 La siguiente misión, «{title}», empieza en el nivel {level}."
   chapter_done: "🏁 ¡Terminaste el {chapter}!"
   title_won: "🏅 Ganaste el título {title}."
@@ -142,8 +142,8 @@ story:
   bio_saved: "📝 Guardé tu biografía."
   bio_cleared: "📝 Borré tu biografía."
   bio_clear_words: ["borrar", "quitar"]
-  hero_origin: "🎭 Origen: {origin} · 📖 Historia: /historia"
-  hero_origin_none: "🎭 Origen: sin elegir · 📖 Historia: /historia"
+  hero_origin: "🎭 Origen: {origin}"
+  hero_origin_none: "🎭 Origen: sin elegir (elígelo en 🎭 Origen, abajo)"
   hero_emblem: "🏷️ Emblema: {emoji} {trade} (rango {rank}, {title})"
   hero_bio: "📝 «{bio}»"
   emblem_name: "{emoji} {name}"
@@ -160,10 +160,10 @@ story:
   # ---- 🎭 Origen
   origin_title: "🎭 Tu origen"
   origin_ask: "Despertaste sin recuerdos, pero algo vuelve: imágenes sueltas, un oficio en las manos, un nombre. ¿De dónde vienes?"
-  origin_new: "🎭 Nuevo: elige de dónde viene tu héroe. Da un rasgo chico (nunca de combate), un regalo y su propia historia. Puedes hacerlo después en 📖 Historia."
+  origin_new: "🎭 Nuevo: elige de dónde viene tu héroe. Da un rasgo chico (nunca de combate), un regalo y su propia historia. Puedes hacerlo después en 👤 Héroe → 🎭 Origen."
   origin_page: "Orígenes (página {n} de {total}):"
   origin_list_line: "• {name} — {intro}"
-  origin_later: "¿Prefieres decidir después? Usa el menú de abajo: lo eliges cuando quieras en 📖 Historia."
+  origin_later: "¿Prefieres decidir después? Usa el menú de abajo: lo eliges cuando quieras en 👤 Héroe → 🎭 Origen."
   origin_detail_trait: "✨ Rasgo: {trait}"
   origin_detail_gift: "🎁 Llevas: {gift}"
   origin_detail_story: "📖 Su historia empieza con «{title}»."
@@ -386,7 +386,7 @@ story:
     c1_m5:
       title: "El ámbar que canta"
       hablar: "El yunque suena desde lejos. Una mujer ancha, con el pelo atado y quemaduras viejas en los brazos, golpea un hierro al rojo. Es Brena, la herrera."
-      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → ⚒️ Oficios."
+      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar."
       ambar: "Brena te muestra una astilla de ámbar del tamaño de un dedo. Zumba bajito, como una colmena lejana. «Salió entre la chatarra que le compré a Odo. De noche canta. No sé qué es.»\n🌿 Iria la estudiaría para el Círculo del Umbral.\n⚒️ Brena la fundiría en el yunque para la Llama Común.\n🪙 Odo pagaría bien por ella para la Cofradía."
       opt_iria: "🌿 Dársela a Iria"
       opt_brena: "⚒️ Que Brena la funda"
@@ -444,7 +444,7 @@ story:
     o_aprendiz_1:
       title: "Manos que recuerdan"
       hablar: "Brena te ve mirar el yunque. «Tienes manos de taller», gruñe. «¿De quién aprendiste?» No recuerdas su nombre, pero sí sus manos."
-      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → ⚒️ Oficios."
+      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar."
       mostrar: "Ya hiciste algo con tus manos. Muéstraselo a Brena."
       done: "Brena da vuelta tu trabajo y se queda quieta. «Esta forma de cerrar la juntura solo la enseñaba un maestro: Teodoro el Alto. Partió lejos del Claro hace dos inviernos. No volvió.»"
     o_aprendiz_2:

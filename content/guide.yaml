@@ -1,0 +1,92 @@
+# Guided path (D-190 confirmed, D-193 provisional): the steps of the "camino guiado" in their order, and the one-time
+# progressive tips that arrive as the player meets new things (never all at once).
+# [ES] El camino guiado: los pasos en su orden (uno solo a la vez), qué completa cada uno, si da premio, qué avisos abre y
+# qué botón ofrece su pantalla; y los avisos de una sola vez ("tutoriales a medida que desbloqueas cosas", D-190).
+# Los textos de cada paso y aviso viven en content/locales/es_guia.yaml (guide.step.<id>.* y guide.tip.<id>.*); los números
+# (premio por paso, nivel de veterano, movimientos antes de fundar, umbral de energía, peleas para ⚙️ Opciones) en
+# content/balance.yaml, bloque guide.
+# Documento de diseño: diseno/03-personaje/camino-guiado.md
+# Lo lee: engine/service/guide.py (GuideMixin: _guide_steps, _guide_tips). El avance de cada héroe se guarda en Hero.guide
+#     {"v", "done" [ids de pasos], "tips" [ids de avisos], "away" (zonas pisadas fuera del Claro después del camino básico)}.
+# IDs ESTABLES (C-18, mapa de impacto C-29): los ids de pasos y avisos están guardados en los héroes. Solo se agregan; nunca
+#     se renombran ni se borran. Para retirar uno: retired: true (los héroes que lo tenían hecho lo conservan).
+# Cómo se completa un paso ("done"):
+#     event: arrive | explore | gather | fight | camp  → lo avisa el motor (_guide_event): llegar a una zona, una vuelta de
+#            explorar o recolectar, el final de una pelea, fundar un campamento
+#     action: <id de botón>                          → tocar ese botón ("map", "claro", "trainer", "hero"; los dos últimos
+#            los arma la pantalla nueva del campamento y del héroe, D-191)
+#     where: away (fuera del Claro) | home (en el Claro o en tu campamento) | spot (un buen lugar para fundar)
+#     hunt: true                                    → la pelea tiene que ser de 🏹 Cazar
+#     state: home | has_camp                        → también se da por hecho si ya se cumple al mirarlo (sin evento)
+#     skip: has_camp                                → se salta sin premio si ya tienes campamento
+# "go": el botón que ofrece la pantalla del paso (/guia); "routes" = las 4 rutas de 📍 Zona.
+# "basic_end": último paso del camino básico (E-133: los héroes de antes que terminaron el tutorial viejo lo tienen hecho).
+# "hidden_home": sin línea "🧭 Ahora:" mientras estás en el Claro (D-190: el tutorial de fundar empieza al salir).
+# "needs: camp": la línea "🧭 Ahora:" suma lo que falta para fundar aquí (las reglas de balance.yaml camps).
+# "unlocks": avisos que salen solo después de este paso.
+# Si cambias el orden, un id o lo que completa un paso, revisa: tests/test_camino_guiado.py y el mapa de impacto C-29.
+
+steps:
+  move:                        # [ES] a) dónde estás (el Claro, la antorcha 🔥) y moverte a una zona vecina
+    done: {event: arrive, where: away}
+    go: routes
+    reward: true
+  explore:                     # [ES] b) en la zona nueva: explorar una vez...
+    done: {event: explore}
+    go: explore_menu
+    reward: true
+  gather:                      # [ES] ...después recolectar...
+    done: {event: gather}
+    go: explore_menu
+    reward: true
+  hunt:                        # [ES] ...y después cazar (la pelea de 🏹 Cazar, gane o pierda)
+    done: {event: fight, hunt: true}
+    go: hunt
+    reward: true
+    unlocks: [options]
+  map:                         # [ES] c) el 🗺️ Mapa y todo lo que muestra
+    done: {action: map}
+    go: map
+    reward: true
+  return:                      # [ES] d) volver al campamento (el Claro)
+    done: {event: arrive, where: home, state: home}
+    go: places
+    reward: true
+  camp:                        # [ES] e) el 🏕️ Campamento: cocinar, investigar, fabricar, entrenador, mercader, Dudas...
+    done: {action: claro, where: home}
+    go: claro
+    reward: true
+  trainer:                     # [ES] ...y el 🧑‍🏫 Entrenador, que presenta los oficios (D-191)
+    done: {action: trainer}
+    go: trainer
+    reward: true
+  hero:                        # [ES] f) el 👤 Héroe: talentos, mochila, salud y lo demás
+    done: {action: hero}
+    go: hero
+    reward: true
+    basic_end: true
+    unlocks: [origin]
+  found_spot:                  # [ES] D-190: fundar campamento, sin tutorial hasta salir del Claro; después de 1 o 2 movimientos
+    done: {event: arrive, where: spot}
+    skip: has_camp
+    hidden_home: true
+    reward: false
+  found:                       # [ES] ...fundarlo (el flujo de siempre pide el nombre) y su tutorial corto
+    done: {event: camp, state: has_camp}
+    go: claro
+    needs: camp                # [ES] la línea "🧭 Ahora:" suma lo que falta para fundar en la zona donde estás
+    reward: true
+
+tips:                          # [ES] avisos de una sola vez, en este orden de prioridad; como mucho uno por pantalla
+  fight:      {when: in_combat, screen: combat}   # [ES] tu primera pelea (en la pantalla del combate)
+  downed:     {when: downed}                      # [ES] caíste en combate
+  level_up:   {when: level_up}                    # [ES] subiste de nivel y tienes un punto de talento
+  energy_low: {when: energy_low}                  # [ES] energía baja (balance.yaml guide.energy_low)
+  bag_full:   {when: bag_full}                    # [ES] mochila llena (D-90)
+  cave:       {when: cave}                        # [ES] estás en la entrada de una 🕳️ / 🌀 mazmorra (D-170)
+  ecamp:      {when: ecamp}                       # [ES] estás en un 👹 campamento enemigo (D-112)
+  node:       {when: node}                        # [ES] descubriste tu primer ✨ nodo de recursos (D-184)
+  rank_up:    {when: rank_up}                     # [ES] tu primer oficio subió de rango (D-109)
+  raid:       {when: raid}                        # [ES] la primera oleada en tu campamento (D-99)
+  options:    {when: kills}                       # [ES] ⚙️ Opciones y las peleas automáticas (después de 🏹 Cazar)
+  origin:     {when: path_done}                   # [ES] E-131: el 🎭 origen, paso opcional al terminar el camino básico

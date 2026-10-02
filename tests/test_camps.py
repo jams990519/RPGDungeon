@@ -63,7 +63,7 @@ def test_camp_grows_one_zone_per_level(service):
         choose = service.act("test:1", "grow")                    # you choose where it grows (D-87)
         assert choose.kind == "camp_grow" and len(choose.actions) <= 4
         view = service.act("test:1", pick)
-        assert view.kind == "player_camp" and len(view.actions) <= 4
+        assert view.kind == "player_camp" and len(view.actions) <= 8      # D-192: the camp hub shows up to 8, 2 per row
         camp = service.store.get("camp", "6:0")
         assert camp["level"] == expected and len(camp["zones"]) == expected
     assert camp["zones"] == [[6, 0], [7, 0], [8, 0], [6, 1]]

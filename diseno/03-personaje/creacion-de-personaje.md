@@ -1,12 +1,14 @@
 # Creación de personaje
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); §4 en el juego como **origen** (capa simple, D-117, provisional); §3, §5 y §6 son propuesta
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); desde la 0.29 la creación termina en el [Camino guiado](camino-guiado.md) (D-190, D-193); §4 en el juego como **origen** (capa simple, D-117, provisional; desde la 0.29 se ofrece después, E-131); §3, §5 y §6 son propuesta
 
 Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre → clase → confirmación**. La especialización no se elige al crear: se gana con el primer punto de talento (D-68, D-74). Linaje, trasfondo y apariencia quedan como capa profunda opcional para más adelante (D-44).
 
 ---
 
 ## 1. El flujo de hoy
+
+> **Desde la 0.29 (D-190, D-192):** crear el héroe pide solo el **nombre y la clase** (la raza todavía no, porque no está definida). Al confirmar la clase se entra directo al juego, sin la elección del origen: el origen se elige cuando quieras en 👤 Héroe → 🎭 Origen, y quien ya lo tenía lo conserva (E-131). Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §1 y §3.
 
 ### 1.1 Paso 1 · El nombre
 
@@ -45,7 +47,8 @@ Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre
 - Todos los números están en `content/balance.yaml`.
 - En la ficha, la clase aparece como "sin especialización todavía" y con el ícono de la clase (D-70, D-86).
 - Si entraste con el enlace de un amigo, él gana energía apenas creas tu héroe (D-65).
-- El tutorial empieza solo, con pistas y sin instrucciones (D-56): explorar el Claro, recolectar, vender lo que sobra al mercader (antes: aportar a la obra común, quitada por D-98), salir del Claro, ganar una pelea, curarte y usar 📒 Lugares. Cada paso cumplido da 5 🥉 y 20 de experiencia (`tutorial`).
+- **Desde la 0.29 (D-190, D-193):** al confirmar la clase sale **🔥 Llegaste al Claro** (dónde estás, los terrenos de alrededor y cómo moverte, con las 4 rutas) y empieza el [Camino guiado](camino-guiado.md): un solo paso a la vez, con el botón exacto y 5 🥉 y 20 de experiencia por paso (`guide`). La raza todavía no se elige (no está definida) y el origen se ofrece después (E-131).
+- ~~El tutorial empieza solo, con pistas y sin instrucciones (D-56): explorar el Claro, recolectar, vender lo que sobra al mercader, salir del Claro, ganar una pelea, curarte y usar 📒 Lugares~~ (hasta la 0.28; `balance.yaml` → `tutorial` queda solo para leer quién lo terminó, E-133).
 
 ## 2. La especialización llega después
 
@@ -93,7 +96,7 @@ Como el juego tendrá un sistema de salud profundo (D-09), la raza importa donde
 
 ## 4. Trasfondos (propuesta): de dónde viene tu héroe
 
-> **En el juego (D-117, provisional):** se llama **🎭 origen** y se elige después de confirmar la clase (o después, en 📖 Historia; nunca bloquea). Entraron 6 de los 8 (todos menos el Juglar y el Cazador de recompensas), cada uno con una cadena de **3** misiones, un **rasgo chico que no es de combate** y un regalo de una sola vez. El "oficio a nivel 5" se cambió por +10 a +15 % de experiencia de oficio, y las armas y herramientas por consumibles o materiales (D-49). Detalle y números: [Historia y rol](../06-contenido/historia-y-rol.md) §0.2.
+> **En el juego (D-117, provisional):** se llama **🎭 origen**. Hasta la 0.28 se elegía después de confirmar la clase; **desde la 0.29 (D-190, E-131 provisional) se ofrece al terminar el camino básico, con /origen**, y quien ya lo eligió lo conserva (nunca bloquea). Entraron 6 de los 8 (todos menos el Juglar y el Cazador de recompensas), cada uno con una cadena de **3** misiones, un **rasgo chico que no es de combate** y un regalo de una sola vez. El "oficio a nivel 5" se cambió por +10 a +15 % de experiencia de oficio, y las armas y herramientas por consumibles o materiales (D-49). Detalle y números: [Historia y rol](../06-contenido/historia-y-rol.md) §0.2.
 
 **Cómo entraría.** Como paso optativo después del linaje, también con "elegir después". Cada trasfondo da:
 - una **cadena corta de misiones propia** cerca del Claro (5-6 misiones);

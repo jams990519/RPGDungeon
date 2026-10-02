@@ -31,6 +31,7 @@
 - Crecen cuando un miembro paga 15 de madera, 10 de piedra y 5 de fibra por el nivel actual y elige qué zona vecina toman; desde el nivel 6 también paga 🪎 cofres: 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9 (D-92, provisional). Cambian de nombre en los niveles 3, 5, 7 y 9: aldea, pueblo, ciudad y castillo (D-81, D-87).
 - En su territorio nadie es atacado y sus miembros recolectan un 50 % más.
 - Hoy no tienen servicios, ni almacén, ni obra común propia. El detalle está en [Fundación y cisma](fundacion-y-cisma.md) §2.
+- **Sus botones desde la 0.29 (D-192):** 🏕️ Campamento en tu campamento es un centro con 🍲 Cocinar, 🔬 Investigar, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🏘️ Servicios, 📜 Tablón, 🏰 Gestionar y ❓ Dudas. ⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida y 🛡️ Gremio están en **🏰 Gestionar**; durante una oleada, 🛡️ Defender va primero. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §2.
 
 ### 0.3 Lo que falta para "construir no alcanza"
 
