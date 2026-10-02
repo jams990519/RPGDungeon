@@ -35,11 +35,12 @@ Código: [mapgen.py](../../engine/world/mapgen.py), [travel.py](../../engine/wor
 
 ### 1.2 Biomas
 
-**Desde la 0.26.2 (D-186, D-187): el terreno es un tablero salteado.** El dueño pidió que el mapa se vea como un tablero de ajedrez salteado: varios cuadros juntos del mismo color (cinco verdes, al lado amarillos, al lado morados...), con cantidades, orden y posiciones que cambian. Así se arma (`engine/world/mapgen.py` → `terrain_at`):
+**Desde la 0.26.2 (D-186, D-187): el terreno es un tablero salteado, "como jugando Tetris".** El dueño pidió que el mapa se vea como un tablero de ajedrez salteado: varios cuadros juntos del mismo color (cinco verdes, al lado amarillos, al lado morados...), con cantidades, orden y posiciones que cambian; y aclaró que el mejor ejemplo es Tetris. Así se arma desde la 0.26.3 (`engine/world/mapgen.py` → `terrain_at`):
 
-- El mapa se parte en una rejilla de **3 × 3** (`terrain.patch`) con un centro movido al azar en cada casilla. Cada zona se une al centro más cercano: salen **manchas de unas 3 a 12 zonas**, de forma variada.
-- Cada mancha **sortea su terreno por peso** (`content/biomes.yaml` → `terrain.weight`: pradera y bosque 3; colinas, pantano, montaña, desierto y tundra 2). La **tundra** (`climate: cold`) sale más hacia el norte y el **desierto** (`hot`) más hacia el sur (`terrain.climate_slope` y `climate_strength`), pero los dos pueden salir en cualquier parte.
-- Las **🏚️ ruinas** siguen siendo zonas sueltas (`terrain.scatter`: 6 de cada 100) y el **🔥 Claro** queda fijo en (0, 0).
+- El mapa se parte en **bloques de 4 × 4 zonas**; las filas impares de bloques van corridas 2 zonas, como ladrillos, para que no se vea una cuadrícula.
+- Cada bloque se llena con **piezas de Tetris de 4 zonas** (I, O, T, S, Z, J y L): una de las **117 formas** de cubrir un cuadrado de 4 × 4, elegida por la semilla (`block_tilings`).
+- Cada pieza **sortea su terreno por peso** (`content/biomes.yaml` → `terrain.weight`: pradera y bosque 3; colinas, pantano, montaña, desierto y tundra 2; ruinas 1). La **tundra** (`climate: cold`) sale más hacia el norte y el **desierto** (`hot`) más hacia el sur (`terrain.climate_slope` y `climate_strength`), pero los dos pueden salir en cualquier parte. Dos piezas vecinas del mismo terreno se ven como una mancha más grande.
+- El **🔥 Claro** queda fijo en (0, 0). (En la 0.26.2 eran manchas de 3 a 12 zonas y las ruinas iban sueltas.)
 - Un terreno nuevo solo agrega su `terrain` y su `color` en `content/biomes.yaml` (D-185: se pueden agregar todos los que hagan falta).
 - **El terreno no decide los recursos (D-185):** los recursos de tierra siguen las regiones de antes, calculadas con el bioma "clásico" de abajo (`classic_biome`), así que ninguna zona perdió lo que tenía. El terreno sí decide los enemigos y el peligro, y el agua: un 🟪 pantano siempre tiene agua para pescar.
 
