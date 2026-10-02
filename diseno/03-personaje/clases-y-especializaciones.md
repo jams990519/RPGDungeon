@@ -348,7 +348,7 @@ Cada clase nueva llega con su evento, su zona de inicio especial y una cadena de
 
 ## 7. Lo que ya está en el juego: 8 habilidades por especialización (D-79)
 
-> **2-oct-2026:** el dueño las bajó a **4 por especialización** (D-209). La propuesta de cuáles quedan está en [Habilidades por especialización](habilidades-por-especializacion.md) y espera E-172 (si ⚔️ Atacar cuenta como una de las 4). Lo de abajo sigue siendo lo que hay hoy en el juego hasta que se programe.
+> **2-oct-2026:** el dueño las bajó a **4 por especialización** (D-209). Cuáles quedan se decide con las clases personalizadas (D-214, E-182) y con E-172 (si ⚔️ Atacar cuenta como una de las 4). Lo de abajo sigue siendo lo que hay hoy en el juego hasta que se programe.
 
 Las secciones de arriba son el diseño completo. En la versión jugable, cada una de las 45 especializaciones tiene **8 habilidades**: las 3 de siempre y 5 nuevas inspiradas en las habilidades emblemáticas de esa especialización en World of Warcraft (las del Nigromante y el Bardo, clases propias, siguen la misma idea). La idea viene de WoW, pero **el nombre es propio** (D-135; tabla de cambios en §8). Cada especialización conserva su rol (D-72) y cada clase sigue cubriendo al menos dos roles.
 

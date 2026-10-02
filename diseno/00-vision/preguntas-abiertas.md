@@ -268,3 +268,20 @@ Del pedido del dueño del 2-oct (D-208 a D-210); propuesta completa en [Estadís
 | P-174 | ¿Qué otras mejoras de clase del WoW entran? (E-175) | Bonos de conjunto y adornos de artesano; más adelante glifos y reforja |
 | P-175 | ¿Qué pasa con la malla, la especialización de malla y las habilidades que salen? (E-176) | La malla se vuelve el tipo nuevo de tu clase, la especialización se cambia gratis, nadie pierde poder |
 
+## Dudas del mapa en blanco y las clases propias (2-oct-2026)
+
+Del pedido del dueño del 2-oct (D-212 a D-214).
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-176 | ¿Qué se ve a color sin explorar? (D-212; E-177) | El Claro, tu territorio y las zonas exploradas al 50 % o más; lo demás en blanco ⬜ |
+| P-177 | ¿Qué pasa con los íconos en las zonas en blanco? (E-178) | Siguen sus reglas de hoy (cueva cerca, nodo al llegar, campamento enemigo al verlo) |
+| P-178 | ¿Qué pasa con lo que ya ven los jugadores de hoy? (E-179) | Lo explorado al 50 % queda a color; lo demás vuelve a blanco, sin perder el porcentaje |
+| P-179 | ¿Cómo se le compra el mapa a un investigador? (D-213; E-180) | Pergamino de mapa del 🧭 Explorador con lo que exploró al 50 % de una región de 6 × 6, precio libre |
+| P-180 | ¿Cuenta lo que exploras alrededor sin moverte? (E-181) | Sí: una zona vecina estudiada al 50 % también se pinta |
+| P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | Claude propone 8 a 10 clases propias con 3 especializaciones; el dueño elige y cambia |
+| P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | 2 por clase y 1 por especialización, +10 % a lo que sumas en ellas |
+| P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | No: afinidades por clase; el jugador elige con equipo, gemas y filas de talentos |
+| P-184 | ¿Rendimiento decreciente en las secundarias? (E-185) | Sí, como el WoW: pasado un 30 %, cada punto rinde menos, con tope |
+| P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | Cambio de clase gratis una vez, conservando nivel, equipo y oficios |
+

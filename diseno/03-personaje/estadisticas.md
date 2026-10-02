@@ -1,6 +1,6 @@
 # Estadísticas, armaduras y clases (la reforma del 2-oct-2026)
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-44, D-46, D-77, D-83, D-110, D-199, D-208, D-209, D-210, D-211), [Clases y especializaciones](clases-y-especializaciones.md), [Equipamiento](equipamiento.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Botín](botin.md), [Talentos](talentos.md), los oficios que fabrican equipo ([Repaso de oficios](../07-economia/oficios-repaso-2-oct.md)) · **Estado:** lo que dijo el dueño es decisión confirmada (D-208 a D-210); el resto es **propuesta de Claude** (D-211, provisional) que espera las preguntas E-170 a E-176. **Solo diseño: el código no se toca hasta que el dueño apruebe la propuesta.**
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-44, D-46, D-77, D-83, D-110, D-199, D-208 a D-211, D-214), [Clases y especializaciones](clases-y-especializaciones.md), [Equipamiento](equipamiento.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Botín](botin.md), [Talentos](talentos.md), los oficios que fabrican equipo ([Repaso de oficios](../07-economia/oficios-repaso-2-oct.md)) · **Estado:** lo que dijo el dueño es decisión confirmada (D-208 a D-210 y D-214); el resto es **propuesta de Claude** (D-211, provisional) que espera las preguntas E-170 a E-176 y E-182 a E-186. **Solo diseño: el código no se toca hasta que el dueño apruebe la propuesta.**
 
 ## 1. Lo que pidió el dueño
 
@@ -101,6 +101,58 @@ Las 46 se escriben con el código, una línea cada una, en `content/classes.yaml
 
 **Lo que no entra, y por qué.** Golpe, Pericia, Defensa, Penetración, Golpe múltiple, Armadura adicional, Valor de bloqueo, Espíritu y MP5: WoW los quitó porque solo obligaban a llegar a un tope o porque se volvieron confusos. El poder de ataque y el poder con hechizos salen de la estadística principal, como en WoW desde Cataclysm.
 
+### 3.1 Cómo funcionan de verdad en el WoW (lo investigado)
+
+- **Puntos que se vuelven porcentaje.** El equipo da "puntos" de una secundaria y el juego los convierte en porcentaje según el nivel. Ejemplo del WoW de hoy: 1320 puntos de Celeridad dan +2 %.
+- **Dos secundarias por pieza.** Cada pieza trae dos de las cuatro (Crítico, Celeridad, Maestría, Versatilidad); los abalorios son la excepción. Por eso dos piezas del mismo nivel no valen lo mismo para todos.
+- **Rendimiento decreciente.** Pasado un 30 % en una secundaria, cada punto rinde menos, y hay un tope. Así conviene repartir y no apilar una sola.
+- **Qué hace cada una:**
+  - **Crítico:** en el WoW de hoy dobla el golpe o la cura; aquí vale ×1,5.
+  - **Celeridad:** acelera todo: lanzamientos, recarga de algunas habilidades, efectos que pegan por tiempo y recursos.
+  - **Maestría:** distinta para cada especialización, potencia lo que mejor hace.
+  - **Versatilidad:** sube el daño y la curación, y baja el daño recibido en la mitad de ese porcentaje.
+- **Prioridades por especialización.** Cada especialización tiene un orden de estadísticas que más le rinden. Los foros y las guías publican ese orden para cada una.
+- **"Afinidad" (WoW Warlords of Draenor).** Cada especialización estaba "afinada" a una secundaria y recibía +5 % extra de ella. Es justo la idea del dueño (§3.2).
+- **Especialización de armadura.** Si llevas todas tus piezas del tipo de tu clase, ganas +5 % de tu principal.
+- **Del WoW clásico, para comparar:**
+  - 1 punto de Aguante daba 10 de vida.
+  - En algunas clases, 20 de Agilidad daban 1 % de crítico y 1 % de esquiva.
+  - La Fuerza daba poder de ataque y bloqueo; el Espíritu, regeneración.
+- **La ficha de personaje** (y los complementos que la amplían) agrupa todo así:
+  - **Atributos:** principal, Aguante y armadura.
+  - **Mejoras:** Crítico, Celeridad, Maestría y Versatilidad.
+  - **Terciarias:** Robo de vida, Evasión y Velocidad.
+  - **Defensa:** esquiva, parada y bloqueo.
+
+  La ficha "📊 Estadísticas" de Lost Realms seguiría ese orden.
+
+**Fuentes consultadas:** [Wowhead: rendimiento decreciente de las secundarias](https://www.wowhead.com/tw/guide/diminishing-returns-on-secondary-stats-in-world-of-warcraft), [warcraft.wiki: estadística secundaria](https://warcraft.wiki.gg/wiki/Secondary_stat), [warcraft.wiki: estadística principal](https://warcraft.wiki.gg/wiki/Primary_stat), [foro oficial: "Secondary Stats: The Illusion of Choice"](https://us.forums.blizzard.com/en/wow/t/secondary-stats-the-illusion-of-choice/2010037), [Blizzard Watch: las estadísticas en Warlords](https://blizzardwatch.com/2015/02/18/explaining-stats-in-warlords-of-draenor/), [RankedBoost: estadísticas del clásico](https://rankedboost.com/world-of-warcraft/classic-stats/), [Icy Veins: prioridad de estadísticas del Guerrero Protección](https://www.icy-veins.com/wow/protection-warrior-pve-tank-stat-priority) y fichas ampliadas de complementos como [DejaCharacterStats](https://www.curseforge.com/wow/addons/dejacharacterstats).
+
+### 3.2 Afinidades: lo que hace mejor a tu clase (D-214, propuesta)
+
+El dueño, el 2-oct: "todos los jugadores tienen esas estadísticas, pero el aumento específico de una hace mejor a tu personaje que el resto".
+
+- **Todos tienen todas las estadísticas.** Cualquier héroe puede llevar Crítico o Fuerza.
+- **Cada clase tiene 2 afinidades y cada especialización 1 más.** Lo que sumas en una estadística afín vale +10 % (E-183). Es la "afinidad" del WoW Warlords (+5 %), algo más marcada para que se note en un juego de texto.
+- **Ejemplos** (con las clases de hoy, que se van a rehacer):
+
+| Clase | Afinidades de la clase | Una especialización y su afinidad extra |
+|---|---|---|
+| Guerrero | Fuerza, Armadura | Protección: Versatilidad |
+| Pícaro | Agilidad, Crítico | Asesinato: Maestría (venenos) |
+| Mago | Intelecto, Crítico | Fuego: Celeridad |
+| Sacerdote | Intelecto, Vitalidad | Sagrado: Maestría (curas extra) |
+
+- **Por qué así:** con el mismo equipo, un Pícaro saca más Crítico que un Guerrero, y el Guerrero aguanta más. El equipo se comparte entre las 2 o 3 clases de una familia (§4), pero cada una lo aprovecha distinto. Eso le da sentido al mercado y a las prioridades.
+
+### 3.3 Clases personalizadas (D-214)
+
+El dueño: "vamos a crear clases personalizadas; no va a ser específicamente la del World of Warcraft; la del WoW era para que tuvieras una idea de cómo funcionaría".
+
+- **Las 15 clases de hoy son el punto de partida, no el final.** La propuesta (E-182) es que Claude arme un juego de clases propias, de unas 8 a 10 con 3 especializaciones cada una. Cada clase tendría nombre propio, tipo de armadura (placa, cuero o tela), afinidades y sus 4 habilidades por especialización.
+- **Quién decide:** el dueño elige y cambia antes de programar.
+- **Los jugadores de hoy:** conservan nivel, equipo y oficios, y cambian de clase gratis una vez cuando lleguen las nuevas (E-186).
+
 ## 4. Las tres armaduras y las clases (D-208)
 
 **Sin malla, las clases que la usaban pasan a otro tipo.** Propuesta (E-171):
@@ -133,7 +185,7 @@ Quedan **4 clases en placa, 6 en cuero y 5 en tela**. Las secundarias deciden qu
 
 - **Cuántas.** Cada especialización tiene 4 habilidades, no más (antes 8, D-79).
 - **Atacar.** Falta decidir si ⚔️ Atacar cuenta como una de las 4 (E-172). **Recomendado: sí.** Atacar y 3 habilidades, todas en la barra y sin tener que elegir, como ya decía D-46 ("las 4 habilidades de la barra"). Si no cuenta, serían Atacar y 4 más, y la barra pasaría de 6 botones o habría que elegir 3 de 4.
-- **Cuáles quedan.** La propuesta para las 46 especializaciones está en [Habilidades por especialización](habilidades-por-especializacion.md). Cada una conserva una respuesta al aviso, lo que hace su rol y su firma del WoW.
+- **Cuáles quedan.** Se decide junto con las clases personalizadas (D-214, E-182): las clases de hoy son solo el punto de partida. Cada una conserva una respuesta al aviso, lo que hace su rol y su firma del WoW.
 - **Cuándo se abren.** Con 1, 3 y 6 puntos de talento, como las 3 habilidades originales.
 
 ## 6. Lo que se mejora dentro de las clases (todas las versiones del WoW)
@@ -196,7 +248,7 @@ Cada fase con su parche, sus pruebas y su medición.
 
 ## 10. Preguntas para el dueño
 
-En el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloque A4 (**E-170 a E-176**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-169 a P-175).
+En el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md), tanda 1, bloques A4 y A5 (**E-170 a E-176** y **E-182 a E-186**), y en [Preguntas abiertas](../00-vision/preguntas-abiertas.md) (P-169 a P-175 y P-181 a P-185).
 
 ## 11. De dónde sale
 
