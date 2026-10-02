@@ -424,3 +424,11 @@ v0_26_2:
     - "🗺️ Los terrenos se reparten de otra forma, más mezclados: la tundra sale más al norte y el desierto más al sur, pero puede salir cualquiera en cualquier parte."
     - "⛏️ Los recursos de cada zona no cambiaron: el color dice el terreno, no lo que hay. Eso solo se sabe explorando."
     - "🐸 Al cambiar el terreno de una zona cambian también sus enemigos, y un pantano siempre tiene agua para pescar."
+
+v0_26_3:
+  version: "0.26.3"
+  title: "🧩 Lost Realms 0.26.3: el mapa, como jugando Tetris"
+  notes:
+    - "🧩 Los terrenos del mapa ahora son como piezas de Tetris: grupos de 4 zonas con formas distintas (en línea, en L, en T, en cuadrado, en zigzag), cada uno de un color, encajados unos con otros."
+    - "🎨 Colores, orden y posición cambian por todo el mapa. Cuando dos piezas del mismo terreno quedan juntas, se ven como una mancha más grande."
+    - "⛏️ Los recursos de cada zona siguen siendo los mismos: el color dice el terreno, no lo que hay."

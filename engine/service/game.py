@@ -735,8 +735,8 @@ class GameService(StoryMixin):
         """The D-186 terrain table for zone_at, built once from balance.yaml terrain and content/biomes.yaml "terrain".
 
         [ES]
-        Qué hace: arma la tabla del tablero de terrenos (tamaño de mancha, clima, peso de cada terreno y los sueltos, como las
-        ruinas) con lo que dicen balance.yaml terrain y cada bioma de content/biomes.yaml. La llama: _zone.
+        Qué hace: arma la tabla del tablero de terrenos (clima, peso de cada terreno en el sorteo de cada pieza de Tetris y los
+        sueltos, si hay) con lo que dicen balance.yaml terrain y cada bioma de content/biomes.yaml. La llama: _zone.
         Si cambia, afecta: el terreno de todo el mapa (color, enemigos y peligro), no los recursos (D-185).
         """
         if getattr(self, "_terrain_table", None) is None:
@@ -745,8 +745,8 @@ class GameService(StoryMixin):
                           for b, d in self.content.biomes.items() if d.get("terrain", {}).get("weight"))
             scattered = tuple((b, float(d["terrain"]["scatter"]))
                               for b, d in self.content.biomes.items() if d.get("terrain", {}).get("scatter"))
-            self._terrain_table = (int(cfg.get("patch", 3)), float(cfg.get("climate_slope", 0.02)),
-                                   float(cfg.get("climate_strength", 3.0)), kinds, scattered)
+            self._terrain_table = (float(cfg.get("climate_slope", 0.02)), float(cfg.get("climate_strength", 3.0)), kinds,
+                                   scattered)
         return self._terrain_table
 
     def _zone(self, x: int, y: int) -> Zone:

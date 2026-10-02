@@ -5,9 +5,9 @@
 # gather: qué se recolecta en ese bioma (material: peso).
 # water (D-115, fase 2 de los oficios): qué parte de las zonas de ese bioma tiene agua (1.0 = todas): ahí también se pesca
 #   🐟 pescado (engine/world/resources.py water_resources; su peso en balance.yaml camp_professions.fish). Sin "water", 0.
-# terrain (D-186, confirmada): el mapa es un tablero salteado de manchas de pocas zonas (engine/world/mapgen.py terrain_at).
-#   weight: cuánto sale cada terreno en el sorteo de una mancha; climate: any, cold (sale más al norte) o hot (más al sur).
-#   scatter: terreno que sale en zonas sueltas (las ruinas). Sin "terrain", el terreno no sale solo en el mapa (el Claro).
+# terrain (D-186, confirmada): el mapa es "como jugando Tetris": piezas de 4 zonas encajadas (engine/world/mapgen.py
+#   terrain_at). weight: cuánto sale cada terreno en el sorteo de cada pieza; climate: any, cold (sale más al norte) o hot
+#   (más al sur). scatter (opcional): terreno que sale en zonas sueltas. Sin "terrain", no sale solo en el mapa (el Claro).
 #   Un terreno nuevo solo agrega su terrain y su color. Los recursos de tierra NO siguen al terreno (D-185): usan el bioma
 #   clásico de antes (mapgen.classic_biome) con estos mismos gather. El agua (water) sí sigue al terreno que se ve.
 # color (D-179, confirmada): con qué color se pinta el terreno en el 🗺️ Mapa (D-182: colores elegidos por Claude). Un terreno
@@ -76,7 +76,7 @@ tundra:
   danger: 0.4
 ruinas:
   name_key: biome.ruinas
-  terrain: {scatter: 0.06}   # [ES] D-186: zonas sueltas (no manchas): 6 de cada 100, en cualquier parte
+  terrain: {weight: 1, climate: any}   # [ES] D-186: también salen en piezas de Tetris, menos seguido (unas 6 de cada 100 zonas)
   color: "⬛"
   gather: {pieza_metal: 4, piedra: 2}
   emoji: "🏚️"

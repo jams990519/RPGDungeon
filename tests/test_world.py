@@ -39,8 +39,19 @@ def test_biome_variety(content):
     assert biomes <= set(content.biomes)
 
 
+def test_block_tilings_are_tetris_pieces():
+    """D-186 ("como jugando Tetris"): every 4x4 block is cut into 4 tetrominoes; all 117 tilings, all different."""
+    from collections import Counter
+    from engine.world.mapgen import block_tilings
+    tilings = block_tilings()
+    assert len(tilings) == 117 and len(set(tilings)) == 117
+    for tiling in tilings:
+        assert sorted(Counter(tiling).values()) == [4, 4, 4, 4]
+
+
 def test_terrain_is_a_patchwork_of_varied_patches(content):
-    """D-186: patches of a few zones of the same terrain, side by side, of varied sizes; cold north, hot south."""
+    """D-186: Tetris-like pieces of 4 zones of one terrain each, side by side (two neighbours of the same terrain look like a
+    bigger patch); cold north, hot south."""
     from engine.world import terrain_at
     seed = 12345
     grid = {(x, y): terrain_at(seed, x, y) for x in range(-30, 31) for y in range(-30, 31)}
@@ -58,9 +69,10 @@ def test_terrain_is_a_patchwork_of_varied_patches(content):
                     seen.add(n)
                     stack.append(n)
         sizes.append(size)
-    sizes.sort()
-    median = sizes[len(sizes) // 2]
-    assert 3 <= median <= 12 and len(set(sizes)) >= 10              # mostly small patches, of many different sizes
+    from collections import Counter
+    count = Counter(sizes)
+    assert count.most_common(1)[0][0] == 4                             # most patches are a single Tetris piece
+    assert len(count) >= 5 and max(sizes) <= 60                        # some merge into bigger shapes, never a huge blob
     north = [grid[(x, y)] for x in range(-30, 31) for y in range(15, 31)]
     south = [grid[(x, y)] for x in range(-30, 31) for y in range(-30, -14)]
     assert north.count("tundra") > south.count("tundra") and south.count("desierto") > north.count("desierto")
@@ -70,8 +82,8 @@ def test_terrain_is_a_patchwork_of_varied_patches(content):
 def test_the_service_builds_the_terrain_from_content(service):
     """D-186: content/biomes.yaml "terrain" and balance.yaml terrain feed zone_at; every weighted biome shows up."""
     table = service._terrain_cfg()
-    assert table[0] == service.content.balance["terrain"]["patch"]
-    kinds = {b for b, _, _ in table[3]}
+    assert table[0] == service.content.balance["terrain"]["climate_slope"]
+    kinds = {b for b, _, _ in table[2]}
     assert kinds == {b for b, d in service.content.biomes.items() if d.get("terrain", {}).get("weight")}
     found = {service._zone(x, y).biome for x in range(-20, 21) for y in range(-20, 21)}
-    assert kinds | {"ruinas", "claro"} <= found
+    assert kinds | {"claro"} <= found

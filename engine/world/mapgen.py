@@ -2,10 +2,11 @@
 
 Each zone is a cell (x, y). Nothing is stored until players change it: the
 terrain (biome), name and level come from hashing the world seed with the
-coordinates. Since D-186 the terrain is a patchwork: patches of a few zones
-each (a jittered grid, every zone joins its nearest patch centre), each patch
-a terrain drawn by weight, the cold ones likelier to the north and the hot ones
-to the south. The old climate biome (temperature, humidity, elevation) stays as
+coordinates. Since D-186 the terrain looks like a game of Tetris: the map is
+cut into 4x4 blocks (odd block rows shifted by 2, like bricks), each block is
+tiled by tetrominoes (I, O, T, S, Z, J, L; one of the 117 tilings of a 4x4
+square, picked by the seed) and each piece draws its terrain by weight, the
+cold ones likelier to the north and the hot ones to the south. The old climate biome (temperature, humidity, elevation) stays as
 classic_biome: the land resource regions still use it (D-185: the
 terrain never decides the resources). Lejanía is the ring distance from the
 Claro at (0, 0).
@@ -13,12 +14,15 @@ Claro at (0, 0).
 [ES]
 Para qué sirve: inventar cualquier zona del mapa infinito siempre igual, sin
 guardarla, a partir de la semilla del mundo y sus coordenadas.
-D-186 (confirmada): el terreno se dibuja como un tablero salteado: manchas de
-pocas zonas (3 a 12, de tamaño y forma variados) de distintos colores, unas al
-lado de otras. Cada mancha sortea su terreno con el peso de content/biomes.yaml
-("terrain": weight y climate; los fríos salen más al norte y los calientes más
-al sur, balance.yaml terrain). Las 🏚️ ruinas siguen sueltas (scatter) y el Claro
-fijo. El bioma "clásico" de antes (classic_biome) queda solo para los recursos
+D-186 (confirmada): el terreno se dibuja como un tablero salteado, "como jugando
+Tetris": piezas de 4 zonas (la I, la O, la T, la S, la Z, la J y la L), cada una
+de un terreno, encajadas unas con otras; colores, orden y posición cambian. El
+mapa se parte en bloques de 4 × 4 (las filas impares corridas 2, como ladrillos)
+y cada bloque se llena con una de las 117 formas de cubrir un cuadrado de 4 × 4
+con piezas de Tetris. Cada pieza sortea su terreno con el peso de
+content/biomes.yaml ("terrain": weight y climate; los fríos salen más al norte y
+los calientes más al sur, balance.yaml terrain). Dos piezas vecinas del mismo
+terreno se ven como una mancha más grande. El Claro queda fijo. El bioma "clásico" de antes (classic_biome) queda solo para los recursos
 de tierra, así lo que los jugadores ya conocen de cada zona no se movió (D-185);
 el agua (la pesca) sí sigue al terreno que se ve: un pantano siempre tiene agua.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md (vocabulario: zona, Lejanía, anillo)
@@ -32,8 +36,8 @@ Reglas que nunca se rompen:
     1. zone_at(seed, x, y) es determinista: mismo resultado siempre.
     2. (0, 0) es siempre el Claro, Lejanía 0, sin peligro.
 Si cambias esto, revisa:
-    - Mundo ya creado: cambiar balance.yaml terrain, los pesos de content/biomes.yaml o los sorteos CAMBIA el terreno de
-      zonas ya visitadas (sus enemigos y su peligro); cambiar classic_biome MUEVE los recursos de tierra de un mundo ya creado
+    - Mundo ya creado: cambiar balance.yaml terrain, los pesos de content/biomes.yaml, las piezas o los sorteos CAMBIA el
+      terreno de zonas ya visitadas (sus enemigos y su peligro); cambiar classic_biome MUEVE los recursos de tierra de un mundo ya creado
     - Servicio: engine/service/game.py — encuentros por bioma y nivel, el color del 🗺️ Mapa (D-179)
     - Pruebas: tests/test_world.py
 """
@@ -41,6 +45,7 @@ Si cambias esto, revisa:
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 
 from engine.core.rng import hash_unit
 
@@ -124,16 +129,61 @@ def classic_biome(seed: int, x: int, y: int) -> str:
 # D-186: default terrain table for direct calls (tests, tools); the service passes the one built from content/biomes.yaml
 # and balance.yaml terrain (GameService._terrain_cfg). [ES] La tabla por defecto, igual a la de content/biomes.yaml.
 DEFAULT_TERRAIN: tuple = (
-    3, 0.02, 3.0,                                   # patch size, climate slope per zone of y, climate strength
+    0.02, 3.0,                                      # climate slope per zone of y, climate strength
     (("pradera", 3.0, "any"), ("bosque", 3.0, "any"), ("colinas", 2.0, "any"), ("pantano", 2.0, "any"),
-     ("montana", 2.0, "any"), ("desierto", 2.0, "hot"), ("tundra", 2.0, "cold")),
-    (("ruinas", 0.06),),                            # scattered single zones: (biome, share)
+     ("montana", 2.0, "any"), ("desierto", 2.0, "hot"), ("tundra", 2.0, "cold"), ("ruinas", 1.0, "any")),
+    (),                                             # scattered single zones: (biome, share); none since the Tetris look
 )
 
+BLOCK = 4                                           # the 4x4 blocks tiled by tetrominoes
+_TETROMINOES = {"I": ((0, 0), (1, 0), (2, 0), (3, 0)), "O": ((0, 0), (1, 0), (0, 1), (1, 1)),
+                "T": ((0, 0), (1, 0), (2, 0), (1, 1)), "S": ((1, 0), (2, 0), (0, 1), (1, 1)),
+                "L": ((0, 0), (0, 1), (0, 2), (1, 2))}   # Z and J are the mirrors of S and L
 
-def _patch_terrain(seed: int, cx: int, cy: int, py: float, terrain: tuple) -> str:
-    """The terrain of one patch centre: a weighted draw, cold kinds likelier to the north and hot ones to the south."""
-    _, slope, strength, kinds, _ = terrain
+
+@lru_cache(maxsize=1)
+def block_tilings() -> tuple[tuple[int, ...], ...]:
+    """Every way to tile a 4x4 block with tetrominoes (117): per tiling, the piece number of each cell, row by row.
+
+    [ES]
+    Qué hace: calcula una vez todas las formas de cubrir un cuadrado de 4 × 4 con piezas de Tetris (las 19 posiciones de las
+    5 piezas, con giros y espejos): 117 formas. Cada una dice, celda por celda, a qué pieza pertenece.
+    La llama: terrain_at. Si cambia, afecta: la forma de todas las manchas del mapa.
+    """
+    fixed = set()
+    for cells in _TETROMINOES.values():
+        for mirror in (False, True):
+            shape = [(-x, y) for x, y in cells] if mirror else list(cells)
+            for _ in range(4):
+                shape = [(-y, x) for x, y in shape]
+                mx, my = min(x for x, _ in shape), min(y for _, y in shape)
+                fixed.add(tuple(sorted((x - mx, y - my) for x, y in shape)))
+    shapes = sorted(fixed)
+    grid, found = [-1] * (BLOCK * BLOCK), []
+
+    def place(piece: int) -> None:
+        if -1 not in grid:
+            found.append(tuple(grid))
+            return
+        cell = grid.index(-1)
+        ex, ey = cell % BLOCK, cell // BLOCK
+        for shape in shapes:
+            ax, ay = min(shape, key=lambda c: (c[1], c[0]))      # the shape's first cell lands on the first empty one
+            cells = [(ex + x - ax, ey + y - ay) for x, y in shape]
+            if all(0 <= x < BLOCK and 0 <= y < BLOCK and grid[y * BLOCK + x] == -1 for x, y in cells):
+                for x, y in cells:
+                    grid[y * BLOCK + x] = piece
+                place(piece + 1)
+                for x, y in cells:
+                    grid[y * BLOCK + x] = -1
+
+    place(0)
+    return tuple(found)
+
+
+def _piece_terrain(seed: int, key: tuple[int, int, int], py: float, terrain: tuple) -> str:
+    """The terrain of one piece: a weighted draw, cold kinds likelier to the north and hot ones to the south."""
+    slope, strength, kinds, _ = terrain
     temperature = 0.5 - py * slope                  # north (positive y) is colder
     weights = []
     for biome, weight, climate in kinds:
@@ -143,7 +193,7 @@ def _patch_terrain(seed: int, cx: int, cy: int, py: float, terrain: tuple) -> st
         elif climate == "hot":
             mult = max(0.15, min(3.0, 1 + (temperature - 0.5) * strength))
         weights.append((biome, weight * mult))
-    roll = hash_unit(seed, "terrain_kind", cx, cy) * sum(w for _, w in weights)
+    roll = hash_unit(seed, "terrain_kind", *key) * sum(w for _, w in weights)
     for biome, weight in weights:
         roll -= weight
         if roll <= 0:
@@ -152,33 +202,30 @@ def _patch_terrain(seed: int, cx: int, cy: int, py: float, terrain: tuple) -> st
 
 
 def terrain_at(seed: int, x: int, y: int, terrain: tuple = DEFAULT_TERRAIN) -> str:
-    """The terrain (biome id) of a zone on the D-186 patchwork.
+    """The terrain (biome id) of a zone on the D-186 Tetris-like map.
 
     Args:
-        terrain: (patch size, climate slope, climate strength, ((biome, weight, climate), ...), ((biome, share), ...)).
+        terrain: (climate slope, climate strength, ((biome, weight, climate), ...), ((biome, share), ...)).
 
     [ES]
-    Qué hace: el terreno de una zona. El mapa se parte en una rejilla de patch × patch con un centro movido al azar en cada
-    casilla; cada zona se une al centro más cercano, así salen manchas de tamaño y forma variados (de unas 3 a 12 zonas), y
-    cada mancha sortea su terreno por peso (frío al norte, calor al sur). Encima, algunas zonas sueltas son 🏚️ ruinas.
+    Qué hace: el terreno de una zona. Busca su bloque de 4 × 4 (las filas impares de bloques corridas 2 zonas, como
+    ladrillos, para que no se vea una cuadrícula), la forma de piezas de Tetris de ese bloque (una de las 117, por la
+    semilla) y la pieza donde cae la zona; la pieza sortea su terreno por peso (frío al norte, calor al sur). Los "scatter"
+    (si algún terreno los tiene) salen en zonas sueltas encima. El Claro es fijo.
     La llama: zone_at. Si cambia, afecta: el color del mapa, los enemigos y el peligro de cada zona.
     """
     if x == 0 and y == 0:
         return "claro"
-    patch, _, _, _, scattered = terrain
-    for biome, share in scattered:
-        if hash_unit(seed, f"scatter:{biome}" if biome != "ruinas" else "ruins", x, y) < share:
+    for biome, share in terrain[3]:
+        if hash_unit(seed, f"scatter:{biome}", x, y) < share:
             return biome
-    gx, gy = x // patch, y // patch
-    best = None
-    for cx in (gx - 1, gx, gx + 1):
-        for cy in (gy - 1, gy, gy + 1):
-            px = cx * patch + hash_unit(seed, "terrain_px", cx, cy) * patch
-            py = cy * patch + hash_unit(seed, "terrain_py", cx, cy) * patch
-            dist = (px - x - 0.5) ** 2 + (py - y - 0.5) ** 2
-            if best is None or dist < best[0]:
-                best = (dist, cx, cy, py)
-    return _patch_terrain(seed, best[1], best[2], best[3], terrain)
+    by = y // BLOCK
+    shifted = x + (BLOCK // 2 if by % 2 else 0)
+    bx = shifted // BLOCK
+    tilings = block_tilings()
+    tiling = tilings[int(hash_unit(seed, "terrain_tiling", bx, by) * len(tilings))]
+    piece = tiling[(y - by * BLOCK) * BLOCK + (shifted - bx * BLOCK)]
+    return _piece_terrain(seed, (bx, by, piece), by * BLOCK + BLOCK / 2, terrain)
 
 
 def zone_at(seed: int, x: int, y: int, level_per_lejania: float = 0.9, name_parts: tuple[int, int] = (10, 10),
