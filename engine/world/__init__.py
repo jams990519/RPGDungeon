@@ -21,11 +21,17 @@ enemy_camps.py dice dónde hay 👹 campamentos enemigos cada día (semilla + d�
 los ve cada 🧭 Explorador (D-112).
 dungeons.py dice dónde están las 🕳️ 🌀 mazmorras para uno (semilla del mundo: nunca se mueven), qué familia de enemigos
 las llena cada día, sus salas, sus pisos, su cofre y su bolsa (D-164, D-165, D-170, D-171).
+resources.py dice qué recursos tiene cada zona: los 6 de base (D-87), los propios de su terreno (D-180, D-183: catálogo de 10
+por terreno, de 4 a 6 por zona) y el pescado de las zonas con agua (D-115).
+nodes.py dice dónde hay ✨ nodos de recursos (semilla del mundo: 2 o 3 por tramo de 6 × 6, nunca se mueven) y de qué
+recurso es cada uno (D-171, D-181, D-184).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Encuentros: encounters.py (bioma y franja de nivel de content/enemies.yaml); tests/test_bestiary.py
     - Campamentos enemigos: enemy_camps.py (usa encounters.py y raids.power); tests/test_enemy_camps.py
     - Mazmorras: dungeons.py (usa mapgen.lejania y raids.power; las familias en content/dungeons.yaml); tests/test_mazmorras.py
+    - Recursos y nodos: resources.py y nodes.py (nodes.py usa dungeons.entrance_at: un nodo nunca cae en una entrada);
+      tests/test_resources.py, tests/test_nodos_y_terrenos.py
     - Pruebas: tests/test_world.py
 """
 

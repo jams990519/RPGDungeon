@@ -958,3 +958,26 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Cuánto cambia el sigilo.** Explorar da una pelea al azar en el 45 % de las vueltas (`explore.encounter`). Con ✋ Manual, cada pelea corta el lote: sin sigilo, un lote dura en promedio ~2,2 vueltas antes de cortarse; con 12,5 % (rango 50), ~2,5; con 25 % (rango 100), ~3,0; con la Infiltrado (35 %), ~3,4. La vuelta evitada no da hallazgo ni monedas (sí la exploración y la experiencia de explorar). Al llegar de un viaje, la emboscada sale con la probabilidad del bioma (25 % a 50 %); el sigilo evita 1 de cada 4 al rango 100. Con ⚔️ Automática el sigilo no se usa: el jugador eligió pelear, y la experiencia por ⚡ de esos lotes queda igual que antes (D-108).
 
 **Lo que queda por mirar:** si los jugadores reconocen tanto que dejan de explorar (medir ⚡ por día en cada cosa); si 2 ⚡ es caro para saber la familia de una mazmorra (si nadie reconoce, bajar a 1); si recolectar con ✋ Manual también debería usar el sigilo; si el sigilo debería poder apagarse en ⚙️ Opciones para quien quiere todas las peleas sin pasar a ⚔️ Automática; y, si se decide P-120, si el reconocimiento debería dar un 📜 informe que se vende en vez de monedas.
+
+### Octubre de 2026: los recursos de cada terreno y los nodos de recursos (D-180, D-181, D-183, D-184)
+
+**Por qué.** El dueño pidió (1-oct-2026) que cada terreno tenga un catálogo de 10 a 15 recursos y que cada zona traiga solo una parte (D-180), y nodos de recursos con un símbolo genérico que se descubren al llegar (D-181). Se aplicó lo recomendado en E-123 y E-124 (D-183, D-184, provisionales; ver [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.2 y §1.16). Son números **nuevos**, propuestos por Claude. Se movió uno de antes: `exploration.reveal_at`. `hero.xp_formula` y `world.epoch` no se tocaron (D-118, D-64).
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Propios por zona (`resources.terrain.add`) | — | 2 o 3 | D-180: "4 o 6 de los 15"; con los 1 a 3 de base quedan 4 a 6 |
+| Recursos de tierra por zona (`resources.terrain.total`) | 1 a 3 | 4 a 6 (el pescado aparte) | Con 1 de base suma 3, nunca pasa de 6: la pantalla de 📍 Zona sigue corta |
+| Riqueza de los propios (`resources.terrain.richness`) | — | 0,3 a 1,0 | La misma escala que los de base (el más fuerte vale 1,0) |
+| Catálogo por terreno (`biomes.yaml` own) | 2 o 3 recursos | 10 (sus 2 o 3 de base + 7 u 8 propios) | El piso del pedido (10 a 15): deja lugar para lo que traigan el 🌾 Agricultor y el 🐑 Ganadero |
+| Precio de los 21 materiales nuevos | — | 2 a 5 🥉 (el mercader paga la mitad) | Cerca de los de base (2 a 6): recolectar rinde lo mismo en monedas por ⚡ |
+| Descubrir recursos (`exploration.reveal_at`) | 1, 50, 100 % (3 recursos) | 1, 20, 40, 60, 80, 100 % | Uno por umbral hasta 6; para cada porcentaje se conoce lo mismo o más que antes (los de base van primero) |
+| Nodos por tramo (`nodes.count`, `stretch`) | — | 2 o 3 por tramo de 6 × 6 | D-171: "2 o 3 iconos de nodos por tramo"; ~7 % de las zonas (115 de 1.680 en la semilla de prueba) |
+| Rinde (`nodes.yield_mult`) | — | ×2 su recurso | E-124: "su recurso rinde el doble" |
+| Se agota (`nodes.stock_mult`) | — | la mitad | E-124: "se agota más despacio": con ×2 de rendimiento, un nodo da 4 veces más de su recurso antes de agotarse |
+| Raro (`nodes.rare_chance`) | — | 5 % por vuelta con algo recolectado | Como el raro de los oficios al rango 10 (`professions.rare_chance`), pero sin pedir rango: 1 💠 o 🌸 cada ~20 vueltas en un nodo |
+| Recurso del nodo (`nodes.own_share`) | — | 6 de cada 10, un propio del terreno | Que los nodos lleven a buscar lo propio de cada terreno; los demás, el más fuerte de la zona |
+| Pista en el mapa (`nodes.hint_radius`) | — | 2 zonas | Igual que las cuevas (`dungeons.hint_radius`) |
+
+**Cuánto cambia recolectar.** Cada vuelta saca las **mismas unidades** que antes (`gather.amount`), repartidas entre más recursos: no se multiplican. Lo que sí cambia es cuánto sale de los 6 de base: en promedio, una vuelta da **53 %** de lo que daba de ellos (63 % en las zonas con 3 de base, 54 % con 2 y 34 % con 1), y el resto son materiales del terreno, que se venden a precios parecidos o se usan en las 22 recetas nuevas. Un nodo duplica solo su recurso (y con eso la experiencia de oficio por unidad de ese recurso; la de héroe sigue siendo por vuelta). Las unidades de más y el raro usan su propio sorteo.
+
+**Lo que queda por mirar:** si fundar, agrandar y las mejoras del campamento quedan lentas porque llega menos madera y piedra por vuelta (si pasa, bajar `resources.terrain.richness` a 0,3-0,7 o sumar menos propios en las zonas con 1 de base); si los nodos concentran a todos en pocos lugares (el agotamiento es para todos); si entran demasiadas 💠 gemas y 🌸 flores de luna por los nodos frente a los oficios; y si 10 por terreno alcanza o conviene subir a 12-15 cuando lleguen el Agricultor y el Ganadero.

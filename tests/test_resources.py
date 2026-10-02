@@ -180,8 +180,9 @@ def test_the_terrain_patchwork_never_moved_the_land_resources(service):
                 continue
             classic = zone_resources(service.world_seed, x, y, classic_biome(service.world_seed, x, y),
                                      service.content.balance, service.content.biomes)
-            land = {r: v for r, v in service._zone_resources(x, y).items() if r != "pescado"}
-            assert land == classic
+            found = service._zone_resources(x, y)
+            assert service._zone_land(x, y)[0] == classic                   # the 6 base ones, as before
+            assert {r: found[r] for r in classic} == classic and list(found)[:len(classic)] == list(classic)
     make_hero(service)
     body = service.act("test:1", "map").body
     radius = service.content.balance["map_view"]["radius"]

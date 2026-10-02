@@ -135,6 +135,123 @@ sillar:
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio (se vende de a uno)
   price: 7                   # [ES] 3 piedras (2 c/u) + el trabajo, como el tablón
 
+# Terrain resources (D-180, D-183, provisional): each terrain's own raw materials, on top of the 6 base ones.
+# [ES] Recursos propios de cada terreno (0.27): cada zona suma 2 o 3 de los de su terreno (content/biomes.yaml "own";
+# engine/world/resources.py terrain_resources). Son materiales crudos como la madera: ocupan 1 de mochila cada uno, el
+# mercader los compra a la mitad de "price" (💱 Vender todo los vende: no son comida ni "keep"), los junta un oficio de
+# recolección con su beneficio (content/professions.yaml "gathers": 🪓 Leñador, ⛏️ Minero o 🌿 Herbolario) y cada uno tiene
+# al menos una receta (refinado, ⚗️ Alquimia, 🩺 Medicina o 🍲 Cocina). Nombres y "para qué sirve" en
+# content/locales/es_terrenos.yaml. Ninguno es comida por sí solo: la 🍲 Cocina los vuelve raciones con carne o pescado.
+# Lo usan: engine/service/game.py (recolectar, nodos, 📦 Recursos, mercader, estaciones), engine/world/resources.py.
+# Si cambias esto, revisa: IDs estables (los guardan las mochilas y el agotamiento de cada zona); el precio no debe dejar
+# ganar monedas refinando ni fabricando, y queda cerca de los de base (2 a 6) para que recolectar rinda lo mismo en
+# monedas (tests/test_nodos_y_terrenos.py).
+bayas:
+  name_key: item.bayas
+  emoji: "🫐"
+  kind: material
+  price: 2                   # [ES] 🌿 pradera, bosque, colinas y tundra
+setas:
+  name_key: item.setas
+  emoji: "🍄"
+  kind: material
+  price: 3                   # [ES] 🌿 pradera, bosque, pantano y ruinas
+miel:
+  name_key: item.miel
+  emoji: "🍯"
+  kind: material
+  price: 4                   # [ES] 🌿 pradera y bosque
+mazorca:
+  name_key: item.mazorca
+  emoji: "🌽"
+  kind: material
+  price: 2                   # [ES] 🌿 pradera y colinas
+lino:
+  name_key: item.lino
+  emoji: "🌼"
+  kind: material
+  price: 2                   # [ES] 🌿 pradera y pantano
+juncos:
+  name_key: item.juncos
+  emoji: "🎋"
+  kind: material
+  price: 2                   # [ES] 🌿 pantano
+nenufar:
+  name_key: item.nenufar
+  emoji: "🪷"
+  kind: material
+  price: 4                   # [ES] 🌿 pantano
+cactus:
+  name_key: item.cactus
+  emoji: "🌵"
+  kind: material
+  price: 3                   # [ES] 🌿 desierto
+datiles:
+  name_key: item.datiles
+  emoji: "🌴"
+  kind: material
+  price: 3                   # [ES] 🌿 desierto
+flor_escarcha:
+  name_key: item.flor_escarcha
+  emoji: "💮"
+  kind: material
+  price: 4                   # [ES] 🌿 montaña y tundra
+musgo:
+  name_key: item.musgo
+  emoji: "🌱"
+  kind: material
+  price: 2                   # [ES] 🌿 bosque, pantano, montaña, tundra y ruinas
+raiz_amarga:
+  name_key: item.raiz_amarga
+  emoji: "🥕"
+  kind: material
+  price: 3                   # [ES] 🌿 pradera, bosque, pantano y ruinas
+tomillo:
+  name_key: item.tomillo
+  emoji: "🍃"
+  kind: material
+  price: 3                   # [ES] 🌿 pradera, colinas, montaña y desierto
+resina:
+  name_key: item.resina
+  emoji: "💧"
+  kind: material
+  price: 3                   # [ES] 🪓 bosque, pantano, montaña y tundra
+corteza:
+  name_key: item.corteza
+  emoji: "🍂"
+  kind: material
+  price: 2                   # [ES] 🪓 bosque, colinas, pantano, tundra y ruinas
+carbon:
+  name_key: item.carbon
+  emoji: "🌑"
+  kind: material
+  price: 3                   # [ES] ⛏️ colinas, montaña, tundra y ruinas
+sal:
+  name_key: item.sal
+  emoji: "🧂"
+  kind: material
+  price: 3                   # [ES] ⛏️ colinas, montaña y desierto
+cuarzo:
+  name_key: item.cuarzo
+  emoji: "🔹"
+  kind: material
+  price: 5                   # [ES] ⛏️ colinas, montaña, desierto y ruinas
+arena:
+  name_key: item.arena
+  emoji: "⏳"
+  kind: material
+  price: 2                   # [ES] ⛏️ desierto y ruinas
+hielo:
+  name_key: item.hielo
+  emoji: "🧊"
+  kind: material
+  price: 2                   # [ES] ⛏️ montaña y tundra
+chatarra:
+  name_key: item.chatarra
+  emoji: "🔧"
+  kind: material
+  price: 3                   # [ES] ⛏️ desierto y ruinas
+
 # Camp furniture (D-116): only 🪑 Carpentry makes it (content/professions.yaml). A member places it in their camp
 # (🔨 Mejoras → 🔨 Obras → 🪑 Colocar); one of each piece per camp, for ever.
 # [ES] Muebles del campamento (D-116): solo la 🪑 Carpintería los hace. Un miembro lo coloca en su campamento y queda para

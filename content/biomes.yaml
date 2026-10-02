@@ -13,7 +13,15 @@
 # color (D-179, confirmada): con qué color se pinta el terreno en el 🗺️ Mapa (D-182: colores elegidos por Claude). Un terreno
 #   nuevo solo agrega su color: la leyenda del mapa se arma sola. El color es el terreno, no promete recursos (D-180).
 #   Libres para terrenos nuevos: 🟧 🟥 (y los círculos 🔴 🟠 🟡 🔵 🟣 🟤 ⚫ ⚪).
-# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; color cambia cómo se ve el mapa (tests/test_resources.py); danger mueve cuántas peleas hay; water mueve dónde
+# own (D-180, D-183 provisional): los recursos propios del terreno. Su catálogo = los de base de "gather" + estos (10 a 15).
+#   Cada zona suma 2 o 3 de estos (engine/world/resources.py terrain_resources; balance.yaml resources.terrain), hasta 4 a 6
+#   recursos de tierra. Cada id es un objeto de content/items.yaml con su oficio de recolección ("gathers" de
+#   content/professions.yaml), al menos una receta que lo usa, precio en el mercader y textos en content/locales/es_terrenos.yaml.
+#   Pueden repetirse entre terrenos (setas en el bosque y el pantano). Agregar uno puede cambiar qué propios trae una zona.
+# node_rare (D-184 provisional): el material raro que a veces da un nodo de recursos de ese terreno al recolectar
+#   (balance.yaml nodes.rare_chance). El Claro no tiene nodos.
+# Si cambias esto, revisa: cambiar un ID cambia el mapa ya generado; own cambia qué recursos del terreno trae cada zona
+#   (tests/test_nodos_y_terrenos.py); color cambia cómo se ve el mapa (tests/test_resources.py); danger mueve cuántas peleas hay; water mueve dónde
 #   se pesca (y cuánta comida llega a las despensas: 🎣 Pescador y 🍲 Cocina, tests/test_oficios_campamento.py).
 
 claro:
@@ -27,6 +35,8 @@ pradera:
   terrain: {weight: 3, climate: any}   # [ES] D-186: peso en el sorteo de cada mancha del tablero; climate: any / cold (más al norte) / hot (más al sur)
   color: "🟩"
   gather: {fibra: 4, hierba_curativa: 2, piedra: 1}
+  own: [bayas, miel, mazorca, lino, tomillo, setas, raiz_amarga]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: flor_luna        # [ES] D-184: el raro que a veces da un nodo de este terreno
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un río o una laguna (🐟 pescado)
   emoji: "🌾"
   danger: 0.25
@@ -35,6 +45,8 @@ bosque:
   terrain: {weight: 3, climate: any}
   color: "🟢"
   gather: {madera: 5, hierba_curativa: 2, fibra: 1}
+  own: [resina, corteza, setas, bayas, miel, musgo, raiz_amarga]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: flor_luna        # [ES] D-184: el raro que a veces da un nodo de este terreno
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un arroyo (🐟 pescado)
   emoji: "🌲"
   danger: 0.35
@@ -43,6 +55,8 @@ colinas:
   terrain: {weight: 2, climate: any}
   color: "🟫"
   gather: {piedra: 4, madera: 1, pieza_metal: 1}
+  own: [carbon, sal, cuarzo, tomillo, mazorca, corteza, bayas]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "⛰️"
   danger: 0.3
 pantano:
@@ -50,6 +64,8 @@ pantano:
   terrain: {weight: 2, climate: any}
   color: "🟪"
   gather: {hierba_curativa: 4, fibra: 2}
+  own: [juncos, nenufar, setas, musgo, raiz_amarga, lino, resina, corteza]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: flor_luna        # [ES] D-184: el raro que a veces da un nodo de este terreno
   water: 1.0            # [ES] D-115: todo el pantano es agua: en cada zona se pesca
   emoji: "🐸"
   danger: 0.45
@@ -58,6 +74,8 @@ montana:
   terrain: {weight: 2, climate: any}
   color: "⬜"
   gather: {piedra: 4, pieza_metal: 2}
+  own: [carbon, cuarzo, sal, hielo, flor_escarcha, musgo, tomillo, resina]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "🏔️"
   danger: 0.4
 desierto:
@@ -65,6 +83,8 @@ desierto:
   terrain: {weight: 2, climate: hot}
   color: "🟨"
   gather: {piedra: 2, pieza_metal: 1, fibra: 1}
+  own: [arena, sal, cactus, datiles, cuarzo, tomillo, chatarra]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "🏜️"
   danger: 0.4
 tundra:
@@ -72,6 +92,8 @@ tundra:
   terrain: {weight: 2, climate: cold}
   color: "🟦"
   gather: {piedra: 2, madera: 1, pieza_metal: 1}
+  own: [hielo, flor_escarcha, musgo, bayas, resina, corteza, carbon]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "❄️"
   danger: 0.4
 ruinas:
@@ -79,5 +101,7 @@ ruinas:
   terrain: {weight: 1, climate: any}   # [ES] D-186: también salen en piezas de Tetris, menos seguido (unas 6 de cada 100 zonas)
   color: "⬛"
   gather: {pieza_metal: 4, piedra: 2}
+  own: [chatarra, cuarzo, carbon, setas, musgo, arena, corteza, raiz_amarga]   # [ES] D-180: los propios del terreno (catálogo de 10 con los de gather)
+  node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "🏚️"
   danger: 0.5

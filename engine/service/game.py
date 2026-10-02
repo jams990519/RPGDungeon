@@ -28,6 +28,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     mapa, D-164, D-165, D-170, D-171)
     diseno/06-contenido/historia-y-rol.md §0 (historia y rol, capa simple, D-117: la parte de la historia vive en
     engine/service/story.py, StoryMixin, de la que GameService hereda)
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.2 (los recursos de cada terreno, D-180, D-183) y §1.16 (los ✨ nodos de
+    recursos, D-181, D-184)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
@@ -35,7 +37,9 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     D-109), engine.service.story (StoryMixin: 📖 Historia, origen, misiones, facciones, encargos, diario y gestos, D-117;
     usa engine.story), engine.world.enemy_camps (dónde están los campamentos enemigos de cada día, su guarnición y su
     cofre, D-112), engine.world.dungeons (dónde están las mazmorras, qué las llena cada día, sus pisos y su botín,
-    D-164/D-170), content/* (content/dungeons.yaml: las familias de enemigos de las mazmorras)
+    D-164/D-170), engine.world.resources (recursos de base, del terreno y pescado, D-87/D-180/D-115), engine.world.nodes
+    (dónde están los nodos de recursos y de qué son, D-184), content/* (content/dungeons.yaml: las familias de enemigos de
+    las mazmorras)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -90,6 +94,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     primero de un día se borran los de antes de ayer). Dónde hay mazmorras no se guarda: sale de la semilla. Una pelea
     de mazmorra lleva "dungeon" ({"kind", "day", "x", "y", "room" o "floor" y "fight", "boss"}) en su estado de
     "combat". Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
+    D-184: "nodes" (los ✨ nodos de recursos que descubrió cada héroe, clave su id: {"found": ["x:y", ...]}; nunca se
+    borra: el progreso se guarda para siempre). Dónde hay nodos no se guarda: sale de la semilla. Los héroes de antes no
+    tienen registro: empiezan vacíos (nada nuevo en Hero).
     D-172: "recon" (el 🔭 reconocimiento de cada héroe, clave su id: {"day", "done" {"x:y": {"kind": "camp" o "dungeon",
     "at"}} (se vacía solo al cambiar el día: uno por lugar y día), "kinds" ["x:y", ...] (entradas de mazmorra reconocidas
     alguna vez: ya sabe si es 🕳️ o 🌀; nunca se borra)}). El 🥷 Sigilo no guarda nada: es el beneficio "stealth" del oficio.
@@ -144,6 +151,10 @@ Reglas que nunca se rompen:
         cofre de un campamento ni tu propia zona, se cobra una vez por lugar y día y nunca es una pelea ni te mueve. El
         🥷 Sigilo usa su propio sorteo y solo evita la pelea al azar de explorar con ✋ Manual y la emboscada al llegar de un
         viaje: nunca lotes automáticos, cacerías, recolectar, asaltos, mazmorras, oleadas ni el Guardián.
+    21. Los nodos de recursos (D-181, D-184) están siempre en el mismo lugar para todos (semilla del mundo), nunca en el
+        Claro, la guarida ni la entrada de una mazmorra; su tipo se descubre SOLO al estar en su zona (llegar de un viaje,
+        📍 Zona, el mapa, recolectar o explorar ahí), nunca explorando alrededor ni reconociendo de lejos (E-125 abierta).
+        Sus unidades de más y su raro usan su propio sorteo: la vuelta de recolección saca lo mismo que sin nodo.
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -275,6 +286,15 @@ Si cambias esto, revisa:
       mapa), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar), _map_view
       (🕳️ cueva y 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
       _end_combat (_dng_fight_done y los botones de _dng_again)
+    - 🌍 Recursos de cada terreno y ✨ nodos de recursos (D-180, D-181, D-183, D-184): content/biomes.yaml (own, node_rare),
+      balance.yaml resources.terrain, exploration.reveal_at y nodes; engine/world/resources.py (terrain_resources) y
+      engine/world/nodes.py; recetas con "variant" en content/professions.yaml (_recipe_name con prof.variant); textos node.*,
+      item.* y resources.use.* en content/locales/es_terrenos.yaml; tests/test_nodos_y_terrenos.py (mapa de impacto C-28).
+      Sección "resource nodes" (_node_main, _node_excluded, _node_discover, _node_seen, _node_icon, _node_map_lines,
+      _node_zone_lines, _node_batch_lines, _node_grow_mark, _node_rare). Tocan _zone_resources (+ los del terreno),
+      _known_resources (un umbral por recurso), _gather_step (×2, se agota la mitad, el raro; activity["node"]),
+      _batch_summary (línea ✨), _explore_step y _arrive (descubrir donde estás), _zone_view (aviso y línea ✨), _map_view
+      (✨ / emoji y 2 líneas, sin botón) y _grow_view (marca ✨ en las zonas con nodo descubierto)
     - 🔭 Reconocer y 🥷 Sigilo (D-172): balance.yaml recon (energía, alcance por umbral, experiencia, monedas, cuántos lista) y
       explorer (ranks recon, recon_far, recon_wide y stealth_max); content/professions.yaml (perk stealth del explorador y el
       efecto perk stealth de la 🎓 🕵️ Infiltrado); PERK_KEYS en engine/professions/rules.py; textos recon.*, stealth.*,
@@ -345,7 +365,8 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import water_resources, zone_resources
+from engine.world.resources import terrain_resources, water_resources, zone_resources
+from engine.world import nodes as node_rules            # D-181, D-184: resource nodes
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
 COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero": "hero", "/zona": "home",
@@ -906,6 +927,7 @@ class GameService(StoryMixin):
         self._presence_move(hero, *left)                # D-96: out of the zone it left, into the new one
         zone = self._zone(hero.x, hero.y)
         hero.remember(hero.x, hero.y)
+        notices += self._node_discover(hero, hero.x, hero.y)   # D-181, D-184: arriving at a node's zone tells what it is, for ever
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
         notices += self._visit_camp(hero)
         if zone.lejania >= 1:
@@ -1020,6 +1042,7 @@ class GameService(StoryMixin):
         if studied is not zone and activity.get("target") != key:
             activity["log"].append(t.t("explore.around", name=self._zone_name(studied), x=studied.x, y=studied.y))
         activity["target"] = key
+        activity["log"] += self._node_discover(hero, zone.x, zone.y)   # D-184: standing in a node's zone (never the one studied around you)
         hero.remember(studied.x, studied.y)           # it shows on your 🗺️ Mapa, like a zone you visited
         before = self._known_resources(hero, studied.x, studied.y)
         before_pct = self._explored_pct(hero, studied.x, studied.y)
@@ -1066,7 +1089,13 @@ class GameService(StoryMixin):
         return None
 
     def _gather_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
-        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87, D-90)."""
+        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87, D-90).
+
+        [ES] D-184: si la zona tiene un nodo de recursos (_node_main), cada unidad de su recurso vale nodes.yield_mult (2) y lo
+        agota la mitad (nodes.stock_mult), y la vuelta tiene nodes.rare_chance de dar el raro de su terreno (biomes.yaml
+        node_rare). Las unidades de más y el raro usan su propio sorteo: la vuelta saca los mismos recursos que sin nodo. Lo
+        que dio el nodo va a activity["node"] para el resumen del lote. Recolectar en la zona descubre el nodo (estás parado ahí).
+        """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
         land = self._territory(zone.x, zone.y)
@@ -1080,17 +1109,40 @@ class GameService(StoryMixin):
         if land and not land.get("claro") and hero.id in land.get("members", []):
             tools = 1 + self._camp_tech_bonus(hero, zone.x, zone.y, "gather_bonus")    # D-101: Herramientas
             amount = int(amount * bal["own_land_bonus"] * tools + 0.5)     # your camp's land gives more (D-87)
+        node = self._node_main(zone.x, zone.y)           # D-184: a resource node here doubles its resource
+        if node:
+            activity["log"] += self._node_discover(hero, zone.x, zone.y)
+        ncfg = self._node_cfg()
+        node_rng = Rng(int(hash_unit(self.world_seed, hero.id, "node", activity.get("until", 0), activity.get("done", 0)) * 2**31))
         got: dict[str, int] = {}
+        extra = 0
         for _ in range(max(1, amount)):
             options = [r for r in resources if stock[r] >= cfg["min_yield"]]
             if not options or self._bag_full(hero):      # gathering stops at the space (D-90); finds do not
                 break
             res = rng.pick_weighted(options, [resources[r] * stock[r] for r in options])
-            self._bag_add(hero, res, 1)
-            stock[res] = max(0.0, stock[res] - cfg["per_unit"])
-            got[res] = got.get(res, 0) + 1
+            units, per_unit = 1, cfg["per_unit"]
+            if res == node:                              # D-184: ×2 and half the depletion (its own draw for a fraction)
+                mult = float(ncfg.get("yield_mult", 1.0))
+                units = max(1, int(mult) + (1 if node_rng.random() < mult - int(mult) else 0))
+                units = min(units, max(1, self._bag_cap(hero) - self._bag_used(hero)))
+                per_unit *= float(ncfg.get("stock_mult", 1.0))
+                extra += units - 1
+            self._bag_add(hero, res, units)
+            stock[res] = max(0.0, stock[res] - per_unit)
+            got[res] = got.get(res, 0) + units
         self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
         activity["log"] += self._trade_gather(hero, got, activity)    # D-109: gathering professions (rank, extra units, rare finds)
+        if node and got:
+            rare = self._node_rare(zone.x, zone.y)
+            found = 1 if rare and node_rng.chance(float(ncfg.get("rare_chance", 0.0))) else 0
+            if found:
+                self._bag_add(hero, rare, found)         # a find: never lost (D-90)
+                got[rare] = got.get(rare, 0) + found
+            if extra or found:
+                info = activity.setdefault("node", {"item": node, "extra": 0, "rare": 0, "rare_item": rare})
+                info["extra"] += extra
+                info["rare"] += found
         for res, n in got.items():
             activity["got"][res] = activity["got"].get(res, 0) + n
         if got:
@@ -1594,6 +1646,7 @@ class GameService(StoryMixin):
                     lines.append(t.t("batch.xp_gather", xp=activity["xp"]))
                 if activity.get("trade"):                 # D-109: what each gathering profession earned
                     lines.append(self._trade_summary(activity["trade"]))
+                lines += self._node_batch_lines(activity)  # D-184: ✨ what the resource node added
             else:
                 zone = self._zone(hero.x, hero.y)
                 lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
@@ -1672,17 +1725,33 @@ class GameService(StoryMixin):
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
         return count
 
-    def _zone_resources(self, x: int, y: int) -> dict[str, float]:
-        """The zone's land resources (D-87) plus 🐟 fish where it has water (D-115), land ones first. [ES] Qué hace: junta los
-        recursos de tierra y el pescado de las zonas con agua. La llaman: recolectar, el agotamiento, explorar, el mapa y el
-        cofre de los campamentos enemigos. Si cambia, afecta: qué se consigue en cada zona.
-        D-185, D-186: los recursos de tierra siguen el bioma clásico (mapgen.classic_biome), no el terreno que dibuja el mapa:
-        así el tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. El agua sí sigue
-        al terreno que se ve (un 🟪 pantano siempre tiene agua). La guarida del Guardián conserva su bioma fijo (D-82)."""
+    def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float]]:
+        """The zone's land resources in two parts: (base, terrain's own). [ES] Qué hace: los 6 de base con el bioma clásico
+        (D-185, D-187; la guarida con su bioma fijo, D-82) y los propios del terreno que se ve (D-183, con los de otro terreno
+        de D-185). La llaman: _zone_resources y _node_main (el nodo es de uno de estos). Si cambia, afecta: los recursos y
+        los nodos de todo el mapa."""
         terrain = self._zone(x, y).biome
         biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
-        found = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
-        found.update(water_resources(self.world_seed, x, y, terrain, self.content.balance, self.content.biomes))
+        base = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
+        own = terrain_resources(self.world_seed, x, y, terrain, base, self.content.balance, self.content.biomes)
+        return base, own
+
+    def _zone_resources(self, x: int, y: int) -> dict[str, float]:
+        """The zone's land resources: the base ones (D-87) and its terrain's own ones (D-180), plus 🐟 fish where it has water
+        (D-115); base first, then the terrain's, then fish (the order exploring reveals them).
+
+        [ES] Qué hace: junta los recursos de base de la zona (los 6 de siempre, en las mismas zonas), los propios de su terreno
+        (D-180, D-183: 2 o 3, hasta 4 a 6 de tierra; engine/world/resources.py terrain_resources) y el pescado de las zonas con
+        agua. El orden es el que sigue explorar para ir mostrándolos (_known_resources). La llaman: recolectar, el agotamiento,
+        explorar, el mapa, ⬆️ Agrandar campamento, el nodo de recursos (_node_main) y el cofre de los campamentos enemigos.
+        Si cambia, afecta: qué se consigue en cada zona.
+        D-185, D-186: los 6 de base siguen el bioma clásico (mapgen.classic_biome), no el terreno que dibuja el mapa: así el
+        tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. Los propios y el agua
+        siguen al terreno que se ve (un 🟪 pantano siempre tiene agua); los propios, a veces, salen del catálogo de otro terreno
+        (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82)."""
+        base, own = self._zone_land(x, y)
+        found = {**base, **own}
+        found.update(water_resources(self.world_seed, x, y, self._zone(x, y).biome, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
@@ -1716,7 +1785,11 @@ class GameService(StoryMixin):
         return lines
 
     def _known_resources(self, hero: Hero, x: int, y: int) -> list[str]:
-        """The resources this hero has found in a zone: more of them as it explores (D-87)."""
+        """The resources this hero has found in a zone: more of them as it explores (D-87).
+
+        [ES] D-183: exploration.reveal_at tiene un umbral por recurso (1, 20, 40, 60, 80 %); al 100 % se conocen todos, también
+        los que pasan de la lista (el pescado). Nadie conoce menos que antes: los de base van primero y los umbrales bajaron.
+        """
         pct = self._explored_pct(hero, x, y)
         ranked = list(self._zone_resources(x, y))
         reveal = self.content.balance["exploration"]["reveal_at"]
@@ -1767,8 +1840,16 @@ class GameService(StoryMixin):
                             energy=hero.energy, max_energy=self.content.balance["energy"]["max"])
 
     def _zone_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📍 Zona: where you are, its resources, camps, lair, enemy camp, dungeon, resource node, players and the 4 routes.
+
+        [ES] D-184: si estás parado en la zona de un nodo de recursos que no conocías (por ejemplo, estabas ahí cuando llegó el
+        parche), lo descubres ahora con su aviso; la línea ✨ del nodo dice de qué es y qué da (_node_zone_lines).
+        """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
+        found = self._node_discover(hero, zone.x, zone.y)  # D-184: standing in a node's zone discovers it
+        if found:
+            notice = self._join(found + [notice or ""])
         record = self._discovered(zone.x, zone.y) or {}
         body = [
             t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)),
@@ -1789,6 +1870,7 @@ class GameService(StoryMixin):
         body += self._lair_lines(zone)
         body += self._ecamp_zone_lines(zone)            # D-112: 👹 an enemy camp here (or its ruins today)
         body += self._dng_zone_lines(hero, zone)        # D-170: 🕳️ / 🌀 a dungeon here (and today's family)
+        body += self._node_zone_lines(zone)             # D-184: ✨ a resource node here
         body += self._zone_players_lines(hero, zone)    # D-96: who else is here now (nothing if nobody)
         body += [self._status_line(hero)]
         body += self._tutorial_hint(hero)
@@ -2692,6 +2774,7 @@ class GameService(StoryMixin):
         for cx, cy in candidates[page * per: page * per + per]:
             known = self._known_resources(hero, cx, cy)
             icons = "".join(self.content.items[r]["emoji"] for r in known) or "❔"
+            icons += self._node_grow_mark(hero, cx, cy)  # D-87, D-184: a node you discovered there (choose with strategy)
             body.append(t.t("camps.grow_option", x=cx, y=cy, items=icons))
             actions.append(Action(id=f"claim:{cx}:{cy}", label=t.t("camps.grow_option", x=cx, y=cy, items=icons)))
         if pages > 1:
@@ -4560,10 +4643,19 @@ class GameService(StoryMixin):
         return f"{item['emoji']} {self.texts.t(item['name_key'])}"
 
     def _recipe_name(self, rid: str) -> str:
-        """What a recipe makes, as "🟢🗡️ Espada forjada" (gear, with its rarity) or "🧪 Poción de vida ×2"."""
-        out_id, count = next(iter(self._recipes()[rid]["output"].items()))
+        """What a recipe makes, as "🟢🗡️ Espada forjada" (gear, with its rarity) or "🧪 Poción de vida ×2".
+
+        [ES] D-183: una receta con "variant" (otra forma de hacer lo mismo con un recurso de terreno) suma " · con ⏳ Arena"
+        (prof.variant), así sus botones no se repiten en la estación.
+        """
+        rdef = self._recipes()[rid]
+        out_id, count = next(iter(rdef["output"].items()))
         name = self._gear_name(out_id) if self.content.items[out_id].get("kind") == "gear" else self._item_label(out_id)
-        return name + (f" ×{count}" if count > 1 else "")
+        name += f" ×{count}" if count > 1 else ""
+        variant = rdef.get("variant")
+        if variant and variant in self.content.items:
+            name = self.texts.t("prof.variant", name=name, item=self._item_label(variant))
+        return name
 
     def _merchant_sale(self, hero: Hero, base: int, sale: str = "goods") -> tuple[int, list[str]]:
         """A sale to the merchant or a camp barter: the 💱 Comercio perk adds coins and the sale raises Comercio (D-116).
@@ -6407,6 +6499,9 @@ class GameService(StoryMixin):
         (_dng_map_lines, que dicen si ya sabes qué es).
         D-172: una línea 🔭 dice cuántos lugares puedes reconocer de lejos hoy (/reconocer) o desde qué rango de 🧭 Explorador;
         las mazmorras reconocidas se saben (🕳️ chica / 🌀 profunda) y, hoy, con su familia; los campamentos reconocidos hoy, con su fuerza.
+        D-181, D-184: los nodos de recursos salen con el símbolo genérico ✨ (node.icon_unknown) si recuerdas una zona a
+        nodes.hint_radius o menos (como las cuevas) y con el emoji de su recurso cuando LLEGASTE a su zona (para siempre);
+        debajo, los nodes.map_lines más cercanos. Orden de lo que se dibuja: 🧍 > 👑 > 👹 > 🏕️ > mazmorra > nodo > terreno.
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), 👹 Ir al campamento
         enemigo más cercano que ves (D-112, si no estás ocupado ni parado en él), 🕳️ Ir a la cueva / 🕳️ 🌀 Ir a la mazmorra
         (D-171, la más cercana que ves), 🔭 Reconocer (D-172, solo si queda lugar y hay algo para reconocer) y ↩️ Volver: 4
@@ -6416,10 +6511,13 @@ class GameService(StoryMixin):
         """
         t = self.texts
         radius = self.content.balance["map_view"]["radius"]
+        self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone (its line below says "aquí")
         seen = self._ecamp_seen(hero)                   # D-112: the enemy camps this hero sees today
         marks = {(camp["x"], camp["y"]) for camp in seen}
         dungeons = self._dng_seen(hero)                 # D-181: 🕳️ a dungeon is there; 🌀 once you know it is deep
         dmarks = {(x, y): self._dng_icon(state) for x, y, state in dungeons}
+        nodes = self._node_seen(hero)                   # D-181, D-184: ✨ a node is there; its resource once you arrived
+        nmarks = {(x, y): self._node_icon(main) for x, y, main in nodes}
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
@@ -6434,6 +6532,8 @@ class GameService(StoryMixin):
                     row += "🏕️"
                 elif (x, y) in dmarks:
                     row += dmarks[(x, y)]
+                elif (x, y) in nmarks:                      # D-184: under everything else, over the terrain's colour
+                    row += nmarks[(x, y)]
                 else:                                       # D-179, D-186: every square shows its terrain's colour
                     biome = self.content.biomes[self._zone(x, y).biome]
                     row += biome.get("color", biome["emoji"])
@@ -6445,6 +6545,7 @@ class GameService(StoryMixin):
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
         body += self._ecamp_map_lines(hero, seen)
         body += self._dng_map_lines(hero, dungeons)     # D-171
+        body += self._node_map_lines(hero, nodes)       # D-184: the 2 nearest nodes (no button: 4 at most)
         pending = self._recon_pending(hero)             # D-172: 🔭 what you can scout from here today
         body += self._recon_map_lines(hero, bool(seen or dungeons), pending)
         actions = [Action(id="places", label=t.t("menu.places"))]
@@ -7664,6 +7765,167 @@ class GameService(StoryMixin):
                 lines.append(t.t("explorer.time_camp", name=camp["name"],
                                  time=self._fmt_duration(self._trip_seconds(hero, camp["x"], camp["y"]))))
         return lines
+
+    # ------------------------------------------------------------------ resource nodes (D-171, D-181, D-184)
+
+    def _node_cfg(self) -> dict[str, Any]:
+        return self.content.balance.get("nodes") or {}
+
+    def _node_excluded(self) -> tuple[tuple[int, int], ...]:
+        """Zones that never hold a node: the Claro with all the land it could ever cover (one zone per settlement stage, D-81),
+        the fixed-resource zones and the Guardian's lair. Only content: the same for every world, never the store."""
+        cached = getattr(self, "_node_excluded_cache", None)        # content never changes while the service runs
+        if cached is None:
+            cells = {(int(x), int(y)) for x, y in first_zones(0, 0, len(self.content.balance["settlement"]["stages"]))}
+            for key in self.content.balance["resources"].get("fixed", {}):
+                fx, fy = (int(v) for v in str(key).split(":"))
+                cells.add((fx, fy))
+            guardian = self._guardian_cfg()
+            if guardian:
+                cells.add((int(guardian["x"]), int(guardian["y"])))
+            cached = tuple(sorted(cells))
+            self._node_excluded_cache = cached
+        return cached
+
+    def _node_main(self, x: int, y: int) -> str | None:
+        """The main resource of the node at (x, y), or None if the zone has no node.
+
+        [ES]
+        Qué hace: dice si en una zona hay un nodo de recursos y de qué es. El lugar sale de la semilla del mundo
+        (engine/world/nodes.py node_at: tramos de 6 × 6 con 2 o 3, desde Lejanía 1, nunca pegados, nunca en el Claro, la guarida
+        ni la entrada de una mazmorra) y nunca cambia: es igual para todos y no depende de lo guardado (un campamento de
+        jugadores no lo tapa: D-87, elegir zonas con buenos nodos). Su recurso es uno de los de tierra de la zona (node_main:
+        casi siempre uno propio del terreno; nunca el pescado). La llaman: el 🗺️ Mapa, 📍 Zona, la llegada, recolectar,
+        explorar y ⬆️ Agrandar campamento.
+        Si cambia, afecta: dónde están los nodos de todos y qué dan (tests/test_nodos_y_terrenos.py).
+        """
+        cfg = self._node_cfg()
+        if not cfg:
+            return None
+        guardian = self._guardian_cfg()
+        dng_excluded = ((int(guardian["x"]), int(guardian["y"])),) if guardian else ()
+        if not node_rules.node_at(self.world_seed, x, y, cfg, self._node_excluded(), self._dng_cfg(), dng_excluded):
+            return None
+        base, own = self._zone_land(x, y)
+        return node_rules.node_main(self.world_seed, x, y, base, own, float(cfg.get("own_share", 0.6)))
+
+    def _node_rare(self, x: int, y: int) -> str | None:
+        """The rare material a node of this zone's terrain can give (content/biomes.yaml node_rare), if it exists."""
+        rare = (self.content.biomes.get(self._zone(x, y).biome) or {}).get("node_rare")
+        return rare if rare in self.content.items else None
+
+    def _node_found(self, hero: Hero) -> set[str]:
+        """The nodes this hero discovered ("x:y"), for ever (store "nodes", key its id: {"found": [...]})."""
+        return set((self.store.get("nodes", hero.id) or {}).get("found", []))
+
+    def _node_discover(self, hero: Hero, x: int, y: int) -> list[str]:
+        """Arriving at (or standing in) a node's zone discovers what it is, for this hero and for ever (D-181).
+
+        [ES]
+        Qué hace: si en (x, y) hay un nodo que el héroe no conocía, lo anota en el espacio "nodes" del almacén (clave: su id;
+        nunca se borra: el progreso se guarda para siempre) y devuelve el aviso ✨ con su recurso y lo que da. Solo lo llaman
+        con la zona donde el héroe ESTÁ: al llegar de un viaje (cada tramo), en 📍 Zona, en el 🗺️ Mapa, al recolectar y al
+        explorar su propia zona. Explorar alrededor (D-107) y el 🔭 Reconocer no lo descubren (E-125 abierta).
+        Si cambia, afecta: cuándo deja de ser ✨ en el mapa de cada uno.
+        """
+        main = self._node_main(x, y)
+        if not main:
+            return []
+        record = dict(self.store.get("nodes", hero.id) or {})
+        found = list(record.get("found", []))
+        key = f"{x}:{y}"
+        if key in found:
+            return []
+        found.append(key)
+        record["found"] = found
+        self.store.put("nodes", hero.id, record)
+        return [self.texts.t("node.arrive", item=self._item_label(main), effect=self._node_effect_text(x, y))]
+
+    def _node_effect_text(self, x: int, y: int) -> str:
+        """"rinde el doble, se agota más despacio y a veces da 💠 Gema en bruto" (with balance.yaml nodes)."""
+        t = self.texts
+        rare = self._node_rare(x, y)
+        cfg = self._node_cfg()
+        text = t.t("node.effect", mult=f"{float(cfg.get('yield_mult', 1.0)):g}")
+        if rare and float(cfg.get("rare_chance", 0.0)) > 0:
+            text += t.t("node.effect_rare", item=self._item_label(rare))
+        return text
+
+    def _node_icon(self, main: str | None) -> str:
+        """The 🗺️ Mapa mark of a node: its resource's emoji once discovered, else the generic ✨ (node.icon_unknown)."""
+        return self.content.items[main]["emoji"] if main else self.texts.t("node.icon_unknown")
+
+    def _node_seen(self, hero: Hero) -> list[tuple[int, int, str | None]]:
+        """The nodes on the hero's 🗺️ Mapa: (x, y, main resource if discovered, else None), nearest first.
+
+        [ES] Qué hace: los nodos que el héroe ve en su mapa de 13 × 13: los que descubrió (con su recurso) y los que están a
+        nodes.hint_radius zonas o menos de alguna que recuerda (✨, sin saber de qué son), como las cuevas (D-171). La llaman:
+        _map_view y las pruebas. Si cambia, afecta: lo que cada uno ve en el mapa.
+        """
+        cfg = self._node_cfg()
+        if not cfg:
+            return []
+        radius = self.content.balance["map_view"]["radius"]
+        hint = int(cfg.get("hint_radius", 2))
+        known = set(hero.known)
+        found = self._node_found(hero)
+        out: list[tuple[int, int, str | None]] = []
+        for dx in range(-radius, radius + 1):
+            for dy in range(-radius, radius + 1):
+                x, y = hero.x + dx, hero.y + dy
+                main = self._node_main(x, y)
+                if not main:
+                    continue
+                if f"{x}:{y}" in found:
+                    out.append((x, y, main))
+                elif any(f"{x + i}:{y + j}" in known for i in range(-hint, hint + 1) for j in range(-hint, hint + 1)):
+                    out.append((x, y, None))
+        out.sort(key=lambda n: (abs(n[0] - hero.x) + abs(n[1] - hero.y), n[0], n[1]))
+        return out
+
+    def _node_map_lines(self, hero: Hero, seen: list[tuple[int, int, str | None]]) -> list[str]:
+        """🗺️ Mapa lines: the nearest nodes you see (nodes.map_lines, 2), with what they are once you arrived."""
+        if not seen:
+            return []
+        t = self.texts
+        lines = []
+        for x, y, main in seen[:int(self._node_cfg().get("map_lines", 2))]:
+            zones = abs(x - hero.x) + abs(y - hero.y)
+            if not main:
+                lines.append(t.t("node.map_unknown", icon=self._node_icon(None), x=x, y=y, zones=zones))
+            elif zones == 0:
+                lines.append(t.t("node.map_here", icon=self._node_icon(None), item=self._item_label(main)))
+            else:
+                lines.append(t.t("node.map_known", icon=self._node_icon(None), item=self._item_label(main), x=x, y=y, zones=zones))
+        return lines
+
+    def _node_zone_lines(self, zone: Zone) -> list[str]:
+        """📍 Zona: "✨ Nodo de 🪵 Madera: rinde el doble..." when the zone has a node (you are standing there: you know it)."""
+        main = self._node_main(zone.x, zone.y)
+        if not main:
+            return []
+        return [self.texts.t("node.zone_line", icon=self._node_icon(None), item=self._item_label(main),
+                             effect=self._node_effect_text(zone.x, zone.y))]
+
+    def _node_batch_lines(self, activity: dict[str, Any]) -> list[str]:
+        """🪓 Recolectar summary: what the node added (units of more and its rare finds)."""
+        info = activity.get("node") or {}
+        if not info or info.get("item") not in self.content.items:
+            return []
+        t = self.texts
+        lines = []
+        if info.get("extra"):
+            lines.append(t.t("node.batch", icon=self._node_icon(None), item=self._item_label(info["item"]), n=info["extra"]))
+        if info.get("rare") and info.get("rare_item") in self.content.items:
+            lines.append(t.t("node.batch_rare", icon=self._node_icon(None), item=self._item_label(info["rare_item"]), n=info["rare"]))
+        return lines
+
+    def _node_grow_mark(self, hero: Hero, x: int, y: int) -> str:
+        """⬆️ Agrandar campamento: " ✨🪵" after the resources of a zone whose node you discovered (D-87: choose with strategy)."""
+        main = self._node_main(x, y)
+        if not main or f"{x}:{y}" not in self._node_found(hero):
+            return ""
+        return self.texts.t("node.grow_mark", icon=self._node_icon(None), emoji=self.content.items[main]["emoji"])
 
     # ------------------------------------------------------------------ solo dungeons (D-164, D-165, D-170, D-171)
 
