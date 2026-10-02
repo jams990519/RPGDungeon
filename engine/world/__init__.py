@@ -29,7 +29,7 @@ Si cambias esto, revisa:
     - Pruebas: tests/test_world.py
 """
 
-from engine.world.mapgen import DIRECTIONS, Zone, lejania, ring, zone_at
+from engine.world.mapgen import DIRECTIONS, Zone, classic_biome, lejania, ring, terrain_at, zone_at
 from engine.world.travel import travel_minutes
 
-__all__ = ["DIRECTIONS", "Zone", "lejania", "ring", "zone_at", "travel_minutes"]
+__all__ = ["DIRECTIONS", "Zone", "classic_biome", "lejania", "ring", "terrain_at", "zone_at", "travel_minutes"]

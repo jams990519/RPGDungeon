@@ -37,3 +37,41 @@ def test_biome_variety(content):
     biomes = {zone_at(7, x, y).biome for x in range(-30, 31, 3) for y in range(-30, 31, 3)}
     assert len(biomes) >= 5
     assert biomes <= set(content.biomes)
+
+
+def test_terrain_is_a_patchwork_of_varied_patches(content):
+    """D-186: patches of a few zones of the same terrain, side by side, of varied sizes; cold north, hot south."""
+    from engine.world import terrain_at
+    seed = 12345
+    grid = {(x, y): terrain_at(seed, x, y) for x in range(-30, 31) for y in range(-30, 31)}
+    seen, sizes = set(), []
+    for start, kind in grid.items():                       # flood-fill the patches (ruins are loose zones: skipped)
+        if start in seen or kind in ("ruinas", "claro"):
+            continue
+        stack, size = [start], 0
+        seen.add(start)
+        while stack:
+            x, y = stack.pop()
+            size += 1
+            for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if n in grid and n not in seen and grid[n] == kind:
+                    seen.add(n)
+                    stack.append(n)
+        sizes.append(size)
+    sizes.sort()
+    median = sizes[len(sizes) // 2]
+    assert 3 <= median <= 12 and len(set(sizes)) >= 10              # mostly small patches, of many different sizes
+    north = [grid[(x, y)] for x in range(-30, 31) for y in range(15, 31)]
+    south = [grid[(x, y)] for x in range(-30, 31) for y in range(-30, -14)]
+    assert north.count("tundra") > south.count("tundra") and south.count("desierto") > north.count("desierto")
+    assert terrain_at(seed, 0, 0) == "claro"
+
+
+def test_the_service_builds_the_terrain_from_content(service):
+    """D-186: content/biomes.yaml "terrain" and balance.yaml terrain feed zone_at; every weighted biome shows up."""
+    table = service._terrain_cfg()
+    assert table[0] == service.content.balance["terrain"]["patch"]
+    kinds = {b for b, _, _ in table[3]}
+    assert kinds == {b for b, d in service.content.biomes.items() if d.get("terrain", {}).get("weight")}
+    found = {service._zone(x, y).biome for x in range(-20, 21) for y in range(-20, 21)}
+    assert kinds | {"ruinas", "claro"} <= found

@@ -1305,7 +1305,7 @@ activity:
 
 map:
   title: "🗺️ Tu mapa"
-  legend: "🧍 tú · 👑 guarida del Guardián · ▪️ la descubrió otro · ▫️ nadie la conoce · el norte está arriba"
+  legend: "🧍 tú · 👑 guarida del Guardián · el norte está arriba"   # [ES] D-186: ya no hay ▪️ / ▫️: todo el cuadrado se pinta por terreno
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "🎨 Terrenos (el color no dice qué recursos hay: eso se sabe explorando): {items}"   # [ES] D-179: la leyenda se arma sola con los colores de content/biomes.yaml
 

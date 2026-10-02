@@ -168,3 +168,24 @@ def test_amount_choices_show_the_estimated_total_time(service):
     view = service.act("test:1", "amt:explore:1")
     assert all("⏱️" in a.label for a in view.actions if a.id.startswith("do:"))
     assert not service.texts.missing
+
+
+def test_the_terrain_patchwork_never_moved_the_land_resources(service):
+    """D-185, D-186: the land resources still follow the classic biome (what players knew of their zones did not move);
+    the map paints every square by terrain, with no blank squares left."""
+    from engine.world import classic_biome
+    for x in range(-8, 9, 2):
+        for y in range(-8, 9, 2):
+            if service._is_lair(x, y):
+                continue
+            classic = zone_resources(service.world_seed, x, y, classic_biome(service.world_seed, x, y),
+                                     service.content.balance, service.content.biomes)
+            land = {r: v for r, v in service._zone_resources(x, y).items() if r != "pescado"}
+            assert land == classic
+    make_hero(service)
+    body = service.act("test:1", "map").body
+    radius = service.content.balance["map_view"]["radius"]
+    rows = body[2:2 + 2 * radius + 1]
+    assert not any("▫️" in row or "▪️" in row for row in rows)         # D-186: no blank squares
+    colours = {b["color"] for b in service.content.biomes.values()}
+    assert sum(row.count(c) for row in rows for c in colours) >= (2 * radius + 1) ** 2 - 10

@@ -335,7 +335,7 @@ from engine.hero.gear import gear_score, is_better, piece_score, real_stats     
 from engine.professions import gatherer_of, masterwork_chance, masterwork_id, max_times, missing_for, rank_of, rank_title, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
-from engine.world import DIRECTIONS, Zone, travel_minutes, zone_at
+from engine.world import DIRECTIONS, Zone, classic_biome, travel_minutes, zone_at
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
@@ -731,9 +731,28 @@ class GameService(StoryMixin):
 
     # ------------------------------------------------------------------ world helpers
 
+    def _terrain_cfg(self) -> tuple:
+        """The D-186 terrain table for zone_at, built once from balance.yaml terrain and content/biomes.yaml "terrain".
+
+        [ES]
+        Qué hace: arma la tabla del tablero de terrenos (tamaño de mancha, clima, peso de cada terreno y los sueltos, como las
+        ruinas) con lo que dicen balance.yaml terrain y cada bioma de content/biomes.yaml. La llama: _zone.
+        Si cambia, afecta: el terreno de todo el mapa (color, enemigos y peligro), no los recursos (D-185).
+        """
+        if getattr(self, "_terrain_table", None) is None:
+            cfg = self.content.balance.get("terrain", {})
+            kinds = tuple((b, float(d["terrain"]["weight"]), d["terrain"].get("climate", "any"))
+                          for b, d in self.content.biomes.items() if d.get("terrain", {}).get("weight"))
+            scattered = tuple((b, float(d["terrain"]["scatter"]))
+                              for b, d in self.content.biomes.items() if d.get("terrain", {}).get("scatter"))
+            self._terrain_table = (int(cfg.get("patch", 3)), float(cfg.get("climate_slope", 0.02)),
+                                   float(cfg.get("climate_strength", 3.0)), kinds, scattered)
+        return self._terrain_table
+
     def _zone(self, x: int, y: int) -> Zone:
         parts = (len(self.texts.list("world.name_first")) or 1, len(self.texts.list("world.name_second")) or 1)
-        zone = zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts)
+        zone = zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts,
+                       self._terrain_cfg())        # D-186: the patchwork terrain
         cfg = self._guardian_cfg()
         if cfg and (x, y) == (cfg["x"], cfg["y"]) and cfg.get("biome") in self.content.biomes:
             zone = replace(zone, biome=cfg["biome"])     # the Guardian's lair has a fixed biome (D-82)
@@ -1656,10 +1675,14 @@ class GameService(StoryMixin):
     def _zone_resources(self, x: int, y: int) -> dict[str, float]:
         """The zone's land resources (D-87) plus 🐟 fish where it has water (D-115), land ones first. [ES] Qué hace: junta los
         recursos de tierra y el pescado de las zonas con agua. La llaman: recolectar, el agotamiento, explorar, el mapa y el
-        cofre de los campamentos enemigos. Si cambia, afecta: qué se consigue en cada zona."""
-        zone = self._zone(x, y)
-        found = zone_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes)
-        found.update(water_resources(self.world_seed, x, y, zone.biome, self.content.balance, self.content.biomes))
+        cofre de los campamentos enemigos. Si cambia, afecta: qué se consigue en cada zona.
+        D-185, D-186: los recursos de tierra siguen el bioma clásico (mapgen.classic_biome), no el terreno que dibuja el mapa:
+        así el tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. El agua sí sigue
+        al terreno que se ve (un 🟪 pantano siempre tiene agua). La guarida del Guardián conserva su bioma fijo (D-82)."""
+        terrain = self._zone(x, y).biome
+        biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
+        found = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
+        found.update(water_resources(self.world_seed, x, y, terrain, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
@@ -6372,8 +6395,10 @@ class GameService(StoryMixin):
         Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
         igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
         se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
-        D-179: lo que tu héroe recuerda se pinta con el color de su terreno (content/biomes.yaml "color"; la leyenda se arma
-        sola), también al 100 %: el color no dice qué recursos hay (antes, al 100 %, se pintaba el recurso principal, D-87).
+        D-179: cada cuadrito se pinta con el color de su terreno (content/biomes.yaml "color"; la leyenda se arma sola): el
+        color no dice qué recursos hay (antes, al 100 %, se pintaba el recurso principal, D-87). D-186: se pinta TODO el
+        cuadrado, como un tablero de manchas de colores (antes solo lo que el héroe recordaba; el resto era ▪️ / ▫️). Lo que
+        no se ve de lejos sigue escondido: los recursos, qué mazmorra es y qué nodo es.
         D-112: 👹 marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
         rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
@@ -6409,13 +6434,9 @@ class GameService(StoryMixin):
                     row += "🏕️"
                 elif (x, y) in dmarks:
                     row += dmarks[(x, y)]
-                elif hero.remembers(x, y):                  # D-179: the terrain's colour, never the resources'
+                else:                                       # D-179, D-186: every square shows its terrain's colour
                     biome = self.content.biomes[self._zone(x, y).biome]
                     row += biome.get("color", biome["emoji"])
-                elif self._discovered(x, y) is not None:
-                    row += "▪️"
-                else:
-                    row += "▫️"
             rows.append(row)
         terrains = " · ".join(f"{b.get('color', b['emoji'])} {t.t(b['name_key'])}" for b in self.content.biomes.values())
         body = [t.t("map.legend"), t.t("map.colors", items=terrains)] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]

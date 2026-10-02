@@ -1,17 +1,30 @@
 """Deterministic generation of the borderless map.
 
 Each zone is a cell (x, y). Nothing is stored until players change it: the
-biome, name and level come from hashing the world seed with the coordinates.
-North (positive y) is colder, south is warmer; noise adds humidity and
-elevation. Lejanía is the ring distance from the Claro at (0, 0).
+terrain (biome), name and level come from hashing the world seed with the
+coordinates. Since D-186 the terrain is a patchwork: patches of a few zones
+each (a jittered grid, every zone joins its nearest patch centre), each patch
+a terrain drawn by weight, the cold ones likelier to the north and the hot ones
+to the south. The old climate biome (temperature, humidity, elevation) stays as
+classic_biome: the land resource regions still use it (D-185: the
+terrain never decides the resources). Lejanía is the ring distance from the
+Claro at (0, 0).
 
 [ES]
 Para qué sirve: inventar cualquier zona del mapa infinito siempre igual, sin
 guardarla, a partir de la semilla del mundo y sus coordenadas.
+D-186 (confirmada): el terreno se dibuja como un tablero salteado: manchas de
+pocas zonas (3 a 12, de tamaño y forma variados) de distintos colores, unas al
+lado de otras. Cada mancha sortea su terreno con el peso de content/biomes.yaml
+("terrain": weight y climate; los fríos salen más al norte y los calientes más
+al sur, balance.yaml terrain). Las 🏚️ ruinas siguen sueltas (scatter) y el Claro
+fijo. El bioma "clásico" de antes (classic_biome) queda solo para los recursos
+de tierra, así lo que los jugadores ya conocen de cada zona no se movió (D-185);
+el agua (la pesca) sí sigue al terreno que se ve: un pantano siempre tiene agua.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md (vocabulario: zona, Lejanía, anillo)
 Módulo: M8 Mundo
 Depende de: engine.core.hash_unit, content/biomes.yaml, content/locales (partes de nombres)
-Lo usan: engine/world/travel.py, engine/service/game.py
+Lo usan: engine/world/travel.py, engine/service/game.py (zone_at para todo; classic_biome para _zone_resources)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
@@ -19,8 +32,9 @@ Reglas que nunca se rompen:
     1. zone_at(seed, x, y) es determinista: mismo resultado siempre.
     2. (0, 0) es siempre el Claro, Lejanía 0, sin peligro.
 Si cambias esto, revisa:
-    - Mundo ya creado: cambiar umbrales o el ruido CAMBIA los biomas de zonas ya visitadas
-    - Servicio: engine/service/game.py — encuentros por bioma y nivel
+    - Mundo ya creado: cambiar balance.yaml terrain, los pesos de content/biomes.yaml o los sorteos CAMBIA el terreno de
+      zonas ya visitadas (sus enemigos y su peligro); cambiar classic_biome MUEVE los recursos de tierra de un mundo ya creado
+    - Servicio: engine/service/game.py — encuentros por bioma y nivel, el color del 🗺️ Mapa (D-179)
     - Pruebas: tests/test_world.py
 """
 
@@ -77,7 +91,14 @@ def _smooth_noise(seed: int, channel: str, x: int, y: int, scale: int = 4) -> fl
     return top * (1 - fy) + bottom * fy
 
 
-def _biome(seed: int, x: int, y: int) -> str:
+def classic_biome(seed: int, x: int, y: int) -> str:
+    """The climate biome of before D-186 (temperature, humidity, elevation): only the resource regions and the water use it.
+
+    [ES]
+    Qué hace: el bioma "clásico" de una zona, el que se usaba antes del tablero de terrenos (D-186). Ya no se ve en el mapa:
+    solo lo usan los recursos de tierra (_zone_resources), para que no se moviera nada de lo que se conoce (D-185).
+    La llama: GameService._zone_resources. Si cambia, afecta: los recursos de tierra de todo el mapa ya creado.
+    """
     if x == 0 and y == 0:
         return "claro"
     temperature = 0.5 - y * 0.03 + (_smooth_noise(seed, "temp", x, y, 6) - 0.5) * 0.4
@@ -100,7 +121,68 @@ def _biome(seed: int, x: int, y: int) -> str:
     return "pradera"
 
 
-def zone_at(seed: int, x: int, y: int, level_per_lejania: float = 0.9, name_parts: tuple[int, int] = (10, 10)) -> Zone:
+# D-186: default terrain table for direct calls (tests, tools); the service passes the one built from content/biomes.yaml
+# and balance.yaml terrain (GameService._terrain_cfg). [ES] La tabla por defecto, igual a la de content/biomes.yaml.
+DEFAULT_TERRAIN: tuple = (
+    3, 0.02, 3.0,                                   # patch size, climate slope per zone of y, climate strength
+    (("pradera", 3.0, "any"), ("bosque", 3.0, "any"), ("colinas", 2.0, "any"), ("pantano", 2.0, "any"),
+     ("montana", 2.0, "any"), ("desierto", 2.0, "hot"), ("tundra", 2.0, "cold")),
+    (("ruinas", 0.06),),                            # scattered single zones: (biome, share)
+)
+
+
+def _patch_terrain(seed: int, cx: int, cy: int, py: float, terrain: tuple) -> str:
+    """The terrain of one patch centre: a weighted draw, cold kinds likelier to the north and hot ones to the south."""
+    _, slope, strength, kinds, _ = terrain
+    temperature = 0.5 - py * slope                  # north (positive y) is colder
+    weights = []
+    for biome, weight, climate in kinds:
+        mult = 1.0
+        if climate == "cold":
+            mult = max(0.15, min(3.0, 1 + (0.5 - temperature) * strength))
+        elif climate == "hot":
+            mult = max(0.15, min(3.0, 1 + (temperature - 0.5) * strength))
+        weights.append((biome, weight * mult))
+    roll = hash_unit(seed, "terrain_kind", cx, cy) * sum(w for _, w in weights)
+    for biome, weight in weights:
+        roll -= weight
+        if roll <= 0:
+            return biome
+    return weights[-1][0]
+
+
+def terrain_at(seed: int, x: int, y: int, terrain: tuple = DEFAULT_TERRAIN) -> str:
+    """The terrain (biome id) of a zone on the D-186 patchwork.
+
+    Args:
+        terrain: (patch size, climate slope, climate strength, ((biome, weight, climate), ...), ((biome, share), ...)).
+
+    [ES]
+    Qué hace: el terreno de una zona. El mapa se parte en una rejilla de patch × patch con un centro movido al azar en cada
+    casilla; cada zona se une al centro más cercano, así salen manchas de tamaño y forma variados (de unas 3 a 12 zonas), y
+    cada mancha sortea su terreno por peso (frío al norte, calor al sur). Encima, algunas zonas sueltas son 🏚️ ruinas.
+    La llama: zone_at. Si cambia, afecta: el color del mapa, los enemigos y el peligro de cada zona.
+    """
+    if x == 0 and y == 0:
+        return "claro"
+    patch, _, _, _, scattered = terrain
+    for biome, share in scattered:
+        if hash_unit(seed, f"scatter:{biome}" if biome != "ruinas" else "ruins", x, y) < share:
+            return biome
+    gx, gy = x // patch, y // patch
+    best = None
+    for cx in (gx - 1, gx, gx + 1):
+        for cy in (gy - 1, gy, gy + 1):
+            px = cx * patch + hash_unit(seed, "terrain_px", cx, cy) * patch
+            py = cy * patch + hash_unit(seed, "terrain_py", cx, cy) * patch
+            dist = (px - x - 0.5) ** 2 + (py - y - 0.5) ** 2
+            if best is None or dist < best[0]:
+                best = (dist, cx, cy, py)
+    return _patch_terrain(seed, best[1], best[2], best[3], terrain)
+
+
+def zone_at(seed: int, x: int, y: int, level_per_lejania: float = 0.9, name_parts: tuple[int, int] = (10, 10),
+            terrain: tuple = DEFAULT_TERRAIN) -> Zone:
     """Generate the zone at (x, y) for a world seed.
 
     Args:
@@ -108,6 +190,7 @@ def zone_at(seed: int, x: int, y: int, level_per_lejania: float = 0.9, name_part
         x, y: coordinates; any integers (the map has no border).
         level_per_lejania: balance number from balance.yaml travel.level_per_lejania.
         name_parts: sizes of the two name-part lists in the locale file.
+        terrain: the D-186 terrain table (terrain_at); the service builds it from content/biomes.yaml and balance.yaml.
 
     [ES]
     Qué hace: devuelve la zona de esas coordenadas, siempre igual para la misma semilla.
@@ -120,7 +203,7 @@ def zone_at(seed: int, x: int, y: int, level_per_lejania: float = 0.9, name_part
     return Zone(
         x=x,
         y=y,
-        biome=_biome(seed, x, y),
+        biome=terrain_at(seed, x, y, terrain),
         lejania=dist,
         ring=ring(dist),
         level=max(1, round(1 + dist * level_per_lejania)),

@@ -415,3 +415,12 @@ v0_26_1:
     - "🕳️ Las mazmorras se marcan con una cueva apenas andas cerca, y ahora hay más: 2 o 3 en cada parte del mapa. Las que ya conocías siguen en su lugar."
     - "👹 Los campamentos de monstruos tienen su propio icono, para no confundirlos con los 🏕️ campamentos de los jugadores."
     - "✅ En ⚙️ Opciones, cada interruptor muestra una palomita verde cuando está activo y una gris ☑️ cuando está apagado."
+
+v0_26_2:
+  version: "0.26.2"
+  title: "🎨 Lost Realms 0.26.2: el mapa es un tablero de colores"
+  notes:
+    - "🎨 El mapa ahora se ve entero: es un tablero de manchas de colores, cada una de un terreno distinto y de tamaño variado. Ya no hay cuadritos en blanco."
+    - "🗺️ Los terrenos se reparten de otra forma, más mezclados: la tundra sale más al norte y el desierto más al sur, pero puede salir cualquiera en cualquier parte."
+    - "⛏️ Los recursos de cada zona no cambiaron: el color dice el terreno, no lo que hay. Eso solo se sabe explorando."
+    - "🐸 Al cambiar el terreno de una zona cambian también sus enemigos, y un pantano siempre tiene agua para pescar."
