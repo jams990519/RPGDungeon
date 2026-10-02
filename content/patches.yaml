@@ -472,3 +472,11 @@ v0_29:
     - "🚶 Moverte entre zonas ya no gasta energía: solo toma tiempo. La energía queda para explorar, recolectar y cazar."
     - "💡 La primera vez que encuentras algo (una mazmorra, un nodo, un campamento enemigo, la mochila llena...) te explicamos lo justo, una sola vez."
     - "🏕️ Al salir del Claro te guiamos para encontrar un buen lugar y fundar tu propio campamento. El origen de tu héroe se elige cuando quieras, con /origen o en 👤 Héroe → 🎭 Origen."
+
+v0_29_1:
+  version: "0.29.1"
+  title: "🚶 Lost Realms 0.29.1: viajes más cortos y energía de entrada"
+  notes:
+    - "🚶 Viajar es más rápido: cada zona que cruzas toma 1 minuto, cerca o lejos del Claro. 10 zonas, 10 minutos. Moverte sigue sin gastar energía."
+    - "⚡ Las mazmorras piden toda su energía de entrada: la 🕳️ chica, la de todas las peleas que te faltan hoy (10 ⚡ al empezar), y cada piso de la 🌀 profunda, la de todas sus peleas. Se sigue cobrando pelea por pelea, pero nadie se queda a medias."
+

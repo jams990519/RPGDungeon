@@ -111,16 +111,17 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 ### 1.5 El viaje
 
 - Desde una zona se viaja **solo a las 4 vecinas** (norte, sur, este, oeste). No hay diagonales ni teletransporte.
-- Los minutos dependen **solo de la distancia** al punto de partida más cercano: el Claro o tu campamento (D-78). Las 2 primeras zonas toman **2 minutos** cada una, las 2 siguientes 3, luego 4, y así (`travel.first_minutes`, `steps_per_minute`). El bioma ya no cambia el tiempo; sigue decidiendo el peligro y lo que se recolecta.
-  - **Tu campamento reinicia la cuenta:** al fundarlo, la distancia se mide desde él, igual que desde el Claro. Cuando el campamento crezca y ocupe más zonas, se medirá desde su borde.
-  - **Tope por tramo: 20 minutos** (`travel.max_minutes`), para que lo muy lejano no se vuelva eterno. Este tope lo propuso Claude; el dueño puede moverlo.
-  - **Energía (D-78):** moverse a una zona vecina, explorar y recolectar gastan 1 ⚡ cada uno. Máximo 50, se recuperan 40 al día (1 cada 36 minutos). Un viaje de varias zonas gasta 1 por tramo y se detiene si se acaba. El combate no gasta energía.
-- Ningún viaje baja de 2 minutos. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
+- **1 minuto real por cuadro, cerca o lejos** (D-197, confirmada; en el juego desde la 0.29.1): 10 cuadros son 10 minutos (`travel.first_minutes: 1`, `travel.steps_per_minute: 0`). El bioma no cambia el tiempo; sigue decidiendo el peligro y lo que se recolecta.
+  - **Regla del dueño:** desplazarse cuesta tiempo; trabajar (farmear solo o en caravana) cuesta energía.
+  - **Antes (D-78):** las 2 primeras zonas desde el Claro o tu campamento tomaban 2 minutos, las 2 siguientes 3, luego 4, hasta un tope de 20 por zona. La fórmula sigue en el código: si `travel.steps_per_minute` vuelve a ser mayor que 0, cada tantas zonas más lejos suma 1 minuto y tu campamento reinicia la cuenta desde su borde.
+  - **Energía:** moverse no gasta energía (D-190, D-197). Explorar y recolectar gastan 1 ⚡ por vuelta; cazar, 2 por presa. Máximo 50, se recuperan 40 al día (1 cada 36 minutos). El combate en sí no gasta energía. Para empezar una acción hay que tener de entrada toda la energía que pide (D-196).
+  - **Pendiente:** si las monturas o mejoras acortarán el minuto por cuadro (E-161) y si mientras viajas puedes hacer otras cosas (E-162; hoy puedes mirar todo, pero no trabajar hasta llegar).
+- Ningún viaje baja de 1 minuto. Un ajuste de servidor (`time_scale`) multiplica todos los tiempos; en juego normal vale 1 y en pruebas es menor.
 - La pantalla redondea hacia arriba al minuto.
 
-| Zonas desde el Claro o tu campamento | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | … | 37 o más |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Minutos para entrar | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 5 | … | 20 (tope) |
+| Cuadros que cruzas | 1 | 2 | 5 | 10 | 20 |
+|---|---|---|---|---|---|
+| Minutos de viaje (D-197) | 1 | 2 | 5 | 10 | 20 |
 
 | Bioma | Peligro al llegar |
 |---|---|
@@ -217,7 +218,7 @@ Coordenadas 1, 2 · Lejanía 2
 - **Qué da el territorio:**
   - Al llegar a una zona del territorio no te atacan.
   - Nadie puede fundar otro campamento encima.
-  - Para tu viaje, la distancia se cuenta desde la zona más cercana de tu campamento o del Claro (2, 2, 3, 3… minutos).
+  - Para tu viaje, cada cuadro toma 1 minuto (D-197). Con la regla vieja (D-78), la distancia se contaba desde la zona más cercana de tu campamento o del Claro.
 - La línea "🏕️ Territorio de…" aparece en la pantalla de la zona.
 - **Nombre y miembros (D-84):** al fundarlo, el fundador escribe el nombre (único; puede cambiarlo). Otros jugadores piden unirse desde el campamento y el fundador acepta o rechaza con un botón. Caben 2 miembros al nivel 1 y 2 más por cada nivel. Cada jugador pertenece a un solo campamento, cuenta la distancia del viaje desde él y puede salir cuando quiera.
 - Lo pidió el dueño. Los costos y la seguridad al llegar los propuso Claude.
@@ -502,7 +503,7 @@ Qué pasa con cada concepto de [Torre y pisos](torre-y-pisos.md):
 - C. Solo entre capitales, una vez al día.
 - *Recomiendo A,* porque es lo que pide D-58 y porque la distancia sostiene los mercados locales y el oficio de comerciante.
 
-**¿Cuánto debe tardar cruzar a una zona vecina a pie?** ✅ Decidido por el dueño (D-78): 2, 2, 3, 3, 4, 4… minutos según la distancia al Claro o a tu campamento.
+**¿Cuánto debe tardar cruzar a una zona vecina a pie?** ✅ Decidido por el dueño: 1 minuto por cuadro (D-197, 2-oct-2026; antes D-78: 2, 2, 3, 3, 4, 4… minutos según la distancia al Claro o a tu campamento).
 - A. 5-10 minutos.
 - B. 15-50 minutos según el bioma (lo de v0.1).
 - C. 1-2 horas.

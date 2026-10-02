@@ -31,19 +31,20 @@ Las 14 familias cubren a los 100 enemigos comunes: 🐺 manada de lobos, 🐻 os
 ### 0.3 🕳️ La mazmorra chica (como los *delves* de Elder Scrolls Online)
 
 - **Estructura fija:** 4 salas y el jefe, 5 peleas a mano de **2 ⚡** cada una (10 ⚡ toda la mazmorra; como una presa o un asalto, D-108).
+- **Toda la energía de entrada (D-196, en el juego desde la 0.29.1):** para pelear la siguiente sala hay que tener la energía de **todas** las peleas que faltan hoy (10 ⚡ al empezar, 2 antes del jefe). Se sigue cobrando pelea por pelea; nadie queda a medias.
 - **Tu avance es tuyo y dura el día:** cada victoria despeja una sala (✅); si huyes o caes, **lo despejado hoy queda** y sigues desde la siguiente cuando quieras. Al otro día empieza de cero, con otra familia.
 - **El cofre del jefe, una vez por mazmorra y día:** monedas de **1,5 peleas comunes** de su nivel (nivel 7: 10 🥉; nivel 40: 29 🥉), **1 a 3 materiales** de la familia del día (D-165: también de otros oficios, como 💠 gema en bruto, 🌸 flor de luna o 🔩 lingote) y **20 %** de una pieza de equipo de su nivel **de cualquier clase y tipo** (D-165: si no es tuya, se vende; nunca equipo de artesano). **No da experiencia extra**: la experiencia es la de las 5 peleas (D-118). La pantalla muestra el cofre de hoy antes de entrar.
 - **Pantalla:** el nivel, la familia y el jefe de hoy, el camino, las salas despejadas, el cofre y **[⚔️ Sala N · ⚡2]** (o **[👑 Jefe · ⚡2]**) **[🏹 Cazar] [↩️ Volver]**. Tras ganar una sala sale **⚔️ Sala N+1** en el final de la pelea.
 
 ### 0.4 🌀 La mazmorra profunda (como el *Deep Dungeon* de Final Fantasy XIV)
 
-- **Bajas piso a piso hasta donde aguantes.** Son pisos de la mazmorra, no del mundo (D-58 sigue). Entrar cuesta **2 ⚡** más la primera pelea; cada pelea, **2 ⚡**.
+- **Bajas piso a piso hasta donde aguantes.** Son pisos de la mazmorra, no del mundo (D-58 sigue). Entrar cuesta **2 ⚡** más la primera pelea; cada pelea, **2 ⚡**. **Cada piso es una acción (D-196):** para empezarlo hay que tener la energía de todas sus peleas (y la entrada si no hay bajada abierta).
 - **Cada piso:** el 1 tiene 1 pelea; desde el 2, 1 o (con 35 %) 2; **cada 5 pisos, la última es el jefe** de la familia de hoy (élite, encima de lo del piso). Cada piso más abajo los enemigos suben **1 nivel**, **+5 % de vida** y **+3 % de ataque** (piso 10: nivel + 9, +45 % de vida, +27 % de ataque).
 - **Entre pisos no hay curación:** mientras la bajada está abierta **la vida no vuelve sola**; solo lo del cinturón (que se rellena de la mochila como siempre) y 🧪 Pociones. Subir de nivel en una pelea sí llena la vida, como siempre.
 - **La bolsa:** cada piso despejado suma monedas de **media pelea común** de su nivel y **1 material** de la familia; cada piso de jefe, **30 %** de una pieza de cualquier clase (D-165). Lo que ganas **en cada pelea** (experiencia, monedas, botín) es tuyo igual, como en toda pelea.
 - **⬇️ Bajar o 🚪 Salir con lo ganado** después de cada pelea: salir cobra **la bolsa entera**. **Si caes o huyes**, la bajada termina y te quedas con **la mitad** (monedas, cada material y las piezas, redondeado hacia abajo); caer además tiene lo de siempre (malherido y 10 % de las monedas). Irte de la zona, ponerte a hacer otra cosa o que cambie el día cierra la bajada como si salieras (bolsa entera).
 - **Tu récord** (el piso más hondo que despejaste, para siempre) y **🏆 la lista de hoy** de esa mazmorra (los 3 más hondos) salen en su pantalla.
-- **Pantalla:** sin bajada abierta, **[🌀 Descender · ⚡4] [🏹 Cazar] [↩️ Volver]**; con una abierta, el piso, la bolsa, lo que sigue y **[⬇️ Bajar al piso N · ⚡2] [🚪 Salir con lo ganado] [🧪 Pociones] [↩️ Volver]**.
+- **Pantalla:** sin bajada abierta, **[🌀 Descender · ⚡4] [🏹 Cazar] [↩️ Volver]**; con una abierta, el piso, la bolsa, lo que sigue y **[⬇️ Bajar al piso N · ⚡2 o ⚡4] [🚪 Salir con lo ganado] [🧪 Pociones] [↩️ Volver]** (el botón de bajar muestra la energía de todo el piso: 4 si tiene 2 peleas).
 
 ### 0.5 Cuánto da (registro de [Balance](../03-personaje/balance.md) §7)
 

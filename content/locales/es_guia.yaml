@@ -53,7 +53,7 @@ guide:
 
         🚶 Cómo moverte
         • En 📍 Zona tienes 4 rutas: ⬆️ norte, ⬇️ sur, ➡️ este y ⬅️ oeste. Cada botón dice cuánto tarda.
-        • Moverte {move}: {first_time} las zonas cercanas, y más cuanto más te alejas (hasta {max_time} por zona).
+        • Moverte {move}: {first_time} por cada zona, cerca o lejos (10 zonas, 10 minutos).
         • Mientras viajas puedes cerrar el chat: te aviso al llegar.
         • Al llegar pueden salirte monstruos: cada terreno tiene su peligro.
     explore:                   # [ES] b) explorar una vez en la zona nueva

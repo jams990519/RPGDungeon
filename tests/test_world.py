@@ -27,10 +27,20 @@ def test_level_grows_with_distance():
 def test_travel_takes_time(content):
     claro = [(0, 0, 0)]
     minutes = [travel_minutes(0, d, claro, content.balance) for d in range(0, 9)]
-    assert minutes == [2, 2, 2, 3, 3, 4, 4, 5, 5]          # D-78: 2, 2, 3, 3, 4, 4...
-    assert travel_minutes(0, 500, claro, content.balance) == content.balance["travel"]["max_minutes"]
+    assert minutes == [1] * 9                               # D-197: 1 minute per zone, near or far
+    assert travel_minutes(0, 500, claro, content.balance) == 1   # 10 zones = 10 minutes, wherever you are
+
+
+def test_old_travel_rule_still_works_if_turned_back_on(content):
+    import copy
+    balance = copy.deepcopy(content.balance)
+    balance["travel"].update({"first_minutes": 2, "steps_per_minute": 2})   # D-78's rule, kept behind steps_per_minute > 0
+    claro = [(0, 0, 0)]
+    minutes = [travel_minutes(0, d, claro, balance) for d in range(0, 9)]
+    assert minutes == [2, 2, 2, 3, 3, 4, 4, 5, 5]
+    assert travel_minutes(0, 500, claro, balance) == balance["travel"]["max_minutes"]
     camp = claro + [(20, 0, 0)]
-    assert travel_minutes(21, 0, camp, content.balance) == 2   # the count restarts at your camp
+    assert travel_minutes(21, 0, camp, balance) == 2        # the count restarts at your camp
 
 
 def test_biome_variety(content):

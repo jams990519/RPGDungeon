@@ -524,3 +524,31 @@ def test_no_dungeon_here_is_refused_without_spending(service):
         view = service.act("test:1", action)
         assert view.notice and service._load("test:1").energy == 50, action
     assert hero_stats(service._kit(service._load("test:1")), 1)["max_hp"] > 0
+
+
+# ---------------------------------------------------------------- D-196: all the energy up front
+
+def test_small_dungeon_asks_for_all_its_remaining_energy_up_front(service):
+    """D-196 (owner): to start an action you need all the energy it takes; nobody is left halfway."""
+    at_dungeon(service, dungeon_rules.SMALL, energy=8)       # 5 fights × 2 ⚡ = 10 needed
+    view = service.act("test:1", "dgo")
+    assert service.store.get("combat", "test:1") is None
+    assert "10" in view.notice and service._load("test:1").energy == 8   # refused, nothing charged
+    hero = service._load("test:1")
+    hero.energy = 10
+    service._save(hero)
+    service.act("test:1", "dgo")
+    assert service.store.get("combat", "test:1") is not None
+    assert service._load("test:1").energy == 8               # still charged fight by fight
+
+
+def test_deep_floor_asks_for_all_its_fights_up_front(service):
+    x, y = at_dungeon(service, dungeon_rules.DEEP, energy=3)  # entry 2 + floor 1 (one fight) 2 = 4
+    info = service._dng_today(x, y, dungeon_rules.DEEP)
+    assert service._dng_need(info) == 4
+    view = service.act("test:1", "dgo")
+    assert service.store.get("combat", "test:1") is None and "4" in view.notice
+    run = {"floor": 2, "fight": 0}
+    plan = service._dng_plan(info, 2)
+    assert service._dng_need(info, run) == 2 * len(plan)      # a floor with 2 fights asks for 4 before its first one
+    assert service._dng_need(info, {"floor": 2, "fight": 1}) == 2 * max(1, len(plan) - 1)
