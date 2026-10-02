@@ -983,3 +983,17 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Cuánto cambia recolectar.** Cada vuelta saca las **mismas unidades** que antes (`gather.amount`), repartidas entre más recursos: no se multiplican. Lo que sí cambia es cuánto sale de los 6 de base: en promedio, una vuelta da **53 %** de lo que daba de ellos (63 % en las zonas con 3 de base, 54 % con 2 y 34 % con 1), y el resto son materiales del terreno, que se venden a precios parecidos o se usan en las 22 recetas nuevas. Un nodo duplica solo su recurso (y con eso la experiencia de oficio por unidad de ese recurso; la de héroe sigue siendo por vuelta). Las unidades de más y el raro usan su propio sorteo.
 
 **Lo que queda por mirar:** si fundar, agrandar y las mejoras del campamento quedan lentas porque llega menos madera y piedra por vuelta (si pasa, bajar `resources.terrain.richness` a 0,3-0,7 o sumar menos propios en las zonas con 1 de base); si los nodos concentran a todos en pocos lugares (el agotamiento es para todos); si entran demasiadas 💠 gemas y 🌸 flores de luna por los nodos frente a los oficios; y si 10 por terreno alcanza o conviene subir a 12-15 cuando lleguen el Agricultor y el Ganadero.
+
+### Octubre de 2026: el camino guiado (D-190, D-193, provisional)
+
+**Por qué.** El camino guiado reemplazó al tutorial de pistas (0.29). Los números los propuso Claude, parecidos a los del tutorial viejo por paso; se ajustan en la beta.
+
+| Qué | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Premio por paso (`tutorial.reward_*` → `guide.reward_gold`, `guide.reward_xp`) | 5 🥉 y 20 de experiencia × 7 pasos (35 🥉, 140) | 5 🥉 y 20 de experiencia × 10 pasos con premio (50 🥉, 200) | Lo mismo por paso; el camino tiene más pasos. 200 de experiencia es el nivel 2 (pide 120) y algo más: no es un atajo (el nivel 3 pide 612) |
+| Veterano (`guide.veteran_level`) | — | nivel 5 | E-133: quien llegó al nivel 5 ya conoce lo básico; se salta el camino sin premio |
+| Movimientos antes de "buscar lugar" (`guide.found_moves`) | — | 2 zonas pisadas fuera del Claro | D-190: "uno o dos movimientos" después de salir; además el lugar tiene que servir (Lejanía 2 o más, `camps.min_lejania`) |
+| Aviso de energía baja (`guide.energy_low`) | — | 10 ⚡ | Una quinta parte del máximo (50): todavía alcanza para un lote chico |
+| Aviso de ⚙️ Opciones (`guide.options_kills`) | — | 3 peleas ganadas | Después del paso 🏹 Cazar, cuando ya peleó un poco |
+
+**Lo que queda por mirar:** en qué paso se queda la gente y cuánto tarda en terminar el camino básico (mapa de impacto, C-29). Si moverse pasa a no gastar energía (E-135), el texto cambia solo.

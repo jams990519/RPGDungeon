@@ -25,8 +25,10 @@ def test_creation_flow(service):
     assert any(a.id.startswith("page:") for a in view.actions)
     service.act("test:1", "grp:guerrero")
     view = service.act("test:1", [a.id for a in service.act("test:1", "grp:guerrero").actions if a.id.startswith("cls:")][0])
-    assert view.kind == "origin" and len(view.actions) <= 4      # D-117: the origin comes right after the class...
-    assert service.act("test:1", "home").kind == "zone"          # ...but never blocks: the menu goes on playing
+    # D-190/D-193: after name and class comes "where you are" (the guided path), with the 4 routes; the origin is offered
+    # later, as an optional step (E-131: /origen)
+    assert view.kind == "guide" and len(view.actions) <= 4
+    assert service.act("test:1", "home").kind == "zone"          # never blocks: the menu goes on playing
 
 
 def test_names_are_unique(service):
@@ -207,23 +209,22 @@ def test_names_ignore_accents_spaces_and_reservations(service):
 
 def test_gather_in_claro_and_sell_to_the_trader(service, clock):
     make_hero(service)
-    view = service.act("test:1", "explore")          # tutorial 1: explore the Claro (choose how much energy, D-87)
+    view = service.act("test:1", "explore")          # explore the Claro (choose how much energy, D-87)
     assert view.kind == "batch" and any(a.id == "explore_menu" for a in view.actions)
     service.act("test:1", "do:explore:5")
     clock.advance(3600)
     service.view("test:1")
-    assert service.store.get("hero", "test:1")["tutorial"] == 1
     service.act("test:1", "do:gather:5")
     clock.advance(3600)
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
-    assert hero["tutorial"] == 2
+    assert hero["tutorial"] == 0                     # D-193: the old hint tutorial no longer advances (the guided path does)
     assert any(hero["backpack"].get(i, 0) for i in ("madera", "fibra"))
     gold = hero["gold"]
     service.act("test:1", "shop")
-    view = service.act("test:1", "sell:all")         # tutorial 3: sell what you do not need (D-98 replaced donating)
+    view = service.act("test:1", "sell:all")         # sell what you do not need
     hero = service.store.get("hero", "test:1")
-    assert hero["tutorial"] == 3 and hero["gold"] > gold and "📜" in view.notice
+    assert hero["gold"] > gold and "💱" in view.notice
     assert view.kind == "shop"
 
 
@@ -247,7 +248,7 @@ def test_the_claro_never_grows(service, clock):
 def test_tutorial_hint_shows_in_zone(service):
     make_hero(service)
     view = service.view("test:1")
-    assert any("📜" in line for line in view.body)
+    assert any("🧭 Ahora:" in line for line in view.body)     # D-193: the guided path's task line (it replaced the 📜 hint)
 
 
 def test_invite_link_gives_energy_on_join(service):

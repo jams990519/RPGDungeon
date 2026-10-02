@@ -247,10 +247,18 @@ settlement:                  # [ES] D-98: el Claro es el campamento base y NO cr
     - {id: castillo, needs: {}}
   inn_discount_per_stage: 1  # [ES] cada etapa baja 1 💰 la posada (mínimo 1)
 
-tutorial:
+tutorial:                     # [ES] D-193: el tutorial viejo ya no se muestra ni avanza (lo reemplazó el camino guiado, bloque guide). Queda para leer Hero.tutorial de los héroes de antes: quien llegó a len(steps) lo terminó y se salta el camino básico (E-133). No borrar ni reordenar
   reward_gold: 5
   reward_xp: 20
   steps: [explore_claro, gather, sell, leave_claro, win_fight, heal, use_places]   # [ES] D-98: "sell" (vender al mercader) reemplazó a "donate" (la obra del Claro ya no existe); el índice de cada héroe no cambia
+
+guide:                        # [ES] D-190 (confirmada) y D-193 (provisional): el camino guiado (pasos y avisos en content/guide.yaml, textos en es_guia.yaml). Números propuestos por Claude: se ajustan en la beta
+  reward_gold: 5              # [ES] 🥉 de cada paso con premio (como el tutorial viejo): 10 pasos con premio = 50 🥉
+  reward_xp: 20               # [ES] experiencia de cada paso con premio (× el acelerador de 💎): 10 pasos = 200, el nivel 2 (pide 120) y algo más
+  veteran_level: 5            # [ES] E-133: un héroe de antes de la 0.29 con este nivel o más (o con el tutorial viejo terminado) se salta el camino básico, sin premio, y sigue recibiendo los avisos nuevos
+  found_moves: 2              # [ES] D-190: zonas que hay que pisar fuera del Claro, después del camino básico, antes de "encontraste un buen lugar para tu campamento" (además, el lugar tiene que servir: camps.min_lejania, camps.min_distance)
+  energy_low: 10              # [ES] el aviso ⚡ de energía baja sale la primera vez que te quedan esto o menos
+  options_kills: 3            # [ES] el aviso ⚙️ de las peleas automáticas sale al llegar a esta cantidad de peleas ganadas (después del paso 🏹 Cazar)
 
 camps:                       # [ES] campamentos que fundan los jugadores lejos del Claro (D-71)
   found_cost: {madera: 20, piedra: 10}
