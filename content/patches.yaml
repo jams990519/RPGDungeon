@@ -458,3 +458,13 @@ v0_28:
     - "🧩 Como en el Tetris, unas 3 de cada 10 piezas del mapa pasaron a ser de un terreno nuevo, con sus enemigos y sus recursos propios. Las demás zonas siguen igual, y los recursos de base de todas también."
     - "🦆 En el lago se pesca en cada zona, y en muchos ríos de la selva y el cañón también."
     - "🖤 En el volcán aparece la obsidiana: con ella, la 🗿 Cantería hace sillares con menos piedra."
+
+v0_29:
+  version: "0.29"
+  title: "🏕️ Lost Realms 0.29: campamento y héroe en orden, entrenador y dudas"
+  notes:
+    - "🧭 El menú de abajo queda con 5 botones: 📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe y ⚙️ Opciones. 📖 Historia salió: tu diario, tus misiones y las facciones están en 👤 Héroe → 📔 Diario."
+    - "🏕️ El Campamento muestra todo de una vez, con una línea por opción: 🍲 Cocinar, 🔬 Investigar, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón y ❓ Dudas. En tu propio campamento, agrandar, mejoras, despensa y gremio están en 🏰 Gestionar."
+    - "👤 El Héroe trae una ficha más completa (vida y energía con cuánto falta) y todos sus botones juntos, también 📔 Diario y 🎭 Origen. Al crear un héroe solo eliges nombre y clase: el origen, cuando quieras."
+    - "🧑‍🏫 El Entrenador te presenta los oficios: qué hace cada familia, cuáles puedes empezar hoy y qué aprenderás más adelante."
+    - "❓ Dudas: escribe una palabra (por ejemplo «energía») y te muestro las preguntas ya respondidas. Cada una tiene su código: toca /d07 para ver la respuesta. También funciona /dudas."
