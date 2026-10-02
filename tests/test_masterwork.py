@@ -312,5 +312,8 @@ def test_masterwork_and_furniture_screens_have_four_buttons_at_most(service, mon
                    "rec:literas_roble:0", "mk:literas_roble:1:0", "gear", "gear:0", f"item:{masterwork_id('artesano_arco_1')}",
                    "resources", "upf:literas_roble", "upgrades"):
         view = service.act("test:1", action)
-        assert len(view.actions) <= 4, (action, ids(view))
+        if view.layout:                                 # D-189: the recipe's amounts in one row and a wide ↩️ Volver
+            assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (action, ids(view))
+        else:
+            assert len(view.actions) <= 4, (action, ids(view))
     assert not service.texts.missing

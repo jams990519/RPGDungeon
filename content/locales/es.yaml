@@ -1987,7 +1987,12 @@ batch:
   around: "🔭 Alrededor: {done}/{total} zonas al 100 %."
   around_next: "Ahora estudias {name} ({x}, {y}), al {pct} %, sin moverte."
   cancel_hint: "Si te equivocaste, toca ❌ Cancelar: no gastas nada."
-  button: "⚡ {n} · ⏱️ {time}"
+  amount: "{n}"                 # [ES] D-189 (confirmada): botoncito con solo la cantidad, todos en una fila
+  all: "Todo"                   # [ES] D-189: botoncito de gastar toda la energía que alcance
+  times: "⏱️ {items}"           # [ES] D-189: el tiempo de cada cantidad, en una línea (antes iba en cada botón, D-114)
+  time_item: "{n} → {time}"
+  time_all: "todo ({n}) → {time}"
+  button: "⚡ {n} · ⏱️ {time}"   # [ES] ya no se usa en las cantidades (D-189); queda por si otra pantalla lo necesita
   more: "▶️ Más"
   max: "⚡ Todo ({n}) · ⏱️ {time}"
   back: "◀️ Volver"
@@ -2304,6 +2309,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   missing: "❌ Te falta: {items}. No gastaste nada."
   make_button: "🔨 Hacer {n}"
   make_all: "🔨 Hacer todo ({n})"
+  make_ask: "🔨 ¿Cuántas veces la haces? Con lo que tienes alcanza para {n}."   # [ES] D-189: encima de los botoncitos de cantidad
   made: "🔨 Hiciste {items} (⚡ −{energy})."
   made_extra: "⭐ Tu oficio rindió más: +{n}."
   gear_made: "🆕 La pieza quedó en 👤 Héroe → 🎒 Mochila → 🛡️ Equipo."

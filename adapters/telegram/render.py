@@ -2,7 +2,7 @@
 
 [ES]
 Para qué sirve: convertir una vista del motor en texto de Telegram (HTML) y un
-teclado de botones de 2 por fila, respetando los límites de Telegram.
+teclado de botones de 2 por fila (o las filas que pida la vista, D-189), respetando los límites de Telegram.
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §3.2
 Módulo: adaptador de Telegram (M19 del lado del cliente)
 Depende de: engine.messaging (View, Action), aiogram (tipos de teclado)
@@ -47,16 +47,32 @@ def render_text(view: View) -> str:
     return text
 
 
+MAX_ROW = 8                     # Telegram shows at most 8 inline buttons in one row
+
+
 def render_keyboard(view: View) -> InlineKeyboardMarkup | None:
-    """Inline keyboard, 2 buttons per row. [ES] Qué hace: arma los botones de 2 en 2. La llaman: el bot. Si cambia, afecta: la disposición de los botones."""
+    """Inline keyboard: the view's layout first (D-189), then 2 buttons per row.
+
+    [ES] Qué hace: arma los botones. Si la vista trae "layout" (por ejemplo [5, 1] en las pantallas de cantidad, D-189), las
+    primeras filas llevan esa cantidad de botones (como mucho 8, el tope de Telegram): así los botoncitos de cantidad van uno
+    al lado del otro y el de volver ocupa una fila entera. El resto, de 2 en 2. La llaman: el bot. Si cambia, afecta: la
+    disposición de los botones (tests/test_telegram_render.py)."""
     if not view.actions:
         return None
-    rows: list[list[InlineKeyboardButton]] = []
+    buttons = []
     for action in view.actions:
         data = action.id.encode("utf-8")[:MAX_CALLBACK].decode("utf-8", "ignore")
         label = action.label if action.enabled else f"🚫 {action.label}"
-        button = InlineKeyboardButton(text=label, callback_data=data)
-        if rows and len(rows[-1]) < 2:
+        buttons.append(InlineKeyboardButton(text=label, callback_data=data))
+    rows: list[list[InlineKeyboardButton]] = []
+    for size in view.layout:
+        if not buttons:
+            break
+        size = max(1, min(int(size), MAX_ROW))
+        rows.append(buttons[:size])
+        buttons = buttons[size:]
+    for button in buttons:
+        if rows and len(rows[-1]) < 2 and len(rows) > len(view.layout):
             rows[-1].append(button)
         else:
             rows.append([button])

@@ -484,7 +484,10 @@ def test_every_dungeon_screen_keeps_four_buttons_and_its_texts(content, kind):
         path = queue.popleft()
         service, view = build(path)
         limit = 6 if view.kind == "combat" else 4
-        assert len(view.actions) <= limit, (path, view.kind, ids(view))
+        if view.layout:                                 # D-189: amount pickers: a row of small amounts, then one wide back
+            assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.kind, ids(view))
+        else:
+            assert len(view.actions) <= limit, (path, view.kind, ids(view))
         assert not service.texts.missing, (path, service.texts.missing)
         kinds.add(view.kind)
         key = (view.kind, tuple(ids(view)))

@@ -50,9 +50,12 @@ class View:
         body: text lines, already translated.
         actions: buttons, in order; clients lay them out 2 per row.
         notice: optional short line shown first (result of the last command).
+        layout: optional buttons per row for the first rows (D-189: an amount picker is [5, 1], a row of small amount
+            buttons and one wide back button); the rest go 2 per row. Empty: 2 per row.
 
     [ES]
-    Qué es: una pantalla neutra del juego.
+    Qué es: una pantalla neutra del juego. D-189: "layout" dice cuántos botones van en cada fila (por ejemplo [5, 1]: una
+    fila de botoncitos con la cantidad y un botón ancho de volver); sin layout, 2 por fila.
     Quién la usa: el servicio la devuelve; los clientes la dibujan.
     Si cambia, afecta: todos los clientes.
     """
@@ -64,3 +67,4 @@ class View:
     notice: str | None = None
     expects_text: bool = False
     meta: dict = field(default_factory=dict)
+    layout: list[int] = field(default_factory=list)

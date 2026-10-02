@@ -170,7 +170,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
 | M17 | Colecciones y logros | Bajo, salvo que dé poder | Regla de las 3 vistas, nunca poder |
 | M18 | Temporadas y rankings | Medio | Duración de la temporada (la usan M7, M9, M10, M25) |
-| M19 | Mensajería | Alto para los clientes | Vistas, avisos, límites de Telegram, el menú fijo (6 botones desde D-117, con 📖 Historia: ya está en el tope de D-46) y "un aviso por lote" (D-87, también con peleas automáticas y con los pasos de misión cumplidos) |
+| M19 | Mensajería | Alto para los clientes | Vistas (D-189: `View.layout` dice cuántos botones van por fila; las pantallas de cantidad usan `[n, 1]` y `adapters/telegram/render.py` lo respeta, hasta 8 por fila), avisos, límites de Telegram, el menú fijo (6 botones desde D-117, con 📖 Historia: ya está en el tope de D-46) y "un aviso por lote" (D-87, también con peleas automáticas y con los pasos de misión cumplidos) |
 | M20 | Administración y telemetría | Bajo en el juego, alto en el proceso | Registro de balance, informe económico |
 | M21 | Simulador de balance | Bajo en el juego, alto en el proceso | Escenarios y objetivos |
 | M22 | Pagos | Bajo en técnica, muy alto en reglas del dueño | D-43, aceleradores |

@@ -442,3 +442,10 @@ v0_27:
     - "✨ En el mapa aparecen nodos de recursos. Al principio solo ves ✨: llega a su zona para saber de qué son, y desde ahí verás su recurso en el mapa para siempre."
     - "🪓 En un nodo su recurso rinde el doble, se agota más despacio y a veces da una 💠 gema o una 🌸 flor de luna. Lo puede usar cualquiera que llegue."
     - "🔎 Explorar descubre los recursos de una zona de a uno: al 1, 20, 40, 60 y 80 %, y todos al 100 %."
+
+v0_27_1:
+  version: "0.27.1"
+  title: "🔢 Lost Realms 0.27.1: elegir cuánto, de un vistazo"
+  notes:
+    - "🔢 Al explorar, recolectar, cazar en lote o fabricar, todas las cantidades salen juntas en botoncitos (5, 10, 20, 40, Todo) y abajo un botón grande para cancelar o volver. Ya no hay que pasar de página."
+    - "⏱️ Cuánto tarda cada cantidad ahora está en el texto, todo en una línea."
