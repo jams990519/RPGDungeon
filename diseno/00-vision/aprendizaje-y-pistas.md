@@ -171,6 +171,8 @@ Además de las pistas que salen solas, puedes **pedir una**. Siempre en un lugar
 
 **Límite:** cada pedido adelanta un nivel, como si hubieras tropezado una vez más, y se puede pedir **una vez por tema por día**. Así no se salta al nivel 3 en tres toques.
 
+**En el juego desde la 0.29: ❓ Dudas** (D-191, D-192). Un botón de 🏕️ Campamento (y /dudas) con 55 preguntas ya respondidas sobre lo que existe hoy: escribes una palabra y salen las que coinciden, cada una con su código fijo (/d07) que muestra la respuesta y sus relacionadas. Es un buscador por palabras, no una IA (E-129). Explica cómo funciona cada sistema, nunca la solución de algo que es habilidad. Cada sistema nuevo suma su pregunta. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §5.
+
 ## 5. Dónde se aprende dentro del mundo
 
 ### 5.1 Las fuentes

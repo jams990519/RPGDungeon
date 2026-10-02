@@ -8,6 +8,8 @@ Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre
 
 ## 1. El flujo de hoy
 
+> **Desde la 0.29 (D-190, D-192):** crear el héroe pide solo el **nombre y la clase** (la raza todavía no, porque no está definida). Al confirmar la clase se entra directo al juego, sin la elección del origen: el origen se elige cuando quieras en 👤 Héroe → 🎭 Origen, y quien ya lo tenía lo conserva (E-131). Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §1 y §3.
+
 ### 1.1 Paso 1 · El nombre
 
 - Al tocar /start, el bot muestra **🌅 Lost Realms · El despertar**: despiertas junto a una fogata en el Claro, sin recuerdos y sin nada.

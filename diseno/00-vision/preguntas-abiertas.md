@@ -203,6 +203,7 @@ Salieron del pedido del dueño de contar la historia como un camino guiado y ord
 | P-130 | ¿Dónde queda el origen del héroe, que se elegía al crearlo? (D-190; E-131) | Más adelante en el camino guiado, como paso opcional; quien ya lo eligió lo conserva |
 | P-131 | ¿El Campamento y el Héroe pueden tener hasta 8 botones de 2 en 2? (D-191, D-75; E-132) | Sí, para ver todas las opciones de una vez |
 | P-132 | ¿Los jugadores que ya existen hacen el camino guiado nuevo? (D-190; E-133) | Quien terminó el tutorial viejo se salta los primeros pasos y recibe los avisos nuevos; los demás empiezan el camino |
+| P-133 | ¿Cómo se reparten los botones de tu propio campamento, que no caben en 8? (D-191, D-192; E-134) | El centro con lo de D-191 y un botón 🏰 Gestionar (agrandar, mejoras, despensa, gremio) como segunda pantalla |
 
 ## Dudas del repaso de oficios y la granja (2-oct-2026)
 

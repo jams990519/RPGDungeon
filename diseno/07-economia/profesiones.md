@@ -46,6 +46,8 @@ Esta es la **capa simple** que se programa primero, con los recursos que ya hay 
 
 ### 0.1 En el juego (fase 1)
 
+> **Desde la 0.29 (D-191, D-192):** el **🧑‍🏫 Entrenador** de 🏕️ Campamento (y /entrenador) presenta los oficios por familia, cuántos puedes empezar hoy y lo que llega después (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento, recetas nuevas con cada rango). En el centro de 🏕️ Campamento, **🛠️ Fabricar** abre ⚒️ Oficios y **🍲 Cocinar** abre la estación de la 🍲 Cocina con solo sus recetas. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md) §2 y §4.
+
 Lo que ya está programado. El catálogo vive en `content/professions.yaml` (oficios, estaciones y recetas), los números en `content/balance.yaml` → `professions` y las cuentas en `engine/professions/`. Cada héroe guarda la experiencia de cada oficio (`Hero.professions`); los héroes de antes empiezan todos los oficios en rango 1.
 
 **Los oficios.** Los 15 de la fase 1, la 🩺 Medicina, el 🧭 Explorador, el 💱 Comercio y los 4 de la fase 2 del lado del campamento (D-115, marcados "fase 2"). No hay tope: cualquiera puede subirlos todos (D-57).

@@ -167,7 +167,7 @@ def test_growing_from_level_six_needs_one_chest(service):
     view = service.act("test:1", "claim:6:1")
     hero = service._load("test:1")
     assert service.store.get("camp", "6:0")["level"] == 7 and hero.chests == 0
-    assert hero.backpack["madera"] == 500 - 15 * 6 and len(view.actions) <= 4
+    assert hero.backpack["madera"] == 500 - 15 * 6 and len(view.actions) <= 8      # D-192: the camp hub, up to 8
 
 
 def test_growing_from_level_seven_needs_two_chests(service):

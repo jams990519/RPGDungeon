@@ -1,6 +1,9 @@
-"""Press every button reachable from the main screens: no crash, no missing text, at most 6 inline buttons.
+"""Press every button reachable from the main screens: no crash, no missing text, at most 4 inline buttons (6 in combat,
+8 in the hubs).
 
-[ES] Prueba que todos los botones funcionen: recorre las pantallas pulsando cada botón (D-66).
+[ES] Prueba que todos los botones funcionen: recorre las pantallas pulsando cada botón (D-66). Tope de botones: 4 (D-75),
+6 en combate (D-46), hasta 8 de 2 en 2 en los centros de 🏕️ Campamento y 👤 Héroe y en ❓ Dudas (D-192, E-132: HUB_KINDS) y
+las filas de cantidades de D-189.
 """
 
 from collections import deque
@@ -8,6 +11,7 @@ from collections import deque
 from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.service import GameService
+from engine.service.game import HUB_BUTTONS, HUB_KINDS
 
 SKIP = ("go:", "goto:", "explore", "gather", "inn", "found", "respec", "donate")
 
@@ -27,7 +31,8 @@ def test_every_button_works(content):
         path = queue.popleft()
         service, view = build(content, path)
         pressed += 1
-        limit = 6 if view.kind == "combat" else 4      # D-46 combat bar; 4 elsewhere (D-75)
+        # D-46 combat bar; D-192 (E-132): the hubs show up to 8, 2 per row; 4 elsewhere (D-75)
+        limit = 6 if view.kind == "combat" else HUB_BUTTONS if view.kind in HUB_KINDS else 4
         if view.layout:                                 # D-189: amount pickers: a row of small amounts and one wide back
             assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions) and max(view.layout) <= 8, (path, view.layout)
         else:

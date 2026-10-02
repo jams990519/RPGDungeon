@@ -13,6 +13,7 @@ from engine.combat import make_combat
 from engine.core import FixedClock, MemoryStore
 from engine.hero import Hero
 from engine.service import GameService
+from engine.service.game import HUB_BUTTONS, HUB_KINDS
 from engine.social import guilds as guild_rules
 from test_camps import found_at, place
 
@@ -84,12 +85,13 @@ def test_founder_creates_the_guild_at_the_camp(service):
     join(service, "test:2")
     place(service, "test:2", 6, 0)
     view = service.act("test:1", "claro")
-    assert view.kind == "player_camp" and ids(view) == ["grow", "guild", "upgrades", "home"]   # D-101: 🔨 Mejoras
+    assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     screen = service.act("test:1", "guild")
-    assert screen.kind == "guild" and ids(screen) == ["guildnew", "rename", "claro"]
+    assert screen.kind == "guild" and ids(screen) == ["guildnew", "rename", "campmgmt"]
     assert any("Lyra" in line and "activo" in line for line in screen.body)
     member = service.act("test:2", "guild")                       # a member sees it, but cannot create it
-    assert ids(member) == ["leave", "claro"]
+    assert ids(member) == ["leave", "campmgmt"]
     assert "fundador" in service.act("test:2", "guildnew").notice
     place(service, "test:1", 7, 0, backpack={})                    # the founder away from the camp: only looks
     away = service.act("test:1", "guild")
@@ -366,7 +368,7 @@ def test_every_guild_screen_keeps_four_buttons(content):
             while queue:
                 path = queue.popleft()
                 service, view = build(role, with_guild, path)
-                assert len(view.actions) <= 4, (role, with_guild, path, view.kind, ids(view))
+                assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (role, with_guild, path, view.kind, ids(view))
                 assert not service.texts.missing, (path, service.texts.missing)
                 key = (view.kind, tuple(ids(view)))
                 if key in seen or len(path) >= 3:
@@ -387,5 +389,5 @@ def test_old_heroes_and_camps_load(service):
     hero.camp, hero.x, hero.y = "0:3", 0, 3
     service.store.put("hero", "test:1", hero.to_dict())
     view = service.act("test:1", "claro")
-    assert view.kind == "player_camp" and "guild" in ids(view)
+    assert view.kind == "player_camp" and "guild" in ids(service.act("test:1", "campmgmt"))   # D-192: in 🏰 Gestionar
     assert service.act("test:1", "guild").kind == "guild"

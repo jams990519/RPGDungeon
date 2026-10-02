@@ -139,7 +139,9 @@ def test_raid_arrives_after_the_interval(service, clock):
     raid = camp(service)["raid"]
     assert raid["kind"] == "raid" and raid["required"] == 1 and raid["until"] == pytest.approx(clock.now() + HOUR)
     assert any(line.startswith("🔔 ¡Oleada!") and "victorias 0/1" in line for line in view.body)
-    assert [a.id for a in view.actions] == ["grow", "campfeed", "guild", "defend"]   # Defender takes the place of Volver
+    # D-192: 🛡️ Defender goes first in the hub (📜 Tablón leaves while the raid lasts) and in 🏰 Gestionar
+    assert [a.id for a in view.actions] == ["defend", "cook", "research", "oficios", "trainer", "upsvc", "campmgmt", "dudas"]
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "claro"]
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]
     assert [a.id for a in notices[0][1].actions] == ["defend"] and "nivel" in notices[0][1].body[0]
@@ -177,7 +179,7 @@ def test_defenders_wins_are_counted_and_a_defended_raid_pays_them(service, clock
     raid = camp(service)["raid"]
     assert raid["wins"] == 2 and raid["fights"] == {"test:2": "won", "test:3": "lost", "test:4": "won"}
     member_view = service.act("test:4", "claro")
-    assert "defend" not in [a.id for a in member_view.actions] and "upgrades" in [a.id for a in member_view.actions]   # D-101: 🔨 Mejoras is back
+    assert "defend" not in [a.id for a in member_view.actions] and "board" in [a.id for a in member_view.actions]   # D-192: 📜 Tablón is back
     until = raid["until"]
     clock.advance(HOUR + 1)
     service.act("test:1", "claro")
@@ -311,7 +313,7 @@ def test_button_limits_during_raids(service, clock):
     open_raid(service, clock, ("test:1", "test:2"))
     for account in ("test:1", "test:2"):
         view = service.act(account, "claro")
-        assert len(view.actions) <= 4 and "defend" in [a.id for a in view.actions]
+        assert len(view.actions) <= 8 and "defend" in [a.id for a in view.actions]      # D-192: the camp hub, up to 8
         assert ("rename" if account == "test:1" else "leave") not in [a.id for a in view.actions]
         trial = service.act(account, "grow")                 # a weekly raid is on: no trial now, but Defender works
         assert trial.kind == "camp_trial" and len(trial.actions) <= 4 and "trial" not in [a.id for a in trial.actions]

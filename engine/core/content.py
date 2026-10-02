@@ -14,6 +14,7 @@ Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/camp_upgrades.yaml → Content.camp_upgrades: mejoras y conocimiento de los campamentos, D-101)
     (content/story.yaml → Content.story: orígenes, campaña, personajes, facciones y encargos, D-117)
     (content/dungeons.yaml → Content.dungeons: familias de enemigos que llenan las mazmorras para uno, D-164/D-170)
+    (content/faq.yaml → Content.faq: las preguntas de ❓ Dudas con su código, tema, palabras clave y relacionadas, D-191/D-192)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
@@ -60,6 +61,8 @@ class Content:
             "chapters", "quests", "daily" and "camp_tasks"), read with retired entries kept (the service hides them).
         dungeons: content/dungeons.yaml (solo dungeons, D-164/D-170: "families" of enemies that fill a dungeon each day),
             read with retired entries kept (the service leaves retired families out).
+        faq: content/faq.yaml (❓ Dudas, D-191/D-192: "topics", "popular" and "questions" with stable codes d01, d02...),
+            read with retired entries kept (the service hides retired questions).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -78,6 +81,7 @@ class Content:
     professions: dict[str, Any] | None = None
     story: dict[str, Any] | None = None
     dungeons: dict[str, Any] | None = None
+    faq: dict[str, Any] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -122,6 +126,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         professions=_read(base / "professions.yaml", keep_retired=True) if (base / "professions.yaml").exists() else {},
         story=_read(base / "story.yaml", keep_retired=True) if (base / "story.yaml").exists() else {},
         dungeons=_read(base / "dungeons.yaml", keep_retired=True) if (base / "dungeons.yaml").exists() else {},
+        faq=_read(base / "faq.yaml", keep_retired=True) if (base / "faq.yaml").exists() else {},
     )
 
 

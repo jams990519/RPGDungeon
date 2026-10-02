@@ -22,8 +22,10 @@ Reglas que nunca se rompen:
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
 Si cambias esto, revisa:
     - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble, /opciones... salen
-      del motor; el menú fijo tiene 6 botones desde D-117, con 📖 Historia). Un texto con "/" que no es un atajo exacto
-      va a service.text(), que entiende los atajos con texto (/bio <texto>, /saludar <nombre>, /brindar, /diario <nombre>)
+      del motor; el menú fijo tiene 5 botones desde D-190: 📖 Historia salió). Un texto con "/" que no es un atajo exacto
+      va a service.text(), que entiende los atajos con texto (/bio <texto>, /saludar <nombre>, /brindar, /diario <nombre>,
+      /dudas <palabras> y los códigos /d07 de ❓ Dudas, D-192). El texto "📖 Historia" de un teclado viejo también va a
+      service.text(), que lo entiende como el botón viejo
     - Despliegue: railway.json (comando de arranque)
 """
 
@@ -54,7 +56,7 @@ MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
 def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe, 📖 Historia y ⚙️ Opciones, D-114 y D-117: 2 por fila, así 6 botones son 3 filas cortas que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
+    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
     labels = [KeyboardButton(text=a.label) for a in service.menu()]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)

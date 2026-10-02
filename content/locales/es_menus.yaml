@@ -1,0 +1,110 @@
+# Texts of the 0.29 menus (D-190, D-191 confirmed; D-192 provisional): the 🏕️ Campamento hub (the Claro and your own camp),
+# 🏰 Gestionar, the 👤 Héroe card, the 🧑‍🏫 Entrenador and the notice of the old 📖 Historia button.
+# [ES] Textos de los menús nuevos de la 0.29 (estilo TowerWars "ampliado, detallado y separado"): el centro de 🏕️ Campamento
+# (el Claro y tu propio campamento) con una línea por opción, 🏰 Gestionar (lo de tu campamento: agrandar, mejoras, despensa,
+# gremio), la ficha nueva de 👤 Héroe (puntos arriba, tiempos de vida y energía), el 🧑‍🏫 Entrenador (presenta los oficios) y el
+# aviso de 📖 Historia, que salió del menú (D-190). Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
+# Los textos de ❓ Dudas están en es_dudas.yaml.
+# Documento de diseño: diseno/01-plataforma/menus-campamento-y-heroe.md
+# Lo leen: engine/service/game.py (_claro_view, _camp_here_view, _camp_hub_lines, _camp_manage_view, _hero_view,
+#     _trainer_view, _cook_view, _research, _idle_action "story") y engine/service/story.py (_origin_card_view)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Los costos y tiempos van en el texto, nunca en el botón
+#     (los teléfonos chicos cortan los botones largos).
+
+hub:
+  title_claro: "🏕️ Campamento del Claro"
+  intro_claro: "🔥 El campamento base, donde empiezan todos. Aquí tienes lo que no llevas encima:"
+  intro_camp: "🏕️ Lo que puedes hacer en tu campamento:"
+  section_info: "📌 Tu campamento"
+  # [ES] una línea por botón, en el orden de los botones
+  cook: "🍲 Cocinar: carne, pescado y lo que da cada terreno se vuelven raciones y guisos para la despensa. 🍲 Cocina rango {rank}."
+  cook_none: "🍲 Cocinar: hace falta el 🔥 Fogón (🏰 Gestionar → 🔨 Mejoras)."
+  research_claro: "🔬 Investigar: en el Claro no; se investiga en tu propio campamento con la 📚 Biblioteca (nivel {level})."
+  research_locked: "🔬 Investigar: con la 📚 Biblioteca, que se construye desde el nivel {level} (tu campamento es nivel {now})."
+  research_open: "🔬 Investigar: 📚 Conocimiento · {done} de {total} {total|estudio|estudios}{current}."
+  research_current: " · estudian {name}"
+  make: "🛠️ Fabricar: 🪚 refinar y 🛠️ fabricar equipo, pociones y muebles · {n} {n|estación|estaciones} aquí · ⚡{energy}/{max}."
+  make_none: "🛠️ Fabricar: todavía sin estaciones; las abren el 🧵 Taller y la 🔨 Herrería (🔨 Mejoras)."
+  trainer: "🧑‍🏫 Entrenador: te presenta los oficios y cuáles puedes empezar ya."
+  shop: "🛒 Mercader: pociones, vendas y 🥖 provisiones; te compra los materiales."
+  inn: "🛏️ Posada: {price} · duermes {time} y despiertas con la vida llena."
+  inn_full: "🛏️ Posada: {price} · tu vida ya está llena."
+  services: "🏘️ Servicios: {list}."
+  services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."
+  board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time}."
+  manage: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🌾 despensa y 🛡️ gremio."
+  dudas: "❓ Dudas: escribe una palabra y te muestro las preguntas ya respondidas."
+  defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
+  # [ES] botones (cortos: sin costos)
+  cook_button: "🍲 Cocinar"
+  research_button: "🔬 Investigar"
+  make_button: "🛠️ Fabricar"
+  trainer_button: "🧑‍🏫 Entrenador"
+  shop_button: "🛒 Mercader"
+  inn_button: "🛏️ Posada"
+  board_button: "📜 Tablón"
+  services_button: "🏘️ Servicios"
+  manage_button: "🏰 Gestionar"
+  # [ES] avisos cuando una opción no se puede aquí: el botón no se esconde, explica por qué y dónde
+  research_claro_notice: "🔬 En el Claro no se investiga: el Claro no crece. En tu propio campamento, con la 📚 Biblioteca (nivel {level}), estudian {studies}."
+  research_locked_notice: "🔬 Para investigar, tu campamento necesita la 📚 Biblioteca: se construye en 🏰 Gestionar → 🔨 Mejoras desde el nivel {level} (hoy es nivel {now})."
+  research_away_notice: "🔬 Se investiga en tu propio campamento, con la 📚 Biblioteca. Ve hasta él."
+  cook_none_notice: "🍲 Para cocinar aquí hace falta el 🔥 Fogón: se construye en 🏰 Gestionar → 🔨 Mejoras. En el Claro siempre se puede."
+  away_notice: "🏕️ Eso se hace en el Claro o en tu propio campamento: ve hasta uno de los dos."
+  cook_title: "🍲 Cocinar"
+  cook_intro: "🍲 Lo cocinado rinde más raciones en la 🌾 despensa de tu campamento que la carne o el pescado crudos. Tu 🍲 Cocina sube con cada receta."
+
+manage:
+  title: "🏰 Gestionar {name}"
+  intro: "Lo que hace crecer y mantener tu campamento:"
+  grow: "⬆️ Agrandar: {cost} para pasar al nivel {next} (una zona más y más lugar para miembros)."
+  grow_top: "⬆️ Agrandar: tu campamento llegó a castillo."
+  upgrades: "🔨 Mejoras: {n} {n|construida|construidas} · 🛡️ Defensa {defense}. Obras, servicios y 📚 Conocimiento."
+  pantry: "🌾 Aportar comida: carne, pescado, comida cocinada o 🥖 provisiones para la despensa."
+  pantry_locked: "🌾 Despensa: llega al nivel {level} (aldea)."
+  guild: "🛡️ Gremio: los miembros, ✏️ el nombre, 🚪 salir y el gremio del campamento."
+  defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
+
+hero_card:
+  points: "✨ Puntos de talento: {n} — ponlos en 🌟 Talentos"
+  hp: "❤️ Vida: {hp}/{max_hp}{timer}"
+  hp_timer: " (llena en {time})"
+  energy: "⚡ Energía: {energy}/{max}{timer}"
+  energy_timer: " (+1 en {time})"
+  energy_full: " (llena)"
+  trades: "⚒️ Oficios: {n} {n|empezado|empezados} · mejor: {best} — /oficios"
+  journal_button: "📔 Diario"
+  origin_button: "🎭 Origen"          # [ES] E-131: el origen se elige cuando quieras (🎭, como en el resto de la historia)
+
+story_moved: "📖 Historia salió del menú de abajo: tu historia sigue aquí, en 👤 Héroe → 📔 Diario. El 📜 Tablón está en 🏕️ Campamento."
+
+origin_card:
+  title: "🎭 Tu origen"
+  head: "🎭 {origin}"
+  chain: "📖 Su historia: misión {done} de {total}."
+  chain_done: "📖 Su historia: completa ✅."
+  forever: "El origen se elige una sola vez y queda para siempre."
+
+trainer:
+  title: "🧑‍🏫 Entrenador"
+  intro: "«Un oficio se aprende haciéndolo: no se paga ni se elige, y puedes tenerlos todos. Esto hace cada familia:»"
+  branch:
+    gather: "🪓 Recolección: juntas materiales en las zonas. Suben al recolectar (el 🔪 Desollador, al vencer bestias; el 🎣 Pescador, en zonas con agua)."
+    explore: "🧭 Exploración: el 🧭 Explorador sube explorando y ve más en el mapa; desde el rango {recon} reconoce de lejos."
+    refine: "🪚 Refinado: conviertes lo que juntas en materiales mejores (tablones, lingotes, telas, sillares…) en una estación."
+    craft: "🛠️ Fabricación: equipo, pociones, vendas, comida y muebles, en una estación. A veces sale una ✒️ obra maestra."
+    enchant: "✨ Encantamiento: desarmas equipo viejo en esencias y encantas tus piezas (/encantar)."
+    service: "💱 Servicio: el 💱 Comercio sube vendiendo; la 🏗️ Construcción, aportando a las obras de tu campamento."
+  names: "   {list}"
+  entry: "{name}"
+  entry_rank: "{name} {rank}"
+  now: "✅ Hoy puedes empezar {n} {n|oficio más|oficios más}: los que todavía no tienen rango en la lista."
+  now_all: "✅ Ya empezaste todos los oficios que tienes a tu alcance."
+  later_title: "🔒 Más adelante:"
+  later_camp: "• 🏕️ Con tu propio campamento: {list} y las estaciones de sus mejoras."
+  later_specs: "• 🎓 Al rango {first} de un oficio eliges su primera especialización, y al {second} la segunda."
+  later_more: "• Cada rango abre recetas nuevas: a medida que avances aprenderás más y más."
+  stations: "📍 Aquí hay estaciones de {n} {n|oficio|oficios}: 🛠️ Fabricar y 🍲 Cocinar las usan."
+  stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
+  mine_button: "⚒️ Mis oficios"
+  ench_button: "✨ Encantamiento"
