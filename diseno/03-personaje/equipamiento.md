@@ -1,6 +1,6 @@
 # Equipamiento
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1) y qué estadística da cada tipo de armadura (D-206, provisional, §2.1)
 
 **De dónde sale.**
 - *World of Warcraft*: 16 ranuras, tipos de armadura, calidades por color, nivel de objeto, conjuntos, gemas, encantamientos, pistas de mejora y Gran Tesoro semanal.
@@ -51,6 +51,22 @@ Se puede lanzar con 10 ranuras (armas, cabeza, hombros, pecho, manos, piernas, p
   | Pesada (70-100 %) | −iniciativa; Aguante máximo −1 (hay para una respuesta menos; ver [Ronda y acciones](../04-combate/ronda-y-acciones.md)) |
   | Sobrecargado (>100 %) | No puedes esquivar (ni con respuestas 💨 ni con 🌀 Esquivar) y Huir siempre falla |
 
+### 2.1 Qué estadística da cada tipo (D-206, provisional)
+
+El dueño pidió, el 2-oct-2026, la estadística principal de cada tipo, sus clases, su rol y qué mejora cada pieza. Lost Realms **no tiene fuerza, agilidad ni intelecto**: sus estadísticas de combate son ❤️ **vida**, ⚔️ **ataque** (un solo valor para lo físico y lo mágico), 🛡️ **armadura** (nunca más de 60 %) y ⚡ **iniciativa** (quién actúa primero). Las curaciones crecen con la vida máxima.
+
+| Tipo | Estadística que prevalece | Clases | Roles | Qué mejora cada pieza |
+|---|---|---|---|---|
+| 🛡️ Placa | 🛡️ armadura y ❤️ vida | Guerrero, Paladín, Caballero de la Muerte | Tanques y cuerpo a cuerpo pesado; también curación (Paladín) y soporte | La armadura más alta de los cuatro y vida; poco ataque (guantes) |
+| ⛓️ Malla | ⚔️ ataque con 🛡️ armadura media | Cazador, Chamán, Evocador | Daño a distancia, curación y soporte (híbridos) | Armadura media y ataque |
+| 🦺 Cuero | ⚡ iniciativa y ⚔️ ataque | Pícaro, Monje, Druida, Cazador de demonios, Bardo | Daño cuerpo a cuerpo rápido, defensa por esquiva, curación y soporte | Iniciativa y ataque; armadura baja |
+| 👘 Tela | ⚔️ ataque (poder mágico) y ❤️ vida (la curación crece con la vida máxima) | Sacerdote, Mago, Brujo, Nigromante | Daño mágico, curación y soporte | El ataque más alto y vida; armadura mínima |
+
+- **Por qué así.** Sigue lo que ya tienen las clases de base: las de placa tienen la armadura más alta (0,14 a 0,22), las de malla, media (0,12 a 0,14), las de cuero, baja (0,10; sus especializaciones de defensa, 0,16 a 0,20) y la mayor iniciativa (11 a 14), y las de tela, la más baja (0,05; las de defensa, 0,12 a 0,14).
+- **Hoy en el juego** los cuatro tipos dan lo mismo por pieza (el pecho, vida y armadura; los guantes suman ataque; las piezas de artesano, un poco de ataque) y solo la clase decide cuál rinde al 100 %; otro tipo rinde la mitad (D-83).
+- **Cuándo se aplica:** con el código de los oficios, y medido con las herramientas de balance (`tools/sim.py`, `tools/balance_report.py`) para que ninguna clase se vuelva más fuerte por sorpresa. Los IDs de las piezas no cambian. Se confirma en E-168.
+- **Quién fabrica cada tipo:** placa, la 🔨 Herrería; cuero, la 🦺 Peletería; tela, la 🪡 Sastrería; malla, un oficio propio, el ⛓️ Mallero (D-194). El 2-oct el dueño dijo "el Herrero hace placa y malla"; no se decidió y quedó en E-143.
+
 ## 3. Qué define a un objeto
 
 Cada objeto tiene siete propiedades. En la pantalla se ven dos o tres; el resto está en el detalle.
@@ -63,9 +79,19 @@ Cada objeto tiene siete propiedades. En la pantalla se ven dos o tres; el resto 
 | **Encantamiento** | +0 a +4 | Albion (.1 a .4) | Cada nivel sube el Poder de Objeto como un anillo parcial. Se hace infundiendo runas, almas y reliquias |
 | **Mejoras** | 0 a 3 | Pistas de mejora de WoW | Cada mejora cuesta Esencia y material, y nunca llega a la base del anillo siguiente |
 | **Afijos** | 0 a 4 líneas | WoW (secundarias), Diablo | Crítico, Celeridad, Maestría, Versatilidad, resistencias, protección de zona, robo de vida… |
-| **Engarces** | 0 a 2 | WoW (gemas) | Gemas de joyería |
+| **Engarces** (ranuras para gemas) | 0 a 3 (D-199: solo armaduras y armas de buena calidad) | WoW (gemas) | Gemas que refina la 💍 Joyería (D-198) |
 
 Además: **durabilidad** (actual y máxima), **peso**, **atadura** y **firma del artesano**.
+
+### 3.1 Ranuras para gemas (D-199, 2-oct-2026)
+
+Aquí "ranura" es el hueco donde va una gema (lo que la tabla llama engarce), no la ranura del cuerpo del §1.
+
+- **Llevan ranura:** todas las piezas de armadura y las armas.
+- **Nunca llevan ranura:** los anillos, collares, amuletos ni ningún accesorio. Su valor está en los bonos con que los crea el 💍 Joyero o el ⚗️ Alquimista (los amuletos pasan a la Alquimia, D-194).
+- **Solo en piezas de buena calidad:** las comunes no llevan.
+- **Cuántas (provisional, recomendación de E-149):** 1 en las piezas buenas y hasta 3 en las mejores. El ✨ encantamiento sigue aparte: una pieza puede tener gemas y su encantamiento.
+- **Las gemas** las refina el Joyero desde la mena que junta el ⛏️ Minero (D-198).
 
 ### Poder de Objeto (PO)
 

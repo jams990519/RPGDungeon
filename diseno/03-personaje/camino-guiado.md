@@ -1,8 +1,10 @@
 # Camino guiado
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Creación de personaje](creacion-de-personaje.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Cacerías](../06-contenido/cacerias.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) · **Alimenta a:** [Progresión](progresion.md), [Aprendizaje y pistas](../00-vision/aprendizaje-y-pistas.md), [Historia y rol](../06-contenido/historia-y-rol.md) · **Estado:** en el juego desde la 0.29 (D-190 confirmada; cómo se aplicó, D-193 provisional)
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Creación de personaje](creacion-de-personaje.md), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md), [Cacerías](../06-contenido/cacerias.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) · **Alimenta a:** [Progresión](progresion.md), [Aprendizaje y pistas](../00-vision/aprendizaje-y-pistas.md), [Historia y rol](../06-contenido/historia-y-rol.md) · **Estado:** en el juego desde la 0.29 (D-190 confirmada; cómo se aplicó, D-193 provisional). El orden exacto lo fijó el dueño el 2-oct-2026 (D-204, §2.1): los cuatro primeros pasos ya coinciden; el 5.º y lo que pasa con los de hoy esperan E-166 y E-167
 
 **Qué pediste (D-190).** La historia ya no es una opción del menú: el juego te va mandando a hacer **una acción a la vez**, cada vez que encuentras algo nuevo, y te explica lo justo. Primero el héroe (nombre y clase), después **dónde estás** (el Claro, la antorcha), **moverte**, en la zona nueva **explorar, recolectar y cazar**, el **🗺️ Mapa**, **volver al campamento**, el **campamento** y el **héroe**. Los tutoriales llegan **a medida que desbloqueas cosas, nunca todo de golpe**. Fundar campamento no se explica hasta que sales del Claro. El formato, como TowerWars: "bien ampliado, detallado y separado".
+
+**El orden exacto (D-204, 2-oct-2026).** Moverse, explorar, recolectar, cazar y **aportar al campamento**: primero aprendes a sostenerte solo y después entras a la capa Imperio (el asentamiento). Ver §2.1.
 
 **De dónde sale.**
 - **TowerWars** (el formato que pediste; se miró solo como referencia, sin tocar nada, D-01): título con emoji, secciones separadas, una cosa por línea; los avisos de "🌳 ¡Desbloqueaste…!" y la guía que muestra solo lo ya desbloqueado. Lost Realms va más guiado: un paso a la vez.
@@ -13,7 +15,7 @@
 
 ## 1. Cómo se ve
 
-- **Al crear el héroe** sale **🔥 Llegaste al Claro**: dónde estás (el campamento base, la antorcha donde despiertan todos), que alrededor hay terrenos distintos (cada color del mapa es uno), que tendrás que moverte para investigar, juntar y hacer misiones, y **cómo moverte**: las 4 rutas, cuánto tarda cada viaje (2 minutos las zonas cercanas, más cuanto más lejos, hasta 20 por zona), que puedes cerrar el chat y que al llegar pueden salir monstruos. Los 4 botones son las rutas.
+- **Al crear el héroe** sale **🔥 Llegaste al Claro**: dónde estás (el campamento base, la antorcha donde despiertan todos), que alrededor hay terrenos distintos (cada color del mapa es uno), que tendrás que moverte para investigar, juntar y hacer misiones, y **cómo moverte**: las 4 rutas, cuánto tarda cada viaje (2 minutos las zonas cercanas, más cuanto más lejos, hasta 20 por zona; desde la 0.29.1, 1 minuto por zona, D-197), que puedes cerrar el chat y que al llegar pueden salir monstruos. Los 4 botones son las rutas.
 - **Un solo paso a la vez.** El paso de ahora sale como una línea **🧭 Ahora:** con el botón exacto, al final de 📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe y el campamento enemigo (y una línea "📖 /guia" para volver a leer la explicación).
 - **Al cumplir un paso**, el aviso dice **✅ Paso N de 11 hecho**, el premio (🎁 +5 🥉 · +20 de experiencia), lo que aprendiste (por ejemplo, cómo leer el mapa al abrirlo) y **👉 el paso siguiente** con su explicación.
 - **/guia** muestra el paso de ahora con su explicación y su botón, y la lista de avisos que ya viste.
@@ -36,6 +38,22 @@
 
 - **Premio:** 5 🥉 y 20 de experiencia por paso (con el acelerador de 💎, la experiencia sube), una sola vez. El paso 10 no paga. En total, 50 🥉 y 200 de experiencia (el tutorial viejo daba 35 y 140).
 - **Fundar campamento (D-190).** Mientras estás en el Claro no se dice nada. Al salir por primera vez después del camino básico, el aviso explica que el Claro no crece y tu campamento sí, y te pide moverte una o dos zonas más. Al llegar a un buen lugar: **"🏕️ ¡Encontraste un buen lugar para tu propio campamento!"** y la lista de lo que hace falta ahí (✅ / ▫️, las reglas de siempre: Lejanía, explorar al 100 %, 4 vecinas conocidas, no tener otro campamento cerca, 20 de madera y 10 de piedra). La línea 🧭 Ahora dice lo que falta en la zona donde estés. Al fundarlo, el **tutorial corto del campamento**: 🔨 Mejoras ("aquí está el botón de mejora"), 🏘️ Servicios (el mercader, la posada y el taller llegan con sus mejoras), 🧑‍🏫 Entrenador, ⬆️ Agrandar, las oleadas y 🛡️ Defender, y que aprenderás más oficios.
+
+### 2.1 El orden que fijó el dueño (D-204, 2-oct-2026)
+
+| N | Paso del dueño | En el juego hoy (0.29) |
+|---|---|---|
+| 1 | Moverse de posición | ✅ Igual: paso 1, Moverte |
+| 2 | Explorar la zona | ✅ Igual: paso 2, Explorar |
+| 3 | Recolectar | ✅ Igual: paso 3, Recolectar |
+| 4 | Cazar | ✅ Igual: paso 4, Cazar |
+| 5 | Aportar al campamento | ❓ No existe todavía. Quien no tiene campamento no tiene dónde aportar: el Claro no tiene despensa (D-95, D-98) y no hay botón para aportar sin campamento (E-166) |
+
+- **La idea del dueño:** el jugador aprende primero a **sostenerse solo** (moverse, explorar, recolectar, cazar) y después entra a la **capa Imperio**: el asentamiento, sus aldeanos y sus caravanas ([Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md)).
+- **El 5.º paso (E-166).** Recomendado: volver al Claro y aportar parte de lo recolectado y cazado al 🔥 fogón común del Claro, un aporte de práctica que enseña el botón 🤲 Aportar y da el premio del paso; en tu propio campamento, ese botón alimenta a los aldeanos (D-205).
+- **Los pasos de hoy después de cazar (E-167):** 🗺️ Mapa, volver al Claro, 🏕️ Campamento, 🧑‍🏫 Entrenador y 👤 Héroe. Recomendado: pasan a ser avisos de una sola vez (§3) cuando abres esas pantallas por primera vez, y el camino queda con los 5 pasos del dueño y después buscar lugar y fundar el campamento.
+- **El premio por terminarlo (E-164).** Recomendado: además de lo de cada paso, al terminar los 5 pasos 1 🥈 y una bolsa chica que agranda la mochila.
+- **Hasta que se respondan**, el camino sigue como en la tabla del §2. Al cambiarlo, los IDs de los pasos no se borran ni se reutilizan: los que salgan se marcan `retired: true` en `content/guide.yaml`, y nadie pierde lo que ya hizo (D-64).
 
 ## 3. Los avisos de una sola vez
 
@@ -77,5 +95,6 @@ Salen **la primera vez** que pasa cada cosa, **de a uno por pantalla** (si pasan
 
 ## 7. Preguntas
 
-- **E-135 (P-134):** dijiste que moverse no gasta energía, pero hoy cada viaje gasta 1 ⚡ (D-78). El texto del camino dice el número real; si lo pasamos a 0, cambia solo.
+- **E-135 (P-134):** ✅ decidida (D-190): moverse no gasta energía, solo tiempo (en el juego desde la 0.29); desde la 0.29.1, 1 minuto por zona (D-197). El texto del camino dice el número real.
+- **Del orden del dueño (D-204):** E-166 (el 5.º paso, aportar al campamento, sin campamento propio), E-167 (qué pasa con los pasos de hoy después de cazar) y E-164 (el premio por terminar el tutorial), en el bloque A3 del [Sistema de preguntas](../00-vision/sistema-de-preguntas.md).
 - Abiertas de antes: E-129 a E-133 (Dudas, lo que estaba en 📖 Historia, el origen, los 8 botones, los jugadores de antes). Aquí se aplican las recomendadas.
