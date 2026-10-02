@@ -32,6 +32,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     engine/service/story.py, StoryMixin, de la que GameService hereda)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.2 (los recursos de cada terreno, D-180, D-183) y §1.16 (los ✨ nodos de
     recursos, D-181, D-184)
+    diseno/03-personaje/camino-guiado.md (el 🧭 camino guiado y sus avisos, D-190, D-193: vive en engine/service/guide.py,
+    GuideMixin, de la que GameService también hereda)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
@@ -41,7 +43,7 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     cofre, D-112), engine.world.dungeons (dónde están las mazmorras, qué las llena cada día, sus pisos y su botín,
     D-164/D-170), engine.world.resources (recursos de base, del terreno y pescado, D-87/D-180/D-115), engine.world.nodes
     (dónde están los nodos de recursos y de qué son, D-184), content/* (content/dungeons.yaml: las familias de enemigos de
-    las mazmorras)
+    las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -105,6 +107,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
     D-192: "dudas_open" (clave la cuenta: {"at"}): la pantalla de ❓ Dudas está abierta y el texto suelto es una búsqueda;
     act() lo borra con cualquier otro botón. Es solo un estado de pantalla, como "camp_naming": nada de progreso.
+    D-193: Hero.guide (el avance del 🧭 camino guiado: pasos hechos, avisos vistos, movimientos para fundar); lo maneja
+    engine/service/guide.py. Hero.tutorial (el tutorial viejo) ya no avanza: solo se lee (E-133).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -159,6 +163,8 @@ Reglas que nunca se rompen:
         Claro, la guarida ni la entrada de una mazmorra; su tipo se descubre SOLO al estar en su zona (llegar de un viaje,
         📍 Zona, el mapa, recolectar o explorar ahí), nunca explorando alrededor ni reconociendo de lejos (E-125 abierta).
         Sus unidades de más y su raro usan su propio sorteo: la vuelta de recolección saca lo mismo que sin nodo.
+    22. El 🧭 camino guiado (D-190, D-193) nunca bloquea nada: un solo paso a la vez, cada paso y cada aviso una sola vez, y
+        el héroe recién creado ve primero "dónde estás" (el Claro) con las 4 rutas, nunca la elección del origen (E-131).
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -327,6 +333,15 @@ Si cambias esto, revisa:
       _map_view (línea y botón 🔭 si cabe), _ecamp_map_lines (fuerza de lo reconocido hoy), _dng_shown/_dng_seen (🕳️ / 🌀 de
       lo reconocido), _dng_map_lines (familia de hoy), _zone_view (marca en la ruta), _ecamp_intel_lines (chest=False),
       _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
+    - 🧭 Camino guiado (D-190, D-193): content/guide.yaml (pasos y avisos), content/locales/es_guia.yaml, balance.yaml guide;
+      engine/service/guide.py (GuideMixin); tests/test_camino_guiado.py (mapa de impacto C-29). El gancho _guide_event se llama
+      en _settle (una vuelta de explorar o recolectar), _arrive (cada tramo), _end_combat (state["guide"]; _auto_combat lo pasa
+      al resumen del lote) y _found_camp; _guide_before en act() y view() (pasos de botón: "map", "claro", "trainer", "hero",
+      antes de armar la pantalla); _tutorial_hint (zona, 🧭 Explorar, Claro, héroe y campamento enemigo) da la línea
+      "🧭 Ahora:" y un aviso; _combat_view el aviso de la primera pelea; _create_action termina en _guide_view (la bienvenida);
+      COMMANDS /guia y /origen; _idle_action "guide". view() y tick() guardan al héroe DESPUÉS de armar la pantalla (un aviso
+      que se mostró queda visto). El tutorial viejo (_tutorial, balance.yaml tutorial, tutorial.* de es.yaml) se quitó o queda
+      solo para leer: si vuelve a usarse, los héroes nuevos tienen Hero.tutorial = 0
 """
 
 from __future__ import annotations
@@ -382,6 +397,7 @@ from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
+from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭 the guided path
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -400,6 +416,8 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/especialidad": "pspecs",                                                         # D-141: 🎓 Especialización
             "/reconocer": "recon",                                                             # D-172: 🔭 Reconocer
             "/dudas": "dudas", "/entrenador": "trainer"}                                       # D-191/D-192: ❓ Dudas, 🧑‍🏫 Entrenador
+# D-193: /guia shows the 🧭 guided path again; /origen chooses the 🎭 origin later (E-131: offered as an optional step).
+COMMANDS.update({"/guia": "guide", "/origen": "origin"})
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
@@ -433,8 +451,9 @@ CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
 
 
-class GameService(StoryMixin):
-    """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117).
+class GameService(StoryMixin, GuideMixin):
+    """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
+    guided path in engine/service/guide.py, D-190/D-193).
 
     Args:
         content: loaded content.
@@ -487,8 +506,10 @@ class GameService(StoryMixin):
         notices = self._settle(hero)
         self._raid_settle(hero)
         self._hunt_party_settle(hero)       # D-106: the camp's hunting party closes lazily too
-        self._save(hero)
-        return self._main_view(hero, notice=self._join(notices))
+        guided = self._guide_before(hero, None)        # D-193: a 🧭 step that already holds (back home, a camp)
+        view = self._main_view(hero, notice=self._join(notices + guided))
+        self._save(hero)                    # after the view: a 🧭 tip it showed stays seen
+        return view
 
     def text(self, account_id: str, text: str) -> View:
         """Handle free text: the hero's name, a camp or guild name, or a typed command ("/bio ...", "/saludar Bram").
@@ -578,7 +599,10 @@ class GameService(StoryMixin):
         if combat is not None:
             view = self._combat_action(hero, combat, action_id)
         else:
-            view = self._idle_action(hero, action_id)
+            guided = self._guide_before(hero, action_id)    # D-193: 🧭 a step done with this button (before the screen is
+            view = self._idle_action(hero, action_id)       # built, so its "🧭 Ahora:" line is already the next step)
+            if guided:
+                view.notice = self._join(([view.notice] if view.notice else []) + guided)
         self._save(hero)
         if notices:
             view.notice = self._join(notices + ([view.notice] if view.notice else []))
@@ -675,9 +699,10 @@ class GameService(StoryMixin):
             hero = Hero.from_dict(data)
             ensure_talents(self.content.classes, self.content.balance, hero)
             notices = self._settle(hero)
-            self._save(hero)
-            if notices:          # a batch step that simply goes on stays silent (D-87)
-                out.append((account_id, self._main_view(hero, notice=self._join(notices))))
+            view = self._main_view(hero, notice=self._join(notices)) if notices else None
+            self._save(hero)     # after the view: a 🧭 tip it showed stays seen (D-193)
+            if view is not None:          # a batch step that simply goes on stays silent (D-87)
+                out.append((account_id, view))
         for account_id, box in list(self.store.items("outbox")):
             self.store.delete("outbox", account_id)
             for item in box.get("items", []):
@@ -904,6 +929,7 @@ class GameService(StoryMixin):
         """Finish due timers and apply passive regeneration. Returns notice lines."""
         now = self.clock.now()
         notices: list[str] = []
+        self._guide_new_request(hero)                   # D-193: every order starts here (rule 1): a fresh "🧭 Ahora:" line
         in_combat = self.store.get("combat", hero.id) is not None
         stats = hero_stats(self._kit(hero), hero.level)
         paused = in_combat or self._dng_paused(hero)    # D-170: no free healing between floors of a deep dungeon
@@ -943,13 +969,12 @@ class GameService(StoryMixin):
                 if activity["kind"] == "explore":
                     fight = self._explore_step(hero, zone, rng, activity)
                     tally["explorations"] = tally.get("explorations", 0) + 1
-                    if zone.x == 0 and zone.y == 0:
-                        activity["log"] += self._tutorial(hero, "explore_claro")
+                    activity["log"] += self._guide_event(hero, "explore")       # D-193: 🧭 the "explore" step
                 elif activity["kind"] == "gather":
                     before = sum(activity["got"].values())
                     fight = self._gather_step(hero, zone, rng, activity)
                     tally["gathered"] = tally.get("gathered", 0) + sum(activity["got"].values()) - before
-                    activity["log"] += self._tutorial(hero, "gather")
+                    activity["log"] += self._guide_event(hero, "gather")        # D-193: 🧭 the "gather" step
                 else:                                   # D-114: a hunting batch, every prey is a fight
                     fight = self._hunt_step(hero, zone, rng)
                 if fight:
@@ -965,7 +990,6 @@ class GameService(StoryMixin):
             elif activity["kind"] == "rest":
                 hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 notices.append(self.texts.t("inn.rested"))
-                notices += self._tutorial(hero, "heal")
         self._guild_count(hero, tally)
         notices += self._dng_settle(hero)               # D-170: a deep run left behind is closed (its pot paid in full)
         return notices
@@ -986,8 +1010,6 @@ class GameService(StoryMixin):
         notices += self._node_discover(hero, hero.x, hero.y)   # D-181, D-184: arriving at a node's zone tells what it is, for ever
         self.bus.publish(TravelArrived(hero.id, hero.x, hero.y))
         notices += self._visit_camp(hero)
-        if zone.lejania >= 1:
-            notices += self._tutorial(hero, "leave_claro")
         path = [list(p) for p in activity.get("path", [])]
         final = not path
         if final:
@@ -1001,6 +1023,7 @@ class GameService(StoryMixin):
             self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
             notices.append(self.texts.t("travel.discovered_named", name=self._zone_name(zone)))
         notices += self._story_event(hero, "visit", x=hero.x, y=hero.y, lejania=zone.lejania, lair=self._is_lair(hero.x, hero.y))   # D-117
+        notices += self._guide_event(hero, "arrive", x=hero.x, y=hero.y, final=final)   # D-193: 🧭 move, back home, a spot to found
         danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
         if self._territory(hero.x, hero.y):
             danger = 0.0                      # camps and the Claro protect their land (D-81)
@@ -1040,6 +1063,8 @@ class GameService(StoryMixin):
     def _spend_energy(self, hero: Hero, kind: str, cost: int | None = None) -> bool:
         """Pay the energy of a non-combat action: move, explore or gather (D-78); hunting passes its own cost (D-106)."""
         cost = self.content.balance["energy"][f"per_{kind}"] if cost is None else cost
+        if cost <= 0:                                   # D-190: moving is free (energy.per_move 0): nothing to pay, no timer touched
+            return True
         if hero.energy < cost:
             return False
         if hero.energy >= self.content.balance["energy"]["max"]:
@@ -1301,13 +1326,16 @@ class GameService(StoryMixin):
             self.store.delete("referral", account_id)
         self.store.put("invite_code", self.invite_code(account_id), {"account": account_id})
         self._pay_referral(hero)
-        # D-190: creating asks only the name and the class; the origin is offered later (E-131: an optional step of the guided
-        # path, or 👤 Héroe → 🎭 Origen whenever the player wants). Nothing is marked "offered": _origin_offer stays available.
+        # D-190: creating asks only the name and the class; the origin is offered later (E-131: the 🧭 guide's 🎭 tip and
+        # /origen, or 👤 Héroe → 🎭 Origen whenever the player wants).
+        hero.story["offered"] = True     # D-117 / E-131: no origin screen now; the 🧭 guide offers it later (/origen)
+        hero.guide = self._guide_new()   # D-193: the 🧭 guided path starts at its first step
         self._journal(hero, "awoke")
         self._save(hero)
         self.store.delete("pending", account_id)
         self.bus.publish(HeroCreated(hero.id, class_id))
-        return self._main_view(hero, notice=self.texts.t("create.welcome", name=hero.name))
+        # D-190: right after name and class, "where you are" (the Claro, the torch) and the first task, with the 4 routes
+        return self._guide_view(hero, notice=self.texts.t("create.welcome", name=hero.name), welcome=True)
 
     # ------------------------------------------------------------------ idle actions
 
@@ -1430,6 +1458,8 @@ class GameService(StoryMixin):
             return self._prof_action(hero, action_id)
         if action_id.startswith(SPEC_ACTIONS):          # D-141: 🎓 Especialización (choosing works while busy: it is a menu)
             return self._pspec_action(hero, action_id)
+        if action_id == "guide":                        # D-193: 🧭 Camino guiado (/guia); a menu, also while busy
+            return self._guide_view(hero)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
         if action_id == "found":
             return self._ask_camp_name(hero, "found")
@@ -1540,8 +1570,7 @@ class GameService(StoryMixin):
             direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
             hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
                              "path": path, "goal": [gx, gy]}
-            notices = self._tutorial(hero, "use_places")
-            return self._activity_view(hero, notice=self._join([t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))] + notices))
+            return self._activity_view(hero, notice=t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy))))
         if action_id == "gather" and self._is_lair(hero.x, hero.y):
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
         if action_id in ("gather", "explore"):
@@ -1897,7 +1926,7 @@ class GameService(StoryMixin):
         hero.hp += healed
         if item.get("kind") == "potion":
             hero.downed = False             # D-83: drinking a potion ends the slow recovery
-        return self._potions_view(hero, notice=self._join([t.t("bag.used", item=t.t(item["name_key"]), amount=healed)] + self._tutorial(hero, "heal")))
+        return self._potions_view(hero, notice=t.t("bag.used", item=t.t(item["name_key"]), amount=healed))
 
     # ------------------------------------------------------------------ views
 
@@ -2490,23 +2519,17 @@ class GameService(StoryMixin):
         inviter.invites += 1
         self._save(inviter)
 
-    def _tutorial(self, hero: Hero, step: str) -> list[str]:
-        """Advance the tutorial if this is the current step; small reward (D-56: hints, not solutions)."""
-        cfg = self.content.balance["tutorial"]
-        steps = cfg["steps"]
-        if hero.tutorial >= len(steps) or steps[hero.tutorial] != step:
-            return []
-        hero.tutorial += 1
-        hero.gold += cfg["reward_gold"]
-        lines = [self.texts.t("tutorial.reward", gold=self._money(cfg["reward_gold"]), xp=int(cfg["reward_xp"] * self._xp_mult(hero)))]
-        return lines + self._give_xp(hero, cfg["reward_xp"])
-
     def _tutorial_hint(self, hero: Hero) -> list[str]:
-        steps = self.content.balance["tutorial"]["steps"]
-        if hero.tutorial >= len(steps):
-            return []
-        return ["", self.texts.t("tutorial.hint_title", n=hero.tutorial + 1, total=len(steps)),
-                self.texts.t(f"tutorial.steps.{steps[hero.tutorial]}")]
+        """The 🧭 guided path's lines for a main screen: the "🧭 Ahora:" task and at most one new tip (D-193).
+
+        [ES] Qué hace: desde la 0.29 (D-193) es la puerta de las pantallas al camino guiado (engine/service/guide.py
+        _guide_hint): la línea "🧭 Ahora:" del paso actual y como mucho un aviso nuevo. El tutorial viejo de pistas
+        (balance.yaml tutorial, Hero.tutorial) ya no se muestra ni avanza. Mantiene su nombre para que las pantallas que la
+        llaman (📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe, el campamento enemigo) no cambien.
+        La llaman: _zone_view, _explore_menu, _claro_view, _hero_view y _ecamp_menu.
+        Si cambia, afecta: el final de esas pantallas (tests/test_camino_guiado.py).
+        """
+        return self._guide_hint(hero)
 
     def _shop_view(self, hero: Hero, notice: str | None = None) -> View:
         """The Claro trader: buy belt items and 🥖 provisions (D-93), sell materials (half price).
@@ -2588,7 +2611,7 @@ class GameService(StoryMixin):
                 return self._shop_view(hero)
             total, trade = self._merchant_sale(hero, total)     # D-116: 💱 Comercio
             hero.gold += total
-            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
+            lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade
             lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)          # D-117
             return self._shop_view(hero, notice="\n".join(lines))
         item = self.content.items.get(item_id, {})
@@ -2600,7 +2623,7 @@ class GameService(StoryMixin):
             del hero.backpack[item_id]
         price, trade = self._merchant_sale(hero, price)         # D-116: 💱 Comercio
         hero.gold += price
-        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + trade + self._tutorial(hero, "sell")   # D-98: the tutorial step that replaced donating
+        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + trade
         lines += self._story_event(hero, "sell", n=1, coins=price)                             # D-117
         return self._shop_view(hero, notice="\n".join(lines))
 
@@ -2834,6 +2857,9 @@ class GameService(StoryMixin):
         story = self._story_event(hero, "camp", name=name)            # D-117: the journal (and any mission that asks for a camp)
         if story:
             notice += "\n" + "\n".join(story)
+        guide = self._guide_event(hero, "camp", name=name)            # D-193: 🧭 the "found" step and the camp's short tutorial
+        if guide:
+            notice += "\n" + "\n".join(guide)
         if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
             notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["per_week"])
         return self._camp_here_view(hero, notice=notice)
@@ -4668,7 +4694,7 @@ class GameService(StoryMixin):
             return self._services_view(hero, notice=t.t("upgrades.nothing_to_sell"))
         total, trade = self._merchant_sale(hero, total, "barter")   # D-116: 💱 Comercio (D-141: 🐪 Caravanero)
         hero.gold += total
-        lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade + self._tutorial(hero, "sell")
+        lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade
         lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)              # D-117
         return self._services_view(hero, notice="\n".join(lines))
 
@@ -6984,7 +7010,7 @@ class GameService(StoryMixin):
         siguen siendo 3), y un lugar con un 👹 campamento enemigo en pie lo dice.
         La llaman: el botón 📒 Lugares del mapa y un "goto:" que ya no sirve.
         Si cambia, afecta: tests/test_service.py, tests/test_boss.py y tests/test_enemy_camps.py (lugares y guarida), el
-        paso use_places del tutorial.
+        paso "return" del 🧭 camino guiado (D-193: su botón y su texto mandan a 📒 Lugares → El Claro).
         """
         t = self.texts
         places = []
@@ -9539,6 +9565,7 @@ class GameService(StoryMixin):
         outcome = state["outcome"]
         ups = {t.t("combat.level_up", level=n) for n in range(level + 1, hero.level + 1)} | {t.t("talents.new_point")}
         activity["log"] += [line for line in state.get("story", []) if line not in ups]    # D-117 (level-ups come below)
+        activity["log"] += state.get("guide", [])                                           # D-193: 🧭 the "hunt" step
         fights = activity.setdefault("fights", {})
         key = {"victory": "won", "defeat": "lost"}.get(outcome, "fled")
         fights[key] = fights.get(key, 0) + 1
@@ -9704,6 +9731,7 @@ class GameService(StoryMixin):
         if hs["toxicity"]:
             body.append(t.t("combat.toxicity", n=hs["toxicity"]))
         body.append(t.t("combat.belt", items=self._item_list(hero.belt)))
+        body += self._guide_tip_lines(hero, "combat")      # D-193: 💡 your first fight, once
         actions = [Action(id="atk", label=t.t("combat.attack_button"))]
         for index, ability in enumerate(cdef["abilities"][:3]):
             reason = validate_choice(state, hero, cdef, {"type": "ability", "index": index}, self.ctx)
@@ -9782,7 +9810,6 @@ class GameService(StoryMixin):
             hero.xp += xp
             hero.gold += gold
             hero.kills += 1
-            lines += self._tutorial(hero, "win_fight")
             lines.append(t.t("combat.rewards", xp=xp, gold=self._money(gold)))
             for item_id, chance in edef.get("loot", {}).items():
                 chance += self._camp_tech_bonus(hero, hero.x, hero.y, "loot_bonus", item_id) if hero.camp else 0.0   # D-101: Rastreo
@@ -9828,6 +9855,9 @@ class GameService(StoryMixin):
             lines += self._ecamp_fight_done(hero, state)
         if state.get("dungeon"):               # D-170: a dungeon fight clears a room or a floor (or ends the deep run)
             lines += self._dng_fight_done(hero, state)
+        # D-193: 🧭 the "hunt" step ends with a hunt fight, won or lost; automatic fights put it in the batch (_auto_combat)
+        state["guide"] = self._guide_event(hero, "fight", outcome=outcome, hunt=bool(state.get("hunt")))
+        lines += state["guide"]
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))

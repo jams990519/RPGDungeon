@@ -49,6 +49,11 @@ Si cambias esto, revisa:
       el bono que quedó al encantar}). Vacío por defecto: los héroes guardados antes cargan igual. engine/hero/gear.py lo suma a
       lo que da la pieza (real_stats, gear_bonus); se borra con la última copia de la pieza (engine/service/game.py
       _forget_piece, al vender o desencantar; tests/test_oficios_equipo.py)
+    - guide (D-190, D-193, provisional): el avance del 🧭 camino guiado ({"v": versión, "done": ids de pasos de
+      content/guide.yaml, "tips": ids de los avisos ya mostrados, "away": zonas pisadas fuera del Claro después del camino
+      básico}). Vacío por defecto: los héroes de antes cargan igual y engine/service/guide.py los pone al día la primera vez
+      (E-133: con el tutorial viejo terminado o nivel 5+, el camino básico queda hecho sin premio). tutorial (el índice del
+      tutorial viejo) se sigue leyendo para eso y ya no avanza: no se borra (tests/test_camino_guiado.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -118,6 +123,11 @@ class Hero:
         gear_enchants: the ✨ enchantment on each gear piece the hero holds (D-115, phase 2), item id -> {"id": enchant id
             from balance.yaml enchanting.enchants, "value": its bonus, fixed when it was made}. Empty for heroes saved before
             it. Like gear_signatures, all copies of one item id share it; it goes away with the last copy.
+        tutorial: index of the old tutorial (before D-193); it no longer advances, only read to skip the guided path of
+            heroes who finished it (E-133).
+        guide: progress of the guided path (D-190, D-193): "v" (record version), "done" (step ids of content/guide.yaml),
+            "tips" (one-time tip ids already shown), "away" (zones stepped on outside the Claro after the basic path).
+            Empty for heroes saved before it: engine/service/guide.py fills it the first time it is read.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -183,6 +193,7 @@ class Hero:
     bio: str = ""
     gear_signatures: dict[str, str] = field(default_factory=dict)
     gear_enchants: dict[str, dict[str, Any]] = field(default_factory=dict)
+    guide: dict[str, Any] = field(default_factory=dict)                 # D-193: 🧭 guided path progress (empty = not read yet)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

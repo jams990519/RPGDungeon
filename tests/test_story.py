@@ -74,8 +74,7 @@ def gather_until(service, clock, account, item, n):
 
 def test_new_hero_chooses_origin_after_the_class_without_being_blocked(service):
     view = make_hero(service)
-    # D-190: creating asks only the name and the class; the origin is chosen later, in 👤 Héroe → 🎭 Origen (E-131)
-    assert view.kind == "zone" and "Bienvenido" in view.notice
+    assert view.kind == "guide" and len(view.actions) <= 4 and "Bienvenido" in view.notice   # D-193 / E-131: origin later (/origen)
     menu = service.menu()
     assert len(menu) <= 6 and "story" not in [m.id for m in menu] and [m.id for m in menu][-1] == "options"
     assert service.act("test:1", "home").kind == "zone"                       # the menu works: nothing is blocked
@@ -385,7 +384,7 @@ def test_camp_tasks_count_every_member_and_pay_each_helper(service, clock):
     assert hero_of(service, "test:2").gold > bram_gold
     assert service.store.get("outbox", "test:1")                              # and told
     outsider = make_hero(service, "test:3", "Cora")
-    assert outsider.kind == "zone"                                           # D-190: straight to the game
+    assert outsider.kind == "guide"                                           # D-193: creation ends in the guided path
     assert service._camp_event(hero_of(service, "test:3"), "explore", {"x": 0, "y": 0, "lejania": 0}) == []
 
 

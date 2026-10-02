@@ -115,17 +115,17 @@ def test_menu_buttons_in_combat_say_why_nothing_happens(service):
 
 
 def test_xp_shown_includes_the_boost(service, clock):
+    # D-193: the guided path's step reward (it replaced the old tutorial's) shows the boosted experience
     make_hero(service)
     hero = service._load("test:1")
-    hero.tutorial = service.content.balance["tutorial"]["steps"].index("sell")
+    hero.guide["done"] = ["move", "explore", "gather", "hunt"]
+    hero.x = 1                                       # away from the Claro: "back home" does not chain in
     hero.xp_boost_until = clock.now() + 3600
-    hero.backpack["madera"] = 1
     service._save(hero)
-    service.act("test:1", "shop")
-    view = service.act("test:1", "sell:all")
+    view = service.act("test:1", "map")
     gained = service._load("test:1").xp
-    reward = service.content.balance["tutorial"]["reward_xp"]
-    assert gained == int(reward * 1.5) and f"+{gained} experiencia" in view.notice
+    reward = service.content.balance["guide"]["reward_xp"]
+    assert gained == int(reward * 1.5) and f"+{gained} de experiencia" in view.notice
 
 
 def test_console_shows_the_menu_and_shortcuts(service, monkeypatch, capsys):

@@ -28,8 +28,8 @@ def test_bottom_menu_has_five_buttons_without_story(service):
 def test_creation_goes_straight_to_the_game_without_origin(service):
     view = make_hero(service)
     hero = service._load("test:1")
-    assert view.kind == "zone" and "Bienvenido" in view.notice                  # D-190: name and class, then the game
-    assert hero.origin is None and not hero.story.get("offered")                # the origin stays for later (E-131)
+    assert view.kind == "guide" and "Bienvenido" in view.notice                 # D-190/D-193: name and class, then "where you are"
+    assert hero.origin is None                                                  # the origin stays for later (E-131: /origen, 🎭 Origen)
     assert service.act("test:1", "hero").kind == "hero"                         # the hub, never the origin screen by itself
     assert service.act("test:1", "hero").kind == "hero"
 

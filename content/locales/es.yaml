@@ -1586,18 +1586,8 @@ camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los 
     ciudad: "una ciudad"
     castillo: "un castillo"
 
-tutorial:
-  hint_title: "📜 Pista ({n}/{total}):"
-  done: "📜 Ya conoces lo básico. Lo demás lo descubrirás tú."
-  reward: "📜 ¡Aprendiste algo! +{gold} · +{xp} experiencia."
-  steps:
-    explore_claro: "Las ruinas alrededor de la fogata todavía esconden cosas. Nadie va a buscarlas por ti."
-    gather: "La tierra da lo que necesitas para levantar algo. Hay que agacharse y juntarlo."
-    sell: "Lo que juntas vale algo. Hay alguien en el Claro que compra lo que te sobra."
-    leave_claro: "Más allá del Claro hay tierras que nadie pisó. Cada paso cuesta tiempo."
-    win_fight: "Afuera hay criaturas. Mira lo que preparan antes de elegir qué hacer."
-    heal: "Las heridas no se van solas tan rápido. Hay quien vende remedio y hay donde dormir."
-    use_places: "Quien recuerda los caminos no se pierde. Tu memoria guarda los lugares que pisaste."
+# [ES] D-193: los textos del tutorial viejo de pistas (tutorial.*) se quitaron: el 🧭 camino guiado los reemplazó y sus textos
+# viven en content/locales/es_guia.yaml (guide.*). balance.yaml tutorial y Hero.tutorial se siguen leyendo (E-133).
 
 claro:
   button: "🏕️ Campamento"

@@ -204,6 +204,7 @@ Salieron del pedido del dueño de contar la historia como un camino guiado y ord
 | P-131 | ¿El Campamento y el Héroe pueden tener hasta 8 botones de 2 en 2? (D-191, D-75; E-132) | Sí, para ver todas las opciones de una vez |
 | P-132 | ¿Los jugadores que ya existen hacen el camino guiado nuevo? (D-190; E-133) | Quien terminó el tutorial viejo se salta los primeros pasos y recibe los avisos nuevos; los demás empiezan el camino |
 | P-133 | ¿Cómo se reparten los botones de tu propio campamento, que no caben en 8? (D-191, D-192; E-134) | El centro con lo de D-191 y un botón 🏰 Gestionar (agrandar, mejoras, despensa, gremio) como segunda pantalla |
+| P-134 ✅ Decidido (D-190: el dueño dijo que moverse no gasta energía, solo tiempo; en el juego desde la 0.29) | ¿Moverse entre zonas gasta energía? D-190 dice que no (solo tiempo), pero hoy cada viaje gasta 1 (D-78) (D-193; E-135) | Que no gaste: el tiempo del viaje ya frena y la energía queda para explorar, recolectar y cazar. El texto del camino guiado lee `energy.per_move` y cambia solo |
 
 ## Dudas del repaso de oficios y la granja (2-oct-2026)
 

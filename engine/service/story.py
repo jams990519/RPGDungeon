@@ -661,8 +661,9 @@ class StoryMixin:
         [ES]
         Qué hace: la pantalla para elegir de dónde viene el héroe: 3 orígenes por página con su frase, ▶️ Más para los
         siguientes; al tocar uno se ve su detalle y se confirma. No bloquea: con el menú de abajo se sigue jugando y se
-        elige después en 👤 Héroe → 🎭 Origen. Con el origen ya elegido, muestra su tarjeta (_origin_card_view).
-        La llaman: el botón 🎭 Origen de 👤 Héroe (D-192), _origin_offer y ↩️ Volver del detalle de un origen.
+        elige después en 👤 Héroe → 🎭 Origen o con /origen. Con el origen ya elegido, muestra su tarjeta (_origin_card_view).
+        La llaman: el botón 🎭 Origen de 👤 Héroe (D-192), /origen (D-193: el aviso 🎭 del camino guiado lo ofrece al terminar el
+        camino básico; desde la 0.29 la creación del héroe ya no termina aquí, E-131), _origin_offer y ↩️ Volver del detalle.
         Si cambia, afecta: tests/test_story.py, tests/test_menus_y_dudas.py y el tope de 4 botones.
         """
         if hero.origin:

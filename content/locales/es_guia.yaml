@@ -1,0 +1,227 @@
+# Texts of the guided path (D-190, D-193): the welcome after creating the hero, each step (name, task line, explanation when
+# it starts and what you learn when it is done) and the one-time progressive tips. Steps and tips live in content/guide.yaml;
+# numbers in content/balance.yaml (guide, travel, energy, explore, gather, hunt, exploration).
+# [ES] Textos del camino guiado: la bienvenida al crear el héroe (dónde estás: el Claro, la antorcha 🔥), cada paso (su nombre,
+# la línea "🧭 Ahora:", la explicación al empezar y lo que aprendes al terminarlo) y los avisos de una sola vez. Formato al
+# estilo de TowerWars ("ampliado, detallado y separado"): un título con emoji, secciones separadas por una línea en blanco y
+# una cosa por línea. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
+# Documento de diseño: diseno/03-personaje/camino-guiado.md
+# Lo leen: engine/service/guide.py (GuideMixin). Los valores entre llaves salen de _guide_values (balance.yaml): si cambias un
+#     nombre de valor, cámbialo también ahí. Cada paso de content/guide.yaml necesita name, task e intro (learn es opcional);
+#     cada aviso, name y text (tests/test_camino_guiado.py revisa que no falte ninguno).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Nombra el botón exacto que hay que tocar.
+
+guide:
+  title: "🧭 Camino guiado"
+  welcome_title: "🔥 Llegaste al Claro"
+  welcome: "👋 ¡Bienvenido, {name}!"
+  progress: "📍 Paso {n} de {total}: {name}"
+  now: "🧭 Ahora: {task}"
+  now_hint: "📖 /guia: la explicación del paso."
+  step_done: "✅ Paso {n} de {total} hecho: {name}."
+  reward: "🎁 +{gold} · +{xp} de experiencia."
+  next_title: "👉 Paso {n} de {total}: {name}"
+  path_done: |-
+    🎉 ¡Terminaste el camino guiado básico!
+    Lo demás lo irás descubriendo: te aviso cuando encuentres algo nuevo.
+    ❓ ¿Dudas? 🏕️ Campamento → ❓ Dudas.
+  all_done: "✅ Ya hiciste todo el camino guiado. Los avisos nuevos llegan solos cuando encuentras algo."
+  waiting_away: "🏕️ Cuando salgas del Claro te voy a guiar para fundar tu propio campamento."
+  learned_title: "📚 Lo que ya aprendiste:"
+  learned_none: "📚 Todavía no salió ningún aviso: te los doy a medida que encuentras cosas nuevas."
+  tip_title: "💡 Nuevo: {name}"
+  move_free: "no gasta energía, pero toma tiempo"          # [ES] si balance.yaml energy.per_move es 0 (lo que dijo el dueño en D-190; E-135)
+  move_cost: "gasta {n} ⚡ por zona y además toma tiempo"   # [ES] si energy.per_move es más de 0 (D-78, lo de hoy)
+  missing: "▫️ Te falta: {items}"
+  ready: "✅ Aquí ya puedes fundarlo."
+  go:                          # [ES] el botón que ofrece la pantalla de cada paso (content/guide.yaml "go")
+    explore_menu: "🧭 Explorar"
+    hunt: "🏹 Cazar"
+    map: "🗺️ Mapa"
+    places: "📒 Lugares"
+    claro: "🏕️ Campamento"
+    trainer: "🧑‍🏫 Entrenador"
+    hero: "👤 Héroe"
+  step:
+    move:                      # [ES] a) dónde estás y moverte (D-190)
+      name: "Moverte"
+      task: "muévete a una zona vecina: 📍 Zona → elige una ruta (⬆️ ⬇️ ➡️ ⬅️)."
+      intro: |-
+        🔥 Estás en el Claro, el campamento base: la antorcha donde despiertan todos los que llegan.
+        🗺️ Alrededor hay tierras de distintos terrenos: pradera, bosque, colinas, montaña, pantano... En el 🗺️ Mapa, cada color es un terreno.
+        🔎 Para conocerlas tendrás que moverte: investigar, juntar recursos y hacer misiones.
+
+        🚶 Cómo moverte
+        • En 📍 Zona tienes 4 rutas: ⬆️ norte, ⬇️ sur, ➡️ este y ⬅️ oeste. Cada botón dice cuánto tarda.
+        • Moverte {move}: {first_time} las zonas cercanas, y más cuanto más te alejas (hasta {max_time} por zona).
+        • Mientras viajas puedes cerrar el chat: te aviso al llegar.
+        • Al llegar pueden salirte monstruos: cada terreno tiene su peligro.
+    explore:                   # [ES] b) explorar una vez en la zona nueva
+      name: "Explorar"
+      task: "explora esta zona: 🧭 Explorar → 🔎 Explorar, y elige cuánta energía gastar."
+      intro: |-
+        🔎 Explorar
+        • Cada vuelta tarda {explore_time}, gasta {per_explore} ⚡ y estudia la zona entre un {pct_low} y un {pct_high} %.
+        • Eliges cuántas vueltas seguidas ({batch} o Todo) y puedes cancelar cuando quieras.
+        • Mientras más conoces la zona, más recursos descubres; al 100 % la sabes entera.
+        • Explorando encuentras objetos y monedas... y a veces una pelea.
+    gather:                    # [ES] b) después, recolectar
+      name: "Recolectar"
+      task: "junta recursos: 🧭 Explorar → 🪓 Recolectar."
+      intro: |-
+        🪓 Recolectar
+        • Juntas los recursos que ya descubriste en la zona: madera, piedra, fibra, hierbas...
+        • Cada vuelta tarda {gather_time} y gasta {per_gather} ⚡. Va a tu 🎒 mochila (espacio: {cap}).
+        • Con eso se fabrica, se funda un campamento y se vende al mercader.
+        • Si recolectas mucho en un lugar, se agota por un tiempo.
+    hunt:                      # [ES] b) y después, cazar
+      name: "Cazar"
+      task: "caza una presa: 🧭 Explorar → 🏹 Cazar → 🏹 Buscar presa."
+      intro: |-
+        🏹 Cazar
+        • Sales a buscar pelea a propósito: cada presa cuesta {hunt} ⚡.
+        • Da experiencia, monedas y botín, pero no exploración ni recursos.
+        • En el Claro no hay presas: caza en una zona de afuera.
+        • En la pelea, cada ronda eliges una acción: mira el ⚠️ aviso del enemigo antes de elegir.
+    map:                       # [ES] c) el mapa y todo lo que muestra (la explicación sale al abrirlo)
+      name: "El mapa"
+      task: "abre el mapa: 🧭 Explorar → 🗺️ Mapa."
+      intro: "🗺️ El mapa te muestra el mundo a tu alrededor. Ábrelo y te explico qué es cada cosa."
+      learn: |-
+        🗺️ Cómo leer el mapa
+        🧍 Eres tú, en el centro. El norte está arriba.
+        🎨 Cada color es un terreno (la lista está arriba del mapa). El color no dice qué recursos hay: eso se sabe explorando.
+        🕳️ Una cueva: ahí hay una mazmorra. 🌀 si ya sabes que es profunda.
+        ✨ Un nodo de recursos: al llegar a su zona aparece con el emoji de su recurso.
+        👹 Un campamento enemigo de hoy: cambian de lugar cada día.
+        🏕️ Un campamento de jugadores.
+        👑 La guarida del Guardián, un jefe muy fuerte.
+        📌 Abajo: tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el Claro. Más lejos, enemigos más fuertes.
+        📒 Lugares: los sitios que recuerdas, para viajar directo.
+    return:                    # [ES] d) volver al campamento (el Claro)
+      name: "Volver al Claro"
+      task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → El Claro (o por las rutas de 📍 Zona)."
+      intro: |-
+        🔥 Vuelve al campamento
+        • El Claro es tu base: ahí están el mercader, la posada y los oficios.
+        • En 📒 Lugares eliges un sitio que recuerdas y tu héroe va solo, zona por zona.
+    camp:                      # [ES] e) el campamento (D-191: cocinar, investigar, fabricar, entrenador, mercader, Dudas)
+      name: "El campamento"
+      task: "abre el campamento: 🏕️ Campamento (menú de abajo)."
+      intro: "🏕️ Ya estás en el Claro. Abre 🏕️ Campamento para ver lo que puedes hacer aquí."
+      learn: |-
+        🏕️ El campamento es tu base: aquí está lo que no lleva el héroe encima.
+        🍲 Cocinar, 🔬 investigar y ⚒️ fabricar: los oficios y sus estaciones.
+        🧑‍🏫 Entrenador: te presenta los oficios.
+        🏪 Mercader: compra lo que te sobra y vende pociones, vendas y provisiones.
+        🛏️ Posada: duermes un rato y despiertas curado.
+        ❓ Dudas: preguntas ya respondidas, por tema.
+    trainer:                   # [ES] e) el entrenador presenta los oficios (la pantalla 🧑‍🏫 la arma el campamento, D-191)
+      name: "El entrenador"
+      task: "habla con el entrenador: 🏕️ Campamento → 🧑‍🏫 Entrenador."
+      intro: "🧑‍🏫 En el campamento hay un entrenador: el maestro que te presenta los oficios."
+      learn: |-
+        🧑‍🏫 Los oficios
+        • Cada oficio sube haciéndolo: recolectar sube los de recolección y fabricar, los de fabricación.
+        • No tienen tope y cada uno da un beneficio.
+        • A medida que avances en el juego, aprenderás más y más oficios.
+    hero:                      # [ES] f) el héroe: talentos, mochila, salud y lo demás
+      name: "Tu héroe"
+      task: "mira tu héroe: 👤 Héroe (menú de abajo)."
+      intro: "👤 Todo lo de tu héroe está en un solo lugar. Ábrelo y te cuento qué hay."
+      learn: |-
+        👤 Tu héroe
+        🌟 Talentos: cada nivel te da un punto; el primero elige tu especialización.
+        🎒 Mochila: equipo, pociones y recursos.
+        📊 Estadísticas: ataque, defensa y vida.
+        🩺 Salud: tus heridas y cómo curarte.
+    found_spot:                # [ES] D-190: buscar dónde fundar, solo después de salir del Claro (1 o 2 movimientos)
+      name: "Buscar lugar"
+      task: "busca un buen lugar para tu campamento: muévete una o dos zonas más, a Lejanía {min_lejania} o más del Claro."
+      intro: |-
+        🏕️ Tu propio campamento
+        • El Claro no crece. Tu campamento, sí: sube de nivel, se mejora y llega a castillo.
+        • Muévete una o dos zonas más, lejos del Claro: te aviso cuando encuentres un buen lugar.
+      learn: "🏕️ ¡Encontraste un buen lugar para tu propio campamento! Aquí puedes fundarlo y ponerle nombre."
+    found:                     # [ES] fundarlo (el flujo de siempre pide el nombre) y su tutorial corto
+      name: "Fundar tu campamento"
+      task: "funda tu campamento: 🏕️ Campamento → 🏕️ Fundar campamento aquí."
+      intro: |-
+        🏕️ Fundar tu campamento
+        Para fundarlo en esta zona necesitas:
+        {needs}
+        Cuando tengas todo, toca 🏕️ Campamento → 🏕️ Fundar campamento aquí y escríbele un nombre.
+      learn: |-
+        🏕️ ¡Ya tienes campamento! Esto es lo que puedes hacer aquí:
+        🔨 Mejoras: aquí está el botón de mejora. Construyes fogón, cabañas, herrería y más.
+        🏘️ Servicios: el mercader, la posada y el taller llegan al construir sus mejoras.
+        🧑‍🏫 Entrenador: el maestro que te enseña los oficios.
+        ⬆️ Agrandar: tu campamento suma zonas y sube de nivel, hasta castillo.
+        🛡️ Ojo: llegan oleadas. Defiéndelo con 🛡️ Defender.
+        📈 A medida que avances, aprenderás más oficios.
+  tip:                         # [ES] avisos de una sola vez (content/guide.yaml "tips"), uno por pantalla como mucho
+    fight:
+      name: "Tu primera pelea"
+      text: |-
+        • Cada ronda eliges una sola acción: ⚔️ Atacar, una habilidad, 🌀 Esquivar o 🏃 Huir.
+        • Lee el ⚠️ aviso: dice qué prepara el enemigo. Contra un golpe grande, mejor defenderte.
+        • 🎒 Mochila: usas una poción o una venda del cinturón (gasta tu turno).
+    downed:
+      name: "Caíste en combate"
+      text: |-
+        • Quedaste malherido: la vida vuelve mucho más lento hasta llenarse.
+        • Para curarte: una 🧪 poción (👤 Héroe → 🎒 Mochila), la 🛏️ posada del Claro o esperar.
+        • En 👤 Héroe → 🩺 Salud ves cuánto te falta.
+    level_up:
+      name: "Punto de talento"
+      text: |-
+        • Cada nivel te da 1 punto de talento: 👤 Héroe → 🌟 Talentos.
+        • El primer punto elige tu especialización; con más puntos se abren habilidades nuevas.
+    energy_low:
+      name: "Energía"
+      text: |-
+        • Te queda poca energía ({energy_now} ⚡). Se recupera sola: +1 cada {period}, hasta {max_energy}.
+        • Explorar, recolectar y cazar la gastan; moverte {move}.
+        • Invitar amigos da energía extra: tu enlace está en 👤 Héroe.
+    bag_full:
+      name: "Mochila llena"
+      text: |-
+        • Con la mochila llena no puedes recolectar ni comprar (lo que encuentras igual entra).
+        • Vende lo que sobra al 🏪 Mercader del Claro, úsalo en ⚒️ Oficios o apórtalo a tu campamento.
+    cave:
+      name: "Mazmorras"
+      text: |-
+        • Aquí hay una mazmorra: 🕳️ la chica tiene salas, un jefe y un cofre; 🌀 la profunda baja por pisos.
+        • Entras desde 🧭 Explorar. Las peleas de adentro son siempre a mano.
+        • Lo de adentro cambia cada día.
+    ecamp:
+      name: "Campamento enemigo"
+      text: |-
+        • Mientras esté en pie, esta zona no se explora ni se recolecta.
+        • ⚔️ Asaltar: peleas contra su guardia hasta llegar al jefe; al caer deja un cofre.
+        • Cada día aparecen en otros lugares.
+    node:
+      name: "Nodo de recursos"
+      text: |-
+        • En un ✨ nodo, recolectar da el doble de su recurso y a veces uno raro.
+        • Es el mismo para todos y no se mueve: en el 🗺️ Mapa sale con el emoji de su recurso.
+    rank_up:
+      name: "Oficios"
+      text: |-
+        • Tu oficio subió de rango: cada oficio sube haciéndolo y no tiene tope.
+        • Cada rango da un beneficio mayor. Míralos con /oficios.
+    raid:
+      name: "Oleada"
+      text: |-
+        • ¡Llegó una oleada a tu campamento! Ve y toca 🛡️ Defender: cada pelea ganada cuenta.
+        • Si pierden, se lleva parte de la despensa, nunca niveles ni zonas.
+    options:
+      name: "Peleas automáticas"
+      text: |-
+        • En ⚙️ Opciones eliges qué pasa si sale una pelea en medio de un lote.
+        • ✋ Manual: el lote se corta y peleas tú. ⚔️ Automática: tu héroe pelea solo y el lote sigue.
+    origin:
+      name: "Tu origen (opcional)"
+      text: |-
+        • ¿De dónde viene tu héroe? Elige tu 🎭 origen con /origen.
+        • Da un rasgo pequeño (no de combate), un regalo y una historia propia. Es para siempre: elígelo cuando quieras.

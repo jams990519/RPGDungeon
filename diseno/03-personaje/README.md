@@ -5,6 +5,7 @@ Quién es tu héroe y cómo crece: linaje, trasfondo, clase, talentos, equipo y 
 | Documento | Qué contiene |
 |---|---|
 | [creacion-de-personaje.md](creacion-de-personaje.md) | El flujo del juego: nombre único → clase en páginas de 3 → confirmación; la especialización llega con el primer punto de talento. Propuesta: 12 linajes que cambian el cuerpo y no el daño, 8 trasfondos, apariencia textual |
+| [camino-guiado.md](camino-guiado.md) | En el juego (0.29, D-190, D-193): después de crear el héroe, "dónde estás" y un solo paso a la vez (moverte, explorar, recolectar, cazar, el mapa, volver al Claro, el campamento, el entrenador, el héroe; después, buscar lugar y fundar tu campamento), con premio chico; 12 avisos de una sola vez que llegan cuando encuentras cada cosa; los jugadores de antes (E-133) |
 | [clases-y-especializaciones.md](clases-y-especializaciones.md) | 15 clases y 46 specs con 3 roles por clase (4 el Druida), recursos adaptados a turnos, la barra de 6 (clase + equipo), juego solo y en grupo, orden de lanzamiento |
 | [balance.md](balance.md) | Qué está roto en WoW, las 10 reglas de balance, el simulador y los objetivos numéricos, números chicos |
 | [talentos.md](talentos.md) | Árboles de clase, spec, héroe y Ápice; configuraciones y cambios gratis |
