@@ -204,3 +204,34 @@ Salieron del pedido del dueño de contar la historia como un camino guiado y ord
 | P-131 | ¿El Campamento y el Héroe pueden tener hasta 8 botones de 2 en 2? (D-191, D-75; E-132) | Sí, para ver todas las opciones de una vez |
 | P-132 | ¿Los jugadores que ya existen hacen el camino guiado nuevo? (D-190; E-133) | Quien terminó el tutorial viejo se salta los primeros pasos y recibe los avisos nuevos; los demás empiezan el camino |
 
+## Dudas del repaso de oficios y la granja (2-oct-2026)
+
+Salieron del repaso de oficios del dueño (D-194) y de la ganadería y la cosecha del asentamiento (D-195). El detalle está en [Repaso de los oficios](../07-economia/oficios-repaso-2-oct.md). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1, bloque A2 (E-136 a E-160). Frenan este trabajo: no se programa hasta tener las respuestas.
+
+| # | Pregunta | Recomendación |
+|---|---|---|
+| P-135 | ¿Qué oficio se dedica a las piedras? (E-136) | 💎 Gemólogo: piedras preciosas y cristales, y mejora sus nodos |
+| P-136 | ¿Quién hace arcos y bastones? (E-137) | 🏹 Arquería nueva para arcos y ballestas; bastones y varitas al Encantamiento |
+| P-137 | ¿Cómo se refina antes de la 3.ª o 4.ª etapa? (E-138) | El Claro conserva estaciones básicas; las variedades piden las estructuras |
+| P-138 | ¿Qué pasa con los rangos ya ganados en los oficios de refinado? (E-139) | Se vuelven experiencia de trabajador de esa estructura |
+| P-139 | ¿Trabajar en una estructura es activo o pasivo? (E-140) | Activo, con energía; los empleados del reino, más adelante, trabajan solos |
+| P-140 | ¿El Ladrón es la casa de los bandidos y cuándo entra? (E-141) | Sí; entra ya robando a monstruos y cofres, y a jugadores con el PvP |
+| P-141 | ¿Cómo se paga a quien trabaja en una estructura? (E-142) | El reino paga por pieza desde su tesoro |
+| P-142 | ¿Cómo se llama el oficio de la malla? (E-143) | ⛓️ Mallero |
+| P-143 | ¿Quién usa las estructuras de refinado? (E-144) | Los miembros gratis; los visitantes pagan una tarifa al asentamiento |
+| P-144 | ¿Cómo es la variedad de los recolectores? (E-145) | Tres niveles (común, del terreno, raro) y 1 a 3 especies por terreno |
+| P-145 | ¿Quién mejora los nodos? (E-146) | Cada recolector, los de su recurso |
+| P-146 | ¿Qué hacen las herramientas del carpintero? (E-147) | Más rendimiento en lo común y necesarias para lo raro |
+| P-147 | ¿Las herramientas se gastan? (E-148) | Sí, como el equipo |
+| P-148 | ¿Cómo mejoran las piezas las gemas? (E-149) | Ranuras (1 a 3 según la pieza); el encantamiento sigue aparte |
+| P-149 | ¿Qué se cultiva y dónde? (E-150) | Trigo, lino, algodón, hortalizas, frutas y hierbas; solo en tierras del asentamiento |
+| P-150 | ¿Qué animales se crían? (E-151) | Gallinas, ovejas, cabras, vacas y cerdos; caballos y monturas después |
+| P-151 | ¿Miel y cera son de la Ganadería o de la Agricultura? (E-152) | De la Ganadería |
+| P-152 | ¿La granja del asentamiento produce sola? (E-153) | Sí, según la etapa; los oficios la mejoran |
+| P-153 | ¿Cuánto cubre la granja? (E-154) | La mitad de lo que come la población |
+| P-154 | ¿Los jugadores pueden sacar lo que produce la granja? (E-155) | No: es del asentamiento; se obtiene trabajando o comprando |
+| P-155 | ¿Cómo son las tierras para cultivar y criar? (E-156) | Cada zona del territorio con fertilidad al azar |
+| P-156 | ¿Qué pasa con los amuletos? (E-157) | Los ya hechos quedan; desde el cambio los hace la Alquimia |
+| P-157 | ¿El Encantamiento crea objetos con esencias? (E-158) | Sí: bastones, varitas y runas |
+| P-158 | ¿Especializaciones de los oficios nuevos? (E-159) | 3 cada uno, propuestas por Claude |
+| P-159 | ¿En qué orden se trabaja? (E-160) | Primero etapas, estructuras y granja; después variedad y oficios nuevos |
