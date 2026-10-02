@@ -203,4 +203,5 @@ Salieron del pedido del dueño de contar la historia como un camino guiado y ord
 | P-130 | ¿Dónde queda el origen del héroe, que se elegía al crearlo? (D-190; E-131) | Más adelante en el camino guiado, como paso opcional; quien ya lo eligió lo conserva |
 | P-131 | ¿El Campamento y el Héroe pueden tener hasta 8 botones de 2 en 2? (D-191, D-75; E-132) | Sí, para ver todas las opciones de una vez |
 | P-132 | ¿Los jugadores que ya existen hacen el camino guiado nuevo? (D-190; E-133) | Quien terminó el tutorial viejo se salta los primeros pasos y recibe los avisos nuevos; los demás empiezan el camino |
+| P-134 | ¿Moverse entre zonas gasta energía? D-190 dice que no (solo tiempo), pero hoy cada viaje gasta 1 (D-78) (D-193; E-135) | Que no gaste: el tiempo del viaje ya frena y la energía queda para explorar, recolectar y cazar. El texto del camino guiado lee `energy.per_move` y cambia solo |
 
