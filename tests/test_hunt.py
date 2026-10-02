@@ -101,7 +101,9 @@ def test_explore_menu_keeps_four_buttons_and_places_moved_to_the_map(service):
     assert ids(menu) == ["explore", "gather", "hunt", "map"]
     assert "🏹 Cazar" in [a.label for a in menu.actions]
     mapv = service.act("test:1", "map")
-    assert ids(mapv) == ["places", "explore_menu"]
+    assert ids(mapv)[0] == "places" and ids(mapv)[-1] == "explore_menu" and len(mapv.actions) <= 4
+    # D-181 (0.26.1): with this seed a 🕳️ cave sits 2 zones from the Claro, so "🕳️ Ir a la cueva" can come in between
+    assert all(i.startswith("goto:") for i in ids(mapv)[1:-1])
     places = service.act("test:1", "places")
     assert places.kind == "places" and ids(places)[-1] == "map"            # ↩️ Volver goes back to the map
     assert any(a.id == "goto:0:0" for a in places.actions)
