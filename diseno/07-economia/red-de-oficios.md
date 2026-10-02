@@ -149,33 +149,34 @@ Cada fase se programa en la capa simple primero (D-44): rango, recetas, benefici
 
 ### 5.1 Los recursos de cada terreno (D-180, D-183, en el juego desde la 0.27)
 
-Desde la 0.27 cada terreno tiene su catálogo de 10 recursos (los de base que favorece y los suyos; [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.2) y cada zona trae de 4 a 6. Los **21 materiales nuevos** entran en la capa ligera (D-44): los junta un oficio de recolección que ya existe (con su beneficio, su unidad de más y su raro), se venden al mercader (D-169: un ingreso para cualquiera) y cada uno tiene **al menos una receta**, que es **otra forma de hacer lo de siempre** (el nombre de la receta lo dice: "🧪 Poción de vida ×2 · con ⏳ Arena fina"). Ninguno es comida por sí solo: la 🍲 Cocina los vuelve raciones junto con carne o pescado.
+Desde la 0.27 cada terreno tiene su catálogo de 10 recursos (desde la 0.28, 10 u 11 en 14 terrenos, D-188: los de base que favorece y los suyos; [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12.2) y cada zona trae de 4 a 6. Los **21 materiales nuevos** entran en la capa ligera (D-44): los junta un oficio de recolección que ya existe (con su beneficio, su unidad de más y su raro), se venden al mercader (D-169: un ingreso para cualquiera) y cada uno tiene **al menos una receta**, que es **otra forma de hacer lo de siempre** (el nombre de la receta lo dice: "🧪 Poción de vida ×2 · con ⏳ Arena fina"). Ninguno es comida por sí solo: la 🍲 Cocina los vuelve raciones junto con carne o pescado.
 
 | Material | Lo junta | Sale en | Lo usa |
 |---|---|---|---|
-| 🫐 Bayas | 🌿 Herbolario | pradera, bosque, colinas, tundra | 🍲 Ración (con carne) · 🍲 Festín (con miel) |
-| 🍄 Setas | 🌿 Herbolario | pradera, bosque, pantano, ruinas | 🍲 Ración (con carne) |
-| 🍯 Miel silvestre | 🌿 Herbolario | pradera, bosque | 🩺 Botiquín (rango 25) · 🍲 Festín (rango 75) |
-| 🌽 Mazorca silvestre | 🌿 Herbolario | pradera, colinas | 🍲 Pescado asado |
-| 🌼 Lino | 🌿 Herbolario | pradera, pantano | 🧶 Tela |
-| 🎋 Juncos | 🌿 Herbolario | pantano | 🧶 Tela (con fibra) |
-| 🪷 Nenúfar | 🌿 Herbolario | pantano | ⚗️ Poción mayor sin 🌸 flor de luna (rango 25) |
-| 🌵 Pulpa de cactus | 🌿 Herbolario | desierto | 🩺 Ungüento (con tela) |
-| 🌴 Dátiles | 🌿 Herbolario | desierto | 🍲 Guiso del cazador (rango 25) |
+| 🫐 Bayas | 🌿 Herbolario | pradera, bosque, colinas, tundra, selva, sabana, cañón, bosque oscuro, lago | 🍲 Ración (con carne) · 🍲 Festín (con miel) |
+| 🍄 Setas | 🌿 Herbolario | pradera, bosque, pantano, ruinas, selva, bosque oscuro, lago | 🍲 Ración (con carne) |
+| 🍯 Miel silvestre | 🌿 Herbolario | pradera, bosque, selva, sabana, bosque oscuro | 🩺 Botiquín (rango 25) · 🍲 Festín (rango 75) |
+| 🌽 Mazorca silvestre | 🌿 Herbolario | pradera, colinas, sabana | 🍲 Pescado asado |
+| 🌼 Lino | 🌿 Herbolario | pradera, pantano, sabana, lago | 🧶 Tela |
+| 🎋 Juncos | 🌿 Herbolario | pantano, lago | 🧶 Tela (con fibra) |
+| 🪷 Nenúfar | 🌿 Herbolario | pantano, lago | ⚗️ Poción mayor sin 🌸 flor de luna (rango 25) |
+| 🌵 Pulpa de cactus | 🌿 Herbolario | desierto, sabana, cañón | 🩺 Ungüento (con tela) |
+| 🌴 Dátiles | 🌿 Herbolario | desierto, selva, sabana | 🍲 Guiso del cazador (rango 25) |
 | 💮 Flor de escarcha | 🌿 Herbolario | montaña, tundra | ⚗️ Poción mayor sin 🌸 flor de luna (con cuarzo, rango 25) |
-| 🌱 Musgo | 🌿 Herbolario | bosque, pantano, montaña, tundra, ruinas | 🩺 Ungüento (con extracto) |
-| 🥕 Raíz amarga | 🌿 Herbolario | pradera, bosque, pantano, ruinas | 💧 Extracto (con hierba) |
-| 🍃 Tomillo | 🌿 Herbolario | pradera, colinas, montaña, desierto | 🍲 Guiso del cazador (rango 25) |
-| 💧 Resina | 🪓 Leñador | bosque, pantano, montaña, tundra | ⚗️ Poción de vida (sella el frasco) |
-| 🍂 Corteza | 🪓 Leñador | bosque, colinas, pantano, tundra, ruinas | 🪣 Cuero: 3 pieles y corteza dan 2 |
-| 🌑 Carbón | ⛏️ Minero | colinas, montaña, tundra, ruinas | 🔥 Lingote: 3 piezas de metal y carbón dan 2 |
-| 🧂 Sal de roca | ⛏️ Minero | colinas, montaña, desierto | 🍲 Pescado asado · 🍲 Conservas (rango 50) |
-| 🔹 Cuarzo | ⛏️ Minero | colinas, montaña, desierto, ruinas | ⚗️ Poción mayor (el frasco, rango 25) |
-| ⏳ Arena fina | ⛏️ Minero | desierto, ruinas | ⚗️ Poción de vida (frasco de vidrio) · 🗿 Sillar con 2 piedras |
+| 🌱 Musgo | 🌿 Herbolario | bosque, pantano, montaña, tundra, ruinas, selva, volcán, bosque oscuro, lago | 🩺 Ungüento (con extracto) |
+| 🥕 Raíz amarga | 🌿 Herbolario | pradera, bosque, pantano, ruinas, selva, bosque oscuro, lago | 💧 Extracto (con hierba) |
+| 🍃 Tomillo | 🌿 Herbolario | pradera, colinas, montaña, desierto, sabana, volcán, cañón | 🍲 Guiso del cazador (rango 25) |
+| 💧 Resina | 🪓 Leñador | bosque, pantano, montaña, tundra, selva, sabana, volcán, bosque oscuro | ⚗️ Poción de vida (sella el frasco) |
+| 🍂 Corteza | 🪓 Leñador | bosque, colinas, pantano, tundra, ruinas, selva, bosque oscuro | 🪣 Cuero: 3 pieles y corteza dan 2 |
+| 🌑 Carbón | ⛏️ Minero | colinas, montaña, tundra, ruinas, volcán, cañón, bosque oscuro | 🔥 Lingote: 3 piezas de metal y carbón dan 2 |
+| 🧂 Sal de roca | ⛏️ Minero | colinas, montaña, desierto, volcán, cañón | 🍲 Pescado asado · 🍲 Conservas (rango 50) |
+| 🔹 Cuarzo | ⛏️ Minero | colinas, montaña, desierto, ruinas, volcán, cañón | ⚗️ Poción mayor (el frasco, rango 25) |
+| ⏳ Arena fina | ⛏️ Minero | desierto, ruinas, volcán, cañón, lago | ⚗️ Poción de vida (frasco de vidrio) · 🗿 Sillar con 2 piedras |
 | 🧊 Hielo eterno | ⛏️ Minero | montaña, tundra | 🍲 Conservas (rango 50) |
-| 🔧 Chatarra | ⛏️ Minero | desierto, ruinas | 🔥 Lingote |
+| 🔧 Chatarra | ⛏️ Minero | desierto, ruinas, cañón | 🔥 Lingote |
+| 🖤 Obsidiana (0.28) | ⛏️ Minero | volcán | 🗿 Sillar con 1 piedra |
 
-- **Las reglas de siempre siguen:** toda receta de fabricación pide materiales de 2 oficios o más (D-109); refinar y fabricar nunca dejan ganar monedas; lo cocinado vale más raciones que lo crudo. Las 22 recetas nuevas están al final de `content/professions.yaml` (campo `variant`).
+- **Las reglas de siempre siguen:** toda receta de fabricación pide materiales de 2 oficios o más (D-109); refinar y fabricar nunca dejan ganar monedas; lo cocinado vale más raciones que lo crudo. Las 22 recetas nuevas están al final de `content/professions.yaml` (campo `variant`), y la 23.ª, el 🧱 sillar con 🖤 obsidiana, llegó con el 🌋 volcán en la 0.28 (el único material nuevo de esa versión: los otros terrenos nuevos reusan estos 21).
 - **Los nodos de recursos** (D-184, [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.16) dan el doble de su recurso y a veces 💠 gema en bruto o 🌸 flor de luna: una fuente más de los raros que piden la 💍 Joyería, la ⚗️ Alquimia y el equipo de artesano.
 - **Lo que viene:** los nodos que sube de nivel el 🪑 carpintero (D-168, E-96) y los especiales de los expertos (D-160, E-78); el 🌾 Agricultor y el 🐑 Ganadero (fase 3) pueden cultivar o criar algunos de estos.
 

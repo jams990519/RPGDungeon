@@ -123,9 +123,12 @@ def test_fish_only_where_there_is_water_and_land_resources_do_not_move(content):
     for biome in ("bosque", "pradera"):
         share = sum(seen[biome]) / len(seen[biome])
         assert 0.15 <= share <= 0.45, (biome, share)                        # ~3 zones of 10
-    for biome, flags in seen.items():
-        if biome not in ("pantano", "bosque", "pradera"):
-            assert not any(flags), biome
+    for biome, flags in seen.items():                                       # 0.28: the new terrains bring their own "water"
+        share = float(content.biomes[biome].get("water", 0.0))
+        if share <= 0:
+            assert not any(flags), biome                                    # no "water": never fish (montaña, volcán...)
+        elif share >= 1:
+            assert all(flags), biome                                        # the swamp and the lake: every zone
     assert water_resources(7, 0, 0, "pantano", content.balance, content.biomes) == {}   # fixed zones (the Claro): never
 
 

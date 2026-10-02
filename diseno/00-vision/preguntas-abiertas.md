@@ -181,7 +181,7 @@ Salieron de las respuestas de la primera tanda (D-118 a D-160). Se preguntan en 
 
 ## Dudas de las ideas sueltas del mapa (1-oct-2026)
 
-Salieron de las ideas sueltas del dueño sobre el mapa y la interfaz (D-178 a D-181). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 2 (E-123 a E-126). Mientras tanto se aplica lo recomendado como provisional (D-182 en la 0.26.1; D-183 y D-184 en la 0.27).
+Salieron de las ideas sueltas del dueño sobre el mapa y la interfaz (D-178 a D-181). Se preguntan en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 2 (E-123 a E-128). Mientras tanto se aplica lo recomendado como provisional (D-182 en la 0.26.1; D-183 y D-184 en la 0.27; D-188 en la 0.28).
 
 | # | Pregunta | Recomendación |
 |---|---|---|
@@ -190,4 +190,5 @@ Salieron de las ideas sueltas del dueño sobre el mapa y la interfaz (D-178 a D-
 | P-124 | ¿El 🔭 Reconocer del Explorador descubre los nodos de lejos? (D-172, D-181; E-125) | Sí, desde el rango 25 de Explorador |
 | P-125 | ¿"2 o 3 cuevas por zona" es por cada tramo de 6 × 6 zonas o en todo lo que muestra el mapa? (D-181, D-182; E-126) | Por tramo de 6 × 6 (unas 10 a 12 en el mapa de 13 × 13, aunque solo se ven las cercanas) |
 | P-126 | ¿Pasar por la zona de un nodo en medio de un viaje lo descubre, o solo la zona donde termina el viaje? (D-181, D-184; E-127) | Pasar por ahí lo descubre: el héroe pisó la zona (así quedó en la 0.27) |
+| P-127 | ¿Los 6 terrenos nuevos de la 0.28 y sus colores están bien, y al agregar terrenos solo cambian las piezas que pasan a ser de un terreno nuevo, o se revuelve todo el mapa? (D-185, D-186, D-188; E-128) | Así: solo cambian las piezas nuevas (unas 3 de cada 10), y las demás conservan sus recursos propios y sus nodos. **Aplicada como provisional en la 0.28 (D-188)** |
 

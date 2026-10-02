@@ -26,7 +26,7 @@ item:
 profession:
   pescador:
     name: "Pescador"
-    how: "recolecta 🐟 pescado en las zonas con agua (todo el 🐸 pantano y algunos ríos del 🌲 bosque y la 🌾 pradera)"
+    how: "recolecta 🐟 pescado en las zonas con agua (todo el 🐸 pantano y el 🦆 lago, y algunos ríos de otros terrenos)"
   cocina:
     name: "Cocina"
     how: "en una estación (el Claro o el 🔥 Fogón de tu campamento): 🍖 carne, 🐟 pescado y hierbas → raciones para la despensa"

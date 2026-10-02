@@ -1,7 +1,7 @@
 # Terrain resources (D-180, D-183) and resource nodes (D-181, D-184). Numbers live in content/balance.yaml (blocks
 # resources.terrain and nodes); the catalog of each terrain in content/biomes.yaml ("own", "node_rare"); the items in
 # content/items.yaml; their recipes in content/professions.yaml (the ones with "variant").
-# [ES] Textos de los recursos propios de cada terreno (0.27: nombre y "para qué sirve" en 📦 Recursos) y de los nodos de
+# [ES] Textos de los recursos propios de cada terreno (0.27, y la 🖤 obsidiana de la 0.28: nombre y "para qué sirve" en 📦 Recursos) y de los nodos de
 # recursos del mapa (el símbolo genérico ✨ del 🗺️ Mapa, sus líneas, el aviso al llegar, la línea de 📍 Zona, lo que dio en el
 # resumen de 🪓 Recolectar y la marca en ⬆️ Agrandar campamento). También prof.variant: el nombre de una receta que hace lo mismo
 # que otra con un recurso del terreno. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py: las
@@ -35,6 +35,7 @@ item:
   arena: "Arena fina"
   hielo: "Hielo eterno"
   chatarra: "Chatarra"
+  obsidiana: "Obsidiana"         # [ES] 0.28 (D-188): propia del 🌋 volcán
 
 resources:
   use:                          # [ES] D-183: para qué sirve cada recurso del terreno (📦 Recursos); todos se venden al mercader
@@ -59,6 +60,7 @@ resources:
     arena: "⚗️ frascos de vidrio para pociones; 🗿 sillares con menos piedra"
     hielo: "🍲 conservas en la Cocina (con sal)"
     chatarra: "la 🔥 Fundición la vuelve lingote"
+    obsidiana: "🗿 sillares de vidrio de lava con menos piedra"
 
 prof:
   variant: "{name} · con {item}"   # [ES] D-183: receta que hace lo mismo que otra con un recurso del terreno ("🧪 Poción de vida ×2 · con ⏳ Arena fina")
