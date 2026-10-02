@@ -176,6 +176,11 @@ hero:
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
+terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es un tablero salteado de manchas (engine/world/mapgen.py terrain_at). Cambiar esto CAMBIA el terreno (enemigos y peligro) de zonas ya visitadas; los recursos no se mueven (D-185)
+  patch: 3                   # [ES] rejilla de 3 × 3 con un centro al azar en cada casilla: manchas de unas 3 a 12 zonas, de forma variada
+  climate_slope: 0.02        # [ES] cuánto se enfría cada zona hacia el norte (y positiva) y se calienta hacia el sur
+  climate_strength: 3.0      # [ES] cuánto pesa el clima: los terrenos "cold" salen hasta 3 veces más al norte, los "hot" al sur
+
 map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (pedido del dueño: tan ancho como el mensaje e igual de alto)
   radius: 6                  # [ES] 6 → 13 × 13 cuadritos; más de 6 puede partir las filas en teléfonos chicos (375 puntos)
 

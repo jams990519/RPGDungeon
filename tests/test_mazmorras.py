@@ -413,7 +413,8 @@ def test_falling_in_the_deep_dungeon_keeps_half_of_the_pot_and_the_record(servic
 
 def test_leaving_the_zone_closes_the_run_with_the_whole_pot(service, clock):
     x, y = at_dungeon(service, "deep", level=20)
-    service.act("test:1", "dgo")
+    service.content.balance["explore"]["arrival_encounter_scale"] = 0      # no ambush on arrival (test only: the run would
+    service.act("test:1", "dgo")                                            # close after that fight, never in the middle)
     win(service, "test:1")
     pot = record(service)["deep"]["pot"]
     gold = service._load("test:1").gold

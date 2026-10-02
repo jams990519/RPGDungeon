@@ -5,6 +5,11 @@
 # gather: qué se recolecta en ese bioma (material: peso).
 # water (D-115, fase 2 de los oficios): qué parte de las zonas de ese bioma tiene agua (1.0 = todas): ahí también se pesca
 #   🐟 pescado (engine/world/resources.py water_resources; su peso en balance.yaml camp_professions.fish). Sin "water", 0.
+# terrain (D-186, confirmada): el mapa es un tablero salteado de manchas de pocas zonas (engine/world/mapgen.py terrain_at).
+#   weight: cuánto sale cada terreno en el sorteo de una mancha; climate: any, cold (sale más al norte) o hot (más al sur).
+#   scatter: terreno que sale en zonas sueltas (las ruinas). Sin "terrain", el terreno no sale solo en el mapa (el Claro).
+#   Un terreno nuevo solo agrega su terrain y su color. Los recursos de tierra NO siguen al terreno (D-185): usan el bioma
+#   clásico de antes (mapgen.classic_biome) con estos mismos gather. El agua (water) sí sigue al terreno que se ve.
 # color (D-179, confirmada): con qué color se pinta el terreno en el 🗺️ Mapa (D-182: colores elegidos por Claude). Un terreno
 #   nuevo solo agrega su color: la leyenda del mapa se arma sola. El color es el terreno, no promete recursos (D-180).
 #   Libres para terrenos nuevos: 🟧 🟥 (y los círculos 🔴 🟠 🟡 🔵 🟣 🟤 ⚫ ⚪).
@@ -19,6 +24,7 @@ claro:
   danger: 0.0
 pradera:
   name_key: biome.pradera
+  terrain: {weight: 3, climate: any}   # [ES] D-186: peso en el sorteo de cada mancha del tablero; climate: any / cold (más al norte) / hot (más al sur)
   color: "🟩"
   gather: {fibra: 4, hierba_curativa: 2, piedra: 1}
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un río o una laguna (🐟 pescado)
@@ -26,6 +32,7 @@ pradera:
   danger: 0.25
 bosque:
   name_key: biome.bosque
+  terrain: {weight: 3, climate: any}
   color: "🟢"
   gather: {madera: 5, hierba_curativa: 2, fibra: 1}
   water: 0.3            # [ES] D-115: 3 de cada 10 zonas tienen un arroyo (🐟 pescado)
@@ -33,12 +40,14 @@ bosque:
   danger: 0.35
 colinas:
   name_key: biome.colinas
+  terrain: {weight: 2, climate: any}
   color: "🟫"
   gather: {piedra: 4, madera: 1, pieza_metal: 1}
   emoji: "⛰️"
   danger: 0.3
 pantano:
   name_key: biome.pantano
+  terrain: {weight: 2, climate: any}
   color: "🟪"
   gather: {hierba_curativa: 4, fibra: 2}
   water: 1.0            # [ES] D-115: todo el pantano es agua: en cada zona se pesca
@@ -46,24 +55,28 @@ pantano:
   danger: 0.45
 montana:
   name_key: biome.montana
+  terrain: {weight: 2, climate: any}
   color: "⬜"
   gather: {piedra: 4, pieza_metal: 2}
   emoji: "🏔️"
   danger: 0.4
 desierto:
   name_key: biome.desierto
+  terrain: {weight: 2, climate: hot}
   color: "🟨"
   gather: {piedra: 2, pieza_metal: 1, fibra: 1}
   emoji: "🏜️"
   danger: 0.4
 tundra:
   name_key: biome.tundra
+  terrain: {weight: 2, climate: cold}
   color: "🟦"
   gather: {piedra: 2, madera: 1, pieza_metal: 1}
   emoji: "❄️"
   danger: 0.4
 ruinas:
   name_key: biome.ruinas
+  terrain: {scatter: 0.06}   # [ES] D-186: zonas sueltas (no manchas): 6 de cada 100, en cualquier parte
   color: "⬛"
   gather: {pieza_metal: 4, piedra: 2}
   emoji: "🏚️"

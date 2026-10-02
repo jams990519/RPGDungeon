@@ -35,7 +35,15 @@ Código: [mapgen.py](../../engine/world/mapgen.py), [travel.py](../../engine/wor
 
 ### 1.2 Biomas
 
-Cada zona saca su bioma de tres ruidos suaves (temperatura, humedad y altura), calculados con la semilla del mundo. El ruido forma **manchas**: zonas vecinas suelen compartir bioma.
+**Desde la 0.26.2 (D-186, D-187): el terreno es un tablero salteado.** El dueño pidió que el mapa se vea como un tablero de ajedrez salteado: varios cuadros juntos del mismo color (cinco verdes, al lado amarillos, al lado morados...), con cantidades, orden y posiciones que cambian. Así se arma (`engine/world/mapgen.py` → `terrain_at`):
+
+- El mapa se parte en una rejilla de **3 × 3** (`terrain.patch`) con un centro movido al azar en cada casilla. Cada zona se une al centro más cercano: salen **manchas de unas 3 a 12 zonas**, de forma variada.
+- Cada mancha **sortea su terreno por peso** (`content/biomes.yaml` → `terrain.weight`: pradera y bosque 3; colinas, pantano, montaña, desierto y tundra 2). La **tundra** (`climate: cold`) sale más hacia el norte y el **desierto** (`hot`) más hacia el sur (`terrain.climate_slope` y `climate_strength`), pero los dos pueden salir en cualquier parte.
+- Las **🏚️ ruinas** siguen siendo zonas sueltas (`terrain.scatter`: 6 de cada 100) y el **🔥 Claro** queda fijo en (0, 0).
+- Un terreno nuevo solo agrega su `terrain` y su `color` en `content/biomes.yaml` (D-185: se pueden agregar todos los que hagan falta).
+- **El terreno no decide los recursos (D-185):** los recursos de tierra siguen las regiones de antes, calculadas con el bioma "clásico" de abajo (`classic_biome`), así que ninguna zona perdió lo que tenía. El terreno sí decide los enemigos y el peligro, y el agua: un 🟪 pantano siempre tiene agua para pescar.
+
+**El bioma clásico (hasta la 0.26.1 era el terreno; ahora solo cuenta para los recursos de tierra).** Cada zona sacaba su bioma de tres ruidos suaves (temperatura, humedad y altura), calculados con la semilla del mundo. El ruido forma **manchas**: zonas vecinas suelen compartir bioma.
 
 - **Temperatura** = 0,5 − 0,03 × `y` ± 0,2 de ruido. **El norte es frío y el sur caliente:** hacia `y = +10` aparece la tundra; hacia `y = −9`, el desierto.
 - **Ruinas:** 6 % de las zonas, en cualquier parte, sin seguir manchas.
@@ -126,9 +134,9 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca los campamentos enemigos que ves (§1.14; desde la 0.26.1 con 👹, antes ⛺); desde D-171, las entradas de mazmorra que tienes cerca (§1.15; desde la 0.26.1 con la 🕳️ cueva, antes ❓). 🧍 eres tú, ▪️ lo que descubrió otro y ▫️ lo que nadie conoce. El norte está arriba.
+El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca los campamentos enemigos que ves (§1.14; desde la 0.26.1 con 👹, antes ⛺); desde D-171, las entradas de mazmorra que tienes cerca (§1.15; desde la 0.26.1 con la 🕳️ cueva, antes ❓). 🧍 eres tú. El norte está arriba. (Hasta la 0.26.1, ▪️ era lo que descubrió otro y ▫️ lo que nadie conoce; desde la 0.26.2 todo el cuadrado se pinta por terreno, D-186.)
 
-**Colores por terreno (D-179, desde la 0.26.1).** Lo que **tu héroe recuerda** se pinta con el color de su terreno: 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas; el 🔥 Claro sigue con su fuego (D-182, colores elegidos por Claude). El color sale de `content/biomes.yaml` (`color`) y la leyenda del mapa se arma sola, así que un terreno nuevo solo agrega su color (quedan libres 🟧, 🟥 y los círculos). **El color es el terreno, no promete recursos:** ver verde no quiere decir que haya madera o semillas; lo que hay se sabe explorando (antes, al 100 %, la zona se pintaba con su recurso principal, D-87).
+**Colores por terreno (D-179, desde la 0.26.1).** Cada cuadrito se pinta con el color de su terreno (en la 0.26.1, solo lo que tu héroe recordaba; desde la 0.26.2, **todo el cuadrado**, como un tablero salteado de manchas, D-186 y §1.2): 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas; el 🔥 Claro sigue con su fuego (D-182, colores elegidos por Claude). El color sale de `content/biomes.yaml` (`color`) y la leyenda del mapa se arma sola, así que un terreno nuevo solo agrega su color (quedan libres 🟧, 🟥 y los círculos). **El color es el terreno, no promete recursos:** ver verde no quiere decir que haya madera o semillas; lo que hay se sabe explorando (antes, al 100 %, la zona se pintaba con su recurso principal, D-87).
 
 ### 1.10 Pantalla de ejemplo
 
