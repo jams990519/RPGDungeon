@@ -442,3 +442,12 @@ v0_27:
     - "✨ En el mapa aparecen nodos de recursos. Al principio solo ves ✨: llega a su zona para saber de qué son, y desde ahí verás su recurso en el mapa para siempre."
     - "🪓 En un nodo su recurso rinde el doble, se agota más despacio y a veces da una 💠 gema o una 🌸 flor de luna. Lo puede usar cualquiera que llegue."
     - "🔎 Explorar descubre los recursos de una zona de a uno: al 1, 20, 40, 60 y 80 %, y todos al 100 %."
+
+v0_28:
+  version: "0.28"
+  title: "🌋 Lost Realms 0.28: terrenos nuevos"
+  notes:
+    - "🎨 El mapa tiene 6 terrenos nuevos, cada uno con su color: 🟣 selva, 🟧 sabana, 🟥 volcán, 🟤 cañón, ⚫ bosque oscuro y 🔵 lago. La selva y la sabana salen más al sur, el bosque oscuro más al norte, y el volcán es raro y el más peligroso."
+    - "🧩 Como en el Tetris, unas 3 de cada 10 piezas del mapa pasaron a ser de un terreno nuevo, con sus enemigos y sus recursos propios. Las demás zonas siguen igual, y los recursos de base de todas también."
+    - "🦆 En el lago se pesca en cada zona, y en muchos ríos de la selva y el cañón también."
+    - "🖤 En el volcán aparece la obsidiana: con ella, la 🗿 Cantería hace sillares con menos piedra."

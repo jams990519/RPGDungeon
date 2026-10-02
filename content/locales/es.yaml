@@ -687,6 +687,12 @@ biome:
   desierto: "Desierto"
   tundra: "Tundra"
   ruinas: "Ruinas"
+  selva: "Selva"                 # [ES] 0.28 (D-188): terrenos nuevos (content/biomes.yaml)
+  sabana: "Sabana"
+  volcan: "Volcán"
+  canon: "Cañón"
+  bosque_oscuro: "Bosque oscuro"
+  lago: "Lago"
 
 item:
   madera: "Madera"

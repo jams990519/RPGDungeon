@@ -6,7 +6,11 @@ coordinates. Since D-186 the terrain looks like a game of Tetris: the map is
 cut into 4x4 blocks (odd block rows shifted by 2, like bricks), each block is
 tiled by tetrominoes (I, O, T, S, Z, J, L; one of the 117 tilings of a 4x4
 square, picked by the seed) and each piece draws its terrain by weight, the
-cold ones likelier to the north and the hot ones to the south. The old climate biome (temperature, humidity, elevation) stays as
+cold ones likelier to the north and the hot ones to the south. Terrains
+added later go in a newer "tier" (0.28: tier 1): a piece first checks, with
+its own roll, whether it takes a terrain of the newest tier and otherwise
+draws exactly as before, so adding terrains only changes the pieces that turn
+into a new one. The old climate biome (temperature, humidity, elevation) stays as
 classic_biome: the land resource regions still use it (D-185: the
 terrain never decides the resources). Lejanía is the ring distance from the
 Claro at (0, 0).
@@ -22,7 +26,13 @@ y cada bloque se llena con una de las 117 formas de cubrir un cuadrado de 4 × 4
 con piezas de Tetris. Cada pieza sortea su terreno con el peso de
 content/biomes.yaml ("terrain": weight y climate; los fríos salen más al norte y
 los calientes más al sur, balance.yaml terrain). Dos piezas vecinas del mismo
-terreno se ven como una mancha más grande. El Claro queda fijo. El bioma "clásico" de antes (classic_biome) queda solo para los recursos
+terreno se ven como una mancha más grande. El Claro queda fijo.
+0.28 (D-188, terrenos nuevos): cada terreno dice en qué tanda se agregó ("tier" en content/biomes.yaml; sin tier, la 0, la de
+siempre). Cada pieza mira primero, con un sorteo propio de esa tanda, si le toca un terreno de la tanda más nueva (con la parte
+que les toca por peso y clima); si no, sortea entre los de antes EXACTAMENTE como antes. Así agregar terrenos solo cambia las
+piezas que pasan a ser de un terreno nuevo (unas 3 de cada 10 en la 0.28): las demás conservan su terreno, sus enemigos,
+sus recursos propios y sus nodos. La parte de cada terreno en todo el mapa es la misma que con un sorteo único por peso.
+El bioma "clásico" de antes (classic_biome) queda solo para los recursos
 de tierra, así lo que los jugadores ya conocen de cada zona no se movió (D-185);
 el agua (la pesca) sí sigue al terreno que se ve: un pantano siempre tiene agua.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md (vocabulario: zona, Lejanía, anillo)
@@ -37,9 +47,13 @@ Reglas que nunca se rompen:
     2. (0, 0) es siempre el Claro, Lejanía 0, sin peligro.
 Si cambias esto, revisa:
     - Mundo ya creado: cambiar balance.yaml terrain, los pesos de content/biomes.yaml, las piezas o los sorteos CAMBIA el
-      terreno de zonas ya visitadas (sus enemigos y su peligro); cambiar classic_biome MUEVE los recursos de tierra de un mundo ya creado
+      terreno de zonas ya visitadas (sus enemigos, su peligro, sus recursos propios y sus nodos); cambiar classic_biome MUEVE
+      los recursos de tierra de un mundo ya creado. Un terreno nuevo va con un "tier" más alto que los que ya estaban: si
+      entra en una tanda vieja, cambia el sorteo de casi todo el mapa (la 0.28 lo midió: sin tanda nueva habría cambiado el
+      terreno del 77 % de las zonas)
+    - Contenido: content/biomes.yaml (terrain), content/enemies.yaml ("biomes": cada terreno con enemigos en cada franja)
     - Servicio: engine/service/game.py — encuentros por bioma y nivel, el color del 🗺️ Mapa (D-179)
-    - Pruebas: tests/test_world.py
+    - Pruebas: tests/test_world.py, tests/test_terrenos_nuevos.py
 """
 
 from __future__ import annotations
@@ -127,11 +141,14 @@ def classic_biome(seed: int, x: int, y: int) -> str:
 
 
 # D-186: default terrain table for direct calls (tests, tools); the service passes the one built from content/biomes.yaml
-# and balance.yaml terrain (GameService._terrain_cfg). [ES] La tabla por defecto, igual a la de content/biomes.yaml.
+# and balance.yaml terrain (GameService._terrain_cfg). Each kind: (biome, weight, climate, tier).
+# [ES] La tabla por defecto, igual a la de content/biomes.yaml (0.28: los 6 terrenos nuevos, en la tanda 1).
 DEFAULT_TERRAIN: tuple = (
     0.02, 3.0,                                      # climate slope per zone of y, climate strength
-    (("pradera", 3.0, "any"), ("bosque", 3.0, "any"), ("colinas", 2.0, "any"), ("pantano", 2.0, "any"),
-     ("montana", 2.0, "any"), ("desierto", 2.0, "hot"), ("tundra", 2.0, "cold"), ("ruinas", 1.0, "any")),
+    (("pradera", 3.0, "any", 0), ("bosque", 3.0, "any", 0), ("colinas", 2.0, "any", 0), ("pantano", 2.0, "any", 0),
+     ("montana", 2.0, "any", 0), ("desierto", 2.0, "hot", 0), ("tundra", 2.0, "cold", 0), ("ruinas", 1.0, "any", 0),
+     ("selva", 1.5, "hot", 1), ("sabana", 1.5, "hot", 1), ("volcan", 0.5, "any", 1), ("canon", 1.0, "any", 1),   # 0.28 (D-188)
+     ("bosque_oscuro", 1.0, "cold", 1), ("lago", 1.0, "any", 1)),
     (),                                             # scattered single zones: (biome, share); none since the Tetris look
 )
 
@@ -181,19 +198,9 @@ def block_tilings() -> tuple[tuple[int, ...], ...]:
     return tuple(found)
 
 
-def _piece_terrain(seed: int, key: tuple[int, int, int], py: float, terrain: tuple) -> str:
-    """The terrain of one piece: a weighted draw, cold kinds likelier to the north and hot ones to the south."""
-    slope, strength, kinds, _ = terrain
-    temperature = 0.5 - py * slope                  # north (positive y) is colder
-    weights = []
-    for biome, weight, climate in kinds:
-        mult = 1.0
-        if climate == "cold":
-            mult = max(0.15, min(3.0, 1 + (0.5 - temperature) * strength))
-        elif climate == "hot":
-            mult = max(0.15, min(3.0, 1 + (temperature - 0.5) * strength))
-        weights.append((biome, weight * mult))
-    roll = hash_unit(seed, "terrain_kind", *key) * sum(w for _, w in weights)
+def _weighted_pick(roll: float, weights: list[tuple[str, float]]) -> str:
+    """The biome a roll (0..1) lands on, by weight. [ES] Qué hace: el sorteo por peso de siempre. La llama: _piece_terrain."""
+    roll *= sum(w for _, w in weights)
     for biome, weight in weights:
         roll -= weight
         if roll <= 0:
@@ -201,11 +208,46 @@ def _piece_terrain(seed: int, key: tuple[int, int, int], py: float, terrain: tup
     return weights[-1][0]
 
 
+def _piece_terrain(seed: int, key: tuple[int, int, int], py: float, terrain: tuple) -> str:
+    """The terrain of one piece: a weighted draw, cold kinds likelier to the north and hot ones to the south.
+
+    Kinds of a newer tier (0.28) are checked first, newest first, each tier with its own roll and its share of the weight
+    left; a piece that takes none of them draws among the oldest tier exactly as before (channel "terrain_kind"), so adding
+    a tier only changes the pieces that turn into one of its terrains. Each kind still gets weight / total of the pieces.
+
+    [ES]
+    Qué hace: sortea el terreno de una pieza por peso y clima. Primero mira la tanda más nueva (0.28: tier 1) con su propio
+    sorteo ("terrain_tier:<n>") y la parte del peso que le toca; si no le toca, la que sigue; al final, la tanda 0 con el
+    sorteo de siempre. Las piezas que no pasan a un terreno nuevo quedan igual que antes de agregarlo.
+    La llama: terrain_at. Si cambia, afecta: el terreno (color, enemigos, peligro, recursos propios y nodos) de todo el mapa.
+    """
+    slope, strength, kinds, _ = terrain
+    temperature = 0.5 - py * slope                  # north (positive y) is colder
+    weights = []
+    for kind in kinds:
+        biome, weight, climate = kind[:3]
+        tier = int(kind[3]) if len(kind) > 3 else 0
+        mult = 1.0
+        if climate == "cold":
+            mult = max(0.15, min(3.0, 1 + (0.5 - temperature) * strength))
+        elif climate == "hot":
+            mult = max(0.15, min(3.0, 1 + (temperature - 0.5) * strength))
+        weights.append((biome, weight * mult, tier))
+    tiers = sorted({tier for _, _, tier in weights}, reverse=True)
+    for tier in tiers[:-1]:                         # newest first; the oldest tier draws as it always did
+        left = sum(w for _, w, t in weights if t <= tier)
+        mine = [(b, w) for b, w, t in weights if t == tier]
+        if hash_unit(seed, f"terrain_tier:{tier}", *key) * left < sum(w for _, w in mine):
+            return _weighted_pick(hash_unit(seed, f"terrain_kind:{tier}", *key), mine)
+    return _weighted_pick(hash_unit(seed, "terrain_kind", *key), [(b, w) for b, w, t in weights if t == tiers[-1]])
+
+
 def terrain_at(seed: int, x: int, y: int, terrain: tuple = DEFAULT_TERRAIN) -> str:
     """The terrain (biome id) of a zone on the D-186 Tetris-like map.
 
     Args:
-        terrain: (climate slope, climate strength, ((biome, weight, climate), ...), ((biome, share), ...)).
+        terrain: (climate slope, climate strength, ((biome, weight, climate, tier), ...), ((biome, share), ...)); the tier
+            (0.28) is optional and 0 when missing.
 
     [ES]
     Qué hace: el terreno de una zona. Busca su bloque de 4 × 4 (las filas impares de bloques corridas 2 zonas, como

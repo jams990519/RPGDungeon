@@ -146,6 +146,7 @@ sillar:
 # Si cambias esto, revisa: IDs estables (los guardan las mochilas y el agotamiento de cada zona); el precio no debe dejar
 # ganar monedas refinando ni fabricando, y queda cerca de los de base (2 a 6) para que recolectar rinda lo mismo en
 # monedas (tests/test_nodos_y_terrenos.py).
+# 0.28 (D-188): un solo material más, la 🖤 obsidiana del 🌋 volcán (al final de esta lista); los demás terrenos nuevos reusan estos.
 bayas:
   name_key: item.bayas
   emoji: "🫐"
@@ -251,6 +252,11 @@ chatarra:
   emoji: "🔧"
   kind: material
   price: 3                   # [ES] ⛏️ desierto y ruinas
+obsidiana:
+  name_key: item.obsidiana
+  emoji: "🖤"                # [ES] no es un color de terreno: el 🗺️ Mapa lo muestra en sus nodos sin confundirse
+  kind: material
+  price: 5                   # [ES] ⛏️ 0.28 (D-188): propia solo del 🌋 volcán (vidrio de lava); 🗿 sillares con menos piedra
 
 # Camp furniture (D-116): only 🪑 Carpentry makes it (content/professions.yaml). A member places it in their camp
 # (🔨 Mejoras → 🔨 Obras → 🪑 Colocar); one of each piece per camp, for ever.

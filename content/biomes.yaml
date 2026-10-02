@@ -8,11 +8,16 @@
 # terrain (D-186, confirmada): el mapa es "como jugando Tetris": piezas de 4 zonas encajadas (engine/world/mapgen.py
 #   terrain_at). weight: cuánto sale cada terreno en el sorteo de cada pieza; climate: any, cold (sale más al norte) o hot
 #   (más al sur). scatter (opcional): terreno que sale en zonas sueltas. Sin "terrain", no sale solo en el mapa (el Claro).
+#   tier (0.28, D-188): la tanda en la que se agregó el terreno (sin tier, la 0). Cada pieza mira primero si le toca uno de
+#   la tanda más nueva, con un sorteo propio; si no, sortea como antes. Un terreno nuevo va en una tanda nueva (la siguiente
+#   a la más alta): así solo cambian las piezas que pasan a ser suyas, y las demás conservan su terreno, enemigos, recursos
+#   propios y nodos. Meterlo en una tanda vieja cambiaría el terreno de casi todo el mapa.
 #   Un terreno nuevo solo agrega su terrain y su color. Los recursos de tierra NO siguen al terreno (D-185): usan el bioma
 #   clásico de antes (mapgen.classic_biome) con estos mismos gather. El agua (water) sí sigue al terreno que se ve.
 # color (D-179, confirmada): con qué color se pinta el terreno en el 🗺️ Mapa (D-182: colores elegidos por Claude). Un terreno
 #   nuevo solo agrega su color: la leyenda del mapa se arma sola. El color es el terreno, no promete recursos (D-180).
-#   Libres para terrenos nuevos: 🟧 🟥 (y los círculos 🔴 🟠 🟡 🔵 🟣 🟤 ⚫ ⚪).
+#   0.28 (D-188) usó 🟧 🟥 🟣 🟤 ⚫ 🔵; libres para terrenos nuevos: 🔴 🟠 🟡 ⚪. Un color nunca se repite
+#   (tests/test_terrenos_nuevos.py) ni es el emoji de un recurso que puede tener nodo (el mapa lo pinta en su zona).
 # own (D-180, D-183 provisional): los recursos propios del terreno. Su catálogo = los de base de "gather" + estos (10 a 15).
 #   Cada zona suma 2 o 3 de estos (engine/world/resources.py terrain_resources; balance.yaml resources.terrain), hasta 4 a 6
 #   recursos de tierra. Cada id es un objeto de content/items.yaml con su oficio de recolección ("gathers" de
@@ -105,3 +110,70 @@ ruinas:
   node_rare: gema_bruta        # [ES] D-184: el raro que a veces da un nodo de este terreno
   emoji: "🏚️"
   danger: 0.5
+
+# ---- 0.28 "terrenos nuevos" (D-185 confirmada: "puedes agregar cuantos colores quieras en cuanto a tipo de zona"; D-188
+# provisional: cuáles, sus colores, pesos y números los propuso Claude). Solo datos: mapgen.terrain_at los sortea solos y la
+# leyenda del 🗺️ Mapa se arma sola. Nunca deciden los recursos de base (siguen a mapgen.classic_biome, que no los devuelve).
+# Cada uno sale menos que los clásicos (peso 1 a 1,5; el volcán 0,5), en la tanda 1: unas 3 de cada 10 piezas del mapa pasan a
+# ser de un terreno nuevo y las otras quedan como estaban en la 0.27. Sus enemigos: los de content/enemies.yaml que llevan su
+# id en "biomes" (elegidos de los terrenos parecidos, con 2 o más en cada franja de nivel; tests/test_terrenos_nuevos.py).
+# [ES] Si cambias el peso o el clima de uno, cambia el terreno (enemigos y peligro) de zonas ya visitadas; nunca sus recursos de base.
+selva:
+  name_key: biome.selva
+  terrain: {weight: 1.5, climate: hot, tier: 1}   # [ES] D-188: caliente y húmeda: sale más al sur
+  color: "🟣"           # [ES] prima del 🟪 pantano (húmedo), como 🟢 bosque lo es de 🟩 pradera
+  gather: {madera: 4, hierba_curativa: 3, fibra: 1}
+  own: [datiles, bayas, miel, setas, resina, corteza, musgo, raiz_amarga]   # [ES] catálogo de 11 con los de gather
+  node_rare: flor_luna
+  water: 0.5            # [ES] la mitad de sus zonas tiene un río (🐟 pescado)
+  emoji: "🦜"
+  danger: 0.45
+sabana:
+  name_key: biome.sabana
+  terrain: {weight: 1.5, climate: hot, tier: 1}   # [ES] D-188: caliente y seca: sale más al sur
+  color: "🟧"
+  gather: {fibra: 4, madera: 1, piedra: 1}
+  own: [mazorca, lino, miel, tomillo, bayas, datiles, resina, cactus]   # [ES] catálogo de 11 con los de gather
+  node_rare: flor_luna
+  water: 0.2            # [ES] 2 de cada 10 zonas tienen un abrevadero (🐟 pescado)
+  emoji: "🦒"
+  danger: 0.3
+volcan:
+  name_key: biome.volcan
+  terrain: {weight: 0.5, climate: any, tier: 1}   # [ES] D-188: raro (el que menos sale) y el más peligroso
+  color: "🟥"
+  gather: {piedra: 4, pieza_metal: 3}
+  own: [obsidiana, carbon, sal, cuarzo, arena, musgo, tomillo, resina]   # [ES] catálogo de 10; 🖤 obsidiana es nueva (0.28) y es propia solo de aquí
+  node_rare: gema_bruta
+  emoji: "🌋"
+  danger: 0.55
+canon:
+  name_key: biome.canon
+  terrain: {weight: 1, climate: any, tier: 1}
+  color: "🟤"           # [ES] primo de 🟫 colinas (roca)
+  gather: {piedra: 4, pieza_metal: 1, arcilla: 1}
+  own: [arena, sal, cuarzo, tomillo, cactus, carbon, chatarra, bayas]   # [ES] catálogo de 11 con los de gather
+  node_rare: gema_bruta
+  water: 0.4            # [ES] 4 de cada 10 zonas tienen el río del fondo del cañón (🐟 pescado)
+  emoji: "🏞️"
+  danger: 0.35
+bosque_oscuro:
+  name_key: biome.bosque_oscuro
+  terrain: {weight: 1, climate: cold, tier: 1}    # [ES] D-188: bosque cerrado y frío: sale más al norte
+  color: "⚫"           # [ES] primo de ⬛ ruinas (oscuro)
+  gather: {madera: 5, hierba_curativa: 1, fibra: 1}
+  own: [setas, musgo, raiz_amarga, corteza, resina, bayas, miel, carbon]   # [ES] catálogo de 11 con los de gather
+  node_rare: flor_luna
+  water: 0.3            # [ES] 3 de cada 10 zonas tienen un arroyo (🐟 pescado)
+  emoji: "🦉"
+  danger: 0.5
+lago:
+  name_key: biome.lago
+  terrain: {weight: 1, climate: any, tier: 1}
+  color: "🔵"           # [ES] el agua
+  gather: {fibra: 3, hierba_curativa: 2, arcilla: 1}
+  own: [juncos, nenufar, lino, musgo, arena, setas, bayas, raiz_amarga]   # [ES] catálogo de 11 con los de gather
+  node_rare: flor_luna
+  water: 1.0            # [ES] como el pantano: en cada zona se pesca
+  emoji: "🦆"
+  danger: 0.25
