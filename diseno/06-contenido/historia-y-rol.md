@@ -28,6 +28,8 @@ Lo que ya se juega de §1. La historia es **datos**: misiones, personajes, facci
 
 ### 0.1 Dónde se juega
 
+> **Cambió en la 0.29 (D-190, D-192):** **📖 Historia ya no está en el menú de abajo** (la historia se cuenta como un camino guiado). Lo que mostraba ahora está en **👤 Héroe → 📔 Diario**: tu tarjeta, el origen y el capítulo, 🎯 Ahora, los encargos de hoy, las facciones y tus hechos, con 🎯 Misiones, ⚜️ Facciones y 📣 Mostrar. El botón viejo y /historia abren el diario con un aviso. El 📜 Tablón está en 🏕️ Campamento (en el Claro y en tu campamento) y desde ahí 🧑 Personajes. El origen ya no se ofrece al crear ni solo: se elige en 👤 Héroe → 🎭 Origen (E-131). Lo de abajo describe la 0.17 a la 0.28. Ver [Menús](../01-plataforma/menus-campamento-y-heroe.md).
+
 - **📖 Historia** es el 6.º botón del menú de abajo (D-46 deja hasta 6; ⚙️ Opciones sigue último) y también **/historia**. Muestra:
   - tu origen y el capítulo, con la misión en que vas (por ejemplo, "misión 2 de 7");
   - **🎯 Ahora:** qué hacer en cada misión en curso y cuánto llevas ("🪓 Recolecta 🌿 Hierba curativa (2/4)"), o desde qué nivel empieza la siguiente;
