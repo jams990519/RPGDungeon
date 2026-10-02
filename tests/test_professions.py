@@ -356,10 +356,11 @@ def test_station_lists_what_you_can_make_first_two_per_page(service):
     assert view.actions[1].id == "rec:baston_roble:0" and not view.actions[1].label.startswith("✅")
     assert view.actions[2].id == "est:craft:1" and view.actions[3].id == "oficios"
     assert any("Falta" in line and "Tablón ×2" in line and "Tela ×1" in line for line in view.body)
-    assert any("Página 1 de 15" in line for line in view.body)         # 29 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2)
+    # 37 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2; D-183: + 8 with terrain resources)
+    assert any("Página 1 de 19" in line for line in view.body)
     refine = service.act("test:1", "est:refine:0")
-    assert refine.kind == "station" and len(refine.actions) == 4      # 6 refining recipes (D-115: + 🧱 sillar): 2 per page
-    assert any("Página 1 de 3" in line for line in refine.body)
+    assert refine.kind == "station" and len(refine.actions) == 4      # 13 refining recipes (D-115: + 🧱 sillar; D-183: + 7): 2 per page
+    assert any("Página 1 de 7" in line for line in refine.body)
     seen = set()
     for page in range(3):
         seen |= {a.id for a in service.act("test:1", f"est:refine:{page}").actions if a.id.startswith("rec:")}

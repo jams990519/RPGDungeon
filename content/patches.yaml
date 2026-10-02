@@ -415,3 +415,13 @@ v0_26_1:
     - "🕳️ Las mazmorras se marcan con una cueva apenas andas cerca, y ahora hay más: 2 o 3 en cada parte del mapa. Las que ya conocías siguen en su lugar."
     - "👹 Los campamentos de monstruos tienen su propio icono, para no confundirlos con los 🏕️ campamentos de los jugadores."
     - "✅ En ⚙️ Opciones, cada interruptor muestra una palomita verde cuando está activo y una gris ☑️ cuando está apagado."
+
+v0_27:
+  version: "0.27"
+  title: "✨ Lost Realms 0.27: cada terreno con sus recursos y nodos por descubrir"
+  notes:
+    - "🌍 Cada terreno tiene ahora sus propios recursos: setas y resina en el bosque, juncos y nenúfares en el pantano, sal y carbón en las colinas, dátiles y cactus en el desierto... Cada zona trae de 4 a 6, y solo explorando sabes cuáles. Lo que ya conocías de tus zonas sigue igual."
+    - "🛠️ Los recursos nuevos sirven: tela de lino, lingotes con carbón, pociones con frasco de arena, ungüentos de musgo, raciones con setas o bayas y más. También se venden al mercader."
+    - "✨ En el mapa aparecen nodos de recursos. Al principio solo ves ✨: llega a su zona para saber de qué son, y desde ahí verás su recurso en el mapa para siempre."
+    - "🪓 En un nodo su recurso rinde el doble, se agota más despacio y a veces da una 💠 gema o una 🌸 flor de luna. Lo puede usar cualquiera que llegue."
+    - "🔎 Explorar descubre los recursos de una zona de a uno: al 1, 20, 40, 60 y 80 %, y todos al 100 %."

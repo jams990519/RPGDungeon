@@ -27,6 +27,8 @@
 #     gasta energía). xp: experiencia de oficio por vez. La experiencia de héroe sale de energy (balance.yaml professions).
 #     spec (D-141, opcional): la 🎓 especialización que la hace exclusiva: solo la ve y la hace quien la tiene, con el rango
 #     de la receta y balance.yaml specs.recipe_mastery de dominio.
+#     variant (D-183, opcional): el material que la distingue de otra receta que hace lo mismo (las de los recursos de cada
+#     terreno): el nombre de la receta lo muestra ("🧪 Poción de vida ×2 · con ⏳ Arena") para que los botones no se repitan.
 # 🎓 Especializaciones (D-115, D-141; bloque "specs", debajo de "ranks"):
 #     specs.<oficio>: las 3 especializaciones del oficio (red-de-oficios.md §2). Cada una: id (estable y único en todo el juego:
 #     el héroe guarda las que tiene en Hero.prof_specs y su dominio en Hero.spec_xp), emoji y effects: una lista corta de
@@ -59,6 +61,10 @@
 #       campamento o castillo (fish_food, cook_food, stone_cost, build_cost, repair_cost): valen para el campamento con el
 #       MEJOR rango entre sus miembros (engine/professions/rules.py camp_perks; balance.yaml camp_professions).
 #       La 🍲 Cocina se hace en el Claro y en el 🔥 Fogón del campamento; la Cantería, en el Claro y en el 🧵 Taller.
+#     - D-180 / D-183 (0.27): los recursos propios de cada terreno (content/biomes.yaml "own") los junta un oficio de
+#       recolección ("gathers" de 🪓 Leñador, ⛏️ Minero y 🌿 Herbolario: su beneficio, su unidad de más y su raro valen para
+#       ellos) y cada uno tiene al menos una receta (sección al final: refinados, ⚗️ Alquimia, 🩺 Medicina y 🍲 Cocina, con
+#       "variant"). Un recurso nuevo sin oficio o sin receta rompe tests/test_nodos_y_terrenos.py.
 #     - D-172: el perk {stealth} del 🧭 Explorador (🥷 Sigilo, en PERK_KEYS de engine/professions/rules.py) y el efecto perk stealth
 #       de la 🎓 🕵️ Infiltrado los usa engine/service/game.py _stealth_chance (evitar una pelea al azar al explorar con ✋ Manual y
 #       al llegar de un viaje), con el tope de balance.yaml explorer.stealth_max. Pruebas: tests/test_reconocimiento.py.
@@ -130,7 +136,7 @@ specs:
   herreria:
     - {id: herreria_armas, emoji: "⚔️", effects: [{kind: masterwork, types: [espada, daga], value: 0.05}]}  # [ES] exclusivas: espec_espada_1 y _2
     - {id: herreria_armero, emoji: "🛡️", effects: [{kind: masterwork, types: [placas], value: 0.05}]}      # [ES] exclusivas: espec_placas_1 y _2
-    - {id: herreria_herramientas, emoji: "🔧", effects: [{kind: yield, items: [madera, piedra, pieza_metal, arcilla, hierba_curativa, fibra, carne, piel], value: 0.05}]}   # [ES] tus herramientas: +5 % en todo lo que recolectas o desuellas
+    - {id: herreria_herramientas, emoji: "🔧", effects: [{kind: yield, items: [madera, piedra, pieza_metal, arcilla, hierba_curativa, fibra, carne, piel, bayas, setas, miel, mazorca, lino, juncos, nenufar, cactus, datiles, flor_escarcha, musgo, raiz_amarga, tomillo, resina, corteza, carbon, sal, cuarzo, arena, hielo, chatarra], value: 0.05}]}   # [ES] tus herramientas: +5 % en todo lo que recolectas o desuellas (D-183: también los recursos de cada terreno)
   peleteria:
     - {id: peleteria_cuero, emoji: "🦺", effects: [{kind: masterwork, types: [cuero], value: 0.05}]}       # [ES] exclusivas: espec_cuero_1 y _2
     - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2
@@ -188,14 +194,14 @@ professions:
     name_key: profession.lenador.name
     how_key: profession.lenador.how
     branch: gather
-    gathers: [madera]
+    gathers: [madera, resina, corteza]       # [ES] D-183: también lo leñoso de cada terreno (💧 resina, 🍂 corteza)
     perk: {bag: 10}                          # [ES] D-111: +10 de espacio en la mochila al rango 100 (crece parejo con el rango)
   minero:
     emoji: "⛏️"
     name_key: profession.minero.name
     how_key: profession.minero.how
     branch: gather
-    gathers: [piedra, pieza_metal, arcilla]
+    gathers: [piedra, pieza_metal, arcilla, carbon, sal, cuarzo, arena, hielo, chatarra]   # [ES] D-183: también lo mineral de cada terreno
     rare: {item: gema_bruta, min_rank: 10}     # [ES] desde el rango 10 aparecen gemas en bruto al minar (las pide la Joyería)
     perk: {hp: 0.05}                         # [ES] D-111: +5 % de vida máxima al rango 100 (tanques)
   herbolario:
@@ -203,7 +209,7 @@ professions:
     name_key: profession.herbolario.name
     how_key: profession.herbolario.how
     branch: gather
-    gathers: [hierba_curativa, fibra]
+    gathers: [hierba_curativa, fibra, bayas, setas, miel, mazorca, lino, juncos, nenufar, cactus, datiles, flor_escarcha, musgo, raiz_amarga, tomillo]   # [ES] D-183: también las plantas, hongos y la miel de cada terreno
     rare: {item: flor_luna, min_rank: 10}      # [ES] desde el rango 10 aparecen flores de luna (pociones mayores, túnicas finas)
     perk: {regen: 0.20}                      # [ES] D-111: la vida vuelve sola un 20 % más rápido al rango 100
   desollador:
@@ -1590,3 +1596,31 @@ recipes:
     min_rank: 100
     energy: 2
     xp: 12
+
+  # ---- D-180 / D-183 (0.27): the terrain resources. [ES] Los recursos propios de cada terreno: cada uno tiene al menos una
+  # receta, en la capa ligera (D-44): otra forma de hacer lo de siempre, con "variant" para que el nombre no se repita. Los
+  # refinados nunca dejan ganar monedas (lo que sale × 0,5 vale menos que lo que entra) y van DESPUÉS de los de siempre (lo crudo
+  # que se aportó de más a una obra sigue contando con la receta vieja: engine/professions/rules.py refined_from). Las de 🍲 Cocina
+  # llevan carne o pescado (lo cocinado vale más raciones que lo crudo) y 6 de experiencia de oficio por ⚡, como todas.
+  tela_lino: {profession: tejeduria, variant: lino, inputs: {lino: 3}, output: {tela_tejida: 1}, min_rank: 1, energy: 1, xp: 6}
+  tela_juncos: {profession: tejeduria, variant: juncos, inputs: {juncos: 2, fibra: 1}, output: {tela_tejida: 1}, min_rank: 1, energy: 1, xp: 6}
+  lingote_carbon: {profession: fundicion, variant: carbon, inputs: {pieza_metal: 3, carbon: 1}, output: {lingote: 2}, min_rank: 1, energy: 1, xp: 6}      # [ES] el carbón de la fragua: 3 piezas dan 2 lingotes
+  lingote_chatarra: {profession: fundicion, variant: chatarra, inputs: {chatarra: 3}, output: {lingote: 1}, min_rank: 1, energy: 1, xp: 6}
+  cuero_corteza: {profession: curtiduria, variant: corteza, inputs: {piel: 3, corteza: 1}, output: {cuero_curtido: 2}, min_rank: 1, energy: 1, xp: 6}   # [ES] taninos de la corteza: 3 pieles dan 2 cueros
+  extracto_raiz: {profession: destilacion, variant: raiz_amarga, inputs: {raiz_amarga: 2, hierba_curativa: 1}, output: {extracto: 1}, min_rank: 1, energy: 1, xp: 6}
+  sillar_arena: {profession: canteria, variant: arena, inputs: {piedra: 2, arena: 1}, output: {sillar: 1}, min_rank: 1, energy: 1, xp: 6}                # [ES] mortero de arena: 2 piedras en vez de 3
+  pocion_vida_arena: {profession: alquimia, variant: arena, inputs: {extracto: 1, arena: 1}, output: {pocion_vida: 2}, min_rank: 1, energy: 1, xp: 6}    # [ES] frasco de vidrio en vez de barro
+  pocion_vida_resina: {profession: alquimia, variant: resina, inputs: {extracto: 1, resina: 1}, output: {pocion_vida: 2}, min_rank: 1, energy: 1, xp: 6}  # [ES] frasco sellado con resina
+  pocion_mayor_nenufar: {profession: alquimia, variant: nenufar, inputs: {extracto: 2, arcilla: 1, nenufar: 2}, output: {pocion_mayor: 1}, min_rank: 25, energy: 1, xp: 8}        # [ES] sin 🌸 flor de luna
+  pocion_mayor_escarcha: {profession: alquimia, variant: flor_escarcha, inputs: {extracto: 2, cuarzo: 1, flor_escarcha: 2}, output: {pocion_mayor: 1}, min_rank: 25, energy: 1, xp: 8}
+  unguento_musgo: {profession: medicina, variant: musgo, inputs: {extracto: 1, musgo: 2}, output: {unguento: 2}, min_rank: 1, energy: 1, xp: 6}
+  unguento_cactus: {profession: medicina, variant: cactus, inputs: {cactus: 2, tela_tejida: 1}, output: {unguento: 2}, min_rank: 1, energy: 1, xp: 6}     # [ES] el jugo del cactus calma las heridas
+  botiquin_miel: {profession: medicina, variant: miel, inputs: {extracto: 1, miel: 2, tela_tejida: 1}, output: {botiquin: 1}, min_rank: 25, energy: 2, xp: 12}
+  racion_setas: {profession: cocina, variant: setas, inputs: {carne: 1, setas: 1}, output: {racion_campamento: 1}, min_rank: 1, energy: 1, xp: 6}         # [ES] 2 raciones crudas → 3
+  racion_bayas: {profession: cocina, variant: bayas, inputs: {carne: 1, bayas: 2}, output: {racion_campamento: 1}, min_rank: 1, energy: 1, xp: 6}
+  pescado_sal: {profession: cocina, variant: sal, inputs: {pescado: 2, sal: 1}, output: {pescado_asado: 1}, min_rank: 1, energy: 1, xp: 6}
+  pescado_mazorca: {profession: cocina, variant: mazorca, inputs: {pescado: 2, mazorca: 1}, output: {pescado_asado: 1}, min_rank: 1, energy: 1, xp: 6}
+  guiso_tomillo: {profession: cocina, variant: tomillo, inputs: {carne: 2, pescado: 2, tomillo: 1}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 12}   # [ES] 6 raciones crudas → 10
+  guiso_datiles: {profession: cocina, variant: datiles, inputs: {carne: 2, pescado: 2, datiles: 2}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 12}
+  conserva_hielo: {profession: cocina, variant: hielo, inputs: {carne: 3, pescado: 3, sal: 1, hielo: 1}, output: {conserva: 1}, min_rank: 50, energy: 2, xp: 12}     # [ES] 9 → 18, sin tarro ni salmuera
+  festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 12}          # [ES] 12 → 27, sin 🌸 flor de luna

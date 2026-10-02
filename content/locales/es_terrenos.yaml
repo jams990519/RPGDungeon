@@ -1,0 +1,77 @@
+# Terrain resources (D-180, D-183) and resource nodes (D-181, D-184). Numbers live in content/balance.yaml (blocks
+# resources.terrain and nodes); the catalog of each terrain in content/biomes.yaml ("own", "node_rare"); the items in
+# content/items.yaml; their recipes in content/professions.yaml (the ones with "variant").
+# [ES] Textos de los recursos propios de cada terreno (0.27: nombre y "para qué sirve" en 📦 Recursos) y de los nodos de
+# recursos del mapa (el símbolo genérico ✨ del 🗺️ Mapa, sus líneas, el aviso al llegar, la línea de 📍 Zona, lo que dio en el
+# resumen de 🪓 Recolectar y la marca en ⬆️ Agrandar campamento). También prof.variant: el nombre de una receta que hace lo mismo
+# que otra con un recurso del terreno. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py: las
+# claves que ya existen, como item, resources o prof, se completan, no se pisan).
+# Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.2 (catálogo de cada terreno) y §1.16 (nodos de recursos)
+# Lo leen: engine/service/game.py (sección "resource nodes": _node_discover, _node_effect_text, _node_icon, _node_map_lines,
+#     _node_zone_lines, _node_batch_lines, _node_grow_mark; _recipe_name con prof.variant; _resources_view con resources.use).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Los números los pone el motor. Si cambias una clave, búscala
+# en game.py: una clave que falta se ve como [clave] (tests/test_nodos_y_terrenos.py revisa que no falte ninguna).
+# Si cambias node.icon_unknown, que no sea un símbolo que ya usa el mapa (🧍 👑 👹 🏕️ 🕳️ 🌀 ▪️ ▫️ ni un color de terreno).
+
+item:
+  bayas: "Bayas"
+  setas: "Setas"
+  miel: "Miel silvestre"
+  mazorca: "Mazorca silvestre"
+  lino: "Lino"
+  juncos: "Juncos"
+  nenufar: "Nenúfar"
+  cactus: "Pulpa de cactus"
+  datiles: "Dátiles"
+  flor_escarcha: "Flor de escarcha"
+  musgo: "Musgo"
+  raiz_amarga: "Raíz amarga"
+  tomillo: "Tomillo"
+  resina: "Resina"
+  corteza: "Corteza"
+  carbon: "Carbón"
+  sal: "Sal de roca"
+  cuarzo: "Cuarzo"
+  arena: "Arena fina"
+  hielo: "Hielo eterno"
+  chatarra: "Chatarra"
+
+resources:
+  use:                          # [ES] D-183: para qué sirve cada recurso del terreno (📦 Recursos); todos se venden al mercader
+    bayas: "🍲 raciones con carne y el festín de la Cocina"
+    setas: "🍲 raciones con carne en la Cocina"
+    miel: "🩺 botiquines de la Medicina y 🍲 el festín de la Cocina"
+    mazorca: "🍲 pescado asado con mazorca en la Cocina"
+    lino: "la 🧶 Tejeduría lo vuelve tela"
+    juncos: "la 🧶 Tejeduría lo vuelve tela (con fibra)"
+    nenufar: "⚗️ pociones mayores sin flor de luna"
+    cactus: "🩺 ungüentos de la Medicina (con tela)"
+    datiles: "🍲 guiso del cazador en la Cocina"
+    flor_escarcha: "⚗️ pociones mayores sin flor de luna (con cuarzo)"
+    musgo: "🩺 ungüentos de la Medicina (con extracto)"
+    raiz_amarga: "la 💧 Destilación la vuelve extracto (con hierba)"
+    tomillo: "🍲 guiso del cazador en la Cocina"
+    resina: "⚗️ sella frascos: pociones de vida con extracto"
+    corteza: "la 🪣 Curtiduría: 3 pieles y corteza dan 2 cueros"
+    carbon: "la 🔥 Fundición: 3 piezas de metal y carbón dan 2 lingotes"
+    sal: "🍲 pescado a la sal y conservas en la Cocina"
+    cuarzo: "⚗️ frascos de pociones mayores"
+    arena: "⚗️ frascos de vidrio para pociones; 🗿 sillares con menos piedra"
+    hielo: "🍲 conservas en la Cocina (con sal)"
+    chatarra: "la 🔥 Fundición la vuelve lingote"
+
+prof:
+  variant: "{name} · con {item}"   # [ES] D-183: receta que hace lo mismo que otra con un recurso del terreno ("🧪 Poción de vida ×2 · con ⏳ Arena fina")
+
+node:                           # [ES] D-181, D-184: nodos de recursos del mapa (lugar fijo; de qué son, se sabe al llegar)
+  icon_unknown: "✨"            # [ES] símbolo genérico del 🗺️ Mapa: hay un nodo, no sabes de qué (al llegar, el emoji de su recurso)
+  arrive: "✨ ¡Encontraste un nodo de recursos! Es de {item}: aquí {effect}."
+  effect: "su recurso rinde ×{mult} al recolectar y se agota más despacio"
+  effect_rare: ", y a veces da {item}"
+  zone_line: "{icon} Nodo de {item}: {effect}."
+  map_unknown: "{icon} ({x}, {y}) · a {zones} {zones|zona|zonas}: un nodo de recursos, llega para saber de qué es"
+  map_known: "{icon} ({x}, {y}) · a {zones} {zones|zona|zonas}: nodo de {item}"
+  map_here: "{icon} Estás en un nodo de {item}: recolecta aquí."
+  batch: "{icon} El nodo de {item} te dio +{n} de más."
+  batch_rare: "{icon} En el nodo encontraste {item} ×{n}."
+  grow_mark: " {icon}{emoji}"

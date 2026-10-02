@@ -184,13 +184,17 @@ resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar
   region_scale: {madera: 5, piedra: 4, fibra: 3, hierba_curativa: 3, pieza_metal: 6, arcilla: 4}   # [ES] tamaño base de las manchas de cada recurso
   biome_bonus: 0.25          # [ES] cuánto ayuda el bioma (más madera en el bosque)
   threshold: 0.62            # [ES] desde qué fuerza un recurso aparece en la zona
-  max_per_zone: 3            # [ES] una zona tiene de 1 a 3 tipos de recurso
-  fixed:                     # [ES] zonas con recursos fijos
+  max_per_zone: 3            # [ES] una zona tiene de 1 a 3 recursos de base (los 6 de siempre: no cambian con D-180)
+  fixed:                     # [ES] zonas con recursos fijos (no suman recursos del terreno ni nodos)
     "0:0": {madera: 1.0, fibra: 0.8}
+  terrain:                   # [ES] D-180, D-183 (provisional; números propuestos por Claude): encima de los de base, cada zona suma recursos propios de su terreno (content/biomes.yaml "own"; catálogo de 10 a 15 por terreno). Sorteo propio: nunca mueve los de base
+    add: [2, 3]              # [ES] cada zona suma 2 o 3 de los propios de su terreno...
+    total: [4, 6]            # [ES] ...sin quedar con menos de 4 ni pasar de 6 recursos de tierra en total (con 1 de base suma 3; el agua va aparte)
+    richness: [0.3, 1.0]     # [ES] riqueza de cada propio (cuánto sale al recolectar, como la de los de base)
 
 exploration:                 # [ES] D-87: cada zona se explora por porcentaje
   per_step: [15, 30]         # [ES] cada exploración suma entre 15 % y 30 %
-  reveal_at: [1, 50, 100]    # [ES] con estos % se conoce el 1.º, 2.º y 3.º recurso; al 100 % se ve todo (D-179: el mapa pinta el terreno, no el recurso)
+  reveal_at: [1, 20, 40, 60, 80, 100]   # [ES] con estos % se conoce el 1.º, 2.º, 3.º... recurso de la zona (D-183: hasta 6 de tierra; antes [1, 50, 100] para 3, y nadie conoce menos que antes); al 100 % se ve todo, también el 🐟 pescado (D-179: el mapa pinta el terreno, no el recurso)
 
 stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
   per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)
@@ -203,6 +207,18 @@ gather:                      # [ES] recolectar en la zona actual
   encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
   own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
   xp_per_step: 14            # [ES] D-108: experiencia por recolección (× nivel de la zona, como matar): solo recolectando también se llega al nivel 100, al ritmo de explorar y cazar
+
+nodes:                       # [ES] D-181 (confirmada) y D-184 (provisional; números propuestos por Claude, se ajustan en la beta): nodos de recursos del mapa (mapa-infinito-y-viaje.md §1.16). Lugar fijo (semilla del mundo), igual para todos; su tipo se descubre al llegar a su zona
+  stretch: 6                 # [ES] el mapa se parte en tramos de 6 × 6 zonas (como las mazmorras)...
+  count: [2, 3]              # [ES] ...y cada tramo tiene 2 o 3 nodos (D-171: "2 o 3 iconos de nodos por tramo"; en un mapa de 13 × 13, unos 10 a 12). Cambiar stretch, count o spacing MUEVE los nodos (lo descubierto queda guardado)
+  spacing: 1                 # [ES] dos nodos nunca quedan pegados (a 1 zona o menos), tampoco entre tramos vecinos
+  min_lejania: 1             # [ES] desde qué Lejanía hay nodos. Nunca en el Claro (ni en todo su territorio posible), la guarida del Guardián ni la entrada de una mazmorra; sí dentro del territorio de un campamento de jugadores (D-87: elegir zonas con buenos nodos)
+  own_share: 0.6             # [ES] 6 de cada 10 nodos son de un recurso propio del terreno que trae la zona; los demás, del más fuerte de la zona (nunca del 🐟 pescado)
+  yield_mult: 2.0            # [ES] E-124: cada unidad de su recurso que recolectas ahí vale 2 (rinde el doble)...
+  stock_mult: 0.5            # [ES] ...y lo agota la mitad (cada recolección baja stock.per_unit × 0,5)...
+  rare_chance: 0.05          # [ES] ...y cada vuelta de recolección ahí tiene 5 % de dar 1 material raro de su terreno (content/biomes.yaml node_rare: 💠 gema en bruto o 🌸 flor de luna), con sorteo propio
+  hint_radius: 2             # [ES] el 🗺️ Mapa marca ✨ un nodo si recuerdas una zona a 2 o menos de él (como las cuevas); de qué es (el emoji de su recurso) lo sabes solo al LLEGAR a su zona (D-181), para siempre. Explorar alrededor y el 🔭 Reconocer no lo descubren (E-125 abierta)
+  map_lines: 2               # [ES] cuántos nodos lista el 🗺️ Mapa debajo de los cuadritos (los más cercanos)
 
 hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0). Números orientativos: se ajustan en la beta
   energy: 2                  # [ES] D-108 (confirmada): cada presa cuesta 2 de energía, así cazar da una experiencia por ⚡ parecida a explorar y recolectar (con 1, cazar llegaría al 100 el doble de rápido). La pelea en sí no gasta (D-78). No hay presas donde el bioma no tiene peligro (el Claro) ni en la guarida del Guardián
