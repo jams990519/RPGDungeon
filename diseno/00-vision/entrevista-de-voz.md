@@ -378,3 +378,35 @@ PENDIENTES QUE SALIERON DE ESTA PARTE
 
 1. **Armaduras.** Para cada tipo de armadura (placa, malla, cuero y tela): qué estadística principal prevalece, qué clases de Lost Realms la usan, cuál es su rol y qué estadística debe mejorar cada pieza. En la pregunta dijo que "el Herrero hace placa y malla, el Peletero hace cuero y el Sastre hace tela". Eso choca con D-194, confirmada (cuatro armaduras, cuatro oficios: la malla con un oficio propio, el ⛓️ Mallero), así que no se decidió: quedó como pregunta en **E-143**. **Respuesta:** D-206 (provisional; se confirma en E-168). Este juego no tiene fuerza, agilidad ni intelecto, así que el reparto usa sus cuatro estadísticas: vida, ataque, armadura e iniciativa.
 2. **Comida.** Los aldeanos PNJ consumen comida (los jugadores no cuentan como población que come), la granja produce comida sola según la etapa, y los aldeanos hacen funcionar las estructuras y forman las caravanas (eso quedó como D-205). Preguntó cuánta comida come cada aldeano por día, cuánto produce la granja por etapa, cuántos aldeanos hay por etapa y qué pasa si hay déficit. **Respuesta:** D-207 (provisional; se confirma en E-169).
+
+## 2-oct-2026 · Estadísticas, armaduras y habilidades
+
+Pedido del dueño por voz (transcripción tal como llegó):
+
+> Okay, ¿Dónde está el resto de estadísticas de World of Warcraft que te permiten eh, sumar beneficios de algún tipo? No lo estoy viendo. O sea, está dando muy pocas estadísticas. Wow, hay como 40 estadísticas diferentes. Están todas las versiones del WoW, cuáles son las que hay, cómo podemos definir para que dos o tres clases compartan algunas cosas. De esta manera lo que pasa es que eh, las clases se equipen con ese equipamiento. Vamos a dejar únicamente tres tipos, placa, cuero y tela. No va a haber malla. Y hay que corregir entonces las clases y lo demás. Vamos a mantener únicamente cuatro habilidades por eh, especialización, no más que eso. Y vamos a reformular todo. Básate en el World of Warcraft en todas sus versiones y cómo podemos ajustarlo. Teniendo en cuenta todas las estadísticas y todas las cosas que se pueden mejorar dentro de eh, las clases.
+
+**Qué se registró:** D-208 (tres armaduras, sin malla), D-209 (cuatro habilidades por especialización) y D-210 (reformular estadísticas y clases según el WoW de todas sus versiones), confirmadas. La propuesta de Claude es D-211 (provisional): [Estadísticas](../03-personaje/estadisticas.md). Las dudas quedaron en E-170 a E-176.
+
+## 2-oct-2026 · Mapa en blanco y clases propias
+
+Pedido del dueño por voz (transcripción tal como llegó):
+
+> Pásame el sistema de preguntas que necesitas para pasar a la otra IA y seguir respondiendo todas las preguntas. Y vas a devolver también el mapa color blanco a medida que vas investigando. Es que vas desbloqueando los colores del mapa, cómo está compuesto. Hasta que no investigas un 50% del mapa, el color no cambia. O sea, de la posición donde estés.
+> Así nadie sabe dónde está nada, a no ser que haya ido a investigar o le compre contenido a un investigador.
+> O sea, te faltan las habilidades de ataque, defensa, crítico, eh, agilidad y cosas así. O sea, un conjunto de habilidades que eh, el aumento específico de un grupo de estadísticas, aunque todos los jugadores tengan esas estadísticas, el aumento específico de una hace mejor a tu player que el resto. Investiga bien cómo funcionan eh, todas las estadísticas del World of Warcraft. Busca capturas. de las estadísticas y información en foros. Ten en cuenta que la idea es resumir y vamos a crear clases personalizadas. O sea, no va a ser específicamente la del World of Warcraft. La de World of Warcraft era para que tuvieras una idea de cómo funcionaría.
+> No era haciendo nada, simplemente mándame el conjunto de preguntas que necesitas antes de continuar. Y ve si sigue dándole el orden de prioridades a las herramientas y todo lo demás.
+
+**Cómo se interpretó:** "no era haciendo nada" se tomó como "no programes nada todavía: mándame las preguntas". Se registraron D-212 (mapa en blanco hasta el 50 %), D-213 (la información del mapa se le compra a un investigador) y D-214 (clases personalizadas con afinidades), confirmadas; las dudas quedaron en E-177 a E-186. El ayudante que elegía 4 habilidades de las clases de hoy se detuvo, porque las clases se van a rehacer. Lo investigado sobre las estadísticas del WoW está en [Estadísticas](../03-personaje/estadisticas.md) §3.1.
+
+## 2-oct-2026 · Estadísticas y clases: contexto decidido en el chat de diseño
+
+El dueño pegó, desde el otro chat, el contexto ya decidido junto con 17 preguntas sobre cómo está el juego hoy:
+
+> - Al subir de nivel, el jugador reparte POCOS puntos, SOLO en estadísticas PRINCIPALES. Las secundarias vienen del equipo, gemas y talentos.
+> - El reparto es libre: cada estadística principal da varios beneficios pequeños, así que ninguna es inútil, pero la AFINIDAD de la clase hace que sus estadísticas rindan mucho más. La guía es intuitiva, sin prohibiciones.
+> - Todo pasa por rendimiento decreciente con tope, para que nada se rompa (ej.: 40 puntos en crítico NO es 40%).
+> - La estadística principal de cada pieza de armadura se ADAPTA a quien la lleva (placa/cuero/tela); la identidad del equipo vive en las secundarias, los bonos de conjunto y las gemas.
+> - Se busca que cada jugador se sienta distinto, estilo Dark Souls: estadísticas con función clara y arquetipos dentro de cada rol (tanque de vida vs. tanque de resistencia, DPS de poder vs. DPS de crítico, sanador de ráfaga vs. sanador sostenido).
+
+**Qué se registró:** D-215 a D-219, confirmadas. Cierran E-170, E-183, E-184, E-185 y la parte de conjuntos de E-175. Las 17 preguntas se respondieron con lo que hay hoy en el juego, y lo que falta decidir quedó en E-187 a E-193 (bloque A6). Detalle en [Estadísticas](../03-personaje/estadisticas.md) §3.4.
+

@@ -166,6 +166,8 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
+> **2-oct-2026 (D-212, confirmada):** el mapa vuelve a estar **en blanco ⬜** hasta que investigas: cada zona muestra el color de su terreno solo cuando la exploraste al 50 % o más. Así nadie sabe dónde está nada si no fue a investigar o no le compró el mapa a un investigador (D-213). Esto cambia D-186, que pintaba todo el tablero. Detalles pendientes: E-177 a E-181.
+
 El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca los campamentos enemigos que ves (§1.14; desde la 0.26.1 con 👹, antes ⛺); desde D-171, las entradas de mazmorra que tienes cerca (§1.15; desde la 0.26.1 con la 🕳️ cueva, antes ❓). 🧍 eres tú. El norte está arriba. (Hasta la 0.26.1, ▪️ era lo que descubrió otro y ▫️ lo que nadie conoce; desde la 0.26.2 todo el cuadrado se pinta por terreno, D-186.)
 
 **Colores por terreno (D-179, desde la 0.26.1).** Cada cuadrito se pinta con el color de su terreno (en la 0.26.1, solo lo que tu héroe recordaba; desde la 0.26.2, **todo el cuadrado**, como un tablero salteado de manchas, D-186 y §1.2): 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas; el 🔥 Claro sigue con su fuego (D-182, colores elegidos por Claude). El color sale de `content/biomes.yaml` (`color`) y la leyenda del mapa se arma sola, así que un terreno nuevo solo agrega su color (quedan libres 🟧, 🟥 y los círculos). **El color es el terreno, no promete recursos:** ver verde no quiere decir que haya madera o semillas; lo que hay se sabe explorando (antes, al 100 %, la zona se pintaba con su recurso principal, D-87).

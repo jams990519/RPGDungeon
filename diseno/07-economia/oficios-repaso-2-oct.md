@@ -1,6 +1,6 @@
 # Repaso de los oficios (2-oct-2026)
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-115, D-125, D-168, D-169, D-173, D-185, D-194, D-195, D-198, D-199, D-205), [Red de oficios](red-de-oficios.md), [Profesiones](profesiones.md) · **Alimenta a:** [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (estructuras y granja), [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md) (aldeanos que comen y trabajan), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (variedades por terreno y nodos), [Equipamiento](../03-personaje/equipamiento.md) (cuatro armaduras, gemas y ranuras) · **Estado:** propuesta. Lo que dijo el dueño es decisión confirmada (D-194, D-195 y, el 2-oct, D-198 gemas, D-199 ranuras y D-205 comida de los aldeanos); lo marcado con ❓ espera su respuesta en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md) (bloque "Oficios y granja", E-137 a E-160; E-136, E-149 y E-153 ya se respondieron y E-154 pasó a E-169). **Solo diseño: el código no se toca hasta que el dueño lo pida.**
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Decisiones](../00-vision/decisiones.md) (D-115, D-125, D-168, D-169, D-173, D-185, D-194, D-195, D-198, D-199, D-205, D-208), [Red de oficios](red-de-oficios.md), [Profesiones](profesiones.md) · **Alimenta a:** [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md) (estructuras y granja), [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md) (aldeanos que comen y trabajan), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (variedades por terreno y nodos), [Equipamiento](../03-personaje/equipamiento.md) (cuatro armaduras, gemas y ranuras) · **Estado:** propuesta. Lo que dijo el dueño es decisión confirmada (D-194, D-195 y, el 2-oct, D-198 gemas, D-199 ranuras y D-205 comida de los aldeanos); lo marcado con ❓ espera su respuesta en el [Sistema de preguntas](../00-vision/sistema-de-preguntas.md) (bloque "Oficios y granja", E-137 a E-160; E-136, E-149 y E-153 ya se respondieron y E-154 pasó a E-169). **Solo diseño: el código no se toca hasta que el dueño lo pida.**
 
 Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-2026. Reemplaza, cuando se programe, la lista de 23 oficios que hoy está en el juego. Lo que hoy existe sigue funcionando igual hasta entonces.
 
@@ -9,7 +9,7 @@ Este documento junta el repaso de oficios que hizo el dueño por voz el 2-oct-20
 1. **Cada oficio tiene su recolección, su refinado y su fabricación.** Si a una cadena le falta un eslabón, se agrega (D-194).
 2. **Los recolectores tienen variedad.** La madera no sale igual en todos lados: cada lugar puede tener su tipo de árbol, con una madera genérica o una más específica. Las mejoras de la civilización piden tipos distintos y cada vez más complicados (D-194). Lo mismo con minerales y hierbas.
 3. **Refinar no es un oficio: es una estructura del asentamiento.** Se construye desde la 3.ª o 4.ª mejora y necesita un trabajador: un jugador o, más adelante, un empleado que contrata el reino (D-194).
-4. **Cuatro tipos de armadura, cuatro oficios:** placas, malla, cuero y tela (D-194).
+4. **Tres tipos de armadura, tres oficios:** placa (🔨 Herrería), cuero (🦺 Peletería) y tela (🪡 Sastrería). El dueño dijo primero cuatro, con malla (D-194), y el mismo 2-oct la quitó: "No va a haber malla" (D-208). Ver [Estadísticas](../03-personaje/estadisticas.md).
 5. **Ganadería y cosecha en cada mejora del asentamiento.** Producen un mínimo para el asentamiento, no para los jugadores, y crecen con la población. Pueden servir a los otros oficios (D-195).
 6. **Todo servicio entre jugadores se paga** (D-140). **Cada oficio cubre un pedazo y siempre dependes de otro** (D-168).
 7. **Las gemas las refina el Joyero, desde la minería.** El Minero alimenta dos cadenas: metal para el Herrero y mena para que el Joyero refine gemas (D-198, 2-oct).
@@ -54,7 +54,7 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | Oficio | Qué hace | Estado |
 |---|---|---|
 | 🔨 Herrería | Todo lo de placas, espadas y dagas | Dicho por el dueño |
-| ⛓️ Mallero ❓ | Nuevo: armaduras de malla (anillas de lingote con cuero) | Dicho por el dueño (D-194: cuatro armaduras, cuatro oficios). ❓ El 2-oct, en una pregunta, dijo "el Herrero hace placa y malla": se pregunta en E-143 si la malla tiene oficio propio (recomendado) o la hace el Herrero |
+| ~~⛓️ Mallero~~ | **Descartado por D-208** (2-oct): ya no hay armaduras de malla | Dicho por el dueño (D-208) |
 | 🦺 Peletería | Solo cuero | Dicho por el dueño |
 | 🪡 Sastrería | Tela | Dicho por el dueño |
 | 🪑 Carpintería | Todo tipo de herramientas para recolectar, con bono de su tipo en los nodos o en cualquier lugar; muebles; la parte de madera de las obras | Dicho por el dueño |
@@ -66,7 +66,7 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | ✨ Encantamiento | Desencanta cosas para crear otras; otra mejora más de las piezas (sube de servicio a fabricación). ❓ También bastones y varitas (E-137) | Dicho por el dueño |
 
 - **Ranuras para gemas (D-199).** Todas las piezas de armadura y las armas pueden llevar ranura; nunca los anillos, collares, amuletos ni ningún accesorio, cuyo valor son los bonos con que los crea el Joyero o el Alquimista. Solo las piezas de buena calidad; las comunes no llevan. Cuántas (1 en las buenas, hasta 3 en las mejores) y que el encantamiento siga aparte quedan como recomendación. Detalle: [Equipamiento](../03-personaje/equipamiento.md) §3.1.
-- **Qué da cada tipo de armadura (D-206, provisional):** placa, armadura y vida; malla, ataque con armadura media; cuero, iniciativa y ataque; tela, ataque y vida. Detalle: [Equipamiento](../03-personaje/equipamiento.md) §2.1.
+- **Qué da cada tipo de armadura:** D-206 quedó reemplazada; la reforma de estadísticas (D-210, propuesta D-211) dice que la principal se adapta a quien lleva la pieza (placa: Fuerza o Intelecto; cuero: Agilidad o Intelecto; tela: Intelecto) y suma secundarias como en el WoW. Detalle: [Estadísticas](../03-personaje/estadisticas.md).
 
 ### 2.4 Servicios
 
@@ -80,12 +80,12 @@ Desde la 3.ª o 4.ª mejora del asentamiento hay que construir cada una. Cada un
 | Línea | Recolecta | Refina (estructura) | Fabrica |
 |---|---|---|---|
 | Madera | Leñador | Aserradero | Carpintería, Arquería ❓, Construcción |
-| Metal | Minero | Fundición | Herrería, Mallero ❓ (o el Herrero, E-143), Joyería, Carpintería (herrajes) |
+| Metal | Minero | Fundición | Herrería, Joyería, Carpintería (herrajes) |
 | Gemas | Minero (mena, D-198) | Joyería (refina las gemas, D-198) | Las gemas van en las ranuras de armaduras y armas (D-199) |
 | Piedra | Minero (provisional) | Cantería | Construcción |
 | Hierbas | Herbolario, Agricultura | Destilería | Alquimia, Medicina |
 | Fibra, lino, algodón y lana | Herbolario, Agricultura, Ganadería | 🧶 Taller | Sastrería |
-| Piel y cuero | Desollador, Ganadería | Curtiduría | Peletería, Mallero |
+| Piel y cuero | Desollador, Ganadería | Curtiduría | Peletería |
 | Comida | Granja del asentamiento (sola, D-195), Pescador, Desollador, Agricultura, Ganadería | Molino ❓ | Cocina. **La comen los aldeanos**, no los jugadores (D-205) |
 | Esencias | Encantamiento (desencanta) | — | Encantamiento |
 | Botín robado | Ladrón | Perista ❓ | Ladrón (ganzúas, trampas, bombas de humo, disfraces) |
@@ -133,7 +133,7 @@ Cada etapa del asentamiento trae su cosecha y su ganadería, que producen solas 
 
 - Los rangos ya ganados en Aserradero, Fundición, Destilación, Tejeduría, Curtiduría y Cantería no se pierden (D-64). Propuesta: se vuelven experiencia de trabajador de esa estructura (E-139).
 - Los amuletos que ya fabricó la Joyería siguen siendo de quien los tiene.
-- Las piezas de malla que hoy hace la Peletería siguen sirviendo. Las nuevas las hará el Mallero (o el Herrero, según la respuesta a E-143).
+- Las piezas de malla que hoy hace la Peletería no se pierden: cada una se vuelve la misma pieza del tipo nuevo de la clase de quien la tiene, y quien eligió la especialización de malla de la Peletería la cambia gratis (D-208; propuesta en E-176).
 - Las 💠 gemas en bruto que hoy salen de los nodos y de los oficios siguen siendo de quien las tiene; cuando se programe D-198, las refinará el Joyero.
 
 ## 7. Preguntas para el dueño
