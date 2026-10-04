@@ -4,7 +4,7 @@
 el mapa "como jugando Tetris", D-186; cuáles y sus números, D-188 provisional). Todo terreno que sale en el mapa (con
 "terrain.weight" en content/biomes.yaml) tiene un color único que no confunde el mapa, nombre, emoji, catálogo de 10 a 15
 recursos y enemigos en cada franja de nivel (encuentros, campamentos enemigos e incursiones), y aparece en el mapa de una zona
-grande. Los nuevos salen menos que los clásicos, se ven en el 🗺️ Mapa de Tetris con su leyenda, y los 6 recursos de base no se
+grande. Los nuevos salen menos que los clásicos, se ven en el 🗺️ Mapa de Tetris con su leyenda (investigadas al 50 %, D-220), y los 6 recursos de base no se
 movieron (siguen al bioma clásico, que nunca devuelve un terreno nuevo). El material nuevo (🖤 obsidiana) tiene oficio, receta,
 precio y textos. Ningún texto falta.
 """
@@ -23,7 +23,7 @@ from test_camps import place
 NEW = ("selva", "sabana", "volcan", "canon", "bosque_oscuro", "lago")
 CLASSIC = {"claro", "pradera", "bosque", "colinas", "pantano", "montana", "desierto", "tundra", "ruinas"}
 BASE = {"madera", "piedra", "fibra", "hierba_curativa", "pieza_metal", "arcilla"}
-MAP_MARKS = {"🧍", "👑", "👹", "🏕️", "🕳️", "🌀", "✨", "▪️", "▫️"}   # [ES] lo que el 🗺️ Mapa dibuja encima del terreno
+MAP_MARKS = {"🧍", "👑", "👹", "🏕️", "🕳️", "🌀", "✨", "▪️", "▫️", "◽", "◻️"}   # [ES] lo que el 🗺️ Mapa dibuja encima del terreno (▫️ ◽ ◻️: las zonas grises, D-220)
 BANDS = (1, 10, 25, 50, 75, 100)
 
 
@@ -110,10 +110,16 @@ def test_the_new_terrains_appear_on_the_tetris_map_with_their_legend(service):
     seen = set()
     for x, y in ((0, 0), (0, 30), (0, -30), (30, 0), (-30, 0)):
         place(service, "test:1", x, y)
+        hero = service._load("test:1")                                         # D-220: colours show from 50 %
+        hero.exploration.update({f"{a}:{b}": 50 for a in range(x - radius, x + radius + 1)
+                                 for b in range(y - radius, y + radius + 1)})
+        service._save(hero)
         view = service.act("test:1", "map")
         assert view.kind == "map" and len(view.actions) <= 4
         legend, rows = view.body[1], view.body[2:2 + 2 * radius + 1]
-        for biome in terrains(service.content):
+        in_view = {service._zone(a, b).biome for a in range(x - radius, x + radius + 1)
+                   for b in range(y - radius, y + radius + 1)}
+        for biome in in_view:                                                  # the legend names what you know
             bdef = service.content.biomes[biome]
             assert f"{bdef['color']} {service.texts.t(bdef['name_key'])}" in legend, biome   # the legend builds itself
         for row in rows:

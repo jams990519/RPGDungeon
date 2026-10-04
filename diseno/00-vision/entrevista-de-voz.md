@@ -410,3 +410,13 @@ El dueño pegó, desde el otro chat, el contexto ya decidido junto con 17 pregun
 
 **Qué se registró:** D-215 a D-219, confirmadas. Cierran E-170, E-183, E-184, E-185 y la parte de conjuntos de E-175. Las 17 preguntas se respondieron con lo que hay hoy en el juego, y lo que falta decidir quedó en E-187 a E-193 (bloque A6). Detalle en [Estadísticas](../03-personaje/estadisticas.md) §3.4.
 
+
+## 4-oct-2026 · Mapa gris por etapas
+
+Pedido del dueño por voz (transcripción tal como llegó):
+
+> Ok, quiero que regreses a los puntos grises todo el mapa. Y cuando lo investigas al 50%, es que se te va a desbloquear el color, el tipo y la información. O sea, a medida que vas investigando, obviamente vas a ir desbloqueando qué, qué materiales vas encontrando, qué esto, qué lo otro, pero... Eh, debes, en, debes hacerlo de diferentes eh, formas o maneras. ¿Sabes? Para que se vea que vas de, de, eh, desarrollándote poco a poco.
+
+**Cómo se interpretó:** "todo el mapa" responde E-177: todas las zonas en puntos grises salvo el 🔥 Claro. "De diferentes formas o maneras" se tomó como etapas que se ven distintas en el mapa y avisan distinto al explorar: ▫️ sin investigar, ◽ con rastros desde el 1 %, ◻️ reconocida desde el 25 % y, al 50 %, el color de la zona y su tipo de terreno en la leyenda (🎨, y 🆕 la primera vez que ves un terreno); los materiales siguen apareciendo al 1, 20, 40, 60, 80 y 100 %. E-178, E-179 y E-181 se aplicaron con la recomendación.
+
+**Qué se registró:** D-220, confirmada (precisa D-212), en el juego desde la 0.30. Queda por confirmar si tu territorio se ve a color (E-177) y si las etapas te gustan así (E-194, nueva). Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.9.

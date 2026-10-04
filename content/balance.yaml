@@ -182,6 +182,12 @@ terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es "
 
 map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (pedido del dueño: tan ancho como el mensaje e igual de alto)
   radius: 6                  # [ES] 6 → 13 × 13 cuadritos; más de 6 puede partir las filas en teléfonos chicos (375 puntos)
+  fog:                       # [ES] D-212 y D-220 (0.30): el mapa vuelve a los puntos grises. Cada zona se ve gris hasta que la investigas al color_at %; el punto crece por etapas para que se vea que vas avanzando. Solo el 🔥 Claro se ve siempre
+    color_at: 50             # [ES] desde este % la zona muestra el color de su terreno y su tipo entra en la leyenda (dueño: "cuando lo investigas al 50 %")
+    stages:                  # [ES] de menos a más (at = desde qué %); el nombre de cada una está en content/locales (map.fog.name.<id>). notice: avisa al llegar
+      - {id: unknown, at: 0, mark: "▫️"}               # [ES] sin investigar
+      - {id: traces, at: 1, mark: "◽"}                 # [ES] con rastros: ya sabes el primer recurso (exploration.reveal_at)
+      - {id: scouted, at: 25, mark: "◻️", notice: true} # [ES] reconocida: ya sabes 2 recursos
 
 resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
   per_page: 8                # [ES] cuántos recursos muestra cada página de 📦 Recursos en la mochila

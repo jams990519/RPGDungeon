@@ -1014,3 +1014,18 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si con viajes tan cortos la gente se junta en pocas zonas lejanas ricas (el agotamiento es para todos); si hace falta que las monturas o mejoras lo aceleren o, al revés, que el viaje largo cueste algo (E-161, E-162); el costo de energía por tamaño de nodo cuando existan los tamaños (E-165).
 
+
+### Octubre de 2026: el 🗺️ Mapa gris por etapas (D-212, D-220, confirmadas; 0.30)
+
+**Por qué.** El dueño pidió el 4-oct-2026: "regreses a los puntos grises todo el mapa. Y cuando lo investigas al 50 %, se te va a desbloquear el color, el tipo y la información", de "diferentes formas o maneras" para que se vea que avanzas poco a poco. Los porcentajes de las etapas los eligió Claude (a confirmar en E-194).
+
+| Qué | Antes | Ahora | Por qué |
+|---|---|---|---|
+| Desde qué % se ve el color de una zona (`map_view.fog.color_at`) | 0 (todo el tablero a color desde la 0.26.2, D-186) | 50 | D-212 y D-220: "cuando lo investigas al 50 %" |
+| ▫️ sin investigar (`map_view.fog.stages`, `unknown`) | — | desde 0 % | Los puntos grises de antes de la 0.26.1 |
+| ◽ con rastros (`traces`) | — | desde 1 % | El mismo % en que se conoce el primer recurso (`exploration.reveal_at`): lo que ya encontraste se nota en el mapa |
+| ◻️ reconocida (`scouted`, con aviso) | — | desde 25 % | La mitad del camino al color; con 🔎 Explorar (15 a 30 % por vuelta, `exploration.per_step`) suele llegar en la primera o la segunda vuelta |
+
+**Cuánto cambia.** Nada del juego cambia de números: el porcentaje de exploración, lo que da cada vuelta y lo que se descubre al 1, 20, 40, 60, 80 y 100 % siguen iguales. Cambia lo que ves: para ver a color una zona hay que darle unas 2 o 3 vueltas de 🔎 Explorar (de 15 a 30 % cada una, `exploration.per_step`); en la zona de un 👹 campamento enemigo, 5 veces 🕵️ Infiltrarse del 🧭 Explorador (`enemy_camps.infiltrate.explore_points`, 10). Nadie pierde nada: lo que estaba al 50 % o más quedó a color.
+
+**Lo que queda por mirar:** si con 3 etapas grises alcanza para "ver que avanzas" o hace falta otra (por ejemplo, el nombre del terreno al 25 %); si el 50 % se siente lento para quien explora poco; y si los jugadores confunden el ◻️ de reconocida con el ⬜ de la montaña (si pasa, se cambia la marca en `map_view.fog.stages` sin tocar nada más).

@@ -268,17 +268,18 @@ Del pedido del dueño del 2-oct (D-208 a D-210); propuesta completa en [Estadís
 | P-174 | ¿Qué otras mejoras de clase del WoW entran? (E-175) | Bonos de conjunto y adornos de artesano; más adelante glifos y reforja |
 | P-175 | ¿Qué pasa con la malla, la especialización de malla y las habilidades que salen? (E-176) | La malla se vuelve el tipo nuevo de tu clase, la especialización se cambia gratis, nadie pierde poder |
 
-## Dudas del mapa en blanco y las clases propias (2-oct-2026)
+## Dudas del mapa gris y las clases propias (2-oct y 4-oct-2026)
 
-Del pedido del dueño del 2-oct (D-212 a D-214).
+Del pedido del dueño del 2-oct (D-212 a D-214) y del 4-oct (D-220: el mapa vuelve a los puntos grises).
 
 | # | Pregunta | Recomendación |
 |---|---|---|
-| P-176 | ¿Qué se ve a color sin explorar? (D-212; E-177) | El Claro, tu territorio y las zonas exploradas al 50 % o más; lo demás en blanco ⬜ |
-| P-177 | ¿Qué pasa con los íconos en las zonas en blanco? (E-178) | Siguen sus reglas de hoy (cueva cerca, nodo al llegar, campamento enemigo al verlo) |
-| P-178 | ¿Qué pasa con lo que ya ven los jugadores de hoy? (E-179) | Lo explorado al 50 % queda a color; lo demás vuelve a blanco, sin perder el porcentaje |
+| P-176 | ¿Qué se ve a color sin explorar? (D-212; E-177) | Respondido en parte (D-220): "todo el mapa" gris salvo el 🔥 Claro (0.30). Falta: ¿tu territorio también a color? Recomendado: sí |
+| P-177 | ¿Qué pasa con los íconos en las zonas grises? (E-178) | Siguen sus reglas de hoy (cueva cerca, nodo al llegar, campamento enemigo al verlo). Aplicado así en la 0.30, a confirmar |
+| P-178 | ¿Qué pasa con lo que ya ven los jugadores de hoy? (E-179) | Lo explorado al 50 % queda a color; lo demás vuelve a gris, sin perder el porcentaje. Aplicado así en la 0.30, a confirmar |
 | P-179 | ¿Cómo se le compra el mapa a un investigador? (D-213; E-180) | Pergamino de mapa del 🧭 Explorador con lo que exploró al 50 % de una región de 6 × 6, precio libre |
-| P-180 | ¿Cuenta lo que exploras alrededor sin moverte? (E-181) | Sí: una zona vecina estudiada al 50 % también se pinta |
+| P-180 | ¿Cuenta lo que exploras alrededor sin moverte? (E-181) | Sí: una zona vecina estudiada al 50 % también se pinta. Aplicado así en la 0.30, a confirmar |
+| P-193 | ¿Cómo se descubre una zona "poco a poco"? (D-220; E-194) | ▫️ sin investigar, ◽ desde el 1 %, ◻️ desde el 25 %, color y terreno al 50 %, con un aviso distinto en cada paso. Aplicado así en la 0.30, a confirmar |
 | P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | Claude propone 8 a 10 clases propias con 3 especializaciones; el dueño elige y cambia |
 | P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
 | P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |
