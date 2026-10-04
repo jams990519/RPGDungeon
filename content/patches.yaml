@@ -480,3 +480,12 @@ v0_29_1:
     - "🚶 Viajar es más rápido: cada zona que cruzas toma 1 minuto, cerca o lejos del Claro. 10 zonas, 10 minutos. Moverte sigue sin gastar energía."
     - "⚡ Las mazmorras piden toda su energía de entrada: la 🕳️ chica, la de todas las peleas que te faltan hoy (10 ⚡ al empezar), y cada piso de la 🌀 profunda, la de todas sus peleas. Se sigue cobrando pelea por pelea, pero nadie se queda a medias."
 
+
+v0_30:
+  version: "0.30"
+  title: "🗺️ Lost Realms 0.30: el mapa gris se descubre investigando"
+  notes:
+    - "▫️ El mapa vuelve a los puntos grises: las zonas que no investigaste no muestran su color ni qué terreno son. Solo el 🔥 Claro se ve siempre."
+    - "◽ Al explorar una zona, su punto crece: ◽ con rastros desde el primer paso y ◻️ reconocida desde el 25 %. Al 50 % aparece el color de su terreno."
+    - "🎨 La leyenda del mapa solo muestra los terrenos que ya conoces (cuántos de cuántos). Cada terreno nuevo que descubres te lo avisa."
+    - "🔭 Lo que exploras alrededor sin moverte también cuenta: si estudias una zona vecina a la mitad, aparece con su color. Nadie pierde lo que ya exploró."

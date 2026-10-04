@@ -1297,7 +1297,7 @@ explore:
   around: "🔭 Tu zona ya está al 100 %: desde aquí estudias {name} ({x}, {y}), sin moverte."
   revealed: "🔎 Descubriste que aquí hay: {items}."
   revealed_there: "🔎 Descubriste que en {name} hay: {items}."
-  full: "✅ Exploraste {name} al 100 %: ya sabes todo lo que tiene y aparece con su color en tu 🗺️ Mapa."
+  full: "✅ Exploraste {name} al 100 %: ya sabes todo lo que tiene."   # [ES] D-220: el color del mapa ya salió al 50 % (map.fog.colored)
   resources_unknown: "🔎 Explorada al {pct} %: todavía no sabes qué recursos tiene."
   resources_line: "🔎 Explorada al {pct} % · {items}"
 
@@ -1311,9 +1311,18 @@ activity:
 
 map:
   title: "🗺️ Tu mapa"
-  legend: "🧍 tú · 👑 guarida del Guardián · el norte está arriba"   # [ES] D-186: ya no hay ▪️ / ▫️: todo el cuadrado se pinta por terreno
+  legend: "🧍 tú · 👑 guarida del Guardián · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
-  colors: "🎨 Terrenos (el color no dice qué recursos hay: eso se sabe explorando): {items}"   # [ES] D-179: la leyenda se arma sola con los colores de content/biomes.yaml
+  colors: "🎨 Terrenos que conoces ({n} de {total}): {items}. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-220: solo los terrenos con una zona investigada al 50 % (y el 🔥 Claro)
+  fog:                          # [ES] D-212, D-220 (0.30): el mapa gris que se desbloquea por etapas al investigar
+    name:                       # [ES] nombre de cada etapa gris (las ids salen de balance.yaml map_view.fog.stages)
+      unknown: "sin investigar"
+      traces: "con rastros"
+      scouted: "reconocida"
+    here: "{mark} Aquí: {stage}, investigada al {pct} %. Al {need} % verás su color y su terreno en el mapa."
+    stage: "{mark} {name} ya se ve en tu 🗺️ Mapa como {stage}."
+    colored: "🎨 Ya investigaste {name} a la mitad: en tu 🗺️ Mapa aparece con su color. Es {terrain}."
+    new_terrain: "🆕 ¡Terreno nuevo en tu mapa! {terrain} (ya conoces {n} de {total})."
 
 presence:                     # [ES] D-96 (provisional): los otros jugadores de tu zona (bloque 👥 de 📍 Zona) y los cruces al explorar o recolectar
   title: "👥 También en esta zona ({n}):"

@@ -89,7 +89,7 @@ faq:
     a: "🏹 Cazar (en 🧭 Explorar) busca una presa de la zona: cuesta {hunt_energy} ⚡ cada una y solo da la pelea y su botín (carne, piel, monedas, a veces equipo). En el Claro no hay presas. Con un campamento puedes llamar a una 🏹 Partida de caza con tus compañeros."
   d12:
     q: "🎨 ¿Qué dicen los colores del mapa?"
-    a: "En 🗺️ Mapa cada cuadrito tiene el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…); la leyenda está arriba. El color no dice qué recursos hay: eso solo se sabe explorando. 🧍 eres tú y el norte está arriba."
+    a: "En 🗺️ Mapa las zonas que no investigaste son puntos grises: ▫️ sin investigar, ◽ con rastros y ◻️ reconocida (25 %). Cuando investigas una zona a la mitad (50 %) aparece el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…) y ese terreno se suma a la leyenda de arriba. Cuenta también lo que exploras alrededor sin moverte. El color no dice qué recursos hay: eso solo se sabe explorando. 🧍 eres tú y el norte está arriba."
   d13:
     q: "🗺️ ¿Qué son 👑 👹 🏕️ 🕳️ 🌀 ✨?"
     a: "En 🗺️ Mapa: 👑 la guarida del Guardián · 👹 un campamento enemigo de hoy · 🏕️ un campamento de jugadores · 🕳️ una cueva con mazmorra (todavía no sabes cuál) · 🌀 una mazmorra profunda · ✨ un nodo de recursos (al llegar ves de qué es) · 🧍 tú."

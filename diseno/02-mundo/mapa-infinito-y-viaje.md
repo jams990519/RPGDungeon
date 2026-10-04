@@ -166,7 +166,25 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca los campamentos enemigos que ves (§1.14; desde la 0.26.1 con 👹, antes ⛺); desde D-171, las entradas de mazmorra que tienes cerca (§1.15; desde la 0.26.1 con la 🕳️ cueva, antes ❓). 🧍 eres tú. El norte está arriba. (Hasta la 0.26.1, ▪️ era lo que descubrió otro y ▫️ lo que nadie conoce; desde la 0.26.2 todo el cuadrado se pinta por terreno, D-186.)
+> **2-oct-2026 (D-212, confirmada):** el mapa vuelve a estar **en blanco ⬜** hasta que investigas: cada zona muestra el color de su terreno solo cuando la exploraste al 50 % o más. Así nadie sabe dónde está nada si no fue a investigar o no le compró el mapa a un investigador (D-213). Esto cambia D-186, que pintaba todo el tablero. Detalles pendientes: E-177 a E-181.
+
+**Mapa gris por etapas (D-220, desde la 0.30).** El 4-oct el dueño precisó D-212: el mapa vuelve a los **puntos grises**, y cada zona se descubre poco a poco, de formas distintas, a medida que la investigas (el porcentaje de 🔎 Explorar, §1.12):
+
+| Investigada | En el mapa | Qué sabes | Cómo te avisa |
+|---|---|---|---|
+| 0 % | ▫️ sin investigar | nada | — |
+| desde el 1 % | ◽ con rastros | el primer recurso (D-183) | "Descubriste …" |
+| desde el 25 % | ◻️ reconocida | más recursos (al 20 %) | "◻️ … ya se ve en tu 🗺️ Mapa como reconocida." |
+| desde el 50 % | el color de su terreno | su terreno, que entra en la leyenda; más recursos (al 40 %) | "🎨 Ya investigaste … a la mitad … Es 🟩 Pradera." y, si es el primero de ese terreno, "🆕 ¡Terreno nuevo en tu mapa! … (ya conoces 3 de 15)" |
+| 100 % | igual | todo lo que tiene (al 60, 80 y 100 %) | "✅ Exploraste … al 100 %: ya sabes todo lo que tiene." |
+
+- **Leyenda.** La primera línea del mapa explica las marcas (`map_view.fog.stages`) y que al 50 % ves el color (`map_view.fog.color_at`); la segunda nombra **solo los terrenos que ya conoces**, "🎨 Terrenos que conoces (3 de 15): …". Si estás en una zona gris, debajo del mapa una línea dice cuánto la llevas investigada y cuánto falta para su color.
+- **Siempre a color:** solo el 🔥 Claro. Los íconos (🧍, 👑, 👹, 🏕️, 🕳️, ✨) siguen sus reglas aunque la zona esté gris (E-178), y el encabezado de 📍 Zona sigue nombrando el terreno donde estás parado.
+- **Cuenta lo que exploras alrededor** sin moverte (D-107, E-181): la zona que estudias desde la tuya también se pinta al 50 %. El porcentaje es de la zona, por eso también suma 🕵️ Infiltrarse del 🧭 Explorador en un 👹 campamento enemigo (`enemy_camps.infiltrate.explore_points`, D-112).
+- **Nadie pierde nada** (D-64, E-179): el porcentaje que ya tenía cada héroe se guarda; las zonas al 50 % o más quedaron a color y las demás volvieron a gris.
+- Interpretado por Claude, a confirmar: las etapas (E-194), si tu territorio se ve a color (E-177), los íconos (E-178), lo de los jugadores de hoy (E-179) y lo de alrededor (E-181). Código: `engine/service/game.py` (`_fog_stage`, `_fog_cell`, `_known_terrains`, `_fog_notices`, `_map_view`); textos en `content/locales/es.yaml` (`map.fog`).
+
+El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; en la v0.1 eran 7 × 7) y, desde D-112, marca los campamentos enemigos que ves (§1.14; desde la 0.26.1 con 👹, antes ⛺); desde D-171, las entradas de mazmorra que tienes cerca (§1.15; desde la 0.26.1 con la 🕳️ cueva, antes ❓). 🧍 eres tú. El norte está arriba. (Hasta la 0.26.1, ▪️ era lo que descubrió otro y ▫️ lo que nadie conoce; de la 0.26.2 a la 0.29 todo el cuadrado se pintaba por terreno, D-186; desde la 0.30, puntos grises hasta el 50 %, D-220.)
 
 **Colores por terreno (D-179, desde la 0.26.1).** Cada cuadrito se pinta con el color de su terreno (en la 0.26.1, solo lo que tu héroe recordaba; desde la 0.26.2, **todo el cuadrado**, como un tablero salteado de manchas, D-186 y §1.2): 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas; el 🔥 Claro sigue con su fuego (D-182, colores elegidos por Claude). El color sale de `content/biomes.yaml` (`color`) y la leyenda del mapa se arma sola, así que un terreno nuevo solo agrega su color (quedan libres 🟧, 🟥 y los círculos). **El color es el terreno, no promete recursos:** ver verde no quiere decir que haya madera o semillas; lo que hay se sabe explorando (antes, al 100 %, la zona se pintaba con su recurso principal, D-87).
 

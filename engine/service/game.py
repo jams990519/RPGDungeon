@@ -32,6 +32,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     engine/service/story.py, StoryMixin, de la que GameService hereda)
     diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.2 (los recursos de cada terreno, D-180, D-183) y §1.16 (los ✨ nodos de
     recursos, D-181, D-184)
+    diseno/02-mundo/mapa-infinito-y-viaje.md §1.9 (el 🗺️ Mapa gris: ▫️ ◽ ◻️ hasta investigar una zona al 50 %, luego su
+    color; balance.yaml map_view.fog, D-212 y D-220)
     diseno/03-personaje/camino-guiado.md (el 🧭 camino guiado y sus avisos, D-190, D-193: vive en engine/service/guide.py,
     GuideMixin, de la que GameService también hereda)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
@@ -1138,6 +1140,7 @@ class GameService(StoryMixin, GuideMixin):
             names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
             activity["log"].append(t.t("explore.revealed", items=names) if studied is zone
                                    else t.t("explore.revealed_there", name=self._zone_name(studied), items=names))
+        activity["log"] += self._fog_notices(hero, studied, before_pct)     # D-220: ◻️ reconocida, 🎨 su color, 🆕 terreno nuevo
         bal = self.content.balance["explore"]
         xp = bal["xp_per_step"]                       # exploring teaches: experience every round (owner's request)
         if hero.exploration[key] >= 100:
@@ -1862,6 +1865,84 @@ class GameService(StoryMixin, GuideMixin):
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
+
+    def _fog_cfg(self) -> dict[str, Any]:
+        return self.content.balance["map_view"]["fog"]
+
+    def _fog_stage(self, pct: int) -> dict[str, Any] | None:
+        """The grey stage a zone shows on the map at this %, or None once it shows its colour (D-212, D-220).
+
+        [ES]
+        Qué hace: dice en qué etapa gris está una zona según cuánto la investigaste (map_view.fog.stages: ▫️ sin
+        investigar, ◽ con rastros, ◻️ reconocida). Desde map_view.fog.color_at (50 %) devuelve None: la zona ya se ve
+        con el color de su terreno.
+        La llaman: _fog_cell (el cuadrito del mapa), _fog_notices (los avisos al explorar) y _map_view (la línea de aquí).
+        Si cambia, afecta: qué se ve en el 🗺️ Mapa y cuándo avisa (tests/test_mapa_gris.py).
+        """
+        cfg = self._fog_cfg()
+        if pct >= int(cfg["color_at"]):
+            return None
+        return [stage for stage in cfg["stages"] if pct >= int(stage["at"])][-1]
+
+    def _fog_cell(self, hero: Hero, x: int, y: int) -> str:
+        """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour."""
+        stage = None if (x, y) == (0, 0) else self._fog_stage(self._explored_pct(hero, x, y))   # the 🔥 Claro: always
+        if stage is not None:
+            return stage["mark"]
+        biome = self.content.biomes[self._zone(x, y).biome]
+        return biome.get("color", biome["emoji"])
+
+    def _terrain_label(self, biome_id: str) -> str:
+        biome = self.content.biomes[biome_id]
+        return f"{biome.get('color', biome['emoji'])} {self.texts.t(biome['name_key'])}"
+
+    def _known_terrains(self, hero: Hero) -> list[str]:
+        """The terrain types this hero has unlocked: the Claro's and every one with a zone investigated to 50 % (D-220).
+
+        [ES] La leyenda del 🗺️ Mapa solo muestra estos (en el orden de content/biomes.yaml): el tipo de terreno se
+        desbloquea al investigar al 50 % una zona de ese terreno. La llaman: _map_view y _fog_notices.
+        """
+        color_at = int(self._fog_cfg()["color_at"])
+        found = {self._zone(0, 0).biome}
+        for key, pct in hero.exploration.items():
+            if pct >= color_at:
+                x, y = (int(part) for part in key.split(":"))
+                found.add(self._zone(x, y).biome)
+        return [biome_id for biome_id in self.content.biomes if biome_id in found]
+
+    def _fog_notices(self, hero: Hero, zone: Zone, before_pct: int) -> list[str]:
+        """What a step of investigation unlocked on the map: a new grey stage, the zone's colour, a new terrain type (D-220).
+
+        [ES]
+        Qué hace: compara el % de antes con el de ahora y avisa, cada etapa a su manera (pedido del dueño: "de diferentes
+        formas, para que se vea que vas desarrollándote poco a poco"): al pasar una etapa con notice (◻️ reconocida, 25 %)
+        dice cómo se ve ahora en el mapa; al llegar a color_at (50 %), que la zona ya tiene color y de qué terreno es; y si
+        es la primera zona de ese terreno, que lo sumaste a tu leyenda (cuántos conoces de cuántos). El primer recurso
+        (1 %) y el 100 % ya tienen su propio aviso (explore.revealed y explore.full).
+        La llaman: _explore_step (explorar y explorar alrededor) e infiltrar un campamento enemigo (_infiltrate).
+        Si cambia, afecta: el resumen del lote de exploración (tests/test_mapa_gris.py).
+        """
+        t = self.texts
+        cfg = self._fog_cfg()
+        after = self._explored_pct(hero, zone.x, zone.y)
+        color_at = int(cfg["color_at"])
+        if before_pct < color_at <= after:
+            label = self._terrain_label(zone.biome)
+            lines = [t.t("map.fog.colored", name=self._zone_name(zone), terrain=label)]
+            key = f"{zone.x}:{zone.y}"
+            known_before = zone.biome == self._zone(0, 0).biome or any(
+                other != key and pct >= color_at and self._zone(*(int(p) for p in other.split(":"))).biome == zone.biome
+                for other, pct in hero.exploration.items())
+            if not known_before:
+                lines.append(t.t("map.fog.new_terrain", terrain=label, n=len(self._known_terrains(hero)),
+                                 total=len(self.content.biomes)))
+            return lines
+        lines = []
+        for stage in cfg["stages"]:
+            if stage.get("notice") and before_pct < int(stage["at"]) <= after:
+                lines.append(t.t("map.fog.stage", name=self._zone_name(zone), mark=stage["mark"],
+                                 stage=t.t(f"map.fog.name.{stage['id']}")))
+        return lines
 
     def _around_line(self, hero: Hero) -> str:
         """🔭 Alrededor: 3/8 zonas al 100 % (D-107)."""
@@ -7055,10 +7136,13 @@ class GameService(StoryMixin, GuideMixin):
         Qué hace: dibuja el mapa como un cuadrado de cuadritos alrededor del héroe, tan ancho como el mensaje y
         igual de alto (pedido del dueño). Con radio 6 son 13 × 13: llena el mensaje en los teléfonos grandes y no
         se parte en los de 375 puntos de ancho. Más radio puede partir las filas en teléfonos chicos.
-        D-179: cada cuadrito se pinta con el color de su terreno (content/biomes.yaml "color"; la leyenda se arma sola): el
-        color no dice qué recursos hay (antes, al 100 %, se pintaba el recurso principal, D-87). D-186: se pinta TODO el
-        cuadrado, como un tablero de manchas de colores (antes solo lo que el héroe recordaba; el resto era ▪️ / ▫️). Lo que
-        no se ve de lejos sigue escondido: los recursos, qué mazmorra es y qué nodo es.
+        D-179: el color de un cuadrito es el de su terreno (content/biomes.yaml "color"): el color no dice qué recursos hay.
+        D-212 y D-220 (0.30, cambia D-186, que pintaba todo): el mapa vuelve a los puntos grises. Cada zona se ve gris hasta
+        que la investigas al map_view.fog.color_at (50 %), y el punto crece por etapas (_fog_cell: ▫️ sin investigar, ◽ con
+        rastros, ◻️ reconocida); desde el 50 % aparece el color de su terreno. Solo el 🔥 Claro se ve siempre. Cuenta lo
+        que exploras alrededor sin moverte (D-107): el % es de la zona, no de dónde estabas. La leyenda dice las etapas y
+        solo los terrenos que ya conoces (_known_terrains: cuántos de cuántos); debajo de las coordenadas, si tu zona sigue
+        gris, en qué etapa está y cuánto le falta para el color. Los íconos de abajo siguen sus propias reglas (E-178).
         D-112: 👹 marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
         rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
@@ -7102,12 +7186,20 @@ class GameService(StoryMixin, GuideMixin):
                     row += dmarks[(x, y)]
                 elif (x, y) in nmarks:                      # D-184: under everything else, over the terrain's colour
                     row += nmarks[(x, y)]
-                else:                                       # D-179, D-186: every square shows its terrain's colour
-                    biome = self.content.biomes[self._zone(x, y).biome]
-                    row += biome.get("color", biome["emoji"])
+                else:                                       # D-212, D-220: grey until investigated to 50 %, then its colour
+                    row += self._fog_cell(hero, x, y)
             rows.append(row)
-        terrains = " · ".join(f"{b.get('color', b['emoji'])} {t.t(b['name_key'])}" for b in self.content.biomes.values())
-        body = [t.t("map.legend"), t.t("map.colors", items=terrains)] + rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
+        fog = self._fog_cfg()
+        stages = " · ".join(f"{stage['mark']} {t.t('map.fog.name.' + stage['id'])}" for stage in fog["stages"])
+        known = self._known_terrains(hero)
+        terrains = " · ".join(self._terrain_label(biome_id) for biome_id in known)
+        body = [t.t("map.legend", stages=stages, pct=fog["color_at"]),
+                t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
+        body += rows + ["", t.t("map.position", x=hero.x, y=hero.y, lejania=self._zone(hero.x, hero.y).lejania)]
+        here = None if (hero.x, hero.y) == (0, 0) else self._fog_stage(self._explored_pct(hero, hero.x, hero.y))
+        if here is not None:                            # D-220: your own square is 🧍, so say how grey it still is
+            body.append(t.t("map.fog.here", mark=here["mark"], stage=t.t("map.fog.name." + here["id"]),
+                            pct=self._explored_pct(hero, hero.x, hero.y), need=fog["color_at"]))
         cfg = self._guardian_cfg()
         if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
             body.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
@@ -8221,13 +8313,15 @@ class GameService(StoryMixin, GuideMixin):
         x, y = camp["x"], camp["y"]
         key = f"{x}:{y}"
         before = self._known_resources(hero, x, y)
-        hero.exploration[key] = min(100, self._explored_pct(hero, x, y) + int(cfg["explore_points"]))
+        before_pct = self._explored_pct(hero, x, y)
+        hero.exploration[key] = min(100, before_pct + int(cfg["explore_points"]))
         if key not in hero.explored:
             hero.explored.append(key)
         lines = [t.t("ecamp.infiltrated", pct=hero.exploration[key])]
         new = [r for r in self._known_resources(hero, x, y) if r not in before]
         if new:
             lines.append(t.t("explore.revealed", items=", ".join(self._item_label(r) for r in new)))
+        lines += self._fog_notices(hero, self._zone(x, y), before_pct)      # D-220
         lines += self._ecamp_intel_lines(camp)
         lines.append(t.t("ecamp.infiltrate_xp", name=self._prof_name(ecfg["profession"]), xp=int(cfg["explorer_xp"])))
         lines += self._prof_gain(hero, ecfg["profession"], int(cfg["explorer_xp"]))

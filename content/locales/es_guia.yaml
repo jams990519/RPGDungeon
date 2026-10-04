@@ -48,7 +48,7 @@ guide:
       task: "muévete a una zona vecina: 📍 Zona → elige una ruta (⬆️ ⬇️ ➡️ ⬅️)."
       intro: |-
         🔥 Estás en el Claro, el campamento base: la antorcha donde despiertan todos los que llegan.
-        🗺️ Alrededor hay tierras de distintos terrenos: pradera, bosque, colinas, montaña, pantano... En el 🗺️ Mapa, cada color es un terreno.
+        🗺️ Alrededor hay tierras de distintos terrenos: pradera, bosque, colinas, montaña, pantano... En el 🗺️ Mapa se ven grises hasta que las investigas; entonces aparece el color de su terreno.
         🔎 Para conocerlas tendrás que moverte: investigar, juntar recursos y hacer misiones.
 
         🚶 Cómo moverte
@@ -90,7 +90,8 @@ guide:
       learn: |-
         🗺️ Cómo leer el mapa
         🧍 Eres tú, en el centro. El norte está arriba.
-        🎨 Cada color es un terreno (la lista está arriba del mapa). El color no dice qué recursos hay: eso se sabe explorando.
+        ▫️ Un punto gris es una zona que todavía no investigaste. Al explorarla, el punto crece: ◽ con rastros, ◻️ reconocida.
+        🎨 Al investigar una zona a la mitad (50 %) aparece el color de su terreno, y el terreno se suma a la lista de arriba del mapa. El color no dice qué recursos hay: eso se sabe explorando.
         🕳️ Una cueva: ahí hay una mazmorra. 🌀 si ya sabes que es profunda.
         ✨ Un nodo de recursos: al llegar a su zona aparece con el emoji de su recurso.
         👹 Un campamento enemigo de hoy: cambian de lugar cada día.

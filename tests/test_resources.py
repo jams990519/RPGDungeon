@@ -64,10 +64,11 @@ def test_exploring_reaches_100_then_goes_on_around_you_without_moving(service, c
     assert hero.exploration["0:0"] == 100
     assert service._known_resources(hero, 0, 0) == ["madera", "fibra"]
     body = service.act("test:1", "map").body                                 # D-179: colours by terrain, legend built alone
-    assert "🟩 Pradera" in body[1] and "🟢 Bosque" in body[1] and "🔥 Claro" in body[1]
+    assert "🔥 Claro" in body[1]                                             # D-220: only the terrains you know
     north = service.content.biomes[service._zone(0, 1).biome]
     radius = service.content.balance["map_view"]["radius"]
-    assert north["color"] in body[2 + radius - 1]                            # the remembered zone to the north, painted
+    north_cell = north["color"] if hero.exploration.get("0:1", 0) >= 50 else service._fog_stage(hero.exploration.get("0:1", 0))["mark"]
+    assert north_cell in body[2 + radius - 1]                                # D-212: grey until 50 %, then its colour
     # D-107: the batch did not stop at 100 %: it went on with the zone to the north, and the hero never moved.
     assert (hero.x, hero.y) == (0, 0) and hero.activity is None
     assert hero.exploration.get("0:1", 0) > 0 and hero.remembers(0, 1)
@@ -173,7 +174,7 @@ def test_amount_choices_show_the_estimated_total_time(service):
 
 def test_the_terrain_patchwork_never_moved_the_land_resources(service):
     """D-185, D-186: the land resources still follow the classic biome (what players knew of their zones did not move);
-    the map paints every square by terrain, with no blank squares left."""
+    since D-212 / D-220 the map is grey until you investigate (tests/test_mapa_gris.py), and paints the terrain at 50 %."""
     from engine.world import classic_biome
     for x in range(-8, 9, 2):
         for y in range(-8, 9, 2):
@@ -185,9 +186,12 @@ def test_the_terrain_patchwork_never_moved_the_land_resources(service):
             assert service._zone_land(x, y)[0] == classic                   # the 6 base ones, as before
             assert {r: found[r] for r in classic} == classic and list(found)[:len(classic)] == list(classic)
     make_hero(service)
-    body = service.act("test:1", "map").body
+    hero = service._load("test:1")
     radius = service.content.balance["map_view"]["radius"]
+    hero.exploration.update({f"{x}:{y}": 50 for x in range(-radius, radius + 1) for y in range(-radius, radius + 1)})
+    service._save(hero)
+    body = service.act("test:1", "map").body
     rows = body[2:2 + 2 * radius + 1]
-    assert not any("▫️" in row or "▪️" in row for row in rows)         # D-186: no blank squares
+    assert not any("▫️" in row or "◽" in row or "◻️" in row for row in rows)   # all at 50 %: no grey squares left
     colours = {b["color"] for b in service.content.biomes.values()}
     assert sum(row.count(c) for row in rows for c in colours) >= (2 * radius + 1) ** 2 - 10
