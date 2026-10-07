@@ -280,6 +280,8 @@ Del pedido del dueño del 2-oct (D-212 a D-214) y del 4-oct (D-220: el mapa vuel
 | P-179 | ¿Cómo se le compra el mapa a un investigador? (D-213; E-180) | Pergamino de mapa del 🧭 Explorador con lo que exploró al 50 % de una región de 6 × 6, precio libre |
 | P-180 | ¿Cuenta lo que exploras alrededor sin moverte? (E-181) | Sí: una zona vecina estudiada al 50 % también se pinta. Aplicado así en la 0.30, a confirmar |
 | P-193 | ¿Cómo se descubre una zona "poco a poco"? (D-220; E-194) | ▫️ sin investigar, ◽ desde el 1 %, ◻️ desde el 25 %, color y terreno al 50 %, con un aviso distinto en cada paso. Aplicado así en la 0.30, a confirmar |
+| P-201 | ¿Las listas de debajo del mapa quedan en 📒 Lugares o se borran? (D-222; E-202) | Quedan en 📒 Lugares, para no perder lo que da el Explorador. Aplicado así en la 0.30.1, a confirmar |
+| P-202 | ¿"Moverte a" solo a lo visitado vale también para campamentos enemigos y lo reconocido? (D-222; E-203) | Sí, y una zona explorada desde al lado cuenta como visitada. Aplicado así en la 0.30.1, a confirmar |
 | P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | Claude propone 8 a 10 clases propias con 3 especializaciones; el dueño elige y cambia |
 | P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
 | P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |

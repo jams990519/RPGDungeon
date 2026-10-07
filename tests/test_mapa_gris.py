@@ -90,14 +90,17 @@ def test_the_mark_grows_by_stages_and_the_colour_comes_at_50(service):
 
 
 def test_the_claro_always_shows_and_your_grey_zone_says_how_far(service):
+    """D-222 (0.30.1): the map has nothing under the grid, so the "how grey is my square" line lives in 📍 Zona."""
     make_hero(service)
     hero = place(service, 1, 0, {"1:0": 30})
     body = service.act("test:1", "map").body
     assert cell(service, hero, body, 0, 0) == "🔥"
-    here = next(line for line in body if line.startswith(mark(service, "scouted") + " Aquí"))
+    assert not any("Aquí:" in line for line in body)
+    zone = service.act("test:1", "home").body
+    here = next(line for line in zone if line.startswith(mark(service, "scouted") + " Aquí"))
     assert "30 %" in here and "50 %" in here
     hero = place(service, 1, 0, {"1:0": 60})                                           # once coloured, no line
-    assert not any("Aquí:" in line for line in service.act("test:1", "map").body)
+    assert not any("Aquí:" in line for line in service.act("test:1", "home").body)
 
 
 def explore_once(service, hero, seed=7):

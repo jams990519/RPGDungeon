@@ -420,3 +420,15 @@ Pedido del dueño por voz (transcripción tal como llegó):
 **Cómo se interpretó:** "todo el mapa" responde E-177: todas las zonas en puntos grises salvo el 🔥 Claro. "De diferentes formas o maneras" se tomó como etapas que se ven distintas en el mapa y avisan distinto al explorar: ▫️ sin investigar, ◽ con rastros desde el 1 %, ◻️ reconocida desde el 25 % y, al 50 %, el color de la zona y su tipo de terreno en la leyenda (🎨, y 🆕 la primera vez que ves un terreno); los materiales siguen apareciendo al 1, 20, 40, 60, 80 y 100 %. E-178, E-179 y E-181 se aplicaron con la recomendación.
 
 **Qué se registró:** D-220, confirmada (precisa D-212), en el juego desde la 0.30. Queda por confirmar si tu territorio se ve a color (E-177) y si las etapas te gustan así (E-194, nueva). Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.9.
+
+## 7-oct-2026 · Zona ordenada y mapa limpio
+
+Pedido del dueño por voz, con capturas de 📍 Zona y del 🗺️ Mapa (transcripción tal como llegó):
+
+> Ok, quiero organizar un poquitico el texto en el mensaje. Como puedes ver, casi no se puede leer. Necesito que cualquier cosa lo pongas ordenada y eh, los textos se vean un poquitico más organizados. Se ve todo regado, creo.
+
+> Ok, eh, coordenadas, todo eso que está abajo de cuevas, mazmorras, zonas y todo eso, tienes que quitarlo. Vas a poner moverte a, en el botón de ir a mazmorra, vas a poner moverte a, y eso solamente va a estar disponible a lugares que ya tú hayas visitado. O sea, si tú no has ido a la primera mazmorra y te has ido después, no vas a poder regresar directamente. Debes ir hasta el lugar y luego... Eh, vas a tener la opción de ir a en el botón de ir a la mazmorra prácticamente para eh, poder ir a ese lugar contando el tiempo que te cuente de llegar hasta ese punto.
+
+**Cómo se interpretó:** el primer pedido es la pantalla 📍 Zona (la captura): bloques cortos y un recurso por renglón. El segundo es el 🗺️ Mapa (la otra captura): debajo de la cuadrícula no queda nada, y el botón pasa a "Moverte a la mazmorra" con su tiempo, solo para una mazmorra que ya visitaste. Claude aplicó la misma regla al campamento enemigo del mapa y al "Moverte allá" de 🔭 Reconocer, y mudó las listas de abajo del mapa a 📒 Lugares para no perder lo que da el oficio de Explorador; las dos cosas quedan por confirmar (E-202 y E-203).
+
+**Qué se registró:** D-221 y D-222, confirmadas, en el juego desde la 0.30.1. Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.9.1.

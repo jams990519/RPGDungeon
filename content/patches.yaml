@@ -489,3 +489,12 @@ v0_30:
     - "◽ Al explorar una zona, su punto crece: ◽ con rastros desde el primer paso y ◻️ reconocida desde el 25 %. Al 50 % aparece el color de su terreno."
     - "🎨 La leyenda del mapa solo muestra los terrenos que ya conoces (cuántos de cuántos). Cada terreno nuevo que descubres te lo avisa."
     - "🔭 Lo que exploras alrededor sin moverte también cuenta: si estudias una zona vecina a la mitad, aparece con su color. Nadie pierde lo que ya exploró."
+
+
+v0_30_1:
+  version: "0.30.1"
+  title: "📍 Lost Realms 0.30.1: pantallas más ordenadas y viajes solo a lo que ya visitaste"
+  notes:
+    - "📍 La pantalla de Zona ahora va en bloques cortos: dónde estás, lo explorado con un recurso por renglón, lo que hay aquí, las rutas y tu estado. Ya no se ve todo amontonado."
+    - "🗺️ El mapa muestra solo el mapa: las coordenadas están en 📍 Zona, y la lista de cuevas, mazmorras, nodos y campamentos enemigos cercanos pasó a 📒 Lugares."
+    - "🌀 El botón de la mazmorra ahora dice «Moverte a la mazmorra» con su tiempo, y solo aparece si ya estuviste ahí. A un lugar nuevo se llega caminando; después puedes volver de una vez."

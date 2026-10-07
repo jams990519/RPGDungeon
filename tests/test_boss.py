@@ -65,14 +65,15 @@ def test_lair_screen_shows_the_guardian_and_the_button(service):
 def test_map_and_places_show_the_lair_once_discovered(service):
     make_hero(service)
     cfg = _cfg(service)
-    before = "\n".join(service.act("test:1", "map").body)
+    before = "\n".join(service.act("test:1", "places").body)     # D-222 (0.30.1): the lists live in 📒 Lugares now
     assert "Guarida del Guardián:" not in before
     _to_lair(service)
     hero = service._load("test:1")
     hero.x, hero.y = 0, 0
     service._save(hero)
-    after = "\n".join(service.act("test:1", "map").body)
+    after = "\n".join(service.act("test:1", "places").body)
     assert f"({cfg['x']}, {cfg['y']})" in after
+    assert f"({cfg['x']}, {cfg['y']})" not in "\n".join(service.act("test:1", "map").body)
     places = service.act("test:1", "places")
     assert any(a.id == f"goto:{cfg['x']}:{cfg['y']}" for a in places.actions)
     assert "👑" in "\n".join(places.body)

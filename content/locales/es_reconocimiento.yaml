@@ -36,7 +36,7 @@ recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explor
   covers_small: "🕳️ Debajo, la entrada de una mazmorra chica: se abre cuando caiga el campamento."
   covers_deep: "🌀 Debajo, la entrada de una mazmorra profunda: se abre cuando caiga el campamento."
   reward: "{name} +{xp} · ✨ {hero_xp} de experiencia · {gold}"
-  go_button: "🧭 Ir allá · ⏱️ {time}"
+  go_button: "🧭 Moverte allá · ⏱️ {time}"
   again_button: "🔭 Reconocer otro"
   map_button: "🔭 Reconocer"
   map_line: "🔭 /reconocer: {n} {n|lugar|lugares} sin reconocer hoy, hasta {zones} {zones|zona|zonas} de aquí."

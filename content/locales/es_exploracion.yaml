@@ -63,7 +63,8 @@ ecamp:                        # [ES] D-112: 👹 campamentos enemigos (cambian d
   map_sight_next: "🔭 Ves campamentos enemigos hasta {n} {n|zona|zonas} a la redonda. Con rango {rank} de 🧭 Explorador, más lejos."
   map_sight_all: "🔭 Ves los campamentos enemigos de todo tu mapa."
   go_button: "👹 Ir al más cercano"
-  go_button_time: "👹 Ir al más cercano · {time}"
+  go_button_time: "👹 Ir al más cercano · {time}"   # [ES] go_button y go_button_time sin uso desde la 0.30.1 (D-222)
+  move_button: "👹 Moverte al campamento · {time}"   # [ES] D-222: solo si ya estuviste en esa zona
 
 explorer:                     # [ES] D-112: lo que ve el 🧭 Explorador con cada rango (números en balance.yaml explorer)
   opened: "🧭 Ahora {what}."
@@ -73,7 +74,7 @@ explorer:                     # [ES] D-112: lo que ve el 🧭 Explorador con cad
   time_camp: "⏱️ A tu campamento {name}: {time}"
   places_hint: "🧭 Con rango {rank} de Explorador, 📒 Lugares lista hasta {n} lugares con su tiempo."
   what:
-    travel: "📒 Lugares lista hasta {places} lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca"
+    travel: "📒 Lugares lista hasta {places} lugares con su tiempo, y dice cuánto tardas a cada zona que marca tu mapa"   # [ES] D-222: la lista de lo que marca el mapa se mudó a 📒 Lugares
     camps_near: "ves los 👹 campamentos enemigos hasta {n} zonas a la redonda, aunque no las hayas pisado"
     infiltrate: "puedes 🕵️ infiltrarte en los campamentos enemigos"
     camps_all: "ves los 👹 campamentos enemigos de todo tu mapa"
