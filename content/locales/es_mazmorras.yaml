@@ -91,7 +91,8 @@ dungeon:                      # [ES] D-164, D-170, D-171: mazmorras para uno (lu
   map_small: "🕳️ ({x}, {y}) · a {zones} zonas: mazmorra chica"
   map_deep: "🌀 ({x}, {y}) · a {zones} zonas: mazmorra profunda"
   go_button: "{mark} Ir a la mazmorra"
-  go_unknown: "🕳️ Ir a la cueva"
+  go_unknown: "🕳️ Ir a la cueva"   # [ES] go_button y go_unknown sin uso desde la 0.30.1 (D-222)
+  move_button: "{mark} Moverte a la mazmorra · {time}"   # [ES] D-222 (0.30.1): solo a una mazmorra que ya visitaste, con el tiempo del viaje
   rooms:                      # [ES] nombres de sala del camino del día (se eligen 4 distintos cada día)
     - "🕯️ la galería de velas"
     - "💧 la cisterna"

@@ -188,9 +188,51 @@ El botón 🗺️ Mapa dibuja 13 × 13 zonas (6 a cada lado, `map_view.radius`; 
 
 **Colores por terreno (D-179, desde la 0.26.1).** Cada cuadrito se pinta con el color de su terreno (en la 0.26.1, solo lo que tu héroe recordaba; desde la 0.26.2, **todo el cuadrado**, como un tablero salteado de manchas, D-186 y §1.2): 🟩 pradera, 🟢 bosque, 🟫 colinas, ⬜ montaña, 🟦 tundra, 🟨 desierto, 🟪 pantano y ⬛ ruinas; el 🔥 Claro sigue con su fuego (D-182, colores elegidos por Claude). El color sale de `content/biomes.yaml` (`color`) y la leyenda del mapa se arma sola, así que un terreno nuevo solo agrega su color (quedan libres 🟧, 🟥 y los círculos). **El color es el terreno, no promete recursos:** ver verde no quiere decir que haya madera o semillas; lo que hay se sabe explorando (antes, al 100 %, la zona se pintaba con su recurso principal, D-87).
 
+### 1.9.1 📍 Zona ordenada y mapa limpio (D-221, D-222, desde la 0.30.1)
+
+El 7-oct el dueño pidió que 📍 Zona "se vea organizada" (se veía "todo regado") y que el 🗺️ Mapa no tenga nada debajo.
+
+**📍 Zona, en bloques cortos** (un renglón vacío entre bloques, una idea por renglón):
+
+```text
+📍 Dónde estás
+Hondonada de los Huesos — 🌲 Bosque
+📌 (0, 5) · Lejanía 5 · Anillo II
+⚔️ Peligro de nivel 6
+🧭 La descubrió Aria
+
+🔎 Explorada al 30 %. Recursos:
+• 🌿 Hierba curativa ▰▰▰▰▰
+• 🍂 Corteza ▰▰▰▰▰
+• ❔ Quedan recursos por descubrir
+◻️ Aquí: reconocida, investigada al 30 %. Al 50 % verás su color y su terreno en el mapa.
+
+🕳️ Mazmorra chica: hoy la ocupan 👹 duendes, ogros y gigantes. 🧭 Explorar → 🕳️ Entrar.
+
+🧭 Rutas
+⬆️ Norte: 🦉 Hoya de las Cenizas · 1 min
+⬇️ Sur: 🌲 Bosque Fuente Viejo · 1 min
+➡️ Este: ❔ Tierra sin cartografiar · 1 min
+⬅️ Oeste: ❔ Tierra sin cartografiar · 1 min
+
+❤️ 115/115 · ⚡ 50/50 · 🥉45 · Nivel 2
+
+🧭 Ahora: junta recursos: 🧭 Explorar → 🪓 Recolectar.
+📖 /guia: la explicación del paso.
+
+❓ ¿Dudas? Escribe /dudas o toca ❓ en 🏕️ Campamento.
+```
+
+- Las rutas muestran el **emoji** del terreno y el nombre del lugar (antes también el nombre del terreno, y la línea se partía en el teléfono).
+- 🧭 Explorar también muestra los recursos uno por renglón (`_resources_lines`).
+
+**🗺️ Mapa sin nada debajo (D-222).** El mapa trae la leyenda, los terrenos que conoces y la cuadrícula; nada más. Las coordenadas y la etapa gris de tu zona están en 📍 Zona. Las listas que iban debajo (la guarida, los 👹 campamentos enemigos con lo que deja ver tu rango de 🧭 Explorador, las 🕳️ 🌀 mazmorras más cercanas, los ✨ nodos y la línea 🔭 de reconocer) se mudaron a **📒 Lugares**, bajo "🔭 Lo que marca tu mapa:" (interpretado por Claude, a confirmar en E-202).
+
+**"Moverte a", solo a lugares que ya visitaste (D-222).** El botón del mapa que decía "Ir a la mazmorra" ahora dice **"🌀 Moverte a la mazmorra · 5 min"** y solo sale para la mazmorra más cercana que ya pisaste (o exploraste desde al lado: la memoria del héroe, `hero.known`). A una mazmorra que solo ves en el mapa se llega caminando por las 🧭 Rutas; después ya puedes volver de una vez. Lo mismo vale para el 👹 campamento enemigo del mapa, el "🧭 Moverte allá" de 🔭 Reconocer y cualquier viaje directo ("goto:"); 📒 Lugares ya solo ofrecía lugares que recuerdas (a confirmar en E-203).
+
 ### 1.10 Pantalla de ejemplo
 
-Salida real del motor (semilla 1), tras ir norte, norte y este desde el Claro:
+Salida real del motor en la v0.1 (semilla 1), tras ir norte, norte y este desde el Claro. Es historia: la pantalla de hoy está en §1.9.1.
 
 ```text
 📍 Llegaste a Hondonada de Hierro (🌾 Pradera).
@@ -406,7 +448,7 @@ El dueño pidió (1-oct-2026) que **el mapa muestre que hay algo, no qué es**: 
 - **Dónde:** el mapa se parte en **tramos de 6 × 6 zonas**, y cada tramo tiene **2 entradas, o 3 con 50 %** (D-181, desde la 0.26.1; antes 1 o 2: las que había no se movieron, solo se sumaron), desde **Lejanía 2**, nunca pegadas dentro del tramo; **1 de cada 4 es 🌀 profunda**, las demás 🕳️ chicas. Sale solo de la semilla del mundo y las coordenadas: **nunca se mueven** y son las mismas para todos (lo que cambia cada día es lo de adentro). Nunca en el Claro ni en la guarida; el **territorio de un campamento de jugadores** la tapa mientras exista, y un **👹 campamento enemigo** en pie sobre su zona tapa la entrada ese día.
 - **🕳️ Una cueva:** el 🗺️ Mapa marca con la **🕳️ cueva** (D-181; hasta la 0.26 era ❓) una entrada si anduviste cerca: si recuerdas (pisaste o estudiaste) alguna zona a **2 zonas o menos** de ella (`dungeons.hint_radius`). Sabes que ahí hay una mazmorra, no cuál.
 - **🕳️ / 🌀 Ya sabes qué es:** al **pisar su zona**, o al **estudiarla desde la de al lado** (explorar alrededor, D-107: la zona queda en tu memoria), sabes si es 🕳️ chica (la cueva sigue igual en el cuadrito y la línea de abajo lo dice) o 🌀 profunda (el cuadrito pasa a 🌀). Al llegar a su zona sale el aviso "🕳️ ¡La entrada de una mazmorra chica!" y 📍 Zona dice qué familia de enemigos la ocupa hoy.
-- **Debajo del mapa:** las **3 más cercanas** que ves ("🕳️ (3, -5) · a 4 zonas: una cueva, ve a ver qué mazmorra es"; "🌀 (-1, -5) · a 2 zonas: mazmorra profunda"), con el tiempo de viaje desde el rango 10 del 🧭 Explorador. El botón **🕳️ Ir a la cueva** (o **🕳️ / 🌀 Ir a la mazmorra**) te lleva a la más cercana zona por zona, como 📒 Lugares; con el de 👹 son 4 botones como mucho.
+- **Debajo del mapa** (hasta la 0.30; desde la 0.30.1, D-222, esta lista está en 📒 Lugares y el botón solo va a una mazmorra que ya visitaste): las **3 más cercanas** que ves ("🕳️ (3, -5) · a 4 zonas: una cueva, ve a ver qué mazmorra es"; "🌀 (-1, -5) · a 2 zonas: mazmorra profunda"), con el tiempo de viaje desde el rango 10 del 🧭 Explorador. El botón **🕳️ Ir a la cueva** (o **🕳️ / 🌀 Ir a la mazmorra**) te lleva a la más cercana zona por zona, como 📒 Lugares; con el de 👹 son 4 botones como mucho.
 - **En el cuadrito**, la marca de la mazmorra va debajo de 🧍 tú, 👑 la guarida, 👹 un campamento enemigo y 🏕️ un campamento de jugadores, y encima del color o el bioma.
 - **En la zona:** 🧭 Explorar cambia 🏹 Cazar por **🕳️ Entrar** o **🌀 Descender** (siguen 4 botones); 🏹 Cazar queda dentro de la pantalla de la mazmorra.
 - **🔭 Reconocer (D-172):** desde el rango 10 del 🧭 Explorador, una entrada cercana se puede reconocer de lejos: sabes para siempre si es 🕳️ chica o 🌀 profunda y, ese día, se ve su familia (§1.14, "🔭 Reconocer y 🥷 Sigilo").

@@ -112,7 +112,7 @@ def test_scouting_costs_energy_and_gives_explorer_xp_hero_xp_and_coins(service):
     assert after.professions["explorador"] == before[1] + cfg["explorer_xp"]
     assert after.xp == before[2] + cfg["hero_xp"]
     assert after.gold == before[3] + camp["level"] * cfg["coins_per_level"]
-    assert f"goto:{cx}:{cy}" in ids(view) and ids(view)[-1] == "map"
+    assert f"goto:{cx}:{cy}" not in ids(view) and ids(view)[-1] == "map"            # D-222: never been there, no shortcut
     assert not service.texts.missing
 
 
@@ -212,13 +212,13 @@ def test_a_camp_shows_garrison_and_chief_not_the_chest_and_infiltration_stays(se
 def test_scouted_places_show_on_the_map_and_on_the_routes(service):
     x, y = dungeon_zone(service, "deep")
     scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])          # 2 zones away: the 🕳️ cave on the map
-    view = service.act("test:1", "map")
+    view = service.act("test:1", "places")                                          # D-222 (0.30.1): the list is in 📒 Lugares
     assert any(line.startswith(f"🕳️ ({x}, {y})") and "cueva" in line for line in view.body)
     assert any("/reconocer" in line for line in view.body)
     service.act("test:1", f"rcn:{x}:{y}")
-    view = service.act("test:1", "map")
     family = service._dng_family_label(service._dng_today(x, y)["family"])
-    assert any(line.startswith(f"🌀 ({x}, {y})") and family in line for line in view.body)   # 🌀 and today's family
+    assert any(line.startswith(f"🌀 ({x}, {y})") and family in line for line in service.act("test:1", "places").body)
+    view = service.act("test:1", "map")                                             # 🌀 and today's family (above); the grid:
     radius = service.content.balance["map_view"]["radius"]
     cells = re.findall(r".\ufe0f?", view.body[2 + radius + 2])                      # its row, 2 below you
     assert cells[radius] == "🌀"                                                     # its square: 🌀, no longer the cave
@@ -229,7 +229,7 @@ def test_scouted_places_show_on_the_map_and_on_the_routes(service):
     # the kind stays known (an entrance never moves); today's family does not
     service.clock.advance(DAY)
     scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])
-    view = service.act("test:1", "map")
+    view = service.act("test:1", "places")
     assert any(line.startswith(f"🌀 ({x}, {y})") and "🔭" not in line for line in view.body)
     assert not service.texts.missing
 
@@ -238,9 +238,9 @@ def test_a_scouted_camp_shows_its_strength_on_the_map(service):
     cx, cy = camp_zone(service)
     scout_at(service, cx + 1, cy, 10)
     mark = f"👹 ({cx}, {cy})"
-    assert not any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "map").body)
+    assert not any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "places").body)
     service.act("test:1", f"rcn:{cx}:{cy}")
-    assert any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "map").body)
+    assert any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "places").body)
 
 
 def test_explore_menu_tells_what_you_can_scout(service):

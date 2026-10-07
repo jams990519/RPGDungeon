@@ -97,8 +97,9 @@ guide:
         👹 Un campamento enemigo de hoy: cambian de lugar cada día.
         🏕️ Un campamento de jugadores.
         👑 La guarida del Guardián, un jefe muy fuerte.
-        📌 Abajo: tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el Claro. Más lejos, enemigos más fuertes.
-        📒 Lugares: los sitios que recuerdas, para viajar directo.
+        📌 Tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el Claro, están en 📍 Zona. Más lejos, enemigos más fuertes.
+        📒 Lugares: los sitios que recuerdas, para viajar directo, y la lista de lo que marca tu mapa.
+        🌀 Moverte a la mazmorra: te lleva a la más cercana que ya visitaste. A un lugar nuevo se llega caminando.
     return:                    # [ES] d) volver al campamento (el Claro)
       name: "Volver al Claro"
       task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → El Claro (o por las rutas de 📍 Zona)."

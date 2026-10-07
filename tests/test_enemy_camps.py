@@ -11,6 +11,7 @@ Explorar sube el oficio, su beneficio suma puntos y el mapa muestra los campamen
 """
 
 from collections import deque
+import re
 
 import pytest
 
@@ -351,10 +352,10 @@ def test_the_map_shows_camps_by_explorer_rank(service):
     make_hero(service)
     cx, cy = camp_zone(service)
 
-    def map_lines(rank, dx):
+    def map_lines(rank, dx):                     # D-222 (0.30.1): the lists left the 🗺️ Mapa for 📒 Lugares
         profs = {"explorador": rank_xp(service, rank)} if rank > 1 else {}
         place(service, "test:1", cx + dx, cy, professions=profs)
-        return service.act("test:1", "map").body
+        return service.act("test:1", "places").body
 
     mark = f"👹 ({cx}, {cy})"
     assert any(line.startswith(mark) for line in map_lines(1, 1))                         # next door: everyone sees it
@@ -366,21 +367,34 @@ def test_the_map_shows_camps_by_explorer_rank(service):
     assert any(line.startswith(mark) for line in map_lines(50, 5))                        # rank 50: the whole map
     assert not any(line.startswith(mark) and "💪" in line for line in map_lines(50, 5))
     assert any(line.startswith(mark) and "💪" in line for line in map_lines(75, 5))        # rank 75: its strength
+    assert not any(line.startswith("👹 (") for line in service.act("test:1", "map").body)   # nothing under the grid
+    view = service.act("test:1", "map")                  # D-222: never been there, so no "Moverte a" and no shortcut
+    assert not any(a.id == f"goto:{cx}:{cy}" for a in view.actions)
+    service.act("test:1", f"goto:{cx}:{cy}")
+    assert not service._load("test:1").activity
+    hero = service._load("test:1")
+    place(service, "test:1", hero.x, hero.y, known=hero.known + [f"{cx}:{cy}"])    # once visited, it is offered
     view = service.act("test:1", "map")
-    assert len(view.actions) <= 4 and any(a.id == f"goto:{cx}:{cy}" for a in view.actions)
+    assert len(view.actions) <= 4 and any(a.id == f"goto:{cx}:{cy}" and "Moverte" in a.label for a in view.actions)
     service.act("test:1", f"goto:{cx}:{cy}")
     assert service._load("test:1").activity["kind"] == "travel"
     assert not service.texts.missing
+
+
+def place_lines(view):
+    """The remembered places listed in 📒 Lugares (D-222: what the map marks comes after, under its own title)."""
+    body = view.body[:view.body.index("🔭 Lo que marca tu mapa:")] if "🔭 Lo que marca tu mapa:" in view.body else view.body
+    return [line for line in body if re.search(r" · a \d+ zonas? · ", line)]
 
 
 def test_places_lists_more_from_explorer_rank_10(service):
     make_hero(service)
     known = ["0:0"] + [f"{x}:0" for x in range(1, 11)]
     place(service, "test:1", 0, 0, known=known)
-    assert sum(1 for line in service.act("test:1", "places").body if "zonas" in line) == 3
+    assert len(place_lines(service.act("test:1", "places"))) == 3
     place(service, "test:1", 0, 0, known=known, professions={"explorador": rank_xp(service, 10)})
     view = service.act("test:1", "places")
-    assert sum(1 for line in view.body if "zonas" in line) == service.content.balance["explorer"]["places_listed"]
+    assert len(place_lines(view)) == service.content.balance["explorer"]["places_listed"]
     assert len(view.actions) <= 4
 
 
