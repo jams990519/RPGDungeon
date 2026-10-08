@@ -3,11 +3,19 @@
 [ES] Pruebas de las 8 habilidades por especialización, su desbloqueo por puntos y la barra de combate elegible.
 """
 
-from conftest import make_hero
+import pytest
+
+from conftest import legacy_content, make_hero
 from engine.classes import bar_choices, bar_slots, base_response, ensure_talents, kit, set_bar_slot, spend_point, specs_of
 from engine.combat import CombatContext, make_combat, resolve_round
 from engine.core import Texts
 from engine.hero import Hero
+
+
+@pytest.fixture
+def content():
+    """0.31: these tests cover the old talent and bar system (D-79), still in the code for the retired specs."""
+    return legacy_content()
 
 KINDS = {"strike", "finisher", "interrupt", "heal", "hot", "dot", "empower", "expose", "weaken", "response"}
 

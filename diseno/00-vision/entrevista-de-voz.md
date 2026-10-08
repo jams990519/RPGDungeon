@@ -449,3 +449,31 @@ Pedido del dueño por voz, con una captura del 🗺️ Mapa (transcripción tal 
 - D-223, confirmada, en el juego desde la 0.30.2.
 - D-224, confirmada, por programar.
 - Preguntas nuevas: E-204 a E-207. E-202 queda cerrada por D-223.
+
+## 8-oct-2026 · Parche de clases, combate y balance
+
+El dueño mandó por escrito el parche completo del sistema de clases ("Notas para implementar. El juego ya está montado: esto no es un resumen, es el parche completo del sistema de clases. Reemplaza lo que haya de clases y combos.") y pidió subirlo antes que cualquier otra cosa: "para absolutamente todo lo que estás haciendo y sube esto primero".
+
+**Lo que trae:** el texto completo, ordenado, está en [Combate en cadena](../04-combate/combate-en-cadena.md).
+- 1 · Reglas universales: 4 botones, energía y tope de 5 objetivos.
+- 2 · Dependencia de cadena y el orden por rol.
+- 3 · Marcas, premio, básicos seguidos, gastador sin combo, variedad y el beneficio de cada H2.
+- 4 · Los tres combos por rol, verificados turno a turno.
+- 5 · Regla madre de balance.
+- 6 · Progresión en tres etapas.
+- 7 · Las seis clases con sus 48 botones.
+- 8 · Decisiones ya cerradas.
+- 9 · Pendientes.
+
+**Lo firme y lo que es borrador:**
+- Los nombres de las habilidades y los porcentajes son borrador.
+- La estructura de cadena, costos y combos es firme.
+- Los pendientes no se inventan: quedan configurables.
+
+**Qué se registró:**
+- D-225 a D-230 y D-232, confirmadas.
+- D-231, provisional: cómo lo aplicó Claude.
+- Los 6 pendientes, como P-207 a P-212 y E-208 a E-213.
+- Se cerraron E-171, E-172 y E-182, y se reescribió E-186.
+
+**Lo que no se aplicó todavía:** que subir de nivel no dé estadísticas. Espera la reforma de estadísticas del equipo (D-232).

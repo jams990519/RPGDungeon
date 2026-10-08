@@ -36,6 +36,9 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     color; balance.yaml map_view.fog, D-212 y D-220)
     diseno/03-personaje/camino-guiado.md (el 🧭 camino guiado y sus avisos, D-190, D-193: vive en engine/service/guide.py,
     GuideMixin, de la que GameService también hereda)
+    diseno/04-combate/combate-en-cadena.md (0.31, D-225 a D-232: las 6 clases con 2 roles y el combate en cadena; en este
+    archivo: _chain_combat_view y la Mochila con 🏃 Huir, la creación con el primer rol, _chain_talents_view,
+    _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
@@ -362,13 +365,18 @@ from engine.classes import (
     base_response,
     default_spec,
     ensure_talents,
+    is_chain_spec,
     kit as talent_kit,
+    second_role_open,
     set_bar_slot,
     spend_point,
     specs_of,
+    switch_role,
     unlock_points,
 )
 from engine.combat import CombatContext, make_combat, play_out, resolve_round, validate_choice
+from engine.combat import chain as chain_rules
+from engine.combat.chain_round import available_energy
 from engine.core import (
     BossDefeated,
     Clock,
@@ -746,14 +754,14 @@ class GameService(StoryMixin, GuideMixin):
 
     def _hero_icon(self, hero: Hero) -> str:
         """The hero's icon: its main spec's unique icon once it has points, else its class icon (D-70)."""
-        if hero.talents.get(hero.class_id):
+        if hero.talents.get(hero.class_id) or is_chain_spec(self.content.classes, hero.class_id):   # 0.31: the role is chosen at creation
             return self.content.classes[hero.class_id].get("icon", "")
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         return self.texts.t(f"class_group.{group}.name").split(" ")[0]
 
     def _hero_title(self, hero: Hero) -> str:
-        """Class and spec name; before the first talent point, only the class (D-68)."""
-        if hero.talents.get(hero.class_id):
+        """Class and spec name; before the first talent point, only the class (D-68). 0.31: a chain hero always has its role."""
+        if hero.talents.get(hero.class_id) or is_chain_spec(self.content.classes, hero.class_id):
             return self.texts.t(self.content.classes[hero.class_id]["name_key"])
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         return self.texts.t(f"class_group.{group}.name") + " · " + self.texts.t("talents.no_spec")
@@ -1281,11 +1289,22 @@ class GameService(StoryMixin, GuideMixin):
             return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions, expects_text=True)
         else:
             # Confirmation step: show the class and its specs, then choose it or go back (D-74).
+            chain_class = all(is_chain_spec(self.content.classes, c) for c in specs_of(self.content.classes, group))
             body = [t.t("create.confirm_class", group=t.t(f"class_group.{group}.name"), desc=t.t(f"class_group.{group}.desc")), "",
-                    t.t("create.its_specs")]
+                    t.t("chain.create_its_roles" if chain_class else "create.its_specs")]
             for class_id in specs_of(self.content.classes, group):
                 cdef = self.content.classes[class_id]
-                body.append(f"• {t.t(cdef['name_key'])} — {t.t('role.' + cdef.get('role', 'ataque'))}: {t.t(cdef['role_key'])}")
+                role = (t.t("chain_role." + chain_rules.role_of(cdef, self.content.balance)) if chain_class
+                        else t.t("role." + cdef.get("role", "ataque")))
+                body.append(f"• {t.t(cdef['name_key'])} — {role}: {t.t(cdef['role_key'])}")
+            specs = specs_of(self.content.classes, group)
+            if specs and all(is_chain_spec(self.content.classes, s) for s in specs):
+                # 0.31 (D-230): choose the first role now; the other one is learned at level 5
+                body += ["", t.t("chain.create_roles", n=self.content.balance["chain"]["second_role_level"])]
+                actions = [Action(id=f"cls:{s}", label=t.t("create.choose_class", group=t.t(self.content.classes[s]["name_key"])))
+                           for s in specs]
+                actions.append(Action(id="grp:", label=t.t("create.back_to_classes")))
+                return View(kind="create_class", title=t.t("create.title"), body=body, actions=actions)
             body += ["", t.t("create.spec_later")]
             actions = [Action(id=f"cls:{default_spec(self.content.classes, group)}", label=t.t("create.choose_class", group=t.t(f"class_group.{group}.name"))),
                        Action(id="grp:", label=t.t("create.back_to_classes"))]
@@ -1387,6 +1406,16 @@ class GameService(StoryMixin, GuideMixin):
             return self._explore_menu(hero)
         if action_id == "talents":
             return self._talents_view(hero)
+        if is_chain_spec(self.content.classes, hero.class_id) and action_id in ("respec", "dual", "dual_unlock", "dual_switch"):
+            return self._talents_view(hero)          # 0.31: no respec or dual setups; the second role opens at level 5 (D-230)
+        if action_id.startswith("role:"):
+            spec = action_id[5:]
+            if hero.activity:
+                return self._spec_view(hero, spec, notice=t.t("activity.busy"))
+            if switch_role(self.content.classes, self.content.balance, hero, spec):
+                self._clamp_hp(hero)
+                return self._spec_view(hero, spec, notice=t.t("chain.switched", name=self._hero_title(hero)))
+            return self._spec_view(hero, spec)
         if action_id == "respec":
             return self._respec(hero)
         if action_id == "dual":
@@ -2617,8 +2646,23 @@ class GameService(StoryMixin, GuideMixin):
             hero.points += 1
             hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
             lines.append(self.texts.t("combat.level_up", level=hero.level))
-            lines.append(self.texts.t("talents.new_point"))
+            lines += self._level_point_lines(hero)
         self._pay_referral(hero)
+        return lines
+
+    def _level_point_lines(self, hero: Hero) -> list[str]:
+        """What a new level says about its point. 0.31: a chain hero's point places itself; at level 5 its second role opens.
+
+        [ES] Qué hace: después de subir de nivel, en las clases nuevas el punto se pone solo en el rol activo (sync_chain) y al
+        nivel chain.second_role_level avisa que ya puede jugar su segundo rol (D-230); en las viejas, el aviso de siempre.
+        La llaman: _give_xp y _end_combat. Si cambia, afecta: el aviso de cada nivel.
+        """
+        if not is_chain_spec(self.content.classes, hero.class_id):
+            return [self.texts.t("talents.new_point")]
+        ensure_talents(self.content.classes, self.content.balance, hero)
+        lines = [self.texts.t("chain.new_point")]
+        if hero.level == int(self.content.balance["chain"]["second_role_level"]):
+            lines.append(self.texts.t("chain.second_role_learned"))
         return lines
 
     def _pay_referral(self, hero: Hero) -> None:
@@ -5086,6 +5130,7 @@ class GameService(StoryMixin, GuideMixin):
             "max_level": b["hero"]["max_level"], "talent_unlock": ", ".join(str(n) for n in unlock[:4]) + "…",
             "respec_cost": self._money(int(b["talents"]["respec_cost_per_level"])),
             "dual_points": b["talents"]["dual"]["min_points"], "dual_bags": b["talents"]["dual"]["cost_bags"],
+            "second_role": b["chain"]["second_role_level"], "hybrid_level": b["chain"]["hybrid"]["level"],   # 0.31 (D-230)
             "bag_cap": b["hero"]["backpack_capacity"],
             "camp_far": camps["min_lejania"], "camp_known": camps["known_neighbors"], "camp_gap": camps["min_distance"],
             "found_cost": self._item_list(camps["found_cost"]), "chests_from": camps["chests_from_level"],
@@ -6505,6 +6550,8 @@ class GameService(StoryMixin, GuideMixin):
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        if is_chain_spec(self.content.classes, hero.class_id):
+            return self._chain_talents_view(hero, notice)
         body = [t.t("talents.intro"), t.t("talents.points", n=hero.points), ""]
         if not hero.talents:
             body[:0] = [t.t("talents.choose_first"), ""]
@@ -6534,9 +6581,86 @@ class GameService(StoryMixin, GuideMixin):
                 out[ability["id"]] = (ability, self.content.classes[spec]["resource"])
         return out
 
+    def _chain_talents_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🌟 Talentos of a 0.31 chain hero: its two roles, the active one, points that place themselves, the second role.
+
+        [ES]
+        Qué hace: muestra los 2 roles de la clase (⭐ el activo; 🔒 el segundo hasta el nivel chain.second_role_level), los
+        puntos de nivel (van solos al rol activo) y el modo híbrido que espera la decisión del dueño (pendiente 3).
+        La llama: _talents_view. Si cambia, afecta: la pantalla de talentos de las clases nuevas.
+        """
+        t = self.texts
+        bal = self.content.balance
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        body = [t.t("chain.active_role", name=self._hero_title(hero)), t.t("chain.points_auto", n=max(0, hero.level - 1)), ""]
+        actions = []
+        for spec in specs_of(self.content.classes, group):
+            sdef = self.content.classes[spec]
+            role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
+            mark = " ⭐" if spec == hero.class_id else ("" if second_role_open(bal, hero) else " 🔒")
+            body.append(f"• {t.t(sdef['name_key'])} — {role}: {t.t(sdef['role_key'])}{mark}")
+            actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
+        body += ["", t.t("chain.second_role_open") if second_role_open(bal, hero)
+                 else t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]),
+                 t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        actions.append(Action(id="hero", label=t.t("menu.back")))
+        return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
+    def _chain_button_lines(self, sdef: dict[str, Any]) -> list[str]:
+        """One line per button of a chain spec: its place in the chain, label and what it does."""
+        t = self.texts
+        out = []
+        for link in chain_rules.LINKS:
+            ability = chain_rules.ability_for(link, sdef)
+            out.append(t.t("chain.spec_button_line", link=t.t(f"chain.link.{link}"), label=self._chain_label(link, ability),
+                           desc=t.t(f"ability.{ability['id']}.desc")))
+        return out
+
+    def _chain_label(self, link: str, ability: dict[str, Any]) -> str:
+        """A chain button's label: icon, name and energy cost (the Básico shows the energy it gives)."""
+        t = self.texts
+        bal = self.content.balance
+        icon = {"B": "⚔️", "H1": "🔸", "H2": "🔹", "H3": "💥"}[link]
+        name = t.t(f"ability.{ability['id']}.name")
+        if link == "B":
+            return t.t("chain.button_basic", icon=icon, name=name, gain=bal["chain"]["energy"]["basic_gain"])
+        return t.t("chain.button", icon=icon, name=name, cost=chain_rules.cost_of(link, bal))
+
+    def _chain_order_text(self, sdef: dict[str, Any]) -> str:
+        """The role's chain with the button names: "Golpe de escudo → Interponerse → Revés → Grito de dominio"."""
+        t = self.texts
+        return " → ".join(t.t(f"ability.{chain_rules.ability_for(link, sdef)['id']}.name")
+                          for link in chain_rules.order(sdef, self.content.balance))
+
+    def _chain_spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
+        """One role of a chain class: its 4 buttons, its chain, and the button to play it (from level 5, D-230)."""
+        t = self.texts
+        bal = self.content.balance
+        sdef = self.content.classes[spec]
+        role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
+        body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=role), t.t(sdef["role_key"]), "",
+                t.t("chain.spec_order", role=role, order=self._chain_order_text(sdef)), "", t.t("chain.spec_buttons")]
+        body += self._chain_button_lines(sdef)
+        body += ["", t.t("chain.spec_rules")]
+        actions = []
+        if spec == hero.class_id:
+            body += ["", t.t("chain.active_role", name=t.t(sdef["name_key"])), t.t("chain.points_auto", n=max(0, hero.level - 1))]
+        elif second_role_open(bal, hero):
+            actions.append(Action(id=f"role:{spec}", label=t.t("chain.switch_button", role=role)))
+        else:
+            body += ["", t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"])]
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
+
     def _bar_view(self, hero: Hero, notice: str | None = None) -> View:
         """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability."""
         t = self.texts
+        if is_chain_spec(self.content.classes, hero.class_id):     # 0.31: the 4 buttons are fixed (the hybrid mode will open them)
+            sdef = self.content.classes[hero.class_id]
+            body = [t.t("chain.spec_buttons")] + self._chain_button_lines(sdef)
+            body += ["", t.t("chain.bar_fixed", n=self.content.balance["chain"]["hybrid"]["level"])]
+            return View(kind="bar", title=t.t("bar.title"), body=body, actions=[Action(id="talents", label=t.t("menu.back"))],
+                        notice=notice)
         abilities = self._class_abilities(hero)
         slots = bar_slots(self.content.classes, hero)
         body = [t.t("bar.intro"), ""]
@@ -7086,6 +7210,8 @@ class GameService(StoryMixin, GuideMixin):
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         if spec not in specs_of(self.content.classes, group):
             return self._talents_view(hero)
+        if is_chain_spec(self.content.classes, spec):
+            return self._chain_spec_view(hero, spec, notice)
         sdef = self.content.classes[spec]
         pts = hero.talents.get(spec, 0)
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque"))),
@@ -7414,8 +7540,10 @@ class GameService(StoryMixin, GuideMixin):
             t.t("stats.attack", value=round(stats["attack"], 1)),
             t.t("stats.defense", value=round(stats["armor"] * 100)),
             t.t("stats.initiative", value=round(stats["initiative"])),
-            t.t("stats.stamina", value=self.content.balance["combat"]["stamina_max"]),
-            t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100)),
+            *([t.t("chain.stats_energy", start=self.content.balance["chain"]["energy"]["start"],
+                   per=self.content.balance["chain"]["energy"]["per_turn"])] if cdef.get("system") == "chain" else    # 0.31
+              [t.t("stats.stamina", value=self.content.balance["combat"]["stamina_max"]),
+               t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100))]),
             t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"], per_day=self.content.balance["energy"]["per_day"]),
             t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
             t.t("stats.talents_armor" if round(bonus.get("armor", 0) * 100) else "stats.talents",   # D-110: Defensa points add armor
@@ -9870,6 +9998,8 @@ class GameService(StoryMixin, GuideMixin):
     def _combat_view(self, hero: Hero, state: dict[str, Any], notice: str | None = None) -> View:
         t = self.texts
         cdef = self._kit(hero)
+        if cdef.get("system") == "chain":
+            return self._chain_combat_view(hero, state, cdef, notice)
         stats = hero_stats(cdef, hero.level)
         enemy = state["enemy"]
         edef = self.content.enemies[enemy["id"]]
@@ -9911,6 +10041,72 @@ class GameService(StoryMixin, GuideMixin):
         title = t.t("combat.title", n=state["round"])
         return View(kind="combat", title=title, body=body, actions=actions, notice=notice)
 
+    def _chain_combat_view(self, hero: Hero, state: dict[str, Any], cdef: dict[str, Any], notice: str | None = None) -> View:
+        """The fight screen of a 0.31 chain class: enemy and warning as before, then energy, marks, the chain and what to press.
+
+        [ES]
+        Qué hace: muestra la energía (y el +2 del turno), las marcas y el premio que cobraría el gastador, el orden del rol con
+        los nombres de los botones y qué sigue (o que el combo está listo, o que sin combo pega al 85 %), la variedad y el
+        cinturón. Botones: los 4 de la cadena, 🛡️ Defenderse (1 de energía) y 🎒 Mochila (pociones y, si se puede, 🏃 Huir):
+        6 como mucho (D-46).
+        La llama: _combat_view. Si cambia, afecta: lo que el jugador ve en cada ronda de las clases nuevas.
+        """
+        t = self.texts
+        bal = self.content.balance
+        stats = hero_stats(cdef, hero.level)
+        enemy = state["enemy"]
+        edef = self.content.enemies[enemy["id"]]
+        hs = state["hero"]
+        chain_rules.ensure_hero(hs, bal)
+        req = chain_rules.required(cdef, bal)
+        pct = round(100 * enemy["hp"] / enemy["max_hp"])
+        body = []
+        if state.get("log"):
+            body += [t.t("combat.last_round", n=state["round"] - 1)] + state["log"] + [""]
+        body += [
+            t.t("combat.enemy_line", enemy=t.t(edef["name_key"]), level=enemy["level"]),
+            t.t("combat.enemy_hp", pct=pct, bar=self._bar(enemy["hp"], enemy["max_hp"])),
+            *([t.t("ecamp.chief_badge")] if (state.get("enemy_camp") or {}).get("chief") else []),     # D-112: the camp's chief
+            *self._dng_combat_lines(state),                                                            # D-170: boss or floor
+            *([t.t("combat.boss_phase", n=enemy.get("phase", 0) + 1, total=len(edef["phases"]) + 1)] if edef.get("phases") else []),
+            "",
+            t.t("combat.warning", text=t.t(f"enemy.{enemy['id']}.moves.{enemy['next_move']}.warn")),
+            "",
+            t.t("combat.hero_line", icon=self._hero_icon(hero), name=hero.name, cls=self._hero_title(hero)),
+            t.t("chain.hp_line", hp=hero.hp, max_hp=stats["max_hp"]),
+        ]
+        cash = chain_rules.preview(hs["chain"], req, bal)
+        bonus = t.t("chain.bonus_tag", pct=round(cash["bonus"] * 100)) if cash["valid"] and cash["bonus"] else ""
+        body.append(t.t("chain.energy_line", n=hs["resource"], per=bal["chain"]["energy"]["per_turn"], marks=hs["chain"]["marks"],
+                        bonus=bonus))
+        body.append(t.t("chain.order_line", order=self._chain_order_text(cdef)))
+        nxt = chain_rules.next_link(hs["chain"], req)
+        spender = t.t(f"ability.{chain_rules.ability_for('H3', cdef)['id']}.name")
+        if nxt == "H3":
+            body.append(t.t("chain.next_spender", name=spender, marks=cash["marks"], pct=round(cash["bonus"] * 100)))
+        else:
+            body.append(t.t("chain.next_line", name=t.t(f"ability.{chain_rules.ability_for(nxt, cdef)['id']}.name")))
+            body.append(t.t("chain.no_combo_hint", name=spender, pct=round(bal["chain"]["no_combo_mult"] * 100)))
+        variety = chain_rules.variety_bonus(list(hs.get("combos") or []), bal)
+        if variety:
+            body.append(t.t("chain.variety_line", pct=round(variety * 100), n=len(set(hs.get("combos") or []))))
+        if hs["toxicity"]:
+            body.append(t.t("combat.toxicity", n=hs["toxicity"]))
+        body.append(t.t("combat.belt", items=self._item_list(hero.belt)))
+        body += self._guide_tip_lines(hero, "combat")      # D-193: 💡 your first fight, once
+        actions = []
+        for link in chain_rules.LINKS:
+            choice = {"type": "attack"} if link == "B" else {"type": "ability",
+                                                              "index": next(i for i, a in enumerate(cdef["abilities"]) if a.get("link") == link)}
+            reason = validate_choice(state, hero, cdef, choice, self.ctx)
+            action_id = "atk" if link == "B" else f"ab:{choice['index']}"
+            actions.append(Action(id=action_id, label=self._chain_label(link, chain_rules.ability_for(link, cdef)), enabled=reason is None))
+        defend_ok = validate_choice(state, hero, cdef, {"type": "dodge"}, self.ctx) is None
+        actions.append(Action(id="dodge", label=t.t("chain.defend_button", cost=bal["chain"]["energy"]["defend_cost"]), enabled=defend_ok))
+        actions.append(Action(id="bag", label=t.t("chain.bag_flee_button" if enemy["can_flee"] else "combat.bag_button")))
+        title = t.t("combat.title", n=state["round"])
+        return View(kind="combat", title=title, body=body, actions=actions, notice=notice)
+
     def _combat_bag_view(self, hero: Hero, state: dict[str, Any]) -> View:
         t = self.texts
         actions = []
@@ -9918,8 +10114,11 @@ class GameService(StoryMixin, GuideMixin):
             item = self.content.items.get(item_id)
             if item and item.get("belt"):
                 actions.append(Action(id=f"use:{item_id}", label=f"{item['emoji']} {t.t(item['name_key'])} ×{count}"))
+        chain_fight = "chain" in state["hero"] or self._kit(hero).get("system") == "chain"
+        if chain_fight and state["enemy"]["can_flee"]:
+            actions.append(Action(id="flee", label=t.t("combat.flee_button")))    # 0.31: 🛡️ Defenderse took its place on the bar
         actions.append(Action(id="back", label=t.t("menu.back")))
-        body = [t.t("combat.belt_help"), t.t("combat.toxicity", n=state["hero"]["toxicity"])]
+        body = [t.t("chain.belt_help" if chain_fight else "combat.belt_help"), t.t("combat.toxicity", n=state["hero"]["toxicity"])]
         return View(kind="combat_bag", title=t.t("combat.belt_title"), body=body, actions=actions)
 
     def _combat_action(self, hero: Hero, state: dict[str, Any], action_id: str) -> View:
@@ -10000,7 +10199,7 @@ class GameService(StoryMixin, GuideMixin):
                 hero.points += 1
                 hero.hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
                 lines.append(t.t("combat.level_up", level=hero.level))
-                lines.append(t.t("talents.new_point"))
+                lines += self._level_point_lines(hero)
             self._pay_referral(hero)
             # D-117: a won fight moves missions and tasks (the zone's biome; a hunt; the Guardian); automatic fights read
             # state["story"] to put these lines in the batch summary (_auto_combat)

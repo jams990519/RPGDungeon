@@ -46,7 +46,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from engine.classes import bar_choices, bar_slots, base_response, kit, specs_of, spend_point  # noqa: E402
+from engine.classes import bar_choices, bar_slots, base_response, kit, specs_of, spend_point, sync_chain  # noqa: E402
 from engine.combat import CombatContext, choose_action, make_combat, resolve_round  # noqa: E402
 from engine.core import Texts, load_content  # noqa: E402
 from engine.hero import Hero, hero_stats  # noqa: E402
@@ -85,12 +85,18 @@ def play(cdef, enemy_id, hero_level, enemy_level, seed):
 
 def spec_hero(spec, level, points=None):
     """A hero of the spec's class with its points all in that spec. [ES] Qué hace: arma un héroe de prueba. La llaman: los modos --real y --bars. Si cambia, afecta: solo el simulador."""
+    spec = C.classes[spec].get("migrate_to", spec) if C.classes[spec].get("retired") else spec   # 0.31: old ids map to the new
     group = C.classes[spec].get("group", spec)
     hero = Hero(id="t", name="T", class_id=spec, level=level)
     hero.unlocked = [base_response(C.classes, group)]
     hero.points = level - 1 if points is None else points
     while hero.points > 0:
+        before = hero.points
         spend_point(C.classes, C.balance, hero, spec)
+        if hero.points == before:          # a point that cannot be placed would loop for ever
+            break
+    if C.classes[spec].get("system") == "chain":
+        sync_chain(C.classes, hero)
     return hero
 
 

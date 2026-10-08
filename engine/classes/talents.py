@@ -20,7 +20,11 @@ Si cambias esto, revisa:
     - Servicio: engine/service/game.py (pantallas 🌟 Talentos y 🎛️ Barra de combate)
     - D-110: la barra automática de Defensa guarda su curación más nueva en la casilla 3 (HEAL_FIRST_ROLES); la mejora
       pasiva puede traer armor (talents.passive.defensa), que hero_stats suma a la armadura (tools/balance_report.py)
-    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py, tests/test_balance_d110.py
+    - 0.31 (D-225, D-230): las clases nuevas (system: chain) no reparten puntos a mano: van solos al rol activo
+      (sync_chain), sus 3 habilidades están siempre abiertas, la barra es fija y desde el nivel 5 se cambia de rol gratis
+      (switch_role). Un héroe con una especialización vieja (retired con migrate_to) pasa a la nueva al cargar, con su
+      nivel, experiencia, equipo y monedas (ensure_talents)
+    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py, tests/test_balance_d110.py, tests/test_clases_031.py
 """
 
 from __future__ import annotations
@@ -86,6 +90,13 @@ def ensure_talents(classes: dict[str, Any], balance: dict[str, Any], hero: Hero)
     La llaman: el servicio al cargar un héroe.
     Si cambia, afecta: los héroes guardados.
     """
+    old = classes.get(hero.class_id, {})
+    if old.get("retired") and old.get("migrate_to") in classes:
+        # 0.31 (D-225): the old classes were replaced. The hero moves to the new spec its old one maps to, keeping level,
+        # experience, gear and coins; its points are collected and placed again in the new role (sync_chain below).
+        hero.class_id = old["migrate_to"]
+        hero.talents, hero.points, hero.unlocked, hero.bar = {}, 0, [], []
+        hero.profiles, hero.dual_unlocked, hero.profile = {}, False, 1
     group = _group(classes, hero)
     if classes.get(hero.class_id, {}).get("retired"):
         # The spec was retired (D-69): move to the class's first spec and refund its points.
@@ -93,6 +104,9 @@ def ensure_talents(classes: dict[str, Any], balance: dict[str, Any], hero: Hero)
         hero.class_id = default_spec(classes, group)
         retired_ids = {a["id"] for cid, c in classes.items() if c.get("retired") for a in c["abilities"]}
         hero.unlocked = [a for a in hero.unlocked if a not in retired_ids]
+    if is_chain_spec(classes, hero.class_id):
+        sync_chain(classes, hero)
+        return
     if hero.unlocked:
         # Heroes saved before abilities 4-8 existed (D-79): unlock what their points already pay for.
         for spec in specs_of(classes, group):
@@ -106,6 +120,52 @@ def ensure_talents(classes: dict[str, Any], balance: dict[str, Any], hero: Hero)
             spend_point(classes, balance, hero, hero.class_id)
 
 
+def is_chain_spec(classes: dict[str, Any], spec: str) -> bool:
+    """True for a 0.31 chain spec (system: chain). [ES] Qué hace: dice si la especialización es de las clases nuevas. La llaman: este módulo y el servicio. Si cambia, afecta: qué reglas de talentos y combate usa el héroe."""
+    return classes.get(spec, {}).get("system") == "chain"
+
+
+def sync_chain(classes: dict[str, Any], hero: Hero) -> None:
+    """A chain hero's level points all sit in its active role; its four buttons are always open.
+
+    [ES]
+    Qué hace: en las clases nuevas (0.31) los puntos de nivel van solos al rol activo (1 por nivel, D-215: subir de nivel no
+    da estadísticas por sí solo, las dan los puntos), los 3 botones de habilidad siempre están abiertos (todas las clases
+    pegan desde el principio) y la barra es fija (Básico, H1, H2, H3). Al cambiar de rol los puntos se recogen y se ponen en
+    el rol nuevo (chain.keep_points: pendiente 4 del parche; hoy no cambia nada porque los puntos tienen un solo destino).
+    La llaman: ensure_talents (cada vez que se carga el héroe) y switch_role.
+    Si cambia, afecta: la mejora pasiva de cada héroe de las clases nuevas.
+    """
+    hero.talents = {hero.class_id: max(0, hero.level - 1)}
+    hero.points = 0
+    hero.unlocked = [a["id"] for a in classes[hero.class_id]["abilities"]]
+    hero.bar = []
+
+
+def second_role_open(balance: dict[str, Any], hero: Hero) -> bool:
+    """From chain.second_role_level (5) the hero can play the other role of its class. [ES] Qué hace: dice si el héroe ya aprendió su segundo rol (D-230). La llaman: switch_role y el servicio. Si cambia, afecta: cuándo se cambia de rol."""
+    return hero.level >= int(balance["chain"]["second_role_level"])
+
+
+def switch_role(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, spec: str) -> bool:
+    """Play the other role of the class (0.31, D-230). Returns True if done.
+
+    [ES]
+    Qué hace: cambia el rol activo a la otra especialización de la clase, desde el nivel chain.second_role_level y gratis.
+    Los puntos se recogen y se reparten de nuevo en el rol nuevo (sync_chain).
+    La llaman: el servicio (botón 🔄 en la especialización).
+    Si cambia, afecta: el rol de cada héroe de las clases nuevas.
+    """
+    group = _group(classes, hero)
+    if not is_chain_spec(classes, hero.class_id) or spec == hero.class_id or spec not in specs_of(classes, group):
+        return False
+    if not second_role_open(balance, hero):
+        return False
+    hero.class_id = spec
+    sync_chain(classes, hero)
+    return True
+
+
 def spend_point(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, spec: str) -> list[str]:
     """Put one point in a spec of the hero's class; returns newly unlocked ability ids.
 
@@ -116,6 +176,9 @@ def spend_point(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, sp
     Si cambia, afecta: el poder de cada héroe.
     """
     group = _group(classes, hero)
+    if is_chain_spec(classes, hero.class_id):      # 0.31: the points place themselves (sync_chain); a call just uses one up
+        hero.points = max(0, hero.points - 1)
+        return []
     if hero.points <= 0 or spec not in specs_of(classes, group):
         return []
     hero.points -= 1
@@ -176,6 +239,8 @@ def bar_slots(classes: dict[str, Any], hero: Hero) -> list[str]:
     La llaman: bar(), el servicio (pantalla 🎛️ Barra de combate) y set_bar_slot().
     Si cambia, afecta: qué botones salen en combate y en qué orden.
     """
+    if is_chain_spec(classes, hero.class_id):      # 0.31: the bar is fixed: H1, H2, H3 (the Básico is ⚔️)
+        return [a["id"] for a in classes[hero.class_id]["abilities"]]
     known, unlocked = _known_unlocked(classes, hero)
     auto = _auto_slots(known, unlocked, classes.get(hero.class_id, {}).get("role"))
     saved = list(hero.bar or [])
@@ -206,6 +271,8 @@ def bar(classes: dict[str, Any], hero: Hero) -> list[dict[str, Any]]:
     La llaman: kit() y la vista del héroe.
     Si cambia, afecta: qué botones salen en combate.
     """
+    if is_chain_spec(classes, hero.class_id):
+        return list(classes[hero.class_id]["abilities"])
     known = _abilities(classes, _group(classes, hero))
     return [known[a][2] for a in bar_slots(classes, hero)]
 
@@ -219,6 +286,8 @@ def bar_choices(classes: dict[str, Any], hero: Hero, slot: int) -> list[str]:
     La llaman: el servicio (pantalla para elegir casilla).
     Si cambia, afecta: qué opciones ve el jugador.
     """
+    if is_chain_spec(classes, hero.class_id):      # 0.31: the bar is fixed (the hybrid mode, D-231, will open it)
+        return []
     known, unlocked = _known_unlocked(classes, hero)
     slots = bar_slots(classes, hero)
     current = slots[slot - 1] if 0 < slot <= len(slots) else None
@@ -264,7 +333,10 @@ def kit(classes: dict[str, Any], balance: dict[str, Any], hero: Hero) -> dict[st
     base["abilities"] = bar(classes, hero)
     cfg = balance["talents"]
     bonus = {"attack": 0.0, "hp": 0.0}
-    for spec, points in hero.talents.items():
+    talents = hero.talents
+    if is_chain_spec(classes, hero.class_id):      # 0.31: one point per level, all in the active role (sync_chain)
+        talents = {hero.class_id: max(0, hero.level - 1)}
+    for spec, points in talents.items():
         role = classes.get(spec, {}).get("role", "ataque")
         for stat, per_point in cfg["passive"].get(role, {}).items():
             bonus[stat] = bonus.get(stat, 0.0) + per_point * min(points, cfg["passive_cap"])

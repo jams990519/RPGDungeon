@@ -2,6 +2,9 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Balance](balance.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Talentos](talentos.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) · **Estado:** propuesta (la barra de 6 está decidida en D-46, el reparto de roles responde a D-50 y la capa jugable de §7 a D-79)
 
+> ⚠️ **8-oct-2026 (D-225):** el parche de clases reemplazó estas 15 clases y 46 especializaciones por **6 clases con 2 roles cada una** y la misma mecánica de cadena para todas: ver [Combate en cadena](../04-combate/combate-en-cadena.md). Las especializaciones de abajo quedan retiradas (sus IDs no se borran) y este documento queda como historia de dónde salieron.
+
+
 **De dónde sale.**
 - Las 13 clases y 40 especializaciones de *World of Warcraft* a septiembre de 2026 (expansión *Midnight*, con la tercera spec del Cazador de Demonios, **Devorador**, ya en vivo). Se suman dos clases propias que WoW nunca tuvo y que un juego por turnos pide: **Nigromante** y **Bardo**.
 - De *Albion Online*, la idea de que **el equipo aporta habilidades**.

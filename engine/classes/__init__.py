@@ -28,12 +28,16 @@ from engine.classes.talents import (
     bar_slots,
     default_spec,
     ensure_talents,
+    is_chain_spec,
     kit,
+    second_role_open,
     set_bar_slot,
     spend_point,
     specs_of,
+    switch_role,
+    sync_chain,
     unlock_points,
 )
 
-__all__ = ["base_response", "bar", "bar_choices", "bar_slots", "default_spec", "ensure_talents", "kit", "set_bar_slot",
-           "spend_point", "specs_of", "unlock_points"]
+__all__ = ["base_response", "bar", "bar_choices", "bar_slots", "default_spec", "ensure_talents", "is_chain_spec", "kit",
+           "second_role_open", "set_bar_slot", "spend_point", "specs_of", "switch_role", "sync_chain", "unlock_points"]

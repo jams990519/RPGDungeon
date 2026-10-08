@@ -1,7 +1,15 @@
 """Talents by level (D-68) and max 3 specs per class (D-69). [ES] Pruebas de talentos por nivel."""
 
-from conftest import make_hero
+import pytest
+
+from conftest import legacy_content, make_hero
 from engine.classes import specs_of
+
+
+@pytest.fixture
+def content():
+    """0.31: these tests cover the old talent and bar system (D-79), still in the code for the retired specs."""
+    return legacy_content()
 
 
 def test_every_class_has_at_most_three_specs(content):
@@ -82,7 +90,7 @@ def test_double_spec_after_dedication_paid_with_bags(service):
     service.act("test:1", "dual_switch")
     hero = service._load("test:1")
     assert hero.profile == 2 and hero.talents == {} and hero.points == 11
-    other = [s for s in service.content.classes if service.content.classes[s].get("group") == "guerrero" and s != first[0]][0]
+    other = [s for s in specs_of(service.content.classes, "guerrero") if s != first[0]][0]
     service.act("test:1", f"pt:{other}")
     service.act("test:1", "dual_switch")
     hero = service._load("test:1")

@@ -261,8 +261,8 @@ Del pedido del dueño del 2-oct (D-208 a D-210); propuesta completa en [Estadís
 | # | Pregunta | Recomendación |
 |---|---|---|
 | P-169 | ¿La estadística principal de una pieza se adapta a quien la lleva o es fija? (E-170) | ✅ **Decidido (D-218):** la principal se adapta a quien lleva la pieza |
-| P-170 | ¿A qué tipo de armadura pasan las clases que usaban malla? (E-171) | Cazador a cuero, Chamán a placa, Evocador a tela (4 en placa, 6 en cuero, 5 en tela) |
-| P-171 | ¿⚔️ Atacar cuenta como una de las 4 habilidades? (E-172) | Sí: Atacar y 3 habilidades, todas en la barra (D-46) |
+| P-170 | ¿A qué tipo de armadura pasan las clases que usaban malla? (E-171) | ✅ **Decidido (D-225):** el parche de clases trae su armadura: Cazador y Chamán en cuero (el Evocador ya no existe) |
+| P-171 | ¿⚔️ Atacar cuenta como una de las 4 habilidades? (E-172) | ✅ **Decidido (D-225):** sí, el Básico es uno de los 4 botones (Básico, Constructor, Preparador y Gastador) |
 | P-172 | ¿Cuántas estadísticas? (E-173) | Capa simple de 9 (3 principales, Vitalidad, Armadura y 4 secundarias) y capa profunda (terciarias y resistencias) |
 | P-173 | ¿Cómo se mejoran las habilidades sin sumar botones? (E-174) | Filas de talentos cada 15 niveles: 1 de 3 mejoras (WoW de Pandaria) |
 | P-174 | ¿Qué otras mejoras de clase del WoW entran? (E-175) | Bonos de conjunto y adornos de artesano; más adelante glifos y reforja |
@@ -286,11 +286,17 @@ Del pedido del dueño del 2-oct (D-212 a D-214) y del 4-oct (D-220: el mapa vuel
 | P-204 | ¿La hoguera se llama "Campamento" en todo el juego? (D-223; E-205) | Sí; la etapa de los jugadores que hoy se llama campamento pasa a "Asentamiento" |
 | P-205 | ¿Qué cuenta como lugar importante en 📒 Lugares? (D-223; E-206) | Hogueras, campamentos de jugadores, mazmorras y la guarida visitados; los nodos no. Aplicado así en la 0.30.2, a confirmar |
 | P-206 | ¿Dónde ve el Explorador lo que antes veía en el mapa? (D-112, D-223; E-207) | En 🔭 Reconocer, como lista de lo que su rango deja ver |
-| P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | Claude propone 8 a 10 clases propias con 3 especializaciones; el dueño elige y cambia |
+| P-207 | ¿Cuáles son los porcentajes finales del premio por marcas? (D-228; E-208) | Dejar 10 %, 25 % y 50 % hasta la beta y medir (`balance.yaml` → `chain.mark_bonus`) |
+| P-208 | ¿Qué habilidades de DPS no generan agro? (D-228; E-209) | Las que pegan cada turno (sangrado, quemadura, sombra); los golpes directos sí (`chain.no_threat`) |
+| P-209 | ¿Cuántas habilidades del otro rol mezcla el modo híbrido y con qué límite de botones? (D-230; E-210) | 1 de las 3, por la del mismo puesto del otro rol; siguen siendo 4 botones (`chain.hybrid.max_mixed`) |
+| P-210 | Al cambiar de rol, ¿cada rol guarda sus puntos o se reparten de cero? (D-230; E-211) | Cada rol guarda los suyos (`chain.keep_points`; hoy da igual) |
+| P-211 | ¿El bono por variedad dura la pelea o es para siempre? (D-229; E-212) | Dura la pelea (`chain.variety.scope`) |
+| P-212 | ¿El tanque sube la defensa antes que el agro? (D-226; E-213) | Sí, dejar B → H2 → H1 → H3 (`chain.orders.tanque`) |
+| P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | ✅ **Decidido (D-225):** el dueño mandó las 6 clases con 2 roles cada una (parche del 8-oct, en el juego desde la 0.31) |
 | P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
 | P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |
 | P-184 | ¿Rendimiento decreciente en las secundarias? (E-185) | ✅ **Decidido (D-217):** sí, rendimiento decreciente con tope |
-| P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | Cambio de clase gratis una vez, conservando nivel, equipo y oficios |
+| P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | En la 0.31 cada héroe pasó solo a la clase nueva más parecida, con todo (D-231); recomendado además un cambio gratis una vez (E-186, reescrita) |
 
 ## Dudas de las estadísticas: puntos, afinidad, tope, armas y arquetipos (2-oct-2026)
 

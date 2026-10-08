@@ -53,7 +53,7 @@ def test_every_tank_has_more_base_armor_than_its_attack_sibling(content):
             for attacker in attackers:
                 assert content.classes[tank]["base"]["armor"] > content.classes[attacker]["base"]["armor"], (tank, attacker)
                 checked += 1
-    assert checked == 8                                     # the 8 classes with a tank spec
+    assert checked == 2                                     # 0.31: the 2 classes with a tank role (Guerrero and Druida)
 
 
 def test_gear_goes_up_to_level_100_in_every_slot_and_type(content):
@@ -130,28 +130,25 @@ def test_loot_drops_gear_near_high_enemy_levels(content, enemy_level):
 
 
 def test_defense_points_add_armor_and_the_tank_bar_keeps_a_heal(content):
-    tank = sim.spec_hero("guerrero", 50)
+    tank = sim.spec_hero("guerrero_tanque", 50)                                     # 0.31: the chain tank
     cdef = kit(content.classes, content.balance, tank)
     per_point = content.balance["talents"]["passive"]["defensa"]["armor"]
     assert cdef["talent_bonus"]["armor"] == pytest.approx(per_point * 49)
-    assert hero_stats(cdef, 50)["armor"] == pytest.approx(content.classes["guerrero"]["base"]["armor"] + per_point * 49)
-    attacker = kit(content.classes, content.balance, sim.spec_hero("guerrero_furia", 50))
+    assert hero_stats(cdef, 50)["armor"] == pytest.approx(content.classes["guerrero_tanque"]["base"]["armor"] + per_point * 49)
+    attacker = kit(content.classes, content.balance, sim.spec_hero("guerrero_dps", 50))
     assert not attacker["talent_bonus"].get("armor")                               # only Defensa gets armor
     cdef["gear_bonus"] = {"armor": 0.9}
     assert hero_stats(cdef, 50)["armor"] == content.balance["gear"]["armor_cap"]   # never above the cap
     for spec in [s for s in active(content) if content.classes[s]["role"] == "defensa"]:
-        hero = sim.spec_hero(spec, 30)
-        unlocked_heals = [a for a in hero.unlocked if any(x["id"] == a and x["kind"] == "heal" for x in content.classes[spec]["abilities"])]
-        bar = kit(content.classes, content.balance, hero)["abilities"]
-        if unlocked_heals:
-            assert any(a["kind"] == "heal" for a in bar), spec                     # its automatic bar keeps a heal (D-110)
-        assert bar[0]["kind"] == "response", spec
+        bar = kit(content.classes, content.balance, sim.spec_hero(spec, 30))["abilities"]
+        assert [a["link"] for a in bar] == ["H1", "H2", "H3"], spec                 # 0.31: the chain bar is fixed
+        assert any(a["kind"] == "guard" for a in bar), spec                        # the tank's endurance or dodge
 
 
-SAMPLE = {"ataque": ("guerrero_furia", "caballero_muerte_escarcha", "mago_fuego"),
-          "defensa": ("guerrero", "caballero_muerte_sangre", "nigromante_legion"),
-          "curacion": ("druida_restauracion", "sacerdote_sagrado"),
-          "soporte": ("bardo_estratega", "chaman_totems")}
+SAMPLE = {"ataque": ("guerrero_dps", "druida_dps", "mago_dps"),                   # 0.31: the chain classes
+          "defensa": ("guerrero_tanque", "druida_tanque"),
+          "curacion": ("sacerdote_sanador", "chaman_sanador"),
+          "soporte": ("cazador_soporte", "mago_soporte")}
 
 
 @pytest.mark.parametrize("level", [50, 75])

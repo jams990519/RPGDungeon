@@ -19,7 +19,9 @@ Documento de diseño: diseno/04-combate/ronda-y-acciones.md §1-§6 y §10; avis
     diseno/06-contenido/jefes.md §2 regla 4 y §5 (fases de jefe, D-82)
 Módulo: M5 Combate (y las fases de jefe de M6)
 Depende de: engine.core (Rng, Texts), engine.hero.hero_stats, contenido (clases, enemigos, objetos, balance)
-Lo usan: engine/service/game.py; engine/combat/auto.py (peleas automáticas, D-114) y tools/sim.py juegan con resolve_round
+Lo usan: engine/service/game.py; engine/combat/auto.py (peleas automáticas, D-114) y tools/sim.py juegan con resolve_round.
+    0.31 (D-225): las clases con system: chain (las 6 nuevas) se juegan en engine/combat/chain_round.py: validate_choice y
+    resolve_round las mandan allá; este archivo sigue igual para las clases retiradas y las peleas guardadas de antes
 Eventos que publica: ninguno (devuelve el resultado; el servicio publica)
 Eventos que escucha: ninguno
 Datos de los que es dueño: el estado de combate (dict) que el servicio guarda en "combat"
@@ -100,6 +102,8 @@ def make_combat(enemy_id: str, enemy_def: dict[str, Any], level: int, class_def:
             "cooldowns": {},
             "combo": 0,
             "toxicity": 0,
+            # 0.31: a chain class starts with an empty chain (its resource_start is balance.yaml chain.energy.start, 5)
+            **({"chain": {"step": 0, "marks": 0, "last": None, "seq": []}, "combos": []} if class_def.get("system") == "chain" else {}),
         },
         "log": [],
         "outcome": None,
@@ -184,6 +188,9 @@ def validate_choice(state: dict[str, Any], hero: Hero, class_def: dict[str, Any]
     La llaman: el servicio antes de resolver la ronda.
     Si cambia, afecta: qué botones funcionan en cada momento.
     """
+    if class_def.get("system") == "chain":            # 0.31: the six chain classes (engine/combat/chain_round.py)
+        from engine.combat.chain_round import validate_chain
+        return validate_chain(state, hero, class_def, choice, ctx)
     t = ctx.texts
     hs = state["hero"]
     stamina_max = ctx.balance["combat"]["stamina_max"]
@@ -241,6 +248,9 @@ def resolve_round(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
     La llaman: el servicio, después de validate_choice.
     Si cambia, afecta: todo el combate.
     """
+    if class_def.get("system") == "chain":            # 0.31: the six chain classes (engine/combat/chain_round.py)
+        from engine.combat.chain_round import resolve_chain
+        return resolve_chain(state, hero, class_def, choice, ctx)
     t = ctx.texts
     bal = ctx.balance
     rng = Rng(state["seed"], state["draws"])

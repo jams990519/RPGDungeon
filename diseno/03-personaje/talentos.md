@@ -2,6 +2,9 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases](clases-y-especializaciones.md), [Balance](balance.md) · **Estado:** propuesta (la capa simple de §5 ya está en el juego: D-68, D-79)
 
+> ⚠️ **8-oct-2026 (D-225, D-230):** en las clases nuevas los puntos de nivel van solos al rol activo, los 4 botones están siempre abiertos y el segundo rol se aprende al nivel 5. Las 8 habilidades por especialización y su desbloqueo por puntos quedan para las clases retiradas. Ver [Combate en cadena](../04-combate/combate-en-cadena.md).
+
+
 **De dónde sale.** WoW desde *Dragonflight* (2022): un árbol de clase más un árbol de especialización. Desde *The War Within* (2024) se suman los **talentos de héroe**: cada spec elige 1 de 2 árboles, y cada árbol lo comparten dos specs de la clase. Desde *Midnight* (2026), un **talento Ápice** de remate de cuatro rangos.
 
 ---

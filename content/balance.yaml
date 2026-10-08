@@ -15,6 +15,41 @@ combat:
   flee_max: 0.9
   toxicity_max: 100
 
+chain:                       # [ES] 0.31 (D-225 a D-232): el combate en cadena de las 6 clases nuevas (diseno/04-combate/combate-en-cadena.md). Firme: la cadena, los costos y los combos; borrador: los porcentajes
+  energy:
+    start: 5                 # [ES] la pelea arranca con 5 de energía
+    per_turn: 2              # [ES] +2 al empezar cada turno, antes de pagar (un gastador de 6 se paga con 4 en la mano). Sin tope de energía (D-226)
+    basic_gain: 1            # [ES] el Básico cuesta 0 y da +1 extra
+    defend_cost: 1           # [ES] 🛡️ Defenderse es la acción del turno y cuesta 1 de energía
+    item_cost: 1             # [ES] tomar una poción (o una venda) también es la acción del turno y cuesta 1
+  costs: {B: 0, H1: 2, H2: 3, H3: 6}   # [ES] Básico, Constructor, Preparador y Gastador (firme)
+  role_of: {defensa: tanque, curacion: sanador, ataque: dps, soporte: soporte}   # [ES] rol de la especialización → rol de la cadena
+  orders:                    # [ES] el orden de cada rol, gastador incluido (firme; pendiente 6: el del tanque, defensa antes que agro, está en revisión: se cambia aquí)
+    tanque: [B, H2, H1, H3]
+    sanador: [B, H1, H2, H3]
+    dps: [H1, H2, H3]        # [ES] el Básico va libre (nunca corta ninguna cadena)
+    soporte: [H2, H1, H3]
+  mark_bonus:                # [ES] premio del gastador por marcas (borrador; pendiente 1 del parche): 2 marcas +10 %, 3-4 +25 %, 5 o más +50 %
+    - {marks: 2, bonus: 0.10}
+    - {marks: 3, bonus: 0.25}
+    - {marks: 5, bonus: 0.50}
+  no_combo_mult: 0.85        # [ES] gastador sin combo (sin el orden del rol o con menos de 3 botones distintos): pega al 85 % (el parche dice 80-90 %)
+  combo_min_distinct: 3      # [ES] un combo válido exige al menos 3 botones distintos (contando el gastador)
+  variety:                   # [ES] bono por variedad: combos distintos cobrados (D-229). Pendiente 5 del parche: si dura la pelea ("fight") o para siempre ("permanent")
+    scope: fight
+    steps:
+      - {combos: 2, bonus: 0.02}
+      - {combos: 3, bonus: 0.03}
+  target_cap: 5              # [ES] ninguna habilidad en área o a varios jugadores toca a más de 5 a la vez, en ninguna clase (firme)
+  guard_cap: 0.75            # [ES] el aguante o la esquiva del tanque nunca frena más del 75 % de un golpe (aunque el premio lo suba)
+  extend_cap: 3              # [ES] Disparo arcano y Lentitud alargan un turno la marca o la fragilidad activa, pero nunca a más de 3 turnos por delante
+  second_role_level: 5       # [ES] D-230: al nivel 5 aprendes tu segundo rol (la otra especialización de tu clase), gratis
+  keep_points: false         # [ES] pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
+  hybrid:                    # [ES] D-231: al nivel 10, modo híbrido (mezclar habilidades de tus dos roles). Pendiente 3 del parche: cuántas y el límite de botones
+    level: 10
+    max_mixed: null          # [ES] null = todavía no decidido: el modo híbrido no se ofrece hasta que el dueño diga cuántas habilidades se mezclan
+  no_threat: []              # [ES] pendiente 2 del parche: ids de habilidades de DPS que no generan agro (el agro solo cuenta en grupo, que todavía no existe)
+
 travel:
   first_minutes: 1           # [ES] D-197 (confirmada): 1 minuto real por cuadro (10 cuadros = 10 minutos). Antes (D-78) 2 minutos las 2 primeras zonas
   steps_per_minute: 0        # [ES] D-197: 0 = cada zona tarda lo mismo, lejos o cerca. Con un número N, cada N zonas más lejos del Claro o de tu campamento sumaría 1 minuto (D-78 usaba 2: 2, 2, 3, 3, 4...)
@@ -343,8 +378,8 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
     guerrero: placas
     paladin: placas
     caballero_muerte: placas
-    cazador: malla
-    chaman: malla
+    cazador: cuero          # [ES] 0.31 y D-208: ya no hay malla; el Cazador y el Chamán usan cuero (sus piezas de malla siguen siendo suyas, rinden la mitad)
+    chaman: cuero
     evocador: malla
     picaro: cuero
     druida: cuero

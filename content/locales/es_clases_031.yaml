@@ -1,0 +1,203 @@
+# Textos del parche 0.31 de clases, combate y balance (D-225 a D-232): las 6 clases, sus 12 roles, sus 48 botones y el
+# combate en cadena.
+# [ES] Para qué sirve: lo que lee el jugador de las clases nuevas y de la cadena. Los nombres de las habilidades son borrador
+# del parche (se pueden ajustar); los IDs nunca cambian (content/classes.yaml).
+# Con qué se conecta: content/classes.yaml (system: chain), engine/combat/chain_round.py (claves chain.*),
+# engine/service/game.py (_combat_view, _spec_view, _talents_view, creación del héroe) y content/locales/es.yaml (combat.*).
+# Se carga después de es_clases.yaml: lo que repite (class_group) manda este archivo.
+# Si cambias esto: los marcadores {n}, {pct}, {rounds}... tienen que seguir iguales; tests/test_cadena.py y
+# tests/test_clases_031.py revisan que no falte ningún texto.
+
+class_group:
+  guerrero: {name: "🏰 Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
+  druida: {name: "🌳 Druida", desc: "cuero · Tanque de esquiva (oso) o DPS de sangrado (felino)"}
+  sacerdote: {name: "📿 Sacerdote", desc: "tela · Sanador de uno (el tanque) o DPS de sombra"}
+  chaman: {name: "🌩️ Chamán", desc: "cuero · Sanador de grupo o DPS de rayo"}
+  cazador: {name: "🏹 Cazador", desc: "cuero · Soporte que potencia aliados o DPS a distancia"}
+  mago: {name: "🔮 Mago", desc: "tela · Soporte que debilita al enemigo o DPS de fuego"}
+
+chain_role:
+  tanque: "🛡️ Tanque"
+  sanador: "✚ Sanador"
+  dps: "⚔️ DPS"
+  soporte: "✦ Soporte"
+
+class:
+  guerrero_tanque:
+    name: "🛡️ Guerrero · Tanque"
+    role: "aguante de placa: recibe el golpe, protege y fija al enemigo"
+    attack_name: "Golpe de escudo"
+  druida_tanque:
+    name: "🐻 Druida · Tanque"
+    role: "esquiva en forma de oso: evita el golpe y devuelve contragolpes"
+    attack_name: "Zarpazo"
+  sacerdote_sanador:
+    name: "✨ Sacerdote · Sanador"
+    role: "curación concentrada en uno: sostiene al tanque"
+    attack_name: "Castigo"
+  chaman_sanador:
+    name: "🌊 Chamán · Sanador"
+    role: "curación repartida: levanta al resto del equipo"
+    attack_name: "Choque de tierra"
+  guerrero_dps:
+    name: "⚔️ Guerrero · DPS"
+    role: "fuerza: rompe la armadura y ejecuta"
+    attack_name: "Tajo"
+  druida_dps:
+    name: "🐈 Druida · DPS"
+    role: "forma felina: sangrado que se cobra de un mordisco"
+    attack_name: "Arañazo"
+  sacerdote_dps:
+    name: "🌑 Sacerdote · DPS"
+    role: "sombra: un dolor que crece y estalla"
+    attack_name: "Toque mental"
+  chaman_dps:
+    name: "⚡ Chamán · DPS"
+    role: "rayo: carga al enemigo y salta en cadena"
+    attack_name: "Descarga"
+  cazador_soporte:
+    name: "🦅 Cazador · Soporte"
+    role: "sube a los aliados: marca de manada y llamada salvaje"
+    attack_name: "Disparo automático"
+  mago_soporte:
+    name: "🔮 Mago · Soporte"
+    role: "baja al jefe: fragilidad, lentitud y ruptura"
+    attack_name: "Proyectil arcano"
+  cazador_dps:
+    name: "🏹 Cazador · DPS"
+    role: "agilidad a distancia: marca y disparo mortal"
+    attack_name: "Disparo"
+  mago_dps:
+    name: "🔥 Mago · DPS"
+    role: "fuego: prende y detona"
+    attack_name: "Chispa"
+
+resource:
+  energia_combate: "Energía"
+
+ability:
+  # Guerrero · Tanque (B → H2 → H1 → H3)
+  guerrero_golpe_de_escudo: {name: "Golpe de escudo", desc: "daño bajo, toma el 50 % del agro y da +1 de energía"}
+  guerrero_reves: {name: "Revés", desc: "daño moderado con amenaza alta: carga el agro hacia el 100 %"}
+  guerrero_interponerse: {name: "Interponerse", desc: "recibes tú los golpes del aliado que elijas y subes tu defensa (este turno y el siguiente)"}
+  guerrero_grito_de_dominio: {name: "Grito de dominio", desc: "fija el 100 % del agro; la defensa extra escala con las marcas"}
+  # Druida · Tanque, forma de oso (B → H2 → H1 → H3)
+  druida_zarpazo: {name: "Zarpazo", desc: "daño bajo, toma el 50 % del agro y da +1 de energía"}
+  druida_vapulear: {name: "Vapulear", desc: "daño moderado y amenaza; cada esquiva lograda mientras dura suma una marca extra"}
+  druida_piel_de_corteza: {name: "Piel de corteza", desc: "sube tu esquiva por 2 turnos (la misma protección que el aguante del Guerrero)"}
+  druida_rugido_salvaje: {name: "Rugido salvaje", desc: "fija el 100 % del agro, sube tu esquiva y devuelve un contragolpe por cada esquiva acumulada"}
+  # Sacerdote · Sanador (B → H1 → H2 → H3)
+  sacerdote_castigo: {name: "Castigo", desc: "golpe sagrado sencillo, +1 de energía; arranca la cadena"}
+  sacerdote_renovar: {name: "Renovar", desc: "curación chica a un aliado y un poco más el turno siguiente"}
+  sacerdote_escudo_sagrado: {name: "Escudo sagrado", desc: "escudo que absorbe daño en el aliado elegido"}
+  sacerdote_sanacion_superior: {name: "Sanación superior", desc: "toda la curación en un solo jugador (90 a uno, contra el 30+30+30 del Chamán)"}
+  # Chamán · Sanador (B → H1 → H2 → H3)
+  chaman_choque_de_tierra: {name: "Choque de tierra", desc: "golpe sencillo, +1 de energía; no es para hacer daño sino para arrancar el combo"}
+  chaman_sanacion_en_cadena: {name: "Sanación en cadena", desc: "cura a 3 objetivos parejo (uno elegido y dos al azar): 30+30+30; solo, las 3 caen en ti"}
+  chaman_golpe_de_tormenta: {name: "Golpe de tormenta", desc: "daño medio que deja una oleada: tu próxima curación grande cura más"}
+  chaman_marea_de_sanacion: {name: "Marea de sanación", desc: "curación masiva hasta 5 jugadores; escala con Restauración y con cuántos haya, no con la cadena"}
+  # Guerrero · DPS (H1 → H2 → H3)
+  guerrero_tajo: {name: "Tajo", desc: "golpe sencillo, +1 de energía"}
+  guerrero_golpe_heroico: {name: "Golpe heroico", desc: "golpe fuerte de relleno que se repite"}
+  guerrero_desgarrar_armadura: {name: "Desgarrar armadura", desc: "baja la defensa del enemigo por 3 turnos"}
+  guerrero_ejecutar: {name: "Ejecutar", desc: "gran daño; pega más si el enemigo está bajo el 35 % de vida"}
+  # Druida · DPS, forma felina (H1 → H2 → H3)
+  druida_aranazo: {name: "Arañazo", desc: "golpe sencillo, +1 de energía"}
+  druida_triturar: {name: "Triturar", desc: "golpe de relleno que se repite"}
+  druida_desgarrar: {name: "Desgarrar", desc: "aplica un sangrado que pega cada turno"}
+  druida_mordisco_feroz: {name: "Mordisco feroz", desc: "gran daño; consume el sangrado activo y lo cobra de una vez"}
+  # Sacerdote · DPS de sombra (H1 → H2 → H3)
+  sacerdote_toque_mental: {name: "Toque mental", desc: "golpe de sombra sencillo, +1 de energía"}
+  sacerdote_tortura_mental: {name: "Tortura mental", desc: "golpe de relleno que se repite"}
+  sacerdote_dolor_sombrio: {name: "Dolor sombrío", desc: "daño de sombra cada turno, y tu siguiente golpe de sombra pega más"}
+  sacerdote_explosion_mental: {name: "Explosión mental", desc: "gran daño; pega más por cada turno que lleve activo el Dolor sombrío"}
+  # Chamán · DPS de rayo (H1 → H2 → H3)
+  chaman_descarga: {name: "Descarga", desc: "golpe eléctrico sencillo, +1 de energía"}
+  chaman_rayo: {name: "Rayo", desc: "golpe de relleno que se repite"}
+  chaman_choque_de_llamas: {name: "Choque de llamas", desc: "deja al enemigo cargado: el siguiente golpe eléctrico pega más"}
+  chaman_cadena_de_relampagos: {name: "Cadena de relámpagos", desc: "gran daño que salta a varios enemigos (máximo 5)"}
+  # Cazador · Soporte (H2 → H1 → H3)
+  cazador_disparo_automatico: {name: "Disparo automático", desc: "disparo sencillo, +1 de energía"}
+  cazador_marca_de_manada: {name: "Marca de manada", desc: "eliges un aliado y sus golpes pegan más por 2 turnos; va primero en la cadena"}
+  cazador_disparo_arcano: {name: "Disparo arcano", desc: "disparo de relleno; cada uso alarga un turno la Marca de manada activa"}
+  cazador_llamada_salvaje: {name: "Llamada salvaje", desc: "tus bestias atacan y todo el grupo (máximo 5) pega más; la fuerza y los turnos escalan con las marcas"}
+  # Mago · Soporte (H2 → H1 → H3)
+  mago_proyectil_arcano: {name: "Proyectil arcano", desc: "golpe sencillo, +1 de energía"}
+  mago_fragilidad_arcana: {name: "Fragilidad arcana", desc: "el enemigo recibe más daño de todo el grupo por 2 turnos; va primero en la cadena"}
+  mago_lentitud: {name: "Lentitud", desc: "golpe de relleno que reduce el daño del enemigo y alarga la Fragilidad activa"}
+  mago_ruptura_arcana: {name: "Ruptura arcana", desc: "estallido que baja la defensa y el daño del jefe e interrumpe su ataque cargado; escala con las marcas"}
+  # Cazador · DPS (H1 → H2 → H3)
+  cazador_disparo: {name: "Disparo", desc: "disparo sencillo, +1 de energía"}
+  cazador_disparo_firme: {name: "Disparo firme", desc: "disparo de relleno que se repite"}
+  cazador_marca_del_cazador: {name: "Marca del cazador", desc: "el enemigo marcado recibe más daño de tus disparos"}
+  cazador_disparo_mortal: {name: "Disparo mortal", desc: "gran daño; pega más si el enemigo tiene tu marca"}
+  # Mago · DPS de fuego (H1 → H2 → H3)
+  mago_chispa: {name: "Chispa", desc: "golpe de fuego sencillo, +1 de energía"}
+  mago_bola_de_fuego: {name: "Bola de fuego", desc: "golpe de relleno que se repite"}
+  mago_ignio: {name: "Ignio", desc: "prende al enemigo, que quema cada turno"}
+  mago_piroexplosion: {name: "Piroexplosión", desc: "gran daño; detona el Ignio activo y lo cobra de una vez"}
+
+chain:
+  link:                                           # [ES] el nombre del puesto de cada botón en la cadena
+    B: "Básico"
+    H1: "Constructor"
+    H2: "Preparador"
+    H3: "Gastador"
+  energy_line: "🔷 Energía: {n} (+{per} al actuar) · Marcas: {marks}{bonus}"
+  bonus_tag: " → gastador +{pct} %"
+  order_line: "🔗 Tu cadena: {order}"
+  next_line: "👉 Sigue: {name}"
+  next_spender: "👉 Combo listo: suelta {name} ({marks} marcas, +{pct} %)"
+  no_combo_hint: "👉 Sin combo, {name} pega al {pct} %"
+  variety_line: "🎨 Variedad: +{pct} % ({n} combos distintos en esta pelea)"
+  button: "{icon} {name} ({cost})"
+  button_basic: "{icon} {name} (+{gain})"
+  defend_button: "🛡️ Defenderse ({cost})"
+  defend: "🛡️ Te defiendes: este turno recibes un {pct} % menos."
+  broken: "⛓️‍💥 Rompiste el orden: se cortó la cadena y perdiste {n} {n|marca|marcas}."
+  cashed: "💥 Cobras {n} {n|marca|marcas}: +{pct} %."
+  no_combo: "⚠️ Gastador sin combo: pega al {pct} %."
+  dot_applied: "🩸 {action}: pega cada turno por {rounds} {rounds|turno|turnos}."
+  consume_dot: "💢 Cobra de una vez lo que quedaba: {dmg} de daño."
+  counter: "🐾 Contragolpe por {n} {n|esquiva|esquivas}: {dmg} de daño."
+  guard_aguante: "🛡️ {action}: aguantas un {pct} % de cada golpe por {rounds} {rounds|turno|turnos}."
+  guard_esquiva: "🍃 {action}: esquivas un {pct} % de cada golpe por {rounds} {rounds|turno|turnos}."
+  endured: "🛡️ Aguantas un {pct} % del golpe."
+  evaded: "🍃 Esquivas un {pct} % del golpe."
+  dodge_mark: "🔗 Vapulear: la esquiva suma una marca."
+  shield_applied: "🫧 {action}: escudo de {amount} por {rounds} {rounds|turno|turnos}."
+  heal_split: "💚 {action}: {n} sanaciones parejas; solo, todas caen en ti: +{amount} de vida."
+  heal_group: "🌊 {action}: cura a todo el grupo (hasta {cap}); a ti, +{amount} de vida."
+  heal_boost: "🌊 Queda una oleada: tu próxima curación grande cura un {pct} % más."
+  heal_boost_used: "🌊 La oleada refuerza esta curación."
+  empower_applied: "💪 {action}: pegas un {pct} % más por {rounds} {rounds|turno|turnos}."
+  expose_applied: "🎯 {action}: el enemigo recibe un {pct} % más de daño por {rounds} {rounds|turno|turnos}."
+  weaken_applied: "🔻 {action}: el enemigo pega un {pct} % menos por {rounds} {rounds|turno|turnos}."
+  debuff_applied: "🌀 {action}: el enemigo recibe un {expose} % más de daño y pega un {weaken} % menos por {rounds} {rounds|turno|turnos}."
+  charged: "⚡ El enemigo queda cargado: tu próximo golpe eléctrico pega un {pct} % más."
+  charged_used: "⚡ ¡Descarga sobre la carga! +{pct} %."
+  next_bonus: "🌑 Tu próximo golpe de sombra pega un {pct} % más."
+  extended: "⏳ Se alarga: quedan {rounds} {rounds|turno|turnos}."
+  charge_broken: "✋ Rompes la carga de {enemy}: su próximo golpe ya no será feroz."
+  hp_line: "❤️ {hp}/{max_hp}"
+  stats_energy: "🔷 Energía de combate: arranca en {start} y sube {per} por turno, sin tope — la gastan tus botones (Constructor 2, Preparador 3, Gastador 6); el Básico da +1; defenderte o una poción cuestan 1."
+  new_point: "⭐ +1 punto de nivel: se puso solo en tu rol."
+  second_role_learned: "🔄 ¡Aprendiste tu segundo rol! Cámbialo cuando quieras en 👤 Héroe → 🌟 Talentos."
+  bag_flee_button: "🎒 Mochila / 🏃 Huir"
+  belt_help: "⏳ Usar algo de la mochila es la acción de tu turno y cuesta 1 de energía (va antes que los golpes). Aquí también puedes huir."
+  create_its_roles: "Sus 2 roles:"
+  create_roles: "Eliges tu primer rol ahora. El otro lo aprendes al nivel {n}, gratis, y desde ahí cambias cuando quieras."
+  err:
+    energy: "🔷 No te alcanza la energía: cuesta {n} y tienes {have} este turno."
+  spec_buttons: "🎛️ Tus 4 botones:"
+  spec_button_line: "• {link} · {label}: {desc}"
+  spec_order: "🔗 Orden de tu rol ({role}): {order}"
+  spec_rules: "Cada botón en orden suma una marca; el gastador las cobra (+10 % con 2, +25 % con 3-4, +50 % con 5 o más). Romper el orden corta la cadena. El Básico nunca la corta."
+  second_role_open: "🔄 Tu segundo rol: lo puedes jugar cuando quieras (gratis)."
+  second_role_locked: "🔒 Tu segundo rol se aprende al nivel {n}."
+  switch_button: "🔄 Jugar como {role}"
+  switched: "🔄 Ahora juegas como {name}. Tus puntos se repartieron de nuevo."
+  points_auto: "⭐ Puntos de nivel: {n}, todos en tu rol activo (se ponen solos)."
+  active_role: "⭐ Rol activo: {name}"
+  hybrid_soon: "🧪 Modo híbrido (nivel {n}): llega cuando se decida cuántas habilidades se mezclan."
+  bar_fixed: "Tus 4 botones son fijos: ⚔️ Básico, Constructor, Preparador y Gastador. El modo híbrido (nivel {n}) los abrirá."
