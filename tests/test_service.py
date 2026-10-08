@@ -112,7 +112,7 @@ def test_hero_remembers_places_and_routes_back(service, clock):
     hero = service.store.get("hero", "test:1")
     assert "1:0" in hero["known"] and "0:0" in hero["known"]
     places = service.act("test:1", "places")
-    assert any(a.id == "goto:0:0" for a in places.actions)
+    assert any(a.id == "goask:0:0" for a in places.actions)                # D-223: asks first, then ✅ Sí, ir
     view = service.act("test:1", "goto:0:0")
     if view.kind == "activity":
         clock.advance(3 * 3600)

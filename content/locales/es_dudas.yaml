@@ -89,10 +89,10 @@ faq:
     a: "🏹 Cazar (en 🧭 Explorar) busca una presa de la zona: cuesta {hunt_energy} ⚡ cada una y solo da la pelea y su botín (carne, piel, monedas, a veces equipo). En el Claro no hay presas. Con un campamento puedes llamar a una 🏹 Partida de caza con tus compañeros."
   d12:
     q: "🎨 ¿Qué dicen los colores del mapa?"
-    a: "En 🗺️ Mapa las zonas que no investigaste son puntos grises: ▫️ sin investigar, ◽ con rastros y ◻️ reconocida (25 %). Cuando investigas una zona a la mitad (50 %) aparece el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…) y ese terreno se suma a la leyenda de arriba. Cuenta también lo que exploras alrededor sin moverte. El color no dice qué recursos hay: eso solo se sabe explorando. 🧍 eres tú y el norte está arriba."
+    a: "En 🗺️ Mapa las zonas que no investigaste se ven en blanco ▫️. Cuando investigas una zona a la mitad (50 %) aparece el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…) y ese terreno se suma a la leyenda de arriba. Cuenta también lo que exploras alrededor sin moverte. El 🔥 es el campamento de inicio y se ve siempre. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-223 (0.30.2)
   d13:
-    q: "🗺️ ¿Qué son 👑 👹 🏕️ 🕳️ 🌀 ✨?"
-    a: "En 🗺️ Mapa: 👑 la guarida del Guardián · 👹 un campamento enemigo de hoy · 🏕️ un campamento de jugadores · 🕳️ una cueva con mazmorra (todavía no sabes cuál) · 🌀 una mazmorra profunda · ✨ un nodo de recursos (al llegar ves de qué es) · 🧍 tú."
+    q: "🗺️ ¿Dónde veo las mazmorras?"
+    a: "Ya no salen en el 🗺️ Mapa: ahí solo estás tú 🧍, el 🔥 campamento de inicio y el color de las zonas que investigaste. Las 🕳️ 🌀 mazmorras, los ✨ nodos, los 👹 campamentos enemigos, los 🏕️ campamentos de jugadores y la 👑 guarida se descubren caminando. Los lugares importantes que ya visitaste quedan en 📒 Lugares, para volver de una vez."   # [ES] D-223 (0.30.2)
   d14:
     q: "✨ ¿Qué es un nodo de recursos?"
     a: "Un ✨ nodo es una zona rica en un recurso. Al llegar a su zona sabes de qué es, para siempre. Ahí ese recurso rinde ×{node_yield}, se agota la mitad de rápido y a veces ({node_rare} %) da una 💠 gema en bruto o una 🌸 flor de luna. Lo puede usar cualquiera."

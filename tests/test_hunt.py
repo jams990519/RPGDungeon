@@ -101,13 +101,10 @@ def test_explore_menu_keeps_four_buttons_and_places_moved_to_the_map(service):
     assert ids(menu) == ["explore", "gather", "hunt", "map"]
     assert "🏹 Cazar" in [a.label for a in menu.actions]
     mapv = service.act("test:1", "map")
-    # 📒 Lugares first and ↩️ Volver last; in between, at most a "goto:" to the nearest 🕳️ cave or 👹 camp you see (D-181:
-    # with 2 or 3 entrances per stretch there can be one 2 zones from the Claro)
-    assert ids(mapv)[0] == "places" and ids(mapv)[-1] == "explore_menu" and len(mapv.actions) <= 4
-    assert all(i.startswith(("goto:", "recon")) for i in ids(mapv)[1:-1])
+    assert ids(mapv) == ["places", "explore_menu"]                          # D-223: 📒 Lugares and ↩️ Volver, nothing else
     places = service.act("test:1", "places")
     assert places.kind == "places" and ids(places)[-1] == "map"            # ↩️ Volver goes back to the map
-    assert any(a.id == "goto:0:0" for a in places.actions)
+    assert any(a.id == "goask:0:0" for a in places.actions)                # the Claro: asks before you go (D-223)
     # The console numbers these same buttons: from the explore menu it still reaches the map, and from there Lugares.
     from adapters.cli import play
     assert "map" in [a.id for a in play.options(menu, service)] and "places" in [a.id for a in play.options(mapv, service)]

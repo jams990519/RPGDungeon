@@ -348,48 +348,40 @@ def test_rank_thresholds_are_announced_and_rank_100_gives_the_title(service):
     assert not service.texts.missing
 
 
-def test_the_map_shows_camps_by_explorer_rank(service):
+def test_explorer_rank_decides_which_camps_you_see(service):
+    """D-112 (what the 🧭 Explorador sees) still holds, though D-223 (0.30.2) no longer draws or lists the camps: it shows
+    in the 👹 mark of 📍 Zona's routes and in 🔭 Reconocer."""
     make_hero(service)
     cx, cy = camp_zone(service)
 
-    def map_lines(rank, dx):                     # D-222 (0.30.1): the lists left the 🗺️ Mapa for 📒 Lugares
+    def sees(rank, dx):
         profs = {"explorador": rank_xp(service, rank)} if rank > 1 else {}
         place(service, "test:1", cx + dx, cy, professions=profs)
-        return service.act("test:1", "places").body
+        return any((camp["x"], camp["y"]) == (cx, cy) for camp in service._ecamp_seen(service._load("test:1")))
 
-    mark = f"👹 ({cx}, {cy})"
-    assert any(line.startswith(mark) for line in map_lines(1, 1))                         # next door: everyone sees it
-    assert not any(line.startswith(mark) for line in map_lines(1, 3))                     # 3 zones away: not without rank
-    assert not any(line.startswith(mark) and "⏱️" in line for line in map_lines(1, 1))
-    assert any(line.startswith(mark) and "⏱️" in line for line in map_lines(10, 1))        # rank 10: travel time
-    assert any(line.startswith(mark) for line in map_lines(25, 3))                        # rank 25: 3 zones
-    assert not any(line.startswith(mark) for line in map_lines(25, 5))
-    assert any(line.startswith(mark) for line in map_lines(50, 5))                        # rank 50: the whole map
-    assert not any(line.startswith(mark) and "💪" in line for line in map_lines(50, 5))
-    assert any(line.startswith(mark) and "💪" in line for line in map_lines(75, 5))        # rank 75: its strength
-    assert not any(line.startswith("👹 (") for line in service.act("test:1", "map").body)   # nothing under the grid
-    view = service.act("test:1", "map")                  # D-222: never been there, so no "Moverte a" and no shortcut
-    assert not any(a.id == f"goto:{cx}:{cy}" for a in view.actions)
-    service.act("test:1", f"goto:{cx}:{cy}")
+    assert sees(1, 1) and not sees(1, 3)                                                   # next door: everyone
+    assert sees(25, 3) and not sees(25, 5)                                                 # rank 25: 3 zones
+    assert sees(50, 5)                                                                     # rank 50: the whole map
+    place(service, "test:1", cx + 1, cy, professions={})
+    assert not any(line.startswith("👹 (") for line in service.act("test:1", "map").body)   # nothing drawn or listed
+    assert not any(line.startswith("👹 (") for line in service.act("test:1", "places").body)
+    zone = service.act("test:1", "home").body
+    assert any(line.startswith("⬅️") and "👹" in line for line in zone)                    # the route next door says it
+    service.act("test:1", f"goto:{cx}:{cy}")                                               # D-222: never been there
     assert not service._load("test:1").activity
-    hero = service._load("test:1")
-    place(service, "test:1", hero.x, hero.y, known=hero.known + [f"{cx}:{cy}"])    # once visited, it is offered
-    view = service.act("test:1", "map")
-    assert len(view.actions) <= 4 and any(a.id == f"goto:{cx}:{cy}" and "Moverte" in a.label for a in view.actions)
-    service.act("test:1", f"goto:{cx}:{cy}")
-    assert service._load("test:1").activity["kind"] == "travel"
     assert not service.texts.missing
 
 
 def place_lines(view):
-    """The remembered places listed in 📒 Lugares (D-222: what the map marks comes after, under its own title)."""
-    body = view.body[:view.body.index("🔭 Lo que marca tu mapa:")] if "🔭 Lo que marca tu mapa:" in view.body else view.body
-    return [line for line in body if re.search(r" · a \d+ zonas? · ", line)]
+    """The places listed in 📒 Lugares, each with its /irN code (D-223)."""
+    return [line for line in view.body if re.search(r"/ir\d+$", line)]
 
 
 def test_places_lists_more_from_explorer_rank_10(service):
     make_hero(service)
-    known = ["0:0"] + [f"{x}:0" for x in range(1, 11)]
+    entrances = [f"{x}:{y}" for x in range(-20, 21) for y in range(-20, 21) if service._dng_kind(x, y)][:10]
+    assert len(entrances) == 10
+    known = ["0:0"] + entrances                                       # D-223: only important places count (visited dungeons)
     place(service, "test:1", 0, 0, known=known)
     assert len(place_lines(service.act("test:1", "places"))) == 3
     place(service, "test:1", 0, 0, known=known, professions={"explorador": rank_xp(service, 10)})

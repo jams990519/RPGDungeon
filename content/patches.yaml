@@ -498,3 +498,12 @@ v0_30_1:
     - "📍 La pantalla de Zona ahora va en bloques cortos: dónde estás, lo explorado con un recurso por renglón, lo que hay aquí, las rutas y tu estado. Ya no se ve todo amontonado."
     - "🗺️ El mapa muestra solo el mapa: las coordenadas están en 📍 Zona, y la lista de cuevas, mazmorras, nodos y campamentos enemigos cercanos pasó a 📒 Lugares."
     - "🌀 El botón de la mazmorra ahora dice «Moverte a la mazmorra» con su tiempo, y solo aparece si ya estuviste ahí. A un lugar nuevo se llega caminando; después puedes volver de una vez."
+
+
+v0_30_2:
+  version: "0.30.2"
+  title: "🗺️ Lost Realms 0.30.2: el mapa en blanco y viajes con confirmación"
+  notes:
+    - "🗺️ El mapa se ve en blanco: cada zona aparece con su color cuando la investigas a la mitad. Solo se ven tú y el 🔥 campamento; las mazmorras, los nodos y los campamentos se descubren caminando."
+    - "📒 Lugares muestra los lugares importantes que ya visitaste (el campamento, mazmorras, campamentos de jugadores), cada uno con su código: escribe /ir1, /ir2… o toca el botón."
+    - "🧭 Antes de viajar te pregunta si quieres ir, con cuánto tardas. Confirmas y tu héroe va solo."

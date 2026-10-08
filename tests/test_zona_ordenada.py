@@ -3,10 +3,11 @@
 [ES] Pruebas de la pantalla ordenada. 📍 Zona va en bloques separados por renglones vacíos: el lugar (nombre, coordenadas,
 peligro), lo explorado con un recurso por renglón, lo que hay aquí, las 🧭 Rutas (con el emoji del terreno, sin su nombre),
 tu estado y una sola línea final de ❓ Dudas. 🧭 Explorar también lista los recursos uno por renglón. El 🗺️ Mapa trae la
-leyenda, los terrenos y la cuadrícula, nada más: las listas de abajo se mudaron a 📒 Lugares. Viajar directo ("goto:")
+leyenda, los terrenos y la cuadrícula, nada más (D-223: tampoco las listas en 📒 Lugares). Viajar directo ("goto:")
 solo va a lugares que el héroe ya visitó. Ningún texto falta.
 Archivo: tests/test_zona_ordenada.py · Módulo: M8 Mundo y mapa · Prueba: engine/service/game.py (_zone_view,
-_resources_lines, _explore_menu, _map_view, _map_marks_lines, _places_view y "goto:").
+_resources_lines, _explore_menu, _map_view y "goto:"). D-223 (0.30.2): 📒 Lugares ya no lleva las listas del mapa (ver
+tests/test_lugares.py).
 """
 
 from conftest import make_hero
@@ -61,7 +62,7 @@ def test_a_zone_still_being_explored_says_what_is_left(service):
     body = service.act("test:1", "home").body
     resources = next(part for part in blocks(body) if part[0].startswith("🔎 Explorada al 30 %"))
     assert service.texts.t("explore.resources_more") in resources                         # less than 100 %: more to find
-    assert any(line.startswith("◻️ Aquí") for line in body)                                 # the grey stage of your square
+    assert any("sigue en blanco" in line and "30 %" in line for line in body)              # how far from its colour (D-223)
     assert not service.texts.missing
 
 
@@ -74,17 +75,14 @@ def test_the_explore_menu_lists_resources_one_per_line(service):
     assert not service.texts.missing
 
 
-def test_the_map_has_nothing_under_the_grid_and_places_keeps_the_lists(service):
+def test_the_map_has_nothing_under_the_grid(service):
     make_hero(service)
     place(service, 0, 5, known=[f"0:{i}" for i in range(1, 6)])
     radius = service.content.balance["map_view"]["radius"]
     view = service.act("test:1", "map")
     assert len(view.body) == 2 + 2 * radius + 1                                   # legend, terrains and the grid only
     assert not any(line.startswith(("Coordenadas", "🕳️ (", "✨ (", "👹 (", "🔭")) for line in view.body)
-    marks = service._map_marks_lines(service._load("test:1"))
-    places = service.act("test:1", "places").body
-    if marks:                                                                     # what the map marks, under its title
-        assert service.texts.t("places.marks_title") in places and all(line in places for line in marks)
+    assert not any(line.startswith(("🕳️ (", "✨ (", "👹 (")) for line in service.act("test:1", "places").body)   # D-223
     assert not service.texts.missing
 
 

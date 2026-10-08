@@ -65,17 +65,16 @@ def test_lair_screen_shows_the_guardian_and_the_button(service):
 def test_map_and_places_show_the_lair_once_discovered(service):
     make_hero(service)
     cfg = _cfg(service)
-    before = "\n".join(service.act("test:1", "places").body)     # D-222 (0.30.1): the lists live in 📒 Lugares now
-    assert "Guarida del Guardián:" not in before
+    before = "\n".join(service.act("test:1", "places").body)     # D-223 (0.30.2): 📒 Lugares lists the important places
+    assert "👑" not in before
     _to_lair(service)
     hero = service._load("test:1")
     hero.x, hero.y = 0, 0
     service._save(hero)
-    after = "\n".join(service.act("test:1", "places").body)
-    assert f"({cfg['x']}, {cfg['y']})" in after
-    assert f"({cfg['x']}, {cfg['y']})" not in "\n".join(service.act("test:1", "map").body)
+    assert "👑" not in "\n".join(service.act("test:1", "map").body)        # the map draws nothing but you and the 🔥
     places = service.act("test:1", "places")
-    assert any(a.id == f"goto:{cfg['x']}:{cfg['y']}" for a in places.actions)
+    assert any(a.id == f"goask:{cfg['x']}:{cfg['y']}" for a in places.actions)   # asks first (D-223)
+    assert service.act("test:1", f"goask:{cfg['x']}:{cfg['y']}").actions[0].id == f"goto:{cfg['x']}:{cfg['y']}"
     assert "👑" in "\n".join(places.body)
 
 

@@ -294,9 +294,9 @@ Si cambias esto, revisa:
     - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
       engine/world/dungeons.py; textos dungeon.* en content/locales/es_mazmorras.yaml; tests/test_mazmorras.py. Tocan
       _settle (sin vida que vuelva mientras hay bajada abierta: _dng_paused; al final, _dng_settle cierra la bajada que
-      quedó atrás), _arrive (aviso al llegar), _idle_action ("dungeon", "dgo", "dout"; "goto:" acepta una entrada del
-      mapa), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar), _map_view
-      (🕳️ cueva y 🌀, líneas y "Ir a la mazmorra"), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
+      quedó atrás), _arrive (aviso al llegar), _idle_action ("dungeon", "dgo", "dout"; "goto:" acepta una entrada ya
+      visitada), _zone_view (línea de la mazmorra), _explore_menu (🕳️ Entrar / 🌀 Descender en lugar de 🏹 Cazar),
+      _important_places (las que visitaste, en 📒 Lugares; D-223: el 🗺️ Mapa ya no las dibuja), _batch_fight (nunca pelea sola una mazmorra), _combat_view (jefe o piso) y
       _end_combat (_dng_fight_done y los botones de _dng_again)
     - 🌍 Recursos de cada terreno y ✨ nodos de recursos (D-180, D-181, D-183, D-184): content/biomes.yaml (own, node_rare),
       balance.yaml resources.terrain, exploration.reveal_at y nodes; engine/world/resources.py (terrain_resources) y
@@ -305,8 +305,9 @@ Si cambias esto, revisa:
       Sección "resource nodes" (_node_main, _node_excluded, _node_discover, _node_seen, _node_icon, _node_map_lines,
       _node_zone_lines, _node_batch_lines, _node_grow_mark, _node_rare). Tocan _zone_resources (+ los del terreno),
       _known_resources (un umbral por recurso), _gather_step (×2, se agota la mitad, el raro; activity["node"]),
-      _batch_summary (línea ✨), _explore_step y _arrive (descubrir donde estás), _zone_view (aviso y línea ✨), _map_view
-      (✨ / emoji y 2 líneas, sin botón) y _grow_view (marca ✨ en las zonas con nodo descubierto)
+      _batch_summary (línea ✨), _explore_step y _arrive (descubrir donde estás), _zone_view (aviso y línea ✨) y _grow_view
+      (marca ✨ en las zonas con nodo descubierto). D-223 (0.30.2): el 🗺️ Mapa no dibuja nodos; _node_seen y _node_map_lines
+      quedan sin pantalla hasta que el dueño responda E-207
     - 🎨 Terrenos nuevos (0.28, D-185, D-188): solo datos en content/biomes.yaml (terrain con weight, climate y tier; color,
       emoji, danger, water, gather, own, node_rare), content/enemies.yaml ("biomes") y los nombres biome.* de es.yaml. Los lee
       _terrain_cfg (la tanda "tier" pasa a mapgen._piece_terrain: un terreno nuevo solo cambia las piezas que pasan a ser suyas)
@@ -332,8 +333,9 @@ Si cambias esto, revisa:
       Sección "reconnaissance and stealth" (_recon_view, _recon, _recon_targets, _recon_range, _stealth_chance, _sneaks_past).
       Tocan COMMANDS (/reconocer), _idle_action ("recon", "rcn:"; antes del freno de ocupado: es instantáneo), _arrive y
       _explore_step (el sigilo), _batch_summary (línea 🥷), _options_view (línea 🥷), _explore_menu y _ecamp_menu (línea 🔭),
-      _map_view (línea y botón 🔭 si cabe), _ecamp_map_lines (fuerza de lo reconocido hoy), _dng_shown/_dng_seen (🕳️ / 🌀 de
-      lo reconocido), _dng_map_lines (familia de hoy), _zone_view (marca en la ruta), _ecamp_intel_lines (chest=False),
+      _recon_view (✅ y lo que hay hoy en cada lugar reconocido), _zone_view (marca en la ruta). D-223 (0.30.2): el 🗺️ Mapa
+      ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla hasta
+      que el dueño responda E-207, _ecamp_intel_lines (chest=False),
       _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
     - 🧭 Camino guiado (D-190, D-193): content/guide.yaml (pasos y avisos), content/locales/es_guia.yaml, balance.yaml guide;
       engine/service/guide.py (GuideMixin); tests/test_camino_guiado.py (mapa de impacto C-29). El gancho _guide_event se llama
@@ -451,6 +453,7 @@ COOK_PROFESSION = "cocina"
 # D-192: professions that need your own camp to rise (🏗️ Construcción: giving to its works); the 🧑‍🏫 Entrenador says so.
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
+PLACE_CODE_RE = re.compile(r"^/ir_?(\d{1,2})(@\w+)?$")      # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares
 
 
 class GameService(StoryMixin, GuideMixin):
@@ -534,7 +537,11 @@ class GameService(StoryMixin, GuideMixin):
                 return self.view(account_id)
             self._mark_seen(hero)
             notices = self._settle(hero)
-            typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
+            code = PLACE_CODE_RE.match(text.strip().lower())
+            if code:                                     # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
+                typed = self._place_code(hero, int(code.group(1)))
+            else:
+                typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
             if typed is None:
                 word = text.split()[0].split("@")[0].lower() if text.split() else ""
@@ -1447,6 +1454,12 @@ class GameService(StoryMixin, GuideMixin):
             return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
+        if action_id.startswith("goask:"):              # D-223: 📒 Lugares asks before travelling
+            try:
+                gx, gy = (int(v) for v in action_id[6:].split(":"))
+            except ValueError:
+                return self._places_view(hero)
+            return self._place_confirm_view(hero, gx, gy)
         if action_id == "dungeon":                      # D-170: the dungeon screen of this zone (🕳️ Entrar / 🌀 Descender)
             return self._dng_view(hero)
         if action_id == "recon":                        # D-172: 🔭 Reconocer (/reconocer); a menu, also while busy
@@ -1881,7 +1894,11 @@ class GameService(StoryMixin, GuideMixin):
         cfg = self._fog_cfg()
         if pct >= int(cfg["color_at"]):
             return None
-        return [stage for stage in cfg["stages"] if pct >= int(stage["at"])][-1]
+        return [stage for stage in self._fog_stages() if pct >= int(stage["at"])][-1]
+
+    def _fog_stages(self) -> list[dict[str, Any]]:
+        """The grey stages still in use (D-223: ◽ and ◻️ are retired; the map is blank until its colour shows)."""
+        return [stage for stage in self._fog_cfg()["stages"] if not stage.get("retired")]
 
     def _fog_cell(self, hero: Hero, x: int, y: int) -> str:
         """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour."""
@@ -1893,6 +1910,8 @@ class GameService(StoryMixin, GuideMixin):
 
     def _terrain_label(self, biome_id: str) -> str:
         biome = self.content.biomes[biome_id]
+        if biome_id == self._zone(0, 0).biome:          # D-223: on the map the 🔥 is a camp (the bonfire), not "Claro"
+            return f"{biome.get('color', biome['emoji'])} {self.texts.t('map.bonfire')}"
         return f"{biome.get('color', biome['emoji'])} {self.texts.t(biome['name_key'])}"
 
     def _known_terrains(self, hero: Hero) -> list[str]:
@@ -1937,7 +1956,7 @@ class GameService(StoryMixin, GuideMixin):
                                  total=len(self.content.biomes)))
             return lines
         lines = []
-        for stage in cfg["stages"]:
+        for stage in self._fog_stages():
             if stage.get("notice") and before_pct < int(stage["at"]) <= after:
                 lines.append(t.t("map.fog.stage", name=self._zone_name(zone), mark=stage["mark"],
                                  stage=t.t(f"map.fog.name.{stage['id']}")))
@@ -7098,60 +7117,87 @@ class GameService(StoryMixin, GuideMixin):
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
-    def _places_view(self, hero: Hero) -> View:
-        """Places this hero remembers, nearest first, with an estimated trip time (D-61).
+    def _important_places(self, hero: Hero) -> list[tuple[int, int, int, str, str]]:
+        """The important places this hero knows, nearest first: (seconds, x, y, icon, name) (D-223).
 
         [ES]
-        Qué hace: 📒 Lugares: los 3 lugares que recuerdas más cerca (la guarida del Guardián siempre, D-82), con el tiempo
-        del viaje; al elegir uno, el héroe va solo, zona por zona. Desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares
-        (su ↩️ Volver vuelve al mapa), para dejarle lugar a 🏹 Cazar en 🧭 Explorar. D-112: desde el rango 10 de
-        🧭 Explorador (explorer.ranks.travel) la lista llega a explorer.places_listed lugares con su tiempo (los botones
-        siguen siendo 3), y un lugar con un 👹 campamento enemigo en pie lo dice.
-        D-222 (0.30.1): debajo de la lista va "🔭 Lo que marca tu mapa:" con lo que antes salía debajo del 🗺️ Mapa (guarida,
-        campamentos enemigos según tu rango de 🧭 Explorador, mazmorras, nodos y la línea de reconocer: _map_marks_lines).
-        Los botones solo llevan a lugares que recuerdas (hero.known: los que visitaste o exploraste).
-        La llaman: el botón 📒 Lugares del mapa y un "goto:" que ya no sirve.
-        Si cambia, afecta: tests/test_service.py, tests/test_boss.py y tests/test_enemy_camps.py (lugares y guarida), el
-        paso "return" del 🧭 camino guiado (D-193: su botón y su texto mandan a 📒 Lugares → El Claro).
+        Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): el 🔥 Claro
+        (el campamento de inicio, siempre), su 🏕️ campamento y los de otros jugadores que pisó, las 🕳️ 🌀 mazmorras que
+        visitó y la 👑 guarida del Guardián si llegó a ella. Las zonas comunes y los ✨ nodos ya no salen (pedido del
+        dueño: "los lugares más importantes únicamente"). Ordenados por el tiempo del viaje.
+        La llaman: _places_view y _place_code. Si cambia, afecta: qué se puede viajar de una vez (tests/test_lugares.py).
         """
         t = self.texts
-        places = []
+        found: dict[tuple[int, int], tuple[str, str]] = {}
+        found[(0, 0)] = ("🔥", self._zone_name(self._zone(0, 0)))
         for key in hero.known:
             x, y = (int(v) for v in key.split(":"))
-            if (x, y) == (hero.x, hero.y):
-                continue
-            places.append((self._trip_seconds(hero, x, y), x, y))
-        places.sort()
-        shown = places[:3]
-        lair = next((p for p in places if self._is_lair(p[1], p[2])), None)
-        if lair and lair not in shown:
-            shown = shown[:2] + [lair]          # the Guardian's lair is always offered (D-82)
+            camp = self.store.get("camp", key)
+            kind = self._dng_kind(x, y)
+            if camp:
+                found[(x, y)] = ("🏕️", camp["name"])
+            elif self._is_lair(x, y):
+                found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)))
+            elif kind:
+                found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))))
+        places = [(self._trip_seconds(hero, x, y), x, y, icon, name) for (x, y), (icon, name) in found.items()
+                  if (x, y) != (hero.x, hero.y)]
+        return sorted(places)
+
+    def _places_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📒 Lugares: the important places this hero knows, each with a code and a button, asking before it travels (D-223).
+
+        [ES]
+        Qué hace: lista los lugares importantes que conoces (_important_places), cada uno con su tiempo de viaje y su código
+        (/ir1, /ir2...); los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar
+        (_place_confirm_view) y, al confirmar, el héroe va solo, zona por zona ("goto:"). Guarda el orden mostrado (espacio
+        "places_shown") para que el código /irN sea el que viste. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más
+        cercanos; desde el rango 10, hasta explorer.places_listed. Historia: hasta la 0.30.1 listaba cualquier zona que
+        recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó solo los lugares importantes.
+        La llaman: el botón 📒 Lugares del 🗺️ Mapa (también al rechazar un viaje).
+        Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py y el paso
+        "return" del 🧭 camino guiado (D-193: su texto manda a 📒 Lugares → El Claro).
+        """
+        t = self.texts
+        places = self._important_places(hero)
         count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
         listed = places[:count]
-        if lair and lair not in listed:
-            listed = listed[:count - 1] + [lair]
-        body = [t.t("places.intro", n=len(hero.known))]
-        for seconds, x, y in listed:
-            zone = self._zone(x, y)
-            mark = t.t("guardian.route_mark") if self._is_lair(x, y) else ""
-            mark += t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
-            body.append(t.t("places.line", biome=self.content.biomes[zone.biome]["emoji"], name=self._zone_name(zone) + mark,
+        self.store.put("places_shown", hero.id, {"list": [[x, y] for _, x, y, _, _ in listed]})
+        body = [t.t("places.intro")]
+        for n, (seconds, x, y, icon, name) in enumerate(listed, 1):
+            mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
+            body.append(t.t("places.code_line", n=n, icon=icon, name=name + mark,
                             zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
-        actions = []
-        for seconds, x, y in shown:
-            zone = self._zone(x, y)
-            actions.append(Action(id=f"goto:{x}:{y}", label=t.t("places.go_button", name=self._zone_name(zone), time=self._fmt_duration(seconds))))
         if not places:
             body.append(t.t("places.none"))
         elif len(places) > len(listed):
             body.append(t.t("places.more", n=len(places) - len(listed)))
         if count == 3 and len(places) > 3:
             body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
-        marks = self._map_marks_lines(hero)             # D-222: what used to be listed under the 🗺️ Mapa
-        if marks:
-            body += ["", t.t("places.marks_title")] + marks
+        actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
+                   for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
         actions.append(Action(id="map", label=t.t("menu.back")))
-        return View(kind="places", title=t.t("places.title"), body=body, actions=actions)
+        return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice)
+
+    def _place_confirm_view(self, hero: Hero, x: int, y: int) -> View:
+        """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed)."""
+        t = self.texts
+        place = next(((icon, name) for _, px, py, icon, name in self._important_places(hero) if (px, py) == (x, y)), None)
+        if place is None or hero.activity:
+            return self._places_view(hero, notice=t.t("places.unknown"))
+        seconds = self._trip_seconds(hero, x, y)
+        body = [t.t("places.confirm", icon=place[0], name=place[1], zones=abs(x - hero.x) + abs(y - hero.y),
+                    time=self._fmt_duration(seconds)), t.t("places.confirm_hint")]
+        actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
+        return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
+
+    def _place_code(self, hero: Hero, n: int) -> View:
+        """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
+        shown = (self.store.get("places_shown", hero.id) or {}).get("list", [])
+        if not 1 <= n <= len(shown):
+            return self._places_view(hero, notice=self.texts.t("places.bad_code"))
+        x, y = shown[n - 1]
+        return self._place_confirm_view(hero, x, y)
 
     def _map_view(self, hero: Hero) -> View:
         """A square map around the hero: (2 × map_view.radius + 1) cells wide and as many tall.
@@ -7167,9 +7213,12 @@ class GameService(StoryMixin, GuideMixin):
         que exploras alrededor sin moverte (D-107): el % es de la zona, no de dónde estabas. La leyenda dice las etapas y
         solo los terrenos que ya conoces (_known_terrains: cuántos de cuántos). Los íconos siguen sus propias reglas (E-178).
         D-222 (0.30.1, pedido del dueño): debajo de la cuadrícula ya no va nada. Las coordenadas están en 📍 Zona (y ahí
-        también la línea de en qué etapa gris está tu zona); las listas de la guarida, los campamentos enemigos, las
-        mazmorras, los nodos y la línea 🔭 se mudaron a 📒 Lugares (_map_marks_lines). Lo que se dice abajo de "debajo" es
-        historia: hoy esas líneas salen en 📒 Lugares.
+        también la línea de cómo va tu zona).
+        D-223 (0.30.2, pedido del dueño): el mapa se ve en blanco. Solo se dibujan tú (🧍) y cada zona: ▫️ en blanco hasta
+        el 50 % y después su color; el 🔥 del inicio (el campamento, la hoguera) se ve siempre. Ya no se dibujan mazmorras,
+        nodos, campamentos enemigos ni de jugadores, ni la guarida; las etapas ◽ ◻️ se retiraron (map_view.fog: retired).
+        Botones: 📒 Lugares y ↩️ Volver (se viaja desde 📒 Lugares, con confirmación). Lo que sigue en esta nota (íconos,
+        listas de abajo y botones de ir) es historia de antes de la 0.30.2.
         D-112: 👹 marca los campamentos enemigos de hoy que ves (tu zona y las vecinas; con el 🧭 Explorador, a 3 zonas desde el
         rango 25 y todo el mapa desde el 50); debajo, los más cercanos (con su tiempo desde el rango 10 y su fuerza desde el
         75), hasta dónde ves y, desde el rango 10, el tiempo a la guarida y a tu campamento.
@@ -7190,81 +7239,24 @@ class GameService(StoryMixin, GuideMixin):
         """
         t = self.texts
         radius = self.content.balance["map_view"]["radius"]
-        self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone (its line below says "aquí")
-        seen = self._ecamp_seen(hero)                   # D-112: the enemy camps this hero sees today
-        marks = {(camp["x"], camp["y"]) for camp in seen}
-        dungeons = self._dng_seen(hero)                 # D-181: 🕳️ a dungeon is there; 🌀 once you know it is deep
-        dmarks = {(x, y): self._dng_icon(state) for x, y, state in dungeons}
-        nodes = self._node_seen(hero)                   # D-181, D-184: ✨ a node is there; its resource once you arrived
-        nmarks = {(x, y): self._node_icon(main) for x, y, main in nodes}
+        self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone still discovers it
         rows = []
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
             for x in range(hero.x - radius, hero.x + radius + 1):
-                if x == hero.x and y == hero.y:
-                    row += "🧍"
-                elif self._is_lair(x, y) and (hero.remembers(x, y) or self._discovered(x, y) is not None):
-                    row += "👑"
-                elif (x, y) in marks:
-                    row += t.t("ecamp.icon")
-                elif hero.remembers(x, y) and self.store.get("camp", f"{x}:{y}"):
-                    row += "🏕️"
-                elif (x, y) in dmarks:
-                    row += dmarks[(x, y)]
-                elif (x, y) in nmarks:                      # D-184: under everything else, over the terrain's colour
-                    row += nmarks[(x, y)]
-                else:                                       # D-212, D-220: grey until investigated to 50 %, then its colour
-                    row += self._fog_cell(hero, x, y)
+                # D-223: nothing else is drawn (no dungeons, nodes, camps or lair): you, and each zone blank or in its colour
+                row += "🧍" if (x, y) == (hero.x, hero.y) else self._fog_cell(hero, x, y)
             rows.append(row)
         fog = self._fog_cfg()
-        stages = " · ".join(f"{stage['mark']} {t.t('map.fog.name.' + stage['id'])}" for stage in fog["stages"])
+        stages = " · ".join(f"{stage['mark']} {t.t('map.fog.name.' + stage['id'])}" for stage in self._fog_stages())
         known = self._known_terrains(hero)
         terrains = " · ".join(self._terrain_label(biome_id) for biome_id in known)
         body = [t.t("map.legend", stages=stages, pct=fog["color_at"]),
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
-        body += rows                                    # D-222: nothing under the grid (the lists went to 📒 Lugares)
-        pending = self._recon_pending(hero)             # D-172: 🔭 what you can scout from here today
-        actions = [Action(id="places", label=t.t("menu.places"))]
-        # D-222: "Moverte a" only to a place the hero has already visited (hero.known), with the trip's time
-        target = next((camp for camp in seen if (camp["x"], camp["y"]) != (hero.x, hero.y)
-                       and hero.remembers(camp["x"], camp["y"])), None)
-        if target and not hero.activity:               # D-112: 👹 the nearest enemy camp you see, if you were already there
-            label = t.t("ecamp.move_button", time=self._fmt_duration(self._trip_seconds(hero, target["x"], target["y"])))
-            actions.append(Action(id=f"goto:{target['x']}:{target['y']}", label=label))
-        near = next(((x, y, state) for x, y, state in dungeons if (x, y) != (hero.x, hero.y) and hero.remembers(x, y)), None)
-        if near and not hero.activity:                 # D-171, D-222: the nearest dungeon you already visited (4 buttons at most)
-            label = t.t("dungeon.move_button", mark=self._dng_icon(near[2]),
-                        time=self._fmt_duration(self._trip_seconds(hero, near[0], near[1])))
-            actions.append(Action(id=f"goto:{near[0]}:{near[1]}", label=label))
-        if pending and len(actions) < 3:                # D-172: 🔭 Reconocer only when it fits (4 buttons at most); /reconocer always
-            actions.append(Action(id="recon", label=t.t("recon.map_button")))
-        actions.append(Action(id="explore_menu", label=t.t("menu.back")))
+        body += rows                                    # D-222: nothing under the grid
+        actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
+                   Action(id="explore_menu", label=t.t("menu.back"))]
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
-
-    def _map_marks_lines(self, hero: Hero) -> list[str]:
-        """What the hero's map marks around it, as lines with distances (D-222: moved from under the 🗺️ Mapa to 📒 Lugares).
-
-        [ES]
-        Qué hace: junta las listas que hasta la 0.30 iban debajo del mapa: la guarida del Guardián (D-82), los 👹 campamentos
-        enemigos que ves con lo que te deja ver tu rango de 🧭 Explorador (D-112: tiempo desde el rango 10, fuerza desde el 75),
-        las 🕳️ 🌀 mazmorras más cercanas (D-171), los ✨ nodos (D-184) y la línea 🔭 de reconocer (D-172). El dueño pidió
-        sacarlas del mapa (D-222); se mudaron a 📒 Lugares para no perder lo que da el oficio de Explorador.
-        La llaman: _places_view. Si cambia, afecta: lo que muestra 📒 Lugares (tests/test_enemy_camps.py,
-        tests/test_mazmorras.py, tests/test_nodos_y_terrenos.py, tests/test_reconocimiento.py, tests/test_boss.py).
-        """
-        t = self.texts
-        seen = self._ecamp_seen(hero)
-        dungeons = self._dng_seen(hero)
-        nodes = self._node_seen(hero)
-        lines: list[str] = []
-        cfg = self._guardian_cfg()
-        if cfg and self._discovered(cfg["x"], cfg["y"]) is not None:
-            lines.append(t.t("guardian.map_line", x=cfg["x"], y=cfg["y"], lejania=self._zone(cfg["x"], cfg["y"]).lejania))
-        lines += self._ecamp_map_lines(hero, seen)
-        lines += self._dng_map_lines(hero, dungeons)
-        lines += self._node_map_lines(hero, nodes)
-        lines += self._recon_map_lines(hero, bool(seen or dungeons), self._recon_pending(hero))
-        return lines
 
     def _hero_view(self, hero: Hero) -> View:
         """Hero hub (D-76, D-191, D-192): a detailed card like TowerWars' and up to 8 buttons, 2 per row.
@@ -8182,7 +8174,8 @@ class GameService(StoryMixin, GuideMixin):
         return None
 
     def _ecamp_seen(self, hero: Hero) -> list[dict[str, Any]]:
-        """Standing enemy camps the hero sees on its 🗺️ Mapa, nearest first."""
+        """Standing enemy camps the hero sees on its 🗺️ Mapa, nearest first.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         radius = self.content.balance["map_view"]["radius"]
         found = [camp for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
                  if (camp := self._ecamp_visible(hero, hero.x + dx, hero.y + dy))]
@@ -8479,7 +8472,8 @@ class GameService(StoryMixin, GuideMixin):
 
     def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
         """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75 or after 🔭 scouting it
-        today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp."""
+        today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         t = self.texts
         cfg = self._explorer_cfg()
         travel = self._explorer_has(hero, "travel")
@@ -8631,7 +8625,8 @@ class GameService(StoryMixin, GuideMixin):
         return out
 
     def _node_map_lines(self, hero: Hero, seen: list[tuple[int, int, str | None]]) -> list[str]:
-        """🗺️ Mapa lines: the nearest nodes you see (nodes.map_lines, 2), with what they are once you arrived."""
+        """🗺️ Mapa lines: the nearest nodes you see (nodes.map_lines, 2), with what they are once you arrived.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         if not seen:
             return []
         t = self.texts
@@ -8819,7 +8814,8 @@ class GameService(StoryMixin, GuideMixin):
         return self._dng_icon(state) if state else None
 
     def _dng_seen(self, hero: Hero) -> list[tuple[int, int, str]]:
-        """The dungeons on the hero's 🗺️ Mapa (x, y, state: "unknown" / "small" / "deep"), nearest first."""
+        """The dungeons on the hero's 🗺️ Mapa (x, y, state: "unknown" / "small" / "deep"), nearest first.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         radius = self.content.balance["map_view"]["radius"]
         known = set(hero.known)
         kinds = self._recon_kinds(hero)                 # D-172: entrances scouted from afar
@@ -8830,7 +8826,8 @@ class GameService(StoryMixin, GuideMixin):
 
     def _dng_map_lines(self, hero: Hero, seen: list[tuple[int, int, str]]) -> list[str]:
         """🗺️ Mapa lines: the nearest dungeons you know of (🕳️ a cave, 🕳️ small, 🌀 deep), with the time from 🧭 rank 10
-        and, D-172, today's family of those you scouted from afar today ("🔭 hoy 🐺 Manada")."""
+        and, D-172, today's family of those you scouted from afar today ("🔭 hoy 🐺 Manada").
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         if not seen:
             return []
         t = self.texts
@@ -9424,7 +9421,8 @@ class GameService(StoryMixin, GuideMixin):
         return [self.texts.t("recon.hint", n=len(pending))] if pending else []
 
     def _recon_map_lines(self, hero: Hero, marks: bool, pending: list[tuple[int, int, str]]) -> list[str]:
-        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer), or from which 🧭 rank (only if the map marks something)."""
+        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer), or from which 🧭 rank (only if the map marks something).
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
         t = self.texts
         radius = self._recon_range(hero)
         if radius <= 0:

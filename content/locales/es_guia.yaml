@@ -90,23 +90,19 @@ guide:
       learn: |-
         🗺️ Cómo leer el mapa
         🧍 Eres tú, en el centro. El norte está arriba.
-        ▫️ Un punto gris es una zona que todavía no investigaste. Al explorarla, el punto crece: ◽ con rastros, ◻️ reconocida.
+        ▫️ Una zona en blanco: todavía no la investigaste lo suficiente.
         🎨 Al investigar una zona a la mitad (50 %) aparece el color de su terreno, y el terreno se suma a la lista de arriba del mapa. El color no dice qué recursos hay: eso se sabe explorando.
-        🕳️ Una cueva: ahí hay una mazmorra. 🌀 si ya sabes que es profunda.
-        ✨ Un nodo de recursos: al llegar a su zona aparece con el emoji de su recurso.
-        👹 Un campamento enemigo de hoy: cambian de lugar cada día.
-        🏕️ Un campamento de jugadores.
-        👑 La guarida del Guardián, un jefe muy fuerte.
-        📌 Tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el Claro, están en 📍 Zona. Más lejos, enemigos más fuertes.
-        📒 Lugares: los sitios que recuerdas, para viajar directo, y la lista de lo que marca tu mapa.
-        🌀 Moverte a la mazmorra: te lleva a la más cercana que ya visitaste. A un lugar nuevo se llega caminando.
+        🔥 El campamento (la hoguera) de inicio: se ve siempre.
+        Nada más se ve en el mapa: las mazmorras, los nodos y los campamentos se descubren caminando.
+        📌 Tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el inicio, están en 📍 Zona. Más lejos, enemigos más fuertes.
+        📒 Lugares: los lugares importantes que ya visitaste (el campamento, mazmorras, campamentos de jugadores). Elige uno, confirma y tu héroe va solo.
     return:                    # [ES] d) volver al campamento (el Claro)
       name: "Volver al Claro"
       task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → El Claro (o por las rutas de 📍 Zona)."
       intro: |-
         🔥 Vuelve al campamento
         • El Claro es tu base: ahí están el mercader, la posada y los oficios.
-        • En 📒 Lugares eliges un sitio que recuerdas y tu héroe va solo, zona por zona.
+        • En 📒 Lugares eliges un lugar importante que ya visitaste, confirmas y tu héroe va solo, zona por zona.
     camp:                      # [ES] e) el campamento (D-191: cocinar, investigar, fabricar, entrenador, mercader, Dudas)
       name: "El campamento"
       task: "abre el campamento: 🏕️ Campamento (menú de abajo)."
