@@ -54,6 +54,9 @@ Si cambias esto, revisa:
       básico}). Vacío por defecto: los héroes de antes cargan igual y engine/service/guide.py los pone al día la primera vez
       (E-133: con el tutorial viejo terminado o nivel 5+, el camino básico queda hecho sin premio). tutorial (el índice del
       tutorial viejo) se sigue leyendo para eso y ya no avanza: no se borra (tests/test_camino_guiado.py)
+    - combo_shapes (0.31, D-229): los combos distintos de la cadena que el héroe cobró alguna vez; solo cuentan para la
+      variedad si balance.yaml chain.variety.scope es "permanent" (pendiente 5 del parche). Vacío por defecto: los héroes
+      guardados antes cargan igual (engine/combat/chain_round.py; tests/test_cadena.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -128,6 +131,9 @@ class Hero:
         guide: progress of the guided path (D-190, D-193): "v" (record version), "done" (step ids of content/guide.yaml),
             "tips" (one-time tip ids already shown), "away" (zones stepped on outside the Claro after the basic path).
             Empty for heroes saved before it: engine/service/guide.py fills it the first time it is read.
+        combo_shapes: the different chain combos (0.31, D-229) the hero ever cashed with a spender, e.g. "B-H2-H1-H3". Only
+            used when balance.yaml chain.variety.scope is "permanent" (the variety bonus then lasts for ever, not one fight).
+            Empty for heroes saved before it.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -194,6 +200,7 @@ class Hero:
     gear_signatures: dict[str, str] = field(default_factory=dict)
     gear_enchants: dict[str, dict[str, Any]] = field(default_factory=dict)
     guide: dict[str, Any] = field(default_factory=dict)                 # D-193: 🧭 guided path progress (empty = not read yet)
+    combo_shapes: list[str] = field(default_factory=list)               # D-229: different chain combos ever cashed (variety)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

@@ -100,7 +100,8 @@ def test_hero_hub_card_and_buttons(service):
     service._save(hero)
     text = "\n".join(service.act("test:1", "hero").body)
     assert "(+1 en" in text and "(llena en" in text                            # timers, like TowerWars' card
-    assert service.act("test:1", "hero").body[0].startswith("✨")               # pending points first
+    assert not service.act("test:1", "hero").body[0].startswith("✨")           # 0.31: level points place themselves (D-230)
+    assert service._load("test:1").points == 0
     origin = service.act("test:1", "origin")
     assert origin.kind == "origin" and len(origin.actions) <= 4                # chosen whenever you want (E-131)
     service.act("test:1", "origpick:noble")

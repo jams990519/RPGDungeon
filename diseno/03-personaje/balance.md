@@ -1029,3 +1029,53 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Cuánto cambia.** Nada del juego cambia de números: el porcentaje de exploración, lo que da cada vuelta y lo que se descubre al 1, 20, 40, 60, 80 y 100 % siguen iguales. Cambia lo que ves: para ver a color una zona hay que darle unas 2 o 3 vueltas de 🔎 Explorar (de 15 a 30 % cada una, `exploration.per_step`); en la zona de un 👹 campamento enemigo, 5 veces 🕵️ Infiltrarse del 🧭 Explorador (`enemy_camps.infiltrate.explore_points`, 10). Nadie pierde nada: lo que estaba al 50 % o más quedó a color.
 
 **Lo que queda por mirar:** si con 3 etapas grises alcanza para "ver que avanzas" o hace falta otra (por ejemplo, el nombre del terreno al 25 %); si el 50 % se siente lento para quien explora poco; y si los jugadores confunden el ◻️ de reconocida con el ⬜ de la montaña (si pasa, se cambia la marca en `map_view.fog.stages` sin tocar nada más).
+
+### Octubre de 2026 (8-oct): el parche de clases 0.31 (D-225 a D-232)
+
+**Por qué.** El dueño reemplazó las 15 clases por 6 clases con 2 roles y la misma cadena para todas ([Combate en cadena](../04-combate/combate-en-cadena.md)). Los números del parche son la estructura (energía 5 y +2, costos 0/2/3/6, premio 10/25/50 %, gastador sin combo 85 %). La potencia de cada botón y el esqueleto de cada rol los midió Claude con el simulador. Es provisional (D-231) y se ajusta en la beta.
+
+**Objetivos (los mismos de antes):**
+- Contra cada enemigo de nivel 1 a 3: 90 % o más (curación: 85 %).
+- Contra el Guardián al nivel 6: entre 45 y 90 %.
+- A los niveles 50 y 75 (tests/test_balance_d110.py):
+  - todos ganan el 85 % o más;
+  - el tanque termina con más vida que el DPS;
+  - el DPS es el que mata más rápido y la curación la más lenta;
+  - la curación es la que más vida deja.
+- Regla madre (D-232): las clases de un mismo rol comparten esqueleto. La diferencia dentro del rol no debería pasar de unos 15 puntos contra el Guardián.
+
+**El esqueleto de cada rol** (`content/classes.yaml`, base y por nivel):
+
+| Rol | Vida | Ataque | Armadura | Iniciativa | Por nivel |
+|---|---|---|---|---|---|
+| Tanque | 135 | 10,5 | 20 % | 9 | +16 vida, +1,5 ataque |
+| Sanador | 110 | 9,8 | 10 % | 10 | +12 vida, +1,4 ataque |
+| DPS | 160 | 13,5 | 10 % | 11 | +12 vida, +1,7 ataque |
+| Soporte | 165 | 12,5 | 12 % | 11 | +14 vida, +1,5 ataque |
+
+**Los botones.** Potencia × ataque; las curaciones se miden en parte de la vida máxima.
+
+| Rol | Básico | Constructor | Preparador | Gastador |
+|---|---|---|---|---|
+| Tanque | 0,9 | 1,3 | Aguante o esquiva 35 % por 2 turnos | 1,0 (Druida: 0,6 + 0,06 por esquiva), y aguante o esquiva 40 % por 3 turnos |
+| Sanador | Sacerdote 1,0 · Chamán 0,65 | Cura 15 % (Sacerdote: 10 % + 5 % el turno siguiente; Chamán: 3 × 5 %) | Sacerdote: escudo del 15 % · Chamán: golpe 1,35 y +25 % a la próxima curación grande | Sacerdote: cura 32 % (con premio) · Chamán: cura 36 % (sin premio, D-227) |
+| DPS | 0,7 | 1,0 | Exponer 20 % por 3 turnos, sangrado o quemadura 0,3 por turno, sombra 0,3 y +10 %, o golpe 0,7 que carga +30 % | 1,9, más lo propio de cada clase (Ejecutar ×1,6 con el enemigo bajo el 35 %, consumir el daño en el tiempo, +0,25 por turno de sombra, ×1,25 con tu marca) |
+| Soporte | 1,0 | 1,3 (alarga lo activo, hasta 3 turnos) | Cazador: potenciar 30 % · Mago: exponer 20 % (2 turnos) | Golpe 1,0, más Cazador: potenciar 40 % por 3 turnos · Mago: exponer 20 % y debilitar 5 % por 3 turnos, e interrumpir |
+
+**Resultado** (`tools/sim.py`):
+- Contra los enemigos de nivel 1 a 3, todas ganan el 100 %.
+  - Rondas: DPS de 3,8 a 4,4; tanques de 7,7 a 7,9; sanadores de 8 a 8,6; soportes de 4,6 a 5,4.
+  - Vida que les queda: de 66 a 81 %.
+- Contra el Guardián al nivel 6 (80 peleas):
+
+| Rol | Resultado |
+|---|---|
+| Tanques | 84 y 90 % |
+| Sanadores | 85 y 90 % |
+| DPS | Guerrero 82, Druida 80, Sacerdote 82, Chamán 74, Cazador 68, Mago 80 % |
+| Soportes | Cazador 74, Mago 89 % |
+
+**Lo que queda por mirar:**
+- El Cazador DPS (68 %) y el soporte del Cazador (74 %) quedan algo por debajo de su pareja.
+- Los avisos de los enemigos todavía dicen "se puede bloquear o esquivar". En las clases nuevas eso se contesta con 🛡️ Defenderse, el aguante o la esquiva del tanque, o la Ruptura del Mago.
+- El nivel todavía da vida y ataque, hasta la reforma de estadísticas del equipo (D-232).

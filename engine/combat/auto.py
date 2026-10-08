@@ -28,6 +28,7 @@ Reglas que nunca se rompen:
     3. Sin use_items no toca el cinturón (opción 🧪 Pociones de ⚙️ Opciones).
     4. Una pelea automática siempre termina: a las auto_fight.max_rounds rondas el héroe la deja ("fled", sin premio
        ni castigo).
+0.31 (D-225): las clases con system: chain juegan con chain_choice (sobrevivir y luego seguir el orden de su rol).
 Si cambias esto, revisa:
     - Simulador: tools/sim.py (choose llama a choose_action; compara --summary, --real y --boss antes y después)
     - Servicio: engine/service/game.py _auto_combat (opción de pociones, eventos, fin de la pelea)
@@ -77,6 +78,8 @@ def choose_action(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
     La llaman: play_out (peleas automáticas) y tools/sim.py (choose).
     Si cambia, afecta: todos los números del simulador y cómo pelean solos los héroes de todos los jugadores.
     """
+    if class_def.get("system") == "chain":            # 0.31: the six chain classes play their role's chain
+        return chain_choice(state, hero, class_def, ctx, attentive, use_items)
     policy = ctx.balance["auto_fight"]["policy"]
     enemy, hs = state["enemy"], state["hero"]
     move = find_move(ctx.enemies[enemy["id"]], enemy["next_move"])
@@ -157,6 +160,89 @@ def choose_action(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], 
             return use(i)
         if k == "heal" and frac < policy["heal_late_below"] and can(i):
             return use(i)
+    return {"type": "attack"}
+
+
+def chain_choice(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], ctx: CombatContext,
+                 attentive: bool = True, use_items: bool = True) -> dict[str, Any]:
+    """The round's choice for a chain class (0.31): survive first, then follow the role's chain.
+
+    [ES]
+    Qué hace: la forma de jugar de las clases nuevas en las peleas automáticas y el simulador. Primero sobrevive (el sanador
+    usa su curación grande o la chica con poca vida; pociones; el tanque levanta su aguante o esquiva ante un golpe grande;
+    el Mago interrumpe un ataque cargado con su Ruptura; con un golpe muy grande y nada mejor, se defiende). Después sigue
+    el orden de su rol: toca el siguiente eslabón si le alcanza la energía; si no, el Básico (que nunca corta la cadena y da
+    energía); con el orden cumplido suelta el gastador apenas puede. El sanador sano no gasta curaciones: pega con el
+    Básico hasta que le hace falta curarse.
+    La llama: choose_action (system: chain). Si cambia, afecta: las peleas automáticas y los números del simulador.
+    """
+    from engine.combat import chain
+    from engine.combat.chain_round import available_energy
+
+    bal = ctx.balance
+    policy = bal["auto_fight"]["policy"]
+    enemy, hs = state["enemy"], state["hero"]
+    chain.ensure_hero(hs, bal)
+    move = find_move(ctx.enemies[enemy["id"]], enemy["next_move"])
+    tags = move.get("tags", [])
+    stats = hero_stats(class_def, hero.level)
+    role = chain.role_of(class_def, bal)
+    req = chain.required(class_def, bal)
+    energy = available_energy(state, bal)
+    index = {a.get("link"): i for i, a in enumerate(class_def["abilities"])}
+
+    def ok(choice: dict[str, Any]) -> bool:
+        return validate_choice(state, hero, class_def, choice, ctx) is None
+
+    def press(link: str) -> dict[str, Any] | None:
+        choice = {"type": "attack"} if link == "B" else {"type": "ability", "index": index.get(link, -1)}
+        return choice if ok(choice) else None
+
+    # A hit that finishes the enemy beats anything else (the cheapest that surely kills: lowest roll, no crit).
+    low = float(bal["combat"]["damage_spread"][0]) * (1 - float(enemy["armor"]))
+    mult = (1 + (hs.get("empower") or {}).get("value", 0.0)) * (1 + (enemy.get("exposed") or {}).get("value", 0.0))
+    for link in ("B", "H1", "H2", "H3"):
+        spec = chain.ability_for(link, class_def)
+        hit = float(spec.get("power", 0.0)) if spec.get("kind", "strike") in ("strike", "guard", "debuff") else 0.0
+        if link == "H3" and not chain.preview(hs["chain"], req, bal)["valid"]:
+            hit *= float(chain.cfg(bal)["no_combo_mult"])
+        if hit and stats["attack"] * hit * mult * low >= enemy["hp"] and press(link):
+            return press(link)
+    frac = hero.hp / stats["max_hp"]
+    if role == "sanador" and frac < policy["heal_below"]:
+        for link in ("H3", "H1"):
+            spec = chain.ability_for(link, class_def)
+            if spec.get("kind") == "heal" and press(link):
+                return press(link)
+    if use_items and frac < policy["potion_below"]:
+        for item_id in _belt_pick(hero, ctx, "potion", 1 - frac):
+            if ok({"type": "item", "item_id": item_id}):
+                return {"type": "item", "item_id": item_id}
+    if use_items and attentive and frac < policy["bandage_below"]:
+        for item_id in _belt_pick(hero, ctx, "bandage", 1 - frac):
+            if ok({"type": "item", "item_id": item_id}):
+                return {"type": "item", "item_id": item_id}
+    channel = move.get("kind") == "channel"
+    power = move.get("power", 1) * enemy.get("buff", 1.0)
+    big = (not channel) and power > policy["big_hit"]
+    first = stats["initiative"] >= enemy["initiative"]
+    spender = chain.ability_for("H3", class_def)
+    if spender.get("interrupt") and first and (channel or "interruptible" in tags) and press("H3"):
+        return press("H3")
+    if big and role == "tanque" and not hs.get("guard"):
+        for link in ("H2", "H3"):
+            if chain.ability_for(link, class_def).get("kind") == "guard" and press(link):
+                return press(link)
+    if big and attentive and power >= policy["dodge_hit"] and not hs.get("guard") and not hs.get("shield") and ok({"type": "dodge"}):
+        return {"type": "dodge"}
+    if role == "sanador" and frac >= policy["heal_late_below"]:
+        h2 = chain.ability_for("H2", class_def)      # a healthy healer hits: its H2 if it is a hit (Chamán), else the Básico
+        if h2.get("kind") == "strike" and hs["chain"]["last"] == "B" and press("H2"):
+            return press("H2")
+        return {"type": "attack"}
+    nxt = chain.next_link(hs["chain"], req)
+    if nxt != "B" and chain.cost_of(nxt, bal) <= energy and press(nxt):
+        return press(nxt)
     return {"type": "attack"}
 
 

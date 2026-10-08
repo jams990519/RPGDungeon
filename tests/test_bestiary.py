@@ -122,7 +122,7 @@ def test_a_fight_of_each_band_is_winnable_but_not_free(level, biome):
     pool = encounter_pool(sim.C.enemies, biome, level)
     hardest = max(pool, key=lambda pair: raid_rules.power(pair[1], level))[0]
     softest = min(pool, key=lambda pair: raid_rules.power(pair[1], level))[0]
-    for spec in ("guerrero", "mago_fuego", "druida_restauracion", "bardo_estratega"):
+    for spec in ("guerrero_tanque", "mago_dps", "sacerdote_sanador", "cazador_soporte"):     # 0.31: one spec per role
         cdef = sim.level_gear(sim.spec_hero(spec, level), level, 99)
         for enemy_id in {hardest, softest}:
             results = [_fight(cdef, enemy_id, level, seed) for seed in range(8)]

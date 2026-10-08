@@ -1,4 +1,7 @@
-# Classes and specializations: 15 classes, 46 specs (diseno/03-personaje/clases-y-especializaciones.md).
+# Classes and specializations. Since 0.31 (D-225): 6 classes × 2 roles with the chain combat (system: chain,
+# diseno/04-combate/combate-en-cadena.md); the 15 classes and 46 specs below them are retired (retired: true, migrate_to).
+# [ES] 0.31: arriba van las 12 especializaciones nuevas (las únicas que se juegan); abajo, las viejas retiradas. Lo de
+# abajo (8 habilidades, puntos que las abren, barra elegible) vale solo para las retiradas.
 # [ES] Clases y especializaciones. Cada entrada es una spec; "group" es su clase.
 # El orden del archivo es el orden en que se muestran las clases y sus specs (el del diseño).
 # Cada spec tiene 8 habilidades (D-79): se desbloquean con puntos de talento (balance.yaml talents.unlock)
@@ -21,8 +24,264 @@
 #   empower (pegas más) | expose (el enemigo recibe más) | weaken (el enemigo pega menos) | hot (cura por ronda): value, rounds
 # Opcionales: cost, cooldown, gain (recurso que da una respuesta).
 
+# ======================================================================================================================
+# 0.31 (D-225 a D-232): las 6 clases del parche de clases, combate y balance (diseno/04-combate/combate-en-cadena.md).
+# [ES] Cada clase tiene 2 roles (2 especializaciones). Todas juegan la misma cadena (system: chain): 4 botones, Básico
+# (el "attack", link B), H1 Constructor, H2 Preparador y H3 Gastador; la energía, los costos, el orden de cada rol, las
+# marcas y el premio están en balance.yaml chain. Aquí solo va qué hace cada botón.
+# Regla madre (D-232): las clases de un mismo rol comparten el mismo esqueleto: la misma vida, ataque, armadura e iniciativa
+# base y por nivel, y los mismos números en los botones; solo cambia el sabor (tests/test_clases_031.py lo vigila). Lo que
+# separa a dos personajes del mismo rol es su equipo y su nivel.
+# Los nombres de las habilidades y los porcentajes son borrador del parche (se pueden ajustar); la cadena, los costos y los
+# combos son firmes. En una pelea solo, lo que elige un aliado, cura a varios o potencia al grupo cae en el héroe, y lo
+# que pega a varios enemigos pega al de enfrente (engine/combat/chain_round.py).
+# Campos de los botones (system: chain): link (B, H1, H2, H3); kind = strike (power) | dot (power por ronda, rounds) |
+#   guard (value: frena esa parte de cada golpe, rounds; style aguante o esquiva: mismos números, D-232) | heal (value ×
+#   vida máx.; split, group, hot, chain_free) | shield (value × vida máx., rounds) | empower | expose | weaken (value,
+#   rounds; mark) | debuff (expose, weaken, interrupt). Extras: school, low_hp, vs_mark, consume_dot, per_dot_age,
+#   counter_per_dodge, dodge_marks, charge, next_bonus, heal_boost, extend, weaken, interrupt, targets, threat (solo en grupo).
+# Si cambias esto, revisa: la regla madre (mismos números por rol), tools/sim.py --summary --real y --boss, el registro de
+# balance (diseno/03-personaje/balance.md) y los textos en content/locales/es_clases_031.yaml.
+
+guerrero_tanque:
+  group: guerrero
+  system: chain
+  icon: "🛡️"
+  role: defensa
+  name_key: class.guerrero_tanque.name
+  role_key: class.guerrero_tanque.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000       # [ES] sin tope de energía (D-226): el motor de la cadena no la recorta
+  resource_regen: 0
+  base: {hp: 135, attack: 10.5, armor: 0.20, initiative: 9}    # [ES] esqueleto del tanque (igual para el Druida)
+  per_level: {hp: 16, attack: 1.5}
+  attack: {id: guerrero_golpe_de_escudo, link: B, kind: strike, power: 0.9, threat: 0.5}   # [ES] toma el 50 % del agro (en grupo)
+  abilities:
+    - {id: guerrero_reves, link: H1, kind: strike, power: 1.3, threat: 1.0}               # [ES] daño moderado, amenaza alta
+    - {id: guerrero_interponerse, link: H2, kind: guard, value: 0.35, rounds: 2, style: aguante}   # [ES] recibes tú los golpes del aliado y subes tu defensa: este turno y el siguiente
+    - {id: guerrero_grito_de_dominio, link: H3, kind: guard, value: 0.40, rounds: 3, style: aguante, power: 1.0, threat: 2.0}   # [ES] fija el 100 % del agro; la defensa escala con las marcas
+
+druida_tanque:
+  group: druida
+  system: chain
+  icon: "🐻"
+  role: defensa
+  name_key: class.druida_tanque.name
+  role_key: class.druida_tanque.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 135, attack: 10.5, armor: 0.20, initiative: 9}
+  per_level: {hp: 16, attack: 1.5}
+  attack: {id: druida_zarpazo, link: B, kind: strike, power: 0.9, threat: 0.5}
+  abilities:
+    - {id: druida_vapulear, link: H1, kind: strike, power: 1.3, threat: 1.0, dodge_marks: 2}   # [ES] mientras dura, cada esquiva suma una marca extra
+    - {id: druida_piel_de_corteza, link: H2, kind: guard, value: 0.35, rounds: 2, style: esquiva}   # [ES] la esquiva del Druida = el aguante del Guerrero en números (D-232)
+    - {id: druida_rugido_salvaje, link: H3, kind: guard, value: 0.40, rounds: 3, style: esquiva, power: 0.6, counter_per_dodge: 0.06, threat: 2.0}   # [ES] fija el agro y devuelve un contragolpe por cada esquiva acumulada
+
+sacerdote_sanador:
+  group: sacerdote
+  system: chain
+  icon: "✨"
+  role: curacion
+  name_key: class.sacerdote_sanador.name
+  role_key: class.sacerdote_sanador.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}    # [ES] esqueleto del sanador (igual para el Chamán)
+  per_level: {hp: 12, attack: 1.4}
+  attack: {id: sacerdote_castigo, link: B, kind: strike, power: 1.0, school: sagrado}
+  abilities:
+    - {id: sacerdote_renovar, link: H1, kind: heal, value: 0.10, hot: {value: 0.05, rounds: 1}}   # [ES] curación chica y un poco más el turno siguiente
+    - {id: sacerdote_escudo_sagrado, link: H2, kind: shield, value: 0.15, rounds: 2}              # [ES] escudo que absorbe daño en el aliado elegido
+    - {id: sacerdote_sanacion_superior, link: H3, kind: heal, value: 0.32}                        # [ES] toda la curación en uno (90 a uno contra 30+30+30)
+
+chaman_sanador:
+  group: chaman
+  system: chain
+  icon: "🌊"
+  role: curacion
+  name_key: class.chaman_sanador.name
+  role_key: class.chaman_sanador.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}
+  per_level: {hp: 12, attack: 1.4}
+  attack: {id: chaman_choque_de_tierra, link: B, kind: strike, power: 0.65, school: tierra}   # [ES] no es para hacer daño sino para arrancar el combo
+  abilities:
+    - {id: chaman_sanacion_en_cadena, link: H1, kind: heal, value: 0.15, split: 3}             # [ES] 3 objetivos parejos (uno elegido y dos al azar): solo, las 3 caen en ti
+    - {id: chaman_golpe_de_tormenta, link: H2, kind: strike, power: 1.35, school: rayo, heal_boost: 0.25}   # [ES] daño medio y deja una oleada que refuerza la próxima curación grande
+    - {id: chaman_marea_de_sanacion, link: H3, kind: heal, value: 0.36, group: true, chain_free: true}     # [ES] hasta 5 jugadores; escala solo con Restauración y con cuántos haya, no con la cadena (D-227)
+
+guerrero_dps:
+  group: guerrero
+  system: chain
+  icon: "⚔️"
+  role: ataque
+  name_key: class.guerrero_dps.name
+  role_key: class.guerrero_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}   # [ES] esqueleto del DPS (igual para las 6 clases)
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: guerrero_tajo, link: B, kind: strike, power: 0.7}
+  abilities:
+    - {id: guerrero_golpe_heroico, link: H1, kind: strike, power: 1.0}
+    - {id: guerrero_desgarrar_armadura, link: H2, kind: expose, value: 0.2, rounds: 3}        # [ES] baja la defensa del enemigo por 3 turnos
+    - {id: guerrero_ejecutar, link: H3, kind: strike, power: 1.9, low_hp: {below: 0.35, mult: 1.6}}   # [ES] pega más si el enemigo está bajo el 30 %
+
+druida_dps:
+  group: druida
+  system: chain
+  icon: "🐈"
+  role: ataque
+  name_key: class.druida_dps.name
+  role_key: class.druida_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: druida_aranazo, link: B, kind: strike, power: 0.7}
+  abilities:
+    - {id: druida_triturar, link: H1, kind: strike, power: 1.0}
+    - {id: druida_desgarrar, link: H2, kind: dot, power: 0.3, rounds: 3, school: sangrado}     # [ES] sangrado que pega cada turno
+    - {id: druida_mordisco_feroz, link: H3, kind: strike, power: 1.9, consume_dot: true}       # [ES] consume el sangrado y lo cobra de una vez
+
+sacerdote_dps:
+  group: sacerdote
+  system: chain
+  icon: "🌑"
+  role: ataque
+  name_key: class.sacerdote_dps.name
+  role_key: class.sacerdote_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: sacerdote_toque_mental, link: B, kind: strike, power: 0.7, school: sombra}
+  abilities:
+    - {id: sacerdote_tortura_mental, link: H1, kind: strike, power: 1.0, school: sombra}
+    - {id: sacerdote_dolor_sombrio, link: H2, kind: dot, power: 0.3, rounds: 3, school: sombra, next_bonus: {school: sombra, value: 0.10}}   # [ES] daño de sombra cada turno y potencia el siguiente golpe de sombra
+    - {id: sacerdote_explosion_mental, link: H3, kind: strike, power: 1.9, school: sombra, per_dot_age: 0.25}   # [ES] pega más por cada turno que lleve el Dolor sombrío
+
+chaman_dps:
+  group: chaman
+  system: chain
+  icon: "⚡"
+  role: ataque
+  name_key: class.chaman_dps.name
+  role_key: class.chaman_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: chaman_descarga, link: B, kind: strike, power: 0.7, school: rayo}
+  abilities:
+    - {id: chaman_rayo, link: H1, kind: strike, power: 1.0, school: rayo}
+    - {id: chaman_choque_de_llamas, link: H2, kind: strike, power: 0.7, school: fuego, charge: {school: rayo, value: 0.30}}   # [ES] deja al enemigo cargado: el siguiente golpe eléctrico pega más
+    - {id: chaman_cadena_de_relampagos, link: H3, kind: strike, power: 1.9, school: rayo, targets: 5}   # [ES] salta a varios enemigos (máximo 5)
+
+cazador_soporte:
+  group: cazador
+  system: chain
+  icon: "🦅"
+  role: soporte
+  name_key: class.cazador_soporte.name
+  role_key: class.cazador_soporte.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 165, attack: 12.5, armor: 0.12, initiative: 11}   # [ES] esqueleto del soporte (igual para el Mago)
+  per_level: {hp: 14, attack: 1.5}
+  attack: {id: cazador_disparo_automatico, link: B, kind: strike, power: 1.0}
+  abilities:
+    - {id: cazador_disparo_arcano, link: H1, kind: strike, power: 1.3, extend: empower}        # [ES] cada uso alarga un turno la Marca de manada
+    - {id: cazador_marca_de_manada, link: H2, kind: empower, value: 0.3, rounds: 2}           # [ES] un aliado pega más por 2 turnos (va primero en la cadena)
+    - {id: cazador_llamada_salvaje, link: H3, kind: empower, value: 0.4, rounds: 3, group: true, power: 1.0}   # [ES] potencia a todo el grupo (máximo 5); fuerza y turnos escalan con las marcas
+
+mago_soporte:
+  group: mago
+  system: chain
+  icon: "🔮"
+  role: soporte
+  name_key: class.mago_soporte.name
+  role_key: class.mago_soporte.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 165, attack: 12.5, armor: 0.12, initiative: 11}
+  per_level: {hp: 14, attack: 1.5}
+  attack: {id: mago_proyectil_arcano, link: B, kind: strike, power: 1.0}
+  abilities:
+    - {id: mago_lentitud, link: H1, kind: strike, power: 1.3, weaken: 0.05, weaken_rounds: 2, extend: expose}   # [ES] reduce el daño del enemigo y alarga la Fragilidad
+    - {id: mago_fragilidad_arcana, link: H2, kind: expose, value: 0.20, rounds: 2}           # [ES] el enemigo recibe más daño de todo el grupo por 2 turnos (va primero)
+    - {id: mago_ruptura_arcana, link: H3, kind: debuff, expose: 0.20, weaken: 0.05, rounds: 3, interrupt: true, power: 1.0}   # [ES] baja la defensa y el daño del jefe e interrumpe su ataque cargado
+
+cazador_dps:
+  group: cazador
+  system: chain
+  icon: "🏹"
+  role: ataque
+  name_key: class.cazador_dps.name
+  role_key: class.cazador_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: cazador_disparo, link: B, kind: strike, power: 0.7}
+  abilities:
+    - {id: cazador_disparo_firme, link: H1, kind: strike, power: 1.0}
+    - {id: cazador_marca_del_cazador, link: H2, kind: expose, value: 0.2, rounds: 3, mark: true}   # [ES] el enemigo marcado recibe más daño de tus disparos
+    - {id: cazador_disparo_mortal, link: H3, kind: strike, power: 1.9, vs_mark: 1.25}          # [ES] pega más si el enemigo tiene tu marca
+
+mago_dps:
+  group: mago
+  system: chain
+  icon: "🔥"
+  role: ataque
+  name_key: class.mago_dps.name
+  role_key: class.mago_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: mago_chispa, link: B, kind: strike, power: 0.7, school: fuego}
+  abilities:
+    - {id: mago_bola_de_fuego, link: H1, kind: strike, power: 1.0, school: fuego}
+    - {id: mago_ignio, link: H2, kind: dot, power: 0.3, rounds: 3, school: fuego}             # [ES] prende al enemigo, que quema cada turno
+    - {id: mago_piroexplosion, link: H3, kind: strike, power: 1.9, school: fuego, consume_dot: true}   # [ES] detona el Ignio y lo cobra de una vez
+
+# ======================================================================================================================
+# Clases y especializaciones de antes (D-79, D-110): retiradas por el parche 0.31 (retired: true, migrate_to). Sus IDs
+# nunca se borran ni se reutilizan; un héroe guardado con una de ellas pasa a migrate_to al cargar, con su nivel, su
+# experiencia, su equipo y sus monedas, y sus puntos se reparten de nuevo en el rol nuevo (engine/classes/talents.py).
+# ======================================================================================================================
+
 guerrero_furia:
   group: guerrero
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_dps
+  migrate_to: guerrero_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "💢"
   role: ataque
   name_key: class.guerrero_furia.name
@@ -81,6 +340,9 @@ guerrero_furia:
 
 guerrero:
   group: guerrero
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_tanque
+  migrate_to: guerrero_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🏰"
   role: defensa
   name_key: class.guerrero.name
@@ -137,6 +399,9 @@ guerrero:
 
 guerrero_senor_guerra:
   group: guerrero
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_dps
+  migrate_to: guerrero_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🚩"
   role: soporte
   name_key: class.guerrero_senor_guerra.name
@@ -197,6 +462,9 @@ guerrero_senor_guerra:
 
 paladin_reprension:
   group: paladin
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_dps
+  migrate_to: guerrero_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "⚖️"
   role: ataque
   name_key: class.paladin_reprension.name
@@ -254,6 +522,9 @@ paladin_reprension:
 
 paladin_proteccion:
   group: paladin
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_tanque
+  migrate_to: guerrero_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🔰"
   role: defensa
   name_key: class.paladin_proteccion.name
@@ -314,6 +585,9 @@ paladin_proteccion:
 
 paladin_sagrado:
   group: paladin
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_sanador
+  migrate_to: sacerdote_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌅"
   role: curacion
   name_key: class.paladin_sagrado.name
@@ -372,6 +646,9 @@ paladin_sagrado:
 
 cazador_punteria:
   group: cazador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a cazador_dps
+  migrate_to: cazador_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🎯"
   role: ataque
   name_key: class.cazador_punteria.name
@@ -426,6 +703,9 @@ cazador_punteria:
 
 cazador_bestias:
   group: cazador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a cazador_soporte
+  migrate_to: cazador_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐺"
   role: soporte
   name_key: class.cazador_bestias.name
@@ -483,6 +763,9 @@ cazador_bestias:
 
 cazador_supervivencia:
   group: cazador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a cazador_soporte
+  migrate_to: cazador_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🪤"
   role: soporte
   name_key: class.cazador_supervivencia.name
@@ -541,6 +824,9 @@ cazador_supervivencia:
 
 picaro:
   group: picaro
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐍"
   role: ataque
   name_key: class.picaro.name
@@ -596,6 +882,9 @@ picaro:
 
 picaro_sutileza:
   group: picaro
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌑"
   role: soporte
   name_key: class.picaro_sutileza.name
@@ -654,6 +943,9 @@ picaro_sutileza:
 
 picaro_forajido:
   group: picaro
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🏴‍☠️"
   role: soporte
   name_key: class.picaro_forajido.name
@@ -711,6 +1003,9 @@ picaro_forajido:
 
 sacerdote_sombra:
   group: sacerdote
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_dps
+  migrate_to: sacerdote_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "👁️"
   role: ataque
   name_key: class.sacerdote_sombra.name
@@ -767,6 +1062,9 @@ sacerdote_sombra:
 
 sacerdote_sagrado:
   group: sacerdote
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_sanador
+  migrate_to: sacerdote_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "😇"
   role: curacion
   name_key: class.sacerdote_sagrado.name
@@ -822,6 +1120,9 @@ sacerdote_sagrado:
 
 sacerdote:
   group: sacerdote
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_sanador
+  migrate_to: sacerdote_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "📿"
   role: soporte
   name_key: class.sacerdote.name
@@ -879,6 +1180,9 @@ sacerdote:
 
 caballero_muerte_escarcha:
   group: caballero_muerte
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_dps
+  migrate_to: guerrero_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🧊"
   role: ataque
   name_key: class.caballero_muerte_escarcha.name
@@ -935,6 +1239,9 @@ caballero_muerte_escarcha:
 
 caballero_muerte_sangre:
   group: caballero_muerte
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_tanque
+  migrate_to: guerrero_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🫀"
   role: defensa
   name_key: class.caballero_muerte_sangre.name
@@ -994,6 +1301,9 @@ caballero_muerte_sangre:
 
 caballero_muerte_profano:
   group: caballero_muerte
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a guerrero_dps
+  migrate_to: guerrero_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "☣️"
   role: soporte
   name_key: class.caballero_muerte_profano.name
@@ -1052,6 +1362,9 @@ caballero_muerte_profano:
 
 chaman_elemental:
   group: chaman
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_dps
+  migrate_to: chaman_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌩️"
   role: ataque
   name_key: class.chaman_elemental.name
@@ -1106,6 +1419,9 @@ chaman_elemental:
 
 chaman_restauracion:
   group: chaman
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌊"
   role: curacion
   name_key: class.chaman_restauracion.name
@@ -1162,6 +1478,9 @@ chaman_restauracion:
 
 chaman_totems:
   group: chaman
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🗿"
   role: soporte
   name_key: class.chaman_totems.name
@@ -1220,6 +1539,9 @@ chaman_totems:
 
 mago_fuego:
   group: mago
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_dps
+  migrate_to: mago_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "☄️"
   role: ataque
   name_key: class.mago_fuego.name
@@ -1275,6 +1597,9 @@ mago_fuego:
 
 mago_escarcha:
   group: mago
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_soporte
+  migrate_to: mago_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌨️"
   role: soporte
   name_key: class.mago_escarcha.name
@@ -1333,6 +1658,9 @@ mago_escarcha:
 
 mago_arcano:
   group: mago
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_soporte
+  migrate_to: mago_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "💠"
   role: soporte
   name_key: class.mago_arcano.name
@@ -1389,6 +1717,9 @@ mago_arcano:
 
 brujo_destruccion:
   group: brujo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_dps
+  migrate_to: mago_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌋"
   role: ataque
   name_key: class.brujo_destruccion.name
@@ -1445,6 +1776,9 @@ brujo_destruccion:
 
 brujo_demonologia:
   group: brujo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_soporte
+  migrate_to: mago_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "👹"
   role: defensa
   name_key: class.brujo_demonologia.name
@@ -1502,6 +1836,9 @@ brujo_demonologia:
 
 brujo_afliccion:
   group: brujo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_dps
+  migrate_to: sacerdote_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🕸️"
   role: soporte
   name_key: class.brujo_afliccion.name
@@ -1559,6 +1896,9 @@ brujo_afliccion:
 
 monje_viajero_viento:
   group: monje
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌪️"
   role: ataque
   name_key: class.monje_viajero_viento.name
@@ -1614,6 +1954,9 @@ monje_viajero_viento:
 
 monje_maestro_cervecero:
   group: monje
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_tanque
+  migrate_to: druida_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🍺"
   role: defensa
   name_key: class.monje_maestro_cervecero.name
@@ -1670,6 +2013,9 @@ monje_maestro_cervecero:
 
 monje_tejedor_niebla:
   group: monje
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌫️"
   role: curacion
   name_key: class.monje_tejedor_niebla.name
@@ -1727,6 +2073,9 @@ monje_tejedor_niebla:
 
 druida_feral:
   group: druida
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐆"
   role: ataque
   name_key: class.druida_feral.name
@@ -1784,6 +2133,9 @@ druida_feral:
 
 druida_guardian:
   group: druida
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_tanque
+  migrate_to: druida_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐻"
   role: defensa
   name_key: class.druida_guardian.name
@@ -1840,6 +2192,9 @@ druida_guardian:
 
 druida_restauracion:
   group: druida
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌸"
   role: curacion
   name_key: class.druida_restauracion.name
@@ -1894,7 +2249,8 @@ druida_restauracion:
       cooldown: 7
 
 druida_equilibrio:
-  retired: true            # [ES] D-69: máximo 3 especializaciones por clase
+  retired: true
+  migrate_to: cazador_soporte            # [ES] D-69: máximo 3 especializaciones por clase
   group: druida
   role: soporte
   name_key: class.druida_equilibrio.name
@@ -1926,6 +2282,9 @@ druida_equilibrio:
 
 cazador_demonios_estrago:
   group: cazador_demonios
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🦇"
   role: ataque
   name_key: class.cazador_demonios_estrago.name
@@ -1982,6 +2341,9 @@ cazador_demonios_estrago:
 
 cazador_demonios_venganza:
   group: cazador_demonios
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_tanque
+  migrate_to: druida_tanque
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "👺"
   role: defensa
   name_key: class.cazador_demonios_venganza.name
@@ -2041,6 +2403,9 @@ cazador_demonios_venganza:
 
 cazador_demonios_devorador:
   group: cazador_demonios
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🕳️"
   role: soporte
   name_key: class.cazador_demonios_devorador.name
@@ -2098,6 +2463,9 @@ cazador_demonios_devorador:
 
 evocador_devastacion:
   group: evocador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_dps
+  migrate_to: chaman_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐲"
   role: ataque
   name_key: class.evocador_devastacion.name
@@ -2153,6 +2521,9 @@ evocador_devastacion:
 
 evocador_preservacion:
   group: evocador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "⏳"
   role: curacion
   name_key: class.evocador_preservacion.name
@@ -2209,6 +2580,9 @@ evocador_preservacion:
 
 evocador_aumentacion:
   group: evocador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a cazador_soporte
+  migrate_to: cazador_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🔆"
   role: soporte
   name_key: class.evocador_aumentacion.name
@@ -2268,6 +2642,9 @@ evocador_aumentacion:
 
 nigromante_plaga:
   group: nigromante
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_dps
+  migrate_to: sacerdote_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🪦"
   role: ataque
   name_key: class.nigromante_plaga.name
@@ -2323,6 +2700,9 @@ nigromante_plaga:
 
 nigromante_legion:
   group: nigromante
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a mago_soporte
+  migrate_to: mago_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🧟"
   role: defensa
   name_key: class.nigromante_legion.name
@@ -2381,6 +2761,9 @@ nigromante_legion:
 
 nigromante_drenaje:
   group: nigromante
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a sacerdote_sanador
+  migrate_to: sacerdote_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🧛"
   role: curacion
   name_key: class.nigromante_drenaje.name
@@ -2438,6 +2821,9 @@ nigromante_drenaje:
 
 bardo_duelista:
   group: bardo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a druida_dps
+  migrate_to: druida_dps
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🤺"
   role: ataque
   name_key: class.bardo_duelista.name
@@ -2494,6 +2880,9 @@ bardo_duelista:
 
 bardo_trovador:
   group: bardo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
+  migrate_to: chaman_sanador
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🎶"
   role: curacion
   name_key: class.bardo_trovador.name
@@ -2549,6 +2938,9 @@ bardo_trovador:
 
 bardo_estratega:
   group: bardo
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a cazador_soporte
+  migrate_to: cazador_soporte
+  retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🥁"
   role: soporte
   name_key: class.bardo_estratega.name

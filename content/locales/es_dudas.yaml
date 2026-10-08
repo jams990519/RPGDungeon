@@ -117,7 +117,7 @@ faq:
   # ---- ⚔️ Peleas y salud
   d21:
     q: "⚔️ ¿Cómo funciona una pelea?"
-    a: "Las peleas son por rondas: eliges una acción de tu barra (⚔️ atacar, tus habilidades, 🌀 esquivar, 🎒 usar algo o 🏃 huir) y el enemigo responde. Pelear no gasta energía. Ganar da experiencia, monedas y a veces equipo."
+    a: "Las peleas son por rondas y tienes 4 botones: ⚔️ Básico (cuesta 0 y da +1 de energía), Constructor (2), Preparador (3) y 💥 Gastador (6). Arrancas con 5 de energía y ganas 2 por turno. Cada botón en el orden de tu rol suma una marca y el Gastador las cobra (hasta +50 %); romper el orden corta la cadena. 🛡️ Defenderse o una poción cuestan 1 y gastan el turno; 🏃 Huir está en 🎒 Mochila. Pelear no gasta ⚡."   # [ES] 0.31 (D-225, D-226)
   d22:
     q: "💀 ¿Qué pasa si pierdo?"
     a: "Si caes, despiertas malherido: pierdes el {defeat_pct} % de tus monedas y tu vida vuelve muy despacio (de 0 a llena en {downed_full}). Una poción o la 🛏️ Posada lo arreglan antes. No pierdes niveles, equipo ni zonas."
@@ -129,20 +129,20 @@ faq:
     a: "En ⚙️ Opciones prendes ⚔️ Peleas automáticas: en los lotes de explorar, recolectar o cazar tu héroe pelea solo, con las mismas reglas. 🩹 Retirarse corta el lote si tu vida baja de ese %. El Guardián, las mazmorras, las oleadas y los asaltos siempre se pelean a mano."
   d25:
     q: "📊 ¿Qué son ataque y defensa?"
-    a: "En 👤 Héroe → 📊 Estadísticas está cada número con lo que hace: ❤️ vida, ⚔️ ataque, 🛡 defensa (armadura), iniciativa, aguante y tu recurso. Suben con el nivel, los talentos y el equipo."
+    a: "En 👤 Héroe → 📊 Estadísticas está cada número con lo que hace: ❤️ vida, ⚔️ ataque, 🛡 defensa (armadura) e iniciativa. Suben con el nivel, tus puntos de nivel y el equipo. Las clases de un mismo rol arrancan con los mismos números: lo que te separa es tu equipo y tu nivel."   # [ES] 0.31 (D-232)
   # ---- 👤 Tu héroe
   d26:
     q: "🎖 ¿Cómo subo de nivel?"
     a: "Ganas experiencia explorando, recolectando, cazando, fabricando y con los encargos. Todos los caminos llegan al nivel {max_level}, despacio: es un juego largo. En 👤 Héroe ves tu nivel y cuánto falta."
   d27:
     q: "🌟 ¿Qué son los talentos?"
-    a: "Cada nivel te da 1 punto de talento para una especialización de tu clase (👤 Héroe → 🌟 Talentos). Con {talent_unlock} puntos se abren sus habilidades. Reiniciar cuesta {respec_cost} por nivel."
+    a: "Cada clase tiene 2 roles. Eliges el primero al crear tu héroe y el segundo lo aprendes al nivel {second_role}, gratis: cambias de rol cuando quieras en 👤 Héroe → 🌟 Talentos. Cada nivel te da 1 punto, que se pone solo en tu rol activo y te hace un poco más fuerte."   # [ES] 0.31 (D-230)
   d28:
     q: "🎛️ ¿Cómo elijo mis habilidades?"
-    a: "Tu barra de combate tiene 3 casillas además de atacar. Elige qué va en cada una en 👤 Héroe → 🎛️ Barra de combate. Las habilidades nuevas se abren con los puntos de 🌟 Talentos."
+    a: "Tus 4 botones son fijos y están abiertos desde el principio: Básico, Constructor, Preparador y Gastador. Cada rol pide su orden (lo ves en 🌟 Talentos y en cada pelea). Al nivel {hybrid_level} llega el modo híbrido, para mezclar habilidades de tus dos roles."   # [ES] 0.31 (D-225, D-230)
   d29:
     q: "🔀 ¿Qué es la doble especialización?"
-    a: "Con {dual_points} puntos en tu especialización principal y {dual_bags} 💰 bolsas abres una segunda configuración de talentos con /doble, y cambias entre las dos cuando quieras."
+    a: "Es tu segundo rol: al nivel {second_role} lo aprendes gratis y desde ahí cambias entre tus dos roles cuando quieras en 👤 Héroe → 🌟 Talentos. Tus puntos se reparten solos en el rol que juegas."   # [ES] 0.31 (D-230)
   d30:
     q: "🎒 ¿Cómo funciona la mochila?"
     a: "La 🎒 mochila tiene {bag_cap} de espacio: cada unidad ocupa 1 (el cinturón y lo que llevas puesto no cuentan). Lo que encuentras nunca se pierde aunque pase del espacio, pero con la mochila llena no recolectas ni compras hasta vender o usar cosas."

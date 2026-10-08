@@ -13,6 +13,8 @@ Datos de los que es dueño: espacio "combat" del almacén (clave = id del héroe
 Reglas que nunca se rompen:
     1. Una sola elección por ronda; respuestas y objetos van primero; huir va al final (D-46, ronda §6).
     2. Todo el azar sale de la semilla guardada del combate.
+0.31 (D-225 a D-232): las 6 clases nuevas juegan el combate en cadena (engine/combat/chain.py y chain_round.py): 4 botones
+(Básico, Constructor, Preparador, Gastador), energía 5 y +2 por turno, marcas y premio; 🛡️ Defenderse y 🎒 Mochila (con 🏃 Huir).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — arma las vistas de combate
     - Números: balance.yaml combat.*, classes.yaml, enemies.yaml

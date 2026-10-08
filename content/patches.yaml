@@ -507,3 +507,13 @@ v0_30_2:
     - "🗺️ El mapa se ve en blanco: cada zona aparece con su color cuando la investigas a la mitad. Solo se ven tú y el 🔥 campamento; las mazmorras, los nodos y los campamentos se descubren caminando."
     - "📒 Lugares muestra los lugares importantes que ya visitaste (el campamento, mazmorras, campamentos de jugadores), cada uno con su código: escribe /ir1, /ir2… o toca el botón."
     - "🧭 Antes de viajar te pregunta si quieres ir, con cuánto tardas. Confirmas y tu héroe va solo."
+
+
+v0_31:
+  version: "0.31"
+  title: "⚔️ Lost Realms 0.31: seis clases nuevas y el combate en cadena"
+  notes:
+    - "⚔️ Llegan las 6 clases nuevas, cada una con 2 roles: 🏰 Guerrero (tanque o DPS), 🌳 Druida (tanque o DPS), 📿 Sacerdote (sanador o DPS), 🌩️ Chamán (sanador o DPS), 🏹 Cazador (soporte o DPS) y 🔮 Mago (soporte o DPS). Tu héroe ya pasó a la más parecida a la que tenía, con su nivel, su equipo, sus monedas y sus oficios."
+    - "🔗 Todas pelean igual: 4 botones (Básico, Constructor, Preparador y Gastador) y energía que arranca en 5 y sube 2 por turno. Cada botón en el orden de tu rol suma una marca, y el Gastador las cobra: hasta +50 % si juntas 5 o más. Romper el orden corta la cadena; el Básico nunca la corta."
+    - "🛡️ Defenderse y tomar una poción cuestan 1 de energía y gastan tu turno. 🏃 Huir está en 🎒 Mochila."
+    - "🔄 Al nivel 5 aprendes tu segundo rol, gratis: cámbialo cuando quieras en 👤 Héroe → 🌟 Talentos. Tus puntos de nivel se ponen solos en tu rol."

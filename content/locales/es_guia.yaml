@@ -161,9 +161,9 @@ guide:
     fight:
       name: "Tu primera pelea"
       text: |-
-        • Cada ronda eliges una sola acción: ⚔️ Atacar, una habilidad, 🌀 Esquivar o 🏃 Huir.
-        • Lee el ⚠️ aviso: dice qué prepara el enemigo. Contra un golpe grande, mejor defenderte.
-        • 🎒 Mochila: usas una poción o una venda del cinturón (gasta tu turno).
+        • Tienes 4 botones: ⚔️ Básico (da +1 de energía), Constructor (2), Preparador (3) y 💥 Gastador (6). Arrancas con 5 de energía y ganas 2 por turno.
+        • Sigue el orden de tu rol (🔗 Tu cadena): cada botón en orden suma una marca y el Gastador las cobra. El Básico nunca corta la cadena.
+        • Lee el ⚠️ aviso: contra un golpe grande, 🛡️ Defenderse (1 de energía). En 🎒 Mochila: pociones y 🏃 Huir.
     downed:
       name: "Caíste en combate"
       text: |-
