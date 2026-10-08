@@ -432,3 +432,20 @@ Pedido del dueño por voz, con capturas de 📍 Zona y del 🗺️ Mapa (transcr
 **Cómo se interpretó:** el primer pedido es la pantalla 📍 Zona (la captura): bloques cortos y un recurso por renglón. El segundo es el 🗺️ Mapa (la otra captura): debajo de la cuadrícula no queda nada, y el botón pasa a "Moverte a la mazmorra" con su tiempo, solo para una mazmorra que ya visitaste. Claude aplicó la misma regla al campamento enemigo del mapa y al "Moverte allá" de 🔭 Reconocer, y mudó las listas de abajo del mapa a 📒 Lugares para no perder lo que da el oficio de Explorador; las dos cosas quedan por confirmar (E-202 y E-203).
 
 **Qué se registró:** D-221 y D-222, confirmadas, en el juego desde la 0.30.1. Detalle en [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.9.1.
+
+## 8-oct-2026 · Mapa en blanco, hogueras y Lugares
+
+Pedido del dueño por voz, con una captura del 🗺️ Mapa (transcripción tal como llegó, resumida en lo que pide):
+
+> Guardia del guardián. No sé ni siquiera qué es eso. […] A medida que va aumentando ya pasa de ser color blanco al color correspondiente de acuerdo a la zona. […] Las mazmorras no las vas a anunciar. Los nodos de recursos tampoco los vas a anunciar. Nada se va a ver en el mapa. El mapa se va a ver en blanco. Lo único que se va a ver es la hoguera. Y la hoguera no se va a llamar claro. Se va a llamar campamento. […] A las doce posiciones del mapa siempre va a haber una hoguera. Donde tú sales siempre hay una hoguera. Los jugadores los vas a respawnear a medida que van entrando en las cinco o diez hogueras más cercanas, de tal manera que les va a costar un poquitico encontrar jugadores más adelante, pero los van a poder encontrar. […] Coordenadas para abajo, todo eso lo vas a quitar. Lugares, vas a mantener lugares: los lugares más importantes únicamente. El botón de ir a las mazmorras lo vas a quitar. Te va a salir un botón o un código que te va a permitir ir hacia ese lugar. Te va a preguntar para confirmar. Y listo.
+
+**Cómo se interpretó:**
+- La captura era el mapa de la 0.30: las coordenadas y las listas de abajo ya se habían quitado en la 0.30.1.
+- "Pasa de blanco al color" se tomó como: sin etapas intermedias.
+- "La hoguera se llama campamento" se aplicó en el mapa; en el resto del juego queda para E-205.
+- Las hogueras cada 12 zonas cambian dónde nace cada jugador y la dificultad del comienzo, así que esperan su respuesta (E-204).
+
+**Qué se registró:**
+- D-223, confirmada, en el juego desde la 0.30.2.
+- D-224, confirmada, por programar.
+- Preguntas nuevas: E-204 a E-207. E-202 queda cerrada por D-223.

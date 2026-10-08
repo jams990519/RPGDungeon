@@ -1316,15 +1316,16 @@ activity:
 
 map:
   title: "🗺️ Tu mapa"
-  legend: "🧍 tú · 👑 guarida del Guardián · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
+  legend: "🧍 tú · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "🎨 Terrenos que conoces ({n} de {total}): {items}. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-220: solo los terrenos con una zona investigada al 50 % (y el 🔥 Claro)
+  bonfire: "Campamento"   # [ES] D-223 (0.30.2): en el mapa, el 🔥 del inicio se llama campamento (la hoguera), no "Claro"
   fog:                          # [ES] D-212, D-220 (0.30): el mapa gris que se desbloquea por etapas al investigar
     name:                       # [ES] nombre de cada etapa gris (las ids salen de balance.yaml map_view.fog.stages)
       unknown: "sin investigar"
       traces: "con rastros"
       scouted: "reconocida"
-    here: "{mark} Aquí: {stage}, investigada al {pct} %. Al {need} % verás su color y su terreno en el mapa."
+    here: "{mark} Esta zona sigue en blanco en tu mapa: la investigaste al {pct} %. Al {need} % verás su color."   # [ES] D-223: en 📍 Zona
     stage: "{mark} {name} ya se ve en tu 🗺️ Mapa como {stage}."
     colored: "🎨 Ya investigaste {name} a la mitad: en tu 🗺️ Mapa aparece con su color. Es {terrain}."
     new_terrain: "🆕 ¡Terreno nuevo en tu mapa! {terrain} (ya conoces {n} de {total})."
@@ -1505,13 +1506,23 @@ combat:
   busy: "⚔️ Estás en combate: termina la pelea primero."
 
 places:
-  title: "📒 Lugares que recuerdas"
-  intro: "Recuerdas {n} {n|lugar|lugares}. Elige uno y tu héroe irá solo, zona por zona."
+  title: "📒 Lugares"
   line: "{biome} {name} · a {zones} {zones|zona|zonas} · {time}"
   go_button: "{name} · {time}"
-  none: "Todavía no recuerdas otros lugares. Sal a explorar."
+  none: "Todavía no conoces otros lugares importantes: sal a explorar."
   more: "…y {n} más, más lejos."
-  marks_title: "🔭 Lo que marca tu mapa:"   # [ES] D-222 (0.30.1): las listas que iban debajo del 🗺️ Mapa (guarida, campamentos enemigos, mazmorras, nodos, reconocer)
+  marks_title: "🔭 Lo que marca tu mapa:"   # [ES] sin uso desde la 0.30.2 (D-223: el mapa no anuncia nada)
+  intro: "📒 Los lugares importantes que conoces. Toca uno o escribe su código y confirma: tu héroe irá solo, zona por zona."   # [ES] D-223
+  code_line: "{n}. {icon} {name} · a {zones} {zones|zona|zonas} · {time} · /ir{n}"
+  dungeon_small: "{name}, mazmorra chica"
+  dungeon_deep: "{name}, mazmorra profunda"
+  unknown: "Ese lugar ya no está en tu lista: elige uno de aquí."
+  bad_code: "Ese código no está en tu lista de lugares: usa uno de los que ves aquí."
+  confirm_title: "🧭 ¿Viajar?"
+  confirm: "Vas a ir a {icon} {name}: {zones} {zones|zona|zonas}, unos {time}."
+  confirm_hint: "Tu héroe va solo, zona por zona. Puedes cerrar el chat: te aviso al llegar."
+  confirm_yes: "✅ Sí, ir"
+  confirm_no: "↩️ No, volver"
 
 shop:
   button: "🏪 Mercader"

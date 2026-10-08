@@ -230,6 +230,21 @@ Hondonada de los Huesos — 🌲 Bosque
 
 **"Moverte a", solo a lugares que ya visitaste (D-222).** El botón del mapa que decía "Ir a la mazmorra" ahora dice **"🌀 Moverte a la mazmorra · 5 min"** y solo sale para la mazmorra más cercana que ya pisaste (o exploraste desde al lado: la memoria del héroe, `hero.known`). A una mazmorra que solo ves en el mapa se llega caminando por las 🧭 Rutas; después ya puedes volver de una vez. Lo mismo vale para el 👹 campamento enemigo del mapa, el "🧭 Moverte allá" de 🔭 Reconocer y cualquier viaje directo ("goto:"); 📒 Lugares ya solo ofrecía lugares que recuerdas (a confirmar en E-203).
 
+**🗺️ Mapa en blanco y 📒 Lugares con confirmación (D-223, desde la 0.30.2).** El 8-oct el dueño pidió que el mapa "se vea en blanco" y que lo único que se vea sea la hoguera:
+
+- **Qué dibuja:** 🧍 tú y cada zona: ▫️ en blanco hasta investigarla al 50 % y después el color de su terreno. El 🔥 del inicio se ve siempre y en la leyenda se llama **Campamento** (la hoguera). Ya no se dibujan 🕳️ 🌀 mazmorras, ✨ nodos, 👹 campamentos enemigos, 🏕️ campamentos de jugadores ni la 👑 guarida: se descubren caminando. Las etapas ◽ ◻️ de la 0.30 se retiraron.
+- **Leyenda:** "🧍 tú · ▫️ sin investigar · al 50 % ves su color · el norte está arriba", y la línea de los terrenos que conoces.
+- **Botones:** solo 📒 Lugares y ↩️ Volver. Ya no hay "Moverte a la mazmorra".
+- **📒 Lugares:** los lugares importantes que ya visitaste: el 🔥 Claro (siempre), los 🏕️ campamentos de jugadores, las 🕳️ 🌀 mazmorras y la 👑 guarida. Cada uno con su tiempo y su código (/ir1, /ir2…); los 3 más cercanos traen además un botón. Elegir uno abre "🧭 ¿Viajar?" con ✅ Sí, ir y ↩️ No, volver; al confirmar, el héroe va solo, zona por zona. Sin el rango 10 de 🧭 Explorador se listan 3; desde el 10, hasta 8 (D-112).
+- A confirmar: el nombre "Campamento" en el resto del juego (E-205), qué cuenta como lugar importante (E-206) y dónde ve el 🧭 Explorador lo que antes veía en el mapa (E-207).
+
+### 1.9.2 Hogueras cada 12 zonas (D-224, por programar)
+
+El dueño pidió (8-oct) que cada 12 zonas del mapa haya una **hoguera**, que en el inicio siempre haya una, y que los jugadores nuevos nazcan repartidos entre las 5 a 10 hogueras más cercanas, para que cueste un poco encontrar gente más adelante, pero se pueda.
+
+- **El problema a resolver antes de programar:** hoy los monstruos suben de nivel con la distancia al inicio (Lejanía). Una hoguera a 12 zonas tiene enemigos de nivel 13, y un jugador nuevo no sobrevive ahí.
+- **Propuesta de Claude (E-204):** las 9 hogueras del centro (el inicio y las 8 de alrededor, a 12 zonas) son comienzos seguros: el peligro se cuenta desde la más cercana de ellas. Más allá de ese cuadro, el peligro sigue subiendo como hoy hasta el nivel 100. Cada hoguera tiene descanso y el mercader básico, como el Claro. Los nuevos nacen al azar en una de esas 9; las de más afuera se ven y sirven de parada. Los jugadores de hoy no se mueven.
+
 ### 1.10 Pantalla de ejemplo
 
 Salida real del motor en la v0.1 (semilla 1), tras ir norte, norte y este desde el Claro. Es historia: la pantalla de hoy está en §1.9.1.

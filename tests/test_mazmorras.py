@@ -438,30 +438,26 @@ def test_automatic_fights_never_fight_in_a_dungeon(service):
 
 # ---------------------------------------------------------------- the 🗺️ Mapa (D-171)
 
-def test_the_map_shows_something_is_there_before_you_know_what(service):
-    """D-171, D-181; D-222 (0.30.1): the list of what the map marks lives in 📒 Lugares, and "Moverte a" only goes where you were."""
+def test_the_map_never_shows_dungeons_and_places_keeps_the_ones_you_visited(service):
+    """D-171, D-181; D-223 (0.30.2): the map draws no dungeons (you find them walking); once you were there, 📒 Lugares
+    offers it with its code, asking before the trip."""
     make_hero(service)
     x, y = dungeon_zone(service, "deep")
-    place(service, "test:1", x, y + 2, known=["0:0", f"{x}:{y + 2}"])                    # 2 zones away: within hint_radius
-    view = service.act("test:1", "places")
-    assert any(line.startswith(f"🕳️ ({x}, {y})") and "cueva" in line for line in view.body)   # D-181: a cave, not which
-    assert not any(line.startswith(f"🌀 ({x}, {y})") for line in view.body)
+    place(service, "test:1", x, y + 2, known=["0:0", f"{x}:{y + 2}"])                    # 2 zones away
     mapv = service.act("test:1", "map")
-    assert not any(f"({x}, {y})" in line for line in mapv.body)                         # nothing under the grid
-    assert not any(a.id == f"goto:{x}:{y}" for a in mapv.actions)                       # never visited: walk there
-    service.act("test:1", f"goto:{x}:{y}")
+    assert not any("🕳️" in row or "🌀" in row for row in mapv.body)                       # nothing drawn
+    assert [a.id for a in mapv.actions] == ["places", "explore_menu"]
+    assert not any(a.id == f"goask:{x}:{y}" for a in service.act("test:1", "places").actions)
+    service.act("test:1", f"goto:{x}:{y}")                                              # never visited: walk there
     assert not service._load("test:1").activity
-    place(service, "test:1", x, y + 1, activity=None, known=["0:0", f"{x}:{y}", f"{x}:{y + 1}"])
-    assert any(line.startswith(f"🌀 ({x}, {y})") for line in service.act("test:1", "places").body)   # now you know what it is
-    place(service, "test:1", x, y + 2, activity=None, known=["0:0", f"{x}:{y}", f"{x}:{y + 1}", f"{x}:{y + 2}"])
-    mapv = service.act("test:1", "map")                                                 # visited: "Moverte a" with its time
-    button = next(a for a in mapv.actions if a.id == f"goto:{x}:{y}")
-    assert "Moverte a la mazmorra" in button.label and "min" in button.label and len(mapv.actions) <= 4
-    service.act("test:1", f"goto:{x}:{y}")
+    place(service, "test:1", x, y + 2, activity=None, known=["0:0", f"{x}:{y}", f"{x}:{y + 2}"])
+    places = service.act("test:1", "places")
+    assert any("mazmorra profunda" in line and "/ir" in line for line in places.body)
+    button = next(a for a in places.actions if a.id == f"goask:{x}:{y}")
+    confirm = service.act("test:1", button.id)
+    assert confirm.kind == "place_confirm"
+    service.act("test:1", confirm.actions[0].id)
     assert service._load("test:1").activity["kind"] == "travel"
-    far = [x + 12, y + 12]
-    place(service, "test:1", far[0], far[1], activity=None, known=["0:0", f"{far[0]}:{far[1]}"])
-    assert not any(f"({x}, {y})" in line for line in service.act("test:1", "places").body)
     assert not service.texts.missing
 
 

@@ -63,7 +63,7 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   xp_per_step: 5             # [ES] experiencia de Explorador por cada vuelta de exploración...
   xp_full_zone: 6            # [ES] ...y un extra al dejar una zona al 100 %. Unos 6 por ⚡ en total, como refinar (6): rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año dedicado (la curva es la de todos los oficios)
   ranks:                     # [ES] desde qué rango de Explorador se abre cada cosa (⚒️ Oficios muestra la lista)
-    travel: 10               # [ES] ⏱️ 📒 Lugares lista hasta places_listed lugares con su tiempo, y el 🗺️ Mapa dice cuánto tardas a cada zona que marca (campamentos, guarida, tu campamento)
+    travel: 10               # [ES] ⏱️ 📒 Lugares lista hasta places_listed lugares importantes con su tiempo y su código /irN (D-223)
     recon: 10                # [ES] D-172: 🔭 Reconocer de lejos (/reconocer) las ❓ mazmorras y los 👹 campamentos hasta recon.range.recon zonas (1: las 8 vecinas)
     camps_near: 25           # [ES] 👹 ve los campamentos enemigos hasta near_radius zonas, aunque no los haya pisado
     infiltrate: 30           # [ES] 🕵️ Infiltrarse en un campamento enemigo
@@ -75,7 +75,7 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
   base_sight: 1              # [ES] cualquiera ve los campamentos de su zona y de las 8 vecinas
   near_radius: 3             # [ES] desde el rango camps_near: hasta 3 zonas a la redonda (7 × 7)
   places_listed: 8           # [ES] desde el rango travel, 📒 Lugares lista hasta 8 lugares con su tiempo (sin ese rango, 3; los botones siguen siendo 3)
-  map_lines: 4               # [ES] cuántos campamentos enemigos lista el mapa debajo de los cuadritos (los más cercanos)
+  map_lines: 4               # [ES] cuántos campamentos enemigos lista el mapa debajo de los cuadritos (los más cercanos). D-223 (0.30.2): sin uso, el mapa no lista nada; queda hasta E-207
   title: gran_explorador     # [ES] id del título del rango 100 (estable; se guarda en Hero.titles)
   stealth_max: 0.5           # [ES] D-172: 🥷 Sigilo nunca pasa de 50 % (el oficio da hasta 25 % al rango 100, perk stealth de content/professions.yaml, y la 🎓 🕵️ Infiltrado hasta 10 puntos más: 35 %)
 
@@ -118,11 +118,11 @@ dungeons:                    # [ES] D-164, D-170, D-171 (confirmadas): mazmorras
   min_lejania: 2             # [ES] desde qué Lejanía hay entradas (nunca en el Claro). Tampoco en la guarida ni en el territorio de un campamento de jugadores; un campamento enemigo en pie tapa la entrada ese día
   spacing: 1                 # [ES] dos entradas del mismo tramo nunca quedan pegadas (a 1 zona o menos)
   deep_share: 0.25           # [ES] 1 de cada 4 entradas es 🌀 profunda; las demás, 🕳️ chicas
-  hint_radius: 2             # [ES] D-171: el 🗺️ Mapa marca ❓ una entrada si pisaste o estudiaste una zona a 2 o menos de ella; qué es (🕳️ o 🌀) lo sabes al pisar su zona o estudiarla desde la de al lado (explorar alrededor, D-107)
+  hint_radius: 2             # [ES] D-171: el héroe sabe que hay una entrada (🔭 la lista; D-223: el 🗺️ Mapa ya no la dibuja) si pisaste o estudiaste una zona a 2 o menos de ella; qué es (🕳️ o 🌀) lo sabes al pisar su zona o estudiarla desde la de al lado (explorar alrededor, D-107)
   level_bonus: 1             # [ES] la mazmorra es del nivel de su zona + 1, como los campamentos enemigos
   coin_unit: 4               # [ES] lo que suelta en monedas una pelea común de nivel 1, en promedio (4 🥉); sube 10 % por nivel como en el combate (coin_level_scale). Los cofres se cuentan en "peleas de monedas"
   coin_level_scale: 0.1      # [ES] el mismo 10 % por nivel que usa el combate para las monedas de cada victoria
-  map_lines: 3               # [ES] cuántas entradas lista el 🗺️ Mapa debajo de los cuadritos (las más cercanas)
+  map_lines: 3               # [ES] cuántas entradas lista el 🗺️ Mapa debajo de los cuadritos (las más cercanas). D-223 (0.30.2): sin uso, el mapa no lista nada; queda hasta E-207
   small:                     # [ES] 🕳️ mazmorra chica (como los delves de Elder Scrolls Online): estructura fija, recompensa modesta
     rooms: 4                 # [ES] 4 salas y el jefe: 5 peleas, siempre las mismas cantidades (D-164)
     fight_energy: 2          # [ES] cada pelea cuesta 2 ⚡, como una presa o un asalto (D-108): 10 ⚡ toda la mazmorra. Nunca es automática (D-114)
@@ -186,8 +186,8 @@ map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (p
     color_at: 50             # [ES] desde este % la zona muestra el color de su terreno y su tipo entra en la leyenda (dueño: "cuando lo investigas al 50 %")
     stages:                  # [ES] de menos a más (at = desde qué %); el nombre de cada una está en content/locales (map.fog.name.<id>). notice: avisa al llegar
       - {id: unknown, at: 0, mark: "▫️"}               # [ES] sin investigar
-      - {id: traces, at: 1, mark: "◽"}                 # [ES] con rastros: ya sabes el primer recurso (exploration.reveal_at)
-      - {id: scouted, at: 25, mark: "◻️", notice: true} # [ES] reconocida: ya sabes 2 recursos
+      - {id: traces, at: 1, mark: "◽", retired: true}   # [ES] D-223 (0.30.2): retirada; el mapa queda en blanco ▫️ hasta el color                 # [ES] con rastros: ya sabes el primer recurso (exploration.reveal_at)
+      - {id: scouted, at: 25, mark: "◻️", notice: true, retired: true}   # [ES] D-223: retirada (el dueño: "pasa de blanco al color de la zona")
 
 resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar escalas o umbrales mueve los recursos de un mundo ya creado)
   per_page: 8                # [ES] cuántos recursos muestra cada página de 📦 Recursos en la mochila
@@ -228,8 +228,8 @@ nodes:                       # [ES] D-181 (confirmada) y D-184 (provisional; nú
   yield_mult: 2.0            # [ES] E-124: cada unidad de su recurso que recolectas ahí vale 2 (rinde el doble)...
   stock_mult: 0.5            # [ES] ...y lo agota la mitad (cada recolección baja stock.per_unit × 0,5)...
   rare_chance: 0.05          # [ES] ...y cada vuelta de recolección ahí tiene 5 % de dar 1 material raro de su terreno (content/biomes.yaml node_rare: 💠 gema en bruto o 🌸 flor de luna), con sorteo propio
-  hint_radius: 2             # [ES] el 🗺️ Mapa marca ✨ un nodo si recuerdas una zona a 2 o menos de él (como las cuevas); de qué es (el emoji de su recurso) lo sabes solo al LLEGAR a su zona (D-181), para siempre. Explorar alrededor y el 🔭 Reconocer no lo descubren (E-125 abierta)
-  map_lines: 2               # [ES] cuántos nodos lista el 🗺️ Mapa debajo de los cuadritos (los más cercanos)
+  hint_radius: 2             # [ES] el héroe sabe de un nodo si recuerdas una zona a 2 o menos de él (D-223: el 🗺️ Mapa ya no lo dibuja); de qué es (el emoji de su recurso) lo sabes solo al LLEGAR a su zona (D-181), para siempre. Explorar alrededor y el 🔭 Reconocer no lo descubren (E-125 abierta)
+  map_lines: 2               # [ES] cuántos nodos lista el 🗺️ Mapa debajo de los cuadritos (los más cercanos). D-223 (0.30.2): sin uso, el mapa no lista nada; queda hasta E-207
 
 hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0). Números orientativos: se ajustan en la beta
   energy: 2                  # [ES] D-108 (confirmada): cada presa cuesta 2 de energía, así cazar da una experiencia por ⚡ parecida a explorar y recolectar (con 1, cazar llegaría al 100 el doble de rápido). La pelea en sí no gasta (D-78). No hay presas donde el bioma no tiene peligro (el Claro) ni en la guarida del Guardián

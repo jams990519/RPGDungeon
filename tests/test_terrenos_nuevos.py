@@ -120,8 +120,7 @@ def test_the_new_terrains_appear_on_the_tetris_map_with_their_legend(service):
         in_view = {service._zone(a, b).biome for a in range(x - radius, x + radius + 1)
                    for b in range(y - radius, y + radius + 1)}
         for biome in in_view:                                                  # the legend names what you know
-            bdef = service.content.biomes[biome]
-            assert f"{bdef['color']} {service.texts.t(bdef['name_key'])}" in legend, biome   # the legend builds itself
+            assert service._terrain_label(biome) in legend, biome                 # the legend builds itself (D-223: 🔥 Campamento)
         for row in rows:
             seen |= {service.content.biomes[b]["color"] for b in NEW if service.content.biomes[b]["color"] in row}
     assert seen == {service.content.biomes[b]["color"] for b in NEW}

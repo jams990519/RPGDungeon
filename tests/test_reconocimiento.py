@@ -3,10 +3,10 @@
 [ES] Pruebas del reconocimiento y del sigilo. 🔭 Reconocer se abre al rango 10 de Explorador y llega a 1 zona (2 al 30, 3 al 50),
 nunca a tu propia zona; cuesta 2 ⚡, da experiencia de Explorador, de héroe y unas monedas, y se hace una vez por lugar y día
 (al otro día, otra vez). Muestra lo mismo que vería cualquiera ese día: la familia y el jefe de una mazmorra (y el récord de la
-profunda), la guarnición y el jefe de un campamento enemigo, sin su cofre y sin gastar la infiltración. Lo reconocido queda en el
-🗺️ Mapa y en 📍 Zona. 🥷 Sigilo crece parejo con el rango (25 % al 100, más la 🕵️ Infiltrado, con tope), evita peleas al azar al
-explorar con ✋ Manual y en la emboscada del viaje, y nunca en lotes automáticos, cacerías, asaltos, mazmorras, oleadas ni el
-Guardián. Los héroes de antes cargan, ninguna pantalla pasa de 4 botones y ningún texto falta.
+profunda), la guarnición y el jefe de un campamento enemigo, sin su cofre y sin gastar la infiltración. Lo reconocido queda en la
+lista de 🔭 Reconocer y en las rutas de 📍 Zona (D-223: el 🗺️ Mapa ya no lo dibuja). 🥷 Sigilo crece parejo con el rango (25 %
+al 100, más la 🕵️ Infiltrado, con tope), evita peleas al azar al explorar con ✋ Manual y en la emboscada del viaje, y nunca
+en lotes automáticos, cacerías, asaltos, mazmorras, oleadas ni el Guardián. Los héroes de antes cargan, ninguna pantalla pasa de 4 botones y ningún texto falta.
 """
 
 import re
@@ -209,38 +209,43 @@ def test_a_camp_shows_garrison_and_chief_not_the_chest_and_infiltration_stays(se
     assert [line for line in inside.body if line.startswith(same)] == [line for line in one.body if line.startswith(same)]
 
 
-def test_scouted_places_show_on_the_map_and_on_the_routes(service):
+def test_scouted_places_show_on_the_recon_list_and_on_the_routes(service):
+    """D-223 (0.30.2): the 🗺️ Mapa draws nothing of it; 🔭 Reconocer and the 📍 Zona routes say what you scouted."""
     x, y = dungeon_zone(service, "deep")
-    scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])          # 2 zones away: the 🕳️ cave on the map
-    view = service.act("test:1", "places")                                          # D-222 (0.30.1): the list is in 📒 Lugares
-    assert any(line.startswith(f"🕳️ ({x}, {y})") and "cueva" in line for line in view.body)
-    assert any("/reconocer" in line for line in view.body)
+    scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])          # 2 zones away: within reach at rank 30
+    radius = service.content.balance["map_view"]["radius"]
+
+    def cell():                                                                     # its square on the grid, 2 rows below you
+        return re.findall(r".\ufe0f?", service.act("test:1", "map").body[2 + radius + 2])[radius]
+
+    assert cell() not in ("🕳️", "🌀")                                              # the map is blank (D-223)
+    assert any(line.startswith(f"🕳️ ({x}, {y})") for line in service.act("test:1", "recon").body)
     service.act("test:1", f"rcn:{x}:{y}")
     family = service._dng_family_label(service._dng_today(x, y)["family"])
-    assert any(line.startswith(f"🌀 ({x}, {y})") and family in line for line in service.act("test:1", "places").body)
-    view = service.act("test:1", "map")                                             # 🌀 and today's family (above); the grid:
-    radius = service.content.balance["map_view"]["radius"]
-    cells = re.findall(r".\ufe0f?", view.body[2 + radius + 2])                      # its row, 2 below you
-    assert cells[radius] == "🌀"                                                     # its square: 🌀, no longer the cave
-    scout_at(service, x, y + 1, 30, known=["0:0", f"{x}:{y + 1}"])          # next door: the route says it too
+    assert any(line.startswith(f"✅ 🌀 ({x}, {y})") and family in line for line in service.act("test:1", "recon").body)
+    assert cell() not in ("🕳️", "🌀")                                              # scouting never draws it either
+    scout_at(service, x, y + 1, 30, known=["0:0", f"{x}:{y + 1}"])          # next door: the route says it
     zone = service.act("test:1", "home")
     emoji = service._dng_families()[service._dng_today(x, y)["family"]]["emoji"]
     assert any(line.startswith("⬇️") and f"🌀{emoji}" in line for line in zone.body)
     # the kind stays known (an entrance never moves); today's family does not
     service.clock.advance(DAY)
     scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])
-    view = service.act("test:1", "places")
-    assert any(line.startswith(f"🌀 ({x}, {y})") and "🔭" not in line for line in view.body)
+    hero = service._load("test:1")
+    assert service._dng_state(hero, x, y) == "deep"
+    assert not any(line.startswith(f"✅ 🌀 ({x}, {y})") for line in service.act("test:1", "recon").body)
     assert not service.texts.missing
 
 
-def test_a_scouted_camp_shows_its_strength_on_the_map(service):
+def test_a_scouted_camp_shows_its_strength_on_the_recon_list(service):
+    """D-223 (0.30.2): the 🗺️ Mapa no longer lists camps; the 🔭 list says how many are left once you scouted it."""
     cx, cy = camp_zone(service)
     scout_at(service, cx + 1, cy, 10)
-    mark = f"👹 ({cx}, {cy})"
-    assert not any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "places").body)
+    mark = f"✅ 👹 ({cx}, {cy})"
+    assert not any(line.startswith(mark) for line in service.act("test:1", "recon").body)
     service.act("test:1", f"rcn:{cx}:{cy}")
-    assert any(line.startswith(mark) and "💪" in line for line in service.act("test:1", "places").body)
+    assert any(line.startswith(mark) and "quedan" in line for line in service.act("test:1", "recon").body)
+    assert not service.texts.missing
 
 
 def test_explore_menu_tells_what_you_can_scout(service):

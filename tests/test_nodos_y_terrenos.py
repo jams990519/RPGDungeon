@@ -4,8 +4,8 @@
 de base siguen exactamente donde estaban), de los recursos nuevos (cada uno con su oficio de recolección, una receta, precio en
 el mercader, nombre y "para qué sirve", sin dejar ganar monedas), del descubrimiento por exploración (umbrales para hasta 6) y de
 los nodos de recursos: lugar fijo para todos (2 o 3 por tramo de 6 × 6, nunca pegados, nunca en el Claro, la guarida ni una
-entrada de mazmorra), el símbolo genérico ✨ en el 🗺️ Mapa hasta LLEGAR a su zona (explorar alrededor no lo descubre) y el
-emoji de su recurso después, y su efecto al recolectar (×2, se agota la mitad, a veces un raro del terreno). Ningún texto falta.
+entrada de mazmorra), que se descubre solo al LLEGAR a su zona (explorar alrededor no lo descubre; D-223: el 🗺️ Mapa no lo
+dibuja nunca, ni antes ni después), y su efecto al recolectar (×2, se agota la mitad, a veces un raro del terreno). Ningún texto falta.
 """
 
 import pytest
@@ -203,7 +203,8 @@ def test_nodes_are_fixed_spread_out_and_two_or_three_per_stretch(content):
     assert node_rules.node_main(1, 0, 0, {}, {}, 0.6) is None
 
 
-def test_the_map_shows_a_generic_symbol_until_you_arrive(service, clock):
+def test_nodes_are_found_on_arrival_and_the_map_never_shows_them(service, clock):
+    """D-223 (0.30.2): the 🗺️ Mapa is blank (no ✨, no resource emoji); a node is found only by arriving (D-107)."""
     service.content.balance["explore"]["arrival_encounter_scale"] = 0         # no ambush on arrival (test only)
     ready(service, energy=50)
     x, y = node_near(service)
@@ -213,11 +214,9 @@ def test_the_map_shows_a_generic_symbol_until_you_arrive(service, clock):
     hero = service._load("test:1")
     assert (x, y, None) in service._node_seen(hero)
     view = service.act("test:1", "map")
-    assert "✨" in map_row(service, hero, y) and icon not in map_row(service, hero, y)
+    assert "✨" not in map_row(service, hero, y) and icon not in map_row(service, hero, y)   # the map is blank (D-223)
     assert len(view.actions) <= 4
-    view = service.act("test:1", "places")                                     # D-222 (0.30.1): the list moved to 📒 Lugares
-    assert any(line.startswith(f"✨ ({x}, {y})") and "llega para saber" in line for line in view.body)
-    assert sum(1 for line in view.body if line.startswith("✨ (")) <= service.content.balance["nodes"]["map_lines"]
+    assert not any(line.startswith("✨") for line in service.act("test:1", "places").body)  # 📒 Lugares: no nodes either
     far = service._load("test:1")                                              # far from anything you remember: nothing
     place(service, "test:1", x + 13, y + 13, known=["0:0", f"{x + 13}:{y + 13}"])
     assert not any(n[:2] == (x, y) for n in service._node_seen(service._load("test:1")))
@@ -237,13 +236,10 @@ def test_the_map_shows_a_generic_symbol_until_you_arrive(service, clock):
     assert f"{x}:{y}" in service._node_found(service._load("test:1"))
     assert "Encontraste un nodo de recursos" in (view.notice or "") and service._item_label(main) in view.notice
     assert any(line.startswith("✨ Nodo de") and service._item_label(main) in line for line in view.body)
-    assert any("Estás en un nodo" in line for line in service.act("test:1", "places").body)
     place(service, "test:1", x, y - 2, activity=None)
     hero = service._load("test:1")
-    assert (x, y, main) in service._node_seen(hero)
-    assert icon in map_row(service, hero, y)
-    assert any(line.startswith(f"✨ ({x}, {y})") and f"nodo de {service._item_label(main)}" in line
-               for line in service.act("test:1", "places").body)
+    assert (x, y, main) in service._node_seen(hero)                            # the hero knows what it is...
+    assert "✨" not in map_row(service, hero, y) and icon not in map_row(service, hero, y)   # ...the map still draws nothing
     assert "Encontraste" not in (service.act("test:1", "home").notice or "")   # discovered once, for ever
     assert not service.texts.missing
 
