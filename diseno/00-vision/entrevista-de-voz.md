@@ -477,3 +477,17 @@ El dueño mandó por escrito el parche completo del sistema de clases ("Notas pa
 - Se cerraron E-171, E-172 y E-182, y se reescribió E-186.
 
 **Lo que no se aplicó todavía:** que subir de nivel no dé estadísticas. Espera la reforma de estadísticas del equipo (D-232).
+
+## 9-oct-2026 · El Paladín reemplaza al Chamán
+
+El dueño, por voz: "Va a ser un cambio importante, que es que básicamente vamos a cambiar el chamán por el paladín. Para tener dos de placa, que es el guerrero y el paladín. Luego tener el druida y el cazador de cuero. Y el sacerdote y el mago de tela. Muy importante."
+
+**Cómo se interpretó:** el Paladín toma el lugar exacto del Chamán, con sus dos roles (sanador de grupo y DPS) y sus mismos números; solo cambian los nombres, la escuela (sagrado) y la armadura (placa). Las clases se muestran de dos en dos por armadura, en el orden que dijo el dueño. El detalle está en [Combate en cadena](../04-combate/combate-en-cadena.md) §11.
+
+**Qué se registró:**
+- D-233, confirmada: el Paladín reemplaza al Chamán; dos clases por armadura, en ese orden.
+- D-234, provisional: cómo lo aplicó Claude (roles, nombres y que los héroes Chamán pasan a Paladín).
+- La pregunta de qué roles tiene el Paladín, como P-213 y E-214.
+- Notas en D-225, D-227 y D-231, y E-186 al día.
+
+**En el juego:** desde la 0.32.

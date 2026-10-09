@@ -1,8 +1,8 @@
 # Combate en cadena: las 6 clases del parche 0.31
 
-> **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Alimenta a:** [Jefes](../06-contenido/jefes.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md) · **Estado:** confirmado por el dueño (8-oct-2026) y en el juego desde la 0.31
+> **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Alimenta a:** [Jefes](../06-contenido/jefes.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md) · **Estado:** confirmado por el dueño (8-oct-2026) y en el juego desde la 0.31; el Paladín reemplazó al Chamán en la 0.32 (9-oct-2026, D-233)
 
-El dueño mandó el parche completo del sistema de clases: "esto no es un resumen, es el parche completo del sistema de clases. Reemplaza lo que haya de clases y combos". Este documento lo ordena y dice cómo quedó en el juego. Las decisiones son D-225 a D-232 en [Decisiones](../00-vision/decisiones.md).
+El dueño mandó el parche completo del sistema de clases: "esto no es un resumen, es el parche completo del sistema de clases. Reemplaza lo que haya de clases y combos". Este documento lo ordena y dice cómo quedó en el juego. Las decisiones son D-225 a D-234 en [Decisiones](../00-vision/decisiones.md). El 9-oct-2026 el dueño cambió el Chamán por el Paladín, para tener dos clases por armadura (§11).
 
 Lo firme y lo que es borrador:
 
@@ -63,7 +63,7 @@ Reglas de las marcas:
 - **Básicos seguidos cuentan como una sola marca.** No se puede hacer básico, básico, gastador para ganar el premio fácil.
 - **Gastador sin combo:** pega al 80-90 % en vez del 100 %. Un combo válido exige al menos 3 botones distintos. Si se suelta el gastador sin haber usado antes la H1 o la H2, sale a ese 80-90 %.
 - **Bono por variedad:** el juego anota las combinaciones distintas que usa el jugador. Mientras más use, cultiva un bono de +2 % o +3 % en lo que haga su rol.
-- **Cada preparadora (H2) deja algo concreto que se nota el turno siguiente.** Ejemplos: la de sombra potencia el siguiente daño de sombra; la del Chamán deja una oleada que refuerza la siguiente curación grande.
+- **Cada preparadora (H2) deja algo concreto que se nota el turno siguiente.** Ejemplos: la de sombra potencia el siguiente daño de sombra; la del Paladín (Choque sagrado, antes la oleada del Chamán) deja una gracia que refuerza la siguiente curación grande.
 
 ## 4. Tres combos por rol
 
@@ -89,7 +89,7 @@ Ninguna clase nace más fuerte que otra. Las clases de un mismo rol comparten el
 | Rol | Igual para todos | Lo que cambia (el sabor) |
 |---|---|---|
 | Tanque | Supervivencia total | Esquiva (Druida) o placa (Guerrero) |
-| Sanador | Sanación total por energía | Concentrada en uno (Sacerdote) o repartida (Chamán) |
+| Sanador | Sanación total por energía | Concentrada en uno (Sacerdote) o repartida (Paladín; en la 0.31, el Chamán) |
 | DPS | Daño total por rotación | Sangrado, quemadura o golpe directo |
 | Soporte | Valor de apoyo | Sube aliados (Cazador) o baja enemigos (Mago) |
 
@@ -105,13 +105,15 @@ Ninguna clase nace más fuerte que otra. Las clases de un mismo rol comparten el
 
 ## 7. Las seis clases
 
+Desde la 0.32 (D-233) el ⚜️ Paladín ocupa el lugar del 🌩️ Chamán y las clases se muestran de dos en dos por armadura. Las filas del Chamán quedan en §11 como referencia.
+
 | Clase | Armadura | Rol 1 (orden) | Rol 2 (orden) |
 |---|---|---|---|
 | 🏰 Guerrero | Placa | 🛡️ Tanque de aguante (B → H2 → H1 → H3) | ⚔️ DPS de fuerza (H1 → H2 → H3) |
+| ⚜️ Paladín | Placa | ☀️ Sanador de grupo; estadística principal: Restauración | 🔆 DPS sagrado |
 | 🌳 Druida | Cuero | 🐻 Tanque de esquiva, forma de oso | 🐈 DPS de sangrado, forma felina |
-| 📿 Sacerdote | Tela | ✨ Sanador de uno; estadística principal: Espíritu | 🌑 DPS de sombra |
-| 🌩️ Chamán | Cuero | 🌊 Sanador de grupo; estadística principal: Restauración | ⚡ DPS de rayo |
 | 🏹 Cazador | Cuero | 🦅 Soporte que potencia aliados | 🏹 DPS de agilidad a distancia |
+| 📿 Sacerdote | Tela | ✨ Sanador de uno; estadística principal: Espíritu | 🌑 DPS de sombra |
 | 🔮 Mago | Tela | 🔮 Soporte que debilita al enemigo | 🔥 DPS de fuego |
 
 | Rol | Básico | H1 · Constructor | H2 · Preparador | H3 · Gastador |
@@ -119,11 +121,11 @@ Ninguna clase nace más fuerte que otra. Las clases de un mismo rol comparten el
 | Guerrero · Tanque | Golpe de escudo: daño bajo, 50 % del agro | Revés: daño moderado, amenaza alta | Interponerse: recibes los golpes del aliado y subes tu defensa | Grito de dominio: fija el 100 % del agro; la defensa escala con las marcas |
 | Druida · Tanque | Zarpazo | Vapulear: cada esquiva mientras dura suma una marca extra | Piel de corteza: sube la esquiva 2 turnos | Rugido salvaje: fija el agro y devuelve un contragolpe por cada esquiva acumulada |
 | Sacerdote · Sanador | Castigo | Renovar: curación chica y un poco más el turno siguiente | Escudo sagrado: absorbe daño | Sanación superior: toda la curación en uno (90 a uno contra 30+30+30) |
-| Chamán · Sanador | Choque de tierra: arranca el combo | Sanación en cadena: 3 objetivos parejos | Golpe de tormenta: daño medio que prepara la curación grande | Marea de sanación: hasta 5 jugadores; escala solo con Restauración y con cuántos haya |
+| Paladín · Sanador | Juicio: arranca el combo | Luz sagrada: 3 objetivos parejos | Choque sagrado: daño medio que prepara la curación grande | Luz del alba: hasta 5 jugadores; escala solo con Restauración y con cuántos haya |
 | Guerrero · DPS | Tajo | Golpe heroico | Desgarrar armadura: baja la defensa 3 turnos | Ejecutar: pega más con el enemigo bajo |
 | Druida · DPS | Arañazo | Triturar | Desgarrar: sangrado cada turno | Mordisco feroz: consume el sangrado y lo cobra de una vez |
 | Sacerdote · DPS | Toque mental | Tortura mental | Dolor sombrío: sombra cada turno | Explosión mental: más por cada turno de Dolor sombrío |
-| Chamán · DPS | Descarga | Rayo | Choque de llamas: deja al enemigo cargado | Cadena de relámpagos: salta a varios enemigos (máximo 5) |
+| Paladín · DPS | Golpe sagrado | Golpe de cruzado | Sentencia: carga tu siguiente golpe sagrado | Tormenta divina: pega a varios enemigos (máximo 5) |
 | Cazador · Soporte | Disparo automático | Disparo arcano: alarga la Marca de manada | Marca de manada: un aliado pega más 2 turnos (va primero) | Llamada salvaje: potencia a todo el grupo (máximo 5) |
 | Mago · Soporte | Proyectil arcano | Lentitud: reduce el daño del enemigo y alarga la Fragilidad | Fragilidad arcana: el enemigo recibe más daño 2 turnos (va primero) | Ruptura arcana: baja la defensa y el daño del jefe e interrumpe su ataque cargado |
 | Cazador · DPS | Disparo | Disparo firme | Marca del cazador: más daño de tus disparos | Disparo mortal: más si el enemigo tiene tu marca |
@@ -133,7 +135,8 @@ Todos los Básicos dan +1 de energía.
 
 ## 8. Decisiones ya cerradas por el dueño
 
-- La Marea de sanación del Chamán escala solo con Restauración y con el número de jugadores, no con el largo de la cadena.
+- La Marea de sanación del Chamán escala solo con Restauración y con el número de jugadores, no con el largo de la cadena. Desde la 0.32 la misma regla vale para la Luz del alba del Paladín (D-234).
+- Dos clases por armadura, en este orden: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela) (D-233, 9-oct-2026).
 - La Sanación superior del Sacerdote cuesta 6, igual que todos los gastadores; la diferencia está en el efecto, no en el precio.
 - Básicos seguidos = una sola marca.
 - No hay tope de energía. Un gastador sin combo de 3 botones distintos pega al 80-90 %.
@@ -205,7 +208,35 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 |---|---|
 | Contra cada enemigo de nivel 1 a 3 | Todas ganan el 100 % |
 | Rondas por pelea | DPS unas 4, soportes unas 5, tanques unas 8, sanadores unas 8 a 9 |
-| Contra el Guardián al nivel 6 | Todas entre 68 % y 90 %: tanques 84 y 90 %, sanadores 85 y 90 %, DPS 68 a 82 %, soportes 74 y 89 % |
+| Contra el Guardián al nivel 6 | Todas entre 68 % y 90 %: tanques 84 y 90 %, sanadores 85 y 90 %, DPS 68 a 82 %, soportes 74 y 89 % (con el Paladín de la 0.32: Sanador 90 %, DPS 74 %, §11) |
+
+## 11. El Paladín reemplaza al Chamán (0.32, D-233 y D-234)
+
+**Lo que pidió el dueño (9-oct-2026):** "Vamos a cambiar el chamán por el paladín. Para tener dos de placa, que es el guerrero y el paladín. Luego tener el druida y el cazador de cuero. Y el sacerdote y el mago de tela. Muy importante."
+
+**Cómo se aplicó (Claude, provisional: D-234):**
+- El Paladín toma el lugar exacto del Chamán: sanador de grupo y DPS. Así siguen las 2 clases por rol: 2 tanques (Guerrero, Druida), 2 sanadores (Sacerdote, Paladín), 2 soportes (Cazador, Mago) y 6 DPS.
+- Los números son los del Chamán (regla madre, D-232). Cambian los nombres, la escuela (sagrado en vez de rayo o tierra) y la armadura (placa en vez de cuero).
+- Al crear el héroe, las clases salen en el orden del dueño: Guerrero, Paladín, Druida, Cazador, Sacerdote y Mago.
+- Un héroe Chamán guardado pasa al Paladín del mismo rol, con su nivel, experiencia, equipo y monedas. Las especializaciones viejas que iban al Chamán (por ejemplo, el Chamán de Restauración) ahora van al Paladín. Los Paladines de antes de la 0.31 ya pasaron a Guerrero o Sacerdote, y se quedan donde están.
+- El Chamán no se borra: queda `retired: true` con `migrate_to` (IDs estables).
+
+| Antes (Chamán, 0.31) | Ahora (Paladín, 0.32) | Qué hace |
+|---|---|---|
+| 🌊 Chamán · Sanador | ☀️ Paladín · Sanador | Sanador de grupo |
+| Choque de tierra (B) | ⚔️ Juicio | Arranca el combo; daño bajo y +1 de energía |
+| Sanación en cadena (H1) | Luz sagrada | Cura repartida en 3 |
+| Golpe de tormenta (H2) | Choque sagrado | Daño medio; la siguiente curación grande cura un 25 % más |
+| Marea de sanación (H3) | Luz del alba | Cura a todo el grupo (máximo 5); no escala con la cadena |
+| ⚡ Chamán · DPS | 🔆 Paladín · DPS | Daño sagrado |
+| Descarga (B) | ⚔️ Golpe sagrado | Daño bajo y +1 de energía |
+| Rayo (H1) | Golpe de cruzado | Daño moderado |
+| Choque de llamas (H2) | Sentencia | Carga el siguiente golpe sagrado (+30 %) |
+| Cadena de relámpagos (H3) | Tormenta divina | Pega a varios enemigos (máximo 5) |
+
+**Medido con `tools/sim.py`:** contra el Guardián, el Paladín · Sanador gana el 90 % y el Paladín · DPS el 74 %, los mismos números del Chamán; contra cada enemigo de nivel 1 a 3, el 100 %.
+
+**Por decidir (E-214, P-213):** en World of Warcraft el Paladín es tanque, sanador o DPS. Aquí quedó sanador y DPS para no dejar 3 tanques y 1 solo sanador de grupo. Si el dueño lo prefiere tanque y sanador, el cambio es de contenido (`content/classes.yaml`).
 
 ## De dónde sale
 
@@ -213,3 +244,4 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 - **La idea de los botones que cargan y gastan** viene de las rotaciones de World of Warcraft: los generadores y gastadores, los puntos de combo del Pícaro, la ira del Guerrero.
 - **Tejer** viene del "weaving" de los MMO de acción.
 - **El tope de 5 objetivos** viene de los límites de objetivos de WoW.
+- **El Paladín** viene del Paladín de World of Warcraft: guerrero sagrado de placa que cura y pega con luz (Juicio, Golpe de cruzado, Tormenta divina).

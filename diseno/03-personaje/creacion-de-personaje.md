@@ -19,6 +19,8 @@ Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre
 
 ### 1.2 Paso 2 · La clase, en páginas de 3
 
+> **Desde la 0.32 (D-233):** son 6 clases y salen de **2 en 2, una armadura por página**: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela). Cada página tiene 3 botones: las 2 clases y ▶️. Al tocar una clase se elige su primer rol (D-230); el segundo se aprende al nivel 5. Ver [Combate en cadena](../04-combate/combate-en-cadena.md) §10 y §11. Lo de abajo es como era con 15 clases.
+
 - El bot pregunta "¿cómo peleas?" y muestra **3 clases por página**, cada una con una frase: su armadura, su recurso y su estilo.
 - Son 15 clases, así que hay 5 páginas. **▶️ Ver más clases** pasa a la siguiente y, después de la última, vuelve a la primera.
 - Así el mensaje nunca pasa de 4 botones (D-75): 3 clases y ▶️.

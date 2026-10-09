@@ -26,6 +26,8 @@
 
 # ======================================================================================================================
 # 0.31 (D-225 a D-232): las 6 clases del parche de clases, combate y balance (diseno/04-combate/combate-en-cadena.md).
+# 0.32 (D-233): el Paladín reemplaza al Chamán; quedan dos por armadura: Guerrero y Paladín (placa), Druida y
+# Cazador (cuero), Sacerdote y Mago (tela), en ese orden (el de la creación del héroe).
 # [ES] Cada clase tiene 2 roles (2 especializaciones). Todas juegan la misma cadena (system: chain): 4 botones, Básico
 # (el "attack", link B), H1 Constructor, H2 Preparador y H3 Gastador; la energía, los costos, el orden de cada rol, las
 # marcas y el premio están en balance.yaml chain. Aquí solo va qué hace cada botón.
@@ -62,63 +64,6 @@ guerrero_tanque:
     - {id: guerrero_interponerse, link: H2, kind: guard, value: 0.35, rounds: 2, style: aguante}   # [ES] recibes tú los golpes del aliado y subes tu defensa: este turno y el siguiente
     - {id: guerrero_grito_de_dominio, link: H3, kind: guard, value: 0.40, rounds: 3, style: aguante, power: 1.0, threat: 2.0}   # [ES] fija el 100 % del agro; la defensa escala con las marcas
 
-druida_tanque:
-  group: druida
-  system: chain
-  icon: "🐻"
-  role: defensa
-  name_key: class.druida_tanque.name
-  role_key: class.druida_tanque.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 135, attack: 10.5, armor: 0.20, initiative: 9}
-  per_level: {hp: 16, attack: 1.5}
-  attack: {id: druida_zarpazo, link: B, kind: strike, power: 0.9, threat: 0.5}
-  abilities:
-    - {id: druida_vapulear, link: H1, kind: strike, power: 1.3, threat: 1.0, dodge_marks: 2}   # [ES] mientras dura, cada esquiva suma una marca extra
-    - {id: druida_piel_de_corteza, link: H2, kind: guard, value: 0.35, rounds: 2, style: esquiva}   # [ES] la esquiva del Druida = el aguante del Guerrero en números (D-232)
-    - {id: druida_rugido_salvaje, link: H3, kind: guard, value: 0.40, rounds: 3, style: esquiva, power: 0.6, counter_per_dodge: 0.06, threat: 2.0}   # [ES] fija el agro y devuelve un contragolpe por cada esquiva acumulada
-
-sacerdote_sanador:
-  group: sacerdote
-  system: chain
-  icon: "✨"
-  role: curacion
-  name_key: class.sacerdote_sanador.name
-  role_key: class.sacerdote_sanador.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}    # [ES] esqueleto del sanador (igual para el Chamán)
-  per_level: {hp: 12, attack: 1.4}
-  attack: {id: sacerdote_castigo, link: B, kind: strike, power: 1.0, school: sagrado}
-  abilities:
-    - {id: sacerdote_renovar, link: H1, kind: heal, value: 0.10, hot: {value: 0.05, rounds: 1}}   # [ES] curación chica y un poco más el turno siguiente
-    - {id: sacerdote_escudo_sagrado, link: H2, kind: shield, value: 0.15, rounds: 2}              # [ES] escudo que absorbe daño en el aliado elegido
-    - {id: sacerdote_sanacion_superior, link: H3, kind: heal, value: 0.32}                        # [ES] toda la curación en uno (90 a uno contra 30+30+30)
-
-chaman_sanador:
-  group: chaman
-  system: chain
-  icon: "🌊"
-  role: curacion
-  name_key: class.chaman_sanador.name
-  role_key: class.chaman_sanador.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}
-  per_level: {hp: 12, attack: 1.4}
-  attack: {id: chaman_choque_de_tierra, link: B, kind: strike, power: 0.65, school: tierra}   # [ES] no es para hacer daño sino para arrancar el combo
-  abilities:
-    - {id: chaman_sanacion_en_cadena, link: H1, kind: heal, value: 0.15, split: 3}             # [ES] 3 objetivos parejos (uno elegido y dos al azar): solo, las 3 caen en ti
-    - {id: chaman_golpe_de_tormenta, link: H2, kind: strike, power: 1.35, school: rayo, heal_boost: 0.25}   # [ES] daño medio y deja una oleada que refuerza la próxima curación grande
-    - {id: chaman_marea_de_sanacion, link: H3, kind: heal, value: 0.36, group: true, chain_free: true}     # [ES] hasta 5 jugadores; escala solo con Restauración y con cuántos haya, no con la cadena (D-227)
-
 guerrero_dps:
   group: guerrero
   system: chain
@@ -137,6 +82,63 @@ guerrero_dps:
     - {id: guerrero_golpe_heroico, link: H1, kind: strike, power: 1.0}
     - {id: guerrero_desgarrar_armadura, link: H2, kind: expose, value: 0.2, rounds: 3}        # [ES] baja la defensa del enemigo por 3 turnos
     - {id: guerrero_ejecutar, link: H3, kind: strike, power: 1.9, low_hp: {below: 0.35, mult: 1.6}}   # [ES] pega más si el enemigo está bajo el 30 %
+
+paladin_sanador:
+  group: paladin
+  system: chain
+  icon: "☀️"
+  role: curacion
+  name_key: class.paladin_sanador.name
+  role_key: class.paladin_sanador.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}
+  per_level: {hp: 12, attack: 1.4}
+  attack: {id: paladin_juicio, link: B, kind: strike, power: 0.65, school: sagrado}   # [ES] golpe sagrado sencillo: no es para hacer daño sino para arrancar el combo
+  abilities:
+    - {id: paladin_luz_sagrada, link: H1, kind: heal, value: 0.15, split: 3}             # [ES] 3 objetivos parejos (uno elegido y dos al azar): solo, las 3 caen en ti
+    - {id: paladin_choque_sagrado, link: H2, kind: strike, power: 1.35, school: sagrado, heal_boost: 0.25}   # [ES] daño medio y deja una gracia que refuerza la próxima curación grande
+    - {id: paladin_luz_del_alba, link: H3, kind: heal, value: 0.36, group: true, chain_free: true}     # [ES] hasta 5 jugadores; escala solo con Restauración y con cuántos haya, no con la cadena (D-227, que era la Marea del Chamán)
+
+paladin_dps:
+  group: paladin
+  system: chain
+  icon: "🔆"
+  role: ataque
+  name_key: class.paladin_dps.name
+  role_key: class.paladin_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: paladin_golpe_sagrado, link: B, kind: strike, power: 0.7, school: sagrado}
+  abilities:
+    - {id: paladin_golpe_de_cruzado, link: H1, kind: strike, power: 1.0, school: sagrado}
+    - {id: paladin_sentencia, link: H2, kind: strike, power: 0.7, school: sagrado, charge: {school: sagrado, value: 0.30}}   # [ES] deja al enemigo sentenciado: el siguiente golpe sagrado pega más
+    - {id: paladin_tormenta_divina, link: H3, kind: strike, power: 1.9, school: sagrado, targets: 5}   # [ES] golpea a varios enemigos a la vez (máximo 5)
+
+druida_tanque:
+  group: druida
+  system: chain
+  icon: "🐻"
+  role: defensa
+  name_key: class.druida_tanque.name
+  role_key: class.druida_tanque.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 135, attack: 10.5, armor: 0.20, initiative: 9}
+  per_level: {hp: 16, attack: 1.5}
+  attack: {id: druida_zarpazo, link: B, kind: strike, power: 0.9, threat: 0.5}
+  abilities:
+    - {id: druida_vapulear, link: H1, kind: strike, power: 1.3, threat: 1.0, dodge_marks: 2}   # [ES] mientras dura, cada esquiva suma una marca extra
+    - {id: druida_piel_de_corteza, link: H2, kind: guard, value: 0.35, rounds: 2, style: esquiva}   # [ES] la esquiva del Druida = el aguante del Guerrero en números (D-232)
+    - {id: druida_rugido_salvaje, link: H3, kind: guard, value: 0.40, rounds: 3, style: esquiva, power: 0.6, counter_per_dodge: 0.06, threat: 2.0}   # [ES] fija el agro y devuelve un contragolpe por cada esquiva acumulada
 
 druida_dps:
   group: druida
@@ -157,44 +159,6 @@ druida_dps:
     - {id: druida_desgarrar, link: H2, kind: dot, power: 0.3, rounds: 3, school: sangrado}     # [ES] sangrado que pega cada turno
     - {id: druida_mordisco_feroz, link: H3, kind: strike, power: 1.9, consume_dot: true}       # [ES] consume el sangrado y lo cobra de una vez
 
-sacerdote_dps:
-  group: sacerdote
-  system: chain
-  icon: "🌑"
-  role: ataque
-  name_key: class.sacerdote_dps.name
-  role_key: class.sacerdote_dps.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
-  per_level: {hp: 12, attack: 1.7}
-  attack: {id: sacerdote_toque_mental, link: B, kind: strike, power: 0.7, school: sombra}
-  abilities:
-    - {id: sacerdote_tortura_mental, link: H1, kind: strike, power: 1.0, school: sombra}
-    - {id: sacerdote_dolor_sombrio, link: H2, kind: dot, power: 0.3, rounds: 3, school: sombra, next_bonus: {school: sombra, value: 0.10}}   # [ES] daño de sombra cada turno y potencia el siguiente golpe de sombra
-    - {id: sacerdote_explosion_mental, link: H3, kind: strike, power: 1.9, school: sombra, per_dot_age: 0.25}   # [ES] pega más por cada turno que lleve el Dolor sombrío
-
-chaman_dps:
-  group: chaman
-  system: chain
-  icon: "⚡"
-  role: ataque
-  name_key: class.chaman_dps.name
-  role_key: class.chaman_dps.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
-  per_level: {hp: 12, attack: 1.7}
-  attack: {id: chaman_descarga, link: B, kind: strike, power: 0.7, school: rayo}
-  abilities:
-    - {id: chaman_rayo, link: H1, kind: strike, power: 1.0, school: rayo}
-    - {id: chaman_choque_de_llamas, link: H2, kind: strike, power: 0.7, school: fuego, charge: {school: rayo, value: 0.30}}   # [ES] deja al enemigo cargado: el siguiente golpe eléctrico pega más
-    - {id: chaman_cadena_de_relampagos, link: H3, kind: strike, power: 1.9, school: rayo, targets: 5}   # [ES] salta a varios enemigos (máximo 5)
-
 cazador_soporte:
   group: cazador
   system: chain
@@ -213,25 +177,6 @@ cazador_soporte:
     - {id: cazador_disparo_arcano, link: H1, kind: strike, power: 1.3, extend: empower}        # [ES] cada uso alarga un turno la Marca de manada
     - {id: cazador_marca_de_manada, link: H2, kind: empower, value: 0.3, rounds: 2}           # [ES] un aliado pega más por 2 turnos (va primero en la cadena)
     - {id: cazador_llamada_salvaje, link: H3, kind: empower, value: 0.4, rounds: 3, group: true, power: 1.0}   # [ES] potencia a todo el grupo (máximo 5); fuerza y turnos escalan con las marcas
-
-mago_soporte:
-  group: mago
-  system: chain
-  icon: "🔮"
-  role: soporte
-  name_key: class.mago_soporte.name
-  role_key: class.mago_soporte.role
-  resource: energia_combate
-  resource_start: 5
-  resource_max: 100000
-  resource_regen: 0
-  base: {hp: 165, attack: 12.5, armor: 0.12, initiative: 11}
-  per_level: {hp: 14, attack: 1.5}
-  attack: {id: mago_proyectil_arcano, link: B, kind: strike, power: 1.0}
-  abilities:
-    - {id: mago_lentitud, link: H1, kind: strike, power: 1.3, weaken: 0.05, weaken_rounds: 2, extend: expose}   # [ES] reduce el daño del enemigo y alarga la Fragilidad
-    - {id: mago_fragilidad_arcana, link: H2, kind: expose, value: 0.20, rounds: 2}           # [ES] el enemigo recibe más daño de todo el grupo por 2 turnos (va primero)
-    - {id: mago_ruptura_arcana, link: H3, kind: debuff, expose: 0.20, weaken: 0.05, rounds: 3, interrupt: true, power: 1.0}   # [ES] baja la defensa y el daño del jefe e interrumpe su ataque cargado
 
 cazador_dps:
   group: cazador
@@ -252,6 +197,63 @@ cazador_dps:
     - {id: cazador_marca_del_cazador, link: H2, kind: expose, value: 0.2, rounds: 3, mark: true}   # [ES] el enemigo marcado recibe más daño de tus disparos
     - {id: cazador_disparo_mortal, link: H3, kind: strike, power: 1.9, vs_mark: 1.25}          # [ES] pega más si el enemigo tiene tu marca
 
+sacerdote_sanador:
+  group: sacerdote
+  system: chain
+  icon: "✨"
+  role: curacion
+  name_key: class.sacerdote_sanador.name
+  role_key: class.sacerdote_sanador.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}    # [ES] esqueleto del sanador (igual para el Chamán)
+  per_level: {hp: 12, attack: 1.4}
+  attack: {id: sacerdote_castigo, link: B, kind: strike, power: 1.0, school: sagrado}
+  abilities:
+    - {id: sacerdote_renovar, link: H1, kind: heal, value: 0.10, hot: {value: 0.05, rounds: 1}}   # [ES] curación chica y un poco más el turno siguiente
+    - {id: sacerdote_escudo_sagrado, link: H2, kind: shield, value: 0.15, rounds: 2}              # [ES] escudo que absorbe daño en el aliado elegido
+    - {id: sacerdote_sanacion_superior, link: H3, kind: heal, value: 0.32}                        # [ES] toda la curación en uno (90 a uno contra 30+30+30)
+
+sacerdote_dps:
+  group: sacerdote
+  system: chain
+  icon: "🌑"
+  role: ataque
+  name_key: class.sacerdote_dps.name
+  role_key: class.sacerdote_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: sacerdote_toque_mental, link: B, kind: strike, power: 0.7, school: sombra}
+  abilities:
+    - {id: sacerdote_tortura_mental, link: H1, kind: strike, power: 1.0, school: sombra}
+    - {id: sacerdote_dolor_sombrio, link: H2, kind: dot, power: 0.3, rounds: 3, school: sombra, next_bonus: {school: sombra, value: 0.10}}   # [ES] daño de sombra cada turno y potencia el siguiente golpe de sombra
+    - {id: sacerdote_explosion_mental, link: H3, kind: strike, power: 1.9, school: sombra, per_dot_age: 0.25}   # [ES] pega más por cada turno que lleve el Dolor sombrío
+
+mago_soporte:
+  group: mago
+  system: chain
+  icon: "🔮"
+  role: soporte
+  name_key: class.mago_soporte.name
+  role_key: class.mago_soporte.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 165, attack: 12.5, armor: 0.12, initiative: 11}
+  per_level: {hp: 14, attack: 1.5}
+  attack: {id: mago_proyectil_arcano, link: B, kind: strike, power: 1.0}
+  abilities:
+    - {id: mago_lentitud, link: H1, kind: strike, power: 1.3, weaken: 0.05, weaken_rounds: 2, extend: expose}   # [ES] reduce el daño del enemigo y alarga la Fragilidad
+    - {id: mago_fragilidad_arcana, link: H2, kind: expose, value: 0.20, rounds: 2}           # [ES] el enemigo recibe más daño de todo el grupo por 2 turnos (va primero)
+    - {id: mago_ruptura_arcana, link: H3, kind: debuff, expose: 0.20, weaken: 0.05, rounds: 3, interrupt: true, power: 1.0}   # [ES] baja la defensa y el daño del jefe e interrumpe su ataque cargado
+
 mago_dps:
   group: mago
   system: chain
@@ -270,6 +272,52 @@ mago_dps:
     - {id: mago_bola_de_fuego, link: H1, kind: strike, power: 1.0, school: fuego}
     - {id: mago_ignio, link: H2, kind: dot, power: 0.3, rounds: 3, school: fuego}             # [ES] prende al enemigo, que quema cada turno
     - {id: mago_piroexplosion, link: H3, kind: strike, power: 1.9, school: fuego, consume_dot: true}   # [ES] detona el Ignio y lo cobra de una vez
+
+# [ES] 0.32 (D-233): el Chamán quedó retirado (el Paladín tomó su lugar, para tener dos clases por armadura). Sus IDs
+# no se borran; quien lo jugaba pasa al Paladín del mismo rol, con todo lo suyo.
+chaman_sanador:
+  group: chaman
+  retired: true          # [ES] 0.32 (D-233): el Paladín reemplaza al Chamán; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
+  retired_in: "0.32"
+  system: chain
+  icon: "🌊"
+  role: curacion
+  name_key: class.chaman_sanador.name
+  role_key: class.chaman_sanador.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 110, attack: 9.8, armor: 0.10, initiative: 10}
+  per_level: {hp: 12, attack: 1.4}
+  attack: {id: chaman_choque_de_tierra, link: B, kind: strike, power: 0.65, school: tierra}   # [ES] no es para hacer daño sino para arrancar el combo
+  abilities:
+    - {id: chaman_sanacion_en_cadena, link: H1, kind: heal, value: 0.15, split: 3}             # [ES] 3 objetivos parejos (uno elegido y dos al azar): solo, las 3 caen en ti
+    - {id: chaman_golpe_de_tormenta, link: H2, kind: strike, power: 1.35, school: rayo, heal_boost: 0.25}   # [ES] daño medio y deja una gracia que refuerza la próxima curación grande
+    - {id: chaman_marea_de_sanacion, link: H3, kind: heal, value: 0.36, group: true, chain_free: true}     # [ES] hasta 5 jugadores; escala solo con Restauración y con cuántos haya, no con la cadena (D-227)
+
+chaman_dps:
+  group: chaman
+  retired: true          # [ES] 0.32 (D-233): el Paladín reemplaza al Chamán; los héroes pasan a paladin_dps
+  migrate_to: paladin_dps
+  retired_in: "0.32"
+  system: chain
+  icon: "⚡"
+  role: ataque
+  name_key: class.chaman_dps.name
+  role_key: class.chaman_dps.role
+  resource: energia_combate
+  resource_start: 5
+  resource_max: 100000
+  resource_regen: 0
+  base: {hp: 160, attack: 13.5, armor: 0.10, initiative: 11}
+  per_level: {hp: 12, attack: 1.7}
+  attack: {id: chaman_descarga, link: B, kind: strike, power: 0.7, school: rayo}
+  abilities:
+    - {id: chaman_rayo, link: H1, kind: strike, power: 1.0, school: rayo}
+    - {id: chaman_choque_de_llamas, link: H2, kind: strike, power: 0.7, school: fuego, charge: {school: rayo, value: 0.30}}   # [ES] deja al enemigo cargado: el siguiente golpe eléctrico pega más
+    - {id: chaman_cadena_de_relampagos, link: H3, kind: strike, power: 1.9, school: rayo, targets: 5}   # [ES] salta a varios enemigos (máximo 5)
 
 # ======================================================================================================================
 # Clases y especializaciones de antes (D-79, D-110): retiradas por el parche 0.31 (retired: true, migrate_to). Sus IDs
@@ -1362,8 +1410,8 @@ caballero_muerte_profano:
 
 chaman_elemental:
   group: chaman
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_dps
-  migrate_to: chaman_dps
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_dps
+  migrate_to: paladin_dps
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌩️"
   role: ataque
@@ -1419,8 +1467,8 @@ chaman_elemental:
 
 chaman_restauracion:
   group: chaman
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌊"
   role: curacion
@@ -1478,8 +1526,8 @@ chaman_restauracion:
 
 chaman_totems:
   group: chaman
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🗿"
   role: soporte
@@ -2013,8 +2061,8 @@ monje_maestro_cervecero:
 
 monje_tejedor_niebla:
   group: monje
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌫️"
   role: curacion
@@ -2192,8 +2240,8 @@ druida_guardian:
 
 druida_restauracion:
   group: druida
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🌸"
   role: curacion
@@ -2463,8 +2511,8 @@ cazador_demonios_devorador:
 
 evocador_devastacion:
   group: evocador
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_dps
-  migrate_to: chaman_dps
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_dps
+  migrate_to: paladin_dps
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🐲"
   role: ataque
@@ -2521,8 +2569,8 @@ evocador_devastacion:
 
 evocador_preservacion:
   group: evocador
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "⏳"
   role: curacion
@@ -2880,8 +2928,8 @@ bardo_duelista:
 
 bardo_trovador:
   group: bardo
-  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a chaman_sanador
-  migrate_to: chaman_sanador
+  retired: true          # [ES] 0.31 (D-225): retirada por el parche de clases; los héroes pasan a paladin_sanador
+  migrate_to: paladin_sanador
   retired_in: "0.31"       # [ES] la retiró el parche 0.31 (las pruebas del sistema viejo la reactivan solo en memoria)
   icon: "🎶"
   role: curacion

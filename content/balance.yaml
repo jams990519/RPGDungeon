@@ -378,7 +378,7 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
     guerrero: placas
     paladin: placas
     caballero_muerte: placas
-    cazador: cuero          # [ES] 0.31 y D-208: ya no hay malla; el Cazador y el Chamán usan cuero (sus piezas de malla siguen siendo suyas, rinden la mitad)
+    cazador: cuero          # [ES] 0.31 y D-208: ya no hay malla; el Cazador y el Chamán usan cuero (sus piezas de malla siguen siendo suyas, rinden la mitad). 0.32 (D-233): el Paladín (placa) reemplaza al Chamán; 2 clases por armadura
     chaman: cuero
     evocador: malla
     picaro: cuero

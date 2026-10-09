@@ -2,7 +2,7 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Balance](balance.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Talentos](talentos.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) · **Estado:** propuesta (la barra de 6 está decidida en D-46, el reparto de roles responde a D-50 y la capa jugable de §7 a D-79)
 
-> ⚠️ **8-oct-2026 (D-225):** el parche de clases reemplazó estas 15 clases y 46 especializaciones por **6 clases con 2 roles cada una** y la misma mecánica de cadena para todas: ver [Combate en cadena](../04-combate/combate-en-cadena.md). Las especializaciones de abajo quedan retiradas (sus IDs no se borran) y este documento queda como historia de dónde salieron.
+> ⚠️ **8-oct-2026 (D-225):** el parche de clases reemplazó estas 15 clases y 46 especializaciones por **6 clases con 2 roles cada una** y la misma mecánica de cadena para todas: ver [Combate en cadena](../04-combate/combate-en-cadena.md). Las especializaciones de abajo quedan retiradas (sus IDs no se borran) y este documento queda como historia de dónde salieron. Desde el 9-oct-2026 (D-233, 0.32) el Paladín reemplaza al Chamán: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela).
 
 
 **De dónde sale.**
