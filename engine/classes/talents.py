@@ -94,7 +94,12 @@ def ensure_talents(classes: dict[str, Any], balance: dict[str, Any], hero: Hero)
     if old.get("retired") and old.get("migrate_to") in classes:
         # 0.31 (D-225): the old classes were replaced. The hero moves to the new spec its old one maps to, keeping level,
         # experience, gear and coins; its points are collected and placed again in the new role (sync_chain below).
-        hero.class_id = old["migrate_to"]
+        # 0.32 (D-233): the Chamán became the Paladín, so a pointer may lead to another retired spec: follow it (a few hops).
+        for _ in range(5):
+            spec = classes.get(hero.class_id, {})
+            if not (spec.get("retired") and spec.get("migrate_to") in classes):
+                break
+            hero.class_id = spec["migrate_to"]
         hero.talents, hero.points, hero.unlocked, hero.bar = {}, 0, [], []
         hero.profiles, hero.dual_unlocked, hero.profile = {}, False, 1
     group = _group(classes, hero)

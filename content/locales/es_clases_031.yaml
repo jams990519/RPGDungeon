@@ -12,7 +12,8 @@ class_group:
   guerrero: {name: "🏰 Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
   druida: {name: "🌳 Druida", desc: "cuero · Tanque de esquiva (oso) o DPS de sangrado (felino)"}
   sacerdote: {name: "📿 Sacerdote", desc: "tela · Sanador de uno (el tanque) o DPS de sombra"}
-  chaman: {name: "🌩️ Chamán", desc: "cuero · Sanador de grupo o DPS de rayo"}
+  chaman: {name: "🌩️ Chamán", desc: "cuero · Sanador de grupo o DPS de rayo (retirado en la 0.32: lo reemplazó el Paladín)"}
+  paladin: {name: "⚜️ Paladín", desc: "placa · Sanador de grupo o DPS sagrado"}   # [ES] 0.32 (D-233): toma el lugar del Chamán
   cazador: {name: "🏹 Cazador", desc: "cuero · Soporte que potencia aliados o DPS a distancia"}
   mago: {name: "🔮 Mago", desc: "tela · Soporte que debilita al enemigo o DPS de fuego"}
 
@@ -55,6 +56,14 @@ class:
     name: "⚡ Chamán · DPS"
     role: "rayo: carga al enemigo y salta en cadena"
     attack_name: "Descarga"
+  paladin_sanador:
+    name: "☀️ Paladín · Sanador"
+    role: "curación repartida: levanta al resto del equipo desde el frente"
+    attack_name: "Juicio"
+  paladin_dps:
+    name: "🔆 Paladín · DPS"
+    role: "sagrado: sentencia al enemigo y lo barre con la tormenta divina"
+    attack_name: "Golpe sagrado"
   cazador_soporte:
     name: "🦅 Cazador · Soporte"
     role: "sube a los aliados: marca de manada y llamada salvaje"
@@ -90,12 +99,22 @@ ability:
   sacerdote_castigo: {name: "Castigo", desc: "golpe sagrado sencillo, +1 de energía; arranca la cadena"}
   sacerdote_renovar: {name: "Renovar", desc: "curación chica a un aliado y un poco más el turno siguiente"}
   sacerdote_escudo_sagrado: {name: "Escudo sagrado", desc: "escudo que absorbe daño en el aliado elegido"}
-  sacerdote_sanacion_superior: {name: "Sanación superior", desc: "toda la curación en un solo jugador (90 a uno, contra el 30+30+30 del Chamán)"}
+  sacerdote_sanacion_superior: {name: "Sanación superior", desc: "toda la curación en un solo jugador (90 a uno, contra el 30+30+30 del Paladín)"}
   # Chamán · Sanador (B → H1 → H2 → H3)
   chaman_choque_de_tierra: {name: "Choque de tierra", desc: "golpe sencillo, +1 de energía; no es para hacer daño sino para arrancar el combo"}
   chaman_sanacion_en_cadena: {name: "Sanación en cadena", desc: "cura a 3 objetivos parejo (uno elegido y dos al azar): 30+30+30; solo, las 3 caen en ti"}
   chaman_golpe_de_tormenta: {name: "Golpe de tormenta", desc: "daño medio que deja una oleada: tu próxima curación grande cura más"}
   chaman_marea_de_sanacion: {name: "Marea de sanación", desc: "curación masiva hasta 5 jugadores; escala con Restauración y con cuántos haya, no con la cadena"}
+  # Paladín · Sanador (B → H1 → H2 → H3), 0.32: toma el lugar del Chamán · Sanador con los mismos números
+  paladin_juicio: {name: "Juicio", desc: "golpe sagrado sencillo, +1 de energía; no es para hacer daño sino para arrancar el combo"}
+  paladin_luz_sagrada: {name: "Luz sagrada", desc: "cura a 3 objetivos parejo (uno elegido y dos al azar): 30+30+30; solo, las 3 caen en ti"}
+  paladin_choque_sagrado: {name: "Choque sagrado", desc: "daño medio que deja una gracia: tu próxima curación grande cura más"}
+  paladin_luz_del_alba: {name: "Luz del alba", desc: "curación masiva hasta 5 jugadores; escala con Restauración y con cuántos haya, no con la cadena"}
+  # Paladín · DPS sagrado (H1 → H2 → H3), 0.32: toma el lugar del Chamán · DPS con los mismos números
+  paladin_golpe_sagrado: {name: "Golpe sagrado", desc: "golpe sagrado sencillo, +1 de energía"}
+  paladin_golpe_de_cruzado: {name: "Golpe de cruzado", desc: "golpe de relleno que se repite"}
+  paladin_sentencia: {name: "Sentencia", desc: "deja al enemigo sentenciado: tu siguiente golpe sagrado pega más"}
+  paladin_tormenta_divina: {name: "Tormenta divina", desc: "gran daño que golpea a varios enemigos a la vez (máximo 5)"}
   # Guerrero · DPS (H1 → H2 → H3)
   guerrero_tajo: {name: "Tajo", desc: "golpe sencillo, +1 de energía"}
   guerrero_golpe_heroico: {name: "Golpe heroico", desc: "golpe fuerte de relleno que se repite"}
@@ -168,14 +187,14 @@ chain:
   shield_applied: "🫧 {action}: escudo de {amount} por {rounds} {rounds|turno|turnos}."
   heal_split: "💚 {action}: {n} sanaciones parejas; solo, todas caen en ti: +{amount} de vida."
   heal_group: "🌊 {action}: cura a todo el grupo (hasta {cap}); a ti, +{amount} de vida."
-  heal_boost: "🌊 Queda una oleada: tu próxima curación grande cura un {pct} % más."
-  heal_boost_used: "🌊 La oleada refuerza esta curación."
+  heal_boost: "✨ Queda una gracia: tu próxima curación grande cura un {pct} % más."
+  heal_boost_used: "✨ La gracia refuerza esta curación."
   empower_applied: "💪 {action}: pegas un {pct} % más por {rounds} {rounds|turno|turnos}."
   expose_applied: "🎯 {action}: el enemigo recibe un {pct} % más de daño por {rounds} {rounds|turno|turnos}."
   weaken_applied: "🔻 {action}: el enemigo pega un {pct} % menos por {rounds} {rounds|turno|turnos}."
   debuff_applied: "🌀 {action}: el enemigo recibe un {expose} % más de daño y pega un {weaken} % menos por {rounds} {rounds|turno|turnos}."
-  charged: "⚡ El enemigo queda cargado: tu próximo golpe eléctrico pega un {pct} % más."
-  charged_used: "⚡ ¡Descarga sobre la carga! +{pct} %."
+  charged: "⚡ El enemigo queda marcado: tu próximo golpe de esa escuela pega un {pct} % más."
+  charged_used: "⚡ ¡Golpe sobre la marca! +{pct} %."
   next_bonus: "🌑 Tu próximo golpe de sombra pega un {pct} % más."
   extended: "⏳ Se alarga: quedan {rounds} {rounds|turno|turnos}."
   charge_broken: "✋ Rompes la carga de {enemy}: su próximo golpe ya no será feroz."

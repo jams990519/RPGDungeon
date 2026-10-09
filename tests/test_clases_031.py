@@ -1,9 +1,10 @@
 """The six classes of the 0.31 patch (D-225, D-230, D-232): two roles each, the mother rule, old heroes and the second role.
 
-[ES] Pruebas de las clases nuevas: hay exactamente 6 clases (Guerrero, Druida, Sacerdote, Chamán, Cazador, Mago) con sus 2
+[ES] Pruebas de las clases nuevas: hay exactamente 6 clases (desde la 0.32, D-233: Guerrero y Paladín de placa, Druida y
+Cazador de cuero, Sacerdote y Mago de tela, en ese orden y de 2 en 2 al crear el héroe; el Chamán pasa a Paladín) con sus 2
 roles del parche; las clases de un mismo rol comparten el esqueleto (la misma vida, ataque, armadura e iniciativa, base y por
 nivel: regla madre); la esquiva del Druida tiene los mismos números que el aguante del Guerrero; la Sanación superior cuesta 6
-como todo gastador; la Marea de sanación no escala con la cadena; las 46 especializaciones viejas quedan retiradas y un héroe
+como todo gastador; la Marea de sanación (hoy la Luz del alba) no escala con la cadena; las 48 especializaciones viejas quedan retiradas y un héroe
 guardado con una de ellas pasa a la nueva con su nivel, experiencia, equipo y monedas; al crear el héroe se elige el primer
 rol y el segundo se abre al nivel 5; la pantalla de combate tiene a lo sumo 6 botones con su costo. Ningún texto falta.
 Archivo: tests/test_clases_031.py · Módulo: M3 Clases y talentos · Prueba: content/classes.yaml (system: chain),
@@ -18,15 +19,15 @@ from engine.combat import chain
 from engine.core import load_content
 from engine.hero import Hero
 
-PATCH = {
+PATCH = {                                                   # 0.32 (D-233): the Paladín took the Chamán's place
     "guerrero": {"guerrero_tanque": "defensa", "guerrero_dps": "ataque"},
+    "paladin": {"paladin_sanador": "curacion", "paladin_dps": "ataque"},
     "druida": {"druida_tanque": "defensa", "druida_dps": "ataque"},
-    "sacerdote": {"sacerdote_sanador": "curacion", "sacerdote_dps": "ataque"},
-    "chaman": {"chaman_sanador": "curacion", "chaman_dps": "ataque"},
     "cazador": {"cazador_soporte": "soporte", "cazador_dps": "ataque"},
+    "sacerdote": {"sacerdote_sanador": "curacion", "sacerdote_dps": "ataque"},
     "mago": {"mago_soporte": "soporte", "mago_dps": "ataque"},
 }
-ARMOR = {"guerrero": "placas", "druida": "cuero", "sacerdote": "tela", "chaman": "cuero", "cazador": "cuero", "mago": "tela"}
+ARMOR = {"guerrero": "placas", "paladin": "placas", "druida": "cuero", "cazador": "cuero", "sacerdote": "tela", "mago": "tela"}
 
 
 @pytest.fixture(scope="module")
@@ -66,7 +67,7 @@ def test_the_mother_rule_same_role_same_numbers(content):
 
 def test_every_spender_costs_six_and_the_tide_ignores_the_chain(content):
     assert chain.cost_of("H3", content.balance) == 6
-    marea = next(a for a in content.classes["chaman_sanador"]["abilities"] if a["link"] == "H3")
+    marea = next(a for a in content.classes["paladin_sanador"]["abilities"] if a["link"] == "H3")     # the old Marea
     assert marea.get("chain_free") and marea.get("group")
     superior = next(a for a in content.classes["sacerdote_sanador"]["abilities"] if a["link"] == "H3")
     assert superior["kind"] == "heal" and not superior.get("chain_free")
@@ -74,7 +75,7 @@ def test_every_spender_costs_six_and_the_tide_ignores_the_chain(content):
 
 def test_old_classes_are_retired_and_old_heroes_move_with_everything(service, content):
     old = [cid for cid, c in content.classes.items() if c.get("retired")]
-    assert len(old) == 46
+    assert len(old) == 48                                      # 46 before the patch + the Chamán's 2 roles (0.32)
     for cid in old:
         target = content.classes[cid]["migrate_to"]
         assert target in content.classes and not content.classes[target].get("retired")
@@ -151,3 +152,37 @@ def test_the_fight_screen_shows_the_chain_with_six_buttons_at_most(service):
 def test_old_heroes_without_combo_shapes_load(content):
     hero = Hero.from_dict({"id": "x", "name": "X", "class_id": "guerrero"})
     assert hero.combo_shapes == []
+
+
+def test_two_classes_per_armor_in_this_order(service, content):
+    """0.32 (D-233): Guerrero and Paladín (plate), Druida and Cazador (leather), Sacerdote and Mago (cloth)."""
+    assert service._class_groups() == ["guerrero", "paladin", "druida", "cazador", "sacerdote", "mago"]
+    armor = content.balance["gear"]["armor_by_group"]
+    assert [armor[g] for g in service._class_groups()] == ["placas", "placas", "cuero", "cuero", "tela", "tela"]
+
+
+def test_shaman_heroes_become_paladins_with_everything(service, content):
+    make_hero(service)
+    for old, new in (("chaman_sanador", "paladin_sanador"), ("chaman_dps", "paladin_dps"), ("chaman_restauracion", "paladin_sanador")):
+        data = service.store.get("hero", "test:1")
+        data.update(class_id=old, level=7, xp=500, gold=321, talents={old: 6}, points=0)
+        service.store.put("hero", "test:1", data)
+        hero = service._load("test:1")
+        assert hero.class_id == new and hero.level == 7 and hero.xp == 500 and hero.gold == 321, old
+        assert hero.talents == {new: 6}
+    assert not service.texts.missing
+
+
+def test_the_creation_pages_show_one_armor_each(service):
+    """0.32 (D-233): two classes per page, so each armor pair stays together."""
+    service.view("test:9")
+    view = service.text("test:9", "Pares")
+    pages = []
+    for _ in range(3):
+        pages.append([a.id[4:] for a in view.actions if a.id.startswith("grp:")])
+        view = service.act("test:9", next(a.id for a in view.actions if a.id.startswith("page:")))
+    assert pages == [["guerrero", "paladin"], ["druida", "cazador"], ["sacerdote", "mago"]]
+    service.act("test:9", "grp:cazador")
+    back = service.act("test:9", "grp:")                                  # back returns to the leather page
+    assert [a.id for a in back.actions if a.id.startswith("grp:")] == ["grp:druida", "grp:cazador"]
+    assert not service.texts.missing

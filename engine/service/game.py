@@ -1,6 +1,6 @@
 """GameService: commands in, neutral views out. Version 0.1 (playable core).
 
-What version 0.1 covers: hero creation (3 classes), the infinite map with
+What version 0.1 covers: hero creation (today 6 classes, D-225/D-233), the infinite map with
 travel that takes real time (D-58), exploring a zone, solo fights with the
 6-button bar (D-46), rewards, levels, belt and backpack, passive regeneration.
 
@@ -38,7 +38,9 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     GuideMixin, de la que GameService también hereda)
     diseno/04-combate/combate-en-cadena.md (0.31, D-225 a D-232: las 6 clases con 2 roles y el combate en cadena; en este
     archivo: _chain_combat_view y la Mochila con 🏃 Huir, la creación con el primer rol, _chain_talents_view,
-    _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas)
+    _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas;
+    0.32, D-233: el Paladín reemplaza al Chamán y la creación muestra las clases de 2 en 2, una armadura por página:
+    CLASS_PAGE_SIZE)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
@@ -431,6 +433,10 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
 # D-193: /guia shows the 🧭 guided path again; /origen chooses the 🎭 origin later (E-131: offered as an optional step).
 COMMANDS.update({"/guia": "guide", "/origen": "origin"})
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
+# D-233: classes on the creation screen, two per page: plate (Guerrero, Paladín), leather (Druida, Cazador), cloth
+# (Sacerdote, Mago). [ES] El orden sale de content/classes.yaml; si cambia el número de clases o su orden, las parejas
+# de armadura dejan de caer juntas (tests/test_clases_031.py y test_service.py miran las páginas).
+CLASS_PAGE_SIZE = 2
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
@@ -1275,7 +1281,7 @@ class GameService(StoryMixin, GuideMixin):
         group = pending.get("group")
         if not group:
             groups = self._class_groups()
-            per = 3
+            per = CLASS_PAGE_SIZE
             pages = max(1, (len(groups) + per - 1) // per)
             page = int(pending.get("page", 0)) % pages
             body = [t.t("create.ask_class", name=pending["name"]), t.t("create.page", n=page + 1, total=pages), ""]
@@ -1324,7 +1330,7 @@ class GameService(StoryMixin, GuideMixin):
             groups = self._class_groups()
             pending["group"] = group if group in groups else None
             if group in groups:
-                pending["page"] = groups.index(group) // 3   # "back" returns to this class's page
+                pending["page"] = groups.index(group) // CLASS_PAGE_SIZE   # "back" returns to this class's page
             self.store.put("pending", account_id, pending)
             return self._creation_view(account_id)
         if not action_id.startswith("cls:") or pending.get("stage") != "class":

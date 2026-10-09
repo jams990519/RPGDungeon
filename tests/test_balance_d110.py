@@ -147,7 +147,7 @@ def test_defense_points_add_armor_and_the_tank_bar_keeps_a_heal(content):
 
 SAMPLE = {"ataque": ("guerrero_dps", "druida_dps", "mago_dps"),                   # 0.31: the chain classes
           "defensa": ("guerrero_tanque", "druida_tanque"),
-          "curacion": ("sacerdote_sanador", "chaman_sanador"),
+          "curacion": ("sacerdote_sanador", "paladin_sanador"),                     # 0.32: the Paladín took the Chamán's place
           "soporte": ("cazador_soporte", "mago_soporte")}
 
 

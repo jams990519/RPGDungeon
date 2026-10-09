@@ -236,7 +236,7 @@ def chain_choice(state: dict[str, Any], hero: Hero, class_def: dict[str, Any], c
     if big and attentive and power >= policy["dodge_hit"] and not hs.get("guard") and not hs.get("shield") and ok({"type": "dodge"}):
         return {"type": "dodge"}
     if role == "sanador" and frac >= policy["heal_late_below"]:
-        h2 = chain.ability_for("H2", class_def)      # a healthy healer hits: its H2 if it is a hit (Chamán), else the Básico
+        h2 = chain.ability_for("H2", class_def)      # a healthy healer hits: its H2 if it is a hit (Paladín), else the Básico
         if h2.get("kind") == "strike" and hs["chain"]["last"] == "B" and press("H2"):
             return press("H2")
         return {"type": "attack"}

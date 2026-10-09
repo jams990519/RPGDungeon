@@ -1079,3 +1079,11 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 - El Cazador DPS (68 %) y el soporte del Cazador (74 %) quedan algo por debajo de su pareja.
 - Los avisos de los enemigos todavía dicen "se puede bloquear o esquivar". En las clases nuevas eso se contesta con 🛡️ Defenderse, el aguante o la esquiva del tanque, o la Ruptura del Mago.
 - El nivel todavía da vida y ataque, hasta la reforma de estadísticas del equipo (D-232).
+
+### Octubre de 2026 (9-oct): el Paladín en lugar del Chamán (0.32, D-233 y D-234)
+
+**Por qué.** El dueño cambió el Chamán por el Paladín para tener dos clases por armadura ([Combate en cadena](../04-combate/combate-en-cadena.md) §11).
+
+**Qué se movió:** ningún número. El Paladín · Sanador y el Paladín · DPS usan los botones, la vida, el ataque, la armadura y la iniciativa del Chamán; solo cambian los nombres y la escuela (sagrado). La armadura por grupo del Paladín es placa (`gear.armor_by_group`), igual que antes; el Chamán sigue en cuero, pero ya no se juega.
+
+**Resultado** (`tools/sim.py`): contra el Guardián al nivel 6 (80 peleas), Paladín · Sanador 90 % y Paladín · DPS 74 %, los mismos números del Chamán; contra cada enemigo de nivel 1 a 3, el 100 % (sanador: 8 rondas y 66 % de vida al final; DPS: 3,9 rondas y 81 %).

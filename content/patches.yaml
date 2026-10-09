@@ -517,3 +517,12 @@ v0_31:
     - "🔗 Todas pelean igual: 4 botones (Básico, Constructor, Preparador y Gastador) y energía que arranca en 5 y sube 2 por turno. Cada botón en el orden de tu rol suma una marca, y el Gastador las cobra: hasta +50 % si juntas 5 o más. Romper el orden corta la cadena; el Básico nunca la corta."
     - "🛡️ Defenderse y tomar una poción cuestan 1 de energía y gastan tu turno. 🏃 Huir está en 🎒 Mochila."
     - "🔄 Al nivel 5 aprendes tu segundo rol, gratis: cámbialo cuando quieras en 👤 Héroe → 🌟 Talentos. Tus puntos de nivel se ponen solos en tu rol."
+
+
+v0_32:
+  version: "0.32"
+  title: "⚜️ Lost Realms 0.32: llega el Paladín"
+  notes:
+    - "⚜️ El Paladín reemplaza al Chamán: guerrero sagrado de placa, ☀️ sanador de grupo (Luz sagrada, Choque sagrado y Luz del alba) o 🔆 DPS sagrado (Golpe de cruzado, Sentencia y Tormenta divina)."
+    - "🌩️ Si tu héroe era Chamán, ya es Paladín del mismo rol, con su nivel, su equipo, sus monedas y sus oficios. Pelea igual que antes; cambian los nombres y ahora usa placa."
+    - "🛡️ Las clases van de dos en dos por armadura: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela). Así salen al crear un héroe."

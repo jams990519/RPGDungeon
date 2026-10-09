@@ -292,6 +292,7 @@ Del pedido del dueño del 2-oct (D-212 a D-214) y del 4-oct (D-220: el mapa vuel
 | P-210 | Al cambiar de rol, ¿cada rol guarda sus puntos o se reparten de cero? (D-230; E-211) | Cada rol guarda los suyos (`chain.keep_points`; hoy da igual) |
 | P-211 | ¿El bono por variedad dura la pelea o es para siempre? (D-229; E-212) | Dura la pelea (`chain.variety.scope`) |
 | P-212 | ¿El tanque sube la defensa antes que el agro? (D-226; E-213) | Sí, dejar B → H2 → H1 → H3 (`chain.orders.tanque`) |
+| P-213 | ¿Qué roles tiene el Paladín: sanador y DPS (como el Chamán al que reemplaza) o tanque y sanador (como en World of Warcraft)? (D-233, D-234; E-214) | Sanador y DPS, así quedó en la 0.32: siguen 2 tanques, 2 sanadores y 2 soportes |
 | P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | ✅ **Decidido (D-225):** el dueño mandó las 6 clases con 2 roles cada una (parche del 8-oct, en el juego desde la 0.31) |
 | P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
 | P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |
