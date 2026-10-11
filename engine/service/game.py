@@ -718,9 +718,11 @@ class GameService(StoryMixin, GuideMixin):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
                 continue
-            data = self.store.get("hero", account_id) or data     # fresh: an earlier hero may have paid this one (D-117 camp tasks)
-            hero = Hero.from_dict(data)
-            ensure_talents(self.content.classes, self.content.balance, hero)
+            # R-02: through _load, so a hero saved before an old patch gets its migrations here too (energy_version,
+            # the 0.8.1 exploration, the starter gear) and not only on its next button.
+            hero = self._load(account_id)
+            if hero is None:
+                continue
             notices = self._settle(hero)
             view = self._main_view(hero, notice=self._join(notices)) if notices else None
             self._save(hero)     # after the view: a 🧭 tip it showed stays seen (D-193)
