@@ -44,7 +44,7 @@ chain:                       # [ES] 0.31 (D-225 a D-232): el combate en cadena d
   guard_cap: 0.75            # [ES] el aguante o la esquiva del tanque nunca frena más del 75 % de un golpe (aunque el premio lo suba)
   extend_cap: 3              # [ES] Disparo arcano y Lentitud alargan un turno la marca o la fragilidad activa, pero nunca a más de 3 turnos por delante
   second_role_level: 5       # [ES] D-230: al nivel 5 aprendes tu segundo rol (la otra especialización de tu clase), gratis
-  keep_points: false         # [ES] pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
+  keep_points: true          # [ES] D-238.4 (dueño, 11-oct-2026): cada rol guarda los suyos. Antes false; pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
   hybrid:                    # [ES] D-231: al nivel 10, modo híbrido (mezclar habilidades de tus dos roles). Pendiente 3 del parche: cuántas y el límite de botones
     level: 10
     max_mixed: null          # [ES] null = todavía no decidido: el modo híbrido no se ofrece hasta que el dueño diga cuántas habilidades se mezclan
