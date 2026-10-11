@@ -7441,7 +7441,11 @@ class GameService(StoryMixin, GuideMixin):
             *(self._recovery_lines(hero, max_hp) if hero.downed else []),   # 🤕 malherido: why it is slow and what fixes it
             t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
             t.t("hero_card.energy", energy=hero.energy, max=energy_max, timer=energy_timer),
-            t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100)),
+            # La 🔷 energía de combate solo se ve en la pelea (pedido del dueño): en la ficha, el centinela de "sin tope"
+            # (resource_max 100000, D-226) salía como "100000/100000" y no significaba nada. Las clases retiradas, que sí
+            # tienen un recurso con tope, la siguen mostrando.
+            *([] if cdef.get("system") == "chain" else
+              [t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100))]),
             self._coins_line(hero),
             t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap(hero)),     # same count as "space in the backpack" (D-87)
             self._hero_trades_line(hero),                               # D-109: ⚒️ Oficios (/oficios)
