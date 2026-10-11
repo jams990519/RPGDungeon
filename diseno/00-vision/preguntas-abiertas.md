@@ -286,18 +286,21 @@ Del pedido del dueño del 2-oct (D-212 a D-214) y del 4-oct (D-220: el mapa vuel
 | P-204 | ¿La hoguera se llama "Campamento" en todo el juego? (D-223; E-205) | Sí; la etapa de los jugadores que hoy se llama campamento pasa a "Asentamiento" |
 | P-205 | ¿Qué cuenta como lugar importante en 📒 Lugares? (D-223; E-206) | Hogueras, campamentos de jugadores, mazmorras y la guarida visitados; los nodos no. Aplicado así en la 0.30.2, a confirmar |
 | P-206 | ¿Dónde ve el Explorador lo que antes veía en el mapa? (D-112, D-223; E-207) | En 🔭 Reconocer, como lista de lo que su rango deja ver |
-| P-207 | ¿Cuáles son los porcentajes finales del premio por marcas? (D-228; E-208) | Dejar 10 %, 25 % y 50 % hasta la beta y medir (`balance.yaml` → `chain.mark_bonus`) |
-| P-208 | ¿Qué habilidades de DPS no generan agro? (D-228; E-209) | Las que pegan cada turno (sangrado, quemadura, sombra); los golpes directos sí (`chain.no_threat`) |
-| P-209 | ¿Cuántas habilidades del otro rol mezcla el modo híbrido y con qué límite de botones? (D-230; E-210) | 1 de las 3, por la del mismo puesto del otro rol; siguen siendo 4 botones (`chain.hybrid.max_mixed`) |
-| P-210 | Al cambiar de rol, ¿cada rol guarda sus puntos o se reparten de cero? (D-230; E-211) | Cada rol guarda los suyos (`chain.keep_points`; hoy da igual) |
-| P-211 | ¿El bono por variedad dura la pelea o es para siempre? (D-229; E-212) | Dura la pelea (`chain.variety.scope`) |
-| P-212 | ¿El tanque sube la defensa antes que el agro? (D-226; E-213) | Sí, dejar B → H2 → H1 → H3 (`chain.orders.tanque`) |
-| P-213 | ¿Qué roles tiene el Paladín: sanador y DPS (como el Chamán al que reemplaza) o tanque y sanador (como en World of Warcraft)? (D-233, D-234; E-214) | Sanador y DPS, así quedó en la 0.32: siguen 2 tanques, 2 sanadores y 2 soportes |
+| P-207 | ¿Cuáles son los porcentajes finales del premio por marcas? (D-228; E-208) | ✅ **Decidido (D-238.1):** no se eligen a dedo; se construye la telemetría y los datos deciden. Hasta entonces 10 %, 25 % y 50 % |
+| P-208 | ¿Qué habilidades de DPS no generan agro? (D-228; E-209) | ✅ **Decidido (D-238.2):** el DPS genera agro solo en grupos y solo contra mobs; el papel del tanque en PvP queda por diseñar (P-214) |
+| P-209 | ¿Cuántas habilidades del otro rol mezcla el modo híbrido y con qué límite de botones? (D-230; E-210) | ✅ **Decidido (D-238.3):** 1 habilidad del otro rol, la del mismo puesto; siguen 4 botones |
+| P-210 | Al cambiar de rol, ¿cada rol guarda sus puntos o se reparten de cero? (D-230; E-211) | ✅ **Decidido (D-238.4):** cada rol guarda los suyos (`chain.keep_points: true`) |
+| P-211 | ¿El bono por variedad dura la pelea o es para siempre? (D-229; E-212) | ✅ **Decidido (D-238.5):** dura la pelea |
+| P-212 | ¿El tanque sube la defensa antes que el agro? (D-226; E-213) | ✅ **Decidido (D-238.6):** sí, B → H2 → H1 → H3; el tejer ya permite llegar al gastador por otro camino |
+| P-213 | ¿Qué roles tiene el Paladín: sanador y DPS (como el Chamán al que reemplaza) o tanque y sanador (como en World of Warcraft)? (D-233, D-234; E-214) | ✅ **Decidido (D-238.7):** sanador y DPS |
+| P-214 | Si el agro solo cuenta en grupo y contra mobs (D-238.2), ¿qué función cumple el tanque en PvP? ¿Cómo se reparte el daño entre jugadores? | Pregunta del propio dueño al decidir el agro (11-oct-2026). Recomendado: que el tanque proteja por absorción y control (interponerse, escudos, frenar al atacante), no por amenaza, porque a un jugador no se le puede forzar el objetivo |
+| P-215 | ¿Las habilidades de las 46 especializaciones retiradas se reescriben para el sistema de cadena, como fuente de variación de rotaciones? | **Provisional (interpretación de Claude, 11-oct-2026):** el dueño dijo "las habilidades hay que reescribirlas para adaptarlas de acuerdo al orden, y darles las funciones dentro del sistema de combate para que haya variación de rotación". Leído como: las retiradas se adaptan al sistema de cadena (B, H1, H2, H3) para dar más rotaciones. Si se refería a las 12 vivas, que ya tienen su función, se corrige |
+| P-216 | ¿Los grupos (combate en grupo y agro) se construyen antes del parche de mundo abierto? | Recomendado: sí. El nodo es guerra de grupo (D-239.2), las mazmorras grupales son parte de la tanda de mazmorras (D-241.5) y el propio documento del dueño dice que defender un nodo pide varios tanques y sanadores coordinados. Hoy no existen grupos ni peleas de más de uno contra uno |
 | P-181 | ¿Cómo se arman las clases personalizadas? (D-214; E-182) | ✅ **Decidido (D-225):** el dueño mandó las 6 clases con 2 roles cada una (parche del 8-oct, en el juego desde la 0.31) |
 | P-182 | ¿Cuánto valen las afinidades? (D-214; E-183) | ✅ **Decidido (D-216):** hay afinidad y rinde "mucho más"; cuánto, en P-188 |
 | P-183 | ¿El jugador reparte puntos en estadísticas al subir de nivel? (E-184) | ✅ **Decidido (D-215):** sí, pocos puntos y solo en principales |
 | P-184 | ¿Rendimiento decreciente en las secundarias? (E-185) | ✅ **Decidido (D-217):** sí, rendimiento decreciente con tope |
-| P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | En la 0.31 cada héroe pasó solo a la clase nueva más parecida, con todo (D-231); recomendado además un cambio gratis una vez (E-186, reescrita) |
+| P-185 | ¿Qué pasa con los jugadores de hoy cuando lleguen las clases nuevas? (E-186) | ✅ **Decidido (D-238.9):** un cambio de clase gratis, una vez |
 
 ## Dudas de las estadísticas: puntos, afinidad, tope, armas y arquetipos (2-oct-2026)
 

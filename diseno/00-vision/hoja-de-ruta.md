@@ -6,7 +6,30 @@
 
 ---
 
-## 1. Dónde estamos
+## 0. Orden de trabajo (11-oct-2026): de lo más fácil a lo más difícil, sin que un paso invalide al anterior
+
+**Qué pidió el dueño:** "Define un roadmap que vamos a ir tratando de lo más fácil a lo más difícil, sin que choquen cosas que cambiamos antes con las que vamos a cambiar después."
+
+**La regla que lo ordena, en una frase:** *ningún paso que fije un número de combate va antes de la fórmula que lo calcula.* Todo lo demás se acomoda alrededor de eso.
+
+**La colisión que esto evita (y que ya estábamos a punto de cometer).** El orden que Claude propuso primero era: arreglos → igualar el daño de los DPS → cambiar la mitigación. Está **mal**: cambiar la mitigación a `def/(def+K)` (D-237.2) mueve el daño recibido de las 12 clases, así que **cualquier balance medido antes queda sin valor** y habría que rehacerlo. Igualar los DPS va **después** de la fórmula, no antes.
+
+| Fase | Qué | Por qué va aquí, y qué invalidaría si se adelantara |
+|---|---|---|
+| **0 · Destrabar** | R-03 (la consola y las herramientas en UTF-8), R-02 (`tick` por `_load`), `keep_points: true` | No tocan ni un número de combate ni una estructura: nada de lo que venga después los invalida. R-03 además devuelve el poder probar en Windows, que es el paso 2 de la lista de publicación |
+| **1 · Medir antes de tocar** | Telemetría dentro del juego (cada acción) y la **exportación diaria** (D-241.4) | Solo **lee**: no cambia ninguna regla, así que nunca hay que rehacerla. Y es la que decide los números que el dueño no quiso fijar a dedo (las marcas, D-238.1) y la que muestra la curva de dificultad real. Si se deja para después, cada número que toquemos antes se decide a ciegas |
+| **2 · La base del combate** | Mitigación **`def/(def+K)`** y fuera el tope del 60 % (D-237.2); **presupuesto de poder por nivel** (D-237.4) con las cinco fuentes dentro (D-237.8) | Es la raíz. Todo lo de balance cuelga de aquí. **Invalida**: cualquier ajuste de clases, de enemigos o de dificultad hecho antes |
+| **3 · Las estadísticas** | Primarias (Fuerza, Agilidad e Intelecto convirtiendo igual) + Vitalidad + Armadura; secundarias Crítico (un número) y Versatilidad (un efecto); **sin Celeridad ni Maestría** (D-237) | Necesita el presupuesto de la fase 2 fijado. **Invalida** cualquier número de equipo puesto antes |
+| **4 · Re-medir y apretar** | Volver a medir las 12 clases; **ahora sí** igualar el Cazador y el Paladín DPS con su prueba (D-238.8); apretar la dificultad en niveles altos con los datos de la fase 1 (D-241.1); revisar **enemigos** y **órdenes de habilidades** | Es el primer punto en que medir sirve, porque la fórmula y las estadísticas ya están quietas |
+| **5 · El héroe** | Cambio de clase gratis (D-238.9) → modo híbrido con 1 habilidad (D-238.3) → **puntos de mejora de habilidad** y deshacer con 💰 bolsas (D-240) | En ese orden a propósito: el cambio de clase gratis **antes** de que existan los puntos, así no hay que decidir qué pasa con ellos al cambiar; el híbrido antes de los puntos, porque es más chico y los puntos se cuelgan de las habilidades, no de las casillas |
+| **6 · Estructura** | Partir `engine/service/game.py` por tandas, empezando por las mazmorras (D-241.5) | Antes de las dos features grandes: cada cosa nueva metida en un archivo de 10.000 líneas hace el troceado más caro. Y nunca **durante** una feature |
+| **7 · Grupos** | Formar grupo, pelea de varios, **agro contra mobs** (D-238.2); el papel del tanque en PvP (P-214); **re-medir los tanques**; mazmorras grupales (D-241.5) | Es la llave de todo lo que falta. Ojo: el premio por marcas del tanque se aplica a "agro y defensa" y hoy **solo da defensa**, así que al llegar el agro el tanque cambia de potencia → por eso se re-mide aquí y no antes |
+| **8 · Mundo abierto** | Nodos y territorios: cuadrantes con costo creciente y recursos (D-239.4), la estructura que **llega** al nodo (D-239.1), escudo de 24 h (D-239.6), costo de sostener creciente por nodo (D-239.5), franja activa por grupo (D-236.3); hogueras en rejilla cada 12 zonas y nacimiento en 3 × 3 (D-239.10) | Depende de los grupos: el nodo es guerra de grupo (D-239.2) |
+| **9 · Después** | Civilizaciones (D-239.7); reescribir las habilidades retiradas al sistema de cadena (P-215); **salud** (heridas, enfermedades, toxicidad: casi nada implementado) | Las civilizaciones el propio dueño las puso después de las estadísticas y los grupos. La salud toca el daño recibido, así que también va detrás de la fase 2 |
+
+**Lo que puede entrar en cualquier momento, porque no choca con nada:** la 🧭 Cola de movimiento (D-242.3), parar el lote con la mochila llena (D-242.2) y quitar las peleas automáticas de la cacería (D-242.4). Son de interfaz y de reglas de lote: no tocan la aritmética del combate.
+
+
 
 El diseño se escribió primero, como un juego de años. Desde D-59 se programa en paralelo: primero una versión jugable mínima y después un parche por vez. Hoy hay un solo cliente, el bot de Telegram. El motor ya está separado de los clientes, así que la web y la app móvil (D-40, D-41) se pueden sumar sin cambiar las reglas.
 

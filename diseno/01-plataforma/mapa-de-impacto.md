@@ -1200,7 +1200,7 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 | 🛡️ Defensa del campamento | 11 puntos con las 8 defensas (12 de noche con los Braseros) | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.6, [Defensa](../09-construccion/defensa-y-protecciones.md) §0 | M9, M24 | La fuerza de las incursiones cuando se conecte (D-99) |
 | Cisma | 15 % de los residentes activos o 30 jugadores (lo mayor), con un Maestro de obras; 7 días de plazo; tope de 7 castillos | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §5-6 | M9 | Facciones, guerra |
 | Mandatos | Una temporada; máximo dos seguidos | [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §4 | M9 | Política |
-| Día de juego | 6 horas reales | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) §2 | M1, M8 | C-19 |
+| Día de juego | **4 días reales** (D-126, reconfirmado en D-239.9 el 11-oct-2026; antes decía 6 horas reales, que era lo viejo). Cada franja —día, tarde y noche— dura unas 32 horas, así que quien juega siempre a la misma hora igual ve las tres (P-86). Todavía no está en el código: el único reloj que corre es el del día real | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) §2 | M1, M8 | C-19 |
 | Estación | Una semana real (un año = 4 semanas) | [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) §4 | M8 | Cosechas, inviernos, enfermedades |
 | Luna llena | Cada 7 días de juego | [Eventos](../06-contenido/eventos.md) | M8 | Licantropía, amenaza, bestias raras |
 | Temporada | 3-4 meses (arena: 3) | [Progresión](../03-personaje/progresion.md) §7 | M18 | C-14 |
