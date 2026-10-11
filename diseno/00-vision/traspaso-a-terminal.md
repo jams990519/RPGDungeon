@@ -1,0 +1,246 @@
+# Traspaso a la terminal: todo lo que sabía el chat de la web
+
+> **Módulo** [00 · Visión](README.md) · **Depende de:** [CLAUDE.md](../../CLAUDE.md), [Decisiones](decisiones.md), [Sistema de preguntas](sistema-de-preguntas.md) · **Alimenta a:** toda sesión de IA que trabaje en la terminal · **Estado:** al día el 11-oct-2026 (versión 0.32 en el juego)
+
+El dueño pidió pasar el trabajo del chat de Claude Code en la web a la terminal de Claude Code en su computadora, "con toda la memoria y toda la información que tiene y dónde puede tomarla y todas las indicaciones". Este documento es esa memoria. **La IA de la terminal lo lee después de [CLAUDE.md](../../CLAUDE.md).** Las reglas de CLAUDE.md siguen siendo la ley; aquí está lo que se aprendió trabajando y el estado de cada cosa.
+
+Cuando algo de aquí quede viejo, se corrige en el mismo cambio que lo cambia.
+
+---
+
+## 1. Primeros pasos en la terminal
+
+1. **Abrir la terminal dentro del proyecto**, no en otra carpeta. Si `claude` se abre fuera del repositorio, no lee CLAUDE.md ni este documento.
+   ```bash
+   git clone https://github.com/jams990519/RPGDungeon.git
+   cd RPGDungeon
+   claude
+   ```
+   Si el repositorio ya está clonado: `cd RPGDungeon`, luego `git checkout main` y `git pull`, y después `claude`.
+
+   **Para traer también la conversación de la web** (opcional; la memoria importante ya está en este documento):
+   - Dentro de la carpeta clonada, con el git limpio y la misma cuenta de claude.ai, correr:
+     ```bash
+     claude --teleport session_01HGFTXEa37dZqWfpZtB6dj9
+     ```
+   - Otra forma: escribir `/teleport` dentro de `claude` y elegir la sesión.
+   - El traspaso va en un solo sentido, de la web a la terminal. `claude --resume` no sirve para esto, porque solo ve las sesiones de la computadora.
+   - Si `claude` no está instalado:
+     - Windows (PowerShell): `irm https://claude.ai/install.ps1 | iex`
+     - macOS o Linux: `curl -fsSL https://claude.ai/install.sh | bash`
+     - Luego `claude` y entrar con la cuenta de claude.ai.
+2. **Preparar Python 3.11** (lo pide `.python-version`):
+   ```bash
+   pip install -r requirements.txt pytest
+   ```
+3. **Comprobar que todo anda:**
+   ```bash
+   python -m pytest -q                       # 539 pruebas; tarda unos 20 minutos
+   python -m adapters.cli.play --fast        # jugar en la consola; "q" para salir
+   ```
+   Después de jugar en la consola, **borrar la carpeta `data/`** (guarda la partida de prueba en `data/consola.sqlite3` y no se sube). En Windows: `Remove-Item -Recurse data` (PowerShell) o `rmdir /s /q data` (CMD); en macOS o Linux: `rm -rf data`.
+4. **La carpeta de TowerWars no se toca** (regla 1 de CLAUDE.md, D-01). Si en la computadora hay una carpeta, un repositorio o una base de TowerWars, la IA no la abre, no la lee y no la cambia.
+
+---
+
+## 2. Dónde está cada cosa
+
+| Qué | Dónde |
+|---|---|
+| Código y diseño | GitHub `jams990519/RPGDungeon`. La rama `main` es lo que está en el juego |
+| Rama de trabajo de la web | `claude/blissful-lamport-7p5hmj` (hoy igual a `main`). En la terminal conviene una rama nueva por tema |
+| El bot | Telegram **@LostRealmsbot** |
+| Dónde corre | Railway, proyecto **satisfied-balance**, servicio **RPGDungeon**, entorno production. IDs: proyecto `8483a1b9-1aac-4111-9b8d-81b202908953`, servicio `88e89f1b-92f9-40e4-a0b5-525993ffca90`, entorno `91fbd952-6fff-4189-9394-c3aa76a74567` |
+| Cómo arranca | `railway.json`: `python -m adapters.telegram.bot`. Las partidas viven en un volumen montado en `/data` |
+| Variables | Solo los nombres, en `.env.example`. **El token del bot nunca se imprime, se copia ni se sube** |
+| Lo decidido | [Decisiones](decisiones.md): la última es D-234 |
+| Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-213) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-214) |
+| Lo que dijo el dueño, por fecha | [Entrevista de voz](entrevista-de-voz.md) |
+| Las notas de cada parche | `content/patches.yaml` (la última es `v0_32`) |
+| Copia en texto para otras IA | Notion (§7) |
+
+---
+
+## 3. Cómo se publica un parche
+
+Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60, D-63).
+
+1. **Trabajar en una rama**, nunca en `main`.
+2. **Antes de subir:**
+   - Correr las pruebas completas.
+   - Arrancar la consola: `printf 'Nombre\n1\n1\nq\n' | python -m adapters.cli.play` crea un héroe y sale (en Windows, abrir `python -m adapters.cli.play`, crear el héroe a mano y salir con `q`). Después, borrar `data/`.
+   - Verificar los enlaces de los documentos (el comando está en CLAUDE.md §5).
+3. **Si el parche es jugable,** agregar su entrada al final de `content/patches.yaml`:
+   - Mismo contenido: 0.32 → 0.32.1.
+   - Contenido nuevo: 0.33 (D-67, D-73).
+   - Las notas van en lenguaje de jugador.
+4. **Commit en español,** con un tema por commit y en lenguaje de resultado. **Agregar los archivos por nombre**, nunca con `git add -A` ni `git add .`. Antes, `git status`, para no subir archivos ajenos (por ejemplo `.claude/` o `data/`).
+5. **Push de la rama** y **pull request en borrador** contra `main`.
+6. **Pasar el pull request a listo y unirlo con "merge"** (no squash ni rebase). Railway publica `main` solo, en un par de minutos.
+7. **Comprobar en los registros de Railway** que salen dos líneas:
+   - `running as @LostRealmsbot`;
+   - `patch announced to N players`, si había nota nueva.
+8. **Contarle al dueño, en español,** qué quedó, qué falta y qué necesita de él.
+
+**Nunca:**
+- subir `world.epoch` en `content/balance.yaml`: borraría el progreso de todos (D-64);
+- borrar datos del volumen;
+- tocar otro servicio de Railway;
+- hacer `push --force`.
+
+---
+
+## 4. Lo que se aprendió trabajando (además de CLAUDE.md)
+
+**El dueño**
+- Habla por voz: se interpreta la intención sin pedirle que repita.
+- Si la interpretación cambia algo importante, se registra como decisión provisional y se le dice cuál se tomó.
+- Lo que él dice va como **confirmada**. Lo que decide la IA va como **provisional**, con la pregunta en el sistema de preguntas.
+- Quiere respuestas cortas: qué quedó, qué falta, qué necesita de él, y una recomendación en cada pregunta.
+- Si pide "para todo y haz esto primero", eso pasa adelante de todo lo demás.
+
+**Las pruebas**
+- La suite completa tarda unos 20 minutos. Se puede partir en dos mitades y correrlas a la vez.
+- `tests/conftest.py` tiene `legacy_content()`, que reactiva en memoria las especializaciones retiradas en la 0.31 (`retired_in: "0.31"`). Así las pruebas del sistema viejo siguen corriendo; no se borran.
+- Si una prueba se cuelga, revisar que `spend_point` y `make_hero` no caigan en un ciclo con una especialización retirada.
+
+**El balance**
+- Toda cifra de combate se mide con el simulador antes de subir:
+  ```bash
+  python tools/sim.py --summary --real            # contra los enemigos de nivel 1 a 3
+  python tools/sim.py --boss --seeds=80           # contra el Guardián al nivel 6
+  python tools/sim.py --boss --seeds=80 --only=paladin,sacerdote
+  ```
+- **Objetivos:** contra los enemigos de nivel 1 a 3, el 90 % o más (curación: 85 %). Contra el Guardián, entre 45 y 90 %.
+- **Regla madre (D-232):** las clases de un mismo rol comparten `base` y `per_level`.
+- **No cambiar `hero.xp_formula`** sin permiso del dueño.
+
+**Los IDs**
+- Solo se agregan. Para quitar algo: `retired: true`.
+- Para mover a los jugadores: `migrate_to`, más `retired_in` con la versión. `ensure_talents` sigue la cadena de `migrate_to` hasta 5 saltos.
+
+**Notion**
+- Si un sistema de seguridad bloquea una página, no se reintenta, no se reescribe y no se parte: se salta y se anota.
+- Las páginas de TowerWars en Notion tampoco se tocan.
+
+**Agentes**
+- Uno o dos a la vez como mucho, por los créditos (regla 6 de CLAUDE.md).
+
+---
+
+## 5. Cómo está el juego (11-oct-2026)
+
+- **Versión 0.32 en el juego** (commit `65faad7`, pull request #74, publicado el 9-oct-2026).
+- **El parche anterior: 0.31** ([Combate en cadena](../04-combate/combate-en-cadena.md), D-225 a D-232):
+  - 6 clases con 2 roles cada una.
+  - 4 botones: Básico, Constructor, Preparador y Gastador.
+  - Energía que arranca en 5 y sube 2 por turno.
+  - Marcas, y un premio de hasta +50 %.
+  - Segundo rol al nivel 5.
+  - Las 46 especializaciones viejas quedaron retiradas y cada héroe pasó a la más parecida.
+- **0.32 (D-233, D-234):**
+  - El ⚜️ Paladín reemplazó al Chamán.
+  - Hay dos clases por armadura y salen de dos en dos al crear el héroe: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela).
+- **Lo de antes, en una línea:**
+  - Mapa infinito en blanco, que se revela explorando.
+  - Viajes con tiempo real.
+  - Exploración, nodos de recursos, oficios en cadena, campamentos con despensa e incursiones, gremios.
+  - Mazmorras para uno, el Guardián, historia en capa simple, el camino guiado.
+  - Menús de 🏕️ Campamento y 👤 Héroe, y 📒 Lugares con código (/ir1).
+  - El detalle de cada parche está en `content/patches.yaml` y en [Hoja de ruta](hoja-de-ruta.md).
+- **Jugadores:** 1 (el dueño).
+
+---
+
+## 6. Lo que falta
+
+**Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):
+
+| Pregunta | De qué trata | Recomendación |
+|---|---|---|
+| E-214 (P-213) | ¿El Paladín es sanador y DPS (así quedó) o tanque y sanador? | Sanador y DPS |
+| E-186 (P-185) | ¿Un cambio de clase gratis para los héroes que el parche 0.31 movió solos? | Sí, una vez |
+| E-208 a E-213 | Los pendientes del parche de clases: los porcentajes de las marcas, qué no genera agro, el modo híbrido, los puntos al cambiar de rol, la variedad y el orden del tanque | Están en `content/balance.yaml` → `chain`; así quedan hasta que responda |
+| E-204 a E-207 | Las hogueras y dónde nace un jugador nuevo, el nombre "Campamento", qué cuenta en 📒 Lugares y qué ve el 🧭 Explorador | Cada una tiene la suya |
+| Tandas 1 a 6 | El resto: 94 preguntas en la tanda 1 | — |
+
+**Otras cosas pendientes con el dueño**
+- **Notas del "mundo abierto"** que trajo de otro chat el 8-oct: modo campamento, nodos por guerra de grupos, territorios con impuesto y cuadrantes, y 7 preguntas. Se le pidió el texto completo; todavía no se registraron como decisiones.
+- **`tests/test_lugares.py`:** pidió deshacer cambios en ese archivo, pero en ese turno no se había tocado. Se le recomendó dejarlo y se espera su respuesta.
+- **Copia en texto en Notion:** está en pausa (§7).
+
+**Trabajo siguiente, en orden**
+1. **"Subir de nivel no da estadísticas" (D-232).** Espera la reforma de estadísticas del equipo (D-210, D-211, E-170 a E-176): con el equipo de hoy, un héroe de nivel 20 quedaría con la fuerza de uno de nivel 1.
+2. **Cómo se forman las civilizaciones** (en curso). Ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md), [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md), D-201 y D-202.
+3. **Economía de jugadores, 2.ª tanda:** mercado de órdenes, pedidos de fabricación, durabilidad y reparación (D-109, D-113).
+4. **Asentamiento por escalones:** la casa primero, misiones de grupo por nivel, castillo exigente (D-122, D-136, D-153, D-155, D-158).
+5. **Razas y 3 facciones nuevas;** día, tarde y noche con la zona horaria de cada jugador (D-124, D-126, D-129, D-130).
+
+---
+
+## 7. La copia en texto en Notion
+
+**Para qué es:** el dueño la pidió para analizar el proyecto con otra IA ("en puro texto, del código con todas las informaciones y preguntas y respuestas").
+
+**Cómo está armada:** cada archivo del repositorio es una página de texto, debajo de la página de su carpeta:
+
+| Carpeta | Página de Notion |
+|---|---|
+| raíz del repositorio | `3f2476db16ab81b88da9c6bbb322b6c2` |
+| diseno | `3f2476db16ab8161939cdaa32b7628cd` |
+| diseno/00-vision | `3f2476db16ab81e7bf9ce1a05cc43def` |
+| diseno/01-plataforma | `3f2476db16ab811f9e4eda526ee85edc` |
+| diseno/02-mundo | `3f2476db16ab81c8a712da27cdfb2722` |
+| diseno/03-personaje | `3f2476db16ab81939858c5523c95f739` |
+| diseno/04-combate | `3f2476db16ab81998766c1e937804084` |
+| diseno/05-salud | `3f2476db16ab819ab86ecb29477386fb` |
+| diseno/06-contenido | `3f2476db16ab8121b503f1c28336bc83` |
+| diseno/07-economia | `3f2476db16ab81b6b3ebcf3d9bc3cbe4` |
+| diseno/08-social | `3f2476db16ab81c08b26f02fed2b5bc7` |
+| diseno/09-construccion | `3f2476db16ab818fa1afef9f480decb5` |
+| diseno/99-referencias | `3f2476db16ab8161b323c513c443a3f2` |
+| engine | `3f2476db16ab81bf99a4c0f9efb7c834` |
+| content | `3f2476db16ab819d975fe73e3f1bcb48` |
+| adapters | `3f2476db16ab81e585b9e657d637c418` |
+| tests | `3f2476db16ab81768ec2c1b358076936` |
+| tools | `3f2476db16ab81c3b2f8ccef5208d1f1` |
+
+**Cómo está:** al día con la 0.30.2, y con la 0.31 solo en parte.
+- Ya se refrescó para la 0.31: CLAUDE.md, los documentos de `00-vision` (menos el glosario), `01-plataforma` y una parte de `content/`.
+- **Falta:**
+  - los documentos y el código cambiados en la 0.31 y la 0.32;
+  - reparar 4 páginas:
+    - el **glosario**: un bloqueo de seguridad lo cortó en "Dominio";
+    - **`content/balance.yaml`**: quedó solo con su encabezado;
+    - `supervivencia-del-asentamiento.md` y `camino-guiado.md`: también se saltaron por bloqueos de seguridad;
+  - una página índice **"Empieza aquí"** para la IA que lea la copia.
+- **Cómo se hacía:**
+  - Un programa convertía cada archivo a Markdown de Notion, en trozos de unos 19 KB.
+  - Agentes los pegaban página por página, en tres modos: crear, reemplazar o agregar al final.
+  - Ese programa vivía en la sesión de la web y no se guardó. En la terminal se puede rehacer, o la otra IA puede leer el repositorio directo.
+- **Antes de seguir, preguntarle al dueño** si todavía la quiere. Con la terminal, la otra IA puede leer los archivos sin Notion. Si sigue, se rehace al día con la 0.32.
+- **Más fácil que Notion:** también se le mandaron 4 archivos de texto de la 0.31, que se pueden regenerar:
+  - parte 1: diseño, decisiones y preguntas;
+  - parte 2: contenido y textos;
+  - parte 3: código del motor y los clientes;
+  - parte 4: pruebas.
+
+---
+
+## 8. Herramientas: lo que tenía la web y cómo tenerlo en la terminal
+
+| La web usaba | En la terminal |
+|---|---|
+| El conector de GitHub (pull requests, merge) | `git` y la herramienta `gh` de GitHub (`gh pr create --draft`, `gh pr ready`, `gh pr merge --merge`), con la sesión de GitHub del dueño |
+| El conector de Railway (despliegues y registros) | La herramienta `railway` (`railway logs`) o el conector de Railway agregado a Claude Code; los registros también se ven en railway.com |
+| El conector de Notion | El conector de Notion agregado a Claude Code (solo si se sigue con la copia en texto) |
+
+- **Conectores:** si la terminal entra con la cuenta de claude.ai, los conectores conectados en claude.ai (por ejemplo Notion) aparecen solos; se revisan con `/mcp`.
+- **Agregar uno a mano:** `claude mcp add --transport http notion https://mcp.notion.com/mcp`. Para Railway, la dirección `https://mcp.railway.com` no está comprobada; hay que revisarla en la documentación de Railway.
+- **Más ayuda:** https://code.claude.com/docs/en/mcp.md y https://code.claude.com/docs/en/claude-code-on-the-web.md
+| Telegram | No hace falta: el bot corre en Railway. Para probar, la consola (`python -m adapters.cli.play`) |
+
+## De dónde sale
+
+- **Del chat de Claude Code en la web** que llevó el proyecto del diseño a la versión 0.32 (30-sep al 11-oct-2026).
+- **Lo pidió el dueño el 11-oct-2026** para seguir trabajando desde la terminal de su computadora.

@@ -7,6 +7,7 @@ Toda sesión de IA que trabaje en este repositorio lee esto primero. Una orden n
 - ***Lost Realms*** (D-62): un MMORPG **por turnos y en texto**. Un solo motor y un solo mundo, con tres clientes: el bot de Telegram **@LostRealmsbot**, la web y una app móvil de texto (D-40, D-41).
 - **Estado:** diseño casi completo y **código en marcha** (D-59): primero una versión jugable mínima.
 - **Punto de entrada:** [diseno/README.md](diseno/README.md), con el mapa de los módulos.
+- **La memoria del trabajo hecho y lo que falta:** [traspaso-a-terminal.md](diseno/00-vision/traspaso-a-terminal.md). Ahí están cómo se publica un parche, dónde corre el bot, el estado de cada cosa y las preguntas pendientes con el dueño. Leerlo al empezar, sobre todo en la terminal, y mantenerlo al día.
 - **Lo decidido:** [decisiones.md](diseno/00-vision/decisiones.md) (D-xx). Solo la tabla "Confirmadas por el dueño" es ley; lo demás es provisional o propuesta.
 - **Si un documento contradice una decisión confirmada, manda la decisión** y se avisa del documento viejo. Ejemplo: D-58 quitó los pisos, pero muchos documentos todavía los nombran.
 - **Lo que falta decidir:** [preguntas-abiertas.md](diseno/00-vision/preguntas-abiertas.md) (P-xx, cada una con recomendación).
