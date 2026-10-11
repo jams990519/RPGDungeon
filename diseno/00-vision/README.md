@@ -9,6 +9,7 @@ Qué es el juego, qué está decidido, qué falta decidir, cómo se conecta todo
 | [red-de-sistemas.md](red-de-sistemas.md) | Las tres reglas para que todo dependa de todo, el mapa, qué consume y produce cada sistema |
 | [catalogo-ampliado.md](catalogo-ampliado.md) | Más sistemas por fases: termas, dioses, idiomas antiguos, música compuesta, vino que se añeja, barcos, tribunal, liga de pelota, linaje… |
 | [decisiones.md](decisiones.md) | Lo confirmado por el dueño, lo provisional y lo propuesto |
+| [traspaso-a-terminal.md](traspaso-a-terminal.md) | **La memoria del trabajo para la IA de la terminal** (11-oct-2026): primeros pasos, cómo se publica un parche, dónde corre el bot, cómo está el juego (0.32), lo que falta y la copia en Notion |
 | [preguntas-abiertas.md](preguntas-abiertas.md) | Las preguntas abiertas (P-xx), cada una con recomendación |
 | [sistema-de-preguntas.md](sistema-de-preguntas.md) | **Todas las preguntas que el dueño tiene que responder**, en tandas por prioridad y en un solo texto para pegar en un chat de voz: entrevista (E-xx), preguntas abiertas (P-xx) y antes de la beta (C-xxx). Toda duda nueva entra aquí |
 | [entrevista-de-voz.md](entrevista-de-voz.md) | 54 preguntas listas para pegar en un chat de voz: el dueño responde hablando y trae el resumen (decisiones que frenan el trabajo, historia y rol, oficios y economía, combate, castillos, comunidad y prioridades) |
