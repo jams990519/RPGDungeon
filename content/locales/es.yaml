@@ -1360,6 +1360,8 @@ hero:
   skills_link: "🌟 Habilidades: /habilidades"
   trades_link: "⚒️ Oficios: /oficios"
   status_title: "Estado: {status}"
+  status_busy: "Estado: {status} · ⏳ faltan {time} en total"   # [ES] D-242.1: con una actividad en marcha, el total, no la vuelta
+
   stats_button: "📊 Estadísticas"
   status:
     idle: "🧍 Libre"
@@ -1601,6 +1603,7 @@ hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona 
   batch_low_hp: "🩹 Tu vida está por debajo del {pct} %: cúrate antes de cazar en lote (o cambia el límite en ⚙️ Opciones)."
   batch_in_progress: "🏹 Sigues rastros y tu héroe pelea solo cada presa."
   batch_progress: "Presa {done} de {total}"
+
 
 camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
@@ -1994,6 +1997,7 @@ guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), s
   memento_done: "🌰 La semilla se abre y te deja {item}."
 
 batch:
+  total_left: "⏳ En total faltan {time} para terminar."   # [ES] D-242.1: el tiempo del lote entero, no de la vuelta
   title_gather: "🪓 Recolectar"
   title_explore: "🔎 Explorar"
   title_hunt: "🏹 Cazar en lote"

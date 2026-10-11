@@ -2182,6 +2182,8 @@ class GameService(StoryMixin, GuideMixin):
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining)] + self._explore_progress_lines(hero)
             title = t.t("explore.title")
+        if activity.get("kind") in BATCH_KINDS:            # D-242.1: cuánto falta para TODO el lote, no solo esta vuelta
+            body.append(t.t("batch.total_left", time=self._fmt_duration(self._activity_left_seconds(hero))))
         if activity.get("kind") in BATCH_KINDS:            # D-114: the automatic fights so far, and what happens if one comes up
             body += self._auto_summary(activity)[:1] + self._auto_lines(hero, activity.get("kind"))
         if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
@@ -7425,6 +7427,7 @@ class GameService(StoryMixin, GuideMixin):
             wait = self._energy_period() - (self.clock.now() - hero.energy_at)
             energy_timer = t.t("hero_card.energy_timer", time=self._fmt_duration(max(1, wait)))
         refill = self._hp_refill_seconds(hero, max_hp)
+        busy_left = self._activity_left_seconds(hero)      # D-242.1: el tiempo total de lo que está haciendo
         body = [t.t("hero_card.points", n=hero.points)] if hero.points else []      # pending first (TowerWars)
         body += [
             t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
@@ -7443,7 +7446,9 @@ class GameService(StoryMixin, GuideMixin):
             t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap(hero)),     # same count as "space in the backpack" (D-87)
             self._hero_trades_line(hero),                               # D-109: ⚒️ Oficios (/oficios)
             "",
-            t.t("hero.status_title", status=self._status_text(hero)),
+            # D-242.1: con una actividad en marcha, el Estado dice cuánto falta EN TOTAL, no solo de la vuelta
+            t.t("hero.status_busy", status=self._status_text(hero), time=self._fmt_duration(busy_left)) if busy_left > 0
+            else t.t("hero.status_title", status=self._status_text(hero)),
         ]
         cfg = self.content.balance["invite"]
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
@@ -7504,6 +7509,32 @@ class GameService(StoryMixin, GuideMixin):
             return t.t("hero.status.combat")
         kind = (hero.activity or {}).get("kind")
         return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+
+    def _activity_left_seconds(self, hero: Hero) -> float:
+        """Seconds until the WHOLE activity ends, not just the round in progress (0 if the hero is free).
+
+        [ES]
+        Qué hace: suma lo que falta de la vuelta en curso más lo que van a tardar las que quedan, así el jugador
+        ve el tiempo total del farmeo y no solo el de la vuelta. En un lote: lo que resta de esta vuelta más
+        activity["left"] vueltas enteras. En un viaje con ruta: lo que resta del tramo más los tramos que faltan.
+        En la posada: lo que resta de la noche.
+        La llaman: _hero_view (la línea de Estado) y _activity_view (la línea del total).
+        Si cambia, afecta: solo los tiempos que se muestran.
+        """
+        activity = hero.activity or {}
+        until = activity.get("until")
+        if not until:
+            return 0.0
+        left = max(0.0, until - self.clock.now())
+        kind = activity.get("kind")
+        if kind in BATCH_KINDS:
+            return left + max(0, int(activity.get("left", 0))) * self._seconds(self._step_minutes(kind))
+        if kind == "travel":
+            cx, cy = activity.get("to", [hero.x, hero.y])
+            for nx, ny in activity.get("path", []):
+                left += self._leg_seconds(hero, cx, cy, nx, ny)
+                cx, cy = nx, ny
+        return left
 
     def _health_view(self, hero: Hero) -> View:
         """🩺 Salud: how your body is right now, how it recovers and what can cure it (owner's request).
