@@ -46,6 +46,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+for _stream in (sys.stdout, sys.stderr):      # R-03: Windows consoles are cp1252 and the game prints emoji
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 from engine.classes import bar_choices, bar_slots, base_response, kit, specs_of, spend_point, sync_chain  # noqa: E402
 from engine.combat import CombatContext, choose_action, make_combat, resolve_round  # noqa: E402
 from engine.core import Texts, load_content  # noqa: E402

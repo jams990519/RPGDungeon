@@ -63,8 +63,22 @@ def draw(view: View, service: GameService | None = None) -> None:
         print(f"  {number}. {action.label}{mark}")
 
 
+def utf8_output() -> None:
+    """Print UTF-8 whatever the console's codepage is (Windows defaults to cp1252 and the game prints emoji).
+
+    [ES]
+    Qué hace: pone la salida en UTF-8 para que la consola de Windows no se caiga con los emoji del juego
+    (sin esto: UnicodeEncodeError 'charmap' en el primer título). La llaman: main y las herramientas de tools/.
+    Si cambia, afecta: solo lo que se ve en la consola.
+    """
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> None:
     """Run the console loop. [ES] Qué hace: el bucle de juego en consola. La llaman: python -m adapters.cli.play. Si cambia, afecta: solo la consola."""
+    utf8_output()                      # Windows: the console is cp1252 by default and every screen has emoji
     fast = "--fast" in sys.argv
     service = GameService(load_content(), SqliteStore("data/consola.sqlite3"), SystemClock(), time_scale=1 / 600 if fast else 1.0)
     account = "console:local"
