@@ -1,0 +1,314 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_especializaciones.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_especializaciones.yaml. Una clave nueva va
+# primero en es_especializaciones.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+item:
+  espec_arco_1: Archer's Longbow
+  espec_arco_2: Master Archer's Longbow
+  espec_espada_1: Weaponsmith's Blade
+  espec_espada_2: Master Weaponsmith's Blade
+  espec_placas_1: Armorsmith's Cuirass
+  espec_placas_2: Master Armorsmith's Cuirass
+  espec_cuero_1: Fine Leather Jerkin
+  espec_cuero_2: Master Leatherworker's Jerkin
+  espec_malla_1: Fine Ringmail
+  espec_malla_2: Master Chainsmith's Mail
+  espec_tela_1: Runic Robe
+  espec_tela_2: Arcane Master's Robe
+  espec_joya_gemas_1: Cut Gem Necklace
+  espec_joya_gemas_2: Master Gemcutter's Necklace
+  espec_joya_oro_1: Goldsmith's Signet
+  espec_joya_oro_2: Master Goldsmith's Signet
+  paveses_roble: Oak Pavises
+  carro_viveres: Supply Cart
+furniture:
+  paveses_roble: +1 🛡️ camp Defense against the waves
+  carro_viveres: members eat 5% less from the pantry
+resources:
+  use:
+    paveses_roble: '🪑 furniture: place it in your camp (🔨 Upgrades → 🔨 Works) · +1 🛡️ Defense'
+    carro_viveres: '🪑 furniture: place it in your camp (🔨 Upgrades → 🔨 Works) · members eat 5% less'
+spec:
+  lenador_nobles:
+    name: Hardwoods
+    desc: 'You know which trunk is worth it: your wood makes better planks when you saw it. (🌳 Hardwood is coming later.)'
+  lenador_carbon:
+    name: Firewood and Charcoal
+    desc: 'You prepare firewood and charcoal for the forge: your ingots yield more when you smelt.'
+  lenador_tala:
+    name: Fast Felling
+    desc: 'You fell trees faster than anyone: more wood on every run.'
+  minero_metales:
+    name: Metals
+    desc: 'You follow the metal veins: more metal on every run.'
+  minero_gemas:
+    name: Gems
+    desc: 'Your eye finds precious stones: more rough gems when mining.'
+  minero_cantera:
+    name: Quarry
+    desc: You dig up stone and clay in bulk, for the camp's works.
+  herbolario_medicinales:
+    name: Medicinal Herbs
+    desc: 'You know every herb that heals: more healing herbs on every run.'
+  herbolario_flores:
+    name: Rare Flowers
+    desc: 'You know where moonflowers hide: you find them more often.'
+  herbolario_fibras:
+    name: Fibers
+    desc: 'You gather fiber for the weavers: more fiber on every run.'
+  desollador_pieles:
+    name: Fine Hides
+    desc: 'You skin without tearing the hide: more hide from every beast.'
+  desollador_carniceria:
+    name: Butchery
+    desc: 'You make the most of every cut: more meat for the pantry.'
+  desollador_trofeos:
+    name: Trophies
+    desc: 'You keep the beasts'' fangs and crystals: sometimes they''re gems for Jewelcrafting.'
+  explorador_cartografo:
+    name: Field Cartographer
+    desc: 'You note down everything you see: you explore each zone faster.'
+  explorador_rastreador:
+    name: Tracker
+    desc: 'You follow the trail of loot: more coins when an enemy camp you fought in falls.'
+  explorador_infiltrado:
+    name: Infiltrator
+    desc: 'You move like a shadow: you''re harder to spot when you infiltrate, and you avoid more fights while exploring and traveling (🥷 Stealth).'
+  aserradero_nobles:
+    name: Fine Planks
+    desc: 'Master of the saw: more planks from the same wood.'
+  aserradero_carbon:
+    name: Charcoal
+    desc: 'You make charcoal from the scraps: your planks yield a bit more, and so do your ingots if you smelt.'
+  aserradero_papel:
+    name: Paper
+    desc: 'You make paper for maps and notes: a few more planks, and you explore a little faster. (Inscription is coming later.)'
+  fundicion_hierro:
+    name: Iron
+    desc: 'Master of the furnace: more ingots from the same metal.'
+  fundicion_preciosos:
+    name: Precious Metals
+    desc: 'You separate the valuable bits from the ore: a few more ingots and, sometimes, a rough gem.'
+  fundicion_aleaciones:
+    name: Alloys
+    desc: 'You blend metals for armor: a few more ingots, and more mail and plate masterworks if you craft them.'
+  destilacion_extractos:
+    name: Extracts
+    desc: 'Master of the still: more extract from the same herbs.'
+  destilacion_tintes:
+    name: Dyes and Ink
+    desc: 'You prepare dyes: a bit more extract, and more cloth and leather masterworks if you craft them.'
+  destilacion_licores:
+    name: Spirits
+    desc: 'You distill spirits for potions: a bit more extract, and more potions if you brew them.'
+  tejeduria_lino:
+    name: Linen
+    desc: 'You weave clean linen: a bit more cloth, and more bandages if you sew them.'
+  tejeduria_lana:
+    name: Wool
+    desc: 'Master of the loom: more cloth from the same fiber.'
+  tejeduria_seda:
+    name: Silk
+    desc: 'You weave the finest cloth: a bit more cloth, and more cloth masterworks if you sew them.'
+  curtiduria_grueso:
+    name: Thick Leather
+    desc: 'Master of the tannery: more leather from the same hides.'
+  curtiduria_fino:
+    name: Fine Leather
+    desc: 'You tan the softest leather: a bit more leather, and more leather masterworks if you craft them.'
+  curtiduria_pergamino:
+    name: Parchment
+    desc: 'You make parchment for maps: a bit more leather, and you explore a little faster. (Inscription is coming later.)'
+  carpinteria_arqueria:
+    name: Bowcraft
+    desc: 'The best bows come from your hands: more bow masterworks, and bows only you can make.'
+  carpinteria_escudos:
+    name: Shields
+    desc: 'You work hardwood: more staff masterworks, and oak pavises to defend the camp. (Shields will come with their own slot.)'
+  carpinteria_mobiliario:
+    name: Furniture and Carts
+    desc: 'You make furniture and carts: a handcart to carry more, and the supply cart for your camp.'
+  herreria_armas:
+    name: Weaponsmith
+    desc: 'You forge the finest blades: more sword and dagger masterworks, and blades only you can make.'
+  herreria_armero:
+    name: Armorsmith
+    desc: 'For plate, they come to you: more plate masterworks, and cuirasses only you can make.'
+  herreria_herramientas:
+    name: Tools
+    desc: 'You make yourself good tools: a little more of everything you gather or skin.'
+  peleteria_cuero:
+    name: Light Leather
+    desc: 'Leather armor that weighs nothing: more leather masterworks, and jerkins only you can make.'
+  peleteria_malla:
+    name: Mail
+    desc: 'Ring by ring: more mail masterworks, and mail coats only you can make.'
+  peleteria_talabarteria:
+    name: Saddlery
+    desc: 'Saddlebags and backpacks made to fit you: you carry more. (Saddles will come with mounts.)'
+  sastreria_tunicas:
+    name: Magic Robes
+    desc: 'You embroider runes into the cloth: more robe masterworks, and robes only you can make.'
+  sastreria_clima:
+    name: Weather Wear
+    desc: 'Warm wear for head, hands, legs and feet: more masterworks in those cloth pieces. (Weather is coming later.)'
+  sastreria_medico:
+    name: Medical Textiles
+    desc: 'You sew clean bandages: more bandages in each batch.'
+  alquimia_pociones:
+    name: Potions
+    desc: 'Master of potions: more potions in each batch.'
+  alquimia_elixires:
+    name: Elixirs
+    desc: 'You know the exact dose: your potions heal more.'
+  alquimia_venenos:
+    name: Poisons
+    desc: 'You coat your weapons with poison: you hit a little harder. (Poisons for others are coming later.)'
+  medicina_auxilios:
+    name: First Aid
+    desc: 'You bandage like no one else: your bandages and salves heal more.'
+  medicina_cirugia:
+    name: Surgery
+    desc: 'Steady hands: if you''re a healer, your heals heal more.'
+  medicina_farmacia:
+    name: Pharmacy
+    desc: 'You make remedies in bulk: more salves, first-aid kits and bandages in each batch.'
+  joyeria_gemas:
+    name: Gemcutting
+    desc: 'You cut every gem to perfection: more jewelry masterworks, and necklaces only you can make.'
+  joyeria_orfebreria:
+    name: Goldsmithing
+    desc: 'You work fine metal: your ingots yield more when you smelt, and you make signets no one else can.'
+  joyeria_vidrieria:
+    name: Glassblowing
+    desc: 'You blow glass flasks: more potions in each batch, if you brew them.'
+  comercio_abastecedor:
+    name: Supplier
+    desc: 'You buy and sell materials: more coins when selling materials to the merchant.'
+  comercio_tratante:
+    name: Gear Dealer
+    desc: 'You know what every piece is worth: more coins when selling gear.'
+  comercio_caravanero:
+    name: Caravaneer
+    desc: 'You bargain at the camps: more coins at the trading post. (Caravans are coming later.)'
+  encantamiento_armas:
+    name: Weapons
+    desc: 'You enchant blades: your ⚔️ Edge adds more.'
+  encantamiento_armaduras:
+    name: Armor
+    desc: 'You enchant armor and jewelry: your ❤️ Vigor and your 🛡️ Ward add more.'
+  encantamiento_desencantar:
+    name: Disenchanting
+    desc: 'You squeeze everything out of old gear: more essences when disenchanting.'
+  effect:
+    yield: +{v}% chance of an extra unit of {what}
+    find: +{v}% chance to find {what}
+    masterwork: +{v}% chance of a ✒️ masterwork on {what} pieces
+    coins: +{v}% coins {what}
+    enchant: +{v} to {what} when enchanting
+    detect: −{v} points to your chance of being spotted when you 🕵️ infiltrate
+  sale:
+    goods: when selling materials to the merchant
+    gear: when selling gear
+    barter: at the camp's 💱 trading post
+    ecamp: from 👹 enemy camps (chest and share)
+  slots_of: '{types} ({slots})'
+  and: ' and '
+  button: 🎓 Specialization
+  title: 🎓 Specialization
+  intro: 'At rank {first} in a profession you choose a specialization; at {second}, a second one. Never all three: you''ll always need another player. Each one gives more yield or better quality in its line and, for some, recipes only they can make.'
+  mastery_rule: '📈 Its effect grows with your mastery: the experience in that profession you earn while you hold it ({full} for 100%). Swapping one for another costs coins and you start from zero in the new one; what you learned in the old one is saved in case you come back.'
+  hub_line: '{name} · rank {rank}: {state}'
+  state_held: 🎓 {names}
+  state_free: 🎓 you can choose one
+  state_held_free: 🎓 {names} · you can add another
+  none: No profession has reached rank {rank} yet. Raise one to choose its specialization.
+  locked_list: '🔒 From rank {rank}: {items}'
+  prof_title: 🎓 {name}
+  prof_intro: '{name} · rank {rank} ({title}) · specializations: {used}/{slots}'
+  next_first: 🔓 At rank {rank} you choose your first specialization.
+  next_second: 🔓 At rank {rank} you can add a second one.
+  line_held: ✅ {name} · mastery {bar}
+  line_saved: '💾 {name} · saved mastery: {pct}%'
+  line_other: ▫️ {name}
+  effect_line: '   ↳ {effect}'
+  exclusive_line: '   📜 Only this one: {items}'
+  held_mark: '✅ '
+  view_title: 🎓 Specialization
+  of_prof: '{prof} specialization · your rank {rank} ({title})'
+  mastery_line: '📈 Mastery: {bar}'
+  effect_now: '✨ Now: {effect}'
+  effect_full: '🎯 At full mastery: {effect}'
+  exclusive_title: '📜 Recipes only this one makes:'
+  exclusive_entry: '{mark} {item} · rank {rank} and {pct}% mastery'
+  exclusive_none: '📜 It has no recipes of its own: its strength is in the effect.'
+  held_note: ✅ You have it. Keep at {prof} to master it.
+  locked_note: 🔒 Needs rank {rank} in {prof} (you have {have}).
+  pick_note: 'Choosing it is free: it''s your {n|first|second} {prof} specialization.'
+  switch_note: 'Your slots are full: to take it, drop one ({cost}). You start at {pct}% mastery; what you had in the one you drop is saved.'
+  pick_button: 🎓 Choose {name}
+  switch_button: 🔄 Drop {name} ({cost})
+  confirm_title: 🔄 Change specialization
+  confirm_body: You drop {old} and take {new}. It costs {cost}.
+  confirm_lose: You lose its effect and its exclusive recipes while you don't have it. Its mastery ({pct}%) is saved in case you come back.
+  confirm_start: '{new} starts at {pct}% mastery.'
+  gold_line: You have {have}.
+  confirm_button: ✅ Yes, change ({cost})
+  picked: '🎓 You chose {name} in {prof}. Its effect grows with your mastery: keep at your profession.'
+  switched: 🔄 You dropped {old} and took {new} (−{cost}). Your mastery of {old} was saved.
+  no_gold: '🥉 You''re short on coins: changing costs {cost} and you have {have}. You didn''t spend anything.'
+  err_held: You already have that specialization.
+  err_full: 'Your slots are full: drop one to take this one.'
+  err_locked: '🔒 Not yet: needs rank {rank} in {prof}.'
+  err_switch: 'Couldn''t change it: check your specializations again. You didn''t spend anything.'
+  unlock_first: '🎓 You can now choose a specialization in {prof}: ⚒️ Professions → 🎓 Specialization.'
+  unlock_second: '🎓 You can now add a second specialization in {prof}: ⚒️ Professions → 🎓 Specialization.'
+  recipe_unlocked: '🎓 New exclusive recipe from {spec}: {items}.'
+  mastered: '🎓 You''ve mastered {spec}: its effect is now complete.'
+  prof_line: '   🎓 {items}'
+  prof_line_item: '{name} ({pct}%)'
+  prof_free: '   🎓 You can choose a specialization: 🎓 Specialization.'
+  recipe_line: 🎓 Exclusive recipe of {spec}.
+  recipe_locked: 🔒 Needs {pct}% mastery of {spec} (you have {have}%).
+  recipe_not_held: 🔒 Only someone with the {spec} specialization in {prof} can make it.
+  yield_line: ⭐ {pct}% chance of an extra unit (from your specialization).
+  found: 🎓 Your specialization found {items}.
+  mark: '🎓 '
+  pescador_redes:
+    name: Nets
+    desc: 'You fish with a net: more fish on every run.'
+  pescador_perlas:
+    name: Pearls
+    desc: 'You open every shell: sometimes there''s a pearl, which Jewelcrafting takes as a gem.'
+  pescador_ahumado:
+    name: Smoking and Salting
+    desc: Your fish dishes and preserves go further in the pantry.
+  cocina_guisos:
+    name: Stews
+    desc: Rations and hunter's stews that go further.
+  cocina_conservas:
+    name: Preserves
+    desc: Preserves and roast fish that go further.
+  cocina_banquetes:
+    name: Banquets
+    desc: Feasts and banquets that go further.
+  canteria_sillares:
+    name: Ashlar Blocks
+    desc: 'You cut stone precisely: more ashlar blocks.'
+  canteria_tallado:
+    name: Carving
+    desc: 'You carve fine stone: an extra ashlar block now and then and, sometimes, a hidden gem.'
+  canteria_muros:
+    name: Walls
+    desc: 'You know the quarry: an extra ashlar block now and then, and more stone when gathering.'
+  construccion_madera:
+    name: Timber Works
+    desc: 'You prepare the wood for the works better: more planks when sawing.'
+  construccion_piedra:
+    name: Stone Works
+    desc: 'You prepare the stone for the works better: more ashlar blocks.'
+  construccion_fortificaciones:
+    name: Fortifications
+    desc: 'Ironwork and nails for walls and towers: more ingots when smelting.'

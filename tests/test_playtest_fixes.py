@@ -134,7 +134,8 @@ def test_console_shows_the_menu_and_shortcuts(service, monkeypatch, capsys):
     view = service.view("test:1")
     ids = [a.id for a in play.options(view, service)]
     assert "explore_menu" in ids and "hero" in ids               # from the zone you can reach every screen
-    assert play.options(service.view("test:9"), service) == []    # no menu while creating the hero
+    creating = play.options(service.view("test:9"), service)      # no menu while creating the hero: only the
+    assert [a.id for a in creating] == ["lang:es", "lang:en"]      # 🌐 language buttons of the first screen (D-250)
     assert service.commands()["/doble"] == "dual"                 # the double spec is only linked as /doble
     play.draw(view, service)
     assert "🧭 Explorar" in capsys.readouterr().out

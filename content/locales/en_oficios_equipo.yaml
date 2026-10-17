@@ -1,0 +1,282 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_oficios_equipo.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_oficios_equipo.yaml. Una clave nueva va
+# primero en es_oficios_equipo.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+profession:
+  encantamiento:
+    name: Enchanting
+    how: 'disenchant old gear into ✨ essences and enchant your pieces: 🛡️ Gear → a piece → ✨ Enchanting (or /enchant)'
+prof:
+  perk:
+    disenchant: +{v}% essences when disenchanting
+  branch:
+    enchant: ✨ Arcane Arts
+resources:
+  use:
+    esencia: '✨ Enchanting: enchant your pieces (comes from disenchanting gear)'
+    esencia_mayor: '✨ Enchanting: enchant pieces of level 50 or higher (comes from disenchanting 🟣 epic pieces)'
+ench:
+  title: ✨ Enchanting
+  intro: 'Disenchant the gear you no longer use: the piece is lost and gives you ✨ essences. With them and a material from another profession, enchant your pieces: one enchantment per piece, which adds its bonus while you wear it.'
+  rank_line: ✨ Enchanting · rank {rank} ({title}) {bar}
+  essences_line: 'You carry: {items}'
+  essences_none: 'You don''t carry any essences yet: disenchant a piece you don''t use.'
+  table_title: 'One enchantment per slot (the value comes from your rank and stays on the piece):'
+  table_line: '{name} · {slots}: {stats} · needs {material}{lock}'
+  lock: ' · 🔒 rank {rank}'
+  cost_rule: Enchanting takes ✨ {base} essences and 1 more every {per} levels of the piece, 🔮 1 greater essence from level {major}, and the material (1, and 1 more every {mat_per} levels). ⚡{energy}
+  disenchant_rule: Disenchanting gives ✨ essences by rarity (⚪ {comun} · 🟢 {poco_comun} · 🔵 {raro} · 🟣 {epico}) and 1 more every {per} levels; 🟣 epic pieces also give 🔮 1 greater essence. ⚡{energy}
+  worn_title: 'Your enchanted gear: {items}'
+  worn_none: You aren't wearing anything enchanted yet.
+  how: Choose a piece in 🛡️ Gear and tap ✨ Enchanting.
+  pick_button: 🛡️ Choose piece
+  piece_title: ✨ Enchant or disenchant
+  current: 'Now: {enchant}'
+  current_none: 'Now: no enchantment.'
+  no_slot: This piece can't be enchanted.
+  locked: 🔒 {name} needs rank {need} in ✨ Enchanting (you have {rank}).
+  offer_best: It already has the best enchantment you can make at your rank. Rank up to improve it.
+  offer: 'You can give it {name}: {stats} at your rank.'
+  offer_replace: 'You can give it {name}: {stats} at your rank (replaces the current one).'
+  needs: 'Needs: {items} · ⚡{energy}'
+  enchant_button: ✨ Enchant ({stats})
+  worn_cant: 💨 To disenchant it, take it off first.
+  disenchant_line: '💨 Disenchant: the piece is lost and gives you {items}{bonus} · ⚡{energy}'
+  disenchant_bonus: ' (and up to {pct}% more from your rank)'
+  disenchant_button: 💨 Disenchant
+  enchanted: '✨ You enchanted {item}: {enchant} (⚡ −{energy}).'
+  not_better: That piece already has that enchantment or a better one. You didn't spend anything.
+  worn_no: '💨 You can''t disenchant what you''re wearing: take it off first.'
+  confirm_title: 💨 Disenchant a masterwork?
+  confirm: It's a ✒️ masterwork{by}. If you disenchant it, it's lost forever.
+  confirm_by: ' by {name}'
+  confirm_button: 💨 Yes, disenchant
+  cancel_button: ↩️ No
+  disenchanted: '💨 You disenchanted {item}: +{items} (⚡ −{energy}).'
+  unlocked: '🔓 New enchantment: {items}.'
+  mark: ' ✨'
+  item_line: '✨ Enchantment: {enchant}'
+  item_button: ✨ Enchanting
+  name:
+    filo: ⚔️ Edge
+    vigor: ❤️ Vigor
+    guarda: 🛡️ Ward
+gear:
+  better_mark: ' ⬆️'
+  better_hint: ⬆️ = better than what you wear in that slot, and you can already use it.
+  better_notice: '⬆️ You have a better piece! {item} beats what you wear in {slot}: {stats}.'
+  better_button: 🔁 Equip {item}
+  better_batch: '⬆️ You have a better piece: {item}. Put it on in 👤 Hero → 🎒 Backpack → 🛡️ Gear (the one with ⬆️).'
+item:
+  esencia: Arcane Essence
+  esencia_mayor: Greater Essence
+  artesano_cabeza_tela_1: Apprentice's Circlet
+  artesano_cabeza_tela_2: Journeyman's Circlet
+  artesano_cabeza_tela_3: Artisan's Circlet
+  artesano_cabeza_tela_4: Frontier Circlet
+  artesano_cabeza_tela_5: Wasteland Circlet
+  artesano_cabeza_tela_6: Vigil Circlet
+  artesano_cabeza_tela_7: Twilight Circlet
+  artesano_cabeza_tela_8: Storm Circlet
+  artesano_cabeza_tela_9: Everfrost Circlet
+  artesano_cabeza_tela_10: Abyssal Circlet
+  artesano_cabeza_tela_11: Titan Circlet
+  artesano_cabeza_tela_12: Starlit Circlet
+  artesano_cabeza_tela_13: Everdawn Circlet
+  artesano_cabeza_cuero_1: Apprentice's Cowl
+  artesano_cabeza_cuero_2: Journeyman's Cowl
+  artesano_cabeza_cuero_3: Artisan's Cowl
+  artesano_cabeza_cuero_4: Frontier Cowl
+  artesano_cabeza_cuero_5: Wasteland Cowl
+  artesano_cabeza_cuero_6: Vigil Cowl
+  artesano_cabeza_cuero_7: Twilight Cowl
+  artesano_cabeza_cuero_8: Storm Cowl
+  artesano_cabeza_cuero_9: Everfrost Cowl
+  artesano_cabeza_cuero_10: Abyssal Cowl
+  artesano_cabeza_cuero_11: Titan Cowl
+  artesano_cabeza_cuero_12: Starlit Cowl
+  artesano_cabeza_cuero_13: Everdawn Cowl
+  artesano_cabeza_malla_1: Apprentice's Aventail
+  artesano_cabeza_malla_2: Journeyman's Aventail
+  artesano_cabeza_malla_3: Artisan's Aventail
+  artesano_cabeza_malla_4: Frontier Aventail
+  artesano_cabeza_malla_5: Wasteland Aventail
+  artesano_cabeza_malla_6: Vigil Aventail
+  artesano_cabeza_malla_7: Twilight Aventail
+  artesano_cabeza_malla_8: Storm Aventail
+  artesano_cabeza_malla_9: Everfrost Aventail
+  artesano_cabeza_malla_10: Abyssal Aventail
+  artesano_cabeza_malla_11: Titan Aventail
+  artesano_cabeza_malla_12: Starlit Aventail
+  artesano_cabeza_malla_13: Everdawn Aventail
+  artesano_cabeza_placas_1: Apprentice's Sallet
+  artesano_cabeza_placas_2: Journeyman's Sallet
+  artesano_cabeza_placas_3: Artisan's Sallet
+  artesano_cabeza_placas_4: Frontier Sallet
+  artesano_cabeza_placas_5: Wasteland Sallet
+  artesano_cabeza_placas_6: Vigil Sallet
+  artesano_cabeza_placas_7: Twilight Sallet
+  artesano_cabeza_placas_8: Storm Sallet
+  artesano_cabeza_placas_9: Everfrost Sallet
+  artesano_cabeza_placas_10: Abyssal Sallet
+  artesano_cabeza_placas_11: Titan Sallet
+  artesano_cabeza_placas_12: Starlit Sallet
+  artesano_cabeza_placas_13: Everdawn Sallet
+  artesano_manos_tela_1: Apprentice's Cuffs
+  artesano_manos_tela_2: Journeyman's Cuffs
+  artesano_manos_tela_3: Artisan's Cuffs
+  artesano_manos_tela_4: Frontier Cuffs
+  artesano_manos_tela_5: Wasteland Cuffs
+  artesano_manos_tela_6: Vigil Cuffs
+  artesano_manos_tela_7: Twilight Cuffs
+  artesano_manos_tela_8: Storm Cuffs
+  artesano_manos_tela_9: Everfrost Cuffs
+  artesano_manos_tela_10: Abyssal Cuffs
+  artesano_manos_tela_11: Titan Cuffs
+  artesano_manos_tela_12: Starlit Cuffs
+  artesano_manos_tela_13: Everdawn Cuffs
+  artesano_manos_cuero_1: Apprentice's Bracers
+  artesano_manos_cuero_2: Journeyman's Bracers
+  artesano_manos_cuero_3: Artisan's Bracers
+  artesano_manos_cuero_4: Frontier Bracers
+  artesano_manos_cuero_5: Wasteland Bracers
+  artesano_manos_cuero_6: Vigil Bracers
+  artesano_manos_cuero_7: Twilight Bracers
+  artesano_manos_cuero_8: Storm Bracers
+  artesano_manos_cuero_9: Everfrost Bracers
+  artesano_manos_cuero_10: Abyssal Bracers
+  artesano_manos_cuero_11: Titan Bracers
+  artesano_manos_cuero_12: Starlit Bracers
+  artesano_manos_cuero_13: Everdawn Bracers
+  artesano_manos_malla_1: Apprentice's Wristguards
+  artesano_manos_malla_2: Journeyman's Wristguards
+  artesano_manos_malla_3: Artisan's Wristguards
+  artesano_manos_malla_4: Frontier Wristguards
+  artesano_manos_malla_5: Wasteland Wristguards
+  artesano_manos_malla_6: Vigil Wristguards
+  artesano_manos_malla_7: Twilight Wristguards
+  artesano_manos_malla_8: Storm Wristguards
+  artesano_manos_malla_9: Everfrost Wristguards
+  artesano_manos_malla_10: Abyssal Wristguards
+  artesano_manos_malla_11: Titan Wristguards
+  artesano_manos_malla_12: Starlit Wristguards
+  artesano_manos_malla_13: Everdawn Wristguards
+  artesano_manos_placas_1: Apprentice's Vambraces
+  artesano_manos_placas_2: Journeyman's Vambraces
+  artesano_manos_placas_3: Artisan's Vambraces
+  artesano_manos_placas_4: Frontier Vambraces
+  artesano_manos_placas_5: Wasteland Vambraces
+  artesano_manos_placas_6: Vigil Vambraces
+  artesano_manos_placas_7: Twilight Vambraces
+  artesano_manos_placas_8: Storm Vambraces
+  artesano_manos_placas_9: Everfrost Vambraces
+  artesano_manos_placas_10: Abyssal Vambraces
+  artesano_manos_placas_11: Titan Vambraces
+  artesano_manos_placas_12: Starlit Vambraces
+  artesano_manos_placas_13: Everdawn Vambraces
+  artesano_piernas_tela_1: Apprentice's Kilt
+  artesano_piernas_tela_2: Journeyman's Kilt
+  artesano_piernas_tela_3: Artisan's Kilt
+  artesano_piernas_tela_4: Frontier Kilt
+  artesano_piernas_tela_5: Wasteland Kilt
+  artesano_piernas_tela_6: Vigil Kilt
+  artesano_piernas_tela_7: Twilight Kilt
+  artesano_piernas_tela_8: Storm Kilt
+  artesano_piernas_tela_9: Everfrost Kilt
+  artesano_piernas_tela_10: Abyssal Kilt
+  artesano_piernas_tela_11: Titan Kilt
+  artesano_piernas_tela_12: Starlit Kilt
+  artesano_piernas_tela_13: Everdawn Kilt
+  artesano_piernas_cuero_1: Apprentice's Chaps
+  artesano_piernas_cuero_2: Journeyman's Chaps
+  artesano_piernas_cuero_3: Artisan's Chaps
+  artesano_piernas_cuero_4: Frontier Chaps
+  artesano_piernas_cuero_5: Wasteland Chaps
+  artesano_piernas_cuero_6: Vigil Chaps
+  artesano_piernas_cuero_7: Twilight Chaps
+  artesano_piernas_cuero_8: Storm Chaps
+  artesano_piernas_cuero_9: Everfrost Chaps
+  artesano_piernas_cuero_10: Abyssal Chaps
+  artesano_piernas_cuero_11: Titan Chaps
+  artesano_piernas_cuero_12: Starlit Chaps
+  artesano_piernas_cuero_13: Everdawn Chaps
+  artesano_piernas_malla_1: Apprentice's Chausses
+  artesano_piernas_malla_2: Journeyman's Chausses
+  artesano_piernas_malla_3: Artisan's Chausses
+  artesano_piernas_malla_4: Frontier Chausses
+  artesano_piernas_malla_5: Wasteland Chausses
+  artesano_piernas_malla_6: Vigil Chausses
+  artesano_piernas_malla_7: Twilight Chausses
+  artesano_piernas_malla_8: Storm Chausses
+  artesano_piernas_malla_9: Everfrost Chausses
+  artesano_piernas_malla_10: Abyssal Chausses
+  artesano_piernas_malla_11: Titan Chausses
+  artesano_piernas_malla_12: Starlit Chausses
+  artesano_piernas_malla_13: Everdawn Chausses
+  artesano_piernas_placas_1: Apprentice's Cuisses
+  artesano_piernas_placas_2: Journeyman's Cuisses
+  artesano_piernas_placas_3: Artisan's Cuisses
+  artesano_piernas_placas_4: Frontier Cuisses
+  artesano_piernas_placas_5: Wasteland Cuisses
+  artesano_piernas_placas_6: Vigil Cuisses
+  artesano_piernas_placas_7: Twilight Cuisses
+  artesano_piernas_placas_8: Storm Cuisses
+  artesano_piernas_placas_9: Everfrost Cuisses
+  artesano_piernas_placas_10: Abyssal Cuisses
+  artesano_piernas_placas_11: Titan Cuisses
+  artesano_piernas_placas_12: Starlit Cuisses
+  artesano_piernas_placas_13: Everdawn Cuisses
+  artesano_pies_tela_1: Apprentice's Slippers
+  artesano_pies_tela_2: Journeyman's Slippers
+  artesano_pies_tela_3: Artisan's Slippers
+  artesano_pies_tela_4: Frontier Slippers
+  artesano_pies_tela_5: Wasteland Slippers
+  artesano_pies_tela_6: Vigil Slippers
+  artesano_pies_tela_7: Twilight Slippers
+  artesano_pies_tela_8: Storm Slippers
+  artesano_pies_tela_9: Everfrost Slippers
+  artesano_pies_tela_10: Abyssal Slippers
+  artesano_pies_tela_11: Titan Slippers
+  artesano_pies_tela_12: Starlit Slippers
+  artesano_pies_tela_13: Everdawn Slippers
+  artesano_pies_cuero_1: Apprentice's Gaiters
+  artesano_pies_cuero_2: Journeyman's Gaiters
+  artesano_pies_cuero_3: Artisan's Gaiters
+  artesano_pies_cuero_4: Frontier Gaiters
+  artesano_pies_cuero_5: Wasteland Gaiters
+  artesano_pies_cuero_6: Vigil Gaiters
+  artesano_pies_cuero_7: Twilight Gaiters
+  artesano_pies_cuero_8: Storm Gaiters
+  artesano_pies_cuero_9: Everfrost Gaiters
+  artesano_pies_cuero_10: Abyssal Gaiters
+  artesano_pies_cuero_11: Titan Gaiters
+  artesano_pies_cuero_12: Starlit Gaiters
+  artesano_pies_cuero_13: Everdawn Gaiters
+  artesano_pies_malla_1: Apprentice's Footguards
+  artesano_pies_malla_2: Journeyman's Footguards
+  artesano_pies_malla_3: Artisan's Footguards
+  artesano_pies_malla_4: Frontier Footguards
+  artesano_pies_malla_5: Wasteland Footguards
+  artesano_pies_malla_6: Vigil Footguards
+  artesano_pies_malla_7: Twilight Footguards
+  artesano_pies_malla_8: Storm Footguards
+  artesano_pies_malla_9: Everfrost Footguards
+  artesano_pies_malla_10: Abyssal Footguards
+  artesano_pies_malla_11: Titan Footguards
+  artesano_pies_malla_12: Starlit Footguards
+  artesano_pies_malla_13: Everdawn Footguards
+  artesano_pies_placas_1: Apprentice's Sollerets
+  artesano_pies_placas_2: Journeyman's Sollerets
+  artesano_pies_placas_3: Artisan's Sollerets
+  artesano_pies_placas_4: Frontier Sollerets
+  artesano_pies_placas_5: Wasteland Sollerets
+  artesano_pies_placas_6: Vigil Sollerets
+  artesano_pies_placas_7: Twilight Sollerets
+  artesano_pies_placas_8: Storm Sollerets
+  artesano_pies_placas_9: Everfrost Sollerets
+  artesano_pies_placas_10: Abyssal Sollerets
+  artesano_pies_placas_11: Titan Sollerets
+  artesano_pies_placas_12: Starlit Sollerets
+  artesano_pies_placas_13: Everdawn Sollerets
