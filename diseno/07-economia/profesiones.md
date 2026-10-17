@@ -19,9 +19,22 @@
 
 ---
 
+## 0.0 Los oficios se aprenden (D-257, en el juego desde la 0.33)
+
+El dueño pidió (17-oct): "cocina es una profesión: no debería salirme hasta que yo no aprenda la profesión… cuando yo le doy a aprender, voy a pagar por la primera receta". Y: "el jugador va a ir aprendiendo recetas a medida que va haciendo recetas".
+
+- **Suben solos, sin aprenderse:** la 🪓 recolección (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) y la 🧭 exploración (`learn: auto` en `content/professions.yaml`).
+- **Se aprenden una vez:** todos los demás, también el 🔪 Desollador (sin él, las bestias dan su botín de siempre, sin la unidad de más), el 💱 Comercio (sin él, se vende igual, sin las monedas de más), el ✨ Encantamiento y la 🏗️ Construcción (esta, siendo miembro de un campamento).
+- **Dónde:** en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Cada oficio tiene su código (/cocina); su pantalla dice qué hace, su primera receta y lo que cuesta.
+- **Cuánto:** su primera receta, 🥉20 (`professions.learn_price`, a medir con el informe diario, P-231). Gratis si ya lo practicabas antes de la 0.33: conservas tu rango (D-64).
+- **Qué abre:** el oficio en rango 1, con todas sus recetas de rango 1. Las demás se abren **haciendo recetas**, rango por rango, como hasta ahora.
+- **Sin aprenderlo:** rango 0. No se hace ninguna de sus recetas, no da beneficio ni especialización y no sube. La experiencia de antes queda guardada (`Hero.professions`); lo aprendido, en `Hero.learned`.
+- **📋 Mis oficios:** una línea corta por oficio que tienes ("⛏️ Minero · rango 2 (Aprendiz) ▓▓▓▓░░░░ 55 %  /minero"). Lo largo (qué junta, su beneficio, lo que abre el próximo rango, sus especializaciones) sale tocando el código.
+- **🛠️ Fabricar** muestra lo mismo, corto, y las estaciones. Ya no lista los oficios "sin empezar": esos están en 📚 Aprender oficios.
+
 ## 0. Fase 1 para programar (D-109)
 
-El dueño pidió (1-oct-2026) preparar los oficios **como en World of Warcraft**: para que un carpintero avance hace falta un recolector y alguien que refine; para crear pociones hace falta herbología y alquimia; los joyeros y los guerreros necesitan lo que hacen otros. **Que avanzar no dependa de una sola cosa y que 50 jugadores tengan tareas distintas, con mucha variedad.** Sigue valiendo D-57: no hay tope duro de oficios; quien quiere serlo todo avanza mucho más lento que el especialista, porque cada oficio pide su tiempo, sus materiales y su estación.
+El dueño pidió (1-oct-2026) preparar los oficios **como en World of Warcraft**: para que un carpintero avance hace falta un recolector y alguien que refine; para crear pociones hace falta herbología y alquimia; los joyeros y los guerreros necesitan lo que hacen otros. **Que avanzar no dependa de una sola cosa y que 50 jugadores tengan tareas distintas, con mucha variedad.** Sigue valiendo D-57: no hay tope duro de oficios (desde la 0.33 cada uno se aprende una vez, §0.0); quien quiere serlo todo avanza mucho más lento que el especialista, porque cada oficio pide su tiempo, sus materiales y su estación.
 
 Esta es la **capa simple** que se programa primero, con los recursos que ya hay en el juego. El resto de este documento (maestría por objeto, exámenes, enfermedades laborales) queda como capa profunda, para después. Las especializaciones ya están en su capa simple (§0.6).
 

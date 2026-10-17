@@ -75,8 +75,10 @@ El dueño pidió el juego también en inglés: "añadas la traducción al inglé
 | bronce · plata · oro | bronze · silver · gold | | /guia, /origen | /guide, /origin |
 | Guerrero · Paladín · Druida | Warrior · Paladin · Druid | | /idioma | /language |
 | Cazador · Sacerdote · Mago | Hunter · Priest · Mage | | /ir1, /ir2… | /go1, /go2… |
+| 📋 Mis oficios | 📋 My professions | | /misoficios, /aprender | /myprofessions, /learn |
+| 📚 Aprender oficios | 📚 Learn professions | | /feedback | /feedback |
 
-/stats, /inv, /hero, /bio, /start y los códigos de ❓ Dudas (/d07) son iguales en los dos idiomas.
+/stats, /inv, /hero, /bio, /start y los códigos son iguales en los dos idiomas: ❓ Dudas (/d07), 📦 Recursos (/07), vender al mercader (/v07) y los oficios (/minero, /cocina: el código es el id del oficio).
 
 ## 5. Para agregar un idioma más
 
