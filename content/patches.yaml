@@ -526,3 +526,24 @@ v0_32:
     - "⚜️ El Paladín reemplaza al Chamán: guerrero sagrado de placa, ☀️ sanador de grupo (Luz sagrada, Choque sagrado y Luz del alba) o 🔆 DPS sagrado (Golpe de cruzado, Sentencia y Tormenta divina)."
     - "🌩️ Si tu héroe era Chamán, ya es Paladín del mismo rol, con su nivel, su equipo, sus monedas y sus oficios. Pelea igual que antes; cambian los nombres y ahora usa placa."
     - "🛡️ Las clases van de dos en dos por armadura: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela). Así salen al crear un héroe."
+
+
+# D-250: from 0.33 on, every patch also carries title_en and notes_en (each player reads the notes in their language;
+# a patch without them is shown in Spanish to everybody). [ES] Desde la 0.33 cada parche lleva también su título y sus
+# notas en inglés: el bot le manda a cada jugador las de su idioma (GameService.announcement_view).
+v0_33:
+  version: "0.33"
+  title: "🌐 Lost Realms 0.33: el juego, también en inglés"
+  title_en: "🌐 Lost Realms 0.33: the game, now in English too"
+  notes:
+    - "🌐 Lost Realms ya se juega en español o en inglés. Cada jugador elige su idioma y todo sale en ese idioma: pantallas, botones, combate, historia, avisos y ❓ Dudas."
+    - "🇪🇸 🇬🇧 Al empezar, la primera pantalla te deja elegir Español o English. Si ya juegas, cámbialo cuando quieras en ⚙️ Opciones → 🌐 Idioma, o escribe /idioma."
+    - "💬 Los avisos te llegan en tu idioma aunque los mande alguien que juega en el otro: un saludo, el informe de una oleada o lo que pasa en tu campamento."
+    - "⌨️ Los atajos también tienen nombre en inglés (/coins, /help, /greet…) y los de siempre siguen funcionando."
+    - "⏱️ Al recolectar en lote ves el tiempo total, no solo el de cada vuelta. La energía de combate ya no sale en tu ficha: se ve en la pelea."
+  notes_en:
+    - "🌐 Lost Realms can now be played in Spanish or English. Each player picks a language and everything follows it: screens, buttons, combat, story, notices and ❓ Help."
+    - "🇪🇸 🇬🇧 When you start, the first screen lets you choose Español or English. If you already play, switch anytime in ⚙️ Options → 🌐 Language, or type /language."
+    - "💬 Notices reach you in your language even when they come from someone playing in the other one: a greeting, a wave report or news from your camp."
+    - "⌨️ Shortcuts have English names too (/coins, /help, /greet…), and the old ones still work."
+    - "⏱️ Batch gathering now shows the total time, not just each round. Combat energy no longer shows on your hero sheet: you see it in the fight."

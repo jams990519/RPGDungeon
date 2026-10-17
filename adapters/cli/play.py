@@ -36,15 +36,18 @@ from engine.messaging import Action, View
 from engine.service import GameService
 
 
-def options(view: View, service: GameService) -> list[Action]:
-    """The screen's buttons, then the global menu (except while creating the hero).
+ACCOUNT = "console:local"
 
-    [ES] Qué hace: junta los botones de la pantalla y el menú fijo, numerados seguidos. La llaman: draw y main.
-    Si cambia, afecta: solo la consola.
+
+def options(view: View, service: GameService, account: str = ACCOUNT) -> list[Action]:
+    """The screen's buttons, then the global menu in the player's language (not while creating the hero or picking the language).
+
+    [ES] Qué hace: junta los botones de la pantalla y el menú fijo, numerados seguidos, en el idioma del jugador (D-250).
+    La llaman: draw y main. Si cambia, afecta: solo la consola.
     """
-    if view.kind.startswith("create"):
+    if view.kind.startswith("create") or view.kind == "language":
         return list(view.actions)
-    return list(view.actions) + service.menu()
+    return list(view.actions) + service.menu(account)
 
 
 def draw(view: View, service: GameService | None = None) -> None:
@@ -59,7 +62,7 @@ def draw(view: View, service: GameService | None = None) -> None:
     for number, action in enumerate(buttons, start=1):
         if number == len(view.actions) + 1:
             print("  ---")
-        mark = "" if action.enabled else " (no disponible)"
+        mark = "" if action.enabled else " 🚫"
         print(f"  {number}. {action.label}{mark}")
 
 
@@ -81,7 +84,7 @@ def main() -> None:
     utf8_output()                      # Windows: the console is cp1252 by default and every screen has emoji
     fast = "--fast" in sys.argv
     service = GameService(load_content(), SqliteStore("data/consola.sqlite3"), SystemClock(), time_scale=1 / 600 if fast else 1.0)
-    account = "console:local"
+    account = ACCOUNT
     view = service.view(account)
     while True:
         draw(view, service)
@@ -90,7 +93,7 @@ def main() -> None:
             raw = input("> ").strip()
         except (EOFError, KeyboardInterrupt):
             return
-        if raw.lower() in ("q", "salir"):
+        if raw.lower() in ("q", "salir", "quit", "exit"):
             return
         if raw.isdigit() and 1 <= int(raw) <= len(buttons):
             view = service.act(account, buttons[int(raw) - 1].id)

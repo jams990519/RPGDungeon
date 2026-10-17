@@ -24,6 +24,8 @@ topics: [start, world, fight, hero, camp, trades, money]
 # Shown first on the ❓ Dudas screen. [ES] Las más buscadas, arriba de la pantalla de ❓ Dudas.
 popular: [d01, d06, d07, d35, d44, d22]
 
+# keywords_en (D-250): the English words that find the question for a player who plays in English (the Spanish keywords
+#     also count for them). [ES] Las palabras en inglés: un jugador en inglés busca con estas y también con las españolas.
 # keywords: lowercase words without accents (the search also ignores accents and case). [ES] palabras clave en minúscula,
 # sin tildes; la búsqueda también ignora tildes y mayúsculas. related: códigos de preguntas parecidas (hasta 3).
 questions:

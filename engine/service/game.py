@@ -355,11 +355,13 @@ Si cambias esto, revisa:
 
 from __future__ import annotations
 
+import functools
 import math
 import re
 import unicodedata
+from contextlib import contextmanager
 from dataclasses import asdict, replace
-from typing import Any, Callable
+from typing import Any, Callable, Iterable, Iterator
 
 from engine.classes import (
     bar_choices,
@@ -432,6 +434,16 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/dudas": "dudas", "/entrenador": "trainer"}                                       # D-191/D-192: ❓ Dudas, 🧑‍🏫 Entrenador
 # D-193: /guia shows the 🧭 guided path again; /origen chooses the 🎭 origin later (E-131: offered as an optional step).
 COMMANDS.update({"/guia": "guide", "/origen": "origin"})
+# D-250: 🌐 the language screen, and the English name of every shortcut (both work for everyone, in any language).
+COMMANDS.update({"/idioma": "lang", "/language": "lang",
+                 "/skills": "talents", "/zone": "home", "/gear": "gear", "/coins": "wallet", "/dual": "dual",
+                 "/guild": "guild", "/health": "health", "/professions": "oficios", "/options": "options",
+                 "/story": "story", "/journal": "journal", "/board": "board", "/greet": "gesture:saludar",
+                 "/toast": "gesture:brindar", "/enchant": "ench", "/specialty": "pspecs", "/recon": "recon",
+                 "/help": "dudas", "/faq": "dudas", "/trainer": "trainer", "/guide": "guide", "/origin": "origin"})
+# D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
+# handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
+TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 # D-233: classes on the creation screen, two per page: plate (Guerrero, Paladín), leather (Druida, Cazador), cloth
 # (Sacerdote, Mago). [ES] El orden sale de content/classes.yaml; si cambia el número de clases o su orden, las parejas
@@ -467,7 +479,20 @@ COOK_PROFESSION = "cocina"
 # D-192: professions that need your own camp to rise (🏗️ Construcción: giving to its works); the 🧑‍🏫 Entrenador says so.
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
-PLACE_CODE_RE = re.compile(r"^/ir_?(\d{1,2})(@\w+)?$")      # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares
+PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
+
+
+def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
+    """Run a public entry point (view, text, act) in the language its account chose (D-250).
+
+    [ES] Qué hace: todo lo que arma una entrada del motor sale en el idioma del jugador que juega (Texts.use). La usan:
+    view, text y act. Si cambia, afecta: el idioma de todas las pantallas.
+    """
+    @functools.wraps(method)
+    def wrapper(self: "GameService", account_id: str, *args: Any, **kwargs: Any) -> Any:
+        with self._speaking(account_id):
+            return method(self, account_id, *args, **kwargs)
+    return wrapper
 
 
 class GameService(StoryMixin, GuideMixin):
@@ -495,7 +520,7 @@ class GameService(StoryMixin, GuideMixin):
         self.clock = clock
         self.time_scale = max(0.0001, time_scale)
         self.bus = bus or EventBus()
-        self.texts = Texts(content.texts)
+        self.texts = Texts(content.texts, catalogs=content.locales or {})       # D-250: one catalog per language
         meta = store.get("meta", "world") or {}
         epoch = int(content.balance.get("world", {}).get("epoch", 1))
         if meta and meta.get("epoch", 1) != epoch:
@@ -516,12 +541,13 @@ class GameService(StoryMixin, GuideMixin):
 
     # ------------------------------------------------------------------ public API
 
+    @_in_player_language
     def view(self, account_id: str) -> View:
         """Current screen for an account. [ES] Qué hace: muestra la pantalla actual. La llaman: los clientes (al abrir o actualizar). Si cambia, afecta: todos los clientes."""
         self._seen(account_id)
         hero = self._load(account_id)
         if hero is None:
-            return self._creation_view(account_id)
+            return self._creation_view(account_id)        # D-250: its first screen also offers the 🌐 language
         notices = self._settle(hero)
         self._raid_settle(hero)
         self._hunt_party_settle(hero)       # D-106: the camp's hunting party closes lazily too
@@ -530,6 +556,7 @@ class GameService(StoryMixin, GuideMixin):
         self._save(hero)                    # after the view: a 🧭 tip it showed stays seen
         return view
 
+    @_in_player_language
     def text(self, account_id: str, text: str) -> View:
         """Handle free text: the hero's name, a camp or guild name, or a typed command ("/bio ...", "/saludar Bram").
 
@@ -546,6 +573,7 @@ class GameService(StoryMixin, GuideMixin):
         """
         self._seen(account_id)
         hero = self._load(account_id)
+        text = self._canonical_command(text)            # D-250: "/greet Bram" is "/saludar Bram"
         if text.lstrip().startswith("/"):
             if hero is None:
                 return self.view(account_id)
@@ -567,7 +595,7 @@ class GameService(StoryMixin, GuideMixin):
             view = self._name_camp(hero, " ".join(text.split()))
             self._save(hero)
             return view
-        if hero is not None and " ".join(text.split()) == self.texts.t("menu.story"):
+        if hero is not None and " ".join(text.split()) in self.texts.all_languages("menu.story"):
             return self.act(account_id, "story")         # D-190: the 📖 Historia key of an old Telegram keyboard
         if hero is not None and not self.store.get("combat", account_id) and (
                 self.store.get("dudas_open", account_id) or FAQ_CODE_RE.match(text.strip().lower())):
@@ -596,9 +624,12 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("pending", account_id, pending)
         return self._creation_view(account_id)
 
+    @_in_player_language
     def act(self, account_id: str, action_id: str) -> View:
         """Handle a button press. [ES] Qué hace: ejecuta la acción de un botón. La llaman: los clientes. Si cambia, afecta: todos los botones."""
         hero = self._load(account_id)
+        if action_id == "lang" or action_id.startswith("lang:"):     # D-250: 🌐 before or after creating the hero
+            return self._language_action(account_id, action_id, hero)
         if hero is None:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
@@ -674,9 +705,31 @@ class GameService(StoryMixin, GuideMixin):
         if meta.get("version") == latest["version"]:
             return None
         self.store.put("meta", "announce", {"version": latest["version"], "at": self.clock.now()})
-        return View(kind="patch", title=latest["title"], body=["• " + line for line in latest["notes"]])
+        return self._patch_view(latest)
 
-    def menu(self) -> list[Action]:
+    def announcement_view(self, account_id: str) -> View | None:
+        """The newest patch notes in that player's language (D-250); None if there are no patches.
+
+        [ES]
+        Qué hace: el aviso del último parche en el idioma del jugador (title_en y notes_en en patches.yaml; si un parche
+        no los tiene, sale en español). No marca nada: lo marca pending_announcement, una vez por versión.
+        La llaman: el bot de Telegram, para mandarle a cada jugador el aviso en su idioma.
+        Si cambia, afecta: los avisos de parches.
+        """
+        patches = self.content.patches or {}
+        if not patches:
+            return None
+        with self._speaking(account_id):
+            return self._patch_view(list(patches.values())[-1])
+
+    def _patch_view(self, patch: dict[str, Any]) -> View:
+        """A patch entry as a screen, in the current language (patches.yaml: title/notes, or title_<lang>/notes_<lang>)."""
+        lang = self.texts.lang
+        title = patch.get(f"title_{lang}") or patch["title"]
+        notes = patch.get(f"notes_{lang}") or patch["notes"]
+        return View(kind="patch", title=title, body=["• " + line for line in notes])
+
+    def menu(self, account_id: str | None = None) -> list[Action]:
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard): 5 buttons.
 
         [ES]
@@ -685,13 +738,29 @@ class GameService(StoryMixin, GuideMixin):
         🏕️ Campamento. El botón viejo y /historia siguen respondiendo ("story" abre el diario con un aviso; el texto
         "📖 Historia" de un teclado viejo lo entiende text()). D-46 deja hasta 6. ⚙️ Opciones sigue siendo el último.
         La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 5 quedan filas de 2, 2 y 1).
+        D-250: con account_id, el menú sale en el idioma de ese jugador (Telegram arma su teclado así).
         Si cambia, afecta: la navegación de todos los clientes (tests/test_buttons.py, tests/test_options.py y
         tests/test_menus_y_dudas.py miran el menú).
         """
+        if account_id is not None:
+            with self._speaking(account_id):
+                return self.menu()
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
                 Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero")),
                 Action(id="options", label=t.t("menu.options"))]
+
+    def menu_labels(self) -> dict[str, str]:
+        """Every label of the bottom menu in every language -> its action id (D-250).
+
+        [ES]
+        Qué hace: los botones del menú de abajo en todos los idiomas y a qué acción van: así un teclado viejo, en el
+        idioma que el jugador tenía antes de cambiarlo, sigue funcionando. La llaman: el bot de Telegram.
+        Si cambia, afecta: qué texto escrito se entiende como un botón del menú.
+        """
+        keys = {"home": "menu.zone", "explore_menu": "menu.explore", "claro": "menu.camp", "hero": "menu.hero",
+                "options": "menu.options"}
+        return {label: action for action, key in keys.items() for label in self.texts.all_languages(key)}
 
     def commands(self) -> dict[str, str]:
         """Typed shortcuts (/stats, /inv, /doble...) -> action id; some screens only link to them.
@@ -723,8 +792,9 @@ class GameService(StoryMixin, GuideMixin):
             hero = self._load(account_id)
             if hero is None:
                 continue
-            notices = self._settle(hero)
-            view = self._main_view(hero, notice=self._join(notices)) if notices else None
+            with self._speaking(account_id):              # D-250: the notice in that player's language
+                notices = self._settle(hero)
+                view = self._main_view(hero, notice=self._join(notices)) if notices else None
             self._save(hero)     # after the view: a 🧭 tip it showed stays seen (D-193)
             if view is not None:          # a batch step that simply goes on stays silent (D-87)
                 out.append((account_id, view))
@@ -736,10 +806,101 @@ class GameService(StoryMixin, GuideMixin):
         return out
 
     def _push(self, account_id: str, view: View) -> None:
-        """Queue a message for another player; tick() delivers it (camp contacts, D-71)."""
+        """Queue a message for another player; tick() delivers it (camp contacts, D-71).
+
+        D-250: build the view in that player's language: use _push_each (or wrap the building in _speaking(account_id)).
+        """
         box = self.store.get("outbox", account_id) or {"items": []}
         box["items"].append(asdict(view))
         self.store.put("outbox", account_id, box)
+
+    def _push_each(self, recipients: Iterable[str], build: Callable[[], View]) -> None:
+        """Queue one message per player, each built in that player's language (D-250).
+
+        [ES]
+        Qué hace: manda un aviso a varios jugadores (miembros del campamento, presentes en la zona…) armándolo de nuevo
+        para cada uno en su idioma. `build` solo arma textos: no debe cambiar nada del juego (se llama una vez por
+        jugador). La llaman: todo aviso para otro jugador. Si cambia, afecta: los avisos entre jugadores.
+        """
+        for account_id in recipients:
+            with self._speaking(account_id):
+                self._push(account_id, build())
+
+    # ------------------------------------------------------------------ 🌐 language (D-250)
+
+    @contextmanager
+    def _speaking(self, account_id: str | None) -> Iterator[None]:
+        """Everything built inside the `with` comes out in that player's language (the default if none was chosen)."""
+        with self.texts.use(self._lang_of(account_id) if account_id else None):
+            yield
+
+    def _lang_of(self, account_id: str) -> str | None:
+        """The language the player chose (store "prefs"), or None if never chosen (then: the default, Spanish)."""
+        lang = (self.store.get("prefs", account_id) or {}).get("lang")
+        return lang if lang in self.texts.languages else None
+
+    def _language_buttons(self, account_id: str) -> list[Action]:
+        """One button per language, each named in its own language; ✅ on the one in use (the default if none chosen)."""
+        current = self._lang_of(account_id) or self.texts.default
+        actions = []
+        for lang in self.texts.languages:
+            with self.texts.use(lang):
+                name = self.texts.t("language.name")
+            mark = self.texts.t("options.check_on") + " " if lang == current else ""
+            actions.append(Action(id=f"lang:{lang}", label=f"{mark}{name}"))
+        return actions
+
+    def _language_view(self, account_id: str, notice: str | None = None) -> View:
+        """🌐 Idioma (in the game): the language in use and one button per language, plus ↩️ Volver to ⚙️ Opciones.
+
+        [ES]
+        Qué hace: la pantalla para cambiar el idioma dentro del juego (D-250): ⚙️ Opciones → 🌐 Idioma, /idioma o
+        /language. Cada botón lleva el nombre del idioma en ese idioma; el que se usa lleva ✅. (Al empezar, el idioma se
+        elige en la primera pantalla de la creación: _creation_view.)
+        La llaman: _language_action. Si cambia, afecta: tests/test_idiomas.py.
+        """
+        t = self.texts
+        body = [t.t("language.current", name=t.t("language.name")), "", t.t("language.ask")]
+        actions = self._language_buttons(account_id) + [Action(id="options", label=t.t("menu.back"))]
+        return View(kind="language", title=t.t("language.title"), body=body, actions=actions, notice=notice)
+
+    def _all_texts(self, key: str) -> list[str]:
+        """A key in every language, without repeats (for the very first screen, read before choosing)."""
+        return self.texts.all_languages(key)
+
+    def _language_action(self, account_id: str, action_id: str, hero: Hero | None) -> View:
+        """"lang" opens the 🌐 screen; "lang:en" saves English (store "prefs") and shows the next screen in it.
+
+        [ES]
+        Qué hace: guarda el idioma elegido y sigue: sin héroe, la misma pantalla de la creación ya en ese idioma; con héroe, vuelve a ⚙️ Opciones
+        ya en el idioma nuevo, con el aviso, y marca la vista (meta["menu_changed"]) para que Telegram cambie también el
+        teclado de abajo. Nada del juego cambia: solo el idioma de lo que se muestra.
+        La llaman: act(). Si cambia, afecta: tests/test_idiomas.py y el teclado de Telegram.
+        """
+        lang = action_id.partition(":")[2]
+        if not lang or lang not in self.texts.languages:
+            return self._creation_view(account_id) if hero is None else self._language_view(account_id)
+        prefs = self.store.get("prefs", account_id) or {}
+        prefs["lang"] = lang
+        self.store.put("prefs", account_id, prefs)
+        with self.texts.use(lang):
+            if hero is None:
+                view = self._creation_view(account_id)
+            else:
+                view = self._options_view(hero, notice=self.texts.t("language.changed"))
+        view.meta["menu_changed"] = True
+        return view
+
+    @staticmethod
+    def _canonical_command(text: str) -> str:
+        """English typed commands with words after them become the Spanish ones the handlers read ("/greet Bram")."""
+        parts = text.strip().split(maxsplit=1)
+        if not parts:
+            return text
+        word, _, bot = parts[0].lower().partition("@")
+        if word not in TYPED_ALIASES:
+            return text
+        return " ".join([TYPED_ALIASES[word] + (f"@{bot}" if bot else "")] + parts[1:])
 
     # ------------------------------------------------------------------ storage helpers
 
@@ -877,7 +1038,8 @@ class GameService(StoryMixin, GuideMixin):
         return self._terrain_table
 
     def _zone(self, x: int, y: int) -> Zone:
-        parts = (len(self.texts.list("world.name_first")) or 1, len(self.texts.list("world.name_second")) or 1)
+        default = self.texts.default                    # D-250: the same name index in every language
+        parts = (len(self.texts.list("world.name_first", default)) or 1, len(self.texts.list("world.name_second", default)) or 1)
         zone = zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts,
                        self._terrain_cfg())        # D-186: the patchwork terrain
         cfg = self._guardian_cfg()
@@ -899,7 +1061,9 @@ class GameService(StoryMixin, GuideMixin):
         second = self.texts.list("world.name_second")
         if not first or not second:
             return f"{zone.x},{zone.y}"
-        return f"{first[zone.name_index[0] % len(first)]} {second[zone.name_index[1] % len(second)]}"
+        # D-250: "{first} {second}" in Spanish ("Vado Gris"), "{second} {first}" in English ("Grey Ford")
+        return self.texts.t("world.name_format", first=first[zone.name_index[0] % len(first)],
+                            second=second[zone.name_index[1] % len(second)])
 
     def _biome_label(self, zone: Zone) -> str:
         biome = self.content.biomes[zone.biome]
@@ -1279,7 +1443,12 @@ class GameService(StoryMixin, GuideMixin):
         pending = self.store.get("pending", account_id)
         if not pending or pending.get("stage") != "class":
             self.store.put("pending", account_id, {"stage": "name"})
-            return View(kind="create_name", title=t.t("create.title"), body=[t.t("create.intro"), "", t.t("create.ask_name")], expects_text=True)
+            # D-250: 🌐 the very first screen also picks the language. Until one is chosen, the question goes in every
+            # language (we do not know yet which one the player reads); typing a name right away keeps the default.
+            chosen = self._lang_of(account_id) is not None
+            body = ([] if chosen else self._all_texts("language.ask") + [""]) + [t.t("create.intro"), "", t.t("create.ask_name")]
+            return View(kind="create_name", title=t.t("create.title"), body=body, expects_text=True,
+                        actions=self._language_buttons(account_id))
         group = pending.get("group")
         if not group:
             groups = self._class_groups()
@@ -3066,10 +3235,11 @@ class GameService(StoryMixin, GuideMixin):
         if hero.id not in requests:
             requests.append(hero.id)
             self.store.put("camp", key, camp)
-            ask = View(kind="camp_join", title=t.t("camps.join_title"), body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
-                       actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
-                                Action(id=f"join:{key}:{hero.id}:n", label=t.t("camps.join_no"))])
-            self._push(camp["founder_id"], ask)
+            self._push_each([camp["founder_id"]], lambda: View(
+                kind="camp_join", title=t.t("camps.join_title"),
+                body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
+                actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
+                         Action(id=f"join:{key}:{hero.id}:n", label=t.t("camps.join_no"))]))
         return self._camp_here_view(hero, notice=t.t("camps.join_sent"))
 
     def _answer_join(self, hero: Hero, action_id: str) -> View:
@@ -3090,7 +3260,8 @@ class GameService(StoryMixin, GuideMixin):
             self.store.put("hero", visitor, data)
         self.store.put("camp", key, camp)
         result = "accepted" if accepted else "refused"
-        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.join_{result}", camp=camp["name"])]))
+        self._push_each([visitor], lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                                body=[t.t(f"camps.join_{result}", camp=camp["name"])]))
         return self._main_view(hero, notice=t.t(f"camps.you_{result}"))
 
     def _leave_camp(self, hero: Hero) -> View:
@@ -3252,12 +3423,11 @@ class GameService(StoryMixin, GuideMixin):
         if hero.id not in camp["relations"] and hero.id not in camp["asked"]:
             camp["asked"].append(hero.id)
             self.store.put("camp", key, camp)
-            ask = View(kind="camp_visit", title=t.t("camps.visit_title"),
-                       body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
-                       actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
-                                Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))])
-            for member in camp["members"]:
-                self._push(member, ask)
+            self._push_each(camp["members"], lambda: View(
+                kind="camp_visit", title=t.t("camps.visit_title"),
+                body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
+                actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
+                         Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))]))
             lines.append(t.t("camps.members_told"))
         else:
             lines.append(t.t(f"camps.relation.{camp['relations'].get(hero.id, 'unknown')}"))
@@ -3277,7 +3447,8 @@ class GameService(StoryMixin, GuideMixin):
         relation = "friendly" if choice == "f" else "hostile"
         camp["relations"][visitor] = relation
         self.store.put("camp", key, camp)
-        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
+        self._push_each([visitor], lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                                body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
         return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
 
     # ------------------------------------------------------------------ hunting (D-106, provisional)
@@ -3521,9 +3692,7 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("hunt_party", hero.camp, party)
         present = {p["id"] for p in self._zone_players(hero.x, hero.y, exclude=hero.id)}
         invited = [member for member in camp["members"] if member != hero.id and member in present]
-        notice = self._hunt_party_notice(hero, camp, party)
-        for member in invited:
-            self._push(member, notice)
+        self._push_each(invited, lambda: self._hunt_party_notice(hero, camp, party))
         return self._hunt_view(hero, notice=t.t("hunt.party_called" if invited else "hunt.party_called_alone", n=len(invited)))
 
     def _join_hunt_party(self, hero: Hero) -> View:
@@ -3578,25 +3747,29 @@ class GameService(StoryMixin, GuideMixin):
         cfg = self._hunt_cfg()["party"]
         camp = self.store.get("camp", key) or {}
         members = party.get("members", {})
-        body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members), zone=self._zone_name(self._zone(party["x"], party["y"])),
-                    target=self._hunt_target(party))]
-        hunters = []
-        for hero_id, prey in sorted(members.items(), key=lambda row: -row[1]):
-            name = actor.name if hero_id == actor.id else (self.store.get("hero", hero_id) or {}).get("name", "?")
-            hunters.append(t.t("hunt.party_end_hunter", name=name, prey=prey))
-        if hunters:
-            body.append(t.t("hunt.party_end_hunters", list=" · ".join(hunters)))
-        if hunt_rules.reward_earned(party, cfg["prey_per_hunter"], cfg["min_hunters"]):
+        earned = hunt_rules.reward_earned(party, cfg["prey_per_hunter"], cfg["min_hunters"])
+        if earned:
             for hero_id in hunt_rules.rewarded(party):
                 self._raid_reward(hero_id, cfg["reward"], actor)        # pays online or not, the actor in memory
-            body.append(t.t("hunt.party_end_reward", xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"])))
-        elif len(members) < cfg["min_hunters"]:
-            body.append(t.t("hunt.party_end_alone", n=cfg["min_hunters"]))
-        else:
-            body.append(t.t("hunt.party_end_short"))
-        view = View(kind="hunt_party_end", title=t.t("hunt.party_end_title", camp=camp.get("name", "?")), body=body)
-        for hero_id in members:
-            self._push(hero_id, view)
+        names = {hero_id: actor.name if hero_id == actor.id else (self.store.get("hero", hero_id) or {}).get("name", "?")
+                 for hero_id in members}
+
+        def report() -> View:                    # D-250: built again in each hunter's language
+            body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members),
+                        zone=self._zone_name(self._zone(party["x"], party["y"])), target=self._hunt_target(party))]
+            hunters = [t.t("hunt.party_end_hunter", name=names[hero_id], prey=prey)
+                       for hero_id, prey in sorted(members.items(), key=lambda row: -row[1])]
+            if hunters:
+                body.append(t.t("hunt.party_end_hunters", list=" · ".join(hunters)))
+            if earned:
+                body.append(t.t("hunt.party_end_reward", xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"])))
+            elif len(members) < cfg["min_hunters"]:
+                body.append(t.t("hunt.party_end_alone", n=cfg["min_hunters"]))
+            else:
+                body.append(t.t("hunt.party_end_short"))
+            return View(kind="hunt_party_end", title=t.t("hunt.party_end_title", camp=camp.get("name", "?")), body=body)
+
+        self._push_each(members, report)
 
     # ------------------------------------------------------------------ guilds (D-97, provisional)
 
@@ -3765,11 +3938,9 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("guild_name", self._name_key(name), {"camp": key})
         self.store.put("guild", key, {"name": name, "camp": key, "founder_id": hero.id, "level": 1,
                                        "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": self.clock.now()})
-        news = View(kind="guild_news", title=t.t("guild.founded_title"),
-                    body=[t.t("guild.founded_push", founder=hero.name, name=name, camp=camp["name"])])
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, news)
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+            kind="guild_news", title=t.t("guild.founded_title"),
+            body=[t.t("guild.founded_push", founder=hero.name, name=name, camp=camp["name"])]))
         return self._guild_view(hero, notice=t.t("guild.founded", name=name))
 
     def _rise_guild(self, hero: Hero) -> View:
@@ -3784,11 +3955,11 @@ class GameService(StoryMixin, GuideMixin):
         if not guild_rules.rise(guild, levels):
             return self._guild_view(hero, notice=t.t("guild.not_ready"))
         self.store.put("guild", key, guild)
-        text = t.t("guild.risen", name=guild["name"], level=guild["level"], cap=guild_rules.capacity(levels, guild["level"]))
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, View(kind="guild_news", title=t.t("guild.risen_title"), body=[text]))
-        return self._guild_view(hero, notice=text)
+        risen = lambda: t.t("guild.risen", name=guild["name"], level=guild["level"],      # noqa: E731
+                            cap=guild_rules.capacity(levels, guild["level"]))
+        self._push_each([m for m in camp["members"] if m != hero.id],
+                        lambda: View(kind="guild_news", title=t.t("guild.risen_title"), body=[risen()]))
+        return self._guild_view(hero, notice=risen())
 
     def _castle_needs(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
         """What becoming a castle asks of the camp's guild (D-97); empty unless the next level is the castle.
@@ -3900,9 +4071,7 @@ class GameService(StoryMixin, GuideMixin):
                 "wins": 0, "fights": {}, "enemy": enemy_id, "level": level,
                 "defense": self._camp_defense(camp, night=self._is_night(now))}     # D-101: what the improvements hold back
         camp["raid"] = raid
-        notice = self._raid_notice(camp, raid)
-        for member in told:
-            self._push(member, notice)
+        self._push_each(told, lambda: self._raid_notice(camp, raid))
 
     def _raid_notice(self, camp: dict[str, Any], raid: dict[str, Any]) -> View:
         t = self.texts
@@ -3996,13 +4165,15 @@ class GameService(StoryMixin, GuideMixin):
         won = raid["wins"] >= raid["required"]
         camp.pop("raid", None)
         name, score = camp["name"], {"wins": raid["wins"], "need": raid["required"]}
-        body: list[str] = []
+        # First what happens (rewards, food, damage, next date); then the report, written in each member's language
+        # (D-250): `lines` holds (key, values) pairs, so the texts are only formatted inside report().
+        lines: list[tuple[str, dict[str, Any]]] = []
         if won:
-            body.append(t.t("raids.trial_won" if trial else "raids.defended", camp=name, **score))
+            lines.append(("raids.trial_won" if trial else "raids.defended", {"camp": name, **score}))
             for hero_id in raid["fights"]:
                 self._raid_reward(hero_id, sub["reward"], actor)
             if raid["fights"]:
-                body.append(t.t("raids.reward", xp=sub["reward"]["xp"], gold=self._money(sub["reward"]["gold"])))
+                lines.append(("raids.reward", {"xp": sub["reward"]["xp"], "gold": self._money(sub["reward"]["gold"])}))
         if trial and camp.get("next_raid_at") is not None and camp["next_raid_at"] <= raid["until"]:
             # the weekly raid came due during the Noche de prueba: the trial was that week's raid
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
@@ -4010,22 +4181,31 @@ class GameService(StoryMixin, GuideMixin):
             camp["trial_won"] = True
         elif trial:
             camp["trial_retry_at"] = raid["until"] + self._seconds(sub["retry_days"] * 24 * 60)
-            body.append(t.t("raids.trial_lost", camp=name, time=self._fmt_duration(camp["trial_retry_at"] - now), **score))
+            lines.append(("raids.trial_lost", {"camp": name, "retry_in": camp["trial_retry_at"] - now, **score}))
         else:
             record = camp.setdefault("raids", {"won": 0, "lost": 0})
             record["won" if won else "lost"] += 1
             if not won:
                 lost = self._raid_food_loss(camp)
-                body += [t.t("raids.lost", camp=name, **score),
-                         t.t("raids.lost_food", rations=lost) if lost else t.t("raids.lost_nothing")]
+                lines += [("raids.lost", {"camp": name, **score}),
+                          ("raids.lost_food", {"rations": lost}) if lost else ("raids.lost_nothing", {})]
             damaged = self._raid_damage(camp, won)            # D-115: 🛠️ the wave damages the defenses until repaired
             if damaged:
-                body.append(t.t("camp_prof.raid_damage", n=damaged, defense=self._camp_defense(camp)))
+                lines.append(("camp_prof.raid_damage", {"n": damaged, "defense": self._camp_defense(camp)}))
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
-            body.append(t.t("raids.next", n=self._days_until(camp["next_raid_at"])))
-        view = View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name), body=body)
-        for member in camp["members"]:
-            self._push(member, view)
+            lines.append(("raids.next", {"n": self._days_until(camp["next_raid_at"])}))
+
+        def report() -> View:
+            body = []
+            for key, values in lines:
+                if "retry_in" in values:                  # a duration reads differently in each language
+                    values = {k: v for k, v in values.items() if k != "retry_in"} | {
+                        "time": self._fmt_duration(values["retry_in"])}
+                body.append(t.t(key, **values))
+            return View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name),
+                        body=body)
+
+        self._push_each(camp["members"], report)
 
     def _raid_reward(self, hero_id: str, reward: dict[str, int], actor: Hero) -> None:
         """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it.
@@ -4070,12 +4250,10 @@ class GameService(StoryMixin, GuideMixin):
             return False
         camp["watched"] = nxt
         t = self.texts
-        view = View(kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
-                    body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), defense=self._camp_defense(camp))])
         active = self._active()
-        for member in camp["members"]:
-            if member in active:
-                self._push(member, view)
+        self._push_each([m for m in camp["members"] if m in active], lambda: View(
+            kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
+            body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), defense=self._camp_defense(camp))]))
         return True
 
     def _raid_food_loss(self, camp: dict[str, Any]) -> int:
@@ -4696,11 +4874,9 @@ class GameService(StoryMixin, GuideMixin):
             record["built"][uid] = self.clock.now()
             record["works"].pop(uid, None)
             lines.append(t.t("upgrades.built", name=name))
-            news = View(kind="camp_news", title=t.t("upgrades.built_push_title"),
-                        body=[t.t("upgrades.built_push", hero=hero.name, name=name, camp=camp["name"])])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("upgrades.built_push_title"),
+                body=[t.t("upgrades.built_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"])]))
             page = 0
         self.store.put("upgrades", key, record)
         return self._works_view(hero, page, notice="\n".join(lines))
@@ -4749,13 +4925,12 @@ class GameService(StoryMixin, GuideMixin):
             del hero.backpack[fid]
         record["furniture"][fid] = {"by": hero.name, "id": hero.id, "at": self.clock.now()}
         self.store.put("upgrades", key, record)
-        desc = t.t(item["desc_key"])
-        news = View(kind="camp_news", title=t.t("upgrades.furniture_push_title"),
-                    body=[t.t("upgrades.furniture_push", hero=hero.name, name=name, camp=camp["name"], desc=desc)])
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, news)
-        return self._works_view(hero, notice=t.t("upgrades.furniture_placed", name=name, camp=camp["name"], desc=desc))
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+            kind="camp_news", title=t.t("upgrades.furniture_push_title"),
+            body=[t.t("upgrades.furniture_push", hero=hero.name, name=self._item_label(fid), camp=camp["name"],
+                      desc=t.t(item["desc_key"]))]))
+        return self._works_view(hero, notice=t.t("upgrades.furniture_placed", name=name, camp=camp["name"],
+                                                  desc=t.t(item["desc_key"])))
 
     def _castle_upgrades(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
         """D-101: on the step to castle (8 → 9) the camp needs upgrades.castle_min_built improvements built; else [].
@@ -5000,11 +5175,9 @@ class GameService(StoryMixin, GuideMixin):
             tech.setdefault("done", []).append(tid)
             tech["current"], tech["progress"] = None, {}
             lines.append(t.t("knowledge.done", name=name))
-            news = View(kind="camp_news", title=t.t("knowledge.push_title"),
-                        body=[t.t("knowledge.push", hero=hero.name, name=name, camp=camp["name"])])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("knowledge.push_title"),
+                body=[t.t("knowledge.push", hero=hero.name, name=self._tech_name(tid), camp=camp["name"])]))
         self.store.put("upgrades", key, record)
         return self._knowledge_view(hero, notice="\n".join(lines))
 
@@ -5184,7 +5357,8 @@ class GameService(StoryMixin, GuideMixin):
         scores: dict[str, int] = {}
         for code, entry in entries.items():
             score = 0
-            for keyword in (self._faq_norm(k) for k in entry.get("keywords") or []):
+            words_of_lang = entry.get(f"keywords_{self.texts.lang}") if self.texts.lang != self.texts.default else []
+            for keyword in (self._faq_norm(k) for k in list(words_of_lang or []) + list(entry.get("keywords") or [])):
                 if not keyword:
                     continue
                 if " " in keyword:
@@ -6549,11 +6723,9 @@ class GameService(StoryMixin, GuideMixin):
         if complete:
             record["damage"], record["repair"] = 0, {}
             lines.append(t.t("camp_prof.repaired", n=damage))
-            news = View(kind="camp_news", title=t.t("camp_prof.repaired_push_title"),
-                        body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("camp_prof.repaired_push_title"),
+                body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)]))
         self.store.put("upgrades", key, record)
         return self._works_view(hero, notice="\n".join(lines))
 
@@ -8149,12 +8321,10 @@ class GameService(StoryMixin, GuideMixin):
             if title not in hero.titles:
                 hero.titles.append(title)
             lines.append(t.t("guardian.pioneer_title", title=t.t(f"guardian.title.{title}")))
-            news = View(kind="news", title=t.t("guardian.news_title"),
-                        body=[t.t("guardian.news_body", hero=hero.name, boss=self._guardian_name(),
-                                  title=t.t(f"guardian.title.{title}"))])
-            for account_id in self.players():
-                if account_id != hero.id:
-                    self._push(account_id, news)
+            self._push_each([a for a in self.players() if a != hero.id], lambda: View(
+                kind="news", title=t.t("guardian.news_title"),
+                body=[t.t("guardian.news_body", hero=hero.name, boss=self._guardian_name(),
+                          title=t.t(f"guardian.title.{title}"))]))
         lines.append(t.t("guardian.again_in", name=self._guardian_name(),
                          time=self._fmt_duration(cfg["cooldown_hours"] * 3600 * self.time_scale)))
         self.bus.publish(BossDefeated(hero.id, enemy["id"], first_win, first_in_server))
@@ -8620,12 +8790,15 @@ class GameService(StoryMixin, GuideMixin):
                 continue
             their_coins = int(round(coins * (1 + self._pspec_bonus(target, "coins", sale="ecamp"))))   # D-141: 🐾 Rastreador
             target.gold += their_coins
-            more = self._give_xp(target, share_xp)
+            with self._speaking(hid):                     # D-250: the level-up lines and the news in their language
+                more = self._give_xp(target, share_xp)
+                news = View(kind="ecamp_news", title=t.t("ecamp.news_title"),
+                            body=[t.t("ecamp.news_body", hero=hero.name, name=self._zone_name(self._zone(x, y)), x=x, y=y),
+                                  t.t("ecamp.share", gold=self._money(their_coins),
+                                      xp=int(share_xp * self._xp_mult(target)))] + more)
             self._journal(target, "enemy_camp", x=x, y=y, f=0)
             self._save(target)
-            self._push(hid, View(kind="ecamp_news", title=t.t("ecamp.news_title"),
-                                 body=[t.t("ecamp.news_body", hero=hero.name, name=name, x=x, y=y),
-                                       t.t("ecamp.share", gold=self._money(their_coins), xp=int(share_xp * self._xp_mult(target)))] + more))
+            self._push(hid, news)
         if others:
             lines.append(t.t("ecamp.shared", n=len(others), gold=self._money(coins)))
         lines += self._story_event(hero, "enemy_camp", x=x, y=y, level=camp["level"], destroyed=True)     # D-117: 📔 Diario
@@ -9796,6 +9969,8 @@ class GameService(StoryMixin, GuideMixin):
         (30 / 50 / 70 % de vida, auto_fight.retreat_choices) y 🧪 Pociones en peleas automáticas (sí / no); más ↩️ Volver.
         D-178: los dos interruptores (Peleas automáticas y Pociones) llevan palomita: ✅ activo, ☑️ apagado (options.check_*).
         Se puede abrir mientras exploras, recolectas o cazas (la opción vale desde la próxima pelea), no en combate.
+        D-250, D-251 (0.33): el 4.º botón es 🌐 Idioma (abre la pantalla del idioma); ↩️ Volver salió para no pasar de 4
+        botones (D-75): el menú de abajo (📍 Zona) siempre está para volver.
         La llaman: el botón ⚙️ Opciones del menú fijo, /opciones y _set_option.
         Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75). Una opción nueva pide página o ciclo.
         """
@@ -9815,7 +9990,7 @@ class GameService(StoryMixin, GuideMixin):
         actions = [Action(id="opt:fights", label=t.t("options.fights_button", check=check(auto))),
                    Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
                    Action(id="opt:potions", label=t.t("options.potions_button", check=check(potions))),
-                   Action(id="home", label=t.t("menu.back"))]
+                   Action(id="lang", label=t.t("language.button", name=t.t("language.name")))]   # D-250, D-251: 🌐
         return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice)
 
     def _set_option(self, hero: Hero, key: str) -> View:
@@ -9994,10 +10169,9 @@ class GameService(StoryMixin, GuideMixin):
             label += f" (+{ability['gain']})"
         return label
 
-    @staticmethod
-    def _num(value: float) -> str:
-        """Short number for players: 1.3 -> "1,3", 2.0 -> "2"."""
-        return f"{value:g}".replace(".", ",")
+    def _num(self, value: float) -> str:
+        """Short number for players: 1.3 -> "1,3" in Spanish, "1.3" in English (common.decimal_sep, D-250); 2.0 -> "2"."""
+        return f"{value:g}".replace(".", self.texts.t("common.decimal_sep"))
 
     def _ability_effect(self, ability: dict[str, Any], resource: str) -> str:
         """One short line of what an ability does, built from its numbers and the texts in ability_effect.*.

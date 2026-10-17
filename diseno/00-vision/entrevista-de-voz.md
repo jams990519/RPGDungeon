@@ -491,3 +491,20 @@ El dueño, por voz: "Va a ser un cambio importante, que es que básicamente vamo
 - Notas en D-225, D-227 y D-231, y E-186 al día.
 
 **En el juego:** desde la 0.32.
+
+## 17-oct-2026 · El juego en inglés
+
+El dueño, por voz: "Necesito que añadas la traducción al inglés y la opción en un menú de escoger el idioma y que puedes cambiar de idioma si lo deseas. Dale empezar el juego y dentro del juego en sí. Asegura de traducir cada una de las acciones de los jugadores y demás. Todo."
+
+**Cómo se interpretó:**
+- Todo lo que el juego escribe existe en español y en inglés.
+- El idioma se elige en la primera pantalla (al empezar) y se cambia cuando se quiera en ⚙️ Opciones → 🌐 Idioma, con /idioma o con /language.
+- El idioma es de cada jugador: los avisos que provoca otro jugador también le llegan a cada uno en el suyo.
+- El detalle está en [Idiomas](../01-plataforma/idiomas.md).
+
+**Qué se registró:**
+- D-250, confirmada: el juego también en inglés, y el idioma lo elige cada jugador, al empezar y dentro del juego.
+- D-251, provisional: cómo lo aplicó Claude (la primera pantalla, los que ya jugaban siguen en español, el botón de ⚙️ Opciones, los atajos en inglés, los avisos y las notas de parche).
+- Regla nueva en CLAUDE.md §4: toda clave de texto nueva va en los dos idiomas en el mismo cambio.
+
+**En el juego:** desde la 0.33.

@@ -77,7 +77,7 @@ def test_options_screen_has_four_buttons_and_toggles_persist(service):
     make_hero(service)
     view = service.act("test:1", "options")
     assert view.kind == "options" and len(view.actions) <= 4
-    assert ids(view) == ["opt:fights", "opt:retreat", "opt:potions", "home"]
+    assert ids(view) == ["opt:fights", "opt:retreat", "opt:potions", "lang"]   # D-251: 🌐 Idioma (the bottom menu goes back)
     assert view.actions[0].label == "☑️ Peleas automáticas"            # D-178: gray check = off (✋ manual)
     assert "30 %" in view.actions[1].label and view.actions[2].label == "✅ Pociones"   # green check = on
     assert "✅ activo" in "\n".join(view.body)

@@ -55,9 +55,9 @@ log = logging.getLogger("lostrealms.telegram")
 MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
-def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
-    labels = [KeyboardButton(text=a.label) for a in service.menu()]
+def menu_keyboard(service: GameService, account: str | None = None) -> ReplyKeyboardMarkup:
+    """Bottom keyboard built from the engine's global menu, 2 per row, in the player's language. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6), en el idioma del jugador (D-250). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego", con el aviso del parche y al cambiar de idioma. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
+    labels = [KeyboardButton(text=a.label) for a in service.menu(account)]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
@@ -109,14 +109,14 @@ def register(dp: Dispatcher, service: GameService) -> None:
         parts = (message.text or "").split(maxsplit=1)
         if len(parts) == 2 and parts[1].startswith("ref_"):
             service.register_referral(account, parts[1][4:])
-        await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+        await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
         view = service.view(account)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
 
     @dp.message(F.text)
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
-        menu_ids = {a.label: a.id for a in service.menu()}
+        menu_ids = service.menu_labels()           # D-250: the bottom buttons in every language (an old keyboard works)
         commands = service.commands()
         word = (message.text or "").split("@")[0].strip().lower()
         if message.text in menu_ids:
@@ -124,23 +124,28 @@ def register(dp: Dispatcher, service: GameService) -> None:
         elif word in commands:
             view = service.act(account, commands[word])
         elif message.text == MENU_LABEL:
-            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
             view = service.view(account)
         elif message.text.startswith("/"):
             view = service.text(account, message.text)      # D-117: /bio <texto>, /saludar <nombre>... (unknown ones show the game)
         else:
             view = service.text(account, message.text)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
+        if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
+            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 
     @dp.callback_query()
     async def on_button(query: CallbackQuery) -> None:
-        view = service.act(account_of(query.from_user.id), query.data or "")
+        account = account_of(query.from_user.id)
+        view = service.act(account, query.data or "")
         try:
             await query.message.edit_text(render_text(view), reply_markup=render_keyboard(view))
         except TelegramBadRequest as error:
             if "not modified" not in str(error):
                 await send_view(query.bot, query.from_user.id, view)
         await query.answer()
+        if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
+            await query.bot.send_message(query.from_user.id, "🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 
 
 async def notifier(bot: Bot, service: GameService) -> None:
@@ -168,15 +173,17 @@ async def announce_patch(bot: Bot, service: GameService) -> None:
     La llaman: main, al arrancar.
     Si cambia, afecta: los avisos de parches.
     """
-    view = service.pending_announcement()
-    if view is None:
+    if service.pending_announcement() is None:
         return
     sent = 0
     for account_id in service.players():
         if not account_id.startswith("tg:"):
             continue
+        view = service.announcement_view(account_id)     # D-250: each player reads it in their language
+        if view is None:
+            continue
         try:
-            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service))
+            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service, account_id))
             sent += 1
         except Exception:  # blocked the bot, deleted account, etc.
             log.info("could not announce to %s", account_id)

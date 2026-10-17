@@ -16,6 +16,7 @@ Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/guide.yaml → Content.guide: pasos del 🧭 camino guiado y avisos de una sola vez, D-190/D-193)
     (content/dungeons.yaml → Content.dungeons: familias de enemigos que llenan las mazmorras para uno, D-164/D-170)
     (content/faq.yaml → Content.faq: las preguntas de ❓ Dudas con su código, tema, palabras clave y relacionadas, D-191/D-192)
+    (content/locales/<idioma>*.yaml → Content.texts, el español, y Content.locales, todos los idiomas: D-250)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (solo lee)
@@ -52,7 +53,9 @@ class Content:
         items: content/items.yaml keyed by item id, plus the masterwork twin of every crafted gear piece ("<id>_obra",
             source: masterwork, D-116), derived from balance.yaml "masterwork".
         balance: content/balance.yaml (tunable numbers).
-        texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts).
+        texts: content/locales/<lang>.yaml merged with <lang>_*.yaml (player-facing texts, the default language).
+        locales: every language found in content/locales (a "<code>.yaml" file without "_"), each merged the same way,
+            the default one included (D-250: Spanish and English).
         guide: content/guide.yaml (the guided path, D-190/D-193: "steps" in order and one-time "tips"), read with retired
             entries kept (engine/service/guide.py leaves retired ones out; heroes keep the ids they have done).
         patches: content/patches.yaml (patch notes, D-67).
@@ -86,6 +89,7 @@ class Content:
     story: dict[str, Any] | None = None
     dungeons: dict[str, Any] | None = None
     faq: dict[str, Any] | None = None
+    locales: dict[str, dict[str, Any]] | None = None
 
 
 def _read(path: Path, keep_retired: bool = False) -> dict[str, Any]:
@@ -125,6 +129,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         items=items,
         balance=balance,
         texts=_read_texts(base / "locales", lang),
+        locales={code: _read_texts(base / "locales", code) for code in _languages(base / "locales")},
         guide=_read(base / "guide.yaml", keep_retired=True) if (base / "guide.yaml").exists() else {},
         patches=_read(base / "patches.yaml") if (base / "patches.yaml").exists() else {},
         camp_upgrades=_read(base / "camp_upgrades.yaml", keep_retired=True) if (base / "camp_upgrades.yaml").exists() else {},
@@ -141,6 +146,11 @@ def _merge(into: dict[str, Any], extra: dict[str, Any]) -> None:
             _merge(into[key], value)
         else:
             into[key] = value
+
+
+def _languages(folder: Path) -> list[str]:
+    """Language codes with a main file in locales/ ("es.yaml", "en.yaml"; "es_clases.yaml" is part of "es")."""
+    return sorted(path.stem for path in folder.glob("*.yaml") if "_" not in path.stem)
 
 
 def _read_texts(folder: Path, lang: str) -> dict[str, Any]:

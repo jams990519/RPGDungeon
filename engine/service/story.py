@@ -613,15 +613,17 @@ class StoryMixin:
         reward = (self._story_data().get("camp_tasks") or {})[tid].get("reward") or {}
         reward = {"xp": int(reward.get("xp", 0)), "gold": int(reward.get("gold", 0))}
         name = t.t(f"story.camp_task.{tid}")
-        news = View(kind="camp_news", title=t.t("story.camp_task_push_title"),
-                    body=[t.t("story.camp_task_push", hero=hero.name, task=name, camp=camp.get("name", "?"), xp=reward["xp"],
-                              gold=self._money(reward["gold"]))])
+        told = []
         for member, given in by.items():
             if given <= 0:
                 continue
             self._raid_reward(member, reward, hero)       # pays online or not; the actor in memory
             if member != hero.id:
-                self._push(member, news)
+                told.append(member)
+        self._push_each(told, lambda: View(              # D-250: each member reads it in their language
+            kind="camp_news", title=t.t("story.camp_task_push_title"),
+            body=[t.t("story.camp_task_push", hero=hero.name, task=t.t(f"story.camp_task.{tid}"),
+                      camp=camp.get("name", "?"), xp=reward["xp"], gold=self._money(reward["gold"]))]))
         return [t.t("story.camp_task_done", task=name, xp=reward["xp"], gold=self._money(reward["gold"]))]
 
     # ------------------------------------------------------------------ origin
@@ -1322,21 +1324,28 @@ class StoryMixin:
         present = self._zone_players(hero.x, hero.y, exclude=hero.id)
         if not present:
             return self._main_view(hero, notice=t.t("story.gesture_alone"))
-        zone = self._zone_name(self._zone(hero.x, hero.y))
         me = self._banner(hero) + self._emblem_name(hero)
+        target = None
+        toast = ""
         if kind == "saludar":
-            target = None
             if arg.strip():
                 target = next((p for p in present if self._name_key(p.get("plain", "")) == self._name_key(arg)), None)
                 if target is None:
                     return self._main_view(hero, notice=t.t("story.gesture_not_here", name=story_rules.clean_text(arg, 20)))
-            line = t.t("story.gesture_saludar_to", name=me, target=target["name"]) if target else t.t("story.gesture_saludar", name=me, zone=zone)
         else:
             toast = story_rules.clean_text(arg, int(self._story_cfg()["toast_max"]))
-            line = t.t("story.gesture_brindar_text", name=me, text=toast) if toast else t.t("story.gesture_brindar", name=me)
-        view = View(kind="gesture", title=t.t("story.gesture_title", zone=zone), body=[line])
-        for player in present:
-            self._push(player["id"], view)
+
+        def gesture_line() -> str:                       # D-250: written again in each listener's language
+            zone = self._zone_name(self._zone(hero.x, hero.y))
+            if kind == "saludar":
+                return (t.t("story.gesture_saludar_to", name=me, target=target["name"]) if target
+                        else t.t("story.gesture_saludar", name=me, zone=zone))
+            return t.t("story.gesture_brindar_text", name=me, text=toast) if toast else t.t("story.gesture_brindar", name=me)
+
+        line = gesture_line()
+        self._push_each([player["id"] for player in present], lambda: View(
+            kind="gesture", title=t.t("story.gesture_title", zone=self._zone_name(self._zone(hero.x, hero.y))),
+            body=[gesture_line()]))
         self._st(hero)["g_at"] = self.clock.now()
         return self._main_view(hero, notice=t.t("story.gesture_done", line=line, n=len(present)))
 
@@ -1349,9 +1358,9 @@ class StoryMixin:
         present = self._zone_players(hero.x, hero.y, exclude=hero.id)
         if not present:
             return self._journal_view(hero, notice=t.t("story.gesture_alone"))
-        view = View(kind="card", title=t.t("story.card_push_title", name=hero.name), body=self._card_lines(hero, int(self._story_cfg()["card_shown"])))
-        for player in present:
-            self._push(player["id"], view)
+        self._push_each([player["id"] for player in present], lambda: View(     # D-250: in each listener's language
+            kind="card", title=t.t("story.card_push_title", name=hero.name),
+            body=self._card_lines(hero, int(self._story_cfg()["card_shown"]))))
         self._st(hero)["g_at"] = self.clock.now()
         return self._journal_view(hero, notice=t.t("story.shown", n=len(present), zone=self._zone_name(self._zone(hero.x, hero.y))))
 

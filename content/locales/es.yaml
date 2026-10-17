@@ -1,9 +1,22 @@
 # Player-facing texts in Spanish. The engine only uses the keys.
 # [ES] Todos los textos que ve el jugador. El motor solo usa las claves.
 # Si cambias una clave, búscala en engine/ antes: una clave que falta se ve como [clave].
+# D-250 (0.33): el español es el idioma de referencia. Toda clave nueva va aquí Y, en el mismo cambio, en en.yaml (o en el
+# en_*.yaml que corresponde a este es_*.yaml). tools/check_locales.py compara los dos y tests/test_idiomas.py lo exige.
 
 common:
   use_buttons: "Usa los botones de abajo."
+  decimal_sep: ","                 # D-250: 1,5 en español; 1.5 en inglés (GameService._num)
+
+# D-250: 🌐 el idioma del jugador. La primera pantalla (al tocar /start sin héroe) muestra language.title y language.ask
+# en todos los idiomas a la vez, porque todavía no sabemos cuál lee; cada botón lleva el nombre del idioma en ese idioma.
+language:
+  name: "🇪🇸 Español"
+  title: "🌐 Idioma"
+  ask: "🌐 Elige tu idioma. Puedes cambiarlo cuando quieras en ⚙️ Opciones."
+  current: "Ahora juegas en: {name}"
+  changed: "✅ Listo: ahora juegas en español."
+  button: "🌐 Idioma: {name}"
 
 create:
   title: "🌅 Lost Realms · El despertar"
@@ -1200,6 +1213,7 @@ world:
   claro_name: "El Claro"
   name_first: ["Vado", "Cerro", "Hondonada", "Llano", "Paso", "Loma", "Fuente", "Cañada", "Risco", "Valle", "Hoya", "Collado"]
   name_second: ["Gris", "de las Cenizas", "Quebrado", "del Cuervo", "Hundido", "Callado", "de Hierro", "Viejo", "Rojo", "del Eco", "Ahogado", "de los Huesos"]
+  name_format: "{first} {second}"     # D-250: el orden de las dos partes del nombre de zona (en inglés, "{second} {first}")
 
 dir:
   n: "⬆️ Norte"
