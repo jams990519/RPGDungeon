@@ -88,7 +88,7 @@ Rangos y permisos, banco, salón, chat vinculado, calendario, alianzas y expulsa
 
 ## 3. Grupos y buscador
 
-- **Grupo:** hasta 5 jugadores, con un chat retransmitido por el bot.
+- **Grupo:** hasta 5 jugadores, con un chat retransmitido por el bot. **Desde D-252 (17-oct, confirmada):** el grupo nace cuando un jugador construye él mismo (su casa o, mientras no exista, su campamento), nunca en la fogata de salida, y dentro del gremio pasa a ser una **escuadra** (D-253). Ver [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md).
 - **Buscador por rol** para mazmorras, Profundidades, bandas de Buscador, campos de batalla y cacerías (ver [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md)).
 - **Calificación después de cada grupo:** un "👍" opcional por compañero, que suma a un indicador de buen compañero visible en el perfil. No hay votos negativos, para que no se use para acosar; los reportes van por separado.
 
