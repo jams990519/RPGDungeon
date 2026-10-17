@@ -20,6 +20,9 @@ from engine.professions import (branches_of, disenchant_amount, disenchant_yield
 from engine.professions.rules import PERK_KEYS
 import engine.service.game as game_module
 
+# D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
+pytestmark = pytest.mark.usefixtures("every_profession_known")
+
 NEW_SLOTS = ("cabeza", "manos", "piernas", "pies")
 TYPES = ("tela", "cuero", "malla", "placas")
 PROFESSION_OF = {"tela": "sastreria", "cuero": "peleteria", "malla": "peleteria", "placas": "herreria"}
@@ -105,7 +108,7 @@ def test_disenchant_perk_gives_30_percent_more_at_rank_100(service):
         service.act("test:1", "dis:espada_7")
     got = service._load("test:1").backpack["esencia"]
     assert 4 * 40 * 1.2 <= got <= 4 * 40 * 1.4                          # ~+30 % (208 on average)
-    view = service.act("test:1", "oficios")
+    view = service.text("test:1", "/encantamiento")          # D-257: the perk shows behind the profession's code
     assert any("+30 % de esencias al desencantar" in line for line in view.body)
     assert not service.texts.missing
 

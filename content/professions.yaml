@@ -17,6 +17,9 @@
 # Campos de cada oficio:
 #     emoji, name_key, how_key: lo que se muestra (cómo se sube, en una frase).
 #     branch: gather (recolección), refine (refinado) o craft (fabricación).
+#     learn (D-257, 0.33): "auto" en la recolección (menos el 🔪 Desollador) y la exploración: suben solas. Los demás se
+#     aprenden una vez pagando su primera receta (balance.yaml professions.learn_price, o learn_price aquí si uno cuesta
+#     distinto); sin aprenderlo, su rango es 0 y no se hace ninguna de sus recetas.
 #     gathers: materiales que junta al recolectar (sube 1 de experiencia de oficio por unidad: balance.yaml professions).
 #     skins: materiales que saca de las bestias vencidas (el 🔪 Desollador: carne y piel del botín).
 #     rare: {item, min_rank}: el material raro que puede encontrar al recolectar desde ese rango.
@@ -188,12 +191,13 @@ specs:
     - {id: construccion_fortificaciones, emoji: "🏰", effects: [{kind: yield, items: [lingote], value: 0.10}]}         # [ES] fortificaciones: herrajes y clavos
 
 professions:
-  # ---- Recolección: sube al recolectar (o al vencer bestias, el desollador)
+  # ---- Recolección: sube al recolectar (o al vencer bestias, el desollador, que se aprende: D-257)
   lenador:
     emoji: "🪓"
     name_key: profession.lenador.name
     how_key: profession.lenador.how
     branch: gather
+    learn: auto                                # [ES] D-257 (0.33): la recolección no se aprende, sube sola
     gathers: [madera, resina, corteza]       # [ES] D-183: también lo leñoso de cada terreno (💧 resina, 🍂 corteza)
     perk: {bag: 10}                          # [ES] D-111: +10 de espacio en la mochila al rango 100 (crece parejo con el rango)
   minero:
@@ -201,6 +205,7 @@ professions:
     name_key: profession.minero.name
     how_key: profession.minero.how
     branch: gather
+    learn: auto                                # [ES] D-257 (0.33): la recolección no se aprende, sube sola
     gathers: [piedra, pieza_metal, arcilla, carbon, sal, cuarzo, arena, hielo, chatarra, obsidiana]   # [ES] D-183: también lo mineral de cada terreno (0.28: 🖤 obsidiana del 🌋 volcán)
     rare: {item: gema_bruta, min_rank: 10}     # [ES] desde el rango 10 aparecen gemas en bruto al minar (las pide la Joyería)
     perk: {hp: 0.05}                         # [ES] D-111: +5 % de vida máxima al rango 100 (tanques)
@@ -209,6 +214,7 @@ professions:
     name_key: profession.herbolario.name
     how_key: profession.herbolario.how
     branch: gather
+    learn: auto                                # [ES] D-257 (0.33): la recolección no se aprende, sube sola
     gathers: [hierba_curativa, fibra, bayas, setas, miel, mazorca, lino, juncos, nenufar, cactus, datiles, flor_escarcha, musgo, raiz_amarga, tomillo]   # [ES] D-183: también las plantas, hongos y la miel de cada terreno
     rare: {item: flor_luna, min_rank: 10}      # [ES] desde el rango 10 aparecen flores de luna (pociones mayores, túnicas finas)
     perk: {regen: 0.20}                      # [ES] D-111: la vida vuelve sola un 20 % más rápido al rango 100
@@ -225,6 +231,7 @@ professions:
     emoji: "🧭"
     name_key: profession.explorador.name
     how_key: profession.explorador.how
+    learn: auto                                # [ES] D-257 (0.33): la exploración no se aprende, sube sola
     branch: explore                            # [ES] rama propia: sube con cada vuelta de exploración (balance.yaml explorer), no con materiales
     perk: {explore: 5, stealth: 0.25}          # [ES] D-112: +5 puntos de exploración por vuelta al rango 100 (1 cada 20 rangos); lo que ve en el mapa con el rango, en balance.yaml explorer.ranks.
                                                # [ES] D-172: 🥷 Sigilo, hasta 25 % al rango 100 (parejo con el rango) de evitar una pelea al azar al explorar con ✋ Manual y al llegar de un viaje; nunca en cacerías, asaltos, mazmorras, oleadas ni el Guardián
@@ -323,6 +330,7 @@ professions:
     name_key: profession.pescador.name
     how_key: profession.pescador.how
     branch: gather
+    learn: auto                                # [ES] D-257 (0.33): la recolección no se aprende, sube sola
     gathers: [pescado]                         # [ES] 🐟 en las zonas con agua (content/biomes.yaml "water"): 1 de experiencia por unidad
     perk: {fish_food: 0.30}                    # [ES] el 🐟 pescado crudo rinde 30 % más en la despensa del campamento al rango 100
   cocina:

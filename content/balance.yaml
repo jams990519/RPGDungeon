@@ -44,7 +44,7 @@ chain:                       # [ES] 0.31 (D-225 a D-232): el combate en cadena d
   guard_cap: 0.75            # [ES] el aguante o la esquiva del tanque nunca frena más del 75 % de un golpe (aunque el premio lo suba)
   extend_cap: 3              # [ES] Disparo arcano y Lentitud alargan un turno la marca o la fragilidad activa, pero nunca a más de 3 turnos por delante
   second_role_level: 5       # [ES] D-230: al nivel 5 aprendes tu segundo rol (la otra especialización de tu clase), gratis
-  keep_points: false         # [ES] pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
+  keep_points: true          # [ES] D-238.4 (dueño, 11-oct-2026): cada rol guarda los suyos. Antes false; pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
   hybrid:                    # [ES] D-231: al nivel 10, modo híbrido (mezclar habilidades de tus dos roles). Pendiente 3 del parche: cuántas y el límite de botones
     level: 10
     max_mixed: null          # [ES] null = todavía no decidido: el modo híbrido no se ofrece hasta que el dueño diga cuántas habilidades se mezclan
@@ -54,6 +54,7 @@ travel:
   first_minutes: 1           # [ES] D-197 (confirmada): 1 minuto real por cuadro (10 cuadros = 10 minutos). Antes (D-78) 2 minutos las 2 primeras zonas
   steps_per_minute: 0        # [ES] D-197: 0 = cada zona tarda lo mismo, lejos o cerca. Con un número N, cada N zonas más lejos del Claro o de tu campamento sumaría 1 minuto (D-78 usaba 2: 2, 2, 3, 3, 4...)
   max_minutes: 20            # [ES] tope por zona si steps_per_minute vuelve a sumar minutos (con 0 no influye)
+  walk_max: 50               # [ES] D-244 (0.33, confirmada): pasos que se pueden sumar en 🔗 Moverte ("hasta 50 sin problema")
   level_per_lejania: 0.9     # [ES] nivel de la zona = 1 + Lejanía × esto
 
 energy:                      # [ES] energía para toda acción fuera del combate (D-65, D-78)
@@ -417,9 +418,14 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
                              # [ES] (lo que la pieza te da de verdad: la mitad si no es de tu tipo, más su ✨ encantamiento). La defensa pesa doble: 1 punto de defensa
                              # [ES] quita daño en cada golpe. Es el mismo puntaje que ya usaba la comparación "⬆️/⬇️ Frente a lo que llevas" (engine/hero/gear.py gear_score)
 
+feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones; el bot manda cada mensaje al chat de informes
+  max_chars: 1000            # [ES] largo máximo que se guarda de un mensaje
+
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4
-  minutes: 5
+  minutes: 5                 # [ES] sin uso desde la 0.33 (D-259): la posada tarda según la vida que falta (speed, min_minutes)
+  speed: 4                   # [ES] D-259 (0.33, pedido del dueño): la vida vuelve 4 veces más rápido que sola: de 0 a llena en 1 hora (regen.hp_full_minutes 240 / 4)
+  min_minutes: 5             # [ES] lo menos que dura aunque falte muy poca vida
 
 guardian:                    # [ES] D-82: el primer Guardián de región (capa simple, en solitario por ahora)
   enemy: raigambre           # [ES] id en enemies.yaml (vida, golpes y fases)
@@ -454,6 +460,7 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.
   # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,
   # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.
+  learn_price: 20             # [ES] D-257 (0.33, confirmada la regla; el número es de Claude): 🥉 que cuesta aprender un oficio (su primera receta). Gratis si ya lo practicabas antes de la 0.33. La recolección y la exploración no se aprenden
   rank_formula: {base: 9, exponent: 2.0}
   max_rank: 100              # [ES] rango máximo de cada oficio (profesiones.md §4)
   trade_xp_per_coin: 1       # [ES] D-116: 💱 Comercio sube 1 de experiencia por cada 🥉 que cobras vendiendo (la venta base, sin el beneficio)
@@ -493,7 +500,8 @@ specs:                       # [ES] D-115 y D-141 (confirmada): 🎓 especializa
                              # [ES] (rango 25: 6 🥈; 50: 11 🥈; 75: 16 🥈; 100: 21 🥈). Elegir la 1.ª (rango 25) y la 2.ª (rango 75) no cuesta nada
   per_page: 2                # [ES] oficios por página en 🎓 Especialización cuando hay más de 3 (4 botones como mucho, D-75)
 
-auto_fight:                  # [ES] D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
+auto_fight:                  # [ES] D-258 (0.33): apagadas por ahora (enabled: false). D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
+  enabled: false             # [ES] D-258 (0.33, pedido del dueño): sin peleas automáticas ni pociones automáticas por ahora; todo lote se corta al salir una pelea y 🏹 Cazar no va en lote. true las devuelve
   defaults: {fights: manual, retreat: 30, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 30 % de vida (D-119, entrevista E-02; antes 50), sí usar pociones
   retreat_choices: [30, 50, 70]   # [ES] 🩹 Retirarse con menos de: el botón va pasando por estos % de vida. Al terminar una pelea automática por debajo, el lote se corta; si una pelea sale con la vida ya por debajo, el héroe no pelea solo y la pelea te espera
   max_rounds: 60             # [ES] una pelea automática que no termina en 60 rondas se deja (sin premio ni castigo); el simulador juega 60 (120 contra el Guardián)

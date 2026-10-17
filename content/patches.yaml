@@ -526,3 +526,46 @@ v0_32:
     - "⚜️ El Paladín reemplaza al Chamán: guerrero sagrado de placa, ☀️ sanador de grupo (Luz sagrada, Choque sagrado y Luz del alba) o 🔆 DPS sagrado (Golpe de cruzado, Sentencia y Tormenta divina)."
     - "🌩️ Si tu héroe era Chamán, ya es Paladín del mismo rol, con su nivel, su equipo, sus monedas y sus oficios. Pelea igual que antes; cambian los nombres y ahora usa placa."
     - "🛡️ Las clases van de dos en dos por armadura: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela). Así salen al crear un héroe."
+
+
+# D-250: from 0.33 on, every patch also carries title_en and notes_en (each player reads the notes in their language;
+# a patch without them is shown in Spanish to everybody). [ES] Desde la 0.33 cada parche lleva también su título y sus
+# notas en inglés: el bot le manda a cada jugador las de su idioma (GameService.announcement_view).
+v0_33:
+  version: "0.33"
+  title: "🌐 Lost Realms 0.33: el juego, también en inglés"
+  title_en: "🌐 Lost Realms 0.33: the game, now in English too"
+  notes:
+    - "🌐 Lost Realms ya se juega en español o en inglés. Cada jugador elige su idioma y todo sale en ese idioma: pantallas, botones, combate, historia, avisos y ❓ Dudas."
+    - "🇪🇸 🇬🇧 Al empezar, la primera pantalla te deja elegir Español o English. Si ya juegas, cámbialo cuando quieras en ⚙️ Opciones → 🌐 Idioma, o escribe /idioma."
+    - "💬 Los avisos te llegan en tu idioma aunque los mande alguien que juega en el otro: un saludo, el informe de una oleada o lo que pasa en tu campamento."
+    - "⌨️ Los atajos también tienen nombre en inglés (/coins, /help, /greet…) y los de siempre siguen funcionando."
+    - "⏱️ Al recolectar en lote ves el tiempo total, no solo el de cada vuelta. La energía de combate ya no sale en tu ficha: se ve en la pelea."
+    - "🔗 Nuevo botón Moverte en 📍 Zona: suma pasos en las direcciones que quieras (hasta 50) y tu héroe los camina solo, también por tierra nueva."
+    - "⚔️ Si te sale un enemigo a mitad de un viaje, gánale y sigues tu camino. Antes el viaje se cortaba ahí."
+    - "📦 Recursos más corto: cada recurso con su cantidad y su código (/07). Toca el código para ver para qué sirve."
+    - "📒 Ya puedes ir a la fogata o a otro lugar aunque estés explorando o de viaje: lo que hacías se corta o cambias el rumbo."
+    - "📚 Los oficios ahora se aprenden: paga su primera receta en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. La recolección y la exploración suben solas. Si ya practicabas un oficio, lo aprendes gratis y conservas tu rango."
+    - "📋 Mis oficios, corto: una línea por oficio con su código (/minero). Toca el código para ver todo lo que da."
+    - "🛒 El mercader tiene 🛒 Comprar y 💱 Vender: vende lo que traes, todo de una cosa con su código (/v02)."
+    - "📜 Cada personaje del Claro te da un encargo por día: entrégale lo que pide o cuéntale lo que hiciste y te paga. Con tu propio campamento, los cobras desde ahí."
+    - "🛏️ La posada tarda según la vida que te falta: de 0 a llena, una hora."
+    - "⚙️ Opciones: salen las peleas y las pociones automáticas (por ahora, toda pelea la peleas tú) y entra 💬 Feedback para contarnos lo que quieras."
+    - "📔 El Diario abierto desde el campamento vuelve al campamento."
+  notes_en:
+    - "🌐 Lost Realms can now be played in Spanish or English. Each player picks a language and everything follows it: screens, buttons, combat, story, notices and ❓ Help."
+    - "🇪🇸 🇬🇧 When you start, the first screen lets you choose Español or English. If you already play, switch anytime in ⚙️ Options → 🌐 Language, or type /language."
+    - "💬 Notices reach you in your language even when they come from someone playing in the other one: a greeting, a wave report or news from your camp."
+    - "⌨️ Shortcuts have English names too (/coins, /help, /greet…), and the old ones still work."
+    - "⏱️ Batch gathering now shows the total time, not just each round. Combat energy no longer shows on your hero sheet: you see it in the fight."
+    - "🔗 New Move button in 📍 Zone: add steps in any directions you like (up to 50) and your hero walks them alone, even across new land."
+    - "⚔️ If an enemy jumps you halfway through a trip, beat it and you go on your way. Before, the trip stopped there."
+    - "📦 Shorter Resources: each resource with its amount and its code (/07). Tap the code to see what it's for."
+    - "📒 You can now head to the bonfire or another place even while exploring or travelling: what you were doing stops, or you change course."
+    - "📚 Professions are now learned: pay for the first recipe in the Clearing's 🔬 Research or in 🧑‍🏫 Trainer → 📚 Learn professions. Gathering and exploration rise on their own. If you already practised a profession, you learn it for free and keep your rank."
+    - "📋 Short My professions: one line per profession with its code (/minero). Tap the code to see everything it gives."
+    - "🛒 The merchant has 🛒 Buy and 💱 Sell: sell what you carry, all of one thing with its code (/v02)."
+    - "📜 Each character of the Clearing gives you one task a day: bring what they ask or tell them what you did and they pay you. With your own camp, you cash them in from there."
+    - "🛏️ The inn takes as long as the health you lack: from empty to full, one hour."
+    - "⚙️ Options: automatic fights and potions are gone (for now you fight every fight yourself) and 💬 Feedback is in, to tell us anything."
+    - "📔 The Journal opened from the camp goes back to the camp."

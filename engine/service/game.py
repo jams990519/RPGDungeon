@@ -116,6 +116,17 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     act() lo borra con cualquier otro botón. Es solo un estado de pantalla, como "camp_naming": nada de progreso.
     D-193: Hero.guide (el avance del 🧭 camino guiado: pasos hechos, avisos vistos, movimientos para fundar); lo maneja
     engine/service/guide.py. Hero.tutorial (el tutorial viejo) ya no avanza: solo se lee (E-133).
+    D-244 (0.33): "walk" (el camino de 🔗 Moverte a medio armar, clave el id del héroe: {"from": [x, y], "steps"}); se
+    borra al salir o al cancelar. Una emboscada a mitad de viaje lleva "route" ({"path", "goal", "walk"}) en su estado
+    de "combat": si el héroe gana, _end_combat retoma el viaje (_resume_route).
+    D-257 (0.33): Hero.learned (los oficios aprendidos pagando su primera receta; la 🪓 recolección y la 🧭 exploración no
+    van ahí: suben solas, professions.yaml learn: auto). Nunca se borra.
+    D-258 (0.33): "feedback" (los mensajes de 💬 Feedback, clave "<hora>:<cuenta>": {"account", "hero", "level", "class",
+    "lang", "text", "at", "sent"}; take_feedback los marca enviados) y "feedback_open" (clave la cuenta: la pantalla
+    espera el texto; act() lo borra con cualquier otro botón, como "dudas_open").
+    D-259 (0.33): "journal_back" (clave el id del héroe: {"to": "claro" o "hero"}, a dónde vuelve ↩️ del 📔 Diario; solo
+    pantalla).
+    D-260 (0.33): "reports" y "report_snap" son de adapters/reports.py (la marca del último informe y la foto del día).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -355,11 +366,13 @@ Si cambias esto, revisa:
 
 from __future__ import annotations
 
+import functools
 import math
 import re
 import unicodedata
+from contextlib import contextmanager
 from dataclasses import asdict, replace
-from typing import Any, Callable
+from typing import Any, Callable, Iterable, Iterator
 
 from engine.classes import (
     bar_choices,
@@ -432,6 +445,18 @@ COMMANDS = {"/stats": "stats", "/inv": "bag", "/habilidades": "talents", "/hero"
             "/dudas": "dudas", "/entrenador": "trainer"}                                       # D-191/D-192: ❓ Dudas, 🧑‍🏫 Entrenador
 # D-193: /guia shows the 🧭 guided path again; /origen chooses the 🎭 origin later (E-131: offered as an optional step).
 COMMANDS.update({"/guia": "guide", "/origen": "origin"})
+# D-250: 🌐 the language screen, and the English name of every shortcut (both work for everyone, in any language).
+COMMANDS.update({"/idioma": "lang", "/language": "lang",
+                 "/skills": "talents", "/zone": "home", "/gear": "gear", "/coins": "wallet", "/dual": "dual",
+                 "/guild": "guild", "/health": "health", "/professions": "oficios", "/options": "options",
+                 "/story": "story", "/journal": "journal", "/board": "board", "/greet": "gesture:saludar",
+                 "/toast": "gesture:brindar", "/enchant": "ench", "/specialty": "pspecs", "/recon": "recon",
+                 "/help": "dudas", "/faq": "dudas", "/trainer": "trainer", "/guide": "guide", "/origin": "origin"})
+# D-258: 💬 Feedback (⚙️ Opciones); D-257: 📋 Mis oficios and 📚 Aprender oficios.
+COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "myprof", "/aprender": "learnlist", "/learn": "learnlist"})
+# D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
+# handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
+TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
 ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 # D-233: classes on the creation screen, two per page: plate (Guerrero, Paladín), leather (Druida, Cazador), cloth
 # (Sacerdote, Mago). [ES] El orden sale de content/classes.yaml; si cambia el número de clases o su orden, las parejas
@@ -450,7 +475,7 @@ UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctalle
 # Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
 BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
-PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:")
+PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:")   # D-257: + 📋 📚 and a profession's screen
 # Button ids (or prefixes) of ✨ Encantamiento (D-115, phase 2): the hub, a piece's screen, enchant, disenchant (and confirm it).
 ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 # Button ids (or prefixes) of 🎓 Especialización (D-141): the hub (and its pages), a profession, a specialization, pick it, switch
@@ -467,7 +492,24 @@ COOK_PROFESSION = "cocina"
 # D-192: professions that need your own camp to rise (🏗️ Construcción: giving to its works); the 🧑‍🏫 Entrenador says so.
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
-PLACE_CODE_RE = re.compile(r"^/ir_?(\d{1,2})(@\w+)?$")      # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares
+PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
+WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
+WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
+SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
+RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
+
+
+def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
+    """Run a public entry point (view, text, act) in the language its account chose (D-250).
+
+    [ES] Qué hace: todo lo que arma una entrada del motor sale en el idioma del jugador que juega (Texts.use). La usan:
+    view, text y act. Si cambia, afecta: el idioma de todas las pantallas.
+    """
+    @functools.wraps(method)
+    def wrapper(self: "GameService", account_id: str, *args: Any, **kwargs: Any) -> Any:
+        with self._speaking(account_id):
+            return method(self, account_id, *args, **kwargs)
+    return wrapper
 
 
 class GameService(StoryMixin, GuideMixin):
@@ -495,7 +537,7 @@ class GameService(StoryMixin, GuideMixin):
         self.clock = clock
         self.time_scale = max(0.0001, time_scale)
         self.bus = bus or EventBus()
-        self.texts = Texts(content.texts)
+        self.texts = Texts(content.texts, catalogs=content.locales or {})       # D-250: one catalog per language
         meta = store.get("meta", "world") or {}
         epoch = int(content.balance.get("world", {}).get("epoch", 1))
         if meta and meta.get("epoch", 1) != epoch:
@@ -516,12 +558,13 @@ class GameService(StoryMixin, GuideMixin):
 
     # ------------------------------------------------------------------ public API
 
+    @_in_player_language
     def view(self, account_id: str) -> View:
         """Current screen for an account. [ES] Qué hace: muestra la pantalla actual. La llaman: los clientes (al abrir o actualizar). Si cambia, afecta: todos los clientes."""
         self._seen(account_id)
         hero = self._load(account_id)
         if hero is None:
-            return self._creation_view(account_id)
+            return self._creation_view(account_id)        # D-250: its first screen also offers the 🌐 language
         notices = self._settle(hero)
         self._raid_settle(hero)
         self._hunt_party_settle(hero)       # D-106: the camp's hunting party closes lazily too
@@ -530,6 +573,7 @@ class GameService(StoryMixin, GuideMixin):
         self._save(hero)                    # after the view: a 🧭 tip it showed stays seen
         return view
 
+    @_in_player_language
     def text(self, account_id: str, text: str) -> View:
         """Handle free text: the hero's name, a camp or guild name, or a typed command ("/bio ...", "/saludar Bram").
 
@@ -546,14 +590,22 @@ class GameService(StoryMixin, GuideMixin):
         """
         self._seen(account_id)
         hero = self._load(account_id)
+        text = self._canonical_command(text)            # D-250: "/greet Bram" is "/saludar Bram"
         if text.lstrip().startswith("/"):
             if hero is None:
                 return self.view(account_id)
             self._mark_seen(hero)
             notices = self._settle(hero)
             code = PLACE_CODE_RE.match(text.strip().lower())
+            resource = RESOURCE_CODE_RE.match(text.strip().lower())
             if code:                                     # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
                 typed = self._place_code(hero, int(code.group(1)))
+            elif resource:                               # D-243: /07 = what that resource is for
+                typed = self._resource_detail(hero, int(resource.group(1)))
+            elif SELL_CODE_RE.match(text.strip().lower()):      # D-259: /v02 = sell all of that to the Claro trader
+                typed = self._sell_code(hero, int(SELL_CODE_RE.match(text.strip().lower()).group(1)))
+            elif self._prof_code(text):                  # D-257: /minero = everything about that profession
+                typed = self._prof_detail_view(hero, self._prof_code(text))
             else:
                 typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
@@ -567,7 +619,9 @@ class GameService(StoryMixin, GuideMixin):
             view = self._name_camp(hero, " ".join(text.split()))
             self._save(hero)
             return view
-        if hero is not None and " ".join(text.split()) == self.texts.t("menu.story"):
+        if hero is not None and self.store.get("feedback_open", account_id):
+            return self._save_feedback(hero, account_id, text)    # D-258: 💬 Feedback: the next message is the player's note
+        if hero is not None and " ".join(text.split()) in self.texts.all_languages("menu.story"):
             return self.act(account_id, "story")         # D-190: the 📖 Historia key of an old Telegram keyboard
         if hero is not None and not self.store.get("combat", account_id) and (
                 self.store.get("dudas_open", account_id) or FAQ_CODE_RE.match(text.strip().lower())):
@@ -596,9 +650,12 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("pending", account_id, pending)
         return self._creation_view(account_id)
 
+    @_in_player_language
     def act(self, account_id: str, action_id: str) -> View:
         """Handle a button press. [ES] Qué hace: ejecuta la acción de un botón. La llaman: los clientes. Si cambia, afecta: todos los botones."""
         hero = self._load(account_id)
+        if action_id == "lang" or action_id.startswith("lang:"):     # D-250: 🌐 before or after creating the hero
+            return self._language_action(account_id, action_id, hero)
         if hero is None:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
@@ -610,6 +667,8 @@ class GameService(StoryMixin, GuideMixin):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if not action_id.startswith(DUDAS_ACTIONS) and self.store.get("dudas_open", account_id):
             self.store.delete("dudas_open", account_id)     # D-192: leaving ❓ Dudas: free text is no longer a search
+        if action_id != "fb" and self.store.get("feedback_open", account_id):
+            self.store.delete("feedback_open", account_id)  # D-258: leaving 💬 Feedback: free text is no longer a message
         if action_id.startswith("rel:"):
             view = self._answer_visitor(hero, action_id)
             self._save(hero)
@@ -674,9 +733,31 @@ class GameService(StoryMixin, GuideMixin):
         if meta.get("version") == latest["version"]:
             return None
         self.store.put("meta", "announce", {"version": latest["version"], "at": self.clock.now()})
-        return View(kind="patch", title=latest["title"], body=["• " + line for line in latest["notes"]])
+        return self._patch_view(latest)
 
-    def menu(self) -> list[Action]:
+    def announcement_view(self, account_id: str) -> View | None:
+        """The newest patch notes in that player's language (D-250); None if there are no patches.
+
+        [ES]
+        Qué hace: el aviso del último parche en el idioma del jugador (title_en y notes_en en patches.yaml; si un parche
+        no los tiene, sale en español). No marca nada: lo marca pending_announcement, una vez por versión.
+        La llaman: el bot de Telegram, para mandarle a cada jugador el aviso en su idioma.
+        Si cambia, afecta: los avisos de parches.
+        """
+        patches = self.content.patches or {}
+        if not patches:
+            return None
+        with self._speaking(account_id):
+            return self._patch_view(list(patches.values())[-1])
+
+    def _patch_view(self, patch: dict[str, Any]) -> View:
+        """A patch entry as a screen, in the current language (patches.yaml: title/notes, or title_<lang>/notes_<lang>)."""
+        lang = self.texts.lang
+        title = patch.get(f"title_{lang}") or patch["title"]
+        notes = patch.get(f"notes_{lang}") or patch["notes"]
+        return View(kind="patch", title=title, body=["• " + line for line in notes])
+
+    def menu(self, account_id: str | None = None) -> list[Action]:
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard): 5 buttons.
 
         [ES]
@@ -685,13 +766,29 @@ class GameService(StoryMixin, GuideMixin):
         🏕️ Campamento. El botón viejo y /historia siguen respondiendo ("story" abre el diario con un aviso; el texto
         "📖 Historia" de un teclado viejo lo entiende text()). D-46 deja hasta 6. ⚙️ Opciones sigue siendo el último.
         La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 5 quedan filas de 2, 2 y 1).
+        D-250: con account_id, el menú sale en el idioma de ese jugador (Telegram arma su teclado así).
         Si cambia, afecta: la navegación de todos los clientes (tests/test_buttons.py, tests/test_options.py y
         tests/test_menus_y_dudas.py miran el menú).
         """
+        if account_id is not None:
+            with self._speaking(account_id):
+                return self.menu()
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
                 Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero")),
                 Action(id="options", label=t.t("menu.options"))]
+
+    def menu_labels(self) -> dict[str, str]:
+        """Every label of the bottom menu in every language -> its action id (D-250).
+
+        [ES]
+        Qué hace: los botones del menú de abajo en todos los idiomas y a qué acción van: así un teclado viejo, en el
+        idioma que el jugador tenía antes de cambiarlo, sigue funcionando. La llaman: el bot de Telegram.
+        Si cambia, afecta: qué texto escrito se entiende como un botón del menú.
+        """
+        keys = {"home": "menu.zone", "explore_menu": "menu.explore", "claro": "menu.camp", "hero": "menu.hero",
+                "options": "menu.options"}
+        return {label: action for action, key in keys.items() for label in self.texts.all_languages(key)}
 
     def commands(self) -> dict[str, str]:
         """Typed shortcuts (/stats, /inv, /doble...) -> action id; some screens only link to them.
@@ -718,11 +815,14 @@ class GameService(StoryMixin, GuideMixin):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
                 continue
-            data = self.store.get("hero", account_id) or data     # fresh: an earlier hero may have paid this one (D-117 camp tasks)
-            hero = Hero.from_dict(data)
-            ensure_talents(self.content.classes, self.content.balance, hero)
-            notices = self._settle(hero)
-            view = self._main_view(hero, notice=self._join(notices)) if notices else None
+            # R-02: through _load, so a hero saved before an old patch gets its migrations here too (energy_version,
+            # the 0.8.1 exploration, the starter gear) and not only on its next button.
+            hero = self._load(account_id)
+            if hero is None:
+                continue
+            with self._speaking(account_id):              # D-250: the notice in that player's language
+                notices = self._settle(hero)
+                view = self._main_view(hero, notice=self._join(notices)) if notices else None
             self._save(hero)     # after the view: a 🧭 tip it showed stays seen (D-193)
             if view is not None:          # a batch step that simply goes on stays silent (D-87)
                 out.append((account_id, view))
@@ -734,10 +834,101 @@ class GameService(StoryMixin, GuideMixin):
         return out
 
     def _push(self, account_id: str, view: View) -> None:
-        """Queue a message for another player; tick() delivers it (camp contacts, D-71)."""
+        """Queue a message for another player; tick() delivers it (camp contacts, D-71).
+
+        D-250: build the view in that player's language: use _push_each (or wrap the building in _speaking(account_id)).
+        """
         box = self.store.get("outbox", account_id) or {"items": []}
         box["items"].append(asdict(view))
         self.store.put("outbox", account_id, box)
+
+    def _push_each(self, recipients: Iterable[str], build: Callable[[], View]) -> None:
+        """Queue one message per player, each built in that player's language (D-250).
+
+        [ES]
+        Qué hace: manda un aviso a varios jugadores (miembros del campamento, presentes en la zona…) armándolo de nuevo
+        para cada uno en su idioma. `build` solo arma textos: no debe cambiar nada del juego (se llama una vez por
+        jugador). La llaman: todo aviso para otro jugador. Si cambia, afecta: los avisos entre jugadores.
+        """
+        for account_id in recipients:
+            with self._speaking(account_id):
+                self._push(account_id, build())
+
+    # ------------------------------------------------------------------ 🌐 language (D-250)
+
+    @contextmanager
+    def _speaking(self, account_id: str | None) -> Iterator[None]:
+        """Everything built inside the `with` comes out in that player's language (the default if none was chosen)."""
+        with self.texts.use(self._lang_of(account_id) if account_id else None):
+            yield
+
+    def _lang_of(self, account_id: str) -> str | None:
+        """The language the player chose (store "prefs"), or None if never chosen (then: the default, Spanish)."""
+        lang = (self.store.get("prefs", account_id) or {}).get("lang")
+        return lang if lang in self.texts.languages else None
+
+    def _language_buttons(self, account_id: str) -> list[Action]:
+        """One button per language, each named in its own language; ✅ on the one in use (the default if none chosen)."""
+        current = self._lang_of(account_id) or self.texts.default
+        actions = []
+        for lang in self.texts.languages:
+            with self.texts.use(lang):
+                name = self.texts.t("language.name")
+            mark = self.texts.t("options.check_on") + " " if lang == current else ""
+            actions.append(Action(id=f"lang:{lang}", label=f"{mark}{name}"))
+        return actions
+
+    def _language_view(self, account_id: str, notice: str | None = None) -> View:
+        """🌐 Idioma (in the game): the language in use and one button per language, plus ↩️ Volver to ⚙️ Opciones.
+
+        [ES]
+        Qué hace: la pantalla para cambiar el idioma dentro del juego (D-250): ⚙️ Opciones → 🌐 Idioma, /idioma o
+        /language. Cada botón lleva el nombre del idioma en ese idioma; el que se usa lleva ✅. (Al empezar, el idioma se
+        elige en la primera pantalla de la creación: _creation_view.)
+        La llaman: _language_action. Si cambia, afecta: tests/test_idiomas.py.
+        """
+        t = self.texts
+        body = [t.t("language.current", name=t.t("language.name")), "", t.t("language.ask")]
+        actions = self._language_buttons(account_id) + [Action(id="options", label=t.t("menu.back"))]
+        return View(kind="language", title=t.t("language.title"), body=body, actions=actions, notice=notice)
+
+    def _all_texts(self, key: str) -> list[str]:
+        """A key in every language, without repeats (for the very first screen, read before choosing)."""
+        return self.texts.all_languages(key)
+
+    def _language_action(self, account_id: str, action_id: str, hero: Hero | None) -> View:
+        """"lang" opens the 🌐 screen; "lang:en" saves English (store "prefs") and shows the next screen in it.
+
+        [ES]
+        Qué hace: guarda el idioma elegido y sigue: sin héroe, la misma pantalla de la creación ya en ese idioma; con héroe, vuelve a ⚙️ Opciones
+        ya en el idioma nuevo, con el aviso, y marca la vista (meta["menu_changed"]) para que Telegram cambie también el
+        teclado de abajo. Nada del juego cambia: solo el idioma de lo que se muestra.
+        La llaman: act(). Si cambia, afecta: tests/test_idiomas.py y el teclado de Telegram.
+        """
+        lang = action_id.partition(":")[2]
+        if not lang or lang not in self.texts.languages:
+            return self._creation_view(account_id) if hero is None else self._language_view(account_id)
+        prefs = self.store.get("prefs", account_id) or {}
+        prefs["lang"] = lang
+        self.store.put("prefs", account_id, prefs)
+        with self.texts.use(lang):
+            if hero is None:
+                view = self._creation_view(account_id)
+            else:
+                view = self._options_view(hero, notice=self.texts.t("language.changed"))
+        view.meta["menu_changed"] = True
+        return view
+
+    @staticmethod
+    def _canonical_command(text: str) -> str:
+        """English typed commands with words after them become the Spanish ones the handlers read ("/greet Bram")."""
+        parts = text.strip().split(maxsplit=1)
+        if not parts:
+            return text
+        word, _, bot = parts[0].lower().partition("@")
+        if word not in TYPED_ALIASES:
+            return text
+        return " ".join([TYPED_ALIASES[word] + (f"@{bot}" if bot else "")] + parts[1:])
 
     # ------------------------------------------------------------------ storage helpers
 
@@ -875,7 +1066,8 @@ class GameService(StoryMixin, GuideMixin):
         return self._terrain_table
 
     def _zone(self, x: int, y: int) -> Zone:
-        parts = (len(self.texts.list("world.name_first")) or 1, len(self.texts.list("world.name_second")) or 1)
+        default = self.texts.default                    # D-250: the same name index in every language
+        parts = (len(self.texts.list("world.name_first", default)) or 1, len(self.texts.list("world.name_second", default)) or 1)
         zone = zone_at(self.world_seed, x, y, self.content.balance["travel"].get("level_per_lejania", 0.9), parts,
                        self._terrain_cfg())        # D-186: the patchwork terrain
         cfg = self._guardian_cfg()
@@ -897,7 +1089,9 @@ class GameService(StoryMixin, GuideMixin):
         second = self.texts.list("world.name_second")
         if not first or not second:
             return f"{zone.x},{zone.y}"
-        return f"{first[zone.name_index[0] % len(first)]} {second[zone.name_index[1] % len(second)]}"
+        # D-250: "{first} {second}" in Spanish ("Vado Gris"), "{second} {first}" in English ("Grey Ford")
+        return self.texts.t("world.name_format", first=first[zone.name_index[0] % len(first)],
+                            second=second[zone.name_index[1] % len(second)])
 
     def _biome_label(self, zone: Zone) -> str:
         biome = self.content.biomes[zone.biome]
@@ -1054,9 +1248,12 @@ class GameService(StoryMixin, GuideMixin):
             if self._sneaks_past(hero, "travel", activity["until"]):      # D-172: 🥷 Sigilo (its own draw)
                 notices.append(self.texts.t("stealth.travel", name=self._zone_name(zone)))
             else:
-                if not final:
-                    notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
-                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
+                route = None
+                if not final:                 # D-244: win the fight and the trip goes on; flee or fall and you stay here
+                    notices.append(self.texts.t("travel.interrupted_fight", name=self._zone_name(zone)))
+                    route = {"path": path, "goal": activity.get("goal"), "walk": bool(activity.get("walk"))}
+                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush",
+                                                  mark={"route": route} if route else None))
                 return notices
         if path and not self._spend_energy(hero, "move"):
             notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
@@ -1066,7 +1263,38 @@ class GameService(StoryMixin, GuideMixin):
             seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
             hero.activity = {"kind": "travel", "to": [nx, ny], "until": activity["until"] + seconds,
                              "dir": activity.get("dir", "n"), "path": path, "goal": activity.get("goal")}
+            if activity.get("walk"):                  # D-244: a 🔗 walk turns at every step
+                hero.activity.update(walk=True, dir=self._step_dir(hero.x, hero.y, nx, ny))
         return notices
+
+    @staticmethod
+    def _step_dir(x: int, y: int, nx: int, ny: int) -> str:
+        """The direction of one step between two neighbouring zones ("n", "s", "e" or "w")."""
+        return next((d for d, (dx, dy) in DIRECTIONS.items() if (x + dx, y + dy) == (nx, ny)), "n")
+
+    def _resume_route(self, hero: Hero, route: dict[str, Any]) -> list[str]:
+        """After winning an ambush on the way, the trip goes on from here (D-244).
+
+        [ES]
+        Qué hace: si te emboscaron a mitad de un viaje de varios tramos (📒 Lugares, 🔭, el 🗺️ Mapa o la 🔗 cadena de
+        Moverte) y ganaste, sigues con los tramos que faltaban desde ahora. Antes (hasta la 0.32) la emboscada tiraba el
+        resto del camino y el viaje largo casi nunca llegaba (D-244 lo midió: 5 tramos llegaban entre el 2 % y el 24 %).
+        La llaman: _end_combat cuando ganas una pelea con state["route"] (la pone _arrive).
+        Si cambia, afecta: el viaje largo, la 🔗 cadena y tests/test_moverte.py.
+        """
+        t = self.texts
+        path = [list(p) for p in route.get("path") or []]
+        if not path:
+            return []
+        if not self._spend_energy(hero, "move"):
+            return [t.t("energy.route_stopped", name=self._zone_name(self._zone(hero.x, hero.y)))]
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds,
+                         "dir": self._step_dir(hero.x, hero.y, nx, ny), "path": path, "goal": route.get("goal")}
+        if route.get("walk"):
+            hero.activity["walk"] = True
+        return [t.t("travel.resumed", n=len(path) + 1)]
 
     def _energy_period(self) -> float:
         cfg = self.content.balance["energy"]
@@ -1277,7 +1505,12 @@ class GameService(StoryMixin, GuideMixin):
         pending = self.store.get("pending", account_id)
         if not pending or pending.get("stage") != "class":
             self.store.put("pending", account_id, {"stage": "name"})
-            return View(kind="create_name", title=t.t("create.title"), body=[t.t("create.intro"), "", t.t("create.ask_name")], expects_text=True)
+            # D-250: 🌐 the very first screen also picks the language. Until one is chosen, the question goes in every
+            # language (we do not know yet which one the player reads); typing a name right away keeps the default.
+            chosen = self._lang_of(account_id) is not None
+            body = ([] if chosen else self._all_texts("language.ask") + [""]) + [t.t("create.intro"), "", t.t("create.ask_name")]
+            return View(kind="create_name", title=t.t("create.title"), body=body, expects_text=True,
+                        actions=self._language_buttons(account_id))
         group = pending.get("group")
         if not group:
             groups = self._class_groups()
@@ -1402,6 +1635,8 @@ class GameService(StoryMixin, GuideMixin):
             return self._options_view(hero)
         if action_id.startswith(STORY_ACTIONS):         # D-117: 📔 Diario (the old 📖 Historia), 📜 Tablón, 🎭 Origen, gestures; also busy
             return self._story_action(hero, action_id)
+        if action_id == "fb":                           # D-258: 💬 Feedback (⚙️ Opciones, /feedback); also while busy
+            return self._feedback_view(hero)
         if action_id.startswith("opt:"):
             return self._set_option(hero, action_id[4:])
         if action_id == "stats":
@@ -1486,6 +1721,8 @@ class GameService(StoryMixin, GuideMixin):
                 return self._gear_view(hero)
             return self._item_view(hero, item_id, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))
         if action_id.startswith(ENCHANT_ACTIONS):       # D-115: ✨ Encantamiento (the screens work while busy; doing it, not)
+            if not self._knows(hero, self._ench_pid()):    # D-257: learn ✨ Encantamiento first
+                return self._prof_detail_view(hero, self._ench_pid(), notice=self.texts.t("learn.need", name=self._prof_name(self._ench_pid())))
             return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
@@ -1558,11 +1795,15 @@ class GameService(StoryMixin, GuideMixin):
             return self._claro_view(hero, notice=t.t("claro.no_growth"))
         if action_id.startswith("sellg:"):
             return self._sell_gear(hero, action_id[6:], in_claro or self._sells_gear_here(hero))    # D-101: 🔨 Herrería
-        if action_id in ("shop", "inn") or action_id.startswith(("buy:", "sell:")):
+        if action_id in ("shop", "inn", "shop:buy", "shop:sell") or action_id.startswith(("buy:", "sell:")):
             if not in_claro:
                 return self._main_view(hero, notice=t.t("shop.only_in_claro"))
             if action_id == "shop":
                 return self._shop_view(hero)
+            if action_id == "shop:buy":                 # D-259: 🛒 Comprar
+                return self._shop_buy_view(hero)
+            if action_id == "shop:sell":                # D-259: 💱 Vender
+                return self._shop_sell_view(hero)
             if action_id.startswith("buy:"):
                 return self._buy(hero, action_id[4:])
             if action_id.startswith("sell:"):
@@ -1574,10 +1815,18 @@ class GameService(StoryMixin, GuideMixin):
             return self._main_view(hero)
         if action_id == "stop":
             return self._stop_batch(hero)
+        if action_id.startswith("goto:"):               # 0.33: also while busy (a batch is cut, a trip changes course)
+            try:
+                gx, gy = (int(v) for v in action_id[5:].split(":"))
+            except ValueError:
+                return self._places_view(hero)
+            return self._goto(hero, gx, gy)
         if hero.activity:
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
             return view
+        if action_id.startswith(WALK_ACTIONS):          # D-244: 🔗 Moverte (build a path step by step, then walk it)
+            return self._walk_action(hero, action_id)
         if action_id == "boss":
             return self._challenge_guardian(hero)
         if action_id == "assault":                      # D-112: ⚔️ Asaltar the enemy camp of this zone (a fight by hand)
@@ -1603,24 +1852,6 @@ class GameService(StoryMixin, GuideMixin):
             hero.activity = {"kind": "travel", "to": [dest.x, dest.y], "until": until, "dir": direction}
             self.bus.publish(TravelStarted(hero.id, dest.x, dest.y, until))
             return self._activity_view(hero, notice=t.t("travel.started", time=self._fmt_duration(seconds)))
-        if action_id.startswith("goto:"):
-            try:
-                gx, gy = (int(v) for v in action_id[5:].split(":"))
-            except ValueError:
-                return self._places_view(hero)
-            # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map)
-            if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
-                return self._places_view(hero)
-            if not self._spend_energy(hero, "move"):
-                return self._zone_view(hero, notice=self._no_energy_notice(hero))
-            path = self._path(hero.x, hero.y, gx, gy)
-            nx, ny = path.pop(0)
-            seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
-            dx, dy = gx - hero.x, gy - hero.y
-            direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
-            hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
-                             "path": path, "goal": [gx, gy]}
-            return self._activity_view(hero, notice=t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy))))
         if action_id == "gather" and self._is_lair(hero.x, hero.y):
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
         if action_id in ("gather", "explore"):
@@ -2141,9 +2372,10 @@ class GameService(StoryMixin, GuideMixin):
                 where += self._recon_route_mark(dest.x, dest.y)
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
+        actions.append(Action(id="walk", label=t.t("walk.button")))     # D-244: 🔗 Moverte, wide under the 4 routes
         body += ["", self._status_line(hero)] + self._tutorial_hint(hero)
         body += ["", t.t("menu.hint")]
-        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice)
+        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1])
 
     def _activity_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2162,7 +2394,8 @@ class GameService(StoryMixin, GuideMixin):
                 for nx, ny in activity.get("path", []):
                     total += self._leg_seconds(hero, cx, cy, nx, ny)
                     cx, cy = nx, ny
-                body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
+                goal = self._zone_name(self._zone(gx, gy)) if hero.remembers(gx, gy) else t.t("zone.uncharted")   # D-244: a walk can end on new land
+                body.append(t.t("travel.goal", name=goal, legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
             body = [t.t("gather.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
@@ -2180,6 +2413,8 @@ class GameService(StoryMixin, GuideMixin):
             body = [t.t("explore.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining)] + self._explore_progress_lines(hero)
             title = t.t("explore.title")
+        if activity.get("kind") in BATCH_KINDS:            # D-242.1: cuánto falta para TODO el lote, no solo esta vuelta
+            body.append(t.t("batch.total_left", time=self._fmt_duration(self._activity_left_seconds(hero))))
         if activity.get("kind") in BATCH_KINDS:            # D-114: the automatic fights so far, and what happens if one comes up
             body += self._auto_summary(activity)[:1] + self._auto_lines(hero, activity.get("kind"))
         if activity.get("kind") in PRESENT_BUSY:          # D-96: 📍 Zona while busy in the zone also shows who is here
@@ -2383,10 +2618,14 @@ class GameService(StoryMixin, GuideMixin):
         stations, _ = self._stations_here(hero)
         energy_max = self.content.balance["energy"]["max"]
         cook_rank = self._prof_rank(hero, COOK_PROFESSION) if COOK_PROFESSION in self._prof_catalog() else 0
-        lines = [t.t("hub.cook", rank=cook_rank) if COOK_PROFESSION in stations or (camp is None and not hero.activity)
-                 else t.t("hub.cook_none")]
-        if camp is None:
-            lines.append(t.t("hub.research_claro", level=self._library_level()))
+        if COOK_PROFESSION in self._prof_catalog() and not self._knows(hero, COOK_PROFESSION):
+            lines = [t.t("hub.cook_unlearned")]         # D-257: 🍲 Cocina is a profession you learn first
+        else:
+            lines = [t.t("hub.cook", rank=cook_rank) if COOK_PROFESSION in stations or (camp is None and not hero.activity)
+                     else t.t("hub.cook_none")]
+        if camp is None:                                # D-257: in the Claro, 🔬 Investigar is 📚 Aprender oficios
+            missing = len(self._to_learn(hero))
+            lines.append(t.t("hub.research_learn", n=missing) if missing else t.t("hub.research_learn_all"))
         else:
             key = f"{hero.x}:{hero.y}"
             if self._camp_service(camp, "knowledge"):
@@ -2403,14 +2642,14 @@ class GameService(StoryMixin, GuideMixin):
             price = self._money(self._inn_price())
             full = hero.hp >= hero_stats(self._kit(hero), hero.level)["max_hp"]
             lines += [t.t("hub.shop"), t.t("hub.inn_full", price=price) if full else
-                      t.t("hub.inn", price=price, time=self._fmt_duration(self._seconds(self.content.balance["inn"]["minutes"])))]
+                      t.t("hub.inn", price=price, time=self._fmt_duration(self._inn_seconds(hero)))]      # D-259: by the life you lack
         else:
             catalog = self._upgrade_catalog()
             services = [self._upgrade_name(uid) for uid in self._built(camp)
                         if uid in catalog and set(catalog[uid].get("service") or {}) & {"rest_price", "sell_ratio", "craft", "sell_gear"}]
             lines.append(t.t("hub.services", list=" · ".join(services)) if services else t.t("hub.services_none"))
         daily = self._daily(hero)
-        ids = self._daily_ids()
+        ids = self._daily_ids(hero)
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
         lines.append(t.t("hub.board", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left)))
         if camp is not None:
@@ -2699,14 +2938,28 @@ class GameService(StoryMixin, GuideMixin):
         return self._guide_hint(hero)
 
     def _shop_view(self, hero: Hero, notice: str | None = None) -> View:
-        """The Claro trader: buy belt items and 🥖 provisions (D-93), sell materials (half price).
+        """🏪 The Claro trader: choose 🛒 Comprar or 💱 Vender (D-259, 0.33).
 
-        [ES] Hasta 3 botones de compra (shop.sells) + 💱 Vender materiales; ↩️ Volver solo si cabe (tope de 4, D-75).
-        Con la mochila llena (D-90) muestra la línea de mochila llena; comprar se rechaza en _buy sin cobrar.
+        [ES]
+        Qué hace: la entrada del mercader del Claro (pedido del dueño: "el mercader me da la opción de comprar y vender, yo
+        escojo a cuál quiero entrar"): quién es, tus monedas y dos botones, 🛒 Comprar (_shop_buy_view) y 💱 Vender
+        (_shop_sell_view), más ↩️ Volver al centro de 🏕️ Campamento. Antes (hasta la 0.32) compra y venta iban juntas y el
+        botón de vender solo salía con materiales comunes en la mochila.
+        La llaman: 🛒 Mercader del centro del Claro y los ↩️ Volver de comprar y vender. Si cambia, afecta: tests/test_shop.py.
         """
         t = self.texts
+        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), "", t.t("shop.menu_buy"), t.t("shop.menu_sell")]
+        if self._bag_full(hero):  # D-90: buying waits until there is room again
+            body += ["", self._bag_full_line(hero)]
+        actions = [Action(id="shop:buy", label=t.t("shop.buy_menu_button")), Action(id="shop:sell", label=t.t("shop.sell_menu_button")),
+                   Action(id="claro", label=t.t("menu.back"))]
+        return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
+
+    def _shop_buy_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🛒 Comprar: belt items and 🥖 provisions (D-93, D-125); up to 3 buy buttons and ↩️ Volver to the trader."""
+        t = self.texts
         shop = self.content.balance["shop"]
-        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), ""]
+        body = [t.t("hero.gold_line", gold=self._money(hero.gold)), ""]
         actions = []
         for item_id in shop["sells"]:
             item = self.content.items[item_id]
@@ -2716,41 +2969,86 @@ class GameService(StoryMixin, GuideMixin):
             if cap is not None:                                  # D-125: 20 🥖 provisions a week
                 body.append(t.t("shop.cap_line", left=max(0, cap - self._shop_week(hero).get(item_id, 0)), n=cap))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(price))))
-        actions = actions[:3]
-        sellable = {i: n for i, n in hero.backpack.items()      # food stays: it feeds the pantry (D-93)
-                    if self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")
-                    and not self.content.items[i].get("keep")}       # refined goods and rares are sold one by one (D-109)
-        if sellable:
-            total = sum(max(1, int(self.content.items[i]["price"] * shop["sell_ratio"])) * n for i, n in sellable.items())
-            body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
-            actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=self._money(total))))
         if self._bag_full(hero):  # D-90: buying waits until there is room again
             body += ["", self._bag_full_line(hero)]
-        if len(actions) < 4:     # 4 buttons at most (D-75); without room, 🏕️ Campamento in the menu goes back to the same place
-            actions.append(Action(id="claro", label=t.t("menu.back")))
-        return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
+        actions = actions[:3] + [Action(id="shop", label=t.t("menu.back"))]
+        return View(kind="shop_buy", title=t.t("shop.buy_title"), body=body, actions=actions, notice=notice)
+
+    def _sellable(self, hero: Hero) -> dict[str, int]:
+        """What the trader buys from your backpack: materials, food and furniture (gear is sold from 🛡️ Equipo)."""
+        return {i: n for i, n in hero.backpack.items()
+                if n > 0 and self.content.items.get(i, {}).get("kind") in ("material", "food", "furniture") and self.content.items[i].get("code")}
+
+    def _sell_price(self, item_id: str) -> int:
+        """What the trader pays for one unit before 💱 Comercio: half its price (shop.sell_ratio), at least 1."""
+        return max(1, int(self.content.items[item_id].get("price", 1) * self.content.balance["shop"]["sell_ratio"]))
+
+    def _sell_all_common(self, hero: Hero) -> dict[str, int]:
+        """The common gathered materials "💱 Vender materiales" sells at once (never food, refined goods or rares, D-93, D-109)."""
+        return {i: n for i, n in hero.backpack.items()
+                if n > 0 and self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")
+                and not self.content.items[i].get("keep")}
+
+    def _shop_sell_view(self, hero: Hero, notice: str | None = None) -> View:
+        """💱 Vender: everything the trader buys, with its price and code (/v02 sells all of it); "sell common" at once (D-259).
+
+        [ES]
+        Qué hace: la pantalla de vender del mercader (pedido del dueño: "necesito vender lo que yo traigo"): cada cosa que
+        compra (materiales, comida y muebles; el equipo se vende desde 🛡️ Equipo) en una línea con cuántas llevas, cuánto paga
+        cada una (la mitad de su precio, más el 💱 Comercio si lo aprendiste) y su código (/v02, el mismo número de
+        📦 Recursos): tocarlo vende todas las de esa cosa. 💱 Vender materiales vende de una vez lo común que juntaste (no la
+        comida, ni lo refinado, ni lo raro). ↩️ Volver al mercader.
+        La llaman: 💱 Vender del mercader, los códigos /vNN y _sell. Si cambia, afecta: tests/test_shop.py.
+        """
+        t = self.texts
+        goods = self._sellable(hero)
+        body = [t.t("shop.sell_intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), ""]
+        for item_id, n in sorted(goods.items(), key=lambda kv: int(self.content.items[kv[0]]["code"])):
+            item, price = self.content.items[item_id], self._sell_price(item_id)
+            body.append(t.t("shop.sell_item_line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n, price=self._money(price),
+                            total=self._money(price * n), code=f"{int(item['code']):02d}"))
+        if not goods:
+            body.append(t.t("shop.sell_none"))
+        actions = []
+        common = self._sell_all_common(hero)
+        if common:
+            total = sum(self._sell_price(i) * n for i, n in common.items())
+            body += ["", t.t("shop.sell_all_line")]
+            actions.append(Action(id="sell:all", label=t.t("shop.sell_all_button", total=self._money(total))))
+        actions.append(Action(id="shop", label=t.t("menu.back")))
+        return View(kind="shop_sell", title=t.t("shop.sell_title"), body=body, actions=actions, notice=notice)
+
+    def _sell_code(self, hero: Hero, code: int) -> View:
+        """/v02: sell every unit of the thing with that code to the Claro trader (D-259)."""
+        t = self.texts
+        if (hero.x, hero.y) != (0, 0) or hero.activity:
+            return self._main_view(hero, notice=t.t("shop.only_in_claro"))
+        item_id = next((i for i in self._sellable(hero) if int(self.content.items[i]["code"]) == code), None)
+        if item_id is None:
+            return self._shop_sell_view(hero, notice=t.t("shop.no_code", code=f"/v{code:02d}"))
+        return self._sell(hero, item_id, every=True)
 
     def _buy(self, hero: Hero, item_id: str) -> View:
         t = self.texts
         if item_id not in self.content.balance["shop"]["sells"]:
-            return self._shop_view(hero)
+            return self._shop_buy_view(hero)
         item = self.content.items[item_id]
         if self._bag_full(hero):
-            return self._shop_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
+            return self._shop_buy_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
         cap = self.content.balance["shop"].get("weekly_cap", {}).get(item_id)
         bought = self._shop_week(hero)
         if cap is not None and bought.get(item_id, 0) >= cap:      # D-125: never charged once the week's cap is reached
-            return self._shop_view(hero, notice=t.t("shop.weekly_cap", item=t.t(item["name_key"]), n=cap))
+            return self._shop_buy_view(hero, notice=t.t("shop.weekly_cap", item=t.t(item["name_key"]), n=cap))
         price = self._shop_price(hero, item_id)                  # D-117: the origin's discount, if any
         if hero.gold < price:
-            return self._shop_view(hero, notice=t.t("shop.no_gold"))
+            return self._shop_buy_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
         if cap is not None:
             bought[item_id] = bought.get(item_id, 0) + 1
             self.store.put("shop_week", hero.id, {"week": self._today() // 7, "bought": bought})
         self._refill_belt(hero)
-        return self._shop_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
+        return self._shop_buy_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
 
     def _shop_week(self, hero: Hero) -> dict[str, int]:
         """What the hero bought this real week from the capped items (balance.yaml shop.weekly_cap), {item_id: n}.
@@ -2764,47 +3062,59 @@ class GameService(StoryMixin, GuideMixin):
             return {}
         return dict(record.get("bought", {}))
 
-    def _sell(self, hero: Hero, item_id: str) -> View:
+    def _sell(self, hero: Hero, item_id: str, every: bool = False) -> View:
+        """Sell to the Claro trader: "all" (the common materials at once), one unit, or every unit of one thing (/v02)."""
         t = self.texts
         if item_id == "all":
-            total, sold = 0, {}
-            for i, n in list(hero.backpack.items()):
-                item = self.content.items.get(i, {})
-                if item.get("kind") == "material" and not item.get("food") and not item.get("keep") and n > 0:
-                    total += max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"])) * n
-                    sold[i] = n
-                    del hero.backpack[i]
+            sold = self._sell_all_common(hero)
             if not sold:
-                return self._shop_view(hero)
+                return self._shop_sell_view(hero)
+            total = sum(self._sell_price(i) * n for i, n in sold.items())
+            for i in sold:
+                del hero.backpack[i]
             total, trade = self._merchant_sale(hero, total)     # D-116: 💱 Comercio
             hero.gold += total
             lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade
             lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)          # D-117
-            return self._shop_view(hero, notice="\n".join(lines))
-        item = self.content.items.get(item_id, {})
-        if item.get("kind") != "material" or hero.backpack.get(item_id, 0) <= 0:
-            return self._shop_view(hero)
-        price = max(1, int(item["price"] * self.content.balance["shop"]["sell_ratio"]))
-        hero.backpack[item_id] -= 1
+            return self._shop_sell_view(hero, notice="\n".join(lines))
+        if item_id not in self._sellable(hero):
+            return self._shop_sell_view(hero)
+        n = hero.backpack[item_id] if every else 1
+        price = self._sell_price(item_id) * n
+        hero.backpack[item_id] -= n
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
         price, trade = self._merchant_sale(hero, price)         # D-116: 💱 Comercio
         hero.gold += price
-        lines = [t.t("shop.sold", item=t.t(item["name_key"]), price=self._money(price))] + trade
-        lines += self._story_event(hero, "sell", n=1, coins=price)                             # D-117
-        return self._shop_view(hero, notice="\n".join(lines))
+        lines = [t.t("shop.sold_all", items=self._item_list({item_id: n}), total=self._money(price))] + trade
+        lines += self._story_event(hero, "sell", n=n, coins=price)                             # D-117
+        return self._shop_sell_view(hero, notice="\n".join(lines))
+
+    def _inn_seconds(self, hero: Hero) -> float:
+        """How long the Claro inn takes: the life you lack, inn.speed times faster than it comes back alone (D-259).
+
+        [ES]
+        Qué hace: el tiempo de la 🛏️ Posada (pedido del dueño: "si tu vida se llena en 4 horas, te la va a llenar en una hora
+        o en 40 minutos, pero no en 5 minutos"): lo que te falta de vida × (regen.hp_full_minutes / inn.speed), con un mínimo
+        de inn.min_minutes. Con speed 4 y 240 minutos, de 0 a llena es 1 hora; con media vida, 30 minutos.
+        La llaman: _rest y la línea de la posada del centro del Claro. Si cambia, afecta: cuánto vale la posada frente a esperar.
+        """
+        inn = self.content.balance["inn"]
+        max_hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
+        missing = max(0.0, 1 - hero.hp / max_hp) if max_hp else 1.0
+        full = self.content.balance["regen"]["hp_full_minutes"] / float(inn.get("speed", 4))
+        return self._seconds(max(float(inn.get("min_minutes", 5)), missing * full))
 
     def _rest(self, hero: Hero) -> View:
-        """Inn: pay gold, sleep a few minutes, wake with full health."""
+        """Inn: pay, sleep for the time the life you lack takes at the inn's speed (D-259), wake with full health."""
         t = self.texts
-        inn = self.content.balance["inn"]
         price = self._inn_price()
         if hero.hp >= hero_stats(self._kit(hero), hero.level)["max_hp"]:
             return self._claro_view(hero, notice=t.t("inn.full_hp"))       # do not charge for a useless night
         if hero.gold < price:
             return self._zone_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
-        seconds = self._seconds(inn["minutes"])
+        seconds = self._inn_seconds(hero)
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
         return self._activity_view(hero, notice=t.t("inn.started", price=self._money(price), time=self._fmt_duration(seconds)))
 
@@ -3062,10 +3372,11 @@ class GameService(StoryMixin, GuideMixin):
         if hero.id not in requests:
             requests.append(hero.id)
             self.store.put("camp", key, camp)
-            ask = View(kind="camp_join", title=t.t("camps.join_title"), body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
-                       actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
-                                Action(id=f"join:{key}:{hero.id}:n", label=t.t("camps.join_no"))])
-            self._push(camp["founder_id"], ask)
+            self._push_each([camp["founder_id"]], lambda: View(
+                kind="camp_join", title=t.t("camps.join_title"),
+                body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
+                actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
+                         Action(id=f"join:{key}:{hero.id}:n", label=t.t("camps.join_no"))]))
         return self._camp_here_view(hero, notice=t.t("camps.join_sent"))
 
     def _answer_join(self, hero: Hero, action_id: str) -> View:
@@ -3086,7 +3397,8 @@ class GameService(StoryMixin, GuideMixin):
             self.store.put("hero", visitor, data)
         self.store.put("camp", key, camp)
         result = "accepted" if accepted else "refused"
-        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.join_{result}", camp=camp["name"])]))
+        self._push_each([visitor], lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                                body=[t.t(f"camps.join_{result}", camp=camp["name"])]))
         return self._main_view(hero, notice=t.t(f"camps.you_{result}"))
 
     def _leave_camp(self, hero: Hero) -> View:
@@ -3248,12 +3560,11 @@ class GameService(StoryMixin, GuideMixin):
         if hero.id not in camp["relations"] and hero.id not in camp["asked"]:
             camp["asked"].append(hero.id)
             self.store.put("camp", key, camp)
-            ask = View(kind="camp_visit", title=t.t("camps.visit_title"),
-                       body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
-                       actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
-                                Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))])
-            for member in camp["members"]:
-                self._push(member, ask)
+            self._push_each(camp["members"], lambda: View(
+                kind="camp_visit", title=t.t("camps.visit_title"),
+                body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
+                actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
+                         Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))]))
             lines.append(t.t("camps.members_told"))
         else:
             lines.append(t.t(f"camps.relation.{camp['relations'].get(hero.id, 'unknown')}"))
@@ -3273,7 +3584,8 @@ class GameService(StoryMixin, GuideMixin):
         relation = "friendly" if choice == "f" else "hostile"
         camp["relations"][visitor] = relation
         self.store.put("camp", key, camp)
-        self._push(visitor, View(kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
+        self._push_each([visitor], lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                                body=[t.t(f"camps.answer.{relation}", camp=camp["name"], name=hero.name)]))
         return self._main_view(hero, notice=t.t("camps.you_answered", relation=t.t(f"camps.relation.{relation}")))
 
     # ------------------------------------------------------------------ hunting (D-106, provisional)
@@ -3517,9 +3829,7 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("hunt_party", hero.camp, party)
         present = {p["id"] for p in self._zone_players(hero.x, hero.y, exclude=hero.id)}
         invited = [member for member in camp["members"] if member != hero.id and member in present]
-        notice = self._hunt_party_notice(hero, camp, party)
-        for member in invited:
-            self._push(member, notice)
+        self._push_each(invited, lambda: self._hunt_party_notice(hero, camp, party))
         return self._hunt_view(hero, notice=t.t("hunt.party_called" if invited else "hunt.party_called_alone", n=len(invited)))
 
     def _join_hunt_party(self, hero: Hero) -> View:
@@ -3574,25 +3884,29 @@ class GameService(StoryMixin, GuideMixin):
         cfg = self._hunt_cfg()["party"]
         camp = self.store.get("camp", key) or {}
         members = party.get("members", {})
-        body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members), zone=self._zone_name(self._zone(party["x"], party["y"])),
-                    target=self._hunt_target(party))]
-        hunters = []
-        for hero_id, prey in sorted(members.items(), key=lambda row: -row[1]):
-            name = actor.name if hero_id == actor.id else (self.store.get("hero", hero_id) or {}).get("name", "?")
-            hunters.append(t.t("hunt.party_end_hunter", name=name, prey=prey))
-        if hunters:
-            body.append(t.t("hunt.party_end_hunters", list=" · ".join(hunters)))
-        if hunt_rules.reward_earned(party, cfg["prey_per_hunter"], cfg["min_hunters"]):
+        earned = hunt_rules.reward_earned(party, cfg["prey_per_hunter"], cfg["min_hunters"])
+        if earned:
             for hero_id in hunt_rules.rewarded(party):
                 self._raid_reward(hero_id, cfg["reward"], actor)        # pays online or not, the actor in memory
-            body.append(t.t("hunt.party_end_reward", xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"])))
-        elif len(members) < cfg["min_hunters"]:
-            body.append(t.t("hunt.party_end_alone", n=cfg["min_hunters"]))
-        else:
-            body.append(t.t("hunt.party_end_short"))
-        view = View(kind="hunt_party_end", title=t.t("hunt.party_end_title", camp=camp.get("name", "?")), body=body)
-        for hero_id in members:
-            self._push(hero_id, view)
+        names = {hero_id: actor.name if hero_id == actor.id else (self.store.get("hero", hero_id) or {}).get("name", "?")
+                 for hero_id in members}
+
+        def report() -> View:                    # D-250: built again in each hunter's language
+            body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members),
+                        zone=self._zone_name(self._zone(party["x"], party["y"])), target=self._hunt_target(party))]
+            hunters = [t.t("hunt.party_end_hunter", name=names[hero_id], prey=prey)
+                       for hero_id, prey in sorted(members.items(), key=lambda row: -row[1])]
+            if hunters:
+                body.append(t.t("hunt.party_end_hunters", list=" · ".join(hunters)))
+            if earned:
+                body.append(t.t("hunt.party_end_reward", xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"])))
+            elif len(members) < cfg["min_hunters"]:
+                body.append(t.t("hunt.party_end_alone", n=cfg["min_hunters"]))
+            else:
+                body.append(t.t("hunt.party_end_short"))
+            return View(kind="hunt_party_end", title=t.t("hunt.party_end_title", camp=camp.get("name", "?")), body=body)
+
+        self._push_each(members, report)
 
     # ------------------------------------------------------------------ guilds (D-97, provisional)
 
@@ -3761,11 +4075,9 @@ class GameService(StoryMixin, GuideMixin):
         self.store.put("guild_name", self._name_key(name), {"camp": key})
         self.store.put("guild", key, {"name": name, "camp": key, "founder_id": hero.id, "level": 1,
                                        "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": self.clock.now()})
-        news = View(kind="guild_news", title=t.t("guild.founded_title"),
-                    body=[t.t("guild.founded_push", founder=hero.name, name=name, camp=camp["name"])])
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, news)
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+            kind="guild_news", title=t.t("guild.founded_title"),
+            body=[t.t("guild.founded_push", founder=hero.name, name=name, camp=camp["name"])]))
         return self._guild_view(hero, notice=t.t("guild.founded", name=name))
 
     def _rise_guild(self, hero: Hero) -> View:
@@ -3780,11 +4092,11 @@ class GameService(StoryMixin, GuideMixin):
         if not guild_rules.rise(guild, levels):
             return self._guild_view(hero, notice=t.t("guild.not_ready"))
         self.store.put("guild", key, guild)
-        text = t.t("guild.risen", name=guild["name"], level=guild["level"], cap=guild_rules.capacity(levels, guild["level"]))
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, View(kind="guild_news", title=t.t("guild.risen_title"), body=[text]))
-        return self._guild_view(hero, notice=text)
+        risen = lambda: t.t("guild.risen", name=guild["name"], level=guild["level"],      # noqa: E731
+                            cap=guild_rules.capacity(levels, guild["level"]))
+        self._push_each([m for m in camp["members"] if m != hero.id],
+                        lambda: View(kind="guild_news", title=t.t("guild.risen_title"), body=[risen()]))
+        return self._guild_view(hero, notice=risen())
 
     def _castle_needs(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
         """What becoming a castle asks of the camp's guild (D-97); empty unless the next level is the castle.
@@ -3896,9 +4208,7 @@ class GameService(StoryMixin, GuideMixin):
                 "wins": 0, "fights": {}, "enemy": enemy_id, "level": level,
                 "defense": self._camp_defense(camp, night=self._is_night(now))}     # D-101: what the improvements hold back
         camp["raid"] = raid
-        notice = self._raid_notice(camp, raid)
-        for member in told:
-            self._push(member, notice)
+        self._push_each(told, lambda: self._raid_notice(camp, raid))
 
     def _raid_notice(self, camp: dict[str, Any], raid: dict[str, Any]) -> View:
         t = self.texts
@@ -3992,13 +4302,15 @@ class GameService(StoryMixin, GuideMixin):
         won = raid["wins"] >= raid["required"]
         camp.pop("raid", None)
         name, score = camp["name"], {"wins": raid["wins"], "need": raid["required"]}
-        body: list[str] = []
+        # First what happens (rewards, food, damage, next date); then the report, written in each member's language
+        # (D-250): `lines` holds (key, values) pairs, so the texts are only formatted inside report().
+        lines: list[tuple[str, dict[str, Any]]] = []
         if won:
-            body.append(t.t("raids.trial_won" if trial else "raids.defended", camp=name, **score))
+            lines.append(("raids.trial_won" if trial else "raids.defended", {"camp": name, **score}))
             for hero_id in raid["fights"]:
                 self._raid_reward(hero_id, sub["reward"], actor)
             if raid["fights"]:
-                body.append(t.t("raids.reward", xp=sub["reward"]["xp"], gold=self._money(sub["reward"]["gold"])))
+                lines.append(("raids.reward", {"xp": sub["reward"]["xp"], "gold": self._money(sub["reward"]["gold"])}))
         if trial and camp.get("next_raid_at") is not None and camp["next_raid_at"] <= raid["until"]:
             # the weekly raid came due during the Noche de prueba: the trial was that week's raid
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
@@ -4006,22 +4318,31 @@ class GameService(StoryMixin, GuideMixin):
             camp["trial_won"] = True
         elif trial:
             camp["trial_retry_at"] = raid["until"] + self._seconds(sub["retry_days"] * 24 * 60)
-            body.append(t.t("raids.trial_lost", camp=name, time=self._fmt_duration(camp["trial_retry_at"] - now), **score))
+            lines.append(("raids.trial_lost", {"camp": name, "retry_in": camp["trial_retry_at"] - now, **score}))
         else:
             record = camp.setdefault("raids", {"won": 0, "lost": 0})
             record["won" if won else "lost"] += 1
             if not won:
                 lost = self._raid_food_loss(camp)
-                body += [t.t("raids.lost", camp=name, **score),
-                         t.t("raids.lost_food", rations=lost) if lost else t.t("raids.lost_nothing")]
+                lines += [("raids.lost", {"camp": name, **score}),
+                          ("raids.lost_food", {"rations": lost}) if lost else ("raids.lost_nothing", {})]
             damaged = self._raid_damage(camp, won)            # D-115: 🛠️ the wave damages the defenses until repaired
             if damaged:
-                body.append(t.t("camp_prof.raid_damage", n=damaged, defense=self._camp_defense(camp)))
+                lines.append(("camp_prof.raid_damage", {"n": damaged, "defense": self._camp_defense(camp)}))
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
-            body.append(t.t("raids.next", n=self._days_until(camp["next_raid_at"])))
-        view = View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name), body=body)
-        for member in camp["members"]:
-            self._push(member, view)
+            lines.append(("raids.next", {"n": self._days_until(camp["next_raid_at"])}))
+
+        def report() -> View:
+            body = []
+            for key, values in lines:
+                if "retry_in" in values:                  # a duration reads differently in each language
+                    values = {k: v for k, v in values.items() if k != "retry_in"} | {
+                        "time": self._fmt_duration(values["retry_in"])}
+                body.append(t.t(key, **values))
+            return View(kind="camp_raid_end", title=t.t("raids.trial_end_title" if trial else "raids.end_title", camp=name),
+                        body=body)
+
+        self._push_each(camp["members"], report)
 
     def _raid_reward(self, hero_id: str, reward: dict[str, int], actor: Hero) -> None:
         """Pay a defender (online or not); the hero playing right now is paid in memory, so its save keeps it.
@@ -4066,12 +4387,10 @@ class GameService(StoryMixin, GuideMixin):
             return False
         camp["watched"] = nxt
         t = self.texts
-        view = View(kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
-                    body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), defense=self._camp_defense(camp))])
         active = self._active()
-        for member in camp["members"]:
-            if member in active:
-                self._push(member, view)
+        self._push_each([m for m in camp["members"] if m in active], lambda: View(
+            kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
+            body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), defense=self._camp_defense(camp))]))
         return True
 
     def _raid_food_loss(self, camp: dict[str, Any]) -> int:
@@ -4692,11 +5011,9 @@ class GameService(StoryMixin, GuideMixin):
             record["built"][uid] = self.clock.now()
             record["works"].pop(uid, None)
             lines.append(t.t("upgrades.built", name=name))
-            news = View(kind="camp_news", title=t.t("upgrades.built_push_title"),
-                        body=[t.t("upgrades.built_push", hero=hero.name, name=name, camp=camp["name"])])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("upgrades.built_push_title"),
+                body=[t.t("upgrades.built_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"])]))
             page = 0
         self.store.put("upgrades", key, record)
         return self._works_view(hero, page, notice="\n".join(lines))
@@ -4745,13 +5062,12 @@ class GameService(StoryMixin, GuideMixin):
             del hero.backpack[fid]
         record["furniture"][fid] = {"by": hero.name, "id": hero.id, "at": self.clock.now()}
         self.store.put("upgrades", key, record)
-        desc = t.t(item["desc_key"])
-        news = View(kind="camp_news", title=t.t("upgrades.furniture_push_title"),
-                    body=[t.t("upgrades.furniture_push", hero=hero.name, name=name, camp=camp["name"], desc=desc)])
-        for member in camp["members"]:
-            if member != hero.id:
-                self._push(member, news)
-        return self._works_view(hero, notice=t.t("upgrades.furniture_placed", name=name, camp=camp["name"], desc=desc))
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+            kind="camp_news", title=t.t("upgrades.furniture_push_title"),
+            body=[t.t("upgrades.furniture_push", hero=hero.name, name=self._item_label(fid), camp=camp["name"],
+                      desc=t.t(item["desc_key"]))]))
+        return self._works_view(hero, notice=t.t("upgrades.furniture_placed", name=name, camp=camp["name"],
+                                                  desc=t.t(item["desc_key"])))
 
     def _castle_upgrades(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
         """D-101: on the step to castle (8 → 9) the camp needs upgrades.castle_min_built improvements built; else [].
@@ -4836,7 +5152,7 @@ class GameService(StoryMixin, GuideMixin):
         if hero.gold < price:
             return self._services_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
-        seconds = self._seconds(service.get("rest_minutes", self.content.balance["inn"]["minutes"]))
+        seconds = self._inn_seconds(hero)               # D-259: like the Claro inn, by the life you lack (rest_minutes no longer used)
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
         return self._activity_view(hero, notice=t.t("upgrades.rest_started", price=self._money(price), time=self._fmt_duration(seconds)))
 
@@ -4996,11 +5312,9 @@ class GameService(StoryMixin, GuideMixin):
             tech.setdefault("done", []).append(tid)
             tech["current"], tech["progress"] = None, {}
             lines.append(t.t("knowledge.done", name=name))
-            news = View(kind="camp_news", title=t.t("knowledge.push_title"),
-                        body=[t.t("knowledge.push", hero=hero.name, name=name, camp=camp["name"])])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("knowledge.push_title"),
+                body=[t.t("knowledge.push", hero=hero.name, name=self._tech_name(tid), camp=camp["name"])]))
         self.store.put("upgrades", key, record)
         return self._knowledge_view(hero, notice="\n".join(lines))
 
@@ -5010,14 +5324,15 @@ class GameService(StoryMixin, GuideMixin):
         """🔬 Investigar (D-191): your camp's 📚 Conocimiento; elsewhere it explains where and how (never hidden, D-192).
 
         [ES]
-        Qué hace: el botón 🔬 Investigar del centro de 🏕️ Campamento. En tu campamento con la 📚 Biblioteca abre el
-        📚 Conocimiento (D-101); sin Biblioteca, en el Claro o lejos de tu campamento, vuelve al centro con un aviso que dice por
-        qué y dónde se investiga (regla de TowerWars: no esconder, explicar).
+        Qué hace: el botón 🔬 Investigar del centro de 🏕️ Campamento. D-257 (0.33, pedido del dueño): en el Claro abre
+        📚 Aprender oficios (_learn_view), donde se aprende cada oficio pagando su primera receta. En tu campamento con la
+        📚 Biblioteca abre el 📚 Conocimiento (D-101); sin Biblioteca o lejos de tu campamento, vuelve al centro con un aviso
+        que dice por qué y dónde se investiga (regla de TowerWars: no esconder, explicar).
         La llama: _idle_action ("research"). Si cambia, afecta: tests/test_menus_y_dudas.py.
         """
         t = self.texts
-        if (hero.x, hero.y) == (0, 0):
-            return self._hub_view(hero, notice=t.t("hub.research_claro_notice", level=self._library_level(), studies=self._studies_text()))
+        if (hero.x, hero.y) == (0, 0):                  # D-257 (0.33): in the Claro, 🔬 Investigar is where professions are learned
+            return self._learn_view(hero)
         here = self._upgrades_here(hero)
         if not here:
             return self._hub_view(hero, notice=t.t("hub.research_away_notice"))
@@ -5027,51 +5342,38 @@ class GameService(StoryMixin, GuideMixin):
         return self._knowledge_view(hero)
 
     def _trainer_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🧑‍🏫 Entrenador (D-191): presents the professions by family, which you can start now and what comes later.
+        """🧑‍🏫 Entrenador (D-191, D-257): how a profession is learned, the ones you have and, below, the ones you lack.
 
         [ES]
-        Qué hace: el entrenador del campamento (D-191: "te presenta los oficios"): cómo se aprende un oficio (haciéndolo, sin
-        pagar ni elegir y sin tope, D-57), cada familia en orden (🪓 recolección, 🧭 exploración, 🪚 refinado, 🛠️ fabricación,
-        💱 servicio, ✨ encantamiento) con lo que hace y sus oficios (con tu rango si ya lo empezaste), cuántos puedes empezar
-        hoy, lo que llega más adelante (🏗️ Construcción con tu campamento, 🎓 especializaciones al rango 25 y 75, recetas nuevas
-        con cada rango: "a medida que avances aprenderás más") y si hay estaciones donde estás. Botones: ⚒️ Mis oficios,
-        🎓 Especialización, ✨ Encantamiento y ↩️ Volver (4). Es un menú: se abre también ocupado y desde cualquier lugar
-        (/entrenador). No cambia nada guardado.
-        La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py.
+        Qué hace: el entrenador (D-191: "te presenta los oficios"). D-257 (0.33, pedido del dueño): corto. Cómo se aprende un
+        oficio (una vez, pagando su primera receta; después sube haciendo recetas y cada rango abre recetas nuevas; la
+        🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango, abajo los que te faltan por aprender y
+        lo que llega más adelante (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento). Botones:
+        📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver (4). El ✨ Encantamiento ya no tiene botón aquí:
+        se aprende como los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
+        Es un menú: se abre también ocupado y desde cualquier lugar (/entrenador). No cambia nada guardado.
+        La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py y
+        tests/test_aprender_oficios.py.
         """
         t = self.texts
-        catalog = self._prof_catalog()
-        order = {b: i for i, b in enumerate(BRANCH_ORDER)}
-        ordered = sorted(catalog, key=lambda pid: order.get(catalog[pid].get("branch"), len(order)))
+        known = self._known_profs(hero)
+        missing = self._to_learn(hero)
+        price = self._money(int(self._prof_cfg().get("learn_price", 20)))
+        body = [t.t("trainer.intro_learn", price=price), ""]
+        have = [t.t("trainer.entry_rank", name=self._prof_name(pid), rank=self._prof_rank(hero, pid)) for pid in known]
+        body.append(t.t("trainer.have", list=" · ".join(have)) if have else t.t("trainer.have_none"))
+        body.append(t.t("trainer.missing", n=len(missing), list=" · ".join(self._prof_name(pid) for pid in missing))
+                    if missing else t.t("trainer.missing_none"))
+        body += ["", t.t("trainer.later_title")]
         camp = self.store.get("camp", hero.camp) if hero.camp else None
         member = bool(camp) and hero.id in camp.get("members", [])
-        recon = int(self.content.balance.get("explorer", {}).get("ranks", {}).get("recon", 10))
-        body = [t.t("trainer.intro"), ""]
-        branch, names = None, []
-        for pid in ordered:
-            pdef = catalog[pid]
-            if pdef.get("branch") != branch:
-                if names:
-                    body.append(t.t("trainer.names", list=" · ".join(names)))
-                branch, names = pdef.get("branch"), []
-                key = f"trainer.branch.{branch}"
-                body.append(t.t(key, recon=recon) if t.has(key) else t.t(f"prof.branch.{branch}"))
-            started = hero.professions.get(pid, 0) > 0
-            names.append(t.t("trainer.entry_rank", name=self._prof_name(pid), rank=self._prof_rank(hero, pid)) if started
-                         else t.t("trainer.entry", name=self._prof_name(pid)))
-        if names:
-            body.append(t.t("trainer.names", list=" · ".join(names)))
-        can_start = [pid for pid in ordered if hero.professions.get(pid, 0) <= 0 and (member or pid not in CAMP_ONLY_PROFESSIONS)]
-        body += ["", t.t("trainer.now", n=len(can_start)) if can_start else t.t("trainer.now_all"), "", t.t("trainer.later_title")]
-        camp_only = [self._prof_name(pid) for pid in CAMP_ONLY_PROFESSIONS if pid in catalog]
+        camp_only = [self._prof_name(pid) for pid in CAMP_ONLY_PROFESSIONS if pid in self._prof_catalog()]
         if not member and camp_only:
             body.append(t.t("trainer.later_camp", list=", ".join(camp_only)))
         slots_at = self._pspec_slots_at() or [25, 75]
-        body += [t.t("trainer.later_specs", first=slots_at[0], second=slots_at[-1]), t.t("trainer.later_more")]
-        stations, _ = self._stations_here(hero)
-        body += ["", t.t("trainer.stations", n=len(stations)) if stations else t.t("trainer.stations_none")]
-        actions = [Action(id="oficios", label=t.t("trainer.mine_button")), Action(id="pspecs", label=t.t("spec.button")),
-                   Action(id="ench", label=t.t("trainer.ench_button")), Action(id="claro", label=t.t("menu.back"))]
+        body.append(t.t("trainer.later_specs", first=slots_at[0], second=slots_at[-1]))
+        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button")),
+                   Action(id="pspecs", label=t.t("spec.button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ ❓ Dudas (D-191, D-192; keyword search, E-129)
@@ -5122,7 +5424,8 @@ class GameService(StoryMixin, GuideMixin):
             "energy_max": energy["max"], "energy_day": energy["per_day"],
             "energy_every": self._fmt_duration(86400 / max(1, energy["per_day"])),
             "move_cost": t.t("dudas.value.move_cost", n=move) if move else t.t("dudas.value.move_free"),
-            "travel_first": travel["first_minutes"], "travel_max": travel["max_minutes"],
+            "travel_first": travel["first_minutes"], "travel_max": travel["max_minutes"], "walk_max": travel.get("walk_max", 50),
+            "learn_price": self._money(int(b["professions"].get("learn_price", 20))),     # D-257
             "explore_min": b["explore"]["minutes"], "gather_min": b["gather"]["minutes"],
             "explore_low": b["exploration"]["per_step"][0], "explore_high": b["exploration"]["per_step"][-1],
             "reveal": self._faq_and(b["exploration"].get("reveal_at", [100])),
@@ -5180,7 +5483,8 @@ class GameService(StoryMixin, GuideMixin):
         scores: dict[str, int] = {}
         for code, entry in entries.items():
             score = 0
-            for keyword in (self._faq_norm(k) for k in entry.get("keywords") or []):
+            words_of_lang = entry.get(f"keywords_{self.texts.lang}") if self.texts.lang != self.texts.default else []
+            for keyword in (self._faq_norm(k) for k in list(words_of_lang or []) + list(entry.get("keywords") or [])):
                 if not keyword:
                     continue
                 if " " in keyword:
@@ -5336,16 +5640,225 @@ class GameService(StoryMixin, GuideMixin):
         return {rid: rdef for rid, rdef in recipes.items() if not rdef.get("retired")}
 
     def _prof_rank(self, hero: Hero, pid: str) -> int:
-        """A hero's rank (1-100) in a profession, from its profession xp (rank 1 if never started).
+        """A hero's rank (1-100) in a profession, from its profession xp (rank 1 if never started); 0 if not learned.
 
         [ES]
         Qué hace: da el rango de un oficio para este héroe (1 si nunca lo empezó), con la curva de
-        balance.yaml professions.rank_formula.
+        balance.yaml professions.rank_formula. D-257 (0.33): un oficio que se aprende y no aprendiste tiene rango 0, así ninguna
+        receta, beneficio, especialización ni encantamiento se abre (todas piden rango 1 o más); la experiencia de antes queda.
         La llaman: todas las funciones de esta sección.
         Si cambia, afecta: qué recetas y materiales raros tiene abiertos cada uno.
         """
+        if not self._knows(hero, pid):
+            return 0
         cfg = self._prof_cfg()
         return rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+
+    # ------------------------------------------------------------------ learning a profession (D-257, 0.33)
+
+    def _prof_auto(self, pid: str) -> bool:
+        """True for the professions nobody learns: gathering and exploration (content/professions.yaml learn: auto)."""
+        return self._prof_catalog().get(pid, {}).get("learn") == "auto"
+
+    def _knows(self, hero: Hero, pid: str) -> bool:
+        """True if the hero can use this profession: an automatic one, or one learned by paying its first recipe (D-257).
+
+        [ES]
+        Qué hace: dice si el héroe sabe un oficio: los de recolección (menos el 🔪 Desollador) y la 🧭 exploración siempre;
+        los demás, solo si los aprendió (Hero.learned). La llaman: _prof_rank, _prof_gain y las pantallas de oficios.
+        Si cambia, afecta: qué puede hacer cada jugador con los oficios (tests/test_aprender_oficios.py).
+        """
+        return self._prof_auto(pid) or pid in (hero.learned or [])
+
+    def _known_profs(self, hero: Hero) -> list[str]:
+        """The professions to list as the hero's: learned ones always, automatic ones once started; in branch order."""
+        catalog = self._prof_catalog()
+        order = {b: i for i, b in enumerate(BRANCH_ORDER)}
+        ordered = sorted(catalog, key=lambda pid: order.get(catalog[pid].get("branch"), len(order)))
+        return [pid for pid in ordered if pid in (hero.learned or []) or (self._prof_auto(pid) and hero.professions.get(pid, 0) > 0)]
+
+    def _can_learn_here(self, hero: Hero, pid: str) -> bool:
+        """🏗️ Construcción is learned only as a camp member (CAMP_ONLY_PROFESSIONS); the rest, by anyone."""
+        if pid not in CAMP_ONLY_PROFESSIONS:
+            return True
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        return bool(camp) and hero.id in camp.get("members", [])
+
+    def _to_learn(self, hero: Hero) -> list[str]:
+        """The professions this hero can still learn, in branch order (automatic ones never appear)."""
+        catalog = self._prof_catalog()
+        order = {b: i for i, b in enumerate(BRANCH_ORDER)}
+        ordered = sorted(catalog, key=lambda pid: order.get(catalog[pid].get("branch"), len(order)))
+        return [pid for pid in ordered if not self._prof_auto(pid) and not self._knows(hero, pid)]
+
+    def _learn_price(self, hero: Hero, pid: str) -> int:
+        """🥉 to learn a profession (its first recipe): free if the hero practised it before 0.33 (its xp is kept)."""
+        if hero.professions.get(pid, 0) > 0:
+            return 0
+        return int(self._prof_catalog().get(pid, {}).get("learn_price", self._prof_cfg().get("learn_price", 20)))
+
+    def _first_recipe(self, pid: str) -> str | None:
+        """The first rank-1 recipe of a profession (file order, never a 🎓 exclusive one): what learning it opens."""
+        return next((rid for rid, rdef in self._recipes().items()
+                     if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) <= 1 and not rdef.get("spec")), None)
+
+    def _learn_unlocks(self, pid: str) -> str:
+        """One line: what learning this profession lets you do now (recipes, skinning, selling, enchanting...)."""
+        t = self.texts
+        key = f"learn.unlocks_{pid}"
+        if t.has(key):
+            return t.t(key)
+        return t.t("learn.unlocks")
+
+    def _prof_code(self, text: str) -> str | None:
+        """"/minero" -> "minero": a profession's code as players type or tap it (never a shortcut's name)."""
+        match = re.match(r"^/([a-z_]+)(@\w+)?$", text.strip().lower())
+        if not match or match.group(1) not in self._prof_catalog() or f"/{match.group(1)}" in COMMANDS:
+            return None
+        return match.group(1)
+
+    def _prof_short_line(self, hero: Hero, pid: str) -> str:
+        """"⛏️ Minero · rango 2 (Aprendiz) ▓▓▓▓░░░░ 55 %  /minero": one profession in one line (📋 Mis oficios, 🛠️ Fabricar)."""
+        rank = self._prof_rank(hero, pid)
+        return self.texts.t("myprof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank),
+                            bar=self._rank_bar(hero, pid), code=pid)
+
+    def _my_profs_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📋 Mis oficios: one short line per profession you have, with its code; the details are behind the code (D-257).
+
+        [ES]
+        Qué hace: la lista corta de tus oficios (pedido del dueño, 17-oct): nombre, rango, título, la barrita y su código
+        (/minero). Lo largo (qué junta, su beneficio, lo que abre cada rango, sus especializaciones) sale tocando el código
+        (_prof_detail_view). Salen los oficios aprendidos y los de recolección o exploración que ya subiste. Botones:
+        📚 Aprender oficios y ↩️ Volver al 🧑‍🏫 Entrenador.
+        La llaman: 📋 Mis oficios del 🧑‍🏫 Entrenador y ↩️ Volver del detalle de un oficio. Si cambia, afecta:
+        tests/test_aprender_oficios.py.
+        """
+        t = self.texts
+        known = self._known_profs(hero)
+        body = [t.t("myprof.intro"), ""] + ([self._prof_short_line(hero, pid) for pid in known] or [t.t("myprof.none")])
+        actions = [Action(id="learnlist", label=t.t("learn.button")), Action(id="trainer", label=t.t("menu.back"))]
+        return View(kind="my_professions", title=t.t("myprof.title"), body=body, actions=actions, notice=notice)
+
+    def _learn_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📚 Aprender oficios: every profession you can still learn, its price and its code (D-257).
+
+        [ES]
+        Qué hace: la lista de los oficios que te faltan (pedido del dueño: "dentro de investigar debería salirme todas las
+        profesiones que hay y cuál yo quiero aprender"), cada uno con lo que cuesta (su primera receta,
+        balance.yaml professions.learn_price; gratis si ya lo practicabas) y su código. Tocando el código se ve qué hace y se
+        aprende (_prof_detail_view → "learn:<oficio>"). 🏗️ Construcción solo se aprende siendo miembro de un campamento.
+        La llaman: 🔬 Investigar en el Claro, 📚 Aprender oficios del 🧑‍🏫 Entrenador y de 📋 Mis oficios.
+        Si cambia, afecta: tests/test_aprender_oficios.py.
+        """
+        t = self.texts
+        missing = self._to_learn(hero)
+        body = [t.t("learn.intro"), ""]
+        for pid in missing:
+            price = self._learn_price(hero, pid)
+            key = "learn.line_free" if price == 0 else "learn.line"
+            body.append(t.t(key, name=self._prof_name(pid), price=self._money(price), code=pid))
+        body.append(t.t("learn.hint") if missing else t.t("learn.none"))
+        body += ["", t.t("hero.gold_line", gold=self._money(hero.gold))]
+        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id=self._learn_back(hero), label=t.t("menu.back"))]
+        return View(kind="learn", title=t.t("learn.title"), body=body, actions=actions, notice=notice)
+
+    def _learn_back(self, hero: Hero) -> str:
+        """Where ↩️ Volver of 📚 Aprender oficios goes: the 🏕️ Campamento hub in the Claro, else the 🧑‍🏫 Entrenador."""
+        return "claro" if (hero.x, hero.y) == (0, 0) and not hero.activity else "trainer"
+
+    def _prof_detail_view(self, hero: Hero, pid: str, notice: str | None = None) -> View:
+        """/minero: everything about one profession; if you do not know it yet, its price and 📚 Aprender (D-257).
+
+        [ES]
+        Qué hace: la pantalla de un oficio, que se abre con su código. Si lo sabes: rango y barra, cómo sube, su beneficio
+        ahora, sus 🎓 especializaciones, lo que abre en el mapa (🧭) y lo que abre el próximo rango, con un botón a su estación
+        (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. Si no lo sabes: qué hace, su primera receta, lo que cuesta
+        y 📚 Aprender (gratis si ya lo practicabas). La recolección y la exploración dicen que suben solas.
+        La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
+        (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
+        """
+        t = self.texts
+        catalog = self._prof_catalog()
+        pdef = catalog.get(pid)
+        if not pdef:
+            return self._my_profs_view(hero, notice=notice)
+        how = t.t(pdef.get("how_key", f"profession.{pid}.how"))
+        actions: list[Action] = []
+        if self._knows(hero, pid):
+            rank = self._prof_rank(hero, pid)
+            body = [t.t("prof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid)),
+                    t.t("prof.how_line", how=how)]
+            perk = self._perk_text(pdef.get("perk"), rank)
+            if "masterwork" not in (pdef.get("perk") or {}) and self._makes_masterworks(pid):    # D-116: ✒️ the base chance
+                shown = round(100 * self._masterwork_chance(hero, pid), 1)
+                perk = " · ".join(part for part in (perk, t.t("prof.perk.masterwork", v=f"{shown:g}")) if part)
+            if perk:
+                body.append(t.t("prof.perk_line", perk=perk))
+            if pid in profession_rules.camp_perk_professions(catalog):
+                body.append(t.t("camp_prof.perk_note"))
+            body += self._pspec_prof_lines(hero, pid) + self._explorer_prof_lines(hero, pid)
+            unlock = self._next_unlock(hero, pid)
+            if unlock:
+                body.append(unlock)
+            stations, _ = self._stations_here(hero)
+            branch = pdef.get("branch")
+            if pid == COOK_PROFESSION and pid in stations:
+                actions.append(Action(id="cook", label=t.t("hub.cook_button")))
+            elif branch in ("refine", "craft") and pid in stations:
+                actions.append(Action(id=f"est:{branch}:0", label=t.t(f"prof.{branch}_button")))
+            elif pid == self._ench_pid():
+                actions.append(Action(id="ench", label=t.t("trainer.ench_button")))
+            if self._pspec_any(hero):
+                actions.append(Action(id="pspecs", label=t.t("spec.button")))
+            actions.append(Action(id="myprof", label=t.t("menu.back")))
+        elif self._prof_auto(pid):
+            body = [t.t("learn.auto", name=self._prof_name(pid), how=how)]
+            actions.append(Action(id="myprof", label=t.t("menu.back")))
+        else:
+            price = self._learn_price(hero, pid)
+            body = [self._prof_name(pid), t.t("prof.how_line", how=how), "", self._learn_unlocks(pid)]
+            first = self._first_recipe(pid)
+            if first:
+                rdef = self._recipes()[first]
+                body.append(t.t("learn.first_recipe", recipe=self._recipe_name(first), inputs=self._item_list(rdef["inputs"])))
+            body.append("")
+            if price == 0:
+                body.append(t.t("learn.free_line", rank=rank_of(hero.professions.get(pid, 0), self._prof_cfg()["rank_formula"],
+                                                                self._prof_cfg()["max_rank"])))
+            else:
+                body.append(t.t("learn.price_line", price=self._money(price), gold=self._money(hero.gold)))
+            if not self._can_learn_here(hero, pid):
+                body.append(t.t("learn.camp_needed", name=self._prof_name(pid)))
+            else:
+                label = t.t("learn.learn_button_free") if price == 0 else t.t("learn.learn_button", price=self._money(price))
+                actions.append(Action(id=f"learn:{pid}", label=label))
+            actions.append(Action(id="learnlist", label=t.t("menu.back")))
+        return View(kind="profession", title=self._prof_name(pid), body=body, actions=actions[:4], notice=notice)
+
+    def _learn(self, hero: Hero, pid: str) -> View:
+        """📚 Aprender: pay a profession's first recipe and learn it for ever (D-257); free if practised before 0.33.
+
+        [ES]
+        Qué hace: aprende un oficio: cobra su precio (balance.yaml professions.learn_price; 0 si ya tenía experiencia), lo
+        anota en Hero.learned para siempre y vuelve a su pantalla con lo que ya puede hacer. Rechaza sin cobrar si ya lo
+        sabe, si es de los que suben solos, si 🏗️ Construcción pide campamento o si faltan monedas.
+        La llama: "learn:<oficio>" (botón 📚 Aprender de _prof_detail_view). Si cambia, afecta: Hero.learned y las monedas.
+        """
+        t = self.texts
+        if pid not in self._prof_catalog():
+            return self._learn_view(hero)
+        name = self._prof_name(pid)
+        if self._knows(hero, pid):
+            return self._prof_detail_view(hero, pid, notice=t.t("learn.already", name=name))
+        if not self._can_learn_here(hero, pid):
+            return self._prof_detail_view(hero, pid, notice=t.t("learn.camp_needed", name=name))
+        price = self._learn_price(hero, pid)
+        if hero.gold < price:
+            return self._prof_detail_view(hero, pid, notice=t.t("learn.no_gold", price=self._money(price), gold=self._money(hero.gold)))
+        hero.gold -= price
+        hero.learned = list(hero.learned or []) + [pid]
+        return self._prof_detail_view(hero, pid, notice=t.t("learn.done", name=name, unlocks=self._learn_unlocks(pid)))
 
     def _prof_name(self, pid: str) -> str:
         pdef = self._prof_catalog().get(pid, {})
@@ -5404,7 +5917,7 @@ class GameService(StoryMixin, GuideMixin):
         exclusivas que no puedes hacer no se anuncian.
         Si cambia, afecta: el avance de todos los oficios y los avisos de subida.
         """
-        if xp <= 0 or pid not in self._prof_catalog():
+        if xp <= 0 or pid not in self._prof_catalog() or not self._knows(hero, pid):    # D-257: a profession not learned never rises
             return []
         xp = int(round(xp * (1 + self._origin_prof_bonus(hero, pid))))      # D-117: the origin's trait (e.g. ⛏️ Minero +15 %)
         before = self._prof_rank(hero, pid)
@@ -5628,6 +6141,14 @@ class GameService(StoryMixin, GuideMixin):
         Si cambia, afecta: los IDs de botón de los oficios (los clientes solo los reenvían)."""
         parts = action_id.split(":")
         page = int(parts[-1]) if len(parts) > 2 and parts[-1].isdigit() else 0
+        if parts[0] == "myprof":                        # D-257: 📋 Mis oficios
+            return self._my_profs_view(hero)
+        if parts[0] == "learnlist":                     # D-257: 📚 Aprender oficios
+            return self._learn_view(hero)
+        if parts[0] == "pview" and len(parts) >= 2:     # D-257: one profession's screen (the same as its code /minero)
+            return self._prof_detail_view(hero, parts[1])
+        if parts[0] == "learn" and len(parts) >= 2:     # D-257: 📚 Aprender (pays the first recipe)
+            return self._learn(hero, parts[1])
         if parts[0] == "est" and len(parts) >= 2:
             return self._station_view(hero, parts[1], page)
         if parts[0] == "rec" and len(parts) >= 2:
@@ -5655,57 +6176,21 @@ class GameService(StoryMixin, GuideMixin):
         return " · ".join(parts)
 
     def _professions_view(self, hero: Hero, notice: str | None = None) -> View:
-        """⚒️ Oficios: your rank in every profession you started, how to raise it and what the next rank opens;
-        the professions not started yet; the stations where you stand. Buttons: 🪚 Refinar, 🛠️ Fabricar, ↩️ Volver.
+        """⚒️ Oficios / 🛠️ Fabricar: one short line per profession you have and the stations here; 🪚 Refinar, 🛠️ Fabricar.
 
         [ES]
-        Qué hace: muestra los oficios que empezaste, agrupados en recolección, refinado y fabricación, cada uno con su
-        rango (y título), la barra hasta el próximo, cómo se sube y qué abre el próximo umbral; después, los que faltan
-        empezar (sin tope de oficios, D-57) y dónde están las estaciones. Con estaciones aquí (el Claro o tu
-        campamento con 🧵 Taller o 🔨 Herrería): 🪚 Refinar y 🛠️ Fabricar. El 🧭 Explorador
-        (D-112, rama 🧭 Exploración) muestra además qué abre cada rango en el mapa (✅ lo abierto) y el próximo umbral.
-        D-115: los oficios van agrupados por rama aunque se agreguen al final del catálogo (BRANCH_ORDER); los de beneficio
-        de campamento (🎣 🍲 🗿 🏗️) dicen que valen para el campamento con el mejor rango, y si eres miembro de uno, la
-        línea 🏰 de los beneficios de tu campamento y quién los da.
-        D-141: bajo cada oficio, sus 🎓 especializaciones con su dominio (o "puedes elegir") y, desde que un oficio llega al
-        rango 25, el botón 🎓 Especialización. 4 botones como mucho (D-75).
-        La llaman: el atajo /oficios, ⚒️ Oficios del Claro, del 🧵 Taller y de los servicios del campamento.
-        Si cambia, afecta: dónde ve el jugador sus oficios (tests/test_professions.py).
+        Qué hace: la pantalla de 🛠️ Fabricar del 🏕️ Campamento (y /oficios): arriba cómo suben los oficios; después, una
+        línea corta por oficio que tienes (nombre, rango, barra y su código, como en 📋 Mis oficios); dónde están las
+        estaciones y tu energía. D-257 (0.33, pedido del dueño): ya no lista lo largo de cada oficio (eso sale con su código)
+        ni los oficios "sin empezar" (están en 📚 Aprender oficios). Si eres miembro de un campamento, la línea 🏰 de sus
+        beneficios. Botones: 🪚 Refinar y 🛠️ Fabricar (con estaciones aquí), 🎓 Especialización desde el rango 25 (D-141) y
+        ↩️ Volver: 4 como mucho (D-75).
+        La llaman: 🛠️ Fabricar del centro de 🏕️ Campamento, /oficios, el 🧵 Taller y los servicios del campamento, y los
+        ↩️ Volver de las estaciones. Si cambia, afecta: tests/test_professions.py y tests/test_aprender_oficios.py.
         """
         t = self.texts
-        catalog = self._prof_catalog()
-        body = [t.t("prof.intro")]
-        order = {b: i for i, b in enumerate(BRANCH_ORDER)}       # D-115: grouped by branch, catalog order inside each
-        ordered = sorted(catalog, key=lambda pid: order.get(catalog[pid].get("branch"), len(order)))
-        camp_pids = profession_rules.camp_perk_professions(catalog)
-        started = [pid for pid in ordered if hero.professions.get(pid, 0) > 0]
-        branch = None
-        for pid in started:
-            pdef = catalog[pid]
-            if pdef.get("branch") != branch:
-                branch = pdef.get("branch")
-                body += ["", t.t(f"prof.branch.{branch}")]
-            rank = self._prof_rank(hero, pid)
-            body.append(t.t("prof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), bar=self._rank_bar(hero, pid)))
-            body.append(t.t("prof.how_line", how=t.t(pdef.get("how_key", f"profession.{pid}.how"))))
-            perk = self._perk_text(pdef.get("perk"), rank)
-            if "masterwork" not in (pdef.get("perk") or {}) and self._makes_masterworks(pid):    # D-116: ✒️ the base chance
-                shown = round(100 * self._masterwork_chance(hero, pid), 1)
-                perk = " · ".join(part for part in (perk, t.t("prof.perk.masterwork", v=f"{shown:g}")) if part)
-            if perk:
-                body.append(t.t("prof.perk_line", perk=perk))           # D-111: what this profession gives you now
-            if pid in camp_pids:
-                body.append(t.t("camp_prof.perk_note"))                  # D-115: 🏰 for the camp, the best member's rank
-            body += self._pspec_prof_lines(hero, pid)                     # D-141: 🎓 your specializations here (or "you can choose")
-            body += self._explorer_prof_lines(hero, pid)                 # D-112: what each 🧭 rank opens on the map
-            unlock = self._next_unlock(hero, pid)
-            if unlock:
-                body.append(unlock)
-        if not started:
-            body += ["", t.t("prof.none")]
-        rest = [self._prof_name(pid) for pid in ordered if pid not in started]
-        if rest:
-            body += ["", t.t("prof.not_started", items=", ".join(rest))]
+        known = self._known_profs(hero)
+        body = [t.t("prof.intro"), ""] + ([self._prof_short_line(hero, pid) for pid in known] or [t.t("prof.none")])
         camp = self.store.get("camp", hero.camp) if hero.camp else None
         if camp and hero.id in camp.get("members", []):
             perk_lines = self._camp_perk_lines(camp, hero)             # D-115: 🏰 your camp's perks and who gives them
@@ -5742,6 +6227,8 @@ class GameService(StoryMixin, GuideMixin):
         only = None
         if branch == "cook":                            # D-192: 🍲 Cocinar lists only the 🍲 Cocina recipes of the craft station
             only, branch = COOK_PROFESSION, "craft"
+            if not self._knows(hero, COOK_PROFESSION):  # D-257: learn 🍲 Cocina first
+                return self._prof_detail_view(hero, COOK_PROFESSION, notice=t.t("learn.need", name=self._prof_name(COOK_PROFESSION)))
         if branch not in ("refine", "craft"):
             return self._professions_view(hero)
         if hero.activity:
@@ -5794,14 +6281,22 @@ class GameService(StoryMixin, GuideMixin):
                 body.append(t.t("prof.entry_missing", items=self._item_list(missing)))
             actions.append(Action(id=f"rec:{rid}:{page}", label=t.t("prof.entry_button_ok" if not missing else "prof.entry_button",
                                                                      item=name)))
+        unknown = [pid for pid in self._to_learn(hero)                    # D-257: what you could learn to make more here
+                   if catalog[pid].get("branch") == branch and not only and any(r["profession"] == pid for r in recipes.values())]
+        known_here = only or any(catalog[pid].get("branch") == branch and self._knows(hero, pid) for pid in catalog)
         if not entries:
-            body.append(t.t("prof.station_empty"))
+            body.append(t.t("prof.station_empty") if known_here else t.t(f"learn.none_{branch}"))
         if pages > 1:
             body.append(t.t("prof.page", n=page + 1, total=pages))
             actions.append(Action(id=f"est:{'cook' if only else branch}:{page + 1}", label=t.t("prof.more")))
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
-        body.append(t.t("prof.locked_hint"))
+        if known_here:
+            body.append(t.t("prof.locked_hint"))
+        if unknown:
+            body.append(t.t("learn.more_branch", list=", ".join(self._prof_name(pid) for pid in unknown)))
+            if len(actions) < 3:
+                actions.append(Action(id="learnlist", label=t.t("learn.button")))
         actions.append(Action(id="claro" if only else "oficios", label=t.t("menu.back")))    # D-192: 🍲 Cocinar goes back to 🏕️
         title = t.t("hub.cook_title") if only else t.t(f"prof.station_title_{branch}")
         return View(kind="station", title=title, body=body, actions=actions[:4], notice=notice)
@@ -5864,7 +6359,10 @@ class GameService(StoryMixin, GuideMixin):
         elif branch != "refine" and round(100 * spec_yield):
             body.append(t.t("spec.yield_line", pct=round(100 * spec_yield)))
         actions = []
-        if rank < need_rank:
+        if not self._knows(hero, pid):                          # D-257: learn the profession first
+            body.append(t.t("learn.need", name=self._prof_name(pid)))
+            actions.append(Action(id=f"pview:{pid}", label=t.t("learn.see_button", name=self._prof_name(pid))))
+        elif rank < need_rank:
             body.append(t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         elif not self._pspec_recipe_ok(hero, rdef):              # D-141: only its 🎓 specialization, with enough mastery
             body.append(self._pspec_recipe_lock(hero, rdef))
@@ -6545,11 +7043,9 @@ class GameService(StoryMixin, GuideMixin):
         if complete:
             record["damage"], record["repair"] = 0, {}
             lines.append(t.t("camp_prof.repaired", n=damage))
-            news = View(kind="camp_news", title=t.t("camp_prof.repaired_push_title"),
-                        body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)])
-            for member in camp["members"]:
-                if member != hero.id:
-                    self._push(member, news)
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("camp_prof.repaired_push_title"),
+                body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)]))
         self.store.put("upgrades", key, record)
         return self._works_view(hero, notice="\n".join(lines))
 
@@ -7312,16 +7808,166 @@ class GameService(StoryMixin, GuideMixin):
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice)
 
     def _place_confirm_view(self, hero: Hero, x: int, y: int) -> View:
-        """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed)."""
+        """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed).
+
+        [ES]
+        Qué hace: pregunta antes de viajar a un lugar de 📒 Lugares. 0.33 (pedido del dueño: "debería dejarme ir hacia la
+        fogata"): estando ocupado ya no responde "ese lugar ya no está en tu lista". Si exploras, recolectas o cazas en lote,
+        avisa que el lote se corta; si vas de viaje, que cambias el rumbo; solo descansando en la posada pide esperar.
+        La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso "return" del 🧭 camino.
+        """
         t = self.texts
         place = next(((icon, name) for _, px, py, icon, name in self._important_places(hero) if (px, py) == (x, y)), None)
-        if place is None or hero.activity:
+        if place is None:
             return self._places_view(hero, notice=t.t("places.unknown"))
+        kind = (hero.activity or {}).get("kind")
+        if kind == "rest":
+            return self._places_view(hero, notice=t.t("places.resting"))
         seconds = self._trip_seconds(hero, x, y)
         body = [t.t("places.confirm", icon=place[0], name=place[1], zones=abs(x - hero.x) + abs(y - hero.y),
                     time=self._fmt_duration(seconds)), t.t("places.confirm_hint")]
+        if kind == "travel":
+            body.append(t.t("places.confirm_reroute"))
+        elif kind in BATCH_KINDS:
+            body.append(t.t("places.confirm_cut"))
         actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
+
+    def _goto(self, hero: Hero, gx: int, gy: int) -> View:
+        """Travel zone by zone to a place you have visited ("goto:"), also while busy (0.33).
+
+        [ES]
+        Qué hace: el viaje automático de 📒 Lugares, 🔭 Reconocer y el 🗺️ Mapa: solo a una zona donde ya estuviste (D-222).
+        0.33 (pedido del dueño: "debería dejarme ir hacia la fogata"): si estás en un lote (explorar, recolectar, cazar), el
+        lote se corta como con ⏹️ (el paso en curso devuelve su energía) y sales; si ya vas de viaje, terminas el tramo en
+        curso y sigues hacia el lugar nuevo (cambias el rumbo). Descansando en la posada, espera.
+        La llaman: act() con "goto:x:y" (antes del bloqueo de "estás ocupado"). Si cambia, afecta: tests/test_lugares.py,
+        _arrive (lee "path" y "goal"), la 🔗 cadena (D-244) y el paso "return" del 🧭 camino guiado.
+        """
+        t = self.texts
+        activity = hero.activity or {}
+        kind = activity.get("kind")
+        if kind == "travel":                            # change course: the leg in progress ends, then on to the new goal
+            if not hero.remembers(gx, gy):
+                return self._places_view(hero)
+            tx, ty = activity["to"]
+            hero.activity = {**activity, "path": self._path(tx, ty, gx, gy), "goal": [gx, gy]}
+            hero.activity.pop("walk", None)             # D-244: a 🔗 walk in progress gives way to the new goal
+            return self._activity_view(hero, notice=t.t("places.rerouted", name=self._zone_name(self._zone(gx, gy))))
+        if kind == "rest" or (kind and kind not in BATCH_KINDS):
+            view = self._activity_view(hero)
+            view.notice = t.t("activity.busy")
+            return view
+        # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map)
+        if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
+            return self._places_view(hero)
+        cut: list[str] = []
+        if kind in BATCH_KINDS:                         # the same as ⏹️ Detener: the step in progress gives its energy back
+            hero.energy += self._step_cost(kind)
+            hero.activity = None
+            cut = self._batch_summary(hero, activity, "stopped")
+        if not self._spend_energy(hero, "move"):
+            return self._zone_view(hero, notice=self._join(cut + [self._no_energy_notice(hero)]))
+        path = self._path(hero.x, hero.y, gx, gy)
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        dx, dy = gx - hero.x, gy - hero.y
+        direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
+                         "path": path, "goal": [gx, gy]}
+        return self._activity_view(hero, notice=self._join(
+            cut + [t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))]))
+
+    def _walk_action(self, hero: Hero, action_id: str) -> View:
+        """🔗 Moverte: add steps in any order, then walk them zone by zone (D-244).
+
+        [ES]
+        Qué hace: el 5.º botón de 📍 Zona (pedido del dueño: "un botón extra que diga moverte" para elegir cuántos pasos
+        seguidos y en qué direcciones). Cada flecha suma un paso; ⌫ quita el último; ❌ Cancelar borra el camino y vuelve a
+        📍 Zona; ✅ Terminar sale. Hasta travel.walk_max pasos (50). Solo mueve: no explora ni recolecta, y como moverse no
+        gasta energía (D-190) cuesta solo tiempo, 1 minuto por zona (D-197). A diferencia de 📒 Lugares, sí pisa terreno nuevo.
+        El camino armado se guarda en el espacio "walk" del almacén ({"from": [x, y], "steps": ["n", "e"...]}) y se borra
+        si el héroe ya no está donde lo armó. Una emboscada en el camino se pelea: si ganas, sigues (_resume_route); si huyes
+        o caes, te quedas ahí.
+        La llaman: act() con "walk" y "wlk:..." (solo sin otra actividad). Si cambia, afecta: 📍 Zona (5 botones,
+        layout [2, 2, 1]), _arrive, _end_combat y tests/test_moverte.py.
+        """
+        t = self.texts
+        plan = self.store.get("walk", hero.id) or {}
+        steps = list(plan.get("steps", [])) if plan.get("from") == [hero.x, hero.y] else []
+        notice = None
+        command = action_id[4:] if action_id.startswith("wlk:") else ""
+        top = int(self.content.balance["travel"].get("walk_max", 50))
+        if command in DIRECTIONS:
+            if len(steps) >= top:
+                notice = t.t("walk.full", n=top)
+            else:
+                steps.append(command)
+        elif command == "undo" and steps:
+            steps.pop()
+        elif command == "cancel":
+            self.store.delete("walk", hero.id)
+            return self._zone_view(hero, notice=t.t("walk.cancelled"))
+        elif command == "go":
+            if not steps:
+                notice = t.t("walk.need_step")
+            else:
+                return self._walk_start(hero, steps)
+        self.store.put("walk", hero.id, {"from": [hero.x, hero.y], "steps": steps})
+        return self._walk_view(hero, steps, notice)
+
+    def _walk_cells(self, hero: Hero, steps: list[str]) -> list[list[int]]:
+        """The zones a 🔗 walk goes through, one per step, from where the hero stands."""
+        cells, x, y = [], hero.x, hero.y
+        for step in steps:
+            dx, dy = DIRECTIONS[step]
+            x, y = x + dx, y + dy
+            cells.append([x, y])
+        return cells
+
+    def _walk_view(self, hero: Hero, steps: list[str], notice: str | None = None) -> View:
+        """The 🔗 Moverte screen: the steps added so far, where they end and how long they take (D-244)."""
+        t = self.texts
+        body = [t.t("walk.intro"), ""]
+        if steps:
+            groups: list[list[Any]] = []
+            for step in steps:                          # "⬆️×2 ➡️ ⬅️ ⬇️×2": the same direction in a row, counted once
+                if groups and groups[-1][0] == step:
+                    groups[-1][1] += 1
+                else:
+                    groups.append([step, 1])
+            line = " ".join(WALK_ARROWS[d] + (f"×{n}" if n > 1 else "") for d, n in groups)
+            cells = self._walk_cells(hero, steps)
+            seconds, cx, cy = 0.0, hero.x, hero.y
+            for nx, ny in cells:
+                seconds += self._leg_seconds(hero, cx, cy, nx, ny)
+                cx, cy = nx, ny
+            body += [t.t("walk.steps", steps=line),
+                     t.t("walk.summary", n=len(steps), x=cells[-1][0], y=cells[-1][1], time=self._fmt_duration(seconds))]
+        else:
+            body.append(t.t("walk.empty"))
+        body += ["", t.t("walk.ambush")]
+        actions = [Action(id=f"wlk:{d}", label=WALK_ARROWS[d]) for d in ("n", "s", "e", "w")]
+        if steps:
+            actions.append(Action(id="wlk:undo", label=t.t("walk.undo")))
+        actions += [Action(id="wlk:cancel", label=t.t("walk.cancel")), Action(id="wlk:go", label=t.t("walk.go"))]
+        layout = [4, 1, 2] if steps else [4, 2]
+        return View(kind="walk", title=t.t("walk.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _walk_start(self, hero: Hero, steps: list[str]) -> View:
+        """✅ Terminar: the hero sets off on the 🔗 walk, one zone at a time (D-244)."""
+        t = self.texts
+        if not self._spend_energy(hero, "move"):
+            return self._walk_view(hero, steps, notice=self._no_energy_notice(hero))
+        path = self._walk_cells(hero, steps)
+        goal = path[-1]
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": steps[0],
+                         "path": path, "goal": goal, "walk": True}
+        self.bus.publish(TravelStarted(hero.id, nx, ny, hero.activity["until"]))
+        self.store.delete("walk", hero.id)
+        return self._activity_view(hero, notice=t.t("walk.started", n=len(steps), x=goal[0], y=goal[1]))
 
     def _place_code(self, hero: Hero, n: int) -> View:
         """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
@@ -7423,6 +8069,7 @@ class GameService(StoryMixin, GuideMixin):
             wait = self._energy_period() - (self.clock.now() - hero.energy_at)
             energy_timer = t.t("hero_card.energy_timer", time=self._fmt_duration(max(1, wait)))
         refill = self._hp_refill_seconds(hero, max_hp)
+        busy_left = self._activity_left_seconds(hero)      # D-242.1: el tiempo total de lo que está haciendo
         body = [t.t("hero_card.points", n=hero.points)] if hero.points else []      # pending first (TowerWars)
         body += [
             t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
@@ -7436,12 +8083,18 @@ class GameService(StoryMixin, GuideMixin):
             *(self._recovery_lines(hero, max_hp) if hero.downed else []),   # 🤕 malherido: why it is slow and what fixes it
             t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
             t.t("hero_card.energy", energy=hero.energy, max=energy_max, timer=energy_timer),
-            t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100)),
+            # La 🔷 energía de combate solo se ve en la pelea (pedido del dueño): en la ficha, el centinela de "sin tope"
+            # (resource_max 100000, D-226) salía como "100000/100000" y no significaba nada. Las clases retiradas, que sí
+            # tienen un recurso con tope, la siguen mostrando.
+            *([] if cdef.get("system") == "chain" else
+              [t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100))]),
             self._coins_line(hero),
             t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap(hero)),     # same count as "space in the backpack" (D-87)
             self._hero_trades_line(hero),                               # D-109: ⚒️ Oficios (/oficios)
             "",
-            t.t("hero.status_title", status=self._status_text(hero)),
+            # D-242.1: con una actividad en marcha, el Estado dice cuánto falta EN TOTAL, no solo de la vuelta
+            t.t("hero.status_busy", status=self._status_text(hero), time=self._fmt_duration(busy_left)) if busy_left > 0
+            else t.t("hero.status_title", status=self._status_text(hero)),
         ]
         cfg = self.content.balance["invite"]
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
@@ -7450,7 +8103,7 @@ class GameService(StoryMixin, GuideMixin):
                    Action(id="talents", label=t.t("talents.button", n=hero.points)),
                    Action(id="health", label=t.t("health.button")), Action(id="stats", label=t.t("hero.stats_button")),
                    Action(id="bar", label=t.t("bar.button")), Action(id="oficios", label=t.t("prof.button")),
-                   Action(id="journal", label=t.t("hero_card.journal_button")),      # E-130: the journal moved to the hero
+                   Action(id="hjournal", label=t.t("hero_card.journal_button")),     # E-130; D-259: back goes to 👤
                    Action(id="origin", label=t.t("hero_card.origin_button"))]        # E-131: chosen whenever you want
         return View(kind="hero", title=t.t("hero.title"), body=body, actions=actions[:HUB_BUTTONS],
                     meta={"invite_code": self.invite_code(hero.id)})
@@ -7458,8 +8111,7 @@ class GameService(StoryMixin, GuideMixin):
     def _hero_trades_line(self, hero: Hero) -> str:
         """⚒️ Oficios on the hero card: how many you started and your best one (rank), with /oficios (D-192)."""
         t = self.texts
-        catalog = self._prof_catalog()
-        started = [pid for pid in catalog if hero.professions.get(pid, 0) > 0]
+        started = self._known_profs(hero)               # D-257: only the professions you have (learned, or gathering you raised)
         if not started:
             return t.t("hero.trades_link")
         best = max(started, key=lambda pid: (self._prof_rank(hero, pid), hero.professions.get(pid, 0)))
@@ -7502,6 +8154,32 @@ class GameService(StoryMixin, GuideMixin):
             return t.t("hero.status.combat")
         kind = (hero.activity or {}).get("kind")
         return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+
+    def _activity_left_seconds(self, hero: Hero) -> float:
+        """Seconds until the WHOLE activity ends, not just the round in progress (0 if the hero is free).
+
+        [ES]
+        Qué hace: suma lo que falta de la vuelta en curso más lo que van a tardar las que quedan, así el jugador
+        ve el tiempo total del farmeo y no solo el de la vuelta. En un lote: lo que resta de esta vuelta más
+        activity["left"] vueltas enteras. En un viaje con ruta: lo que resta del tramo más los tramos que faltan.
+        En la posada: lo que resta de la noche.
+        La llaman: _hero_view (la línea de Estado) y _activity_view (la línea del total).
+        Si cambia, afecta: solo los tiempos que se muestran.
+        """
+        activity = hero.activity or {}
+        until = activity.get("until")
+        if not until:
+            return 0.0
+        left = max(0.0, until - self.clock.now())
+        kind = activity.get("kind")
+        if kind in BATCH_KINDS:
+            return left + max(0, int(activity.get("left", 0))) * self._seconds(self._step_minutes(kind))
+        if kind == "travel":
+            cx, cy = activity.get("to", [hero.x, hero.y])
+            for nx, ny in activity.get("path", []):
+                left += self._leg_seconds(hero, cx, cy, nx, ny)
+                cx, cy = nx, ny
+        return left
 
     def _health_view(self, hero: Hero) -> View:
         """🩺 Salud: how your body is right now, how it recovers and what can cure it (owner's request).
@@ -7588,14 +8266,15 @@ class GameService(StoryMixin, GuideMixin):
                    Action(id="resources", label=t.t("resources.button"))]
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
 
-    def _resources_view(self, hero: Hero, page: int = 0) -> View:
-        """📦 Recursos: materials and food you carry, how many and what they are for, a page at a time.
+    def _resources_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """📦 Recursos: materials and food you carry, one short line each with its code (D-243), a page at a time.
 
         [ES]
         Qué hace: lista los materiales, la comida y los 🪑 muebles (D-116) de la mochila (no el equipo, que está en
-        🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve
-        cada uno.
-        La llaman: el botón 📦 Recursos de la mochila.
+        🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página. D-243 (0.33): una línea
+        corta por recurso (emoji, nombre, ×cantidad y su código, "/07"); para qué sirve se ve tocando el código
+        (_resource_detail).
+        La llaman: el botón 📦 Recursos de la mochila y ↩️ Volver del detalle de un recurso.
         Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
         """
         t = self.texts
@@ -7608,8 +8287,8 @@ class GameService(StoryMixin, GuideMixin):
         body = [t.t("resources.intro")]
         for item_id, n in owned[page * per: page * per + per]:
             item = self.content.items[item_id]
-            use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
-            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n, use=use))
+            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n,
+                            code=self._resource_code(item_id)))
         if not owned:
             body.append(t.t("resources.none"))
         if pages > 1:
@@ -7618,7 +8297,32 @@ class GameService(StoryMixin, GuideMixin):
         body += ["", space]
         actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
         actions.append(Action(id="bag", label=t.t("menu.back")))
-        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions)
+        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions, notice=notice)
+
+    def _resource_code(self, item_id: str) -> str:
+        """The resource's code as players write it: "/07" (content/items.yaml "code", stable; D-243)."""
+        code = self.content.items.get(item_id, {}).get("code")
+        return f"/{int(code):02d}" if code else ""
+
+    def _resource_detail(self, hero: Hero, code: int) -> View:
+        """/07: what the resource with that code is for, and how many you carry (D-243).
+
+        [ES]
+        Qué hace: la pantalla de un recurso, que se abre escribiendo (o tocando) su código: cuántos tienes y para qué
+        sirve (resources.use.<id>, el mismo texto que antes salía en la lista). Se puede mirar aunque no lo lleves. Un
+        código que no existe vuelve a 📦 Recursos con un aviso.
+        La llaman: text() con "/07" (RESOURCE_CODE_RE). Si cambia, afecta: tests/test_backpack.py.
+        """
+        t = self.texts
+        item_id = next((i for i, item in self.content.items.items() if item.get("code") == code), None)
+        if item_id is None:
+            return self._resources_view(hero, notice=t.t("resources.no_code", code=f"/{code:02d}"))
+        item = self.content.items[item_id]
+        use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
+        body = [t.t("resources.detail_have", n=hero.backpack.get(item_id, 0)), "", use]
+        return View(kind="resource", title=t.t("resources.detail_title", emoji=item["emoji"], item=t.t(item["name_key"]),
+                                               code=self._resource_code(item_id)),
+                    body=body, actions=[Action(id="res:0", label=t.t("resources.back"))])
 
     def _potions_view(self, hero: Hero, notice: str | None = None) -> View:
         """Every potion and remedy you carry, with what it does, and a button to use it (D-86)."""
@@ -8112,12 +8816,10 @@ class GameService(StoryMixin, GuideMixin):
             if title not in hero.titles:
                 hero.titles.append(title)
             lines.append(t.t("guardian.pioneer_title", title=t.t(f"guardian.title.{title}")))
-            news = View(kind="news", title=t.t("guardian.news_title"),
-                        body=[t.t("guardian.news_body", hero=hero.name, boss=self._guardian_name(),
-                                  title=t.t(f"guardian.title.{title}"))])
-            for account_id in self.players():
-                if account_id != hero.id:
-                    self._push(account_id, news)
+            self._push_each([a for a in self.players() if a != hero.id], lambda: View(
+                kind="news", title=t.t("guardian.news_title"),
+                body=[t.t("guardian.news_body", hero=hero.name, boss=self._guardian_name(),
+                          title=t.t(f"guardian.title.{title}"))]))
         lines.append(t.t("guardian.again_in", name=self._guardian_name(),
                          time=self._fmt_duration(cfg["cooldown_hours"] * 3600 * self.time_scale)))
         self.bus.publish(BossDefeated(hero.id, enemy["id"], first_win, first_in_server))
@@ -8583,12 +9285,15 @@ class GameService(StoryMixin, GuideMixin):
                 continue
             their_coins = int(round(coins * (1 + self._pspec_bonus(target, "coins", sale="ecamp"))))   # D-141: 🐾 Rastreador
             target.gold += their_coins
-            more = self._give_xp(target, share_xp)
+            with self._speaking(hid):                     # D-250: the level-up lines and the news in their language
+                more = self._give_xp(target, share_xp)
+                news = View(kind="ecamp_news", title=t.t("ecamp.news_title"),
+                            body=[t.t("ecamp.news_body", hero=hero.name, name=self._zone_name(self._zone(x, y)), x=x, y=y),
+                                  t.t("ecamp.share", gold=self._money(their_coins),
+                                      xp=int(share_xp * self._xp_mult(target)))] + more)
             self._journal(target, "enemy_camp", x=x, y=y, f=0)
             self._save(target)
-            self._push(hid, View(kind="ecamp_news", title=t.t("ecamp.news_title"),
-                                 body=[t.t("ecamp.news_body", hero=hero.name, name=name, x=x, y=y),
-                                       t.t("ecamp.share", gold=self._money(their_coins), xp=int(share_xp * self._xp_mult(target)))] + more))
+            self._push(hid, news)
         if others:
             lines.append(t.t("ecamp.shared", n=len(others), gold=self._money(coins)))
         lines += self._story_event(hero, "enemy_camp", x=x, y=y, level=camp["level"], destroyed=True)     # D-117: 📔 Diario
@@ -9742,8 +10447,12 @@ class GameService(StoryMixin, GuideMixin):
         return value
 
     def _auto_on(self, hero: Hero) -> bool:
-        """True if the hero chose ⚔️ automatic fights in batches (D-114)."""
-        return self._option(hero, "fights") == "auto"
+        """True if the hero chose ⚔️ automatic fights in batches (D-114) and they are switched on (D-258: off since 0.33).
+
+        [ES] D-258 (0.33, pedido del dueño): las peleas automáticas se quitaron por ahora (balance.yaml auto_fight.enabled:
+        false). Con eso todo lote se corta al salir una pelea y 🏹 Cazar en lote no se ofrece; el código queda para volver.
+        """
+        return bool(self._auto_cfg().get("enabled", True)) and self._option(hero, "fights") == "auto"
 
     def _below_retreat(self, hero: Hero) -> bool:
         """True if the hero's life is under its 🩹 Retirarse limit (⚙️ Opciones): automatic fights stop there (D-114)."""
@@ -9751,58 +10460,94 @@ class GameService(StoryMixin, GuideMixin):
         return hero.hp * 100 < self._option(hero, "retreat") * max_hp
 
     def _options_view(self, hero: Hero, notice: str | None = None) -> View:
-        """⚙️ Opciones: what happens and what does not (D-114). 3 options, one button each, plus ↩️ Volver (4 at most).
+        """⚙️ Opciones: 🩹 Retirarse, 🌐 Idioma and 💬 Feedback, plus ↩️ Volver (D-114, D-250, D-258).
 
         [ES]
-        Qué hace: la pantalla ⚙️ Opciones (menú de abajo y /opciones). Explica cada opción con su valor de ahora y tiene un
-        botón por opción que la cambia: ⚔️ Peleas en un lote (✋ Manual / ⚔️ Automática), 🩹 Retirarse con menos de
-        (30 / 50 / 70 % de vida, auto_fight.retreat_choices) y 🧪 Pociones en peleas automáticas (sí / no); más ↩️ Volver.
-        D-178: los dos interruptores (Peleas automáticas y Pociones) llevan palomita: ✅ activo, ☑️ apagado (options.check_*).
-        Se puede abrir mientras exploras, recolectas o cazas (la opción vale desde la próxima pelea), no en combate.
-        La llaman: el botón ⚙️ Opciones del menú fijo, /opciones y _set_option.
-        Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75). Una opción nueva pide página o ciclo.
+        Qué hace: la pantalla ⚙️ Opciones (menú de abajo y /opciones). D-258 (0.33, pedido del dueño): salieron ⚔️ Peleas
+        automáticas y 🧪 Pociones ("no podemos hacer pociones aún automático"); quedan 🩹 Retirarse con menos de (30 / 50 /
+        70 % de vida, auto_fight.retreat_choices), 🌐 Idioma (D-250) y 💬 Feedback (un mensaje para el equipo del juego), y
+        vuelve ↩️ Volver a 📍 Zona. Se puede abrir mientras exploras, recolectas o cazas, no en combate.
+        La llaman: el botón ⚙️ Opciones del menú fijo, /opciones, _set_option y _save_feedback.
+        Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75).
         """
         t = self.texts
-        auto = self._auto_on(hero)
         pct = self._option(hero, "retreat")
-        potions = self._option(hero, "potions")
-        check = lambda on: t.t("options.check_on" if on else "options.check_off")   # D-178: ✅ on, ☑️ off
-        body = [t.t("options.intro"), "",
-                t.t("options.fights_auto" if auto else "options.fights_manual"),
-                t.t("options.retreat", pct=pct),
-                t.t("options.potions_on" if potions else "options.potions_off"),
-                "", t.t("options.never_auto")]
+        body = [t.t("options.intro_short"), "", t.t("options.retreat_now", pct=pct), t.t("options.language_line", name=t.t("language.name")),
+                t.t("options.feedback_line")]
         stealth = self._stealth_chance(hero)
-        if stealth > 0:                                 # D-172: 🥷 Sigilo only helps with ✋ Manual (and when travelling)
-            body.append(t.t("stealth.options", pct=f"{round(100 * stealth, 1):g}"))
-        actions = [Action(id="opt:fights", label=t.t("options.fights_button", check=check(auto))),
-                   Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
-                   Action(id="opt:potions", label=t.t("options.potions_button", check=check(potions))),
+        if stealth > 0:                                 # D-172: 🥷 Sigilo only helps with fights by hand (and when travelling)
+            body += ["", t.t("stealth.options", pct=f"{round(100 * stealth, 1):g}")]
+        actions = [Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
+                   Action(id="lang", label=t.t("language.button", name=t.t("language.name"))),   # D-250, D-251: 🌐
+                   Action(id="fb", label=t.t("feedback.button")),                                 # D-258: 💬
                    Action(id="home", label=t.t("menu.back"))]
         return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice)
 
     def _set_option(self, hero: Hero, key: str) -> View:
-        """Change one option ("opt:fights" toggles, "opt:retreat" cycles 30 → 50 → 70, "opt:potions" toggles); saved now.
+        """Change one option ("opt:retreat" cycles 30 → 50 → 70); saved now. Old "opt:fights"/"opt:potions" buttons do nothing.
 
         [ES]
-        Qué hace: cambia una opción con su botón y la guarda en Hero.options: ✋/⚔️ se alterna, el % de 🩹 Retirarse va
-        pasando por auto_fight.retreat_choices y 🧪 Pociones se alterna. Vuelve a ⚙️ Opciones con el aviso de lo guardado.
+        Qué hace: cambia una opción con su botón y la guarda en Hero.options: el % de 🩹 Retirarse va pasando por
+        auto_fight.retreat_choices. D-258: ⚔️ Peleas automáticas y 🧪 Pociones ya no se cambian (un botón viejo solo muestra
+        ⚙️ Opciones). Vuelve a ⚙️ Opciones con el aviso de lo guardado.
         La llaman: los botones "opt:" de _options_view. Si cambia, afecta: lo que se guarda de cada jugador.
         """
         t = self.texts
-        if key == "fights":
-            hero.options["fights"] = "manual" if self._auto_on(hero) else "auto"
-            notice = t.t("options.saved_auto" if self._auto_on(hero) else "options.saved_manual")
-        elif key == "retreat":
+        if key == "retreat":
             choices = list(self._auto_cfg()["retreat_choices"])
             hero.options["retreat"] = choices[(choices.index(self._option(hero, "retreat")) + 1) % len(choices)]
-            notice = t.t("options.saved_retreat", pct=hero.options["retreat"])
-        elif key == "potions":
-            hero.options["potions"] = not self._option(hero, "potions")
-            notice = t.t("options.saved_potions_on" if hero.options["potions"] else "options.saved_potions_off")
-        else:
+            return self._options_view(hero, notice=t.t("options.saved_retreat", pct=hero.options["retreat"]))
+        return self._options_view(hero)
+
+    def _feedback_view(self, hero: Hero) -> View:
+        """💬 Feedback: the next message the player writes goes to the game's team (D-258).
+
+        [ES]
+        Qué hace: abre 💬 Feedback (⚙️ Opciones o /feedback): pide que el jugador escriba en un mensaje un error, una idea o algo
+        que no entiende, y deja marcado (espacio "feedback_open", clave la cuenta) que el próximo texto suelto es eso. Cualquier
+        otro botón lo cancela. Botón: ↩️ Volver a ⚙️ Opciones.
+        La llaman: "fb". Si cambia, afecta: _save_feedback y el chat de informes (adapters/reports.py).
+        """
+        t = self.texts
+        self.store.put("feedback_open", hero.id, {"at": self.clock.now()})
+        return View(kind="feedback", title=t.t("feedback.title"), body=[t.t("feedback.ask"), "", t.t("feedback.privacy")],
+                    actions=[Action(id="options", label=t.t("menu.back"))], expects_text=True)
+
+    def _save_feedback(self, hero: Hero, account_id: str, text: str) -> View:
+        """Keep the player's note for the team (store "feedback", sent once to the reports chat) and thank them (D-258).
+
+        [ES]
+        Qué hace: guarda el mensaje de 💬 Feedback en el espacio "feedback" (clave "<hora>:<cuenta>": héroe, nivel, idioma,
+        texto y "sent": false), lo recorta a feedback.max_chars y vuelve a ⚙️ Opciones con las gracias. El bot lo manda al chat
+        de informes y lo marca enviado (take_feedback). Un mensaje vacío no se guarda.
+        La llama: text() con "feedback_open". Si cambia, afecta: el chat de informes.
+        """
+        t = self.texts
+        self.store.delete("feedback_open", account_id)
+        clean = " ".join(str(text).split())[: int(self.content.balance.get("feedback", {}).get("max_chars", 1000))]
+        if not clean:
             return self._options_view(hero)
-        return self._options_view(hero, notice=notice)
+        now = self.clock.now()
+        self.store.put("feedback", f"{int(now)}:{account_id}", {
+            "account": account_id, "hero": hero.name, "level": hero.level, "class": hero.class_id,
+            "lang": self.texts.lang, "text": clean, "at": now, "sent": False})
+        return self._options_view(hero, notice=t.t("feedback.thanks"))
+
+    def take_feedback(self) -> list[dict[str, Any]]:
+        """The feedback notes not sent yet, oldest first; they are marked as sent (the bot posts them to the reports chat).
+
+        [ES]
+        Qué hace: devuelve los mensajes de 💬 Feedback que todavía no salieron y los marca enviados, así cada uno sale una
+        sola vez. La llama: el bot (adapters/telegram/bot.py, notifier) cada pocos segundos. Si cambia, afecta: el chat de
+        informes.
+        """
+        pending = sorted(((key, data) for key, data in self.store.items("feedback") if not data.get("sent")), key=lambda kv: kv[1].get("at", 0))
+        out = []
+        for key, data in pending:
+            data = dict(data, sent=True)
+            self.store.put("feedback", key, data)
+            out.append(data)
+        return out
 
     def _auto_lines(self, hero: Hero, kind: str | None = None) -> list[str]:
         """The batch screens' line: what happens if a fight comes up, as ⚙️ Opciones says (D-114); a hunt only says the limits."""
@@ -9957,10 +10702,9 @@ class GameService(StoryMixin, GuideMixin):
             label += f" (+{ability['gain']})"
         return label
 
-    @staticmethod
-    def _num(value: float) -> str:
-        """Short number for players: 1.3 -> "1,3", 2.0 -> "2"."""
-        return f"{value:g}".replace(".", ",")
+    def _num(self, value: float) -> str:
+        """Short number for players: 1.3 -> "1,3" in Spanish, "1.3" in English (common.decimal_sep, D-250); 2.0 -> "2"."""
+        return f"{value:g}".replace(".", self.texts.t("common.decimal_sep"))
 
     def _ability_effect(self, ability: dict[str, Any], resource: str) -> str:
         """One short line of what an ability does, built from its numbers and the texts in ability_effect.*.
@@ -10227,6 +10971,9 @@ class GameService(StoryMixin, GuideMixin):
             lines += self._ecamp_fight_done(hero, state)
         if state.get("dungeon"):               # D-170: a dungeon fight clears a room or a floor (or ends the deep run)
             lines += self._dng_fight_done(hero, state)
+        if state.get("route"):                 # D-244: an ambush on the way: won, the trip goes on; else you stay here
+            lines += (self._resume_route(hero, state["route"]) if outcome == "victory" else
+                      [t.t("travel.route_lost", name=self._zone_name(self._zone(hero.x, hero.y)))])
         # D-193: 🧭 the "hunt" step ends with a hunt fight, won or lost; automatic fights put it in the batch (_auto_combat)
         state["guide"] = self._guide_event(hero, "fight", outcome=outcome, hunt=bool(state.get("hunt")))
         lines += state["guide"]

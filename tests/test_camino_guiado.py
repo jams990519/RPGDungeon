@@ -294,12 +294,12 @@ def test_unlocked_tips_wait_for_their_step(service):
     hero = service._load(ACC)
     hero.kills = 10
     service._save(hero)
-    assert not any("Peleas automáticas" in line for line in service.act(ACC, "home").body)
+    assert not any("⚙️ Opciones" in line and "Feedback" in line for line in service.act(ACC, "home").body)
     hero = service._load(ACC)
     hero.guide["done"] = list(basic_ids(service))
     service._save(hero)
     lines = service.act(ACC, "home").body + service.act(ACC, "home").body
-    assert any("Peleas automáticas" in line for line in lines) and any("/origen" in line for line in lines)
+    assert any("💬 Feedback" in line for line in lines) and any("/origen" in line for line in lines)   # D-258: the ⚙️ tip
     assert service.text(ACC, "/origen").kind == "origin"
 
 

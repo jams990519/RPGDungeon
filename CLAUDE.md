@@ -42,7 +42,7 @@ Lo que pidió el dueño: que, si le pide a la IA cambiar una sola línea, la IA 
 
 - **Código en inglés:** nombres, comentarios y docstrings.
 - **Debajo, una nota `[ES]` en español:** para qué sirve, con qué se conecta y qué se rompe si cambia. Va en cada archivo (encabezado de 10 campos, §2), en cada clase y función pública (§3) y en cada archivo de datos (§4).
-- **Los textos que ve el jugador** van en archivos de idiomas o de contenido, nunca en el motor.
+- **Los textos que ve el jugador** van en archivos de idiomas o de contenido, nunca en el motor, y **en los dos idiomas del juego** (D-250): cada clave nueva va en `content/locales/es*.yaml` y, en el mismo cambio, en su `en*.yaml`; `python tools/check_locales.py` tiene que dar 0 errores. Un aviso para otro jugador se arma con `_push_each`, para que le llegue en su idioma. El detalle está en [idiomas.md](diseno/01-plataforma/idiomas.md).
 - **Carpetas en inglés,** como propone §7.1 de las convenciones: `engine/` (un paquete por módulo), `content/`, `adapters/`, `simulator/`, `tests/` y `tools/`. La arquitectura §6 todavía las nombra en español.
 
 **Antes de cambiar código:**
@@ -59,7 +59,7 @@ Lo que pidió el dueño: que, si le pide a la IA cambiar una sola línea, la IA 
 - **El progreso de los jugadores se guarda para siempre:** nunca subir `world.epoch` en `content/balance.yaml` ni borrar datos del juego sin permiso explícito del dueño (D-64).
 - **Credenciales nunca en el repositorio:** solo los nombres de las variables, en un archivo de ejemplo. Los valores, jamás.
 - **Antes de subir:** correr las pruebas **y** arrancar el motor con al menos un cliente.
-- **Cada parche jugable agrega su entrada al final de `content/patches.yaml`** (versión nueva y notas en lenguaje de jugador): el bot la avisa a todos al arrancar (D-67). Mismo contenido: 0.5 → 0.5.1 → 0.5.2; contenido nuevo: 0.6 (D-73).
+- **Cada parche jugable agrega su entrada al final de `content/patches.yaml`** (versión nueva y notas en lenguaje de jugador, con `title_en` y `notes_en` en inglés desde la 0.33): el bot la avisa a todos al arrancar, a cada uno en su idioma (D-67, D-250). Mismo contenido: 0.5 → 0.5.1 → 0.5.2; contenido nuevo: 0.6 (D-73).
 
 ## 5. Cómo se trabaja el diseño
 

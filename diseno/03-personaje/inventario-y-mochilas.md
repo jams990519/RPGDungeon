@@ -204,6 +204,21 @@ Configuración: Solitario ✓ · Mazmorra · PvP
 [✏️ Cambiar una casilla] [💾 Guardar en esta configuración]
 ```
 
+**📦 Recursos con código (D-243, en el juego desde la 0.33).** El dueño pidió (17-oct) quitar de la lista "toda esa información" de para qué sirve cada recurso: "el icono, el nombre, la cantidad, dos espacios y el código de ese recurso". Para saber para qué es, se toca el código:
+
+```
+📦 Recursos
+Lo que juntaste. Toca el código de un recurso para ver para qué sirve:
+🪨 Piedra ×14  /02
+🌿 Hierba curativa ×11  /06
+⚙️ Pieza de metal ×9  /05
+Página 1 de 2
+```
+
+- **El código es fijo y se escribe a mano** en `content/items.yaml` (`code: 2`), nunca sale del orden de la lista: agregar un recurso no cambia los códigos que el jugador ya conoce (regla de IDs estables). Hoy van del 1 al 52 (41 materiales, 7 comidas y 4 muebles). Los números pelados (`/07`) quedan reservados para siempre a los recursos.
+- **Al tocar `/07`** se abre la pantalla del recurso: cuántos llevas y para qué sirve (el mismo texto que antes salía en la lista). Se puede mirar aunque no lo lleves; un código que no existe vuelve a 📦 Recursos con un aviso. Su botón: ↩️ Volver a 📦 Recursos.
+- **Por ahora no se genera de las recetas** qué oficio lo junta y quién lo pide (punto c de D-243): el dueño dijo que eso "no me interesa que la gente lo sepa. No por ahora" (D-255).
+
 **Mochila llena:**
 
 ```

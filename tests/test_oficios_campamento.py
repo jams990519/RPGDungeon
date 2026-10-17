@@ -25,6 +25,9 @@ from test_camp_upgrades import build, camp_at, set_hero
 from test_camps import place
 from test_guilds import join
 
+# D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
+pytestmark = pytest.mark.usefixtures("every_profession_known")
+
 KEY = "6:0"
 NEW = ("pescador", "cocina", "canteria", "construccion")
 
@@ -162,7 +165,7 @@ def test_gathering_fish_raises_the_pescador(service):
     service._save(hero)
     view = service.act("test:1", "oficios")
     assert any("Pescador" in line and "rango" in line for line in view.body)
-    assert any("🏰 Es de campamento" in line for line in view.body)
+    assert any("🏰 Es de campamento" in line for line in service.text("test:1", "/pescador").body)   # D-257: behind the code
     assert not service.texts.missing
 
 

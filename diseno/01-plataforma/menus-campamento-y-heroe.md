@@ -26,13 +26,13 @@ Un **centro** (D-192): arriba, una línea por opción con lo que hace y sus núm
 
 | Botón | Qué hace | Si no se puede |
 |---|---|---|
-| 🍲 Cocinar | La estación de la 🍲 Cocina: carne, pescado y lo de cada terreno se vuelven raciones y guisos (rinden más en la despensa de un campamento) | — (el Claro tiene todas las estaciones básicas) |
-| 🔬 Investigar | El 📚 Conocimiento de un campamento | El Claro no crece (D-98): el botón explica que se investiga en tu campamento, con la 📚 Biblioteca y desde qué nivel |
-| 🛠️ Fabricar | ⚒️ Oficios: 🪚 Refinar y 🛠️ Fabricar en las estaciones de aquí | — |
-| 🧑‍🏫 Entrenador | Presenta los oficios (§4) | — |
-| 🛒 Mercader | Pociones, vendas, 🥖 provisiones; compra materiales | — |
-| 🛏️ Posada | Dormir y despertar con la vida llena (precio y tiempo en el texto) | Con la vida llena no cobra |
-| 📜 Tablón | Los 3 encargos de hoy y, con campamento, los de la semana | — |
+| 🍲 Cocinar | La estación de la 🍲 Cocina: carne, pescado y lo de cada terreno se vuelven raciones y guisos (rinden más en la despensa de un campamento) | Sin la 🍲 Cocina aprendida (D-257), la línea dice que primero se aprende y el botón lleva a aprenderla |
+| 🔬 Investigar | **En el Claro, 📚 Aprender oficios (D-257, 0.33):** cada oficio con su precio y su código. En tu campamento, el 📚 Conocimiento | — |
+| 🛠️ Fabricar | ⚒️ Oficios: una línea corta por oficio que tienes y 🪚 Refinar y 🛠️ Fabricar en las estaciones de aquí (D-259) | Una estación sin oficios aprendidos dice cuáles aprender |
+| 🧑‍🏫 Entrenador | Tus oficios, los que te faltan y cómo se aprenden (§4) | — |
+| 🛒 Mercader | **🛒 Comprar** (pociones, vendas, 🥖 provisiones) y **💱 Vender** (lo que traes, con su código /v02) (D-259) | — |
+| 🛏️ Posada | Dormir y despertar con la vida llena: tarda según la vida que falta, de 0 a llena en 1 hora (D-259) | Con la vida llena no cobra |
+| 📜 Tablón | **Un encargo por personaje cada día** (se cobra hablando con él, en el Claro o en tu campamento) y, con campamento, los de la semana (D-259) | — |
 | ❓ Dudas | Buscar respuestas (§5) | — |
 
 Debajo va la pista de siempre: el Claro no crece; para crecer, funda tu campamento.
@@ -79,11 +79,13 @@ La ficha, de arriba abajo:
 
 Lo pidió el dueño: "cuando el jugador vuelve, le presenta los oficios" y le cuenta que aprenderá más a medida que avance.
 
-- **Cómo se aprende:** haciéndolo, sin pagar ni elegir, y sin tope (D-57).
-- **Cada familia, en orden**, con lo que hace y sus oficios (con tu rango si ya lo empezaste): 🪓 recolección, 🧭 exploración, 🪚 refinado, 🛠️ fabricación, 💱 servicio y ✨ encantamiento.
-- **Cuántos puedes empezar hoy** y **lo que llega más adelante:** 🏗️ Construcción con tu propio campamento, la 🎓 especialización al rango 25 y la segunda al 75, y recetas nuevas con cada rango.
-- **Dónde:** si hay estaciones donde estás.
-- Botones: ⚒️ Mis oficios, 🎓 Especialización, ✨ Encantamiento y ↩️ Volver. Se abre también con /entrenador y estando ocupado (es solo para leer).
+**Desde la 0.33 (D-257, D-259), corto:**
+- **Cómo se aprende:** una vez, pagando su primera receta; después sube haciendo recetas. La recolección y la exploración suben solas.
+- **✅ Tus oficios** con su rango, y abajo **📚 los que te faltan por aprender**.
+- **Más adelante:** 🏗️ Construcción con tu propio campamento y la 🎓 especialización al rango 25 y la segunda al 75.
+- Botones: 📋 Mis oficios (una línea por oficio con su código), 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver. El ✨ Encantamiento ya no tiene botón aquí: se aprende como los demás. Se abre también con /entrenador y estando ocupado.
+
+Antes (0.29 a 0.32) presentaba cada familia con sus oficios ("se aprende haciéndolo, sin pagar ni elegir", D-57) y tenía los botones ⚒️ Mis oficios, 🎓 Especialización, ✨ Encantamiento y ↩️ Volver.
 
 El camino guiado (D-190) puede mandar al jugador aquí después de fundar su campamento.
 

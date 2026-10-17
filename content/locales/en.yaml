@@ -1,0 +1,2983 @@
+# Player-facing texts in English (D-250). Same keys, same order as es.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es.yaml. Una clave nueva va
+# primero en es.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+common:
+  use_buttons: Use the buttons below.
+  decimal_sep: .
+language:
+  name: 🇬🇧 English
+  title: 🌐 Language
+  ask: 🌐 Choose your language. You can change it anytime in ⚙️ Options.
+  current: 'You are playing in: {name}'
+  changed: '✅ Done: you now play in English.'
+  button: '🌐 Language: {name}'
+create:
+  title: 🌅 Lost Realms · The Awakening
+  intro: 'The world broke in the Collapse. You wake up beside a campfire in the Clearing, with no memories and nothing to your name. Beyond it, the land has no edge: no one knows what lies far away, and every step takes its time.'
+  ask_name: ✍️ Type your hero's name (2 to 16 letters).
+  bad_name: ⚠️ The name must be 2 to 16 characters long and start with a letter.
+  name_taken: ⚠️ Another hero already uses that name. Try a different one.
+  ask_class: '{name}, how do you fight? Your class sets your combat style. They''re all equally good: what makes the difference is your professions and what you learn.'
+  rename: ✏️ Change name
+  ask_spec: '{group}: choose your specialization. It sets your role, solo and in a group.'
+  other_class: ↩️ Other class
+  page: 'Classes (page {n} of {total}):'
+  prev: ◀️ Previous
+  next: ▶️ More classes
+  rename_hint: ✏️ Want another name? Type it and I'll change it.
+  confirm_class: '{group}: {desc}.'
+  its_specs: 'Its specializations (you earn them with talent points):'
+  spec_later: Your class is forever. You pick your specialization level by level, and you can change it later on.
+  choose_class: ✅ Choose {group}
+  back_to_classes: ↩️ Back to classes
+  welcome: ✨ Welcome, {name}. Explore the land around the Clearing and blaze a trail into the unknown.
+role:
+  ataque: ⚔ Attack
+  defensa: 🛡 Defense
+  curacion: ✚ Healing
+  soporte: ✦ Support
+class_group:
+  guerrero:
+    name: 🏰 Warrior
+    desc: 'plate and rage: takes hits, blocks and strikes back'
+  picaro:
+    name: 🐍 Rogue
+    desc: 'leather, energy and combos: fast and deadly'
+  sacerdote:
+    name: 📿 Priest
+    desc: 'cloth and mana: heals, shields and wears down'
+class:
+  guerrero:
+    name: 🏰 Warrior · Protection
+    role: takes hits, blocks and strikes back
+    attack_name: Slash
+  picaro:
+    name: 🐍 Rogue · Assassination
+    role: fast, dodges and finishes with combos
+    attack_name: Stab
+  sacerdote:
+    name: 📿 Priest · Discipline
+    role: 'prevents damage: shields and weakens the enemy'
+    attack_name: Smite
+ability:
+  golpe_heroico:
+    name: Valiant Strike
+  bloqueo_escudo:
+    name: Shield Block
+  segundo_aliento:
+    name: Second Wind
+  eviscerar:
+    name: Eviscerate
+  evasion:
+    name: Evasion
+  patada:
+    name: Kick
+  sanar:
+    name: Heal
+  escudo_de_luz:
+    name: Shield of Light
+  dolor:
+    name: Remorse
+resource:
+  ira: Rage
+  energia: Energy
+  mana: Mana
+enemy:
+  raigambre:
+    name: Raigambre, the Guardian of the Clearing
+    moves:
+      ramazo:
+        name: Branch Slam
+        warn: Raigambre raises a branch arm and brings it down on you.
+      pisoton:
+        name: Stomp
+        warn: Raigambre lifts a huge root foot… it's going to STOMP hard. (Can't be dodged; can be blocked, or interrupted if you're faster)
+      canto_del_bosque:
+        name: Forest Song
+        warn: Raigambre closes its eyes and the forest SINGS with it. If you let it finish, its next hit will be fierce. (Can be interrupted)
+      raices_atrapantes:
+        name: Grasping Roots
+        warn: 'The ground shakes under your feet: the ROOTS are about to burst out. (Can be dodged; can''t be fully blocked)'
+      lluvia_de_astillas:
+        name: Splinter Rain
+        warn: 'Raigambre shakes its crown: SPLINTERS are about to rain down. (Can be blocked; can''t be dodged)'
+      golpe_de_ambar:
+        name: Amber Strike
+        warn: The amber heart glows in its fist… it's going to STRIKE with everything. (Can be blocked; can't be dodged)
+      furia_del_bosque:
+        name: Fury of the Forest
+        warn: 'Raigambre roars and the whole forest leans toward you: FURY OF THE FOREST! (Very strong. Can be dodged, or interrupted if you''re faster)'
+    phases:
+      raices: '🌱 Raigambre sinks its arms into the earth and the earth answers: the roots awaken around it.'
+      corazon: 🔥 Raigambre's bark splits open, revealing a blazing amber heart. It flies into a rage and hits harder!
+  lobo_ceniciento:
+    name: Ashen Wolf
+    moves:
+      mordisco:
+        name: Bite
+        warn: The wolf bares its teeth and goes for your leg.
+      salto:
+        name: Pounce
+        warn: The wolf crouches low… it's going to LEAP at you. (Can't be fully blocked)
+      aullido:
+        name: Howl
+        warn: The wolf raises its snout to HOWL. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  jabali_espinoso:
+    name: Spiny Boar
+    moves:
+      corneo:
+        name: Gore
+        warn: The boar lowers its head and snorts.
+      embestida:
+        name: Charge
+        warn: The boar paws at the ground… it's going to CHARGE. (Can't be dodged; can be interrupted if you're faster)
+  rata_del_pantano:
+    name: Swamp Rat
+    moves:
+      mordida:
+        name: Bite
+        warn: The rat creeps closer through the mud.
+      chillido:
+        name: Squeal
+        warn: The rat puffs up its chest to SQUEAL and call the pack. (Can be interrupted)
+  espectro_de_ruinas:
+    name: Wraith of the Ruins
+    moves:
+      toque_helado:
+        name: Icy Touch
+        warn: The wraith reaches out an icy hand. (Can't be fully blocked)
+      lamento:
+        name: Wail
+        warn: The wraith opens its mouth for a blood-chilling WAIL. (Can be interrupted; can't be dodged)
+  oso_de_las_cumbres:
+    name: Summit Bear
+    moves:
+      zarpazo:
+        name: Claw Swipe
+        warn: The bear rears up on its hind legs.
+      aplastar:
+        name: Crush
+        warn: The bear raises both arms to CRUSH you. (Can't be dodged; can be interrupted if you're faster)
+  escorpion_de_arena:
+    name: Sand Scorpion
+    moves:
+      pinza:
+        name: Pincer
+        warn: The scorpion opens its pincers.
+      aguijon:
+        name: Sting
+        warn: The scorpion's tail curls… here comes the STING. (Can't be fully blocked)
+  bandido_errante:
+    name: Roving Bandit
+    moves:
+      tajo:
+        name: Slash
+        warn: The bandit twirls his knife.
+      estocada:
+        name: Lunge
+        warn: The bandit winds up for a LUNGE. (Can't be dodged)
+      apuntar:
+        name: Take Aim
+        warn: The bandit studies your guard, looking for an opening. (Can be interrupted)
+  arana_tejedora:
+    name: Weaver Spider
+    moves:
+      picadura:
+        name: Bite
+        warn: The spider drops down on its thread, front legs spread wide.
+      telarana:
+        name: Web
+        warn: The spider hurriedly spins a WEB around you. If you let it finish, its next hit will be worse. (Can be interrupted)
+  tortuga_musgosa:
+    name: Mossy Tortoise
+    moves:
+      mordida_lenta:
+        name: Slow Bite
+        warn: The tortoise stretches out its neck, slowly.
+      caparazonazo:
+        name: Shell Slam
+        warn: The tortoise tucks in and rolls at you with its whole SHELL. (Can't be dodged)
+  hongo_esporon:
+    name: Sporecap Fungus
+    moves:
+      latigazo:
+        name: Lash
+        warn: The fungus waves its filaments.
+      estallido:
+        name: Burst
+        warn: The fungus SWELLS up as if it's about to pop. (Can't be fully blocked)
+  limo_verde:
+    name: Green Slime
+    moves:
+      engullir:
+        name: Engulf
+        warn: The slime oozes toward your feet.
+      dividirse:
+        name: Split
+        warn: The slime quivers and starts to SPLIT in two. (Can be interrupted)
+  vibora_de_hierba:
+    name: Grass Viper
+    moves:
+      mordisco_rapido:
+        name: Quick Bite
+        warn: The viper hisses in the tall grass.
+      veneno:
+        name: Venomous Bite
+        warn: The viper coils and pulls its head back for a deep BITE. (Can't be fully blocked)
+  mantis_segadora:
+    name: Reaper Mantis
+    moves:
+      guadana:
+        name: Scythe
+        warn: The mantis raises a razor-sharp arm.
+      doble_corte:
+        name: Double Cut
+        warn: The mantis crosses BOTH scythes over its head. (Can't be dodged)
+  esqueleto_soldado:
+    name: Skeleton Soldier
+    moves:
+      espadazo:
+        name: Sword Strike
+        warn: The skeleton raises its notched sword.
+      hoja_oxidada:
+        name: Rusty Blade
+        warn: The skeleton lunges with ALL its weight, blade first. (Can't be dodged)
+  poltergeist:
+    name: Poltergeist
+    moves:
+      lanzar_objeto:
+        name: Hurl Object
+        warn: Something floats in the air and takes aim at you. (Can't be fully blocked)
+      chirrido:
+        name: Screech
+        warn: The walls SCREECH and everything starts to shake. (Can be interrupted)
+  caiman_de_lodo:
+    name: Mud Caiman
+    moves:
+      dentellada:
+        name: Snap
+        warn: Two eyes peek out above the mud.
+      arrastre:
+        name: Drag Under
+        warn: The caiman opens its jaws to DRAG you into the water. (Can't be dodged; can be interrupted if you're faster)
+  oso_cavernario:
+    name: Cave Bear
+    moves:
+      garrazo:
+        name: Claw
+        warn: The bear growls and sways.
+      abrazo:
+        name: Bear Hug
+        warn: The bear spreads its arms to TRAP you in a hug. (Can't be fully blocked)
+  cabra_montes:
+    name: Mountain Goat
+    moves:
+      topetazo:
+        name: Headbutt
+        warn: The goat lowers its horns and scrapes the rock with its hoof.
+      salto_de_roca:
+        name: Rock Leap
+        warn: The goat climbs onto a rock above you… it's going to JUMP on you. (Can be dodged; can't be fully blocked)
+      balido:
+        name: Bleat
+        warn: The goat lets out a BLEAT that echoes across the whole mountain. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  zorro_polar:
+    name: Arctic Fox
+    moves:
+      dentellada_rapida:
+        name: Quick Snap
+        warn: The white fox slips through the snow, going for your ankle.
+      brinco_helado:
+        name: Frost Pounce
+        warn: The fox burrows into the snow… it's going to LEAP from below. (Can be dodged; can't be fully blocked)
+      aullido_corto:
+        name: Short Howl
+        warn: The fox raises its snout and HOWLS to call its mate. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  kobold_minero:
+    name: Kobold Miner
+    moves:
+      golpe_de_pico:
+        name: Pick Strike
+        warn: The kobold raises its old, notched pick.
+      pedrada:
+        name: Rock Throw
+        warn: The kobold picks up a big ROCK and aims at your head. (Can be blocked; can't be dodged)
+      mecha_encendida:
+        name: Lit Fuse
+        warn: The kobold lights a FUSE with its candle and snickers. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  chacal_del_desierto:
+    name: Desert Jackal
+    moves:
+      mordisco_seco:
+        name: Sharp Bite
+        warn: The jackal circles you, tongue hanging out.
+      acometida:
+        name: Rush
+        warn: The jackal crouches behind a dune… it's going to POUNCE on you. (Can be dodged; can't be fully blocked)
+      llamada_de_la_jauria:
+        name: Call the Pack
+        warn: The jackal raises its head to CALL the pack. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  escarabajo_de_duna:
+    name: Dune Beetle
+    moves:
+      pinzada:
+        name: Pinch
+        warn: The beetle opens its mandibles and advances across the sand.
+      bola_de_arena:
+        name: Sand Ball
+        warn: The beetle pushes a BALL of hard-packed sand toward you. (Can be blocked; can't be dodged)
+  murcielago_de_cripta:
+    name: Crypt Bat
+    moves:
+      mordisco_de_murcielago:
+        name: Bite
+        warn: A bat shrieks and swoops down from the broken ceiling.
+      nube_de_alas:
+        name: Cloud of Wings
+        warn: The whole crypt fills with WINGS flying at your face. (Can be blocked; can't be dodged)
+  buho_nival:
+    name: Snowy Owl
+    moves:
+      garra_silenciosa:
+        name: Silent Talon
+        warn: The owl glides silently over your head.
+      picado_nocturno:
+        name: Dive
+        warn: The owl climbs very high… it's going to DIVE down on you. (Can be dodged; can't be fully blocked)
+  lobo_gris:
+    name: Grey Wolf
+    moves:
+      colmillazo:
+        name: Fang Strike
+        warn: The grey wolf growls and bares its fangs.
+      rodeo:
+        name: Flank
+        warn: 'The pack fans out: the grey wolf is going to LEAP at your back. (Can be dodged; can''t be fully blocked)'
+      llamada_de_la_manada:
+        name: Call of the Pack
+        warn: The grey wolf raises its head to HOWL to the pack. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  jabali_colmillo_hierro:
+    name: Irontusk Boar
+    moves:
+      colmillo_de_hierro:
+        name: Iron Tusk
+        warn: 'The boar shakes its head: its tusks ring like metal.'
+      carga_de_hierro:
+        name: Charge
+        warn: The boar paws the ground and snorts… it's going to CHARGE in a straight line. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  espantapajaros_animado:
+    name: Animated Scarecrow
+    moves:
+      hoz_de_paja:
+        name: Rusty Sickle
+        warn: The scarecrow raises a rusty sickle.
+      cosecha:
+        name: Harvest
+        warn: The scarecrow whirls the sickle over its head… it's going to REAP. (Can be blocked; can't be dodged)
+      bandada_de_cuervos:
+        name: Murder of Crows
+        warn: The scarecrow spreads its arms and the CROWS gather around it. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  enredadera_estranguladora:
+    name: Strangler Vine
+    moves:
+      latigo_de_espinas:
+        name: Thorn Whip
+        warn: The vine thrashes its thorn-covered branches.
+      estrangular:
+        name: Strangle
+        warn: The roots coil around your leg… they're going to SQUEEZE. (Can be dodged; can't be fully blocked)
+  fuego_fatuo:
+    name: Will-o'-the-Wisp
+    moves:
+      chispa_fatua:
+        name: Wisp Spark
+        warn: The little light dances before your eyes and burns your skin. (Can't be fully blocked)
+      llamarada_fria:
+        name: Cold Flare
+        warn: 'The wisp grows and turns BLUE: it''s about to burst into cold flames. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      parpadeo:
+        name: Flicker
+        warn: The wisp flickers out and back on… it's GATHERING light. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  lobo_de_las_nieves:
+    name: Snow Wolf
+    moves:
+      mordisco_helado:
+        name: Frostbite
+        warn: The white wolf creeps low across the snow.
+      salto_en_la_ventisca:
+        name: Blizzard Leap
+        warn: The wolf vanishes into the blizzard… it's going to LEAP from where you're not looking. (Can be dodged; can't be fully blocked)
+      aullido_de_escarcha:
+        name: Frost Howl
+        warn: The wolf raises its snout to the icy wind to HOWL. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  ogro_del_puente:
+    name: Bridge Ogre
+    moves:
+      garrotazo:
+        name: Club Smash
+        warn: The ogre swings its club, a whole tree trunk.
+      cobrar_peaje:
+        name: Collect Toll
+        warn: 'The ogre raises the club with both hands: it''s here to COLLECT the toll. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+  langosta_de_plaga:
+    name: Plague Locust
+    moves:
+      nube_mordiente:
+        name: Biting Cloud
+        warn: A cloud of locusts buzzes around you.
+      plaga:
+        name: Plague
+        warn: 'The sky goes dark: the whole cloud is about to DESCEND on you. (Can be blocked; can''t be dodged)'
+  chispa_errante:
+    name: Wandering Spark
+    moves:
+      descarga:
+        name: Zap
+        warn: The spark crackles and jumps at you. (Can't be fully blocked)
+      rayo_en_cadena:
+        name: Chain Lightning
+        warn: 'The air smells of storm: the spark is about to unleash a LIGHTNING BOLT. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      carga_estatica:
+        name: Static Charge
+        warn: 'The spark grows and hums: it''s CHARGING up the storm. If you let it finish, its next hit will be fierce. (Can be interrupted)'
+  lobo_bicefalo:
+    name: Two-Headed Wolf
+    moves:
+      doble_mordisco:
+        name: Double Bite
+        warn: Both of the wolf's heads growl at once.
+      salto_doble:
+        name: Double Leap
+        warn: Both heads crouch together… the wolf is going to LEAP. (Can be dodged; can't be fully blocked)
+      aullido_doble:
+        name: Double Howl
+        warn: Both heads HOWL in two voices. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  ciclope_de_cantera:
+    name: Quarry Cyclops
+    moves:
+      punetazo:
+        name: Punch
+        warn: The cyclops clenches a fist as big as a boulder.
+      roca_lanzada:
+        name: Boulder Toss
+        warn: The cyclops tears a BOULDER out of the quarry and lifts it over its head. (Can be dodged; can't be fully blocked)
+  arana_nodriza:
+    name: Broodmother Spider
+    moves:
+      picadura_nodriza:
+        name: Bite
+        warn: The broodmother drops from her web, huge and hairy.
+      puesta:
+        name: Spawn
+        warn: 'The spider''s abdomen throbs: it''s about to release its YOUNG on you. (Can be dodged; can''t be fully blocked)'
+  hada_de_espinas:
+    name: Thorn Fairy
+    moves:
+      espina_voladora:
+        name: Flying Thorn
+        warn: The fairy laughs and flings a thorn at you from the air. (Can't be fully blocked)
+      circulo_de_hongos:
+        name: Mushroom Ring
+        warn: The fairy traces a RING of mushrooms at your feet. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      polvo_de_hada:
+        name: Fairy Dust
+        warn: The fairy shakes her wings and gathers a sparkling DUST. If you let her finish, her next hit will be fierce. (Can be interrupted)
+  sanguijuela_gigante:
+    name: Giant Leech
+    moves:
+      chupar:
+        name: Drain
+        warn: The leech crawls toward you, opening its round mouth.
+      abrazo_viscoso:
+        name: Slimy Embrace
+        warn: The leech coils up… it's going to LATCH onto your body. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  enjambre_de_mosquitos:
+    name: Mosquito Swarm
+    moves:
+      picaduras:
+        name: Bites
+        warn: A high-pitched buzzing surrounds you.
+      nube_de_fiebre:
+        name: Fever Cloud
+        warn: The swarm thickens and flies at your FACE. (Can be blocked; can't be dodged)
+  elemental_de_piedra:
+    name: Stone Elemental
+    moves:
+      puno_de_piedra:
+        name: Stone Fist
+        warn: The elemental creaks and lifts an arm of rock.
+      derrumbe:
+        name: Rockslide
+        warn: 'The elemental strikes the ground: a ROCKSLIDE is coming down. (Can be blocked; can''t be dodged)'
+  uro_lanudo:
+    name: Woolly Aurochs
+    moves:
+      cornada:
+        name: Gore
+        warn: The aurochs shakes its frost-covered wool.
+      estampida:
+        name: Stampede
+        warn: The aurochs paws at the snow… it's going to TRAMPLE you. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  gloton_de_las_nieves:
+    name: Snow Wolverine
+    moves:
+      zarpa_voraz:
+        name: Ravenous Claw
+        warn: The wolverine growls, its snout full of snow.
+      frenesi:
+        name: Frenzy
+        warn: The wolverine bristles all over… it's going to JUMP on you in a fury. (Can be dodged; can't be fully blocked)
+      grunido:
+        name: Growl
+        warn: The wolverine plants its feet and GROWLS, building up rage. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  buitre_de_hueso:
+    name: Bone Vulture
+    moves:
+      picotazo_de_hueso:
+        name: Peck
+        warn: The vulture circles down over you.
+      caida_en_picado:
+        name: Nosedive
+        warn: The vulture climbs until it blots out the sun… it's going to DIVE. (Can be dodged; can't be fully blocked)
+  hiena_rayada:
+    name: Striped Hyena
+    moves:
+      mordisco_de_hiena:
+        name: Bite
+        warn: The hyena snickers and circles you.
+      tiron:
+        name: Yank
+        warn: The hyena crouches… it's going to BITE you and yank hard. (Can be dodged; can't be fully blocked)
+      carcajada:
+        name: Cackle
+        warn: The hyena lets out a CACKLE that makes your skin crawl. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  momia_de_arena:
+    name: Sand Mummy
+    moves:
+      golpe_vendado:
+        name: Bandaged Blow
+        warn: The mummy shuffles forward and raises a bandaged arm.
+      abrazo_de_la_tumba:
+        name: Tomb Embrace
+        warn: The mummy opens its arms… it's going to GRAB you. (Can be blocked; can't be dodged)
+      polvo_de_tumba:
+        name: Tomb Dust
+        warn: The mummy breathes a grey, centuries-old DUST around it. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  gargola_de_ruinas:
+    name: Ruin Gargoyle
+    moves:
+      garra_de_piedra:
+        name: Stone Claw
+        warn: The gargoyle spreads its stone wings.
+      caida_de_la_cornisa:
+        name: Ledge Drop
+        warn: The gargoyle climbs a column… it's going to DROP onto you. (Can be dodged; can't be fully blocked)
+  saqueador_de_tumbas:
+    name: Tomb Robber
+    moves:
+      cuchillada:
+        name: Knife Slash
+        warn: The robber draws a curved knife.
+      bomba_de_polvora:
+        name: Powder Bomb
+        warn: The robber lights a BOMB and throws it at you. (Can be dodged; can't be fully blocked)
+      trampa:
+        name: Trap
+        warn: The robber crouches to SET a trap among the stones. If you let him finish, his next hit will be fierce. (Can be interrupted)
+  leon_de_la_estepa:
+    name: Steppe Lion
+    moves:
+      zarpazo_de_leon:
+        name: Claw Swipe
+        warn: The lion stalks slowly through the tall grass.
+      salto_de_caza:
+        name: Hunting Leap
+        warn: The lion flattens itself against the ground… it's going to LEAP for your throat. (Can be dodged; can't be fully blocked)
+      rugido_de_leon:
+        name: Roar
+        warn: The lion opens its jaws to ROAR. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  centauro_salvaje:
+    name: Wild Centaur
+    moves:
+      lanzazo:
+        name: Spear Thrust
+        warn: The centaur circles you with its spear lowered.
+      galope:
+        name: Gallop
+        warn: The centaur backs off… it's going to CHARGE at a gallop. (Can be blocked; can't be dodged)
+      tensar_el_arco:
+        name: Draw the Bow
+        warn: The centaur halts and DRAWS its bow, aiming at you. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  trol_de_colina:
+    name: Hill Troll
+    moves:
+      manotazo:
+        name: Swat
+        warn: The troll drags its knuckles along the ground.
+      aplastamiento:
+        name: Crushing Blow
+        warn: The troll raises both hands together… it's going to CRUSH you. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  pantera_sombria:
+    name: Shadow Panther
+    moves:
+      zarpa_sombria:
+        name: Claw
+        warn: Something black moves between the trees.
+      emboscada:
+        name: Ambush
+        warn: The panther vanishes into the shadows… it's going to LEAP from above. (Can be dodged; can't be fully blocked)
+      acecho:
+        name: Stalk
+        warn: The panther goes still and STARES at you, readying its leap. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  micelio_andante:
+    name: Walking Mycelium
+    moves:
+      golpe_de_moho:
+        name: Mold Strike
+        warn: The mycelium crawls along, leaving mold in its wake.
+      nube_de_esporas:
+        name: Spore Cloud
+        warn: The mycelium swells… it's about to release a CLOUD of spores. (Can be dodged; can't be fully blocked)
+  basilisco_de_pantano:
+    name: Swamp Basilisk
+    moves:
+      mordida_de_basilisco:
+        name: Bite
+        warn: The basilisk hisses and slithers through the mud.
+      mirada_petrea:
+        name: Stone Gaze
+        warn: 'The basilisk''s eyes light up: don''t meet its GAZE. (Can be dodged; can''t be fully blocked)'
+  necrofago:
+    name: Ghoul
+    moves:
+      zarpa_sucia:
+        name: Filthy Claw
+        warn: The ghoul sniffs the air and creeps closer on all fours.
+      remate:
+        name: Finishing Blow
+        warn: The ghoul crouches beside you… it's going for your WOUND. (Can be blocked; can't be dodged)
+      festin:
+        name: Feast
+        warn: The ghoul crawls toward a corpse to EAT. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  grifo_de_montana:
+    name: Mountain Griffin
+    moves:
+      garra_de_grifo:
+        name: Talon
+        warn: The griffin spreads its wings and screeches.
+      picado_de_grifo:
+        name: Dive
+        warn: The griffin spirals upward… it's going to DIVE and carry you off. (Can be dodged; can't be fully blocked)
+      grito_del_nido:
+        name: Nest Cry
+        warn: The griffin perches on its nest and SCREAMS. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  oso_polar:
+    name: Polar Bear
+    moves:
+      zarpazo_polar:
+        name: Claw Swipe
+        warn: The white bear rears up on the ice.
+      golpe_sobre_el_hielo:
+        name: Ice Slam
+        warn: The bear raises its arms… it's going to SLAM you against the ice. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  ventisquero:
+    name: Snow Squall
+    moves:
+      azote_helado:
+        name: Icy Lash
+        warn: The squall spins and lashes you with snow. (Can't be fully blocked)
+      nova_de_hielo:
+        name: Frost Nova
+        warn: 'The squall shrinks and GLOWS: it''s about to burst into ice. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      remolino_helado:
+        name: Whirlwind
+        warn: The squall SPINS faster and faster. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  tigre_de_duna:
+    name: Dune Tiger
+    moves:
+      zarpazo_de_tigre:
+        name: Claw Swipe
+        warn: A striped back peeks out of the sand.
+      salto_bajo_la_arena:
+        name: Leap from the Sand
+        warn: The sand shifts with no wind… the tiger is going to BURST out from below. (Can be dodged; can't be fully blocked)
+      rugido_del_desierto:
+        name: Roar
+        warn: The tiger ROARS and the sand trembles. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  escorpion_de_vidrio:
+    name: Glass Scorpion
+    moves:
+      pinza_de_vidrio:
+        name: Glass Pincer
+        warn: The scorpion glints in the sun and opens its pincers.
+      aguijon_de_vidrio:
+        name: Glass Sting
+        warn: The transparent tail curls… here comes the STING. (Can be dodged; can't be fully blocked)
+  planidera:
+    name: Mourner
+    moves:
+      toque_de_luto:
+        name: Mourning Touch
+        warn: The mourner floats toward you, covered by a veil. (Can't be fully blocked)
+      lamento_eterno:
+        name: Eternal Lament
+        warn: 'The mourner lifts her veil to WEEP: her lament chills your blood. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      sollozo:
+        name: Sob
+        warn: The mourner SOBS and the air turns cold. If you let her finish, her next hit will be fierce. (Can be interrupted)
+  bisonte_de_trueno:
+    name: Thunder Bison
+    moves:
+      cabezazo:
+        name: Headbutt
+        warn: The bison snorts and lowers its head.
+      estampida_de_trueno:
+        name: Stampede
+        warn: 'The ground rumbles like thunder: the bison is going to RUN YOU DOWN. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+  asaltante_de_caravanas:
+    name: Caravan Raider
+    moves:
+      sablazo:
+        name: Saber Slash
+        warn: The raider grins and twirls his saber.
+      golpe_de_escudo:
+        name: Shield Bash
+        warn: The raider ducks behind his SHIELD and rams you with it. (Can be blocked; can't be dodged)
+      silbido:
+        name: Whistle
+        warn: 'The raider WHISTLES: something moves behind the rocks. If you let him finish, his next hit will be fierce. (Can be interrupted)'
+  wyvern_de_penasco:
+    name: Crag Wyvern
+    moves:
+      mordida_de_wyvern:
+        name: Bite
+        warn: The wyvern hangs from a crag and watches you.
+      cola_venenosa:
+        name: Venom Tail
+        warn: The wyvern arches its tail over its head… here comes the STING. (Can be dodged; can't be fully blocked)
+  licantropo_salvaje:
+    name: Feral Werewolf
+    moves:
+      desgarro:
+        name: Rend
+        warn: The werewolf pants and bares its claws.
+      salto_lunar:
+        name: Moon Leap
+        warn: The werewolf crouches, eyes gleaming yellow… it's going to LEAP. (Can be dodged; can't be fully blocked)
+      aullido_a_la_luna:
+        name: Howl at the Moon
+        warn: The werewolf raises its snout toward the moon to HOWL. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  driade_marchita:
+    name: Withered Dryad
+    moves:
+      latigo_de_raiz:
+        name: Root Whip
+        warn: The dryad stretches out an arm of dry bark. (Can't be fully blocked)
+      raices_del_sueno:
+        name: Roots of Slumber
+        warn: The dryad sings and ROOTS rise from the ground at your feet. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      polen:
+        name: Pollen
+        warn: 'The dryad shakes her leafy hair: a golden POLLEN fills the air. If you let her finish, her next hit will be fierce. (Can be interrupted)'
+  gigante_del_fango:
+    name: Mud Giant
+    moves:
+      puno_de_fango:
+        name: Mud Fist
+        warn: The giant rises from the swamp, dripping mud.
+      hundir:
+        name: Sink
+        warn: The giant raises a huge foot… it's going to SINK you into the mud. (Can't be dodged; can be blocked, or interrupted if you're faster)
+  cultista_de_la_podredumbre:
+    name: Rot Cultist
+    moves:
+      rayo_podrido:
+        name: Rot Bolt
+        warn: The cultist points a rotten finger at you. (Can't be fully blocked)
+      ofrenda:
+        name: Offering
+        warn: The cultist raises his arms to offer your BLOOD to the rot. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      rezo:
+        name: Prayer
+        warn: The cultist PRAYS in a tongue you don't understand. If you let him finish, his next hit will be fierce. (Can be interrupted)
+  gigante_de_escarcha:
+    name: Frost Giant
+    moves:
+      hachazo_helado:
+        name: Icy Cleave
+        warn: The giant raises an axe of ice.
+      meteoro_de_hielo:
+        name: Ice Meteor
+        warn: The giant tears off a block of ice… it's going to HURL it at you. (Can be dodged; can't be fully blocked)
+  remolino_de_arena:
+    name: Sand Whirlwind
+    moves:
+      arena_cortante:
+        name: Cutting Sand
+        warn: The whirlwind whistles and pelts you with sand.
+      tormenta_de_arena:
+        name: Sandstorm
+        warn: 'The whirlwind grows until it blots out the sky: it''s going to ENGULF you. (Can be blocked; can''t be dodged)'
+  wyrm_joven_de_las_dunas:
+    name: Young Dune Wyrm
+    moves:
+      mordida_de_wyrm:
+        name: Bite
+        warn: The wyrm pokes its head out of the sand.
+      aliento_de_vidrio:
+        name: Glass Breath
+        warn: 'The wyrm draws a breath and its throat glows red-hot: it''s about to blow burning SAND. (Can be dodged, or interrupted if you''re faster; can''t be fully blocked)'
+  caballero_hueco:
+    name: Husk Knight
+    moves:
+      espadazo_hueco:
+        name: Sword Strike
+        warn: The hollow knight raises a notched sword.
+      golpe_retrasado:
+        name: Delayed Strike
+        warn: The knight stands still, sword held high… it's going to BRING IT DOWN. (Can be blocked; can't be dodged)
+      guardia:
+        name: Guard
+        warn: The knight raises its shield and STUDIES your guard. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  manticora:
+    name: Manticore
+    moves:
+      zarpazo_de_manticora:
+        name: Claw Swipe
+        warn: The manticore shakes its mane and its spiked tail.
+      lluvia_de_puas:
+        name: Spike Rain
+        warn: 'The manticore whips its tail: SPIKES are about to fly. (Can be dodged; can''t be fully blocked)'
+      golpe_de_cola:
+        name: Tail Strike
+        warn: The manticore spins and its spiked tail sweeps in from the side… it's going to HIT you. (Can be blocked; can't be dodged)
+  gigante_de_tormenta:
+    name: Storm Giant
+    moves:
+      mazazo:
+        name: Maul Strike
+        warn: The giant raises a crackling maul.
+      trueno:
+        name: Thunderclap
+        warn: 'The giant slams the ground with its maul: THUNDER is about to burst. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      rayo_del_cielo:
+        name: Bolt from the Sky
+        warn: 'The giant points at the sky: a LIGHTNING BOLT is about to strike where you stand. (Can be dodged; can''t be fully blocked)'
+  golem_de_granito:
+    name: Granite Golem
+    moves:
+      puno_de_granito:
+        name: Granite Fist
+        warn: The golem advances with steps that shake the ground.
+      aplastar_granito:
+        name: Crush
+        warn: The golem joins its fists over its head… it's going to BRING THEM DOWN. (Can be blocked; can't be dodged)
+      runa_brillante:
+        name: Glowing Rune
+        warn: 'The rune on the golem''s chest lights up: it''s GATHERING strength. If you let it finish, its next hit will be fierce. (Can be interrupted)'
+  arbol_hueco:
+    name: Hollow Tree
+    moves:
+      ramazo_hueco:
+        name: Branch Slam
+        warn: The hollow tree creaks and swings a thick branch.
+      tronco_que_cae:
+        name: Falling Trunk
+        warn: 'The tree tears itself out of the ground with a crack: it''s going to CRUSH you with its whole trunk. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      enjambre_del_tronco:
+        name: Trunk Swarm
+        warn: A furious SWARM pours out of the hollow trunk. (Can be dodged; can't be fully blocked)
+  osolechuza:
+    name: Owlbear
+    moves:
+      picotazo_de_osolechuza:
+        name: Peck
+        warn: The owlbear hoots and opens its huge beak.
+      abrazo_emplumado:
+        name: Bear Hug
+        warn: The owlbear opens its feathered arms… it's going to SQUEEZE you. (Can be blocked; can't be dodged)
+      ulular:
+        name: Hoot
+        warn: The owlbear HOOTS and ruffles all its feathers. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  hidra_del_pantano:
+    name: Swamp Hydra
+    moves:
+      mordida_de_hidra:
+        name: Bite
+        warn: Three heads rise from the water and stare at you.
+      tres_mordiscos:
+        name: Three Bites
+        warn: All three heads pull back at once… they're going to BITE together. (Can be dodged; can't be fully blocked)
+      cabeza_escondida:
+        name: Hidden Head
+        warn: A head you hadn't seen rises from the water beside you… it's going to BITE. (Can be blocked; can't be dodged)
+  draco_de_escarcha:
+    name: Frost Drake
+    moves:
+      zarpa_helada:
+        name: Frozen Claw
+        warn: The drake beats its wings and the air freezes.
+      aliento_de_escarcha:
+        name: Frost Breath
+        warn: 'The drake draws a breath and its throat glows: it''s about to blow FROST. (Can be dodged, or interrupted if you''re faster; can''t be fully blocked)'
+      coletazo_de_draco:
+        name: Tail Swipe
+        warn: The drake spins in the air… it's going to sweep you with its TAIL. (Can be blocked; can't be dodged)
+  novia_de_escarcha:
+    name: Frost Bride
+    moves:
+      caricia_helada:
+        name: Icy Caress
+        warn: A woman of ice floats toward you, her veil streaming in the wind. (Can't be fully blocked)
+      beso_de_hielo:
+        name: Kiss of Ice
+        warn: The bride leans toward you… her KISS freezes. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      canto_de_cuna:
+        name: Lullaby
+        warn: The bride SINGS softly and your eyelids grow heavy. If you let her finish, her next hit will be fierce. (Can be interrupted)
+  centinela_de_vidrio:
+    name: Glass Sentinel
+    moves:
+      filo_de_vidrio:
+        name: Glass Edge
+        warn: The sentinel glints and raises a sharp arm.
+      descarga_de_vidrio:
+        name: Discharge
+        warn: 'The sentinel''s glass fills with light: it''s about to fire a BEAM. (Can be dodged; can''t be fully blocked)'
+      luz_del_sol:
+        name: Sunlight
+        warn: The sentinel HUMS and gathers the sunlight. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  soldado_fantasma:
+    name: Phantom Soldier
+    moves:
+      tajo_fantasma:
+        name: Phantom Slash
+        warn: A see-through soldier relives a battle he already lost. (Can't be fully blocked)
+      carga_fantasma:
+        name: Charge
+        warn: The phantom shouts an old order… it's going to CHARGE at you. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      toque_de_corneta:
+        name: Bugle Call
+        warn: 'A distant BUGLE sounds: the phantom gets ready. If you let it finish, its next hit will be fierce. (Can be interrupted)'
+  automata_de_ruinas:
+    name: Ruin Automaton
+    moves:
+      golpe_mecanico:
+        name: Mechanical Strike
+        warn: The automaton's gears grind and screech.
+      martillo_de_vapor:
+        name: Steam Hammer
+        warn: The automaton vents STEAM and raises its hammer arm. (Can be blocked; can't be dodged)
+      alarma:
+        name: Alarm
+        warn: 'A red light spins on the automaton''s head: it sounds the ALARM. If you let it finish, its next hit will be fierce. (Can be interrupted)'
+  behemot_de_la_estepa:
+    name: Steppe Behemoth
+    moves:
+      pisoton_de_behemot:
+        name: Stomp
+        warn: The behemoth advances and the earth sinks under its feet.
+      embestida_colosal:
+        name: Colossal Charge
+        warn: 'The behemoth lowers its horns and takes a run-up: it''s going to RUN YOU DOWN. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      bramido:
+        name: Bellow
+        warn: The behemoth lets out a BELLOW you can hear for leagues. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  jinete_espectral:
+    name: Spectral Rider
+    moves:
+      guadana_espectral:
+        name: Scythe
+        warn: A faceless rider circles you on horseback. (Can't be fully blocked)
+      carga_nocturna:
+        name: Night Charge
+        warn: The ghost horse rears… the rider is going to CHARGE. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      cuerno_de_caza:
+        name: Hunting Horn
+        warn: The rider sounds an icy HORN. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  roc_de_las_alturas:
+    name: Roc of the Heights
+    moves:
+      garra_de_roc:
+        name: Talon
+        warn: A huge shadow passes over you.
+      picado_del_roc:
+        name: Dive
+        warn: The roc folds its wings… it's going to DIVE. (Can be dodged; can't be fully blocked)
+      vendaval:
+        name: Gale
+        warn: The roc beats its wings and whips up a GALE. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  sierpe_esmeralda:
+    name: Emerald Serpent
+    moves:
+      mordida_esmeralda:
+        name: Bite
+        warn: A green-scaled serpent slides between the roots.
+      aliento_toxico:
+        name: Toxic Breath
+        warn: 'The serpent puffs up its neck: it''s about to spit VENOM. (Can be dodged; can''t be fully blocked)'
+      coletazo_esmeralda:
+        name: Tail Swipe
+        warn: The serpent twists among the roots… it's going to sweep you with its TAIL. (Can be blocked; can't be dodged)
+  caballero_de_la_corte_marchita:
+    name: Knight of the Withered Court
+    moves:
+      estocada_feerica:
+        name: Thrust
+        warn: A knight in armor of thorns salutes you with his sword.
+      duelo:
+        name: Duel
+        warn: 'The knight points his sword at you: he challenges you to a DUEL. (Can be blocked; can''t be dodged)'
+      corona_de_espinas:
+        name: Crown of Thorns
+        warn: The knight's armor is covered in THORNS. If you let him finish, his next hit will be fierce. (Can be interrupted)
+  abominacion_del_cieno:
+    name: Mire Abomination
+    moves:
+      golpe_podrido:
+        name: Rotten Blow
+        warn: A mass of mud and bones drags itself toward you.
+      devorar:
+        name: Devour
+        warn: The abomination opens a huge mouth… it's going to SWALLOW you. (Can't be dodged; can be blocked, or interrupted if you're faster)
+      vomito_de_cieno:
+        name: Sludge Vomit
+        warn: The abomination bloats… it's about to spew SLUDGE. (Can be dodged; can't be fully blocked)
+  salamandra_de_lava:
+    name: Lava Salamander
+    moves:
+      mordida_ardiente:
+        name: Searing Bite
+        warn: A red-hot salamander leaves fiery footprints.
+      escupitajo_de_lava:
+        name: Lava Spit
+        warn: 'The salamander opens its mouth: it''s about to spit LAVA. (Can be dodged; can''t be fully blocked)'
+      zarpazo_de_brasa:
+        name: Ember Claw
+        warn: The salamander rears up on two legs… it's going to STRIKE with its blazing claws. (Can be blocked; can't be dodged)
+  mamut_de_guerra:
+    name: War Mammoth
+    moves:
+      colmillazo_de_mamut:
+        name: Tusk Strike
+        warn: The mammoth swings its trunk and tusks.
+      embestida_de_mamut:
+        name: Charge
+        warn: 'The mammoth raises its trunk and BELLOWS: it''s going to charge. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      pisoton_de_mamut:
+        name: Stomp
+        warn: The mammoth rears up on its hind legs… it's going to STOMP. (Can be dodged; can't be fully blocked)
+  espectro_glacial:
+    name: Glacial Wraith
+    moves:
+      toque_glacial:
+        name: Glacial Touch
+        warn: An icy figure takes shape in the blizzard. (Can't be fully blocked)
+      tumba_de_hielo:
+        name: Ice Tomb
+        warn: 'The wraith raises its hands: the ice is going to CLOSE over you. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      viento_helado:
+        name: Icy Wind
+        warn: The wraith blows and the WIND turns to blades. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  gusano_de_las_arenas:
+    name: Sandworm
+    moves:
+      mordida_del_gusano:
+        name: Bite
+        warn: The sand trembles under your feet.
+      tragar:
+        name: Swallow
+        warn: 'The ground splits open: the worm is going to BURST OUT with its mouth wide open. (Can be dodged; can''t be fully blocked)'
+      hundirse:
+        name: Burrow
+        warn: The worm BURROWS into the sand and disappears. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  centinela_runico:
+    name: Runic Sentinel
+    moves:
+      golpe_runico:
+        name: Runic Strike
+        warn: The sentinel's runes glow as it moves.
+      rayo_runico:
+        name: Runic Bolt
+        warn: The sentinel gathers a BOLT between its runes. (Can't be dodged; can be blocked, or interrupted if you're faster)
+      runa_de_poder:
+        name: Rune of Power
+        warn: 'A rune lights up on the sentinel''s chest: it''s GATHERING power. If you let it finish, its next hit will be fierce. (Can be interrupted)'
+  quimera:
+    name: Chimera
+    moves:
+      zarpazo_de_quimera:
+        name: Claw Swipe
+        warn: 'The chimera roars with its three heads: lion, goat and serpent.'
+      llamarada:
+        name: Flame Burst
+        warn: 'The goat head opens its mouth: it''s about to spit FIRE. (Can be dodged; can''t be fully blocked)'
+      mordida_de_serpiente:
+        name: Serpent Bite
+        warn: The serpent tail rises… it's going to BITE. (Can be blocked; can't be dodged)
+      rugido_triple:
+        name: Triple Roar
+        warn: All three heads ROAR at once. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  titan_de_las_llanuras:
+    name: Titan of the Plains
+    moves:
+      golpe_de_titan:
+        name: Titan Blow
+        warn: The titan takes a step and blots out the sun.
+      terremoto:
+        name: Earthquake
+        warn: 'The titan raises both fists: it''s going to split the GROUND. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      roca_del_cielo:
+        name: Sky Boulder
+        warn: The titan tears off half a hill… it's going to HURL it. (Can be dodged; can't be fully blocked)
+  gigante_de_las_nubes:
+    name: Cloud Giant
+    moves:
+      palmada:
+        name: Slap
+        warn: The giant comes down from among the clouds.
+      soplido:
+        name: Gust
+        warn: 'The giant puffs out its cheeks: it''s going to BLOW a hurricane. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      granizo:
+        name: Hail
+        warn: 'The giant shakes its cloak: HAIL is about to fall. (Can be dodged; can''t be fully blocked)'
+  licantropo_alfa:
+    name: Alpha Werewolf
+    moves:
+      desgarro_alfa:
+        name: Rend
+        warn: The alpha walks upright, taller than a man.
+      salto_del_alfa:
+        name: Alpha Leap
+        warn: The alpha crouches, muscles tense… it's going to LEAP. (Can be dodged; can't be fully blocked)
+      mordida_maldita:
+        name: Cursed Bite
+        warn: The alpha opens its slavering jaws… it's going to BITE. (Can be blocked; can't be dodged)
+      llamada_del_alfa:
+        name: Alpha's Call
+        warn: The alpha HOWLS and the whole pack answers. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  polilla_lunar:
+    name: Moon Moth
+    moves:
+      aleteo:
+        name: Flutter
+        warn: A huge moth, pale as the moon, flutters about.
+      polvo_lunar:
+        name: Moon Dust
+        warn: 'The moth shakes its wings: a silvery DUST falls on you. (Can be blocked; can''t be dodged)'
+      vuelo_rasante:
+        name: Low Swoop
+        warn: The moth suddenly drops into a LOW SWOOP. (Can be dodged; can't be fully blocked)
+  leviatan_del_cieno:
+    name: Mire Leviathan
+    moves:
+      coletazo_del_leviatan:
+        name: Tail Swipe
+        warn: 'The black water churns: something huge is swimming below.'
+      arrastre_al_fondo:
+        name: Drag to the Depths
+        warn: 'The leviathan opens its mouth beneath your feet: it''s going to DRAG you to the bottom. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      ola_de_cieno:
+        name: Sludge Wave
+        warn: The leviathan submerges… it's going to raise a WAVE. (Can be dodged; can't be fully blocked)
+  fenix_de_ceniza:
+    name: Ash Phoenix
+    moves:
+      ala_ardiente:
+        name: Burning Wing
+        warn: A bird of fire streaks across the sky, leaving ash behind. (Can't be fully blocked)
+      lluvia_de_fuego:
+        name: Rain of Fire
+        warn: 'The phoenix soars and spreads its wings: FIRE is about to rain down. (Very strong. Can be interrupted if you''re faster; can''t be dodged or fully blocked)'
+      renacer:
+        name: Rebirth
+        warn: The phoenix burns brighter, rising from its ASHES. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  wyrm_de_hielo:
+    name: Ice Wyrm
+    moves:
+      mordida_de_hielo:
+        name: Ice Bite
+        warn: A white wyrm emerges from a crack in the glacier.
+      aliento_glacial:
+        name: Glacial Breath
+        warn: 'The wyrm draws a breath and the cold bites your face: it''s about to blow ICE. (Can be dodged, or interrupted if you''re faster; can''t be fully blocked)'
+      coletazo_de_hielo:
+        name: Tail Swipe
+        warn: The wyrm spins around… it's going to sweep you with its TAIL. (Can be blocked; can't be dodged)
+  escorpion_emperador:
+    name: Emperor Scorpion
+    moves:
+      tenaza_imperial:
+        name: Pincer
+        warn: A black scorpion the size of a cart opens its pincers.
+      aguijon_imperial:
+        name: Imperial Sting
+        warn: The tail curls over its carapace… here comes the STING. (Can be dodged; can't be fully blocked)
+      cerrar_la_coraza:
+        name: Shell Up
+        warn: The scorpion seals itself in its carapace and GATHERS strength. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  liche_errante:
+    name: Wandering Lich
+    moves:
+      rayo_necrotico:
+        name: Necrotic Bolt
+        warn: A crowned skeleton raises a black staff. (Can't be fully blocked)
+      palabra_de_muerte:
+        name: Word of Death
+        warn: The lich speaks a forbidden WORD. (Very strong. Can be interrupted if you're faster; can't be dodged or fully blocked)
+      filacteria:
+        name: Phylactery
+        warn: The lich clutches its phylactery and GATHERS souls. If you let it finish, its next hit will be fierce. (Can be interrupted)
+  engendro_del_umbral:
+    name: Spawn of the Threshold
+    moves:
+      tentaculo:
+        name: Tentacle
+        warn: Something formless crawls out of a crack in the ground.
+      grito_del_umbral:
+        name: Threshold Scream
+        warn: 'The spawn opens mouths all over its body: it''s going to SCREAM. (Can''t be dodged; can be blocked, or interrupted if you''re faster)'
+      zarpa_del_vacio:
+        name: Void Claw
+        warn: The spawn stretches out an arm that wasn't there before… it's going to STRIKE. (Can be dodged; can't be fully blocked)
+biome:
+  claro: Clearing
+  pradera: Meadow
+  bosque: Forest
+  colinas: Hills
+  pantano: Swamp
+  montana: Mountain
+  desierto: Desert
+  tundra: Tundra
+  ruinas: Ruins
+  selva: Jungle
+  sabana: Savanna
+  volcan: Volcano
+  canon: Canyon
+  bosque_oscuro: Dark Forest
+  lago: Lake
+item:
+  madera: Wood
+  piedra: Stone
+  fibra: Fiber
+  arcilla: Clay
+  pocion_vida: Health Potion
+  venda: Bandage
+  hierba_curativa: Healing Herb
+  pieza_metal: Metal Scrap
+  carne: Meat
+  provisiones: Provisions
+  piel: Hide
+  tablon: Plank
+  lingote: Ingot
+  extracto: Extract
+  tela_tejida: Cloth
+  cuero_curtido: Leather
+  gema_bruta: Rough Gem
+  flor_luna: Moonflower
+  pocion_mayor: Greater Potion
+  unguento: Salve
+  botiquin: First-Aid Kit
+  vendaje_maestro: Master's Bandage
+  artesano_espada_1: Forged Sword
+  artesano_espada_2: Tempered Sword
+  artesano_espada_3: Artisan's Sword
+  artesano_daga_1: Forged Dagger
+  artesano_daga_2: Tempered Dagger
+  artesano_daga_3: Artisan's Dagger
+  artesano_arco_1: Elm Bow
+  artesano_arco_2: Reinforced Bow
+  artesano_arco_3: Artisan's Bow
+  artesano_baston_1: Oak Staff
+  artesano_baston_2: Engraved Staff
+  artesano_baston_3: Artisan's Staff
+  artesano_tela_1: Traveler's Robe
+  artesano_tela_2: Dyed Robe
+  artesano_tela_3: Artisan's Robe
+  artesano_cuero_1: Leather Jerkin
+  artesano_cuero_2: Reinforced Jerkin
+  artesano_cuero_3: Artisan's Jerkin
+  artesano_malla_1: Light Mail
+  artesano_malla_2: Riveted Mail
+  artesano_malla_3: Artisan's Mail
+  artesano_placas_1: Forged Breastplate
+  artesano_placas_2: Tempered Breastplate
+  artesano_placas_3: Artisan's Cuirass
+  artesano_joya_1: Gem-Set Ring
+  artesano_joya_2: Gem Necklace
+  artesano_joya_3: Artisan's Amulet
+  espada_1: Rusty Sword
+  espada_2: Iron Sword
+  espada_3: Steel Sword
+  espada_4: Veteran's Blade
+  daga_1: Chipped Dagger
+  daga_2: Iron Dagger
+  daga_3: Steel Dagger
+  daga_4: Stalker's Fang
+  arco_1: Branch Bow
+  arco_2: Yew Bow
+  arco_3: Composite Bow
+  arco_4: Tracker's Bow
+  baston_1: Ashwood Staff
+  baston_2: Carved Staff
+  baston_3: Runic Staff
+  baston_4: Sage's Staff
+  tela_1: Linen Robe
+  tela_2: Wool Robe
+  tela_3: Embroidered Robe
+  tela_4: Scholar's Mantle
+  cuero_1: Hide Vest
+  cuero_2: Leather Cuirass
+  cuero_3: Hardened Leather Armor
+  cuero_4: Ranger's Cuirass
+  malla_1: Patched Mail
+  malla_2: Ringmail
+  malla_3: Chainmail
+  malla_4: Sentinel's Mail
+  placas_1: Dented Breastplate
+  placas_2: Iron Breastplate
+  placas_3: Steel Breastplate
+  placas_4: Bulwark Cuirass
+  joya_1: Copper Ring
+  joya_2: Silver Ring
+  joya_3: Amber Amulet
+  joya_4: Amulet of the Clearing
+  cabeza_tela_1: Linen Hood
+  cabeza_tela_2: Wool Hood
+  cabeza_tela_3: Silk Hood
+  cabeza_tela_4: Scholar's Hood
+  cabeza_cuero_1: Hide Cap
+  cabeza_cuero_2: Leather Cap
+  cabeza_cuero_3: Hardened Leather Cap
+  cabeza_cuero_4: Ranger's Cap
+  cabeza_malla_1: Old Ringmail Coif
+  cabeza_malla_2: Ringmail Coif
+  cabeza_malla_3: Fine Mail Coif
+  cabeza_malla_4: Sentinel's Coif
+  cabeza_placas_1: Old Iron Helm
+  cabeza_placas_2: Iron Helm
+  cabeza_placas_3: Steel Helm
+  cabeza_placas_4: Bulwark Helm
+  manos_tela_1: Linen Gloves
+  manos_tela_2: Wool Gloves
+  manos_tela_3: Silk Gloves
+  manos_tela_4: Scholar's Gloves
+  manos_cuero_1: Hide Gloves
+  manos_cuero_2: Leather Gloves
+  manos_cuero_3: Hardened Leather Gloves
+  manos_cuero_4: Ranger's Gloves
+  manos_malla_1: Old Ringmail Gauntlets
+  manos_malla_2: Ringmail Gauntlets
+  manos_malla_3: Fine Mail Gauntlets
+  manos_malla_4: Sentinel's Gauntlets
+  manos_placas_1: Old Iron Gauntlets
+  manos_placas_2: Iron Gauntlets
+  manos_placas_3: Steel Gauntlets
+  manos_placas_4: Bulwark Gauntlets
+  piernas_tela_1: Linen Leggings
+  piernas_tela_2: Wool Leggings
+  piernas_tela_3: Silk Leggings
+  piernas_tela_4: Scholar's Leggings
+  piernas_cuero_1: Hide Breeches
+  piernas_cuero_2: Leather Breeches
+  piernas_cuero_3: Hardened Leather Breeches
+  piernas_cuero_4: Ranger's Breeches
+  piernas_malla_1: Old Ringmail Greaves
+  piernas_malla_2: Ringmail Greaves
+  piernas_malla_3: Fine Mail Greaves
+  piernas_malla_4: Sentinel's Greaves
+  piernas_placas_1: Old Iron Legplates
+  piernas_placas_2: Iron Legplates
+  piernas_placas_3: Steel Legplates
+  piernas_placas_4: Bulwark Legplates
+  pies_tela_1: Linen Sandals
+  pies_tela_2: Wool Sandals
+  pies_tela_3: Silk Sandals
+  pies_tela_4: Scholar's Sandals
+  pies_cuero_1: Hide Boots
+  pies_cuero_2: Leather Boots
+  pies_cuero_3: Hardened Leather Boots
+  pies_cuero_4: Ranger's Boots
+  pies_malla_1: Old Ringmail Boots
+  pies_malla_2: Ringmail Boots
+  pies_malla_3: Fine Mail Boots
+  pies_malla_4: Sentinel's Boots
+  pies_placas_1: Old Iron Sabatons
+  pies_placas_2: Iron Sabatons
+  pies_placas_3: Steel Sabatons
+  pies_placas_4: Bulwark Sabatons
+  recuerdo_raigambre: Memento of Raigambre
+  guardian_espada: Living Root Sword
+  guardian_daga: Raigambre's Thorn
+  guardian_arco: Mother Branch Bow
+  guardian_baston: Amberheart Staff
+  guardian_tela: Mantle of Eternal Leaves
+  guardian_cuero: Living Bark Cuirass
+  guardian_malla: Root-Ring Mail
+  guardian_placas: Stonebark Plate
+  espada_5: Frontier Sword
+  daga_5: Frontier Dagger
+  arco_5: Frontier Bow
+  baston_5: Frontier Staff
+  tela_5: Frontier Robe
+  cuero_5: Frontier Jerkin
+  malla_5: Frontier Mail
+  placas_5: Frontier Breastplate
+  joya_5: Frontier Amulet
+  cabeza_tela_5: Frontier Hood
+  cabeza_cuero_5: Frontier Cap
+  cabeza_malla_5: Frontier Coif
+  cabeza_placas_5: Frontier Helm
+  manos_tela_5: Frontier Gloves
+  manos_cuero_5: Frontier Mitts
+  manos_malla_5: Frontier Gauntlets
+  manos_placas_5: Frontier Handguards
+  piernas_tela_5: Frontier Leggings
+  piernas_cuero_5: Frontier Breeches
+  piernas_malla_5: Frontier Greaves
+  piernas_placas_5: Frontier Legplates
+  pies_tela_5: Frontier Sandals
+  pies_cuero_5: Frontier Boots
+  pies_malla_5: Frontier Treads
+  pies_placas_5: Frontier Sabatons
+  espada_6: Wasteland Sword
+  daga_6: Wasteland Dagger
+  arco_6: Wasteland Bow
+  baston_6: Wasteland Staff
+  tela_6: Wasteland Robe
+  cuero_6: Wasteland Jerkin
+  malla_6: Wasteland Mail
+  placas_6: Wasteland Breastplate
+  joya_6: Wasteland Amulet
+  cabeza_tela_6: Wasteland Hood
+  cabeza_cuero_6: Wasteland Cap
+  cabeza_malla_6: Wasteland Coif
+  cabeza_placas_6: Wasteland Helm
+  manos_tela_6: Wasteland Gloves
+  manos_cuero_6: Wasteland Mitts
+  manos_malla_6: Wasteland Gauntlets
+  manos_placas_6: Wasteland Handguards
+  piernas_tela_6: Wasteland Leggings
+  piernas_cuero_6: Wasteland Breeches
+  piernas_malla_6: Wasteland Greaves
+  piernas_placas_6: Wasteland Legplates
+  pies_tela_6: Wasteland Sandals
+  pies_cuero_6: Wasteland Boots
+  pies_malla_6: Wasteland Treads
+  pies_placas_6: Wasteland Sabatons
+  espada_7: Vigil Sword
+  daga_7: Vigil Dagger
+  arco_7: Vigil Bow
+  baston_7: Vigil Staff
+  tela_7: Vigil Robe
+  cuero_7: Vigil Jerkin
+  malla_7: Vigil Mail
+  placas_7: Vigil Breastplate
+  joya_7: Vigil Amulet
+  cabeza_tela_7: Vigil Hood
+  cabeza_cuero_7: Vigil Cap
+  cabeza_malla_7: Vigil Coif
+  cabeza_placas_7: Vigil Helm
+  manos_tela_7: Vigil Gloves
+  manos_cuero_7: Vigil Mitts
+  manos_malla_7: Vigil Gauntlets
+  manos_placas_7: Vigil Handguards
+  piernas_tela_7: Vigil Leggings
+  piernas_cuero_7: Vigil Breeches
+  piernas_malla_7: Vigil Greaves
+  piernas_placas_7: Vigil Legplates
+  pies_tela_7: Vigil Sandals
+  pies_cuero_7: Vigil Boots
+  pies_malla_7: Vigil Treads
+  pies_placas_7: Vigil Sabatons
+  espada_8: Twilight Sword
+  daga_8: Twilight Dagger
+  arco_8: Twilight Bow
+  baston_8: Twilight Staff
+  tela_8: Twilight Robe
+  cuero_8: Twilight Jerkin
+  malla_8: Twilight Mail
+  placas_8: Twilight Breastplate
+  joya_8: Twilight Amulet
+  cabeza_tela_8: Twilight Hood
+  cabeza_cuero_8: Twilight Cap
+  cabeza_malla_8: Twilight Coif
+  cabeza_placas_8: Twilight Helm
+  manos_tela_8: Twilight Gloves
+  manos_cuero_8: Twilight Mitts
+  manos_malla_8: Twilight Gauntlets
+  manos_placas_8: Twilight Handguards
+  piernas_tela_8: Twilight Leggings
+  piernas_cuero_8: Twilight Breeches
+  piernas_malla_8: Twilight Greaves
+  piernas_placas_8: Twilight Legplates
+  pies_tela_8: Twilight Sandals
+  pies_cuero_8: Twilight Boots
+  pies_malla_8: Twilight Treads
+  pies_placas_8: Twilight Sabatons
+  espada_9: Storm Sword
+  daga_9: Storm Dagger
+  arco_9: Storm Bow
+  baston_9: Storm Staff
+  tela_9: Storm Robe
+  cuero_9: Storm Jerkin
+  malla_9: Storm Mail
+  placas_9: Storm Breastplate
+  joya_9: Storm Amulet
+  cabeza_tela_9: Storm Hood
+  cabeza_cuero_9: Storm Cap
+  cabeza_malla_9: Storm Coif
+  cabeza_placas_9: Storm Helm
+  manos_tela_9: Storm Gloves
+  manos_cuero_9: Storm Mitts
+  manos_malla_9: Storm Gauntlets
+  manos_placas_9: Storm Handguards
+  piernas_tela_9: Storm Leggings
+  piernas_cuero_9: Storm Breeches
+  piernas_malla_9: Storm Greaves
+  piernas_placas_9: Storm Legplates
+  pies_tela_9: Storm Sandals
+  pies_cuero_9: Storm Boots
+  pies_malla_9: Storm Treads
+  pies_placas_9: Storm Sabatons
+  espada_10: Everfrost Sword
+  daga_10: Everfrost Dagger
+  arco_10: Everfrost Bow
+  baston_10: Everfrost Staff
+  tela_10: Everfrost Robe
+  cuero_10: Everfrost Jerkin
+  malla_10: Everfrost Mail
+  placas_10: Everfrost Breastplate
+  joya_10: Everfrost Amulet
+  cabeza_tela_10: Everfrost Hood
+  cabeza_cuero_10: Everfrost Cap
+  cabeza_malla_10: Everfrost Coif
+  cabeza_placas_10: Everfrost Helm
+  manos_tela_10: Everfrost Gloves
+  manos_cuero_10: Everfrost Mitts
+  manos_malla_10: Everfrost Gauntlets
+  manos_placas_10: Everfrost Handguards
+  piernas_tela_10: Everfrost Leggings
+  piernas_cuero_10: Everfrost Breeches
+  piernas_malla_10: Everfrost Greaves
+  piernas_placas_10: Everfrost Legplates
+  pies_tela_10: Everfrost Sandals
+  pies_cuero_10: Everfrost Boots
+  pies_malla_10: Everfrost Treads
+  pies_placas_10: Everfrost Sabatons
+  espada_11: Abyssal Sword
+  daga_11: Abyssal Dagger
+  arco_11: Abyssal Bow
+  baston_11: Abyssal Staff
+  tela_11: Abyssal Robe
+  cuero_11: Abyssal Jerkin
+  malla_11: Abyssal Mail
+  placas_11: Abyssal Breastplate
+  joya_11: Abyssal Amulet
+  cabeza_tela_11: Abyssal Hood
+  cabeza_cuero_11: Abyssal Cap
+  cabeza_malla_11: Abyssal Coif
+  cabeza_placas_11: Abyssal Helm
+  manos_tela_11: Abyssal Gloves
+  manos_cuero_11: Abyssal Mitts
+  manos_malla_11: Abyssal Gauntlets
+  manos_placas_11: Abyssal Handguards
+  piernas_tela_11: Abyssal Leggings
+  piernas_cuero_11: Abyssal Breeches
+  piernas_malla_11: Abyssal Greaves
+  piernas_placas_11: Abyssal Legplates
+  pies_tela_11: Abyssal Sandals
+  pies_cuero_11: Abyssal Boots
+  pies_malla_11: Abyssal Treads
+  pies_placas_11: Abyssal Sabatons
+  espada_12: Titan Sword
+  daga_12: Titan Dagger
+  arco_12: Titan Bow
+  baston_12: Titan Staff
+  tela_12: Titan Robe
+  cuero_12: Titan Jerkin
+  malla_12: Titan Mail
+  placas_12: Titan Breastplate
+  joya_12: Titan Amulet
+  cabeza_tela_12: Titan Hood
+  cabeza_cuero_12: Titan Cap
+  cabeza_malla_12: Titan Coif
+  cabeza_placas_12: Titan Helm
+  manos_tela_12: Titan Gloves
+  manos_cuero_12: Titan Mitts
+  manos_malla_12: Titan Gauntlets
+  manos_placas_12: Titan Handguards
+  piernas_tela_12: Titan Leggings
+  piernas_cuero_12: Titan Breeches
+  piernas_malla_12: Titan Greaves
+  piernas_placas_12: Titan Legplates
+  pies_tela_12: Titan Sandals
+  pies_cuero_12: Titan Boots
+  pies_malla_12: Titan Treads
+  pies_placas_12: Titan Sabatons
+  espada_13: Starlit Sword
+  daga_13: Starlit Dagger
+  arco_13: Starlit Bow
+  baston_13: Starlit Staff
+  tela_13: Starlit Robe
+  cuero_13: Starlit Jerkin
+  malla_13: Starlit Mail
+  placas_13: Starlit Breastplate
+  joya_13: Starlit Amulet
+  cabeza_tela_13: Starlit Hood
+  cabeza_cuero_13: Starlit Cap
+  cabeza_malla_13: Starlit Coif
+  cabeza_placas_13: Starlit Helm
+  manos_tela_13: Starlit Gloves
+  manos_cuero_13: Starlit Mitts
+  manos_malla_13: Starlit Gauntlets
+  manos_placas_13: Starlit Handguards
+  piernas_tela_13: Starlit Leggings
+  piernas_cuero_13: Starlit Breeches
+  piernas_malla_13: Starlit Greaves
+  piernas_placas_13: Starlit Legplates
+  pies_tela_13: Starlit Sandals
+  pies_cuero_13: Starlit Boots
+  pies_malla_13: Starlit Treads
+  pies_placas_13: Starlit Sabatons
+  espada_14: Everdawn Sword
+  daga_14: Everdawn Dagger
+  arco_14: Everdawn Bow
+  baston_14: Everdawn Staff
+  tela_14: Everdawn Robe
+  cuero_14: Everdawn Jerkin
+  malla_14: Everdawn Mail
+  placas_14: Everdawn Breastplate
+  joya_14: Everdawn Amulet
+  cabeza_tela_14: Everdawn Hood
+  cabeza_cuero_14: Everdawn Cap
+  cabeza_malla_14: Everdawn Coif
+  cabeza_placas_14: Everdawn Helm
+  manos_tela_14: Everdawn Gloves
+  manos_cuero_14: Everdawn Mitts
+  manos_malla_14: Everdawn Gauntlets
+  manos_placas_14: Everdawn Handguards
+  piernas_tela_14: Everdawn Leggings
+  piernas_cuero_14: Everdawn Breeches
+  piernas_malla_14: Everdawn Greaves
+  piernas_placas_14: Everdawn Legplates
+  pies_tela_14: Everdawn Sandals
+  pies_cuero_14: Everdawn Boots
+  pies_malla_14: Everdawn Treads
+  pies_placas_14: Everdawn Sabatons
+  artesano_espada_4: Frontier Blade
+  artesano_espada_5: Wasteland Blade
+  artesano_espada_6: Vigil Blade
+  artesano_espada_7: Twilight Blade
+  artesano_espada_8: Storm Blade
+  artesano_espada_9: Everfrost Blade
+  artesano_espada_10: Abyssal Blade
+  artesano_espada_11: Titan Blade
+  artesano_espada_12: Starlit Blade
+  artesano_espada_13: Everdawn Blade
+  artesano_daga_4: Frontier Dirk
+  artesano_daga_5: Wasteland Dirk
+  artesano_daga_6: Vigil Dirk
+  artesano_daga_7: Twilight Dirk
+  artesano_daga_8: Storm Dirk
+  artesano_daga_9: Everfrost Dirk
+  artesano_daga_10: Abyssal Dirk
+  artesano_daga_11: Titan Dirk
+  artesano_daga_12: Starlit Dirk
+  artesano_daga_13: Everdawn Dirk
+  artesano_arco_4: Frontier Longbow
+  artesano_arco_5: Wasteland Longbow
+  artesano_arco_6: Vigil Longbow
+  artesano_arco_7: Twilight Longbow
+  artesano_arco_8: Storm Longbow
+  artesano_arco_9: Everfrost Longbow
+  artesano_arco_10: Abyssal Longbow
+  artesano_arco_11: Titan Longbow
+  artesano_arco_12: Starlit Longbow
+  artesano_arco_13: Everdawn Longbow
+  artesano_baston_4: Frontier Scepter
+  artesano_baston_5: Wasteland Scepter
+  artesano_baston_6: Vigil Scepter
+  artesano_baston_7: Twilight Scepter
+  artesano_baston_8: Storm Scepter
+  artesano_baston_9: Everfrost Scepter
+  artesano_baston_10: Abyssal Scepter
+  artesano_baston_11: Titan Scepter
+  artesano_baston_12: Starlit Scepter
+  artesano_baston_13: Everdawn Scepter
+  artesano_tela_4: Frontier Mantle
+  artesano_tela_5: Wasteland Mantle
+  artesano_tela_6: Vigil Mantle
+  artesano_tela_7: Twilight Mantle
+  artesano_tela_8: Storm Mantle
+  artesano_tela_9: Everfrost Mantle
+  artesano_tela_10: Abyssal Mantle
+  artesano_tela_11: Titan Mantle
+  artesano_tela_12: Starlit Mantle
+  artesano_tela_13: Everdawn Mantle
+  artesano_cuero_4: Frontier Brigandine
+  artesano_cuero_5: Wasteland Brigandine
+  artesano_cuero_6: Vigil Brigandine
+  artesano_cuero_7: Twilight Brigandine
+  artesano_cuero_8: Storm Brigandine
+  artesano_cuero_9: Everfrost Brigandine
+  artesano_cuero_10: Abyssal Brigandine
+  artesano_cuero_11: Titan Brigandine
+  artesano_cuero_12: Starlit Brigandine
+  artesano_cuero_13: Everdawn Brigandine
+  artesano_malla_4: Frontier Hauberk
+  artesano_malla_5: Wasteland Hauberk
+  artesano_malla_6: Vigil Hauberk
+  artesano_malla_7: Twilight Hauberk
+  artesano_malla_8: Storm Hauberk
+  artesano_malla_9: Everfrost Hauberk
+  artesano_malla_10: Abyssal Hauberk
+  artesano_malla_11: Titan Hauberk
+  artesano_malla_12: Starlit Hauberk
+  artesano_malla_13: Everdawn Hauberk
+  artesano_placas_4: Frontier Warplate
+  artesano_placas_5: Wasteland Warplate
+  artesano_placas_6: Vigil Warplate
+  artesano_placas_7: Twilight Warplate
+  artesano_placas_8: Storm Warplate
+  artesano_placas_9: Everfrost Warplate
+  artesano_placas_10: Abyssal Warplate
+  artesano_placas_11: Titan Warplate
+  artesano_placas_12: Starlit Warplate
+  artesano_placas_13: Everdawn Warplate
+  artesano_joya_4: Frontier Pendant
+  artesano_joya_5: Wasteland Pendant
+  artesano_joya_6: Vigil Pendant
+  artesano_joya_7: Twilight Pendant
+  artesano_joya_8: Storm Pendant
+  artesano_joya_9: Everfrost Pendant
+  artesano_joya_10: Abyssal Pendant
+  artesano_joya_11: Titan Pendant
+  artesano_joya_12: Starlit Pendant
+  artesano_joya_13: Everdawn Pendant
+world:
+  claro_name: The Clearing
+  name_first:
+  - Ford
+  - Hill
+  - Hollow
+  - Plain
+  - Pass
+  - Rise
+  - Spring
+  - Glen
+  - Crag
+  - Vale
+  - Dell
+  - Saddle
+  name_second:
+  - Grey
+  - Ashen
+  - Broken
+  - Raven's
+  - Sunken
+  - Silent
+  - Iron
+  - Old
+  - Red
+  - Echoing
+  - Drowned
+  - Bone
+  name_format: '{second} {first}'
+dir:
+  n: ⬆️ North
+  s: ⬇️ South
+  e: ➡️ East
+  w: ⬅️ West
+time:
+  seconds: '{n} s'
+  minutes: '{n} min'
+  hours: '{h} h {m} min'
+menu:
+  zone: 📍 Zone
+  explore: 🧭 Explore
+  camp: 🏕️ Camp
+  hint: ❓ Questions? Type /help or tap ❓ in 🏕️ Camp.
+  map: 🗺️ Map
+  hero: 👤 Hero
+  bag: 🎒 Backpack
+  refresh: 🔄 Refresh
+  back: ↩️ Back
+  continue: ▶️ Continue
+  places: 📒 Places
+  options: ⚙️ Options
+  story: 📖 Story
+options:
+  title: ⚙️ Options
+  intro: 'Choose what happens and what doesn''t. Tap a button to change it: it gets saved. ✅ on · ☑️ off.'
+  check_on: ✅
+  check_off: ☑️
+  fights_manual: '☑️ ⚔️ Auto-fights: off (✋ manual). If a fight comes up while you explore or gather, the batch stops and you fight it yourself. For when you''re online.'
+  fights_auto: '✅ ⚔️ Auto-fights: your hero fights alone, with a basic but alert playstyle: they read the warning, defend against big hits and use their abilities. If they win, the batch goes on, and 🏹 Hunt also runs in batches. For when you leave and come back later.'
+  retreat: '🩹 Retreat below {pct}% health: in auto-fights, if your health drops below it, the batch stops. If it''s already below when a fight comes up, your hero won''t fight alone: the fight waits for you.'
+  potions_on: '✅ 🧪 Potions in auto-fights: your hero drinks potions and uses bandages from the belt when needed.'
+  potions_off: '☑️ 🧪 Potions in auto-fights: off. Your hero won''t touch the belt: you save it for when you fight yourself.'
+  never_auto: 'You always fight the Guardian and the camp defenses yourself. Fighting alone gives the same rewards as fighting by hand: an attentive player just plays better.'
+  fights_button: '{check} Auto-fights'
+  retreat_button: '🩹 Retreat: {pct}%'
+  potions_button: '{check} Potions'
+  value_yes: 'yes'
+  value_no: 'no'
+  saved_auto: '⚔️ Done: fights in your batches are now automatic, and 🏹 Hunt runs in batches.'
+  saved_manual: '✋ Done: if a fight comes up in a batch, the batch stops and you fight it yourself.'
+  saved_retreat: '🩹 Done: your hero retreats below {pct}% health.'
+  saved_potions_on: '🧪 Done: in auto-fights your hero uses potions and bandages from the belt.'
+  saved_potions_off: '🧪 Done: in auto-fights your hero won''t touch the belt.'
+  intro_short: 'Tap a button to change it: it is saved.'
+  retreat_now: '🩹 Retreat below {pct}% health: automatic fights will use it when they come back. Today, if a fight comes up in a batch, the batch stops and you fight it.'
+  language_line: '🌐 Language: {name}.'
+  feedback_line: '💬 Feedback: tell us about a bug, an idea or something that is unclear.'
+feedback:
+  button: 💬 Feedback
+  title: 💬 Feedback
+  ask: 'Write in one message whatever you want to tell us: a bug, an idea or something that is unclear. The game team reads it.'
+  privacy: 'It goes with your hero''s name and level, so we can understand it. If you change your mind, tap ↩️ Back.'
+  thanks: '💬 Thank you! Your message reached the game team.'
+auto:
+  batch_manual: '⚔️ If a fight comes up: ✋ the batch stops and you fight it yourself (⚙️ Options).'
+  batch_auto: '⚔️ If a fight comes up, your hero fights it alone · 🩹 retreats below {pct}% · 🧪 potions: {potions} (⚙️ Options).'
+  batch_hunt: '⚔️ Your hero fights alone · 🩹 retreats below {pct}% · 🧪 potions: {potions} (⚙️ Options).'
+  summary: '⚔️ {n} {n|auto-fight|auto-fights}: {result}.'
+  won: '{n} {n|won|won}'
+  lost: '{n} {n|lost|lost}'
+  fled: '{n} unfinished'
+  rewards: ⭐ The fights gave +{xp} experience · +{gold}.
+  loot: '🎁 Loot from the fights: {items}.'
+  gave_up: '🏳️ The fight wouldn''t end: your hero walked away, with no reward or penalty.'
+zone:
+  title: 📍 Where you are
+  header: '{name} — {biome}'
+  distance: 📌 Coordinates ({x}, {y}) · Distance {lejania} · Ring {ring} · Danger level {level}
+  coords: 📌 ({x}, {y}) · Distance {lejania} · Ring {ring}
+  danger: ⚔️ Danger level {level}
+  discovered_by: 🧭 Discovered by {name}
+  routes: 🧭 Routes
+  uncharted: ❔ Uncharted land
+  known_by_others: ▪️ Someone else discovered it, but you don't know it yet
+  route_line: '{dir}: {where} · {time}'
+  go_button: '{dir} · {time}'
+  explore_button: 🔎 Explore · {time}
+travel:
+  title: 🚶 Traveling
+  started: 🚶 You set off. It will take {time}.
+  on_the_way: You're heading to {where} ({dir}).
+  remaining: ⏳ {time} left.
+  arrived: 📍 You reached {name} ({biome}).
+  discovered: 🧭 No one had ever set foot in this zone! It goes on the map with your name.
+  discovered_named: 🧭 No one had ever set foot in {name}! It goes on the map with your name.
+  interrupted: ⛔ Your journey stops at {name}.
+  started_route: 🚶 You set out for {name}. You'll go zone by zone; I'll let you know when you arrive.
+  goal: '🎯 Destination: {name} · {legs} legs · you arrive in {time}'
+  interrupted_fight: ⛔ An enemy jumps you at {name}. Beat it and you go on your way.
+  resumed: '🚶 You go on your way: {n} {n|leg|legs} left.'
+  route_lost: '🧭 You stay at {name}: the rest of the way was cancelled.'
+walk:
+  button: 🔗 Move
+  title: 🔗 Move
+  intro: 'Build your way step by step: each arrow adds one zone in that direction. When you finish, your hero walks it alone, 1 minute per zone.'
+  empty: You haven't added any steps yet.
+  steps: '🧭 Your way: {steps}'
+  summary: '{n} {n|step|steps} · you end at ({x}, {y}) · about {time}'
+  ambush: ⚔️ If an enemy jumps you on the way, beat it and you go on. If you flee or fall, you stay where you are.
+  undo: ⌫ Remove the last one
+  cancel: ❌ Cancel
+  go: ✅ Finish
+  full: ⚠️ You already have {n} steps, the most allowed.
+  need_step: ⚠️ Add at least one step before finishing.
+  cancelled: ❌ Way cancelled.
+  started: '🔗 You set off: {n} {n|step|steps} to ({x}, {y}). I''ll let you know when you arrive.'
+explore:
+  menu_title: 🧭 Explore
+  menu_intro: Roam the zone, gather materials, go hunting or check your map.
+  title: 🔎 Exploring
+  started: 🔎 You start roaming the zone. It will take {time}.
+  in_progress: You roam the zone carefully.
+  found_item: '🔎 You found: {item}.'
+  found_gold: 🔎 You found {gold} among the remains from before the Collapse.
+  already_full: '✅ You already know this zone and the ones around it 100%: there''s nothing left to explore from here. Move to keep exploring, or gather what it has.'
+  around: '🔭 Your zone is already at 100%: from here you study {name} ({x}, {y}) without moving.'
+  revealed: '🔎 You discovered that this place has: {items}.'
+  revealed_there: '🔎 You discovered that {name} has: {items}.'
+  full: '✅ You explored {name} 100%: now you know everything it has.'
+  resources_unknown: '🔎 Explored {pct}%: you don''t know its resources yet.'
+  resources_line: 🔎 Explored {pct}% · {items}
+  resources_title: '🔎 Explored {pct}%. Resources:'
+  resource_item: • {emoji} {name} {bars}
+  resources_more: • ❔ Resources left to discover
+encounter:
+  ambush: '⚠️ As you arrive, an enemy blocks your path: {enemy} (lv {level}).'
+  found: '⚠️ While you explored, an enemy spotted you: {enemy} (lv {level}).'
+activity:
+  busy: ⏳ You're already busy. Wait until you're done.
+  offline_ok: 'You can close the chat: I''ll let you know when it''s done.'
+map:
+  title: 🗺️ Your map
+  legend: 🧍 you · {stages} · at {pct}% you see its color · north is up
+  position: Coordinates {x}, {y} · Distance {lejania}
+  colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
+  bonfire: Camp
+  fog:
+    name:
+      unknown: unexplored
+      traces: with tracks
+      scouted: scouted
+    here: '{mark} This zone is still blank on your map: you''ve investigated it {pct}%. At {need}% you''ll see its color.'
+    stage: '{mark} {name} now shows on your 🗺️ Map: {stage}.'
+    colored: '🎨 You''ve investigated half of {name}: it now shows in color on your 🗺️ Map. Terrain: {terrain}.'
+    new_terrain: 🆕 New terrain on your map! {terrain} (you now know {n} of {total}).
+presence:
+  title: '👥 Also in this zone ({n}):'
+  line: • {name} · {cls} · lv {level} · {activity}
+  more: • … and {n} more
+  crossed: 👋 You crossed paths with {name} ({cls}, level {level}), who was {activity}.
+  activity:
+    explore: 🔎 exploring
+    gather: 🪓 gathering
+    combat: ⚔️ fighting
+    rest: 🛌 resting
+    travel: 🚶 passing through
+    idle: 🧍 hanging around
+    hunt: 🏹 hunting
+hero:
+  title: 👤 Your hero
+  top_line: '{icon} {name} — 📍 {place}'
+  class_line: '{cls} · {role}'
+  level_pct: 🎖 Level {level} ({pct}%)
+  xp_line: '🔥 XP: {xp}/{next}'
+  stats_link: '📊 Stats: /stats'
+  atk_def: '⚔️ Atk: {attack}  🛡 Def: {armor}%'
+  energy_line: '⚡ Energy: {energy}/{max_energy}'
+  resource_line: '🔷 {resource}: {max}/{max}'
+  class_short: '{cls}'
+  coins_line: '{coins}'
+  inv_link: '🎒 Backpack: {n}/{cap} — /inv'
+  skills_link: '🌟 Skills: /skills'
+  trades_link: '⚒️ Professions: /professions'
+  status_title: 'Status: {status}'
+  status_busy: 'Status: {status} · ⏳ {time} left in total'
+  stats_button: 📊 Stats
+  status:
+    idle: 🧍 Idle
+    travel: 🚶 Traveling
+    explore: 🔎 Exploring
+    gather: 🪓 Gathering
+    rest: 🛌 Resting
+    combat: ⚔️ In combat
+  status_line: ❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · {gold} · Level {level}
+  name_line: '{icon} {name} — {cls} ({role})'
+  level_line: ⭐ Level {level} · Experience {xp}/{next}
+  hp_line: '❤️ HP: {hp}/{max_hp}'
+  regen_line: '💗 Your health comes back on its own (0 to full in {full}): it will be full in {time}.'
+  downed_line: '🤕 Gravely wounded: you fell and are recovering slowly (0 to full in {full}): it will be full in {time}. A potion or the inn fixes it sooner.'
+  stats_line: ⚔️ Attack {attack} · 🛡 Armor {armor}% · ⚡ Initiative {initiative}
+  gold_line: '💰 Your coins: {gold}'
+  record_line: ☠️ Enemies defeated {kills} · 🧭 Zones discovered {zones}
+bag:
+  title: 🎒 Backpack
+  belt: 'Belt: {items}'
+  backpack: 'Backpack: {items}'
+  intro: 'What you carry, sorted by buttons:'
+  help_gear: '🛡️ Gear: what you''re wearing and the pieces you''ve found. There you see if they suit you and equip them.'
+  help_potions: '🧪 Potions: every potion and remedy, with how much it heals. You use them there.'
+  help_wallet: '💰 Coins: bronze, silver, gold, bags, chests and diamonds. In the Clearing you sew bags and build chests.'
+  help_resources: '📦 Resources: the materials and food you''ve gathered, how many you have and what they''re for.'
+  empty: empty
+  use_button: '{emoji} Use {item} (×{n})'
+  button_new: 🎒 Backpack 🆕
+  used: 'You used {item}: you recover {amount} health.'
+  full_hp: '❤️ Your health is already full: save your remedies for when you need them.'
+  full_line: '🎒 Backpack full ({used}/{cap}): sell or use things to gather or buy again.'
+health:
+  button: 🩺 Health
+  title: 🩺 Health
+  hp: '❤️ Health: {hp}/{max_hp} ({pct}%) {bar}'
+  body: '🧍 Your body: {state}'
+  state:
+    healthy: 🟢 healthy
+    bruised: 🟡 bruised
+    hurt: 🟠 hurt
+    badly_hurt: 🔴 badly hurt
+    downed: '🤕 gravely wounded: you fell in combat'
+  recovery: '💗 Out of combat your health comes back on its own: 0 to full in {full}. If you fall (🤕 gravely wounded), it takes {downed}.'
+  diseases: '🦠 Diseases: none.'
+  toxicity: '☠️ Toxicity: it rises in combat when you use potions back to back, and goes away when the fight ends.'
+  cures: '🧪 To heal sooner: the potions in 🎒 Backpack → 🧪 Potions, or a night at the inn in the Clearing.'
+  coming: 📋 Here you'll also see wounds by body part and diseases once they come to the game.
+resources:
+  button: 📦 Resources
+  title: 📦 Resources
+  intro: 'What you''ve gathered. Tap a resource''s code to see what it''s for:'
+  line: '{emoji} {item} ×{n}  {code}'
+  detail_title: '{emoji} {item} · {code}'
+  detail_have: You have ×{n}.
+  no_code: ⚠️ There is no resource with the code {code}.
+  back: ↩️ Back to 📦 Resources
+  none: You haven't gathered anything yet. Gather in the zones with 🪓 Gather.
+  page: Page {n} of {total}
+  more: ➡️ See more
+  use_default: sells to the merchant in the Clearing
+  use:
+    madera: founding and growing camps, building chests; the 🪚 Sawmill turns it into planks
+    piedra: founding and growing camps; 🗿 Stonemasonry turns it into ashlar blocks
+    fibra: sewing bags, growing camps; 🧶 Weaving turns it into cloth
+    pieza_metal: sewing bags and building chests; 🔥 Smelting turns it into ingots
+    arcilla: flasks for ⚗️ Alchemy (potions); camp upgrades
+    hierba_curativa: 💧 Distilling turns it into extract; bandages from 🪡 Tailoring
+    piel: 🪣 Tanning turns it into leather
+    tablon: '🪑 Carpentry: bows, staves and camp furniture'
+    lingote: 🔨 Blacksmithing, 🦺 Leatherworking (mail) and 💍 Jewelcrafting
+    extracto: ⚗️ Alchemy (potions), 🪡 Tailoring and 🦺 Leatherworking
+    tela_tejida: 🪡 Tailoring, 🪑 Carpentry, 🦺 Leatherworking and 🔨 Blacksmithing
+    cuero_curtido: 🔨 Blacksmithing, 🦺 Leatherworking, 🪑 Carpentry and 🪡 Tailoring
+    gema_bruta: 💍 Jewelcrafting and the best weapons from 🔨 Blacksmithing and 🪑 Carpentry
+    flor_luna: greater potions from ⚗️ Alchemy and fine robes from 🪡 Tailoring
+    carne: 'food: 2 rations for your camp''s pantry'
+    provisiones: 'food: 1 ration for your camp''s pantry'
+combat:
+  title: ⚔️ Combat · Round {n}
+  last_round: — Round {n} —
+  enemy_line: '{enemy} · level {level}'
+  enemy_hp: ❤️ {pct}% {bar}
+  boss_phase: 👑 Guardian · phase {n} of {total}
+  phase_change: '👑 Phase {n} of {total} begins: watch the next warning closely.'
+  warning: ⚠️ {text}
+  hero_line: '{icon} {name} — {cls}'
+  hero_bars: ❤️ {hp}/{max_hp} · 🔷 {resource} {value} · 🔋 {stamina}
+  combo: 🎯 Combo {n}/5
+  toxicity: ☠️ Toxicity {n}%
+  belt: '🎒 Belt: {items}'
+  attack_button: ⚔️ Attack
+  flee_button: 🏃 Flee
+  dodge_button: 🌀 Dodge
+  bag_button: 🎒 Backpack
+  belt_title: 🎒 Belt
+  belt_help: '⏳ Using something from the backpack spends your turn: that round you don''t attack or use abilities. On the plus side, it happens before the hits.'
+  dodge_name: Dodge
+  crit: ' (critical!)'
+  hit_enemy: '⚔️ {action}: {dmg} damage{crit}'
+  enemy_hits: '💥 {enemy} — {move}: hits you for {dmg}{crit}'
+  blocked: '🛡 You blocked: the hit loses {pct}%'
+  partial_block: '🛡 It can''t be fully blocked: you only stop {pct}%'
+  dodged: 💨 You dodged {move}
+  cannot_dodge: 💨 {move} can't be dodged
+  basic_dodge: 🌀 You partly dodge {move}
+  shield: 🫧 The shield absorbs {amount}
+  interrupted: ✋ You interrupted {move}
+  interrupt_late: '✋ Too late: {move} had already started'
+  not_interruptible: ✋ {move} can't be interrupted
+  channel: '🌀 {enemy} prepares {move}: its next hit will be stronger'
+  heal: '💚 {action}: you recover {amount}'
+  dot_applied: '🩸 {action}: it will suffer for {rounds} rounds'
+  dot_tick: 🩸 {enemy} suffers {dmg}
+  lifesteal: 🩸 You steal {amount} health
+  empower_applied: '🔥 {action}: you hit harder for {rounds} rounds'
+  hot_applied: '🌿 {action}: you heal a little each round for {rounds} rounds'
+  hot_tick: 🌿 You recover {amount}
+  expose_applied: '🎯 {action}: the enemy takes more damage for {rounds} rounds'
+  weaken_applied: '🌀 {action}: the enemy hits softer for {rounds} rounds'
+  item_used: '🎒 {item}: you recover {amount}'
+  flee_ok: 🏃 You got away.
+  flee_fail: 🏃 You couldn't escape.
+  victory: 🏆 {enemy} falls.
+  defeat: 💀 You fall to the ground.
+  rewards: ⭐ +{xp} experience · +{gold}
+  loot: '🎁 Loot: {item}'
+  level_up: 🎉 You reached level {level}! Your health is restored.
+  defeat_consequence: You wake up hours later, gravely wounded. You lost {gold}. Rest before going on.
+  belt_refilled: 🎒 You refilled the belt from the backpack.
+  end_title:
+    victory: 🏆 Victory
+    defeat: 💀 Defeat
+    fled: 🏃 You fled
+  err:
+    unknown: That action doesn't exist.
+    cooldown: '{action} is back in {n} rounds.'
+    cost: Not enough {resource}.
+    stamina: 'Out of Endurance 🔋: rest one round without defending.'
+    combo: 'You need combo points: use Attack first.'
+    no_flee: You can't flee here.
+    item: You have none of those left.
+    toxicity: 'Your Toxicity is maxed out: you can''t drink any more potions.'
+  busy: '⚔️ You''re in combat: finish the fight first.'
+places:
+  title: 📒 Places
+  line: '{biome} {name} · {zones} {zones|zone|zones} away · {time}'
+  go_button: '{name} · {time}'
+  none: 'You don''t know any other important places yet: go out and explore.'
+  more: …and {n} more, farther away.
+  marks_title: '🔭 What your map marks:'
+  intro: '📒 The important places you know. Tap one or type its code and confirm: your hero will go alone, zone by zone.'
+  code_line: '{n}. {icon} {name} · {zones} {zones|zone|zones} away · {time} · /go{n}'
+  dungeon_small: '{name}, small dungeon'
+  dungeon_deep: '{name}, deep dungeon'
+  unknown: 'That place is no longer on your list: choose one from here.'
+  bad_code: 'That code isn''t on your list of places: use one of the ones you see here.'
+  confirm_title: 🧭 Travel?
+  confirm: 'You''re going to {icon} {name}: {zones} {zones|zone|zones}, about {time}.'
+  confirm_hint: 'Your hero goes alone, zone by zone. You can close the chat: I''ll let you know when you arrive.'
+  confirm_yes: ✅ Yes, go
+  confirm_no: ↩️ No, go back
+  confirm_cut: '⏹️ What you''re doing stops here: the step in progress gives its energy back.'
+  confirm_reroute: '🧭 You''re already travelling: you finish the leg in progress and change course toward it.'
+  rerouted: '🧭 You changed course: after this leg you go on toward {name}.'
+  resting: '🛏️ You''re resting at the inn. When you''re done, choose where to go again.'
+shop:
+  button: 🏪 Merchant
+  title: 🏪 The Clearing's Merchant
+  intro: An old man with a cart full of salvaged things. He sells just the essentials and buys whatever you find.
+  buy_line: '{emoji} {item} · {price}'
+  buy_button: Buy {emoji} · {price}
+  sell_button: Sell {emoji} ×{n} · {price} each
+  sell_line: 'To sell: {items} (gives you {total})'
+  sell_all_button: 💱 Sell materials · {total}
+  sold_all: 💱 You sold {items} for {total}.
+  bought: 'You bought: {item}.'
+  sold: You sold {item} for {price}.
+  no_gold: You don't have enough coins.
+  weekly_cap: 🥖 The merchant won't sell you any more {item} this week (max {n}). Camp food comes from hunting, fishing and cooking.
+  cap_line: '   You have {left} of {n} left this week.'
+  only_in_claro: The merchant and the inn are in the Clearing.
+  menu_buy: '🛒 Buy: potions, bandages and 🥖 provisions.'
+  menu_sell: '💱 Sell: what you carry in your backpack. He pays half of what it is worth.'
+  buy_menu_button: 🛒 Buy
+  sell_menu_button: 💱 Sell
+  buy_title: 🛒 Buy
+  sell_title: 💱 Sell
+  sell_intro: Tap a thing's code to sell all of it. Gear is sold from 🛡️ Gear.
+  sell_item_line: '{emoji} {item} ×{n} · {price} each → {total}  /v{code}'
+  sell_none: "You carry nothing the merchant buys: gather materials in the zones."
+  sell_all_line: '💱 Sell materials sells at once the common things you gathered (not food, refined goods or rare finds).'
+  no_code: ⚠️ You carry nothing with the code {code}.
+inn:
+  button: 🛏️ Inn · {price}
+  title: 🛏️ The Clearing Inn
+  started: You pay {price} and lie down by the fire. You'll wake up in {time}.
+  in_progress: You sleep by the fire.
+  rested: '🛏️ You wake up rested: your health is full.'
+  full_hp: '❤️ Your health is already full: no need to sleep.'
+gather:
+  button: 🪓 Gather · {time}
+  title: 🪓 Gathering
+  started: 🪓 You start collecting what this land has to offer. It will take {time}.
+  in_progress: You gather materials carefully.
+  found: '🪓 You gathered: {items}.'
+  ambush: '⚠️ While you were gathering, an enemy took you by surprise: {enemy} (lv {level}).'
+hunt:
+  button: 🏹 Hunt
+  title: 🏹 Hunt
+  intro: 'You go out looking for prey: just fighting, no exploring or gathering. Each prey costs ⚡{energy}.'
+  prey_line: '🐾 Roaming around here: {names}.'
+  rewards_hint: 'You get what each fight gives: experience, coins and loot (beasts drop 🍖 meat).'
+  go_button: 🏹 Find prey · ⚡{energy}
+  again_button: 🏹 Another prey
+  found: '🏹 You follow some tracks and come upon your prey: {enemy} (lv {level}).'
+  no_prey: 🔥 There's no prey in the Clearing. Head out to the surrounding zones to hunt.
+  lair: '👑 Only the Guardian is in the lair: there''s no loose prey here.'
+  downed: '🤕 You''re badly wounded: heal before going hunting (👤 Hero → 🩺 Health).'
+  camp_hint: 🏕️ With a camp you can call a 🏹 Hunting party with its members.
+  party_button: 🏹 Hunting party
+  join_button: 🏹 Join
+  party_line: '🏹 {camp}''s hunting party in {zone}: {n} {n|hunter|hunters} · {prey}/{target} prey · {time} left'
+  party_bonus_line: 'Your bonus now: +{pct}% ({k} {k|companion|companions} in the zone).'
+  party_title: 🏹 Hunting party in {zone}
+  party_call: '{name} calls the members of {camp} to hunt in {zone} for {time}.'
+  party_how: Everyone fights their own prey. Each prey in the party gives +{per}% experience and loot chance for each companion in the zone (up to +{cap}%).
+  party_goal: 'Goal: {per_hunter} prey per hunter. If you reach it together, every hunter with at least 1 prey earns +{xp} experience and +{gold}.'
+  party_called: '🏹 You called the hunting party: I alerted {n} {n|member|members} of your camp in this zone.'
+  party_called_alone: '🏹 You called the hunting party. No other members are online in this zone: anyone who arrives can join here.'
+  party_joined: 🏹 You joined {camp}'s hunting party. Happy hunting!
+  party_already: '🏹 Your camp already has a hunting party in {zone}: {time} left.'
+  party_member: 🏹 You're already in the hunting party.
+  party_no_camp: 🏕️ Hunting parties are for camp members.
+  party_none: 🏹 There's no hunting party from your camp right now.
+  party_wrong_zone: '🏹 The hunting party is in {zone}: go there to join.'
+  party_prey: '🏹 Hunting party: {prey}/{target} prey all together · bonus for this prey +{pct}%.'
+  party_end_title: 🏹 {camp}'s hunting party is over
+  party_end: 'Together, {n} {n|hunter|hunters} caught {prey} {prey|prey|prey} in {zone} (goal: {target}).'
+  party_end_hunter: '{name} {prey}'
+  party_end_hunters: 🐾 {list}
+  party_end_reward: ✅ Goal reached! Every hunter with at least 1 prey earns +{xp} experience and +{gold}.
+  party_end_short: 'You didn''t reach the goal: no reward this time.'
+  party_end_alone: The reward needs at least {n} hunters.
+  batch_button: 🏹 Batch hunt
+  mode_manual: '✋ You hunt one prey at a time: the fight starts right away and you fight it yourself.'
+  mode_auto: '⚔️ Auto-fights: you choose how much energy to spend and your hero hunts alone, prey after prey (⚙️ Options).'
+  batch_manual: '✋ For now you hunt one prey at a time: the fight starts right away and you fight it yourself.'
+  batch_low_hp: '🩹 Your health is below {pct}%: heal before hunting in batches (or change the limit in ⚙️ Options).'
+  batch_in_progress: 🏹 You follow tracks and your hero fights each prey alone.
+  batch_progress: Prey {done} of {total}
+camp:
+  need_line: '{emoji} {item}: {have}/{need} {bar}'
+  stages:
+    fogata: a campfire
+    campamento: a camp
+    aldea: a village
+    pueblo: a town
+    ciudad: a city
+    castillo: a castle
+claro:
+  button: 🏕️ Camp
+  title: 🏕️ The Clearing Camp
+  intro: 'The base camp, where everyone starts: the campfire, the merchant and a place to sleep.'
+  grow_hint: '🏕️ The Clearing doesn''t grow. To grow, found your own camp far from here: your camps are the ones that level up, get upgrades and become castles.'
+  trades_hint: '⚒️ Professions: here you''ll find the basic stations to refine what you gather and craft gear, potions and bandages.'
+  no_growth: '🔥 The Clearing''s works are finished: the Clearing is the base camp and no longer grows. What you gather is for founding and growing your camps, sewing bags and building chests.'
+  far: 🏕️ The camp is in the Clearing. Head back from 🧭 Explore → 📒 Places.
+pantry:
+  line: '🌾 Pantry: {state} · {rations} {rations|ration|rations} · lasts {days} {days|day|days}'
+  eaters: '👥 {n} {n|active resident eats|active residents eat} from it: 1 ration a day each. Whoever doesn''t play doesn''t eat.'
+  how: 🍖 Beasts drop meat; 🥖 the Clearing's merchant sells provisions.
+  feed_button: 🌾 Contribute food
+  fed: '🌾 You contributed {items} = {rations} {rations|ration|rations}: +{xp} experience and +{merit} merit.'
+  no_food: You aren't carrying any food. 🍖 Beasts drop meat; 🥖 the Clearing's merchant sells provisions.
+  not_yet_camp: The pantry opens when the camp becomes a village (level {level}).
+  famine_camp: '🔴 The pantry is empty: the camp can''t grow until it''s filled.'
+  grow_famine: '🌾 Fill the pantry first: with an empty pantry the camp doesn''t grow.'
+  state:
+    abundancia: 🟢 Plenty
+    holgada: 🟢 Comfortable
+    justa: 🟡 Tight
+    escasez: 🟠 Shortage
+    hambruna: 🔴 Famine
+raids:
+  founded_warning: '🌊 Heads-up: {n} {n|time|times} a week, a wave of enemies will reach your camp. Members defend it with 🛡️ Defend, wherever they are. Strengthen the surroundings to protect it: defenses are built in 🏕️ Camp → 🏰 Manage → 🔨 Upgrades.'
+  soon_line: '👁 When it becomes a town (level {level}), the waves begin: 3 a week.'
+  next_line: 👁 Next wave in {n} {n|day|days}. Online members defend it.
+  open_line: '🔔 Wave! Defenders: {n} · wins {wins}/{need} · {time} left'
+  trial_line: '🌙 Trial Night! Defenders: {n} · wins {wins}/{need} · {time} left'
+  defend_button: 🛡️ Defend
+  defense_line: '🛡️ Defense {defense}: the camp''s defenses take {pct}% off their health and attack.'
+  watch_title: 🗼 {camp}'s Watchtower
+  watch: '🗼 The tower sees a wave coming: it arrives in {time}. Camp defense: {defense}. Get ready to tap 🛡️ Defend.'
+  watch_line: '🗼 The tower sees a wave coming: it arrives in {time}.'
+  title: 🔔 Wave at {camp}!
+  trial_title: 🌙 Trial Night at {camp}
+  arrive: ⚔️ A pack led by {enemy} (level {level}) surrounds the camp.
+  trial_arrive: '⚔️ Tonight an elite {enemy} arrives (level {level}): more health and more strength.'
+  need: You have {time} to rack up {need} {need|win|wins}. Each member fights once, wherever they are.
+  stakes: 'If you fall short, the pantry loses part of its food. Nothing else: no levels, no zones, no members.'
+  trial_stakes: If you win, the camp can become a castle. If not, you retry after {days} {days|day|days} and nothing is lost.
+  started: '🛡️ You go out to defend {camp}: you face {enemy} (level {level})!'
+  trial_started: '🌙 Trial Night: an elite {enemy} (level {level}) attacks {camp}!'
+  none: There's no wave at your camp right now.
+  already: 'You already defended in this wave: each member fights once.'
+  busy: Finish what you're doing to go out and defend.
+  fight_won: 🛡️ A win for {camp}! That's {wins} of {need}.
+  fight_lost: 🛡️ This fight adds nothing for {camp}. Still {wins} of {need}.
+  fight_late: '🛡️ The wave was already over: this fight doesn''t count for the camp.'
+  end_title: 🛡️ Wave at {camp}
+  trial_end_title: 🌙 Trial Night at {camp}
+  defended: '✅ {camp} held out! Wins: {wins} of {need}.'
+  reward: Each defender earns +{xp} experience and +{gold}.
+  lost: '🔥 The wave swept through {camp}: wins {wins} of {need}.'
+  lost_food: 'The pantry lost {rations} {rations|ration|rations}. Nothing else is lost: levels, zones and members stay the same.'
+  lost_nothing: 'Nothing else is lost: levels, zones and members stay the same.'
+  next: 👁 The next wave arrives in {n} {n|day|days}.
+  trial_won: 🏰 {camp} won the Trial Night ({wins} of {need})! It can now grow into a castle.
+  trial_lost: '🌙 {camp} didn''t win the Trial Night: wins {wins} of {need}. It can be called again in {time}. Nothing is lost.'
+  trial_screen: 🌙 Trial Night
+  trial_intro: '🏰 To become a castle, {camp} must win the Trial Night: a big wave with an elite {enemy} (level {level}).'
+  trial_how: With today's active members, you need {need} {need|win|wins} from different members, with {time} to get them. If you lose, you retry after {days} {days|day|days} and nothing is lost.
+  trial_button: 🌙 Trial Night
+  trial_wait: ⏳ It can be called again in {time}.
+  trial_famine: '🌾 You can''t call it with an empty pantry: fill it first.'
+  trial_busy: 'There''s already a wave underway: finish it first.'
+  trial_sent: 🌙 You called the Trial Night! Online members were alerted.
+energy:
+  empty: ⚡ Out of energy. Moving, exploring and gathering cost 1; hunting, {hunt}. You recover 1 in {time} ({per_day} a day).
+  route_stopped: '⚡ You ran out of energy: the journey stops at {name}.'
+invite:
+  line: '👥 Invite friends with your link: for every new player who joins, you get +{bonus} ⚡ extra energy. Invited: {n}.'
+talents:
+  button: 🌟 Talents ({n})
+  title: 🌟 Talents
+  intro: 'Each level gives you 1 point. Put it into a specialization of your class: each one has 8 abilities that unlock with more and more points, and each point makes you a bit stronger in its role. Your main specialization ⭐ is the one with the most points.'
+  points: 'Unspent points: {n}'
+  spec_line: '{name} — {role}: {n} {n|point|points}'
+  spec_title: '{name} · {role}'
+  spec_points: 'Points here: {n} · Unspent: {free}'
+  spend_button: ➕ Put 1 point here
+  spent: 🌟 You put in 1 point.
+  unlocked: 'Unlocked: {names}.'
+  new_point: '🌟 You earned 1 talent point: 👤 Hero → 🌟 Talents.'
+  bar: 'Combat bar: {abilities}'
+  respec_button: 🔄 Reset specialization · {cost}
+  no_spec: no specialization yet
+  no_role: you earn your first talent point when you level up
+  choose_first: '👉 First pick your specialization: tap one below and put your point in it. You earn your first talent point at level 2.'
+  respec_done: '🔄 You paid {cost}: your points are back. You have {n} to spend.'
+  bar_line: '🎛️ Your bar: {abilities}'
+  ability_open: 🔓 {ability} — {effect}
+  ability_locked: 🔒 {need} pts · {ability} — {effect}
+  next_unlock: 'Next: {name} at {need} {need|point|points} ({left} {left|point|points} to go).'
+  all_unlocked: You've unlocked all 8 abilities of this specialization.
+  legend: ×2 = double your attack · (20) = its cost · 🔋 = Endurance
+bar:
+  button: 🎛️ Combat Bar
+  title: 🎛️ Combat Bar
+  intro: In combat you have ⚔️ Attack and 3 abilities. Slot 1 is your response to the warning (🛡 block, 💨 dodge or 🫧 shield). Slots 2 and 3 are for whatever you want.
+  slot_line: '{n}️⃣ {ability} — {effect}'
+  slot_empty: '{n}️⃣ (empty: unlock more abilities with 🌟 Talents)'
+  auto: 'Right now it fills itself: your newest response, your newest strike and your newest other ability (in a Defense role, your newest heal). Tap a slot to choose yourself.'
+  custom: You chose this bar. Tap a slot to change it.
+  slot_button: '{n}️⃣ Slot {n}'
+  pick_title: 'Slot {n}: what goes here?'
+  pick_rule_1: 'A response goes here: block, dodge or shield.'
+  pick_rule_other: Any ability you've unlocked goes here. If it's already in another slot, they swap places.
+  pick_current: 'Now: {ability}'
+  no_choices: You don't have another ability for this slot yet. Unlock more with 🌟 Talents.
+  page: 'Page {n} of {total}:'
+  choice_line: • {ability} — {effect}
+  more: ▶️ See more
+  saved: '🎛️ Done: {name} goes in slot {n}.'
+  new_hint: 'Put it on your bar: 🌟 Talents → 🎛️ Combat Bar.'
+ability_effect:
+  strike: hit ×{power}
+  interrupt: hit ×{power}; cuts off an ✋ interruptible attack if you act first
+  finisher: finisher ×{power}, plus ×{per} more per combo
+  dot: ×{power} damage each round for {rounds} rounds
+  heal: heals you for {pct}% of your health
+  hot: heals you for {pct}% of your health each round for {rounds} rounds
+  empower: you hit {pct}% harder for {rounds} rounds
+  expose: the enemy takes {pct}% more damage for {rounds} rounds
+  weaken: the enemy hits {pct}% softer for {rounds} rounds
+  block: stops {pct}% of a blockable hit
+  dodge: you avoid a dodgeable hit
+  shield: shield worth {pct}% of your health
+  lifesteal: heals you for {pct}% of the damage
+  combo: +{n} combo points
+  gain: +{n} {resource}
+  stamina: costs {n} 🔋
+  cooldown: then wait {n} rounds
+camps:
+  title: 🏕️ Camps
+  zone_line: 🏕️ {name} is here ({n} {n|member|members})
+  info: '🏕️ {name}, founded by {founder}, at coordinates ({x}, {y}). Members: {n}.'
+  you_member: You're part of this camp.
+  size: 📐 Level {level} · covers {zones} zone(s). In its territory you aren't attacked on arrival, and travel counts the distance from its edge.
+  grow_cost: ⬆️ Expanding it adds 1 neighboring zone of your choice and costs {items}. In your territory you gather 50% more.
+  grow_button: ⬆️ Expand camp
+  grow_title: ⬆️ Which way does it grow?
+  grow_intro: 'Choose which neighboring zone your camp takes. It costs {items}. Check the resources you know in each one: choose strategically.'
+  grow_option: ({x}, {y}) {items}
+  grow_more: ▶️ See more zones
+  stage_line: '🏰 Stage: {stage}. As it grows it becomes a village, town, city and castle.'
+  stage:
+    campamento: camp
+    aldea: village
+    pueblo: town
+    ciudad: city
+    castillo: castle
+  grow_missing: To expand it you need {items}.
+  chest_cost: 🪎 Chest ×{n}
+  chests_have: 🪎 You have {n} {n|chest|chests}. They're built in the Clearing, in 💰 Coins (/coins).
+  grow_missing_chests: '🪎 You''re short on chests: you have {n} of {need}. They''re built in the Clearing, in 💰 Coins (/coins).'
+  grow_blocked: There's no free space left around it to grow.
+  grown: ⬆️ The camp grew! It now covers {zones} zones (added ({x}, {y})).
+  land_line: 🏕️ Territory of {name}
+  claro_land: '🔥 Clearing territory: you aren''t attacked on arrival here.'
+  found_intro: 'There''s no camp here. To found one at ({x}, {y}) you need:'
+  req_far: To be far from the Clearing (Distance {n} or more)
+  req_explored: To have explored this zone 100% (you're at {pct}%)
+  req_known: 'To know the surroundings: {n} of {need} neighboring zones known (visited or explored from here)'
+  req_alone: No other camp within {n} {n|zone|zones}
+  req_cost: To carry {items}
+  req_one: Not to belong to another camp
+  found_button: 🏕️ Found camp here
+  cannot: You don't meet all the requirements yet.
+  founded: 🏕️ You founded {name} at ({x}, {y})! Whoever arrives here will find it, and I'll let you know.
+  ask_name: ✏️ Type your camp's name (3 to 24 letters). Everyone who arrives will see it.
+  bad_name: 'That name won''t work: use 3 to 24 letters, numbers or spaces.'
+  name_taken: There's already a camp with that name. Try another.
+  cancel_name: ❌ Cancel
+  renamed: ✏️ Your camp is now called {name}.
+  rename_button: ✏️ Change name
+  members_cap: '👥 Members: {n} of {cap}. Expanding it makes room for more.'
+  join_button: 🙋 Ask to join
+  join_sent: 🙋 You asked the founder to join. I'll let you know when they answer.
+  join_waiting: ⏳ Your request to join is waiting for the founder's answer.
+  full: 'This camp is full: it has to grow for anyone else to join.'
+  join_title: 🙋 Someone wants to join your camp
+  join_body: '{name} (level {level}) wants to join {camp}. Do you let them in?'
+  join_yes: ✅ Accept
+  join_no: ❌ Decline
+  join_accepted: '✅ You joined {camp}! It''s your camp now: travel counts the distance from it.'
+  join_refused: ❌ {camp} didn't accept you this time.
+  you_accepted: ✅ You accepted the new member.
+  you_refused: ❌ You declined the request.
+  leave_button: 🚪 Leave camp
+  left: 🚪 You left {camp}.
+  default_name: '{name}''s Camp'
+  found_it: 🏕️ You came across {name}, founded by {founder}.
+  members_told: Its members were told you arrived.
+  visit_title: 🏕️ Someone arrived at your camp
+  visit_body: '{name} (level {level}) arrived at {camp}. How do you welcome them?'
+  friendly: 🤝 Friendly
+  hostile: ⚔️ Hostile
+  already_answered: Another member already answered for that visitor.
+  you_answered: 'You answered: {relation}.'
+  answer:
+    friendly: 🤝 {camp} welcomes you as a friend ({name} answered).
+    hostile: ⚔️ {camp} considers you hostile ({name} answered). Be careful.
+  relation:
+    friendly: 🤝 Friendly
+    hostile: ⚔️ Hostile
+    unknown: ❔ They haven't answered yet whether you're welcome.
+stats:
+  title: 📊 Stats
+  hp: '❤️ Max health: {value} — if it hits 0, you fall.'
+  attack: '⚔️ Attack: {value} — the base damage of Attack and your abilities.'
+  defense: '🛡 Defense: {value}% — how much damage you shave off each hit.'
+  initiative: '💨 Initiative: {value} — who acts first in the round; acting first lets you interrupt.'
+  stamina: '🔋 Endurance: {value} — responses spend it (block, dodge, shields); you get 1 back each round you don''t respond.'
+  resource: '🔷 {resource}: up to {value} — your abilities spend it; ⚔️ Attack restores it.'
+  energy: '⚡ Energy: {value}/{max} — moving, exploring and gathering cost 1; you recover {per_day} a day.'
+  toxicity: '☠️ Toxicity: max {value}% per fight — each potion adds some; when it''s full, you can''t drink more.'
+  talents: '🌟 Talents: +{attack}% attack · +{hp}% health.'
+  talents_armor: '🌟 Talents: +{attack}% attack · +{hp}% health · +{armor}% defense.'
+  gear: '🛡️ Gear: +{attack}% attack · +{hp}% health · +{armor}% defense — check it in /gear.'
+gear:
+  title: 🛡️ Gear
+  button: 🛡️ Gear
+  button_new: 🛡️ Gear 🆕
+  simple_line: '{emoji} {item}   {stats}'
+  nothing_worn: You aren't wearing anything.
+  in_bag: '🎒 Pieces in your backpack: {n}'
+  equip_menu: 🔁 Equip
+  equip_menu_new: 🔁 Equip 🆕
+  equip_title: 🔁 Equip or remove
+  item_title: 🔎 Gear piece
+  hero_line: '🛡️ Gear: {items} — /gear'
+  slot:
+    arma: ⚔️ Weapon
+    cabeza: ⛑️ Head
+    armadura: 🥋 Chest
+    manos: 🧤 Hands
+    piernas: 👖 Legs
+    pies: 🥾 Feet
+    joya: 💍 Jewelry
+  type:
+    espada: sword
+    daga: dagger
+    arco: bow
+    baston: staff
+    tela: cloth
+    cuero: leather
+    malla: mail
+    placas: plate
+    joya: jewelry
+  rarity:
+    comun: common
+    poco_comun: uncommon
+    raro: rare
+    epico: epic
+  stat:
+    attack: '{value}% attack'
+    hp: '{value}% health'
+    armor: '{value}% defense'
+  no_stats: no bonuses
+  worn_line: '{slot}: {item} — {stats}'
+  empty_slot: '{slot}: — empty'
+  total: 'Gear total: {stats}'
+  backpack_title: 'In your backpack ({n}):'
+  backpack_line: • {item}{n} — {status}
+  backpack_empty: You have no pieces in your backpack. Enemies sometimes drop gear when you win.
+  worn_title: 'Worn (tap to remove):'
+  hint: 'Tap a piece to see what it gives you, put it on or sell it in the Clearing. You decide: the game only advises you.'
+  piece_button: '{item}'
+  piece_worn: ✔️ {item}
+  more: ▶️ See more pieces
+  for_you: '✅ It suits you: it''s for your class.'
+  for_you_later: 🔒 It will suit you from level {level}.
+  not_for_you: '⚠️ It''s not for your class (you don''t use {type}): you can wear it, but it only gives half.'
+  not_for_you_later: 🔒 From level {level}, and it's not for your class (you don't use {type}).
+  loot: 🎁 A gear piece dropped. Check it in 👤 Hero → 🛡️ Gear.
+  loot_worn: '🎁 A gear piece dropped and you put it on, since you had nothing in that slot. Check it in 👤 Hero → 🛡️ Gear: it may not be the best for you.'
+  detail_line: '{slot} · {type} · {rarity} · level {level}'
+  detail_stats: 'Bonuses: {stats}'
+  detail_real: (it gives you {stats})
+  is_worn: ✔️ You're wearing it.
+  compare_better: '⬆️ Compared to what you wear: {stats}'
+  compare_worse: '⬇️ Compared to what you wear: {stats}'
+  compare_same: 🟰 Same as what you wear.
+  sell_in_claro: 💰 In the Clearing they'll give you {price} for it.
+  equip_button: ✅ Equip
+  unequip_button: ↩️ Remove
+  sell_button: 💰 Sell (+{price})
+  equipped: You put on {item}.
+  unequipped: You took off {item}; it's back in your backpack.
+  err:
+    missing: That piece is no longer in your backpack.
+    type: Your class can't use that piece.
+    level: You're not high enough level for that piece yet.
+wallet:
+  title: 💰 Coins
+  button: 💰 Coins
+  coins: 'Coins: {coins}'
+  coins_help: '🥉 Bronze, 🥈 Silver and 🥇 Gold are earned by playing and add up on their own: {rate} bronze make 1 silver and {rate} silver make 1 gold.'
+  bags: '💰 Bags: {n}'
+  bags_help: They're sewn in the Clearing with {items} and {coins}. They're used for dual specialization and for building chests.
+  chests: '🪎 Chests: {n}'
+  chests_help: They're built in the Clearing with {bags} 💰 {bags|bag|bags} and {items}. They pay for growing large camps (from level {level}).
+  gems: '💎 Diamonds: {n}'
+  gems_help: Diamonds are bought. They give comforts and cosmetics, never power.
+  cards: '🪪 Profession credentials: {n}'
+  cards_help: 'Your professional calling card: show it to other players so they know what you can make. They come with professions.'
+  boost_on: '⭐ Experience +50% active: {time} left.'
+  sew_button: 💰 Sew a bag
+  sew_in_claro: 💰 Bags are sewn and 🪎 chests are built in the Clearing, or in your camp's 🧵 Workshop.
+  sew_missing: To sew a bag you need {items} and {coins}.
+  sewn: 💰 You sewed a bag. You now have {n}.
+  chest_button: 🪎 Build chest
+  chest_missing: To build a chest you need {bags} 💰 {bags|bag|bags} (you have {have}) and {items}.
+  chest_built: 🪎 You built a chest. You now have {n}.
+  gems_button: 💎 Diamond shop
+  gem_shop_title: 💎 Diamond Shop
+  gem_shop_intro: Diamonds are bought with real money (coming soon). They only give comforts and cosmetics.
+  xp_boost_line: ⭐ Experience +{pct}% for {days} days · {gems} 💎
+  xp_boost_button: ⭐ Experience · {gems} 💎
+  banner_line:
+    beta: '🚩 Beta tester banner: shows next to your name forever · {gems} 💎'
+    premium: '🚩 Premium banner: shows next to your name · {gems} 💎'
+  banner_button: 🚩 Banner · {gems} 💎
+  banner_owned: 'You already have your banner: {tag}'
+  banner_tag:
+    beta: 🚩[Beta]
+    premium: 🚩
+  no_gems: You don't have enough diamonds.
+  boost_bought: ⭐ Done! You earn +50% experience for 7 days.
+  banner_bought: 🚩 Done! Your {tag} banner now shows next to your name.
+potions:
+  button: 🧪 Potions
+  title: 🧪 Potions
+  intro: 'What you carry to heal yourself and what it''s for:'
+  line: '{emoji} {item} ×{n} — heals {heal}% of your health · toxicity {tox}'
+  none: You aren't carrying any potions. The Clearing's merchant sells them.
+guardian:
+  button: ⚔️ Challenge the Guardian
+  lair_name: Raigambre's Lair
+  route_mark: ' 👑'
+  zone_line: 👑 {name} (level {level}) lives here. Challenge it from 🧭 Explore.
+  pioneer_line: '🏅 {name} beat it first: Pioneer of the Clearing forever.'
+  nobody_yet: 🏅 No one has beaten it yet. The first will be Pioneer of the Clearing.
+  ready: '⚔️ You can challenge it now. Careful: there''s no fleeing from a Guardian, only dodging.'
+  no_gather: '🚫 You can''t gather in the lair: the Guardian won''t allow it.'
+  wait: ⏳ {name} is recovering from your last fight. Come back in {time}.
+  not_here: 👑 The Guardian isn't here. Its lair appears on the 🗺️ Map once someone discovers it.
+  started: '👑 You stand before {name}. The ground shakes: there''s no fleeing here, only dodging.'
+  map_line: '👑 Guardian''s Lair: ({x}, {y}) · Distance {lejania}'
+  rewards_first: ⭐ +{xp} experience
+  first_win: '🎁 First victory! You receive the {item}: trade it for a unique piece made for you.'
+  again_in: ⏳ You can challenge {name} again in {time}. Future victories give coins and sometimes gear.
+  pioneer_title: 🏅 You're the first in the world to beat it! You earn the title {title} forever.
+  news_title: 📣 World news
+  news_body: '🏅 {hero} beat {boss} for the first time in the world and earns the title {title}. The lair stays open to everyone: every hero who beats it takes home its Memento.'
+  titles_line: '🏅 Titles: {titles}'
+  title:
+    pionero_raigambre: «Pioneer of the Clearing»
+  memento_button: 🌰 Use the Memento
+  memento_intro: An amber seed that still pulses. Choose ONE of these two pieces, made for you; the other is lost.
+  memento_option: '{item} · {slot} · {stats} · from level {level}'
+  memento_done: 🌰 The seed opens and leaves you {item}.
+batch:
+  total_left: ⏳ {time} left in total until it's done.
+  title_gather: 🪓 Gather
+  title_explore: 🔎 Explore
+  title_hunt: 🏹 Batch hunt
+  ask_hunt: How much energy do you want to spend hunting? Each prey costs ⚡{energy}, takes {minutes} min, and your hero fights it alone.
+  estimate_hunt: ⏱️ Each prey takes {step}; with all your energy ({n} ⚡, {k} {k|prey|prey}), about {total} in total.
+  started_hunt: 🏹 You'll hunt {n} {n|prey|prey} (until {time}). Your hero fights alone; you can stop whenever you want.
+  ask_gather: How much energy do you want to spend gathering? Each time costs 1 ⚡ and takes {minutes} min; it keeps going on its own until done.
+  ask_explore: How much energy do you want to spend exploring? Each time costs 1 ⚡, takes {minutes} min and adds 15% to 30% of the zone.
+  energy: ⚡ You have {energy}.
+  estimate: ⏱️ Each run takes {step}; with all your energy ({n}), about {total} in total. Any fights that come up make it a little longer.
+  space: '🎒 Backpack space: {used}/{cap}'
+  explored: 🔎 This zone is {pct}% explored.
+  around: '🔭 Around you: {done}/{total} zones at 100%.'
+  around_next: Now you're studying {name} ({x}, {y}), at {pct}%, without moving.
+  cancel_hint: 'If you made a mistake, tap ❌ Cancel: you don''t spend anything.'
+  amount: '{n}'
+  all: All
+  times: ⏱️ {items}
+  time_item: '{n} → {time}'
+  time_all: all ({n}) → {time}
+  button: ⚡ {n} · ⏱️ {time}
+  more: ▶️ More
+  max: ⚡ All ({n}) · ⏱️ {time}
+  back: ◀️ Back
+  cancel: ❌ Cancel
+  stop: ❌ Stop
+  started_gather: 🪓 You'll gather {n} {n|time|times} (until {time}). You can stop whenever you want.
+  started_explore: 🔎 You'll explore {n} {n|time|times} (until {time}). You can stop whenever you want.
+  progress: Run {done} of {total}
+  gathered: '🪓 You gathered {n} {n|time|times}: {items}.'
+  explored_done: '🔎 You explored {n} {n|time|times}: the zone is at {pct}%.'
+  found: '🔎 You found: {items}.'
+  coins: 🔎 You found {coins} among the remains.
+  xp: '✨ Exploring taught you: +{xp} experience.'
+  xp_gather: '✨ Gathering taught you: +{xp} experience.'
+  reason:
+    stopped: '❌ You stopped: the energy for the run in progress came back.'
+    fight: ⚔️ Something interrupted you.
+    energy: ⚡ You ran out of energy.
+    bag_full: '🎒 Your backpack is full: sell to the merchant or contribute to the Clearing''s works.'
+    depleted: '🪫 This zone is depleted for now: its resources come back over time.'
+    full_explored: '✅ There''s nothing left to explore from here: your zone and the ones around it are at 100%.'
+    auto_wait: '🩹 Your health was below {pct}%: your hero won''t fight alone. The fight is waiting for you.'
+    auto_defeat: '💀 You lost an auto-fight to {enemy} (lv {level}): the batch stopped. You lost {gold} and you''re badly wounded (👤 Hero → 🩺 Health).'
+    auto_fled: '🏳️ A fight wouldn''t end and your hero walked away: the batch stopped.'
+    auto_low_hp: '🩹 Your health dropped below {pct}%: your hero retreated and the batch stopped.'
+dual:
+  title: 🔀 Dual Specialization
+  intro: With dual specialization you have two talent setups and can switch between them whenever you want (out of combat). Each one keeps its own points, abilities and bar.
+  req_points: 'Commit to your specialization: {need} points in it (you have {n})'
+  req_bags: Pay {need} 💰 bags (you have {n}). They're sewn in the Clearing.
+  unlock_button: 🔓 Unlock · {n} 💰
+  unlocked: 🔀 You unlocked dual specialization! You paid {n} 💰. Your second setup starts with all your points free.
+  active: '▶️ In use: setup {n} — {name}'
+  other: '⏸️ Saved: setup {n} — {name}'
+  empty: empty, with all your points free
+  switch_button: 🔀 Switch to setup {n}
+  switched: 🔀 You're now using setup {n}.
+  link: '🔀 Dual specialization: /dual'
+  link_on: '🔀 Dual specialization: you''re using setup {n} — /dual'
+guild:
+  title: 🛡️ Guild
+  button: 🛡️ Guild
+  none: 🛡️ {camp} doesn't have a guild yet.
+  what: A guild brings the camp's members together. It levels up with what everyone does together (exploring, winning fights and gathering), and each level lets more people in.
+  castle_hint: 🏰 For the camp to become a castle, it needs a guild of level {level} or higher, with {members} or more members.
+  cap_warning: '👥 With a guild, the camp''s member cap can grow: the guild gives {cap} spots at level 1 and more as it levels up. It never lowers the cap you already have.'
+  found_cost: Creating it costs {coins}. The founder creates it, while at the camp.
+  only_founder: Only the founder, {founder}, can create it.
+  found_button: 🛡️ Create guild
+  ask_name: ✏️ Type your guild's name (3 to 24 letters). It's unique in the world.
+  bad_name: 'That name won''t work: use 3 to 24 letters, numbers or spaces.'
+  name_taken: There's already a guild with that name. Try another.
+  cancel: ❌ Cancel
+  cannot: The founder creates the guild, while at their camp, if it doesn't have one yet.
+  no_coins: Creating the guild costs {coins}. You don't have enough coins.
+  founded: '🛡️ You founded the guild {name}! Its members are the camp''s members: everything they do from now on helps it level up.'
+  founded_title: 🛡️ Your camp has a guild
+  founded_push: '🛡️ {founder} founded the guild {name} at {camp}. Everything you do from now on helps it level up: check it in 🛡️ Guild or with /guild.'
+  header: 🛡️ {name} · level {level}
+  camp_line: '🏕️ Camp: {camp}'
+  members: '👥 Members: {n} of {cap}'
+  member_line: • {name} (lv {level}){crown} · {ago}
+  crown: ' 👑'
+  ago:
+    now: active now
+    minutes: active {n} min ago
+    hours: active {n} h ago
+    days: active {n} {n|day|days} ago
+    never: no recent activity
+  needs_title: 'To reach level {next} (room for {cap}):'
+  need_line: '{label}: {have}/{need} {bar}'
+  counter:
+    explorations: 🧭 Explorations
+    victories: ⚔️ Fights won
+    gathered: 🪓 Resources gathered
+  how: It counts what every member does from the moment they join.
+  top: 🏆 It's the highest level for now.
+  ready: '✅ You meet every requirement: the guild can level up!'
+  ready_away: ✅ You meet every requirement! Go back to the camp to level it up.
+  up_button: ⬆️ Level up guild
+  not_ready: You don't meet the level's requirements yet.
+  risen: 🎉 The guild {name} reached level {level}! There's now room for {cap} members.
+  risen_title: 🛡️ Your guild leveled up
+  camp_line_visitor: '🛡️ Guild: {name} (level {level})'
+  members_cap: '👥 Members: {n} of {cap}. There''s room for more as the guild levels up.'
+  full: 'This camp is full: its guild has to level up for anyone else to join.'
+  no_camp: 🛡️ The guild is created from your camp. First found one or join one.
+  rename_camp: ✏️ Rename camp
+  castle_title: '🏰 To become a castle it needs:'
+  castle_has_guild: A guild
+  castle_level: A guild of level {need} or higher (it's level {level})
+  castle_level_none: A guild of level {need} or higher
+  castle_members: '{need} or more members (there are {n})'
+  castle_blocked: It can't be a castle yet. Check it in 🛡️ Guild.
+upgrades:
+  button: 🔨 Upgrades
+  title: 🔨 Camp Upgrades
+  header: 🔨 Upgrades of {camp}
+  count: '🏗️ Built: {n} of {total} · a castle needs {need}'
+  defense: '🛡️ Defense: {n}'
+  defense_help: 'Defenses strengthen the surroundings: each point helps protect the camp when the waves come.'
+  built_line: ✅ {names}
+  none_built: No upgrades built yet.
+  open_title: '🔨 Open works:'
+  open_line: '{name} {bar} {pct}%'
+  open_more: …and {n} more in 🔨 Works.
+  locked_line: '🔒 At level {level}, {n|this opens|these open}: {names}'
+  works_button: 🔨 Works ({n})
+  services_button: 🏘️ Services
+  works_title: 🔨 Camp Works
+  works_intro: Tap 🤲 on a work to contribute everything it asks for that you carry in your backpack (and its coins). Any member can contribute. What gets finished stays forever.
+  page: Page {n} of {total}
+  work_line: '{name} · level {level}'
+  defense_mark: ' · 🛡️ +{n}'
+  give_button: 🤲 {name}
+  more: ➡️ See more
+  no_works: 'There are no open works right now: expand the camp to open more.'
+  nothing_to_give: 'You aren''t carrying anything {name} needs. It still needs: {items}.'
+  given: '🤲 You contributed {items} to {name}: +{xp} experience and +{merit} merit.'
+  built: 🎉 {name} is finished! It stays forever.
+  built_push_title: 🔨 Your camp has a new upgrade
+  built_push: 🔨 {hero} finished {name} at {camp}.
+  coin_line: 'Coins: {have} of {need} {bar}'
+  claro_none: '🏕️ The Clearing is the base camp: it has no upgrades. Upgrades are built at your camp.'
+  members_only: 🔨 Upgrades are built by members, while at their camp.
+  camp_line: '🔨 Upgrades built: {n} · 🛡️ Defense: {defense}'
+  castle_line: 🔨 {need} or more upgrades built (they have {n})
+  castle_blocked: 'It can''t be a castle yet: it''s missing upgrades. Build them in 🔨 Upgrades.'
+  services_title: 🏘️ Camp Services
+  services_intro: What's already built and members can use here, without going back to the Clearing.
+  rest_line: '🛏️ Shelter: sleep a while and wake up with full health · {price}'
+  rest_button: 🛏️ Shelter · {price}
+  rest_started: 🛏️ You pay {price} and lie down in the shelter. You'll wake up in {time}.
+  trade_line: '🏪 Trading Post: buys your materials at half their price. Not food: that goes to the pantry.'
+  nothing_to_sell: 'You aren''t carrying any materials to sell. Food isn''t sold: it goes to the pantry.'
+  workshop_line: '🧵 Workshop: sew 💰 bags and build 🪎 chests, just like in the Clearing.'
+  workshop_button: 🧵 Workshop
+  workshop_title: 🧵 Camp Workshop
+  workshop_intro: Here you sew 💰 bags and build 🪎 chests, with the same recipe as in the Clearing.
+  bag_recipe: A bag takes {items} and {coins}.
+  chest_recipe: A chest takes {bags} 💰 {bags|bag|bags} and {items}.
+  smithy_line: '🔨 Smithy: sell the gear you don''t use from 🛡️ Gear, just like in the Clearing.'
+  no_services: No services built yet.
+  need_library: 📚 First build the 📚 Library.
+  granary_line: '🌾 Granary: you eat {pct}% less.'
+  garden_line: '🥬 Garden: adds {n} {n|ration|rations} a day.'
+  smoked: '🍖 Smokehouse: the meat yielded {n} more {n|ration|rations}.'
+knowledge:
+  button: 📚 Knowledge
+  locked: 📚 Knowledge unlocks with the 📚 Library (level {level}).
+  title: 📚 Camp Knowledge
+  intro: What the camp learns together stays forever.
+  rule: You study one thing at a time. It only applies to members, in the camp's territory.
+  done_line: '✅ {name}: {desc}'
+  current_line: '📖 Studying {name}: {desc}'
+  open_line: '▫️ {name}: {desc}'
+  choose: 'Choose what to study first:'
+  start_button: 📖 {name}
+  give_button: 🤲 Contribute to the study
+  all_done: 🏆 You've already learned everything there is for now.
+  one_at_a_time: 'You''re already studying something else: finish that first.'
+  started: 📖 You started studying {name}. Each member contributes what they carry.
+  done: 🎉 You learned {name}!
+  push_title: 📚 Your camp learned something new
+  push: 📚 Thanks to {hero}'s contribution, {camp} learned {name}.
+upgrade:
+  fogon:
+    name: Hearth
+    desc: Members recover health 50% faster in the territory.
+  empalizada:
+    name: Palisade
+    desc: A log fence that holds back vermin.
+  torre_vigia:
+    name: Watchtower
+    desc: 'See attacks coming sooner: it warns you in time.'
+  pozo:
+    name: Well
+    desc: Resources in the territory's zones come back 50% faster.
+  refugio:
+    name: Shelter
+    desc: Heal at the camp like at the Clearing's inn, but cheaper.
+  trueque:
+    name: Trading Post
+    desc: Sell your materials at the camp. Food can't be sold.
+  granero:
+    name: Granary
+    desc: Members eat 10% less from the pantry.
+  trampas:
+    name: Traps
+    desc: Hidden snares and pits around the camp.
+  ahumadero:
+    name: Smokehouse
+    desc: Each 🍖 meat contributed to the pantry is worth 1 more ration.
+  perrera:
+    name: Kennel
+    desc: Guard dogs that sniff out intruders.
+  cabanas:
+    name: Cabins
+    desc: Room for 2 more members in the camp.
+  taller:
+    name: Workshop
+    desc: Sew 💰 bags and build 🪎 chests at the camp.
+  muralla:
+    name: Stone Wall
+    desc: 'A real wall: it has to be broken down to get in.'
+  huerto:
+    name: Garden
+    desc: Adds 1 ration a day to the pantry.
+  braseros:
+    name: Braziers
+    desc: 'Fire on the wall: at night it defends even better.'
+  herreria:
+    name: Smithy
+    desc: Sell the gear you don't use at the camp.
+  enfermeria:
+    name: Infirmary
+    desc: Those who fell recover 50% faster in the territory.
+  biblioteca:
+    name: Library
+    desc: Opens the camp's 📚 Knowledge.
+  torres_arqueros:
+    name: Archer Towers
+    desc: They shoot on their own at anything that comes close.
+  foso:
+    name: Moat
+    desc: 'Water around the wall: no one gets close easily.'
+tech:
+  herramientas:
+    name: Tools
+    desc: +10% resources when gathering in the territory.
+  cartografia:
+    name: Cartography
+    desc: +5 exploration points per run in the territory.
+  rastreo:
+    name: Tracking
+    desc: +10% chance of 🍖 meat in the territory and in the zones that border it.
+prof:
+  button: ⚒️ Professions
+  title: ⚒️ Professions
+  intro: Each profession improves as you practice it, from rank 1 to 100, and each rank opens new recipes. Almost everything crafted needs materials from two or more professions.
+  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 🔬 Research.'
+  line: '{name} · rank {rank} ({title}) {bar}'
+  how_line: '   ↳ {how}'
+  perk_line: '   ✨ Current perk: {perk}'
+  next: '   🔓 At rank {rank}: {items}'
+  not_started: 'Not started: {items}'
+  perk:
+    attack: +{v}% attack
+    hp: +{v}% health
+    armor: +{v} armor
+    regen: health comes back {v}% faster
+    potion: potions +{v}%
+    bandage: bandages and salves +{v}%
+    heal: heals +{v}% (healers)
+    bag: +{v} backpack space
+    sell: +{v}% coins when selling
+    only_armor: with {what}
+    only_weapon: with {what}
+  branch:
+    gather: 🪓 Gathering
+    refine: 🪚 Refining
+    craft: 🛠️ Crafting
+    service: 💱 Services
+  rank:
+    aprendiz: Apprentice
+    oficial: Journeyman
+    experto: Expert
+    artesano: Artisan
+    maestro: Master
+    gran_maestro: Grandmaster
+  stations_claro: 🏭 Here in the Clearing you'll find all the basic stations.
+  stations_camp: '🏭 Your camp''s stations: {items}. Refining here: +{pct}% chance of an extra unit.'
+  stations_none: '🏭 To refine and craft: the Clearing, or your camp''s center with a 🧵 Workshop, 🔨 Smithy or 🔥 Hearth (🍲 Cooking).'
+  workshop_line: '⚒️ Professions: your camp''s stations for refining and crafting.'
+  energy: '⚡ Energy: {energy}/{max}'
+  refine_button: 🪚 Refine
+  craft_button: 🛠️ Craft
+  station_title_refine: 🪚 Refine
+  station_title_craft: 🛠️ Craft
+  station_intro_refine: Turn what you gathered into crafting materials. ✅ = you have everything.
+  station_intro_craft: Gear and remedies made with materials from several professions. ✅ = you have everything.
+  entry_ok: ✅ {item} ← {inputs} · ⚡{energy}
+  entry: ▫️ {item} ← {inputs} · ⚡{energy}
+  entry_missing: '   ❌ Missing: {items}'
+  entry_button_ok: ✅ {item}
+  entry_button: '{item}'
+  station_empty: There are no recipes for these stations at your rank.
+  page: Page {n} of {total}
+  more: ➡️ See more
+  more_in_claro: 🏭 There are more recipes at the Clearing's stations.
+  locked_hint: '🔒 Higher-rank recipes open as you make recipes: each rank brings new ones.'
+  recipe_title: 📜 Recipe
+  recipe_prof: '{name} · your rank {rank} ({title}) · needs rank {need}'
+  recipe_needs: 'You need, each time:'
+  have_line: '✅ {item}: {have}/{need}'
+  lack_line: '❌ {item}: {have}/{need}'
+  gear_out: 'Makes: {slot} · {type} · level {level} · {stats}'
+  heal_out: 'Makes: heals {heal}% of your health · ☠️ toxicity {tox}'
+  material_out: 'Used for: {use}'
+  energy_cost: ⚡ {energy} energy each time (you have {have})
+  gains: 'You gain each time: ✨ {xp} experience · {name} +{prof_xp}'
+  yield_line: ⭐ {pct}% chance of an extra unit (from your rank and the station).
+  locked: 🔒 Needs rank {need} in {name} (you have {rank}).
+  no_station: '🏭 That station isn''t here: go to the Clearing or to your camp''s center with a 🧵 Workshop, 🔨 Smithy or 🔥 Hearth (🍲 Cooking).'
+  missing_line: '❌ You''re missing: {items}'
+  missing: '❌ You''re missing: {items}. You didn''t spend anything.'
+  make_button: 🔨 Make {n}
+  make_all: 🔨 Make all ({n})
+  make_ask: 🔨 How many times do you make it? What you have is enough for {n}.
+  made: 🔨 You made {items} (⚡ −{energy}).
+  made_extra: '⭐ Your profession yielded extra: +{n}.'
+  gear_made: 🆕 The piece is in 👤 Hero → 🎒 Backpack → 🛡️ Gear.
+  gear_worn: 🆕 You put it on because you had nothing in that slot. Check it in 🛡️ Gear.
+  gained: ✨ +{xp} experience · {name} +{prof_xp}
+  rank_up: '⬆️ {name}: rank {rank} ({title})!'
+  unlocked: '🔓 New recipe: {items}.'
+  rare_unlocked: 🔓 Now you can find {item} while gathering.
+  summary: '⚒️ Professions: {items}'
+profession:
+  comercio:
+    name: Trade
+    how: sell to the Clearing's merchant, at your camp's 💱 trading post, or sell your old gear
+  medicina:
+    name: Medicine
+    how: make 🫙 salves and 🧰 first-aid kits (extract and cloth) at a station
+  lenador:
+    name: Lumberjack
+    how: gather 🪵 wood
+  minero:
+    name: Miner
+    how: gather 🪨 stone, ⚙️ metal scrap and 🏺 clay; with rank, also 💠 rough gems
+  herbolario:
+    name: Herbalist
+    how: gather 🌿 healing herbs and 🧵 fiber; with rank, also 🌸 moonflowers
+  desollador:
+    name: Skinner
+    how: 'defeat beasts: they drop 🍖 meat and 🦌 hide'
+  aserradero:
+    name: Sawmill
+    how: 'at a station: 🪵 wood → 🟫 plank'
+  fundicion:
+    name: Smelting
+    how: 'at a station: ⚙️ metal scrap → 🔩 ingot'
+  destilacion:
+    name: Distilling
+    how: 'at a station: 🌿 healing herb → 🧴 extract'
+  tejeduria:
+    name: Weaving
+    how: 'at a station: 🧵 fiber → 🧣 cloth'
+  curtiduria:
+    name: Tanning
+    how: 'at a station: 🦌 hide → 🟤 leather'
+  carpinteria:
+    name: Carpentry
+    how: bows and staves (🟫 planks with 🧣 cloth or 🟤 leather) and, from rank 40, 🪑 furniture for the camp
+  herreria:
+    name: Blacksmithing
+    how: 'swords, daggers, breastplates and plate pieces (head, hands, legs and feet): 🔩 ingots with 🟤 leather'
+  alquimia:
+    name: Alchemy
+    how: 'potions: 🧴 extract with 🏺 clay (greater ones, with 🌸 moonflower)'
+  sastreria:
+    name: Tailoring
+    how: 'bandages, robes and cloth pieces (head, hands, legs and feet): 🧣 cloth with 🌿 herbs, 🟤 leather or 🧴 extract'
+  peleteria:
+    name: Leatherworking
+    how: 'leather and mail armor, including head, hands, legs and feet: 🟤 leather with 🧣 cloth or 🔩 ingots'
+  joyeria:
+    name: Jewelcrafting
+    how: 'rings and amulets: 🔩 ingots with 💠 rough gems'

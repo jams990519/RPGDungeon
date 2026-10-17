@@ -22,31 +22,37 @@ venda:
   price: 3
 hierba_curativa:
   name_key: item.hierba_curativa
+  code: 6                  # [ES] D-243: el código del recurso (/06), estable: nunca se renumera ni se reutiliza
   emoji: "🌿"
   kind: material
   price: 3
 pieza_metal:
   name_key: item.pieza_metal
+  code: 5                  # [ES] D-243: el código del recurso (/05), estable: nunca se renumera ni se reutiliza
   emoji: "⚙️"
   kind: material
   price: 6
 madera:
   name_key: item.madera
+  code: 1                  # [ES] D-243: el código del recurso (/01), estable: nunca se renumera ni se reutiliza
   emoji: "🪵"
   kind: material
   price: 2
 piedra:
   name_key: item.piedra
+  code: 2                  # [ES] D-243: el código del recurso (/02), estable: nunca se renumera ni se reutiliza
   emoji: "🪨"
   kind: material
   price: 2
 arcilla:
   name_key: item.arcilla
+  code: 4                  # [ES] D-243: el código del recurso (/04), estable: nunca se renumera ni se reutiliza
   emoji: "🏺"
   kind: material
   price: 2
 fibra:
   name_key: item.fibra
+  code: 3                  # [ES] D-243: el código del recurso (/03), estable: nunca se renumera ni se reutiliza
   emoji: "🧵"
   kind: material
   price: 2
@@ -60,6 +66,7 @@ fibra:
 # provisiones es el sumidero de monedas de emergencia (supervivencia-del-asentamiento.md §15.8).
 carne:
   name_key: item.carne
+  code: 7                  # [ES] D-243: el código del recurso (/07), estable: nunca se renumera ni se reutiliza
   emoji: "🍖"
   kind: material             # [ES] se vende barata con "Vender materiales"; vale más en la despensa
   food: 2
@@ -67,6 +74,7 @@ carne:
   price: 2
 provisiones:
   name_key: item.provisiones
+  code: 9                  # [ES] D-243: el código del recurso (/09), estable: nunca se renumera ni se reutiliza
   emoji: "🥖"
   kind: food                 # [ES] no es material: "Vender materiales" no la revende
   food: 1
@@ -82,12 +90,14 @@ provisiones:
 # raciones que lo crudo que lleva (tests/test_oficios_campamento.py); el sillar no debe dejar ganar monedas refinando.
 pescado:
   name_key: item.pescado
+  code: 10                 # [ES] D-243: el código del recurso (/10), estable: nunca se renumera ni se reutiliza
   emoji: "🐟"
   kind: material             # [ES] como la carne: es comida (food), va a la despensa o a la 🍲 Cocina; 💱 Vender todo no la vende
   food: 1                    # [ES] 1 ración cruda (la carne, 2); el 🎣 Pescador del campamento le suma hasta 30 %
   price: 2
 racion_campamento:
   name_key: item.racion_campamento
+  code: 43                 # [ES] D-243: el código del recurso (/43), estable: nunca se renumera ni se reutiliza
   emoji: "🍱"
   kind: food
   cooked: true
@@ -95,6 +105,7 @@ racion_campamento:
   price: 3
 pescado_asado:
   name_key: item.pescado_asado
+  code: 44                 # [ES] D-243: el código del recurso (/44), estable: nunca se renumera ni se reutiliza
   emoji: "🍢"
   kind: food
   cooked: true
@@ -102,6 +113,7 @@ pescado_asado:
   price: 3
 guiso_cazador:
   name_key: item.guiso_cazador
+  code: 45                 # [ES] D-243: el código del recurso (/45), estable: nunca se renumera ni se reutiliza
   emoji: "🥘"
   kind: food
   cooked: true
@@ -109,6 +121,7 @@ guiso_cazador:
   price: 10
 conserva:
   name_key: item.conserva
+  code: 46                 # [ES] D-243: el código del recurso (/46), estable: nunca se renumera ni se reutiliza
   emoji: "🥫"
   kind: food
   cooked: true
@@ -116,6 +129,7 @@ conserva:
   price: 18
 festin:
   name_key: item.festin
+  code: 47                 # [ES] D-243: el código del recurso (/47), estable: nunca se renumera ni se reutiliza
   emoji: "🍗"
   kind: food
   cooked: true
@@ -123,6 +137,7 @@ festin:
   price: 27
 banquete:
   name_key: item.banquete
+  code: 48                 # [ES] D-243: el código del recurso (/48), estable: nunca se renumera ni se reutiliza
   emoji: "🍽️"
   kind: food
   cooked: true
@@ -130,6 +145,7 @@ banquete:
   price: 45
 sillar:
   name_key: item.sillar
+  code: 16                 # [ES] D-243: el código del recurso (/16), estable: nunca se renumera ni se reutiliza
   emoji: "🧱"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio (se vende de a uno)
@@ -149,111 +165,133 @@ sillar:
 # 0.28 (D-188): un solo material más, la 🖤 obsidiana del 🌋 volcán (al final de esta lista); los demás terrenos nuevos reusan estos.
 bayas:
   name_key: item.bayas
+  code: 21                 # [ES] D-243: el código del recurso (/21), estable: nunca se renumera ni se reutiliza
   emoji: "🫐"
   kind: material
   price: 2                   # [ES] 🌿 pradera, bosque, colinas y tundra
 setas:
   name_key: item.setas
+  code: 22                 # [ES] D-243: el código del recurso (/22), estable: nunca se renumera ni se reutiliza
   emoji: "🍄"
   kind: material
   price: 3                   # [ES] 🌿 pradera, bosque, pantano y ruinas
 miel:
   name_key: item.miel
+  code: 23                 # [ES] D-243: el código del recurso (/23), estable: nunca se renumera ni se reutiliza
   emoji: "🍯"
   kind: material
   price: 4                   # [ES] 🌿 pradera y bosque
 mazorca:
   name_key: item.mazorca
+  code: 24                 # [ES] D-243: el código del recurso (/24), estable: nunca se renumera ni se reutiliza
   emoji: "🌽"
   kind: material
   price: 2                   # [ES] 🌿 pradera y colinas
 lino:
   name_key: item.lino
+  code: 25                 # [ES] D-243: el código del recurso (/25), estable: nunca se renumera ni se reutiliza
   emoji: "🌼"
   kind: material
   price: 2                   # [ES] 🌿 pradera y pantano
 juncos:
   name_key: item.juncos
+  code: 26                 # [ES] D-243: el código del recurso (/26), estable: nunca se renumera ni se reutiliza
   emoji: "🎋"
   kind: material
   price: 2                   # [ES] 🌿 pantano
 nenufar:
   name_key: item.nenufar
+  code: 27                 # [ES] D-243: el código del recurso (/27), estable: nunca se renumera ni se reutiliza
   emoji: "🪷"
   kind: material
   price: 4                   # [ES] 🌿 pantano
 cactus:
   name_key: item.cactus
+  code: 28                 # [ES] D-243: el código del recurso (/28), estable: nunca se renumera ni se reutiliza
   emoji: "🌵"
   kind: material
   price: 3                   # [ES] 🌿 desierto
 datiles:
   name_key: item.datiles
+  code: 29                 # [ES] D-243: el código del recurso (/29), estable: nunca se renumera ni se reutiliza
   emoji: "🌴"
   kind: material
   price: 3                   # [ES] 🌿 desierto
 flor_escarcha:
   name_key: item.flor_escarcha
+  code: 30                 # [ES] D-243: el código del recurso (/30), estable: nunca se renumera ni se reutiliza
   emoji: "💮"
   kind: material
   price: 4                   # [ES] 🌿 montaña y tundra
 musgo:
   name_key: item.musgo
+  code: 31                 # [ES] D-243: el código del recurso (/31), estable: nunca se renumera ni se reutiliza
   emoji: "🌱"
   kind: material
   price: 2                   # [ES] 🌿 bosque, pantano, montaña, tundra y ruinas
 raiz_amarga:
   name_key: item.raiz_amarga
+  code: 32                 # [ES] D-243: el código del recurso (/32), estable: nunca se renumera ni se reutiliza
   emoji: "🥕"
   kind: material
   price: 3                   # [ES] 🌿 pradera, bosque, pantano y ruinas
 tomillo:
   name_key: item.tomillo
+  code: 33                 # [ES] D-243: el código del recurso (/33), estable: nunca se renumera ni se reutiliza
   emoji: "🍃"
   kind: material
   price: 3                   # [ES] 🌿 pradera, colinas, montaña y desierto
 resina:
   name_key: item.resina
+  code: 34                 # [ES] D-243: el código del recurso (/34), estable: nunca se renumera ni se reutiliza
   emoji: "💧"
   kind: material
   price: 3                   # [ES] 🪓 bosque, pantano, montaña y tundra
 corteza:
   name_key: item.corteza
+  code: 35                 # [ES] D-243: el código del recurso (/35), estable: nunca se renumera ni se reutiliza
   emoji: "🍂"
   kind: material
   price: 2                   # [ES] 🪓 bosque, colinas, pantano, tundra y ruinas
 carbon:
   name_key: item.carbon
+  code: 36                 # [ES] D-243: el código del recurso (/36), estable: nunca se renumera ni se reutiliza
   emoji: "🌑"
   kind: material
   price: 3                   # [ES] ⛏️ colinas, montaña, tundra y ruinas
 sal:
   name_key: item.sal
+  code: 37                 # [ES] D-243: el código del recurso (/37), estable: nunca se renumera ni se reutiliza
   emoji: "🧂"
   kind: material
   price: 3                   # [ES] ⛏️ colinas, montaña y desierto
 cuarzo:
   name_key: item.cuarzo
+  code: 38                 # [ES] D-243: el código del recurso (/38), estable: nunca se renumera ni se reutiliza
   emoji: "🔹"
   kind: material
   price: 5                   # [ES] ⛏️ colinas, montaña, desierto y ruinas
 arena:
   name_key: item.arena
+  code: 39                 # [ES] D-243: el código del recurso (/39), estable: nunca se renumera ni se reutiliza
   emoji: "⏳"
   kind: material
   price: 2                   # [ES] ⛏️ desierto y ruinas
 hielo:
   name_key: item.hielo
+  code: 40                 # [ES] D-243: el código del recurso (/40), estable: nunca se renumera ni se reutiliza
   emoji: "🧊"
   kind: material
   price: 2                   # [ES] ⛏️ montaña y tundra
 chatarra:
   name_key: item.chatarra
+  code: 41                 # [ES] D-243: el código del recurso (/41), estable: nunca se renumera ni se reutiliza
   emoji: "🔧"
   kind: material
   price: 3                   # [ES] ⛏️ desierto y ruinas
 obsidiana:
   name_key: item.obsidiana
+  code: 42                 # [ES] D-243: el código del recurso (/42), estable: nunca se renumera ni se reutiliza
   emoji: "🖤"                # [ES] no es un color de terreno: el 🗺️ Mapa lo muestra en sus nodos sin confundirse
   kind: material
   price: 5                   # [ES] ⛏️ 0.28 (D-188): propia solo del 🌋 volcán (vidrio de lava); 🗿 sillares con menos piedra
@@ -268,6 +306,7 @@ obsidiana:
 # Si cambias esto, revisa: members mueve el cupo (_members_cap) y defense las oleadas (_camp_defense, _raid_weaken).
 literas_roble:
   name_key: item.literas_roble
+  code: 49                 # [ES] D-243: el código del recurso (/49), estable: nunca se renumera ni se reutiliza
   desc_key: furniture.literas_roble
   emoji: "🛏️"
   kind: furniture
@@ -275,6 +314,7 @@ literas_roble:
   price: 60
 armero_roble:
   name_key: item.armero_roble
+  code: 50                 # [ES] D-243: el código del recurso (/50), estable: nunca se renumera ni se reutiliza
   desc_key: furniture.armero_roble
   emoji: "🗄️"
   kind: furniture
@@ -1510,48 +1550,56 @@ guardian_placas:
 # ≈ precio de entrada × 0,5).
 piel:
   name_key: item.piel
+  code: 8                  # [ES] D-243: el código del recurso (/08), estable: nunca se renumera ni se reutiliza
   emoji: "🦌"
   kind: material
   loot_amount: [1, 2]        # [ES] como la carne: 1 o 2 cuando sale en el botín de una bestia
   price: 3
 tablon:
   name_key: item.tablon
+  code: 11                 # [ES] D-243: el código del recurso (/11), estable: nunca se renumera ni se reutiliza
   emoji: "🟫"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 7                   # [ES] 3 maderas (2 c/u) + el trabajo
 lingote:
   name_key: item.lingote
+  code: 12                 # [ES] D-243: el código del recurso (/12), estable: nunca se renumera ni se reutiliza
   emoji: "🔩"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 13                  # [ES] 2 piezas de metal (6 c/u) + el trabajo
 extracto:
   name_key: item.extracto
+  code: 13                 # [ES] D-243: el código del recurso (/13), estable: nunca se renumera ni se reutiliza
   emoji: "🧴"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 10                  # [ES] 3 hierbas curativas (3 c/u) + el trabajo
 tela_tejida:
   name_key: item.tela_tejida
+  code: 14                 # [ES] D-243: el código del recurso (/14), estable: nunca se renumera ni se reutiliza
   emoji: "🧣"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 7                   # [ES] 3 fibras (2 c/u) + el trabajo
 cuero_curtido:
   name_key: item.cuero_curtido
+  code: 15                 # [ES] D-243: el código del recurso (/15), estable: nunca se renumera ni se reutiliza
   emoji: "🟤"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 7                   # [ES] 2 pieles (3 c/u) + el trabajo
 gema_bruta:
   name_key: item.gema_bruta
+  code: 17                 # [ES] D-243: el código del recurso (/17), estable: nunca se renumera ni se reutiliza
   emoji: "💠"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
   price: 15                  # [ES] rara: el minero la encuentra desde el rango 10
 flor_luna:
   name_key: item.flor_luna
+  code: 18                 # [ES] D-243: el código del recurso (/18), estable: nunca se renumera ni se reutiliza
   emoji: "🌸"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no lo vende: es trabajo de un oficio o un raro (se vende de a uno)
@@ -1948,8 +1996,8 @@ espec_joya_oro_1: {name_key: item.espec_joya_oro_1, emoji: "💍", kind: gear, s
 espec_joya_oro_2: {name_key: item.espec_joya_oro_2, emoji: "📿", kind: gear, slot: joya, type: joya, tier: 14, rarity: epico, req_level: 100, source: crafted, spec: joyeria_orfebreria, stats: {hp: 0.24, attack: 0.19, armor: 0.04}, price: 592}
 # [ES] Muebles exclusivos de la 🪑 Carpintería especializada (mismas reglas que los otros muebles: uno de cada uno por campamento,
 # "effect" con los nombres de content/camp_upgrades.yaml). 🛡️ Escudos hace los paveses; 🛒 Mobiliario y carros, el carro.
-paveses_roble: {name_key: item.paveses_roble, desc_key: furniture.paveses_roble, emoji: "🛡️", kind: furniture, effect: {defense: 1}, price: 90}    # [ES] +1 de 🛡️ Defensa contra las oleadas (con el armero, +2 de muebles)
-carro_viveres: {name_key: item.carro_viveres, desc_key: furniture.carro_viveres, emoji: "🛒", kind: furniture, effect: {ration_cut: 0.05}, price: 70}   # [ES] los miembros comen 5 % menos de la despensa (se suma al 🌾 Granero; el tope sigue en 90 %)
+paveses_roble: {name_key: item.paveses_roble, code: 51, desc_key: furniture.paveses_roble, emoji: "🛡️", kind: furniture, effect: {defense: 1}, price: 90}    # [ES] +1 de 🛡️ Defensa contra las oleadas (con el armero, +2 de muebles)
+carro_viveres: {name_key: item.carro_viveres, code: 52, desc_key: furniture.carro_viveres, emoji: "🛒", kind: furniture, effect: {ration_cut: 0.05}, price: 70}   # [ES] los miembros comen 5 % menos de la despensa (se suma al 🌾 Granero; el tope sigue en 90 %)
 
 # --- D-110 / D-113: gear tiers up to level 100 ---
 # Loot pieces every 10 levels (tier 5 = level 10 ... tier 14 = level 100), one per slot and type, and crafted pieces of
@@ -5819,12 +5867,14 @@ artesano_joya_13:
 # Si cambias esto, revisa: IDs estables (las guardan las mochilas); subir el precio puede abrir la trampa de monedas.
 esencia:
   name_key: item.esencia
+  code: 19                 # [ES] D-243: el código del recurso (/19), estable: nunca se renumera ni se reutiliza
   emoji: "✨"
   kind: material
   keep: true                 # [ES] 💱 Vender todo no la vende: es trabajo del ✨ Encantamiento
   price: 2                   # [ES] el mercader paga 1 🥉 (la mitad, nunca menos de 1)
 esencia_mayor:
   name_key: item.esencia_mayor
+  code: 20                 # [ES] D-243: el código del recurso (/20), estable: nunca se renumera ni se reutiliza
   emoji: "🔮"
   kind: material
   keep: true                 # [ES] solo sale de piezas 🟣 épicas (las de artesano, las obras maestras, las del Guardián)

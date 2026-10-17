@@ -272,7 +272,7 @@ def test_stealth_grows_evenly_with_rank_and_the_infiltrado_adds_some(service):
     assert service._stealth_chance(spy) == pytest.approx(0.35)
     service.content.balance["explorer"]["stealth_max"] = 0.3
     assert service._stealth_chance(spy) == pytest.approx(0.3)                       # never past the cap
-    view = service.act("test:1", "oficios")
+    view = service.text("test:1", "/explorador")               # D-257: the long lines live behind the profession's code
     assert any("🥷" in line and "25" in line for line in view.body)                 # in the explorer's perk line
     assert any("🔭" in line for line in view.body)                                  # and the 🔭 thresholds
     assert not service.texts.missing
@@ -302,7 +302,7 @@ def test_without_stealth_the_fight_comes(service, clock, monkeypatch):
     assert service.store.get("combat", "test:1") is not None
 
 
-def test_automatic_batches_are_unaffected(service, clock, monkeypatch):
+def test_automatic_batches_are_unaffected(service, clock, monkeypatch, auto_fights_on):     # D-258: off in the game
     hero, _ = explore_round(service, clock, monkeypatch, 1.0, auto=True)
     assert hero.kills >= 1                                                          # it fought: stealth stayed out
     assert not (hero.activity or {}).get("sneaked")
@@ -372,7 +372,7 @@ def test_stealth_never_applies_to_chosen_fights(service, clock, monkeypatch):
     assert calls == []
 
 
-def test_automatic_hunting_batches_still_fight_every_prey(service, clock, monkeypatch):
+def test_automatic_hunting_batches_still_fight_every_prey(service, clock, monkeypatch, auto_fights_on):
     monkeypatch.setattr(GameService, "_stealth_chance", lambda self, hero: 1.0)
     hero = ready(service, level=30)
     kills = hero.kills

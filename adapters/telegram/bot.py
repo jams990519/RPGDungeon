@@ -5,11 +5,13 @@ Environment variables (names only in .env.example, never values in the repo):
   RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
+  RPG_REPORTS_CHAT_ID chat that receives the daily player report and the 💬 Feedback notes (default: the team's reports chat)
 
 [ES]
 Para qué sirve: el proceso del bot. Recibe mensajes y botones de Telegram, se los pasa
 al motor y edita el "mensaje vivo" con la vista nueva. Cada pocos segundos revisa los
-viajes que terminaron y avisa al jugador.
+viajes que terminaron y avisa al jugador. D-260 (0.33): también manda al chat de informes cada mensaje de
+💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py).
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §4 (identidad)
 Módulo: adaptador de Telegram
 Depende de: aiogram, engine.service, engine.core, adapters.storage, adapters.telegram.render
@@ -32,6 +34,7 @@ Si cambias esto, revisa:
 from __future__ import annotations
 
 import asyncio
+import html
 import logging
 import os
 import re
@@ -41,8 +44,9 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.filters import CommandStart
-from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
+from aiogram.types import BufferedInputFile, CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
 
+from adapters import reports
 from adapters.storage import SqliteStore
 from adapters.telegram import render as render_module
 from adapters.telegram.render import render_keyboard, render_text
@@ -55,12 +59,14 @@ log = logging.getLogger("lostrealms.telegram")
 MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
-def menu_keyboard(service: GameService) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego" y con el aviso del parche. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
-    labels = [KeyboardButton(text=a.label) for a in service.menu()]
+def menu_keyboard(service: GameService, account: str | None = None) -> ReplyKeyboardMarkup:
+    """Bottom keyboard built from the engine's global menu, 2 per row, in the player's language. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6), en el idioma del jugador (D-250). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego", con el aviso del parche y al cambiar de idioma. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
+    labels = [KeyboardButton(text=a.label) for a in service.menu(account)]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
+REPORTS_CHAT_DEFAULT = "-1004365890113"   # D-260: the team's reports chat (the owner gave it, 17-oct-2026); not a credential
+REPORT_RETRY_SECONDS = 3600              # a report Telegram refused is tried again an hour later, not every tick
 TOKEN_RE = re.compile(r"^\d{6,12}:[A-Za-z0-9_-]{30,}$")
 
 
@@ -109,14 +115,14 @@ def register(dp: Dispatcher, service: GameService) -> None:
         parts = (message.text or "").split(maxsplit=1)
         if len(parts) == 2 and parts[1].startswith("ref_"):
             service.register_referral(account, parts[1][4:])
-        await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+        await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
         view = service.view(account)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
 
     @dp.message(F.text)
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
-        menu_ids = {a.label: a.id for a in service.menu()}
+        menu_ids = service.menu_labels()           # D-250: the bottom buttons in every language (an old keyboard works)
         commands = service.commands()
         word = (message.text or "").split("@")[0].strip().lower()
         if message.text in menu_ids:
@@ -124,23 +130,28 @@ def register(dp: Dispatcher, service: GameService) -> None:
         elif word in commands:
             view = service.act(account, commands[word])
         elif message.text == MENU_LABEL:
-            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service))
+            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
             view = service.view(account)
         elif message.text.startswith("/"):
             view = service.text(account, message.text)      # D-117: /bio <texto>, /saludar <nombre>... (unknown ones show the game)
         else:
             view = service.text(account, message.text)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
+        if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
+            await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 
     @dp.callback_query()
     async def on_button(query: CallbackQuery) -> None:
-        view = service.act(account_of(query.from_user.id), query.data or "")
+        account = account_of(query.from_user.id)
+        view = service.act(account, query.data or "")
         try:
             await query.message.edit_text(render_text(view), reply_markup=render_keyboard(view))
         except TelegramBadRequest as error:
             if "not modified" not in str(error):
                 await send_view(query.bot, query.from_user.id, view)
         await query.answer()
+        if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
+            await query.bot.send_message(query.from_user.id, "🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 
 
 async def notifier(bot: Bot, service: GameService) -> None:
@@ -157,7 +168,55 @@ async def notifier(bot: Bot, service: GameService) -> None:
                 await asyncio.sleep(0.05)
         except Exception:  # keep the loop alive; the error is logged
             log.exception("notifier error")
+        try:
+            await send_reports(bot, service)          # D-260: 💬 Feedback and the daily player report
+        except Exception:
+            log.exception("reports error")
         await asyncio.sleep(TICK_SECONDS)
+
+
+def reports_chat() -> int | None:
+    """The chat id for reports and feedback (RPG_REPORTS_CHAT_ID, else the team's chat); None if it is not a number."""
+    raw = (os.environ.get("RPG_REPORTS_CHAT_ID") or REPORTS_CHAT_DEFAULT).strip()
+    try:
+        return int(raw)
+    except ValueError:
+        log.error("RPG_REPORTS_CHAT_ID is not a chat id")
+        return None
+
+
+_report_failed_at = [float("-inf")]   # when the last report failed (loop time); none yet
+
+
+async def send_reports(bot: Bot, service: GameService) -> None:
+    """Post every new 💬 Feedback note and, once a day, the player report file to the reports chat (D-260).
+
+    [ES]
+    Qué hace: manda al chat de informes cada mensaje de 💬 Feedback nuevo (con el héroe, su nivel y su idioma) y, una vez por
+    día, el informe de jugadores como archivo .txt (adapters/reports.py). Si Telegram rechaza el informe (por ejemplo, el bot
+    no está en el chat), lo anota en el registro y lo vuelve a intentar a la hora. Un error nunca para al bot.
+    La llama: notifier, en cada vuelta. Si cambia, afecta: lo que recibe el equipo.
+    """
+    chat = reports_chat()
+    if chat is None:
+        return
+    for note in service.take_feedback():
+        text = (f"💬 <b>Feedback</b> · {html.escape(str(note.get('hero', '?')))} · nivel {note.get('level', '?')} · "
+                f"{html.escape(str(note.get('lang', '?')))}\n{html.escape(str(note.get('text', '')))}")
+        try:
+            await bot.send_message(chat, text)
+        except Exception:  # the note stays saved in the store "feedback"
+            log.exception("could not post feedback: %s", note.get("text", ""))
+    loop_now = asyncio.get_event_loop().time()
+    if reports.due(service) and loop_now - _report_failed_at[0] >= REPORT_RETRY_SECONDS:
+        try:
+            name, body = reports.build(service)
+            await bot.send_document(chat, BufferedInputFile(body.encode("utf-8"), filename=name), caption="📊 Informe de jugadores")
+            reports.mark_sent(service)
+            log.info("player report sent: %s", name)
+        except Exception:
+            _report_failed_at[0] = loop_now
+            log.exception("could not send the player report to %s", chat)
 
 
 async def announce_patch(bot: Bot, service: GameService) -> None:
@@ -168,15 +227,17 @@ async def announce_patch(bot: Bot, service: GameService) -> None:
     La llaman: main, al arrancar.
     Si cambia, afecta: los avisos de parches.
     """
-    view = service.pending_announcement()
-    if view is None:
+    if service.pending_announcement() is None:
         return
     sent = 0
     for account_id in service.players():
         if not account_id.startswith("tg:"):
             continue
+        view = service.announcement_view(account_id)     # D-250: each player reads it in their language
+        if view is None:
+            continue
         try:
-            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service))
+            await bot.send_message(int(account_id[3:]), render_text(view), reply_markup=menu_keyboard(service, account_id))
             sent += 1
         except Exception:  # blocked the bot, deleted account, etc.
             log.info("could not announce to %s", account_id)

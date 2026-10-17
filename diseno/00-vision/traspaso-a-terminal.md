@@ -53,11 +53,13 @@ Cuando algo de aquí quede viejo, se corrige en el mismo cambio que lo cambia.
 | Dónde corre | Railway, proyecto **satisfied-balance**, servicio **RPGDungeon**, entorno production. IDs: proyecto `8483a1b9-1aac-4111-9b8d-81b202908953`, servicio `88e89f1b-92f9-40e4-a0b5-525993ffca90`, entorno `91fbd952-6fff-4189-9394-c3aa76a74567` |
 | Cómo arranca | `railway.json`: `python -m adapters.telegram.bot`. Las partidas viven en un volumen montado en `/data` |
 | Variables | Solo los nombres, en `.env.example`. **El token del bot nunca se imprime, se copia ni se sube** |
-| Lo decidido | [Decisiones](decisiones.md): la última es D-234 |
-| Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-213) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-214) |
+| Lo decidido | [Decisiones](decisiones.md): la última es D-261 (D-247 a D-249 las registró la terminal el 14-oct en su rama local; todavía no están en el archivo) |
+| Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-231) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-220; E-215 la citó D-241 y no existe: no usarla) |
 | Lo que dijo el dueño, por fecha | [Entrevista de voz](entrevista-de-voz.md) |
-| Las notas de cada parche | `content/patches.yaml` (la última es `v0_32`) |
+| Las notas de cada parche | `content/patches.yaml` (la última es `v0_33`, con `title_en` y `notes_en`) |
 | Copia en texto para otras IA | Notion (§7) |
+| Los dos idiomas | [Idiomas](../01-plataforma/idiomas.md): toda clave de texto va en `es*.yaml` y en `en*.yaml`; `python tools/check_locales.py` en 0 errores |
+| Informes y 💬 Feedback | El chat del equipo `RPG_REPORTS_CHAT_ID` (si no está, el chat que dio el dueño). El bot tiene que ser miembro de ese chat. Ver [Informes](../01-plataforma/informes.md) |
 
 ---
 
@@ -71,8 +73,9 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
    - Arrancar la consola: `printf 'Nombre\n1\n1\nq\n' | python -m adapters.cli.play` crea un héroe y sale (en Windows, abrir `python -m adapters.cli.play`, crear el héroe a mano y salir con `q`). Después, borrar `data/`.
    - Verificar los enlaces de los documentos (el comando está en CLAUDE.md §5).
 3. **Si el parche es jugable,** agregar su entrada al final de `content/patches.yaml`:
-   - Mismo contenido: 0.32 → 0.32.1.
-   - Contenido nuevo: 0.33 (D-67, D-73).
+   - Mismo contenido: 0.33 → 0.33.1.
+   - Contenido nuevo: 0.34 (D-67, D-73).
+   - Desde la 0.33 cada entrada lleva también `title_en` y `notes_en` (D-250).
    - Las notas van en lenguaje de jugador.
 4. **Commit en español,** con un tema por commit y en lenguaje de resultado. **Agregar los archivos por nombre**, nunca con `git add -A` ni `git add .`. Antes, `git status`, para no subir archivos ajenos (por ejemplo `.claude/` o `data/`).
 5. **Push de la rama** y **pull request en borrador** contra `main`.
@@ -128,7 +131,10 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 
 ---
 
-## 5. Cómo está el juego (11-oct-2026)
+## 5. Cómo está el juego (17-oct-2026)
+
+- **0.33 (D-250, D-251), el juego también en inglés:** cada jugador elige su idioma en la primera pantalla o en ⚙️ Opciones → 🌐 Idioma; todo sale en su idioma, también los avisos que le mandan otros. Trae además lo que la terminal dejó listo el 11-oct en la rama `revision/codigo-0.32` (la revisión del código, R-02, R-03, cada rol guarda sus puntos, el tiempo total del lote). Ver [Revisión del código](revision-codigo-0.32.md) y la hoja de ruta nueva ([Hoja de ruta](hoja-de-ruta.md) §0). La 0.33 trae también tres pedidos del 17-oct (D-255): 📦 Recursos corto con código (/07, D-243), el botón 🔗 Moverte con la emboscada que ya no corta el viaje (D-244) y viajar a la fogata estando ocupado. Y la **fogata ordenada** (D-257 a D-261): los oficios se aprenden pagando su primera receta (la recolección y la exploración suben solas), 📋 Mis oficios corto con códigos, 🛒 mercader con Comprar y Vender, posada según la vida que falta, un encargo por personaje cada día (se cobra en el Claro o en tu campamento), ⚙️ Opciones sin peleas automáticas y con 💬 Feedback, el 📔 Diario que vuelve a donde se abrió, y el **informe diario de jugadores** en el chat del equipo ([Informes](../01-plataforma/informes.md)). El dueño dio el sí para publicarla el 17-oct (pull request #76).
+- **Diseño del 17-oct, sin código:** la escalera de 5 a 200 jugadores (D-252 a D-254): el grupo nace al construir, nunca en la fogata; 10 etapas con un solo cupo, escuadras de 5, líder y oficiales; quien no juega libera su lugar a los 30 días; la muralla crece con la etapa y la tierra de adentro cosecha sola. Ver [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md).
 
 - **Versión 0.32 en el juego** (commit `65faad7`, pull request #74, publicado el 9-oct-2026).
 - **El parche anterior: 0.31** ([Combate en cadena](../04-combate/combate-en-cadena.md), D-225 a D-232):
@@ -158,18 +164,21 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
+| E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
+| E-216 a E-218 (P-227 a P-229) | La muralla: cuánto cosecha cada zona (40 % o menos), si reemplaza el +50 % de hoy y cuántas zonas cierra cada etapa | 20 % al almacén del asentamiento; sí; de 1 a 81 zonas |
 | E-214 (P-213) | ¿El Paladín es sanador y DPS (así quedó) o tanque y sanador? | Sanador y DPS |
 | E-186 (P-185) | ¿Un cambio de clase gratis para los héroes que el parche 0.31 movió solos? | Sí, una vez |
 | E-208 a E-213 | Los pendientes del parche de clases: los porcentajes de las marcas, qué no genera agro, el modo híbrido, los puntos al cambiar de rol, la variedad y el orden del tanque | Están en `content/balance.yaml` → `chain`; así quedan hasta que responda |
 | E-204 a E-207 | Las hogueras y dónde nace un jugador nuevo, el nombre "Campamento", qué cuenta en 📒 Lugares y qué ve el 🧭 Explorador | Cada una tiene la suya |
-| Tandas 1 a 6 | El resto: 94 preguntas en la tanda 1 | — |
+| Tandas 1 a 6 | El resto: 99 preguntas en la tanda 1 | — |
 
 **Otras cosas pendientes con el dueño**
 - **Notas del "mundo abierto"** que trajo de otro chat el 8-oct: modo campamento, nodos por guerra de grupos, territorios con impuesto y cuadrantes, y 7 preguntas. Se le pidió el texto completo; todavía no se registraron como decisiones.
 - **`tests/test_lugares.py`:** pidió deshacer cambios en ese archivo, pero en ese turno no se había tocado. Se le recomendó dejarlo y se espera su respuesta.
 - **Copia en texto en Notion:** está en pausa (§7).
 
-**Trabajo siguiente, en orden**
+**Trabajo siguiente:** el orden de la [Hoja de ruta](hoja-de-ruta.md) §0 (11-oct, fases 0 a 9): primero la telemetría (fase 1), después la fórmula de armadura y las estadísticas (fases 2 y 3). El arreglo de la cadena de movimiento (D-244) ya está hecho en la 0.33. Las decisiones D-235 a D-249 (11 y 14-oct) contestaron varias de las preguntas de abajo (por ejemplo, las de las clases, E-208 a E-213, en D-238): antes de preguntar, revisar decisiones.md. Lo que sigue es la lista vieja, del 11-oct:
+
 1. **"Subir de nivel no da estadísticas" (D-232).** Espera la reforma de estadísticas del equipo (D-210, D-211, E-170 a E-176): con el equipo de hoy, un héroe de nivel 20 quedaría con la fuerza de uno de nivel 1.
 2. **Cómo se forman las civilizaciones** (en curso). Ver [El Colapso y las comunidades](../02-mundo/el-colapso-y-las-comunidades.md), [Caravanas y aldeanos](../02-mundo/caravanas-y-aldeanos.md), D-201 y D-202.
 3. **Economía de jugadores, 2.ª tanda:** mercado de órdenes, pedidos de fabricación, durabilidad y reparación (D-109, D-113).

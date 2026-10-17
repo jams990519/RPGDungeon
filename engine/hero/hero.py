@@ -26,6 +26,10 @@ Si cambias esto, revisa:
       guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
       tests/test_professions.py). D-112: el 🧭 Explorador guarda aquí su experiencia con el id "explorador" (sube
       explorando; con el rango ve más en el mapa: engine/service/game.py sección "enemy camps"; tests/test_enemy_camps.py)
+    - learned (0.33, D-257): los oficios que el héroe aprendió pagando su primera receta. La 🪓 recolección y la
+      🧭 exploración no se aprenden (learn: auto en content/professions.yaml). Un oficio que no está aquí tiene rango 0:
+      no se hace ninguna receta ni sube, pero la experiencia de antes queda en professions y vuelve al aprenderlo
+      (engine/service/game.py _knows, _learn; tests/test_aprender_oficios.py)
     - prof_specs y spec_xp (D-115, D-141): las 🎓 especializaciones de oficio (id de oficio → ids de especialización de
       content/professions.yaml "specs", en el orden elegido: la 1.ª desde el rango 25, la 2.ª desde el 75, nunca tres) y el
       dominio de cada una (id de especialización → experiencia de oficio ganada mientras la tenía). El dominio de una
@@ -103,6 +107,8 @@ class Hero:
             Players seen in the last presence.minutes are also listed in their zone (D-96).
         professions: profession xp, profession id (content/professions.yaml) -> xp (D-109). The rank (1-100)
             is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
+        learned: the professions the hero learned by paying their first recipe (0.33, D-257). Gathering and exploration are
+            never learned (learn: auto). A profession not learned has rank 0; its xp from before stays in professions.
         prof_specs: the 🎓 specializations the hero holds (D-115, D-141), profession id -> spec ids in the order chosen (the
             first from rank 25, the second from rank 75; never three). Empty for heroes saved before it.
         spec_xp: mastery of each specialization, spec id -> profession xp earned in its profession while holding it. Kept
@@ -190,6 +196,7 @@ class Hero:
     seen_at: float = 0.0
     professions: dict[str, int] = field(default_factory=dict)
     prof_specs: dict[str, list[str]] = field(default_factory=dict)      # D-141: 🎓 specializations held per profession
+    learned: list[str] = field(default_factory=list)                    # D-257: professions learned (first recipe paid)
     spec_xp: dict[str, int] = field(default_factory=dict)               # D-141: mastery of every specialization ever held
     options: dict[str, Any] = field(default_factory=dict)
     origin: str | None = None

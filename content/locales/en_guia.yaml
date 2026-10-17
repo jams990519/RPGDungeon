@@ -1,0 +1,264 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_guia.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_guia.yaml. Una clave nueva va
+# primero en es_guia.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+guide:
+  title: 🧭 Guided path
+  welcome_title: 🔥 You reached the Clearing
+  welcome: 👋 Welcome, {name}!
+  progress: '📍 Step {n} of {total}: {name}'
+  now: '🧭 Now: {task}'
+  now_hint: '📖 /guide: the explanation of this step.'
+  step_done: '✅ Step {n} of {total} done: {name}.'
+  reward: 🎁 +{gold} · +{xp} experience.
+  next_title: '👉 Step {n} of {total}: {name}'
+  path_done: '🎉 You finished the basic guided path!
+
+    You''ll discover the rest along the way: I''ll let you know when you find something new.
+
+    ❓ Questions? 🏕️ Camp → ❓ Help.'
+  all_done: ✅ You've already done the whole guided path. New tips arrive on their own when you find something.
+  waiting_away: 🏕️ When you leave the Clearing, I'll guide you to found your own camp.
+  learned_title: '📚 What you''ve learned so far:'
+  learned_none: '📚 No tips yet: I''ll give them to you as you find new things.'
+  tip_title: '💡 New: {name}'
+  move_free: doesn't cost energy, but it takes time
+  move_cost: costs {n} ⚡ per zone and also takes time
+  missing: '▫️ You still need: {items}'
+  ready: ✅ You can found it right here.
+  go:
+    explore_menu: 🧭 Explore
+    hunt: 🏹 Hunt
+    map: 🗺️ Map
+    places: 📒 Places
+    claro: 🏕️ Camp
+    trainer: 🧑‍🏫 Trainer
+    hero: 👤 Hero
+  step:
+    move:
+      name: Move
+      task: 'move to a neighboring zone: 📍 Zone → choose a route (⬆️ ⬇️ ➡️ ⬅️).'
+      intro: '🔥 You''re in the Clearing, the base camp: the torch where everyone who arrives wakes up.
+
+        🗺️ All around are lands of different terrains: meadow, forest, hills, mountain, swamp... On the 🗺️ Map they look grey until you investigate them; then the color of their terrain appears.
+
+        🔎 To get to know them you''ll have to move: investigate, gather resources and do quests.
+
+
+        🚶 How to move
+
+        • In 📍 Zone you have 4 routes: ⬆️ north, ⬇️ south, ➡️ east and ⬅️ west. Each button says how long it takes.
+        • With 🔗 Move you build a way of several steps, in any directions you like, and your hero walks it alone.
+
+        • Moving {move}: {first_time} per zone, near or far (10 zones, 10 minutes).
+
+        • While you travel you can close the chat: I''ll let you know when you arrive.
+
+        • Monsters may show up when you arrive: each terrain has its own danger.'
+    explore:
+      name: Explore
+      task: 'explore this zone: 🧭 Explore → 🔎 Explore, and choose how much energy to spend.'
+      intro: '🔎 Explore
+
+        • Each run takes {explore_time}, costs {per_explore} ⚡ and studies {pct_low} to {pct_high}% of the zone.
+
+        • You choose how many runs in a row ({batch} or All) and can cancel whenever you want.
+
+        • The better you know the zone, the more resources you discover; at 100% you know all of it.
+
+        • While exploring you find items and coins... and sometimes a fight.'
+    gather:
+      name: Gather
+      task: 'gather resources: 🧭 Explore → 🪓 Gather.'
+      intro: '🪓 Gather
+
+        • You collect the resources you''ve already discovered in the zone: wood, stone, fiber, herbs...
+
+        • Each run takes {gather_time} and costs {per_gather} ⚡. It goes into your 🎒 backpack (space: {cap}).
+
+        • With that you craft, found a camp and sell to the merchant.
+
+        • If you gather a lot in one place, it gets depleted for a while.'
+    hunt:
+      name: Hunt
+      task: 'hunt some prey: 🧭 Explore → 🏹 Hunt → 🏹 Find prey.'
+      intro: '🏹 Hunt
+
+        • You go looking for a fight on purpose: each prey costs {hunt} ⚡.
+
+        • It gives experience, coins and loot, but no exploration or resources.
+
+        • There''s no prey in the Clearing: hunt in a zone outside.
+
+        • In the fight, you choose an action each round: check the enemy''s ⚠️ warning before choosing.'
+    map:
+      name: The map
+      task: 'open the map: 🧭 Explore → 🗺️ Map.'
+      intro: 🗺️ The map shows you the world around you. Open it and I'll explain what each thing is.
+      learn: '🗺️ How to read the map
+
+        🧍 That''s you, in the center. North is up.
+
+        ▫️ A white zone: you haven''t investigated it enough yet.
+
+        🎨 When you investigate a zone halfway (50%), the color of its terrain appears, and the terrain is added to the list at the top of the map. The color doesn''t tell you what resources there are: you learn that by exploring.
+
+        🔥 The starting camp (the bonfire): it always shows.
+
+        Nothing else shows on the map: dungeons, nodes and camps are discovered by walking.
+
+        📌 Your coordinates (x, y) and the Distance, how many zones away the start is, are in 📍 Zone. The farther away, the stronger the enemies.
+
+        📒 Places: the important places you''ve already visited (the camp, dungeons, player camps). Pick one, confirm and your hero goes alone.'
+    return:
+      name: Back to the Clearing
+      task: 'go back to the Clearing: 🗺️ Map → 📒 Places → The Clearing (or by the routes in 📍 Zone).'
+      intro: '🔥 Go back to camp
+
+        • The Clearing is your base: the merchant, the inn and the professions are there.
+
+        • In 📒 Places you choose an important place you''ve already visited, confirm and your hero goes alone, zone by zone.'
+    camp:
+      name: The camp
+      task: 'open the camp: 🏕️ Camp (bottom menu).'
+      intro: 🏕️ You're in the Clearing now. Open 🏕️ Camp to see what you can do here.
+      learn: '🏕️ The camp is your base: here is everything the hero doesn''t carry around.
+
+        🍲 Cook, 🔬 research and ⚒️ craft: the professions and their stations.
+
+        🧑‍🏫 Trainer: introduces you to the professions.
+
+        🏪 Merchant: buys what you don''t need and sells potions, bandages and provisions.
+
+        🛏️ Inn: sleep a while and wake up healed.
+
+        ❓ Help: questions already answered, by topic.'
+    trainer:
+      name: The trainer
+      task: 'talk to the trainer: 🏕️ Camp → 🧑‍🏫 Trainer.'
+      intro: '🧑‍🏫 There''s a trainer in the camp: the master who introduces you to the professions.'
+      learn: '🧑‍🏫 Professions
+
+        • Each profession improves as you practice it: gathering raises the gathering ones and crafting, the crafting ones.
+
+        • They have no cap and each one gives a perk.
+
+        • As you progress in the game, you''ll learn more and more professions.'
+    hero:
+      name: Your hero
+      task: 'check your hero: 👤 Hero (bottom menu).'
+      intro: 👤 Everything about your hero is in one place. Open it and I'll tell you what's there.
+      learn: '👤 Your hero
+
+        🌟 Talents: each level gives you a point; the first one chooses your specialization.
+
+        🎒 Backpack: gear, potions and resources.
+
+        📊 Stats: attack, defense and health.
+
+        🩺 Health: your wounds and how to heal.'
+    found_spot:
+      name: Find a spot
+      task: 'find a good spot for your camp: move one or two more zones, to Distance {min_lejania} or more from the Clearing.'
+      intro: '🏕️ Your own camp
+
+        • The Clearing doesn''t grow. Your camp does: it levels up, gets upgrades and becomes a castle.
+
+        • Move one or two more zones, away from the Clearing: I''ll let you know when you find a good spot.'
+      learn: 🏕️ You found a good spot for your own camp! You can found it here and give it a name.
+    found:
+      name: Found your camp
+      task: 'found your camp: 🏕️ Camp → 🏕️ Found camp here.'
+      intro: '🏕️ Found your camp
+
+        To found it in this zone you need:
+
+        {needs}
+
+        When you have everything, tap 🏕️ Camp → 🏕️ Found camp here and give it a name.'
+      learn: '🏕️ You have a camp now! Here''s what you can do here:
+
+        🔨 Upgrades: the upgrade button is here. You build a hearth, cabins, a smithy and more.
+
+        🏘️ Services: the merchant, the inn and the workshop arrive when you build their upgrades.
+
+        🧑‍🏫 Trainer: the master who teaches you the professions.
+
+        ⬆️ Expand: your camp adds zones and levels up, all the way to castle.
+
+        🛡️ Watch out: waves will come. Defend it with 🛡️ Defend.
+
+        📈 As you progress, you''ll learn more professions.'
+  tip:
+    fight:
+      name: Your first fight
+      text: '• You have 4 buttons: ⚔️ Basic (gives +1 energy), Builder (2), Primer (3) and 💥 Spender (6). You start with 5 energy and gain 2 per turn.
+
+        • Follow your role''s order (🔗 Your chain): each button in order adds a mark and the Spender cashes them in. The Basic never snaps the chain.
+
+        • Read the ⚠️ warning: against a big hit, 🛡️ Defend (1 energy). In 🎒 Backpack: potions and 🏃 Flee.'
+    downed:
+      name: You fell in combat
+      text: '• You''re gravely wounded: your health comes back much more slowly until it''s full.
+
+        • To heal: a 🧪 potion (👤 Hero → 🎒 Backpack), the Clearing''s 🛏️ inn, or waiting.
+
+        • In 👤 Hero → 🩺 Health you see how long is left.'
+    level_up:
+      name: Talent point
+      text: '• Each level gives you 1 talent point: 👤 Hero → 🌟 Talents.
+
+        • The first point chooses your specialization; with more points, new abilities open up.'
+    energy_low:
+      name: Energy
+      text: '• You''re low on energy ({energy_now} ⚡). It recovers on its own: +1 every {period}, up to {max_energy}.
+
+        • Exploring, gathering and hunting use it up; moving {move}.
+
+        • Inviting friends gives extra energy: your link is in 👤 Hero.'
+    bag_full:
+      name: Backpack full
+      text: '• With a full backpack you can''t gather or buy (what you find still goes in).
+
+        • Sell what you don''t need to the Clearing''s 🏪 Merchant, use it in ⚒️ Professions or contribute it to your camp.'
+    cave:
+      name: Dungeons
+      text: '• There''s a dungeon here: 🕳️ the small one has rooms, a boss and a chest; 🌀 the deep one goes down floor by floor.
+
+        • You enter from 🧭 Explore. Fights inside are always by hand.
+
+        • What''s inside changes every day.'
+    ecamp:
+      name: Enemy camp
+      text: '• While it''s standing, this zone can''t be explored or gathered.
+
+        • ⚔️ Assault: you fight its guards until you reach the boss; when it falls, it leaves a chest.
+
+        • Every day they appear in other places.'
+    node:
+      name: Resource node
+      text: '• At a ✨ node, gathering gives double its resource and sometimes a rare one.
+
+        • It''s the same for everyone and doesn''t move: on the 🗺️ Map it shows with its resource''s emoji.'
+    rank_up:
+      name: Professions
+      text: '• Your profession ranked up: each profession improves as you practice it and has no cap.
+
+        • Each rank gives a bigger perk. Check them with /professions.'
+    raid:
+      name: Wave
+      text: '• A wave has reached your camp! Go and tap 🛡️ Defend: every fight won counts.
+
+        • If you lose, it takes part of the pantry, never levels or zones.'
+    options:
+      name: ⚙️ Options
+      text: '• If a fight comes up in the middle of a batch, the batch stops and you fight it.
+
+        • In ⚙️ Options you choose at what health you retreat, change the 🌐 language and send us 💬 Feedback.'
+    origin:
+      name: Your origin (optional)
+      text: '• Where does your hero come from? Choose your 🎭 origin with /origin.
+
+        • It gives a small trait (not for combat), a gift and a story of its own. It''s forever: choose it whenever you want.'

@@ -62,6 +62,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+for _stream in (sys.stdout, sys.stderr):      # R-03: Windows consoles are cp1252 and the game prints emoji
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 import sim  # noqa: E402  (the same helpers and play policy as the rest of the balance log)
 from engine.classes import kit  # noqa: E402
 from engine.combat import CombatContext, make_combat, resolve_round  # noqa: E402

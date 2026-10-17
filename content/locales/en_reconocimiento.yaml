@@ -1,0 +1,55 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_reconocimiento.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_reconocimiento.yaml. Una clave nueva va
+# primero en es_reconocimiento.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+recon:
+  title: 🔭 Scout
+  intro: '🔭 You look from afar at what''s in a 🕳️ dungeon or a 👹 enemy camp, without going there: the same thing anyone arriving today would see. Each one costs ⚡{energy} and gives 🧭 Explorer experience and a few coins. One per place per day.'
+  locked: 🔒 Scouting needs 🧭 Explorer rank {rank} (you have {have}). Level it up by exploring.
+  reach: '🔭 You reach up to {n} {n|zone|zones} around you (not your own zone: there you enter or infiltrate).'
+  line: '{mark} ({x}, {y}) · {zones} {zones|zone|zones} away'
+  line_done_dungeon: ✅ {mark} ({x}, {y}) · today {family} · 👑 {boss}
+  line_done_camp: ✅ 👹 ({x}, {y}) · 👹 {left} of {total} left · 👑 {chief}
+  more: …and {n} more, farther away.
+  none: '🔭 You don''t see anything to scout within reach. Explore and travel: the 🗺️ Map marks 🕳️ dungeons and 👹 enemy camps.'
+  next: 🔓 With 🧭 Explorer rank {rank}, up to {n} {n|zone|zones}.
+  button: 🔭 {mark} ({x}, {y}) · ⚡{energy}
+  out_of_reach: 🔭 That place isn't within your reach or there's nothing left to see there. You didn't spend anything.
+  already: '🔭 You already scouted that place today: what you know is in the list. Tomorrow there may be something else.'
+  report_title: 🔭 Scouting report
+  done: '🔭 You looked from afar at {name} ({x}, {y}), {zones} {zones|zone|zones} away, without moving:'
+  dungeon_small: '🕳️ A small dungeon · level {level}: {rooms} rooms and their boss.'
+  dungeon_deep: '🌀 A deep dungeon · level {level}: floors going down, each one harder.'
+  top: '🏆 Today''s record here: {name}, floor {floor}. Can you beat it?'
+  top_none: '🏆 No one has gone down here yet today: the day''s first record could be yours.'
+  camp: 👹 An enemy camp · level {level} · garrison of {total}.
+  covers_small: '🕳️ Beneath it, the entrance to a small dungeon: it opens when the camp falls.'
+  covers_deep: '🌀 Beneath it, the entrance to a deep dungeon: it opens when the camp falls.'
+  reward: '{name} +{xp} · ✨ {hero_xp} experience · {gold}'
+  go_button: 🧭 Move there · ⏱️ {time}
+  again_button: 🔭 Scout another
+  map_button: 🔭 Scout
+  map_line: '🔭 /recon: {n} {n|place|places} not yet scouted today, up to {zones} {zones|zone|zones} from here.'
+  map_line_none: '🔭 /recon: nothing new left within your reach today (up to {zones} {zones|zone|zones}).'
+  map_locked: 🔭 From 🧭 Explorer rank {rank} you can scout from afar what the map marks.
+  map_today: ' · 🔭 today {family}'
+  hint: '🔭 {n} {n|place|places} to scout from afar: /recon'
+  route_mark: ' {mark}{emoji}'
+stealth:
+  travel: 🥷 You passed through {name} without anything seeing you.
+  batch: '🥷 Stealth: {n} {n|fight avoided|fights avoided} without being seen.'
+  options: 🥷 Your stealth ({pct}%) avoids random fights with ✋ Manual and when traveling. With ⚔️ Automatic you fight every one that comes up.
+explorer:
+  what:
+    recon: 'you can 🔭 scout from afar (/recon) 🕳️ dungeons and 👹 camps up to {zones} {zones|zone|zones} around you: what''s there today, without going'
+    recon_far: 🔭 you scout from afar up to {zones} zones around you
+    recon_wide: 🔭 you scout from afar up to {zones} zones around you
+  short:
+    recon: '{rank} 🔭 within {zones} {zones|zone|zones}'
+    recon_far: '{rank} 🔭 within {zones} zones'
+    recon_wide: '{rank} 🔭 within {zones} zones'
+prof:
+  perk:
+    stealth: 🥷 {v}% chance to avoid random fights (when exploring with ✋ Manual and when traveling)

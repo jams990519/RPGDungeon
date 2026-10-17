@@ -53,3 +53,22 @@ def make_hero(service, account="test:1", name="Lyra", class_id="guerrero"):
     service.act(account, f"grp:{group}")
     specs = specs_of(service.content.classes, group)
     return service.act(account, f"cls:{class_id if class_id in specs else default_spec(service.content.classes, group)}")
+
+@pytest.fixture
+def every_profession_known(monkeypatch):
+    """Tests about crafting itself (D-109 to D-141): every profession counts as learned.
+
+    [ES] Desde la 0.33 los oficios se aprenden (D-257, con sus propias pruebas en test_aprender_oficios.py). Las pruebas de
+    cómo se fabrica, se refina, se encanta o se especializa usan este arreglo para que todo oficio cuente como aprendido.
+    """
+    monkeypatch.setattr(GameService, "_knows", lambda self, hero, pid: True)
+
+
+@pytest.fixture
+def auto_fights_on(content):
+    """Tests of the automatic fights, switched off in the game since 0.33 (D-258): they turn them back on.
+
+    [ES] Las peleas automáticas se apagaron (balance.yaml auto_fight.enabled: false) pero el código queda para volver; sus
+    pruebas las prenden en su contenido de prueba para seguir cuidándolo.
+    """
+    content.balance["auto_fight"]["enabled"] = True

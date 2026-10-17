@@ -156,7 +156,7 @@ def test_shop_and_inn_in_claro(service, clock):
     assert service.store.get("hero", "test:1")["gold"] == 44 + 2   # 2 herbs x 1
     view = service.act("test:1", "inn")
     assert view.kind == "activity"
-    clock.advance(600)
+    clock.advance(service._load("test:1").activity["until"] - clock.now() + 1)   # D-259: by the life you lacked
     service.view("test:1")
     hero = service.store.get("hero", "test:1")
     from engine.hero import hero_stats
@@ -226,7 +226,7 @@ def test_gather_in_claro_and_sell_to_the_trader(service, clock):
     view = service.act("test:1", "sell:all")         # sell what you do not need
     hero = service.store.get("hero", "test:1")
     assert hero["gold"] > gold and "💱" in view.notice
-    assert view.kind == "shop"
+    assert view.kind == "shop_sell"                  # D-259: selling happens in 💱 Vender
 
 
 def test_the_claro_never_grows(service, clock):

@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Any
+from typing import Any, Callable
 
 from engine.core.rng import hash_unit
 
@@ -175,6 +175,25 @@ def daily_pick(pool: dict[str, dict[str, Any]], factions: list[str], giver_facti
         options = [tid for tid, tdef in pool.items() if not tdef.get("retired") and giver_faction.get(tdef.get("giver")) == fid]
         if options:
             picked.append(options[int(hash_unit(seed, "daily", day, fid) * len(options)) % len(options)])
+    return picked
+
+
+def daily_pick_npcs(pool: dict[str, dict[str, Any]], npcs: list[str], seed: int, day: int,
+                    eligible: Callable[[dict[str, Any]], bool] = lambda tdef: True) -> list[str]:
+    """Today's character missions: one per character (in character order), drawn from the world seed and the day (D-259).
+
+    [ES]
+    Qué hace: elige el encargo del día de cada personaje (D-259, pedido del dueño: "cada personaje va a tener una misión
+    diaria"), con un sorteo fijo por semilla del mundo, día y personaje, entre los suyos que `eligible` deja (por ejemplo,
+    el de cocina de Marta solo si sabes 🍲 Cocina). Los retirados no salen; un personaje sin encargos posibles no da nada.
+    La llama: el servicio (_daily_ids, una vez por día y héroe: lo elegido se guarda). Si cambia, afecta: qué encargos ve
+    cada uno hoy.
+    """
+    picked: list[str] = []
+    for nid in npcs:
+        options = [tid for tid, tdef in pool.items() if not tdef.get("retired") and tdef.get("giver") == nid and eligible(tdef)]
+        if options:
+            picked.append(options[int(hash_unit(seed, "daily", day, nid) * len(options)) % len(options)])
     return picked
 
 

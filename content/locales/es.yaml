@@ -1,9 +1,22 @@
 # Player-facing texts in Spanish. The engine only uses the keys.
 # [ES] Todos los textos que ve el jugador. El motor solo usa las claves.
 # Si cambias una clave, búscala en engine/ antes: una clave que falta se ve como [clave].
+# D-250 (0.33): el español es el idioma de referencia. Toda clave nueva va aquí Y, en el mismo cambio, en en.yaml (o en el
+# en_*.yaml que corresponde a este es_*.yaml). tools/check_locales.py compara los dos y tests/test_idiomas.py lo exige.
 
 common:
   use_buttons: "Usa los botones de abajo."
+  decimal_sep: ","                 # D-250: 1,5 en español; 1.5 en inglés (GameService._num)
+
+# D-250: 🌐 el idioma del jugador. La primera pantalla (al tocar /start sin héroe) muestra language.title y language.ask
+# en todos los idiomas a la vez, porque todavía no sabemos cuál lee; cada botón lleva el nombre del idioma en ese idioma.
+language:
+  name: "🇪🇸 Español"
+  title: "🌐 Idioma"
+  ask: "🌐 Elige tu idioma. Puedes cambiarlo cuando quieras en ⚙️ Opciones."
+  current: "Ahora juegas en: {name}"
+  changed: "✅ Listo: ahora juegas en español."
+  button: "🌐 Idioma: {name}"
 
 create:
   title: "🌅 Lost Realms · El despertar"
@@ -1200,6 +1213,7 @@ world:
   claro_name: "El Claro"
   name_first: ["Vado", "Cerro", "Hondonada", "Llano", "Paso", "Loma", "Fuente", "Cañada", "Risco", "Valle", "Hoya", "Collado"]
   name_second: ["Gris", "de las Cenizas", "Quebrado", "del Cuervo", "Hundido", "Callado", "de Hierro", "Viejo", "Rojo", "del Eco", "Ahogado", "de los Huesos"]
+  name_format: "{first} {second}"     # D-250: el orden de las dos partes del nombre de zona (en inglés, "{second} {first}")
 
 dir:
   n: "⬆️ Norte"
@@ -1248,6 +1262,17 @@ options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opcione
   saved_retreat: "🩹 Listo: tu héroe se retira con menos de {pct} % de vida."
   saved_potions_on: "🧪 Listo: en las peleas automáticas usa las pociones y las vendas del cinturón."
   saved_potions_off: "🧪 Listo: en las peleas automáticas no toca el cinturón."
+  intro_short: "Toca un botón para cambiarlo: queda guardado."   # [ES] D-258 (0.33): sin peleas ni pociones automáticas; con 💬 Feedback
+  retreat_now: "🩹 Retirarse con menos de {pct} % de vida: lo usarán las peleas automáticas cuando vuelvan. Hoy, si sale una pelea en un lote, el lote se corta y la peleas tú."
+  language_line: "🌐 Idioma: {name}."
+  feedback_line: "💬 Feedback: cuéntanos un error, una idea o algo que no se entiende."
+
+feedback:                      # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones (y /feedback); el bot lo manda al chat de informes
+  button: "💬 Feedback"
+  title: "💬 Feedback"
+  ask: "Escribe en un mensaje lo que quieras contarnos: un error, una idea o algo que no se entiende. Lo lee el equipo del juego."
+  privacy: "Va con el nombre y el nivel de tu héroe, para poder entenderlo. Si cambias de idea, toca ↩️ Volver."
+  thanks: "💬 ¡Gracias! Tu mensaje llegó al equipo del juego."
 
 auto:                         # [ES] D-114: peleas automáticas de los lotes (resumen del final y la línea de las pantallas de lote)
   batch_manual: "⚔️ Si sale una pelea: ✋ el lote se corta y la peleas tú (⚙️ Opciones)."
@@ -1286,6 +1311,25 @@ travel:
   interrupted: "⛔ Tu viaje se corta en {name}."
   started_route: "🚶 Sales hacia {name}. Irás zona por zona; te aviso al llegar."
   goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
+  interrupted_fight: "⛔ Te sale un enemigo en {name}. Si le ganas, sigues tu camino."   # [ES] D-244 (0.33): la emboscada ya no tira el resto del viaje
+  resumed: "🚶 Sigues tu camino: te {n|queda|quedan} {n} {n|tramo|tramos}."
+  route_lost: "🧭 Te quedas en {name}: el resto del camino se canceló."
+
+walk:                          # [ES] D-244 (0.33, pedido del dueño): 🔗 Moverte, el 5.º botón de 📍 Zona. Sumas pasos en el orden que quieras y tu héroe los camina solo
+  button: "🔗 Moverte"
+  title: "🔗 Moverte"
+  intro: "Arma tu camino paso a paso: cada flecha suma una zona en esa dirección. Al terminar, tu héroe lo recorre solo, 1 minuto por zona."
+  empty: "Todavía no sumaste pasos."
+  steps: "🧭 Tu camino: {steps}"
+  summary: "{n} {n|paso|pasos} · terminas en ({x}, {y}) · unos {time}"
+  ambush: "⚔️ Si te sale un enemigo en el camino, gánale y sigues. Si huyes o caes, te quedas donde estés."
+  undo: "⌫ Quitar el último"
+  cancel: "❌ Cancelar"
+  go: "✅ Terminar"
+  full: "⚠️ Ya tienes {n} pasos, el máximo."
+  need_step: "⚠️ Suma al menos un paso antes de terminar."
+  cancelled: "❌ Camino cancelado."
+  started: "🔗 Sales: {n} {n|paso|pasos} hasta ({x}, {y}). Te aviso al llegar."
 
 explore:
   menu_title: "🧭 Explorar"
@@ -1360,6 +1404,8 @@ hero:
   skills_link: "🌟 Habilidades: /habilidades"
   trades_link: "⚒️ Oficios: /oficios"
   status_title: "Estado: {status}"
+  status_busy: "Estado: {status} · ⏳ faltan {time} en total"   # [ES] D-242.1: con una actividad en marcha, el total, no la vuelta
+
   stats_button: "📊 Estadísticas"
   status:
     idle: "🧍 Libre"
@@ -1414,8 +1460,12 @@ health:                       # [ES] pantalla 🩺 Salud del héroe (pedido del 
 resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedido del dueño): materiales y comida, de a páginas
   button: "📦 Recursos"
   title: "📦 Recursos"
-  intro: "Lo que juntaste y para qué sirve:"
-  line: "{emoji} {item} ×{n} — {use}"
+  intro: "Lo que juntaste. Toca el código de un recurso para ver para qué sirve:"     # [ES] D-243 (0.33): la lista corta, la explicación detrás del código
+  line: "{emoji} {item} ×{n}  {code}"
+  detail_title: "{emoji} {item} · {code}"
+  detail_have: "Tienes ×{n}."
+  no_code: "⚠️ No hay ningún recurso con el código {code}."
+  back: "↩️ Volver a 📦 Recursos"
   none: "Todavía no juntaste nada. Recolecta en las zonas con 🪓 Recolectar."
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
@@ -1523,6 +1573,10 @@ places:
   confirm_hint: "Tu héroe va solo, zona por zona. Puedes cerrar el chat: te aviso al llegar."
   confirm_yes: "✅ Sí, ir"
   confirm_no: "↩️ No, volver"
+  confirm_cut: "⏹️ Lo que estás haciendo se corta aquí: el paso en curso te devuelve su energía."   # [ES] 0.33: viajar también ocupado (pedido del dueño)
+  confirm_reroute: "🧭 Ya vas de viaje: terminas el tramo en curso y cambias el rumbo hacia allí."
+  rerouted: "🧭 Cambiaste el rumbo: al terminar este tramo sigues hacia {name}."
+  resting: "🛏️ Estás descansando en la posada. Cuando termines, elige de nuevo a dónde ir."
 
 shop:
   button: "🏪 Mercader"
@@ -1540,6 +1594,17 @@ shop:
   weekly_cap: "🥖 El mercader ya no te vende más {item} esta semana (máximo {n}). La comida del campamento la dan la caza, la pesca y la cocina."
   cap_line: "   Te quedan {left} de {n} esta semana."
   only_in_claro: "El mercader y la posada están en el Claro."
+  menu_buy: "🛒 Comprar: pociones, vendas y 🥖 provisiones."   # [ES] D-259 (0.33, pedido del dueño): el mercader se parte en comprar y vender
+  menu_sell: "💱 Vender: lo que traes en la mochila. Paga la mitad de lo que vale."
+  buy_menu_button: "🛒 Comprar"
+  sell_menu_button: "💱 Vender"
+  buy_title: "🛒 Comprar"
+  sell_title: "💱 Vender"
+  sell_intro: "Toca el código de una cosa para venderla toda. El equipo se vende desde 🛡️ Equipo."
+  sell_item_line: "{emoji} {item} ×{n} · {price} c/u → {total}  /v{code}"
+  sell_none: "No traes nada que el mercader compre: junta materiales en las zonas."
+  sell_all_line: "💱 Vender materiales vende de una vez lo común que juntaste (no la comida, ni lo refinado, ni lo raro)."
+  no_code: "⚠️ No traes nada con el código {code}."
 
 inn:
   button: "🛏️ Posada · {price}"
@@ -1595,12 +1660,13 @@ hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona 
   party_end_short: "No llegaron a la meta: esta vez no hay premio."
   party_end_alone: "Para el premio hacen falta al menos {n} cazadores."
   batch_button: "🏹 Cazar en lote"     # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), 🏹 Buscar presa pasa a ser esto
-  mode_manual: "✋ Cazas de a una presa: la pelea empieza enseguida y la peleas tú. Con ⚔️ Peleas automáticas (⚙️ Opciones) puedes cazar en lote."
+  mode_manual: "✋ Cazas de a una presa: la pelea empieza enseguida y la peleas tú."   # [ES] D-258 (0.33): sin peleas automáticas no hay caza en lote
   mode_auto: "⚔️ Peleas automáticas: eliges cuánta energía gastar y tu héroe caza solo, presa tras presa (⚙️ Opciones)."
-  batch_manual: "✋ Para cazar en lote, elige ⚔️ Peleas automáticas en ⚙️ Opciones."
+  batch_manual: "✋ Por ahora se caza de a una presa: la pelea empieza enseguida y la peleas tú."
   batch_low_hp: "🩹 Tu vida está por debajo del {pct} %: cúrate antes de cazar en lote (o cambia el límite en ⚙️ Opciones)."
   batch_in_progress: "🏹 Sigues rastros y tu héroe pelea solo cada presa."
   batch_progress: "Presa {done} de {total}"
+
 
 camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los nombres de etapa y la línea de avance que usan otras pantallas
   need_line: "{emoji} {item}: {have}/{need} {bar}"
@@ -1994,6 +2060,7 @@ guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), s
   memento_done: "🌰 La semilla se abre y te deja {item}."
 
 batch:
+  total_left: "⏳ En total faltan {time} para terminar."   # [ES] D-242.1: el tiempo del lote entero, no de la vuelta
   title_gather: "🪓 Recolectar"
   title_explore: "🔎 Explorar"
   title_hunt: "🏹 Cazar en lote"
@@ -2262,8 +2329,8 @@ tech:                         # [ES] D-101: nombre y efecto de cada estudio del 
 prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar → refinar → fabricar). Catálogo en content/professions.yaml; números en balance.yaml professions
   button: "⚒️ Oficios"
   title: "⚒️ Oficios"
-  intro: "Cada oficio sube haciéndolo, del rango 1 al 100. Puedes aprenderlos todos: cada uno pide su tiempo, sus materiales y su estación. Casi todo lo que se fabrica pide materiales de dos oficios o más."
-  none: "Todavía no empezaste ningún oficio: recolecta, refina o fabrica para empezar."
+  intro: "Cada oficio sube haciéndolo, del rango 1 al 100, y cada rango abre recetas nuevas. Casi todo lo que se fabrica pide materiales de dos oficios o más."   # [ES] D-257 (0.33): los oficios se aprenden; la lista larga salió
+  none: "Todavía no tienes oficios: recolecta y explora (suben solos) o aprende uno en 🔬 Investigar."
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
   perk_line: "   ✨ Beneficio ahora: {perk}"
@@ -2313,7 +2380,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
   more_in_claro: "🏭 Hay más recetas en las estaciones del Claro."
-  locked_hint: "🔒 Las recetas de rango más alto se ven en ⚒️ Oficios."
+  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."
   recipe_title: "📜 Receta"
   recipe_prof: "{name} · tu rango {rank} ({title}) · pide rango {need}"
   recipe_needs: "Necesitas por vez:"

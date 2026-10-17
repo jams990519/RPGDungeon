@@ -37,6 +37,15 @@ La defensa más barata es el diseño:
 - La mejor defensa es que el oro tenga un canal legal si se decide monetizar así (ver [Monetización](../07-economia/monetizacion.md)).
 - Impuestos y un porcentaje quemado en las transferencias entre jugadores frenan el lavado de oro (el bot Iris quema un 5 % de cada transferencia de su moneda).
 
+## 4.1 Si algún día hay cliente web o Mini App (11-oct-2026)
+
+Hoy no hay ninguno: el bot usa *long polling* y no abre ningún puerto, así que no hay superficie que atacar. El día que exista la segunda puerta (D-40, D-41), dos reglas **antes** de la primera petición:
+
+- **Verificar el `initData` en el servidor.** Una Mini App de Telegram manda los datos del usuario firmados; la firma se comprueba con **HMAC-SHA256 derivado del token del bot**. Sin esa comprobación, cualquiera manda peticiones diciendo que es otro jugador y el juego entero queda abierto.
+- **El cliente nunca es de fiar.** Las reglas se quedan **enteras** en el servidor y la página solo dibuja lo que el motor le da. En el bot de texto esto sale solo, porque el jugador solo puede pulsar botones que el motor creó; en una página web es una decisión que se puede equivocar.
+
+**De dónde sale:** contexto traído de la sesión de Xnova (11-oct-2026), donde un competidor (@Xnova_Elite_bot) sumó Mini App. Ojo con el resto de aquel texto: afirmaba que "Lost Realms todavía no tiene código" y es falso — hay 18.173 líneas de motor, 57 parches y la 0.32 en producción. Lo que sí vale de aquel aviso está aquí y en P-225.
+
 ## 5. Sanciones
 
 Escalonadas y públicas en su criterio, no en su nombre: aviso → congelación de comercio → suspensión temporal → baneo. Nada automático sin revisión humana, salvo el congelamiento preventivo.

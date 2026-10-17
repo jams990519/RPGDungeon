@@ -1,0 +1,39 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_obra_maestra.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_obra_maestra.yaml. Una clave nueva va
+# primero en es_obra_maestra.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+item:
+  literas_roble: Oak Bunks
+  armero_roble: Oak Weapon Rack
+furniture:
+  literas_roble: +1 spot for a camp member
+  armero_roble: +1 camp 🛡️ Defense against the waves
+gear:
+  masterwork_mark: ' ✒️'
+  masterwork_by: ✒️ Masterwork by {name}
+  masterwork_unsigned: ✒️ Masterwork
+  masterwork_help: 'Unique: +{pct}% on each bonus and one more bonus than the normal piece. The merchant pays more for it.'
+prof:
+  perk:
+    masterwork: +{v}% masterwork chance
+  masterwork_line: '✒️ {pct}% chance for each piece to come out as a masterwork: unique, better and with your signature.'
+  masterwork_made: '✒️ Masterwork! {item} ×{n}: {n|it came out|they came out} unique, better and signed by {name}.'
+  furniture_out: 'Makes: 🪑 furniture for your camp · {desc} (one of each piece per camp)'
+  furniture_made: 🪑 Take it to your camp's center and place it in 🔨 Upgrades → 🔨 Works.
+upgrades:
+  furniture_line: '🪑 Furniture: {names}'
+  furniture_by: '{name} (by {hero})'
+  furniture_hint: '🪑 You''re carrying furniture to place: {names}. It''s in 🔨 Works.'
+  furniture_intro: '🪑 Carpentry furniture is placed once and stays forever: one of each per camp.'
+  furniture_entry: '🪑 {name}: {desc}'
+  furniture_button: 🪑 Place {name}
+  furniture_placed: '🪑 You placed {name} in {camp}: {desc}. It stays forever.'
+  furniture_already: '🪑 {camp} already has {name}: one of each piece per camp. Keep it: it''ll come in handy if you ever move to another camp.'
+  furniture_push_title: 🪑 Your camp has new furniture
+  furniture_push: '🪑 {hero} placed {name} in {camp}: {desc}.'
+resources:
+  use:
+    literas_roble: '🪑 furniture: place it in your camp (🔨 Upgrades → 🔨 Works) · +1 spot for a member'
+    armero_roble: '🪑 furniture: place it in your camp (🔨 Upgrades → 🔨 Works) · +1 🛡️ Defense'

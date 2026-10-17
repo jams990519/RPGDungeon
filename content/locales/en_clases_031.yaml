@@ -1,0 +1,325 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_clases_031.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_clases_031.yaml. Una clave nueva va
+# primero en es_clases_031.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+class_group:
+  guerrero:
+    name: 🏰 Warrior
+    desc: plate · endurance Tank or strength DPS
+  druida:
+    name: 🌳 Druid
+    desc: leather · dodge Tank (bear) or bleed DPS (cat)
+  sacerdote:
+    name: 📿 Priest
+    desc: cloth · single-target Healer (the tank) or shadow DPS
+  chaman:
+    name: 🌩️ Shaman
+    desc: 'leather · group Healer or lightning DPS (retired in 0.32: replaced by the Paladin)'
+  paladin:
+    name: ⚜️ Paladin
+    desc: plate · group Healer or holy DPS
+  cazador:
+    name: 🏹 Hunter
+    desc: leather · Support who empowers allies or ranged DPS
+  mago:
+    name: 🔮 Mage
+    desc: cloth · Support who weakens the enemy or fire DPS
+chain_role:
+  tanque: 🛡️ Tank
+  sanador: ✚ Healer
+  dps: ⚔️ DPS
+  soporte: ✦ Support
+class:
+  guerrero_tanque:
+    name: 🛡️ Warrior · Tank
+    role: 'plate endurance: takes the hit, protects and pins the enemy'
+    attack_name: Shield Bash
+  druida_tanque:
+    name: 🐻 Druid · Tank
+    role: 'dodge in bear form: avoids the hit and strikes back with counters'
+    attack_name: Claw
+  sacerdote_sanador:
+    name: ✨ Priest · Healer
+    role: 'healing focused on one: keeps the tank standing'
+    attack_name: Smite
+  chaman_sanador:
+    name: 🌊 Shaman · Healer
+    role: 'spread-out healing: lifts up the rest of the team'
+    attack_name: Earth Shock
+  guerrero_dps:
+    name: ⚔️ Warrior · DPS
+    role: 'strength: breaks armor and executes'
+    attack_name: Slash
+  druida_dps:
+    name: 🐈 Druid · DPS
+    role: 'cat form: a bleed cashed in with one bite'
+    attack_name: Scratch
+  sacerdote_dps:
+    name: 🌑 Priest · DPS
+    role: 'shadow: a pain that grows and bursts'
+    attack_name: Mind Touch
+  chaman_dps:
+    name: ⚡ Shaman · DPS
+    role: 'lightning: charges the enemy and leaps in a chain'
+    attack_name: Discharge
+  paladin_sanador:
+    name: ☀️ Paladin · Healer
+    role: 'spread-out healing: lifts up the rest of the team from the front line'
+    attack_name: Judgment
+  paladin_dps:
+    name: 🔆 Paladin · DPS
+    role: 'holy: passes a verdict on the enemy and sweeps it away with the divine storm'
+    attack_name: Holy Strike
+  cazador_soporte:
+    name: 🦅 Hunter · Support
+    role: 'boosts allies: pack mark and wild call'
+    attack_name: Auto Shot
+  mago_soporte:
+    name: 🔮 Mage · Support
+    role: 'brings the boss down: fragility, slow and rupture'
+    attack_name: Arcane Missile
+  cazador_dps:
+    name: 🏹 Hunter · DPS
+    role: 'ranged agility: mark and deadly shot'
+    attack_name: Shot
+  mago_dps:
+    name: 🔥 Mage · DPS
+    role: 'fire: ignites and detonates'
+    attack_name: Spark
+resource:
+  energia_combate: Energy
+ability:
+  guerrero_golpe_de_escudo:
+    name: Shield Bash
+    desc: low damage, takes 50% of the aggro and gives +1 energy
+  guerrero_reves:
+    name: Backhand
+    desc: 'moderate damage with high threat: pushes the aggro toward 100%'
+  guerrero_interponerse:
+    name: Interpose
+    desc: you take the hits meant for the ally you choose and raise your defense (this turn and the next)
+  guerrero_grito_de_dominio:
+    name: Dominating Shout
+    desc: locks 100% of the aggro; the extra defense scales with the marks
+  druida_zarpazo:
+    name: Claw
+    desc: low damage, takes 50% of the aggro and gives +1 energy
+  druida_vapulear:
+    name: Maul
+    desc: moderate damage and threat; each dodge you land while it lasts adds an extra mark
+  druida_piel_de_corteza:
+    name: Barkskin
+    desc: raises your dodge for 2 turns (the same protection as the Warrior's endurance)
+  druida_rugido_salvaje:
+    name: Savage Roar
+    desc: locks 100% of the aggro, raises your dodge and strikes back once for every dodge built up
+  sacerdote_castigo:
+    name: Smite
+    desc: simple holy hit, +1 energy; starts the chain
+  sacerdote_renovar:
+    name: Renew
+    desc: small heal on an ally and a bit more the next turn
+  sacerdote_escudo_sagrado:
+    name: Holy Shield
+    desc: shield that absorbs damage on the chosen ally
+  sacerdote_sanacion_superior:
+    name: Greater Heal
+    desc: all the healing on a single player (90 on one, vs the Paladin's 30+30+30)
+  chaman_choque_de_tierra:
+    name: Earth Shock
+    desc: simple hit, +1 energy; it's not for dealing damage but for starting the combo
+  chaman_sanacion_en_cadena:
+    name: Chain Heal
+    desc: 'heals 3 targets evenly (one you choose and two at random): 30+30+30; solo, all 3 land on you'
+  chaman_golpe_de_tormenta:
+    name: Stormstrike
+    desc: 'medium damage that leaves a surge: your next big heal heals more'
+  chaman_marea_de_sanacion:
+    name: Healing Tide
+    desc: massive healing on up to 5 players; scales with Restoration and with how many there are, not with the chain
+  paladin_juicio:
+    name: Judgment
+    desc: simple holy hit, +1 energy; it's not for dealing damage but for starting the combo
+  paladin_luz_sagrada:
+    name: Holy Light
+    desc: 'heals 3 targets evenly (one you choose and two at random): 30+30+30; solo, all 3 land on you'
+  paladin_choque_sagrado:
+    name: Holy Shock
+    desc: 'medium damage that leaves a grace: your next big heal heals more'
+  paladin_luz_del_alba:
+    name: Light of Dawn
+    desc: massive healing on up to 5 players; scales with Restoration and with how many there are, not with the chain
+  paladin_golpe_sagrado:
+    name: Holy Strike
+    desc: simple holy hit, +1 energy
+  paladin_golpe_de_cruzado:
+    name: Crusader Strike
+    desc: repeatable filler hit
+  paladin_sentencia:
+    name: Verdict
+    desc: 'leaves the enemy condemned: your next holy hit strikes harder'
+  paladin_tormenta_divina:
+    name: Divine Storm
+    desc: big damage that hits several enemies at once (up to 5)
+  guerrero_tajo:
+    name: Slash
+    desc: simple hit, +1 energy
+  guerrero_golpe_heroico:
+    name: Heroic Strike
+    desc: strong repeatable filler hit
+  guerrero_desgarrar_armadura:
+    name: Sunder Armor
+    desc: lowers the enemy's defense for 3 turns
+  guerrero_ejecutar:
+    name: Execute
+    desc: big damage; hits harder if the enemy is below 35% health
+  druida_aranazo:
+    name: Scratch
+    desc: simple hit, +1 energy
+  druida_triturar:
+    name: Shred
+    desc: repeatable filler hit
+  druida_desgarrar:
+    name: Rend
+    desc: applies a bleed that hits every turn
+  druida_mordisco_feroz:
+    name: Ferocious Bite
+    desc: big damage; consumes the active bleed and cashes it in all at once
+  sacerdote_toque_mental:
+    name: Mind Touch
+    desc: simple shadow hit, +1 energy
+  sacerdote_tortura_mental:
+    name: Mind Flay
+    desc: repeatable filler hit
+  sacerdote_dolor_sombrio:
+    name: Shadow Pain
+    desc: shadow damage every turn, and your next shadow hit strikes harder
+  sacerdote_explosion_mental:
+    name: Mind Blast
+    desc: big damage; hits harder for each turn Shadow Pain has been active
+  chaman_descarga:
+    name: Discharge
+    desc: simple electric hit, +1 energy
+  chaman_rayo:
+    name: Lightning Bolt
+    desc: repeatable filler hit
+  chaman_choque_de_llamas:
+    name: Flame Shock
+    desc: 'leaves the enemy charged: the next electric hit strikes harder'
+  chaman_cadena_de_relampagos:
+    name: Chain Lightning
+    desc: big damage that jumps to several enemies (up to 5)
+  cazador_disparo_automatico:
+    name: Auto Shot
+    desc: simple shot, +1 energy
+  cazador_marca_de_manada:
+    name: Pack Mark
+    desc: you pick an ally and their hits strike harder for 2 turns; goes first in the chain
+  cazador_disparo_arcano:
+    name: Arcane Shot
+    desc: filler shot; each use extends the active Pack Mark by one turn
+  cazador_llamada_salvaje:
+    name: Wild Call
+    desc: your beasts attack and the whole group (up to 5) hits harder; the strength and the turns scale with the marks
+  mago_proyectil_arcano:
+    name: Arcane Missile
+    desc: simple hit, +1 energy
+  mago_fragilidad_arcana:
+    name: Arcane Fragility
+    desc: the enemy takes more damage from the whole group for 2 turns; goes first in the chain
+  mago_lentitud:
+    name: Slow
+    desc: filler hit that lowers the enemy's damage and extends the active Fragility
+  mago_ruptura_arcana:
+    name: Arcane Rupture
+    desc: burst that lowers the boss's defense and damage and interrupts its charged attack; scales with the marks
+  cazador_disparo:
+    name: Shot
+    desc: simple shot, +1 energy
+  cazador_disparo_firme:
+    name: Steady Shot
+    desc: repeatable filler shot
+  cazador_marca_del_cazador:
+    name: Hunter's Mark
+    desc: the marked enemy takes more damage from your shots
+  cazador_disparo_mortal:
+    name: Deadly Shot
+    desc: big damage; hits harder if the enemy has your mark
+  mago_chispa:
+    name: Spark
+    desc: simple fire hit, +1 energy
+  mago_bola_de_fuego:
+    name: Fireball
+    desc: repeatable filler hit
+  mago_ignio:
+    name: Ignite
+    desc: sets the enemy ablaze, and it burns every turn
+  mago_piroexplosion:
+    name: Pyroblast
+    desc: big damage; detonates the active Ignite and cashes it in all at once
+chain:
+  link:
+    B: Basic
+    H1: Builder
+    H2: Primer
+    H3: Spender
+  energy_line: '🔷 Energy: {n} (+{per} when you act) · Marks: {marks}{bonus}'
+  bonus_tag: ' → spender +{pct}%'
+  order_line: '🔗 Your chain: {order}'
+  next_line: '👉 Next: {name}'
+  next_spender: '👉 Combo ready: unleash {name} ({marks} marks, +{pct}%)'
+  no_combo_hint: 👉 With no combo, {name} hits at {pct}%
+  variety_line: '🎨 Variety: +{pct}% ({n} different combos in this fight)'
+  button: '{icon} {name} ({cost})'
+  button_basic: '{icon} {name} (+{gain})'
+  defend_button: 🛡️ Defend ({cost})
+  defend: '🛡️ You defend: this turn you take {pct}% less.'
+  broken: '⛓️‍💥 You broke the order: the chain snapped and you lost {n} {n|mark|marks}.'
+  cashed: '💥 You cash in {n} {n|mark|marks}: +{pct}%.'
+  no_combo: '⚠️ Spender with no combo: hits at {pct}%.'
+  dot_applied: '🩸 {action}: hits every turn for {rounds} {rounds|turn|turns}.'
+  consume_dot: '💢 Cashes in what was left all at once: {dmg} damage.'
+  counter: '🐾 Counter for {n} {n|dodge|dodges}: {dmg} damage.'
+  guard_aguante: '🛡️ {action}: you shrug off {pct}% of each hit for {rounds} {rounds|turn|turns}.'
+  guard_esquiva: '🍃 {action}: you dodge {pct}% of each hit for {rounds} {rounds|turn|turns}.'
+  endured: 🛡️ You shrug off {pct}% of the hit.
+  evaded: 🍃 You dodge {pct}% of the hit.
+  dodge_mark: '🔗 Maul: the dodge adds a mark.'
+  shield_applied: '🫧 {action}: shield of {amount} for {rounds} {rounds|turn|turns}.'
+  heal_split: '💚 {action}: {n} even heals; solo, they all land on you: +{amount} health.'
+  heal_group: '🌊 {action}: heals the whole group (up to {cap}); you get +{amount} health.'
+  heal_boost: '✨ A grace remains: your next big heal heals {pct}% more.'
+  heal_boost_used: ✨ The grace boosts this heal.
+  empower_applied: '💪 {action}: you hit {pct}% harder for {rounds} {rounds|turn|turns}.'
+  expose_applied: '🎯 {action}: the enemy takes {pct}% more damage for {rounds} {rounds|turn|turns}.'
+  weaken_applied: '🔻 {action}: the enemy hits {pct}% softer for {rounds} {rounds|turn|turns}.'
+  debuff_applied: '🌀 {action}: the enemy takes {expose}% more damage and hits {weaken}% softer for {rounds} {rounds|turn|turns}.'
+  charged: '⚡ The enemy is marked: your next hit of that school strikes {pct}% harder.'
+  charged_used: ⚡ Hit on the mark! +{pct}%.
+  next_bonus: 🌑 Your next shadow hit strikes {pct}% harder.
+  extended: '⏳ Extended: {rounds} {rounds|turn|turns} left.'
+  charge_broken: '✋ You break {enemy}''s charge: its next hit won''t be fierce.'
+  hp_line: ❤️ {hp}/{max_hp}
+  stats_energy: '🔷 Combat energy: starts at {start} and rises {per} per turn, with no cap — your buttons spend it (Builder 2, Primer 3, Spender 6); the Basic gives +1; defending or a potion costs 1.'
+  new_point: '⭐ +1 level point: it went into your role on its own.'
+  second_role_learned: 🔄 You learned your second role! Switch whenever you like in 👤 Hero → 🌟 Talents.
+  bag_flee_button: 🎒 Backpack / 🏃 Flee
+  belt_help: ⏳ Using something from the backpack is your turn's action and costs 1 energy (it happens before the hits). You can also flee from here.
+  create_its_roles: 'Its 2 roles:'
+  create_roles: You choose your first role now. You learn the other one at level {n}, for free, and from then on you can switch whenever you like.
+  err:
+    energy: '🔷 Not enough energy: it costs {n} and you have {have} this turn.'
+  spec_buttons: '🎛️ Your 4 buttons:'
+  spec_button_line: '• {link} · {label}: {desc}'
+  spec_order: '🔗 Your role''s order ({role}): {order}'
+  spec_rules: Each button in order adds a mark; the spender cashes them in (+10% with 2, +25% with 3-4, +50% with 5 or more). Breaking the order snaps the chain. The Basic never snaps it.
+  second_role_open: '🔄 Your second role: you can play it whenever you like (free).'
+  second_role_locked: 🔒 You learn your second role at level {n}.
+  switch_button: 🔄 Play as {role}
+  switched: 🔄 You now play as {name}. Your points were redistributed.
+  points_auto: '⭐ Level points: {n}, all in your active role (placed automatically).'
+  active_role: '⭐ Active role: {name}'
+  hybrid_soon: '🧪 Hybrid mode (level {n}): coming once it''s decided how many abilities get mixed.'
+  bar_fixed: 'Your 4 buttons are fixed: ⚔️ Basic, Builder, Primer and Spender. Hybrid mode (level {n}) will open them up.'

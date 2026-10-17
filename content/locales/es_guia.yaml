@@ -53,6 +53,7 @@ guide:
 
         🚶 Cómo moverte
         • En 📍 Zona tienes 4 rutas: ⬆️ norte, ⬇️ sur, ➡️ este y ⬅️ oeste. Cada botón dice cuánto tarda.
+        • Con 🔗 Moverte armas un camino de varios pasos, en las direcciones que quieras, y tu héroe lo camina solo.
         • Moverte {move}: {first_time} por cada zona, cerca o lejos (10 zonas, 10 minutos).
         • Mientras viajas puedes cerrar el chat: te aviso al llegar.
         • Al llegar pueden salirte monstruos: cada terreno tiene su peligro.
@@ -214,10 +215,10 @@ guide:
         • ¡Llegó una oleada a tu campamento! Ve y toca 🛡️ Defender: cada pelea ganada cuenta.
         • Si pierden, se lleva parte de la despensa, nunca niveles ni zonas.
     options:
-      name: "Peleas automáticas"
+      name: "⚙️ Opciones"
       text: |-
-        • En ⚙️ Opciones eliges qué pasa si sale una pelea en medio de un lote.
-        • ✋ Manual: el lote se corta y peleas tú. ⚔️ Automática: tu héroe pelea solo y el lote sigue.
+        • Si sale una pelea en medio de un lote, el lote se corta y la peleas tú.
+        • En ⚙️ Opciones eliges con cuánta vida te retiras, cambias el 🌐 idioma y nos mandas 💬 Feedback.
     origin:
       name: "Tu origen (opcional)"
       text: |-

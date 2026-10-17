@@ -1,0 +1,274 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_dudas.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_dudas.yaml. Una clave nueva va
+# primero en es_dudas.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+dudas:
+  button: ❓ Help
+  title: ❓ Help
+  intro: 'Ask anything: type a word (for example “energy”, “map” or “camp”) and I''ll show you the questions that already have an answer.'
+  codes: 'Each question has its own code: tap or type /d07 to see its answer.'
+  popular: '⭐ Most searched:'
+  topics: '📚 Or pick a topic:'
+  topic_line: '{name}: {n} {n|question|questions}'
+  line: /{code} · {question}
+  topic_title: ❓ Help · {name}
+  results_title: 🔎 “{query}”
+  results: 'I found {n} {n|question|questions}. Tap or type a code to see its answer:'
+  results_more: '… and {n} more: try a more specific word.'
+  none: 🤔 I didn't find anything for “{query}”. Try another word (for example “energy”, “professions” or “dungeon”) or pick a topic.
+  unknown_code: 🤔 Question {code} doesn't exist. Codes start at /d01.
+  answer_title: ❓ {question}
+  related: '🔗 Related:'
+  again: 🔎 Type another word to keep searching.
+  back_button: ❓ Help
+  write_hint: ❓ Got a question? Type /help and a word, or open ❓ Help in 🏕️ Camp.
+  stopwords:
+  - what
+  - whats
+  - how
+  - which
+  - who
+  - where
+  - when
+  - why
+  - the
+  - a
+  - an
+  - is
+  - are
+  - was
+  - were
+  - be
+  - do
+  - does
+  - did
+  - don
+  - doesn
+  - didn
+  - isn
+  - i
+  - im
+  - me
+  - my
+  - mine
+  - you
+  - your
+  - can
+  - could
+  - should
+  - would
+  - will
+  - to
+  - of
+  - in
+  - 'on'
+  - at
+  - for
+  - and
+  - or
+  - with
+  - without
+  - from
+  - by
+  - about
+  - it
+  - its
+  - this
+  - that
+  - these
+  - those
+  - there
+  - here
+  - have
+  - has
+  - had
+  - get
+  - any
+  - some
+  - much
+  - many
+  - way
+  - mean
+  - means
+  - work
+  - please
+  topic:
+    start: 🌱 First steps
+    world: 🧭 Map and exploring
+    fight: ⚔️ Fights and health
+    hero: 👤 Your hero
+    camp: 🏕️ Camps
+    trades: ⚒️ Professions
+    money: 💰 Coins and trade
+  value:
+    move_free: doesn't cost energy
+    move_cost: costs {n} ⚡
+    list_and: '{items} and {last}'
+faq:
+  d01:
+    q: 🌱 What do I do first?
+    a: You wake up in the 🔥 Clearing, the base camp. Move to a neighboring zone from 📍 Zone, and there 🔎 explore, 🪓 gather and 🏹 hunt. Come back to the Clearing to sell, sleep, cook and craft. The game guides you step by step and tells you each time something new opens up.
+  d02:
+    q: 🧭 What is each menu for?
+    a: 'At the bottom you have 5 buttons: 📍 Zone (where you are and where to go), 🧭 Explore (explore, gather, hunt and the 🗺️ Map), 🏕️ Camp (cook, research, craft, the trainer, the merchant and this ❓ Help), 👤 Hero (your character sheet, backpack, talents, health, professions and journal) and ⚙️ Options.'
+  d03:
+    q: 📖 Where did the Story go?
+    a: 'The 📖 Story button left the menu: now the story guides you step by step as you play. Your 📔 Journal, your 🎯 Quests and the ⚜️ Factions are in 👤 Hero → 📔 Journal. The 📜 Board with its tasks and the Clearing''s characters are in 🏕️ Camp. /story also takes you to the journal.'
+  d04:
+    q: ⌨️ What shortcuts can I type?
+    a: Type /zone, /hero, /inv (backpack), /stats, /health, /skills, /professions, /options, /journal, /board, /recon or /help. With /help and a word you search for answers, and each answer has its own code, like /d05.
+  d05:
+    q: ⏱️ Why do I have to wait?
+    a: 'Traveling, exploring, gathering and sleeping take real minutes. You can close the chat: your hero keeps going and I''ll let you know when it''s done. Nothing is lost while you wait.'
+  d54:
+    q: 🆕 How do I know what's new?
+    a: When the game brings something new, you get a one-time notice with the patch notes. If you don't see the new bottom menu, type /start. Your progress is saved forever.
+  d55:
+    q: ⚙️ What can I change in Options?
+    a: In ⚙️ Options you choose at what health you retreat ({retreat}%), change the 🌐 language and send us 💬 Feedback. It stays saved and you can change it whenever you want.
+  d06:
+    q: 🚶 How do I move around the map?
+    a: 'In 📍 Zone tap a direction. Each zone you cross takes {travel_first} min, near or far (10 zones, 10 minutes), and {move_cost}. With 🔗 Move you build a way of several steps (up to {walk_max}) and your hero walks it alone. At each zone a monster may show up: beat it and you go on. With 🗺️ Map → 📒 Places you go straight back to a place you already know.'
+  d07:
+    q: ⚡ What is energy?
+    a: '⚡ Energy is spent on what you do outside a fight: exploring, gathering, hunting, crafting, cooking and more. You have up to {energy_max} and recover {energy_day} a day (1 every {energy_every}). Fighting doesn''t cost energy. Every friend you invite gives you more.'
+  d08:
+    q: 🔎 What is exploring?
+    a: '🔎 Explore searches your zone: each run takes {explore_min} min and 1 ⚡, adds {explore_low} to {explore_high}% of the zone and can give you items, coins or a fight. At {reveal}% you discover its resources one at a time. With the zone at 100% you keep going with the neighboring ones without moving.'
+  d09:
+    q: 🪓 How do I gather?
+    a: '🪓 Gather collects the resources you''ve already discovered in your zone: each run takes {gather_min} min and 1 ⚡. If you gather a lot, the zone gets depleted and recovers on its own over the hours. In your camp''s territory you gather {own_bonus}% more.'
+  d10:
+    q: 🔢 What are batches?
+    a: When exploring, gathering or hunting, you choose how much energy to spend in a row ({batches} or All). Your hero does one run after another and I'll send you a summary at the end. If a fight comes up, the batch stops and you fight it yourself.
+  d11:
+    q: 🏹 How do I hunt?
+    a: '🏹 Hunt (in 🧭 Explore) looks for prey in the zone: each one costs {hunt_energy} ⚡ and only gives the fight and its loot (meat, hide, coins, sometimes gear). There''s no prey in the Clearing. With a camp you can call a 🏹 Hunting party with your companions.'
+  d12:
+    q: 🎨 What do the map colors mean?
+    a: 'On the 🗺️ Map, zones you haven''t investigated show as white ▫️. When you investigate a zone halfway (50%), the color of its terrain appears (🟩 meadow, 🟢 forest, 🟫 hills…) and that terrain is added to the legend at the top. What you explore around you without moving counts too. The 🔥 is the starting camp and always shows. The color doesn''t tell you what resources there are: you learn that by exploring.'
+  d13:
+    q: 🗺️ Where do I see the dungeons?
+    a: 'They no longer show on the 🗺️ Map: there you only see yourself 🧍, the 🔥 starting camp and the color of the zones you''ve investigated. 🕳️ 🌀 Dungeons, ✨ nodes, 👹 enemy camps, 🏕️ player camps and the 👑 lair are discovered by walking. The important places you''ve already visited stay in 📒 Places, so you can go straight back.'
+  d14:
+    q: ✨ What is a resource node?
+    a: A ✨ node is a zone rich in one resource. When you reach its zone you learn what it is, forever. There, that resource yields ×{node_yield}, gets depleted half as fast and sometimes ({node_rare}%) gives a 💠 rough gem or a 🌸 moonflower. Anyone can use it.
+  d15:
+    q: 🕳️ What is a dungeon?
+    a: 'Dungeons are solo and always in the same place; what''s inside changes every day. 🕳️ The small one has 4 rooms, its boss and a chest you open once a day. 🌀 The deep one goes down floor by floor: you fill a bag of rewards and choose 🚪 Leave with your loot; if you lose, you keep half.'
+  d16:
+    q: 👹 What is an enemy camp?
+    a: Every day 👹 enemy camps appear in different places. While one is still standing, its zone can't be explored or gathered. With ⚔️ Assault you fight its guards and finally its boss, who drops its chest. With 🕵️ Infiltrate (🧭 Explorer rank {infiltrate_rank}) you get in unseen and take note of everything.
+  d17:
+    q: 👑 Who is the Guardian?
+    a: 'The Guardian of the Clearing waits in its lair 👑. Go to its zone and tap ⚔️ Challenge the Guardian in 🧭 Explore: it''s a tough fight, solo. The first to beat it is remembered forever as the Pioneer. If you lose, you can try again.'
+  d18:
+    q: 🔭 What is scouting from afar?
+    a: 'With the 🧭 Explorer profession at rank {recon_rank} you use /recon: you see from afar what''s in a dungeon or a 👹 enemy camp, without going or fighting. One per place per day. The Explorer''s 🥷 Stealth sometimes spares you a fight when exploring by hand or arriving from a trip.'
+  d19:
+    q: 🚫 Why can't I gather?
+    a: It could be a full backpack (sell or use things), a depleted zone (come back in a few hours), a 👹 enemy camp standing in the zone, the Guardian's lair, or you haven't discovered its resources yet (explore first). If you can't, energy is never charged.
+  d20:
+    q: 👥 Can I see other players?
+    a: 'In 📍 Zone you see who''s in your zone and what they''re doing. You can greet with /greet or toast with /toast, and show your journal. It''s just for seeing each other: no rewards and no fights between players.'
+  d21:
+    q: ⚔️ How does a fight work?
+    a: 'Fights go in rounds and you have 4 buttons: ⚔️ Basic (costs 0 and gives +1 energy), Builder (2), Primer (3) and 💥 Spender (6). You start with 5 energy and gain 2 per turn. Each button in your role''s order adds a mark and the Spender cashes them in (up to +50%); breaking the order snaps the chain. 🛡️ Defend or a potion cost 1 and use up your turn; 🏃 Flee is in 🎒 Backpack. Fighting doesn''t cost ⚡.'
+  d22:
+    q: 💀 What happens if I lose?
+    a: 'If you fall, you wake up gravely wounded: you lose {defeat_pct}% of your coins and your health comes back very slowly (0 to full in {downed_full}). A potion or the 🛏️ Inn fixes it sooner. You don''t lose levels, gear or zones.'
+  d23:
+    q: ❤️ How do I recover health?
+    a: 'Out of combat your health comes back on its own: 0 to full in {hp_full}. Faster: 🧪 potions and bandages (🎒 Backpack → 🧪 Potions), the Clearing''s 🛏️ Inn or your camp''s 🛏️ Shelter. In 👤 Hero → 🩺 Health you see how long is left.'
+  d24:
+    q: 🤖 What are auto-fights?
+    a: 'They are off for now: if a fight comes up in an explore, gather or hunt batch, the batch stops and you fight it yourself. They will come back later.'
+  d25:
+    q: 📊 What are attack and defense?
+    a: 'In 👤 Hero → 📊 Stats you''ll find each number with what it does: ❤️ health, ⚔️ attack, 🛡 defense (armor) and initiative. They go up with your level, your level points and your gear. Classes with the same role start with the same numbers: what sets you apart is your gear and your level.'
+  d26:
+    q: 🎖 How do I level up?
+    a: 'You gain experience by exploring, gathering, hunting, crafting and doing tasks. Every path leads to level {max_level}, slowly: it''s a long game. In 👤 Hero you see your level and how much is left.'
+  d27:
+    q: 🌟 What are talents?
+    a: 'Each class has 2 roles. You choose the first when you create your hero and learn the second at level {second_role}, for free: switch roles whenever you want in 👤 Hero → 🌟 Talents. Each level gives you 1 point, which goes into your active role on its own and makes you a bit stronger.'
+  d28:
+    q: 🎛️ How do I choose my abilities?
+    a: 'Your 4 buttons are fixed and open from the start: Basic, Builder, Primer and Spender. Each role asks for its own order (you see it in 🌟 Talents and in every fight). At level {hybrid_level} hybrid mode arrives, to mix abilities from your two roles.'
+  d29:
+    q: 🔀 What is dual specialization?
+    a: 'It''s your second role: at level {second_role} you learn it for free, and from then on you switch between your two roles whenever you want in 👤 Hero → 🌟 Talents. Your points are spread on their own into the role you''re playing.'
+  d30:
+    q: 🎒 How does the backpack work?
+    a: 'The 🎒 backpack has {bag_cap} space: each unit takes 1 (the belt and what you''re wearing don''t count). What you find is never lost even if it goes over the space, but with a full backpack you can''t gather or buy until you sell or use things.'
+  d31:
+    q: 🛡️ How do I equip gear?
+    a: 'In 🎒 Backpack → 🛡️ Gear you see what you''re wearing and the pieces you''ve found, whether they suit you and how much better they are. ⬆️ marks a piece better than yours: tap it and choose ✅ Equip. Each piece needs a level and a type.'
+  d32:
+    q: 🎭 What is an origin?
+    a: 'Your origin says where your hero comes from: it gives a small trait (never for combat), a gift and its own story. You choose it only once, whenever you want, in 👤 Hero → 🎭 Origin. If you already chose it, you keep it.'
+  d33:
+    q: 📔 What is the journal?
+    a: In 👤 Hero → 📔 Journal you'll find your card, the last thing you did, your 🎯 Quests and the ⚜️ Factions. Type /bio and some text for your biography, or /journal and a name to see another hero's card.
+  d34:
+    q: 🔥 What's in the Clearing?
+    a: 'The 🔥 Clearing is everyone''s base camp: 🛒 merchant, 🛏️ inn, the stations to 🍲 cook and 🛠️ craft, the 🧑‍🏫 trainer, the 📜 task board and this ❓ Help. The Clearing doesn''t grow: to grow, found your own camp.'
+  d35:
+    q: 🏕️ How do I found my camp?
+    a: Go to a zone at Distance {camp_far} or more, explore it to 100%, know {camp_known} of the 8 zones around it, make sure there's no other camp within {camp_gap} zones and carry {found_cost}. There, tap 🏕️ Camp → 🏕️ Found camp here and type its name. Each hero has one.
+  d36:
+    q: ⬆️ How do I expand my camp?
+    a: 'In your camp: 🏰 Manage → ⬆️ Expand. Each level adds a zone to your territory and costs materials depending on the level; from level {chests_from}, also 🪎 chests. It goes from camp to village, town, city and castle.'
+  d37:
+    q: 🙋 Who can join my camp?
+    a: Another player goes to your camp and taps 🙋 Ask to join; you decide. There's room for {members_base} at the start and {members_step} more per level. Members share the upgrades, the pantry, the waves and the guild.
+  d38:
+    q: 🌾 What is the pantry?
+    a: 'From level {pantry_level} your camp has a 🌾 pantry: each member who played that day eats 1 ration. Fill it with 🏰 Manage → 🌾 Contribute food (meat, fish, cooked food or 🥖 provisions). During a famine the camp doesn''t grow, but it never loses levels.'
+  d39:
+    q: 🛡️ What are waves?
+    a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers.'
+  d40:
+    q: 🔨 What are upgrades?
+    a: 'In 🏰 Manage → 🔨 Upgrades everyone builds the camp''s works together (🔥 Hearth, 🧵 Workshop, 🔨 Smithy, 📚 Library, defenses…): each member contributes materials until they''re complete. What''s built stays forever and gives services and defense.'
+  d41:
+    q: 🔬 How do I research?
+    a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'
+  d42:
+    q: 🛡️ What is the guild?
+    a: The founder creates the guild at their camp for {guild_cost} (🏰 Manage → 🛡️ Guild). Its members are the camp's members; it levels up with what everyone explores, wins and gathers together, and lets more people in. To become a castle you need a guild of level {guild_castle}.
+  d43:
+    q: 📜 What is the board?
+    a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one per faction: completing them gives experience, coins and reputation. If you have a camp, you also see its weekly tasks, which everyone does together.'
+  d44:
+    q: ⚒️ How do I learn a profession?
+    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🔬 Research in the Clearing or in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Gathering and the 🧭 Explorer are never learned: they rise on their own. Your professions: /myprofessions.'
+  d45:
+    q: 🛠️ How do I craft?
+    a: In 🏕️ Camp → 🛠️ Craft you choose 🪚 Refine (wood → plank, metal → ingot…) or 🛠️ Craft (gear, potions, bandages, furniture). Each recipe shows what it needs and how much ⚡ it costs. The Clearing has all the basic stations; your camp, the ones from its upgrades.
+  d46:
+    q: 🍲 How do I cook?
+    a: '🍲 Cook (🏕️ Camp) uses the 🍲 Cooking station: meat, fish and what each terrain gives become rations and stews that go further in the 🌾 pantry. You can already cook in the Clearing; in your camp, with the 🔥 Hearth. 🎣 Fish comes from zones with water.'
+  d47:
+    q: 🎓 What are specializations?
+    a: When a profession reaches rank {spec_first} you choose its first 🎓 specialization, and at {spec_second} the second (never all three). They give bonuses and their own recipes that grow with mastery. Choose them in ⚒️ Professions → 🎓 Specialization or with /specialty.
+  d48:
+    q: ✨ What is enchanting?
+    a: 'With /enchant you break down old gear into ✨ essences and use them to enchant a piece and give it a small bonus. It''s one more profession: you learn it first (📚 Learn professions) and it goes up by enchanting and disenchanting.'
+  d49:
+    q: ✒️ What is a masterwork?
+    a: 'When you craft a piece of gear it may come out as a ✒️ masterwork: stronger, unique and with your signature. It happens more often the higher your rank in that profession.'
+  d50:
+    q: 💰 How do coins work?
+    a: 'There''s 🥉 bronze, 🥈 silver and 🥇 gold: {rate} 🥉 = 1 🥈 and {rate} 🥈 = 1 🥇. Also 💰 bags (sewn), 🪎 chests (built from bags) and 💎 diamonds. It''s all in 🎒 Backpack → 💰 Coins.'
+  d51:
+    q: 🛒 What does the merchant do?
+    a: 'The Clearing''s 🛒 Merchant sells potions, bandages and 🥖 provisions (up to {provisions_cap} a week) and buys your materials at {sell_pct}% of their price. Gear you don''t use is sold from 🛡️ Gear. Food can''t be sold: it''s for the pantry.'
+  d52:
+    q: 🪎 How do I make bags and chests?
+    a: A 💰 bag is sewn with {bag_recipe} and {bag_coins}. A 🪎 chest is built with {chest_bags} bags and {chest_items}. You make them in 🎒 Backpack → 💰 Coins (in the Clearing) or in your camp's 🧵 Workshop. Chests pay for the camp's high levels.
+  d53:
+    q: 🔗 Why invite friends?
+    a: Your invite code is in 👤 Hero. Every friend who joins with your link and creates their hero gives you {invite_bonus} extra ⚡.

@@ -1,0 +1,99 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_exploracion.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_exploracion.yaml. Una clave nueva va
+# primero en es_exploracion.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+ecamp:
+  icon: 👹
+  arrive: 👹 An enemy camp! Its guards won't let you explore or gather here. 🧭 Explore → ⚔️ Assault.
+  blocked: '👹 There''s an enemy camp in this zone: its guards won''t let you explore or gather until it falls. You didn''t spend anything.'
+  zone_line: '👹 Enemy camp: no exploring or gathering here until it''s destroyed (🧭 Explore → ⚔️ Assault).'
+  ruins: 🔥 An enemy camp fell here today ({name} finished it off). Tomorrow another one will appear somewhere else.
+  route_mark: ' 👹'
+  here: '👹 An enemy camp (level {level}) holds the zone: its guards won''t let you explore or gather until it falls.'
+  progress: ⚔️ Together, everyone has already defeated {n} of its garrison today.
+  untouched: ⚔️ No one has attacked it yet today.
+  intel_hint: '🕵️ How many are left, who the boss is and what the chest holds: a 🧭 Explorer of rank {rank} who infiltrates it finds out.'
+  how: '⚔️ Assault: each fight (⚡ {energy}) defeats one of the garrison, for everyone; the last one is the boss. When it falls, the chest goes to whoever finishes it, and everyone who fought today earns something.'
+  assault_button: ⚔️ Assault · ⚡{energy}
+  again_button: ⚔️ Keep assaulting · ⚡{energy}
+  infiltrate_button: 🕵️ Infiltrate · ⚡{energy}
+  infiltrate_locked_button: 🕵️ Infiltrate (rank {rank})
+  none_here: 👹 There's no enemy camp standing here.
+  downed: '🤕 You''re badly wounded: heal before taking on an enemy camp (👤 Hero → 🩺 Health).'
+  infiltrate_locked: 🕵️ Infiltrating needs 🧭 Explorer rank {need} (you have {rank}). Level it up by exploring.
+  already_scouted: '🕵️ You already infiltrated this camp today: what you know is above.'
+  assault_fight: '⚔️ You assault the camp: a {enemy} (lv {level}) comes out to fight.'
+  detected_fight: 👀 You've been spotted! A {enemy} (lv {level}) from the camp jumps on you.
+  chief_fight: '👑 The camp''s boss comes out: {enemy} (lv {level}), stronger than the rest! If it falls, the camp falls.'
+  chief_badge: '👑 Camp boss: more health and more attack.'
+  intel_title: 🕵️ You infiltrated
+  infiltrated: 🕵️ You slipped in unseen and got out with everything noted down. The zone is now {pct}% explored.
+  infiltrate_xp: '{name} +{xp}'
+  guard_group: '{enemy} ×{n} (lv {level})'
+  intel_left: '👹 {n} of {total} left: {guards} and the boss.'
+  intel_no_guards: no guards
+  intel_chief: '👑 Boss: {enemy} (lv {level}), elite: +{hp}% health and +{attack}% attack.'
+  intel_chest: '🎁 Chest: {items} · {pct}% chance of a level {level} gear piece.'
+  gone: '👹 The camp is gone: your fight didn''t count toward it, but what you earned is yours.'
+  late: '👹 {name} had already finished off the camp: your fight didn''t count toward it, but what you earned is yours.'
+  guard_down: '👹 A camp guard fell: that''s {n} so far.'
+  chief_next: '👑 No guards left: the next fight is against the boss.'
+  left: 👹 {n} left, counting the boss.
+  no_guards_left: '👹 There were no guards left: only the boss remains.'
+  still_standing: 👹 The camp is still standing ({n} defeated today).
+  destroyed: 🔥 You destroyed the enemy camp at {name}! Tomorrow another one will appear somewhere else.
+  chest: '🎁 Its chest is yours: {items} · ✨ {xp} experience.'
+  shared: '🤝 {n} {n|other hero|other heroes} fought here today: each one earns {gold} and some experience.'
+  news_title: 👹 An enemy camp fell
+  news_body: 🔥 {hero} finished off the enemy camp at {name} ({x}, {y}), where you fought today.
+  share: '🤝 Your share: {gold} · ✨ {xp} experience.'
+  map_legend: '👹 today''s enemy camp: its zone can''t be explored or gathered until it falls'
+  map_line: 👹 ({x}, {y}) · {zones} zones away
+  map_strength: ' · 💪 {left} left · lv {level} · boss: {chief}'
+  map_more: …and {n} more, farther away.
+  map_sight_next: 🔭 You see enemy camps up to {n} {n|zone|zones} around you. With 🧭 Explorer rank {rank}, farther.
+  map_sight_all: 🔭 You see the enemy camps across your whole map.
+  go_button: 👹 Go to the nearest
+  go_button_time: 👹 Go to the nearest · {time}
+  move_button: 👹 Move to the camp · {time}
+explorer:
+  opened: 🧭 Now {what}.
+  ranks_line: '   🗺️ {items}'
+  map_time: ' · ⏱️ {time}'
+  time_lair: '⏱️ To the Guardian''s lair: {time}'
+  time_camp: '⏱️ To your camp {name}: {time}'
+  places_hint: 🧭 With Explorer rank {rank}, 📒 Places lists up to {n} places with their travel time.
+  what:
+    travel: 📒 Places lists up to {places} places with their travel time, and tells you how long it takes to reach each zone your map marks
+    camps_near: you see 👹 enemy camps up to {n} zones around you, even if you haven't set foot there
+    infiltrate: you can 🕵️ infiltrate enemy camps
+    camps_all: you see 👹 enemy camps across your whole map
+    strength: 'you see each camp''s strength from the map: how many are left, their level and their boss'
+    master: you're a 🏅 Grand Explorer
+  short:
+    travel: '{rank} ⏱️ travel times'
+    camps_near: '{rank} 👹 within {n} zones'
+    infiltrate: '{rank} 🕵️ infiltrate'
+    camps_all: '{rank} 👹 whole map'
+    strength: '{rank} 💪 their strength'
+    master: '{rank} 🏅 Grand Explorer'
+batch:
+  reason:
+    enemy_camp: '👹 An enemy camp set up in this zone: they won''t let you explore or gather here anymore. The energy for the run in progress came back. 🧭 Explore → ⚔️ Assault.'
+prof:
+  perk:
+    explore: +{v} exploration per run
+  branch:
+    explore: 🧭 Exploration
+profession:
+  explorador:
+    name: Explorer
+    how: 'explore: every run counts, and more when you bring a zone to 100%; with rank you see more on the map'
+story:
+  journal:
+    enemy_camp: 🔥 Destroyed an enemy camp at ({x}, {y}).
+    enemy_camp_help: 👹 Helped destroy an enemy camp at ({x}, {y}).
+  titles:
+    gran_explorador: «Grand Explorer»

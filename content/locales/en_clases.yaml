@@ -1,0 +1,939 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_clases.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_clases.yaml. Una clave nueva va
+# primero en es_clases.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+class_group:
+  paladin:
+    name: ⚜️ Paladin
+    desc: 'plate and Holy Power: judges, protects and heals from the front line'
+  cazador:
+    name: 🏹 Hunter
+    desc: 'mail and focus: aims, commands their beast and sets traps'
+  caballero_muerte:
+    name: 💀 Death Knight
+    desc: 'plate and runes: freezes, drains life and spreads plagues'
+  chaman:
+    name: ⚡ Shaman
+    desc: 'mail and Maelstrom: lightning, tides and totems'
+  mago:
+    name: 🔮 Mage
+    desc: 'cloth and mana: fire, frost and arcane magic'
+  brujo:
+    name: 🕯️ Warlock
+    desc: 'cloth and soul shards: chaos, demons and curses'
+  monje:
+    name: ☯️ Monk
+    desc: 'leather and chi: combos, stagger and healing mists'
+  druida:
+    name: 🌿 Druid
+    desc: 'leather and forms: cat, bear, healer or astral; the only one with all 4 roles'
+  cazador_demonios:
+    name: 😈 Demon Hunter
+    desc: 'leather and Fury: brimstone leaps, glyphs and souls'
+  evocador:
+    name: 🐉 Evoker
+    desc: 'mail and Essence: dragon breath and time magic'
+  nigromante:
+    name: 🦴 Necromancer
+    desc: 'cloth and reaped souls: plagues, skeletons and stolen life'
+  bardo:
+    name: 🎻 Bard
+    desc: 'leather and Cadence: blade rhythm, ballads and tempo'
+class:
+  guerrero_furia:
+    name: 💢 Warrior · Fury
+    role: opens a window with Armorbreaker and makes the most of it
+    attack_name: Double Slash
+  guerrero_senor_guerra:
+    name: 🚩 Warrior · Warlord
+    role: 'plants banners: more damage dealt or less damage taken'
+    attack_name: Command Strike
+  paladin_reprension:
+    name: ⚖️ Paladin · Retribution
+    role: judges the enemy and punishes it with light
+    attack_name: Righteous Swing
+  paladin_proteccion:
+    name: 🔰 Paladin · Protection
+    role: a shield that silences and auras that protect
+    attack_name: Steady Hammer
+  paladin_sagrado:
+    name: 🌅 Paladin · Holy
+    role: heals from the vanguard with their Dawn Lantern
+    attack_name: Dawn Strike
+  cazador_punteria:
+    name: 🎯 Hunter · Marksmanship
+    role: aims for a round and the next shot never misses
+    attack_name: Calm Shot
+  cazador_bestias:
+    name: 🐺 Hunter · Beasts
+    role: their beast marks the prey and everyone hits harder
+    attack_name: Quick Arrow
+  cazador_supervivencia:
+    name: 🪤 Hunter · Survival
+    role: 'traps and decoys: takes options away from the enemy'
+    attack_name: Survival Spear
+  picaro_sutileza:
+    name: 🌑 Rogue · Subtlety
+    role: strikes from the shadows and blinds the enemy
+    attack_name: Shadow Stab
+  picaro_forajido:
+    name: 🏴‍☠️ Rogue · Outlaw
+    role: rolls the dice of fate and distracts the enemy
+    attack_name: Knife Swipe
+  sacerdote_sombra:
+    name: 👁️ Priest · Shadow
+    role: damage over time and Madness
+    attack_name: Mind Sting
+  sacerdote_sagrado:
+    name: 😇 Priest · Holy
+    role: big heals and heals that last
+    attack_name: Blessed Flame
+  caballero_muerte_escarcha:
+    name: 🧊 Death Knight · Frost
+    role: builds up frost until the enemy is frozen still
+    attack_name: Icy Strike
+  caballero_muerte_sangre:
+    name: 🫀 Death Knight · Blood
+    role: takes the hit to give it back as health
+    attack_name: Crimson Slash
+  caballero_muerte_profano:
+    name: ☣️ Death Knight · Unholy
+    role: plagues that make the enemy perform worse
+    attack_name: Putrid Bite
+  chaman_elemental:
+    name: 🌩️ Shaman · Elemental
+    role: lightning and lava that sometimes repeat on their own
+    attack_name: Zap
+  chaman_restauracion:
+    name: 🌊 Shaman · Restoration
+    role: chain heals and tide totems
+    attack_name: Splash
+  chaman_totems:
+    name: 🗿 Shaman · Totems
+    role: plants totems that help and protect on their own
+    attack_name: Squall Strike
+  mago_fuego:
+    name: ☄️ Mage · Fire
+    role: chains critical hits up to the Blazing Burst
+    attack_name: Fireball
+  mago_escarcha:
+    name: 🌨️ Mage · Frost
+    role: freezes and slows the enemy so it hits softer
+    attack_name: Ice Dart
+  mago_arcano:
+    name: 💠 Mage · Arcane
+    role: builds up Arcane Charges and spreads them around
+    attack_name: Arcane Spark
+  brujo_destruccion:
+    name: 🌋 Warlock · Destruction
+    role: saves shards for an Infernal Comet
+    attack_name: Incinerate
+  brujo_demonologia:
+    name: 👹 Warlock · Demonology
+    role: their guardian demon tanks while they keep it alive
+    attack_name: Umbral Dart
+  brujo_afliccion:
+    name: 🕸️ Warlock · Affliction
+    role: curses that weaken and drain
+    attack_name: Corruption
+  monje_viajero_viento:
+    name: 🌪️ Monk · Windwalker
+    role: combo strikes that never repeat
+    attack_name: Quick Palm
+  monje_maestro_cervecero:
+    name: 🍺 Monk · Brewmaster
+    role: staggers damage over several rounds and purges it
+    attack_name: Quick Palm
+  monje_tejedor_niebla:
+    name: 🌫️ Monk · Mistweaver
+    role: channeled heals that grow if they aren't cut short
+    attack_name: Spinning Kick
+  druida_feral:
+    name: 🐆 Druid · Feral
+    role: bleeds and combos in cat form
+    attack_name: Scratch
+  druida_guardian:
+    name: 🐻 Druid · Guardian
+    role: a bear that turns rage into health
+    attack_name: Maul
+  druida_restauracion:
+    name: 🌸 Druid · Restoration
+    role: 'heals over time: plan ahead'
+    attack_name: Wrath
+  druida_equilibrio:
+    name: 🌿 Druid · Balance
+    role: Eclipse empowers and roots hold back
+    attack_name: Starglow
+  cazador_demonios_estrago:
+    name: 🦇 Demon Hunter · Havoc
+    role: leaps, strikes and dodges in the same round
+    attack_name: Brimstone Claw
+  cazador_demonios_venganza:
+    name: 👺 Demon Hunter · Vengeance
+    role: glyphs that trigger one round later
+    attack_name: Shear
+  cazador_demonios_devorador:
+    name: 🕳️ Demon Hunter · Devourer
+    role: consumes souls and shares their power
+    attack_name: Abyss Flash
+  evocador_devastacion:
+    name: 🐲 Evoker · Devastation
+    role: charges dragon breaths for 1 to 3 rounds
+    attack_name: Hungry Flame
+  evocador_preservacion:
+    name: ⏳ Evoker · Preservation
+    role: 'time magic: doubles heals and rewinds damage'
+    attack_name: Hungry Flame
+  evocador_aumentacion:
+    name: 🔆 Evoker · Augmentation
+    role: lends their power and makes sure of the critical hit
+    attack_name: Eruption
+  nigromante_plaga:
+    name: 🪦 Necromancer · Plague
+    role: diseases that jump from enemy to enemy
+    attack_name: Necrotic Bolt
+  nigromante_legion:
+    name: 🧟 Necromancer · Legion
+    role: a wall of skeletons that sacrifice themselves for their master
+    attack_name: Necrotic Bolt
+  nigromante_drenaje:
+    name: 🧛 Necromancer · Drain
+    role: heals with the life they steal from the enemy
+    attack_name: Withering Touch
+  bardo_duelista:
+    name: 🤺 Bard · Duelist
+    role: 'sword dance: combos with rhythm'
+    attack_name: Thrust
+  bardo_trovador:
+    name: 🎶 Bard · Troubadour
+    role: ballads that heal every round while they play
+    attack_name: Cutting Chord
+  bardo_estratega:
+    name: 🥁 Bard · Strategist
+    role: 'shifts initiative: moves allies up and pushes enemies back'
+    attack_name: Downbeat
+ability:
+  golpe_colosal:
+    name: Armorbreaker
+  ejecutar:
+    name: Final Slash
+  parada:
+    name: Parry
+  estandarte_de_guerra:
+    name: War Banner
+  estandarte_de_muralla:
+    name: Rampart Banner
+  intervenir:
+    name: Interpose
+  juicio:
+    name: Judgment
+  veredicto_templario:
+    name: Radiant Sentence
+  escudo_divino:
+    name: Heavenly Shelter
+  escudo_del_vengador:
+    name: Silencing Shield
+  bendicion_de_proteccion:
+    name: Sheltering Grace
+  aura_de_devocion:
+    name: Steadfast Aura
+  destello_de_luz:
+    name: Healing Gleam
+  faro_de_luz:
+    name: Dawn Lantern
+  escudo_divino_sagrado:
+    name: Heavenly Shelter
+  apuntar:
+    name: Take Aim
+  disparo_certero:
+    name: Sure Shot
+  destrabarse:
+    name: Leap Back
+  orden_de_matar:
+    name: Claw on Command
+  aspecto_de_la_tortuga:
+    name: Shell Up
+  postura_provocar:
+    name: Marked Prey
+  trampa_de_alquitran:
+    name: Pitch Pool
+  marca_del_cazador:
+    name: Tracker's Eye
+  senuelo:
+    name: Decoy
+  danza_de_las_sombras:
+    name: Twilight Waltz
+  contraataque:
+    name: Counterattack
+  provocacion_burlona:
+    name: Blinding Dust
+  dados_del_destino:
+    name: Dice of Fate
+  distraccion:
+    name: Distraction
+  capa_de_sombras:
+    name: Black Cape
+  toque_vampirico:
+    name: Vampire's Kiss
+  tortura_mental:
+    name: Mind Torment
+  dispersion:
+    name: Smoke Form
+  plegaria_de_sanacion:
+    name: Healing Plea
+  renovar:
+    name: Slow Balm
+  palabra_de_poder_escudo:
+    name: Warding Word
+  golpe_de_escarcha:
+    name: Frigid Edge
+  helada_mental:
+    name: Frozen Silence
+  entereza_ligada_al_hielo:
+    name: Iceskin
+  golpe_de_muerte:
+    name: Blood Toll
+  escudo_de_huesos:
+    name: Bone Cuirass
+  hervor_de_sangre:
+    name: Crimson Fever
+  peste:
+    name: Pestilence
+  ejercito_de_los_muertos:
+    name: Levy of the Dead
+  caparazon_antimagia:
+    name: Negating Veil
+  descarga_de_lava:
+    name: Magma Jet
+  choque_de_llamas:
+    name: Lingering Ember
+  paso_espiritual:
+    name: Ethereal Stride
+  sanacion_en_cadena:
+    name: Bouncing Heal
+  totem_de_marea:
+    name: Swell Totem
+  cambio_astral:
+    name: Spirit Form
+  totem_viento_furioso:
+    name: Gale Totem
+  totem_piel_de_piedra:
+    name: Granite Totem
+  totem_de_captura:
+    name: Snare Totem
+  piroexplosion:
+    name: Blazing Burst
+  combustion:
+    name: Unbound Blaze
+  bloque_de_hielo:
+    name: Frozen Cell
+  barrera_de_hielo:
+    name: Sleet Shield
+  lanza_de_hielo:
+    name: Icepick
+  muro_de_hielo:
+    name: Paralyzing Frost
+  poder_arcano:
+    name: Arcane Overflow
+  ralentizar:
+    name: Slowdown
+  barrera_prismatica:
+    name: Iridescent Dome
+  descarga_del_caos:
+    name: Infernal Comet
+  inmolar:
+    name: Immolate
+  resolucion_inagotable:
+    name: Grim Stubbornness
+  hachazo_vil:
+    name: Demonic Hack
+  vinculo_demoniaco:
+    name: Demonic Bond
+  sacrificio:
+    name: Sacrifice
+  maldicion_de_debilidad:
+    name: Feeble Curse
+  drenar_alma:
+    name: Soul Sip
+  circulo_demoniaco:
+    name: Circle of Return
+  patada_del_sol_naciente:
+    name: Rising Kick
+  palma_mistica:
+    name: Shattering Palm
+  rodar:
+    name: Roll
+  golpe_de_barril:
+    name: Barrel Bash
+  toque_de_karma:
+    name: Instant Karma
+  brebaje_purificador:
+    name: Clean Swig
+  niebla_envolvente:
+    name: Haze Mantle
+  vivificar:
+    name: Vital Breath
+  capullo_de_vida:
+    name: Chrysalis
+  mordedura_feroz:
+    name: Final Bite
+  desgarrar:
+    name: Rend
+  piel_de_corteza:
+    name: Oakskin
+  destrozar:
+    name: Mangle
+  pelaje_de_hierro:
+    name: Thick Pelt
+  regeneracion_frenetica:
+    name: Lick Your Wounds
+  rejuvenecimiento:
+    name: Fresh Sap
+  alivio_presto:
+    name: Healing Leaf
+  corteza_de_hierro:
+    name: Oak's Embrace
+  eclipse_solar:
+    name: Solar Eclipse
+  raices_enredadoras:
+    name: Root Tangle
+  carrerilla_salvaje:
+    name: Stag Leap
+  golpe_del_caos:
+    name: Infernal Tear
+  metamorfosis:
+    name: Metamorphosis
+  salto_vil:
+    name: Brimstone Leap
+  sigilo_de_llamas:
+    name: Glyph of Flames
+  puas_demoniacas:
+    name: Spiny Skin
+  sigilo_de_miseria:
+    name: Glyph of Anguish
+  entregar_alma:
+    name: Offer Soul
+  marca_del_caos:
+    name: Infernal Stigma
+  escudo_de_almas:
+    name: Soul Shield
+  aliento_de_fuego:
+    name: Fire Breath
+  desintegrar:
+    name: Disintegrate
+  planear:
+    name: Glide
+  eco:
+    name: Echo
+  rebobinar:
+    name: Rewind
+  escamas_obsidianas:
+    name: Basalt Scales
+  poder_de_ebano:
+    name: Borrowed Strength
+  presciencia:
+    name: Hunch
+  salto_temporal:
+    name: Time Shortcut
+  plaga_reptante:
+    name: Creeping Plague
+  estallido_putrido:
+    name: Putrid Burst
+  forma_espectral:
+    name: Spectral Form
+  hueso_protector:
+    name: Guarding Bone
+  levantar_esqueletos:
+    name: Raise Skeletons
+  grito_del_sepulcro:
+    name: Grave Cry
+  sifon_vital:
+    name: Life Siphon
+  pacto_de_sangre:
+    name: Blood Pact
+  velo_de_almas:
+    name: Veil of Souls
+  floritura_final:
+    name: Final Flourish
+  estocada_ritmica:
+    name: Rhythmic Thrust
+  paso_de_baile:
+    name: Dance Step
+  balada_curativa:
+    name: Healing Ballad
+  nota_curativa:
+    name: Healing Note
+  nota_sostenida:
+    name: Sustained Note
+  allegro:
+    name: Allegro
+  contratiempo:
+    name: Offbeat
+  calderon:
+    name: Fermata
+  sed_de_sangre:
+    name: Thirsting Steel
+  reflejo_de_hechizos:
+    name: Steel Mirror
+  temeridad:
+    name: Full Tilt
+  regeneracion_enfurecida:
+    name: Breath of Rage
+  desenfreno:
+    name: Slashing Gale
+  golpe_con_escudo:
+    name: Shield Strike
+  grito_desmoralizador:
+    name: Disheartening Roar
+  venganza:
+    name: Revenge
+  muro_de_escudo:
+    name: Sealed Bulwark
+  ultima_resistencia:
+    name: Still Standing
+  grito_de_batalla:
+    name: War Harangue
+  lanzamiento_heroico:
+    name: Flying Axe
+  golpe_mortal:
+    name: Dire Slash
+  grito_de_reunion:
+    name: Call to Arms
+  grito_intimidador:
+    name: Dread Shriek
+  hoja_de_justicia:
+    name: Edge of Justice
+  palabra_de_gloria:
+    name: Breath of Faith
+  colera_vengativa:
+    name: Holy Furor
+  estela_de_cenizas:
+    name: Trail of Embers
+  sentencia_de_ejecucion:
+    name: No Appeal
+  consagracion:
+    name: Anointed Ground
+  escudo_de_los_justos:
+    name: Firm Aegis
+  defensor_ardiente:
+    name: Stubborn Flame
+  guardian_de_los_reyes:
+    name: Sentinel of Old
+  imposicion_de_manos:
+    name: Timely Miracle
+  juicio_de_luz:
+    name: Revealing Light
+  luz_sagrada:
+    name: Healing Clarity
+  bendicion_de_sacrificio:
+    name: Shared Burden
+  luz_del_alba:
+    name: Warm Sunrise
+  prisma_sagrado:
+    name: Radiant Glass
+  disparo_arcano:
+    name: Rune Arrow
+  disparo_de_contencion:
+    name: Gag Arrow
+  supervivencia_del_mas_apto:
+    name: Tough Hide
+  fuego_rapido:
+    name: Arrow Flurry
+  disparo_mortal:
+    name: Finishing Shot
+  disparo_de_puas:
+    name: Serrated Arrow
+  intimidacion:
+    name: Intimidation
+  colera_de_las_bestias:
+    name: Pack Rage
+  euforia:
+    name: Euphoria
+  llamada_de_lo_salvaje:
+    name: Howl of the Pack
+  bomba_de_fuego_salvaje:
+    name: Incendiary Bomb
+  bozal:
+    name: Muzzle
+  golpe_de_raptor:
+    name: Fierce Lunge
+  trampa_congelante:
+    name: Frost Snare
+  asalto_coordinado:
+    name: Paired Hunt
+  mutilar:
+    name: Mutilate
+  garrote:
+    name: Garrote
+  vial_carmesi:
+    name: Pocket Tonic
+  marca_de_la_muerte:
+    name: Fatal Sign
+  envenenar:
+    name: Envenom
+  golpe_en_los_rinones:
+    name: Low Elbow
+  amago:
+    name: Fake-Out
+  ceguera:
+    name: Blind
+  simbolos_de_muerte:
+    name: Executioner's Marks
+  tecnica_secreta:
+    name: Guild Trick
+  disparo_de_pistola:
+    name: Pistol Shot
+  gubia:
+    name: Eye Poke
+  riposte:
+    name: Riposte
+  golpe_fantasmal:
+    name: Mist Dagger
+  ola_de_asesinatos:
+    name: Dagger Spree
+  palabra_sombria_dolor:
+    name: Aching Whisper
+  silencio:
+    name: Silence
+  peste_devoradora:
+    name: Black Hunger
+  alarido_psiquico:
+    name: Mind Shriek
+  palabra_sombria_muerte:
+    name: Final Whisper
+  sanacion_relampago:
+    name: Quick Remedy
+  palabra_sagrada_castigo:
+    name: Voice of Reproach
+  rezo_de_alivio:
+    name: Wandering Prayer
+  espiritu_guardian:
+    name: Soul Cloak
+  palabra_sagrada_serenidad:
+    name: Voice of Calm
+  purgar_al_malvado:
+    name: Atoning Flame
+  supresion_de_dolor:
+    name: Numbed Pain
+  infusion_de_poder:
+    name: Shared Fervor
+  resplandor:
+    name: Radiant Word
+  cisma:
+    name: Soul Fissure
+  explosion_aullante:
+    name: Northern Lament
+  pilar_de_escarcha:
+    name: Heart of Ice
+  arrasar:
+    name: Raze
+  invierno_despiadado:
+    name: Grave Chill
+  furia_del_vermis:
+    name: Glacial Roar
+  desgarro_de_medula:
+    name: Marrow Slash
+  sangre_vampirica:
+    name: Stubborn Blood
+  arma_de_runas_danzante:
+    name: Spectral Blade
+  muerte_y_descomposicion:
+    name: Rotten Ground
+  bebesangre:
+    name: Blood Toast
+  espiral_de_la_muerte:
+    name: Dire Dart
+  atraccion_letal:
+    name: Shadow Hook
+  transformacion_oscura:
+    name: Enraged Ghoul
+  brote:
+    name: Outbreak
+  apocalipsis:
+    name: Apocalypse
+  descarga_de_relampagos:
+    name: Lightning Flash
+  corte_de_viento:
+    name: Cutting Gust
+  guardian_de_tormentas:
+    name: Bottled Storm
+  choque_de_tierra:
+    name: Rock Fist
+  elemental_de_fuego:
+    name: Fire Elemental
+  mareas_vivas:
+    name: Healing Dew
+  choque_de_escarcha:
+    name: Biting Frost
+  escudo_de_tierra:
+    name: Mud Armor
+  ola_de_sanacion:
+    name: Vital Torrent
+  ascension:
+    name: Ascension
+  golpe_de_tormenta:
+    name: Thunder Smash
+  totem_de_condensador:
+    name: Spark Totem
+  totem_corriente_sanadora:
+    name: Spring Totem
+  latigazo_de_lava:
+    name: Ember Fist
+  espiritu_feral:
+    name: Spirit Pack
+  explosion_de_fuego:
+    name: Flare-Up
+  contrahechizo:
+    name: Counterspell
+  bomba_viviente:
+    name: Time Bomb
+  barrera_ardiente:
+    name: Fire Curtain
+  meteorito:
+    name: Meteor
+  nova_de_escarcha:
+    name: Icy Burst
+  venas_heladas:
+    name: Icy Pulse
+  ventisca:
+    name: Blizzard
+  orbe_congelado:
+    name: Snowball
+  pua_glacial:
+    name: Ice Stake
+  misiles_arcanos:
+    name: Wandering Sparks
+  supernova:
+    name: Supernova
+  imagen_reflejada:
+    name: Mocking Reflection
+  toque_del_magi:
+    name: Scholar's Seal
+  tromba_arcana:
+    name: Arcane Downpour
+  incinerar:
+    name: Incinerate
+  espiral_mortal:
+    name: Dread Noose
+  conflagrar:
+    name: Stoke Flames
+  pacto_oscuro:
+    name: Shady Deal
+  invocar_infernal:
+    name: Brimstone Colossus
+  descarga_demoniaca:
+    name: Brimstone Dart
+  furia_de_las_sombras:
+    name: Umbral Jolt
+  armadura_demoniaca:
+    name: Devil Scales
+  drenar_vida:
+    name: Shadow Leech
+  tirano_demoniaco:
+    name: Lord of Imps
+  corrupcion:
+    name: Corruption
+  miedo:
+    name: Fear
+  atormentar:
+    name: Torment
+  putrefaccion_de_alma:
+    name: Rancid Soul
+  extasis_malefico:
+    name: Cursed Delirium
+  palma_del_tigre:
+    name: Quick Palm
+  golpe_de_mano_lanza:
+    name: Throat Strike
+  punos_de_furia:
+    name: Rain of Fists
+  tormenta_tierra_fuego:
+    name: Fist Echoes
+  toque_de_la_muerte:
+    name: Full Stop
+  soplo_de_fuego:
+    name: Fiery Belch
+  barrido_de_pierna:
+    name: Trip Up
+  brebaje_celestial:
+    name: Cloud Ale
+  barril_explosivo:
+    name: Bursting Keg
+  invocar_a_niuzao:
+    name: Ox Charge
+  paralisis:
+    name: Paralysis
+  niebla_renovadora:
+    name: Fresh Mist
+  te_de_enfoque_atronador:
+    name: Extra-Strong Tea
+  regalo_de_sheilun:
+    name: Gift of the Clouds
+  revivir:
+    name: Revive
+  triturar:
+    name: Shred
+  testarazo:
+    name: Headbutt
+  furia_del_tigre:
+    name: Feline Frenzy
+  instintos_de_supervivencia:
+    name: Bristled Back
+  ira_primigenia:
+    name: Savage Claw
+  vapulear:
+    name: Maul
+  rugido_incapacitador:
+    name: Bear's Bellow
+  magullar:
+    name: Bruise
+  furia_del_durmiente:
+    name: Waking Bear
+  encarnacion_de_ursoc:
+    name: Ancestral Bear
+  fuego_lunar:
+    name: Moon Burn
+  recrecimiento:
+    name: Sprout
+  flor_de_vida:
+    name: Patient Bloom
+  crecimiento_salvaje:
+    name: Healing Thicket
+  tranquilidad:
+    name: Forest Calm
+  mordisco_demoniaco:
+    name: Dark Bite
+  disrupcion:
+    name: Disruption
+  desdibujar:
+    name: Blur
+  rayo_ocular:
+    name: Burning Gaze
+  la_caceria:
+    name: Cornered Prey
+  cizallar:
+    name: Shearing Cut
+  sigilo_de_silencio:
+    name: Mute Glyph
+  hendidura_de_alma:
+    name: Soulsplitter
+  marca_ignea:
+    name: Red-Hot Iron
+  devastacion_vil:
+    name: Brimstone Breath
+  consumir:
+    name: Consume
+  rayo_del_vacio:
+    name: Abyssal Beam
+  cambio_de_fase:
+    name: Step Between Worlds
+  cosecha_de_almas:
+    name: Soul Feast
+  estrella_colapsante:
+    name: Sunken Sun
+  llama_viva:
+    name: Hungry Flame
+  sofocar:
+    name: Smother
+  furia_dragontina:
+    name: Wrath of Scales
+  estrella_destrozadora:
+    name: Broken Star
+  oleada_de_eternidad:
+    name: Tide of Ages
+  flor_esmeralda:
+    name: Healing Petal
+  dilatacion_temporal:
+    name: Endless Moment
+  aliento_onirico:
+    name: Dream Sigh
+  anomalia_temporal:
+    name: Time Rift
+  flor_espiritual:
+    name: Late Bloom
+  erupcion:
+    name: Eruption
+  distorsion_temporal:
+    name: Twisted Time
+  escamas_abrasadoras:
+    name: Boiling Scales
+  sublevacion:
+    name: Rebel Earth
+  aliento_de_eones:
+    name: Timeless Breath
+  toque_de_putrefaccion:
+    name: Touch of Decay
+  enjambre_de_moscas:
+    name: Swarm of Flies
+  contagio:
+    name: Contagion
+  ola_de_pestilencia:
+    name: Pestilent Wave
+  epidemia:
+    name: Epidemic
+  golpe_de_hueso:
+    name: Bone Strike
+  muro_de_cadaveres:
+    name: Corpse Wall
+  coloso_de_huesos:
+    name: Bone Colossus
+  festin_de_cadaveres:
+    name: Corpse Feast
+  legion_inmortal:
+    name: Undying Legion
+  mano_de_la_tumba:
+    name: Hand of the Grave
+  marchitar:
+    name: Wither
+  transfusion:
+    name: Transfusion
+  cosecha_vital:
+    name: Life Harvest
+  segador_de_almas:
+    name: Soul Scythe
+  estocada_doble:
+    name: Double Thrust
+  contrapunto:
+    name: Counterpoint
+  finta:
+    name: Feint
+  crescendo:
+    name: Crescendo
+  gran_final:
+    name: Grand Finale
+  cancion_de_cuna:
+    name: Lullaby
+  himno_de_esperanza:
+    name: Song of Tomorrow
+  acorde_disonante:
+    name: Dissonant Chord
+  coro_celestial:
+    name: Celestial Choir
+  requiem_de_vida:
+    name: Requiem of Life
+  staccato:
+    name: Staccato
+  sincopa:
+    name: Syncopation
+  compas_de_espera:
+    name: Holding Pattern
+  fortissimo:
+    name: Fortissimo
+  sinfonia_de_guerra:
+    name: War Symphony
+resource:
+  poder_sagrado: Holy Power
+  foco: Focus
+  locura: Madness
+  runas: Runes
+  voragine: Maelstrom
+  cargas_arcanas: Arcane Charges
+  fragmentos_alma: Soul shards
+  chi: Chi
+  poder_astral: Astral Power
+  furia: Fury
+  esencia: Essence
+  almas: Reaped souls
+  compas: Cadence

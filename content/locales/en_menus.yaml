@@ -1,0 +1,137 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_menus.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_menus.yaml. Una clave nueva va
+# primero en es_menus.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+hub:
+  title_claro: 🏕️ The Clearing Camp
+  intro_claro: '🔥 The base camp, where everyone starts. Here you have what you don''t carry with you:'
+  intro_camp: '🏕️ What you can do at your camp:'
+  section_info: 📌 Your camp
+  cook: '🍲 Cook: meat, fish and what each terrain gives become rations and stews for the pantry. 🍲 Cooking rank {rank}.'
+  cook_none: '🍲 Cook: needs the 🔥 Hearth (🏰 Manage → 🔨 Upgrades).'
+  cook_unlearned: '🍲 Cook: first learn 🍲 Cooking in 🔬 Research.'
+  research_claro: '🔬 Research: not in the Clearing; you research at your own camp with the 📚 Library (level {level}).'
+  research_locked: '🔬 Research: with the 📚 Library, which can be built from level {level} (your camp is level {now}).'
+  research_open: '🔬 Research: 📚 Knowledge · {done} of {total} {total|study|studies}{current}.'
+  research_current: ' · studying {name}'
+  research_learn: '🔬 Research: learn new professions · {n} left to learn.'
+  research_learn_all: '🔬 Research: you have learned every profession you can learn here.'
+  make: '🛠️ Craft: 🪚 refine and 🛠️ craft gear, potions and furniture · {n} {n|station|stations} here · ⚡{energy}/{max}.'
+  make_none: '🛠️ Craft: no stations yet; the 🧵 Workshop and the 🔨 Smithy open them (🔨 Upgrades).'
+  trainer: '🧑‍🏫 Trainer: your professions, the ones you lack and how they are learned.'
+  shop: '🛒 Merchant: potions, bandages and 🥖 provisions; buys your materials.'
+  inn: '🛏️ Inn: {price} · sleep {time} and wake up with full health.'
+  inn_full: '🛏️ Inn: {price} · your health is already full.'
+  services: '🏘️ Services: {list}.'
+  services_none: '🏘️ Services: shelter, trading post and workshop come with 🔨 Upgrades.'
+  board: '📜 Board: {done} of {total} of today''s tasks · they change in {time}.'
+  manage: '🏰 Manage: ⬆️ expand, 🔨 upgrades, 🌾 pantry and 🛡️ guild.'
+  dudas: '❓ Help: type a word and I''ll show you questions that are already answered.'
+  defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
+  cook_button: 🍲 Cook
+  research_button: 🔬 Research
+  make_button: 🛠️ Craft
+  trainer_button: 🧑‍🏫 Trainer
+  shop_button: 🛒 Merchant
+  inn_button: 🛏️ Inn
+  board_button: 📜 Board
+  services_button: 🏘️ Services
+  manage_button: 🏰 Manage
+  research_claro_notice: '🔬 There''s no research in the Clearing: the Clearing doesn''t grow. At your own camp, with the 📚 Library (level {level}), you can study {studies}.'
+  research_locked_notice: '🔬 To research, your camp needs the 📚 Library: it''s built in 🏰 Manage → 🔨 Upgrades from level {level} (it''s level {now} now).'
+  research_away_notice: 🔬 Research is done at your own camp, with the 📚 Library. Head over there.
+  cook_none_notice: '🍲 To cook here you need the 🔥 Hearth: it''s built in 🏰 Manage → 🔨 Upgrades. In the Clearing you can always cook.'
+  away_notice: '🏕️ That''s done in the Clearing or at your own camp: go to one of the two.'
+  cook_title: 🍲 Cook
+  cook_intro: 🍲 Cooked food yields more rations in your camp's 🌾 pantry than raw meat or fish. Your 🍲 Cooking goes up with every recipe.
+manage:
+  title: 🏰 Manage {name}
+  intro: 'What makes your camp grow and keeps it going:'
+  grow: '⬆️ Expand: {cost} to reach level {next} (one more zone and more room for members).'
+  grow_top: '⬆️ Expand: your camp has become a castle.'
+  upgrades: '🔨 Upgrades: {n} {n|built|built} · 🛡️ Defense {defense}. Works, services and 📚 Knowledge.'
+  pantry: '🌾 Contribute food: meat, fish, cooked food or 🥖 provisions for the pantry.'
+  pantry_locked: '🌾 Pantry: unlocks at level {level} (village).'
+  guild: '🛡️ Guild: the members, ✏️ the name, 🚪 leaving and the camp''s guild.'
+  defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
+hero_card:
+  points: '✨ Talent points: {n} — spend them in 🌟 Talents'
+  hp: '❤️ Health: {hp}/{max_hp}{timer}'
+  hp_timer: ' (full in {time})'
+  energy: '⚡ Energy: {energy}/{max}{timer}'
+  energy_timer: ' (+1 in {time})'
+  energy_full: ' (full)'
+  trades: '⚒️ Professions: {n} {n|started|started} · best: {best} — /professions'
+  journal_button: 📔 Journal
+  origin_button: 🎭 Origin
+story_moved: '📖 Story left the bottom menu: your story is still here, in 👤 Hero → 📔 Journal. The 📜 Board is in 🏕️ Camp.'
+origin_card:
+  title: 🎭 Your origin
+  head: 🎭 {origin}
+  chain: '📖 Its story: quest {done} of {total}.'
+  chain_done: '📖 Its story: complete ✅.'
+  forever: Your origin is chosen only once and stays forever.
+trainer:
+  title: 🧑‍🏫 Trainer
+  intro: '«You learn a profession by doing it: you don''t pay for it or pick it, and you can have them all. Here''s what each family does:»'
+  branch:
+    gather: '🪓 Gathering: you collect materials in the zones. They level up as you gather (the 🔪 Skinner, by defeating beasts; the 🎣 Fisher, in zones with water).'
+    explore: '🧭 Exploration: the 🧭 Explorer levels up by exploring and sees more on the map; from rank {recon} it lets you scout from afar.'
+    refine: '🪚 Refining: you turn what you collect into better materials (planks, ingots, cloth, ashlar blocks…) at a station.'
+    craft: '🛠️ Crafting: gear, potions, bandages, food and furniture, at a station. Sometimes a ✒️ masterwork comes out.'
+    enchant: '✨ Enchanting: you break down old gear into essences and enchant your pieces (/enchant).'
+    service: '💱 Services: 💱 Trade levels up by selling; 🏗️ Construction, by contributing to your camp''s works.'
+  names: '   {list}'
+  entry: '{name}'
+  entry_rank: '{name} {rank}'
+  now: '✅ Today you can start {n} more {n|profession|professions}: the ones in the list that don''t have a rank yet.'
+  now_all: ✅ You've already started every profession within your reach.
+  later_title: '🔒 Later on:'
+  later_camp: '• 🏕️ With your own camp: {list} and the stations from its upgrades.'
+  later_specs: • 🎓 At rank {first} of a profession you choose its first specialization, and at {second} the second.
+  later_more: '• Each rank opens new recipes: the further you go, the more you''ll learn.'
+  stations: '📍 There are stations for {n} {n|profession|professions} here: 🛠️ Craft and 🍲 Cook use them.'
+  stations_none: '📍 There are no stations here: the Clearing has all the basic ones.'
+  mine_button: ⚒️ My professions
+  ench_button: ✨ Enchanting
+  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. 🪓 Gathering and 🧭 exploration are never learned: they rise on their own.»'
+  have: '✅ Your professions: {list}'
+  have_none: '✅ You have no professions yet: gather and explore, they rise on their own.'
+  missing: '📚 Still to learn ({n} {n|profession|professions}): {list}'
+  missing_none: '📚 You have learned every profession within your reach.'
+myprof:
+  title: 📋 My professions
+  button: 📋 My professions
+  intro: Your professions and how they are going. Tap one's code to see everything it gives.
+  line: '{name} · rank {rank} ({title}) {bar}  /{code}'
+  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 📚 Learn professions.'
+learn:
+  title: 📚 Learn professions
+  button: 📚 Learn professions
+  intro: 'Each profession is learned once, by paying for its first recipe. Then it rises as you make recipes: each rank opens new recipes.'
+  line: '{name} · {price}  /{code}'
+  line_free: '{name} · free (you practised it)  /{code}'
+  hint: Tap a profession's code to see what it does and learn it.
+  none: ✅ You have learned every profession you can learn.
+  first_recipe: '📜 First recipe: {recipe} ← {inputs}'
+  unlocks: 'Once learned you can make its rank 1 recipes; the rest open as you rank up with every recipe you make.'
+  unlocks_desollador: Once learned, beasts sometimes give you extra 🍖 meat and 🦌 hide, and the profession rises with each one.
+  unlocks_comercio: Once learned, every sale gives you extra coins and the profession rises as you sell.
+  unlocks_encantamiento: Once learned you can disenchant old gear into essences and enchant your pieces (/enchant).
+  unlocks_construccion: Once learned, your contributions to your camp's works raise the profession, and its benefit applies to the whole camp.
+  price_line: '💰 It costs {price}. You have {gold}.'
+  free_line: '🎁 Free: you practised it (rank {rank}) and you keep it when you learn it.'
+  learn_button: '📚 Learn · {price}'
+  learn_button_free: 📚 Learn · free
+  see_button: '📚 See {name}'
+  done: '✅ You learned {name}. {unlocks}'
+  already: You already know {name}.
+  no_gold: "💰 You can't afford it: it costs {price} and you have {gold}."
+  camp_needed: 🏗️ {name} is learned as a member of a camp.
+  auto: '{name} is not learned: it rises on its own. {how}'
+  need: '🔒 For this, first learn {name} (📚 Learn professions, or 🔬 Research in the Clearing).'
+  more_branch: '🔒 More recipes with the professions you still lack: {list}.'
+  none_refine: "You don't know any refining profession yet: learn one in 📚 Learn professions."
+  none_craft: "You don't know any crafting profession yet: learn one in 📚 Learn professions."

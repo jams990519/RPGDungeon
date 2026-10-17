@@ -425,9 +425,11 @@ def test_leaving_the_zone_closes_the_run_with_the_whole_pot(service, clock):
     assert "bolsa entera" in (view.notice or "")
 
 
-def test_automatic_fights_never_fight_in_a_dungeon(service):
+def test_automatic_fights_never_fight_in_a_dungeon(service, auto_fights_on):
     at_dungeon(service, "small", level=20)
-    service.act("test:1", "opt:fights")
+    hero = service._load("test:1")
+    hero.options["fights"] = "auto"          # D-258: the button left; the code stays (fixture auto_fights_on)
+    service._save(hero)
     service.act("test:1", "dgo")
     hero = service._load("test:1")
     activity = {"kind": "explore", "done": 1, "left": 3, "got": {}, "log": [], "until": 0}

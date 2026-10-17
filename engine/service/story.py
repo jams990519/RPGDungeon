@@ -56,7 +56,7 @@ from engine.story import rules as story_rules
 
 # Story button ids (or prefixes): _story_action routes them (GameService._idle_action sends them here).
 STORY_ACTIONS = ("story", "squests", "board", "npcs", "npc:", "talk:", "ch:", "factions", "journal", "jshow",
-                 "origin", "orig:", "origpick:", "bio", "gesture:")
+                 "origin", "orig:", "origpick:", "bio", "gesture:", "dly:", "cjournal", "hjournal")   # D-259: dly: (cobrar), c/hjournal
 # Events the daily tasks and the camp tasks can count. [ES] Lo que cuentan los encargos del día y los del campamento.
 TASK_EVENTS = ("explore", "gather", "win", "craft", "sell")
 CAMP_EVENTS = ("explore", "gather", "win", "feed", "build")
@@ -505,11 +505,46 @@ class StoryMixin:
     def _story_day(self) -> int:
         return int(self.clock.now() // self._day_seconds())
 
-    def _daily_ids(self) -> list[str]:
-        """Today's tasks: one per faction, the same for everybody (world seed + day)."""
-        pool = self._story_data().get("daily") or {}
-        givers = {nid: n.get("faction") for nid, n in self._npc_defs().items()}
-        return story_rules.daily_pick(pool, list(self._faction_defs()), givers, self.world_seed, self._story_day())
+    def _daily_ids(self, hero: Hero) -> list[str]:
+        """Today's character missions for this hero: one per character (D-259), picked once a day and kept.
+
+        [ES]
+        Qué hace: los encargos de hoy, uno por personaje (antes, uno por facción), elegidos con la semilla del mundo y el día
+        entre los que te pueden tocar (needs: el de 🍲 cocina de Marta solo si sabes 🍲 Cocina; el de taller de Brena, con un
+        oficio de refinar o fabricar). Se guardan en el registro del día (daily["ids"]), así aprender un oficio a mitad del
+        día no te cambia un encargo empezado.
+        La llaman: el tablón, el centro de 🏕️ Campamento, el resumen del 📔 Diario, _daily_event y _claim_daily.
+        Si cambia, afecta: qué encargos ve cada uno (tests/test_story.py, tests/test_tablon_personajes.py).
+        """
+        record = self._daily(hero)
+        if "ids" not in record:
+            pool = self._story_data().get("daily") or {}
+            record["ids"] = story_rules.daily_pick_npcs(pool, list(self._npc_defs()), self.world_seed, self._story_day(),
+                                                        lambda tdef: self._task_eligible(hero, tdef))
+        return [tid for tid in record["ids"] if tid in (self._story_data().get("daily") or {})]
+
+    def _task_eligible(self, hero: Hero, tdef: dict[str, Any]) -> bool:
+        """Whether a character mission can be this hero's today (its "needs": a profession, or any_craft)."""
+        needs = tdef.get("needs")
+        if not needs:
+            return True
+        if needs == "any_craft":
+            catalog = self._prof_catalog()
+            return any(catalog[pid].get("branch") in ("refine", "craft") and self._knows(hero, pid) for pid in catalog)
+        return self._knows(hero, needs)
+
+    def _task_ready(self, hero: Hero, tid: str) -> bool:
+        """A character mission you can cash in now: you carry what it asks (deliver) or its count is reached."""
+        tdef = (self._story_data().get("daily") or {}).get(tid) or {}
+        goal = tdef.get("goal") or {}
+        if goal.get("kind") == "deliver":
+            return all(hero.backpack.get(i, 0) >= int(n) for i, n in (goal.get("items") or {}).items())
+        return int(self._daily(hero)["p"].get(tid, 0)) >= story_rules.target(goal)
+
+    def _can_meet(self, hero: Hero) -> bool:
+        """The Claro's characters can be met in the Claro, or from your own camp (D-259: the bonfire can't be held)."""
+        travelling = (hero.activity or {}).get("kind") == "travel"
+        return self._in_claro(hero) or (not travelling and self._own_camp_here(hero) is not None)
 
     def _daily(self, hero: Hero) -> dict[str, Any]:
         """The hero's progress on today's tasks; a new day starts it again."""
@@ -534,27 +569,74 @@ class StoryMixin:
         return reward, self._task_xp(hero, tdef.get("energy", 0))
 
     def _daily_event(self, hero: Hero, kind: str, data: dict[str, Any]) -> list[str]:
-        """Count an event for today's tasks; a task done pays once, right away."""
+        """Count an event for today's counted missions; when one is reached, say once that it can be cashed in (D-259).
+
+        [ES]
+        Qué hace: suma lo que pasó (explorar, ganar, vender, fabricar) a los encargos de hoy que se cuentan. D-259 (0.33):
+        ya no pagan solos: cuando uno llega a la meta, avisa una vez que está listo y se cobra hablando con su personaje
+        (_claim_daily). Los de entregar no cuentan eventos: se cumplen llevando lo que piden.
+        La llama: _story_event. Si cambia, afecta: el avance de los encargos.
+        """
         if kind not in TASK_EVENTS:
             return []
         pool = self._story_data().get("daily") or {}
         record = self._daily(hero)
         lines: list[str] = []
-        for tid in self._daily_ids():
-            if tid in record["done"]:
-                continue
+        for tid in self._daily_ids(hero):
             tdef = pool[tid]
-            got = story_rules.amount(tdef.get("goal") or {}, kind, data)
+            goal = tdef.get("goal") or {}
+            if tid in record["done"] or goal.get("kind") == "deliver":
+                continue
+            got = story_rules.amount(goal, kind, data)
             if got <= 0:
                 continue
             record["p"][tid] = int(record["p"].get(tid, 0)) + got
-            if record["p"][tid] >= story_rules.target(tdef.get("goal") or {}):
-                record["done"].append(tid)
-                self._st(hero)["tasks"] = int(self._st(hero).get("tasks", 0)) + 1
-                lines.append(self.texts.t("story.task_done", npc=self._npc_label(tdef.get("giver", "")), task=self.texts.t(f"story.daily.{tid}")))
-                reward, xp = self._task_reward(hero, tdef)
-                lines += self._apply_reward(hero, reward, xp=xp)
+            ready = record.setdefault("ready", [])
+            if record["p"][tid] >= story_rules.target(goal) and tid not in ready:
+                ready.append(tid)
+                lines.append(self.texts.t("story.task_ready", npc=self._npc_label(tdef.get("giver", "")), task=self.texts.t(f"story.daily.{tid}")))
         return lines
+
+    def _claim_daily(self, hero: Hero, nid: str) -> View:
+        """🤲 Entregar / 🎁 Cobrar: cash in this character's mission of today, in the Claro or at your own camp (D-259).
+
+        [ES]
+        Qué hace: cobra el encargo de hoy del personaje: si pide cosas, se las das (todas o ninguna: si falta algo, dice qué);
+        si se cuenta, tiene que estar cumplido. Paga experiencia, monedas y reputación (como antes) y lo marca hecho. Hay que
+        estar en el Claro o en tu propio campamento (D-259: "una vez que creas tu propio campamento, las misiones las vas a
+        poder hacer directamente ahí").
+        La llama: "dly:<personaje>" (botón de la ficha del personaje). Si cambia, afecta: tests/test_tablon_personajes.py.
+        """
+        t = self.texts
+        name = t.t(f"story.npc.{nid}.name")
+        pool = self._story_data().get("daily") or {}
+        tid = next((x for x in self._daily_ids(hero) if pool[x].get("giver") == nid), None)
+        record = self._daily(hero)
+        if tid is None or tid in record["done"]:
+            return self._npc_view(hero, nid)
+        if not self._can_meet(hero):
+            return self._npc_view(hero, nid, notice=t.t("story.not_in_claro", name=name))
+        tdef = pool[tid]
+        goal = tdef.get("goal") or {}
+        lines: list[str] = []
+        if goal.get("kind") == "deliver":
+            need = {i: int(n) for i, n in (goal.get("items") or {}).items() if i in self.content.items}
+            missing = {i: n - hero.backpack.get(i, 0) for i, n in need.items() if hero.backpack.get(i, 0) < n}
+            if missing:
+                return self._npc_view(hero, nid, notice=t.t("story.deliver_missing", name=name, items=self._item_list(missing)))
+            for item_id, n in need.items():
+                hero.backpack[item_id] -= n
+                if hero.backpack[item_id] <= 0:
+                    del hero.backpack[item_id]
+            lines.append(t.t("story.delivered", name=name, items=self._item_list(need)))
+        elif not self._task_ready(hero, tid):
+            return self._npc_view(hero, nid, notice=t.t("story.task_not_yet", name=name, goal=self._goal_line(hero, dict(goal, npc=nid), record["p"].get(tid, 0))))
+        record["done"].append(tid)
+        self._st(hero)["tasks"] = int(self._st(hero).get("tasks", 0)) + 1
+        lines.append(t.t("story.task_done", npc=self._npc_label(nid), task=t.t(f"story.daily.{tid}")))
+        reward, xp = self._task_reward(hero, tdef)
+        lines += self._apply_reward(hero, reward, xp=xp)
+        return self._npc_view(hero, nid, notice=self._join(lines))
 
     # ------------------------------------------------------------------ camp tasks (weekly, all members together)
 
@@ -613,15 +695,17 @@ class StoryMixin:
         reward = (self._story_data().get("camp_tasks") or {})[tid].get("reward") or {}
         reward = {"xp": int(reward.get("xp", 0)), "gold": int(reward.get("gold", 0))}
         name = t.t(f"story.camp_task.{tid}")
-        news = View(kind="camp_news", title=t.t("story.camp_task_push_title"),
-                    body=[t.t("story.camp_task_push", hero=hero.name, task=name, camp=camp.get("name", "?"), xp=reward["xp"],
-                              gold=self._money(reward["gold"]))])
+        told = []
         for member, given in by.items():
             if given <= 0:
                 continue
             self._raid_reward(member, reward, hero)       # pays online or not; the actor in memory
             if member != hero.id:
-                self._push(member, news)
+                told.append(member)
+        self._push_each(told, lambda: View(              # D-250: each member reads it in their language
+            kind="camp_news", title=t.t("story.camp_task_push_title"),
+            body=[t.t("story.camp_task_push", hero=hero.name, task=t.t(f"story.camp_task.{tid}"),
+                      camp=camp.get("name", "?"), xp=reward["xp"], gold=self._money(reward["gold"]))]))
         return [t.t("story.camp_task_done", task=name, xp=reward["xp"], gold=self._money(reward["gold"]))]
 
     # ------------------------------------------------------------------ origin
@@ -754,6 +838,11 @@ class StoryMixin:
             return self._npc_view(hero, action_id[4:])
         if action_id.startswith("talk:"):
             return self._talk(hero, action_id[5:])
+        if action_id.startswith("dly:"):                 # D-259: 🤲 Entregar / 🎁 Cobrar a character's mission of today
+            return self._claim_daily(hero, action_id[4:])
+        if action_id in ("cjournal", "hjournal"):        # D-259: ↩️ of the 📔 Diario goes back where it was opened from
+            self.store.put("journal_back", hero.id, {"to": "claro" if action_id == "cjournal" else "hero"})
+            return self._journal_view(hero)
         if action_id.startswith("ch:"):
             parts = action_id.split(":")
             return self._choose(hero, parts[1], parts[2]) if len(parts) == 3 else self._quests_view(hero)
@@ -879,7 +968,7 @@ class StoryMixin:
                 now.append(t.t("story.now_line", title=self._quest_title(qid), goal=self._quest_goal_line(hero, qid)))
         body += now or [t.t("story.now_none")]
         daily = self._daily(hero)
-        ids = self._daily_ids()
+        ids = self._daily_ids(hero)
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
         body.append(t.t("story.tasks_line", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left)))
         body.append(t.t("story.factions_line", list=self._factions_short(hero)))
@@ -1010,13 +1099,13 @@ class StoryMixin:
         pages = max(1, (len(ids) + per - 1) // per)
         page = page % pages
         body = [t.t("story.npcs_intro")]
-        if not self._in_claro(hero):
+        if not self._can_meet(hero):                    # D-259: the Claro, or your own camp
             body.append(t.t("story.npcs_away"))
         body.append("")
         actions = []
         for nid in ids[page * per:(page + 1) * per]:
             npc = self._npc_defs()[nid]
-            mark = t.t("story.npc_mark") if self._npc_pending(hero, nid) else ""
+            mark = t.t("story.npc_mark") if self._npc_pending(hero, nid) or self._npc_daily_ready(hero, nid) else ""
             body.append(t.t("story.npc_line", emoji=npc.get("emoji", ""), name=t.t(f"story.npc.{nid}.name"), role=t.t(f"story.npc.{nid}.role"),
                             faction=self._faction_defs().get(npc.get("faction"), {}).get("emoji", ""), mark=mark))
             actions.append(Action(id=f"npc:{nid}", label=self._npc_label(nid) + (t.t("story.npc_button_mark") if mark else "")))
@@ -1041,6 +1130,31 @@ class StoryMixin:
                 return self.texts.t(f"story.npc.{nid}.lines.{line['key']}")
         return self.texts.t(f"story.npc.{nid}.lines.default")
 
+    def _npc_daily_id(self, hero: Hero, nid: str) -> str | None:
+        """This character's mission of today for the hero, if any (D-259)."""
+        pool = self._story_data().get("daily") or {}
+        return next((tid for tid in self._daily_ids(hero) if pool[tid].get("giver") == nid), None)
+
+    def _npc_daily_ready(self, hero: Hero, nid: str) -> bool:
+        """True if this character's mission of today can be cashed in now (it puts ❗ on the character)."""
+        tid = self._npc_daily_id(hero, nid)
+        return bool(tid) and tid not in self._daily(hero)["done"] and self._task_ready(hero, tid)
+
+    def _npc_daily_lines(self, hero: Hero, nid: str) -> list[str]:
+        """The character sheet's lines about its mission of today: what it asks, what it pays and how it is going (D-259)."""
+        t = self.texts
+        tid = self._npc_daily_id(hero, nid)
+        if not tid:
+            return []
+        tdef = (self._story_data().get("daily") or {})[tid]
+        record = self._daily(hero)
+        if tid in record["done"]:
+            return ["", t.t("story.npc_daily_done")]
+        reward, xp = self._task_reward(hero, tdef)
+        prize = " · ".join([t.t("story.reward_xp", xp=int(xp * self._xp_mult(hero))), f"+{self._money(reward['coins'])}"])
+        goal = dict(tdef.get("goal") or {}, npc=nid)
+        return ["", t.t("story.npc_daily", task=t.t(f"story.daily.{tid}"), goal=self._goal_line(hero, goal, record["p"].get(tid, 0)), reward=prize)]
+
     def _npc_view(self, hero: Hero, nid: str, notice: str | None = None) -> View:
         """One character: role, faction and your rank, what they say now, what they want from you; [💬 Hablar] [↩️ Volver].
 
@@ -1062,14 +1176,20 @@ class StoryMixin:
         pending = self._npc_pending(hero, nid)
         for qid, goal in pending:
             body.append(t.t("story.npc_pending", goal=self._goal_line(hero, goal, 0)))
+        daily = self._npc_daily_lines(hero, nid)                   # D-259: this character's mission of today
+        body += daily
         actions: list[Action] = []
-        if self._in_claro(hero):
+        if self._can_meet(hero):                                     # D-259: the Claro, or your own camp
             st = self._st(hero)
-            if nid not in st["met"]:
+            if self._in_claro(hero) and nid not in st["met"]:
                 st["met"].append(nid)
             if pending:
                 deliver = pending[0][1].get("kind") == "deliver"
                 actions.append(Action(id=f"talk:{nid}", label=t.t("story.button_deliver" if deliver else "story.button_talk")))
+            tid = self._npc_daily_id(hero, nid)
+            if tid and tid not in self._daily(hero)["done"]:
+                deliver = ((self._story_data().get("daily") or {})[tid].get("goal") or {}).get("kind") == "deliver"
+                actions.append(Action(id=f"dly:{nid}", label=t.t("story.button_deliver" if deliver else "story.button_claim")))
         else:
             body.append(t.t("story.npc_away", name=t.t(f"story.npc.{nid}.name")))
         page = list(self._npc_defs()).index(nid) // max(1, int(self._story_cfg()["npc_page"]))
@@ -1082,14 +1202,14 @@ class StoryMixin:
         [ES]
         Qué hace: hablas con el personaje y avanza el primer paso que lo pide; si el paso es llevarle cosas, se las das
         (todas o ninguna: si falta algo, avisa qué y no toma nada). Muestra lo que pasa y el paso siguiente. Hay que estar
-        en el Claro (no de viaje).
+        en el Claro o, desde la 0.33 (D-259), en tu propio campamento (no de viaje).
         La llama: el botón 💬 Hablar / 🤲 Entregar de la ficha del personaje. Si cambia, afecta: tests/test_story.py.
         """
         t = self.texts
         name = t.t(f"story.npc.{nid}.name")
         if nid not in self._npc_defs():
             return self._npcs_view(hero)
-        if not self._in_claro(hero):
+        if not self._can_meet(hero):                    # D-259: the Claro, or your own camp
             return self._npc_view(hero, nid, notice=t.t("story.not_in_claro", name=name))
         lines: list[str] = []
         for qid, goal in self._npc_pending(hero, nid):
@@ -1114,7 +1234,7 @@ class StoryMixin:
     # ------------------------------------------------------------------ 📜 Tablón, ⚜️ Facciones
 
     def _board_view(self, hero: Hero, notice: str | None = None) -> View:
-        """📜 Tablón: today's three tasks (one per faction) and, with a camp, this week's camp tasks.
+        """📜 Tablón: today's missions (one per character, D-259) and, with a camp, this week's camp tasks.
 
         [ES]
         Qué hace: el tablón de encargos del Claro (también desde 🎯 Misiones → 📜 Encargos y /encargos): los 3 encargos de
@@ -1127,7 +1247,7 @@ class StoryMixin:
         pool = self._story_data().get("daily") or {}
         daily = self._daily(hero)
         body = [t.t("story.board_intro"), ""]
-        for tid in self._daily_ids():
+        for tid in self._daily_ids(hero):
             tdef = pool[tid]
             goal = tdef.get("goal") or {}
             reward, xp = self._task_reward(hero, tdef)
@@ -1135,14 +1255,15 @@ class StoryMixin:
             prize = " · ".join([t.t("story.reward_xp", xp=int(xp * self._xp_mult(hero))), f"+{self._money(reward['coins'])}",
                                 t.t("story.rep_part", emoji=emoji, points=f"+{int(tdef.get('rep', 0))}")])
             done = tid in daily["done"]
-            body.append(t.t("story.board_line", mark=t.t("story.mark_done" if done else "story.mark_todo"), npc=self._npc_label(tdef.get("giver", "")),
-                            task=t.t(f"story.daily.{tid}"), goal=self._goal_line(hero, goal, story_rules.target(goal) if done else daily["p"].get(tid, 0)),
+            mark = "story.mark_done" if done else "story.mark_ready" if self._task_ready(hero, tid) else "story.mark_todo"   # D-259: 🎁 ready
+            body.append(t.t("story.board_line", mark=t.t(mark), npc=self._npc_label(tdef.get("giver", "")),
+                            task=t.t(f"story.daily.{tid}"), goal=t.t("story.board_paid") if done else self._goal_line(hero, dict(goal, npc=tdef.get("giver", "")), daily["p"].get(tid, 0)),
                             reward=prize))
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
         body += [t.t("story.board_reset", time=self._fmt_duration(left)), ""]
         body += self._camp_task_lines(hero)
-        actions = [Action(id="npcs", label=t.t("story.button_npcs")), Action(id="journal", label=t.t("story.button_journal")),
-                   Action(id="claro", label=t.t("menu.back"))]                # D-192: the board is a button of 🏕️ Campamento
+        actions = [Action(id="npcs", label=t.t("story.button_npcs")), Action(id="cjournal", label=t.t("story.button_journal")),
+                   Action(id="claro", label=t.t("menu.back"))]                # D-192: the board is a button of 🏕️ Campamento; D-259: cjournal
         return View(kind="board", title=t.t("story.board_title"), body=body, actions=actions, notice=notice)
 
     def _camp_task_lines(self, hero: Hero) -> list[str]:
@@ -1229,8 +1350,9 @@ class StoryMixin:
         body += ["", t.t("story.intro")] + self._story_summary_lines(hero)
         journal = self._journal_lines(hero, int(self._story_cfg()["journal_shown"]))
         body += [""] + (journal or [t.t("story.journal_empty")]) + ["", t.t("story.journal_hint", name=hero.name), t.t("story.links")]
+        back = (self.store.get("journal_back", hero.id) or {}).get("to", "hero")   # D-259: from 📜 Tablón it goes back to 🏕️
         actions = [Action(id="squests", label=t.t("story.button_quests")), Action(id="factions", label=t.t("story.button_factions")),
-                   Action(id="jshow", label=t.t("story.button_show")), Action(id="hero", label=t.t("menu.back"))]
+                   Action(id="jshow", label=t.t("story.button_show")), Action(id=back, label=t.t("menu.back"))]
         return View(kind="journal", title=t.t("story.journal_title", name=hero.name), body=body, actions=actions, notice=notice)
 
     def _find_hero(self, name: str) -> Hero | None:
@@ -1322,21 +1444,28 @@ class StoryMixin:
         present = self._zone_players(hero.x, hero.y, exclude=hero.id)
         if not present:
             return self._main_view(hero, notice=t.t("story.gesture_alone"))
-        zone = self._zone_name(self._zone(hero.x, hero.y))
         me = self._banner(hero) + self._emblem_name(hero)
+        target = None
+        toast = ""
         if kind == "saludar":
-            target = None
             if arg.strip():
                 target = next((p for p in present if self._name_key(p.get("plain", "")) == self._name_key(arg)), None)
                 if target is None:
                     return self._main_view(hero, notice=t.t("story.gesture_not_here", name=story_rules.clean_text(arg, 20)))
-            line = t.t("story.gesture_saludar_to", name=me, target=target["name"]) if target else t.t("story.gesture_saludar", name=me, zone=zone)
         else:
             toast = story_rules.clean_text(arg, int(self._story_cfg()["toast_max"]))
-            line = t.t("story.gesture_brindar_text", name=me, text=toast) if toast else t.t("story.gesture_brindar", name=me)
-        view = View(kind="gesture", title=t.t("story.gesture_title", zone=zone), body=[line])
-        for player in present:
-            self._push(player["id"], view)
+
+        def gesture_line() -> str:                       # D-250: written again in each listener's language
+            zone = self._zone_name(self._zone(hero.x, hero.y))
+            if kind == "saludar":
+                return (t.t("story.gesture_saludar_to", name=me, target=target["name"]) if target
+                        else t.t("story.gesture_saludar", name=me, zone=zone))
+            return t.t("story.gesture_brindar_text", name=me, text=toast) if toast else t.t("story.gesture_brindar", name=me)
+
+        line = gesture_line()
+        self._push_each([player["id"] for player in present], lambda: View(
+            kind="gesture", title=t.t("story.gesture_title", zone=self._zone_name(self._zone(hero.x, hero.y))),
+            body=[gesture_line()]))
         self._st(hero)["g_at"] = self.clock.now()
         return self._main_view(hero, notice=t.t("story.gesture_done", line=line, n=len(present)))
 
@@ -1349,9 +1478,9 @@ class StoryMixin:
         present = self._zone_players(hero.x, hero.y, exclude=hero.id)
         if not present:
             return self._journal_view(hero, notice=t.t("story.gesture_alone"))
-        view = View(kind="card", title=t.t("story.card_push_title", name=hero.name), body=self._card_lines(hero, int(self._story_cfg()["card_shown"])))
-        for player in present:
-            self._push(player["id"], view)
+        self._push_each([player["id"] for player in present], lambda: View(     # D-250: in each listener's language
+            kind="card", title=t.t("story.card_push_title", name=hero.name),
+            body=self._card_lines(hero, int(self._story_cfg()["card_shown"]))))
         self._st(hero)["g_at"] = self.clock.now()
         return self._journal_view(hero, notice=t.t("story.shown", n=len(present), zone=self._zone_name(self._zone(hero.x, hero.y))))
 

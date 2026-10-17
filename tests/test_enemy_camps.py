@@ -255,9 +255,11 @@ def test_camps_come_back_somewhere_else_the_next_day(service, clock):
 
 # ---------------------------------------------------------------- never automatic (D-114)
 
-def test_automatic_fights_never_fight_an_enemy_camp(service):
+def test_automatic_fights_never_fight_an_enemy_camp(service, auto_fights_on):
     at_camp(service)
-    service.act("test:1", "opt:fights")
+    hero = service._load("test:1")
+    hero.options["fights"] = "auto"          # D-258: the button left; the code stays (fixture auto_fights_on)
+    service._save(hero)
     assert service._load("test:1").options["fights"] == "auto"
     service.act("test:1", "assault")
     hero = service._load("test:1")
@@ -331,7 +333,7 @@ def test_exploring_raises_the_explorer_and_its_perk_adds_points(content):
     assert master.exploration["1:0"] - novice.exploration["1:0"] == 5                         # +5 points at rank 100
     perks = profession_rules.perks(content.professions["professions"], {"explorador": 50}, 100, None, None, None)
     assert perks["explore"] == pytest.approx(2.5)
-    view = service.act("test:1", "oficios")
+    view = service.text("test:1", "/explorador")              # D-257: the long lines live behind the profession's code
     assert any("Explorador" in line for line in view.body) and any("🗺️" in line for line in view.body)
     assert any("En rango 10" in line for line in view.body)
 
