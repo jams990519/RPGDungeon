@@ -215,10 +215,10 @@ guide:
         • ¡Llegó una oleada a tu campamento! Ve y toca 🛡️ Defender: cada pelea ganada cuenta.
         • Si pierden, se lleva parte de la despensa, nunca niveles ni zonas.
     options:
-      name: "Peleas automáticas"
+      name: "⚙️ Opciones"
       text: |-
-        • En ⚙️ Opciones eliges qué pasa si sale una pelea en medio de un lote.
-        • ✋ Manual: el lote se corta y peleas tú. ⚔️ Automática: tu héroe pelea solo y el lote sigue.
+        • Si sale una pelea en medio de un lote, el lote se corta y la peleas tú.
+        • En ⚙️ Opciones eliges con cuánta vida te retiras, cambias el 🌐 idioma y nos mandas 💬 Feedback.
     origin:
       name: "Tu origen (opcional)"
       text: |-

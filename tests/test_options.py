@@ -1,12 +1,16 @@
-"""⚙️ Opciones and automatic fights in batches (D-114).
+"""⚙️ Opciones (D-114, D-258) and the automatic fights in batches, switched off since 0.33 but kept in the code.
 
-[ES] Pruebas de ⚙️ Opciones y las peleas automáticas: la pantalla tiene 4 botones como mucho y lo que se cambia queda
+[ES] Pruebas de ⚙️ Opciones y las peleas automáticas. D-258 (0.33): la pantalla trae 🩹 Retirarse, 🌐 Idioma, 💬 Feedback y
+↩️ Volver, y las peleas automáticas están apagadas en el juego (sus pruebas las prenden con el arreglo auto_fights_on para
+seguir cuidando el código). Lo de antes: la pantalla tiene 4 botones como mucho y lo que se cambia queda
 guardado; el menú de abajo suma ⚙️ Opciones (6 como mucho) y /opciones la abre. Con ✋ Manual (lo de siempre) el lote se
 corta en la pelea. Con ⚔️ Automática el héroe pelea solo: si gana, el lote sigue; si pierde o su vida queda bajo el límite,
 el lote se corta; el resumen cuenta las peleas y el bot avisa una sola vez por lote (también con el chat cerrado). Las
 pociones solo se usan si se permite. El Guardián y las defensas del campamento nunca van solos. Cazar en lote cuesta 2 ⚡ por
 presa y se corta bien. Los héroes guardados antes cargan con las opciones por defecto. Ningún texto falta.
 """
+
+import pytest
 
 from conftest import make_hero
 from engine.combat import choose_action, make_combat
@@ -17,6 +21,7 @@ from test_hunt import wild
 from test_raids import camp_at_level, open_raid
 
 MINUTE = 60
+pytestmark = pytest.mark.usefixtures("auto_fights_on")     # D-258: the automatic fights are off in the game, on for these tests
 
 
 def ids(view):
@@ -35,9 +40,10 @@ def ready(service, account="test:1", level=1, auto=True, hp=1.0, **extra):
     hero = service._load(account)
     hero.hp = max(1, int(max_hp(service, hero) * hp))
     service._save(hero)
-    if auto:
-        service.act(account, "opt:fights")
-        assert service._load(account).options["fights"] == "auto"
+    if auto:                                            # D-258: no button any more; the saved choice still works when enabled
+        hero = service._load(account)
+        hero.options["fights"] = "auto"
+        service._save(hero)
     return hero
 
 
@@ -77,21 +83,14 @@ def test_options_screen_has_four_buttons_and_toggles_persist(service):
     make_hero(service)
     view = service.act("test:1", "options")
     assert view.kind == "options" and len(view.actions) <= 4
-    assert ids(view) == ["opt:fights", "opt:retreat", "opt:potions", "lang"]   # D-251: 🌐 Idioma (the bottom menu goes back)
-    assert view.actions[0].label == "☑️ Peleas automáticas"            # D-178: gray check = off (✋ manual)
-    assert "30 %" in view.actions[1].label and view.actions[2].label == "✅ Pociones"   # green check = on
-    assert "✅ activo" in "\n".join(view.body)
-    view = service.act("test:1", "opt:fights")
-    assert view.actions[0].label == "✅ Peleas automáticas" and view.notice
-    assert service.store.get("hero", "test:1")["options"]["fights"] == "auto"
+    assert ids(view) == ["opt:retreat", "lang", "fb", "home"]          # D-258: no automatic fights or potions; 💬 Feedback
+    assert "30 %" in view.actions[0].label
     for expected in (50, 70, 30):                       # 30 → 50 → 70 → 30 (D-119: 30 by default)
         view = service.act("test:1", "opt:retreat")
-        assert f"{expected} %" in view.actions[1].label
+        assert f"{expected} %" in view.actions[0].label
         assert service.store.get("hero", "test:1")["options"]["retreat"] == expected
-    view = service.act("test:1", "opt:potions")
-    assert view.actions[2].label == "☑️ Pociones" and service.store.get("hero", "test:1")["options"]["potions"] is False
-    again = service.act("test:1", "options")               # saved: the screen reads it back
-    assert again.actions[0].label == "✅ Peleas automáticas" and again.actions[2].label == "☑️ Pociones"
+    assert service.act("test:1", "opt:fights").kind == "options"       # an old button changes nothing
+    assert "fights" not in service.store.get("hero", "test:1")["options"]
     assert service.act("test:1", "opt:nothing").kind == "options"      # an unknown option changes nothing
     assert service.act("test:1", "home").kind == "zone"
     assert not service.texts.missing
@@ -116,7 +115,7 @@ def test_options_can_change_during_a_batch_but_not_in_combat(service, clock):
     ready(service, auto=False)
     service.act("test:1", "do:explore:5")
     assert service.act("test:1", "options").kind == "options"          # busy exploring: still allowed
-    assert service.act("test:1", "opt:fights").kind == "options"
+    assert service.act("test:1", "opt:retreat").kind == "options"
     assert service._load("test:1").activity is not None
     hero = service._load("test:1")
     eid = next(e for e, d in service.content.enemies.items() if not d.get("boss"))
@@ -136,7 +135,7 @@ def test_old_heroes_load_with_the_default_options(service):
     hero.options = {"fights": "???", "retreat": 42}         # a value that no longer exists falls back too
     assert service._option(hero, "fights") == "manual" and service._option(hero, "retreat") == 30
     view = service.act("test:1", "options")
-    assert view.actions[0].label.startswith("☑️")
+    assert view.actions[0].label.endswith("30 %")              # D-258: 🩹 Retirarse comes first now
     assert Hero.from_dict(service.store.get("hero", "test:1")).options == {}
 
 
@@ -287,7 +286,9 @@ def test_the_potions_option_reaches_the_fight(service, clock, monkeypatch):
     service.act("test:1", "do:hunt:4")
     run_batch(service, clock, "test:1", 16, 1)
     service.act("test:1", "stop")
-    service.act("test:1", "opt:potions")
+    hero = service._load("test:1")                      # D-258: no button any more; the saved choice still reaches the fight
+    hero.options["potions"] = False
+    service._save(hero)
     service.act("test:1", "do:hunt:4")
     run_batch(service, clock, "test:1", 16, 1)
     assert calls[0] is True and calls[-1] is False
@@ -297,7 +298,9 @@ def test_the_potions_option_reaches_the_fight(service, clock, monkeypatch):
 
 def test_the_guardian_and_raids_are_never_automatic(service, clock):
     make_hero(service)
-    service.act("test:1", "opt:fights")
+    hero = service._load("test:1")
+    hero.options["fights"] = "auto"
+    service._save(hero)
     _to_lair(service)
     view = service.act("test:1", "boss")
     assert view.kind == "combat" and service.store.get("combat", "test:1")["outcome"] is None
@@ -317,7 +320,9 @@ def test_the_guardian_and_raids_are_never_automatic(service, clock):
 def test_defending_the_camp_is_a_manual_fight(service, clock):
     make_hero(service)
     camp_at_level(service, 5)
-    service.act("test:1", "opt:fights")
+    hero = service._load("test:1")
+    hero.options["fights"] = "auto"
+    service._save(hero)
     open_raid(service, clock, ("test:1",))
     view = service.act("test:1", "defend")
     assert view.kind == "combat" and service.store.get("combat", "test:1")["outcome"] is None
@@ -330,7 +335,7 @@ def test_manual_hunting_stays_one_prey_at_a_time(service):
     view = service.act("test:1", "hunt")
     assert view.actions[0].id == "prey" and "Buscar presa" in view.actions[0].label
     refused = service.act("test:1", "do:hunt:4")
-    assert "⚙️ Opciones" in refused.notice and service._load("test:1").energy == hero.energy
+    assert "de a una presa" in refused.notice and service._load("test:1").energy == hero.energy   # D-258: no hunting in batches
     assert service._load("test:1").activity is None
     assert service.act("test:1", "prey").kind == "combat"           # one prey, fought by hand, as before
 

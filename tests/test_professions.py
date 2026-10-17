@@ -22,6 +22,9 @@ from engine.professions import branches_of, max_times, missing_for, rank_of, ran
 from engine.service import GameService
 from test_camp_upgrades import build, camp_at, set_hero
 
+# D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
+pytestmark = pytest.mark.usefixtures("every_profession_known")
+
 FORMULA = {"base": 9, "exponent": 2.0}
 
 
@@ -330,15 +333,18 @@ def test_oficios_command_and_screen(service):
     assert ids(view) == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]          # D-192: 🛠️ Fabricar is ⚒️ Oficios
     view = service.act("test:1", "oficios")
     assert view.kind == "professions" and ids(view) == ["est:refine:0", "est:craft:0", "claro"]
-    assert any("Todavía no empezaste" in line for line in view.body)
-    assert any("Sin empezar" in line and "Joyería" in line for line in view.body)
+    assert any("Todavía no tienes oficios" in line for line in view.body)          # D-257: nothing learned or raised yet
+    assert not any("Sin empezar" in line for line in view.body)          # D-257: those are in 📚 Aprender oficios now
     hero = service._load("test:1")
     hero.professions = {"minero": 40, "herreria": rank_xp(service, 25) + 5}
+    hero.learned = ["herreria"]
     service._save(hero)
     view = service.act("test:1", "oficios")
     body = "\n".join(view.body)
     assert "Minero · rango 3 (Aprendiz)" in body and "Herrería · rango 25 (Oficial)" in body
-    assert "En rango 10: 💠 Gema en bruto" in body and "En rango 50" in body
+    assert "/minero" in body and "/herreria" in body                     # D-257: one short line each, with its code
+    assert "En rango 10: 💠 Gema en bruto" in "\n".join(service.text("test:1", "/minero").body)
+    assert "En rango 50" in "\n".join(service.text("test:1", "/herreria").body)
     set_hero(service, "test:1", x=4, y=0)
     view = service.act("test:1", "oficios")                            # anywhere: ranks yes, stations no
     # D-141: 🔨 Herrería is rank 25, so 🎓 Especialización shows up (it works anywhere: choosing is a menu, not a station)
@@ -510,7 +516,7 @@ def test_profession_perks_grow_with_rank_and_need_the_right_gear(service, clock)
     assert hero_stats(service._kit(hero), hero.level)["max_hp"] == int(base * 1.05) or \
         abs(hero_stats(service._kit(hero), hero.level)["max_hp"] - base * 1.05) <= 1                  # ⛏️ +5 % de vida
     assert service._bag_cap(hero) == cap + 10                                                          # 🪓 +10 de espacio
-    view = service.act("test:1", "oficios")
+    view = service.text("test:1", "/minero")                       # D-257: the perk shows behind the profession's code
     assert any("Beneficio ahora" in line and "+5 % de vida" in line for line in view.body)
     assert not service.texts.missing
 
@@ -543,5 +549,5 @@ def test_comercio_earns_more_coins_and_rises_by_selling(service):
     assert service._load("test:1").gold == round(base * 1.2)
     kit = service._kit(service._load("test:1"))
     assert kit["perk_bonus"] == {"attack": 0.0, "hp": 0.0, "armor": 0.0}   # nothing in battle
-    view = service.act("test:1", "oficios")
-    assert any("💱 Servicios" in line for line in view.body) and any("+20 % de monedas" in line for line in view.body)
+    view = service.text("test:1", "/comercio")                     # D-257: the perk shows behind the profession's code
+    assert any("+20 % de monedas" in line for line in view.body)

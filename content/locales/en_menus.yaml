@@ -11,13 +11,16 @@ hub:
   section_info: 📌 Your camp
   cook: '🍲 Cook: meat, fish and what each terrain gives become rations and stews for the pantry. 🍲 Cooking rank {rank}.'
   cook_none: '🍲 Cook: needs the 🔥 Hearth (🏰 Manage → 🔨 Upgrades).'
+  cook_unlearned: '🍲 Cook: first learn 🍲 Cooking in 🔬 Research.'
   research_claro: '🔬 Research: not in the Clearing; you research at your own camp with the 📚 Library (level {level}).'
   research_locked: '🔬 Research: with the 📚 Library, which can be built from level {level} (your camp is level {now}).'
   research_open: '🔬 Research: 📚 Knowledge · {done} of {total} {total|study|studies}{current}.'
   research_current: ' · studying {name}'
+  research_learn: '🔬 Research: learn new professions · {n} left to learn.'
+  research_learn_all: '🔬 Research: you have learned every profession you can learn here.'
   make: '🛠️ Craft: 🪚 refine and 🛠️ craft gear, potions and furniture · {n} {n|station|stations} here · ⚡{energy}/{max}.'
   make_none: '🛠️ Craft: no stations yet; the 🧵 Workshop and the 🔨 Smithy open them (🔨 Upgrades).'
-  trainer: '🧑‍🏫 Trainer: introduces you to the professions and which ones you can start now.'
+  trainer: '🧑‍🏫 Trainer: your professions, the ones you lack and how they are learned.'
   shop: '🛒 Merchant: potions, bandages and 🥖 provisions; buys your materials.'
   inn: '🛏️ Inn: {price} · sleep {time} and wake up with full health.'
   inn_full: '🛏️ Inn: {price} · your health is already full.'
@@ -93,3 +96,42 @@ trainer:
   stations_none: '📍 There are no stations here: the Clearing has all the basic ones.'
   mine_button: ⚒️ My professions
   ench_button: ✨ Enchanting
+  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. 🪓 Gathering and 🧭 exploration are never learned: they rise on their own.»'
+  have: '✅ Your professions: {list}'
+  have_none: '✅ You have no professions yet: gather and explore, they rise on their own.'
+  missing: '📚 Still to learn ({n} {n|profession|professions}): {list}'
+  missing_none: '📚 You have learned every profession within your reach.'
+myprof:
+  title: 📋 My professions
+  button: 📋 My professions
+  intro: Your professions and how they are going. Tap one's code to see everything it gives.
+  line: '{name} · rank {rank} ({title}) {bar}  /{code}'
+  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 📚 Learn professions.'
+learn:
+  title: 📚 Learn professions
+  button: 📚 Learn professions
+  intro: 'Each profession is learned once, by paying for its first recipe. Then it rises as you make recipes: each rank opens new recipes.'
+  line: '{name} · {price}  /{code}'
+  line_free: '{name} · free (you practised it)  /{code}'
+  hint: Tap a profession's code to see what it does and learn it.
+  none: ✅ You have learned every profession you can learn.
+  first_recipe: '📜 First recipe: {recipe} ← {inputs}'
+  unlocks: 'Once learned you can make its rank 1 recipes; the rest open as you rank up with every recipe you make.'
+  unlocks_desollador: Once learned, beasts sometimes give you extra 🍖 meat and 🦌 hide, and the profession rises with each one.
+  unlocks_comercio: Once learned, every sale gives you extra coins and the profession rises as you sell.
+  unlocks_encantamiento: Once learned you can disenchant old gear into essences and enchant your pieces (/enchant).
+  unlocks_construccion: Once learned, your contributions to your camp's works raise the profession, and its benefit applies to the whole camp.
+  price_line: '💰 It costs {price}. You have {gold}.'
+  free_line: '🎁 Free: you practised it (rank {rank}) and you keep it when you learn it.'
+  learn_button: '📚 Learn · {price}'
+  learn_button_free: 📚 Learn · free
+  see_button: '📚 See {name}'
+  done: '✅ You learned {name}. {unlocks}'
+  already: You already know {name}.
+  no_gold: "💰 You can't afford it: it costs {price} and you have {gold}."
+  camp_needed: 🏗️ {name} is learned as a member of a camp.
+  auto: '{name} is not learned: it rises on its own. {how}'
+  need: '🔒 For this, first learn {name} (📚 Learn professions, or 🔬 Research in the Clearing).'
+  more_branch: '🔒 More recipes with the professions you still lack: {list}.'
+  none_refine: "You don't know any refining profession yet: learn one in 📚 Learn professions."
+  none_craft: "You don't know any crafting profession yet: learn one in 📚 Learn professions."

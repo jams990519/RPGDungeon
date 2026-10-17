@@ -127,7 +127,7 @@ faq:
     a: When the game brings something new, you get a one-time notice with the patch notes. If you don't see the new bottom menu, type /start. Your progress is saved forever.
   d55:
     q: ⚙️ What can I change in Options?
-    a: In ⚙️ Options you choose whether you fight by hand or automatically in batches, at what health you retreat ({retreat}%) and whether your hero uses potions on their own. It stays saved and you can change it whenever you want.
+    a: In ⚙️ Options you choose at what health you retreat ({retreat}%), change the 🌐 language and send us 💬 Feedback. It stays saved and you can change it whenever you want.
   d06:
     q: 🚶 How do I move around the map?
     a: 'In 📍 Zone tap a direction. Each zone you cross takes {travel_first} min, near or far (10 zones, 10 minutes), and {move_cost}. With 🔗 Move you build a way of several steps (up to {walk_max}) and your hero walks it alone. At each zone a monster may show up: beat it and you go on. With 🗺️ Map → 📒 Places you go straight back to a place you already know.'
@@ -142,7 +142,7 @@ faq:
     a: '🪓 Gather collects the resources you''ve already discovered in your zone: each run takes {gather_min} min and 1 ⚡. If you gather a lot, the zone gets depleted and recovers on its own over the hours. In your camp''s territory you gather {own_bonus}% more.'
   d10:
     q: 🔢 What are batches?
-    a: When exploring, gathering or hunting, you choose how much energy to spend in a row ({batches} or All). Your hero does one run after another and I'll send you a summary at the end. With ✋ Manual the batch stops if a fight comes up; with ⚔️ Auto-fights (⚙️ Options) your hero fights alone.
+    a: When exploring, gathering or hunting, you choose how much energy to spend in a row ({batches} or All). Your hero does one run after another and I'll send you a summary at the end. If a fight comes up, the batch stops and you fight it yourself.
   d11:
     q: 🏹 How do I hunt?
     a: '🏹 Hunt (in 🧭 Explore) looks for prey in the zone: each one costs {hunt_energy} ⚡ and only gives the fight and its loot (meat, hide, coins, sometimes gear). There''s no prey in the Clearing. With a camp you can call a 🏹 Hunting party with your companions.'
@@ -184,7 +184,7 @@ faq:
     a: 'Out of combat your health comes back on its own: 0 to full in {hp_full}. Faster: 🧪 potions and bandages (🎒 Backpack → 🧪 Potions), the Clearing''s 🛏️ Inn or your camp''s 🛏️ Shelter. In 👤 Hero → 🩺 Health you see how long is left.'
   d24:
     q: 🤖 What are auto-fights?
-    a: 'In ⚙️ Options you turn on ⚔️ Auto-fights: in explore, gather or hunt batches your hero fights alone, with the same rules. 🩹 Retreat stops the batch if your health drops below that %. The Guardian, dungeons, waves and assaults are always fought by hand.'
+    a: 'They are off for now: if a fight comes up in an explore, gather or hunt batch, the batch stops and you fight it yourself. They will come back later.'
   d25:
     q: 📊 What are attack and defense?
     a: 'In 👤 Hero → 📊 Stats you''ll find each number with what it does: ❤️ health, ⚔️ attack, 🛡 defense (armor) and initiative. They go up with your level, your level points and your gear. Classes with the same role start with the same numbers: what sets you apart is your gear and your level.'
@@ -244,7 +244,7 @@ faq:
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one per faction: completing them gives experience, coins and reputation. If you have a camp, you also see its weekly tasks, which everyone does together.'
   d44:
     q: ⚒️ How do I learn a profession?
-    a: You learn a profession by doing it, without paying or choosing, and you can have them all. Gathering raises the gathering ones, exploring raises 🧭 Explorer, and refining or crafting at a station raises its own. The 🧑‍🏫 Trainer (🏕️ Camp) introduces them and /professions shows your ranks.
+    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🔬 Research in the Clearing or in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Gathering and the 🧭 Explorer are never learned: they rise on their own. Your professions: /myprofessions.'
   d45:
     q: 🛠️ How do I craft?
     a: In 🏕️ Camp → 🛠️ Craft you choose 🪚 Refine (wood → plank, metal → ingot…) or 🛠️ Craft (gear, potions, bandages, furniture). Each recipe shows what it needs and how much ⚡ it costs. The Clearing has all the basic stations; your camp, the ones from its upgrades.
@@ -256,7 +256,7 @@ faq:
     a: When a profession reaches rank {spec_first} you choose its first 🎓 specialization, and at {spec_second} the second (never all three). They give bonuses and their own recipes that grow with mastery. Choose them in ⚒️ Professions → 🎓 Specialization or with /specialty.
   d48:
     q: ✨ What is enchanting?
-    a: 'With /enchant you break down old gear into ✨ essences and use them to enchant a piece and give it a small bonus. It''s one more profession: it goes up by enchanting and disenchanting.'
+    a: 'With /enchant you break down old gear into ✨ essences and use them to enchant a piece and give it a small bonus. It''s one more profession: you learn it first (📚 Learn professions) and it goes up by enchanting and disenchanting.'
   d49:
     q: ✒️ What is a masterwork?
     a: 'When you craft a piece of gear it may come out as a ✒️ masterwork: stronger, unique and with your signature. It happens more often the higher your rank in that profession.'

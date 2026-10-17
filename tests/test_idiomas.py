@@ -97,7 +97,7 @@ def test_an_english_hero_plays_everything_in_english(service):
 def test_old_players_switch_in_options_and_the_keyboard_follows(service):
     make_hero(service)
     options = service.act("test:1", "options")
-    assert [a.id for a in options.actions][-1] == "lang" and len(options.actions) <= 4
+    assert "lang" in [a.id for a in options.actions] and len(options.actions) <= 4     # D-258: 🌐 stays, with 💬 and ↩️
     screen = service.act("test:1", "lang")
     assert screen.kind == "language" and [a.id for a in screen.actions] == ["lang:es", "lang:en", "options"]
     assert screen.actions[0].label.startswith("✅")

@@ -1262,6 +1262,17 @@ options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opcione
   saved_retreat: "🩹 Listo: tu héroe se retira con menos de {pct} % de vida."
   saved_potions_on: "🧪 Listo: en las peleas automáticas usa las pociones y las vendas del cinturón."
   saved_potions_off: "🧪 Listo: en las peleas automáticas no toca el cinturón."
+  intro_short: "Toca un botón para cambiarlo: queda guardado."   # [ES] D-258 (0.33): sin peleas ni pociones automáticas; con 💬 Feedback
+  retreat_now: "🩹 Retirarse con menos de {pct} % de vida: lo usarán las peleas automáticas cuando vuelvan. Hoy, si sale una pelea en un lote, el lote se corta y la peleas tú."
+  language_line: "🌐 Idioma: {name}."
+  feedback_line: "💬 Feedback: cuéntanos un error, una idea o algo que no se entiende."
+
+feedback:                      # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones (y /feedback); el bot lo manda al chat de informes
+  button: "💬 Feedback"
+  title: "💬 Feedback"
+  ask: "Escribe en un mensaje lo que quieras contarnos: un error, una idea o algo que no se entiende. Lo lee el equipo del juego."
+  privacy: "Va con el nombre y el nivel de tu héroe, para poder entenderlo. Si cambias de idea, toca ↩️ Volver."
+  thanks: "💬 ¡Gracias! Tu mensaje llegó al equipo del juego."
 
 auto:                         # [ES] D-114: peleas automáticas de los lotes (resumen del final y la línea de las pantallas de lote)
   batch_manual: "⚔️ Si sale una pelea: ✋ el lote se corta y la peleas tú (⚙️ Opciones)."
@@ -1583,6 +1594,17 @@ shop:
   weekly_cap: "🥖 El mercader ya no te vende más {item} esta semana (máximo {n}). La comida del campamento la dan la caza, la pesca y la cocina."
   cap_line: "   Te quedan {left} de {n} esta semana."
   only_in_claro: "El mercader y la posada están en el Claro."
+  menu_buy: "🛒 Comprar: pociones, vendas y 🥖 provisiones."   # [ES] D-259 (0.33, pedido del dueño): el mercader se parte en comprar y vender
+  menu_sell: "💱 Vender: lo que traes en la mochila. Paga la mitad de lo que vale."
+  buy_menu_button: "🛒 Comprar"
+  sell_menu_button: "💱 Vender"
+  buy_title: "🛒 Comprar"
+  sell_title: "💱 Vender"
+  sell_intro: "Toca el código de una cosa para venderla toda. El equipo se vende desde 🛡️ Equipo."
+  sell_item_line: "{emoji} {item} ×{n} · {price} c/u → {total}  /v{code}"
+  sell_none: "No traes nada que el mercader compre: junta materiales en las zonas."
+  sell_all_line: "💱 Vender materiales vende de una vez lo común que juntaste (no la comida, ni lo refinado, ni lo raro)."
+  no_code: "⚠️ No traes nada con el código {code}."
 
 inn:
   button: "🛏️ Posada · {price}"
@@ -1638,9 +1660,9 @@ hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona 
   party_end_short: "No llegaron a la meta: esta vez no hay premio."
   party_end_alone: "Para el premio hacen falta al menos {n} cazadores."
   batch_button: "🏹 Cazar en lote"     # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), 🏹 Buscar presa pasa a ser esto
-  mode_manual: "✋ Cazas de a una presa: la pelea empieza enseguida y la peleas tú. Con ⚔️ Peleas automáticas (⚙️ Opciones) puedes cazar en lote."
+  mode_manual: "✋ Cazas de a una presa: la pelea empieza enseguida y la peleas tú."   # [ES] D-258 (0.33): sin peleas automáticas no hay caza en lote
   mode_auto: "⚔️ Peleas automáticas: eliges cuánta energía gastar y tu héroe caza solo, presa tras presa (⚙️ Opciones)."
-  batch_manual: "✋ Para cazar en lote, elige ⚔️ Peleas automáticas en ⚙️ Opciones."
+  batch_manual: "✋ Por ahora se caza de a una presa: la pelea empieza enseguida y la peleas tú."
   batch_low_hp: "🩹 Tu vida está por debajo del {pct} %: cúrate antes de cazar en lote (o cambia el límite en ⚙️ Opciones)."
   batch_in_progress: "🏹 Sigues rastros y tu héroe pelea solo cada presa."
   batch_progress: "Presa {done} de {total}"
@@ -2307,8 +2329,8 @@ tech:                         # [ES] D-101: nombre y efecto de cada estudio del 
 prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar → refinar → fabricar). Catálogo en content/professions.yaml; números en balance.yaml professions
   button: "⚒️ Oficios"
   title: "⚒️ Oficios"
-  intro: "Cada oficio sube haciéndolo, del rango 1 al 100. Puedes aprenderlos todos: cada uno pide su tiempo, sus materiales y su estación. Casi todo lo que se fabrica pide materiales de dos oficios o más."
-  none: "Todavía no empezaste ningún oficio: recolecta, refina o fabrica para empezar."
+  intro: "Cada oficio sube haciéndolo, del rango 1 al 100, y cada rango abre recetas nuevas. Casi todo lo que se fabrica pide materiales de dos oficios o más."   # [ES] D-257 (0.33): los oficios se aprenden; la lista larga salió
+  none: "Todavía no tienes oficios: recolecta y explora (suben solos) o aprende uno en 🔬 Investigar."
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
   perk_line: "   ✨ Beneficio ahora: {perk}"
@@ -2358,7 +2380,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
   more_in_claro: "🏭 Hay más recetas en las estaciones del Claro."
-  locked_hint: "🔒 Las recetas de rango más alto se ven en ⚒️ Oficios."
+  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."
   recipe_title: "📜 Receta"
   recipe_prof: "{name} · tu rango {rank} ({title}) · pide rango {need}"
   recipe_needs: "Necesitas por vez:"

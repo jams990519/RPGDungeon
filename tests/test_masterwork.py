@@ -18,6 +18,9 @@ from engine.professions import masterwork_chance, masterwork_id, xp_for_rank
 from engine.professions import rules as profession_rules
 from test_camp_upgrades import KEY, camp_at, set_hero
 
+# D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
+pytestmark = pytest.mark.usefixtures("every_profession_known")
+
 
 def ids(view):
     return [a.id for a in view.actions]
@@ -106,8 +109,8 @@ def test_carpentry_perk_no_longer_gives_attack(service):
     service._save(hero)
     hero = service._load("test:1")
     assert service._kit(hero)["perk_bonus"]["attack"] == base["attack"] == 0
-    view = service.act("test:1", "oficios")
-    lines = [line for line in view.body if "Beneficio ahora" in line]
+    lines = [line for code in ("/carpinteria", "/herreria")       # D-257: each perk shows behind its profession's code
+             for line in service.text("test:1", code).body if "Beneficio ahora" in line]
     assert any("+15 % de obra maestra" in line for line in lines)        # 🪑 Carpintería
     assert any("+3 de armadura" in line and "+5 % de obra maestra" in line for line in lines)   # 🔨 its base chance too
     assert not service.texts.missing

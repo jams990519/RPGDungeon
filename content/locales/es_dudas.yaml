@@ -67,7 +67,7 @@ faq:
     a: "Cuando el juego trae algo nuevo te llega una vez el aviso con las notas del parche. Si no ves el menú de abajo nuevo, escribe /start. Tu progreso se guarda para siempre."
   d55:
     q: "⚙️ ¿Qué cambio en Opciones?"
-    a: "En ⚙️ Opciones eliges si en los lotes peleas a mano o en automático, con cuánta vida te retiras ({retreat} %) y si usas pociones solo. Queda guardado y lo cambias cuando quieras."
+    a: "En ⚙️ Opciones eliges con cuánta vida te retiras ({retreat} %), cambias el 🌐 idioma y nos mandas 💬 Feedback. Queda guardado y lo cambias cuando quieras."
   # ---- 🧭 Mapa y exploración
   d06:
     q: "🚶 ¿Cómo me muevo por el mapa?"
@@ -83,7 +83,7 @@ faq:
     a: "🪓 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas. En el territorio de tu campamento juntas {own_bonus} % más."
   d10:
     q: "🔢 ¿Qué son los lotes?"
-    a: "Al explorar, recolectar o cazar eliges cuánta energía gastar seguido ({batches} o Todo). Tu héroe hace una vuelta tras otra y te aviso al final con el resumen. Con ✋ Manual el lote se corta si sale una pelea; con ⚔️ Peleas automáticas (⚙️ Opciones) pelea solo."
+    a: "Al explorar, recolectar o cazar eliges cuánta energía gastar seguido ({batches} o Todo). Tu héroe hace una vuelta tras otra y te aviso al final con el resumen. Si sale una pelea, el lote se corta y la peleas tú."
   d11:
     q: "🏹 ¿Cómo cazo?"
     a: "🏹 Cazar (en 🧭 Explorar) busca una presa de la zona: cuesta {hunt_energy} ⚡ cada una y solo da la pelea y su botín (carne, piel, monedas, a veces equipo). En el Claro no hay presas. Con un campamento puedes llamar a una 🏹 Partida de caza con tus compañeros."
@@ -126,7 +126,7 @@ faq:
     a: "Fuera de pelea la vida vuelve sola: de 0 a llena en {hp_full}. Más rápido: 🧪 pociones y vendas (🎒 Mochila → 🧪 Pociones), la 🛏️ Posada del Claro o el 🛏️ Refugio de tu campamento. En 👤 Héroe → 🩺 Salud ves cuánto falta."
   d24:
     q: "🤖 ¿Qué son las peleas automáticas?"
-    a: "En ⚙️ Opciones prendes ⚔️ Peleas automáticas: en los lotes de explorar, recolectar o cazar tu héroe pelea solo, con las mismas reglas. 🩹 Retirarse corta el lote si tu vida baja de ese %. El Guardián, las mazmorras, las oleadas y los asaltos siempre se pelean a mano."
+    a: "Por ahora están apagadas: si sale una pelea en un lote de explorar, recolectar o cazar, el lote se corta y la peleas tú. Volverán más adelante."
   d25:
     q: "📊 ¿Qué son ataque y defensa?"
     a: "En 👤 Héroe → 📊 Estadísticas está cada número con lo que hace: ❤️ vida, ⚔️ ataque, 🛡 defensa (armadura) e iniciativa. Suben con el nivel, tus puntos de nivel y el equipo. Las clases de un mismo rol arrancan con los mismos números: lo que te separa es tu equipo y tu nivel."   # [ES] 0.31 (D-232)
@@ -189,7 +189,7 @@ faq:
   # ---- ⚒️ Oficios
   d44:
     q: "⚒️ ¿Cómo aprendo un oficio?"
-    a: "Un oficio se aprende haciéndolo, sin pagar ni elegir, y puedes tenerlos todos. Recolectar sube los de recolección, explorar el 🧭 Explorador, y refinar o fabricar en una estación, los suyos. El 🧑‍🏫 Entrenador (🏕️ Campamento) te los presenta y /oficios muestra tus rangos."
+    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. La recolección y el 🧭 Explorador no se aprenden: suben solos. Tus oficios: /misoficios."
   d45:
     q: "🛠️ ¿Cómo fabrico?"
     a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."
@@ -201,7 +201,7 @@ faq:
     a: "Cuando un oficio llega al rango {spec_first} eliges su primera 🎓 especialización, y al {spec_second} la segunda (nunca las tres). Dan bonos y recetas propias que crecen con el dominio. Se eligen en ⚒️ Oficios → 🎓 Especialización o con /especialidad."
   d48:
     q: "✨ ¿Qué es el encantamiento?"
-    a: "Con /encantar desarmas equipo viejo en ✨ esencias y con ellas encantas una pieza para darle un bono chico. Es un oficio más: sube encantando y desencantando."
+    a: "Con /encantar desarmas equipo viejo en ✨ esencias y con ellas encantas una pieza para darle un bono chico. Es un oficio más: primero se aprende (📚 Aprender oficios) y sube encantando y desencantando."
   d49:
     q: "✒️ ¿Qué es una obra maestra?"
     a: "Al fabricar una pieza de equipo puede salir ✒️ obra maestra: más fuerte, única y con tu firma. Sale más seguido cuanto más rango tienes en ese oficio."

@@ -20,6 +20,9 @@ from engine.professions import rules as profession_rules
 from engine.professions.rules import PERK_KEYS, SPEC_FILTERS, SPEC_KINDS
 from engine.service import GameService
 
+# D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
+pytestmark = pytest.mark.usefixtures("every_profession_known")
+
 
 def ids(view):
     return [a.id for a in view.actions]
@@ -390,7 +393,9 @@ def test_old_heroes_without_specializations_load(service):
     hero = service._load("test:1")
     assert hero.prof_specs == {} and hero.spec_xp == {}
     view = service.act("test:1", "oficios")
-    assert "pspecs" in ids(view) and any("Puedes elegir especialización" in line for line in view.body)
+    assert "pspecs" in ids(view)
+    detail = service.text("test:1", "/minero")                  # D-257: the long lines live behind the profession's code
+    assert any("Puedes elegir especialización" in line for line in detail.body)
     assert service.act("test:1", "pspecs").kind == "specs"
     assert service.commands()["/especialidad"] == "pspecs"
     assert not service.texts.missing

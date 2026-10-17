@@ -177,7 +177,7 @@ def test_refugio_heals_at_the_camp_cheaper_than_the_inn(service, clock):
     assert price < service.content.balance["inn"]["price"]
     hero = service._load("test:1")
     assert view.kind == "activity" and hero.activity["kind"] == "rest" and hero.gold == 10 - price
-    clock.advance(6 * 60)
+    clock.advance(hero.activity["until"] - clock.now() + 1)     # D-259: it takes as long as the life you lacked
     service.view("test:1")
     hero = service._load("test:1")
     assert hero.activity is None and hero.hp == hero_stats(service._kit(hero), hero.level)["max_hp"]

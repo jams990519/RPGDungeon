@@ -131,7 +131,7 @@ def test_origin_traits_are_small_and_never_combat(service):
     other = hero_of(service, "test:2")
     price = service.content.items["provisiones"]["price"]
     assert service._shop_price(other, "provisiones") == round(price * 0.9) < price
-    shop = service.act("test:2", "shop")
+    shop = service.act("test:2", "shop:buy")                                   # D-259: 🛒 Comprar has the prices
     assert any(service._money(service._shop_price(other, "provisiones")) in line for line in shop.body)
 
 
@@ -142,7 +142,7 @@ def test_first_missions_advance_from_real_actions_in_the_claro(service, clock):
     make_hero(service)
     service.act("test:1", "origpick:minero")
     npc = service.act("test:1", "npc:marta")
-    assert npc.kind == "npc" and ids(npc) == ["talk:marta", "npcs:0"]
+    assert npc.kind == "npc" and ids(npc) == ["talk:marta", "dly:marta", "npcs:0"]   # D-259: + her mission of today
     talk = service.act("test:1", "talk:marta")
     assert "Recorre los alrededores" in talk.notice                           # the next step reads as a scene
     summary = batch(service, clock, "test:1", "explore", 2)                    # exploring from the Claro
@@ -172,7 +172,7 @@ def test_origin_chain_advances_and_gives_its_title(service, clock):
     make_hero(service)
     service.act("test:1", "origpick:aprendiz")
     service.act("test:1", "talk:brena")
-    place(service, "test:1", 0, 0, backpack={"madera": 9})
+    place(service, "test:1", 0, 0, backpack={"madera": 9}, learned=["aserradero"])   # D-257: crafting needs the profession
     made = service.act("test:1", "mk:tablon:1:0")                              # a real craft at the Claro station
     assert "paso cumplido" in made.notice
     service.act("test:1", "talk:brena")
@@ -213,7 +213,7 @@ def test_decisions_change_reputation_are_remembered_and_choose_who_helps(service
     service._st(hero)["done"] += ["c1_m1", "c1_m2", "c1_m3", "c1_m4"]
     service._save(hero)
     service.act("test:1", "talk:brena")
-    place(service, "test:1", 0, 0, backpack={"madera": 3})
+    place(service, "test:1", 0, 0, backpack={"madera": 3}, learned=["aserradero"])   # D-257: crafting needs the profession
     service.act("test:1", "mk:tablon:1:0")
     quests = service.act("test:1", "squests")
     assert quests.kind == "story_quests" and ids(quests) == ["ch:c1_m5:iria", "ch:c1_m5:brena", "ch:c1_m5:odo", "journal"]
@@ -323,43 +323,34 @@ def test_faction_ranks_pay_once_and_noble_gets_a_bit_more(service):
 # ---------------------------------------------------------------- daily and camp tasks
 
 
-def test_daily_tasks_rotate_by_day_one_per_faction_and_pay_once(service, clock):
+def test_daily_tasks_rotate_by_day_one_per_character_and_pay_once(service, clock):
+    """D-259 (0.33): one mission per character a day (before, one per faction), cashed in by talking to them."""
     make_hero(service)
     pool = service.content.story["daily"]
     seen = set()
     for _ in range(6):
-        today = service._daily_ids()
-        assert len(today) == 3
-        factions = [service.content.story["npcs"][pool[t]["giver"]]["faction"] for t in today]
-        assert factions == ["llama", "umbral", "restos"]
-        assert service._daily_ids() == today                                  # the same all day
+        hero = hero_of(service)
+        today = service._daily_ids(hero)
+        assert sorted(pool[t]["giver"] for t in today) == sorted(service.content.story["npcs"])
+        assert service._daily_ids(hero) == today                              # the same all day
         seen.add(tuple(today))
         clock.advance(24 * 60 * MINUTE)
     assert len(seen) > 1                                                       # they change with the days
-    for _ in range(40):                                                        # a day whose llama task is wood or fiber
-        if service._daily_ids()[0] in ("d_lena", "d_fibra"):
-            break
-        clock.advance(24 * 60 * MINUTE)
-    tid = service._daily_ids()[0]
-    item = pool[tid]["goal"]["item"]
     hero = hero_of(service)
-    gold, rep = hero.gold, hero.factions.get("llama", 0)
-    for _ in range(10):
-        if tid in hero_of(service).story.get("daily", {}).get("done", []):
-            break
-        batch(service, clock, "test:1", "gather", 5)
-        hero = hero_of(service)
-        hero.backpack = {}                                                    # keep space; only what is gathered counts
-        service._save(hero)
+    tid = next(t for t in service._daily_ids(hero) if pool[t]["giver"] == "marta")
+    need = pool[tid]["goal"]["items"]
+    set_story(service, "test:1", backpack=dict(need))
+    gold, rep = hero_of(service).gold, hero_of(service).factions.get("llama", 0)
+    service.act("test:1", "dly:marta")
     hero = hero_of(service)
-    assert tid in hero.story["daily"]["done"] and hero.factions["llama"] == rep + 10 and hero.gold > gold
+    assert tid in hero.story["daily"]["done"] and hero.factions["llama"] == rep + int(pool[tid]["rep"]) and hero.gold > gold
     board = service.act("test:1", "board")
-    assert board.kind == "board" and len(board.actions) <= 4 and any("✅" in line for line in board.body)
+    assert board.kind == "board" and len(board.actions) <= 4 and any(line.startswith("✅") for line in board.body)
     paid = hero.factions["llama"]
-    batch(service, clock, "test:1", "gather", 5)
+    set_story(service, "test:1", backpack=dict(need))
+    service.act("test:1", "dly:marta")
     assert hero_of(service).factions["llama"] == paid                          # once a day
     assert service._st(hero)["tasks"] >= 1
-    assert item in ("madera", "fibra")
 
 
 def test_camp_tasks_count_every_member_and_pay_each_helper(service, clock):
@@ -462,7 +453,7 @@ def test_saludar_reaches_only_players_present_in_the_zone(service, clock):
 def test_profession_emblem_shows_next_to_the_name(service):
     make_hero(service, "test:1", "Lyra")
     make_hero(service, "test:2", "Bram")
-    set_story(service, "test:1", professions={"medicina": 5000})
+    set_story(service, "test:1", professions={"medicina": 5000}, learned=["medicina"])   # D-257: a profession you learned
     service.act("test:1", "home")
     lines = service.act("test:2", "home").body
     assert any("🩺 Lyra" in line for line in lines)

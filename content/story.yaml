@@ -463,19 +463,24 @@ quests:
 # más o menos (experiencia = balance.yaml story.task_xp_per_energy × energy × escala de nivel); coins: 🥉 base (+10 % por
 # nivel del héroe); rep: reputación con la facción del personaje que lo da.
 daily:
-  d_lena: {giver: marta, goal: {kind: gather, item: madera, n: 8}, energy: 4, coins: 8, rep: 10}
-  d_fibra: {giver: marta, goal: {kind: gather, item: fibra, n: 8}, energy: 4, coins: 8, rep: 10}
-  d_metal: {giver: brena, goal: {kind: gather, item: pieza_metal, n: 3}, energy: 4, coins: 10, rep: 10}
-  d_piedra: {giver: brena, goal: {kind: gather, item: piedra, n: 6}, energy: 4, coins: 8, rep: 10}
-  d_forja: {giver: brena, goal: {kind: craft, n: 1}, energy: 2, coins: 10, rep: 10}
-  d_hierbas: {giver: iria, goal: {kind: gather, item: hierba_curativa, n: 5}, energy: 4, coins: 10, rep: 10}
+  # D-259 (0.33, pedido del dueño): un encargo por personaje cada día (antes, uno por facción). Lo que se junta se ENTREGA
+  # (kind: deliver, sale de la mochila); explorar, ganar, vender y fabricar se cuentan. Se cobra hablando con el personaje
+  # en el Claro o en tu propio campamento. needs: el oficio que hace falta para que ese encargo te toque (any_craft = un
+  # oficio de refinar o fabricar cualquiera).
+  d_lena: {giver: marta, goal: {kind: deliver, items: {madera: 8}}, energy: 4, coins: 8, rep: 10}
+  d_fibra: {giver: marta, goal: {kind: deliver, items: {fibra: 8}}, energy: 4, coins: 8, rep: 10}
+  d_cocina: {giver: marta, needs: cocina, goal: {kind: deliver, items: {racion_campamento: 2}}, energy: 4, coins: 12, rep: 12}   # [ES] D-259: "Marta te pide que le hagas una receta" (solo con 🍲 Cocina)
+  d_metal: {giver: brena, goal: {kind: deliver, items: {pieza_metal: 3}}, energy: 4, coins: 10, rep: 10}
+  d_piedra: {giver: brena, goal: {kind: deliver, items: {piedra: 6}}, energy: 4, coins: 8, rep: 10}
+  d_forja: {giver: brena, needs: any_craft, goal: {kind: craft, n: 1}, energy: 2, coins: 10, rep: 10}
+  d_hierbas: {giver: iria, goal: {kind: deliver, items: {hierba_curativa: 5}}, energy: 4, coins: 10, rep: 10}
+  d_setas: {giver: iria, goal: {kind: deliver, items: {setas: 3}}, energy: 3, coins: 10, rep: 10}                  # [ES] D-259: Iria tenía uno solo
   d_ronda: {giver: anselmo, goal: {kind: explore, n: 4, outside: true}, energy: 4, coins: 8, rep: 10}
   d_presas: {giver: anselmo, goal: {kind: win, n: 2, hunt: true}, energy: 4, coins: 10, rep: 10}
   d_bestias: {giver: anselmo, goal: {kind: win, n: 3}, energy: 6, coins: 12, rep: 10}
   d_venta: {giver: odo, goal: {kind: sell, n: 5}, energy: 2, coins: 8, rep: 10}
   d_chatarra: {giver: odo, goal: {kind: explore, n: 3, outside: true}, energy: 3, coins: 10, rep: 10}
-  d_arcilla: {giver: odo, goal: {kind: gather, item: arcilla, n: 4}, energy: 3, coins: 10, rep: 10}
-
+  d_arcilla: {giver: odo, goal: {kind: deliver, items: {arcilla: 4}}, energy: 3, coins: 10, rep: 10}
 # Camp tasks: every week, balance.yaml story.camp_tasks of these for each player camp (by its level), done together.
 # What every member does counts; when the goal is reached, every member who helped gets the reward (also offline).
 # [ES] Encargos de campamento: cada semana, entre todos los miembros. Cuenta lo que hace cada uno, en cualquier lugar;

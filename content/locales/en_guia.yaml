@@ -253,10 +253,10 @@ guide:
 
         • If you lose, it takes part of the pantry, never levels or zones.'
     options:
-      name: Auto-fights
-      text: '• In ⚙️ Options you choose what happens if a fight comes up in the middle of a batch.
+      name: ⚙️ Options
+      text: '• If a fight comes up in the middle of a batch, the batch stops and you fight it.
 
-        • ✋ Manual: the batch stops and you fight. ⚔️ Automatic: your hero fights alone and the batch goes on.'
+        • In ⚙️ Options you choose at what health you retreat, change the 🌐 language and send us 💬 Feedback.'
     origin:
       name: Your origin (optional)
       text: '• Where does your hero come from? Choose your 🎭 origin with /origin.

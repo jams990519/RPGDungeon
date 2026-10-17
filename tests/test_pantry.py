@@ -186,9 +186,10 @@ def test_merchant_sells_provisions_without_losing_buttons(service):
     hero = service._load("test:1")
     hero.gold = 100
     service._save(hero)
-    view = service.act("test:1", "shop")
+    view = service.act("test:1", "shop:buy")                          # D-259: 🛒 Comprar and 💱 Vender are apart
     ids = [a.id for a in view.actions]
-    assert "buy:provisiones" in ids and "sell:all" in ids and len(ids) <= 4
+    assert "buy:provisiones" in ids and len(ids) <= 4
+    assert "sell:all" in [a.id for a in service.act("test:1", "shop:sell").actions]
     price = service.content.items["provisiones"]["price"]
     assert price >= 10                                               # an expensive emergency (coin sink)
     service.act("test:1", "buy:provisiones")
@@ -271,7 +272,7 @@ def test_merchant_sells_at_most_20_provisions_a_week(service, clock):
     service._save(hero)
     cap = service.content.balance["shop"]["weekly_cap"]["provisiones"]
     assert cap == 20
-    assert "Te quedan 20 de 20" in "\n".join(service.act("test:1", "shop").body)
+    assert "Te quedan 20 de 20" in "\n".join(service.act("test:1", "shop:buy").body)
     for _ in range(cap):
         hero = service._load("test:1")
         hero.backpack = {}                                           # keep room in the backpack

@@ -64,6 +64,13 @@ story:
   rank_up: "⚜️ {faction}: ahora te consideran {rank}."
   rank_down: "⚜️ {faction}: ahora te miran como {rank}."
   task_done: "📜 ¡Encargo cumplido! {npc}: {task}."
+  task_ready: "🎁 {npc}: «{task}» está listo. Cóbralo en 📜 Tablón → 🧑 Personajes, en el Claro o en tu campamento."   # [ES] D-259 (0.33): los encargos se cobran hablando
+  task_not_yet: "{name} espera: {goal}"
+  button_claim: "🎁 Cobrar"
+  npc_daily: "📜 Su encargo de hoy: {task}\n   {goal} · 🎁 {reward}"
+  npc_daily_done: "✅ Ya cumpliste su encargo de hoy. Mañana tendrá otro."
+  mark_ready: "🎁"
+  board_paid: "✅ cumplido y cobrado"
   camp_task_done: "🏕️ ¡Encargo de campamento cumplido: {task}! Cada miembro que ayudó gana +{xp} exp y +{gold}."
   camp_task_push_title: "🏕️ Encargo de campamento cumplido"
   camp_task_push: "{hero} completó el último tramo de «{task}» en {camp}. Por tu ayuda: +{xp} exp y +{gold}."
@@ -71,7 +78,7 @@ story:
   # ---- 🧑 Personajes
   npcs_title: "🧑 Personajes del Claro"
   npcs_intro: "Viven junto a la fogata. Recuerdan lo que haces y lo que eliges."
-  npcs_away: "📍 Para hablar con ellos tienes que estar en el Claro."
+  npcs_away: "📍 Para hablar con ellos tienes que estar en el Claro o en tu propio campamento."
   npc_line: "{emoji} {name}, {role} · {faction}{mark}"
   npc_mark: " · ❗ te espera"
   npc_button_mark: " ❗"           # [ES] marca en el botón del personaje que tiene algo para ti
@@ -79,16 +86,16 @@ story:
   npc_faction: "{faction} · tu rango: {rank} ({points})"
   npc_says: "«{line}»"
   npc_pending: "❗ {goal}"
-  npc_away: "📍 {name} vive en el Claro: ve hasta la fogata para hablar."
+  npc_away: "📍 {name} vive en el Claro: habla con {name} junto a la fogata o desde tu propio campamento."
   nothing_to_say: "{name} te saluda con la cabeza: hoy no tiene nada para ti."
   deliver_missing: "🤲 Te falta para {name}: {items}."
   delivered: "🤲 Le diste a {name}: {items}."
-  not_in_claro: "📍 Tienes que estar en el Claro para hablar con {name}."
+  not_in_claro: "📍 Para hablar con {name} tienes que estar en el Claro o en tu propio campamento."
   page: "Página {n} de {total}"
 
   # ---- 📜 Tablón y encargos
   board_title: "📜 Tablón del Claro"
-  board_intro: "Encargos cortos de la gente del Claro: uno de cada facción, nuevos cada día. Cuentan donde estés y pagan apenas los cumples."
+  board_intro: "Cada personaje del Claro te da un encargo por día. Cúmplelo y cóbralo hablando con él en 🧑 Personajes, en el Claro o en tu propio campamento."
   board_line: "{mark} {npc}: {task}\n   {goal} · 🎁 {reward}"
   board_reset: "🔄 Cambian en {time}."
   board_camp_title: "🏕️ Encargos de {camp} (esta semana, entre todos):"
@@ -334,7 +341,7 @@ story:
       trait: "leíste vetas toda tu vida: +15 % de experiencia de ⛏️ Minero."
       gift: "3 ⚙️ piezas de metal de tu última jornada."
 
-  # ---- Encargos del tablón (uno por facción cada día)
+  # ---- Encargos del tablón (uno por personaje cada día, D-259)
   daily:
     d_lena: "🪵 Leña para la fogata"
     d_fibra: "🧵 Fibra para los recién despertados"
@@ -348,6 +355,8 @@ story:
     d_venta: "💱 Mercancía para Odo"
     d_chatarra: "🏚️ Chatarra de antes del Colapso"
     d_arcilla: "🏺 Arcilla para los frascos"
+    d_cocina: "🍱 Raciones para la cocina de Marta"
+    d_setas: "🍄 Setas para los remedios de Iria"
 
   camp_task:
     ct_caza: "⚔️ Limpiar los caminos"
@@ -386,7 +395,7 @@ story:
     c1_m5:
       title: "El ámbar que canta"
       hablar: "El yunque suena desde lejos. Una mujer ancha, con el pelo atado y quemaduras viejas en los brazos, golpea un hierro al rojo. Es Brena, la herrera."
-      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar."
+      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🔬 Investigar."
       ambar: "Brena te muestra una astilla de ámbar del tamaño de un dedo. Zumba bajito, como una colmena lejana. «Salió entre la chatarra que le compré a Odo. De noche canta. No sé qué es.»\n🌿 Iria la estudiaría para el Círculo del Umbral.\n⚒️ Brena la fundiría en el yunque para la Llama Común.\n🪙 Odo pagaría bien por ella para la Cofradía."
       opt_iria: "🌿 Dársela a Iria"
       opt_brena: "⚒️ Que Brena la funda"
@@ -444,7 +453,7 @@ story:
     o_aprendiz_1:
       title: "Manos que recuerdan"
       hablar: "Brena te ve mirar el yunque. «Tienes manos de taller», gruñe. «¿De quién aprendiste?» No recuerdas su nombre, pero sí sus manos."
-      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar."
+      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🔬 Investigar."
       mostrar: "Ya hiciste algo con tus manos. Muéstraselo a Brena."
       done: "Brena da vuelta tu trabajo y se queda quieta. «Esta forma de cerrar la juntura solo la enseñaba un maestro: Teodoro el Alto. Partió lejos del Claro hace dos inviernos. No volvió.»"
     o_aprendiz_2:

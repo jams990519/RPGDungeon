@@ -57,12 +57,19 @@ story:
   rank_up: '⚜️ {faction}: they now consider you {rank}.'
   rank_down: '⚜️ {faction}: they now see you as {rank}.'
   task_done: '📜 Task complete! {npc}: {task}.'
+  task_ready: '🎁 {npc}: «{task}» is ready. Cash it in at 📜 Board → 🧑 Characters, in the Clearing or at your camp.'
+  task_not_yet: '{name} is waiting: {goal}'
+  button_claim: 🎁 Cash in
+  npc_daily: "📜 Their task for today: {task}\n   {goal} · 🎁 {reward}"
+  npc_daily_done: ✅ You already did their task for today. Tomorrow they will have another.
+  mark_ready: 🎁
+  board_paid: ✅ done and cashed in
   camp_task_done: '🏕️ Camp task complete: {task}! Every member who helped earns +{xp} XP and +{gold}.'
   camp_task_push_title: 🏕️ Camp task complete
   camp_task_push: '{hero} finished the last stretch of “{task}” in {camp}. For your help: +{xp} XP and +{gold}.'
   npcs_title: 🧑 Characters of the Clearing
   npcs_intro: They live by the campfire. They remember what you do and what you choose.
-  npcs_away: 📍 To talk to them you have to be in the Clearing.
+  npcs_away: 📍 To talk to them you have to be in the Clearing or at your own camp.
   npc_line: '{emoji} {name}, {role} · {faction}{mark}'
   npc_mark: ' · ❗ waiting for you'
   npc_button_mark: ' ❗'
@@ -70,14 +77,14 @@ story:
   npc_faction: '{faction} · your rank: {rank} ({points})'
   npc_says: “{line}”
   npc_pending: ❗ {goal}
-  npc_away: '📍 {name} lives in the Clearing: go to the campfire to talk.'
+  npc_away: '📍 {name} lives in the Clearing: talk to {name} by the campfire or from your own camp.'
   nothing_to_say: '{name} gives you a nod: nothing for you today.'
   deliver_missing: '🤲 For {name}, you''re still missing: {items}.'
   delivered: '🤲 You gave {name}: {items}.'
-  not_in_claro: 📍 You have to be in the Clearing to talk to {name}.
+  not_in_claro: 📍 To talk to {name} you have to be in the Clearing or at your own camp.
   page: Page {n} of {total}
   board_title: 📜 The Clearing's Board
-  board_intro: 'Short tasks from the people of the Clearing: one from each faction, new every day. They count wherever you are and pay as soon as you complete them.'
+  board_intro: Each character of the Clearing gives you one task a day. Do it and cash it in by talking to them in 🧑 Characters, in the Clearing or at your own camp.
   board_line: "{mark} {npc}: {task}\n   {goal} · \U0001F381 {reward}"
   board_reset: 🔄 They change in {time}.
   board_camp_title: '🏕️ {camp}''s tasks (this week, everyone together):'
@@ -325,6 +332,8 @@ story:
     d_venta: 💱 Goods for Odo
     d_chatarra: 🏚️ Scrap from before the Collapse
     d_arcilla: 🏺 Clay for the flasks
+    d_cocina: 🍱 Rations for Marta's kitchen
+    d_setas: 🍄 Mushrooms for Iria's remedies
   camp_task:
     ct_caza: ⚔️ Clear the roads
     ct_mapa: 🗺️ Learn the territory
@@ -374,7 +383,7 @@ story:
       hablar: The anvil rings out from afar. A broad woman, her hair tied back and old burns on her arms, hammers a red-hot iron. It's Brena, the blacksmith.
       fabricar: 'Brena: “Nobody in this Clearing knows how to make anything. Show me you do: craft something at a station. Anything. A plank, a bandage, a potion.”
 
-        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft.'
+        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🔬 Research.'
       ambar: 'Brena shows you a shard of amber the size of a finger. It hums softly, like a distant beehive. “It turned up in the scrap I bought from Odo. It sings at night. I don''t know what it is.”
 
         🌿 Iria would study it for the Circle of the Threshold.
@@ -447,7 +456,7 @@ story:
       hablar: Brena catches you eyeing the anvil. “You've got workshop hands,” she grunts. “Who taught you?” You don't remember the name, but you do remember the hands.
       hacer: 'Brena: “If you learned something, it shows in the work, not in the talk. Make something at a station and I''ll tell you what school you come from.”
 
-        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft.'
+        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🔬 Research.'
       mostrar: You've made something with your hands. Show it to Brena.
       done: 'Brena turns your work over and goes still. “Only one master taught this way of closing a joint: Teodoro the Tall. He left the Clearing for faraway lands two winters ago. He never came back.”'
     o_aprendiz_2:

@@ -79,7 +79,7 @@ upgrades:
     desc_key: upgrade.refugio.desc
     level: 3
     cost: {madera: 70, fibra: 40, arcilla: 15}  # [ES] 125 unidades
-    service: {rest_price: 2, rest_minutes: 5}   # [ES] como la posada del Claro (balance.yaml inn: 4 🥉, 5 min) pero a 2 🥉
+    service: {rest_price: 2, rest_minutes: 5}   # [ES] como la posada del Claro pero a 2 🥉. Desde la 0.33 (D-259) tarda como la posada, según la vida que falta (balance.yaml inn.speed); rest_minutes ya no se usa
   trueque:
     emoji: "🏪"
     name_key: upgrade.trueque.name

@@ -1832,6 +1832,16 @@ options:
   saved_retreat: '🩹 Done: your hero retreats below {pct}% health.'
   saved_potions_on: '🧪 Done: in auto-fights your hero uses potions and bandages from the belt.'
   saved_potions_off: '🧪 Done: in auto-fights your hero won''t touch the belt.'
+  intro_short: 'Tap a button to change it: it is saved.'
+  retreat_now: '🩹 Retreat below {pct}% health: automatic fights will use it when they come back. Today, if a fight comes up in a batch, the batch stops and you fight it.'
+  language_line: '🌐 Language: {name}.'
+  feedback_line: '💬 Feedback: tell us about a bug, an idea or something that is unclear.'
+feedback:
+  button: 💬 Feedback
+  title: 💬 Feedback
+  ask: 'Write in one message whatever you want to tell us: a bug, an idea or something that is unclear. The game team reads it.'
+  privacy: 'It goes with your hero''s name and level, so we can understand it. If you change your mind, tap ↩️ Back.'
+  thanks: '💬 Thank you! Your message reached the game team.'
 auto:
   batch_manual: '⚔️ If a fight comes up: ✋ the batch stops and you fight it yourself (⚙️ Options).'
   batch_auto: '⚔️ If a fight comes up, your hero fights it alone · 🩹 retreats below {pct}% · 🧪 potions: {potions} (⚙️ Options).'
@@ -2136,6 +2146,17 @@ shop:
   weekly_cap: 🥖 The merchant won't sell you any more {item} this week (max {n}). Camp food comes from hunting, fishing and cooking.
   cap_line: '   You have {left} of {n} left this week.'
   only_in_claro: The merchant and the inn are in the Clearing.
+  menu_buy: '🛒 Buy: potions, bandages and 🥖 provisions.'
+  menu_sell: '💱 Sell: what you carry in your backpack. He pays half of what it is worth.'
+  buy_menu_button: 🛒 Buy
+  sell_menu_button: 💱 Sell
+  buy_title: 🛒 Buy
+  sell_title: 💱 Sell
+  sell_intro: Tap a thing's code to sell all of it. Gear is sold from 🛡️ Gear.
+  sell_item_line: '{emoji} {item} ×{n} · {price} each → {total}  /v{code}'
+  sell_none: "You carry nothing the merchant buys: gather materials in the zones."
+  sell_all_line: '💱 Sell materials sells at once the common things you gathered (not food, refined goods or rare finds).'
+  no_code: ⚠️ You carry nothing with the code {code}.
 inn:
   button: 🛏️ Inn · {price}
   title: 🛏️ The Clearing Inn
@@ -2188,9 +2209,9 @@ hunt:
   party_end_short: 'You didn''t reach the goal: no reward this time.'
   party_end_alone: The reward needs at least {n} hunters.
   batch_button: 🏹 Batch hunt
-  mode_manual: '✋ You hunt one prey at a time: the fight starts right away and you fight it yourself. With ⚔️ Auto-fights (⚙️ Options) you can hunt in batches.'
+  mode_manual: '✋ You hunt one prey at a time: the fight starts right away and you fight it yourself.'
   mode_auto: '⚔️ Auto-fights: you choose how much energy to spend and your hero hunts alone, prey after prey (⚙️ Options).'
-  batch_manual: ✋ To hunt in batches, choose ⚔️ Auto-fights in ⚙️ Options.
+  batch_manual: '✋ For now you hunt one prey at a time: the fight starts right away and you fight it yourself.'
   batch_low_hp: '🩹 Your health is below {pct}%: heal before hunting in batches (or change the limit in ⚙️ Options).'
   batch_in_progress: 🏹 You follow tracks and your hero fights each prey alone.
   batch_progress: Prey {done} of {total}
@@ -2829,8 +2850,8 @@ tech:
 prof:
   button: ⚒️ Professions
   title: ⚒️ Professions
-  intro: 'Each profession improves as you practice it, from rank 1 to 100. You can learn them all: each one needs its own time, materials and station. Almost everything crafted needs materials from two or more professions.'
-  none: 'You haven''t started any profession yet: gather, refine or craft to begin.'
+  intro: Each profession improves as you practice it, from rank 1 to 100, and each rank opens new recipes. Almost everything crafted needs materials from two or more professions.
+  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 🔬 Research.'
   line: '{name} · rank {rank} ({title}) {bar}'
   how_line: '   ↳ {how}'
   perk_line: '   ✨ Current perk: {perk}'
@@ -2880,7 +2901,7 @@ prof:
   page: Page {n} of {total}
   more: ➡️ See more
   more_in_claro: 🏭 There are more recipes at the Clearing's stations.
-  locked_hint: 🔒 Higher-rank recipes are shown in ⚒️ Professions.
+  locked_hint: '🔒 Higher-rank recipes open as you make recipes: each rank brings new ones.'
   recipe_title: 📜 Recipe
   recipe_prof: '{name} · your rank {rank} ({title}) · needs rank {need}'
   recipe_needs: 'You need, each time:'

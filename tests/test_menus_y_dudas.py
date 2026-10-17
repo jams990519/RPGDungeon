@@ -61,13 +61,18 @@ def test_claro_hub_order_and_button_cap(service):
 
 def test_claro_options_lead_somewhere_or_explain(service):
     make_hero(service)
+    locked = service.act("test:1", "cook")                                      # D-257: 🍲 Cocina is learned first
+    assert locked.kind == "profession" and "learn:cocina" in ids(locked) and "primero aprende" in locked.notice
+    hero = service._load("test:1")
+    hero.learned = ["cocina"]
+    service._save(hero)
     cook = service.act("test:1", "cook")
     assert cook.kind == "station" and cook.title == "🍲 Cocinar" and ids(cook)[-1] == "claro"
     assert all(a.id.startswith(("rec:", "est:cook:", "claro")) for a in cook.actions)
     recipe = service.act("test:1", cook.actions[0].id)
     assert recipe.kind == "recipe" and recipe.actions[-1].id.startswith("est:cook:")   # a kitchen recipe goes back to 🍲
-    research = service.act("test:1", "research")                               # the Claro does not research: it explains
-    assert research.kind == "claro" and "Biblioteca" in research.notice
+    research = service.act("test:1", "research")                               # D-257: in the Claro, 🔬 is 📚 Aprender oficios
+    assert research.kind == "learn"
     assert service.act("test:1", "oficios").kind == "professions"
     assert service.act("test:1", "board").actions[-1].id == "claro"
 
@@ -78,7 +83,10 @@ def test_own_camp_hub_and_manage_screen(service):
     view = service.act("test:1", "claro")
     assert view.kind == "player_camp" and len(view.actions) <= HUB_BUTTONS
     assert ids(view) == ["cook", "research", "oficios", "trainer", "upsvc", "board", "campmgmt", "dudas"]
-    assert "Fogón" in service.act("test:1", "cook").notice                      # no 🔥 Fogón yet: it says where
+    hero = service._load("test:1")
+    hero.learned = ["cocina"]                                                    # D-257: with 🍲 Cocina learned...
+    service._save(hero)
+    assert "Fogón" in service.act("test:1", "cook").notice                      # ...no 🔥 Fogón yet: it says where
     assert "Biblioteca" in service.act("test:1", "research").notice             # no 📚 Biblioteca yet
     manage = service.act("test:1", "campmgmt")
     assert manage.kind == "camp_manage" and manage.kind in HUB_KINDS
@@ -92,7 +100,7 @@ def test_hero_hub_card_and_buttons(service):
     make_hero(service)
     view = service.act("test:1", "hero")
     assert view.kind == "hero" and view.kind in HUB_KINDS and len(view.actions) <= HUB_BUTTONS
-    assert ids(view) == ["bag", "talents", "health", "stats", "bar", "oficios", "journal", "origin"]
+    assert ids(view) == ["bag", "talents", "health", "stats", "bar", "oficios", "hjournal", "origin"]
     text = "\n".join(view.body)
     assert "❤️ Vida:" in text and "⚡ Energía: 50/50 (llena)" in text and "/oficios" in text
     hero = service._load("test:1")
@@ -113,9 +121,9 @@ def test_trainer_presents_the_professions(service):
     make_hero(service)
     view = service.act("test:1", "trainer")
     assert view.kind == "trainer" and len(view.actions) <= 4
-    assert ids(view) == ["oficios", "pspecs", "ench", "claro"]
+    assert ids(view) == ["myprof", "learnlist", "pspecs", "claro"]             # D-257: 📋 Mis oficios and 📚 Aprender oficios
     text = "\n".join(view.body)
-    for word in ("Recolección", "Refinado", "Fabricación", "Explorador", "25", "75", "Construcción"):
+    for word in ("primera receta", "recolección", "exploración", "Te faltan por aprender", "25", "75", "Construcción"):
         assert word in text
     assert service.text("test:1", "/entrenador").kind == "trainer"
     assert not service.texts.missing
