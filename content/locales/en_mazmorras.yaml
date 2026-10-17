@@ -1,0 +1,122 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_mazmorras.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_mazmorras.yaml. Una clave nueva va
+# primero en es_mazmorras.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+dungeon:
+  icon_small: 🕳️
+  icon_deep: 🌀
+  icon_unknown: 🕳️
+  title_small: 🕳️ Small dungeon
+  title_deep: 🌀 Deep dungeon
+  enter_small: 🕳️ Enter
+  enter_deep: 🌀 Descend
+  header_small: '🕳️ Small dungeon at {name} · level {level}. Solo: fixed layout, 4 rooms and their boss; what''s inside changes every day.'
+  header_deep: '🌀 Deep dungeon at {name} · level {level}. Solo: you go down floor by floor for as long as you can last.'
+  today: 'Today it''s held by: {family}. Tomorrow it''ll be others, with another boss and other loot.'
+  boss_line: '👑 Today''s boss: {enemy} (lv {level}), elite: +{hp}% health and +{attack}% attack.'
+  boss_line_deep: '👑 Every {every} floors, today''s boss is waiting: {enemy}, elite.'
+  path: '🧭 Today''s path: {rooms}.'
+  progress: 'Rooms: {marks} · 👑 {boss} ({n} of {total} cleared today).'
+  chest_line: '🎁 Boss chest: {items} · {pct}% chance of a level {level} gear piece for any class (if it''s not yours, you can sell it).'
+  small_how: '⚔️ Each room is a fight by hand (⚡ {energy}). If you flee or fall, what you cleared today stays: come back whenever you want. The chest opens once a day.'
+  done_today: '✅ You already finished it today. Tomorrow it changes: other enemies, another boss, another chest.'
+  need_line: '⚡ To enter you need {need} energy: enough for all the remaining fights. It''s charged fight by fight, but no one gets stuck halfway.'
+  need_small: '⚡ Not enough energy: this dungeon asks for {need} ⚡ to enter (all of today''s remaining fights) and you have {have}. No one gets stuck halfway.'
+  need_deep: '⚡ Not enough energy: this floor asks for {need} ⚡ to enter (all its fights) and you have {have}. No one gets stuck halfway.'
+  room_button: ⚔️ Room {n} · ⚡{energy}
+  boss_button: 👑 Boss · ⚡{energy}
+  deep_how: ⬇️ With each floor deeper, enemies go up {level} level, +{hp}% health and +{attack}% attack; every {every} floors, the boss. Entering costs ⚡ {enter} and each fight ⚡ {energy}; to start a floor you need, up front, the energy for all its fights.
+  deep_rules: '🩸 There''s no healing between floors: only what''s on your belt. When you clear a floor you choose: ⬇️ Go down or 🚪 Leave with your loot. If you fall or flee, you keep {keep}% of the bag.'
+  best: '🏆 Your record: floor {floor}.'
+  best_none: 🏆 You haven't cleared any floor yet.
+  top: '🏆 Today here: {items}.'
+  top_item: '{n}. {name} (floor {floor})'
+  top_empty: 🏆 No one has gone down yet today.
+  descend_button: 🌀 Descend · ⚡{energy}
+  run_start: 🌀 You go down into the darkness. From now on your health won't come back on its own until you leave.
+  run_line: ⬇️ You're on floor {floor} (cleared {cleared}).
+  pot_line: '🎒 In the bag: {items}.'
+  next_fight: '⚔️ Next up: fight {n} of {total} on floor {floor} (lv {level}).'
+  next_boss: '👑 Next up: the boss of floor {floor} (lv {level}), fight {n} of {total}.'
+  down_button: ⬇️ Down to floor {floor} · ⚡{energy}
+  on_button: ⚔️ Continue floor {floor} · ⚡{energy}
+  out_button: 🚪 Leave with your loot
+  potions_button: 🧪 Potions
+  room_fight: '🕳️ Room {n} of {total}, {room}: {enemy} (lv {level}) blocks your way.'
+  boss_fight: '👑 {room}: the boss, {enemy} (lv {level})! If it falls, the chest is yours.'
+  deep_fight: '🌀 Floor {floor}: {enemy} (lv {level}) emerges from the shadows.'
+  deep_boss_fight: '👑 Floor {floor}: the boss, {enemy} (lv {level})!'
+  boss_badge: '👑 Dungeon boss: more health and more attack.'
+  floor_badge: 🌀 Floor {floor} of the deep dungeon.
+  room_cleared: ✅ Room {n} of {total} cleared.
+  rooms_left: 🕳️ {n} {n|room|rooms} left, and the boss.
+  boss_next: 👑 Only the boss is left.
+  kept: 🕳️ What you cleared today stays ({n} of {total}). Heal up and come back whenever you want.
+  no_count: '🕳️ That room was already cleared: the fight didn''t change anything, but what you earned is yours.'
+  changed: '🕳️ The dungeon changed with the new day: your fight didn''t count toward it, but what you earned is yours.'
+  cleared: '🏆 You finished the dungeon! Today it was held by: {family}.'
+  chest: '🎁 Its chest: {items}.'
+  tomorrow: '🌅 Tomorrow it changes: other enemies, another boss and another chest.'
+  piece_yours: '🛡️ {item}: it''s your type.'
+  piece_other: '🛡️ {item}: it''s for another class; you can sell it or keep it for someone who''ll use it.'
+  floor_more: ⚔️ Floor {floor} has one more fight.
+  floor_cleared: '⬇️ Floor {floor} cleared! Into the bag: {items}.'
+  new_best: '🏆 Your new record: floor {floor}!'
+  choose: Do you go down to floor {floor} or leave with your loot? Your health won't come back on its own while you stay down here.
+  run_gone: '🌀 That descent is already over: the fight didn''t count toward it, but what you earned is yours.'
+  closed_out: '🚪 You left the deep dungeon (cleared {floor}). You take the whole bag: {items}.'
+  closed_left: '🚪 You left the deep dungeon (cleared {floor}) and took the whole bag: {items}.'
+  closed_defeat: '💀 You fell down below (cleared {floor}): you keep half the bag: {items}.'
+  closed_fled: '🏃 You fled back up (cleared {floor}): half the bag was lost in the rush. You have left: {items}.'
+  no_run: 🌀 You don't have a descent in progress.
+  none_here: 🕳️ There's no dungeon here.
+  blocked: '👹 An enemy camp blocks the dungeon entrance: it has to be destroyed first (today).'
+  downed: '🤕 You''re badly wounded: heal before entering a dungeon (👤 Hero → 🩺 Health).'
+  zone_small: '🕳️ Small dungeon: today it''s held by {family}. 🧭 Explore → 🕳️ Enter.'
+  zone_deep: '🌀 Deep dungeon: today it''s held by {family}. 🧭 Explore → 🌀 Descend.'
+  zone_blocked_small: 🕳️ There's a small dungeon here, but an enemy camp blocks the entrance until it falls.
+  zone_blocked_deep: 🌀 There's a deep dungeon here, but an enemy camp blocks the entrance until it falls.
+  arrive_small: 🕳️ The entrance to a small dungeon! 🧭 Explore → 🕳️ Enter.
+  arrive_deep: 🌀 The entrance to a deep dungeon! 🧭 Explore → 🌀 Descend.
+  map_legend: '🕳️ cave: a dungeon (you find out which when you get there) · 🌀 deep dungeon'
+  map_unknown: '🕳️ ({x}, {y}) · {zones} zones away: a cave, go see what dungeon it is'
+  map_small: '🕳️ ({x}, {y}) · {zones} zones away: small dungeon'
+  map_deep: '🌀 ({x}, {y}) · {zones} zones away: deep dungeon'
+  go_button: '{mark} Go to the dungeon'
+  go_unknown: 🕳️ Go to the cave
+  move_button: '{mark} Move to the dungeon · {time}'
+  rooms:
+  - 🕯️ the candle gallery
+  - 💧 the cistern
+  - 🦴 the ossuary
+  - 🕸️ the cobweb corridor
+  - 🪨 the crevice
+  - 🔥 the cold forge
+  - 📚 the sunken library
+  - 🍄 the mushroom grotto
+  - ⛓️ the cells
+  - 🌊 the underground river
+  - 🏺 the broken storeroom
+  - 🌀 the spiral staircase
+  boss_rooms:
+  - 👑 the throne room
+  - 👑 the great crypt
+  - 👑 the sunken altar
+  - 👑 the echoing cavern
+  family:
+    manada: a wolf pack
+    fieras: bears and wild beasts
+    colmillos: fanged and horned beasts
+    bichos: spiders and insects
+    limos: mire slimes
+    plantas: fungi and living plants
+    no_muertos: the undead
+    espectros: wraiths
+    forajidos: outlaws and cultists
+    gigantes: goblins, ogres and giants
+    dragones: serpents and dragons
+    constructos: golems and elementals
+    alas: winged beasts
+    alimanas: vermin

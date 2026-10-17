@@ -1,0 +1,63 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_oficios_campamento.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_oficios_campamento.yaml. Una clave nueva va
+# primero en es_oficios_campamento.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+item:
+  pescado: Fish
+  racion_campamento: Camp Ration
+  pescado_asado: Grilled Fish
+  guiso_cazador: Hunter's Stew
+  conserva: Jarred Preserves
+  festin: Frontier Feast
+  banquete: Castle Banquet
+  sillar: Ashlar Block
+profession:
+  pescador:
+    name: Fisher
+    how: gather 🐟 fish in zones with water (the whole 🐸 swamp and 🦆 lake, and some rivers in other terrains)
+  cocina:
+    name: Cooking
+    how: 'at a station (the Clearing or your camp''s 🔥 Hearth): 🍖 meat, 🐟 fish and herbs → rations for the pantry'
+  canteria:
+    name: Stonemasonry
+    how: 'at a station: 🪨 stone → 🧱 ashlar block (needed for big upgrades and for repairing defenses)'
+  construccion:
+    name: Construction
+    how: contribute materials to your camp's 🔨 works and repair its defenses after a wave
+prof:
+  perk:
+    fish_food: fish yields +{v}% in the pantry
+    cook_food: cooked food yields +{v}% in the pantry
+    stone_cost: works need −{v}% stone and ashlar blocks
+    build_cost: upgrades need −{v}% materials
+    repair_cost: repairing defenses costs −{v}%
+camp_prof:
+  perk_note: '   🏰 It''s a camp profession: it works for your camp, and the best rank among its members applies.'
+  perks_line: '🏰 Camp professions (best rank applies): {items}'
+  perk_part: '{prof}: {perk} ({name})'
+  pantry_how: 🐟 Fish comes from zones with water; 🍲 Cooking turns meat and fish into rations that go further.
+  fish_bonus: '🎣 The fish yielded {n} more {n|ration|rations} (Fisher: {name}).'
+  cook_bonus: '🍲 The cooked food yielded {n} more {n|ration|rations} (Cooking: {name}).'
+  food_out: 'Makes: 🌾 {rations} {rations|ration|rations} for your camp''s pantry (more with the camp''s 🍲 Cooking)'
+  damage_line: '🛠️ Damaged defenses: −{n} 🛡️ from the waves. Repair them in 🔨 Upgrades → 🔨 Works.'
+  raid_damage: '🛠️ The wave damaged the defenses: −{n} 🛡️ ({defense} left) until they''re repaired in 🔨 Upgrades → 🔨 Works.'
+  repair_name: 🛠️ Repair defenses
+  repair_entry: 🛠️ Repair defenses · −{n} 🛡️
+  repair_desc: The waves damaged the defenses. Everyone repairs them together with 🟫 planks and 🧱 ashlar blocks; the camp's 🏗️ Construction makes it cheaper.
+  repair_button: 🛠️ Repair defenses
+  repair_none: '🛠️ The defenses are intact: there''s nothing to repair.'
+  repaired: 🛠️ The defenses are repaired! The {n} {n|point|points} of 🛡️ Defense are back.
+  repaired_push_title: 🛠️ Defenses repaired
+  repaired_push: '🛠️ With {hero}''s contribution, {camp} repaired its defenses: +{n} 🛡️.'
+resources:
+  use:
+    pescado: 'food: 1 ration in the pantry (more with a 🎣 Fisher in the camp) or for 🍲 Cooking'
+    sillar: '🗿 refined: needed for the camp''s big upgrades and for repairing defenses'
+    racion_campamento: '🍲 food: 3 rations in your camp''s pantry'
+    pescado_asado: '🍲 food: 3 rations in your camp''s pantry'
+    guiso_cazador: '🍲 food: 10 rations in your camp''s pantry'
+    conserva: '🍲 food: 18 rations in your camp''s pantry'
+    festin: '🍲 food: 27 rations in your camp''s pantry'
+    banquete: '🍲 food: 45 rations in your camp''s pantry'

@@ -116,7 +116,7 @@ def test_english_commands_do_what_the_spanish_ones_do(service):
     assert service.text("test:1", "/coins").kind == service.text("test:1", "/monedas").kind
     assert service.text("test:1", "/professions").kind == service.text("test:1", "/oficios").kind
     found = service.text("test:1", "/help energy")
-    assert found.kind.startswith("dudas") and any("/d" in line for line in found.body)
+    assert found.kind.startswith("duda") and "energy" in all_text(found).lower()     # one hit opens the answer
     assert service.commands()["/help"] == service.commands()["/dudas"]
     assert service._canonical_command("/greet Bram") == "/saludar Bram"
 

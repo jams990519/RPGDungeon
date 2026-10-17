@@ -1,0 +1,67 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_terrenos.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_terrenos.yaml. Una clave nueva va
+# primero en es_terrenos.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo
+# exige): mismas claves, mismos huecos {nombre} y {n|uno|varios}, mismas etiquetas HTML y el mismo largo en las listas
+# que el motor lee por posición (nombres de zona, salas de mazmorra).
+
+item:
+  bayas: Berries
+  setas: Mushrooms
+  miel: Wild Honey
+  mazorca: Wild Corn
+  lino: Flax
+  juncos: Reeds
+  nenufar: Water Lily
+  cactus: Cactus Pulp
+  datiles: Dates
+  flor_escarcha: Frostflower
+  musgo: Moss
+  raiz_amarga: Bitter Root
+  tomillo: Thyme
+  resina: Resin
+  corteza: Bark
+  carbon: Coal
+  sal: Rock Salt
+  cuarzo: Quartz
+  arena: Fine Sand
+  hielo: Eternal Ice
+  chatarra: Scrap Iron
+  obsidiana: Obsidian
+resources:
+  use:
+    bayas: 🍲 rations with meat and Cooking's feast
+    setas: 🍲 rations with meat in Cooking
+    miel: 🩺 Medicine's first-aid kits and 🍲 Cooking's feast
+    mazorca: 🍲 grilled fish with corn in Cooking
+    lino: 🧶 Weaving turns it into cloth
+    juncos: 🧶 Weaving turns them into cloth (with fiber)
+    nenufar: ⚗️ greater potions without moonflower
+    cactus: 🩺 Medicine's salves (with cloth)
+    datiles: 🍲 hunter's stew in Cooking
+    flor_escarcha: ⚗️ greater potions without moonflower (with quartz)
+    musgo: 🩺 Medicine's salves (with extract)
+    raiz_amarga: 💧 Distilling turns it into extract (with herbs)
+    tomillo: 🍲 hunter's stew in Cooking
+    resina: '⚗️ seals flasks: health potions with extract'
+    corteza: '🪣 Tanning: 3 hides and bark make 2 leathers'
+    carbon: '🔥 Smelting: 3 metal scraps and coal make 2 ingots'
+    sal: 🍲 salt-baked fish and preserves in Cooking
+    cuarzo: ⚗️ flasks for greater potions
+    arena: ⚗️ glass flasks for potions; 🗿 ashlar blocks with less stone
+    hielo: 🍲 preserves in Cooking (with salt)
+    chatarra: 🔥 Smelting turns it into ingots
+    obsidiana: 🗿 lava-glass ashlar blocks with less stone
+prof:
+  variant: '{name} · with {item}'
+node:
+  icon_unknown: ✨
+  arrive: '✨ You found a resource node! It''s a {item} node: here {effect}.'
+  effect: its resource yields ×{mult} when gathering and depletes more slowly
+  effect_rare: ', and sometimes gives {item}'
+  zone_line: '{icon} {item} node: {effect}.'
+  map_unknown: '{icon} ({x}, {y}) · {zones} {zones|zone|zones} away: a resource node, go there to find out what kind'
+  map_known: '{icon} ({x}, {y}) · {zones} {zones|zone|zones} away: {item} node'
+  map_here: '{icon} You''re on a {item} node: gather here.'
+  batch: '{icon} The {item} node gave you +{n} extra.'
+  batch_rare: '{icon} At the node you found {item} ×{n}.'
+  grow_mark: ' {icon}{emoji}'
