@@ -5,11 +5,13 @@ Environment variables (names only in .env.example, never values in the repo):
   RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
+  RPG_REPORTS_CHAT_ID chat that receives the daily player report and the 💬 Feedback notes (default: the team's reports chat)
 
 [ES]
 Para qué sirve: el proceso del bot. Recibe mensajes y botones de Telegram, se los pasa
 al motor y edita el "mensaje vivo" con la vista nueva. Cada pocos segundos revisa los
-viajes que terminaron y avisa al jugador.
+viajes que terminaron y avisa al jugador. D-260 (0.33): también manda al chat de informes cada mensaje de
+💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py).
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §4 (identidad)
 Módulo: adaptador de Telegram
 Depende de: aiogram, engine.service, engine.core, adapters.storage, adapters.telegram.render
@@ -32,6 +34,7 @@ Si cambias esto, revisa:
 from __future__ import annotations
 
 import asyncio
+import html
 import logging
 import os
 import re
@@ -41,8 +44,9 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.filters import CommandStart
-from aiogram.types import CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
+from aiogram.types import BufferedInputFile, CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
 
+from adapters import reports
 from adapters.storage import SqliteStore
 from adapters.telegram import render as render_module
 from adapters.telegram.render import render_keyboard, render_text
@@ -61,6 +65,8 @@ def menu_keyboard(service: GameService, account: str | None = None) -> ReplyKeyb
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
+REPORTS_CHAT_DEFAULT = "-1004365890113"   # D-260: the team's reports chat (the owner gave it, 17-oct-2026); not a credential
+REPORT_RETRY_SECONDS = 3600              # a report Telegram refused is tried again an hour later, not every tick
 TOKEN_RE = re.compile(r"^\d{6,12}:[A-Za-z0-9_-]{30,}$")
 
 
@@ -162,7 +168,55 @@ async def notifier(bot: Bot, service: GameService) -> None:
                 await asyncio.sleep(0.05)
         except Exception:  # keep the loop alive; the error is logged
             log.exception("notifier error")
+        try:
+            await send_reports(bot, service)          # D-260: 💬 Feedback and the daily player report
+        except Exception:
+            log.exception("reports error")
         await asyncio.sleep(TICK_SECONDS)
+
+
+def reports_chat() -> int | None:
+    """The chat id for reports and feedback (RPG_REPORTS_CHAT_ID, else the team's chat); None if it is not a number."""
+    raw = (os.environ.get("RPG_REPORTS_CHAT_ID") or REPORTS_CHAT_DEFAULT).strip()
+    try:
+        return int(raw)
+    except ValueError:
+        log.error("RPG_REPORTS_CHAT_ID is not a chat id")
+        return None
+
+
+_report_failed_at = [float("-inf")]   # when the last report failed (loop time); none yet
+
+
+async def send_reports(bot: Bot, service: GameService) -> None:
+    """Post every new 💬 Feedback note and, once a day, the player report file to the reports chat (D-260).
+
+    [ES]
+    Qué hace: manda al chat de informes cada mensaje de 💬 Feedback nuevo (con el héroe, su nivel y su idioma) y, una vez por
+    día, el informe de jugadores como archivo .txt (adapters/reports.py). Si Telegram rechaza el informe (por ejemplo, el bot
+    no está en el chat), lo anota en el registro y lo vuelve a intentar a la hora. Un error nunca para al bot.
+    La llama: notifier, en cada vuelta. Si cambia, afecta: lo que recibe el equipo.
+    """
+    chat = reports_chat()
+    if chat is None:
+        return
+    for note in service.take_feedback():
+        text = (f"💬 <b>Feedback</b> · {html.escape(str(note.get('hero', '?')))} · nivel {note.get('level', '?')} · "
+                f"{html.escape(str(note.get('lang', '?')))}\n{html.escape(str(note.get('text', '')))}")
+        try:
+            await bot.send_message(chat, text)
+        except Exception:  # the note stays saved in the store "feedback"
+            log.exception("could not post feedback: %s", note.get("text", ""))
+    loop_now = asyncio.get_event_loop().time()
+    if reports.due(service) and loop_now - _report_failed_at[0] >= REPORT_RETRY_SECONDS:
+        try:
+            name, body = reports.build(service)
+            await bot.send_document(chat, BufferedInputFile(body.encode("utf-8"), filename=name), caption="📊 Informe de jugadores")
+            reports.mark_sent(service)
+            log.info("player report sent: %s", name)
+        except Exception:
+            _report_failed_at[0] = loop_now
+            log.exception("could not send the player report to %s", chat)
 
 
 async def announce_patch(bot: Bot, service: GameService) -> None:
