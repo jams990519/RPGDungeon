@@ -145,8 +145,8 @@ El mapa **no se guarda**: cualquier zona se recalcula igual a partir de la semil
 
 - **Temporizadores perezosos:** el viaje guarda solo su hora de fin. Cada orden del jugador primero "cierra las cuentas" del héroe (termina lo que ya venció). No hay un proceso por héroe.
 - **Aviso:** el bot de Telegram revisa cada 15 segundos quién terminó y le manda la pantalla de llegada. El jugador puede cerrar el chat.
-- **Una actividad a la vez:** viajando no se explora ni se cambia de rumbo; en combate no se viaja. Sí se puede mirar el mapa, los Lugares, el héroe y la mochila.
-- **📒 Lugares** (desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares, para dejarle lugar a 🏹 Cazar en 🧭 Explorar): lista los lugares que tu héroe recuerda, del más cercano al más lejano (se muestran 8), con la distancia en zonas y el tiempo estimado. Al elegir uno, el héroe viaja solo, zona por zona: primero en el eje este-oeste y después en el norte-sur. Cada tramo se encadena desde la hora en que terminó el anterior, aunque nadie mire. Un encuentro al llegar a un tramo corta el viaje ("⛔ Tu viaje se corta en…").
+- **Una actividad a la vez:** viajando no se explora; en combate no se viaja. Sí se puede mirar el mapa, los Lugares, el héroe y la mochila. **Desde la 0.33** (pedido del dueño: "debería dejarme ir hacia la fogata"), elegir un lugar de 📒 Lugares estando ocupado ya no responde "ese lugar ya no está en tu lista": si exploras, recolectas o cazas en lote, el lote se corta como con ⏹️ (el paso en curso devuelve su energía) y sales; si ya vas de viaje, terminas el tramo en curso y **cambias el rumbo**; solo descansando en la posada hay que esperar (D-255).
+- **📒 Lugares** (desde D-106 se abre en 🧭 Explorar → 🗺️ Mapa → 📒 Lugares, para dejarle lugar a 🏹 Cazar en 🧭 Explorar): lista los lugares que tu héroe recuerda, del más cercano al más lejano (se muestran 8), con la distancia en zonas y el tiempo estimado. Al elegir uno, el héroe viaja solo, zona por zona: primero en el eje este-oeste y después en el norte-sur. Cada tramo se encadena desde la hora en que terminó el anterior, aunque nadie mire. Hasta la 0.32, un encuentro al llegar a un tramo cortaba el viaje ("⛔ Tu viaje se corta en…"); **desde la 0.33 (D-244)** el enemigo se pelea y, si ganas, el viaje sigue con los tramos que faltaban; si huyes o caes, te quedas en esa zona.
 - **Al llegar:** se publica `TravelArrived`. Si nadie había pisado la zona, queda a nombre del héroe y se publica `ZoneDiscovered`.
 - **Encuentro al llegar:** probabilidad = peligro del bioma × 1,0 (`arrival_encounter_scale`). El enemigo sale de los que viven en ese bioma y encajan con el nivel de la zona; su nivel es el de la zona, +1 con 30 % de probabilidad. El sorteo usa la semilla del mundo, el héroe y la hora de llegada: el resultado no cambia aunque se repita la orden.
 
@@ -237,6 +237,16 @@ Hondonada de los Huesos — 🌲 Bosque
 - **Botones:** solo 📒 Lugares y ↩️ Volver. Ya no hay "Moverte a la mazmorra".
 - **📒 Lugares:** los lugares importantes que ya visitaste: el 🔥 Claro (siempre), los 🏕️ campamentos de jugadores, las 🕳️ 🌀 mazmorras y la 👑 guarida. Cada uno con su tiempo y su código (/ir1, /ir2…); los 3 más cercanos traen además un botón. Elegir uno abre "🧭 ¿Viajar?" con ✅ Sí, ir y ↩️ No, volver; al confirmar, el héroe va solo, zona por zona. Sin el rango 10 de 🧭 Explorador se listan 3; desde el 10, hasta 8 (D-112).
 - A confirmar: el nombre "Campamento" en el resto del juego (E-205), qué cuenta como lugar importante (E-206) y dónde ve el 🧭 Explorador lo que antes veía en el mapa (E-207).
+
+### 1.9.1.1 🔗 Moverte: el camino paso a paso (D-244, en el juego desde la 0.33)
+
+El dueño pidió (11 y 17-oct) "un botón extra que diga moverte" para elegir cuántos pasos seguidos y en qué direcciones, "hasta que tú lo decidas".
+
+- **Dónde:** 📍 Zona tiene 5 botones: las 4 rutas, de a 2 por fila, y debajo, ancho, **🔗 Moverte** (`View.layout = [2, 2, 1]`; D-244 decía `[4, 1]`, pero 4 rutas con su tiempo no entran en una fila de teléfono, D-255).
+- **La pantalla 🔗 Moverte:** cuatro flechas (⬆️ ⬇️ ➡️ ⬅️) que suman un paso cada una, **⌫ Quitar el último**, **❌ Cancelar** y **✅ Terminar**. Muestra el camino agrupado ("⬆️×2 ➡️ ⬅️ ⬇️×2"), cuántos pasos son, dónde terminas (coordenadas) y cuánto tardas.
+- **Reglas:** hasta `travel.walk_max` = **50 pasos**. Solo mueve: no explora ni recolecta. Moverse no gasta energía (D-190), así que cuesta solo tiempo: 1 minuto por zona (D-197). A diferencia de 📒 Lugares, **sí pisa tierra nueva**, porque se camina zona por zona; el destino de tierra sin cartografiar no muestra su nombre.
+- **Emboscadas:** si sale un enemigo en un tramo, hay que pelearlo; al ganarlo, el camino **sigue** con los pasos que quedaban. Si huyes o caes, te quedas en esa zona y el resto se cancela. El camino que falta viaja en el estado del combate (`state["route"]`) y `_end_combat` lo retoma (`_resume_route`). La misma regla vale para el viaje de 📒 Lugares, 🔭 Reconocer y el 🗺️ Mapa.
+- **Código:** `engine/service/game.py` (`_walk_action`, `_walk_view`, `_walk_start`, `_arrive`, `_resume_route`); el camino a medio armar se guarda en el espacio `walk` del almacén. Pruebas: `tests/test_moverte.py`.
 
 ### 1.9.2 Hogueras cada 12 zonas (D-224, por programar)
 

@@ -1300,6 +1300,25 @@ travel:
   interrupted: "⛔ Tu viaje se corta en {name}."
   started_route: "🚶 Sales hacia {name}. Irás zona por zona; te aviso al llegar."
   goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
+  interrupted_fight: "⛔ Te sale un enemigo en {name}. Si le ganas, sigues tu camino."   # [ES] D-244 (0.33): la emboscada ya no tira el resto del viaje
+  resumed: "🚶 Sigues tu camino: te {n|queda|quedan} {n} {n|tramo|tramos}."
+  route_lost: "🧭 Te quedas en {name}: el resto del camino se canceló."
+
+walk:                          # [ES] D-244 (0.33, pedido del dueño): 🔗 Moverte, el 5.º botón de 📍 Zona. Sumas pasos en el orden que quieras y tu héroe los camina solo
+  button: "🔗 Moverte"
+  title: "🔗 Moverte"
+  intro: "Arma tu camino paso a paso: cada flecha suma una zona en esa dirección. Al terminar, tu héroe lo recorre solo, 1 minuto por zona."
+  empty: "Todavía no sumaste pasos."
+  steps: "🧭 Tu camino: {steps}"
+  summary: "{n} {n|paso|pasos} · terminas en ({x}, {y}) · unos {time}"
+  ambush: "⚔️ Si te sale un enemigo en el camino, gánale y sigues. Si huyes o caes, te quedas donde estés."
+  undo: "⌫ Quitar el último"
+  cancel: "❌ Cancelar"
+  go: "✅ Terminar"
+  full: "⚠️ Ya tienes {n} pasos, el máximo."
+  need_step: "⚠️ Suma al menos un paso antes de terminar."
+  cancelled: "❌ Camino cancelado."
+  started: "🔗 Sales: {n} {n|paso|pasos} hasta ({x}, {y}). Te aviso al llegar."
 
 explore:
   menu_title: "🧭 Explorar"
@@ -1430,8 +1449,12 @@ health:                       # [ES] pantalla 🩺 Salud del héroe (pedido del 
 resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedido del dueño): materiales y comida, de a páginas
   button: "📦 Recursos"
   title: "📦 Recursos"
-  intro: "Lo que juntaste y para qué sirve:"
-  line: "{emoji} {item} ×{n} — {use}"
+  intro: "Lo que juntaste. Toca el código de un recurso para ver para qué sirve:"     # [ES] D-243 (0.33): la lista corta, la explicación detrás del código
+  line: "{emoji} {item} ×{n}  {code}"
+  detail_title: "{emoji} {item} · {code}"
+  detail_have: "Tienes ×{n}."
+  no_code: "⚠️ No hay ningún recurso con el código {code}."
+  back: "↩️ Volver a 📦 Recursos"
   none: "Todavía no juntaste nada. Recolecta en las zonas con 🪓 Recolectar."
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
@@ -1539,6 +1562,10 @@ places:
   confirm_hint: "Tu héroe va solo, zona por zona. Puedes cerrar el chat: te aviso al llegar."
   confirm_yes: "✅ Sí, ir"
   confirm_no: "↩️ No, volver"
+  confirm_cut: "⏹️ Lo que estás haciendo se corta aquí: el paso en curso te devuelve su energía."   # [ES] 0.33: viajar también ocupado (pedido del dueño)
+  confirm_reroute: "🧭 Ya vas de viaje: terminas el tramo en curso y cambias el rumbo hacia allí."
+  rerouted: "🧭 Cambiaste el rumbo: al terminar este tramo sigues hacia {name}."
+  resting: "🛏️ Estás descansando en la posada. Cuando termines, elige de nuevo a dónde ir."
 
 shop:
   button: "🏪 Mercader"

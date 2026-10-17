@@ -1867,6 +1867,24 @@ travel:
   interrupted: ⛔ Your journey stops at {name}.
   started_route: 🚶 You set out for {name}. You'll go zone by zone; I'll let you know when you arrive.
   goal: '🎯 Destination: {name} · {legs} legs · you arrive in {time}'
+  interrupted_fight: ⛔ An enemy jumps you at {name}. Beat it and you go on your way.
+  resumed: '🚶 You go on your way: {n} {n|leg|legs} left.'
+  route_lost: '🧭 You stay at {name}: the rest of the way was cancelled.'
+walk:
+  button: 🔗 Move
+  title: 🔗 Move
+  intro: 'Build your way step by step: each arrow adds one zone in that direction. When you finish, your hero walks it alone, 1 minute per zone.'
+  empty: You haven't added any steps yet.
+  steps: '🧭 Your way: {steps}'
+  summary: '{n} {n|step|steps} · you end at ({x}, {y}) · about {time}'
+  ambush: ⚔️ If an enemy jumps you on the way, beat it and you go on. If you flee or fall, you stay where you are.
+  undo: ⌫ Remove the last one
+  cancel: ❌ Cancel
+  go: ✅ Finish
+  full: ⚠️ You already have {n} steps, the most allowed.
+  need_step: ⚠️ Add at least one step before finishing.
+  cancelled: ❌ Way cancelled.
+  started: '🔗 You set off: {n} {n|step|steps} to ({x}, {y}). I''ll let you know when you arrive.'
 explore:
   menu_title: 🧭 Explore
   menu_intro: Roam the zone, gather materials, go hunting or check your map.
@@ -1987,8 +2005,12 @@ health:
 resources:
   button: 📦 Resources
   title: 📦 Resources
-  intro: 'What you''ve gathered and what it''s for:'
-  line: '{emoji} {item} ×{n} — {use}'
+  intro: 'What you''ve gathered. Tap a resource''s code to see what it''s for:'
+  line: '{emoji} {item} ×{n}  {code}'
+  detail_title: '{emoji} {item} · {code}'
+  detail_have: You have ×{n}.
+  no_code: ⚠️ There is no resource with the code {code}.
+  back: ↩️ Back to 📦 Resources
   none: You haven't gathered anything yet. Gather in the zones with 🪓 Gather.
   page: Page {n} of {total}
   more: ➡️ See more
@@ -2094,6 +2116,10 @@ places:
   confirm_hint: 'Your hero goes alone, zone by zone. You can close the chat: I''ll let you know when you arrive.'
   confirm_yes: ✅ Yes, go
   confirm_no: ↩️ No, go back
+  confirm_cut: '⏹️ What you''re doing stops here: the step in progress gives its energy back.'
+  confirm_reroute: '🧭 You''re already travelling: you finish the leg in progress and change course toward it.'
+  rerouted: '🧭 You changed course: after this leg you go on toward {name}.'
+  resting: '🛏️ You''re resting at the inn. When you''re done, choose where to go again.'
 shop:
   button: 🏪 Merchant
   title: 🏪 The Clearing's Merchant

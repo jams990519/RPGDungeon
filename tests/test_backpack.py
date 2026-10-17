@@ -229,7 +229,8 @@ def test_resources_screen_lists_materials_and_food_by_pages(service):
     view = service.act("test:1", "resources")
     body = "\n".join(view.body)
     assert view.kind == "resources" and [a.id for a in view.actions] == ["bag"]
-    assert "Madera ×7" in body and "agrandar campamentos" in body and "2 raciones" in body
+    assert "🪵 Madera ×7  /01" in body and "Fibra ×3  /03" in body
+    assert "agrandar campamentos" not in body and "raciones" not in body      # D-243: what it is for, behind the code
     assert "Poción" not in body and "Espada" not in body           # potions and gear have their own buttons
     assert not service.texts.missing
     per = service.content.balance["resources"]["per_page"]
@@ -242,3 +243,29 @@ def test_resources_screen_lists_materials_and_food_by_pages(service):
         assert [a.id for a in first.actions] == ["res:1", "bag"]
         second = service.act("test:1", "res:1")
         assert second.kind == "resources" and len(second.actions) <= 4
+
+
+def test_a_resource_code_shows_what_it_is_for(service):
+    """D-243: the list only says emoji, name, ×count and "/07"; writing or tapping the code explains the resource."""
+    make_hero(service)
+    hero = service._load("test:1")
+    hero.backpack.update({"madera": 7, "carne": 2})
+    service._save(hero)
+    view = service.text("test:1", "/01")
+    body = "\n".join(view.body)
+    assert view.kind == "resource" and "Madera" in view.title and "/01" in view.title
+    assert "Tienes ×7." in body and "agrandar campamentos" in body
+    assert [a.id for a in view.actions] == ["res:0"]
+    assert service.act("test:1", "res:0").kind == "resources"
+    assert "2 raciones" in "\n".join(service.text("test:1", "/7").body)          # with or without the leading zero
+    assert "Tienes ×0." in service.text("test:1", "/02").body                     # it can be looked up without carrying it
+    unknown = service.text("test:1", "/99")
+    assert unknown.kind == "resources" and "/99" in unknown.notice
+    assert not service.texts.missing
+
+
+def test_resource_codes_are_unique_and_cover_every_material_and_food(content):
+    codes = [it["code"] for it in content.items.values() if "code" in it]
+    assert len(codes) == len(set(codes))
+    listed = [i for i, it in content.items.items() if it.get("kind") in ("material", "food", "furniture")]
+    assert all(content.items[i].get("code") for i in listed), [i for i in listed if not content.items[i].get("code")]

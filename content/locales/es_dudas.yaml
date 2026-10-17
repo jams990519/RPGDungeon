@@ -71,7 +71,7 @@ faq:
   # ---- 🧭 Mapa y exploración
   d06:
     q: "🚶 ¿Cómo me muevo por el mapa?"
-    a: "En 📍 Zona toca una dirección. Cada zona que cruzas toma {travel_first} min, cerca o lejos (10 zonas, 10 minutos), y {move_cost}. Al llegar puede salirte un monstruo. Con 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces."
+    a: "En 📍 Zona toca una dirección. Cada zona que cruzas toma {travel_first} min, cerca o lejos (10 zonas, 10 minutos), y {move_cost}. Con 🔗 Moverte armas un camino de varios pasos (hasta {walk_max}) y tu héroe lo camina solo. Al llegar a cada zona puede salirte un monstruo: si le ganas, sigues. Con 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces."   # [ES] D-244 (0.33)
   d07:
     q: "⚡ ¿Qué es la energía?"
     a: "La ⚡ energía se gasta en lo que haces fuera de una pelea: explorar, recolectar, cazar, fabricar, cocinar y más. Tienes hasta {energy_max} y recuperas {energy_day} al día (1 cada {energy_every}). Pelear no gasta energía. Cada amigo que invitas te da más."

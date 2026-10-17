@@ -50,6 +50,7 @@ guide:
         🚶 How to move
 
         • In 📍 Zone you have 4 routes: ⬆️ north, ⬇️ south, ➡️ east and ⬅️ west. Each button says how long it takes.
+        • With 🔗 Move you build a way of several steps, in any directions you like, and your hero walks it alone.
 
         • Moving {move}: {first_time} per zone, near or far (10 zones, 10 minutes).
 

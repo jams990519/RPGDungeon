@@ -3,7 +3,9 @@
 [ES] Pruebas de 📒 Lugares. La lista trae solo los lugares importantes que ya visitaste: el 🔥 Claro (siempre), los
 🏕️ campamentos de jugadores, las 🕳️ 🌀 mazmorras y la 👑 guarida; las zonas comunes no. Cada lugar tiene su código (/ir1,
 /ir2...) y los 3 más cercanos un botón; elegir uno (botón o código) pregunta antes de viajar, y al confirmar el héroe va
-solo, zona por zona. Un código que no está en la lista no hace nada raro. Ningún texto falta.
+solo, zona por zona. Un código que no está en la lista no hace nada raro. Ningún texto falta. 0.33 (pedido del dueño:
+"debería dejarme ir hacia la fogata"): estando ocupado también se puede ir: un lote se corta, un viaje cambia el rumbo y
+solo descansando en la posada hay que esperar.
 Archivo: tests/test_lugares.py · Módulo: M8 Mundo y mapa · Prueba: engine/service/game.py (_important_places,
 _places_view, _place_confirm_view, _place_code, "goask:", "goto:" y el texto /irN).
 """
@@ -92,3 +94,48 @@ def test_you_cannot_ask_for_a_place_you_never_visited(service):
     service.act("test:1", f"goto:{dx}:{dy}")
     assert not service._load("test:1").activity
     assert not service.texts.missing
+
+
+def test_exploring_you_can_still_go_to_the_bonfire(service):
+    """0.33 (the owner: "debería dejarme ir hacia la fogata"): busy exploring, /ir2 no longer says "not on your list"."""
+    make_hero(service)
+    place(service, 0, 3, known=["0:1", "0:2"])
+    service.act("test:1", "explore")
+    service.act("test:1", "do:explore:5")
+    hero = service._load("test:1")
+    assert hero.activity["kind"] == "explore"
+    energy = hero.energy
+    service.act("test:1", "places")
+    view = service.act("test:1", "goask:0:0")
+    assert view.kind == "place_confirm" and "⏹️" in "\n".join(view.body)          # it says the batch will be cut
+    view = service.act("test:1", "goto:0:0")
+    hero = service._load("test:1")
+    assert hero.activity["kind"] == "travel" and hero.activity["goal"] == [0, 0]
+    assert hero.energy >= energy                                                   # the step in progress gave its energy back
+    assert view.notice and not service.texts.missing
+
+
+def test_travelling_you_can_change_course(service):
+    make_hero(service)
+    place(service, 0, 3, known=["0:1", "0:2", "1:3"])
+    service.act("test:1", "go:e")
+    hero = service._load("test:1")
+    assert hero.activity["kind"] == "travel" and hero.activity["to"] == [1, 3]
+    view = service.act("test:1", "goask:0:0")
+    assert view.kind == "place_confirm" and "🧭" in view.body[-1]
+    service.act("test:1", "goto:0:0")
+    hero = service._load("test:1")
+    assert hero.activity["to"] == [1, 3] and hero.activity["goal"] == [0, 0]       # the leg in progress ends first
+    assert hero.activity["path"][-1] == [0, 0]
+    assert not service.texts.missing
+
+
+def test_resting_at_the_inn_you_wait(service):
+    make_hero(service)
+    hero = place(service, 0, 3, known=["0:1", "0:2"])
+    hero.activity = {"kind": "rest", "until": service.clock.now() + 3600}
+    service._save(hero)
+    view = service.act("test:1", "goask:0:0")
+    assert view.kind == "places" and "🛏️" in view.notice
+    service.act("test:1", "goto:0:0")
+    assert service._load("test:1").activity["kind"] == "rest"

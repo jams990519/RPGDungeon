@@ -116,6 +116,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     act() lo borra con cualquier otro botón. Es solo un estado de pantalla, como "camp_naming": nada de progreso.
     D-193: Hero.guide (el avance del 🧭 camino guiado: pasos hechos, avisos vistos, movimientos para fundar); lo maneja
     engine/service/guide.py. Hero.tutorial (el tutorial viejo) ya no avanza: solo se lee (E-133).
+    D-244 (0.33): "walk" (el camino de 🔗 Moverte a medio armar, clave el id del héroe: {"from": [x, y], "steps"}); se
+    borra al salir o al cancelar. Una emboscada a mitad de viaje lleva "route" ({"path", "goal", "walk"}) en su estado
+    de "combat": si el héroe gana, _end_combat retoma el viaje (_resume_route).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -480,6 +483,9 @@ COOK_PROFESSION = "cocina"
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
 PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
+WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
+WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
+RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
 
 
 def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
@@ -580,8 +586,11 @@ class GameService(StoryMixin, GuideMixin):
             self._mark_seen(hero)
             notices = self._settle(hero)
             code = PLACE_CODE_RE.match(text.strip().lower())
+            resource = RESOURCE_CODE_RE.match(text.strip().lower())
             if code:                                     # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
                 typed = self._place_code(hero, int(code.group(1)))
+            elif resource:                               # D-243: /07 = what that resource is for
+                typed = self._resource_detail(hero, int(resource.group(1)))
             else:
                 typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
@@ -1220,9 +1229,12 @@ class GameService(StoryMixin, GuideMixin):
             if self._sneaks_past(hero, "travel", activity["until"]):      # D-172: 🥷 Sigilo (its own draw)
                 notices.append(self.texts.t("stealth.travel", name=self._zone_name(zone)))
             else:
-                if not final:
-                    notices.append(self.texts.t("travel.interrupted", name=self._zone_name(zone)))
-                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush"))
+                route = None
+                if not final:                 # D-244: win the fight and the trip goes on; flee or fall and you stay here
+                    notices.append(self.texts.t("travel.interrupted_fight", name=self._zone_name(zone)))
+                    route = {"path": path, "goal": activity.get("goal"), "walk": bool(activity.get("walk"))}
+                notices.append(self._start_combat(hero, zone, rng, "encounter.ambush",
+                                                  mark={"route": route} if route else None))
                 return notices
         if path and not self._spend_energy(hero, "move"):
             notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
@@ -1232,7 +1244,38 @@ class GameService(StoryMixin, GuideMixin):
             seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
             hero.activity = {"kind": "travel", "to": [nx, ny], "until": activity["until"] + seconds,
                              "dir": activity.get("dir", "n"), "path": path, "goal": activity.get("goal")}
+            if activity.get("walk"):                  # D-244: a 🔗 walk turns at every step
+                hero.activity.update(walk=True, dir=self._step_dir(hero.x, hero.y, nx, ny))
         return notices
+
+    @staticmethod
+    def _step_dir(x: int, y: int, nx: int, ny: int) -> str:
+        """The direction of one step between two neighbouring zones ("n", "s", "e" or "w")."""
+        return next((d for d, (dx, dy) in DIRECTIONS.items() if (x + dx, y + dy) == (nx, ny)), "n")
+
+    def _resume_route(self, hero: Hero, route: dict[str, Any]) -> list[str]:
+        """After winning an ambush on the way, the trip goes on from here (D-244).
+
+        [ES]
+        Qué hace: si te emboscaron a mitad de un viaje de varios tramos (📒 Lugares, 🔭, el 🗺️ Mapa o la 🔗 cadena de
+        Moverte) y ganaste, sigues con los tramos que faltaban desde ahora. Antes (hasta la 0.32) la emboscada tiraba el
+        resto del camino y el viaje largo casi nunca llegaba (D-244 lo midió: 5 tramos llegaban entre el 2 % y el 24 %).
+        La llaman: _end_combat cuando ganas una pelea con state["route"] (la pone _arrive).
+        Si cambia, afecta: el viaje largo, la 🔗 cadena y tests/test_moverte.py.
+        """
+        t = self.texts
+        path = [list(p) for p in route.get("path") or []]
+        if not path:
+            return []
+        if not self._spend_energy(hero, "move"):
+            return [t.t("energy.route_stopped", name=self._zone_name(self._zone(hero.x, hero.y)))]
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds,
+                         "dir": self._step_dir(hero.x, hero.y, nx, ny), "path": path, "goal": route.get("goal")}
+        if route.get("walk"):
+            hero.activity["walk"] = True
+        return [t.t("travel.resumed", n=len(path) + 1)]
 
     def _energy_period(self) -> float:
         cfg = self.content.balance["energy"]
@@ -1745,10 +1788,18 @@ class GameService(StoryMixin, GuideMixin):
             return self._main_view(hero)
         if action_id == "stop":
             return self._stop_batch(hero)
+        if action_id.startswith("goto:"):               # 0.33: also while busy (a batch is cut, a trip changes course)
+            try:
+                gx, gy = (int(v) for v in action_id[5:].split(":"))
+            except ValueError:
+                return self._places_view(hero)
+            return self._goto(hero, gx, gy)
         if hero.activity:
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
             return view
+        if action_id.startswith(WALK_ACTIONS):          # D-244: 🔗 Moverte (build a path step by step, then walk it)
+            return self._walk_action(hero, action_id)
         if action_id == "boss":
             return self._challenge_guardian(hero)
         if action_id == "assault":                      # D-112: ⚔️ Asaltar the enemy camp of this zone (a fight by hand)
@@ -1774,24 +1825,6 @@ class GameService(StoryMixin, GuideMixin):
             hero.activity = {"kind": "travel", "to": [dest.x, dest.y], "until": until, "dir": direction}
             self.bus.publish(TravelStarted(hero.id, dest.x, dest.y, until))
             return self._activity_view(hero, notice=t.t("travel.started", time=self._fmt_duration(seconds)))
-        if action_id.startswith("goto:"):
-            try:
-                gx, gy = (int(v) for v in action_id[5:].split(":"))
-            except ValueError:
-                return self._places_view(hero)
-            # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map)
-            if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
-                return self._places_view(hero)
-            if not self._spend_energy(hero, "move"):
-                return self._zone_view(hero, notice=self._no_energy_notice(hero))
-            path = self._path(hero.x, hero.y, gx, gy)
-            nx, ny = path.pop(0)
-            seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
-            dx, dy = gx - hero.x, gy - hero.y
-            direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
-            hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
-                             "path": path, "goal": [gx, gy]}
-            return self._activity_view(hero, notice=t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy))))
         if action_id == "gather" and self._is_lair(hero.x, hero.y):
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
         if action_id in ("gather", "explore"):
@@ -2312,9 +2345,10 @@ class GameService(StoryMixin, GuideMixin):
                 where += self._recon_route_mark(dest.x, dest.y)
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
+        actions.append(Action(id="walk", label=t.t("walk.button")))     # D-244: 🔗 Moverte, wide under the 4 routes
         body += ["", self._status_line(hero)] + self._tutorial_hint(hero)
         body += ["", t.t("menu.hint")]
-        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice)
+        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1])
 
     def _activity_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2333,7 +2367,8 @@ class GameService(StoryMixin, GuideMixin):
                 for nx, ny in activity.get("path", []):
                     total += self._leg_seconds(hero, cx, cy, nx, ny)
                     cx, cy = nx, ny
-                body.append(t.t("travel.goal", name=self._zone_name(self._zone(gx, gy)), legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
+                goal = self._zone_name(self._zone(gx, gy)) if hero.remembers(gx, gy) else t.t("zone.uncharted")   # D-244: a walk can end on new land
+                body.append(t.t("travel.goal", name=goal, legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
             body = [t.t("gather.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
@@ -5299,7 +5334,7 @@ class GameService(StoryMixin, GuideMixin):
             "energy_max": energy["max"], "energy_day": energy["per_day"],
             "energy_every": self._fmt_duration(86400 / max(1, energy["per_day"])),
             "move_cost": t.t("dudas.value.move_cost", n=move) if move else t.t("dudas.value.move_free"),
-            "travel_first": travel["first_minutes"], "travel_max": travel["max_minutes"],
+            "travel_first": travel["first_minutes"], "travel_max": travel["max_minutes"], "walk_max": travel.get("walk_max", 50),
             "explore_min": b["explore"]["minutes"], "gather_min": b["gather"]["minutes"],
             "explore_low": b["exploration"]["per_step"][0], "explore_high": b["exploration"]["per_step"][-1],
             "reveal": self._faq_and(b["exploration"].get("reveal_at", [100])),
@@ -7488,16 +7523,166 @@ class GameService(StoryMixin, GuideMixin):
         return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice)
 
     def _place_confirm_view(self, hero: Hero, x: int, y: int) -> View:
-        """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed)."""
+        """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed).
+
+        [ES]
+        Qué hace: pregunta antes de viajar a un lugar de 📒 Lugares. 0.33 (pedido del dueño: "debería dejarme ir hacia la
+        fogata"): estando ocupado ya no responde "ese lugar ya no está en tu lista". Si exploras, recolectas o cazas en lote,
+        avisa que el lote se corta; si vas de viaje, que cambias el rumbo; solo descansando en la posada pide esperar.
+        La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso "return" del 🧭 camino.
+        """
         t = self.texts
         place = next(((icon, name) for _, px, py, icon, name in self._important_places(hero) if (px, py) == (x, y)), None)
-        if place is None or hero.activity:
+        if place is None:
             return self._places_view(hero, notice=t.t("places.unknown"))
+        kind = (hero.activity or {}).get("kind")
+        if kind == "rest":
+            return self._places_view(hero, notice=t.t("places.resting"))
         seconds = self._trip_seconds(hero, x, y)
         body = [t.t("places.confirm", icon=place[0], name=place[1], zones=abs(x - hero.x) + abs(y - hero.y),
                     time=self._fmt_duration(seconds)), t.t("places.confirm_hint")]
+        if kind == "travel":
+            body.append(t.t("places.confirm_reroute"))
+        elif kind in BATCH_KINDS:
+            body.append(t.t("places.confirm_cut"))
         actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
+
+    def _goto(self, hero: Hero, gx: int, gy: int) -> View:
+        """Travel zone by zone to a place you have visited ("goto:"), also while busy (0.33).
+
+        [ES]
+        Qué hace: el viaje automático de 📒 Lugares, 🔭 Reconocer y el 🗺️ Mapa: solo a una zona donde ya estuviste (D-222).
+        0.33 (pedido del dueño: "debería dejarme ir hacia la fogata"): si estás en un lote (explorar, recolectar, cazar), el
+        lote se corta como con ⏹️ (el paso en curso devuelve su energía) y sales; si ya vas de viaje, terminas el tramo en
+        curso y sigues hacia el lugar nuevo (cambias el rumbo). Descansando en la posada, espera.
+        La llaman: act() con "goto:x:y" (antes del bloqueo de "estás ocupado"). Si cambia, afecta: tests/test_lugares.py,
+        _arrive (lee "path" y "goal"), la 🔗 cadena (D-244) y el paso "return" del 🧭 camino guiado.
+        """
+        t = self.texts
+        activity = hero.activity or {}
+        kind = activity.get("kind")
+        if kind == "travel":                            # change course: the leg in progress ends, then on to the new goal
+            if not hero.remembers(gx, gy):
+                return self._places_view(hero)
+            tx, ty = activity["to"]
+            hero.activity = {**activity, "path": self._path(tx, ty, gx, gy), "goal": [gx, gy]}
+            hero.activity.pop("walk", None)             # D-244: a 🔗 walk in progress gives way to the new goal
+            return self._activity_view(hero, notice=t.t("places.rerouted", name=self._zone_name(self._zone(gx, gy))))
+        if kind == "rest" or (kind and kind not in BATCH_KINDS):
+            view = self._activity_view(hero)
+            view.notice = t.t("activity.busy")
+            return view
+        # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map)
+        if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
+            return self._places_view(hero)
+        cut: list[str] = []
+        if kind in BATCH_KINDS:                         # the same as ⏹️ Detener: the step in progress gives its energy back
+            hero.energy += self._step_cost(kind)
+            hero.activity = None
+            cut = self._batch_summary(hero, activity, "stopped")
+        if not self._spend_energy(hero, "move"):
+            return self._zone_view(hero, notice=self._join(cut + [self._no_energy_notice(hero)]))
+        path = self._path(hero.x, hero.y, gx, gy)
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        dx, dy = gx - hero.x, gy - hero.y
+        direction = ("e" if dx > 0 else "w") if abs(dx) >= abs(dy) else ("n" if dy > 0 else "s")
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
+                         "path": path, "goal": [gx, gy]}
+        return self._activity_view(hero, notice=self._join(
+            cut + [t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))]))
+
+    def _walk_action(self, hero: Hero, action_id: str) -> View:
+        """🔗 Moverte: add steps in any order, then walk them zone by zone (D-244).
+
+        [ES]
+        Qué hace: el 5.º botón de 📍 Zona (pedido del dueño: "un botón extra que diga moverte" para elegir cuántos pasos
+        seguidos y en qué direcciones). Cada flecha suma un paso; ⌫ quita el último; ❌ Cancelar borra el camino y vuelve a
+        📍 Zona; ✅ Terminar sale. Hasta travel.walk_max pasos (50). Solo mueve: no explora ni recolecta, y como moverse no
+        gasta energía (D-190) cuesta solo tiempo, 1 minuto por zona (D-197). A diferencia de 📒 Lugares, sí pisa terreno nuevo.
+        El camino armado se guarda en el espacio "walk" del almacén ({"from": [x, y], "steps": ["n", "e"...]}) y se borra
+        si el héroe ya no está donde lo armó. Una emboscada en el camino se pelea: si ganas, sigues (_resume_route); si huyes
+        o caes, te quedas ahí.
+        La llaman: act() con "walk" y "wlk:..." (solo sin otra actividad). Si cambia, afecta: 📍 Zona (5 botones,
+        layout [2, 2, 1]), _arrive, _end_combat y tests/test_moverte.py.
+        """
+        t = self.texts
+        plan = self.store.get("walk", hero.id) or {}
+        steps = list(plan.get("steps", [])) if plan.get("from") == [hero.x, hero.y] else []
+        notice = None
+        command = action_id[4:] if action_id.startswith("wlk:") else ""
+        top = int(self.content.balance["travel"].get("walk_max", 50))
+        if command in DIRECTIONS:
+            if len(steps) >= top:
+                notice = t.t("walk.full", n=top)
+            else:
+                steps.append(command)
+        elif command == "undo" and steps:
+            steps.pop()
+        elif command == "cancel":
+            self.store.delete("walk", hero.id)
+            return self._zone_view(hero, notice=t.t("walk.cancelled"))
+        elif command == "go":
+            if not steps:
+                notice = t.t("walk.need_step")
+            else:
+                return self._walk_start(hero, steps)
+        self.store.put("walk", hero.id, {"from": [hero.x, hero.y], "steps": steps})
+        return self._walk_view(hero, steps, notice)
+
+    def _walk_cells(self, hero: Hero, steps: list[str]) -> list[list[int]]:
+        """The zones a 🔗 walk goes through, one per step, from where the hero stands."""
+        cells, x, y = [], hero.x, hero.y
+        for step in steps:
+            dx, dy = DIRECTIONS[step]
+            x, y = x + dx, y + dy
+            cells.append([x, y])
+        return cells
+
+    def _walk_view(self, hero: Hero, steps: list[str], notice: str | None = None) -> View:
+        """The 🔗 Moverte screen: the steps added so far, where they end and how long they take (D-244)."""
+        t = self.texts
+        body = [t.t("walk.intro"), ""]
+        if steps:
+            groups: list[list[Any]] = []
+            for step in steps:                          # "⬆️×2 ➡️ ⬅️ ⬇️×2": the same direction in a row, counted once
+                if groups and groups[-1][0] == step:
+                    groups[-1][1] += 1
+                else:
+                    groups.append([step, 1])
+            line = " ".join(WALK_ARROWS[d] + (f"×{n}" if n > 1 else "") for d, n in groups)
+            cells = self._walk_cells(hero, steps)
+            seconds, cx, cy = 0.0, hero.x, hero.y
+            for nx, ny in cells:
+                seconds += self._leg_seconds(hero, cx, cy, nx, ny)
+                cx, cy = nx, ny
+            body += [t.t("walk.steps", steps=line),
+                     t.t("walk.summary", n=len(steps), x=cells[-1][0], y=cells[-1][1], time=self._fmt_duration(seconds))]
+        else:
+            body.append(t.t("walk.empty"))
+        body += ["", t.t("walk.ambush")]
+        actions = [Action(id=f"wlk:{d}", label=WALK_ARROWS[d]) for d in ("n", "s", "e", "w")]
+        if steps:
+            actions.append(Action(id="wlk:undo", label=t.t("walk.undo")))
+        actions += [Action(id="wlk:cancel", label=t.t("walk.cancel")), Action(id="wlk:go", label=t.t("walk.go"))]
+        layout = [4, 1, 2] if steps else [4, 2]
+        return View(kind="walk", title=t.t("walk.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _walk_start(self, hero: Hero, steps: list[str]) -> View:
+        """✅ Terminar: the hero sets off on the 🔗 walk, one zone at a time (D-244)."""
+        t = self.texts
+        if not self._spend_energy(hero, "move"):
+            return self._walk_view(hero, steps, notice=self._no_energy_notice(hero))
+        path = self._walk_cells(hero, steps)
+        goal = path[-1]
+        nx, ny = path.pop(0)
+        seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
+        hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": steps[0],
+                         "path": path, "goal": goal, "walk": True}
+        self.bus.publish(TravelStarted(hero.id, nx, ny, hero.activity["until"]))
+        self.store.delete("walk", hero.id)
+        return self._activity_view(hero, notice=t.t("walk.started", n=len(steps), x=goal[0], y=goal[1]))
 
     def _place_code(self, hero: Hero, n: int) -> View:
         """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
@@ -7797,14 +7982,15 @@ class GameService(StoryMixin, GuideMixin):
                    Action(id="resources", label=t.t("resources.button"))]
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
 
-    def _resources_view(self, hero: Hero, page: int = 0) -> View:
-        """📦 Recursos: materials and food you carry, how many and what they are for, a page at a time.
+    def _resources_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """📦 Recursos: materials and food you carry, one short line each with its code (D-243), a page at a time.
 
         [ES]
         Qué hace: lista los materiales, la comida y los 🪑 muebles (D-116) de la mochila (no el equipo, que está en
-        🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página, con para qué sirve
-        cada uno.
-        La llaman: el botón 📦 Recursos de la mochila.
+        🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página. D-243 (0.33): una línea
+        corta por recurso (emoji, nombre, ×cantidad y su código, "/07"); para qué sirve se ve tocando el código
+        (_resource_detail).
+        La llaman: el botón 📦 Recursos de la mochila y ↩️ Volver del detalle de un recurso.
         Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
         """
         t = self.texts
@@ -7817,8 +8003,8 @@ class GameService(StoryMixin, GuideMixin):
         body = [t.t("resources.intro")]
         for item_id, n in owned[page * per: page * per + per]:
             item = self.content.items[item_id]
-            use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
-            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n, use=use))
+            body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n,
+                            code=self._resource_code(item_id)))
         if not owned:
             body.append(t.t("resources.none"))
         if pages > 1:
@@ -7827,7 +8013,32 @@ class GameService(StoryMixin, GuideMixin):
         body += ["", space]
         actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
         actions.append(Action(id="bag", label=t.t("menu.back")))
-        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions)
+        return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions, notice=notice)
+
+    def _resource_code(self, item_id: str) -> str:
+        """The resource's code as players write it: "/07" (content/items.yaml "code", stable; D-243)."""
+        code = self.content.items.get(item_id, {}).get("code")
+        return f"/{int(code):02d}" if code else ""
+
+    def _resource_detail(self, hero: Hero, code: int) -> View:
+        """/07: what the resource with that code is for, and how many you carry (D-243).
+
+        [ES]
+        Qué hace: la pantalla de un recurso, que se abre escribiendo (o tocando) su código: cuántos tienes y para qué
+        sirve (resources.use.<id>, el mismo texto que antes salía en la lista). Se puede mirar aunque no lo lleves. Un
+        código que no existe vuelve a 📦 Recursos con un aviso.
+        La llaman: text() con "/07" (RESOURCE_CODE_RE). Si cambia, afecta: tests/test_backpack.py.
+        """
+        t = self.texts
+        item_id = next((i for i, item in self.content.items.items() if item.get("code") == code), None)
+        if item_id is None:
+            return self._resources_view(hero, notice=t.t("resources.no_code", code=f"/{code:02d}"))
+        item = self.content.items[item_id]
+        use = t.t(f"resources.use.{item_id}") if t.has(f"resources.use.{item_id}") else t.t("resources.use_default")
+        body = [t.t("resources.detail_have", n=hero.backpack.get(item_id, 0)), "", use]
+        return View(kind="resource", title=t.t("resources.detail_title", emoji=item["emoji"], item=t.t(item["name_key"]),
+                                               code=self._resource_code(item_id)),
+                    body=body, actions=[Action(id="res:0", label=t.t("resources.back"))])
 
     def _potions_view(self, hero: Hero, notice: str | None = None) -> View:
         """Every potion and remedy you carry, with what it does, and a button to use it (D-86)."""
@@ -10438,6 +10649,9 @@ class GameService(StoryMixin, GuideMixin):
             lines += self._ecamp_fight_done(hero, state)
         if state.get("dungeon"):               # D-170: a dungeon fight clears a room or a floor (or ends the deep run)
             lines += self._dng_fight_done(hero, state)
+        if state.get("route"):                 # D-244: an ambush on the way: won, the trip goes on; else you stay here
+            lines += (self._resume_route(hero, state["route"]) if outcome == "victory" else
+                      [t.t("travel.route_lost", name=self._zone_name(self._zone(hero.x, hero.y)))])
         # D-193: 🧭 the "hunt" step ends with a hunt fight, won or lost; automatic fights put it in the batch (_auto_combat)
         state["guide"] = self._guide_event(hero, "fight", outcome=outcome, hunt=bool(state.get("hunt")))
         lines += state["guide"]

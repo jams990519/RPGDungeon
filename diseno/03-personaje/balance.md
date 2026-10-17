@@ -1007,6 +1007,7 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 | Minutos por zona (`travel.first_minutes`) | 2 las 2 primeras zonas desde el Claro o tu campamento (D-78) | 1, en cualquier zona | D-197: 10 cuadros = 10 minutos |
 | Aumento por lejanía (`travel.steps_per_minute`) | 2 (cada 2 zonas, 1 minuto más: 2, 2, 3, 3, 4…) | 0 (sin aumento) | D-197. La fórmula vieja vuelve si se sube a más de 0 |
 | Tope por zona (`travel.max_minutes`) | 20 | 20 (sin efecto con 0) | Se deja por si vuelve la regla vieja |
+| Pasos de 🔗 Moverte (`travel.walk_max`) | — (no existía) | 50 | D-244 (0.33): "hasta 50 sin problema". Moverse no gasta energía, así que 50 pasos son unos 50 minutos de viaje |
 | 🕳️ Mazmorra chica | Se entraba con 2 ⚡ y se cobraba pelea por pelea | Pide de entrada la energía de todas las peleas que faltan hoy (10 ⚡ al empezar); se cobra igual, pelea por pelea | D-196: nadie queda a medias |
 | 🌀 Mazmorra profunda | Cada pelea pedía 2 ⚡ (4 la primera, con la entrada) | Cada piso pide de entrada todas sus peleas (4 si tiene 2 peleas; 4 el piso 1 con la entrada) | D-196: el piso es la acción |
 

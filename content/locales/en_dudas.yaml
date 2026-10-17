@@ -130,7 +130,7 @@ faq:
     a: In ⚙️ Options you choose whether you fight by hand or automatically in batches, at what health you retreat ({retreat}%) and whether your hero uses potions on their own. It stays saved and you can change it whenever you want.
   d06:
     q: 🚶 How do I move around the map?
-    a: In 📍 Zone tap a direction. Each zone you cross takes {travel_first} min, near or far (10 zones, 10 minutes), and {move_cost}. When you arrive, a monster may show up. With 🗺️ Map → 📒 Places you go straight back to a place you already know.
+    a: 'In 📍 Zone tap a direction. Each zone you cross takes {travel_first} min, near or far (10 zones, 10 minutes), and {move_cost}. With 🔗 Move you build a way of several steps (up to {walk_max}) and your hero walks it alone. At each zone a monster may show up: beat it and you go on. With 🗺️ Map → 📒 Places you go straight back to a place you already know.'
   d07:
     q: ⚡ What is energy?
     a: '⚡ Energy is spent on what you do outside a fight: exploring, gathering, hunting, crafting, cooking and more. You have up to {energy_max} and recover {energy_day} a day (1 every {energy_every}). Fighting doesn''t cost energy. Every friend you invite gives you more.'
