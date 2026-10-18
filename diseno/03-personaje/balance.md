@@ -1157,3 +1157,13 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Qué cambia al jugar.** Alrededor de cada hoguera nueva la tierra vuelve a ser de nivel bajo: una zona a 11 del Claro hacia el este pasó de Lejanía 11 a Lejanía 1. Lo más lejano también baja (una zona a 30 zonas del Claro queda a 18 de la hoguera más cercana): el anillo de recursos, el nivel de las mazmorras y de los campamentos enemigos bajan en todo el mapa de afuera. Los monstruos de afuera no cambian: ya salían del nivel del héroe (D-266).
 
 **Lo que queda por mirar:** si con la Lejanía desde la más cercana el mapa de afuera queda demasiado fácil (si hace falta, que más allá del anillo de hogueras se cuente desde el Claro); cuántos jugadores nacen fuera del Claro y si las hogueras nuevas se sienten vacías.
+
+### Octubre de 2026 (18-oct): lo que sabe el gremio (0.38, D-282, confirmada)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `gremio.zones_shown` (nuevo) | — | 8: cuántas zonas lista 🗺️ Zonas del gremio de una vez (Claude) |
+
+**Qué cambia al jugar.** Un gremio que se reparte las zonas conoce el mapa mucho más rápido: 5 miembros que exploran cada uno su parte conocen 5 veces más zonas que uno solo, y fundar ya no pide que el líder explore de nuevo la zona elegida. La experiencia no cambia: cada uno gana la suya explorando.
+
+**Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.

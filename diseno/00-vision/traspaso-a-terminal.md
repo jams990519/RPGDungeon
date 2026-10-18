@@ -167,7 +167,8 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 3. **0.36 (publicada el 18-oct):** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programó un agente en una copia aparte (`engine/service/gremio.py`); las reglas chicas que decidió Claude están en D-276 (provisional) y se le preguntan al dueño (E-225).
 4. **0.36.1 (publicada el 18-oct):** coordenadas en todo lugar y /ir x y (D-278), 🛡️ Gremio en cualquier lugar (D-279) e invitar con /inv_ y el código de jugador (D-280).
 5. **0.37 (publicada el 18-oct):** las 9 hogueras con tope de 20 y el desborde (D-265). Cómo, ya decidido (D-277): el peligro desde la hoguera más cercana, las 9 visibles desde el inicio, nombres por su lado y una sola despensa.
-6. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+6. **0.38 (publicada el 18-oct):** lo que explora uno del gremio (o del campamento) lo sabe todo el gremio, menos la experiencia, y la pantalla 🗺️ Zonas del gremio (D-282). Antes, ya publicado: 🛡️ Gremio en el menú de abajo (D-281) y la prueba de la energía de cada acción.
+7. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):

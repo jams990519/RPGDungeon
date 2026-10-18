@@ -202,6 +202,19 @@ gremio:
   cinv_title: "🏕️ Te invitan a un campamento"
   cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
 
+gzones:                        # [ES] D-282 (0.38, pedido del dueño): lo que el gremio sabe de las zonas, ordenado
+  button: "🗺️ Zonas del gremio"
+  title: "🗺️ Zonas del gremio"
+  intro: "Lo que tu gremio sabe de las zonas, las más cercanas primero. Lo que explora uno lo saben todos (la experiencia es de quien explora)."
+  query_intro: "Zonas del gremio donde se sabe que hay «{query}»:"
+  line: "{n}. {place} · {pct} % · {items} · {who} · a {zones} {zones|zona|zonas} · /z{n}"
+  more: "…y {n} más, más lejos."
+  none: "Tu gremio todavía no exploró ninguna zona: sal a explorar y lo verán todos."
+  query_none: "Tu gremio todavía no encontró «{query}» en ninguna zona."
+  hint: "🔎 Escribe un recurso (por ejemplo, hierro) para ver dónde hay. Toca el código de una zona (/z1) para armar el camino."
+  bad_code: "Ese código no está en la lista: usa uno de los que ves aquí."
+  no_guild: "🗺️ Las zonas se comparten dentro de un gremio: crea uno o entra a uno para ver lo que exploran los demás."
+
 bonfire:                       # [ES] D-265 (0.37): una hoguera llena manda a los que llegan a la más cercana con lugar
   full_reroute: "🔥 {name} está llena ({cap} jugadores): sigues hacia {next}, la hoguera más cercana con lugar."
 

@@ -51,6 +51,8 @@ Datos de los que es dueño:
         que sobró del fondo al fundar: se usa primero al aportar a una obra).
     D-280 (0.36.1): "player_code" (clave el código de 8 cifras): {"account"}; "player_code_of" (clave la cuenta): {"code"}. El
         código de jugador nunca cambia. El campamento suma "invites" [cuentas que su fundador invitó con /inv_ y no respondieron].
+    D-282 (0.38): lo que el gremio sabe de las zonas no se guarda aparte: sale de la "exploration" de cada compañero
+        (_mates_knowledge) y "gremio_codes" suma "zones" (el orden de 🗺️ Zonas del gremio para /z1: solo pantalla).
 Reglas que nunca se rompen:
     1. Un gremio por héroe: quien es miembro de un campamento tiene el gremio de su campamento (D-97) y no entra a otro.
     2. Antes del campamento caben gremio.members_before_camp (5); entra quien pide y acepta el líder o un oficial (o quien
@@ -96,10 +98,12 @@ FUND_CODE_RE = re.compile(r"^/f(\d{1,3})(@\w+)?$")
 # D-280: /inv_12345678 invites the player with that code (👤 Héroe) to your guild, or to your camp once founded. "/inv"
 # alone is still 🎒 Mochila. [ES] /inv_ más el código de jugador: invitar al gremio (o al campamento ya fundado).
 INVITE_CODE_RE = re.compile(r"^/inv_?(\d{4,16})(@\w+)?$")
+# D-282: /z2 = the 2nd zone of the last 🗺️ Zonas del gremio list (lays out the road in 🔗 Moverte, like /ir x y).
+ZONE_CODE_RE = re.compile(r"^/z_?(\d{1,2})(@\w+)?$")
 # Guild names follow the camp names (the camp takes the guild's name when it is founded). [ES] Igual que CAMP_NAME_RE.
 GREMIO_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Button ids (or prefixes) that _gremio_action routes (menus: they also work while busy). [ES] Si cambian, cambian los botones.
-GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greqs", "ginvite:", "gmsg", "gfund", "gmeet",
+GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greqs", "ginvite:", "gmsg", "gfund", "gmeet", "gzones",
                   "gmeetset", "gfound", "gfoundx", "gleave", "gmem:", "goff:", "glead:", "glead!:", "gkick:", "gkick!:")
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
 GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:")   # D-280: "cinv:" = the camp's invitation by code
@@ -405,6 +409,7 @@ class GremioMixin:
                   "gmsg": lambda: self._gremio_msg_ask(hero), "gfund": lambda: self._gremio_fund_view(hero),
                   "gmeet": lambda: self._gremio_meet_view(hero), "gmeetset": lambda: self._gremio_meet_set(hero),
                   "gfound": lambda: self._gremio_found_view(hero), "gfoundx": lambda: self._gremio_found_cancel(hero),
+                  "gzones": lambda: self._gremio_zones_view(hero),
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
         if action_id in routes:
             return routes[action_id]()
@@ -467,7 +472,7 @@ class GremioMixin:
         if self._gremio_manager(record, hero.id) and self._gremio_room(record):
             body.append(t.t("gremio.invite_hint"))     # D-280: /inv_ and the player's code
         actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="gfund", label=t.t("gremio.fund_button")),
-                   Action(id="gmeet", label=t.t("gremio.meet_button"))]
+                   Action(id="gmeet", label=t.t("gremio.meet_button")), Action(id="gzones", label=t.t("gzones.button"))]
         if hero.id == leader or founding:
             actions.append(Action(id="gfound", label=t.t("gremio.found_button")))
         if self._gremio_manager(record, hero.id) and record.get("requests"):
@@ -523,6 +528,8 @@ class GremioMixin:
             return self._gremio_post(hero, text)
         if mode == "gsearch":
             return self._gremio_list(hero, query=text)
+        if mode == "gzones":                             # D-282: a resource to look for among the guild's zones
+            return self._gremio_zones_view(hero, query=text)
         return self._gremio_name(hero, text)
 
     def _gremio_name(self, hero: Hero, name: str) -> View:
@@ -724,6 +731,116 @@ class GremioMixin:
                 actions=[Action(id=f"ginv:{record['id']}:y", label=t.t("gremio.accept")),
                          Action(id=f"ginv:{record['id']}:n", label=t.t("gremio.refuse"))]))
         return "invite_sent"
+
+    # ------------------------------------------------------------------ what the guild knows of the zones (D-282)
+
+    def _mates(self, hero: Hero) -> list[str]:
+        """The other accounts that share what they know of the zones with this hero (D-282).
+
+        [ES]
+        Qué hace: con quién comparte el héroe lo que sabe de las zonas (pedido del dueño, 18-oct-2026: "no tener que investigar
+        doble la zona, para los del gremio únicamente"): los miembros de su gremio antes del campamento y, después, los
+        miembros de su campamento (su gremio, D-97). Sin gremio ni campamento, nadie. La llaman: _mates_knowledge.
+        Si cambia, afecta: qué ve cada uno en 📍 Zona, el 🗺️ Mapa, 🗺️ Zonas del gremio y lo que pide fundar.
+        """
+        record = self._my_gremio(hero)
+        if record:
+            members = record.get("members", [])
+        else:
+            camp = self.store.get("camp", hero.camp) if hero.camp else None
+            members = camp.get("members", []) if camp and hero.id in camp.get("members", []) else []
+        return [m for m in members if m != hero.id]
+
+    def _mates_knowledge(self, hero: Hero) -> tuple[dict[str, int], dict[str, str], set[str]]:
+        """What the mates know: the best % of each zone, who has it, and the zones they stood on (memo for this request).
+
+        [ES]
+        Qué hace: junta lo que exploraron los compañeros (el mejor % de cada zona entre ellos y el nombre de quien lo tiene) y las
+        zonas que pisaron. Se lee una vez por pedido (queda guardado en el héroe cargado, no en la base: asdict no lo ve).
+        La llaman: _known_pct, _knows_zone, _known_terrains y _gremio_zones_view.
+        Si cambia, afecta: todo lo que el gremio comparte (D-282).
+        """
+        memo = hero.__dict__.get("_mates_memo")
+        if memo is not None:
+            return memo
+        best: dict[str, int] = {}
+        who: dict[str, str] = {}
+        known: set[str] = set()
+        for account in self._mates(hero):
+            data = self.store.get("hero", account)
+            if not data:
+                continue
+            for key, pct in (data.get("exploration") or {}).items():
+                if int(pct) > best.get(key, 0):
+                    best[key], who[key] = int(pct), data.get("name", "?")
+            known.update(data.get("known") or [])
+        memo = (best, who, known)
+        hero.__dict__["_mates_memo"] = memo
+        return memo
+
+    def _known_pct(self, hero: Hero, x: int, y: int) -> int:
+        """How far a zone is known: the hero's own % or the best of its guild's (D-282). Experience still uses its own."""
+        key = f"{x}:{y}"
+        return max(int(hero.exploration.get(key, 0)), self._mates_knowledge(hero)[0].get(key, 0))
+
+    def _knows_zone(self, hero: Hero, x: int, y: int) -> bool:
+        """The hero or a mate stood on that zone or explored it (D-282: the neighbours a founding asks for)."""
+        key = f"{x}:{y}"
+        best, _, known = self._mates_knowledge(hero)
+        return hero.remembers(x, y) or key in known or best.get(key, 0) > 0
+
+    def _gremio_zones_view(self, hero: Hero, query: str | None = None, notice: str | None = None) -> View:
+        """🗺️ Zonas del gremio: the zones the guild knows, nearest first, with their resources, who explored them and a code.
+
+        [ES]
+        Qué hace: ordena lo que el gremio sabe de las zonas (D-282): las más cercanas primero (gzones.list_shown), cada una con
+        su nombre y coordenadas, cuánto se conoce (el mejor % del gremio), los recursos ya descubiertos, quién la exploró y su
+        código (/z1: arma el camino en 🔗 Moverte). Escribir un recurso ("hierro") muestra solo las zonas donde se sabe que hay.
+        Sin gremio ni campamento, explica cómo tenerlo. La llaman: el botón 🗺️ Zonas del gremio (🛡️ Gremio) y el texto
+        escrito en esta pantalla. Si cambia, afecta: tests/test_conocimiento_del_gremio.py.
+        """
+        t = self.texts
+        if not self._mates(hero):
+            return self._guild_view(hero, notice=t.t("gzones.no_guild"))
+        best, who, _ = self._mates_knowledge(hero)
+        merged, by = dict(best), dict(who)
+        for key, pct in hero.exploration.items():
+            if int(pct) > 0 and int(pct) >= merged.get(key, 0):
+                merged[key], by[key] = int(pct), hero.name
+        wanted = _plain(query) if query else ""
+        rows = []
+        for key, pct in merged.items():
+            x, y = (int(v) for v in key.split(":"))
+            if pct <= 0 or mapgen.is_bonfire(x, y):
+                continue
+            known = self._known_resources(hero, x, y)
+            if wanted and not any(wanted in _plain(t.t(self.content.items[r]["name_key"])) for r in known):
+                continue
+            rows.append((abs(x - hero.x) + abs(y - hero.y), x, y, pct, known, by.get(key, "?")))
+        rows.sort()
+        shown = rows[:int(self.content.balance.get("gremio", {}).get("zones_shown", 8))]
+        self._codes(hero, "zones", [f"{x}:{y}" for _, x, y, _, _, _ in shown])
+        self.store.put("camp_naming", hero.id, {"mode": "gzones", "x": hero.x, "y": hero.y})   # a text searches a resource
+        body = [t.t("gzones.query_intro", query=query) if query else t.t("gzones.intro"), ""]
+        for n, (zones, x, y, pct, known, name) in enumerate(shown, 1):
+            items = " ".join(self.content.items[r]["emoji"] for r in known) or "❔"
+            body.append(t.t("gzones.line", n=n, place=self._place_label(x, y), pct=pct, items=items, who=name, zones=zones))
+        if not shown:
+            body.append(t.t("gzones.query_none", query=query) if query else t.t("gzones.none"))
+        elif len(rows) > len(shown):
+            body.append(t.t("gzones.more", n=len(rows) - len(shown)))
+        body += ["", t.t("gzones.hint")]
+        actions = [Action(id="guild", label=t.t("menu.back"))]
+        return View(kind="gremio_zones", title=t.t("gzones.title"), body=body, actions=actions, notice=notice,
+                    expects_text=True)
+
+    def _zone_code(self, hero: Hero, n: int) -> View:
+        """/z2: the 2nd zone of the last 🗺️ Zonas del gremio list: its road laid out in 🔗 Moverte (D-282, like /ir x y)."""
+        key = self._code_target(hero, "zones", n)
+        if key is None:
+            return self._gremio_zones_view(hero, notice=self.texts.t("gzones.bad_code"))
+        x, y = (int(v) for v in key.split(":"))
+        return self._coord_walk(hero, x, y)
 
     # ------------------------------------------------------------------ the player code and /inv_<code> (D-280)
 
