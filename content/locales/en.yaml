@@ -1862,6 +1862,12 @@ zone:
   distance: 📌 Coordinates ({x}, {y}) · Distance {lejania} · Ring {ring} · Danger level {level}
   coords: 📌 ({x}, {y}) · Distance {lejania} · Ring {ring}
   danger: ⚔️ Danger level {level}
+  danger_safe: '🛡️ Protected zone: no fights when you arrive here.'
+  danger_wild: '⚔️ {word} danger: {pct}% chance of a fight on arrival · monsters match your level'
+  danger_word:
+    low: Low
+    mid: Medium
+    high: High
   discovered_by: 🧭 Discovered by {name}
   routes: 🧭 Routes
   uncharted: ❔ Uncharted land
@@ -1925,6 +1931,8 @@ activity:
 map:
   title: 🗺️ Your map
   legend: 🧍 you · {stages} · at {pct}% you see its color · north is up
+  camp_mark: 🏕️
+  camps_legend: "{mark} players' camp"
   position: Coordinates {x}, {y} · Distance {lejania}
   colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
   bonfire: Camp

@@ -127,6 +127,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-259 (0.33): "journal_back" (clave el id del héroe: {"to": "claro" o "hero"}, a dónde vuelve ↩️ del 📔 Diario; solo
     pantalla).
     D-260 (0.33): "reports" y "report_snap" son de adapters/reports.py (la marca del último informe y la foto del día).
+    D-266 a D-271 (0.34): nada nuevo guardado. Los monstruos de afuera salen del nivel del héroe (_wild_level), la pelea al
+    llegar baja a 6-14 % (explore.arrival_encounter_scale), los 🏕️ de jugadores se ven en el mapa y en 📒 Lugares
+    (_map_view, _important_places, _can_goto), 🗺️ Mapa en 📍 Zona y al viajar ("zmap") y el Entrenador recomienda oficio.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -1634,6 +1637,8 @@ class GameService(StoryMixin, GuideMixin):
         t = self.texts
         if action_id == "map":
             return self._map_view(hero)
+        if action_id == "zmap":                         # D-268: the map from 📍 Zona or the trip goes back there
+            return self._map_view(hero, back="home")
         if action_id == "hero":                         # D-192: always the hub (the origin is 🎭 Origen inside it, E-131)
             return self._hero_view(hero)
         if action_id.startswith(DUDAS_ACTIONS):         # D-191/D-192: ❓ Dudas (/dudas, /d07); a menu: also while busy
@@ -2342,7 +2347,7 @@ class GameService(StoryMixin, GuideMixin):
         body = [
             t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)),
             t.t("zone.coords", x=zone.x, y=zone.y, lejania=zone.lejania, ring=ROMAN[zone.ring]),
-            t.t("zone.danger", level=zone.level),
+            self._danger_line(zone),
         ]
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
@@ -2388,9 +2393,27 @@ class GameService(StoryMixin, GuideMixin):
             body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         actions.append(Action(id="walk", label=t.t("walk.button")))     # D-244: 🔗 Moverte, wide under the 4 routes
+        actions.append(Action(id="zmap", label=t.t("menu.map")))        # D-268: 🗺️ Mapa, wide under 🔗 Moverte
         body += ["", self._status_line(hero)] + self._tutorial_hint(hero)
         body += ["", t.t("menu.hint")]
-        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1])
+        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1, 1])
+
+    def _danger_line(self, zone: Zone) -> str:
+        """⚔️ line of 📍 Zona: the chance of a fight when you arrive here, and that what you meet is at your level (D-266).
+
+        [ES]
+        Qué hace: la línea de peligro de 📍 Zona. Desde la 0.34 los monstruos de afuera salen de tu nivel, así que ya no dice
+        un nivel: dice qué tan seguido sale una pelea al llegar (peligro del terreno × explore.arrival_encounter_scale, de 6 a
+        14 %) y, en el campamento o la fogata, que la zona está protegida. La llama: _zone_view. Si cambia, afecta: solo lo que
+        se lee.
+        """
+        t = self.texts
+        if self._territory(zone.x, zone.y):
+            return t.t("zone.danger_safe")
+        raw = float(self.content.biomes[zone.biome]["danger"])
+        pct = round(raw * float(self.content.balance["explore"]["arrival_encounter_scale"]) * 100)
+        word = "low" if raw <= 0.3 else "mid" if raw <= 0.45 else "high"
+        return t.t("zone.danger_wild", word=t.t(f"zone.danger_word.{word}"), pct=pct)
 
     def _activity_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -2438,6 +2461,8 @@ class GameService(StoryMixin, GuideMixin):
         actions = [Action(id="refresh", label=t.t("menu.refresh"))]
         if activity.get("kind") in BATCH_KINDS:
             actions.append(Action(id="stop", label=t.t("batch.stop")))
+        if activity.get("kind") == "travel":
+            actions.append(Action(id="zmap", label=t.t("menu.map")))    # D-268: see where you are while you travel
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ players in the zone (D-96, provisional)
@@ -3642,7 +3667,7 @@ class GameService(StoryMixin, GuideMixin):
         zone = self._zone(hero.x, hero.y)
         cost = self._hunt_cfg()["energy"]
         names: list[str] = []
-        for _, edef in self._zone_enemies(zone):
+        for _, edef in self._zone_enemies(zone, hero.level):     # D-266: what you meet outside is at your level
             name = t.t(edef["name_key"])
             if name not in names:
                 names.append(name)
@@ -5375,6 +5400,7 @@ class GameService(StoryMixin, GuideMixin):
         missing = self._to_learn(hero)
         price = self._money(int(self._prof_cfg().get("learn_price", 20)))
         body = [t.t("trainer.intro_learn", price=price), ""]
+        body += self._trainer_recommend_lines(hero)
         have = [t.t("trainer.entry_rank", name=self._prof_name(pid), rank=self._prof_rank(hero, pid)) for pid in known]
         body.append(t.t("trainer.have", list=" · ".join(have)) if have else t.t("trainer.have_none"))
         body.append(t.t("trainer.missing", n=len(missing), list=" · ".join(self._prof_name(pid) for pid in missing))
@@ -5390,6 +5416,28 @@ class GameService(StoryMixin, GuideMixin):
         actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button")),
                    Action(id="pspecs", label=t.t("spec.button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice)
+
+    def _trainer_recommend_lines(self, hero: Hero) -> list[str]:
+        """⭐ line of 🧑‍🏫 Entrenador: the profession that makes your class's armour, and whether you know it (D-271).
+
+        [ES]
+        Qué hace: el Entrenador recomienda el oficio del equipo de tu clase (pedido del dueño, 18-oct): placas → 🔨 Herrería,
+        cuero → 🦺 Peletería, tela → 🪡 Sastrería (balance.yaml professions.recommend_by_armor, con la armadura de
+        gear.armor_by_group). Si ya lo sabes dice tu rango; si no, su código para verlo y aprenderlo. La llama: _trainer_view.
+        Si cambia, afecta: solo lo que se lee en el Entrenador.
+        """
+        t = self.texts
+        group = self.content.classes.get(hero.class_id, {}).get("group", hero.class_id)
+        armor = self.content.balance["gear"]["armor_by_group"].get(group)
+        pid = (self._prof_cfg().get("recommend_by_armor") or {}).get(armor)
+        if not armor or not pid or pid not in self._prof_catalog():
+            return []
+        armor_name = t.t(f"gear.type.{armor}")
+        if self._knows(hero, pid):
+            line = t.t("trainer.recommend_known", armor=armor_name, name=self._prof_name(pid), rank=self._prof_rank(hero, pid))
+        else:
+            line = t.t("trainer.recommend", armor=armor_name, name=self._prof_name(pid), code=pid)
+        return [line, ""]
 
     # ------------------------------------------------------------------ ❓ Dudas (D-191, D-192; keyword search, E-129)
 
@@ -7765,7 +7813,8 @@ class GameService(StoryMixin, GuideMixin):
 
         [ES]
         Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): el 🔥 Claro
-        (el campamento de inicio, siempre), su 🏕️ campamento y los de otros jugadores que pisó, las 🕳️ 🌀 mazmorras que
+        (el campamento de inicio, siempre), su 🏕️ campamento y los de otros jugadores que pisó (D-267, 0.34: y además los
+        places.camps_listed campamentos de jugadores más cercanos, aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que
         visitó y la 👑 guarida del Guardián si llegó a ella. Las zonas comunes y los ✨ nodos ya no salen (pedido del
         dueño: "los lugares más importantes únicamente"). Ordenados por el tiempo del viaje.
         La llaman: _places_view y _place_code. Si cambia, afecta: qué se puede viajar de una vez (tests/test_lugares.py).
@@ -7783,6 +7832,10 @@ class GameService(StoryMixin, GuideMixin):
                 found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)))
             elif kind:
                 found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))))
+        near = sorted((abs(x - hero.x) + abs(y - hero.y), x, y, camp["name"]) for key, camp in self.store.items("camp")
+                      for x, y in [tuple(int(v) for v in key.split(":"))] if (x, y) not in found)
+        for _, x, y, name in near[:int(self.content.balance["places"].get("camps_listed", 5))]:
+            found[(x, y)] = ("🏕️", name)                # D-267: the nearest players' camps, even if never visited
         places = [(self._trip_seconds(hero, x, y), x, y, icon, name) for (x, y), (icon, name) in found.items()
                   if (x, y) != (hero.x, hero.y)]
         return sorted(places)
@@ -7848,6 +7901,10 @@ class GameService(StoryMixin, GuideMixin):
         actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
 
+    def _can_goto(self, hero: Hero, gx: int, gy: int) -> bool:
+        """A trip from 📒 Lugares can end there: a zone the hero visited, or any players' camp (D-222, D-267)."""
+        return hero.remembers(gx, gy) or self.store.get("camp", f"{gx}:{gy}") is not None
+
     def _goto(self, hero: Hero, gx: int, gy: int) -> View:
         """Travel zone by zone to a place you have visited ("goto:"), also while busy (0.33).
 
@@ -7863,7 +7920,7 @@ class GameService(StoryMixin, GuideMixin):
         activity = hero.activity or {}
         kind = activity.get("kind")
         if kind == "travel":                            # change course: the leg in progress ends, then on to the new goal
-            if not hero.remembers(gx, gy):
+            if not self._can_goto(hero, gx, gy):
                 return self._places_view(hero)
             tx, ty = activity["to"]
             hero.activity = {**activity, "path": self._path(tx, ty, gx, gy), "goal": [gx, gy]}
@@ -7873,8 +7930,9 @@ class GameService(StoryMixin, GuideMixin):
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
             return view
-        # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map)
-        if not hero.remembers(gx, gy) or (gx, gy) == (hero.x, hero.y):
+        # D-222: only to a place the hero has already visited (before: also any enemy camp or dungeon seen on the map);
+        # D-267: or to a players' camp, which everyone sees
+        if not self._can_goto(hero, gx, gy) or (gx, gy) == (hero.x, hero.y):
             return self._places_view(hero)
         cut: list[str] = []
         if kind in BATCH_KINDS:                         # the same as ⏹️ Detener: the step in progress gives its energy back
@@ -7992,7 +8050,7 @@ class GameService(StoryMixin, GuideMixin):
         x, y = shown[n - 1]
         return self._place_confirm_view(hero, x, y)
 
-    def _map_view(self, hero: Hero) -> View:
+    def _map_view(self, hero: Hero, back: str = "explore_menu") -> View:
         """A square map around the hero: (2 × map_view.radius + 1) cells wide and as many tall.
 
         [ES]
@@ -8023,6 +8081,9 @@ class GameService(StoryMixin, GuideMixin):
         D-181, D-184: los nodos de recursos salen con el símbolo genérico ✨ (node.icon_unknown) si recuerdas una zona a
         nodes.hint_radius o menos (como las cuevas) y con el emoji de su recurso cuando LLEGASTE a su zona (para siempre);
         debajo, los nodes.map_lines más cercanos. Orden de lo que se dibuja: 🧍 > 👑 > 👹 > 🏕️ > mazmorra > nodo > terreno.
+        D-267 (0.34, pedido del dueño: "los jugadores van a poder ver los lugares donde ya alguien empezó a construir un
+        campamento"): los 🏕️ campamentos de jugadores se dibujan siempre, como el 🔥, y la leyenda los nombra si hay alguno.
+        D-268 (0.34): también se abre desde 📍 Zona y desde la pantalla del viaje ("zmap"); ↩️ Volver regresa ahí (`back`).
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), 👹 Moverte al
         campamento enemigo más cercano que ves (D-112) y 🕳️ 🌀 Moverte a la mazmorra más cercana (D-171), los dos con el
         tiempo del viaje y SOLO si ya estuviste en esa zona (D-222: a un lugar nuevo se llega caminando; "goto:" también lo
@@ -8033,12 +8094,20 @@ class GameService(StoryMixin, GuideMixin):
         t = self.texts
         radius = self.content.balance["map_view"]["radius"]
         self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone still discovers it
+        camps = {tuple(int(v) for v in key.split(":")) for key, _ in self.store.items("camp")}   # D-267: everyone sees them
         rows = []
+        seen_camp = False
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
             row = ""
             for x in range(hero.x - radius, hero.x + radius + 1):
-                # D-223: nothing else is drawn (no dungeons, nodes, camps or lair): you, and each zone blank or in its colour
-                row += "🧍" if (x, y) == (hero.x, hero.y) else self._fog_cell(hero, x, y)
+                # D-223: nothing else is drawn (no dungeons, nodes or lair): you, players' camps and each zone's colour
+                if (x, y) == (hero.x, hero.y):
+                    row += "🧍"
+                elif (x, y) in camps:
+                    row += t.t("map.camp_mark")
+                    seen_camp = True
+                else:
+                    row += self._fog_cell(hero, x, y)
             rows.append(row)
         fog = self._fog_cfg()
         stages = " · ".join(f"{stage['mark']} {t.t('map.fog.name.' + stage['id'])}" for stage in self._fog_stages())
@@ -8046,9 +8115,11 @@ class GameService(StoryMixin, GuideMixin):
         terrains = " · ".join(self._terrain_label(biome_id) for biome_id in known)
         body = [t.t("map.legend", stages=stages, pct=fog["color_at"]),
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
+        if seen_camp:
+            body.append(t.t("map.camps_legend", mark=t.t("map.camp_mark")))
         body += rows                                    # D-222: nothing under the grid
         actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
-                   Action(id="explore_menu", label=t.t("menu.back"))]
+                   Action(id=back, label=t.t("menu.back"))]
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
 
     def _hero_view(self, hero: Hero) -> View:
@@ -10688,19 +10759,35 @@ class GameService(StoryMixin, GuideMixin):
 
     # ------------------------------------------------------------------ combat
 
-    def _zone_enemies(self, zone: Zone) -> list[tuple[str, dict[str, Any]]]:
-        """Enemies that can show up in a zone: its biome and level; if none fit, the closest band of its biome (D-108).
+    def _zone_enemies(self, zone: Zone, level: int | None = None) -> list[tuple[str, dict[str, Any]]]:
+        """Enemies that can show up in a zone: its biome, at `level` (the zone's if None); else the closest band (D-108).
 
-        [ES] Qué hace: los enemigos que salen en una zona (nunca jefes ni retirados). La llaman: _start_combat (encuentros,
-        emboscadas y cacería) y la pantalla 🏹 Cazar (🐾 Por aquí rondan). Si cambia, afecta: qué enemigos salen en todo el mapa.
+        [ES] Qué hace: los enemigos que salen en una zona (nunca jefes ni retirados), del nivel pedido. D-266 (0.34): afuera
+        se pide el nivel del héroe (_wild_level), no el de la zona. La llaman: _start_combat (encuentros, emboscadas y cacería)
+        y la pantalla 🏹 Cazar (🐾 Por aquí rondan). Si cambia, afecta: qué enemigos salen en todo el mapa.
         """
-        return encounter_pool(self.content.enemies, zone.biome, zone.level)     # D-108: the biome's band, or the closest one
+        return encounter_pool(self.content.enemies, zone.biome, zone.level if level is None else level)   # D-108
+
+    def _wild_level(self, hero: Hero, rng: Rng) -> int:
+        """The level of an enemy met outside: the hero's, from wild_level.below under to wild_level.above over (D-266).
+
+        [ES]
+        Qué hace: el nivel de un monstruo de afuera (moverte, explorar, recolectar y 🏹 Cazar): el del héroe, de 1 menos a 2
+        más (balance.yaml wild_level), entre 1 y el nivel máximo. Antes era el nivel de la zona, que sube con la distancia al
+        inicio: una hoguera lejana mataba a un jugador nuevo (E-204). Las mazmorras, los campamentos enemigos y las
+        incursiones no pasan por aquí. La llama: _start_combat. Si cambia, afecta: la dificultad y la experiencia de pelear.
+        """
+        cfg = self.content.balance.get("wild_level", {})
+        low, high = -int(cfg.get("below", 1)), int(cfg.get("above", 2))
+        offset = min(high, low + int(rng.random() * (high - low + 1)))
+        return max(1, min(int(self.content.balance["hero"].get("max_level", 100)), hero.level + offset))
 
     def _start_combat(self, hero: Hero, zone: Zone, rng: Rng, reason_key: str, mark: dict[str, Any] | None = None) -> str:
-        """Start a fight against a common enemy of the zone; `mark` adds keys to the fight state (a hunt, D-106)."""
-        pool = self._zone_enemies(zone)
+        """Start a fight against a common enemy of the zone, at the hero's level (D-266); `mark` adds keys to the fight (a hunt, D-106)."""
+        wanted = self._wild_level(hero, rng)
+        pool = self._zone_enemies(zone, wanted)
         enemy_id, enemy_def = pool[int(rng.random() * len(pool)) % len(pool)]
-        level = clamp_level(enemy_def, zone.level + (1 if rng.chance(0.3) else 0))
+        level = clamp_level(enemy_def, wanted)
         seed = int(rng.random() * 2**31)
         state = make_combat(enemy_id, enemy_def, level, self._kit(hero), seed)
         if mark:

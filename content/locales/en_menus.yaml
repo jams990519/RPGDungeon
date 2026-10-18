@@ -97,6 +97,8 @@ trainer:
   mine_button: ⚒️ My professions
   ench_button: ✨ Enchanting
   intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. 🪓 Gathering and 🧭 exploration are never learned: they rise on their own.»'
+  recommend: '⭐ For your {armor} armor: {name}. Tap /{code} to see it and learn it.'
+  recommend_known: '⭐ For your {armor} armor: {name}, rank {rank}.'
   have: '✅ Your professions: {list}'
   have_none: '✅ You have no professions yet: gather and explore, they rise on their own.'
   missing: '📚 Still to learn ({n} {n|profession|professions}): {list}'

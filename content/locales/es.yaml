@@ -1296,6 +1296,12 @@ zone:
   distance: "📌 Coordenadas ({x}, {y}) · Lejanía {lejania} · Anillo {ring} · Peligro de nivel {level}"   # [ES] sin uso desde la 0.30.1 (D-221: se partió en coords y danger)
   coords: "📌 ({x}, {y}) · Lejanía {lejania} · Anillo {ring}"   # [ES] D-221 (0.30.1): la pantalla 📍 Zona va en bloques cortos, una idea por renglón
   danger: "⚔️ Peligro de nivel {level}"
+  danger_safe: "🛡️ Zona protegida: aquí no salen peleas al llegar."   # [ES] D-266 (0.34): campamento o fogata
+  danger_wild: "⚔️ Peligro {word}: {pct} % de pelea al llegar · los monstruos salen de tu nivel"   # [ES] D-266 (0.34): reemplaza a danger
+  danger_word:
+    low: "bajo"
+    mid: "medio"
+    high: "alto"
   discovered_by: "🧭 La descubrió {name}"
   routes: "🧭 Rutas"
   uncharted: "❔ Tierra sin cartografiar"
@@ -1365,6 +1371,8 @@ activity:
 map:
   title: "🗺️ Tu mapa"
   legend: "🧍 tú · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
+  camp_mark: "🏕️"            # [ES] D-267 (0.34): los campamentos de jugadores se ven en el mapa
+  camps_legend: "{mark} campamento de jugadores"
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "🎨 Terrenos que conoces ({n} de {total}): {items}. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-220: solo los terrenos con una zona investigada al 50 % (y el 🔥 Claro)
   bonfire: "Campamento"   # [ES] D-223 (0.30.2): en el mapa, el 🔥 del inicio se llama campamento (la hoguera), no "Claro"
