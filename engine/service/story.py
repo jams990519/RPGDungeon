@@ -886,7 +886,7 @@ class StoryMixin:
             return t.t(f"story.goal.{key}", n=n, p=p)
         if kind == "explored":
             x, y = goal.get("zone", [0, 0])
-            return t.t("story.goal.explored", zone=self._zone_name(self._zone(int(x), int(y))), pct=int(goal.get("pct", 100)),
+            return t.t("story.goal.explored", zone=self._place_label(int(x), int(y)), pct=int(goal.get("pct", 100)),
                        now=self._explored_pct(hero, int(x), int(y)))
         if kind == "gather":
             if goal.get("item") in self.content.items:

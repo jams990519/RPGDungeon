@@ -148,6 +148,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     lo tienen), el gremio D-97 ("guild") también guarda "gremio", "guild_name" y "camp_name" guardan {"gremio": id} mientras
     el nombre está reservado, y "upgrades" suma "building" (🏗️ obras en curso: need, done, at, floor, by, started) y "fund"
     (lo que sobró del fondo al fundar). Lo construido antes sigue construido (D-64).
+    D-278 (0.36.1): /ir x y arma el camino de 🔗 Moverte en el espacio "walk" de siempre (_coord_walk); no guarda nada nuevo.
+    D-280 (0.36.1): "player_code" (código de jugador → cuenta) y "player_code_of" (cuenta → código), de gremio.py
+    (player_code); "camp" suma "invites" (a quién invitó su fundador con /inv_, hasta que responde: "cinv:").
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -463,7 +466,7 @@ from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭 the guided path
 from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE, GUILD_CODE_RE, MEMBER_CODE_RE,   # D-269, D-265
-                                   PLAYER_CODE_RE, GremioMixin)
+                                   INVITE_CODE_RE, PLAYER_CODE_RE, GremioMixin)   # D-280: /inv_<code>
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -539,6 +542,7 @@ FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
 PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
 WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
+COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
 RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
 
@@ -645,7 +649,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             code = PLACE_CODE_RE.match(text.strip().lower())
             low = text.strip().lower()
             resource = RESOURCE_CODE_RE.match(text.strip().lower())
-            if code:                                     # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
+            coords = COORD_RE.match(low)
+            invite = INVITE_CODE_RE.match(low)
+            if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
+                typed = self._invite_code(hero, invite.group(1))
+            elif coords:                                   # D-278: /ir 12 -3 = 🔗 Moverte with the road to (12, -3) laid out
+                typed = self._coord_walk(hero, int(coords.group(1)), int(coords.group(2)))
+            elif code:                                   # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
                 typed = self._place_code(hero, int(code.group(1)))
             elif resource:                               # D-243: /07 = what that resource is for
                 typed = self._resource_detail(hero, int(resource.group(1)))
@@ -1174,6 +1184,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self.texts.t("world.name_format", first=first[zone.name_index[0] % len(first)],
                             second=second[zone.name_index[1] % len(second)])
 
+    def _place_label(self, x: int, y: int, known: bool = True) -> str:
+        """A place with its coordinates, "Vado Gris (3, -2)", for every list and notice that names a place (D-278).
+
+        [ES]
+        Qué hace: el nombre de la zona con sus coordenadas, para que todo lugar que nombra el juego diga dónde está y el jugador
+        pueda ir con /ir x y (pedido del dueño, 18-oct-2026: "asegúrate que todas las posiciones tengan una coordenada").
+        Con known=False el nombre es "❔ Tierra sin cartografiar" (una zona que todavía no pisaste), con sus coordenadas igual.
+        La llaman: los avisos de viaje, 📒 Lugares, el viaje en curso, la caza, las mazmorras, el gremio y la historia.
+        Si cambia, afecta: todos esos textos (clave world.place, en los dos idiomas).
+        """
+        name = self._zone_name(self._zone(x, y)) if known else self.texts.t("zone.uncharted")
+        return self.texts.t("world.place", name=name, x=x, y=y)
+
     def _biome_label(self, zone: Zone) -> str:
         biome = self.content.biomes[zone.biome]
         return f"{biome['emoji']} {self.texts.t(biome['name_key'])}"
@@ -1311,7 +1334,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         path = [list(p) for p in activity.get("path", [])]
         final = not path
         if final:
-            notices.append(self.texts.t("travel.arrived", name=self._zone_name(zone), biome=self._biome_label(zone)))
+            notices.append(self.texts.t("travel.arrived", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)))
             if self._ecamp_standing(hero.x, hero.y):
                 notices.append(self.texts.t("ecamp.arrive"))      # D-112: an enemy camp stands here
             notices += self._dng_arrive_lines(hero)               # D-171: a dungeon entrance here (now you know what it is)
@@ -1319,7 +1342,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": activity["until"]})
             hero.zones_discovered += 1
             self.bus.publish(ZoneDiscovered(hero.id, hero.x, hero.y))
-            notices.append(self.texts.t("travel.discovered_named", name=self._zone_name(zone)))
+            notices.append(self.texts.t("travel.discovered_named", name=self._place_label(zone.x, zone.y)))
         notices += self._story_event(hero, "visit", x=hero.x, y=hero.y, lejania=zone.lejania, lair=self._is_lair(hero.x, hero.y))   # D-117
         notices += self._guide_event(hero, "arrive", x=hero.x, y=hero.y, final=final)   # D-193: 🧭 move, back home, a spot to found
         danger = self.content.biomes[zone.biome]["danger"] * self.content.balance["explore"]["arrival_encounter_scale"]
@@ -1327,17 +1350,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             danger = 0.0                      # camps and the Claro protect their land (D-81)
         if rng.chance(danger):
             if self._sneaks_past(hero, "travel", activity["until"]):      # D-172: 🥷 Sigilo (its own draw)
-                notices.append(self.texts.t("stealth.travel", name=self._zone_name(zone)))
+                notices.append(self.texts.t("stealth.travel", name=self._place_label(zone.x, zone.y)))
             else:
                 route = None
                 if not final:                 # D-244: win the fight and the trip goes on; flee or fall and you stay here
-                    notices.append(self.texts.t("travel.interrupted_fight", name=self._zone_name(zone)))
+                    notices.append(self.texts.t("travel.interrupted_fight", name=self._place_label(zone.x, zone.y)))
                     route = {"path": path, "goal": activity.get("goal"), "walk": bool(activity.get("walk"))}
                 notices.append(self._start_combat(hero, zone, rng, "encounter.ambush",
                                                   mark={"route": route} if route else None))
                 return notices
         if path and not self._spend_energy(hero, "move"):
-            notices.append(self.texts.t("energy.route_stopped", name=self._zone_name(zone)))
+            notices.append(self.texts.t("energy.route_stopped", name=self._place_label(zone.x, zone.y)))
             path = []
         if path:
             nx, ny = path.pop(0)
@@ -1368,7 +1391,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not path:
             return []
         if not self._spend_energy(hero, "move"):
-            return [t.t("energy.route_stopped", name=self._zone_name(self._zone(hero.x, hero.y)))]
+            return [t.t("energy.route_stopped", name=self._place_label(hero.x, hero.y))]
         nx, ny = path.pop(0)
         seconds = self._leg_seconds(hero, hero.x, hero.y, nx, ny)
         hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds,
@@ -1469,12 +1492,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if new:
             names = ", ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in new)
             activity["log"].append(t.t("explore.revealed", items=names) if studied is zone
-                                   else t.t("explore.revealed_there", name=self._zone_name(studied), items=names))
+                                   else t.t("explore.revealed_there", name=self._place_label(studied.x, studied.y), items=names))
         activity["log"] += self._fog_notices(hero, studied, before_pct)     # D-220: ◻️ reconocida, 🎨 su color, 🆕 terreno nuevo
         bal = self.content.balance["explore"]
         xp = bal["xp_per_step"]                       # exploring teaches: experience every round (owner's request)
         if hero.exploration[key] >= 100:
-            activity["log"].append(t.t("explore.full", name=self._zone_name(studied)))
+            activity["log"].append(t.t("explore.full", name=self._place_label(studied.x, studied.y)))
             if before_pct < 100:
                 xp += bal["xp_full_zone"]             # finishing a zone is worth more
         activity["xp"] = activity.get("xp", 0) + int(xp * self._xp_mult(hero))
@@ -2463,7 +2486,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 where += t.t("ecamp.route_mark")
             elif f"{dest.x}:{dest.y}" in scouted:
                 where += self._recon_route_mark(dest.x, dest.y)
-            body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, time=self._fmt_duration(seconds)))
+            body.append(t.t("zone.route_line", dir=t.t(f"dir.{direction}"), where=where, x=dest.x, y=dest.y,   # D-278: its coordinates
+                                 time=self._fmt_duration(seconds)))
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         actions.append(Action(id="walk", label=t.t("walk.button")))     # D-244: 🔗 Moverte, wide under the 4 routes
         actions.append(Action(id="zmap", label=t.t("menu.map")))        # D-268: 🗺️ Mapa, wide under 🔗 Moverte
@@ -2501,7 +2525,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             x, y = activity["to"]
             dest = self._zone(x, y)
             known = hero.remembers(x, y)
-            where = self._zone_name(dest) if known else t.t("zone.uncharted")
+            where = self._place_label(x, y, known)        # D-278: every place with its coordinates
             body = [t.t("travel.on_the_way", where=where, dir=t.t(f"dir.{activity.get('dir', 'n')}")), t.t("travel.remaining", time=remaining)]
             if activity.get("goal"):
                 gx, gy = activity["goal"]
@@ -2510,7 +2534,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 for nx, ny in activity.get("path", []):
                     total += self._leg_seconds(hero, cx, cy, nx, ny)
                     cx, cy = nx, ny
-                goal = self._zone_name(self._zone(gx, gy)) if hero.remembers(gx, gy) else t.t("zone.uncharted")   # D-244: a walk can end on new land
+                goal = self._place_label(gx, gy, hero.remembers(gx, gy))   # D-244: a walk can end on new land; D-278: with its coordinates
                 body.append(t.t("travel.goal", name=goal, legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
@@ -3265,7 +3289,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._ecamp_menu(hero, camp, notice=notice)
         explore_time = self._fmt_duration(self._seconds(self.content.balance["explore"]["minutes"]))
         gather_time = self._fmt_duration(self._seconds(self.content.balance["gather"]["minutes"]))
-        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("explore.menu_intro"), ""]
+        body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("explore.menu_intro"), ""]
         body += self._resources_lines(hero, zone.x, zone.y)     # D-221: one resource per line
         body += ["", t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
         if camp:                                        # D-112: the camp here fell today
@@ -3326,7 +3350,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         🔬 Investigar, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🏘️ Servicios, 📜 Tablón, 🏰 Gestionar y ❓ Dudas (🛡️ Defender primero
         durante una oleada). Lo de antes (⬆️ Agrandar, 🌾 Aportar comida, 🛡️ Gremio y 🔨 Mejoras) pasó a 🏰 Gestionar
         (_camp_manage_view). Los visitantes ven las mejoras y la 🛡️ Defensa, 🙋 Pedir unirme, ❓ Dudas y ↩️ Volver; donde no
-        hay campamento, lo que pide fundarlo, ❓ Dudas y ↩️ Volver (4 como máximo).
+        hay campamento, lo que pide fundarlo, 🛡️ Gremio (D-279, 0.36.1: el gremio se arma desde cualquier lugar), ❓ Dudas y
+        ↩️ Volver (4 como máximo).
         D-115: a los miembros, las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de campamento de los oficios.
         La llaman: el botón 🏕️ Campamento fuera del Claro y casi todas las acciones de campamento.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_camp_upgrades.py,
@@ -3381,12 +3406,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                                 minutes=int(self._gremio_cfg().get("found_minutes", 60)),
                                 floor=int(self._gremio_cfg().get("found_floor_minutes", 10))))
             actions = [Action(id="gfoundx", label=t.t("gremio.found_cancel"))] if hero.id == building["leader"] else []
+            actions += [Action(id="guild", label=t.t("gremio.button"))]       # D-279: the guild from anywhere
             actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
             return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         reqs = self._camp_requirements(hero)
         body = [t.t("camps.found_intro", x=zone.x, y=zone.y), ""] + [("✅ " if ok else "▫️ ") + text for text, ok in reqs]
         body += ["", t.t("camps.found_guild_hint")]     # D-269: founding is the guild's work now
         actions = [Action(id="found", label=t.t("camps.found_button"))] if all(ok for _, ok in reqs) else []
+        actions += [Action(id="guild", label=t.t("gremio.button"))]           # D-279: create or see your guild from anywhere
         actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]   # D-192: ❓ anywhere
         return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
 
@@ -3790,7 +3817,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             name = t.t(edef["name_key"])
             if name not in names:
                 names.append(name)
-        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("hunt.intro", energy=cost),
+        body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("hunt.intro", energy=cost),
                 t.t("hunt.prey_line", names=", ".join(names[:5])), t.t("hunt.rewards_hint"), self._status_line(hero)]
         body.append(t.t("hunt.mode_auto" if self._auto_on(hero) else "hunt.mode_manual"))     # D-114
         body += self._hunt_party_lines(hero)
@@ -3932,7 +3959,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp = self._hunt_camp(hero)
         if not party or camp is None:
             return []
-        zone = self._zone_name(self._zone(party["x"], party["y"]))
+        zone = self._place_label(party["x"], party["y"])
         lines = [t.t("hunt.party_line", camp=camp["name"], zone=zone, n=len(party["members"]), prey=party["prey"],
                      target=self._hunt_target(party), time=self._fmt_duration(party["until"] - self.clock.now()))]
         if hero.id in party["members"] and (hero.x, hero.y) == (party["x"], party["y"]):
@@ -3944,7 +3971,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """The push the camp members present in the zone get: who calls, where, for how long, bonus and goal, [🏹 Unirme]."""
         t = self.texts
         cfg = self._hunt_cfg()["party"]
-        zone = self._zone_name(self._zone(party["x"], party["y"]))
+        zone = self._place_label(party["x"], party["y"])
         body = [t.t("hunt.party_call", name=hero.name, camp=camp["name"], zone=zone, time=self._fmt_duration(party["until"] - party["at"])),
                 t.t("hunt.party_how", per=round(100 * cfg["bonus_per_companion"]), cap=round(100 * cfg["bonus_cap"])),
                 t.t("hunt.party_goal", per_hunter=cfg["prey_per_hunter"], xp=cfg["reward"]["xp"], gold=self._money(cfg["reward"]["gold"]))]
@@ -3980,7 +4007,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 return self._join_hunt_party(hero)
             if here:
                 return self._hunt_view(hero, notice=t.t("hunt.party_member"))
-            return self._hunt_view(hero, notice=t.t("hunt.party_already", zone=self._zone_name(self._zone(party["x"], party["y"])),
+            return self._hunt_view(hero, notice=t.t("hunt.party_already", zone=self._place_label(party["x"], party["y"]),
                                                     time=self._fmt_duration(party["until"] - self.clock.now())))
         now = self.clock.now()
         party = {"x": hero.x, "y": hero.y, "at": now, "until": now + self._seconds(self._hunt_cfg()["party"]["minutes"]),
@@ -4009,7 +4036,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if party is None:
             return self._main_view(hero, notice=t.t("hunt.party_none"))
         if (hero.x, hero.y) != (party["x"], party["y"]):
-            return self._main_view(hero, notice=t.t("hunt.party_wrong_zone", zone=self._zone_name(self._zone(party["x"], party["y"]))))
+            return self._main_view(hero, notice=t.t("hunt.party_wrong_zone", zone=self._place_label(party["x"], party["y"])))
         if hero.id in party["members"]:
             notice = t.t("hunt.party_member")
         else:
@@ -4052,7 +4079,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         def report() -> View:                    # D-250: built again in each hunter's language
             body = [t.t("hunt.party_end", prey=party.get("prey", 0), n=len(members),
-                        zone=self._zone_name(self._zone(party["x"], party["y"])), target=self._hunt_target(party))]
+                        zone=self._place_label(party["x"], party["y"]), target=self._hunt_target(party))]
             hunters = [t.t("hunt.party_end_hunter", name=names[hero_id], prey=prey)
                        for hero_id, prey in sorted(members.items(), key=lambda row: -row[1])]
             if hunters:
@@ -4173,6 +4200,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                         actions.append(Action(id="guildup", label=t.t("guild.up_button")))
             else:
                 body.append(t.t("guild.top"))
+        if founder and n < cap:
+            body += ["", t.t("gremio.invite_hint")]     # D-280: the founder invites into the camp with /inv_<code>
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
                            else Action(id="leave", label=t.t("camps.leave_button")))
@@ -8122,7 +8151,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body = [t.t("places.intro")]
         for n, (seconds, x, y, icon, name) in enumerate(listed, 1):
             mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
-            body.append(t.t("places.code_line", n=n, icon=icon, name=name + mark,
+            body.append(t.t("places.code_line", n=n, icon=icon, name=name + mark, x=x, y=y,
                             zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
         if not places:
             body.append(t.t("places.none"))
@@ -8130,6 +8159,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.more", n=len(places) - len(listed)))
         if count == 3 and len(places) > 3:
             body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
+        body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
         actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
                    for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
         actions.append(Action(id="map", label=t.t("menu.back")))
@@ -8152,7 +8182,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if kind == "rest":
             return self._places_view(hero, notice=t.t("places.resting"))
         seconds = self._trip_seconds(hero, x, y)
-        body = [t.t("places.confirm", icon=place[0], name=place[1], zones=abs(x - hero.x) + abs(y - hero.y),
+        body = [t.t("places.confirm", icon=place[0], name=place[1], x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y),
                     time=self._fmt_duration(seconds)), t.t("places.confirm_hint")]
         if kind == "travel":
             body.append(t.t("places.confirm_reroute"))
@@ -8186,7 +8216,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             tx, ty = activity["to"]
             hero.activity = {**activity, "path": self._path(tx, ty, gx, gy), "goal": [gx, gy]}
             hero.activity.pop("walk", None)             # D-244: a 🔗 walk in progress gives way to the new goal
-            return self._activity_view(hero, notice=t.t("places.rerouted", name=self._zone_name(self._zone(gx, gy))))
+            return self._activity_view(hero, notice=t.t("places.rerouted", name=self._place_label(gx, gy)))
         if kind == "rest" or (kind and kind not in BATCH_KINDS):
             view = self._activity_view(hero)
             view.notice = t.t("activity.busy")
@@ -8210,7 +8240,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.activity = {"kind": "travel", "to": [nx, ny], "until": self.clock.now() + seconds, "dir": direction,
                          "path": path, "goal": [gx, gy]}
         return self._activity_view(hero, notice=self._join(
-            cut + [t.t("travel.started_route", name=self._zone_name(self._zone(gx, gy)))]))
+            cut + [t.t("travel.started_route", name=self._place_label(gx, gy))]))
 
     def _walk_action(self, hero: Hero, action_id: str) -> View:
         """🔗 Moverte: add steps in any order, then walk them zone by zone (D-244).
@@ -8262,7 +8292,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _walk_view(self, hero: Hero, steps: list[str], notice: str | None = None) -> View:
         """The 🔗 Moverte screen: the steps added so far, where they end and how long they take (D-244)."""
         t = self.texts
-        body = [t.t("walk.intro"), ""]
+        body = [t.t("walk.intro"), t.t("walk.coord_hint", x=hero.x, y=hero.y), ""]   # D-278: how to go to a coordinate
         if steps:
             groups: list[list[Any]] = []
             for step in steps:                          # "⬆️×2 ➡️ ⬅️ ⬇️×2": the same direction in a row, counted once
@@ -8302,6 +8332,40 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         self.bus.publish(TravelStarted(hero.id, nx, ny, hero.activity["until"]))
         self.store.delete("walk", hero.id)
         return self._activity_view(hero, notice=t.t("walk.started", n=len(steps), x=goal[0], y=goal[1]))
+
+    def _coord_walk(self, hero: Hero, gx: int, gy: int) -> View:
+        """/ir x y: lay out the 🔗 Moverte road to that coordinate, east-west first, then north-south (D-278).
+
+        [ES]
+        Qué hace: el jugador escribe /ir 12 -3 (o /ir 12,-3, /go 12 -3) y se abre 🔗 Moverte con el camino ya armado hasta
+        esa coordenada: primero este-oeste y después norte-sur, sin diagonales, como el viaje de 📒 Lugares. No sale solo:
+        el jugador lo ve (pasos, dónde termina y cuánto tarda) y toca ✅ Terminar, o lo cambia con las flechas. Pisa tierra
+        nueva como cualquier 🔗 camino (D-244). Más de travel.walk_max pasos (50) no entra: dice hasta dónde llegar primero.
+        Ocupado (viajando, en un lote o en la posada) o en combate, avisa y no arma nada. El norte suma a la y; el este, a la x.
+        Pedido del dueño, 18-oct-2026: "asegúrate que todas las posiciones tengan una coordenada para cuando los jugadores
+        quieran moverse en una coordenada ya sepan cómo hacerlo".
+        La llama: text() con COORD_RE. Si cambia, afecta: 🔗 Moverte (_walk_view, _walk_start) y tests/test_coordenadas.py.
+        """
+        t = self.texts
+        if self.store.get("combat", hero.id) is not None:
+            view = self.view(hero.id)
+            view.notice = t.t("walk.coord_busy")
+            return view
+        if hero.activity:
+            view = self._activity_view(hero)
+            view.notice = t.t("walk.coord_busy")
+            return view
+        if (gx, gy) == (hero.x, hero.y):
+            return self._zone_view(hero, notice=t.t("walk.coord_here", x=gx, y=gy))
+        steps = ["e" if gx > hero.x else "w"] * abs(gx - hero.x) + ["n" if gy > hero.y else "s"] * abs(gy - hero.y)
+        top = int(self.content.balance["travel"].get("walk_max", 50))
+        if len(steps) > top:
+            mx, my = self._walk_cells(hero, steps[:top])[-1]
+            plan = self.store.get("walk", hero.id) or {}
+            kept = list(plan.get("steps", [])) if plan.get("from") == [hero.x, hero.y] else []
+            return self._walk_view(hero, kept, notice=t.t("walk.coord_far", x=gx, y=gy, n=len(steps), top=top, mx=mx, my=my))
+        self.store.put("walk", hero.id, {"from": [hero.x, hero.y], "steps": steps})
+        return self._walk_view(hero, steps, notice=t.t("walk.coord_ready", x=gx, y=gy))
 
     def _place_code(self, hero: Hero, n: int) -> View:
         """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
@@ -8374,7 +8438,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         stages = " · ".join(f"{stage['mark']} {t.t('map.fog.name.' + stage['id'])}" for stage in self._fog_stages())
         known = self._known_terrains(hero)
         terrains = " · ".join(self._terrain_label(biome_id) for biome_id in known)
-        body = [t.t("map.legend", stages=stages, pct=fog["color_at"]),
+        body = [t.t("map.legend", stages=stages, pct=fog["color_at"], x=hero.x, y=hero.y),   # D-278: where you are
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
         if seen_camp:
             body.append(t.t("map.camps_legend", mark=t.t("map.camp_mark")))
@@ -8419,7 +8483,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         busy_left = self._activity_left_seconds(hero)      # D-242.1: el tiempo total de lo que está haciendo
         body = [t.t("hero_card.points", n=hero.points)] if hero.points else []      # pending first (TowerWars)
         body += [
-            t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._zone_name(zone)),
+            t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._place_label(zone.x, zone.y)),
             t.t("hero.class_short", icon=self._hero_icon(hero), cls=class_line),
             *([t.t("guardian.titles_line", titles=", ".join(self._title_name(x) for x in hero.titles))] if hero.titles else []),
             *self._story_hero_lines(hero),                              # D-117: origin, role emblem and /bio
@@ -8444,7 +8508,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             else t.t("hero.status_title", status=self._status_text(hero)),
         ]
         cfg = self.content.balance["invite"]
-        body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"])]
+        body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"]),
+                 t.t("gremio.code_line", code=self.player_code(hero.id))]        # D-280: 🆔 your player code, for /inv_<code>
         body += self._tutorial_hint(hero)
         actions = [Action(id="bag", label=t.t("bag.button_new" if hero.gear_new else "menu.bag")),
                    Action(id="talents", label=t.t("talents.button", n=hero.points)),
@@ -9431,7 +9496,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         zone = self._zone(hero.x, hero.y)
         cfg = self._ecamp_cfg()
         need = int(self._explorer_cfg()["ranks"]["infiltrate"])
-        body = [t.t("zone.header", name=self._zone_name(zone), biome=self._biome_label(zone)), t.t("ecamp.here", level=camp["level"])]
+        body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("ecamp.here", level=camp["level"])]
         body.append(t.t("ecamp.progress", n=camp["beaten"]) if camp["beaten"] else t.t("ecamp.untouched"))
         if self._ecamp_intel(hero, camp):
             body += self._ecamp_intel_lines(camp)
@@ -10111,7 +10176,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         info = self._dng_today(x, y, kind)
         record = self._dng_record(hero)
         zone = self._zone(x, y)
-        body = [t.t(f"dungeon.header_{kind}", name=self._zone_name(zone), level=info["level"]),
+        body = [t.t(f"dungeon.header_{kind}", name=self._place_label(zone.x, zone.y), level=info["level"]),
                 t.t("dungeon.today", family=self._dng_family_label(info["family"]))]
         if kind == dungeon_rules.SMALL:
             scfg = cfg["small"]
@@ -11446,7 +11511,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             lines += self._dng_fight_done(hero, state)
         if state.get("route"):                 # D-244: an ambush on the way: won, the trip goes on; else you stay here
             lines += (self._resume_route(hero, state["route"]) if outcome == "victory" else
-                      [t.t("travel.route_lost", name=self._zone_name(self._zone(hero.x, hero.y)))])
+                      [t.t("travel.route_lost", name=self._place_label(hero.x, hero.y))])
         # D-193: 🧭 the "hunt" step ends with a hunt fight, won or lost; automatic fights put it in the batch (_auto_combat)
         state["guide"] = self._guide_event(hero, "fight", outcome=outcome, hunt=bool(state.get("hunt")))
         lines += state["guide"]

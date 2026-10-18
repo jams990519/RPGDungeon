@@ -91,3 +91,4 @@ questions:
   d51: {topic: money, keywords: [mercader, comprar, compra, vender, venta, tienda, precio, provisiones, comercio], keywords_en: ["merchant", "buy", "buying", "sell", "selling", "shop", "store", "price", "provisions", "trade", "vendor"], related: [d50, d30, d38]}
   d52: {topic: money, keywords: [bolsa, bolsas, cofre, cofres, coser, armar], keywords_en: ["bag", "bags", "sew", "sewing", "sew bag", "pouch", "chest", "chests", "build chest"], related: [d50, d36, d29]}
   d53: {topic: money, keywords: [invitar, invitacion, enlace, amigos, referido, codigo, compartir], keywords_en: ["invite", "invitation", "link", "friends", "referral", "refer", "code", "share", "bonus energy"], related: [d07, d50, d20]}
+  d54: {topic: world, keywords: [coordenada, coordenadas, posicion, ir a, punto, x, y, ir], keywords_en: ["coordinate", "coordinates", "position", "go to", "point", "x", "y", "go"], related: [d06, d07, d35]}   # [ES] D-278 (0.36.1)

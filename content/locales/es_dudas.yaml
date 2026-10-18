@@ -218,3 +218,6 @@ faq:
   d53:
     q: "🔗 ¿Para qué sirve invitar?"
     a: "En 👤 Héroe está tu código de invitación. Cada amigo que entra con tu enlace y crea su héroe te da {invite_bonus} ⚡ extra."
+  d54:
+    q: "📌 ¿Cómo voy a una coordenada?"
+    a: "Cada lugar dice sus coordenadas: (x, y). Tú estás donde dice 📍 Zona. El norte suma a la y y el este, a la x: (3, -2) está 3 zonas al este y 2 al sur del Claro, que es (0, 0). Para ir, escribe /ir x y (por ejemplo, /ir 3 -2): se arma el camino en 🔗 Moverte, primero este-oeste y después norte-sur, y tocas ✅ Terminar. Hasta {walk_max} pasos por vez."   # [ES] D-278 (0.36.1, pedido del dueño)

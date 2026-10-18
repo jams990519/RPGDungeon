@@ -493,6 +493,15 @@ El dueño pidió (1-oct-2026): **los nodos de recursos se colocan al azar con un
 - **Al recolectar:** el resumen de 🪓 Recolectar dice lo que dio el nodo ("✨ El nodo de 🪵 Madera te dio +4 de más."; "✨ En el nodo encontraste 🌸 Flor de luna ×1.").
 - **Lo que queda abierto:** si el 🔭 Reconocer del Explorador debería descubrir los nodos de lejos desde el rango 25 (E-125); los nodos que sube de nivel el 🪑 carpintero (E-96) y los especiales de los expertos (E-78).
 
+### 1.17 Coordenadas en todo lugar e ir a una coordenada (D-278, en el juego desde la 0.36.1)
+
+El dueño pidió (18-oct-2026): "asegúrate que todas las posiciones tengan una coordenada para cuando los jugadores quieran moverse en una coordenada ya sepan cómo hacerlo".
+
+- **Cada lugar dice sus coordenadas, «(x, y)».** El Claro es (0, 0); el norte suma a la y y el este, a la x. Las llevan las rutas de 📍 Zona («⬆️ Norte (0, 1): …»), el 🗺️ Mapa (dónde estás), 📒 Lugares y su confirmación, los avisos y la pantalla del viaje, la caza, las mazmorras, los campamentos enemigos, el punto de reunión del gremio y las metas de la historia.
+- **/ir x y** (en inglés, /go x y; también /ir 12,-3 o /ir (12, -3)) arma el camino en 🔗 Moverte: primero este-oeste y después norte-sur, sin diagonales, como el viaje de 📒 Lugares. No sale solo: el jugador ve los pasos, dónde termina y cuánto tarda, y toca ✅ Terminar (o lo cambia con las flechas). Pisa tierra nueva como cualquier camino de 🔗 Moverte (D-244), con sus emboscadas.
+- **Tope:** el de 🔗 Moverte, 50 pasos (`travel.walk_max`). Si la coordenada queda más lejos, el juego dice hasta dónde llegar primero («ve por partes: primero /ir 40 10»). Ocupado o en combate, avisa y no arma nada.
+- **Dónde se explica:** debajo del texto de 🔗 Moverte, al final de 📒 Lugares y en ❓ Dudas («📌 ¿Cómo voy a una coordenada?», d54).
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).

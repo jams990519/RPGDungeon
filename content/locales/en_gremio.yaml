@@ -34,6 +34,7 @@ players:
   card_no_guild: "🛡️ No guild"
   card_seen: "🕒 {ago}"
   card_here: "🔥 At the campfire"
+  card_code: "🆔 Player code: {code} · to invite them: /inv_{code}"
 
 gremio:
   title: "🛡️ Guild"
@@ -73,7 +74,7 @@ gremio:
   cancel: "❌ Cancel"
   bad_name: "That name won't do: use 3 to 24 letters, numbers or spaces."
   name_taken: "There is already a guild or a camp with that name. Try another one."
-  created: "🛡️ You created the guild {name}! You paid {coins}. Invite players from 👥 Players or wait for their requests."
+  created: "🛡️ You created the guild {name}! You paid {coins}. Invite with /inv_ and each one's player code (it is in their 👤 Hero), from 👥 Players, or wait for their requests."
   list_title: "🔎 Find a guild"
   list_intro: "Guilds that have no camp yet. Tap one's code to see it and ask to join."
   list_query: "Guilds with \"{query}\":"
@@ -184,6 +185,14 @@ gremio:
   camp_joined_push: "✅ {name} joined the camp {camp}."
   camp_full_push: "⚠️ {name} wanted to join {camp}, but it was full."
   camp_declined_push: "❌ {name} did not join the camp {camp}."
+  code_line: "🆔 Your player code: {code}. Give it to a guild leader so they can invite you with /inv_{code}."
+  none_code: "🆔 Your player code is {code}: a guild leader invites you with /inv_{code}."
+  invite_hint: "✉️ To invite someone, type /inv_ and their player code (everyone sees theirs in 👤 Hero). For example: /inv_12345678."
+  code_unknown: "No player has the code {code}. Check the number: it is in each player's 👤 Hero."
+  code_self: "That is your own code: give it to someone else so they can invite you."
+  code_no_rights: "To invite with a code you must be a guild's leader or officer, or the founder of its camp."
+  cinv_title: "🏕️ You are invited to a camp"
+  cinv_body: "{name} invites you to their camp {camp}, at {place}. If you join, you are in its guild."
 
 works:
   title: "🏗️ Works in progress:"

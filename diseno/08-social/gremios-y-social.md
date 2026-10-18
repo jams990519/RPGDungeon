@@ -12,6 +12,8 @@
 
 > **0.36 (D-269, 18-oct-2026):** el gremio ya se crea **desde el primer momento**, antes del campamento (🥉20, 5 miembros, mensajes, fondo y punto de reunión), y es el gremio el que funda el campamento; al fundarlo pasa a ser el gremio del campamento que describe esta sección (nivel 1 con cupo 5). Cómo funciona: [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0. Lo de abajo sigue valiendo para el gremio del campamento y para los campamentos de antes, que lo crean como siempre.
 
+> **0.36.1 (D-279 y D-280, 18-oct-2026):** el gremio se crea **en cualquier lugar** (🛡️ Gremio está en 🏕️ Campamento también donde no hay campamento) y su territorio es solo el de su campamento. **Invitar con un código:** cada jugador tiene su **código de jugador** (8 cifras, nunca cambia; se ve en 👤 Héroe y en su tarjeta), y el líder o un oficial lo invita escribiendo **/inv_<código>** desde cualquier lugar; con el campamento ya fundado, invita su fundador y quien acepta entra al campamento y a su gremio, si hay lugar.
+
 **Cómo se tomó** (D-97, provisional, en [decisiones.md](../00-vision/decisiones.md)). Un gremio por campamento de jugadores, ligado a él: sus miembros son los del campamento, sube de nivel con lo que hacen todos juntos, cada nivel deja entrar a más gente y el castillo pide un gremio listo. Lo de las mismas horas de juego no tiene reglas: la pantalla solo muestra cuándo jugó cada miembro.
 
 ### 0.1 Crearlo
