@@ -265,6 +265,7 @@ def test_canteria_refines_stone_into_sillar(service):
     assert service._load("test:1").backpack == {"sillar": 3}
 
 
+@pytest.mark.usefixtures("instant_works")        # D-269: what the works ask and who gives it, not how long they take
 def test_higher_tier_upgrades_ask_refined_stone_without_breaking_what_was_built(service):
     ready(service)
     camp_at(service, 8)
@@ -295,6 +296,7 @@ def test_higher_tier_upgrades_ask_refined_stone_without_breaking_what_was_built(
 # ---------------------------------------------------------------- 🏗️ Construcción
 
 
+@pytest.mark.usefixtures("instant_works")        # D-269: what the works ask and who gives it, not how long they take
 def test_construccion_lowers_the_works_and_rises_by_giving(service):
     two_members(service, 1)
     camp = service.store.get("camp", KEY)

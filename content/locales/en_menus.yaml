@@ -11,7 +11,7 @@ hub:
   section_info: 📌 Your camp
   cook: '🍲 Cook: meat, fish and what each terrain gives become rations and stews for the pantry. 🍲 Cooking rank {rank}.'
   cook_none: '🍲 Cook: needs the 🔥 Hearth (🏰 Manage → 🔨 Upgrades).'
-  cook_unlearned: '🍲 Cook: first learn 🍲 Cooking in 🔬 Research.'
+  cook_unlearned: '🍲 Cook: first learn 🍲 Cooking in 🧑‍🏫 Trainer → 📚 Learn professions.'
   research_claro: '🔬 Research: not in the Clearing; you research at your own camp with the 📚 Library (level {level}).'
   research_locked: '🔬 Research: with the 📚 Library, which can be built from level {level} (your camp is level {now}).'
   research_open: '🔬 Research: 📚 Knowledge · {done} of {total} {total|study|studies}{current}.'
@@ -96,7 +96,7 @@ trainer:
   stations_none: '📍 There are no stations here: the Clearing has all the basic ones.'
   mine_button: ⚒️ My professions
   ench_button: ✨ Enchanting
-  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. Only 🧭 exploration rises on its own; 🪓 gathering is learned too (without the profession, gathering still gives the base resources).»'
+  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here, in 📚 Learn professions. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. Only 🧭 exploration rises on its own; 🪓 gathering is learned too (without the profession, gathering still gives the base resources).»'
   recommend: '⭐ For your {armor} armor: {name}. Tap /{code} to see it and learn it.'
   recommend_known: '⭐ For your {armor} armor: {name}, rank {rank}.'
   have: '✅ Your professions: {list}'
@@ -134,7 +134,7 @@ learn:
   no_gold: "💰 You can't afford it: it costs {price} and you have {gold}."
   camp_needed: 🏗️ {name} is learned as a member of a camp.
   auto: '{name} is not learned: it rises on its own. {how}'
-  need: '🔒 For this, first learn {name} (📚 Learn professions, or 🔬 Research in the Clearing).'
+  need: '🔒 For this, first learn {name} (🧑‍🏫 Trainer → 📚 Learn professions).'
   more_branch: '🔒 More recipes with the professions you still lack: {list}.'
   none_refine: "You don't know any refining profession yet: learn one in 📚 Learn professions."
   none_craft: "You don't know any crafting profession yet: learn one in 📚 Learn professions."

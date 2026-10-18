@@ -37,7 +37,7 @@ Reglas que nunca se rompen:
     5. Los gestos y 📣 Mostrar solo llegan a los jugadores presentes en tu zona (D-96) y como mucho uno por minuto.
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (llamadas a _story_event en _explore_step, _gather_step, _end_combat y
-      _auto_combat, _make, _sell, _camp_sell, _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study; el menú y
+      _auto_combat, _make, _sell, _camp_sell, _sell_gear, _arrive, _create_camp (antes _found_camp; D-269), _camp_feed, _give_to_work y _give_to_study; el menú y
       los atajos; _hero_view (botones 📔 Diario y 🎭 Origen, D-192); _claro_view y _camp_hub_lines (📜 Tablón y su línea);
       text(), que entiende el texto "📖 Historia" de un teclado viejo)
     - Números: balance.yaml story (experiencia por ⚡, rangos, largo de la biografía, tope del diario, espera de gestos)
@@ -472,7 +472,7 @@ class StoryMixin:
         Guardián, el título de Pionero y el campamento fundado. Devuelve las líneas para mostrar (una vez: el lote las
         junta en su resumen; una pelea, en su final).
         La llaman: engine/service/game.py en _explore_step, _gather_step, _end_combat, _make, _sell, _camp_sell,
-        _sell_gear, _arrive, _found_camp, _camp_feed, _give_to_work y _give_to_study; y D-112: _infiltrate (🕵️ te
+        _sell_gear, _arrive, _create_camp (antes _found_camp), _camp_feed, _give_to_work y _give_to_study; y D-112: _infiltrate (🕵️ te
         infiltraste) y _ecamp_destroyed (👹 destruiste un campamento enemigo: queda en el 📔 Diario).
         Si cambia, afecta: todo el avance de la historia (tests/test_story.py).
         """

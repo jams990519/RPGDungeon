@@ -126,7 +126,9 @@ guide:
       intro: 🏕️ You're in the Clearing now. Open 🏕️ Camp to see what you can do here.
       learn: '🏕️ The camp is your base: here is everything the hero doesn''t carry around.
 
-        🍲 Cook, 🔬 research and ⚒️ craft: the professions and their stations.
+        🍲 Cook and ⚒️ craft: the professions and their stations.
+
+        👥 Players: who is at the campfire, and your 🛡️ guild.
 
         🧑‍🏫 Trainer: introduces you to the professions.
 
@@ -167,17 +169,19 @@ guide:
         • The Clearing doesn''t grow. Your camp does: it levels up, gets upgrades and becomes a castle.
 
         • Move one or two more zones, away from the Clearing: I''ll let you know when you find a good spot.'
-      learn: 🏕️ You found a good spot for your own camp! You can found it here and give it a name.
+      learn: 🏕️ You found a good spot for your own camp! Your 🛡️ guild can found it here.
     found:
       name: Found your camp
-      task: 'found your camp: 🏕️ Camp → 🏕️ Found camp here.'
+      task: 'found your camp with your guild: 🏕️ Camp → 🏕️ Found camp here.'
       intro: '🏕️ Found your camp
+
+        Camps are founded by a 🛡️ guild (👥 Players → 🛡️ Guild): its leader, with 2 members in the zone; the 💰 fund pays and it takes 1 h with 2.
 
         To found it in this zone you need:
 
         {needs}
 
-        When you have everything, tap 🏕️ Camp → 🏕️ Found camp here and give it a name.'
+        When you have everything, tap 🏕️ Camp → 🏕️ Found camp here. It will take your guild''s name.'
       learn: '🏕️ You have a camp now! Here''s what you can do here:
 
         🔨 Upgrades: the upgrade button is here. You build a hearth, cabins, a smithy and more.

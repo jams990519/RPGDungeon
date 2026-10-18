@@ -10,6 +10,8 @@
 
 **Qué pidió el dueño** (por voz, 1-oct-2026). Que, una vez creado tu campamento, puedas crear un **gremio**. El gremio deja entrar a cierta cantidad de jugadores, pero pide requisitos: exploraciones, misiones, combates y demás. A medida que progresa, crece su capacidad, y hasta te deja tener un **castillo** con esa cantidad de jugadores. Lo ideal sería que se junten jugadores de las mismas horas de juego, pero eso lo dijo **solo como comentario**.
 
+> **0.36 (D-269, 18-oct-2026):** el gremio ya se crea **desde el primer momento**, antes del campamento (🥉20, 5 miembros, mensajes, fondo y punto de reunión), y es el gremio el que funda el campamento; al fundarlo pasa a ser el gremio del campamento que describe esta sección (nivel 1 con cupo 5). Cómo funciona: [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0. Lo de abajo sigue valiendo para el gremio del campamento y para los campamentos de antes, que lo crean como siempre.
+
 **Cómo se tomó** (D-97, provisional, en [decisiones.md](../00-vision/decisiones.md)). Un gremio por campamento de jugadores, ligado a él: sus miembros son los del campamento, sube de nivel con lo que hacen todos juntos, cada nivel deja entrar a más gente y el castillo pide un gremio listo. Lo de las mismas horas de juego no tiene reglas: la pantalla solo muestra cuándo jugó cada miembro.
 
 ### 0.1 Crearlo

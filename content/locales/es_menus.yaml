@@ -19,7 +19,7 @@ hub:
   # [ES] una línea por botón, en el orden de los botones
   cook: "🍲 Cocinar: carne, pescado y lo que da cada terreno se vuelven raciones y guisos para la despensa. 🍲 Cocina rango {rank}."
   cook_none: "🍲 Cocinar: hace falta el 🔥 Fogón (🏰 Gestionar → 🔨 Mejoras)."
-  cook_unlearned: "🍲 Cocinar: primero aprende la 🍲 Cocina en 🔬 Investigar."   # [ES] D-257 (0.33): los oficios se aprenden
+  cook_unlearned: "🍲 Cocinar: primero aprende la 🍲 Cocina en 🧑‍🏫 Entrenador → 📚 Aprender oficios."   # [ES] D-257 (0.33): los oficios se aprenden; D-274.1: 🔬 Investigar ya no está en la fogata
   research_claro: "🔬 Investigar: en el Claro no; se investiga en tu propio campamento con la 📚 Biblioteca (nivel {level})."
   research_locked: "🔬 Investigar: con la 📚 Biblioteca, que se construye desde el nivel {level} (tu campamento es nivel {now})."
   research_open: "🔬 Investigar: 📚 Conocimiento · {done} de {total} {total|estudio|estudios}{current}."
@@ -111,7 +111,7 @@ trainer:
   stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
   mine_button: "⚒️ Mis oficios"
   ench_button: "✨ Encantamiento"
-  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí o en 🔬 Investigar. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. Solo 🧭 la exploración sube sola; la 🪓 recolección también se aprende (sin el oficio, recolectar da igual los recursos base).»"   # [ES] D-257 (0.33), D-272 (0.35)
+  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí, en 📚 Aprender oficios. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. Solo 🧭 la exploración sube sola; la 🪓 recolección también se aprende (sin el oficio, recolectar da igual los recursos base).»"   # [ES] D-257 (0.33), D-272 (0.35)
   recommend: "⭐ Para tu armadura de {armor}: {name}. Toca /{code} para verlo y aprenderlo."   # [ES] D-271 (0.34)
   recommend_known: "⭐ Para tu armadura de {armor}: {name}, rango {rank}."
   have: "✅ Tus oficios: {list}"
@@ -151,7 +151,7 @@ learn:                         # [ES] D-257 (0.33): 📚 Aprender oficios: cada 
   no_gold: "💰 No te alcanza: cuesta {price} y tienes {gold}."
   camp_needed: "🏗️ {name} se aprende siendo miembro de un campamento."
   auto: "{name} no se aprende: sube solo. {how}"
-  need: "🔒 Para esto primero aprende {name} (📚 Aprender oficios, o 🔬 Investigar en el Claro)."
+  need: "🔒 Para esto primero aprende {name} (🧑‍🏫 Entrenador → 📚 Aprender oficios)."
   more_branch: "🔒 Más recetas con los oficios que te faltan: {list}."
   none_refine: "Todavía no sabes ningún oficio de refinar: apréndelo en 📚 Aprender oficios."
   none_craft: "Todavía no sabes ningún oficio de fabricar: apréndelo en 📚 Aprender oficios."

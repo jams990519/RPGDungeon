@@ -1117,3 +1117,30 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Qué cambia al jugar.** Un jugador nuevo recolecta solo los recursos base hasta aprender el oficio (🥉20): sin la unidad de más (rango × `rank_yield`), sin hallazgos raros (gemas desde el Minero 10) y sin experiencia. Ojo: la Joyería empieza pidiendo una 💠 gema, que sin el Minero sale solo de nodos (P-234). Quien ya recolectaba no pierde nada.
 
+### Octubre de 2026 (18-oct): el gremio desde el inicio y las obras con tiempo (0.36; D-265, D-269 confirmadas; D-274 y D-276 provisionales)
+
+**Por qué.** El dueño: "hay que empezar a crear los grupos desde el primer momento… entre más miembros haya dentro de la zona, más rápido se construye… y así funciona para todas las cosas". Y para la fogata: "un botón de jugadores… los que estuvieron en el último minuto… una cantidad máxima de 20 jugadores". Los números marcados "dueño" los dijo él; el resto los propuso Claude.
+
+**Números nuevos** (`content/balance.yaml`):
+
+| Número | Valor | De quién y por qué |
+|---|---|---|
+| `gremio.found_coins` | 🥉20 | Dueño: crear un gremio |
+| `gremio.members_before_camp` | 5 | Dueño: los que caben antes del campamento |
+| `gremio.found_min_members` | 2 | Dueño: miembros presentes para fundar |
+| `gremio.found_minutes` | 60 | Dueño: fundar tarda 1 h con 2; con 4, 30 min (tiempo = 60 × 2 ÷ presentes) |
+| `gremio.found_floor_minutes` | 10 | Dueño: nunca menos de 10 min |
+| `gremio.message_max_chars` / `messages_kept` / `list_shown` | 200 / 5 / 8 | Claude: mensajes cortos para el teléfono; los últimos 5 en la pantalla; 8 gremios por lista |
+| `works.minutes_per_level` / `members_ref` / `floor_minutes` | 60 / 2 / 10 | Claude sobre la regla del dueño (D-274.4): cada obra, 1 h por su nivel con 2 miembros en el territorio; con 1, el doble; nunca menos de 10 min |
+| `presence.bonfire_seconds` | 60 | Dueño: 👥 Jugadores lista a los del último minuto |
+| `bonfire.cap` | 20 | Dueño: el tope de cada fogata (en la 0.36 solo se muestra "N/20"; el reparto, en la 0.37) |
+
+**Qué se movió:**
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| `guild.levels[0].capacity` (gremio del campamento, nivel 1) | 4 | 5 | Al fundar, el gremio de 5 pasa a ser el del campamento: con 4, uno quedaba afuera |
+
+**Cuenta rápida.** Un gremio de 2 que junta el fondo (🪵 20 y 🪨 10, menos de una hora de recolectar entre los dos) y se encuentra en el lugar funda en 1 hora; con los 5, en 24 min. Una obra de nivel 1 tarda 1 h con 2 en el territorio y una de nivel 8 (foso, torres) 8 h con 2, o 3 h 12 min con 5: el castillo (15 mejoras) pide horas de estar juntos, no solo materiales. Con nadie en el territorio, la obra espera: no hay construcción "sola".
+
+**Lo que queda por mirar:** si 60 min por nivel hace muy lentas las obras grandes para campamentos chicos; si la fundación con 1 solo presente debería pausarse (hoy avanza al doble de tiempo); cuántas obras quedan en pausa más de un día; cuántos invitados entran al campamento recién fundado.

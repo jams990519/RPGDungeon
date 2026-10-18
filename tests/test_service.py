@@ -240,8 +240,8 @@ def test_the_claro_never_grows(service, clock):
     assert service._settlement()["stage"] == 0
     assert service.store.get("hero", "test:1")["backpack"]["madera"] == 50   # nothing taken
     view = service.act("test:1", "claro")
-    # D-192: the Claro hub: cook, research, make (⚒️ Oficios), trainer, shop, inn, 📜 Tablón and ❓ Dudas
-    assert [a.id for a in view.actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]
+    # D-192: the Claro hub: cook, 👥 players (D-274.1, it took research's place), make (⚒️ Oficios), trainer, shop, inn, 📜 Tablón and ❓ Dudas
+    assert [a.id for a in view.actions] == ["cook", "players", "oficios", "trainer", "shop", "inn", "board", "dudas"]
     assert any("funda tu propio campamento" in line for line in view.body)
 
 

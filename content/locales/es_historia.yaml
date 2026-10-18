@@ -396,7 +396,7 @@ story:
     c1_m5:
       title: "El ámbar que canta"
       hablar: "El yunque suena desde lejos. Una mujer ancha, con el pelo atado y quemaduras viejas en los brazos, golpea un hierro al rojo. Es Brena, la herrera."
-      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🔬 Investigar."
+      fabricar: "Brena: «Nadie sabe hacer nada en este Claro. Demuéstrame que tú sí: fabrica algo en una estación. Lo que sea. Un tablón, una venda, una poción.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🧑‍🏫 Entrenador → 📚 Aprender oficios."
       ambar: "Brena te muestra una astilla de ámbar del tamaño de un dedo. Zumba bajito, como una colmena lejana. «Salió entre la chatarra que le compré a Odo. De noche canta. No sé qué es.»\n🌿 Iria la estudiaría para el Círculo del Umbral.\n⚒️ Brena la fundiría en el yunque para la Llama Común.\n🪙 Odo pagaría bien por ella para la Cofradía."
       opt_iria: "🌿 Dársela a Iria"
       opt_brena: "⚒️ Que Brena la funda"
@@ -454,7 +454,7 @@ story:
     o_aprendiz_1:
       title: "Manos que recuerdan"
       hablar: "Brena te ve mirar el yunque. «Tienes manos de taller», gruñe. «¿De quién aprendiste?» No recuerdas su nombre, pero sí sus manos."
-      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🔬 Investigar."
+      hacer: "Brena: «Si aprendiste algo, se nota en el trabajo, no en la boca. Haz algo en una estación y te digo de qué escuela vienes.»\n⚒️ Las estaciones están en 🏕️ Campamento → 🛠️ Fabricar. Si todavía no sabes ningún oficio, apréndelo en 🧑‍🏫 Entrenador → 📚 Aprender oficios."
       mostrar: "Ya hiciste algo con tus manos. Muéstraselo a Brena."
       done: "Brena da vuelta tu trabajo y se queda quieta. «Esta forma de cerrar la juntura solo la enseñaba un maestro: Teodoro el Alto. Partió lejos del Claro hace dos inviernos. No volvió.»"
     o_aprendiz_2:

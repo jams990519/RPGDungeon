@@ -22,7 +22,7 @@ Depende de: content/guide.yaml (pasos y avisos), content/locales/es_guia.yaml (t
     _node_found, _dng_kind, _ecamp_standing, _zone, _join)
 Lo usan: engine/service/game.py (GameService hereda de esta clase; llama a _guide_new_request al empezar _settle, a
     _guide_event en _settle (explorar y recolectar),
-    _arrive, _end_combat (y _auto_combat lee state["guide"]) y _found_camp; a _guide_before en act() y view(); a _guide_new
+    _arrive, _end_combat (y _auto_combat lee state["guide"]) y _create_camp (antes _found_camp; D-269); a _guide_before en act() y view(); a _guide_new
     y _guide_view al crear el héroe; a _guide_hint desde _tutorial_hint (las pantallas de zona, explorar, campamento y
     héroe) y a _guide_tip_lines desde _combat_view; a _guide_view con la acción "guide" y /guia)
 Eventos que publica: ninguno
@@ -250,7 +250,7 @@ class GuideMixin:
         (fundaste un campamento). Si el paso actual espera eso, se completa (premio, lo que aprendiste y el paso que sigue).
         Al llegar fuera del Claro después del camino básico, también cuenta los movimientos para fundar (D-190) y, en el
         primero, explica que vas a buscar un buen lugar.
-        La llaman: _settle, _arrive, _end_combat y _found_camp (engine/service/game.py).
+        La llaman: _settle, _arrive, _end_combat y _create_camp (engine/service/game.py; D-269: al terminar la fundación del gremio).
         Si cambia, afecta: cuándo avanza cada paso (tests/test_camino_guiado.py).
         """
         guide = self._guide(hero)

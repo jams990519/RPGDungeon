@@ -112,7 +112,7 @@ faq:
     a: You wake up in the 🔥 Clearing, the base camp. Move to a neighboring zone from 📍 Zone, and there 🔎 explore, 🪓 gather and 🏹 hunt. Come back to the Clearing to sell, sleep, cook and craft. The game guides you step by step and tells you each time something new opens up.
   d02:
     q: 🧭 What is each menu for?
-    a: 'At the bottom you have 5 buttons: 📍 Zone (where you are and where to go), 🧭 Explore (explore, gather, hunt and the 🗺️ Map), 🏕️ Camp (cook, research, craft, the trainer, the merchant and this ❓ Help), 👤 Hero (your character sheet, backpack, talents, health, professions and journal) and ⚙️ Options.'
+    a: 'At the bottom you have 5 buttons: 📍 Zone (where you are and where to go), 🧭 Explore (explore, gather, hunt and the 🗺️ Map), 🏕️ Camp (cook, the 👥 players at the campfire, craft, the trainer, the merchant and this ❓ Help), 👤 Hero (your character sheet, backpack, talents, health, professions and journal) and ⚙️ Options.'
   d03:
     q: 📖 Where did the Story go?
     a: 'The 📖 Story button left the menu: now the story guides you step by step as you play. Your 📔 Journal, your 🎯 Quests and the ⚜️ Factions are in 👤 Hero → 📔 Journal. The 📜 Board with its tasks and the Clearing''s characters are in 🏕️ Camp. /story also takes you to the journal.'
@@ -217,7 +217,7 @@ faq:
     a: 'The 🔥 Clearing is everyone''s base camp: 🛒 merchant, 🛏️ inn, the stations to 🍲 cook and 🛠️ craft, the 🧑‍🏫 trainer, the 📜 task board and this ❓ Help. The Clearing doesn''t grow: to grow, found your own camp.'
   d35:
     q: 🏕️ How do I found my camp?
-    a: Go to a zone at Distance {camp_far} or more, explore it to 100%, know {camp_known} of the 8 zones around it, make sure there's no other camp within {camp_gap} zones and carry {found_cost}. There, tap 🏕️ Camp → 🏕️ Found camp here and type its name. Each hero has one.
+    a: 'Your 🛡️ guild founds it. The leader goes to a zone at Distance {camp_far} or more, explores it to 100% and knows {camp_known} of the 8 zones around it, with no other camp within {camp_gap} zones. {found_members} guild members must be there and the 💰 fund must hold {found_cost}. The leader taps 🏕️ Camp → 🏕️ Found camp here: it takes {found_minutes} min with {found_members} members present, less with more (never under {found_floor} min). The camp takes the guild''s name and every member gets an invitation.'
   d36:
     q: ⬆️ How do I expand my camp?
     a: 'In your camp: 🏰 Manage → ⬆️ Expand. Each level adds a zone to your territory and costs materials depending on the level; from level {chests_from}, also 🪎 chests. It goes from camp to village, town, city and castle.'
@@ -232,19 +232,19 @@ faq:
     a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers.'
   d40:
     q: 🔨 What are upgrades?
-    a: 'In 🏰 Manage → 🔨 Upgrades everyone builds the camp''s works together (🔥 Hearth, 🧵 Workshop, 🔨 Smithy, 📚 Library, defenses…): each member contributes materials until they''re complete. What''s built stays forever and gives services and defense.'
+    a: 'In 🏰 Manage → 🔨 Upgrades everyone builds the camp''s works together (🔥 Hearth, 🧵 Workshop, 🔨 Smithy, 📚 Library, defenses…): each member contributes materials until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
   d41:
     q: 🔬 How do I research?
     a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'
   d42:
     q: 🛡️ What is the guild?
-    a: The founder creates the guild at their camp for {guild_cost} (🏰 Manage → 🛡️ Guild). Its members are the camp's members; it levels up with what everyone explores, wins and gathers together, and lets more people in. To become a castle you need a guild of level {guild_castle}.
+    a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle}.'
   d43:
     q: 📜 What is the board?
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one per faction: completing them gives experience, coins and reputation. If you have a camp, you also see its weekly tasks, which everyone does together.'
   d44:
     q: ⚒️ How do I learn a profession?
-    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🔬 Research in the Clearing or in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. Your professions: /myprofessions.'
+    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. Your professions: /myprofessions.'
   d45:
     q: 🛠️ How do I craft?
     a: In 🏕️ Camp → 🛠️ Craft you choose 🪚 Refine (wood → plank, metal → ingot…) or 🛠️ Craft (gear, potions, bandages, furniture). Each recipe shows what it needs and how much ⚡ it costs. The Clearing has all the basic stations; your camp, the ones from its upgrades.

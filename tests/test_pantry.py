@@ -68,8 +68,8 @@ def test_the_claro_never_has_a_pantry(service):
     for stage in range(len(service.content.balance["settlement"]["stages"])):
         set_stage(service, stage)
         view = service.act("test:1", "claro")
-        # D-192: the Claro hub (cook, research, make = ⚒️ Oficios, trainer, shop, inn, 📜 Tablón, ❓ Dudas), 8 at most
-        assert [a.id for a in view.actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"], stage
+        # D-192: the Claro hub (cook, 👥 players (D-274.1), make = ⚒️ Oficios, trainer, shop, inn, 📜 Tablón, ❓ Dudas), 8 at most
+        assert [a.id for a in view.actions] == ["cook", "players", "oficios", "trainer", "shop", "inn", "board", "dudas"], stage
         assert not any("Despensa" in line for line in view.body)
         assert service.act("test:1", "feed").kind == "claro"         # an old 0.10 button lands on the Claro
     assert service.store.get("pantry", "claro") is None
@@ -208,7 +208,7 @@ def test_claro_screens_keep_four_buttons(service):
     set_stage(service, ALDEA)
     make_hero(service)
     # D-192 (E-132): the Claro hub shows its 8 options at once, 2 per row
-    assert [a.id for a in service.act("test:1", "claro").actions] == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]
+    assert [a.id for a in service.act("test:1", "claro").actions] == ["cook", "players", "oficios", "trainer", "shop", "inn", "board", "dudas"]
 
 
 def test_every_claro_button_works_from_aldea(content):
