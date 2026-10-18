@@ -597,3 +597,14 @@ v0_34:
     - "🗺️ Map button in 📍 Zone and while travelling, to see where you are."
     - "🧑‍🏫 The Trainer recommends the profession that makes your class's armor."
     - "🔒 To be clear: the bot does not play in Telegram groups, but inside the game you still see and meet the other players."
+
+v0_35:
+  version: "0.35"
+  title: "🔄 Lost Realms 0.35: cambia de clase, y los oficios de recolección se aprenden"
+  title_en: "🔄 Lost Realms 0.35: change your class, and gathering professions are learned"
+  notes:
+    - "🔄 Ya puedes cambiar de clase en 👤 Héroe → 🌟 Talentos → 🔄 Cambiar de clase (o /cambiarclase). El primer cambio es gratis; después cuesta 🥈1, 🥈10, 🥈30 y luego 🥈50 cada vez. Conservas tu nivel, tus oficios, tus monedas y tu equipo."
+    - "⛏️ Leñador, Minero, Herbolario y Pescador ahora se aprenden, como los demás oficios: solo la 🧭 exploración sube sola. Sin el oficio recolectas igual los recursos base. Si ya los practicabas, siguen aprendidos y conservas tu rango."
+  notes_en:
+    - "🔄 You can now change class in 👤 Hero → 🌟 Talents → 🔄 Change class (or /changeclass). The first change is free; then it costs 🥈1, 🥈10, 🥈30 and then 🥈50 each time. You keep your level, professions, coins and gear."
+    - "⛏️ Lumberjack, Miner, Herbalist and Fisher are now learned, like the other professions: only 🧭 exploration rises on its own. Without the profession you still gather the base resources. If you already practised them, they stay learned and you keep your rank."

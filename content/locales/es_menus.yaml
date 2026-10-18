@@ -111,11 +111,11 @@ trainer:
   stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
   mine_button: "⚒️ Mis oficios"
   ench_button: "✨ Encantamiento"
-  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí o en 🔬 Investigar. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. 🪓 La recolección y 🧭 la exploración no se aprenden: suben solas.»"   # [ES] D-257 (0.33)
+  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí o en 🔬 Investigar. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. Solo 🧭 la exploración sube sola; la 🪓 recolección también se aprende (sin el oficio, recolectar da igual los recursos base).»"   # [ES] D-257 (0.33), D-272 (0.35)
   recommend: "⭐ Para tu armadura de {armor}: {name}. Toca /{code} para verlo y aprenderlo."   # [ES] D-271 (0.34)
   recommend_known: "⭐ Para tu armadura de {armor}: {name}, rango {rank}."
   have: "✅ Tus oficios: {list}"
-  have_none: "✅ Todavía no tienes oficios: recolecta y explora, que suben solos."
+  have_none: "✅ Todavía no tienes oficios: explora (sube solo) y aprende uno abajo."
   missing: "📚 Te {n|falta|faltan} por aprender ({n}): {list}"
   missing_none: "📚 Ya aprendiste todos los oficios a tu alcance."
 
@@ -124,7 +124,7 @@ myprof:                        # [ES] D-257 (0.33, pedido del dueño): 📋 Mis 
   button: "📋 Mis oficios"
   intro: "Tus oficios y cómo van. Toca el código de uno para ver todo lo que da."
   line: "{name} · rango {rank} ({title}) {bar}  /{code}"
-  none: "Todavía no tienes oficios: recolecta y explora (suben solos) o aprende uno en 📚 Aprender oficios."
+  none: "Todavía no tienes oficios: explora (sube solo) o aprende uno en 📚 Aprender oficios."
 
 learn:                         # [ES] D-257 (0.33): 📚 Aprender oficios: cada oficio se aprende pagando su primera receta
   title: "📚 Aprender oficios"
@@ -140,6 +140,7 @@ learn:                         # [ES] D-257 (0.33): 📚 Aprender oficios: cada 
   unlocks_comercio: "Al aprenderlo, cada venta te da monedas de más y el oficio sube vendiendo."
   unlocks_encantamiento: "Al aprenderlo puedes desencantar equipo viejo en esencias y encantar tus piezas (/encantar)."
   unlocks_construccion: "Al aprenderlo, tus aportes a las obras de tu campamento suben el oficio, y su beneficio vale para todo el campamento."
+  unlocks_gather: "Al aprenderlo, al recolectar a veces sale una unidad de más, con rango aparecen hallazgos raros y el oficio sube con cada unidad. Sin aprenderlo recolectas igual los recursos base."   # [ES] D-272 (0.35): Leñador, Minero, Herbolario y Pescador
   price_line: "💰 Cuesta {price}. Tienes {gold}."
   free_line: "🎁 Gratis: ya lo practicabas (rango {rank}) y lo conservas al aprenderlo."
   learn_button: "📚 Aprender · {price}"

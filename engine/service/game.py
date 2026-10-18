@@ -130,6 +130,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-266 a D-271 (0.34): nada nuevo guardado. Los monstruos de afuera salen del nivel del héroe (_wild_level), la pelea al
     llegar baja a 6-14 % (explore.arrival_encounter_scale), los 🏕️ de jugadores se ven en el mapa y en 📒 Lugares
     (_map_view, _important_places, _can_goto), 🗺️ Mapa en 📍 Zona y al viajar ("zmap") y el Entrenador recomienda oficio.
+    D-270 (0.35): Hero.class_changes (cuántas veces cambió de clase; el 1.º gratis, después balance.yaml class_change.prices).
+    D-272 (0.35): la 🪓 recolección también se aprende (solo el 🧭 Explorador sube solo); _load le deja aprendido el oficio de
+    recolección a quien ya tenía experiencia en él (grandfather en content/professions.yaml).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -390,6 +393,7 @@ from engine.classes import (
     spend_point,
     specs_of,
     switch_role,
+    sync_chain,
     unlock_points,
 )
 from engine.combat import CombatContext, make_combat, play_out, resolve_round, validate_choice
@@ -456,6 +460,7 @@ COMMANDS.update({"/idioma": "lang", "/language": "lang",
                  "/toast": "gesture:brindar", "/enchant": "ench", "/specialty": "pspecs", "/recon": "recon",
                  "/help": "dudas", "/faq": "dudas", "/trainer": "trainer", "/guide": "guide", "/origin": "origin"})
 # D-258: 💬 Feedback (⚙️ Opciones); D-257: 📋 Mis oficios and 📚 Aprender oficios.
+COMMANDS.update({"/cambiarclase": "chcls", "/changeclass": "chcls"})   # D-270 (0.35): 🔄 Cambiar de clase
 COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "myprof", "/aprender": "learnlist", "/learn": "learnlist"})
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
@@ -465,6 +470,7 @@ ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 # (Sacerdote, Mago). [ES] El orden sale de content/classes.yaml; si cambia el número de clases o su orden, las parejas
 # de armadura dejan de caer juntas (tests/test_clases_031.py y test_service.py miran las páginas).
 CLASS_PAGE_SIZE = 2
+CLASS_CHANGE_ACTIONS = ("chgrp:", "chpick:", "chok:")   # D-270 (0.35): 🔄 Cambiar de clase: pick a class, a role, confirm
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
@@ -965,6 +971,9 @@ class GameService(StoryMixin, GuideMixin):
         if not hero.gear_started:          # 0.6: every hero gets its starter gear once (D-77)
             starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
             hero.gear_started = True
+        for pid, pdef in self._prof_catalog().items():      # D-272 (0.35): gathering is learned now; who practised keeps it
+            if pdef.get("grandfather") and hero.professions.get(pid, 0) > 0 and pid not in hero.learned:
+                hero.learned.append(pid)
         return hero
 
     def _hero_icon(self, hero: Hero) -> str:
@@ -1667,6 +1676,8 @@ class GameService(StoryMixin, GuideMixin):
             return self._explore_menu(hero)
         if action_id == "talents":
             return self._talents_view(hero)
+        if action_id == "chcls" or action_id.startswith(CLASS_CHANGE_ACTIONS):   # D-270: 🔄 Cambiar de clase
+            return self._class_change_action(hero, action_id)
         if is_chain_spec(self.content.classes, hero.class_id) and action_id in ("respec", "dual", "dual_unlock", "dual_switch"):
             return self._talents_view(hero)          # 0.31: no respec or dual setups; the second role opens at level 5 (D-230)
         if action_id.startswith("role:"):
@@ -5439,6 +5450,109 @@ class GameService(StoryMixin, GuideMixin):
             line = t.t("trainer.recommend", armor=armor_name, name=self._prof_name(pid), code=pid)
         return [line, ""]
 
+    # ------------------------------------------------------------------ 🔄 class change (D-270, 0.35)
+
+    def _class_change_price(self, hero: Hero) -> int:
+        """🥉 the next class change costs: the first free, then balance.yaml class_change.prices (the last one for ever)."""
+        prices = [int(p) for p in self.content.balance["class_change"]["prices"]]
+        return prices[min(hero.class_changes, len(prices) - 1)]
+
+    def _class_change_action(self, hero: Hero, action_id: str) -> View:
+        """Route the 🔄 Cambiar de clase buttons: the classes, one class's two roles, the confirmation and the change."""
+        if action_id.startswith("chgrp:"):
+            return self._class_change_group_view(hero, action_id[6:])
+        if action_id.startswith("chpick:"):
+            return self._class_change_confirm_view(hero, action_id[7:])
+        if action_id.startswith("chok:"):
+            return self._class_change_do(hero, action_id[5:])
+        return self._class_change_view(hero)
+
+    def _class_change_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🔄 Cambiar de clase: what it costs this time, what you keep, and the other classes (D-270).
+
+        [ES]
+        Qué hace: la pantalla para cambiar de clase (pedido del dueño, 18-oct: "cambiar la primera gratis, la segunda pagando
+        y la tercera pagando más… cuantas veces quieras"). Dice el precio de este cambio (el 1.º gratis; después 🥈1, 🥈10,
+        🥈30 y 🥈50 para siempre: balance.yaml class_change.prices), lo que conservas (nivel, oficios, monedas y equipo; lo
+        de otra armadura rinde la mitad, D-83) y un botón por cada una de las otras clases. Botones: las 5 clases, ↩️ Volver.
+        La llaman: 🌟 Talentos → 🔄 Cambiar de clase y /cambiarclase. No cambia nada guardado.
+        Si cambia, afecta: tests/test_cambio_de_clase.py.
+        """
+        t = self.texts
+        price = self._class_change_price(hero)
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        body = [t.t("chclass.intro", now=self._hero_title(hero)), "",
+                t.t("chclass.price_free") if price == 0 else t.t("chclass.price", price=self._money(price), n=hero.class_changes + 1),
+                t.t("chclass.keeps"), "", t.t("chclass.pick")]
+        actions = [Action(id=f"chgrp:{gid}", label=t.t(f"class_group.{gid}.name")) for gid in self._class_groups() if gid != group]
+        layout = [2] * (len(actions) // 2) + ([1] if len(actions) % 2 else []) + [1]
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _class_change_group_view(self, hero: Hero, group: str) -> View:
+        """One class of 🔄 Cambiar de clase: its two roles, each with its button (either role can be chosen, like at creation)."""
+        t = self.texts
+        specs = [s for s in specs_of(self.content.classes, group) if is_chain_spec(self.content.classes, s)]
+        if not specs or group == self.content.classes[hero.class_id].get("group", hero.class_id):
+            return self._class_change_view(hero)
+        body = [t.t("create.confirm_class", group=t.t(f"class_group.{group}.name"), desc=t.t(f"class_group.{group}.desc")), "",
+                t.t("chain.create_its_roles")]
+        for class_id in specs:
+            cdef = self.content.classes[class_id]
+            role = t.t("chain_role." + chain_rules.role_of(cdef, self.content.balance))
+            body.append(f"• {t.t(cdef['name_key'])} — {role}: {t.t(cdef['role_key'])}")
+        actions = [Action(id=f"chpick:{s}", label=t.t("create.choose_class", group=t.t(self.content.classes[s]["name_key"])))
+                   for s in specs]
+        actions.append(Action(id="chcls", label=t.t("menu.back")))
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions)
+
+    def _class_change_confirm_view(self, hero: Hero, class_id: str, notice: str | None = None) -> View:
+        """Ask before changing class: the new class and role, the price and your coins."""
+        t = self.texts
+        cdef = self.content.classes.get(class_id)
+        if not cdef or not is_chain_spec(self.content.classes, class_id) or cdef.get("retired"):
+            return self._class_change_view(hero)
+        price = self._class_change_price(hero)
+        body = [t.t("chclass.confirm_free", name=t.t(cdef["name_key"])) if price == 0
+                else t.t("chclass.confirm", name=t.t(cdef["name_key"]), price=self._money(price), gold=self._money(hero.gold)),
+                t.t("chclass.keeps")]
+        group = cdef.get("group", class_id)
+        actions = [Action(id=f"chok:{class_id}", label=t.t("chclass.do_button")), Action(id=f"chgrp:{group}", label=t.t("menu.back"))]
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions, notice=notice)
+
+    def _class_change_do(self, hero: Hero, class_id: str) -> View:
+        """Change class: pay, switch to the new class's role and spread the level points there again (D-270).
+
+        [ES]
+        Qué hace: cambia la clase del héroe. Cobra el precio de este cambio (el 1.º gratis), pone la clase y el rol elegidos
+        y reparte los puntos de nivel en el rol nuevo (sync_chain, como al cambiar de rol). Conserva el nivel, la experiencia,
+        los oficios, las monedas que quedan y el equipo (lo de otra armadura rinde la mitad, D-83). Suma 1 a
+        Hero.class_changes y lo anota en el 📔 Diario. No se cambia ocupado ni a la misma clase.
+        La llaman: el botón ✅ Cambiar de clase. Si cambia, afecta: tests/test_cambio_de_clase.py.
+        """
+        t = self.texts
+        cdef = self.content.classes.get(class_id)
+        if not cdef or not is_chain_spec(self.content.classes, class_id) or cdef.get("retired"):
+            return self._class_change_view(hero)
+        if cdef.get("group", class_id) == self.content.classes[hero.class_id].get("group", hero.class_id):
+            return self._class_change_view(hero, notice=t.t("chclass.same"))
+        if hero.activity:
+            return self._class_change_confirm_view(hero, class_id, notice=t.t("activity.busy"))
+        price = self._class_change_price(hero)
+        if hero.gold < price:
+            return self._class_change_confirm_view(hero, class_id, notice=t.t("chclass.poor", price=self._money(price),
+                                                                                gold=self._money(hero.gold)))
+        hero.gold -= price
+        old = self._hero_title(hero)
+        hero.class_id = class_id
+        sync_chain(self.content.classes, hero)
+        hero.class_changes += 1
+        self._clamp_hp(hero)
+        self._journal(hero, "class_change", name=self._hero_title(hero))
+        notice = (t.t("chclass.done_free", old=old, name=self._hero_title(hero)) if price == 0
+                  else t.t("chclass.done", old=old, name=self._hero_title(hero), price=self._money(price)))
+        return self._talents_view(hero, notice=notice)
+
     # ------------------------------------------------------------------ ❓ Dudas (D-191, D-192; keyword search, E-129)
 
     def _faq(self) -> dict[str, Any]:
@@ -5771,6 +5885,8 @@ class GameService(StoryMixin, GuideMixin):
         key = f"learn.unlocks_{pid}"
         if t.has(key):
             return t.t(key)
+        if self._prof_catalog().get(pid, {}).get("gathers"):      # D-272 (0.35): gathering is learned too
+            return t.t("learn.unlocks_gather")
         return t.t("learn.unlocks")
 
     def _prof_code(self, text: str) -> str | None:
@@ -5837,7 +5953,7 @@ class GameService(StoryMixin, GuideMixin):
         Qué hace: la pantalla de un oficio, que se abre con su código. Si lo sabes: rango y barra, cómo sube, su beneficio
         ahora, sus 🎓 especializaciones, lo que abre en el mapa (🧭) y lo que abre el próximo rango, con un botón a su estación
         (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. Si no lo sabes: qué hace, su primera receta, lo que cuesta
-        y 📚 Aprender (gratis si ya lo practicabas). La recolección y la exploración dicen que suben solas.
+        y 📚 Aprender (gratis si ya lo practicabas). La 🧭 exploración dice que sube sola (D-272: la recolección ya se aprende).
         La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
         (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
         """
@@ -7168,6 +7284,7 @@ class GameService(StoryMixin, GuideMixin):
         body += ["", t.t("chain.second_role_open") if second_role_open(bal, hero)
                  else t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]),
                  t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        actions.append(Action(id="chcls", label=t.t("chclass.button")))     # D-270: 🔄 Cambiar de clase
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 

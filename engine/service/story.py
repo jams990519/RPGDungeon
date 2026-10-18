@@ -437,6 +437,8 @@ class StoryMixin:
             return t.t("story.journal.guardian", name=t.t(edef["name_key"]) if edef else v.get("e", "?"))
         if key == "camp":
             return t.t("story.journal.camp", name=v.get("name", "?"))
+        if key == "class_change":                                     # D-270 (0.35): 🔄 changed class
+            return t.t("story.journal.class_change", name=v.get("name", "?"))
         if key == "enemy_camp":                                       # D-112: finished it (f=1) or fought there (f=0)
             return t.t("story.journal.enemy_camp" if v.get("f") else "story.journal.enemy_camp_help", x=v.get("x"), y=v.get("y"))
         if key == "title":

@@ -26,8 +26,9 @@ Si cambias esto, revisa:
       guardados antes: empiezan todos los oficios en rango 1 (engine/service/game.py sección "professions";
       tests/test_professions.py). D-112: el 🧭 Explorador guarda aquí su experiencia con el id "explorador" (sube
       explorando; con el rango ve más en el mapa: engine/service/game.py sección "enemy camps"; tests/test_enemy_camps.py)
-    - learned (0.33, D-257): los oficios que el héroe aprendió pagando su primera receta. La 🪓 recolección y la
-      🧭 exploración no se aprenden (learn: auto en content/professions.yaml). Un oficio que no está aquí tiene rango 0:
+    - learned (0.33, D-257): los oficios que el héroe aprendió pagando su primera receta. Solo la 🧭 exploración no se
+      aprende (learn: auto en content/professions.yaml; desde la 0.35, D-272, la 🪓 recolección también se aprende, y quien
+      ya la practicaba la conserva: grandfather). Un oficio que no está aquí tiene rango 0:
       no se hace ninguna receta ni sube, pero la experiencia de antes queda en professions y vuelve al aprenderlo
       (engine/service/game.py _knows, _learn; tests/test_aprender_oficios.py)
     - prof_specs y spec_xp (D-115, D-141): las 🎓 especializaciones de oficio (id de oficio → ids de especialización de
@@ -107,8 +108,10 @@ class Hero:
             Players seen in the last presence.minutes are also listed in their zone (D-96).
         professions: profession xp, profession id (content/professions.yaml) -> xp (D-109). The rank (1-100)
             is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
-        learned: the professions the hero learned by paying their first recipe (0.33, D-257). Gathering and exploration are
-            never learned (learn: auto). A profession not learned has rank 0; its xp from before stays in professions.
+        learned: the professions the hero learned by paying their first recipe (0.33, D-257). Only exploration is never
+            learned (learn: auto; gathering too until 0.35, D-272). A profession not learned has rank 0; its xp stays.
+        class_changes: how many times the hero changed class (0.35, D-270): the first is free, then the price grows
+            (balance.yaml class_change.prices). 0 for heroes saved before it.
         prof_specs: the 🎓 specializations the hero holds (D-115, D-141), profession id -> spec ids in the order chosen (the
             first from rank 25, the second from rank 75; never three). Empty for heroes saved before it.
         spec_xp: mastery of each specialization, spec id -> profession xp earned in its profession while holding it. Kept
@@ -208,6 +211,7 @@ class Hero:
     gear_enchants: dict[str, dict[str, Any]] = field(default_factory=dict)
     guide: dict[str, Any] = field(default_factory=dict)                 # D-193: 🧭 guided path progress (empty = not read yet)
     combo_shapes: list[str] = field(default_factory=list)               # D-229: different chain combos ever cashed (variety)
+    class_changes: int = 0                                              # D-270: class changes done (the first is free)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

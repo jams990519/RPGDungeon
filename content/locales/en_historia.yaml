@@ -125,6 +125,7 @@ story:
     chapter: 🏁 Finished {chapter}.
     guardian: 👑 Defeated {name} for the first time.
     camp: 🏕️ Founded the camp {name}.
+    class_change: "🔄 Changed class: now a {name}."
     title: 🏅 Earned the title {title}.
     rank: ⚜️ {faction} now considers them {rank}.
   bio_title: 📝 Your biography
