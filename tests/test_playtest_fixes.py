@@ -84,20 +84,24 @@ def _camp_ready(service, account="test:1"):
 
 
 def test_leaving_the_camp_name_prompt_cancels_it(service):
+    # [ES] D-269 (0.35): el nombre que se escribe es el del gremio (será el del campamento); nadie funda solo
     make_hero(service)
     _camp_ready(service)
-    assert service.act("test:1", "found").expects_text
+    assert not service.act("test:1", "found").expects_text  # nobody founds alone: no name prompt
+    hero = service._load("test:1")
+    hero.gold = 100
+    service._save(hero)
+    assert service.act("test:1", "gnew").expects_text       # 🛡️ Crear gremio asks its name
     service.act("test:1", "hero")                           # the player goes elsewhere...
     service.text("test:1", "hola")                          # ...and later writes anything
-    assert service.store.get("camp", "3:0") is None
-    assert service._load("test:1").backpack["madera"] == 40
+    assert service.store.get("camp", "3:0") is None and service.store.get("gremio_of", "test:1") is None
+    assert service._load("test:1").backpack["madera"] == 40 and service._load("test:1").gold == 100
 
 
 def test_camp_grow_pages_say_zones_not_gear(service):
+    from test_camps import found_at
     make_hero(service)
-    _camp_ready(service)
-    service.act("test:1", "found")
-    service.text("test:1", "Roble Alto")
+    found_at(service, "test:1", 3, 0)                      # D-269: founded with its guild
     view = service.act("test:1", "grow")
     more = [a for a in view.actions if a.id.startswith("grow:")]
     assert more and "zonas" in more[0].label and "piezas" not in more[0].label

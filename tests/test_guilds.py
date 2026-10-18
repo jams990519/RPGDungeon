@@ -1,5 +1,8 @@
 """Guild of a player camp (D-97, provisional): founding, capacity per level, collective counters, castle.
 
+D-269 (0.35): a new camp is born with its guild (tests/test_gremio_desde_el_inicio.py). These tests use camps founded before
+it (old_camp_at, no guild): the D-97 rules keep working for them (D-64).
+
 [ES] Pruebas del gremio: lo crea el fundador en su campamento (con nombre único), sus miembros son los del
 campamento, el cupo sale del nivel del gremio, los contadores suben al explorar, ganar peleas y recolectar,
 sube cuando cumplen, el castillo pide gremio, los campamentos sin gremio siguen igual y ninguna pantalla pasa
@@ -15,7 +18,7 @@ from engine.hero import Hero
 from engine.service import GameService
 from engine.service.game import HUB_BUTTONS, HUB_KINDS
 from engine.social import guilds as guild_rules
-from test_camps import found_at, place
+from test_camps import old_camp_at as found_at, place     # D-97: camps founded before D-269 (no guild)
 
 HOUR = 3600
 
@@ -148,24 +151,24 @@ def test_members_cap_follows_the_guild_level(service):
     assert service._members_cap(camp) == 2                         # old formula without a guild at level 1
     new_guild(service)
     levels = service.content.balance["guild"]["levels"]
-    assert service._members_cap(camp) == levels[0]["capacity"] == 4   # the guild only adds room
-    for n, name in ((2, "Bram"), (3, "Cora"), (4, "Dara")):
+    assert service._members_cap(camp) == levels[0]["capacity"] == 5   # the guild only adds room (D-269: 4 → 5)
+    for n, name in ((2, "Bram"), (3, "Cora"), (4, "Dara"), (5, "Eric")):
         make_hero(service, f"test:{n}", name)
         join(service, f"test:{n}")
-    make_hero(service, "test:5", "Eric")
-    place(service, "test:5", 6, 0)
-    view = service.act("test:5", "askjoin")                        # 4 of 4: full until the guild rises
+    make_hero(service, "test:6", "Fina")
+    place(service, "test:6", 6, 0)
+    view = service.act("test:6", "askjoin")                        # 5 of 5: full until the guild rises
     assert "lleno" in view.notice and "gremio" in view.notice
-    assert "test:5" not in service.store.get("camp", "6:0").get("requests", [])
+    assert "test:6" not in service.store.get("camp", "6:0").get("requests", [])
     guild = service.store.get("guild", "6:0")
     guild["level"] = 2
     service.store.put("guild", "6:0", guild)
     assert service._members_cap(camp) == levels[1]["capacity"] == 6
-    service.act("test:5", "askjoin")
+    service.act("test:6", "askjoin")
     asks = [v for acc, v in service.tick() if acc == "test:1" and v.kind == "camp_join"]
     service.act("test:1", asks[0].actions[0].id)
-    assert "test:5" in service.store.get("camp", "6:0")["members"]
-    assert any("5 de 6" in line for line in service.act("test:1", "claro").body)
+    assert "test:6" in service.store.get("camp", "6:0")["members"]
+    assert any("6 de 6" in line for line in service.act("test:1", "claro").body)
 
 
 def test_creating_a_guild_never_kicks_anyone(service):
@@ -175,7 +178,7 @@ def test_creating_a_guild_never_kicks_anyone(service):
     for n in range(2, 7):
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
-    new_guild(service)                                             # guild level 1 gives 4: the cap stays 8
+    new_guild(service)                                             # guild level 1 gives 5: the cap stays 8
     camp = service.store.get("camp", "6:0")
     assert len(camp["members"]) == 6 and service._members_cap(camp) == 8
     assert all(service._load(f"test:{n}").camp == "6:0" for n in range(2, 7))
@@ -332,12 +335,14 @@ def test_member_lines_show_when_each_one_last_played(service, clock):
 
 
 def test_gremio_command_and_no_camp(service):
+    # [ES] D-269 (0.35): sin campamento, /gremio abre el gremio desde el primer momento (crear o buscar uno)
     make_hero(service, "test:1", "Lyra")
     assert service.commands()["/gremio"] == "guild"
     view = service.act("test:1", "guild")
-    assert view.kind == "zone" and "campamento" in view.notice
-    assert service.act("test:1", "guildup").kind == "zone"
-    assert service.act("test:1", "guildnew").kind == "zone"
+    assert view.kind == "gremio_none" and ids(view)[:2] == ["gnew", "glist"]
+    assert service.act("test:1", "guildup").kind == "gremio_none"
+    view = service.act("test:1", "guildnew")                         # 🛡️ Crear gremio: the guild from the first moment...
+    assert view.kind == "gremio_none" and "🥉20" in view.notice          # ...costs 🥉20 (a new hero has 🥉10)
 
 
 def test_every_guild_screen_keeps_four_buttons(content):

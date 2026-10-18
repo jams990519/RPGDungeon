@@ -112,12 +112,17 @@ def test_members_contribute_until_it_is_built(service):
     set_hero(service, "test:2", backpack={"madera": 50, "piedra": 50})
     view = service.act("test:2", "upg:fogon")
     record = service._upgrades(KEY)
-    assert "fogon" in record["built"] and "fogon" not in record["works"]
+    assert "fogon" in record["building"] and "fogon" not in record["works"]   # D-269: complete, now it is built with time
     assert service._load("test:2").backpack == {"madera": 47, "piedra": 38}   # never more than it asks
-    assert "Terminaron" in view.notice
+    assert "Materiales completos" in view.notice
     news = [v for acc, v in service.tick() if acc == "test:1"]
     assert news and news[0].kind == "camp_news" and "Fogón" in news[0].body[0]
-    assert "upg:fogon" not in ids(service.act("test:2", "upw"))   # built for ever: no longer a work
+    assert "upg:fogon" not in ids(service.act("test:2", "upw"))   # no longer asks for anything
+    for _ in range(6):                                            # level 1: 1 h with 2 members in the territory
+        service.clock.advance(600)
+        service.act("test:1", "home")
+        service.act("test:2", "home")
+    assert "fogon" in service._upgrades(KEY)["built"] and not service._upgrades(KEY)["building"]   # built for ever
     set_hero(service, "test:2", activity={"kind": "explore", "until": service.clock.now() + 600, "left": 0, "total": 1},
              backpack={"madera": 50, "fibra": 50})
     view = service.act("test:2", "upg:empalizada")              # busy (exploring): nothing is taken
@@ -309,8 +314,7 @@ def test_castle_needs_fifteen_improvements(service):
     castle = next(s["from_level"] for s in service.content.balance["camps"]["stages"] if s["id"] == "castillo")
     camp_at(service, castle - 1)
     place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)
-    new_guild(service)
-    guild = service.store.get("guild", KEY)
+    guild = service.store.get("guild", KEY)                       # D-269: the camp was born with its guild
     guild["level"] = cfg["castle_min_level"]
     service.store.put("guild", KEY, guild)
     for n in range(2, cfg["castle_min_members"] + 1):

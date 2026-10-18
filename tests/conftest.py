@@ -83,3 +83,15 @@ def auto_fights_on(content):
     pruebas las prenden en su contenido de prueba para seguir cuidándolo.
     """
     content.balance["auto_fight"]["enabled"] = True
+
+
+@pytest.fixture
+def instant_works(content):
+    """Tests of what a camp improvement costs and gives (not of its time): built the moment its materials are complete.
+
+    [ES] Desde la 0.35 cada mejora, con sus materiales completos, se construye con el tiempo y los miembros presentes en el
+    territorio (D-269.4, balance.yaml works.minutes_per_level). Las pruebas de costos y beneficios de las obras la ponen en 0,
+    solo en su contenido de prueba: la obra queda construida al completarse, como antes. El tiempo de las obras se prueba en
+    tests/test_gremio_desde_el_inicio.py.
+    """
+    content.balance["works"]["minutes_per_level"] = 0
