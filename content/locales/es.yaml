@@ -2342,7 +2342,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   button: "⚒️ Oficios"
   title: "⚒️ Oficios"
   intro: "Cada oficio sube haciéndolo, del rango 1 al 100, y cada rango abre recetas nuevas. Casi todo lo que se fabrica pide materiales de dos oficios o más."   # [ES] D-257 (0.33): los oficios se aprenden; la lista larga salió
-  none: "Todavía no tienes oficios: recolecta y explora (suben solos) o aprende uno en 🔬 Investigar."
+  none: "Todavía no tienes oficios: recolecta y explora (suben solos) o aprende uno en 🧑‍🏫 Entrenador → 📚 Aprender oficios."
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
   perk_line: "   ✨ Beneficio ahora: {perk}"

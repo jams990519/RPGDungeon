@@ -2862,7 +2862,7 @@ prof:
   button: ⚒️ Professions
   title: ⚒️ Professions
   intro: Each profession improves as you practice it, from rank 1 to 100, and each rank opens new recipes. Almost everything crafted needs materials from two or more professions.
-  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 🔬 Research.'
+  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 🧑‍🏫 Trainer → 📚 Learn professions.'
   line: '{name} · rank {rank} ({title}) {bar}'
   how_line: '   ↳ {how}'
   perk_line: '   ✨ Current perk: {perk}'

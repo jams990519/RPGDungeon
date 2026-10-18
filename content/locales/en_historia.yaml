@@ -383,7 +383,7 @@ story:
       hablar: The anvil rings out from afar. A broad woman, her hair tied back and old burns on her arms, hammers a red-hot iron. It's Brena, the blacksmith.
       fabricar: 'Brena: “Nobody in this Clearing knows how to make anything. Show me you do: craft something at a station. Anything. A plank, a bandage, a potion.”
 
-        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🔬 Research.'
+        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🧑‍🏫 Trainer → 📚 Learn professions.'
       ambar: 'Brena shows you a shard of amber the size of a finger. It hums softly, like a distant beehive. “It turned up in the scrap I bought from Odo. It sings at night. I don''t know what it is.”
 
         🌿 Iria would study it for the Circle of the Threshold.
@@ -456,7 +456,7 @@ story:
       hablar: Brena catches you eyeing the anvil. “You've got workshop hands,” she grunts. “Who taught you?” You don't remember the name, but you do remember the hands.
       hacer: 'Brena: “If you learned something, it shows in the work, not in the talk. Make something at a station and I''ll tell you what school you come from.”
 
-        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🔬 Research.'
+        ⚒️ The stations are in 🏕️ Camp → 🛠️ Craft. If you don''t know any profession yet, learn one in 🧑‍🏫 Trainer → 📚 Learn professions.'
       mostrar: You've made something with your hands. Show it to Brena.
       done: 'Brena turns your work over and goes still. “Only one master taught this way of closing a joint: Teodoro the Tall. He left the Clearing for faraway lands two winters ago. He never came back.”'
     o_aprendiz_2:

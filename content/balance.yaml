@@ -193,6 +193,10 @@ presence:                    # [ES] D-96 (provisional): ver a los otros jugadore
   minutes: 15                # [ES] un jugador "está" en la zona si tocó un botón en los últimos 15 min (o si su héroe explora, recolecta o duerme ahí, aunque tenga el chat cerrado)
   max_listed: 5              # [ES] cuántos nombres muestra 📍 Zona como mucho; el resto sale como "… y N más" (pantallas cortas, D-86)
   cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
+  bonfire_seconds: 60        # [ES] D-265/D-274 (0.35): 👥 Jugadores de la fogata lista a los que tocaron un botón ahí en el último minuto (60 segundos). El contador "N/20" usa la regla de 15 min de arriba (minutes)
+
+bonfire:                     # [ES] D-265 (confirmada; 0.35 trae solo el contador): las fogatas (hoy, la del Claro). El reparto a otras hogueras cuando una se llena llega con las 9 hogueras (0.36)
+  cap: 20                    # [ES] tope de jugadores por fogata (D-265): se muestra como "👥 N/20 en la fogata". Todavía no saca a nadie: el reparto es del 0.36
 
 regen:
   hp_full_minutes: 240        # [ES] pedido del dueño: fuera de combate la vida vuelve sola, de 0 a llena en 4 horas
@@ -448,7 +452,7 @@ guild:                       # [ES] D-97 (provisional): el gremio de un campamen
   castle_min_level: 5        # [ES] para que el campamento pase a castillo (nivel 8 → 9) su gremio tiene que ser de nivel 5 o más...
   castle_min_members: 10     # [ES] ...y tener 10 miembros o más. Sin gremio, un campamento no llega a castillo
   levels:                    # [ES] cupo de miembros de cada nivel y lo que tienen que hacer entre todos, después de entrar, para subir al siguiente (~×1,6 por nivel). Lo que sobra pasa al nivel siguiente
-    - {capacity: 4, needs: {explorations: 40, victories: 20, gathered: 100}}     # [ES] nivel 1 → 2
+    - {capacity: 5, needs: {explorations: 40, victories: 20, gathered: 100}}     # [ES] nivel 1 → 2. D-269 (0.35): 4 → 5, el cupo del gremio antes del campamento (gremio.members_before_camp), para que al fundar quepan todos
     - {capacity: 6, needs: {explorations: 65, victories: 32, gathered: 160}}     # [ES] nivel 2 → 3
     - {capacity: 8, needs: {explorations: 100, victories: 50, gathered: 260}}    # [ES] nivel 3 → 4
     - {capacity: 12, needs: {explorations: 165, victories: 80, gathered: 410}}   # [ES] nivel 4 → 5 (el mínimo para castillo)
@@ -456,6 +460,21 @@ guild:                       # [ES] D-97 (provisional): el gremio de un campamen
     - {capacity: 20, needs: {explorations: 420, victories: 210, gathered: 1050}} # [ES] nivel 6 → 7
     - {capacity: 25, needs: {explorations: 670, victories: 335, gathered: 1680}} # [ES] nivel 7 → 8
     - {capacity: 30, needs: {}}                                                  # [ES] nivel 8: el último por ahora. Solo se agregan niveles al final
+
+gremio:                      # [ES] D-269 (confirmada; números del dueño salvo los marcados) y D-274 (provisional): el gremio desde el primer momento, antes de tener campamento. Al fundar, pasa a ser el gremio del campamento (bloque guild de arriba)
+  found_coins: 20            # [ES] crear un gremio cuesta 🥉20 (D-269, el dueño). Un gremio por héroe
+  members_before_camp: 5     # [ES] caben 5 antes de tener campamento (D-269, el dueño); después manda el cupo del campamento (guild.levels)
+  message_max_chars: 200     # [ES] largo máximo de un 📢 mensaje al gremio; lo que pasa se corta (Claude)
+  messages_kept: 5           # [ES] cuántos mensajes guarda y muestra la pantalla del gremio (Claude)
+  list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
+  found_min_members: 2       # [ES] miembros del gremio que tienen que estar en la zona para empezar a fundar (D-269, el dueño)
+  found_minutes: 60          # [ES] fundar tarda 60 min con found_min_members presentes; con más, menos: tiempo = 60 × 2 ÷ presentes (4 → 30 min). Con 1, el doble; con nadie, se pausa (D-269, D-274)
+  found_floor_minutes: 10    # [ES] nunca menos de 10 min, por más miembros que haya (D-269, el dueño)
+
+works:                       # [ES] D-269 (4) y D-274 (4): cada 🔨 mejora del campamento, con sus materiales completos, se construye con el tiempo (🏗️ obra en curso). Antes se terminaba al instante
+  minutes_per_level: 60      # [ES] 60 min por nivel de la obra con members_ref miembros dentro del territorio del campamento: tiempo = 60 × nivel × 2 ÷ presentes (D-274, Claude sobre la regla del dueño)
+  members_ref: 2             # [ES] con 2 presentes tarda lo de arriba; con 1, el doble; con nadie, se pausa
+  floor_minutes: 10          # [ES] nunca menos de 10 min por obra (la misma regla que fundar)
 
 upgrades:                    # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo, costos y efectos en content/camp_upgrades.yaml). El Claro no tiene: no crece (D-98). Números orientativos: se ajustan en la beta
   castle_min_built: 15       # [ES] para pasar del nivel 8 al 9 (castillo) el campamento necesita 15 mejoras construidas o más (hay 20). Se suma a la despensa, los 🪎 cofres y el gremio (D-97). Los castillos que ya existen siguen creciendo

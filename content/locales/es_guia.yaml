@@ -110,7 +110,8 @@ guide:
       intro: "🏕️ Ya estás en el Claro. Abre 🏕️ Campamento para ver lo que puedes hacer aquí."
       learn: |-
         🏕️ El campamento es tu base: aquí está lo que no lleva el héroe encima.
-        🍲 Cocinar, 🔬 investigar y ⚒️ fabricar: los oficios y sus estaciones.
+        🍲 Cocinar y ⚒️ fabricar: los oficios y sus estaciones.
+        👥 Jugadores: quién está en la fogata y tu 🛡️ gremio.
         🧑‍🏫 Entrenador: te presenta los oficios.
         🏪 Mercader: compra lo que te sobra y vende pociones, vendas y provisiones.
         🛏️ Posada: duermes un rato y despiertas curado.
@@ -141,15 +142,16 @@ guide:
         🏕️ Tu propio campamento
         • El Claro no crece. Tu campamento, sí: sube de nivel, se mejora y llega a castillo.
         • Muévete una o dos zonas más, lejos del Claro: te aviso cuando encuentres un buen lugar.
-      learn: "🏕️ ¡Encontraste un buen lugar para tu propio campamento! Aquí puedes fundarlo y ponerle nombre."
-    found:                     # [ES] fundarlo (el flujo de siempre pide el nombre) y su tutorial corto
+      learn: "🏕️ ¡Encontraste un buen lugar para tu propio campamento! Aquí lo puede fundar tu 🛡️ gremio."
+    found:                     # [ES] fundarlo con el gremio (D-269: el líder, 2 miembros aquí, el fondo paga, tarda) y su tutorial corto
       name: "Fundar tu campamento"
-      task: "funda tu campamento: 🏕️ Campamento → 🏕️ Fundar campamento aquí."
+      task: "funda tu campamento con tu gremio: 🏕️ Campamento → 🏕️ Fundar campamento aquí."
       intro: |-
         🏕️ Fundar tu campamento
+        Los campamentos los funda un 🛡️ gremio (👥 Jugadores → 🛡️ Gremio): su líder, con 2 miembros en la zona; el 💰 fondo paga y tarda 1 h con 2.
         Para fundarlo en esta zona necesitas:
         {needs}
-        Cuando tengas todo, toca 🏕️ Campamento → 🏕️ Fundar campamento aquí y escríbele un nombre.
+        Cuando tengas todo, toca 🏕️ Campamento → 🏕️ Fundar campamento aquí. Se llamará como tu gremio.
       learn: |-
         🏕️ ¡Ya tienes campamento! Esto es lo que puedes hacer aquí:
         🔨 Mejoras: aquí está el botón de mejora. Construyes fogón, cabañas, herrería y más.
