@@ -92,8 +92,6 @@ class Zone:
     name_index: tuple[int, int]
 
 
-BONFIRES: tuple[tuple[int, int], ...] = ((0, 0),)          # D-265: set by configure_bonfires (the Claro first)
-_BONFIRE_SET: frozenset[tuple[int, int]] = frozenset(BONFIRES)
 
 
 def bonfire_layout(spacing: int, rings: int) -> tuple[tuple[int, int], ...]:
@@ -114,6 +112,10 @@ def bonfire_layout(spacing: int, rings: int) -> tuple[tuple[int, int], ...]:
         return (max(abs(x), abs(y)), abs(x) + abs(y), side_order.get(sign, -1))
 
     return tuple(sorted(cells, key=order))
+
+
+BONFIRES: tuple[tuple[int, int], ...] = bonfire_layout(12, 1)   # D-265: the default 9; configure_bonfires sets them
+_BONFIRE_SET: frozenset[tuple[int, int]] = frozenset(BONFIRES)
 
 
 def configure_bonfires(spacing: int, rings: int) -> None:

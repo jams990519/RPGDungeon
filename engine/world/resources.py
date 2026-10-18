@@ -44,6 +44,7 @@ from __future__ import annotations
 from typing import Any
 
 from engine.core import hash_unit
+from engine.world.mapgen import is_bonfire               # D-265: every bonfire has the Claro's fixed resources
 
 
 def _noise(seed: int, channel: str, x: int, y: int, scale: int) -> float:
@@ -64,7 +65,7 @@ def zone_resources(seed: int, x: int, y: int, biome: str, balance: dict[str, Any
     Si cambia, afecta: qué se consigue en cada lugar del mundo.
     """
     cfg = balance["resources"]
-    fixed = cfg.get("fixed", {}).get(f"{x}:{y}")
+    fixed = cfg.get("fixed", {}).get("0:0" if is_bonfire(x, y) else f"{x}:{y}")   # D-265: the 9 bonfires, like the Claro
     if fixed:
         return dict(fixed)
     affinity = biomes.get(biome, {}).get("gather", {})

@@ -1249,7 +1249,8 @@ menu:
   back: "↩️ Volver"
   continue: "▶️ Continuar"
   places: "📒 Lugares"
-  options: "⚙️ Opciones"           # [ES] D-114: último botón del menú de abajo (D-46 deja hasta 6; desde D-190 son 5)
+  guild: "🛡️ Gremio"               # [ES] D-281 (0.37, pedido del dueño): en el menú de abajo, al lado de ⚙️ Opciones
+  options: "⚙️ Opciones"           # [ES] D-114: último botón del menú de abajo (D-46 deja hasta 6; desde la 0.37 son 6, con 🛡️ Gremio)
   story: "📖 Historia"            # [ES] D-190: ya no está en el menú de abajo; queda para entender el botón de un teclado viejo (GameService.text)
 
 options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho. D-178: cada interruptor lleva palomita (✅ activo, ☑️ apagado)

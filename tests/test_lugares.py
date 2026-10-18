@@ -79,7 +79,7 @@ def test_a_code_asks_first_too(service):
     view = service.text("test:1", "/ir1")
     assert view.kind == "place_confirm" and view.actions[0].id == f"goto:{first[1]}:{first[2]}"
     assert service.text("test:1", "/ir_1").kind == "place_confirm"
-    view = service.text("test:1", "/ir9")                                             # not on the list: back to it
+    view = service.text("test:1", "/ir99")                                            # not on the list: back to it
     assert view.kind == "places" and view.notice
     assert not service._load("test:1").activity
     assert not service.texts.missing

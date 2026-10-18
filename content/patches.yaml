@@ -645,17 +645,19 @@ v0_36_1:
 
 v0_37:
   version: "0.37"
-  title: "🔥 Lost Realms 0.37: nueve hogueras"
-  title_en: "🔥 Lost Realms 0.37: nine campfires"
+  title: "🔥 Lost Realms 0.37: nueve hogueras y 🛡️ Gremio en el menú"
+  title_en: "🔥 Lost Realms 0.37: nine campfires and 🛡️ Guild in the menu"
   notes:
     - "🔥 Ahora hay 9 hogueras: el Claro y 8 más a 12 zonas, la Fogata del Norte, del Este, del Sur, del Oeste y las 4 de las esquinas. Cada una tiene todo: Mercader, Posada, Entrenador, Tablón, los Personajes y 👥 Jugadores. La despensa del Claro es una sola para todas."
     - "👥 Cada hoguera recibe hasta 20 jugadores. Los nuevos nacen en la más cercana al Claro que tenga lugar. Si viajas a una llena, sigues solo hasta la más cercana con lugar. A nadie que ya está se lo mueve."
     - "🛡️ El peligro se cuenta desde la hoguera más cercana: alrededor de cada una vuelve a ser tierra fácil (mazmorras, campamentos enemigos y recursos), y se pone difícil al alejarte."
     - "📒 Las 9 hogueras están en 📒 Lugares desde el primer día, aunque nunca hayas ido, y puedes viajar a cualquiera."
+    - "🛡️ Nuevo botón Gremio en el menú de abajo, al lado de ⚙️ Opciones: tu gremio a un toque, desde cualquier lugar."
     - "⚠️ Cerca de las hogueras nuevas el mapa cambió: algunas mazmorras y nodos de recursos de esas zonas se movieron."
   notes_en:
     - "🔥 There are now 9 campfires: the Clearing and 8 more, 12 zones away: the North, East, South and West Campfires and the 4 in the corners. Each one has everything: Merchant, Inn, Trainer, Board, the Characters and 👥 Players. The Clearing's pantry is one for all of them."
     - "👥 Each campfire takes up to 20 players. New players are born at the one nearest the Clearing that has room. If you travel to a full one, you go on by yourself to the nearest with room. Nobody already there is moved."
     - "🛡️ Danger counts from the nearest campfire: around each one the land is easy again (dungeons, enemy camps and resources), and it gets harder as you go away."
     - "📒 The 9 campfires are in 📒 Places from day one, even if you have never been there, and you can travel to any of them."
+    - "🛡️ New Guild button in the bottom menu, next to ⚙️ Options: your guild one tap away, from anywhere."
     - "⚠️ Near the new campfires the map changed: some dungeons and resource nodes in those zones moved."

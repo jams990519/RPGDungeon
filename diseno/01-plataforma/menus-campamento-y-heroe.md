@@ -12,7 +12,7 @@ Cómo se ordenan las pantallas principales del juego desde la 0.29: el menú de 
 
 ## 1. El menú de abajo
 
-5 botones, de 2 en 2 (filas de 2, 2 y 1): **📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · ⚙️ Opciones**.
+6 botones, de 2 en 2 (filas de 2, 2 y 2): **📍 Zona · 🧭 Explorar · 🏕️ Campamento · 👤 Héroe · 🛡️ Gremio · ⚙️ Opciones**. 🛡️ Gremio entró en la 0.37, al lado de ⚙️ Opciones (D-281, pedido del dueño: "para que se pueda ver").
 
 - **📖 Historia salió** (D-190): la historia ahora te guía mientras juegas. Lo que estaba ahí se repartió (E-130): el 📔 Diario con 🎯 Misiones y ⚜️ Facciones pasó a 👤 Héroe; el 📜 Tablón de encargos y 🧑 Personajes, a 🏕️ Campamento.
 - **Nada viejo se rompe:** el botón 📖 Historia de un teclado viejo, /historia y el texto "📖 Historia" abren el 📔 Diario con un aviso de una línea que dice dónde quedó todo.

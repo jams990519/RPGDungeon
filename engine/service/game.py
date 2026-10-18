@@ -843,11 +843,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """Global navigation shown by every client outside the screen (in Telegram, the bottom keyboard): 5 buttons.
 
         [ES]
-        Qué hace: da el menú fijo: 📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe y ⚙️ Opciones (D-114). D-190 borró
+        Qué hace: da el menú fijo: 📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe, 🛡️ Gremio y ⚙️ Opciones (D-114; 🛡️ Gremio,
+        D-281, 0.37: pedido del dueño, "al lado del botón de opciones pon el botón de gremio para que se pueda ver"). D-190 borró
         📖 Historia (era el 6.º, D-117): la historia ahora es el camino guiado, el 📔 Diario está en 👤 Héroe y el 📜 Tablón en
         🏕️ Campamento. El botón viejo y /historia siguen respondiendo ("story" abre el diario con un aviso; el texto
         "📖 Historia" de un teclado viejo lo entiende text()). D-46 deja hasta 6. ⚙️ Opciones sigue siendo el último.
-        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 5 quedan filas de 2, 2 y 1).
+        La llaman: los adaptadores (Telegram lo pone en el teclado de abajo, de 2 en 2: con 6 quedan filas de 2, 2 y 2, y
+        🛡️ Gremio queda al lado de ⚙️ Opciones).
         D-250: con account_id, el menú sale en el idioma de ese jugador (Telegram arma su teclado así).
         Si cambia, afecta: la navegación de todos los clientes (tests/test_buttons.py, tests/test_options.py y
         tests/test_menus_y_dudas.py miran el menú).
@@ -858,6 +860,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         return [Action(id="home", label=t.t("menu.zone")), Action(id="explore_menu", label=t.t("menu.explore")),
                 Action(id="claro", label=t.t("menu.camp")), Action(id="hero", label=t.t("menu.hero")),
+                Action(id="guild", label=t.t("menu.guild")),                     # D-281: next to ⚙️ Opciones
                 Action(id="options", label=t.t("menu.options"))]
 
     def menu_labels(self) -> dict[str, str]:
@@ -869,7 +872,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Si cambia, afecta: qué texto escrito se entiende como un botón del menú.
         """
         keys = {"home": "menu.zone", "explore_menu": "menu.explore", "claro": "menu.camp", "hero": "menu.hero",
-                "options": "menu.options"}
+                "guild": "menu.guild", "options": "menu.options"}
         return {label: action for action, key in keys.items() for label in self.texts.all_languages(key)}
 
     def say(self, account_id: str | None, key: str, lang_hint: str | None = None, **values: Any) -> str:
@@ -2818,7 +2821,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             lines = [t.t("hub.cook", rank=cook_rank) if COOK_PROFESSION in stations or (camp is None and not hero.activity)
                      else t.t("hub.cook_none")]
         if camp is None:                                # D-274.1: in the Claro, 👥 Jugadores took 🔬 Investigar's place
-            present = self._bonfire_count(hero.x, hero.y)   # D-265: the bonfire you stand at
+            present = self._bonfire_count(hero.x, hero.y, hero.id) + 1   # D-265: the bonfire you stand at, you included
             lines.append(t.t("hub.players", n=present, cap=int(self.content.balance.get("bonfire", {}).get("cap", 20))))
         else:
             key = f"{hero.x}:{hero.y}"
