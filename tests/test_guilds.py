@@ -91,7 +91,7 @@ def test_founder_creates_the_guild_at_the_camp(service):
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
     assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     screen = service.act("test:1", "guild")
-    assert screen.kind == "guild" and ids(screen) == ["guildnew", "rename", "campmgmt"]
+    assert screen.kind == "guild" and ids(screen) == ["guildnew", "gzones", "rename", "campmgmt"]   # D-282: 🗺️ Zonas
     assert any("Lyra" in line and "activo" in line for line in screen.body)
     member = service.act("test:2", "guild")                       # a member sees it, but cannot create it
     assert ids(member) == ["leave", "campmgmt"]

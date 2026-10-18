@@ -178,7 +178,7 @@ faq:
     a: 'Fights go in rounds and you have 4 buttons: ⚔️ Basic (costs 0 and gives +1 energy), Builder (2), Primer (3) and 💥 Spender (6). You start with 5 energy and gain 2 per turn. Each button in your role''s order adds a mark and the Spender cashes them in (up to +50%); breaking the order snaps the chain. 🛡️ Defend or a potion cost 1 and use up your turn; 🏃 Flee is in 🎒 Backpack. Fighting doesn''t cost ⚡.'
   d22:
     q: 💀 What happens if I lose?
-    a: 'If you fall, you wake up gravely wounded: you lose {defeat_pct}% of your coins and your health comes back very slowly (0 to full in {downed_full}). A potion or the 🛏️ Inn fixes it sooner. You don''t lose levels, gear or zones.'
+    a: 'If you fall, you wake up gravely wounded: you lose {defeat_pct}% of your coins and your health comes back on its own, as always (0 to full in {downed_full}). A potion or the 🛏️ Inn fixes it sooner. You don''t lose levels, gear or zones.'
   d23:
     q: ❤️ How do I recover health?
     a: 'Out of combat your health comes back on its own: 0 to full in {hp_full}. Faster: 🧪 potions and bandages (🎒 Backpack → 🧪 Potions), the Clearing''s 🛏️ Inn or your camp''s 🛏️ Shelter. In 👤 Hero → 🩺 Health you see how long is left.'
