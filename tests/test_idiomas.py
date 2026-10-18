@@ -72,7 +72,7 @@ def test_typing_a_name_right_away_keeps_spanish(service):
 def test_an_english_hero_plays_everything_in_english(service):
     english_hero(service)
     labels = [a.label for a in service.menu("test:1")]
-    assert labels == ["📍 Zone", "🧭 Explore", "🏕️ Camp", "👤 Hero", "⚙️ Options"]
+    assert labels == ["📍 Zone", "🧭 Explore", "🏕️ Camp", "👤 Hero", "🛡️ Guild", "⚙️ Options"]
     seen = []
     for action in ("home", "explore_menu", "claro", "hero", "options", "stats", "health", "bag", "wallet", "gear",
                    "talents", "map", "places", "oficios", "dudas", "trainer", "journal", "board", "guide"):

@@ -71,7 +71,7 @@ MENU_LABEL = "📍 Juego"  # old single-button keyboard; still accepted
 
 
 def menu_keyboard(service: GameService, account: str | None = None) -> ReplyKeyboardMarkup:
-    """Bottom keyboard built from the engine's global menu, 2 per row, in the player's language. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe y ⚙️ Opciones, D-114; D-190 quitó 📖 Historia: 2 por fila, así 5 botones son filas de 2, 2 y 1 que entran en el celular; D-46 deja hasta 6), en el idioma del jugador (D-250). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego", con el aviso del parche y al cambiar de idioma. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
+    """Bottom keyboard built from the engine's global menu, 2 per row, in the player's language. [ES] Qué hace: arma el menú fijo de abajo (Zona, Explorar, Campamento, Héroe, 🛡️ Gremio y ⚙️ Opciones, D-114, D-281; D-190 quitó 📖 Historia: 2 por fila, así 6 botones son filas de 2, 2 y 2 que entran en el celular y 🛡️ Gremio queda al lado de ⚙️ Opciones; D-46 deja hasta 6), en el idioma del jugador (D-250). Los jugadores reciben el teclado nuevo con /start, con "📍 Juego", con el aviso del parche y al cambiar de idioma. La llaman: los manejadores. Si cambia, afecta: la navegación en Telegram (tests/test_options.py)."""
     labels = [KeyboardButton(text=a.label) for a in service.menu(account)]
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)

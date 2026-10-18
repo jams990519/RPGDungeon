@@ -40,7 +40,7 @@ players:
   card_guild: "🛡️ Gremio: {name}"
   card_no_guild: "🛡️ Sin gremio"
   card_seen: "🕒 {ago}"
-  card_here: "🔥 En la fogata"
+  card_here: "🔥 En {place}"   # [ES] D-265 (0.37): cuál de las 9 hogueras
   card_code: "🆔 Código de jugador: {code} · para invitarlo: /inv_{code}"   # [ES] D-280 (0.36.1)
 
 gremio:
@@ -201,6 +201,9 @@ gremio:
   code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador de su campamento."
   cinv_title: "🏕️ Te invitan a un campamento"
   cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
+
+bonfire:                       # [ES] D-265 (0.37): una hoguera llena manda a los que llegan a la más cercana con lugar
+  full_reroute: "🔥 {name} está llena ({cap} jugadores): sigues hacia {next}, la hoguera más cercana con lugar."
 
 works:
   title: "🏗️ Obras en curso:"

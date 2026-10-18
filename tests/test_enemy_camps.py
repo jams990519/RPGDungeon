@@ -376,7 +376,7 @@ def test_explorer_rank_decides_which_camps_you_see(service):
 
 def place_lines(view):
     """The places listed in 📒 Lugares, each with its /irN code (D-223)."""
-    return [line for line in view.body if re.search(r"/ir\d+$", line)]
+    return [line for line in view.body if re.search(r"/ir\d+$", line) and "🔥" not in line]   # D-277: the bonfires, always
 
 
 def test_places_lists_more_from_explorer_rank_10(service):

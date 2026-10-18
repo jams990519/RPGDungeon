@@ -59,7 +59,7 @@ def amount(goal: dict[str, Any], kind: str, data: dict[str, Any]) -> int:
 
     [ES]
     Qué hace: dice cuánto suma una cosa que pasó en el juego a un objetivo. Explorar suma 1 por vuelta (con
-    "claro: true", solo explorando desde el Claro; con "outside: true", solo fuera de él). Recolectar suma las
+    "claro: true", solo explorando desde el Claro o cualquier hoguera, Lejanía 0, desde la 0.37; con "outside: true", solo fuera de él). Recolectar suma las
     unidades del material pedido (o todas). Ganar suma 1 si la pelea cumple el bioma o es una presa de 🏹 Cazar,
     si así lo pide. Fabricar suma las veces hechas; vender, las cosas vendidas; llegar a un lugar, 1 si es el pedido
     (la guarida, una Lejanía o unas coordenadas); hablar, 1 con el personaje justo; aportar a la despensa, las
@@ -69,7 +69,7 @@ def amount(goal: dict[str, Any], kind: str, data: dict[str, Any]) -> int:
     """
     want = goal.get("kind")
     if want == "explore" and kind == "explore":
-        if goal.get("claro") and (data.get("x"), data.get("y")) != (0, 0):
+        if goal.get("claro") and int(data.get("lejania", 0)) != 0:      # D-265: from any of the 9 bonfires (Lejanía 0)
             return 0
         if goal.get("outside") and int(data.get("lejania", 0)) < 1:
             return 0

@@ -84,6 +84,7 @@ from engine.core.rng import hash_unit
 from engine.hero import Hero
 from engine.messaging import Action, View
 from engine.social import guilds as guild_rules
+from engine.world import mapgen                          # D-265: the 9 bonfires
 
 # Typed codes of the guild screens. [ES] /j1 (o /p1 en inglés): la tarjeta de un jugador de 👥 Jugadores; /g1: un gremio de
 # 🔎 Buscar gremio; /m1: un miembro de tu gremio; /f02: depositar en el fondo todo lo que llevas del recurso 02 (su código de
@@ -331,15 +332,15 @@ class GremioMixin:
         Qué hace: la pantalla 👥 Jugadores de la fogata (D-274.1: reemplaza a 🔬 Investigar en el menú del Claro). Lista a los que
         tocaron un botón en la fogata en el último minuto (presence.bonfire_seconds) con su clase, nivel y gremio, cada uno con su
         código (/j1, /j2…: su tarjeta), y el contador "👥 N/20 en la fogata" (N con la regla de 15 min de 📍 Zona, D-274.2; 20 es
-        bonfire.cap: el reparto a otras hogueras llega con el 0.37). Botones: 🛡️ Gremio, 🔄 Actualizar y ↩️ Volver.
+        bonfire.cap; desde la 0.37, en cualquiera de las 9 hogueras y con el reparto de D-265). Botones: 🛡️ Gremio, 🔄 Actualizar y ↩️ Volver.
         La llaman: 👥 Jugadores del Claro, /jugadores y /players. Si cambia, afecta: tests/test_gremio_desde_el_inicio.py.
         """
         t = self.texts
-        if (hero.x, hero.y) != (0, 0):
+        if not mapgen.is_bonfire(hero.x, hero.y):       # D-265: any of the 9 bonfires
             return self._main_view(hero, notice=t.t("players.only_bonfire"))
         now = self.clock.now()
         window = self._seconds(float(self.content.balance["presence"].get("bonfire_seconds", 60)) / 60)
-        present = self._zone_players(0, 0, exclude=hero.id)
+        present = self._zone_players(hero.x, hero.y, exclude=hero.id)
         cap = int(self.content.balance.get("bonfire", {}).get("cap", 20))
         recent = [p for p in present if p["seen"] >= now - window][:cap]
         body = [t.t("players.intro"), "", t.t("players.count", n=len(present) + 1, cap=cap), ""]
@@ -379,8 +380,8 @@ class GremioMixin:
                 t.t("players.card_class", cls=self._class_label(data), level=other.level),
                 t.t("players.card_guild", name=guild) if guild else t.t("players.card_no_guild"),
                 t.t("players.card_seen", ago=self._ago(other.seen_at))]
-        if (other.x, other.y) == (0, 0):
-            body.append(t.t("players.card_here"))
+        if mapgen.is_bonfire(other.x, other.y):
+            body.append(t.t("players.card_here", place=self._zone_name(self._zone(other.x, other.y))))
         body.append(t.t("players.card_code", code=self.player_code(account)))   # D-280: /inv_<code>
         actions = []
         mine = self._my_gremio(hero)
@@ -477,7 +478,7 @@ class GremioMixin:
 
     def _gremio_back(self, hero: Hero) -> str:
         """↩️ Volver of the guild: 👥 Jugadores at the bonfire, else 📍 Zona."""
-        return "players" if (hero.x, hero.y) == (0, 0) and not hero.activity else "home"
+        return "players" if mapgen.is_bonfire(hero.x, hero.y) and not hero.activity else "home"
 
     def _gremio_member_line(self, n: int, account: str, record: dict[str, Any], hero: Hero) -> str:
         """"/m1 👑 Lyra (nv 3) · 🟢 en línea · Colinas (5, 2) · 🔎 explorando"."""

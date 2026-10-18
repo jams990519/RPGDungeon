@@ -166,7 +166,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 2. **0.35 (publicada el 18-oct):** cambio de clase con precios (D-270), solo el Explorador sube solo (D-272) y el 💬 Feedback llega al chat del equipo con su @, tipo, prioridad y pasos con botones (D-275).
 3. **0.36 (publicada el 18-oct):** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programó un agente en una copia aparte (`engine/service/gremio.py`); las reglas chicas que decidió Claude están en D-276 (provisional) y se le preguntan al dueño (E-225).
 4. **0.36.1 (publicada el 18-oct):** coordenadas en todo lugar y /ir x y (D-278), 🛡️ Gremio en cualquier lugar (D-279) e invitar con /inv_ y el código de jugador (D-280).
-5. **0.37:** las 9 hogueras con tope de 20 y el desborde (D-265). Cómo, ya decidido (D-277): el peligro desde la hoguera más cercana, las 9 visibles desde el inicio, nombres por su lado y una sola despensa.
+5. **0.37 (publicada el 18-oct):** las 9 hogueras con tope de 20 y el desborde (D-265). Cómo, ya decidido (D-277): el peligro desde la hoguera más cercana, las 9 visibles desde el inicio, nombres por su lado y una sola despensa.
 6. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 

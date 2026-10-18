@@ -17,10 +17,10 @@ def ids(view):
     return [a.id for a in view.actions]
 
 
-def test_bottom_menu_has_five_buttons_without_story(service):
+def test_bottom_menu_has_six_buttons_without_story(service):
     make_hero(service)
     menu = service.menu()
-    assert [m.id for m in menu] == ["home", "explore_menu", "claro", "hero", "options"]
+    assert [m.id for m in menu] == ["home", "explore_menu", "claro", "hero", "guild", "options"]   # D-281: 🛡️ Gremio
     assert "story" not in [m.id for m in menu] and menu[-1].label == "⚙️ Opciones"
     assert service.commands()["/dudas"] == "dudas" and service.commands()["/historia"] == "story"
 

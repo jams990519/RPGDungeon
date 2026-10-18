@@ -60,6 +60,11 @@ def _dungeon_key(cfg: dict[str, Any] | None) -> tuple:
             int(cfg["spacing"]), float(cfg.get("third_chance", 0.0)))
 
 
+def clear_cache() -> None:
+    """Forget the stretches already worked out: the service calls it when the bonfires change (D-265, mapgen.lejania)."""
+    _stretch_nodes.cache_clear()
+
+
 @lru_cache(maxsize=8192)
 def _stretch_nodes(seed: int, bx: int, by: int, size: int, low: int, high: int, spacing: int, min_lejania: int,
                    excluded: tuple[tuple[int, int], ...], dungeon: tuple, dungeon_excluded: tuple[tuple[int, int], ...]

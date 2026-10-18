@@ -111,8 +111,8 @@ def test_zones_bring_4_to_6_land_resources_and_the_base_ones_never_move(content)
             own = terrain_resources(7, x, y, zone.biome, base, content.balance, content.biomes)
             assert land == {**base, **own}
             assert found == service._zone_resources(x, y)                   # always the same for the same seed
-            if (x, y) == (0, 0):
-                assert land == {"madera": 1.0, "fibra": 0.8}                 # the Claro: only its fixed ones
+            if service._territory(x, y) == {"claro": True} and zone.biome == "claro":
+                assert land == {"madera": 1.0, "fibra": 0.8}                 # the Claro and every bonfire (D-265): its fixed ones
                 continue
             assert 4 <= len(land) <= 6, (x, y, land)
             assert 1 <= len(own) <= 3 and set(own) <= every_own, (x, y)

@@ -12,11 +12,12 @@ def test_generation_is_deterministic_and_borderless():
     a = zone_at(99, 1234, -5678)
     b = zone_at(99, 1234, -5678)
     assert a == b
-    assert a.lejania == 5678 and a.ring == 10
+    assert a.lejania == 5666 and a.ring == 10        # D-277 (0.37): from the nearest bonfire, (12, -12)
 
 
 def test_lejania_and_ring():
-    assert lejania(3, -7) == 7
+    assert lejania(3, -7) == 5                       # D-277 (0.37): from the nearest bonfire, the South one at (0, -12)
+    assert lejania(3, -2) == 3 and lejania(12, 12) == 0
     assert ring(1) == 1 and ring(3) == 1 and ring(4) == 2 and ring(100) == 10
 
 

@@ -1211,7 +1211,17 @@ item:
 
 world:
   claro_name: "El Claro"
-  place: "{name} ({x}, {y})"   # [ES] D-278 (0.36.1, pedido del dueño): todo lugar que nombra el juego lleva sus coordenadas (_place_label)
+  place: "{name} ({x}, {y})"
+  bonfire_terrain: "Hoguera"          # [ES] D-265 (0.37): el terreno de las hogueras que no son el Claro
+  bonfire_name:                # [ES] D-277 (0.37): las 8 hogueras de alrededor del Claro se llaman por su lado
+    n: "Fogata del Norte"
+    ne: "Fogata del Noreste"
+    e: "Fogata del Este"
+    se: "Fogata del Sureste"
+    s: "Fogata del Sur"
+    sw: "Fogata del Suroeste"
+    w: "Fogata del Oeste"
+    nw: "Fogata del Noroeste"   # [ES] D-278 (0.36.1, pedido del dueño): todo lugar que nombra el juego lleva sus coordenadas (_place_label)
   name_first: ["Vado", "Cerro", "Hondonada", "Llano", "Paso", "Loma", "Fuente", "Cañada", "Risco", "Valle", "Hoya", "Collado"]
   name_second: ["Gris", "de las Cenizas", "Quebrado", "del Cuervo", "Hundido", "Callado", "de Hierro", "Viejo", "Rojo", "del Eco", "Ahogado", "de los Huesos"]
   name_format: "{first} {second}"     # D-250: el orden de las dos partes del nombre de zona (en inglés, "{second} {first}")
@@ -1239,7 +1249,8 @@ menu:
   back: "↩️ Volver"
   continue: "▶️ Continuar"
   places: "📒 Lugares"
-  options: "⚙️ Opciones"           # [ES] D-114: último botón del menú de abajo (D-46 deja hasta 6; desde D-190 son 5)
+  guild: "🛡️ Gremio"               # [ES] D-281 (0.37, pedido del dueño): en el menú de abajo, al lado de ⚙️ Opciones
+  options: "⚙️ Opciones"           # [ES] D-114: último botón del menú de abajo (D-46 deja hasta 6; desde la 0.37 son 6, con 🛡️ Gremio)
   story: "📖 Historia"            # [ES] D-190: ya no está en el menú de abajo; queda para entender el botón de un teclado viejo (GameService.text)
 
 options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opciones (menú de abajo y /opciones): qué pasa y qué no. 4 botones como mucho. D-178: cada interruptor lleva palomita (✅ activo, ☑️ apagado)
@@ -1347,7 +1358,7 @@ travel:
   started: "🚶 Te pones en marcha. Tardarás {time}."
   on_the_way: "Vas hacia {where} ({dir})."
   remaining: "⏳ Faltan {time}."
-  arrived: "📍 Llegaste a {name} ({biome})."
+  arrived: "📍 Llegaste a {name} · {biome}."   # [ES] D-278 (0.36.1): el nombre ya trae sus coordenadas
   discovered: "🧭 ¡Nadie había pisado esta zona! Queda en el mapa con tu nombre."
   discovered_named: "🧭 ¡Nadie había pisado {name}! Queda en el mapa con tu nombre."
   interrupted: "⛔ Tu viaje se corta en {name}."
