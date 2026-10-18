@@ -106,3 +106,29 @@ def test_guild_zones_read_well_in_english(service):
     view = service.act("test:1", "gzones")
     assert view.title == "🗺️ Guild zones" and "(2, 0)" in text(view)
     assert not service.texts.fallbacks.get("en")
+
+
+def test_who_leaves_keeps_only_what_it_explored(service):
+    # [ES] D-283 (pedido del dueño): si la persona sale del gremio, solo se mantiene con la información que conoce
+    guild_of_two(service)
+    place(service, "test:2", 3, 0, exploration={"3:0": 100, "4:0": 60})
+    place(service, "test:1", 0, 0, exploration={"5:0": 40})
+    assert service._known_pct(service._load("test:1"), 3, 0) == 100
+    service.act("test:2", "gleave!")                                              # Bram leaves the guild
+    leaver = service._load("test:2")
+    assert service._mates(leaver) == [] and service._known_pct(leaver, 3, 0) == 100   # its own exploration stays
+    assert service._known_pct(leaver, 5, 0) == 0                                  # what the others knew is gone for it
+    assert service._known_pct(service._load("test:1"), 3, 0) == 0                 # and the one left loses what it gave
+
+
+def test_guild_mates_are_drawn_on_the_map(service):
+    guild_of_two(service)
+    make_hero(service, "test:3", "Cira")
+    place(service, "test:2", 2, 1)
+    place(service, "test:3", -1, 0)                                               # not in the guild: not drawn
+    view = service.act("test:1", "map")
+    mark = service.texts.t("map.mate_mark")
+    assert any(mark in line for line in view.body) and "compañero de tu gremio" in text(view)
+    grid = [line for line in view.body if " " not in line]                       # the map's rows (the legend has spaces)
+    assert sum(line.count("🧍") for line in grid) == 1                            # you
+    assert sum(line.count(mark) for line in grid) == 1                            # Bram; Cira is not in the guild

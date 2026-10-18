@@ -1980,6 +1980,8 @@ map:
   legend: 🧍 you, at ({x}, {y}) · {stages} · at {pct}% you see its color · north is up
   camp_mark: 🏕️
   camps_legend: "{mark} players' camp"
+  mate_mark: 🧑
+  mates_legend: "{mark} {n|guild mate|guild mates}"
   position: Coordinates {x}, {y} · Distance {lejania}
   colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
   bonfire: Camp

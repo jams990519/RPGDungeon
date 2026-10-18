@@ -8455,6 +8455,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         solo los terrenos que ya conoces (_known_terrains: cuántos de cuántos). Los íconos siguen sus propias reglas (E-178).
         D-222 (0.30.1, pedido del dueño): debajo de la cuadrícula ya no va nada. Las coordenadas están en 📍 Zona (y ahí
         también la línea de cómo va tu zona).
+        D-283 (0.38, pedido del dueño): también tus compañeros del gremio o del campamento (🧑, map.mate_mark), con su leyenda.
         D-223 (0.30.2, pedido del dueño): el mapa se ve en blanco. Solo se dibujan tú (🧍) y cada zona: ▫️ en blanco hasta
         el 50 % y después su color; el 🔥 del inicio (el campamento, la hoguera) se ve siempre. Ya no se dibujan mazmorras,
         nodos, campamentos enemigos ni de jugadores, ni la guarida; las etapas ◽ ◻️ se retiraron (map_view.fog: retired).
@@ -8485,6 +8486,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         radius = self.content.balance["map_view"]["radius"]
         self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone still discovers it
         camps = {tuple(int(v) for v in key.split(":")) for key, _ in self.store.items("camp")}   # D-267: everyone sees them
+        mates = set()                                   # D-283: where your guild mates stand (or your camp mates)
+        for account in self._mates(hero):
+            data = self.store.get("hero", account)
+            if data and abs(int(data.get("x", 0)) - hero.x) <= radius and abs(int(data.get("y", 0)) - hero.y) <= radius:
+                mates.add((int(data.get("x", 0)), int(data.get("y", 0))))
         rows = []
         seen_camp = False
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
@@ -8493,6 +8499,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 # D-223: nothing else is drawn (no dungeons, nodes or lair): you, players' camps and each zone's colour
                 if (x, y) == (hero.x, hero.y):
                     row += "🧍"
+                elif (x, y) in mates:
+                    row += t.t("map.mate_mark")
                 elif (x, y) in camps:
                     row += t.t("map.camp_mark")
                     seen_camp = True
@@ -8507,6 +8515,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
         if seen_camp:
             body.append(t.t("map.camps_legend", mark=t.t("map.camp_mark")))
+        if mates:
+            body.append(t.t("map.mates_legend", mark=t.t("map.mate_mark"), n=len(mates)))
         body += rows                                    # D-222: nothing under the grid
         actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
                    Action(id=back, label=t.t("menu.back"))]
