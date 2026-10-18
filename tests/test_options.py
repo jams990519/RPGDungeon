@@ -157,7 +157,7 @@ def test_manual_mode_still_stops_the_batch_at_a_fight(service, clock):
     assert not service.texts.missing
 
 
-def test_auto_mode_fights_and_the_batch_goes_on_with_one_push(service, clock):
+def test_auto_mode_fights_and_the_batch_goes_on_with_one_push(service, clock, weak_wild_monsters):
     hero = ready(service, level=30)
     kills, energy = hero.kills, hero.energy
     view = service.act("test:1", "explore")
@@ -176,7 +176,7 @@ def test_auto_mode_fights_and_the_batch_goes_on_with_one_push(service, clock):
     assert not service.texts.missing
 
 
-def test_auto_fights_also_happen_with_the_chat_closed(service, clock):
+def test_auto_fights_also_happen_with_the_chat_closed(service, clock, weak_wild_monsters):
     ready(service, level=30)
     service.act("test:1", "do:explore:20")
     clock.advance(5 * 3600)                                 # away: no tick, no button
@@ -340,7 +340,7 @@ def test_manual_hunting_stays_one_prey_at_a_time(service):
     assert service.act("test:1", "prey").kind == "combat"           # one prey, fought by hand, as before
 
 
-def test_auto_hunting_goes_in_batches_of_two_energy_per_prey(service, clock):
+def test_auto_hunting_goes_in_batches_of_two_energy_per_prey(service, clock, weak_wild_monsters):
     hero = ready(service, level=30)
     kills = hero.kills
     view = service.act("test:1", "hunt")

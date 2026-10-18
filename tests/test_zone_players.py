@@ -47,7 +47,7 @@ def test_zone_screen_keeps_its_buttons(service):
     join(service, "test:2", "Bram")
     view = service.act("test:1", "home")
     assert players_block(view)
-    assert [a.id for a in view.actions] == before == ["go:n", "go:s", "go:e", "go:w", "walk"]     # D-244: + 🔗 Moverte
+    assert [a.id for a in view.actions] == before == ["go:n", "go:s", "go:e", "go:w", "walk", "zmap"]   # D-244 🔗, D-268 🗺️
 
 
 def test_idle_players_disappear_and_come_back_with_their_next_button(service, clock):

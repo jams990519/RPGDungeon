@@ -69,20 +69,21 @@ def test_enemy_ranges_texts_and_numbers_are_valid(content):
     assert not t.missing
 
 
-def test_picks_follow_the_zone_level_and_vary(service):
+def test_picks_follow_the_heros_level_and_vary(service):
     make_hero(service)
     hero = service._load("test:1")
     for level in (20, 50, 90):
+        hero.level = level                                  # 0.34 (D-266): outside, monsters match the hero, not the zone
         for biome in danger_biomes(service.content):
-            zone = Zone(x=level, y=0, biome=biome, lejania=level, ring=10, level=level, name_index=(0, 0))
+            zone = Zone(x=3, y=0, biome=biome, lejania=3, ring=1, level=3, name_index=(0, 0))
             seen = set()
             for seed in range(40):
                 service._start_combat(hero, zone, Rng(seed), "encounter.found")
                 state = service.store.get("combat", "test:1")
                 edef = service.content.enemies[state["enemy"]["id"]]
+                got = state["enemy"]["level"]
                 assert biome in edef["biomes"] and not edef.get("boss")
-                assert edef["level_min"] <= level <= edef["level_max"], (biome, level, state["enemy"]["id"])
-                assert state["enemy"]["level"] in (level, level + 1) and state["enemy"]["level"] <= edef["level_max"]
+                assert level - 1 <= got <= level + 2 and edef["level_min"] <= got <= edef["level_max"], (biome, level, got)
                 seen.add(state["enemy"]["id"])
             assert len(seen) >= 3, (biome, level, seen)     # the bandit and at least 2 of the biome's own
 

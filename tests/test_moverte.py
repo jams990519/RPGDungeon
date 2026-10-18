@@ -31,8 +31,8 @@ class AmbushRng(Rng):
 def test_the_zone_has_a_fifth_wide_button_to_move(service):
     make_hero(service)
     view = service.act("test:1", "home")
-    assert ids(view) == ["go:n", "go:s", "go:e", "go:w", "walk"] and view.layout == [2, 2, 1]
-    assert view.actions[-1].label == "🔗 Moverte"
+    assert ids(view) == ["go:n", "go:s", "go:e", "go:w", "walk", "zmap"] and view.layout == [2, 2, 1, 1]   # 0.34: + 🗺️ Mapa
+    assert view.actions[-2].label == "🔗 Moverte"
 
 
 def test_steps_add_up_in_any_order_and_can_be_undone_or_cancelled(service):
@@ -131,7 +131,7 @@ def test_moving_reads_well_in_english(service):
     from test_idiomas import english_hero
     english_hero(service)
     zone = service.act("test:1", "home")
-    assert zone.actions[-1].label == "🔗 Move"
+    assert zone.actions[-2].label == "🔗 Move" and zone.actions[-1].label == "🗺️ Map"
     service.act("test:1", "wlk:n")
     view = service.act("test:1", "wlk:e")
     assert "2 steps" in "\n".join(view.body) and view.actions[-1].label == "✅ Finish"
