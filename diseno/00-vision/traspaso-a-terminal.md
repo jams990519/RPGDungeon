@@ -165,14 +165,16 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 1. **0.34 (publicada el 18-oct):** encuentros al moverte de 6 a 14 % por zona y monstruos de afuera de tu nivel (D-266), botón 🗺️ Mapa en 📍 Zona y al viajar (D-268), campamentos de jugadores visibles (D-267, D-274), el Entrenador recomienda el oficio de tu armadura (D-271).
 2. **0.35 (publicada el 18-oct):** cambio de clase con precios (D-270), solo el Explorador sube solo (D-272) y el 💬 Feedback llega al chat del equipo con su @, tipo, prioridad y pasos con botones (D-275).
 3. **0.36 (publicada el 18-oct):** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programó un agente en una copia aparte (`engine/service/gremio.py`); las reglas chicas que decidió Claude están en D-276 (provisional) y se le preguntan al dueño (E-225).
-4. **0.37:** las 9 hogueras con tope de 20 y el desborde (D-265).
-5. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+4. **0.36.1 (publicada el 18-oct):** coordenadas en todo lugar y /ir x y (D-278), 🛡️ Gremio en cualquier lugar (D-279) e invitar con /inv_ y el código de jugador (D-280).
+5. **0.37:** las 9 hogueras con tope de 20 y el desborde (D-265). Cómo, ya decidido (D-277): el peligro desde la hoguera más cercana, las 9 visibles desde el inicio, nombres por su lado y una sola despensa.
+6. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):
 
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
+| E-226 (P-237) | Quién invita con /inv_: el líder y los oficiales antes del campamento; después, el fundador | Así, y que inviten los oficiales del gremio del campamento cuando existan |
 | E-225 (P-236) | Las reglas chicas del gremio desde el inicio (D-276): un gremio por héroe, el fondo solo con materiales, con 1 presente todo tarda el doble, varias obras a la vez | Confirmarlas así |
 | E-221 a E-224 (P-232 a P-235) | La reforma de las recetas: tramos cada 5 rangos y colores, costos de aprender, lo que hoy no avanza (piel, Pescador, Desollador, Construcción) y el orden de los parches | Sí a todo; recetas después de las 0.34 a 0.37 |
 | E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
