@@ -15,6 +15,8 @@ El dueño pidió (17-oct-2026) un chat para los informes: "ahí vamos a empezar 
 
 El chat sale de la variable `RPG_REPORTS_CHAT_ID`. Si no está, se usa el chat que dio el dueño. El número del chat no es una credencial: sin el token del bot no sirve para nada.
 
+**El número del chat (0.33.1, D-263).** Un grupo común tiene un número como `-4365890113`; un supergrupo lleva `-100` delante (`-1004365890113`). Si Telegram dice "chat no encontrado", el bot prueba la otra forma; si el grupo pasó a supergrupo, sigue al número nuevo. Recuerda el que funcionó y lo anota en el registro ("reports chat: …"). Cuando agregan al bot a un chat, el registro anota su número real ("bot membership: chat …") y el informe que esperaba se intenta enseguida. El bot nunca manda informes a otro grupo, aunque lo agreguen ahí. En los grupos el bot no juega (D-262, [Telegram](telegram.md) §6).
+
 ## 2. Qué trae el informe de jugadores
 
 Es **genérico**: sin nombres ni cuentas. Mira a todos los que jugaron en la última semana y toma como muestra a los **10 más activos**: los que más experiencia sumaron desde el informe anterior (el primer día, los que jugaron más reciente).
@@ -42,7 +44,7 @@ Es **genérico**: sin nombres ni cuentas. Mira a todos los que jugaron en la úl
 1. **Solo lee el juego.** Nunca cambia un héroe, un campamento ni una regla. Lo único que escribe es su foto del día y la marca del último informe (espacio `reports`).
 2. **Sin nombres.** El informe es de todos juntos. El feedback sí lleva el nombre del héroe: el jugador lo ve antes de escribir.
 3. **Para el equipo, en español.** No pasa por los archivos de idiomas porque no lo ve ningún jugador.
-4. **Un error nunca para al bot:** si Telegram rechaza el archivo (por ejemplo, el bot no está en el chat), se anota en el registro y se intenta a la hora.
+4. **Un error nunca para al bot:** si Telegram rechaza el archivo (por ejemplo, el bot no está en el chat), se anota en el registro y se intenta a la hora. El 💬 Feedback que no pudo salir vuelve a la cola y sale en el próximo intento: ninguno se pierde (0.33.1).
 
 ## 4. Cómo está hecho
 
@@ -50,8 +52,9 @@ Es **genérico**: sin nombres ni cuentas. Mira a todos los que jugaron en la úl
 |---|---|
 | El informe | `adapters/reports.py` (`build`, `due`, `mark_sent`) |
 | El envío | `adapters/telegram/bot.py` (`send_reports`, dentro de `notifier`, cada 15 segundos) |
-| El feedback | `engine/service/game.py` (`_feedback_view`, `_save_feedback`, `take_feedback`; espacio `feedback`) |
-| Pruebas | `tests/test_fogata_ordenada.py` |
+| El feedback | `engine/service/game.py` (`_feedback_view`, `_save_feedback`, `take_feedback`, `return_feedback`; espacio `feedback`) |
+| El número del chat | `adapters/telegram/bot.py` (`report_chats`, `post_to_reports`) |
+| Pruebas | `tests/test_fogata_ordenada.py` y `tests/test_solo_privado.py` |
 
 ## 5. Lo que puede venir después
 

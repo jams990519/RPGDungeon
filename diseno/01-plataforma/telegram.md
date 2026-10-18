@@ -69,7 +69,7 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
 
 | Lugar | Qué pasa ahí |
 |---|---|
-| **Privado con el bot** | Todo lo personal: héroe, inventario, cuerpo, crafteo, encargos, combate en solitario, mazmorras (en salas retransmitidas) |
+| **Privado con el bot** | Todo lo personal: héroe, inventario, cuerpo, crafteo, encargos, combate en solitario, mazmorras (en salas retransmitidas). **Desde la 0.33.1, el único lugar donde se juega** (D-262, §6) |
 | **Grupo de facción** | Órdenes de guerra, anuncios, reclutamiento |
 | **Grupo del gremio** (con temas) | #órdenes (mensaje fijado), #banda, #mercado, #taberna, #rol |
 | **Grupos públicos por región** | Chat de zona: comercio local, apariciones de criaturas y reliquias, jefes errantes |
@@ -85,3 +85,17 @@ Telegram no documenta oficialmente las cifras de envío y pueden cambiar; se dis
 - Las ediciones se limitan a una cada 3-5 s por chat, con cola.
 - Los avisos masivos (evento de servidor, apertura de región) se escalonan en minutos y se anuncian primero en el canal. La apertura misma es a una hora fija, igual para todos los clientes (ver [Web y multiplataforma](web-y-multiplataforma.md) §6.6).
 - Todo temporizador vive en el servidor con cálculo perezoso: si el bot se reinicia, nada se pierde.
+
+## 6. El juego, solo por privado (D-262, 0.33.1)
+
+El dueño pidió (18-oct-2026) que no se juegue dentro de los grupos: "si no, todos van a estar jugando dentro de los chats y no es la idea". Los grupos de la tabla del §4 (facción, gremio, región) quedan para avisos y charla cuando lleguen; **la jugada es siempre en el privado**.
+
+| Qué pasa en un grupo | Qué hace el bot |
+|---|---|
+| Alguien escribe un comando (`/start`, `/zona`…) | Responde una sola línea, "🔒 Lost Realms se juega por privado", con el botón ▶️ Jugar por privado que abre su chat |
+| Alguien charla (texto sin "/") | Nada: el grupo no se llena de mensajes del bot |
+| Alguien toca un botón viejo del juego que quedó en el grupo | No juega: le muestra el aviso solo a esa persona, aparte |
+| Agregan o sacan al bot | Lo anota en el registro con el número real del chat (sirve para `RPG_REPORTS_CHAT_ID`, [Informes](informes.md)) |
+
+El aviso sale en el idioma del jugador o, si nunca eligió, en el de su Telegram ([Idiomas](idiomas.md)). Ningún mensaje ni botón de un grupo llega al motor como jugada. Cómo se aplicó: D-263.
+

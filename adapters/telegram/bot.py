@@ -11,7 +11,9 @@ Environment variables (names only in .env.example, never values in the repo):
 Para qué sirve: el proceso del bot. Recibe mensajes y botones de Telegram, se los pasa
 al motor y edita el "mensaje vivo" con la vista nueva. Cada pocos segundos revisa los
 viajes que terminaron y avisa al jugador. D-260 (0.33): también manda al chat de informes cada mensaje de
-💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py).
+💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py). D-262 (0.33.1): el juego se
+juega solo por privado; en un grupo el bot no juega: a un comando responde "🔒 se juega por privado" con un botón a su chat,
+a un botón viejo le muestra ese aviso aparte y la charla del grupo la ignora.
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §4 (identidad)
 Módulo: adaptador de Telegram
 Depende de: aiogram, engine.service, engine.core, adapters.storage, adapters.telegram.render
@@ -22,6 +24,10 @@ Datos de los que es dueño: ninguno
 Reglas que nunca se rompen:
     1. El id de cuenta es "tg:<id de usuario>"; el motor no lo interpreta.
     2. El token solo se lee del entorno; nunca se escribe en el código ni en el repositorio.
+    3. D-262: el juego solo se juega en el chat privado con el bot. En un grupo, ni una jugada: ningún mensaje ni botón de
+       un grupo llega al motor como jugada.
+    4. El informe y el 💬 Feedback van solo al chat configurado (RPG_REPORTS_CHAT_ID) o a la otra forma de su número; nunca
+       a un grupo cualquiera al que agreguen al bot.
 Si cambias esto, revisa:
     - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble, /opciones... salen
       del motor; el menú fijo tiene 5 botones desde D-190: 📖 Historia salió). Un texto con "/" que no es un atajo exacto
@@ -39,12 +45,16 @@ import logging
 import os
 import re
 import sys
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
-from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
+from aiogram.enums import ChatType
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramMigrateToChat
 from aiogram.filters import CommandStart
-from aiogram.types import BufferedInputFile, CallbackQuery, KeyboardButton, Message, ReplyKeyboardMarkup
+from aiogram.types import (BufferedInputFile, CallbackQuery, ChatMemberUpdated, InlineKeyboardButton, InlineKeyboardMarkup,
+                           KeyboardButton, Message, ReplyKeyboardMarkup, User)
 
 from adapters import reports
 from adapters.storage import SqliteStore
@@ -101,15 +111,60 @@ def build_service() -> GameService:
     )
 
 
+def private_notice(service: GameService, user: User) -> tuple[str, InlineKeyboardMarkup | None]:
+    """The "🔒 played in private" notice for a group, with a button to the bot's chat, in the player's language (D-262).
+
+    [ES]
+    Qué hace: arma el aviso de que Lost Realms se juega por privado, en el idioma del jugador (o el de su Telegram si nunca
+    eligió), con el botón "▶️ Jugar por privado" que abre el chat con el bot. La llaman: los manejadores de grupos.
+    Si cambia, afecta: lo que ve quien escribe un comando o toca un botón en un grupo.
+    """
+    account = account_of(user.id)
+    hint = (user.language_code or "")[:2].lower() or None
+    text = service.say(account, "client.private_only", lang_hint=hint)
+    username = render_module.BOT_USERNAME[0]
+    if not username:
+        return text, None
+    button = InlineKeyboardButton(text=service.say(account, "client.play_private", lang_hint=hint), url=f"https://t.me/{username}")
+    return text, InlineKeyboardMarkup(inline_keyboard=[[button]])
+
+
+def in_group(query: CallbackQuery) -> bool:
+    """A button pressed on a message that lives in a group or channel, not in the private chat (D-262)."""
+    return query.message is not None and query.message.chat.type != ChatType.PRIVATE
+
+
 async def send_view(bot: Bot, chat_id: int, view: View) -> None:
     """Send a view as a new message. [ES] Qué hace: manda una vista como mensaje nuevo. La llaman: manejadores y avisos. Si cambia, afecta: los mensajes del bot."""
     await bot.send_message(chat_id, render_text(view), reply_markup=render_keyboard(view))
 
 
 def register(dp: Dispatcher, service: GameService) -> None:
-    """Attach handlers. [ES] Qué hace: conecta los mensajes y botones con el motor. La llaman: main. Si cambia, afecta: qué responde el bot."""
+    """Attach handlers. [ES] Qué hace: conecta los mensajes y botones con el motor; los de grupos van primero y nunca
+    llegan al motor (D-262). La llaman: main. Si cambia, afecta: qué responde el bot."""
 
-    @dp.message(CommandStart())
+    @dp.message(F.chat.type != ChatType.PRIVATE)
+    async def on_group_message(message: Message) -> None:
+        # D-262: never played in a group. A command gets the short notice; plain chat is ignored so the group stays quiet
+        if message.from_user and (message.text or "").startswith("/"):
+            text, markup = private_notice(service, message.from_user)
+            await message.reply(text, reply_markup=markup)
+
+    @dp.callback_query(in_group)
+    async def on_group_button(query: CallbackQuery) -> None:
+        # D-262: a game button left in a group does nothing; the notice shows only to whoever pressed it
+        text, _ = private_notice(service, query.from_user)
+        await query.answer(text, show_alert=True)
+
+    @dp.my_chat_member()
+    async def on_bot_membership(update: ChatMemberUpdated) -> None:
+        # The log says which chat the bot joined or left, with its real id (handy for RPG_REPORTS_CHAT_ID); a new chat
+        # also lets the waiting report try again right away. It never plays there (D-262)
+        log.info("bot membership: chat %s (%s, %r) -> %s", update.chat.id, update.chat.type, update.chat.title,
+                 update.new_chat_member.status)
+        _report_failed_at[0] = float("-inf")
+
+    @dp.message(CommandStart(), F.chat.type == ChatType.PRIVATE)
     async def on_start(message: Message) -> None:
         account = account_of(message.from_user.id)
         parts = (message.text or "").split(maxsplit=1)
@@ -119,7 +174,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
         view = service.view(account)
         await message.answer(render_text(view), reply_markup=render_keyboard(view))
 
-    @dp.message(F.text)
+    @dp.message(F.text, F.chat.type == ChatType.PRIVATE)
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
         menu_ids = service.menu_labels()           # D-250: the bottom buttons in every language (an old keyboard works)
@@ -140,7 +195,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
         if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
             await message.answer("🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 
-    @dp.callback_query()
+    @dp.callback_query(lambda query: not in_group(query))
     async def on_button(query: CallbackQuery) -> None:
         account = account_of(query.from_user.id)
         view = service.act(account, query.data or "")
@@ -175,17 +230,58 @@ async def notifier(bot: Bot, service: GameService) -> None:
         await asyncio.sleep(TICK_SECONDS)
 
 
-def reports_chat() -> int | None:
-    """The chat id for reports and feedback (RPG_REPORTS_CHAT_ID, else the team's chat); None if it is not a number."""
+def report_chats() -> list[int]:
+    """The reports chat id (RPG_REPORTS_CHAT_ID, else the team's chat) and its other form; [] if it is not a number.
+
+    [ES]
+    Qué hace: da el número del chat de informes y su otra forma, por si se copió mal: un grupo común tiene un número como
+    -4365890113 y un supergrupo, -100 delante (-1004365890113). El bot prueba el primero y, si Telegram dice "chat no
+    encontrado", el otro. La llama: post_to_reports. Si cambia, afecta: a dónde llegan el informe y el feedback.
+    """
     raw = (os.environ.get("RPG_REPORTS_CHAT_ID") or REPORTS_CHAT_DEFAULT).strip()
     try:
-        return int(raw)
+        chat = int(raw)
     except ValueError:
         log.error("RPG_REPORTS_CHAT_ID is not a chat id")
-        return None
+        return []
+    digits = str(abs(chat))
+    if chat >= 0:
+        return [chat]
+    other = -int(digits[3:]) if digits.startswith("100") and len(digits) > 3 else int(f"-100{digits}")
+    return [chat, other]
 
 
-_report_failed_at = [float("-inf")]   # when the last report failed (loop time); none yet
+_reports_chat: list[int | None] = [None]   # the reports chat id that worked last (one of report_chats()), once known
+_report_failed_at = [float("-inf")]       # when the reports chat last refused us (loop time); none yet
+
+
+async def post_to_reports(send: Callable[[int], Awaitable[Any]]) -> None:
+    """Run send(chat) on the reports chat: the id that worked before, else each form of it; raise if none works.
+
+    [ES]
+    Qué hace: manda algo al chat de informes. Usa el número que ya funcionó; si todavía no hay, prueba report_chats() en
+    orden. Si el grupo pasó a supergrupo (su número cambió), sigue al número nuevo. Recuerda el que funcionó y lo anota
+    en el registro. Si ninguno funciona, lanza el último error. La llama: send_reports. Si cambia, afecta: el informe y el
+    feedback.
+    """
+    chats = [_reports_chat[0]] if _reports_chat[0] is not None else report_chats()
+    error: Exception | None = None
+    for chat in chats:
+        try:
+            try:
+                await send(chat)
+            except TelegramMigrateToChat as moved:          # a group that became a supergroup has a new id
+                chat = moved.migrate_to_chat_id
+                await send(chat)
+        except (TelegramBadRequest, TelegramForbiddenError) as refused:
+            error = refused
+            continue
+        if _reports_chat[0] != chat:
+            _reports_chat[0] = chat
+            log.info("reports chat: %s", chat)
+        return
+    _reports_chat[0] = None                                # next time, try every form again
+    raise error or RuntimeError("no reports chat configured")
 
 
 async def send_reports(bot: Bot, service: GameService) -> None:
@@ -193,30 +289,35 @@ async def send_reports(bot: Bot, service: GameService) -> None:
 
     [ES]
     Qué hace: manda al chat de informes cada mensaje de 💬 Feedback nuevo (con el héroe, su nivel y su idioma) y, una vez por
-    día, el informe de jugadores como archivo .txt (adapters/reports.py). Si Telegram rechaza el informe (por ejemplo, el bot
-    no está en el chat), lo anota en el registro y lo vuelve a intentar a la hora. Un error nunca para al bot.
+    día, el informe de jugadores como archivo .txt (adapters/reports.py). Si Telegram no deja (por ejemplo, el bot no está
+    en el chat), lo anota en el registro, el feedback vuelve a la cola (return_feedback) y todo se intenta de nuevo a la
+    hora, o apenas agregan al bot a un chat. Un error nunca para al bot.
     La llama: notifier, en cada vuelta. Si cambia, afecta: lo que recibe el equipo.
     """
-    chat = reports_chat()
-    if chat is None:
-        return
-    for note in service.take_feedback():
+    loop_now = asyncio.get_event_loop().time()
+    if loop_now - _report_failed_at[0] < REPORT_RETRY_SECONDS:
+        return                                             # refused not long ago: wait (the feedback stays queued)
+    notes = service.take_feedback()
+    for index, note in enumerate(notes):
         text = (f"💬 <b>Feedback</b> · {html.escape(str(note.get('hero', '?')))} · nivel {note.get('level', '?')} · "
                 f"{html.escape(str(note.get('lang', '?')))}\n{html.escape(str(note.get('text', '')))}")
         try:
-            await bot.send_message(chat, text)
-        except Exception:  # the note stays saved in the store "feedback"
-            log.exception("could not post feedback: %s", note.get("text", ""))
-    loop_now = asyncio.get_event_loop().time()
-    if reports.due(service) and loop_now - _report_failed_at[0] >= REPORT_RETRY_SECONDS:
+            await post_to_reports(lambda chat, text=text: bot.send_message(chat, text))
+        except Exception:
+            service.return_feedback(notes[index:])         # nothing is lost: they go out on the next try
+            _report_failed_at[0] = loop_now
+            log.exception("could not post feedback; %d note(s) wait", len(notes) - index)
+            return
+    if reports.due(service):
         try:
             name, body = reports.build(service)
-            await bot.send_document(chat, BufferedInputFile(body.encode("utf-8"), filename=name), caption="📊 Informe de jugadores")
+            document = BufferedInputFile(body.encode("utf-8"), filename=name)
+            await post_to_reports(lambda chat: bot.send_document(chat, document, caption="📊 Informe de jugadores"))
             reports.mark_sent(service)
             log.info("player report sent: %s", name)
         except Exception:
             _report_failed_at[0] = loop_now
-            log.exception("could not send the player report to %s", chat)
+            log.exception("could not send the player report (tried %s)", report_chats())
 
 
 async def announce_patch(bot: Bot, service: GameService) -> None:
