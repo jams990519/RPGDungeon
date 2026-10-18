@@ -53,13 +53,13 @@ Cuando algo de aquí quede viejo, se corrige en el mismo cambio que lo cambia.
 | Dónde corre | Railway, proyecto **satisfied-balance**, servicio **RPGDungeon**, entorno production. IDs: proyecto `8483a1b9-1aac-4111-9b8d-81b202908953`, servicio `88e89f1b-92f9-40e4-a0b5-525993ffca90`, entorno `91fbd952-6fff-4189-9394-c3aa76a74567` |
 | Cómo arranca | `railway.json`: `python -m adapters.telegram.bot`. Las partidas viven en un volumen montado en `/data` |
 | Variables | Solo los nombres, en `.env.example`. **El token del bot nunca se imprime, se copia ni se sube** |
-| Lo decidido | [Decisiones](decisiones.md): la última es D-261 (D-247 a D-249 las registró la terminal el 14-oct en su rama local; todavía no están en el archivo) |
+| Lo decidido | [Decisiones](decisiones.md): la última es D-263 (D-247 a D-249 las registró la terminal el 14-oct en su rama local; todavía no están en el archivo) |
 | Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-231) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-220; E-215 la citó D-241 y no existe: no usarla) |
 | Lo que dijo el dueño, por fecha | [Entrevista de voz](entrevista-de-voz.md) |
-| Las notas de cada parche | `content/patches.yaml` (la última es `v0_33`, con `title_en` y `notes_en`) |
+| Las notas de cada parche | `content/patches.yaml` (la última es `v0_33_1`, con `title_en` y `notes_en`) |
 | Copia en texto para otras IA | Notion (§7) |
 | Los dos idiomas | [Idiomas](../01-plataforma/idiomas.md): toda clave de texto va en `es*.yaml` y en `en*.yaml`; `python tools/check_locales.py` en 0 errores |
-| Informes y 💬 Feedback | El chat del equipo `RPG_REPORTS_CHAT_ID` (si no está, el chat que dio el dueño). El bot tiene que ser miembro de ese chat. Ver [Informes](../01-plataforma/informes.md) |
+| Informes y 💬 Feedback | El chat del equipo `RPG_REPORTS_CHAT_ID` (si no está, el chat que dio el dueño; el bot prueba también la otra forma del número, con o sin -100). El bot tiene que ser miembro de ese chat (el dueño lo agregó el 18-oct). Ver [Informes](../01-plataforma/informes.md) |
 
 ---
 
@@ -73,7 +73,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
    - Arrancar la consola: `printf 'Nombre\n1\n1\nq\n' | python -m adapters.cli.play` crea un héroe y sale (en Windows, abrir `python -m adapters.cli.play`, crear el héroe a mano y salir con `q`). Después, borrar `data/`.
    - Verificar los enlaces de los documentos (el comando está en CLAUDE.md §5).
 3. **Si el parche es jugable,** agregar su entrada al final de `content/patches.yaml`:
-   - Mismo contenido: 0.33 → 0.33.1.
+   - Mismo contenido: 0.33.1 → 0.33.2.
    - Contenido nuevo: 0.34 (D-67, D-73).
    - Desde la 0.33 cada entrada lleva también `title_en` y `notes_en` (D-250).
    - Las notas van en lenguaje de jugador.
@@ -134,6 +134,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 ## 5. Cómo está el juego (17-oct-2026)
 
 - **0.33 (D-250, D-251), el juego también en inglés:** cada jugador elige su idioma en la primera pantalla o en ⚙️ Opciones → 🌐 Idioma; todo sale en su idioma, también los avisos que le mandan otros. Trae además lo que la terminal dejó listo el 11-oct en la rama `revision/codigo-0.32` (la revisión del código, R-02, R-03, cada rol guarda sus puntos, el tiempo total del lote). Ver [Revisión del código](revision-codigo-0.32.md) y la hoja de ruta nueva ([Hoja de ruta](hoja-de-ruta.md) §0). La 0.33 trae también tres pedidos del 17-oct (D-255): 📦 Recursos corto con código (/07, D-243), el botón 🔗 Moverte con la emboscada que ya no corta el viaje (D-244) y viajar a la fogata estando ocupado. Y la **fogata ordenada** (D-257 a D-261): los oficios se aprenden pagando su primera receta (la recolección y la exploración suben solas), 📋 Mis oficios corto con códigos, 🛒 mercader con Comprar y Vender, posada según la vida que falta, un encargo por personaje cada día (se cobra en el Claro o en tu campamento), ⚙️ Opciones sin peleas automáticas y con 💬 Feedback, el 📔 Diario que vuelve a donde se abrió, y el **informe diario de jugadores** en el chat del equipo ([Informes](../01-plataforma/informes.md)). El dueño dio el sí para publicarla el 17-oct (pull request #76).
+- **0.33.1 (D-262, D-263), el juego solo por privado:** en un grupo de Telegram el bot no juega; a un comando responde "🔒 se juega por privado" con un botón a su chat. El informe y el feedback prueban las dos formas del número del chat y el feedback que no sale vuelve a la cola.
 - **Diseño del 17-oct, sin código:** la escalera de 5 a 200 jugadores (D-252 a D-254): el grupo nace al construir, nunca en la fogata; 10 etapas con un solo cupo, escuadras de 5, líder y oficiales; quien no juega libera su lugar a los 30 días; la muralla crece con la etapa y la tierra de adentro cosecha sola. Ver [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md).
 
 - **Versión 0.32 en el juego** (commit `65faad7`, pull request #74, publicado el 9-oct-2026).
