@@ -605,6 +605,8 @@ v0_35:
   notes:
     - "🔄 Ya puedes cambiar de clase en 👤 Héroe → 🌟 Talentos → 🔄 Cambiar de clase (o /cambiarclase). El primer cambio es gratis; después cuesta 🥈1, 🥈10, 🥈30 y luego 🥈50 cada vez. Conservas tu nivel, tus oficios, tus monedas y tu equipo."
     - "⛏️ Leñador, Minero, Herbolario y Pescador ahora se aprenden, como los demás oficios: solo la 🧭 exploración sube sola. Sin el oficio recolectas igual los recursos base. Si ya los practicabas, siguen aprendidos y conservas tu rango."
+    - "💬 Feedback: primero eliges el tipo (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende u 💬 Otro) y después escribes. El equipo sigue cada mensaje y, cuando lo resuelve, te avisa."
   notes_en:
     - "🔄 You can now change class in 👤 Hero → 🌟 Talents → 🔄 Change class (or /changeclass). The first change is free; then it costs 🥈1, 🥈10, 🥈30 and then 🥈50 each time. You keep your level, professions, coins and gear."
     - "⛏️ Lumberjack, Miner, Herbalist and Fisher are now learned, like the other professions: only 🧭 exploration rises on its own. Without the profession you still gather the base resources. If you already practised them, they stay learned and you keep your rank."
+    - "💬 Feedback: first choose the type (🐞 Bug, 💡 Idea, ⚖️ Balance, ❓ Unclear or 💬 Other), then write. The team follows every message and lets you know when it is solved."

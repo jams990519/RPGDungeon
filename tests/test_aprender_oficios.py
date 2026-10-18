@@ -1,7 +1,7 @@
 """Professions are learned once by paying their first recipe; gathering and exploration rise on their own (D-257, 0.33).
 
-[ES] Pruebas de aprender oficios (pedido del dueño, 17-oct-2026). La 🪓 recolección (menos el 🔪 Desollador) y la 🧭
-exploración no se aprenden: suben solas. Los demás se aprenden una vez pagando su primera receta (balance.yaml
+[ES] Pruebas de aprender oficios (pedido del dueño, 17-oct-2026). Desde la 0.35 (D-272) solo la 🧭 exploración no se
+aprende: sube sola; la 🪓 recolección también se aprende. Los demás se aprenden una vez pagando su primera receta (balance.yaml
 professions.learn_price) en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios; sin aprenderlos su rango es 0:
 no se cocina, no se refina ni se fabrica con ellos, no se encanta y no suben. Lo que ya practicabas antes de la 0.33 se
 aprende gratis y conserva su rango. 📋 Mis oficios trae una línea corta por oficio con su código (/minero); lo largo sale
@@ -29,23 +29,23 @@ def rich(service, account="test:1", gold=500):
     return hero
 
 
-def test_gathering_and_exploring_are_never_learned(service):
+def test_only_exploring_is_never_learned(service):
     make_hero(service)
     hero = service._load("test:1")
-    for pid in ("minero", "herbolario", "lenador", "pescador", "explorador"):
-        assert service._knows(hero, pid), pid
-    for pid in ("desollador", "cocina", "herreria", "comercio", "encantamiento", "construccion"):
+    assert service._knows(hero, "explorador") and service._prof_rank(hero, "explorador") == 1
+    for pid in ("minero", "herbolario", "lenador", "pescador",          # 0.35 (D-272): gathering is learned too
+                "desollador", "cocina", "herreria", "comercio", "encantamiento", "construccion"):
         assert not service._knows(hero, pid), pid
         assert service._prof_rank(hero, pid) == 0
-    assert service._prof_rank(hero, "minero") == 1
 
 
 def test_a_profession_not_learned_never_rises(service):
     make_hero(service)
     hero = service._load("test:1")
     assert service._prof_gain(hero, "desollador", 50) == [] and not hero.professions.get("desollador")
-    service._prof_gain(hero, "minero", 50)
-    assert hero.professions["minero"] == 50
+    assert service._prof_gain(hero, "minero", 50) == [] and not hero.professions.get("minero")      # D-272
+    service._prof_gain(hero, "explorador", 50)
+    assert hero.professions["explorador"] == 50
 
 
 def test_research_in_the_claro_lists_what_you_can_learn_with_its_price(service):
@@ -54,7 +54,7 @@ def test_research_in_the_claro_lists_what_you_can_learn_with_its_price(service):
     assert view.kind == "learn"
     price = service._money(service.content.balance["professions"]["learn_price"])
     assert f"🍲 Cocina · {price}  /cocina" in body(view)
-    assert "Minero" not in body(view) and "Explorador" not in body(view)        # they rise on their own
+    assert "Minero" in body(view) and "Explorador" not in body(view)            # D-272: only exploring rises on its own
     assert "Cocinar: primero aprende" in body(service.act("test:1", "claro"))
 
 

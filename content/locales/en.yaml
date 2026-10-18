@@ -1842,6 +1842,21 @@ feedback:
   ask: 'Write in one message whatever you want to tell us: a bug, an idea or something that is unclear. The game team reads it.'
   privacy: 'It goes with your hero''s name and level, so we can understand it. If you change your mind, tap ↩️ Back.'
   thanks: '💬 Thank you! Your message reached the game team.'
+  ask_kind: 'What do you want to tell us? Choose the type, then write your message. (You can also just write it.)'
+  ask_write: 'Write in one message whatever you want to tell us ({kind}). The game team reads it.'
+  resolved: '✔️ Your message about «{topic}» is solved. Thank you for helping us improve the game!'
+  kind:
+    bug: 🐞 Bug
+    idea: 💡 Idea
+    balance: ⚖️ Balance
+    confusing: ❓ Unclear
+    other: 💬 Other
+  keywords:
+    bug: "error, bug, broken, crash, crashes, stuck, does not work, doesn't work, not working, can't, cannot, lost, disappeared, freeze"
+    idea: "idea, suggest, suggestion, propose, would be nice, could you, please add, add, wish, it would be great"
+    balance: "hard, easy, too expensive, expensive, cheap, slow, fast, too few, too many, strong, weak, unfair, balance, nerf, buff"
+    confusing: "don't understand, do not understand, how, where, what do i, confusing, lost, unclear, what for, explain"
+    other: "thanks, thank you, hello, hi"
 client:
   private_only: '🔒 Lost Realms is played in private, in your chat with the bot. It is not played in groups.'
   play_private: '▶️ Play in private'

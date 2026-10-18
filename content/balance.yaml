@@ -430,6 +430,8 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
 
 feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones; el bot manda cada mensaje al chat de informes
   max_chars: 1000            # [ES] largo máximo que se guarda de un mensaje
+  kinds: [bug, idea, balance, confusing, other]   # [ES] D-275 (0.35, confirmada): tipos que elige el jugador (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende, 💬 Otro); sus nombres y palabras en content/locales (feedback.kind, feedback.keywords)
+  kind_priority: {bug: high, balance: mid, confusing: mid, idea: low, other: low}   # [ES] D-275: prioridad con la que arranca cada tipo en el chat de informes; el equipo la cambia con 🔴 🟡 🟢
 
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4

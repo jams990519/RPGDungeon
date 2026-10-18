@@ -1273,6 +1273,21 @@ feedback:                      # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opci
   ask: "Escribe en un mensaje lo que quieras contarnos: un error, una idea o algo que no se entiende. Lo lee el equipo del juego."
   privacy: "Va con el nombre y el nivel de tu héroe, para poder entenderlo. Si cambias de idea, toca ↩️ Volver."
   thanks: "💬 ¡Gracias! Tu mensaje llegó al equipo del juego."
+  ask_kind: "¿Qué nos quieres contar? Elige el tipo y después escribe tu mensaje. (También puedes escribirlo directo.)"   # [ES] D-275 (0.35)
+  ask_write: "Escribe en un mensaje lo que quieras contarnos ({kind}). Lo lee el equipo del juego."
+  resolved: "✔️ Tu mensaje sobre «{topic}» quedó resuelto. ¡Gracias por ayudarnos a mejorar el juego!"
+  kind:
+    bug: "🐞 Error"
+    idea: "💡 Idea"
+    balance: "⚖️ Balance"
+    confusing: "❓ No se entiende"
+    other: "💬 Otro"
+  keywords:                   # [ES] D-275: si escribe sin elegir el tipo, sale de estas palabras (en cualquier idioma)
+    bug: "error, falla, fallo, bug, roto, rota, no funciona, no anda, se traba, se cuelga, no carga, no me deja, desapareció, perdí"
+    idea: "idea, sugiero, sugerencia, propongo, estaría bueno, sería bueno, podrían, agregar, añadir, me gustaría, ojalá"
+    balance: "difícil, fácil, muy caro, caro, barato, lento, rápido, poco, mucho, fuerte, débil, injusto, balance, nerf"
+    confusing: "no entiendo, no sé, cómo, dónde, qué hago, confuso, perdido, no se entiende, para qué, explicar"
+    other: "gracias, hola, saludos"
 
 client:                       # [ES] D-262 (0.33.1): textos de los clientes. En un grupo de Telegram no se juega: a un comando el bot responde esto
   private_only: "🔒 Lost Realms se juega por privado, en tu chat con el bot. En los grupos no se juega."
