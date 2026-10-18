@@ -42,9 +42,16 @@ Lo usan: engine/world/travel.py, engine/service/game.py (zone_at para todo; clas
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
+D-265 y D-277 (0.37): las 9 hogueras. BONFIRES son el Claro (0, 0) y una hoguera cada bonfire.spacing zonas alrededor
+(bonfire.ring anillos: con 1, las 8 de alrededor, a 12 zonas). La Lejanía se cuenta desde la hoguera MÁS CERCANA (pedido del
+dueño: "cada hoguera es un comienzo seguro"), así el peligro, el nivel, el anillo de recursos, las mazmorras, los nodos y los
+campamentos enemigos bajan alrededor de cada una. Cada hoguera es terreno "claro" (también en classic_biome: sin recursos
+de tierra, como el Claro). El servicio llama configure_bonfires al arrancar, con los números de content/balance.yaml
+(bonfire.spacing y bonfire.ring), y vacía las memorias de las mazmorras y los nodos (engine/world/dungeons.py y nodes.py
+guardan resultados que dependen de la Lejanía).
 Reglas que nunca se rompen:
-    1. zone_at(seed, x, y) es determinista: mismo resultado siempre.
-    2. (0, 0) es siempre el Claro, Lejanía 0, sin peligro.
+    1. zone_at(seed, x, y) es determinista: mismo resultado siempre (con la misma configuración de hogueras).
+    2. (0, 0) es siempre el Claro, y toda hoguera tiene Lejanía 0, sin peligro.
 Si cambias esto, revisa:
     - Mundo ya creado: cambiar balance.yaml terrain, los pesos de content/biomes.yaml, las piezas o los sorteos CAMBIA el
       terreno de zonas ya visitadas (sus enemigos, su peligro, sus recursos propios y sus nodos); cambiar classic_biome MUEVE
@@ -85,9 +92,55 @@ class Zone:
     name_index: tuple[int, int]
 
 
+BONFIRES: tuple[tuple[int, int], ...] = ((0, 0),)          # D-265: set by configure_bonfires (the Claro first)
+_BONFIRE_SET: frozenset[tuple[int, int]] = frozenset(BONFIRES)
+
+
+def bonfire_layout(spacing: int, rings: int) -> tuple[tuple[int, int], ...]:
+    """The bonfires: the Claro and one every `spacing` zones around it, `rings` rings out; the Claro first, then the nearest.
+
+    [ES]
+    Qué hace: dónde están las hogueras (D-265, D-224: "cada 12 posiciones del mapa siempre va a haber una hoguera"). Con
+    spacing 12 y rings 1 son 9: el Claro, las 4 de los lados a 12 zonas (norte, este, sur, oeste) y las 4 de las esquinas.
+    El orden importa: es el orden en que se llenan con jugadores nuevos (el Claro primero, después los lados, después las
+    esquinas). La llaman: configure_bonfires. Si cambia, afecta: dónde nacen los jugadores y el peligro de todo el mapa.
+    """
+    side_order = {(0, 1): 0, (1, 0): 1, (0, -1): 2, (-1, 0): 3, (1, 1): 4, (1, -1): 5, (-1, -1): 6, (-1, 1): 7}
+    cells = [(i * spacing, j * spacing) for i in range(-rings, rings + 1) for j in range(-rings, rings + 1)]
+
+    def order(cell: tuple[int, int]) -> tuple[int, int, int]:
+        x, y = cell
+        sign = ((x > 0) - (x < 0), (y > 0) - (y < 0))
+        return (max(abs(x), abs(y)), abs(x) + abs(y), side_order.get(sign, -1))
+
+    return tuple(sorted(cells, key=order))
+
+
+def configure_bonfires(spacing: int, rings: int) -> None:
+    """Set the world's bonfires (the service does it once, from content/balance.yaml bonfire). [ES] Ver bonfire_layout."""
+    global BONFIRES, _BONFIRE_SET
+    BONFIRES = bonfire_layout(max(1, int(spacing)), max(0, int(rings)))
+    _BONFIRE_SET = frozenset(BONFIRES)
+
+
+def is_bonfire(x: int, y: int) -> bool:
+    """True if a bonfire stands at (x, y) (the Claro or one of the others, D-265)."""
+    return (x, y) in _BONFIRE_SET
+
+
+def nearest_bonfire(x: int, y: int) -> tuple[int, int]:
+    """The bonfire nearest to (x, y), by ring distance; a tie goes to the one listed first (the Claro, then the sides)."""
+    return min(BONFIRES, key=lambda b: max(abs(x - b[0]), abs(y - b[1])))
+
+
 def lejania(x: int, y: int) -> int:
-    """Ring distance from the Claro. [ES] Qué hace: cuántas zonas hay hasta el Claro. La llaman: generación, viaje. Si cambia, afecta: peligro y nivel de todo el mapa."""
-    return max(abs(x), abs(y))
+    """Ring distance from the nearest bonfire (D-277; before 0.37, from the Claro).
+
+    [ES] Qué hace: cuántas zonas hay hasta la hoguera más cercana. La llaman: generación (nivel, anillo), mazmorras, nodos y
+    campamentos enemigos (su Lejanía mínima), viaje. Si cambia, afecta: peligro y nivel de todo el mapa.
+    """
+    bx, by = nearest_bonfire(x, y)
+    return max(abs(x - bx), abs(y - by))
 
 
 def ring(dist: int) -> int:
@@ -118,7 +171,7 @@ def classic_biome(seed: int, x: int, y: int) -> str:
     solo lo usan los recursos de tierra (_zone_resources), para que no se moviera nada de lo que se conoce (D-185).
     La llama: GameService._zone_resources. Si cambia, afecta: los recursos de tierra de todo el mapa ya creado.
     """
-    if x == 0 and y == 0:
+    if (x, y) in _BONFIRE_SET:                          # D-265: every bonfire stands on the Claro's land
         return "claro"
     temperature = 0.5 - y * 0.03 + (_smooth_noise(seed, "temp", x, y, 6) - 0.5) * 0.4
     humidity = _smooth_noise(seed, "hum", x, y)
@@ -256,7 +309,7 @@ def terrain_at(seed: int, x: int, y: int, terrain: tuple = DEFAULT_TERRAIN) -> s
     (si algún terreno los tiene) salen en zonas sueltas encima. El Claro es fijo.
     La llama: zone_at. Si cambia, afecta: el color del mapa, los enemigos y el peligro de cada zona.
     """
-    if x == 0 and y == 0:
+    if (x, y) in _BONFIRE_SET:                          # D-265: every bonfire stands on the Claro's land
         return "claro"
     for biome, share in terrain[3]:
         if hash_unit(seed, f"scatter:{biome}", x, y) < share:

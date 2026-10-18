@@ -1144,3 +1144,16 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Cuenta rápida.** Un gremio de 2 que junta el fondo (🪵 20 y 🪨 10, menos de una hora de recolectar entre los dos) y se encuentra en el lugar funda en 1 hora; con los 5, en 24 min. Una obra de nivel 1 tarda 1 h con 2 en el territorio y una de nivel 8 (foso, torres) 8 h con 2, o 3 h 12 min con 5: el castillo (15 mejoras) pide horas de estar juntos, no solo materiales. Con nadie en el territorio, la obra espera: no hay construcción "sola".
 
 **Lo que queda por mirar:** si 60 min por nivel hace muy lentas las obras grandes para campamentos chicos; si la fundación con 1 solo presente debería pausarse (hoy avanza al doble de tiempo); cuántas obras quedan en pausa más de un día; cuántos invitados entran al campamento recién fundado.
+
+### Octubre de 2026 (18-oct): las 9 hogueras y la Lejanía desde la más cercana (0.37, D-265 y D-277, confirmadas)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `bonfire.spacing` (nuevo) | — | 12: una hoguera cada 12 zonas (D-224, D-265) |
+| `bonfire.ring` (nuevo) | — | 1: las 8 de alrededor del Claro (9 en total) |
+| `bonfire.cap` | 20, solo se mostraba | 20: llena, los nuevos nacen en la siguiente y los que llegan siguen hasta la más cercana con lugar |
+| Lejanía de una zona (`mapgen.lejania`) | distancia al Claro | distancia a la hoguera más cercana (D-277) |
+
+**Qué cambia al jugar.** Alrededor de cada hoguera nueva la tierra vuelve a ser de nivel bajo: una zona a 11 del Claro hacia el este pasó de Lejanía 11 a Lejanía 1. Lo más lejano también baja (una zona a 30 zonas del Claro queda a 18 de la hoguera más cercana): el anillo de recursos, el nivel de las mazmorras y de los campamentos enemigos bajan en todo el mapa de afuera. Los monstruos de afuera no cambian: ya salían del nivel del héroe (D-266).
+
+**Lo que queda por mirar:** si con la Lejanía desde la más cercana el mapa de afuera queda demasiado fácil (si hace falta, que más allá del anillo de hogueras se cuente desde el Claro); cuántos jugadores nacen fuera del Claro y si las hogueras nuevas se sienten vacías.

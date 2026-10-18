@@ -65,6 +65,11 @@ def stretch_of(x: int, y: int, size: int) -> tuple[int, int]:
     return x // size, y // size
 
 
+def clear_cache() -> None:
+    """Forget the stretches already worked out: the service calls it when the bonfires change (D-265, mapgen.lejania)."""
+    _stretch_entrances.cache_clear()
+
+
 @lru_cache(maxsize=8192)
 def _stretch_entrances(seed: int, bx: int, by: int, size: int, min_lejania: int, second_chance: float, deep_share: float,
                        spacing: int, excluded: tuple[tuple[int, int], ...], third_chance: float = 0.0) -> tuple[tuple[int, int, str], ...]:

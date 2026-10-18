@@ -54,6 +54,7 @@ from typing import Any
 
 from engine.hero import Hero
 from engine.messaging import Action, View
+from engine.world import mapgen                          # D-265: the 9 bonfires
 
 # Version of the Hero.guide record. [ES] Versión del registro Hero.guide: un héroe sin "v" es de antes de la 0.29 (E-133).
 GUIDE_VERSION = 1
@@ -151,7 +152,8 @@ class GuideMixin:
             evidence = {sid: True for sid in self._guide_basic()}
         else:
             evidence = {
-                "move": (hero.x, hero.y) != (0, 0) or len(hero.known) > 1,
+                "move": not mapgen.is_bonfire(hero.x, hero.y) or any(   # D-265: a zone besides the Claro and where it was born
+                    key not in ("0:0", f"{hero.home[0]}:{hero.home[1]}") for key in hero.known),
                 "explore": any(key != "0:0" and pct > 0 for key, pct in hero.exploration.items()),
                 "gather": "gather" in old and hero.tutorial > old.index("gather"),
                 "hunt": hero.kills > 0,
@@ -191,7 +193,7 @@ class GuideMixin:
     # ------------------------------------------------------------------ conditions
 
     def _guide_in_claro(self, hero: Hero) -> bool:
-        return [hero.x, hero.y] in self._claro_zones()
+        return [hero.x, hero.y] in self._claro_zones() or mapgen.is_bonfire(hero.x, hero.y)   # D-265: any of the 9
 
     def _guide_where(self, hero: Hero, where: str | None) -> bool:
         """away: outside the Claro; home: in the Claro or in your own camp; spot: a good place to found a camp (D-190)."""

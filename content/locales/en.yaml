@@ -1762,6 +1762,16 @@ item:
 world:
   claro_name: The Clearing
   place: "{name} ({x}, {y})"
+  bonfire_terrain: Campfire
+  bonfire_name:
+    n: North Campfire
+    ne: Northeast Campfire
+    e: East Campfire
+    se: Southeast Campfire
+    s: South Campfire
+    sw: Southwest Campfire
+    w: West Campfire
+    nw: Northwest Campfire
   name_first:
   - Ford
   - Hill
@@ -1911,7 +1921,7 @@ travel:
   started: 🚶 You set off. It will take {time}.
   on_the_way: You're heading to {where} ({dir}).
   remaining: ⏳ {time} left.
-  arrived: 📍 You reached {name} ({biome}).
+  arrived: 📍 You reached {name} · {biome}.
   discovered: 🧭 No one had ever set foot in this zone! It goes on the map with your name.
   discovered_named: 🧭 No one had ever set foot in {name}! It goes on the map with your name.
   interrupted: ⛔ Your journey stops at {name}.

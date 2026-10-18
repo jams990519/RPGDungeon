@@ -195,8 +195,10 @@ presence:                    # [ES] D-96 (provisional): ver a los otros jugadore
   cross_chance: 0.15         # [ES] probabilidad, en cada vuelta de exploración o recolección sin pelea, de cruzarte con alguien que esté en tu zona (a cada uno, una vez por lote)
   bonfire_seconds: 60        # [ES] D-265/D-274 (0.36): 👥 Jugadores de la fogata lista a los que tocaron un botón ahí en el último minuto (60 segundos). El contador "N/20" usa la regla de 15 min de arriba (minutes)
 
-bonfire:                     # [ES] D-265 (confirmada; 0.36 trae solo el contador): las fogatas (hoy, la del Claro). El reparto a otras hogueras cuando una se llena llega con las 9 hogueras (0.37)
-  cap: 20                    # [ES] tope de jugadores por fogata (D-265): se muestra como "👥 N/20 en la fogata". Todavía no saca a nadie: el reparto es del 0.37
+bonfire:                     # [ES] D-265 y D-277 (confirmadas, 0.37): las 9 hogueras, el tope de 20 y el reparto de los que llegan
+  cap: 20                    # [ES] tope de jugadores por fogata (D-265): "👥 N/20 en la fogata" (N con la regla de 15 min de presence.minutes). Llena, los jugadores nuevos nacen en la siguiente con lugar y quien viaja a ella sigue hasta la más cercana con lugar; a nadie que ya está se lo mueve
+  spacing: 12                # [ES] D-224, D-265: una hoguera cada 12 zonas (el Claro en (0, 0) y las demás en múltiplos de 12). Cambiarlo MUEVE las hogueras y el peligro de todo el mapa (la Lejanía se cuenta desde la más cercana, D-277)
+  ring: 1                    # [ES] anillos de hogueras alrededor del Claro: 1 = las 8 de alrededor (9 en total, D-265). 0 = solo el Claro, como antes de la 0.37
 
 regen:
   hp_full_minutes: 240        # [ES] pedido del dueño: fuera de combate la vida vuelve sola, de 0 a llena en 4 horas

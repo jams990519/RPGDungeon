@@ -502,6 +502,15 @@ El dueño pidió (18-oct-2026): "asegúrate que todas las posiciones tengan una 
 - **Tope:** el de 🔗 Moverte, 50 pasos (`travel.walk_max`). Si la coordenada queda más lejos, el juego dice hasta dónde llegar primero («ve por partes: primero /ir 40 10»). Ocupado o en combate, avisa y no arma nada.
 - **Dónde se explica:** debajo del texto de 🔗 Moverte, al final de 📒 Lugares y en ❓ Dudas («📌 ¿Cómo voy a una coordenada?», d54).
 
+### 1.18 Las 9 hogueras (D-265, D-277, en el juego desde la 0.37)
+
+- **Dónde están:** el Claro (0, 0) y una hoguera cada 12 zonas alrededor (`bonfire.spacing` 12, `bonfire.ring` 1): la Fogata del Norte (0, 12), del Este (12, 0), del Sur (0, −12), del Oeste (−12, 0) y las de las esquinas, del Noreste (12, 12), del Sureste (12, −12), del Suroeste (−12, −12) y del Noroeste (−12, 12). Se llaman por su lado (D-277).
+- **Qué tiene cada una:** todo lo de la fogata: el menú del campamento (🍲 Cocinar, 👥 Jugadores, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón y ❓ Dudas), los personajes de la historia y la tierra protegida (no salen peleas al llegar). La 🥫 Despensa y el crecimiento del Claro son uno solo, desde cualquier hoguera (D-277).
+- **El peligro se cuenta desde la hoguera más cercana (D-277):** la Lejanía de una zona es la distancia a la hoguera más cercana, así que alrededor de cada una el nivel, el anillo de recursos, las mazmorras, los nodos y los campamentos enemigos vuelven a ser de nivel bajo. Antes de la 0.37 se contaba desde el Claro: las zonas cerca de las 8 nuevas bajaron de nivel y algunas mazmorras y nodos de esa zona cambiaron de lugar (el mundo se reinicia al abrir la beta, D-273).
+- **Tope de 20 por hoguera (D-265):** cuenta a los que están ahí con la regla de 15 min de 📍 Zona. Los jugadores nuevos nacen en la más cercana al Claro que tenga lugar (el Claro primero, después los lados y después las esquinas). Quien viaja a una hoguera llena llega y sigue solo hasta la más cercana con lugar, con un aviso. A nadie que ya está se lo mueve. Si las 9 están llenas, va a la menos llena.
+- **A la vista desde el primer día (D-277):** las 9 están en 📒 Lugares, aunque nunca hayas ido (no cuentan para el tope de lugares del 🧭 Explorador), y se puede viajar a cualquiera. En el 🗺️ Mapa siempre se ven.
+- **La historia:** la meta "explora el Claro" es la hoguera donde naciste (`Hero.home`).
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).

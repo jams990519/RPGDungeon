@@ -151,6 +151,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-278 (0.36.1): /ir x y arma el camino de 🔗 Moverte en el espacio "walk" de siempre (_coord_walk); no guarda nada nuevo.
     D-280 (0.36.1): "player_code" (código de jugador → cuenta) y "player_code_of" (cuenta → código), de gremio.py
     (player_code); "camp" suma "invites" (a quién invitó su fundador con /inv_, hasta que responde: "cinv:").
+    D-265 y D-277 (0.37): Hero.home (la hoguera donde nació; los de antes, [0, 0]). Las 9 hogueras no se guardan: salen de
+    content/balance.yaml (bonfire.spacing, bonfire.ring) vía engine/world/mapgen.py, y "estar en la fogata" es
+    mapgen.is_bonfire(x, y). Cada hoguera usa la presencia de siempre ("presence", clave "x:y") para su "N/20".
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -460,6 +463,7 @@ from engine.professions import gatherer_of, masterwork_chance, masterwork_id, ma
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, classic_biome, travel_minutes, zone_at
+from engine.world import mapgen                          # D-265: the bonfires (BONFIRES, is_bonfire, nearest_bonfire)
 from engine.world import pantry as pantry_rules
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
@@ -603,6 +607,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             store.put("meta", "world", meta)
         self.world_seed = int(meta["seed"])
         self.ctx = CombatContext(content.classes, content.enemies, content.items, content.balance, self.texts)
+        bonfire = content.balance.get("bonfire", {})
+        layout = mapgen.bonfire_layout(int(bonfire.get("spacing", 12)), int(bonfire.get("ring", 1)))
+        if layout != mapgen.BONFIRES:                    # D-265, D-277: the 9 bonfires; lejania counts from the nearest
+            mapgen.configure_bonfires(int(bonfire.get("spacing", 12)), int(bonfire.get("ring", 1)))
+            dungeon_rules.clear_cache()
+            node_rules.clear_cache()
 
     # ------------------------------------------------------------------ public API
 
@@ -1167,13 +1177,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return zone
 
     def _discovered(self, x: int, y: int) -> dict[str, Any] | None:
-        if x == 0 and y == 0:
+        if mapgen.is_bonfire(x, y):                     # D-265: every bonfire is known to all from the first day
             return {"discovered_by": None}
         return self.store.get("zone", f"{x}:{y}")
 
     def _zone_name(self, zone: Zone) -> str:
         if zone.x == 0 and zone.y == 0:
             return self.texts.t("world.claro_name")
+        if mapgen.is_bonfire(zone.x, zone.y):           # D-277: the other bonfires are named by their side of the Claro
+            side = ("n" if zone.y > 0 else "s" if zone.y < 0 else "") + ("e" if zone.x > 0 else "w" if zone.x < 0 else "")
+            return self.texts.t(f"world.bonfire_name.{side}")
         if self._is_lair(zone.x, zone.y):
             return self.texts.t("guardian.lair_name")
         first = self.texts.list("world.name_first")
@@ -1199,6 +1212,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _biome_label(self, zone: Zone) -> str:
         biome = self.content.biomes[zone.biome]
+        if mapgen.is_bonfire(zone.x, zone.y) and (zone.x, zone.y) != (0, 0):
+            return f"{biome['emoji']} {self.texts.t('world.bonfire_terrain')}"   # D-265: "🔥 Hoguera", not "Claro"
         return f"{biome['emoji']} {self.texts.t(biome['name_key'])}"
 
     def _route_seconds(self, hero: Hero, direction: str) -> tuple[Zone, float, bool]:
@@ -1214,8 +1229,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._seconds(minutes)
 
     def _anchors(self, hero: Hero) -> list[tuple[int, int, int]]:
-        """Where travel distance is counted from (D-78): the Claro and the hero's own camp."""
-        anchors = [(x, y, 0) for x, y in self._claro_zones()]
+        """Where travel distance is counted from (D-78): the Claro, every bonfire (D-265) and the hero's own camp."""
+        anchors = [(x, y, 0) for x, y in self._claro_zones()] + [(x, y, 0) for x, y in mapgen.BONFIRES[1:]]
         camp = self.store.get("camp", hero.camp) if hero.camp else None
         if camp:
             anchors += [(x, y, 0) for x, y in camp.get("zones", [[camp["x"], camp["y"]]])]
@@ -1225,9 +1240,32 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """The Claro covers one more zone per settlement stage (D-81)."""
         return first_zones(0, 0, self._settlement()["stage"] + 1)
 
+    def _bonfire_count(self, x: int, y: int, exclude: str | None = None) -> int:
+        """Players at the bonfire (x, y) now, by the 15-minute rule of 📍 Zona (D-265: the "N/20"), not counting `exclude`."""
+        return len(self._zone_players(x, y, exclude=exclude))
+
+    def _bonfire_cap(self) -> int:
+        return int(self.content.balance.get("bonfire", {}).get("cap", 20))
+
+    def _bonfire_with_room(self, x: int, y: int, exclude: str | None = None) -> tuple[int, int]:
+        """The bonfire nearest to (x, y) with room (fewer than bonfire.cap there); if all are full, the least crowded (D-265).
+
+        [ES]
+        Qué hace: elige a qué hoguera va alguien que llega (pedido del dueño: "cuando exceda 20 jugadores… vas a sacar a los
+        jugadores a una hoguera cercana"; D-265: solo los que llegan, a nadie que ya está se lo mueve). Primero la más cercana
+        a (x, y) que tenga lugar; empatadas, la que va primero en mapgen.BONFIRES (el Claro, los lados, las esquinas). Si las 9
+        están llenas, la menos llena. La llaman: la creación del héroe (dónde nace, desde el Claro) y _arrive (una hoguera
+        llena). Si cambia, afecta: dónde nace cada jugador y a dónde sigue quien llega a una hoguera llena.
+        """
+        cap = self._bonfire_cap()
+        order = {b: n for n, b in enumerate(mapgen.BONFIRES)}
+        ranked = sorted(mapgen.BONFIRES, key=lambda b: (max(abs(b[0] - x), abs(b[1] - y)), abs(b[0] - x) + abs(b[1] - y), order[b]))
+        counts = {b: self._bonfire_count(b[0], b[1], exclude) for b in ranked}
+        return next((b for b in ranked if counts[b] < cap), min(ranked, key=lambda b: (counts[b], ranked.index(b))))
+
     def _territory(self, x: int, y: int) -> dict[str, Any] | None:
         """Whose land a zone is: {"claro": True} or the camp record, or None (D-81)."""
-        if [x, y] in self._claro_zones():
+        if [x, y] in self._claro_zones() or mapgen.is_bonfire(x, y):     # D-265: every bonfire is protected land
             return {"claro": True}
         ref = self.store.get("territory", f"{x}:{y}")
         return self.store.get("camp", ref["camp"]) if ref else None
@@ -1338,6 +1376,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if self._ecamp_standing(hero.x, hero.y):
                 notices.append(self.texts.t("ecamp.arrive"))      # D-112: an enemy camp stands here
             notices += self._dng_arrive_lines(hero)               # D-171: a dungeon entrance here (now you know what it is)
+            if mapgen.is_bonfire(hero.x, hero.y) and self._bonfire_count(hero.x, hero.y, hero.id) >= self._bonfire_cap():
+                target = self._bonfire_with_room(hero.x, hero.y, hero.id)       # D-265: a full bonfire sends arrivals on
+                if target != (hero.x, hero.y):
+                    path = self._path(hero.x, hero.y, *target)
+                    activity = {**activity, "goal": list(target), "walk": False}
+                    notices.append(self.texts.t("bonfire.full_reroute", name=self._place_label(hero.x, hero.y),
+                                                cap=self._bonfire_cap(), next=self._place_label(*target)))
         if self._discovered(hero.x, hero.y) is None:
             self.store.put("zone", f"{hero.x}:{hero.y}", {"discovered_by": hero.name, "at": activity["until"]})
             hero.zones_discovered += 1
@@ -1687,6 +1732,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                     energy=self.content.balance["energy"]["max"], energy_at=self.clock.now(),
                     belt=dict(hb["start_belt"]), backpack=dict(hb["start_backpack"]), last_regen_at=self.clock.now())
         hero.unlocked = [base_response(self.content.classes, group)]
+        bx, by = self._bonfire_with_room(0, 0, account_id)   # D-265: born at the bonfire nearest the Claro with room
+        hero.x, hero.y, hero.home = bx, by, [bx, by]
+        hero.known = sorted({"0:0", f"{bx}:{by}"})
         starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
         hero.gear_started = True
         hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
@@ -1860,7 +1908,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._guide_view(hero)
         if action_id.startswith(GREMIO_ACTIONS) or action_id == "gleave!":     # D-265/D-269: 👥 Jugadores and the guild (menus)
             return self._gremio_action(hero, action_id)
-        in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
+        in_claro = mapgen.is_bonfire(hero.x, hero.y) and not hero.activity
         if action_id == "found":                        # D-269: the guild founds (the leader, 2 members here, the fund pays)
             return self._start_founding(hero)
         if action_id == "rename":
@@ -2280,7 +2328,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _fog_cell(self, hero: Hero, x: int, y: int) -> str:
         """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour."""
-        stage = None if (x, y) == (0, 0) else self._fog_stage(self._explored_pct(hero, x, y))   # the 🔥 Claro: always
+        stage = None if mapgen.is_bonfire(x, y) else self._fog_stage(self._explored_pct(hero, x, y))   # 🔥 every bonfire: always
         if stage is not None:
             return stage["mark"]
         biome = self.content.biomes[self._zone(x, y).biome]
@@ -2448,7 +2496,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
         body += [""] + self._resources_lines(hero, zone.x, zone.y)
-        fog_here = None if (zone.x, zone.y) == (0, 0) else self._fog_stage(self._explored_pct(hero, zone.x, zone.y))
+        fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._explored_pct(hero, zone.x, zone.y))
         if fog_here is not None:                        # D-220, D-222: how grey your square still is (it left the 🗺️ Mapa)
             body.append(t.t("map.fog.here", mark=fog_here["mark"], stage=t.t("map.fog.name." + fog_here["id"]),
                             pct=self._explored_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
@@ -2458,7 +2506,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if camp:
             here.append(t.t("camps.zone_line", name=camp["name"], n=len(camp["members"])))
         elif land and land.get("claro"):
-            if (zone.x, zone.y) != (0, 0):
+            if not mapgen.is_bonfire(zone.x, zone.y):
                 here.append(t.t("camps.claro_land"))
         elif land:
             here.append(t.t("camps.land_line", name=land["name"]))
@@ -2733,7 +2781,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         lo que pide fundarlo), con un aviso. La llaman: las opciones del centro que no se pueden aquí (🍲 sin Fogón, 🔬 sin
         Biblioteca...) para explicar por qué. Si cambia, afecta: a dónde vuelven esos avisos.
         """
-        if (hero.x, hero.y) == (0, 0) and not hero.activity:
+        if mapgen.is_bonfire(hero.x, hero.y) and not hero.activity:
             return self._claro_view(hero, notice=notice)
         return self._camp_here_view(hero, notice=notice)
 
@@ -2770,7 +2818,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             lines = [t.t("hub.cook", rank=cook_rank) if COOK_PROFESSION in stations or (camp is None and not hero.activity)
                      else t.t("hub.cook_none")]
         if camp is None:                                # D-274.1: in the Claro, 👥 Jugadores took 🔬 Investigar's place
-            present = len(self._zone_players(0, 0, exclude=hero.id)) + (1 if (hero.x, hero.y) == (0, 0) else 0)
+            present = self._bonfire_count(hero.x, hero.y)   # D-265: the bonfire you stand at
             lines.append(t.t("hub.players", n=present, cap=int(self.content.balance.get("bonfire", {}).get("cap", 20))))
         else:
             key = f"{hero.x}:{hero.y}"
@@ -3170,7 +3218,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _sell_code(self, hero: Hero, code: int) -> View:
         """/v02: sell every unit of the thing with that code to the Claro trader (D-259)."""
         t = self.texts
-        if (hero.x, hero.y) != (0, 0) or hero.activity:
+        if not mapgen.is_bonfire(hero.x, hero.y) or hero.activity:
             return self._main_view(hero, notice=t.t("shop.only_in_claro"))
         item_id = next((i for i in self._sellable(hero) if int(self.content.items[i]["code"]) == code), None)
         if item_id is None:
@@ -4961,7 +5009,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _upgrades_elsewhere(self, hero: Hero) -> View:
         """Improvements are built at your own camp: the Claro has none (D-98); elsewhere, the camp screen says why."""
         t = self.texts
-        if (hero.x, hero.y) == (0, 0):
+        if mapgen.is_bonfire(hero.x, hero.y):
             return self._claro_view(hero, notice=t.t("upgrades.claro_none"))
         return self._camp_here_view(hero, notice=t.t("upgrades.members_only"))
 
@@ -5404,7 +5452,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """Bags and chests are made in the Claro, or at your camp once it built the 🧵 Taller (D-101); never while busy."""
         if hero.activity:
             return False
-        if (hero.x, hero.y) == (0, 0):
+        if mapgen.is_bonfire(hero.x, hero.y):
             return True
         here = self._upgrades_here(hero)
         return bool(here) and self._camp_service(here[0], "craft") is not None
@@ -5549,7 +5597,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         La llama: _idle_action ("research"). Si cambia, afecta: tests/test_menus_y_dudas.py.
         """
         t = self.texts
-        if (hero.x, hero.y) == (0, 0):                  # D-257 (0.33): in the Claro, 🔬 Investigar is where professions are learned
+        if mapgen.is_bonfire(hero.x, hero.y):                  # D-257 (0.33): in the Claro, 🔬 Investigar is where professions are learned
             return self._learn_view(hero)
         here = self._upgrades_here(hero)
         if not here:
@@ -6114,7 +6162,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _learn_back(self, hero: Hero) -> str:
         """Where ↩️ Volver of 📚 Aprender oficios goes: the 🏕️ Campamento hub in the Claro, else the 🧑‍🏫 Entrenador."""
-        return "claro" if (hero.x, hero.y) == (0, 0) and not hero.activity else "trainer"
+        return "claro" if mapgen.is_bonfire(hero.x, hero.y) and not hero.activity else "trainer"
 
     def _prof_detail_view(self, hero: Hero, pid: str, notice: str | None = None) -> View:
         """/minero: everything about one profession; if you do not know it yet, its price and 📚 Aprender (D-257).
@@ -6394,7 +6442,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if hero.activity:
             return [], None
         stations = (self.content.professions or {}).get("stations") or {}
-        if (hero.x, hero.y) == (0, 0):
+        if mapgen.is_bonfire(hero.x, hero.y):
             return list(stations.get("claro") or []), "claro"
         here = self._upgrades_here(hero)
         if not here:
@@ -6408,7 +6456,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _prof_back(self, hero: Hero) -> str:
         """Where ↩️ Volver of ⚒️ Oficios goes: the 🏕️ hub (the Claro or your camp, D-192: 🛠️ Fabricar opens it) or the hero."""
-        if (hero.x, hero.y) == (0, 0) or self._upgrades_here(hero):
+        if mapgen.is_bonfire(hero.x, hero.y) or self._upgrades_here(hero):
             return "claro"
         return "hero"
 
@@ -8108,7 +8156,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         t = self.texts
         found: dict[tuple[int, int], tuple[str, str]] = {}
-        found[(0, 0)] = ("🔥", self._zone_name(self._zone(0, 0)))
+        for bx, by in mapgen.BONFIRES:                  # D-277: the 9 bonfires are in 📒 Lugares from the first day
+            found[(bx, by)] = ("🔥", self._zone_name(self._zone(bx, by)))
         for key in hero.known:
             x, y = (int(v) for v in key.split(":"))
             camp = self.store.get("camp", key)
@@ -8146,7 +8195,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         places = self._important_places(hero)
         count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
-        listed = places[:count]
+        others = [p for p in places if not mapgen.is_bonfire(p[1], p[2])][:count]
+        listed = sorted([p for p in places if mapgen.is_bonfire(p[1], p[2])] + others)   # D-277: the 9 bonfires, always
         self.store.put("places_shown", hero.id, {"list": [[x, y] for _, x, y, _, _ in listed]})
         body = [t.t("places.intro")]
         for n, (seconds, x, y, icon, name) in enumerate(listed, 1):
@@ -8157,7 +8207,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.none"))
         elif len(places) > len(listed):
             body.append(t.t("places.more", n=len(places) - len(listed)))
-        if count == 3 and len(places) > 3:
+        if count == 3 and sum(1 for p in places if not mapgen.is_bonfire(p[1], p[2])) > 3:     # the bonfires do not count
             body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
         body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
         actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
@@ -8194,7 +8244,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _can_goto(self, hero: Hero, gx: int, gy: int) -> bool:
         """A trip from 📒 Lugares can end there: a zone the hero visited, any players' camp (D-222, D-267), or your guild's
         meeting point or construction (D-269; 🏗️ Moverte a la construcción, even if you never stood there)."""
-        return hero.remembers(gx, gy) or self.store.get("camp", f"{gx}:{gy}") is not None or self._gremio_goal(hero, gx, gy)
+        return (hero.remembers(gx, gy) or self.store.get("camp", f"{gx}:{gy}") is not None or self._gremio_goal(hero, gx, gy)
+                or mapgen.is_bonfire(gx, gy))           # D-277: any bonfire, even if never visited
 
     def _goto(self, hero: Hero, gx: int, gy: int) -> View:
         """Travel zone by zone to a place you have visited ("goto:"), also while busy (0.33).
@@ -9058,7 +9109,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if item_id in hero.gear_new:
             hero.gear_new.remove(item_id)
         actions = []
-        in_claro = (hero.x == 0 and hero.y == 0 and not hero.activity) or self._sells_gear_here(hero)   # D-101: 🔨 Herrería
+        in_claro = (mapgen.is_bonfire(hero.x, hero.y) and not hero.activity) or self._sells_gear_here(hero)   # D-101: 🔨 Herrería
         price = max(1, int(item.get("price", 1) * self.content.balance["shop"]["sell_ratio"]))
         if worn_slot:
             body.append(t.t("gear.is_worn"))

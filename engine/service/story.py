@@ -53,6 +53,7 @@ from typing import Any
 from engine.hero import Hero
 from engine.messaging import Action, View
 from engine.story import rules as story_rules
+from engine.world import mapgen                          # D-265: every bonfire has the Claro's characters
 
 # Story button ids (or prefixes): _story_action routes them (GameService._idle_action sends them here).
 STORY_ACTIONS = ("story", "squests", "board", "npcs", "npc:", "talk:", "ch:", "factions", "journal", "jshow",
@@ -195,8 +196,8 @@ class StoryMixin:
     def _state_done(self, hero: Hero, goal: dict[str, Any]) -> bool:
         kind = goal.get("kind")
         if kind == "explored":
-            x, y = goal.get("zone", [0, 0])
-            return self._explored_pct(hero, int(x), int(y)) >= int(goal.get("pct", 100))
+            x, y = self._goal_zone(hero, goal)
+            return self._explored_pct(hero, x, y) >= int(goal.get("pct", 100))
         if kind == "camp":
             return hero.camp is not None
         if kind == "level":
@@ -885,9 +886,9 @@ class StoryMixin:
             key = "explore_claro" if goal.get("claro") else ("explore_outside" if goal.get("outside") else "explore")
             return t.t(f"story.goal.{key}", n=n, p=p)
         if kind == "explored":
-            x, y = goal.get("zone", [0, 0])
-            return t.t("story.goal.explored", zone=self._place_label(int(x), int(y)), pct=int(goal.get("pct", 100)),
-                       now=self._explored_pct(hero, int(x), int(y)))
+            x, y = self._goal_zone(hero, goal)
+            return t.t("story.goal.explored", zone=self._place_label(x, y), pct=int(goal.get("pct", 100)),
+                       now=self._explored_pct(hero, x, y))
         if kind == "gather":
             if goal.get("item") in self.content.items:
                 return t.t("story.goal.gather_item", item=self._item_label(goal["item"]), n=n, p=p)
@@ -1090,8 +1091,15 @@ class StoryMixin:
                 out.append((qid, goal))
         return out
 
+    @staticmethod
+    def _goal_zone(hero: Hero, goal: dict[str, Any]) -> tuple[int, int]:
+        """The zone of an "explored" goal; [0, 0] (the Claro in content/story.yaml) is the hero's own bonfire (D-265)."""
+        x, y = (int(v) for v in goal.get("zone", [0, 0]))
+        return (int(hero.home[0]), int(hero.home[1])) if (x, y) == (0, 0) and hero.home else (x, y)
+
     def _in_claro(self, hero: Hero) -> bool:
-        return (hero.x, hero.y) == (0, 0) and (hero.activity or {}).get("kind") != "travel"
+        """At a bonfire (the Claro or any of the 9, D-265: each has the Claro's characters), not travelling."""
+        return mapgen.is_bonfire(hero.x, hero.y) and (hero.activity or {}).get("kind") != "travel"
 
     def _npcs_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
         """🧑 Personajes: the Claro's characters, 3 per page (❗ = has something for you); 4 buttons at most."""

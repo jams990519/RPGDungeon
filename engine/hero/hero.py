@@ -112,6 +112,7 @@ class Hero:
             learned (learn: auto; gathering too until 0.35, D-272). A profession not learned has rank 0; its xp stays.
         class_changes: how many times the hero changed class (0.35, D-270): the first is free, then the price grows
             (balance.yaml class_change.prices). 0 for heroes saved before it.
+        home: the bonfire where the hero was born (0.37, D-265): one of the 9; heroes from before have [0, 0] (the Claro)
         prof_specs: the 🎓 specializations the hero holds (D-115, D-141), profession id -> spec ids in the order chosen (the
             first from rank 25, the second from rank 75; never three). Empty for heroes saved before it.
         spec_xp: mastery of each specialization, spec id -> profession xp earned in its profession while holding it. Kept
@@ -212,6 +213,7 @@ class Hero:
     guide: dict[str, Any] = field(default_factory=dict)                 # D-193: 🧭 guided path progress (empty = not read yet)
     combo_shapes: list[str] = field(default_factory=list)               # D-229: different chain combos ever cashed (variety)
     class_changes: int = 0                                              # D-270: class changes done (the first is free)
+    home: list[int] = field(default_factory=lambda: [0, 0])               # D-265: the bonfire where the hero was born (0.37)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
