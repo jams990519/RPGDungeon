@@ -162,10 +162,10 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 ## 6. Lo que falta
 
 **El 18-oct el dueño decidió mucho de una vez (D-264 a D-273)** y pidió publicar todo solo y preguntarle antes de empezar (D-264, CLAUDE.md §6). La cola, en este orden:
-1. **0.34:** encuentros al moverte de 6 a 14 % por zona y monstruos de afuera de tu nivel (D-266), botón 🗺️ Mapa en 📍 Zona y al viajar (D-268), campamentos de jugadores visibles (D-267, D-274), el Entrenador recomienda el oficio de tu armadura (D-271).
-2. **0.35:** el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-269, reemplaza a D-252).
-3. **0.36:** 👥 Jugadores en la fogata y 9 hogueras con tope de 20 (D-265).
-4. **0.37:** cambio de clase con precios (D-270) y solo el Explorador sube solo (D-272).
+1. **0.34 (publicada el 18-oct):** encuentros al moverte de 6 a 14 % por zona y monstruos de afuera de tu nivel (D-266), botón 🗺️ Mapa en 📍 Zona y al viajar (D-268), campamentos de jugadores visibles (D-267, D-274), el Entrenador recomienda el oficio de tu armadura (D-271).
+2. **0.35:** cambio de clase con precios (D-270) y solo el Explorador sube solo (D-272).
+3. **0.36:** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programa un agente en una copia aparte.
+4. **0.37:** las 9 hogueras con tope de 20 y el desborde (D-265).
 5. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
