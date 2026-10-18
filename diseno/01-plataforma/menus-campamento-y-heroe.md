@@ -1,6 +1,6 @@
 # Menús: 🏕️ Campamento, 👤 Héroe, 🧑‍🏫 Entrenador y ❓ Dudas
 
-> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Web y multiplataforma](web-y-multiplataforma.md) §3 (vistas neutras), [Decisiones](../00-vision/decisiones.md) D-190, D-191 y D-192 · **Alimenta a:** todos los módulos que tienen pantallas en el campamento o en el héroe · **Estado:** en el juego desde la 0.29 (D-190 y D-191 confirmadas; cómo se aplican, D-192 provisional)
+> **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Web y multiplataforma](web-y-multiplataforma.md) §3 (vistas neutras), [Decisiones](../00-vision/decisiones.md) D-190, D-191 y D-192 · **Alimenta a:** todos los módulos que tienen pantallas en el campamento o en el héroe · **Estado:** en el juego desde la 0.29 (D-190 y D-191 confirmadas; cómo se aplican, D-192 provisional). 0.36: 👥 Jugadores en la fogata (D-265, D-274) y el centro del 🛡️ Gremio (D-269)
 
 Cómo se ordenan las pantallas principales del juego desde la 0.29: el menú de abajo, el centro de 🏕️ Campamento (en el Claro y en tu propio campamento), el centro de 👤 Héroe, el 🧑‍🏫 Entrenador y ❓ Dudas. El camino guiado de la historia (D-190), que manda al jugador a hacer una cosa nueva por vez, se describe aparte.
 
@@ -27,7 +27,7 @@ Un **centro** (D-192): arriba, una línea por opción con lo que hace y sus núm
 | Botón | Qué hace | Si no se puede |
 |---|---|---|
 | 🍲 Cocinar | La estación de la 🍲 Cocina: carne, pescado y lo de cada terreno se vuelven raciones y guisos (rinden más en la despensa de un campamento) | Sin la 🍲 Cocina aprendida (D-257), la línea dice que primero se aprende y el botón lleva a aprenderla |
-| 🔬 Investigar | **En el Claro, 📚 Aprender oficios (D-257, 0.33):** cada oficio con su precio y su código. En tu campamento, el 📚 Conocimiento | — |
+| 👥 Jugadores | **0.36 (D-265, D-274.1):** reemplaza a 🔬 Investigar, que en el Claro repetía 📚 Aprender oficios (los oficios se aprenden en 🧑‍🏫 Entrenador → 📚 Aprender oficios; el botón viejo y /aprender siguen andando). Los que jugaron en la fogata en el último minuto, con clase, nivel y gremio, cada uno con su código (/j1, en inglés /p1) que abre su tarjeta (✉️ invitar a tu gremio o 🙋 pedir entrar al suyo), y el contador **"👥 N/20 en la fogata"** (N con la regla de 15 min de 📍 Zona; 20 es `bonfire.cap`). Botones: 🛡️ Gremio, 🔄 Actualizar y ↩️ Volver. También /jugadores y /players | Lejos de la fogata, avisa que se ve ahí |
 | 🛠️ Fabricar | ⚒️ Oficios: una línea corta por oficio que tienes y 🪚 Refinar y 🛠️ Fabricar en las estaciones de aquí (D-259) | Una estación sin oficios aprendidos dice cuáles aprender |
 | 🧑‍🏫 Entrenador | Tus oficios, los que te faltan y cómo se aprenden (§4) | — |
 | 🛒 Mercader | **🛒 Comprar** (pociones, vendas, 🥖 provisiones) y **💱 Vender** (lo que traes, con su código /v02) (D-259) | — |
@@ -36,6 +36,8 @@ Un **centro** (D-192): arriba, una línea por opción con lo que hace y sus núm
 | ❓ Dudas | Buscar respuestas (§5) | — |
 
 Debajo va la pista de siempre: el Claro no crece; para crecer, funda tu campamento.
+
+**🛡️ Gremio (D-269, 0.36)** se abre desde 👥 Jugadores y con /gremio. Sin gremio: qué es, 🛡️ Crear gremio (🥉20) y 🔎 Buscar gremio (los gremios sin campamento con su código /g1; cualquier texto busca). Con gremio, un **centro** (hasta 8 botones de 2 en 2): arriba el líder y "👥 N/5", la fundación en curso con su barra, el 📍 punto de reunión, el 💰 fondo, cada miembro con su código (/m1), si está en línea, dónde está y qué hace, y los últimos 📢 mensajes; abajo **📢 Mensaje · 💰 Fondo · 📍 Reunión · 🏕️ Fundar** (el líder) **· 🙋 Solicitudes** (líder u oficial, si hay) **· 🚪 Salir · ↩️ Volver**. Ya con campamento, 🛡️ Gremio es la pantalla del gremio del campamento (D-97), en 🏰 Gestionar. Mientras el gremio tiene un lugar definido, 📍 Zona suma el botón ancho **🏗️ Moverte a la construcción** (layout [2, 2, 1, 1, 1]). Cómo funciona todo: [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.
 
 ### 2.2 En tu propio campamento
 
@@ -101,7 +103,7 @@ El camino guiado (D-190) puede mandar al jugador aquí después de fundar su cam
 
 ## 6. Reglas de los centros
 
-1. **Hasta 8 botones de 2 en 2** solo en los centros (🏕️ Campamento, 🏰 Gestionar, 👤 Héroe y ❓ Dudas); las demás pantallas siguen con 4 (D-75), el combate con 6 (D-46) y las cantidades con su fila de botoncitos (D-189). No hace falta ningún campo nuevo en la vista: los clientes ya dibujan los botones de 2 en 2 ([Web y multiplataforma](web-y-multiplataforma.md) §3.3).
+1. **Hasta 8 botones de 2 en 2** solo en los centros (🏕️ Campamento, 🏰 Gestionar, 👤 Héroe, ❓ Dudas y, desde la 0.36, 🛡️ Gremio antes del campamento); las demás pantallas siguen con 4 (D-75), el combate con 6 (D-46) y las cantidades con su fila de botoncitos (D-189). No hace falta ningún campo nuevo en la vista: los clientes ya dibujan los botones de 2 en 2 ([Web y multiplataforma](web-y-multiplataforma.md) §3.3).
 2. **Una línea por opción**, en el mismo orden que los botones; los costos y tiempos van en la línea, nunca en el botón.
 3. **No esconder, explicar:** si una opción no se puede donde estás, el botón queda y dice por qué y dónde.
 4. **Volver con sentido:** las pantallas de 🏰 Gestionar vuelven a 🏰 Gestionar; las del centro (🍲, 🛠️, 🏘️, 📜, 🧑‍🏫, ❓), al centro.

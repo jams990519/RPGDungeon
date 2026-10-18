@@ -163,8 +163,8 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 
 **El 18-oct el dueño decidió mucho de una vez (D-264 a D-273)** y pidió publicar todo solo y preguntarle antes de empezar (D-264, CLAUDE.md §6). La cola, en este orden:
 1. **0.34 (publicada el 18-oct):** encuentros al moverte de 6 a 14 % por zona y monstruos de afuera de tu nivel (D-266), botón 🗺️ Mapa en 📍 Zona y al viajar (D-268), campamentos de jugadores visibles (D-267, D-274), el Entrenador recomienda el oficio de tu armadura (D-271).
-2. **0.35:** cambio de clase con precios (D-270) y solo el Explorador sube solo (D-272).
-3. **0.36:** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programa un agente en una copia aparte.
+2. **0.35 (publicada el 18-oct):** cambio de clase con precios (D-270), solo el Explorador sube solo (D-272) y el 💬 Feedback llega al chat del equipo con su @, tipo, prioridad y pasos con botones (D-275).
+3. **0.36 (publicada el 18-oct):** 👥 Jugadores en la fogata y el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-265, D-269, reemplaza a D-252). Lo programó un agente en una copia aparte (`engine/service/gremio.py`); las reglas chicas que decidió Claude están en D-276 (provisional) y se le preguntan al dueño (E-225).
 4. **0.37:** las 9 hogueras con tope de 20 y el desborde (D-265).
 5. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
@@ -173,6 +173,7 @@ El mundo se reinicia al abrir la beta, no antes (D-273).
 
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
+| E-225 (P-236) | Las reglas chicas del gremio desde el inicio (D-276): un gremio por héroe, el fondo solo con materiales, con 1 presente todo tarda el doble, varias obras a la vez | Confirmarlas así |
 | E-221 a E-224 (P-232 a P-235) | La reforma de las recetas: tramos cada 5 rangos y colores, costos de aprender, lo que hoy no avanza (piel, Pescador, Desollador, Construcción) y el orden de los parches | Sí a todo; recetas después de las 0.34 a 0.37 |
 | E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
 | E-216 a E-218 (P-227 a P-229) | La muralla: cuánto cosecha cada zona (40 % o menos), si reemplaza el +50 % de hoy y cuántas zonas cierra cada etapa | 20 % al almacén del asentamiento; sí; de 1 a 81 zonas |

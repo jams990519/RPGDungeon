@@ -52,7 +52,7 @@ faq:
     a: "Despiertas en el 🔥 Claro, el campamento base. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🪓 recolecta y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
   d02:
     q: "🧭 ¿Para qué sirve cada menú?"
-    a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, investigar, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
+    a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, los 👥 jugadores de la fogata, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
   d03:
     q: "📖 ¿Dónde quedó la Historia?"
     a: "El botón 📖 Historia salió del menú: ahora la historia te guía paso a paso mientras juegas. Tu 📔 Diario, tus 🎯 Misiones y las ⚜️ Facciones están en 👤 Héroe → 📔 Diario. El 📜 Tablón de encargos y los personajes del Claro, en 🏕️ Campamento. /historia también te lleva al diario."
@@ -113,7 +113,7 @@ faq:
     a: "Puede ser por la mochila llena (vende o usa cosas), la zona agotada (vuelve en unas horas), un 👹 campamento enemigo en pie en la zona, la guarida del Guardián o que todavía no descubriste sus recursos (explora primero). Si no se puede, nunca se cobra energía."
   d20:
     q: "👥 ¿Veo a otros jugadores?"
-    a: "En 📍 Zona ves quién anda en tu zona y qué hace. Puedes saludar con /saludar o brindar con /brindar, y mostrar tu diario. Es solo para verse: no da premios ni peleas entre jugadores."
+    a: "En 📍 Zona ves quién anda en tu zona y qué hace; en la fogata, 🏕️ Campamento → 👥 Jugadores muestra quién jugó en el último minuto, con su tarjeta. Puedes saludar con /saludar o brindar con /brindar, y mostrar tu diario. Es solo para verse: no da premios ni peleas entre jugadores."
   # ---- ⚔️ Peleas y salud
   d21:
     q: "⚔️ ¿Cómo funciona una pelea?"
@@ -161,7 +161,7 @@ faq:
     a: "El 🔥 Claro es el campamento base de todos: 🛒 mercader, 🛏️ posada, las estaciones para 🍲 cocinar y 🛠️ fabricar, el 🧑‍🏫 entrenador, el 📜 tablón de encargos y estas ❓ Dudas. El Claro no crece: para crecer, funda tu propio campamento."
   d35:
     q: "🏕️ ¿Cómo fundo mi campamento?"
-    a: "Ve a una zona a Lejanía {camp_far} o más, explórala al 100 %, conoce {camp_known} de las 8 zonas de alrededor, que no haya otro campamento a {camp_gap} zonas o menos y lleva {found_cost}. Ahí toca 🏕️ Campamento → 🏕️ Fundar campamento aquí y escribe su nombre. Cada héroe tiene uno."
+    a: "Lo funda tu 🛡️ gremio. El líder va a una zona a Lejanía {camp_far} o más, la explora al 100 % y conoce {camp_known} de las 8 zonas de alrededor, sin otro campamento a {camp_gap} zonas o menos. Hacen falta {found_members} miembros del gremio ahí y {found_cost} en el 💰 fondo. El líder toca 🏕️ Campamento → 🏕️ Fundar campamento aquí: tarda {found_minutes} min con {found_members} miembros presentes y menos con más (nunca menos de {found_floor} min). El campamento se llama como el gremio y a cada miembro le llega la invitación."
   d36:
     q: "⬆️ ¿Cómo agrando mi campamento?"
     a: "En tu campamento: 🏰 Gestionar → ⬆️ Agrandar. Cada nivel suma una zona a tu territorio y cuesta materiales según el nivel; desde el nivel {chests_from}, también 🪎 cofres. Pasa de campamento a aldea, pueblo, ciudad y castillo."
@@ -176,20 +176,20 @@ faq:
     a: "{raids_week} veces por semana llega una oleada a tu campamento. Tienen {raid_window} min para tocar 🛡️ Defender y pelear una vez cada uno; hace falta que gane la mitad de los miembros activos. Si no alcanza, la despensa pierde el {raid_loss} % y nada más. La 🛡️ Defensa de tus mejoras debilita a los atacantes."
   d40:
     q: "🔨 ¿Qué son las mejoras?"
-    a: "En 🏰 Gestionar → 🔨 Mejoras construyen entre todos las obras del campamento (🔥 Fogón, 🧵 Taller, 🔨 Herrería, 📚 Biblioteca, defensas…): cada uno aporta materiales hasta completarlas. Lo construido queda para siempre y da servicios y defensa."
+    a: "En 🏰 Gestionar → 🔨 Mejoras construyen entre todos las obras del campamento (🔥 Fogón, 🧵 Taller, 🔨 Herrería, 📚 Biblioteca, defensas…): cada uno aporta materiales hasta completarlas y después se construyen con el tiempo: {work_minutes} min por nivel de la obra con 2 miembros en el territorio (con 1, el doble; con más, menos). Lo construido queda para siempre y da servicios y defensa."
   d41:
     q: "🔬 ¿Cómo investigo?"
     a: "🔬 Investigar es el 📚 Conocimiento de tu campamento: con la 📚 Biblioteca (nivel {library_level}) estudian de a uno {studies}, y lo aprendido vale para siempre para todos los miembros. En el Claro no se investiga."
   d42:
     q: "🛡️ ¿Qué es el gremio?"
-    a: "El fundador crea el gremio en su campamento por {guild_cost} (🏰 Gestionar → 🛡️ Gremio). Sus miembros son los del campamento; sube de nivel con lo que exploran, ganan y juntan entre todos, y deja entrar a más gente. Para llegar a castillo hace falta un gremio de nivel {guild_castle}."
+    a: "Cualquiera crea un gremio por {gremio_cost} (🏕️ Campamento → 👥 Jugadores → 🛡️ Gremio, o /gremio); caben {gremio_cap} antes del campamento. Se pide entrar y acepta el líder o un oficial. Sirve para ver dónde está cada miembro y qué hace, mandar 📢 mensajes y juntar un 💰 fondo desde donde estés; el líder marca el 📍 punto de reunión y funda el campamento. Después, sus miembros son los del campamento: sube de nivel con lo que exploran, ganan y juntan entre todos. Para llegar a castillo hace falta un gremio de nivel {guild_castle}."
   d43:
     q: "📜 ¿Qué es el tablón?"
     a: "En el 📜 Tablón (🏕️ Campamento) hay 3 encargos nuevos cada día, uno por facción: cumplirlos da experiencia, monedas y reputación. Si tienes campamento, ves también sus encargos de la semana, que se hacen entre todos."
   # ---- ⚒️ Oficios
   d44:
     q: "⚒️ ¿Cómo aprendo un oficio?"
-    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Tus oficios: /misoficios."
+    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Tus oficios: /misoficios."
   d45:
     q: "🛠️ ¿Cómo fabrico?"
     a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."

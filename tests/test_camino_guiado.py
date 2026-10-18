@@ -231,18 +231,14 @@ def test_moving_during_the_basic_path_does_not_count_for_founding(service, clock
 
 
 def test_founding_completes_the_last_step_with_the_camp_tutorial(service):
+    from test_camps import found_at
     make_hero(service)
     hero = service._load(ACC)
     hero.guide["done"] = list(basic_ids(service)) + ["found_spot"]
-    hero.x, hero.y = 3, 0
-    hero.known = ["0:0", "3:0", "2:0", "4:0", "3:1", "3:-1"]
-    hero.exploration = {"3:0": 100}
-    hero.backpack = {"madera": 30, "piedra": 10}
     service._save(hero)
     gold = hero_of(service).gold
-    assert service.act(ACC, "found").kind == "name_camp"
-    view = service.text(ACC, "Roca Alta")
-    assert service.store.get("camp", "3:0")["name"] == "Roca Alta"
+    view = found_at(service, ACC, 3, 0)          # D-269: with its guild (2 members here, the fund pays, 1 h); the 🥉20 refunded
+    assert service.store.get("camp", "3:0")["name"] == "Campo 1 3"
     assert "found" in done(service) and "botón de mejora" in view.notice and "más oficios" in view.notice
     assert hero_of(service).gold == gold + service.content.balance["guide"]["reward_gold"]
     assert service._guide_current(service._load(ACC)) is None

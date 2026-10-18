@@ -1,8 +1,25 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026); los números son propuesta de Claude, a medir en la beta; **nada de esto está en el código todavía**
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0)**; la escalera de etapas (§2 a §7) todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
+
+---
+
+## 0. Cómo está D-269 en el juego (0.36)
+
+El 18-oct el dueño cambió el primer escalón: "hay que empezar a crear los grupos desde el primer momento" (D-269, **reemplaza a D-252**: el grupo ya no nace al construir). Cómo se aplicó, con las lecturas de D-274 (provisional):
+
+- **👥 Jugadores en la fogata (D-265, D-274.1-2).** En el menú del campamento del Claro, 👥 Jugadores reemplaza a 🔬 Investigar (que ahí repetía 📚 Aprender oficios; en tu propio campamento 🔬 Investigar sigue). Lista a los que jugaron en la fogata en el último minuto, con clase, nivel y gremio, cada uno con su código (/j1) que abre su tarjeta: desde ahí el líder o un oficial ✉️ invita, o tú 🙋 pides entrar al gremio del otro. Arriba, "👥 N/20 en la fogata" (N con la regla de 15 min de 📍 Zona). El reparto a otras hogueras cuando una se llena es del 0.37.
+- **El gremio antes del campamento (D-269.1-2).** Cualquier héroe lo crea por 🥉20 con un nombre libre (que será el del campamento: es único entre gremios y campamentos). Un gremio por héroe. Caben **5**. Se entra pidiendo (desde 🔎 Buscar gremio o la tarjeta de un jugador) y acepta el **líder o un oficial**; el líder nombra oficiales, saca miembros y cede el liderazgo; cualquiera sale (si sale el último, el gremio se disuelve y el fondo vuelve a su mochila). Sirve para:
+  - **ver a los miembros:** dónde está cada uno (zona y coordenadas), qué hace y si está en línea (🟢 con la regla de 15 min);
+  - **📢 mensajes al gremio:** el texto le llega a cada miembro (hasta 200 letras; la pantalla guarda los últimos 5);
+  - **💰 el fondo:** cada miembro deposita desde donde esté escribiendo o tocando el código de un material (/f02, el número de 📦 Recursos): "no tienen que llevarlo a ningún lugar". Se ve el total y quién dio qué.
+- **📍 Punto de reunión y 🏗️ Moverte a la construcción.** El líder marca "📍 Punto de reunión: aquí" y se avisa a todos. Mientras el gremio tiene un lugar definido (el punto de reunión o la fundación en curso), cada miembro ve en 📍 Zona un botón ancho más, **🏗️ Moverte a la construcción** (pedido del dueño, 18-oct: "lo que te tomes realmente en llegar. No te mueves en diagonal"): pregunta "¿Viajar?" y el héroe va solo por el camino de verdad, primero este-oeste y después norte-sur, aunque nunca haya pisado esa zona. No sale si ya estás ahí, ni cuando el campamento ya está fundado y eres miembro.
+- **Fundar con el gremio (D-269.3).** El líder funda donde está, con **al menos 2 miembros del gremio presentes** en la zona; siguen las reglas de siempre (Lejanía 2 o más, la zona explorada al 100 %, 4 vecinas conocidas, sin otro campamento a 2 zonas). El **fondo paga** `camps.found_cost` al empezar. Fundar es una **obra en curso**: tarda **60 min con 2 presentes** y menos con más (tiempo = 60 × 2 ÷ presentes: 4 → 30 min), **nunca menos de 10 min**; con 1 presente, el doble; sin nadie, se pausa. Al terminar nace el campamento con el **nombre del gremio** y el líder como fundador; el gremio pasa a ser **el gremio del campamento** (el de D-97, nivel 1, cupo 5) y **a cada otro miembro le llega la invitación**: decide si entra. Lo que sobró del fondo va a las obras del campamento (se pone primero al aportar).
+- **Las obras con tiempo (D-269.4, D-274.4).** Cada 🔨 mejora, con sus materiales completos, pasa a 🏗️ obra en curso: **60 min × su nivel con 2 miembros dentro del territorio** del campamento (en cualquiera de sus zonas), con 1 el doble, nunca menos de 10 min, sin nadie en pausa. 🔨 Mejoras muestra cada obra con su barra, los presentes y lo que falta. Lo que ya estaba construido sigue construido.
+- **Lo que no cambió:** los campamentos y gremios de antes siguen igual (D-64); el gremio del campamento sube de nivel como siempre (D-97). Dónde está el código: `engine/service/gremio.py`; los números, en `content/balance.yaml` (`gremio`, `works`, `bonfire`); la cascada, en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-30.
+- **Lo que decidió Claude y espera al dueño (D-276, provisional):** varias obras en curso avanzan a la vez con los mismos presentes; con 1 solo presente la fundación también avanza (el doble de lento); la reparación de defensas, los muebles, los estudios y ⬆️ Agrandar siguen siendo al instante; el fondo recibe solo materiales (no comida ni monedas); después de fundar, los 📢 mensajes, el fondo y el punto de reunión quedan para los gremios sin campamento (el del campamento es la pantalla de D-97).
 
 ---
 
@@ -10,7 +27,8 @@ El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empece
 
 | Decisión | Qué dice |
 |---|---|
-| **D-252** | El grupo **nace al construir** uno mismo. En la fogata donde se sale **no se crea grupo**. |
+| **D-252** | *(18-oct: D-269 lo reemplaza: el gremio se crea desde el primer momento, §0.)* El grupo **nace al construir** uno mismo. En la fogata donde se sale **no se crea grupo**. |
+| **D-269** | **El gremio desde el primer momento:** 🥉20, 5 antes del campamento, se pide entrar y aceptan el líder o un oficial; miembros a la vista, mensajes y un fondo; se funda con 2 miembros presentes y tarda (1 h con 2); cada obra tarda según los miembros en el territorio (§0). |
 | **D-253.1** | **Forma A + B:** un solo cupo por etapa, y la **escuadra de 5** como unidad para organizarse. El castillo llega a 50 y el reino a 200. Las alianzas de castillos (Forma C) quedan para más adelante. |
 | **D-253.2** | **Castillo:** 40 activos con cupo de 50 (D-122). |
 | **D-253.3** | **Un miembro que no juega** libera su lugar a los **30 días** sin jugar. |
@@ -100,6 +118,8 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 5. **La cosecha sale de lo que vuelve a crecer, no del recurso que hay:** el que recolecta a mano en esa zona encuentra lo mismo que hoy.
 
 ## 6. Dónde no se crea grupo (D-252)
+
+> *(18-oct: D-269 reemplaza a D-252: el gremio se crea desde el primer momento, también en la fogata; ver §0. Lo de abajo queda como historia.)*
 
 - **En la fogata de salida no se crea grupo.** Eso vale para el Claro y, cuando existan, para las hogueras de inicio (D-224, D-239.10).
 - **El grupo nace cuando un jugador construye él mismo.** Cómo se leyó (D-256, provisional): levantar uno mismo la 🏠 casa de D-158 y, mientras la casa no exista en el juego, fundar el campamento. Aportar a la obra de otro no crea grupo.

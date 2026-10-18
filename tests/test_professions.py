@@ -330,7 +330,7 @@ def test_oficios_command_and_screen(service):
     ready(service)
     assert service.commands()["/oficios"] == "oficios"
     view = service.act("test:1", "claro")
-    assert ids(view) == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]          # D-192: 🛠️ Fabricar is ⚒️ Oficios
+    assert ids(view) == ["cook", "players", "oficios", "trainer", "shop", "inn", "board", "dudas"]          # D-192: 🛠️ Fabricar is ⚒️ Oficios
     view = service.act("test:1", "oficios")
     assert view.kind == "professions" and ids(view) == ["est:refine:0", "est:craft:0", "claro"]
     assert any("Todavía no tienes oficios" in line for line in view.body)          # D-257: nothing learned or raised yet

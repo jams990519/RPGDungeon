@@ -51,10 +51,10 @@ def test_claro_hub_order_and_button_cap(service):
     make_hero(service)
     view = service.act("test:1", "claro")
     assert view.kind == "claro" and view.kind in HUB_KINDS
-    assert ids(view) == ["cook", "research", "oficios", "trainer", "shop", "inn", "board", "dudas"]
+    assert ids(view) == ["cook", "players", "oficios", "trainer", "shop", "inn", "board", "dudas"]
     assert len(view.actions) <= HUB_BUTTONS
     text = "\n".join(view.body)
-    for mark in ("🍲 Cocinar", "🔬 Investigar", "🛠️ Fabricar", "🧑‍🏫 Entrenador", "🛒 Mercader", "🛏️ Posada", "📜 Tablón", "❓ Dudas"):
+    for mark in ("🍲 Cocinar", "👥 Jugadores", "🛠️ Fabricar", "🧑‍🏫 Entrenador", "🛒 Mercader", "🛏️ Posada", "📜 Tablón", "❓ Dudas"):
         assert mark in text                                                     # one detailed line per option
     assert all("·" not in a.label for a in view.actions)                        # costs go in the text, not on the button
 
@@ -71,7 +71,7 @@ def test_claro_options_lead_somewhere_or_explain(service):
     assert all(a.id.startswith(("rec:", "est:cook:", "claro")) for a in cook.actions)
     recipe = service.act("test:1", cook.actions[0].id)
     assert recipe.kind == "recipe" and recipe.actions[-1].id.startswith("est:cook:")   # a kitchen recipe goes back to 🍲
-    research = service.act("test:1", "research")                               # D-257: in the Claro, 🔬 is 📚 Aprender oficios
+    research = service.act("test:1", "research")       # D-257: an old 🔬 key in the Claro opens 📚 Aprender oficios (D-274.1: 👥 took its place)
     assert research.kind == "learn"
     assert service.act("test:1", "oficios").kind == "professions"
     assert service.act("test:1", "board").actions[-1].id == "claro"

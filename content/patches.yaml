@@ -610,3 +610,20 @@ v0_35:
     - "🔄 You can now change class in 👤 Hero → 🌟 Talents → 🔄 Change class (or /changeclass). The first change is free; then it costs 🥈1, 🥈10, 🥈30 and then 🥈50 each time. You keep your level, professions, coins and gear."
     - "⛏️ Lumberjack, Miner, Herbalist and Fisher are now learned, like the other professions: only 🧭 exploration rises on its own. Without the profession you still gather the base resources. If you already practised them, they stay learned and you keep your rank."
     - "💬 Feedback: first choose the type (🐞 Bug, 💡 Idea, ⚖️ Balance, ❓ Unclear or 💬 Other), then write. The team follows every message and lets you know when it is solved."
+
+v0_36:
+  version: "0.36"
+  title: "🛡️ Lost Realms 0.36: gremios desde el primer día y 👥 Jugadores en la fogata"
+  title_en: "🛡️ Lost Realms 0.36: guilds from day one and 👥 Players at the bonfire"
+  notes:
+    - "👥 Nuevo botón Jugadores en el campamento de la fogata (en lugar de 🔬 Investigar): ves quién jugó ahí en el último minuto, con su clase, nivel y gremio, y cuántos hay en la fogata (👥 N/20). Toca su código (/j1) para ver su tarjeta, invitarlo o pedir entrar a su gremio."
+    - "🛡️ Ya puedes crear un gremio desde el primer momento, por 🥉20 (/gremio). Caben 5. Se entra pidiendo, y aceptan el líder o un oficial. Ves dónde está cada miembro y si está en línea, le mandas 📢 mensajes a todos y depositan en el 💰 fondo desde donde estén, con el código del material (/f02)."
+    - "📍 El líder marca el punto de reunión. Desde entonces, en 📍 Zona sale el botón 🏗️ Moverte a la construcción, que te lleva por el camino de verdad (sin diagonales)."
+    - "🏕️ Un campamento lo funda un gremio: el líder, con al menos 2 miembros en la zona, y el fondo paga. Tarda 1 hora con 2 y menos con más (nunca menos de 10 min). Al terminar, el gremio pasa a ser el del campamento y a cada miembro le llega la invitación."
+    - "🏗️ Las mejoras del campamento, con sus materiales completos, se construyen con el tiempo: más rápido cuantos más miembros estén dentro del territorio. Lo que ya estaba construido sigue igual."
+  notes_en:
+    - "👥 New Players button in the bonfire camp (instead of 🔬 Research): see who played there in the last minute, with their class, level and guild, and how many are at the bonfire (👥 N/20). Tap their code (/j1) to see their card, invite them or ask to join their guild."
+    - "🛡️ You can now create a guild from the very start, for 🥉20 (/guild). It holds 5. You join by asking, and the leader or an officer accepts. You see where each member is and whether they are online, you send 📢 messages to everyone, and members deposit into the 💰 fund from wherever they are, with the material's code (/f02)."
+    - "📍 The leader sets the meeting point. From then on, 📍 Zone shows the 🏗️ Move to the construction button, which takes you along the real path (no diagonals)."
+    - "🏕️ A camp is founded by a guild: the leader, with at least 2 members in the zone, and the fund pays. It takes 1 hour with 2 and less with more (never under 10 min). When it is done, the guild becomes the camp's guild and every member gets the invitation."
+    - "🏗️ Camp upgrades, once their materials are complete, are built over time: faster the more members are inside the territory. What was already built stays as it was."

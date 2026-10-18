@@ -41,6 +41,9 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas;
     0.32, D-233: el Paladín reemplaza al Chamán y la creación muestra las clases de 2 en 2, una armadura por página:
     CLASS_PAGE_SIZE)
+    diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
+    gremio y las obras con tiempo; vive en engine/service/gremio.py, GremioMixin, de la que GameService también hereda) y
+    diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata, D-265)
 Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
@@ -50,7 +53,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     cofre, D-112), engine.world.dungeons (dónde están las mazmorras, qué las llena cada día, sus pisos y su botín,
     D-164/D-170), engine.world.resources (recursos de base, del terreno y pescado, D-87/D-180/D-115), engine.world.nodes
     (dónde están los nodos de recursos y de qué son, D-184), content/* (content/dungeons.yaml: las familias de enemigos de
-    las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml)
+    las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml), engine.service.gremio
+    (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -136,6 +140,14 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     dónde estaba, la versión y dónde está su tarjeta en el chat de informes (chat, message). feedback_update mueve el paso.
     D-272 (0.35): la 🪓 recolección también se aprende (solo el 🧭 Explorador sube solo); _load le deja aprendido el oficio de
     recolección a quien ya tenía experiencia en él (grandfather en content/professions.yaml).
+    D-265, D-269 y D-274 (0.36): los espacios nuevos son de engine/service/gremio.py (ver su encabezado): "gremio" (el gremio
+    antes del campamento: líder, oficiales, miembros, solicitudes, invitaciones, 📢 mensajes, 💰 fondo y quién dio qué,
+    📍 punto de reunión, la fundación en curso, el campamento ya fundado e invitados), "gremio_of" (a qué gremio pertenece cada
+    cuenta), "gremio_codes" (el orden de las listas con /j1, /g1, /m1: solo pantalla), "works_open" (índice de las obras en
+    curso para tick()) y "meta"/"gremio_seq". Además: "camp" guarda "gremio" (el id del gremio que lo fundó; los de antes no
+    lo tienen), el gremio D-97 ("guild") también guarda "gremio", "guild_name" y "camp_name" guardan {"gremio": id} mientras
+    el nombre está reservado, y "upgrades" suma "building" (🏗️ obras en curso: need, done, at, floor, by, started) y "fund"
+    (lo que sobró del fondo al fundar). Lo construido antes sigue construido (D-64).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -192,6 +204,9 @@ Reglas que nunca se rompen:
         Sus unidades de más y su raro usan su propio sorteo: la vuelta de recolección saca lo mismo que sin nodo.
     22. El 🧭 camino guiado (D-190, D-193) nunca bloquea nada: un solo paso a la vez, cada paso y cada aviso una sola vez, y
         el héroe recién creado ve primero "dónde estás" (el Claro) con las 4 rutas, nunca la elección del origen (E-131).
+    23. Nadie funda solo (D-269, 0.36): un campamento lo funda un gremio (su líder, gremio.found_min_members miembros presentes,
+        el fondo paga) y la fundación y cada mejora tardan según los miembros presentes; con nadie se pausan, nunca retroceden y
+        lo construido nunca se borra. Un gremio por héroe (el de su campamento, si lo tiene).
 Si cambias esto, revisa:
     - Adaptadores: adapters/telegram/render.py y bot.py (IDs de acción y tipos de vista); bot.py y
       adapters/cli/play.py leen menu() y commands() (atajos /stats, /doble...)
@@ -285,7 +300,7 @@ Si cambias esto, revisa:
       content/locales/es_historia.yaml, balance.yaml story; engine/service/story.py y engine/story; tests/test_story.py.
       El gancho _story_event se llama en _arrive (visit), _explore_step (explore), _gather_step (gather), _end_combat (win,
       también las peleas automáticas: _auto_combat pasa state["story"] al resumen del lote), _make (craft), _sell, _camp_sell
-      y _sell_gear (sell), _found_camp (camp), _camp_feed (feed) y _give_to_work / _give_to_study (build). Tocan además
+      y _sell_gear (sell), _create_camp (camp; antes _found_camp), _camp_feed (feed) y _give_to_work / _give_to_study (build). Tocan además
       menu() (D-190: 📖 Historia ya no está; /historia y el botón viejo abren el 📔 Diario), COMMANDS (/historia, /diario, /bio, /encargos,
       /saludar, /brindar), text() (atajos con texto), _idle_action (STORY_ACTIONS; D-192: "hero" ya no ofrece el origen),
       _create_action (D-190: ya no ofrece el origen), _camp_hub_actions (📜 Tablón, E-130), _shop_view y _buy (descuento
@@ -362,10 +377,22 @@ Si cambias esto, revisa:
       ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla hasta
       que el dueño responda E-207, _ecamp_intel_lines (chest=False),
       _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
+    - 🛡️ Gremio desde el inicio, 👥 Jugadores y obras con tiempo (D-265, D-269, D-274; 0.36): engine/service/gremio.py
+      (GremioMixin: su encabezado lista todo), balance.yaml gremio, works, bonfire.cap y presence.bonfire_seconds (y
+      guild.levels[0].capacity 5), content/locales/es_gremio.yaml y en_gremio.yaml; tests/test_gremio_desde_el_inicio.py
+      (mapa de impacto: "El gremio desde el inicio y las obras con tiempo"). Tocan: COMMANDS (/jugadores, /players), HUB_KINDS
+      ("gremio"), view()/act()/text() (_works_settle; "gans:", "ginv:", "gcamp:" antes del combate; los códigos /j1 /p1, /g1,
+      /m1 y /f02), tick() (_works_tick), _idle_action (GREMIO_ACTIONS; "found" → _start_founding), _camp_hub_lines y
+      _camp_hub_actions (👥 en lugar de 🔬 en el Claro), _camp_requirements (las 3 condiciones del gremio), _camp_here_view
+      (la fundación en curso), _name_camp (los textos del gremio; "found" ya no funda), _create_camp (antes _found_camp),
+      _guild_view y _ask_guild_name (sin campamento, el gremio nuevo), _upgrades/_open_works/_upgrades_view/_give_to_work
+      (obras en curso y el fondo del campamento), _important_places y _can_goto (punto de reunión y construcción), _zone_view
+      (🏗️ Moverte a la construcción, layout [2, 2, 1, 1, 1]) y _activity_view (lo mismo, de viaje). tests/test_camps.py
+      found_at funda con el gremio (y old_camp_at escribe un campamento de antes, sin gremio, para las pruebas viejas)
     - 🧭 Camino guiado (D-190, D-193): content/guide.yaml (pasos y avisos), content/locales/es_guia.yaml, balance.yaml guide;
       engine/service/guide.py (GuideMixin); tests/test_camino_guiado.py (mapa de impacto C-29). El gancho _guide_event se llama
       en _settle (una vuelta de explorar o recolectar), _arrive (cada tramo), _end_combat (state["guide"]; _auto_combat lo pasa
-      al resumen del lote) y _found_camp; _guide_before en act() y view() (pasos de botón: "map", "claro", "trainer", "hero",
+      al resumen del lote) y _create_camp (antes _found_camp); _guide_before en act() y view() (pasos de botón: "map", "claro", "trainer", "hero",
       antes de armar la pantalla); _tutorial_hint (zona, 🧭 Explorar, Claro, héroe y campamento enemigo) da la línea
       "🧭 Ahora:" y un aviso; _combat_view el aviso de la primera pelea; _create_action termina en _guide_view (la bienvenida);
       COMMANDS /guia y /origen; _idle_action "guide". view() y tick() guardan al héroe DESPUÉS de armar la pantalla (un aviso
@@ -435,6 +462,8 @@ from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭 the guided path
+from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE, GUILD_CODE_RE, MEMBER_CODE_RE,   # D-269, D-265
+                                   PLAYER_CODE_RE, GremioMixin)
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -465,6 +494,8 @@ COMMANDS.update({"/idioma": "lang", "/language": "lang",
 # D-258: 💬 Feedback (⚙️ Opciones); D-257: 📋 Mis oficios and 📚 Aprender oficios.
 COMMANDS.update({"/cambiarclase": "chcls", "/changeclass": "chcls"})   # D-270 (0.35): 🔄 Cambiar de clase
 COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "myprof", "/aprender": "learnlist", "/learn": "learnlist"})
+# D-265/D-274: 👥 Jugadores of the bonfire (it took 🔬 Investigar's place in the Claro's hub).
+COMMANDS.update({"/jugadores": "players", "/players": "players"})
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -496,7 +527,7 @@ ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 # D-192 (provisional; E-132): the 🏕️ Campamento and 👤 Héroe hubs (and the screens that work like them) show all their options
 # at once, up to HUB_BUTTONS, 2 per row; every other screen keeps the 4 of D-75 (the combat bar, 6; amount pickers, D-189).
-HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas")
+HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio")    # D-269: the guild hub too
 HUB_BUTTONS = 8
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), a topic ("dudas:<topic>") and an answer ("duda:<code>").
 DUDAS_ACTIONS = ("dudas", "duda:")
@@ -525,7 +556,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -581,6 +612,7 @@ class GameService(StoryMixin, GuideMixin):
         notices = self._settle(hero)
         self._raid_settle(hero)
         self._hunt_party_settle(hero)       # D-106: the camp's hunting party closes lazily too
+        notices += self._works_settle(hero)            # D-269: the guild's founding and the camp's works, lazily too
         guided = self._guide_before(hero, None)        # D-193: a 🧭 step that already holds (back home, a camp)
         view = self._main_view(hero, notice=self._join(notices + guided))
         self._save(hero)                    # after the view: a 🧭 tip it showed stays seen
@@ -609,7 +641,9 @@ class GameService(StoryMixin, GuideMixin):
                 return self.view(account_id)
             self._mark_seen(hero)
             notices = self._settle(hero)
+            notices += self._works_settle(hero)        # D-269: the founding and the camp's works
             code = PLACE_CODE_RE.match(text.strip().lower())
+            low = text.strip().lower()
             resource = RESOURCE_CODE_RE.match(text.strip().lower())
             if code:                                     # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
                 typed = self._place_code(hero, int(code.group(1)))
@@ -619,6 +653,14 @@ class GameService(StoryMixin, GuideMixin):
                 typed = self._sell_code(hero, int(SELL_CODE_RE.match(text.strip().lower()).group(1)))
             elif self._prof_code(text):                  # D-257: /minero = everything about that profession
                 typed = self._prof_detail_view(hero, self._prof_code(text))
+            elif self.store.get("combat", hero.id) is None and PLAYER_CODE_RE.match(low):     # D-265: /j2 = a player's card
+                typed = self._player_code(hero, int(PLAYER_CODE_RE.match(low).group(1)))
+            elif self.store.get("combat", hero.id) is None and GUILD_CODE_RE.match(low):      # D-269: /g2 = a guild's card
+                typed = self._guild_code(hero, int(GUILD_CODE_RE.match(low).group(1)))
+            elif self.store.get("combat", hero.id) is None and MEMBER_CODE_RE.match(low):     # D-269: /m2 = a member of yours
+                typed = self._member_code(hero, int(MEMBER_CODE_RE.match(low).group(1)))
+            elif FUND_CODE_RE.match(low):                # D-269: /f02 = put all of that in the guild's fund, from anywhere
+                typed = self._fund_code(hero, int(FUND_CODE_RE.match(low).group(1)))
             else:
                 typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
@@ -676,6 +718,7 @@ class GameService(StoryMixin, GuideMixin):
         self._presence_note(hero)                       # D-96: others see you in 📍 Zona
         self._raid_settle(hero)             # D-99: the camp's raid clock is lazy too
         self._hunt_party_settle(hero)       # D-106: and so is its hunting party
+        notices += self._works_settle(hero)            # D-269: the guild's founding and the camp's works (lazy)
         if action_id not in ("found", "rename") and self.store.get("camp_naming", account_id):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if not action_id.startswith(DUDAS_ACTIONS) and self.store.get("dudas_open", account_id):
@@ -689,6 +732,12 @@ class GameService(StoryMixin, GuideMixin):
         if action_id.startswith("join:"):
             view = self._answer_join(hero, action_id)
             self._save(hero)
+            return view
+        if action_id.startswith(GREMIO_ANSWERS):        # D-269: a guild request, invitation or the camp's invitation
+            view = self._gremio_answer_action(hero, action_id)
+            self._save(hero)
+            if notices:
+                view.notice = self._join(notices + ([view.notice] if view.notice else []))
             return view
         combat = self.store.get("combat", hero.id)
         if combat is not None:
@@ -839,6 +888,7 @@ class GameService(StoryMixin, GuideMixin):
         """
         now = self.clock.now()
         out: list[tuple[str, View]] = []
+        self._works_tick()                  # D-269: a founding or a camp work whose time came ends now (its notices go out below)
         for account_id, data in self.store.items("hero"):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
@@ -1785,9 +1835,11 @@ class GameService(StoryMixin, GuideMixin):
             return self._pspec_action(hero, action_id)
         if action_id == "guide":                        # D-193: 🧭 Camino guiado (/guia); a menu, also while busy
             return self._guide_view(hero)
+        if action_id.startswith(GREMIO_ACTIONS) or action_id == "gleave!":     # D-265/D-269: 👥 Jugadores and the guild (menus)
+            return self._gremio_action(hero, action_id)
         in_claro = hero.x == 0 and hero.y == 0 and not hero.activity
-        if action_id == "found":
-            return self._ask_camp_name(hero, "found")
+        if action_id == "found":                        # D-269: the guild founds (the leader, 2 members here, the fund pays)
+            return self._start_founding(hero)
         if action_id == "rename":
             return self._ask_camp_name(hero, "rename")
         if action_id == "cancel_name":
@@ -2353,6 +2405,10 @@ class GameService(StoryMixin, GuideMixin):
 
         [ES] D-184: si estás parado en la zona de un nodo de recursos que no conocías (por ejemplo, estabas ahí cuando llegó el
         parche), lo descubres ahora con su aviso; la línea ✨ del nodo dice de qué es y qué da (_node_zone_lines).
+        Botones: las 4 rutas (de 2 en 2), 🔗 Moverte y 🗺️ Mapa a lo ancho (layout [2, 2, 1, 1]); D-269 (pedido del dueño,
+        18-oct): mientras tu gremio tiene definido el lugar de la construcción (la fundación en curso o el 📍 punto de reunión;
+        o el campamento ya fundado si todavía no respondiste la invitación), un 8.º botón ancho 🏗️ Moverte a la construcción
+        (_build_site_action) y el layout pasa a [2, 2, 1, 1, 1]. Si cambia, afecta: tests/test_buttons.py y tests/test_moverte.py.
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
@@ -2411,9 +2467,14 @@ class GameService(StoryMixin, GuideMixin):
             actions.append(Action(id=f"go:{direction}", label=t.t("zone.go_button", dir=t.t(f"dir.{direction}"), time=self._fmt_duration(seconds))))
         actions.append(Action(id="walk", label=t.t("walk.button")))     # D-244: 🔗 Moverte, wide under the 4 routes
         actions.append(Action(id="zmap", label=t.t("menu.map")))        # D-268: 🗺️ Mapa, wide under 🔗 Moverte
+        layout = [2, 2, 1, 1]
+        site = self._build_site_action(hero)            # D-269 (18-oct): 🏗️ Moverte a la construcción, wide under 🗺️ Mapa
+        if site:
+            actions.append(site)
+            layout = [2, 2, 1, 1, 1]
         body += ["", self._status_line(hero)] + self._tutorial_hint(hero)
         body += ["", t.t("menu.hint")]
-        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1, 1])
+        return View(kind="zone", title=t.t("zone.title"), body=body, actions=actions, notice=notice, layout=layout)
 
     def _danger_line(self, zone: Zone) -> str:
         """⚔️ line of 📍 Zona: the chance of a fight when you arrive here, and that what you meet is at your level (D-266).
@@ -2480,6 +2541,9 @@ class GameService(StoryMixin, GuideMixin):
             actions.append(Action(id="stop", label=t.t("batch.stop")))
         if activity.get("kind") == "travel":
             actions.append(Action(id="zmap", label=t.t("menu.map")))    # D-268: see where you are while you travel
+            site = self._build_site_action(hero)        # D-269 (18-oct): change course to the guild's construction
+            if site:
+                actions.append(site)
         return View(kind="activity", title=title, body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ players in the zone (D-96, provisional)
@@ -2623,8 +2687,9 @@ class GameService(StoryMixin, GuideMixin):
         [ES]
         Qué hace: el centro de 🏕️ Campamento en el Claro, el campamento base donde empiezan todos (estilo TowerWars
         "ampliado, detallado y separado"): una línea por opción, con costos y tiempos en el texto, y sus 8 botones en este
-        orden (D-191: primero lo que no está en el héroe): 🍲 Cocinar (la estación de la 🍲 Cocina), 🔬 Investigar (aquí no:
-        el botón explica que se investiga en tu campamento con la 📚 Biblioteca; no se esconde), 🛠️ Fabricar (⚒️ Oficios:
+        orden (D-191: primero lo que no está en el héroe): 🍲 Cocinar (la estación de la 🍲 Cocina), 👥 Jugadores (D-274.1, 0.36:
+        reemplaza a 🔬 Investigar, que aquí repetía 📚 Aprender oficios; los que jugaron en el último minuto y el contador
+        "N/20", _players_view), 🛠️ Fabricar (⚒️ Oficios:
         🪚 Refinar y 🛠️ Fabricar), 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón (E-130: los encargos quedan en el
         Campamento) y ❓ Dudas. El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
         La llaman: el botón 🏕️ Campamento estando en el Claro, los ↩️ Volver de sus pantallas y los botones viejos de la obra
@@ -2680,9 +2745,9 @@ class GameService(StoryMixin, GuideMixin):
         else:
             lines = [t.t("hub.cook", rank=cook_rank) if COOK_PROFESSION in stations or (camp is None and not hero.activity)
                      else t.t("hub.cook_none")]
-        if camp is None:                                # D-257: in the Claro, 🔬 Investigar is 📚 Aprender oficios
-            missing = len(self._to_learn(hero))
-            lines.append(t.t("hub.research_learn", n=missing) if missing else t.t("hub.research_learn_all"))
+        if camp is None:                                # D-274.1: in the Claro, 👥 Jugadores took 🔬 Investigar's place
+            present = len(self._zone_players(0, 0, exclude=hero.id)) + (1 if (hero.x, hero.y) == (0, 0) else 0)
+            lines.append(t.t("hub.players", n=present, cap=int(self.content.balance.get("bonfire", {}).get("cap", 20))))
         else:
             key = f"{hero.x}:{hero.y}"
             if self._camp_service(camp, "knowledge"):
@@ -2718,8 +2783,9 @@ class GameService(StoryMixin, GuideMixin):
         """The hub buttons (D-191 order: cook, research, make, then the rest), 8 at most, 2 per row (D-192, E-132).
 
         [ES]
-        Qué hace: arma los botones del centro de 🏕️ Campamento, en un solo lugar. Claro: 🍲 Cocinar, 🔬 Investigar,
-        🛠️ Fabricar, 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón y ❓ Dudas. Tu campamento: lo mismo con 🏘️ Servicios en
+        Qué hace: arma los botones del centro de 🏕️ Campamento, en un solo lugar. Claro: 🍲 Cocinar, 👥 Jugadores (D-274.1: en
+        lugar de 🔬 Investigar), 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón y ❓ Dudas. Tu campamento: lo
+        mismo con 🔬 Investigar (el 📚 Conocimiento) y 🏘️ Servicios en
         lugar del mercader y la posada, y 🏰 Gestionar (agrandar, mejoras, despensa, gremio) antes de ❓ Dudas. Mientras dura una
         oleada que no peleaste, 🛡️ Defender va primero y 📜 Tablón sale (sigue en /encargos): nunca pasan de HUB_BUTTONS.
         Nada se esconde: lo que no se puede aquí explica por qué al tocarlo.
@@ -2727,7 +2793,9 @@ class GameService(StoryMixin, GuideMixin):
         demás que miran los botones del campamento (test_raids, test_pantry, test_guilds, test_camp_upgrades).
         """
         t = self.texts
-        actions = [Action(id="cook", label=t.t("hub.cook_button")), Action(id="research", label=t.t("hub.research_button")),
+        second = (Action(id="players", label=t.t("hub.players_button")) if camp is None        # D-274.1: 👥 at the bonfire
+                  else Action(id="research", label=t.t("hub.research_button")))
+        actions = [Action(id="cook", label=t.t("hub.cook_button")), second,
                    Action(id="oficios", label=t.t("hub.make_button")), Action(id="trainer", label=t.t("hub.trainer_button"))]
         if camp is None:
             actions += [Action(id="shop", label=t.t("hub.shop_button")), Action(id="inn", label=t.t("hub.inn_button"))]
@@ -3221,6 +3289,16 @@ class GameService(StoryMixin, GuideMixin):
     # ------------------------------------------------------------------ player camps (D-71)
 
     def _camp_requirements(self, hero: Hero) -> list[tuple[str, bool]]:
+        """What founding a camp here needs, as (text, met) pairs (D-71; D-269: the guild founds it).
+
+        [ES]
+        Qué hace: la lista de lo que pide fundar en la zona del héroe: Lejanía camps.min_lejania o más, la zona explorada al
+        100 %, camps.known_neighbors vecinas conocidas, sin otro campamento (ni otra fundación en curso) a camps.min_distance o
+        menos y fuera de todo territorio; y desde D-269 (0.36), lo del gremio (_gremio_found_reqs): ser su líder, tener 2
+        miembros presentes aquí y que el 💰 fondo tenga camps.found_cost (antes se pagaba de la mochila y se fundaba solo).
+        Un campamento por héroe. La llaman: _camp_here_view, _start_founding, _gremio_found_view y el 🧭 camino guiado
+        (engine/service/guide.py: la línea de lo que falta). Si cambia, afecta: quién puede fundar (tests/test_camps.py).
+        """
         t = self.texts
         cfg = self.content.balance["camps"]
         zone = self._zone(hero.x, hero.y)
@@ -3228,13 +3306,13 @@ class GameService(StoryMixin, GuideMixin):
         near = any(self.store.get("camp", f"{zone.x + dx}:{zone.y + dy}")
                    for dx in range(-cfg["min_distance"], cfg["min_distance"] + 1)
                    for dy in range(-cfg["min_distance"], cfg["min_distance"] + 1))
-        cost_ok = all(hero.backpack.get(i, 0) >= n for i, n in cfg["found_cost"].items())
+        busy = self._founding_near(zone.x, zone.y, cfg["min_distance"])      # D-269: another guild founds near here
         return [
             (t.t("camps.req_far", n=cfg["min_lejania"]), zone.lejania >= cfg["min_lejania"]),
             (t.t("camps.req_explored", pct=self._explored_pct(hero, zone.x, zone.y)), self._explored_pct(hero, zone.x, zone.y) >= 100),
             (t.t("camps.req_known", n=known, need=cfg["known_neighbors"]), known >= cfg["known_neighbors"]),
-            (t.t("camps.req_alone", n=cfg["min_distance"]), not near and not self._territory(zone.x, zone.y)),
-            (t.t("camps.req_cost", items=self._item_list(cfg["found_cost"])), cost_ok),
+            (t.t("camps.req_alone", n=cfg["min_distance"]), not near and not busy and not self._territory(zone.x, zone.y)),
+        ] + self._gremio_found_reqs(hero) + [
             (t.t("camps.req_one"), hero.camp is None),
         ]
 
@@ -3292,8 +3370,22 @@ class GameService(StoryMixin, GuideMixin):
                     actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
                 actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
             return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
+        building = self._founding_at(zone.x, zone.y)     # D-269: a guild is founding here: its progress, and ❌ for its leader
+        if building:
+            founding = building["founding"]
+            present = len(self._present_now(building["members"], {(zone.x, zone.y)}, hero))
+            body = [t.t("gremio.found_here_line", name=building["name"]),
+                    self._work_line("gremio.founding_line", self._place_label(zone.x, zone.y), founding, present)]
+            if hero.id in building["members"]:
+                body.append(t.t("gremio.found_rule", n=int(self._gremio_cfg().get("found_min_members", 2)),
+                                minutes=int(self._gremio_cfg().get("found_minutes", 60)),
+                                floor=int(self._gremio_cfg().get("found_floor_minutes", 10))))
+            actions = [Action(id="gfoundx", label=t.t("gremio.found_cancel"))] if hero.id == building["leader"] else []
+            actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
+            return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         reqs = self._camp_requirements(hero)
         body = [t.t("camps.found_intro", x=zone.x, y=zone.y), ""] + [("✅ " if ok else "▫️ ") + text for text, ok in reqs]
+        body += ["", t.t("camps.found_guild_hint")]     # D-269: founding is the guild's work now
         actions = [Action(id="found", label=t.t("camps.found_button"))] if all(ok for _, ok in reqs) else []
         actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]   # D-192: ❓ anywhere
         return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
@@ -3349,6 +3441,11 @@ class GameService(StoryMixin, GuideMixin):
         pending = self.store.get("camp_naming", hero.id)
         if pending.get("mode") == "guild":                 # the same prompt names a guild (D-97)
             return self._name_guild(hero, name, pending)
+        if pending.get("mode") in ("gremio", "gmsg", "gsearch"):    # D-269: a new guild's name, a 📢 message or a search
+            return self._gremio_text(hero, pending["mode"], name)
+        if pending.get("mode") == "found":                 # D-269: nobody founds alone any more (an old prompt founds nothing)
+            self.store.delete("camp_naming", hero.id)
+            return self._camp_here_view(hero, notice=t.t("camps.found_by_guild"))
         if (pending["x"], pending["y"]) != (hero.x, hero.y):
             self.store.delete("camp_naming", hero.id)
             return self._camp_here_view(hero)
@@ -3371,33 +3468,35 @@ class GameService(StoryMixin, GuideMixin):
             self.store.put("camp", key, camp)
             self.store.put("camp_name", self._name_key(name), {"camp": key})
             return self._camp_here_view(hero, notice=t.t("camps.renamed", name=name))
-        return self._found_camp(hero, name)
+        self.store.delete("camp_naming", hero.id)
+        return self._camp_here_view(hero)
 
-    def _found_camp(self, hero: Hero, name: str) -> View:
+    def _create_camp(self, hero: Hero, x: int, y: int, name: str, gremio: str | None = None) -> list[str]:
+        """Create a player camp at (x, y) with `hero` as founder; return the founder's notice lines (D-71; D-269).
+
+        [ES]
+        Qué hace: crea el campamento (registro "camp", su nombre en "camp_name", su territorio y el reloj de las oleadas) con el
+        héroe como fundador y único miembro, y avisa lo de siempre: fundado, 📔 diario (D-117), 🧭 camino guiado (el paso
+        "found", D-193) y las oleadas (D-105). Desde D-269 no cobra nada: lo llama _finish_founding cuando la fundación del
+        gremio termina (el fondo ya pagó al empezar) y guarda "gremio" (el id del gremio que lo fundó). Reemplaza a
+        _found_camp (fundar solo, con el nombre escrito y pagando de la mochila).
+        La llama: engine/service/gremio.py _finish_founding. Si cambia, afecta: los campamentos nuevos (tests/test_camps.py).
+        """
         t = self.texts
-        if hero.activity or not all(ok for _, ok in self._camp_requirements(hero)):
-            return self._camp_here_view(hero, notice=t.t("camps.cannot"))
-        for item_id, n in self.content.balance["camps"]["found_cost"].items():
-            hero.backpack[item_id] -= n
-            if hero.backpack[item_id] <= 0:
-                del hero.backpack[item_id]
-        key = f"{hero.x}:{hero.y}"
+        key = f"{x}:{y}"
+        now = self.clock.now()
         self.store.put("camp_name", self._name_key(name), {"camp": key})
         self.store.put("camp", key, {"name": name, "founder": hero.name, "founder_id": hero.id,
-                                      "members": [hero.id], "relations": {}, "asked": [], "x": hero.x, "y": hero.y, "created": self.clock.now(),
-                                      "level": 1, "zones": [[hero.x, hero.y]], "next_raid_at": self.clock.now() + self._raid_interval()})
+                                      "members": [hero.id], "relations": {}, "asked": [], "x": x, "y": y, "created": now,
+                                      "level": 1, "zones": [[x, y]], "next_raid_at": now + self._raid_interval(), "gremio": gremio})
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
-        notice = t.t("camps.founded", name=name, x=hero.x, y=hero.y)
-        story = self._story_event(hero, "camp", name=name)            # D-117: the journal (and any mission that asks for a camp)
-        if story:
-            notice += "\n" + "\n".join(story)
-        guide = self._guide_event(hero, "camp", name=name)            # D-193: 🧭 the "found" step and the camp's short tutorial
-        if guide:
-            notice += "\n" + "\n".join(guide)
+        lines = [t.t("camps.founded", name=name, x=x, y=y)]
+        lines += self._story_event(hero, "camp", name=name)          # D-117: the journal (and any mission that asks for a camp)
+        lines += self._guide_event(hero, "camp", name=name)          # D-193: 🧭 the "found" step and the camp's short tutorial
         if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
-            notice += "\n" + t.t("raids.founded_warning", n=self._raid_cfg()["per_week"])
-        return self._camp_here_view(hero, notice=notice)
+            lines.append(t.t("raids.founded_warning", n=self._raid_cfg()["per_week"]))
+        return lines
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
         """How many members fit: base + per level (D-84), or the guild's capacity if bigger (D-97).
@@ -3423,6 +3522,8 @@ class GameService(StoryMixin, GuideMixin):
         camp = self.store.get("camp", key)
         if not camp or hero.id in camp["members"] or hero.camp is not None or camp["relations"].get(hero.id) == "hostile":
             return self._camp_here_view(hero)
+        if self._gremio_link(hero.id):                  # D-269: one guild per hero: your camp is the one your guild founds
+            return self._camp_here_view(hero, notice=t.t("camps.join_in_gremio"))
         if len(camp["members"]) >= self._members_cap(camp):
             return self._camp_here_view(hero, notice=t.t("guild.full" if self.store.get("guild", key) else "camps.full"))
         requests = camp.setdefault("requests", [])
@@ -3447,7 +3548,8 @@ class GameService(StoryMixin, GuideMixin):
             return self._main_view(hero, notice=t.t("camps.already_answered"))
         camp["requests"].remove(visitor)
         data = self.store.get("hero", visitor)
-        accepted = choice == "y" and data is not None and data.get("camp") is None and len(camp["members"]) < self._members_cap(camp)
+        accepted = (choice == "y" and data is not None and data.get("camp") is None and len(camp["members"]) < self._members_cap(camp)
+                    and self._gremio_link(visitor) is None)      # D-269: one guild per hero
         if accepted:
             camp["members"].append(visitor)
             data["camp"] = key
@@ -4027,13 +4129,15 @@ class GameService(StoryMixin, GuideMixin):
         Botones (3 como máximo): 🛡️ Crear gremio (fundador, sin gremio) o ⬆️ Subir el gremio (cuando cumplen),
         ✏️ Renombrar campamento (fundador) o 🚪 Salir del campamento (miembros), y ↩️ Volver. Crear, subir, renombrar
         y salir solo aparecen estando en el campamento; desde otro lugar (/gremio) solo se mira.
-        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí) y el atajo /gremio.
+        D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view); un gremio
+        que fundó su campamento pasa a ser este (el registro "guild" lleva "gremio" con su id).
+        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores y el atajo /gremio.
         Si cambia, afecta: tests/test_guilds.py y el recorrido de botones (4 como máximo).
         """
         t = self.texts
         camp = self.store.get("camp", hero.camp) if hero.camp else None
         if not camp or hero.id not in camp["members"]:
-            return self._main_view(hero, notice=t.t("guild.no_camp"))
+            return self._gremio_view(hero, notice=notice)    # D-269: without a camp, the guild from the first moment
         cfg = self.content.balance["guild"]
         levels = cfg["levels"]
         guild = self.store.get("guild", hero.camp)
@@ -4085,6 +4189,8 @@ class GameService(StoryMixin, GuideMixin):
         """🛡️ Crear gremio: check the rules and the fee, then the next text the founder writes is the guild's name."""
         t = self.texts
         cfg = self.content.balance["guild"]
+        if not hero.camp:                       # D-269: without a camp, 🛡️ Crear gremio is the guild from the first moment
+            return self._gremio_new(hero)
         if not self._can_found_guild(hero):
             return self._guild_view(hero, notice=t.t("guild.cannot"))
         if hero.gold < cfg["found_coins"]:
@@ -4566,7 +4672,8 @@ class GameService(StoryMixin, GuideMixin):
         y su conocimiento ("tech": "done" aprendidos, "current" el que estudian y "progress" lo aportado). D-116: también
         los 🪑 muebles colocados ("furniture": id del mueble → {"by": nombre, "id": cuenta, "at": hora}), uno de cada uno.
         D-115: "damage" (puntos de 🛡️ Defensa que dañaron las oleadas, 0 en los guardados de antes) y "repair" (lo aportado
-        a 🛠️ Reparar defensas).
+        a 🛠️ Reparar defensas). D-269 (0.36): "building" (las 🏗️ obras en curso: materiales completos, se construyen con el
+        tiempo y los miembros en el territorio) y "fund" (lo que sobró del fondo del gremio al fundar; se usa primero).
         La llaman: las pantallas y acciones de 🔨 Mejoras y los efectos (_built_at, _furniture_effect).
         Si cambia, afecta: todo lo guardado de las mejoras; los campos solo se agregan (nunca se borra lo construido).
         """
@@ -4577,6 +4684,8 @@ class GameService(StoryMixin, GuideMixin):
         data.setdefault("furniture", {})        # D-116: 🪑 camp furniture placed (one of each piece)
         data.setdefault("damage", 0)            # D-115: 🛡️ Defensa points the raids damaged, until repaired
         data.setdefault("repair", {})           # D-115: what the members gave to 🛠️ Reparar defensas
+        data.setdefault("building", {})         # D-269: 🏗️ works in progress (materials complete, being built with time)
+        data.setdefault("fund", {})             # D-269: what the guild's fund left when it founded the camp (used first)
         return data
 
     def _built_at(self, key: str | None) -> list[str]:
@@ -4830,8 +4939,9 @@ class GameService(StoryMixin, GuideMixin):
     def _open_works(self, camp: dict[str, Any], record: dict[str, Any]) -> list[str]:
         """Improvements the camp can build now: unlocked by its level, not built, not retired (catalog order)."""
         level = camp.get("level", 1)
+        building = record.get("building") or {}         # D-269: a work in progress no longer asks for materials
         return [uid for uid, udef in self._upgrade_catalog().items()
-                if not udef.get("retired") and uid not in record["built"] and int(udef.get("level", 1)) <= level]
+                if not udef.get("retired") and uid not in record["built"] and uid not in building and int(udef.get("level", 1)) <= level]
 
     def _upgrade_action(self, hero: Hero, action_id: str) -> View:
         """Route the buttons of 🔨 Mejoras, its services and the knowledge (D-101). [ES] Qué hace: reparte los botones de esta sección. La llama: _idle_action. Si cambia, afecta: los IDs de botón de las mejoras."""
@@ -4929,6 +5039,9 @@ class GameService(StoryMixin, GuideMixin):
         to_place = self._furniture_to_place(hero, record)
         if to_place:
             body.append(t.t("upgrades.furniture_hint", names=" · ".join(self._item_label(fid) for fid in to_place)))
+        body += self._building_lines(key, camp, hero)            # D-269: 🏗️ the works in progress and the time left
+        if record.get("fund"):                                    # D-269: what the guild's fund left, used first
+            body.append(t.t("works.camp_fund", items=self._item_list(record["fund"])))
         works = self._open_works(camp, record)
         if works:
             body += ["", t.t("upgrades.open_title")]
@@ -5032,6 +5145,10 @@ class GameService(StoryMixin, GuideMixin):
         Qué hace: el miembro aporta a la obra lo que lleva de lo que pide (_contribute) y gana experiencia y mérito por
         material. Si con eso se completa, la mejora queda construida para siempre y se avisa a los demás miembros.
         Si no lleva nada de lo que pide, avisa qué falta y no toca nada. Ocupado (viajando, explorando...) no aporta.
+        D-269 (0.36): lo que sobró del fondo del gremio al fundar ("upgrades"."fund") se pone primero; y con los materiales
+        completos la mejora no queda construida al instante: pasa a 🏗️ obra en curso (_start_work) y se termina con el tiempo
+        y los miembros presentes en el territorio (60 min × nivel con 2; con 1, el doble; nunca menos de 10 min). Con
+        works.minutes_per_level en 0 se construye al instante, como antes.
         D-115: lo que pide sale de _upgrade_need (con la 🗿 Cantería y la 🏗️ Construcción del campamento); lo crudo que
         la obra ya tenía de más cuenta como refinado (_credit_raw); cada material aportado sube la 🏗️ Construcción
         (_build_gain); si los beneficios ya cubren la obra, el próximo 🤲 la termina aunque no lleves nada.
@@ -5056,23 +5173,38 @@ class GameService(StoryMixin, GuideMixin):
         need = self._upgrade_need(udef, self._camp_perks(camp, hero))     # D-115: 🗿 Cantería and 🏗️ Construcción
         progress = record["works"].setdefault(uid, {})
         self._credit_raw(need, progress)                     # D-115: raw given before the work asked refined counts as refined
+        from_fund = self._take_from_fund(record, need, progress)     # D-269: what the guild's fund left goes first
         given = self._contribute(hero, need, progress)
         name = self._upgrade_name(uid)
         complete = all(int(progress.get(k, 0)) >= n for k, n in need.items())
-        if not given and not complete:      # D-115: a work the perks already cover is finished by the next 🤲, empty-handed
+        if not given and not from_fund and not complete:   # D-115: a work the perks already cover is finished by the next 🤲
             return self._works_view(hero, page, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
-        lines = self._contribution_lines(hero, given, name) if given else []
+        lines = [t.t("works.from_fund", items=self._item_list(from_fund), name=name)] if from_fund else []
+        lines += self._contribution_lines(hero, given, name) if given else []
         lines += self._build_gain(hero, given)                # D-115: 🏗️ Construcción rises with every material given
         lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins")) if given else []     # D-117
+        timed = False
         if complete:
-            record["built"][uid] = self.clock.now()
             record["works"].pop(uid, None)
-            lines.append(t.t("upgrades.built", name=name))
-            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
-                kind="camp_news", title=t.t("upgrades.built_push_title"),
-                body=[t.t("upgrades.built_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"])]))
+            self.store.put("upgrades", key, record)
+            timed = self._start_work(key, camp, uid, hero)   # D-269 (4): with its materials complete, it is built with time
+            record = self._upgrades(key)
+            if timed:
+                hours = self._fmt_duration(self._work_seconds(udef) / int(self.content.balance["works"].get("members_ref", 2)))
+                lines.append(t.t("works.started", name=name, time=hours))
+                self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                    kind="camp_news", title=t.t("upgrades.built_push_title"),
+                    body=[t.t("works.started_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"], time=hours)]))
+            else:
+                record["built"][uid] = self.clock.now()
+                lines.append(t.t("upgrades.built", name=name))
+                self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                    kind="camp_news", title=t.t("upgrades.built_push_title"),
+                    body=[t.t("upgrades.built_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"])]))
             page = 0
         self.store.put("upgrades", key, record)
+        if timed:
+            self._works_refresh(key, camp, hero)                 # D-269: when it could end, for tick()
         return self._works_view(hero, page, notice="\n".join(lines))
 
     def _furniture_to_place(self, hero: Hero, record: dict[str, Any]) -> list[str]:
@@ -5631,6 +5763,9 @@ class GameService(StoryMixin, GuideMixin):
             "raid_window": b["raids"]["window_minutes"], "raid_loss": round(float(b["raids"]["loss_share"]) * 100),
             "library_level": self._library_level(), "studies": self._studies_text(),
             "guild_cost": self._money(int(b["guild"]["found_coins"])), "guild_castle": b["guild"]["castle_min_level"],
+            "gremio_cost": self._money(int(b["gremio"]["found_coins"])), "gremio_cap": b["gremio"]["members_before_camp"],   # D-269
+            "found_members": b["gremio"]["found_min_members"], "found_minutes": b["gremio"]["found_minutes"],
+            "found_floor": b["gremio"]["found_floor_minutes"], "work_minutes": b["works"]["minutes_per_level"],
             "spec_first": slots[0], "spec_second": slots[-1],
             "rate": cur["rate"], "provisions_cap": (b["shop"].get("weekly_cap") or {}).get("provisiones", 0),
             "sell_pct": round(float(b["shop"]["sell_ratio"]) * 100),
@@ -7959,6 +8094,8 @@ class GameService(StoryMixin, GuideMixin):
                       for x, y in [tuple(int(v) for v in key.split(":"))] if (x, y) not in found)
         for _, x, y, name in near[:int(self.content.balance["places"].get("camps_listed", 5))]:
             found[(x, y)] = ("🏕️", name)                # D-267: the nearest players' camps, even if never visited
+        for x, y, icon, name in self._gremio_places(hero):
+            found[(x, y)] = (icon, name)                 # D-269: your guild's 🏗️ construction and 📍 meeting point
         places = [(self._trip_seconds(hero, x, y), x, y, icon, name) for (x, y), (icon, name) in found.items()
                   if (x, y) != (hero.x, hero.y)]
         return sorted(places)
@@ -8025,8 +8162,9 @@ class GameService(StoryMixin, GuideMixin):
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
 
     def _can_goto(self, hero: Hero, gx: int, gy: int) -> bool:
-        """A trip from 📒 Lugares can end there: a zone the hero visited, or any players' camp (D-222, D-267)."""
-        return hero.remembers(gx, gy) or self.store.get("camp", f"{gx}:{gy}") is not None
+        """A trip from 📒 Lugares can end there: a zone the hero visited, any players' camp (D-222, D-267), or your guild's
+        meeting point or construction (D-269; 🏗️ Moverte a la construcción, even if you never stood there)."""
+        return hero.remembers(gx, gy) or self.store.get("camp", f"{gx}:{gy}") is not None or self._gremio_goal(hero, gx, gy)
 
     def _goto(self, hero: Hero, gx: int, gy: int) -> View:
         """Travel zone by zone to a place you have visited ("goto:"), also while busy (0.33).
