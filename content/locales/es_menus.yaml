@@ -112,6 +112,8 @@ trainer:
   mine_button: "⚒️ Mis oficios"
   ench_button: "✨ Encantamiento"
   intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí o en 🔬 Investigar. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. 🪓 La recolección y 🧭 la exploración no se aprenden: suben solas.»"   # [ES] D-257 (0.33)
+  recommend: "⭐ Para tu armadura de {armor}: {name}. Toca /{code} para verlo y aprenderlo."   # [ES] D-271 (0.34)
+  recommend_known: "⭐ Para tu armadura de {armor}: {name}, rango {rank}."
   have: "✅ Tus oficios: {list}"
   have_none: "✅ Todavía no tienes oficios: recolecta y explora, que suben solos."
   missing: "📚 Te {n|falta|faltan} por aprender ({n}): {list}"

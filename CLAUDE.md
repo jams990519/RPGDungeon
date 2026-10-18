@@ -90,4 +90,5 @@ EOF
 - Se trabaja en la **rama asignada a la sesión**. Nunca directo en `main` y nunca `push --force`.
 - **Commits claros en español,** en lenguaje de resultado y un tema por commit. Ejemplo: "Registrar decisión: modular también para aplicación móvil de texto".
 - Antes de cada commit, `git status`: no subir archivos ajenos al pedido ni pisar cambios de otras sesiones.
-- **Pull requests en borrador.** El dueño decide cuándo se unen.
+- **Todo se publica solo** (orden del dueño, 18-oct-2026, D-264): lo terminado y probado se sube, se une a `main` y se despliega sin esperar. El pull request se abre en borrador y se marca listo al unirlo.
+- **Antes de empezar, las preguntas** (D-264): se hace la revisión (cómo está escrito, qué funciona, qué se recomienda y el mensaje de impacto del [mapa de impacto](diseno/01-plataforma/mapa-de-impacto.md) §1.2) y se le preguntan al dueño, juntas y con recomendación, las decisiones que son suyas. Lo que dependa de una respuesta espera; lo demás sigue.

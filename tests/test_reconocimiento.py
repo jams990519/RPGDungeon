@@ -372,7 +372,7 @@ def test_stealth_never_applies_to_chosen_fights(service, clock, monkeypatch):
     assert calls == []
 
 
-def test_automatic_hunting_batches_still_fight_every_prey(service, clock, monkeypatch, auto_fights_on):
+def test_automatic_hunting_batches_still_fight_every_prey(service, clock, monkeypatch, auto_fights_on, weak_wild_monsters):
     monkeypatch.setattr(GameService, "_stealth_chance", lambda self, hero: 1.0)
     hero = ready(service, level=30)
     kills = hero.kills

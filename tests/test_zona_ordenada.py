@@ -43,7 +43,7 @@ def test_the_zone_screen_goes_in_short_blocks(service):
     view = service.act("test:1", "home")
     parts = blocks(view.body)
     place_block = parts[0]
-    assert place_block[1].startswith("📌 (0, 2) · Lejanía") and place_block[2].startswith("⚔️ Peligro de nivel")
+    assert place_block[1].startswith("📌 (0, 2) · Lejanía") and place_block[2].startswith("⚔️ Peligro")
     resources = next(part for part in parts if part[0].startswith("🔎 Explorada al 100 %"))
     assert len(resources) > 1 and all(line.startswith("• ") for line in resources[1:])      # one resource per line
     assert all("▰" in line or "▱" in line for line in resources[1:])

@@ -53,8 +53,8 @@ Cuando algo de aquí quede viejo, se corrige en el mismo cambio que lo cambia.
 | Dónde corre | Railway, proyecto **satisfied-balance**, servicio **RPGDungeon**, entorno production. IDs: proyecto `8483a1b9-1aac-4111-9b8d-81b202908953`, servicio `88e89f1b-92f9-40e4-a0b5-525993ffca90`, entorno `91fbd952-6fff-4189-9394-c3aa76a74567` |
 | Cómo arranca | `railway.json`: `python -m adapters.telegram.bot`. Las partidas viven en un volumen montado en `/data` |
 | Variables | Solo los nombres, en `.env.example`. **El token del bot nunca se imprime, se copia ni se sube** |
-| Lo decidido | [Decisiones](decisiones.md): la última es D-263 (D-247 a D-249 las registró la terminal el 14-oct en su rama local; todavía no están en el archivo) |
-| Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-231) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-220; E-215 la citó D-241 y no existe: no usarla) |
+| Lo decidido | [Decisiones](decisiones.md): la última es D-274 (D-247 a D-249 las registró la terminal el 14-oct en su rama local; todavía no están en el archivo) |
+| Lo que falta decidir | [Preguntas abiertas](preguntas-abiertas.md) (la última es P-235) y el [Sistema de preguntas](sistema-de-preguntas.md) (la última es E-224; E-215 la citó D-241 y no existe: no usarla) |
 | Lo que dijo el dueño, por fecha | [Entrevista de voz](entrevista-de-voz.md) |
 | Las notas de cada parche | `content/patches.yaml` (la última es `v0_33_1`, con `title_en` y `notes_en`) |
 | Copia en texto para otras IA | Notion (§7) |
@@ -161,10 +161,19 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 
 ## 6. Lo que falta
 
+**El 18-oct el dueño decidió mucho de una vez (D-264 a D-273)** y pidió publicar todo solo y preguntarle antes de empezar (D-264, CLAUDE.md §6). La cola, en este orden:
+1. **0.34:** encuentros al moverte de 6 a 14 % por zona y monstruos de afuera de tu nivel (D-266), botón 🗺️ Mapa en 📍 Zona y al viajar (D-268), campamentos de jugadores visibles (D-267, D-274), el Entrenador recomienda el oficio de tu armadura (D-271).
+2. **0.35:** el gremio desde el primer momento, con fondo, fundación que tarda según los presentes y obras según los miembros en el territorio (D-269, reemplaza a D-252).
+3. **0.36:** 👥 Jugadores en la fogata y 9 hogueras con tope de 20 (D-265).
+4. **0.37:** cambio de clase con precios (D-270) y solo el Explorador sube solo (D-272).
+5. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+El mundo se reinicia al abrir la beta, no antes (D-273).
+
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):
 
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
+| E-221 a E-224 (P-232 a P-235) | La reforma de las recetas: tramos cada 5 rangos y colores, costos de aprender, lo que hoy no avanza (piel, Pescador, Desollador, Construcción) y el orden de los parches | Sí a todo; recetas después de las 0.34 a 0.37 |
 | E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
 | E-216 a E-218 (P-227 a P-229) | La muralla: cuánto cosecha cada zona (40 % o menos), si reemplaza el +50 % de hoy y cuántas zonas cierra cada etapa | 20 % al almacén del asentamiento; sí; de 1 a 81 zonas |
 | E-214 (P-213) | ¿El Paladín es sanador y DPS (así quedó) o tanque y sanador? | Sanador y DPS |

@@ -578,3 +578,22 @@ v0_33_1:
     - "🔒 Lost Realms se juega solo por privado, en tu chat con el bot. En los grupos el bot ya no juega: si escribes un comando ahí, te lleva a tu chat con él."
   notes_en:
     - "🔒 Lost Realms is played only in private, in your chat with the bot. The bot no longer plays in groups: if you type a command there, it points you to your chat with it."
+
+v0_34:
+  version: "0.34"
+  title: "🗺️ Lost Realms 0.34: viajes más seguros, monstruos de tu nivel y campamentos a la vista"
+  title_en: "🗺️ Lost Realms 0.34: safer trips, monsters at your level and camps in sight"
+  notes:
+    - "⚔️ Al viajar sale una pelea mucho menos seguido: de 6 a 14 % por zona según el terreno (antes, de 25 a 55 %). 📍 Zona te dice cuánto."
+    - "🐺 Los monstruos de afuera (al moverte, explorar, recolectar y cazar) salen de tu nivel, a veces un poco más fuertes. Ir lejos ya no es una trampa. Las mazmorras siguen con su propio peligro."
+    - "🏕️ Ves los campamentos que otros jugadores empezaron: en el 🗺️ Mapa y en 📒 Lugares, los más cercanos, aunque nunca hayas ido. Puedes viajar a ellos desde ahí."
+    - "🗺️ Botón Mapa en 📍 Zona y mientras viajas, para ver dónde estás."
+    - "🧑‍🏫 El Entrenador te recomienda el oficio que hace la armadura de tu clase."
+    - "🔒 Aclaración: en los grupos de Telegram el bot no juega, pero dentro del juego sigues viendo y cruzándote con los demás jugadores."
+  notes_en:
+    - "⚔️ Fights while travelling happen much less often: 6 to 14% per zone depending on the terrain (before, 25 to 55%). 📍 Zone tells you how much."
+    - "🐺 Monsters outside (when you move, explore, gather and hunt) match your level, sometimes a bit stronger. Going far is no longer a trap. Dungeons keep their own danger."
+    - "🏕️ You see the camps other players started: on the 🗺️ Map and in 📒 Places, the nearest ones, even if you have never been there. You can travel to them from there."
+    - "🗺️ Map button in 📍 Zone and while travelling, to see where you are."
+    - "🧑‍🏫 The Trainer recommends the profession that makes your class's armor."
+    - "🔒 To be clear: the bot does not play in Telegram groups, but inside the game you still see and meet the other players."

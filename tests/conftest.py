@@ -65,6 +65,17 @@ def every_profession_known(monkeypatch):
 
 
 @pytest.fixture
+def weak_wild_monsters(content):
+    """Old tests where a strong hero (level 30) beats every monster outside: since 0.34 monsters match the hero (D-266).
+
+    [ES] Desde la 0.34 los monstruos de afuera salen del nivel del héroe (balance.yaml wild_level). Las pruebas viejas que
+    usan un héroe de nivel 30 para ganar seguro (lotes con peleas automáticas, cacería) bajan a los monstruos al nivel 1,
+    solo en su contenido de prueba, para seguir probando lo mismo que antes.
+    """
+    content.balance["wild_level"] = {"below": 1000, "above": -1000}
+
+
+@pytest.fixture
 def auto_fights_on(content):
     """Tests of the automatic fights, switched off in the game since 0.33 (D-258): they turn them back on.
 

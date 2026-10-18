@@ -1092,3 +1092,19 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Qué se movió:** ningún número. El Paladín · Sanador y el Paladín · DPS usan los botones, la vida, el ataque, la armadura y la iniciativa del Chamán; solo cambian los nombres y la escuela (sagrado). La armadura por grupo del Paladín es placa (`gear.armor_by_group`), igual que antes; el Chamán sigue en cuero, pero ya no se juega.
 
 **Resultado** (`tools/sim.py`): contra el Guardián al nivel 6 (80 peleas), Paladín · Sanador 90 % y Paladín · DPS 74 %, los mismos números del Chamán; contra cada enemigo de nivel 1 a 3, el 100 % (sanador: 8 rondas y 66 % de vida al final; DPS: 3,9 rondas y 81 %).
+
+### Octubre de 2026 (18-oct): viajes más seguros y monstruos de tu nivel (0.34, D-266, confirmada)
+
+**Por qué.** El dueño: "no siempre que te muevas vas a pelear, porque vas a morir muchas veces… los mobs pueden ser de tu nivel, un poquito más o menos; cuando ya estamos hablando de una dungeon, sí es diferente".
+
+**Qué se movió** (`content/balance.yaml`):
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `explore.arrival_encounter_scale` | 1,0 (pelea al llegar: 25 a 55 % por zona) | 0,25 (6 a 14 %) |
+| `wild_level.below` / `above` (nuevo) | el nivel de los monstruos era el de la zona (+1 con 30 %) | el del héroe, de 1 menos a 2 más |
+| `places.camps_listed` (nuevo) | — | 5 campamentos de jugadores en 📒 Lugares (D-267) |
+| `professions.recommend_by_armor` (nuevo) | — | placas → Herrería, cuero → Peletería, tela → Sastrería (D-271) |
+
+**Qué cambia al jugar.** Un viaje de 10 zonas por pradera trae pelea la mitad de las veces (antes el 94 %). Ir lejos ya no castiga a un jugador nuevo (resuelve P-203): el monstruo sale de su nivel, y la experiencia y el botín de pelear siguen al nivel del monstruo, así que tampoco hay premio extra por ir lejos. Los recursos raros y la experiencia de recolectar siguen subiendo con la lejanía. **A medir en la beta** con el informe diario: muertes por viaje y peleas por hora.
+

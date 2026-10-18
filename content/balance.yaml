@@ -92,7 +92,11 @@ explore:
   xp_per_step: 3             # [ES] pedido del dueño: explorar da experiencia en cada vuelta
   xp_full_zone: 15           # [ES] y un extra al dejar una zona explorada al 100 %
   around_radius: 1           # [ES] D-107: con tu zona al 100 %, explorar sigue con las casillas de alrededor (1 = las 8 vecinas) sin moverte
-  arrival_encounter_scale: 1.0
+  arrival_encounter_scale: 0.25   # [ES] D-266 (0.34, confirmada): pelea al llegar a cada zona del viaje = peligro del terreno × esto. Con 0,25: de 6 a 14 % (antes 1,0: de 25 a 55 %, "vas a morir muchas veces"). El campamento y la fogata protegen (0 %)
+
+wild_level:                  # [ES] D-266 (0.34, confirmada): los monstruos de afuera (moverte, explorar, recolectar y 🏹 Cazar) salen de TU nivel, de `below` menos a `above` más; antes salían del nivel de la zona (sube con la distancia al inicio). Las mazmorras, los campamentos enemigos y las incursiones siguen con su regla. El nivel de la zona sigue para los recursos y la experiencia de recolectar
+  below: 1
+  above: 2
 
 explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorador (sube explorando) y lo que ve de más en el mapa según su rango (mapa-infinito-y-viaje.md §1.14). Su beneficio (+5 de exploración por vuelta al rango 100) está en content/professions.yaml. Números propuestos por Claude: se ajustan en la beta
   profession: explorador     # [ES] id del oficio en content/professions.yaml (estable: los héroes guardan su experiencia con este id)
@@ -215,6 +219,9 @@ world:
 terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es "como jugando Tetris": piezas de 4 zonas de distintas formas y colores, encajadas (engine/world/mapgen.py terrain_at, bloques de 4 × 4). Cambiar esto CAMBIA el terreno (enemigos y peligro) de zonas ya visitadas; los recursos no se mueven (D-185)
   climate_slope: 0.02        # [ES] cuánto se enfría cada zona hacia el norte (y positiva) y se calienta hacia el sur
   climate_strength: 3.0      # [ES] cuánto pesa el clima: los terrenos "cold" salen hasta 3 veces más al norte, los "hot" al sur
+
+places:                      # [ES] D-267 (0.34): 📒 Lugares
+  camps_listed: 5            # [ES] cuántos campamentos de jugadores (los más cercanos) entran en 📒 Lugares aunque nunca los hayas pisado ("los jugadores van a poder ver los lugares donde alguien empezó a construir un campamento")
 
 map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (pedido del dueño: tan ancho como el mensaje e igual de alto)
   radius: 6                  # [ES] 6 → 13 × 13 cuadritos; más de 6 puede partir las filas en teléfonos chicos (375 puntos)
@@ -460,6 +467,7 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.
   # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,
   # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.
+  recommend_by_armor: {placas: herreria, cuero: peleteria, tela: sastreria}   # [ES] D-271 (0.34, confirmada): el 🧑‍🏫 Entrenador recomienda el oficio que hace la armadura de tu clase (gear.armor_by_group)
   learn_price: 20             # [ES] D-257 (0.33, confirmada la regla; el número es de Claude): 🥉 que cuesta aprender un oficio (su primera receta). Gratis si ya lo practicabas antes de la 0.33. La recolección y la exploración no se aprenden
   rank_formula: {base: 9, exponent: 2.0}
   max_rank: 100              # [ES] rango máximo de cada oficio (profesiones.md §4)
