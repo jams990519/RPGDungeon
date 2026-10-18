@@ -1842,6 +1842,9 @@ feedback:
   ask: 'Write in one message whatever you want to tell us: a bug, an idea or something that is unclear. The game team reads it.'
   privacy: 'It goes with your hero''s name and level, so we can understand it. If you change your mind, tap ↩️ Back.'
   thanks: '💬 Thank you! Your message reached the game team.'
+client:
+  private_only: '🔒 Lost Realms is played in private, in your chat with the bot. It is not played in groups.'
+  play_private: '▶️ Play in private'
 auto:
   batch_manual: '⚔️ If a fight comes up: ✋ the batch stops and you fight it yourself (⚙️ Options).'
   batch_auto: '⚔️ If a fight comes up, your hero fights it alone · 🩹 retreats below {pct}% · 🧪 potions: {potions} (⚙️ Options).'

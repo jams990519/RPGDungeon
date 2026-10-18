@@ -569,3 +569,12 @@ v0_33:
     - "🛏️ The inn takes as long as the health you lack: from empty to full, one hour."
     - "⚙️ Options: automatic fights and potions are gone (for now you fight every fight yourself) and 💬 Feedback is in, to tell us anything."
     - "📔 The Journal opened from the camp goes back to the camp."
+
+v0_33_1:
+  version: "0.33.1"
+  title: "🔒 Lost Realms 0.33.1: el juego, solo por privado"
+  title_en: "🔒 Lost Realms 0.33.1: the game, only in private"
+  notes:
+    - "🔒 Lost Realms se juega solo por privado, en tu chat con el bot. En los grupos el bot ya no juega: si escribes un comando ahí, te lleva a tu chat con él."
+  notes_en:
+    - "🔒 Lost Realms is played only in private, in your chat with the bot. The bot no longer plays in groups: if you type a command there, it points you to your chat with it."

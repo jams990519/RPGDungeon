@@ -790,6 +790,21 @@ class GameService(StoryMixin, GuideMixin):
                 "options": "menu.options"}
         return {label: action for action, key in keys.items() for label in self.texts.all_languages(key)}
 
+    def say(self, account_id: str | None, key: str, lang_hint: str | None = None, **values: Any) -> str:
+        """One text from content/locales in that player's language; lang_hint if they never chose one (D-262).
+
+        [ES]
+        Qué hace: da un texto suelto (no una pantalla) en el idioma del jugador. Si nunca eligió idioma, usa lang_hint (por
+        ejemplo, el idioma de su Telegram, "en") si el juego lo tiene; si no, el español.
+        La llaman: los adaptadores, para sus avisos propios (Telegram: "🔒 se juega por privado" en un grupo, D-262).
+        Si cambia, afecta: esos avisos.
+        """
+        lang = self._lang_of(account_id) if account_id else None
+        if lang is None and lang_hint in self.texts.languages:
+            lang = lang_hint
+        with self.texts.use(lang):
+            return self.texts.t(key, **values)
+
     def commands(self) -> dict[str, str]:
         """Typed shortcuts (/stats, /inv, /doble...) -> action id; some screens only link to them.
 
@@ -10537,17 +10552,30 @@ class GameService(StoryMixin, GuideMixin):
         """The feedback notes not sent yet, oldest first; they are marked as sent (the bot posts them to the reports chat).
 
         [ES]
-        Qué hace: devuelve los mensajes de 💬 Feedback que todavía no salieron y los marca enviados, así cada uno sale una
-        sola vez. La llama: el bot (adapters/telegram/bot.py, notifier) cada pocos segundos. Si cambia, afecta: el chat de
-        informes.
+        Qué hace: devuelve los mensajes de 💬 Feedback que todavía no salieron (cada uno con su clave, "key") y los marca
+        enviados, así cada uno sale una sola vez; si el bot no pudo mandarlos, los devuelve con return_feedback (D-262).
+        La llama: el bot (adapters/telegram/bot.py, notifier) cada pocos segundos. Si cambia, afecta: el chat de informes.
         """
         pending = sorted(((key, data) for key, data in self.store.items("feedback") if not data.get("sent")), key=lambda kv: kv[1].get("at", 0))
         out = []
         for key, data in pending:
             data = dict(data, sent=True)
             self.store.put("feedback", key, data)
-            out.append(data)
+            out.append(dict(data, key=key))
         return out
+
+    def return_feedback(self, notes: list[dict[str, Any]]) -> None:
+        """Put feedback notes the bot could not post back in the queue, so they go out later (D-262).
+
+        [ES]
+        Qué hace: vuelve a marcar como no enviados los mensajes de 💬 Feedback que el bot no pudo mandar (por ejemplo, el chat
+        de informes no lo dejó), así salen en la próxima vuelta y ninguno se pierde. La llama: el bot (send_reports).
+        Si cambia, afecta: que el feedback llegue al chat de informes.
+        """
+        for note in notes:
+            data = self.store.get("feedback", note.get("key", ""))
+            if data is not None:
+                self.store.put("feedback", note["key"], dict(data, sent=False))
 
     def _auto_lines(self, hero: Hero, kind: str | None = None) -> list[str]:
         """The batch screens' line: what happens if a fight comes up, as ⚙️ Opciones says (D-114); a hunt only says the limits."""
