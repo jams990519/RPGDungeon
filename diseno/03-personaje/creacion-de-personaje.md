@@ -58,9 +58,19 @@ Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre
 - En **👤 Héroe → 🌟 Talentos**, lo primero es escoger la especialización: tocas una y le pones tu punto (D-86).
 - Con 1, 3, 6, 10, 16, 24, 34 y 46 puntos en una especialización se abren sus 8 habilidades (D-79).
 - Tu especialización principal ⭐ es la que tiene más puntos. Su ícono te representa en todo el juego (D-70).
-- **Cambiarla:** reiniciar los talentos cuesta 10 🥉 por nivel y devuelve todos los puntos para repartirlos de nuevo (D-74). La clase nunca cambia.
+- **Cambiarla:** reiniciar los talentos cuesta 10 🥉 por nivel y devuelve todos los puntos para repartirlos de nuevo (D-74). ~~La clase nunca cambia.~~ Desde la 0.35 la clase sí cambia (§2.1).
 - **Doble especialización:** con 10 puntos en tu especialización principal y 3 💰 bolsas tienes dos repartos y cambias entre ellos fuera de combate con /doble (D-88).
 - El detalle está en [Talentos](talentos.md) y en [Progresión](progresion.md).
+
+### 2.1 Cambiar de clase (D-270, en el juego desde la 0.35)
+
+El dueño pidió (18-oct-2026): "cuando escoges una clase, tienes la opción de cambiar la primera gratis, la segunda pagando y la tercera pagando más, y así sucesivamente. Cuantas veces quieras, pero vas a pagar más… tampoco lo puedes estar cambiando todos los días".
+
+- **Dónde:** 👤 Héroe → 🌟 Talentos → 🔄 Cambiar de clase, o /cambiarclase. Se elige la clase y después cualquiera de sus dos roles, como al crear el héroe.
+- **Cuánto:** el 1.º gratis; después 🥈1, 🥈10, 🥈30 y de ahí 🥈50 cada vez, para siempre (`class_change.prices`). Sin días de espera: el precio es el freno.
+- **Qué se conserva:** el nivel, la experiencia, los oficios, las monedas que quedan y el equipo (lo de otra armadura rinde la mitad, D-83). Los puntos de nivel se reparten solos en el rol nuevo, como al cambiar de rol.
+- **Qué no se puede:** cambiar ocupado (viajando, explorando, en un lote) ni a la misma clase (para cambiar de rol está 🌟 Talentos).
+- Queda anotado en el 📔 Diario y en `Hero.class_changes`.
 
 **Por qué así.** Elegir clase, especialización, raza y origen de golpe, con nombres que todavía no dicen nada, asusta al jugador nuevo. Con un solo paso importante (la clase) se entra rápido. La especialización se elige cuando ya se peleó un poco y se sabe qué gusta.
 

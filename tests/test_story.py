@@ -124,6 +124,7 @@ def test_origin_traits_are_small_and_never_combat(service):
     hero = hero_of(service)
     assert hero_stats(service._kit(hero), 1)["attack"] == attack               # no combat power
     before = hero.professions.get("minero", 0)
+    hero.learned.append("minero")                                              # 0.35 (D-272): gathering is learned too
     service._prof_gain(hero, "minero", 100)
     assert hero.professions["minero"] - before == 115                          # ⛏️ +15 %
     make_hero(service, "test:2", "Bram")

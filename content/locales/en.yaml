@@ -1842,9 +1842,39 @@ feedback:
   ask: 'Write in one message whatever you want to tell us: a bug, an idea or something that is unclear. The game team reads it.'
   privacy: 'It goes with your hero''s name and level, so we can understand it. If you change your mind, tap ↩️ Back.'
   thanks: '💬 Thank you! Your message reached the game team.'
+  ask_kind: 'What do you want to tell us? Choose the type, then write your message. (You can also just write it.)'
+  ask_write: 'Write in one message whatever you want to tell us ({kind}). The game team reads it.'
+  resolved: '✔️ Your message about «{topic}» is solved. Thank you for helping us improve the game!'
+  kind:
+    bug: 🐞 Bug
+    idea: 💡 Idea
+    balance: ⚖️ Balance
+    confusing: ❓ Unclear
+    other: 💬 Other
+  keywords:
+    bug: "error, bug, broken, crash, crashes, stuck, does not work, doesn't work, not working, can't, cannot, lost, disappeared, freeze"
+    idea: "idea, suggest, suggestion, propose, would be nice, could you, please add, add, wish, it would be great"
+    balance: "hard, easy, too expensive, expensive, cheap, slow, fast, too few, too many, strong, weak, unfair, balance, nerf, buff"
+    confusing: "don't understand, do not understand, how, where, what do i, confusing, lost, unclear, what for, explain"
+    other: "thanks, thank you, hello, hi"
 client:
   private_only: '🔒 Lost Realms is played in private, in your chat with the bot. It is not played in groups.'
   play_private: '▶️ Play in private'
+chclass:
+  button: 🔄 Change class
+  title: 🔄 Change class
+  intro: 'Today you are a {now}. You can change class as often as you like; each time costs more.'
+  price_free: '💰 This change is free: it is your first.'
+  price: '💰 This change (number {n}) costs {price}.'
+  keeps: 'You keep your level, professions, coins and gear (gear for another armor type works at half). Your level points spread on their own in the new role.'
+  pick: 'Choose your new class:'
+  confirm: 'Change to {name}? It costs {price}. You have {gold}.'
+  confirm_free: 'Change to {name}? This change is free.'
+  do_button: ✅ Change class
+  same: 'You already are that class: to change role use 🌟 Talents.'
+  poor: 'Not enough: this change costs {price} and you have {gold}.'
+  done: '🔄 You are no longer a {old}: now you are a {name}. It cost {price}.'
+  done_free: '🔄 You are no longer a {old}: now you are a {name}. It was free; the next change costs.'
 auto:
   batch_manual: '⚔️ If a fight comes up: ✋ the batch stops and you fight it yourself (⚙️ Options).'
   batch_auto: '⚔️ If a fight comes up, your hero fights it alone · 🩹 retreats below {pct}% · 🧪 potions: {potions} (⚙️ Options).'
@@ -2862,7 +2892,7 @@ prof:
   button: ⚒️ Professions
   title: ⚒️ Professions
   intro: Each profession improves as you practice it, from rank 1 to 100, and each rank opens new recipes. Almost everything crafted needs materials from two or more professions.
-  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 🔬 Research.'
+  none: 'You have no professions yet: explore (it rises on its own) or learn one in 🧑‍🏫 Trainer → 📚 Learn professions.'
   line: '{name} · rank {rank} ({title}) {bar}'
   how_line: '   ↳ {how}'
   perk_line: '   ✨ Current perk: {perk}'

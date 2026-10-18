@@ -130,6 +130,12 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-266 a D-271 (0.34): nada nuevo guardado. Los monstruos de afuera salen del nivel del héroe (_wild_level), la pelea al
     llegar baja a 6-14 % (explore.arrival_encounter_scale), los 🏕️ de jugadores se ven en el mapa y en 📒 Lugares
     (_map_view, _important_places, _can_goto), 🗺️ Mapa en 📍 Zona y al viajar ("zmap") y el Entrenador recomienda oficio.
+    D-270 (0.35): Hero.class_changes (cuántas veces cambió de clase; el 1.º gratis, después balance.yaml class_change.prices).
+    D-275 (0.35): "feedback" con clave el número del feedback (contador en "meta"/"feedback_seq"): tipo, prioridad, paso
+    ("new" → "resolved"/"discarded"), historial de quién movió cada botón, el @ del jugador (de "prefs"/"handle", set_handle),
+    dónde estaba, la versión y dónde está su tarjeta en el chat de informes (chat, message). feedback_update mueve el paso.
+    D-272 (0.35): la 🪓 recolección también se aprende (solo el 🧭 Explorador sube solo); _load le deja aprendido el oficio de
+    recolección a quien ya tenía experiencia en él (grandfather en content/professions.yaml).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -390,6 +396,7 @@ from engine.classes import (
     spend_point,
     specs_of,
     switch_role,
+    sync_chain,
     unlock_points,
 )
 from engine.combat import CombatContext, make_combat, play_out, resolve_round, validate_choice
@@ -456,6 +463,7 @@ COMMANDS.update({"/idioma": "lang", "/language": "lang",
                  "/toast": "gesture:brindar", "/enchant": "ench", "/specialty": "pspecs", "/recon": "recon",
                  "/help": "dudas", "/faq": "dudas", "/trainer": "trainer", "/guide": "guide", "/origin": "origin"})
 # D-258: 💬 Feedback (⚙️ Opciones); D-257: 📋 Mis oficios and 📚 Aprender oficios.
+COMMANDS.update({"/cambiarclase": "chcls", "/changeclass": "chcls"})   # D-270 (0.35): 🔄 Cambiar de clase
 COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "myprof", "/aprender": "learnlist", "/learn": "learnlist"})
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
@@ -465,6 +473,8 @@ ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 # (Sacerdote, Mago). [ES] El orden sale de content/classes.yaml; si cambia el número de clases o su orden, las parejas
 # de armadura dejan de caer juntas (tests/test_clases_031.py y test_service.py miran las páginas).
 CLASS_PAGE_SIZE = 2
+FEEDBACK_NEXT = {"new": "seen", "seen": "approved", "approved": "fixing", "fixing": "resolved"}   # D-275: the desk's steps
+CLASS_CHANGE_ACTIONS = ("chgrp:", "chpick:", "chok:")   # D-270 (0.35): 🔄 Cambiar de clase: pick a class, a role, confirm
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
@@ -670,7 +680,7 @@ class GameService(StoryMixin, GuideMixin):
             self.store.delete("camp_naming", account_id)    # leaving the name prompt cancels it (no surprise camp later)
         if not action_id.startswith(DUDAS_ACTIONS) and self.store.get("dudas_open", account_id):
             self.store.delete("dudas_open", account_id)     # D-192: leaving ❓ Dudas: free text is no longer a search
-        if action_id != "fb" and self.store.get("feedback_open", account_id):
+        if action_id != "fb" and not action_id.startswith("fbk:") and self.store.get("feedback_open", account_id):
             self.store.delete("feedback_open", account_id)  # D-258: leaving 💬 Feedback: free text is no longer a message
         if action_id.startswith("rel:"):
             view = self._answer_visitor(hero, action_id)
@@ -965,6 +975,9 @@ class GameService(StoryMixin, GuideMixin):
         if not hero.gear_started:          # 0.6: every hero gets its starter gear once (D-77)
             starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
             hero.gear_started = True
+        for pid, pdef in self._prof_catalog().items():      # D-272 (0.35): gathering is learned now; who practised keeps it
+            if pdef.get("grandfather") and hero.professions.get(pid, 0) > 0 and pid not in hero.learned:
+                hero.learned.append(pid)
         return hero
 
     def _hero_icon(self, hero: Hero) -> str:
@@ -1657,6 +1670,8 @@ class GameService(StoryMixin, GuideMixin):
             return self._story_action(hero, action_id)
         if action_id == "fb":                           # D-258: 💬 Feedback (⚙️ Opciones, /feedback); also while busy
             return self._feedback_view(hero)
+        if action_id.startswith("fbk:"):                # D-275: 💬 Feedback, the type chosen (🐞 💡 ⚖️ ❓ 💬)
+            return self._feedback_view(hero, kind=action_id[4:])
         if action_id.startswith("opt:"):
             return self._set_option(hero, action_id[4:])
         if action_id == "stats":
@@ -1667,6 +1682,8 @@ class GameService(StoryMixin, GuideMixin):
             return self._explore_menu(hero)
         if action_id == "talents":
             return self._talents_view(hero)
+        if action_id == "chcls" or action_id.startswith(CLASS_CHANGE_ACTIONS):   # D-270: 🔄 Cambiar de clase
+            return self._class_change_action(hero, action_id)
         if is_chain_spec(self.content.classes, hero.class_id) and action_id in ("respec", "dual", "dual_unlock", "dual_switch"):
             return self._talents_view(hero)          # 0.31: no respec or dual setups; the second role opens at level 5 (D-230)
         if action_id.startswith("role:"):
@@ -5439,6 +5456,109 @@ class GameService(StoryMixin, GuideMixin):
             line = t.t("trainer.recommend", armor=armor_name, name=self._prof_name(pid), code=pid)
         return [line, ""]
 
+    # ------------------------------------------------------------------ 🔄 class change (D-270, 0.35)
+
+    def _class_change_price(self, hero: Hero) -> int:
+        """🥉 the next class change costs: the first free, then balance.yaml class_change.prices (the last one for ever)."""
+        prices = [int(p) for p in self.content.balance["class_change"]["prices"]]
+        return prices[min(hero.class_changes, len(prices) - 1)]
+
+    def _class_change_action(self, hero: Hero, action_id: str) -> View:
+        """Route the 🔄 Cambiar de clase buttons: the classes, one class's two roles, the confirmation and the change."""
+        if action_id.startswith("chgrp:"):
+            return self._class_change_group_view(hero, action_id[6:])
+        if action_id.startswith("chpick:"):
+            return self._class_change_confirm_view(hero, action_id[7:])
+        if action_id.startswith("chok:"):
+            return self._class_change_do(hero, action_id[5:])
+        return self._class_change_view(hero)
+
+    def _class_change_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🔄 Cambiar de clase: what it costs this time, what you keep, and the other classes (D-270).
+
+        [ES]
+        Qué hace: la pantalla para cambiar de clase (pedido del dueño, 18-oct: "cambiar la primera gratis, la segunda pagando
+        y la tercera pagando más… cuantas veces quieras"). Dice el precio de este cambio (el 1.º gratis; después 🥈1, 🥈10,
+        🥈30 y 🥈50 para siempre: balance.yaml class_change.prices), lo que conservas (nivel, oficios, monedas y equipo; lo
+        de otra armadura rinde la mitad, D-83) y un botón por cada una de las otras clases. Botones: las 5 clases, ↩️ Volver.
+        La llaman: 🌟 Talentos → 🔄 Cambiar de clase y /cambiarclase. No cambia nada guardado.
+        Si cambia, afecta: tests/test_cambio_de_clase.py.
+        """
+        t = self.texts
+        price = self._class_change_price(hero)
+        group = self.content.classes[hero.class_id].get("group", hero.class_id)
+        body = [t.t("chclass.intro", now=self._hero_title(hero)), "",
+                t.t("chclass.price_free") if price == 0 else t.t("chclass.price", price=self._money(price), n=hero.class_changes + 1),
+                t.t("chclass.keeps"), "", t.t("chclass.pick")]
+        actions = [Action(id=f"chgrp:{gid}", label=t.t(f"class_group.{gid}.name")) for gid in self._class_groups() if gid != group]
+        layout = [2] * (len(actions) // 2) + ([1] if len(actions) % 2 else []) + [1]
+        actions.append(Action(id="talents", label=t.t("menu.back")))
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _class_change_group_view(self, hero: Hero, group: str) -> View:
+        """One class of 🔄 Cambiar de clase: its two roles, each with its button (either role can be chosen, like at creation)."""
+        t = self.texts
+        specs = [s for s in specs_of(self.content.classes, group) if is_chain_spec(self.content.classes, s)]
+        if not specs or group == self.content.classes[hero.class_id].get("group", hero.class_id):
+            return self._class_change_view(hero)
+        body = [t.t("create.confirm_class", group=t.t(f"class_group.{group}.name"), desc=t.t(f"class_group.{group}.desc")), "",
+                t.t("chain.create_its_roles")]
+        for class_id in specs:
+            cdef = self.content.classes[class_id]
+            role = t.t("chain_role." + chain_rules.role_of(cdef, self.content.balance))
+            body.append(f"• {t.t(cdef['name_key'])} — {role}: {t.t(cdef['role_key'])}")
+        actions = [Action(id=f"chpick:{s}", label=t.t("create.choose_class", group=t.t(self.content.classes[s]["name_key"])))
+                   for s in specs]
+        actions.append(Action(id="chcls", label=t.t("menu.back")))
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions)
+
+    def _class_change_confirm_view(self, hero: Hero, class_id: str, notice: str | None = None) -> View:
+        """Ask before changing class: the new class and role, the price and your coins."""
+        t = self.texts
+        cdef = self.content.classes.get(class_id)
+        if not cdef or not is_chain_spec(self.content.classes, class_id) or cdef.get("retired"):
+            return self._class_change_view(hero)
+        price = self._class_change_price(hero)
+        body = [t.t("chclass.confirm_free", name=t.t(cdef["name_key"])) if price == 0
+                else t.t("chclass.confirm", name=t.t(cdef["name_key"]), price=self._money(price), gold=self._money(hero.gold)),
+                t.t("chclass.keeps")]
+        group = cdef.get("group", class_id)
+        actions = [Action(id=f"chok:{class_id}", label=t.t("chclass.do_button")), Action(id=f"chgrp:{group}", label=t.t("menu.back"))]
+        return View(kind="class_change", title=t.t("chclass.title"), body=body, actions=actions, notice=notice)
+
+    def _class_change_do(self, hero: Hero, class_id: str) -> View:
+        """Change class: pay, switch to the new class's role and spread the level points there again (D-270).
+
+        [ES]
+        Qué hace: cambia la clase del héroe. Cobra el precio de este cambio (el 1.º gratis), pone la clase y el rol elegidos
+        y reparte los puntos de nivel en el rol nuevo (sync_chain, como al cambiar de rol). Conserva el nivel, la experiencia,
+        los oficios, las monedas que quedan y el equipo (lo de otra armadura rinde la mitad, D-83). Suma 1 a
+        Hero.class_changes y lo anota en el 📔 Diario. No se cambia ocupado ni a la misma clase.
+        La llaman: el botón ✅ Cambiar de clase. Si cambia, afecta: tests/test_cambio_de_clase.py.
+        """
+        t = self.texts
+        cdef = self.content.classes.get(class_id)
+        if not cdef or not is_chain_spec(self.content.classes, class_id) or cdef.get("retired"):
+            return self._class_change_view(hero)
+        if cdef.get("group", class_id) == self.content.classes[hero.class_id].get("group", hero.class_id):
+            return self._class_change_view(hero, notice=t.t("chclass.same"))
+        if hero.activity:
+            return self._class_change_confirm_view(hero, class_id, notice=t.t("activity.busy"))
+        price = self._class_change_price(hero)
+        if hero.gold < price:
+            return self._class_change_confirm_view(hero, class_id, notice=t.t("chclass.poor", price=self._money(price),
+                                                                                gold=self._money(hero.gold)))
+        hero.gold -= price
+        old = self._hero_title(hero)
+        hero.class_id = class_id
+        sync_chain(self.content.classes, hero)
+        hero.class_changes += 1
+        self._clamp_hp(hero)
+        self._journal(hero, "class_change", name=self._hero_title(hero))
+        notice = (t.t("chclass.done_free", old=old, name=self._hero_title(hero)) if price == 0
+                  else t.t("chclass.done", old=old, name=self._hero_title(hero), price=self._money(price)))
+        return self._talents_view(hero, notice=notice)
+
     # ------------------------------------------------------------------ ❓ Dudas (D-191, D-192; keyword search, E-129)
 
     def _faq(self) -> dict[str, Any]:
@@ -5771,6 +5891,8 @@ class GameService(StoryMixin, GuideMixin):
         key = f"learn.unlocks_{pid}"
         if t.has(key):
             return t.t(key)
+        if self._prof_catalog().get(pid, {}).get("gathers"):      # D-272 (0.35): gathering is learned too
+            return t.t("learn.unlocks_gather")
         return t.t("learn.unlocks")
 
     def _prof_code(self, text: str) -> str | None:
@@ -5837,7 +5959,7 @@ class GameService(StoryMixin, GuideMixin):
         Qué hace: la pantalla de un oficio, que se abre con su código. Si lo sabes: rango y barra, cómo sube, su beneficio
         ahora, sus 🎓 especializaciones, lo que abre en el mapa (🧭) y lo que abre el próximo rango, con un botón a su estación
         (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. Si no lo sabes: qué hace, su primera receta, lo que cuesta
-        y 📚 Aprender (gratis si ya lo practicabas). La recolección y la exploración dicen que suben solas.
+        y 📚 Aprender (gratis si ya lo practicabas). La 🧭 exploración dice que sube sola (D-272: la recolección ya se aprende).
         La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
         (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
         """
@@ -7168,6 +7290,7 @@ class GameService(StoryMixin, GuideMixin):
         body += ["", t.t("chain.second_role_open") if second_role_open(bal, hero)
                  else t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]),
                  t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        actions.append(Action(id="chcls", label=t.t("chclass.button")))     # D-270: 🔄 Cambiar de clase
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
@@ -10585,39 +10708,136 @@ class GameService(StoryMixin, GuideMixin):
             return self._options_view(hero, notice=t.t("options.saved_retreat", pct=hero.options["retreat"]))
         return self._options_view(hero)
 
-    def _feedback_view(self, hero: Hero) -> View:
-        """💬 Feedback: the next message the player writes goes to the game's team (D-258).
+    def _feedback_cfg(self) -> dict[str, Any]:
+        return self.content.balance.get("feedback", {})
+
+    def _feedback_view(self, hero: Hero, kind: str | None = None) -> View:
+        """💬 Feedback: first the type (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende, 💬 Otro), then the message (D-258, D-275).
 
         [ES]
-        Qué hace: abre 💬 Feedback (⚙️ Opciones o /feedback): pide que el jugador escriba en un mensaje un error, una idea o algo
-        que no entiende, y deja marcado (espacio "feedback_open", clave la cuenta) que el próximo texto suelto es eso. Cualquier
-        otro botón lo cancela. Botón: ↩️ Volver a ⚙️ Opciones.
-        La llaman: "fb". Si cambia, afecta: _save_feedback y el chat de informes (adapters/reports.py).
+        Qué hace: abre 💬 Feedback (⚙️ Opciones o /feedback). D-275 (pedido del dueño, 18-oct): primero se elige el tipo de lo
+        que se cuenta (balance.yaml feedback.kinds) y después se escribe; si escribe sin elegir, el tipo sale de sus palabras
+        (_feedback_classify). Deja marcado (espacio "feedback_open", clave la cuenta, con el tipo si lo eligió) que el próximo
+        texto suelto es el mensaje. Cualquier otro botón lo cancela. Botones: los 5 tipos y ↩️ Volver; con el tipo elegido,
+        ↩️ Volver a los tipos.
+        La llaman: "fb" y "fbk:<tipo>". Si cambia, afecta: _save_feedback y el chat de informes (adapters/feedback_desk.py).
         """
         t = self.texts
+        kinds = list(self._feedback_cfg().get("kinds", ["bug", "idea", "balance", "confusing", "other"]))
+        if kind in kinds:
+            self.store.put("feedback_open", hero.id, {"at": self.clock.now(), "kind": kind})
+            body = [t.t("feedback.ask_write", kind=t.t(f"feedback.kind.{kind}")), "", t.t("feedback.privacy")]
+            return View(kind="feedback", title=t.t("feedback.title"), body=body,
+                        actions=[Action(id="fb", label=t.t("menu.back"))], expects_text=True)
         self.store.put("feedback_open", hero.id, {"at": self.clock.now()})
-        return View(kind="feedback", title=t.t("feedback.title"), body=[t.t("feedback.ask"), "", t.t("feedback.privacy")],
-                    actions=[Action(id="options", label=t.t("menu.back"))], expects_text=True)
+        actions = [Action(id=f"fbk:{k}", label=t.t(f"feedback.kind.{k}")) for k in kinds]
+        layout = [2] * (len(actions) // 2) + ([1] if len(actions) % 2 else []) + [1]
+        actions.append(Action(id="options", label=t.t("menu.back")))
+        return View(kind="feedback", title=t.t("feedback.title"), body=[t.t("feedback.ask_kind"), "", t.t("feedback.privacy")],
+                    actions=actions, expects_text=True, layout=layout)
+
+    def _feedback_classify(self, text: str) -> str:
+        """The type of a message written without choosing one: the kind whose words (in any language) it uses most."""
+        words = " " + re.sub(r"[^\w]+", " ", text.lower()) + " "
+        best, score = "other", 0
+        for kind in self._feedback_cfg().get("kinds", []):
+            hits = sum(words.count(f" {w.strip().lower()}") for raw in self.texts.all_languages(f"feedback.keywords.{kind}")
+                       for w in raw.split(",") if w.strip())
+            if hits > score:
+                best, score = kind, hits
+        return best
 
     def _save_feedback(self, hero: Hero, account_id: str, text: str) -> View:
-        """Keep the player's note for the team (store "feedback", sent once to the reports chat) and thank them (D-258).
+        """Keep the player's note for the team (store "feedback", posted once to the reports chat) and thank them (D-258, D-275).
 
         [ES]
-        Qué hace: guarda el mensaje de 💬 Feedback en el espacio "feedback" (clave "<hora>:<cuenta>": héroe, nivel, idioma,
-        texto y "sent": false), lo recorta a feedback.max_chars y vuelve a ⚙️ Opciones con las gracias. El bot lo manda al chat
-        de informes y lo marca enviado (take_feedback). Un mensaje vacío no se guarda.
+        Qué hace: guarda el mensaje de 💬 Feedback en el espacio "feedback" con un número propio (clave el número, contado en
+        "meta"/"feedback_seq"): el @ del jugador (set_handle), héroe, nivel, clase, idioma, dónde estaba, la versión del juego,
+        el texto (recortado a feedback.max_chars), el tipo (el elegido o el de sus palabras), la prioridad que le toca a ese
+        tipo (feedback.kind_priority), el paso "new" y el historial vacío. Vuelve a ⚙️ Opciones con las gracias. El bot lo manda
+        al chat de informes (take_feedback) y el equipo lo mueve con los botones (feedback_update). Un mensaje vacío no se guarda.
         La llama: text() con "feedback_open". Si cambia, afecta: el chat de informes.
         """
         t = self.texts
+        opened = self.store.get("feedback_open", account_id) or {}
         self.store.delete("feedback_open", account_id)
-        clean = " ".join(str(text).split())[: int(self.content.balance.get("feedback", {}).get("max_chars", 1000))]
+        cfg = self._feedback_cfg()
+        clean = " ".join(str(text).split())[: int(cfg.get("max_chars", 1000))]
         if not clean:
             return self._options_view(hero)
-        now = self.clock.now()
-        self.store.put("feedback", f"{int(now)}:{account_id}", {
-            "account": account_id, "hero": hero.name, "level": hero.level, "class": hero.class_id,
-            "lang": self.texts.lang, "text": clean, "at": now, "sent": False})
+        kind = opened.get("kind") if opened.get("kind") in cfg.get("kinds", []) else self._feedback_classify(clean)
+        seq = self.store.get("meta", "feedback_seq") or {"n": 0}
+        seq["n"] = int(seq.get("n", 0)) + 1
+        self.store.put("meta", "feedback_seq", seq)
+        patches = self.content.patches or {}
+        zone = self._zone(hero.x, hero.y)
+        with self.texts.use("es"):                      # the desk is for the team, in Spanish (like the player report)
+            class_name, where = self._hero_title(hero), f"{self._zone_name(zone)} ({zone.x}, {zone.y})"
+        self.store.put("feedback", str(seq["n"]), {
+            "id": seq["n"], "account": account_id, "handle": (self.store.get("prefs", account_id) or {}).get("handle", ""),
+            "hero": hero.name, "level": hero.level, "class": hero.class_id, "class_name": class_name, "lang": self.texts.lang,
+            "where": where, "version": list(patches.values())[-1]["version"] if patches else "",
+            "text": clean, "at": self.clock.now(), "sent": False, "kind": kind,
+            "priority": (cfg.get("kind_priority") or {}).get(kind, "low"), "status": "new", "history": []})
         return self._options_view(hero, notice=t.t("feedback.thanks"))
+
+    def set_handle(self, account_id: str, handle: str | None) -> None:
+        """Remember how the team can reach the player in their client (Telegram: "@name"); written only when it changes.
+
+        [ES]
+        Qué hace: guarda el @ del jugador (o como lo llame su cliente) en "prefs", para que el 💬 Feedback llegue al equipo con
+        su arroba (D-275). El motor no lo interpreta. La llama: el bot de Telegram en cada mensaje privado. Si cambia, afecta:
+        el @ del chat de informes.
+        """
+        prefs = self.store.get("prefs", account_id) or {}
+        if (handle or "") != prefs.get("handle", ""):
+            self.store.put("prefs", account_id, dict(prefs, handle=handle or ""))
+
+    def feedback_note(self, fid: str) -> dict[str, Any] | None:
+        """One feedback note by its number, with its key (for the team's desk). [ES] Qué hace: devuelve un feedback por su número. La llama: el bot. Si cambia, afecta: el chat de informes."""
+        data = self.store.get("feedback", str(fid))
+        return dict(data, key=str(fid)) if data else None
+
+    def feedback_posted(self, fid: str, chat_id: int, message_id: int) -> None:
+        """Remember where the desk message of a feedback lives (to edit it later). [ES] La llama: el bot al mandarlo."""
+        data = self.store.get("feedback", str(fid))
+        if data:
+            self.store.put("feedback", str(fid), dict(data, chat=chat_id, message=message_id))
+
+    def feedback_update(self, fid: str, op: str, by: str) -> dict[str, Any] | None:
+        """Move a feedback on the team's desk: priority ("p:high"), next step, discard or reopen; None if not allowed (D-275).
+
+        [ES]
+        Qué hace: lo que hace cada botón del chat de informes. "p:high|mid|low" pone la prioridad; "next" pasa al paso
+        siguiente (🆕 Nuevo → 👀 Visto → ✅ Aprobado → 🔧 En arreglo → ✔️ Resuelto, FEEDBACK_NEXT); "discard" lo cierra como
+        ❌ Descartado; "reopen" vuelve a 👀 Visto un cerrado. Cada cambio queda en el historial con quién lo tocó y cuándo. Al
+        llegar a ✔️ Resuelto, al jugador le llega un gracias en su idioma (feedback.resolved). Devuelve la nota nueva, o None
+        si no existe o el botón no vale en ese paso.
+        La llama: el bot (on_desk_button). Si cambia, afecta: el chat de informes y el aviso al jugador.
+        """
+        data = self.store.get("feedback", str(fid))
+        if not data:
+            return None
+        status = data.get("status", "new")
+        closed = status in ("resolved", "discarded")
+        if op.startswith("p:") and op[2:] in ("high", "mid", "low") and not closed:
+            data["priority"] = op[2:]
+        elif op == "next" and status in FEEDBACK_NEXT:
+            data["status"] = FEEDBACK_NEXT[status]
+        elif op == "discard" and not closed:
+            data["status"] = "discarded"
+        elif op == "reopen" and closed:
+            data["status"] = "seen"
+        else:
+            return None
+        data.setdefault("history", []).append({"op": op, "status": data["status"], "priority": data.get("priority"),
+                                               "by": by, "at": self.clock.now()})
+        self.store.put("feedback", str(fid), data)
+        if data["status"] == "resolved" and status != "resolved":
+            topic = data.get("text", "")[:60]
+            self._push_each([data["account"]], lambda: View(kind="feedback_resolved", title=self.texts.t("feedback.title"),
+                                                             body=[self.texts.t("feedback.resolved", topic=topic)]))
+        return dict(data, key=str(fid))
 
     def take_feedback(self) -> list[dict[str, Any]]:
         """The feedback notes not sent yet, oldest first; they are marked as sent (the bot posts them to the reports chat).

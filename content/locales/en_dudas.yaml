@@ -244,7 +244,7 @@ faq:
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one per faction: completing them gives experience, coins and reputation. If you have a camp, you also see its weekly tasks, which everyone does together.'
   d44:
     q: ⚒️ How do I learn a profession?
-    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🔬 Research in the Clearing or in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Gathering and the 🧭 Explorer are never learned: they rise on their own. Your professions: /myprofessions.'
+    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🔬 Research in the Clearing or in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. Your professions: /myprofessions.'
   d45:
     q: 🛠️ How do I craft?
     a: In 🏕️ Camp → 🛠️ Craft you choose 🪚 Refine (wood → plank, metal → ingot…) or 🛠️ Craft (gear, potions, bandages, furniture). Each recipe shows what it needs and how much ⚡ it costs. The Clearing has all the basic stations; your camp, the ones from its upgrades.

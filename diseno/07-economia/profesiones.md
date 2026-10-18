@@ -23,7 +23,7 @@
 
 El dueño pidió (17-oct): "cocina es una profesión: no debería salirme hasta que yo no aprenda la profesión… cuando yo le doy a aprender, voy a pagar por la primera receta". Y: "el jugador va a ir aprendiendo recetas a medida que va haciendo recetas".
 
-- **Suben solos, sin aprenderse:** la 🪓 recolección (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) y la 🧭 exploración (`learn: auto` en `content/professions.yaml`).
+- **Sube solo, sin aprenderse:** solo la 🧭 exploración (`learn: auto` en `content/professions.yaml`). **Desde la 0.35 (D-272)** la 🪓 recolección (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) también se aprende: el dueño, el 18-oct, "Herbolario es una profesión que tienes que aprender… solamente van a tener exploración… porque farmear te va a dar recursos base". Sin el oficio, recolectar da igual los recursos base, pero no la unidad de más, los hallazgos raros ni la experiencia. Quien ya tenía experiencia en uno lo conserva aprendido (`grandfather: true`).
 - **Se aprenden una vez:** todos los demás, también el 🔪 Desollador (sin él, las bestias dan su botín de siempre, sin la unidad de más), el 💱 Comercio (sin él, se vende igual, sin las monedas de más), el ✨ Encantamiento y la 🏗️ Construcción (esta, siendo miembro de un campamento).
 - **Dónde:** en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Cada oficio tiene su código (/cocina); su pantalla dice qué hace, su primera receta y lo que cuesta.
 - **Cuánto:** su primera receta, 🥉20 (`professions.learn_price`, a medir con el informe diario, P-231). Gratis si ya lo practicabas antes de la 0.33: conservas tu rango (D-64).

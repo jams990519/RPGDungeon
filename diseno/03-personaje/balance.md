@@ -1108,3 +1108,12 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Qué cambia al jugar.** Un viaje de 10 zonas por pradera trae pelea la mitad de las veces (antes el 94 %). Ir lejos ya no castiga a un jugador nuevo (resuelve P-203): el monstruo sale de su nivel, y la experiencia y el botín de pelear siguen al nivel del monstruo, así que tampoco hay premio extra por ir lejos. Los recursos raros y la experiencia de recolectar siguen subiendo con la lejanía. **A medir en la beta** con el informe diario: muertes por viaje y peleas por hora.
 
+### Octubre de 2026 (18-oct): cambio de clase y recolección que se aprende (0.35, D-270 y D-272, confirmadas)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `class_change.prices` (nuevo) | la clase no se cambiaba | 0, 100, 1.000, 3.000 y 5.000 🥉 (gratis, 🥈1, 🥈10, 🥈30 y 🥈50 para siempre) |
+| `learn: auto` en `content/professions.yaml` | Leñador, Minero, Herbolario, Pescador y Explorador | solo el Explorador (los 4 de recolección llevan `grandfather: true`) |
+
+**Qué cambia al jugar.** Un jugador nuevo recolecta solo los recursos base hasta aprender el oficio (🥉20): sin la unidad de más (rango × `rank_yield`), sin hallazgos raros (gemas desde el Minero 10) y sin experiencia. Ojo: la Joyería empieza pidiendo una 💠 gema, que sin el Minero sale solo de nodos (P-234). Quien ya recolectaba no pierde nada.
+

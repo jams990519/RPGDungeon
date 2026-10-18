@@ -189,7 +189,7 @@ faq:
   # ---- ⚒️ Oficios
   d44:
     q: "⚒️ ¿Cómo aprendo un oficio?"
-    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. La recolección y el 🧭 Explorador no se aprenden: suben solos. Tus oficios: /misoficios."
+    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Tus oficios: /misoficios."
   d45:
     q: "🛠️ ¿Cómo fabrico?"
     a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."

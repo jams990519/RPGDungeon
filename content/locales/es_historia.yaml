@@ -138,6 +138,7 @@ story:
     chapter: "🏁 Terminó el {chapter}."
     guardian: "👑 Venció por primera vez a {name}."
     camp: "🏕️ Fundó el campamento {name}."
+    class_change: "🔄 Cambió de clase: ahora es {name}."   # [ES] D-270 (0.35)
     title: "🏅 Ganó el título {title}."
     rank: "⚜️ {faction} ahora le considera {rank}."
 

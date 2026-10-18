@@ -13,7 +13,9 @@ al motor y edita el "mensaje vivo" con la vista nueva. Cada pocos segundos revis
 viajes que terminaron y avisa al jugador. D-260 (0.33): también manda al chat de informes cada mensaje de
 💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py). D-262 (0.33.1): el juego se
 juega solo por privado; en un grupo el bot no juega: a un comando responde "🔒 se juega por privado" con un botón a su chat,
-a un botón viejo le muestra ese aviso aparte y la charla del grupo la ignora.
+a un botón viejo le muestra ese aviso aparte y la charla del grupo la ignora. D-275 (0.35): cada 💬 Feedback llega al chat de
+informes como una tarjeta (adapters/feedback_desk.py) con el @ del jugador, su tipo, prioridad y paso, y botones que el equipo
+toca para moverlo hasta ✔️ Resuelto (on_desk_button); son los únicos botones de un grupo que el bot atiende.
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §4 (identidad)
 Módulo: adaptador de Telegram
 Depende de: aiogram, engine.service, engine.core, adapters.storage, adapters.telegram.render
@@ -40,7 +42,6 @@ Si cambias esto, revisa:
 from __future__ import annotations
 
 import asyncio
-import html
 import logging
 import os
 import re
@@ -56,7 +57,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import (BufferedInputFile, CallbackQuery, ChatMemberUpdated, InlineKeyboardButton, InlineKeyboardMarkup,
                            KeyboardButton, Message, ReplyKeyboardMarkup, User)
 
-from adapters import reports
+from adapters import feedback_desk, reports
 from adapters.storage import SqliteStore
 from adapters.telegram import render as render_module
 from adapters.telegram.render import render_keyboard, render_text
@@ -129,6 +130,17 @@ def private_notice(service: GameService, user: User) -> tuple[str, InlineKeyboar
     return text, InlineKeyboardMarkup(inline_keyboard=[[button]])
 
 
+def handle_of(user: User) -> str:
+    """The player's Telegram @ ("@name"), or "" if they have none (the desk then links to their chat)."""
+    return f"@{user.username}" if user.username else ""
+
+
+def desk_keyboard(note: dict[str, Any]) -> InlineKeyboardMarkup:
+    """The feedback card's buttons (adapters/feedback_desk.buttons) as a Telegram inline keyboard (D-275)."""
+    rows = [[InlineKeyboardButton(text=label, callback_data=data) for label, data in row] for row in feedback_desk.buttons(note)]
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 def in_group(query: CallbackQuery) -> bool:
     """A button pressed on a message that lives in a group or channel, not in the private chat (D-262)."""
     return query.message is not None and query.message.chat.type != ChatType.PRIVATE
@@ -142,6 +154,27 @@ async def send_view(bot: Bot, chat_id: int, view: View) -> None:
 def register(dp: Dispatcher, service: GameService) -> None:
     """Attach handlers. [ES] Qué hace: conecta los mensajes y botones con el motor; los de grupos van primero y nunca
     llegan al motor (D-262). La llaman: main. Si cambia, afecta: qué responde el bot."""
+
+    @dp.callback_query(F.data.startswith(f"{feedback_desk.PREFIX}:"))
+    async def on_desk_button(query: CallbackQuery) -> None:
+        # D-275: the team moves a 💬 Feedback card in the reports chat (priority, next step, discard, reopen). Only there:
+        # the same button anywhere else does nothing.
+        parsed = feedback_desk.parse(query.data)
+        chat = query.message.chat.id if query.message else None
+        if not parsed or chat is None or chat not in set(report_chats()) | {_reports_chat[0]}:
+            await query.answer()
+            return
+        by = f"@{query.from_user.username}" if query.from_user.username else query.from_user.first_name
+        note = service.feedback_update(parsed[0], parsed[1], by)
+        if note is None:
+            await query.answer("—")
+            return
+        try:
+            await query.message.edit_text(feedback_desk.card(note), reply_markup=desk_keyboard(note))
+        except TelegramBadRequest as error:
+            if "not modified" not in str(error):
+                log.exception("could not edit feedback card %s", parsed[0])
+        await query.answer()
 
     @dp.message(F.chat.type != ChatType.PRIVATE)
     async def on_group_message(message: Message) -> None:
@@ -167,6 +200,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
     @dp.message(CommandStart(), F.chat.type == ChatType.PRIVATE)
     async def on_start(message: Message) -> None:
         account = account_of(message.from_user.id)
+        service.set_handle(account, handle_of(message.from_user))          # D-275: the @ the team sees in 💬 Feedback
         parts = (message.text or "").split(maxsplit=1)
         if len(parts) == 2 and parts[1].startswith("ref_"):
             service.register_referral(account, parts[1][4:])
@@ -177,6 +211,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
     @dp.message(F.text, F.chat.type == ChatType.PRIVATE)
     async def on_text(message: Message) -> None:
         account = account_of(message.from_user.id)
+        service.set_handle(account, handle_of(message.from_user))          # D-275: the @ the team sees in 💬 Feedback
         menu_ids = service.menu_labels()           # D-250: the bottom buttons in every language (an old keyboard works)
         commands = service.commands()
         word = (message.text or "").split("@")[0].strip().lower()
@@ -255,7 +290,7 @@ _reports_chat: list[int | None] = [None]   # the reports chat id that worked las
 _report_failed_at = [float("-inf")]       # when the reports chat last refused us (loop time); none yet
 
 
-async def post_to_reports(send: Callable[[int], Awaitable[Any]]) -> None:
+async def post_to_reports(send: Callable[[int], Awaitable[Any]]) -> Any:
     """Run send(chat) on the reports chat: the id that worked before, else each form of it; raise if none works.
 
     [ES]
@@ -269,17 +304,17 @@ async def post_to_reports(send: Callable[[int], Awaitable[Any]]) -> None:
     for chat in chats:
         try:
             try:
-                await send(chat)
+                result = await send(chat)
             except TelegramMigrateToChat as moved:          # a group that became a supergroup has a new id
                 chat = moved.migrate_to_chat_id
-                await send(chat)
+                result = await send(chat)
         except (TelegramBadRequest, TelegramForbiddenError) as refused:
             error = refused
             continue
         if _reports_chat[0] != chat:
             _reports_chat[0] = chat
             log.info("reports chat: %s", chat)
-        return
+        return result
     _reports_chat[0] = None                                # next time, try every form again
     raise error or RuntimeError("no reports chat configured")
 
@@ -299,10 +334,12 @@ async def send_reports(bot: Bot, service: GameService) -> None:
         return                                             # refused not long ago: wait (the feedback stays queued)
     notes = service.take_feedback()
     for index, note in enumerate(notes):
-        text = (f"💬 <b>Feedback</b> · {html.escape(str(note.get('hero', '?')))} · nivel {note.get('level', '?')} · "
-                f"{html.escape(str(note.get('lang', '?')))}\n{html.escape(str(note.get('text', '')))}")
+        text = feedback_desk.card(note)                 # D-275: the card with its @, type, priority, step and buttons
+        markup = desk_keyboard(note) if note.get("id") else None
         try:
-            await post_to_reports(lambda chat, text=text: bot.send_message(chat, text))
+            sent = await post_to_reports(lambda chat, text=text, markup=markup: bot.send_message(chat, text, reply_markup=markup))
+            if note.get("id") and sent is not None and getattr(sent, "message_id", None):
+                service.feedback_posted(str(note["id"]), sent.chat.id, sent.message_id)
         except Exception:
             service.return_feedback(notes[index:])         # nothing is lost: they go out on the next try
             _report_failed_at[0] = loop_now

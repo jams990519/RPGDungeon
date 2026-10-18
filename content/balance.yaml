@@ -220,6 +220,9 @@ terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es "
   climate_slope: 0.02        # [ES] cuánto se enfría cada zona hacia el norte (y positiva) y se calienta hacia el sur
   climate_strength: 3.0      # [ES] cuánto pesa el clima: los terrenos "cold" salen hasta 3 veces más al norte, los "hot" al sur
 
+class_change:                # [ES] D-270 (0.35, confirmada): 🔄 Cambiar de clase (🌟 Talentos o /cambiarclase). Se conservan nivel, oficios, monedas y equipo; los puntos de nivel se reparten solos en el rol nuevo
+  prices: [0, 100, 1000, 3000, 5000]   # [ES] 🥉 de cada cambio: el 1.º gratis, después 🥈1, 🥈10, 🥈30 y 🥈50; el último se repite para siempre (el dueño: "primer cambio 1, el siguiente 10, el siguiente 30 y luego 50 para siempre")
+
 places:                      # [ES] D-267 (0.34): 📒 Lugares
   camps_listed: 5            # [ES] cuántos campamentos de jugadores (los más cercanos) entran en 📒 Lugares aunque nunca los hayas pisado ("los jugadores van a poder ver los lugares donde alguien empezó a construir un campamento")
 
@@ -427,6 +430,8 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
 
 feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones; el bot manda cada mensaje al chat de informes
   max_chars: 1000            # [ES] largo máximo que se guarda de un mensaje
+  kinds: [bug, idea, balance, confusing, other]   # [ES] D-275 (0.35, confirmada): tipos que elige el jugador (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende, 💬 Otro); sus nombres y palabras en content/locales (feedback.kind, feedback.keywords)
+  kind_priority: {bug: high, balance: mid, confusing: mid, idea: low, other: low}   # [ES] D-275: prioridad con la que arranca cada tipo en el chat de informes; el equipo la cambia con 🔴 🟡 🟢
 
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4

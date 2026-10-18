@@ -96,11 +96,11 @@ trainer:
   stations_none: '📍 There are no stations here: the Clearing has all the basic ones.'
   mine_button: ⚒️ My professions
   ench_button: ✨ Enchanting
-  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. 🪓 Gathering and 🧭 exploration are never learned: they rise on their own.»'
+  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here or in 🔬 Research. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. Only 🧭 exploration rises on its own; 🪓 gathering is learned too (without the profession, gathering still gives the base resources).»'
   recommend: '⭐ For your {armor} armor: {name}. Tap /{code} to see it and learn it.'
   recommend_known: '⭐ For your {armor} armor: {name}, rank {rank}.'
   have: '✅ Your professions: {list}'
-  have_none: '✅ You have no professions yet: gather and explore, they rise on their own.'
+  have_none: '✅ You have no professions yet: explore (it rises on its own) and learn one below.'
   missing: '📚 Still to learn ({n} {n|profession|professions}): {list}'
   missing_none: '📚 You have learned every profession within your reach.'
 myprof:
@@ -108,7 +108,7 @@ myprof:
   button: 📋 My professions
   intro: Your professions and how they are going. Tap one's code to see everything it gives.
   line: '{name} · rank {rank} ({title}) {bar}  /{code}'
-  none: 'You have no professions yet: gather and explore (they rise on their own) or learn one in 📚 Learn professions.'
+  none: 'You have no professions yet: explore (it rises on its own) or learn one in 📚 Learn professions.'
 learn:
   title: 📚 Learn professions
   button: 📚 Learn professions
@@ -123,6 +123,7 @@ learn:
   unlocks_comercio: Once learned, every sale gives you extra coins and the profession rises as you sell.
   unlocks_encantamiento: Once learned you can disenchant old gear into essences and enchant your pieces (/enchant).
   unlocks_construccion: Once learned, your contributions to your camp's works raise the profession, and its benefit applies to the whole camp.
+  unlocks_gather: 'Once learned, gathering sometimes gives an extra unit, rare finds appear with rank, and the profession rises with each unit. Without it you still gather the base resources.'
   price_line: '💰 It costs {price}. You have {gold}.'
   free_line: '🎁 Free: you practised it (rank {rank}) and you keep it when you learn it.'
   learn_button: '📚 Learn · {price}'
