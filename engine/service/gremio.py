@@ -21,8 +21,8 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     ayudas de GameService (_zone, _zone_name, _money, _item_list, _bar, _fmt_duration, _seconds, _join, _ago, _banner,
     _emblem_name, _load, _save, _push, _push_each, _speaking, _name_key, _camp_requirements, _camp_here_view, _main_view,
     _guild_view, _members_cap, _upgrades, _upgrade_catalog, _upgrade_name, _create_camp, _territory, _trip_seconds, _zone_players)
-Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:" antes del
-    combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1 y /f02;
+Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:", "cinv:" antes del
+    combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1, /f02 y /inv_<código>;
     _gremio_text desde _name_camp), tick() (_works_tick), _idle_action (GREMIO_ACTIONS, "found" → _start_founding),
     _guild_view (sin campamento abre _gremio_view), _camp_hub_lines y _camp_hub_actions (👥 Jugadores en la fogata),
     _camp_requirements (las condiciones del gremio para fundar), _camp_here_view (la fundación en curso), _zone_view y
@@ -49,6 +49,8 @@ Datos de los que es dueño:
         reservado para los dos); el campamento guarda "gremio" (id) y el gremio D-97 del campamento también; "upgrades" guarda
         "building" {mejora: {"need", "done", "at", "floor", "by", "started"}} (obras en curso) y "fund" {objeto: cantidad} (lo
         que sobró del fondo al fundar: se usa primero al aportar a una obra).
+    D-280 (0.36.1): "player_code" (clave el código de 8 cifras): {"account"}; "player_code_of" (clave la cuenta): {"code"}. El
+        código de jugador nunca cambia. El campamento suma "invites" [cuentas que su fundador invitó con /inv_ y no respondieron].
 Reglas que nunca se rompen:
     1. Un gremio por héroe: quien es miembro de un campamento tiene el gremio de su campamento (D-97) y no entra a otro.
     2. Antes del campamento caben gremio.members_before_camp (5); entra quien pide y acepta el líder o un oficial (o quien
@@ -78,6 +80,7 @@ import re
 import unicodedata
 from typing import Any
 
+from engine.core.rng import hash_unit
 from engine.hero import Hero
 from engine.messaging import Action, View
 from engine.social import guilds as guild_rules
@@ -89,13 +92,16 @@ PLAYER_CODE_RE = re.compile(r"^/(?:j|p)_?(\d{1,2})(@\w+)?$")
 GUILD_CODE_RE = re.compile(r"^/g_?(\d{1,2})(@\w+)?$")
 MEMBER_CODE_RE = re.compile(r"^/m_?(\d{1,2})(@\w+)?$")
 FUND_CODE_RE = re.compile(r"^/f(\d{1,3})(@\w+)?$")
+# D-280: /inv_12345678 invites the player with that code (👤 Héroe) to your guild, or to your camp once founded. "/inv"
+# alone is still 🎒 Mochila. [ES] /inv_ más el código de jugador: invitar al gremio (o al campamento ya fundado).
+INVITE_CODE_RE = re.compile(r"^/inv_?(\d{4,16})(@\w+)?$")
 # Guild names follow the camp names (the camp takes the guild's name when it is founded). [ES] Igual que CAMP_NAME_RE.
 GREMIO_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Button ids (or prefixes) that _gremio_action routes (menus: they also work while busy). [ES] Si cambian, cambian los botones.
 GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greqs", "ginvite:", "gmsg", "gfund", "gmeet",
                   "gmeetset", "gfound", "gfoundx", "gleave", "gmem:", "goff:", "glead:", "glead!:", "gkick:", "gkick!:")
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
-GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:")
+GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:")   # D-280: "cinv:" = the camp's invitation by code
 EPS = 1e-6
 
 
@@ -190,9 +196,6 @@ class GremioMixin:
         cid = data.get("class_id", "")
         group = self.content.classes.get(cid, {}).get("group", cid)
         return self.texts.t(f"class_group.{group}.name")
-
-    def _place_label(self, x: int, y: int) -> str:
-        return self.texts.t("gremio.place", name=self._zone_name(self._zone(x, y)), x=x, y=y)
 
     # ------------------------------------------------------------------ presence and works that take time (D-269, D-274)
 
@@ -378,6 +381,7 @@ class GremioMixin:
                 t.t("players.card_seen", ago=self._ago(other.seen_at))]
         if (other.x, other.y) == (0, 0):
             body.append(t.t("players.card_here"))
+        body.append(t.t("players.card_code", code=self.player_code(account)))   # D-280: /inv_<code>
         actions = []
         mine = self._my_gremio(hero)
         theirs = self._gremio_link(account)
@@ -459,6 +463,8 @@ class GremioMixin:
             body += ["", t.t("gremio.messages_title")]
             body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
         body += ["", t.t("gremio.codes_hint")]
+        if self._gremio_manager(record, hero.id) and self._gremio_room(record):
+            body.append(t.t("gremio.invite_hint"))     # D-280: /inv_ and the player's code
         actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="gfund", label=t.t("gremio.fund_button")),
                    Action(id="gmeet", label=t.t("gremio.meet_button"))]
         if hero.id == leader or founding:
@@ -492,7 +498,8 @@ class GremioMixin:
         cfg = self._gremio_cfg()
         body = [t.t("gremio.none_intro"), t.t("gremio.none_what"),
                 t.t("gremio.none_cost", coins=self._money(int(cfg.get("found_coins", 20))), cap=self._gremio_cap()),
-                t.t("gremio.none_found", n=int(cfg.get("found_min_members", 2)), minutes=int(cfg.get("found_minutes", 60)))]
+                t.t("gremio.none_found", n=int(cfg.get("found_min_members", 2)), minutes=int(cfg.get("found_minutes", 60))),
+                "", t.t("gremio.none_code", code=self.player_code(hero.id))]      # D-280: so a leader can invite you
         actions = [Action(id="gnew", label=t.t("gremio.new_button")), Action(id="glist", label=t.t("gremio.list_button")),
                    Action(id=self._gremio_back(hero), label=t.t("menu.back"))]
         return View(kind="gremio_none", title=t.t("gremio.title"), body=body, actions=actions, notice=notice)
@@ -649,6 +656,8 @@ class GremioMixin:
             return self._gremio_answer(hero, action_id)
         if action_id.startswith("ginv:"):
             return self._gremio_invite_answer(hero, action_id)
+        if action_id.startswith("cinv:"):
+            return self._camp_invite_answer(hero, action_id)
         return self._gremio_camp_answer(hero, action_id)
 
     def _gremio_answer(self, hero: Hero, action_id: str) -> View:
@@ -683,14 +692,28 @@ class GremioMixin:
     def _gremio_invite(self, hero: Hero, account: str) -> View:
         """✉️ Invitar a mi gremio (from a player's card): the player gets ✅ / ❌."""
         t = self.texts
+        result = self._gremio_invite_send(hero, account)
+        if result == "only_managers":
+            return self._players_view(hero, notice=t.t("gremio.only_managers"))
+        return self._player_card(hero, account, notice=t.t(f"gremio.{result}", name=self._hero_name(account)))
+
+    def _gremio_invite_send(self, hero: Hero, account: str) -> str:
+        """Send the ✉️ invitation of your guild before its camp; returns the notice key (invite_sent, full, target_busy...).
+
+        [ES]
+        Qué hace: le manda al jugador la invitación del gremio (✅ / ❌) si eres líder u oficial, hay lugar y el jugador no
+        tiene gremio ni campamento. La llaman: la tarjeta del jugador (✉️ Invitar) y /inv_<código> (D-280).
+        Si cambia, afecta: quién puede invitar y tests/test_gremio_desde_el_inicio.py, tests/test_invitar_con_codigo.py.
+        """
+        t = self.texts
         record = self._my_gremio(hero)
         data = self.store.get("hero", account)
         if not record or not self._gremio_manager(record, hero.id):
-            return self._players_view(hero, notice=t.t("gremio.only_managers"))
+            return "only_managers"
         if not self._gremio_room(record):
-            return self._player_card(hero, account, notice=t.t("gremio.full"))
+            return "full"
         if not self._gremio_free(account, data):
-            return self._player_card(hero, account, notice=t.t("gremio.target_busy"))
+            return "target_busy"
         if account not in record["invites"]:
             record["invites"].append(account)
             self.store.put("gremio", record["id"], record)
@@ -699,7 +722,113 @@ class GremioMixin:
                 body=[t.t("gremio.invite_body", name=hero.name, guild=record["name"])],
                 actions=[Action(id=f"ginv:{record['id']}:y", label=t.t("gremio.accept")),
                          Action(id=f"ginv:{record['id']}:n", label=t.t("gremio.refuse"))]))
-        return self._player_card(hero, account, notice=t.t("gremio.invite_sent", name=(data or {}).get("name", "?")))
+        return "invite_sent"
+
+    # ------------------------------------------------------------------ the player code and /inv_<code> (D-280)
+
+    def player_code(self, account_id: str) -> str:
+        """The player's own 8-digit number, for /inv_<code> (D-280); stable: stored the first time it is asked for.
+
+        [ES]
+        Qué hace: el código de jugador (8 cifras), el que se escribe después de /inv_ para invitarlo a un gremio (pedido del
+        dueño, 18-oct-2026: "/inv_ y el código de jugador"). Sale de la cuenta y se guarda la primera vez (espacios
+        "player_code": código → cuenta y "player_code_of": cuenta → código); si dos cuentas dieran el mismo, la segunda prueba
+        otro. Nunca cambia. La llaman: 👤 Héroe, la tarjeta de un jugador, 🛡️ Gremio y _account_by_code.
+        Si cambia, afecta: los códigos que los jugadores ya se pasaron.
+        """
+        known = self.store.get("player_code_of", account_id)
+        if known:
+            return str(known["code"])
+        salt = 0
+        while True:
+            code = str(10_000_000 + int(hash_unit("player_code", account_id, salt) * 90_000_000))
+            owner = self.store.get("player_code", code)
+            if owner is None or owner.get("account") == account_id:
+                break
+            salt += 1
+        self.store.put("player_code", code, {"account": account_id})
+        self.store.put("player_code_of", account_id, {"code": code})
+        return code
+
+    def _account_by_code(self, code: str) -> str | None:
+        """The account whose player code this is (heroes that never showed theirs get one now), or None."""
+        owner = self.store.get("player_code", code)
+        if owner is None:
+            for account, _ in self.store.items("hero"):
+                if self.store.get("player_code_of", account) is None:
+                    self.player_code(account)
+            owner = self.store.get("player_code", code)
+        account = (owner or {}).get("account")
+        return account if account and self.store.get("hero", account) else None
+
+    def _invite_code(self, hero: Hero, code: str) -> View:
+        """/inv_<code>: invite that player to your guild, or to your camp once the guild founded it (D-280).
+
+        [ES]
+        Qué hace: el líder o un oficial de un gremio sin campamento invita con el código (lo mismo que ✉️ Invitar en la
+        tarjeta, desde cualquier lugar); con el campamento ya fundado, invita su fundador, y al jugador le llega la invitación
+        al campamento (✅ / ❌, "cinv:"). El jugador tiene que estar sin gremio ni campamento. Un código que no es de nadie,
+        el tuyo propio o no tener permiso: avisa. La llama: text() con INVITE_CODE_RE.
+        Si cambia, afecta: tests/test_invitar_con_codigo.py.
+        """
+        t = self.texts
+        account = self._account_by_code(code)
+        if account is None:
+            return self._guild_view(hero, notice=t.t("gremio.code_unknown", code=code))
+        if account == hero.id:
+            return self._guild_view(hero, notice=t.t("gremio.code_self"))
+        name = self._hero_name(account)
+        if self._my_gremio(hero):
+            return self._guild_view(hero, notice=t.t(f"gremio.{self._gremio_invite_send(hero, account)}", name=name))
+        camp = self.store.get("camp", hero.camp) if hero.camp else None
+        if camp and camp.get("founder_id") == hero.id:
+            return self._guild_view(hero, notice=t.t(f"gremio.{self._camp_invite_send(hero, camp, account)}", name=name))
+        return self._guild_view(hero, notice=t.t("gremio.code_no_rights"))
+
+    def _camp_invite_send(self, hero: Hero, camp: dict[str, Any], account: str) -> str:
+        """The founder invites a free player into the camp (and so its guild, D-97); returns the notice key."""
+        t = self.texts
+        if not self._gremio_free(account, self.store.get("hero", account)):
+            return "target_busy"
+        if len(camp["members"]) >= self._members_cap(camp):
+            return "full"
+        key = f"{camp['x']}:{camp['y']}"
+        invites = camp.setdefault("invites", [])
+        if account not in invites:
+            invites.append(account)
+            self.store.put("camp", key, camp)
+            name, founder = camp["name"], hero.name
+            place = self._place_label(camp["x"], camp["y"])
+            self._push_each([account], lambda: View(
+                kind="camp_invite", title=t.t("gremio.cinv_title"),
+                body=[t.t("gremio.cinv_body", name=founder, camp=name, place=place)],
+                actions=[Action(id=f"cinv:{key}:y", label=t.t("gremio.camp_yes")),
+                         Action(id=f"cinv:{key}:n", label=t.t("gremio.camp_no"))]))
+        return "invite_sent"
+
+    def _camp_invite_answer(self, hero: Hero, action_id: str) -> View:
+        """✅ / ❌ a camp's invitation by code ("cinv:<x>:<y>:y|n"): in if still free and there is room (D-280)."""
+        t = self.texts
+        parts = action_id.split(":")
+        if len(parts) != 4 or parts[3] not in ("y", "n"):
+            return self._main_view(hero)
+        key = f"{parts[1]}:{parts[2]}"
+        camp = self.store.get("camp", key)
+        if not camp or hero.id not in camp.get("invites", []):
+            return self._main_view(hero, notice=t.t("gremio.already_answered"))
+        camp["invites"].remove(hero.id)
+        if parts[3] == "y" and not self._gremio_free(hero.id, hero):      # joined another guild or camp meanwhile
+            self.store.put("camp", key, camp)
+            return self._main_view(hero, notice=t.t("gremio.already"))
+        joined = parts[3] == "y" and len(camp["members"]) < self._members_cap(camp)
+        if joined:
+            camp["members"].append(hero.id)
+            hero.camp = key
+        self.store.put("camp", key, camp)
+        result = "joined" if joined else ("full" if parts[3] == "y" else "declined")
+        self._push_each([camp["founder_id"]], lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                                           body=[t.t(f"gremio.camp_{result}_push", name=hero.name, camp=camp["name"])]))
+        return self._main_view(hero, notice=t.t(f"gremio.camp_{result}", camp=camp["name"]))
 
     def _gremio_invite_answer(self, hero: Hero, action_id: str) -> View:
         """✅ / ❌ an invitation: in if still free and there is room; the leader is told."""
@@ -1054,6 +1183,7 @@ class GremioMixin:
             out.append((site[0], site[1], "🏕️", record["name"]))
         meet = record.get("meet") if not record.get("camp") else None
         if meet and not any((x, y) == tuple(meet) for x, y, _, _ in out):
+            # 📒 Lugares adds the coordinates (D-278)
             out.append((meet[0], meet[1], "📍", t.t("gremio.meet_place", name=self._zone_name(self._zone(*meet)))))
         return out
 

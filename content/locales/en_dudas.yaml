@@ -272,3 +272,6 @@ faq:
   d53:
     q: 🔗 Why invite friends?
     a: Your invite code is in 👤 Hero. Every friend who joins with your link and creates their hero gives you {invite_bonus} extra ⚡.
+  d54:
+    q: 📌 How do I go to a coordinate?
+    a: 'Every place shows its coordinates: (x, y). You are where 📍 Zone says. North adds to y and east adds to x: (3, -2) is 3 zones east and 2 south of the Clearing, which is (0, 0). To go, type /go x y (for example, /go 3 -2): the way is laid out in 🔗 Move, first east-west, then north-south, and you tap ✅ Finish. Up to {walk_max} steps at a time.'

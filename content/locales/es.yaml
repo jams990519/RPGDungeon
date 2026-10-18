@@ -1211,6 +1211,7 @@ item:
 
 world:
   claro_name: "El Claro"
+  place: "{name} ({x}, {y})"   # [ES] D-278 (0.36.1, pedido del dueño): todo lugar que nombra el juego lleva sus coordenadas (_place_label)
   name_first: ["Vado", "Cerro", "Hondonada", "Llano", "Paso", "Loma", "Fuente", "Cañada", "Risco", "Valle", "Hoya", "Collado"]
   name_second: ["Gris", "de las Cenizas", "Quebrado", "del Cuervo", "Hundido", "Callado", "de Hierro", "Viejo", "Rojo", "del Eco", "Ahogado", "de los Huesos"]
   name_format: "{first} {second}"     # D-250: el orden de las dos partes del nombre de zona (en inglés, "{second} {first}")
@@ -1337,7 +1338,7 @@ zone:
   routes: "🧭 Rutas"
   uncharted: "❔ Tierra sin cartografiar"
   known_by_others: "▪️ Otro la descubrió, pero tú no la conoces"
-  route_line: "{dir}: {where} · {time}"
+  route_line: "{dir} ({x}, {y}): {where} · {time}"   # [ES] D-278: cada ruta dice a qué coordenada lleva (el norte suma a la y; el este, a la x)
   go_button: "{dir} · {time}"
   explore_button: "🔎 Explorar · {time}"
 
@@ -1371,6 +1372,11 @@ walk:                          # [ES] D-244 (0.33, pedido del dueño): 🔗 Move
   need_step: "⚠️ Suma al menos un paso antes de terminar."
   cancelled: "❌ Camino cancelado."
   started: "🔗 Sales: {n} {n|paso|pasos} hasta ({x}, {y}). Te aviso al llegar."
+  coord_hint: "📌 Estás en ({x}, {y}). Para ir a una coordenada, escribe /ir x y (por ejemplo, /ir 12 -3): el norte suma a la y y el este, a la x."   # [ES] D-278 (0.36.1)
+  coord_ready: "📌 Camino armado hasta ({x}, {y}): primero este-oeste y después norte-sur. Toca ✅ Terminar para salir."
+  coord_far: "📌 ({x}, {y}) está a {n} pasos y el máximo son {top}. Ve por partes: primero /ir {mx} {my}."
+  coord_here: "📌 Ya estás en ({x}, {y})."
+  coord_busy: "📌 Para ir a una coordenada, primero termina lo que estás haciendo."
 
 explore:
   menu_title: "🧭 Explorar"
@@ -1401,7 +1407,7 @@ activity:
 
 map:
   title: "🗺️ Tu mapa"
-  legend: "🧍 tú · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
+  legend: "🧍 tú, en ({x}, {y}) · {stages} · al {pct} % ves su color · el norte está arriba"   # [ES] D-212, D-220 (0.30): vuelven los puntos grises; las etapas salen de balance.yaml map_view.fog
   camp_mark: "🏕️"            # [ES] D-267 (0.34): los campamentos de jugadores se ven en el mapa
   camps_legend: "{mark} campamento de jugadores"
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
@@ -1606,13 +1612,14 @@ places:
   more: "…y {n} más, más lejos."
   marks_title: "🔭 Lo que marca tu mapa:"   # [ES] sin uso desde la 0.30.2 (D-223: el mapa no anuncia nada)
   intro: "📒 Los lugares importantes que conoces. Toca uno o escribe su código y confirma: tu héroe irá solo, zona por zona."   # [ES] D-223
-  code_line: "{n}. {icon} {name} · a {zones} {zones|zona|zonas} · {time} · /ir{n}"
+  code_line: "{n}. {icon} {name} ({x}, {y}) · a {zones} {zones|zona|zonas} · {time} · /ir{n}"   # [ES] D-278: con sus coordenadas
+  coord_hint: "📌 ¿Otra coordenada? Escribe /ir x y (por ejemplo, /ir 12 -3) y se arma el camino en 🔗 Moverte."
   dungeon_small: "{name}, mazmorra chica"
   dungeon_deep: "{name}, mazmorra profunda"
   unknown: "Ese lugar ya no está en tu lista: elige uno de aquí."
   bad_code: "Ese código no está en tu lista de lugares: usa uno de los que ves aquí."
   confirm_title: "🧭 ¿Viajar?"
-  confirm: "Vas a ir a {icon} {name}: {zones} {zones|zona|zonas}, unos {time}."
+  confirm: "Vas a ir a {icon} {name} ({x}, {y}): {zones} {zones|zona|zonas}, unos {time}."
   confirm_hint: "Tu héroe va solo, zona por zona. Puedes cerrar el chat: te aviso al llegar."
   confirm_yes: "✅ Sí, ir"
   confirm_no: "↩️ No, volver"

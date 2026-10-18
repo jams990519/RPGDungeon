@@ -1761,6 +1761,7 @@ item:
   artesano_joya_13: Everdawn Pendant
 world:
   claro_name: The Clearing
+  place: "{name} ({x}, {y})"
   name_first:
   - Ford
   - Hill
@@ -1902,7 +1903,7 @@ zone:
   routes: 🧭 Routes
   uncharted: ❔ Uncharted land
   known_by_others: ▪️ Someone else discovered it, but you don't know it yet
-  route_line: '{dir}: {where} · {time}'
+  route_line: '{dir} ({x}, {y}): {where} · {time}'
   go_button: '{dir} · {time}'
   explore_button: 🔎 Explore · {time}
 travel:
@@ -1934,6 +1935,11 @@ walk:
   need_step: ⚠️ Add at least one step before finishing.
   cancelled: ❌ Way cancelled.
   started: '🔗 You set off: {n} {n|step|steps} to ({x}, {y}). I''ll let you know when you arrive.'
+  coord_hint: '📌 You are at ({x}, {y}). To go to a coordinate, type /go x y (for example, /go 12 -3): north adds to y and east adds to x.'
+  coord_ready: '📌 Way laid out to ({x}, {y}): first east-west, then north-south. Tap ✅ Finish to set off.'
+  coord_far: '📌 ({x}, {y}) is {n} steps away and the most is {top}. Go in parts: first /go {mx} {my}.'
+  coord_here: '📌 You are already at ({x}, {y}).'
+  coord_busy: '📌 To go to a coordinate, first finish what you are doing.'
 explore:
   menu_title: 🧭 Explore
   menu_intro: Roam the zone, gather materials, go hunting or check your map.
@@ -1960,7 +1966,7 @@ activity:
   offline_ok: 'You can close the chat: I''ll let you know when it''s done.'
 map:
   title: 🗺️ Your map
-  legend: 🧍 you · {stages} · at {pct}% you see its color · north is up
+  legend: 🧍 you, at ({x}, {y}) · {stages} · at {pct}% you see its color · north is up
   camp_mark: 🏕️
   camps_legend: "{mark} players' camp"
   position: Coordinates {x}, {y} · Distance {lejania}
@@ -2157,13 +2163,14 @@ places:
   more: …and {n} more, farther away.
   marks_title: '🔭 What your map marks:'
   intro: '📒 The important places you know. Tap one or type its code and confirm: your hero will go alone, zone by zone.'
-  code_line: '{n}. {icon} {name} · {zones} {zones|zone|zones} away · {time} · /go{n}'
+  code_line: '{n}. {icon} {name} ({x}, {y}) · {zones} {zones|zone|zones} away · {time} · /go{n}'
+  coord_hint: '📌 Another coordinate? Type /go x y (for example, /go 12 -3) and the way is laid out in 🔗 Move.'
   dungeon_small: '{name}, small dungeon'
   dungeon_deep: '{name}, deep dungeon'
   unknown: 'That place is no longer on your list: choose one from here.'
   bad_code: 'That code isn''t on your list of places: use one of the ones you see here.'
   confirm_title: 🧭 Travel?
-  confirm: 'You''re going to {icon} {name}: {zones} {zones|zone|zones}, about {time}.'
+  confirm: 'You''re going to {icon} {name} ({x}, {y}): {zones} {zones|zone|zones}, about {time}.'
   confirm_hint: 'Your hero goes alone, zone by zone. You can close the chat: I''ll let you know when you arrive.'
   confirm_yes: ✅ Yes, go
   confirm_no: ↩️ No, go back

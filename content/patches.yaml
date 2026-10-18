@@ -627,3 +627,18 @@ v0_36:
     - "📍 The leader sets the meeting point. From then on, 📍 Zone shows the 🏗️ Move to the construction button, which takes you along the real path (no diagonals)."
     - "🏕️ A camp is founded by a guild: the leader, with at least 2 members in the zone, and the fund pays. It takes 1 hour with 2 and less with more (never under 10 min). When it is done, the guild becomes the camp's guild and every member gets the invitation."
     - "🏗️ Camp upgrades, once their materials are complete, are built over time: faster the more members are inside the territory. What was already built stays as it was."
+
+v0_36_1:
+  version: "0.36.1"
+  title: "📌 Lost Realms 0.36.1: coordenadas en todo lugar e invitar con /inv_"
+  title_en: "📌 Lost Realms 0.36.1: coordinates everywhere and inviting with /inv_"
+  notes:
+    - "📌 Cada lugar dice sus coordenadas (x, y): las rutas de 📍 Zona, el 🗺️ Mapa, 📒 Lugares y los avisos del viaje. El norte suma a la y y el este, a la x; el Claro es (0, 0)."
+    - "🧭 Para ir a una coordenada escribe /ir x y (por ejemplo, /ir 12 -3): se arma el camino en 🔗 Moverte, primero este-oeste y después norte-sur, y tocas ✅ Terminar."
+    - "🆔 Cada jugador tiene su código de jugador (lo ves en 👤 Héroe). El líder o un oficial de un gremio te invita escribiendo /inv_ y tu código, desde cualquier lugar. Con el campamento ya fundado, invita su fundador."
+    - "🛡️ El botón Gremio está en 🏕️ Campamento también donde todavía no hay campamento: crea o busca tu gremio desde cualquier lugar."
+  notes_en:
+    - "📌 Every place shows its coordinates (x, y): the routes in 📍 Zone, the 🗺️ Map, 📒 Places and the travel notices. North adds to y and east adds to x; the Clearing is (0, 0)."
+    - "🧭 To go to a coordinate type /go x y (for example, /go 12 -3): the way is laid out in 🔗 Move, first east-west, then north-south, and you tap ✅ Finish."
+    - "🆔 Every player has a player code (you see yours in 👤 Hero). A guild's leader or an officer invites you by typing /inv_ and your code, from anywhere. Once the camp is founded, its founder invites."
+    - "🛡️ The Guild button is in 🏕️ Camp also where there is no camp yet: create or find your guild from anywhere."

@@ -41,6 +41,7 @@ players:
   card_no_guild: "🛡️ Sin gremio"
   card_seen: "🕒 {ago}"
   card_here: "🔥 En la fogata"
+  card_code: "🆔 Código de jugador: {code} · para invitarlo: /inv_{code}"   # [ES] D-280 (0.36.1)
 
 gremio:
   title: "🛡️ Gremio"
@@ -80,7 +81,7 @@ gremio:
   cancel: "❌ Cancelar"
   bad_name: "Ese nombre no sirve: usa de 3 a 24 letras, números o espacios."
   name_taken: "Ya hay un gremio o un campamento con ese nombre. Prueba otro."
-  created: "🛡️ ¡Creaste el gremio {name}! Pagaste {coins}. Invita jugadores desde 👥 Jugadores o espera sus solicitudes."
+  created: "🛡️ ¡Creaste el gremio {name}! Pagaste {coins}. Invita con /inv_ y el código de jugador de cada uno (está en su 👤 Héroe), desde 👥 Jugadores, o espera sus solicitudes."
   list_title: "🔎 Buscar gremio"
   list_intro: "Gremios sin campamento todavía. Toca el código de uno para verlo y pedir entrar."
   list_query: "Gremios con \"{query}\":"
@@ -191,6 +192,15 @@ gremio:
   camp_joined_push: "✅ {name} entró al campamento {camp}."
   camp_full_push: "⚠️ {name} quiso entrar a {camp}, pero estaba lleno."
   camp_declined_push: "❌ {name} no entró al campamento {camp}."
+  # [ES] D-280 (0.36.1, pedido del dueño): invitar con "/inv_" y el código de jugador
+  code_line: "🆔 Tu código de jugador: {code}. Pásaselo al líder de un gremio para que te invite con /inv_{code}."
+  none_code: "🆔 Tu código de jugador es {code}: el líder de un gremio te invita con /inv_{code}."
+  invite_hint: "✉️ Para invitar a alguien, escribe /inv_ y su código de jugador (cada uno lo ve en 👤 Héroe). Por ejemplo: /inv_12345678."
+  code_unknown: "No hay ningún jugador con el código {code}. Revisa el número: está en 👤 Héroe de cada jugador."
+  code_self: "Ese es tu propio código: pásaselo a otro para que te invite."
+  code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador de su campamento."
+  cinv_title: "🏕️ Te invitan a un campamento"
+  cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
 
 works:
   title: "🏗️ Obras en curso:"
