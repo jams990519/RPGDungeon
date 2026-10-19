@@ -194,13 +194,13 @@ def test_origin_chain_advances_and_gives_its_title(service, clock):
     assert "Herencia del taller" in "\n".join(service.act("test:1", "hero").body)     # titles of the story on the sheet
 
 
-def test_level_locks_a_mission_and_says_so(service):
+def test_level_locks_a_mission_and_hides_it(service):
     make_hero(service)
     hero = hero_of(service)
     service._st(hero)["done"] += ["c1_m1", "c1_m2"]
     service._save(hero)
     story = service.act("test:1", "story")
-    assert any("🔒" in line and "nivel 2" in line for line in story.body)
+    assert not any("🔒" in line or "nivel 2" in line for line in story.body)     # D-287 (0.39): not for your level yet
     assert service._active_quests(hero_of(service)) == []
 
 

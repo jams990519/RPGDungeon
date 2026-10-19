@@ -343,8 +343,8 @@ def test_oficios_command_and_screen(service):
     body = "\n".join(view.body)
     assert "Minero · rango 3 (Aprendiz)" in body and "Herrería · rango 25 (Oficial)" in body
     assert "/minero" in body and "/herreria" in body                     # D-257: one short line each, with its code
-    assert "En rango 10: 💠 Gema en bruto" in "\n".join(service.text("test:1", "/minero").body)
-    assert "En rango 50" in "\n".join(service.text("test:1", "/herreria").body)
+    assert "En rango 10" not in "\n".join(service.text("test:1", "/minero").body)       # D-287 (0.39): no next-rank line
+    assert "En rango 50" not in "\n".join(service.text("test:1", "/herreria").body)
     set_hero(service, "test:1", x=4, y=0)
     view = service.act("test:1", "oficios")                            # anywhere: ranks yes, stations no
     # D-141: 🔨 Herrería is rank 25, so 🎓 Especialización shows up (it works anywhere: choosing is a menu, not a station)

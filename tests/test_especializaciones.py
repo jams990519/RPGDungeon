@@ -148,8 +148,9 @@ def test_rules_slots_choice_mastery_and_cost(content):
 def test_cannot_pick_before_rank_25_and_the_first_is_free_at_25(service):
     ready(service, gold=0)
     with_ranks(service, {"minero": 24})
-    view = service.act("test:1", "pspv:minero_gemas")
-    assert view.kind == "spec" and "pspp:minero_gemas" not in ids(view) and any("🔒" in line for line in view.body)
+    view = service.act("test:1", "pspv:minero_gemas")              # D-287 (0.39): an old button: back with a short reply
+    assert view.kind == "specs" and "pspp:minero_gemas" not in ids(view) and "🔒" in view.notice
+    assert not any("🔒" in line for line in view.body)
     view = service.act("test:1", "pspp:minero_gemas")
     assert "🔒" in view.notice and service._load("test:1").prof_specs == {}
     with_ranks(service, {"minero": 25}, gold=0)

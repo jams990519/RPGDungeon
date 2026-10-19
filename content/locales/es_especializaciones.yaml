@@ -242,12 +242,13 @@ spec:
   state_held: "🎓 {names}"
   state_free: "🎓 puedes elegir una"
   state_held_free: "🎓 {names} · puedes sumar otra"
-  none: "Ningún oficio llegó todavía al rango {rank}. Súbelo para elegir su especialización."
-  locked_list: "🔒 Desde el rango {rank}: {items}"
+  none: "Ningún oficio llegó todavía al rango {rank}. Súbelo para elegir su especialización."   # [ES] sin uso desde la 0.39 (D-287)
+  locked_list: "🔒 Desde el rango {rank}: {items}"   # [ES] sin uso desde la 0.39 (D-287)
+  none_yet: "🎓 Todavía no tienes especializaciones."   # [ES] D-287 (0.39): sin oficios en su rango, una línea neutra
   prof_title: "🎓 {name}"
   prof_intro: "{name} · rango {rank} ({title}) · especializaciones: {used}/{slots}"
-  next_first: "🔓 En rango {rank} eliges tu primera especialización."
-  next_second: "🔓 En rango {rank} puedes sumar una segunda."
+  next_first: "🔓 En rango {rank} eliges tu primera especialización."   # [ES] sin uso desde la 0.39 (D-287)
+  next_second: "🔓 En rango {rank} puedes sumar una segunda."   # [ES] sin uso desde la 0.39 (D-287)
   line_held: "✅ {name} · dominio {bar}"
   line_saved: "💾 {name} · dominio guardado: {pct} %"
   line_other: "▫️ {name}"
@@ -263,7 +264,7 @@ spec:
   exclusive_entry: "{mark} {item} · rango {rank} y {pct} % de dominio"
   exclusive_none: "📜 No tiene recetas propias: su fuerza está en el efecto."
   held_note: "✅ La tienes. Sigue con {prof} para dominarla."
-  locked_note: "🔒 Pide rango {rank} de {prof} (tienes {have})."
+  locked_note: "🔒 Pide rango {rank} de {prof} (tienes {have})."   # [ES] sin uso desde la 0.39 (D-287)
   pick_note: "Elegirla es gratis: es tu {n|primera|segunda} especialización de {prof}."
   switch_note: "Tus lugares están llenos: para tomarla, deja una ({cost}). Empiezas con {pct} % de dominio; lo de la que dejas queda guardado."
   pick_button: "🎓 Elegir {name}"

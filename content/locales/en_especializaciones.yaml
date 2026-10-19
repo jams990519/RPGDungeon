@@ -226,6 +226,7 @@ spec:
   state_held_free: 🎓 {names} · you can add another
   none: No profession has reached rank {rank} yet. Raise one to choose its specialization.
   locked_list: '🔒 From rank {rank}: {items}'
+  none_yet: "🎓 You have no specializations yet."
   prof_title: 🎓 {name}
   prof_intro: '{name} · rank {rank} ({title}) · specializations: {used}/{slots}'
   next_first: 🔓 At rank {rank} you choose your first specialization.

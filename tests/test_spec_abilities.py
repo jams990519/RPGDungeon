@@ -175,7 +175,7 @@ def test_callback_ids_fit_telegram(content):
     assert longest <= 64
 
 
-def test_spec_view_lists_eight_abilities_and_the_next_unlock(service):
+def test_spec_view_lists_only_the_open_abilities(service):
     make_hero(service, class_id="guerrero")
     data = service.store.get("hero", "test:1")
     data.update({"level": 12, "points": 11})
@@ -183,9 +183,9 @@ def test_spec_view_lists_eight_abilities_and_the_next_unlock(service):
     for _ in range(11):
         view = service.act("test:1", "pt:guerrero_furia")
     lines = [line for line in view.body if line.startswith(("🔓", "🔒"))]
-    assert len(lines) == 8 and sum(line.startswith("🔓") for line in lines) == 4
+    assert len(lines) == 4 and all(line.startswith("🔓") for line in lines)      # D-287 (0.39): the 4 closed are not listed
     next_name = service.texts.t("ability.reflejo_de_hechizos.name")   # display text (D-135 renamed it); the ID is stable
-    assert any("16" in line and next_name in line for line in view.body if line.startswith("Siguiente"))
+    assert next_name not in "\n".join(view.body) and not any(line.startswith("Siguiente") for line in view.body)
     assert not service.texts.missing
 
 

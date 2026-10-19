@@ -231,7 +231,7 @@ Si cambias esto, revisa:
       _item_view, _enchant, _disenchant; botones "ench", "ench:<pieza>", "enc:<pieza>", "dis:<pieza>", "dis!:<pieza>" en
       ENCHANT_ACTIONS). Números en balance.yaml enchanting; cuentas en engine/professions/rules.py; el bono entra al kit por
       engine/hero/gear.py gear_bonus (real_stats). No suma botón a ⚒️ Oficios (sus 4 lugares quedan para las estaciones):
-      ahí sale con su rango, su beneficio (prof.perk.disenchant) y el próximo umbral (_ench_next, _ench_unlocks en _prof_gain).
+      ahí sale con su rango y su beneficio (prof.perk.disenchant); _ench_unlocks avisa en _prof_gain lo que abre un rango nuevo.
       Desencantar nunca fabrica monedas (precios de esencia y esencia_mayor en items.yaml). Pruebas: tests/test_oficios_equipo.py
     - 🎓 Especializaciones de oficio (D-115, D-141): sección "profession specializations" (_pspecs_view con /especialidad y el
       botón 🎓 Especialización de ⚒️ Oficios, _pspec_prof_view, _pspec_view, _pspec_switch_view, _pspec_pick, _pspec_switch;
@@ -239,7 +239,7 @@ Si cambias esto, revisa:
       (y recetas con "spec"), números en balance.yaml specs, cuentas en engine/professions/rules.py (spec_*), textos en
       content/locales/es_especializaciones.yaml. Sus efectos entran por _pspec_bonus/_pspec_finds en _perks (perk), _merchant_sale
       (coins: goods, barter, gear), _trade_gather y _trade_loot (yield, find), _make y _recipe_view (yield, find, masterwork y la
-      receta exclusiva: _pspec_recipe_ok), _station_view, _next_unlock y _prof_gain (recetas exclusivas; _pspec_gain sube el
+      receta exclusiva: _pspec_recipe_ok), _station_view y _prof_gain (recetas exclusivas; _pspec_gain sube el
       dominio y avisa al rango 25 y 75), _enchant_plan y _ench_view (enchant), _infiltrate (detect) y _ecamp_destroyed (coins:
       ecamp). Ojo: _spec_view es la pantalla de la especialización de CLASE (talentos); la de oficio es _pspec_view.
       Pruebas: tests/test_especializaciones.py
@@ -338,7 +338,7 @@ Si cambias esto, revisa:
       (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
       un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (👹, líneas y 👹 Ir al más cercano),
       _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
-      (marca del jefe), _prof_gain (umbrales del mapa y el título), _next_unlock, _professions_view y _perk_text. El gancho
+      (marca del jefe), _prof_gain (umbrales del mapa y el título), _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
     - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
       engine/world/dungeons.py; textos dungeon.* en content/locales/es_mazmorras.yaml; tests/test_mazmorras.py. Tocan
@@ -385,7 +385,7 @@ Si cambias esto, revisa:
       _recon_view (✅ y lo que hay hoy en cada lugar reconocido), _zone_view (marca en la ruta). D-223 (0.30.2): el 🗺️ Mapa
       ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla hasta
       que el dueño responda E-207, _ecamp_intel_lines (chest=False),
-      _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
+      _explorer_what y _explorer_prof_lines (los umbrales 🔭 que ya abriste, en la pantalla del 🧭 Explorador)
     - 🛡️ Gremio desde el inicio, 👥 Jugadores y obras con tiempo (D-265, D-269, D-274; 0.36): engine/service/gremio.py
       (GremioMixin: su encabezado lista todo), balance.yaml gremio, works, bonfire.cap y presence.bonfire_seconds (y
       guild.levels[0].capacity 5), content/locales/es_gremio.yaml y en_gremio.yaml; tests/test_gremio_desde_el_inicio.py
@@ -407,6 +407,19 @@ Si cambias esto, revisa:
       COMMANDS /guia y /origen; _idle_action "guide". view() y tick() guardan al héroe DESPUÉS de armar la pantalla (un aviso
       que se mostró queda visto). El tutorial viejo (_tutorial, balance.yaml tutorial, tutorial.* de es.yaml) se quitó o queda
       solo para leer: si vuelve a usarse, los héroes nuevos tienen Hero.tutorial = 0
+    - 🙈 No se muestra lo que todavía no es de tu nivel (D-287, 0.39, pedido del dueño: "si hay algo que no está para tu
+      nivel, no lo vas a mostrar", en todo el juego y sin línea de "lo próximo"). Fuera de tu campamento y del gremio (que
+      tienen su propio cambio): 🧑‍🏫 _trainer_view (sin "🔒 Más adelante"; 🎓 solo con _pspec_any), _prof_detail_view (sin
+      "🔓 En rango N": se quitaron _next_unlock, _ench_next, _explorer_next y _recon_next), _explorer_prof_lines (solo los
+      umbrales abiertos), _station_view (sin la línea 🔒 de recetas de rango más alto ni la de oficios que faltan),
+      _recipe_view (una receta de rango más alto vuelve a la estación con el aviso corto), _ench_view y _enchant_view (sin
+      los encantamientos de rango más alto), _pspecs_view/_pspec_prof_view/_pspec_view (sin la lista 🔒, sin "🔓 En rango",
+      sin recetas exclusivas de rango más alto), _chain_talents_view/_chain_spec_view/_bar_view (sin el 🔒 segundo rol ni el
+      modo híbrido antes de su nivel), _spec_view (sin habilidades cerradas ni "Siguiente"), _ecamp_menu (sin 🕵️ Infiltrarse
+      ni su pista antes del rango), _places_view, _recon_view, _recon_map_lines y _ecamp_map_lines (sin "con rango N...") y,
+      en engine/service/story.py, el 📔 Diario y 🎯 Misiones (sin las misiones de nivel más alto; se avisan al llegar a su
+      nivel: _story_level_lines). Lo que el jugador pide a mano (un código o un botón viejo) recibe un aviso corto. Textos
+      que quedan sin uso: marcados "# [ES] sin uso desde la 0.39 (D-287)". Pruebas: tests/test_ocultar_lo_bloqueado.py
 """
 
 from __future__ import annotations
@@ -3111,15 +3124,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES] Qué hace: después de subir de nivel, en las clases nuevas el punto se pone solo en el rol activo (sync_chain) y al
         nivel chain.second_role_level avisa que ya puede jugar su segundo rol (D-230); en las viejas, el aviso de siempre.
+        D-287 (0.39, pedido del dueño): como lo de niveles más altos ya no se anuncia antes, aquí se avisa la misión de la
+        historia que se abre justo en este nivel ("📖 Nueva misión", _story_level_lines de engine/service/story.py).
         La llaman: _give_xp y _end_combat. Si cambia, afecta: el aviso de cada nivel.
         """
         if not is_chain_spec(self.content.classes, hero.class_id):
-            return [self.texts.t("talents.new_point")]
+            return [self.texts.t("talents.new_point")] + self._story_level_lines(hero)
         ensure_talents(self.content.classes, self.content.balance, hero)
         lines = [self.texts.t("chain.new_point")]
         if hero.level == int(self.content.balance["chain"]["second_role_level"]):
             lines.append(self.texts.t("chain.second_role_learned"))
-        return lines
+        return lines + self._story_level_lines(hero)
 
     def _pay_referral(self, hero: Hero) -> None:
         """When an invited hero reaches the reward level, the inviter gets bonus energy (once)."""
@@ -5636,10 +5651,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: el entrenador (D-191: "te presenta los oficios"). D-257 (0.33, pedido del dueño): corto. Cómo se aprende un
         oficio (una vez, pagando su primera receta; después sube haciendo recetas y cada rango abre recetas nuevas; la
-        🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango, abajo los que te faltan por aprender y
-        lo que llega más adelante (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento). Botones:
-        📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver (4). El ✨ Encantamiento ya no tiene botón aquí:
-        se aprende como los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
+        🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango y, abajo, los que te faltan por aprender.
+        Botones: 📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización (solo si ya puedes elegir una o tienes alguna,
+        _pspec_any, como en ⚒️ Oficios) y ↩️ Volver (4 como mucho). El ✨ Encantamiento ya no tiene botón aquí: se aprende como
+        los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel. Se quitó el bloque "🔒 Más adelante"
+        (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento): sus textos trainer.later_* quedan sin uso.
         Es un menú: se abre también ocupado y desde cualquier lugar (/entrenador). No cambia nada guardado.
         La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py y
         tests/test_aprender_oficios.py.
@@ -5654,16 +5671,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body.append(t.t("trainer.have", list=" · ".join(have)) if have else t.t("trainer.have_none"))
         body.append(t.t("trainer.missing", n=len(missing), list=" · ".join(self._prof_name(pid) for pid in missing))
                     if missing else t.t("trainer.missing_none"))
-        body += ["", t.t("trainer.later_title")]
-        camp = self.store.get("camp", hero.camp) if hero.camp else None
-        member = bool(camp) and hero.id in camp.get("members", [])
-        camp_only = [self._prof_name(pid) for pid in CAMP_ONLY_PROFESSIONS if pid in self._prof_catalog()]
-        if not member and camp_only:
-            body.append(t.t("trainer.later_camp", list=", ".join(camp_only)))
-        slots_at = self._pspec_slots_at() or [25, 75]
-        body.append(t.t("trainer.later_specs", first=slots_at[0], second=slots_at[-1]))
-        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button")),
-                   Action(id="pspecs", label=t.t("spec.button")), Action(id="claro", label=t.t("menu.back"))]
+        # D-287 (0.39, owner): nothing that is not for your level yet: no "🔒 Más adelante" block, no 🎓 button before rank 25.
+        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button"))]
+        if self._pspec_any(hero):
+            actions.append(Action(id="pspecs", label=t.t("spec.button")))
+        actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice)
 
     def _trainer_recommend_lines(self, hero: Hero) -> list[str]:
@@ -6192,8 +6204,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: la pantalla de un oficio, que se abre con su código. Si lo sabes: rango y barra, cómo sube, su beneficio
-        ahora, sus 🎓 especializaciones, lo que abre en el mapa (🧭) y lo que abre el próximo rango, con un botón a su estación
-        (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. Si no lo sabes: qué hace, su primera receta, lo que cuesta
+        ahora, sus 🎓 especializaciones y lo que ya abriste en el mapa (🧭), con un botón a su estación
+        (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
+        no es de tu nivel: ya no dice qué abre el próximo rango ("🔓 En rango N: ..."). Si no lo sabes: qué hace, su primera receta, lo que cuesta
         y 📚 Aprender (gratis si ya lo practicabas). La 🧭 exploración dice que sube sola (D-272: la recolección ya se aprende).
         La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
         (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
@@ -6218,9 +6231,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if pid in profession_rules.camp_perk_professions(catalog):
                 body.append(t.t("camp_prof.perk_note"))
             body += self._pspec_prof_lines(hero, pid) + self._explorer_prof_lines(hero, pid)
-            unlock = self._next_unlock(hero, pid)
-            if unlock:
-                body.append(unlock)
             stations, _ = self._stations_here(hero)
             branch = pdef.get("branch")
             if pid == COOK_PROFESSION and pid in stations:
@@ -6528,24 +6538,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         have = hero.professions.get(pid, 0) - low
         return f"{self._bar(have, max(1, high - low), 8)} {int(100 * have / max(1, high - low))} %"
 
-    def _next_unlock(self, hero: Hero, pid: str) -> str | None:
-        """🔓 What the next rank threshold of a profession opens: its rare find, or its next recipes."""
-        t = self.texts
-        if pid == self._explorer_cfg()["profession"]:      # D-112: the 🧭 Explorador opens map info, not recipes
-            return self._explorer_next(hero)
-        if pid == self._ench_cfg().get("profession"):      # D-115: ✨ Encantamiento opens enchantments, not recipes
-            return self._ench_next(hero)
-        rank = self._prof_rank(hero, pid)
-        rare = self._prof_catalog()[pid].get("rare")
-        if rare and rank < int(rare["min_rank"]):
-            return t.t("prof.next", rank=rare["min_rank"], items=self._item_label(rare["item"]))
-        later = [(int(rdef.get("min_rank", 1)), rid) for rid, rdef in self._recipes().items()
-                 if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) > rank and self._pspec_recipe_ok(hero, rdef)]   # D-141
-        if not later:
-            return None
-        need = min(r for r, _ in later)
-        return t.t("prof.next", rank=need, items=", ".join(self._recipe_name(rid) for r, rid in later if r == need))
-
     def _stations_line(self, where: str | None, stations: list[str]) -> str:
         t = self.texts
         if where == "claro":
@@ -6635,7 +6627,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las
         demás; dentro de cada grupo, las de rango más alto primero (D-110: cada línea tiene equipo hasta el nivel 100 y la
         más nueva es la que sirve). Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
-        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios. D-141: las recetas
+        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es
+        de tu nivel: las recetas de rango más alto no salen en ningún lado, ni la línea 🔒 que las anunciaba (prof.locked_hint) ni
+        la de "más recetas con los oficios que te faltan" (learn.more_branch); si hay oficios de esta rama por aprender, queda
+        el botón 📚 Aprender oficios. D-141: las recetas
         exclusivas de una 🎓 especialización solo aparecen (con 🎓 delante) para quien la tiene con el dominio que piden.
         D-192: branch "cook" es 🍲 Cocinar del 🏕️ Campamento: la estación de fabricar con solo las recetas de la 🍲 Cocina
         (COOK_PROFESSION), su título, ➡️ Ver más como "est:cook:<página>" y ↩️ Volver al centro de 🏕️ Campamento. Sin la
@@ -6711,12 +6706,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id=f"est:{'cook' if only else branch}:{page + 1}", label=t.t("prof.more")))
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
-        if known_here:
-            body.append(t.t("prof.locked_hint"))
-        if unknown:
-            body.append(t.t("learn.more_branch", list=", ".join(self._prof_name(pid) for pid in unknown)))
-            if len(actions) < 3:
-                actions.append(Action(id="learnlist", label=t.t("learn.button")))
+        if unknown and len(actions) < 3:                                  # D-287: the 📚 button, without the 🔒 lines
+            actions.append(Action(id="learnlist", label=t.t("learn.button")))
         actions.append(Action(id="claro" if only else "oficios", label=t.t("menu.back")))    # D-192: 🍲 Cocinar goes back to 🏕️
         title = t.t("hub.cook_title") if only else t.t(f"prof.station_title_{branch}")
         return View(kind="station", title=title, body=body, actions=actions[:4], notice=notice)
@@ -6733,6 +6724,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         alcance, professions.make_amounts, y "Todo" si alcanza para más), y ↩️ Volver ancho abajo (View.layout). Si falta
         algo, lo dice y no hay botón de hacer.
         D-192: ↩️ Volver de una receta de la 🍲 Cocina vuelve a 🍲 Cocinar ("est:cook").
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: una receta de rango más alto que el tuyo
+        (solo se llega con un botón viejo) no se abre: vuelve a su estación con el aviso corto prof.locked.
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar / 🍲 Cocinar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
         """
@@ -6744,6 +6737,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         branch = self._prof_catalog().get(pid, {}).get("branch", "craft")
         rank = self._prof_rank(hero, pid)
         need_rank = int(rdef.get("min_rank", 1))
+        if self._knows(hero, pid) and rank < need_rank:         # D-287: a recipe above your rank is not shown (an old button)
+            return self._station_view(hero, "cook" if pid == COOK_PROFESSION else branch, page,
+                                      notice=notice or t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         stations, where = self._stations_here(hero)
         body = [self._pspec_mark(rdef) + self._recipe_name(rid),
                 t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank)]
@@ -6782,8 +6778,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not self._knows(hero, pid):                          # D-257: learn the profession first
             body.append(t.t("learn.need", name=self._prof_name(pid)))
             actions.append(Action(id=f"pview:{pid}", label=t.t("learn.see_button", name=self._prof_name(pid))))
-        elif rank < need_rank:
-            body.append(t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         elif not self._pspec_recipe_ok(hero, rdef):              # D-141: only its 🎓 specialization, with enough mastery
             body.append(self._pspec_recipe_lock(hero, rdef))
         elif pid not in stations:
@@ -7009,15 +7003,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         opened = [self._ench_label(eid) for eid, edef in self._ench_defs().items() if before < int(edef.get("min_rank", 1)) <= after]
         return [self.texts.t("ench.unlocked", items=", ".join(opened))] if opened else []
 
-    def _ench_next(self, hero: Hero) -> str | None:
-        """🔓 The next ✨ Encantamiento rank that opens an enchantment (for ⚒️ Oficios), or None."""
-        rank = self._ench_rank(hero)
-        later = [(int(edef.get("min_rank", 1)), eid) for eid, edef in self._ench_defs().items() if int(edef.get("min_rank", 1)) > rank]
-        if not later:
-            return None
-        need = min(r for r, _ in later)
-        return self.texts.t("prof.next", rank=need, items=", ".join(self._ench_label(eid) for r, eid in later if r == need))
-
     def _ench_need_text(self, hero: Hero, cost: dict[str, int]) -> str:
         """"✅ ✨ Esencia arcana: 5/3 · ❌ 🔩 Lingote: 0/1" (what a ✨ action asks, with what you carry)."""
         t = self.texts
@@ -7087,8 +7072,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: explica el ✨ Encantamiento en una pantalla: tu rango (con su barra) y su beneficio, las esencias que llevas,
-        qué encantamiento lleva cada ranura y cuánto suma con tu rango (🔒 si todavía no llegas), qué pide encantar y qué da
-        desencantar, y lo que llevas encantado. Botones: 🛡️ Elegir pieza (🔁 Equipar) y ↩️ Volver a ⚒️ Oficios. No tiene
+        qué encantamiento lleva cada ranura y cuánto suma con tu rango, qué pide encantar y qué da desencantar, y lo que llevas
+        encantado. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: los encantamientos de rango
+        más alto que el tuyo no salen en la lista (antes, con " · 🔒 rango N": ench.lock queda sin uso). Botones: 🛡️ Elegir pieza (🔁 Equipar) y ↩️ Volver a ⚒️ Oficios. No tiene
         botón en ⚒️ Oficios (sus 4 lugares quedan para las estaciones): se llega con /encantar o desde una pieza.
         La llaman: el atajo /encantar.
         Si cambia, afecta: cómo entiende el jugador el oficio (tests/test_oficios_equipo.py).
@@ -7105,11 +7091,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body.append(t.t("ench.essences_line", items=self._item_list(essences)) if essences else t.t("ench.essences_none"))
         body += ["", t.t("ench.table_title")]
         for eid, edef in self._ench_defs().items():
+            if rank < int(edef.get("min_rank", 1)):                                                 # D-287: not for your rank yet
+                continue
             value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"],
                                                    self._pspec_bonus(hero, "enchant", enchant=eid))     # D-141: 🎓
-            lock = "" if rank >= int(edef.get("min_rank", 1)) else t.t("ench.lock", rank=edef.get("min_rank", 1))
             body.append(t.t("ench.table_line", name=self._ench_label(eid), slots=", ".join(t.t(f"gear.slot.{s}") for s in edef.get("slots", [])),
-                            stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=lock))
+                            stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=""))
         enc, dis = cfg.get("enchant") or {}, cfg.get("disenchant") or {}
         by_rarity = dis.get("by_rarity") or {}
         body += ["", t.t("ench.cost_rule", base=enc.get("essences", 3), per=enc.get("essences_per_levels", 10),
@@ -7127,8 +7114,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: la pantalla ✨ de una pieza (desde ✨ Encantamiento en la pieza): el encantamiento que tiene, el que le toca
-        por su ranura con tu rango (o 🔒 el rango que pide, o que ya tiene el mejor que puedes hacer), qué pide (✅/❌ con lo
-        que llevas) y la energía; si está en la mochila, cuánto da desencantarla (con tu beneficio); puesta, que hay que
+        por su ranura con tu rango (o que ya tiene el mejor que puedes hacer), qué pide (✅/❌ con lo que llevas) y la energía.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: si el de su ranura pide más rango, no se
+        ofrece nada (antes, "🔒 pide rango N"; ench.locked queda solo para el aviso de _enchant si se toca un botón viejo); si está en la mochila, cuánto da desencantarla (con tu beneficio); puesta, que hay que
         quitársela primero. Botones: ✨ Encantar (si se puede), 💨 Desencantar (solo de la mochila) y ↩️ Volver a la pieza: 3.
         La llaman: el botón ✨ Encantamiento de _item_view, y _enchant / _disenchant al terminar.
         Si cambia, afecta: tests/test_oficios_equipo.py.
@@ -7152,8 +7140,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("ench.no_slot"))
         else:
             name, stats = self._ench_label(plan["eid"]), self._gear_stats_text({plan["edef"]["stat"]: plan["value"]})
-            if problem == "rank":
-                body.append(t.t("ench.locked", name=name, need=plan["edef"].get("min_rank", 1), rank=rank))
+            if problem == "rank":                                   # D-287: not for your rank yet: nothing offered, no 🔒 line
+                pass
             elif problem == "not_better":
                 body.append(t.t("ench.offer_best"))
             else:
@@ -7507,8 +7495,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """🌟 Talentos of a 0.31 chain hero: its two roles, the active one, points that place themselves, the second role.
 
         [ES]
-        Qué hace: muestra los 2 roles de la clase (⭐ el activo; 🔒 el segundo hasta el nivel chain.second_role_level), los
-        puntos de nivel (van solos al rol activo) y el modo híbrido que espera la decisión del dueño (pendiente 3).
+        Qué hace: muestra los roles de la clase (⭐ el activo), los puntos de nivel (van solos al rol activo) y el modo híbrido
+        que espera la decisión del dueño (pendiente 3).
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del nivel chain.second_role_level
+        solo sale tu rol activo (sin el segundo con 🔒 ni "se aprende al nivel N": chain.second_role_locked queda para el
+        aviso corto de un botón viejo), y el modo híbrido sale solo desde su nivel (chain.hybrid.level).
         La llama: _talents_view. Si cambia, afecta: la pantalla de talentos de las clases nuevas.
         """
         t = self.texts
@@ -7516,15 +7507,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         body = [t.t("chain.active_role", name=self._hero_title(hero)), t.t("chain.points_auto", n=max(0, hero.level - 1)), ""]
         actions = []
+        second = second_role_open(bal, hero)
         for spec in specs_of(self.content.classes, group):
+            if spec != hero.class_id and not second:                    # D-287: the second role, only from its level
+                continue
             sdef = self.content.classes[spec]
             role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
-            mark = " ⭐" if spec == hero.class_id else ("" if second_role_open(bal, hero) else " 🔒")
+            mark = " ⭐" if spec == hero.class_id else ""
             body.append(f"• {t.t(sdef['name_key'])} — {role}: {t.t(sdef['role_key'])}{mark}")
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
-        body += ["", t.t("chain.second_role_open") if second_role_open(bal, hero)
-                 else t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]),
-                 t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        if second:
+            body += ["", t.t("chain.second_role_open")]
+        if hero.level >= int(bal["chain"]["hybrid"]["level"]):             # D-287: the hybrid mode, only from its level
+            body += ["", t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
         actions.append(Action(id="chcls", label=t.t("chclass.button")))     # D-270: 🔄 Cambiar de clase
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
@@ -7556,9 +7551,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                           for link in chain_rules.order(sdef, self.content.balance))
 
     def _chain_spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
-        """One role of a chain class: its 4 buttons, its chain, and the button to play it (from level 5, D-230)."""
+        """One role of a chain class: its 4 buttons, its chain, and the button to play it (from level 5, D-230).
+
+        [ES]
+        Qué hace: la pantalla de un rol: sus 4 botones, su cadena y, si no es el activo, 🔄 Jugar como ese rol.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: el segundo rol antes de su nivel
+        (solo con un botón viejo) vuelve a 🌟 Talentos con el aviso corto chain.second_role_locked.
+        La llama: _spec_view. Si cambia, afecta: la pantalla de un rol de las clases nuevas.
+        """
         t = self.texts
         bal = self.content.balance
+        if spec != hero.class_id and not second_role_open(bal, hero):     # D-287: an old button of the second role
+            return self._chain_talents_view(hero, notice=notice or t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]))
         sdef = self.content.classes[spec]
         role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=role), t.t(sdef["role_key"]), "",
@@ -7568,20 +7572,26 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions = []
         if spec == hero.class_id:
             body += ["", t.t("chain.active_role", name=t.t(sdef["name_key"])), t.t("chain.points_auto", n=max(0, hero.level - 1))]
-        elif second_role_open(bal, hero):
-            actions.append(Action(id=f"role:{spec}", label=t.t("chain.switch_button", role=role)))
         else:
-            body += ["", t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"])]
+            actions.append(Action(id=f"role:{spec}", label=t.t("chain.switch_button", role=role)))
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
     def _bar_view(self, hero: Hero, notice: str | None = None) -> View:
-        """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability."""
+        """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability.
+
+        [ES]
+        Qué hace: la 🎛️ Barra de combate. En las clases nuevas (0.31) los 4 botones son fijos y solo se listan; en las viejas,
+        las 3 casillas con un botón para cambiar cada una. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de
+        tu nivel: antes del nivel del modo híbrido dice solo que los botones son fijos (chain.bar_fixed_now), sin anunciarlo.
+        La llaman: 🎛️ Barra de combate de los talentos. Si cambia, afecta: tests/test_cadena.py y tests/test_talents.py.
+        """
         t = self.texts
         if is_chain_spec(self.content.classes, hero.class_id):     # 0.31: the 4 buttons are fixed (the hybrid mode will open them)
             sdef = self.content.classes[hero.class_id]
             body = [t.t("chain.spec_buttons")] + self._chain_button_lines(sdef)
-            body += ["", t.t("chain.bar_fixed", n=self.content.balance["chain"]["hybrid"]["level"])]
+            hybrid = int(self.content.balance["chain"]["hybrid"]["level"])
+            body += ["", t.t("chain.bar_fixed", n=hybrid) if hero.level >= hybrid else t.t("chain.bar_fixed_now")]   # D-287
             return View(kind="bar", title=t.t("bar.title"), body=body, actions=[Action(id="talents", label=t.t("menu.back"))],
                         notice=notice)
         abilities = self._class_abilities(hero)
@@ -7742,7 +7752,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: dice si el héroe puede ver y hacer una receta por su especialización: las normales siempre; las exclusivas
         (spec: <id>) solo si tiene esa 🎓 especialización con balance.yaml specs.recipe_mastery de dominio (25 %). El rango lo
         miran aparte quienes llaman.
-        La llaman: _prof_gain, _next_unlock, _station_view, _recipe_view, _make y _spec_view.
+        La llaman: _prof_gain, _station_view, _recipe_view, _make y _spec_view.
         Si cambia, afecta: quién hace las piezas exclusivas.
         """
         sid = rdef.get("spec")
@@ -7885,9 +7895,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: explica las especializaciones (una al rango 25, otra al 75, nunca las tres; el dominio; cambiar cuesta y
-        empieza de cero) y lista los oficios que ya llegaron al 25, con las que tienes o "puedes elegir"; después, los oficios
-        empezados que todavía no llegan. Un botón por oficio (de a 2 por página si son más de 3, ➡️ Ver más) y ↩️ Volver a
-        ⚒️ Oficios: 4 como mucho (D-75).
+        empieza de cero) y lista los oficios que ya llegaron al 25, con las que tienes o "puedes elegir". Un botón por oficio
+        (de a 2 por página si son más de 3, ➡️ Ver más) y ↩️ Volver a ⚒️ Oficios: 4 como mucho (D-75).
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: ya no lista los oficios que todavía no
+        llegan ("🔒 Desde el rango 25: ...", spec.locked_list) y, si ningún oficio llegó (solo con /especialidad: el botón 🎓 ya
+        no sale antes, _pspec_any), dice una sola línea neutra (spec.none_yet) en vez de la explicación y "súbelo al rango 25".
         La llaman: 🎓 Especialización de ⚒️ Oficios, /especialidad y ↩️ Volver de un oficio.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7896,8 +7908,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         first, second = slots_at[0], slots_at[-1]
         specs = self._pspec_catalog()
         catalog = self._prof_catalog()
-        body = [t.t("spec.intro", first=first, second=second), t.t("spec.mastery_rule", full=self._pspec_mastery_xp()), ""]
         ready = [pid for pid in catalog if profession_rules.spec_list(specs, pid) and self._prof_rank(hero, pid) >= first]
+        if not ready:                                   # D-287: one neutral line, nothing about the ranks still to come
+            return View(kind="specs", title=t.t("spec.title"), body=[t.t("spec.none_yet")],
+                        actions=[Action(id="oficios", label=t.t("menu.back"))], notice=notice)
+        body = [t.t("spec.intro", first=first, second=second), t.t("spec.mastery_rule", full=self._pspec_mastery_xp()), ""]
         for pid in ready:
             held = self._pspec_held(hero, pid)
             free = len(held) < profession_rules.spec_slots(self._prof_rank(hero, pid), slots_at)
@@ -7905,12 +7920,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             state = (t.t("spec.state_held_free", names=names) if held and free else t.t("spec.state_held", names=names) if held
                      else t.t("spec.state_free"))
             body.append(t.t("spec.hub_line", name=self._prof_name(pid), rank=self._prof_rank(hero, pid), state=state))
-        if not ready:
-            body.append(t.t("spec.none", rank=first))
-        later = [self._prof_name(pid) for pid in catalog if profession_rules.spec_list(specs, pid)
-                 and hero.professions.get(pid, 0) > 0 and self._prof_rank(hero, pid) < first]
-        if later:
-            body += ["", t.t("spec.locked_list", rank=first, items=", ".join(later))]
         per = int(self._pspec_cfg().get("per_page", 2))
         pages = 1 if len(ready) <= 3 else (len(ready) + per - 1) // per
         page %= pages
@@ -7927,9 +7936,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         exclusive recipes. A button per specialization and ↩️ Volver (4).
 
         [ES]
-        Qué hace: la pantalla de las especializaciones de un oficio: tu rango, cuántos lugares tienes (0 antes del 25, 1 hasta el
-        74, 2 desde el 75), cada especialización con su efecto completo, si la tienes (✅ con su dominio), si la tuviste (💾 dominio
-        guardado) y sus recetas exclusivas. Un botón por especialización (abre su detalle) y ↩️ Volver a 🎓 Especialización.
+        Qué hace: la pantalla de las especializaciones de un oficio: tu rango, cuántos lugares tienes (1 hasta el 74, 2 desde el
+        75), cada especialización con su efecto completo, si la tienes (✅ con su dominio), si la tuviste (💾 dominio guardado) y
+        sus recetas exclusivas de tu rango. Un botón por especialización (abre su detalle) y ↩️ Volver a 🎓 Especialización.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: sin "🔓 En rango N..." (spec.next_first,
+        spec.next_second), sin las recetas exclusivas de rango más alto, y un oficio que todavía no llega al 25 (solo con un
+        botón viejo) vuelve a 🎓 Especialización con el aviso corto spec.err_locked.
         La llaman: los botones de oficio de 🎓 Especialización, y elegir o cambiar al terminar.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7941,10 +7953,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         rank = self._prof_rank(hero, pid)
         held = self._pspec_held(hero, pid)
         slots = profession_rules.spec_slots(rank, slots_at)
-        body = [t.t("spec.prof_intro", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), used=len(held), slots=slots)]
-        if slots < len(slots_at):
-            body.append(t.t("spec.next_first" if slots == 0 else "spec.next_second", rank=slots_at[slots]))
-        body.append("")
+        if slots <= 0 and not held:                     # D-287: not for your rank yet (an old button)
+            return self._pspecs_view(hero, notice=notice or t.t("spec.err_locked", rank=(slots_at or [25])[0], prof=self._prof_name(pid)))
+        body = [t.t("spec.prof_intro", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), used=len(held), slots=slots),
+                ""]
         for sdef in specs:
             sid = sdef["id"]
             if sid in held:
@@ -7954,7 +7966,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             else:
                 body.append(t.t("spec.line_other", name=self._pspec_name(sid)))
             body.append(t.t("spec.effect_line", effect=self._pspec_effect_text(sdef, 1.0)))
-            exclusive = self._pspec_exclusives(sid)
+            exclusive = [rid for rid in self._pspec_exclusives(sid)                          # D-287: only those of your rank
+                         if int(self._recipes()[rid].get("min_rank", 1)) <= rank]
             if exclusive:
                 body.append(t.t("spec.exclusive_line", items=", ".join(self._recipe_name(rid) for rid in exclusive)))
         actions = [Action(id=f"pspv:{sdef['id']}", label=(t.t("spec.held_mark") if sdef["id"] in held else "") + self._pspec_name(sdef["id"]))
@@ -7967,9 +7980,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: el detalle de una especialización: de qué oficio es, qué hace, tu dominio (barra), su efecto ahora y con todo el
-        dominio, sus recetas exclusivas (✅ abierta o 🔒 con el rango y el dominio que piden) y qué puedes hacer: nada si ya la
-        tienes; 🔒 si tu rango no abre lugar; 🎓 Elegir si tienes un lugar libre (gratis); o 🔄 Dejar <otra> (cuesta monedas, una por
-        cada una que tienes, y pide confirmación). Botones: 3 como mucho más ↩️ Volver al oficio.
+        dominio, sus recetas exclusivas de tu rango (✅ abierta o 🔒 con el dominio que piden) y qué puedes hacer: nada si ya la
+        tienes; 🎓 Elegir si tienes un lugar libre (gratis); o 🔄 Dejar <otra> (cuesta monedas, una por cada una que tienes, y
+        pide confirmación). Botones: 3 como mucho más ↩️ Volver al oficio.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: las recetas exclusivas de rango más alto
+        no salen (si todas lo son, no sale la sección), y si tu rango no abre lugar (solo con un botón viejo) vuelve a
+        🎓 Especialización con el aviso corto spec.err_locked (spec.locked_note queda sin uso).
         La llaman: los botones de especialización de la pantalla del oficio, y _pspec_switch_view al cancelar.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7978,13 +7994,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not sdef or pid not in self._prof_catalog():
             return self._pspecs_view(hero, notice=notice)
         rank = self._prof_rank(hero, pid)
+        choice = self._pspec_choice(hero, pid, sid)
+        if choice == "locked":                          # D-287: not for your rank yet (an old button)
+            return self._pspecs_view(hero, notice=notice or t.t("spec.err_locked", rank=(self._pspec_slots_at() or [25])[0],
+                                                                 prof=self._prof_name(pid)))
         share = self._pspec_share(hero, sid)
         held = self._pspec_held(hero, pid)
         body = [self._pspec_name(sid), t.t("spec.of_prof", prof=self._prof_name(pid), rank=rank, title=self._rank_title(rank)),
                 t.t(f"spec.{sid}.desc"), "", t.t("spec.mastery_line", bar=self._pspec_bar(hero, sid)),
                 t.t("spec.effect_now", effect=self._pspec_effect_text(sdef, share)),
                 t.t("spec.effect_full", effect=self._pspec_effect_text(sdef, 1.0)), ""]
-        exclusive = self._pspec_exclusives(sid)
+        every = self._pspec_exclusives(sid)
+        exclusive = [rid for rid in every if int(self._recipes()[rid].get("min_rank", 1)) <= rank]     # D-287: of your rank
         need = int(100 * float(self._pspec_cfg().get("recipe_mastery", 0.0)) + 1e-9)
         if exclusive:
             body.append(t.t("spec.exclusive_title"))
@@ -7993,15 +8014,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 ok = self._pspec_recipe_ok(hero, rdef) and rank >= int(rdef.get("min_rank", 1))
                 body.append(t.t("spec.exclusive_entry", mark="✅" if ok else "🔒", item=self._recipe_name(rid),
                                 rank=rdef.get("min_rank", 1), pct=need))
-        else:
+        elif not every:
             body.append(t.t("spec.exclusive_none"))
-        body.append("")
-        choice = self._pspec_choice(hero, pid, sid)
+        if exclusive or not every:
+            body.append("")
         actions = []
         if choice == "held":
             body.append(t.t("spec.held_note", prof=self._prof_name(pid)))
-        elif choice == "locked":
-            body.append(t.t("spec.locked_note", rank=(self._pspec_slots_at() or [25])[0], prof=self._prof_name(pid), have=rank))
         elif choice == "pick":
             body.append(t.t("spec.pick_note", n=len(held) + 1, prof=self._prof_name(pid)))
             actions.append(Action(id=f"pspp:{sid}", label=t.t("spec.pick_button", name=t.t(f"spec.{sid}.name"))))
@@ -8129,6 +8148,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._dual_view(hero, notice=t.t("dual.switched", n=hero.profile))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
+        """One specialization of the hero's class: its abilities already open, its points and its buttons (old system, D-79).
+
+        [ES]
+        Qué hace: la pantalla de una especialización de CLASE (talentos; la de oficio es _pspec_view). En las clases nuevas
+        (0.31) pasa a _chain_spec_view. En las viejas: sus puntos, las habilidades que ya abriste (🔓) y los botones
+        ➕ Poner punto, 🔄 Reiniciar, 🎛️ Barra y ↩️ Volver. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es
+        de tu nivel: las habilidades que todavía no abriste no salen (talents.ability_locked) ni la línea "Siguiente: ... con N
+        puntos" (talents.next_unlock); con las 8 abiertas sale talents.all_unlocked.
+        La llaman: los botones "tal:<especialización>", "role:" y "pt:" de 🌟 Talentos. Si cambia, afecta:
+        tests/test_spec_abilities.py.
+        """
         t = self.texts
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         if spec not in specs_of(self.content.classes, group):
@@ -8139,23 +8169,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         pts = hero.talents.get(spec, 0)
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque"))),
                 t.t(sdef["role_key"]), t.t("talents.spec_points", n=pts, free=hero.points), ""]
-        following = None
-        for index, need in enumerate(unlock_points(self.content.balance)):
+        closed = False
+        for index, _need in enumerate(unlock_points(self.content.balance)):
             if index >= len(sdef["abilities"]):
                 break
             ability = sdef["abilities"][index]
+            if ability["id"] not in hero.unlocked:          # D-287: an ability you do not have yet is not listed
+                closed = True
+                continue
             label, effect = self._ability_label(ability, sdef["resource"]), self._ability_effect(ability, sdef["resource"])
-            if ability["id"] in hero.unlocked:
-                body.append(t.t("talents.ability_open", ability=label, effect=effect))
-            else:
-                body.append(t.t("talents.ability_locked", need=need, ability=label, effect=effect))
-                if following is None:
-                    following = (ability, need)
+            body.append(t.t("talents.ability_open", ability=label, effect=effect))
         body += ["", t.t("talents.legend")]
-        if following:
-            body.append(t.t("talents.next_unlock", name=t.t(f"ability.{following[0]['id']}.name"), need=following[1],
-                            left=max(0, following[1] - pts)))
-        else:
+        if not closed:
             body.append(t.t("talents.all_unlocked"))
         actions = []
         if hero.points > 0:
@@ -8209,8 +8234,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         (/ir1, /ir2...); los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar
         (_place_confirm_view) y, al confirmar, el héroe va solo, zona por zona ("goto:"). Guarda el orden mostrado (espacio
         "places_shown") para que el código /irN sea el que viste. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más
-        cercanos; desde el rango 10, hasta explorer.places_listed. Historia: hasta la 0.30.1 listaba cualquier zona que
-        recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó solo los lugares importantes.
+        cercanos; desde el rango 10, hasta explorer.places_listed. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
+        no es de tu nivel: ya no dice "con rango 10 de Explorador, 📒 Lugares lista hasta 8" (explorer.places_hint queda sin uso).
+        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó
+        solo los lugares importantes.
         La llaman: el botón 📒 Lugares del 🗺️ Mapa (también al rechazar un viaje).
         Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py y el paso
         "return" del 🧭 camino guiado (D-193: su texto manda a 📒 Lugares → El Claro).
@@ -8230,8 +8257,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.none"))
         elif len(places) > len(listed):
             body.append(t.t("places.more", n=len(places) - len(listed)))
-        if count == 3 and sum(1 for p in places if not mapgen.is_bonfire(p[1], p[2])) > 3:     # the bonfires do not count
-            body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
         body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
         actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
                    for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
@@ -9433,27 +9458,21 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return lines
 
     def _explorer_prof_lines(self, hero: Hero, pid: str) -> list[str]:
-        """⚒️ Oficios, 🧭 Explorador only: what every rank threshold opens on the map, ✅ the ones already open."""
+        """/explorador, 🧭 Explorador only: what the rank thresholds you already reached open on the map (✅ each).
+
+        [ES]
+        Qué hace: en la pantalla del 🧭 Explorador, una línea con lo que ya abriste en el mapa (✅ 10 ⏱️ tiempos · ✅ 25 👹 a 3
+        zonas...). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: los umbrales que no
+        alcanzaste no salen, y sin ninguno no hay línea. La llama: _prof_detail_view. Si cambia, afecta: solo esa pantalla.
+        """
         cfg = self._explorer_cfg()
         if pid != cfg["profession"]:
             return []
         t = self.texts
         rank = self._explorer_rank(hero)
-        parts = [("✅" if rank >= int(need) else "") + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"],
-                                                            zones=self._recon_range_of(key))     # D-172: 🔭 reach
-                 for key, need in cfg["ranks"].items()]
-        return [t.t("explorer.ranks_line", items=" · ".join(parts))]
-
-    def _explorer_next(self, hero: Hero) -> str | None:
-        """🔓 The next 🧭 Explorador threshold and everything it opens (None at the top). D-172: 10, 30 and 50 open two things."""
-        rank = self._explorer_rank(hero)
-        ranks = self._explorer_cfg()["ranks"]
-        later = [int(need) for need in ranks.values() if int(need) > rank]
-        if not later:
-            return None
-        need = min(later)
-        keys = [key for key, value in ranks.items() if int(value) == need]
-        return self.texts.t("prof.next", rank=need, items=" · ".join(self._explorer_what(key) for key in keys))
+        parts = ["✅" + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"], zones=self._recon_range_of(key))   # D-172: 🔭
+                 for key, need in cfg["ranks"].items() if rank >= int(need)]
+        return [t.t("explorer.ranks_line", items=" · ".join(parts))] if parts else []
 
     def _trip_seconds(self, hero: Hero, x: int, y: int) -> float:
         """Estimated travel time from the hero to a zone, leg by leg (the path 📒 Lugares follows)."""
@@ -9606,9 +9625,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: el menú de 🧭 Explorar cuando en tu zona hay un 👹 campamento enemigo en pie (D-112): explorar y
         recolectar no se pueden (los enemigos no te dejan), así que sus lugares los toman ⚔️ Asaltar (cada pelea cuesta
-        enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30;
-        con menos, el botón dice el rango que pide). Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o
-        tu rango de Explorador es 75 o más, quiénes quedan, el jefe y el cofre. 4 botones.
+        enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30).
+        Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o tu rango de Explorador es 75 o más, quiénes quedan,
+        el jefe y el cofre. 4 botones como mucho.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: con menos rango no sale el botón
+        🕵️ Infiltrarse (antes "🕵️ Infiltrarse (rango 30)": ecamp.infiltrate_locked_button queda sin uso) ni la pista de que un
+        Explorador de rango 30 sabría más (ecamp.intel_hint sale solo si ya puedes infiltrarte).
         La llama: _explore_menu. Si cambia, afecta: tests/test_enemy_camps.py y el tope de 4 botones.
         """
         t = self.texts
@@ -9617,18 +9639,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         need = int(self._explorer_cfg()["ranks"]["infiltrate"])
         body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("ecamp.here", level=camp["level"])]
         body.append(t.t("ecamp.progress", n=camp["beaten"]) if camp["beaten"] else t.t("ecamp.untouched"))
+        can_infiltrate = self._explorer_rank(hero) >= need
         if self._ecamp_intel(hero, camp):
             body += self._ecamp_intel_lines(camp)
-        else:
+        elif can_infiltrate:                            # D-287: the hint only when you can infiltrate already
             body.append(t.t("ecamp.intel_hint", rank=need))
         body += [t.t("ecamp.how", energy=cfg["fight_energy"])] + self._recon_hint_lines(hero) + [self._status_line(hero)]   # D-172
         body += self._tutorial_hint(hero)
-        infiltrate = (t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"]) if self._explorer_rank(hero) >= need
-                      else t.t("ecamp.infiltrate_locked_button", rank=need))
-        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=cfg["fight_energy"])),
-                   Action(id="infiltrate", label=infiltrate),
-                   Action(id="hunt", label=t.t("hunt.button")),
-                   Action(id="map", label=t.t("menu.map"))]
+        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=cfg["fight_energy"]))]
+        if can_infiltrate:                              # D-287: no locked 🕵️ button before the rank
+            actions.append(Action(id="infiltrate", label=t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"])))
+        actions += [Action(id="hunt", label=t.t("hunt.button")), Action(id="map", label=t.t("menu.map"))]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
     def _ecamp_fight(self, hero: Hero, camp: dict[str, Any], how: str) -> str:
@@ -9686,7 +9707,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         10 % al 100): entonces empieza una pelea, a mano, con el siguiente de la guarnición (cuenta como un asalto). Si sale
         bien: quedas anotado para hoy ("scouted": ves su fuerza en 🧭 Explorar y en el mapa), ves quiénes quedan, el jefe y
         el cofre, y ganas un poco de exploración de esa zona y experiencia de Explorador. Una vez por campamento y día.
-        Se rechaza sin cobrar sin campamento, con menos rango, ya infiltrado hoy, malherido o sin energía. D-141: la
+        Se rechaza sin cobrar sin campamento, con menos rango (D-287: el botón ya no sale antes del rango; si llega uno viejo
+        o se escribe, el aviso corto ecamp.infiltrate_locked), ya infiltrado hoy, malherido o sin energía. D-141: la
         🎓 especialización 🕵️ Infiltrado baja la probabilidad de que te descubran (sin bajar de detect_min).
         La llama: el botón 🕵️ Infiltrarse. Si cambia, afecta: tests/test_enemy_camps.py.
         """
@@ -9843,7 +9865,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
         """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75 or after 🔭 scouting it
         today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: dice hasta dónde ves
+        (ecamp.map_sight), sin "con rango N de Explorador, más lejos" (ecamp.map_sight_next queda sin uso)."""
         t = self.texts
         cfg = self._explorer_cfg()
         travel = self._explorer_has(hero, "travel")
@@ -9862,10 +9886,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 lines.append(text)
             if len(seen) > int(cfg["map_lines"]):
                 lines.append(t.t("ecamp.map_more", n=len(seen) - int(cfg["map_lines"])))
-        rank = self._explorer_rank(hero)
-        later = [int(cfg["ranks"][k]) for k in ("camps_near", "camps_all") if int(cfg["ranks"][k]) > rank]
-        sight = self._ecamp_sight(hero)
-        lines.append(t.t("ecamp.map_sight_next", n=sight, rank=later[0]) if later else t.t("ecamp.map_sight_all"))
+        all_map = self._explorer_has(hero, "camps_all")
+        lines.append(t.t("ecamp.map_sight_all") if all_map else t.t("ecamp.map_sight", n=self._ecamp_sight(hero)))    # D-287
         if travel:
             guardian = self._guardian_cfg()
             if guardian and self._discovered(guardian["x"], guardian["y"]) is not None \
@@ -10778,25 +10800,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                            family=self._dng_family_label(info["family"]), boss=self._dng_enemy(info["boss"]))
         return t.t("recon.line", mark=self._recon_mark(hero, x, y, what), x=x, y=y, zones=zones)
 
-    def _recon_next(self, hero: Hero) -> str | None:
-        """🔓 The next 🔭 reach: "Con rango 30 de 🧭 Explorador, hasta 2 zonas" (None at the widest)."""
-        rank = self._explorer_rank(hero)
-        ranks = self._explorer_cfg()["ranks"]
-        later = sorted((int(ranks[key]), int(zones)) for key, zones in self._recon_cfg()["range"].items() if int(ranks[key]) > rank)
-        return self.texts.t("recon.next", rank=later[0][0], n=later[0][1]) if later else None
-
     def _recon_hint_lines(self, hero: Hero) -> list[str]:
         """🧭 Explorar: "🔭 2 lugares para reconocer de lejos: /reconocer", only when there is something to scout today."""
         pending = self._recon_pending(hero)
         return [self.texts.t("recon.hint", n=len(pending))] if pending else []
 
     def _recon_map_lines(self, hero: Hero, marks: bool, pending: list[tuple[int, int, str]]) -> list[str]:
-        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer), or from which 🧭 rank (only if the map marks something).
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer); nothing before the 🧭 rank that opens it.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del rango del 🔭 no dice
+        nada (recon.map_locked queda sin uso)."""
         t = self.texts
         radius = self._recon_range(hero)
-        if radius <= 0:
-            return [t.t("recon.map_locked", rank=self._explorer_cfg()["ranks"]["recon"])] if marks else []
+        if radius <= 0:                                 # D-287: nothing about the rank still to come
+            return []
         if pending:
             return [t.t("recon.map_line", n=len(pending), zones=radius)]
         return [t.t("recon.map_line_none", zones=radius)] if marks else []
@@ -10808,8 +10825,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: la pantalla del reconocimiento de lejos (D-172). Dice cómo funciona (recon.energy ⚡ cada uno, experiencia de
         🧭 Explorador y unas monedas; uno por lugar y día), hasta dónde llegas, y lista hasta recon.listed lugares a tu alcance
         (los 👹 y las 🕳️ / 🌀 de tu mapa), con ✅ y lo que hay hoy en los que ya reconociste. Botones: hasta 3 lugares sin
-        reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Antes del rango 10 dice qué rango pide. Es un menú: se abre aunque
-        estés explorando, recolectando o viajando (no en combate).
+        reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Es un menú: se abre aunque estés explorando, recolectando o
+        viajando (no en combate). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: ya no dice
+        hasta dónde llegarás con más rango (recon.next; se quitó _recon_next), y antes del rango 10 (solo si se escribe
+        /reconocer: no hay botón) responde solo con el aviso corto recon.locked.
         La llaman: "recon" (/reconocer, el botón 🔭 del mapa, 🔭 Reconocer otro) y lo que _recon rechaza.
         Si cambia, afecta: tests/test_reconocimiento.py y el tope de 4 botones.
         """
@@ -10818,9 +10837,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body = [t.t("recon.intro", energy=rcfg["energy"])]
         radius = self._recon_range(hero)
         actions: list[Action] = []
-        if radius <= 0:
-            body += [t.t("recon.locked", rank=self._explorer_cfg()["ranks"]["recon"], have=self._explorer_rank(hero)),
-                     "", self._status_line(hero)]
+        if radius <= 0:                                 # D-287: typed before the rank: the short reply only
+            body = [t.t("recon.locked", rank=self._explorer_cfg()["ranks"]["recon"], have=self._explorer_rank(hero))]
             return View(kind="recon", title=t.t("recon.title"), body=body,
                         actions=[Action(id="map", label=t.t("menu.back"))], notice=notice)
         body.append(t.t("recon.reach", n=radius))
@@ -10832,9 +10850,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("recon.more", n=len(targets) - listed))
         if not targets:
             body.append(t.t("recon.none"))
-        nxt = self._recon_next(hero)
-        if nxt:
-            body.append(nxt)
         body += ["", self._status_line(hero)]
         for x, y, what in [target for target in targets if f"{target[0]}:{target[1]}" not in done][:3]:
             actions.append(Action(id=f"rcn:{x}:{y}", label=t.t("recon.button", mark=self._recon_mark(hero, x, y, what), x=x, y=y,

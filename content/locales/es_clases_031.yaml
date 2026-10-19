@@ -220,3 +220,4 @@ chain:
   active_role: "⭐ Rol activo: {name}"
   hybrid_soon: "🧪 Modo híbrido (nivel {n}): llega cuando se decida cuántas habilidades se mezclan."
   bar_fixed: "Tus 4 botones son fijos: ⚔️ Básico, Constructor, Preparador y Gastador. El modo híbrido (nivel {n}) los abrirá."
+  bar_fixed_now: "Tus 4 botones son fijos: ⚔️ Básico, Constructor, Preparador y Gastador."   # [ES] D-287 (0.39): antes del nivel del modo híbrido, sin anunciarlo

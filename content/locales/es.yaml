@@ -1848,8 +1848,8 @@ talents:
   respec_done: "🔄 Pagaste {cost}: tus puntos volvieron. Tienes {n} para repartir."
   bar_line: "🎛️ Tu barra: {abilities}"
   ability_open: "🔓 {ability} — {effect}"
-  ability_locked: "🔒 {need} pts · {ability} — {effect}"
-  next_unlock: "Siguiente: {name} con {need} {need|punto|puntos} (te {left|falta|faltan} {left})."
+  ability_locked: "🔒 {need} pts · {ability} — {effect}"   # [ES] sin uso desde la 0.39 (D-287)
+  next_unlock: "Siguiente: {name} con {need} {need|punto|puntos} (te {left|falta|faltan} {left})."   # [ES] sin uso desde la 0.39 (D-287)
   all_unlocked: "Ya abriste las 8 habilidades de esta especialización."
   legend: "×2 = el doble de tu ataque · (20) = lo que cuesta · 🔋 = Aguante"
 
@@ -2403,7 +2403,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
   perk_line: "   ✨ Beneficio ahora: {perk}"
-  next: "   🔓 En rango {rank}: {items}"
+  next: "   🔓 En rango {rank}: {items}"   # [ES] sin uso desde la 0.39 (D-287)
   not_started: "Sin empezar: {items}"
   perk:
     attack: "+{v} % de ataque"
@@ -2449,7 +2449,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
   more_in_claro: "🏭 Hay más recetas en las estaciones del Claro."
-  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."
+  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."   # [ES] sin uso desde la 0.39 (D-287)
   recipe_title: "📜 Receta"
   recipe_prof: "{name} · tu rango {rank} ({title}) · pide rango {need}"
   recipe_needs: "Necesitas por vez:"
