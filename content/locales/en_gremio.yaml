@@ -197,17 +197,30 @@ gremio:
   cinv_body: "{name} invites you to their camp {camp}, at {place}. If you join, you are in its guild."
 
 gzones:
-  button: "🗺️ Guild zones"
+  button: "🔎 Find resources"
   title: "🗺️ Guild zones"
+  title_alone: "🔎 Find resources"
   intro: "What your guild knows of the zones, nearest first. What one explores, all know (the experience goes to whoever explores)."
+  intro_alone: "The zones you explored, nearest first."
   query_intro: "Guild zones where «{query}» is known to be:"
   line: "{n}. {place} · {pct}% · {items} · {who} · {zones} {zones|zone|zones} away · /z{n}"
   more: "…and {n} more, farther away."
   none: "Your guild has not explored any zone yet: go exploring and everyone will see it."
+  none_alone: "You have not explored any zone yet: go exploring."
   query_none: "Your guild has not found «{query}» in any zone yet."
-  hint: "🔎 Type a resource (for example, iron) to see where there is some. Tap a zone's code (/z1) to lay out the way."
+  hint: "🔎 Type a resource (for example, wood) and I'll tell you which zones investigated to {pct}% or more have it. Tap a zone's code (/z1) to lay out the way."
   bad_code: "That code is not on the list: use one of the ones you see here."
-  no_guild: "🗺️ Zones are shared inside a guild: create one or join one to see what the others explore."
+  no_guild: "🛡️ With a guild you would also see the zones the others explore."
+
+rsearch:
+  title: "🔎 Find resources"
+  intro: "{names}: zones investigated to {pct}% or more, nearest first."
+  line: "{n}. {emoji} {place} · {zones} {zones|zone|zones} away · 🔎 {pct}% · richness {rich}% · {state} · /z{n}"
+  left: "left {bars}"
+  empty: "⏳ depleted for now"
+  none: "{names}: not in any zone investigated to {pct}% or more yet. Explore more (or let your guild explore)."
+  unknown: "I don't know a resource called «{query}». Type its name, for example: {examples}."
+  hint: "Tap the code (/z1) to lay out the way in 🔗 Move. Type another resource to look for it, or use /search wood from anywhere."
 
 bonfire:
   full_reroute: "🔥 {name} is full ({cap} players): you go on to {next}, the nearest campfire with room."

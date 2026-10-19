@@ -442,7 +442,7 @@ def test_camps_saved_before_the_patch_still_work(service):
     view = service.act("test:1", "claro")
     # D-192: the camp hub; D-287 (0.39): no 🔬 Investigar until the camp has its 📚 Biblioteca
     assert view.kind == "player_camp" and ids(view) == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "claro"]
     assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in view.body)
     assert service.act("test:1", "upgrades").kind == "camp_upgrades"
 

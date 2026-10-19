@@ -142,7 +142,7 @@ def test_raid_arrives_after_the_interval(service, clock):
     # D-192: 🛡️ Defender goes first in the hub and in 🏰 Gestionar; 📜 Tablón leaves only if they would pass 8 (D-291: with
     # 🛡️ Gremio in the hub they do; D-287: no 🔬 Investigar without the 📚 Biblioteca)
     assert [a.id for a in view.actions] == ["defend", "cook", "oficios", "trainer", "upsvc", "guild", "campmgmt", "dudas"]
-    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "claro"]
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "gzones", "claro"]
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]
     assert [a.id for a in notices[0][1].actions] == ["defend"] and "nivel" in notices[0][1].body[0]

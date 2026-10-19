@@ -733,3 +733,14 @@ v0_39:
     - "⚔️ New guild Armory: leave the gear you don't use with /a1 and take what others left with /t1. Who left and who took what is recorded."
     - "⏳ With the camp full, you can invite into the guild someone without a camp (up to 10 can wait). They get everything of the guild, and join the camp when there is room and the founder or a helper adds them."
 
+v0_39_1:
+  version: "0.39.1"
+  title: "🔎 Lost Realms 0.39.1: buscador de recursos"
+  title_en: "🔎 Lost Realms 0.39.1: resource finder"
+  notes:
+    - "🔎 Nuevo buscador de recursos, en 🛡️ Gremio y en 🏰 Gestionar: escribe un recurso (por ejemplo, madera) y te dice en qué zonas investigadas al 50 % o más está, la más cercana primero, con cuánto queda. Toca /z1 para armar el camino."
+    - "🛡️ Con gremio, cuenta lo que exploraron todos; sin gremio, lo que exploraste tú. También puedes escribir /buscar madera desde cualquier lugar."
+  notes_en:
+    - "🔎 New resource finder, in 🛡️ Guild and in 🏰 Manage: type a resource (for example, wood) and it tells you which zones investigated to 50% or more have it, nearest first, with how much is left. Tap /z1 to lay out the way."
+    - "🛡️ With a guild, what everyone explored counts; without one, what you explored. You can also type /search wood from anywhere."
+

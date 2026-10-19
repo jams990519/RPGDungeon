@@ -580,6 +580,7 @@ class GremioMixin:
                 t.t("gremio.none_found", n=int(cfg.get("found_min_members", 2)), minutes=int(cfg.get("found_minutes", 60))),
                 "", t.t("gremio.none_code", code=self.player_code(hero.id))]      # D-280: so a leader can invite you
         actions = [Action(id="gnew", label=t.t("gremio.new_button")), Action(id="glist", label=t.t("gremio.list_button")),
+                   Action(id="gzones", label=t.t("gzones.button")),          # D-296: 🔎 the resource finder, also alone
                    Action(id=self._gremio_back(hero), label=t.t("menu.back"))]
         return View(kind="gremio_none", title=t.t("gremio.title"), body=body, actions=actions, notice=notice)
 
@@ -880,43 +881,126 @@ class GremioMixin:
         [ES]
         Qué hace: ordena lo que el gremio sabe de las zonas (D-282): las más cercanas primero (gzones.list_shown), cada una con
         su nombre y coordenadas, cuánto se conoce (el mejor % del gremio), los recursos ya descubiertos, quién la exploró y su
-        código (/z1: arma el camino en 🔗 Moverte). Escribir un recurso ("hierro") muestra solo las zonas donde se sabe que hay.
-        Sin gremio ni campamento, explica cómo tenerlo. La llaman: el botón 🗺️ Zonas del gremio (🛡️ Gremio) y el texto
+        código (/z1: arma el camino en 🔗 Moverte). D-296 (0.39.1, pedido del dueño): es también el 🔎 buscador de recursos:
+        escribir un recurso ("madera") abre _resource_search_view (solo zonas investigadas al 50 % o más). Sin gremio ni
+        campamento también se abre, con lo que exploraste tú y un aviso de que con un gremio verías lo de los demás. La llaman: el botón 🗺️ Zonas del gremio (🛡️ Gremio) y el texto
         escrito en esta pantalla. Si cambia, afecta: tests/test_conocimiento_del_gremio.py.
         """
         t = self.texts
-        if not self._mates(hero):
-            return self._guild_view(hero, notice=t.t("gzones.no_guild"))
+        if query and " ".join(query.split()):              # D-296: a typed word is the 🔎 resource finder
+            return self._resource_search_view(hero, query, notice=notice)
+        alone = not self._mates(hero)                      # D-296: without a guild it lists what you explored yourself
+        if alone and notice is None:
+            notice = t.t("gzones.no_guild")
         best, who, _ = self._mates_knowledge(hero)
         merged, by = dict(best), dict(who)
         for key, pct in hero.exploration.items():
             if int(pct) > 0 and int(pct) >= merged.get(key, 0):
                 merged[key], by[key] = int(pct), hero.name
-        wanted = _plain(query) if query else ""
         rows = []
         for key, pct in merged.items():
             x, y = (int(v) for v in key.split(":"))
             if pct <= 0 or mapgen.is_bonfire(x, y):
                 continue
             known = self._known_resources(hero, x, y)
-            if wanted and not any(wanted in _plain(t.t(self.content.items[r]["name_key"])) for r in known):
-                continue
             rows.append((abs(x - hero.x) + abs(y - hero.y), x, y, pct, known, by.get(key, "?")))
         rows.sort()
         shown = rows[:int(self.content.balance.get("gremio", {}).get("zones_shown", 8))]
         self._codes(hero, "zones", [f"{x}:{y}" for _, x, y, _, _, _ in shown])
         self.store.put("camp_naming", hero.id, {"mode": "gzones", "x": hero.x, "y": hero.y})   # a text searches a resource
-        body = [t.t("gzones.query_intro", query=query) if query else t.t("gzones.intro"), ""]
+        body = [t.t("gzones.intro_alone" if alone else "gzones.intro"), ""]
         for n, (zones, x, y, pct, known, name) in enumerate(shown, 1):
             items = " ".join(self.content.items[r]["emoji"] for r in known) or "❔"
             body.append(t.t("gzones.line", n=n, place=self._place_label(x, y), pct=pct, items=items, who=name, zones=zones))
         if not shown:
-            body.append(t.t("gzones.query_none", query=query) if query else t.t("gzones.none"))
+            body.append(t.t("gzones.none_alone" if alone else "gzones.none"))
         elif len(rows) > len(shown):
             body.append(t.t("gzones.more", n=len(rows) - len(shown)))
-        body += ["", t.t("gzones.hint")]
+        body += ["", t.t("gzones.hint", pct=self._search_min_pct())]
         actions = [Action(id="guild", label=t.t("menu.back"))]
-        return View(kind="gremio_zones", title=t.t("gzones.title"), body=body, actions=actions, notice=notice,
+        return View(kind="gremio_zones", title=t.t("gzones.title_alone" if alone else "gzones.title"), body=body,
+                    actions=actions, notice=notice, expects_text=True)
+
+    def _search_min_pct(self) -> int:
+        """From what % of a zone investigated the 🔎 finder shows it (D-296: the owner said 50 %)."""
+        return int(self._gremio_cfg().get("search_min_pct", 50))
+
+    def _searchable_resources(self) -> list[str]:
+        """Every resource a zone can have: the 6 base ones, every terrain's own ones and 🐟 fish (D-296)."""
+        found = list(self.content.balance["resources"]["region_scale"])
+        for bdef in self.content.biomes.values():
+            found += [r for r in ((bdef or {}).get("own") or []) if r not in found]
+        fish = ((self.content.balance.get("camp_professions") or {}).get("fish") or {}).get("resource")
+        if fish and fish not in found:
+            found.append(fish)
+        return [r for r in found if r in self.content.items]
+
+    def _resource_matches(self, query: str) -> list[str]:
+        """The resources a typed word names, by their name in any language; an exact name wins over a part of one (D-296)."""
+        wanted = _plain(" ".join(query.split()))
+        if not wanted:
+            return []
+        names = {r: [_plain(n) for n in self.texts.all_languages(self.content.items[r]["name_key"])]
+                 for r in self._searchable_resources()}
+        exact = [r for r, plain in names.items() if wanted in plain]
+        return exact or [r for r, plain in names.items() if any(wanted in n for n in plain)]
+
+    def _resource_search_view(self, hero: Hero, query: str, notice: str | None = None) -> View:
+        """🔎 The resource finder: where a resource is, in the zones you (or your guild) investigated to 50 % or more (D-296).
+
+        [ES]
+        Qué hace: el buscador de recursos (pedido del dueño, 19-oct-2026: "en el apartado del campamento y del gremio vas a poner
+        un buscador de recursos… si busco madera, únicamente para zonas investigadas a más del 50 %, te va a decir en qué zona
+        está para que puedas ir a farmearlo más fácil"). Con la palabra escrita (el nombre del recurso, con o sin tildes, en
+        español o en inglés) lista las zonas investigadas al gremio.search_min_pct (50 %) o más, por ti o por tu gremio (D-282),
+        donde ya se sabe que está: la más cercana primero, con su riqueza, cuánto queda (⏳ si está agotado) y el código /z1, que
+        arma el camino en 🔗 Moverte. Sin gremio, usa solo lo que exploraste tú.
+        La llaman: _gremio_zones_view (lo escrito en 🔎 Buscar recursos), el atajo /buscar <recurso> (text()).
+        Si cambia, afecta: tests/test_buscador_de_recursos.py y tests/test_conocimiento_del_gremio.py.
+        """
+        t = self.texts
+        self.store.put("camp_naming", hero.id, {"mode": "gzones", "x": hero.x, "y": hero.y})   # another word searches again
+        matches = self._resource_matches(query)
+        actions = [Action(id="gzones", label=t.t("gzones.button")), Action(id="guild", label=t.t("menu.back"))]
+        if not matches:
+            examples = ", ".join(t.t(self.content.items[r]["name_key"]).lower()
+                                 for r in self.content.balance["resources"]["region_scale"] if r in self.content.items)
+            return View(kind="gremio_zones", title=t.t("rsearch.title"), body=[t.t("rsearch.unknown", query=query, examples=examples)],
+                        actions=actions, notice=notice, expects_text=True)
+        least = self._search_min_pct()
+        best, _, _ = self._mates_knowledge(hero)
+        keys = set(best) | {k for k, pct in hero.exploration.items() if int(pct) > 0}
+        min_yield = float(self.content.balance["stock"]["min_yield"])
+        rows = []
+        for key in keys:
+            x, y = (int(v) for v in key.split(":"))
+            pct = self._known_pct(hero, x, y)
+            if pct < least:
+                continue
+            known = self._known_resources(hero, x, y)
+            here = [r for r in matches if r in known]
+            if not here:
+                continue
+            resources, stock = self._zone_resources(x, y), self._stock(x, y)
+            for res in here:
+                rows.append((abs(x - hero.x) + abs(y - hero.y), x, y, res, pct, resources.get(res, 0.0), stock.get(res, 1.0)))
+        rows.sort(key=lambda r: (r[0], -r[5], r[1], r[2], r[3]))
+        shown = rows[:int(self._gremio_cfg().get("zones_shown", 8))]
+        self._codes(hero, "zones", [f"{x}:{y}" for _, x, y, _, _, _, _ in shown])
+        names = " · ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in matches)
+        body = [t.t("rsearch.intro", names=names, pct=least), ""]
+        for n, (zones, x, y, res, pct, rich, left) in enumerate(shown, 1):
+            item = self.content.items[res]
+            bars = round(left * 5)
+            state = t.t("rsearch.empty") if left < min_yield else t.t("rsearch.left", bars=f"{'▰' * bars}{'▱' * (5 - bars)}")
+            body.append(t.t("rsearch.line", n=n, emoji=item["emoji"], place=self._place_label(x, y), zones=zones, pct=pct,
+                            rich=round(rich * 100), state=state))
+        if not shown:
+            body.append(t.t("rsearch.none", names=names, pct=least))
+        elif len(rows) > len(shown):
+            body.append(t.t("gzones.more", n=len(rows) - len(shown)))
+        body += ["", t.t("rsearch.hint")]
+        return View(kind="gremio_zones", title=t.t("rsearch.title"), body=body, actions=actions, notice=notice,
                     expects_text=True)
 
     def _zone_code(self, hero: Hero, n: int) -> View:

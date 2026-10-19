@@ -593,6 +593,7 @@ WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
+SEARCH_RE = re.compile(r"^/(?:buscar|search)(?:@\w+)?(?:\s+(.+))?$", re.IGNORECASE)   # D-296: /buscar madera = 🔎 the finder
 RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
 
 
@@ -710,8 +711,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             coords = COORD_RE.match(low)
             invite = INVITE_CODE_RE.match(low)
             zcode = ZONE_CODE_RE.match(low)
+            search = SEARCH_RE.match(text.strip())
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif search:                                 # D-296: /buscar madera = where there is wood, in zones known to 50 %
+                typed = self._gremio_zones_view(hero, query=search.group(1))
             elif zcode:                                  # D-282: /z2 = the 2nd zone of 🗺️ Zonas del gremio
                 typed = self._zone_code(hero, int(zcode.group(1)))
             elif coords:                                   # D-278: /ir 12 -3 = 🔗 Moverte with the road to (12, -3) laid out
@@ -5249,7 +5253,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: arma los botones de 🏰 Gestionar (D-192; antes eran los del campamento): 🛡️ Defender primero mientras dura
         una oleada que todavía no peleaste (D-99), ⬆️ Agrandar, 🔨 Mejoras (D-101), 🌾 Aportar comida (solo con despensa,
-        desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97) y ↩️ Volver al centro.
+        desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97), 🔎 Buscar recursos (D-296, pedido
+        del dueño: el buscador también en el campamento) y ↩️ Volver al centro.
         La llama: _camp_manage_view.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_raids.py,
         tests/test_camp_upgrades.py y tests/test_menus_y_dudas.py (orden de los botones).
@@ -5259,6 +5264,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if pantry:
             actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
         actions.append(Action(id="guild", label=t.t("guild.button")))
+        actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-296: 🔎 the resource finder, in the camp too
         defend = self._defend_action(camp, hero)    # D-99: while a raid lasts, 🛡️ Defender goes first
         if defend:
             actions.insert(0, defend)
