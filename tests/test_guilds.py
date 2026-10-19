@@ -89,7 +89,7 @@ def test_founder_creates_the_guild_at_the_camp(service):
     place(service, "test:2", 6, 0)
     view = service.act("test:1", "claro")
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "claro"]
     screen = service.act("test:1", "guild")
     # D-291 (0.39): the guild keeps its tools after founding (📢 💰 ⚔️ 🗺️), then the D-97 ones
     tools = ["gmsg", "gfund", "garm", "gzones"]

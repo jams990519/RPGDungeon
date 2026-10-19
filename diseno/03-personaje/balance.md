@@ -1168,6 +1168,14 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (19-oct): el buscador de recursos (0.39.1, D-296, confirmada)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `gremio.search_min_pct` (nuevo) | — | 50: el 🔎 buscador solo muestra zonas investigadas al 50 % o más (lo dijo el dueño) |
+
+**Qué cambia al jugar.** Nada de balance: encontrar un recurso conocido es más rápido. Con 50 % se conocen los 3 primeros recursos de la zona (`exploration.reveal_at`); los demás aparecen al seguir explorando.
+
 ### Octubre de 2026 (19-oct): el campamento de la 0.39 (D-288 a D-291, D-294, D-295)
 
 | Número | Antes | Ahora |

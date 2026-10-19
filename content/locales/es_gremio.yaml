@@ -205,17 +205,30 @@ gremio:
   cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
 
 gzones:                        # [ES] D-282 (0.38, pedido del dueño): lo que el gremio sabe de las zonas, ordenado
-  button: "🗺️ Zonas del gremio"
+  button: "🔎 Buscar recursos"   # [ES] D-296 (0.39.1, pedido del dueño): el botón abre el buscador de recursos (antes "🗺️ Zonas del gremio")
   title: "🗺️ Zonas del gremio"
+  title_alone: "🔎 Buscar recursos"
   intro: "Lo que tu gremio sabe de las zonas, las más cercanas primero. Lo que explora uno lo saben todos (la experiencia es de quien explora)."
-  query_intro: "Zonas del gremio donde se sabe que hay «{query}»:"
+  intro_alone: "Las zonas que exploraste, las más cercanas primero."
+  query_intro: "Zonas del gremio donde se sabe que hay «{query}»:"   # [ES] sin uso desde la 0.39.1 (D-296: rsearch.intro)
   line: "{n}. {place} · {pct} % · {items} · {who} · a {zones} {zones|zona|zonas} · /z{n}"
   more: "…y {n} más, más lejos."
   none: "Tu gremio todavía no exploró ninguna zona: sal a explorar y lo verán todos."
-  query_none: "Tu gremio todavía no encontró «{query}» en ninguna zona."
-  hint: "🔎 Escribe un recurso (por ejemplo, hierro) para ver dónde hay. Toca el código de una zona (/z1) para armar el camino."
+  none_alone: "Todavía no exploraste ninguna zona: sal a explorar."
+  query_none: "Tu gremio todavía no encontró «{query}» en ninguna zona."   # [ES] sin uso desde la 0.39.1 (D-296: rsearch.none)
+  hint: "🔎 Escribe un recurso (por ejemplo, madera) y te digo en qué zonas investigadas al {pct} % o más está. Toca el código de una zona (/z1) para armar el camino."
   bad_code: "Ese código no está en la lista: usa uno de los que ves aquí."
-  no_guild: "🗺️ Las zonas se comparten dentro de un gremio: crea uno o entra a uno para ver lo que exploran los demás."
+  no_guild: "🛡️ Con un gremio también verías las zonas que exploran los demás."   # [ES] D-296: sin gremio, el buscador usa lo tuyo
+
+rsearch:                       # [ES] D-296 (0.39.1, pedido del dueño): el buscador de recursos de 🛡️ Gremio y 🏰 Gestionar
+  title: "🔎 Buscar recursos"
+  intro: "{names}: zonas investigadas al {pct} % o más, la más cercana primero."
+  line: "{n}. {emoji} {place} · a {zones} {zones|zona|zonas} · 🔎 {pct} % · riqueza {rich} % · {state} · /z{n}"
+  left: "queda {bars}"
+  empty: "⏳ agotado por ahora"
+  none: "{names}: todavía no está en ninguna zona investigada al {pct} % o más. Explora más (o que explore tu gremio)."
+  unknown: "No conozco un recurso llamado «{query}». Escribe su nombre, por ejemplo: {examples}."
+  hint: "Toca el código (/z1) para armar el camino en 🔗 Moverte. Escribe otro recurso para buscarlo, o usa /buscar madera desde cualquier lugar."
 
 bonfire:                       # [ES] D-265 (0.37): una hoguera llena manda a los que llegan a la más cercana con lugar
   full_reroute: "🔥 {name} está llena ({cap} jugadores): sigues hacia {next}, la hoguera más cercana con lugar."

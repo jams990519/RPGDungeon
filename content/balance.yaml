@@ -477,6 +477,7 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   messages_kept: 5           # [ES] cuántos mensajes guarda y muestra la pantalla del gremio (Claude)
   list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
   zones_shown: 8             # [ES] D-282 (0.38, Claude): cuántas zonas muestra 🗺️ Zonas del gremio de una vez (las más cercanas)
+  search_min_pct: 50         # [ES] D-296 (0.39.1, pedido del dueño): el 🔎 buscador de recursos solo muestra zonas investigadas al 50 % o más (por ti o por tu gremio)
   found_min_members: 2       # [ES] miembros del gremio que tienen que estar en la zona para empezar a fundar (D-269, el dueño)
   found_minutes: 60          # [ES] fundar tarda 60 min con found_min_members presentes; con más, menos: tiempo = 60 × 2 ÷ presentes (4 → 30 min). Con 1, el doble; con nadie, se pausa (D-269, D-274)
   found_floor_minutes: 10    # [ES] nunca menos de 10 min, por más miembros que haya (D-269, el dueño)
