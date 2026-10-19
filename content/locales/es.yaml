@@ -1422,7 +1422,13 @@ map:
   camp_mark: "🏕️"            # [ES] D-267 (0.34): los campamentos de jugadores se ven en el mapa
   camps_legend: "{mark} campamento de jugadores"
   mate_mark: "🧑"            # [ES] D-283 (0.38, pedido del dueño): tus compañeros del gremio (o del campamento) se ven en el mapa
-  mates_legend: "{mark} {n|compañero|compañeros} de tu gremio"
+  mates_legend: "{mark} {n|compañero|compañeros} de tu gremio"   # [ES] sin uso desde la 0.38.1 (D-286: map.mates_title y una línea por compañero)
+  mates_title: "🛡️ Tu gremio en el mapa ({n}):"   # [ES] D-286 (0.38.1, pedido del dueño): quién es cada compañero, con su clase y dónde está
+  mate_line: "{mark} {name} · {cls} · ({x}, {y})"
+  mates_more: "…y {n} más"
+  mates_group_mark: "👥"   # [ES] D-286: dos o más compañeros en la misma zona
+  mates_group_legend: "{mark} varios compañeros en la misma zona"
+  mates_away: "{n} {n|compañero|compañeros} fuera de este mapa: los ves en 🛡️ Gremio."
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "🎨 Terrenos que conoces ({n} de {total}): {items}. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-220: solo los terrenos con una zona investigada al 50 % (y el 🔥 Claro)
   bonfire: "Campamento"   # [ES] D-223 (0.30.2): en el mapa, el 🔥 del inicio se llama campamento (la hoguera), no "Claro"

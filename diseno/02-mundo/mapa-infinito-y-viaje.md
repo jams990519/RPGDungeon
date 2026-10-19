@@ -511,6 +511,12 @@ El dueño pidió (18-oct-2026): "asegúrate que todas las posiciones tengan una 
 - **A la vista desde el primer día (D-277):** las 9 están en 📒 Lugares, aunque nunca hayas ido (no cuentan para el tope de lugares del 🧭 Explorador), y se puede viajar a cualquiera. En el 🗺️ Mapa siempre se ven.
 - **La historia:** la meta "explora el Claro" es la hoguera donde naciste (`Hero.home`).
 
+### 1.19 Tu gremio en el mapa (D-283, D-286, en el juego desde la 0.38 y la 0.38.1)
+
+- **Quiénes:** los compañeros con los que compartes lo que sabes de las zonas (tu gremio antes del campamento o tu campamento, D-282).
+- **Cómo se ven:** cada uno con el emoji de su clase (🏰 Guerrero, 📿 Sacerdote, 🌳 Druida…, el mismo de 👤 Héroe) y 👥 si hay dos o más en la misma zona. Tú sigues siendo 🧍 y tapas a quien esté en tu zona.
+- **Quién es quién:** arriba de la cuadrícula (debajo no va nada, D-222), una línea por compañero a la vista, "🏰 Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta `map_view.mates_listed` (8; después "…y N más"), y cuántos quedan fuera del mapa (se ven en 🛡️ Gremio).
+
 ## 2. Lo que viene por parches (propuesta)
 
 Cada parche abre una pieza cuando está lista (D-60). Todas siguen "amplio pero ligero" (D-44): la **capa simple** es la que ve cualquiera; la **capa profunda** es opcional. Ninguna agrega teletransporte (D-58).

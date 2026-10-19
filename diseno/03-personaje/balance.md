@@ -1168,6 +1168,16 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (19-oct): tu gremio en el mapa (0.38.1, D-286, confirmada)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `map_view.mates_listed` (nuevo) | — | 8: cuántos compañeros nombra el 🗺️ Mapa arriba de la cuadrícula (Claude) |
+
+**Qué cambia al jugar.** Nada de balance: solo cuántas líneas lleva el mapa. Con 8 compañeros a la vista, el mapa baja 9 renglones en el teléfono.
+
+**Lo que queda por mirar:** si con gremios grandes conviene bajar el tope o juntar varios nombres por renglón.
+
 ### Octubre de 2026 (18-oct): la vida en 30 minutos (0.38, D-284, confirmada)
 
 | Número | Antes | Ahora |

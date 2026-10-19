@@ -678,3 +678,14 @@ v0_38:
     - "🧑 Your guild mates show on the 🗺️ Map."
     - "❤️ Health comes back on its own much faster: 0 to full in 30 minutes (before, 4 hours), also if you fell in a fight. Potions and the inn are still faster."
     - "📋 New 🗺️ Guild zones screen, in 🛡️ Guild: the zones your guild knows, nearest first, with their resources and who explored them. Type a resource (for example, iron) to see where there is some, and tap /z1 to lay out the way."
+
+v0_38_1:
+  version: "0.38.1"
+  title: "💬 Lost Realms 0.38.1: el chat del gremio"
+  title_en: "💬 Lost Realms 0.38.1: the guild chat"
+  notes:
+    - "💬 Si tienes gremio (o campamento), todo lo que escribes en el chat del juego le llega a todo tu gremio, desde donde estés. Los últimos mensajes quedan en 🛡️ Gremio. Los comandos con / y las pantallas que te piden escribir algo siguen igual."
+    - "🗺️ En el mapa, cada compañero de tu gremio se ve con el emoji de su clase (🏰, 📿, 🌳…), y 👥 si hay varios en la misma zona. Arriba del mapa, una línea por compañero dice quién es, su clase y sus coordenadas."
+  notes_en:
+    - "💬 If you have a guild (or a camp), everything you type in the game chat reaches your whole guild, from wherever you are. The latest messages stay in 🛡️ Guild. Commands with / and the screens that ask you to type something work as before."
+    - "🗺️ On the map, each of your guild mates shows with their class's emoji (🏰, 📿, 🌳…), and 👥 if several are in the same zone. Above the map, one line per mate says who it is, their class and their coordinates."

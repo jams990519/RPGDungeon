@@ -1982,6 +1982,12 @@ map:
   camps_legend: "{mark} players' camp"
   mate_mark: 🧑
   mates_legend: "{mark} {n|guild mate|guild mates}"
+  mates_title: "🛡️ Your guild on the map ({n}):"
+  mate_line: "{mark} {name} · {cls} · ({x}, {y})"
+  mates_more: "…and {n} more"
+  mates_group_mark: 👥
+  mates_group_legend: "{mark} several mates in the same zone"
+  mates_away: "{n} {n|mate|mates} off this map: see them in 🛡️ Guild."
   position: Coordinates {x}, {y} · Distance {lejania}
   colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
   bonfire: Camp

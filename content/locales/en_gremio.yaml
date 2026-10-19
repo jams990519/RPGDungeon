@@ -139,6 +139,8 @@ gremio:
   msg_ask: "📢 Write the message for the whole guild (up to {n} letters)."
   msg_push_title: "📢 Guild {name}"
   msg_sent: "📢 Message sent to the whole guild."
+  chat_sent: "📢 Sent to your guild ({n} {n|mate|mates})."
+  chat_hint: "💬 Type any message in the game chat, from wherever you are, and your whole guild gets it."
   fund_title: "💰 Guild fund"
   fund_intro: "Deposit from wherever you are: no need to carry it anywhere. Type or tap a material's code (/f02) and everything you carry of it goes in."
   fund_found: "Founding the camp takes {items}"

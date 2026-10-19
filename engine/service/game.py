@@ -646,7 +646,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-191/D-192: ❓ Dudas: "/dudas <palabras>" busca; "/d07" (o "d07") muestra esa respuesta; con la pantalla de ❓ Dudas
         abierta (store "dudas_open"), cualquier texto es una búsqueda. El texto "📖 Historia" de un teclado viejo (D-190 lo
         sacó del menú) abre lo mismo que el botón viejo. Otro texto suelto avisa que se usen los botones, con la pista de
-        /dudas.
+        /dudas. D-285 (0.38.1, pedido del dueño): si el héroe tiene gremio (o campamento), ese texto suelto es un mensaje a
+        todo su gremio (_guild_chat); los comandos con "/" y las pantallas que piden texto siguen igual.
         La llaman: los clientes (Telegram manda aquí todo texto que empieza con "/" y no es un atajo exacto).
         Si cambia, afecta: la creación de personaje, los nombres de campamento y gremio, los atajos con texto y ❓ Dudas.
         """
@@ -714,8 +715,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 view.notice = self._join(notices + ([view.notice] if view.notice else []))
             return view
         if hero is not None:
+            sent = self._guild_chat(hero, text)          # D-285: in a guild, loose text is a message to all of it
             view = self.view(account_id)
-            view.notice = self._join([self.texts.t("common.use_buttons"), self.texts.t("dudas.write_hint")])
+            view.notice = sent or self._join([self.texts.t("common.use_buttons"), self.texts.t("dudas.write_hint")])
             return view
         pending = self.store.get("pending", account_id) or {"stage": "name"}
         name = " ".join(text.split())
@@ -4219,6 +4221,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         y salir solo aparecen estando en el campamento; desde otro lugar (/gremio) solo se mira.
         D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view); un gremio
         que fundó su campamento pasa a ser este (el registro "guild" lleva "gremio" con su id).
+        D-285 (0.38.1): muestra los últimos mensajes del campamento (camp["messages"]) y la pista de que cualquier texto que
+        escribas le llega a todo el gremio (gremio.chat_hint).
         La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores y el atajo /gremio.
         Si cambia, afecta: tests/test_guilds.py y el recorrido de botones (4 como máximo).
         """
@@ -4261,8 +4265,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                         actions.append(Action(id="guildup", label=t.t("guild.up_button")))
             else:
                 body.append(t.t("guild.top"))
+        messages = camp.get("messages") or []          # D-285: the camp's guild chat (any loose text of a member)
+        if messages:
+            body += ["", t.t("gremio.messages_title")]
+            body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
+        body += ["", t.t("gremio.chat_hint")]
         if founder and n < cap:
-            body += ["", t.t("gremio.invite_hint")]     # D-280: the founder invites into the camp with /inv_<code>
+            body.append(t.t("gremio.invite_hint"))       # D-280: the founder invites into the camp with /inv_<code>
         actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-282: what the camp's guild knows of the zones
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
@@ -8455,7 +8464,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         solo los terrenos que ya conoces (_known_terrains: cuántos de cuántos). Los íconos siguen sus propias reglas (E-178).
         D-222 (0.30.1, pedido del dueño): debajo de la cuadrícula ya no va nada. Las coordenadas están en 📍 Zona (y ahí
         también la línea de cómo va tu zona).
-        D-283 (0.38, pedido del dueño): también tus compañeros del gremio o del campamento (🧑, map.mate_mark), con su leyenda.
+        D-283 (0.38, pedido del dueño): también tus compañeros del gremio o del campamento, con su leyenda.
+        D-286 (0.38.1, pedido del dueño: "para saber diferenciar dónde está cada quien y qué tipo es"): cada compañero se
+        dibuja con el emoji de su clase (🏰 🐍 📿…, el de class_group.<grupo>.name; 🧑 map.mate_mark si no tiene) y 👥
+        (map.mates_group_mark) si hay varios en la misma zona; arriba de la cuadrícula, una línea por compañero a la vista
+        (_map_mate_lines: nombre, clase y coordenadas) y cuántos quedan fuera del mapa.
         D-223 (0.30.2, pedido del dueño): el mapa se ve en blanco. Solo se dibujan tú (🧍) y cada zona: ▫️ en blanco hasta
         el 50 % y después su color; el 🔥 del inicio (el campamento, la hoguera) se ve siempre. Ya no se dibujan mazmorras,
         nodos, campamentos enemigos ni de jugadores, ni la guarida; las etapas ◽ ◻️ se retiraron (map_view.fog: retired).
@@ -8486,11 +8499,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         radius = self.content.balance["map_view"]["radius"]
         self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone still discovers it
         camps = {tuple(int(v) for v in key.split(":")) for key, _ in self.store.items("camp")}   # D-267: everyone sees them
-        mates = set()                                   # D-283: where your guild mates stand (or your camp mates)
+        mates: dict[tuple[int, int], list[tuple[str, str, str]]] = {}   # D-283, D-286: who of your guild stands where
+        away = 0
         for account in self._mates(hero):
             data = self.store.get("hero", account)
-            if data and abs(int(data.get("x", 0)) - hero.x) <= radius and abs(int(data.get("y", 0)) - hero.y) <= radius:
-                mates.add((int(data.get("x", 0)), int(data.get("y", 0))))
+            if not data:
+                continue
+            spot = (int(data.get("x", 0)), int(data.get("y", 0)))
+            if abs(spot[0] - hero.x) > radius or abs(spot[1] - hero.y) > radius:
+                away += 1
+                continue
+            mark, _, cls = self._class_label(data).partition(" ")     # D-286: "🏰 Guerrero" → 🏰 on the map, Guerrero below
+            mates.setdefault(spot, []).append((mark if cls else t.t("map.mate_mark"), data.get("name", "?"), cls or mark))
         rows = []
         seen_camp = False
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
@@ -8499,8 +8519,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 # D-223: nothing else is drawn (no dungeons, nodes or lair): you, players' camps and each zone's colour
                 if (x, y) == (hero.x, hero.y):
                     row += "🧍"
-                elif (x, y) in mates:
-                    row += t.t("map.mate_mark")
+                elif (x, y) in mates:                   # D-286: its class's emoji; 👥 when several share the zone
+                    row += mates[(x, y)][0][0] if len(mates[(x, y)]) == 1 else t.t("map.mates_group_mark")
                 elif (x, y) in camps:
                     row += t.t("map.camp_mark")
                     seen_camp = True
@@ -8515,12 +8535,36 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
         if seen_camp:
             body.append(t.t("map.camps_legend", mark=t.t("map.camp_mark")))
-        if mates:
-            body.append(t.t("map.mates_legend", mark=t.t("map.mate_mark"), n=len(mates)))
+        if mates or away:                               # D-286: who is who, with its class and where it stands
+            body += self._map_mate_lines(hero, mates, away)
         body += rows                                    # D-222: nothing under the grid
         actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
                    Action(id=back, label=t.t("menu.back"))]
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
+
+    def _map_mate_lines(self, hero: Hero, mates: dict[tuple[int, int], list[tuple[str, str, str]]], away: int) -> list[str]:
+        """The map's guild legend: one line per mate in view (mark, name, class, where), nearest first (D-286).
+
+        [ES]
+        Qué hace: debajo de la leyenda del 🗺️ Mapa (arriba de la cuadrícula, D-222) dice quién es cada compañero que se ve:
+        "🏰 Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta map_view.mates_listed (después "…y N más"); si
+        dos o más están en la misma zona, el mapa muestra 👥 y aquí se nombran todos; y cuántos están fuera del mapa.
+        Pedido del dueño (19-oct-2026): "lo que se muestra en el mapa en sí, para saber diferenciar dónde está cada quien y
+        qué tipo es". La llama: _map_view. Si cambia, afecta: el largo del mapa (va arriba de la cuadrícula).
+        """
+        t = self.texts
+        listed = max(1, int(self.content.balance["map_view"].get("mates_listed", 8)))
+        found = sorted(((abs(x - hero.x) + abs(y - hero.y), name, mark, cls, x, y)
+                        for (x, y), people in mates.items() for mark, name, cls in people))
+        lines = [t.t("map.mates_title", n=len(found))] if found else []
+        lines += [t.t("map.mate_line", mark=mark, name=name, cls=cls, x=x, y=y) for _, name, mark, cls, x, y in found[:listed]]
+        if len(found) > listed:
+            lines.append(t.t("map.mates_more", n=len(found) - listed))
+        if any(len(people) > 1 for people in mates.values()):
+            lines.append(t.t("map.mates_group_legend", mark=t.t("map.mates_group_mark")))
+        if away:
+            lines.append(t.t("map.mates_away", n=away))
+        return lines
 
     def _hero_view(self, hero: Hero) -> View:
         """Hero hub (D-76, D-191, D-192): a detailed card like TowerWars' and up to 8 buttons, 2 per row.
