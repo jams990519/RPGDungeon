@@ -109,8 +109,9 @@ def test_the_second_role_opens_at_level_five(service, content):
     hero = service._load("test:1")
     hero.level = 4
     assert not switch_role(content.classes, content.balance, hero, "guerrero_dps")
-    view = service.act("test:1", "tal:guerrero_dps")
-    assert not any(a.id.startswith("role:") for a in view.actions) and any("nivel 5" in line for line in view.body)
+    view = service.act("test:1", "tal:guerrero_dps")              # D-287 (0.39): an old button: back with a short reply
+    assert not any(a.id.startswith("role:") for a in view.actions) and "nivel 5" in view.notice
+    assert "tal:guerrero_dps" not in [a.id for a in view.actions]
     hero = service._load("test:1")
     hero.level = 5
     service._save(hero)

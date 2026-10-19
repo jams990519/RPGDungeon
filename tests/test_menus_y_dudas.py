@@ -121,10 +121,11 @@ def test_trainer_presents_the_professions(service):
     make_hero(service)
     view = service.act("test:1", "trainer")
     assert view.kind == "trainer" and len(view.actions) <= 4
-    assert ids(view) == ["myprof", "learnlist", "pspecs", "claro"]             # D-257: 📋 Mis oficios and 📚 Aprender oficios
+    assert ids(view) == ["myprof", "learnlist", "claro"]             # D-257: 📋 Mis oficios and 📚 Aprender oficios (D-287: no 🎓 yet)
     text = "\n".join(view.body)
-    for word in ("primera receta", "recolección", "exploración", "Te faltan por aprender", "25", "75", "Construcción"):
+    for word in ("primera receta", "recolección", "exploración", "Te faltan por aprender", "Construcción"):
         assert word in text
+    assert "Más adelante" not in text and "25" not in text and "75" not in text      # D-287 (0.39): nothing that comes later
     assert service.text("test:1", "/entrenador").kind == "trainer"
     assert not service.texts.missing
 

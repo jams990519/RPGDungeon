@@ -22,7 +22,7 @@ recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explor
   line_done_camp: "✅ 👹 ({x}, {y}) · 👹 quedan {left} de {total} · 👑 {chief}"
   more: "…y {n} más, más lejos."
   none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: el 🗺️ Mapa marca 🕳️ las mazmorras y 👹 los campamentos enemigos."
-  next: "🔓 Con rango {rank} de 🧭 Explorador, hasta {n} {n|zona|zonas}."
+  next: "🔓 Con rango {rank} de 🧭 Explorador, hasta {n} {n|zona|zonas}."   # [ES] sin uso desde la 0.39 (D-287)
   button: "🔭 {mark} ({x}, {y}) · ⚡{energy}"
   out_of_reach: "🔭 Ese lugar no está a tu alcance o ya no hay nada que ver ahí. No gastaste nada."
   already: "🔭 Ya reconociste ese lugar hoy: lo que sabes está en la lista. Mañana puede haber otra cosa."
@@ -41,7 +41,7 @@ recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explor
   map_button: "🔭 Reconocer"
   map_line: "🔭 /reconocer: {n} {n|lugar|lugares} sin reconocer hoy, hasta {zones} {zones|zona|zonas} de aquí."
   map_line_none: "🔭 /reconocer: hoy no te queda nada nuevo a tu alcance (hasta {zones} {zones|zona|zonas})."
-  map_locked: "🔭 Desde el rango {rank} de 🧭 Explorador puedes reconocer de lejos lo que marca el mapa."
+  map_locked: "🔭 Desde el rango {rank} de 🧭 Explorador puedes reconocer de lejos lo que marca el mapa."   # [ES] sin uso desde la 0.39 (D-287)
   map_today: " · 🔭 hoy {family}"
   hint: "🔭 {n} {n|lugar|lugares} para reconocer de lejos: /reconocer"
   route_mark: " {mark}{emoji}"

@@ -20,7 +20,8 @@ Módulo: capa de servicios (M10 Misiones; personajes, facciones y diario con M2 
 Depende de: engine.story (cuentas puras), engine.messaging, engine.hero, content/story.yaml,
     content/locales/es_historia.yaml, content/balance.yaml (bloque story)
 Lo usan: engine/service/game.py (GameService hereda de esta clase; llama a _story_event, _story_action, _typed_command,
-    _origin_offer, _origin_view, _story_hero_lines, _title_name, _emblem_name, _origin_prof_bonus, _shop_price, _journal)
+    _origin_offer, _origin_view, _story_hero_lines, _title_name, _emblem_name, _origin_prof_bonus, _shop_price, _journal y,
+    desde la 0.39, _story_level_lines al subir de nivel)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno (el gancho _story_event lo llama el servicio)
 Datos de los que es dueño: Hero.origin, Hero.story, Hero.factions, Hero.journal, Hero.bio; espacio "camp_tasks" del
@@ -35,6 +36,9 @@ Reglas que nunca se rompen:
     4. La historia nunca da poder de combate por sí sola (rasgos de oficio, precio o reputación; premios de monedas,
        consumibles, materiales y títulos).
     5. Los gestos y 📣 Mostrar solo llegan a los jugadores presentes en tu zona (D-96) y como mucho uno por minuto.
+    6. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel. Una misión de nivel más alto que el
+       tuyo no sale en el 📔 Diario ni en 🎯 Misiones (antes "🔒 «X» empieza en el nivel N") ni se anuncia al cumplir la
+       anterior; se avisa al llegar a su nivel ("📖 Nueva misión", _story_level_lines).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (llamadas a _story_event en _explore_step, _gather_step, _end_combat y
       _auto_combat, _make, _sell, _camp_sell, _sell_gear, _arrive, _create_camp (antes _found_camp; D-269), _camp_feed, _give_to_work y _give_to_study; el menú y
@@ -313,13 +317,28 @@ class StoryMixin:
                 nxt = next((q for q in chapters[following[0]].get("quests", []) if q in self._quest_defs()), None)
         else:
             nxt = self._current_quest(hero, qids)
-        if nxt:
-            level = int(self._quest_defs()[nxt].get("level", 1))
-            if level <= hero.level:
-                lines.append(t.t("story.next_quest", title=self._quest_title(nxt)))
-                lines += self._quest_progress(hero, nxt, None, {})
-            else:
-                lines.append(t.t("story.next_locked", title=self._quest_title(nxt), level=level))
+        if nxt and int(self._quest_defs()[nxt].get("level", 1)) <= hero.level:
+            line = t.t("story.next_quest", title=self._quest_title(nxt))
+            if line not in lines:                    # the reward's level-up may have announced it already
+                lines.append(line)
+            lines += self._quest_progress(hero, nxt, None, {})
+        # D-287 (0.39, owner): a next mission above your level is not announced (no story.next_locked); it is when you get there
+        return lines
+
+    def _story_level_lines(self, hero: Hero) -> list[str]:
+        """"📖 Nueva misión: «X»" for each current mission whose level the hero has just reached (D-287).
+
+        [ES] Qué hace: al subir de nivel, avisa las misiones de la historia que se abren justo en ese nivel (la que sigue de tu
+        origen o del capítulo). Reemplaza al aviso viejo "la siguiente misión empieza en el nivel N" (D-287, 0.39, pedido del
+        dueño: no se muestra lo que todavía no es de tu nivel). La llama: GameService._level_point_lines, una vez por nivel
+        (al ganar experiencia y al ganar una pelea). Si cambia, afecta: los avisos al subir de nivel.
+        """
+        t = self.texts
+        lines = []
+        for _, qids in self._chains(hero):
+            qid = self._current_quest(hero, qids)
+            if qid and int(self._quest_defs()[qid].get("level", 1)) == hero.level:
+                lines.append(t.t("story.next_quest", title=self._quest_title(qid)))
         return lines
 
     def _story_check(self, hero: Hero) -> list[str]:
@@ -942,8 +961,9 @@ class StoryMixin:
         """Origin and chapter progress, what to do now, today's tasks and factions (the old 📖 Historia body).
 
         [ES] Qué hace: las líneas de resumen de la historia (antes la pantalla 📖 Historia): tu origen y su avance, el capítulo,
-        qué hacer ahora en cada misión, los encargos de hoy y tu rango con cada facción. La llama: _journal_view. Si cambia,
-        afecta: el 📔 Diario.
+        qué hacer ahora en cada misión, los encargos de hoy y tu rango con cada facción. D-287 (0.39, pedido del dueño): no se
+        muestra lo que todavía no es de tu nivel: una misión de nivel más alto no sale en "🎯 Ahora" (story.now_locked queda sin
+        uso); sin ninguna, story.now_none. La llama: _journal_view. Si cambia, afecta: el 📔 Diario.
         """
         t = self.texts
         st = self._st(hero)
@@ -964,11 +984,9 @@ class StoryMixin:
             qid = self._current_quest(hero, qids)
             if not qid:
                 continue
-            level = int(self._quest_defs()[qid].get("level", 1))
-            if level > hero.level:
-                now.append(t.t("story.now_locked", title=self._quest_title(qid), level=level))
-            else:
-                now.append(t.t("story.now_line", title=self._quest_title(qid), goal=self._quest_goal_line(hero, qid)))
+            if int(self._quest_defs()[qid].get("level", 1)) > hero.level:     # D-287: not for your level yet: not shown
+                continue
+            now.append(t.t("story.now_line", title=self._quest_title(qid), goal=self._quest_goal_line(hero, qid)))
         body += now or [t.t("story.now_none")]
         daily = self._daily(hero)
         ids = self._daily_ids(hero)
@@ -989,7 +1007,9 @@ class StoryMixin:
         [ES]
         Qué hace: muestra la misión en curso de tu origen y del capítulo: el texto del paso (lo que pasa), qué hacer y
         cuánto llevas. Si un paso es una decisión, sus opciones son los botones (hasta 3, más ↩️ Volver); si no,
-        📜 Encargos y ↩️ Volver.
+        📜 Encargos y ↩️ Volver. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: una cadena
+        cuya misión en curso es de nivel más alto no sale (antes "🔒 «X» empieza en el nivel N": story.quest_locked queda sin
+        uso); sin ninguna, la línea neutra story.now_none.
         La llaman: 🎯 Misiones del 📔 Diario (y de la tarjeta del origen) y las decisiones. Si cambia, afecta: tests/test_story.py.
         """
         t = self.texts
@@ -999,9 +1019,13 @@ class StoryMixin:
         choice: tuple[str, dict[str, Any]] | None = None
         if not hero.origin:
             body += [t.t("story.chain_origin_none"), ""]
+        shown = False
         for chain, qids in self._chains(hero):
             done = sum(1 for q in qids if q in st["done"])
             qid = self._current_quest(hero, qids)
+            if qid and int(self._quest_defs()[qid].get("level", 1)) > hero.level:    # D-287: not for your level yet
+                continue
+            shown = True
             if chain == "origin":
                 head = t.t("story.chain_origin_done" if not qid else "story.chain_origin", origin=self._origin_name(hero.origin),
                            done=done, total=len(qids))
@@ -1012,10 +1036,11 @@ class StoryMixin:
             if qid:
                 body += self._quest_block(hero, qid)
                 step = self._step(hero, qid)
-                if step and (step.get("goal") or {}).get("kind") == "choice" and choice is None \
-                        and int(self._quest_defs()[qid].get("level", 1)) <= hero.level:
+                if step and (step.get("goal") or {}).get("kind") == "choice" and choice is None:
                     choice = (qid, step)
             body.append("")
+        if not shown:
+            body += [t.t("story.now_none"), ""]
         actions: list[Action] = []
         if choice:
             qid, step = choice
@@ -1028,12 +1053,11 @@ class StoryMixin:
         return View(kind="story_quests", title=t.t("story.quests_title"), body=body, actions=actions[:4], notice=notice)
 
     def _quest_block(self, hero: Hero, qid: str) -> list[str]:
-        """A mission's current step: header, its text (by decision, if any) and its goal; or its level lock."""
+        """A mission's current step: header, its text (by decision, if any) and its goal; nothing above your level (D-287)."""
         t = self.texts
         qdef = self._quest_defs()[qid]
-        level = int(qdef.get("level", 1))
-        if level > hero.level:
-            return [t.t("story.quest_locked", title=self._quest_title(qid), level=level)]
+        if int(qdef.get("level", 1)) > hero.level:      # D-287 (0.39, owner): not for your level yet: not shown
+            return []
         step = self._step(hero, qid)
         if not step:
             return []

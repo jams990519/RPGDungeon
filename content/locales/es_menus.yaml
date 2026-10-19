@@ -103,9 +103,9 @@ trainer:
   entry_rank: "{name} {rank}"
   now: "✅ Hoy puedes empezar {n} {n|oficio más|oficios más}: los que todavía no tienen rango en la lista."
   now_all: "✅ Ya empezaste todos los oficios que tienes a tu alcance."
-  later_title: "🔒 Más adelante:"
-  later_camp: "• 🏕️ Con tu propio campamento: {list} y las estaciones de sus mejoras."
-  later_specs: "• 🎓 Al rango {first} de un oficio eliges su primera especialización, y al {second} la segunda."
+  later_title: "🔒 Más adelante:"   # [ES] sin uso desde la 0.39 (D-287)
+  later_camp: "• 🏕️ Con tu propio campamento: {list} y las estaciones de sus mejoras."   # [ES] sin uso desde la 0.39 (D-287)
+  later_specs: "• 🎓 Al rango {first} de un oficio eliges su primera especialización, y al {second} la segunda."   # [ES] sin uso desde la 0.39 (D-287)
   later_more: "• Cada rango abre recetas nuevas: a medida que avances aprenderás más y más."
   stations: "📍 Aquí hay estaciones de {n} {n|oficio|oficios}: 🛠️ Fabricar y 🍲 Cocinar las usan."
   stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
@@ -152,6 +152,6 @@ learn:                         # [ES] D-257 (0.33): 📚 Aprender oficios: cada 
   camp_needed: "🏗️ {name} se aprende siendo miembro de un campamento."
   auto: "{name} no se aprende: sube solo. {how}"
   need: "🔒 Para esto primero aprende {name} (🧑‍🏫 Entrenador → 📚 Aprender oficios)."
-  more_branch: "🔒 Más recetas con los oficios que te faltan: {list}."
+  more_branch: "🔒 Más recetas con los oficios que te faltan: {list}."   # [ES] sin uso desde la 0.39 (D-287)
   none_refine: "Todavía no sabes ningún oficio de refinar: apréndelo en 📚 Aprender oficios."
   none_craft: "Todavía no sabes ningún oficio de fabricar: apréndelo en 📚 Aprender oficios."

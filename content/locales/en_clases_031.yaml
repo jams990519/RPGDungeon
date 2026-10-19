@@ -323,3 +323,4 @@ chain:
   active_role: '⭐ Active role: {name}'
   hybrid_soon: '🧪 Hybrid mode (level {n}): coming once it''s decided how many abilities get mixed.'
   bar_fixed: 'Your 4 buttons are fixed: ⚔️ Basic, Builder, Primer and Spender. Hybrid mode (level {n}) will open them up.'
+  bar_fixed_now: 'Your 4 buttons are fixed: ⚔️ Basic, Builder, Primer and Spender.'

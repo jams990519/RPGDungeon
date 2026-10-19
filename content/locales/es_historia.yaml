@@ -18,7 +18,7 @@ story:
   chapter_done_line: "📖 {chapter} · ✅ completo. El próximo capítulo llega con un parche grande."
   now_title: "🎯 Ahora:"
   now_line: "• «{title}»: {goal}"
-  now_locked: "• 🔒 «{title}» empieza en el nivel {level}."
+  now_locked: "• 🔒 «{title}» empieza en el nivel {level}."   # [ES] sin uso desde la 0.39 (D-287)
   now_none: "• Nada pendiente en la historia por ahora."
   tasks_line: "📜 Encargos de hoy: {done} de {total} cumplidos · cambian en {time}"
   factions_line: "⚜️ {list}"
@@ -47,7 +47,7 @@ story:
   chain_chapter: "📖 {chapter} ({done}/{total})"
   chain_chapter_done: "📖 {chapter}: ✅ completo."
   quest_head: "📜 «{title}» · paso {step} de {steps}"
-  quest_locked: "🔒 «{title}» empieza en el nivel {level}. Mientras tanto: encargos del tablón, oficios o explorar."
+  quest_locked: "🔒 «{title}» empieza en el nivel {level}. Mientras tanto: encargos del tablón, oficios o explorar."   # [ES] sin uso desde la 0.39 (D-287)
   goal_now: "🎯 {goal}"
   choice_hint: "⚖️ Decide con los botones de abajo. Lo que elijas se recuerda."
 
@@ -58,7 +58,7 @@ story:
   reward_xp: "+{xp} exp"
   rep_part: "{emoji} {points}"
   next_quest: "📖 Nueva misión: «{title}». Mírala en 👤 Héroe → 📔 Diario → 🎯 Misiones."
-  next_locked: "📖 La siguiente misión, «{title}», empieza en el nivel {level}."
+  next_locked: "📖 La siguiente misión, «{title}», empieza en el nivel {level}."   # [ES] sin uso desde la 0.39 (D-287)
   chapter_done: "🏁 ¡Terminaste el {chapter}!"
   title_won: "🏅 Ganaste el título {title}."
   rank_up: "⚜️ {faction}: ahora te consideran {rank}."
