@@ -192,7 +192,7 @@ gremio:
   invite_hint: "✉️ To invite someone, type /inv_ and their player code (everyone sees theirs in 👤 Hero). For example: /inv_12345678."
   code_unknown: "No player has the code {code}. Check the number: it is in each player's 👤 Hero."
   code_self: "That is your own code: give it to someone else so they can invite you."
-  code_no_rights: "To invite with a code you must be a guild's leader or officer, or the founder of its camp."
+  code_no_rights: "To invite with a code you must be a guild's leader or officer, or the founder or a 🤝 helper of its camp."
   cinv_title: "🏕️ You are invited to a camp"
   cinv_body: "{name} invites you to their camp {camp}, at {place}. If you join, you are in its guild."
 
@@ -222,5 +222,5 @@ works:
   started_push: "🏗️ {hero} completed the materials of {name} at {camp}. Now it is being built: {time} with 2 members in the territory; the more, the faster."
   done: "✅ {name} is finished!"
   done_push: "✅ {name} is finished at {camp}!"
-  camp_fund: "💰 Guild fund: {items} (it goes in first when you contribute to a work)."
-  from_fund: "💰 The guild's fund put {items} into {name}."
+  camp_fund: "💰 Camp fund: {items} (it feeds the active works)."
+  from_fund: "💰 The fund put {items} into {name}."

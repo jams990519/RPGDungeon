@@ -200,7 +200,7 @@ gremio:
   invite_hint: "✉️ Para invitar a alguien, escribe /inv_ y su código de jugador (cada uno lo ve en 👤 Héroe). Por ejemplo: /inv_12345678."
   code_unknown: "No hay ningún jugador con el código {code}. Revisa el número: está en 👤 Héroe de cada jugador."
   code_self: "Ese es tu propio código: pásaselo a otro para que te invite."
-  code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador de su campamento."
+  code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador o un 🤝 ayudante de su campamento."
   cinv_title: "🏕️ Te invitan a un campamento"
   cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
 
@@ -230,5 +230,5 @@ works:
   started_push: "🏗️ {hero} completó los materiales de {name} en {camp}. Ahora se construye: {time} con 2 miembros en el territorio; cuantos más, más rápido."
   done: "✅ ¡Se terminó de construir {name}!"
   done_push: "✅ ¡Se terminó de construir {name} en {camp}!"
-  camp_fund: "💰 Fondo del gremio: {items} (se pone primero al aportar a una obra)."
-  from_fund: "💰 El fondo del gremio puso {items} en {name}."
+  camp_fund: "💰 Fondo del campamento: {items} (alimenta las obras activas)."   # [ES] D-291 (0.39)
+  from_fund: "💰 El fondo puso {items} en {name}."

@@ -10,7 +10,7 @@ hub:
   intro_camp: '🏕️ What you can do at your camp:'
   section_info: 📌 Your camp
   cook: '🍲 Cook: meat, fish and what each terrain gives become rations and stews for the pantry. 🍲 Cooking rank {rank}.'
-  cook_none: '🍲 Cook: needs the 🔥 Hearth (🏰 Manage → 🔨 Upgrades).'
+  cook_none: '🍲 Cook: needs the 🔥 Hearth (🏘️ Services → ⚒️ Crafts).'
   cook_unlearned: '🍲 Cook: first learn 🍲 Cooking in 🧑‍🏫 Trainer → 📚 Learn professions.'
   research_claro: '🔬 Research: not in the Clearing; you research at your own camp with the 📚 Library (level {level}).'
   research_locked: '🔬 Research: with the 📚 Library, which can be built from level {level} (your camp is level {now}).'
@@ -19,7 +19,7 @@ hub:
   research_learn: '🔬 Research: learn new professions · {n} left to learn.'
   research_learn_all: '🔬 Research: you have learned every profession you can learn here.'
   make: '🛠️ Craft: 🪚 refine and 🛠️ craft gear, potions and furniture · {n} {n|station|stations} here · ⚡{energy}/{max}.'
-  make_none: '🛠️ Craft: no stations yet; the 🧵 Workshop and the 🔨 Smithy open them (🔨 Upgrades).'
+  make_none: '🛠️ Craft: there are no stations here right now.'
   trainer: '🧑‍🏫 Trainer: your professions, the ones you lack and how they are learned.'
   shop: '🛒 Merchant: potions, bandages and 🥖 provisions; buys your materials.'
   inn: '🛏️ Inn: {price} · sleep {time} and wake up with full health.'
@@ -42,7 +42,7 @@ hub:
   research_claro_notice: '🔬 There''s no research in the Clearing: the Clearing doesn''t grow. At your own camp, with the 📚 Library (level {level}), you can study {studies}.'
   research_locked_notice: '🔬 To research, your camp needs the 📚 Library: it''s built in 🏰 Manage → 🔨 Upgrades from level {level} (it''s level {now} now).'
   research_away_notice: 🔬 Research is done at your own camp, with the 📚 Library. Head over there.
-  cook_none_notice: '🍲 To cook here you need the 🔥 Hearth: it''s built in 🏰 Manage → 🔨 Upgrades. In the Clearing you can always cook.'
+  cook_none_notice: '🍲 To cook here you need the 🔥 Hearth: it''s activated and built in 🏘️ Services → ⚒️ Crafts. In the Clearing you can always cook.'
   away_notice: '🏕️ That''s done in the Clearing or at your own camp: go to one of the two.'
   cook_title: 🍲 Cook
   cook_intro: 🍲 Cooked food yields more rations in your camp's 🌾 pantry than raw meat or fish. Your 🍲 Cooking goes up with every recipe.
@@ -51,7 +51,7 @@ manage:
   intro: 'What makes your camp grow and keeps it going:'
   grow: '⬆️ Expand: {cost} to reach level {next} (one more zone and more room for members).'
   grow_top: '⬆️ Expand: your camp has become a castle.'
-  upgrades: '🔨 Upgrades: {n} {n|built|built} · 🛡️ Defense {defense}. Works, services and 📚 Knowledge.'
+  upgrades: '🔨 Upgrades: {n} {n|built|built} · 🛡️ Defense {defense}. The works and what''s missing.'
   pantry: '🌾 Contribute food: meat, fish, cooked food or 🥖 provisions for the pantry.'
   pantry_locked: '🌾 Pantry: unlocks at level {level} (village).'
   guild: '🛡️ Guild: the members, ✏️ the name, 🚪 leaving and the camp''s guild.'

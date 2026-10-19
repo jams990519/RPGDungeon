@@ -2316,7 +2316,7 @@ pantry:
     escasez: 🟠 Shortage
     hambruna: 🔴 Famine
 raids:
-  founded_warning: '🌊 Heads-up: {n} {n|time|times} a week, a wave of enemies will reach your camp. Members defend it with 🛡️ Defend, wherever they are. Strengthen the surroundings to protect it: defenses are built in 🏕️ Camp → 🏰 Manage → 🔨 Upgrades.'
+  founded_warning: '🌊 Heads-up: {n} {n|time|times} a week, a wave of enemies will reach your camp. Members defend it with 🛡️ Defend, wherever they are. Strengthen the surroundings to protect it: defenses are activated and built in 🏕️ Camp → 🏘️ Services → 🛡️ Defenses.'
   soon_line: '👁 When it becomes a town (level {level}), the waves begin: 3 a week.'
   next_line: 👁 Next wave in {n} {n|day|days}. Online members defend it.
   open_line: '🔔 Wave! Defenders: {n} · wins {wins}/{need} · {time} left'
@@ -2601,7 +2601,7 @@ wallet:
   cards_help: 'Your professional calling card: show it to other players so they know what you can make. They come with professions.'
   boost_on: '⭐ Experience +50% active: {time} left.'
   sew_button: 💰 Sew a bag
-  sew_in_claro: 💰 Bags are sewn and 🪎 chests are built in the Clearing, or in your camp's 🧵 Workshop.
+  sew_in_claro: 💰 Bags are sewn and 🪎 chests are built in the Clearing, or in your camp's 🪡 Tailor's shop (or its 🧵 Workshop, if it was built before).
   sew_missing: To sew a bag you need {items} and {coins}.
   sewn: 💰 You sewed a bag. You now have {n}.
   chest_button: 🪎 Build chest
@@ -2813,13 +2813,13 @@ upgrades:
   rest_started: 🛏️ You pay {price} and lie down in the shelter. You'll wake up in {time}.
   trade_line: '🏪 Trading Post: buys your materials at half their price. Not food: that goes to the pantry.'
   nothing_to_sell: 'You aren''t carrying any materials to sell. Food isn''t sold: it goes to the pantry.'
-  workshop_line: '🧵 Workshop: sew 💰 bags and build 🪎 chests, just like in the Clearing.'
+  workshop_line: '{name}: sew 💰 bags and build 🪎 chests in the 🧵 Workshop, just like in the Clearing.'
   workshop_button: 🧵 Workshop
   workshop_title: 🧵 Camp Workshop
   workshop_intro: Here you sew 💰 bags and build 🪎 chests, with the same recipe as in the Clearing.
   bag_recipe: A bag takes {items} and {coins}.
   chest_recipe: A chest takes {bags} 💰 {bags|bag|bags} and {items}.
-  smithy_line: '🔨 Smithy: sell the gear you don''t use from 🛡️ Gear, just like in the Clearing.'
+  smithy_line: '{name}: sell the gear you don''t use from 🛡️ Gear, just like in the Clearing.'
   no_services: No services built yet.
   need_library: 📚 First build the 📚 Library.
   granary_line: '🌾 Granary: you eat {pct}% less.'
@@ -2950,7 +2950,7 @@ prof:
     gran_maestro: Grandmaster
   stations_claro: 🏭 Here in the Clearing you'll find all the basic stations.
   stations_camp: '🏭 Your camp''s stations: {items}. Refining here: +{pct}% chance of an extra unit.'
-  stations_none: '🏭 To refine and craft: the Clearing, or your camp''s center with a 🧵 Workshop, 🔨 Smithy or 🔥 Hearth (🍲 Cooking).'
+  stations_none: '🏭 To refine and craft: the Clearing, or your camp''s center with its craft buildings (🏘️ Services → ⚒️ Crafts).'
   workshop_line: '⚒️ Professions: your camp''s stations for refining and crafting.'
   energy: '⚡ Energy: {energy}/{max}'
   refine_button: 🪚 Refine
@@ -2981,7 +2981,7 @@ prof:
   gains: 'You gain each time: ✨ {xp} experience · {name} +{prof_xp}'
   yield_line: ⭐ {pct}% chance of an extra unit (from your rank and the station).
   locked: 🔒 Needs rank {need} in {name} (you have {rank}).
-  no_station: '🏭 That station isn''t here: go to the Clearing or to your camp''s center with a 🧵 Workshop, 🔨 Smithy or 🔥 Hearth (🍲 Cooking).'
+  no_station: '🏭 That station isn''t here: go to the Clearing or to your camp''s center with that profession''s building (🏘️ Services → ⚒️ Crafts).'
   missing_line: '❌ You''re missing: {items}'
   missing: '❌ You''re missing: {items}. You didn''t spend anything.'
   make_button: 🔨 Make {n}

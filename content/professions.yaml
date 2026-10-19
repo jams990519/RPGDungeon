@@ -55,7 +55,9 @@
 #       archivo, una línea cada una, con el id de la pieza que sale) y el ✨ Encantamiento es un oficio de rama propia (branch:
 #       enchant): no tiene estación ni recetas aquí; desencanta y encanta desde 🛡️ Equipo (engine/service/game.py, sección
 #       "enchanting"; números en balance.yaml enchanting; perk {disenchant} en PERK_KEYS de engine/professions/rules.py).
-#     - Las estaciones del campamento dependen de los ids de content/camp_upgrades.yaml (taller, herreria).
+#     - Las estaciones del campamento dependen de los ids de content/camp_upgrades.yaml. D-288 (0.39): un edificio por oficio
+#       (aserradero, tejeduria, canteria, curtiduria, alambique, fundicion, carpinteria, sastreria, peleteria, alquimia,
+#       botica, forja, joyeria); taller y herreria quedan retirados pero sus estaciones siguen para quien ya los construyó.
 #     - D-116: la ✒️ obra maestra. Toda pieza de equipo fabricada (source: crafted) tiene su gemela "<id>_obra" que arma el
 #       motor al cargar (engine/professions/rules.py masterwork_items; números en balance.yaml masterwork). La probabilidad
 #       sale del rango del oficio que fabrica: la 🪑 Carpintería usa su perk {masterwork}; los demás, masterwork.base_chance.
@@ -65,7 +67,8 @@
 #       Construcción (oficio de servicio: sube aportando a las obras y reparando las defensas). Sus beneficios son de
 #       campamento o castillo (fish_food, cook_food, stone_cost, build_cost, repair_cost): valen para el campamento con el
 #       MEJOR rango entre sus miembros (engine/professions/rules.py camp_perks; balance.yaml camp_professions).
-#       La 🍲 Cocina se hace en el Claro y en el 🔥 Fogón del campamento; la Cantería, en el Claro y en el 🧵 Taller.
+#       La 🍲 Cocina se hace en el Claro y en el 🔥 Fogón del campamento; la Cantería, en el Claro, en la 🗿 Cantería del
+#       campamento (D-288) y en el 🧵 Taller de quien ya lo tenía.
 #     - D-180 / D-183 (0.27): los recursos propios de cada terreno (content/biomes.yaml "own") los junta un oficio de
 #       recolección ("gathers" de 🪓 Leñador, ⛏️ Minero y 🌿 Herbolario: su beneficio, su unidad de más y su raro valen para
 #       ellos) y cada uno tiene al menos una receta (sección al final: refinados, ⚗️ Alquimia, 🩺 Medicina y 🍲 Cocina, con
@@ -360,12 +363,26 @@ stations:
   claro: [aserradero, fundicion, destilacion, tejeduria, curtiduria, carpinteria, herreria, alquimia, sastreria, peleteria, joyeria, medicina,
           cocina, canteria]                    # [ES] D-115 fase 2: 🍲 Cocina y Cantería
   # [ES] En tu campamento, cada mejora construida (ids de content/camp_upgrades.yaml) abre las suyas, con algo más de
-  # rendimiento al refinar (balance.yaml professions.camp_bonus). No hay alambique todavía: destilar y la alquimia van
-  # en el 🧵 Taller hasta que exista una mejora propia.
+  # rendimiento al refinar (balance.yaml professions.camp_bonus). D-288 (0.39, pedido del dueño): un edificio por oficio,
+  # cada uno con su estación. El 🧵 Taller y la 🔨 Herrería están retirados (ya no se construyen) pero quedan aquí: los
+  # campamentos que los construyeron conservan todas sus estaciones (D-64).
   camp:
-    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia, medicina, canteria]   # [ES] D-115: + Cantería
-    herreria: [fundicion, herreria, joyeria]
+    taller: [aserradero, tejeduria, curtiduria, destilacion, carpinteria, sastreria, peleteria, alquimia, medicina, canteria]   # [ES] D-115: + Cantería. Retirado en la 0.39 (D-288)
+    herreria: [fundicion, herreria, joyeria]   # [ES] retirada en la 0.39 (D-288)
     fogon: [cocina]                            # [ES] D-115 fase 2: el 🔥 Fogón (nivel 1) ya sirve para cocinar en el campamento
+    aserradero: [aserradero]                   # [ES] D-288 (0.39): refinado, niveles 1 y 2
+    tejeduria: [tejeduria]
+    canteria: [canteria]
+    curtiduria: [curtiduria]
+    alambique: [destilacion]
+    fundicion: [fundicion]
+    carpinteria: [carpinteria]                 # [ES] D-288 (0.39): fabricación, niveles 3 a 5
+    sastreria: [sastreria]
+    peleteria: [peleteria]
+    alquimia: [alquimia]
+    botica: [medicina]
+    forja: [herreria]
+    joyeria: [joyeria]
 
 recipes:
   # ---- Refinado (1 ⚡, 6 de experiencia de oficio). [ES] Lo que sale vale como lo que entra en el mercader:
