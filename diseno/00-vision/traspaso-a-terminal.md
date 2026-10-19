@@ -146,7 +146,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
   - Segundo rol al nivel 5.
   - Las 46 especializaciones viejas quedaron retiradas y cada héroe pasó a la más parecida.
 - **0.32 (D-233, D-234):**
-  - El ⚜️ Paladín reemplazó al Chamán.
+  - El 🦁 Paladín reemplazó al Chamán.
   - Hay dos clases por armadura y salen de dos en dos al crear el héroe: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela).
 - **Lo de antes, en una línea:**
   - Mapa infinito en blanco, que se revela explorando.

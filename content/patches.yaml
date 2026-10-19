@@ -699,3 +699,14 @@ v0_38_2:
   notes_en:
     - "🗡️ The Warrior now shows with a sword everywhere: on the map, in 👥 Players and on their card."
 
+v0_38_3:
+  version: "0.38.3"
+  title: "🧙 Lost Realms 0.38.3: cada clase con su propio ícono"
+  title_en: "🧙 Lost Realms 0.38.3: every class with its own icon"
+  notes:
+    - "🧙 Cada clase y cada rol tienen ahora un ícono que no se usa para nada más del juego, para reconocerlos de un vistazo en el mapa, en 👥 Jugadores y en las peleas: 🤺 Guerrero, 🦁 Paladín, 🍀 Druida, 🧝 Cazador, 🕊️ Sacerdote y 🧙 Mago."
+    - "🎭 Roles: 🐢 y 🦏 Guerrero, 🌞 y 🔱 Paladín, 🦬 y 🐅 Druida, 🪶 y 🦊 Cazador, 🙏 y 🌚 Sacerdote, 🧿 y 🌠 Mago (tanque o sanador o soporte primero, DPS después)."
+  notes_en:
+    - "🧙 Every class and every role now has an icon nothing else in the game uses, so you can tell them apart at a glance on the map, in 👥 Players and in fights: 🤺 Warrior, 🦁 Paladin, 🍀 Druid, 🧝 Hunter, 🕊️ Priest and 🧙 Mage."
+    - "🎭 Roles: 🐢 and 🦏 Warrior, 🌞 and 🔱 Paladin, 🦬 and 🐅 Druid, 🪶 and 🦊 Hunter, 🙏 and 🌚 Priest, 🧿 and 🌠 Mage (tank, healer or support first, DPS second)."
+

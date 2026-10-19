@@ -404,7 +404,7 @@ El dueño pidió (1-oct-2026): **cada tipo de terreno tiene un catálogo de 10 a
   - Quien se fue, ya no existe o lleva más de 15 minutos sin jugar (y no está ocupado ahí) sale de la lista, y vuelve con su próximo botón.
 - **Qué está haciendo:** 🔎 explorando · 🪓 recolectando · ⚔️ peleando · 🛌 descansando · 🚶 de paso (salió de viaje desde aquí) · 🧍 por aquí (sin actividad).
 - **Tope:** se muestran **5** nombres (`presence.max_listed`), primero el que jugó hace menos; el resto sale como "… y N más".
-- **Cruzarse al explorar:** en cada vuelta de 🔎 exploración o 🪓 recolección que no termina en pelea, con probabilidad **15 %** (`presence.cross_chance`), si hay alguien presente en la zona, el resumen del lote dice "👋 Te cruzaste con Bram (🗡️ Guerrero, nivel 2), que andaba 🪓 recolectando." A cada jugador te lo cruzas una sola vez por lote.
+- **Cruzarse al explorar:** en cada vuelta de 🔎 exploración o 🪓 recolección que no termina en pelea, con probabilidad **15 %** (`presence.cross_chance`), si hay alguien presente en la zona, el resumen del lote dice "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 2), que andaba 🪓 recolectando." A cada jugador te lo cruzas una sola vez por lote.
   - Es **solo texto**: sin premio, sin pelea, sin PvP. Vale en cualquier zona, también en el Claro y en los campamentos.
   - Usa su propio sorteo fijo (semilla del mundo, héroe y hora de la vuelta), así que no cambia ningún otro resultado de la vuelta (hallazgos, monedas, porcentaje explorado).
 - **Cómo se sabe quién está, sin revisar a todos los héroes:** el espacio `presence` guarda, por zona, a quién se anotó ahí. Se escribe al tocar un botón (solo si faltabas) y al llegar a una zona (sales de la que dejas y entras en la nueva, aunque tengas el chat cerrado). Al leer se poda: se vuelve a mirar la ficha de cada anotado y se quita a quien ya no está.
@@ -514,8 +514,8 @@ El dueño pidió (18-oct-2026): "asegúrate que todas las posiciones tengan una 
 ### 1.19 Tu gremio en el mapa (D-283, D-286, en el juego desde la 0.38 y la 0.38.1)
 
 - **Quiénes:** los compañeros con los que compartes lo que sabes de las zonas (tu gremio antes del campamento o tu campamento, D-282).
-- **Cómo se ven:** cada uno con el emoji de su clase (🗡️ Guerrero, 📿 Sacerdote, 🌳 Druida…, el mismo de 👤 Héroe) y 👥 si hay dos o más en la misma zona. Tú sigues siendo 🧍 y tapas a quien esté en tu zona.
-- **Quién es quién:** arriba de la cuadrícula (debajo no va nada, D-222), una línea por compañero a la vista, "🗡️ Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta `map_view.mates_listed` (8; después "…y N más"), y cuántos quedan fuera del mapa (se ven en 🛡️ Gremio).
+- **Cómo se ven:** cada uno con el emoji de su clase (🤺 Guerrero, 🕊️ Sacerdote, 🍀 Druida…, el mismo de 👤 Héroe) y 👥 si hay dos o más en la misma zona. Tú sigues siendo 🧍 y tapas a quien esté en tu zona.
+- **Quién es quién:** arriba de la cuadrícula (debajo no va nada, D-222), una línea por compañero a la vista, "🤺 Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta `map_view.mates_listed` (8; después "…y N más"), y cuántos quedan fuera del mapa (se ven en 🛡️ Gremio).
 
 ## 2. Lo que viene por parches (propuesta)
 

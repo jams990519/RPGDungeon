@@ -41,17 +41,17 @@ role:
   soporte: ✦ Support
 class_group:
   guerrero:
-    name: 🗡️ Warrior
+    name: 🤺 Warrior
     desc: 'plate and rage: takes hits, blocks and strikes back'
   picaro:
     name: 🐍 Rogue
     desc: 'leather, energy and combos: fast and deadly'
   sacerdote:
-    name: 📿 Priest
+    name: 🕊️ Priest
     desc: 'cloth and mana: heals, shields and wears down'
 class:
   guerrero:
-    name: 🗡️ Warrior · Protection
+    name: 🤺 Warrior · Protection
     role: takes hits, blocks and strikes back
     attack_name: Slash
   picaro:
@@ -59,7 +59,7 @@ class:
     role: fast, dodges and finishes with combos
     attack_name: Stab
   sacerdote:
-    name: 📿 Priest · Discipline
+    name: 🕊️ Priest · Discipline
     role: 'prevents damage: shields and weakens the enemy'
     attack_name: Smite
 ability:

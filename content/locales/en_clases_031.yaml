@@ -6,25 +6,25 @@
 
 class_group:
   guerrero:
-    name: 🗡️ Warrior
+    name: 🤺 Warrior
     desc: plate · endurance Tank or strength DPS
   druida:
-    name: 🌳 Druid
+    name: 🍀 Druid
     desc: leather · dodge Tank (bear) or bleed DPS (cat)
   sacerdote:
-    name: 📿 Priest
+    name: 🕊️ Priest
     desc: cloth · single-target Healer (the tank) or shadow DPS
   chaman:
     name: 🌩️ Shaman
     desc: 'leather · group Healer or lightning DPS (retired in 0.32: replaced by the Paladin)'
   paladin:
-    name: ⚜️ Paladin
+    name: 🦁 Paladin
     desc: plate · group Healer or holy DPS
   cazador:
-    name: 🏹 Hunter
+    name: 🧝 Hunter
     desc: leather · Support who empowers allies or ranged DPS
   mago:
-    name: 🔮 Mage
+    name: 🧙 Mage
     desc: cloth · Support who weakens the enemy or fire DPS
 chain_role:
   tanque: 🛡️ Tank
@@ -33,15 +33,15 @@ chain_role:
   soporte: ✦ Support
 class:
   guerrero_tanque:
-    name: 🛡️ Warrior · Tank
+    name: 🐢 Warrior · Tank
     role: 'plate endurance: takes the hit, protects and pins the enemy'
     attack_name: Shield Bash
   druida_tanque:
-    name: 🐻 Druid · Tank
+    name: 🦬 Druid · Tank
     role: 'dodge in bear form: avoids the hit and strikes back with counters'
     attack_name: Claw
   sacerdote_sanador:
-    name: ✨ Priest · Healer
+    name: 🙏 Priest · Healer
     role: 'healing focused on one: keeps the tank standing'
     attack_name: Smite
   chaman_sanador:
@@ -49,15 +49,15 @@ class:
     role: 'spread-out healing: lifts up the rest of the team'
     attack_name: Earth Shock
   guerrero_dps:
-    name: ⚔️ Warrior · DPS
+    name: 🦏 Warrior · DPS
     role: 'strength: breaks armor and executes'
     attack_name: Slash
   druida_dps:
-    name: 🐈 Druid · DPS
+    name: 🐅 Druid · DPS
     role: 'cat form: a bleed cashed in with one bite'
     attack_name: Scratch
   sacerdote_dps:
-    name: 🌑 Priest · DPS
+    name: 🌚 Priest · DPS
     role: 'shadow: a pain that grows and bursts'
     attack_name: Mind Touch
   chaman_dps:
@@ -65,27 +65,27 @@ class:
     role: 'lightning: charges the enemy and leaps in a chain'
     attack_name: Discharge
   paladin_sanador:
-    name: ☀️ Paladin · Healer
+    name: 🌞 Paladin · Healer
     role: 'spread-out healing: lifts up the rest of the team from the front line'
     attack_name: Judgment
   paladin_dps:
-    name: 🔆 Paladin · DPS
+    name: 🔱 Paladin · DPS
     role: 'holy: passes a verdict on the enemy and sweeps it away with the divine storm'
     attack_name: Holy Strike
   cazador_soporte:
-    name: 🦅 Hunter · Support
+    name: 🪶 Hunter · Support
     role: 'boosts allies: pack mark and wild call'
     attack_name: Auto Shot
   mago_soporte:
-    name: 🔮 Mage · Support
+    name: 🧿 Mage · Support
     role: 'brings the boss down: fragility, slow and rupture'
     attack_name: Arcane Missile
   cazador_dps:
-    name: 🏹 Hunter · DPS
+    name: 🦊 Hunter · DPS
     role: 'ranged agility: mark and deadly shot'
     attack_name: Shot
   mago_dps:
-    name: 🔥 Mage · DPS
+    name: 🌠 Mage · DPS
     role: 'fire: ignites and detonates'
     attack_name: Spark
 resource:

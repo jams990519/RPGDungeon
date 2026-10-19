@@ -61,7 +61,7 @@ La ficha, de arriba abajo:
 ```text
 ✨ Puntos de talento: 2 — ponlos en 🌟 Talentos      (solo si hay puntos sin poner)
 🏰 Lyra — 📍 El Claro
-🗡️ Guerrero · Defensa
+🤺 Guerrero · Defensa
 🎭 Origen: Soldado desertor
 🎖 Nivel 12 (34.50%)
 🔥 Exp: 1234/3000

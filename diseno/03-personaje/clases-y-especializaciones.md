@@ -4,6 +4,8 @@
 
 > ⚠️ **8-oct-2026 (D-225):** el parche de clases reemplazó estas 15 clases y 46 especializaciones por **6 clases con 2 roles cada una** y la misma mecánica de cadena para todas: ver [Combate en cadena](../04-combate/combate-en-cadena.md). Las especializaciones de abajo quedan retiradas (sus IDs no se borran) y este documento queda como historia de dónde salieron. Desde el 9-oct-2026 (D-233, 0.32) el Paladín reemplaza al Chamán: Guerrero y Paladín (placa), Druida y Cazador (cuero), Sacerdote y Mago (tela).
 
+> **Íconos únicos (D-293, 19-oct-2026, regla del dueño):** el ícono de cada clase y de cada rol no se usa para nada más del juego. Clases: 🤺 Guerrero, 🦁 Paladín, 🍀 Druida, 🧝 Cazador, 🕊️ Sacerdote, 🧙 Mago. Roles: 🐢 🦏 (Guerrero), 🌞 🔱 (Paladín), 🦬 🐅 (Druida), 🪶 🦊 (Cazador), 🙏 🌚 (Sacerdote), 🧿 🌠 (Mago). Al agregar un objeto, un lugar, un botón o un texto, no se usa ninguno de estos; `tests/test_iconos_de_clase.py` lo revisa.
+
 
 **De dónde sale.**
 - Las 13 clases y 40 especializaciones de *World of Warcraft* a septiembre de 2026 (expansión *Midnight*, con la tercera spec del Cazador de Demonios, **Devorador**, ya en vivo). Se suman dos clases propias que WoW nunca tuvo y que un juego por turnos pide: **Nigromante** y **Bardo**.
@@ -374,7 +376,7 @@ Las secciones de arriba son el diseño completo. En la versión jugable, cada un
 | Especialización | Rol | 1 a 3 (1, 3 y 6 puntos) | 4 a 8 (10, 16, 24, 34 y 46 puntos) |
 |---|---|---|---|
 | 💢 Guerrero · Furia | ⚔ Ataque | Rompecorazas, Tajo Final, Parada | Acero Sediento, Espejo de Acero, A Tumba Abierta, Aliento de Rabia, Vendaval de Tajos |
-| 🗡️ Guerrero · Protección | 🛡 Defensa | Golpe valeroso, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Bramido Desalentador, Venganza, Baluarte Cerrado, Todavía en Pie |
+| 🤺 Guerrero · Protección | 🛡 Defensa | Golpe valeroso, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Bramido Desalentador, Venganza, Baluarte Cerrado, Todavía en Pie |
 | 🚩 Guerrero · Señor de la Guerra | ✦ Soporte | Estandarte de Guerra, Estandarte de Muralla, Interponerse | Arenga de Guerra, Hacha Voladora, Tajo Funesto, Llamada a Filas, Alarido de Espanto |
 | ⚖️ Paladín · Reprensión | ⚔ Ataque | Juicio, Condena Radiante, Amparo Celestial | Filo Justiciero, Aliento de Fe, Furor Sagrado, Rastro de Brasas, Fallo Inapelable |
 | 🔰 Paladín · Protección | 🛡 Defensa | Escudo Acallador, Gracia Protectora, Aura de Constancia | Suelo Ungido, Égida Firme, Llama Tenaz, Centinela de Antaño, Milagro a Tiempo |
@@ -387,7 +389,7 @@ Las secciones de arriba son el diseño completo. En la versión jugable, cada un
 | 🏴‍☠️ Pícaro · Forajido | ✦ Soporte | Dados del Destino, Distracción, Capote Negro | Disparo de Pistola, Dedo en el Ojo, Riposte, Puñal de Niebla, Juerga de Puñales |
 | 👁️ Sacerdote · Sombra | ⚔ Ataque | Beso Vampírico, Suplicio Mental, Cuerpo de Humo | Susurro Doliente, Silencio, Hambre Negra, Chillido Mental, Susurro Final |
 | 😇 Sacerdote · Sagrado | ✚ Curación | Súplica Curativa, Bálsamo Lento, Verbo Protector | Remedio Rápido, Voz de Reproche, Oración Viajera, Abrigo del Alma, Voz de Calma |
-| 📿 Sacerdote · Disciplina | ✦ Soporte | Sanar, Escudo de luz, Remordimiento | Llama Expiatoria, Dolor Adormecido, Fervor Compartido, Verbo Radiante, Fisura del Alma |
+| 🕊️ Sacerdote · Disciplina | ✦ Soporte | Sanar, Escudo de luz, Remordimiento | Llama Expiatoria, Dolor Adormecido, Fervor Compartido, Verbo Radiante, Fisura del Alma |
 | 🧊 Caballero de la Muerte · Escarcha | ⚔ Ataque | Filo Gélido, Silencio Helado, Piel de Témpano | Lamento del Norte, Corazón de Hielo, Arrasar, Frío de Tumba, Rugido Glacial |
 | 🫀 Caballero de la Muerte · Sangre | 🛡 Defensa | Cobro de Sangre, Coraza Osaria, Fiebre Carmesí | Tajo al Tuétano, Sangre Tozuda, Hoja Espectral, Tierra Podrida, Brindis de Sangre |
 | ☣️ Caballero de la Muerte · Profano | ✦ Soporte | Peste, Leva de Difuntos, Velo Negador | Dardo Funesto, Garfio Sombrío, Gul Enfurecido, Brote, Apocalipsis |
@@ -440,7 +442,7 @@ Ver P-12, P-14, P-67 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abier
 | Especialización | Antes → ahora |
 |---|---|
 | 💢 Guerrero · Furia | Golpe Colosal → Rompecorazas · Ejecutar → Tajo Final · Sed de Sangre → Acero Sediento · Reflejo de Hechizos → Espejo de Acero · Temeridad → A Tumba Abierta · Regeneración Enfurecida → Aliento de Rabia · Desenfreno → Vendaval de Tajos |
-| 🗡️ Guerrero · Protección | Golpe heroico → Golpe valeroso · Grito Desmoralizador → Bramido Desalentador · Muro de Escudo → Baluarte Cerrado · Última Resistencia → Todavía en Pie |
+| 🤺 Guerrero · Protección | Golpe heroico → Golpe valeroso · Grito Desmoralizador → Bramido Desalentador · Muro de Escudo → Baluarte Cerrado · Última Resistencia → Todavía en Pie |
 | 🚩 Guerrero · Señor de la Guerra | Intervenir → Interponerse · Grito de Batalla → Arenga de Guerra · Lanzamiento Heroico → Hacha Voladora · Golpe Mortal → Tajo Funesto · Grito de Reunión → Llamada a Filas · Grito Intimidador → Alarido de Espanto |
 | ⚖️ Paladín · Reprensión | ⚔️ Golpe de cruzado → Mandoble justo · Veredicto del Templario → Condena Radiante · Escudo Divino → Amparo Celestial · Hoja de Justicia → Filo Justiciero · Palabra de Gloria → Aliento de Fe · Cólera Vengativa → Furor Sagrado · Estela de Cenizas → Rastro de Brasas · Sentencia de Ejecución → Fallo Inapelable |
 | 🔰 Paladín · Protección | ⚔️ Martillo del justo → Martillazo firme · Escudo del Vengador → Escudo Acallador · Bendición de Protección → Gracia Protectora · Aura de Devoción → Aura de Constancia · Consagración → Suelo Ungido · Escudo de los Justos → Égida Firme · Defensor Ardiente → Llama Tenaz · Guardián de los Reyes Ancestrales → Centinela de Antaño · Imposición de Manos → Milagro a Tiempo |
@@ -453,7 +455,7 @@ Ver P-12, P-14, P-67 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abier
 | 🏴‍☠️ Pícaro · Forajido | ⚔️ Golpe siniestro → Navajazo · Capa de Sombras → Capote Negro · Gubia → Dedo en el Ojo · Golpe Fantasmal → Puñal de Niebla · Ola de Asesinatos → Juerga de Puñales |
 | 👁️ Sacerdote · Sombra | ⚔️ Explosión mental → Punzada mental · Toque Vampírico → Beso Vampírico · Tortura Mental → Suplicio Mental · Dispersión → Cuerpo de Humo · Palabra de las Sombras: Dolor → Susurro Doliente · Peste Devoradora → Hambre Negra · Alarido Psíquico → Chillido Mental · Palabra de las Sombras: Muerte → Susurro Final |
 | 😇 Sacerdote · Sagrado | ⚔️ Fuego sagrado → Lumbre bendita · Plegaria de Sanación → Súplica Curativa · Renovar → Bálsamo Lento · Palabra de Poder: Escudo → Verbo Protector · Sanación Relámpago → Remedio Rápido · Palabra Sagrada: Castigo → Voz de Reproche · Rezo de Alivio → Oración Viajera · Espíritu Guardián → Abrigo del Alma · Palabra Sagrada: Serenidad → Voz de Calma |
-| 📿 Sacerdote · Disciplina | Penitencia → Remordimiento · Purgar al Malvado → Llama Expiatoria · Supresión de Dolor → Dolor Adormecido · Infusión de Poder → Fervor Compartido · Palabra de Poder: Resplandor → Verbo Radiante · Cisma → Fisura del Alma |
+| 🕊️ Sacerdote · Disciplina | Penitencia → Remordimiento · Purgar al Malvado → Llama Expiatoria · Supresión de Dolor → Dolor Adormecido · Infusión de Poder → Fervor Compartido · Palabra de Poder: Resplandor → Verbo Radiante · Cisma → Fisura del Alma |
 | 🧊 Caballero de la Muerte · Escarcha | Golpe de Escarcha → Filo Gélido · Helada Mental → Silencio Helado · Entereza Ligada al Hielo → Piel de Témpano · Explosión Aullante → Lamento del Norte · Pilar de Escarcha → Corazón de Hielo · Invierno Despiadado → Frío de Tumba · Furia del Vermis de Escarcha → Rugido Glacial |
 | 🫀 Caballero de la Muerte · Sangre | ⚔️ Golpe de corazón → Tajo carmesí · Golpe de Muerte → Cobro de Sangre · Escudo de Huesos → Coraza Osaria · Hervor de Sangre → Fiebre Carmesí · Desgarro de Médula → Tajo al Tuétano · Sangre Vampírica → Sangre Tozuda · Arma de Runas Danzante → Hoja Espectral · Muerte y Descomposición → Tierra Podrida · Bebesangre → Brindis de Sangre |
 | ☣️ Caballero de la Muerte · Profano | ⚔️ Golpe de plaga → Mordida pútrida · Ejército de los muertos → Leva de Difuntos · Caparazón Antimagia → Velo Negador · Espiral de la Muerte → Dardo Funesto · Atracción Letal → Garfio Sombrío · Transformación Oscura → Gul Enfurecido |
