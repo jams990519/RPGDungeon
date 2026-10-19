@@ -11,11 +11,11 @@
 # diseno/03-personaje/clases-y-especializaciones.md §7).
 
 class_group:
-  paladin: {name: "⚜️ Paladín", desc: "placas y Poder Sagrado: juzga, protege y cura desde el frente"}
-  cazador: {name: "🏹 Cazador", desc: "malla y foco: apunta, manda a su bestia y pone trampas"}
+  paladin: {name: "🦁 Paladín", desc: "placas y Poder Sagrado: juzga, protege y cura desde el frente"}
+  cazador: {name: "🧝 Cazador", desc: "malla y foco: apunta, manda a su bestia y pone trampas"}
   caballero_muerte: {name: "💀 Caballero de la Muerte", desc: "placas y runas: congela, drena vida y esparce plagas"}
   chaman: {name: "⚡ Chamán", desc: "malla y Vorágine: rayos, mareas y tótems"}
-  mago: {name: "🔮 Mago", desc: "tela y maná: fuego, hielo y magia arcana"}
+  mago: {name: "🧙 Mago", desc: "tela y maná: fuego, hielo y magia arcana"}
   brujo: {name: "🕯️ Brujo", desc: "tela y fragmentos de alma: caos, demonios y maldiciones"}
   monje: {name: "☯️ Monje", desc: "cuero y chi: combos, tambaleo y nieblas que curan"}
   druida: {name: "🌿 Druida", desc: "cuero y formas: felino, oso, sanador o astral; el único con los 4 roles"}

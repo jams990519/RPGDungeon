@@ -6,10 +6,10 @@
 
 class_group:
   paladin:
-    name: ⚜️ Paladin
+    name: 🦁 Paladin
     desc: 'plate and Holy Power: judges, protects and heals from the front line'
   cazador:
-    name: 🏹 Hunter
+    name: 🧝 Hunter
     desc: 'mail and focus: aims, commands their beast and sets traps'
   caballero_muerte:
     name: 💀 Death Knight
@@ -18,7 +18,7 @@ class_group:
     name: ⚡ Shaman
     desc: 'mail and Maelstrom: lightning, tides and totems'
   mago:
-    name: 🔮 Mage
+    name: 🧙 Mage
     desc: 'cloth and mana: fire, frost and arcane magic'
   brujo:
     name: 🕯️ Warlock

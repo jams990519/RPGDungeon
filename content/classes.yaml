@@ -48,7 +48,7 @@
 guerrero_tanque:
   group: guerrero
   system: chain
-  icon: "🛡️"
+  icon: "🐢"
   role: defensa
   name_key: class.guerrero_tanque.name
   role_key: class.guerrero_tanque.role
@@ -67,7 +67,7 @@ guerrero_tanque:
 guerrero_dps:
   group: guerrero
   system: chain
-  icon: "⚔️"
+  icon: "🦏"
   role: ataque
   name_key: class.guerrero_dps.name
   role_key: class.guerrero_dps.role
@@ -86,7 +86,7 @@ guerrero_dps:
 paladin_sanador:
   group: paladin
   system: chain
-  icon: "☀️"
+  icon: "🌞"
   role: curacion
   name_key: class.paladin_sanador.name
   role_key: class.paladin_sanador.role
@@ -105,7 +105,7 @@ paladin_sanador:
 paladin_dps:
   group: paladin
   system: chain
-  icon: "🔆"
+  icon: "🔱"
   role: ataque
   name_key: class.paladin_dps.name
   role_key: class.paladin_dps.role
@@ -124,7 +124,7 @@ paladin_dps:
 druida_tanque:
   group: druida
   system: chain
-  icon: "🐻"
+  icon: "🦬"
   role: defensa
   name_key: class.druida_tanque.name
   role_key: class.druida_tanque.role
@@ -143,7 +143,7 @@ druida_tanque:
 druida_dps:
   group: druida
   system: chain
-  icon: "🐈"
+  icon: "🐅"
   role: ataque
   name_key: class.druida_dps.name
   role_key: class.druida_dps.role
@@ -162,7 +162,7 @@ druida_dps:
 cazador_soporte:
   group: cazador
   system: chain
-  icon: "🦅"
+  icon: "🪶"
   role: soporte
   name_key: class.cazador_soporte.name
   role_key: class.cazador_soporte.role
@@ -181,7 +181,7 @@ cazador_soporte:
 cazador_dps:
   group: cazador
   system: chain
-  icon: "🏹"
+  icon: "🦊"
   role: ataque
   name_key: class.cazador_dps.name
   role_key: class.cazador_dps.role
@@ -200,7 +200,7 @@ cazador_dps:
 sacerdote_sanador:
   group: sacerdote
   system: chain
-  icon: "✨"
+  icon: "🙏"
   role: curacion
   name_key: class.sacerdote_sanador.name
   role_key: class.sacerdote_sanador.role
@@ -219,7 +219,7 @@ sacerdote_sanador:
 sacerdote_dps:
   group: sacerdote
   system: chain
-  icon: "🌑"
+  icon: "🌚"
   role: ataque
   name_key: class.sacerdote_dps.name
   role_key: class.sacerdote_dps.role
@@ -238,7 +238,7 @@ sacerdote_dps:
 mago_soporte:
   group: mago
   system: chain
-  icon: "🔮"
+  icon: "🧿"
   role: soporte
   name_key: class.mago_soporte.name
   role_key: class.mago_soporte.role
@@ -257,7 +257,7 @@ mago_soporte:
 mago_dps:
   group: mago
   system: chain
-  icon: "🔥"
+  icon: "🌠"
   role: ataque
   name_key: class.mago_dps.name
   role_key: class.mago_dps.role

@@ -46,13 +46,13 @@ role:
   soporte: "✦ Soporte"
 
 class_group:
-  guerrero: {name: "🗡️ Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
+  guerrero: {name: "🤺 Guerrero", desc: "placas e ira: aguanta, bloquea y castiga"}
   picaro: {name: "🐍 Pícaro", desc: "cuero, energía y combos: rápido y letal"}
-  sacerdote: {name: "📿 Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
+  sacerdote: {name: "🕊️ Sacerdote", desc: "tela y maná: cura, escuda y desgasta"}
 
 class:
   guerrero:
-    name: "🗡️ Guerrero · Protección"
+    name: "🤺 Guerrero · Protección"
     role: "aguanta golpes, bloquea y castiga"
     attack_name: "Tajo"
   picaro:
@@ -60,7 +60,7 @@ class:
     role: "rápido, esquiva y remata con combos"
     attack_name: "Puñalada"
   sacerdote:
-    name: "📿 Sacerdote · Disciplina"
+    name: "🕊️ Sacerdote · Disciplina"
     role: "previene el daño: escuda y debilita al enemigo"
     attack_name: "Castigo"
 

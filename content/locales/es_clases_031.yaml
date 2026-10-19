@@ -9,13 +9,13 @@
 # tests/test_clases_031.py revisan que no falte ningún texto.
 
 class_group:
-  guerrero: {name: "🗡️ Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
-  druida: {name: "🌳 Druida", desc: "cuero · Tanque de esquiva (oso) o DPS de sangrado (felino)"}
-  sacerdote: {name: "📿 Sacerdote", desc: "tela · Sanador de uno (el tanque) o DPS de sombra"}
+  guerrero: {name: "🤺 Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
+  druida: {name: "🍀 Druida", desc: "cuero · Tanque de esquiva (oso) o DPS de sangrado (felino)"}
+  sacerdote: {name: "🕊️ Sacerdote", desc: "tela · Sanador de uno (el tanque) o DPS de sombra"}
   chaman: {name: "🌩️ Chamán", desc: "cuero · Sanador de grupo o DPS de rayo (retirado en la 0.32: lo reemplazó el Paladín)"}
-  paladin: {name: "⚜️ Paladín", desc: "placa · Sanador de grupo o DPS sagrado"}   # [ES] 0.32 (D-233): toma el lugar del Chamán
-  cazador: {name: "🏹 Cazador", desc: "cuero · Soporte que potencia aliados o DPS a distancia"}
-  mago: {name: "🔮 Mago", desc: "tela · Soporte que debilita al enemigo o DPS de fuego"}
+  paladin: {name: "🦁 Paladín", desc: "placa · Sanador de grupo o DPS sagrado"}   # [ES] 0.32 (D-233): toma el lugar del Chamán
+  cazador: {name: "🧝 Cazador", desc: "cuero · Soporte que potencia aliados o DPS a distancia"}
+  mago: {name: "🧙 Mago", desc: "tela · Soporte que debilita al enemigo o DPS de fuego"}
 
 chain_role:
   tanque: "🛡️ Tanque"
@@ -25,15 +25,15 @@ chain_role:
 
 class:
   guerrero_tanque:
-    name: "🛡️ Guerrero · Tanque"
+    name: "🐢 Guerrero · Tanque"
     role: "aguante de placa: recibe el golpe, protege y fija al enemigo"
     attack_name: "Golpe de escudo"
   druida_tanque:
-    name: "🐻 Druida · Tanque"
+    name: "🦬 Druida · Tanque"
     role: "esquiva en forma de oso: evita el golpe y devuelve contragolpes"
     attack_name: "Zarpazo"
   sacerdote_sanador:
-    name: "✨ Sacerdote · Sanador"
+    name: "🙏 Sacerdote · Sanador"
     role: "curación concentrada en uno: sostiene al tanque"
     attack_name: "Castigo"
   chaman_sanador:
@@ -41,15 +41,15 @@ class:
     role: "curación repartida: levanta al resto del equipo"
     attack_name: "Choque de tierra"
   guerrero_dps:
-    name: "⚔️ Guerrero · DPS"
+    name: "🦏 Guerrero · DPS"
     role: "fuerza: rompe la armadura y ejecuta"
     attack_name: "Tajo"
   druida_dps:
-    name: "🐈 Druida · DPS"
+    name: "🐅 Druida · DPS"
     role: "forma felina: sangrado que se cobra de un mordisco"
     attack_name: "Arañazo"
   sacerdote_dps:
-    name: "🌑 Sacerdote · DPS"
+    name: "🌚 Sacerdote · DPS"
     role: "sombra: un dolor que crece y estalla"
     attack_name: "Toque mental"
   chaman_dps:
@@ -57,27 +57,27 @@ class:
     role: "rayo: carga al enemigo y salta en cadena"
     attack_name: "Descarga"
   paladin_sanador:
-    name: "☀️ Paladín · Sanador"
+    name: "🌞 Paladín · Sanador"
     role: "curación repartida: levanta al resto del equipo desde el frente"
     attack_name: "Juicio"
   paladin_dps:
-    name: "🔆 Paladín · DPS"
+    name: "🔱 Paladín · DPS"
     role: "sagrado: sentencia al enemigo y lo barre con la tormenta divina"
     attack_name: "Golpe sagrado"
   cazador_soporte:
-    name: "🦅 Cazador · Soporte"
+    name: "🪶 Cazador · Soporte"
     role: "sube a los aliados: marca de manada y llamada salvaje"
     attack_name: "Disparo automático"
   mago_soporte:
-    name: "🔮 Mago · Soporte"
+    name: "🧿 Mago · Soporte"
     role: "baja al jefe: fragilidad, lentitud y ruptura"
     attack_name: "Proyectil arcano"
   cazador_dps:
-    name: "🏹 Cazador · DPS"
+    name: "🦊 Cazador · DPS"
     role: "agilidad a distancia: marca y disparo mortal"
     attack_name: "Disparo"
   mago_dps:
-    name: "🔥 Mago · DPS"
+    name: "🌠 Mago · DPS"
     role: "fuego: prende y detona"
     attack_name: "Chispa"
 

@@ -31,7 +31,7 @@ def label(service, account):
 
 def guild_of_three(service):
     make_hero(service, "test:1", "Lyra", "guerrero")
-    make_hero(service, "test:2", "Bram", "picaro")                               # 0.31: the old Pícaro is a 🌳 Druida now
+    make_hero(service, "test:2", "Bram", "picaro")                               # 0.31: the old Pícaro is a 🍀 Druida now
     make_hero(service, "test:3", "Cira", "sacerdote")
     gid, _ = new_gremio(service)
     join(service, gid, "test:2")
@@ -133,5 +133,5 @@ def test_the_map_s_guild_lines_read_well_in_english(service):
     join(service, gid, "test:2")
     place(service, "test:2", 2, 1)
     body = text(service.act("test:1", "map"))
-    assert "🛡️ Your guild on the map (1):" in body and "📿 Bram · Priest · (2, 1)" in body
+    assert "🛡️ Your guild on the map (1):" in body and "🕊️ Bram · Priest · (2, 1)" in body
     assert not service.texts.fallbacks.get("en")

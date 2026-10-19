@@ -105,16 +105,16 @@ Ninguna clase nace más fuerte que otra. Las clases de un mismo rol comparten el
 
 ## 7. Las seis clases
 
-Desde la 0.32 (D-233) el ⚜️ Paladín ocupa el lugar del 🌩️ Chamán y las clases se muestran de dos en dos por armadura. Las filas del Chamán quedan en §11 como referencia.
+Desde la 0.32 (D-233) el 🦁 Paladín ocupa el lugar del 🌩️ Chamán y las clases se muestran de dos en dos por armadura. Las filas del Chamán quedan en §11 como referencia.
 
 | Clase | Armadura | Rol 1 (orden) | Rol 2 (orden) |
 |---|---|---|---|
-| 🗡️ Guerrero | Placa | 🛡️ Tanque de aguante (B → H2 → H1 → H3) | ⚔️ DPS de fuerza (H1 → H2 → H3) |
-| ⚜️ Paladín | Placa | ☀️ Sanador de grupo; estadística principal: Restauración | 🔆 DPS sagrado |
-| 🌳 Druida | Cuero | 🐻 Tanque de esquiva, forma de oso | 🐈 DPS de sangrado, forma felina |
-| 🏹 Cazador | Cuero | 🦅 Soporte que potencia aliados | 🏹 DPS de agilidad a distancia |
-| 📿 Sacerdote | Tela | ✨ Sanador de uno; estadística principal: Espíritu | 🌑 DPS de sombra |
-| 🔮 Mago | Tela | 🔮 Soporte que debilita al enemigo | 🔥 DPS de fuego |
+| 🤺 Guerrero | Placa | 🛡️ Tanque de aguante (B → H2 → H1 → H3) | ⚔️ DPS de fuerza (H1 → H2 → H3) |
+| 🦁 Paladín | Placa | ☀️ Sanador de grupo; estadística principal: Restauración | 🔆 DPS sagrado |
+| 🍀 Druida | Cuero | 🐻 Tanque de esquiva, forma de oso | 🐈 DPS de sangrado, forma felina |
+| 🧝 Cazador | Cuero | 🦅 Soporte que potencia aliados | 🏹 DPS de agilidad a distancia |
+| 🕊️ Sacerdote | Tela | ✨ Sanador de uno; estadística principal: Espíritu | 🌑 DPS de sombra |
+| 🧙 Mago | Tela | 🔮 Soporte que debilita al enemigo | 🔥 DPS de fuego |
 
 | Rol | Básico | H1 · Constructor | H2 · Preparador | H3 · Gastador |
 |---|---|---|---|---|
@@ -223,12 +223,12 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 
 | Antes (Chamán, 0.31) | Ahora (Paladín, 0.32) | Qué hace |
 |---|---|---|
-| 🌊 Chamán · Sanador | ☀️ Paladín · Sanador | Sanador de grupo |
+| 🌊 Chamán · Sanador | 🌞 Paladín · Sanador | Sanador de grupo |
 | Choque de tierra (B) | ⚔️ Juicio | Arranca el combo; daño bajo y +1 de energía |
 | Sanación en cadena (H1) | Luz sagrada | Cura repartida en 3 |
 | Golpe de tormenta (H2) | Choque sagrado | Daño medio; la siguiente curación grande cura un 25 % más |
 | Marea de sanación (H3) | Luz del alba | Cura a todo el grupo (máximo 5); no escala con la cadena |
-| ⚡ Chamán · DPS | 🔆 Paladín · DPS | Daño sagrado |
+| ⚡ Chamán · DPS | 🔱 Paladín · DPS | Daño sagrado |
 | Descarga (B) | ⚔️ Golpe sagrado | Daño bajo y +1 de energía |
 | Rayo (H1) | Golpe de cruzado | Daño moderado |
 | Choque de llamas (H2) | Sentencia | Carga el siguiente golpe sagrado (+30 %) |

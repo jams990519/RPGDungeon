@@ -31,13 +31,13 @@ def test_two_heroes_see_each_other_with_their_activity(service):
     view = service.act("test:1", "home")
     block = players_block(view)
     assert block[0] == "👥 También en esta zona (1):"
-    assert block[1] == "• Bram · 🗡️ Guerrero · nv 1 · 🧍 por aquí"
+    assert block[1] == "• Bram · 🤺 Guerrero · nv 1 · 🧍 por aquí"
     assert not any("Lyra" in line for line in block)        # never yourself
     service.act("test:2", "do:explore:5")                   # Bram starts exploring the Claro
     view = service.act("test:1", "home")
-    assert "• Bram · 🗡️ Guerrero · nv 1 · 🔎 explorando" in view.body
+    assert "• Bram · 🤺 Guerrero · nv 1 · 🔎 explorando" in view.body
     busy = service.act("test:2", "home")                    # 📍 Zona while busy: the activity screen also lists who is here
-    assert busy.kind == "activity" and "• Lyra · 🗡️ Guerrero · nv 1 · 🧍 por aquí" in busy.body
+    assert busy.kind == "activity" and "• Lyra · 🤺 Guerrero · nv 1 · 🧍 por aquí" in busy.body
     assert not any("Bram" in line for line in players_block(busy))
 
 
@@ -68,7 +68,7 @@ def test_busy_hero_stays_listed_with_the_chat_closed(service, clock):
     clock.advance(40 * MIN)
     service.tick()
     view = service.act("test:1", "home")
-    assert "• Bram · 🗡️ Guerrero · nv 1 · 🪓 recolectando" in view.body
+    assert "• Bram · 🤺 Guerrero · nv 1 · 🪓 recolectando" in view.body
 
 
 def test_hero_who_left_is_not_listed_and_appears_where_he_arrived(service, clock):
@@ -76,7 +76,7 @@ def test_hero_who_left_is_not_listed_and_appears_where_he_arrived(service, clock
     join(service, "test:2", "Bram")
     service.act("test:2", "go:n")
     view = service.act("test:1", "home")
-    assert "• Bram · 🗡️ Guerrero · nv 1 · 🚶 de paso" in view.body          # on his way out
+    assert "• Bram · 🤺 Guerrero · nv 1 · 🚶 de paso" in view.body          # on his way out
     clock.advance(10 * MIN)
     service.tick()                                          # arrives at (0, 1) with the chat closed
     assert service.store.get("hero", "test:2")["y"] == 1
@@ -121,7 +121,7 @@ def test_crossing_paths_while_exploring(service, clock):
     service.store.put("hero", "test:1", {**service.store.get("hero", "test:1"), "exploration": {}})
     service.act("test:1", "do:explore:5")
     summary = run_batch(service, clock, "test:1", 8)
-    line = "👋 Te cruzaste con Bram (🗡️ Guerrero, nivel 1), que andaba 🪓 recolectando."
+    line = "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 1), que andaba 🪓 recolectando."
     assert summary.count(line) == 1                         # once per batch, even with chance 1.0
 
 

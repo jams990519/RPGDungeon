@@ -88,10 +88,10 @@ Clásico (1.x), The Burning Crusade (TBC), Wrath of the Lich King (WotLK), Catac
 
 | Especialización | Su Maestría |
 |---|---|
-| 🗡️ Guerrero · Protección | Bloqueas más (las respuestas 🛡 frenan más) |
+| 🤺 Guerrero · Protección | Bloqueas más (las respuestas 🛡 frenan más) |
 | 💢 Guerrero · Furia | Más daño mientras tienes ira alta |
 | 😇 Sacerdote · Sagrado | Tus curas dejan una cura extra la ronda siguiente |
-| 📿 Sacerdote · Disciplina | Tus escudos 🫧 son más grandes |
+| 🕊️ Sacerdote · Disciplina | Tus escudos 🫧 son más grandes |
 | 🐍 Pícaro · Asesinato | Tus venenos y sangrados pegan más |
 | ☄️ Mago · Fuego | Las quemaduras duran y pegan más |
 
@@ -182,7 +182,7 @@ El dueño: "vamos a crear clases personalizadas; no va a ser específicamente la
 
 | Clase | Antes | Ahora (propuesta) | Por qué |
 |---|---|---|---|
-| 🏹 Cazador | Malla | **Cuero** | En el WoW clásico usaba cuero hasta el nivel 40; es de Agilidad, como el Pícaro |
+| 🧝 Cazador | Malla | **Cuero** | En el WoW clásico usaba cuero hasta el nivel 40; es de Agilidad, como el Pícaro |
 | 🌊 Chamán | Malla | **Placa** | Queda como el Paladín, un híbrido pesado de Intelecto con escudo; así placa no se queda con solo 3 clases |
 | 🐲 Evocador | Malla | **Tela** | Lanza hechizos y cura con Intelecto, como el Mago y el Sacerdote |
 
