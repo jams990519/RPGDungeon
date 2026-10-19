@@ -31,6 +31,7 @@ services:
   deposit_hint: "💰 Deposit: from wherever you are, with each material's code (/f02). The fund feeds the active works."
   deposit_button: "💰 Deposit"
   intro_casa: "🏠 Homes: shelter, pantry, health and room for more members."
+  cost_growth: "📈 With {n} {n|work|works} built, every new work costs {pct} % more (its price is fixed when activated)."
   intro_oficio: "⚒️ Crafts: one building per profession (each opens its station), the 🔥 Hearth and trade."
   intro_defensa: "🛡️ Defenses: every point of 🛡️ Defense helps when the waves come."
   intro_saber: "📚 Knowledge: the 📚 Library and what the camp learns together."

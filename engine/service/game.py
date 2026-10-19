@@ -5318,7 +5318,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body += ["", t.t("upgrades.active_title")]
             shown = max(1, int(cfg.get("open_shown", 3)))
             for uid in works[:shown]:
-                need = self._upgrade_need(catalog[uid], perks)
+                need = self._upgrade_need(catalog[uid], perks, record, uid)
                 progress = dict(record["works"].get(uid, {}))
                 self._credit_raw(need, progress)
                 have = sum(min(n, int(progress.get(k, 0))) for k, n in need.items())
@@ -5397,7 +5397,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             defense = int(udef.get("defense", 0))
             title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
             title += t.t("upgrades.defense_mark", n=defense) if defense else ""
-            need = self._upgrade_need(udef, perks)              # D-115: with the camp's perks
+            need = self._upgrade_need(udef, perks, record, uid)  # D-115, D-295: perks and growth
             progress = dict(record["works"].get(uid, {}))
             self._credit_raw(need, progress)                    # D-115: raw given before counts as refined
             if kind == "open":                                  # D-291: not active yet: what it would ask, and ▶️
@@ -5463,8 +5463,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if not self._camp_manager(camp, hero.id):            # D-291: the founder or a helper activates it first
                 return self._work_back(hero, uid, back, notice=t.t("services.not_active", name=self._upgrade_name(uid)))
             activated = True
+            self._freeze_mult(record, uid)                       # D-295: its price is fixed from now on
         udef = self._upgrade_catalog()[uid]
-        need = self._upgrade_need(udef, self._camp_perks(camp, hero))     # D-115: 🗿 Cantería and 🏗️ Construcción
+        need = self._upgrade_need(udef, self._camp_perks(camp, hero), record, uid)     # D-115, D-295
         progress = record["works"].setdefault(uid, {})
         self._credit_raw(need, progress)                     # D-115: raw given before the work asked refined counts as refined
         from_fund = self._take_from_fund(record, need, progress)     # D-269/D-291: what is in the camp's fund goes first
@@ -5557,7 +5558,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         for uid in self._active_works(camp, record):
             if not record.get("fund"):
                 break
-            need = self._upgrade_need(self._upgrade_catalog()[uid], perks)
+            need = self._upgrade_need(self._upgrade_catalog()[uid], perks, record, uid)
             progress = record["works"].setdefault(uid, {})
             self._credit_raw(need, progress)
             given = self._take_from_fund(record, need, progress)
@@ -5599,13 +5600,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._work_back(hero, uid, back, notice=t.t("services.already_active", name=name))
         if uid not in self._open_works(camp, record):            # built, in progress or not for this level (D-287)
             return self._work_back(hero, uid, back)
+        self._freeze_mult(record, uid)                               # D-295: its price is fixed from now on
         record["active"] = list(record.get("active") or []) + [uid]
         lines = [t.t("services.activated", name=name)]
         record, fed, timed = self._feed_works(key, camp, record, hero)     # D-291: the fund gives it what it has
         lines += fed
         self.store.put("upgrades", key, record)
         if uid in self._active_works(camp, record):                # still asking: every member sees what it lacks
-            need = self._upgrade_need(catalog[uid], self._camp_perks(camp, hero))
+            need = self._upgrade_need(catalog[uid], self._camp_perks(camp, hero), record, uid)
             progress = dict(record["works"].get(uid, {}))
             self._credit_raw(need, progress)
             self._announce_activation(camp, hero, uid, need, progress)
@@ -5873,6 +5875,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         perks = self._camp_perks(camp, hero)
         built = [uid for uid in self._built(camp) if self._upgrade_kind(uid) == kind]
         body = [t.t(f"services.intro_{kind}")]
+        mult = self._growth_mult(record)
+        if mult > 1.0:                                   # D-295: every built work makes the next one cost more
+            body.append(t.t("services.cost_growth", n=len(record.get("built") or {}), pct=round((mult - 1) * 100)))
         body.append(t.t("services.built_line", names=" · ".join(self._upgrade_name(uid) for uid in built)) if built
                     else t.t("services.built_none"))
         uses, use_lines = self._service_uses(hero, camp, kind)
@@ -5904,7 +5909,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             defense = int(udef.get("defense", 0))
             title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
             title += t.t("upgrades.defense_mark", n=defense) if defense else ""
-            need = self._upgrade_need(udef, perks)
+            need = self._upgrade_need(udef, perks, record, uid)
             progress = dict(record["works"].get(uid, {}))
             self._credit_raw(need, progress)
             if entry in ("open", "idle"):                 # D-291: what it would ask; ▶️ Activar only for the founder and helpers
@@ -7819,18 +7824,53 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         cooked = sum(int(items[i].get("food", 0)) * n for i, n in given.items() if items[i].get("cooked"))
         return int(fish * perks["fish_food"][0] + 1e-9), int(cooked * perks["cook_food"][0] + 1e-9)
 
-    def _upgrade_need(self, udef: dict[str, Any], perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
-        """What an improvement asks after the camp perks (D-115): 🏗️ −20 % of every material, 🗿 −15 % of the stone ones.
+    def _upgrade_need(self, udef: dict[str, Any], perks: dict[str, tuple[float, str | None]],
+                      record: dict[str, Any] | None = None, uid: str | None = None) -> dict[str, int]:
+        """What an improvement asks: its cost × the camp's growth (D-295), then the camp perks (D-115).
 
         [ES]
         Qué hace: lo que pide una mejora (materiales y monedas) con los beneficios del campamento: la 🏗️ Construcción le baja
         todos los materiales y la 🗿 Cantería, además, la piedra y el sillar (balance.yaml camp_professions.stone_items).
         Las monedas no bajan. Redondea hacia arriba, nunca menos de 1 (profession_rules.scaled_cost).
-        La llaman: _upgrades_view, _works_view y _give_to_work.
-        Si cambia, afecta: cuánto cuesta cada mejora a los campamentos con esos oficios (y lo que muestran las barras).
+        D-295 (0.39, pedido del dueño: "aumentar los costos a medida que se va subiendo"): antes, el costo (materiales y
+        monedas) se multiplica por _work_mult: cada obra nueva cuesta upgrades.cost_growth más por cada obra que el campamento
+        ya construyó, con el precio fijo desde que se activa. Sin `record` (una lista general) cuesta lo de base.
+        La llaman: _upgrades_view, _works_view, _give_to_work, _feed_works, _activate_work, _service_type_view y el 💰 fondo
+        (engine/service/gremio.py).
+        Si cambia, afecta: cuánto cuesta cada mejora (y lo que muestran las barras); el costo del castillo
+        (upgrades.castle_min_built).
         """
         stone = tuple(self._camp_prof_cfg().get("stone_items") or ())
-        return profession_rules.scaled_cost(self._work_need(udef), perks["build_cost"][0], perks["stone_cost"][0], stone)
+        base = self._work_need(udef)
+        mult = self._work_mult(record, uid) if record is not None and uid else 1.0
+        if mult != 1.0:
+            base = {k: max(1, math.ceil(n * mult - 1e-9)) for k, n in base.items()}
+        return profession_rules.scaled_cost(base, perks["build_cost"][0], perks["stone_cost"][0], stone)
+
+    def _growth_mult(self, record: dict[str, Any]) -> float:
+        """× the cost of the next work: 1 + upgrades.cost_growth per improvement already built (D-295)."""
+        growth = float(self.content.balance["upgrades"].get("cost_growth", 0.0))
+        return round(1.0 + growth * len(record.get("built") or {}), 4)
+
+    def _work_mult(self, record: dict[str, Any], uid: str) -> float:
+        """The cost multiplier of one work (D-295): fixed when it was activated; works started before 0.39 keep ×1.
+
+        [ES]
+        Qué hace: por cuánto se multiplica lo que pide una obra. Se fija al activarla (record "mult" {obra: ×}) para que lo
+        que falta no suba a mitad de camino cuando se termina otra; una obra que ya tenía materiales dados antes de esta regla
+        sigue ×1 (no se le pide más a lo empezado); una sin activar muestra el precio de hoy (_growth_mult).
+        La llaman: _upgrade_need. Si cambia, afecta: el costo de cada obra nueva.
+        """
+        frozen = (record.get("mult") or {}).get(uid)
+        if frozen is not None:
+            return float(frozen)
+        if self._work_started(record, uid):
+            return 1.0
+        return self._growth_mult(record)
+
+    def _freeze_mult(self, record: dict[str, Any], uid: str) -> None:
+        """Fix a work's cost multiplier at activation (D-295), unless it already has one."""
+        record.setdefault("mult", {}).setdefault(uid, self._work_mult(record, uid))
 
     def _repair_need(self, damage: int, perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
         """What repairing `damage` points asks: camp_professions.repair_per_point × damage, halved by 🏗️ at rank 100 (D-115)."""

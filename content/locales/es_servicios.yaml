@@ -42,6 +42,7 @@ services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios po
   deposit_hint: "💰 Depositar: desde donde estés, con el código de cada material (/f02). El fondo alimenta las obras activas."
   deposit_button: "💰 Depositar"
   intro_casa: "🏠 Casas: refugio, despensa, salud y lugar para más miembros."
+  cost_growth: "📈 Con {n} {n|obra construida|obras construidas}, cada obra nueva cuesta un {pct} % más (el precio queda fijo al activarla)."   # [ES] D-295 (0.39, pedido del dueño): los costos suben a medida que el campamento crece
   intro_oficio: "⚒️ Oficios: un edificio por oficio (cada uno abre su estación), el 🔥 Fogón y el comercio."
   intro_defensa: "🛡️ Defensas: cada punto de 🛡️ Defensa ayuda cuando llegan las oleadas."
   intro_saber: "📚 Saber: la 📚 Biblioteca y lo que el campamento aprende entre todos."

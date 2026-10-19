@@ -2009,7 +2009,7 @@ class GremioMixin:
             perks = self._camp_perks(camp, hero)
             body += ["", t.t("cfund.active_title")]
             for n, uid in enumerate(works, 1):
-                need = self._upgrade_need(self._upgrade_catalog()[uid], perks)
+                need = self._upgrade_need(self._upgrade_catalog()[uid], perks, record, uid)
                 progress = dict(record["works"].get(uid, {}))
                 self._credit_raw(need, progress)
                 body.append(t.t("cfund.work_line", n=n, name=self._upgrade_name(uid), items=self._missing_text(need, progress) or "—"))
