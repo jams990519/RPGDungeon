@@ -53,6 +53,8 @@ Datos de los que es dueño:
         código de jugador nunca cambia. El campamento suma "invites" [cuentas que su fundador invitó con /inv_ y no respondieron].
     D-282 (0.38): lo que el gremio sabe de las zonas no se guarda aparte: sale de la "exploration" de cada compañero
         (_mates_knowledge) y "gremio_codes" suma "zones" (el orden de 🗺️ Zonas del gremio para /z1: solo pantalla).
+    D-285 (0.38.1): el chat del gremio. Todo texto suelto de un miembro (_guild_chat, desde text()) va a todos: se guarda en
+        "messages" del gremio o, ya con campamento, en "messages" del campamento (los últimos gremio.messages_kept).
 Reglas que nunca se rompen:
     1. Un gremio por héroe: quien es miembro de un campamento tiene el gremio de su campamento (D-97) y no entra a otro.
     2. Antes del campamento caben gremio.members_before_camp (5); entra quien pide y acepta el líder o un oficial (o quien
@@ -468,7 +470,7 @@ class GremioMixin:
         if messages:
             body += ["", t.t("gremio.messages_title")]
             body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
-        body += ["", t.t("gremio.codes_hint")]
+        body += ["", t.t("gremio.chat_hint"), t.t("gremio.codes_hint")]     # D-285: any loose text goes to the whole guild
         if self._gremio_manager(record, hero.id) and self._gremio_room(record):
             body.append(t.t("gremio.invite_hint"))     # D-280: /inv_ and the player's code
         actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="gfund", label=t.t("gremio.fund_button")),
@@ -1130,20 +1132,48 @@ class GremioMixin:
         self.store.delete("camp_naming", hero.id)
         if not record:
             return self._gremio_view(hero)
-        text = " ".join(text.split())
-        if not text:
+        if not " ".join(text.split()):
             return self._gremio_msg_ask(hero)
+        self._guild_chat(hero, text)
+        return self._gremio_view(hero, notice=t.t("gremio.msg_sent"))
+
+    def _guild_chat(self, hero: Hero, text: str) -> str | None:
+        """A message to the whole guild (or camp): kept with the last few and pushed to every mate; None without a guild.
+
+        [ES]
+        Qué hace: manda un mensaje a todos los compañeros (_mates: el gremio sin campamento o el campamento, D-282), cortado a
+        gremio.message_max_chars, y lo guarda con los últimos gremio.messages_kept (en el gremio o en el campamento). D-285
+        (pedido del dueño, 19-oct-2026: "cuando ya se crea un gremio, todos los mensajes que se envíen dentro del juego van a
+        ser recibidos por el resto de jugadores"): cualquier texto suelto que escribe un miembro (que no sea un comando ni la
+        respuesta a una pantalla que pide texto) llega a todos. Devuelve el aviso para quien lo mandó, o None si no tiene
+        gremio. La llaman: text() (el texto suelto) y _gremio_post (📢 Mensaje). Si cambia, afecta: el chat del gremio.
+        """
+        t = self.texts
+        text = " ".join(text.split())
+        record = self._my_gremio(hero)
+        camp = None if record or not hero.camp else self.store.get("camp", hero.camp)
+        if camp and hero.id not in camp.get("members", []):
+            camp = None
+        if not (record or camp) or not text:
+            return None
+        mates = self._mates(hero)
         cap = int(self._gremio_cfg().get("message_max_chars", 200))
         if len(text) > cap:
             text = text[:max(1, cap - 1)].rstrip() + "…"
         keep = max(1, int(self._gremio_cfg().get("messages_kept", 5)))
-        messages = (record.get("messages") or []) + [{"by": hero.name, "id": hero.id, "text": text, "at": self.clock.now()}]
-        record["messages"] = messages[-keep:]
-        self.store.put("gremio", record["id"], record)
-        self._push_each([m for m in record["members"] if m != hero.id], lambda: View(
-            kind="gremio_message", title=t.t("gremio.msg_push_title", name=record["name"]),
+        entry = {"by": hero.name, "id": hero.id, "text": text, "at": self.clock.now()}
+        if record:
+            record["messages"] = ((record.get("messages") or []) + [entry])[-keep:]
+            self.store.put("gremio", record["id"], record)
+            name = record["name"]
+        else:
+            camp["messages"] = ((camp.get("messages") or []) + [entry])[-keep:]
+            self.store.put("camp", hero.camp, camp)
+            name = camp["name"]
+        self._push_each(mates, lambda: View(
+            kind="gremio_message", title=t.t("gremio.msg_push_title", name=name),
             body=[t.t("gremio.msg_line", name=hero.name, text=text)], actions=[Action(id="guild", label=t.t("gremio.button"))]))
-        return self._gremio_view(hero, notice=t.t("gremio.msg_sent"))
+        return t.t("gremio.chat_sent", n=len(mates))
 
     def _gremio_fund_view(self, hero: Hero, notice: str | None = None) -> View:
         """💰 Fondo: totals, what founding asks, who gave what, and your backpack's materials with a code each (/f02).

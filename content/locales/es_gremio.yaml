@@ -146,6 +146,8 @@ gremio:
   msg_ask: "📢 Escribe el mensaje para todo el gremio (hasta {n} letras)."
   msg_push_title: "📢 Gremio {name}"
   msg_sent: "📢 Mensaje enviado a todo el gremio."
+  chat_sent: "📢 Enviado a tu gremio ({n} {n|compañero|compañeros})."   # [ES] D-285 (0.38.1): el texto suelto de un miembro le llega a todo el gremio
+  chat_hint: "💬 Escribe cualquier mensaje en el chat del juego, desde donde estés, y le llega a todo tu gremio."
   fund_title: "💰 Fondo del gremio"
   fund_intro: "Deposita desde donde estés: no hace falta llevarlo a ningún lugar. Escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso."
   fund_found: "Fundar el campamento pide {items}"

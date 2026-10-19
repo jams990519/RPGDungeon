@@ -234,6 +234,7 @@ places:                      # [ES] D-267 (0.34): 📒 Lugares
 
 map_view:                    # [ES] el mapa de 🧭 Explorar → 🗺️ Mapa (pedido del dueño: tan ancho como el mensaje e igual de alto)
   radius: 6                  # [ES] 6 → 13 × 13 cuadritos; más de 6 puede partir las filas en teléfonos chicos (375 puntos)
+  mates_listed: 8            # [ES] D-286 (0.38.1): cuántos compañeros del gremio nombra el mapa arriba de la cuadrícula (después "…y N más"; Claude)
   fog:                       # [ES] D-212 y D-220 (0.30): el mapa vuelve a los puntos grises. Cada zona se ve gris hasta que la investigas al color_at %; el punto crece por etapas para que se vea que vas avanzando. Solo el 🔥 Claro se ve siempre
     color_at: 50             # [ES] desde este % la zona muestra el color de su terreno y su tipo entra en la leyenda (dueño: "cuando lo investigas al 50 %")
     stages:                  # [ES] de menos a más (at = desde qué %); el nombre de cada una está en content/locales (map.fog.name.<id>). notice: avisa al llegar

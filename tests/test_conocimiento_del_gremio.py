@@ -127,8 +127,8 @@ def test_guild_mates_are_drawn_on_the_map(service):
     place(service, "test:2", 2, 1)
     place(service, "test:3", -1, 0)                                               # not in the guild: not drawn
     view = service.act("test:1", "map")
-    mark = service.texts.t("map.mate_mark")
-    assert any(mark in line for line in view.body) and "compañero de tu gremio" in text(view)
+    mark = "🏰"                                                                   # D-286: Bram's class (🏰 Guerrero)
+    assert "🏰 Bram · Guerrero · (2, 1)" in text(view) and "Cira" not in text(view)
     grid = [line for line in view.body if " " not in line]                       # the map's rows (the legend has spaces)
     assert sum(line.count("🧍") for line in grid) == 1                            # you
     assert sum(line.count(mark) for line in grid) == 1                            # Bram; Cira is not in the guild
