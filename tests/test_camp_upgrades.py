@@ -143,7 +143,7 @@ def test_only_members_at_the_camp_build(service):
     assert service._upgrades(KEY)["works"] == {}
 
 
-def regen_gain(service, clock, account, downed=False, minutes=60):
+def regen_gain(service, clock, account, downed=False, minutes=10):   # D-284: full in 30 min, so 10 min shows the ×1,5
     set_hero(service, account, hp=1, downed=downed, last_regen_at=clock.now())
     clock.advance(minutes * 60)
     service.view(account)
@@ -163,9 +163,9 @@ def test_fogon_and_enfermeria_only_for_members_in_the_territory(service, clock):
     place(service, "test:1", 9, 9)
     assert regen_gain(service, clock, "test:1") == base                       # nothing outside the territory
     place(service, "test:1", 6, 0)
-    downed = regen_gain(service, clock, "test:1", downed=True, minutes=120)
+    downed = regen_gain(service, clock, "test:1", downed=True)
     build(service, "enfermeria")
-    assert abs(regen_gain(service, clock, "test:1", downed=True, minutes=120) - 1.5 * downed) <= 2
+    assert abs(regen_gain(service, clock, "test:1", downed=True) - 1.5 * downed) <= 2
     assert service._camp_regen_mult(service._load("test:2")) == 1.0
 
 

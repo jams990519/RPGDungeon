@@ -131,11 +131,11 @@ def test_the_inn_takes_time_by_the_life_you_lack(service):
     max_hp = hero_stats(service._kit(hero), hero.level)["max_hp"]
     hero.hp = 1
     service._save(hero)
-    assert 55 * 60 <= service._inn_seconds(service._load("test:1")) <= 60 * 60      # almost empty: about an hour
+    assert 7 * 60 <= service._inn_seconds(service._load("test:1")) <= 7.5 * 60      # D-284: almost empty, about 7,5 min (30 / 4)
     hero = service._load("test:1")
     hero.hp = max_hp // 2
     service._save(hero)
-    assert 25 * 60 <= service._inn_seconds(service._load("test:1")) <= 35 * 60      # half: about half an hour
+    assert service._inn_seconds(service._load("test:1")) == 5 * 60                  # half (3,75 min): never under inn.min_minutes
     hero = service._load("test:1")
     hero.hp, hero.gold = 1, 50
     service._save(hero)
