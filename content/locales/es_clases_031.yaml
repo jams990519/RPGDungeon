@@ -9,7 +9,7 @@
 # tests/test_clases_031.py revisan que no falte ningún texto.
 
 class_group:
-  guerrero: {name: "🏰 Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
+  guerrero: {name: "🗡️ Guerrero", desc: "placa · Tanque de aguante o DPS de fuerza"}
   druida: {name: "🌳 Druida", desc: "cuero · Tanque de esquiva (oso) o DPS de sangrado (felino)"}
   sacerdote: {name: "📿 Sacerdote", desc: "tela · Sanador de uno (el tanque) o DPS de sombra"}
   chaman: {name: "🌩️ Chamán", desc: "cuero · Sanador de grupo o DPS de rayo (retirado en la 0.32: lo reemplazó el Paladín)"}

@@ -6,7 +6,7 @@
 
 class_group:
   guerrero:
-    name: 🏰 Warrior
+    name: 🗡️ Warrior
     desc: plate · endurance Tank or strength DPS
   druida:
     name: 🌳 Druid

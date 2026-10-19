@@ -88,7 +88,7 @@ Clásico (1.x), The Burning Crusade (TBC), Wrath of the Lich King (WotLK), Catac
 
 | Especialización | Su Maestría |
 |---|---|
-| 🏰 Guerrero · Protección | Bloqueas más (las respuestas 🛡 frenan más) |
+| 🗡️ Guerrero · Protección | Bloqueas más (las respuestas 🛡 frenan más) |
 | 💢 Guerrero · Furia | Más daño mientras tienes ira alta |
 | 😇 Sacerdote · Sagrado | Tus curas dejan una cura extra la ronda siguiente |
 | 📿 Sacerdote · Disciplina | Tus escudos 🫧 son más grandes |
