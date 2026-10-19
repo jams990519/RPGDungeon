@@ -2749,7 +2749,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: tras una vuelta de exploración o recolección sin pelea, con probabilidad presence.cross_chance,
-        agrega al resumen "👋 Te cruzaste con Bram (🏰 Guerrero, nivel 2), que andaba 🪓 recolectando." si hay
+        agrega al resumen "👋 Te cruzaste con Bram (🗡️ Guerrero, nivel 2), que andaba 🪓 recolectando." si hay
         alguien en la zona. Solo texto: sin premio, sin pelea, sin PvP, en cualquier zona (también el Claro y los
         campamentos). Usa su propio sorteo fijo, así no cambia ningún otro resultado de la vuelta; a cada jugador
         te lo cruzas una sola vez por lote (activity["met"]).
@@ -8466,7 +8466,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         también la línea de cómo va tu zona).
         D-283 (0.38, pedido del dueño): también tus compañeros del gremio o del campamento, con su leyenda.
         D-286 (0.38.1, pedido del dueño: "para saber diferenciar dónde está cada quien y qué tipo es"): cada compañero se
-        dibuja con el emoji de su clase (🏰 🐍 📿…, el de class_group.<grupo>.name; 🧑 map.mate_mark si no tiene) y 👥
+        dibuja con el emoji de su clase (🗡️ 🌳 📿…, el de class_group.<grupo>.name; 🧑 map.mate_mark si no tiene) y 👥
         (map.mates_group_mark) si hay varios en la misma zona; arriba de la cuadrícula, una línea por compañero a la vista
         (_map_mate_lines: nombre, clase y coordenadas) y cuántos quedan fuera del mapa.
         D-223 (0.30.2, pedido del dueño): el mapa se ve en blanco. Solo se dibujan tú (🧍) y cada zona: ▫️ en blanco hasta
@@ -8509,7 +8509,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if abs(spot[0] - hero.x) > radius or abs(spot[1] - hero.y) > radius:
                 away += 1
                 continue
-            mark, _, cls = self._class_label(data).partition(" ")     # D-286: "🏰 Guerrero" → 🏰 on the map, Guerrero below
+            mark, _, cls = self._class_label(data).partition(" ")     # D-286: "🗡️ Guerrero" → 🗡️ on the map, Guerrero below
             mates.setdefault(spot, []).append((mark if cls else t.t("map.mate_mark"), data.get("name", "?"), cls or mark))
         rows = []
         seen_camp = False
@@ -8547,7 +8547,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: debajo de la leyenda del 🗺️ Mapa (arriba de la cuadrícula, D-222) dice quién es cada compañero que se ve:
-        "🏰 Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta map_view.mates_listed (después "…y N más"); si
+        "🗡️ Bram · Guerrero · (2, 1)", del más cercano al más lejano, hasta map_view.mates_listed (después "…y N más"); si
         dos o más están en la misma zona, el mapa muestra 👥 y aquí se nombran todos; y cuántos están fuera del mapa.
         Pedido del dueño (19-oct-2026): "lo que se muestra en el mapa en sí, para saber diferenciar dónde está cada quien y
         qué tipo es". La llama: _map_view. Si cambia, afecta: el largo del mapa (va arriba de la cuadrícula).

@@ -109,7 +109,7 @@ Desde la 0.32 (D-233) el ⚜️ Paladín ocupa el lugar del 🌩️ Chamán y la
 
 | Clase | Armadura | Rol 1 (orden) | Rol 2 (orden) |
 |---|---|---|---|
-| 🏰 Guerrero | Placa | 🛡️ Tanque de aguante (B → H2 → H1 → H3) | ⚔️ DPS de fuerza (H1 → H2 → H3) |
+| 🗡️ Guerrero | Placa | 🛡️ Tanque de aguante (B → H2 → H1 → H3) | ⚔️ DPS de fuerza (H1 → H2 → H3) |
 | ⚜️ Paladín | Placa | ☀️ Sanador de grupo; estadística principal: Restauración | 🔆 DPS sagrado |
 | 🌳 Druida | Cuero | 🐻 Tanque de esquiva, forma de oso | 🐈 DPS de sangrado, forma felina |
 | 🏹 Cazador | Cuero | 🦅 Soporte que potencia aliados | 🏹 DPS de agilidad a distancia |

@@ -689,3 +689,13 @@ v0_38_1:
   notes_en:
     - "💬 If you have a guild (or a camp), everything you type in the game chat reaches your whole guild, from wherever you are. The latest messages stay in 🛡️ Guild. Commands with / and the screens that ask you to type something work as before."
     - "🗺️ On the map, each of your guild mates shows with their class's emoji (🏰, 📿, 🌳…), and 👥 if several are in the same zone. Above the map, one line per mate says who it is, their class and their coordinates."
+
+v0_38_2:
+  version: "0.38.2"
+  title: "🗡️ Lost Realms 0.38.2: el Guerrero con su espada"
+  title_en: "🗡️ Lost Realms 0.38.2: the Warrior with a sword"
+  notes:
+    - "🗡️ El Guerrero ahora se ve con una espada en todo el juego: en el mapa, en 👥 Jugadores y en su ficha."
+  notes_en:
+    - "🗡️ The Warrior now shows with a sword everywhere: on the map, in 👥 Players and on their card."
+

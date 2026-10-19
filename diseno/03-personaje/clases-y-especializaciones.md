@@ -374,7 +374,7 @@ Las secciones de arriba son el diseño completo. En la versión jugable, cada un
 | Especialización | Rol | 1 a 3 (1, 3 y 6 puntos) | 4 a 8 (10, 16, 24, 34 y 46 puntos) |
 |---|---|---|---|
 | 💢 Guerrero · Furia | ⚔ Ataque | Rompecorazas, Tajo Final, Parada | Acero Sediento, Espejo de Acero, A Tumba Abierta, Aliento de Rabia, Vendaval de Tajos |
-| 🏰 Guerrero · Protección | 🛡 Defensa | Golpe valeroso, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Bramido Desalentador, Venganza, Baluarte Cerrado, Todavía en Pie |
+| 🗡️ Guerrero · Protección | 🛡 Defensa | Golpe valeroso, Bloqueo con escudo, Segundo aliento | Golpe con Escudo, Bramido Desalentador, Venganza, Baluarte Cerrado, Todavía en Pie |
 | 🚩 Guerrero · Señor de la Guerra | ✦ Soporte | Estandarte de Guerra, Estandarte de Muralla, Interponerse | Arenga de Guerra, Hacha Voladora, Tajo Funesto, Llamada a Filas, Alarido de Espanto |
 | ⚖️ Paladín · Reprensión | ⚔ Ataque | Juicio, Condena Radiante, Amparo Celestial | Filo Justiciero, Aliento de Fe, Furor Sagrado, Rastro de Brasas, Fallo Inapelable |
 | 🔰 Paladín · Protección | 🛡 Defensa | Escudo Acallador, Gracia Protectora, Aura de Constancia | Suelo Ungido, Égida Firme, Llama Tenaz, Centinela de Antaño, Milagro a Tiempo |
@@ -440,7 +440,7 @@ Ver P-12, P-14, P-67 y P-68 en [Preguntas abiertas](../00-vision/preguntas-abier
 | Especialización | Antes → ahora |
 |---|---|
 | 💢 Guerrero · Furia | Golpe Colosal → Rompecorazas · Ejecutar → Tajo Final · Sed de Sangre → Acero Sediento · Reflejo de Hechizos → Espejo de Acero · Temeridad → A Tumba Abierta · Regeneración Enfurecida → Aliento de Rabia · Desenfreno → Vendaval de Tajos |
-| 🏰 Guerrero · Protección | Golpe heroico → Golpe valeroso · Grito Desmoralizador → Bramido Desalentador · Muro de Escudo → Baluarte Cerrado · Última Resistencia → Todavía en Pie |
+| 🗡️ Guerrero · Protección | Golpe heroico → Golpe valeroso · Grito Desmoralizador → Bramido Desalentador · Muro de Escudo → Baluarte Cerrado · Última Resistencia → Todavía en Pie |
 | 🚩 Guerrero · Señor de la Guerra | Intervenir → Interponerse · Grito de Batalla → Arenga de Guerra · Lanzamiento Heroico → Hacha Voladora · Golpe Mortal → Tajo Funesto · Grito de Reunión → Llamada a Filas · Grito Intimidador → Alarido de Espanto |
 | ⚖️ Paladín · Reprensión | ⚔️ Golpe de cruzado → Mandoble justo · Veredicto del Templario → Condena Radiante · Escudo Divino → Amparo Celestial · Hoja de Justicia → Filo Justiciero · Palabra de Gloria → Aliento de Fe · Cólera Vengativa → Furor Sagrado · Estela de Cenizas → Rastro de Brasas · Sentencia de Ejecución → Fallo Inapelable |
 | 🔰 Paladín · Protección | ⚔️ Martillo del justo → Martillazo firme · Escudo del Vengador → Escudo Acallador · Bendición de Protección → Gracia Protectora · Aura de Devoción → Aura de Constancia · Consagración → Suelo Ungido · Escudo de los Justos → Égida Firme · Defensor Ardiente → Llama Tenaz · Guardián de los Reyes Ancestrales → Centinela de Antaño · Imposición de Manos → Milagro a Tiempo |

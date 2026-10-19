@@ -41,7 +41,7 @@ role:
   soporte: ✦ Support
 class_group:
   guerrero:
-    name: 🏰 Warrior
+    name: 🗡️ Warrior
     desc: 'plate and rage: takes hits, blocks and strikes back'
   picaro:
     name: 🐍 Rogue
@@ -51,7 +51,7 @@ class_group:
     desc: 'cloth and mana: heals, shields and wears down'
 class:
   guerrero:
-    name: 🏰 Warrior · Protection
+    name: 🗡️ Warrior · Protection
     role: takes hits, blocks and strikes back
     attack_name: Slash
   picaro:
