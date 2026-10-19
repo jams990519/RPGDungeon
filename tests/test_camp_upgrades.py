@@ -70,8 +70,15 @@ def test_catalog_is_wide_spread_and_complete(content):
     assert len(techs) == 3 and all(t.has(tdef["name_key"]) and t.has(tdef["desc_key"]) for tdef in techs.values())
     first = [udef for udef in catalog.values() if udef["level"] == 1]
     assert all(sum(udef["cost"].values()) <= 60 and not udef.get("coins") for udef in first)   # 2 players, a day or two
-    cheapest = sorted(sum(udef["cost"].values()) for udef in catalog.values())[:15]
-    assert sum(cheapest) >= 2000                                   # 15 built: weeks for a group, like the castle
+    # D-288 (0.39): one small building per profession makes the 15 cheapest much cheaper than before (2000+ with the 20 of
+    # D-101); castle_min_built stays 15 and the owner was told (the castle also asks the guild, the pantry and 🪎 chests)
+    cheapest = sorted(sum(udef["cost"].values()) for udef in catalog.values() if not udef.get("retired"))[:15]
+    assert sum(cheapest) >= 1000
+    assert all(udef.get("kind") in ("casa", "oficio", "defensa", "saber") for udef in catalog.values())     # D-288
+    assert catalog["taller"]["retired"] and catalog["herreria"]["retired"]                                  # D-288
+    stations = content.professions["stations"]["camp"]
+    crafted = {pid for pid, pdef in content.professions["professions"].items() if pdef.get("branch") in ("refine", "craft")}
+    assert crafted <= {sid for uid, sids in stations.items() if not catalog[uid].get("retired") for sid in sids}   # each has a home
 
 
 def test_works_open_by_camp_level(service):
@@ -79,15 +86,18 @@ def test_works_open_by_camp_level(service):
     camp_at(service, 1)
     view = service.act("test:1", "upgrades")
     assert view.kind == "camp_upgrades" and "upw" in ids(view) and len(view.actions) <= 4
-    assert any("0 de 20" in line and "15" in line for line in view.body)
-    assert any("🔒 En nivel 2" in line for line in view.body)
-    works = service.act("test:1", "upw")
-    assert [a.id for a in works.actions] == ["upg:fogon", "upg:empalizada", "upgrades"]
+    catalog = service._upgrade_catalog()
+    level_one = [uid for uid, udef in catalog.items() if udef["level"] == 1 and not udef.get("retired")]
+    assert any(f"0 de {len(level_one)}" in line for line in view.body)          # D-287: only what this level reaches
+    assert not any("🔒" in line or "castillo" in line for line in view.body)     # D-287: nothing of higher levels
+    works = service.act("test:1", "upw")                         # D-291: the founder sees what to ▶️ activate
+    assert [a.id for a in works.actions] == [f"upact:{level_one[0]}:w", f"upact:{level_one[1]}:w", "upw:1", "upgrades"]
     service.act("test:1", "upg:refugio")                           # level 3: still locked
     assert "refugio" not in service._upgrades(KEY)["works"]
     set_level(service, 3)
     open_now = service._open_works(service.store.get("camp", KEY), service._upgrades(KEY))
-    assert {"fogon", "empalizada", "torre_vigia", "pozo", "refugio", "trueque", "granero", "trampas"} == set(open_now)
+    assert {"fogon", "empalizada", "torre_vigia", "pozo", "refugio", "trueque", "granero", "trampas",
+            "aserradero", "tejeduria", "canteria", "curtiduria", "alambique", "fundicion", "carpinteria", "sastreria"} == set(open_now)
     works = service.act("test:1", "upw")
     assert len(works.actions) == 4 and works.actions[2].id == "upw:1"   # 2 per page + ➡️ Ver más + ↩️ Volver
 
@@ -172,11 +182,13 @@ def test_fogon_and_enfermeria_only_for_members_in_the_territory(service, clock):
 def test_refugio_heals_at_the_camp_cheaper_than_the_inn(service, clock):
     make_hero(service, "test:1", "Lyra")
     camp_at(service, 3)
-    assert "upsvc" not in ids(service.act("test:1", "upgrades"))  # no service built yet
+    assert "crest" not in ids(service.act("test:1", "svc:casa"))  # no service built yet
     build(service, "refugio")
     set_hero(service, "test:1", hp=5, gold=10, last_regen_at=clock.now())
-    view = service.act("test:1", "upsvc")
-    assert view.kind == "camp_services" and ids(view) == ["crest", "claro"]      # D-192: 🏘️ Servicios is a hub button
+    view = service.act("test:1", "upsvc")                         # D-288: 🏘️ Servicios shows one button per type
+    assert view.kind == "camp_services" and "svc:casa" in ids(view) and ids(view)[-2:] == ["gfund:svc", "claro"]
+    view = service.act("test:1", "svc:casa")                      # 🏠 Casas: the 🛏️ Refugio first, ↩️ back to Servicios
+    assert view.kind == "camp_type" and ids(view)[0] == "crest" and ids(view)[-1] == "upsvc"
     view = service.act("test:1", "crest")
     price = service.content.camp_upgrades["upgrades"]["refugio"]["service"]["rest_price"]
     assert price < service.content.balance["inn"]["price"]
@@ -196,7 +208,7 @@ def test_trueque_sells_materials_but_never_food(service):
     service.act("test:1", "csell")
     assert service._load("test:1").backpack["madera"] == 10      # no Puesto de trueque yet: nothing sold
     build(service, "trueque")
-    view = service.act("test:1", "upsvc")
+    view = service.act("test:1", "svc:oficio")                    # D-288: 💱 Vender lives in ⚒️ Oficios
     assert "csell" in ids(view)
     view = service.act("test:1", "csell")
     hero = service._load("test:1")
@@ -213,10 +225,10 @@ def test_taller_sews_bags_and_builds_chests_at_the_camp(service):
     service.act("test:1", "sew")                                  # no Taller: bags only in the Claro
     assert service._load("test:1").bags == 0
     assert "sew" not in ids(service.act("test:1", "wallet"))
-    build(service, "taller")
+    build(service, "taller")                                      # D-288: retired, but a camp that built it keeps it all
     view = service.act("test:1", "ctaller")
     # D-109: the Taller also opens the camp's profession stations, so ⚒️ Oficios ("oficios") is its 4th button
-    assert view.kind == "camp_workshop" and ids(view) == ["tsew", "tchest", "oficios", "upsvc"]
+    assert view.kind == "camp_workshop" and ids(view) == ["tsew", "tchest", "oficios", "svc:oficio"]
     view = service.act("test:1", "tsew")
     assert view.kind == "camp_workshop" and service._load("test:1").bags == 1
     bags, materials = service._chest_recipe()
@@ -409,7 +421,7 @@ def test_the_claro_has_no_improvements(service):
     set_hero(service, "test:1", hp=5)
     set_hero(service, "test:1", backpack={"madera": 50, "piedra": 50, "fibra": 4, "pieza_metal": 1}, gold=500, bags=0)
     for action in ("upgrades", "upw", "upg:fogon", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know",
-                   "kstart:rastreo", "kgive"):
+                   "kstart:rastreo", "kgive", "svc:casa", "upact:fogon", "upstop:fogon"):     # D-288, D-291
         view = service.act("test:1", action)
         assert view.kind in ("claro", "activity", "zone"), (action, view.kind)
         assert len(view.actions) <= (8 if view.kind == "claro" else 4)           # D-192: the Claro hub, up to 8
@@ -428,7 +440,8 @@ def test_camps_saved_before_the_patch_still_work(service):
     hero.camp, hero.x, hero.y = "0:3", 0, 3
     service.store.put("hero", "test:1", hero.to_dict())
     view = service.act("test:1", "claro")
-    assert view.kind == "player_camp" and ids(view) == ["cook", "research", "oficios", "trainer", "upsvc", "board", "campmgmt", "dudas"]   # D-192: the camp hub
+    # D-192: the camp hub; D-287 (0.39): no 🔬 Investigar until the camp has its 📚 Biblioteca
+    assert view.kind == "player_camp" and ids(view) == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]
     assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in view.body)
     assert service.act("test:1", "upgrades").kind == "camp_upgrades"

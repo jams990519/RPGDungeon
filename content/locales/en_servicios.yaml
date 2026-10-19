@@ -1,0 +1,181 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_servicios.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_servicios.yaml. Una clave
+# nueva va primero en es_servicios.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas
+# (tests/test_idiomas.py lo exige): mismas claves, mismos huecos {nombre} y {n|uno|varios} y mismas etiquetas HTML.
+
+hub:
+  services_active: "🏘️ Services: {list} · 🔨 {n} {n|active work|active works}. What's built and what's missing, by type."
+  services_types: "🏘️ Services: the camp's homes, crafts and defenses, by type · 🔨 {n} {n|active work|active works}."
+  make_none_camp: "🛠️ Craft: no stations yet; the craft buildings open them (🏘️ Services → ⚒️ Crafts)."
+  manage_nopantry: "🏰 Manage: ⬆️ grow, 🔨 upgrades and 🛡️ guild."
+  research_none_notice: "🔬 Your camp doesn't have a 📚 Library yet."
+  guild_camp: "🛡️ Guild: the members, 💰 deposit from wherever you are, 📢 messages and ⚔️ armory."
+
+upgrades:
+  count_reach: "🏗️ Built: {n} of {total} for this level"
+  active_title: "🔨 Active works:"
+
+services:
+  intro: "🏘️ What your camp has and what it still needs, by type. Tap one to see its works and contribute."
+  kind:
+    casa: "🏠 Homes"
+    oficio: "⚒️ Crafts"
+    defensa: "🛡️ Defenses"
+    saber: "📚 Knowledge"
+  kind_line: "{label}: ✅ {built} · 🔨 {active} {active|active|active}"
+  kind_building: " · 🏗️ {n} in progress"
+  kind_open: " · ▶️ {n} to activate"
+  kind_idle: " · ⏸️ {n} not active"
+  nothing_yet: "Nothing is built or active yet. The founder or a 🤝 helper picks which work to activate; then everyone sees what's missing."
+  nothing_yet_manager: "There are no works for this level right now: grow the camp to open more."
+  deposit_hint: "💰 Deposit: from wherever you are, with each material's code (/f02). The fund feeds the active works."
+  deposit_button: "💰 Deposit"
+  intro_casa: "🏠 Homes: shelter, pantry, health and room for more members."
+  intro_oficio: "⚒️ Crafts: one building per profession (each opens its station), the 🔥 Hearth and trade."
+  intro_defensa: "🛡️ Defenses: every point of 🛡️ Defense helps when the waves come."
+  intro_saber: "📚 Knowledge: the 📚 Library and what the camp learns together."
+  built_line: "✅ Built: {names}"
+  built_none: "✅ Nothing of this type is built yet."
+  type_empty: "Nothing of this type is active: the founder or a 🤝 helper activates it."
+  type_empty_manager: "There are no works of this type for this level."
+  activate_hint: "▶️ Activate: the work starts asking for materials and every member sees it."
+  open_entry: "▫️ {title}"
+  idle_entry: "⏸️ {title} · not active"
+  idle_hint: "⏸️ The founder or a 🤝 helper picks which works to activate; once active, everyone can contribute."
+  active_entry: "🔨 {title}"
+  asks: "Needs: {items}"
+  activate_button: "▶️ {name}"
+  stop_button: "⏹️ {name}"
+  activated: "▶️ You activated {name}: it now asks for materials and everyone sees it."
+  activated_push_title: "🏗️ New work at your camp"
+  activated_push: "🏗️ {hero} activated {name} at {camp}: still missing {items}."
+  already_active: "{name} is already active."
+  only_managers: "Works are activated by the founder or a 🤝 helper."
+  not_active: "⏸️ {name} isn't active yet: the founder or a 🤝 helper activates it."
+  cannot_stop: "{name} can't be removed: someone already gave materials, or it isn't active."
+  stopped: "⏹️ You removed {name} from the active works."
+  to_activate: "▶️ {n} {n|work|works} of this level to activate in 🏘️ Services."
+  to_activate_member: "⏸️ {n} {n|work|works} of this level not active yet: see them in 🏘️ Services (the founder or a 🤝 helper activates them)."
+  none_active: "No works are active yet: the founder or a 🤝 helper picks them in 🏘️ Services."
+  none_active_manager: "No works are active or ready to activate at this level: grow the camp to open more."
+  knowledge_line: "📚 Knowledge: the camp's studies, one at a time."
+
+helpers:
+  role: "🤝 "
+  line: "🤝 Helpers ({n}/{cap}): {names}"
+  none: "🤝 Helpers (0/{cap}): the founder names them from each member's card (/m2). One per 5 members."
+  make_button: "🤝 Make helper"
+  remove_button: "✖️ Remove helper"
+  full: "🤝 There are already {cap} {cap|helper|helpers}: one per 5 members."
+  only_founder: "Only the founder names helpers."
+  named: "🤝 {name} is now a helper: activates works, invites and accepts requests."
+  removed: "✖️ {name} is no longer a helper."
+  named_push: "🤝 You're now a helper at {camp}: you activate works, invite with /inv_ and accept requests."
+  removed_push: "✖️ You're no longer a helper at {camp}."
+
+waiting:
+  title: "⏳ Waiting for room in the camp ({n}/{cap}):"
+  role: "⏳ "
+  room: "🏕️ There {n|is|are} {n} {n|place|places} free in the camp: tap the code of someone waiting to bring them in."
+  you: "⏳ You're in the guild of {camp}, waiting for room in the camp: you deposit, chat and use the armory; the camp's perks come when you're brought in."
+  card: "⏳ Waiting for room in the camp: has the guild's things, not the camp's yet."
+  join_button: "🏕️ Bring into the camp"
+  no_room: "🏕️ The camp is full: once there's room, they can be brought in."
+  joined: "🏕️ {name} is now a member of the camp."
+  joined_push: "🏕️ You're now a member of the camp {camp}! You get its perks too."
+  invite_title: "✉️ Guild invitation"
+  invite_body: "✉️ {name} invites you to the guild of {camp}. The camp is full: you join the guild and wait for room (you deposit, chat and use the armory)."
+  welcome: "✅ You joined the guild of {camp}: you're waiting for room in the camp."
+  declined: "You didn't join the guild of {camp}."
+  full: "The guild of {camp} has no more room for waiting members."
+  accepted_push: "✅ {name} joined the guild of {camp} and waits for room in the camp."
+  declined_push: "❌ {name} didn't accept the invitation to the guild of {camp}."
+  full_push: "⚠️ {name} wanted to join the guild of {camp}, but there was no more room to wait."
+  room_push: "🏕️ There's room in the camp {camp}: the founder or a 🤝 helper will bring you in."
+  room_push_managers: "🏕️ There {n|is|are} {n} {n|place|places} free in {camp} and {w} {w|member waits|members wait} in the guild: bring them in from 🛡️ Guild."
+  leave_button: "🚪 Leave the guild"
+  leave_ask: "🚪 Leave the guild of {camp}? What you deposited stays in the fund."
+  left: "🚪 You left the guild of {camp}."
+  left_push: "🚪 {name} left the guild of {camp}."
+
+gremio:
+  wait_invite_sent: "✉️ You invited {name} to the guild: the camp is full, so they'll wait for room."
+  waiting_full: "⏳ The guild already has as many waiting as it can: bring someone into the camp first."
+
+cfund:
+  title: "💰 Camp fund"
+  intro: "Deposit from wherever you are: type or tap a material's code (/f02) and everything you carry of it goes in. The fund gives the active works what they lack, the oldest activated first; whatever is left stays here."
+  line: "💰 In the fund: {items}"
+  empty: "💰 The fund is empty."
+  empty_short: "💰 Camp fund: empty."
+  active_title: "🔨 Active works (the fund fills them in this order):"
+  work_line: "{n}. {name}: still missing {items}"
+  no_active: "No works are active: what you deposit waits in the fund."
+  given: "💰 You deposited {items} in the camp fund."
+
+armory:
+  button: "⚔️ Armory"
+  title: "⚔️ Guild armory"
+  intro: "Leave the weapons and armor you don't use here and take the ones that suit you, from wherever you are. Who left and who took each piece is recorded."
+  line: "⚔️ Armory: {n}/{cap} pieces"
+  count: "🗃️ {n}/{cap} pieces"
+  item_line: "/t{n} {item} · left by {name}"
+  signed: " (✒️ {name})"
+  empty: "The armory is empty."
+  log_title: "📜 Latest movements:"
+  log_in: "📥 {name} left {item} · {ago}"
+  log_out: "📤 {name} took {item} · {ago}"
+  bag_title: "🎒 Your unused gear (tap the code to leave it):"
+  bag_line: "/a{n} {item}{count}"
+  bag_none: "You carry no unused gear."
+  bag_more: "…and {n} more."
+  hint: "Take a piece with its code (/t1) and leave one of yours with its own (/a1)."
+  no_guild: "⚔️ The armory belongs to a guild: create one or join one."
+  bad_code: "That code isn't on your list: look at the list again."
+  full: "⚔️ The armory is full ({cap} pieces): someone has to take something first."
+  left: "📥 You left {item} in the armory."
+  took: "📤 You took {item}: it's in your backpack."
+  gone: "That piece is no longer in the armory: look at the list again."
+  conflict: "You already carry {item} with a different enchantment or signature: they can't go together. Leave or sell yours first."
+  back: "⚔️ The armory's pieces came back to your backpack: {items}"
+
+upgrade:
+  aserradero:
+    name: "Sawmill"
+    desc: "Opens the 🪚 Sawmill station: wood into planks."
+  tejeduria:
+    name: "Weaving shed"
+    desc: "Opens the 🧶 Weaving station: fiber into cloth."
+  canteria:
+    name: "Stonemason's yard"
+    desc: "Opens the 🗿 Stonemasonry station: stone into blocks."
+  curtiduria:
+    name: "Tannery"
+    desc: "Opens the 🪣 Tanning station: hides into leather."
+  alambique:
+    name: "Still"
+    desc: "Opens the 💧 Distilling station: herbs into extract."
+  fundicion:
+    name: "Smelter"
+    desc: "Opens the 🔥 Smelting station: metal into ingots."
+  carpinteria:
+    name: "Carpentry"
+    desc: "Opens the 🪑 Carpentry station: bows, staves and furniture."
+  sastreria:
+    name: "Tailor's shop"
+    desc: "Opens the 🪡 Tailoring station (cloth clothes) and the 🧵 Workshop: sew 💰 bags and build 🪎 chests."
+  peleteria:
+    name: "Leatherworks"
+    desc: "Opens the 🦺 Leatherworking station: leather armor."
+  alquimia:
+    name: "Alchemy lab"
+    desc: "Opens the ⚗️ Alchemy station: potions."
+  botica:
+    name: "Apothecary"
+    desc: "Opens the 🩺 Medicine station: bandages and remedies."
+  forja:
+    name: "Forge"
+    desc: "Opens the 🔨 Blacksmithing station (metal weapons and armor) and buys the gear you don't use."
+  joyeria:
+    name: "Jeweler"
+    desc: "Opens the 💍 Jewelcrafting station: rings and amulets."

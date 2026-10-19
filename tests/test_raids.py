@@ -139,8 +139,9 @@ def test_raid_arrives_after_the_interval(service, clock):
     raid = camp(service)["raid"]
     assert raid["kind"] == "raid" and raid["required"] == 1 and raid["until"] == pytest.approx(clock.now() + HOUR)
     assert any(line.startswith("🔔 ¡Oleada!") and "victorias 0/1" in line for line in view.body)
-    # D-192: 🛡️ Defender goes first in the hub (📜 Tablón leaves while the raid lasts) and in 🏰 Gestionar
-    assert [a.id for a in view.actions] == ["defend", "cook", "research", "oficios", "trainer", "upsvc", "campmgmt", "dudas"]
+    # D-192: 🛡️ Defender goes first in the hub and in 🏰 Gestionar; 📜 Tablón leaves only if they would pass 8 (D-291: with
+    # 🛡️ Gremio in the hub they do; D-287: no 🔬 Investigar without the 📚 Biblioteca)
+    assert [a.id for a in view.actions] == ["defend", "cook", "oficios", "trainer", "upsvc", "guild", "campmgmt", "dudas"]
     assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "claro"]
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]
