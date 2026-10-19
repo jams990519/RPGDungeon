@@ -232,7 +232,7 @@ faq:
     a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers.'
   d40:
     q: 🔨 What are upgrades?
-    a: 'In 🏰 Manage → 🔨 Upgrades everyone builds the camp''s works together (🔥 Hearth, 🧵 Workshop, 🔨 Smithy, 📚 Library, defenses…): each member contributes materials until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
+    a: 'In 🏘️ Services the camp''s works are sorted by type (🏠 Homes, ⚒️ Crafts with one building per profession, 🛡️ Defenses, 📚 Knowledge). The founder or a 🤝 helper activates each work; then everyone sees what''s missing and contributes with 🤲 or from afar with 💰 Deposit until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
   d41:
     q: 🔬 How do I research?
     a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'
@@ -268,7 +268,7 @@ faq:
     a: 'The Clearing''s 🛒 Merchant sells potions, bandages and 🥖 provisions (up to {provisions_cap} a week) and buys your materials at {sell_pct}% of their price. Gear you don''t use is sold from 🛡️ Gear. Food can''t be sold: it''s for the pantry.'
   d52:
     q: 🪎 How do I make bags and chests?
-    a: A 💰 bag is sewn with {bag_recipe} and {bag_coins}. A 🪎 chest is built with {chest_bags} bags and {chest_items}. You make them in 🎒 Backpack → 💰 Coins (in the Clearing) or in your camp's 🧵 Workshop. Chests pay for the camp's high levels.
+    a: A 💰 bag is sewn with {bag_recipe} and {bag_coins}. A 🪎 chest is built with {chest_bags} bags and {chest_items}. You make them in 🎒 Backpack → 💰 Coins (in the Clearing) or in your camp's 🪡 Tailor's shop. Chests pay for the camp's high levels.
   d53:
     q: 🔗 Why invite friends?
     a: Your invite code is in 👤 Hero. Every friend who joins with your link and creates their hero gives you {invite_bonus} extra ⚡.

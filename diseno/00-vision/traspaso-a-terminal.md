@@ -169,7 +169,9 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 5. **0.37 (publicada el 18-oct):** las 9 hogueras con tope de 20 y el desborde (D-265). Cómo, ya decidido (D-277): el peligro desde la hoguera más cercana, las 9 visibles desde el inicio, nombres por su lado y una sola despensa.
 6. **0.38 (publicada el 18-oct):** lo que explora uno del gremio (o del campamento) lo sabe todo el gremio, menos la experiencia, y la pantalla 🗺️ Zonas del gremio (D-282). Antes, ya publicado: 🛡️ Gremio en el menú de abajo (D-281) y la prueba de la energía de cada acción.
 7. **0.38.1 (publicada el 19-oct):** el chat del gremio: con gremio o campamento, lo que escribes le llega a todos (D-285); y en el 🗺️ Mapa cada compañero con el emoji de su clase y una línea con su nombre, clase y coordenadas (D-286).
-8. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+8. **0.38.2 y 0.38.3 (publicadas el 19-oct):** el Guerrero con espada (D-292) y los íconos de clase únicos (D-293).
+9. **0.39 (publicada el 19-oct):** no se muestra lo que no es de tu nivel (D-287); 🏘️ Servicios por tipo y un edificio por oficio (D-288); 🤝 ayudantes (D-289); ⚔️ Armería (D-290); obras que activa el fundador o un ayudante, 💰 Depositar y el gremio completo después de fundar (D-291); gremio en espera (D-294); cada obra nueva cuesta más (D-295). La programaron dos agentes en paralelo y se unió aquí.
+10. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):

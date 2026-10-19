@@ -23,6 +23,14 @@ El 18-oct el dueño cambió el primer escalón: "hay que empezar a crear los gru
 
 ---
 
+## 0.1 Las obras del campamento desde la 0.39 (D-287, D-288, D-291, D-295)
+
+- **🏘️ Servicios por tipo (D-288):** un botón por tipo de obra: 🏠 Casas (pozo, refugio, granero, ahumadero, cabañas, huerto, enfermería), ⚒️ Oficios (fogón, puesto de trueque y un edificio por oficio), 🛡️ Defensas y 📚 Saber (biblioteca). Cada tipo muestra lo construido con su botón de uso, las obras activas con lo que falta y las que esperan que las activen.
+- **Un edificio por oficio (D-288):** 🪚 Aserradero, 🧶 Tejeduría y 🗿 Cantería (nivel 1); 🪣 Curtiduría, 💧 Alambique y 🏭 Fundición (2); 🪑 Carpintería y 🪡 Sastrería (3); 🦺 Peletería, ⚗️ Laboratorio de alquimia y 🩺 Botica (4); 🔨 Forja y 💍 Joyería (5). El 🧵 Taller y la Herrería se retiraron: quien ya los tenía conserva todas sus estaciones.
+- **Obras que se activan (D-291):** todos ven las obras del nivel de su campamento; solo el fundador o un 🤝 ayudante toca ▶️ Activar (o ⏹️ Quitar, si nadie le dio nada), y todos aportan a las activas. Lo que estaba empezado antes de la 0.39 quedó activo solo.
+- **Lo que no es de tu nivel no se ve (D-287):** las obras de niveles más altos, 🔬 Investigar sin 📚 Biblioteca y los avisos de "se abre al nivel X" ya no aparecen.
+- **Cada obra nueva cuesta más (D-295):** un 15 % más por cada obra ya construida, con el precio fijo al activarla.
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |

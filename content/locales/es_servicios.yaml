@@ -1,0 +1,193 @@
+# Texts of the 0.39 camp patch: 🏘️ Servicios by type of building (D-288), one building per profession (D-288), works that the
+# founder or a helper activates (D-291), the founder's 🤝 helpers (D-289), the camp's 💰 fund after founding (D-291) and the
+# guild's ⚔️ Armería (D-290).
+# [ES] Textos del parche 0.39 del campamento (pedido del dueño, 19-oct-2026): 🏘️ Servicios con un botón por tipo de construcción
+# (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas, 📚 Saber), un edificio por oficio, las obras que activa el fundador o un ayudante (▶️ Activar,
+# ⏹️ Quitar), los 🤝 ayudantes, el 💰 fondo del campamento después de fundar y la ⚔️ Armería del gremio. Se junta con es.yaml y los
+# demás es_*.yaml al cargar (engine/core/content.py): las claves de "hub", "upgrades" y "upgrade" se suman a las de es.yaml y
+# es_menus.yaml.
+# Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md y diseno/08-social/gremios-y-social.md (los actualiza
+#     quien une el parche)
+# Lo leen: engine/service/game.py (_camp_hub_lines, _upgrades_view, _works_view, _services_view, _service_type_view,
+#     _activate_work, _stop_work, _give_to_work, _guild_view, _research) y engine/service/gremio.py (ayudantes, fondo del
+#     campamento y armería)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_servicios.yaml, en el mismo
+# cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+hub:
+  services_active: "🏘️ Servicios: {list} · 🔨 {n} {n|obra activa|obras activas}. Lo construido y lo que falta, por tipo."   # [ES] D-288
+  services_types: "🏘️ Servicios: casas, oficios y defensas del campamento, por tipo · 🔨 {n} {n|obra activa|obras activas}."
+  make_none_camp: "🛠️ Fabricar: todavía sin estaciones; las abren los edificios de oficio (🏘️ Servicios → ⚒️ Oficios)."
+  manage_nopantry: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras y 🛡️ gremio."   # [ES] D-287: antes del nivel 3 no se nombra la despensa
+  research_none_notice: "🔬 Tu campamento todavía no tiene 📚 Biblioteca."   # [ES] D-287: respuesta corta a un botón viejo, sin nivel
+  guild_camp: "🛡️ Gremio: los miembros, 💰 depositar desde donde estés, 📢 mensajes y ⚔️ armería."   # [ES] D-291: el botón está en el centro
+
+upgrades:
+  count_reach: "🏗️ Construidas: {n} de {total} de este nivel"   # [ES] D-287: solo lo que tienen a su alcance
+  active_title: "🔨 Obras activas:"
+
+services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios por tipo y las obras que se activan
+  intro: "🏘️ Lo que tiene tu campamento y lo que le falta, por tipo. Toca uno para ver sus obras y aportar."
+  kind:
+    casa: "🏠 Casas"
+    oficio: "⚒️ Oficios"
+    defensa: "🛡️ Defensas"
+    saber: "📚 Saber"
+  kind_line: "{label}: ✅ {built} · 🔨 {active} {active|activa|activas}"
+  kind_building: " · 🏗️ {n} en curso"
+  kind_open: " · ▶️ {n} para activar"
+  kind_idle: " · ⏸️ {n} sin activar"   # [ES] lo que ve un miembro común: las ve, no las elige
+  nothing_yet: "Todavía no hay nada construido ni activo. El fundador o un 🤝 ayudante elige qué obra se activa; entonces todos ven lo que falta."
+  nothing_yet_manager: "No hay obras para este nivel ahora: agranden el campamento para abrir más."
+  deposit_hint: "💰 Depositar: desde donde estés, con el código de cada material (/f02). El fondo alimenta las obras activas."
+  deposit_button: "💰 Depositar"
+  intro_casa: "🏠 Casas: refugio, despensa, salud y lugar para más miembros."
+  cost_growth: "📈 Con {n} {n|obra construida|obras construidas}, cada obra nueva cuesta un {pct} % más (el precio queda fijo al activarla)."   # [ES] D-295 (0.39, pedido del dueño): los costos suben a medida que el campamento crece
+  intro_oficio: "⚒️ Oficios: un edificio por oficio (cada uno abre su estación), el 🔥 Fogón y el comercio."
+  intro_defensa: "🛡️ Defensas: cada punto de 🛡️ Defensa ayuda cuando llegan las oleadas."
+  intro_saber: "📚 Saber: la 📚 Biblioteca y lo que el campamento aprende entre todos."
+  built_line: "✅ Construido: {names}"
+  built_none: "✅ Todavía nada construido de este tipo."
+  type_empty: "Nada activo de este tipo: el fundador o un 🤝 ayudante lo activa."
+  type_empty_manager: "No hay obras de este tipo para este nivel."
+  activate_hint: "▶️ Activar: la obra empieza a pedir materiales y la ven todos los miembros."
+  open_entry: "▫️ {title}"
+  idle_entry: "⏸️ {title} · sin activar"
+  idle_hint: "⏸️ Las obras sin activar las elige el fundador o un 🤝 ayudante; cuando se activan, todos pueden aportar."
+  active_entry: "🔨 {title}"
+  asks: "Pide: {items}"
+  activate_button: "▶️ {name}"
+  stop_button: "⏹️ {name}"
+  activated: "▶️ Activaste {name}: ya pide materiales y todos lo ven."
+  activated_push_title: "🏗️ Obra nueva en tu campamento"
+  activated_push: "🏗️ {hero} activó {name} en {camp}: falta {items}."
+  already_active: "{name} ya está activa."
+  only_managers: "Las obras las activa el fundador o un 🤝 ayudante."
+  not_active: "⏸️ {name} todavía no está activa: la activa el fundador o un 🤝 ayudante."
+  cannot_stop: "{name} no se puede quitar: ya le dieron materiales o no está activa."
+  stopped: "⏹️ Quitaste {name} de las obras activas."
+  to_activate: "▶️ {n} {n|obra|obras} de este nivel para activar en 🏘️ Servicios."
+  to_activate_member: "⏸️ {n} {n|obra|obras} de este nivel sin activar: míralas en 🏘️ Servicios (las activa el fundador o un 🤝 ayudante)."
+  none_active: "Todavía no hay obras activas: el fundador o un 🤝 ayudante las elige en 🏘️ Servicios."
+  none_active_manager: "No hay obras activas ni para activar en este nivel: agranden el campamento para abrir más."
+  knowledge_line: "📚 Conocimiento: los estudios del campamento, de a uno."
+
+helpers:                       # [ES] D-289 (0.39): los ayudantes del fundador, 1 por cada 5 miembros
+  role: "🤝 "
+  line: "🤝 Ayudantes ({n}/{cap}): {names}"
+  none: "🤝 Ayudantes (0/{cap}): el fundador los nombra desde la tarjeta de cada miembro (/m2). Uno por cada 5 miembros."
+  make_button: "🤝 Hacer ayudante"
+  remove_button: "✖️ Quitar ayudante"
+  full: "🤝 Ya hay {cap} {cap|ayudante|ayudantes}: uno por cada 5 miembros."
+  only_founder: "Solo el fundador nombra ayudantes."
+  named: "🤝 {name} ahora es ayudante: activa obras, invita y acepta solicitudes."
+  removed: "✖️ {name} ya no es ayudante."
+  named_push: "🤝 Ahora eres ayudante en {camp}: activas obras, invitas con /inv_ y aceptas solicitudes."
+  removed_push: "✖️ Ya no eres ayudante en {camp}."
+
+waiting:                       # [ES] D-294 (0.39, el dueño): del gremio, esperando lugar en el campamento
+  title: "⏳ Esperando lugar en el campamento ({n}/{cap}):"
+  role: "⏳ "
+  room: "🏕️ Hay {n} {n|lugar|lugares} en el campamento: toca el código de quien espera para unirlo."
+  you: "⏳ Estás en el gremio de {camp} esperando lugar en el campamento: depositas, chateas y usas la armería; lo del campamento llega cuando te unan."
+  card: "⏳ Espera lugar en el campamento: tiene lo del gremio, todavía no lo del campamento."
+  join_button: "🏕️ Unir al campamento"
+  no_room: "🏕️ El campamento está lleno: cuando haya lugar, se podrá unir."
+  joined: "🏕️ {name} ya es miembro del campamento."
+  joined_push: "🏕️ ¡Ya eres miembro del campamento {camp}! Ahora tienes también sus beneficios."
+  invite_title: "✉️ Invitación a un gremio"
+  invite_body: "✉️ {name} te invita al gremio de {camp}. El campamento está lleno: entras al gremio y esperas lugar (depositas, chateas y usas la armería)."
+  welcome: "✅ Entraste al gremio de {camp}: esperas lugar en el campamento."
+  declined: "No entraste al gremio de {camp}."
+  full: "El gremio de {camp} ya no tiene lugar para esperar."
+  accepted_push: "✅ {name} entró al gremio de {camp} y espera lugar en el campamento."
+  declined_push: "❌ {name} no aceptó la invitación al gremio de {camp}."
+  full_push: "⚠️ {name} quiso entrar al gremio de {camp}, pero ya no había lugar para esperar."
+  room_push: "🏕️ Hay lugar en el campamento {camp}: el fundador o un 🤝 ayudante te une."
+  room_push_managers: "🏕️ Hay {n} {n|lugar|lugares} en {camp} y {w} {w|espera|esperan} en el gremio: únelos desde 🛡️ Gremio."
+  leave_button: "🚪 Salir del gremio"
+  leave_ask: "🚪 ¿Sales del gremio de {camp}? Lo que depositaste queda en el fondo."
+  left: "🚪 Saliste del gremio de {camp}."
+  left_push: "🚪 {name} salió del gremio de {camp}."
+
+gremio:                        # [ES] D-294 (0.39): avisos de /inv_ y ✉️ Invitar con el campamento lleno
+  wait_invite_sent: "✉️ Invitaste a {name} al gremio: el campamento está lleno, así que esperará lugar."
+  waiting_full: "⏳ Ya esperan los que caben en el gremio: une a alguien al campamento primero."
+
+cfund:                         # [ES] D-291 (0.39): el 💰 fondo del campamento, después de fundar
+  title: "💰 Fondo del campamento"
+  intro: "Deposita desde donde estés: escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso. El fondo le da a las obras activas lo que les falta, primero a la que se activó antes; lo que sobra queda aquí."
+  line: "💰 En el fondo: {items}"
+  empty: "💰 El fondo está vacío."
+  empty_short: "💰 Fondo del campamento: vacío."
+  active_title: "🔨 Obras activas (el fondo las llena en este orden):"
+  work_line: "{n}. {name}: falta {items}"
+  no_active: "No hay obras activas: lo que deposites espera en el fondo."
+  given: "💰 Depositaste {items} en el fondo del campamento."
+
+armory:                        # [ES] D-290 (0.39): ⚔️ Armería del gremio
+  button: "⚔️ Armería"
+  title: "⚔️ Armería del gremio"
+  intro: "Deja aquí las armas y armaduras que no usas y toma las que te sirvan, desde donde estés. Queda anotado quién dejó y quién tomó cada pieza."
+  line: "⚔️ Armería: {n}/{cap} piezas"
+  count: "🗃️ {n}/{cap} piezas"
+  item_line: "/t{n} {item} · dejó {name}"
+  signed: " (✒️ {name})"
+  empty: "La armería está vacía."
+  log_title: "📜 Últimos movimientos:"
+  log_in: "📥 {name} dejó {item} · {ago}"
+  log_out: "📤 {name} tomó {item} · {ago}"
+  bag_title: "🎒 Tu equipo sin usar (toca el código para dejarlo):"
+  bag_line: "/a{n} {item}{count}"
+  bag_none: "No llevas equipo sin usar."
+  bag_more: "…y {n} más."
+  hint: "Toma una pieza con su código (/t1) y deja una de las tuyas con el suyo (/a1)."
+  no_guild: "⚔️ La armería es de un gremio: crea uno o entra a uno."
+  bad_code: "Ese código no está en tu lista: mira la lista de nuevo."
+  full: "⚔️ La armería está llena ({cap} piezas): alguien tiene que tomar algo primero."
+  left: "📥 Dejaste {item} en la armería."
+  took: "📤 Tomaste {item}: está en tu mochila."
+  gone: "Esa pieza ya no está en la armería: mira la lista de nuevo."
+  conflict: "Ya llevas {item} con otro encantamiento o firma: no pueden ir juntas. Deja o vende la tuya primero."
+  back: "⚔️ Volvió a tu mochila lo de la armería: {items}"
+
+upgrade:                       # [ES] D-288 (0.39): un edificio por oficio (ids en content/camp_upgrades.yaml)
+  aserradero:
+    name: "Aserradero"
+    desc: "Abre la estación de 🪚 Aserradero: madera en tablones."
+  tejeduria:
+    name: "Tejeduría"
+    desc: "Abre la estación de 🧶 Tejeduría: fibra en tela."
+  canteria:
+    name: "Cantería"
+    desc: "Abre la estación de 🗿 Cantería: piedra en sillares."
+  curtiduria:
+    name: "Curtiduría"
+    desc: "Abre la estación de 🪣 Curtiduría: pieles en cuero."
+  alambique:
+    name: "Alambique"
+    desc: "Abre la estación de 💧 Destilación: hierbas en extracto."
+  fundicion:
+    name: "Fundición"
+    desc: "Abre la estación de 🔥 Fundición: metal en lingotes."
+  carpinteria:
+    name: "Carpintería"
+    desc: "Abre la estación de 🪑 Carpintería: arcos, bastones y muebles."
+  sastreria:
+    name: "Sastrería"
+    desc: "Abre la estación de 🪡 Sastrería (ropa de tela) y el 🧵 Taller: coser 💰 bolsas y armar 🪎 cofres."
+  peleteria:
+    name: "Peletería"
+    desc: "Abre la estación de 🦺 Peletería: armaduras de cuero."
+  alquimia:
+    name: "Laboratorio de alquimia"
+    desc: "Abre la estación de ⚗️ Alquimia: pociones."
+  botica:
+    name: "Botica"
+    desc: "Abre la estación de 🩺 Medicina: vendas y remedios."
+  forja:
+    name: "Forja"
+    desc: "Abre la estación de 🔨 Herrería (armas y armaduras de metal) y compra el equipo que no usas."
+  joyeria:
+    name: "Joyería"
+    desc: "Abre la estación de 💍 Joyería: anillos y amuletos."

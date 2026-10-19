@@ -343,12 +343,13 @@ def test_oficios_command_and_screen(service):
     body = "\n".join(view.body)
     assert "Minero · rango 3 (Aprendiz)" in body and "Herrería · rango 25 (Oficial)" in body
     assert "/minero" in body and "/herreria" in body                     # D-257: one short line each, with its code
-    assert "En rango 10: 💠 Gema en bruto" in "\n".join(service.text("test:1", "/minero").body)
-    assert "En rango 50" in "\n".join(service.text("test:1", "/herreria").body)
+    assert "En rango 10" not in "\n".join(service.text("test:1", "/minero").body)       # D-287 (0.39): no next-rank line
+    assert "En rango 50" not in "\n".join(service.text("test:1", "/herreria").body)
     set_hero(service, "test:1", x=4, y=0)
     view = service.act("test:1", "oficios")                            # anywhere: ranks yes, stations no
     # D-141: 🔨 Herrería is rank 25, so 🎓 Especialización shows up (it works anywhere: choosing is a menu, not a station)
-    assert ids(view) == ["pspecs", "hero"] and any("🧵 Taller" in line for line in view.body)
+    # D-288 (0.39): the stations of your camp are its buildings, one per profession (🏘️ Servicios → ⚒️ Oficios)
+    assert ids(view) == ["pspecs", "hero"] and any("edificios de oficio" in line for line in view.body)
     assert any("/oficios" in line for line in service.act("test:1", "hero").body)
     assert not service.texts.missing
 
@@ -406,9 +407,9 @@ def test_camp_stations_come_with_the_taller_and_the_herreria(service):
 def test_herreria_without_taller_opens_its_stations_from_the_services(service):
     make_hero(service, "test:1", "Lyra")
     camp_at(service, 6)
-    build(service, "herreria")
-    view = service.act("test:1", "upsvc")
-    assert view.kind == "camp_services" and "oficios" in ids(view) and len(view.actions) <= 4
+    build(service, "herreria")                                     # D-288: retired, but a camp that built it keeps it all
+    view = service.act("test:1", "svc:oficio")                     # D-288: ⚒️ Oficios of 🏘️ Servicios
+    assert view.kind == "camp_type" and "oficios" in ids(view) and len(view.actions) <= 8
     stations, where = service._stations_here(service._load("test:1"))
     assert set(stations) == {"fundicion", "herreria", "joyeria"} and where == "camp"
     assert ids(service.act("test:1", "oficios"))[-1] == "claro"           # D-192: back to the camp hub

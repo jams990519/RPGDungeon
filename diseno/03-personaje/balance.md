@@ -1168,6 +1168,21 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (19-oct): el campamento de la 0.39 (D-288 a D-291, D-294, D-295)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `upgrades.cost_growth` (nuevo) | — | 0,15: cada obra nueva cuesta un 15 % más por cada obra ya construida; precio fijo al activarla (D-295, Claude sobre la regla del dueño) |
+| `camps.helpers_per_members` (nuevo) | — | 5: 1 🤝 ayudante cada 5 miembros (D-289, del dueño) |
+| `armory.slots` / `armory.log_kept` (nuevos) | — | 30 lugares en la ⚔️ Armería / los últimos 10 movimientos (D-290, Claude) |
+| `gremio.waiting_max` (nuevo) | — | 10 miembros en espera de lugar en el campamento (D-294: tope fijo del dueño, el número de Claude) |
+| `upgrades.type_shown` (nuevo) | — | 3 obras por página en cada tipo de 🏘️ Servicios (Claude) |
+| Edificios de oficio (nuevos, `content/camp_upgrades.yaml`) | el 🧵 Taller (nivel 5) abría 10 oficios y la Herrería (6) 3 | uno por oficio: nivel 1 Aserradero, Tejeduría, Cantería (35-40 unidades); 2 Curtiduría, Alambique, Fundición (55 + 🥉30); 3 Carpintería, Sastrería (100-105 + 🥉50); 4 Peletería, Alquimia, Botica (110-120 + 🥉100); 5 Forja, Joyería (130-170 + 🥉200) |
+
+**Qué cambia al jugar.** Un campamento chico ya refina desde el nivel 1 con el oficio que elija, sin esperar al Taller del nivel 5. El castillo sigue pidiendo 15 obras: sin `cost_growth`, las 15 más baratas costaban 1.035 unidades (antes de la 0.39, 2.445); con el 15 % por obra, unas 2.400.
+
+**Lo que queda por mirar:** si el 15 % hace muy caras las últimas obras de un campamento grande (la 25.ª pide ×4,6); si conviene que algunas obras (las de oficio) no cuenten para el castillo.
+
 ### Octubre de 2026 (19-oct): tu gremio en el mapa (0.38.1, D-286, confirmada)
 
 | Número | Antes | Ahora |

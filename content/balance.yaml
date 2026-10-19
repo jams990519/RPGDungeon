@@ -336,6 +336,7 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
   chests_from_level: 6       # [ES] D-92 (provisional): agrandar DESDE este nivel también cuesta 🪎 cofres (6→7 es el primero; ciudad y castillo)
   chests_per_level: 1        # [ES] cofres = esto × (nivel actual − chests_from_level + 1): 6→7 pide 1, 7→8 pide 2, 8→9 pide 3 (6 hasta castillo).
                              # [ES] Los paga de sus cofres (hero.chests) el miembro que agranda. Subirlo encarece mucho los campamentos grandes (cada cofre = 10 bolsas)
+  helpers_per_members: 5      # [ES] D-289 (0.39, el dueño): 🤝 ayudantes del fundador: 1 por cada 5 miembros, y siempre al menos 1 (tope = máx(1, ⌈miembros ÷ 5⌉)). Si el tope baja, los que ya son ayudantes se quedan
 
 pantry:                      # [ES] D-93 (provisional): la despensa de los campamentos de jugadores, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §7.2). El Claro no se mantiene: no tiene dueño (D-95). Números orientativos: se ajustan en la beta
   camp_from_level: 3         # [ES] los campamentos de jugadores, desde el nivel 3 (aldea): despensa chica, capa ligera (§7.2)
@@ -479,6 +480,7 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   found_min_members: 2       # [ES] miembros del gremio que tienen que estar en la zona para empezar a fundar (D-269, el dueño)
   found_minutes: 60          # [ES] fundar tarda 60 min con found_min_members presentes; con más, menos: tiempo = 60 × 2 ÷ presentes (4 → 30 min). Con 1, el doble; con nadie, se pausa (D-269, D-274)
   found_floor_minutes: 10    # [ES] nunca menos de 10 min, por más miembros que haya (D-269, el dueño)
+  waiting_max: 10            # [ES] D-294 (0.39): número fijo que eligió el dueño; el 10 lo propuso Claude. Cuántos del gremio pueden esperar lugar en el campamento lleno (tienen lo del gremio: depositar, chat, armería, zonas; nada del campamento hasta que el fundador o un ayudante los une)
 
 works:                       # [ES] D-269 (4) y D-274 (4): cada 🔨 mejora del campamento, con sus materiales completos, se construye con el tiempo (🏗️ obra en curso). Antes se terminaba al instante
   minutes_per_level: 60      # [ES] 60 min por nivel de la obra con members_ref miembros dentro del territorio del campamento: tiempo = 60 × nivel × 2 ÷ presentes (D-274, Claude sobre la regla del dueño)
@@ -486,10 +488,16 @@ works:                       # [ES] D-269 (4) y D-274 (4): cada 🔨 mejora del 
   floor_minutes: 10          # [ES] nunca menos de 10 min por obra (la misma regla que fundar)
 
 upgrades:                    # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo, costos y efectos en content/camp_upgrades.yaml). El Claro no tiene: no crece (D-98). Números orientativos: se ajustan en la beta
-  castle_min_built: 15       # [ES] para pasar del nivel 8 al 9 (castillo) el campamento necesita 15 mejoras construidas o más (hay 20). Se suma a la despensa, los 🪎 cofres y el gremio (D-97). Los castillos que ya existen siguen creciendo
+  cost_growth: 0.15         # [ES] D-295 (0.39, pedido del dueño: "aumentar los costos a medida que se va subiendo"): cada obra nueva cuesta un 15 % más por cada obra que el campamento ya construyó (la 5.ª ×1,6; la 15.ª ×3,1); el precio queda fijo al activarla y lo empezado antes de la 0.39 no sube. Con esto, las 15 obras más baratas vuelven a costar unas 2.400 unidades, como antes de los edificios de oficio (2.450) (Claude)
+  castle_min_built: 15       # [ES] para pasar del nivel 8 al 9 (castillo) el campamento necesita 15 mejoras construidas o más (desde la 0.39 hay 31 para construir y 2 retiradas, D-288: los 13 edificios de oficio cuentan; cost_growth hace que cada obra nueva cueste más, D-295). Se suma a la despensa, los 🪎 cofres y el gremio (D-97). Los castillos que ya existen siguen creciendo
   xp_per_unit: 1             # [ES] experiencia por cada material aportado a una obra o a un estudio del 📚 Conocimiento (las monedas no dan). La obra del Claro daba 2
   merit_per_unit: 1          # [ES] mérito por cada material aportado (como la obra común: 1 por material)
-  open_shown: 3              # [ES] cuántas obras abiertas, con su barra de avance, muestra la pantalla 🔨 Mejoras (todas se ven en 🔨 Obras, de a 2 o 3 por página)
+  open_shown: 3              # [ES] cuántas obras activas, con su barra de avance, muestra la pantalla 🔨 Mejoras (todas se ven en 🔨 Obras, de a 2 o 3 por página, y en 🏘️ Servicios)
+  type_shown: 3              # [ES] D-288 (0.39, Claude): cuántas obras muestra por página cada tipo de 🏘️ Servicios (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas, 📚 Saber); menos si los botones no entran en 8
+
+armory:                      # [ES] D-290 (0.39, el dueño): ⚔️ Armería del gremio: un cofre de equipo compartido (los miembros dejan armas y armaduras que no usan y otros las toman), desde que existe el gremio
+  slots: 30                  # [ES] cuántas piezas caben (Claude)
+  log_kept: 10               # [ES] cuántos movimientos (quién dejó o tomó qué) guarda y muestra la pantalla (Claude)
 
 professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.

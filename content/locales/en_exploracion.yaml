@@ -54,6 +54,7 @@ ecamp:
   map_strength: ' · 💪 {left} left · lv {level} · boss: {chief}'
   map_more: …and {n} more, farther away.
   map_sight_next: 🔭 You see enemy camps up to {n} {n|zone|zones} around you. With 🧭 Explorer rank {rank}, farther.
+  map_sight: 🔭 You see enemy camps up to {n} {n|zone|zones} around you.
   map_sight_all: 🔭 You see the enemy camps across your whole map.
   go_button: 👹 Go to the nearest
   go_button_time: 👹 Go to the nearest · {time}

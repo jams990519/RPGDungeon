@@ -131,7 +131,7 @@ def test_exploring_and_gathering_are_blocked_without_spending(service):
         assert view.kind == "explore_menu" and "campamento enemigo" in view.notice, action
         assert hero.energy == 50 and hero.activity is None, action
     menu = service.act("test:1", "explore_menu")
-    assert ids(menu) == ["assault", "infiltrate", "hunt", "map"]
+    assert ids(menu) == ["assault", "hunt", "map"]                     # D-287 (0.39): no 🔒 🕵️ button before rank 30
     assert any("campamento enemigo" in line.lower() for line in service.act("test:1", "home").body)
     assert not service.texts.missing
 
@@ -276,7 +276,7 @@ def test_infiltration_needs_rank_30_and_costs_nothing_if_refused(service):
     view = service.act("test:1", "infiltrate")
     assert "rango 30" in view.notice and service._load("test:1").energy == 50
     menu = service.act("test:1", "explore_menu")
-    assert "(rango 30)" in menu.actions[1].label
+    assert "infiltrate" not in ids(menu) and not any("rango 30" in a.label for a in menu.actions)    # D-287 (0.39): hidden
 
 
 def test_infiltration_reveals_the_camp_and_gives_exploration(service, monkeypatch):
@@ -327,15 +327,17 @@ def test_exploring_raises_the_explorer_and_its_perk_adds_points(content):
         return service._load("test:1"), service
 
     novice, service = one_round(1)
-    master, _ = one_round(100)
+    master, master_service = one_round(100)
     cfg = content.balance["explorer"]
     assert novice.professions["explorador"] == cfg["xp_per_step"]
     assert master.exploration["1:0"] - novice.exploration["1:0"] == 5                         # +5 points at rank 100
     perks = profession_rules.perks(content.professions["professions"], {"explorador": 50}, 100, None, None, None)
     assert perks["explore"] == pytest.approx(2.5)
     view = service.text("test:1", "/explorador")              # D-257: the long lines live behind the profession's code
-    assert any("Explorador" in line for line in view.body) and any("🗺️" in line for line in view.body)
-    assert any("En rango 10" in line for line in view.body)
+    assert any("Explorador" in line for line in view.body)
+    assert not any("🗺️" in line or "En rango 10" in line for line in view.body)     # D-287 (0.39): rank 1 reached no threshold
+    view = master_service.text("test:1", "/explorador")        # rank 100: every threshold, all reached
+    assert any("🗺️" in line and "✅10" in line and "✅100" in line for line in view.body)
 
 
 def test_rank_thresholds_are_announced_and_rank_100_gives_the_title(service):

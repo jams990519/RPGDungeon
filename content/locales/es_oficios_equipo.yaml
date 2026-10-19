@@ -32,7 +32,7 @@ ench:                         # [ES] ✨ Encantamiento (D-115, fase 2): pantalla
   essences_none: "Todavía no llevas esencias: desencanta una pieza que no uses."
   table_title: "Un encantamiento por ranura (el valor sale de tu rango y queda en la pieza):"
   table_line: "{name} · {slots}: {stats} · pide {material}{lock}"
-  lock: " · 🔒 rango {rank}"
+  lock: " · 🔒 rango {rank}"   # [ES] sin uso desde la 0.39 (D-287)
   cost_rule: "Encantar pide ✨ {base} esencias y 1 más cada {per} niveles de la pieza, 🔮 1 esencia mayor desde el nivel {major} y el material (1, y 1 más cada {mat_per} niveles). ⚡{energy}"
   disenchant_rule: "Desencantar da ✨ esencias según la rareza (⚪ {comun} · 🟢 {poco_comun} · 🔵 {raro} · 🟣 {epico}) y 1 más cada {per} niveles; las 🟣 épicas, también 🔮 1 esencia mayor. ⚡{energy}"
   worn_title: "Lo que llevas encantado: {items}"

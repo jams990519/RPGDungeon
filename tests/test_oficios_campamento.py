@@ -208,9 +208,9 @@ def test_cooking_spends_ingredients_and_feeds_the_pantry_with_the_cook_perk(serv
     assert service._stations_here(service._load("test:1")) == ([], None)
     build(service, "fogon")
     assert service._stations_here(service._load("test:1")) == (["cocina"], "camp")
-    assert "upsvc" in ids(service.act("test:1", "upgrades"))               # the Fogón's station opens 🏘️ Servicios
-    services = service.act("test:1", "upsvc")
-    assert "oficios" in ids(services) and len(services.actions) <= 4
+    assert "upsvc" in ids(service.act("test:1", "upgrades"))               # 🏘️ Servicios is always there (D-288)
+    services = service.act("test:1", "svc:oficio")                          # D-288: the Fogón's station, in ⚒️ Oficios
+    assert "oficios" in ids(services) and len(services.actions) <= HUB_BUTTONS
     assert ids(service.act("test:1", "oficios"))[:2] == ["est:refine:0", "est:craft:0"]
     service._camp_pantry(camp)
     set_rank(service, "test:2", "cocina", 100)                              # Bram is the camp's cook (rank 100)

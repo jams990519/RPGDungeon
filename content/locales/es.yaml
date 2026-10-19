@@ -1777,7 +1777,7 @@ pantry:                       # [ES] D-93 (provisional): la despensa de los camp
     hambruna: "🔴 Hambruna"
 
 raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde que se funda el campamento; en el diseño, "incursiones") y Noche de prueba (antes de castillo) de los campamentos de jugadores. El Claro nunca tiene
-  founded_warning: "🌊 Aviso: {n} {n|vez|veces} por semana llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se construyen en 🏕️ Campamento → 🏰 Gestionar → 🔨 Mejoras."   # [ES] D-101: las defensas suman 🛡️ Defensa
+  founded_warning: "🌊 Aviso: {n} {n|vez|veces} por semana llegará una oleada de enemigos a tu campamento. Los miembros la defienden con 🛡️ Defender, estén donde estén. Refuerza los alrededores para protegerlo: las defensas se activan y construyen en 🏕️ Campamento → 🏘️ Servicios → 🛡️ Defensas."   # [ES] D-101: las defensas suman 🛡️ Defensa
   soon_line: "👁 Al llegar a pueblo (nivel {level}) empiezan las oleadas: 3 por semana."
   next_line: "👁 Próxima oleada en {n} {n|día|días}. La defienden los miembros conectados."
   open_line: "🔔 ¡Oleada! Defensores: {n} · victorias {wins}/{need} · quedan {time}"
@@ -1848,8 +1848,8 @@ talents:
   respec_done: "🔄 Pagaste {cost}: tus puntos volvieron. Tienes {n} para repartir."
   bar_line: "🎛️ Tu barra: {abilities}"
   ability_open: "🔓 {ability} — {effect}"
-  ability_locked: "🔒 {need} pts · {ability} — {effect}"
-  next_unlock: "Siguiente: {name} con {need} {need|punto|puntos} (te {left|falta|faltan} {left})."
+  ability_locked: "🔒 {need} pts · {ability} — {effect}"   # [ES] sin uso desde la 0.39 (D-287)
+  next_unlock: "Siguiente: {name} con {need} {need|punto|puntos} (te {left|falta|faltan} {left})."   # [ES] sin uso desde la 0.39 (D-287)
   all_unlocked: "Ya abriste las 8 habilidades de esta especialización."
   legend: "×2 = el doble de tu ataque · (20) = lo que cuesta · 🔋 = Aguante"
 
@@ -2071,7 +2071,7 @@ wallet:
   cards_help: "Tu carta de presentación de oficio: la muestras a otros jugadores para que sepan qué sabes hacer. Llegan con los oficios."
   boost_on: "⭐ Experiencia +50 % activa: quedan {time}."
   sew_button: "💰 Coser una bolsa"
-  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro, o en el 🧵 Taller de tu campamento."
+  sew_in_claro: "💰 Las bolsas se cosen y los 🪎 cofres se arman en el Claro, o en la 🪡 Sastrería de tu campamento (o su 🧵 Taller, si lo construyeron antes)."
   sew_missing: "Para coser una bolsa necesitas {items} y {coins}."
   sewn: "💰 Cosiste una bolsa. Ahora tienes {n}."
   chest_button: "🪎 Armar cofre"
@@ -2198,7 +2198,7 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   button: "🛡️ Gremio"
   none: "🛡️ {camp} todavía no tiene gremio."
   what: "Un gremio junta a los miembros del campamento. Sube de nivel con lo que hacen todos juntos (explorar, ganar peleas y recolectar), y cada nivel deja entrar a más gente."
-  castle_hint: "🏰 Para que el campamento llegue a castillo hace falta un gremio de nivel {level} o más, con {members} miembros o más."
+  castle_hint: "🏰 Para que el campamento llegue a castillo hace falta un gremio de nivel {level} o más, con {members} miembros o más."   # [ES] D-287 (0.39): solo se muestra en el nivel de antes del castillo
   cap_warning: "👥 Con gremio, el cupo del campamento puede crecer: el gremio da {cap} lugares al nivel 1 y más al subirlo. Nunca baja el cupo que ya tienes."
   found_cost: "Crearlo cuesta {coins}. Lo crea el fundador, estando en el campamento."
   only_founder: "Solo el fundador, {founder}, puede crearlo."
@@ -2215,8 +2215,8 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   header: "🛡️ {name} · nivel {level}"
   camp_line: "🏕️ Campamento: {camp}"
   members: "👥 Miembros: {n} de {cap}"
-  member_line: "• {name} (nv {level}){crown} · {ago}"
-  crown: " 👑"
+  member_line: "• {name} (nv {level}){crown} · {ago}"   # [ES] sin uso desde la 0.39 (D-291: 🛡️ Gremio lista a los miembros con /m1)
+  crown: " 👑"   # [ES] sin uso desde la 0.39 (D-291)
   ago:
     now: "activo ahora"
     minutes: "activo hace {n} min"
@@ -2258,10 +2258,10 @@ upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de lo
   defense_help: "Las defensas refuerzan los alrededores: cada punto ayuda a proteger el campamento cuando lleguen las oleadas."
   built_line: "✅ {names}"
   none_built: "Todavía no construyeron ninguna mejora."
-  open_title: "🔨 Obras abiertas:"
+  open_title: "🔨 Obras abiertas:"   # [ES] sin uso desde la 0.39 (D-291: upgrades.active_title)
   open_line: "{name} {bar} {pct} %"
   open_more: "…y {n} más en 🔨 Obras."
-  locked_line: "🔒 En nivel {level} {n|se abre|se abren}: {names}"
+  locked_line: "🔒 En nivel {level} {n|se abre|se abren}: {names}"   # [ES] sin uso desde la 0.39 (D-287)
   works_button: "🔨 Obras ({n})"
   services_button: "🏘️ Servicios"
   works_title: "🔨 Obras del campamento"
@@ -2284,20 +2284,20 @@ upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de lo
   castle_line: "🔨 {need} mejoras construidas o más (tienen {n})"
   castle_blocked: "Todavía no puede ser castillo: les faltan mejoras. Constrúyanlas en 🔨 Mejoras."
   services_title: "🏘️ Servicios del campamento"
-  services_intro: "Lo que ya construyeron y pueden usar los miembros aquí, sin volver al Claro."
+  services_intro: "Lo que ya construyeron y pueden usar los miembros aquí, sin volver al Claro."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   rest_line: "🛏️ Refugio: duermes un rato y despiertas con la vida llena · {price}"
   rest_button: "🛏️ Refugio · {price}"
   rest_started: "🛏️ Pagas {price} y te acuestas en el refugio. Despertarás en {time}."
   trade_line: "🏪 Puesto de trueque: compra tus materiales a la mitad de su precio. La comida no: va a la despensa."
   nothing_to_sell: "No llevas materiales para vender. La comida no se vende: va a la despensa."
-  workshop_line: "🧵 Taller: coser 💰 bolsas y armar 🪎 cofres, como en el Claro."
+  workshop_line: "{name}: coser 💰 bolsas y armar 🪎 cofres en el 🧵 Taller, como en el Claro."   # [ES] D-288: {name} es el edificio que lo da (🪡 Sastrería o un 🧵 Taller de antes)
   workshop_button: "🧵 Taller"
   workshop_title: "🧵 Taller del campamento"
   workshop_intro: "Aquí se cosen 💰 bolsas y se arman 🪎 cofres, con la misma receta que en el Claro."
   bag_recipe: "Una bolsa pide {items} y {coins}."
   chest_recipe: "Un cofre pide {bags} 💰 {bags|bolsa|bolsas} y {items}."
-  smithy_line: "🔨 Herrería: vende el equipo que no usas desde 🛡️ Equipo, como en el Claro."
-  no_services: "Todavía no construyeron servicios."
+  smithy_line: "{name}: vende el equipo que no usas desde 🛡️ Equipo, como en el Claro."   # [ES] D-288: {name} es la 🔨 Forja (o una 🔨 Herrería de antes)
+  no_services: "Todavía no construyeron servicios."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   need_library: "📚 Primero construyan la 📚 Biblioteca."
   granary_line: "🌾 Granero: comen un {pct} % menos."
   garden_line: "🥬 Huerto: suma {n} {n|ración|raciones} por día."
@@ -2305,7 +2305,7 @@ upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de lo
 
 knowledge:                    # [ES] D-101 (provisional): el 📚 Conocimiento del campamento, que se abre con la Biblioteca
   button: "📚 Conocimiento"
-  locked: "📚 El conocimiento se abre con la 📚 Biblioteca (nivel {level})."
+  locked: "📚 El conocimiento se abre con la 📚 Biblioteca (nivel {level})."   # [ES] sin uso desde la 0.39 (D-287)
   title: "📚 Conocimiento del campamento"
   intro: "Lo que el campamento aprende entre todos queda para siempre."
   rule: "Se estudia una cosa a la vez. Vale solo para los miembros, en el territorio del campamento."
@@ -2403,7 +2403,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   line: "{name} · rango {rank} ({title}) {bar}"
   how_line: "   ↳ {how}"
   perk_line: "   ✨ Beneficio ahora: {perk}"
-  next: "   🔓 En rango {rank}: {items}"
+  next: "   🔓 En rango {rank}: {items}"   # [ES] sin uso desde la 0.39 (D-287)
   not_started: "Sin empezar: {items}"
   perk:
     attack: "+{v} % de ataque"
@@ -2431,7 +2431,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
     gran_maestro: "Gran Maestro"
   stations_claro: "🏭 Aquí, en el Claro, están todas las estaciones básicas."
   stations_camp: "🏭 Estaciones de tu campamento: {items}. Al refinar aquí: +{pct} % de sacar una unidad más."
-  stations_none: "🏭 Para refinar y fabricar: el Claro, o el centro de tu campamento con 🧵 Taller, 🔨 Herrería o 🔥 Fogón (🍲 Cocina)."
+  stations_none: "🏭 Para refinar y fabricar: el Claro, o el centro de tu campamento con sus edificios de oficio (🏘️ Servicios → ⚒️ Oficios)."
   workshop_line: "⚒️ Oficios: las estaciones de tu campamento para refinar y fabricar."
   energy: "⚡ Energía: {energy}/{max}"
   refine_button: "🪚 Refinar"
@@ -2449,7 +2449,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
   more_in_claro: "🏭 Hay más recetas en las estaciones del Claro."
-  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."
+  locked_hint: "🔒 Las recetas de rango más alto se abren haciendo recetas: cada rango trae nuevas."   # [ES] sin uso desde la 0.39 (D-287)
   recipe_title: "📜 Receta"
   recipe_prof: "{name} · tu rango {rank} ({title}) · pide rango {need}"
   recipe_needs: "Necesitas por vez:"
@@ -2462,7 +2462,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   gains: "Ganas por vez: ✨ {xp} de experiencia · {name} +{prof_xp}"
   yield_line: "⭐ {pct} % de sacar una unidad más (por tu rango y la estación)."
   locked: "🔒 Pide rango {need} de {name} (tienes {rank})."
-  no_station: "🏭 Esa estación no está aquí: ve al Claro o al centro de tu campamento con 🧵 Taller, 🔨 Herrería o 🔥 Fogón (🍲 Cocina)."
+  no_station: "🏭 Esa estación no está aquí: ve al Claro o al centro de tu campamento con el edificio de ese oficio (🏘️ Servicios → ⚒️ Oficios)."
   missing_line: "❌ Te falta: {items}"
   missing: "❌ Te falta: {items}. No gastaste nada."
   make_button: "🔨 Hacer {n}"

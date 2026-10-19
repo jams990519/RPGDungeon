@@ -127,7 +127,7 @@ def test_my_professions_is_short_with_codes_and_the_detail_is_behind_them(servic
 def test_the_trainer_lists_yours_and_those_left_with_learn_buttons(service):
     make_hero(service)
     view = service.act("test:1", "trainer")
-    assert ids(view) == ["myprof", "learnlist", "pspecs", "claro"]
+    assert ids(view) == ["myprof", "learnlist", "claro"]                # D-287 (0.39): no 🎓 before a rank 25
     text = body(view)
     assert "Te faltan por aprender" in text and "pagando su primera receta" in text
     assert "ench" not in ids(view)

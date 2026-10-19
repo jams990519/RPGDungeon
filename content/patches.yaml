@@ -710,3 +710,26 @@ v0_38_3:
     - "🧙 Every class and every role now has an icon nothing else in the game uses, so you can tell them apart at a glance on the map, in 👥 Players and in fights: 🤺 Warrior, 🦁 Paladin, 🍀 Druid, 🧝 Hunter, 🕊️ Priest and 🧙 Mage."
     - "🎭 Roles: 🐢 and 🦏 Warrior, 🌞 and 🔱 Paladin, 🦬 and 🐅 Druid, 🪶 and 🦊 Hunter, 🙏 and 🌚 Priest, 🧿 and 🌠 Mage (tank, healer or support first, DPS second)."
 
+v0_39:
+  version: "0.39"
+  title: "🏘️ Lost Realms 0.39: el campamento por tipos, ayudantes y armería"
+  title_en: "🏘️ Lost Realms 0.39: the camp by types, helpers and armory"
+  notes:
+    - "🙈 Menos texto: lo que todavía no es para tu nivel ya no se muestra (recetas, especializaciones, talentos, obras, misiones). Aparece cuando lo puedes usar; al subir de nivel te avisa \"📖 Nueva misión\"."
+    - "🏘️ Servicios ahora tiene un botón por tipo de obra: 🏠 Casas, ⚒️ Oficios, 🛡️ Defensas y 📚 Saber. Cada uno muestra lo construido, lo que falta en las obras activas y las que esperan."
+    - "🪣 Cada oficio tiene su propio edificio: 🪚 Aserradero, 🧶 Tejeduría y 🗿 Cantería desde el nivel 1, 🪣 Curtiduría, 💧 Alambique y 🏭 Fundición desde el 2, y más hasta el 5. Si tu campamento ya tenía el 🧵 Taller o la Herrería, conserva todo."
+    - "▶️ El fundador o un 🤝 ayudante activa cada obra; todos la ven y aportan a las activas. Cada obra nueva cuesta un poco más que la anterior."
+    - "🤝 Ayudantes: el fundador nombra 1 cada 5 miembros. Activan obras, invitan con /inv_ y aceptan a quien pide entrar."
+    - "💰 Después de fundar, 🛡️ Gremio no pierde nada: 📢 Mensaje, 💰 Depositar desde cualquier lugar (llena solo las obras activas), 🗺️ Zonas y la lista de miembros."
+    - "⚔️ Nueva Armería del gremio: deja con /a1 el equipo que no usas y toma con /t1 el que dejaron otros. Queda anotado quién dejó y quién tomó."
+    - "⏳ Con el campamento lleno, puedes invitar al gremio a quien no tiene campamento (hasta 10 esperan). Tienen todo lo del gremio, y entran al campamento cuando hay lugar y el fundador o un ayudante los une."
+  notes_en:
+    - "🙈 Less text: what isn't for your level yet is no longer shown (recipes, specializations, talents, works, quests). It appears when you can use it; when you level up you get \"📖 New quest\"."
+    - "🏘️ Services now has one button per type of work: 🏠 Homes, ⚒️ Crafts, 🛡️ Defenses and 📚 Knowledge. Each one shows what is built, what the active works still need and the ones waiting."
+    - "🪣 Every profession has its own building: 🪚 Sawmill, 🧶 Weaving shed and 🗿 Stonemason's yard from level 1, 🪣 Tannery, 💧 Still and 🏭 Smelter from 2, and more up to 5. If your camp already had the 🧵 Workshop or the Smithy, it keeps everything."
+    - "▶️ The founder or a 🤝 helper activates each work; everyone sees it and gives to the active ones. Each new work costs a bit more than the last."
+    - "🤝 Helpers: the founder names 1 for every 5 members. They activate works, invite with /inv_ and accept those who ask to join."
+    - "💰 After founding, 🛡️ Guild loses nothing: 📢 Message, 💰 Deposit from anywhere (it only fills the active works), 🗺️ Zones and the member list."
+    - "⚔️ New guild Armory: leave the gear you don't use with /a1 and take what others left with /t1. Who left and who took what is recorded."
+    - "⏳ With the camp full, you can invite into the guild someone without a camp (up to 10 can wait). They get everything of the guild, and join the camp when there is room and the founder or a helper adds them."
+

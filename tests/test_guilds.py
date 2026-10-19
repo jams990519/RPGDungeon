@@ -91,14 +91,16 @@ def test_founder_creates_the_guild_at_the_camp(service):
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
     assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     screen = service.act("test:1", "guild")
-    assert screen.kind == "guild" and ids(screen) == ["guildnew", "gzones", "rename", "campmgmt"]   # D-282: 🗺️ Zonas
-    assert any("Lyra" in line and "activo" in line for line in screen.body)
+    # D-291 (0.39): the guild keeps its tools after founding (📢 💰 ⚔️ 🗺️), then the D-97 ones
+    tools = ["gmsg", "gfund", "garm", "gzones"]
+    assert screen.kind == "guild" and ids(screen) == tools + ["guildnew", "rename", "campmgmt"]
+    assert any(line.startswith("/m1 👑 Lyra") and "🟢 en línea" in line for line in screen.body)
     member = service.act("test:2", "guild")                       # a member sees it, but cannot create it
-    assert ids(member) == ["gzones", "leave", "campmgmt"]                # D-282: 🗺️ Zonas del gremio for members too
+    assert ids(member) == tools + ["leave", "campmgmt"]
     assert "fundador" in service.act("test:2", "guildnew").notice
     place(service, "test:1", 7, 0, backpack={})                    # the founder away from the camp: only looks
     away = service.act("test:1", "guild")
-    assert ids(away) == ["gzones", "home"]                              # D-282: 🗺️ Zonas del gremio from anywhere
+    assert ids(away) == tools + ["home"]                            # 📢 💰 ⚔️ 🗺️ from anywhere
     assert service.act("test:1", "guildnew").kind == "guild" and service.store.get("guild", "6:0") is None
     place(service, "test:1", 6, 0)
     set_gold(service, "test:1", 10)                               # the fee: 50 bronze
@@ -245,7 +247,7 @@ def test_the_guild_rises_when_the_members_meet_its_needs(service):
     away = service.act("test:1", "guild")
     assert "guildup" not in ids(away) and any("Vuelve al campamento" in line for line in away.body)
     view = service.act("test:2", "guild")                          # any member at the camp can do it
-    assert ids(view)[0] == "guildup" and len(view.actions) <= 4
+    assert "guildup" in ids(view) and len(view.actions) <= HUB_BUTTONS     # D-291: the guild screen is a hub (8)
     view = service.act("test:2", "guildup")
     guild = service.store.get("guild", "6:0")
     assert guild["level"] == 2 and guild["progress"]["explorations"] == 5 and guild["progress"]["victories"] == 0
@@ -327,9 +329,10 @@ def test_member_lines_show_when_each_one_last_played(service, clock):
     service.act("test:2", "hero")                                  # Bram presses a button now
     clock.advance(2 * HOUR)
     view = service.act("test:1", "guild")
-    lines = [line for line in view.body if line.startswith("• ")]
-    assert lines[0].startswith("• Lyra") and "👑" in lines[0] and "activo ahora" in lines[0]
-    assert "Bram" in lines[1] and "activo hace 2 h" in lines[1]
+    # D-291 (0.39): the same member lines as the guild had before founding: code, 👑, online or when they last played
+    lines = [line for line in view.body if line.startswith("/m")]
+    assert lines[0].startswith("/m1 👑 Lyra") and "🟢 en línea" in lines[0]
+    assert "Bram" in lines[1] and "⚪ activo hace 2 h" in lines[1]
     clock.advance(3 * 24 * HOUR)
     assert any("Bram" in line and "hace 3 días" in line for line in service.act("test:1", "guild").body)
 
@@ -373,7 +376,11 @@ def test_every_guild_screen_keeps_four_buttons(content):
             while queue:
                 path = queue.popleft()
                 service, view = build(role, with_guild, path)
-                assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (role, with_guild, path, view.kind, ids(view))
+                if view.layout:                 # D-189/D-244: rows of their own (📍 Zona, D-288 screens): a wide last row
+                    assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.layout)
+                    assert len(view.actions) <= HUB_BUTTONS, (role, with_guild, path, view.kind, ids(view))
+                else:
+                    assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (role, with_guild, path, view.kind, ids(view))
                 assert not service.texts.missing, (path, service.texts.missing)
                 key = (view.kind, tuple(ids(view)))
                 if key in seen or len(path) >= 3:

@@ -82,12 +82,15 @@ def test_own_camp_hub_and_manage_screen(service):
     found_at(service, "test:1", 6, 0)
     view = service.act("test:1", "claro")
     assert view.kind == "player_camp" and len(view.actions) <= HUB_BUTTONS
-    assert ids(view) == ["cook", "research", "oficios", "trainer", "upsvc", "board", "campmgmt", "dudas"]
+    assert ids(view) == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]   # D-287: no 🔬 without 📚; D-291: 🛡️
     hero = service._load("test:1")
     hero.learned = ["cocina"]                                                    # D-257: with 🍲 Cocina learned...
     service._save(hero)
     assert "Fogón" in service.act("test:1", "cook").notice                      # ...no 🔥 Fogón yet: it says where
     assert "Biblioteca" in service.act("test:1", "research").notice             # no 📚 Biblioteca yet
+    guild = service.act("test:1", "guild")                                      # D-291: 🛡️ Gremio straight from the hub
+    assert guild.kind == "guild" and "gfund" in ids(guild)                      # ...with 💰 Depositar after founding
+    assert any(a.id == "guild" for a in service.menu())                         # and in the bottom menu (D-281)
     manage = service.act("test:1", "campmgmt")
     assert manage.kind == "camp_manage" and manage.kind in HUB_KINDS
     assert ids(manage) == ["grow", "upgrades", "guild", "claro"]
@@ -121,10 +124,11 @@ def test_trainer_presents_the_professions(service):
     make_hero(service)
     view = service.act("test:1", "trainer")
     assert view.kind == "trainer" and len(view.actions) <= 4
-    assert ids(view) == ["myprof", "learnlist", "pspecs", "claro"]             # D-257: 📋 Mis oficios and 📚 Aprender oficios
+    assert ids(view) == ["myprof", "learnlist", "claro"]             # D-257: 📋 Mis oficios and 📚 Aprender oficios (D-287: no 🎓 yet)
     text = "\n".join(view.body)
-    for word in ("primera receta", "recolección", "exploración", "Te faltan por aprender", "25", "75", "Construcción"):
+    for word in ("primera receta", "recolección", "exploración", "Te faltan por aprender", "Construcción"):
         assert word in text
+    assert "Más adelante" not in text and "25" not in text and "75" not in text      # D-287 (0.39): nothing that comes later
     assert service.text("test:1", "/entrenador").kind == "trainer"
     assert not service.texts.missing
 

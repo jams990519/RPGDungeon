@@ -18,22 +18,22 @@ hub:
   section_info: "📌 Tu campamento"
   # [ES] una línea por botón, en el orden de los botones
   cook: "🍲 Cocinar: carne, pescado y lo que da cada terreno se vuelven raciones y guisos para la despensa. 🍲 Cocina rango {rank}."
-  cook_none: "🍲 Cocinar: hace falta el 🔥 Fogón (🏰 Gestionar → 🔨 Mejoras)."
+  cook_none: "🍲 Cocinar: hace falta el 🔥 Fogón (🏘️ Servicios → ⚒️ Oficios)."
   cook_unlearned: "🍲 Cocinar: primero aprende la 🍲 Cocina en 🧑‍🏫 Entrenador → 📚 Aprender oficios."   # [ES] D-257 (0.33): los oficios se aprenden; D-274.1: 🔬 Investigar ya no está en la fogata
   research_claro: "🔬 Investigar: en el Claro no; se investiga en tu propio campamento con la 📚 Biblioteca (nivel {level})."
-  research_locked: "🔬 Investigar: con la 📚 Biblioteca, que se construye desde el nivel {level} (tu campamento es nivel {now})."
+  research_locked: "🔬 Investigar: con la 📚 Biblioteca, que se construye desde el nivel {level} (tu campamento es nivel {now})."   # [ES] sin uso desde la 0.39 (D-287)
   research_open: "🔬 Investigar: 📚 Conocimiento · {done} de {total} {total|estudio|estudios}{current}."
   research_current: " · estudian {name}"
   research_learn: "🔬 Investigar: aprende oficios nuevos · {n} por aprender."   # [ES] D-257: en el Claro se aprenden los oficios
   research_learn_all: "🔬 Investigar: ya aprendiste todos los oficios que puedes aprender aquí."
   make: "🛠️ Fabricar: 🪚 refinar y 🛠️ fabricar equipo, pociones y muebles · {n} {n|estación|estaciones} aquí · ⚡{energy}/{max}."
-  make_none: "🛠️ Fabricar: todavía sin estaciones; las abren el 🧵 Taller y la 🔨 Herrería (🔨 Mejoras)."
+  make_none: "🛠️ Fabricar: aquí no hay estaciones ahora."   # [ES] D-288 (0.39): en tu campamento, hub.make_none_camp
   trainer: "🧑‍🏫 Entrenador: tus oficios, los que te faltan y cómo se aprenden."
   shop: "🛒 Mercader: pociones, vendas y 🥖 provisiones; te compra los materiales."
   inn: "🛏️ Posada: {price} · duermes {time} y despiertas con la vida llena."
   inn_full: "🛏️ Posada: {price} · tu vida ya está llena."
-  services: "🏘️ Servicios: {list}."
-  services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."
+  services: "🏘️ Servicios: {list}."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
+  services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time}."
   manage: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🌾 despensa y 🛡️ gremio."
   dudas: "❓ Dudas: escribe una palabra y te muestro las preguntas ya respondidas."
@@ -50,9 +50,9 @@ hub:
   manage_button: "🏰 Gestionar"
   # [ES] avisos cuando una opción no se puede aquí: el botón no se esconde, explica por qué y dónde
   research_claro_notice: "🔬 En el Claro no se investiga: el Claro no crece. En tu propio campamento, con la 📚 Biblioteca (nivel {level}), estudian {studies}."
-  research_locked_notice: "🔬 Para investigar, tu campamento necesita la 📚 Biblioteca: se construye en 🏰 Gestionar → 🔨 Mejoras desde el nivel {level} (hoy es nivel {now})."
+  research_locked_notice: "🔬 Para investigar, tu campamento necesita la 📚 Biblioteca: se construye en 🏰 Gestionar → 🔨 Mejoras desde el nivel {level} (hoy es nivel {now})."   # [ES] sin uso desde la 0.39 (D-287)
   research_away_notice: "🔬 Se investiga en tu propio campamento, con la 📚 Biblioteca. Ve hasta él."
-  cook_none_notice: "🍲 Para cocinar aquí hace falta el 🔥 Fogón: se construye en 🏰 Gestionar → 🔨 Mejoras. En el Claro siempre se puede."
+  cook_none_notice: "🍲 Para cocinar aquí hace falta el 🔥 Fogón: se activa y se construye en 🏘️ Servicios → ⚒️ Oficios. En el Claro siempre se puede."
   away_notice: "🏕️ Eso se hace en el Claro o en tu propio campamento: ve hasta uno de los dos."
   cook_title: "🍲 Cocinar"
   cook_intro: "🍲 Lo cocinado rinde más raciones en la 🌾 despensa de tu campamento que la carne o el pescado crudos. Tu 🍲 Cocina sube con cada receta."
@@ -62,9 +62,9 @@ manage:
   intro: "Lo que hace crecer y mantener tu campamento:"
   grow: "⬆️ Agrandar: {cost} para pasar al nivel {next} (una zona más y más lugar para miembros)."
   grow_top: "⬆️ Agrandar: tu campamento llegó a castillo."
-  upgrades: "🔨 Mejoras: {n} {n|construida|construidas} · 🛡️ Defensa {defense}. Obras, servicios y 📚 Conocimiento."
+  upgrades: "🔨 Mejoras: {n} {n|construida|construidas} · 🛡️ Defensa {defense}. Las obras y lo que falta."
   pantry: "🌾 Aportar comida: carne, pescado, comida cocinada o 🥖 provisiones para la despensa."
-  pantry_locked: "🌾 Despensa: llega al nivel {level} (aldea)."
+  pantry_locked: "🌾 Despensa: llega al nivel {level} (aldea)."   # [ES] sin uso desde la 0.39 (D-287)
   guild: "🛡️ Gremio: los miembros, ✏️ el nombre, 🚪 salir y el gremio del campamento."
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
 
@@ -103,9 +103,9 @@ trainer:
   entry_rank: "{name} {rank}"
   now: "✅ Hoy puedes empezar {n} {n|oficio más|oficios más}: los que todavía no tienen rango en la lista."
   now_all: "✅ Ya empezaste todos los oficios que tienes a tu alcance."
-  later_title: "🔒 Más adelante:"
-  later_camp: "• 🏕️ Con tu propio campamento: {list} y las estaciones de sus mejoras."
-  later_specs: "• 🎓 Al rango {first} de un oficio eliges su primera especialización, y al {second} la segunda."
+  later_title: "🔒 Más adelante:"   # [ES] sin uso desde la 0.39 (D-287)
+  later_camp: "• 🏕️ Con tu propio campamento: {list} y las estaciones de sus mejoras."   # [ES] sin uso desde la 0.39 (D-287)
+  later_specs: "• 🎓 Al rango {first} de un oficio eliges su primera especialización, y al {second} la segunda."   # [ES] sin uso desde la 0.39 (D-287)
   later_more: "• Cada rango abre recetas nuevas: a medida que avances aprenderás más y más."
   stations: "📍 Aquí hay estaciones de {n} {n|oficio|oficios}: 🛠️ Fabricar y 🍲 Cocinar las usan."
   stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
@@ -152,6 +152,6 @@ learn:                         # [ES] D-257 (0.33): 📚 Aprender oficios: cada 
   camp_needed: "🏗️ {name} se aprende siendo miembro de un campamento."
   auto: "{name} no se aprende: sube solo. {how}"
   need: "🔒 Para esto primero aprende {name} (🧑‍🏫 Entrenador → 📚 Aprender oficios)."
-  more_branch: "🔒 Más recetas con los oficios que te faltan: {list}."
+  more_branch: "🔒 Más recetas con los oficios que te faltan: {list}."   # [ES] sin uso desde la 0.39 (D-287)
   none_refine: "Todavía no sabes ningún oficio de refinar: apréndelo en 📚 Aprender oficios."
   none_craft: "Todavía no sabes ningún oficio de fabricar: apréndelo en 📚 Aprender oficios."

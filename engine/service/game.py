@@ -157,6 +157,14 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-282 (0.38): lo que sabe el gremio se calcula de la "exploration" de los compañeros (engine/service/gremio.py
     _known_pct); no guarda nada nuevo. Saber (recursos, mapa, fundar) usa _known_pct; hacer (explorar, experiencia,
     misiones) sigue con _explored_pct, el % propio.
+    D-287 a D-291 (0.39, pedido del dueño del 19-oct-2026): "upgrades" suma "active" (obras activadas por el fundador o un
+    🤝 ayudante, en orden; un registro de antes cuenta como activa toda obra con materiales dados) y "gave" (quién dio qué al
+    💰 fondo del campamento después de fundar); "camp" suma "helpers" (los 🤝 ayudantes, D-289); "armory" (la ⚔️ Armería,
+    D-290) y los códigos /a1 /t1 son de engine/service/gremio.py. content/camp_upgrades.yaml suma "kind" (tipo de
+    construcción, D-288) y 13 edificios de oficio; el 🧵 Taller y la 🔨 Herrería quedan retirados (lo construido sigue).
+    D-294 (0.39): "camp" suma "waiting", "wait_invites" y "room_told" y el espacio "camp_wait" (del gremio esperando lugar en
+    el campamento; de engine/service/gremio.py). Quien espera no está en camp["members"]: nada de lo de este archivo que mira
+    los miembros (cupo, territorio, despensa, obras, oleadas, castillo) lo cuenta; _guild_view y _ask_join sí lo miran.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -176,7 +184,10 @@ Reglas que nunca se rompen:
     11. Una incursión perdida (D-99) solo quita parte de la despensa: nunca niveles, zonas ni miembros.
     12. Las mejoras (D-101) son solo de los campamentos de jugadores (el Claro no crece, D-98): lo construido queda para
         siempre, cada aporte toma solo lo que la obra todavía pide, y sus efectos valen solo para los miembros (y,
-        salvo la Defensa y los servicios, solo en el territorio del campamento).
+        salvo la Defensa y los servicios, solo en el territorio del campamento). D-291 (0.39): una obra pide materiales solo
+        si está activa (la activó el fundador o un ayudante, o ya tenía materiales dados); lo dado nunca se pierde (una obra
+        retirada a medias se puede terminar) y ⏹️ Quitar solo vale mientras nadie le dio nada. D-287: nada de un nivel que el
+        campamento no tiene se muestra.
     13. Cazar (D-106) solo da la pelea y su botín: nunca exploración ni recursos. No hay presas donde el bioma no tiene
         peligro (el Claro) ni en la guarida del Guardián. La partida de caza no junta a nadie en una pelea (el combate
         sigue de 1 contra 1) y solo avisa a los miembros presentes en la misma zona (sin teletransporte).
@@ -231,7 +242,7 @@ Si cambias esto, revisa:
       _item_view, _enchant, _disenchant; botones "ench", "ench:<pieza>", "enc:<pieza>", "dis:<pieza>", "dis!:<pieza>" en
       ENCHANT_ACTIONS). Números en balance.yaml enchanting; cuentas en engine/professions/rules.py; el bono entra al kit por
       engine/hero/gear.py gear_bonus (real_stats). No suma botón a ⚒️ Oficios (sus 4 lugares quedan para las estaciones):
-      ahí sale con su rango, su beneficio (prof.perk.disenchant) y el próximo umbral (_ench_next, _ench_unlocks en _prof_gain).
+      ahí sale con su rango y su beneficio (prof.perk.disenchant); _ench_unlocks avisa en _prof_gain lo que abre un rango nuevo.
       Desencantar nunca fabrica monedas (precios de esencia y esencia_mayor en items.yaml). Pruebas: tests/test_oficios_equipo.py
     - 🎓 Especializaciones de oficio (D-115, D-141): sección "profession specializations" (_pspecs_view con /especialidad y el
       botón 🎓 Especialización de ⚒️ Oficios, _pspec_prof_view, _pspec_view, _pspec_switch_view, _pspec_pick, _pspec_switch;
@@ -239,7 +250,7 @@ Si cambias esto, revisa:
       (y recetas con "spec"), números en balance.yaml specs, cuentas en engine/professions/rules.py (spec_*), textos en
       content/locales/es_especializaciones.yaml. Sus efectos entran por _pspec_bonus/_pspec_finds en _perks (perk), _merchant_sale
       (coins: goods, barter, gear), _trade_gather y _trade_loot (yield, find), _make y _recipe_view (yield, find, masterwork y la
-      receta exclusiva: _pspec_recipe_ok), _station_view, _next_unlock y _prof_gain (recetas exclusivas; _pspec_gain sube el
+      receta exclusiva: _pspec_recipe_ok), _station_view y _prof_gain (recetas exclusivas; _pspec_gain sube el
       dominio y avisa al rango 25 y 75), _enchant_plan y _ench_view (enchant), _infiltrate (detect) y _ecamp_destroyed (coins:
       ecamp). Ojo: _spec_view es la pantalla de la especialización de CLASE (talentos); la de oficio es _pspec_view.
       Pruebas: tests/test_especializaciones.py
@@ -282,9 +293,18 @@ Si cambias esto, revisa:
       knowledge.*, upgrade.* y tech.* en es.yaml; tests/test_camp_upgrades.py. Sus efectos tocan _settle (vida: Fogón y
       Enfermería), _explore_step (Cartografía), _gather_step (Herramientas), _end_combat (Rastreo), _stock (Pozo),
       _members_cap (Cabañas), _camp_pantry y _camp_feed (Granero, Huerto, Ahumadero), _wallet_view, _sew_bag y
-      _build_chest (Taller), _item_view y _sell_gear (Herrería), _grow_view y _grow_camp (15 mejoras para castillo).
+      _build_chest (Taller; desde la 0.39 la 🪡 Sastrería), _item_view y _sell_gear (Herrería; desde la 0.39 la 🔨 Forja),
+      _grow_view y _grow_camp (15 mejoras para castillo).
       _camp_defense lo leen las oleadas: _open_raid la guarda y _raid_weaken frena a los atacantes; la Torre de vigía
       avisa con _raid_watch (tests/test_raids.py)
+    - 🏘️ Servicios por tipo, un edificio por oficio y obras que se activan (D-287, D-288, D-291; 0.39): content/camp_upgrades.yaml
+      ("kind", los 13 edificios de oficio, taller y herreria retirados), content/professions.yaml stations.camp, balance.yaml
+      upgrades.type_shown, CAMP_KINDS, HUB_KINDS ("camp_services", "camp_type", "guild"), UPGRADE_ACTIONS ("svc:", "upact:",
+      "upstop:"); textos services.*, upgrades.count_reach/active_title y upgrade.<edificio> en es_servicios.yaml y
+      en_servicios.yaml. Funciones: _open_works, _active_works, _available_works, _services_view, _service_type_view,
+      _service_uses, _type_entries, _type_pages, _activate_work, _stop_work, _give_to_work, _complete_work, _feed_works y
+      _work_back; las usan también engine/service/gremio.py (_camp_deposit, _camp_fund_view). Pruebas:
+      tests/test_servicios_por_tipo.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py y tests/test_armeria.py
       tests/test_hunt.py (cacería en la zona y partida de caza, D-106)
     - Cacería (D-106): balance.yaml hunt; engine/social/hunting.py; textos hunt.* en es.yaml; los botones
       🏹 Cazar ("hunt"), 🏹 Buscar presa y 🏹 Otra presa ("prey"), 🏹 Partida de caza ("huntparty") y 🏹 Unirme
@@ -295,8 +315,9 @@ Si cambias esto, revisa:
       (curva de rango, unidad extra, raros, experiencia de héroe por ⚡, bono del campamento), engine/professions;
       Hero.professions; textos prof.*, profession.* e item.* en es.yaml; tests/test_professions.py. Tocan _gather_step
       (_trade_gather: oficio, unidad extra y raros), _batch_summary (línea ⚒️ Oficios), _end_combat (_trade_loot: carne y
-      piel del 🔪 Desollador), _camp_hub_actions (D-192: 🛠️ Fabricar abre ⚒️ Oficios), _workshop_view (4.º botón) y _services_view
-      (⚒️ Oficios si hay 🔨 Herrería sin 🧵 Taller), _hero_view (línea /oficios) y COMMANDS (/oficios). La experiencia de
+      piel del 🔪 Desollador), _camp_hub_actions (D-192: 🛠️ Fabricar abre ⚒️ Oficios), _workshop_view (4.º botón) y
+      _service_uses (D-288: ⚒️ Oficios en el tipo ⚒️ Oficios de 🏘️ Servicios si hay estaciones y no hay 🧵 Taller), _hero_view
+      (línea /oficios) y COMMANDS (/oficios). La experiencia de
       héroe al refinar y fabricar (_make_xp) sigue a D-108: tiene que quedar a la par de recolectar por cada ⚡
     - ⚙️ Opciones y peleas automáticas (D-114): balance.yaml auto_fight (opciones por defecto, % de 🩹 Retirarse, tope de
       rondas y umbrales de la forma de jugar) y hunt.batch / hunt.batch_minutes; engine/combat/auto.py (la forma de jugar,
@@ -316,7 +337,7 @@ Si cambias esto, revisa:
       del origen), _prof_gain (experiencia de oficio del origen), _hero_view (origen, emblema, biografía y títulos de la
       historia), _zone_players (emblema junto al nombre) y tick() (relee el héroe: otro pudo pagarle un encargo de campamento)
     - Oficios fase 2, lado del campamento (D-115, D-116): content/professions.yaml (pescador, cocina, canteria, construccion,
-      estaciones del Claro, del 🔥 Fogón y del 🧵 Taller, recetas sillar y de cocina), balance.yaml camp_professions (el
+      estaciones del Claro, del 🔥 Fogón, del 🧵 Taller y, desde la 0.39, de la 🗿 Cantería, recetas sillar y de cocina), balance.yaml camp_professions (el
       pescado, la piedra de la Cantería, la experiencia de 🏗️, el daño de las oleadas y lo que pide reparar),
       content/biomes.yaml "water", content/items.yaml (pescado, comidas "cooked", sillar), content/camp_upgrades.yaml (desde
       el nivel 7 piden sillar y tablón), engine/professions/rules.py (CAMP_PERK_KEYS, camp_best_ranks, camp_perks,
@@ -325,7 +346,8 @@ Si cambias esto, revisa:
       _camp_feed (_food_perk_bonus), _pantry_lines, _camp_here_view (daño y línea 🏰), _camp_defense (menos el daño:
       _defense_built, _camp_damage), _resolve_raid (_raid_damage), _upgrades (damage, repair), _upgrades_view, _works_view,
       _works_entries ("fix"), _give_to_work (_upgrade_need, _credit_raw, _build_gain), _upgrade_action ("uprep" →
-      _repair_defenses), _services_view (⚒️ Oficios con cualquier estación sin 🧵 Taller), _professions_view (BRANCH_ORDER y
+      _repair_defenses), _service_uses (⚒️ Oficios con cualquier estación sin 🧵 Taller; D-288: la 🛠️ reparación también en
+      🛡️ Defensas de 🏘️ Servicios), _professions_view (BRANCH_ORDER y
       la línea 🏰) y _recipe_view (lo que vale una comida en la despensa)
     - 🧭 Explorador y 👹 campamentos enemigos (D-112): balance.yaml explorer (experiencia del oficio, umbrales del mapa) y
       enemy_camps (densidad, guarnición, jefe, energía, cofre, parte, infiltración); content/professions.yaml (explorador,
@@ -338,7 +360,7 @@ Si cambias esto, revisa:
       (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
       un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (👹, líneas y 👹 Ir al más cercano),
       _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
-      (marca del jefe), _prof_gain (umbrales del mapa y el título), _next_unlock, _professions_view y _perk_text. El gancho
+      (marca del jefe), _prof_gain (umbrales del mapa y el título), _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
     - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
       engine/world/dungeons.py; textos dungeon.* en content/locales/es_mazmorras.yaml; tests/test_mazmorras.py. Tocan
@@ -385,7 +407,7 @@ Si cambias esto, revisa:
       _recon_view (✅ y lo que hay hoy en cada lugar reconocido), _zone_view (marca en la ruta). D-223 (0.30.2): el 🗺️ Mapa
       ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla hasta
       que el dueño responda E-207, _ecamp_intel_lines (chest=False),
-      _explorer_what, _explorer_prof_lines y _explorer_next (los umbrales 🔭 en ⚒️ Oficios)
+      _explorer_what y _explorer_prof_lines (los umbrales 🔭 que ya abriste, en la pantalla del 🧭 Explorador)
     - 🛡️ Gremio desde el inicio, 👥 Jugadores y obras con tiempo (D-265, D-269, D-274; 0.36): engine/service/gremio.py
       (GremioMixin: su encabezado lista todo), balance.yaml gremio, works, bonfire.cap y presence.bonfire_seconds (y
       guild.levels[0].capacity 5), content/locales/es_gremio.yaml y en_gremio.yaml; tests/test_gremio_desde_el_inicio.py
@@ -407,6 +429,19 @@ Si cambias esto, revisa:
       COMMANDS /guia y /origen; _idle_action "guide". view() y tick() guardan al héroe DESPUÉS de armar la pantalla (un aviso
       que se mostró queda visto). El tutorial viejo (_tutorial, balance.yaml tutorial, tutorial.* de es.yaml) se quitó o queda
       solo para leer: si vuelve a usarse, los héroes nuevos tienen Hero.tutorial = 0
+    - 🙈 No se muestra lo que todavía no es de tu nivel (D-287, 0.39, pedido del dueño: "si hay algo que no está para tu
+      nivel, no lo vas a mostrar", en todo el juego y sin línea de "lo próximo"). Fuera de tu campamento y del gremio (que
+      tienen su propio cambio): 🧑‍🏫 _trainer_view (sin "🔒 Más adelante"; 🎓 solo con _pspec_any), _prof_detail_view (sin
+      "🔓 En rango N": se quitaron _next_unlock, _ench_next, _explorer_next y _recon_next), _explorer_prof_lines (solo los
+      umbrales abiertos), _station_view (sin la línea 🔒 de recetas de rango más alto ni la de oficios que faltan),
+      _recipe_view (una receta de rango más alto vuelve a la estación con el aviso corto), _ench_view y _enchant_view (sin
+      los encantamientos de rango más alto), _pspecs_view/_pspec_prof_view/_pspec_view (sin la lista 🔒, sin "🔓 En rango",
+      sin recetas exclusivas de rango más alto), _chain_talents_view/_chain_spec_view/_bar_view (sin el 🔒 segundo rol ni el
+      modo híbrido antes de su nivel), _spec_view (sin habilidades cerradas ni "Siguiente"), _ecamp_menu (sin 🕵️ Infiltrarse
+      ni su pista antes del rango), _places_view, _recon_view, _recon_map_lines y _ecamp_map_lines (sin "con rango N...") y,
+      en engine/service/story.py, el 📔 Diario y 🎯 Misiones (sin las misiones de nivel más alto; se avisan al llegar a su
+      nivel: _story_level_lines). Lo que el jugador pide a mano (un código o un botón viejo) recibe un aviso corto. Textos
+      que quedan sin uso: marcados "# [ES] sin uso desde la 0.39 (D-287)". Pruebas: tests/test_ocultar_lo_bloqueado.py
 """
 
 from __future__ import annotations
@@ -473,7 +508,8 @@ from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭 the guided path
 from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE, GUILD_CODE_RE, MEMBER_CODE_RE,   # D-269, D-265
-                                   INVITE_CODE_RE, PLAYER_CODE_RE, ZONE_CODE_RE, GremioMixin)   # D-280, D-282
+                                   INVITE_CODE_RE, PLAYER_CODE_RE, ZONE_CODE_RE, GremioMixin,   # D-280, D-282
+                                   ARMORY_IN_RE, ARMORY_OUT_RE)                                 # D-290: ⚔️ /a1 and /t1
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -525,7 +561,12 @@ BATCH_KINDS = ("explore", "gather", "hunt")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive",
                    "upf:",       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
-                   "uprep")      # D-115: 🛠️ Reparar defensas after a raid (from 🔨 Obras)
+                   "uprep",      # D-115: 🛠️ Reparar defensas after a raid (from 🔨 Obras)
+                   "svc:",       # D-288 (0.39): one type of 🏘️ Servicios ("svc:<kind>" or "svc:<kind>:<page>")
+                   "upact:",     # D-291: ▶️ Activar a work (the founder or a 🤝 helper); "upact:<id>:w" comes from 🔨 Obras
+                   "upstop:")    # D-291: ⏹️ Quitar an active work nobody gave to yet
+# D-288 (0.39): the types of camp buildings, in the order of their 🏘️ Servicios buttons (content/camp_upgrades.yaml "kind").
+CAMP_KINDS = ("casa", "oficio", "defensa", "saber")
 # Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
 BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
@@ -537,7 +578,8 @@ ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 # D-192 (provisional; E-132): the 🏕️ Campamento and 👤 Héroe hubs (and the screens that work like them) show all their options
 # at once, up to HUB_BUTTONS, 2 per row; every other screen keeps the 4 of D-75 (the combat bar, 6; amount pickers, D-189).
-HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio")    # D-269: the guild hub too
+HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio",    # D-269: the guild hub too
+             "guild", "camp_services", "camp_type")   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
 HUB_BUTTONS = 8
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), a topic ("dudas:<topic>") and an answer ("duda:<code>").
 DUDAS_ACTIONS = ("dudas", "duda:")
@@ -648,6 +690,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         sacó del menú) abre lo mismo que el botón viejo. Otro texto suelto avisa que se usen los botones, con la pista de
         /dudas. D-285 (0.38.1, pedido del dueño): si el héroe tiene gremio (o campamento), ese texto suelto es un mensaje a
         todo su gremio (_guild_chat); los comandos con "/" y las pantallas que piden texto siguen igual.
+        D-290 y D-291 (0.39): /a2 deja en la ⚔️ Armería del gremio la 2.ª pieza de tu lista y /t2 toma la 2.ª pieza de la
+        armería (engine/service/gremio.py); /f02 sigue depositando también después de fundar (en el fondo del campamento).
         La llaman: los clientes (Telegram manda aquí todo texto que empieza con "/" y no es un atajo exacto).
         Si cambia, afecta: la creación de personaje, los nombres de campamento y gremio, los atajos con texto y ❓ Dudas.
         """
@@ -688,6 +732,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 typed = self._member_code(hero, int(MEMBER_CODE_RE.match(low).group(1)))
             elif FUND_CODE_RE.match(low):                # D-269: /f02 = put all of that in the guild's fund, from anywhere
                 typed = self._fund_code(hero, int(FUND_CODE_RE.match(low).group(1)))
+            elif self.store.get("combat", hero.id) is None and ARMORY_IN_RE.match(low):     # D-290: /a2 = leave that piece in ⚔️
+                typed = self._armory_in_code(hero, int(ARMORY_IN_RE.match(low).group(1)))
+            elif self.store.get("combat", hero.id) is None and ARMORY_OUT_RE.match(low):    # D-290: /t2 = take that piece
+                typed = self._armory_out_code(hero, int(ARMORY_OUT_RE.match(low).group(1)))
             else:
                 typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
@@ -2818,8 +2866,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: arma las líneas del centro de 🏕️ Campamento, una por botón y en su orden, con lo que hace cada opción y sus
         números (rango de 🍲 Cocina, estaciones y energía, precio y tiempo de la posada, encargos de hoy...). En tu campamento
-        cambian la posada por 🏘️ Servicios y suman 🏰 Gestionar; lo que todavía no hay (🔥 Fogón, 📚 Biblioteca, estaciones)
-        se explica en la misma línea.
+        cambian la posada por 🏘️ Servicios (lo que usan y cuántas obras activas hay, D-288) y suman 🏰 Gestionar; lo que todavía
+        no hay pero se puede hacer en este nivel (🔥 Fogón, estaciones) se explica en la misma línea. D-287 (0.39, pedido del
+        dueño: "si hay algo que no está para tu nivel, no lo vas a mostrar"): 🔬 Investigar solo sale con la 📚 Biblioteca
+        construida, y la línea de 🏰 Gestionar nombra la 🌾 despensa solo cuando ya la tienen.
         La llaman: _claro_view y _camp_here_view (miembros). Si cambia, afecta: el texto de los dos centros.
         """
         t = self.texts
@@ -2836,15 +2886,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             lines.append(t.t("hub.players", n=present, cap=int(self.content.balance.get("bonfire", {}).get("cap", 20))))
         else:
             key = f"{hero.x}:{hero.y}"
-            if self._camp_service(camp, "knowledge"):
+            if self._camp_service(camp, "knowledge"):    # D-287: without the 📚 Biblioteca, no line (and no button)
                 tech = self._upgrades(key)["tech"]
                 total = sum(1 for tid, tdef in self._tech_catalog().items() if not tdef.get("retired") or tid in tech.get("done", []))
                 current = tech.get("current")
                 lines.append(t.t("hub.research_open", done=len(tech.get("done", [])), total=total,
                                  current=t.t("hub.research_current", name=self._tech_name(current)) if current else ""))
-            else:
-                lines.append(t.t("hub.research_locked", level=self._library_level(), now=camp.get("level", 1)))
-        lines.append(t.t("hub.make", n=len(stations), energy=hero.energy, max=energy_max) if stations else t.t("hub.make_none"))
+        lines.append(t.t("hub.make", n=len(stations), energy=hero.energy, max=energy_max) if stations else t.t("hub.make_none_camp"))
         lines.append(t.t("hub.trainer"))
         if camp is None:
             price = self._money(self._inn_price())
@@ -2855,13 +2903,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             catalog = self._upgrade_catalog()
             services = [self._upgrade_name(uid) for uid in self._built(camp)
                         if uid in catalog and set(catalog[uid].get("service") or {}) & {"rest_price", "sell_ratio", "craft", "sell_gear"}]
-            lines.append(t.t("hub.services", list=" · ".join(services)) if services else t.t("hub.services_none"))
+            active = len(self._active_works(camp, self._upgrades(f"{camp['x']}:{camp['y']}")))      # D-291: the works that ask now
+            lines.append(t.t("hub.services_active", list=" · ".join(services), n=active) if services
+                         else t.t("hub.services_types", n=active))
+            lines.append(t.t("hub.guild_camp"))         # D-291: 🛡️ Gremio (💰 Depositar, 📢, ⚔️) straight from the hub
         daily = self._daily(hero)
         ids = self._daily_ids(hero)
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
         lines.append(t.t("hub.board", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left)))
-        if camp is not None:
-            lines.append(t.t("hub.manage"))
+        if camp is not None:                            # D-287: the 🌾 pantry is named only once the camp has it
+            has_pantry = camp.get("level", 1) >= self.content.balance["pantry"]["camp_from_level"]
+            lines.append(t.t("hub.manage") if has_pantry else t.t("hub.manage_nopantry"))
         lines.append(t.t("hub.dudas"))
         return lines
 
@@ -2873,27 +2925,35 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         lugar de 🔬 Investigar), 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🛒 Mercader, 🛏️ Posada, 📜 Tablón y ❓ Dudas. Tu campamento: lo
         mismo con 🔬 Investigar (el 📚 Conocimiento) y 🏘️ Servicios en
         lugar del mercader y la posada, y 🏰 Gestionar (agrandar, mejoras, despensa, gremio) antes de ❓ Dudas. Mientras dura una
-        oleada que no peleaste, 🛡️ Defender va primero y 📜 Tablón sale (sigue en /encargos): nunca pasan de HUB_BUTTONS.
-        Nada se esconde: lo que no se puede aquí explica por qué al tocarlo.
+        oleada que no peleaste, 🛡️ Defender va primero. D-287 (0.39): 🔬 Investigar solo sale cuando el campamento tiene la
+        📚 Biblioteca (antes se veía y explicaba el nivel 7); un botón viejo de 🔬 contesta corto (_research). D-291 (0.39, el
+        dueño: "el botón de gremio no se puede ver una vez ya construiste el campamento… debería aparecer"): 🛡️ Gremio va después
+        de 🏘️ Servicios. Si pasan de HUB_BUTTONS, sale 📜 Tablón (sigue en /encargos) y, si todavía pasan (oleada con
+        Biblioteca), 🧑‍🏫 Entrenador (sigue en /entrenador).
         La llaman: _claro_view y _camp_here_view. Si cambia, afecta: tests/test_menus_y_dudas.py, tests/test_buttons.py y los
         demás que miran los botones del campamento (test_raids, test_pantry, test_guilds, test_camp_upgrades).
         """
         t = self.texts
         second = (Action(id="players", label=t.t("hub.players_button")) if camp is None        # D-274.1: 👥 at the bonfire
-                  else Action(id="research", label=t.t("hub.research_button")))
-        actions = [Action(id="cook", label=t.t("hub.cook_button")), second,
-                   Action(id="oficios", label=t.t("hub.make_button")), Action(id="trainer", label=t.t("hub.trainer_button"))]
+                  else Action(id="research", label=t.t("hub.research_button")) if self._camp_service(camp, "knowledge")
+                  else None)                                                                    # D-287: no 📚, no 🔬
+        actions = [Action(id="cook", label=t.t("hub.cook_button"))] + ([second] if second else [])
+        actions += [Action(id="oficios", label=t.t("hub.make_button")), Action(id="trainer", label=t.t("hub.trainer_button"))]
         if camp is None:
             actions += [Action(id="shop", label=t.t("hub.shop_button")), Action(id="inn", label=t.t("hub.inn_button"))]
         else:
-            actions.append(Action(id="upsvc", label=t.t("hub.services_button")))
+            actions += [Action(id="upsvc", label=t.t("hub.services_button")),
+                        Action(id="guild", label=t.t("gremio.button"))]    # D-291: 🛡️ Gremio after founding, from the hub
         actions.append(Action(id="board", label=t.t("hub.board_button")))
         if camp is not None:
             actions.append(Action(id="campmgmt", label=t.t("hub.manage_button")))
         actions.append(Action(id="dudas", label=t.t("dudas.button")))
         defend = self._defend_action(camp, hero) if camp is not None else None
-        if defend:                                      # D-99: pending first (TowerWars); the board stays in /encargos
-            actions = [defend] + [a for a in actions if a.id != "board"]
+        if defend:                                      # D-99: pending first (TowerWars)
+            actions = [defend] + actions
+        for spare in ("board", "trainer"):              # past 8: 📜 Tablón waits in /encargos, then 🧑‍🏫 in /entrenador
+            if len(actions) > HUB_BUTTONS:
+                actions = [a for a in actions if a.id != spare]
         return actions[:HUB_BUTTONS]
 
     def _settlement(self) -> dict[str, Any]:
@@ -3111,15 +3171,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES] Qué hace: después de subir de nivel, en las clases nuevas el punto se pone solo en el rol activo (sync_chain) y al
         nivel chain.second_role_level avisa que ya puede jugar su segundo rol (D-230); en las viejas, el aviso de siempre.
+        D-287 (0.39, pedido del dueño): como lo de niveles más altos ya no se anuncia antes, aquí se avisa la misión de la
+        historia que se abre justo en este nivel ("📖 Nueva misión", _story_level_lines de engine/service/story.py).
         La llaman: _give_xp y _end_combat. Si cambia, afecta: el aviso de cada nivel.
         """
         if not is_chain_spec(self.content.classes, hero.class_id):
-            return [self.texts.t("talents.new_point")]
+            return [self.texts.t("talents.new_point")] + self._story_level_lines(hero)
         ensure_talents(self.content.classes, self.content.balance, hero)
         lines = [self.texts.t("chain.new_point")]
         if hero.level == int(self.content.balance["chain"]["second_role_level"]):
             lines.append(self.texts.t("chain.second_role_learned"))
-        return lines
+        return lines + self._story_level_lines(hero)
 
     def _pay_referral(self, hero: Hero) -> None:
         """When an invited hero reaches the reward level, the inviter gets bonus energy (once)."""
@@ -3452,7 +3514,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 rel = camp["relations"].get(hero.id)
                 body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t(f"camps.relation.{rel or 'unknown'}")]
                 actions = []
-                if hero.id in camp.get("requests", []):
+                if hero.id in (camp.get("waiting") or []):   # D-294: in its guild, waiting for room (no 🙋 Pedir unirme)
+                    body.append(t.t("waiting.you", camp=camp["name"]))
+                    actions.append(Action(id="guild", label=t.t("gremio.button")))
+                elif hero.id in camp.get("requests", []):
                     body.append(t.t("camps.join_waiting"))
                 elif hero.camp is None and rel != "hostile":
                     actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
@@ -3486,7 +3551,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: la segunda parte del centro de tu campamento (D-192: los 8 lugares del centro van para cocinar, investigar,
         fabricar y lo demás de D-191): una línea por opción con su costo (agrandar), lo construido y la 🛡️ Defensa, la
-        despensa y el gremio, y sus botones de _camp_member_actions (⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
+        despensa (D-287: solo cuando ya la tienen, desde el nivel 3) y el gremio, y sus botones de _camp_member_actions (⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
         3, 🛡️ Gremio y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 6 como mucho, de 2 en 2 (es parte del centro, HUB_KINDS).
         Solo para miembros, estando en el campamento; en otro lado explica por qué (_upgrades_elsewhere).
         La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras y 🛡️ Gremio.
@@ -3506,7 +3571,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("manage.defend"))
         body.append(t.t("manage.grow", cost=self._grow_cost_text(level), next=level + 1) if level < top else t.t("manage.grow_top"))
         body.append(t.t("manage.upgrades", n=len(self._built(camp)), defense=self._camp_defense(camp)))
-        body.append(t.t("manage.pantry") if pantry else t.t("manage.pantry_locked", level=self.content.balance["pantry"]["camp_from_level"]))
+        if pantry:                                      # D-287 (0.39): before level 3 the pantry is not mentioned at all
+            body.append(t.t("manage.pantry"))
         body.append(t.t("manage.guild"))
         if pantry:
             body += [""] + self._pantry_lines(pantry)
@@ -3606,13 +3672,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return base + int(self._camp_effect(camp, "members"))      # D-101: 🛖 Cabañas add room on top
 
     def _ask_join(self, hero: Hero) -> View:
-        """Ask the founder to let you in; the founder decides with two buttons (D-84)."""
+        """Ask the founder to let you in; the founder (or a 🤝 helper, D-289) decides with two buttons (D-84).
+
+        [ES] Qué hace: el visitante pide entrar; el pedido le llega al fundador y a sus 🤝 ayudantes (D-289, 0.39), cada uno en su
+        idioma, con ✅ / ❌; y queda en 🛡️ Gremio → 🙋 Solicitudes. La llama: 🙋 Pedir unirme. Si cambia, afecta: tests/test_camps.py
+        y tests/test_ayudantes.py."""
         t = self.texts
         key = f"{hero.x}:{hero.y}"
         camp = self.store.get("camp", key)
         if not camp or hero.id in camp["members"] or hero.camp is not None or camp["relations"].get(hero.id) == "hostile":
             return self._camp_here_view(hero)
-        if self._gremio_link(hero.id):                  # D-269: one guild per hero: your camp is the one your guild founds
+        if self._gremio_link(hero.id) or self._waiting_key(hero.id):   # D-269, D-294: one guild per hero (waiting too)
             return self._camp_here_view(hero, notice=t.t("camps.join_in_gremio"))
         if len(camp["members"]) >= self._members_cap(camp):
             return self._camp_here_view(hero, notice=t.t("guild.full" if self.store.get("guild", key) else "camps.full"))
@@ -3620,7 +3690,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if hero.id not in requests:
             requests.append(hero.id)
             self.store.put("camp", key, camp)
-            self._push_each([camp["founder_id"]], lambda: View(
+            self._push_each(self._camp_managers(camp), lambda: View(       # D-289: the founder and the helpers
+
                 kind="camp_join", title=t.t("camps.join_title"),
                 body=[t.t("camps.join_body", name=hero.name, level=hero.level, camp=camp["name"])],
                 actions=[Action(id=f"join:{key}:{hero.id}:y", label=t.t("camps.join_yes")),
@@ -3628,18 +3699,23 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._camp_here_view(hero, notice=t.t("camps.join_sent"))
 
     def _answer_join(self, hero: Hero, action_id: str) -> View:
+        """✅ / ❌ a join request ("join:<x>:<y>:<cuenta>:y|n"): the founder or a 🤝 helper (D-289); room and one guild per hero.
+
+        [ES] Qué hace: responde una solicitud para entrar al campamento. Desde la 0.39 también la responde un ayudante del
+        fundador (D-289). La llaman: el aviso de la solicitud y 🙋 Solicitudes de 🛡️ Gremio. Si cambia, afecta:
+        tests/test_camps.py y tests/test_ayudantes.py."""
         t = self.texts
         parts = action_id.split(":")
         if len(parts) < 5 or parts[-1] not in ("y", "n"):
             return self._main_view(hero)
         key, visitor, choice = f"{parts[1]}:{parts[2]}", ":".join(parts[3:-1]), parts[-1]
         camp = self.store.get("camp", key)
-        if not camp or camp.get("founder_id") != hero.id or visitor not in camp.get("requests", []):
+        if not camp or not self._camp_manager(camp, hero.id) or visitor not in camp.get("requests", []):
             return self._main_view(hero, notice=t.t("camps.already_answered"))
         camp["requests"].remove(visitor)
         data = self.store.get("hero", visitor)
         accepted = (choice == "y" and data is not None and data.get("camp") is None and len(camp["members"]) < self._members_cap(camp)
-                    and self._gremio_link(visitor) is None)      # D-269: one guild per hero
+                    and self._gremio_link(visitor) is None and self._waiting_key(visitor) is None)   # D-269, D-294
         if accepted:
             camp["members"].append(visitor)
             data["camp"] = key
@@ -3658,7 +3734,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._camp_here_view(hero)
         if hero.id in camp["members"]:
             camp["members"].remove(hero.id)
+            camp["helpers"] = [h for h in camp.get("helpers") or [] if h != hero.id]    # D-289: a helper who leaves stops being one
             self.store.put("camp", key, camp)
+            self._tell_waiting_room(key)                # D-294: a place opened for who waits in the guild
         hero.camp = None
         return self._camp_here_view(hero, notice=t.t("camps.left", camp=camp["name"]))
 
@@ -3796,10 +3874,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp["level"] = level + 1
         self.store.put("camp", key, camp)
         self.store.put("territory", f"{new[0]}:{new[1]}", {"camp": key})
+        self._tell_waiting_room(key)                    # D-294: a bigger camp may have room for who waits
         return self._camp_here_view(hero, notice=t.t("camps.grown", zones=len(camp["zones"]), x=new[0], y=new[1]))
 
     def _visit_camp(self, hero: Hero) -> list[str]:
-        """Arriving at someone's camp: tell the visitor and ask its members friendly or hostile (once)."""
+        """Arriving at someone's camp: tell the visitor and ask its members friendly or hostile (once).
+
+        [ES] Qué hace: el visitante sabe de quién es el campamento y a los miembros les llega 🤝 Amistoso / ⚔️ Hostil (una vez).
+        D-294 (0.39): al fundador y a sus ayudantes, si el visitante no tiene campamento ni gremio, también ✉️ Invitar a mi
+        gremio (al campamento si hay lugar; si no, al gremio, a esperar lugar). La llama: _arrive. Si cambia, afecta:
+        tests/test_camps.py y tests/test_espera_del_gremio.py."""
         t = self.texts
         key = f"{hero.x}:{hero.y}"
         camp = self.store.get("camp", key)
@@ -3809,11 +3893,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if hero.id not in camp["relations"] and hero.id not in camp["asked"]:
             camp["asked"].append(hero.id)
             self.store.put("camp", key, camp)
-            self._push_each(camp["members"], lambda: View(
-                kind="camp_visit", title=t.t("camps.visit_title"),
-                body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
-                actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
-                         Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))]))
+            # D-294 (0.39): to the founder and the helpers, ✉️ invite a visitor with no camp nor guild (camp or guild)
+            managers = set(self._camp_managers(camp)) if self._gremio_free(hero.id, hero) else set()
+            for member in camp["members"]:
+                invite = [Action(id=f"ginvite:{hero.id}", label=t.t("gremio.invite_button"))] if member in managers else []
+                self._push_each([member], lambda invite=invite: View(
+                    kind="camp_visit", title=t.t("camps.visit_title"),
+                    body=[t.t("camps.visit_body", name=hero.name, camp=camp["name"], level=hero.level)],
+                    actions=[Action(id=f"rel:{key}:{hero.id}:f", label=t.t("camps.friendly")),
+                             Action(id=f"rel:{key}:{hero.id}:h", label=t.t("camps.hostile"))] + invite))
             lines.append(t.t("camps.members_told"))
         else:
             lines.append(t.t(f"camps.relation.{camp['relations'].get(hero.id, 'unknown')}"))
@@ -4188,68 +4276,68 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return t.t("guild.ago.hours", n=int(elapsed // 3600))
         return t.t("guild.ago.days", n=int(elapsed // 86400))
 
-    def _member_lines(self, hero: Hero, camp: dict[str, Any]) -> list[str]:
-        """One line per camp member: name, level and when they last played (founder first, then the most recent).
+    def _camp_member_order(self, hero: Hero, camp: dict[str, Any]) -> list[str]:
+        """The camp's members as 🛡️ Gremio lists them (/m1 is the first): the founder, then the most recent players (D-291)."""
+        def seen(account: str) -> float:
+            if account == hero.id:
+                return hero.seen_at                                  # fresher than the stored copy
+            return float((self.store.get("hero", account) or {}).get("seen_at", 0.0))
 
-        [ES]
-        Qué hace: lista a los miembros con su nivel y "activo hace X". Sirve para ver quién juega a las mismas
-        horas (el dueño lo dejó como comentario: no hay reglas que lo usen, D-97).
-        La llama: _guild_view.
-        Si cambia, afecta: solo lo que se muestra.
-        """
-        t = self.texts
-        rows = []
-        for member in camp["members"]:
-            if member == hero.id:
-                name, level, seen = hero.name, hero.level, hero.seen_at        # fresher than the stored copy
-            else:
-                data = self.store.get("hero", member) or {}
-                name, level, seen = data.get("name", "?"), data.get("level", 1), data.get("seen_at", 0.0)
-            rows.append((member == camp.get("founder_id"), seen, name, level))
-        rows.sort(key=lambda r: (not r[0], -r[1]))
-        return [t.t("guild.member_line", name=name, level=level, crown=t.t("guild.crown") if founder else "", ago=self._ago(seen))
-                for founder, seen, name, level in rows]
+        founder = camp.get("founder_id")
+        rest = sorted((m for m in camp["members"] if m != founder), key=lambda m: -seen(m))
+        return ([founder] if founder in camp["members"] else []) + rest
 
     def _guild_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🛡️ Gremio: your camp's guild (or how to create it), its members and what it needs to rise (D-97).
+        """🛡️ Gremio of a camp: the D-97 guild (or how to create it) and the tools it had before founding (D-291).
 
         [ES]
-        Qué hace: muestra el gremio de tu campamento: nombre, nivel, miembros (con nivel y "activo hace X") y el avance
-        de lo que pide su nivel, con barras como la obra del Claro. Sin gremio, explica qué es y cuánto cuesta.
-        Botones (3 como máximo): 🛡️ Crear gremio (fundador, sin gremio) o ⬆️ Subir el gremio (cuando cumplen),
-        ✏️ Renombrar campamento (fundador) o 🚪 Salir del campamento (miembros), y ↩️ Volver. Crear, subir, renombrar
-        y salir solo aparecen estando en el campamento; desde otro lugar (/gremio) solo se mira.
-        D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view); un gremio
-        que fundó su campamento pasa a ser este (el registro "guild" lleva "gremio" con su id).
-        D-285 (0.38.1): muestra los últimos mensajes del campamento (camp["messages"]) y la pista de que cualquier texto que
-        escribas le llega a todo el gremio (gremio.chat_hint).
-        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores y el atajo /gremio.
-        Si cambia, afecta: tests/test_guilds.py y el recorrido de botones (4 como máximo).
+        Qué hace: el centro del gremio de tu campamento. Arriba el gremio D-97 (nombre, nivel y lo que pide para subir, con barras)
+        o, en un campamento de antes sin gremio, qué es y cuánto cuesta (D-287: la pista del castillo solo en el nivel de antes del
+        castillo). D-291 (0.39, pedido del dueño: "una vez se crea el gremio no se puede perder el botón de depositar… esas
+        cositas deben mantenerse"): después de fundar conserva lo que tenía el gremio antes del campamento: cada miembro con su
+        código (/m1), si está en línea, dónde está y qué hace (👑 el fundador, 🤝 los ayudantes, D-289), la línea de ayudantes,
+        el 💰 fondo del campamento, la ⚔️ Armería (D-290), los últimos 📢 mensajes (los del gremio de antes de fundar pasaron
+        aquí) y las pistas del chat y de /inv_. Botones (hasta 8, de 2 en 2, ↩️ a lo ancho; HUB_KINDS "guild"): 📢 Mensaje,
+        💰 Depositar, ⚔️ Armería, 🗺️ Zonas, 🙋 Solicitudes (fundador o ayudante, si hay), 🛡️ Crear gremio (fundador, sin gremio)
+        o ⬆️ Subir el gremio (cuando cumplen), ✏️ Renombrar (fundador) o 🚪 Salir (los demás) y ↩️ Volver. Crear, subir,
+        renombrar y salir solo estando en el campamento; lo demás desde cualquier lugar.
+        D-294 (0.39): quien está en el gremio esperando lugar en el campamento también la abre (con la línea "⏳ estás esperando
+        lugar" y 🚪 Salir del gremio); todos ven el bloque "⏳ Esperando lugar en el campamento" con sus códigos (los números
+        siguen después de los miembros) y, al fundador y a los ayudantes, cuántos lugares hay para unirlos.
+        D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view).
+        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores, el atajo /gremio
+        y los ↩️ de 📢, 💰, ⚔️, 🗺️ y de la tarjeta de un miembro.
+        Si cambia, afecta: tests/test_guilds.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py y los recorridos.
         """
         t = self.texts
-        camp = self.store.get("camp", hero.camp) if hero.camp else None
-        if not camp or hero.id not in camp["members"]:
+        camp = self._guild_camp(hero)                  # D-294: a member, or a guild member waiting for room in the camp
+        if not camp:
             return self._gremio_view(hero, notice=notice)    # D-269: without a camp, the guild from the first moment
+        key = f"{camp['x']}:{camp['y']}"
+        waiting = hero.id not in camp["members"]
+        self._tell_waiting_room(key)                   # D-294: room may have opened (lazy, once per change)
+        camp = self.store.get("camp", key) or camp
         cfg = self.content.balance["guild"]
         levels = cfg["levels"]
-        guild = self.store.get("guild", hero.camp)
-        here = (hero.x, hero.y) == (camp["x"], camp["y"])
+        guild = self.store.get("guild", key)
+        here = (hero.x, hero.y) == (camp["x"], camp["y"]) and not waiting
         founder = camp.get("founder_id") == hero.id
+        manager = self._camp_manager(camp, hero.id)
         n, cap = len(camp["members"]), self._members_cap(camp)
-        actions = []
+        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")),            # D-291: what the guild had before founding
+                   Action(id="gfund", label=t.t("services.deposit_button")),
+                   Action(id="garm", label=t.t("armory.button")),                # D-290: ⚔️ Armería
+                   Action(id="gzones", label=t.t("gzones.button"))]              # D-282: what the guild knows of the zones
         if guild is None:
-            body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what"),
-                    t.t("guild.castle_hint", level=cfg["castle_min_level"], members=cfg["castle_min_members"]),
-                    t.t("guild.cap_warning", cap=guild_rules.capacity(levels, 1)),
-                    t.t("guild.found_cost", coins=self._money(cfg["found_coins"])) if founder else t.t("guild.only_founder", founder=camp["founder"]),
-                    "", t.t("camps.members_cap", n=n, cap=cap)]
-            body += self._member_lines(hero, camp)
+            body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what")]
+            if self._castle_needs(camp):                 # D-287: the castle hint only on the step before the castle
+                body.append(t.t("guild.castle_hint", level=cfg["castle_min_level"], members=cfg["castle_min_members"]))
+            body += [t.t("guild.cap_warning", cap=guild_rules.capacity(levels, 1)),
+                     t.t("guild.found_cost", coins=self._money(cfg["found_coins"])) if founder else t.t("guild.only_founder", founder=camp["founder"])]
             if founder and here:
                 actions.append(Action(id="guildnew", label=t.t("guild.found_button")))
         else:
-            body = [t.t("guild.header", name=guild["name"], level=guild["level"]), t.t("guild.camp_line", camp=camp["name"]),
-                    "", t.t("guild.members", n=n, cap=cap)]
-            body += self._member_lines(hero, camp) + [""]
+            body = [t.t("guild.header", name=guild["name"], level=guild["level"]), t.t("guild.camp_line", camp=camp["name"])]
             need = guild_rules.needs(levels, guild["level"])
             if need:
                 body.append(t.t("guild.needs_title", next=guild["level"] + 1, cap=guild_rules.capacity(levels, guild["level"] + 1)))
@@ -4265,19 +4353,35 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                         actions.append(Action(id="guildup", label=t.t("guild.up_button")))
             else:
                 body.append(t.t("guild.top"))
+        if waiting:                                    # D-294: in the guild, waiting for room in the camp
+            body[:0] = [t.t("waiting.you", camp=camp["name"]), ""]
+        body += ["", t.t("guild.members", n=n, cap=cap), self._helpers_line(camp, hero)]       # D-289: 🤝 helpers
+        members = self._camp_member_order(hero, camp)
+        body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
+        body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
+        self._codes(hero, "members", members + list(camp.get("waiting") or []))   # D-291: /m1 works after founding too
+        fund = self._upgrades(key).get("fund") or {}
+        body += ["", t.t("works.camp_fund", items=self._item_list(fund)) if fund else t.t("cfund.empty_short"),
+                 self._armory_line(key)]
         messages = camp.get("messages") or []          # D-285: the camp's guild chat (any loose text of a member)
         if messages:
             body += ["", t.t("gremio.messages_title")]
             body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
-        body += ["", t.t("gremio.chat_hint")]
-        if founder and n < cap:
-            body.append(t.t("gremio.invite_hint"))       # D-280: the founder invites into the camp with /inv_<code>
-        actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-282: what the camp's guild knows of the zones
+        body += ["", t.t("gremio.chat_hint"), t.t("gremio.codes_hint")]
+        if manager and n < cap:
+            body.append(t.t("gremio.invite_hint"))       # D-280, D-289: the founder or a helper invites with /inv_<code>
+        requests = camp.get("requests") or []
+        if manager and requests:                         # D-289: helpers answer the join requests too
+            actions.append(Action(id="creqs", label=t.t("gremio.requests_button", n=len(requests))))
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
                            else Action(id="leave", label=t.t("camps.leave_button")))
+        if waiting:                                    # D-294: they can leave the guild while they wait
+            actions.append(Action(id="gwleave", label=t.t("waiting.leave_button")))
+        actions = actions[:HUB_BUTTONS - 1]
         actions.append(Action(id="campmgmt" if here else "home", label=t.t("menu.back")))     # D-192: 🛡️ Gremio is in 🏰 Gestionar
-        return View(kind="guild", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
+        return View(kind="guild", title=t.t("guild.title"), body=body, actions=actions, notice=notice,
+                    layout=self._pairs_layout(len(actions)))
 
     def _can_found_guild(self, hero: Hero) -> bool:
         """The founder, standing at its camp, which has no guild yet (D-97)."""
@@ -4355,6 +4459,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not guild_rules.rise(guild, levels):
             return self._guild_view(hero, notice=t.t("guild.not_ready"))
         self.store.put("guild", key, guild)
+        self._tell_waiting_room(key)                    # D-294: a higher guild may have room for who waits
         risen = lambda: t.t("guild.risen", name=guild["name"], level=guild["level"],      # noqa: E731
                             cap=guild_rules.capacity(levels, guild["level"]))
         self._push_each([m for m in camp["members"] if m != hero.id],
@@ -4774,6 +4879,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-115: "damage" (puntos de 🛡️ Defensa que dañaron las oleadas, 0 en los guardados de antes) y "repair" (lo aportado
         a 🛠️ Reparar defensas). D-269 (0.36): "building" (las 🏗️ obras en curso: materiales completos, se construyen con el
         tiempo y los miembros en el territorio) y "fund" (lo que sobró del fondo del gremio al fundar; se usa primero).
+        D-291 (0.39): "fund" es el 💰 fondo del campamento (cualquier miembro deposita desde donde esté con 💰 Depositar o /f02 y
+        alimenta las obras activas), "gave" (quién dio qué al fondo: cuenta → {objeto: cantidad}, para siempre) y "active" (las
+        obras que el fundador o un 🤝 ayudante activó, en el orden en que se activaron; solo esas piden materiales). Un registro
+        de antes de la 0.39 no tiene "active": cuenta como activa toda obra con materiales ya dados (catálogo en orden).
         La llaman: las pantallas y acciones de 🔨 Mejoras y los efectos (_built_at, _furniture_effect).
         Si cambia, afecta: todo lo guardado de las mejoras; los campos solo se agregan (nunca se borra lo construido).
         """
@@ -4786,7 +4895,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         data.setdefault("repair", {})           # D-115: what the members gave to 🛠️ Reparar defensas
         data.setdefault("building", {})         # D-269: 🏗️ works in progress (materials complete, being built with time)
         data.setdefault("fund", {})             # D-269: what the guild's fund left when it founded the camp (used first)
+        data.setdefault("gave", {})             # D-291: who put what in the camp's 💰 fund (for ever)
+        if "active" not in data:                # D-291: works with materials given before 0.39 are active by themselves
+            data["active"] = [uid for uid in self._upgrade_catalog() if self._work_started(data, uid)]
         return data
+
+    @staticmethod
+    def _work_started(record: dict[str, Any], uid: str) -> bool:
+        """True if the members already gave something to this work (D-291: then it stays active and cannot be removed)."""
+        return any(int(n) > 0 for n in ((record.get("works") or {}).get(uid) or {}).values())
 
     def _built_at(self, key: str | None) -> list[str]:
         """Ids of the improvements built by the camp at `key`, in catalog order (empty without a camp)."""
@@ -5037,23 +5154,73 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._camp_here_view(hero, notice=t.t("upgrades.members_only"))
 
     def _open_works(self, camp: dict[str, Any], record: dict[str, Any]) -> list[str]:
-        """Improvements the camp can build now: unlocked by its level, not built, not retired (catalog order)."""
+        """Improvements the camp can build now: unlocked by its level, not built, not retired (catalog order).
+
+        [ES]
+        Qué hace: las obras que el campamento puede hacer ahora: de su nivel o menos (D-287: las de más arriba no se muestran en
+        ningún lado), sin construir y sin estar en curso. Una mejora retirada solo si el campamento ya le había dado materiales
+        (D-288: un 🧵 Taller o una 🔨 Herrería a medias se puede terminar; nada de lo dado se pierde). Activas o no: las activas
+        son _active_works; las que el fundador o un ayudante puede activar, _available_works.
+        La llaman: _active_works, _available_works, _upgrades_view, _give_to_work y las pruebas.
+        Si cambia, afecta: qué obras existen para cada campamento.
+        """
         level = camp.get("level", 1)
         building = record.get("building") or {}         # D-269: a work in progress no longer asks for materials
         return [uid for uid, udef in self._upgrade_catalog().items()
-                if not udef.get("retired") and uid not in record["built"] and uid not in building and int(udef.get("level", 1)) <= level]
+                if uid not in record["built"] and uid not in building and int(udef.get("level", 1)) <= level
+                and (not udef.get("retired") or self._work_started(record, uid))]
+
+    def _active_works(self, camp: dict[str, Any], record: dict[str, Any]) -> list[str]:
+        """The works that ask for materials now (D-291), oldest activation first; one with materials given is always active.
+
+        [ES]
+        Qué hace: las obras activas del campamento, en el orden en que el fundador o un 🤝 ayudante las activó ("active" de las
+        mejoras); al final, por compatibilidad, cualquier obra abierta que ya tenga materiales dados (las de antes de la 0.39).
+        Solo estas piden materiales, las ven todos los miembros y las alimenta el 💰 fondo (la más antigua primero).
+        La llaman: _works_entries, _services_view, _service_type_view, _feed_works, _camp_fund_view y la línea del centro.
+        Si cambia, afecta: qué ve cada miembro y a qué se puede aportar.
+        """
+        open_ids = self._open_works(camp, record)
+        order = [uid for uid in record.get("active") or [] if uid in open_ids]
+        return order + [uid for uid in open_ids if uid not in order and self._work_started(record, uid)]
+
+    def _available_works(self, camp: dict[str, Any], record: dict[str, Any]) -> list[str]:
+        """The works of the camp's level that nobody activated yet: only the founder and the helpers see them (D-291)."""
+        active = set(self._active_works(camp, record))
+        return [uid for uid in self._open_works(camp, record) if uid not in active]
+
+    def _upgrade_kind(self, uid: str) -> str:
+        """The type of a camp building (D-288): casa, oficio, defensa or saber (content/camp_upgrades.yaml "kind")."""
+        kind = self._upgrade_catalog().get(uid, {}).get("kind", "casa")
+        return kind if kind in CAMP_KINDS else "casa"
+
+    def _service_upgrade(self, camp: dict[str, Any] | None, name: str) -> str | None:
+        """The id of the built improvement that opens the service `name` (D-288: its name goes on the 🏘️ Servicios line)."""
+        catalog = self._upgrade_catalog()
+        return next((uid for uid in self._built(camp) if name in (catalog[uid].get("service") or {})), None)
 
     def _upgrade_action(self, hero: Hero, action_id: str) -> View:
-        """Route the buttons of 🔨 Mejoras, its services and the knowledge (D-101). [ES] Qué hace: reparte los botones de esta sección. La llama: _idle_action. Si cambia, afecta: los IDs de botón de las mejoras."""
+        """Route the buttons of 🔨 Mejoras, its services and the knowledge (D-101). [ES] Qué hace: reparte los botones de esta
+        sección (D-288 y D-291, 0.39: también los tipos de 🏘️ Servicios "svc:", ▶️ Activar "upact:" y ⏹️ Quitar "upstop:").
+        La llama: _idle_action. Si cambia, afecta: los IDs de botón de las mejoras (los viejos siguen andando)."""
         if action_id == "upgrades":
             return self._upgrades_view(hero)
         if action_id.startswith("upw"):
             page = action_id[4:]
             return self._works_view(hero, int(page) if page.isdigit() else 0)
-        if action_id.startswith("upg:"):
-            return self._give_to_work(hero, action_id[4:])
+        if action_id.startswith("upg:"):                # D-288: "upg:<id>:s" comes from a 🏘️ Servicios type (and goes back there)
+            uid, _, origin = action_id[4:].partition(":")
+            return self._give_to_work(hero, uid, back="type" if origin == "s" else "works")
         if action_id == "upsvc":
             return self._services_view(hero)
+        if action_id.startswith("svc:"):                # D-288: one type of 🏘️ Servicios (and its page)
+            kind, _, page = action_id[4:].partition(":")
+            return self._service_type_view(hero, kind, int(page) if page.isdigit() else 0)
+        if action_id.startswith("upact:"):              # D-291: ▶️ Activar ("upact:<id>:w" from 🔨 Obras)
+            uid, _, origin = action_id[6:].partition(":")
+            return self._activate_work(hero, uid, back="works" if origin == "w" else "type")
+        if action_id.startswith("upstop:"):             # D-291: ⏹️ Quitar an active work nobody gave to
+            return self._stop_work(hero, action_id[7:])
         if action_id == "crest":
             return self._camp_rest(hero)
         if action_id == "csell":
@@ -5099,19 +5266,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return actions
 
     def _upgrades_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🔨 Mejoras: built n of total (castle asks upgrades.castle_min_built), 🛡️ Defensa, the open works with bars.
+        """🔨 Mejoras: built n of what this level reaches, 🛡️ Defensa, the works in progress and the active works with bars.
 
         [ES]
-        Qué hace: muestra las mejoras del campamento: cuántas construyeron de cuántas (y cuántas pide el castillo), la
-        🛡️ Defensa, la lista de lo construido, las próximas obras abiertas con su barra de avance y qué se abre en el
-        nivel siguiente. D-116: también los 🪑 muebles colocados (con quién los puso) y, si llevas un mueble que el
-        campamento no tiene, el aviso de colocarlo en 🔨 Obras. D-115: las 🛠️ defensas dañadas, lo que piden las obras con
-        los beneficios de la 🗿 Cantería y la 🏗️ Construcción del campamento (_upgrade_need) y quién los da. Botones (4 como
-        máximo): 🔨 Obras (obras abiertas, la reparación y muebles para colocar), 🏘️ Servicios (si construyeron alguno o
-        hay una estación de oficio, como el 🔥 Fogón), 📚 Conocimiento (con la Biblioteca) y ↩️ Volver.
+        Qué hace: el resumen de las mejoras del campamento: cuántas construyeron de las que tienen a su alcance en este nivel
+        (D-287, 0.39: nada de niveles que todavía no tienen, ni la línea "🔒 En nivel N"; lo que pide el castillo solo se nombra
+        en el nivel de antes del castillo), la 🛡️ Defensa, lo construido, los 🪑 muebles colocados (D-116), las 🛠️ defensas
+        dañadas (D-115), las 🏗️ obras en curso, el 💰 fondo del campamento y las obras ACTIVAS con su barra (D-291: solo esas
+        piden materiales). A todos les dice cuántas obras de este nivel siguen sin activar: el fundador y los 🤝 ayudantes las
+        activan en 🏘️ Servicios; los demás las ven ahí. Botones (4 como máximo): 🔨 Obras (las activas, la reparación, las que puedes activar
+        y los muebles para colocar), 🏘️ Servicios (siempre: ahí están las obras por tipo), 📚 Conocimiento (solo con la
+        Biblioteca) y ↩️ Volver.
         Solo para miembros, estando en el campamento; el Claro no tiene (D-98).
-        La llaman: el botón 🔨 Mejoras de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí) y los ↩️ Volver de Obras, Servicios y
-        Conocimiento.
+        La llaman: el botón 🔨 Mejoras de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí) y los ↩️ Volver de Obras y Conocimiento.
         Si cambia, afecta: tests/test_camp_upgrades.py y el recorrido de botones (tope de 4).
         """
         here = self._upgrades_here(hero)
@@ -5123,11 +5290,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         catalog = self._upgrade_catalog()
         record = self._upgrades(key)
         perks = self._camp_perks(camp, hero)                   # D-115: 🗿 Cantería and 🏗️ Construcción lower the works
+        manager = self._camp_manager(camp, hero.id)
         built = [uid for uid in catalog if uid in record["built"]]
-        total = sum(1 for uid, udef in catalog.items() if not udef.get("retired") or uid in record["built"])
-        body = [t.t("upgrades.header", camp=camp["name"]),
-                t.t("upgrades.count", n=len(built), total=total, need=cfg["castle_min_built"]),
-                t.t("upgrades.defense", n=self._camp_defense(camp)), t.t("upgrades.defense_help"), ""]
+        works = self._active_works(camp, record)
+        reach = len(built) + len(record.get("building") or {}) + len(self._open_works(camp, record))   # D-287: this level only
+        body = [t.t("upgrades.header", camp=camp["name"])]
+        if self._castle_upgrades(camp):                        # D-287: the castle's count only on the step before it
+            body.append(t.t("upgrades.count", n=len(built), total=reach, need=cfg["castle_min_built"]))
+        else:
+            body.append(t.t("upgrades.count_reach", n=len(built), total=reach))
+        body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t("upgrades.defense_help"), ""]
         if record["damage"]:                                   # D-115: 🛠️ repaired from 🔨 Obras
             body.insert(3, t.t("camp_prof.damage_line", n=record["damage"]))
         body.append(t.t("upgrades.built_line", names=" · ".join(self._upgrade_name(uid) for uid in built)) if built
@@ -5140,14 +5312,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if to_place:
             body.append(t.t("upgrades.furniture_hint", names=" · ".join(self._item_label(fid) for fid in to_place)))
         body += self._building_lines(key, camp, hero)            # D-269: 🏗️ the works in progress and the time left
-        if record.get("fund"):                                    # D-269: what the guild's fund left, used first
+        if record.get("fund"):                                    # D-291: the camp's fund feeds the active works
             body.append(t.t("works.camp_fund", items=self._item_list(record["fund"])))
-        works = self._open_works(camp, record)
-        if works:
-            body += ["", t.t("upgrades.open_title")]
+        if works:                                                 # D-291: only the active works ask for materials
+            body += ["", t.t("upgrades.active_title")]
             shown = max(1, int(cfg.get("open_shown", 3)))
             for uid in works[:shown]:
-                need = self._upgrade_need(catalog[uid], perks)
+                need = self._upgrade_need(catalog[uid], perks, record, uid)
                 progress = dict(record["works"].get(uid, {}))
                 self._credit_raw(need, progress)
                 have = sum(min(n, int(progress.get(k, 0))) for k, n in need.items())
@@ -5155,41 +5326,36 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("upgrades.open_line", name=self._upgrade_name(uid), bar=self._bar(have, full, 8), pct=int(100 * have / full)))
             if len(works) > shown:
                 body.append(t.t("upgrades.open_more", n=len(works) - shown))
-        level = camp.get("level", 1)
-        locked = [uid for uid, udef in catalog.items()
-                  if not udef.get("retired") and uid not in record["built"] and int(udef.get("level", 1)) > level]
-        if locked:
-            next_level = min(int(catalog[uid].get("level", 1)) for uid in locked)
-            names = [self._upgrade_name(uid) for uid in locked if int(catalog[uid].get("level", 1)) == next_level]
-            body.append(t.t("upgrades.locked_line", level=next_level, names=" · ".join(names), n=len(names)))
+        available = self._available_works(camp, record)
+        if available:                                   # the owner: everyone sees them; only the founder or a helper picks
+            body.append(t.t("services.to_activate" if manager else "services.to_activate_member", n=len(available)))
+        elif not works:
+            body.append(t.t("services.none_active_manager" if manager else "services.none_active"))
         body += self._camp_perk_lines(camp, hero, perks, only=("stone_cost", "build_cost", "repair_cost"))     # D-115
-        services = {name for uid in built for name in (catalog[uid].get("service") or {})}
         actions = []
         entries = self._works_entries(hero, camp, record)       # works, 🛠️ the repair (D-115) and 🪑 furniture (D-116)
         if entries:
             actions.append(Action(id="upw", label=t.t("upgrades.works_button", n=len(entries))))
-        if services & {"rest_price", "sell_ratio", "craft", "sell_gear"} or self._stations_here(hero)[0]:
-            actions.append(Action(id="upsvc", label=t.t("upgrades.services_button")))      # D-115: 🔥 Fogón's 🍲 Cocina too
-        if "knowledge" in services:
+        actions.append(Action(id="upsvc", label=t.t("upgrades.services_button")))      # D-288: the works by type live there
+        if self._camp_service(camp, "knowledge"):                 # D-287: no "opens at level 7" line without the Biblioteca
             actions.append(Action(id="know", label=t.t("knowledge.button")))
-        else:
-            library = next((udef for udef in catalog.values() if (udef.get("service") or {}).get("knowledge")), None)
-            if library:
-                body.append(t.t("knowledge.locked", level=library.get("level", 1)))
         actions.append(Action(id="campmgmt", label=t.t("menu.back")))      # D-192: 🔨 Mejoras lives in 🏰 Gestionar
         return View(kind="camp_upgrades", title=t.t("upgrades.title"), body=body, actions=actions, notice=notice)
 
     def _works_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
-        """🔨 Obras: the improvements the camp can build now, with a bar per material and a 🤲 button each (D-101).
+        """🔨 Obras: the active works with a bar per material and a 🤲 button each; for the founder and the helpers, also the
+        works they can ▶️ activate (D-291).
 
         [ES]
-        Qué hace: lista las obras abiertas (por el nivel del campamento) con lo que pide cada una y lo aportado. Cada
-        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). D-115: primero, si las oleadas
-        dañaron las defensas, 🛠️ Reparar defensas (se aporta igual que una obra); lo que piden las obras ya tiene los
-        beneficios de la 🗿 Cantería y la 🏗️ Construcción del campamento. Al final, los 🪑 muebles que llevas y el
-        campamento no tiene, cada uno con su botón 🪑 Colocar (D-116). De a 3, o de a 2 con ➡️ Ver más si son más (4
-        botones como máximo, D-75).
-        La llaman: 🔨 Obras de la pantalla de mejoras, cada aporte (vuelve a la página de esa obra) y _place_furniture.
+        Qué hace: lista las obras ACTIVAS (D-291, 0.39: solo esas piden materiales) con lo que pide cada una y lo aportado. Cada
+        botón 🤲 aporta todo lo que esa obra todavía pide y llevas (también sus monedas). Al fundador y a los 🤝 ayudantes les
+        muestra después las obras de este nivel que todavía nadie activó, con ▶️ Activar ("upact:<id>:w"). D-115: primero, si
+        las oleadas dañaron las defensas, 🛠️ Reparar defensas (se aporta igual que una obra); lo que piden las obras ya tiene los
+        beneficios de la 🗿 Cantería y la 🏗️ Construcción del campamento. Al final, los 🪑 muebles que llevas y el campamento no
+        tiene, cada uno con su botón 🪑 Colocar (D-116). De a 3, o de a 2 con ➡️ Ver más si son más (4 botones como máximo,
+        D-75).
+        La llaman: 🔨 Obras de la pantalla de mejoras, cada aporte (vuelve a la página de esa obra), ▶️ Activar desde aquí y
+        _place_furniture.
         Si cambia, afecta: cómo aportan los miembros (tests/test_camp_upgrades.py).
         """
         here = self._upgrades_here(hero)
@@ -5199,14 +5365,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         catalog = self._upgrade_catalog()
         record = self._upgrades(key)
+        manager = self._camp_manager(camp, hero.id)
         entries = self._works_entries(hero, camp, record)
         if not entries:
-            return self._upgrades_view(hero, notice=notice or t.t("upgrades.no_works"))
+            return self._upgrades_view(hero, notice=notice or t.t("upgrades.no_works" if manager else "services.none_active"))
         perks = self._camp_perks(camp, hero)                   # D-115: what the camp's 🗿 and 🏗️ take off each work
         per = 3 if len(entries) <= 3 else 2
         pages = (len(entries) + per - 1) // per
         page %= pages
         body = [t.t("upgrades.works_intro")]
+        if any(kind == "open" for kind, _ in entries):
+            body.append(t.t("services.activate_hint"))         # D-291: ▶️ for the founder and the helpers
         body += self._camp_perk_lines(camp, hero, perks, only=("stone_cost", "build_cost", "repair_cost"))
         if any(kind == "furn" for kind, _ in entries):
             body.append(t.t("upgrades.furniture_intro"))
@@ -5227,10 +5396,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             udef = catalog[uid]
             defense = int(udef.get("defense", 0))
             title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
-            body += ["", title + (t.t("upgrades.defense_mark", n=defense) if defense else ""), t.t(udef["desc_key"])]
-            need = self._upgrade_need(udef, perks)              # D-115: with the camp's perks
+            title += t.t("upgrades.defense_mark", n=defense) if defense else ""
+            need = self._upgrade_need(udef, perks, record, uid)  # D-115, D-295: perks and growth
             progress = dict(record["works"].get(uid, {}))
             self._credit_raw(need, progress)                    # D-115: raw given before counts as refined
+            if kind == "open":                                  # D-291: not active yet: what it would ask, and ▶️
+                body += ["", t.t("services.open_entry", title=title), t.t(udef["desc_key"])]
+                body += self._need_lines(need, progress)
+                actions.append(Action(id=f"upact:{uid}:w", label=t.t("services.activate_button", name=self._upgrade_name(uid))))
+                continue
+            body += ["", title, t.t(udef["desc_key"])]
             body += self._need_lines(need, progress)
             actions.append(Action(id=f"upg:{uid}", label=t.t("upgrades.give_button", name=self._upgrade_name(uid))))
         if pages > 1:
@@ -5238,21 +5413,39 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions.append(Action(id="upgrades", label=t.t("menu.back")))
         return View(kind="camp_works", title=t.t("upgrades.works_title"), body=body, actions=actions, notice=notice)
 
-    def _give_to_work(self, hero: Hero, uid: str) -> View:
-        """🤲 Aportar to one improvement: any member at the camp, no approval; when complete it is built for ever.
+    def _work_back(self, hero: Hero, uid: str, back: str, notice: str | None = None) -> View:
+        """The screen an action on a work goes back to: 🔨 Obras on the page of that work, or its 🏘️ Servicios type (D-288)."""
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        record = self._upgrades(key)
+        if back == "type":
+            kind = self._upgrade_kind(uid)
+            return self._service_type_view(hero, kind, self._type_page_of(hero, camp, record, kind, uid), notice=notice)
+        entries = self._works_entries(hero, camp, record)
+        per = 3 if len(entries) <= 3 else 2
+        page = entries.index(("work", uid)) // per if ("work", uid) in entries else 0
+        return self._works_view(hero, page, notice=notice)
+
+    def _give_to_work(self, hero: Hero, uid: str, back: str = "works") -> View:
+        """🤲 Aportar to one ACTIVE improvement (D-291): any member at the camp; when complete it is built for ever.
 
         [ES]
         Qué hace: el miembro aporta a la obra lo que lleva de lo que pide (_contribute) y gana experiencia y mérito por
         material. Si con eso se completa, la mejora queda construida para siempre y se avisa a los demás miembros.
         Si no lleva nada de lo que pide, avisa qué falta y no toca nada. Ocupado (viajando, explorando...) no aporta.
-        D-269 (0.36): lo que sobró del fondo del gremio al fundar ("upgrades"."fund") se pone primero; y con los materiales
-        completos la mejora no queda construida al instante: pasa a 🏗️ obra en curso (_start_work) y se termina con el tiempo
-        y los miembros presentes en el territorio (60 min × nivel con 2; con 1, el doble; nunca menos de 10 min). Con
-        works.minutes_per_level en 0 se construye al instante, como antes.
+        D-291 (0.39, pedido del dueño): solo se aporta a una obra ACTIVA (la activó el fundador o un 🤝 ayudante, o ya tenía
+        materiales dados). Si el fundador o un ayudante toca 🤲 en una obra de su nivel que no estaba activa (un botón viejo),
+        aportar la activa (y se avisa a todos, como con ▶️ Activar); un miembro común recibe el aviso de que no está activa.
+        D-269 (0.36): lo que hay en el 💰 fondo del campamento ("upgrades"."fund") se pone primero; y con los materiales
+        completos la mejora no queda construida al instante: pasa a 🏗️ obra en curso (_complete_work → _start_work) y se
+        termina con el tiempo y los miembros presentes en el territorio. Con works.minutes_per_level en 0 se construye al
+        instante, como antes.
         D-115: lo que pide sale de _upgrade_need (con la 🗿 Cantería y la 🏗️ Construcción del campamento); lo crudo que
         la obra ya tenía de más cuenta como refinado (_credit_raw); cada material aportado sube la 🏗️ Construcción
         (_build_gain); si los beneficios ya cubren la obra, el próximo 🤲 la termina aunque no lleves nada.
-        La llaman: los botones 🤲 de 🔨 Obras (upg:<id>).
+        La llaman: los botones 🤲 de 🔨 Obras ("upg:<id>") y de cada tipo de 🏘️ Servicios ("upg:<id>:s", back="type").
         Si cambia, afecta: el ritmo de las mejoras y el castillo (upgrades.castle_min_built).
         """
         here = self._upgrades_here(hero)
@@ -5261,51 +5454,184 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp, key = here
         t = self.texts
         if hero.activity:
-            return self._works_view(hero, notice=t.t("activity.busy"))
+            return self._work_back(hero, uid, back, notice=t.t("activity.busy"))
         record = self._upgrades(key)
-        works = self._open_works(camp, record)
-        if uid not in works:
-            return self._works_view(hero)
-        entries = self._works_entries(hero, camp, record)
-        per = 3 if len(entries) <= 3 else 2
-        page = entries.index(("work", uid)) // per
+        activated = False
+        if uid not in self._active_works(camp, record):
+            if uid not in self._open_works(camp, record):        # built, in progress or not for this level (D-287)
+                return self._work_back(hero, uid, back)
+            if not self._camp_manager(camp, hero.id):            # D-291: the founder or a helper activates it first
+                return self._work_back(hero, uid, back, notice=t.t("services.not_active", name=self._upgrade_name(uid)))
+            activated = True
+            self._freeze_mult(record, uid)                       # D-295: its price is fixed from now on
         udef = self._upgrade_catalog()[uid]
-        need = self._upgrade_need(udef, self._camp_perks(camp, hero))     # D-115: 🗿 Cantería and 🏗️ Construcción
+        need = self._upgrade_need(udef, self._camp_perks(camp, hero), record, uid)     # D-115, D-295
         progress = record["works"].setdefault(uid, {})
         self._credit_raw(need, progress)                     # D-115: raw given before the work asked refined counts as refined
-        from_fund = self._take_from_fund(record, need, progress)     # D-269: what the guild's fund left goes first
+        from_fund = self._take_from_fund(record, need, progress)     # D-269/D-291: what is in the camp's fund goes first
         given = self._contribute(hero, need, progress)
         name = self._upgrade_name(uid)
         complete = all(int(progress.get(k, 0)) >= n for k, n in need.items())
         if not given and not from_fund and not complete:   # D-115: a work the perks already cover is finished by the next 🤲
-            return self._works_view(hero, page, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
-        lines = [t.t("works.from_fund", items=self._item_list(from_fund), name=name)] if from_fund else []
+            return self._work_back(hero, uid, back, notice=t.t("upgrades.nothing_to_give", name=name,
+                                                                 items=self._missing_text(need, progress)))
+        lines = []
+        if activated:                                        # D-291: a founder or helper giving to it activates it
+            record["active"] = list(record.get("active") or []) + [uid]
+            lines.append(t.t("services.activated", name=name))
+        lines += [t.t("works.from_fund", items=self._item_list(from_fund), name=name)] if from_fund else []
         lines += self._contribution_lines(hero, given, name) if given else []
         lines += self._build_gain(hero, given)                # D-115: 🏗️ Construcción rises with every material given
         lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins")) if given else []     # D-117
         timed = False
         if complete:
-            record["works"].pop(uid, None)
-            self.store.put("upgrades", key, record)
-            timed = self._start_work(key, camp, uid, hero)   # D-269 (4): with its materials complete, it is built with time
-            record = self._upgrades(key)
-            if timed:
-                hours = self._fmt_duration(self._work_seconds(udef) / int(self.content.balance["works"].get("members_ref", 2)))
-                lines.append(t.t("works.started", name=name, time=hours))
-                self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
-                    kind="camp_news", title=t.t("upgrades.built_push_title"),
-                    body=[t.t("works.started_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"], time=hours)]))
-            else:
-                record["built"][uid] = self.clock.now()
-                lines.append(t.t("upgrades.built", name=name))
-                self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
-                    kind="camp_news", title=t.t("upgrades.built_push_title"),
-                    body=[t.t("upgrades.built_push", hero=hero.name, name=self._upgrade_name(uid), camp=camp["name"])]))
-            page = 0
+            record, done, timed = self._complete_work(key, camp, uid, hero, record)
+            lines += done
         self.store.put("upgrades", key, record)
+        if activated and not complete:
+            self._announce_activation(camp, hero, uid, need, progress)
         if timed:
             self._works_refresh(key, camp, hero)                 # D-269: when it could end, for tick()
-        return self._works_view(hero, page, notice="\n".join(lines))
+        return self._work_back(hero, uid, back, notice="\n".join(lines))
+
+    def _complete_work(self, key: str, camp: dict[str, Any], uid: str, actor: Hero,
+                       record: dict[str, Any]) -> tuple[dict[str, Any], list[str], bool]:
+        """A work got all its materials: it leaves the active list and is built with time (or at once); the members are told.
+
+        [ES]
+        Qué hace: lo que pasa cuando una obra completa sus materiales (con un 🤲, con el 💰 fondo o al activarla): sale de las
+        obras activas (D-291) y de las obras a medias, pasa a 🏗️ obra en curso (_start_work, D-269) o, con
+        works.minutes_per_level en 0, queda construida al instante; se avisa a los demás miembros en su idioma. Guarda el
+        registro y devuelve (registro nuevo, líneas para quien lo hizo, si quedó con tiempo).
+        La llaman: _give_to_work y _feed_works. Si cambia, afecta: cuándo y cómo se avisa que una obra se completó.
+        """
+        t = self.texts
+        record["works"].pop(uid, None)
+        record["active"] = [a for a in record.get("active") or [] if a != uid]
+        self.store.put("upgrades", key, record)
+        timed = self._start_work(key, camp, uid, actor)   # D-269 (4): with its materials complete, it is built with time
+        record = self._upgrades(key)
+        others = [m for m in camp["members"] if m != actor.id]
+        if timed:
+            seconds = self._work_seconds(self._upgrade_catalog()[uid]) / int(self.content.balance["works"].get("members_ref", 2))
+            self._push_each(others, lambda: View(
+                kind="camp_news", title=t.t("upgrades.built_push_title"),
+                body=[t.t("works.started_push", hero=actor.name, name=self._upgrade_name(uid), camp=camp["name"],
+                          time=self._fmt_duration(seconds))]))
+            return record, [t.t("works.started", name=self._upgrade_name(uid), time=self._fmt_duration(seconds))], True
+        record["built"][uid] = self.clock.now()
+        self.store.put("upgrades", key, record)
+        self._tell_waiting_room(key)                    # D-294: 🛖 Cabañas may have made room for who waits
+        self._push_each(others, lambda: View(
+            kind="camp_news", title=t.t("upgrades.built_push_title"),
+            body=[t.t("upgrades.built_push", hero=actor.name, name=self._upgrade_name(uid), camp=camp["name"])]))
+        return record, [t.t("upgrades.built", name=self._upgrade_name(uid))], False
+
+    def _announce_activation(self, camp: dict[str, Any], actor: Hero, uid: str, need: dict[str, int],
+                             progress: dict[str, int]) -> None:
+        """🏗️ "{who} activó {work}: falta …" to every other member, in their language (D-291), with 💰 Depositar."""
+        t = self.texts
+        missing = {k: n for k, n in need.items()}
+        have = dict(progress)
+        self._push_each([m for m in camp["members"] if m != actor.id], lambda: View(
+            kind="camp_news", title=t.t("services.activated_push_title"),
+            body=[t.t("services.activated_push", hero=actor.name, name=self._upgrade_name(uid), camp=camp["name"],
+                      items=self._missing_text(missing, have) or "—")],
+            actions=[Action(id="gfund", label=t.t("services.deposit_button"))]))
+
+    def _feed_works(self, key: str, camp: dict[str, Any], record: dict[str, Any],
+                    actor: Hero) -> tuple[dict[str, Any], list[str], bool]:
+        """The camp's 💰 fund gives the active works what they lack, oldest activation first (D-291); what is left stays.
+
+        [ES]
+        Qué hace: pasa del 💰 fondo del campamento a cada obra activa lo que todavía le falta (solo materiales: el fondo no
+        guarda monedas), empezando por la que se activó primero; si una obra queda completa, se construye (_complete_work).
+        Lo que sobra queda en el fondo. No da experiencia ni mérito a nadie (como el fondo de antes de fundar: eso lo da el 🤲).
+        Devuelve (registro, líneas para quien depositó o activó, si alguna obra quedó con tiempo). El que llama guarda.
+        La llaman: _activate_work (al activar) y el depósito del fondo del campamento (engine/service/gremio.py _camp_deposit).
+        Si cambia, afecta: a dónde va lo que se deposita (tests/test_deposito_tras_fundar.py).
+        """
+        t = self.texts
+        lines: list[str] = []
+        timed_any = False
+        perks = self._camp_perks(camp, actor)
+        for uid in self._active_works(camp, record):
+            if not record.get("fund"):
+                break
+            need = self._upgrade_need(self._upgrade_catalog()[uid], perks, record, uid)
+            progress = record["works"].setdefault(uid, {})
+            self._credit_raw(need, progress)
+            given = self._take_from_fund(record, need, progress)
+            if not progress:
+                record["works"].pop(uid, None)
+            if not given:
+                continue
+            lines.append(t.t("works.from_fund", items=self._item_list(given), name=self._upgrade_name(uid)))
+            if all(int(progress.get(k, 0)) >= n for k, n in need.items()):
+                record, done, timed = self._complete_work(key, camp, uid, actor, record)
+                lines += done
+                timed_any = timed_any or timed
+        return record, lines, timed_any
+
+    def _activate_work(self, hero: Hero, uid: str, back: str = "type") -> View:
+        """▶️ Activar: the founder or a 🤝 helper opens a work of the camp's level: from now on it asks for materials (D-291).
+
+        [ES]
+        Qué hace: el fundador o un ayudante (D-289) activa una obra de este nivel que nadie activó todavía (pedido del dueño,
+        19-oct-2026: "si un jugador quiere construir la refinería para el cuero, yo lo activo o mi ayudante… una vez yo lo pongo
+        todos pueden ver lo que falta"). Queda al final de la lista de activas ("active"), el 💰 fondo del campamento le da lo
+        que tenga (_feed_works) y a cada miembro le llega "🏗️ {quién} activó {obra}: falta …". No hay tope de obras activas.
+        Un miembro común no puede (aviso). La llaman: ▶️ Activar de cada tipo de 🏘️ Servicios ("upact:<id>") y de 🔨 Obras
+        ("upact:<id>:w"). Si cambia, afecta: tests/test_servicios_por_tipo.py y tests/test_ayudantes.py.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        record = self._upgrades(key)
+        catalog = self._upgrade_catalog()
+        if uid not in catalog:
+            return self._services_view(hero)
+        name = self._upgrade_name(uid)
+        if not self._camp_manager(camp, hero.id):
+            return self._work_back(hero, uid, back, notice=t.t("services.only_managers"))
+        if uid in self._active_works(camp, record):
+            return self._work_back(hero, uid, back, notice=t.t("services.already_active", name=name))
+        if uid not in self._open_works(camp, record):            # built, in progress or not for this level (D-287)
+            return self._work_back(hero, uid, back)
+        self._freeze_mult(record, uid)                               # D-295: its price is fixed from now on
+        record["active"] = list(record.get("active") or []) + [uid]
+        lines = [t.t("services.activated", name=name)]
+        record, fed, timed = self._feed_works(key, camp, record, hero)     # D-291: the fund gives it what it has
+        lines += fed
+        self.store.put("upgrades", key, record)
+        if uid in self._active_works(camp, record):                # still asking: every member sees what it lacks
+            need = self._upgrade_need(catalog[uid], self._camp_perks(camp, hero), record, uid)
+            progress = dict(record["works"].get(uid, {}))
+            self._credit_raw(need, progress)
+            self._announce_activation(camp, hero, uid, need, progress)
+        if timed:
+            self._works_refresh(key, camp, hero)
+        return self._work_back(hero, uid, back, notice="\n".join(lines))
+
+    def _stop_work(self, hero: Hero, uid: str) -> View:
+        """⏹️ Quitar: the founder or a helper takes a work off the active list, only while nobody gave anything to it (D-291)."""
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        record = self._upgrades(key)
+        name = self._upgrade_name(uid)
+        if not self._camp_manager(camp, hero.id):
+            return self._work_back(hero, uid, "type", notice=t.t("services.only_managers"))
+        if uid not in (record.get("active") or []) or self._work_started(record, uid):
+            return self._work_back(hero, uid, "type", notice=t.t("services.cannot_stop", name=name))
+        record["active"] = [a for a in record["active"] if a != uid]
+        record["works"].pop(uid, None)
+        self.store.put("upgrades", key, record)
+        return self._work_back(hero, uid, "type", notice=t.t("services.stopped", name=name))
 
     def _furniture_to_place(self, hero: Hero, record: dict[str, Any]) -> list[str]:
         """🪑 Furniture pieces the hero carries that this camp does not have yet (D-116), in items.yaml order."""
@@ -5315,10 +5641,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _works_entries(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str]]:
         """What 🔨 Obras lists, in order: ("fix", "defense") when the raids damaged the defenses (D-115), ("work",
-        improvement id) for the open works, then ("furn", item id) for the 🪑 furniture the hero can place (D-116). One
-        list, so the pages of the screen and of each 🤲 match."""
+        improvement id) for the ACTIVE works (D-291), ("open", improvement id) for the works the founder or a helper can
+        activate (only for them), then ("furn", item id) for the 🪑 furniture the hero can place (D-116). One list, so the
+        pages of the screen and of each 🤲 match."""
         fix = [("fix", "defense")] if record.get("damage") else []      # D-115: 🛠️ repair the defenses first
-        return fix + [("work", uid) for uid in self._open_works(camp, record)] + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
+        active = [("work", uid) for uid in self._active_works(camp, record)]
+        available = ([("open", uid) for uid in self._available_works(camp, record)]
+                     if self._camp_manager(camp, hero.id) else [])      # D-291: only they see what is not active yet
+        return fix + active + available + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
 
     def _place_furniture(self, hero: Hero, fid: str) -> View:
         """🪑 Colocar: a member places a furniture piece in their camp, for ever; one of each piece per camp (D-116).
@@ -5351,6 +5681,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             del hero.backpack[fid]
         record["furniture"][fid] = {"by": hero.name, "id": hero.id, "at": self.clock.now()}
         self.store.put("upgrades", key, record)
+        self._tell_waiting_room(key)                    # D-294: 🛏️ Literas may have made room for who waits
         self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
             kind="camp_news", title=t.t("upgrades.furniture_push_title"),
             body=[t.t("upgrades.furniture_push", hero=hero.name, name=self._item_label(fid), camp=camp["name"],
@@ -5374,55 +5705,230 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         n = len(self._built(camp))
         return [(self.texts.t("upgrades.castle_line", need=need, n=n), n >= need)]
 
+    @staticmethod
+    def _pairs_layout(n: int) -> list[int]:
+        """Buttons 2 per row and the last one (↩️ Volver) wide: [2, 2, 1, 1] for 6 buttons (D-189 rows, D-288 screens)."""
+        if n <= 0:
+            return []
+        rest = n - 1
+        return [2] * (rest // 2) + ([1] if rest % 2 else []) + [1]
+
+    def _kinds_summary(self, camp: dict[str, Any], record: dict[str, Any], manager: bool) -> dict[str, dict[str, int]]:
+        """Per building type (D-288): how many are built, in progress, active and not activated yet (everyone sees them)."""
+        rows = {kind: {"built": 0, "building": 0, "active": 0, "available": 0, "repair": 0} for kind in CAMP_KINDS}
+        for uid in self._built(camp):
+            rows[self._upgrade_kind(uid)]["built"] += 1
+        for uid in record.get("building") or {}:
+            rows[self._upgrade_kind(uid)]["building"] += 1
+        for uid in self._active_works(camp, record):
+            rows[self._upgrade_kind(uid)]["active"] += 1
+        for uid in self._available_works(camp, record):    # the owner: "las mejoras tienen que ser visibles para los jugadores"
+            rows[self._upgrade_kind(uid)]["available"] += 1
+        if record.get("damage"):                           # D-115: 🛠️ the repair lives with the defenses
+            rows["defensa"]["repair"] = 1
+        return rows
+
     def _services_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🏘️ Servicios: what the camp built to use there: 🛏️ Refugio, 💱 trade, 🧵 Taller (and the 🔨 Herrería note).
+        """🏘️ Servicios: one button per type of building (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas, 📚 Saber), 💰 Depositar, ↩️ (D-288).
 
         [ES]
-        Qué hace: junta los servicios construidos: 🛏️ Refugio (curarse como en la posada del Claro, más barato),
-        💱 Vender materiales (Puesto de trueque; la comida nunca), 🧵 Taller (bolsas y cofres) y la nota de la
-        🔨 Herrería (vender equipo desde 🛡️ Equipo). 4 botones como máximo: Refugio, Vender, Taller y ↩️ Volver.
-        Las estaciones de oficio (D-109) se abren desde el 🧵 Taller; sin Taller y con otra estación (🔨 Herrería o, D-115,
-        el 🔥 Fogón de la 🍲 Cocina), ⚒️ Oficios toma su lugar.
-        La llama: 🏘️ Servicios del centro de tu campamento (D-192; su ↩️ Volver vuelve ahí) y de 🔨 Mejoras, y cada servicio
-        al terminar.
-        Si cambia, afecta: qué se puede hacer en el campamento sin volver al Claro.
+        Qué hace: la pantalla que pidió el dueño (19-oct-2026: "dentro de los servicios, botones de acuerdo a los tipos de
+        construcciones… que todos los miembros puedan entrar y ver qué es lo que se necesita"). Una línea por tipo con lo
+        construido, lo que está en curso, las obras activas y las que nadie activó todavía (▶️ para activar al fundador y a los
+        🤝 ayudantes; ⏸️ sin activar a los demás: el dueño, 19-oct-2026, "las mejoras tienen que ser visibles para los jugadores;
+        no van a tener derecho a elegir cuál mejora, pero sí aportar a las mejoras existentes") y un botón por tipo con algo
+        (D-287: nada de niveles que no tienen). Debajo, el 💰 fondo del campamento y 💰 Depositar (D-291: desde cualquier
+        lugar, "gfund:svc"). Botones de 2 en 2 y ↩️ Volver al centro a lo ancho (HUB_KINDS "camp_services", hasta 8).
+        Lo que antes estaba aquí (🛏️ Refugio, 💱 Vender, 🧵 Taller, la nota de la Herrería) pasó a su tipo (_service_uses).
+        La llaman: 🏘️ Servicios del centro de tu campamento (D-192; su ↩️ Volver vuelve ahí), de 🔨 Mejoras y el ↩️ de cada tipo.
+        Si cambia, afecta: tests/test_servicios_por_tipo.py, tests/test_camp_upgrades.py y tests/test_menus_y_dudas.py.
         """
         here = self._upgrades_here(hero)
         if not here:
             return self._upgrades_elsewhere(hero)
-        camp, _ = here
+        camp, key = here
         t = self.texts
-        body = [t.t("upgrades.services_intro")]
+        record = self._upgrades(key)
+        manager = self._camp_manager(camp, hero.id)
+        rows = self._kinds_summary(camp, record, manager)
+        body = [t.t("services.intro"), ""]
         actions = []
-        rest = self._camp_service(camp, "rest_price")
-        if rest:
-            price = self._money(int(rest["rest_price"]))
-            body.append(t.t("upgrades.rest_line", price=price))
-            actions.append(Action(id="crest", label=t.t("upgrades.rest_button", price=price)))
-        trade = self._camp_service(camp, "sell_ratio")
-        if trade:
-            body.append(t.t("upgrades.trade_line"))
-            sellable = {i: n for i, n in hero.backpack.items()
-                        if n > 0 and self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")}
-            if sellable:
-                total = sum(max(1, int(self.content.items[i]["price"] * trade["sell_ratio"])) * n for i, n in sellable.items())
-                body.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
-                actions.append(Action(id="csell", label=t.t("shop.sell_all_button", total=self._money(total))))
-            else:
-                body.append(t.t("upgrades.nothing_to_sell"))
-        if self._camp_service(camp, "craft"):
-            body.append(t.t("upgrades.workshop_line"))
-            actions.append(Action(id="ctaller", label=t.t("upgrades.workshop_button")))
-        if self._camp_service(camp, "sell_gear"):
-            body.append(t.t("upgrades.smithy_line"))
-        if not self._camp_service(camp, "craft") and self._stations_here(hero)[0]:
-            body.append(t.t("prof.workshop_line"))       # D-109: no Taller: the Herrería's stations (D-115: the Fogón's) go here
-            actions.append(Action(id="oficios", label=t.t("prof.button")))
-        if len(body) == 1:
-            body.append(t.t("upgrades.no_services"))
-        body += ["", self._status_line(hero)]
+        for kind in CAMP_KINDS:
+            row = rows[kind]
+            if not (row["built"] or row["building"] or row["active"] or row["available"] or row["repair"]):
+                continue
+            body.append(t.t("services.kind_line", label=t.t(f"services.kind.{kind}"), built=row["built"], active=row["active"])
+                        + (t.t("services.kind_building", n=row["building"]) if row["building"] else "")
+                        + (t.t("services.kind_open" if manager else "services.kind_idle", n=row["available"])
+                           if row["available"] else ""))
+            actions.append(Action(id=f"svc:{kind}", label=t.t(f"services.kind.{kind}")))
+        if not actions:
+            body.append(t.t("services.nothing_yet_manager" if manager else "services.nothing_yet"))
+        fund = record.get("fund") or {}
+        body += ["", t.t("works.camp_fund", items=self._item_list(fund)) if fund else t.t("cfund.empty_short"),
+                 t.t("services.deposit_hint"), "", self._status_line(hero)]
+        actions.append(Action(id="gfund:svc", label=t.t("services.deposit_button")))    # D-291: deposit from anywhere
         actions.append(Action(id="claro", label=t.t("menu.back")))         # D-192: 🏘️ Servicios is a button of the hub
-        return View(kind="camp_services", title=t.t("upgrades.services_title"), body=body, actions=actions[:4], notice=notice)
+        return View(kind="camp_services", title=t.t("upgrades.services_title"), body=body, actions=actions, notice=notice,
+                    layout=self._pairs_layout(len(actions)))
+
+    def _service_uses(self, hero: Hero, camp: dict[str, Any], kind: str) -> tuple[list[Action], list[str]]:
+        """The buttons and lines of what a type's BUILT services do (🛏️ Refugio, 💱 Vender, 🧵 Taller, ⚒️ Oficios, 📚), ≤ 2."""
+        t = self.texts
+        actions: list[Action] = []
+        lines: list[str] = []
+        if kind == "casa":
+            rest = self._camp_service(camp, "rest_price")
+            if rest:
+                price = self._money(int(rest["rest_price"]))
+                lines.append(t.t("upgrades.rest_line", price=price))
+                actions.append(Action(id="crest", label=t.t("upgrades.rest_button", price=price)))
+        elif kind == "oficio":
+            trade = self._camp_service(camp, "sell_ratio")
+            if trade:
+                lines.append(t.t("upgrades.trade_line"))
+                sellable = {i: n for i, n in hero.backpack.items()
+                            if n > 0 and self.content.items.get(i, {}).get("kind") == "material" and not self.content.items[i].get("food")}
+                if sellable:
+                    total = sum(max(1, int(self.content.items[i]["price"] * trade["sell_ratio"])) * n for i, n in sellable.items())
+                    lines.append(t.t("shop.sell_line", items=self._item_list(sellable), total=self._money(total)))
+                    actions.append(Action(id="csell", label=t.t("shop.sell_all_button", total=self._money(total))))
+                else:
+                    lines.append(t.t("upgrades.nothing_to_sell"))
+            craft = self._service_upgrade(camp, "craft")          # D-288: the 🪡 Sastrería (or an old 🧵 Taller)
+            if craft:
+                lines.append(t.t("upgrades.workshop_line", name=self._upgrade_name(craft)))
+                actions.append(Action(id="ctaller", label=t.t("upgrades.workshop_button")))
+            smithy = self._service_upgrade(camp, "sell_gear")     # D-288: the 🔨 Forja (or an old 🔨 Herrería)
+            if smithy:
+                lines.append(t.t("upgrades.smithy_line", name=self._upgrade_name(smithy)))
+            if self._stations_here(hero)[0]:
+                lines.append(t.t("prof.workshop_line"))
+                if not craft:                                     # the 🧵 Taller screen already has ⚒️ Oficios
+                    actions.append(Action(id="oficios", label=t.t("prof.button")))
+        elif kind == "saber" and self._camp_service(camp, "knowledge"):
+            lines.append(t.t("services.knowledge_line"))
+            actions.append(Action(id="know", label=t.t("knowledge.button")))
+        return actions, lines
+
+    def _type_entries(self, camp: dict[str, Any], record: dict[str, Any], kind: str, manager: bool) -> list[tuple[str, str]]:
+        """A type's list (D-288): 🛠️ the repair (defenses), its active works, then the ones nobody activated yet: ("open", ▶️)
+        for the founder and helpers, ("idle", read-only ⏸️) for everyone else (the owner: works are visible to all)."""
+        fix = [("fix", "defense")] if kind == "defensa" and record.get("damage") else []
+        active = [("work", uid) for uid in self._active_works(camp, record) if self._upgrade_kind(uid) == kind]
+        available = [("open" if manager else "idle", uid) for uid in self._available_works(camp, record)
+                     if self._upgrade_kind(uid) == kind]
+        return fix + active + available
+
+    def _type_pages(self, entries: list[tuple[str, str]], record: dict[str, Any], manager: bool, uses: int) -> list[list[tuple[str, str]]]:
+        """Split a type's list in pages: upgrades.type_shown entries at most, and never more than HUB_BUTTONS buttons in all."""
+        per = max(1, int(self.content.balance["upgrades"].get("type_shown", 3)))
+        budget = max(1, HUB_BUTTONS - 2 - uses)          # ➡️ Ver más and ↩️ Volver always fit
+        pages: list[list[tuple[str, str]]] = []
+        page: list[tuple[str, str]] = []
+        used = 0
+        for entry in entries:
+            stop = manager and entry[0] == "work" and entry[1] in (record.get("active") or []) and not self._work_started(record, entry[1])
+            cost = 2 if stop else 0 if entry[0] == "idle" else 1      # D-291: 🤲 and ⏹️ Quitar; ⏸️ has no button
+            if page and (len(page) >= per or used + cost > budget):
+                pages.append(page)
+                page, used = [], 0
+            page.append(entry)
+            used += cost
+        if page:
+            pages.append(page)
+        return pages or [[]]
+
+    def _type_page_of(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any], kind: str, uid: str) -> int:
+        """The page of a type's screen where a work is listed (0 if it is no longer there)."""
+        manager = self._camp_manager(camp, hero.id)
+        pages = self._type_pages(self._type_entries(camp, record, kind, manager), record, manager,
+                                 len(self._service_uses(hero, camp, kind)[0]))
+        return next((n for n, page in enumerate(pages) if any(e[1] == uid for e in page)), 0)
+
+    def _service_type_view(self, hero: Hero, kind: str, page: int = 0, notice: str | None = None) -> View:
+        """One type of 🏘️ Servicios (D-288): built ✅ with their uses, works in progress, active works with 🤲, and ▶️ to activate.
+
+        [ES]
+        Qué hace: la pantalla de un tipo (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas o 📚 Saber): lo construido ✅ con los botones de lo
+        que se usa (🛏️ Refugio en Casas; 💱 Vender, 🧵 Taller y ⚒️ Oficios en Oficios; 📚 Conocimiento en Saber), las 🏗️ obras en
+        curso con su tiempo, las obras ACTIVAS con lo que falta (barras y monedas) y su 🤲 (D-291: cualquier miembro aporta) y
+        las obras de este nivel que nadie activó todavía: el fundador y los 🤝 ayudantes con ▶️ Activar (y ⏹️ Quitar una activa a
+        la que nadie le dio nada); los demás las ven "⏸️ sin activar", sin botón (el dueño: "las mejoras tienen que ser visibles
+        para los jugadores; no van a tener derecho a elegir cuál mejora, pero sí aportar a las mejoras existentes"). En Defensas,
+        primero 🛠️ Reparar defensas si las oleadas las dañaron (D-115). D-287: nada de un nivel que no tienen. Páginas de upgrades.type_shown obras, nunca más de 8
+        botones (HUB_KINDS "camp_type"), de 2 en 2 y ↩️ Volver a lo ancho.
+        La llaman: los botones de 🏘️ Servicios ("svc:<tipo>" y "svc:<tipo>:<página>"), _work_back (después de aportar, activar
+        o quitar) y los servicios al terminar (_camp_rest, _camp_sell).
+        Si cambia, afecta: tests/test_servicios_por_tipo.py y los recorridos de botones.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        if kind not in CAMP_KINDS:
+            return self._services_view(hero, notice=notice)
+        camp, key = here
+        t = self.texts
+        record = self._upgrades(key)
+        catalog = self._upgrade_catalog()
+        manager = self._camp_manager(camp, hero.id)
+        perks = self._camp_perks(camp, hero)
+        built = [uid for uid in self._built(camp) if self._upgrade_kind(uid) == kind]
+        body = [t.t(f"services.intro_{kind}")]
+        mult = self._growth_mult(record)
+        if mult > 1.0:                                   # D-295: every built work makes the next one cost more
+            body.append(t.t("services.cost_growth", n=len(record.get("built") or {}), pct=round((mult - 1) * 100)))
+        body.append(t.t("services.built_line", names=" · ".join(self._upgrade_name(uid) for uid in built)) if built
+                    else t.t("services.built_none"))
+        uses, use_lines = self._service_uses(hero, camp, kind)
+        body += use_lines
+        building = [(uid, work) for uid, work in (record.get("building") or {}).items() if self._upgrade_kind(uid) == kind]
+        if building:                                      # D-269: 🏗️ in progress, with the members present
+            present = len(self._present_now(camp["members"], self._camp_zones(camp), hero))
+            body += [self._work_line("works.line", self._upgrade_name(uid), work, present) for uid, work in building]
+        entries = self._type_entries(camp, record, kind, manager)
+        pages = self._type_pages(entries, record, manager, len(uses))
+        page %= len(pages)
+        if entries:
+            if any(entry[0] == "open" for entry in entries):
+                body += ["", t.t("services.activate_hint")]
+            elif any(entry[0] == "idle" for entry in entries):
+                body += ["", t.t("services.idle_hint")]        # the owner: everyone sees them, the founder or a helper picks
+            if len(pages) > 1:
+                body.append(t.t("upgrades.page", n=page + 1, total=len(pages)))
+        elif not built and not building:
+            body.append(t.t("services.type_empty_manager" if manager else "services.type_empty"))
+        actions = list(uses)
+        for entry, uid in pages[page]:
+            if entry == "fix":                            # D-115: 🛠️ repair what the raids damaged, like a work
+                body += ["", t.t("camp_prof.repair_entry", n=record["damage"]), t.t("camp_prof.repair_desc")]
+                body += self._need_lines(self._repair_need(record["damage"], perks), record["repair"])
+                actions.append(Action(id="uprep", label=t.t("camp_prof.repair_button")))
+                continue
+            udef = catalog[uid]
+            defense = int(udef.get("defense", 0))
+            title = t.t("upgrades.work_line", name=self._upgrade_name(uid), level=udef.get("level", 1))
+            title += t.t("upgrades.defense_mark", n=defense) if defense else ""
+            need = self._upgrade_need(udef, perks, record, uid)
+            progress = dict(record["works"].get(uid, {}))
+            self._credit_raw(need, progress)
+            if entry in ("open", "idle"):                 # D-291: what it would ask; ▶️ Activar only for the founder and helpers
+                body += ["", t.t("services.open_entry" if entry == "open" else "services.idle_entry", title=title),
+                         t.t(udef["desc_key"]), t.t("services.asks", items=self._missing_text(need, progress))]
+                if entry == "open":
+                    actions.append(Action(id=f"upact:{uid}", label=t.t("services.activate_button", name=self._upgrade_name(uid))))
+                continue
+            body += ["", t.t("services.active_entry", title=title), t.t(udef["desc_key"])]
+            body += self._need_lines(need, progress)
+            actions.append(Action(id=f"upg:{uid}:s", label=t.t("upgrades.give_button", name=self._upgrade_name(uid))))
+            if manager and uid in (record.get("active") or []) and not self._work_started(record, uid):
+                actions.append(Action(id=f"upstop:{uid}", label=t.t("services.stop_button", name=self._upgrade_name(uid))))
+        if len(pages) > 1:
+            actions.append(Action(id=f"svc:{kind}:{(page + 1) % len(pages)}", label=t.t("upgrades.more")))
+        body += ["", self._status_line(hero)]
+        actions.append(Action(id="upsvc", label=t.t("menu.back")))
+        return View(kind="camp_type", title=t.t(f"services.kind.{kind}"), body=body, actions=actions, notice=notice,
+                    layout=self._pairs_layout(len(actions)))
 
     def _camp_rest(self, hero: Hero) -> View:
         """🛏️ Refugio: like the Claro inn (pay, sleep, wake with full health), cheaper, at your camp (D-101)."""
@@ -5434,12 +5940,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not service:
             return self._services_view(hero)
         if hero.activity:
-            return self._services_view(hero, notice=t.t("activity.busy"))
+            return self._service_type_view(hero, "casa", notice=t.t("activity.busy"))
         if hero.hp >= hero_stats(self._kit(hero), hero.level)["max_hp"]:
-            return self._services_view(hero, notice=t.t("inn.full_hp"))     # never charged for a useless night
+            return self._service_type_view(hero, "casa", notice=t.t("inn.full_hp"))     # never charged for a useless night
         price = int(service["rest_price"])
         if hero.gold < price:
-            return self._services_view(hero, notice=t.t("shop.no_gold"))
+            return self._service_type_view(hero, "casa", notice=t.t("shop.no_gold"))
         hero.gold -= price
         seconds = self._inn_seconds(hero)               # D-259: like the Claro inn, by the life you lack (rest_minutes no longer used)
         hero.activity = {"kind": "rest", "until": self.clock.now() + seconds}
@@ -5455,7 +5961,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not service:
             return self._services_view(hero)
         if hero.activity:
-            return self._services_view(hero, notice=t.t("activity.busy"))
+            return self._service_type_view(hero, "oficio", notice=t.t("activity.busy"))
         total, sold = 0, {}
         for item_id, n in list(hero.backpack.items()):
             item = self.content.items.get(item_id, {})
@@ -5464,15 +5970,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 sold[item_id] = n
                 del hero.backpack[item_id]
         if not sold:
-            return self._services_view(hero, notice=t.t("upgrades.nothing_to_sell"))
+            return self._service_type_view(hero, "oficio", notice=t.t("upgrades.nothing_to_sell"))
         total, trade = self._merchant_sale(hero, total, "barter")   # D-116: 💱 Comercio (D-141: 🐪 Caravanero)
         hero.gold += total
         lines = [t.t("shop.sold_all", items=self._item_list(sold), total=self._money(total))] + trade
         lines += self._story_event(hero, "sell", n=sum(sold.values()), coins=total)              # D-117
-        return self._services_view(hero, notice="\n".join(lines))
+        return self._service_type_view(hero, "oficio", notice="\n".join(lines))
 
     def _can_craft(self, hero: Hero) -> bool:
-        """Bags and chests are made in the Claro, or at your camp once it built the 🧵 Taller (D-101); never while busy."""
+        """Bags and chests are made in the Claro, or at your camp once it built the 🪡 Sastrería (or an old 🧵 Taller; D-101,
+        D-288); never while busy."""
         if hero.activity:
             return False
         if mapgen.is_bonfire(hero.x, hero.y):
@@ -5481,13 +5988,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return bool(here) and self._camp_service(here[0], "craft") is not None
 
     def _sells_gear_here(self, hero: Hero) -> bool:
-        """Your camp's 🔨 Herrería buys the gear you do not use, like the Claro (D-101)."""
+        """Your camp's 🔨 Forja (or an old 🔨 Herrería) buys the gear you do not use, like the Claro (D-101, D-288)."""
         here = None if hero.activity else self._upgrades_here(hero)
         return bool(here) and self._camp_service(here[0], "sell_gear") is not None
 
     def _workshop_view(self, hero: Hero, notice: str | None = None) -> View:
         """🧵 Taller: sew 💰 bags and assemble 🪎 chests at the camp, with the Claro's recipes (D-101); ⚒️ Oficios opens the
-        camp's profession stations (D-109). [ES] 4 botones: Coser, Armar cofre, ⚒️ Oficios y ↩️ Volver."""
+        camp's profession stations (D-109). [ES] 4 botones: Coser, Armar cofre, ⚒️ Oficios y ↩️ Volver (D-288: a ⚒️ Oficios de
+        🏘️ Servicios). Desde la 0.39 lo abre la 🪡 Sastrería (o un 🧵 Taller construido antes)."""
         here = self._upgrades_here(hero)
         if not here:
             return self._upgrades_elsewhere(hero)
@@ -5502,10 +6010,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("wallet.chests", n=hero.chests),
                 t.t("upgrades.chest_recipe", bags=bags_need, items=self._item_list(materials)),
                 "", t.t("hero.gold_line", gold=self._money(hero.gold))]
-        if self._stations_here(hero)[0]:                # D-109: the Taller's stations (and the Herrería's) for ⚒️ Oficios
+        if self._stations_here(hero)[0]:                # D-109: the camp's stations for ⚒️ Oficios
             body.insert(1, t.t("prof.workshop_line"))
         actions = [Action(id="tsew", label=t.t("wallet.sew_button")), Action(id="tchest", label=t.t("wallet.chest_button")),
-                   Action(id="oficios", label=t.t("prof.button")), Action(id="upsvc", label=t.t("menu.back"))]
+                   Action(id="oficios", label=t.t("prof.button")), Action(id="svc:oficio", label=t.t("menu.back"))]
         return View(kind="camp_workshop", title=t.t("upgrades.workshop_title"), body=body, actions=actions, notice=notice)
 
     def _knowledge_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -5515,7 +6023,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: muestra los estudios (Herramientas, Cartografía, Rastreo): ✅ aprendidos, 📖 el que estudian ahora
         con sus barras, ▫️ los que faltan. Sin estudio en curso, un botón 📖 por estudio para empezarlo (cualquier
         miembro); con uno en curso, 🤲 Aportar al estudio. Más ↩️ Volver: 4 botones como máximo.
-        La llaman: 📚 Conocimiento de 🔨 Mejoras (solo con la Biblioteca construida).
+        La llaman: 📚 Conocimiento de 🔨 Mejoras y de 📚 Saber en 🏘️ Servicios (D-288), y 🔬 Investigar (solo con la Biblioteca
+        construida; sin ella, un botón viejo vuelve a 🔨 Mejoras con un aviso corto, sin nombrar niveles: D-287).
         Si cambia, afecta: tests/test_camp_upgrades.py.
         """
         here = self._upgrades_here(hero)
@@ -5615,8 +6124,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: el botón 🔬 Investigar del centro de 🏕️ Campamento. D-257 (0.33, pedido del dueño): en el Claro abre
         📚 Aprender oficios (_learn_view), donde se aprende cada oficio pagando su primera receta. En tu campamento con la
-        📚 Biblioteca abre el 📚 Conocimiento (D-101); sin Biblioteca o lejos de tu campamento, vuelve al centro con un aviso
-        que dice por qué y dónde se investiga (regla de TowerWars: no esconder, explicar).
+        📚 Biblioteca abre el 📚 Conocimiento (D-101); lejos de tu campamento, vuelve al centro con un aviso que dice dónde se
+        investiga. D-287 (0.39): sin Biblioteca el botón ya no está en el centro; un botón viejo (o /research escrito) solo
+        contesta corto, sin nombrar el nivel en que se abre.
         La llama: _idle_action ("research"). Si cambia, afecta: tests/test_menus_y_dudas.py.
         """
         t = self.texts
@@ -5627,7 +6137,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._hub_view(hero, notice=t.t("hub.research_away_notice"))
         camp = here[0]
         if not self._camp_service(camp, "knowledge"):
-            return self._camp_here_view(hero, notice=t.t("hub.research_locked_notice", level=self._library_level(), now=camp.get("level", 1)))
+            return self._camp_here_view(hero, notice=t.t("hub.research_none_notice"))     # D-287: no level named
         return self._knowledge_view(hero)
 
     def _trainer_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -5636,10 +6146,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: el entrenador (D-191: "te presenta los oficios"). D-257 (0.33, pedido del dueño): corto. Cómo se aprende un
         oficio (una vez, pagando su primera receta; después sube haciendo recetas y cada rango abre recetas nuevas; la
-        🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango, abajo los que te faltan por aprender y
-        lo que llega más adelante (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento). Botones:
-        📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver (4). El ✨ Encantamiento ya no tiene botón aquí:
-        se aprende como los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
+        🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango y, abajo, los que te faltan por aprender.
+        Botones: 📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización (solo si ya puedes elegir una o tienes alguna,
+        _pspec_any, como en ⚒️ Oficios) y ↩️ Volver (4 como mucho). El ✨ Encantamiento ya no tiene botón aquí: se aprende como
+        los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel. Se quitó el bloque "🔒 Más adelante"
+        (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento): sus textos trainer.later_* quedan sin uso.
         Es un menú: se abre también ocupado y desde cualquier lugar (/entrenador). No cambia nada guardado.
         La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py y
         tests/test_aprender_oficios.py.
@@ -5654,16 +6166,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body.append(t.t("trainer.have", list=" · ".join(have)) if have else t.t("trainer.have_none"))
         body.append(t.t("trainer.missing", n=len(missing), list=" · ".join(self._prof_name(pid) for pid in missing))
                     if missing else t.t("trainer.missing_none"))
-        body += ["", t.t("trainer.later_title")]
-        camp = self.store.get("camp", hero.camp) if hero.camp else None
-        member = bool(camp) and hero.id in camp.get("members", [])
-        camp_only = [self._prof_name(pid) for pid in CAMP_ONLY_PROFESSIONS if pid in self._prof_catalog()]
-        if not member and camp_only:
-            body.append(t.t("trainer.later_camp", list=", ".join(camp_only)))
-        slots_at = self._pspec_slots_at() or [25, 75]
-        body.append(t.t("trainer.later_specs", first=slots_at[0], second=slots_at[-1]))
-        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button")),
-                   Action(id="pspecs", label=t.t("spec.button")), Action(id="claro", label=t.t("menu.back"))]
+        # D-287 (0.39, owner): nothing that is not for your level yet: no "🔒 Más adelante" block, no 🎓 button before rank 25.
+        actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button"))]
+        if self._pspec_any(hero):
+            actions.append(Action(id="pspecs", label=t.t("spec.button")))
+        actions.append(Action(id="claro", label=t.t("menu.back")))
         return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice)
 
     def _trainer_recommend_lines(self, hero: Hero) -> list[str]:
@@ -6192,8 +6699,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: la pantalla de un oficio, que se abre con su código. Si lo sabes: rango y barra, cómo sube, su beneficio
-        ahora, sus 🎓 especializaciones, lo que abre en el mapa (🧭) y lo que abre el próximo rango, con un botón a su estación
-        (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. Si no lo sabes: qué hace, su primera receta, lo que cuesta
+        ahora, sus 🎓 especializaciones y lo que ya abriste en el mapa (🧭), con un botón a su estación
+        (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
+        no es de tu nivel: ya no dice qué abre el próximo rango ("🔓 En rango N: ..."). Si no lo sabes: qué hace, su primera receta, lo que cuesta
         y 📚 Aprender (gratis si ya lo practicabas). La 🧭 exploración dice que sube sola (D-272: la recolección ya se aprende).
         La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
         (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
@@ -6218,9 +6726,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if pid in profession_rules.camp_perk_professions(catalog):
                 body.append(t.t("camp_prof.perk_note"))
             body += self._pspec_prof_lines(hero, pid) + self._explorer_prof_lines(hero, pid)
-            unlock = self._next_unlock(hero, pid)
-            if unlock:
-                body.append(unlock)
             stations, _ = self._stations_here(hero)
             branch = pdef.get("branch")
             if pid == COOK_PROFESSION and pid in stations:
@@ -6457,8 +6962,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: dice qué estaciones de oficio hay donde está el héroe: todas las básicas en el Claro; en el centro de
-        su campamento, las que abren sus mejoras construidas (🧵 Taller y 🔨 Herrería, content/professions.yaml
-        "stations"). Ocupado (viaje, exploración...) no hay ninguna: una actividad a la vez.
+        su campamento, las que abren sus mejoras construidas (content/professions.yaml "stations"; D-288, 0.39: un edificio
+        por oficio, y el 🧵 Taller y la 🔨 Herrería de quien ya los tenía). Ocupado (viaje, exploración...) no hay ninguna.
         La llaman: ⚒️ Oficios, las estaciones, las recetas, _make, el Taller y los servicios del campamento.
         Si cambia, afecta: dónde se puede refinar y fabricar.
         """
@@ -6527,24 +7032,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         low, high = xp_for_rank(cfg["rank_formula"], rank), xp_for_rank(cfg["rank_formula"], rank + 1)
         have = hero.professions.get(pid, 0) - low
         return f"{self._bar(have, max(1, high - low), 8)} {int(100 * have / max(1, high - low))} %"
-
-    def _next_unlock(self, hero: Hero, pid: str) -> str | None:
-        """🔓 What the next rank threshold of a profession opens: its rare find, or its next recipes."""
-        t = self.texts
-        if pid == self._explorer_cfg()["profession"]:      # D-112: the 🧭 Explorador opens map info, not recipes
-            return self._explorer_next(hero)
-        if pid == self._ench_cfg().get("profession"):      # D-115: ✨ Encantamiento opens enchantments, not recipes
-            return self._ench_next(hero)
-        rank = self._prof_rank(hero, pid)
-        rare = self._prof_catalog()[pid].get("rare")
-        if rare and rank < int(rare["min_rank"]):
-            return t.t("prof.next", rank=rare["min_rank"], items=self._item_label(rare["item"]))
-        later = [(int(rdef.get("min_rank", 1)), rid) for rid, rdef in self._recipes().items()
-                 if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) > rank and self._pspec_recipe_ok(hero, rdef)]   # D-141
-        if not later:
-            return None
-        need = min(r for r, _ in later)
-        return t.t("prof.next", rank=need, items=", ".join(self._recipe_name(rid) for r, rid in later if r == need))
 
     def _stations_line(self, where: str | None, stations: list[str]) -> str:
         t = self.texts
@@ -6635,7 +7122,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         primero las que puedes hacer (✅), después aquellas de las que llevas algo (con lo que falta) y al final las
         demás; dentro de cada grupo, las de rango más alto primero (D-110: cada línea tiene equipo hasta el nivel 100 y la
         más nueva es la que sirve). Cada receta es un botón que abre su detalle; de a 2 por página cuando son más de 3 (➡️ Ver más), con
-        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). Las recetas de rango más alto se ven en ⚒️ Oficios. D-141: las recetas
+        ↩️ Volver a ⚒️ Oficios: 4 botones como mucho (D-75). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es
+        de tu nivel: las recetas de rango más alto no salen en ningún lado, ni la línea 🔒 que las anunciaba (prof.locked_hint) ni
+        la de "más recetas con los oficios que te faltan" (learn.more_branch); si hay oficios de esta rama por aprender, queda
+        el botón 📚 Aprender oficios. D-141: las recetas
         exclusivas de una 🎓 especialización solo aparecen (con 🎓 delante) para quien la tiene con el dominio que piden.
         D-192: branch "cook" es 🍲 Cocinar del 🏕️ Campamento: la estación de fabricar con solo las recetas de la 🍲 Cocina
         (COOK_PROFESSION), su título, ➡️ Ver más como "est:cook:<página>" y ↩️ Volver al centro de 🏕️ Campamento. Sin la
@@ -6711,12 +7201,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id=f"est:{'cook' if only else branch}:{page + 1}", label=t.t("prof.more")))
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
-        if known_here:
-            body.append(t.t("prof.locked_hint"))
-        if unknown:
-            body.append(t.t("learn.more_branch", list=", ".join(self._prof_name(pid) for pid in unknown)))
-            if len(actions) < 3:
-                actions.append(Action(id="learnlist", label=t.t("learn.button")))
+        if unknown and len(actions) < 3:                                  # D-287: the 📚 button, without the 🔒 lines
+            actions.append(Action(id="learnlist", label=t.t("learn.button")))
         actions.append(Action(id="claro" if only else "oficios", label=t.t("menu.back")))    # D-192: 🍲 Cocinar goes back to 🏕️
         title = t.t("hub.cook_title") if only else t.t(f"prof.station_title_{branch}")
         return View(kind="station", title=title, body=body, actions=actions[:4], notice=notice)
@@ -6733,6 +7219,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         alcance, professions.make_amounts, y "Todo" si alcanza para más), y ↩️ Volver ancho abajo (View.layout). Si falta
         algo, lo dice y no hay botón de hacer.
         D-192: ↩️ Volver de una receta de la 🍲 Cocina vuelve a 🍲 Cocinar ("est:cook").
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: una receta de rango más alto que el tuyo
+        (solo se llega con un botón viejo) no se abre: vuelve a su estación con el aviso corto prof.locked.
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar / 🍲 Cocinar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
         """
@@ -6744,6 +7232,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         branch = self._prof_catalog().get(pid, {}).get("branch", "craft")
         rank = self._prof_rank(hero, pid)
         need_rank = int(rdef.get("min_rank", 1))
+        if self._knows(hero, pid) and rank < need_rank:         # D-287: a recipe above your rank is not shown (an old button)
+            return self._station_view(hero, "cook" if pid == COOK_PROFESSION else branch, page,
+                                      notice=notice or t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         stations, where = self._stations_here(hero)
         body = [self._pspec_mark(rdef) + self._recipe_name(rid),
                 t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank)]
@@ -6782,8 +7273,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not self._knows(hero, pid):                          # D-257: learn the profession first
             body.append(t.t("learn.need", name=self._prof_name(pid)))
             actions.append(Action(id=f"pview:{pid}", label=t.t("learn.see_button", name=self._prof_name(pid))))
-        elif rank < need_rank:
-            body.append(t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         elif not self._pspec_recipe_ok(hero, rdef):              # D-141: only its 🎓 specialization, with enough mastery
             body.append(self._pspec_recipe_lock(hero, rdef))
         elif pid not in stations:
@@ -7009,15 +7498,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         opened = [self._ench_label(eid) for eid, edef in self._ench_defs().items() if before < int(edef.get("min_rank", 1)) <= after]
         return [self.texts.t("ench.unlocked", items=", ".join(opened))] if opened else []
 
-    def _ench_next(self, hero: Hero) -> str | None:
-        """🔓 The next ✨ Encantamiento rank that opens an enchantment (for ⚒️ Oficios), or None."""
-        rank = self._ench_rank(hero)
-        later = [(int(edef.get("min_rank", 1)), eid) for eid, edef in self._ench_defs().items() if int(edef.get("min_rank", 1)) > rank]
-        if not later:
-            return None
-        need = min(r for r, _ in later)
-        return self.texts.t("prof.next", rank=need, items=", ".join(self._ench_label(eid) for r, eid in later if r == need))
-
     def _ench_need_text(self, hero: Hero, cost: dict[str, int]) -> str:
         """"✅ ✨ Esencia arcana: 5/3 · ❌ 🔩 Lingote: 0/1" (what a ✨ action asks, with what you carry)."""
         t = self.texts
@@ -7087,8 +7567,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: explica el ✨ Encantamiento en una pantalla: tu rango (con su barra) y su beneficio, las esencias que llevas,
-        qué encantamiento lleva cada ranura y cuánto suma con tu rango (🔒 si todavía no llegas), qué pide encantar y qué da
-        desencantar, y lo que llevas encantado. Botones: 🛡️ Elegir pieza (🔁 Equipar) y ↩️ Volver a ⚒️ Oficios. No tiene
+        qué encantamiento lleva cada ranura y cuánto suma con tu rango, qué pide encantar y qué da desencantar, y lo que llevas
+        encantado. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: los encantamientos de rango
+        más alto que el tuyo no salen en la lista (antes, con " · 🔒 rango N": ench.lock queda sin uso). Botones: 🛡️ Elegir pieza (🔁 Equipar) y ↩️ Volver a ⚒️ Oficios. No tiene
         botón en ⚒️ Oficios (sus 4 lugares quedan para las estaciones): se llega con /encantar o desde una pieza.
         La llaman: el atajo /encantar.
         Si cambia, afecta: cómo entiende el jugador el oficio (tests/test_oficios_equipo.py).
@@ -7105,11 +7586,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body.append(t.t("ench.essences_line", items=self._item_list(essences)) if essences else t.t("ench.essences_none"))
         body += ["", t.t("ench.table_title")]
         for eid, edef in self._ench_defs().items():
+            if rank < int(edef.get("min_rank", 1)):                                                 # D-287: not for your rank yet
+                continue
             value = profession_rules.enchant_value(edef, rank, self._prof_cfg()["max_rank"],
                                                    self._pspec_bonus(hero, "enchant", enchant=eid))     # D-141: 🎓
-            lock = "" if rank >= int(edef.get("min_rank", 1)) else t.t("ench.lock", rank=edef.get("min_rank", 1))
             body.append(t.t("ench.table_line", name=self._ench_label(eid), slots=", ".join(t.t(f"gear.slot.{s}") for s in edef.get("slots", [])),
-                            stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=lock))
+                            stats=self._gear_stats_text({edef["stat"]: value}), material=self._item_label(edef["material"]), lock=""))
         enc, dis = cfg.get("enchant") or {}, cfg.get("disenchant") or {}
         by_rarity = dis.get("by_rarity") or {}
         body += ["", t.t("ench.cost_rule", base=enc.get("essences", 3), per=enc.get("essences_per_levels", 10),
@@ -7127,8 +7609,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: la pantalla ✨ de una pieza (desde ✨ Encantamiento en la pieza): el encantamiento que tiene, el que le toca
-        por su ranura con tu rango (o 🔒 el rango que pide, o que ya tiene el mejor que puedes hacer), qué pide (✅/❌ con lo
-        que llevas) y la energía; si está en la mochila, cuánto da desencantarla (con tu beneficio); puesta, que hay que
+        por su ranura con tu rango (o que ya tiene el mejor que puedes hacer), qué pide (✅/❌ con lo que llevas) y la energía.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: si el de su ranura pide más rango, no se
+        ofrece nada (antes, "🔒 pide rango N"; ench.locked queda solo para el aviso de _enchant si se toca un botón viejo); si está en la mochila, cuánto da desencantarla (con tu beneficio); puesta, que hay que
         quitársela primero. Botones: ✨ Encantar (si se puede), 💨 Desencantar (solo de la mochila) y ↩️ Volver a la pieza: 3.
         La llaman: el botón ✨ Encantamiento de _item_view, y _enchant / _disenchant al terminar.
         Si cambia, afecta: tests/test_oficios_equipo.py.
@@ -7152,8 +7635,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("ench.no_slot"))
         else:
             name, stats = self._ench_label(plan["eid"]), self._gear_stats_text({plan["edef"]["stat"]: plan["value"]})
-            if problem == "rank":
-                body.append(t.t("ench.locked", name=name, need=plan["edef"].get("min_rank", 1), rank=rank))
+            if problem == "rank":                                   # D-287: not for your rank yet: nothing offered, no 🔒 line
+                pass
             elif problem == "not_better":
                 body.append(t.t("ench.offer_best"))
             else:
@@ -7341,18 +7824,53 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         cooked = sum(int(items[i].get("food", 0)) * n for i, n in given.items() if items[i].get("cooked"))
         return int(fish * perks["fish_food"][0] + 1e-9), int(cooked * perks["cook_food"][0] + 1e-9)
 
-    def _upgrade_need(self, udef: dict[str, Any], perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
-        """What an improvement asks after the camp perks (D-115): 🏗️ −20 % of every material, 🗿 −15 % of the stone ones.
+    def _upgrade_need(self, udef: dict[str, Any], perks: dict[str, tuple[float, str | None]],
+                      record: dict[str, Any] | None = None, uid: str | None = None) -> dict[str, int]:
+        """What an improvement asks: its cost × the camp's growth (D-295), then the camp perks (D-115).
 
         [ES]
         Qué hace: lo que pide una mejora (materiales y monedas) con los beneficios del campamento: la 🏗️ Construcción le baja
         todos los materiales y la 🗿 Cantería, además, la piedra y el sillar (balance.yaml camp_professions.stone_items).
         Las monedas no bajan. Redondea hacia arriba, nunca menos de 1 (profession_rules.scaled_cost).
-        La llaman: _upgrades_view, _works_view y _give_to_work.
-        Si cambia, afecta: cuánto cuesta cada mejora a los campamentos con esos oficios (y lo que muestran las barras).
+        D-295 (0.39, pedido del dueño: "aumentar los costos a medida que se va subiendo"): antes, el costo (materiales y
+        monedas) se multiplica por _work_mult: cada obra nueva cuesta upgrades.cost_growth más por cada obra que el campamento
+        ya construyó, con el precio fijo desde que se activa. Sin `record` (una lista general) cuesta lo de base.
+        La llaman: _upgrades_view, _works_view, _give_to_work, _feed_works, _activate_work, _service_type_view y el 💰 fondo
+        (engine/service/gremio.py).
+        Si cambia, afecta: cuánto cuesta cada mejora (y lo que muestran las barras); el costo del castillo
+        (upgrades.castle_min_built).
         """
         stone = tuple(self._camp_prof_cfg().get("stone_items") or ())
-        return profession_rules.scaled_cost(self._work_need(udef), perks["build_cost"][0], perks["stone_cost"][0], stone)
+        base = self._work_need(udef)
+        mult = self._work_mult(record, uid) if record is not None and uid else 1.0
+        if mult != 1.0:
+            base = {k: max(1, math.ceil(n * mult - 1e-9)) for k, n in base.items()}
+        return profession_rules.scaled_cost(base, perks["build_cost"][0], perks["stone_cost"][0], stone)
+
+    def _growth_mult(self, record: dict[str, Any]) -> float:
+        """× the cost of the next work: 1 + upgrades.cost_growth per improvement already built (D-295)."""
+        growth = float(self.content.balance["upgrades"].get("cost_growth", 0.0))
+        return round(1.0 + growth * len(record.get("built") or {}), 4)
+
+    def _work_mult(self, record: dict[str, Any], uid: str) -> float:
+        """The cost multiplier of one work (D-295): fixed when it was activated; works started before 0.39 keep ×1.
+
+        [ES]
+        Qué hace: por cuánto se multiplica lo que pide una obra. Se fija al activarla (record "mult" {obra: ×}) para que lo
+        que falta no suba a mitad de camino cuando se termina otra; una obra que ya tenía materiales dados antes de esta regla
+        sigue ×1 (no se le pide más a lo empezado); una sin activar muestra el precio de hoy (_growth_mult).
+        La llaman: _upgrade_need. Si cambia, afecta: el costo de cada obra nueva.
+        """
+        frozen = (record.get("mult") or {}).get(uid)
+        if frozen is not None:
+            return float(frozen)
+        if self._work_started(record, uid):
+            return 1.0
+        return self._growth_mult(record)
+
+    def _freeze_mult(self, record: dict[str, Any], uid: str) -> None:
+        """Fix a work's cost multiplier at activation (D-295), unless it already has one."""
+        record.setdefault("mult", {}).setdefault(uid, self._work_mult(record, uid))
 
     def _repair_need(self, damage: int, perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
         """What repairing `damage` points asks: camp_professions.repair_per_point × damage, halved by 🏗️ at rank 100 (D-115)."""
@@ -7507,8 +8025,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """🌟 Talentos of a 0.31 chain hero: its two roles, the active one, points that place themselves, the second role.
 
         [ES]
-        Qué hace: muestra los 2 roles de la clase (⭐ el activo; 🔒 el segundo hasta el nivel chain.second_role_level), los
-        puntos de nivel (van solos al rol activo) y el modo híbrido que espera la decisión del dueño (pendiente 3).
+        Qué hace: muestra los roles de la clase (⭐ el activo), los puntos de nivel (van solos al rol activo) y el modo híbrido
+        que espera la decisión del dueño (pendiente 3).
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del nivel chain.second_role_level
+        solo sale tu rol activo (sin el segundo con 🔒 ni "se aprende al nivel N": chain.second_role_locked queda para el
+        aviso corto de un botón viejo), y el modo híbrido sale solo desde su nivel (chain.hybrid.level).
         La llama: _talents_view. Si cambia, afecta: la pantalla de talentos de las clases nuevas.
         """
         t = self.texts
@@ -7516,15 +8037,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         body = [t.t("chain.active_role", name=self._hero_title(hero)), t.t("chain.points_auto", n=max(0, hero.level - 1)), ""]
         actions = []
+        second = second_role_open(bal, hero)
         for spec in specs_of(self.content.classes, group):
+            if spec != hero.class_id and not second:                    # D-287: the second role, only from its level
+                continue
             sdef = self.content.classes[spec]
             role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
-            mark = " ⭐" if spec == hero.class_id else ("" if second_role_open(bal, hero) else " 🔒")
+            mark = " ⭐" if spec == hero.class_id else ""
             body.append(f"• {t.t(sdef['name_key'])} — {role}: {t.t(sdef['role_key'])}{mark}")
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
-        body += ["", t.t("chain.second_role_open") if second_role_open(bal, hero)
-                 else t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]),
-                 t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        if second:
+            body += ["", t.t("chain.second_role_open")]
+        if hero.level >= int(bal["chain"]["hybrid"]["level"]):             # D-287: the hybrid mode, only from its level
+            body += ["", t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
         actions.append(Action(id="chcls", label=t.t("chclass.button")))     # D-270: 🔄 Cambiar de clase
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
@@ -7556,9 +8081,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                           for link in chain_rules.order(sdef, self.content.balance))
 
     def _chain_spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
-        """One role of a chain class: its 4 buttons, its chain, and the button to play it (from level 5, D-230)."""
+        """One role of a chain class: its 4 buttons, its chain, and the button to play it (from level 5, D-230).
+
+        [ES]
+        Qué hace: la pantalla de un rol: sus 4 botones, su cadena y, si no es el activo, 🔄 Jugar como ese rol.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: el segundo rol antes de su nivel
+        (solo con un botón viejo) vuelve a 🌟 Talentos con el aviso corto chain.second_role_locked.
+        La llama: _spec_view. Si cambia, afecta: la pantalla de un rol de las clases nuevas.
+        """
         t = self.texts
         bal = self.content.balance
+        if spec != hero.class_id and not second_role_open(bal, hero):     # D-287: an old button of the second role
+            return self._chain_talents_view(hero, notice=notice or t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"]))
         sdef = self.content.classes[spec]
         role = t.t("chain_role." + chain_rules.role_of(sdef, bal))
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=role), t.t(sdef["role_key"]), "",
@@ -7568,20 +8102,26 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions = []
         if spec == hero.class_id:
             body += ["", t.t("chain.active_role", name=t.t(sdef["name_key"])), t.t("chain.points_auto", n=max(0, hero.level - 1))]
-        elif second_role_open(bal, hero):
-            actions.append(Action(id=f"role:{spec}", label=t.t("chain.switch_button", role=role)))
         else:
-            body += ["", t.t("chain.second_role_locked", n=bal["chain"]["second_role_level"])]
+            actions.append(Action(id=f"role:{spec}", label=t.t("chain.switch_button", role=role)))
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
     def _bar_view(self, hero: Hero, notice: str | None = None) -> View:
-        """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability."""
+        """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability.
+
+        [ES]
+        Qué hace: la 🎛️ Barra de combate. En las clases nuevas (0.31) los 4 botones son fijos y solo se listan; en las viejas,
+        las 3 casillas con un botón para cambiar cada una. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de
+        tu nivel: antes del nivel del modo híbrido dice solo que los botones son fijos (chain.bar_fixed_now), sin anunciarlo.
+        La llaman: 🎛️ Barra de combate de los talentos. Si cambia, afecta: tests/test_cadena.py y tests/test_talents.py.
+        """
         t = self.texts
         if is_chain_spec(self.content.classes, hero.class_id):     # 0.31: the 4 buttons are fixed (the hybrid mode will open them)
             sdef = self.content.classes[hero.class_id]
             body = [t.t("chain.spec_buttons")] + self._chain_button_lines(sdef)
-            body += ["", t.t("chain.bar_fixed", n=self.content.balance["chain"]["hybrid"]["level"])]
+            hybrid = int(self.content.balance["chain"]["hybrid"]["level"])
+            body += ["", t.t("chain.bar_fixed", n=hybrid) if hero.level >= hybrid else t.t("chain.bar_fixed_now")]   # D-287
             return View(kind="bar", title=t.t("bar.title"), body=body, actions=[Action(id="talents", label=t.t("menu.back"))],
                         notice=notice)
         abilities = self._class_abilities(hero)
@@ -7742,7 +8282,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: dice si el héroe puede ver y hacer una receta por su especialización: las normales siempre; las exclusivas
         (spec: <id>) solo si tiene esa 🎓 especialización con balance.yaml specs.recipe_mastery de dominio (25 %). El rango lo
         miran aparte quienes llaman.
-        La llaman: _prof_gain, _next_unlock, _station_view, _recipe_view, _make y _spec_view.
+        La llaman: _prof_gain, _station_view, _recipe_view, _make y _spec_view.
         Si cambia, afecta: quién hace las piezas exclusivas.
         """
         sid = rdef.get("spec")
@@ -7885,9 +8425,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: explica las especializaciones (una al rango 25, otra al 75, nunca las tres; el dominio; cambiar cuesta y
-        empieza de cero) y lista los oficios que ya llegaron al 25, con las que tienes o "puedes elegir"; después, los oficios
-        empezados que todavía no llegan. Un botón por oficio (de a 2 por página si son más de 3, ➡️ Ver más) y ↩️ Volver a
-        ⚒️ Oficios: 4 como mucho (D-75).
+        empieza de cero) y lista los oficios que ya llegaron al 25, con las que tienes o "puedes elegir". Un botón por oficio
+        (de a 2 por página si son más de 3, ➡️ Ver más) y ↩️ Volver a ⚒️ Oficios: 4 como mucho (D-75).
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: ya no lista los oficios que todavía no
+        llegan ("🔒 Desde el rango 25: ...", spec.locked_list) y, si ningún oficio llegó (solo con /especialidad: el botón 🎓 ya
+        no sale antes, _pspec_any), dice una sola línea neutra (spec.none_yet) en vez de la explicación y "súbelo al rango 25".
         La llaman: 🎓 Especialización de ⚒️ Oficios, /especialidad y ↩️ Volver de un oficio.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7896,8 +8438,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         first, second = slots_at[0], slots_at[-1]
         specs = self._pspec_catalog()
         catalog = self._prof_catalog()
-        body = [t.t("spec.intro", first=first, second=second), t.t("spec.mastery_rule", full=self._pspec_mastery_xp()), ""]
         ready = [pid for pid in catalog if profession_rules.spec_list(specs, pid) and self._prof_rank(hero, pid) >= first]
+        if not ready:                                   # D-287: one neutral line, nothing about the ranks still to come
+            return View(kind="specs", title=t.t("spec.title"), body=[t.t("spec.none_yet")],
+                        actions=[Action(id="oficios", label=t.t("menu.back"))], notice=notice)
+        body = [t.t("spec.intro", first=first, second=second), t.t("spec.mastery_rule", full=self._pspec_mastery_xp()), ""]
         for pid in ready:
             held = self._pspec_held(hero, pid)
             free = len(held) < profession_rules.spec_slots(self._prof_rank(hero, pid), slots_at)
@@ -7905,12 +8450,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             state = (t.t("spec.state_held_free", names=names) if held and free else t.t("spec.state_held", names=names) if held
                      else t.t("spec.state_free"))
             body.append(t.t("spec.hub_line", name=self._prof_name(pid), rank=self._prof_rank(hero, pid), state=state))
-        if not ready:
-            body.append(t.t("spec.none", rank=first))
-        later = [self._prof_name(pid) for pid in catalog if profession_rules.spec_list(specs, pid)
-                 and hero.professions.get(pid, 0) > 0 and self._prof_rank(hero, pid) < first]
-        if later:
-            body += ["", t.t("spec.locked_list", rank=first, items=", ".join(later))]
         per = int(self._pspec_cfg().get("per_page", 2))
         pages = 1 if len(ready) <= 3 else (len(ready) + per - 1) // per
         page %= pages
@@ -7927,9 +8466,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         exclusive recipes. A button per specialization and ↩️ Volver (4).
 
         [ES]
-        Qué hace: la pantalla de las especializaciones de un oficio: tu rango, cuántos lugares tienes (0 antes del 25, 1 hasta el
-        74, 2 desde el 75), cada especialización con su efecto completo, si la tienes (✅ con su dominio), si la tuviste (💾 dominio
-        guardado) y sus recetas exclusivas. Un botón por especialización (abre su detalle) y ↩️ Volver a 🎓 Especialización.
+        Qué hace: la pantalla de las especializaciones de un oficio: tu rango, cuántos lugares tienes (1 hasta el 74, 2 desde el
+        75), cada especialización con su efecto completo, si la tienes (✅ con su dominio), si la tuviste (💾 dominio guardado) y
+        sus recetas exclusivas de tu rango. Un botón por especialización (abre su detalle) y ↩️ Volver a 🎓 Especialización.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: sin "🔓 En rango N..." (spec.next_first,
+        spec.next_second), sin las recetas exclusivas de rango más alto, y un oficio que todavía no llega al 25 (solo con un
+        botón viejo) vuelve a 🎓 Especialización con el aviso corto spec.err_locked.
         La llaman: los botones de oficio de 🎓 Especialización, y elegir o cambiar al terminar.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7941,10 +8483,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         rank = self._prof_rank(hero, pid)
         held = self._pspec_held(hero, pid)
         slots = profession_rules.spec_slots(rank, slots_at)
-        body = [t.t("spec.prof_intro", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), used=len(held), slots=slots)]
-        if slots < len(slots_at):
-            body.append(t.t("spec.next_first" if slots == 0 else "spec.next_second", rank=slots_at[slots]))
-        body.append("")
+        if slots <= 0 and not held:                     # D-287: not for your rank yet (an old button)
+            return self._pspecs_view(hero, notice=notice or t.t("spec.err_locked", rank=(slots_at or [25])[0], prof=self._prof_name(pid)))
+        body = [t.t("spec.prof_intro", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), used=len(held), slots=slots),
+                ""]
         for sdef in specs:
             sid = sdef["id"]
             if sid in held:
@@ -7954,7 +8496,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             else:
                 body.append(t.t("spec.line_other", name=self._pspec_name(sid)))
             body.append(t.t("spec.effect_line", effect=self._pspec_effect_text(sdef, 1.0)))
-            exclusive = self._pspec_exclusives(sid)
+            exclusive = [rid for rid in self._pspec_exclusives(sid)                          # D-287: only those of your rank
+                         if int(self._recipes()[rid].get("min_rank", 1)) <= rank]
             if exclusive:
                 body.append(t.t("spec.exclusive_line", items=", ".join(self._recipe_name(rid) for rid in exclusive)))
         actions = [Action(id=f"pspv:{sdef['id']}", label=(t.t("spec.held_mark") if sdef["id"] in held else "") + self._pspec_name(sdef["id"]))
@@ -7967,9 +8510,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: el detalle de una especialización: de qué oficio es, qué hace, tu dominio (barra), su efecto ahora y con todo el
-        dominio, sus recetas exclusivas (✅ abierta o 🔒 con el rango y el dominio que piden) y qué puedes hacer: nada si ya la
-        tienes; 🔒 si tu rango no abre lugar; 🎓 Elegir si tienes un lugar libre (gratis); o 🔄 Dejar <otra> (cuesta monedas, una por
-        cada una que tienes, y pide confirmación). Botones: 3 como mucho más ↩️ Volver al oficio.
+        dominio, sus recetas exclusivas de tu rango (✅ abierta o 🔒 con el dominio que piden) y qué puedes hacer: nada si ya la
+        tienes; 🎓 Elegir si tienes un lugar libre (gratis); o 🔄 Dejar <otra> (cuesta monedas, una por cada una que tienes, y
+        pide confirmación). Botones: 3 como mucho más ↩️ Volver al oficio.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: las recetas exclusivas de rango más alto
+        no salen (si todas lo son, no sale la sección), y si tu rango no abre lugar (solo con un botón viejo) vuelve a
+        🎓 Especialización con el aviso corto spec.err_locked (spec.locked_note queda sin uso).
         La llaman: los botones de especialización de la pantalla del oficio, y _pspec_switch_view al cancelar.
         Si cambia, afecta: tests/test_especializaciones.py.
         """
@@ -7978,13 +8524,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if not sdef or pid not in self._prof_catalog():
             return self._pspecs_view(hero, notice=notice)
         rank = self._prof_rank(hero, pid)
+        choice = self._pspec_choice(hero, pid, sid)
+        if choice == "locked":                          # D-287: not for your rank yet (an old button)
+            return self._pspecs_view(hero, notice=notice or t.t("spec.err_locked", rank=(self._pspec_slots_at() or [25])[0],
+                                                                 prof=self._prof_name(pid)))
         share = self._pspec_share(hero, sid)
         held = self._pspec_held(hero, pid)
         body = [self._pspec_name(sid), t.t("spec.of_prof", prof=self._prof_name(pid), rank=rank, title=self._rank_title(rank)),
                 t.t(f"spec.{sid}.desc"), "", t.t("spec.mastery_line", bar=self._pspec_bar(hero, sid)),
                 t.t("spec.effect_now", effect=self._pspec_effect_text(sdef, share)),
                 t.t("spec.effect_full", effect=self._pspec_effect_text(sdef, 1.0)), ""]
-        exclusive = self._pspec_exclusives(sid)
+        every = self._pspec_exclusives(sid)
+        exclusive = [rid for rid in every if int(self._recipes()[rid].get("min_rank", 1)) <= rank]     # D-287: of your rank
         need = int(100 * float(self._pspec_cfg().get("recipe_mastery", 0.0)) + 1e-9)
         if exclusive:
             body.append(t.t("spec.exclusive_title"))
@@ -7993,15 +8544,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 ok = self._pspec_recipe_ok(hero, rdef) and rank >= int(rdef.get("min_rank", 1))
                 body.append(t.t("spec.exclusive_entry", mark="✅" if ok else "🔒", item=self._recipe_name(rid),
                                 rank=rdef.get("min_rank", 1), pct=need))
-        else:
+        elif not every:
             body.append(t.t("spec.exclusive_none"))
-        body.append("")
-        choice = self._pspec_choice(hero, pid, sid)
+        if exclusive or not every:
+            body.append("")
         actions = []
         if choice == "held":
             body.append(t.t("spec.held_note", prof=self._prof_name(pid)))
-        elif choice == "locked":
-            body.append(t.t("spec.locked_note", rank=(self._pspec_slots_at() or [25])[0], prof=self._prof_name(pid), have=rank))
         elif choice == "pick":
             body.append(t.t("spec.pick_note", n=len(held) + 1, prof=self._prof_name(pid)))
             actions.append(Action(id=f"pspp:{sid}", label=t.t("spec.pick_button", name=t.t(f"spec.{sid}.name"))))
@@ -8129,6 +8678,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._dual_view(hero, notice=t.t("dual.switched", n=hero.profile))
 
     def _spec_view(self, hero: Hero, spec: str, notice: str | None = None) -> View:
+        """One specialization of the hero's class: its abilities already open, its points and its buttons (old system, D-79).
+
+        [ES]
+        Qué hace: la pantalla de una especialización de CLASE (talentos; la de oficio es _pspec_view). En las clases nuevas
+        (0.31) pasa a _chain_spec_view. En las viejas: sus puntos, las habilidades que ya abriste (🔓) y los botones
+        ➕ Poner punto, 🔄 Reiniciar, 🎛️ Barra y ↩️ Volver. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es
+        de tu nivel: las habilidades que todavía no abriste no salen (talents.ability_locked) ni la línea "Siguiente: ... con N
+        puntos" (talents.next_unlock); con las 8 abiertas sale talents.all_unlocked.
+        La llaman: los botones "tal:<especialización>", "role:" y "pt:" de 🌟 Talentos. Si cambia, afecta:
+        tests/test_spec_abilities.py.
+        """
         t = self.texts
         group = self.content.classes[hero.class_id].get("group", hero.class_id)
         if spec not in specs_of(self.content.classes, group):
@@ -8139,23 +8699,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         pts = hero.talents.get(spec, 0)
         body = [t.t("talents.spec_title", name=t.t(sdef["name_key"]), role=t.t("role." + sdef.get("role", "ataque"))),
                 t.t(sdef["role_key"]), t.t("talents.spec_points", n=pts, free=hero.points), ""]
-        following = None
-        for index, need in enumerate(unlock_points(self.content.balance)):
+        closed = False
+        for index, _need in enumerate(unlock_points(self.content.balance)):
             if index >= len(sdef["abilities"]):
                 break
             ability = sdef["abilities"][index]
+            if ability["id"] not in hero.unlocked:          # D-287: an ability you do not have yet is not listed
+                closed = True
+                continue
             label, effect = self._ability_label(ability, sdef["resource"]), self._ability_effect(ability, sdef["resource"])
-            if ability["id"] in hero.unlocked:
-                body.append(t.t("talents.ability_open", ability=label, effect=effect))
-            else:
-                body.append(t.t("talents.ability_locked", need=need, ability=label, effect=effect))
-                if following is None:
-                    following = (ability, need)
+            body.append(t.t("talents.ability_open", ability=label, effect=effect))
         body += ["", t.t("talents.legend")]
-        if following:
-            body.append(t.t("talents.next_unlock", name=t.t(f"ability.{following[0]['id']}.name"), need=following[1],
-                            left=max(0, following[1] - pts)))
-        else:
+        if not closed:
             body.append(t.t("talents.all_unlocked"))
         actions = []
         if hero.points > 0:
@@ -8209,8 +8764,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         (/ir1, /ir2...); los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar
         (_place_confirm_view) y, al confirmar, el héroe va solo, zona por zona ("goto:"). Guarda el orden mostrado (espacio
         "places_shown") para que el código /irN sea el que viste. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más
-        cercanos; desde el rango 10, hasta explorer.places_listed. Historia: hasta la 0.30.1 listaba cualquier zona que
-        recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó solo los lugares importantes.
+        cercanos; desde el rango 10, hasta explorer.places_listed. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
+        no es de tu nivel: ya no dice "con rango 10 de Explorador, 📒 Lugares lista hasta 8" (explorer.places_hint queda sin uso).
+        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó
+        solo los lugares importantes.
         La llaman: el botón 📒 Lugares del 🗺️ Mapa (también al rechazar un viaje).
         Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py y el paso
         "return" del 🧭 camino guiado (D-193: su texto manda a 📒 Lugares → El Claro).
@@ -8230,8 +8787,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.none"))
         elif len(places) > len(listed):
             body.append(t.t("places.more", n=len(places) - len(listed)))
-        if count == 3 and sum(1 for p in places if not mapgen.is_bonfire(p[1], p[2])) > 3:     # the bonfires do not count
-            body.append(t.t("explorer.places_hint", rank=self._explorer_cfg()["ranks"]["travel"], n=self._explorer_cfg()["places_listed"]))
         body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
         actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
                    for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
@@ -9433,27 +9988,21 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return lines
 
     def _explorer_prof_lines(self, hero: Hero, pid: str) -> list[str]:
-        """⚒️ Oficios, 🧭 Explorador only: what every rank threshold opens on the map, ✅ the ones already open."""
+        """/explorador, 🧭 Explorador only: what the rank thresholds you already reached open on the map (✅ each).
+
+        [ES]
+        Qué hace: en la pantalla del 🧭 Explorador, una línea con lo que ya abriste en el mapa (✅ 10 ⏱️ tiempos · ✅ 25 👹 a 3
+        zonas...). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: los umbrales que no
+        alcanzaste no salen, y sin ninguno no hay línea. La llama: _prof_detail_view. Si cambia, afecta: solo esa pantalla.
+        """
         cfg = self._explorer_cfg()
         if pid != cfg["profession"]:
             return []
         t = self.texts
         rank = self._explorer_rank(hero)
-        parts = [("✅" if rank >= int(need) else "") + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"],
-                                                            zones=self._recon_range_of(key))     # D-172: 🔭 reach
-                 for key, need in cfg["ranks"].items()]
-        return [t.t("explorer.ranks_line", items=" · ".join(parts))]
-
-    def _explorer_next(self, hero: Hero) -> str | None:
-        """🔓 The next 🧭 Explorador threshold and everything it opens (None at the top). D-172: 10, 30 and 50 open two things."""
-        rank = self._explorer_rank(hero)
-        ranks = self._explorer_cfg()["ranks"]
-        later = [int(need) for need in ranks.values() if int(need) > rank]
-        if not later:
-            return None
-        need = min(later)
-        keys = [key for key, value in ranks.items() if int(value) == need]
-        return self.texts.t("prof.next", rank=need, items=" · ".join(self._explorer_what(key) for key in keys))
+        parts = ["✅" + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"], zones=self._recon_range_of(key))   # D-172: 🔭
+                 for key, need in cfg["ranks"].items() if rank >= int(need)]
+        return [t.t("explorer.ranks_line", items=" · ".join(parts))] if parts else []
 
     def _trip_seconds(self, hero: Hero, x: int, y: int) -> float:
         """Estimated travel time from the hero to a zone, leg by leg (the path 📒 Lugares follows)."""
@@ -9606,9 +10155,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: el menú de 🧭 Explorar cuando en tu zona hay un 👹 campamento enemigo en pie (D-112): explorar y
         recolectar no se pueden (los enemigos no te dejan), así que sus lugares los toman ⚔️ Asaltar (cada pelea cuesta
-        enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30;
-        con menos, el botón dice el rango que pide). Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o
-        tu rango de Explorador es 75 o más, quiénes quedan, el jefe y el cofre. 4 botones.
+        enemy_camps.fight_energy y vence a uno de la guarnición, para todos) y 🕵️ Infiltrarse (🧭 Explorador de rango 30).
+        Dice cuántos vencieron hoy entre todos y, si te infiltraste hoy o tu rango de Explorador es 75 o más, quiénes quedan,
+        el jefe y el cofre. 4 botones como mucho.
+        D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: con menos rango no sale el botón
+        🕵️ Infiltrarse (antes "🕵️ Infiltrarse (rango 30)": ecamp.infiltrate_locked_button queda sin uso) ni la pista de que un
+        Explorador de rango 30 sabría más (ecamp.intel_hint sale solo si ya puedes infiltrarte).
         La llama: _explore_menu. Si cambia, afecta: tests/test_enemy_camps.py y el tope de 4 botones.
         """
         t = self.texts
@@ -9617,18 +10169,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         need = int(self._explorer_cfg()["ranks"]["infiltrate"])
         body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("ecamp.here", level=camp["level"])]
         body.append(t.t("ecamp.progress", n=camp["beaten"]) if camp["beaten"] else t.t("ecamp.untouched"))
+        can_infiltrate = self._explorer_rank(hero) >= need
         if self._ecamp_intel(hero, camp):
             body += self._ecamp_intel_lines(camp)
-        else:
+        elif can_infiltrate:                            # D-287: the hint only when you can infiltrate already
             body.append(t.t("ecamp.intel_hint", rank=need))
         body += [t.t("ecamp.how", energy=cfg["fight_energy"])] + self._recon_hint_lines(hero) + [self._status_line(hero)]   # D-172
         body += self._tutorial_hint(hero)
-        infiltrate = (t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"]) if self._explorer_rank(hero) >= need
-                      else t.t("ecamp.infiltrate_locked_button", rank=need))
-        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=cfg["fight_energy"])),
-                   Action(id="infiltrate", label=infiltrate),
-                   Action(id="hunt", label=t.t("hunt.button")),
-                   Action(id="map", label=t.t("menu.map"))]
+        actions = [Action(id="assault", label=t.t("ecamp.assault_button", energy=cfg["fight_energy"]))]
+        if can_infiltrate:                              # D-287: no locked 🕵️ button before the rank
+            actions.append(Action(id="infiltrate", label=t.t("ecamp.infiltrate_button", energy=cfg["infiltrate"]["energy"])))
+        actions += [Action(id="hunt", label=t.t("hunt.button")), Action(id="map", label=t.t("menu.map"))]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
 
     def _ecamp_fight(self, hero: Hero, camp: dict[str, Any], how: str) -> str:
@@ -9686,7 +10237,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         10 % al 100): entonces empieza una pelea, a mano, con el siguiente de la guarnición (cuenta como un asalto). Si sale
         bien: quedas anotado para hoy ("scouted": ves su fuerza en 🧭 Explorar y en el mapa), ves quiénes quedan, el jefe y
         el cofre, y ganas un poco de exploración de esa zona y experiencia de Explorador. Una vez por campamento y día.
-        Se rechaza sin cobrar sin campamento, con menos rango, ya infiltrado hoy, malherido o sin energía. D-141: la
+        Se rechaza sin cobrar sin campamento, con menos rango (D-287: el botón ya no sale antes del rango; si llega uno viejo
+        o se escribe, el aviso corto ecamp.infiltrate_locked), ya infiltrado hoy, malherido o sin energía. D-141: la
         🎓 especialización 🕵️ Infiltrado baja la probabilidad de que te descubran (sin bajar de detect_min).
         La llama: el botón 🕵️ Infiltrarse. Si cambia, afecta: tests/test_enemy_camps.py.
         """
@@ -9843,7 +10395,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
         """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75 or after 🔭 scouting it
         today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: dice hasta dónde ves
+        (ecamp.map_sight), sin "con rango N de Explorador, más lejos" (ecamp.map_sight_next queda sin uso)."""
         t = self.texts
         cfg = self._explorer_cfg()
         travel = self._explorer_has(hero, "travel")
@@ -9862,10 +10416,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 lines.append(text)
             if len(seen) > int(cfg["map_lines"]):
                 lines.append(t.t("ecamp.map_more", n=len(seen) - int(cfg["map_lines"])))
-        rank = self._explorer_rank(hero)
-        later = [int(cfg["ranks"][k]) for k in ("camps_near", "camps_all") if int(cfg["ranks"][k]) > rank]
-        sight = self._ecamp_sight(hero)
-        lines.append(t.t("ecamp.map_sight_next", n=sight, rank=later[0]) if later else t.t("ecamp.map_sight_all"))
+        all_map = self._explorer_has(hero, "camps_all")
+        lines.append(t.t("ecamp.map_sight_all") if all_map else t.t("ecamp.map_sight", n=self._ecamp_sight(hero)))    # D-287
         if travel:
             guardian = self._guardian_cfg()
             if guardian and self._discovered(guardian["x"], guardian["y"]) is not None \
@@ -10778,25 +11330,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                            family=self._dng_family_label(info["family"]), boss=self._dng_enemy(info["boss"]))
         return t.t("recon.line", mark=self._recon_mark(hero, x, y, what), x=x, y=y, zones=zones)
 
-    def _recon_next(self, hero: Hero) -> str | None:
-        """🔓 The next 🔭 reach: "Con rango 30 de 🧭 Explorador, hasta 2 zonas" (None at the widest)."""
-        rank = self._explorer_rank(hero)
-        ranks = self._explorer_cfg()["ranks"]
-        later = sorted((int(ranks[key]), int(zones)) for key, zones in self._recon_cfg()["range"].items() if int(ranks[key]) > rank)
-        return self.texts.t("recon.next", rank=later[0][0], n=later[0][1]) if later else None
-
     def _recon_hint_lines(self, hero: Hero) -> list[str]:
         """🧭 Explorar: "🔭 2 lugares para reconocer de lejos: /reconocer", only when there is something to scout today."""
         pending = self._recon_pending(hero)
         return [self.texts.t("recon.hint", n=len(pending))] if pending else []
 
     def _recon_map_lines(self, hero: Hero, marks: bool, pending: list[tuple[int, int, str]]) -> list[str]:
-        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer), or from which 🧭 rank (only if the map marks something).
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer); nothing before the 🧭 rank that opens it.
+        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del rango del 🔭 no dice
+        nada (recon.map_locked queda sin uso)."""
         t = self.texts
         radius = self._recon_range(hero)
-        if radius <= 0:
-            return [t.t("recon.map_locked", rank=self._explorer_cfg()["ranks"]["recon"])] if marks else []
+        if radius <= 0:                                 # D-287: nothing about the rank still to come
+            return []
         if pending:
             return [t.t("recon.map_line", n=len(pending), zones=radius)]
         return [t.t("recon.map_line_none", zones=radius)] if marks else []
@@ -10808,8 +11355,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: la pantalla del reconocimiento de lejos (D-172). Dice cómo funciona (recon.energy ⚡ cada uno, experiencia de
         🧭 Explorador y unas monedas; uno por lugar y día), hasta dónde llegas, y lista hasta recon.listed lugares a tu alcance
         (los 👹 y las 🕳️ / 🌀 de tu mapa), con ✅ y lo que hay hoy en los que ya reconociste. Botones: hasta 3 lugares sin
-        reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Antes del rango 10 dice qué rango pide. Es un menú: se abre aunque
-        estés explorando, recolectando o viajando (no en combate).
+        reconocer hoy ("rcn:x:y") y ↩️ Volver (al 🗺️ Mapa). Es un menú: se abre aunque estés explorando, recolectando o
+        viajando (no en combate). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: ya no dice
+        hasta dónde llegarás con más rango (recon.next; se quitó _recon_next), y antes del rango 10 (solo si se escribe
+        /reconocer: no hay botón) responde solo con el aviso corto recon.locked.
         La llaman: "recon" (/reconocer, el botón 🔭 del mapa, 🔭 Reconocer otro) y lo que _recon rechaza.
         Si cambia, afecta: tests/test_reconocimiento.py y el tope de 4 botones.
         """
@@ -10818,9 +11367,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body = [t.t("recon.intro", energy=rcfg["energy"])]
         radius = self._recon_range(hero)
         actions: list[Action] = []
-        if radius <= 0:
-            body += [t.t("recon.locked", rank=self._explorer_cfg()["ranks"]["recon"], have=self._explorer_rank(hero)),
-                     "", self._status_line(hero)]
+        if radius <= 0:                                 # D-287: typed before the rank: the short reply only
+            body = [t.t("recon.locked", rank=self._explorer_cfg()["ranks"]["recon"], have=self._explorer_rank(hero))]
             return View(kind="recon", title=t.t("recon.title"), body=body,
                         actions=[Action(id="map", label=t.t("menu.back"))], notice=notice)
         body.append(t.t("recon.reach", n=radius))
@@ -10832,9 +11380,6 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("recon.more", n=len(targets) - listed))
         if not targets:
             body.append(t.t("recon.none"))
-        nxt = self._recon_next(hero)
-        if nxt:
-            body.append(nxt)
         body += ["", self._status_line(hero)]
         for x, y, what in [target for target in targets if f"{target[0]}:{target[1]}" not in done][:3]:
             actions.append(Action(id=f"rcn:{x}:{y}", label=t.t("recon.button", mark=self._recon_mark(hero, x, y, what), x=x, y=y,
