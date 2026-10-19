@@ -1157,3 +1157,25 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 **Qué cambia al jugar.** Alrededor de cada hoguera nueva la tierra vuelve a ser de nivel bajo: una zona a 11 del Claro hacia el este pasó de Lejanía 11 a Lejanía 1. Lo más lejano también baja (una zona a 30 zonas del Claro queda a 18 de la hoguera más cercana): el anillo de recursos, el nivel de las mazmorras y de los campamentos enemigos bajan en todo el mapa de afuera. Los monstruos de afuera no cambian: ya salían del nivel del héroe (D-266).
 
 **Lo que queda por mirar:** si con la Lejanía desde la más cercana el mapa de afuera queda demasiado fácil (si hace falta, que más allá del anillo de hogueras se cuente desde el Claro); cuántos jugadores nacen fuera del Claro y si las hogueras nuevas se sienten vacías.
+
+### Octubre de 2026 (18-oct): lo que sabe el gremio (0.38, D-282, confirmada)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `gremio.zones_shown` (nuevo) | — | 8: cuántas zonas lista 🗺️ Zonas del gremio de una vez (Claude) |
+
+**Qué cambia al jugar.** Un gremio que se reparte las zonas conoce el mapa mucho más rápido: 5 miembros que exploran cada uno su parte conocen 5 veces más zonas que uno solo, y fundar ya no pide que el líder explore de nuevo la zona elegida. La experiencia no cambia: cada uno gana la suya explorando.
+
+**Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
+
+### Octubre de 2026 (18-oct): la vida en 30 minutos (0.38, D-284, confirmada)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `regen.hp_full_minutes` | 240 (4 horas) | 30 |
+| `regen.downed_full_minutes` | 500 (unas 8 horas, D-83) | 30: caer no cuesta tiempo extra |
+| `inn.speed` (sin cambio) | 4: posada de 0 a llena en 1 hora | 4: de 0 a llena en 7,5 min (nunca menos de `inn.min_minutes`, 5) |
+
+**Qué cambia al jugar.** Después de una pelea se vuelve a jugar enseguida: una vida a la mitad se llena en 15 minutos. Las pociones y las vendas valen menos para el día a día y más en medio de una pelea o de un lote largo; la posada casi no hace falta (5 a 7,5 min por 🥉4). Caer ya no deja al héroe horas afuera: lo que se pierde es lo de la derrota (monedas, el lote cortado).
+
+**Lo que queda por mirar:** si las pociones se siguen comprando; si la posada sigue teniendo sentido o conviene darle otro uso; si sin el castigo de tiempo al caer los jugadores pelean demasiado arriba de su nivel.

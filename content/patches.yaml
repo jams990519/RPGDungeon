@@ -661,3 +661,20 @@ v0_37:
     - "📒 The 9 campfires are in 📒 Places from day one, even if you have never been there, and you can travel to any of them."
     - "🛡️ New Guild button in the bottom menu, next to ⚙️ Options: your guild one tap away, from anywhere."
     - "⚠️ Near the new campfires the map changed: some dungeons and resource nodes in those zones moved."
+
+v0_38:
+  version: "0.38"
+  title: "🗺️ Lost Realms 0.38: lo que explora tu gremio, lo saben todos"
+  title_en: "🗺️ Lost Realms 0.38: what your guild explores, everyone knows"
+  notes:
+    - "🗺️ Lo que explora un miembro de tu gremio (o de tu campamento) lo saben todos: en 📍 Zona ves sus recursos y cuánto se conoce, y en el 🗺️ Mapa se ve su color, sin investigarla de nuevo. También vale para fundar el campamento."
+    - "⭐ La experiencia sigue siendo de quien explora: si exploras una zona que tu gremio ya conoce, igual ganas la tuya. Si sales del gremio, te quedas con lo que exploraste tú."
+    - "🧑 Tus compañeros del gremio se ven en el 🗺️ Mapa."
+    - "❤️ La vida vuelve sola mucho más rápido: de 0 a llena en 30 minutos (antes 4 horas), también si caíste en una pelea. Las pociones y la posada siguen siendo más rápidas."
+    - "📋 Nueva pantalla 🗺️ Zonas del gremio, en 🛡️ Gremio: las zonas que conoce tu gremio, las más cercanas primero, con sus recursos y quién la exploró. Escribe un recurso (por ejemplo, hierro) para ver dónde hay, y toca /z1 para armar el camino."
+  notes_en:
+    - "🗺️ What one member of your guild (or camp) explores, everyone knows: in 📍 Zone you see its resources and how well it is known, and the 🗺️ Map shows its colour, without investigating it again. It also counts for founding the camp."
+    - "⭐ The experience still goes to whoever explores: if you explore a zone your guild already knows, you still earn yours. If you leave the guild, you keep what you explored yourself."
+    - "🧑 Your guild mates show on the 🗺️ Map."
+    - "❤️ Health comes back on its own much faster: 0 to full in 30 minutes (before, 4 hours), also if you fell in a fight. Potions and the inn are still faster."
+    - "📋 New 🗺️ Guild zones screen, in 🛡️ Guild: the zones your guild knows, nearest first, with their resources and who explored them. Type a resource (for example, iron) to see where there is some, and tap /z1 to lay out the way."

@@ -170,7 +170,7 @@ guide:
     downed:
       name: "Caíste en combate"
       text: |-
-        • Quedaste malherido: la vida vuelve mucho más lento hasta llenarse.
+        • Quedaste malherido: la vida vuelve sola en unos minutos; una poción la llena antes.
         • Para curarte: una 🧪 poción (👤 Héroe → 🎒 Mochila), la 🛏️ posada del Claro o esperar.
         • En 👤 Héroe → 🩺 Salud ves cuánto te falta.
     level_up:

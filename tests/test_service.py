@@ -322,20 +322,21 @@ def test_patch_announced_once_and_players_survive_reset(content, clock):
     assert service.pending_announcement() is None  # only once per version
 
 
-def test_falling_means_a_slow_recovery(service, clock):
+def test_falling_heals_in_thirty_minutes_too(service, clock):
+    # [ES] D-284 (0.38, el dueño): caer ya no es más lento: de 0 a llena en 30 minutos, como siempre (antes 8 horas, D-83)
     from engine.hero import hero_stats
     make_hero(service)
     hero = service._load("test:1")
     max_hp = hero_stats(service._kit(hero), hero.level)["max_hp"]
     hero.hp, hero.downed, hero.last_regen_at = 1, True, clock.now()
     service._save(hero)
-    for _ in range(10):                                   # acting every minute must not lose the slow regen
+    for _ in range(10):                                   # acting every minute must not lose the regen
         clock.advance(60)
         service.act("test:1", "hero")
-    slow = service._load("test:1").hp
-    assert 1 < slow < 1 + max_hp * 0.03
+    third = service._load("test:1").hp
+    assert abs(third - max_hp / 3) <= 3                   # 10 of 30 minutes: a third
     assert "Malherido" in "\n".join(service.act("test:1", "hero").body)
-    clock.advance(9 * 3600)
+    clock.advance(20 * 60)
     service.act("test:1", "hero")
     hero = service._load("test:1")
     assert hero.hp == max_hp and not hero.downed
@@ -360,20 +361,20 @@ def test_health_screen_shows_the_body_and_how_it_heals(service):
     view = service.act("test:1", "health")
     body = "\n".join(view.body)
     assert view.kind == "health" and [a.id for a in view.actions] == ["potions", "hero"]
-    assert "herido" in body and "4 h" in body and "Enfermedades: ninguna" in body
+    assert "herido" in body and "30 min" in body and "Enfermedades: ninguna" in body   # D-284
     assert not service.texts.missing
 
 
-def test_full_health_comes_back_in_four_hours(service, clock):
+def test_full_health_comes_back_in_thirty_minutes(service, clock):    # D-284 (before 0.38: four hours, D-103)
     make_hero(service)
     hero = service._load("test:1")
     max_hp = hero.hp
     hero.hp, hero.last_regen_at = 1, clock.now()
     service._save(hero)
-    clock.advance(2 * 3600)
+    clock.advance(15 * 60)
     service.view("test:1")
-    assert abs(service._load("test:1").hp - max_hp / 2) <= 2            # half in 2 hours
-    clock.advance(2 * 3600)
+    assert abs(service._load("test:1").hp - max_hp / 2) <= 2            # half in 15 minutes
+    clock.advance(15 * 60)
     service.view("test:1")
     assert service._load("test:1").hp == max_hp
 

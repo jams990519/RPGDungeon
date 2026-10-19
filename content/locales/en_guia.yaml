@@ -205,7 +205,7 @@ guide:
         • Read the ⚠️ warning: against a big hit, 🛡️ Defend (1 energy). In 🎒 Backpack: potions and 🏃 Flee.'
     downed:
       name: You fell in combat
-      text: '• You''re gravely wounded: your health comes back much more slowly until it''s full.
+      text: '• You''re gravely wounded: your health comes back on its own in a few minutes; a potion fills it sooner.
 
         • To heal: a 🧪 potion (👤 Hero → 🎒 Backpack), the Clearing''s 🛏️ inn, or waiting.
 

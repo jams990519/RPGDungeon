@@ -91,14 +91,14 @@ def test_founder_creates_the_guild_at_the_camp(service):
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
     assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "claro"]
     screen = service.act("test:1", "guild")
-    assert screen.kind == "guild" and ids(screen) == ["guildnew", "rename", "campmgmt"]
+    assert screen.kind == "guild" and ids(screen) == ["guildnew", "gzones", "rename", "campmgmt"]   # D-282: 🗺️ Zonas
     assert any("Lyra" in line and "activo" in line for line in screen.body)
     member = service.act("test:2", "guild")                       # a member sees it, but cannot create it
-    assert ids(member) == ["leave", "campmgmt"]
+    assert ids(member) == ["gzones", "leave", "campmgmt"]                # D-282: 🗺️ Zonas del gremio for members too
     assert "fundador" in service.act("test:2", "guildnew").notice
     place(service, "test:1", 7, 0, backpack={})                    # the founder away from the camp: only looks
     away = service.act("test:1", "guild")
-    assert ids(away) == ["home"]
+    assert ids(away) == ["gzones", "home"]                              # D-282: 🗺️ Zonas del gremio from anywhere
     assert service.act("test:1", "guildnew").kind == "guild" and service.store.get("guild", "6:0") is None
     place(service, "test:1", 6, 0)
     set_gold(service, "test:1", 10)                               # the fee: 50 bronze

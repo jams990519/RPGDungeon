@@ -1980,6 +1980,8 @@ map:
   legend: 🧍 you, at ({x}, {y}) · {stages} · at {pct}% you see its color · north is up
   camp_mark: 🏕️
   camps_legend: "{mark} players' camp"
+  mate_mark: 🧑
+  mates_legend: "{mark} {n|guild mate|guild mates}"
   position: Coordinates {x}, {y} · Distance {lejania}
   colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
   bonfire: Camp
@@ -2035,7 +2037,7 @@ hero:
   level_line: ⭐ Level {level} · Experience {xp}/{next}
   hp_line: '❤️ HP: {hp}/{max_hp}'
   regen_line: '💗 Your health comes back on its own (0 to full in {full}): it will be full in {time}.'
-  downed_line: '🤕 Gravely wounded: you fell and are recovering slowly (0 to full in {full}): it will be full in {time}. A potion or the inn fixes it sooner.'
+  downed_line: '🤕 Gravely wounded: you fell. Your health comes back on its own (0 to full in {full}): it will be full in {time}. A potion or the inn fixes it sooner.'
   stats_line: ⚔️ Attack {attack} · 🛡 Armor {armor}% · ⚡ Initiative {initiative}
   gold_line: '💰 Your coins: {gold}'
   record_line: ☠️ Enemies defeated {kills} · 🧭 Zones discovered {zones}

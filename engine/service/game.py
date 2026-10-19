@@ -154,6 +154,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-265 y D-277 (0.37): Hero.home (la hoguera donde nació; los de antes, [0, 0]). Las 9 hogueras no se guardan: salen de
     content/balance.yaml (bonfire.spacing, bonfire.ring) vía engine/world/mapgen.py, y "estar en la fogata" es
     mapgen.is_bonfire(x, y). Cada hoguera usa la presencia de siempre ("presence", clave "x:y") para su "N/20".
+    D-282 (0.38): lo que sabe el gremio se calcula de la "exploration" de los compañeros (engine/service/gremio.py
+    _known_pct); no guarda nada nuevo. Saber (recursos, mapa, fundar) usa _known_pct; hacer (explorar, experiencia,
+    misiones) sigue con _explored_pct, el % propio.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -470,7 +473,7 @@ from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
 from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭 the guided path
 from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE, GUILD_CODE_RE, MEMBER_CODE_RE,   # D-269, D-265
-                                   INVITE_CODE_RE, PLAYER_CODE_RE, GremioMixin)   # D-280: /inv_<code>
+                                   INVITE_CODE_RE, PLAYER_CODE_RE, ZONE_CODE_RE, GremioMixin)   # D-280, D-282
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -661,8 +664,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             resource = RESOURCE_CODE_RE.match(text.strip().lower())
             coords = COORD_RE.match(low)
             invite = INVITE_CODE_RE.match(low)
+            zcode = ZONE_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif zcode:                                  # D-282: /z2 = the 2nd zone of 🗺️ Zonas del gremio
+                typed = self._zone_code(hero, int(zcode.group(1)))
             elif coords:                                   # D-278: /ir 12 -3 = 🔗 Moverte with the road to (12, -3) laid out
                 typed = self._coord_walk(hero, int(coords.group(1)), int(coords.group(2)))
             elif code:                                   # D-223: /ir2 = the 2nd place of 📒 Lugares (asks first)
@@ -2331,7 +2337,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _fog_cell(self, hero: Hero, x: int, y: int) -> str:
         """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour."""
-        stage = None if mapgen.is_bonfire(x, y) else self._fog_stage(self._explored_pct(hero, x, y))   # 🔥 every bonfire: always
+        stage = None if mapgen.is_bonfire(x, y) else self._fog_stage(self._known_pct(hero, x, y))   # 🔥 always; D-282: guild
         if stage is not None:
             return stage["mark"]
         biome = self.content.biomes[self._zone(x, y).biome]
@@ -2351,7 +2357,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         color_at = int(self._fog_cfg()["color_at"])
         found = {self._zone(0, 0).biome}
+        seen = dict(self._mates_knowledge(hero)[0])      # D-282: what the guild explored counts for the legend too
         for key, pct in hero.exploration.items():
+            seen[key] = max(seen.get(key, 0), int(pct))
+        for key, pct in seen.items():
             if pct >= color_at:
                 x, y = (int(part) for part in key.split(":"))
                 found.add(self._zone(x, y).biome)
@@ -2414,7 +2423,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES] D-183: exploration.reveal_at tiene un umbral por recurso (1, 20, 40, 60, 80 %); al 100 % se conocen todos, también
         los que pasan de la lista (el pescado). Nadie conoce menos que antes: los de base van primero y los umbrales bajaron.
         """
-        pct = self._explored_pct(hero, x, y)
+        pct = self._known_pct(hero, x, y)               # D-282: the guild's best (experience still counts your own)
         ranked = list(self._zone_resources(x, y))
         reveal = self.content.balance["exploration"]["reveal_at"]
         count = len(ranked) if pct >= 100 else sum(1 for need in reveal if pct >= need)
@@ -2432,7 +2441,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         t = self.texts
         known = self._known_resources(hero, x, y)
-        pct = self._explored_pct(hero, x, y)
+        pct = self._known_pct(hero, x, y)               # D-282: what the guild knows of it
         if not known:
             return [t.t("explore.resources_unknown", pct=pct)]
         stock = self._stock(x, y)
@@ -2499,10 +2508,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
         body += [""] + self._resources_lines(hero, zone.x, zone.y)
-        fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._explored_pct(hero, zone.x, zone.y))
+        fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._known_pct(hero, zone.x, zone.y))
         if fog_here is not None:                        # D-220, D-222: how grey your square still is (it left the 🗺️ Mapa)
             body.append(t.t("map.fog.here", mark=fog_here["mark"], stage=t.t("map.fog.name." + fog_here["id"]),
-                            pct=self._explored_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
+                            pct=self._known_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
         here: list[str] = []
         camp = self.store.get("camp", f"{zone.x}:{zone.y}")
         land = self._territory(zone.x, zone.y)
@@ -3377,14 +3386,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         cfg = self.content.balance["camps"]
         zone = self._zone(hero.x, hero.y)
-        known = sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1) if (dx or dy) and hero.remembers(zone.x + dx, zone.y + dy))
+        known = sum(1 for dx in (-1, 0, 1) for dy in (-1, 0, 1)                 # D-282: what the guild knows counts
+                    if (dx or dy) and self._knows_zone(hero, zone.x + dx, zone.y + dy))
         near = any(self.store.get("camp", f"{zone.x + dx}:{zone.y + dy}")
                    for dx in range(-cfg["min_distance"], cfg["min_distance"] + 1)
                    for dy in range(-cfg["min_distance"], cfg["min_distance"] + 1))
         busy = self._founding_near(zone.x, zone.y, cfg["min_distance"])      # D-269: another guild founds near here
         return [
             (t.t("camps.req_far", n=cfg["min_lejania"]), zone.lejania >= cfg["min_lejania"]),
-            (t.t("camps.req_explored", pct=self._explored_pct(hero, zone.x, zone.y)), self._explored_pct(hero, zone.x, zone.y) >= 100),
+            (t.t("camps.req_explored", pct=self._known_pct(hero, zone.x, zone.y)), self._known_pct(hero, zone.x, zone.y) >= 100),
             (t.t("camps.req_known", n=known, need=cfg["known_neighbors"]), known >= cfg["known_neighbors"]),
             (t.t("camps.req_alone", n=cfg["min_distance"]), not near and not busy and not self._territory(zone.x, zone.y)),
         ] + self._gremio_found_reqs(hero) + [
@@ -3519,7 +3529,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         pending = self.store.get("camp_naming", hero.id)
         if pending.get("mode") == "guild":                 # the same prompt names a guild (D-97)
             return self._name_guild(hero, name, pending)
-        if pending.get("mode") in ("gremio", "gmsg", "gsearch"):    # D-269: a new guild's name, a 📢 message or a search
+        if pending.get("mode") in ("gremio", "gmsg", "gsearch", "gzones"):    # D-269, D-282: guild texts and searches
             return self._gremio_text(hero, pending["mode"], name)
         if pending.get("mode") == "found":                 # D-269: nobody founds alone any more (an old prompt founds nothing)
             self.store.delete("camp_naming", hero.id)
@@ -4253,6 +4263,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("guild.top"))
         if founder and n < cap:
             body += ["", t.t("gremio.invite_hint")]     # D-280: the founder invites into the camp with /inv_<code>
+        actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-282: what the camp's guild knows of the zones
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
                            else Action(id="leave", label=t.t("camps.leave_button")))
@@ -8444,6 +8455,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         solo los terrenos que ya conoces (_known_terrains: cuántos de cuántos). Los íconos siguen sus propias reglas (E-178).
         D-222 (0.30.1, pedido del dueño): debajo de la cuadrícula ya no va nada. Las coordenadas están en 📍 Zona (y ahí
         también la línea de cómo va tu zona).
+        D-283 (0.38, pedido del dueño): también tus compañeros del gremio o del campamento (🧑, map.mate_mark), con su leyenda.
         D-223 (0.30.2, pedido del dueño): el mapa se ve en blanco. Solo se dibujan tú (🧍) y cada zona: ▫️ en blanco hasta
         el 50 % y después su color; el 🔥 del inicio (el campamento, la hoguera) se ve siempre. Ya no se dibujan mazmorras,
         nodos, campamentos enemigos ni de jugadores, ni la guarida; las etapas ◽ ◻️ se retiraron (map_view.fog: retired).
@@ -8474,6 +8486,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         radius = self.content.balance["map_view"]["radius"]
         self._node_discover(hero, hero.x, hero.y)       # D-184: standing in a node's zone still discovers it
         camps = {tuple(int(v) for v in key.split(":")) for key, _ in self.store.items("camp")}   # D-267: everyone sees them
+        mates = set()                                   # D-283: where your guild mates stand (or your camp mates)
+        for account in self._mates(hero):
+            data = self.store.get("hero", account)
+            if data and abs(int(data.get("x", 0)) - hero.x) <= radius and abs(int(data.get("y", 0)) - hero.y) <= radius:
+                mates.add((int(data.get("x", 0)), int(data.get("y", 0))))
         rows = []
         seen_camp = False
         for y in range(hero.y + radius, hero.y - radius - 1, -1):
@@ -8482,6 +8499,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 # D-223: nothing else is drawn (no dungeons, nodes or lair): you, players' camps and each zone's colour
                 if (x, y) == (hero.x, hero.y):
                     row += "🧍"
+                elif (x, y) in mates:
+                    row += t.t("map.mate_mark")
                 elif (x, y) in camps:
                     row += t.t("map.camp_mark")
                     seen_camp = True
@@ -8496,6 +8515,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("map.colors", items=terrains, n=len(known), total=len(self.content.biomes))]
         if seen_camp:
             body.append(t.t("map.camps_legend", mark=t.t("map.camp_mark")))
+        if mates:
+            body.append(t.t("map.mates_legend", mark=t.t("map.mate_mark"), n=len(mates)))
         body += rows                                    # D-222: nothing under the grid
         actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
                    Action(id=back, label=t.t("menu.back"))]

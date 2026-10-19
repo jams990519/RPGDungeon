@@ -220,7 +220,8 @@ def test_auto_batch_stops_when_life_drops_under_the_limit(service, clock, monkey
 
 
 def test_a_fight_with_life_already_low_waits_for_the_player(service, clock):
-    ready(service, hp=0.01, downed=True)                    # downed: life comes back very slowly, it stays under 50 %
+    service.content.balance["regen"].update(hp_full_minutes=10 ** 6, downed_full_minutes=10 ** 6)   # D-284: 30 min now;
+    ready(service, hp=0.01, downed=True)                    # frozen here so the life stays under 50 % for the check
     service.act("test:1", "do:explore:20")
     pushes = []
     for _ in range(20):

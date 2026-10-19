@@ -201,8 +201,8 @@ bonfire:                     # [ES] D-265 y D-277 (confirmadas, 0.37): las 9 hog
   ring: 1                    # [ES] anillos de hogueras alrededor del Claro: 1 = las 8 de alrededor (9 en total, D-265). 0 = solo el Claro, como antes de la 0.37
 
 regen:
-  hp_full_minutes: 240        # [ES] pedido del dueño: fuera de combate la vida vuelve sola, de 0 a llena en 4 horas
-  downed_full_minutes: 500    # [ES] D-83: si caíste, mucho más lento (unas 8 horas) hasta llenar la vida, beber pociones o dormir en la posada
+  hp_full_minutes: 30         # [ES] D-284 (0.38, pedido del dueño): fuera de combate la vida vuelve sola, de 0 a llena en 30 minutos (antes 240, 4 horas). Las pociones siguen siendo más rápidas
+  downed_full_minutes: 30     # [ES] D-284 (0.38, el dueño): también 30 minutos si caíste (antes 500, unas 8 horas, D-83): caer no cuesta tiempo extra
 
 hero:
   start_gold: 10
@@ -442,7 +442,7 @@ feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opcion
 inn:                         # [ES] posada del Claro: pagas, duermes y despiertas con la vida llena
   price: 4
   minutes: 5                 # [ES] sin uso desde la 0.33 (D-259): la posada tarda según la vida que falta (speed, min_minutes)
-  speed: 4                   # [ES] D-259 (0.33, pedido del dueño): la vida vuelve 4 veces más rápido que sola: de 0 a llena en 1 hora (regen.hp_full_minutes 240 / 4)
+  speed: 4                   # [ES] D-259 (0.33, pedido del dueño): la vida vuelve 4 veces más rápido que sola: de 0 a llena en 7,5 min desde la 0.38 (regen.hp_full_minutes 30 / 4; antes 1 hora), nunca menos de min_minutes
   min_minutes: 5             # [ES] lo menos que dura aunque falte muy poca vida
 
 guardian:                    # [ES] D-82: el primer Guardián de región (capa simple, en solitario por ahora)
@@ -474,6 +474,7 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   message_max_chars: 200     # [ES] largo máximo de un 📢 mensaje al gremio; lo que pasa se corta (Claude)
   messages_kept: 5           # [ES] cuántos mensajes guarda y muestra la pantalla del gremio (Claude)
   list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
+  zones_shown: 8             # [ES] D-282 (0.38, Claude): cuántas zonas muestra 🗺️ Zonas del gremio de una vez (las más cercanas)
   found_min_members: 2       # [ES] miembros del gremio que tienen que estar en la zona para empezar a fundar (D-269, el dueño)
   found_minutes: 60          # [ES] fundar tarda 60 min con found_min_members presentes; con más, menos: tiempo = 60 × 2 ÷ presentes (4 → 30 min). Con 1, el doble; con nadie, se pausa (D-269, D-274)
   found_floor_minutes: 10    # [ES] nunca menos de 10 min, por más miembros que haya (D-269, el dueño)
