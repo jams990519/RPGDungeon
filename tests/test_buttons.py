@@ -3,6 +3,7 @@
 
 [ES] Prueba que todos los botones funcionen: recorre las pantallas pulsando cada botón (D-66). Tope de botones: 4 (D-75),
 6 en combate (D-46), hasta 8 de 2 en 2 en los centros de 🏕️ Campamento y 👤 Héroe y en ❓ Dudas (D-192, E-132: HUB_KINDS) y
+uno más en ❓ Dudas (9, con 📚 Guías) y en ⚙️ Opciones (5, con ❓ Dudas) porque lo pidió el dueño (D-297: button_cap), y
 las filas de cantidades de D-189. D-244 (0.33): 📍 Zona trae 5 botones ([2, 2, 1]) y 🔗 Moverte sus flechas en una fila y
 ❌ Cancelar y ✅ Terminar juntos al final ([4, 2] o [4, 1, 2]).
 """
@@ -12,7 +13,7 @@ from collections import deque
 from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.service import GameService
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import button_cap
 
 SKIP = ("go:", "goto:", "explore", "gather", "inn", "found", "respec", "donate")
 
@@ -33,7 +34,7 @@ def test_every_button_works(content):
         service, view = build(content, path)
         pressed += 1
         # D-46 combat bar; D-192 (E-132): the hubs show up to 8, 2 per row; 4 elsewhere (D-75)
-        limit = 6 if view.kind == "combat" else HUB_BUTTONS if view.kind in HUB_KINDS else 4
+        limit = button_cap(view.kind)     # D-297: ❓ Dudas (📚 Guías) and ⚙️ Opciones (❓ Dudas) one more, the owner asked
         if view.layout:                                 # D-189: amount pickers: a row of small amounts and one wide back
             assert sum(view.layout) == len(view.actions) and max(view.layout) <= 8, (path, view.layout)
             # D-244: 🔗 Moverte closes with two buttons side by side (❌ Cancelar, ✅ Terminar)

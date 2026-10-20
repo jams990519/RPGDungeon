@@ -16,6 +16,7 @@ Lo usan: engine/service/game.py, engine/core/i18n.py, tests
     (content/guide.yaml → Content.guide: pasos del 🧭 camino guiado y avisos de una sola vez, D-190/D-193)
     (content/dungeons.yaml → Content.dungeons: familias de enemigos que llenan las mazmorras para uno, D-164/D-170)
     (content/faq.yaml → Content.faq: las preguntas de ❓ Dudas con su código, tema, palabras clave y relacionadas, D-191/D-192)
+    (content/guides.yaml → Content.guides: las 📚 Guías de ❓ Dudas, sus categorías y el orden de sus botones, D-297)
     (content/locales/<idioma>*.yaml → Content.texts, el español, y Content.locales, todos los idiomas: D-250)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
@@ -28,7 +29,7 @@ Si cambias esto, revisa:
     - Todos los catálogos: engine/classes, engine/enemies, engine/world, engine/professions (D-109), engine/story (D-117)
     - Obra maestra (D-116): Content.items trae también las piezas "<id>_obra" (source: masterwork); quien recorre todos
       los objetos las ve (nunca salen en el botín ni en el equipo inicial: tienen "source")
-    - Pruebas: tests/test_content.py, tests/test_masterwork.py
+    - Pruebas: tests/test_content.py, tests/test_masterwork.py, tests/test_guias.py (Content.guides, D-297)
 """
 
 from __future__ import annotations
@@ -69,6 +70,8 @@ class Content:
             read with retired entries kept (the service leaves retired families out).
         faq: content/faq.yaml (❓ Dudas, D-191/D-192: "topics", "popular" and "questions" with stable codes d01, d02...),
             read with retired entries kept (the service hides retired questions).
+        guides: content/guides.yaml (📚 Guías of ❓ Dudas, D-297: "categories" in button order and "guides" with stable
+            ids and their category), read with retired entries kept (the service hides retired guides).
 
     [ES]
     Qué es: todo el contenido del juego cargado en memoria.
@@ -89,6 +92,7 @@ class Content:
     story: dict[str, Any] | None = None
     dungeons: dict[str, Any] | None = None
     faq: dict[str, Any] | None = None
+    guides: dict[str, Any] | None = None
     locales: dict[str, dict[str, Any]] | None = None
 
 
@@ -137,6 +141,7 @@ def load_content(content_dir: Path | None = None, lang: str = "es") -> Content:
         story=_read(base / "story.yaml", keep_retired=True) if (base / "story.yaml").exists() else {},
         dungeons=_read(base / "dungeons.yaml", keep_retired=True) if (base / "dungeons.yaml").exists() else {},
         faq=_read(base / "faq.yaml", keep_retired=True) if (base / "faq.yaml").exists() else {},
+        guides=_read(base / "guides.yaml", keep_retired=True) if (base / "guides.yaml").exists() else {},   # D-297
     )
 
 

@@ -2,7 +2,8 @@
 
 [ES] Pruebas de ⚙️ Opciones y las peleas automáticas. D-258 (0.33): la pantalla trae 🩹 Retirarse, 🌐 Idioma, 💬 Feedback y
 ↩️ Volver, y las peleas automáticas están apagadas en el juego (sus pruebas las prenden con el arreglo auto_fights_on para
-seguir cuidando el código). Lo de antes: la pantalla tiene 4 botones como mucho y lo que se cambia queda
+seguir cuidando el código). D-297 (20-oct-2026, el dueño): suma ❓ Dudas ("dudas@options"; su ↩️ Volver vuelve a
+⚙️ Opciones), 5 botones (button_cap "options"). Lo de antes: la pantalla tiene 4 botones como mucho y lo que se cambia queda
 guardado; el menú de abajo suma ⚙️ Opciones (6 como mucho) y /opciones la abre. Con ✋ Manual (lo de siempre) el lote se
 corta en la pelea. Con ⚔️ Automática el héroe pelea solo: si gana, el lote sigue; si pierde o su vida queda bajo el límite,
 el lote se corta; el resumen cuenta las peleas y el bot avisa una sola vez por lote (también con el chat cerrado). Las
@@ -15,6 +16,7 @@ import pytest
 from conftest import make_hero
 from engine.combat import choose_action, make_combat
 from engine.hero import Hero, hero_stats
+from engine.service.game import button_cap
 from test_boss import _to_lair
 from test_camps import place
 from test_hunt import wild
@@ -79,11 +81,11 @@ def fake_play_out(result, hp=None, calls=None):
 
 # ---------------------------------------------------------------- the screen, the menu and the command
 
-def test_options_screen_has_four_buttons_and_toggles_persist(service):
+def test_options_screen_has_five_buttons_and_toggles_persist(service):
     make_hero(service)
     view = service.act("test:1", "options")
-    assert view.kind == "options" and len(view.actions) <= 4
-    assert ids(view) == ["opt:retreat", "lang", "fb", "home"]          # D-258: no automatic fights or potions; 💬 Feedback
+    assert view.kind == "options" and len(view.actions) <= button_cap("options") == 5    # D-297: the owner asked for ❓ Dudas
+    assert ids(view) == ["opt:retreat", "lang", "fb", "dudas@options", "home"]   # D-258: no auto fights or potions; 💬; D-297: ❓
     assert "30 %" in view.actions[0].label
     for expected in (50, 70, 30):                       # 30 → 50 → 70 → 30 (D-119: 30 by default)
         view = service.act("test:1", "opt:retreat")

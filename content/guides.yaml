@@ -1,0 +1,53 @@
+# 📚 Guías of ❓ Dudas (D-297, the owner, 20-oct-2026): short guides by category, one screen each, in Spanish and English.
+# The catalog only: the categories in button order and each guide with its stable id and its category. The texts live in
+# content/locales/es_guias.yaml and en_guias.yaml; every number comes from content/balance.yaml when the guide is shown.
+#
+# [ES]
+# Para qué sirve: el catálogo del botón 📚 Guías de ❓ Dudas (pedido del dueño: "un botón extra como si fuese un submenú con
+#     subguías de acuerdo a sus clases, cómo conseguir recursos, cómo funciona cada cosa, para que sea fácil para las
+#     personas, tanto en español y en inglés"). 📚 Guías → una categoría → una guía: una pantalla corta (de 5 a 9 líneas).
+# Documento de diseño: diseno/01-plataforma/menus-campamento-y-heroe.md §4 (❓ Dudas); lo actualiza quien une el parche.
+# Módulo: capa de servicios (❓ Dudas, M1 Núcleo para los textos).
+# Depende de: content/classes.yaml (una guía de clase por cada clase que se juega: "class" es su "group"),
+#     content/balance.yaml (los números), content/locales/es_guias.yaml y en_guias.yaml (los textos).
+# Lo leen: engine/core/content.py (Content.guides) y engine/service/game.py (sección "📚 Guías": _guidebook_entries,
+#     _guidebook_view, _guidebook_category_view, _guidebook_page_view, _guidebook_values) y tests/test_guias.py.
+# Eventos: ninguno. Datos de los que es dueño: ninguno (solo catálogo).
+# IDs: estables (son los botones "guide:<id>" y "guides:<categoría>"): nunca se renombran, se borran ni se reutilizan.
+#     Para retirar una guía se marca retired: true. Una guía de clase cuya clase se retira deja de mostrarse sola.
+# Números: ninguno aquí. Los textos usan marcadores ({energy_max}, {gather_min}...) que el motor llena con balance.yaml al
+#     mostrarse (_guidebook_values, que suma a _faq_values): una guía nunca escribe un número de balance a mano.
+# Reglas que nunca se rompen:
+#     1. Cada guía dice solo lo que el juego hace hoy (se revisa contra el código, no contra el diseño viejo).
+#     2. D-293: un ícono de clase o de rol va solo pegado al nombre de su clase ("🤺 Guerrero"); los nombres de clase, rol y
+#        habilidad salen de sus propios textos (class_group, class, ability), así siempre coinciden con el juego.
+#     3. Cada clase que se juega tiene su guía (tests/test_guias.py lo vigila).
+# Si cambias esto, revisa: content/locales/es_guias.yaml y en_guias.yaml (cada guía con title y text, o intro y tip si es de
+#     clase; cada categoría con su nombre y su línea), tests/test_guias.py (todas se abren en los dos idiomas sin marcadores
+#     sin llenar) y el tope de botones: una categoría muestra hasta 7 guías y ↩️ Volver; con más, de a 6 con ➡️ Más.
+
+# Categories, in the order of the 📚 Guías buttons. [ES] Categorías, en el orden de sus botones.
+categories: [classes, resources, howto]
+
+# Guides, in the order of their buttons inside each category. [ES] Las guías, en el orden de sus botones.
+guides:
+  # ---- 🎭 Clases: one per class that is played (class = its group in content/classes.yaml), in the order of creation
+  guerrero: {category: classes, class: guerrero}
+  paladin: {category: classes, class: paladin}
+  druida: {category: classes, class: druida}
+  cazador: {category: classes, class: cazador}
+  sacerdote: {category: classes, class: sacerdote}
+  mago: {category: classes, class: mago}
+  # ---- 🪵 Recursos
+  find: {category: resources}       # [ES] 🔎 encontrar recursos: explorar por %, el buscador y el gremio
+  gather: {category: resources}     # [ES] 🪓 recolectar: vueltas, lotes, agotarse, nodos, mochila y territorio
+  hunt: {category: resources}       # [ES] 🏹 caza y comida: presas, pescado, cocina, despensa y provisiones
+  trades: {category: resources}     # [ES] ⚒️ oficios: aprender, refinar, fabricar, estaciones y especializaciones
+  # ---- ⚙️ Cómo funciona
+  energy: {category: howto}         # [ES] ⚡ energía y vida
+  map: {category: howto}            # [ES] 🚶 moverte, coordenadas, lugares y fogatas
+  fights: {category: howto}         # [ES] ⚔️ la cadena, defenderse, pociones y caer
+  guild: {category: howto}          # [ES] 🛡️ gremio: crear, entrar, invitar, chat, fondo, armería y lo compartido
+  camp: {category: howto}           # [ES] 🏕️ campamento: fundar, obras, ayudantes, agrandar y oleadas
+  dungeons: {category: howto}       # [ES] 🕳️ mazmorras, campamentos enemigos y el Guardián
+  quests: {category: howto}         # [ES] 📜 historia, diario, origen, tablón y encargos del campamento

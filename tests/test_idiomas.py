@@ -19,6 +19,7 @@ import pytest
 from conftest import make_hero
 from engine.core import FixedClock, MemoryStore, Rng, load_content
 from engine.service import GameService
+from engine.service.game import button_cap
 from tools.check_locales import compare
 
 SPANISH = re.compile(r"[áéíóúñ¿¡]")
@@ -97,7 +98,7 @@ def test_an_english_hero_plays_everything_in_english(service):
 def test_old_players_switch_in_options_and_the_keyboard_follows(service):
     make_hero(service)
     options = service.act("test:1", "options")
-    assert "lang" in [a.id for a in options.actions] and len(options.actions) <= 4     # D-258: 🌐 stays, with 💬 and ↩️
+    assert "lang" in [a.id for a in options.actions] and len(options.actions) <= button_cap("options")   # D-258, D-297 (❓)
     screen = service.act("test:1", "lang")
     assert screen.kind == "language" and [a.id for a in screen.actions] == ["lang:es", "lang:en", "options"]
     assert screen.actions[0].label.startswith("✅")
