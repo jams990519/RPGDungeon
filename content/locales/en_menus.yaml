@@ -27,7 +27,7 @@ hub:
   services: '🏘️ Services: {list}.'
   services_none: '🏘️ Services: shelter, trading post and workshop come with 🔨 Upgrades.'
   board: '📜 Board: {done} of {total} of today''s tasks · they change in {time}.'
-  manage: '🏰 Manage: ⬆️ expand, 🔨 upgrades, 🌾 pantry and 🛡️ guild.'
+  manage: '🏰 Manage: ⬆️ expand, 🔨 upgrades, 🌾 pantry, 🛡️ guild and ℹ️ camp info.'
   dudas: '❓ Help: type a word and I''ll show you questions that are already answered.'
   defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
   cook_button: 🍲 Cook

@@ -108,7 +108,8 @@ def test_waves_start_when_the_camp_is_founded_and_never_in_the_claro(service, cl
     view = found_at(service, "test:1", 6, 0)                        # D-105: from the very first level, with a warning
     assert "oleada" in view.notice and "Refuerza" in view.notice and "3 veces por semana" in view.notice
     assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + RAID_GAP)
-    assert any("Próxima oleada en 3 días" in line for line in view.body)
+    assert not any("Próxima oleada" in line for line in view.body)   # D-302: the hub keeps only what is urgent...
+    assert any("Próxima oleada en 3 días" in line for line in service.act("test:1", "campinfo").body)   # ...ℹ️ the rest
     clock.advance(RAID_GAP)
     view = service.act("test:1", "claro")
     assert camp(service)["raid"]["required"] == 1 and "defend" in [a.id for a in view.actions]   # a camp of one can defend it
@@ -127,12 +128,12 @@ def test_waves_start_when_the_camp_is_founded_and_never_in_the_claro(service, cl
 def test_raid_arrives_after_the_interval(service, clock):
     make_hero(service, "test:1", "Lyra")
     camp_at_level(service, 5)
-    view = service.act("test:1", "claro")
+    service.act("test:1", "claro")
     assert camp(service)["next_raid_at"] == pytest.approx(clock.now() + RAID_GAP)   # existing camp: scheduled lazily
-    assert any("Próxima oleada en 3 días" in line for line in view.body)
+    assert any("Próxima oleada en 3 días" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️
     clock.advance(RAID_GAP - 60)
-    view = service.act("test:1", "claro")
-    assert not camp(service).get("raid") and any("en 1 día" in line for line in view.body)
+    service.act("test:1", "claro")
+    assert not camp(service).get("raid") and any("en 1 día" in line for line in service.act("test:1", "campinfo").body)
     assert not pushes(service, "camp_raid")
     clock.advance(60)
     view = service.act("test:1", "claro")
@@ -142,7 +143,7 @@ def test_raid_arrives_after_the_interval(service, clock):
     # D-192: 🛡️ Defender goes first in the hub and in 🏰 Gestionar; 📜 Tablón leaves only if they would pass 8 (D-291: with
     # 🛡️ Gremio in the hub they do; D-287: no 🔬 Investigar without the 📚 Biblioteca)
     assert [a.id for a in view.actions] == ["defend", "cook", "oficios", "trainer", "upsvc", "guild", "campmgmt", "dudas"]
-    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "gzones", "claro"]
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]
     assert [a.id for a in notices[0][1].actions] == ["defend"] and "nivel" in notices[0][1].body[0]
@@ -302,8 +303,8 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     assert view.kind == "camp_grow"
     claim = next(a.id for a in view.actions if a.id.startswith("claim:"))
     place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # the usual cost (D-92)
-    view = service.act("test:1", claim)
-    assert camp(service)["level"] == 9 and any("castillo" in line for line in view.body)
+    service.act("test:1", claim)
+    assert camp(service)["level"] == 9 and any("castillo" in line for line in service.act("test:1", "campinfo").body)
 
 
 def test_button_limits_during_raids(service, clock):

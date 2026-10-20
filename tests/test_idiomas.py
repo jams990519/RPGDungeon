@@ -76,7 +76,7 @@ def test_an_english_hero_plays_everything_in_english(service):
     assert labels == ["📍 Zone", "🧭 Explore", "🏕️ Camp", "👤 Hero", "🛡️ Guild", "⚙️ Options"]
     seen = []
     for action in ("home", "explore_menu", "claro", "hero", "options", "stats", "health", "bag", "wallet", "gear",
-                   "talents", "map", "places", "oficios", "dudas", "trainer", "journal", "board", "guide"):
+                   "talents", "map", "places", "plc:fire", "oficios", "dudas", "trainer", "journal", "board", "guide"):
         seen.append(service.act("test:1", action))
     hero = service._load("test:1")
     service._start_combat(hero, service._zone(1, 0), Rng(5), "encounter.ambush")

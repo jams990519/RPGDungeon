@@ -114,7 +114,7 @@ explorer:                    # [ES] D-112 (confirmada): el oficio 🧭 Explorado
     master: 100              # [ES] 🏅 título Gran Explorador
   base_sight: 1              # [ES] cualquiera ve los campamentos de su zona y de las 8 vecinas
   near_radius: 3             # [ES] desde el rango camps_near: hasta 3 zonas a la redonda (7 × 7)
-  places_listed: 8           # [ES] desde el rango travel, 📒 Lugares lista hasta 8 lugares con su tiempo (sin ese rango, 3; los botones siguen siendo 3)
+  places_listed: 8           # [ES] desde el rango travel, 📒 Lugares lista hasta 8 lugares con su tiempo (sin ese rango, 3; los botones siguen siendo 3). D-301: el tope es por tipo (Mazmorras, Campamentos...); las 🔥 fogatas salen siempre todas
   map_lines: 4               # [ES] cuántos campamentos enemigos lista el mapa debajo de los cuadritos (los más cercanos). D-223 (0.30.2): sin uso, el mapa no lista nada; queda hasta E-207
   title: gran_explorador     # [ES] id del título del rango 100 (estable; se guarda en Hero.titles)
   stealth_max: 0.5           # [ES] D-172: 🥷 Sigilo nunca pasa de 50 % (el oficio da hasta 25 % al rango 100, perk stealth de content/professions.yaml, y la 🎓 🕵️ Infiltrado hasta 10 puntos más: 35 %)
@@ -255,6 +255,11 @@ resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar
     total: [4, 6]            # [ES] ...sin quedar con menos de 4 ni pasar de 6 recursos de tierra en total (con 1 de base suma 3; el agua va aparte)
     richness: [0.3, 1.0]     # [ES] riqueza de cada propio (cuánto sale al recolectar, como la de los de base)
     foreign_chance: 0.3      # [ES] D-185 (confirmada: "bastante aleatorio"; el número lo propuso Claude): cada recurso propio de la zona tiene 3 de 10 de salir del catálogo de OTRO terreno (árboles donde no deberían, sal en el bosque...)
+  wood:                      # [ES] D-300 (pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo imposible encontrarlo"; números de Claude, provisionales): la 🪵 madera se SUMA en más zonas (engine/world/resources.py wood_resource). Solo suma: ninguna zona pierde un recurso, va justo después de los de base y puede pasar del tope de 3. Sin este bloque, el reparto de antes
+    resource: madera         # [ES] el recurso que se suma
+    forest: [bosque, bosque_oscuro, selva]   # [ES] toda zona cuyo terreno VISIBLE es uno de estos tiene madera...
+    forest_min: 0.7          # [ES] ...con riqueza de al menos 0,7 (cuánto sale al recolectar, como la de los de base)
+    threshold: 0.62          # [ES] en los demás terrenos, la madera aparece desde esta fuerza aunque ya haya 3 de base (nunca más alto que el general, threshold: 0.62). Igual al general porque solo la regla del bosque ya suma ~14 puntos (los bosques son ~24 % del mapa); así, fuera del bosque se suma donde la madera ya alcanzaba pero el tope de 3 la dejaba afuera (+2 a +3 puntos). Medido en 73 × 73 zonas con 3 semillas: zonas con madera de 39-47 % a 55-63 % (+16 puntos). Bajarlo suma más: 0.61 → +18 puntos; 0.58 → +22
 
 exploration:                 # [ES] D-87: cada zona se explora por porcentaje
   per_step: [15, 30]         # [ES] cada exploración suma entre 15 % y 30 %
@@ -263,6 +268,7 @@ exploration:                 # [ES] D-87: cada zona se explora por porcentaje
 stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
   per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)
   regen_per_hour: 0.02       # [ES] y vuelve un 2 % por hora (de vacío a lleno: unas 50 horas)
+  regen_mult: {madera: 2.0}  # [ES] D-300 (pedido del dueño: "lento para las construcciones, pero tampoco tan lento"; número de Claude, provisional): la 🪵 madera vuelve el doble de rápido (4 % por hora: unas 2 unidades por hora en cada zona en vez de 1; de vacía a llena, unas 25 horas). Se multiplica con el ⛲ Pozo
   min_yield: 0.15            # [ES] por debajo de esto, el recurso está agotado y no da nada
 
 gather:                      # [ES] recolectar en la zona actual
@@ -475,7 +481,10 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   found_coins: 20            # [ES] crear un gremio cuesta 🥉20 (D-269, el dueño). Un gremio por héroe
   members_before_camp: 5     # [ES] caben 5 antes de tener campamento (D-269, el dueño); después manda el cupo del campamento (guild.levels)
   message_max_chars: 200     # [ES] largo máximo de un 📢 mensaje al gremio; lo que pasa se corta (Claude)
-  messages_kept: 5           # [ES] cuántos mensajes guarda y muestra la pantalla del gremio (Claude)
+  messages_kept: 50          # [ES] cuántos mensajes guarda el chat del gremio (antes 5, que mostraba la pantalla del gremio; D-302, 0.39.4, Claude: 📢 Chat muestra los del último día, ver chat_*)
+  chat_hours: 24             # [ES] D-302 (0.39.4, pedido del dueño: "el listado del chat del último día"): 📢 Chat muestra los mensajes de las últimas 24 h
+  chat_shown: 20             # [ES] D-302 (Claude): como mucho 20 mensajes en 📢 Chat (los más nuevos, el último abajo)
+  chat_max_chars: 3500       # [ES] D-302 (Claude): si los mensajes pasan de 3.500 letras se quitan los más viejos, para que la pantalla no pase el tope de 4.096 de Telegram
   list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
   zones_shown: 8             # [ES] D-282 (0.38, Claude): cuántas zonas muestra 🗺️ Zonas del gremio de una vez (las más cercanas)
   search_min_pct: 50         # [ES] D-296 (0.39.1, pedido del dueño): el 🔎 buscador de recursos solo muestra zonas investigadas al 50 % o más (por ti o por tu gremio)

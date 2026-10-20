@@ -6,7 +6,8 @@ registro de quién dejó o tomó qué):
 - ⚔️ Armería está en 🛡️ Gremio desde que existe el gremio; se deja con /a1 (equipo de la mochila, nunca lo puesto) y se toma
   con /t1, desde cualquier lugar; cualquiera del gremio toma;
 - cada pieza conserva su ✨ encantamiento y su ✒️ firma; si quien la toma ya lleva una igual distinta, no se la lleva;
-- caben armory.slots piezas; la pantalla muestra los últimos movimientos (quién dejó o tomó qué);
+- caben armory.slots piezas; la pantalla muestra cuántas hay ("🗃️ 1/30": desde D-302 solo ahí, no en 🛡️ Gremio) y los
+  últimos movimientos (quién dejó o tomó qué);
 - al fundar, la armería se muda al campamento con todo; si el último miembro disuelve el gremio, las piezas vuelven a él;
 - sin gremio, explica; y se lee en inglés.
 Archivo: tests/test_armeria.py · Módulo: M15 Social · Prueba: engine/service/gremio.py (_armory_view, _armory_in_code,
@@ -117,8 +118,8 @@ def test_the_armory_moves_with_the_founding_and_comes_back_if_the_guild_dissolve
     assert [e["item"] for e in service.store.get("armory", "6:0")["items"]] == ["espada_2"]   # moved, nothing lost
     service.act("test:2", f"gcamp:{gid}:y")
     view = service.act("test:2", "guild")
-    assert "garm" in ids(view) and any("⚔️ Armería: 1/30" in line for line in view.body)
-    service.act("test:2", "garm")
+    assert "garm" in ids(view) and not any("Armería" in line for line in view.body)   # D-302: the count is on its screen
+    assert "🗃️ 1/30 piezas" in service.act("test:2", "garm").body
     assert "Tomaste" in service.text("test:2", "/t1").notice and service._load("test:2").backpack["espada_2"] == 1
     make_hero(service, "test:3", "Cora")                                         # a lone guild that dissolves
     new_gremio(service, "test:3", "Osos Pardos")

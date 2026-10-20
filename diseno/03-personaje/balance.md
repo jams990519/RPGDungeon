@@ -1168,6 +1168,34 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (20-oct): el chat del gremio (0.40, D-302)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `gremio.messages_kept` | 5 | 50 mensajes guardados |
+| `gremio.chat_hours` (nuevo) | — | 24: el 📢 Chat muestra los del último día |
+| `gremio.chat_shown` (nuevo) | — | 20 como mucho |
+| `gremio.chat_max_chars` (nuevo) | — | 3.500 letras (para que entre en un mensaje de Telegram) |
+
+### Octubre de 2026 (20-oct): más madera (0.40, D-300)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `resources.wood.forest` (nuevo) | — | bosque, bosque oscuro y selva: siempre con madera (Claude, sobre el pedido del dueño) |
+| `resources.wood.forest_min` (nuevo) | — | 0,7: riqueza mínima de la madera en esos terrenos |
+| `resources.wood.threshold` (nuevo) | — | 0,62 (igual al general): fuera del bosque, la madera entra donde ya era fuerte pero el tope de 3 la dejaba afuera |
+| `stock.regen_mult.madera` (nuevo) | ×1 (1 por hora por zona) | ×2 (unas 2 por hora por zona); se suma al ⛲ Pozo |
+
+**Qué cambia al jugar.** Zonas con madera, medido en 73 × 73 zonas con 3 semillas:
+
+- **Todo el mapa:** del 39-47 % al 55-63 %.
+- **En los bosques:** del 40 % al 100 %.
+- **Fuera de ellos:** sube unos 3 puntos.
+
+Desde casi todas las fogatas hay madera a 1 zona. Solo se suma madera, sin quitar ningún recurso ni mover nodos. Lo que cambia es el orden en que se descubren: la madera va justo después de los recursos de base.
+
+**Lo que queda por mirar:** si alcanza para las obras; si hace falta un botón 🪓 Talar (P-238).
+
 ### Octubre de 2026 (19-oct): el buscador de recursos (0.39.1, D-296, confirmada)
 
 | Número | Antes | Ahora |

@@ -73,7 +73,7 @@ guides_page:
       🪓 Gather (in 🧭 Explore) collects the resources you've already discovered in your zone.
       ⏱️ Each round takes {gather_min} min and {gather_energy} ⚡, and gives {gather_low} to {gather_high} units (more in faraway zones).
       🔢 You choose how many rounds in a row ({batches} or All) and I'll let you know when it's done.
-      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour; once depleted, it gives nothing.
+      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour (🪵 wood, {wood_regen}%); once depleted, it gives nothing.
       ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
       🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
       🏕️ No fights show up inside a camp's territory, and in yours you gather {own_bonus}% more.
@@ -138,8 +138,8 @@ guides_page:
       🛡️ Open it from the bottom menu or with /guild. Creating one costs {gremio_cost}, and {gremio_cap} members fit before the camp.
       🔎 Find a guild: tap its code (/g1) and ask to join; the leader or an officer accepts.
       ✉️ To invite someone: /inv_ and their player code (everyone sees theirs in 👤 Hero).
-      💬 Whatever you type in the game chat reaches your whole guild.
-      💰 Fund (with a camp, 💰 Deposit): add materials from wherever you are, using their code (/f02).
+      💬 Whatever you type in the game chat reaches your whole guild; the last day's messages are in 📢 Chat.
+      💰 Fund (with a camp, 💰 Camp funds) → 💰 Deposit: add materials from wherever you are, using their code (/f02).
       ⚔️ Armory: leave gear with /a1 and take it with /t1.
       🗺️ What one member explores, the whole guild knows (the experience goes to whoever explores). If you leave, you keep what's yours.
       ⏳ When the camp is full, the founder or a 🤝 helper can add you to the guild to wait for a spot (up to {waiting_max}).
@@ -153,7 +153,7 @@ guides_page:
       ▶️ The founder or a 🤝 helper (1 per {helpers_per} members) activates a work; everyone contributes with 🤲, or from afar with 💰 Deposit.
       📈 Each new work costs {growth_pct}% more for every work already built.
       🏗️ Once its materials are complete, it gets built: {work_minutes} min per level with {work_members} members in the territory (faster with more).
-      ⬆️ Expand camp (🏰 Manage) adds one zone to the territory; there you gather {own_bonus}% more.
+      ⬆️ Expand camp (🏰 Manage, where ℹ️ Info is too) adds one zone to the territory; there you gather {own_bonus}% more.
       🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight.
   dungeons:
     title: "🕳️ Dungeons and enemies"

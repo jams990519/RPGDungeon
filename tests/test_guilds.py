@@ -89,18 +89,19 @@ def test_founder_creates_the_guild_at_the_camp(service):
     place(service, "test:2", 6, 0)
     view = service.act("test:1", "claro")
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "claro"]
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
     screen = service.act("test:1", "guild")
-    # D-291 (0.39): the guild keeps its tools after founding (📢 💰 ⚔️ 🗺️), then the D-97 ones
-    tools = ["gmsg", "gfund", "garm", "gzones"]
+    # D-291 (0.39): the guild keeps its tools after founding; D-302 (0.39.4): 👥 Miembros, 💰 Fondos and 📢 Chat are buttons
+    tools = ["gmembers", "gfunds", "gchat", "garm", "gzones"]
     assert screen.kind == "guild" and ids(screen) == tools + ["guildnew", "rename", "campmgmt"]
-    assert any(line.startswith("/m1 👑 Lyra") and "🟢 en línea" in line for line in screen.body)
+    assert not any(line.startswith("/m") for line in screen.body)           # the members live in 👥 Miembros
+    assert any(line.startswith("/m1 👑 Lyra") and "🟢 en línea" in line for line in service.act("test:1", "gmembers").body)
     member = service.act("test:2", "guild")                       # a member sees it, but cannot create it
     assert ids(member) == tools + ["leave", "campmgmt"]
     assert "fundador" in service.act("test:2", "guildnew").notice
     place(service, "test:1", 7, 0, backpack={})                    # the founder away from the camp: only looks
     away = service.act("test:1", "guild")
-    assert ids(away) == tools + ["home"]                            # 📢 💰 ⚔️ 🗺️ from anywhere
+    assert ids(away) == tools + ["home"]                            # 👥 💰 📢 ⚔️ 🔎 from anywhere
     assert service.act("test:1", "guildnew").kind == "guild" and service.store.get("guild", "6:0") is None
     place(service, "test:1", 6, 0)
     set_gold(service, "test:1", 10)                               # the fee: 50 bronze
@@ -115,8 +116,8 @@ def test_founder_creates_the_guild_at_the_camp(service):
     assert service._load("test:1").gold == 100 - service.content.balance["guild"]["found_coins"]
     news = [v for acc, v in service.tick() if acc == "test:2"]
     assert news and news[0].kind == "guild_news" and "Lobos Grises" in news[0].body[0]
-    camp_view = service.act("test:2", "claro")
-    assert any("Lobos Grises" in line for line in camp_view.body)  # the camp screen names its guild
+    camp_view = service.act("test:2", "campinfo")                  # D-302: ℹ️ Información (from 🏰 Gestionar)
+    assert any("Lobos Grises" in line for line in camp_view.body)  # the camp's info names its guild
     assert service.act("test:1", "guildnew").kind == "guild"      # one guild per camp
     assert service.store.get("guild", "6:0")["name"] == "Lobos Grises"
 
@@ -170,7 +171,7 @@ def test_members_cap_follows_the_guild_level(service):
     asks = [v for acc, v in service.tick() if acc == "test:1" and v.kind == "camp_join"]
     service.act("test:1", asks[0].actions[0].id)
     assert "test:6" in service.store.get("camp", "6:0")["members"]
-    assert any("6 de 6" in line for line in service.act("test:1", "claro").body)
+    assert any("6 de 6" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
 
 
 def test_creating_a_guild_never_kicks_anyone(service):
@@ -328,13 +329,13 @@ def test_member_lines_show_when_each_one_last_played(service, clock):
     join(service, "test:2")
     service.act("test:2", "hero")                                  # Bram presses a button now
     clock.advance(2 * HOUR)
-    view = service.act("test:1", "guild")
+    view = service.act("test:1", "gmembers")                       # D-302: the members live in 👥 Miembros
     # D-291 (0.39): the same member lines as the guild had before founding: code, 👑, online or when they last played
     lines = [line for line in view.body if line.startswith("/m")]
     assert lines[0].startswith("/m1 👑 Lyra") and "🟢 en línea" in lines[0]
     assert "Bram" in lines[1] and "⚪ activo hace 2 h" in lines[1]
     clock.advance(3 * 24 * HOUR)
-    assert any("Bram" in line and "hace 3 días" in line for line in service.act("test:1", "guild").body)
+    assert any("Bram" in line and "hace 3 días" in line for line in service.act("test:1", "gmembers").body)
 
 
 def test_gremio_command_and_no_camp(service):

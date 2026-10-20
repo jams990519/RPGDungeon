@@ -11,7 +11,7 @@ momento no va a recibir los bonos del campamento. Pero como está en el gremio, 
    (🏕️ Unir al campamento), nunca solo;
 4. mientras espera tiene todo lo del gremio (💰 depositar, 📢 chat de ida y vuelta, ⚔️ armería, 🗺️ zonas) y nada del campamento
    (servicios, estaciones, territorio, cupo); no funda ni entra a otro gremio, y puede salir del gremio;
-5. 🛡️ Gremio lo muestra en su bloque "⏳ Esperando lugar en el campamento"; y todo se lee en inglés.
+5. 🛡️ Gremio → 👥 Miembros (D-302) lo muestra en su bloque "⏳ Esperando lugar en el campamento"; y todo se lee en inglés.
 Además, el 🛡️ Gremio se abre directo desde el centro del campamento (el dueño: "el botón de gremio no se puede ver una vez ya
 construiste el campamento… debería aparecer") y nunca pasa de 8 botones.
 Archivo: tests/test_espera_del_gremio.py · Módulo: M15 Social · Prueba: engine/service/gremio.py (_waiting_key, _guild_camp,
@@ -77,15 +77,17 @@ def test_a_full_camp_invites_into_the_guild_and_they_show_in_their_own_block(ser
     view = service.act("test:3", "cwait:6:0:y")
     camp = service.store.get("camp", KEY)
     assert camp["waiting"] == ["test:3"] and camp["members"] == ["test:1", "test:2"] and service._load("test:3").camp is None
-    assert view.kind == "guild" and "esperando lugar" in text(view) and "gwleave" in ids(view) and "gfund" in ids(view)
+    assert view.kind == "guild" and "esperando lugar" in text(view) and "gwleave" in ids(view) and "gfunds" in ids(view)
+    assert "gfund" in ids(service.act("test:3", "gfunds"))                   # D-302: 💰 Depositar inside 💰 Fondos
     told = pushes(service, "test:1", "camp_answer")
     assert told and "espera lugar" in told[0].body[0]
-    guild = service.act("test:1", "guild")
+    guild = service.act("test:1", "gmembers")                                # D-302: the members live in 👥 Miembros
     body = text(guild)
     assert "⏳ Esperando lugar en el campamento (1/10):" in body
     assert any(line.startswith("/m3 ⏳ Cora") for line in guild.body)
     card = service.text("test:1", "/m3")
     assert card.kind == "gremio_member" and "lleno" in text(card) and not any(a.startswith("cwjoin:") for a in ids(card))
+    assert ids(card) == ["gmembers"]                                         # ↩️ back to 👥 Miembros
     assert "ya se respondió" in service.act("test:3", "cwait:6:0:y").notice
 
 
@@ -145,14 +147,14 @@ def test_when_there_is_room_they_are_told_and_a_founder_or_helper_joins_them(ser
     assert service.store.get("camp", KEY)["waiting"] == ["test:3"]           # never automatic
     told = [v for acc, v in service.tick() if acc == "test:1"]
     assert not told                                                          # the notice was already delivered
-    assert "Hay 2 lugares" in text(service.act("test:1", "guild"))
-    service.act("test:2", "guild")
+    assert "Hay 2 lugares" in text(service.act("test:1", "gmembers"))
+    service.act("test:2", "gmembers")
     assert "cwjoin" not in " ".join(ids(service.text("test:2", "/m3")))      # a plain member cannot
     assert "fundador o un 🤝 ayudante" in service.act("test:2", "cwjoin:test:3").notice
     camp = service.store.get("camp", KEY)
     camp["helpers"] = ["test:2"]                                             # a helper can
     service.store.put("camp", KEY, camp)
-    service.act("test:2", "guild")
+    service.act("test:2", "gmembers")
     card = service.text("test:2", "/m3")
     assert "cwjoin:test:3" in ids(card)
     view = service.act("test:2", "cwjoin:test:3")
@@ -192,7 +194,7 @@ def test_the_guild_is_on_the_camp_hub_and_the_hub_keeps_eight(service, monkeypat
     full_camp(service)
     view = service.act("test:1", "claro")
     assert "guild" in ids(view) and len(view.actions) <= HUB_BUTTONS
-    assert "gfund" in ids(service.act("test:1", "guild"))
+    assert "gfunds" in ids(service.act("test:1", "guild"))                   # D-302: 💰 Fondos (💰 Depositar inside)
     from test_camp_upgrades import build
     from test_guilds import set_level
     set_level(service, 7)
@@ -216,6 +218,7 @@ def test_waiting_reads_well_in_english(service):
     assert invite and invite[0].title == "✉️ Guild invitation"
     view = service.act("test:3", "cwait:6:0:y")
     assert "waiting for room" in text(view) and "[" not in text(view)
-    assert "[" not in text(service.act("test:3", "gfund")) and "[" not in text(service.act("test:3", "garm"))
+    for action in ("gfund", "garm", "gmembers", "gfunds", "gchat"):
+        assert "[" not in text(service.act("test:3", action)), action
     assert not service.texts.fallbacks.get("en"), sorted(service.texts.fallbacks.get("en", []))[:20]
     assert not service.texts.missing

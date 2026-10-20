@@ -360,8 +360,8 @@ Si cambias esto, revisa:
       (experiencia y beneficio del Explorador), _amount_view, _start_batch y _continue_batch (explorar y recolectar
       bloqueados), _batch_summary (línea ⚒️ Oficios al explorar), _zone_view (línea y marca 👹 en las rutas), _explore_menu
       (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
-      un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (👹, líneas y 👹 Ir al más cercano),
-      _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
+      un campamento visible), _places_kind_view (8 lugares de cada tipo desde el rango 10; D-301), _map_view (👹, líneas
+      y 👹 Ir al más cercano), _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
       (marca del jefe), _prof_gain (umbrales del mapa y el título), _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
     - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
@@ -393,7 +393,7 @@ Si cambias esto, revisa:
       🔬 "research" = _research → 📚 Conocimiento o un aviso; 🛠️ = "oficios"; 🧑‍🏫 "trainer" = _trainer_view; 🛒 "shop" /
       🏘️ "upsvc"; 🛏️ "inn"; 📜 "board"; 🏰 "campmgmt" = _camp_manage_view con _camp_member_actions; ❓ "dudas"); 👤 Héroe
       (_hero_view: ficha con tiempos, _hero_trades_line, _hp_refill_seconds; botones bag, talents, health, stats, bar,
-      oficios, journal, origin). ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
+      oficios, journal, origin). ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información (D-302) y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
       🍲 Cocinar y ⚒️ Oficios (_prof_back), al centro. ❓ Dudas (sección "❓ Dudas": _faq_entries, _faq_search, _faq_values,
       _dudas_view, _dudas_topic_view, _duda_view, _dudas_search_view, _dudas_typed; botones DUDAS_ACTIONS; /dudas, /d07 y el
       texto suelto con "dudas_open"): content/faq.yaml (códigos estables d01...) y content/locales/es_dudas.yaml; sus
@@ -455,6 +455,28 @@ Si cambias esto, revisa:
       en engine/service/story.py, el 📔 Diario y 🎯 Misiones (sin las misiones de nivel más alto; se avisan al llegar a su
       nivel: _story_level_lines). Lo que el jugador pide a mano (un código o un botón viejo) recibe un aviso corto. Textos
       que quedan sin uso: marcados "# [ES] sin uso desde la 0.39 (D-287)". Pruebas: tests/test_ocultar_lo_bloqueado.py
+    - 🪵 Más madera (D-300, pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo
+      imposible encontrarlo" y "lento para las construcciones, pero tampoco tan lento"; números de Claude, provisionales).
+      Tocan: _zone_land (devuelve tres partes: base, madera sumada y propios; engine/world/resources.py wood_resource),
+      _zone_resources (la madera va justo después de los de base), _node_main (los nodos no miran la madera sumada: no se
+      movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values ({wood_regen} de la guía de recolectar).
+      Números: balance.yaml resources.wood y stock.regen_mult. Ninguna zona pierde un recurso. Pruebas: tests/test_resources.py
+    - 📒 Lugares por tipo (D-301, pedido del dueño, 20-oct-2026: "el primer botón va a ser el del campamento... luego
+      Mazmorras... luego Fogatas, y así sucesivamente"). Tocan: PLACE_KINDS (orden de los botones), HUB_KINDS ("places",
+      hasta 8 botones), _important_places (cada lugar con su tipo; tu campamento siempre), _place_groups, _places_view (el
+      menú: 🏕️ tu campamento directo a "¿Viajar?" y un botón por tipo), _places_kind_view ("plc:<tipo>": la lista con sus
+      códigos /irN desde 1), _place_confirm_view (↩️ No, volver a la lista del tipo) y _place_code (una lista guardada antes
+      sigue sirviendo). Textos: places.* de content/locales/es.yaml y en.yaml. Pruebas: tests/test_lugares.py
+    - 🗂️ Submenús del campamento y del gremio (D-302, 0.39.4, pedido del dueño del 20-oct-2026: menos texto en cada pantalla,
+      "prefiero que haya submenús con más información para que sea más fácil"): el centro de tu campamento (_camp_here_view)
+      muestra solo su nombre, lo que puedes hacer y lo urgente (la oleada en curso o el aviso de la 🗼 Torre de vigía, con
+      _raid_lines(urgent=True), y 🛡️ Defender); sigue leyendo la 🌾 despensa en cada visita (consumo perezoso, D-93); lo de arriba pasó a
+      🏰 Gestionar → ℹ️ Información ("campinfo", _camp_info_view con _camp_info_lines; _camp_summary_lines es lo que ven
+      también los visitantes). 🛡️ Gremio (_guild_view, y _gremio_view antes de fundar) deja arriba lo del gremio y pasa a
+      botones 👥 Miembros, 💰 Fondos y 📢 Chat ("gmembers", "gfunds", "gchat" en engine/service/gremio.py GREMIO_ACTIONS;
+      los botones viejos "gmsg", "gfund" y "creqs" siguen). Números: balance.yaml gremio.messages_kept (50), chat_hours,
+      chat_shown y chat_max_chars. Textos: content/locales/es_submenus.yaml y en_submenus.yaml (campinfo.*, guildmenu.*).
+      Pruebas: tests/test_submenus_campamento_gremio.py
 """
 
 from __future__ import annotations
@@ -528,7 +550,7 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import terrain_resources, water_resources, zone_resources
+from engine.world.resources import terrain_resources, water_resources, wood_resource, zone_resources
 from engine.world import nodes as node_rules            # D-181, D-184: resource nodes
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
@@ -593,7 +615,8 @@ SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 # at once, up to HUB_BUTTONS, 2 per row; every other screen keeps the 4 of D-75 (the combat bar, 6; amount pickers, D-189).
 HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio",    # D-269: the guild hub too
              "guild", "camp_services", "camp_type",   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
-             "guides_category")                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
+             "guides_category",                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
+             "places")                                # D-301: 📒 Lugares (your camp, up to 5 kinds and ↩️ Volver)
 HUB_BUTTONS = 8
 # D-297 (20-oct-2026, the owner asked for one extra button on each): ❓ Dudas shows 📚 Guías on top of its 7 topics and
 # ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
@@ -612,6 +635,11 @@ COOK_PROFESSION = "cocina"
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
 PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
+# D-301 (owner, 20-oct-2026): the kinds of 📒 Lugares, in button order: your own camp first (straight to "Travel?"), then
+# 🕳️ dungeons, 🔥 bonfires, your 🛡️ guild's places, other players' 🏕️ camps and the 👑 lair. Each kind's list is "plc:<kind>".
+# [ES] D-301: el orden de los botones de 📒 Lugares (pedido del dueño: "el primer botón va a ser el del campamento... luego
+# Mazmorras... luego Fogatas, y así sucesivamente"). Son ids estables (van en los botones "plc:<tipo>"): solo se agregan.
+PLACE_KINDS = ("camp", "dng", "fire", "guild", "camps", "lair")
 WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
@@ -1891,6 +1919,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._trainer_view(hero)
         if action_id == "campmgmt":                     # D-192: 🏰 Gestionar (your own camp)
             return self._camp_manage_view(hero)
+        if action_id == "campinfo":                     # D-302: ℹ️ Información del campamento (from 🏰 Gestionar)
+            return self._camp_info_view(hero)
         if action_id == "research":                     # D-192: 🔬 Investigar = your camp's 📚 Conocimiento (explains where if not)
             return self._research(hero)
         if action_id == "cook":                         # D-192: 🍲 Cocinar = the station of the 🍲 Cocina ("est:cook")
@@ -1996,6 +2026,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
+        if action_id.startswith("plc:"):                # D-301: one kind of 📒 Lugares (Mazmorras, Fogatas...)
+            return self._places_kind_view(hero, action_id[4:])
         if action_id.startswith("goask:"):              # D-223: 📒 Lugares asks before travelling
             try:
                 gx, gy = (int(v) for v in action_id[6:].split(":"))
@@ -2374,16 +2406,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
         return count
 
-    def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float]]:
-        """The zone's land resources in two parts: (base, terrain's own). [ES] Qué hace: los 6 de base con el bioma clásico
-        (D-185, D-187; la guarida con su bioma fijo, D-82) y los propios del terreno que se ve (D-183, con los de otro terreno
-        de D-185). La llaman: _zone_resources y _node_main (el nodo es de uno de estos). Si cambia, afecta: los recursos y
-        los nodos de todo el mapa."""
+    def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
+        """The zone's land resources in three parts: (base, added wood, terrain's own). [ES] Qué hace: los 6 de base con el
+        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 suma (wood_resource: todo
+        terreno de bosque y un umbral propio más bajo; {} si ya era de base o no toca) y los propios del terreno que se ve
+        (D-183, con los de otro terreno de D-185). Los propios se sortean con los de base SIN la madera sumada, así D-300 no
+        sacó ninguno. La llaman: _zone_resources y _node_main (el nodo es de un recurso de base o propio, nunca de la madera
+        sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
         terrain = self._zone(x, y).biome
         biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
         base = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
+        wood = wood_resource(self.world_seed, x, y, biome, terrain, base, self.content.balance, self.content.biomes)
         own = terrain_resources(self.world_seed, x, y, terrain, base, self.content.balance, self.content.biomes)
-        return base, own
+        return base, wood, own
 
     def _zone_resources(self, x: int, y: int) -> dict[str, float]:
         """The zone's land resources: the base ones (D-87) and its terrain's own ones (D-180), plus 🐟 fish where it has water
@@ -2397,21 +2432,30 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-185, D-186: los 6 de base siguen el bioma clásico (mapgen.classic_biome), no el terreno que dibuja el mapa: así el
         tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. Los propios y el agua
         siguen al terreno que se ve (un 🟪 pantano siempre tiene agua); los propios, a veces, salen del catálogo de otro terreno
-        (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82)."""
-        base, own = self._zone_land(x, y)
-        found = {**base, **own}
+        (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82).
+        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios."""
+        base, wood, own = self._zone_land(x, y)
+        found = {**base, **wood, **own}
         found.update(water_resources(self.world_seed, x, y, self._zone(x, y).biome, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
-        """How much is left of each resource in a zone (1.0 = full), regenerating with time (faster with a camp's ⛲ Pozo, D-101)."""
+        """How much is left of each resource in a zone (1.0 = full), regenerating with time (faster with a camp's ⛲ Pozo, D-101).
+
+        [ES] D-300 (pedido del dueño: "tiene que ser lento para las construcciones, pero tampoco tan lento"): cada recurso
+        puede volver más rápido que los demás con stock.regen_mult (la 🪵 madera ×2: unas 2 unidades por hora en cada zona en
+        vez de 1). Se multiplica con el ⛲ Pozo. La llaman: recolectar, 📍 Zona, 🧭 Explorar y 🔎 Buscar recursos.
+        Si cambia, afecta: cuánto se puede recolectar de cada recurso por hora en una zona.
+        """
         cfg = self.content.balance["stock"]
         data = self.store.get("stock", f"{x}:{y}") or {}
         hours = (self.clock.now() - data.get("at", self.clock.now())) / (3600 * self.time_scale)
         levels = data.get("levels", {})
         ref = self.store.get("territory", f"{x}:{y}") if levels else None
         regen = cfg["regen_per_hour"] * (1 + (self._effect_at(ref["camp"], "stock_regen") if ref else 0.0))
-        return {res: min(1.0, levels.get(res, 1.0) + hours * regen) for res in self._zone_resources(x, y)}
+        mult = cfg.get("regen_mult") or {}               # D-300: wood comes back faster
+        return {res: min(1.0, levels.get(res, 1.0) + hours * regen * float(mult.get(res, 1.0)))
+                for res in self._zone_resources(x, y)}
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
@@ -2922,7 +2966,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         cambian la posada por 🏘️ Servicios (lo que usan y cuántas obras activas hay, D-288) y suman 🏰 Gestionar; lo que todavía
         no hay pero se puede hacer en este nivel (🔥 Fogón, estaciones) se explica en la misma línea. D-287 (0.39, pedido del
         dueño: "si hay algo que no está para tu nivel, no lo vas a mostrar"): 🔬 Investigar solo sale con la 📚 Biblioteca
-        construida, y la línea de 🏰 Gestionar nombra la 🌾 despensa solo cuando ya la tienen.
+        construida, y la línea de 🏰 Gestionar nombra la 🌾 despensa solo cuando ya la tienen. D-302 (0.39.4): en tu campamento
+        estas líneas son casi todo lo que se ve (lo de arriba pasó a ℹ️ Información, que nombra la línea de 🏰 Gestionar) y la
+        de 🛡️ Gremio nombra sus submenús (👥 💰 📢 ⚔️).
         La llaman: _claro_view y _camp_here_view (miembros). Si cambia, afecta: el texto de los dos centros.
         """
         t = self.texts
@@ -3523,58 +3569,52 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: muestra el campamento de la zona. D-192: para un miembro es el centro de 🏕️ Campamento (como el del Claro,
-        hasta 8 botones de 2 en 2): arriba lo de su campamento (miembros, nivel, mejoras, 🛡️ Defensa, despensa, beneficios,
-        oleadas) y después una línea por opción (_camp_hub_lines) con sus botones (_camp_hub_actions): 🍲 Cocinar,
+        hasta 8 botones de 2 en 2). D-302 (0.39.4, pedido del dueño del 20-oct-2026: "vas a separarlo en dos partes. Lo que
+        puedes hacer en el campamento, eso es lo que se va a mostrar. Y dentro del menú, vas a poner un apartado que explique
+        la parte de arriba"): arriba solo el nombre del campamento y lo urgente: la oleada en curso (o el aviso de la 🗼 Torre
+        de vigía) y 🛡️ Defender; lo de antes (fundador, coordenadas, etapa, nivel y zonas, miembros, gremio, costo de agrandar, mejoras y 🛡️ Defensa,
+        daño, despensa, beneficios y la próxima oleada) pasó a 🏰 Gestionar → ℹ️ Información (_camp_info_view). Después,
+        una línea por opción (_camp_hub_lines) con sus botones (_camp_hub_actions): 🍲 Cocinar,
         🔬 Investigar, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🏘️ Servicios, 📜 Tablón, 🏰 Gestionar y ❓ Dudas (🛡️ Defender primero
         durante una oleada). Lo de antes (⬆️ Agrandar, 🌾 Aportar comida, 🛡️ Gremio y 🔨 Mejoras) pasó a 🏰 Gestionar
         (_camp_manage_view). Los visitantes ven las mejoras y la 🛡️ Defensa, 🙋 Pedir unirme, ❓ Dudas y ↩️ Volver; donde no
         hay campamento, lo que pide fundarlo, 🛡️ Gremio (D-279, 0.36.1: el gremio se arma desde cualquier lugar), ❓ Dudas y
         ↩️ Volver (4 como máximo).
-        D-115: a los miembros, las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de campamento de los oficios.
+        D-115: las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de campamento de los oficios (desde D-302, en
+        ℹ️ Información). Los visitantes ven lo de _camp_summary_lines.
         La llaman: el botón 🏕️ Campamento fuera del Claro y casi todas las acciones de campamento.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_camp_upgrades.py,
-        tests/test_raids.py y tests/test_menus_y_dudas.py (orden de los botones).
+        tests/test_raids.py, tests/test_menus_y_dudas.py (orden de los botones) y tests/test_submenus_campamento_gremio.py.
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
         key = f"{zone.x}:{zone.y}"
         camp = self.store.get("camp", key)
         if camp:
-            level = camp.get("level", 1)
-            guild = self.store.get("guild", key)
-            body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
-                    t.t("camps.stage_line", stage=self._camp_stage(level)),
-                    t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]]))),
-                    t.t("guild.members_cap" if guild else "camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
-            if guild:
-                body.append(t.t("guild.camp_line_visitor", name=guild["name"], level=guild["level"]))
             if hero.id in camp["members"]:
-                body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
-                         t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
-                damage = self._camp_damage(camp)          # D-115: 🛠️ what the last raids damaged, until it is repaired
-                if damage:
-                    body.append(t.t("camp_prof.damage_line", n=damage))
-                pantry = self._camp_pantry(camp)          # D-93: from level 3 (aldea), a small pantry
-                if pantry:
-                    body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
-                body += self._camp_perk_lines(camp, hero)  # D-115: 🏰 the camp perks and who gives them
-                body += self._raid_lines(camp)            # D-99: the next raid, or the one going on
-                # D-192: the hub; ⬆️ Agrandar, 🌾 Aportar comida, 🛡️ Gremio and 🔨 Mejoras live in 🏰 Gestionar
-                body += ["", t.t("hub.intro_camp")] + ([t.t("hub.defend")] if self._defend_action(camp, hero) else [])
+                # D-302 (20-oct-2026, the owner: "lo que puedes hacer en el campamento, eso es lo que se va a mostrar"): the
+                # camp's name and what you can do; the info block lives in 🏰 Gestionar → ℹ️ Información (_camp_info_view).
+                # Only what is urgent stays: a raid going on or 🗼 coming, and 🛡️ Defender. ⬆️, 🌾, 🛡️ and 🔨: 🏰 Gestionar (D-192)
+                body = [t.t("campinfo.hub_name", name=camp["name"]), "", t.t("hub.intro_camp")]
+                self._camp_pantry(camp)                  # D-93: the lazy pantry settles on each visit, as before (shown in ℹ️)
+                body += self._raid_lines(camp, urgent=True)   # D-99: a raid going on or 🗼 coming (the next one: in ℹ️)
+                if self._defend_action(camp, hero):
+                    body.append(t.t("hub.defend"))
                 body += self._camp_hub_lines(hero, camp)
-                actions = self._camp_hub_actions(hero, camp)
-            else:
-                rel = camp["relations"].get(hero.id)
-                body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t(f"camps.relation.{rel or 'unknown'}")]
-                actions = []
-                if hero.id in (camp.get("waiting") or []):   # D-294: in its guild, waiting for room (no 🙋 Pedir unirme)
-                    body.append(t.t("waiting.you", camp=camp["name"]))
-                    actions.append(Action(id="guild", label=t.t("gremio.button")))
-                elif hero.id in camp.get("requests", []):
-                    body.append(t.t("camps.join_waiting"))
-                elif hero.camp is None and rel != "hostile":
-                    actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
-                actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
+                return View(kind="player_camp", title=t.t("camps.title"), body=body,
+                            actions=self._camp_hub_actions(hero, camp), notice=notice)
+            rel = camp["relations"].get(hero.id)         # a visitor: what anyone sees, the 🛡️ Defensa and the relation
+            body = self._camp_summary_lines(camp)
+            body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t(f"camps.relation.{rel or 'unknown'}")]
+            actions = []
+            if hero.id in (camp.get("waiting") or []):   # D-294: in its guild, waiting for room (no 🙋 Pedir unirme)
+                body.append(t.t("waiting.you", camp=camp["name"]))
+                actions.append(Action(id="guild", label=t.t("gremio.button")))
+            elif hero.id in camp.get("requests", []):
+                body.append(t.t("camps.join_waiting"))
+            elif hero.camp is None and rel != "hostile":
+                actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
+            actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
             return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         building = self._founding_at(zone.x, zone.y)     # D-269: a guild is founding here: its progress, and ❌ for its leader
         if building:
@@ -3605,9 +3645,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: la segunda parte del centro de tu campamento (D-192: los 8 lugares del centro van para cocinar, investigar,
         fabricar y lo demás de D-191): una línea por opción con su costo (agrandar), lo construido y la 🛡️ Defensa, la
         despensa (D-287: solo cuando ya la tienen, desde el nivel 3) y el gremio, y sus botones de _camp_member_actions (⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
-        3, 🛡️ Gremio y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 6 como mucho, de 2 en 2 (es parte del centro, HUB_KINDS).
+        3, 🛡️ Gremio, 🔎 Buscar recursos, ℹ️ Información y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 8 como mucho, de 2 en 2
+        (es parte del centro, HUB_KINDS). D-302 (0.39.4): la última línea presenta ℹ️ Información (_camp_info_view), adonde se
+        mudó lo que el centro mostraba arriba.
         Solo para miembros, estando en el campamento; en otro lado explica por qué (_upgrades_elsewhere).
-        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras y 🛡️ Gremio.
+        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información y 🛡️ Gremio.
         Si cambia, afecta: tests/test_menus_y_dudas.py y los que miran esos botones (test_camps, test_pantry, test_guilds,
         test_raids, test_camp_upgrades).
         """
@@ -3627,11 +3669,72 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if pantry:                                      # D-287 (0.39): before level 3 the pantry is not mentioned at all
             body.append(t.t("manage.pantry"))
         body.append(t.t("manage.guild"))
+        body.append(t.t("campinfo.manage_line"))        # D-302: ℹ️ what the camp hub showed on top before
         if pantry:
             body += [""] + self._pantry_lines(pantry)
         body += self._raid_lines(camp)
         actions = self._camp_member_actions(camp, hero, pantry)
         return View(kind="camp_manage", title=t.t("manage.title", name=camp["name"]), body=body, actions=actions, notice=notice)
+
+    def _camp_summary_lines(self, camp: dict[str, Any]) -> list[str]:
+        """What anyone sees of a camp: name, founder, coordinates, stage, level and zones, members and cap, its guild.
+
+        [ES] Qué hace: las primeras líneas de un campamento (lo mismo para miembros y visitantes). La llaman: _camp_here_view
+        (visitantes) y _camp_info_lines (ℹ️ Información, D-302). Si cambia, afecta: lo que ve quien visita un campamento y la
+        pantalla ℹ️ Información (tests/test_camps.py, tests/test_backpack.py, tests/test_submenus_campamento_gremio.py).
+        """
+        t = self.texts
+        x, y = camp["x"], camp["y"]
+        level = camp.get("level", 1)
+        guild = self.store.get("guild", f"{x}:{y}")
+        lines = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=x, y=y, n=len(camp["members"])),
+                 t.t("camps.stage_line", stage=self._camp_stage(level)),
+                 t.t("camps.size", level=level, zones=len(camp.get("zones", [[x, y]]))),
+                 t.t("guild.members_cap" if guild else "camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
+        if guild:
+            lines.append(t.t("guild.camp_line_visitor", name=guild["name"], level=guild["level"]))
+        return lines
+
+    def _camp_info_lines(self, camp: dict[str, Any], hero: Hero) -> list[str]:
+        """The member's info block of a camp (D-302): the summary, the grow cost, upgrades and 🛡️, damage, pantry, perks, raids.
+
+        [ES] Qué hace: lo que antes iba arriba del centro de tu campamento (D-302 lo mudó a ℹ️ Información): el resumen
+        (_camp_summary_lines), "Eres parte…", ⬆️ el costo de agrandar, 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
+        dañadas (D-115), la 🌾 despensa (D-93, desde el nivel 3) y la hambruna, los 🏰 beneficios de los oficios (D-115) y la
+        👁 próxima oleada o la que está en curso (D-99). La llama: _camp_info_view. Si cambia, afecta: esa pantalla
+        (tests/test_submenus_campamento_gremio.py, tests/test_pantry.py, tests/test_oficios_campamento.py, tests/test_raids.py).
+        """
+        t = self.texts
+        level = camp.get("level", 1)
+        lines = self._camp_summary_lines(camp)
+        lines += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
+                  t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
+        damage = self._camp_damage(camp)                # D-115: 🛠️ what the last raids damaged, until it is repaired
+        if damage:
+            lines.append(t.t("camp_prof.damage_line", n=damage))
+        pantry = self._camp_pantry(camp)                # D-93: from level 3 (aldea), a small pantry
+        if pantry:
+            lines += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
+        lines += self._camp_perk_lines(camp, hero)      # D-115: 🏰 the camp perks and who gives them
+        lines += self._raid_lines(camp)                 # D-99: the next raid, or the one going on
+        return lines
+
+    def _camp_info_view(self, hero: Hero) -> View:
+        """ℹ️ Información del campamento (D-302): the block the camp hub showed on top, from 🏰 Gestionar; ↩️ back there.
+
+        [ES] Qué hace: la pantalla ℹ️ Información (pedido del dueño del 20-oct-2026: "dentro del menú, vas a poner un apartado
+        que explique la parte de arriba"). Solo para miembros, estando en su campamento (como 🏰 Gestionar; en otro lugar,
+        _upgrades_elsewhere). Un botón: ↩️ Volver a 🏰 Gestionar. La llama: el botón ℹ️ Información ("campinfo") de
+        🏰 Gestionar (_camp_member_actions). Si cambia, afecta: tests/test_submenus_campamento_gremio.py y el recorrido de
+        botones (tests/test_buttons.py).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        t = self.texts
+        return View(kind="camp_info", title=t.t("campinfo.title"), body=self._camp_info_lines(camp, hero),
+                    actions=[Action(id="campmgmt", label=t.t("menu.back"))])
 
     def _ask_camp_name(self, hero: Hero, mode: str) -> View:
         """Founding or renaming a camp: the next text the player writes is its name (D-84)."""
@@ -4341,26 +4444,30 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return ([founder] if founder in camp["members"] else []) + rest
 
     def _guild_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🛡️ Gremio of a camp: the D-97 guild (or how to create it) and the tools it had before founding (D-291).
+        """🛡️ Gremio of a camp: the D-97 guild on top (or how to create it) and one button per part (D-291, D-302).
 
         [ES]
-        Qué hace: el centro del gremio de tu campamento. Arriba el gremio D-97 (nombre, nivel y lo que pide para subir, con barras)
-        o, en un campamento de antes sin gremio, qué es y cuánto cuesta (D-287: la pista del castillo solo en el nivel de antes del
-        castillo). D-291 (0.39, pedido del dueño: "una vez se crea el gremio no se puede perder el botón de depositar… esas
-        cositas deben mantenerse"): después de fundar conserva lo que tenía el gremio antes del campamento: cada miembro con su
-        código (/m1), si está en línea, dónde está y qué hace (👑 el fundador, 🤝 los ayudantes, D-289), la línea de ayudantes,
-        el 💰 fondo del campamento, la ⚔️ Armería (D-290), los últimos 📢 mensajes (los del gremio de antes de fundar pasaron
-        aquí) y las pistas del chat y de /inv_. Botones (hasta 8, de 2 en 2, ↩️ a lo ancho; HUB_KINDS "guild"): 📢 Mensaje,
-        💰 Depositar, ⚔️ Armería, 🗺️ Zonas, 🙋 Solicitudes (fundador o ayudante, si hay), 🛡️ Crear gremio (fundador, sin gremio)
-        o ⬆️ Subir el gremio (cuando cumplen), ✏️ Renombrar (fundador) o 🚪 Salir (los demás) y ↩️ Volver. Crear, subir,
-        renombrar y salir solo estando en el campamento; lo demás desde cualquier lugar.
+        Qué hace: el centro del gremio de tu campamento. Arriba el gremio D-97 (nombre, nivel, campamento y lo que pide para
+        subir, con barras y "cuenta lo que hacen todos los miembros desde que entran") o, en un campamento de antes sin gremio,
+        qué es y cuánto cuesta (D-287: la pista del castillo solo en el nivel de antes del castillo). D-291 (0.39): después de
+        fundar conserva lo que tenía el gremio antes del campamento. D-302 (0.39.4, pedido del dueño del 20-oct-2026: "lo de
+        arriba… perfecto, eso se mantiene"; "👥 Miembros… lo vas a volver un botón"; "Fondo del campamento → un botón";
+        "Últimos mensajes → conviértelo en un botón de 📢 Chat"): el cuerpo es solo la parte de arriba y, al fundador o a un
+        🤝 ayudante, una línea corta si hay 🙋 solicitudes. Lo demás está detrás de su botón: 👥 Miembros (N/cupo) (cada
+        miembro con /m1, 🤝 ayudantes, ⏳ los que esperan lugar, 🙋 Solicitudes; engine/service/gremio.py _guild_members_view),
+        💰 Fondos del campamento (cada recurso con su código y 💰 Depositar; _guild_funds_view), 📢 Chat (los mensajes del último
+        día y 📢 Mensaje; _guild_chat_view), ⚔️ Armería (su "0/30" está en su pantalla) y 🔎 Buscar recursos. Botones (hasta 8,
+        de 2 en 2, ↩️ a lo ancho; HUB_KINDS "guild"): esos 5, 🛡️ Crear gremio (fundador, sin gremio) o ⬆️ Subir el gremio
+        (cuando cumplen), ✏️ Renombrar (fundador) o 🚪 Salir (los demás) o, esperando lugar, 🚪 Salir del gremio, y ↩️ Volver.
+        Crear, subir, renombrar y salir solo estando en el campamento; lo demás desde cualquier lugar. Los botones viejos
+        ("gmsg", "gfund", "creqs") siguen funcionando.
         D-294 (0.39): quien está en el gremio esperando lugar en el campamento también la abre (con la línea "⏳ estás esperando
-        lugar" y 🚪 Salir del gremio); todos ven el bloque "⏳ Esperando lugar en el campamento" con sus códigos (los números
-        siguen después de los miembros) y, al fundador y a los ayudantes, cuántos lugares hay para unirlos.
+        lugar" y 🚪 Salir del gremio).
         D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view).
-        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores, el atajo /gremio
-        y los ↩️ de 📢, 💰, ⚔️, 🗺️ y de la tarjeta de un miembro.
-        Si cambia, afecta: tests/test_guilds.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py y los recorridos.
+        La llaman: el botón 🛡️ Gremio del centro y de 🏰 Gestionar (D-192; su ↩️ Volver vuelve a 🏰 Gestionar), 🛡️ Gremio de
+        👥 Jugadores, el atajo /gremio y los ↩️ de 👥, 💰, 📢, ⚔️ y 🗺️.
+        Si cambia, afecta: tests/test_guilds.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py,
+        tests/test_submenus_campamento_gremio.py y los recorridos.
         """
         t = self.texts
         camp = self._guild_camp(hero)                  # D-294: a member, or a guild member waiting for room in the camp
@@ -4377,10 +4484,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         founder = camp.get("founder_id") == hero.id
         manager = self._camp_manager(camp, hero.id)
         n, cap = len(camp["members"]), self._members_cap(camp)
-        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")),            # D-291: what the guild had before founding
-                   Action(id="gfund", label=t.t("services.deposit_button")),
+        actions = [Action(id="gmembers", label=t.t("guildmenu.members_button", n=n, cap=cap)),    # D-302: 👥 Miembros
+                   Action(id="gfunds", label=t.t("guildmenu.funds_button")),     # D-302: 💰 Fondos del campamento
+                   Action(id="gchat", label=t.t("guildmenu.chat_button")),       # D-302: 📢 Chat (D-285)
                    Action(id="garm", label=t.t("armory.button")),                # D-290: ⚔️ Armería
-                   Action(id="gzones", label=t.t("gzones.button"))]              # D-282: what the guild knows of the zones
+                   Action(id="gzones", label=t.t("gzones.button"))]              # D-296: 🔎 Buscar recursos
         if guild is None:
             body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what")]
             if self._castle_needs(camp):                 # D-287: the castle hint only on the step before the castle
@@ -4408,24 +4516,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("guild.top"))
         if waiting:                                    # D-294: in the guild, waiting for room in the camp
             body[:0] = [t.t("waiting.you", camp=camp["name"]), ""]
-        body += ["", t.t("guild.members", n=n, cap=cap), self._helpers_line(camp, hero)]       # D-289: 🤝 helpers
-        members = self._camp_member_order(hero, camp)
-        body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
-        body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
-        self._codes(hero, "members", members + list(camp.get("waiting") or []))   # D-291: /m1 works after founding too
-        fund = self._upgrades(key).get("fund") or {}
-        body += ["", t.t("works.camp_fund", items=self._item_list(fund)) if fund else t.t("cfund.empty_short"),
-                 self._armory_line(key)]
-        messages = camp.get("messages") or []          # D-285: the camp's guild chat (any loose text of a member)
-        if messages:
-            body += ["", t.t("gremio.messages_title")]
-            body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
-        body += ["", t.t("gremio.chat_hint"), t.t("gremio.codes_hint")]
-        if manager and n < cap:
-            body.append(t.t("gremio.invite_hint"))       # D-280, D-289: the founder or a helper invites with /inv_<code>
         requests = camp.get("requests") or []
-        if manager and requests:                         # D-289: helpers answer the join requests too
-            actions.append(Action(id="creqs", label=t.t("gremio.requests_button", n=len(requests))))
+        if manager and requests:                       # D-289, D-302: 🙋 the requests wait in 👥 Miembros
+            body += ["", t.t("guildmenu.requests_line", n=len(requests))]
+        self._codes(hero, "members", self._camp_member_order(hero, camp) + list(camp.get("waiting") or []))   # /m1 (D-291)
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
                            else Action(id="leave", label=t.t("camps.leave_button")))
@@ -4825,8 +4919,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         self.store.put("pantry", key, data)
         return int(round(lost))
 
-    def _raid_lines(self, camp: dict[str, Any]) -> list[str]:
-        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before."""
+    def _raid_lines(self, camp: dict[str, Any], urgent: bool = False) -> list[str]:
+        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before.
+
+        [ES] Qué hace: la línea de oleadas de un campamento: la que está en curso, el aviso de la 🗼 Torre de vigía, la próxima
+        o el aviso de un nivel antes. Con urgent=True (D-302: el centro de tu campamento) solo la que está en curso o el aviso
+        de la torre; lo demás se ve en ℹ️ Información y 🏰 Gestionar. La llaman: _camp_here_view (urgent), _camp_manage_view,
+        _camp_info_lines y _grow_view. Si cambia, afecta: tests/test_raids.py."""
         t = self.texts
         cfg = self._raid_cfg()
         raid = camp.get("raid")
@@ -4840,7 +4939,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hours = self._camp_effect(camp, "warning_hours")
             if nxt is not None and hours and 0 < nxt - self.clock.now() <= self._seconds(hours * 60):
                 return [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()))]     # 🗼 Torre de vigía
+            if urgent:
+                return []
             return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else math.ceil(7 / cfg["per_week"]))]
+        if urgent:
+            return []
         if level == cfg["from_level"] - 1:
             return [t.t("raids.soon_line", level=cfg["from_level"])]
         return []
@@ -5303,7 +5406,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: arma los botones de 🏰 Gestionar (D-192; antes eran los del campamento): 🛡️ Defender primero mientras dura
         una oleada que todavía no peleaste (D-99), ⬆️ Agrandar, 🔨 Mejoras (D-101), 🌾 Aportar comida (solo con despensa,
         desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97), 🔎 Buscar recursos (D-296, pedido
-        del dueño: el buscador también en el campamento) y ↩️ Volver al centro.
+        del dueño: el buscador también en el campamento), ℹ️ Información (D-302: lo que el centro mostraba arriba) y ↩️ Volver
+        al centro: 8 como mucho (con 🛡️ Defender y la despensa), de 2 en 2.
         La llama: _camp_manage_view.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_raids.py,
         tests/test_camp_upgrades.py y tests/test_menus_y_dudas.py (orden de los botones).
@@ -5314,6 +5418,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
         actions.append(Action(id="guild", label=t.t("guild.button")))
         actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-296: 🔎 the resource finder, in the camp too
+        actions.append(Action(id="campinfo", label=t.t("campinfo.button")))  # D-302: ℹ️ what the hub showed on top before
         defend = self._defend_action(camp, hero)    # D-99: while a raid lasts, 🛡️ Defender goes first
         if defend:
             actions.insert(0, defend)
@@ -6702,6 +6807,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "explore_energy": b["energy"].get("per_explore", 1), "gather_energy": b["energy"].get("per_gather", 1),
             "gather_low": b["gather"]["amount"][0], "gather_high": b["gather"]["amount"][-1],
             "stock_unit": pct(b["stock"]["per_unit"]), "stock_regen": pct(b["stock"]["regen_per_hour"]),
+            # D-300: wood comes back faster (stock.regen_mult)
+            "wood_regen": pct(float(b["stock"]["regen_per_hour"]) * float((b["stock"].get("regen_mult") or {}).get("madera", 1.0))),
             "color_at": b["map_view"]["fog"]["color_at"], "search_min": b["gremio"]["search_min_pct"],
             "inn_price": self._money(self._inn_price()), "bonfires": len(mapgen.BONFIRES),
             "bonfire_spacing": b["bonfire"]["spacing"], "bonfire_cap": self._bonfire_cap(),
@@ -8999,77 +9106,143 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
-    def _important_places(self, hero: Hero) -> list[tuple[int, int, int, str, str]]:
-        """The important places this hero knows, nearest first: (seconds, x, y, icon, name) (D-223).
+    def _important_places(self, hero: Hero) -> list[tuple[int, int, int, str, str, str]]:
+        """The important places this hero knows, nearest first: (seconds, x, y, icon, name, kind) (D-223, D-301).
+
+        kind is one of PLACE_KINDS: "camp" (your own camp), "dng" (a dungeon), "fire" (a bonfire), "guild" (your guild's
+        construction, meeting point or the camp it invited you to), "camps" (other players' camps) or "lair".
 
         [ES]
-        Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): el 🔥 Claro
-        (el campamento de inicio, siempre), su 🏕️ campamento y los de otros jugadores que pisó (D-267, 0.34: y además los
-        places.camps_listed campamentos de jugadores más cercanos, aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que
-        visitó y la 👑 guarida del Guardián si llegó a ella. Las zonas comunes y los ✨ nodos ya no salen (pedido del
-        dueño: "los lugares más importantes únicamente"). Ordenados por el tiempo del viaje.
-        La llaman: _places_view y _place_code. Si cambia, afecta: qué se puede viajar de una vez (tests/test_lugares.py).
+        Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): las 🔥 9 fogatas
+        (siempre, D-277), su 🏕️ campamento (D-301: siempre, aunque nunca lo haya pisado: es el primer botón de 📒 Lugares) y
+        los de otros jugadores que pisó (D-267, 0.34: y además los places.camps_listed campamentos de jugadores más cercanos,
+        aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que visitó, la 👑 guarida del Guardián si llegó a ella y los
+        lugares de su gremio (D-269). Las zonas comunes y los ✨ nodos ya no salen (pedido del dueño: "los lugares más
+        importantes únicamente"). Ordenados por el tiempo del viaje. D-301: cada lugar dice de qué tipo es (el último campo),
+        para los botones por tipo de 📒 Lugares. La zona donde estás no sale.
+        La llaman: _place_groups (📒 Lugares y cada tipo) y _place_confirm_view. Si cambia, afecta: qué se puede viajar de una
+        vez (tests/test_lugares.py).
         """
         t = self.texts
-        found: dict[tuple[int, int], tuple[str, str]] = {}
+        found: dict[tuple[int, int], tuple[str, str, str]] = {}
         for bx, by in mapgen.BONFIRES:                  # D-277: the 9 bonfires are in 📒 Lugares from the first day
-            found[(bx, by)] = ("🔥", self._zone_name(self._zone(bx, by)))
+            found[(bx, by)] = ("🔥", self._zone_name(self._zone(bx, by)), "fire")
         for key in hero.known:
             x, y = (int(v) for v in key.split(":"))
             camp = self.store.get("camp", key)
             kind = self._dng_kind(x, y)
             if camp:
-                found[(x, y)] = ("🏕️", camp["name"])
+                found[(x, y)] = ("🏕️", camp["name"], "camps")
             elif self._is_lair(x, y):
-                found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)))
+                found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)), "lair")
             elif kind:
-                found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))))
+                found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))),
+                                 "dng")
+        own = self._member_camp(hero)
+        if own:                                          # D-301: your own camp, always (its own button, the first one)
+            ox, oy = (int(v) for v in hero.camp.split(":"))
+            found[(ox, oy)] = ("🏕️", own["name"], "camp")
         near = sorted((abs(x - hero.x) + abs(y - hero.y), x, y, camp["name"]) for key, camp in self.store.items("camp")
                       for x, y in [tuple(int(v) for v in key.split(":"))] if (x, y) not in found)
         for _, x, y, name in near[:int(self.content.balance["places"].get("camps_listed", 5))]:
-            found[(x, y)] = ("🏕️", name)                # D-267: the nearest players' camps, even if never visited
+            found[(x, y)] = ("🏕️", name, "camps")       # D-267: the nearest players' camps, even if never visited
         for x, y, icon, name in self._gremio_places(hero):
-            found[(x, y)] = (icon, name)                 # D-269: your guild's 🏗️ construction and 📍 meeting point
-        places = [(self._trip_seconds(hero, x, y), x, y, icon, name) for (x, y), (icon, name) in found.items()
+            if found.get((x, y), ("", "", ""))[2] != "camp":
+                found[(x, y)] = (icon, name, "guild")    # D-269: your guild's 🏗️ construction and 📍 meeting point
+        places = [(self._trip_seconds(hero, x, y), x, y, icon, name, kind) for (x, y), (icon, name, kind) in found.items()
                   if (x, y) != (hero.x, hero.y)]
         return sorted(places)
 
+    def _place_groups(self, hero: Hero) -> dict[str, list[tuple[int, int, int, str, str, str]]]:
+        """📒 Lugares by kind (D-301): {kind: its places, nearest first}, only the kinds with something, in PLACE_KINDS order.
+
+        [ES] Qué hace: reparte _important_places por tipo, en el orden de los botones (PLACE_KINDS: tu campamento, mazmorras,
+        fogatas, gremio, campamentos, guarida) y sin los tipos vacíos. La llaman: _places_view y _places_kind_view.
+        Si cambia, afecta: los botones de 📒 Lugares y cada lista (tests/test_lugares.py).
+        """
+        groups: dict[str, list[tuple[int, int, int, str, str, str]]] = {kind: [] for kind in PLACE_KINDS}
+        for place in self._important_places(hero):
+            groups.setdefault(place[5], []).append(place)
+        return {kind: items for kind, items in groups.items() if items}
+
     def _places_view(self, hero: Hero, notice: str | None = None) -> View:
-        """📒 Lugares: the important places this hero knows, each with a code and a button, asking before it travels (D-223).
+        """📒 Lugares: one button per kind of important place you know (D-301), your own camp first; travel asks first (D-223).
 
         [ES]
-        Qué hace: lista los lugares importantes que conoces (_important_places), cada uno con su tiempo de viaje y su código
-        (/ir1, /ir2...); los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar
-        (_place_confirm_view) y, al confirmar, el héroe va solo, zona por zona ("goto:"). Guarda el orden mostrado (espacio
-        "places_shown") para que el código /irN sea el que viste. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más
-        cercanos; desde el rango 10, hasta explorer.places_listed. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
-        no es de tu nivel: ya no dice "con rango 10 de Explorador, 📒 Lugares lista hasta 8" (explorer.places_hint queda sin uso).
-        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó
-        solo los lugares importantes.
-        La llaman: el botón 📒 Lugares del 🗺️ Mapa (también al rechazar un viaje).
-        Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py y el paso
-        "return" del 🧭 camino guiado (D-193: su texto manda a 📒 Lugares → El Claro).
+        Qué hace: D-301 (pedido del dueño, 20-oct-2026: "cuando le das en lugares, el primer botón va a ser el del campamento...
+        luego mazmorra: un botón que se llame Mazmorras. Luego un botón que se llame Fogatas. Y así sucesivamente"): el menú
+        de 📒 Lugares. Arriba, a lo ancho, 🏕️ <nombre de tu campamento> (solo si tienes campamento y no estás en él): va
+        directo a "¿Viajar?" (_place_confirm_view). Después un botón por tipo que tenga lugares, en el orden de PLACE_KINDS:
+        🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio, 🏕️ Campamentos y 👑 Guarida, cada uno con cuántos hay; cada botón abre su lista
+        (_places_kind_view, "plc:<tipo>") con los códigos /irN y el tiempo del viaje. ↩️ Volver va al 🗺️ Mapa. Como mucho 7
+        botones, de 2 en 2 (HUB_KINDS "places"). No guarda códigos: /irN es de la última lista que viste.
+        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas (D-222); D-223 dejó solo los lugares importantes, en
+        una sola lista con códigos; D-301 la partió por tipo.
+        La llaman: el botón 📒 Lugares del 🗺️ Mapa, ↩️ Volver de cada lista y de "¿Viajar?" (tu campamento) y los códigos o
+        lugares que ya no sirven (con su aviso).
+        Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py,
+        tests/test_nueve_hogueras.py, tests/test_mazmorras.py y el paso "return" del 🧭 camino guiado (D-193: su texto manda a
+        📒 Lugares → 🔥 Fogatas → El Claro).
         """
         t = self.texts
-        places = self._important_places(hero)
-        count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
-        others = [p for p in places if not mapgen.is_bonfire(p[1], p[2])][:count]
-        listed = sorted([p for p in places if mapgen.is_bonfire(p[1], p[2])] + others)   # D-277: the 9 bonfires, always
-        self.store.put("places_shown", hero.id, {"list": [[x, y] for _, x, y, _, _ in listed]})
+        groups = self._place_groups(hero)
         body = [t.t("places.intro")]
-        for n, (seconds, x, y, icon, name) in enumerate(listed, 1):
-            mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
-            body.append(t.t("places.code_line", n=n, icon=icon, name=name + mark, x=x, y=y,
-                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
-        if not places:
+        actions: list[Action] = []
+        own = (groups.get("camp") or [None])[0]
+        if own:                                          # D-301: your camp first, straight to "Travel?"
+            seconds, x, y, icon, name, _ = own
+            body.append(t.t("places.camp_line", icon=icon, name=name, x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y),
+                            time=self._fmt_duration(seconds)))
+            actions.append(Action(id=f"goask:{x}:{y}", label=t.t("places.camp_button", name=name)))
+        for kind, items in groups.items():
+            if kind != "camp":
+                actions.append(Action(id=f"plc:{kind}", label=t.t("places.kind_button", kind=t.t(f"places.kind.{kind}"),
+                                                                  n=len(items))))
+        if not any(kind != "fire" for kind in groups):
             body.append(t.t("places.none"))
-        elif len(places) > len(listed):
-            body.append(t.t("places.more", n=len(places) - len(listed)))
         body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
-        actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
-                   for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
         actions.append(Action(id="map", label=t.t("menu.back")))
-        return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice)
+        layout = ([1] if own else []) + self._pairs_layout(len(actions) - (1 if own else 0))
+        return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _places_kind_view(self, hero: Hero, kind: str, notice: str | None = None) -> View:
+        """One kind of 📒 Lugares (D-301): its places nearest first, each with its /irN code and travel time (D-223).
+
+        [ES]
+        Qué hace: la lista de un tipo de 📒 Lugares ("plc:<tipo>": dng, fire, guild, camps o lair), como era la lista única
+        de antes: cada lugar con su número, sus coordenadas, cuántas zonas, el tiempo del viaje y su código (/ir1, /ir2...);
+        los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar (_place_confirm_view).
+        Guarda el orden mostrado (espacio "places_shown", el mismo de siempre) para que /irN sea el de la última lista que
+        viste: los códigos empiezan en 1 en cada tipo, y un código que se escribió antes de D-301 sigue llevando al lugar que
+        mostraba. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más cercanos de cada tipo; desde el rango 10, hasta
+        explorer.places_listed. Las 🔥 fogatas salen siempre todas (D-277). D-287: no dice nada del rango. ↩️ Volver va al menú
+        de 📒 Lugares. Un tipo que no existe o quedó vacío vuelve al menú; "plc:camp" es tu campamento: va a "¿Viajar?".
+        La llaman: los botones de tipo de _places_view y ↩️ No, volver de "¿Viajar?".
+        Si cambia, afecta: tests/test_lugares.py y las pruebas que buscan un lugar en su lista.
+        """
+        t = self.texts
+        groups = self._place_groups(hero)
+        if kind == "camp" and groups.get("camp"):
+            _, x, y, _, _, _ = groups["camp"][0]
+            return self._place_confirm_view(hero, x, y)
+        if kind not in groups or kind == "camp":
+            return self._places_view(hero, notice=notice)
+        places = groups[kind]
+        count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
+        listed = places if kind == "fire" else places[:count]   # D-277: the bonfires, always all of them
+        self.store.put("places_shown", hero.id, {"list": [[p[1], p[2]] for p in listed], "kind": kind})
+        name = t.t(f"places.kind.{kind}")
+        body = [t.t("places.kind_intro", kind=name)]
+        for n, (seconds, x, y, icon, pname, _) in enumerate(listed, 1):
+            mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
+            body.append(t.t("places.code_line", n=n, icon=icon, name=pname + mark, x=x, y=y,
+                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
+        if len(places) > len(listed):
+            body.append(t.t("places.more", n=len(places) - len(listed)))
+        actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {pname}", time=self._fmt_duration(seconds)))
+                   for n, (seconds, x, y, icon, pname, _) in enumerate(listed[:3], 1)]
+        actions.append(Action(id="places", label=t.t("menu.back")))
+        return View(kind="places_kind", title=t.t("places.kind_title", kind=name), body=body, actions=actions, notice=notice)
 
     def _place_confirm_view(self, hero: Hero, x: int, y: int) -> View:
         """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed).
@@ -9078,10 +9251,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: pregunta antes de viajar a un lugar de 📒 Lugares. 0.33 (pedido del dueño: "debería dejarme ir hacia la
         fogata"): estando ocupado ya no responde "ese lugar ya no está en tu lista". Si exploras, recolectas o cazas en lote,
         avisa que el lote se corta; si vas de viaje, que cambias el rumbo; solo descansando en la posada pide esperar.
+        D-301: ↩️ No, volver lleva a la lista del tipo de ese lugar ("plc:<tipo>"); el de tu campamento, al menú de 📒 Lugares.
         La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso "return" del 🧭 camino.
         """
         t = self.texts
-        place = next(((icon, name) for _, px, py, icon, name in self._important_places(hero) if (px, py) == (x, y)), None)
+        place = next(((icon, name, kind) for _, px, py, icon, name, kind in self._important_places(hero) if (px, py) == (x, y)),
+                     None)
         if place is None:
             return self._places_view(hero, notice=t.t("places.unknown"))
         kind = (hero.activity or {}).get("kind")
@@ -9094,7 +9269,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.confirm_reroute"))
         elif kind in BATCH_KINDS:
             body.append(t.t("places.confirm_cut"))
-        actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
+        back = "places" if place[2] == "camp" else f"plc:{place[2]}"     # D-301: back to that kind's list
+        actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id=back, label=t.t("places.confirm_no"))]
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
 
     def _can_goto(self, hero: Hero, gx: int, gy: int) -> bool:
@@ -9276,9 +9452,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._walk_view(hero, steps, notice=t.t("walk.coord_ready", x=gx, y=gy))
 
     def _place_code(self, hero: Hero, n: int) -> View:
-        """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
-        shown = (self.store.get("places_shown", hero.id) or {}).get("list", [])
+        """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels.
+
+        [ES] D-301: la última lista es la de un tipo (Mazmorras, Fogatas...): /ir1 es el primero de esa lista. Una lista
+        guardada antes de D-301 (sin "kind") sigue sirviendo igual. Un código que no está vuelve a esa lista (o al menú) con
+        su aviso. La llama: act() con el texto /irN o /goN. Si cambia, afecta: tests/test_lugares.py."""
+        saved = self.store.get("places_shown", hero.id) or {}
+        shown = saved.get("list", [])
         if not 1 <= n <= len(shown):
+            if saved.get("kind"):
+                return self._places_kind_view(hero, saved["kind"], notice=self.texts.t("places.bad_code"))
             return self._places_view(hero, notice=self.texts.t("places.bad_code"))
         x, y = shown[n - 1]
         return self._place_confirm_view(hero, x, y)
@@ -10784,7 +10967,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         dng_excluded = ((int(guardian["x"]), int(guardian["y"])),) if guardian else ()
         if not node_rules.node_at(self.world_seed, x, y, cfg, self._node_excluded(), self._dng_cfg(), dng_excluded):
             return None
-        base, own = self._zone_land(x, y)
+        base, _wood, own = self._zone_land(x, y)        # D-300: the added wood never moves a node
         return node_rules.node_main(self.world_seed, x, y, base, own, float(cfg.get("own_share", 0.6)))
 
     def _node_rare(self, x: int, y: int) -> str | None:

@@ -2,6 +2,8 @@
 
 > **Módulo** [01 · Plataforma](README.md) · **Depende de:** [Web y multiplataforma](web-y-multiplataforma.md) §3 (vistas neutras), [Decisiones](../00-vision/decisiones.md) D-190, D-191 y D-192 · **Alimenta a:** todos los módulos que tienen pantallas en el campamento o en el héroe · **Estado:** en el juego desde la 0.29 (D-190 y D-191 confirmadas; cómo se aplican, D-192 provisional). 0.36: 👥 Jugadores en la fogata (D-265, D-274) y el centro del 🛡️ Gremio (D-269)
 
+> **0.40 (D-302, pedido del dueño):** el centro de tu campamento muestra solo su nombre, lo que puedes hacer y lo urgente (una oleada); la información de siempre (etapa, nivel, miembros, gremio, costo de agrandar, mejoras, defensa, despensa, beneficios, próxima oleada) pasó a 🏰 Gestionar → ℹ️ Información.
+
 Cómo se ordenan las pantallas principales del juego desde la 0.29: el menú de abajo, el centro de 🏕️ Campamento (en el Claro y en tu propio campamento), el centro de 👤 Héroe, el 🧑‍🏫 Entrenador y ❓ Dudas. El camino guiado de la historia (D-190), que manda al jugador a hacer una cosa nueva por vez, se describe aparte.
 
 ## De dónde sale

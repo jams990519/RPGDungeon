@@ -96,14 +96,14 @@ guide:
         🔥 El campamento (la hoguera) de inicio: se ve siempre.
         Nada más se ve en el mapa: las mazmorras, los nodos y los campamentos se descubren caminando.
         📌 Tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el inicio, están en 📍 Zona. Más lejos, enemigos más fuertes.
-        📒 Lugares: los lugares importantes que ya visitaste (el campamento, mazmorras, campamentos de jugadores). Elige uno, confirma y tu héroe va solo.
-    return:                    # [ES] d) volver al campamento (el Claro)
+        📒 Lugares: los lugares importantes que ya visitaste, por tipo (tu campamento, 🕳️ Mazmorras, 🔥 Fogatas...). Elige el tipo y el lugar, confirma y tu héroe va solo.
+    return:                    # [ES] d) volver al campamento (el Claro). D-301: 📒 Lugares tiene un botón por tipo
       name: "Volver al Claro"
-      task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → El Claro (o por las rutas de 📍 Zona)."
+      task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → 🔥 Fogatas → El Claro (o por las rutas de 📍 Zona)."
       intro: |-
         🔥 Vuelve al campamento
         • El Claro es tu base: ahí están el mercader, la posada y los oficios.
-        • En 📒 Lugares eliges un lugar importante que ya visitaste, confirmas y tu héroe va solo, zona por zona.
+        • En 📒 Lugares eliges el tipo (🔥 Fogatas, 🕳️ Mazmorras...) y un lugar importante que ya visitaste, confirmas y tu héroe va solo, zona por zona.
     camp:                      # [ES] e) el campamento (D-191: cocinar, investigar, fabricar, entrenador, mercader, Dudas)
       name: "El campamento"
       task: "abre el campamento: 🏕️ Campamento (menú de abajo)."

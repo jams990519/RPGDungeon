@@ -78,7 +78,7 @@ def test_players_camps_are_seen_on_the_map_and_in_places_and_you_can_go(service)
     assert service.store.get("camp", "6:0")
     map_view = service.act("test:2", "map")                                    # Bram never went there
     assert any("🏕️" in row for row in map_view.body) and any("campamento de jugadores" in line for line in map_view.body)
-    places = service.act("test:2", "places")
+    places = service.act("test:2", "plc:camps")                                # D-301: 📒 Lugares → 🏕️ Campamentos
     assert any("Campo 1 6" in line for line in places.body)
     hero = service._load("test:2")
     assert not hero.remembers(6, 0) and service._can_goto(hero, 6, 0)

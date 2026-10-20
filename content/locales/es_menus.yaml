@@ -35,7 +35,7 @@ hub:
   services: "🏘️ Servicios: {list}."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time}."
-  manage: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🌾 despensa y 🛡️ gremio."
+  manage: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🌾 despensa, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-302: ℹ️ Información está ahí
   dudas: "❓ Dudas: escribe una palabra y te muestro las preguntas ya respondidas."
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
   # [ES] botones (cortos: sin costos)

@@ -50,7 +50,7 @@ def test_the_leader_invites_with_the_code_from_anywhere(service):
     assert [a["id"] for a in push["actions"]] == [f"ginv:{gid}:y", f"ginv:{gid}:n"]
     service.act("test:2", f"ginv:{gid}:y")
     assert "test:2" in service.store.get("gremio", gid)["members"]
-    assert "/inv_" in text(service.act("test:1", "guild"))                         # the leader sees how to invite
+    assert "/inv_" in text(service.act("test:1", "gmembers"))                      # the leader sees how to invite (D-302: in 👥 Miembros)
 
 
 def test_unknown_own_or_without_rights_only_explain(service):

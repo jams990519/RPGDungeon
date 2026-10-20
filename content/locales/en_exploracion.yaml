@@ -67,7 +67,7 @@ explorer:
   time_camp: '⏱️ To your camp {name}: {time}'
   places_hint: 🧭 With Explorer rank {rank}, 📒 Places lists up to {n} places with their travel time.
   what:
-    travel: 📒 Places lists up to {places} places with their travel time, and tells you how long it takes to reach each zone your map marks
+    travel: 📒 Places lists up to {places} places of each kind with their travel time, and tells you how long it takes to reach each zone your map marks
     camps_near: you see 👹 enemy camps up to {n} zones around you, even if you haven't set foot there
     infiltrate: you can 🕵️ infiltrate enemy camps
     camps_all: you see 👹 enemy camps across your whole map

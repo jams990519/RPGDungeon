@@ -126,7 +126,8 @@ def test_a_new_hero_walks_the_whole_path_in_order(service, clock):
     view = service.act(ACC, "map")
     assert done(service)[-1] == "map" and "Cómo leer el mapa" in view.notice and "🔥" in view.notice   # D-223
 
-    places = service.act(ACC, "places")
+    assert "plc:fire" in [a.id for a in service.act(ACC, "places").actions]   # D-301: 📒 Lugares → 🔥 Fogatas
+    places = service.act(ACC, "plc:fire")
     assert "goask:0:0" in [a.id for a in places.actions]                   # D-223: it asks first...
     assert service.act(ACC, "goask:0:0").kind == "place_confirm"
     service.act(ACC, "goto:0:0")                                           # ...✅ Sí, ir

@@ -1,0 +1,39 @@
+# Texts of the 0.39.4 submenus (D-302): the own camp's hub split in two (ℹ️ Información inside 🏰 Gestionar) and the guild
+# screen with 👥 Miembros, 💰 Fondos and 📢 Chat as buttons (before and after founding).
+# [ES] Textos de los submenús de la 0.39.4 (D-302, pedido del dueño del 20-oct-2026: menos texto en cada pantalla y
+# "submenús con más información para que sea más fácil"): el centro de tu campamento muestra solo su nombre y lo que puedes
+# hacer, y lo de arriba pasó a 🏰 Gestionar → ℹ️ Información; la pantalla del gremio deja arriba lo del gremio y pasa a botones
+# 👥 Miembros, 💰 Fondos (cada recurso con su código de 📦 Recursos) y 📢 Chat (los mensajes del último día). Se junta con
+# es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
+# Documento de diseño: diseno/01-plataforma/menus-campamento-y-heroe.md y diseno/08-social/gremios-y-social.md (los actualiza
+#     quien une el parche)
+# Lo leen: engine/service/game.py (_camp_here_view, _camp_manage_view, _camp_member_actions, _camp_info_view, _guild_view) y
+#     engine/service/gremio.py (_gremio_view, _gremio_members_view, _camp_members_view, _fund_item_lines, _guild_funds_view,
+#     _guild_chat_view, _guild_chat)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_submenus.yaml, en el mismo
+# cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+campinfo:                      # [ES] D-302: ℹ️ Información del campamento (desde 🏰 Gestionar)
+  hub_name: "🏕️ {name}"   # [ES] la única línea de arriba del centro de tu campamento
+  button: "ℹ️ Información"
+  title: "ℹ️ Información del campamento"
+  manage_line: "ℹ️ Información: quién lo fundó, nivel y zonas, miembros, mejoras y 🛡️ Defensa, despensa, beneficios y oleadas."
+
+guildmenu:                     # [ES] D-302: los submenús de 🛡️ Gremio (antes y después de fundar)
+  members_button: "👥 Miembros ({n}/{cap})"
+  members_title: "👥 Miembros del gremio"
+  requests_line: "🙋 {n} {n|solicitud espera|solicitudes esperan}: míralas en 👥 Miembros."
+  funds_button: "💰 Fondos del campamento"
+  funds_title: "💰 Fondos del campamento"
+  funds_intro: "💰 El fondo alimenta las obras activas del campamento: cada una toma de aquí lo que le falta, primero la que se activó antes."
+  funds_works: "🔨 {n} {n|obra activa|obras activas} ahora."
+  gfunds_button: "💰 Fondo del gremio"
+  gfunds_title: "💰 Fondo del gremio"
+  gfunds_intro: "💰 El fondo del gremio paga la fundación del campamento; lo que sobre pasa al fondo del campamento."
+  fund_item: "{code} {emoji} {item} ×{n}"   # [ES] en orden por código de 📦 Recursos (/07)
+  funds_empty: "El fondo está vacío: deposita con 💰 Depositar."
+  funds_hint: "Toca un código para ver para qué sirve ese recurso."
+  chat_button: "📢 Chat"
+  chat_title: "📢 Chat del gremio"
+  chat_intro: "Los mensajes de las últimas {hours} h, el más nuevo al final."
+  chat_none: "No hay mensajes del último día."

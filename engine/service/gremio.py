@@ -16,6 +16,12 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     0.39 (pedido del dueño, 19-oct-2026): los 🤝 ayudantes del fundador (D-289), la ⚔️ Armería del gremio (D-290), el gremio
     que después de fundar conserva sus herramientas: 💰 Depositar desde cualquier lugar, 📢 Mensaje, los miembros con su
     código y los mensajes de antes (D-291), y los del gremio que esperan lugar en el campamento lleno (D-294).
+    D-302 (0.39.4, pedido del dueño del 20-oct-2026: menos texto en pantalla y "submenús con más información"): la pantalla del
+    gremio (antes y después de fundar) deja arriba solo lo del gremio y pasa el resto a submenús: 👥 Miembros
+    (_guild_members_view: los miembros con /m1, los 🤝 ayudantes, los ⏳ que esperan lugar, 🙋 Solicitudes), 💰 Fondos
+    (_guild_funds_view: cada recurso con su código de 📦 Recursos, en orden por código, y 💰 Depositar) y 📢 Chat
+    (_guild_chat_view: los mensajes del último día, como mucho gremio.chat_shown y gremio.chat_max_chars letras, y 📢 Mensaje).
+    La ⚔️ Armería muestra su "0/30" solo en su pantalla.
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -35,7 +41,9 @@ Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las r
     _give_to_work, _open_works y _upgrades_view (las obras en curso y el fondo del campamento); 0.39: _camp_manager y
     _camp_managers (quién activa obras y recibe solicitudes: _give_to_work, _activate_work, _stop_work, _works_entries,
     _services_view, _service_type_view, _upgrades_view, _guild_view, _ask_join, _answer_join), _helpers_line,
-    _camp_member_line, _armory_line (_guild_view), _member_camp y text() (/a1, /t1: _armory_in_code, _armory_out_code)
+    _camp_member_line, _member_camp y text() (/a1, /t1: _armory_in_code, _armory_out_code); D-302: _guild_view (los botones
+    "gmembers", "gfunds" y "gchat" que abren _guild_members_view, _guild_funds_view y _guild_chat_view; _armory_line se quitó:
+    la cuenta de la armería está solo en ⚔️ Armería). Usa también _resource_code de game.py (el código /07 de cada recurso)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño:
@@ -98,16 +106,18 @@ Reglas que nunca se rompen:
        Si el gremio se disuelve, las piezas vuelven al último miembro.
 Si cambias esto, revisa:
     - Números: balance.yaml gremio, works, bonfire.cap, presence.bonfire_seconds, camps.found_cost y guild.levels[0].capacity;
-      desde la 0.39, camps.helpers_per_members (D-289), armory.slots y armory.log_kept (D-290) y gremio.waiting_max (D-294)
+      desde la 0.39, camps.helpers_per_members (D-289), armory.slots y armory.log_kept (D-290) y gremio.waiting_max (D-294);
+      desde la 0.39.4 (D-302), gremio.messages_kept (50), gremio.chat_hours, gremio.chat_shown y gremio.chat_max_chars
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); engine/service/guide.py (el paso "found" lee
       _camp_requirements y se completa con el evento "camp" que manda _create_camp)
-    - Pantallas y botones: HUB_KINDS ("gremio": hasta 8 botones), el layout de 📍 Zona ([2, 2, 1, 1] o [2, 2, 1, 1, 1] con
+    - Pantallas y botones: HUB_KINDS ("gremio" y "guild": hasta 8 botones; los submenús de D-302, "guild_members",
+      "guild_funds" y "guild_chat", tienen 4 como máximo), el layout de 📍 Zona ([2, 2, 1, 1] o [2, 2, 1, 1, 1] con
       🏗️ Moverte a la construcción) y los ids de GREMIO_ACTIONS y GREMIO_ANSWERS (64 bytes como máximo en Telegram)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (el gremio desde el inicio y las obras con tiempo)
     - Pruebas: tests/test_gremio_desde_el_inicio.py; tests/test_camps.py (found_at funda por el gremio), tests/test_guilds.py,
       tests/test_camp_upgrades.py (las obras con tiempo), tests/test_menus_y_dudas.py (la fogata con 👥 Jugadores);
       0.39: tests/test_ayudantes.py, tests/test_armeria.py, tests/test_deposito_tras_fundar.py, tests/test_servicios_por_tipo.py,
-      tests/test_espera_del_gremio.py
+      tests/test_espera_del_gremio.py; 0.39.4: tests/test_submenus_campamento_gremio.py (D-302) y tests/test_chat_del_gremio.py
 """
 
 from __future__ import annotations
@@ -147,7 +157,8 @@ GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greq
                   "ghelp:",      # D-289: 🤝 Hacer ayudante / ✖️ Quitar ayudante (the founder, from a member's card)
                   "creqs",       # D-289: 🙋 Solicitudes to join the camp (the founder or a helper)
                   "cwjoin:",     # D-294: 🏕️ Unir al campamento a guild member who waits for room
-                  "gwleave")     # D-294: 🚪 Salir del gremio while waiting for room ("gwleave!" confirms)
+                  "gwleave",     # D-294: 🚪 Salir del gremio while waiting for room ("gwleave!" confirms)
+                  "gmembers", "gfunds", "gchat")   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
 GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:",   # D-280: "cinv:" = the camp's invitation by code
                   "cwait:")                              # D-294: the guild's invitation while its camp is full
@@ -456,7 +467,8 @@ class GremioMixin:
 
     def _gremio_action(self, hero: Hero, action_id: str) -> View:
         """Route the guild and bonfire buttons (GREMIO_ACTIONS). [ES] Qué hace: reparte los botones de esta sección (0.39: también
-        ⚔️ "garm", 🤝 "ghelp:", 🙋 "creqs" y 💰 "gfund"/"gfund:svc", que después de fundar es el fondo del campamento). La llama:
+        ⚔️ "garm", 🤝 "ghelp:", 🙋 "creqs" y 💰 "gfund"/"gfund:svc", que después de fundar es el fondo del campamento; D-302,
+        0.39.4: 👥 "gmembers", 💰 "gfunds" y 📢 "gchat", los submenús del gremio). La llama:
         _idle_action. Si cambia, afecta: los IDs de botón del gremio (64 bytes como máximo en Telegram)."""
         arg = action_id.partition(":")[2]
         routes = {"players": lambda: self._players_view(hero), "gnew": lambda: self._gremio_new(hero),
@@ -467,6 +479,9 @@ class GremioMixin:
                   "gzones": lambda: self._gremio_zones_view(hero),
                   "garm": lambda: self._armory_view(hero),                  # D-290: ⚔️ Armería
                   "creqs": lambda: self._camp_requests_view(hero),          # D-289: the camp's join requests
+                  "gmembers": lambda: self._guild_members_view(hero),       # D-302: 👥 Miembros
+                  "gfunds": lambda: self._guild_funds_view(hero),           # D-302: 💰 Fondos (before "gfund": its prefix)
+                  "gchat": lambda: self._guild_chat_view(hero),             # D-302: 📢 Chat
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
         if action_id in routes:
             return routes[action_id]()
@@ -492,17 +507,21 @@ class GremioMixin:
         return self._gremio_view(hero)
 
     def _gremio_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🛡️ Gremio before a camp: members (where, doing what, online), founding, meeting point, fund and messages (D-269).
+        """🛡️ Gremio before a camp: name, leader, founding and meeting point on top; members, fund and chat behind buttons (D-302).
 
         [ES]
         Qué hace: el centro del gremio antes del campamento (hasta 8 botones, de 2 en 2: HUB_KINDS "gremio"). Arriba el nombre,
-        el líder y "👥 N/5"; la fundación en curso con su barra; el 📍 punto de reunión; el 💰 fondo; cada miembro con su código
-        (/m1), si está en línea (regla de 15 min), dónde está y qué hace; y los últimos 📢 mensajes. Botones: 📢 Mensaje,
-        💰 Fondo, ⚔️ Armería (D-290, 0.39), 📍 Reunión, 🗺️ Zonas, 🏕️ Fundar (el líder), 🙋 Solicitudes (líder u oficial, si hay),
-        🚪 Salir (sale cuando entra en 8; si no, espera a que respondan las solicitudes) y ↩️ Volver. Sin gremio,
-        qué es y cómo se crea o se busca (_gremio_none_view); con el campamento ya fundado, la invitación (_gremio_invite_view).
+        el líder y "👥 N/5", la fundación en curso con su barra y el 📍 punto de reunión. D-302 (0.39.4, la misma forma que el
+        gremio después de fundar, pedido del dueño del 20-oct-2026): los miembros, el fondo y los mensajes ya no van en esta
+        pantalla sino detrás de su botón; al líder o a un oficial, una línea corta si hay 🙋 solicitudes. Botones: 👥 Miembros
+        (N/5) (cada miembro con /m1, 🙋 Solicitudes y 🚪 Salir; _gremio_members_view), 💰 Fondo del gremio (cada recurso con su
+        código, lo que pide fundar y 💰 Depositar; _guild_funds_view), 📢 Chat (_guild_chat_view), ⚔️ Armería (D-290),
+        📍 Reunión, 🔎 Buscar recursos, 🏕️ Fundar (el líder, o todos mientras se funda), 🚪 Salir (si entra en 8; si no, está en
+        👥 Miembros) y ↩️ Volver. Sin gremio, qué es y cómo se crea o se busca (_gremio_none_view); con el campamento ya
+        fundado, la invitación (_gremio_invite_view).
         La llaman: 🛡️ Gremio (de 👥 Jugadores y de /gremio sin campamento: _guild_view) y casi todas las acciones del gremio.
-        Si cambia, afecta: tests/test_gremio_desde_el_inicio.py y los recorridos de botones.
+        Si cambia, afecta: tests/test_gremio_desde_el_inicio.py, tests/test_submenus_campamento_gremio.py y los recorridos de
+        botones.
         """
         t = self.texts
         record = self._gremio_link(hero.id)
@@ -524,27 +543,18 @@ class GremioMixin:
             body.append(self._work_line("gremio.founding_line", self._place_label(founding["x"], founding["y"]), founding, present))
         meet = record.get("meet")
         body.append(t.t("gremio.meet_line", place=self._place_label(*meet)) if meet else t.t("gremio.meet_none"))
-        body.append(t.t("gremio.fund_line", items=self._item_list(record["fund"])) if record.get("fund") else t.t("gremio.fund_empty"))
-        body += ["", t.t("gremio.members_title")]
-        for n, account in enumerate(members, 1):
-            body.append(self._gremio_member_line(n, account, record, hero))
-        self._codes(hero, "members", members)
-        messages = record.get("messages") or []
-        if messages:
-            body += ["", t.t("gremio.messages_title")]
-            body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
-        body += ["", t.t("gremio.chat_hint"), t.t("gremio.codes_hint")]     # D-285: any loose text goes to the whole guild
-        if self._gremio_manager(record, hero.id) and self._gremio_room(record):
-            body.append(t.t("gremio.invite_hint"))     # D-280: /inv_ and the player's code
-        body.append(self._armory_line(record["id"]))   # D-290: ⚔️ the guild's armory
-        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="gfund", label=t.t("gremio.fund_button")),
+        manager = self._gremio_manager(record, hero.id)
+        if manager and record.get("requests"):          # D-302: 🙋 the requests wait in 👥 Miembros
+            body.append(t.t("guildmenu.requests_line", n=len(record["requests"])))
+        self._codes(hero, "members", members)           # /m1 keeps working from this screen too
+        actions = [Action(id="gmembers", label=t.t("guildmenu.members_button", n=len(members), cap=self._gremio_cap())),
+                   Action(id="gfunds", label=t.t("guildmenu.gfunds_button")),
+                   Action(id="gchat", label=t.t("guildmenu.chat_button")),
                    Action(id="garm", label=t.t("armory.button")),           # D-290: ⚔️ Armería from the first moment
                    Action(id="gmeet", label=t.t("gremio.meet_button")), Action(id="gzones", label=t.t("gzones.button"))]
         if hero.id == leader or founding:
             actions.append(Action(id="gfound", label=t.t("gremio.found_button")))
-        if self._gremio_manager(record, hero.id) and record.get("requests"):
-            actions.append(Action(id="greqs", label=t.t("gremio.requests_button", n=len(record["requests"]))))
-        if len(actions) < _hub_buttons() - 1:           # D-290: with ⚔️, a leader with requests would pass 8: 🚪 waits a moment
+        if len(actions) < _hub_buttons() - 1:           # D-302: when it does not fit, 🚪 Salir waits in 👥 Miembros
             actions.append(Action(id="gleave", label=t.t("gremio.leave_button")))
         actions.append(Action(id=self._gremio_back(hero), label=t.t("menu.back")))
         return View(kind="gremio", title=t.t("gremio.title"), body=body, actions=actions, notice=notice)
@@ -570,6 +580,170 @@ class GremioMixin:
         return t.t("gremio.member_line", code=f"/m{n}", role=role, name=data.get("name", "?"), level=data.get("level", 1),
                    state=state, where=self._place_label(data.get("x", 0), data.get("y", 0)),
                    activity=t.t(f"presence.activity.{kind}"))
+
+    # ------------------------------------------------------------------ the guild's submenus: 👥 💰 📢 (D-302, 0.39.4)
+
+    def _guild_members_view(self, hero: Hero, notice: str | None = None) -> View:
+        """👥 Miembros: the guild's members (before founding) or the camp's (after it), with their codes (D-302).
+
+        [ES] Qué hace: abre la pantalla de miembros que corresponde: la del gremio sin campamento (_gremio_members_view) o la del
+        campamento (_camp_members_view; también para quien espera lugar, D-294). Sin gremio, la pantalla del gremio. La llama:
+        el botón 👥 Miembros ("gmembers") y los ↩️ de la tarjeta de un miembro y de 🙋 Solicitudes. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py."""
+        record = self._my_gremio(hero)
+        if record:
+            return self._gremio_members_view(hero, record, notice)
+        camp = self._guild_camp(hero)
+        if camp:
+            return self._camp_members_view(hero, camp, notice)
+        return self._gremio_view(hero, notice=notice)
+
+    def _gremio_members_view(self, hero: Hero, record: dict[str, Any], notice: str | None = None) -> View:
+        """👥 Miembros before founding: each member with /m1, where and doing what; 🙋 Solicitudes and 🚪 Salir (D-302).
+
+        [ES] Qué hace: lo que la pantalla del gremio mostraba de los miembros (D-269): "👥 Miembros: N de 5", cada uno con su
+        código (/m1: su tarjeta), 👑 el líder y ⭐ los oficiales, si está en línea, dónde está y qué hace, la pista de los
+        códigos y, al líder o a un oficial con lugar, la de /inv_. Botones: 🙋 Solicitudes (líder u oficial, si hay), 🚪 Salir
+        (siempre aquí: en el gremio solo si entra en 8) y ↩️ Volver al gremio. La llama: _guild_members_view. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py y tests/test_gremio_desde_el_inicio.py."""
+        t = self.texts
+        leader = record["leader"]
+        members = [leader] + [m for m in record["members"] if m != leader]
+        body = [t.t("guild.members", n=len(members), cap=self._gremio_cap()), ""]
+        body += [self._gremio_member_line(n, account, record, hero) for n, account in enumerate(members, 1)]
+        self._codes(hero, "members", members)
+        body += ["", t.t("gremio.codes_hint")]
+        manager = self._gremio_manager(record, hero.id)
+        if manager and self._gremio_room(record):
+            body.append(t.t("gremio.invite_hint"))     # D-280: /inv_ and the player's code
+        actions = []
+        if manager and record.get("requests"):
+            actions.append(Action(id="greqs", label=t.t("gremio.requests_button", n=len(record["requests"]))))
+        actions += [Action(id="gleave", label=t.t("gremio.leave_button")), Action(id="guild", label=t.t("menu.back"))]
+        return View(kind="guild_members", title=t.t("guildmenu.members_title"), body=body, actions=actions, notice=notice)
+
+    def _camp_members_view(self, hero: Hero, camp: dict[str, Any], notice: str | None = None) -> View:
+        """👥 Miembros after founding: 🤝 helpers, each member with /m1, the ⏳ waiting block and 🙋 Solicitudes (D-302).
+
+        [ES] Qué hace: lo que 🛡️ Gremio mostraba de los miembros después de fundar (D-291, D-289, D-294; pedido del dueño del
+        20-oct-2026: "toda la información de los miembros dentro de ese botón. Esperando lugar en el campamento, lo mismo"):
+        "👥 Miembros: N de cupo", la línea de 🤝 ayudantes, cada miembro con su código (/m1), 👑 el fundador y 🤝 los ayudantes,
+        si está en línea, dónde está y qué hace, el bloque "⏳ Esperando lugar en el campamento" (sus códigos siguen después de
+        los miembros; al fundador y a los ayudantes, cuántos lugares hay para unirlos), la pista de los códigos y, al fundador
+        o a un ayudante con lugar, la de /inv_. Botones: 🙋 Solicitudes (fundador o ayudante, si hay) y ↩️ Volver al gremio.
+        La llama: _guild_members_view. Si cambia, afecta: tests/test_submenus_campamento_gremio.py, tests/test_ayudantes.py y
+        tests/test_espera_del_gremio.py."""
+        t = self.texts
+        n, cap = len(camp["members"]), self._members_cap(camp)
+        manager = self._camp_manager(camp, hero.id)
+        body = [t.t("guild.members", n=n, cap=cap), self._helpers_line(camp, hero), ""]     # D-289: 🤝 helpers
+        members = self._camp_member_order(hero, camp)
+        body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
+        body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
+        self._codes(hero, "members", members + list(camp.get("waiting") or []))   # D-291: /m1 works after founding too
+        body += ["", t.t("gremio.codes_hint")]
+        if manager and n < cap:
+            body.append(t.t("gremio.invite_hint"))     # D-280, D-289: the founder or a helper invites with /inv_<code>
+        actions = []
+        requests = camp.get("requests") or []
+        if manager and requests:                       # D-289: helpers answer the join requests too
+            actions.append(Action(id="creqs", label=t.t("gremio.requests_button", n=len(requests))))
+        actions.append(Action(id="guild", label=t.t("menu.back")))
+        return View(kind="guild_members", title=t.t("guildmenu.members_title"), body=body, actions=actions, notice=notice)
+
+    def _fund_item_lines(self, fund: dict[str, int]) -> list[str]:
+        """One line per thing in a fund, "/07 🪵 Madera ×12", by resource code (D-243); things without a code go last.
+
+        [ES] Qué hace: lista un fondo en orden por el código de 📦 Recursos (el mismo /07 que abre para qué sirve cada recurso;
+        el dueño: "todos los recursos y todas las cosas tienen que tener un código"). Lo que no tiene código (no debería haber:
+        solo se depositan materiales con código) va al final, sin código. La llama: _guild_funds_view. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py."""
+        t = self.texts
+
+        def order(row: tuple[str, int]) -> tuple[int, int, str]:
+            code = self.content.items[row[0]].get("code")
+            return (0, int(code), row[0]) if code else (1, 0, row[0])
+
+        rows = sorted(((i, n) for i, n in fund.items() if n > 0 and i in self.content.items), key=order)
+        lines = []
+        for item_id, n in rows:
+            item = self.content.items[item_id]
+            lines.append(t.t("guildmenu.fund_item", code=self._resource_code(item_id), emoji=item["emoji"],
+                             item=t.t(item["name_key"]), n=n).strip())
+        return lines
+
+    def _guild_funds_view(self, hero: Hero, notice: str | None = None) -> View:
+        """💰 Fondos: each thing in the fund with its resource code, what the fund is for, and 💰 Depositar (D-302).
+
+        [ES] Qué hace: la pantalla del fondo, en orden por código (pedido del dueño del 20-oct-2026: "Fondo del campamento → un
+        botón que se llame 💰 Fondos del campamento, listado en orden con su código"). Después de fundar: para qué sirve (le da
+        a las obras activas lo que les falta), cuántas obras activas hay, cada recurso con su código de 📦 Recursos (/07) y la
+        pista de los códigos. Antes de fundar (💰 Fondo del gremio): lo mismo con lo que pide fundar (✅ o ▫️). Botones:
+        💰 Depositar ("gfund": tu mochila con los códigos /f02, quién dio qué) y ↩️ Volver al gremio. Sin gremio, la pantalla
+        del gremio. La llama: el botón 💰 Fondos ("gfunds") y el ↩️ de 💰 Depositar. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py."""
+        t = self.texts
+        record = self._my_gremio(hero)
+        if record:                                     # before founding: the guild's fund pays the founding
+            fund = record.get("fund") or {}
+            cost = self.content.balance["camps"]["found_cost"]
+            ready = all(fund.get(i, 0) >= n for i, n in cost.items())
+            body = [t.t("guildmenu.gfunds_intro"), ""] + (self._fund_item_lines(fund) or [t.t("guildmenu.funds_empty")])
+            body += ["", ("✅ " if ready else "▫️ ") + t.t("gremio.fund_found", items=self._item_list(cost))]
+            title = t.t("guildmenu.gfunds_title")
+        else:
+            camp = self._guild_camp(hero)
+            if not camp:
+                return self._gremio_view(hero, notice=notice)
+            upgrades = self._upgrades(f"{camp['x']}:{camp['y']}")
+            fund = upgrades.get("fund") or {}
+            body = [t.t("guildmenu.funds_intro"), t.t("guildmenu.funds_works", n=len(self._active_works(camp, upgrades))), ""]
+            body += self._fund_item_lines(fund) or [t.t("guildmenu.funds_empty")]
+            title = t.t("guildmenu.funds_title")
+        if fund:
+            body += ["", t.t("guildmenu.funds_hint")]
+        actions = [Action(id="gfund", label=t.t("services.deposit_button")), Action(id="guild", label=t.t("menu.back"))]
+        return View(kind="guild_funds", title=title, body=body, actions=actions, notice=notice)
+
+    def _chat_lines(self, messages: list[dict[str, Any]]) -> list[str]:
+        """The chat lines of the last gremio.chat_hours, newest last, at most gremio.chat_shown and gremio.chat_max_chars.
+
+        [ES] Qué hace: elige qué mensajes se ven en 📢 Chat (D-302, el dueño: "te sale el listado del chat del último día. Si es
+        muy largo, lo reduces a la cantidad de mensajes que se puedan ver"): los de las últimas gremio.chat_hours (24 h), el
+        más nuevo al final, como mucho gremio.chat_shown (20) y, si pasan de gremio.chat_max_chars letras (3.500, para que el
+        mensaje de Telegram no pase su tope de 4.096), se quitan los más viejos. La llama: _guild_chat_view. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py."""
+        t = self.texts
+        cfg = self._gremio_cfg()
+        since = self.clock.now() - self._seconds(float(cfg.get("chat_hours", 24)) * 60)
+        shown = max(1, int(cfg.get("chat_shown", 20)))
+        limit = max(1, int(cfg.get("chat_max_chars", 3500)))
+        recent = [m for m in messages if float(m.get("at", 0.0)) >= since][-shown:]
+        lines = [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in recent]
+        while lines and sum(len(line) + 1 for line in lines) > limit:
+            lines.pop(0)
+        return lines
+
+    def _guild_chat_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📢 Chat: the guild's messages of the last day, the hint that any text goes to everyone, and 📢 Mensaje (D-302).
+
+        [ES] Qué hace: la pantalla del chat del gremio (pedido del dueño del 20-oct-2026: "Últimos mensajes → conviértelo en un
+        botón de 📢 Chat. Puedes verlo directamente cuando alguien escriba, o puedes venir aquí"). Antes de fundar, los mensajes
+        del gremio; después, los del campamento (D-285, D-291; también para quien espera lugar, D-294). Muestra _chat_lines,
+        "no hay mensajes del último día" si no hay, y la pista "💬 Escribe cualquier mensaje…". Botones: 📢 Mensaje ("gmsg") y
+        ↩️ Volver al gremio. Sin gremio, la pantalla del gremio. La llaman: el botón 📢 Chat ("gchat"), el del aviso de un
+        mensaje y _gremio_post. Si cambia, afecta: tests/test_submenus_campamento_gremio.py y tests/test_chat_del_gremio.py."""
+        t = self.texts
+        record = self._my_gremio(hero)
+        camp = None if record else self._guild_camp(hero)
+        if not (record or camp):
+            return self._guild_view(hero, notice=notice)
+        lines = self._chat_lines((record or camp).get("messages") or [])
+        body = [t.t("guildmenu.chat_intro", hours=int(self._gremio_cfg().get("chat_hours", 24))), ""]
+        body += lines or [t.t("guildmenu.chat_none")]
+        body += ["", t.t("gremio.chat_hint")]
+        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="guild", label=t.t("menu.back"))]
+        return View(kind="guild_chat", title=t.t("guildmenu.chat_title"), body=body, actions=actions, notice=notice)
 
     def _gremio_none_view(self, hero: Hero, notice: str | None = None) -> View:
         """No guild yet: what a guild is, its price and cap, and 🛡️ Crear gremio / 🔎 Buscar gremio."""
@@ -723,7 +897,7 @@ class GremioMixin:
                     guild=record["name"]), t.t("gremio.requests_count", n=len(record["requests"]))]
         actions = [Action(id=f"gans:{record['id']}:{account}:y", label=t.t("gremio.accept")),
                    Action(id=f"gans:{record['id']}:{account}:n", label=t.t("gremio.refuse")),
-                   Action(id="guild", label=t.t("menu.back"))]
+                   Action(id="gmembers", label=t.t("menu.back"))]          # D-302: 🙋 lives in 👥 Miembros
         return View(kind="gremio_requests", title=t.t("gremio.request_title"), body=body, actions=actions)
 
     def _gremio_join(self, record: dict[str, Any], account: str) -> None:
@@ -1173,7 +1347,7 @@ class GremioMixin:
             actions += [Action(id=f"goff:{account}", label=t.t("gremio.unofficer_button" if officer else "gremio.officer_button")),
                         Action(id=f"glead:{account}", label=t.t("gremio.lead_button")),
                         Action(id=f"gkick:{account}", label=t.t("gremio.kick_button"))]
-        actions.append(Action(id="guild", label=t.t("menu.back")))
+        actions.append(Action(id="gmembers", label=t.t("menu.back")))           # D-302: back to 👥 Miembros
         return View(kind="gremio_member", title=t.t("gremio.title"), body=body, actions=actions, notice=notice)
 
     def _gremio_officer(self, hero: Hero, account: str) -> View:
@@ -1289,23 +1463,28 @@ class GremioMixin:
     # ------------------------------------------------------------------ 📢 messages, 💰 fund, 📍 meeting point (D-269.2)
 
     def _gremio_msg_ask(self, hero: Hero) -> View:
-        """📢 Mensaje: the next text goes to every member (D-291: after founding too, to the camp's members)."""
+        """📢 Mensaje: the next text goes to every member (D-291: after founding too, to the camp's members).
+
+        [ES] Qué hace: la próxima frase que escribas va a todo el gremio. ❌ Cancelar vuelve a 📢 Chat (D-302: el botón está
+        ahí). La llaman: 📢 Mensaje de 📢 Chat ("gmsg"; también los botones viejos del gremio) y _gremio_post (texto vacío)."""
         t = self.texts
         if not self._my_gremio(hero) and not self._guild_camp(hero):
             return self._guild_view(hero)
         self.store.put("camp_naming", hero.id, {"mode": "gmsg", "x": hero.x, "y": hero.y})
         return View(kind="gremio_msg", title=t.t("gremio.title"),
                     body=[t.t("gremio.msg_ask", n=int(self._gremio_cfg().get("message_max_chars", 200)))], expects_text=True,
-                    actions=[Action(id="guild", label=t.t("gremio.cancel"))])
+                    actions=[Action(id="gchat", label=t.t("gremio.cancel"))])
 
     def _gremio_post(self, hero: Hero, text: str) -> View:
         """Send a 📢 message: cut to gremio.message_max_chars, kept with the last gremio.messages_kept, pushed to every member.
 
         [ES]
         Qué hace: manda el texto a cada miembro (_push_each: el título les llega en su idioma; el texto es del jugador) y lo
-        guarda en la pantalla del gremio (los últimos 5). Lo que pasa del largo se corta con "…". D-291 (0.39): después de
-        fundar también (va a los miembros del campamento, por _guild_chat). La llama: _gremio_text.
-        Si cambia, afecta: tests/test_gremio_desde_el_inicio.py y tests/test_deposito_tras_fundar.py.
+        guarda con los últimos gremio.messages_kept (50 desde D-302). Lo que pasa del largo se corta con "…". D-291 (0.39):
+        después de fundar también (va a los miembros del campamento, por _guild_chat). D-302 (0.39.4): vuelve a 📢 Chat, con
+        tu mensaje al final. La llama: _gremio_text.
+        Si cambia, afecta: tests/test_gremio_desde_el_inicio.py, tests/test_deposito_tras_fundar.py y
+        tests/test_submenus_campamento_gremio.py.
         """
         t = self.texts
         record = self._my_gremio(hero)
@@ -1315,7 +1494,7 @@ class GremioMixin:
         if not " ".join(text.split()):
             return self._gremio_msg_ask(hero)
         self._guild_chat(hero, text)
-        return self._guild_view(hero, notice=t.t("gremio.msg_sent"))
+        return self._guild_chat_view(hero, notice=t.t("gremio.msg_sent"))
 
     def _guild_chat(self, hero: Hero, text: str) -> str | None:
         """A message to the whole guild (or camp): kept with the last few and pushed to every mate; None without a guild.
@@ -1326,7 +1505,9 @@ class GremioMixin:
         (pedido del dueño, 19-oct-2026: "cuando ya se crea un gremio, todos los mensajes que se envíen dentro del juego van a
         ser recibidos por el resto de jugadores"): cualquier texto suelto que escribe un miembro (que no sea un comando ni la
         respuesta a una pantalla que pide texto) llega a todos. Devuelve el aviso para quien lo mandó, o None si no tiene
-        gremio. La llaman: text() (el texto suelto) y _gremio_post (📢 Mensaje). Si cambia, afecta: el chat del gremio.
+        gremio. D-302 (0.39.4): se guardan los últimos 50 (gremio.messages_kept) para la pantalla 📢 Chat (_guild_chat_view, los
+        del último día) y el botón del aviso abre 📢 Chat. La llaman: text() (el texto suelto) y _gremio_post (📢 Mensaje).
+        Si cambia, afecta: el chat del gremio.
         """
         t = self.texts
         text = " ".join(text.split())
@@ -1350,7 +1531,8 @@ class GremioMixin:
             name = camp["name"]
         self._push_each(mates, lambda: View(
             kind="gremio_message", title=t.t("gremio.msg_push_title", name=name),
-            body=[t.t("gremio.msg_line", name=hero.name, text=text)], actions=[Action(id="guild", label=t.t("gremio.button"))]))
+            body=[t.t("gremio.msg_line", name=hero.name, text=text)],
+            actions=[Action(id="gchat", label=t.t("guildmenu.chat_button"))]))      # D-302: the push opens 📢 Chat
         return t.t("gremio.chat_sent", n=len(mates))
 
     def _gremio_fund_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -1359,8 +1541,9 @@ class GremioMixin:
         [ES]
         Qué hace: el fondo del gremio (D-269.2: "no tienen que llevarlo a ningún lugar"): cada miembro deposita desde donde esté
         escribiendo o tocando el código de un material (/f02, el mismo número de 📦 Recursos): pasa todo lo que lleva de eso.
-        Muestra el total, lo que pide fundar (camps.found_cost) y quién dio qué. ↩️ Volver al gremio.
-        La llaman: 💰 Fondo del gremio y _fund_code. Si cambia, afecta: tests/test_gremio_desde_el_inicio.py.
+        Muestra el total, lo que pide fundar (camps.found_cost) y quién dio qué. D-302 (0.39.4): es la pantalla de 💰 Depositar,
+        dentro de 💰 Fondo del gremio (_guild_funds_view, la lista con los códigos de 📦 Recursos); su ↩️ Volver va ahí.
+        La llaman: 💰 Depositar ("gfund") y _fund_code. Si cambia, afecta: tests/test_gremio_desde_el_inicio.py.
         """
         t = self.texts
         record = self._my_gremio(hero)
@@ -1385,7 +1568,7 @@ class GremioMixin:
         if not mine:
             body.append(t.t("gremio.fund_bag_none"))
         return View(kind="gremio_fund", title=t.t("gremio.fund_title"), body=body, notice=notice,
-                    actions=[Action(id="guild", label=t.t("menu.back"))])
+                    actions=[Action(id="gfunds", label=t.t("menu.back"))])       # D-302: back to 💰 Fondo del gremio
 
     def _fund_goods(self, hero: Hero) -> list[tuple[str, int]]:
         """The materials of the backpack that the fund takes (with a code; never food: it is for the pantry), by code."""
@@ -1979,8 +2162,8 @@ class GremioMixin:
         [ES] Qué hace: la tarjeta de un miembro del campamento (desde /m2 en 🛡️ Gremio): su línea, clase y nivel, lo que dio al
         fondo y los ayudantes. El fundador ve 🤝 Hacer ayudante (si hay lugar: 1 por cada 5 miembros) o ✖️ Quitar ayudante.
         D-294 (0.39): la tarjeta de quien espera lugar en el campamento (⏳); el fundador o un ayudante lo une con 🏕️ Unir al
-        campamento cuando hay lugar (nunca solo). La llaman: /m1 (_member_code) y "gmem:<cuenta>". Si cambia, afecta:
-        tests/test_ayudantes.py y tests/test_espera_del_gremio.py."""
+        campamento cuando hay lugar (nunca solo). D-302 (0.39.4): su ↩️ Volver va a 👥 Miembros, donde está la lista. La llaman:
+        /m1 (_member_code) y "gmem:<cuenta>". Si cambia, afecta: tests/test_ayudantes.py y tests/test_espera_del_gremio.py."""
         t = self.texts
         camp = self._guild_camp(hero)
         waiting = list(camp.get("waiting") or []) if camp else []
@@ -2000,7 +2183,7 @@ class GremioMixin:
                     actions.append(Action(id=f"cwjoin:{account}", label=t.t("waiting.join_button")))
                 else:
                     body.append(t.t("waiting.no_room"))
-            actions.append(Action(id="guild", label=t.t("menu.back")))
+            actions.append(Action(id="gmembers", label=t.t("menu.back")))      # D-302: back to 👥 Miembros
             return View(kind="gremio_member", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
         body.append(self._helpers_line(camp, hero))
         founder = camp.get("founder_id")
@@ -2010,7 +2193,7 @@ class GremioMixin:
                 actions.append(Action(id=f"ghelp:{account}", label=t.t("helpers.remove_button" if helper else "helpers.make_button")))
             else:
                 body.append(t.t("helpers.full", cap=self._helpers_cap(camp)))
-        actions.append(Action(id="guild", label=t.t("menu.back")))
+        actions.append(Action(id="gmembers", label=t.t("menu.back")))          # D-302: back to 👥 Miembros
         return View(kind="gremio_member", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
 
     def _camp_helper_toggle(self, hero: Hero, account: str) -> View:
@@ -2057,20 +2240,23 @@ class GremioMixin:
                 t.t("gremio.requests_count", n=len(camp["requests"]))]
         actions = [Action(id=f"join:{key}:{account}:y", label=t.t("camps.join_yes")),
                    Action(id=f"join:{key}:{account}:n", label=t.t("camps.join_no")),
-                   Action(id="guild", label=t.t("menu.back"))]
+                   Action(id="gmembers", label=t.t("menu.back"))]          # D-302: 🙋 lives in 👥 Miembros
         return View(kind="camp_requests", title=t.t("camps.join_title"), body=body, actions=actions)
 
     # ------------------------------------------------------------------ 💰 the camp's fund after founding (D-291, 0.39)
 
-    def _fund_view(self, hero: Hero, back: str = "guild") -> View:
-        """💰 Depositar: the guild's fund before founding, the camp's fund after it (D-291); nothing without a guild."""
+    def _fund_view(self, hero: Hero, back: str = "gfunds") -> View:
+        """💰 Depositar: the guild's fund before founding, the camp's fund after it (D-291); nothing without a guild.
+
+        [ES] Qué hace: abre la pantalla de depositar que corresponde. D-302 (0.39.4): su ↩️ Volver va a 💰 Fondos ("gfunds"),
+        o a 🏘️ Servicios si vino de ahí ("gfund:svc"). La llama: _gremio_action ("gfund", "gfund:svc")."""
         if self._my_gremio(hero):
             return self._gremio_fund_view(hero)
         if self._guild_camp(hero):
             return self._camp_fund_view(hero, back=back)
         return self._gremio_view(hero)
 
-    def _camp_fund_view(self, hero: Hero, back: str = "guild", notice: str | None = None) -> View:
+    def _camp_fund_view(self, hero: Hero, back: str = "gfunds", notice: str | None = None) -> View:
         """💰 Fondo del campamento: what is in it, the active works it feeds (oldest first), who gave what, your codes (/f02).
 
         [ES] Qué hace: la pantalla de 💰 Depositar después de fundar (D-291, pedido del dueño: "una vez se crea el gremio no se
@@ -2078,7 +2264,8 @@ class GremioMixin:
         o tocando el código de un material (/f02, como antes de fundar): pasa todo lo que llevas de eso al fondo, que le da a las
         obras activas lo que les falta, la que se activó primero antes (game.py _feed_works); lo que sobra queda en el fondo y se
         ve aquí. Muestra cada obra activa con lo que le falta, quién dio qué (antes y después de fundar) y tu mochila con códigos.
-        ↩️ Volver a 🛡️ Gremio o a 🏘️ Servicios (de donde vino). La llaman: 💰 Depositar ("gfund", "gfund:svc") y _camp_deposit.
+        ↩️ Volver a 💰 Fondos del campamento (D-302, _guild_funds_view: la lista con los códigos de 📦 Recursos) o a 🏘️ Servicios
+        (de donde vino). La llaman: 💰 Depositar ("gfund", "gfund:svc") y _camp_deposit.
         Si cambia, afecta: tests/test_deposito_tras_fundar.py."""
         t = self.texts
         camp = self._guild_camp(hero)
@@ -2112,7 +2299,7 @@ class GremioMixin:
         if not mine:
             body.append(t.t("gremio.fund_bag_none"))
         return View(kind="camp_fund", title=t.t("cfund.title"), body=body, notice=notice,
-                    actions=[Action(id=back if back in ("guild", "upsvc") else "guild", label=t.t("menu.back"))])
+                    actions=[Action(id=back if back in ("gfunds", "guild", "upsvc") else "gfunds", label=t.t("menu.back"))])
 
     def _camp_deposit(self, hero: Hero, camp: dict[str, Any], code: int) -> View:
         """/f02 after founding: all of that material into the camp's fund, from anywhere; then the fund feeds the works (D-291).
@@ -2158,11 +2345,6 @@ class GremioMixin:
         data.setdefault("log", [])
         data.setdefault("seq", 0)
         return data
-
-    def _armory_line(self, key: str | None) -> str:
-        """"⚔️ Armería: 3/30 piezas" for the guild screens."""
-        data = (self.store.get("armory", key) if key else None) or {}
-        return self.texts.t("armory.line", n=len(data.get("items") or []), cap=int(self._armory_cfg().get("slots", 30)))
 
     def _armory_label(self, entry: dict[str, Any]) -> str:
         """A piece of the armory with its marks: rarity, emoji, name, ✒️, ✨ and who signed it."""

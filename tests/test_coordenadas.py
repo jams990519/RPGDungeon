@@ -29,8 +29,8 @@ def test_routes_the_map_and_places_say_their_coordinates(service):
     zone = text(service.act("test:1", "home"))
     assert "Norte (2, 0)" in zone and "Sur (2, -2)" in zone and "Este (3, -1)" in zone and "Oeste (1, -1)" in zone
     assert "tú, en (2, -1)" in text(service.act("test:1", "zmap"))
-    places = text(service.act("test:1", "places"))
-    assert "El Claro (0, 0)" in places and "/ir x y" in places
+    assert "/ir x y" in text(service.act("test:1", "places"))           # D-301: the menu says it; each kind lists its places
+    assert "El Claro (0, 0)" in text(service.act("test:1", "plc:fire"))
     confirm = text(service.act("test:1", "goask:0:0"))
     assert "(0, 0)" in confirm
     started = service.act("test:1", "goto:0:0")

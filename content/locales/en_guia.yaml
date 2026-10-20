@@ -111,15 +111,15 @@ guide:
 
         📌 Your coordinates (x, y) and the Distance, how many zones away the start is, are in 📍 Zone. The farther away, the stronger the enemies.
 
-        📒 Places: the important places you''ve already visited (the camp, dungeons, player camps). Pick one, confirm and your hero goes alone.'
+        📒 Places: the important places you''ve already visited, by kind (your camp, 🕳️ Dungeons, 🔥 Campfires...). Pick the kind and the place, confirm and your hero goes alone.'
     return:
       name: Back to the Clearing
-      task: 'go back to the Clearing: 🗺️ Map → 📒 Places → The Clearing (or by the routes in 📍 Zone).'
+      task: 'go back to the Clearing: 🗺️ Map → 📒 Places → 🔥 Campfires → The Clearing (or by the routes in 📍 Zone).'
       intro: '🔥 Go back to camp
 
         • The Clearing is your base: the merchant, the inn and the professions are there.
 
-        • In 📒 Places you choose an important place you''ve already visited, confirm and your hero goes alone, zone by zone.'
+        • In 📒 Places you choose the kind (🔥 Campfires, 🕳️ Dungeons...) and an important place you''ve already visited, confirm and your hero goes alone, zone by zone.'
     camp:
       name: The camp
       task: 'open the camp: 🏕️ Camp (bottom menu).'

@@ -90,12 +90,13 @@ def test_own_camp_hub_and_manage_screen(service):
     assert "Fogón" in service.act("test:1", "cook").notice                      # ...no 🔥 Fogón yet: it says where
     assert "Biblioteca" in service.act("test:1", "research").notice             # no 📚 Biblioteca yet
     guild = service.act("test:1", "guild")                                      # D-291: 🛡️ Gremio straight from the hub
-    assert guild.kind == "guild" and "gfund" in ids(guild)                      # ...with 💰 Depositar after founding
+    assert guild.kind == "guild" and "gfunds" in ids(guild)                     # ...with 💰 Fondos after founding (D-302)
+    assert "gfund" in ids(service.act("test:1", "gfunds"))                      # ...and 💰 Depositar inside it
     assert any(a.id == "guild" for a in service.menu())                         # and in the bottom menu (D-281)
     manage = service.act("test:1", "campmgmt")
     assert manage.kind == "camp_manage" and manage.kind in HUB_KINDS
-    assert ids(manage) == ["grow", "upgrades", "guild", "gzones", "claro"]
-    for screen in ("grow", "upgrades", "guild"):
+    assert ids(manage) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
+    for screen in ("grow", "upgrades", "guild", "campinfo"):
         assert service.act("test:1", screen).actions[-1].id == "campmgmt"      # back to 🏰 Gestionar
     assert service.act("test:1", "upsvc").actions[-1].id == "claro"
 

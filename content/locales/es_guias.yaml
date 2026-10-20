@@ -78,7 +78,7 @@ guides_page:
       🪓 Recolectar (en 🧭 Explorar) junta los recursos que ya descubriste en tu zona.
       ⏱️ Cada vuelta toma {gather_min} min y {gather_energy} ⚡, y da de {gather_low} a {gather_high} unidades (más en las zonas lejanas).
       🔢 Eliges cuántas vueltas seguidas ({batches} o Todo) y te aviso al terminar.
-      📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo, un {stock_regen} % por hora; agotado, no da nada.
+      📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo, un {stock_regen} % por hora (la 🪵 madera, un {wood_regen} %); agotado, no da nada.
       ✨ En un nodo, su recurso rinde ×{node_yield}, se agota más lento y a veces ({node_rare} %) da algo raro.
       🎒 Con la mochila llena ({bag_cap}) no recolectas: vende o usa cosas.
       🏕️ En el territorio de un campamento no salen peleas, y en el tuyo juntas un {own_bonus} % más.
@@ -143,8 +143,8 @@ guides_page:
       🛡️ Ábrelo en el menú de abajo o con /gremio. Crear uno cuesta {gremio_cost}, y caben {gremio_cap} antes del campamento.
       🔎 Buscar gremio: toca su código (/g1) y pide entrar; acepta el líder o un oficial.
       ✉️ Para invitar: /inv_ y el código de jugador del otro (cada uno lo ve en 👤 Héroe).
-      💬 Lo que escribes en el chat del juego le llega a todo tu gremio.
-      💰 Fondo (con campamento, 💰 Depositar): pones materiales desde donde estés, con su código (/f02).
+      💬 Lo que escribes en el chat del juego le llega a todo tu gremio; lo del último día está en 📢 Chat.
+      💰 Fondo (con campamento, 💰 Fondos del campamento) → 💰 Depositar: pones materiales desde donde estés, con su código (/f02).
       ⚔️ Armería: dejas equipo con /a1 y lo tomas con /t1.
       🗺️ Lo que explora uno lo sabe todo el gremio (la experiencia es de quien explora). Si sales, te quedas con lo tuyo.
       ⏳ Con el campamento lleno, el fundador o un 🤝 ayudante puede sumarte al gremio a esperar lugar (hasta {waiting_max}).
@@ -158,7 +158,7 @@ guides_page:
       ▶️ El fundador o un 🤝 ayudante (1 cada {helpers_per} miembros) activa una obra; todos aportan con 🤲, o desde lejos con 💰 Depositar.
       📈 Cada obra nueva cuesta un {growth_pct} % más por cada obra que ya construyeron.
       🏗️ Con los materiales completos se construye: {work_minutes} min por nivel con {work_members} miembros en el territorio (con más, menos).
-      ⬆️ Agrandar campamento (🏰 Gestionar) suma una zona al territorio; ahí recolectas un {own_bonus} % más.
+      ⬆️ Agrandar campamento (🏰 Gestionar, donde también está ℹ️ Información) suma una zona al territorio; ahí recolectas un {own_bonus} % más.
       🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear.
   dungeons:
     title: "🕳️ Mazmorras y enemigos"
