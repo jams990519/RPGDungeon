@@ -337,6 +337,10 @@ Coordenadas 1, 2 · Lejanía 2
 - Lo pidió el dueño. Los números los propuso Claude.
 - **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
 
+> **0.40 (D-300, pedido del dueño): más madera.** Los terrenos de bosque (bosque, bosque oscuro, selva) siempre tienen madera (riqueza ≥ 0,7); fuera de ellos entra en algunas zonas más, y vuelve el doble de rápido que los demás recursos. Solo se suma, sin quitar recursos.
+
+> **0.40 (D-301, pedido del dueño): 📒 Lugares por botones.** Primero 🏕️ tu campamento (va directo a ¿Viajar?), después 🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio (la construcción o el punto de reunión), 🏕️ Campamentos de otros y 👑 Guarida; cada botón lista sus lugares con su código /ir.
+
 ### 1.12.1 Tiempo estimado y ⚙️ Opciones de pelea en los lotes (D-114)
 
 El dueño pidió (1-oct-2026):
