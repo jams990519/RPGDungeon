@@ -1934,7 +1934,7 @@ travel:
 walk:
   button: 🔗 Move
   title: 🔗 Move
-  intro: 'Build your way step by step: each arrow adds one zone in that direction. When you finish, your hero walks it alone, 1 minute per zone.'
+  intro: 'Build your way step by step: each arrow adds one zone in that direction. When you finish, your hero walks it alone, {minutes} min per zone.'
   empty: You haven't added any steps yet.
   steps: '🧭 Your way: {steps}'
   summary: '{n} {n|step|steps} · you end at ({x}, {y}) · about {time}'
@@ -2453,7 +2453,7 @@ camps:
   land_line: 🏕️ Territory of {name}
   claro_land: '🔥 Clearing territory: you aren''t attacked on arrival here.'
   found_intro: 'There''s no camp here. To found one at ({x}, {y}) you need:'
-  req_far: To be far from the Clearing (Distance {n} or more)
+  req_far: To be far from the campfires (Distance {n} or more)
   req_explored: To have explored this zone 100% (you're at {pct}%)
   req_known: 'To know the surroundings: {n} of {need} neighboring zones known (visited or explored from here)'
   req_alone: No other camp within {n} {n|zone|zones}

@@ -753,3 +753,14 @@ v0_39_2:
   notes_en:
     - "💱 The Trade profession is locked for now: it will change and come back with the caravans. Selling to the merchant and at the Trading Post works as before for everyone. If you already had a rank, it is kept."
 
+v0_39_3:
+  version: "0.39.3"
+  title: "📚 Lost Realms 0.39.3: guías para aprender a jugar"
+  title_en: "📚 Lost Realms 0.39.3: guides to learn the game"
+  notes:
+    - "📚 Nuevas guías en ❓ Dudas: una por cada clase, cómo encontrar y juntar recursos, los oficios, y cómo funciona cada cosa (energía, mapa, peleas, gremio, campamento, mazmorras y misiones). En español y en inglés."
+    - "❓ Dudas ahora también está en ⚙️ Opciones, para encontrarla más fácil."
+  notes_en:
+    - "📚 New guides in ❓ Help: one for each class, how to find and gather resources, professions, and how everything works (energy, map, fights, guild, camp, dungeons and quests). In Spanish and in English."
+    - "❓ Help is now also in ⚙️ Options, so it's easier to find."
+

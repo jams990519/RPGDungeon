@@ -1371,7 +1371,7 @@ travel:
 walk:                          # [ES] D-244 (0.33, pedido del dueño): 🔗 Moverte, el 5.º botón de 📍 Zona. Sumas pasos en el orden que quieras y tu héroe los camina solo
   button: "🔗 Moverte"
   title: "🔗 Moverte"
-  intro: "Arma tu camino paso a paso: cada flecha suma una zona en esa dirección. Al terminar, tu héroe lo recorre solo, 1 minuto por zona."
+  intro: "Arma tu camino paso a paso: cada flecha suma una zona en esa dirección. Al terminar, tu héroe lo recorre solo, {minutes} min por zona."
   empty: "Todavía no sumaste pasos."
   steps: "🧭 Tu camino: {steps}"
   summary: "{n} {n|paso|pasos} · terminas en ({x}, {y}) · unos {time}"
@@ -1920,7 +1920,7 @@ camps:
   land_line: "🏕️ Territorio de {name}"
   claro_land: "🔥 Territorio del Claro: aquí no te atacan al llegar."
   found_intro: "Aquí no hay campamento. Para fundar uno en ({x}, {y}) necesitas:"
-  req_far: "Estar lejos del Claro (Lejanía {n} o más)"
+  req_far: "Estar lejos de las fogatas (Lejanía {n} o más)"   # [ES] D-277: la Lejanía se cuenta desde la fogata más cercana
   req_explored: "Haber explorado esta zona al 100 % (vas en {pct} %)"
   req_known: "Conocer los alrededores: {n} de {need} zonas vecinas conocidas (pisadas o exploradas desde aquí)"
   req_alone: "Que no haya otro campamento a {n} {n|zona|zonas} o menos"

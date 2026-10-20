@@ -9193,7 +9193,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _walk_view(self, hero: Hero, steps: list[str], notice: str | None = None) -> View:
         """The 🔗 Moverte screen: the steps added so far, where they end and how long they take (D-244)."""
         t = self.texts
-        body = [t.t("walk.intro"), t.t("walk.coord_hint", x=hero.x, y=hero.y), ""]   # D-278: how to go to a coordinate
+        minutes = self.content.balance["travel"]["first_minutes"]      # the time of one zone, from balance (not written by hand)
+        body = [t.t("walk.intro", minutes=minutes), t.t("walk.coord_hint", x=hero.x, y=hero.y), ""]   # D-278: how to go to a coordinate
         if steps:
             groups: list[list[Any]] = []
             for step in steps:                          # "⬆️×2 ➡️ ⬅️ ⬇️×2": the same direction in a row, counted once
