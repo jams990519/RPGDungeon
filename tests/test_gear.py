@@ -97,15 +97,11 @@ def test_gear_screens_keep_four_buttons_and_sell_in_claro(service):
         hero.backpack[item_id] = 1
     service._save(hero)
     view = service.act("test:1", "gear")
-    assert view.kind == "gear_worn" and [a.id for a in view.actions] == ["gear:0", "bag"]
+    assert view.kind == "gear_worn" and [a.id for a in view.actions] == ["gear:0", "unequipl", "bag"]   # D-299: 🔽 Desequipar
     view = service.act("test:1", "gear:0")
     assert view.kind == "gear" and len(view.actions) <= 4
-    assert any(a.id.startswith("gear:") for a in view.actions)
-    seen = set()
-    for _ in range(5):
-        seen |= {a.id for a in view.actions if a.id.startswith("item:")}
-        view = service.act("test:1", next(a.id for a in view.actions if a.id.startswith("gear:")))
-    assert len(seen) == 7                                    # 2 worn + 5 in the backpack
+    lines = [line for line in view.body if line.startswith("/e")]   # D-299: a list with codes, only what is not worn
+    assert len(lines) == 5 and not any("oxidada" in line or "abollado" in line for line in lines)
     item = service.act("test:1", "item:tela_1")
     assert any(a.id.startswith("equip:") for a in item.actions) and "rinde la mitad" in "\n".join(item.body)
     gold = service._load("test:1").gold

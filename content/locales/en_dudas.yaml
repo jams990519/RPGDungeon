@@ -205,7 +205,7 @@ faq:
     a: 'The 🎒 backpack has {bag_cap} space: each unit takes 1 (the belt and what you''re wearing don''t count). What you find is never lost even if it goes over the space, but with a full backpack you can''t gather or buy until you sell or use things.'
   d31:
     q: 🛡️ How do I equip gear?
-    a: 'In 🎒 Backpack → 🛡️ Gear you see what you''re wearing and the pieces you''ve found, whether they suit you and how much better they are. ⬆️ marks a piece better than yours: tap it and choose ✅ Equip. Each piece needs a level and a type.'
+    a: 'In 🎒 Backpack → 🛡️ Gear you see what you''re wearing and the pieces you''ve found, whether they suit you and how much better they are. 🔁 Equip lists what you are not wearing, each piece with its code (/e1): ⬆️ marks one better than yours; tap it and choose ✅ Equip. 🔽 Unequip lists what you wear: its code (/q1) takes it off. Each piece needs a level and a type.'
   d32:
     q: 🎭 What is an origin?
     a: 'Your origin says where your hero comes from: it gives a small trait (never for combat), a gift and its own story. You choose it only once, whenever you want, in 👤 Hero → 🎭 Origin. If you already chose it, you keep it.'

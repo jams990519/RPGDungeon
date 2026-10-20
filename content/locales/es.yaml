@@ -1990,7 +1990,15 @@ gear:
   in_bag: "🎒 Piezas en la mochila: {n}"
   equip_menu: "🔁 Equipar"
   equip_menu_new: "🔁 Equipar 🆕"
-  equip_title: "🔁 Equipar o quitar"
+  equip_title: "🔁 Equipar"   # [ES] D-299 (0.39.4): lo puesto se quita en 🔽 Desequipar
+  unequip_menu: "🔽 Desequipar"
+  unequip_title: "🔽 Desequipar"
+  unequip_line: "{code} {item} — {stats}"
+  unequip_hint: "Toca el código de una pieza para quitártela: queda en la mochila."
+  list_line: "{code} {item}{n} — {status}"   # [ES] D-299: 🔁 Equipar en formato lista, solo lo que no llevas puesto
+  list_page: "Página {page} de {pages}."
+  list_hint: "Toca el código de una pieza para ver qué te da y ponértela, o venderla en una fogata."
+  bad_code: "Ese código no está en la lista: usa uno de los que ves aquí."
   item_title: "🔎 Pieza de equipo"
   hero_line: "🛡️ Equipo: {items} — /equipo"
   slot:
@@ -2027,10 +2035,10 @@ gear:
   backpack_title: "En la mochila ({n}):"
   backpack_line: "• {item}{n} — {status}"
   backpack_empty: "No tienes piezas en la mochila. Los enemigos a veces sueltan equipo al ganar."
-  worn_title: "Puestas (tócalas para quitarlas):"
-  hint: "Toca una pieza para ver qué te da, ponértela o venderla en el Claro. Tú decides: el juego solo te aconseja."
-  piece_button: "{item}"
-  piece_worn: "✔️ {item}"
+  worn_title: "Puestas (tócalas para quitarlas):"   # [ES] sin uso desde la 0.39.4 (D-299)
+  hint: "Toca una pieza para ver qué te da, ponértela o venderla en el Claro. Tú decides: el juego solo te aconseja."   # [ES] sin uso desde la 0.39.4 (D-299: gear.list_hint)
+  piece_button: "{item}"   # [ES] sin uso desde la 0.39.4 (D-299: la lista usa códigos /e1)
+  piece_worn: "✔️ {item}"   # [ES] sin uso desde la 0.39.4 (D-299)
   more: "▶️ Ver más piezas"
   for_you: "✅ Te sirve: es de tu clase."
   for_you_later: "🔒 Te servirá desde el nivel {level}."
