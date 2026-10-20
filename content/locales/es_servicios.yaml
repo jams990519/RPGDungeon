@@ -18,9 +18,9 @@ hub:
   services_active: "🏘️ Servicios: {list} · 🔨 {n} {n|obra activa|obras activas}. Lo construido y lo que falta, por tipo."   # [ES] D-288
   services_types: "🏘️ Servicios: casas, oficios y defensas del campamento, por tipo · 🔨 {n} {n|obra activa|obras activas}."
   make_none_camp: "🛠️ Fabricar: todavía sin estaciones; las abren los edificios de oficio (🏘️ Servicios → ⚒️ Oficios)."
-  manage_nopantry: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras y 🛡️ gremio."   # [ES] D-287: antes del nivel 3 no se nombra la despensa
+  manage_nopantry: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-287: antes del nivel 3 no se nombra la despensa; D-302: ℹ️ Información
   research_none_notice: "🔬 Tu campamento todavía no tiene 📚 Biblioteca."   # [ES] D-287: respuesta corta a un botón viejo, sin nivel
-  guild_camp: "🛡️ Gremio: los miembros, 💰 depositar desde donde estés, 📢 mensajes y ⚔️ armería."   # [ES] D-291: el botón está en el centro
+  guild_camp: "🛡️ Gremio: 👥 miembros, 💰 fondos (depositas desde donde estés), 📢 chat y ⚔️ armería."   # [ES] D-291: el botón está en el centro; D-302: sus submenús
 
 upgrades:
   count_reach: "🏗️ Construidas: {n} de {total} de este nivel"   # [ES] D-287: solo lo que tienen a su alcance
@@ -115,7 +115,7 @@ gremio:                        # [ES] D-294 (0.39): avisos de /inv_ y ✉️ Inv
   waiting_full: "⏳ Ya esperan los que caben en el gremio: une a alguien al campamento primero."
 
 cfund:                         # [ES] D-291 (0.39): el 💰 fondo del campamento, después de fundar
-  title: "💰 Fondo del campamento"
+  title: "💰 Depositar en el fondo del campamento"   # [ES] D-302: la pantalla de 💰 Depositar (la lista es 💰 Fondos del campamento)
   intro: "Deposita desde donde estés: escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso. El fondo le da a las obras activas lo que les falta, primero a la que se activó antes; lo que sobra queda aquí."
   line: "💰 En el fondo: {items}"
   empty: "💰 El fondo está vacío."
@@ -129,7 +129,7 @@ armory:                        # [ES] D-290 (0.39): ⚔️ Armería del gremio
   button: "⚔️ Armería"
   title: "⚔️ Armería del gremio"
   intro: "Deja aquí las armas y armaduras que no usas y toma las que te sirvan, desde donde estés. Queda anotado quién dejó y quién tomó cada pieza."
-  line: "⚔️ Armería: {n}/{cap} piezas"
+  line: "⚔️ Armería: {n}/{cap} piezas"   # [ES] sin uso desde la 0.39.4 (D-302: la cuenta está solo en ⚔️ Armería, armory.count)
   count: "🗃️ {n}/{cap} piezas"
   item_line: "/t{n} {item} · dejó {name}"
   signed: " (✒️ {name})"

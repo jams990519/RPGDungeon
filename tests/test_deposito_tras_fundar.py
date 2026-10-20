@@ -3,7 +3,8 @@
 [ES] Pruebas de lo que pidió el dueño el 19-oct-2026 ("una vez se crea el gremio no se puede perder el botón de depositar porque
 ahí es donde se va a depositar… el chat, qué pasó cuando creé el campamento: esas cositas deben mantenerse"):
 - después de fundar, 🛡️ Gremio sigue con 📢 Mensaje, 💰 Depositar, ⚔️ Armería y 🗺️ Zonas, los miembros con su código y los
-  📢 mensajes de antes de fundar (pasan al campamento);
+  📢 mensajes de antes de fundar (pasan al campamento); desde D-302 (0.39.4) detrás de sus botones: 👥 Miembros, 💰 Fondos del
+  campamento (con 💰 Depositar) y 📢 Chat (con 📢 Mensaje);
 - 💰 Depositar (en 🛡️ Gremio y en 🏘️ Servicios) y /f02 funcionan desde cualquier lugar: lo depositado va al fondo del campamento,
   que alimenta las obras activas (la que se activó primero, antes); lo que sobra queda y se ve; al activar una obra, el fondo le
   da lo que tiene; se anota quién dio qué y no da experiencia (como el fondo de antes de fundar);
@@ -52,18 +53,20 @@ def test_the_guild_screen_keeps_its_tools_and_the_messages_of_before(service, cl
     camp = service.store.get("camp", KEY)
     assert camp and camp["messages"][-1]["text"] == "Nos juntamos en el bosque"   # D-291: carried into the camp
     view = service.act("test:1", "guild")
-    assert view.kind == "guild" and ids(view)[:4] == ["gmsg", "gfund", "garm", "gzones"]
-    body = text(view)
-    assert "💬 Lyra: Nos juntamos en el bosque" in body and "le llega a todo tu gremio" in body
-    assert any(line.startswith("/m1 👑 Lyra") for line in view.body)
+    assert view.kind == "guild" and ids(view)[:5] == ["gmembers", "gfunds", "gchat", "garm", "gzones"]   # D-302: submenus
+    assert "gfund" in ids(service.act("test:1", "gfunds"))                  # 💰 Depositar inside 💰 Fondos
+    chat = service.act("test:1", "gchat")
+    body = text(chat)
+    assert "💬 Lyra: Nos juntamos en el bosque" in body and "le llega a todo tu gremio" in body and "gmsg" in ids(chat)
+    assert any(line.startswith("/m1 👑 Lyra") for line in service.act("test:1", "gmembers").body)
     service.act("test:2", f"gcamp:{gid}:y")
     service.tick()
     assert service.act("test:1", "gmsg").expects_text                       # 📢 Mensaje after founding
     view = service.text("test:1", "Traigan piedra")
-    assert view.kind == "guild" and "enviado" in view.notice
+    assert view.kind == "guild_chat" and "enviado" in view.notice and "💬 Lyra: Traigan piedra" in view.body
     got = pushes(service, "test:2", "gremio_message")
     assert got and "💬 Lyra: Traigan piedra" in got[0].body
-    lines = [line for line in service.act("test:1", "guild").body if line.startswith("/m")]
+    lines = [line for line in service.act("test:1", "gmembers").body if line.startswith("/m")]
     assert len(lines) == 2 and "Bram" in lines[1]
     card = service.text("test:1", "/m2")                                     # /m codes after founding
     assert card.kind == "gremio_member" and "Bram" in text(card)
@@ -81,7 +84,7 @@ def test_deposits_from_far_away_feed_the_active_works_oldest_first(service):
     service.tick()
     xp, merit = service._load("test:2").xp, service._load("test:2").merit
     view = service.act("test:2", "gfund")
-    assert view.kind == "camp_fund" and ids(view) == ["guild"] and any(line.startswith("/f01 ") for line in view.body)
+    assert view.kind == "camp_fund" and ids(view) == ["gfunds"] and any(line.startswith("/f01 ") for line in view.body)
     assert not any("Carne" in line and line.startswith("/f") for line in view.body)     # food is for the pantry
     assert any(line.startswith("1.") and "Fogón" in line for line in view.body)       # the order the fund fills them
     view = service.text("test:2", "/f01")
@@ -126,7 +129,7 @@ def test_old_camps_without_a_guild_deposit_too_and_it_reads_well_in_english(serv
     view = service.text("test:1", "/f01")
     assert view.kind == "camp_fund" and "You deposited" in view.notice
     assert service._upgrades(KEY)["works"]["fogon"] == {"madera": 5}
-    for action in ("gfund", "guild", "garm"):
+    for action in ("gfund", "guild", "garm", "gmembers", "gfunds", "gchat", "campinfo"):
         assert "[" not in text(service.act("test:1", action)), action
     assert not service.texts.fallbacks.get("en"), sorted(service.texts.fallbacks.get("en", []))[:20]
     assert not service.texts.missing

@@ -232,7 +232,7 @@ def test_camp_perks_use_the_best_rank_among_current_members(service):
     assert perks["cook_food"] == (pytest.approx(0.30), "Bram")              # the best, never the sum
     assert perks["build_cost"] == (pytest.approx(0.10), "Lyra") and perks["repair_cost"] == (pytest.approx(0.25), "Lyra")
     assert perks["fish_food"] == (0.0, None) and perks["stone_cost"] == (0.0, None)
-    view = service.act("test:1", "claro")
+    view = service.act("test:1", "campinfo")                                # D-302: the perks are in ℹ️ Información
     line = next(line for line in view.body if "Oficios del campamento" in line)
     assert line.startswith("🏰") and "Bram" in line and "Lyra" in line and "+30 %" in line
     assert any("Oficios del campamento" in line for line in service.act("test:1", "oficios").body)
@@ -347,8 +347,9 @@ def test_raids_damage_the_defenses_and_the_members_repair_them(service, clock):
     service._resolve_raid(camp, dict(raid, kind="trial"), service._load("test:1"))   # the Noche de prueba never damages
     assert service._camp_damage(camp) == 3
     service.tick()
-    view = service.act("test:1", "claro")
-    assert any(line.startswith("🛠️") and "−3" in line for line in view.body) and len(view.actions) <= 8   # D-192: the hub
+    assert len(service.act("test:1", "claro").actions) <= 8                # D-192: the hub
+    view = service.act("test:1", "campinfo")                                # D-302: the damage is in ℹ️ Información
+    assert any(line.startswith("🛠️") and "−3" in line for line in view.body)
     up = service.act("test:1", "upgrades")
     assert any(line.startswith("🛠️") for line in up.body) and "upw" in ids(up)
     works = service.act("test:1", "upw")

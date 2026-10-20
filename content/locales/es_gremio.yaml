@@ -53,18 +53,18 @@ gremio:
   meet_line: "📍 Punto de reunión: {place}"
   meet_none: "📍 Sin punto de reunión todavía (lo marca el líder)."
   fund_line: "💰 Fondo: {items}"
-  fund_empty: "💰 Fondo: vacío. Cada miembro deposita desde donde esté (💰 Fondo)."
-  members_title: "👥 Miembros:"
+  fund_empty: "💰 Fondo: vacío. Cada miembro deposita desde donde esté."
+  members_title: "👥 Miembros:"   # [ES] sin uso desde la 0.39.4 (D-302: 👥 Miembros es un botón)
   member_line: "{code} {role}{name} (nv {level}) · {state} · {where} · {activity}"
   role_leader: "👑 "
   role_officer: "⭐ "
   online: "🟢 en línea"
   offline: "⚪ {ago}"
-  messages_title: "📢 Últimos mensajes:"
+  messages_title: "📢 Últimos mensajes:"   # [ES] sin uso desde la 0.39.4 (D-302: 📢 Chat es un botón)
   msg_line: "💬 {name}: {text}"
   codes_hint: "Toca el código de un miembro (/m1) para ver su tarjeta."
   msg_button: "📢 Mensaje"
-  fund_button: "💰 Fondo"
+  fund_button: "💰 Fondo"   # [ES] sin uso desde la 0.39.4 (D-302: guildmenu.gfunds_button)
   meet_button: "📍 Reunión"
   found_button: "🏕️ Fundar"
   requests_button: "🙋 Solicitudes ({n})"
@@ -148,7 +148,7 @@ gremio:
   msg_sent: "📢 Mensaje enviado a todo el gremio."
   chat_sent: "📢 Enviado a tu gremio ({n} {n|compañero|compañeros})."   # [ES] D-285 (0.38.1): el texto suelto de un miembro le llega a todo el gremio
   chat_hint: "💬 Escribe cualquier mensaje en el chat del juego, desde donde estés, y le llega a todo tu gremio."
-  fund_title: "💰 Fondo del gremio"
+  fund_title: "💰 Depositar en el fondo del gremio"   # [ES] D-302: la pantalla de 💰 Depositar (la lista es 💰 Fondo del gremio)
   fund_intro: "Deposita desde donde estés: no hace falta llevarlo a ningún lugar. Escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso."
   fund_found: "Fundar el campamento pide {items}"
   fund_gave_title: "Quién dio qué:"

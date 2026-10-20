@@ -1,0 +1,29 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_submenus.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_submenus.yaml (D-302). Una
+# clave nueva va primero en es_submenus.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas
+# (tests/test_idiomas.py lo exige): mismas claves, mismos huecos {nombre} y {n|uno|varios} y mismas etiquetas HTML.
+
+campinfo:
+  hub_name: "🏕️ {name}"
+  button: "ℹ️ Info"
+  title: "ℹ️ Camp info"
+  manage_line: "ℹ️ Info: who founded it, level and zones, members, upgrades and 🛡️ Defense, pantry, perks and waves."
+
+guildmenu:
+  members_button: "👥 Members ({n}/{cap})"
+  members_title: "👥 Guild members"
+  requests_line: "🙋 {n} {n|request is|requests are} waiting: see them in 👥 Members."
+  funds_button: "💰 Camp funds"
+  funds_title: "💰 Camp funds"
+  funds_intro: "💰 The fund feeds the camp's active works: each one takes what it lacks from here, the oldest activated first."
+  funds_works: "🔨 {n} {n|active work|active works} now."
+  gfunds_button: "💰 Guild fund"
+  gfunds_title: "💰 Guild fund"
+  gfunds_intro: "💰 The guild fund pays for founding the camp; whatever is left goes to the camp's fund."
+  fund_item: "{code} {emoji} {item} ×{n}"
+  funds_empty: "The fund is empty: deposit with 💰 Deposit."
+  funds_hint: "Tap a code to see what that resource is for."
+  chat_button: "📢 Chat"
+  chat_title: "📢 Guild chat"
+  chat_intro: "Messages from the last {hours} h, newest last."
+  chat_none: "No messages from the last day."
