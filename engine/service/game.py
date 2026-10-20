@@ -616,6 +616,7 @@ WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
+GEAR_CODE_RE = re.compile(r"^/(e|q)_?(\d{1,2})(@\w+)?$")   # D-299: /e1 = the 1st piece of 🔁 Equipar; /q1 = take off the 1st worn piece
 SEARCH_RE = re.compile(r"^/(?:buscar|search)(?:@\w+)?(?:\s+(.+))?$", re.IGNORECASE)   # D-296: /buscar madera = 🔎 the finder
 RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
 
@@ -755,8 +756,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             invite = INVITE_CODE_RE.match(low)
             zcode = ZONE_CODE_RE.match(low)
             search = SEARCH_RE.match(text.strip())
+            gcode = GEAR_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif gcode and self.store.get("combat", hero.id) is None:     # D-299: /e1 opens a piece, /q1 takes one off
+                typed = self._gear_code(hero, "equip" if gcode.group(1) == "e" else "unequip", int(gcode.group(2)))
             elif search:                                 # D-296: /buscar madera = where there is wood, in zones known to 50 %
                 typed = self._gremio_zones_view(hero, query=search.group(1))
             elif zcode:                                  # D-282: /z2 = the 2nd zone of 🗺️ Zonas del gremio
@@ -1971,6 +1975,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._build_chest(hero)
         if action_id == "gear":
             return self._worn_view(hero)
+        if action_id == "unequipl":                     # D-299: 🔽 Desequipar, the list of what you wear
+            return self._unequip_view(hero)
         if action_id.startswith("gear:"):
             page = action_id[5:]
             return self._gear_view(hero, int(page) if page.isdigit() else 0)
@@ -1982,8 +1988,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             item_id = unequip(hero, action_id[8:])
             self._clamp_hp(hero)
             if not item_id:
-                return self._gear_view(hero)
-            return self._item_view(hero, item_id, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))
+                return self._unequip_view(hero)
+            return self._unequip_view(hero, notice=self.texts.t("gear.unequipped", item=self._gear_name(item_id)))   # D-299
         if action_id.startswith(ENCHANT_ACTIONS):       # D-115: ✨ Encantamiento (the screens work while busy; doing it, not)
             if not self._knows(hero, self._ench_pid()):    # D-257: learn ✨ Encantamiento first
                 return self._prof_detail_view(hero, self._ench_pid(), notice=self.texts.t("learn.need", name=self._prof_name(self._ench_pid())))
@@ -9905,7 +9911,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.hp = min(hero.hp, hero_stats(self._kit(hero), hero.level)["max_hp"])
 
     def _worn_view(self, hero: Hero, notice: str | None = None) -> View:
-        """What you wear, one simple line per piece: icon, name and what it gives you (D-86)."""
+        """What you wear, one simple line per piece: icon, name and what it gives you (D-86); 🔁 Equipar and 🔽 Desequipar (D-299)."""
         t = self.texts
         body = []
         for slot in self.content.balance["gear"]["slots"]:
@@ -9922,56 +9928,92 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         loose = sum(n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "gear")
         body.append(t.t("gear.in_bag", n=loose))
         actions = [Action(id="gear:0", label=t.t("gear.equip_menu_new" if hero.gear_new else "gear.equip_menu"))]
+        if any(hero.gear.get(slot) in self.content.items for slot in self.content.balance["gear"]["slots"]):
+            actions.append(Action(id="unequipl", label=t.t("gear.unequip_menu")))     # D-299: 🔽 Desequipar, beside 🔁 Equipar
         if self._has_memento(hero):
             actions.append(Action(id="memento", label=t.t("guardian.memento_button")))
         actions.append(Action(id="bag", label=t.t("menu.back")))
         return View(kind="gear_worn", title=t.t("gear.title"), body=body, actions=actions, notice=notice)
 
     def _gear_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
-        """Worn pieces, gear in the backpack marked for you / later / not for you, one button per piece; a ✒️ masterwork
-        also says who made it (D-116)."""
+        """🔁 Equipar: the gear in the backpack as a list with a code each (/e1), never what you already wear (D-299).
+
+        [ES]
+        Qué hace: la lista de las piezas de la mochila (lo que NO llevas puesto), una por renglón con su código (/e1), marcada
+        🆕, ⬆️ mejor que lo tuyo, para ti / más adelante / no es de tu clase, y la ✒️ firma de una obra maestra (D-116). Tocar el
+        código abre la pieza (_item_view: qué te da, ✅ Equipar, 💰 Vender, ✨). D-299 (pedido del dueño, 20-oct-2026: "dentro de
+        equipar, que salga en formato lista y solamente lo que no está equipado, porque se ve lo que ya tienes equipado y se
+        forma la confusión"): lo puesto ya no sale aquí; se quita en 🔽 Desequipar (_unequip_view). Páginas de
+        gear.list_per_page; botones: ➡️ Más (si hay más) y ↩️ Volver a 🛡️ Equipo.
+        La llaman: 🔁 Equipar de 🛡️ Equipo ("gear:<página>"), _equip y _sell_gear con un aviso.
+        Si cambia, afecta: tests/test_gear.py, tests/test_masterwork.py y tests/test_oficios_equipo.py.
+        """
         t = self.texts
-        slots = self.content.balance["gear"]["slots"]
-        body = []
-        loose = [i for i in hero.backpack if self.content.items.get(i, {}).get("kind") == "gear"]
+        loose = [i for i in hero.backpack if self.content.items.get(i, {}).get("kind") == "gear" and hero.backpack[i] > 0]
         better = {i for i in loose if self._is_better(hero, i)}           # D-115: ⬆️ better than what you wear (and usable)
         loose.sort(key=lambda i: (i not in hero.gear_new, i not in better,
                                   can_use(self.content.items[i], hero, self.content.classes, self.content.balance) is not None,
                                   not suits(self.content.items[i], hero, self.content.classes, self.content.balance), -self.content.items[i].get("tier", 1), i))
+        self._codes(hero, "equip", loose)                # D-299: /e1 is the piece the player saw first
+        per = max(1, int(self.content.balance["gear"].get("list_per_page", 8)))
+        pages = max(1, (len(loose) + per - 1) // per)
+        page %= pages
+        body = []
         if loose:
             body.append(t.t("gear.backpack_title", n=sum(hero.backpack[i] for i in loose)))
-            for item_id in loose[:15]:
+            for n, item_id in enumerate(loose[page * per:(page + 1) * per], page * per + 1):
                 count = hero.backpack[item_id]
                 note = self._masterwork_note(hero, item_id)                     # D-116: ✒️ Obra maestra de Lyra
-                body.append(t.t("gear.backpack_line", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id)
+                body.append(t.t("gear.list_line", code=f"/e{n}", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id)
                                 + self._better_mark(hero, item_id) + self._new_mark(hero, item_id), n=f" ×{count}" if count > 1 else "",
                                 status=self._gear_status(hero, self.content.items[item_id]) + (f" · {note}" if note else "")))
-            body.append(t.t("gear.hint"))
+            if pages > 1:
+                body.append(t.t("gear.list_page", page=page + 1, pages=pages))
+            body += ["", t.t("gear.list_hint")]
             if better:
                 body.append(t.t("gear.better_hint"))
         else:
             body.append(t.t("gear.backpack_empty"))
-        worn_names = [self._gear_name(hero.gear[slot]) for slot in slots if hero.gear.get(slot) in self.content.items]
-        if worn_names:
-            body += ["", t.t("gear.worn_title"), " · ".join(worn_names)]
-        worn_new = [(hero.gear[slot], True) for slot in slots if hero.gear.get(slot) in hero.gear_new]
-        worn_old = [(hero.gear[slot], True) for slot in slots if hero.gear.get(slot) in self.content.items and hero.gear[slot] not in hero.gear_new]
-        pieces = worn_new + [(i, False) for i in loose] + worn_old       # what just dropped comes first
         actions = []
-        if len(pieces) <= 3:
-            shown = pieces
-        else:
-            pages = (len(pieces) + 1) // 2
-            page %= pages
-            shown = pieces[page * 2: page * 2 + 2]
-        for item_id, worn in shown:
-            label = t.t("gear.piece_worn" if worn else "gear.piece_button", item=self._gear_name(item_id)
-                        + ("" if worn else self._better_mark(hero, item_id)) + self._new_mark(hero, item_id))
-            actions.append(Action(id=f"item:{item_id}", label=label))
-        if len(pieces) > 3:
+        if pages > 1:
             actions.append(Action(id=f"gear:{page + 1}", label=t.t("gear.more")))
         actions.append(Action(id="gear", label=t.t("menu.back")))
         return View(kind="gear", title=t.t("gear.equip_title"), body=body, actions=actions, notice=notice)
+
+    def _unequip_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🔽 Desequipar: what you wear as a list with a code each (/q1); the code takes that piece off (D-299).
+
+        [ES]
+        Qué hace: la lista de lo que llevas puesto, una pieza por renglón con su código (/q1) y lo que te da; tocar el código la
+        quita y la deja en la mochila. Pedido del dueño (20-oct-2026): "un segundo botón en el menú anterior de equipar, un
+        botón de desequipar para poder desequipar la ropa". La llaman: 🔽 Desequipar de 🛡️ Equipo ("unequipl") y /q1.
+        Si cambia, afecta: tests/test_gear.py.
+        """
+        t = self.texts
+        worn = [slot for slot in self.content.balance["gear"]["slots"] if hero.gear.get(slot) in self.content.items]
+        self._codes(hero, "unequip", worn)
+        body = []
+        for n, slot in enumerate(worn, 1):
+            item_id = hero.gear[slot]
+            body.append(t.t("gear.unequip_line", code=f"/q{n}", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id),
+                            stats=self._gear_stats_text(self._real_stats(hero, item_id))))
+        body += ["", t.t("gear.unequip_hint")] if worn else [t.t("gear.nothing_worn")]
+        return View(kind="gear_unequip", title=t.t("gear.unequip_title"), body=body,
+                    actions=[Action(id="gear", label=t.t("menu.back"))], notice=notice)
+
+    def _gear_code(self, hero: Hero, kind: str, n: int) -> View:
+        """/e2 opens the 2nd piece of 🔁 Equipar; /q2 takes off the 2nd piece of 🔽 Desequipar (D-299)."""
+        t = self.texts
+        target = self._code_target(hero, kind, n)
+        if kind == "equip":
+            if target is None or hero.backpack.get(target, 0) <= 0:
+                return self._gear_view(hero, notice=t.t("gear.bad_code"))
+            return self._item_view(hero, target)
+        if target is None or not hero.gear.get(target):
+            return self._unequip_view(hero, notice=t.t("gear.bad_code"))
+        item_id = unequip(hero, target)
+        self._clamp_hp(hero)
+        return self._unequip_view(hero, notice=t.t("gear.unequipped", item=self._gear_name(item_id)) if item_id else None)
 
     def _new_mark(self, hero: Hero, item_id: str) -> str:
         return " 🆕" if item_id in hero.gear_new else ""
@@ -10024,7 +10066,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("gear.sell_in_claro", price=self._money(price)))
         if self._enchant_slot(item):                # D-115: ✨ Encantamiento (enchant it, or disenchant it from the backpack)
             actions.append(Action(id=f"ench:{item_id}", label=t.t("ench.item_button")))
-        actions.append(Action(id="gear:0", label=t.t("menu.back")))
+        actions.append(Action(id="unequipl" if worn_slot else "gear:0", label=t.t("menu.back")))    # D-299: back to its list
         return View(kind="item", title=t.t("gear.item_title"), body=body, actions=actions, notice=notice)    # 4 at most: equip, sell, ✨, back
 
     def _equip(self, hero: Hero, item_id: str) -> View:

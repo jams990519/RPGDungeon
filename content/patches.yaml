@@ -764,3 +764,14 @@ v0_39_3:
     - "📚 New guides in ❓ Help: one for each class, how to find and gather resources, professions, and how everything works (energy, map, fights, guild, camp, dungeons and quests). In Spanish and in English."
     - "❓ Help is now also in ⚙️ Options, so it's easier to find."
 
+v0_39_4:
+  version: "0.39.4"
+  title: "🛡️ Lost Realms 0.39.4: equipar más claro"
+  title_en: "🛡️ Lost Realms 0.39.4: clearer equipping"
+  notes:
+    - "🔁 Equipar ahora es una lista con solo lo que no llevas puesto: cada pieza tiene su código (/e1) para verla y ponértela."
+    - "🔽 Nuevo botón Desequipar, al lado de Equipar: la lista de lo que llevas puesto, y con su código (/q1) te lo quitas."
+  notes_en:
+    - "🔁 Equip is now a list with only what you are not wearing: each piece has its code (/e1) to see it and put it on."
+    - "🔽 New Unequip button, next to Equip: the list of what you wear, and its code (/q1) takes it off."
+

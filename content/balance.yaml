@@ -393,6 +393,7 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
   slots: [arma, cabeza, armadura, manos, piernas, pies, joya]   # [ES] D-83: armadura = pecho
   off_type_factor: 0.5       # [ES] D-83: puedes ponerte lo que quieras; si no es de tu clase rinde la mitad
   armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
+  list_per_page: 8           # [ES] D-299 (0.39.4): cuántas piezas muestra por página la lista de 🔁 Equipar (Claude)
   armor_by_group:            # [ES] qué armadura usa cada clase (como en WoW)
     guerrero: placas
     paladin: placas

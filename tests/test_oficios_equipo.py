@@ -297,8 +297,8 @@ def test_loot_says_when_a_piece_is_better_and_equip_works(service, monkeypatch):
     service._save(hero)
     gear = service.act("test:1", "gear:0")
     assert any("Peto de la frontera ⬆️" in line for line in gear.body)
-    labels = [a.label for page in range(4) for a in service.act("test:1", f"gear:{page}").actions]
-    assert any("Peto de la frontera ⬆️" in label for label in labels)          # its button carries the mark too
+    line = next(line for line in gear.body if "Peto de la frontera ⬆️" in line)
+    assert line.startswith("/e")                                         # D-299: in the list with its code (no buttons per piece)
     assert not service.texts.missing
 
 

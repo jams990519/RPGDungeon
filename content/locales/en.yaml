@@ -2521,7 +2521,15 @@ gear:
   in_bag: '🎒 Pieces in your backpack: {n}'
   equip_menu: 🔁 Equip
   equip_menu_new: 🔁 Equip 🆕
-  equip_title: 🔁 Equip or remove
+  equip_title: 🔁 Equip
+  unequip_menu: 🔽 Unequip
+  unequip_title: 🔽 Unequip
+  unequip_line: '{code} {item} — {stats}'
+  unequip_hint: Tap a piece's code to take it off; it goes back to your backpack.
+  list_line: '{code} {item}{n} — {status}'
+  list_page: Page {page} of {pages}.
+  list_hint: Tap a piece's code to see what it gives you and put it on, or to sell it at a campfire.
+  bad_code: That code is not on the list; use one of the ones you see here.
   item_title: 🔎 Gear piece
   hero_line: '🛡️ Gear: {items} — /gear'
   slot:

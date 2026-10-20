@@ -174,7 +174,8 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 10. **0.39.1 (publicada el 19-oct):** 🔎 buscador de recursos en 🛡️ Gremio y 🏰 Gestionar, solo zonas al 50 % o más (D-296). Espera respuesta: cómo arreglar la madera escasa (E-227, P-238).
 11. **0.39.2:** 💱 Comercio bloqueado hasta las caravanas (D-298). Después, 📚 Guías en ❓ Dudas (D-297, la programa un agente).
 12. **0.39.3:** 📚 Guías en ❓ Dudas (D-297) y ❓ Dudas también en ⚙️ Opciones; /d54 vuelve a ser «¿qué hay de nuevo?» y la de coordenadas pasa a /d56.
-13. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+13. **0.39.4:** 🔁 Equipar en lista solo con lo que no llevas (/e1) y 🔽 Desequipar (/q1) (D-299).
+14. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):

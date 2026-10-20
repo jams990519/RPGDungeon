@@ -148,7 +148,7 @@ faq:
     a: "La 🎒 mochila tiene {bag_cap} de espacio: cada unidad ocupa 1 (el cinturón y lo que llevas puesto no cuentan). Lo que encuentras nunca se pierde aunque pase del espacio, pero con la mochila llena no recolectas ni compras hasta vender o usar cosas."
   d31:
     q: "🛡️ ¿Cómo me equipo?"
-    a: "En 🎒 Mochila → 🛡️ Equipo ves lo que llevas y las piezas que encontraste, si te sirven y cuánto mejoran. ⬆️ marca una pieza mejor que la tuya: tócala y elige ✅ Equipar. Cada pieza pide un nivel y un tipo."
+    a: "En 🎒 Mochila → 🛡️ Equipo ves lo que llevas y las piezas que encontraste, si te sirven y cuánto mejoran. 🔁 Equipar lista lo que no llevas puesto, cada pieza con su código (/e1): ⬆️ marca una mejor que la tuya; tócala y elige ✅ Equipar. 🔽 Desequipar lista lo puesto: su código (/q1) te lo quita. Cada pieza pide un nivel y un tipo."
   d32:
     q: "🎭 ¿Qué es el origen?"
     a: "El origen dice de dónde viene tu héroe: da un rasgo chico (nunca de combate), un regalo y su propia historia. Se elige una sola vez, cuando quieras, en 👤 Héroe → 🎭 Origen. Si ya lo elegiste, lo conservas."
