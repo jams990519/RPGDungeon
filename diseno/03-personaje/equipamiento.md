@@ -2,6 +2,8 @@
 
 > **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1); tres tipos de armadura sin malla (D-208, confirmada, §2); las estadísticas se reforman según el WoW (D-210; propuesta en [Estadísticas](estadisticas.md))
 
+> **0.39.4 (D-299, pedido del dueño):** en 🎒 Mochila → 🛡️ Equipo, 🔁 Equipar es una lista con solo lo que no llevas puesto (cada pieza con su código /e1, de a 8 por página) y, al lado, 🔽 Desequipar lista lo puesto (su código /q1 te lo quita).
+
 **De dónde sale.**
 - *World of Warcraft*: 16 ranuras, tipos de armadura, calidades por color, nivel de objeto, conjuntos, gemas, encantamientos, pistas de mejora y Gran Tesoro semanal.
 - *Albion Online*: tiers de T1 a T8, encantamiento de .1 a .4, calidad al fabricar, durabilidad y destrucción. Casi todo lo fabrican jugadores, y los jefes sueltan **artefactos** que sirven de ingrediente.
