@@ -393,7 +393,7 @@ Si cambias esto, revisa:
       🔬 "research" = _research → 📚 Conocimiento o un aviso; 🛠️ = "oficios"; 🧑‍🏫 "trainer" = _trainer_view; 🛒 "shop" /
       🏘️ "upsvc"; 🛏️ "inn"; 📜 "board"; 🏰 "campmgmt" = _camp_manage_view con _camp_member_actions; ❓ "dudas"); 👤 Héroe
       (_hero_view: ficha con tiempos, _hero_trades_line, _hp_refill_seconds; botones bag, talents, health, stats, bar,
-      oficios, journal, origin). ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
+      oficios, journal, origin). ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información (D-302) y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
       🍲 Cocinar y ⚒️ Oficios (_prof_back), al centro. ❓ Dudas (sección "❓ Dudas": _faq_entries, _faq_search, _faq_values,
       _dudas_view, _dudas_topic_view, _duda_view, _dudas_search_view, _dudas_typed; botones DUDAS_ACTIONS; /dudas, /d07 y el
       texto suelto con "dudas_open"): content/faq.yaml (códigos estables d01...) y content/locales/es_dudas.yaml; sus
@@ -467,6 +467,16 @@ Si cambias esto, revisa:
       menú: 🏕️ tu campamento directo a "¿Viajar?" y un botón por tipo), _places_kind_view ("plc:<tipo>": la lista con sus
       códigos /irN desde 1), _place_confirm_view (↩️ No, volver a la lista del tipo) y _place_code (una lista guardada antes
       sigue sirviendo). Textos: places.* de content/locales/es.yaml y en.yaml. Pruebas: tests/test_lugares.py
+    - 🗂️ Submenús del campamento y del gremio (D-302, 0.39.4, pedido del dueño del 20-oct-2026: menos texto en cada pantalla,
+      "prefiero que haya submenús con más información para que sea más fácil"): el centro de tu campamento (_camp_here_view)
+      muestra solo su nombre, lo que puedes hacer y lo urgente (la oleada en curso o el aviso de la 🗼 Torre de vigía, con
+      _raid_lines(urgent=True), y 🛡️ Defender); sigue leyendo la 🌾 despensa en cada visita (consumo perezoso, D-93); lo de arriba pasó a
+      🏰 Gestionar → ℹ️ Información ("campinfo", _camp_info_view con _camp_info_lines; _camp_summary_lines es lo que ven
+      también los visitantes). 🛡️ Gremio (_guild_view, y _gremio_view antes de fundar) deja arriba lo del gremio y pasa a
+      botones 👥 Miembros, 💰 Fondos y 📢 Chat ("gmembers", "gfunds", "gchat" en engine/service/gremio.py GREMIO_ACTIONS;
+      los botones viejos "gmsg", "gfund" y "creqs" siguen). Números: balance.yaml gremio.messages_kept (50), chat_hours,
+      chat_shown y chat_max_chars. Textos: content/locales/es_submenus.yaml y en_submenus.yaml (campinfo.*, guildmenu.*).
+      Pruebas: tests/test_submenus_campamento_gremio.py
 """
 
 from __future__ import annotations
@@ -1909,6 +1919,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._trainer_view(hero)
         if action_id == "campmgmt":                     # D-192: 🏰 Gestionar (your own camp)
             return self._camp_manage_view(hero)
+        if action_id == "campinfo":                     # D-302: ℹ️ Información del campamento (from 🏰 Gestionar)
+            return self._camp_info_view(hero)
         if action_id == "research":                     # D-192: 🔬 Investigar = your camp's 📚 Conocimiento (explains where if not)
             return self._research(hero)
         if action_id == "cook":                         # D-192: 🍲 Cocinar = the station of the 🍲 Cocina ("est:cook")
@@ -2954,7 +2966,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         cambian la posada por 🏘️ Servicios (lo que usan y cuántas obras activas hay, D-288) y suman 🏰 Gestionar; lo que todavía
         no hay pero se puede hacer en este nivel (🔥 Fogón, estaciones) se explica en la misma línea. D-287 (0.39, pedido del
         dueño: "si hay algo que no está para tu nivel, no lo vas a mostrar"): 🔬 Investigar solo sale con la 📚 Biblioteca
-        construida, y la línea de 🏰 Gestionar nombra la 🌾 despensa solo cuando ya la tienen.
+        construida, y la línea de 🏰 Gestionar nombra la 🌾 despensa solo cuando ya la tienen. D-302 (0.39.4): en tu campamento
+        estas líneas son casi todo lo que se ve (lo de arriba pasó a ℹ️ Información, que nombra la línea de 🏰 Gestionar) y la
+        de 🛡️ Gremio nombra sus submenús (👥 💰 📢 ⚔️).
         La llaman: _claro_view y _camp_here_view (miembros). Si cambia, afecta: el texto de los dos centros.
         """
         t = self.texts
@@ -3555,58 +3569,52 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: muestra el campamento de la zona. D-192: para un miembro es el centro de 🏕️ Campamento (como el del Claro,
-        hasta 8 botones de 2 en 2): arriba lo de su campamento (miembros, nivel, mejoras, 🛡️ Defensa, despensa, beneficios,
-        oleadas) y después una línea por opción (_camp_hub_lines) con sus botones (_camp_hub_actions): 🍲 Cocinar,
+        hasta 8 botones de 2 en 2). D-302 (0.39.4, pedido del dueño del 20-oct-2026: "vas a separarlo en dos partes. Lo que
+        puedes hacer en el campamento, eso es lo que se va a mostrar. Y dentro del menú, vas a poner un apartado que explique
+        la parte de arriba"): arriba solo el nombre del campamento y lo urgente: la oleada en curso (o el aviso de la 🗼 Torre
+        de vigía) y 🛡️ Defender; lo de antes (fundador, coordenadas, etapa, nivel y zonas, miembros, gremio, costo de agrandar, mejoras y 🛡️ Defensa,
+        daño, despensa, beneficios y la próxima oleada) pasó a 🏰 Gestionar → ℹ️ Información (_camp_info_view). Después,
+        una línea por opción (_camp_hub_lines) con sus botones (_camp_hub_actions): 🍲 Cocinar,
         🔬 Investigar, 🛠️ Fabricar, 🧑‍🏫 Entrenador, 🏘️ Servicios, 📜 Tablón, 🏰 Gestionar y ❓ Dudas (🛡️ Defender primero
         durante una oleada). Lo de antes (⬆️ Agrandar, 🌾 Aportar comida, 🛡️ Gremio y 🔨 Mejoras) pasó a 🏰 Gestionar
         (_camp_manage_view). Los visitantes ven las mejoras y la 🛡️ Defensa, 🙋 Pedir unirme, ❓ Dudas y ↩️ Volver; donde no
         hay campamento, lo que pide fundarlo, 🛡️ Gremio (D-279, 0.36.1: el gremio se arma desde cualquier lugar), ❓ Dudas y
         ↩️ Volver (4 como máximo).
-        D-115: a los miembros, las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de campamento de los oficios.
+        D-115: las 🛠️ defensas dañadas por las oleadas y los 🏰 beneficios de campamento de los oficios (desde D-302, en
+        ℹ️ Información). Los visitantes ven lo de _camp_summary_lines.
         La llaman: el botón 🏕️ Campamento fuera del Claro y casi todas las acciones de campamento.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_camp_upgrades.py,
-        tests/test_raids.py y tests/test_menus_y_dudas.py (orden de los botones).
+        tests/test_raids.py, tests/test_menus_y_dudas.py (orden de los botones) y tests/test_submenus_campamento_gremio.py.
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
         key = f"{zone.x}:{zone.y}"
         camp = self.store.get("camp", key)
         if camp:
-            level = camp.get("level", 1)
-            guild = self.store.get("guild", key)
-            body = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=zone.x, y=zone.y, n=len(camp["members"])),
-                    t.t("camps.stage_line", stage=self._camp_stage(level)),
-                    t.t("camps.size", level=level, zones=len(camp.get("zones", [[zone.x, zone.y]]))),
-                    t.t("guild.members_cap" if guild else "camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
-            if guild:
-                body.append(t.t("guild.camp_line_visitor", name=guild["name"], level=guild["level"]))
             if hero.id in camp["members"]:
-                body += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
-                         t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
-                damage = self._camp_damage(camp)          # D-115: 🛠️ what the last raids damaged, until it is repaired
-                if damage:
-                    body.append(t.t("camp_prof.damage_line", n=damage))
-                pantry = self._camp_pantry(camp)          # D-93: from level 3 (aldea), a small pantry
-                if pantry:
-                    body += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
-                body += self._camp_perk_lines(camp, hero)  # D-115: 🏰 the camp perks and who gives them
-                body += self._raid_lines(camp)            # D-99: the next raid, or the one going on
-                # D-192: the hub; ⬆️ Agrandar, 🌾 Aportar comida, 🛡️ Gremio and 🔨 Mejoras live in 🏰 Gestionar
-                body += ["", t.t("hub.intro_camp")] + ([t.t("hub.defend")] if self._defend_action(camp, hero) else [])
+                # D-302 (20-oct-2026, the owner: "lo que puedes hacer en el campamento, eso es lo que se va a mostrar"): the
+                # camp's name and what you can do; the info block lives in 🏰 Gestionar → ℹ️ Información (_camp_info_view).
+                # Only what is urgent stays: a raid going on or 🗼 coming, and 🛡️ Defender. ⬆️, 🌾, 🛡️ and 🔨: 🏰 Gestionar (D-192)
+                body = [t.t("campinfo.hub_name", name=camp["name"]), "", t.t("hub.intro_camp")]
+                self._camp_pantry(camp)                  # D-93: the lazy pantry settles on each visit, as before (shown in ℹ️)
+                body += self._raid_lines(camp, urgent=True)   # D-99: a raid going on or 🗼 coming (the next one: in ℹ️)
+                if self._defend_action(camp, hero):
+                    body.append(t.t("hub.defend"))
                 body += self._camp_hub_lines(hero, camp)
-                actions = self._camp_hub_actions(hero, camp)
-            else:
-                rel = camp["relations"].get(hero.id)
-                body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t(f"camps.relation.{rel or 'unknown'}")]
-                actions = []
-                if hero.id in (camp.get("waiting") or []):   # D-294: in its guild, waiting for room (no 🙋 Pedir unirme)
-                    body.append(t.t("waiting.you", camp=camp["name"]))
-                    actions.append(Action(id="guild", label=t.t("gremio.button")))
-                elif hero.id in camp.get("requests", []):
-                    body.append(t.t("camps.join_waiting"))
-                elif hero.camp is None and rel != "hostile":
-                    actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
-                actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
+                return View(kind="player_camp", title=t.t("camps.title"), body=body,
+                            actions=self._camp_hub_actions(hero, camp), notice=notice)
+            rel = camp["relations"].get(hero.id)         # a visitor: what anyone sees, the 🛡️ Defensa and the relation
+            body = self._camp_summary_lines(camp)
+            body += [t.t("upgrades.defense", n=self._camp_defense(camp)), t.t(f"camps.relation.{rel or 'unknown'}")]
+            actions = []
+            if hero.id in (camp.get("waiting") or []):   # D-294: in its guild, waiting for room (no 🙋 Pedir unirme)
+                body.append(t.t("waiting.you", camp=camp["name"]))
+                actions.append(Action(id="guild", label=t.t("gremio.button")))
+            elif hero.id in camp.get("requests", []):
+                body.append(t.t("camps.join_waiting"))
+            elif hero.camp is None and rel != "hostile":
+                actions.append(Action(id="askjoin", label=t.t("camps.join_button")))
+            actions += [Action(id="dudas", label=t.t("dudas.button")), Action(id="home", label=t.t("menu.back"))]
             return View(kind="player_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
         building = self._founding_at(zone.x, zone.y)     # D-269: a guild is founding here: its progress, and ❌ for its leader
         if building:
@@ -3637,9 +3645,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: la segunda parte del centro de tu campamento (D-192: los 8 lugares del centro van para cocinar, investigar,
         fabricar y lo demás de D-191): una línea por opción con su costo (agrandar), lo construido y la 🛡️ Defensa, la
         despensa (D-287: solo cuando ya la tienen, desde el nivel 3) y el gremio, y sus botones de _camp_member_actions (⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
-        3, 🛡️ Gremio y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 6 como mucho, de 2 en 2 (es parte del centro, HUB_KINDS).
+        3, 🛡️ Gremio, 🔎 Buscar recursos, ℹ️ Información y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 8 como mucho, de 2 en 2
+        (es parte del centro, HUB_KINDS). D-302 (0.39.4): la última línea presenta ℹ️ Información (_camp_info_view), adonde se
+        mudó lo que el centro mostraba arriba.
         Solo para miembros, estando en el campamento; en otro lado explica por qué (_upgrades_elsewhere).
-        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras y 🛡️ Gremio.
+        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información y 🛡️ Gremio.
         Si cambia, afecta: tests/test_menus_y_dudas.py y los que miran esos botones (test_camps, test_pantry, test_guilds,
         test_raids, test_camp_upgrades).
         """
@@ -3659,11 +3669,72 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if pantry:                                      # D-287 (0.39): before level 3 the pantry is not mentioned at all
             body.append(t.t("manage.pantry"))
         body.append(t.t("manage.guild"))
+        body.append(t.t("campinfo.manage_line"))        # D-302: ℹ️ what the camp hub showed on top before
         if pantry:
             body += [""] + self._pantry_lines(pantry)
         body += self._raid_lines(camp)
         actions = self._camp_member_actions(camp, hero, pantry)
         return View(kind="camp_manage", title=t.t("manage.title", name=camp["name"]), body=body, actions=actions, notice=notice)
+
+    def _camp_summary_lines(self, camp: dict[str, Any]) -> list[str]:
+        """What anyone sees of a camp: name, founder, coordinates, stage, level and zones, members and cap, its guild.
+
+        [ES] Qué hace: las primeras líneas de un campamento (lo mismo para miembros y visitantes). La llaman: _camp_here_view
+        (visitantes) y _camp_info_lines (ℹ️ Información, D-302). Si cambia, afecta: lo que ve quien visita un campamento y la
+        pantalla ℹ️ Información (tests/test_camps.py, tests/test_backpack.py, tests/test_submenus_campamento_gremio.py).
+        """
+        t = self.texts
+        x, y = camp["x"], camp["y"]
+        level = camp.get("level", 1)
+        guild = self.store.get("guild", f"{x}:{y}")
+        lines = [t.t("camps.info", name=camp["name"], founder=camp["founder"], x=x, y=y, n=len(camp["members"])),
+                 t.t("camps.stage_line", stage=self._camp_stage(level)),
+                 t.t("camps.size", level=level, zones=len(camp.get("zones", [[x, y]]))),
+                 t.t("guild.members_cap" if guild else "camps.members_cap", n=len(camp["members"]), cap=self._members_cap(camp))]
+        if guild:
+            lines.append(t.t("guild.camp_line_visitor", name=guild["name"], level=guild["level"]))
+        return lines
+
+    def _camp_info_lines(self, camp: dict[str, Any], hero: Hero) -> list[str]:
+        """The member's info block of a camp (D-302): the summary, the grow cost, upgrades and 🛡️, damage, pantry, perks, raids.
+
+        [ES] Qué hace: lo que antes iba arriba del centro de tu campamento (D-302 lo mudó a ℹ️ Información): el resumen
+        (_camp_summary_lines), "Eres parte…", ⬆️ el costo de agrandar, 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
+        dañadas (D-115), la 🌾 despensa (D-93, desde el nivel 3) y la hambruna, los 🏰 beneficios de los oficios (D-115) y la
+        👁 próxima oleada o la que está en curso (D-99). La llama: _camp_info_view. Si cambia, afecta: esa pantalla
+        (tests/test_submenus_campamento_gremio.py, tests/test_pantry.py, tests/test_oficios_campamento.py, tests/test_raids.py).
+        """
+        t = self.texts
+        level = camp.get("level", 1)
+        lines = self._camp_summary_lines(camp)
+        lines += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
+                  t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
+        damage = self._camp_damage(camp)                # D-115: 🛠️ what the last raids damaged, until it is repaired
+        if damage:
+            lines.append(t.t("camp_prof.damage_line", n=damage))
+        pantry = self._camp_pantry(camp)                # D-93: from level 3 (aldea), a small pantry
+        if pantry:
+            lines += self._pantry_lines(pantry) + ([t.t("pantry.famine_camp")] if pantry["state"] == "hambruna" else [])
+        lines += self._camp_perk_lines(camp, hero)      # D-115: 🏰 the camp perks and who gives them
+        lines += self._raid_lines(camp)                 # D-99: the next raid, or the one going on
+        return lines
+
+    def _camp_info_view(self, hero: Hero) -> View:
+        """ℹ️ Información del campamento (D-302): the block the camp hub showed on top, from 🏰 Gestionar; ↩️ back there.
+
+        [ES] Qué hace: la pantalla ℹ️ Información (pedido del dueño del 20-oct-2026: "dentro del menú, vas a poner un apartado
+        que explique la parte de arriba"). Solo para miembros, estando en su campamento (como 🏰 Gestionar; en otro lugar,
+        _upgrades_elsewhere). Un botón: ↩️ Volver a 🏰 Gestionar. La llama: el botón ℹ️ Información ("campinfo") de
+        🏰 Gestionar (_camp_member_actions). Si cambia, afecta: tests/test_submenus_campamento_gremio.py y el recorrido de
+        botones (tests/test_buttons.py).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        t = self.texts
+        return View(kind="camp_info", title=t.t("campinfo.title"), body=self._camp_info_lines(camp, hero),
+                    actions=[Action(id="campmgmt", label=t.t("menu.back"))])
 
     def _ask_camp_name(self, hero: Hero, mode: str) -> View:
         """Founding or renaming a camp: the next text the player writes is its name (D-84)."""
@@ -4373,26 +4444,30 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return ([founder] if founder in camp["members"] else []) + rest
 
     def _guild_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🛡️ Gremio of a camp: the D-97 guild (or how to create it) and the tools it had before founding (D-291).
+        """🛡️ Gremio of a camp: the D-97 guild on top (or how to create it) and one button per part (D-291, D-302).
 
         [ES]
-        Qué hace: el centro del gremio de tu campamento. Arriba el gremio D-97 (nombre, nivel y lo que pide para subir, con barras)
-        o, en un campamento de antes sin gremio, qué es y cuánto cuesta (D-287: la pista del castillo solo en el nivel de antes del
-        castillo). D-291 (0.39, pedido del dueño: "una vez se crea el gremio no se puede perder el botón de depositar… esas
-        cositas deben mantenerse"): después de fundar conserva lo que tenía el gremio antes del campamento: cada miembro con su
-        código (/m1), si está en línea, dónde está y qué hace (👑 el fundador, 🤝 los ayudantes, D-289), la línea de ayudantes,
-        el 💰 fondo del campamento, la ⚔️ Armería (D-290), los últimos 📢 mensajes (los del gremio de antes de fundar pasaron
-        aquí) y las pistas del chat y de /inv_. Botones (hasta 8, de 2 en 2, ↩️ a lo ancho; HUB_KINDS "guild"): 📢 Mensaje,
-        💰 Depositar, ⚔️ Armería, 🗺️ Zonas, 🙋 Solicitudes (fundador o ayudante, si hay), 🛡️ Crear gremio (fundador, sin gremio)
-        o ⬆️ Subir el gremio (cuando cumplen), ✏️ Renombrar (fundador) o 🚪 Salir (los demás) y ↩️ Volver. Crear, subir,
-        renombrar y salir solo estando en el campamento; lo demás desde cualquier lugar.
+        Qué hace: el centro del gremio de tu campamento. Arriba el gremio D-97 (nombre, nivel, campamento y lo que pide para
+        subir, con barras y "cuenta lo que hacen todos los miembros desde que entran") o, en un campamento de antes sin gremio,
+        qué es y cuánto cuesta (D-287: la pista del castillo solo en el nivel de antes del castillo). D-291 (0.39): después de
+        fundar conserva lo que tenía el gremio antes del campamento. D-302 (0.39.4, pedido del dueño del 20-oct-2026: "lo de
+        arriba… perfecto, eso se mantiene"; "👥 Miembros… lo vas a volver un botón"; "Fondo del campamento → un botón";
+        "Últimos mensajes → conviértelo en un botón de 📢 Chat"): el cuerpo es solo la parte de arriba y, al fundador o a un
+        🤝 ayudante, una línea corta si hay 🙋 solicitudes. Lo demás está detrás de su botón: 👥 Miembros (N/cupo) (cada
+        miembro con /m1, 🤝 ayudantes, ⏳ los que esperan lugar, 🙋 Solicitudes; engine/service/gremio.py _guild_members_view),
+        💰 Fondos del campamento (cada recurso con su código y 💰 Depositar; _guild_funds_view), 📢 Chat (los mensajes del último
+        día y 📢 Mensaje; _guild_chat_view), ⚔️ Armería (su "0/30" está en su pantalla) y 🔎 Buscar recursos. Botones (hasta 8,
+        de 2 en 2, ↩️ a lo ancho; HUB_KINDS "guild"): esos 5, 🛡️ Crear gremio (fundador, sin gremio) o ⬆️ Subir el gremio
+        (cuando cumplen), ✏️ Renombrar (fundador) o 🚪 Salir (los demás) o, esperando lugar, 🚪 Salir del gremio, y ↩️ Volver.
+        Crear, subir, renombrar y salir solo estando en el campamento; lo demás desde cualquier lugar. Los botones viejos
+        ("gmsg", "gfund", "creqs") siguen funcionando.
         D-294 (0.39): quien está en el gremio esperando lugar en el campamento también la abre (con la línea "⏳ estás esperando
-        lugar" y 🚪 Salir del gremio); todos ven el bloque "⏳ Esperando lugar en el campamento" con sus códigos (los números
-        siguen después de los miembros) y, al fundador y a los ayudantes, cuántos lugares hay para unirlos.
+        lugar" y 🚪 Salir del gremio).
         D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view).
-        La llaman: el botón 🛡️ Gremio de 🏰 Gestionar (D-192; su ↩️ Volver vuelve ahí), 🛡️ Gremio de 👥 Jugadores, el atajo /gremio
-        y los ↩️ de 📢, 💰, ⚔️, 🗺️ y de la tarjeta de un miembro.
-        Si cambia, afecta: tests/test_guilds.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py y los recorridos.
+        La llaman: el botón 🛡️ Gremio del centro y de 🏰 Gestionar (D-192; su ↩️ Volver vuelve a 🏰 Gestionar), 🛡️ Gremio de
+        👥 Jugadores, el atajo /gremio y los ↩️ de 👥, 💰, 📢, ⚔️ y 🗺️.
+        Si cambia, afecta: tests/test_guilds.py, tests/test_ayudantes.py, tests/test_deposito_tras_fundar.py,
+        tests/test_submenus_campamento_gremio.py y los recorridos.
         """
         t = self.texts
         camp = self._guild_camp(hero)                  # D-294: a member, or a guild member waiting for room in the camp
@@ -4409,10 +4484,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         founder = camp.get("founder_id") == hero.id
         manager = self._camp_manager(camp, hero.id)
         n, cap = len(camp["members"]), self._members_cap(camp)
-        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")),            # D-291: what the guild had before founding
-                   Action(id="gfund", label=t.t("services.deposit_button")),
+        actions = [Action(id="gmembers", label=t.t("guildmenu.members_button", n=n, cap=cap)),    # D-302: 👥 Miembros
+                   Action(id="gfunds", label=t.t("guildmenu.funds_button")),     # D-302: 💰 Fondos del campamento
+                   Action(id="gchat", label=t.t("guildmenu.chat_button")),       # D-302: 📢 Chat (D-285)
                    Action(id="garm", label=t.t("armory.button")),                # D-290: ⚔️ Armería
-                   Action(id="gzones", label=t.t("gzones.button"))]              # D-282: what the guild knows of the zones
+                   Action(id="gzones", label=t.t("gzones.button"))]              # D-296: 🔎 Buscar recursos
         if guild is None:
             body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what")]
             if self._castle_needs(camp):                 # D-287: the castle hint only on the step before the castle
@@ -4440,24 +4516,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("guild.top"))
         if waiting:                                    # D-294: in the guild, waiting for room in the camp
             body[:0] = [t.t("waiting.you", camp=camp["name"]), ""]
-        body += ["", t.t("guild.members", n=n, cap=cap), self._helpers_line(camp, hero)]       # D-289: 🤝 helpers
-        members = self._camp_member_order(hero, camp)
-        body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
-        body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
-        self._codes(hero, "members", members + list(camp.get("waiting") or []))   # D-291: /m1 works after founding too
-        fund = self._upgrades(key).get("fund") or {}
-        body += ["", t.t("works.camp_fund", items=self._item_list(fund)) if fund else t.t("cfund.empty_short"),
-                 self._armory_line(key)]
-        messages = camp.get("messages") or []          # D-285: the camp's guild chat (any loose text of a member)
-        if messages:
-            body += ["", t.t("gremio.messages_title")]
-            body += [t.t("gremio.msg_line", name=m.get("by", "?"), text=m.get("text", "")) for m in messages]
-        body += ["", t.t("gremio.chat_hint"), t.t("gremio.codes_hint")]
-        if manager and n < cap:
-            body.append(t.t("gremio.invite_hint"))       # D-280, D-289: the founder or a helper invites with /inv_<code>
         requests = camp.get("requests") or []
-        if manager and requests:                         # D-289: helpers answer the join requests too
-            actions.append(Action(id="creqs", label=t.t("gremio.requests_button", n=len(requests))))
+        if manager and requests:                       # D-289, D-302: 🙋 the requests wait in 👥 Miembros
+            body += ["", t.t("guildmenu.requests_line", n=len(requests))]
+        self._codes(hero, "members", self._camp_member_order(hero, camp) + list(camp.get("waiting") or []))   # /m1 (D-291)
         if here:
             actions.append(Action(id="rename", label=t.t("guild.rename_camp")) if founder
                            else Action(id="leave", label=t.t("camps.leave_button")))
@@ -4857,8 +4919,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         self.store.put("pantry", key, data)
         return int(round(lost))
 
-    def _raid_lines(self, camp: dict[str, Any]) -> list[str]:
-        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before."""
+    def _raid_lines(self, camp: dict[str, Any], urgent: bool = False) -> list[str]:
+        """The camp screen's raid line: the one going on, the next one (from pueblo) or a heads-up one level before.
+
+        [ES] Qué hace: la línea de oleadas de un campamento: la que está en curso, el aviso de la 🗼 Torre de vigía, la próxima
+        o el aviso de un nivel antes. Con urgent=True (D-302: el centro de tu campamento) solo la que está en curso o el aviso
+        de la torre; lo demás se ve en ℹ️ Información y 🏰 Gestionar. La llaman: _camp_here_view (urgent), _camp_manage_view,
+        _camp_info_lines y _grow_view. Si cambia, afecta: tests/test_raids.py."""
         t = self.texts
         cfg = self._raid_cfg()
         raid = camp.get("raid")
@@ -4872,7 +4939,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hours = self._camp_effect(camp, "warning_hours")
             if nxt is not None and hours and 0 < nxt - self.clock.now() <= self._seconds(hours * 60):
                 return [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()))]     # 🗼 Torre de vigía
+            if urgent:
+                return []
             return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else math.ceil(7 / cfg["per_week"]))]
+        if urgent:
+            return []
         if level == cfg["from_level"] - 1:
             return [t.t("raids.soon_line", level=cfg["from_level"])]
         return []
@@ -5335,7 +5406,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: arma los botones de 🏰 Gestionar (D-192; antes eran los del campamento): 🛡️ Defender primero mientras dura
         una oleada que todavía no peleaste (D-99), ⬆️ Agrandar, 🔨 Mejoras (D-101), 🌾 Aportar comida (solo con despensa,
         desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97), 🔎 Buscar recursos (D-296, pedido
-        del dueño: el buscador también en el campamento) y ↩️ Volver al centro.
+        del dueño: el buscador también en el campamento), ℹ️ Información (D-302: lo que el centro mostraba arriba) y ↩️ Volver
+        al centro: 8 como mucho (con 🛡️ Defender y la despensa), de 2 en 2.
         La llama: _camp_manage_view.
         Si cambia, afecta: tests/test_camps.py, tests/test_pantry.py, tests/test_guilds.py, tests/test_raids.py,
         tests/test_camp_upgrades.py y tests/test_menus_y_dudas.py (orden de los botones).
@@ -5346,6 +5418,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
         actions.append(Action(id="guild", label=t.t("guild.button")))
         actions.append(Action(id="gzones", label=t.t("gzones.button")))     # D-296: 🔎 the resource finder, in the camp too
+        actions.append(Action(id="campinfo", label=t.t("campinfo.button")))  # D-302: ℹ️ what the hub showed on top before
         defend = self._defend_action(camp, hero)    # D-99: while a raid lasts, 🛡️ Defender goes first
         if defend:
             actions.insert(0, defend)

@@ -4,14 +4,15 @@ with its class's emoji and a line saying who it is (D-286).
 [ES] Pruebas de lo que pidió el dueño el 19-oct-2026 ("cuando ya se crea un gremio, todos los mensajes que se envíen dentro
 del juego van a ser recibidos por el resto de jugadores"; y del mapa: "para saber diferenciar dónde está cada quien y qué
 tipo es"):
-- en un gremio sin campamento, el texto suelto le llega a cada compañero (en su idioma) y queda en 🛡️ Gremio;
-- con campamento, igual: le llega a los del campamento y queda en su 🛡️ Gremio;
+- en un gremio sin campamento, el texto suelto le llega a cada compañero (en su idioma) y queda en 🛡️ Gremio → 📢 Chat
+  (D-302: el chat es un botón; el aviso abre 📢 Chat);
+- con campamento, igual: le llega a los del campamento y queda en su 📢 Chat;
 - sin gremio, el texto suelto sigue avisando que se usen los botones; los comandos con "/" y las pantallas que piden texto
   (❓ Dudas, 💬 Feedback, los nombres) no se mandan al gremio;
 - en el 🗺️ Mapa cada compañero sale con el emoji de su clase, 👥 si hay varios en la misma zona, y arriba una línea por
   compañero: nombre, clase y coordenadas; también cuántos quedan fuera del mapa. Y todo se lee en inglés.
 Archivo: tests/test_chat_del_gremio.py · Módulo: M15 Social, M8 Mundo · Prueba: engine/service/gremio.py (_guild_chat,
-_gremio_view), engine/service/game.py (text, _guild_view, _map_view, _map_mate_lines).
+_guild_chat_view), engine/service/game.py (text, _map_view, _map_mate_lines).
 """
 
 from conftest import make_hero
@@ -51,9 +52,10 @@ def test_loose_text_reaches_the_whole_guild_before_a_camp(service):
     assert "Enviado a tu gremio (1 compañero)" in view.notice
     got = pushes(service, "test:2", "gremio_message")
     assert got and got[0].title == "📢 Guild Lobos Grises" and "💬 Lyra: Nos vemos en el bosque" in got[0].body
+    assert [a.id for a in got[0].actions] == ["gchat"]                            # D-302: the push opens 📢 Chat
     assert not pushes(service, "test:1", "gremio_message")                        # not to who wrote it
     assert service.store.get("gremio", gid)["messages"][-1]["text"] == "Nos vemos en el bosque"
-    hub = text(service.act("test:2", "guild"))
+    hub = text(service.act("test:2", "gchat"))
     assert "💬 Lyra: Nos vemos en el bosque" in hub and "whole guild gets it" in hub
     assert not service.texts.fallbacks.get("en")
 
@@ -71,7 +73,7 @@ def test_loose_text_reaches_the_camp_once_it_is_founded(service):
     assert "Enviado a tu gremio (1 compañero)" in view.notice
     got = pushes(service, "test:1", "gremio_message")
     assert got and "Roca Alta" in got[0].title and "💬 Bram: ¿Quién trae piedra?" in got[0].body
-    guild = text(service.act("test:1", "guild"))
+    guild = text(service.act("test:1", "gchat"))
     assert "💬 Bram: ¿Quién trae piedra?" in guild and "le llega a todo tu gremio" in guild
 
 

@@ -205,7 +205,7 @@ def test_hero_card_shows_chests_and_old_heroes_load(service):
 def test_camp_stage_line_reads_well(service):
     make_hero(service)
     found_at(service, "test:1", 6, 0)
-    body = service.act("test:1", "claro").body
+    body = service.act("test:1", "campinfo").body                            # D-302: in 🏰 Gestionar → ℹ️ Información
     assert "🏰 Etapa: campamento. Al crecer pasa a aldea, pueblo, ciudad y castillo." in body
     assert not any("Es un" in line for line in body)
 

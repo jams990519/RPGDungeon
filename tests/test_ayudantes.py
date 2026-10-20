@@ -4,13 +4,14 @@
 primer día que se crea el campamento y a medida que aumenta la cantidad puede aumentar también"; respuesta: 1 por cada 5
 miembros; activan obras, invitan con /inv_ y aceptan solicitudes, pero no renombran ni nombran a otros ayudantes):
 - el tope es máx(1, ⌈miembros ÷ 5⌉); si baja, los que ya son ayudantes se quedan pero no entra uno nuevo;
-- el fundador nombra y saca ayudantes desde la tarjeta del miembro (/m2 en 🛡️ Gremio); al miembro le llega el aviso; 🤝 junto a
-  su nombre;
-- un ayudante activa obras, invita con /inv_, recibe y responde las solicitudes (también desde 🙋 Solicitudes de 🛡️ Gremio);
+- el fundador nombra y saca ayudantes desde la tarjeta del miembro (/m2 en 🛡️ Gremio → 👥 Miembros, D-302); al miembro le
+  llega el aviso; 🤝 junto a su nombre;
+- un ayudante activa obras, invita con /inv_, recibe y responde las solicitudes (también desde 🙋 Solicitudes de 👥 Miembros);
   no renombra, no nombra ayudantes y no crea el gremio D-97; quien sale del campamento deja de ser ayudante;
 - al fundar, los oficiales del gremio que entran al campamento quedan de ayudantes (hasta el tope); y se lee en inglés.
 Archivo: tests/test_ayudantes.py · Módulo: M15 Social · Prueba: engine/service/gremio.py (_helpers_cap, _camp_manager,
-_camp_member_view, _camp_helper_toggle, _camp_requests_view, _invite_code, _gremio_camp_answer) y engine/service/game.py
+_camp_member_view, _camp_helper_toggle, _camp_requests_view, _camp_members_view, _invite_code, _gremio_camp_answer) y
+engine/service/game.py
 (_ask_join, _answer_join, _leave_camp, _activate_work, _guild_view).
 """
 
@@ -64,7 +65,7 @@ def test_one_helper_per_five_members_never_under_one(service):
 
 def test_the_founder_names_and_removes_helpers_from_the_member_card(service):
     camp_with(service, "Bram", "Cora")
-    guild = service.act("test:1", "guild")
+    guild = service.act("test:1", "gmembers")                                 # D-302: the members live in 👥 Miembros
     assert any("🤝 Ayudantes (0/1)" in line for line in guild.body)
     card = service.text("test:1", code_of(service, guild, "Bram"))
     assert card.kind == "gremio_member" and "ghelp:test:2" in ids(card)
@@ -72,7 +73,7 @@ def test_the_founder_names_and_removes_helpers_from_the_member_card(service):
     assert "ahora es ayudante" in view.notice and service.store.get("camp", KEY)["helpers"] == ["test:2"]
     told = pushes(service, "test:2", "gremio_news")
     assert told and "Ahora eres ayudante en Roca Alta" in told[0].body[0]
-    guild = service.act("test:1", "guild")
+    guild = service.act("test:1", "gmembers")
     assert any(line.startswith("/m") and "🤝 Bram" in line for line in guild.body)
     assert any("🤝 Ayudantes (1/1): Bram" in line for line in guild.body)
     card = service.text("test:1", code_of(service, guild, "Cora"))             # 3 members: room for 1 only
@@ -101,10 +102,11 @@ def test_a_helper_activates_invites_and_answers_requests_but_does_not_rename_or_
     service.act("test:5", "askjoin")
     asks = pushes(service, "test:2", "camp_join")                            # the request reaches the helper too
     assert asks and all(len(a.id.encode()) <= 64 for a in asks[0].actions)
-    guild = service.act("test:2", "guild")
-    assert "creqs" in ids(guild)                                             # 🙋 Solicitudes in 🛡️ Gremio
+    assert "solicitud espera" in text(service.act("test:2", "guild"))        # D-302: a short line on 🛡️ Gremio
+    guild = service.act("test:2", "gmembers")
+    assert "creqs" in ids(guild)                                             # 🙋 Solicitudes in 👥 Miembros
     requests = service.act("test:2", "creqs")
-    assert requests.kind == "camp_requests" and ids(requests)[:2] == ["join:6:0:test:5:y", "join:6:0:test:5:n"]
+    assert requests.kind == "camp_requests" and ids(requests) == ["join:6:0:test:5:y", "join:6:0:test:5:n", "gmembers"]
     service.act("test:2", "join:6:0:test:5:y")
     assert "test:5" in service.store.get("camp", KEY)["members"] and service._load("test:5").camp == KEY
     view = service.act("test:2", "rename")                                   # not rename...
@@ -165,10 +167,11 @@ def test_helpers_read_well_in_english(service):
     set_level(service, 3)
     make_hero(service, "test:2", "Bram")
     join(service, "test:2")
-    guild = service.act("test:1", "guild")
+    guild = service.act("test:1", "gmembers")
     card = service.text("test:1", code_of(service, guild, "Bram"))
     assert card.actions[0].label == "🤝 Make helper"
     view = service.act("test:1", "ghelp:test:2")
     assert "is now a helper" in view.notice and "[" not in text(service.act("test:1", "guild"))
+    assert "🤝 Helpers (1/1): Bram" in text(service.act("test:1", "gmembers"))
     assert not service.texts.fallbacks.get("en"), sorted(service.texts.fallbacks.get("en", []))[:20]
     assert not service.texts.missing

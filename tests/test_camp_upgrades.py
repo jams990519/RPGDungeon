@@ -265,9 +265,9 @@ def test_granero_huerto_and_ahumadero_change_the_pantry(service, clock):
     assert service.store.get("pantry", KEY)["rations"] == pytest.approx(9)       # 1 active member, 1 day
     build(service, "granero")
     clock.advance(DAY)
-    view = service.act("test:1", "claro")
+    service.act("test:1", "claro")                                               # the hub still settles the pantry
     assert service.store.get("pantry", KEY)["rations"] == pytest.approx(8.1)     # 10 % less
-    assert any("Granero" in line for line in view.body)
+    assert any("Granero" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
     build(service, "huerto")
     clock.advance(DAY)
     service.act("test:1", "claro")
@@ -315,7 +315,7 @@ def test_camp_defense_sums_the_built_defenses(service):
     assert service._camp_defense(camp, night=True) == 12          # 🔥 Braseros count once more at night
     assert service._camp_defense({"claro": True}) == 0 and service._camp_defense(None) == 0
     assert service._camp_effect(camp, "warning_hours") == 2       # 🗼 Torre de vigía: for the raids
-    assert any("Defensa: 11" in line for line in service.act("test:1", "claro").body)
+    assert any("Defensa: 11" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
     place(service, "test:2", 6, 0)
     assert any("Defensa: 11" in line for line in service.act("test:2", "claro").body)   # visitors see it too
 
@@ -442,8 +442,9 @@ def test_camps_saved_before_the_patch_still_work(service):
     view = service.act("test:1", "claro")
     # D-192: the camp hub; D-287 (0.39): no 🔬 Investigar until the camp has its 📚 Biblioteca
     assert view.kind == "player_camp" and ids(view) == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "claro"]
-    assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in view.body)
+    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
+    info = service.act("test:1", "campinfo")                                     # D-302: ℹ️ Información
+    assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in info.body)
     assert service.act("test:1", "upgrades").kind == "camp_upgrades"
 
 

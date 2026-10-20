@@ -169,8 +169,10 @@ def test_request_accept_refuse_officers_and_the_cap_of_five(service):
     view = service.act("test:1", "goff:test:2")
     assert "test:2" in service.store.get("gremio", gid)["officers"] and "oficial" in view.notice
     service.act("test:4", f"greq:{gid}")
-    view = service.act("test:2", "guild")
-    assert "greqs" in ids(view)                                        # 🙋 Solicitudes (1) for the officer
+    assert "1 solicitud espera" in text(service.act("test:2", "guild"))   # D-302: one short line on the guild screen
+    view = service.act("test:2", "gmembers")
+    assert "greqs" in ids(view)                                        # 🙋 Solicitudes (1) for the officer, in 👥 Miembros
+    assert ids(service.act("test:2", "greqs"))[-1] == "gmembers"       # its ↩️ goes back there
     service.act("test:2", f"gans:{gid}:test:4:y")                      # an officer accepts too
     join(service, gid, "test:5")
     join(service, gid, "test:6")
@@ -228,18 +230,18 @@ def test_members_show_where_they_are_what_they_do_and_if_they_are_online(service
     join(service, gid, "test:2")
     place(service, "test:2", 3, 0, energy=50)
     service.act("test:2", "do:explore:3")
-    view = service.act("test:1", "guild")
+    view = service.act("test:1", "gmembers")                         # D-302: the members live in 👥 Miembros
     lines = [line for line in view.body if line.startswith("/m")]
     assert lines[0].startswith("/m1 👑 Lyra") and "🟢 en línea" in lines[0]
     assert "Bram" in lines[1] and "(3, 0)" in lines[1] and "explorando" in lines[1] and "🟢" in lines[1]
     clock.advance(3 * 60 * MIN)
     service.act("test:2", "stop")
     clock.advance(20 * MIN)
-    lines = [line for line in service.act("test:1", "guild").body if line.startswith("/m")]
+    lines = [line for line in service.act("test:1", "gmembers").body if line.startswith("/m")]
     assert "⚪" in lines[1] and "hace 20 min" in lines[1]
 
 
-def test_messages_go_to_every_member_in_their_language_and_the_last_five_stay(service):
+def test_messages_go_to_every_member_in_their_language_and_the_last_ones_stay(service):
     from test_idiomas import english_hero
     make_hero(service, "test:1", "Lyra")
     english_hero(service, "test:2", "Bram")
@@ -249,18 +251,19 @@ def test_messages_go_to_every_member_in_their_language_and_the_last_five_stay(se
     ask = service.act("test:1", "gmsg")
     assert ask.expects_text
     view = service.text("test:1", "¡Nos vemos en el bosque!  " + "x" * 300)
-    assert view.kind == "gremio" and "enviado" in view.notice
+    assert view.kind == "guild_chat" and "enviado" in view.notice     # D-302: back to 📢 Chat
     got = pushes(service, "test:2", "gremio_message")
     assert got and got[0].title == "📢 Guild Lobos Grises" and "Lyra: ¡Nos vemos en el bosque!" in got[0].body[0]
     cap = service.content.balance["gremio"]["message_max_chars"]
     stored = service.store.get("gremio", gid)["messages"][-1]["text"]
     assert len(stored) == cap and stored.endswith("…")
-    for n in range(6):
+    keep = service.content.balance["gremio"]["messages_kept"]
+    for n in range(keep + 1):
         service.act("test:2", "gmsg")
         service.text("test:2", f"mensaje {n}")
     messages = service.store.get("gremio", gid)["messages"]
-    assert len(messages) == service.content.balance["gremio"]["messages_kept"] and messages[-1]["text"] == "mensaje 5"
-    assert "💬 Bram: mensaje 5" in text(service.act("test:1", "guild"))
+    assert len(messages) == keep and messages[-1]["text"] == f"mensaje {keep}"
+    assert f"💬 Bram: mensaje {keep}" in text(service.act("test:1", "gchat"))   # D-302: the chat is its own screen
 
 
 def test_the_fund_takes_deposits_from_far_away_and_shows_who_gave_what(service):
@@ -532,7 +535,7 @@ def test_the_guild_reads_well_in_english(service, clock):
     view = service.text("test:1", "Grey Wolves")
     gid = service.store.get("gremio_of", "test:1")["gremio"]
     join(service, gid, "test:2")
-    for screen in ("guild", "gfund", "gmeet", "gmeetset", "gfound", "glist", "gmsg"):
+    for screen in ("guild", "gmembers", "gfunds", "gchat", "gfund", "gmeet", "gmeetset", "gfound", "glist", "gmsg"):   # D-302
         view = service.act("test:1", screen)
         assert view.title and "[" not in text(view), (screen, text(view))
     site(service, "test:1", 6, 0)

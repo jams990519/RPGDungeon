@@ -7,9 +7,9 @@ hub:
   services_active: "🏘️ Services: {list} · 🔨 {n} {n|active work|active works}. What's built and what's missing, by type."
   services_types: "🏘️ Services: the camp's homes, crafts and defenses, by type · 🔨 {n} {n|active work|active works}."
   make_none_camp: "🛠️ Craft: no stations yet; the craft buildings open them (🏘️ Services → ⚒️ Crafts)."
-  manage_nopantry: "🏰 Manage: ⬆️ grow, 🔨 upgrades and 🛡️ guild."
+  manage_nopantry: "🏰 Manage: ⬆️ grow, 🔨 upgrades, 🛡️ guild and ℹ️ camp info."
   research_none_notice: "🔬 Your camp doesn't have a 📚 Library yet."
-  guild_camp: "🛡️ Guild: the members, 💰 deposit from wherever you are, 📢 messages and ⚔️ armory."
+  guild_camp: "🛡️ Guild: 👥 members, 💰 funds (deposit from wherever you are), 📢 chat and ⚔️ armory."
 
 upgrades:
   count_reach: "🏗️ Built: {n} of {total} for this level"
@@ -104,7 +104,7 @@ gremio:
   waiting_full: "⏳ The guild already has as many waiting as it can: bring someone into the camp first."
 
 cfund:
-  title: "💰 Camp fund"
+  title: "💰 Deposit in the camp fund"
   intro: "Deposit from wherever you are: type or tap a material's code (/f02) and everything you carry of it goes in. The fund gives the active works what they lack, the oldest activated first; whatever is left stays here."
   line: "💰 In the fund: {items}"
   empty: "💰 The fund is empty."

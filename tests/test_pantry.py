@@ -80,7 +80,8 @@ def test_consumption_over_time_counts_only_active_members(service, clock):
     make_hero(service, "test:1", "Lyra")
     make_hero(service, "test:2", "Bram")
     camp = camp_at_level(service, 3, members=("test:1", "test:2"))
-    view = service.act("test:1", "claro")                    # at the camp: its screen, with the pantry
+    service.act("test:1", "claro")                           # at the camp: its screen...
+    view = service.act("test:1", "campinfo")                 # ...and its pantry in ℹ️ Información (D-302)
     assert any("Despensa" in line for line in view.body)
     assert rations(service, "6:0") == 7 * 2                  # migration: 7 days for every member
     clock.advance(DAY)
@@ -126,15 +127,15 @@ def test_camp_cannot_grow_with_an_empty_pantry(service):
     view = service.act("test:1", "claim:8:0")                       # level 3: aldea, the pantry opens
     camp = service.store.get("camp", "6:0")
     assert camp["level"] == 3
-    assert any("Despensa" in line for line in view.body)
+    assert any("Despensa" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
     assert [a.id for a in view.actions] == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]    # D-192; D-287: no 🔬 without 📚
     # D-192: ⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida and 🛡️ Gremio live in 🏰 Gestionar
-    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["grow", "upgrades", "campfeed", "guild", "gzones", "claro"]
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["grow", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]
     assert rations(service, "6:0") == 7                             # a new pantry starts with 7 days
     set_rations(service, "6:0", 0)
     view = service.act("test:1", "grow")
     assert view.kind == "player_camp" and "despensa" in view.notice.lower()
-    assert any("vacía" in line for line in view.body)
+    assert any("vacía" in line for line in service.act("test:1", "campinfo").body)      # D-302: the famine in ℹ️
     service.act("test:1", "claim:6:1")
     assert service.store.get("camp", "6:0")["level"] == 3           # nothing paid, nothing lost
     give(service, "test:1", carne=1)
@@ -259,7 +260,7 @@ def test_existing_camp_starts_with_a_week_for_its_members(service):
     for n, name in ((1, "Lyra"), (2, "Bram"), (3, "Cora")):
         make_hero(service, f"test:{n}", name)
     camp_at_level(service, 5, members=("test:1", "test:2", "test:3"))   # a camp that was already a pueblo
-    view = service.act("test:1", "claro")
+    view = service.act("test:1", "campinfo")                         # D-302: the pantry is in ℹ️ Información
     assert rations(service, "6:0") == 7 * 3
     assert any("Abundancia" in line for line in view.body)          # 21 rations for the 1 who plays today
 

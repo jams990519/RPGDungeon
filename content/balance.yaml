@@ -481,7 +481,10 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   found_coins: 20            # [ES] crear un gremio cuesta 🥉20 (D-269, el dueño). Un gremio por héroe
   members_before_camp: 5     # [ES] caben 5 antes de tener campamento (D-269, el dueño); después manda el cupo del campamento (guild.levels)
   message_max_chars: 200     # [ES] largo máximo de un 📢 mensaje al gremio; lo que pasa se corta (Claude)
-  messages_kept: 5           # [ES] cuántos mensajes guarda y muestra la pantalla del gremio (Claude)
+  messages_kept: 50          # [ES] cuántos mensajes guarda el chat del gremio (antes 5, que mostraba la pantalla del gremio; D-302, 0.39.4, Claude: 📢 Chat muestra los del último día, ver chat_*)
+  chat_hours: 24             # [ES] D-302 (0.39.4, pedido del dueño: "el listado del chat del último día"): 📢 Chat muestra los mensajes de las últimas 24 h
+  chat_shown: 20             # [ES] D-302 (Claude): como mucho 20 mensajes en 📢 Chat (los más nuevos, el último abajo)
+  chat_max_chars: 3500       # [ES] D-302 (Claude): si los mensajes pasan de 3.500 letras se quitan los más viejos, para que la pantalla no pase el tope de 4.096 de Telegram
   list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
   zones_shown: 8             # [ES] D-282 (0.38, Claude): cuántas zonas muestra 🗺️ Zonas del gremio de una vez (las más cercanas)
   search_min_pct: 50         # [ES] D-296 (0.39.1, pedido del dueño): el 🔎 buscador de recursos solo muestra zonas investigadas al 50 % o más (por ti o por tu gremio)
