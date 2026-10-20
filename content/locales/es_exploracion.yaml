@@ -75,7 +75,7 @@ explorer:                     # [ES] D-112: lo que ve el 🧭 Explorador con cad
   time_camp: "⏱️ A tu campamento {name}: {time}"
   places_hint: "🧭 Con rango {rank} de Explorador, 📒 Lugares lista hasta {n} lugares con su tiempo."   # [ES] sin uso desde la 0.39 (D-287)
   what:
-    travel: "📒 Lugares lista hasta {places} lugares con su tiempo, y dice cuánto tardas a cada zona que marca tu mapa"   # [ES] D-222: la lista de lo que marca el mapa se mudó a 📒 Lugares
+    travel: "📒 Lugares lista hasta {places} lugares de cada tipo con su tiempo, y dice cuánto tardas a cada zona que marca tu mapa"   # [ES] D-222: la lista de lo que marca el mapa se mudó a 📒 Lugares; D-301: el tope es por tipo (Mazmorras, Campamentos...)
     camps_near: "ves los 👹 campamentos enemigos hasta {n} zonas a la redonda, aunque no las hayas pisado"
     infiltrate: "puedes 🕵️ infiltrarte en los campamentos enemigos"
     camps_all: "ves los 👹 campamentos enemigos de todo tu mapa"

@@ -2181,7 +2181,18 @@ places:
   none: 'You don''t know any other important places yet: go out and explore.'
   more: …and {n} more, farther away.
   marks_title: '🔭 What your map marks:'
-  intro: '📒 The important places you know. Tap one or type its code and confirm: your hero will go alone, zone by zone.'
+  intro: '📒 The important places you know, by kind. Pick a kind, then the place (or type its code) and confirm: your hero will go alone, zone by zone.'
+  camp_line: '{icon} Your camp, {name} ({x}, {y}) · {zones} {zones|zone|zones} away · {time}'
+  camp_button: 🏕️ {name}
+  kind_button: '{kind} ({n})'
+  kind:
+    dng: 🕳️ Dungeons
+    fire: 🔥 Campfires
+    guild: 🛡️ Guild
+    camps: 🏕️ Camps
+    lair: 👑 Lair
+  kind_title: 📒 Places · {kind}
+  kind_intro: '📒 {kind}: tap one or type its code and confirm. Your hero will go alone, zone by zone.'
   code_line: '{n}. {icon} {name} ({x}, {y}) · {zones} {zones|zone|zones} away · {time} · /go{n}'
   coord_hint: '📌 Another coordinate? Type /go x y (for example, /go 12 -3) and the way is laid out in 🔗 Move.'
   dungeon_small: '{name}, small dungeon'

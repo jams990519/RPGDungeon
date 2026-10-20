@@ -73,7 +73,7 @@ guides_page:
       🪓 Gather (in 🧭 Explore) collects the resources you've already discovered in your zone.
       ⏱️ Each round takes {gather_min} min and {gather_energy} ⚡, and gives {gather_low} to {gather_high} units (more in faraway zones).
       🔢 You choose how many rounds in a row ({batches} or All) and I'll let you know when it's done.
-      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour; once depleted, it gives nothing.
+      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour (🪵 wood, {wood_regen}%); once depleted, it gives nothing.
       ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
       🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
       🏕️ No fights show up inside a camp's territory, and in yours you gather {own_bonus}% more.

@@ -289,15 +289,15 @@ def test_cabanas_and_pozo(service, clock):
     cap = service._members_cap(camp)
     build(service, "cabanas")
     assert service._members_cap(camp) == cap + 2
-    resources = list(service._zone_resources(6, 0))
-    service.store.put("stock", KEY, {"levels": {r: 0.0 for r in resources}, "at": clock.now()})
+    resources = [r for r in service._zone_resources(6, 0) if r != "madera"]    # D-300: wood comes back ×2 on its own
+    service.store.put("stock", KEY, {"levels": {r: 0.0 for r in service._zone_resources(6, 0)}, "at": clock.now()})
     service.store.put("stock", "9:9", {"levels": {r: 0.0 for r in service._zone_resources(9, 9)}, "at": clock.now()})
     clock.advance(10 * 3600)
     before = service._stock(6, 0)[resources[0]]
     build(service, "pozo")
     after = service._stock(6, 0)[resources[0]]
     assert after == pytest.approx(before * 1.5)                   # 50 % faster in the territory
-    outside = list(service._stock(9, 9).values())[0]
+    outside = next(v for r, v in service._stock(9, 9).items() if r != "madera")
     assert outside == pytest.approx(before)                       # not outside it
 
 

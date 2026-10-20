@@ -449,11 +449,12 @@ def test_the_map_never_shows_dungeons_and_places_keeps_the_ones_you_visited(serv
     mapv = service.act("test:1", "map")
     assert not any("🕳️" in row or "🌀" in row for row in mapv.body)                       # nothing drawn
     assert [a.id for a in mapv.actions] == ["places", "explore_menu"]
-    assert not any(a.id == f"goask:{x}:{y}" for a in service.act("test:1", "places").actions)
+    assert "plc:dng" not in [a.id for a in service.act("test:1", "places").actions]     # D-301: no 🕳️ Mazmorras yet
     service.act("test:1", f"goto:{x}:{y}")                                              # never visited: walk there
     assert not service._load("test:1").activity
     place(service, "test:1", x, y + 2, activity=None, known=["0:0", f"{x}:{y}", f"{x}:{y + 2}"])
-    places = service.act("test:1", "places")
+    assert "plc:dng" in [a.id for a in service.act("test:1", "places").actions]
+    places = service.act("test:1", "plc:dng")
     assert any("mazmorra profunda" in line and "/ir" in line for line in places.body)
     button = next(a for a in places.actions if a.id == f"goask:{x}:{y}")
     confirm = service.act("test:1", button.id)
