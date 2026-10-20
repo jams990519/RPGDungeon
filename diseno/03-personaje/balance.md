@@ -1168,6 +1168,15 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (20-oct): el chat del gremio (0.40, D-302)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `gremio.messages_kept` | 5 | 50 mensajes guardados |
+| `gremio.chat_hours` (nuevo) | — | 24: el 📢 Chat muestra los del último día |
+| `gremio.chat_shown` (nuevo) | — | 20 como mucho |
+| `gremio.chat_max_chars` (nuevo) | — | 3.500 letras (para que entre en un mensaje de Telegram) |
+
 ### Octubre de 2026 (20-oct): más madera (0.40, D-300)
 
 | Número | Antes | Ahora |

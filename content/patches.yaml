@@ -775,3 +775,18 @@ v0_39_4:
     - "🔁 Equip is now a list with only what you are not wearing: each piece has its code (/e1) to see it and put it on."
     - "🔽 New Unequip button, next to Equip: the list of what you wear, and its code (/q1) takes it off."
 
+v0_40:
+  version: "0.40"
+  title: "🪵 Lost Realms 0.40: más madera, Lugares ordenados y un gremio más claro"
+  title_en: "🪵 Lost Realms 0.40: more wood, tidier Places and a clearer guild"
+  notes:
+    - "🪵 Hay más madera: los bosques, bosques oscuros y selvas siempre tienen, aparece en algunas zonas más y vuelve el doble de rápido."
+    - "📒 Lugares ahora tiene botones: primero tu campamento, después 🕳️ Mazmorras, 🔥 Fogatas y los demás. Cada uno con su lista y sus códigos /ir."
+    - "🏕️ Tu campamento muestra solo lo que puedes hacer; la información (nivel, miembros, mejoras, próxima oleada…) está en 🏰 Gestionar → ℹ️ Información."
+    - "🛡️ El gremio está más ordenado: arriba su nivel y lo que falta; abajo 👥 Miembros, 💰 Fondos del campamento (cada recurso con su código), 📢 Chat (los mensajes del último día), ⚔️ Armería y 🔎 Buscar recursos."
+  notes_en:
+    - "🪵 There is more wood: forests, dark forests and jungles always have it, it shows up in a few more zones and it grows back twice as fast."
+    - "📒 Places now has buttons: your camp first, then 🕳️ Dungeons, 🔥 Campfires and the rest. Each one with its list and its /go codes."
+    - "🏕️ Your camp shows only what you can do; the information (level, members, upgrades, next wave…) is in 🏰 Manage → ℹ️ Information."
+    - "🛡️ The guild is tidier: its level and what's missing at the top; below, 👥 Members, 💰 Camp funds (each resource with its code), 📢 Chat (the last day's messages), ⚔️ Armory and 🔎 Find resources."
+
