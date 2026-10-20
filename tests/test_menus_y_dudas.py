@@ -3,13 +3,14 @@
 [ES] Pruebas de los menús nuevos: el menú de abajo tiene 5 botones sin 📖 Historia; los centros del Claro, de tu campamento y
 del héroe van en orden y con 8 botones como mucho; el entrenador presenta los oficios; ❓ Dudas encuentra respuestas por
 palabra y por código, y toda pregunta tiene sus textos; crear un héroe lleva directo al juego, sin origen; el botón viejo
-📖 Historia sigue respondiendo.
+📖 Historia sigue respondiendo. D-297: ❓ Dudas trae 📚 Guías primero (9 botones, el extra que pidió el dueño); las guías
+se prueban en tests/test_guias.py.
 """
 
 import re
 
 from conftest import make_hero
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import HUB_BUTTONS, HUB_KINDS, button_cap
 from test_camps import found_at
 
 
@@ -136,8 +137,9 @@ def test_trainer_presents_the_professions(service):
 def test_dudas_screen_topics_and_search_by_word(service):
     make_hero(service)
     view = service.act("test:1", "dudas")
-    assert view.kind == "dudas" and view.expects_text and len(view.actions) <= HUB_BUTTONS
-    assert ids(view)[-1] == "claro" and all(i.startswith("dudas:") for i in ids(view)[:-1])
+    assert view.kind == "dudas" and view.expects_text and len(view.actions) <= button_cap("dudas") == HUB_BUTTONS + 1
+    assert ids(view)[0] == "guides" and ids(view)[-1] == "claro"               # D-297: 📚 Guías first, the extra button
+    assert all(i.startswith("dudas:") for i in ids(view)[1:-1]) and len(ids(view)[1:-1]) == len(service._faq_topics())
     topic = service.act("test:1", ids(view)[1])
     assert topic.kind == "dudas_topic" and any(re.match(r"^/d\d\d · ", line) for line in topic.body)
     found = service.text("test:1", "energía")                                  # the screen is open: any text searches

@@ -8,7 +8,7 @@ los jugadores quieran moverse en una coordenada ya sepan cómo hacerlo"):
 - ❓ Dudas explica cómo ir a una coordenada;
 - y el gremio se arma desde cualquier lugar (D-279): 🛡️ Gremio está en 🏕️ Campamento aunque no haya campamento ahí.
 Archivo: tests/test_coordenadas.py · Módulo: M2 Mundo y viaje, M15 Social · Prueba: engine/service/game.py (_place_label,
-_coord_walk, COORD_RE, _zone_view, _places_view, _map_view, _camp_here_view), content/faq.yaml (d54).
+_coord_walk, COORD_RE, _zone_view, _places_view, _map_view, _camp_here_view), content/faq.yaml (d56).
 """
 
 from conftest import make_hero
@@ -70,8 +70,8 @@ def test_too_far_here_or_busy_only_explains(service):
 def test_dudas_explain_how_to_go_to_a_coordinate(service):
     make_hero(service)
     view = service.text("test:1", "/dudas coordenada")
-    assert "/ir x y" in text(view) or any("d54" in a.id for a in view.actions)
-    answer = text(service.text("test:1", "/d54"))
+    assert "/ir x y" in text(view) or any("d56" in a.id for a in view.actions)
+    answer = text(service.text("test:1", "/d56"))   # [ES] 0.39.3: era d54, repetido con «¿qué hay de nuevo?»
     assert "/ir x y" in answer and "(0, 0)" in answer
 
 

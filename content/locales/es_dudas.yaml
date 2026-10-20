@@ -185,7 +185,7 @@ faq:
     a: "Cualquiera crea un gremio por {gremio_cost} (🏕️ Campamento → 👥 Jugadores → 🛡️ Gremio, o /gremio); caben {gremio_cap} antes del campamento. Se pide entrar y acepta el líder o un oficial. Sirve para ver dónde está cada miembro y qué hace, mandar 📢 mensajes y juntar un 💰 fondo desde donde estés; el líder marca el 📍 punto de reunión y funda el campamento. Después, sus miembros son los del campamento: sube de nivel con lo que exploran, ganan y juntan entre todos. Para llegar a castillo hace falta un gremio de nivel {guild_castle}."
   d43:
     q: "📜 ¿Qué es el tablón?"
-    a: "En el 📜 Tablón (🏕️ Campamento) hay 3 encargos nuevos cada día, uno por facción: cumplirlos da experiencia, monedas y reputación. Si tienes campamento, ves también sus encargos de la semana, que se hacen entre todos."
+    a: "En el 📜 Tablón (🏕️ Campamento) hay 3 encargos nuevos cada día, uno de cada personaje: cumplirlos da experiencia, monedas y reputación con su facción. Si tienes campamento, ves también sus encargos de la semana, que se hacen entre todos."
   # ---- ⚒️ Oficios
   d44:
     q: "⚒️ ¿Cómo aprendo un oficio?"
@@ -218,6 +218,6 @@ faq:
   d53:
     q: "🔗 ¿Para qué sirve invitar?"
     a: "En 👤 Héroe está tu código de invitación. Cada amigo que entra con tu enlace y crea su héroe te da {invite_bonus} ⚡ extra."
-  d54:
+  d56:
     q: "📌 ¿Cómo voy a una coordenada?"
     a: "Cada lugar dice sus coordenadas: (x, y). Tú estás donde dice 📍 Zona. El norte suma a la y y el este, a la x: (3, -2) está 3 zonas al este y 2 al sur del Claro, que es (0, 0). Para ir, escribe /ir x y (por ejemplo, /ir 3 -2): se arma el camino en 🔗 Moverte, primero este-oeste y después norte-sur, y tocas ✅ Terminar. Hasta {walk_max} pasos por vez."   # [ES] D-278 (0.36.1, pedido del dueño)

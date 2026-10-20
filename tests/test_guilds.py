@@ -16,7 +16,7 @@ from engine.combat import make_combat
 from engine.core import FixedClock, MemoryStore
 from engine.hero import Hero
 from engine.service import GameService
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import HUB_BUTTONS, button_cap
 from engine.social import guilds as guild_rules
 from test_camps import old_camp_at as found_at, place     # D-97: camps founded before D-269 (no guild)
 
@@ -378,9 +378,9 @@ def test_every_guild_screen_keeps_four_buttons(content):
                 service, view = build(role, with_guild, path)
                 if view.layout:                 # D-189/D-244: rows of their own (📍 Zona, D-288 screens): a wide last row
                     assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.layout)
-                    assert len(view.actions) <= HUB_BUTTONS, (role, with_guild, path, view.kind, ids(view))
+                    assert len(view.actions) <= max(HUB_BUTTONS, button_cap(view.kind)), (role, with_guild, path, view.kind, ids(view))
                 else:
-                    assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (role, with_guild, path, view.kind, ids(view))
+                    assert len(view.actions) <= button_cap(view.kind), (role, with_guild, path, view.kind, ids(view))   # D-297
                 assert not service.texts.missing, (path, service.texts.missing)
                 key = (view.kind, tuple(ids(view)))
                 if key in seen or len(path) >= 3:

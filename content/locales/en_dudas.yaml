@@ -241,7 +241,7 @@ faq:
     a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle}.'
   d43:
     q: 📜 What is the board?
-    a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one per faction: completing them gives experience, coins and reputation. If you have a camp, you also see its weekly tasks, which everyone does together.'
+    a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one from each character: completing them gives experience, coins and reputation with their faction. If you have a camp, you also see its weekly tasks, which everyone does together.'
   d44:
     q: ⚒️ How do I learn a profession?
     a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. Your professions: /myprofessions.'
@@ -272,6 +272,6 @@ faq:
   d53:
     q: 🔗 Why invite friends?
     a: Your invite code is in 👤 Hero. Every friend who joins with your link and creates their hero gives you {invite_bonus} extra ⚡.
-  d54:
+  d56:
     q: 📌 How do I go to a coordinate?
     a: 'Every place shows its coordinates: (x, y). You are where 📍 Zone says. North adds to y and east adds to x: (3, -2) is 3 zones east and 2 south of the Clearing, which is (0, 0). To go, type /go x y (for example, /go 3 -2): the way is laid out in 🔗 Move, first east-west, then north-south, and you tap ✅ Finish. Up to {walk_max} steps at a time.'

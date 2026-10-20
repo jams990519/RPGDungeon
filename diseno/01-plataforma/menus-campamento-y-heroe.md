@@ -93,6 +93,8 @@ El camino guiado (D-190) puede mandar al jugador aquí después de fundar su cam
 
 ## 5. ❓ Dudas
 
+> **0.39.3 (D-297):** ❓ Dudas tiene primero el botón **📚 Guías** (9 botones en esa pantalla, a pedido del dueño): 🎭 Clases (una guía por clase), 🪵 Recursos (encontrar, recolectar, caza y comida, oficios) y ⚙️ Cómo funciona (energía y vida, moverte y el mapa, peleas, gremio, campamento, mazmorras y enemigos, misiones). ❓ Dudas también está en ⚙️ Opciones y su ↩️ Volver regresa a donde se abrió.
+
 "Una IA que, cuando le mencionas algo, te muestra preguntas ya respondidas; con un código se llama la respuesta" (D-191). Por ahora es un **buscador por palabras** (E-129): gratis e instantáneo; una IA de verdad, si se decide, llega después.
 
 - **Catálogo:** 55 preguntas en 7 temas (🌱 Primeros pasos, 🧭 Mapa y exploración, ⚔️ Peleas y salud, 👤 Tu héroe, 🏕️ Campamentos, ⚒️ Oficios, 💰 Monedas y comercio), en `content/faq.yaml`. Cada una tiene un **código fijo** (/d01 a /d55), palabras clave, su tema y hasta 3 relacionadas. Los textos van en `content/locales/es_dudas.yaml`.

@@ -1,0 +1,176 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_guias.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_guias.yaml (📚 Guías de
+# ❓ Dudas, D-297). Una clave nueva va primero en es_guias.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara
+# los dos idiomas (tests/test_idiomas.py lo exige): mismas claves y los mismos huecos {nombre}. No es una traducción palabra
+# por palabra: inglés natural, con los mismos nombres de botones y lugares que ya usa el inglés del juego (Clearing,
+# Campfire, Zone, Explore, Camp, Hero, Guild, Services, Manage, Places, Move, Trainer, Merchant, Inn, Board...).
+# D-293: aquí tampoco van íconos de clase ni de rol; los nombres de clase, rol y habilidad salen de en_clases_031.yaml.
+
+guides:
+  button: "📚 Guides"
+  title: "📚 Guides"
+  dudas_line: "📚 Guides: the basics of each class, of resources and of how everything works."
+  intro: "Short guides to help you understand the game. Pick a topic:"
+  category_line: "{name}: {desc}"
+  search_hint: "🔎 Got a specific question? Type a word and I'll look it up in ❓ Help."
+  category:
+    classes: "🎭 Classes"
+    resources: "🪵 Resources"
+    howto: "⚙️ How it works"
+  category_desc:
+    classes: "one guide per class, with its 2 roles and its chain."
+    resources: "where to find them, how to gather them, and professions."
+    howto: "energy, the map, fights, guild, camp and more."
+  category_title: "{name}"
+  pick: "Pick a guide:"
+  page: "Page {page} of {pages}."
+  more_button: "➡️ More"
+  value:
+    free: "free"
+  class:
+    gear: "🎽 Armor: {armor} (made by {trade}) · weapons: {weapons}."
+    gear_plain: "🎽 Armor: {armor} · weapons: {weapons}."
+    role: "{name} — {role}."
+    chain: "   🔗 {order}"
+    second_role: "🔄 Your second role comes at level {second_role}, for free: switch roles whenever you like in 👤 Hero → 🌟 Talents."
+    change: "🔀 Want another class? 🌟 Talents → 🔄 Change class. Each change costs more: {class_prices} (after that, always the last one). You keep your level, professions, coins and gear."
+
+guides_page:
+  # ---- 🎭 Classes (the title is the class name: class_group.<class>.name)
+  guerrero:
+    intro: "Fights up front: takes the hits for the group or breaks the enemy with sheer strength."
+    tip: "💡 Solo, the Tank blocks more of every hit and the DPS hits harder. Execute hits harder when the enemy is low on health."
+  paladin:
+    intro: "A holy fighter in plate: heals from the front line or punishes with light."
+    tip: "💡 Solo, your heals land on you. Verdict makes your next holy hit stronger; Divine Storm hits several enemies at once."
+  druida:
+    intro: "A shapeshifter: a bear that dodges and strikes back, or a cat that makes enemies bleed."
+    tip: "💡 Bear: every dodge builds up Savage Roar's counterattack. Cat: Rend makes the enemy bleed and Ferocious Bite cashes in the bleed all at once."
+  cazador:
+    intro: "Fights from range: boosts allies or finishes enemies off with shots."
+    tip: "💡 Support: Pack Mark makes one ally hit harder (solo, you) and Wild Call, the whole group. DPS: Deadly Shot hits harder on your Hunter's Mark."
+  sacerdote:
+    intro: "Wields faith: keeps one ally standing with heals and shields, or deals shadow damage."
+    tip: "💡 Healer: Holy Shield absorbs damage and Greater Heal puts all the healing on one target. Shadow: the longer Shadow Pain lasts, the harder Mind Blast hits."
+  mago:
+    intro: "Wields magic: weakens the enemy for the whole group or burns it with fire."
+    tip: "💡 Support: Arcane Fragility makes the enemy take more damage and Arcane Rupture interrupts its charged attack. Fire: Ignite burns it and Pyroblast detonates it all at once."
+  # ---- 🪵 Resources
+  find:
+    title: "🔎 Finding resources"
+    text: |-
+      🔎 Explore (in 🧭 Explore) studies your zone: each round takes {explore_min} min and {explore_energy} ⚡, and adds {explore_low} to {explore_high}%.
+      🪵 At {reveal}% you discover its resources, one by one.
+      ➡️ Once your zone is at 100%, exploring moves on to the neighboring zones, without you moving.
+      🗺️ At {color_at}% the zone shows its terrain on the 🗺️ Map; the color doesn't tell you which resources are there.
+      ✨ A node is a zone rich in one resource: you find out which one when you step on it.
+      🔎 Find resources (🛡️ Guild or 🏰 Manage) or /search wood: tells you where that resource is in zones studied to {search_min}% or more, nearest first.
+      📍 Tap a zone's code (/z1) and the route is laid out in 🔗 Move.
+      🛡️ In a guild, what one member discovers, everyone knows.
+  gather:
+    title: "🪓 Gathering"
+    text: |-
+      🪓 Gather (in 🧭 Explore) collects the resources you've already discovered in your zone.
+      ⏱️ Each round takes {gather_min} min and {gather_energy} ⚡, and gives {gather_low} to {gather_high} units (more in faraway zones).
+      🔢 You choose how many rounds in a row ({batches} or All) and I'll let you know when it's done.
+      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour; once depleted, it gives nothing.
+      ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
+      🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
+      🏕️ No fights show up inside a camp's territory, and in yours you gather {own_bonus}% more.
+      ⚒️ Without the profession you get the basics; once you learn it, you sometimes get an extra unit and, with rank, something rare.
+  hunt:
+    title: "🏹 Hunting and food"
+    text: |-
+      🏹 Hunt (in 🧭 Explore) looks for prey in your zone: {hunt_energy} ⚡ per prey.
+      🍖 You get the fight and its loot: meat, hide, coins and sometimes gear. There's no prey at the campfires.
+      {skinner}: once you've learned it, you sometimes get extra meat or hide.
+      🐟 Zones with water also have fish: you gather it, and it's what the {fisher} profession collects.
+      🍲 Cook (🏕️ Camp) turns meat and fish into rations and stews; learn 🍲 Cooking first.
+      🌾 From level {pantry_level}, food fills your camp's pantry: 🏰 Manage → 🌾 Contribute food.
+      🥖 The 🛒 Merchant sells provisions: up to {provisions_cap} a week.
+      🏹 Hunting party: with a camp you can call one, and every companion in the zone adds experience and loot chance (up to +{party_cap}%).
+  trades:
+    title: "⚒️ Professions"
+    text: |-
+      🧑‍🏫 You learn them in 🏕️ Camp → 🧑‍🏫 Trainer → 📚 Learn professions: {learn_price} each, with no limit on how many.
+      🧭 The Explorer is the only one that levels up on its own, as you explore. Gathering is learned too: {gatherers}.
+      ⭐ The Trainer recommends the profession that makes your class's armor.
+      🔗 You gather materials → 🪚 Refine (wood → plank, metal → ingot…) → 🛠️ Craft (gear, potions, bandages, furniture).
+      🔥 It's all done in 🏕️ Camp → 🛠️ Craft: every campfire has the basic stations; your camp, the ones its profession buildings open.
+      ⚡ Each recipe spends energy and gives profession experience; each rank opens new recipes, up to {max_rank}.
+      🎓 At rank {spec_first} you pick a specialization, and at {spec_second}, another one.
+      📋 Your professions: /myprofessions (each with its code, to see everything about it).
+  # ---- ⚙️ How it works
+  energy:
+    title: "⚡ Energy and health"
+    text: |-
+      ⚡ Energy is spent outside of fights: exploring, gathering, hunting, crafting, cooking…
+      🔋 You hold up to {energy_max} and recover {energy_day} a day: 1 every {energy_every}.
+      🚶 Moving between zones {move_cost}. Fights that come up while exploring, gathering or traveling don't cost ⚡.
+      👥 Each friend who joins with your invite link (👤 Hero) gives you {invite_bonus} extra ⚡.
+      ❤️ Out of combat your health comes back on its own: 0 to full in {hp_full}; if you fell, in {downed_full}.
+      🧪 Faster: potions and bandages (🎒 Backpack → 🧪 Potions) or the 🛏️ Inn at any campfire ({inn_price}).
+      🩺 👤 Hero → 🩺 Health shows how much you're missing.
+  map:
+    title: "🚶 Moving and the map"
+    text: |-
+      📍 Zone: tap a direction. Each zone takes {travel_first} min, and moving {move_cost}.
+      🔗 Move: build a route of up to {walk_max} steps and your hero walks it alone.
+      📌 Coordinates (x, y): the Clearing is (0, 0); east adds to x and north adds to y. Type /go 3 -2 and the route is laid out.
+      📒 In 🗺️ Map → 📒 Places you go straight back to a place you already know (/go1).
+      🔥 There are {bonfires} campfires: the Clearing and one every {bonfire_spacing} zones around it. All of them have a merchant, an inn, a trainer and stations.
+      👥 Each campfire holds {bonfire_cap} players: if it's full, you carry on to the nearest one with room.
+      🎨 A zone shows its terrain on the map once you or your guild have studied it to {color_at}%.
+      ⚔️ When you arrive in a zone, a monster may show up; never at campfires or camps.
+  fights:
+    title: "⚔️ Fights"
+    text: |-
+      ⚔️ Fights are turn-based, with 4 buttons: Basic (gives you +{basic_gain} energy), Builder ({cost_h1}), Primer ({cost_h2}) and Spender ({cost_h3}).
+      🔷 You start with {chain_start} energy and gain {chain_per_turn} per turn.
+      🔗 Your role has its own order: each button in order adds a mark and the Spender cashes them in (up to +{bonus_max}%). Breaking the order snaps the chain.
+      🛡️ Defending ({defend_cost}) or drinking a potion ({item_cost}) uses up your turn. 🏃 Flee is in 🎒 Backpack.
+      👾 Monsters out in the wild match your level: from {wild_below} below to {wild_above} above.
+      💀 If you fall, you lose {defeat_pct}% of your coins and end up 🤕 gravely wounded; you never lose levels or gear.
+      🤕 While gravely wounded you can't hunt, enter dungeons or assault enemy camps: wait for your health to fill up or drink a potion.
+  guild:
+    title: "🛡️ Guild"
+    text: |-
+      🛡️ Open it from the bottom menu or with /guild. Creating one costs {gremio_cost}, and {gremio_cap} members fit before the camp.
+      🔎 Find a guild: tap its code (/g1) and ask to join; the leader or an officer accepts.
+      ✉️ To invite someone: /inv_ and their player code (everyone sees theirs in 👤 Hero).
+      💬 Whatever you type in the game chat reaches your whole guild.
+      💰 Fund (with a camp, 💰 Deposit): add materials from wherever you are, using their code (/f02).
+      ⚔️ Armory: leave gear with /a1 and take it with /t1.
+      🗺️ What one member explores, the whole guild knows (the experience goes to whoever explores). If you leave, you keep what's yours.
+      ⏳ When the camp is full, the founder or a 🤝 helper can add you to the guild to wait for a spot (up to {waiting_max}).
+  camp:
+    title: "🏕️ Camp"
+    text: |-
+      🏕️ Your 🛡️ guild founds it, wherever the leader chooses: away from the campfires (Distance {camp_far} or more) and with no other camp within {camp_gap} zones.
+      🔎 The zone must be explored to 100%, with {camp_known} of its 8 neighbors known (what your guild explores counts).
+      ⏳ You need {found_members} members there and {found_cost} in the 💰 fund: the leader taps 🛡️ Guild → 🏕️ Found. It takes {found_minutes} min (less with more members).
+      🏘️ Services shows the works by type: {kinds}.
+      ▶️ The founder or a 🤝 helper (1 per {helpers_per} members) activates a work; everyone contributes with 🤲, or from afar with 💰 Deposit.
+      📈 Each new work costs {growth_pct}% more for every work already built.
+      🏗️ Once its materials are complete, it gets built: {work_minutes} min per level with {work_members} members in the territory (faster with more).
+      ⬆️ Expand camp (🏰 Manage) adds one zone to the territory; there you gather {own_bonus}% more.
+      🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight.
+  dungeons:
+    title: "🕳️ Dungeons and enemies"
+    text: |-
+      🕳️ Dungeons are solo and always in the same place; what's inside changes every day. You go in from 🧭 Explore in their zone.
+      🕳️ The small one has {small_rooms} rooms and its boss; its chest opens once a day.
+      🌀 The deep one goes down floor by floor: you fill a bag and choose ⬇️ Go down or 🚪 Leave with your loot. If you fall or flee, you keep {deep_keep}%.
+      👹 Enemy camps show up somewhere new every day and block exploring and gathering in their zone.
+      ⚔️ Assault: each fight defeats one of the garrison, for everyone; the last one is the boss, and its chest goes to whoever finishes it.
+      🕵️ Infiltrate needs 🧭 Explorer rank {infiltrate_rank}; from rank {recon_rank}, /recon lets you see from afar what's there.
+      👑 The Guardian waits in its lair: ⚔️ Challenge the Guardian in 🧭 Explore. The first to beat it becomes Pioneer of the Clearing.
+  quests:
+    title: "📜 Quests and tasks"
+    text: |-
+      📖 The story guides you step by step as you play; /guide shows you the current step.
+      📔 👤 Hero → 📔 Journal has your card, your 🎯 Quests and the ⚜️ Factions.
+      🎭 Your origin (👤 Hero → 🎭 Origin) brings its own story.
+      📜 Board (🏕️ Camp): each character gives you one task a day, and you cash it in by talking to them in 🧑 Characters.
+      🎁 Tasks give experience, coins and reputation with their faction; more reputation brings rewards and titles.
+      🏕️ With a camp there are also {camp_tasks} tasks a week, done together.

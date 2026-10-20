@@ -500,7 +500,7 @@ El dueño pidió (18-oct-2026): "asegúrate que todas las posiciones tengan una 
 - **Cada lugar dice sus coordenadas, «(x, y)».** El Claro es (0, 0); el norte suma a la y y el este, a la x. Las llevan las rutas de 📍 Zona («⬆️ Norte (0, 1): …»), el 🗺️ Mapa (dónde estás), 📒 Lugares y su confirmación, los avisos y la pantalla del viaje, la caza, las mazmorras, los campamentos enemigos, el punto de reunión del gremio y las metas de la historia.
 - **/ir x y** (en inglés, /go x y; también /ir 12,-3 o /ir (12, -3)) arma el camino en 🔗 Moverte: primero este-oeste y después norte-sur, sin diagonales, como el viaje de 📒 Lugares. No sale solo: el jugador ve los pasos, dónde termina y cuánto tarda, y toca ✅ Terminar (o lo cambia con las flechas). Pisa tierra nueva como cualquier camino de 🔗 Moverte (D-244), con sus emboscadas.
 - **Tope:** el de 🔗 Moverte, 50 pasos (`travel.walk_max`). Si la coordenada queda más lejos, el juego dice hasta dónde llegar primero («ve por partes: primero /ir 40 10»). Ocupado o en combate, avisa y no arma nada.
-- **Dónde se explica:** debajo del texto de 🔗 Moverte, al final de 📒 Lugares y en ❓ Dudas («📌 ¿Cómo voy a una coordenada?», d54).
+- **Dónde se explica:** debajo del texto de 🔗 Moverte, al final de 📒 Lugares y en ❓ Dudas («📌 ¿Cómo voy a una coordenada?», d56; hasta la 0.39.3, d54 por error).
 
 ### 1.18 Las 9 hogueras (D-265, D-277, en el juego desde la 0.37)
 

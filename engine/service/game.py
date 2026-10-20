@@ -116,8 +116,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     "at"}} (se vacía solo al cambiar el día: uno por lugar y día), "kinds" ["x:y", ...] (entradas de mazmorra reconocidas
     alguna vez: ya sabe si es 🕳️ o 🌀; nunca se borra)}). El 🥷 Sigilo no guarda nada: es el beneficio "stealth" del oficio.
     Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
-    D-192: "dudas_open" (clave la cuenta: {"at"}): la pantalla de ❓ Dudas está abierta y el texto suelto es una búsqueda;
-    act() lo borra con cualquier otro botón. Es solo un estado de pantalla, como "camp_naming": nada de progreso.
+    D-192: "dudas_open" (clave la cuenta: {"at", "from"}): la pantalla de ❓ Dudas (o de 📚 Guías, D-297) está abierta y el
+    texto suelto es una búsqueda; act() lo borra con cualquier otro botón. D-297: "from" es de dónde se abrió ("claro",
+    "options" u "hero"; sin él, el centro de 🏕️ Campamento) y adónde va su ↩️ Volver. Es solo un estado de pantalla, como
+    "camp_naming": nada de progreso.
     D-193: Hero.guide (el avance del 🧭 camino guiado: pasos hechos, avisos vistos, movimientos para fundar); lo maneja
     engine/service/guide.py. Hero.tutorial (el tutorial viejo) ya no avanza: solo se lee (E-133).
     D-244 (0.33): "walk" (el camino de 🔗 Moverte a medio armar, clave el id del héroe: {"from": [x, y], "steps"}); se
@@ -397,6 +399,17 @@ Si cambias esto, revisa:
       texto suelto con "dudas_open"): content/faq.yaml (códigos estables d01...) y content/locales/es_dudas.yaml; sus
       respuestas toman los números de balance.yaml (_faq_values: si una respuesta pide un número nuevo, se agrega ahí).
       Textos de los centros: content/locales/es_menus.yaml. Pruebas: tests/test_menus_y_dudas.py
+    - 📚 Guías de ❓ Dudas (D-297, el dueño, 20-oct-2026: "un botón extra como si fuese un submenú con subguías de acuerdo a
+      sus clases, cómo conseguir recursos, cómo funciona cada cosa… tanto en español y en inglés"; y "agrega el botón de
+      dudas también en el botón de opción"): sección "📚 Guías" (_guidebook_entries, _guidebook_categories,
+      _guidebook_title, _guidebook_values, _guidebook_class_lines, _guidebook_view, _guidebook_category_view,
+      _guidebook_page_view; llevan "guidebook" para no pisar los _guide_* del 🧭 camino guiado, GuideMixin); botones
+      "guides", "guides:<categoría>[:<página>]" y "guide:<id>" (DUDAS_ACTIONS, por _dudas_action; "guide" solo sigue siendo
+      el camino guiado); "dudas@options" (❓ Dudas en ⚙️ Opciones, DUDAS_ORIGINS, _dudas_back); EXTRA_BUTTON_KINDS y
+      button_cap (❓ Dudas 9 botones y ⚙️ Opciones 5, porque el dueño pidió el botón extra); HUB_KINDS "guides_category".
+      Datos: content/guides.yaml (Content.guides); textos: content/locales/es_guias.yaml y en_guias.yaml; números de
+      balance.yaml (_guidebook_values suma a _faq_values) y nombres de clase, rol y habilidad de es_clases_031.yaml (D-293).
+      Pruebas: tests/test_guias.py, tests/test_options.py, tests/test_menus_y_dudas.py
     - 🔭 Reconocer y 🥷 Sigilo (D-172): balance.yaml recon (energía, alcance por umbral, experiencia, monedas, cuántos lista) y
       explorer (ranks recon, recon_far, recon_wide y stealth_max); content/professions.yaml (perk stealth del explorador y el
       efecto perk stealth de la 🎓 🕵️ Infiltrado); PERK_KEYS en engine/professions/rules.py; textos recon.*, stealth.*,
@@ -579,10 +592,20 @@ SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 # D-192 (provisional; E-132): the 🏕️ Campamento and 👤 Héroe hubs (and the screens that work like them) show all their options
 # at once, up to HUB_BUTTONS, 2 per row; every other screen keeps the 4 of D-75 (the combat bar, 6; amount pickers, D-189).
 HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio",    # D-269: the guild hub too
-             "guild", "camp_services", "camp_type")   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
+             "guild", "camp_services", "camp_type",   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
+             "guides_category")                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
 HUB_BUTTONS = 8
-# Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), a topic ("dudas:<topic>") and an answer ("duda:<code>").
-DUDAS_ACTIONS = ("dudas", "duda:")
+# D-297 (20-oct-2026, the owner asked for one extra button on each): ❓ Dudas shows 📚 Guías on top of its 7 topics and
+# ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
+# [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
+EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1}
+# Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
+# ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
+# ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
+# "guide" alone is the 🧭 Camino guiado (/guia, D-193): it is not one of these.
+DUDAS_ACTIONS = ("dudas", "duda:", "guides", "guide:")
+# D-297: where ↩️ Volver of the ❓ Dudas main screen may go (the screen it was opened from); anything else goes to the hub.
+DUDAS_ORIGINS = ("claro", "options", "hero")
 # D-192: the profession whose recipes 🍲 Cocinar lists (the 🍲 Cocina, content/professions.yaml); its station page is "est:cook".
 COOK_PROFESSION = "cocina"
 # D-192: professions that need your own camp to rise (🏗️ Construcción: giving to its works); the 🧑‍🏫 Entrenador says so.
@@ -595,6 +618,26 @@ COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
 SEARCH_RE = re.compile(r"^/(?:buscar|search)(?:@\w+)?(?:\s+(.+))?$", re.IGNORECASE)   # D-296: /buscar madera = 🔎 the finder
 RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
+
+
+def button_cap(kind: str) -> int:
+    """How many buttons a screen of this kind may show (amount pickers with a layout follow their own rows, D-189).
+
+    6 in combat (D-46), HUB_BUTTONS in the hubs (D-192, E-132: HUB_KINDS), 4 anywhere else (D-75), and one more on
+    ❓ Dudas and ⚙️ Opciones (D-297: EXTRA_BUTTON_KINDS).
+
+    [ES]
+    Qué hace: dice el tope de botones de una pantalla según su tipo. D-297 (20-oct-2026): el dueño pidió un botón extra en
+    ❓ Dudas (📚 Guías, 9) y en ⚙️ Opciones (❓ Dudas, 5); el resto sigue igual.
+    La usan: las pruebas que recorren los botones (tests/test_buttons.py, test_story, test_guilds, test_camp_upgrades,
+    test_oficios_campamento, test_menus_y_dudas, test_options, test_idiomas y test_guias).
+    Si cambia, afecta: lo que esas pruebas dejan pasar; el motor no lo usa para recortar botones.
+    """
+    if kind in EXTRA_BUTTON_KINDS:
+        return EXTRA_BUTTON_KINDS[kind]
+    if kind == "combat":
+        return 6
+    return HUB_BUTTONS if kind in HUB_KINDS else 4
 
 
 def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
@@ -6433,14 +6476,46 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         order = list(entries)
         return sorted(scores, key=lambda code: (-scores[code], order.index(code)))
 
-    def _dudas_open(self, hero: Hero) -> None:
-        """Free text is a ❓ Dudas search while its screens are open (store "dudas_open"; act() clears it on another button)."""
-        self.store.put("dudas_open", hero.id, {"at": self.clock.now()})
+    def _dudas_open(self, hero: Hero, origin: str | None = None) -> None:
+        """Free text is a ❓ Dudas search while its screens are open (store "dudas_open"; act() clears it on another button).
+
+        [ES] Qué hace: deja marcado que la pantalla de ❓ Dudas (o de 📚 Guías) está abierta: el texto suelto es una búsqueda.
+        D-297: guarda también de dónde se abrió ("from": "claro", "options" u "hero") para que ↩️ Volver vuelva ahí; las
+        pantallas de adentro lo conservan y, sin registro, es el centro de 🏕️ Campamento. La llaman: todas las pantallas de
+        ❓ Dudas y 📚 Guías ("dudas@options" con origin). Si cambia, afecta: text() (la búsqueda) y _dudas_back.
+        """
+        record = self.store.get("dudas_open", hero.id) or {}
+        back = origin or record.get("from") or "claro"
+        self.store.put("dudas_open", hero.id, {"at": self.clock.now(), "from": back})
+
+    def _dudas_back(self, hero: Hero) -> str:
+        """Where ↩️ Volver of the ❓ Dudas main screen goes: the screen it was opened from (D-297), else the 🏕️ hub."""
+        origin = (self.store.get("dudas_open", hero.id) or {}).get("from")
+        return origin if origin in DUDAS_ORIGINS else "claro"
 
     def _dudas_action(self, hero: Hero, action_id: str) -> View:
-        """Route ❓ Dudas: "dudas" (main), "dudas:<topic>" and "duda:<code>". [ES] Reparte los botones de ❓ Dudas."""
+        """Route ❓ Dudas: "dudas" (main), "dudas@<origin>", "dudas:<topic>", "duda:<code>" and the 📚 Guías (D-297).
+
+        [ES]
+        Qué hace: reparte los botones de ❓ Dudas: la pantalla principal, un tema y una respuesta (D-191), y desde D-297
+        "dudas@options" (❓ Dudas abierta desde ⚙️ Opciones: ↩️ Volver vuelve ahí; "dudas" sola sigue igual y, si ya estabas
+        en ❓ Dudas, conserva de dónde la abriste) y las 📚 Guías: "guides" (las categorías), "guides:<categoría>" (y su
+        página, "guides:<categoría>:<n>") y "guide:<id>" (una guía). La llaman: _idle_action (DUDAS_ACTIONS).
+        Si cambia, afecta: todos los botones de ❓ Dudas y 📚 Guías (tests/test_menus_y_dudas.py, tests/test_guias.py).
+        """
         if action_id.startswith("duda:"):
             return self._duda_view(hero, action_id[5:])
+        if action_id.startswith("guide:"):              # D-297: one guide
+            return self._guidebook_page_view(hero, action_id[6:])
+        if action_id.startswith("guides"):              # D-297: 📚 Guías, a category (and its page)
+            category, _, page = action_id.partition(":")[2].partition(":")
+            if not category:
+                return self._guidebook_view(hero)
+            return self._guidebook_category_view(hero, category, int(page) if page.isdigit() else 0)
+        if action_id.startswith("dudas@"):              # D-297: opened from a screen that ↩️ Volver goes back to
+            origin = action_id[6:]
+            self._dudas_open(hero, origin if origin in DUDAS_ORIGINS else "claro")
+            return self._dudas_view(hero)
         topic = action_id.partition(":")[2]
         if topic:
             return self._dudas_topic_view(hero, topic)
@@ -6453,22 +6528,28 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: la pantalla principal de ❓ Dudas (D-191): pide escribir una palabra (la vista espera texto), muestra las más
         buscadas con su código (/d01...), los temas con cuántas preguntas tiene cada uno, y un botón por tema más ↩️ Volver
         (7 + 1 = 8, de 2 en 2: D-192). Mientras está abierta, lo que el jugador escribe es una búsqueda.
-        La llaman: ❓ Dudas del centro de 🏕️ Campamento (y de las pantallas de fundar o visitar un campamento), /dudas y los
-        botones ❓ Dudas de sus pantallas. Si cambia, afecta: tests/test_menus_y_dudas.py y tests/test_buttons.py.
+        D-297 (20-oct-2026, el dueño pidió un botón extra): 📚 Guías va primero y a lo ancho (layout [1, 2, 2, 2, 1, 1]): 9
+        botones (button_cap "dudas"). ↩️ Volver vuelve a donde se abrió (_dudas_back: el centro de 🏕️ Campamento o
+        ⚙️ Opciones).
+        La llaman: ❓ Dudas del centro de 🏕️ Campamento (y de las pantallas de fundar o visitar un campamento), ❓ Dudas de
+        ⚙️ Opciones ("dudas@options"), /dudas y los botones ❓ Dudas de sus pantallas. Si cambia, afecta:
+        tests/test_menus_y_dudas.py, tests/test_guias.py y tests/test_buttons.py.
         """
         t = self.texts
         self._dudas_open(hero)
         entries = self._faq_entries()
-        body = [t.t("dudas.intro"), t.t("dudas.codes"), "", t.t("dudas.popular")]
+        body = [t.t("dudas.intro"), t.t("dudas.codes"), "", t.t("guides.dudas_line"), "", t.t("dudas.popular")]
         body += [self._faq_line(code) for code in self._faq().get("popular") or [] if code in entries]
         body += ["", t.t("dudas.topics")]
-        actions = []
+        topics = []
         for topic in self._faq_topics():
             name = t.t(f"dudas.topic.{topic}")
             body.append(t.t("dudas.topic_line", name=name, n=sum(1 for q in entries.values() if q.get("topic") == topic)))
-            actions.append(Action(id=f"dudas:{topic}", label=name))
-        actions = actions[:HUB_BUTTONS - 1] + [Action(id="claro", label=t.t("menu.back"))]
-        return View(kind="dudas", title=t.t("dudas.title"), body=body, actions=actions, notice=notice, expects_text=True)
+            topics.append(Action(id=f"dudas:{topic}", label=name))
+        topics = topics[:HUB_BUTTONS - 1]
+        actions = [Action(id="guides", label=t.t("guides.button"))] + topics + [Action(id=self._dudas_back(hero), label=t.t("menu.back"))]
+        return View(kind="dudas", title=t.t("dudas.title"), body=body, actions=actions, notice=notice, expects_text=True,
+                    layout=[1] + self._pairs_layout(len(topics) + 1))
 
     def _dudas_topic_view(self, hero: Hero, topic: str) -> View:
         """One topic of ❓ Dudas: its questions with their codes. [ES] Las preguntas de un tema, cada una con su código."""
@@ -6555,6 +6636,185 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._dudas_search_view(hero, rest)
         code = self._faq_code(word)
         return self._duda_view(hero, code) if code else None
+
+    # ------------------------------------------------------------------ 📚 Guías of ❓ Dudas (D-297)
+
+    def _guidebook(self) -> dict[str, Any]:
+        return self.content.guides or {}
+
+    def _guidebook_entries(self, category: str | None = None) -> dict[str, dict[str, Any]]:
+        """The guides shown (not retired; a class guide only while its class is played), in file order, of one category.
+
+        [ES] Qué hace: las guías vigentes de content/guides.yaml (id -> entrada), en el orden del archivo; si se pide una
+        categoría, solo las de esa. Una guía de clase cuya clase se retiró deja de salir sola. La llaman: las pantallas de
+        📚 Guías. Si cambia, afecta: qué guías se ven (tests/test_guias.py).
+        """
+        groups = set(self._class_groups())
+        out: dict[str, dict[str, Any]] = {}
+        for gid, entry in (self._guidebook().get("guides") or {}).items():
+            if not isinstance(entry, dict) or entry.get("retired") or (entry.get("class") and entry["class"] not in groups):
+                continue
+            if category is None or entry.get("category") == category:
+                out[gid] = entry
+        return out
+
+    def _guidebook_categories(self) -> list[str]:
+        """The 📚 Guías categories in button order (content/guides.yaml), only those with a guide to show."""
+        entries = self._guidebook_entries()
+        return [c for c in self._guidebook().get("categories") or [] if any(e.get("category") == c for e in entries.values())]
+
+    def _guidebook_title(self, gid: str, entry: dict[str, Any]) -> str:
+        """A guide's title (its button): a class guide is named as the game names the class (D-293), the rest by its text."""
+        if entry.get("class"):
+            return self.texts.t(f"class_group.{entry['class']}.name")
+        return self.texts.t(f"guides_page.{gid}.title")
+
+    def _guidebook_values(self) -> dict[str, Any]:
+        """The numbers and names the guides show: those of ❓ Dudas (_faq_values) and a few more, read from content each time.
+
+        [ES]
+        Qué hace: arma los valores de los marcadores de las guías ({gather_low}, {bonfires}, {class_prices}...) con
+        content/balance.yaml, professions.yaml y los textos (nombres de oficios, tipos de obra). Suma lo de _faq_values, así
+        una guía y una respuesta de ❓ Dudas nunca dicen números distintos. Si una guía pide un número nuevo, se agrega aquí.
+        La llaman: _guidebook_page_view y _guidebook_class_lines. Si cambia, afecta: lo que dicen las guías (tests/test_guias.py revisa que
+        ninguna quede con un marcador sin llenar, en español y en inglés).
+        """
+        t = self.texts
+        b = self.content.balance
+        chain = b["chain"]
+
+        def pct(value: Any) -> int:
+            return round(float(value) * 100)
+
+        catalog = self._prof_catalog()
+        gatherers = [self._prof_name(pid) for pid, pdef in catalog.items()
+                     if pdef.get("branch") == "gather" and not pdef.get("retired")]
+        prices = [t.t("guides.value.free") if int(p) == 0 else self._money(int(p))
+                  for p in (b.get("class_change") or {}).get("prices") or []]
+        values = self._faq_values()
+        values.update({
+            "explore_energy": b["energy"].get("per_explore", 1), "gather_energy": b["energy"].get("per_gather", 1),
+            "gather_low": b["gather"]["amount"][0], "gather_high": b["gather"]["amount"][-1],
+            "stock_unit": pct(b["stock"]["per_unit"]), "stock_regen": pct(b["stock"]["regen_per_hour"]),
+            "color_at": b["map_view"]["fog"]["color_at"], "search_min": b["gremio"]["search_min_pct"],
+            "inn_price": self._money(self._inn_price()), "bonfires": len(mapgen.BONFIRES),
+            "bonfire_spacing": b["bonfire"]["spacing"], "bonfire_cap": self._bonfire_cap(),
+            "chain_start": chain["energy"]["start"], "chain_per_turn": chain["energy"]["per_turn"],
+            "basic_gain": chain["energy"]["basic_gain"], "defend_cost": chain["energy"]["defend_cost"],
+            "item_cost": chain["energy"]["item_cost"], "cost_h1": chain["costs"]["H1"], "cost_h2": chain["costs"]["H2"],
+            "cost_h3": chain["costs"]["H3"], "bonus_max": pct(max(float(m["bonus"]) for m in chain["mark_bonus"])),
+            "wild_below": b["wild_level"]["below"], "wild_above": b["wild_level"]["above"],
+            "small_rooms": b["dungeons"]["small"]["rooms"], "deep_keep": pct(b["dungeons"]["deep"]["defeat_keep"]),
+            "growth_pct": pct(b["upgrades"]["cost_growth"]), "helpers_per": b["camps"]["helpers_per_members"],
+            "work_members": b["works"]["members_ref"], "waiting_max": b["gremio"]["waiting_max"],
+            "camp_tasks": b["story"]["camp_tasks"], "party_cap": pct(b["hunt"]["party"]["bonus_cap"]),
+            "max_rank": b["professions"]["max_rank"], "gatherers": self._faq_and(gatherers),
+            "skinner": self._prof_name("desollador"), "fisher": self._prof_name("pescador"),
+            "kinds": self._faq_and([t.t(f"services.kind.{kind}") for kind in CAMP_KINDS]),
+            "class_prices": self._faq_and(prices),
+        })
+        return values
+
+    def _guidebook_class_lines(self, group: str, values: dict[str, Any]) -> list[str]:
+        """A class guide: its intro, its armor and weapons, each role with its chain, a tip, the second role and changing class.
+
+        [ES]
+        Qué hace: arma la guía de una clase (de 7 a 9 líneas): su intro y su consejo (guides_page.<clase>), la armadura y las
+        armas que usa (balance.yaml gear) con el oficio que fabrica esa armadura (professions.recommend_by_armor), y cada rol
+        con su nombre, lo que hace y su cadena con los nombres de los botones (class.<spec>, _chain_order_text), más el segundo
+        rol y el cambio de clase con sus precios. D-293: los íconos de clase y de rol salen solo de los nombres del juego.
+        La llama: _guidebook_page_view. Si cambia, afecta: las 6 guías de clase (tests/test_guias.py, tests/test_iconos_de_clase.py).
+        """
+        t = self.texts
+        gear = self.content.balance["gear"]
+        lines = [t.t(f"guides_page.{group}.intro")]
+        armor = gear.get("armor_by_group", {}).get(group)
+        weapons = self._faq_and([t.t(f"gear.type.{w}") for w in gear.get("weapons_by_group", {}).get(group) or []])
+        trade = (self._prof_cfg().get("recommend_by_armor") or {}).get(armor)
+        if armor and trade in self._prof_catalog():
+            lines.append(t.t("guides.class.gear", armor=t.t(f"gear.type.{armor}"), trade=self._prof_name(trade), weapons=weapons))
+        elif armor:
+            lines.append(t.t("guides.class.gear_plain", armor=t.t(f"gear.type.{armor}"), weapons=weapons))
+        for sdef in self.content.classes.values():
+            if sdef.get("group") != group or sdef.get("retired"):
+                continue
+            lines.append(t.t("guides.class.role", name=t.t(sdef["name_key"]), role=t.t(sdef["role_key"])))
+            if sdef.get("system") == "chain":
+                lines.append(t.t("guides.class.chain", order=self._chain_order_text(sdef)))
+        lines += [t.t(f"guides_page.{group}.tip"), t.t("guides.class.second_role", **values), t.t("guides.class.change", **values)]
+        return lines
+
+    def _guidebook_view(self, hero: Hero, notice: str | None = None) -> View:
+        """📚 Guías: the categories (🎭 Clases, 🪵 Recursos, ⚙️ Cómo funciona), one line and one button each, and ↩️ Volver.
+
+        [ES]
+        Qué hace: la pantalla de 📚 Guías (D-297, pedido del dueño: "un botón extra como si fuese un submenú con subguías"): una
+        línea por categoría con lo que trae, un botón por categoría y ↩️ Volver a ❓ Dudas (4 botones; 2 por fila y ↩️ a lo
+        ancho). Sigue abierta la búsqueda de ❓ Dudas: lo que escribas se busca. La llaman: el botón 📚 Guías de ❓ Dudas y los
+        ↩️ de cada categoría. Si cambia, afecta: tests/test_guias.py.
+        """
+        t = self.texts
+        self._dudas_open(hero)
+        categories = self._guidebook_categories()
+        body = [t.t("guides.intro"), ""]
+        body += [t.t("guides.category_line", name=t.t(f"guides.category.{c}"), desc=t.t(f"guides.category_desc.{c}"))
+                 for c in categories]
+        body += ["", t.t("guides.search_hint")]
+        actions = [Action(id=f"guides:{c}", label=t.t(f"guides.category.{c}")) for c in categories][:3]   # D-75: 4 at most
+        actions.append(Action(id="dudas", label=t.t("menu.back")))     # back to ❓ Dudas (it keeps where it was opened from)
+        return View(kind="guides", title=t.t("guides.title"), body=body, actions=actions, notice=notice, expects_text=True,
+                    layout=self._pairs_layout(len(actions)))
+
+    def _guidebook_category_view(self, hero: Hero, category: str, page: int = 0) -> View:
+        """One 📚 Guías category: a button per guide (up to 7 and ↩️ Volver; with more, 6 a page and ➡️ Más).
+
+        [ES]
+        Qué hace: la lista de guías de una categoría, un botón por guía con su título y ↩️ Volver a 📚 Guías (HUB_KINDS
+        "guides_category": hasta 8, de 2 en 2 y ↩️ a lo ancho). Si un día hay más de 7, van de a 6 por página con ➡️ Más (que
+        da la vuelta al llegar al final). Una categoría que no existe vuelve a 📚 Guías. La llaman: "guides:<categoría>" y
+        "guides:<categoría>:<página>". Si cambia, afecta: tests/test_guias.py y tests/test_buttons.py (tope de botones).
+        """
+        t = self.texts
+        if category not in self._guidebook_categories():
+            return self._guidebook_view(hero)
+        self._dudas_open(hero)
+        entries = list(self._guidebook_entries(category).items())
+        per = HUB_BUTTONS - 1 if len(entries) <= HUB_BUTTONS - 1 else HUB_BUTTONS - 2
+        pages = max(1, math.ceil(len(entries) / per))
+        page = page % pages
+        name = t.t(f"guides.category.{category}")
+        body = [t.t("guides.pick")]
+        if pages > 1:
+            body.append(t.t("guides.page", page=page + 1, pages=pages))
+        actions = [Action(id=f"guide:{gid}", label=self._guidebook_title(gid, entry)) for gid, entry in entries[page * per:(page + 1) * per]]
+        if pages > 1:
+            actions.append(Action(id=f"guides:{category}:{(page + 1) % pages}", label=t.t("guides.more_button")))
+        actions.append(Action(id="guides", label=t.t("menu.back")))
+        return View(kind="guides_category", title=t.t("guides.category_title", name=name), body=body, actions=actions,
+                    expects_text=True, layout=self._pairs_layout(len(actions)))
+
+    def _guidebook_page_view(self, hero: Hero, gid: str) -> View:
+        """One guide: a short screen (5 to 9 lines) with ↩️ Volver to its category and ❓ Dudas.
+
+        [ES]
+        Qué hace: muestra una guía. Las de clase se arman con _guidebook_class_lines; las demás son su texto (guides_page.<id>.text,
+        una línea por renglón) con los números de _guidebook_values. Botones: ↩️ Volver a su categoría y ❓ Dudas (2). Lo escrito
+        con la guía abierta se busca en ❓ Dudas. Un id que no existe vuelve a 📚 Guías. La llaman: "guide:<id>".
+        Si cambia, afecta: tests/test_guias.py (todas las guías, en los dos idiomas, sin marcadores sin llenar).
+        """
+        t = self.texts
+        entry = self._guidebook_entries().get(gid)
+        if entry is None:
+            return self._guidebook_view(hero)
+        self._dudas_open(hero)
+        values = self._guidebook_values()
+        if entry.get("class"):
+            body = self._guidebook_class_lines(entry["class"], values)
+        else:
+            body = t.t(f"guides_page.{gid}.text", **values).split("\n")
+        actions = [Action(id=f"guides:{entry.get('category')}", label=t.t("menu.back")),
+                   Action(id="dudas", label=t.t("dudas.back_button"))]
+        return View(kind="guides_page", title=self._guidebook_title(gid, entry), body=body, actions=actions, expects_text=True)
 
     # ------------------------------------------------------------------ chained professions, phase 1 (D-109)
 
@@ -8933,7 +9193,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _walk_view(self, hero: Hero, steps: list[str], notice: str | None = None) -> View:
         """The 🔗 Moverte screen: the steps added so far, where they end and how long they take (D-244)."""
         t = self.texts
-        body = [t.t("walk.intro"), t.t("walk.coord_hint", x=hero.x, y=hero.y), ""]   # D-278: how to go to a coordinate
+        minutes = self.content.balance["travel"]["first_minutes"]      # the time of one zone, from balance (not written by hand)
+        body = [t.t("walk.intro", minutes=minutes), t.t("walk.coord_hint", x=hero.x, y=hero.y), ""]   # D-278: how to go to a coordinate
         if steps:
             groups: list[list[Any]] = []
             for step in steps:                          # "⬆️×2 ➡️ ⬅️ ⬇️×2": the same direction in a row, counted once
@@ -11548,15 +11809,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return hero.hp * 100 < self._option(hero, "retreat") * max_hp
 
     def _options_view(self, hero: Hero, notice: str | None = None) -> View:
-        """⚙️ Opciones: 🩹 Retirarse, 🌐 Idioma and 💬 Feedback, plus ↩️ Volver (D-114, D-250, D-258).
+        """⚙️ Opciones: 🩹 Retirarse, 🌐 Idioma, 💬 Feedback and ❓ Dudas, plus ↩️ Volver (D-114, D-250, D-258, D-297).
 
         [ES]
         Qué hace: la pantalla ⚙️ Opciones (menú de abajo y /opciones). D-258 (0.33, pedido del dueño): salieron ⚔️ Peleas
         automáticas y 🧪 Pociones ("no podemos hacer pociones aún automático"); quedan 🩹 Retirarse con menos de (30 / 50 /
         70 % de vida, auto_fight.retreat_choices), 🌐 Idioma (D-250) y 💬 Feedback (un mensaje para el equipo del juego), y
         vuelve ↩️ Volver a 📍 Zona. Se puede abrir mientras exploras, recolectas o cazas, no en combate.
+        D-297 (20-oct-2026, el dueño: "agrega el botón de dudas también en el botón de opción… más fácil de encontrar en
+        varios lugares"): ❓ Dudas ("dudas@options": su ↩️ Volver vuelve aquí) antes de ↩️ Volver. Son 5 botones, uno más que
+        el tope de D-75 porque lo pidió el dueño (EXTRA_BUTTON_KINDS "options"): de 2 en 2 y ↩️ solo abajo.
         La llaman: el botón ⚙️ Opciones del menú fijo, /opciones, _set_option y _save_feedback.
-        Si cambia, afecta: tests/test_options.py y el tope de 4 botones (D-75).
+        Si cambia, afecta: tests/test_options.py, tests/test_idiomas.py y el tope de botones (button_cap "options").
         """
         t = self.texts
         pct = self._option(hero, "retreat")
@@ -11568,6 +11832,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions = [Action(id="opt:retreat", label=t.t("options.retreat_button", pct=pct)),
                    Action(id="lang", label=t.t("language.button", name=t.t("language.name"))),   # D-250, D-251: 🌐
                    Action(id="fb", label=t.t("feedback.button")),                                 # D-258: 💬
+                   Action(id="dudas@options", label=t.t("dudas.button")),                         # D-297: ❓, back comes here
                    Action(id="home", label=t.t("menu.back"))]
         return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice)
 

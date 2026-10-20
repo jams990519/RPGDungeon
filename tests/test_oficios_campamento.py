@@ -18,7 +18,7 @@ from engine.core import FixedClock, MemoryStore, Rng
 from engine.professions import branches_of, xp_for_rank
 from engine.professions import rules as profession_rules
 from engine.service import GameService
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import HUB_BUTTONS, button_cap
 from engine.world import zone_at
 from engine.world.resources import water_resources, zone_resources
 from test_camp_upgrades import build, camp_at, set_hero
@@ -431,7 +431,7 @@ def test_every_camp_screen_keeps_four_buttons_with_damage_and_perks(content):
         if view.layout:                         # D-189: an amount picker
             assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.layout)
         else:
-            assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (path, view.kind, ids(view))   # D-192
+            assert len(view.actions) <= button_cap(view.kind), (path, view.kind, ids(view))   # D-192; D-297: button_cap
         assert not service.texts.missing, (path, service.texts.missing)
         kinds.add(view.kind)
         key = (view.kind, tuple(ids(view)))
