@@ -15,7 +15,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore, Rng
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import button_cap
 from test_camps import found_at, place
 from test_guilds import join, new_guild, set_level
 
@@ -470,7 +470,7 @@ def test_every_upgrade_screen_keeps_four_buttons(content):
             if view.layout:                     # D-189: an amount picker (reached from 🛠️ Fabricar since D-192)
                 assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (level, path, view.layout)
             else:
-                assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4), (level, path, view.kind, ids(view))   # D-192
+                assert len(view.actions) <= button_cap(view.kind), (level, path, view.kind, ids(view))   # D-192, D-297
             assert not service.texts.missing, (path, service.texts.missing)
             kinds.add(view.kind)
             key = (view.kind, tuple(ids(view)))

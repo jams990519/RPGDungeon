@@ -1,0 +1,181 @@
+# Texts of 📚 Guías (D-297, the owner, 20-oct-2026): the guides menu of ❓ Dudas, its categories and every guide.
+# [ES] Textos del botón 📚 Guías de ❓ Dudas: la pantalla de las categorías, cada categoría y cada guía (una pantalla corta).
+# El catálogo (ids, categorías y orden) está en content/guides.yaml. Se junta con es.yaml y los demás es_*.yaml al cargar
+# (engine/core/content.py). Una clave nueva va también en en_guias.yaml, en el mismo cambio (tools/check_locales.py).
+# Números: nunca a mano. Los marcadores ({energy_max}, {gather_min}, {class_prices}...) los llena el motor con
+#     content/balance.yaml al mostrar la guía (_guidebook_values y _faq_values en engine/service/game.py).
+# Clases (D-293): un ícono de clase o de rol va solo pegado al nombre de su clase. Por eso las guías de clase no los escriben:
+#     el título, los roles y la cadena salen de class_group, class y ability (es_clases_031.yaml); aquí van solo su intro y
+#     su consejo, sin íconos de clase.
+# Lo leen: engine/service/game.py (sección "📚 Guías") y tests/test_guias.py (todas se abren sin marcadores sin llenar).
+# Estilo: español neutro, de tú, líneas cortas para el teléfono (de 5 a 9 por guía). Cada línea del texto (text) es una
+#     línea en la pantalla. Los nombres de botones y lugares, tal como los muestra el juego.
+
+guides:
+  button: "📚 Guías"
+  title: "📚 Guías"
+  dudas_line: "📚 Guías: lo básico de cada clase, de los recursos y de cómo funciona cada cosa."
+  intro: "Guías cortas para entender el juego. Elige un tema:"
+  category_line: "{name}: {desc}"
+  search_hint: "🔎 ¿Una duda puntual? Escribe una palabra y la busco en ❓ Dudas."
+  category:
+    classes: "🎭 Clases"
+    resources: "🪵 Recursos"
+    howto: "⚙️ Cómo funciona"
+  category_desc:
+    classes: "una guía por clase, con sus 2 roles y su cadena."
+    resources: "dónde encontrarlos, cómo juntarlos y los oficios."
+    howto: "energía, mapa, peleas, gremio, campamento y más."
+  category_title: "{name}"
+  pick: "Elige una guía:"
+  page: "Página {page} de {pages}."
+  more_button: "➡️ Más"
+  value:                        # [ES] pedacitos que arma el motor (_guidebook_values)
+    free: "gratis"
+  class:                        # [ES] las líneas que comparten las 6 guías de clase (_guidebook_class_lines)
+    gear: "🎽 Armadura: {armor} (la fabrica {trade}) · armas: {weapons}."
+    gear_plain: "🎽 Armadura: {armor} · armas: {weapons}."
+    role: "{name} — {role}."
+    chain: "   🔗 {order}"
+    second_role: "🔄 Tu segundo rol llega al nivel {second_role}, gratis: cambias de rol cuando quieras en 👤 Héroe → 🌟 Talentos."
+    change: "🔀 ¿Otra clase? 🌟 Talentos → 🔄 Cambiar de clase. Cada cambio cuesta más: {class_prices} (de ahí, siempre el último). Conservas nivel, oficios, monedas y equipo."
+
+guides_page:
+  # ---- 🎭 Clases (el título es el nombre de la clase: class_group.<clase>.name)
+  guerrero:
+    intro: "Pelea al frente: recibe los golpes por el grupo o rompe al enemigo con fuerza."
+    tip: "💡 Solo, el Tanque frena más cada golpe y el DPS pega más fuerte. Ejecutar pega más cuando al enemigo le queda poca vida."
+  paladin:
+    intro: "Luchador sagrado con placas: cura desde el frente o castiga con luz."
+    tip: "💡 Solo, tus curaciones caen en ti. Sentencia hace que tu próximo golpe sagrado pegue más; Tormenta divina pega a varios enemigos a la vez."
+  druida:
+    intro: "Cambia de forma: oso que esquiva y devuelve golpes, o felino que hace sangrar."
+    tip: "💡 Oso: cada esquiva suma para el contragolpe de Rugido salvaje. Felino: Desgarrar hace sangrar y Mordisco feroz cobra el sangrado de una vez."
+  cazador:
+    intro: "Pelea a distancia: sube a sus aliados o remata con disparos."
+    tip: "💡 Soporte: Marca de manada hace pegar más a un aliado (solo, a ti) y Llamada salvaje, a todo el grupo. DPS: Disparo mortal pega más sobre tu Marca del cazador."
+  sacerdote:
+    intro: "Usa la fe: sostiene a uno con curaciones y escudos, o hace daño de sombra."
+    tip: "💡 Sanador: Escudo sagrado absorbe daño y Sanación superior pone toda la curación en uno. Sombra: cuanto más dura Dolor sombrío, más pega Explosión mental."
+  mago:
+    intro: "Usa la magia: debilita al enemigo para todo el grupo o lo quema con fuego."
+    tip: "💡 Soporte: Fragilidad arcana hace que el enemigo reciba más daño y Ruptura arcana corta su ataque cargado. Fuego: Ignio lo quema y Piroexplosión lo detona de una vez."
+  # ---- 🪵 Recursos
+  find:
+    title: "🔎 Encontrar recursos"
+    text: |-
+      🔎 Explorar (en 🧭 Explorar) investiga tu zona: cada vuelta toma {explore_min} min y {explore_energy} ⚡, y suma de {explore_low} a {explore_high} %.
+      🪵 Al {reveal} % descubres sus recursos, de a uno.
+      ➡️ Con tu zona al 100 %, explorar sigue con las vecinas sin moverte.
+      🗺️ Al {color_at} % la zona muestra su terreno en el 🗺️ Mapa; el color no dice qué recursos hay.
+      ✨ Un nodo es una zona rica en un recurso: sabes de qué es al pisarla.
+      🔎 Buscar recursos (🛡️ Gremio o 🏰 Gestionar) o /buscar madera: te dice dónde hay ese recurso en zonas investigadas al {search_min} % o más, la más cercana primero.
+      📍 Toca el código de una zona (/z1) y se arma el camino en 🔗 Moverte.
+      🛡️ En un gremio, lo que descubre uno lo saben todos.
+  gather:
+    title: "🪓 Recolectar"
+    text: |-
+      🪓 Recolectar (en 🧭 Explorar) junta los recursos que ya descubriste en tu zona.
+      ⏱️ Cada vuelta toma {gather_min} min y {gather_energy} ⚡, y da de {gather_low} a {gather_high} unidades (más en las zonas lejanas).
+      🔢 Eliges cuántas vueltas seguidas ({batches} o Todo) y te aviso al terminar.
+      📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo, un {stock_regen} % por hora; agotado, no da nada.
+      ✨ En un nodo, su recurso rinde ×{node_yield}, se agota más lento y a veces ({node_rare} %) da algo raro.
+      🎒 Con la mochila llena ({bag_cap}) no recolectas: vende o usa cosas.
+      🏕️ En el territorio de un campamento no salen peleas, y en el tuyo juntas un {own_bonus} % más.
+      ⚒️ Sin el oficio juntas lo básico; aprendido, a veces sale una unidad más y, con rango, algo raro.
+  hunt:
+    title: "🏹 Caza y comida"
+    text: |-
+      🏹 Cazar (en 🧭 Explorar) busca una presa en tu zona: {hunt_energy} ⚡ por presa.
+      🍖 Da la pelea y su botín: carne, piel, monedas y a veces equipo. En las fogatas no hay presas.
+      {skinner}: con el oficio aprendido, a veces sacas carne o piel de más.
+      🐟 En las zonas con agua también hay pescado: se recolecta, y es lo que junta el {fisher}.
+      🍲 Cocinar (🏕️ Campamento) vuelve la carne y el pescado raciones y guisos; antes aprende la 🍲 Cocina.
+      🌾 Desde el nivel {pantry_level}, la comida llena la despensa de tu campamento: 🏰 Gestionar → 🌾 Aportar comida.
+      🥖 El 🛒 Mercader vende provisiones: hasta {provisions_cap} por semana.
+      🏹 Partida de caza: con campamento, la llamas y cada compañero en la zona suma experiencia y probabilidad de botín (hasta +{party_cap} %).
+  trades:
+    title: "⚒️ Oficios"
+    text: |-
+      🧑‍🏫 Se aprenden en 🏕️ Campamento → 🧑‍🏫 Entrenador → 📚 Aprender oficios: {learn_price} cada uno, sin tope de oficios.
+      🧭 El Explorador es el único que sube solo, explorando. La recolección también se aprende: {gatherers}.
+      ⭐ El Entrenador te recomienda el oficio que fabrica la armadura de tu clase.
+      🔗 Juntas materiales → 🪚 Refinar (madera → tablón, metal → lingote…) → 🛠️ Fabricar (equipo, pociones, vendas, muebles).
+      🔥 Se hace en 🏕️ Campamento → 🛠️ Fabricar: cada fogata tiene las estaciones básicas; tu campamento, las de sus edificios de oficio.
+      ⚡ Cada receta gasta energía y da experiencia del oficio; cada rango abre recetas nuevas, hasta el {max_rank}.
+      🎓 Al rango {spec_first} eliges una especialización, y al {spec_second}, otra.
+      📋 Tus oficios: /misoficios (cada uno con su código, para ver todo de él).
+  # ---- ⚙️ Cómo funciona
+  energy:
+    title: "⚡ Energía y vida"
+    text: |-
+      ⚡ La energía se gasta fuera de las peleas: explorar, recolectar, cazar, fabricar, cocinar…
+      🔋 Tienes hasta {energy_max} y recuperas {energy_day} al día: 1 cada {energy_every}.
+      🚶 Moverte entre zonas {move_cost}. Las peleas que te salen al explorar, recolectar o viajar no gastan ⚡.
+      👥 Cada amigo que entra con tu enlace de invitación (👤 Héroe) te da {invite_bonus} ⚡ extra.
+      ❤️ Fuera de pelea la vida vuelve sola: de 0 a llena en {hp_full}; si caíste, en {downed_full}.
+      🧪 Más rápido: pociones y vendas (🎒 Mochila → 🧪 Pociones) o la 🛏️ Posada de cualquier fogata ({inn_price}).
+      🩺 En 👤 Héroe → 🩺 Salud ves cuánto te falta.
+  map:
+    title: "🚶 Moverte y el mapa"
+    text: |-
+      📍 Zona: toca una dirección. Cada zona toma {travel_first} min y moverte {move_cost}.
+      🔗 Moverte: armas un camino de hasta {walk_max} pasos y tu héroe lo camina solo.
+      📌 Coordenadas (x, y): el Claro es (0, 0), el este suma a la x y el norte a la y. Escribe /ir 3 -2 y se arma el camino.
+      📒 En 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces (/ir1).
+      🔥 Hay {bonfires} fogatas: el Claro y una cada {bonfire_spacing} zonas a su alrededor. Todas tienen mercader, posada, entrenador y estaciones.
+      👥 En cada fogata caben {bonfire_cap}: si está llena, sigues hasta la más cercana con lugar.
+      🎨 Una zona muestra su terreno en el mapa cuando tú o tu gremio la investigan al {color_at} %.
+      ⚔️ Al llegar a una zona puede salirte un monstruo; en las fogatas y en los campamentos, no.
+  fights:
+    title: "⚔️ Peleas"
+    text: |-
+      ⚔️ Las peleas son por turnos, con 4 botones: Básico (te da +{basic_gain} de energía), Constructor ({cost_h1}), Preparador ({cost_h2}) y Gastador ({cost_h3}).
+      🔷 Arrancas con {chain_start} de energía y ganas {chain_per_turn} por turno.
+      🔗 Tu rol tiene su orden: cada botón en orden suma una marca y el Gastador las cobra (hasta +{bonus_max} %). Romper el orden corta la cadena.
+      🛡️ Defenderte ({defend_cost}) o tomar una poción ({item_cost}) gasta tu turno. 🏃 Huir está en 🎒 Mochila.
+      👾 Los monstruos de afuera son de tu nivel: de {wild_below} menos a {wild_above} más.
+      💀 Si caes, pierdes el {defeat_pct} % de tus monedas y quedas 🤕 malherido; nunca pierdes nivel ni equipo.
+      🤕 Malherido no cazas, no entras a mazmorras ni asaltas campamentos enemigos: espera a que se llene tu vida o toma una poción.
+  guild:
+    title: "🛡️ Gremio"
+    text: |-
+      🛡️ Ábrelo en el menú de abajo o con /gremio. Crear uno cuesta {gremio_cost}, y caben {gremio_cap} antes del campamento.
+      🔎 Buscar gremio: toca su código (/g1) y pide entrar; acepta el líder o un oficial.
+      ✉️ Para invitar: /inv_ y el código de jugador del otro (cada uno lo ve en 👤 Héroe).
+      💬 Lo que escribes en el chat del juego le llega a todo tu gremio.
+      💰 Fondo (con campamento, 💰 Depositar): pones materiales desde donde estés, con su código (/f02).
+      ⚔️ Armería: dejas equipo con /a1 y lo tomas con /t1.
+      🗺️ Lo que explora uno lo sabe todo el gremio (la experiencia es de quien explora). Si sales, te quedas con lo tuyo.
+      ⏳ Con el campamento lleno, el fundador o un 🤝 ayudante puede sumarte al gremio a esperar lugar (hasta {waiting_max}).
+  camp:
+    title: "🏕️ Campamento"
+    text: |-
+      🏕️ Lo funda tu 🛡️ gremio, donde elige el líder: lejos de las fogatas (Lejanía {camp_far} o más) y sin otro campamento a {camp_gap} zonas o menos.
+      🔎 La zona tiene que estar explorada al 100 % y con {camp_known} de sus 8 vecinas conocidas (cuenta lo que explora tu gremio).
+      ⏳ Hacen falta {found_members} miembros ahí y {found_cost} en el 💰 fondo: el líder toca 🛡️ Gremio → 🏕️ Fundar. Tarda {found_minutes} min (menos con más miembros).
+      🏘️ Servicios muestra las obras por tipo: {kinds}.
+      ▶️ El fundador o un 🤝 ayudante (1 cada {helpers_per} miembros) activa una obra; todos aportan con 🤲, o desde lejos con 💰 Depositar.
+      📈 Cada obra nueva cuesta un {growth_pct} % más por cada obra que ya construyeron.
+      🏗️ Con los materiales completos se construye: {work_minutes} min por nivel con {work_members} miembros en el territorio (con más, menos).
+      ⬆️ Agrandar campamento (🏰 Gestionar) suma una zona al territorio; ahí recolectas un {own_bonus} % más.
+      🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear.
+  dungeons:
+    title: "🕳️ Mazmorras y enemigos"
+    text: |-
+      🕳️ Las mazmorras son para uno y están siempre en el mismo lugar; lo de adentro cambia cada día. Se entra desde 🧭 Explorar en su zona.
+      🕳️ La chica tiene {small_rooms} salas y su jefe; su cofre se abre una vez al día.
+      🌀 La profunda se baja piso a piso: juntas una bolsa y eliges ⬇️ Bajar o 🚪 Salir con lo ganado. Si caes o huyes, te queda el {deep_keep} %.
+      👹 Los campamentos enemigos salen cada día en otro lugar y no dejan explorar ni recolectar su zona.
+      ⚔️ Asaltar: cada pelea vence a uno de la guarnición, para todos; el último es el jefe y su cofre es de quien lo termina.
+      🕵️ Infiltrarse pide 🧭 Explorador rango {infiltrate_rank}; desde el rango {recon_rank}, /reconocer te deja ver de lejos qué hay.
+      👑 El Guardián espera en su guarida: ⚔️ Desafiar al Guardián en 🧭 Explorar. El primero que lo vence queda como Pionero del Claro.
+  quests:
+    title: "📜 Misiones y encargos"
+    text: |-
+      📖 La historia te guía paso a paso mientras juegas; /guia te muestra el paso de ahora.
+      📔 En 👤 Héroe → 📔 Diario están tu tarjeta, tus 🎯 Misiones y las ⚜️ Facciones.
+      🎭 Tu origen (👤 Héroe → 🎭 Origen) trae su propia historia.
+      📜 Tablón (🏕️ Campamento): cada personaje te da un encargo por día, y lo cobras hablando con él en 🧑 Personajes.
+      🎁 Los encargos dan experiencia, monedas y reputación con su facción; con más reputación llegan premios y títulos.
+      🏕️ Con campamento hay además {camp_tasks} encargos por semana, que se hacen entre todos.

@@ -15,7 +15,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
-from engine.service.game import HUB_BUTTONS, HUB_KINDS
+from engine.service.game import button_cap
 from test_camps import found_at, place
 
 MINUTE = 60
@@ -480,7 +480,7 @@ def test_every_story_screen_has_four_buttons_at_most_and_no_missing_text(content
         path = queue.popleft()
         service, view = build(path)
         pressed += 1
-        assert len(view.actions) <= (6 if view.kind == "combat" else 8 if view.kind in HUB_KINDS else 4), (path, view.kind)
+        assert len(view.actions) <= button_cap(view.kind), (path, view.kind)     # D-46, D-192; D-297: ❓ Dudas and ⚙️ one more
         assert len(service.menu()) <= 6
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(ids(view)))
@@ -546,6 +546,6 @@ def test_old_saves_load_and_play_the_story(service):
     assert hero.origin is None and hero.story == {} and hero.factions == {} and hero.journal == [] and hero.bio == ""
     for action in ("story", "story", "squests", "npcs", "npc:odo", "board", "factions", "journal", "hero", "origin"):
         view = service.act("test:1", action)
-        assert len(view.actions) <= (8 if view.kind in HUB_KINDS else 4)      # D-192: the hero hub, up to 8
+        assert len(view.actions) <= button_cap(view.kind)      # D-192: the hero hub, up to 8 (D-297: button_cap)
     assert service.act("test:1", "journal").kind == "journal"
     assert not service.texts.missing

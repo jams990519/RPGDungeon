@@ -7,7 +7,7 @@ the daily player report for the team (D-258, D-259, D-260).
   cobra en el Claro o en tu propio campamento (la fogata no se controla); el de cocina de Marta solo con 🍲 Cocina.
 - 🛒 Mercader con 🛒 Comprar y 💱 Vender; vender todo de una cosa con su código (/v02).
 - 🛏️ Posada que tarda según la vida que falta (de 0 a llena en 1 hora).
-- ⚙️ Opciones: sin ⚔️ Peleas automáticas ni 🧪 Pociones; 🩹 Retirarse, 🌐 Idioma, 💬 Feedback y ↩️ Volver; el mensaje de
+- ⚙️ Opciones: sin ⚔️ Peleas automáticas ni 🧪 Pociones; 🩹 Retirarse, 🌐 Idioma, 💬 Feedback, ❓ Dudas (D-297) y ↩️ Volver; el mensaje de
   feedback se guarda y sale una sola vez para el chat de informes.
 - 📔 Diario: ↩️ Volver va al campamento si lo abriste desde 📜 Tablón, y al héroe si lo abriste desde 👤 Héroe.
 - El informe de jugadores (adapters/reports.py): genérico, sin nombres, uno por día, con la foto del día.
@@ -146,7 +146,7 @@ def test_the_inn_takes_time_by_the_life_you_lack(service):
 def test_options_without_automatic_fights_and_with_feedback(service):
     make_hero(service)
     view = service.act("test:1", "options")
-    assert ids(view) == ["opt:retreat", "lang", "fb", "home"]
+    assert ids(view) == ["opt:retreat", "lang", "fb", "dudas@options", "home"]     # D-297: ❓ Dudas too (the owner)
     assert "Peleas automáticas" not in body(view) and "Pociones" not in body(view)
     hero = service._load("test:1")
     hero.options["fights"] = "auto"                                                # an old choice no longer turns them on
