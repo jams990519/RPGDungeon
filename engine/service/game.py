@@ -360,8 +360,8 @@ Si cambias esto, revisa:
       (experiencia y beneficio del Explorador), _amount_view, _start_batch y _continue_batch (explorar y recolectar
       bloqueados), _batch_summary (línea ⚒️ Oficios al explorar), _zone_view (línea y marca 👹 en las rutas), _explore_menu
       (_ecamp_menu: ⚔️ Asaltar, 🕵️ Infiltrarse, 🏹 Cazar, 🗺️ Mapa), _idle_action ("assault", "infiltrate"; "goto:" acepta
-      un campamento visible), _places_view (8 lugares desde el rango 10), _map_view (👹, líneas y 👹 Ir al más cercano),
-      _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
+      un campamento visible), _places_kind_view (8 lugares de cada tipo desde el rango 10; D-301), _map_view (👹, líneas
+      y 👹 Ir al más cercano), _batch_fight (nunca pelea solo un campamento), _end_combat (_ecamp_fight_done y ⚔️ Seguir asaltando), _combat_view
       (marca del jefe), _prof_gain (umbrales del mapa y el título), _professions_view y _perk_text. El gancho
       _story_event recibe "infiltrate" y "enemy_camp" (📔 Diario, engine/service/story.py _story_marks)
     - 🕳️ 🌀 Mazmorras para uno (D-164, D-165, D-170, D-171): balance.yaml dungeons; content/dungeons.yaml (familias);
@@ -455,6 +455,18 @@ Si cambias esto, revisa:
       en engine/service/story.py, el 📔 Diario y 🎯 Misiones (sin las misiones de nivel más alto; se avisan al llegar a su
       nivel: _story_level_lines). Lo que el jugador pide a mano (un código o un botón viejo) recibe un aviso corto. Textos
       que quedan sin uso: marcados "# [ES] sin uso desde la 0.39 (D-287)". Pruebas: tests/test_ocultar_lo_bloqueado.py
+    - 🪵 Más madera (D-300, pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo
+      imposible encontrarlo" y "lento para las construcciones, pero tampoco tan lento"; números de Claude, provisionales).
+      Tocan: _zone_land (devuelve tres partes: base, madera sumada y propios; engine/world/resources.py wood_resource),
+      _zone_resources (la madera va justo después de los de base), _node_main (los nodos no miran la madera sumada: no se
+      movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values ({wood_regen} de la guía de recolectar).
+      Números: balance.yaml resources.wood y stock.regen_mult. Ninguna zona pierde un recurso. Pruebas: tests/test_resources.py
+    - 📒 Lugares por tipo (D-301, pedido del dueño, 20-oct-2026: "el primer botón va a ser el del campamento... luego
+      Mazmorras... luego Fogatas, y así sucesivamente"). Tocan: PLACE_KINDS (orden de los botones), HUB_KINDS ("places",
+      hasta 8 botones), _important_places (cada lugar con su tipo; tu campamento siempre), _place_groups, _places_view (el
+      menú: 🏕️ tu campamento directo a "¿Viajar?" y un botón por tipo), _places_kind_view ("plc:<tipo>": la lista con sus
+      códigos /irN desde 1), _place_confirm_view (↩️ No, volver a la lista del tipo) y _place_code (una lista guardada antes
+      sigue sirviendo). Textos: places.* de content/locales/es.yaml y en.yaml. Pruebas: tests/test_lugares.py
 """
 
 from __future__ import annotations
@@ -528,7 +540,7 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import terrain_resources, water_resources, zone_resources
+from engine.world.resources import terrain_resources, water_resources, wood_resource, zone_resources
 from engine.world import nodes as node_rules            # D-181, D-184: resource nodes
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
@@ -593,7 +605,8 @@ SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 # at once, up to HUB_BUTTONS, 2 per row; every other screen keeps the 4 of D-75 (the combat bar, 6; amount pickers, D-189).
 HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio",    # D-269: the guild hub too
              "guild", "camp_services", "camp_type",   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
-             "guides_category")                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
+             "guides_category",                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
+             "places")                                # D-301: 📒 Lugares (your camp, up to 5 kinds and ↩️ Volver)
 HUB_BUTTONS = 8
 # D-297 (20-oct-2026, the owner asked for one extra button on each): ❓ Dudas shows 📚 Guías on top of its 7 topics and
 # ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
@@ -612,6 +625,11 @@ COOK_PROFESSION = "cocina"
 CAMP_ONLY_PROFESSIONS = ("construccion",)
 FAQ_CODE_RE = re.compile(r"^/?d(\d{1,3})$")
 PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /ir_1 (and /ir1@bot in a group) in 📒 Lugares; D-250: /go1
+# D-301 (owner, 20-oct-2026): the kinds of 📒 Lugares, in button order: your own camp first (straight to "Travel?"), then
+# 🕳️ dungeons, 🔥 bonfires, your 🛡️ guild's places, other players' 🏕️ camps and the 👑 lair. Each kind's list is "plc:<kind>".
+# [ES] D-301: el orden de los botones de 📒 Lugares (pedido del dueño: "el primer botón va a ser el del campamento... luego
+# Mazmorras... luego Fogatas, y así sucesivamente"). Son ids estables (van en los botones "plc:<tipo>"): solo se agregan.
+PLACE_KINDS = ("camp", "dng", "fire", "guild", "camps", "lair")
 WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
@@ -1990,6 +2008,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._enchant_action(hero, action_id)
         if action_id == "places":
             return self._places_view(hero)
+        if action_id.startswith("plc:"):                # D-301: one kind of 📒 Lugares (Mazmorras, Fogatas...)
+            return self._places_kind_view(hero, action_id[4:])
         if action_id.startswith("goask:"):              # D-223: 📒 Lugares asks before travelling
             try:
                 gx, gy = (int(v) for v in action_id[6:].split(":"))
@@ -2368,16 +2388,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
         return count
 
-    def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float]]:
-        """The zone's land resources in two parts: (base, terrain's own). [ES] Qué hace: los 6 de base con el bioma clásico
-        (D-185, D-187; la guarida con su bioma fijo, D-82) y los propios del terreno que se ve (D-183, con los de otro terreno
-        de D-185). La llaman: _zone_resources y _node_main (el nodo es de uno de estos). Si cambia, afecta: los recursos y
-        los nodos de todo el mapa."""
+    def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
+        """The zone's land resources in three parts: (base, added wood, terrain's own). [ES] Qué hace: los 6 de base con el
+        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 suma (wood_resource: todo
+        terreno de bosque y un umbral propio más bajo; {} si ya era de base o no toca) y los propios del terreno que se ve
+        (D-183, con los de otro terreno de D-185). Los propios se sortean con los de base SIN la madera sumada, así D-300 no
+        sacó ninguno. La llaman: _zone_resources y _node_main (el nodo es de un recurso de base o propio, nunca de la madera
+        sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
         terrain = self._zone(x, y).biome
         biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
         base = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
+        wood = wood_resource(self.world_seed, x, y, biome, terrain, base, self.content.balance, self.content.biomes)
         own = terrain_resources(self.world_seed, x, y, terrain, base, self.content.balance, self.content.biomes)
-        return base, own
+        return base, wood, own
 
     def _zone_resources(self, x: int, y: int) -> dict[str, float]:
         """The zone's land resources: the base ones (D-87) and its terrain's own ones (D-180), plus 🐟 fish where it has water
@@ -2391,21 +2414,30 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-185, D-186: los 6 de base siguen el bioma clásico (mapgen.classic_biome), no el terreno que dibuja el mapa: así el
         tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. Los propios y el agua
         siguen al terreno que se ve (un 🟪 pantano siempre tiene agua); los propios, a veces, salen del catálogo de otro terreno
-        (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82)."""
-        base, own = self._zone_land(x, y)
-        found = {**base, **own}
+        (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82).
+        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios."""
+        base, wood, own = self._zone_land(x, y)
+        found = {**base, **wood, **own}
         found.update(water_resources(self.world_seed, x, y, self._zone(x, y).biome, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
-        """How much is left of each resource in a zone (1.0 = full), regenerating with time (faster with a camp's ⛲ Pozo, D-101)."""
+        """How much is left of each resource in a zone (1.0 = full), regenerating with time (faster with a camp's ⛲ Pozo, D-101).
+
+        [ES] D-300 (pedido del dueño: "tiene que ser lento para las construcciones, pero tampoco tan lento"): cada recurso
+        puede volver más rápido que los demás con stock.regen_mult (la 🪵 madera ×2: unas 2 unidades por hora en cada zona en
+        vez de 1). Se multiplica con el ⛲ Pozo. La llaman: recolectar, 📍 Zona, 🧭 Explorar y 🔎 Buscar recursos.
+        Si cambia, afecta: cuánto se puede recolectar de cada recurso por hora en una zona.
+        """
         cfg = self.content.balance["stock"]
         data = self.store.get("stock", f"{x}:{y}") or {}
         hours = (self.clock.now() - data.get("at", self.clock.now())) / (3600 * self.time_scale)
         levels = data.get("levels", {})
         ref = self.store.get("territory", f"{x}:{y}") if levels else None
         regen = cfg["regen_per_hour"] * (1 + (self._effect_at(ref["camp"], "stock_regen") if ref else 0.0))
-        return {res: min(1.0, levels.get(res, 1.0) + hours * regen) for res in self._zone_resources(x, y)}
+        mult = cfg.get("regen_mult") or {}               # D-300: wood comes back faster
+        return {res: min(1.0, levels.get(res, 1.0) + hours * regen * float(mult.get(res, 1.0)))
+                for res in self._zone_resources(x, y)}
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
@@ -6696,6 +6728,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "explore_energy": b["energy"].get("per_explore", 1), "gather_energy": b["energy"].get("per_gather", 1),
             "gather_low": b["gather"]["amount"][0], "gather_high": b["gather"]["amount"][-1],
             "stock_unit": pct(b["stock"]["per_unit"]), "stock_regen": pct(b["stock"]["regen_per_hour"]),
+            # D-300: wood comes back faster (stock.regen_mult)
+            "wood_regen": pct(float(b["stock"]["regen_per_hour"]) * float((b["stock"].get("regen_mult") or {}).get("madera", 1.0))),
             "color_at": b["map_view"]["fog"]["color_at"], "search_min": b["gremio"]["search_min_pct"],
             "inn_price": self._money(self._inn_price()), "bonfires": len(mapgen.BONFIRES),
             "bonfire_spacing": b["bonfire"]["spacing"], "bonfire_cap": self._bonfire_cap(),
@@ -8993,77 +9027,143 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="talent_spec", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
-    def _important_places(self, hero: Hero) -> list[tuple[int, int, int, str, str]]:
-        """The important places this hero knows, nearest first: (seconds, x, y, icon, name) (D-223).
+    def _important_places(self, hero: Hero) -> list[tuple[int, int, int, str, str, str]]:
+        """The important places this hero knows, nearest first: (seconds, x, y, icon, name, kind) (D-223, D-301).
+
+        kind is one of PLACE_KINDS: "camp" (your own camp), "dng" (a dungeon), "fire" (a bonfire), "guild" (your guild's
+        construction, meeting point or the camp it invited you to), "camps" (other players' camps) or "lair".
 
         [ES]
-        Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): el 🔥 Claro
-        (el campamento de inicio, siempre), su 🏕️ campamento y los de otros jugadores que pisó (D-267, 0.34: y además los
-        places.camps_listed campamentos de jugadores más cercanos, aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que
-        visitó y la 👑 guarida del Guardián si llegó a ella. Las zonas comunes y los ✨ nodos ya no salen (pedido del
-        dueño: "los lugares más importantes únicamente"). Ordenados por el tiempo del viaje.
-        La llaman: _places_view y _place_code. Si cambia, afecta: qué se puede viajar de una vez (tests/test_lugares.py).
+        Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): las 🔥 9 fogatas
+        (siempre, D-277), su 🏕️ campamento (D-301: siempre, aunque nunca lo haya pisado: es el primer botón de 📒 Lugares) y
+        los de otros jugadores que pisó (D-267, 0.34: y además los places.camps_listed campamentos de jugadores más cercanos,
+        aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que visitó, la 👑 guarida del Guardián si llegó a ella y los
+        lugares de su gremio (D-269). Las zonas comunes y los ✨ nodos ya no salen (pedido del dueño: "los lugares más
+        importantes únicamente"). Ordenados por el tiempo del viaje. D-301: cada lugar dice de qué tipo es (el último campo),
+        para los botones por tipo de 📒 Lugares. La zona donde estás no sale.
+        La llaman: _place_groups (📒 Lugares y cada tipo) y _place_confirm_view. Si cambia, afecta: qué se puede viajar de una
+        vez (tests/test_lugares.py).
         """
         t = self.texts
-        found: dict[tuple[int, int], tuple[str, str]] = {}
+        found: dict[tuple[int, int], tuple[str, str, str]] = {}
         for bx, by in mapgen.BONFIRES:                  # D-277: the 9 bonfires are in 📒 Lugares from the first day
-            found[(bx, by)] = ("🔥", self._zone_name(self._zone(bx, by)))
+            found[(bx, by)] = ("🔥", self._zone_name(self._zone(bx, by)), "fire")
         for key in hero.known:
             x, y = (int(v) for v in key.split(":"))
             camp = self.store.get("camp", key)
             kind = self._dng_kind(x, y)
             if camp:
-                found[(x, y)] = ("🏕️", camp["name"])
+                found[(x, y)] = ("🏕️", camp["name"], "camps")
             elif self._is_lair(x, y):
-                found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)))
+                found[(x, y)] = ("👑", self._zone_name(self._zone(x, y)), "lair")
             elif kind:
-                found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))))
+                found[(x, y)] = (self._dng_icon(kind), t.t(f"places.dungeon_{kind}", name=self._zone_name(self._zone(x, y))),
+                                 "dng")
+        own = self._member_camp(hero)
+        if own:                                          # D-301: your own camp, always (its own button, the first one)
+            ox, oy = (int(v) for v in hero.camp.split(":"))
+            found[(ox, oy)] = ("🏕️", own["name"], "camp")
         near = sorted((abs(x - hero.x) + abs(y - hero.y), x, y, camp["name"]) for key, camp in self.store.items("camp")
                       for x, y in [tuple(int(v) for v in key.split(":"))] if (x, y) not in found)
         for _, x, y, name in near[:int(self.content.balance["places"].get("camps_listed", 5))]:
-            found[(x, y)] = ("🏕️", name)                # D-267: the nearest players' camps, even if never visited
+            found[(x, y)] = ("🏕️", name, "camps")       # D-267: the nearest players' camps, even if never visited
         for x, y, icon, name in self._gremio_places(hero):
-            found[(x, y)] = (icon, name)                 # D-269: your guild's 🏗️ construction and 📍 meeting point
-        places = [(self._trip_seconds(hero, x, y), x, y, icon, name) for (x, y), (icon, name) in found.items()
+            if found.get((x, y), ("", "", ""))[2] != "camp":
+                found[(x, y)] = (icon, name, "guild")    # D-269: your guild's 🏗️ construction and 📍 meeting point
+        places = [(self._trip_seconds(hero, x, y), x, y, icon, name, kind) for (x, y), (icon, name, kind) in found.items()
                   if (x, y) != (hero.x, hero.y)]
         return sorted(places)
 
+    def _place_groups(self, hero: Hero) -> dict[str, list[tuple[int, int, int, str, str, str]]]:
+        """📒 Lugares by kind (D-301): {kind: its places, nearest first}, only the kinds with something, in PLACE_KINDS order.
+
+        [ES] Qué hace: reparte _important_places por tipo, en el orden de los botones (PLACE_KINDS: tu campamento, mazmorras,
+        fogatas, gremio, campamentos, guarida) y sin los tipos vacíos. La llaman: _places_view y _places_kind_view.
+        Si cambia, afecta: los botones de 📒 Lugares y cada lista (tests/test_lugares.py).
+        """
+        groups: dict[str, list[tuple[int, int, int, str, str, str]]] = {kind: [] for kind in PLACE_KINDS}
+        for place in self._important_places(hero):
+            groups.setdefault(place[5], []).append(place)
+        return {kind: items for kind, items in groups.items() if items}
+
     def _places_view(self, hero: Hero, notice: str | None = None) -> View:
-        """📒 Lugares: the important places this hero knows, each with a code and a button, asking before it travels (D-223).
+        """📒 Lugares: one button per kind of important place you know (D-301), your own camp first; travel asks first (D-223).
 
         [ES]
-        Qué hace: lista los lugares importantes que conoces (_important_places), cada uno con su tiempo de viaje y su código
-        (/ir1, /ir2...); los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar
-        (_place_confirm_view) y, al confirmar, el héroe va solo, zona por zona ("goto:"). Guarda el orden mostrado (espacio
-        "places_shown") para que el código /irN sea el que viste. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más
-        cercanos; desde el rango 10, hasta explorer.places_listed. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
-        no es de tu nivel: ya no dice "con rango 10 de Explorador, 📒 Lugares lista hasta 8" (explorer.places_hint queda sin uso).
-        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas y, debajo, lo que marcaba el mapa (D-222); D-223 dejó
-        solo los lugares importantes.
-        La llaman: el botón 📒 Lugares del 🗺️ Mapa (también al rechazar un viaje).
-        Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py y el paso
-        "return" del 🧭 camino guiado (D-193: su texto manda a 📒 Lugares → El Claro).
+        Qué hace: D-301 (pedido del dueño, 20-oct-2026: "cuando le das en lugares, el primer botón va a ser el del campamento...
+        luego mazmorra: un botón que se llame Mazmorras. Luego un botón que se llame Fogatas. Y así sucesivamente"): el menú
+        de 📒 Lugares. Arriba, a lo ancho, 🏕️ <nombre de tu campamento> (solo si tienes campamento y no estás en él): va
+        directo a "¿Viajar?" (_place_confirm_view). Después un botón por tipo que tenga lugares, en el orden de PLACE_KINDS:
+        🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio, 🏕️ Campamentos y 👑 Guarida, cada uno con cuántos hay; cada botón abre su lista
+        (_places_kind_view, "plc:<tipo>") con los códigos /irN y el tiempo del viaje. ↩️ Volver va al 🗺️ Mapa. Como mucho 7
+        botones, de 2 en 2 (HUB_KINDS "places"). No guarda códigos: /irN es de la última lista que viste.
+        Historia: hasta la 0.30.1 listaba cualquier zona que recordabas (D-222); D-223 dejó solo los lugares importantes, en
+        una sola lista con códigos; D-301 la partió por tipo.
+        La llaman: el botón 📒 Lugares del 🗺️ Mapa, ↩️ Volver de cada lista y de "¿Viajar?" (tu campamento) y los códigos o
+        lugares que ya no sirven (con su aviso).
+        Si cambia, afecta: tests/test_lugares.py, tests/test_boss.py, tests/test_enemy_camps.py, tests/test_hunt.py,
+        tests/test_nueve_hogueras.py, tests/test_mazmorras.py y el paso "return" del 🧭 camino guiado (D-193: su texto manda a
+        📒 Lugares → 🔥 Fogatas → El Claro).
         """
         t = self.texts
-        places = self._important_places(hero)
-        count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
-        others = [p for p in places if not mapgen.is_bonfire(p[1], p[2])][:count]
-        listed = sorted([p for p in places if mapgen.is_bonfire(p[1], p[2])] + others)   # D-277: the 9 bonfires, always
-        self.store.put("places_shown", hero.id, {"list": [[x, y] for _, x, y, _, _ in listed]})
+        groups = self._place_groups(hero)
         body = [t.t("places.intro")]
-        for n, (seconds, x, y, icon, name) in enumerate(listed, 1):
-            mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
-            body.append(t.t("places.code_line", n=n, icon=icon, name=name + mark, x=x, y=y,
-                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
-        if not places:
+        actions: list[Action] = []
+        own = (groups.get("camp") or [None])[0]
+        if own:                                          # D-301: your camp first, straight to "Travel?"
+            seconds, x, y, icon, name, _ = own
+            body.append(t.t("places.camp_line", icon=icon, name=name, x=x, y=y, zones=abs(x - hero.x) + abs(y - hero.y),
+                            time=self._fmt_duration(seconds)))
+            actions.append(Action(id=f"goask:{x}:{y}", label=t.t("places.camp_button", name=name)))
+        for kind, items in groups.items():
+            if kind != "camp":
+                actions.append(Action(id=f"plc:{kind}", label=t.t("places.kind_button", kind=t.t(f"places.kind.{kind}"),
+                                                                  n=len(items))))
+        if not any(kind != "fire" for kind in groups):
             body.append(t.t("places.none"))
-        elif len(places) > len(listed):
-            body.append(t.t("places.more", n=len(places) - len(listed)))
         body.append(t.t("places.coord_hint"))           # D-278: any other coordinate, with /ir x y
-        actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {name}", time=self._fmt_duration(seconds)))
-                   for n, (seconds, x, y, icon, name) in enumerate(listed[:3], 1)]
         actions.append(Action(id="map", label=t.t("menu.back")))
-        return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice)
+        layout = ([1] if own else []) + self._pairs_layout(len(actions) - (1 if own else 0))
+        return View(kind="places", title=t.t("places.title"), body=body, actions=actions, notice=notice, layout=layout)
+
+    def _places_kind_view(self, hero: Hero, kind: str, notice: str | None = None) -> View:
+        """One kind of 📒 Lugares (D-301): its places nearest first, each with its /irN code and travel time (D-223).
+
+        [ES]
+        Qué hace: la lista de un tipo de 📒 Lugares ("plc:<tipo>": dng, fire, guild, camps o lair), como era la lista única
+        de antes: cada lugar con su número, sus coordenadas, cuántas zonas, el tiempo del viaje y su código (/ir1, /ir2...);
+        los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar (_place_confirm_view).
+        Guarda el orden mostrado (espacio "places_shown", el mismo de siempre) para que /irN sea el de la última lista que
+        viste: los códigos empiezan en 1 en cada tipo, y un código que se escribió antes de D-301 sigue llevando al lugar que
+        mostraba. D-112: sin el rango 10 de 🧭 Explorador se listan los 3 más cercanos de cada tipo; desde el rango 10, hasta
+        explorer.places_listed. Las 🔥 fogatas salen siempre todas (D-277). D-287: no dice nada del rango. ↩️ Volver va al menú
+        de 📒 Lugares. Un tipo que no existe o quedó vacío vuelve al menú; "plc:camp" es tu campamento: va a "¿Viajar?".
+        La llaman: los botones de tipo de _places_view y ↩️ No, volver de "¿Viajar?".
+        Si cambia, afecta: tests/test_lugares.py y las pruebas que buscan un lugar en su lista.
+        """
+        t = self.texts
+        groups = self._place_groups(hero)
+        if kind == "camp" and groups.get("camp"):
+            _, x, y, _, _, _ = groups["camp"][0]
+            return self._place_confirm_view(hero, x, y)
+        if kind not in groups or kind == "camp":
+            return self._places_view(hero, notice=notice)
+        places = groups[kind]
+        count = int(self._explorer_cfg()["places_listed"]) if self._explorer_has(hero, "travel") else 3
+        listed = places if kind == "fire" else places[:count]   # D-277: the bonfires, always all of them
+        self.store.put("places_shown", hero.id, {"list": [[p[1], p[2]] for p in listed], "kind": kind})
+        name = t.t(f"places.kind.{kind}")
+        body = [t.t("places.kind_intro", kind=name)]
+        for n, (seconds, x, y, icon, pname, _) in enumerate(listed, 1):
+            mark = t.t("ecamp.route_mark") if self._ecamp_standing(x, y) else ""     # D-112
+            body.append(t.t("places.code_line", n=n, icon=icon, name=pname + mark, x=x, y=y,
+                            zones=abs(x - hero.x) + abs(y - hero.y), time=self._fmt_duration(seconds)))
+        if len(places) > len(listed):
+            body.append(t.t("places.more", n=len(places) - len(listed)))
+        actions = [Action(id=f"goask:{x}:{y}", label=t.t("places.go_button", name=f"{n}. {pname}", time=self._fmt_duration(seconds)))
+                   for n, (seconds, x, y, icon, pname, _) in enumerate(listed[:3], 1)]
+        actions.append(Action(id="places", label=t.t("menu.back")))
+        return View(kind="places_kind", title=t.t("places.kind_title", kind=name), body=body, actions=actions, notice=notice)
 
     def _place_confirm_view(self, hero: Hero, x: int, y: int) -> View:
         """"Travel to …?" before a trip chosen in 📒 Lugares (D-223: the owner wants it confirmed).
@@ -9072,10 +9172,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: pregunta antes de viajar a un lugar de 📒 Lugares. 0.33 (pedido del dueño: "debería dejarme ir hacia la
         fogata"): estando ocupado ya no responde "ese lugar ya no está en tu lista". Si exploras, recolectas o cazas en lote,
         avisa que el lote se corta; si vas de viaje, que cambias el rumbo; solo descansando en la posada pide esperar.
+        D-301: ↩️ No, volver lleva a la lista del tipo de ese lugar ("plc:<tipo>"); el de tu campamento, al menú de 📒 Lugares.
         La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso "return" del 🧭 camino.
         """
         t = self.texts
-        place = next(((icon, name) for _, px, py, icon, name in self._important_places(hero) if (px, py) == (x, y)), None)
+        place = next(((icon, name, kind) for _, px, py, icon, name, kind in self._important_places(hero) if (px, py) == (x, y)),
+                     None)
         if place is None:
             return self._places_view(hero, notice=t.t("places.unknown"))
         kind = (hero.activity or {}).get("kind")
@@ -9088,7 +9190,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("places.confirm_reroute"))
         elif kind in BATCH_KINDS:
             body.append(t.t("places.confirm_cut"))
-        actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id="places", label=t.t("places.confirm_no"))]
+        back = "places" if place[2] == "camp" else f"plc:{place[2]}"     # D-301: back to that kind's list
+        actions = [Action(id=f"goto:{x}:{y}", label=t.t("places.confirm_yes")), Action(id=back, label=t.t("places.confirm_no"))]
         return View(kind="place_confirm", title=t.t("places.confirm_title"), body=body, actions=actions)
 
     def _can_goto(self, hero: Hero, gx: int, gy: int) -> bool:
@@ -9270,9 +9373,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._walk_view(hero, steps, notice=t.t("walk.coord_ready", x=gx, y=gy))
 
     def _place_code(self, hero: Hero, n: int) -> View:
-        """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels."""
-        shown = (self.store.get("places_shown", hero.id) or {}).get("list", [])
+        """/irN: the N-th place of the last 📒 Lugares list this hero saw (D-223), asking before it travels.
+
+        [ES] D-301: la última lista es la de un tipo (Mazmorras, Fogatas...): /ir1 es el primero de esa lista. Una lista
+        guardada antes de D-301 (sin "kind") sigue sirviendo igual. Un código que no está vuelve a esa lista (o al menú) con
+        su aviso. La llama: act() con el texto /irN o /goN. Si cambia, afecta: tests/test_lugares.py."""
+        saved = self.store.get("places_shown", hero.id) or {}
+        shown = saved.get("list", [])
         if not 1 <= n <= len(shown):
+            if saved.get("kind"):
+                return self._places_kind_view(hero, saved["kind"], notice=self.texts.t("places.bad_code"))
             return self._places_view(hero, notice=self.texts.t("places.bad_code"))
         x, y = shown[n - 1]
         return self._place_confirm_view(hero, x, y)
@@ -10742,7 +10852,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         dng_excluded = ((int(guardian["x"]), int(guardian["y"])),) if guardian else ()
         if not node_rules.node_at(self.world_seed, x, y, cfg, self._node_excluded(), self._dng_cfg(), dng_excluded):
             return None
-        base, own = self._zone_land(x, y)
+        base, _wood, own = self._zone_land(x, y)        # D-300: the added wood never moves a node
         return node_rules.node_main(self.world_seed, x, y, base, own, float(cfg.get("own_share", 0.6)))
 
     def _node_rare(self, x: int, y: int) -> str | None:

@@ -1,7 +1,7 @@
 """Terrain catalogs (D-180, D-183) and resource nodes (D-181, D-184).
 
-[ES] Pruebas del catálogo de cada terreno (10 a 15 recursos posibles; cada zona que no es fija trae de 4 a 6 de tierra, y los 6
-de base siguen exactamente donde estaban), de los recursos nuevos (cada uno con su oficio de recolección, una receta, precio en
+[ES] Pruebas del catálogo de cada terreno (10 a 15 recursos posibles; cada zona que no es fija trae de 4 a 6 de tierra, más la 🪵 madera
+que D-300 suma, y los 6 de base siguen exactamente donde estaban), de los recursos nuevos (cada uno con su oficio de recolección, una receta, precio en
 el mercader, nombre y "para qué sirve", sin dejar ganar monedas), del descubrimiento por exploración (umbrales para hasta 6) y de
 los nodos de recursos: lugar fijo para todos (2 o 3 por tramo de 6 × 6, nunca pegados, nunca en el Claro, la guarida ni una
 entrada de mazmorra), que se descubre solo al LLEGAR a su zona (explorar alrededor no lo descubre; D-223: el 🗺️ Mapa no lo
@@ -18,7 +18,7 @@ from engine.world import dungeons as dungeon_rules
 from engine.world import nodes as node_rules
 from engine.world import classic_biome, zone_at
 from engine.world.mapgen import lejania
-from engine.world.resources import catalog, terrain_resources, zone_resources
+from engine.world.resources import catalog, terrain_resources, wood_resource, zone_resources
 from test_camps import place
 
 MINUTE = 60
@@ -109,15 +109,17 @@ def test_zones_bring_4_to_6_land_resources_and_the_base_ones_never_move(content)
             rbiome = zone.biome if service._is_lair(x, y) else classic_biome(7, x, y)    # the lair keeps its biome (D-82)
             base = zone_resources(7, x, y, rbiome, content.balance, content.biomes)
             own = terrain_resources(7, x, y, zone.biome, base, content.balance, content.biomes)
-            assert land == {**base, **own}
+            wood = wood_resource(7, x, y, rbiome, zone.biome, base, content.balance, content.biomes)   # D-300: only added
+            assert land == {**base, **wood, **own} and list(land) == list({**base, **wood, **own})
             assert found == service._zone_resources(x, y)                   # always the same for the same seed
             if service._territory(x, y) == {"claro": True} and zone.biome == "claro":
                 assert land == {"madera": 1.0, "fibra": 0.8}                 # the Claro and every bonfire (D-265): its fixed ones
                 continue
-            assert 4 <= len(land) <= 6, (x, y, land)
+            added = len(set(wood) - set(base))                               # D-300: the added wood may make it 7
+            assert 4 <= len(land) - added <= 6, (x, y, land)
             assert 1 <= len(own) <= 3 and set(own) <= every_own, (x, y)
             assert all(0.3 <= v <= 1.0 for v in own.values())
-            sizes.add(len(land))
+            sizes.add(len(land) - added)
             picks += len(own)
             foreign += sum(1 for r in own if r not in content.biomes[zone.biome]["own"])
     assert sizes == {4, 5, 6}

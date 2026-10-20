@@ -78,7 +78,7 @@ guides_page:
       🪓 Recolectar (en 🧭 Explorar) junta los recursos que ya descubriste en tu zona.
       ⏱️ Cada vuelta toma {gather_min} min y {gather_energy} ⚡, y da de {gather_low} a {gather_high} unidades (más en las zonas lejanas).
       🔢 Eliges cuántas vueltas seguidas ({batches} o Todo) y te aviso al terminar.
-      📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo, un {stock_regen} % por hora; agotado, no da nada.
+      📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo, un {stock_regen} % por hora (la 🪵 madera, un {wood_regen} %); agotado, no da nada.
       ✨ En un nodo, su recurso rinde ×{node_yield}, se agota más lento y a veces ({node_rare} %) da algo raro.
       🎒 Con la mochila llena ({bag_cap}) no recolectas: vende o usa cosas.
       🏕️ En el territorio de un campamento no salen peleas, y en el tuyo juntas un {own_bonus} % más.

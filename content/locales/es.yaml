@@ -1630,7 +1630,18 @@ places:
   none: "Todavía no conoces otros lugares importantes: sal a explorar."
   more: "…y {n} más, más lejos."
   marks_title: "🔭 Lo que marca tu mapa:"   # [ES] sin uso desde la 0.30.2 (D-223: el mapa no anuncia nada)
-  intro: "📒 Los lugares importantes que conoces. Toca uno o escribe su código y confirma: tu héroe irá solo, zona por zona."   # [ES] D-223
+  intro: "📒 Los lugares importantes que conoces, por tipo. Elige un tipo y después el lugar (o escribe su código) y confirma: tu héroe irá solo, zona por zona."   # [ES] D-223; D-301: el menú tiene un botón por tipo
+  camp_line: "{icon} Tu campamento, {name} ({x}, {y}) · a {zones} {zones|zona|zonas} · {time}"   # [ES] D-301: arriba del menú, si tienes campamento
+  camp_button: "🏕️ {name}"          # [ES] D-301: el primer botón (el nombre de tu campamento): va directo a "¿Viajar?"
+  kind_button: "{kind} ({n})"        # [ES] D-301: un botón por tipo, con cuántos lugares tiene
+  kind:                              # [ES] D-301: los tipos de 📒 Lugares (PLACE_KINDS en engine/service/game.py), en el orden de los botones
+    dng: "🕳️ Mazmorras"
+    fire: "🔥 Fogatas"
+    guild: "🛡️ Gremio"
+    camps: "🏕️ Campamentos"
+    lair: "👑 Guarida"
+  kind_title: "📒 Lugares · {kind}"
+  kind_intro: "📒 {kind}: toca uno o escribe su código y confirma. Tu héroe irá solo, zona por zona."
   code_line: "{n}. {icon} {name} ({x}, {y}) · a {zones} {zones|zona|zonas} · {time} · /ir{n}"   # [ES] D-278: con sus coordenadas
   coord_hint: "📌 ¿Otra coordenada? Escribe /ir x y (por ejemplo, /ir 12 -3) y se arma el camino en 🔗 Moverte."
   dungeon_small: "{name}, mazmorra chica"

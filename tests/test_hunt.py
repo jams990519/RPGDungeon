@@ -104,7 +104,9 @@ def test_explore_menu_keeps_four_buttons_and_places_moved_to_the_map(service):
     assert ids(mapv) == ["places", "explore_menu"]                          # D-223: 📒 Lugares and ↩️ Volver, nothing else
     places = service.act("test:1", "places")
     assert places.kind == "places" and ids(places)[-1] == "map"            # ↩️ Volver goes back to the map
-    assert any(a.id == "goask:0:0" for a in places.actions)                # the Claro: asks before you go (D-223)
+    assert "plc:fire" in ids(places)                                       # D-301: one button per kind (🔥 Fogatas)
+    fires = service.act("test:1", "plc:fire")
+    assert any(a.id == "goask:0:0" for a in fires.actions)                 # the Claro: asks before you go (D-223)
     # The console numbers these same buttons: from the explore menu it still reaches the map, and from there Lugares.
     from adapters.cli import play
     assert "map" in [a.id for a in play.options(menu, service)] and "places" in [a.id for a in play.options(mapv, service)]

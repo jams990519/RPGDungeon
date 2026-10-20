@@ -1,10 +1,18 @@
 """Exploration by percent, resource regions, depletion, backpack space and energy batches (D-87).
 
 [ES] Prueba la exploración por porcentaje, las regiones de recursos, el agotamiento, el espacio de la
-mochila, el gasto de energía en lote (con cancelar) y los colores del mapa.
+mochila, el gasto de energía en lote (con cancelar) y los colores del mapa. D-300 (pedido del dueño, 20-oct-2026: más
+madera): toda zona de bosque tiene 🪵 madera, la madera solo se suma (ninguna zona pierde un recurso, comparado con el
+reparto de antes; los nodos no se mueven) y vuelve el doble de rápido.
 """
 
+import copy
+
+import pytest
+
 from conftest import make_hero
+from engine.core import FixedClock, MemoryStore
+from engine.service import GameService
 from engine.world import zone_at
 from engine.world.resources import main_resource, zone_resources
 
@@ -195,3 +203,75 @@ def test_the_terrain_patchwork_never_moved_the_land_resources(service):
     assert not any("▫️" in row or "◽" in row or "◻️" in row for row in rows)   # all at 50 %: no grey squares left
     colours = {b["color"] for b in service.content.biomes.values()}
     assert sum(row.count(c) for row in rows for c in colours) >= (2 * radius + 1) ** 2 - 10
+
+
+# ---------------------------------------------------------------- D-300: more wood (owner, 20-oct-2026)
+
+def _without_wood(content):
+    """The content as before D-300: no resources.wood block and no stock.regen_mult (the old wood distribution)."""
+    old = copy.deepcopy(content)
+    old.balance["resources"].pop("wood", None)
+    old.balance["stock"].pop("regen_mult", None)
+    return old
+
+
+def test_forest_zones_always_have_wood(content):
+    """D-300: every zone whose terrain the map shows as a forest has 🪵 wood, rich enough to gather (forest_min)."""
+    wcfg = content.balance["resources"]["wood"]
+    forests = set(wcfg["forest"])
+    assert forests == {"bosque", "bosque_oscuro", "selva"} and forests <= set(content.biomes)
+    for seed in (7, 12345):
+        service = GameService(content, MemoryStore(), FixedClock(), world_seed=seed)
+        seen = 0
+        for x in range(-18, 19):
+            for y in range(-18, 19):
+                if service._zone(x, y).biome in forests:
+                    found = service._zone_resources(x, y)
+                    assert found.get("madera", 0) >= wcfg["forest_min"], (seed, x, y, found)
+                    seen += 1
+        assert seen > 100
+
+
+def test_wood_is_only_added_and_no_zone_loses_a_resource(content):
+    """D-300: compared with the distribution of before, every zone keeps each resource it had (same richness, same order),
+    wood goes right after the base ones, the nodes did not move and more zones have wood."""
+    old_content = _without_wood(content)
+    for seed in (7, 2026):
+        new = GameService(content, MemoryStore(), FixedClock(), world_seed=seed)
+        old = GameService(old_content, MemoryStore(), FixedClock(), world_seed=seed)
+        before = after = total = 0
+        for x in range(-16, 17, 2):
+            for y in range(-16, 17):
+                was, now = old._zone_resources(x, y), new._zone_resources(x, y)
+                assert all(r in now for r in was), (seed, x, y)                       # nothing lost...
+                assert {r: now[r] for r in was if r != "madera"} == {r: v for r, v in was.items() if r != "madera"}
+                assert now.get("madera", 0) >= was.get("madera", 0)                   # ...and wood never poorer
+                assert [r for r in now if r in was] == list(was), (seed, x, y)        # the old ones keep their order
+                added = [r for r in now if r not in was]
+                assert added in ([], ["madera"]), (seed, x, y, added)                  # only wood is ever added...
+                if added:
+                    base = old._zone_land(x, y)[0]
+                    assert list(now).index("madera") == len(base), (seed, x, y)        # ...right after the base ones
+                    assert 0.3 <= now["madera"] <= 1.0
+                assert new._node_main(x, y) == old._node_main(x, y), (seed, x, y)      # the nodes did not move
+                total += 1
+                before += "madera" in was
+                after += "madera" in now
+        assert after - before >= total * 0.08, (seed, before, after, total)          # clearly more zones with wood
+        assert new._zone_resources(3, 5) == new._zone_resources(3, 5)                  # the same seed, the same world
+
+
+def test_wood_regrows_twice_as_fast(service, clock):
+    """D-300 (owner: "lento para las construcciones, pero tampoco tan lento"): wood comes back ×2 (stock.regen_mult)."""
+    mult = service.content.balance["stock"]["regen_mult"]["madera"]
+    assert mult == 2.0
+    x, y = next((x, y) for x in range(1, 30) for y in range(0, 30)
+                if "madera" in service._zone_resources(x, y) and len(service._zone_resources(x, y)) > 1)
+    service.store.put("stock", f"{x}:{y}", {"levels": {r: 0.0 for r in service._zone_resources(x, y)}, "at": clock.now()})
+    clock.advance(5 * 3600)
+    stock = service._stock(x, y)
+    regen = service.content.balance["stock"]["regen_per_hour"]
+    other = next(r for r in stock if r != "madera")
+    assert stock[other] == pytest.approx(5 * regen)
+    assert stock["madera"] == pytest.approx(5 * regen * mult)                          # 2 units an hour instead of 1
+    assert service._stock(0, 0)["madera"] == 1.0                                          # untouched zones stay full

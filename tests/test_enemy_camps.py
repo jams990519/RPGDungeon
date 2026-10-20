@@ -369,6 +369,7 @@ def test_explorer_rank_decides_which_camps_you_see(service):
     place(service, "test:1", cx + 1, cy, professions={})
     assert not any(line.startswith("👹 (") for line in service.act("test:1", "map").body)   # nothing drawn or listed
     assert not any(line.startswith("👹 (") for line in service.act("test:1", "places").body)
+    assert not any(line.startswith("👹 (") for line in service.act("test:1", "plc:fire").body)   # D-301: nor in a kind
     zone = service.act("test:1", "home").body
     assert any(line.startswith("⬅️") and "👹" in line for line in zone)                    # the route next door says it
     service.act("test:1", f"goto:{cx}:{cy}")                                               # D-222: never been there
@@ -387,9 +388,9 @@ def test_places_lists_more_from_explorer_rank_10(service):
     assert len(entrances) == 10
     known = ["0:0"] + entrances                                       # D-223: only important places count (visited dungeons)
     place(service, "test:1", 0, 0, known=known)
-    assert len(place_lines(service.act("test:1", "places"))) == 3
+    assert len(place_lines(service.act("test:1", "plc:dng"))) == 3                 # D-301: per kind (🕳️ Mazmorras)
     place(service, "test:1", 0, 0, known=known, professions={"explorador": rank_xp(service, 10)})
-    view = service.act("test:1", "places")
+    view = service.act("test:1", "plc:dng")
     assert len(place_lines(view)) == service.content.balance["explorer"]["places_listed"]
     assert len(view.actions) <= 4
 

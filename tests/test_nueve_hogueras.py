@@ -89,7 +89,7 @@ def test_a_full_bonfire_sends_arrivals_on_and_moves_nobody(service, clock):
 
 def test_places_lists_every_bonfire_from_the_first_day(service):
     make_hero(service)
-    places = text(service.act("test:1", "places"))
+    places = text(service.act("test:1", "plc:fire"))                      # D-301: 📒 Lugares → 🔥 Fogatas
     for name in ("Fogata del Norte", "Fogata del Este", "Fogata del Sur", "Fogata del Oeste", "Fogata del Noreste",
                  "Fogata del Sureste", "Fogata del Suroeste", "Fogata del Noroeste"):
         assert name in places, name
@@ -111,6 +111,6 @@ def test_the_story_claro_goal_is_your_own_bonfire(service):
 def test_bonfires_read_well_in_english(service):
     from test_idiomas import english_hero
     english_hero(service)
-    places = text(service.act("test:1", "places"))
+    places = text(service.act("test:1", "plc:fire"))
     assert "North Campfire (0, 12)" in places and "Southwest Campfire" in places
     assert not service.texts.fallbacks.get("en")
