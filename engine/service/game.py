@@ -167,6 +167,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-294 (0.39): "camp" suma "waiting", "wait_invites" y "room_told" y el espacio "camp_wait" (del gremio esperando lugar en
     el campamento; de engine/service/gremio.py). Quien espera no está en camp["members"]: nada de lo de este archivo que mira
     los miembros (cupo, territorio, despensa, obras, oleadas, castillo) lo cuenta; _guild_view y _ask_join sí lo miran.
+    D-304 (0.41): "upgrades" suma "levelup" ({"to": nivel al que suben, "given": {material: n}, "chests": n}: lo aportado a
+    ⏫ Siguiente nivel; se borra al subir y nunca guarda de más). camp["level"] y camp["zones"] ya no van juntos: el nivel
+    sube con ⏫ Siguiente nivel y las zonas con 🗺️ Agrandar territorio (hasta camps.zones_by_stage). Nada nuevo en Hero.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -282,7 +285,8 @@ Si cambias esto, revisa:
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
     - Mochila llena (D-90): balance.yaml hero.backpack_capacity; _bag_full, _bag_add, _gather_blocked, _buy
     - Cofre (D-92): balance.yaml currency.chest_recipe e icons.chests, camps.chests_from_level y chests_per_level;
-      Hero.chests; _build_chest, _grow_chests; textos wallet.chest*, camps.chest* en es.yaml
+      Hero.chests; _build_chest, _grow_chests (D-304: los cofres los pide ⏫ Siguiente nivel, ya no agrandar); textos
+      wallet.chest*, camps.chest* en es.yaml
       tests/test_zone_players.py (jugadores en la zona, D-96)
     - Jugadores en la zona (D-96): balance.yaml presence; textos presence.* en es.yaml; Hero.seen_at (lo marca
       _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
@@ -290,13 +294,14 @@ Si cambias esto, revisa:
       Sus contadores se suman en _settle (exploración y recolección) y en _end_combat (victoria)
       tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
-      🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _grow_view/_grow_camp (castillo pide la prueba ganada)
+      🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _lvlup_rows (castillo pide la prueba ganada; D-304: antes
+      _grow_view/_grow_camp) y _lvlup_trial ("lvltrial": la pantalla de la prueba desde ⏫ Siguiente nivel)
     - Mejoras y conocimiento (D-101): content/camp_upgrades.yaml (catálogo), balance.yaml upgrades; textos upgrades.*,
       knowledge.*, upgrade.* y tech.* en es.yaml; tests/test_camp_upgrades.py. Sus efectos tocan _settle (vida: Fogón y
       Enfermería), _explore_step (Cartografía), _gather_step (Herramientas), _end_combat (Rastreo), _stock (Pozo),
       _members_cap (Cabañas), _camp_pantry y _camp_feed (Granero, Huerto, Ahumadero), _wallet_view, _sew_bag y
       _build_chest (Taller; desde la 0.39 la 🪡 Sastrería), _item_view y _sell_gear (Herrería; desde la 0.39 la 🔨 Forja),
-      _grow_view y _grow_camp (15 mejoras para castillo).
+      _lvlup_rows (15 mejoras para castillo y las obras de camps.level_up de cada nivel, D-304).
       _camp_defense lo leen las oleadas: _open_raid la guarda y _raid_weaken frena a los atacantes; la Torre de vigía
       avisa con _raid_watch (tests/test_raids.py)
     - 🏘️ Servicios por tipo, un edificio por oficio y obras que se activan (D-287, D-288, D-291; 0.39): content/camp_upgrades.yaml
@@ -393,7 +398,7 @@ Si cambias esto, revisa:
       🔬 "research" = _research → 📚 Conocimiento o un aviso; 🛠️ = "oficios"; 🧑‍🏫 "trainer" = _trainer_view; 🛒 "shop" /
       🏘️ "upsvc"; 🛏️ "inn"; 📜 "board"; 🏰 "campmgmt" = _camp_manage_view con _camp_member_actions; ❓ "dudas"); 👤 Héroe
       (_hero_view: ficha con tiempos, _hero_trades_line, _hp_refill_seconds; botones bag, talents, health, stats, bar,
-      oficios, journal, origin). ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información (D-302) y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
+      oficios, journal, origin). ↩️ Volver de ⬆️ Mejorar (D-304; el de ⏫ y 🗺️ va a ⬆️ Mejorar), 🔨 Mejoras, ℹ️ Información (D-302) y 🛡️ Gremio va a "campmgmt"; el de 🏘️ Servicios,
       🍲 Cocinar y ⚒️ Oficios (_prof_back), al centro. ❓ Dudas (sección "❓ Dudas": _faq_entries, _faq_search, _faq_values,
       _dudas_view, _dudas_topic_view, _duda_view, _dudas_search_view, _dudas_typed; botones DUDAS_ACTIONS; /dudas, /d07 y el
       texto suelto con "dudas_open"): content/faq.yaml (códigos estables d01...) y content/locales/es_dudas.yaml; sus
@@ -477,6 +482,23 @@ Si cambias esto, revisa:
       los botones viejos "gmsg", "gfund" y "creqs" siguen). Números: balance.yaml gremio.messages_kept (50), chat_hours,
       chat_shown y chat_max_chars. Textos: content/locales/es_submenus.yaml y en_submenus.yaml (campinfo.*, guildmenu.*).
       Pruebas: tests/test_submenus_campamento_gremio.py
+    - ⬆️ Mejorar campamento: ⏫ Siguiente nivel y 🗺️ Agrandar territorio (D-304, 0.41, pedido del dueño del 20-oct-2026: "en
+      el botón de mejorar dos opciones: una, siguiente nivel, y dos, agrandar territorio… debes construir esto, esto y esto…
+      más los recursos, en formato de lista, y se va a ir completando"; y "un asistente… va a permitir… definir hacia dónde
+      va a avanzar el territorio junto contigo"). El NIVEL ya no va atado a las ZONAS: los campamentos de antes conservan
+      nivel y zonas (D-64). Tocan: _camp_member_actions ("improve" en lugar de "grow"), _camp_manage_view (la línea de
+      ⬆️ Mejorar), _improve_view ("improve"), _lvlup_rows/_lvlup_view/_lvlup_give/_lvlup_go/_lvlup_trial/_level_up ("lvlup",
+      "lvlgive", "lvlgo", "lvltrial"; lo aportado en "upgrades"."levelup" = {"to", "given", "chests"}, que se borra al subir),
+      _grow_view y _grow_camp (🗺️ Agrandar territorio: "grow", "grow:<página>" y "claim:x:y" de siempre; minimapa
+      _territory_map, direcciones _direction_key/_direction_label, TERRITORY_DIRECTIONS y TERRITORY_KEYCAPS; solo el
+      fundador y los 🤝 asistentes eligen la zona; ya no suma nivel ni pide cofres), _zones_cap/_zones_cap_at, _camp_stage_id,
+      _camp_top_level, _camp_zone_list, _grow_cost (× zonas), _trial_view (↩️ vuelve a ⏫), _camp_info_lines (costo y tope de
+      zonas) y _upgrades_view (todos ven los nombres de las obras sin activar y "⏫ Nivel N: x de y listos"). Números:
+      balance.yaml camps.level_up, level_up_cost_per_level, zones_by_stage, territory_map_radius, grow_cost_per_level y
+      chests_* (provisionales de Claude, menos la tabla de zonas, que confirmó el dueño: E-218). Textos:
+      content/locales/es_nivel.yaml y en_nivel.yaml (improve.*, lvlup.*, territory.*, upgrades.idle_names*). En los textos el
+      rol de D-289 se llama 🤝 asistente (los ids siguen: "helpers", "ghelp:"). Pruebas: tests/test_siguiente_nivel.py y
+      tests/test_agrandar_territorio.py
 """
 
 from __future__ import annotations
@@ -642,6 +664,16 @@ PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /
 PLACE_KINDS = ("camp", "dng", "fire", "guild", "camps", "lair")
 WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
+# D-304 (0.41): the 8 directions of 🗺️ Agrandar territorio, counter-clockwise from east (as atan2 counts); north = +y, east = +x
+# (as /ir x y). Their names are territory.dir.<id> in content/locales. TERRITORY_KEYCAPS number the free zones of a page (3 at most).
+# [ES] D-304: las 8 direcciones de 🗺️ Agrandar territorio (ids estables de los textos territory.dir.<id>) y los números de las
+# zonas de cada página (de a 3 como mucho: 4 botones con ↩️ Volver, D-75).
+TERRITORY_DIRECTIONS = ("e", "ne", "n", "nw", "w", "sw", "s", "se")
+TERRITORY_KEYCAPS = ("1️⃣", "2️⃣", "3️⃣")
+# D-304: the headings of the ⏫ Siguiente nivel checklist, by kind of line (_lvlup_rows): what to build, the resources and what
+# the castle asks. A kind without a heading (the famine line) goes under the last one.
+LVLUP_SECTIONS = {"work": "lvlup.works_title", "item": "lvlup.items_title", "chests": "lvlup.items_title",
+                  "guild": "guild.castle_title", "castle": "guild.castle_title", "trial": "guild.castle_title"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
 GEAR_CODE_RE = re.compile(r"^/(e|q)_?(\d{1,2})(@\w+)?$")   # D-299: /e1 = the 1st piece of 🔁 Equipar; /q1 = take off the 1st worn piece
@@ -2060,7 +2092,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if action_id == "cancel_name":
             self.store.delete("camp_naming", hero.id)
             return self._camp_here_view(hero)
-        if action_id == "grow" or action_id.startswith("grow:"):
+        if action_id == "improve":                      # D-304: ⬆️ Mejorar campamento (⏫ Siguiente nivel, 🗺️ Agrandar territorio)
+            return self._improve_view(hero)
+        if action_id == "lvlup":                        # D-304: ⏫ Siguiente nivel, the checklist that fills in
+            return self._lvlup_view(hero)
+        if action_id == "lvlgive":                      # D-304: 🤲 Aportar the level's materials and 🪎 chests
+            return self._lvlup_give(hero)
+        if action_id == "lvlgo":                        # D-304: ⏫ Subir a nivel N, when everything is ✅
+            return self._lvlup_go(hero)
+        if action_id == "lvltrial":                     # D-304: the 🌙 Noche de prueba screen from the 8 → 9 checklist
+            return self._lvlup_trial(hero)
+        if action_id == "grow" or action_id.startswith("grow:"):     # D-304: 🗺️ Agrandar territorio (old buttons too)
             page = action_id[5:]
             return self._grow_view(hero, int(page) if page.isdigit() else 0)
         if action_id.startswith("claim:"):
@@ -3639,17 +3681,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return View(kind="found_camp", title=t.t("camps.title"), body=body, actions=actions, notice=notice)
 
     def _camp_manage_view(self, hero: Hero, notice: str | None = None) -> View:
-        """🏰 Gestionar: what grows and keeps your camp: ⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida, 🛡️ Gremio (D-192).
+        """🏰 Gestionar: what grows and keeps your camp: ⬆️ Mejorar, 🔨 Mejoras, 🌾 Aportar comida, 🛡️ Gremio (D-192, D-304).
 
         [ES]
         Qué hace: la segunda parte del centro de tu campamento (D-192: los 8 lugares del centro van para cocinar, investigar,
-        fabricar y lo demás de D-191): una línea por opción con su costo (agrandar), lo construido y la 🛡️ Defensa, la
-        despensa (D-287: solo cuando ya la tienen, desde el nivel 3) y el gremio, y sus botones de _camp_member_actions (⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
+        fabricar y lo demás de D-191): una línea por opción (⬆️ Mejorar: nivel, etapa y zonas usadas de su tope, D-304), lo
+        construido y la 🛡️ Defensa, la
+        despensa (D-287: solo cuando ya la tienen, desde el nivel 3) y el gremio, y sus botones de _camp_member_actions (⬆️ Mejorar, 🔨 Mejoras, 🌾 Aportar comida desde el nivel
         3, 🛡️ Gremio, 🔎 Buscar recursos, ℹ️ Información y, durante una oleada, 🛡️ Defender) más ↩️ Volver: 8 como mucho, de 2 en 2
         (es parte del centro, HUB_KINDS). D-302 (0.39.4): la última línea presenta ℹ️ Información (_camp_info_view), adonde se
         mudó lo que el centro mostraba arriba.
         Solo para miembros, estando en el campamento; en otro lado explica por qué (_upgrades_elsewhere).
-        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Agrandar, 🔨 Mejoras, ℹ️ Información y 🛡️ Gremio.
+        La llaman: 🏰 Gestionar del centro y los ↩️ Volver de ⬆️ Mejorar, 🔨 Mejoras, ℹ️ Información y 🛡️ Gremio.
         Si cambia, afecta: tests/test_menus_y_dudas.py y los que miran esos botones (test_camps, test_pantry, test_guilds,
         test_raids, test_camp_upgrades).
         """
@@ -3659,12 +3702,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp, _ = here
         t = self.texts
         level = camp.get("level", 1)
-        top = int(self.content.balance["camps"]["stages"][-1]["from_level"])
         pantry = self._camp_pantry(camp)
         body = [t.t("manage.intro"), ""]
         if self._defend_action(camp, hero):
             body.append(t.t("manage.defend"))
-        body.append(t.t("manage.grow", cost=self._grow_cost_text(level), next=level + 1) if level < top else t.t("manage.grow_top"))
+        body.append(t.t("improve.manage_line", level=level, stage=self._camp_stage(level),     # D-304: ⬆️ Mejorar
+                        zones=len(self._camp_zone_list(camp)), cap=self._zones_cap(camp)))
         body.append(t.t("manage.upgrades", n=len(self._built(camp)), defense=self._camp_defense(camp)))
         if pantry:                                      # D-287 (0.39): before level 3 the pantry is not mentioned at all
             body.append(t.t("manage.pantry"))
@@ -3699,7 +3742,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """The member's info block of a camp (D-302): the summary, the grow cost, upgrades and 🛡️, damage, pantry, perks, raids.
 
         [ES] Qué hace: lo que antes iba arriba del centro de tu campamento (D-302 lo mudó a ℹ️ Información): el resumen
-        (_camp_summary_lines), "Eres parte…", ⬆️ el costo de agrandar, 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
+        (_camp_summary_lines), "Eres parte…", 🗺️ el costo de agrandar el territorio y su tope (D-304), 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
         dañadas (D-115), la 🌾 despensa (D-93, desde el nivel 3) y la hambruna, los 🏰 beneficios de los oficios (D-115) y la
         👁 próxima oleada o la que está en curso (D-99). La llama: _camp_info_view. Si cambia, afecta: esa pantalla
         (tests/test_submenus_campamento_gremio.py, tests/test_pantry.py, tests/test_oficios_campamento.py, tests/test_raids.py).
@@ -3707,7 +3750,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         level = camp.get("level", 1)
         lines = self._camp_summary_lines(camp)
-        lines += [t.t("camps.you_member"), t.t("camps.grow_cost", items=self._grow_cost_text(level)),
+        lines += [t.t("camps.you_member"),
+                  t.t("territory.info_line", items=self._grow_cost_text(len(self._camp_zone_list(camp))),   # D-304
+                      cap=self._zones_cap(camp)),
                   t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
         damage = self._camp_damage(camp)                # D-115: 🛠️ what the last raids damaged, until it is repaired
         if damage:
@@ -3896,18 +3941,66 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.camp = None
         return self._camp_here_view(hero, notice=t.t("camps.left", camp=camp["name"]))
 
-    def _grow_cost(self, level: int) -> dict[str, int]:
-        return {i: n * level for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
+    # ------------------------------------------------------------------ ⬆️ Mejorar campamento (D-304, 0.41)
 
-    def _grow_chests(self, level: int) -> int:
-        """🪎 chests that growing a camp from `level` costs (D-92, provisional): 0 below camps.chests_from_level,
-        then chests_per_level × (level − chests_from_level + 1): 6→7 asks 1, 7→8 asks 2, 8→9 asks 3.
+    def _camp_zone_list(self, camp: dict[str, Any]) -> list[list[int]]:
+        """The camp's zones ([x, y] each, its center first); a camp saved without "zones" has only its center."""
+        return camp.get("zones") or [[camp["x"], camp["y"]]]
+
+    def _camp_top_level(self) -> int:
+        """The highest camp level: the castle's (the last of camps.stages, 9). D-304: there is no next level after it yet."""
+        return int(self.content.balance["camps"]["stages"][-1]["from_level"])
+
+    def _camp_stage_id(self, level: int) -> str:
+        """The stage id of a camp level (campamento, aldea, pueblo, ciudad or castillo), from camps.stages."""
+        stages = self.content.balance["camps"]["stages"]
+        name = stages[0]["id"]
+        for stage in stages:
+            if level >= stage["from_level"]:
+                name = stage["id"]
+        return name
+
+    def _camp_stage(self, level: int) -> str:
+        """The stage name of a camp level in the player's language (camps.stage.<id>)."""
+        return self.texts.t(f"camps.stage.{self._camp_stage_id(level)}")
+
+    def _zones_cap_at(self, level: int) -> int:
+        """How many zones a camp of this level may hold: camps.zones_by_stage of its stage (D-304; E-218's table).
 
         [ES]
-        Qué hace: dice cuántos cofres pide agrandar un campamento desde su nivel actual (desde el 6).
-        La llaman: _grow_cost_text, _grow_view y _grow_camp.
+        Qué hace: el tope de zonas del territorio según la etapa del nivel (campamento 3, aldea 5, pueblo 9, ciudad 15, castillo
+        25; balance.yaml camps.zones_by_stage). Sin esa etapa en la tabla, el tope es el nivel (la regla de antes: nivel = zonas).
+        Un campamento que ya tiene más zonas que su tope las conserva; solo no suma otra (D-64).
+        La llaman: _zones_cap, _lvlup_view (lo que da el nivel siguiente) y _level_up.
+        Si cambia, afecta: cuánto crece cada territorio antes de tener que subir de nivel (tests/test_agrandar_territorio.py).
+        """
+        caps = self.content.balance["camps"].get("zones_by_stage") or {}
+        cap = caps.get(self._camp_stage_id(level))
+        return int(cap) if cap is not None else level
+
+    def _zones_cap(self, camp: dict[str, Any]) -> int:
+        """The zones cap of this camp's level (D-304)."""
+        return self._zones_cap_at(camp.get("level", 1))
+
+    def _grow_cost(self, zones: int) -> dict[str, int]:
+        """What 🗺️ Agrandar territorio costs with `zones` zones: camps.grow_cost_per_level × zones (D-81, D-304).
+
+        [ES] Qué hace: el costo de sumar una zona: los materiales de camps.grow_cost_per_level por las zonas que ya tiene (desde
+        D-304 el nivel ya no cambia al agrandar; antes era × el nivel, que era igual a las zonas: el mismo precio). La llaman:
+        _grow_cost_text, _grow_view y _grow_camp. Si cambia, afecta: el ritmo de los territorios (tests/test_camps.py).
+        """
+        return {i: n * zones for i, n in self.content.balance["camps"]["grow_cost_per_level"].items()}
+
+    def _grow_chests(self, level: int) -> int:
+        """🪎 chests that going up from `level` costs (D-92, provisional; D-304 moved them from growing to ⏫ Siguiente nivel):
+        0 below camps.chests_from_level, then chests_per_level × (level − chests_from_level + 1): 6→7 asks 1, 7→8 asks 2, 8→9 asks 3.
+
+        [ES]
+        Qué hace: dice cuántos cofres pide subir un campamento desde su nivel actual (desde el 6). D-304 (0.41): antes los pedía
+        agrandar; ahora son una línea de ⏫ Siguiente nivel y los aporta cualquier miembro con 🤲 Aportar, entre todos.
+        La llaman: _lvlup_rows (la línea 🪎) y _lvlup_give (cuántos toma).
         Si cambia, afecta: el ritmo de los campamentos hasta ciudad y castillo, y cuántas bolsas salen del juego
-        (balance.yaml camps.chests_from_level y chests_per_level; tests/test_backpack.py).
+        (balance.yaml camps.chests_from_level y chests_per_level; tests/test_backpack.py y tests/test_siguiente_nivel.py).
         """
         cfg = self.content.balance["camps"]
         start = cfg.get("chests_from_level")
@@ -3915,15 +4008,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return 0
         return int(cfg.get("chests_per_level", 1)) * (level - start + 1)
 
-    def _grow_cost_text(self, level: int) -> str:
-        """The materials of growing from `level`, plus its 🪎 chests when it asks for them (D-92)."""
-        text = self._item_list(self._grow_cost(level))
-        chests = self._grow_chests(level)
-        return text + (" · " + self.texts.t("camps.chest_cost", n=chests) if chests else "")
+    def _grow_cost_text(self, zones: int) -> str:
+        """The materials of adding a zone to a camp with `zones` zones (D-304: no 🪎 chests any more; those are the level's)."""
+        return self._item_list(self._grow_cost(zones))
 
     def _grow_candidates(self, camp: dict[str, Any]) -> list[list[int]]:
-        """Free zones touching the camp's land: where it can grow next (D-87: you choose)."""
-        zones = camp.get("zones", [[camp["x"], camp["y"]]])
+        """Free zones touching the camp's land, nearest to its center first, then clockwise from the north (D-87, D-304)."""
+        zones = self._camp_zone_list(camp)
         seen, out = {tuple(z) for z in zones}, []
         for zx, zy in zones:
             for dx, dy in ((0, 1), (1, 0), (0, -1), (-1, 0)):
@@ -3931,69 +4022,402 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 if c not in seen and self._territory(*c) is None:
                     seen.add(c)
                     out.append(list(c))
-        out.sort(key=lambda c: (max(abs(c[0] - camp["x"]), abs(c[1] - camp["y"])), c[1] < camp["y"], c))
+        # D-304: nearest ring first, then clockwise from the north (⬆️ ↗️ ➡️ ↘️ ⬇️ ↙️ ⬅️ ↖️), as the directions read
+        out.sort(key=lambda c: (max(abs(c[0] - camp["x"]), abs(c[1] - camp["y"])),
+                                (90 - math.degrees(math.atan2(c[1] - camp["y"], c[0] - camp["x"]))) % 360, c))
         return out
 
-    def _grow_view(self, hero: Hero, page: int = 0) -> View:
-        """Pick which neighbouring zone the camp takes, seeing the resources you know there (D-87)."""
+    @staticmethod
+    def _direction_key(dx: int, dy: int) -> str:
+        """One of 8 directions from a camp's center to a zone (north = +y, east = +x, as /ir x y): n, ne, e, se, s, sw, w, nw."""
+        angle = math.degrees(math.atan2(dy, dx)) % 360
+        return TERRITORY_DIRECTIONS[int((angle + 22.5) // 45) % 8]
+
+    def _direction_label(self, camp: dict[str, Any], x: int, y: int) -> str:
+        """"⬆️ Norte": the arrow and name of the direction of zone (x, y) seen from the camp's center (D-304)."""
+        return self.texts.t(f"territory.dir.{self._direction_key(x - camp['x'], y - camp['y'])}")
+
+    def _territory_map(self, camp: dict[str, Any], numbered: dict[tuple[int, int], str],
+                       others: set[tuple[int, int]]) -> list[str]:
+        """The 🗺️ Agrandar territorio mini-map (D-304): a square centered on the camp, then its legend line.
+
+        [ES]
+        Qué hace: dibuja (2 × camps.territory_map_radius + 1) cuadritos por lado, centrados en el campamento, con el norte arriba
+        (como el 🗺️ Mapa): 🏕️ el centro, 🟩 las zonas propias, 1️⃣ 2️⃣ 3️⃣ las zonas libres de esta página (las de los botones),
+        🔸 otras zonas libres para crecer (en ➡️ Más zonas), ⬛ tierra de otro campamento o del Claro y ▫️ lo demás. Debajo, la leyenda
+        solo con lo que se ve. La llama: _grow_view. Si cambia, afecta: el largo de esa pantalla (tests/test_agrandar_territorio.py).
+        """
         t = self.texts
-        camp = self.store.get("camp", f"{hero.x}:{hero.y}")
-        if not camp or hero.id not in camp["members"]:
-            return self._camp_here_view(hero)
-        if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
-            return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
+        radius = max(1, int(self.content.balance["camps"].get("territory_map_radius", 2)))
+        cx, cy = camp["x"], camp["y"]
+        own = {tuple(z) for z in self._camp_zone_list(camp)}
+        seen: set[str] = {"center"}
+        rows = []
+        for y in range(cy + radius, cy - radius - 1, -1):
+            row = ""
+            for x in range(cx - radius, cx + radius + 1):
+                if (x, y) == (cx, cy):
+                    row += t.t("map.camp_mark")
+                elif (x, y) in numbered:
+                    row += numbered[(x, y)]
+                    seen.add("pick")
+                elif (x, y) in own:
+                    row += t.t("territory.own_mark")
+                    seen.add("own")
+                elif (x, y) in others:
+                    row += t.t("territory.free_mark")
+                    seen.add("free")
+                elif self._territory(x, y) is not None:
+                    row += t.t("territory.taken_mark")
+                    seen.add("taken")
+                else:
+                    row += t.t("territory.empty_mark")
+            rows.append(row)
+        legend = [t.t(f"territory.legend_{part}", mark=t.t("map.camp_mark") if part == "center" else "")
+                  for part in ("center", "own", "pick", "free", "taken") if part in seen]
+        return rows + [" · ".join(text.strip() for text in legend)]
+
+    def _improve_view(self, hero: Hero, notice: str | None = None) -> View:
+        """⬆️ Mejorar campamento: level and stage, zones used of the cap, ⏫ Siguiente nivel and 🗺️ Agrandar territorio (D-304).
+
+        [ES]
+        Qué hace: el menú chico que pidió el dueño (20-oct-2026: "en el botón de mejorar dos opciones: una, siguiente nivel, y
+        dos, agrandar territorio"): el nivel y la etapa, las zonas usadas de su tope y cuántos requisitos del nivel siguiente ya
+        están listos (D-287/D-302: poco texto). Botones: ⏫ Siguiente nivel ("lvlup"), 🗺️ Agrandar territorio ("grow", el id de
+        siempre: los botones viejos siguen andando) y ↩️ Volver a 🏰 Gestionar. Solo para miembros, en el centro de su
+        campamento (en otro lugar, _upgrades_elsewhere).
+        La llaman: ⬆️ Mejorar campamento de 🏰 Gestionar ("improve") y los ↩️ Volver de ⏫ y 🗺️.
+        Si cambia, afecta: tests/test_siguiente_nivel.py, tests/test_agrandar_territorio.py y el recorrido de botones.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
         level = camp.get("level", 1)
-        candidates = self._grow_candidates(camp)
-        body = [t.t("camps.grow_intro", items=self._grow_cost_text(level))]
-        if self._grow_chests(level):     # D-92: from level 6 growing also costs chests
+        body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)),
+                t.t("improve.zones_line", zones=len(self._camp_zone_list(camp)), cap=self._zones_cap(camp))]
+        if level < self._camp_top_level():
+            rows = self._lvlup_rows(camp, self._upgrades(key))
+            body.append(t.t("improve.next_line", level=level + 1, done=sum(1 for _, _, ok in rows if ok), total=len(rows)))
+        else:
+            body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
+        actions = [Action(id="lvlup", label=t.t("improve.lvlup_button")), Action(id="grow", label=t.t("improve.grow_button")),
+                   Action(id="campmgmt", label=t.t("menu.back"))]
+        return View(kind="camp_improve", title=t.t("improve.title", name=camp["name"]), body=body, actions=actions, notice=notice)
+
+    # ------------------------------------------------------------------ ⏫ Siguiente nivel (D-304, 0.41)
+
+    def _lvlup_works(self, target: int) -> list[str]:
+        """The works that must be built to reach level `target` (camps.level_up), without retired or unknown ids (D-304)."""
+        table = self.content.balance["camps"].get("level_up") or {}
+        ids = table.get(target, table.get(str(target))) or []
+        catalog = self._upgrade_catalog()
+        return [uid for uid in ids if uid in catalog and not catalog[uid].get("retired")]
+
+    def _lvlup_need(self, level: int) -> dict[str, int]:
+        """The materials of going up from `level`: camps.level_up_cost_per_level × level (D-304)."""
+        per = self.content.balance["camps"].get("level_up_cost_per_level") or {}
+        return {i: int(n) * level for i, n in per.items() if i in self.content.items and int(n) > 0}
+
+    @staticmethod
+    def _lvlup_progress(record: dict[str, Any], target: int) -> dict[str, Any]:
+        """What the members gave to the next level: "upgrades"."levelup" = {"to", "given" {material: n}, "chests"} (D-304).
+
+        [ES] Qué hace: lee lo aportado al nivel siguiente (una copia: quien la cambia la guarda en record["levelup"]). Un registro
+        de otro nivel conserva lo que tiene (D-64: nada de lo aportado se pierde; al subir de nivel se borra, y nunca guarda de
+        más porque cada aporte toma solo lo que falta). La llaman: _lvlup_rows, _lvlup_view y _lvlup_give.
+        """
+        data = dict(record.get("levelup") or {})
+        data["to"] = target
+        data["given"] = {k: int(n) for k, n in (data.get("given") or {}).items()}
+        data["chests"] = int(data.get("chests", 0) or 0)
+        return data
+
+    def _lvlup_rows(self, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str, bool]]:
+        """The ⏫ Siguiente nivel checklist: (kind, text, done) per requirement, in screen order (D-304).
+
+        [ES]
+        Qué hace: la lista de lo que pide pasar al nivel siguiente, cada cosa con si ya está: 🏗️ las obras de camps.level_up que
+        tienen que estar CONSTRUIDAS (con su estado si no: 🏗️ en obra, 🔨 activa o ⏸️ sin activar), 📦 cada material con lo
+        aportado de lo que pide (camps.level_up_cost_per_level × nivel), 🪎 los cofres desde el nivel 6 (D-92), y en el paso a
+        castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97), las mejoras construidas (_castle_upgrades, D-101)
+        y la 🌙 Noche de prueba ganada (D-99). Con la despensa vacía suma una línea ▫️ (D-93: la hambruna no deja subir).
+        Tipos: "work", "item", "chests", "guild", "castle", "trial" y "famine" (los botones de _lvlup_view los miran).
+        La llaman: _lvlup_view, _lvlup_give, _lvlup_go, _improve_view y _upgrades_view (la línea "⏫ Nivel N: x de y listos").
+        Si cambia, afecta: qué pide subir de nivel (tests/test_siguiente_nivel.py, tests/test_raids.py, tests/test_guilds.py).
+        """
+        t = self.texts
+        level = camp.get("level", 1)
+        target = level + 1
+        rows: list[tuple[str, str, bool]] = []
+        building = record.get("building") or {}
+        active = set(self._active_works(camp, record))
+        for uid in self._lvlup_works(target):
+            done = uid in record["built"]
+            state = ("" if done else t.t("lvlup.state_building") if uid in building
+                     else t.t("lvlup.state_active") if uid in active else t.t("lvlup.state_idle"))
+            rows.append(("work", t.t("lvlup.work_line", name=self._upgrade_name(uid), state=state), done))
+        data = self._lvlup_progress(record, target)
+        for item_id, n in self._lvlup_need(level).items():
+            have = min(n, int(data["given"].get(item_id, 0)))
+            item = self.content.items[item_id]
+            rows.append(("item", t.t("lvlup.item_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=n),
+                         have >= n))
+        chests = self._grow_chests(level)               # D-92: from level 6, 🪎 chests too
+        if chests:
+            have = min(chests, data["chests"])
+            rows.append(("chests", t.t("lvlup.chest_line", have=have, need=chests), have >= chests))
+        rows += [("guild", text, ok) for text, ok in self._castle_needs(camp)]           # D-97: 8 → 9 only
+        rows += [("castle", text, ok) for text, ok in self._castle_upgrades(camp)]       # D-101: 8 → 9 only
+        if target == self._raid_sub("trial")["to_level"]:                                 # D-99: the won 🌙 Noche de prueba
+            rows.append(("trial", t.t("lvlup.trial_line"), bool(camp.get("trial_won"))))
+        if self._camp_starving(camp):                   # D-93: an empty pantry blocks leveling
+            rows.append(("famine", t.t("lvlup.famine_line"), False))
+        return rows
+
+    def _lvlup_view(self, hero: Hero, notice: str | None = None) -> View:
+        """⏫ Siguiente nivel: "to reach level N you still need:" and one ✅ / ▫️ line per requirement, filling in (D-304).
+
+        [ES]
+        Qué hace: la pantalla que pidió el dueño (20-oct-2026: "que te diga, ok, debes construir esto, esto y esto a tal nivel
+        para poder pasar al siguiente nivel, más los recursos que sean necesarios, en formato de lista. Y se va a ir completando
+        a medida que va completándose"): las líneas de _lvlup_rows con ✅ (listo) o ▫️ (falta), lo que da el nivel siguiente, lo
+        que el 💰 fondo pone primero y tus 🪎 cofres. La ven todos los miembros (pedido del dueño del 20-oct-2026: todo visible
+        para todos). Botones (4 como máximo): ⏫ Subir a nivel N (todo ✅: cualquier miembro), 🌙 Noche de prueba (si es lo
+        único que falta), 🤲 Aportar (faltan materiales o cofres), 🔨 Mejoras (faltan obras), 🛡️ Gremio (falta el gremio del
+        castillo), 🌾 Aportar comida (hambruna) y ↩️ Volver a ⬆️ Mejorar. En castillo dice que todavía no hay otro nivel.
+        Solo en el centro de tu campamento (en otro lugar, _upgrades_elsewhere).
+        La llaman: ⏫ Siguiente nivel ("lvlup"), _lvlup_give, _lvlup_go, el tope de 🗺️ Agrandar territorio y _lvlup_trial.
+        Si cambia, afecta: tests/test_siguiente_nivel.py y el recorrido de botones (tests/test_buttons.py).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        level = camp.get("level", 1)
+        back = Action(id="improve", label=t.t("menu.back"))
+        if level >= self._camp_top_level():
+            return View(kind="camp_lvlup", title=t.t("lvlup.title"), body=[t.t("lvlup.top", stage=self._camp_stage(level))],
+                        actions=[back], notice=notice)
+        record = self._upgrades(key)
+        target = level + 1
+        rows = self._lvlup_rows(camp, record)
+        missing = {kind for kind, _, ok in rows if not ok}
+        body = [t.t("lvlup.intro" if missing else "lvlup.ready", level=target, stage=self._camp_stage(target))]
+        heading = None
+        for kind, text, ok in rows:                     # the owner: "en formato de lista": what to build, then the resources
+            section = LVLUP_SECTIONS.get(kind)
+            if section and section != heading:
+                body += ["", t.t(section)]
+                heading = section
+            body.append(("✅ " if ok else "▫️ ") + text)
+        if "item" in missing:                           # D-291: what the camp's 💰 fund holds goes first
+            data = self._lvlup_progress(record, target)
+            fund = record.get("fund") or {}
+            useful = {i: min(int(fund.get(i, 0)), n - data["given"].get(i, 0)) for i, n in self._lvlup_need(level).items()}
+            useful = {i: n for i, n in useful.items() if n > 0}
+            if useful:
+                body.append(t.t("lvlup.fund_hint", items=self._item_list(useful)))
+        if "chests" in missing:
             body.append(t.t("camps.chests_have", n=hero.chests))
-        castle = self._castle_needs(camp)      # D-97: becoming a castle needs a guild that is ready
-        upgrades = self._castle_upgrades(camp)  # D-101: ...and upgrades.castle_min_built improvements built
-        if castle:
-            body += ["", t.t("guild.castle_title")] + [("✅ " if ok else "▫️ ") + text for text, ok in castle]
-            body += [("✅ " if ok else "▫️ ") + text for text, ok in upgrades]
-            if not all(ok for _, ok in castle):
-                return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body + ["", t.t("guild.castle_blocked")],
-                            actions=[Action(id="guild", label=t.t("guild.button")), Action(id="campmgmt", label=t.t("menu.back"))])
-        if not all(ok for _, ok in upgrades):
-            return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body + ["", t.t("upgrades.castle_blocked")],
-                        actions=[Action(id="upgrades", label=t.t("upgrades.button")), Action(id="campmgmt", label=t.t("menu.back"))])
-        if self._trial_needed(camp):           # D-99: then castillo needs a won Noche de prueba (after the guild, D-97)
-            return self._trial_view(hero, camp)
+        body += ["", t.t("lvlup.gives", members=int(self.content.balance["camps"]["members_per_level"]),
+                         zones=self._zones_cap_at(target))]
+        extra: list[Action] = []
+        if not missing:
+            extra.append(Action(id="lvlgo", label=t.t("lvlup.go_button", level=target)))
+        elif missing == {"trial"}:                      # D-99: only the 🌙 Noche de prueba is left
+            extra.append(Action(id="lvltrial", label=t.t("lvlup.trial_button")))
+        else:
+            if missing & {"item", "chests"}:
+                extra.append(Action(id="lvlgive", label=t.t("lvlup.give_button")))
+            if missing & {"work", "castle"}:
+                extra.append(Action(id="upgrades", label=t.t("upgrades.button")))
+            if "guild" in missing:
+                extra.append(Action(id="guild", label=t.t("guild.button")))
+            if "famine" in missing:
+                extra.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
+        return View(kind="camp_lvlup", title=t.t("lvlup.title"), body=body, actions=extra[:3] + [back], notice=notice)
+
+    def _lvlup_give(self, hero: Hero) -> View:
+        """🤲 Aportar to the next level: the 💰 fund first, then what you carry (materials and 🪎 chests); it may level up (D-304).
+
+        [ES]
+        Qué hace: como el 🤲 de una obra (D-291): primero el 💰 fondo del campamento pone lo que tenga de los materiales que faltan
+        (_take_from_fund), después el miembro aporta de su mochila lo que lleva de lo que falta (_contribute: nunca de más) y de
+        sus 🪎 cofres los que faltan; gana experiencia y mérito por material (_contribution_lines) y sube la 🏗️ Construcción
+        (_build_gain). Lo aportado queda en "upgrades"."levelup". Si con eso TODA la lista queda ✅, el campamento sube de nivel
+        en ese momento (_level_up). Cualquier miembro, en el centro del campamento y sin estar ocupado. Si no lleva nada de lo
+        que falta, avisa qué falta y no toca nada.
+        La llama: 🤲 Aportar de ⏫ Siguiente nivel ("lvlgive").
+        Si cambia, afecta: el ritmo de los niveles (tests/test_siguiente_nivel.py).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        level = camp.get("level", 1)
+        if level >= self._camp_top_level():
+            return self._lvlup_view(hero)
+        if hero.activity:
+            return self._lvlup_view(hero, notice=t.t("activity.busy"))
+        record = self._upgrades(key)
+        target = level + 1
+        data = self._lvlup_progress(record, target)
+        need = self._lvlup_need(level)
+        progress = data["given"]
+        from_fund = self._take_from_fund(record, need, progress)     # D-291: the camp's fund goes first
+        given = self._contribute(hero, need, progress)
+        chests_need = self._grow_chests(level)
+        chests = max(0, min(chests_need - data["chests"], hero.chests))
+        name = t.t("lvlup.name", level=target)
+        if not from_fund and not given and not chests:
+            missing = self._missing_text(need, progress)
+            lack = chests_need - data["chests"]
+            if lack > 0:
+                missing = (missing + " · " if missing else "") + t.t("camps.chest_cost", n=lack)
+            return self._lvlup_view(hero, notice=t.t("lvlup.nothing", items=missing) if missing else t.t("lvlup.materials_done"))
+        if chests:
+            hero.chests -= chests
+            data["chests"] += chests
+        record["levelup"] = data
+        lines = [t.t("works.from_fund", items=self._item_list(from_fund), name=name)] if from_fund else []
+        lines += self._contribution_lines(hero, given, name) if given else []
+        lines += self._build_gain(hero, given)                # D-115: 🏗️ Construcción rises with every material given
+        lines += self._story_event(hero, "build", n=sum(given.values())) if given else []      # D-117
+        if chests:
+            lines.append(t.t("lvlup.chests_given", n=chests, name=name))
+        self.store.put("upgrades", key, record)
+        if all(ok for _, _, ok in self._lvlup_rows(camp, record)):       # the last thing was given: up at once
+            lines += self._level_up(key, hero)
+        return self._lvlup_view(hero, notice="\n".join(lines))
+
+    def _lvlup_go(self, hero: Hero) -> View:
+        """⏫ Subir a nivel N: any member at the camp, when every line is ✅ (the last thing was a work finishing, D-304)."""
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        if camp.get("level", 1) >= self._camp_top_level():
+            return self._lvlup_view(hero)
+        if hero.activity:
+            return self._lvlup_view(hero, notice=t.t("activity.busy"))
+        if not all(ok for _, _, ok in self._lvlup_rows(camp, self._upgrades(key))):
+            return self._lvlup_view(hero, notice=t.t("lvlup.not_ready"))
+        return self._lvlup_view(hero, notice="\n".join(self._level_up(key, hero)))
+
+    def _lvlup_trial(self, hero: Hero) -> View:
+        """The 🌙 Noche de prueba screen from the 8 → 9 checklist (D-99, D-304); without a trial to win, the checklist."""
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        return self._trial_view(hero, camp) if self._trial_needed(camp) else self._lvlup_view(hero)
+
+    def _level_up(self, key: str, hero: Hero) -> list[str]:
+        """The camp goes up one level: the record of what was given is cleared, the members are told (D-304).
+
+        [ES]
+        Qué hace: suma 1 al nivel del campamento (camp["level"]), borra lo aportado al nivel ("upgrades"."levelup": nunca guarda
+        de más), avisa a los demás miembros en su idioma (_push_each) y a quien espera lugar en el gremio (_tell_waiting_room: con
+        el nivel caben más miembros). Las zonas no cambian (se agrandan aparte, en 🗺️ Agrandar territorio). Devuelve la línea
+        para quien lo subió. Las oleadas (desde raids.from_level) se agendan solas al jugar (_raid_settle).
+        La llaman: _lvlup_give (el último aporte) y _lvlup_go (⏫ Subir a nivel N).
+        Si cambia, afecta: el cupo de miembros, las obras que se ven (D-287), la despensa (nivel 3), las oleadas y el castillo.
+        """
+        t = self.texts
+        camp = self.store.get("camp", key)
+        record = self._upgrades(key)
+        level = int(camp.get("level", 1)) + 1
+        camp["level"] = level
+        self.store.put("camp", key, camp)
+        record.pop("levelup", None)
+        self.store.put("upgrades", key, record)
+        name = camp["name"]
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+            kind="camp_news", title=t.t("lvlup.push_title"),
+            body=[t.t("lvlup.push", hero=hero.name, camp=name, level=level, stage=self._camp_stage(level))]))
+        self._tell_waiting_room(key)                    # D-294: a higher level has room for more members
+        return [t.t("lvlup.done", camp=name, level=level, stage=self._camp_stage(level), zones=self._zones_cap_at(level))]
+
+    # ------------------------------------------------------------------ 🗺️ Agrandar territorio (D-304, 0.41)
+
+    def _grow_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """🗺️ Agrandar territorio: zones used of the cap, the cost, a mini-map and the free zones by direction (D-87, D-304).
+
+        [ES]
+        Qué hace: la pantalla para elegir HACIA DÓNDE crece el territorio (pedido del dueño del 20-oct-2026: "en territorio es
+        donde vas a escoger para dónde te vas a expandir, en qué dirección"): las zonas usadas de su tope (camps.zones_by_stage),
+        el costo (de tu mochila: camps.grow_cost_per_level × zonas), la pista de D-87 (elige con estrategia), el minimapa
+        (_territory_map) y una línea por zona libre de la página: "1️⃣ ⬆️ Norte · (6, 1) · 🪵🪨 ✨" (dirección desde el centro, los
+        recursos que conoces y el ✨ nodo que descubriste, _node_grow_mark). Botones: uno por zona ("claim:x:y", con su número y
+        dirección; de a 3, o de a 2 con ➡️ Más zonas si son más: 4 como máximo, D-75) y ↩️ Volver a ⬆️ Mejorar.
+        D-304 (pedido del dueño del 20-oct-2026: "un asistente… va a permitir definir hacia dónde va a avanzar el territorio junto
+        contigo"): solo el fundador y los 🤝 asistentes (_camp_manager) tienen los botones de zona; los demás miembros ven todo
+        (minimapa, zonas, tope y costo) con la línea de quién elige. Al tope: el aviso y ⏫ Siguiente nivel. Con la despensa vacía
+        no se agranda (D-93: vuelve a ⬆️ Mejorar con el aviso). Ya no pide el castillo ni la 🌙 Noche de prueba: eso es del nivel.
+        La llaman: 🗺️ Agrandar territorio ("grow", "grow:<página>"; los botones viejos también) y _grow_camp.
+        Si cambia, afecta: tests/test_agrandar_territorio.py, tests/test_camps.py y el recorrido de botones (tope de 4).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        t = self.texts
+        if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
+            return self._improve_view(hero, notice=t.t("pantry.grow_famine"))
+        zones = self._camp_zone_list(camp)
+        cap = self._zones_cap(camp)
+        level = camp.get("level", 1)
+        back = Action(id="improve", label=t.t("menu.back"))
+        body = [t.t("territory.header", zones=len(zones), cap=cap, stage=self._camp_stage(level))]
+        if len(zones) >= cap:                  # D-304: at the stage's cap, level up to grow more (a camp over it keeps its zones)
+            body += [t.t("territory.at_cap"), ""] + self._territory_map(camp, {}, set())
+            return View(kind="camp_grow", title=t.t("territory.title"), body=body,
+                        actions=[Action(id="lvlup", label=t.t("improve.lvlup_button")), back], notice=notice)
+        candidates = self._grow_candidates(camp)
         if not candidates:
-            return self._camp_here_view(hero, notice=t.t("camps.grow_blocked"))
+            return View(kind="camp_grow", title=t.t("territory.title"), body=body + [t.t("camps.grow_blocked")],
+                        actions=[back], notice=notice)
+        manager = self._camp_manager(camp, hero.id)
+        body += [t.t("territory.cost", items=self._grow_cost_text(len(zones))), t.t("territory.hint")]
+        if not manager:                        # D-304: the founder or a 🤝 assistant chooses; everyone sees
+            body.append(t.t("territory.managers_only"))
         per = 3 if len(candidates) <= 3 else 2
         pages = max(1, (len(candidates) + per - 1) // per)
         page %= pages
+        shown = candidates[page * per: page * per + per]
+        numbered = {(x, y): TERRITORY_KEYCAPS[i] for i, (x, y) in enumerate(shown)}
+        others = {(x, y) for x, y in candidates} - set(numbered)
+        body += [""] + self._territory_map(camp, numbered, others) + [""]
         actions = []
-        for cx, cy in candidates[page * per: page * per + per]:
-            known = self._known_resources(hero, cx, cy)
-            icons = "".join(self.content.items[r]["emoji"] for r in known) or "❔"
-            icons += self._node_grow_mark(hero, cx, cy)  # D-87, D-184: a node you discovered there (choose with strategy)
-            body.append(t.t("camps.grow_option", x=cx, y=cy, items=icons))
-            actions.append(Action(id=f"claim:{cx}:{cy}", label=t.t("camps.grow_option", x=cx, y=cy, items=icons)))
+        for i, (x, y) in enumerate(shown):
+            direction = self._direction_label(camp, x, y)
+            icons = "".join(self.content.items[r]["emoji"] for r in self._known_resources(hero, x, y)) or "❔"
+            icons += self._node_grow_mark(hero, x, y)  # D-87, D-184: a node you discovered there (choose with strategy)
+            body.append(t.t("territory.option", n=TERRITORY_KEYCAPS[i], dir=direction, x=x, y=y, items=icons))
+            if manager:
+                actions.append(Action(id=f"claim:{x}:{y}", label=t.t("territory.option_button", n=TERRITORY_KEYCAPS[i], dir=direction)))
         if pages > 1:
-            actions.append(Action(id=f"grow:{page + 1}", label=t.t("camps.grow_more")))
-        actions.append(Action(id="campmgmt", label=t.t("menu.back")))      # D-192: ⬆️ Agrandar lives in 🏰 Gestionar
-        return View(kind="camp_grow", title=t.t("camps.grow_title"), body=body, actions=actions)
-
-    def _camp_stage(self, level: int) -> str:
-        stages = self.content.balance["camps"]["stages"]
-        name = stages[0]["id"]
-        for stage in stages:
-            if level >= stage["from_level"]:
-                name = stage["id"]
-        return self.texts.t(f"camps.stage.{name}")
+            body.append(t.t("territory.page", n=page + 1, total=pages))
+            actions.append(Action(id=f"grow:{(page + 1) % pages}", label=t.t("territory.more")))
+        actions.append(back)                   # D-304: 🗺️ lives in ⬆️ Mejorar
+        return View(kind="camp_grow", title=t.t("territory.title"), body=body, actions=actions, notice=notice)
 
     def _grow_camp(self, hero: Hero, cx: int, cy: int) -> View:
-        """Make the camp bigger: pay materials and take the chosen free zone next to its land (1, 2, 3, 4... zones).
+        """Take the chosen free zone next to the camp's land, paying from the backpack; the level does NOT change (D-304).
 
         [ES]
-        Qué hace: el miembro que agranda paga los materiales de su mochila (camps.grow_cost_per_level × nivel) y,
-        desde el nivel 6, también 🪎 cofres (D-92); el campamento suma 1 nivel y la zona elegida. Con la despensa
-        vacía no crece (D-93). Si falta algo, avisa y no cobra nada.
-        La llaman: los botones de zona de ⬆️ Agrandar campamento (claim:x:y).
-        Si cambia, afecta: niveles, zonas y cupo de miembros de los campamentos (tests/test_camps.py,
+        Qué hace: el fundador o un 🤝 asistente (D-304: "definir hacia dónde va a avanzar el territorio junto contigo") paga de su
+        mochila camps.grow_cost_per_level × las zonas que ya tiene y el territorio suma la zona elegida (tiene que tocar su
+        tierra y estar libre). Ya no suma nivel ni pide 🪎 cofres (eso es de ⏫ Siguiente nivel). Al tope de zonas de su etapa
+        (camps.zones_by_stage) no suma más. Con la despensa vacía no crece (D-93). Un miembro común recibe el aviso de quién
+        elige y no paga nada; si falta algo, avisa y no cobra. A los demás miembros les llega hacia dónde creció, en su idioma.
+        La llaman: los botones de zona de 🗺️ Agrandar territorio (claim:x:y; los viejos también).
+        Si cambia, afecta: zonas y territorio de los campamentos (tests/test_camps.py, tests/test_agrandar_territorio.py,
         tests/test_pantry.py, tests/test_backpack.py).
         """
         t = self.texts
@@ -4001,37 +4425,33 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp = self.store.get("camp", key)
         if not camp or hero.id not in camp["members"] or hero.activity:
             return self._camp_here_view(hero)
+        if not self._camp_manager(camp, hero.id):      # D-304: the founder or a 🤝 assistant chooses where
+            return self._grow_view(hero, notice=t.t("territory.managers_only"))
         if self._camp_starving(camp):          # D-93: with an empty pantry the camp does not grow
-            return self._camp_here_view(hero, notice=t.t("pantry.grow_famine"))
-        if not all(ok for _, ok in self._castle_needs(camp)):     # D-97: no castle without a guild that is ready
+            return self._improve_view(hero, notice=t.t("pantry.grow_famine"))
+        zones = self._camp_zone_list(camp)
+        cap = self._zones_cap(camp)
+        if len(zones) >= cap:                  # D-304: the stage's cap
+            return self._grow_view(hero, notice=t.t("territory.at_cap"))
+        if [cx, cy] not in self._grow_candidates(camp):
             return self._grow_view(hero)
-        if not all(ok for _, ok in self._castle_upgrades(camp)):  # D-101: nor without 15 improvements built
-            return self._grow_view(hero)
-        if self._trial_needed(camp):           # D-99: castillo needs a won Noche de prueba
-            return self._trial_view(hero, camp)
-        level = camp.get("level", 1)
-        cost = self._grow_cost(level)
-        chests = self._grow_chests(level)          # D-92: paid from the chests of the member who grows
-        if any(hero.backpack.get(i, 0) < n for i, n in cost.items()) or hero.chests < chests:
-            lines = [t.t("camps.grow_missing", items=self._grow_cost_text(level))]
-            if hero.chests < chests:
-                lines.append(t.t("camps.grow_missing_chests", n=hero.chests, need=chests))
-            return self._camp_here_view(hero, notice="\n".join(lines))
-        zones = camp.get("zones", [[camp["x"], camp["y"]]])
-        new = [cx, cy] if [cx, cy] in self._grow_candidates(camp) else None
-        if new is None:
-            return self._grow_view(hero)
+        cost = self._grow_cost(len(zones))
+        if any(hero.backpack.get(i, 0) < n for i, n in cost.items()):
+            return self._grow_view(hero, notice=t.t("camps.grow_missing", items=self._grow_cost_text(len(zones))))
         for item_id, n in cost.items():
             hero.backpack[item_id] -= n
             if hero.backpack[item_id] <= 0:
                 del hero.backpack[item_id]
-        hero.chests -= chests
-        camp["zones"] = zones + [new]
-        camp["level"] = level + 1
+        camp["zones"] = zones + [[cx, cy]]
         self.store.put("camp", key, camp)
-        self.store.put("territory", f"{new[0]}:{new[1]}", {"camp": key})
-        self._tell_waiting_room(key)                    # D-294: a bigger camp may have room for who waits
-        return self._camp_here_view(hero, notice=t.t("camps.grown", zones=len(camp["zones"]), x=new[0], y=new[1]))
+        self.store.put("territory", f"{cx}:{cy}", {"camp": key})
+        n, name = len(camp["zones"]), camp["name"]
+        self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(       # D-304: everyone sees where
+            kind="camp_news", title=t.t("territory.title"),
+            body=[t.t("territory.grown_push", hero=hero.name, camp=name, dir=self._direction_label(camp, cx, cy),
+                      x=cx, y=cy, zones=n, cap=cap)]))
+        return self._grow_view(hero, notice=t.t("territory.grown", dir=self._direction_label(camp, cx, cy), x=cx, y=cy,
+                                                zones=n, cap=cap))
 
     def _visit_camp(self, hero: Hero) -> list[str]:
         """Arriving at someone's camp: tell the visitor and ask its members friendly or hostile (once).
@@ -4619,8 +5039,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: dice qué le falta al gremio para que el campamento pase a castillo (nivel 8 → 9): tener gremio,
         de nivel guild.castle_min_level o más, con guild.castle_min_members miembros o más. Vacío en cualquier
-        otro nivel: después del castillo el campamento sigue creciendo sin pedir nada más.
-        La llaman: _grow_view (lo muestra) y _grow_camp (lo exige).
+        otro nivel.
+        La llama: _lvlup_rows (D-304, 0.41: son líneas de ⏫ Siguiente nivel; antes las mostraba y exigía ⬆️ Agrandar).
         Si cambia, afecta: quién llega a castillo; los campamentos sin gremio se quedan en ciudad.
         """
         t = self.texts
@@ -4925,7 +5345,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES] Qué hace: la línea de oleadas de un campamento: la que está en curso, el aviso de la 🗼 Torre de vigía, la próxima
         o el aviso de un nivel antes. Con urgent=True (D-302: el centro de tu campamento) solo la que está en curso o el aviso
         de la torre; lo demás se ve en ℹ️ Información y 🏰 Gestionar. La llaman: _camp_here_view (urgent), _camp_manage_view,
-        _camp_info_lines y _grow_view. Si cambia, afecta: tests/test_raids.py."""
+        _camp_info_lines y _trial_view. Si cambia, afecta: tests/test_raids.py."""
         t = self.texts
         cfg = self._raid_cfg()
         raid = camp.get("raid")
@@ -4949,7 +5369,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return []
 
     def _trial_needed(self, camp: dict[str, Any]) -> bool:
-        """True if growing one level needs a Noche de prueba the camp has not won yet (8 → 9, castillo)."""
+        """True if going up one level needs a Noche de prueba the camp has not won yet (8 → 9, castillo; D-304: ⏫ Siguiente nivel)."""
         return camp.get("level", 1) + 1 == self._raid_sub("trial")["to_level"] and not camp.get("trial_won")
 
     def _trial_blocker(self, camp: dict[str, Any]) -> str | None:
@@ -4965,14 +5385,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return None
 
     def _trial_view(self, hero: Hero, camp: dict[str, Any], notice: str | None = None) -> View:
-        """The grow screen at level 8: castillo needs a won Noche de prueba; call it or defend it here (D-99).
+        """The 🌙 Noche de prueba screen at level 8: castillo needs a won Noche de prueba; call it or defend it here (D-99).
 
         [ES]
-        Qué hace: en lugar de las zonas para crecer, muestra que castillo pide ganar la Noche de prueba, contra qué
-        enemigo y cuántas victorias hacen falta. Botones: 🌙 Noche de prueba (si se puede convocar) o 🛡️ Defender
-        (si ya empezó), y ↩️ Volver. Como mucho 2 botones.
-        La llaman: _grow_view y _grow_camp (nivel 8 sin la prueba ganada) y _start_trial.
-        Si cambia, afecta: cómo se llega a castillo.
+        Qué hace: muestra que castillo pide ganar la Noche de prueba, contra qué enemigo y cuántas victorias hacen falta.
+        Botones: 🌙 Noche de prueba (si se puede convocar) o 🛡️ Defender (si ya empezó), y ↩️ Volver a ⏫ Siguiente nivel (D-304,
+        0.41; antes volvía al centro). Como mucho 2 botones.
+        La llaman: _lvlup_trial (el botón 🌙 de ⏫ Siguiente nivel, "lvltrial", cuando es lo único que falta) y _start_trial.
+        Si cambia, afecta: cómo se llega a castillo (tests/test_raids.py).
         """
         t = self.texts
         sub = self._raid_sub("trial")
@@ -4990,7 +5410,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body += [blocker] if blocker and blocker != notice else []
             actions += [] if blocker else [Action(id="trial", label=t.t("raids.trial_button"))]
         actions += [defend] if defend else []
-        actions.append(Action(id="claro", label=t.t("menu.back")))
+        actions.append(Action(id="lvlup", label=t.t("menu.back")))      # D-304: the trial is a line of ⏫ Siguiente nivel
         return View(kind="camp_trial", title=t.t("raids.trial_screen"), body=body, actions=actions, notice=notice)
 
     def _start_trial(self, hero: Hero) -> View:
@@ -5404,7 +5824,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: arma los botones de 🏰 Gestionar (D-192; antes eran los del campamento): 🛡️ Defender primero mientras dura
-        una oleada que todavía no peleaste (D-99), ⬆️ Agrandar, 🔨 Mejoras (D-101), 🌾 Aportar comida (solo con despensa,
+        una oleada que todavía no peleaste (D-99), ⬆️ Mejorar campamento (D-304, 0.41: antes ⬆️ Agrandar; abre ⏫ Siguiente nivel
+        y 🗺️ Agrandar territorio), 🔨 Mejoras (D-101), 🌾 Aportar comida (solo con despensa,
         desde nivel 3), 🛡️ Gremio (ahí están los miembros, ✏️ Renombrar y 🚪 Salir, D-97), 🔎 Buscar recursos (D-296, pedido
         del dueño: el buscador también en el campamento), ℹ️ Información (D-302: lo que el centro mostraba arriba) y ↩️ Volver
         al centro: 8 como mucho (con 🛡️ Defender y la despensa), de 2 en 2.
@@ -5413,7 +5834,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         tests/test_camp_upgrades.py y tests/test_menus_y_dudas.py (orden de los botones).
         """
         t = self.texts
-        actions = [Action(id="grow", label=t.t("camps.grow_button")), Action(id="upgrades", label=t.t("upgrades.button"))]
+        actions = [Action(id="improve", label=t.t("improve.button")),            # D-304: ⬆️ Mejorar (lvlup, grow)
+                   Action(id="upgrades", label=t.t("upgrades.button"))]
         if pantry:
             actions.append(Action(id="campfeed", label=t.t("pantry.feed_button")))
         actions.append(Action(id="guild", label=t.t("guild.button")))
@@ -5433,8 +5855,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         (D-287, 0.39: nada de niveles que todavía no tienen, ni la línea "🔒 En nivel N"; lo que pide el castillo solo se nombra
         en el nivel de antes del castillo), la 🛡️ Defensa, lo construido, los 🪑 muebles colocados (D-116), las 🛠️ defensas
         dañadas (D-115), las 🏗️ obras en curso, el 💰 fondo del campamento y las obras ACTIVAS con su barra (D-291: solo esas
-        piden materiales). A todos les dice cuántas obras de este nivel siguen sin activar: el fundador y los 🤝 ayudantes las
-        activan en 🏘️ Servicios; los demás las ven ahí. Botones (4 como máximo): 🔨 Obras (las activas, la reparación, las que puedes activar
+        piden materiales). D-304 (0.41, pedido del dueño del 20-oct-2026: "cada mejora debe ser visible para todos los miembros,
+        así como las construcciones pendientes"): a todos les nombra las obras de este nivel que siguen sin activar (el
+        fundador y los 🤝 asistentes las activan en 🏘️ Servicios; los demás las ven) y cuántos requisitos de ⏫ Siguiente nivel
+        ya están listos ("⏫ Nivel 2: 3 de 5 listos"). Botones (4 como máximo): 🔨 Obras (las activas, la reparación, las que puedes activar
         y los muebles para colocar), 🏘️ Servicios (siempre: ahí están las obras por tipo), 📚 Conocimiento (solo con la
         Biblioteca) y ↩️ Volver.
         Solo para miembros, estando en el campamento; el Claro no tiene (D-98).
@@ -5487,10 +5911,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if len(works) > shown:
                 body.append(t.t("upgrades.open_more", n=len(works) - shown))
         available = self._available_works(camp, record)
-        if available:                                   # the owner: everyone sees them; only the founder or a helper picks
-            body.append(t.t("services.to_activate" if manager else "services.to_activate_member", n=len(available)))
+        if available:                                   # D-304: everyone sees their NAMES; only the founder or an assistant picks
+            names = " · ".join(self._upgrade_name(uid) for uid in available)
+            body.append(t.t("upgrades.idle_names_manager" if manager else "upgrades.idle_names", names=names))
         elif not works:
             body.append(t.t("services.none_active_manager" if manager else "services.none_active"))
+        if camp.get("level", 1) < self._camp_top_level():    # D-304: how ⏫ Siguiente nivel goes, for every member
+            rows = self._lvlup_rows(camp, record)
+            body.append(t.t("upgrades.lvlup_line", level=camp.get("level", 1) + 1,
+                            done=sum(1 for _, _, ok in rows if ok), total=len(rows)))
         body += self._camp_perk_lines(camp, hero, perks, only=("stone_cost", "build_cost", "repair_cost"))     # D-115
         actions = []
         entries = self._works_entries(hero, camp, record)       # works, 🛠️ the repair (D-115) and 🪑 furniture (D-116)
@@ -5854,8 +6283,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: dice si el campamento ya construyó las mejoras que pide el castillo (15). Vacío en cualquier otro
-        nivel: los castillos que ya existen siguen creciendo sin pedir nada más.
-        La llaman: _grow_view (lo muestra con ✅ o ▫️) y _grow_camp (lo exige).
+        nivel.
+        La llama: _lvlup_rows (D-304, 0.41: una línea de ⏫ Siguiente nivel con ✅ o ▫️; antes la de ⬆️ Agrandar).
         Si cambia, afecta: quién llega a castillo (balance.yaml upgrades.castle_min_built).
         """
         need = int(self.content.balance.get("upgrades", {}).get("castle_min_built", 0))

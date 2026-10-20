@@ -142,7 +142,7 @@ guides_page:
       💰 Fund (with a camp, 💰 Camp funds) → 💰 Deposit: add materials from wherever you are, using their code (/f02).
       ⚔️ Armory: leave gear with /a1 and take it with /t1.
       🗺️ What one member explores, the whole guild knows (the experience goes to whoever explores). If you leave, you keep what's yours.
-      ⏳ When the camp is full, the founder or a 🤝 helper can add you to the guild to wait for a spot (up to {waiting_max}).
+      ⏳ When the camp is full, the founder or an 🤝 assistant can add you to the guild to wait for a spot (up to {waiting_max}).
   camp:
     title: "🏕️ Camp"
     text: |-
@@ -150,10 +150,10 @@ guides_page:
       🔎 The zone must be explored to 100%, with {camp_known} of its 8 neighbors known (what your guild explores counts).
       ⏳ You need {found_members} members there and {found_cost} in the 💰 fund: the leader taps 🛡️ Guild → 🏕️ Found. It takes {found_minutes} min (less with more members).
       🏘️ Services shows the works by type: {kinds}.
-      ▶️ The founder or a 🤝 helper (1 per {helpers_per} members) activates a work; everyone contributes with 🤲, or from afar with 💰 Deposit.
+      ▶️ The founder or an 🤝 assistant (1 per {helpers_per} members) activates a work; everyone contributes with 🤲, or from afar with 💰 Deposit.
       📈 Each new work costs {growth_pct}% more for every work already built.
       🏗️ Once its materials are complete, it gets built: {work_minutes} min per level with {work_members} members in the territory (faster with more).
-      ⬆️ Expand camp (🏰 Manage, where ℹ️ Info is too) adds one zone to the territory; there you gather {own_bonus}% more.
+      ⬆️ Improve (🏰 Manage): ⏫ Next level lists the works and materials still missing; 🗺️ Expand territory adds a zone wherever the founder or an 🤝 assistant chooses (there you gather {own_bonus}% more).
       🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight.
   dungeons:
     title: "🕳️ Dungeons and enemies"

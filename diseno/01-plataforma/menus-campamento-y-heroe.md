@@ -4,6 +4,8 @@
 
 > **0.40 (D-302, pedido del dueño):** el centro de tu campamento muestra solo su nombre, lo que puedes hacer y lo urgente (una oleada); la información de siempre (etapa, nivel, miembros, gremio, costo de agrandar, mejoras, defensa, despensa, beneficios, próxima oleada) pasó a 🏰 Gestionar → ℹ️ Información.
 
+> **0.41 (D-304, pedido del dueño):** en 🏰 Gestionar, ⬆️ Agrandar pasa a **⬆️ Mejorar campamento**, un menú chico con **⏫ Siguiente nivel** (la lista de obras construidas, materiales y 🪎 cofres que se va completando; cualquier miembro aporta con 🤲) y **🗺️ Agrandar territorio** (minimapa y 8 direcciones; eligen el fundador o un 🤝 asistente; tope de zonas por etapa). Ver §2.2 y [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.2.
+
 Cómo se ordenan las pantallas principales del juego desde la 0.29: el menú de abajo, el centro de 🏕️ Campamento (en el Claro y en tu propio campamento), el centro de 👤 Héroe, el 🧑‍🏫 Entrenador y ❓ Dudas. El camino guiado de la historia (D-190), que manda al jugador a hacer una cosa nueva por vez, se describe aparte.
 
 ## De dónde sale
@@ -47,7 +49,10 @@ Arriba, la información de siempre (miembros, nivel, zonas, mejoras y 🛡️ De
 
 - 🍲 Cocinar pide el 🔥 Fogón; 🔬 Investigar, la 📚 Biblioteca; 🛠️ Fabricar, el 🧵 Taller o la 🔨 Herrería. Sin ellos, la línea y el botón explican qué construir y dónde (🏰 Gestionar → 🔨 Mejoras).
 - 🏘️ Servicios ocupa el lugar del mercader y la posada: el 🛏️ Refugio, el 💱 Puesto de trueque y el 🧵 Taller que construyeron.
-- **🏰 Gestionar** junta lo que hace crecer y mantener el campamento, que antes eran sus 4 botones: **⬆️ Agrandar · 🔨 Mejoras · 🌾 Aportar comida** (desde el nivel 3) **· 🛡️ Gremio**, cada uno con su línea (cuánto cuesta agrandar, cuánto hay construido, la despensa). Sus pantallas vuelven a 🏰 Gestionar. Es la duda E-134.
+- **🏰 Gestionar** junta lo que hace crecer y mantener el campamento, que antes eran sus 4 botones: **⬆️ Mejorar campamento · 🔨 Mejoras · 🌾 Aportar comida** (desde el nivel 3) **· 🛡️ Gremio**, cada uno con su línea (nivel, etapa y zonas de su tope, cuánto hay construido, la despensa). Sus pantallas vuelven a 🏰 Gestionar. Es la duda E-134.
+- **⬆️ Mejorar campamento** (D-304, 0.41; antes ⬆️ Agrandar): tres líneas (nivel y etapa, zonas usadas de su tope y "⏫ Nivel N: x de y listos") y tres botones: **⏫ Siguiente nivel · 🗺️ Agrandar territorio · ↩️ Volver**. ⏫ y 🗺️ vuelven a ⬆️ Mejorar.
+  - **⏫ Siguiente nivel:** "Para subir a nivel N te falta:" con dos listas, 🏗️ Construir y 📦 Recursos (y 🏰 lo del castillo en el paso 8 → 9), cada línea con ✅ o ▫️. Botones (4 como mucho): 🤲 Aportar, 🔨 Mejoras, 🛡️ Gremio o 🌾 Aportar comida según lo que falte; 🌙 Noche de prueba si es lo único que falta; ⏫ Subir a nivel N cuando todo está ✅; y ↩️ Volver.
+  - **🗺️ Agrandar territorio:** zonas y tope, costo, el minimapa de 5 × 5 y una línea por zona libre ("1️⃣ ⬆️ Norte · (6, 1) · 🪵🪨"). Botones: una zona por botón con su número y dirección (de a 2 con ➡️ Más zonas, o de a 3), ↩️ Volver. Solo el fundador y los 🤝 asistentes tienen los botones de zona; los demás ven la pantalla con la línea de quién elige.
 - **Durante una oleada** que todavía no peleaste, 🛡️ Defender va primero en el centro y en 🏰 Gestionar (lo pendiente arriba, como en TowerWars); para no pasar de 8, 📜 Tablón sale del centro mientras dura (sigue en /encargos).
 
 ### 2.3 En otros lugares

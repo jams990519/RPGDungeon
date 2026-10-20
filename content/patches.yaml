@@ -790,3 +790,20 @@ v0_40:
     - "🏕️ Your camp shows only what you can do; the information (level, members, upgrades, next wave…) is in 🏰 Manage → ℹ️ Information."
     - "🛡️ The guild is tidier: its level and what's missing at the top; below, 👥 Members, 💰 Camp funds (each resource with its code), 📢 Chat (the last day's messages), ⚔️ Armory and 🔎 Find resources."
 
+
+v0_41:
+  version: "0.41"
+  title: "⏫ Lost Realms 0.41: sube de nivel tu campamento y elige hacia dónde crece"
+  title_en: "⏫ Lost Realms 0.41: level up your camp and choose where it grows"
+  notes:
+    - "⬆️ En 🏰 Gestionar, Agrandar ahora es ⬆️ Mejorar campamento, con dos botones: ⏫ Siguiente nivel y 🗺️ Agrandar territorio."
+    - "⏫ Siguiente nivel te muestra en una lista lo que falta para subir: qué obras tienen que estar construidas y qué materiales hacen falta. Cada línea se marca ✅ cuando está lista; todos aportan con 🤲 y, con lo último, el campamento sube solo."
+    - "🗺️ Agrandar territorio tiene un minimapa: eliges hacia dónde crece (norte, este…) viendo los recursos de cada zona. Cada etapa tiene su tope de zonas (campamento 3, aldea 5, pueblo 9, ciudad 15, castillo 25). Tus campamentos conservan su nivel y sus zonas."
+    - "🤝 Los ayudantes ahora se llaman asistentes: activan obras y eligen con el fundador hacia dónde crece el territorio. El fundador los nombra en 🛡️ Gremio → 👥 Miembros."
+    - "🔨 Todos los miembros ven las obras: las activas, las que están en obra, las que faltan activar y cuánto falta para el siguiente nivel."
+  notes_en:
+    - "⬆️ In 🏰 Manage, Expand is now ⬆️ Improve camp, with two buttons: ⏫ Next level and 🗺️ Expand territory."
+    - "⏫ Next level shows a list of what is missing to go up: which works must be built and which materials are needed. Each line gets a ✅ when it is done; everyone gives with 🤲 and, with the last thing, the camp goes up by itself."
+    - "🗺️ Expand territory has a mini-map: you choose where it grows (north, east…) seeing each zone's resources. Each stage has its zone cap (camp 3, village 5, town 9, city 15, castle 25). Your camps keep their level and their zones."
+    - "🤝 Helpers are now called assistants: they activate works and choose with the founder where the territory grows. The founder names them in 🛡️ Guild → 👥 Members."
+    - "🔨 Every member sees the works: the active ones, the ones being built, the ones still to activate and how much is missing for the next level."

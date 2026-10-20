@@ -1909,13 +1909,13 @@ camps:
   info: "🏕️ {name}, fundado por {founder}, en las coordenadas ({x}, {y}). Miembros: {n}."
   you_member: "Eres parte de este campamento."
   size: "📐 Nivel {level} · ocupa {zones} zona(s). En su territorio no te atacan al llegar, y el viaje cuenta la distancia desde su borde."
-  grow_cost: "⬆️ Agrandarlo suma 1 zona vecina que tú eliges y cuesta {items}. En tu territorio recolectas un 50 % más."
-  grow_button: "⬆️ Agrandar campamento"
-  grow_title: "⬆️ ¿Hacia dónde crece?"
-  grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."
-  grow_option: "({x}, {y}) {items}"
-  grow_more: "▶️ Ver más zonas"
-  stage_line: "🏰 Etapa: {stage}. Al crecer pasa a aldea, pueblo, ciudad y castillo."
+  grow_cost: "⬆️ Agrandarlo suma 1 zona vecina que tú eliges y cuesta {items}. En tu territorio recolectas un 50 % más."   # [ES] sin uso desde la 0.41 (D-304): ahora territory.info_line
+  grow_button: "⬆️ Agrandar campamento"   # [ES] sin uso desde la 0.41 (D-304): ahora improve.button
+  grow_title: "⬆️ ¿Hacia dónde crece?"   # [ES] sin uso desde la 0.41 (D-304)
+  grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."   # [ES] sin uso desde la 0.41 (D-304)
+  grow_option: "({x}, {y}) {items}"   # [ES] sin uso desde la 0.41 (D-304)
+  grow_more: "▶️ Ver más zonas"   # [ES] sin uso desde la 0.41 (D-304)
+  stage_line: "🏰 Etapa: {stage}. Al subir de nivel pasa a aldea, pueblo, ciudad y castillo."
   stage:
     campamento: "campamento"
     aldea: "aldea"
@@ -1923,11 +1923,11 @@ camps:
     ciudad: "ciudad"
     castillo: "castillo"
   grow_missing: "Para agrandarlo necesitas {items}."
-  chest_cost: "🪎 Cofre ×{n}"   # [ES] D-92: agrandar desde el nivel 6 también cuesta cofres
+  chest_cost: "🪎 Cofre ×{n}"   # [ES] D-92: subir desde el nivel 6 también cuesta cofres (D-304: lo pide ⏫ Siguiente nivel)
   chests_have: "🪎 Tienes {n} {n|cofre|cofres}. Se arman en el Claro, en 💰 Monedas (/monedas)."
-  grow_missing_chests: "🪎 Te faltan cofres: tienes {n} de {need}. Se arman en el Claro, en 💰 Monedas (/monedas)."
+  grow_missing_chests: "🪎 Te faltan cofres: tienes {n} de {need}. Se arman en el Claro, en 💰 Monedas (/monedas)."   # [ES] sin uso desde la 0.41 (D-304)
   grow_blocked: "No queda espacio libre alrededor para crecer."
-  grown: "⬆️ ¡El campamento creció! Ahora ocupa {zones} zonas (sumó ({x}, {y}))."
+  grown: "⬆️ ¡El campamento creció! Ahora ocupa {zones} zonas (sumó ({x}, {y}))."   # [ES] sin uso desde la 0.41 (D-304): ahora territory.grown
   land_line: "🏕️ Territorio de {name}"
   claro_land: "🔥 Territorio del Claro: aquí no te atacan al llegar."
   found_intro: "Aquí no hay campamento. Para fundar uno en ({x}, {y}) necesitas:"
@@ -1946,11 +1946,11 @@ camps:
   cancel_name: "❌ Cancelar"
   renamed: "✏️ Ahora tu campamento se llama {name}."
   rename_button: "✏️ Cambiar nombre"
-  members_cap: "👥 Miembros: {n} de {cap}. Al agrandarlo caben más."
+  members_cap: "👥 Miembros: {n} de {cap}. Al subir de nivel caben más."
   join_button: "🙋 Pedir unirme"
   join_sent: "🙋 Le pediste al fundador unirte. Te avisaré cuando responda."
   join_waiting: "⏳ Tu pedido para unirte espera la respuesta del fundador."
-  full: "Este campamento está lleno: tiene que crecer para que entre alguien más."
+  full: "Este campamento está lleno: tiene que subir de nivel para que entre alguien más."
   join_title: "🙋 Alguien quiere unirse a tu campamento"
   join_body: "{name} (nivel {level}) quiere unirse a {camp}. ¿Lo dejas entrar?"
   join_yes: "✅ Aceptar"
@@ -2083,7 +2083,7 @@ wallet:
   bags: "💰 Bolsas: {n}"
   bags_help: "Se cosen en el Claro con {items} y {coins}. Sirven para la doble especialización y para armar cofres."
   chests: "🪎 Cofres: {n}"   # [ES] D-92 (provisional)
-  chests_help: "Se arman en el Claro con {bags} 💰 {bags|bolsa|bolsas} y {items}. Pagan el crecimiento de los campamentos grandes (desde el nivel {level})."
+  chests_help: "Se arman en el Claro con {bags} 💰 {bags|bolsa|bolsas} y {items}. Los piden los campamentos grandes para subir de nivel (desde el nivel {level})."
   gems: "💎 Diamantes: {n}"
   gems_help: "Los diamantes se compran. Dan comodidades y cosméticos, nunca poder."
   cards: "🪪 Credenciales de oficio: {n}"

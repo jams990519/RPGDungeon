@@ -143,7 +143,7 @@ def test_raid_arrives_after_the_interval(service, clock):
     # D-192: 🛡️ Defender goes first in the hub and in 🏰 Gestionar; 📜 Tablón leaves only if they would pass 8 (D-291: with
     # 🛡️ Gremio in the hub they do; D-287: no 🔬 Investigar without the 📚 Biblioteca)
     assert [a.id for a in view.actions] == ["defend", "cook", "oficios", "trainer", "upsvc", "guild", "campmgmt", "dudas"]
-    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "grow", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["defend", "improve", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]   # D-304
     notices = pushes(service, "camp_raid")
     assert [acc for acc, _ in notices] == ["test:1"]
     assert [a.id for a in notices[0][1].actions] == ["defend"] and "nivel" in notices[0][1].body[0]
@@ -252,12 +252,12 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     camp_at_level(service, 8, ("test:1", "test:2"))
     guild_ready(service)
     service.act("test:2", "claro")
-    view = service.act("test:1", "grow")
-    assert view.kind == "camp_trial" and [a.id for a in view.actions] == ["trial", "claro"]
+    view = service.act("test:1", "lvltrial")                         # D-304: the 🌙 of ⏫ Siguiente nivel (before, ⬆️ Agrandar)
+    assert view.kind == "camp_trial" and [a.id for a in view.actions] == ["trial", "lvlup"]
     assert "castillo" in view.body[0] and "Noche de prueba" in view.body[0]
-    backpack = dict(service._load("test:1").backpack)
-    view = service.act("test:1", "claim:6:1")
-    assert view.kind == "camp_trial" and camp(service)["level"] == 8 and service._load("test:1").backpack == backpack
+    assert "▫️ 🌙 Ganar la Noche de prueba" in service.act("test:1", "lvlup").body
+    view = service.act("test:1", "lvlgo")
+    assert camp(service)["level"] == 8 and view.notice == "Todavía falta algo de la lista."
     set_rations(service, 0)                                          # empty pantry: cannot call it
     view = service.act("test:1", "trial")
     assert view.notice == service.texts.t("raids.trial_famine") and "trial" not in [a.id for a in view.actions]
@@ -265,7 +265,7 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     view = service.act("test:1", "trial")
     raid = camp(service)["raid"]
     assert view.notice == service.texts.t("raids.trial_sent") and raid["kind"] == "trial" and raid["required"] == 2
-    assert [a.id for a in view.actions] == ["defend", "claro"]
+    assert [a.id for a in view.actions] == ["defend", "lvlup"]
     assert sorted(acc for acc, _ in pushes(service, "camp_raid")) == ["test:1", "test:2"]
     # The enemy is an elite: the strongest of the biome with more life and attack.
     fight = service.act("test:1", "defend")
@@ -284,13 +284,13 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     assert not after.get("trial_won") and after["level"] == 8 and after["trial_retry_at"] > clock.now()
     assert service.store.get("pantry", KEY)["rations"] > 29          # a lost trial takes nothing
     assert "no ganó" in pushes(service, "camp_raid_end")[0][1].body[0]
-    view = service.act("test:1", "grow")
+    view = service.act("test:1", "lvltrial")
     assert "trial" not in [a.id for a in view.actions] and any("Se puede volver a convocar" in line for line in view.body)
     assert service.act("test:1", "trial").notice.startswith("⏳")
     clock.advance(2 * DAY)
     service.act("test:2", "claro")
-    view = service.act("test:1", "grow")
-    assert [a.id for a in view.actions] == ["trial", "claro"]       # retry after trial.retry_days
+    view = service.act("test:1", "lvltrial")
+    assert [a.id for a in view.actions] == ["trial", "lvlup"]       # retry after trial.retry_days
     service.act("test:1", "trial")
     for member in ("test:1", "test:2"):
         service.act(member, "defend")
@@ -299,11 +299,11 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     service.act("test:1", "claro")
     assert camp(service)["trial_won"] is True
     assert "ganó la Noche de prueba" in pushes(service, "camp_raid_end")[0][1].body[0]
-    view = service.act("test:1", "grow")
-    assert view.kind == "camp_grow"
-    claim = next(a.id for a in view.actions if a.id.startswith("claim:"))
-    place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # the usual cost (D-92)
-    service.act("test:1", claim)
+    record = service._upgrades(KEY)                                  # D-304: the works of the 8 → 9 checklist...
+    record["built"].update({"torres_arqueros": 0.0, "foso": 0.0})
+    service.store.put("upgrades", KEY, record)
+    place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # ...its materials (D-92)
+    service.act("test:1", "lvlgive")                                 # the last thing given: a castle at once
     assert camp(service)["level"] == 9 and any("castillo" in line for line in service.act("test:1", "campinfo").body)
 
 
@@ -317,7 +317,7 @@ def test_button_limits_during_raids(service, clock):
         view = service.act(account, "claro")
         assert len(view.actions) <= 8 and "defend" in [a.id for a in view.actions]      # D-192: the camp hub, up to 8
         assert ("rename" if account == "test:1" else "leave") not in [a.id for a in view.actions]
-        trial = service.act(account, "grow")                 # a weekly raid is on: no trial now, but Defender works
+        trial = service.act(account, "lvltrial")             # a weekly raid is on: no trial now, but Defender works
         assert trial.kind == "camp_trial" and len(trial.actions) <= 4 and "trial" not in [a.id for a in trial.actions]
     for _, view in service.tick():
         assert len(view.actions) <= 4 and all(len(a.id.encode()) <= 64 for a in view.actions)

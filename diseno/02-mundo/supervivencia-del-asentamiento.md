@@ -95,7 +95,7 @@ La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.
 - **El parte** les llega a todos los miembros, con la próxima incursión: una semana después de la anterior. Si el campamento estuvo quieto más de una semana, la semana se cuenta desde que vuelve alguien, para que nadie vuelva y se encuentre otra encima.
 
 **La Noche de prueba (para pasar del nivel 8 al 9, castillo).**
-- En el nivel 8, **⬆️ Agrandar campamento** muestra que castillo pide ganar la Noche de prueba, contra qué enemigo y cuántas victorias hacen falta.
+- En el nivel 8, **⬆️ Agrandar campamento** (desde la 0.41, D-304: la línea 🌙 de ⏫ Siguiente nivel, con su botón cuando es lo único que falta) muestra que castillo pide ganar la Noche de prueba, contra qué enemigo y cuántas victorias hacen falta.
 - Un miembro **en el campamento** la convoca con **🌙 Noche de prueba**, si la despensa no está vacía y no hay otra incursión en curso. Funciona como una incursión: aviso a los activos, 60 minutos, una pelea por miembro.
 - **El enemigo** es el **más fuerte del bioma** del campamento, con el nivel de la zona + 2, en versión **élite**: el doble de vida y un 30 % más de ataque, solo en esa pelea.
 - **Victorias necesarias:** la mitad de los miembros activos, redondeado hacia arriba, y **al menos 2**: el castillo se gana en conjunto.

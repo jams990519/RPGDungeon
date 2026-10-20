@@ -219,8 +219,8 @@ faq:
     q: 🏕️ How do I found my camp?
     a: 'Your 🛡️ guild founds it. The leader goes to a zone at Distance {camp_far} or more, explores it to 100% and knows {camp_known} of the 8 zones around it, with no other camp within {camp_gap} zones. {found_members} guild members must be there and the 💰 fund must hold {found_cost}. The leader taps 🏕️ Camp → 🏕️ Found camp here: it takes {found_minutes} min with {found_members} members present, less with more (never under {found_floor} min). The camp takes the guild''s name and every member gets an invitation.'
   d36:
-    q: ⬆️ How do I expand my camp?
-    a: 'In your camp: 🏰 Manage → ⬆️ Expand. Each level adds a zone to your territory and costs materials depending on the level; from level {chests_from}, also 🪎 chests. It goes from camp to village, town, city and castle.'
+    q: ⬆️ How do I level up or expand my camp?
+    a: 'In your camp: 🏰 Manage → ⬆️ Improve. ⏫ Next level shows a list of the works that must be built and the materials still missing (from level {chests_from}, also 🪎 chests); any member gives with 🤲 and it fills in. It goes from camp to village, town, city and castle. 🗺️ Expand territory adds a neighbouring zone: the founder or an 🤝 assistant chooses the direction, and each stage has its zone cap.'
   d37:
     q: 🙋 Who can join my camp?
     a: Another player goes to your camp and taps 🙋 Ask to join; you decide. There's room for {members_base} at the start and {members_step} more per level. Members share the upgrades, the pantry, the waves and the guild.
@@ -232,7 +232,7 @@ faq:
     a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers.'
   d40:
     q: 🔨 What are upgrades?
-    a: 'In 🏘️ Services the camp''s works are sorted by type (🏠 Homes, ⚒️ Crafts with one building per profession, 🛡️ Defenses, 📚 Knowledge). The founder or a 🤝 helper activates each work; then everyone sees what''s missing and contributes with 🤲 or from afar with 💰 Deposit until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
+    a: 'In 🏘️ Services the camp''s works are sorted by type (🏠 Homes, ⚒️ Crafts with one building per profession, 🛡️ Defenses, 📚 Knowledge). The founder or an 🤝 assistant activates each work; then everyone sees what''s missing and contributes with 🤲 or from afar with 💰 Deposit until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
   d41:
     q: 🔬 How do I research?
     a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'

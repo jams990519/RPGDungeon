@@ -200,7 +200,7 @@ gremio:
   invite_hint: "✉️ Para invitar a alguien, escribe /inv_ y su código de jugador (cada uno lo ve en 👤 Héroe). Por ejemplo: /inv_12345678."
   code_unknown: "No hay ningún jugador con el código {code}. Revisa el número: está en 👤 Héroe de cada jugador."
   code_self: "Ese es tu propio código: pásaselo a otro para que te invite."
-  code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador o un 🤝 ayudante de su campamento."
+  code_no_rights: "Para invitar con un código tienes que ser líder u oficial de un gremio, o el fundador o un 🤝 asistente de su campamento."
   cinv_title: "🏕️ Te invitan a un campamento"
   cinv_body: "{name} te invita a su campamento {camp}, en {place}. Si entras, quedas en su gremio."
 

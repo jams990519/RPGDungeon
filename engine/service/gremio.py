@@ -22,6 +22,11 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     (_guild_funds_view: cada recurso con su código de 📦 Recursos, en orden por código, y 💰 Depositar) y 📢 Chat
     (_guild_chat_view: los mensajes del último día, como mucho gremio.chat_shown y gremio.chat_max_chars letras, y 📢 Mensaje).
     La ⚔️ Armería muestra su "0/30" solo en su pantalla.
+    D-304 (0.41, pedido del dueño del 20-oct-2026: "dame la opción como dueño de gremio para agregar un asistente… que pueda
+    definir hacia dónde va a avanzar el territorio junto contigo"): en los textos, los 🤝 ayudantes se llaman asistentes (los
+    ids no cambian: "helpers", "ghelp:"); además de activar obras, invitar y responder solicitudes, eligen hacia dónde crece el
+    territorio (game.py _grow_view/_grow_camp, con _camp_manager). En 👥 Miembros el fundador ve cuántos tiene y cómo nombrar
+    uno (_helpers_founder_line).
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -627,7 +632,8 @@ class GremioMixin:
 
         [ES] Qué hace: lo que 🛡️ Gremio mostraba de los miembros después de fundar (D-291, D-289, D-294; pedido del dueño del
         20-oct-2026: "toda la información de los miembros dentro de ese botón. Esperando lugar en el campamento, lo mismo"):
-        "👥 Miembros: N de cupo", la línea de 🤝 ayudantes, cada miembro con su código (/m1), 👑 el fundador y 🤝 los ayudantes,
+        "👥 Miembros: N de cupo", la línea de 🤝 ayudantes (D-304, 0.41: en los textos, asistentes; al fundador le dice cómo
+        nombrarlos, _helpers_founder_line), cada miembro con su código (/m1), 👑 el fundador y 🤝 los ayudantes,
         si está en línea, dónde está y qué hace, el bloque "⏳ Esperando lugar en el campamento" (sus códigos siguen después de
         los miembros; al fundador y a los ayudantes, cuántos lugares hay para unirlos), la pista de los códigos y, al fundador
         o a un ayudante con lugar, la de /inv_. Botones: 🙋 Solicitudes (fundador o ayudante, si hay) y ↩️ Volver al gremio.
@@ -636,7 +642,9 @@ class GremioMixin:
         t = self.texts
         n, cap = len(camp["members"]), self._members_cap(camp)
         manager = self._camp_manager(camp, hero.id)
-        body = [t.t("guild.members", n=n, cap=cap), self._helpers_line(camp, hero), ""]     # D-289: 🤝 helpers
+        helpers_line = (self._helpers_founder_line(camp, hero) if hero.id == camp.get("founder_id")    # D-304: how to name one
+                        else self._helpers_line(camp, hero))
+        body = [t.t("guild.members", n=n, cap=cap), helpers_line, ""]     # D-289: 🤝 helpers (assistants in the texts)
         members = self._camp_member_order(hero, camp)
         body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
         body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
@@ -2113,7 +2121,8 @@ class GremioMixin:
         [ES] Qué hace: dice si esa cuenta manda en el campamento: el fundador o un ayudante que sigue siendo miembro. Renombrar,
         nombrar ayudantes y crear el gremio D-97 siguen siendo solo del fundador. La llaman: game.py (_give_to_work,
         _activate_work, _stop_work, _works_entries, _services_view, _service_type_view, _upgrades_view, _guild_view,
-        _answer_join) y aquí (_invite_code, _camp_requests_view). Si cambia, afecta: quién activa obras e invita."""
+        _answer_join, y desde D-304 _grow_view y _grow_camp: eligen hacia dónde crece el territorio) y aquí (_invite_code,
+        _camp_requests_view). Si cambia, afecta: quién activa obras, invita y agranda el territorio."""
         if not camp or account not in camp.get("members", []):
             return False
         return account == camp.get("founder_id") or account in self._camp_helpers(camp)
@@ -2132,6 +2141,22 @@ class GremioMixin:
             return t.t("helpers.none", cap=cap)
         names = ", ".join(hero.name if h == hero.id else self._hero_name(h) for h in helpers)
         return t.t("helpers.line", n=len(helpers), cap=cap, names=names)
+
+    def _helpers_founder_line(self, camp: dict[str, Any], hero: Hero) -> str:
+        """The founder's 🤝 line in 👥 Miembros: "Asistentes: n de cap — tap a member's code" (D-304), or that they come later.
+
+        [ES] Qué hace: al fundador le dice cuántos 🤝 asistentes tiene de su tope (_helpers_cap) y cómo nombrar uno (tocar el código
+        /m2 de un miembro y elegir 🤝 Hacer asistente, en su tarjeta: _camp_member_view); con el fundador solo, que con más
+        miembros podrá nombrar uno. Pedido del dueño del 20-oct-2026: "dame la opción como dueño de gremio para agregar un
+        asistente". La llama: _camp_members_view. Si cambia, afecta: tests/test_ayudantes.py y tests/test_agrandar_territorio.py.
+        """
+        t = self.texts
+        cap = self._helpers_cap(camp)
+        if len(camp.get("members", [])) <= 1:
+            return t.t("helpers.founder_alone", cap=cap)
+        helpers = self._camp_helpers(camp)
+        names = t.t("helpers.founder_names", names=", ".join(self._hero_name(h) for h in helpers)) if helpers else ""
+        return t.t("helpers.founder_line", n=len(helpers), cap=cap, names=names)
 
     def _camp_member_line(self, n: int, account: str, camp: dict[str, Any], hero: Hero) -> str:
         """A camp member's line in 🛡️ Gremio (D-291): /m1, 👑 the founder or 🤝 a helper, online, where and doing what."""
@@ -2645,8 +2670,8 @@ class GremioMixin:
 
         [ES] Qué hace: el aviso de que hay lugar (D-294): a quien espera ("el fundador o un ayudante te une") y al fundador y sus
         ayudantes ("únelos desde 🛡️ Gremio"). Se avisa una vez por cada cambio de lugares libres ("room_told" del campamento),
-        nunca une a nadie solo. La llaman: game.py (_leave_camp, _grow_camp, _rise_guild, _complete_work, _place_furniture,
-        _guild_view) y aquí (_wait_invite_answer, _camp_join_waiting, _works_settle_camp). Si cambia, afecta: los avisos."""
+        nunca une a nadie solo. La llaman: game.py (_leave_camp, _level_up (D-304; antes _grow_camp), _rise_guild, _complete_work,
+        _place_furniture, _guild_view) y aquí (_wait_invite_answer, _camp_join_waiting, _works_settle_camp). Si cambia, afecta: los avisos."""
         t = self.texts
         camp = self.store.get("camp", key)
         if not camp:

@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0)**; la escalera de etapas (§2 a §7) todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304)**; la escalera de etapas (§2 a §7) todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -27,9 +27,27 @@ El 18-oct el dueño cambió el primer escalón: "hay que empezar a crear los gru
 
 - **🏘️ Servicios por tipo (D-288):** un botón por tipo de obra: 🏠 Casas (pozo, refugio, granero, ahumadero, cabañas, huerto, enfermería), ⚒️ Oficios (fogón, puesto de trueque y un edificio por oficio), 🛡️ Defensas y 📚 Saber (biblioteca). Cada tipo muestra lo construido con su botón de uso, las obras activas con lo que falta y las que esperan que las activen.
 - **Un edificio por oficio (D-288):** 🪚 Aserradero, 🧶 Tejeduría y 🗿 Cantería (nivel 1); 🪣 Curtiduría, 💧 Alambique y 🏭 Fundición (2); 🪑 Carpintería y 🪡 Sastrería (3); 🦺 Peletería, ⚗️ Laboratorio de alquimia y 🩺 Botica (4); 🔨 Forja y 💍 Joyería (5). El 🧵 Taller y la Herrería se retiraron: quien ya los tenía conserva todas sus estaciones.
-- **Obras que se activan (D-291):** todos ven las obras del nivel de su campamento; solo el fundador o un 🤝 ayudante toca ▶️ Activar (o ⏹️ Quitar, si nadie le dio nada), y todos aportan a las activas. Lo que estaba empezado antes de la 0.39 quedó activo solo.
+- **Obras que se activan (D-291):** todos ven las obras del nivel de su campamento; solo el fundador o un 🤝 asistente (antes "ayudante", D-304) toca ▶️ Activar (o ⏹️ Quitar, si nadie le dio nada), y todos aportan a las activas. Lo que estaba empezado antes de la 0.39 quedó activo solo.
 - **Lo que no es de tu nivel no se ve (D-287):** las obras de niveles más altos, 🔬 Investigar sin 📚 Biblioteca y los avisos de "se abre al nivel X" ya no aparecen.
 - **Cada obra nueva cuesta más (D-295):** un 15 % más por cada obra ya construida, con el precio fijo al activarla.
+
+## 0.2 ⬆️ Mejorar campamento desde la 0.41 (D-304)
+
+El dueño pidió (20-oct): "ponme en el botón de mejorar dos opciones: una, siguiente nivel, y dos, agrandar territorio… debes de construir esto, esto y esto a tal nivel para poder pasar al siguiente nivel, más los recursos que sean necesarios, en formato de lista. Y se va a ir completando". Y, el mismo día: "cada mejora debe ser visible para todos los miembros… dame la opción como dueño de gremio para agregar un asistente… que pueda definir hacia dónde va a avanzar el territorio junto contigo".
+
+- **El nivel y las zonas van por separado.** Antes cada ⬆️ Agrandar sumaba 1 nivel y 1 zona (nivel = zonas, D-81). Ahora el nivel sube con ⏫ Siguiente nivel y las zonas con 🗺️ Agrandar territorio. Los campamentos de antes conservan su nivel y sus zonas (D-64).
+- **🏰 Gestionar → ⬆️ Mejorar campamento:** el nivel y la etapa, las zonas usadas de su tope y cuántos requisitos del nivel siguiente están listos; dos botones: ⏫ Siguiente nivel y 🗺️ Agrandar territorio.
+- **⏫ Siguiente nivel:** "Para subir a nivel N te falta:" y una lista con ✅ (listo) o ▫️ (falta) que se va llenando:
+  - 🏗️ **Construir:** las obras que tienen que estar construidas (las elige Claude, provisional, `camps.level_up`; cada una es del nivel que el campamento ya tiene, así se ve y se activa). Si no, dice si está 🏗️ en obra, 🔨 activa o ⏸️ sin activar.
+  - 📦 **Recursos:** 🪵 30, 🪨 20 y 🌿 10 por el nivel actual, con lo aportado (por ejemplo "🪵 Madera 12/30"); desde el nivel 6, 🪎 cofres (D-92: 1, 2 y 3; antes los pedía agrandar).
+  - 🏰 **Para castillo (8 → 9):** el gremio listo (D-97), las 15 mejoras construidas (D-101) y la 🌙 Noche de prueba ganada (D-99, con su botón cuando es lo único que falta).
+  - 🌾 Con la despensa vacía, una línea más: el campamento no sube (D-93).
+  - Cualquier miembro aporta con **🤲 Aportar** (lo que hay en el 💰 fondo del campamento va primero; nunca toma de más; da experiencia, mérito y 🏗️ Construcción como las obras). Si el último aporte completa la lista, el campamento **sube en ese momento**; si lo último fue terminar una obra, cualquier miembro toca **⏫ Subir a nivel N**. Al subir se avisa a todos y caben 2 miembros más. En castillo todavía no hay otro nivel.
+- **🗺️ Agrandar territorio:** las zonas usadas de su tope, el costo (de tu mochila: lo de antes, 🪵15 🪨10 🌿5, por las zonas que ya tiene, sin cofres), un **minimapa de 5 × 5** centrado en el campamento (🏕️ el centro, 🟩 lo tuyo, 1️⃣ 2️⃣ las zonas de esta página, 🔸 otras libres, ⬛ de otro) y una línea por zona libre con su **dirección** (⬆️ Norte, ↗️ Noreste… el norte suma a la y) y los recursos que conoces. **La eligen el fundador o un 🤝 asistente**; los demás ven todo. Sumar una zona no sube el nivel.
+- **Tope de zonas por etapa** (la tabla de E-218, confirmada): campamento **3** · aldea **5** · pueblo **9** · ciudad **15** · castillo **25**. Al tope: "sube de nivel para agrandar más". Quien ya tenía más, las conserva.
+- **🤝 Asistentes:** el ayudante de D-289 se llama asistente en los textos (1 cada 5 miembros, como antes). Activa obras, elige hacia dónde crece el territorio, invita y acepta solicitudes. En 🛡️ Gremio → 👥 Miembros el fundador ve cuántos tiene y cómo nombrar uno (tocar el código /m2 de un miembro → 🤝 Hacer asistente).
+- **Todo visible para todos:** 🔨 Mejoras nombra a cada miembro las obras de su nivel que siguen sin activar, muestra las activas con su barra y las 🏗️ en obra con su tiempo, y dice "⏫ Nivel N: x de y listos". La lista de ⏫ la ve cualquier miembro.
+- **Dónde está:** `engine/service/game.py` (`_improve_view`, `_lvlup_rows`, `_lvlup_view`, `_lvlup_give`, `_lvlup_go`, `_level_up`, `_grow_view`, `_grow_camp`, `_territory_map`), `engine/service/gremio.py` (`_helpers_founder_line`); los números en `content/balance.yaml` (`camps.level_up`, `level_up_cost_per_level`, `zones_by_stage`, `territory_map_radius`, `grow_cost_per_level`, `chests_*`); los textos en `content/locales/es_nivel.yaml` y `en_nivel.yaml`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md).
 
 ## 1. Lo decidido
 
@@ -142,7 +160,7 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 | Solo el fundador acepta (`_answer_join`, D-84) | El líder y los oficiales |
 | Nadie sale si no quiere (regla 10) | Sale a los 30 días sin jugar |
 | Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | 40 activos, la Noche con 10 vencedores distintos y 5 oleadas crecientes (D-122) |
-| Cada nivel suma 1 zona, sin tope (D-81, `_grow_camp`) | Las zonas de muralla de cada etapa (P-229) |
+| Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
 | +50 % al recolectar en tu territorio (`gather.own_land_bonus`) | La tierra cosecha sola para el asentamiento (P-227, P-228) |
 | No hay grupos | Grupo de 5 que nace al construir; escuadras dentro del gremio |
 
@@ -171,7 +189,7 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 
 - **P-227 (E-216):** cuánto cosecha cada zona y a dónde va. Recomendado: 20 %, al almacén, con actividad y con tope de 7 días.
 - **P-228 (E-217):** si la cosecha reemplaza el +50 % de hoy. Recomendado: sí.
-- **P-229 (E-218):** cuántas zonas cierra la muralla por etapa. Recomendado: la tabla del §2.
+- **P-229 (E-218):** ✅ Decidido (D-304): la tabla del §2 (en el juego, desde la 0.41, como tope de zonas del territorio hasta castillo).
 - **Siguen de antes:**
   - P-224, la Academia o la Biblioteca;
   - P-79 / E-56, las oleadas del castillo;

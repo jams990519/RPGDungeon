@@ -1168,6 +1168,29 @@ El jefe de la chica se gana como el de un 👹 campamento enemigo (85-97 %), con
 
 **Lo que queda por mirar:** si conocer el mapa entre todos hace demasiado fácil encontrar los nodos y recursos raros; cuántos jugadores usan 🗺️ Zonas del gremio.
 
+### Octubre de 2026 (20-oct): ⏫ Siguiente nivel y 🗺️ Agrandar territorio (0.41, D-304)
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `camps.grow_cost_per_level` | 🪵15 🪨10 🌿5 × el nivel; cada vez sumaba 1 nivel y 1 zona | el mismo número × las zonas que ya tiene; suma solo 1 zona (para un campamento de antes, el mismo precio: su nivel era igual a sus zonas) |
+| `camps.zones_by_stage` (nuevo) | — sin tope (1 zona por nivel) | campamento 3 · aldea 5 · pueblo 9 · ciudad 15 · castillo 25 (la tabla de E-218, confirmada por el dueño) |
+| `camps.level_up` (nuevo) | — subir era agrandar | las obras construidas que pide cada nivel: 2 🔥 Fogón y 🪵 Empalizada · 3 🗼 Torre de vigía y ⛲ Pozo · 4 Refugio, Granero y Trampas · 5 Ahumadero, Perrera y Cabañas · 6 Muralla y Huerto · 7 Braseros · 8 Enfermería y Biblioteca · 9 Torres de arqueros y Foso (Claude, provisional) |
+| `camps.level_up_cost_per_level` (nuevo) | — | 🪵30 🪨20 🌿10 × el nivel actual (de 1 a 9: 1.080 de madera, 720 de piedra y 360 de fibra) (Claude, provisional) |
+| `camps.chests_from_level` / `chests_per_level` | 6 / 1, los pagaba quien agrandaba | los mismos números; ahora los pide ⏫ Siguiente nivel y los aportan todos con 🤲 (6 cofres hasta castillo, como antes) |
+| `camps.territory_map_radius` (nuevo) | — | 2: el minimapa de 🗺️ Agrandar territorio es de 5 × 5 (Claude) |
+
+**Qué cambia al jugar.**
+
+- Subir de nivel ya no es pagar y listo: pide construir antes las obras de la lista (17 obras nombradas hasta castillo, de 1 a 3 por nivel; el castillo ya pedía 15 construidas) y materiales que pone todo el campamento.
+- Hasta castillo, sumando los dos caminos (el nivel y 24 zonas más), son unas 5.580 maderas, 3.720 piedras y 1.860 fibras. Antes eran 560, 370 y 180 para 9 zonas y el nivel 9.
+- Un campamento de nivel 1 puede tener 3 zonas sin subir de nivel; uno de aldea, 5.
+
+**Lo que queda por mirar:**
+
+- Si las obras de la lista traban a los campamentos chicos (la Biblioteca del nivel 7 es cara).
+- Si 25 zonas a 15 × zonas cada una es demasiado caro al final (la 25.ª cuesta 🪵360).
+- Si conviene que la muralla de D-254 use el mismo tope.
+
 ### Octubre de 2026 (20-oct): el chat del gremio (0.40, D-302)
 
 | Número | Antes | Ahora |

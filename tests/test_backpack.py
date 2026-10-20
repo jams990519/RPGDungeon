@@ -143,43 +143,55 @@ def _camp_at_level(service, level, chests=0):
     place(service, "test:1", 6, 0, chests=chests, backpack={"madera": 500, "piedra": 500, "fibra": 500})
 
 
+def build(service, *uids):
+    record = service._upgrades("6:0")
+    record["built"].update({uid: 0.0 for uid in uids})
+    service.store.put("upgrades", "6:0", record)
+
+
 def test_chest_cost_by_level(service):
+    # [ES] D-92; D-304 (0.41): los 🪎 cofres los pide ⏫ Siguiente nivel; 🗺️ Agrandar territorio ya no pide cofres
     assert [service._grow_chests(level) for level in (1, 5, 6, 7, 8, 9)] == [0, 0, 1, 2, 3, 4]
-    assert "🪎" not in service._grow_cost_text(5)
-    assert service._grow_cost_text(6).endswith("🪎 Cofre ×1")
+    assert "🪎" not in service._grow_cost_text(5) and "🪎" not in service._grow_cost_text(6)
 
 
-def test_growing_from_level_five_needs_no_chest(service):
+def test_going_up_from_level_five_needs_no_chest(service):
     _camp_at_level(service, 5)
-    view = service.act("test:1", "claim:6:1")
-    assert service.store.get("camp", "6:0")["level"] == 6 and "creció" in view.notice
+    assert not any("🪎" in line for line in service.act("test:1", "lvlup").body)
+    view = service.act("test:1", "claim:6:1")                              # the territory never asks chests (D-304)
+    camp = service.store.get("camp", "6:0")
+    assert camp["level"] == 5 and len(camp["zones"]) == 6 and "creció" in view.notice
 
 
-def test_growing_from_level_six_needs_one_chest(service):
+def test_going_up_from_level_six_needs_one_chest(service):
     _camp_at_level(service, 6)
-    view = service.act("test:1", "grow")
-    assert view.kind == "camp_grow" and "🪎 Cofre ×1" in view.body[0] and len(view.actions) <= 4
+    view = service.act("test:1", "lvlup")
+    assert view.kind == "camp_lvlup" and "▫️ 🪎 Cofres 0/1" in view.body and len(view.actions) <= 4
     assert "🪎 Tienes 0 cofres. Se arman en el Claro, en 💰 Monedas (/monedas)." in view.body
-    view = service.act("test:1", "claim:6:1")
+    build(service, "braseros")                                              # the work of the 6 → 7 checklist
+    view = service.act("test:1", "lvlgive")                                # the materials go in; the chest is missing
     hero = service._load("test:1")
-    assert service.store.get("camp", "6:0")["level"] == 6                  # refused: nothing paid
-    assert "🪎 Cofre ×1" in view.notice and "tienes 0 de 1" in view.notice
-    assert hero.backpack["madera"] == 500
+    assert service.store.get("camp", "6:0")["level"] == 6 and "▫️ 🪎 Cofres 0/1" in view.body
+    assert hero.backpack["madera"] == 500 - 30 * 6
+    assert service.act("test:1", "lvlgive").notice == "No llevas nada de lo que falta: 🪎 Cofre ×1."
     place(service, "test:1", 6, 0, chests=1)
-    view = service.act("test:1", "claim:6:1")
+    view = service.act("test:1", "lvlgive")
     hero = service._load("test:1")
     assert service.store.get("camp", "6:0")["level"] == 7 and hero.chests == 0
-    assert hero.backpack["madera"] == 500 - 15 * 6 and len(view.actions) <= 8      # D-192: the camp hub, up to 8
+    assert "🪎 Aportaste 1 cofre" in view.notice and len(view.actions) <= 4
+    service.act("test:1", "claim:6:1")                                     # 🗺️ costs materials only, × the zones
+    assert service._load("test:1").chests == 0 and service._load("test:1").backpack["madera"] == 500 - 30 * 6 - 15 * 6
 
 
-def test_growing_from_level_seven_needs_two_chests(service):
+def test_going_up_from_level_seven_needs_two_chests(service):
     _camp_at_level(service, 7, chests=1)
-    view = service.act("test:1", "claim:6:1")
-    assert service.store.get("camp", "6:0")["level"] == 7 and "tienes 1 de 2" in view.notice
-    assert service._load("test:1").chests == 1
+    build(service, "enfermeria", "biblioteca")
+    view = service.act("test:1", "lvlgive")
+    assert service.store.get("camp", "6:0")["level"] == 7 and "▫️ 🪎 Cofres 1/2" in view.body
+    assert service._load("test:1").chests == 0                             # what you give stays given (D-64)
     place(service, "test:1", 6, 0, chests=3)
-    service.act("test:1", "claim:6:1")
-    assert service.store.get("camp", "6:0")["level"] == 8 and service._load("test:1").chests == 1
+    service.act("test:1", "lvlgive")
+    assert service.store.get("camp", "6:0")["level"] == 8 and service._load("test:1").chests == 2
 
 
 def test_empty_pantry_still_blocks_growth_before_chests(service):
@@ -206,7 +218,7 @@ def test_camp_stage_line_reads_well(service):
     make_hero(service)
     found_at(service, "test:1", 6, 0)
     body = service.act("test:1", "campinfo").body                            # D-302: in 🏰 Gestionar → ℹ️ Información
-    assert "🏰 Etapa: campamento. Al crecer pasa a aldea, pueblo, ciudad y castillo." in body
+    assert "🏰 Etapa: campamento. Al subir de nivel pasa a aldea, pueblo, ciudad y castillo." in body   # D-304
     assert not any("Es un" in line for line in body)
 
 

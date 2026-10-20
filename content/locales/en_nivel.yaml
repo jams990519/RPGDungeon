@@ -1,0 +1,87 @@
+# Texts of the 0.41 camp patch (D-304), in English: ⬆️ Improve camp with ⏫ Next level (a checklist that fills in) and
+# 🗺️ Expand territory (a mini-map and 8 directions, up to the zones of each stage), what every member sees in 🔨 Upgrades and the
+# 🤝 assistants line of 👥 Members.
+# [ES] Los textos de es_nivel.yaml en inglés (D-250): las mismas claves, los mismos huecos {nombre} y plurales
+# (tools/check_locales.py). Lo leen engine/service/game.py y engine/service/gremio.py, como a es_nivel.yaml.
+
+improve:
+  button: "⬆️ Improve camp"
+  title: "⬆️ Improve {name}"
+  manage_line: "⬆️ Improve: level {level} ({stage}) · 🗺️ {zones}/{cap} zones. Go up a level or expand the territory."
+  level_line: "🏕️ Level {level} · {stage}"
+  zones_line: "🗺️ Zones: {zones} of {cap}"
+  next_line: "⏫ Level {level}: {done} of {total} ready"
+  lvlup_button: "⏫ Next level"
+  grow_button: "🗺️ Expand territory"
+
+lvlup:
+  title: "⏫ Next level"
+  intro: "⏫ To reach level {level} ({stage}) you still need:"
+  ready: "⏫ Everything is ready to reach level {level} ({stage})!"
+  works_title: "🏗️ Build:"
+  items_title: "📦 Resources:"
+  work_line: "{name}{state}"
+  state_building: " · 🏗️ being built"
+  state_active: " · 🔨 active"
+  state_idle: " · ⏸️ not active"
+  item_line: "{emoji} {item} {have}/{need}"
+  chest_line: "🪎 Chests {have}/{need}"
+  trial_line: "🌙 Win the Trial Night"
+  famine_line: "🌾 Fill the pantry: while it is empty, the camp cannot go up"
+  fund_hint: "💰 When you tap 🤲 Give, the fund puts in {items} first."
+  gives: "Going up: 👥 +{members} places, new works and 🗺️ up to {zones} zones."
+  give_button: "🤲 Give"
+  go_button: "⏫ Go up to level {level}"
+  trial_button: "🌙 Trial Night"
+  name: "⏫ Level {level}"
+  chests_given: "🪎 You gave {n} {n|chest|chests} to {name}."
+  nothing: "You carry nothing of what is missing: {items}."
+  materials_done: "The materials are in: the rest of the list is missing."
+  not_ready: "Something on the list is still missing."
+  done: "⏫ {camp} reached level {level} ({stage})! More members fit, there are new works and the territory goes up to {zones} zones."
+  push_title: "⏫ Your camp went up a level"
+  push: "⏫ {hero} took {camp} to level {level} ({stage})."
+  top: "🏰 Your camp became a {stage}: there is no higher level yet."
+
+territory:
+  title: "🗺️ Expand territory"
+  header: "🗺️ Zones: {zones} of {cap} ({stage})"
+  cost: "Each new zone costs {items}, from your backpack."
+  hint: "Look at the resources you know in each one: choose wisely."
+  managers_only: "🤝 The founder or an assistant chooses the direction."
+  at_cap: "You reached your level's zone cap: go up a level to expand more."
+  own_mark: "🟩"
+  free_mark: "🔸"
+  taken_mark: "⬛"
+  empty_mark: "▫️"
+  legend_center: "{mark} center"
+  legend_own: "🟩 your territory"
+  legend_pick: "1️⃣ to choose"
+  legend_free: "🔸 free (➡️ More zones)"
+  legend_taken: "⬛ someone else's"
+  option: "{n} {dir} · ({x}, {y}) · {items}"
+  option_button: "{n} {dir}"
+  more: "➡️ More zones"
+  page: "Page {n} of {total}"
+  grown: "🗺️ The territory grew to the {dir}! It now has {zones} of {cap} zones (added ({x}, {y}))."
+  grown_push: "🗺️ {hero} expanded {camp} to the {dir}: added ({x}, {y}) and it has {zones} of {cap} zones."
+  info_line: "🗺️ Expanding the territory adds 1 neighbouring zone (up to {cap} at this stage) and costs {items}. In your territory you gather 50 % more."
+  dir:
+    n: "⬆️ North"
+    ne: "↗️ Northeast"
+    e: "➡️ East"
+    se: "↘️ Southeast"
+    s: "⬇️ South"
+    sw: "↙️ Southwest"
+    w: "⬅️ West"
+    nw: "↖️ Northwest"
+
+upgrades:
+  idle_names: "⏸️ Not active: {names} (the founder or an 🤝 assistant activates them)."
+  idle_names_manager: "▶️ To activate in 🏘️ Services: {names}."
+  lvlup_line: "⏫ Level {level}: {done} of {total} ready (⬆️ Improve → ⏫ Next level)."
+
+helpers:
+  founder_line: "🤝 Assistants: {n} of {cap}{names} — tap a member's code (/m2) and choose 🤝 Make assistant."
+  founder_names: ": {names}"
+  founder_alone: "🤝 Assistants: 0 of {cap}. When another member joins, you can name them assistant."
