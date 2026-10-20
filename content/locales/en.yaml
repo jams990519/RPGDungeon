@@ -2442,13 +2442,13 @@ camps:
   info: '🏕️ {name}, founded by {founder}, at coordinates ({x}, {y}). Members: {n}.'
   you_member: You're part of this camp.
   size: 📐 Level {level} · covers {zones} zone(s). In its territory you aren't attacked on arrival, and travel counts the distance from its edge.
-  grow_cost: ⬆️ Expanding it adds 1 neighboring zone of your choice and costs {items}. In your territory you gather 50% more.
-  grow_button: ⬆️ Expand camp
-  grow_title: ⬆️ Which way does it grow?
-  grow_intro: 'Choose which neighboring zone your camp takes. It costs {items}. Check the resources you know in each one: choose strategically.'
-  grow_option: ({x}, {y}) {items}
-  grow_more: ▶️ See more zones
-  stage_line: '🏰 Stage: {stage}. As it grows it becomes a village, town, city and castle.'
+  grow_cost: ⬆️ Expanding it adds 1 neighboring zone of your choice and costs {items}. In your territory you gather 50% more.   # [ES] sin uso desde la 0.41 (D-304)
+  grow_button: ⬆️ Expand camp   # [ES] sin uso desde la 0.41 (D-304)
+  grow_title: ⬆️ Which way does it grow?   # [ES] sin uso desde la 0.41 (D-304)
+  grow_intro: 'Choose which neighboring zone your camp takes. It costs {items}. Check the resources you know in each one: choose strategically.'   # [ES] sin uso desde la 0.41 (D-304)
+  grow_option: ({x}, {y}) {items}   # [ES] sin uso desde la 0.41 (D-304)
+  grow_more: ▶️ See more zones   # [ES] sin uso desde la 0.41 (D-304)
+  stage_line: '🏰 Stage: {stage}. As it levels up it becomes a village, town, city and castle.'
   stage:
     campamento: camp
     aldea: village
@@ -2458,9 +2458,9 @@ camps:
   grow_missing: To expand it you need {items}.
   chest_cost: 🪎 Chest ×{n}
   chests_have: 🪎 You have {n} {n|chest|chests}. They're built in the Clearing, in 💰 Coins (/coins).
-  grow_missing_chests: '🪎 You''re short on chests: you have {n} of {need}. They''re built in the Clearing, in 💰 Coins (/coins).'
+  grow_missing_chests: '🪎 You''re short on chests: you have {n} of {need}. They''re built in the Clearing, in 💰 Coins (/coins).'   # [ES] sin uso desde la 0.41 (D-304)
   grow_blocked: There's no free space left around it to grow.
-  grown: ⬆️ The camp grew! It now covers {zones} zones (added ({x}, {y})).
+  grown: ⬆️ The camp grew! It now covers {zones} zones (added ({x}, {y})).   # [ES] sin uso desde la 0.41 (D-304)
   land_line: 🏕️ Territory of {name}
   claro_land: '🔥 Clearing territory: you aren''t attacked on arrival here.'
   found_intro: 'There''s no camp here. To found one at ({x}, {y}) you need:'
@@ -2479,11 +2479,11 @@ camps:
   cancel_name: ❌ Cancel
   renamed: ✏️ Your camp is now called {name}.
   rename_button: ✏️ Change name
-  members_cap: '👥 Members: {n} of {cap}. Expanding it makes room for more.'
+  members_cap: '👥 Members: {n} of {cap}. Leveling it up makes room for more.'
   join_button: 🙋 Ask to join
   join_sent: 🙋 You asked the founder to join. I'll let you know when they answer.
   join_waiting: ⏳ Your request to join is waiting for the founder's answer.
-  full: 'This camp is full: it has to grow for anyone else to join.'
+  full: 'This camp is full: it has to level up for anyone else to join.'
   join_title: 🙋 Someone wants to join your camp
   join_body: '{name} (level {level}) wants to join {camp}. Do you let them in?'
   join_yes: ✅ Accept
@@ -2613,7 +2613,7 @@ wallet:
   bags: '💰 Bags: {n}'
   bags_help: They're sewn in the Clearing with {items} and {coins}. They're used for dual specialization and for building chests.
   chests: '🪎 Chests: {n}'
-  chests_help: They're built in the Clearing with {bags} 💰 {bags|bag|bags} and {items}. They pay for growing large camps (from level {level}).
+  chests_help: They're built in the Clearing with {bags} 💰 {bags|bag|bags} and {items}. Large camps need them to level up (from level {level}).
   gems: '💎 Diamonds: {n}'
   gems_help: Diamonds are bought. They give comforts and cosmetics, never power.
   cards: '🪪 Profession credentials: {n}'

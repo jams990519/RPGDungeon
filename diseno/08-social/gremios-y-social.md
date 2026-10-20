@@ -63,7 +63,7 @@ Para subir, el gremio tiene que juntar, **entre todos sus miembros y después de
 ### 0.4 El castillo
 
 - Para que un campamento pase de ciudad a **castillo** (del nivel 8 al 9) hace falta, además de lo de siempre (los materiales y una despensa que no esté vacía), un **gremio de nivel 5 o más con 10 miembros o más** (`guild.castle_min_level`, `guild.castle_min_members`). **Sin gremio, un campamento se queda en ciudad.**
-- La pantalla **⬆️ Agrandar campamento** muestra esos requisitos con ✅ y ▫️ y, si falta algo, no deja elegir zona.
+- La pantalla **⬆️ Agrandar campamento** muestra esos requisitos con ✅ y ▫️ y, si falta algo, no deja elegir zona. Desde la 0.41 (D-304) son líneas de **⏫ Siguiente nivel** (⬆️ Mejorar campamento): agrandar el territorio ya no sube el nivel ni pide el gremio, y en castillo todavía no hay otro nivel.
 - Solo se pide en ese paso: un castillo sigue creciendo después del nivel 9 sin pedir nada nuevo.
 
 ### 0.5 Pantallas

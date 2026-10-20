@@ -321,6 +321,7 @@ def test_camp_defense_sums_the_built_defenses(service):
 
 
 def test_castle_needs_fifteen_improvements(service):
+    # [ES] D-304 (0.41): lo que pide el castillo son líneas de ⏫ Siguiente nivel (antes, de ⬆️ Agrandar)
     make_hero(service, "test:1", "Lyra")
     cfg = service.content.balance["guild"]
     castle = next(s["from_level"] for s in service.content.balance["camps"]["stages"] if s["id"] == "castillo")
@@ -333,24 +334,24 @@ def test_castle_needs_fifteen_improvements(service):
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
     need = service.content.balance["upgrades"]["castle_min_built"]
-    build(service, *list(service._upgrade_catalog())[:need - 1])
-    view = service.act("test:1", "grow")                          # the guild is ready, 14 built: blocked
-    assert view.kind == "camp_grow" and ids(view) == ["upgrades", "campmgmt"]   # D-192: back to 🏰 Gestionar
+    build(service, *list(service._upgrade_catalog())[:need - 3], "torres_arqueros", "foso")   # D-304: the 8 → 9 works count
+    view = service.act("test:1", "lvlup")                         # the guild is ready, 14 built: a ▫️ line
+    assert view.kind == "camp_lvlup" and "upgrades" in ids(view) and ids(view)[-1] == "improve"
     assert any("▫️" in line and f"{need} mejoras" in line and f"tienen {need - 1}" in line for line in view.body)
-    service.act("test:1", "claim:7:0")
+    service.act("test:1", "lvlgive")                              # the materials and the 🪎 chests: still not a castle
     assert service.store.get("camp", KEY)["level"] == castle - 1
-    build(service, list(service._upgrade_catalog())[need - 1])
-    view = service.act("test:1", "grow")
-    assert view.kind == "camp_trial"                              # D-99: then only the Noche de prueba is left
+    build(service, list(service._upgrade_catalog())[need - 3])
+    view = service.act("test:1", "lvlup")
+    assert ids(view) == ["lvltrial", "improve"]                   # D-99: then only the Noche de prueba is left
+    assert service.act("test:1", "lvltrial").kind == "camp_trial"
     data = service.store.get("camp", KEY)
     data["trial_won"] = True
     service.store.put("camp", KEY, data)
-    view = service.act("test:1", "grow")
+    view = service.act("test:1", "lvlup")
     assert any("✅" in line and f"{need} mejoras" in line for line in view.body)
-    claims = [a.id for a in view.actions if a.id.startswith("claim:")]
-    service.act("test:1", claims[0])
+    service.act("test:1", "lvlgo")
     assert service.store.get("camp", KEY)["level"] == castle
-    assert service._castle_upgrades(service.store.get("camp", KEY)) == []     # a castle keeps growing freely
+    assert service._castle_upgrades(service.store.get("camp", KEY)) == []     # a castle asks nothing more
 
 
 def test_old_castles_and_lower_levels_ask_nothing(service):
@@ -359,8 +360,10 @@ def test_old_castles_and_lower_levels_ask_nothing(service):
     assert service._castle_upgrades(camp) == []
     set_level(service, 9)                                         # a castle from before D-101, no improvements
     place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)
-    service.act("test:1", "claim:7:0")
-    assert service.store.get("camp", KEY)["level"] == 10
+    service.act("test:1", "claim:7:0")                            # D-304: its territory still grows (up to 25 zones)...
+    camp = service.store.get("camp", KEY)
+    assert camp["level"] == 9 and len(camp["zones"]) == 2
+    assert service.act("test:1", "lvlup").body == ["🏰 Tu campamento llegó a castillo: todavía no hay un nivel más."]
 
 
 def test_knowledge_needs_the_library_one_at_a_time(service):
@@ -442,7 +445,7 @@ def test_camps_saved_before_the_patch_still_work(service):
     view = service.act("test:1", "claro")
     # D-192: the camp hub; D-287 (0.39): no 🔬 Investigar until the camp has its 📚 Biblioteca
     assert view.kind == "player_camp" and ids(view) == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
+    assert ids(service.act("test:1", "campmgmt")) == ["improve", "upgrades", "guild", "gzones", "campinfo", "claro"]   # D-304
     info = service.act("test:1", "campinfo")                                     # D-302: ℹ️ Información
     assert any("Mejoras construidas: 0" in line and "Defensa: 0" in line for line in info.body)
     assert service.act("test:1", "upgrades").kind == "camp_upgrades"

@@ -2,14 +2,14 @@
 # founder or a helper activates (D-291), the founder's 🤝 helpers (D-289), the camp's 💰 fund after founding (D-291) and the
 # guild's ⚔️ Armería (D-290).
 # [ES] Textos del parche 0.39 del campamento (pedido del dueño, 19-oct-2026): 🏘️ Servicios con un botón por tipo de construcción
-# (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas, 📚 Saber), un edificio por oficio, las obras que activa el fundador o un ayudante (▶️ Activar,
-# ⏹️ Quitar), los 🤝 ayudantes, el 💰 fondo del campamento después de fundar y la ⚔️ Armería del gremio. Se junta con es.yaml y los
+# (🏠 Casas, ⚒️ Oficios, 🛡️ Defensas, 📚 Saber), un edificio por oficio, las obras que activa el fundador o un asistente (▶️ Activar,
+# ⏹️ Quitar), los 🤝 asistentes, el 💰 fondo del campamento después de fundar y la ⚔️ Armería del gremio. Se junta con es.yaml y los
 # demás es_*.yaml al cargar (engine/core/content.py): las claves de "hub", "upgrades" y "upgrade" se suman a las de es.yaml y
 # es_menus.yaml.
 # Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md y diseno/08-social/gremios-y-social.md (los actualiza
 #     quien une el parche)
 # Lo leen: engine/service/game.py (_camp_hub_lines, _upgrades_view, _works_view, _services_view, _service_type_view,
-#     _activate_work, _stop_work, _give_to_work, _guild_view, _research) y engine/service/gremio.py (ayudantes, fondo del
+#     _activate_work, _stop_work, _give_to_work, _guild_view, _research) y engine/service/gremio.py (asistentes, fondo del
 #     campamento y armería)
 # Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_servicios.yaml, en el mismo
 # cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
@@ -18,7 +18,7 @@ hub:
   services_active: "🏘️ Servicios: {list} · 🔨 {n} {n|obra activa|obras activas}. Lo construido y lo que falta, por tipo."   # [ES] D-288
   services_types: "🏘️ Servicios: casas, oficios y defensas del campamento, por tipo · 🔨 {n} {n|obra activa|obras activas}."
   make_none_camp: "🛠️ Fabricar: todavía sin estaciones; las abren los edificios de oficio (🏘️ Servicios → ⚒️ Oficios)."
-  manage_nopantry: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-287: antes del nivel 3 no se nombra la despensa; D-302: ℹ️ Información
+  manage_nopantry: "🏰 Gestionar: ⬆️ mejorar (nivel y territorio), 🔨 mejoras, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-287: antes del nivel 3 no se nombra la despensa; D-302: ℹ️ Información; D-304: ⬆️ Mejorar
   research_none_notice: "🔬 Tu campamento todavía no tiene 📚 Biblioteca."   # [ES] D-287: respuesta corta a un botón viejo, sin nivel
   guild_camp: "🛡️ Gremio: 👥 miembros, 💰 fondos (depositas desde donde estés), 📢 chat y ⚔️ armería."   # [ES] D-291: el botón está en el centro; D-302: sus submenús
 
@@ -37,8 +37,8 @@ services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios po
   kind_building: " · 🏗️ {n} en curso"
   kind_open: " · ▶️ {n} para activar"
   kind_idle: " · ⏸️ {n} sin activar"   # [ES] lo que ve un miembro común: las ve, no las elige
-  nothing_yet: "Todavía no hay nada construido ni activo. El fundador o un 🤝 ayudante elige qué obra se activa; entonces todos ven lo que falta."
-  nothing_yet_manager: "No hay obras para este nivel ahora: agranden el campamento para abrir más."
+  nothing_yet: "Todavía no hay nada construido ni activo. El fundador o un 🤝 asistente elige qué obra se activa; entonces todos ven lo que falta."
+  nothing_yet_manager: "No hay obras para este nivel ahora: suban de nivel (⬆️ Mejorar → ⏫ Siguiente nivel) para abrir más."
   deposit_hint: "💰 Depositar: desde donde estés, con el código de cada material (/f02). El fondo alimenta las obras activas."
   deposit_button: "💰 Depositar"
   intro_casa: "🏠 Casas: refugio, despensa, salud y lugar para más miembros."
@@ -48,12 +48,12 @@ services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios po
   intro_saber: "📚 Saber: la 📚 Biblioteca y lo que el campamento aprende entre todos."
   built_line: "✅ Construido: {names}"
   built_none: "✅ Todavía nada construido de este tipo."
-  type_empty: "Nada activo de este tipo: el fundador o un 🤝 ayudante lo activa."
+  type_empty: "Nada activo de este tipo: el fundador o un 🤝 asistente lo activa."
   type_empty_manager: "No hay obras de este tipo para este nivel."
   activate_hint: "▶️ Activar: la obra empieza a pedir materiales y la ven todos los miembros."
   open_entry: "▫️ {title}"
   idle_entry: "⏸️ {title} · sin activar"
-  idle_hint: "⏸️ Las obras sin activar las elige el fundador o un 🤝 ayudante; cuando se activan, todos pueden aportar."
+  idle_hint: "⏸️ Las obras sin activar las elige el fundador o un 🤝 asistente; cuando se activan, todos pueden aportar."
   active_entry: "🔨 {title}"
   asks: "Pide: {items}"
   activate_button: "▶️ {name}"
@@ -62,28 +62,28 @@ services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios po
   activated_push_title: "🏗️ Obra nueva en tu campamento"
   activated_push: "🏗️ {hero} activó {name} en {camp}: falta {items}."
   already_active: "{name} ya está activa."
-  only_managers: "Las obras las activa el fundador o un 🤝 ayudante."
-  not_active: "⏸️ {name} todavía no está activa: la activa el fundador o un 🤝 ayudante."
+  only_managers: "Las obras las activa el fundador o un 🤝 asistente."
+  not_active: "⏸️ {name} todavía no está activa: la activa el fundador o un 🤝 asistente."
   cannot_stop: "{name} no se puede quitar: ya le dieron materiales o no está activa."
   stopped: "⏹️ Quitaste {name} de las obras activas."
-  to_activate: "▶️ {n} {n|obra|obras} de este nivel para activar en 🏘️ Servicios."
-  to_activate_member: "⏸️ {n} {n|obra|obras} de este nivel sin activar: míralas en 🏘️ Servicios (las activa el fundador o un 🤝 ayudante)."
-  none_active: "Todavía no hay obras activas: el fundador o un 🤝 ayudante las elige en 🏘️ Servicios."
-  none_active_manager: "No hay obras activas ni para activar en este nivel: agranden el campamento para abrir más."
+  to_activate: "▶️ {n} {n|obra|obras} de este nivel para activar en 🏘️ Servicios."   # [ES] sin uso desde la 0.41 (D-304)
+  to_activate_member: "⏸️ {n} {n|obra|obras} de este nivel sin activar: míralas en 🏘️ Servicios (las activa el fundador o un 🤝 asistente)."   # [ES] sin uso desde la 0.41 (D-304)
+  none_active: "Todavía no hay obras activas: el fundador o un 🤝 asistente las elige en 🏘️ Servicios."
+  none_active_manager: "No hay obras activas ni para activar en este nivel: suban de nivel (⬆️ Mejorar → ⏫ Siguiente nivel) para abrir más."
   knowledge_line: "📚 Conocimiento: los estudios del campamento, de a uno."
 
-helpers:                       # [ES] D-289 (0.39): los ayudantes del fundador, 1 por cada 5 miembros
+helpers:                       # [ES] D-289 (0.39): los ayudantes del fundador, 1 por cada 5 miembros; D-304 (0.41): en los textos se llaman asistentes (la clave sigue siendo helpers)
   role: "🤝 "
-  line: "🤝 Ayudantes ({n}/{cap}): {names}"
-  none: "🤝 Ayudantes (0/{cap}): el fundador los nombra desde la tarjeta de cada miembro (/m2). Uno por cada 5 miembros."
-  make_button: "🤝 Hacer ayudante"
-  remove_button: "✖️ Quitar ayudante"
-  full: "🤝 Ya hay {cap} {cap|ayudante|ayudantes}: uno por cada 5 miembros."
-  only_founder: "Solo el fundador nombra ayudantes."
-  named: "🤝 {name} ahora es ayudante: activa obras, invita y acepta solicitudes."
-  removed: "✖️ {name} ya no es ayudante."
-  named_push: "🤝 Ahora eres ayudante en {camp}: activas obras, invitas con /inv_ y aceptas solicitudes."
-  removed_push: "✖️ Ya no eres ayudante en {camp}."
+  line: "🤝 Asistentes ({n}/{cap}): {names}"
+  none: "🤝 Asistentes (0/{cap}): el fundador los nombra desde la tarjeta de cada miembro (/m2). Uno por cada 5 miembros."
+  make_button: "🤝 Hacer asistente"
+  remove_button: "✖️ Quitar asistente"
+  full: "🤝 Ya hay {cap} {cap|asistente|asistentes}: uno por cada 5 miembros."
+  only_founder: "Solo el fundador nombra asistentes."
+  named: "🤝 {name} ahora es asistente: activa obras, elige hacia dónde crece el territorio, invita y acepta solicitudes."
+  removed: "✖️ {name} ya no es asistente."
+  named_push: "🤝 Ahora eres asistente en {camp}: activas obras, eliges hacia dónde crece el territorio, invitas con /inv_ y aceptas solicitudes."
+  removed_push: "✖️ Ya no eres asistente en {camp}."
 
 waiting:                       # [ES] D-294 (0.39, el dueño): del gremio, esperando lugar en el campamento
   title: "⏳ Esperando lugar en el campamento ({n}/{cap}):"
@@ -103,7 +103,7 @@ waiting:                       # [ES] D-294 (0.39, el dueño): del gremio, esper
   accepted_push: "✅ {name} entró al gremio de {camp} y espera lugar en el campamento."
   declined_push: "❌ {name} no aceptó la invitación al gremio de {camp}."
   full_push: "⚠️ {name} quiso entrar al gremio de {camp}, pero ya no había lugar para esperar."
-  room_push: "🏕️ Hay lugar en el campamento {camp}: el fundador o un 🤝 ayudante te une."
+  room_push: "🏕️ Hay lugar en el campamento {camp}: el fundador o un 🤝 asistente te une."
   room_push_managers: "🏕️ Hay {n} {n|lugar|lugares} en {camp} y {w} {w|espera|esperan} en el gremio: únelos desde 🛡️ Gremio."
   leave_button: "🚪 Salir del gremio"
   leave_ask: "🚪 ¿Sales del gremio de {camp}? Lo que depositaste queda en el fondo."

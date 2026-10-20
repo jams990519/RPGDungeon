@@ -163,8 +163,8 @@ faq:
     q: "🏕️ ¿Cómo fundo mi campamento?"
     a: "Lo funda tu 🛡️ gremio. El líder va a una zona a Lejanía {camp_far} o más, la explora al 100 % y conoce {camp_known} de las 8 zonas de alrededor, sin otro campamento a {camp_gap} zonas o menos. Hacen falta {found_members} miembros del gremio ahí y {found_cost} en el 💰 fondo. El líder toca 🏕️ Campamento → 🏕️ Fundar campamento aquí: tarda {found_minutes} min con {found_members} miembros presentes y menos con más (nunca menos de {found_floor} min). El campamento se llama como el gremio y a cada miembro le llega la invitación."
   d36:
-    q: "⬆️ ¿Cómo agrando mi campamento?"
-    a: "En tu campamento: 🏰 Gestionar → ⬆️ Agrandar. Cada nivel suma una zona a tu territorio y cuesta materiales según el nivel; desde el nivel {chests_from}, también 🪎 cofres. Pasa de campamento a aldea, pueblo, ciudad y castillo."
+    q: "⬆️ ¿Cómo subo o agrando mi campamento?"
+    a: "En tu campamento: 🏰 Gestionar → ⬆️ Mejorar. ⏫ Siguiente nivel muestra en una lista qué obras tienen que estar construidas y qué materiales faltan (desde el nivel {chests_from}, también 🪎 cofres); cualquier miembro aporta con 🤲 y se va completando. Pasa de campamento a aldea, pueblo, ciudad y castillo. 🗺️ Agrandar territorio suma una zona vecina: el fundador o un 🤝 asistente elige hacia dónde, y cada etapa tiene su tope de zonas."
   d37:
     q: "🙋 ¿Quién entra a mi campamento?"
     a: "Otro jugador va a tu campamento y toca 🙋 Pedir unirme; tú decides. Caben {members_base} al empezar y {members_step} más por cada nivel. Los miembros comparten las mejoras, la despensa, las oleadas y el gremio."
@@ -176,7 +176,7 @@ faq:
     a: "{raids_week} veces por semana llega una oleada a tu campamento. Tienen {raid_window} min para tocar 🛡️ Defender y pelear una vez cada uno; hace falta que gane la mitad de los miembros activos. Si no alcanza, la despensa pierde el {raid_loss} % y nada más. La 🛡️ Defensa de tus mejoras debilita a los atacantes."
   d40:
     q: "🔨 ¿Qué son las mejoras?"
-    a: "En 🏘️ Servicios están las obras del campamento por tipo (🏠 Casas, ⚒️ Oficios con un edificio por oficio, 🛡️ Defensas, 📚 Saber). El fundador o un 🤝 ayudante activa cada obra; entonces todos ven lo que falta y aportan con 🤲 o desde lejos con 💰 Depositar, hasta completarlas y después se construyen con el tiempo: {work_minutes} min por nivel de la obra con 2 miembros en el territorio (con 1, el doble; con más, menos). Lo construido queda para siempre y da servicios y defensa."
+    a: "En 🏘️ Servicios están las obras del campamento por tipo (🏠 Casas, ⚒️ Oficios con un edificio por oficio, 🛡️ Defensas, 📚 Saber). El fundador o un 🤝 asistente activa cada obra; entonces todos ven lo que falta y aportan con 🤲 o desde lejos con 💰 Depositar, hasta completarlas y después se construyen con el tiempo: {work_minutes} min por nivel de la obra con 2 miembros en el territorio (con 1, el doble; con más, menos). Lo construido queda para siempre y da servicios y defensa."
   d41:
     q: "🔬 ¿Cómo investigo?"
     a: "🔬 Investigar es el 📚 Conocimiento de tu campamento: con la 📚 Biblioteca (nivel {library_level}) estudian de a uno {studies}, y lo aprendido vale para siempre para todos los miembros. En el Claro no se investiga."

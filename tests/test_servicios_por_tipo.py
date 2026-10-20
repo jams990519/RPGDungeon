@@ -101,7 +101,7 @@ def test_the_founder_activates_and_every_member_sees_what_is_missing(service):
     set_hero(service, "test:2", backpack={"madera": 40, "piedra": 20, "piel": 10}, gold=100)
     view = service.act("test:2", "upg:curtiduria:s")                       # not active: Bram cannot give to it
     assert "todavía no está activa" in view.notice and service._load("test:2").backpack["madera"] == 40
-    assert "fundador o un 🤝 ayudante" in service.act("test:2", "upact:curtiduria").notice
+    assert "fundador o un 🤝 asistente" in service.act("test:2", "upact:curtiduria").notice
     assert "curtiduria" not in service._upgrades(KEY)["active"]
     view = service.act("test:1", "upact:curtiduria")                       # ▶️ the founder activates the tannery
     assert "Activaste" in view.notice and service._upgrades(KEY)["active"] == ["curtiduria"]
@@ -130,7 +130,7 @@ def test_stop_only_while_nothing_was_given_and_no_limit_on_active_works(service)
     service.act("test:2", "upg:tejeduria:s")                               # Bram gives a little
     assert "no se puede quitar" in service.act("test:1", "upstop:tejeduria").notice
     assert "tejeduria" in service._upgrades(KEY)["active"]
-    assert "fundador o un 🤝 ayudante" in service.act("test:2", "upstop:canteria").notice
+    assert "fundador o un 🤝 asistente" in service.act("test:2", "upstop:canteria").notice
 
 
 def test_old_buttons_a_founder_giving_activates_and_pages_stay_under_eight(service):

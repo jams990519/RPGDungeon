@@ -141,7 +141,10 @@ def test_while_waiting_everything_of_the_guild_and_nothing_of_the_camp(service):
 
 def test_when_there_is_room_they_are_told_and_a_founder_or_helper_joins_them(service):
     waiting_cora(service)
-    service.act("test:1", "claim:7:0")                                       # the camp grows: room for 4
+    record = service._upgrades(KEY)                                          # D-304: the camp goes up a level: room for 4
+    record["built"].update({"fogon": 0.0, "empalizada": 0.0})
+    service.store.put("upgrades", KEY, record)
+    service.act("test:1", "lvlgive")
     room = pushes(service, "test:3", "gremio_news")
     assert room and "Hay lugar en el campamento Roca Alta" in room[0].body[0]
     assert service.store.get("camp", KEY)["waiting"] == ["test:3"]           # never automatic
@@ -150,7 +153,7 @@ def test_when_there_is_room_they_are_told_and_a_founder_or_helper_joins_them(ser
     assert "Hay 2 lugares" in text(service.act("test:1", "gmembers"))
     service.act("test:2", "gmembers")
     assert "cwjoin" not in " ".join(ids(service.text("test:2", "/m3")))      # a plain member cannot
-    assert "fundador o un 🤝 ayudante" in service.act("test:2", "cwjoin:test:3").notice
+    assert "fundador o un 🤝 asistente" in service.act("test:2", "cwjoin:test:3").notice
     camp = service.store.get("camp", KEY)
     camp["helpers"] = ["test:2"]                                             # a helper can
     service.store.put("camp", KEY, camp)

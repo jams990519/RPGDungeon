@@ -338,11 +338,23 @@ camps:                       # [ES] campamentos que fundan los jugadores lejos d
     - {id: castillo, from_level: 9}
   members_base: 2             # [ES] D-84: miembros que caben en un campamento de nivel 1 (contando al fundador)
   members_per_level: 2        # [ES] cada nivel más deja entrar a 2 personas más
-  grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: agrandar cuesta esto × el nivel actual; cada nivel suma 1 zona
-  chests_from_level: 6       # [ES] D-92 (provisional): agrandar DESDE este nivel también cuesta 🪎 cofres (6→7 es el primero; ciudad y castillo)
+  grow_cost_per_level: {madera: 15, piedra: 10, fibra: 5}   # [ES] D-81: 🗺️ Agrandar territorio cuesta esto × las zonas que ya tiene (D-304, 0.41: antes × el nivel, que era igual a las zonas; ya no sube el nivel). Lo paga de su mochila el fundador o el 🤝 asistente que elige la zona
+  zones_by_stage: {campamento: 3, aldea: 5, pueblo: 9, ciudad: 15, castillo: 25}   # [ES] D-304 (0.41, el dueño confirmó la tabla de E-218): tope de zonas del territorio en cada etapa. Al tope, hay que subir de nivel para agrandar más. Un campamento que ya tenía más zonas las conserva (D-64). Sin una etapa aquí, el tope es el nivel (la regla de antes)
+  territory_map_radius: 2    # [ES] D-304: el minimapa de 🗺️ Agrandar territorio: 2 → 5 × 5 cuadritos centrados en el campamento. Más radio alarga el mensaje
+  level_up:                  # [ES] D-304 (0.41, pedido del dueño: "debes construir esto, esto y esto para pasar al siguiente nivel, en formato de lista"; obras elegidas por Claude, provisionales): las obras que tienen que estar CONSTRUIDAS para subir A ese nivel. Cada una es de un nivel que el campamento ya tiene (se ve y se construye, D-287). Una obra retirada o que no está en content/camp_upgrades.yaml se salta. Los ids son los de camp_upgrades.yaml
+    2: [fogon, empalizada]
+    3: [torre_vigia, pozo]
+    4: [refugio, granero, trampas]
+    5: [ahumadero, perrera, cabanas]
+    6: [muralla, huerto]
+    7: [braseros]
+    8: [enfermeria, biblioteca]
+    9: [torres_arqueros, foso]
+  level_up_cost_per_level: {madera: 30, piedra: 20, fibra: 10}   # [ES] D-304 (Claude, provisional): ⏫ Siguiente nivel pide además estos materiales × el nivel actual (1→2: 🪵30 🪨20 🌿10; 8→9: 🪵240 🪨160 🌿80). Los aporta cualquier miembro con 🤲 Aportar; lo del 💰 fondo del campamento va primero. Se guarda en "upgrades"."levelup"
+  chests_from_level: 6       # [ES] D-92 (provisional): subir de nivel DESDE este nivel también cuesta 🪎 cofres (6→7 es el primero; ciudad y castillo). D-304 (0.41): antes lo pedía agrandar; ahora ⏫ Siguiente nivel
   chests_per_level: 1        # [ES] cofres = esto × (nivel actual − chests_from_level + 1): 6→7 pide 1, 7→8 pide 2, 8→9 pide 3 (6 hasta castillo).
-                             # [ES] Los paga de sus cofres (hero.chests) el miembro que agranda. Subirlo encarece mucho los campamentos grandes (cada cofre = 10 bolsas)
-  helpers_per_members: 5      # [ES] D-289 (0.39, el dueño): 🤝 ayudantes del fundador: 1 por cada 5 miembros, y siempre al menos 1 (tope = máx(1, ⌈miembros ÷ 5⌉)). Si el tope baja, los que ya son ayudantes se quedan
+                             # [ES] Los aporta con 🤲 Aportar (de hero.chests) cualquier miembro, entre todos. Subirlo encarece mucho los campamentos grandes (cada cofre = 10 bolsas)
+  helpers_per_members: 5      # [ES] D-289 (0.39, el dueño): 🤝 ayudantes del fundador: 1 por cada 5 miembros, y siempre al menos 1 (tope = máx(1, ⌈miembros ÷ 5⌉)). Si el tope baja, los que ya son ayudantes se quedan. D-304 (0.41): en los textos del jugador se llaman 🤝 asistentes (el id sigue siendo helpers)
 
 pantry:                      # [ES] D-93 (provisional): la despensa de los campamentos de jugadores, 1.ª parte de "construir no alcanza" (supervivencia-del-asentamiento.md §0.4, §7.2). El Claro no se mantiene: no tiene dueño (D-95). Números orientativos: se ajustan en la beta
   camp_from_level: 3         # [ES] los campamentos de jugadores, desde el nivel 3 (aldea): despensa chica, capa ligera (§7.2)

@@ -147,16 +147,21 @@ def old_camp_at(service, account, x, y, name=None):
     return service.act(account, "claro")
 
 
-def test_camp_grows_one_zone_per_level(service):
+def test_territory_grows_one_zone_at_a_time_and_the_level_stays(service):
+    # [ES] D-304 (0.41): 🗺️ Agrandar territorio suma una zona que tú eliges (D-87) y ya no sube el nivel (eso es ⏫ Siguiente
+    # nivel); cuesta camps.grow_cost_per_level × las zonas que ya tiene (el mismo precio de antes, cuando nivel = zonas)
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
+    camp = service.store.get("camp", "6:0")
+    camp["level"] = 3                                              # aldea: up to 5 zones (camps.zones_by_stage)
+    service.store.put("camp", "6:0", camp)
     for expected, pick in ((2, "claim:7:0"), (3, "claim:8:0"), (4, "claim:6:1")):
         choose = service.act("test:1", "grow")                    # you choose where it grows (D-87)
         assert choose.kind == "camp_grow" and len(choose.actions) <= 4
         view = service.act("test:1", pick)
-        assert view.kind == "player_camp" and len(view.actions) <= 8      # D-192: the camp hub shows up to 8, 2 per row
+        assert view.kind == "camp_grow" and len(view.actions) <= 4      # D-304: back on 🗺️ Agrandar territorio
         camp = service.store.get("camp", "6:0")
-        assert camp["level"] == expected and len(camp["zones"]) == expected
+        assert camp["level"] == 3 and len(camp["zones"]) == expected
     assert camp["zones"] == [[6, 0], [7, 0], [8, 0], [6, 1]]
     assert service.act("test:1", "claim:20:20").kind == "camp_grow"   # not next to the land: refused
     hero = service.store.get("hero", "test:1")
@@ -207,7 +212,10 @@ def test_founder_lets_players_join_and_cap_grows(service, clock):
     assert any(v.kind == "camp_answer" for acc, v in service.tick() if acc == "test:2")
     view = service.act("test:3", "askjoin")                             # full at level 1
     assert "lleno" in (view.notice or "")
-    service.act("test:1", "claim:7:0")
+    record = service._upgrades("6:0")                                   # D-304: ⏫ Siguiente nivel raises the cap (it was
+    record["built"].update({"fogon": 0.0, "empalizada": 0.0})          # ⬆️ Agrandar before): its works and materials
+    service.store.put("upgrades", "6:0", record)
+    service.act("test:1", "lvlgive")
     assert service._members_cap(service.store.get("camp", "6:0")) == 4
     service.act("test:2", "leave")
     assert service.store.get("hero", "test:2")["camp"] is None

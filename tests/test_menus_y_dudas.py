@@ -95,9 +95,11 @@ def test_own_camp_hub_and_manage_screen(service):
     assert any(a.id == "guild" for a in service.menu())                         # and in the bottom menu (D-281)
     manage = service.act("test:1", "campmgmt")
     assert manage.kind == "camp_manage" and manage.kind in HUB_KINDS
-    assert ids(manage) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
-    for screen in ("grow", "upgrades", "guild", "campinfo"):
+    assert ids(manage) == ["improve", "upgrades", "guild", "gzones", "campinfo", "claro"]     # D-304: ⬆️ Mejorar
+    for screen in ("improve", "upgrades", "guild", "campinfo"):
         assert service.act("test:1", screen).actions[-1].id == "campmgmt"      # back to 🏰 Gestionar
+    for screen in ("lvlup", "grow"):                                            # D-304: ⏫ and 🗺️ live in ⬆️ Mejorar
+        assert service.act("test:1", screen).actions[-1].id == "improve"
     assert service.act("test:1", "upsvc").actions[-1].id == "claro"
 
 

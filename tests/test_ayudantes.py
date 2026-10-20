@@ -9,6 +9,8 @@ miembros; activan obras, invitan con /inv_ y aceptan solicitudes, pero no renomb
 - un ayudante activa obras, invita con /inv_, recibe y responde las solicitudes (también desde 🙋 Solicitudes de 👥 Miembros);
   no renombra, no nombra ayudantes y no crea el gremio D-97; quien sale del campamento deja de ser ayudante;
 - al fundar, los oficiales del gremio que entran al campamento quedan de ayudantes (hasta el tope); y se lee en inglés.
+D-304 (0.41): en los textos del jugador se llaman 🤝 asistentes ("assistants" en inglés); los ids siguen ("helpers", "ghelp:").
+El fundador ve en 👥 Miembros cuántos tiene y cómo nombrar uno.
 Archivo: tests/test_ayudantes.py · Módulo: M15 Social · Prueba: engine/service/gremio.py (_helpers_cap, _camp_manager,
 _camp_member_view, _camp_helper_toggle, _camp_requests_view, _camp_members_view, _invite_code, _gremio_camp_answer) y
 engine/service/game.py
@@ -66,16 +68,17 @@ def test_one_helper_per_five_members_never_under_one(service):
 def test_the_founder_names_and_removes_helpers_from_the_member_card(service):
     camp_with(service, "Bram", "Cora")
     guild = service.act("test:1", "gmembers")                                 # D-302: the members live in 👥 Miembros
-    assert any("🤝 Ayudantes (0/1)" in line for line in guild.body)
+    assert any(line.startswith("🤝 Asistentes: 0 de 1 — toca el código") for line in guild.body)   # D-304
     card = service.text("test:1", code_of(service, guild, "Bram"))
     assert card.kind == "gremio_member" and "ghelp:test:2" in ids(card)
     view = service.act("test:1", "ghelp:test:2")
-    assert "ahora es ayudante" in view.notice and service.store.get("camp", KEY)["helpers"] == ["test:2"]
+    assert "ahora es asistente" in view.notice and service.store.get("camp", KEY)["helpers"] == ["test:2"]
     told = pushes(service, "test:2", "gremio_news")
-    assert told and "Ahora eres ayudante en Roca Alta" in told[0].body[0]
+    assert told and "Ahora eres asistente en Roca Alta" in told[0].body[0]
     guild = service.act("test:1", "gmembers")
     assert any(line.startswith("/m") and "🤝 Bram" in line for line in guild.body)
-    assert any("🤝 Ayudantes (1/1): Bram" in line for line in guild.body)
+    assert any(line.startswith("🤝 Asistentes: 1 de 1: Bram") for line in guild.body)
+    assert any("🤝 Asistentes (1/1): Bram" in line for line in service.act("test:2", "gmembers").body)   # what a member reads
     card = service.text("test:1", code_of(service, guild, "Cora"))             # 3 members: room for 1 only
     assert "ghelp:test:3" not in ids(card) and any("uno por cada 5" in line for line in card.body)
     assert "uno por cada 5" in service.act("test:1", "ghelp:test:3").notice
@@ -83,7 +86,7 @@ def test_the_founder_names_and_removes_helpers_from_the_member_card(service):
     assert "Solo el fundador" in service.act("test:2", "ghelp:test:3").notice   # a helper never names another
     assert "ghelp" not in " ".join(ids(service.text("test:2", "/m1")))
     view = service.act("test:1", "ghelp:test:2")
-    assert "ya no es ayudante" in view.notice and service._camp_helpers(service.store.get("camp", KEY)) == []
+    assert "ya no es asistente" in view.notice and service._camp_helpers(service.store.get("camp", KEY)) == []
 
 
 def test_a_helper_activates_invites_and_answers_requests_but_does_not_rename_or_name(service):
@@ -116,7 +119,7 @@ def test_a_helper_activates_invites_and_answers_requests_but_does_not_rename_or_
     assert service.store.get("guild", KEY) is None
     place(service, "test:4", 6, 0)
     plain = service.act("test:4", "upact:empalizada")                        # a plain member does none of it
-    assert "fundador o un 🤝 ayudante" in plain.notice
+    assert "fundador o un 🤝 asistente" in plain.notice
     make_hero(service, "test:6", "Fio")
     assert "líder u oficial" in service.text("test:4", f"/inv_{service.player_code('test:6')}").notice
 
@@ -169,9 +172,9 @@ def test_helpers_read_well_in_english(service):
     join(service, "test:2")
     guild = service.act("test:1", "gmembers")
     card = service.text("test:1", code_of(service, guild, "Bram"))
-    assert card.actions[0].label == "🤝 Make helper"
+    assert card.actions[0].label == "🤝 Make assistant"
     view = service.act("test:1", "ghelp:test:2")
-    assert "is now a helper" in view.notice and "[" not in text(service.act("test:1", "guild"))
-    assert "🤝 Helpers (1/1): Bram" in text(service.act("test:1", "gmembers"))
+    assert "is now an assistant" in view.notice and "[" not in text(service.act("test:1", "guild"))
+    assert "🤝 Assistants: 1 of 1: Bram" in text(service.act("test:1", "gmembers"))
     assert not service.texts.fallbacks.get("en"), sorted(service.texts.fallbacks.get("en", []))[:20]
     assert not service.texts.missing

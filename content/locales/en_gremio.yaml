@@ -192,7 +192,7 @@ gremio:
   invite_hint: "✉️ To invite someone, type /inv_ and their player code (everyone sees theirs in 👤 Hero). For example: /inv_12345678."
   code_unknown: "No player has the code {code}. Check the number: it is in each player's 👤 Hero."
   code_self: "That is your own code: give it to someone else so they can invite you."
-  code_no_rights: "To invite with a code you must be a guild's leader or officer, or the founder or a 🤝 helper of its camp."
+  code_no_rights: "To invite with a code you must be a guild's leader or officer, or the founder or an 🤝 assistant of its camp."
   cinv_title: "🏕️ You are invited to a camp"
   cinv_body: "{name} invites you to their camp {camp}, at {place}. If you join, you are in its guild."
 
