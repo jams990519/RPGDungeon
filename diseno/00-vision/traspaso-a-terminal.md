@@ -177,23 +177,15 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 13. **0.39.4:** 🔁 Equipar en lista solo con lo que no llevas (/e1) y 🔽 Desequipar (/q1) (D-299).
 14. **0.40:** más madera (D-300), 📒 Lugares por botones (D-301) y submenús del campamento y del gremio (D-302).
 14.1. **0.41 (D-304):** ⬆️ Mejorar campamento con ⏫ Siguiente nivel (la lista de obras y materiales que se va completando) y 🗺️ Agrandar territorio (minimapa, dirección y tope de zonas por etapa, E-218); el ayudante pasa a llamarse 🤝 asistente y elige la dirección con el fundador; 🔨 Mejoras muestra todo a todos. Las obras de cada nivel y los materiales los eligió Claude (provisional).
-15. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+14.2. **20-oct: el dueño respondió 34 preguntas** (D-305 a D-312). Lo que falta programar, en este orden (D-306.6): **0.42** 🪓 Talar, los 6 recursos de base vuelven 3 por hora (D-305) y 🩹 Retirarse que no deja empezar un lote con poca vida (D-308); **después la reforma de los oficios** (D-306: tramos de recetas cada 5 y colores, títulos que se compran al Entrenador, precios por tipo y libros, los cuatro arreglos, sin tope de oficios; [Simulación de los oficios](../07-economia/simulacion-oficios.md)); después lo de D-311 (🔥 Fogata en todo el juego, el 🧭 Explorador en 🔭 Reconocer, tu territorio gris hasta el 50 %, el 🗺️ pergamino de mapa, los nodos en 📒 Lugares) y la muralla (D-309); el modo híbrido con las 3 habilidades (D-312) va con la reforma de estadísticas. La prioridad de lo grande es el asentamiento y el castillo (D-310).
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):
 
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
-| E-226 (P-237) | Quién invita con /inv_: el líder y los oficiales antes del campamento; después, el fundador | Así, y que inviten los oficiales del gremio del campamento cuando existan |
-| E-225 (P-236) | Las reglas chicas del gremio desde el inicio (D-276): un gremio por héroe, el fondo solo con materiales, con 1 presente todo tarda el doble, varias obras a la vez | Confirmarlas así |
-| E-221 a E-224 (P-232 a P-235) | La reforma de las recetas: tramos cada 5 rangos y colores, costos de aprender, lo que hoy no avanza (piel, Pescador, Desollador, Construcción) y el orden de los parches | Sí a todo; recetas después de las 0.34 a 0.37 |
-| E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
-| E-216 y E-217 (P-227, P-228) | La muralla: cuánto cosecha cada zona (40 % o menos) y si reemplaza el +50 % de hoy (E-218, las zonas por etapa, ya respondida: D-304) | 20 % al almacén del asentamiento; sí |
-| E-214 (P-213) | ¿El Paladín es sanador y DPS (así quedó) o tanque y sanador? | Sanador y DPS |
-| E-186 (P-185) | ¿Un cambio de clase gratis para los héroes que el parche 0.31 movió solos? | Sí, una vez |
-| E-208 a E-213 | Los pendientes del parche de clases: los porcentajes de las marcas, qué no genera agro, el modo híbrido, los puntos al cambiar de rol, la variedad y el orden del tanque | Están en `content/balance.yaml` → `chain`; así quedan hasta que responda |
-| E-204 a E-207 | Las hogueras y dónde nace un jugador nuevo, el nombre "Campamento", qué cuenta en 📒 Lugares y qué ve el 🧭 Explorador | Cada una tiene la suya |
-| Tandas 1 a 6 | El resto: 99 preguntas en la tanda 1 | — |
+| E-187 en adelante | Estadísticas (puntos, afinidad, tope, armas), E-194 (descubrir zonas), E-173 a E-176 y el resto de la tanda 1 | Ver el [Sistema de preguntas](sistema-de-preguntas.md) |
+| Tandas 1 a 6 | El resto: 73 preguntas en la tanda 1 | — |
 
 **Otras cosas pendientes con el dueño**
 - **Notas del "mundo abierto"** que trajo de otro chat el 8-oct: modo campamento, nodos por guerra de grupos, territorios con impuesto y cuadrantes, y 7 preguntas. Se le pidió el texto completo; todavía no se registraron como decisiones.
