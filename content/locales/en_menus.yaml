@@ -27,7 +27,7 @@ hub:
   services: '🏘️ Services: {list}.'
   services_none: '🏘️ Services: shelter, trading post and workshop come with 🔨 Upgrades.'
   board: '📜 Board: {done} of {total} of today''s tasks · they change in {time}.'
-  manage: '🏰 Manage: ⬆️ expand, 🔨 upgrades, 🌾 pantry, 🛡️ guild and ℹ️ camp info.'
+  manage: '🏰 Manage: ⬆️ improve (level and territory), 🔨 upgrades, 🌾 pantry, 🛡️ guild and ℹ️ camp info.'
   dudas: '❓ Help: type a word and I''ll show you questions that are already answered.'
   defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
   cook_button: 🍲 Cook
@@ -49,8 +49,8 @@ hub:
 manage:
   title: 🏰 Manage {name}
   intro: 'What makes your camp grow and keeps it going:'
-  grow: '⬆️ Expand: {cost} to reach level {next} (one more zone and more room for members).'
-  grow_top: '⬆️ Expand: your camp has become a castle.'
+  grow: '⬆️ Expand: {cost} to reach level {next} (one more zone and more room for members).'   # [ES] sin uso desde la 0.41 (D-304)
+  grow_top: '⬆️ Expand: your camp has become a castle.'   # [ES] sin uso desde la 0.41 (D-304)
   upgrades: '🔨 Upgrades: {n} {n|built|built} · 🛡️ Defense {defense}. The works and what''s missing.'
   pantry: '🌾 Contribute food: meat, fish, cooked food or 🥖 provisions for the pantry.'
   pantry_locked: '🌾 Pantry: unlocks at level {level} (village).'

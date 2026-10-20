@@ -83,6 +83,8 @@ En **🏕️ Campamento**, fuera del Claro, el bot muestra qué falta para funda
 
 ### 2.4 Crecer eligiendo zonas
 
+> **Desde la 0.41 (D-304) esto cambió:** el nivel y las zonas van por separado. ⬆️ Mejorar campamento → ⏫ Siguiente nivel pide una lista de obras construidas, materiales (🪵30 🪨20 🌿10 × el nivel) y, desde el nivel 6, los 🪎 cofres de abajo, que aportan todos; 🗺️ Agrandar territorio suma 1 zona (la eligen el fundador o un 🤝 asistente), cuesta lo de abajo × las zonas que ya tiene, sin cofres, y tiene tope por etapa (3, 5, 9, 15 y 25). En castillo todavía no hay otro nivel. Lo de abajo es cómo funcionaba hasta la 0.40; el detalle nuevo está en [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.2.
+
 - Cualquier miembro toca **⬆️ Agrandar campamento** y paga de su mochila **15 de madera, 10 de piedra y 5 de fibra, por el nivel actual** (`camps.grow_cost_per_level`, D-81).
 - **Desde el nivel 6, también 🪎 cofres** (D-92, provisional): 1 de 6 a 7, 2 de 7 a 8 y 3 de 8 a 9; la fórmula es `camps.chests_per_level` × (nivel actual − `chests_from_level` + 1), y sigue igual después del castillo. Los paga el miembro que agranda. Un cofre se arma en el Claro con 10 💰 bolsas, 10 de madera y 5 piezas de metal (ver [Economía](../07-economia/economia.md) §2). La pantalla de agrandar muestra el costo en cofres y cuántos tienes; si faltan, no se cobra nada.
 - **Elige qué zona toma:** una zona libre que toque el territorio por norte, sur, este u oeste. El bot muestra los recursos que conoces de cada una, para elegir con estrategia (D-87).

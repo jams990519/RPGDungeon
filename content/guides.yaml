@@ -48,6 +48,6 @@ guides:
   map: {category: howto}            # [ES] 🚶 moverte, coordenadas, lugares y fogatas
   fights: {category: howto}         # [ES] ⚔️ la cadena, defenderse, pociones y caer
   guild: {category: howto}          # [ES] 🛡️ gremio: crear, entrar, invitar, chat, fondo, armería y lo compartido
-  camp: {category: howto}           # [ES] 🏕️ campamento: fundar, obras, ayudantes, agrandar y oleadas
+  camp: {category: howto}           # [ES] 🏕️ campamento: fundar, obras, asistentes, ⬆️ mejorar (subir de nivel y agrandar el territorio, D-304) y oleadas
   dungeons: {category: howto}       # [ES] 🕳️ mazmorras, campamentos enemigos y el Guardián
   quests: {category: howto}         # [ES] 📜 historia, diario, origen, tablón y encargos del campamento

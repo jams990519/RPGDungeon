@@ -89,7 +89,7 @@ def test_founder_creates_the_guild_at_the_camp(service):
     place(service, "test:2", 6, 0)
     view = service.act("test:1", "claro")
     assert view.kind == "player_camp" and "campmgmt" in ids(view)        # D-192: 🛡️ Gremio lives in 🏰 Gestionar
-    assert ids(service.act("test:1", "campmgmt")) == ["grow", "upgrades", "guild", "gzones", "campinfo", "claro"]
+    assert ids(service.act("test:1", "campmgmt")) == ["improve", "upgrades", "guild", "gzones", "campinfo", "claro"]   # D-304
     screen = service.act("test:1", "guild")
     # D-291 (0.39): the guild keeps its tools after founding; D-302 (0.39.4): 👥 Miembros, 💰 Fondos and 📢 Chat are buttons
     tools = ["gmembers", "gfunds", "gchat", "garm", "gzones"]
@@ -258,6 +258,7 @@ def test_the_guild_rises_when_the_members_meet_its_needs(service):
 
 
 def test_no_castle_without_a_guild_that_is_ready(service):
+    # [ES] D-304 (0.41): el gremio listo es una línea de ⏫ Siguiente nivel (antes lo pedía ⬆️ Agrandar)
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
     cfg = service.content.balance["guild"]
@@ -266,11 +267,13 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     camp = service.store.get("camp", "6:0")
     camp["trial_won"] = True                                       # the Noche de prueba is its own gate (D-99, test_raids.py)
     service.store.put("camp", "6:0", camp)
-    place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # 🪎 chests pay from level 6 (D-92)
-    view = service.act("test:1", "grow")                           # no guild: blocked, and the screen says why
-    assert view.kind == "camp_grow" and not any(a.id.startswith("claim:") for a in view.actions)
-    assert any("castillo" in line for line in view.body) and len(view.actions) <= 4
-    service.act("test:1", "claim:7:0")
+    need = service.content.balance["upgrades"]["castle_min_built"]     # D-101: the castle also asks 15 improvements
+    built = {uid: 0 for uid in list(service._upgrade_catalog())[:need] + ["torres_arqueros", "foso"]}   # D-304: and its 2 works
+    service.store.put("upgrades", "6:0", {"built": built, "works": {}, "tech": {}})
+    place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # 🪎 chests from level 6 (D-92)
+    view = service.act("test:1", "lvlgive")                        # the materials go in, but the guild is not ready
+    assert view.kind == "camp_lvlup" and "lvlgo" not in ids(view) and "guild" in ids(view) and len(view.actions) <= 4
+    assert "🏰 Para pasar a castillo hace falta:" in view.body and any(line.startswith("▫️") for line in view.body)
     assert service.store.get("camp", "6:0")["level"] == castle - 1
     new_guild(service)
     guild = service.store.get("guild", "6:0")
@@ -279,22 +282,18 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     for n in range(2, cfg["castle_min_members"]):                  # one member short
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
-    assert not any(a.id.startswith("claim:") for a in service.act("test:1", "grow").actions)
-    service.act("test:1", "claim:7:0")
+    assert "lvlgo" not in ids(service.act("test:1", "lvlup"))
+    assert service.act("test:1", "lvlgo").notice == "Todavía falta algo de la lista."
     assert service.store.get("camp", "6:0")["level"] == castle - 1
     make_hero(service, "test:99", "Ultimo")
     join(service, "test:99")
     camp = service.store.get("camp", "6:0")
     assert len(camp["members"]) == cfg["castle_min_members"] and all(ok for _, ok in service._castle_needs(camp))
-    need = service.content.balance["upgrades"]["castle_min_built"]     # D-101: the castle also asks 15 improvements
-    built = {uid: 0 for uid in list(service._upgrade_catalog())[:need]}
-    service.store.put("upgrades", "6:0", {"built": built, "works": {}, "tech": {}})
-    view = service.act("test:1", "grow")
-    claims = [a.id for a in view.actions if a.id.startswith("claim:")]
-    assert claims
-    service.act("test:1", claims[0])
+    view = service.act("test:1", "lvlup")
+    assert ids(view) == ["lvlgo", "improve"]
+    service.act("test:1", "lvlgo")
     assert service.store.get("camp", "6:0")["level"] == castle
-    assert service._castle_needs(service.store.get("camp", "6:0")) == []   # a castle keeps growing freely
+    assert service._castle_needs(service.store.get("camp", "6:0")) == []   # a castle asks nothing more
 
 
 def test_camps_without_a_guild_behave_as_before(service):
@@ -307,16 +306,17 @@ def test_camps_without_a_guild_behave_as_before(service):
         assert service._members_cap(camp) == cfg["members_base"] + (level - 1) * cfg["members_per_level"]
         assert service._castle_needs(camp) == []
     set_level(service, 1)
-    view = service.act("test:1", "grow")
-    assert not any("castillo" in line for line in view.body)       # growing below the castle asks nothing new
-    service.act("test:1", "claim:7:0")
+    view = service.act("test:1", "lvlup")                          # D-304: ⏫ Siguiente nivel
+    assert not any("castillo" in line for line in view.body)       # going up below the castle asks nothing of the guild
+    record = service._upgrades("6:0")
+    record["built"].update({"fogon": 0.0, "empalizada": 0.0})
+    service.store.put("upgrades", "6:0", record)
+    service.act("test:1", "lvlgive")
     assert service.store.get("camp", "6:0")["level"] == 2
-    set_level(service, 9)                                          # an old castle keeps growing without a guild
-    hero = service._load("test:1")
-    hero.chests = 99                                               # 🪎 chests pay from level 6 (D-92)
-    service._save(hero)
+    set_level(service, 9)                                          # an old castle keeps growing its territory without a guild
     service.act("test:1", "claim:6:1")
-    assert service.store.get("camp", "6:0")["level"] == 10
+    camp = service.store.get("camp", "6:0")
+    assert camp["level"] == 9 and [6, 1] in camp["zones"]
     make_hero(service, "test:2", "Bram")
     win(service, "test:1")                                         # no guild: nothing is counted anywhere
     assert list(service.store.items("guild")) == []

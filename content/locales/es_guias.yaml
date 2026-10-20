@@ -147,7 +147,7 @@ guides_page:
       💰 Fondo (con campamento, 💰 Fondos del campamento) → 💰 Depositar: pones materiales desde donde estés, con su código (/f02).
       ⚔️ Armería: dejas equipo con /a1 y lo tomas con /t1.
       🗺️ Lo que explora uno lo sabe todo el gremio (la experiencia es de quien explora). Si sales, te quedas con lo tuyo.
-      ⏳ Con el campamento lleno, el fundador o un 🤝 ayudante puede sumarte al gremio a esperar lugar (hasta {waiting_max}).
+      ⏳ Con el campamento lleno, el fundador o un 🤝 asistente puede sumarte al gremio a esperar lugar (hasta {waiting_max}).
   camp:
     title: "🏕️ Campamento"
     text: |-
@@ -155,10 +155,10 @@ guides_page:
       🔎 La zona tiene que estar explorada al 100 % y con {camp_known} de sus 8 vecinas conocidas (cuenta lo que explora tu gremio).
       ⏳ Hacen falta {found_members} miembros ahí y {found_cost} en el 💰 fondo: el líder toca 🛡️ Gremio → 🏕️ Fundar. Tarda {found_minutes} min (menos con más miembros).
       🏘️ Servicios muestra las obras por tipo: {kinds}.
-      ▶️ El fundador o un 🤝 ayudante (1 cada {helpers_per} miembros) activa una obra; todos aportan con 🤲, o desde lejos con 💰 Depositar.
+      ▶️ El fundador o un 🤝 asistente (1 cada {helpers_per} miembros) activa una obra; todos aportan con 🤲, o desde lejos con 💰 Depositar.
       📈 Cada obra nueva cuesta un {growth_pct} % más por cada obra que ya construyeron.
       🏗️ Con los materiales completos se construye: {work_minutes} min por nivel con {work_members} miembros en el territorio (con más, menos).
-      ⬆️ Agrandar campamento (🏰 Gestionar, donde también está ℹ️ Información) suma una zona al territorio; ahí recolectas un {own_bonus} % más.
+      ⬆️ Mejorar (🏰 Gestionar): ⏫ Siguiente nivel lista las obras y los materiales que faltan; 🗺️ Agrandar territorio suma una zona hacia donde elijan el fundador o un 🤝 asistente (ahí recolectas un {own_bonus} % más).
       🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear.
   dungeons:
     title: "🕳️ Mazmorras y enemigos"

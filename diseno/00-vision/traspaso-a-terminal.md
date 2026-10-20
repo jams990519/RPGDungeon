@@ -176,6 +176,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 12. **0.39.3:** 📚 Guías en ❓ Dudas (D-297) y ❓ Dudas también en ⚙️ Opciones; /d54 vuelve a ser «¿qué hay de nuevo?» y la de coordenadas pasa a /d56.
 13. **0.39.4:** 🔁 Equipar en lista solo con lo que no llevas (/e1) y 🔽 Desequipar (/q1) (D-299).
 14. **0.40:** más madera (D-300), 📒 Lugares por botones (D-301) y submenús del campamento y del gremio (D-302).
+14.1. **0.41 (D-304):** ⬆️ Mejorar campamento con ⏫ Siguiente nivel (la lista de obras y materiales que se va completando) y 🗺️ Agrandar territorio (minimapa, dirección y tope de zonas por etapa, E-218); el ayudante pasa a llamarse 🤝 asistente y elige la dirección con el fundador; 🔨 Mejoras muestra todo a todos. Las obras de cada nivel y los materiales los eligió Claude (provisional).
 15. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
@@ -187,7 +188,7 @@ El mundo se reinicia al abrir la beta, no antes (D-273).
 | E-225 (P-236) | Las reglas chicas del gremio desde el inicio (D-276): un gremio por héroe, el fondo solo con materiales, con 1 presente todo tarda el doble, varias obras a la vez | Confirmarlas así |
 | E-221 a E-224 (P-232 a P-235) | La reforma de las recetas: tramos cada 5 rangos y colores, costos de aprender, lo que hoy no avanza (piel, Pescador, Desollador, Construcción) y el orden de los parches | Sí a todo; recetas después de las 0.34 a 0.37 |
 | E-219 y E-220 (P-230, P-231) | Qué hace 🩹 Retirarse sin peleas automáticas, y el precio de aprender un oficio | Que no deje empezar un lote con la vida bajo ese %; 🥉20 hasta la beta |
-| E-216 a E-218 (P-227 a P-229) | La muralla: cuánto cosecha cada zona (40 % o menos), si reemplaza el +50 % de hoy y cuántas zonas cierra cada etapa | 20 % al almacén del asentamiento; sí; de 1 a 81 zonas |
+| E-216 y E-217 (P-227, P-228) | La muralla: cuánto cosecha cada zona (40 % o menos) y si reemplaza el +50 % de hoy (E-218, las zonas por etapa, ya respondida: D-304) | 20 % al almacén del asentamiento; sí |
 | E-214 (P-213) | ¿El Paladín es sanador y DPS (así quedó) o tanque y sanador? | Sanador y DPS |
 | E-186 (P-185) | ¿Un cambio de clase gratis para los héroes que el parche 0.31 movió solos? | Sí, una vez |
 | E-208 a E-213 | Los pendientes del parche de clases: los porcentajes de las marcas, qué no genera agro, el modo híbrido, los puntos al cambiar de rol, la variedad y el orden del tanque | Están en `content/balance.yaml` → `chain`; así quedan hasta que responda |

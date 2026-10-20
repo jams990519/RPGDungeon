@@ -121,30 +121,32 @@ def test_the_claro_keeps_its_stage_and_never_grows(service):
 
 
 def test_camp_cannot_grow_with_an_empty_pantry(service):
+    # [ES] D-304 (0.41): con la despensa vacía ni sube de nivel (⏫) ni agranda el territorio (🗺️); el nivel ya no va con las zonas
     make_hero(service)
     found_at(service, "test:1", 6, 0)
-    service.act("test:1", "claim:7:0")
-    view = service.act("test:1", "claim:8:0")                       # level 3: aldea, the pantry opens
     camp = service.store.get("camp", "6:0")
-    assert camp["level"] == 3
+    camp["level"] = 3                                               # level 3: aldea, the pantry opens
+    service.store.put("camp", "6:0", camp)
+    view = service.act("test:1", "claro")
     assert any("Despensa" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
     assert [a.id for a in view.actions] == ["cook", "oficios", "trainer", "upsvc", "guild", "board", "campmgmt", "dudas"]    # D-192; D-287: no 🔬 without 📚
-    # D-192: ⬆️ Agrandar, 🔨 Mejoras, 🌾 Aportar comida and 🛡️ Gremio live in 🏰 Gestionar
-    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["grow", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]
+    # D-192: ⬆️ Mejorar (D-304), 🔨 Mejoras, 🌾 Aportar comida and 🛡️ Gremio live in 🏰 Gestionar
+    assert [a.id for a in service.act("test:1", "campmgmt").actions] == ["improve", "upgrades", "campfeed", "guild", "gzones", "campinfo", "claro"]
     assert rations(service, "6:0") == 7                             # a new pantry starts with 7 days
     set_rations(service, "6:0", 0)
     view = service.act("test:1", "grow")
-    assert view.kind == "player_camp" and "despensa" in view.notice.lower()
+    assert view.kind == "camp_improve" and "despensa" in view.notice.lower()
     assert any("vacía" in line for line in service.act("test:1", "campinfo").body)      # D-302: the famine in ℹ️
+    assert any("🌾 Llenar la despensa" in line for line in service.act("test:1", "lvlup").body)   # D-304: nor the level
     service.act("test:1", "claim:6:1")
-    assert service.store.get("camp", "6:0")["level"] == 3           # nothing paid, nothing lost
+    assert len(service.store.get("camp", "6:0")["zones"]) == 1      # nothing paid, nothing lost
     give(service, "test:1", carne=1)
     view = service.act("test:1", "campfeed")
     assert "2 raciones" in view.notice and rations(service, "6:0") == 2
     assert service.act("test:1", "grow").kind == "camp_grow"
     service.act("test:1", "claim:6:1")
     camp = service.store.get("camp", "6:0")
-    assert camp["level"] == 4 and len(camp["zones"]) == 4 and camp["members"] == ["test:1"]
+    assert camp["level"] == 3 and len(camp["zones"]) == 2 and camp["members"] == ["test:1"]
 
 
 def test_camp_pantry_needs_level_three_and_being_there(service):

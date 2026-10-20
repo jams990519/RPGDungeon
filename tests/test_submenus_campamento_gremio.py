@@ -35,7 +35,7 @@ KEY = "6:0"
 DAY = 24 * 3600
 HOUR = 3600
 RAID_GAP = 7 * DAY / 3          # D-154: 3 raids per real week (balance.yaml raids.per_week)
-INFO_BITS = ("fundado por", "🏰 Etapa:", "Eres parte", "Agrandarlo", "Mejoras construidas", "Próxima oleada")
+INFO_BITS = ("fundado por", "🏰 Etapa:", "Eres parte", "Agrandar el territorio", "Mejoras construidas", "Próxima oleada")   # D-304
 
 
 def ids(view):
@@ -139,7 +139,7 @@ def test_members_list_the_members_and_who_waits_for_room(service):
     assert members.kind == "guild_members" and members.title == "👥 Miembros del gremio"
     lines = [line for line in members.body if line.startswith("/m")]
     assert lines[0].startswith("/m1 👑 Lyra") and "Bram" in lines[1] and lines[2].startswith("/m3 ⏳ Cora")
-    assert "⏳ Esperando lugar en el campamento (1/10):" in members.body and any("🤝 Ayudantes" in line for line in members.body)
+    assert "⏳ Esperando lugar en el campamento (1/10):" in members.body and any("🤝 Asistentes" in line for line in members.body)   # D-304: asistentes
     assert ids(members) == ["guild"] and len(members.actions) <= button_cap(members.kind)
     assert ids(service.text("test:1", "/m3"))[-1] == "gmembers"                   # a card goes back to 👥 Miembros
     assert "gmembers" in ids(service.act("test:3", "guild"))                     # who waits sees it too

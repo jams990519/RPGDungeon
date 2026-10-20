@@ -157,7 +157,7 @@ guide:
         🔨 Mejoras: aquí está el botón de mejora. Construyes fogón, cabañas, forja y más (por tipo, en 🏘️ Servicios).
         🏘️ Servicios: el mercader, la posada y el taller llegan al construir sus mejoras.
         🧑‍🏫 Entrenador: el maestro que te enseña los oficios.
-        ⬆️ Agrandar: tu campamento suma zonas y sube de nivel, hasta castillo.
+        ⬆️ Mejorar: ⏫ sube de nivel (una lista dice qué falta) y 🗺️ agranda el territorio, hasta castillo.
         🛡️ Ojo: llegan oleadas. Defiéndelo con 🛡️ Defender.
         📈 A medida que avances, aprenderás más oficios.
   tip:                         # [ES] avisos de una sola vez (content/guide.yaml "tips"), uno por pantalla como mucho

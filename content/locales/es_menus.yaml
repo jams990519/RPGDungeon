@@ -1,7 +1,7 @@
 # Texts of the 0.29 menus (D-190, D-191 confirmed; D-192 provisional): the 🏕️ Campamento hub (the Claro and your own camp),
 # 🏰 Gestionar, the 👤 Héroe card, the 🧑‍🏫 Entrenador and the notice of the old 📖 Historia button.
 # [ES] Textos de los menús nuevos de la 0.29 (estilo TowerWars "ampliado, detallado y separado"): el centro de 🏕️ Campamento
-# (el Claro y tu propio campamento) con una línea por opción, 🏰 Gestionar (lo de tu campamento: agrandar, mejoras, despensa,
+# (el Claro y tu propio campamento) con una línea por opción, 🏰 Gestionar (lo de tu campamento: ⬆️ mejorar, mejoras, despensa,
 # gremio), la ficha nueva de 👤 Héroe (puntos arriba, tiempos de vida y energía), el 🧑‍🏫 Entrenador (presenta los oficios) y el
 # aviso de 📖 Historia, que salió del menú (D-190). Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
 # Los textos de ❓ Dudas están en es_dudas.yaml.
@@ -35,7 +35,7 @@ hub:
   services: "🏘️ Servicios: {list}."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time}."
-  manage: "🏰 Gestionar: ⬆️ agrandar, 🔨 mejoras, 🌾 despensa, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-302: ℹ️ Información está ahí
+  manage: "🏰 Gestionar: ⬆️ mejorar (nivel y territorio), 🔨 mejoras, 🌾 despensa, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-302: ℹ️ Información está ahí; D-304: ⬆️ Mejorar
   dudas: "❓ Dudas: escribe una palabra y te muestro las preguntas ya respondidas."
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
   # [ES] botones (cortos: sin costos)
@@ -60,8 +60,8 @@ hub:
 manage:
   title: "🏰 Gestionar {name}"
   intro: "Lo que hace crecer y mantener tu campamento:"
-  grow: "⬆️ Agrandar: {cost} para pasar al nivel {next} (una zona más y más lugar para miembros)."
-  grow_top: "⬆️ Agrandar: tu campamento llegó a castillo."
+  grow: "⬆️ Agrandar: {cost} para pasar al nivel {next} (una zona más y más lugar para miembros)."   # [ES] sin uso desde la 0.41 (D-304): ahora improve.manage_line
+  grow_top: "⬆️ Agrandar: tu campamento llegó a castillo."   # [ES] sin uso desde la 0.41 (D-304)
   upgrades: "🔨 Mejoras: {n} {n|construida|construidas} · 🛡️ Defensa {defense}. Las obras y lo que falta."
   pantry: "🌾 Aportar comida: carne, pescado, comida cocinada o 🥖 provisiones para la despensa."
   pantry_locked: "🌾 Despensa: llega al nivel {level} (aldea)."   # [ES] sin uso desde la 0.39 (D-287)

@@ -1,0 +1,98 @@
+# Texts of the 0.41 camp patch (D-304): ⬆️ Mejorar campamento with ⏫ Siguiente nivel (a checklist of works that must be built,
+# materials and 🪎 chests that fills in) and 🗺️ Agrandar territorio (where the camp grows: a mini-map and 8 directions, up to the
+# zones of each stage), plus what every member sees in 🔨 Mejoras and the 🤝 assistants line of 👥 Miembros.
+# [ES] Textos del parche 0.41 del campamento (pedido del dueño del 20-oct-2026: "ponme en el botón de mejorar dos opciones: una,
+# siguiente nivel, y dos, agrandar territorio… debes construir esto, esto y esto a tal nivel para pasar al siguiente nivel, más
+# los recursos, en formato de lista, y se va a ir completando"; y "cada mejora debe ser visible para todos los miembros… un
+# asistente va a permitir definir hacia dónde va a avanzar el territorio junto contigo"). Se junta con es.yaml y los demás
+# es_*.yaml al cargar (engine/core/content.py): las claves de "upgrades" y "helpers" se suman a las de es.yaml y
+# es_servicios.yaml.
+# Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0.5 y diseno/01-plataforma/menus-campamento-y-heroe.md
+# Lo leen: engine/service/game.py (_camp_member_actions, _camp_manage_view, _camp_info_lines, _improve_view, _lvlup_rows,
+#     _lvlup_view, _lvlup_give, _lvlup_go, _level_up, _grow_view, _grow_camp, _territory_map, _direction_label, _upgrades_view)
+#     y engine/service/gremio.py (_camp_members_view: la línea de 🤝 asistentes del fundador)
+# Estilo: español neutro, de tú, frases cortas para el teléfono (D-287/D-302: poco texto). Una clave nueva va también en
+# en_nivel.yaml, en el mismo cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se
+# ve como [clave].
+
+improve:                       # [ES] D-304: ⬆️ Mejorar campamento (desde 🏰 Gestionar)
+  button: "⬆️ Mejorar campamento"
+  title: "⬆️ Mejorar {name}"
+  manage_line: "⬆️ Mejorar: nivel {level} ({stage}) · 🗺️ {zones}/{cap} zonas. Sube de nivel o agranda el territorio."
+  level_line: "🏕️ Nivel {level} · {stage}"
+  zones_line: "🗺️ Zonas: {zones} de {cap}"
+  next_line: "⏫ Nivel {level}: {done} de {total} listos"
+  lvlup_button: "⏫ Siguiente nivel"
+  grow_button: "🗺️ Agrandar territorio"
+
+lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que se va completando
+  title: "⏫ Siguiente nivel"
+  intro: "⏫ Para subir a nivel {level} ({stage}) te falta:"
+  ready: "⏫ ¡Todo listo para subir a nivel {level} ({stage})!"
+  works_title: "🏗️ Construir:"
+  items_title: "📦 Recursos:"
+  work_line: "{name}{state}"
+  state_building: " · 🏗️ en obra"
+  state_active: " · 🔨 activa"
+  state_idle: " · ⏸️ sin activar"
+  item_line: "{emoji} {item} {have}/{need}"
+  chest_line: "🪎 Cofres {have}/{need}"
+  trial_line: "🌙 Ganar la Noche de prueba"
+  famine_line: "🌾 Llenar la despensa: vacía, el campamento no sube"
+  fund_hint: "💰 Al tocar 🤲 Aportar, el fondo pone primero {items}."
+  gives: "Al subir: 👥 +{members} lugares, obras nuevas y 🗺️ hasta {zones} zonas."
+  give_button: "🤲 Aportar"
+  go_button: "⏫ Subir a nivel {level}"
+  trial_button: "🌙 Noche de prueba"
+  name: "⏫ Nivel {level}"   # [ES] el nombre en "🤲 Aportaste … a {name}" y "💰 El fondo puso … en {name}"
+  chests_given: "🪎 Aportaste {n} {n|cofre|cofres} a {name}."
+  nothing: "No llevas nada de lo que falta: {items}."
+  materials_done: "Los materiales ya están: falta lo demás de la lista."
+  not_ready: "Todavía falta algo de la lista."
+  done: "⏫ ¡{camp} subió a nivel {level} ({stage})! Caben más miembros, hay obras nuevas y el territorio llega hasta {zones} zonas."
+  push_title: "⏫ Tu campamento subió de nivel"
+  push: "⏫ {hero} subió {camp} a nivel {level} ({stage})."
+  top: "🏰 Tu campamento llegó a {stage}: todavía no hay un nivel más."
+
+territory:                     # [ES] D-304: 🗺️ Agrandar territorio, hacia dónde crece
+  title: "🗺️ Agrandar territorio"
+  header: "🗺️ Zonas: {zones} de {cap} ({stage})"
+  cost: "Cada zona nueva cuesta {items}, de tu mochila."
+  hint: "Mira los recursos que conoces de cada una: elige con estrategia."
+  managers_only: "🤝 La dirección la eligen el fundador o un asistente."
+  at_cap: "Llegaste al tope de zonas de tu nivel: sube de nivel para agrandar más."
+  own_mark: "🟩"
+  free_mark: "🔸"
+  taken_mark: "⬛"
+  empty_mark: "▫️"
+  legend_center: "{mark} centro"
+  legend_own: "🟩 tu territorio"
+  legend_pick: "1️⃣ para elegir"
+  legend_free: "🔸 libre (➡️ Más zonas)"
+  legend_taken: "⬛ de otro"
+  option: "{n} {dir} · ({x}, {y}) · {items}"
+  option_button: "{n} {dir}"
+  more: "➡️ Más zonas"
+  page: "Página {n} de {total}"
+  grown: "🗺️ ¡El territorio creció hacia el {dir}! Ahora tiene {zones} de {cap} zonas (sumó ({x}, {y}))."
+  grown_push: "🗺️ {hero} agrandó {camp} hacia el {dir}: sumó ({x}, {y}) y tiene {zones} de {cap} zonas."
+  info_line: "🗺️ Agrandar el territorio suma 1 zona vecina (hasta {cap} en esta etapa) y cuesta {items}. En tu territorio recolectas un 50 % más."
+  dir:                         # [ES] las 8 direcciones desde el centro del campamento (el norte suma a la y; el este, a la x)
+    n: "⬆️ Norte"
+    ne: "↗️ Noreste"
+    e: "➡️ Este"
+    se: "↘️ Sureste"
+    s: "⬇️ Sur"
+    sw: "↙️ Suroeste"
+    w: "⬅️ Oeste"
+    nw: "↖️ Noroeste"
+
+upgrades:                      # [ES] D-304: lo que ven TODOS los miembros en 🔨 Mejoras
+  idle_names: "⏸️ Sin activar: {names} (las activa el fundador o un 🤝 asistente)."
+  idle_names_manager: "▶️ Para activar en 🏘️ Servicios: {names}."
+  lvlup_line: "⏫ Nivel {level}: {done} de {total} listos (⬆️ Mejorar → ⏫ Siguiente nivel)."
+
+helpers:                       # [ES] D-304: la línea del fundador en 👥 Miembros (cómo nombrar un asistente)
+  founder_line: "🤝 Asistentes: {n} de {cap}{names} — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente."
+  founder_names: ": {names}"
+  founder_alone: "🤝 Asistentes: 0 de {cap}. Cuando entre otro miembro, podrás nombrarlo asistente."
