@@ -97,7 +97,7 @@ trainer:
     refine: "🪚 Refinado: conviertes lo que juntas en materiales mejores (tablones, lingotes, telas, sillares…) en una estación."
     craft: "🛠️ Fabricación: equipo, pociones, vendas, comida y muebles, en una estación. A veces sale una ✒️ obra maestra."
     enchant: "✨ Encantamiento: desarmas equipo viejo en esencias y encantas tus piezas (/encantar)."
-    service: "💱 Servicio: el 💱 Comercio sube vendiendo; la 🏗️ Construcción, aportando a las obras de tu campamento."
+    service: "🏗️ Servicio: la 🏗️ Construcción sube aportando a las obras de tu campamento."   # [ES] D-298: el 💱 Comercio está bloqueado hasta las caravanas
   names: "   {list}"
   entry: "{name}"
   entry_rank: "{name} {rank}"

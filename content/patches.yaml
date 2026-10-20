@@ -744,3 +744,12 @@ v0_39_1:
     - "🔎 New resource finder, in 🛡️ Guild and in 🏰 Manage: type a resource (for example, wood) and it tells you which zones investigated to 50% or more have it, nearest first, with how much is left. Tap /z1 to lay out the way."
     - "🛡️ With a guild, what everyone explored counts; without one, what you explored. You can also type /search wood from anywhere."
 
+v0_39_2:
+  version: "0.39.2"
+  title: "💱 Lost Realms 0.39.2: el Comercio, en pausa hasta las caravanas"
+  title_en: "💱 Lost Realms 0.39.2: Trade, paused until the caravans"
+  notes:
+    - "💱 El oficio de Comercio queda bloqueado por ahora: va a cambiar y volverá con las caravanas. Vender al mercader y al trueque sigue igual para todos. Si ya tenías rango, queda guardado."
+  notes_en:
+    - "💱 The Trade profession is locked for now: it will change and come back with the caravans. Selling to the merchant and at the Trading Post works as before for everyone. If you already had a rank, it is kept."
+

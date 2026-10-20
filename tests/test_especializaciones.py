@@ -339,7 +339,7 @@ def test_trade_enchant_and_explorer_specializations(service):
     hero.backpack, hero.gold = {"madera": 10}, 0
     service._save(hero)
     service.act("test:1", "sell:all")
-    assert service._load("test:1").gold > plain                            # 📦 Abastecedor: goods; 🛡️ Tratante: only gear
+    assert service._load("test:1").gold == plain                           # D-298: 💱 Comercio locked, its 🎓 give nothing for now
     edef = service.content.balance["enchanting"]["enchants"]["filo"]
     hero = Hero(id="e", name="E", class_id="guerrero", professions={"encantamiento": rank_xp(service, 25)},
                 prof_specs={"encantamiento": ["encantamiento_armas"]}, spec_xp={"encantamiento_armas": full(service)})
@@ -416,7 +416,7 @@ def test_the_hub_pages_many_professions_within_four_buttons(service):
         if ids(view)[-2] == "pspecs:0":
             seen |= {i for i in ids(view) if i.startswith("pspec:")}
             break
-    assert seen == {f"pspec:{pid}" for pid in service.content.professions["specs"]}        # every profession is reachable
+    assert seen == {f"pspec:{pid}" for pid in service._pspec_catalog()}    # every profession is reachable (D-298: not the locked 💱)
 
 
 def test_every_specialization_screen_keeps_four_buttons_and_its_texts(content):

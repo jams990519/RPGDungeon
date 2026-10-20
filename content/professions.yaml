@@ -25,6 +25,8 @@
 #     gathers: materiales que junta al recolectar (sube 1 de experiencia de oficio por unidad: balance.yaml professions).
 #     skins: materiales que saca de las bestias vencidas (el 🔪 Desollador: carne y piel del botín).
 #     rare: {item, min_rank}: el material raro que puede encontrar al recolectar desde ese rango.
+#     locked: true (D-298): el oficio no se muestra, no se aprende, no sube ni da beneficio (ni sus 🎓 especializaciones); el
+#         rango ya ganado queda guardado en Hero.professions para cuando se abra. Hoy: 💱 Comercio, hasta las caravanas.
 # Campos de cada receta:
 #     profession: el oficio que la hace (y su estación: en la fase 1 cada oficio de refinado y fabricación tiene la suya).
 #     inputs: materiales de la mochila por vez. output: lo que sale por vez (ids de items.yaml).
@@ -314,6 +316,7 @@ professions:
     perk: {hp: 0.03, attack: 0.03}           # [ES] D-111: +3 % de vida y de ataque
   comercio:
     emoji: "💱"
+    locked: true                               # [ES] D-298 (20-oct-2026, orden del dueño): bloqueado por ahora; se redefine para las caravanas (que todavía no existen). No se aprende, no sube y no da beneficio; el rango de quien ya lo tenía se guarda
     name_key: profession.comercio.name
     how_key: profession.comercio.how
     branch: service                            # [ES] D-116: oficio de servicio: no da nada en combate, da dinero
