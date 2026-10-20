@@ -63,7 +63,7 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 
 | Oficio | Qué hace | Beneficio | 🎓 Especializaciones | En WoW |
 |---|---|---|---|---|
-| 💱 **Comercio** | Sube al vender (al mercader, al trueque o el equipo viejo) | +20 % al vender | Abastecedor · Tratante de equipo · Caravanero | — |
+| 💱 **Comercio** | 🔒 **Bloqueado desde la 0.39.2 (D-298):** se redefine para las caravanas, que todavía no existen. Antes subía al vender. | (antes, +20 % al vender) | Abastecedor · Tratante de equipo · Caravanero | — |
 | 🏗️ **Construcción** | Sube al aportar a las obras del campamento y al reparar defensas | −20 % de materiales en las obras y −50 % al reparar | Obras de madera · Obras de piedra · Fortificaciones | — |
 
 **La cadena, de punta a punta.** Por ejemplo, una espada: ⛏️ Minero (metal) → 🔥 Fundición (lingote) → 🔨 Herrería (espada), con 🔪 Desollador → 🪣 Curtiduría (cuero) para la empuñadura. Nadie lo hace todo solo rápido: por eso hay gremios y mercado.

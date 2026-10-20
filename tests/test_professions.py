@@ -532,7 +532,8 @@ def test_medicina_makes_ointments_that_heal_more_with_its_rank(service):
 
 
 def test_comercio_earns_more_coins_and_rises_by_selling(service):
-    # D-116: not every perk is for combat: 💱 Comercio only gives coins (+20 % at rank 100) and rises by selling.
+    # D-116 gave 💱 Comercio coins (+20 % at rank 100) and xp by selling. D-298 (the owner, 20-oct-2026): locked until the
+    # caravans: selling pays the plain price, gives it no xp, and a rank already earned stays stored but gives nothing yet.
     ready(service, backpack={"madera": 10})
     hero = service._load("test:1")
     hero.gold = 0
@@ -541,14 +542,15 @@ def test_comercio_earns_more_coins_and_rises_by_selling(service):
     service.act("test:1", "sell:all")
     hero = service._load("test:1")
     base = hero.gold
-    assert base > 0 and hero.professions.get("comercio", 0) == base         # 1 xp per coin, no perk at rank 1 yet
+    assert base > 0 and hero.professions.get("comercio", 0) == 0            # no xp while it is locked
     hero.professions["comercio"] = rank_xp(service, 100)
     hero.backpack = {"madera": 10}
     hero.gold = 0
     service._save(hero)
     service.act("test:1", "sell:all")
-    assert service._load("test:1").gold == round(base * 1.2)
+    assert service._load("test:1").gold == base                            # no +20 % for now
+    assert service._load("test:1").professions["comercio"] == rank_xp(service, 100)   # the old rank is kept
     kit = service._kit(service._load("test:1"))
     assert kit["perk_bonus"] == {"attack": 0.0, "hp": 0.0, "armor": 0.0}   # nothing in battle
-    view = service.text("test:1", "/comercio")                     # D-257: the perk shows behind the profession's code
-    assert any("+20 % de monedas" in line for line in view.body)
+    view = service.text("test:1", "/comercio")                     # its code no longer opens a profession
+    assert not any("+20 % de monedas" in line for line in view.body)

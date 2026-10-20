@@ -19,6 +19,8 @@
 
 ---
 
+> **0.39.2 (D-298, orden del dueño):** 💱 Comercio está **bloqueado** hasta que existan las caravanas: no se ve, no se aprende, no sube al vender y no da beneficio (tampoco sus 🎓 especializaciones). Lo que sigue sobre el Comercio describe cómo era y cómo volverá a abrirse. El rango ganado queda guardado.
+
 ## 0.0 Los oficios se aprenden (D-257, en el juego desde la 0.33)
 
 El dueño pidió (17-oct): "cocina es una profesión: no debería salirme hasta que yo no aprenda la profesión… cuando yo le doy a aprender, voy a pagar por la primera receta". Y: "el jugador va a ir aprendiendo recetas a medida que va haciendo recetas".

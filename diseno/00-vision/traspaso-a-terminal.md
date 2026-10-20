@@ -172,7 +172,8 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 8. **0.38.2 y 0.38.3 (publicadas el 19-oct):** el Guerrero con espada (D-292) y los íconos de clase únicos (D-293).
 9. **0.39 (publicada el 19-oct):** no se muestra lo que no es de tu nivel (D-287); 🏘️ Servicios por tipo y un edificio por oficio (D-288); 🤝 ayudantes (D-289); ⚔️ Armería (D-290); obras que activa el fundador o un ayudante, 💰 Depositar y el gremio completo después de fundar (D-291); gremio en espera (D-294); cada obra nueva cuesta más (D-295). La programaron dos agentes en paralelo y se unió aquí.
 10. **0.39.1 (publicada el 19-oct):** 🔎 buscador de recursos en 🛡️ Gremio y 🏰 Gestionar, solo zonas al 50 % o más (D-296). Espera respuesta: cómo arreglar la madera escasa (E-227, P-238).
-11. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+11. **0.39.2:** 💱 Comercio bloqueado hasta las caravanas (D-298). Después, 📚 Guías en ❓ Dudas (D-297, la programa un agente).
+12. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):

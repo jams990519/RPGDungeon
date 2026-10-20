@@ -82,7 +82,7 @@ trainer:
     refine: '🪚 Refining: you turn what you collect into better materials (planks, ingots, cloth, ashlar blocks…) at a station.'
     craft: '🛠️ Crafting: gear, potions, bandages, food and furniture, at a station. Sometimes a ✒️ masterwork comes out.'
     enchant: '✨ Enchanting: you break down old gear into essences and enchant your pieces (/enchant).'
-    service: '💱 Services: 💱 Trade levels up by selling; 🏗️ Construction, by contributing to your camp''s works.'
+    service: '🏗️ Services: 🏗️ Construction levels up by contributing to your camp''s works.'
   names: '   {list}'
   entry: '{name}'
   entry_rank: '{name} {rank}'

@@ -1150,7 +1150,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         La llaman: _kit (ataque, vida, armadura, curación, pociones y vendas), _settle (vida que vuelve), _bag_cap.
         Si cambia, afecta: cuánto ayuda cada oficio (content/professions.yaml "perk" y "specs"; profesiones.md §0.2).
         """
-        catalog = (self.content.professions or {}).get("professions") or {}
+        catalog = self._prof_catalog()                  # D-298: a locked profession (💱 Comercio) gives nothing for now
         ranks = {pid: self._prof_rank(hero, pid) for pid, xp in (hero.professions or {}).items() if xp > 0 and pid in catalog}
         cdef = self.content.classes.get(hero.class_id, {})
         group = cdef.get("group", hero.class_id)
@@ -6562,8 +6562,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self.content.balance["professions"]
 
     def _prof_catalog(self) -> dict[str, dict[str, Any]]:
-        """The professions of content/professions.yaml, in file order (gathering, refining, crafting)."""
-        return (self.content.professions or {}).get("professions") or {}
+        """The professions of content/professions.yaml, in file order (gathering, refining, crafting); locked ones are out.
+
+        [ES] D-298 (orden del dueño, 20-oct-2026): un oficio con locked: true (hoy 💱 Comercio, hasta las caravanas) no está en el
+        catálogo: no se lista, no se aprende, no sube (_prof_gain) ni da beneficio (_perks); su rango queda guardado en el héroe.
+        """
+        catalog = (self.content.professions or {}).get("professions") or {}
+        return {pid: pdef for pid, pdef in catalog.items() if not pdef.get("locked")}
 
     def _recipes(self) -> dict[str, dict[str, Any]]:
         """Every recipe that can be made, in file order (retired ones are hidden)."""
@@ -8209,8 +8214,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self.content.balance.get("specs") or {}
 
     def _pspec_catalog(self) -> dict[str, list[dict[str, Any]]]:
-        """content/professions.yaml "specs": profession id -> its specializations (in file order)."""
-        return (self.content.professions or {}).get("specs") or {}
+        """content/professions.yaml "specs": profession id -> its specializations (in file order); a locked profession's are out (D-298)."""
+        specs = (self.content.professions or {}).get("specs") or {}
+        return {pid: lst for pid, lst in specs.items() if pid in self._prof_catalog()}
 
     def _pspec_slots_at(self) -> list[int]:
         """The profession ranks that open the first and the second specialization (balance.yaml specs.slots_at: 25, 75)."""
