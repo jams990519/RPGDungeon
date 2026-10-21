@@ -1049,6 +1049,21 @@ v0_53:
     - "🛡️ They come by themselves, as always: each member taps 🛡️ Defend, wherever they are. The camp's defenses hold them back, so it pays to repair them between one and the next."
     - "📋 How it's going, in ⏫ Next level and in the notice everyone gets after each wave. Castles that already exist don't change. More in ❓ /d39."
 
+v0_54:
+  version: "0.54"
+  title: "🔀 Lost Realms 0.54: el modo híbrido"
+  title_en: "🔀 Lost Realms 0.54: hybrid mode"
+  notes:
+    - "🔀 Desde el nivel 10 se abre el modo híbrido: cambia tu Constructor, tu Preparador o tu Gastador (uno, dos o los tres) por la habilidad del mismo puesto de tu otro rol. Un Guerrero tanque puede llevar el Ejecutar del DPS; un Paladín DPS, la Luz del alba del sanador."
+    - "🎛️ Está en 👤 Héroe → 🎛️ Barra de combate → 🔀 Modo híbrido, o escribe /hibrido. Cada puesto tiene su botón para cambiarlo y volver. Es gratis fuera de combate."
+    - "⚔️ El Básico no cambia y la barra sigue con sus 4 botones. Tu cadena sigue el orden de tu rol, cada habilidad hace lo suyo (daño, curación o agro) y peleas con la vida y el ataque de tu rol."
+    - "🔄 Cada rol guarda su mezcla: si cambias de rol, el otro pelea con la suya. Si nunca lo tocas, todo sigue igual que antes. La mezcla corre por tu cuenta: el juego no la balancea."
+  notes_en:
+    - "🔀 From level 10 hybrid mode opens: swap your Builder, your Primer or your Spender (one, two or all three) for the ability in the same slot of your other role. A Warrior tank can carry the DPS's Execute; a Paladin DPS, the healer's Light of Dawn."
+    - "🎛️ It's in 👤 Hero → 🎛️ Combat Bar → 🔀 Hybrid mode, or type /hybrid. Each slot has its own button to swap it and back. It's free outside combat."
+    - "⚔️ The Basic doesn't change and the bar keeps its 4 buttons. Your chain follows your role's order, each ability does its own thing (damage, healing or threat) and you fight with your role's life and attack."
+    - "🔄 Each role keeps its own mix: if you switch roles, the other one fights with its own. If you never touch it, everything stays as before. The mix is on you: the game doesn't balance it."
+
 v0_55:
   version: "0.55"
   title: "🪖 Lost Realms 0.55: las escuadras de 5"

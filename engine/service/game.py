@@ -39,9 +39,10 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     GuideMixin, de la que GameService también hereda)
     diseno/04-combate/combate-en-cadena.md (0.31, D-225 a D-232: las 6 clases con 2 roles y el combate en cadena; en este
     archivo: _chain_combat_view y la Mochila con 🏃 Huir, la creación con el primer rol, _chain_talents_view,
-    _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas;
+    _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view, _level_point_lines y las estadísticas;
     0.32, D-233: el Paladín reemplaza al Chamán y la creación muestra las clases de 2 en 2, una armadura por página:
-    CLASS_PAGE_SIZE)
+    CLASS_PAGE_SIZE; §12, 0.54, D-312 y D-330: el 🔀 modo híbrido del nivel 10, _hybrid_view y _hybrid_action, "hyb" y
+    "hyb:<H1|H2|H3>", /hibrido)
     diseno/09-construccion/escalera-del-asentamiento.md §5.5 (0.49, D-309 y D-325: la 🌾 cosecha de la muralla) y §0.4 (0.51,
     D-253 y D-327: el cupo por etapa, quien deja de jugar y los activos del castillo; vive en engine/service/ladder.py);
     diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
@@ -687,8 +688,14 @@ from engine.classes import (
     bar_choices,
     bar_slots,
     base_response,
+    chain_bar,
     default_spec,
     ensure_talents,
+    hybrid_choice,
+    hybrid_max,
+    hybrid_open,
+    hybrid_pairs,
+    hybrid_partner,
     is_chain_spec,
     kit as talent_kit,
     second_role_open,
@@ -697,6 +704,7 @@ from engine.classes import (
     specs_of,
     switch_role,
     sync_chain,
+    toggle_hybrid,
     unlock_points,
 )
 from engine.combat import CombatContext, make_combat, play_out, resolve_round, validate_choice
@@ -780,6 +788,7 @@ COMMANDS.update({"/jugadores": "players", "/players": "players"})
 COMMANDS.update({"/titulos": "ptitles", "/titles": "ptitles"})   # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador
 COMMANDS.update({"/mercado": "mkt", "/market": "mkt"})           # D-320 (0.46): 🏛️ Mercado entre jugadores (engine/service/market.py)
 COMMANDS.update({"/pergaminos": "scrolls", "/scrolls": "scrolls"})   # D-326 (0.50): 🗺️ Pergaminos de mapa (engine/service/map_scroll.py)
+COMMANDS.update({"/hibrido": "hyb", "/hybrid": "hyb"})               # D-330 (0.54): 🔀 Modo híbrido (from level 10, D-312)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -790,6 +799,7 @@ ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
 CLASS_PAGE_SIZE = 2
 FEEDBACK_NEXT = {"new": "seen", "seen": "approved", "approved": "fixing", "fixing": "resolved"}   # D-275: the desk's steps
 CLASS_CHANGE_ACTIONS = ("chgrp:", "chpick:", "chok:")   # D-270 (0.35): 🔄 Cambiar de clase: pick a class, a role, confirm
+CHAIN_ICONS = {"B": "⚔️", "H1": "🔸", "H2": "🔹", "H3": "💥"}   # 0.31: the icon of each chain button (fight, 🎛️ Barra, 🔀 Modo híbrido)
 NAME_RE = re.compile(r"^[^\W\d_][\w ]{1,15}$", re.UNICODE)
 CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Timed activities done INSIDE the zone: the hero counts as present while doing them, even with the chat closed (D-96).
@@ -2289,6 +2299,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._spec_view(hero, spec, notice=notice)
         if action_id == "bar":
             return self._bar_view(hero)
+        if action_id == "hyb" or action_id.startswith("hyb:"):     # D-330 (0.54): 🔀 Modo híbrido (in a fight: combat.busy)
+            return self._hybrid_action(hero, action_id)
         if action_id.startswith("barslot:"):
             parts = action_id.split(":")
             slot = int(parts[1]) if parts[1].isdigit() else 0
@@ -3771,7 +3783,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """What a new level says about its point. 0.31: a chain hero's point places itself; at level 5 its second role opens.
 
         [ES] Qué hace: después de subir de nivel, en las clases nuevas el punto se pone solo en el rol activo (sync_chain) y al
-        nivel chain.second_role_level avisa que ya puede jugar su segundo rol (D-230); en las viejas, el aviso de siempre.
+        nivel chain.second_role_level avisa que ya puede jugar su segundo rol (D-230); al nivel chain.hybrid.level, que se abrió
+        el 🔀 modo híbrido (0.54, D-330: hybrid.learned); en las viejas, el aviso de siempre.
         D-287 (0.39, pedido del dueño): como lo de niveles más altos ya no se anuncia antes, aquí se avisa la misión de la
         historia que se abre justo en este nivel ("📖 Nueva misión", _story_level_lines de engine/service/story.py).
         La llaman: _give_xp y _end_combat. Si cambia, afecta: el aviso de cada nivel.
@@ -3782,6 +3795,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         lines = [self.texts.t("chain.new_point")]
         if hero.level == int(self.content.balance["chain"]["second_role_level"]):
             lines.append(self.texts.t("chain.second_role_learned"))
+        if hero.level == int(self.content.balance["chain"]["hybrid"]["level"]) and hybrid_open(self.content.classes,
+                                                                                               self.content.balance, hero):
+            lines.append(self.texts.t("hybrid.learned"))      # 0.54 (D-330): the 🔀 hybrid mode opens today (said once)
         return lines + self._story_level_lines(hero)
 
     def _pay_referral(self, hero: Hero) -> None:
@@ -10476,11 +10492,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """🌟 Talentos of a 0.31 chain hero: its two roles, the active one, points that place themselves, the second role.
 
         [ES]
-        Qué hace: muestra los roles de la clase (⭐ el activo), los puntos de nivel (van solos al rol activo) y el modo híbrido
-        que espera la decisión del dueño (pendiente 3).
+        Qué hace: muestra los roles de la clase (⭐ el activo), los puntos de nivel (van solos al rol activo) y, desde la 0.54,
+        una línea del 🔀 modo híbrido (cuántos botones cambiaste y dónde se cambia: 🎛️ Barra de combate o /hibrido; D-330).
+        El botón 🔀 Modo híbrido va en 🎛️ Barra de combate porque esta pantalla ya tiene 4 botones (D-75; E-265).
         D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del nivel chain.second_role_level
         solo sale tu rol activo (sin el segundo con 🔒 ni "se aprende al nivel N": chain.second_role_locked queda para el
-        aviso corto de un botón viejo), y el modo híbrido sale solo desde su nivel (chain.hybrid.level).
+        aviso corto de un botón viejo), y el modo híbrido sale solo desde su nivel (chain.hybrid.level, hybrid_open).
         La llama: _talents_view. Si cambia, afecta: la pantalla de talentos de las clases nuevas.
         """
         t = self.texts
@@ -10499,19 +10516,27 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             actions.append(Action(id=f"tal:{spec}", label=t.t(sdef["name_key"])))
         if second:
             body += ["", t.t("chain.second_role_open")]
-        if hero.level >= int(bal["chain"]["hybrid"]["level"]):             # D-287: the hybrid mode, only from its level
-            body += ["", t.t("chain.hybrid_soon", n=bal["chain"]["hybrid"]["level"])]
+        if hybrid_open(self.content.classes, bal, hero):                   # D-287: the 🔀 hybrid mode, only from its level (0.54)
+            body += ["", t.t("chain.hybrid_soon", n=len(hybrid_choice(self.content.classes, bal, hero)), max=hybrid_max(bal))]
         actions.append(Action(id="chcls", label=t.t("chclass.button")))     # D-270: 🔄 Cambiar de clase
         actions.append(Action(id="hero", label=t.t("menu.back")))
         return View(kind="talents", title=t.t("talents.title"), body=body, actions=actions, notice=notice)
 
     def _chain_button_lines(self, sdef: dict[str, Any]) -> list[str]:
-        """One line per button of a chain spec: its place in the chain, label and what it does."""
+        """One line per button of a chain spec: its place in the chain, label and what it does.
+
+        [ES] Qué hace: una línea por botón (puesto, nombre con su costo y qué hace). Un botón prestado por el 🔀 modo híbrido
+        (from_spec, 0.54) dice de qué rol viene. La llaman: _chain_spec_view (los botones del rol) y _bar_view (la barra con
+        la que peleas). Si cambia, afecta: esas dos pantallas.
+        """
         t = self.texts
         out = []
         for link in chain_rules.LINKS:
             ability = chain_rules.ability_for(link, sdef)
-            out.append(t.t("chain.spec_button_line", link=t.t(f"chain.link.{link}"), label=self._chain_label(link, ability),
+            label = self._chain_label(link, ability)
+            if ability.get("from_spec") in self.content.classes:          # D-330: 🔀 borrowed from the other role
+                label += t.t("hybrid.from_tag", role=t.t(self.content.classes[ability["from_spec"]]["name_key"]))
+            out.append(t.t("chain.spec_button_line", link=t.t(f"chain.link.{link}"), label=label,
                            desc=t.t(f"ability.{ability['id']}.desc")))
         return out
 
@@ -10519,7 +10544,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """A chain button's label: icon, name and energy cost (the Básico shows the energy it gives)."""
         t = self.texts
         bal = self.content.balance
-        icon = {"B": "⚔️", "H1": "🔸", "H2": "🔹", "H3": "💥"}[link]
+        icon = CHAIN_ICONS[link]
         name = t.t(f"ability.{ability['id']}.name")
         if link == "B":
             return t.t("chain.button_basic", icon=icon, name=name, gain=bal["chain"]["energy"]["basic_gain"])
@@ -10562,19 +10587,26 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """Combat bar (D-79): 3 slots; slot 1 is a response, slots 2 and 3 any other unlocked ability.
 
         [ES]
-        Qué hace: la 🎛️ Barra de combate. En las clases nuevas (0.31) los 4 botones son fijos y solo se listan; en las viejas,
+        Qué hace: la 🎛️ Barra de combate. En las clases nuevas (0.31) lista los 4 botones con los que peleas (con los que prestó
+        el 🔀 modo híbrido marcados, 0.54) y, desde el nivel del modo híbrido, el botón 🔀 Modo híbrido (D-330); en las viejas,
         las 3 casillas con un botón para cambiar cada una. D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de
         tu nivel: antes del nivel del modo híbrido dice solo que los botones son fijos (chain.bar_fixed_now), sin anunciarlo.
-        La llaman: 🎛️ Barra de combate de los talentos. Si cambia, afecta: tests/test_cadena.py y tests/test_talents.py.
+        La llaman: 🎛️ Barra de combate de 👤 Héroe y de los talentos. Si cambia, afecta: tests/test_cadena.py,
+        tests/test_talents.py y tests/test_modo_hibrido.py.
         """
         t = self.texts
-        if is_chain_spec(self.content.classes, hero.class_id):     # 0.31: the 4 buttons are fixed (the hybrid mode will open them)
-            sdef = self.content.classes[hero.class_id]
+        if is_chain_spec(self.content.classes, hero.class_id):     # 0.31: the role's 4 buttons; 0.54: the 🔀 hybrid swaps shown
+            bal = self.content.balance
+            sdef = {**self.content.classes[hero.class_id], "abilities": chain_bar(self.content.classes, bal, hero)}
             body = [t.t("chain.spec_buttons")] + self._chain_button_lines(sdef)
-            hybrid = int(self.content.balance["chain"]["hybrid"]["level"])
-            body += ["", t.t("chain.bar_fixed", n=hybrid) if hero.level >= hybrid else t.t("chain.bar_fixed_now")]   # D-287
-            return View(kind="bar", title=t.t("bar.title"), body=body, actions=[Action(id="talents", label=t.t("menu.back"))],
-                        notice=notice)
+            actions = []
+            if hybrid_open(self.content.classes, bal, hero):       # D-287: the 🔀 button only from its level (D-312, D-330)
+                body += ["", t.t("chain.bar_fixed", n=bal["chain"]["hybrid"]["level"])]
+                actions.append(Action(id="hyb", label=t.t("hybrid.button")))
+            else:
+                body += ["", t.t("chain.bar_fixed_now")]
+            actions.append(Action(id="talents", label=t.t("menu.back")))
+            return View(kind="bar", title=t.t("bar.title"), body=body, actions=actions, notice=notice)
         abilities = self._class_abilities(hero)
         slots = bar_slots(self.content.classes, hero)
         body = [t.t("bar.intro"), ""]
@@ -10590,6 +10622,86 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                    for index in range(min(3, max(1, len(slots))))]
         actions.append(Action(id="talents", label=t.t("menu.back")))
         return View(kind="bar", title=t.t("bar.title"), body=body, actions=actions, notice=notice)
+
+    # ------------------------------------------------------------------ 🔀 hybrid mode (0.54, D-231, D-312; how: D-330)
+    # [ES] El modo híbrido del nivel 10 (diseno/04-combate/combate-en-cadena.md §12): cada uno de los 3 botones de rol
+    # (Constructor, Preparador, Gastador) puede llevar la habilidad del MISMO puesto de tu otro rol; el ⚔️ Básico no cambia y la
+    # barra sigue con 4 botones. Las reglas y lo guardado viven en engine/classes/talents.py (hybrid_open, hybrid_pairs,
+    # hybrid_choice, toggle_hybrid, chain_bar; Hero.hybrid); aquí, la pantalla y sus botones ("hyb", "hyb:<H1|H2|H3>",
+    # /hibrido). Gratis fuera de combate; en una pelea act() manda todo botón a _combat_action, que responde combat.busy.
+
+    def _hybrid_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🔀 Modo híbrido: the 3 role slots, each with its current ability and the other role's, and a button to swap it.
+
+        [ES]
+        Qué hace: lista los 3 puestos de rol con la habilidad que llevas (✅ la tuya o 🔀 la prestada) y la del mismo puesto de tu
+        otro rol, con un botón por puesto para cambiarlo ("🔸 Usar Golpe heroico"); un puesto sin pareja sale con "—" y sin
+        botón. Abajo, el ⚔️ Básico (no cambia) y la regla: la mezcla corre por tu cuenta (D-230) y cambiarla es gratis fuera de
+        combate. Botones: hasta 3 puestos y ↩️ Volver a 🎛️ Barra de combate (4, D-75).
+        La llama: _hybrid_action. Si cambia, afecta: tests/test_modo_hibrido.py y tests/test_buttons.py.
+        """
+        t = self.texts
+        bal = self.content.balance
+        classes = self.content.classes
+        partner = hybrid_partner(classes, hero) or hero.class_id
+        other_role = t.t(classes[partner]["name_key"])
+        swapped = hybrid_choice(classes, bal, hero)
+
+        def name(ability: dict[str, Any] | None) -> str:
+            return t.t(f"ability.{ability['id']}.name") if ability else "—"
+
+        body = [t.t("hybrid.intro", own=t.t(classes[hero.class_id]["name_key"]), other=other_role), ""]
+        actions = []
+        for link, own, other in hybrid_pairs(classes, hero):
+            icon, slot = CHAIN_ICONS[link], t.t(f"chain.link.{link}")
+            if not (own and other):                                    # no same-slot partner: shown as "—", never swapped
+                body.append(t.t("hybrid.slot_none", icon=icon, slot=slot, name=name(own)))
+            elif link in swapped:
+                body.append(t.t("hybrid.slot_swapped", icon=icon, slot=slot, name=name(other), role=other_role, own=name(own)))
+                actions.append(Action(id=f"hyb:{link}", label=t.t("hybrid.use_button", icon=icon, name=name(own))))
+            else:
+                body.append(t.t("hybrid.slot_own", icon=icon, slot=slot, name=name(own), other=name(other)))
+                actions.append(Action(id=f"hyb:{link}", label=t.t("hybrid.use_button", icon=icon, name=name(other))))
+        basic = t.t(f"ability.{classes[hero.class_id]['attack']['id']}.name")
+        body += ["", t.t("hybrid.basic_line", icon=CHAIN_ICONS["B"], name=basic), t.t("hybrid.rules")]
+        if hybrid_max(bal) < len(hybrid_pairs(classes, hero)):
+            body.append(t.t("hybrid.max_line", n=hybrid_max(bal)))
+        actions.append(Action(id="bar", label=t.t("menu.back")))
+        return View(kind="hybrid", title=t.t("hybrid.title"), body=body, actions=actions, notice=notice)
+
+    def _hybrid_action(self, hero: Hero, action_id: str) -> View:
+        """Open 🔀 Modo híbrido ("hyb", /hibrido) or swap one slot ("hyb:H1"); a short reply before its level (D-287).
+
+        [ES]
+        Qué hace: abre la pantalla o cambia un puesto (toggle_hybrid) y avisa qué quedó. Antes del nivel (o sin segundo rol)
+        responde corto, sin abrir nada (D-287: hybrid.locked). Nunca en una pelea: act() ya manda todo a _combat_action
+        (combat.busy) y aquí se vuelve a mirar por si otra puerta llega sin pasar por act().
+        La llaman: _idle_action. Si cambia, afecta: tests/test_modo_hibrido.py.
+        """
+        t = self.texts
+        bal = self.content.balance
+        classes = self.content.classes
+        if self.store.get("combat", hero.id) is not None:            # D-330: blocked in a fight (it would change the bar mid-round)
+            return self._main_view(hero, notice=t.t("combat.busy"))
+        if not hybrid_open(classes, bal, hero):
+            return self._talents_view(hero, notice=t.t("hybrid.locked", n=bal["chain"]["hybrid"]["level"]))
+        link = action_id[4:] if action_id.startswith("hyb:") else ""
+        if not link:
+            return self._hybrid_view(hero)
+        pair = next((p for p in hybrid_pairs(classes, hero) if p[0] == link), None)
+        if pair is None:
+            return self._hybrid_view(hero)
+        _link, own, other = pair
+        slot = t.t(f"chain.link.{link}")
+        if not toggle_hybrid(classes, bal, hero, link):
+            full = own and other and len(hybrid_choice(classes, bal, hero)) >= hybrid_max(bal)
+            return self._hybrid_view(hero, notice=t.t("hybrid.full", n=hybrid_max(bal)) if full else None)
+        if link in hybrid_choice(classes, bal, hero):
+            role = t.t(classes[hybrid_partner(classes, hero) or hero.class_id]["name_key"])
+            notice = t.t("hybrid.swapped", slot=slot, name=t.t(f"ability.{other['id']}.name"), role=role)
+        else:
+            notice = t.t("hybrid.restored", slot=slot, name=t.t(f"ability.{own['id']}.name"))
+        return self._hybrid_view(hero, notice=notice)
 
     def _bar_slot_view(self, hero: Hero, slot: int, page: int = 0) -> View:
         """Pick what goes in one slot: unlocked abilities, a short line each, 4 buttons at most (D-75)."""

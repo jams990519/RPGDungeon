@@ -62,7 +62,7 @@ questions:
   # ---- 👤 Héroe
   d26: {topic: hero, keywords: [nivel, niveles, experiencia, subir, xp, exp, progreso], keywords_en: ["level", "levels", "leveling", "level up", "experience", "exp", "progress", "max level"], related: [d27, d08, d09]}
   d27: {topic: hero, keywords: [talentos, talento, puntos, especializacion, especializaciones, habilidades, reiniciar], keywords_en: ["talents", "talent", "points", "specialization", "role", "roles", "second role", "abilities", "reset"], related: [d28, d29, d26]}
-  d28: {topic: hero, keywords: [barra, habilidades, habilidad, casillas, casilla, elegir, hechizos], keywords_en: ["bar", "abilities", "ability", "slots", "slot", "choose", "spells", "skills", "buttons", "hybrid"], related: [d27, d21, d29]}
+  d28: {topic: hero, keywords: [barra, habilidades, habilidad, casillas, casilla, elegir, hechizos, hibrido, mezclar], keywords_en: ["bar", "abilities", "ability", "slots", "slot", "choose", "spells", "skills", "buttons", "hybrid"], related: [d27, d21, d29]}
   d29: {topic: hero, keywords: [doble, dual, segunda, configuracion, cambiar], keywords_en: ["dual", "double", "second", "setup", "switch", "change role", "dual spec", "second role"], related: [d27, d52, d28]}
   d30: {topic: hero, keywords: [mochila, espacio, inventario, lleno, llena, cinturon, cargar, inv], keywords_en: ["backpack", "bag", "space", "inventory", "full", "belt", "carry", "inv", "capacity"], related: [d19, d31, d51]}
   d31: {topic: hero, keywords: [equipo, equipar, arma, armas, armadura, pieza, piezas, mejor, ropa], keywords_en: ["gear", "equip", "equipment", "weapon", "weapons", "armor", "piece", "pieces", "better", "clothes", "items"], related: [d30, d25, d49]}

@@ -45,9 +45,9 @@ chain:                       # [ES] 0.31 (D-225 a D-232): el combate en cadena d
   extend_cap: 3              # [ES] Disparo arcano y Lentitud alargan un turno la marca o la fragilidad activa, pero nunca a más de 3 turnos por delante
   second_role_level: 5       # [ES] D-230: al nivel 5 aprendes tu segundo rol (la otra especialización de tu clase), gratis
   keep_points: true          # [ES] D-238.4 (dueño, 11-oct-2026): cada rol guarda los suyos. Antes false; pendiente 4 del parche: false = al cambiar de rol se recogen y se reparten de nuevo los puntos; true = cada rol guarda los suyos
-  hybrid:                    # [ES] D-231: al nivel 10, modo híbrido (mezclar habilidades de tus dos roles). Pendiente 3 del parche: cuántas y el límite de botones
-    level: 10
-    max_mixed: null          # [ES] null = todavía no decidido: el modo híbrido no se ofrece hasta que el dueño diga cuántas habilidades se mezclan
+  hybrid:                    # [ES] D-231: al nivel 10, 🔀 modo híbrido (mezclar habilidades de tus dos roles). En el juego desde la 0.54 (D-312, D-330): engine/classes/talents.py (toggle_hybrid, chain_bar), pantalla 🔀 Modo híbrido en 🎛️ Barra de combate
+    level: 10                # [ES] nivel desde el que se abre (además hace falta el segundo rol, chain.second_role_level). Bajarlo lo abre antes a todos; subirlo lo cierra a quien quede debajo (su elección queda guardada y vuelve al llegar)
+    max_mixed: 3             # [ES] D-312 (dueño, 20-oct-2026, E-210): los 3 botones de rol (Constructor, Preparador, Gastador) se pueden cambiar por los del mismo puesto del otro rol; siguen 4 botones (el Básico no cambia). Antes null (no se ofrecía); D-238.3 decía 1. 0 o null = no se ofrece
   no_threat: []              # [ES] pendiente 2 del parche: ids de habilidades de DPS que no generan agro (el agro solo cuenta en grupo, que todavía no existe)
 
 travel:

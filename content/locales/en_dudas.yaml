@@ -196,7 +196,7 @@ faq:
     a: 'Each class has 2 roles. You choose the first when you create your hero and learn the second at level {second_role}, for free: switch roles whenever you want in 👤 Hero → 🌟 Talents. Each level gives you 1 point, which goes into your active role on its own and makes you a bit stronger.'
   d28:
     q: 🎛️ How do I choose my abilities?
-    a: 'Your 4 buttons are fixed and open from the start: Basic, Builder, Primer and Spender. Each role asks for its own order (you see it in 🌟 Talents and in every fight). At level {hybrid_level} hybrid mode arrives, to mix abilities from your two roles.'
+    a: 'Your 4 buttons are open from the start: Basic, Builder, Primer and Spender. Each role asks for its own order (you see it in 🌟 Talents and in every fight). From level {hybrid_level}, 🔀 Hybrid mode (👤 Hero → 🎛️ Combat Bar, or /hybrid) lets you swap the Builder, the Primer or the Spender for the one in the same slot of your other role, free outside combat; the Basic and your role''s order don''t change.'
   d29:
     q: 🔀 What is dual specialization?
     a: 'It''s your second role: at level {second_role} you learn it for free, and from then on you switch between your two roles whenever you want in 👤 Hero → 🌟 Talents. Your points are spread on their own into the role you''re playing.'
