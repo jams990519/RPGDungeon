@@ -288,7 +288,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Número | Valor | Por qué |
 |---|---|---|
 | Crear el gremio | 50 🥉 | Un sumidero chico: crear el campamento ya costó progreso |
-| Cupo por nivel (1 a 8) | 4 · 6 · 8 · 12 · 16 · 20 · 25 · 30 | Con gremio, reemplaza a la cuenta de antes (2 + 2 por nivel del campamento); nadie sale si baja |
+| Cupo por nivel (1 a 8) | 4 · 6 · 8 · 12 · 16 · 20 · 25 · 30 | Con gremio, reemplaza a la cuenta de antes (2 + 2 por nivel del campamento); nadie sale si baja. *Desde la 0.51 (D-327) ya no da cupo: rige el cupo por etapa (abajo, "la escalera del asentamiento")* |
 | Subir del nivel 1 al 2 | 40 exploraciones, 20 peleas ganadas y 100 recursos | Un grupo chico lo logra en uno o dos días: el primer paso se siente rápido |
 | Cada nivel siguiente | ~×1,6 (hasta 670, 335 y 1.680 para el 7 → 8) | Como la obra del Claro: cada etapa pide bastante más |
 | Castillo | Gremio de nivel 5 o más y 10 miembros o más | El castillo es de un grupo, no de una persona sola |
@@ -1248,6 +1248,40 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 **Lo que queda por mirar:** en el bosque, 1 de cada 4 unidades es madera, y en la fogata más de la mitad (sus 2 recursos fijos). Si hace falta más, lo que queda abierto en P-238: el botón 🪓 Talar (solo madera) y que los recursos de base vuelvan más rápido.
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
+
+### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
+
+El dueño eligió el 17-oct un solo cupo por etapa, el castillo con 40 activos y cupo de 50, la salida de quien no juega 30 días y que acepten gente el líder y los oficiales (D-253). Los números de la escalera (§2) son los que aceptó; cómo se repartieron en los niveles y el aviso de los 25 días los eligió Claude (D-327); se ajustan en la beta (E-253 a E-256).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `camps.members_by_stage` (nuevo) | — (cupo = máx(2 + 2 por nivel, cupo del gremio) + 🛖/🛏️) | campamento 10 · aldea 15 · pueblo 25 · ciudad 40 · castillo 50 (+ 🛖 Cabañas y 🛏️ Literas encima) |
+| `camps.members_base` / `members_per_level` | el cupo de siempre (2 y 2) | igual, pero solo para el piso de los campamentos de antes (`cap_floor`) y una etapa sin número |
+| `guild.levels` → `capacity` | 5 · 6 · 8 · 12 · 16 · 20 · 25 · 30: daba cupo si era mayor | igual, pero ya no da cupo (solo cuenta en el piso de los campamentos de antes) |
+| `guild.castle_min_members` | 10 miembros para castillo | sin uso (vuelve solo si `ladder.castle_active` es 0) |
+| `ladder.castle_active` (nuevo) | — | 40 miembros que jugaron en los últimos `ladder.active_days` (7) |
+| `raids.trial.min_wins` | 2 victorias de miembros distintos | 10 (cada miembro pelea una vez: 10 vencedores distintos) |
+| `ladder.idle_warn_days` / `idle_release_days` (nuevos) | — (nadie salía) | aviso a los 25 días sin jugar; salida a los 30 (siempre 5 días después del aviso); nunca el fundador |
+| `ladder.idle_scan_minutes` (nuevo) | — | 60: cada cuánto mira el barrido de `tick()` |
+
+**Qué cambia al jugar.**
+
+| Etapa | Cupo antes (sin Cabañas) | Cupo ahora |
+|---|---|---|
+| Campamento (niveles 1 y 2) | 2 y 4 (con el gremio del campamento, 5 o más) | 10 |
+| Aldea (3 y 4) | 6 y 8 (o lo del gremio) | 15 |
+| Pueblo (5 y 6) | 10 y 12 (o lo del gremio) | 25 |
+| Ciudad (7 y 8) | 14 y 16 (o lo del gremio, hasta 30) | 40 |
+| Castillo (9) | 18 (o lo del gremio, hasta 30) | 50 |
+
+- **Entra más gente antes:** un campamento recién fundado recibe a 10 (antes, los 5 del gremio). La fila de espera (D-294) se vacía el día del parche en los campamentos que ganaron lugar.
+- **Nadie pierde:** un campamento con un gremio alto (por ejemplo, una aldea con gremio de nivel 6, 20 lugares) conserva su cupo viejo hasta que la etapa da más; si sobran miembros, nadie sale.
+- **El castillo es mucho más difícil:** 40 activos de la semana en una ciudad que tiene cupo para 40 (más 🛖 y 🛏️). Antes bastaban 10 miembros. El ritmo de obras de `tools/camp_costs.py` (5 a 10 miembros) no cambia, pero el castillo ahora espera a que el campamento junte 40 jugadores activos.
+- **La Noche de prueba** pide al menos 10 victorias (antes 2); con 40 activos el mismo día, la mitad (20) ya pedía más, así que el 10 pesa cuando juegan menos de 20 ese día.
+- **Quien deja de jugar** deja su lugar al mes; con la fila de espera, el lugar se llena solo. No toca el combate, la economía ni el progreso de nadie: el héroe, sus cosas y lo que dio quedan.
+- **Lo que no cambia:** los oficios, las obras, sus costos, la despensa (sigue contando las 24 horas), las oleadas semanales y la cosecha.
+
+**Lo que queda por mirar:** cuántos campamentos llegan a 25 y a 40 miembros y en cuántos días; si 40 activos en una semana es alcanzable con los jugadores de la beta (E-256 ofrece bajarlo a 30); cuántos salen por no jugar y cuántos vuelven a pedir entrar; si el cupo de 10 al fundar llena los campamentos demasiado rápido (E-253).
 
 ### Octubre de 2026 (21-oct): el 🗺️ pergamino de mapa del Explorador (0.50, D-311.5 confirmada; D-326 provisional)
 

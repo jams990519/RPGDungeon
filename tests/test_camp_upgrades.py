@@ -335,9 +335,11 @@ def test_castle_needs_fifteen_improvements(service):
     guild = service.store.get("guild", KEY)                       # D-269: the camp was born with its guild
     guild["level"] = cfg["castle_min_level"]
     service.store.put("guild", KEY, guild)
+    service.content.balance["ladder"]["castle_active"] = cfg["castle_min_members"]   # D-327: 10 active here, not 40
     for n in range(2, cfg["castle_min_members"] + 1):
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
+        service.act(f"test:{n}", "home")                          # D-327: they played this week
     need = service.content.balance["upgrades"]["castle_min_built"]
     build(service, *list(service._upgrade_catalog())[:need - 3], "torres_arqueros", "foso")   # D-304: the 8 → 9 works count
     view = service.act("test:1", "lvlup")                         # the guild is ready, 14 built: a ▫️ line

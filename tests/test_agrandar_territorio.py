@@ -148,14 +148,16 @@ def test_the_founder_sees_how_to_name_an_assistant(service):
     make_hero(service, "test:2", "Bram")
     join(service, "test:2")
     view = service.act("test:1", "gmembers")
-    assert "🤝 Asistentes: 0 de 1 — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente." in view.body
+    assert ("🤝 Asistentes: 0 de 1 — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente. Son los oficiales: aceptan "
+            "gente, invitan y activan obras.") in view.body                  # D-327: the assistants are the officers
     code = next(line for line in view.body if line.startswith("/m") and "Bram" in line).split()[0]
     card = service.text("test:1", code)
     assert card.actions[0].label == "🤝 Hacer asistente"
     view = service.act("test:1", "ghelp:test:2")
     assert "Bram ahora es asistente: activa obras, elige hacia dónde crece el territorio" in view.notice
     founder = service.act("test:1", "gmembers")
-    assert "🤝 Asistentes: 1 de 1: Bram — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente." in founder.body
+    assert any(line.startswith("🤝 Asistentes: 1 de 1: Bram — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente.")
+               for line in founder.body)
     member = service.act("test:2", "gmembers")
     assert "🤝 Asistentes (1/1): Bram" in member.body
     assert not any("ayudante" in line.lower() for line in text(founder).splitlines() + text(member).splitlines())

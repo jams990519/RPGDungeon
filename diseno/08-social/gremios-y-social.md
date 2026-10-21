@@ -2,6 +2,8 @@
 
 > **Módulo** [08 · Social](README.md) · **Depende de:** [Telegram](../01-plataforma/telegram.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2 (los campamentos) · **Alimenta a:** [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md), [Mente](../05-salud/mente.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.4 (el castillo) · **Estado:** §0 está en el juego (el gremio del campamento, capa simple, D-97 provisional); lo demás es propuesta
 
+> **0.51 (D-253, confirmada; cómo se aplicó: D-327, provisional): la escalera del asentamiento, 1.ª parte.** **Un solo cupo por etapa** (campamento 10, aldea 15, pueblo 25, ciudad 40, castillo 50; antes de fundar, el gremio de 5): el nivel del gremio ya no da lugares, las 🛖 Cabañas y las 🛏️ Literas suman encima y ningún campamento de antes tiene menos lugar que antes. **Los 🤝 asistentes son los oficiales:** aceptan o rechazan a quien pide entrar (1 cada 5 miembros, D-289). **Quien no juega 30 días libera su lugar** (aviso a los 25; nunca el fundador; cuenta desde el parche): conserva su héroe y sus cosas, lo que dio queda y puede volver a pedir entrar; entra quien espera. **Castillo:** 40 miembros que jugaron en la semana (antes 10 miembros) y la 🌙 Noche de prueba con 10 vencedores distintos. Cómo funciona: [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.4. Lo de §0.2 a §0.4 sobre el cupo del gremio y "nunca se saca a nadie" queda como historia.
+
 > **0.46.1 (D-323, orden del dueño):** quien espera lugar en el gremio de un campamento lleno entra **solo**, en orden de llegada, en cuanto hay lugar (al subir de nivel, con 🛖 Cabañas o 🛏️ Literas, o si alguien sale). Antes (D-294) lo unía a mano el fundador o un asistente.
 
 **De dónde sale.** Los gremios de WoW (rangos, banco, calendario, niveles de gremio que existieron en *Cataclysm*), las alianzas de Albion, los gremios de Chat Wars (almacén común, órdenes fijadas en el chat del castillo), los grupos de SAO (los "clearers", la orden de caballeros, el informante, la herrera) y lo que TowerWars ya probó en Telegram: almacén de gremio, vales por reenvío y alianzas.
@@ -40,8 +42,9 @@
 ### 0.2 Miembros
 
 - **Los miembros del gremio son los del campamento.** Entrar al campamento (🙋 Pedir unirme y el sí del fundador, D-84) es entrar al gremio; salir del campamento es salir del gremio.
-- **Con gremio, el cupo del campamento es el mayor entre el del gremio (tabla de §0.3) y la cuenta de siempre** (2 al nivel 1 y 2 más por nivel del campamento). Crear el gremio nunca baja el cupo: solo puede subirlo a medida que el gremio sube.
-- **Nunca se saca a nadie.** Si algún número bajara, los que ya están se quedan; solo no entra nadie más.
+- ~~**Con gremio, el cupo del campamento es el mayor entre el del gremio (tabla de §0.3) y la cuenta de siempre** (2 al nivel 1 y 2 más por nivel del campamento).~~ **Desde la 0.51 (D-327):** el cupo es el de la etapa del campamento (10, 15, 25, 40, 50) y el nivel del gremio ya no lo sube; ningún campamento de antes tiene menos que lo que tenía.
+- **Nunca se saca a nadie por el cupo.** Si algún número bajara, los que ya están se quedan; solo no entra nadie más. **Desde la 0.51 (D-253.3)** sale quien no juega 30 días (con aviso a los 25), nunca el fundador.
+- **Quién acepta:** el fundador y sus 🤝 asistentes (D-289), que desde la 0.51 son los oficiales de D-253.4.
 - La pantalla del gremio muestra a cada miembro con su nivel y **cuándo jugó por última vez** ("activo hace 2 h"). Sirve para ver quién juega a las mismas horas, que era el comentario del dueño. Ninguna regla lo usa.
 
 ### 0.3 Niveles y requisitos
@@ -60,13 +63,13 @@ Para subir, el gremio tiene que juntar, **entre todos sus miembros y después de
 | 8 | 30 | El último por ahora |
 
 - Cuando cumplen, **cualquier miembro, estando en el campamento**, toca **⬆️ Subir el gremio**. Lo que sobra pasa al nivel siguiente y los demás miembros reciben un aviso.
-- Un gremio **nunca baja de nivel**, y el nivel da comodidad (cupo, poder llegar a castillo), nunca poder de combate.
+- Un gremio **nunca baja de nivel**, y el nivel da comodidad (poder llegar a castillo; hasta la 0.50 también el cupo de la tabla, que desde la 0.51 ya no rige: D-327), nunca poder de combate.
 - **Las misiones contarán cuando existan**: todavía no hay misiones en el juego. La comida aportada a la despensa podría contar también más adelante.
 - Los números están en `content/balance.yaml` → `guild.levels`. Son orientativos y se ajustan en la beta.
 
 ### 0.4 El castillo
 
-- Para que un campamento pase de ciudad a **castillo** (del nivel 8 al 9) hace falta, además de lo de siempre (los materiales y una despensa que no esté vacía), un **gremio de nivel 5 o más con 10 miembros o más** (`guild.castle_min_level`, `guild.castle_min_members`). **Sin gremio, un campamento se queda en ciudad.**
+- Para que un campamento pase de ciudad a **castillo** (del nivel 8 al 9) hace falta, además de lo de siempre (los materiales y una despensa que no esté vacía), un **gremio de nivel 5 o más** (`guild.castle_min_level`) y, desde la 0.51 (D-253.2, D-327), **40 miembros que jugaron en los últimos 7 días** (`ladder.castle_active`; antes, 10 miembros, `guild.castle_min_members`) y la 🌙 Noche de prueba con 10 vencedores distintos. **Sin gremio, un campamento se queda en ciudad.**
 - La pantalla **⬆️ Agrandar campamento** muestra esos requisitos con ✅ y ▫️ y, si falta algo, no deja elegir zona. Desde la 0.41 (D-304) son líneas de **⏫ Siguiente nivel** (⬆️ Mejorar campamento): agrandar el territorio ya no sube el nivel ni pide el gremio, y en castillo todavía no hay otro nivel.
 - Solo se pide en ese paso: un castillo sigue creciendo después del nivel 9 sin pedir nada nuevo.
 
@@ -78,7 +81,7 @@ Para subir, el gremio tiene que juntar, **entre todos sus miembros y después de
 
 ### 0.6 Lo que todavía no tiene
 
-Rangos y permisos, banco, salón, chat vinculado, calendario, alianzas y expulsar inactivos son la capa profunda de §1 y §2. Dos números de §1 no rigen en la capa simple: crear un gremio no pide nivel 5 (pide tener campamento, que ya cuesta progreso), y el cupo va de 4 a 30 miembros, no de 10 a 100.
+Rangos y permisos, banco, salón, chat vinculado, calendario y alianzas son la capa profunda de §1 y §2 (liberar el lugar de quien no juega 30 días está en el juego desde la 0.51, D-327). Dos números de §1 no rigen en la capa simple: crear un gremio no pide nivel 5 (pide tener campamento, que ya cuesta progreso), y el cupo va de 5 a 50 miembros hasta el castillo (desde la 0.51, por etapa; antes, de 4 a 30), no de 10 a 100.
 
 **Dónde está.** Código: `engine/social/guilds.py` (las cuentas) y `engine/service/game.py` (pantallas, ganchos en la exploración, la recolección y la victoria). Números: `content/balance.yaml` → `guild`. Textos: `guild.*` en `content/locales/es.yaml`. Pruebas: `tests/test_guilds.py`.
 

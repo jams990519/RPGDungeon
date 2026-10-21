@@ -43,6 +43,7 @@ def guild_ready(service):
     D-101: and 15 improvements built (tests/test_camp_upgrades.py), so only the Noche de prueba is left."""
     cfg = service.content.balance["guild"]
     cfg["castle_min_members"] = len(camp(service)["members"])
+    service.content.balance["ladder"]["castle_active"] = len(camp(service)["members"])   # D-327: all of them, not 40
     service.store.put("guild", KEY, {"name": "Lobos Grises", "camp": KEY, "founder_id": "test:1",
                                      "level": cfg["castle_min_level"],
                                      "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": 0.0})
@@ -247,6 +248,9 @@ def test_busy_heroes_finish_first(service, clock):
 
 
 def test_noche_de_prueba_gates_castillo(service, clock):
+    # [ES] D-327 (0.51): la Noche pide 10 vencedores distintos como mínimo; esta prueba de cómo funciona la Noche usa el
+    # mínimo de antes (2) en su contenido de prueba, con 2 miembros (los 10 se prueban en test_escalera_cupo_oficiales.py)
+    service.content.balance["raids"]["trial"]["min_wins"] = 2
     make_hero(service, "test:1", "Lyra")
     make_hero(service, "test:2", "Bram")
     camp_at_level(service, 8, ("test:1", "test:2"))

@@ -75,7 +75,7 @@ services:                      # [ES] D-288 y D-291 (0.39): 🏘️ Servicios po
 helpers:                       # [ES] D-289 (0.39): los ayudantes del fundador, 1 por cada 5 miembros; D-304 (0.41): en los textos se llaman asistentes (la clave sigue siendo helpers)
   role: "🤝 "
   line: "🤝 Asistentes ({n}/{cap}): {names}"
-  none: "🤝 Asistentes (0/{cap}): el fundador los nombra desde la tarjeta de cada miembro (/m2). Uno por cada 5 miembros."
+  none: "🤝 Asistentes (0/{cap}): son los oficiales del campamento (aceptan a quien pide entrar, invitan y activan obras). El fundador los nombra desde la tarjeta de cada miembro (/m2). Uno por cada 5 miembros."   # [ES] D-327 (0.51): los asistentes son los oficiales de D-253.4
   make_button: "🤝 Hacer asistente"
   remove_button: "✖️ Quitar asistente"
   full: "🤝 Ya hay {cap} {cap|asistente|asistentes}: uno por cada 5 miembros."

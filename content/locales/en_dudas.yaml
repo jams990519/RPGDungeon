@@ -223,7 +223,7 @@ faq:
     a: 'In your camp: 🏰 Manage → ⬆️ Improve. ⏫ Next level shows a list of the works that must be built and the materials still missing (from level {chests_from}, also 🪎 chests); any member gives with 🤲 and it fills in. It goes from camp to village, town, city and castle. 🗺️ Expand territory adds a neighbouring zone: the founder or an 🤝 assistant chooses the direction, and each stage has its zone cap.'
   d37:
     q: 🙋 Who can join my camp?
-    a: Another player goes to your camp and taps 🙋 Ask to join; you decide. There's room for {members_base} at the start and {members_step} more per level. Members share the upgrades, the pantry, the waves and the guild.
+    a: "Another player goes to your camp and taps 🙋 Ask to join; the founder or an 🤝 assistant (the officers) decides. Each stage has its member cap: {members_stages} (camp, village, town, city and castle); 🛖 Cabins and 🛏️ Bunks add places. Whoever doesn't play for {idle_days} days frees their place (they are warned {idle_left} days before; never the founder): their hero and their things stay and they can ask to join again. Members share the upgrades, the pantry, the waves and the guild."
   d38:
     q: 🌾 What is the pantry?
     a: 'From level {pantry_level} your camp has a 🌾 pantry: each member who played that day eats 1 ration. Fill it with 🏰 Manage → 🌾 Contribute food (meat, fish, cooked food or 🥖 provisions). During a famine the camp doesn''t grow, but it never loses levels.'
@@ -238,7 +238,7 @@ faq:
     a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'
   d42:
     q: 🛡️ What is the guild?
-    a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle}.'
+    a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle} and {castle_active} members who played in the last {active_days} days.'
   d43:
     q: 📜 What is the board?
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one from each character: completing them gives experience, coins and reputation with their faction. If you have a camp, you also see its weekly tasks, which everyone does together.'

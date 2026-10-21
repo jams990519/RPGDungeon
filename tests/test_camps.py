@@ -194,10 +194,11 @@ def test_claro_grows_with_its_stage(service):
 
 
 def test_founder_lets_players_join_and_cap_grows(service, clock):
+    # [ES] D-327 (0.51): el cupo es el de la etapa (campamento 10, aldea 15…), ya no 2 + 2 por nivel
     make_hero(service, "test:1", "Lyra")
     old_camp_at(service, "test:1", 6, 0)                 # D-84: a camp without a guild (one founded before D-269)
     camp = service.store.get("camp", "6:0")
-    assert service._members_cap(camp) == 2
+    assert service._members_cap(camp) == 10
     for n, name in ((2, "Bram"), (3, "Cora")):
         make_hero(service, f"test:{n}", name)
         place(service, f"test:{n}", 6, 0)
@@ -210,16 +211,23 @@ def test_founder_lets_players_join_and_cap_grows(service, clock):
     assert service.store.get("camp", "6:0")["members"] == ["test:1", "test:2"]
     assert service.store.get("hero", "test:2")["camp"] == "6:0"
     assert any(v.kind == "camp_answer" for acc, v in service.tick() if acc == "test:2")
+    camp = service.store.get("camp", "6:0")
+    camp["members"] += [f"ghost:{n}" for n in range(8)]                 # 10 of 10
+    service.store.put("camp", "6:0", camp)
     view = service.act("test:3", "askjoin")                             # full at level 1
     assert "lleno" in (view.notice or "")
-    record = service._upgrades("6:0")                                   # D-304: ⏫ Siguiente nivel raises the cap (it was
-    record["built"].update({"fogon": 0.0, "empalizada": 0.0})          # ⬆️ Agrandar before): its works and materials
+    record = service._upgrades("6:0")                                   # D-304: ⏫ Siguiente nivel (it was ⬆️ Agrandar
+    record["built"].update({"fogon": 0.0, "empalizada": 0.0})          # before): its works and materials
     service.store.put("upgrades", "6:0", record)
     service.act("test:1", "lvlgive")
-    assert service._members_cap(service.store.get("camp", "6:0")) == 4
+    camp = service.store.get("camp", "6:0")
+    assert camp["level"] == 2 and service._members_cap(camp) == 10     # D-327: level 2 is still the campamento stage
+    camp["level"] = 3
+    service.store.put("camp", "6:0", camp)
+    assert service._members_cap(camp) == 15                             # the aldea stage: room for 15
     service.act("test:2", "leave")
     assert service.store.get("hero", "test:2")["camp"] is None
-    assert service.store.get("camp", "6:0")["members"] == ["test:1"]
+    assert service.store.get("camp", "6:0")["members"] == ["test:1"] + [f"ghost:{n}" for n in range(8)]
 
 
 def test_camp_names_are_unique_and_founder_can_rename(service):

@@ -6,7 +6,8 @@ it (old_camp_at, no guild): the D-97 rules keep working for them (D-64).
 [ES] Pruebas del gremio: lo crea el fundador en su campamento (con nombre único), sus miembros son los del
 campamento, el cupo sale del nivel del gremio, los contadores suben al explorar, ganar peleas y recolectar,
 sube cuando cumplen, el castillo pide gremio, los campamentos sin gremio siguen igual y ninguna pantalla pasa
-de 4 botones.
+de 4 botones. D-327 (0.51): el cupo ya no sale del nivel del gremio sino de la etapa del campamento (10, 15, 25, 40,
+50; tests/test_escalera_cupo_oficiales.py) y el castillo pide activos de la semana en lugar de 10 miembros.
 """
 
 from collections import deque
@@ -147,50 +148,55 @@ def test_guild_names_are_unique(service):
     assert service.store.get("guild", "-6:0")["name"] == "Campo 1 6"
 
 
-def test_members_cap_follows_the_guild_level(service):
+def test_the_cap_is_the_stage_s_and_the_guild_level_no_longer_adds(service):
+    # [ES] D-327 (0.51): antes el cupo seguía al nivel del gremio (D-97); ahora es el de la etapa del campamento (D-253.1)
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
     camp = service.store.get("camp", "6:0")
-    assert service._members_cap(camp) == 2                         # old formula without a guild at level 1
+    assert service._members_cap(camp) == 10                        # the campamento stage, without a guild
     new_guild(service)
-    levels = service.content.balance["guild"]["levels"]
-    assert service._members_cap(camp) == levels[0]["capacity"] == 5   # the guild only adds room (D-269: 4 → 5)
+    assert service._members_cap(camp) == 10                        # creating the guild changes nothing
+    service.tick()                                                 # the first tick keeps the old cap (5) as the floor
     for n, name in ((2, "Bram"), (3, "Cora"), (4, "Dara"), (5, "Eric")):
         make_hero(service, f"test:{n}", name)
         join(service, f"test:{n}")
+    camp = service.store.get("camp", "6:0")
+    camp["members"] += [f"ghost:{n}" for n in range(5)]            # 10 of 10
+    service.store.put("camp", "6:0", camp)
     make_hero(service, "test:6", "Fina")
     place(service, "test:6", 6, 0)
-    view = service.act("test:6", "askjoin")                        # 5 of 5: full until the guild rises
-    assert "lleno" in view.notice and "gremio" in view.notice
+    view = service.act("test:6", "askjoin")                        # full until the next stage
+    assert "lleno" in view.notice and "etapa siguiente" in view.notice
     assert "test:6" not in service.store.get("camp", "6:0").get("requests", [])
     guild = service.store.get("guild", "6:0")
-    guild["level"] = 2
+    guild["level"] = 4                                             # the guild's level no longer adds room
     service.store.put("guild", "6:0", guild)
-    assert service._members_cap(camp) == levels[1]["capacity"] == 6
+    assert service._members_cap(camp) == 10
+    set_level(service, 3)                                          # the aldea stage: room for 15
+    assert service._members_cap(service.store.get("camp", "6:0")) == 15
     service.act("test:6", "askjoin")
     asks = [v for acc, v in service.tick() if acc == "test:1" and v.kind == "camp_join"]
     service.act("test:1", asks[0].actions[0].id)
     assert "test:6" in service.store.get("camp", "6:0")["members"]
-    assert any("6 de 6" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
+    assert any("11 de 15" in line for line in service.act("test:1", "campinfo").body)   # D-302: in ℹ️ Información
 
 
 def test_creating_a_guild_never_kicks_anyone(service):
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
-    set_level(service, 4)                                          # old cap 8
+    set_level(service, 4)                                          # D-327: the aldea stage, 15 (the old count gave 8)
     for n in range(2, 7):
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
-    new_guild(service)                                             # guild level 1 gives 5: the cap stays 8
+    new_guild(service)                                             # guild level 1 gave 5: the cap stays 15
     camp = service.store.get("camp", "6:0")
-    assert len(camp["members"]) == 6 and service._members_cap(camp) == 8
+    assert len(camp["members"]) == 6 and service._members_cap(camp) == 15
     assert all(service._load(f"test:{n}").camp == "6:0" for n in range(2, 7))
-    for n in (7, 8):
-        make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
-        join(service, f"test:{n}")
+    camp["members"] += [f"ghost:{n}" for n in range(9)]            # 15 of 15
+    service.store.put("camp", "6:0", camp)
     make_hero(service, "test:9", "Zora")
     place(service, "test:9", 6, 0)
-    assert "lleno" in service.act("test:9", "askjoin").notice     # 8 of 8
+    assert "lleno" in service.act("test:9", "askjoin").notice     # 15 of 15
 
 
 def test_counters_rise_with_exploring_winning_and_gathering(service, clock):
@@ -252,7 +258,7 @@ def test_the_guild_rises_when_the_members_meet_its_needs(service):
     view = service.act("test:2", "guildup")
     guild = service.store.get("guild", "6:0")
     assert guild["level"] == 2 and guild["progress"]["explorations"] == 5 and guild["progress"]["victories"] == 0
-    assert str(levels[1]["capacity"]) in view.notice
+    assert "subió a nivel 2" in view.notice and "caben" not in view.notice      # D-327: the level no longer gives room
     news = [v for acc, v in service.tick() if acc == "test:1"]
     assert news and news[0].kind == "guild_news"
 
@@ -262,6 +268,7 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
     cfg = service.content.balance["guild"]
+    service.content.balance["ladder"]["castle_active"] = cfg["castle_min_members"]   # D-327: 10 active, not 40, here
     castle = next(s["from_level"] for s in service.content.balance["camps"]["stages"] if s["id"] == "castillo")
     set_level(service, castle - 1)
     camp = service.store.get("camp", "6:0")
@@ -279,14 +286,17 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     guild = service.store.get("guild", "6:0")
     guild["level"] = cfg["castle_min_level"]
     service.store.put("guild", "6:0", guild)
-    for n in range(2, cfg["castle_min_members"]):                  # one member short
+    for n in range(2, cfg["castle_min_members"]):                  # one active member short
         make_hero(service, f"test:{n}", f"Miembro{chr(64 + n)}")
         join(service, f"test:{n}")
+        service.act(f"test:{n}", "home")                           # D-327: they played this week
+    service.store.put("pantry", "6:0", {"rations": 99.0, "at": service.clock.now()})   # food for the 10 who play
     assert "lvlgo" not in ids(service.act("test:1", "lvlup"))
     assert service.act("test:1", "lvlgo").notice == "Todavía falta algo de la lista."
     assert service.store.get("camp", "6:0")["level"] == castle - 1
     make_hero(service, "test:99", "Ultimo")
     join(service, "test:99")
+    service.act("test:99", "home")
     camp = service.store.get("camp", "6:0")
     assert len(camp["members"]) == cfg["castle_min_members"] and all(ok for _, ok in service._castle_needs(camp))
     view = service.act("test:1", "lvlup")
@@ -299,11 +309,10 @@ def test_no_castle_without_a_guild_that_is_ready(service):
 def test_camps_without_a_guild_behave_as_before(service):
     make_hero(service, "test:1", "Lyra")
     found_at(service, "test:1", 6, 0)
-    cfg = service.content.balance["camps"]
-    for level in (1, 3, 7):
+    for level, cap in ((1, 10), (3, 15), (7, 40)):                 # D-327: the stage's cap, as with a guild
         set_level(service, level)
         camp = service.store.get("camp", "6:0")
-        assert service._members_cap(camp) == cfg["members_base"] + (level - 1) * cfg["members_per_level"]
+        assert service._members_cap(camp) == cap
         assert service._castle_needs(camp) == []
     set_level(service, 1)
     view = service.act("test:1", "lvlup")                          # D-304: ⏫ Siguiente nivel

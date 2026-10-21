@@ -82,7 +82,7 @@ def test_the_camp_founder_invites_into_the_camp(service):
     make_hero(service, "test:2", "Bram")
     make_hero(service, "test:3", "Cira")
     make_hero(service, "test:4", "Dax")
-    old_camp_at(service, "test:1", 6, 0, name="Roca Alta")                       # a level-1 camp: room for 2
+    old_camp_at(service, "test:1", 6, 0, name="Roca Alta")                       # a level-1 camp: room for 10 (D-327)
     view = service.text("test:1", f"/inv_{service.player_code('test:2')}")
     assert "Invitaste a Bram" in view.notice
     push = last_push(service, "test:2")
@@ -95,6 +95,9 @@ def test_the_camp_founder_invites_into_the_camp(service):
     assert "Entraste al campamento Roca Alta" in answer.notice
     assert service._load("test:2").camp == "6:0" and "test:2" in service.store.get("camp", "6:0")["members"]
     assert "ya se respondió" in service.act("test:2", "cinv:6:0:y").notice
+    camp = service.store.get("camp", "6:0")
+    camp["members"] += [f"ghost:{n}" for n in range(8)]                         # 10 of 10
+    service.store.put("camp", "6:0", camp)
     assert "lleno" in service.text("test:1", f"/inv_{service.player_code('test:4')}").notice   # the camp is full now
     assert "líder u oficial" in service.text("test:2", f"/inv_{service.player_code('test:4')}").notice   # only the founder
 

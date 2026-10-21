@@ -1,0 +1,13 @@
+# Texts of the settlement ladder, first slice (D-253, confirmed; how: D-327, provisional; 0.51): who stops playing frees the
+# place (warning and release) and the castle's active members.
+# [ES] La versión en inglés de es_escalera.yaml (D-250): las mismas claves, los mismos huecos {nombre} y los mismos plurales.
+
+ladder:
+  warn_title: "💤 Your place in the camp"
+  warn_push: "💤 You haven't played for a while. If you don't play within {left} {left|day|days}, you free your place in {camp} (whoever doesn't play for {days} days leaves its guild and camp). Your hero and your things stay. Tap any button to stay."
+  released_title: "💤 Place freed"
+  released_push: "💤 {days} days went by without playing and you freed your place in {camp}: you're no longer a member of its guild or its camp. Your hero, your backpack, your gear and your professions are still yours, and what you gave stays in the camp. You can ask to join again whenever you want."
+  released_managers: "💤 After {days} days without playing, a place was freed in {camp}: {names}. If someone waits for room in the guild, they get in by themselves."
+  idle_line: "💤 Whoever doesn't play for {days} days frees their place (they are warned {left} {left|day|days} before; never the founder)."
+  idle_mark: "💤 "
+  castle_active: "👥 Active this week: {n} of {need} (played in the last {days} days)"
