@@ -4,9 +4,11 @@
 # 🧭 Explorar y de 📍 Zona) y del 🥷 Sigilo (evitar peleas al azar al explorar con ✋ Manual y al viajar). También lo que abre
 # cada rango del Explorador para el reconocimiento (explorer.what y explorer.short) y el beneficio prof.perk.stealth. Se junta
 # con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py: las claves que ya existen, como explorer o prof, se
-# completan, no se pisan).
+# completan, no se pisan). D-324 (0.48, D-311 parte 2): la lista de 🔭 trae también los 👹 campamentos enemigos que deja ver
+# tu rango (con nombre, ⏱️ tiempo y 💪 fuerza) y el código /rcN de lo que puedes reconocer ahora (recon.line, line_code, bad_code,
+# hint_camps).
 # Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.14 ("Reconocer y sigilo"); diseno/07-economia/profesiones.md
-# Lo leen: engine/service/game.py (sección "reconnaissance and stealth": _recon_view, _recon, _recon_map_lines,
+# Lo leen: engine/service/game.py (sección "reconnaissance and stealth": _recon_view, _recon_line, _recon_entries, _recon_code, _recon, _recon_map_lines,
 #     _recon_hint_lines, _recon_route_mark, _stealth_chance; y _arrive, _explore_step, _batch_summary, _options_view,
 #     _explorer_what y _explorer_prof_lines).
 # Estilo: español neutro, de tú, frases cortas para el teléfono. Si cambias una clave, búscala en game.py: una clave que
@@ -14,18 +16,20 @@
 
 recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explorador desde el rango 10)
   title: "🔭 Reconocer"
-  intro: "🔭 Miras de lejos qué hay en una 🕳️ mazmorra o en un 👹 campamento enemigo, sin ir: lo mismo que vería cualquiera que llegue hoy. Cada uno cuesta ⚡{energy}, da experiencia de 🧭 Explorador y unas monedas. Uno por lugar al día."
+  intro: "🔭 Miras de lejos qué hay en una 🕳️ mazmorra o en un 👹 campamento enemigo, sin ir: lo mismo que vería cualquiera que llegue hoy. Cada uno cuesta ⚡{energy}, da experiencia de 🧭 Explorador y unas monedas. Uno por lugar al día. Abajo, también los 👹 campamentos enemigos que tu rango deja ver; toca un botón o escribe el código de la línea."   # [ES] D-324 (0.48)
   locked: "🔒 Reconocer pide rango {rank} de 🧭 Explorador (tienes {have}). Sube explorando."
   reach: "🔭 Llegas hasta {n} {n|zona|zonas} a la redonda (tu propia zona no: ahí se entra o se infiltra)."
-  line: "{mark} ({x}, {y}) · a {zones} {zones|zona|zonas}"
-  line_done_dungeon: "✅ {mark} ({x}, {y}) · hoy {family} · 👑 {boss}"
-  line_done_camp: "✅ 👹 ({x}, {y}) · 👹 quedan {left} de {total} · 👑 {chief}"
+  line: "{mark} {name} ({x}, {y}) · a {zones} {zones|zona|zonas}{time}{strength}{code}"   # [ES] D-311 (2), D-324 (0.48): nombre, distancia, ⏱️ tiempo (explorer.map_time), 💪 fuerza si la sabes (ecamp.map_strength) y el código
+  line_code: " · /rc{n}"          # [ES] D-324: solo en lo que puedes reconocer ahora; /rc1 lo reconoce (_recon_code)
+  line_done_dungeon: "✅ {mark} {name} ({x}, {y}){time} · hoy {family} · 👑 {boss}"
+  line_done_camp: "✅ 👹 {name} ({x}, {y}){time} · 👹 quedan {left} de {total} · 👑 {chief}"
   more: "…y {n} más, más lejos."
-  none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: el 🗺️ Mapa marca 🕳️ las mazmorras y 👹 los campamentos enemigos."
+  none: "🔭 No ves nada para reconocer a tu alcance. Explora y viaja: las 🕳️ mazmorras y los 👹 campamentos enemigos que encuentres cerca salen aquí."
   next: "🔓 Con rango {rank} de 🧭 Explorador, hasta {n} {n|zona|zonas}."   # [ES] sin uso desde la 0.39 (D-287)
   button: "🔭 {mark} ({x}, {y}) · ⚡{energy}"
   out_of_reach: "🔭 Ese lugar no está a tu alcance o ya no hay nada que ver ahí. No gastaste nada."
   already: "🔭 Ya reconociste ese lugar hoy: lo que sabes está en la lista. Mañana puede haber otra cosa."
+  bad_code: "🔭 Ese código no está en tu lista de 🔭 Reconocer: usa uno de los que ves aquí."   # [ES] D-324 (0.48): /rcN que no está
   report_title: "🔭 Reconocimiento"
   done: "🔭 Miraste de lejos {name} ({x}, {y}), a {zones} {zones|zona|zonas}, sin moverte:"
   dungeon_small: "🕳️ Una mazmorra chica · nivel {level}: {rooms} salas y su jefe."
@@ -44,6 +48,7 @@ recon:                        # [ES] D-172: 🔭 Reconocer de lejos (🧭 Explor
   map_locked: "🔭 Desde el rango {rank} de 🧭 Explorador puedes reconocer de lejos lo que marca el mapa."   # [ES] sin uso desde la 0.39 (D-287)
   map_today: " · 🔭 hoy {family}"
   hint: "🔭 {n} {n|lugar|lugares} para reconocer de lejos: /reconocer"
+  hint_camps: "🔭 {n} 👹 {n|campamento enemigo|campamentos enemigos} a la vista: /reconocer"   # [ES] D-324 (0.48): lo que deja ver tu rango, aunque no quede nada para reconocer
   route_mark: " {mark}{emoji}"
 
 stealth:                      # [ES] D-172: 🥷 Sigilo del 🧭 Explorador (beneficio "stealth")

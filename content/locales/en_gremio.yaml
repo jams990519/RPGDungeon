@@ -24,7 +24,7 @@ players:
   hint: "Their card: type or tap their code (/j1). From there you can invite them to your guild or ask to join theirs."
   none: "Nobody else played here in the last minute."
   refresh: "🔄 Refresh"
-  only_bonfire: "👥 Players is seen at the Clearing's campfire."
+  only_bonfire: "👥 Players is seen at the 🔥 campfires."
   bad_code: "That code is not on the list. Look at the list again."
   gone: "That player is gone."
   card_title: "👤 Player card"

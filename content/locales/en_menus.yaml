@@ -5,8 +5,8 @@
 # que el motor lee por posición (nombres de zona, salas de mazmorra).
 
 hub:
-  title_claro: 🏕️ The Clearing Camp
-  intro_claro: '🔥 The base camp, where everyone starts. Here you have what you don''t carry with you:'
+  title_claro: 🔥 {name}
+  intro_claro: '🔥 The campfire, where everyone starts. Here you have what you don''t carry with you:'
   intro_camp: '🏕️ What you can do at your camp:'
   section_info: 📌 Your camp
   cook: '🍲 Cook: meat, fish and what each terrain gives become rations and stews for the pantry. 🍲 Cooking rank {rank}.'

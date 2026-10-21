@@ -12,8 +12,8 @@
 #     (los teléfonos chicos cortan los botones largos).
 
 hub:
-  title_claro: "🏕️ Campamento del Claro"
-  intro_claro: "🔥 El campamento base, donde empiezan todos. Aquí tienes lo que no llevas encima:"
+  title_claro: "🔥 {name}"   # [ES] D-311 y D-324 (0.48): el nombre de la fogata ("🔥 El Claro", "🔥 Fogata del Norte"); antes "🏕️ Campamento del Claro"
+  intro_claro: "🔥 La fogata, donde empiezan todos. Aquí tienes lo que no llevas encima:"
   intro_camp: "🏕️ Lo que puedes hacer en tu campamento:"
   section_info: "📌 Tu campamento"
   # [ES] una línea por botón, en el orden de los botones

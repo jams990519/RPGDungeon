@@ -67,11 +67,11 @@ explorer:
   time_camp: '⏱️ To your camp {name}: {time}'
   places_hint: 🧭 With Explorer rank {rank}, 📒 Places lists up to {n} places with their travel time.
   what:
-    travel: 📒 Places lists up to {places} places of each kind with their travel time, and tells you how long it takes to reach each zone your map marks
-    camps_near: you see 👹 enemy camps up to {n} zones around you, even if you haven't set foot there
+    travel: 📒 Places lists up to {places} places of each kind with their travel time, and 🔭 Scout tells you how long it takes to reach each 👹 enemy camp you see
+    camps_near: you see in 🔭 Scout the 👹 enemy camps up to {n} zones around you, even if you haven't set foot there
     infiltrate: you can 🕵️ infiltrate enemy camps
-    camps_all: you see 👹 enemy camps across your whole map
-    strength: 'you see each camp''s strength from the map: how many are left, their level and their boss'
+    camps_all: you see in 🔭 Scout the 👹 enemy camps across your whole map
+    strength: 'you see in 🔭 Scout each camp''s strength: how many are left, their level and their boss'
     master: you're a 🏅 Grand Explorer
   short:
     travel: '{rank} ⏱️ travel times'
@@ -91,7 +91,7 @@ prof:
 profession:
   explorador:
     name: Explorer
-    how: 'explore: every run counts, and more when you bring a zone to 100%; with rank you see more on the map'
+    how: 'explore: every run counts, and more when you bring a zone to 100%; with rank you see more in 🔭 Scout'
 story:
   journal:
     enemy_camp: 🔥 Destroyed an enemy camp at ({x}, {y}).

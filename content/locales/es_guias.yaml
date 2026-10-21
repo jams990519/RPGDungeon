@@ -69,7 +69,7 @@ guides_page:
       🌲 Hay madera en todas las zonas: en los bosques, bosques oscuros y selvas hay más y la descubres al empezar a explorar. Para juntar solo madera, 🪓 Talar (en 🧭 Explorar).
       ➡️ Con tu zona al 100 %, explorar sigue con las vecinas sin moverte.
       🗺️ Al {color_at} % la zona muestra su terreno en el 🗺️ Mapa; el color no dice qué recursos hay.
-      ✨ Un nodo es una zona rica en un recurso: sabes de qué es al pisarla.
+      ✨ Un nodo es una zona rica en un recurso: sabes de qué es al pisarla, y queda en 📒 Lugares → ✨ Nodos.
       🔎 Buscar recursos (🛡️ Gremio o 🏰 Gestionar) o /buscar madera: te dice dónde hay ese recurso en zonas investigadas al {search_min} % o más, primero las cercanas y más ricas.
       📍 Toca el código de una zona (/z1) y se arma el camino en 🔗 Moverte.
       🛡️ En un gremio, lo que descubre uno lo saben todos.
@@ -135,7 +135,7 @@ guides_page:
       📍 Zona: toca una dirección. Cada zona toma {travel_first} min y moverte {move_cost}.
       🔗 Moverte: armas un camino de hasta {walk_max} pasos y tu héroe lo camina solo.
       📌 Coordenadas (x, y): el Claro es (0, 0), el este suma a la x y el norte a la y. Escribe /ir 3 -2 y se arma el camino.
-      📒 En 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces (/ir1).
+      📒 En 🗺️ Mapa → 📒 Lugares vuelves de una vez a un lugar que ya conoces (/ir1), también a los ✨ nodos que encontraste.
       🔥 Hay {bonfires} fogatas: el Claro y una cada {bonfire_spacing} zonas a su alrededor. Todas tienen mercader, posada, entrenador y estaciones.
       👥 En cada fogata caben {bonfire_cap}: si está llena, sigues hasta la más cercana con lugar.
       🎨 Una zona muestra su terreno en el mapa cuando tú o tu gremio la investigan al {color_at} %.
@@ -182,7 +182,7 @@ guides_page:
       🌀 La profunda se baja piso a piso: juntas una bolsa y eliges ⬇️ Bajar o 🚪 Salir con lo ganado. Si caes o huyes, te queda el {deep_keep} %.
       👹 Los campamentos enemigos salen cada día en otro lugar y no dejan explorar ni recolectar su zona.
       ⚔️ Asaltar: cada pelea vence a uno de la guarnición, para todos; el último es el jefe y su cofre es de quien lo termina.
-      🕵️ Infiltrarse pide 🧭 Explorador rango {infiltrate_rank}; desde el rango {recon_rank}, /reconocer te deja ver de lejos qué hay.
+      🕵️ Infiltrarse pide 🧭 Explorador rango {infiltrate_rank}; desde el rango {recon_rank}, /reconocer te deja ver de lejos qué hay y lista los 👹 campamentos enemigos que tu rango deja ver, con su tiempo.
       👑 El Guardián espera en su guarida: ⚔️ Desafiar al Guardián en 🧭 Explorar. El primero que lo vence queda como Pionero del Claro.
   quests:
     title: "📜 Misiones y encargos"

@@ -47,7 +47,7 @@ guide:
       name: "Moverte"
       task: "muévete a una zona vecina: 📍 Zona → elige una ruta (⬆️ ⬇️ ➡️ ⬅️)."
       intro: |-
-        🔥 Estás en el Claro, el campamento base: la antorcha donde despiertan todos los que llegan.
+        🔥 Estás en el Claro, la fogata del inicio: la antorcha donde despiertan todos los que llegan.
         🗺️ Alrededor hay tierras de distintos terrenos: pradera, bosque, colinas, montaña, pantano... En el 🗺️ Mapa se ven grises hasta que las investigas; entonces aparece el color de su terreno.
         🔎 Para conocerlas tendrás que moverte: investigar, juntar recursos y hacer misiones.
 
@@ -94,23 +94,23 @@ guide:
         🧍 Eres tú, en el centro. El norte está arriba.
         ▫️ Una zona en blanco: todavía no la investigaste lo suficiente.
         🎨 Al investigar una zona a la mitad (50 %) aparece el color de su terreno, y el terreno se suma a la lista de arriba del mapa. El color no dice qué recursos hay: eso se sabe explorando.
-        🔥 El campamento (la hoguera) de inicio: se ve siempre.
-        Nada más se ve en el mapa: las mazmorras, los nodos y los campamentos se descubren caminando.
+        🔥 Las fogatas: el Claro y las otras 8 se ven siempre.
+        🏕️ También se ven los campamentos de jugadores. Las mazmorras, los nodos y los 👹 campamentos enemigos se descubren caminando.
         📌 Tus coordenadas (x, y) y la Lejanía, cuántas zonas hay hasta el inicio, están en 📍 Zona. Más lejos, enemigos más fuertes.
         📒 Lugares: los lugares importantes que ya visitaste, por tipo (tu campamento, 🕳️ Mazmorras, 🔥 Fogatas...). Elige el tipo y el lugar, confirma y tu héroe va solo.
-    return:                    # [ES] d) volver al campamento (el Claro). D-301: 📒 Lugares tiene un botón por tipo
+    return:                    # [ES] d) volver a la fogata (el Claro). D-301: 📒 Lugares tiene un botón por tipo
       name: "Volver al Claro"
       task: "vuelve al Claro: 🗺️ Mapa → 📒 Lugares → 🔥 Fogatas → El Claro (o por las rutas de 📍 Zona)."
       intro: |-
-        🔥 Vuelve al campamento
+        🔥 Vuelve a la fogata
         • El Claro es tu base: ahí están el mercader, la posada y los oficios.
         • En 📒 Lugares eliges el tipo (🔥 Fogatas, 🕳️ Mazmorras...) y un lugar importante que ya visitaste, confirmas y tu héroe va solo, zona por zona.
     camp:                      # [ES] e) el campamento (D-191: cocinar, investigar, fabricar, entrenador, mercader, Dudas)
       name: "El campamento"
-      task: "abre el campamento: 🏕️ Campamento (menú de abajo)."
+      task: "abre 🏕️ Campamento (menú de abajo)."
       intro: "🏕️ Ya estás en el Claro. Abre 🏕️ Campamento para ver lo que puedes hacer aquí."
       learn: |-
-        🏕️ El campamento es tu base: aquí está lo que no lleva el héroe encima.
+        🔥 La fogata es tu base: aquí está lo que no lleva el héroe encima.
         🍲 Cocinar y ⚒️ fabricar: los oficios y sus estaciones.
         👥 Jugadores: quién está en la fogata y tu 🛡️ gremio.
         🧑‍🏫 Entrenador: te presenta los oficios.
@@ -120,7 +120,7 @@ guide:
     trainer:                   # [ES] e) el entrenador presenta los oficios (la pantalla 🧑‍🏫 la arma el campamento, D-191)
       name: "El entrenador"
       task: "habla con el entrenador: 🏕️ Campamento → 🧑‍🏫 Entrenador."
-      intro: "🧑‍🏫 En el campamento hay un entrenador: el maestro que te presenta los oficios."
+      intro: "🧑‍🏫 En la fogata hay un entrenador: el maestro que te presenta los oficios."
       learn: |-
         🧑‍🏫 Los oficios
         • Cada oficio sube haciéndolo: recolectar sube los de recolección y fabricar, los de fabricación.

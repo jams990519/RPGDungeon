@@ -49,7 +49,7 @@ faq:
   # ---- 🌱 Primeros pasos
   d01:
     q: "🌱 ¿Qué hago al empezar?"
-    a: "Despiertas en el 🔥 Claro, el campamento base. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🧺 recolecta, 🪓 tala y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
+    a: "Despiertas en el 🔥 Claro, la fogata del inicio. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🧺 recolecta, 🪓 tala y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
   d02:
     q: "🧭 ¿Para qué sirve cada menú?"
     a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, talar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, los 👥 jugadores de la fogata, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
@@ -89,13 +89,13 @@ faq:
     a: "🏹 Cazar (en 🧭 Explorar) busca una presa de la zona: cuesta {hunt_energy} ⚡ cada una y solo da la pelea y su botín (carne, piel, monedas, a veces equipo). En el Claro no hay presas. Con un campamento puedes llamar a una 🏹 Partida de caza con tus compañeros."
   d12:
     q: "🎨 ¿Qué dicen los colores del mapa?"
-    a: "En 🗺️ Mapa las zonas que no investigaste se ven en blanco ▫️. Cuando investigas una zona a la mitad (50 %) aparece el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…) y ese terreno se suma a la leyenda de arriba. Cuenta también lo que exploras alrededor sin moverte. El 🔥 es el campamento de inicio y se ve siempre. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-223 (0.30.2)
+    a: "En 🗺️ Mapa las zonas que no investigaste se ven en blanco ▫️. Cuando investigas una zona a la mitad (50 %) aparece el color de su terreno (🟩 pradera, 🟢 bosque, 🟫 colinas…) y ese terreno se suma a la leyenda de arriba. Cuenta también lo que exploras alrededor sin moverte. Las 🔥 fogatas se ven siempre; las zonas de tu campamento, como las demás, se ven en blanco hasta investigarlas a la mitad. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-223 (0.30.2); D-324 (0.48): fogatas y tu territorio gris (D-311)
   d13:
     q: "🗺️ ¿Dónde veo las mazmorras?"
-    a: "Ya no salen en el 🗺️ Mapa: ahí solo estás tú 🧍, el 🔥 campamento de inicio y el color de las zonas que investigaste. Las 🕳️ 🌀 mazmorras, los ✨ nodos, los 👹 campamentos enemigos, los 🏕️ campamentos de jugadores y la 👑 guarida se descubren caminando. Los lugares importantes que ya visitaste quedan en 📒 Lugares, para volver de una vez."   # [ES] D-223 (0.30.2)
+    a: "Ya no salen en el 🗺️ Mapa: ahí estás tú 🧍, las 🔥 fogatas, los 🏕️ campamentos de jugadores, tu gremio y el color de las zonas que investigaste. Las 🕳️ 🌀 mazmorras, los ✨ nodos, los 👹 campamentos enemigos y la 👑 guarida se descubren caminando. Lo que ya visitaste queda en 📒 Lugares, también los ✨ nodos que encontraste, para volver de una vez. Con el 🧭 Explorador, 🔭 Reconocer (/reconocer) lista los 👹 campamentos enemigos que tu rango deja ver."   # [ES] D-223 (0.30.2); D-324 (0.48): fogatas, ✨ Nodos en 📒 Lugares y 👹 en 🔭 Reconocer
   d14:
     q: "✨ ¿Qué es un nodo de recursos?"
-    a: "Un ✨ nodo es una zona rica en un recurso. Al llegar a su zona sabes de qué es, para siempre. Ahí ese recurso rinde ×{node_yield}, se agota la mitad de rápido y a veces ({node_rare} %) da una 💠 gema en bruto o una 🌸 flor de luna. Lo puede usar cualquiera."
+    a: "Un ✨ nodo es una zona rica en un recurso. Al llegar a su zona sabes de qué es, para siempre. Ahí ese recurso rinde ×{node_yield}, se agota la mitad de rápido y a veces ({node_rare} %) da una 💠 gema en bruto o una 🌸 flor de luna. Lo puede usar cualquiera. Los que encontraste quedan en 🗺️ Mapa → 📒 Lugares → ✨ Nodos, para volver de una vez."
   d15:
     q: "🕳️ ¿Qué es una mazmorra?"
     a: "Las mazmorras son para uno y están siempre en el mismo lugar; lo de adentro cambia cada día. 🕳️ La chica tiene 4 salas, su jefe y un cofre que abres una vez al día. 🌀 La profunda se baja piso a piso: juntas una bolsa de premios y eliges 🚪 Salir con lo ganado; si pierdes, te queda la mitad."
@@ -107,7 +107,7 @@ faq:
     a: "El Guardián del Claro espera en su guarida 👑. Ve hasta su zona y toca ⚔️ Desafiar al Guardián en 🧭 Explorar: es una pelea dura, para uno. El primero que lo vence queda para siempre como Pionero. Si pierdes, puedes volver a intentarlo."
   d18:
     q: "🔭 ¿Qué es reconocer de lejos?"
-    a: "Con el oficio 🧭 Explorador en rango {recon_rank} usas /reconocer: ves desde lejos qué hay en una mazmorra o en un 👹 campamento enemigo, sin ir ni pelear. Uno por lugar al día. El 🥷 Sigilo del Explorador a veces te evita una pelea al explorar a mano o al llegar de un viaje."
+    a: "Con el oficio 🧭 Explorador en rango {recon_rank} usas /reconocer: ves desde lejos qué hay en una mazmorra o en un 👹 campamento enemigo, sin ir ni pelear. Uno por lugar al día. La lista también trae los 👹 campamentos enemigos que tu rango deja ver, con su nombre, su tiempo de viaje y, con más rango, su fuerza; los que puedes reconocer ahora llevan su código (/rc1). El 🥷 Sigilo del Explorador a veces te evita una pelea al explorar a mano o al llegar de un viaje."
   d19:
     q: "🚫 ¿Por qué no puedo recolectar?"
     a: "Puede ser por la mochila llena (vende o usa cosas), la zona agotada (vuelve en unas horas), un 👹 campamento enemigo en pie en la zona, la guarida del Guardián, tu vida bajo el % de 🩹 Retirarse (descansa primero) o que todavía no descubriste sus recursos (explora primero). Si no se puede, nunca se cobra energía."   # [ES] D-308 (0.42): la vida bajo 🩹 Retirarse
@@ -158,7 +158,7 @@ faq:
   # ---- 🏕️ Campamentos
   d34:
     q: "🔥 ¿Qué hay en el Claro?"
-    a: "El 🔥 Claro es el campamento base de todos: 🛒 mercader, 🛏️ posada, las estaciones para 🍲 cocinar y 🛠️ fabricar, el 🧑‍🏫 entrenador, el 📜 tablón de encargos y estas ❓ Dudas. El Claro no crece: para crecer, funda tu propio campamento."
+    a: "El 🔥 Claro es la fogata del inicio, la base de todos: 🛒 mercader, 🛏️ posada, las estaciones para 🍲 cocinar y 🛠️ fabricar, el 🧑‍🏫 entrenador, el 📜 tablón de encargos y estas ❓ Dudas. El Claro no crece: para crecer, funda tu propio campamento."
   d35:
     q: "🏕️ ¿Cómo fundo mi campamento?"
     a: "Lo funda tu 🛡️ gremio. El líder va a una zona a Lejanía {camp_far} o más, la explora al 100 % y conoce {camp_known} de las 8 zonas de alrededor, sin otro campamento a {camp_gap} zonas o menos. Hacen falta {found_members} miembros del gremio ahí y {found_cost} en el 💰 fondo. El líder toca 🏕️ Campamento → 🏕️ Fundar campamento aquí: tarda {found_minutes} min con {found_members} miembros presentes y menos con más (nunca menos de {found_floor} min). El campamento se llama como el gremio y a cada miembro le llega la invitación."

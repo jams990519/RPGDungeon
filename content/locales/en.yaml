@@ -1990,7 +1990,7 @@ map:
   mates_away: "{n} {n|mate|mates} off this map: see them in 🛡️ Guild."
   position: Coordinates {x}, {y} · Distance {lejania}
   colors: '🎨 Terrains you know ({n} of {total}): {items}. The color doesn''t tell you what resources there are: you learn that by exploring.'
-  bonfire: Camp
+  bonfire: Campfire
   fog:
     name:
       unknown: unexplored
@@ -2191,6 +2191,8 @@ places:
     guild: 🛡️ Guild
     camps: 🏕️ Camps
     lair: 👑 Lair
+    node: ✨ Nodes
+  node_name: '{item} at {name}'
   kind_title: 📒 Places · {kind}
   kind_intro: '📒 {kind}: tap one or type its code and confirm. Your hero will go alone, zone by zone.'
   code_line: '{n}. {icon} {name} ({x}, {y}) · {zones} {zones|zone|zones} away · {time} · /go{n}'
@@ -2304,12 +2306,12 @@ camp:
     castillo: a castle
 claro:
   button: 🏕️ Camp
-  title: 🏕️ The Clearing Camp
-  intro: 'The base camp, where everyone starts: the campfire, the merchant and a place to sleep.'
+  title: 🔥 The Clearing
+  intro: 'The campfire where everyone starts: the fire, the merchant and a place to sleep.'
   grow_hint: '🏕️ The Clearing doesn''t grow. To grow, found your own camp far from here: your camps are the ones that level up, get upgrades and become castles.'
   trades_hint: '⚒️ Professions: here you''ll find the basic stations to refine what you gather and craft gear, potions and bandages.'
-  no_growth: '🔥 The Clearing''s works are finished: the Clearing is the base camp and no longer grows. What you gather is for founding and growing your camps, sewing bags and building chests.'
-  far: 🏕️ The camp is in the Clearing. Head back from 🧭 Explore → 📒 Places.
+  no_growth: '🔥 The Clearing''s works are finished: the Clearing is a campfire and no longer grows. What you gather is for founding and growing your camps, sewing bags and building chests.'
+  far: 🔥 That is at the campfires, like the Clearing. Head back from 🗺️ Map → 📒 Places.
 pantry:
   line: '🌾 Pantry: {state} · {rations} {rations|ration|rations} · lasts {days} {days|day|days}'
   eaters: '👥 {n} {n|active resident eats|active residents eat} from it: 1 ration a day each. Whoever doesn''t play doesn''t eat.'
@@ -2820,7 +2822,7 @@ upgrades:
   built_push_title: 🔨 Your camp has a new upgrade
   built_push: 🔨 {hero} finished {name} at {camp}.
   coin_line: 'Coins: {have} of {need} {bar}'
-  claro_none: '🏕️ The Clearing is the base camp: it has no upgrades. Upgrades are built at your camp.'
+  claro_none: 🔥 Campfires, like the Clearing, have no upgrades. Upgrades are built at your camp.
   members_only: 🔨 Upgrades are built by members, while at their camp.
   camp_line: '🔨 Upgrades built: {n} · 🛡️ Defense: {defense}'
   castle_line: 🔨 {need} or more upgrades built (they have {n})
