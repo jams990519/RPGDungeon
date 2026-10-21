@@ -1,0 +1,20 @@
+# Texts of the recipe list (D-321, 0.46): 🪚 Refinar, 🛠️ Fabricar and 🍲 Cocinar show the recipes as a list with codes (/r1).
+# [ES] Textos de la lista de recetas (pedido del dueño del 21-oct-2026: "las profesiones que hacen ropa, armas y demás necesitan
+# un formato de listado fácil de entender, porque a medida que se aprende salen muchas recetas"). Una línea por receta con su
+# código /rN (lo abre GameService._recipe_code), agrupadas por oficio. Se junta con es.yaml al cargar (engine/core/content.py).
+# Lo leen: engine/service/game.py (_station_view, _recipe_code). Una clave nueva va también en en_lista_recetas.yaml
+# (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+rlist:                         # [ES] D-321: la lista de recetas con código
+  legend: "✅ lo llevas todo · 🔸 te falta algo · ▫️ no llevas nada · toca el código para ver la receta"
+  group: "{name} · rango {rank}"
+  line_ok: "{code} {color}✅ {item}{level} · {prof}+{xp}"
+  line_part: "{code} {color}🔸 {item}{level} · {prof}+{xp}"
+  line_none: "{code} {color}▫️ {item}{level} · {prof}+{xp}"
+  level: " · nv {n}"
+  count: "{n} {n|receta|recetas} · página {page} de {total}"
+  only_ok_button: "✅ Solo las que puedo hacer"
+  all_button: "📜 Ver todas"
+  only_ok_line: "✅ Solo las que puedes hacer ya con lo que llevas."
+  only_ok_empty: "No llevas todo lo que pide ninguna receta de aquí. Toca 📜 Ver todas para ver qué te falta."
+  bad_code: "⚠️ Ese código no está en tu última lista de recetas: abre 🛠️ Fabricar o 🪚 Refinar otra vez."

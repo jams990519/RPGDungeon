@@ -1,0 +1,16 @@
+# Texts of the recipe list (D-321, 0.46): 🪚 Refine, 🛠️ Craft and 🍲 Cook show the recipes as a list with codes (/r1).
+# [ES] La versión en inglés de es_lista_recetas.yaml (D-250): las mismas claves.
+
+rlist:
+  legend: "✅ you carry it all · 🔸 something is missing · ▫️ you carry none of it · tap the code to see the recipe"
+  group: "{name} · rank {rank}"
+  line_ok: "{code} {color}✅ {item}{level} · {prof}+{xp}"
+  line_part: "{code} {color}🔸 {item}{level} · {prof}+{xp}"
+  line_none: "{code} {color}▫️ {item}{level} · {prof}+{xp}"
+  level: " · lv {n}"
+  count: "{n} {n|recipe|recipes} · page {page} of {total}"
+  only_ok_button: "✅ Only what I can make"
+  all_button: "📜 See all"
+  only_ok_line: "✅ Only what you can make now with what you carry."
+  only_ok_empty: "You don't carry everything any recipe here asks for. Tap 📜 See all to see what you lack."
+  bad_code: "⚠️ That code is not on your last recipe list: open 🛠️ Craft or 🪚 Refine again."
