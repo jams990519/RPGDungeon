@@ -96,6 +96,8 @@ Lo pidió el dueño: "cuando el jugador vuelve, le presenta los oficios" y le cu
 - **Más adelante:** 🏗️ Construcción con tu propio campamento y la 🎓 especialización al rango 25 y la segunda al 75.
 - Botones: 📋 Mis oficios (una línea por oficio con su código), 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver. El ✨ Encantamiento ya no tiene botón aquí: se aprende como los demás. Se abre también con /entrenador y estando ocupado.
 
+**Desde la 0.44 (D-306, D-315):** un 5.º botón, **📚 Libros de recetas**, cuando tienes un libro o hay uno a la venta para ti (un oficio en el rango 25, 50 o 75): los libros que tienes, los que puedes comprar (🥈2, 🥈10 y 🥈25) con cuántas recetas abre cada uno y un botón para comprarlo ([Profesiones](../07-economia/profesiones.md) §0.7). Es uno más que el tope de 4 (D-75), como en ❓ Dudas y ⚙️ Opciones (D-297).
+
 Antes (0.29 a 0.32) presentaba cada familia con sus oficios ("se aprende haciéndolo, sin pagar ni elegir", D-57) y tenía los botones ⚒️ Mis oficios, 🎓 Especialización, ✨ Encantamiento y ↩️ Volver.
 
 El camino guiado (D-190) puede mandar al jugador aquí después de fundar su campamento.

@@ -1,0 +1,51 @@
+# Texts of 0.44 (D-306, D-315): the recipe reform. Recipe colors (WoW style), the 📚 recipe books of the 🧑‍🏫 trainer and the
+# first 💍 jewelcrafting recipe without a gem.
+# [ES] Textos de la 0.44: la reforma de recetas (D-306, confirmada por el dueño el 20-oct-2026: E-221, E-222 y E-223). Los
+# colores de receta como en WoW (🟧 naranja da la experiencia de oficio entera, 🟨 amarilla la mitad, 🟩 verde un cuarto y ⬜ gris
+# nada), los 📚 libros de recetas que vende el 🧑‍🏫 Entrenador (abren las recetas de rango 25, 50 y 75 o más) y el 📿 Colgante de
+# cobre (la primera receta de 💍 Joyería, sin 💠 gema). Se junta con es.yaml y los demás es_*.yaml al cargar
+# (engine/core/content.py, mezcla profunda: las claves de item.* de aquí se suman a las de es.yaml sin pisarlas).
+# Documento de diseño: diseno/07-economia/oficios-como-wow.md §3; diseno/07-economia/simulacion-oficios.md §11;
+#     diseno/07-economia/profesiones.md §0.1
+# Lo leen: engine/service/game.py (sección "recipe tiers, colors and books": _color_mark, _station_view, _recipe_view,
+#     _books_view, _buy_book, _book_lock_line, _book_rank_lines; y el botón 📚 de _trainer_view)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_recetas.yaml, en el mismo
+# cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+# Los nombres de las piezas de los tramos nuevos (niveles 15, 25 … 95) están en es_tramos.yaml (generado por
+# tools/recipe_tiers.py).
+
+recipe_tier:                   # [ES] D-306 (E-221): el color de cada receta según cuánto te queda chica (balance.yaml recipe_tiers.colors)
+  color:
+    orange: "🟧"
+    yellow: "🟨"
+    green: "🟩"
+    grey: "⬜"
+  legend: "🟧 experiencia entera · 🟨 la mitad · 🟩 un cuarto · ⬜ nada"
+  line:
+    orange: "🟧 Receta naranja: te da la experiencia de oficio entera."
+    yellow: "🟨 Receta amarilla: tu rango ya la pasa; te da la mitad de la experiencia de oficio."
+    green: "🟩 Receta verde: te da un cuarto de la experiencia de oficio."
+    grey: "⬜ Receta gris: ya te queda chica y no te da experiencia de oficio. Sube con las recetas nuevas."
+
+books:                         # [ES] D-306 (E-222): 📚 Libros de recetas del 🧑‍🏫 Entrenador
+  button: "📚 Libros de recetas"
+  title: "📚 Libros de recetas"
+  intro: "Cada libro abre las recetas de un oficio desde su rango y es tuyo para siempre. Precios: {prices}."
+  price_item: "rango {rank} {price}"
+  book_name: "{name} {rank}"
+  owned: "✅ Tus libros: {list}"
+  owned_none: "Todavía no tienes libros de recetas."
+  for_sale: "🛒 A la venta para ti:"
+  sale_line: "📕 {name} · {price} · abre {n} {n|receta|recetas}"
+  none_for_sale: "Por ahora no hay libros para ti: se venden cuando uno de tus oficios llega al rango 25, 50 o 75."
+  buy_button: "📕 {name} · {price}"
+  bought: "📚 Compraste el libro {name}: ya puedes hacer {n} {n|receta nueva|recetas nuevas}."
+  already: "Ya tienes el libro {name}."
+  rank_low: "🔒 Ese libro pide rango {rank} de {name} (tienes {have})."
+  no_gold: "💰 No te alcanza: el libro cuesta {price} y tienes {gold}."
+  missing_hint: "📚 Con el libro {name} {rank} se abren {n} {n|receta|recetas} más aquí (🧑‍🏫 Entrenador → 📚 Libros de recetas)."
+  recipe_lock: "📕 Pide el libro de recetas {name} {rank}: cómpralo en 🧑‍🏫 Entrenador → 📚 Libros de recetas."
+  rank_reached: "📚 Rango {rank}: el 🧑‍🏫 Entrenador ya te vende el libro {name} {rank} ({price}) con las recetas nuevas."
+
+item:                          # [ES] D-306 (E-223): la primera pieza de 💍 Joyería, sin gema (content/items.yaml colgante_cobre)
+  colgante_cobre: "Colgante de cobre"

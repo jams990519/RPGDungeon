@@ -14,6 +14,14 @@
 #     (sección "professions": _trade_gather, _trade_loot, _professions_view, _station_view, _recipe_view, _make)
 # IDs: estables. Nunca se renombran, nunca se borran, nunca se reutilizan: los héroes guardan la experiencia de cada
 #     oficio con su id (Hero.professions). Para retirar una receta se marca retired: true (deja de mostrarse).
+# D-306 (0.44, la reforma de recetas): en los 5 oficios de equipo (balance.yaml recipe_tiers.professions: 🪑 🔨 🪡 🦺 💍) el
+#     rango (min_rank), la energía y la experiencia (xp) de sus recetas NO se escriben a mano: los escribe tools/recipe_tiers.py
+#     con los números de balance.yaml recipe_tiers (pieza de nivel N → rango N, un tramo cada 5; 2/3/4 ⚡ por tramo; experiencia
+#     12 × (1 + 0,01 × rango)), y agrega al final el bloque "GENERATED" con las recetas de los niveles 15, 25 … 95. Si cambias una
+#     receta de equipo o esos números, corre `python tools/recipe_tiers.py` (tests/test_tramos_de_recetas.py avisa si quedó viejo).
+#     Las 67 recetas de malla (D-208, E-223) tienen retired: true: ya no se hacen, las piezas quedan en las mochilas. Las recetas
+#     de rango 25, 50 y 75 o más de cualquier oficio piden su 📚 libro de recetas (balance.yaml recipe_tiers.books; GameService
+#     _book_missing). La primera receta de 💍 Joyería es colgante_cobre (sin gema), antes del anillo.
 # Campos de cada oficio:
 #     emoji, name_key, how_key: lo que se muestra (cómo se sube, en una frase).
 #     branch: gather (recolección), refine (refinado) o craft (fabricación).
@@ -31,7 +39,8 @@
 #     profession: el oficio que la hace (y su estación: en la fase 1 cada oficio de refinado y fabricación tiene la suya).
 #     inputs: materiales de la mochila por vez. output: lo que sale por vez (ids de items.yaml).
 #     min_rank: rango del oficio desde el que se puede hacer. energy: ⚡ por vez (D-78: toda acción fuera del combate
-#     gasta energía). xp: experiencia de oficio por vez. La experiencia de héroe sale de energy (balance.yaml professions).
+#     gasta energía). xp: experiencia de oficio por vez (D-306: en los oficios con tramos, por el color de la receta: entera,
+#     la mitad, un cuarto o nada según cuánto te queda chica). La experiencia de héroe sale de energy (balance.yaml professions).
 #     spec (D-141, opcional): la 🎓 especialización que la hace exclusiva: solo la ve y la hace quien la tiene, con el rango
 #     de la receta y balance.yaml specs.recipe_mastery de dominio.
 #     variant (D-183, opcional): el material que la distingue de otra receta que hace lo mismo (las de los recursos de cada
@@ -52,7 +61,8 @@
 #       diseno/03-personaje/balance.md §7, "los oficios encadenados").
 #     - El equipo fabricado (items.yaml, source: crafted) tiene que valer siempre algo más que el botín de su nivel (D-113:
 #       lo mejor de cada nivel lo fabrican los jugadores; tests/test_balance_d110.py); nunca sale en el botín al azar (engine/hero/gear.py).
-#     - D-110: las líneas de equipo tienen una receta por nivel de pieza hasta el 100, en los rangos 55 a 100 (al final del archivo).
+#     - D-110: las líneas de equipo tienen una receta por nivel de pieza hasta el 100 (al final del archivo). D-306 (0.44): una cada
+#       5 niveles, desde el rango igual al nivel de la pieza (nivel 3 → rango 1, 8 → 10); los niveles 15, 25 … 95, en el bloque generado.
 #     - D-115 (fase 2, lado del equipo): cabeza, manos, piernas y pies también tienen equipo de artesano (208 recetas al final del
 #       archivo, una línea cada una, con el id de la pieza que sale) y el ✨ Encantamiento es un oficio de rama propia (branch:
 #       enchant): no tiene estación ni recetas aquí; desencanta y encanta desde 🛡️ Equipo (engine/service/game.py, sección
@@ -149,7 +159,7 @@ specs:
     - {id: herreria_herramientas, emoji: "🔧", effects: [{kind: yield, items: [madera, piedra, pieza_metal, arcilla, hierba_curativa, fibra, carne, piel, bayas, setas, miel, mazorca, lino, juncos, nenufar, cactus, datiles, flor_escarcha, musgo, raiz_amarga, tomillo, resina, corteza, carbon, sal, cuarzo, arena, hielo, chatarra], value: 0.05}]}   # [ES] tus herramientas: +5 % en todo lo que recolectas o desuellas (D-183: también los recursos de cada terreno)
   peleteria:
     - {id: peleteria_cuero, emoji: "🦺", effects: [{kind: masterwork, types: [cuero], value: 0.05}]}       # [ES] exclusivas: espec_cuero_1 y _2
-    - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2
+    - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2 (retiradas en la 0.44: ya no hay malla, D-208; qué hacer con ella: P-243)
     - {id: peleteria_talabarteria, emoji: "🎒", effects: [{kind: perk, key: bag, value: 10}]}             # [ES] alforjas y mochilas: +10 de mochila (las sillas de montar, con las monturas)
   sastreria:
     - {id: sastreria_tunicas, emoji: "🔮", effects: [{kind: masterwork, types: [tela], slots: [armadura], value: 0.05}]}                  # [ES] exclusivas: espec_tela_1 y _2
@@ -445,47 +455,48 @@ recipes:
     profession: carpinteria
     inputs: {tablon: 5, tela_tejida: 2}
     output: {artesano_baston_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   arco_reforzado:
     profession: carpinteria
     inputs: {tablon: 5, cuero_curtido: 2}
     output: {artesano_arco_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   baculo_artesano:
     profession: carpinteria
     inputs: {tablon: 8, tela_tejida: 3, gema_bruta: 1}
     output: {artesano_baston_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   arco_artesano:
     profession: carpinteria
     inputs: {tablon: 8, cuero_curtido: 3, tela_tejida: 1}
     output: {artesano_arco_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   # ---- D-116: 🪑 camp furniture, only Carpentry. [ES] Muebles exclusivos para el campamento: solo la 🪑 Carpintería los
   # hace. Se colocan en tu campamento (🔨 Mejoras → 🔨 Obras → 🪑 Colocar), uno de cada mueble por campamento, y dan un
-  # bono chico para siempre a los miembros (items.yaml "effect"). Cuestan 4 ⚡ y dan 24 de experiencia de oficio (6 por ⚡, como las demás).
+  # bono chico para siempre a los miembros (items.yaml "effect"). Cuestan 4 ⚡ y dan 24 de experiencia de oficio (6 por ⚡, como las demás;
+  # D-306: × (1 + 0,01 × rango), escrito por tools/recipe_tiers.py).
   literas_roble:
     profession: carpinteria
     inputs: {tablon: 12, tela_tejida: 4, cuero_curtido: 2}   # [ES] aserradero + tejeduría + curtiduría
     output: {literas_roble: 1}
     min_rank: 40
     energy: 4
-    xp: 24
+    xp: 34
   armero_roble:
     profession: carpinteria
     inputs: {tablon: 16, lingote: 6, cuero_curtido: 3}       # [ES] aserradero + fundición + curtiduría
     output: {armero_roble: 1}
     min_rank: 70
     energy: 4
-    xp: 24
+    xp: 41
 
   # ---- Herrería: armas y placas (lingotes + cuero para el mango y las correas)
   espada_forjada:
@@ -513,44 +524,44 @@ recipes:
     profession: herreria
     inputs: {lingote: 5, cuero_curtido: 2}
     output: {artesano_espada_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   daga_templada:
     profession: herreria
     inputs: {lingote: 4, cuero_curtido: 2}
     output: {artesano_daga_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   peto_templado:
     profession: herreria
     inputs: {lingote: 7, cuero_curtido: 3}
     output: {artesano_placas_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   espada_artesano:
     profession: herreria
     inputs: {lingote: 8, cuero_curtido: 3, gema_bruta: 1}
     output: {artesano_espada_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   daga_artesano:
     profession: herreria
     inputs: {lingote: 6, cuero_curtido: 3, gema_bruta: 1}
     output: {artesano_daga_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   coraza_artesano:
     profession: herreria
     inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}
     output: {artesano_placas_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
 
   # ---- Alquimia: pociones (extracto + arcilla para el frasco)
   pocion_vida:
@@ -594,16 +605,16 @@ recipes:
     profession: sastreria
     inputs: {tela_tejida: 6, extracto: 1}
     output: {artesano_tela_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   tunica_artesano:
     profession: sastreria
     inputs: {tela_tejida: 9, extracto: 2, flor_luna: 1}
     output: {artesano_tela_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
 
   # ---- Peletería: armaduras de cuero (cuero + tela) y de malla ligera (cuero + lingotes)
   jubon_cuero:
@@ -620,13 +631,14 @@ recipes:
     min_rank: 1
     energy: 2
     xp: 12
+    retired: true
   jubon_reforzado:
     profession: peleteria
     inputs: {cuero_curtido: 6, tela_tejida: 2}
     output: {artesano_cuero_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   cota_remachada:
     profession: peleteria
     inputs: {cuero_curtido: 3, lingote: 4}
@@ -634,13 +646,14 @@ recipes:
     min_rank: 25
     energy: 2
     xp: 12
+    retired: true
   jubon_artesano:
     profession: peleteria
     inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 1}
     output: {artesano_cuero_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   cota_artesano:
     profession: peleteria
     inputs: {cuero_curtido: 5, lingote: 7, tela_tejida: 2}
@@ -648,8 +661,18 @@ recipes:
     min_rank: 50
     energy: 2
     xp: 12
+    retired: true
 
   # ---- Joyería: anillos y amuletos para la ranura de joya (lingote + gema en bruto)
+  # [ES] D-306 (0.44, E-223): la primera receta, sin 💠 gema (así el joyero empieza sin el ⛏️ Minero en el rango 10). Va antes del
+  # anillo: es la que el 🧑‍🏫 Entrenador muestra como "primera receta" al aprender la Joyería (GameService._first_recipe).
+  colgante_cobre:
+    profession: joyeria
+    inputs: {lingote: 1, cuero_curtido: 1}
+    output: {colgante_cobre: 1}
+    min_rank: 1
+    energy: 2
+    xp: 12
   anillo_engarzado:
     profession: joyeria
     inputs: {lingote: 1, gema_bruta: 1}
@@ -661,16 +684,16 @@ recipes:
     profession: joyeria
     inputs: {lingote: 2, gema_bruta: 2}
     output: {artesano_joya_2: 1}
-    min_rank: 25
+    min_rank: 5
     energy: 2
-    xp: 12
+    xp: 13
   amuleto_artesano:
     profession: joyeria
     inputs: {lingote: 3, gema_bruta: 3}
     output: {artesano_joya_3: 1}
-    min_rank: 50
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
 
   # ---- Medicina (D-111): ungüentos y botiquines (extracto + tela o cuero: dos ramas o más)
   unguento:
@@ -698,453 +721,455 @@ recipes:
   # ---- D-115 / D-141: 🎓 exclusive recipes (spec: <id>): only that specialization makes them, with recipe_mastery of mastery.
   # [ES] Recetas exclusivas de las especializaciones (red-de-oficios.md §3): solo las ve y las hace quien tiene esa especialización
   # con 25 % de dominio (balance.yaml specs.recipe_mastery) y el rango de la receta. Las de equipo: la receta de artesano de su línea
-  # y nivel con 1 material más (nivel 5) o 1 💠 gema y 1 🌸 flor de luna más (nivel 100); 2 ⚡ y 12 de experiencia de oficio, como
-  # las demás piezas (D-108). Sus piezas (content/items.yaml, "espec_*") valen 5 % más que las de artesano. Una línea por receta.
-  espec_arco_1: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 6, cuero_curtido: 2}, output: {espec_arco_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_arco_2: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 22, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_arco_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_espada_1: {profession: herreria, spec: herreria_armas, inputs: {lingote: 6, cuero_curtido: 2}, output: {espec_espada_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_espada_2: {profession: herreria, spec: herreria_armas, inputs: {lingote: 18, cuero_curtido: 8, gema_bruta: 5, flor_luna: 1}, output: {espec_espada_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_placas_1: {profession: herreria, spec: herreria_armero, inputs: {lingote: 8, cuero_curtido: 3}, output: {espec_placas_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_placas_2: {profession: herreria, spec: herreria_armero, inputs: {lingote: 20, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_placas_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_cuero_1: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 7, tela_tejida: 2}, output: {espec_cuero_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_cuero_2: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 21, tela_tejida: 8, extracto: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_cuero_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_malla_1: {profession: peleteria, spec: peleteria_malla, inputs: {cuero_curtido: 3, lingote: 5}, output: {espec_malla_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_malla_2: {profession: peleteria, spec: peleteria_malla, inputs: {lingote: 17, cuero_curtido: 10, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_malla_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_tela_1: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 7, extracto: 1}, output: {espec_tela_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_tela_2: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 24, extracto: 7, flor_luna: 5, gema_bruta: 1}, output: {espec_tela_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_joya_gemas_1: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 2, gema_bruta: 3}, output: {espec_joya_gemas_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_joya_gemas_2: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_gemas_2: 1}, min_rank: 100, energy: 2, xp: 12}
-  espec_joya_oro_1: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 3, gema_bruta: 2}, output: {espec_joya_oro_1: 1}, min_rank: 25, energy: 2, xp: 12}
-  espec_joya_oro_2: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_oro_2: 1}, min_rank: 100, energy: 2, xp: 12}
+  # y nivel con 1 material más (nivel 5) o 1 💠 gema y 1 🌸 flor de luna más (nivel 100); la energía y la experiencia de su tramo,
+  # como las demás piezas (D-306: tools/recipe_tiers.py; siguen en los rangos 25 y 100). Sus piezas (content/items.yaml, "espec_*")
+  # valen 5 % más que las de artesano. Una línea por receta. Las 2 de la ⛓️ Malla ligera, retiradas (sin malla: D-208, E-223).
+  espec_arco_1: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 6, cuero_curtido: 2}, output: {espec_arco_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_arco_2: {profession: carpinteria, spec: carpinteria_arqueria, inputs: {tablon: 22, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_arco_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_espada_1: {profession: herreria, spec: herreria_armas, inputs: {lingote: 6, cuero_curtido: 2}, output: {espec_espada_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_espada_2: {profession: herreria, spec: herreria_armas, inputs: {lingote: 18, cuero_curtido: 8, gema_bruta: 5, flor_luna: 1}, output: {espec_espada_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_placas_1: {profession: herreria, spec: herreria_armero, inputs: {lingote: 8, cuero_curtido: 3}, output: {espec_placas_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_placas_2: {profession: herreria, spec: herreria_armero, inputs: {lingote: 20, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_placas_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_cuero_1: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 7, tela_tejida: 2}, output: {espec_cuero_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_cuero_2: {profession: peleteria, spec: peleteria_cuero, inputs: {cuero_curtido: 21, tela_tejida: 8, extracto: 4, gema_bruta: 4, flor_luna: 1}, output: {espec_cuero_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_malla_1: {profession: peleteria, spec: peleteria_malla, inputs: {cuero_curtido: 3, lingote: 5}, output: {espec_malla_1: 1}, min_rank: 25, energy: 2, xp: 12, retired: true}
+  espec_malla_2: {profession: peleteria, spec: peleteria_malla, inputs: {lingote: 17, cuero_curtido: 10, tela_tejida: 5, gema_bruta: 4, flor_luna: 1}, output: {espec_malla_2: 1}, min_rank: 100, energy: 2, xp: 12, retired: true}
+  espec_tela_1: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 7, extracto: 1}, output: {espec_tela_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_tela_2: {profession: sastreria, spec: sastreria_tunicas, inputs: {tela_tejida: 24, extracto: 7, flor_luna: 5, gema_bruta: 1}, output: {espec_tela_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_joya_gemas_1: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 2, gema_bruta: 3}, output: {espec_joya_gemas_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_joya_gemas_2: {profession: joyeria, spec: joyeria_gemas, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_gemas_2: 1}, min_rank: 100, energy: 4, xp: 24}
+  espec_joya_oro_1: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 3, gema_bruta: 2}, output: {espec_joya_oro_1: 1}, min_rank: 25, energy: 2, xp: 15}
+  espec_joya_oro_2: {profession: joyeria, spec: joyeria_orfebreria, inputs: {lingote: 8, gema_bruta: 12, flor_luna: 4}, output: {espec_joya_oro_2: 1}, min_rank: 100, energy: 4, xp: 24}
   # [ES] 🪑 Muebles exclusivos (como los de la Carpintería: 4 ⚡ y 24 de experiencia de oficio; aserradero + curtiduría + fundición)
-  paveses_roble: {profession: carpinteria, spec: carpinteria_escudos, inputs: {tablon: 14, cuero_curtido: 4, lingote: 2}, output: {paveses_roble: 1}, min_rank: 50, energy: 4, xp: 24}
-  carro_viveres: {profession: carpinteria, spec: carpinteria_mobiliario, inputs: {tablon: 10, lingote: 2, cuero_curtido: 2}, output: {carro_viveres: 1}, min_rank: 25, energy: 4, xp: 24}
+  paveses_roble: {profession: carpinteria, spec: carpinteria_escudos, inputs: {tablon: 14, cuero_curtido: 4, lingote: 2}, output: {paveses_roble: 1}, min_rank: 50, energy: 4, xp: 36}
+  carro_viveres: {profession: carpinteria, spec: carpinteria_mobiliario, inputs: {tablon: 10, lingote: 2, cuero_curtido: 2}, output: {carro_viveres: 1}, min_rank: 25, energy: 4, xp: 30}
 
   # ---- D-110 / D-113: crafted gear every 10 levels up to 100, at ranks 55 to 100 (5 ranks per tier). Refined inputs
   # from 2 branches or more (and the rares: 💠 gems, 🌸 moon flowers), growing with the tier.
   # [ES] Equipo de artesano por niveles (D-110, D-113): una receta por nivel de pieza (10, 20 ... 100) en cada línea, en los
-  # rangos 55, 60 ... 100. Lo mejor de cada nivel lo fabrican los jugadores; piden lo refinado de 2 ramas o más y, en los
-  # niveles altos, más 💠 gemas y 🌸 flores de luna. 2 ⚡ y 12 de experiencia de oficio, como las demás piezas (D-108).
+  # rangos 55, 60 ... 100 (D-306, 0.44: ahora en el rango igual a su nivel). Lo mejor de cada nivel lo fabrican los jugadores; piden lo refinado de 2 ramas o más y, en los
+  # niveles altos, más 💠 gemas y 🌸 flores de luna. D-306 (0.44): desde el rango igual al nivel de la pieza (antes 55 a 100), con la
+  # energía y la experiencia de su tramo (tools/recipe_tiers.py).
   espada_nivel_10:
     profession: herreria
     inputs: {lingote: 9, cuero_curtido: 3, gema_bruta: 1}
     output: {artesano_espada_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   espada_nivel_20:
     profession: herreria
     inputs: {lingote: 10, cuero_curtido: 4, gema_bruta: 1}
     output: {artesano_espada_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   espada_nivel_30:
     profession: herreria
     inputs: {lingote: 11, cuero_curtido: 4, gema_bruta: 2}
     output: {artesano_espada_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   espada_nivel_40:
     profession: herreria
     inputs: {lingote: 12, cuero_curtido: 5, gema_bruta: 2}
     output: {artesano_espada_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   espada_nivel_50:
     profession: herreria
     inputs: {lingote: 13, cuero_curtido: 5, gema_bruta: 2}
     output: {artesano_espada_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   espada_nivel_60:
     profession: herreria
     inputs: {lingote: 14, cuero_curtido: 6, gema_bruta: 3}
     output: {artesano_espada_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   espada_nivel_70:
     profession: herreria
     inputs: {lingote: 15, cuero_curtido: 6, gema_bruta: 3}
     output: {artesano_espada_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   espada_nivel_80:
     profession: herreria
     inputs: {lingote: 16, cuero_curtido: 7, gema_bruta: 3}
     output: {artesano_espada_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   espada_nivel_90:
     profession: herreria
     inputs: {lingote: 17, cuero_curtido: 7, gema_bruta: 4}
     output: {artesano_espada_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   espada_nivel_100:
     profession: herreria
     inputs: {lingote: 18, cuero_curtido: 8, gema_bruta: 4}
     output: {artesano_espada_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   daga_nivel_10:
     profession: herreria
     inputs: {lingote: 7, cuero_curtido: 3, gema_bruta: 1}
     output: {artesano_daga_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   daga_nivel_20:
     profession: herreria
     inputs: {lingote: 8, cuero_curtido: 4, gema_bruta: 1}
     output: {artesano_daga_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   daga_nivel_30:
     profession: herreria
     inputs: {lingote: 9, cuero_curtido: 4, gema_bruta: 2}
     output: {artesano_daga_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   daga_nivel_40:
     profession: herreria
     inputs: {lingote: 10, cuero_curtido: 5, gema_bruta: 2}
     output: {artesano_daga_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   daga_nivel_50:
     profession: herreria
     inputs: {lingote: 11, cuero_curtido: 5, gema_bruta: 2}
     output: {artesano_daga_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   daga_nivel_60:
     profession: herreria
     inputs: {lingote: 12, cuero_curtido: 6, gema_bruta: 3}
     output: {artesano_daga_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   daga_nivel_70:
     profession: herreria
     inputs: {lingote: 13, cuero_curtido: 6, gema_bruta: 3}
     output: {artesano_daga_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   daga_nivel_80:
     profession: herreria
     inputs: {lingote: 14, cuero_curtido: 7, gema_bruta: 3}
     output: {artesano_daga_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   daga_nivel_90:
     profession: herreria
     inputs: {lingote: 15, cuero_curtido: 7, gema_bruta: 4}
     output: {artesano_daga_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   daga_nivel_100:
     profession: herreria
     inputs: {lingote: 16, cuero_curtido: 8, gema_bruta: 4}
     output: {artesano_daga_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   arco_nivel_10:
     profession: carpinteria
     inputs: {tablon: 9, cuero_curtido: 3, tela_tejida: 1}
     output: {artesano_arco_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   arco_nivel_20:
     profession: carpinteria
     inputs: {tablon: 10, cuero_curtido: 4, tela_tejida: 1}
     output: {artesano_arco_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   arco_nivel_30:
     profession: carpinteria
     inputs: {tablon: 12, cuero_curtido: 4, tela_tejida: 2}
     output: {artesano_arco_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   arco_nivel_40:
     profession: carpinteria
     inputs: {tablon: 12, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}
     output: {artesano_arco_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   arco_nivel_50:
     profession: carpinteria
     inputs: {tablon: 15, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}
     output: {artesano_arco_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   arco_nivel_60:
     profession: carpinteria
     inputs: {tablon: 16, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}
     output: {artesano_arco_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   arco_nivel_70:
     profession: carpinteria
     inputs: {tablon: 18, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}
     output: {artesano_arco_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   arco_nivel_80:
     profession: carpinteria
     inputs: {tablon: 20, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}
     output: {artesano_arco_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   arco_nivel_90:
     profession: carpinteria
     inputs: {tablon: 22, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}
     output: {artesano_arco_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   arco_nivel_100:
     profession: carpinteria
     inputs: {tablon: 22, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 3}
     output: {artesano_arco_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   baston_nivel_10:
     profession: carpinteria
     inputs: {tablon: 9, tela_tejida: 3, gema_bruta: 1}
     output: {artesano_baston_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   baston_nivel_20:
     profession: carpinteria
     inputs: {tablon: 10, tela_tejida: 4, gema_bruta: 1}
     output: {artesano_baston_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   baston_nivel_30:
     profession: carpinteria
     inputs: {tablon: 11, tela_tejida: 4, gema_bruta: 2}
     output: {artesano_baston_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   baston_nivel_40:
     profession: carpinteria
     inputs: {tablon: 12, tela_tejida: 5, gema_bruta: 2}
     output: {artesano_baston_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   baston_nivel_50:
     profession: carpinteria
     inputs: {tablon: 13, tela_tejida: 5, gema_bruta: 2, flor_luna: 1}
     output: {artesano_baston_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   baston_nivel_60:
     profession: carpinteria
     inputs: {tablon: 14, tela_tejida: 6, gema_bruta: 3, flor_luna: 1}
     output: {artesano_baston_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   baston_nivel_70:
     profession: carpinteria
     inputs: {tablon: 17, tela_tejida: 6, gema_bruta: 3, flor_luna: 1}
     output: {artesano_baston_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   baston_nivel_80:
     profession: carpinteria
     inputs: {tablon: 17, tela_tejida: 7, gema_bruta: 3, flor_luna: 2}
     output: {artesano_baston_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   baston_nivel_90:
     profession: carpinteria
     inputs: {tablon: 19, tela_tejida: 7, gema_bruta: 4, flor_luna: 2}
     output: {artesano_baston_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   baston_nivel_100:
     profession: carpinteria
     inputs: {tablon: 21, tela_tejida: 8, gema_bruta: 4, flor_luna: 2}
     output: {artesano_baston_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   tunica_nivel_10:
     profession: sastreria
     inputs: {tela_tejida: 10, extracto: 2, flor_luna: 1}
     output: {artesano_tela_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   tunica_nivel_20:
     profession: sastreria
     inputs: {tela_tejida: 11, extracto: 3, flor_luna: 1}
     output: {artesano_tela_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   tunica_nivel_30:
     profession: sastreria
     inputs: {tela_tejida: 12, extracto: 3, flor_luna: 2}
     output: {artesano_tela_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   tunica_nivel_40:
     profession: sastreria
     inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}
     output: {artesano_tela_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   tunica_nivel_50:
     profession: sastreria
     inputs: {tela_tejida: 15, extracto: 4, flor_luna: 2}
     output: {artesano_tela_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   tunica_nivel_60:
     profession: sastreria
     inputs: {tela_tejida: 15, extracto: 5, flor_luna: 3}
     output: {artesano_tela_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   tunica_nivel_70:
     profession: sastreria
     inputs: {tela_tejida: 19, extracto: 5, flor_luna: 3}
     output: {artesano_tela_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   tunica_nivel_80:
     profession: sastreria
     inputs: {tela_tejida: 20, extracto: 6, flor_luna: 3}
     output: {artesano_tela_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   tunica_nivel_90:
     profession: sastreria
     inputs: {tela_tejida: 22, extracto: 6, flor_luna: 4}
     output: {artesano_tela_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   tunica_nivel_100:
     profession: sastreria
     inputs: {tela_tejida: 24, extracto: 7, flor_luna: 4}
     output: {artesano_tela_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   jubon_nivel_10:
     profession: peleteria
     inputs: {cuero_curtido: 10, tela_tejida: 3, extracto: 1}
     output: {artesano_cuero_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   jubon_nivel_20:
     profession: peleteria
     inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 1}
     output: {artesano_cuero_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   jubon_nivel_30:
     profession: peleteria
     inputs: {cuero_curtido: 12, tela_tejida: 4, extracto: 2}
     output: {artesano_cuero_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   jubon_nivel_40:
     profession: peleteria
     inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 1}
     output: {artesano_cuero_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   jubon_nivel_50:
     profession: peleteria
     inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 1}
     output: {artesano_cuero_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   jubon_nivel_60:
     profession: peleteria
     inputs: {cuero_curtido: 15, tela_tejida: 6, extracto: 3, gema_bruta: 1}
     output: {artesano_cuero_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   jubon_nivel_70:
     profession: peleteria
     inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}
     output: {artesano_cuero_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   jubon_nivel_80:
     profession: peleteria
     inputs: {cuero_curtido: 19, tela_tejida: 7, extracto: 3, gema_bruta: 2}
     output: {artesano_cuero_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   jubon_nivel_90:
     profession: peleteria
     inputs: {cuero_curtido: 21, tela_tejida: 7, extracto: 4, gema_bruta: 2}
     output: {artesano_cuero_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   jubon_nivel_100:
     profession: peleteria
     inputs: {cuero_curtido: 21, tela_tejida: 8, extracto: 4, gema_bruta: 3}
     output: {artesano_cuero_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   cota_nivel_10:
     profession: peleteria
     inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}
@@ -1152,6 +1177,7 @@ recipes:
     min_rank: 55
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_20:
     profession: peleteria
     inputs: {lingote: 9, cuero_curtido: 6, tela_tejida: 2}
@@ -1159,6 +1185,7 @@ recipes:
     min_rank: 60
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_30:
     profession: peleteria
     inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3}
@@ -1166,6 +1193,7 @@ recipes:
     min_rank: 65
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_40:
     profession: peleteria
     inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 1}
@@ -1173,6 +1201,7 @@ recipes:
     min_rank: 70
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_50:
     profession: peleteria
     inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 1}
@@ -1180,6 +1209,7 @@ recipes:
     min_rank: 75
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_60:
     profession: peleteria
     inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 1}
@@ -1187,6 +1217,7 @@ recipes:
     min_rank: 80
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_70:
     profession: peleteria
     inputs: {lingote: 14, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}
@@ -1194,6 +1225,7 @@ recipes:
     min_rank: 85
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_80:
     profession: peleteria
     inputs: {lingote: 15, cuero_curtido: 9, tela_tejida: 4, gema_bruta: 2}
@@ -1201,6 +1233,7 @@ recipes:
     min_rank: 90
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_90:
     profession: peleteria
     inputs: {lingote: 16, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 2}
@@ -1208,6 +1241,7 @@ recipes:
     min_rank: 95
     energy: 2
     xp: 12
+    retired: true
   cota_nivel_100:
     profession: peleteria
     inputs: {lingote: 17, cuero_curtido: 10, tela_tejida: 5, gema_bruta: 3}
@@ -1215,362 +1249,365 @@ recipes:
     min_rank: 100
     energy: 2
     xp: 12
+    retired: true
   peto_nivel_10:
     profession: herreria
     inputs: {lingote: 11, cuero_curtido: 4, tela_tejida: 2}
     output: {artesano_placas_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   peto_nivel_20:
     profession: herreria
     inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 2}
     output: {artesano_placas_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   peto_nivel_30:
     profession: herreria
     inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3}
     output: {artesano_placas_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   peto_nivel_40:
     profession: herreria
     inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}
     output: {artesano_placas_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   peto_nivel_50:
     profession: herreria
     inputs: {lingote: 15, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}
     output: {artesano_placas_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   peto_nivel_60:
     profession: herreria
     inputs: {lingote: 16, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 1}
     output: {artesano_placas_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   peto_nivel_70:
     profession: herreria
     inputs: {lingote: 17, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}
     output: {artesano_placas_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   peto_nivel_80:
     profession: herreria
     inputs: {lingote: 18, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}
     output: {artesano_placas_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   peto_nivel_90:
     profession: herreria
     inputs: {lingote: 19, cuero_curtido: 8, tela_tejida: 5, gema_bruta: 2}
     output: {artesano_placas_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   peto_nivel_100:
     profession: herreria
     inputs: {lingote: 20, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 3}
     output: {artesano_placas_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
   joya_nivel_10:
     profession: joyeria
     inputs: {lingote: 3, gema_bruta: 3}
     output: {artesano_joya_4: 1}
-    min_rank: 55
+    min_rank: 10
     energy: 2
-    xp: 12
+    xp: 13
   joya_nivel_20:
     profession: joyeria
     inputs: {lingote: 4, gema_bruta: 4}
     output: {artesano_joya_5: 1}
-    min_rank: 60
+    min_rank: 20
     energy: 2
-    xp: 12
+    xp: 14
   joya_nivel_30:
     profession: joyeria
     inputs: {lingote: 4, gema_bruta: 5, flor_luna: 1}
     output: {artesano_joya_6: 1}
-    min_rank: 65
+    min_rank: 30
     energy: 2
-    xp: 12
+    xp: 16
   joya_nivel_40:
     profession: joyeria
     inputs: {lingote: 5, gema_bruta: 6, flor_luna: 1}
     output: {artesano_joya_7: 1}
-    min_rank: 70
+    min_rank: 40
     energy: 2
-    xp: 12
+    xp: 17
   joya_nivel_50:
     profession: joyeria
     inputs: {lingote: 6, gema_bruta: 6, flor_luna: 1}
     output: {artesano_joya_8: 1}
-    min_rank: 75
+    min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   joya_nivel_60:
     profession: joyeria
     inputs: {lingote: 6, gema_bruta: 8, flor_luna: 2}
     output: {artesano_joya_9: 1}
-    min_rank: 80
-    energy: 2
-    xp: 12
+    min_rank: 60
+    energy: 3
+    xp: 19
   joya_nivel_70:
     profession: joyeria
     inputs: {lingote: 6, gema_bruta: 8, flor_luna: 2}
     output: {artesano_joya_10: 1}
-    min_rank: 85
-    energy: 2
-    xp: 12
+    min_rank: 70
+    energy: 3
+    xp: 20
   joya_nivel_80:
     profession: joyeria
     inputs: {lingote: 7, gema_bruta: 9, flor_luna: 2}
     output: {artesano_joya_11: 1}
-    min_rank: 90
-    energy: 2
-    xp: 12
+    min_rank: 80
+    energy: 3
+    xp: 22
   joya_nivel_90:
     profession: joyeria
     inputs: {lingote: 7, gema_bruta: 10, flor_luna: 3}
     output: {artesano_joya_12: 1}
-    min_rank: 95
-    energy: 2
-    xp: 12
+    min_rank: 90
+    energy: 4
+    xp: 23
   joya_nivel_100:
     profession: joyeria
     inputs: {lingote: 8, gema_bruta: 11, flor_luna: 3}
     output: {artesano_joya_13: 1}
     min_rank: 100
-    energy: 2
-    xp: 12
+    energy: 4
+    xp: 24
 
   # ---- D-110 / D-113 / D-115: crafted head, hands, legs and feet (one recipe per piece; recipe id = output id).
   # [ES] Equipo de artesano de cabeza, manos, piernas y pies (items.yaml, al final): una receta por pieza, con el mismo id que
   # la pieza que sale. Telas → 🪡 Sastrería; cuero y malla → 🦺 Peletería; placas → 🔨 Herrería. Rangos como el pecho de su tipo:
-  # nivel 3 → rango 1, 5 → 25, 8 → 50, y del 10 al 100 → rangos 55 a 100 (50 + nivel / 2). Los materiales son los del pecho de
+  # hasta la 0.42, nivel 3 → rango 1, 5 → 25, 8 → 50 y del 10 al 100 → 55 a 100; desde la 0.44 (D-306), rango = nivel de la pieza
+  # (3 → 1, 8 → 10; los niveles 15, 25 … 95, en el bloque generado). Los materiales son los del pecho de
   # artesano de su tipo y nivel, en proporción a su precio (cada pieza chica vale ~75 % del pecho), con al menos 1 de cada uno, y
   # siempre valen más que lo que paga el mercader por la pieza (fabricar nunca fabrica monedas, D-113; también con la ✒️ obra
-  # maestra, D-116). 2 ⚡ y 12 de experiencia de oficio, como las demás piezas (D-108). Una línea por receta.
+  # maestra, D-116). Una línea por receta. D-306 (0.44): rango = nivel de la pieza, energía y experiencia por tramo
+  # (tools/recipe_tiers.py); las de malla, retiradas (retired: true).
   artesano_cabeza_tela_1: {profession: sastreria, inputs: {tela_tejida: 3, cuero_curtido: 1}, output: {artesano_cabeza_tela_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_cabeza_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_cabeza_tela_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_cabeza_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_cabeza_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_cabeza_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_cabeza_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_cabeza_tela_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_cabeza_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_cabeza_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_cabeza_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_cabeza_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_cabeza_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_cabeza_tela_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_cabeza_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_cabeza_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_cabeza_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_cabeza_tela_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_cabeza_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_cabeza_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_cabeza_tela_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_cabeza_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_cabeza_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_cabeza_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_cabeza_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_cabeza_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_cabeza_tela_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_cabeza_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_cabeza_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_cabeza_cuero_1: {profession: peleteria, inputs: {cuero_curtido: 3, tela_tejida: 1}, output: {artesano_cabeza_cuero_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_cabeza_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_cuero_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_cabeza_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_cabeza_cuero_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_cabeza_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_cabeza_cuero_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_cabeza_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_cabeza_cuero_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_cabeza_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_cabeza_cuero_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_cabeza_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_cabeza_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_cabeza_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_cabeza_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_cabeza_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_cabeza_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_cabeza_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_13: 1}, min_rank: 100, energy: 2, xp: 12}
-  artesano_cabeza_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_cabeza_malla_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_cabeza_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_cabeza_malla_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_cabeza_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_cabeza_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_malla_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_cabeza_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_cabeza_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_cabeza_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_malla_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_cabeza_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_malla_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_cabeza_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_cabeza_malla_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_cabeza_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_malla_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_cabeza_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_malla_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_cabeza_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_malla_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_cabeza_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_malla_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_cabeza_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_cuero_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_cabeza_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_cabeza_cuero_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_cabeza_cuero_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_cabeza_cuero_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_cabeza_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_cabeza_cuero_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_cabeza_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_cabeza_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_cabeza_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_cabeza_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_cabeza_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_cabeza_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_cabeza_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_13: 1}, min_rank: 100, energy: 4, xp: 24}
+  artesano_cabeza_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_cabeza_malla_1: 1}, min_rank: 1, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_cabeza_malla_2: 1}, min_rank: 25, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_3: 1}, min_rank: 50, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_malla_4: 1}, min_rank: 55, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_5: 1}, min_rank: 60, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_cabeza_malla_6: 1}, min_rank: 65, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_malla_7: 1}, min_rank: 70, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_malla_8: 1}, min_rank: 75, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_cabeza_malla_9: 1}, min_rank: 80, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_malla_10: 1}, min_rank: 85, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_malla_11: 1}, min_rank: 90, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_malla_12: 1}, min_rank: 95, energy: 2, xp: 12, retired: true}
+  artesano_cabeza_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_malla_13: 1}, min_rank: 100, energy: 2, xp: 12, retired: true}
   artesano_cabeza_placas_1: {profession: herreria, inputs: {lingote: 3, cuero_curtido: 2}, output: {artesano_cabeza_placas_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_cabeza_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_cabeza_placas_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_cabeza_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_cabeza_placas_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_cabeza_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_cabeza_placas_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_cabeza_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_cabeza_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_cabeza_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_cabeza_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_cabeza_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_cabeza_placas_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_cabeza_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_cabeza_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_cabeza_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_cabeza_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_cabeza_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_cabeza_placas_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_cabeza_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_cabeza_placas_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_cabeza_placas_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_cabeza_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_cabeza_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_cabeza_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_cabeza_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_cabeza_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_cabeza_placas_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_cabeza_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_cabeza_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_cabeza_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_cabeza_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_manos_tela_1: {profession: sastreria, inputs: {tela_tejida: 3, cuero_curtido: 1}, output: {artesano_manos_tela_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_manos_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_manos_tela_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_manos_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_manos_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_manos_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_manos_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_manos_tela_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_manos_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_manos_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_manos_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_manos_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_manos_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_manos_tela_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_manos_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_manos_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_manos_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_manos_tela_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_manos_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_manos_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_manos_tela_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_manos_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_manos_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_manos_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_manos_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_manos_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_manos_tela_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_manos_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_manos_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_manos_cuero_1: {profession: peleteria, inputs: {cuero_curtido: 3, tela_tejida: 1}, output: {artesano_manos_cuero_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_manos_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_cuero_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_manos_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_manos_cuero_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_manos_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_manos_cuero_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_manos_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_manos_cuero_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_manos_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_manos_cuero_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_manos_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_manos_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_manos_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_manos_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_manos_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_manos_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_manos_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_13: 1}, min_rank: 100, energy: 2, xp: 12}
-  artesano_manos_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_manos_malla_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_manos_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_manos_malla_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_manos_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_manos_malla_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_manos_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_malla_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_manos_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_malla_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_manos_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_malla_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_manos_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_malla_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_manos_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_malla_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_manos_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_manos_malla_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_manos_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_malla_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_manos_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_malla_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_manos_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_malla_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_manos_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_malla_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_manos_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_cuero_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_manos_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_manos_cuero_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_manos_cuero_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_manos_cuero_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_manos_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_manos_cuero_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_manos_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_manos_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_manos_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_manos_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_manos_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_manos_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_manos_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_13: 1}, min_rank: 100, energy: 4, xp: 24}
+  artesano_manos_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_manos_malla_1: 1}, min_rank: 1, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_manos_malla_2: 1}, min_rank: 25, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_manos_malla_3: 1}, min_rank: 50, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_malla_4: 1}, min_rank: 55, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_malla_5: 1}, min_rank: 60, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_manos_malla_6: 1}, min_rank: 65, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_malla_7: 1}, min_rank: 70, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_malla_8: 1}, min_rank: 75, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_manos_malla_9: 1}, min_rank: 80, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_malla_10: 1}, min_rank: 85, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_malla_11: 1}, min_rank: 90, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_malla_12: 1}, min_rank: 95, energy: 2, xp: 12, retired: true}
+  artesano_manos_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_malla_13: 1}, min_rank: 100, energy: 2, xp: 12, retired: true}
   artesano_manos_placas_1: {profession: herreria, inputs: {lingote: 3, cuero_curtido: 2}, output: {artesano_manos_placas_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_manos_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_manos_placas_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_manos_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_manos_placas_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_manos_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_manos_placas_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_manos_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_manos_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_manos_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_manos_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_manos_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_manos_placas_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_manos_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_manos_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_manos_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_manos_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_manos_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_manos_placas_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_manos_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_manos_placas_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_manos_placas_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_manos_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_manos_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_manos_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_manos_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_manos_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_manos_placas_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_manos_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_manos_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_manos_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_manos_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_piernas_tela_1: {profession: sastreria, inputs: {tela_tejida: 3, cuero_curtido: 1}, output: {artesano_piernas_tela_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_piernas_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_piernas_tela_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_piernas_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_piernas_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_piernas_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_piernas_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_piernas_tela_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_piernas_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_piernas_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_piernas_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_piernas_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_piernas_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_piernas_tela_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_piernas_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_piernas_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_piernas_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_piernas_tela_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_piernas_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_piernas_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_piernas_tela_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_piernas_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_piernas_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_piernas_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_piernas_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_piernas_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_piernas_tela_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_piernas_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_piernas_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_piernas_cuero_1: {profession: peleteria, inputs: {cuero_curtido: 3, tela_tejida: 1}, output: {artesano_piernas_cuero_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_piernas_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_cuero_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_piernas_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_piernas_cuero_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_piernas_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_piernas_cuero_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_piernas_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_piernas_cuero_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_piernas_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_piernas_cuero_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_piernas_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_piernas_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_piernas_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_piernas_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_piernas_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_piernas_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_piernas_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_13: 1}, min_rank: 100, energy: 2, xp: 12}
-  artesano_piernas_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_piernas_malla_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_piernas_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_piernas_malla_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_piernas_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_piernas_malla_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_piernas_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_malla_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_piernas_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_malla_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_piernas_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_malla_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_piernas_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_malla_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_piernas_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_malla_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_piernas_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_piernas_malla_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_piernas_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_malla_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_piernas_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_malla_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_piernas_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_malla_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_piernas_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_malla_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_piernas_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_cuero_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_piernas_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_piernas_cuero_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_piernas_cuero_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_piernas_cuero_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_piernas_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_piernas_cuero_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_piernas_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_piernas_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_piernas_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_piernas_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_piernas_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_piernas_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_piernas_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_13: 1}, min_rank: 100, energy: 4, xp: 24}
+  artesano_piernas_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_piernas_malla_1: 1}, min_rank: 1, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_piernas_malla_2: 1}, min_rank: 25, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_piernas_malla_3: 1}, min_rank: 50, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_malla_4: 1}, min_rank: 55, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_malla_5: 1}, min_rank: 60, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_piernas_malla_6: 1}, min_rank: 65, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_malla_7: 1}, min_rank: 70, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_malla_8: 1}, min_rank: 75, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_piernas_malla_9: 1}, min_rank: 80, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_malla_10: 1}, min_rank: 85, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_malla_11: 1}, min_rank: 90, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_malla_12: 1}, min_rank: 95, energy: 2, xp: 12, retired: true}
+  artesano_piernas_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_malla_13: 1}, min_rank: 100, energy: 2, xp: 12, retired: true}
   artesano_piernas_placas_1: {profession: herreria, inputs: {lingote: 3, cuero_curtido: 2}, output: {artesano_piernas_placas_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_piernas_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_piernas_placas_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_piernas_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_piernas_placas_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_piernas_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_piernas_placas_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_piernas_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_piernas_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_piernas_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_piernas_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_piernas_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_piernas_placas_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_piernas_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_piernas_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_piernas_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_piernas_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_piernas_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_piernas_placas_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_piernas_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_piernas_placas_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_piernas_placas_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_piernas_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_piernas_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_piernas_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_piernas_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_piernas_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_piernas_placas_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_piernas_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_piernas_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_piernas_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_piernas_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_pies_tela_1: {profession: sastreria, inputs: {tela_tejida: 3, cuero_curtido: 1}, output: {artesano_pies_tela_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_pies_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_pies_tela_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_pies_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_pies_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_pies_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_pies_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_pies_tela_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_pies_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_pies_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_pies_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_pies_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_pies_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_pies_tela_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_pies_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_pies_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_pies_tela_2: {profession: sastreria, inputs: {tela_tejida: 5, extracto: 1}, output: {artesano_pies_tela_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_pies_tela_3: {profession: sastreria, inputs: {tela_tejida: 7, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_tela_4: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_tela_5: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_pies_tela_6: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_pies_tela_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_pies_tela_7: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_pies_tela_8: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_pies_tela_9: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_pies_tela_10: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_pies_tela_11: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_pies_tela_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_pies_tela_12: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_pies_tela_13: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_13: 1}, min_rank: 100, energy: 4, xp: 24}
   artesano_pies_cuero_1: {profession: peleteria, inputs: {cuero_curtido: 3, tela_tejida: 1}, output: {artesano_pies_cuero_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_pies_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_cuero_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_pies_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_pies_cuero_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_pies_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_pies_cuero_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_pies_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_pies_cuero_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_pies_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_pies_cuero_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_pies_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_pies_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_pies_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_pies_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_pies_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_pies_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_pies_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_13: 1}, min_rank: 100, energy: 2, xp: 12}
-  artesano_pies_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_pies_malla_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_pies_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_pies_malla_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_pies_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_pies_malla_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_pies_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_malla_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_pies_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_malla_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_pies_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_malla_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_pies_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_malla_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_pies_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_malla_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_pies_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_pies_malla_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_pies_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_malla_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_pies_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_malla_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_pies_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_malla_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_pies_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_malla_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_pies_cuero_2: {profession: peleteria, inputs: {cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_cuero_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_pies_cuero_3: {profession: peleteria, inputs: {cuero_curtido: 7, tela_tejida: 2, extracto: 1}, output: {artesano_pies_cuero_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_cuero_4: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 2, extracto: 1}, output: {artesano_pies_cuero_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_cuero_5: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_pies_cuero_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_pies_cuero_6: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_pies_cuero_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_pies_cuero_7: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_pies_cuero_8: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_pies_cuero_9: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_pies_cuero_10: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_pies_cuero_11: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_pies_cuero_12: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_pies_cuero_13: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_13: 1}, min_rank: 100, energy: 4, xp: 24}
+  artesano_pies_malla_1: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 2}, output: {artesano_pies_malla_1: 1}, min_rank: 1, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_2: {profession: peleteria, inputs: {cuero_curtido: 2, lingote: 3}, output: {artesano_pies_malla_2: 1}, min_rank: 25, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_3: {profession: peleteria, inputs: {cuero_curtido: 4, lingote: 5, tela_tejida: 2}, output: {artesano_pies_malla_3: 1}, min_rank: 50, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_4: {profession: peleteria, inputs: {lingote: 6, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_malla_4: 1}, min_rank: 55, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_5: {profession: peleteria, inputs: {lingote: 7, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_malla_5: 1}, min_rank: 60, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_6: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_pies_malla_6: 1}, min_rank: 65, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_7: {profession: peleteria, inputs: {lingote: 8, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_malla_7: 1}, min_rank: 70, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_8: {profession: peleteria, inputs: {lingote: 9, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_malla_8: 1}, min_rank: 75, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_9: {profession: peleteria, inputs: {lingote: 10, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_pies_malla_9: 1}, min_rank: 80, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_10: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_malla_10: 1}, min_rank: 85, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_11: {profession: peleteria, inputs: {lingote: 11, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_malla_11: 1}, min_rank: 90, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_12: {profession: peleteria, inputs: {lingote: 12, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_malla_12: 1}, min_rank: 95, energy: 2, xp: 12, retired: true}
+  artesano_pies_malla_13: {profession: peleteria, inputs: {lingote: 13, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_malla_13: 1}, min_rank: 100, energy: 2, xp: 12, retired: true}
   artesano_pies_placas_1: {profession: herreria, inputs: {lingote: 3, cuero_curtido: 2}, output: {artesano_pies_placas_1: 1}, min_rank: 1, energy: 2, xp: 12}
-  artesano_pies_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_pies_placas_2: 1}, min_rank: 25, energy: 2, xp: 12}
-  artesano_pies_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_pies_placas_3: 1}, min_rank: 50, energy: 2, xp: 12}
-  artesano_pies_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_pies_placas_4: 1}, min_rank: 55, energy: 2, xp: 12}
-  artesano_pies_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_5: 1}, min_rank: 60, energy: 2, xp: 12}
-  artesano_pies_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_6: 1}, min_rank: 65, energy: 2, xp: 12}
-  artesano_pies_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_7: 1}, min_rank: 70, energy: 2, xp: 12}
-  artesano_pies_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_8: 1}, min_rank: 75, energy: 2, xp: 12}
-  artesano_pies_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_pies_placas_9: 1}, min_rank: 80, energy: 2, xp: 12}
-  artesano_pies_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_10: 1}, min_rank: 85, energy: 2, xp: 12}
-  artesano_pies_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_11: 1}, min_rank: 90, energy: 2, xp: 12}
-  artesano_pies_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_12: 1}, min_rank: 95, energy: 2, xp: 12}
-  artesano_pies_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_13: 1}, min_rank: 100, energy: 2, xp: 12}
+  artesano_pies_placas_2: {profession: herreria, inputs: {lingote: 5, cuero_curtido: 2}, output: {artesano_pies_placas_2: 1}, min_rank: 5, energy: 2, xp: 13}
+  artesano_pies_placas_3: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_pies_placas_3: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_placas_4: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 3, tela_tejida: 2}, output: {artesano_pies_placas_4: 1}, min_rank: 10, energy: 2, xp: 13}
+  artesano_pies_placas_5: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_5: 1}, min_rank: 20, energy: 2, xp: 14}
+  artesano_pies_placas_6: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_6: 1}, min_rank: 30, energy: 2, xp: 16}
+  artesano_pies_placas_7: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_7: 1}, min_rank: 40, energy: 2, xp: 17}
+  artesano_pies_placas_8: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_8: 1}, min_rank: 50, energy: 2, xp: 18}
+  artesano_pies_placas_9: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_pies_placas_9: 1}, min_rank: 60, energy: 3, xp: 19}
+  artesano_pies_placas_10: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_10: 1}, min_rank: 70, energy: 3, xp: 20}
+  artesano_pies_placas_11: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_11: 1}, min_rank: 80, energy: 3, xp: 22}
+  artesano_pies_placas_12: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_12: 1}, min_rank: 90, energy: 4, xp: 23}
+  artesano_pies_placas_13: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_13: 1}, min_rank: 100, energy: 4, xp: 24}
   # ---- D-115 phase 2, camp side: Cantería and 🍲 Cocina. [ES] Fase 2, lado del campamento.
   # Cantería (refinado, 1 ⚡, 6 de experiencia de oficio): 3 piedras → 1 sillar. Lo piden las mejoras desde el nivel 7
   # (content/camp_upgrades.yaml) y la reparación de las defensas (balance.yaml camp_professions.repair_per_point).
@@ -1656,3 +1693,188 @@ recipes:
   festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 12}          # [ES] 12 → 27, sin 🌸 flor de luna
   # [ES] 0.28 (D-188): el material nuevo del 🌋 volcán. Bloques de vidrio de lava: 1 piedra y 1 obsidiana en vez de 3 piedras (7 → 3,5 al venderlo: no deja ganar).
   sillar_obsidiana: {profession: canteria, variant: obsidiana, inputs: {piedra: 1, obsidiana: 1}, output: {sillar: 1}, min_rank: 1, energy: 1, xp: 6}
+
+  # ---- BEGIN GENERATED by tools/recipe_tiers.py (D-306, 0.44). Do not edit by hand: change the tool or balance.yaml recipe_tiers and run it again.
+  # [ES] Los tramos nuevos de los oficios de equipo (E-221): una receta por línea en los niveles 15, 25 … 95, desde
+  # [ES] el rango igual al nivel; materiales a mitad de camino entre sus dos vecinas; energía y experiencia por tramo.
+  baston_nivel_15: {profession: carpinteria, inputs: {tablon: 10, tela_tejida: 4, gema_bruta: 1}, output: {artesano_baston_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  baston_nivel_25: {profession: carpinteria, inputs: {tablon: 11, tela_tejida: 4, gema_bruta: 2}, output: {artesano_baston_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  baston_nivel_35: {profession: carpinteria, inputs: {tablon: 12, tela_tejida: 5, gema_bruta: 2}, output: {artesano_baston_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  baston_nivel_45: {profession: carpinteria, inputs: {tablon: 13, tela_tejida: 5, gema_bruta: 2, flor_luna: 1}, output: {artesano_baston_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  baston_nivel_55: {profession: carpinteria, inputs: {tablon: 14, tela_tejida: 6, gema_bruta: 3, flor_luna: 1}, output: {artesano_baston_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  baston_nivel_65: {profession: carpinteria, inputs: {tablon: 16, tela_tejida: 6, gema_bruta: 3, flor_luna: 1}, output: {artesano_baston_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  baston_nivel_75: {profession: carpinteria, inputs: {tablon: 17, tela_tejida: 7, gema_bruta: 3, flor_luna: 2}, output: {artesano_baston_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  baston_nivel_85: {profession: carpinteria, inputs: {tablon: 18, tela_tejida: 7, gema_bruta: 4, flor_luna: 2}, output: {artesano_baston_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  baston_nivel_95: {profession: carpinteria, inputs: {tablon: 20, tela_tejida: 8, gema_bruta: 4, flor_luna: 2}, output: {artesano_baston_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  arco_nivel_15: {profession: carpinteria, inputs: {tablon: 10, cuero_curtido: 4, tela_tejida: 1}, output: {artesano_arco_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  arco_nivel_25: {profession: carpinteria, inputs: {tablon: 11, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_arco_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  arco_nivel_35: {profession: carpinteria, inputs: {tablon: 12, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_arco_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  arco_nivel_45: {profession: carpinteria, inputs: {tablon: 14, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_arco_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  arco_nivel_55: {profession: carpinteria, inputs: {tablon: 16, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_arco_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  arco_nivel_65: {profession: carpinteria, inputs: {tablon: 17, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_arco_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  arco_nivel_75: {profession: carpinteria, inputs: {tablon: 19, cuero_curtido: 7, tela_tejida: 3, gema_bruta: 2}, output: {artesano_arco_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  arco_nivel_85: {profession: carpinteria, inputs: {tablon: 21, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_arco_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  arco_nivel_95: {profession: carpinteria, inputs: {tablon: 22, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 3}, output: {artesano_arco_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  espada_nivel_15: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, gema_bruta: 1}, output: {artesano_espada_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  espada_nivel_25: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 4, gema_bruta: 2}, output: {artesano_espada_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  espada_nivel_35: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, gema_bruta: 2}, output: {artesano_espada_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  espada_nivel_45: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, gema_bruta: 2}, output: {artesano_espada_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  espada_nivel_55: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, gema_bruta: 3}, output: {artesano_espada_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  espada_nivel_65: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 6, gema_bruta: 3}, output: {artesano_espada_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  espada_nivel_75: {profession: herreria, inputs: {lingote: 16, cuero_curtido: 7, gema_bruta: 3}, output: {artesano_espada_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  espada_nivel_85: {profession: herreria, inputs: {lingote: 17, cuero_curtido: 7, gema_bruta: 4}, output: {artesano_espada_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  espada_nivel_95: {profession: herreria, inputs: {lingote: 18, cuero_curtido: 8, gema_bruta: 4}, output: {artesano_espada_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  daga_nivel_15: {profession: herreria, inputs: {lingote: 8, cuero_curtido: 4, gema_bruta: 1}, output: {artesano_daga_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  daga_nivel_25: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, gema_bruta: 2}, output: {artesano_daga_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  daga_nivel_35: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 5, gema_bruta: 2}, output: {artesano_daga_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  daga_nivel_45: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, gema_bruta: 2}, output: {artesano_daga_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  daga_nivel_55: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 6, gema_bruta: 3}, output: {artesano_daga_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  daga_nivel_65: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 6, gema_bruta: 3}, output: {artesano_daga_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  daga_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 7, gema_bruta: 3}, output: {artesano_daga_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  daga_nivel_85: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, gema_bruta: 4}, output: {artesano_daga_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  daga_nivel_95: {profession: herreria, inputs: {lingote: 16, cuero_curtido: 8, gema_bruta: 4}, output: {artesano_daga_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  peto_nivel_15: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 2}, output: {artesano_placas_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  peto_nivel_25: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3}, output: {artesano_placas_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  peto_nivel_35: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_placas_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  peto_nivel_45: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 1}, output: {artesano_placas_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  peto_nivel_55: {profession: herreria, inputs: {lingote: 16, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 1}, output: {artesano_placas_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  peto_nivel_65: {profession: herreria, inputs: {lingote: 17, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_placas_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  peto_nivel_75: {profession: herreria, inputs: {lingote: 18, cuero_curtido: 8, tela_tejida: 4, gema_bruta: 2}, output: {artesano_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  peto_nivel_85: {profession: herreria, inputs: {lingote: 19, cuero_curtido: 8, tela_tejida: 5, gema_bruta: 2}, output: {artesano_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  peto_nivel_95: {profession: herreria, inputs: {lingote: 20, cuero_curtido: 9, tela_tejida: 5, gema_bruta: 3}, output: {artesano_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  tunica_nivel_15: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 1}, output: {artesano_tela_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  tunica_nivel_25: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 3, flor_luna: 2}, output: {artesano_tela_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  tunica_nivel_35: {profession: sastreria, inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}, output: {artesano_tela_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  tunica_nivel_45: {profession: sastreria, inputs: {tela_tejida: 14, extracto: 4, flor_luna: 2}, output: {artesano_tela_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  tunica_nivel_55: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 3}, output: {artesano_tela_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  tunica_nivel_65: {profession: sastreria, inputs: {tela_tejida: 17, extracto: 5, flor_luna: 3}, output: {artesano_tela_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  tunica_nivel_75: {profession: sastreria, inputs: {tela_tejida: 20, extracto: 6, flor_luna: 3}, output: {artesano_tela_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  tunica_nivel_85: {profession: sastreria, inputs: {tela_tejida: 21, extracto: 6, flor_luna: 4}, output: {artesano_tela_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  tunica_nivel_95: {profession: sastreria, inputs: {tela_tejida: 23, extracto: 7, flor_luna: 4}, output: {artesano_tela_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  jubon_nivel_15: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 1}, output: {artesano_cuero_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  jubon_nivel_25: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 4, extracto: 2}, output: {artesano_cuero_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  jubon_nivel_35: {profession: peleteria, inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_cuero_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  jubon_nivel_45: {profession: peleteria, inputs: {cuero_curtido: 14, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_cuero_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  jubon_nivel_55: {profession: peleteria, inputs: {cuero_curtido: 15, tela_tejida: 6, extracto: 3, gema_bruta: 1}, output: {artesano_cuero_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  jubon_nivel_65: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_cuero_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  jubon_nivel_75: {profession: peleteria, inputs: {cuero_curtido: 18, tela_tejida: 7, extracto: 3, gema_bruta: 2}, output: {artesano_cuero_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  jubon_nivel_85: {profession: peleteria, inputs: {cuero_curtido: 20, tela_tejida: 7, extracto: 4, gema_bruta: 2}, output: {artesano_cuero_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  jubon_nivel_95: {profession: peleteria, inputs: {cuero_curtido: 21, tela_tejida: 8, extracto: 4, gema_bruta: 3}, output: {artesano_cuero_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  joya_nivel_15: {profession: joyeria, inputs: {lingote: 4, gema_bruta: 4}, output: {artesano_joya_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  joya_nivel_25: {profession: joyeria, inputs: {lingote: 4, gema_bruta: 5, flor_luna: 1}, output: {artesano_joya_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  joya_nivel_35: {profession: joyeria, inputs: {lingote: 5, gema_bruta: 6, flor_luna: 1}, output: {artesano_joya_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  joya_nivel_45: {profession: joyeria, inputs: {lingote: 6, gema_bruta: 6, flor_luna: 1}, output: {artesano_joya_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  joya_nivel_55: {profession: joyeria, inputs: {lingote: 6, gema_bruta: 7, flor_luna: 2}, output: {artesano_joya_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  joya_nivel_65: {profession: joyeria, inputs: {lingote: 6, gema_bruta: 8, flor_luna: 2}, output: {artesano_joya_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  joya_nivel_75: {profession: joyeria, inputs: {lingote: 7, gema_bruta: 9, flor_luna: 2}, output: {artesano_joya_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  joya_nivel_85: {profession: joyeria, inputs: {lingote: 7, gema_bruta: 10, flor_luna: 3}, output: {artesano_joya_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  joya_nivel_95: {profession: joyeria, inputs: {lingote: 8, gema_bruta: 11, flor_luna: 3}, output: {artesano_joya_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_cabeza_tela_nivel_15: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_cabeza_tela_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_cabeza_tela_nivel_25: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_cabeza_tela_nivel_35: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_cabeza_tela_nivel_45: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_cabeza_tela_nivel_55: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_cabeza_tela_nivel_65: {profession: sastreria, inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_cabeza_tela_nivel_75: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_cabeza_tela_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_cabeza_tela_nivel_85: {profession: sastreria, inputs: {tela_tejida: 16, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_cabeza_tela_nivel_95: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_cabeza_tela_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_cabeza_cuero_nivel_15: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_cabeza_cuero_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_cabeza_cuero_nivel_25: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_cabeza_cuero_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_cabeza_cuero_nivel_35: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_cabeza_cuero_nivel_45: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_cabeza_cuero_nivel_55: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_cabeza_cuero_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_cabeza_cuero_nivel_65: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_cabeza_cuero_nivel_75: {profession: peleteria, inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_cabeza_cuero_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_cabeza_cuero_nivel_85: {profession: peleteria, inputs: {cuero_curtido: 15, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_cabeza_cuero_nivel_95: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_cabeza_cuero_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_cabeza_placas_nivel_15: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_cabeza_placas_nivel_25: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_cabeza_placas_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_cabeza_placas_nivel_35: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_cabeza_placas_nivel_45: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_cabeza_placas_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_cabeza_placas_nivel_55: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_cabeza_placas_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_cabeza_placas_nivel_65: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_cabeza_placas_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_cabeza_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_cabeza_placas_nivel_85: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_cabeza_placas_nivel_95: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_cabeza_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_manos_tela_nivel_15: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_manos_tela_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_manos_tela_nivel_25: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_manos_tela_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_manos_tela_nivel_35: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_manos_tela_nivel_45: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_manos_tela_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_manos_tela_nivel_55: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_manos_tela_nivel_65: {profession: sastreria, inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}, output: {artesano_manos_tela_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_manos_tela_nivel_75: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_manos_tela_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_manos_tela_nivel_85: {profession: sastreria, inputs: {tela_tejida: 16, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_manos_tela_nivel_95: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_manos_tela_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_manos_cuero_nivel_15: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_manos_cuero_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_manos_cuero_nivel_25: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_manos_cuero_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_manos_cuero_nivel_35: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_manos_cuero_nivel_45: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_manos_cuero_nivel_55: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_manos_cuero_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_manos_cuero_nivel_65: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_manos_cuero_nivel_75: {profession: peleteria, inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_manos_cuero_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_manos_cuero_nivel_85: {profession: peleteria, inputs: {cuero_curtido: 15, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_manos_cuero_nivel_95: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_manos_cuero_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_manos_placas_nivel_15: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_manos_placas_nivel_25: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_manos_placas_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_manos_placas_nivel_35: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_manos_placas_nivel_45: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_manos_placas_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_manos_placas_nivel_55: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_manos_placas_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_manos_placas_nivel_65: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_manos_placas_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_manos_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_manos_placas_nivel_85: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_manos_placas_nivel_95: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_manos_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_piernas_tela_nivel_15: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_piernas_tela_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_piernas_tela_nivel_25: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_piernas_tela_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_piernas_tela_nivel_35: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_piernas_tela_nivel_45: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_piernas_tela_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_piernas_tela_nivel_55: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_piernas_tela_nivel_65: {profession: sastreria, inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}, output: {artesano_piernas_tela_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_piernas_tela_nivel_75: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_piernas_tela_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_piernas_tela_nivel_85: {profession: sastreria, inputs: {tela_tejida: 16, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_piernas_tela_nivel_95: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_piernas_tela_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_piernas_cuero_nivel_15: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_piernas_cuero_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_piernas_cuero_nivel_25: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_piernas_cuero_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_piernas_cuero_nivel_35: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_piernas_cuero_nivel_45: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_piernas_cuero_nivel_55: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_piernas_cuero_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_piernas_cuero_nivel_65: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_piernas_cuero_nivel_75: {profession: peleteria, inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_piernas_cuero_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_piernas_cuero_nivel_85: {profession: peleteria, inputs: {cuero_curtido: 15, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_piernas_cuero_nivel_95: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_piernas_cuero_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_piernas_placas_nivel_15: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_piernas_placas_nivel_25: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_piernas_placas_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_piernas_placas_nivel_35: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_piernas_placas_nivel_45: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_piernas_placas_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_piernas_placas_nivel_55: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_piernas_placas_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_piernas_placas_nivel_65: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_piernas_placas_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_piernas_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_piernas_placas_nivel_85: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_piernas_placas_nivel_95: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_piernas_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_pies_tela_nivel_15: {profession: sastreria, inputs: {tela_tejida: 8, extracto: 2, flor_luna: 1}, output: {artesano_pies_tela_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_pies_tela_nivel_25: {profession: sastreria, inputs: {tela_tejida: 9, extracto: 2, flor_luna: 2}, output: {artesano_pies_tela_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_pies_tela_nivel_35: {profession: sastreria, inputs: {tela_tejida: 10, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_pies_tela_nivel_45: {profession: sastreria, inputs: {tela_tejida: 11, extracto: 3, flor_luna: 2}, output: {artesano_pies_tela_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_pies_tela_nivel_55: {profession: sastreria, inputs: {tela_tejida: 12, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_pies_tela_nivel_65: {profession: sastreria, inputs: {tela_tejida: 13, extracto: 4, flor_luna: 2}, output: {artesano_pies_tela_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_pies_tela_nivel_75: {profession: sastreria, inputs: {tela_tejida: 15, extracto: 5, flor_luna: 2}, output: {artesano_pies_tela_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_pies_tela_nivel_85: {profession: sastreria, inputs: {tela_tejida: 16, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_pies_tela_nivel_95: {profession: sastreria, inputs: {tela_tejida: 18, extracto: 5, flor_luna: 3}, output: {artesano_pies_tela_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_pies_cuero_nivel_15: {profession: peleteria, inputs: {cuero_curtido: 8, tela_tejida: 3, extracto: 1}, output: {artesano_pies_cuero_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_pies_cuero_nivel_25: {profession: peleteria, inputs: {cuero_curtido: 9, tela_tejida: 3, extracto: 2}, output: {artesano_pies_cuero_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_pies_cuero_nivel_35: {profession: peleteria, inputs: {cuero_curtido: 10, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_pies_cuero_nivel_45: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 4, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_pies_cuero_nivel_55: {profession: peleteria, inputs: {cuero_curtido: 11, tela_tejida: 5, extracto: 2, gema_bruta: 1}, output: {artesano_pies_cuero_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_pies_cuero_nivel_65: {profession: peleteria, inputs: {cuero_curtido: 12, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_pies_cuero_nivel_75: {profession: peleteria, inputs: {cuero_curtido: 13, tela_tejida: 5, extracto: 2, gema_bruta: 2}, output: {artesano_pies_cuero_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_pies_cuero_nivel_85: {profession: peleteria, inputs: {cuero_curtido: 15, tela_tejida: 5, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_pies_cuero_nivel_95: {profession: peleteria, inputs: {cuero_curtido: 16, tela_tejida: 6, extracto: 3, gema_bruta: 2}, output: {artesano_pies_cuero_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  artesano_pies_placas_nivel_15: {profession: herreria, inputs: {lingote: 9, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  artesano_pies_placas_nivel_25: {profession: herreria, inputs: {lingote: 10, cuero_curtido: 4, tela_tejida: 2}, output: {artesano_pies_placas_nivel_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  artesano_pies_placas_nivel_35: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_nivel_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  artesano_pies_placas_nivel_45: {profession: herreria, inputs: {lingote: 11, cuero_curtido: 5, tela_tejida: 2, gema_bruta: 1}, output: {artesano_pies_placas_nivel_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  artesano_pies_placas_nivel_55: {profession: herreria, inputs: {lingote: 12, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 1}, output: {artesano_pies_placas_nivel_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  artesano_pies_placas_nivel_65: {profession: herreria, inputs: {lingote: 13, cuero_curtido: 5, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_nivel_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  artesano_pies_placas_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  artesano_pies_placas_nivel_85: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  artesano_pies_placas_nivel_95: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  # ---- END GENERATED by tools/recipe_tiers.py

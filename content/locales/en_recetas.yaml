@@ -1,0 +1,39 @@
+# Texts of 0.44 (D-306, D-315): the recipe reform. Recipe colors (WoW style), the 📚 recipe books of the 🧑‍🏫 trainer and the
+# first 💍 jewelcrafting recipe without a gem.
+# [ES] Par inglés de es_recetas.yaml: las mismas claves, los mismos huecos {nombre} y los mismos plurales (tools/check_locales.py).
+
+recipe_tier:
+  color:
+    orange: "🟧"
+    yellow: "🟨"
+    green: "🟩"
+    grey: "⬜"
+  legend: "🟧 full experience · 🟨 half · 🟩 a quarter · ⬜ none"
+  line:
+    orange: "🟧 Orange recipe: it gives you the full profession experience."
+    yellow: "🟨 Yellow recipe: your rank is already past it; it gives you half the profession experience."
+    green: "🟩 Green recipe: it gives you a quarter of the profession experience."
+    grey: "⬜ Grey recipe: it is too easy for you now and gives no profession experience. Rise with the new recipes."
+
+books:
+  button: "📚 Recipe books"
+  title: "📚 Recipe books"
+  intro: "Each book opens a profession's recipes from its rank on and is yours for ever. Prices: {prices}."
+  price_item: "rank {rank} {price}"
+  book_name: "{name} {rank}"
+  owned: "✅ Your books: {list}"
+  owned_none: "You have no recipe books yet."
+  for_sale: "🛒 For sale for you:"
+  sale_line: "📕 {name} · {price} · opens {n} {n|recipe|recipes}"
+  none_for_sale: "No books for you for now: they are sold when one of your professions reaches rank 25, 50 or 75."
+  buy_button: "📕 {name} · {price}"
+  bought: "📚 You bought the book {name}: you can now make {n} {n|new recipe|new recipes}."
+  already: "You already have the book {name}."
+  rank_low: "🔒 That book needs rank {rank} in {name} (you have {have})."
+  no_gold: "💰 Not enough: the book costs {price} and you have {gold}."
+  missing_hint: "📚 With the book {name} {rank}, {n} more {n|recipe opens|recipes open} here (🧑‍🏫 Trainer → 📚 Recipe books)."
+  recipe_lock: "📕 It needs the recipe book {name} {rank}: buy it at 🧑‍🏫 Trainer → 📚 Recipe books."
+  rank_reached: "📚 Rank {rank}: the 🧑‍🏫 Trainer now sells you the book {name} {rank} ({price}) with the new recipes."
+
+item:
+  colgante_cobre: "Copper Pendant"

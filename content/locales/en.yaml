@@ -2100,7 +2100,7 @@ resources:
     hierba_curativa: 💧 Distilling turns it into extract; bandages from 🪡 Tailoring
     piel: 🪣 Tanning turns it into leather
     tablon: '🪑 Carpentry: bows, staves and camp furniture'
-    lingote: 🔨 Blacksmithing, 🦺 Leatherworking (mail) and 💍 Jewelcrafting
+    lingote: 🔨 Blacksmithing, 💍 Jewelcrafting and the Carpentry 🪑 furniture
     extracto: ⚗️ Alchemy (potions), 🪡 Tailoring and 🦺 Leatherworking
     tela_tejida: 🪡 Tailoring, 🪑 Carpentry, 🦺 Leatherworking and 🔨 Blacksmithing
     cuero_curtido: 🔨 Blacksmithing, 🦺 Leatherworking, 🪑 Carpentry and 🪡 Tailoring
@@ -2978,8 +2978,8 @@ prof:
   station_title_craft: 🛠️ Craft
   station_intro_refine: Turn what you gathered into crafting materials. ✅ = you have everything.
   station_intro_craft: Gear and remedies made with materials from several professions. ✅ = you have everything.
-  entry_ok: ✅ {item} ← {inputs} · ⚡{energy}
-  entry: ▫️ {item} ← {inputs} · ⚡{energy}
+  entry_ok: ✅ {item} ← {inputs} · ⚡{energy} · {prof}+{xp}
+  entry: ▫️ {item} ← {inputs} · ⚡{energy} · {prof}+{xp}
   entry_missing: '   ❌ Missing: {items}'
   entry_button_ok: ✅ {item}
   entry_button: '{item}'
@@ -3063,7 +3063,7 @@ profession:
     how: 'bandages, robes and cloth pieces (head, hands, legs and feet): 🧣 cloth with 🌿 herbs, 🟤 leather or 🧴 extract'
   peleteria:
     name: Leatherworking
-    how: 'leather and mail armor, including head, hands, legs and feet: 🟤 leather with 🧣 cloth or 🔩 ingots'
+    how: 'leather armor, including head, hands, legs and feet: 🟤 leather with 🧣 cloth'
   joyeria:
     name: Jewelcrafting
     how: 'rings and amulets: 🔩 ingots with 💠 rough gems'

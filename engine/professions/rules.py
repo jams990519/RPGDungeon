@@ -20,17 +20,21 @@ D-115 y D-141: las cuentas de las 🎓 especializaciones de oficio (3 por oficio
 cuántas permite el rango (spec_slots), el dominio que crece con la experiencia de oficio ganada mientras la tienes
 (spec_share), lo que suma cada efecto según el contexto (spec_bonus, spec_finds), si elegirla es gratis o un cambio pagado
 (spec_choice) y cuánto cuesta cambiar (switch_cost).
+D-306 (0.44, la reforma de recetas): el tramo de cada pieza (tier_rank: nivel de la pieza = rango, uno cada 5), la energía y la
+experiencia que crecen con el tramo (tier_energy, tier_xp), el color de una receta según tu rango (recipe_color: naranja,
+amarilla, verde o gris, como en WoW) y la parte de la experiencia que da cada color (color_factor), y los 📚 libros de recetas
+(books_for: qué libros pide una receta; book_price; book_id, el id que guarda el héroe).
 No guarda nada: el servicio lee Hero.professions (y Hero.prof_specs, Hero.spec_xp) y llama a estas funciones.
 Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra y
-    beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2) y §4; diseno/07-economia/red-de-oficios.md §3
-    (especializaciones, D-141) y §5 (fase 2)
+    beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2), §0.7 (tramos, colores y libros, D-306) y §4;
+    diseno/07-economia/red-de-oficios.md §3 (especializaciones, D-141) y §5 (fase 2)
 Módulo: M14 Oficios
 Depende de: ninguno (los datos llegan de content/professions.yaml, también su bloque specs, y de content/balance.yaml,
-    bloques professions, masterwork, enchanting, camp_professions y specs)
+    bloques professions, masterwork, enchanting, camp_professions, specs y recipe_tiers)
 Lo usan: engine/service/game.py (secciones "professions", "enchanting", "camp professions, phase 2" y "profession
     specializations"), engine/core/content.py (masterwork_items, al cargar los objetos), tests/test_professions.py,
-    tests/test_masterwork.py, tests/test_oficios_equipo.py, tests/test_oficios_campamento.py y
-    tests/test_especializaciones.py
+    tests/test_masterwork.py, tests/test_oficios_equipo.py, tests/test_oficios_campamento.py,
+    tests/test_especializaciones.py y tests/test_tramos_de_recetas.py; tools/recipe_tiers.py y tools/sim_oficios.py (D-306)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -61,8 +65,12 @@ Si cambias esto, revisa:
     - 🎓 Especializaciones (D-141): content/professions.yaml "specs" (efectos con SPEC_KINDS y los filtros de SPEC_FILTERS: un
       tipo de efecto nuevo va aquí, en el texto spec.effect.<tipo> y donde el servicio lo use) y balance.yaml specs (umbrales,
       dominio, recetas exclusivas y costo de cambiar). enchant_value suma el efecto "enchant" antes de redondear
+    - D-306 (tramos, colores y libros): tier_rank, tier_energy y tier_xp los usa tools/recipe_tiers.py para escribir las recetas
+      (cambiarlos obliga a correrla otra vez); recipe_color y color_factor deciden cuánta experiencia de oficio da cada receta
+      (GameService._recipe_xp); books_for decide qué recetas piden libro (GameService._book_missing); book_id es lo que guarda
+      Hero.recipe_books: nunca cambia
     - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py,
-      tests/test_oficios_campamento.py, tests/test_especializaciones.py
+      tests/test_oficios_campamento.py, tests/test_especializaciones.py, tests/test_tramos_de_recetas.py
 """
 
 from __future__ import annotations
@@ -670,4 +678,107 @@ def switch_cost(rank: int, cfg: dict[str, Any]) -> int:
 
 def _as_list(value: Any) -> list[Any]:
     return list(value) if isinstance(value, (list, tuple)) else [value]
+
+
+# ---------------------------------------------------------------- D-306 (0.44): recipe tiers, colors and books
+# [ES] Las cuentas de la reforma de recetas (E-221, E-222): el tramo de cada pieza, la energía y la experiencia que crecen
+# con el tramo, el color de una receta según tu rango (naranja, amarilla, verde o gris, como en WoW) y los 📚 libros de
+# recetas. Números en balance.yaml recipe_tiers; las usan GameService y tools/recipe_tiers.py (que escribe los valores en
+# content/professions.yaml).
+
+def tier_rank(level: int, step: int) -> int:
+    """The recipe rank (tramo) of a gear piece of this level: 1 below `step`, else the next multiple of `step`.
+
+    [ES]
+    Qué hace: dice desde qué rango se fabrica una pieza de equipo de un nivel (D-306: nivel de la pieza = rango, un tramo
+    cada 5): nivel 3 → rango 1, 5 → 5, 8 → 10, 10 → 10, 15 → 15 … 100 → 100. Nunca pide menos rango que el nivel de la pieza.
+    La llaman: tools/recipe_tiers.py y las pruebas.
+    Si cambia, afecta: desde qué rango se abre cada pieza (correr tools/recipe_tiers.py).
+    """
+    if level < step:
+        return 1
+    return step * math.ceil(level / step)
+
+
+def tier_energy(recipe_rank: int, table: list[dict[str, Any]], default: int = 2) -> int:
+    """⚡ of one gear piece of a recipe of this rank (balance.yaml recipe_tiers.energy_by_rank: the last "from" ≤ rank wins).
+
+    [ES]
+    Qué hace: la energía de una pieza de equipo según el rango de su receta (2 ⚡ hasta el 50, 3 desde el 55, 4 desde el 85).
+    La llaman: tools/recipe_tiers.py y las pruebas. Si cambia, afecta: el ritmo de los oficios con tramos (correr la herramienta).
+    """
+    energy = default
+    for row in sorted(table or [], key=lambda r: int(r["from"])):
+        if recipe_rank >= int(row["from"]):
+            energy = int(row["energy"])
+    return energy
+
+
+def tier_xp(base_xp: int, recipe_rank: int, per_rank: float) -> int:
+    """Profession xp of one make of a recipe of this rank: base × (1 + per_rank × rank), rounded (at least 1).
+
+    [ES]
+    Qué hace: la experiencia de oficio de una receta con tramos: la base (12 por pieza, 6 por ⚡ de lo demás) crece con su rango
+    (balance.yaml recipe_tiers.xp_per_rank: 12 en el rango 1, 18 en el 50, 24 en el 100).
+    La llaman: tools/recipe_tiers.py y las pruebas. Si cambia, afecta: el ritmo de los oficios con tramos (correr la herramienta).
+    """
+    return max(1, int(math.floor(base_xp * (1.0 + per_rank * recipe_rank) + 0.5)))
+
+
+def recipe_color(rank: int, recipe_rank: int, colors: list[dict[str, Any]]) -> str:
+    """Color id of a recipe for a crafter of this rank (WoW style): the first color whose "below" is above the gap.
+
+    Args:
+        colors: balance.yaml recipe_tiers.colors, in order; the last one (no "below") catches every larger gap.
+
+    [ES]
+    Qué hace: el color de una receta según cuánto te queda chica: d = tu rango − el de la receta; d < 5 naranja, < 10 amarilla,
+    < 15 verde y desde 15 gris (balance.yaml recipe_tiers.colors). Una receta de tu rango o más nueva es naranja.
+    La llaman: GameService (_recipe_color: 🛠️ Fabricar, 📜 Receta y _make) y las pruebas.
+    Si cambia, afecta: cuánta experiencia da cada receta y cuántas hay que hacer para subir.
+    """
+    gap = max(0, rank - recipe_rank)
+    for row in colors:
+        if "below" not in row or gap < int(row["below"]):
+            return str(row["id"])
+    return str(colors[-1]["id"]) if colors else ""
+
+
+def color_factor(color: str, colors: list[dict[str, Any]]) -> float:
+    """The share of a recipe's profession xp that a color gives (1, ½, ¼ or 0). [ES] Qué hace: la parte de la experiencia de
+    oficio que da cada color (naranja entera, amarilla la mitad, verde un cuarto, gris nada). La llaman: GameService
+    (_recipe_xp) y las pruebas. Si cambia, afecta: el ritmo de los oficios con tramos."""
+    for row in colors:
+        if row["id"] == color:
+            return float(row.get("factor", 1.0))
+    return 1.0
+
+
+def book_ranks(books: list[dict[str, Any]]) -> list[int]:
+    """The ranks that have a 📚 recipe book (balance.yaml recipe_tiers.books), sorted. [ES] Qué hace: los rangos con libro
+    (25, 50, 75). La llaman: books_for y GameService. Si cambia, afecta: qué recetas piden libro."""
+    return sorted(int(b["rank"]) for b in books or [])
+
+
+def books_for(recipe_rank: int, books: list[dict[str, Any]]) -> list[int]:
+    """The book ranks a recipe of this rank needs: every book rank up to it (a rank-100 recipe needs the 25, 50 and 75 books).
+
+    [ES]
+    Qué hace: dice qué 📚 libros pide una receta: todos los de su rango o menos (E-222: las de rango 25 o más piden el libro del
+    25; las de 50 o más, también el del 50…). Las de rango 1 a 24 no piden ninguno.
+    La llaman: GameService (_book_missing) y las pruebas. Si cambia, afecta: qué recetas ve y hace cada jugador.
+    """
+    return [r for r in book_ranks(books) if r <= recipe_rank]
+
+
+def book_price(rank: int, books: list[dict[str, Any]]) -> int:
+    """🥉 of the recipe book of this rank (0 if there is none). [ES] Qué hace: el precio de un libro (🥈2, 🥈10, 🥈25). La
+    llaman: GameService (📚 Libros de recetas). Si cambia, afecta: las monedas que salen del juego."""
+    return next((int(b.get("price", 0)) for b in books or [] if int(b["rank"]) == rank), 0)
+
+
+def book_id(pid: str, rank: int) -> str:
+    """"herreria:25": how a book is kept in Hero.recipe_books (stable: never changes). [ES] Qué hace: el id de un libro
+    (oficio:rango) tal como se guarda en el héroe. Nunca cambia (lo guardan los héroes)."""
+    return f"{pid}:{rank}"
 

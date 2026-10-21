@@ -841,3 +841,22 @@ v0_42:
     - "🧺 Gather now has the basket 🧺, so it is not mixed up with 🪓 Chop wood."
     - "🌱 The 6 base resources (wood, stone, fiber, herb, metal and clay) grow back 3 per hour in each zone, instead of 1. Each terrain's own resources and fish stay the same."
     - "🩹 With your health below your Retreat % (⚙️ Options) you do not start exploring, gathering or chopping wood: the game tells you to rest and shows you how (🛏️ Inn at the campfire, 🩺 Health or changing the % in ⚙️ Options). Fights stay the same."
+
+v0_44:
+  version: "0.44"
+  title: "📚 Lost Realms 0.44: oficios como en WoW, con tramos, colores y libros de recetas"
+  title_en: "📚 Lost Realms 0.44: WoW-style professions, with tiers, colors and recipe books"
+  notes:
+    - "🛠️ Los oficios de equipo (🪑 Carpintería, 🔨 Herrería, 🪡 Sastrería, 🦺 Peletería y 💍 Joyería) abren recetas nuevas cada 5 rangos, y la pieza que sale es de tu rango: con rango 30 haces equipo de nivel 30. Hay 180 piezas nuevas."
+    - "🟧 Colores de receta como en WoW: 🟧 naranja te da la experiencia de oficio entera, 🟨 amarilla la mitad, 🟩 verde un cuarto y ⬜ gris nada. Para seguir subiendo hay que fabricar lo nuevo. En 🛠️ Fabricar cada receta muestra su color y cuánta experiencia te da."
+    - "⚡ Las piezas de rango alto dan más experiencia de oficio (hasta 24) y cuestan más energía (3 ⚡ desde el rango 55 y 4 desde el 85)."
+    - "📚 Libros de recetas en 🧑‍🏫 Entrenador: las recetas de rango 25, 50 y 75 o más piden su libro (🥈2, 🥈10 y 🥈25). Si ya tenías ese rango en un oficio, te regalamos sus libros: sigues haciendo todo lo que hacías."
+    - "📿 La 💍 Joyería empieza con el Colgante de cobre, sin gema: lingote y cuero."
+    - "⛓️ Ya no se fabrica malla (no la usa ninguna clase). Las piezas de malla que tienes siguen en tu mochila."
+  notes_en:
+    - "🛠️ The gear professions (🪑 Carpentry, 🔨 Blacksmithing, 🪡 Tailoring, 🦺 Leatherworking and 💍 Jewelcrafting) open new recipes every 5 ranks, and the piece you make matches your rank: at rank 30 you make level 30 gear. There are 180 new pieces."
+    - "🟧 WoW-style recipe colors: 🟧 orange gives you the full profession experience, 🟨 yellow half, 🟩 green a quarter and ⬜ grey none. To keep rising you have to craft the new things. In 🛠️ Craft each recipe shows its color and how much experience it gives you."
+    - "⚡ High-rank pieces give more profession experience (up to 24) and cost more energy (3 ⚡ from rank 55 and 4 from rank 85)."
+    - "📚 Recipe books at the 🧑‍🏫 Trainer: recipes of rank 25, 50 and 75 or more need their book (🥈2, 🥈10 and 🥈25). If you already had that rank in a profession, its books are a gift: you keep making everything you made."
+    - "📿 💍 Jewelcrafting starts with the Copper Pendant, no gem needed: an ingot and leather."
+    - "⛓️ Mail is no longer crafted (no class uses it). The mail pieces you have stay in your backpack."

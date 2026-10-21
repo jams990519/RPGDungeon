@@ -1,6 +1,6 @@
 # Los oficios de Lost Realms, explicados como los de World of Warcraft
 
-> **Módulo** [07 · Economía y oficios](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), [Simulación de los oficios](simulacion-oficios.md) · **Alimenta a:** las 📚 Guías (D-297), la reforma de recetas (P-232 a P-235) · **Estado:** §1 y §2 describen el juego de hoy (0.39.1); §3 es propuesta
+> **Módulo** [07 · Economía y oficios](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), [Simulación de los oficios](simulacion-oficios.md) · **Alimenta a:** las 📚 Guías (D-297), la reforma de recetas (P-232 a P-235) · **Estado:** §1 y §2 describen el juego (0.39.1, con lo que cambió la 0.44 marcado); §3: los colores y los libros de recetas están en el juego desde la 0.44 (D-306, D-315), el resto es propuesta
 
 Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripción de cada una de las profesiones y cómo se va aprendiendo, como si fueran profesiones del World of Warcraft".
 
@@ -15,8 +15,8 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 | **Aprender** | En el 🧑‍🏫 Entrenador de cualquier hoguera o de tu campamento: 📚 Aprender oficios, 🥉20 cada uno (`professions.learn_price`). Gratis si ya lo practicabas antes de la 0.35. El 🧭 Explorador no se aprende: sube solo. | Pagas al entrenador de tu ciudad. |
 | **Cuántos** | Todos los que quieras. | 2 principales y los secundarios. |
 | **Rangos** | Del 1 al 100. Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81) y Gran maestro (96). | Aprendiz, Oficial, Experto, Artesano, Maestro y Gran maestro. Cada título se le compra al entrenador. |
-| **Subir** | Cada cosa que haces da experiencia de oficio. Recolectar da 1 por unidad. Refinar y fabricar dan la experiencia de la receta (6 al refinar). Vender da experiencia de 💱 Comercio por moneda. No hace falta volver al Entrenador para pasar de título. | Las recetas dan experiencia según su color (naranja, amarillo, verde, gris). |
-| **Recetas** | Se abren solas al llegar al rango que piden: en los oficios de equipo, en el 1, el 25, el 50 y después cada 5 hasta el 100 (⚗️ Alquimia y 🩺 Medicina llegan hasta el 50; 🍲 Cocina, cada 25). En el refinado, todas desde el 1. | El entrenador te enseña las recetas de tu título; otras salen del botín o de las facciones. |
+| **Subir** | Cada cosa que haces da experiencia de oficio. Recolectar da 1 por unidad. Refinar y fabricar dan la experiencia de la receta (6 al refinar). Vender da experiencia de 💱 Comercio por moneda. No hace falta volver al Entrenador para pasar de título. **Desde la 0.44 (D-306):** en los oficios de equipo la experiencia depende del color de la receta (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada) y crece con su tramo (12 a 24 por pieza). | Las recetas dan experiencia según su color (naranja, amarillo, verde, gris). |
+| **Recetas** | Se abren solas al llegar al rango que piden. **Desde la 0.44 (D-306):** en los oficios de equipo, un tramo cada 5 rangos del 1 al 100, con la pieza del nivel del tramo (⚗️ Alquimia y 🩺 Medicina llegan hasta el 50; 🍲 Cocina, cada 25; en el refinado, todas desde el 1). Las de rango 25, 50 y 75 o más piden su 📚 libro de recetas, que vende el 🧑‍🏫 Entrenador (🥈2, 🥈10, 🥈25). | El entrenador te enseña las recetas de tu título; otras salen del botín o de las facciones. |
 | **Especializaciones** | 🎓 Eliges una al rango 25 y otra al 75, entre 3 por oficio. Nunca las tres: la tercera la tiene otro jugador (D-141). | Forjador de armas o Armero, Transmutación… |
 | **Dónde** | Las estaciones de refinar y fabricar están en todas las hogueras. En tu campamento, cada edificio de oficio abre la suya (D-288), con un poco más de rendimiento. | Las forjas y los yunques de las ciudades. |
 | **Beneficio** | Cada oficio da un beneficio propio que crece con el rango y está completo al 100 (D-111): más vida, más ataque, más espacio en la mochila… | Habilidades de oficio, por ejemplo el bonus de la Ingeniería. |
@@ -50,12 +50,12 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 | Oficio | Qué hace | Beneficio | 🎓 Especializaciones | En WoW |
 |---|---|---|---|---|
 | 🔨 **Herrería** | Espadas, dagas y armadura de placas: lingotes con cuero | +3 % de armadura con placas | Forjador de armas · Armero · Herramientas | Herrería |
-| 🦺 **Peletería** | Armadura de cuero y de malla: cuero con tela o lingotes | +4 % de ataque y +3 % de vida | Cuero ligero · Malla · Talabartería | Peletería |
+| 🦺 **Peletería** | Armadura de cuero: cuero con tela (la malla se retiró en la 0.44, D-208) | +4 % de ataque y +3 % de vida | Cuero ligero · Malla (sin recetas desde la 0.44: P-243) · Talabartería | Peletería |
 | 🪡 **Sastrería** | Vendas, túnicas y armadura de tela; también bolsas | +5 % de ataque con tela | Túnicas mágicas · Ropa de clima · Textil médico | Sastrería |
 | 🪑 **Carpintería** | Arcos y bastones; desde el rango 40, 🪑 muebles para el campamento | 15 % de salir ✒️ obra maestra | Arquería · Escudos · Mobiliario y carros | Ingeniería, más o menos |
 | ⚗️ **Alquimia** | Pociones: extracto con arcilla (las mayores, con flor de luna) | +30 % de lo que cura una poción | Pociones · Elixires · Venenos | Alquimia |
 | 🩺 **Medicina** | 🫙 Ungüentos y 🧰 botiquines | +15 % de curación y +30 % de las vendas | Primeros auxilios · Cirugía · Farmacia | Primeros auxilios |
-| 💍 **Joyería** | Anillos y amuletos: lingotes con gemas | +3 % de vida y +3 % de ataque | Talla de gemas · Orfebrería · Vidriería | Joyería |
+| 💍 **Joyería** | Anillos y amuletos: lingotes con gemas (la primera, el 📿 Colgante de cobre, sin gema: 0.44) | +3 % de vida y +3 % de ataque | Talla de gemas · Orfebrería · Vidriería | Joyería |
 | 🍲 **Cocina** | Raciones para la despensa con carne, pescado y hierbas | +30 % de comida al cocinar | Guisos · Conservas · Banquetes | Cocina (secundario) |
 | ✨ **Encantamiento** | Desencanta equipo viejo en ✨ esencias y encanta tus piezas | +30 % de esencias al desencantar | Armas · Armaduras · Desencantar | Encantamiento |
 
@@ -73,7 +73,7 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 Hoy subir es fácil y todo se abre solo. La propuesta acerca el juego a WoW sin hacerlo pesado. Se junta con la reforma de recetas que ya está preguntada (E-221 a E-224).
 
 1. **Cada título se compra al Entrenador** (como en WoW). Llegas al tope de tu título (20, 40, 60, 80, 95) y no subes más hasta pagar el siguiente. Recomendado: Oficial 🥉50, Experto 🥈2, Artesano 🥈10, Maestro 🥈30 y Gran maestro 🥈50, con nivel de héroe mínimo 10, 20, 30, 40 y 50. Así el oficio acompaña al héroe y es un gasto de monedas que se nota (E-228, P-239).
-2. **Recetas con colores** (E-221, ya preguntado): naranja da experiencia siempre, amarillo casi siempre, verde a veces y gris nada. Para subir hay que hacer recetas nuevas, no repetir la primera mil veces.
-3. **Recetas que se aprenden en el Entrenador**, por título (los "libros de recetas", E-222); además, recetas raras en mazmorras, campamentos enemigos y facciones.
+2. **Recetas con colores** (E-221): naranja da experiencia siempre, amarillo casi siempre, verde a veces y gris nada. Para subir hay que hacer recetas nuevas, no repetir la primera mil veces. **En el juego desde la 0.44** (D-306, D-315) en los 5 oficios de equipo, con un tramo cada 5 rangos: 🟧 la experiencia entera, 🟨 la mitad, 🟩 un cuarto y ⬜ nada ([Profesiones](profesiones.md) §0.7). El refinado, la Alquimia, la Medicina y la Cocina esperan sus tramos.
+3. **Recetas que se aprenden en el Entrenador**, por título (los "libros de recetas", E-222); además, recetas raras en mazmorras, campamentos enemigos y facciones. **Los libros están en el juego desde la 0.44:** 🧑‍🏫 Entrenador → 📚 Libros de recetas, uno por oficio en los rangos 25, 50 y 75 (🥈2, 🥈10, 🥈25), gratis los de los rangos que cada uno ya tenía. Las recetas raras del botín y las facciones siguen siendo propuesta.
 4. **¿Un tope de oficios como en WoW?** Recomiendo **sin tope** para la recolección y la 🍲 Cocina, el 🎣 Pescador y la 🩺 Medicina (como los secundarios de WoW), y **2 principales** entre los demás: refinado, fabricación y servicio. Así cada jugador necesita a otros (E-229, P-240). Quien hoy tiene más que eso los conserva (el progreso no se pierde, D-64).
 5. **Las especializaciones siguen igual:** una al 25 y otra al 75 (D-141).

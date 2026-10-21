@@ -192,7 +192,7 @@ faq:
     a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Tus oficios: /misoficios."
   d45:
     q: "🛠️ ¿Cómo fabrico?"
-    a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."
+    a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide, cuánta ⚡ gasta y cuánta experiencia de oficio te da; en los oficios de equipo, también su color (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada: para subir, fabrica lo nuevo). Las recetas de rango 25, 50 y 75 o más piden su 📚 libro de recetas (🧑‍🏫 Entrenador → 📚 Libros de recetas). El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."
   d46:
     q: "🍲 ¿Cómo cocino?"
     a: "🍲 Cocinar (🏕️ Campamento) usa la estación de la 🍲 Cocina: carne, pescado y lo que da cada terreno se vuelven raciones y guisos que rinden más en la 🌾 despensa. En el Claro ya se cocina; en tu campamento, con el 🔥 Fogón. El 🎣 pescado sale de las zonas con agua."

@@ -1249,6 +1249,30 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): tramos de recetas, colores y libros (0.44, D-306 confirmada; D-315 provisional)
+
+El dueño decidió la reforma de recetas el 20-oct (E-221 a E-223): un tramo cada 5 rangos, colores de receta como en WoW y libros de recetas por tramo. Los números de experiencia y energía son de Claude (D-315), elegidos para la meta de la simulación: el especialista al 100 en ~11 meses y obligado a fabricar lo nuevo. Se recalculó con `tools/sim_oficios.py` ([Simulación](../07-economia/simulacion-oficios.md) §11).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| Rango de las piezas de equipo (🪑 🔨 🪡 🦺 💍) | nivel 3 → rango 1, 5 → 25, 8 → 50, 10 al 100 → 55 al 100 | nivel = rango, un tramo cada 5 (`recipe_tiers.step` 5): 3 → 1, 5 → 5, 8 → 10, 10 → 10 … 100 → 100; +180 piezas de los niveles 15, 25 … 95 |
+| Energía de una pieza de equipo | 2 ⚡ | `recipe_tiers.energy_by_rank`: 2 ⚡ hasta el rango 50, 3 desde el 55, 4 desde el 85 |
+| Experiencia de oficio de una pieza | 12 | 12 × (1 + 0,01 × rango) (`recipe_tiers.xp_per_rank`): 12 en el 1, 15 en el 25, 18 en el 50, 24 en el 100; muebles 24 → 34 (rango 40) y 41 (rango 70) |
+| Colores (`recipe_tiers.colors`) | — (la experiencia nunca bajaba) | d = tu rango − el de la receta: 🟧 d < 5 entera, 🟨 5-9 la mitad, 🟩 10-14 un cuarto, ⬜ 15+ nada; solo en los 5 oficios de equipo |
+| 📚 Libros (`recipe_tiers.books`) | — | rango 25 🥈2, rango 50 🥈10, rango 75 🥈25, uno por oficio; gratis los de los rangos que ya tenía cada uno |
+| 📿 Colgante de cobre (nuevo) | — | Joyería rango 1, lingote + cuero, 2 ⚡, 12; nivel 1, vida +4 %, ataque +3 %, 🥉14 (el mercader paga 7; materiales 20) |
+| Recetas de malla | 67 activas | `retired: true` (las piezas quedan) |
+
+**Qué cambia al jugar.**
+
+- **Especialista con los materiales en la mano:** rango 25 en 19 días (antes 22), 50 en 69 (90), 75 en 171 (205) y **100 en 329 (368)**, con ~4.600 piezas (antes 7.351 dagas). Lo que conviene es siempre la receta de su tramo: subir obliga a fabricar lo nuevo.
+- **Quien junta, caza y refina todo solo:** mucho más lento que antes (3,5 a 4,5 veces con la misma cuenta aproximada): la Herrería pasa de ~6 años a ~20-25 y la Peletería de ~9 a ~30, porque cada tramo pide más material (de 3 a 7 veces más en total, sobre todo 💠 gemas y 🌸 flores de luna: ~12.700 para un herrero o un sastre al 100). Queda para especialistas que reciben o compran materiales (P-245).
+- **Experiencia de héroe al fabricar:** sube con la energía de la pieza (20 por ⚡, D-108), así que por ⚡ es la misma; una pieza de rango 85 da el doble que una de rango 1 del mismo nivel de héroe.
+- **Monedas:** los libros sacan 🥈37 por oficio de quien llega al 75 (un sumidero nuevo). Las piezas nuevas se venden al mercader por menos que sus materiales (D-113), como todas.
+- **Sin cambios:** el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina siguen con su experiencia entera (sin colores) hasta tener sus tramos; sus recetas de rango 25 o más piden libro.
+
+**Lo que queda por mirar:** cuántos compran cada libro y cuándo (informe diario); si el especialista tarda de verdad ~11 meses; si la cadena en solitario es demasiado lenta (P-245: la palanca es `xp_per_rank`); la demanda de gemas y flores de luna.
+
 ### Octubre de 2026 (21-oct): 🪓 Talar y los recursos de base ×3 (0.42, D-305, confirmada)
 
 El dueño eligió las dos recomendaciones de E-227 (20-oct): el botón 🪓 Talar y que los 6 recursos de base vuelvan 3 por hora. La forma de aplicarlo es de Claude (D-314, provisional).

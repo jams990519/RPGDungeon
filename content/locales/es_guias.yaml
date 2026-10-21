@@ -104,7 +104,7 @@ guides_page:
       ⭐ El Entrenador te recomienda el oficio que fabrica la armadura de tu clase.
       🔗 Juntas materiales → 🪚 Refinar (madera → tablón, metal → lingote…) → 🛠️ Fabricar (equipo, pociones, vendas, muebles).
       🔥 Se hace en 🏕️ Campamento → 🛠️ Fabricar: cada fogata tiene las estaciones básicas; tu campamento, las de sus edificios de oficio.
-      ⚡ Cada receta gasta energía y da experiencia del oficio; cada rango abre recetas nuevas, hasta el {max_rank}.
+      ⚡ Cada receta gasta energía y da experiencia del oficio, hasta el rango {max_rank}: en los de equipo hay recetas nuevas cada 5 rangos y cada una tiene su color (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada); las de rango 25, 50 y 75 piden su 📚 libro de recetas del 🧑‍🏫 Entrenador.
       🎓 Al rango {spec_first} eliges una especialización, y al {spec_second}, otra.
       📋 Tus oficios: /misoficios (cada uno con su código, para ver todo de él).
   # ---- ⚙️ Cómo funciona

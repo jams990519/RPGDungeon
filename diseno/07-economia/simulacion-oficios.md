@@ -1,6 +1,6 @@
 # Simulación de los oficios (18-oct-2026)
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), `content/professions.yaml`, `content/balance.yaml` · **Alimenta a:** las preguntas P-232 a P-235 ([Preguntas abiertas](../00-vision/preguntas-abiertas.md)), el [registro de balance](../03-personaje/balance.md) · **Estado:** revisión del código (lo que hay hoy) y propuesta (§8); nada de esto está decidido todavía
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), `content/professions.yaml`, `content/balance.yaml` · **Alimenta a:** las preguntas P-232 a P-235 ([Preguntas abiertas](../00-vision/preguntas-abiertas.md)), el [registro de balance](../03-personaje/balance.md) · **Estado:** revisión del código del 18-oct (§1 a §7, el juego hasta la 0.42) y propuesta (§8). El dueño decidió la reforma el 20-oct (D-306); desde la 0.44 está en el juego la parte de las recetas: lo que quedó y los números de hoy, en el §11
 
 El dueño pidió (18-oct-2026) "un chequeo masivo de todas las profesiones": cuántos recursos pide cada una para aprender y para subir, qué hay que hacer en cada rango, y una simulación del progreso continuo, porque "las profesiones tienen que ser un camino lento, pero que se vea la progresión, que puedas vender lo que tienes, que lo que tienes te sirva para vender a otras clases". Este documento es esa revisión, hecha solo con lo que ya está en el código. Los scripts que la calculan quedaron fuera del repositorio (en la copia de trabajo de la sesión); los números se pueden recalcular con el motor.
 
@@ -11,6 +11,8 @@ El dueño pidió (18-oct-2026) "un chequeo masivo de todas las profesiones": cu�
 - **El propio código de Lost Realms:** todos los números de hoy salen de `content/*.yaml` y del motor.
 
 ## 0. En pocas palabras
+
+> **Desde la 0.44 (D-306, D-315):** tramos cada 5 rangos con pieza del nivel del tramo, colores de receta, experiencia y energía que crecen con el tramo y 📚 libros de recetas en los 5 oficios de equipo. Un especialista llega al 100 en 329 días haciendo ~4.600 piezas (antes 368 y 7.351). Lo de abajo describe el juego hasta la 0.42; los números de hoy están en el §11.
 
 1. **Hoy cada oficio se sube al 100 repitiendo su receta más barata de rango 1.** La experiencia de cada receta es fija (12 por
    pieza de 2 ⚡, 6 por refinado de 1 ⚡) y no baja cuando tu rango pasa la receta. Herrería al 100 = **7.351 dagas forjadas**;
@@ -742,8 +744,49 @@ arreglar la piel (×2,5 pieles por presa), días hasta el 25 / 50 / 100 (`propue
 
 ## 10. Archivos de la simulación (fuera del repositorio)
 
+> Desde la 0.44, la parte de "solo su ⚡" se recalcula con **`tools/sim_oficios.py`** (en el repositorio) y la cadena se aproxima con lo que midieron estos scripts (§11).
+
 - `informe-oficios.md`: este informe.
 - `anexo-recetas-a-crudo.md`: las 373 recetas de fabricación, cada una bajada hasta lo crudo.
 - `world_stats.py` → `world_stats.json`: lo medido del mundo con el motor (recursos por zona, presas, nodos).
 - `sim_oficios.py` → `tablas_generadas.md`, `resultados.json`, `simulacion_detalle.json`: catálogo, simulación y economía.
 - `gather_scen.py`: recolección por distancia. `propuesta_combinada.py`: la propuesta del §8.2. `build_report.py`: arma este informe.
+
+## 11. Lo que quedó en el juego (0.44) y los números de hoy
+
+El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte de las recetas; cómo se aplicó lo que no dijo está en D-315 (provisional). El detalle para el jugador: [Profesiones](profesiones.md) §0.7.
+
+**Lo que se hizo, frente a lo que recomendaba el §8:**
+
+| Recomendación | En la 0.44 |
+|---|---|
+| §8.1 Un tramo cada 5 rangos en todos los oficios, nivel de pieza = rango | **Sí en los 5 oficios de equipo** (🪑 🔨 🪡 🦺 💍): las 20 líneas que no son de malla tienen una receta en el 1, 5, 10 … 100; las de antes bajaron de rango (nivel 3 → 1, 5 → 5, 8 → 10, 10 al 100 → su número) y se agregaron 180 piezas de los niveles 15, 25 … 95 (`tools/recipe_tiers.py`). **Pendiente** en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina: necesitan recetas nuevas hasta el 100 |
+| §8.2 Colores d < 5 / 5-9 / 10-14 / 15+ | **Sí**, en los mismos 5 oficios (con colores, los demás se trabarían: Alquimia y Medicina en el 80, el refinado en el 16) |
+| §8.2 Experiencia que crece con el tramo × (1 + rango ÷ 50) | **× (1 + rango ÷ 100)** (`recipe_tiers.xp_per_rank` 0,01): con un tramo cada 5, ÷ 50 dejaba al especialista en 239 días; ÷ 100 lo deja en 329 (~11 meses, la meta) |
+| §8.2 Energía 2 ⚡ hasta el 50, 3 del 55 al 80, 4 del 85 al 100 | **Sí** (`recipe_tiers.energy_by_rank`) |
+| §8.5 Libros de recetas por tramo (🥈2, 🥈10, 🥈25) | **Sí**, en 🧑‍🏫 Entrenador → 📚 Libros de recetas, para todos los oficios con recetas de rango 25 o más; gratis los de los rangos que cada uno ya tenía (D-64) |
+| §8.6 Primera receta de 💍 Joyería sin gema | **Sí**: 📿 Colgante de cobre (lingote y cuero) |
+| §8.7 Retirar las 67 recetas de malla | **Sí** (`retired: true`); las piezas quedan. La 🎓 ⛓️ Malla ligera sigue: P-243 |
+| §8.3 N recetas del tramo anterior · §8.4 refinados intermedios · §8.6 piel, 🔪, 🎣, 🏗️ · §8.7 mercader y mercado | No en esta parte: la piel, 🎣 Pescar, las obras que se repiten y el mercader salieron en la 0.43; el resto sigue pendiente |
+
+**Días hasta el rango 25 / 50 / 75 / 100** (`python tools/sim_oficios.py`; 40 ⚡ al día, todo a ese oficio). "Solo su ⚡": los materiales ya están en la mochila; elige en cada vez la receta con más experiencia de oficio por ⚡ entre las que su rango abre (con los libros comprados a tiempo), con el color de esa vez. "Cadena aprox.": junta, caza y refina todo él mismo, con la energía por unidad cruda que midió la simulación del 18-oct (§1 y §4, Lejanía ≤ 6: metal 0,73 ⚡, madera 0,65, fibra 0,67, hierba 0,68, piel 4,4, gema y flor de luna ~7); no cuenta la unidad de más por rango ni los demás oficios que suben de paso, así que da entre 20 y 45 % más que la cadena del §4.1 (la misma cuenta con el contenido de la 0.42: Herrería 3.073 días contra 2.246 del §4.1).
+
+| Oficio | Tramos y colores | Solo su ⚡ hoy: 25 / 50 / 75 / 100 | Antes (0.42) | Veces hasta el 100 (antes) | Cadena aprox. hoy: 25 / 50 / 100 | Cadena aprox. 0.42 (misma cuenta) |
+|---|---|---|---|---|---|---|
+| 🪑 Carpintería | sí | 19 / 69 / 162 / 321 | 22 / 90 / 205 / 368 | 4.302 (7.351) | 417 / 1.899 / 9.861 | 150 / 624 / 2.547 |
+| 🔨 Herrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 553 / 2.671 / 11.727 | 181 / 753 / 3.073 |
+| 🪡 Sastrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 330 / 1.689 / 7.830 | 101 / 422 / 1.724 |
+| 🦺 Peletería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 794 / 3.841 / 17.247 | 286 / 1.194 / 4.874 |
+| 💍 Joyería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 328 / 1.859 / 9.577 | 124 / 516 / 2.106 |
+| ⚗️ Alquimia | no | 22 / 73 / 159 / 281 | igual | 11.243 | 109 / 454 / 1.852 | igual |
+| 🩺 Medicina · 🍲 Cocina | no | 22 / 90 / 205 / 368 | igual | 14.702 | 130 / 474 / 1.868 · 100 / 419 / 1.709 | igual |
+| Refinado (🪚 🔥 💧 🧶 🗿) | no | 22 / 90 / 205 / 368 | igual | 14.702 | de 53 / 222 / 904 (Fundición) a 66 / 274 / 1.117 (Destilación) | igual |
+| 🪣 Curtiduría | no | 22 / 90 / 205 / 368 | igual | 14.702 | 212 / 882 / 3.602 | igual |
+
+**Lo que dicen los números:**
+
+- **La meta se cumple para el especialista:** 329 días al 100 (~11 meses; la Carpintería, 321, por los 🪑 muebles), con ~4.600 piezas en vez de 7.351, y **siempre fabricando lo del tramo nuevo**: la receta que conviene en el rango r es la del tramo de r (por ejemplo, en la Herrería, la espada del nivel 20 en el rango 20, la del 50 en el 50). Llega al 25 y al 50 antes que hoy (19 y 69 días) porque las piezas de los tramos bajos ya dan más que 12; lo largo está del 50 al 100.
+- **La cadena en solitario es mucho más lenta** (3,5 a 4,5 veces la de antes con la misma cuenta): cada tramo nuevo pide más material por la misma experiencia y no se puede seguir con la pieza barata. Llevado a la cuenta del §4.1, la Herrería pasa de ~6 a ~20-25 años y la Peletería de ~9 a ~30: el oficio queda para especialistas que reciben o compran sus materiales (el mercado entre jugadores, todavía sin hacer). Es la parte "lenta" que pidió el dueño; si parece demasiado, las palancas son `recipe_tiers.xp_per_rank`, los colores o los materiales de los tramos altos (P-245).
+- **Material que pide la economía:** un especialista al 100 gasta de 3 a 7 veces más material que antes, contado en la energía de juntarlo (Peletería ×2,9, Herrería ×4,1, Carpintería ×5,1, Joyería ×5,3, Sastrería ×7,2): las piezas de los tramos altos piden de 6 a 10 veces lo crudo de la de rango 1 (§3.2). Sobre todo raros: un herrero al 100 usa ~12.700 💠 gemas (antes ninguna) y un sastre ~12.700 🌸 flores de luna: mucho trabajo para el ⛏️ Minero y el 🌿 Herbolario.
+- **Sin libros** (quien no compra el del 25) se sube hasta el ~35 con las recetas viejas (🟨 y 🟩); después todas son ⬜ y hay que comprarlo.
+- **Lo que no se midió:** el informe diario dirá cuántos compran cada libro y cuánto tardan de verdad; la simulación supone que gana todas las peleas y no viaja (§9).
