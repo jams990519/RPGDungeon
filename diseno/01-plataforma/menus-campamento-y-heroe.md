@@ -87,6 +87,7 @@ La ficha, de arriba abajo:
 ⚒️ Oficios: 4 empezados · mejor: 🪓 Leñador 12 — /oficios
 ```
 
+- **🎛️ Barra de combate** lista tus 4 botones (⚔️ Básico, 🔸 Constructor, 🔹 Preparador, 💥 Gastador). Desde el nivel 10 suma **🔀 Modo híbrido** (0.54, D-312 y D-330; también /hibrido): cada botón de rol se cambia por el del mismo puesto de tu otro rol, y la barra marca el prestado. Va aquí porque 🌟 Talentos ya tiene sus 4 botones (E-265).
 - **📔 Diario** es la pantalla de la historia (E-130): tu tarjeta, el origen y el capítulo, qué hacer ahora, los encargos de hoy, las facciones y tus últimos hechos; botones 🎯 Misiones, ⚜️ Facciones, 📣 Mostrar en la zona y ↩️ Volver.
 - **🎭 Origen** abre la elección si no tienes origen; si ya lo tienes, su tarjeta (frase, rasgo, regalo y cuánto llevas de su historia). Se usa 🎭 porque es el emoji del origen en toda la historia.
 

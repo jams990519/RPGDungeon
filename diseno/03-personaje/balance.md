@@ -1249,6 +1249,31 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): el 🔀 modo híbrido del nivel 10 (0.54, D-312 confirmada; D-330 provisional)
+
+El dueño eligió que el modo híbrido cambie **los 3** botones de rol por los del mismo puesto del otro rol (D-312) y que cada rol guarde sus puntos (D-238.4). La mezcla corre por cuenta del jugador y el juego no la balancea (D-230). Cómo pelea la habilidad prestada lo eligió Claude (D-330): con sus propios números y el cuerpo del rol activo (E-264).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `chain.hybrid.max_mixed` | `null`: el modo híbrido no se ofrecía | 3: los 3 botones de rol (Constructor, Preparador, Gastador), cada uno por el del mismo puesto del otro rol; el Básico no cambia |
+| `chain.hybrid.level` | 10 (solo una línea de "llega pronto") | 10: desde ahí se abre, si el segundo rol está abierto (`chain.second_role_level`, 5) |
+
+**Qué cambia al jugar** (`python3 tools/sim.py --hybrid`, nuevo: los 8 casos de cada rol, 40 peleas contra el Guardián y los enemigos de nivel 1-3 llevados al nivel del héroe):
+
+| Rol | Sin cambios (nivel 10): Guardián / vida al terminar | Lo que más se aleja |
+|---|---|---|
+| Tanques (Guerrero, Druida) | 100 % / 58-60 % | Entre 55 y 61 % con cualquier mezcla |
+| DPS con lo de su tanque o su soporte | 100 % / 54-60 % | Guerrero DPS con los 3 del tanque, 63 %; Cazador y Mago DPS con dos del soporte, 51-52 % |
+| DPS con lo de su sanador | 100 % / 61-62 % | **Sacerdote DPS con los 3: 85 %; Paladín DPS: 76 %** (cura según su vida, que es más alta, y pega con su ataque) |
+| Sanadores con lo de su DPS | 100 % / 53-60 % | **Sacerdote sanador: baja hasta 40 %; Paladín sanador: hasta 35 %, y contra el Guardián 72 % con los 3** |
+| Soportes (Cazador, Mago) | 100 % / 56-58 % | Entre 52 y 62 % |
+
+- Al nivel 30 pasa lo mismo, con menos vida para todos: Sacerdote DPS con los 3 del sanador 48 → 69 %, Sacerdote sanador con los 3 del DPS 55 → 37 %.
+- **Quien no lo toca no cambia en nada:** su barra y sus números son los de antes (las pruebas lo vigilan).
+- La regla madre (D-232) sigue para los roles sin mezcla; la mezcla queda fuera a propósito (D-230).
+
+**Lo que queda por mirar:** cuántos usan el modo híbrido y qué mezclas eligen (informe diario); si el DPS con curaciones de su sanador saca demasiada ventaja en solitario y en grupo (E-264 ofrece que la prestada use el cuerpo del rol de donde viene o que rinda al 80 %); el agro de las habilidades prestadas cuando exista el combate en grupo.
+
 ### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
 
 El dueño eligió el 17-oct un solo cupo por etapa, el castillo con 40 activos y cupo de 50, la salida de quien no juega 30 días y que acepten gente el líder y los oficiales (D-253). Los números de la escalera (§2) son los que aceptó; cómo se repartieron en los niveles y el aviso de los 25 días los eligió Claude (D-327); se ajustan en la beta (E-253 a E-256).
