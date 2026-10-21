@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304)**; la escalera de etapas (§2 a §7) todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325)**; la escalera de etapas (§2 a §7) todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -74,7 +74,9 @@ El dueño pidió (21-oct): "diseña para que los jugadores del gremio puedan pri
 | **D-253.2** | **Castillo:** 40 activos con cupo de 50 (D-122). |
 | **D-253.3** | **Un miembro que no juega** libera su lugar a los **30 días** sin jugar. |
 | **D-253.4** | **Aceptan gente** el líder y los oficiales. |
-| **D-254** | La **muralla** crece con el asentamiento, y la tierra que encierra **cosecha sola** una parte de sus recursos. El porcentaje sigue abierto (P-227). |
+| **D-254** | La **muralla** crece con el asentamiento, y la tierra que encierra **cosecha sola** una parte de sus recursos. |
+| **D-309** | **Los números de la cosecha (confirmados, 20-oct):** el 20 % de lo que vuelve a crecer, al almacén del asentamiento, solo con jugadores activos esa semana y como mucho 7 días; reemplaza el +50 % de recolectar en tu territorio; las zonas por etapa son las de la tabla del §2 (en el juego como tope del territorio desde la 0.41). |
+| **D-325** | *(Provisional, 0.49.)* Cómo quedó la cosecha en el juego (§5.5): con la 🧱 Muralla todo el territorio cosecha; 24 por recurso y día como base (sin el ×3 de la 0.42); llega sola al 💰 fondo una vez por semana, con un aviso. |
 | **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
@@ -159,6 +161,29 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 4. **Reemplaza el +50 % de hoy** al recolectar en tu propio territorio (D-87, `gather.own_land_bonus: 1.5`), para no sumar dos bonos y para cumplir D-239.3, que dice "nada de bonos de farmeo aparte".
 5. **La cosecha sale de lo que vuelve a crecer, no del recurso que hay:** el que recolecta a mano en esa zona encuentra lo mismo que hoy.
 
+El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zonas ya estaba en el juego (D-304).
+
+### 5.5 Cómo quedó en el juego (0.49, D-309; cómo se aplicó: D-325, provisional)
+
+- **Qué zonas cosechan (E-247).** El juego todavía no tiene la muralla por anillos del §5.2. Mientras tanto, con la **🧱 Muralla** construida (la obra de nivel 5 que pide subir a 6) **todo el territorio** del campamento cuenta como cerrado. Sin muralla no hay cosecha. Un campamento de nivel 5 sin muralla ve en ⬆️ Mejorar una pista con lo que daría; antes del nivel 5 no se nombra (D-287).
+- **Cuánto (E-248).** Cada recurso de cada zona da el **20 % de 24 unidades por día** (lo que vuelve un recurso con `stock.regen_per_hour` 2 % y `stock.per_unit` 2 %, el número de la pregunta que respondió el dueño): 4,8 por recurso y día. Hoy una zona tiene de 4 a 6 recursos (D-180, D-303), así que da **unas 27 por día**, no 14 como en la tabla del §5.3, que contaba 3. No cuenta el ×3 de la 0.42 ni el ⛲ Pozo: eso doblaría la cosecha (`harvest.real_regen`, abierto en E-248).
+- **Qué.** Solo los materiales que recibe el 💰 fondo: los de base, la 🪵 madera y los propios del terreno. El 🐟 pescado es comida y no entra (el fondo no recibe comida, D-276).
+- **A dónde: el 💰 fondo del campamento**, el mismo de 💰 Depositar (D-291). Nunca va a la mochila de nadie. Del fondo la toman las obras activas y ⏫ Siguiente nivel la próxima vez que alguien aporta, deposita o activa una obra, y lo que sobra queda para los oficios (D-322). La cosecha no baja los recursos de la zona.
+- **Cuándo.** Se guarda en el campamento, con un **tope de 7 días** por recurso, y **cada 7 días llega sola al fondo**, de una vez, si algún miembro tocó un botón en esos 7 días. Si nadie jugó, lo de esa semana se pierde: un campamento abandonado no se llena solo. Solo pasan unidades enteras; la fracción queda para la semana siguiente. Una muralla de antes de la 0.49 empieza a contar cuando el juego la ve (como mucho 1 hora antes): nadie cobra días de antes del parche.
+- **Lo que se ve (D-44, capa simple).** Una línea **"🌾 Cosecha de la muralla: +N/día · guardado X (tope 7 días) · al 💰 fondo en N días"** en 🏰 Gestionar → ⬆️ Mejorar, en 🛡️ Gremio → 💰 Fondos y en ℹ️ Información. Cuando llega, **un aviso por semana** a cada miembro, en su idioma, con lo que llegó y el botón 💰 Fondos del campamento. ❓ /d61 lo explica.
+- **El +50 % (E-217).** `gather.own_land_bonus` pasó de 1,5 a 1,0 (la clave queda): en tu territorio juntas lo mismo que afuera. Las ⚒️ Herramientas siguen dando +10 %. ❓ /d09, /d57, las guías e ℹ️ Información ya no prometen el +50 %.
+- **Cuánto da, con números de hoy** (zonas al tope de su etapa):
+
+| Etapa | Zonas | Cosecha por día | De base (ahorra energía de juntar) |
+|---|---|---|---|
+| Pueblo (la muralla llega aquí) | 9 | ~240 | ~120 (unos 40 ⚡) |
+| Ciudad | 15 | ~400 | ~200 (unos 66 ⚡) |
+| Castillo | 25 | ~670 | ~330 |
+
+- **El ritmo hasta castillo** (`python tools/camp_costs.py`, de 5 a 10 miembros que dan el 75 % de su energía): **~20,7 días** (0.48, con el +50 %: 17,6; sin cosecha: 23,4; con el ×3 de E-248: 17,4). Las 31 obras: ~47,7 días (antes 41,1). Hasta la muralla no hay cosecha: el nivel 6 llega hacia el día 7,9 (antes 5,5; E-249). Con la mitad de la energía (`--share=0.5`): castillo ~29,5 días.
+- **Dónde está:** `content/balance.yaml` → `harvest` (wall, share, real_regen, week_days, cap_days, active_days, scan_minutes) y `gather.own_land_bonus`; las cuentas en `engine/world/harvest.py`; la entrega en `engine/service/game.py` (sección "🌾 the wall's harvest": `_harvest_tick` desde `tick()`, `_harvest_deliver`, `_harvest_line`); lo guardado en `upgrades/<x:y>` → `harvest`; los textos en `content/locales/es_cosecha.yaml` y `en_cosecha.yaml`; las pruebas en `tests/test_cosecha_muralla.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-34.
+- **Preguntas para el dueño:** E-247 a E-249 (P-258 a P-260).
+
 ## 6. Dónde no se crea grupo (D-252)
 
 > *(18-oct: D-269 reemplaza a D-252: el gremio se crea desde el primer momento, también en la fogata; ver §0. Lo de abajo queda como historia.)*
@@ -177,7 +202,7 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 | Nadie sale si no quiere (regla 10) | Sale a los 30 días sin jugar |
 | Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | 40 activos, la Noche con 10 vencedores distintos y 5 oleadas crecientes (D-122) |
 | Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
-| +50 % al recolectar en tu territorio (`gather.own_land_bonus`) | La tierra cosecha sola para el asentamiento (P-227, P-228) |
+| ~~+50 % al recolectar en tu territorio (`gather.own_land_bonus`)~~ | **Hecho en la 0.49 (D-309, D-325):** con la 🧱 Muralla, todo el territorio cosecha solo para el 💰 fondo y el +50 % ya no está (§5.5). Falta la muralla por anillos con su costo por zona |
 | No hay grupos | Grupo de 5 que nace al construir; escuadras dentro del gremio |
 
 **Los jugadores de hoy no pierden nada (D-64):**
@@ -203,8 +228,11 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 
 ## 9. Preguntas abiertas
 
-- **P-227 (E-216):** cuánto cosecha cada zona y a dónde va. Recomendado: 20 %, al almacén, con actividad y con tope de 7 días.
-- **P-228 (E-217):** si la cosecha reemplaza el +50 % de hoy. Recomendado: sí.
+- **P-227 (E-216):** ✅ Decidido (D-309): 20 %, al almacén, con actividad y con tope de 7 días (en el juego desde la 0.49, §5.5).
+- **P-228 (E-217):** ✅ Decidido (D-309): la cosecha reemplaza el +50 % (en el juego desde la 0.49).
+- **P-258 (E-247):** qué zonas cierra la muralla. Recomendado: todo el territorio con la muralla, hasta que llegue la muralla por anillos.
+- **P-259 (E-248):** si la cosecha cuenta el ×3 de la 0.42. Recomendado: no por ahora (24 por recurso y día) y medirlo en la beta.
+- **P-260 (E-249):** qué pasa antes de la muralla. Recomendado: dejarlo así; la muralla es la meta del pueblo.
 - **P-229 (E-218):** ✅ Decidido (D-304): la tabla del §2 (en el juego, desde la 0.41, como tope de zonas del territorio hasta castillo).
 - **Siguen de antes:**
   - P-224, la Academia o la Biblioteca;
