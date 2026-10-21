@@ -4,7 +4,8 @@
 juego y sin una línea de "lo próximo que se abre". Fuera del campamento y del gremio (que tienen su propio cambio): las
 estaciones no anuncian recetas de rango más alto ni la pantalla de un oficio dice qué abre el próximo rango; el 🧑‍🏫 Entrenador
 no tiene "🔒 Más adelante" ni el botón 🎓 antes del rango 25; 🎓 Especialización no lista los oficios que no llegan; los talentos
-no muestran habilidades cerradas ni el segundo rol antes del nivel 5; el campamento enemigo no tiene el botón 🔒 de
+no muestran habilidades cerradas ni el segundo rol antes del nivel 5, ni el 🔀 modo híbrido (su línea en 🌟 Talentos y su botón
+en 🎛️ Barra de combate) antes del nivel 10 (0.54, D-330); el campamento enemigo no tiene el botón 🔒 de
 🕵️ Infiltrarse; las misiones de nivel más alto no salen y se avisan al llegar a su nivel. Lo que se pide a mano (un botón
 viejo o un código) recibe un aviso corto. Todo en los dos idiomas.
 Archivo: tests/test_ocultar_lo_bloqueado.py · Módulo: capa de servicios (M14 Oficios, M2 Héroe, M10 Misiones, mapa) · Prueba:
@@ -123,15 +124,18 @@ def test_the_second_role_and_the_hybrid_mode_wait_for_their_level(service):
     other = next(spec for spec in specs_of(service.content.classes, service.content.classes[hero.class_id]["group"])
                  if spec != hero.class_id)
     view = service.act("test:1", "talents")
-    assert "🔒" not in body(view) and f"tal:{other}" not in ids(view) and "🧪" not in body(view)
-    assert "🧪" not in body(service.act("test:1", "bar")) and "nivel 10" not in body(service.act("test:1", "bar"))
+    # 0.54 (D-330): the hybrid mode's line is 🔀 (it was 🧪 "coming soon"); its button lives in 🎛️ Barra de combate
+    assert "🔒" not in body(view) and f"tal:{other}" not in ids(view) and "🔀" not in body(view)
+    bar = service.act("test:1", "bar")
+    assert "🔀" not in body(bar) and "nivel 10" not in body(bar) and "hyb" not in ids(bar)
     old = service.act("test:1", f"tal:{other}")                          # an old button: back with a short reply
     assert old.kind == "talents" and "nivel 5" in old.notice
     hero = service._load("test:1")
     hero.level = 10
     service._save(hero)
     view = service.act("test:1", "talents")
-    assert f"tal:{other}" in ids(view) and "🧪" in body(view)
+    assert f"tal:{other}" in ids(view) and "🔀" in body(view)
+    assert "hyb" in ids(service.act("test:1", "bar"))
 
 
 @pytest.fixture

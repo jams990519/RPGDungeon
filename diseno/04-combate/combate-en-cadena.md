@@ -1,6 +1,6 @@
 # Combate en cadena: las 6 clases del parche 0.31
 
-> **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Alimenta a:** [Jefes](../06-contenido/jefes.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md) · **Estado:** confirmado por el dueño (8-oct-2026) y en el juego desde la 0.31; el Paladín reemplazó al Chamán en la 0.32 (9-oct-2026, D-233)
+> **Módulo** [04 · Combate](README.md) · **Depende de:** [Ronda y acciones](ronda-y-acciones.md), [Clases](../03-personaje/clases-y-especializaciones.md), [Balance](../03-personaje/balance.md) · **Alimenta a:** [Jefes](../06-contenido/jefes.md), [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md) · **Estado:** confirmado por el dueño (8-oct-2026) y en el juego desde la 0.31; el Paladín reemplazó al Chamán en la 0.32 (9-oct-2026, D-233); el modo híbrido del nivel 10, en la 0.54 (D-312, D-330: §12)
 
 El dueño mandó el parche completo del sistema de clases: "esto no es un resumen, es el parche completo del sistema de clases. Reemplaza lo que haya de clases y combos". Este documento lo ordena y dice cómo quedó en el juego. Las decisiones son D-225 a D-234 en [Decisiones](../00-vision/decisiones.md). El 9-oct-2026 el dueño cambió el Chamán por el Paladín, para tener dos clases por armadura (§11).
 
@@ -101,7 +101,7 @@ Ninguna clase nace más fuerte que otra. Las clases de un mismo rol comparten el
 
 1. **Tutorial:** el jugador recibe un arma inicial con daño bajo. Todas las clases pegan desde el principio.
 2. **Nivel 5, doble especialización:** el jugador aprende su segundo rol. Al cambiar de rol se recogen y se reparten de nuevo los puntos de nivel y de mejora de habilidad.
-3. **Nivel 10, modo híbrido:** el jugador elige jugar híbrido o normal. El híbrido le deja mezclar habilidades de sus dos roles. Que pueda mezclarlas no garantiza que funcionen bien: la mezcla corre por cuenta del jugador y el juego no la balancea.
+3. **Nivel 10, modo híbrido:** el jugador elige jugar híbrido o normal. El híbrido le deja mezclar habilidades de sus dos roles. Que pueda mezclarlas no garantiza que funcionen bien: la mezcla corre por cuenta del jugador y el juego no la balancea. El dueño decidió después que se cambian **los 3** botones de rol, cada uno por el del mismo puesto del otro rol, y que siguen 4 botones (D-312). En el juego desde la 0.54: §12.
 
 ## 7. Las seis clases
 
@@ -150,8 +150,8 @@ Todos los Básicos dan +1 de energía.
 |---|---|---|---|
 | 1 | Los porcentajes finales del bono por marcas | `chain.mark_bonus` | 10 %, 25 % y 50 % |
 | 2 | Qué habilidades de DPS no generan agro | `chain.no_threat` | Vacío: el agro solo cuenta en grupo, que todavía no existe |
-| 3 | Modo híbrido: cuántas habilidades de cada rol se mezclan y el límite de botones | `chain.hybrid.max_mixed` | `null`: no se ofrece hasta que se decida |
-| 4 | Si cada rol guarda sus puntos o se reparten de cero al cambiar | `chain.keep_points` | `false`: se recogen y se reparten. Hoy da igual, porque los puntos tienen un solo destino |
+| 3 | Modo híbrido: cuántas habilidades de cada rol se mezclan y el límite de botones | `chain.hybrid.max_mixed` | **Decidido (D-312):** los 3 botones de rol, cada uno por el del mismo puesto del otro rol; siguen 4 botones. `3` desde la 0.54 (antes `null`, no se ofrecía): §12 |
+| 4 | Si cada rol guarda sus puntos o se reparten de cero al cambiar | `chain.keep_points` | **Decidido (D-238.4):** `true`, cada rol guarda los suyos. Hoy da igual, porque cada rol gana uno por nivel |
 | 5 | Si el bono por variedad dura la pelea o es para siempre | `chain.variety.scope` | `fight`: dura la pelea. `permanent` ya funciona si se elige |
 | 6 | El orden del tanque (defensa antes que agro) está en revisión | `chain.orders.tanque` | B → H2 → H1 → H3 |
 
@@ -184,7 +184,7 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 - Al crear el héroe se elige la clase y el primer rol.
 - El segundo rol se abre al nivel 5, gratis, en 👤 Héroe → 🌟 Talentos.
 - Los puntos de nivel (1 por nivel) van solos al rol activo.
-- La barra es fija hasta el modo híbrido.
+- La barra es la de tu rol hasta el modo híbrido del nivel 10 (0.54: §12).
 
 **Lo que agregó Claude para que el juego funcione (provisional, se ajusta en la beta):**
 
@@ -236,7 +236,55 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 
 **Medido con `tools/sim.py`:** contra el Guardián, el Paladín · Sanador gana el 90 % y el Paladín · DPS el 74 %, los mismos números del Chamán; contra cada enemigo de nivel 1 a 3, el 100 %.
 
-**Por decidir (E-214, P-213):** en World of Warcraft el Paladín es tanque, sanador o DPS. Aquí quedó sanador y DPS para no dejar 3 tanques y 1 solo sanador de grupo. Si el dueño lo prefiere tanque y sanador, el cambio es de contenido (`content/classes.yaml`).
+**Por decidir (E-214, P-213):** en World of Warcraft el Paladín es tanque, sanador o DPS. Aquí quedó sanador y DPS para no dejar 3 tanques y 1 solo sanador de grupo. Si el dueño lo prefiere tanque y sanador, el cambio es de contenido (`content/classes.yaml`). *(Decidido: sanador y DPS, D-238.7 y D-312.)*
+
+## 12. El modo híbrido (0.54, D-312; cómo se aplicó: D-330)
+
+**Lo que decidió el dueño:** al nivel 10, un modo híbrido que mezcla habilidades de tus dos roles, por tu cuenta y sin que el juego la balancee (D-230). El 20-oct dijo cuántas: "el modo híbrido del nivel 10 deja cambiar **las 3** habilidades de rol por las del mismo puesto del otro rol" (D-312, que cambió el 1 de D-238.3). Cada rol guarda sus puntos (D-238.4).
+
+**Cómo se juega:**
+- **Dónde:** 👤 Héroe → 🎛️ Barra de combate → 🔀 Modo híbrido, o /hibrido. Sale desde el nivel 10 (`chain.hybrid.level`) y con el segundo rol abierto. Antes no se ve nada (D-287) y un /hibrido recibe un aviso corto. Al llegar al 10, una línea lo avisa una vez, y 🌟 Talentos dice cuántos botones cambiaste.
+- **La pantalla:** los 3 puestos con la habilidad que llevas y la del mismo puesto de tu otro rol, y un botón por puesto para cambiarlo o devolverlo. Cuatro botones en total (D-75).
+
+```text
+🔀 Modo híbrido
+Juegas como 🐢 Guerrero · Tanque. Cada botón de rol puede llevar la habilidad del mismo puesto de 🦏 Guerrero · DPS.
+🔸 Constructor: ✅ Revés · o Golpe heroico
+🔹 Preparador: 🔀 Desgarrar armadura (de 🦏 Guerrero · DPS) · o Interponerse
+💥 Gastador: ✅ Grito de dominio · o Ejecutar
+⚔️ Básico: Golpe de escudo (no cambia).
+[🔸 Usar Golpe heroico] [🔹 Usar Interponerse] [💥 Usar Ejecutar] [↩️ Volver]
+```
+
+- **Los 4 botones siguen:** el ⚔️ Básico nunca cambia; cambian como mucho los 3 de rol (`chain.hybrid.max_mixed`: 3). La pantalla de combate no suma botones (D-46).
+- **Gratis fuera de combate, nunca en una pelea.** Se puede durante un lote o un viaje, como el equipo.
+- **Cada rol guarda su mezcla** (`Hero.hybrid`, por pareja de roles): al cambiar de rol, el otro pelea con la suya; al volver, vuelve la tuya. El cambio de clase tampoco la borra.
+- **Quien nunca lo toca pelea igual que antes.**
+
+**Qué hace en la pelea:**
+
+| Qué | Cómo queda |
+|---|---|
+| La habilidad prestada | La del otro rol tal cual está en `classes.yaml`: sus números y sus marcas (daño, curación, escudo, agro, escuela). Lo del DPS genera agro y el agro del tanque viaja con su botón (D-312) |
+| Su rango | El de su rol de origen. Hoy las habilidades no tienen rango propio (los puntos de mejora de habilidad de D-240 no existen todavía); cuando lleguen, se cuelgan de la habilidad y no del puesto, así que la prestada lleva los suyos |
+| El cuerpo | El del rol activo: vida, ataque, armadura, iniciativa, equipo y la mejora pasiva de sus puntos (E-264) |
+| La cadena | La del rol activo. El puesto no cambia: una prestada en el Gastador es tu gastador y cobra tus marcas |
+| La pelea automática | Juega la barra mezclada sin cambios: `chain_choice` mira el tipo de cada botón |
+
+**Las 6 clases tienen pareja en los 3 puestos**, también el Paladín (sanador y DPS, D-233). Si una clase futura no la tuviera, ese puesto sale con "—" y no se cambia.
+
+**Medido con `python3 tools/sim.py --hybrid`** (los 8 casos de cada rol: sin cambios, cada puesto, de a dos y los 3):
+
+| Prueba | Resultado |
+|---|---|
+| Contra el Guardián al nivel 10 | Casi todos ganan el 100 % con cualquier mezcla. El Paladín sanador con el Gastador del DPS y otro botón baja a 82-95 %, y con los 3, a 72 % |
+| Contra los enemigos de nivel 1-3 llevados al 10, vida al terminar | El DPS con las curaciones de su sanador termina con más vida (Sacerdote DPS 62 → 85 %, Paladín DPS 61 → 76 %). El sanador con los golpes de su DPS, con menos (Sacerdote 60 → 42 %, Paladín 53 → 35 %). El resto se mueve entre −8 y +9 puntos |
+
+La mezcla corre por cuenta del jugador (D-230): se mira en la beta (E-264, P-275).
+
+**Por decidir (E-263 a E-265, P-274 a P-276):** si cada rol guarda su mezcla al cambiar de rol (hoy sí), con qué cuerpo pelea la habilidad prestada (hoy el del rol activo) y dónde va el botón (hoy en 🎛️ Barra de combate, porque 🌟 Talentos ya tiene 4).
+
+**Código:** `engine/classes/talents.py` (`hybrid_open`, `hybrid_pairs`, `hybrid_choice`, `toggle_hybrid`, `chain_bar`; `kit` arma la barra con lo prestado), `engine/service/game.py` (`_hybrid_view`, `_hybrid_action`, `_bar_view`), `engine/hero/hero.py` (`hybrid`), `content/balance.yaml` → `chain.hybrid`, textos en `content/locales/es_hibrido.yaml` y `en_hibrido.yaml`. Pruebas: `tests/test_modo_hibrido.py`.
 
 ## De dónde sale
 
@@ -245,3 +293,4 @@ Están como P-207 a P-212 en [Preguntas abiertas](../00-vision/preguntas-abierta
 - **Tejer** viene del "weaving" de los MMO de acción.
 - **El tope de 5 objetivos** viene de los límites de objetivos de WoW.
 - **El Paladín** viene del Paladín de World of Warcraft: guerrero sagrado de placa que cura y pega con luz (Juicio, Golpe de cruzado, Tormenta divina).
+- **El modo híbrido** lo pidió el dueño (D-230, D-312). Se parece a los nodos de elección de los árboles de talentos de World of Warcraft (dos habilidades en el mismo lugar y eliges una; aquí el lugar es el puesto de la cadena) y a la profesión secundaria de Guild Wars (habilidades de otra clase con tu propio cuerpo).

@@ -1,0 +1,22 @@
+# Texts of the 🔀 hybrid mode (0.54, D-231, D-312; how it was built: D-330): from level 10 each role button (Builder,
+# Primer, Spender) can carry the ability in the same slot of the other role; the Basic never changes.
+# [ES] Los mismos textos de es_hibrido.yaml en inglés (D-250): mismas claves y mismos huecos {nombre}
+# (python tools/check_locales.py: 0 errores).
+
+hybrid:
+  button: "🔀 Hybrid mode"
+  title: "🔀 Hybrid mode"
+  intro: "You play as {own}. Each role button can carry the ability in the same slot of {other}. Tap one to swap it:"
+  slot_own: "{icon} {slot}: ✅ {name} · or {other}"
+  slot_swapped: "{icon} {slot}: 🔀 {name} (from {role}) · or {own}"
+  slot_none: "{icon} {slot}: {name} · —"
+  use_button: "{icon} Use {name}"
+  basic_line: "{icon} Basic: {name} (doesn't change)."
+  rules: "🎲 The mix is on you: the game doesn't balance it. Your chain follows your role's order, each ability does its own thing (damage, healing or threat) and swapping is free outside combat. Each role keeps its own choice."
+  max_line: "You can swap up to {n}."
+  full: "🔀 You already swapped {n}, the maximum: put another one back first."
+  swapped: "🔀 {slot}: you now use {name}, from {role}."
+  restored: "↩️ {slot}: back to {name}."
+  locked: "🔒 🔀 Hybrid mode opens at level {n}, with your second role."
+  learned: "🔀 Hybrid mode is open! Swap your role buttons for the ones in the same slot of your other role in 👤 Hero → 🎛️ Combat Bar (/hybrid)."
+  from_tag: " · 🔀 from {role}"

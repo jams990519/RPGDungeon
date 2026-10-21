@@ -321,6 +321,6 @@ chain:
   switched: 🔄 You now play as {name}. Your points were redistributed.
   points_auto: '⭐ Level points: {n}, all in your active role (placed automatically).'
   active_role: '⭐ Active role: {name}'
-  hybrid_soon: '🧪 Hybrid mode (level {n}): coming once it''s decided how many abilities get mixed.'
-  bar_fixed: 'Your 4 buttons are fixed: ⚔️ Basic, Builder, Primer and Spender. Hybrid mode (level {n}) will open them up.'
+  hybrid_soon: '🔀 Hybrid mode: {n} of {max} role buttons carry the ability in the same slot of your other role. Swap them in 👤 Hero → 🎛️ Combat Bar → 🔀 Hybrid mode (/hybrid).'
+  bar_fixed: 'Your 4 buttons: ⚔️ Basic, Builder, Primer and Spender. With 🔀 Hybrid mode you swap the Builder, the Primer or the Spender for the one in the same slot of your other role; the Basic doesn''t change.'
   bar_fixed_now: 'Your 4 buttons are fixed: ⚔️ Basic, Builder, Primer and Spender.'

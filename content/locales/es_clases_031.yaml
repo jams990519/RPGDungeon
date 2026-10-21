@@ -218,6 +218,6 @@ chain:
   switched: "🔄 Ahora juegas como {name}. Tus puntos se repartieron de nuevo."
   points_auto: "⭐ Puntos de nivel: {n}, todos en tu rol activo (se ponen solos)."
   active_role: "⭐ Rol activo: {name}"
-  hybrid_soon: "🧪 Modo híbrido (nivel {n}): llega cuando se decida cuántas habilidades se mezclan."
-  bar_fixed: "Tus 4 botones son fijos: ⚔️ Básico, Constructor, Preparador y Gastador. El modo híbrido (nivel {n}) los abrirá."
+  hybrid_soon: "🔀 Modo híbrido: {n} de {max} botones de rol con la habilidad del mismo puesto de tu otro rol. Cámbialos en 👤 Héroe → 🎛️ Barra de combate → 🔀 Modo híbrido (/hibrido)."   # [ES] 0.54 (D-330): la clave guarda su nombre viejo; desde la 0.54 es la línea del modo híbrido en 🌟 Talentos ({n} cambiados de {max})
+  bar_fixed: "Tus 4 botones: ⚔️ Básico, Constructor, Preparador y Gastador. Con 🔀 Modo híbrido cambias el Constructor, el Preparador o el Gastador por el del mismo puesto de tu otro rol; el Básico no cambia."   # [ES] 0.54 (D-330): desde el nivel del modo híbrido, en 🎛️ Barra de combate, junto al botón 🔀 Modo híbrido
   bar_fixed_now: "Tus 4 botones son fijos: ⚔️ Básico, Constructor, Preparador y Gastador."   # [ES] D-287 (0.39): antes del nivel del modo híbrido, sin anunciarlo
