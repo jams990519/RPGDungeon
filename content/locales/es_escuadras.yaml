@@ -1,0 +1,54 @@
+# Texts of the squads of 5 inside a camp's guild (D-253.1 Forma B, confirmed; how it was applied: D-331, provisional; 0.55).
+# [ES] Textos de las 🪖 escuadras (D-253.1, Forma B, confirmada el 17-oct-2026; cómo se aplicó: D-331, provisional). Se junta con
+# es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/squads.py (la pantalla 🪖 Escuadras, la línea de 👥 Miembros,
+# la tarjeta de un miembro, 🗳️ votar al jefe, 🔀 cambiar de escuadra, ✏️ el nombre y la línea de las escuadras con un vencedor en
+# la 🌙 Noche de prueba y las 🌊 oleadas crecientes). Una clave nueva va también en en_escuadras.yaml (tools/check_locales.py).
+# Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+squads:                        # [ES] D-331: las escuadras de 5 del gremio de cada campamento
+  title: "🪖 Escuadras"
+  button: "🪖 Escuadras"
+  label: "Escuadra {n}"
+  label_named: "Escuadra {n} «{name}»"
+  # ---- 🪖 Escuadras (🛡️ Gremio → 👥 Miembros → 🪖 Escuadras)
+  header: "🪖 {n} {n|escuadra|escuadras} de hasta {size}. En esta etapa del campamento caben {slots}."
+  squad_line: "🪖 {label} · {n}/{size} · 🎖️ jefe: {chief}"
+  squad_line_mine: "🪖 {label} (la tuya) · {n}/{size} · 🎖️ jefe: {chief}"
+  squad_empty: "▫️ vacía: recibe a los que lleguen"
+  member_line: "{code} {role}{name} (nv {level}) · {state}"
+  role_chief: "🎖️ "            # [ES] delante del nombre del jefe de la escuadra
+  hint: "Toca el código (/m1) de alguien de tu escuadra para votarlo como 🎖️ jefe: lo es quien tiene más de la mitad de los votos de la escuadra. El jefe pasa a los de su escuadra a otra con lugar; el fundador y los 🤝 asistentes, a cualquiera. Aceptan gente solo el fundador y los asistentes."
+  members_line: "🪖 Tu escuadra: {label} · 🎖️ jefe: {chief} (en total, {n} {n|escuadra|escuadras})."   # [ES] 👥 Miembros
+  # ---- la tarjeta de un miembro (/m2)
+  card_line: "🪖 {label} · 🎖️ jefe: {chief}"
+  card_votes: "🗳️ Votos para que sea jefe: {votes} de {n} (lo es con {need})."
+  vote_button: "🗳️ Votar como jefe"
+  unvote_button: "✖️ Quitar mi voto"
+  move_button: "🔀 Cambiar de escuadra"
+  # ---- 🗳️ el voto (gana la mayoría de la escuadra; si nadie la tiene, el jefe sigue)
+  voted: "🗳️ Votaste a {name} como jefe de tu escuadra: {votes} de {n} (lo es con {need})."
+  unvoted: "✖️ Quitaste tu voto."
+  vote_other: "Solo votas a alguien de tu propia escuadra."
+  new_chief: "🎖️ {name} es el nuevo jefe de la {label}."
+  new_chief_push: "🎖️ {name} es el nuevo jefe de la {label} de {camp}."   # [ES] a los demás de la escuadra (_push_each)
+  # ---- 🔀 cambiar de escuadra
+  move_title: "🔀 Cambiar de escuadra"
+  move_ask: "¿A qué escuadra pasa {name}? Hoy está en la {label}."
+  move_to: "🪖 {label} ({n}/{size})"
+  move_new: "🆕 Escuadra {n} (nueva)"
+  more: "➡️ Más escuadras"
+  no_room: "Ninguna otra escuadra tiene lugar. Cuando el campamento tenga más cupo, caben más escuadras."
+  cannot_move: "El 🎖️ jefe pasa a los de su escuadra; el fundador y los 🤝 asistentes, a cualquiera."
+  full: "Esa escuadra ya tiene {size}."
+  moved: "🔀 {name} pasó a la {label}."
+  moved_push: "🔀 {who} te pasó a la {label} de {camp}."   # [ES] al miembro que movió otro (_push_each)
+  # ---- ✏️ el nombre (solo el jefe)
+  name_button: "✏️ Nombre de la escuadra"
+  name_ask: "✏️ Escribe el nombre de tu escuadra (hasta {n} letras)."
+  name_bad: "Ese nombre no sirve: escribe letras o números."
+  named: "✏️ Tu escuadra ahora es la {label}."
+  only_chief: "Solo el 🎖️ jefe de la escuadra le pone nombre."
+  cancel: "❌ Cancelar"
+  # ---- 🌙 la Noche de prueba y 🌊 las oleadas crecientes: solo información (E-266)
+  winners_line: "🪖 Escuadras con al menos un vencedor: {n} de {total}."
+  winners_report: "🪖 {n} de {total} {total|escuadra tuvo|escuadras tuvieron} al menos un vencedor."

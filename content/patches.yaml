@@ -1063,3 +1063,20 @@ v0_54:
     - "🎛️ It's in 👤 Hero → 🎛️ Combat Bar → 🔀 Hybrid mode, or type /hybrid. Each slot has its own button to swap it and back. It's free outside combat."
     - "⚔️ The Basic doesn't change and the bar keeps its 4 buttons. Your chain follows your role's order, each ability does its own thing (damage, healing or threat) and you fight with your role's life and attack."
     - "🔄 Each role keeps its own mix: if you switch roles, the other one fights with its own. If you never touch it, everything stays as before. The mix is on you: the game doesn't balance it."
+
+v0_55:
+  version: "0.55"
+  title: "🪖 Lost Realms 0.55: las escuadras de 5"
+  title_en: "🪖 Lost Realms 0.55: squads of 5"
+  notes:
+    - "🪖 Los miembros de cada campamento se reparten solos en escuadras de 5, en orden de llegada: nadie sale ni pierde nada. Cada etapa abre más escuadras: 2 en el campamento, 3 en la aldea, 5 en el pueblo, 8 en la ciudad y 10 en el castillo."
+    - "👥 Míralas en 🛡️ Gremio → 👥 Miembros → 🪖 Escuadras: cada escuadra con su número, su nombre, su 🎖️ jefe y quién está en línea. La tuya va primero."
+    - "🗳️ Cada escuadra elige a su jefe: toca el código de alguien de tu escuadra y 🗳️ Votar como jefe. Lo es quien tiene más de la mitad de los votos; si no, el jefe sigue."
+    - "🔀 El jefe pasa a los de su escuadra a otra con lugar y le pone ✏️ nombre a la suya. El fundador y los 🤝 asistentes mueven a cualquiera y siguen siendo los que aceptan gente."
+    - "🌙 En la Noche de prueba y en las 🌊 oleadas crecientes del castillo se ve cuántas escuadras tuvieron al menos un vencedor. Por ahora es solo información: lo que piden no cambia. Más en ❓ /d37."
+  notes_en:
+    - "🪖 Each camp's members are split by themselves into squads of 5, in the order they joined: nobody leaves or loses anything. Each stage opens more squads: 2 in the camp, 3 in the village, 5 in the town, 8 in the city and 10 in the castle."
+    - "👥 See them in 🛡️ Guild → 👥 Members → 🪖 Squads: each squad with its number, its name, its 🎖️ chief and who is online. Yours comes first."
+    - "🗳️ Each squad picks its chief: tap the code of someone in your squad and 🗳️ Vote as chief. Whoever has more than half of the votes is chief; otherwise the chief stays."
+    - "🔀 The chief moves the members of their squad to another one with room and gives theirs a ✏️ name. The founder and the 🤝 assistants move anyone and are still the ones who accept people."
+    - "🌙 In the Trial Night and in the castle's 🌊 growing waves you can see how many squads had at least one winner. For now it is information only: what they ask does not change. More in ❓ /d37."

@@ -43,6 +43,9 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     gremio siguen como siempre y al fundar pasan a asistentes. El cupo del campamento es el de su etapa (game.py _members_cap,
     ladder.py) y quien no juega 30 días sale solo (ladder.py _idle_tick): 👥 Miembros lo dice (_idle_line) y marca con 💤 a
     quien ya fue avisado (_camp_member_line).
+    D-331 (0.55, las 🪖 escuadras de 5, D-253.1 Forma B): 👥 Miembros del campamento suma la línea de tu escuadra y el botón
+    🪖 Escuadras, y la tarjeta de un miembro su escuadra con 🗳️ Votar como jefe y 🔀 Cambiar de escuadra. Las reglas viven en
+    engine/service/squads.py; aquí solo están los ganchos (_camp_members_view y _camp_member_view).
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -56,7 +59,9 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today; 0.49 (D-325): _harvest_line, la línea de la 🌾 cosecha
     de la muralla en 💰 Fondos), content/balance.yaml fund_crafts y
     content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios); 0.51 (D-327):
-    _idle_line y _idle_warned_mark de engine/service/ladder.py (LadderMixin)
+    _idle_line y _idle_warned_mark de engine/service/ladder.py (LadderMixin); 0.55 (D-331): _squads_members_line,
+    _squad_card_lines y _squad_card_actions de engine/service/squads.py (SquadsMixin) y content/locales/es_escuadras.yaml y
+    en_escuadras.yaml (el botón 🪖 Escuadras)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:", "cinv:" antes del
     combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1, /f02 y /inv_<código>;
     _gremio_text desde _name_camp), tick() (_works_tick), _idle_action (GREMIO_ACTIONS, "found" → _start_founding),
@@ -149,14 +154,16 @@ Si cambias esto, revisa:
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); engine/service/guide.py (el paso "found" lee
       _camp_requirements y se completa con el evento "camp" que manda _create_camp)
     - Pantallas y botones: HUB_KINDS ("gremio" y "guild": hasta 8 botones; los submenús de D-302, "guild_members",
-      "guild_funds" y "guild_chat", tienen 4 como máximo), el layout de 📍 Zona ([2, 2, 1, 1] o [2, 2, 1, 1, 1] con
+      "guild_funds" y "guild_chat", tienen 4 como máximo; desde la 0.55, D-331, "guild_members" del campamento suma
+      🪖 Escuadras y la tarjeta del miembro 🗳️ y 🔀), el layout de 📍 Zona ([2, 2, 1, 1] o [2, 2, 1, 1, 1] con
       🏗️ Moverte a la construcción) y los ids de GREMIO_ACTIONS y GREMIO_ANSWERS (64 bytes como máximo en Telegram)
-    - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (el gremio desde el inicio y las obras con tiempo)
+    - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (el gremio desde el inicio y las obras con tiempo; desde la
+      0.55, M15 "Las escuadras" y C-35)
     - Pruebas: tests/test_gremio_desde_el_inicio.py; tests/test_camps.py (found_at funda por el gremio), tests/test_guilds.py,
       tests/test_camp_upgrades.py (las obras con tiempo), tests/test_menus_y_dudas.py (la fogata con 👥 Jugadores);
       0.39: tests/test_ayudantes.py, tests/test_armeria.py, tests/test_deposito_tras_fundar.py, tests/test_servicios_por_tipo.py,
       tests/test_espera_del_gremio.py; 0.39.4: tests/test_submenus_campamento_gremio.py (D-302) y tests/test_chat_del_gremio.py;
-      0.47: tests/test_fondo_para_oficios.py (D-322)
+      0.47: tests/test_fondo_para_oficios.py (D-322); 0.55: tests/test_escuadras.py (D-331: 🪖 en 👥 Miembros y en la tarjeta)
 """
 
 from __future__ import annotations
@@ -677,14 +684,20 @@ class GremioMixin:
         o a un ayudante con lugar, la de /inv_. Botones: 🙋 Solicitudes (fundador o ayudante, si hay) y ↩️ Volver al gremio.
         D-327 (0.51): el cupo es el de la etapa (_members_cap); al final, la línea 💤 de quien no juega 30 días (_idle_line), y
         💤 delante de quien ya fue avisado. Los 🤝 asistentes son los oficiales de D-253.4 (aceptan solicitudes).
-        La llama: _guild_members_view. Si cambia, afecta: tests/test_submenus_campamento_gremio.py, tests/test_ayudantes.py y
-        tests/test_espera_del_gremio.py."""
+        D-331 (0.55): debajo de los asistentes, la línea de tu 🪖 escuadra y su 🎖️ jefe (squads.py _squads_members_line), y el
+        botón 🪖 Escuadras ("squads", solo para los miembros: quien espera lugar no está en ninguna); quedan 3 botones.
+        La llama: _guild_members_view. Si cambia, afecta: tests/test_submenus_campamento_gremio.py, tests/test_ayudantes.py,
+        tests/test_espera_del_gremio.py y tests/test_escuadras.py."""
         t = self.texts
         n, cap = len(camp["members"]), self._members_cap(camp)
         manager = self._camp_manager(camp, hero.id)
         helpers_line = (self._helpers_founder_line(camp, hero) if hero.id == camp.get("founder_id")    # D-304: how to name one
                         else self._helpers_line(camp, hero))
-        body = [t.t("guild.members", n=n, cap=cap), helpers_line, ""]     # D-289: 🤝 helpers (assistants in the texts)
+        body = [t.t("guild.members", n=n, cap=cap), helpers_line]     # D-289: 🤝 helpers (assistants in the texts)
+        squad_line = self._squads_members_line(camp, hero)             # D-331: 🪖 your squad and its chief
+        if squad_line:
+            body.append(squad_line)
+        body.append("")
         members = self._camp_member_order(hero, camp)
         body += [self._camp_member_line(i, account, camp, hero) for i, account in enumerate(members, 1)]
         body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
@@ -699,6 +712,8 @@ class GremioMixin:
         requests = camp.get("requests") or []
         if manager and requests:                       # D-289: helpers answer the join requests too
             actions.append(Action(id="creqs", label=t.t("gremio.requests_button", n=len(requests))))
+        if hero.id in camp["members"]:                 # D-331: 🪖 Escuadras (who waits for room is in no squad)
+            actions.append(Action(id="squads", label=t.t("squads.button")))
         actions.append(Action(id="guild", label=t.t("menu.back")))
         return View(kind="guild_members", title=t.t("guildmenu.members_title"), body=body, actions=actions, notice=notice)
 
@@ -2250,17 +2265,23 @@ class GremioMixin:
         [ES] Qué hace: la tarjeta de un miembro del campamento (desde /m2 en 🛡️ Gremio): su línea, clase y nivel, lo que dio al
         fondo y los ayudantes. El fundador ve 🤝 Hacer ayudante (si hay lugar: 1 por cada 5 miembros) o ✖️ Quitar ayudante.
         D-294 (0.39): la tarjeta de quien espera lugar en el campamento (⏳); el fundador o un ayudante lo une con 🏕️ Unir al
-        campamento cuando hay lugar (nunca solo). D-302 (0.39.4): su ↩️ Volver va a 👥 Miembros, donde está la lista. La llaman:
-        /m1 (_member_code) y "gmem:<cuenta>". Si cambia, afecta: tests/test_ayudantes.py y tests/test_espera_del_gremio.py."""
+        campamento cuando hay lugar (nunca solo). D-302 (0.39.4): su ↩️ Volver va a 👥 Miembros, donde está la lista.
+        D-331 (0.55): su 🪖 escuadra y su 🎖️ jefe (y, si es de tu escuadra, sus votos para jefe: squads.py _squad_card_lines) y
+        los botones 🗳️ Votar como jefe (a alguien de tu escuadra) y 🔀 Cambiar de escuadra (el jefe a los suyos; el fundador y
+        los asistentes a cualquiera: _squad_card_actions); con 🤝 y ↩️, 4 botones como mucho. El código que dice es el que
+        tocaste (la lista que viste por última vez: 👥 Miembros o 🪖 Escuadras). La llaman: /m1 (_member_code) y
+        "gmem:<cuenta>". Si cambia, afecta: tests/test_ayudantes.py, tests/test_espera_del_gremio.py y tests/test_escuadras.py."""
         t = self.texts
         camp = self._guild_camp(hero)
         waiting = list(camp.get("waiting") or []) if camp else []
         if not camp or (account not in camp["members"] and account not in waiting):
             return self._guild_view(hero)
         order = self._camp_member_order(hero, camp) + waiting
+        shown = (self.store.get("gremio_codes", hero.id) or {}).get("members") or []
+        code = shown.index(account) + 1 if account in shown else order.index(account) + 1    # D-331: the /m you tapped
         data = self._hero_data(account, hero) or {}
         gave = self._camp_gave(camp).get(account) or {}
-        body = [self._camp_member_line(order.index(account) + 1, account, camp, hero),
+        body = [self._camp_member_line(code, account, camp, hero),
                 t.t("gremio.member_class", cls=self._class_label(data), level=data.get("level", 1)),
                 t.t("gremio.member_gave", items=self._item_list(gave)) if gave else t.t("gremio.member_gave_none")]
         actions = []
@@ -2274,6 +2295,7 @@ class GremioMixin:
             actions.append(Action(id="gmembers", label=t.t("menu.back")))      # D-302: back to 👥 Miembros
             return View(kind="gremio_member", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
         body.append(self._helpers_line(camp, hero))
+        body += self._squad_card_lines(camp, hero, account)        # D-331: 🪖 their squad, its chief and the votes
         founder = camp.get("founder_id")
         if hero.id == founder and account != founder:
             helper = account in self._camp_helpers(camp)
@@ -2281,6 +2303,7 @@ class GremioMixin:
                 actions.append(Action(id=f"ghelp:{account}", label=t.t("helpers.remove_button" if helper else "helpers.make_button")))
             else:
                 body.append(t.t("helpers.full", cap=self._helpers_cap(camp)))
+        actions += self._squad_card_actions(camp, hero, account)   # D-331: 🗳️ Votar como jefe and 🔀 Cambiar de escuadra
         actions.append(Action(id="gmembers", label=t.t("menu.back")))          # D-302: back to 👥 Miembros
         return View(kind="gremio_member", title=t.t("guild.title"), body=body, actions=actions, notice=notice)
 

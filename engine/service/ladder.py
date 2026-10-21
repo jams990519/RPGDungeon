@@ -38,7 +38,8 @@ Lo usan: engine/service/game.py (GameService hereda de esta clase): _members_cap
     _faq_values (_ladder_faq_values); engine/service/gremio.py: _camp_members_view (_idle_line) y _camp_member_line
     (_idle_warned_mark). Desde la 0.53 (D-329): game.py _open_raid (_castle_wave_mark), _raid_notice (_castle_wave_notice_line),
     _defend (_castle_wave_fight_line), _resolve_raid (_castle_wave_done), _raid_lines (_castle_wave_open_line), _lvlup_rows
-    (_castle_waves_row), _lvlup_view (_castle_waves_how) y _lvlup_all_view (_castle_waves_all)
+    (_castle_waves_row), _lvlup_view (_castle_waves_how) y _lvlup_all_view (_castle_waves_all). Desde la 0.55 (D-331):
+    engine/service/squads.py (_ladder_cfg: el bloque ladder.squads de las 🪖 escuadras; las escuadras viven en su propio archivo)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño (todo dentro del registro "camp", clave "x:y"):

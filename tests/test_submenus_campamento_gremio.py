@@ -11,7 +11,8 @@ con su código", "Últimos mensajes → conviértelo en un botón de 📢 Chat�
   ↩️ Volver; una oleada en curso (y 🛡️ Defender) sigue a la vista en el centro; los visitantes ven lo de siempre;
 - 🛡️ Gremio después de fundar: arriba el gremio (nivel, lo que pide para subir, "cuenta lo que hacen todos…"), y los botones
   👥 Miembros (N/cupo), 💰 Fondos del campamento y 📢 Chat; la ⚔️ Armería muestra su "0/30" solo en su pantalla;
-- 👥 Miembros lista a los miembros con su código y a los que esperan lugar, con 🙋 Solicitudes cuando hay;
+- 👥 Miembros lista a los miembros con su código y a los que esperan lugar, con 🙋 Solicitudes cuando hay (y, desde la 0.55,
+  D-331, el botón 🪖 Escuadras para los miembros: tests/test_escuadras.py);
 - 💰 Fondos del campamento lista cada recurso con su código de 📦 Recursos, en orden por código, dice para qué sirve el fondo
   y tiene 💰 Depositar;
 - 📢 Chat muestra los mensajes del último día (el más nuevo al final), como mucho gremio.chat_shown y gremio.chat_max_chars
@@ -140,7 +141,7 @@ def test_members_list_the_members_and_who_waits_for_room(service, old_member_cap
     lines = [line for line in members.body if line.startswith("/m")]
     assert lines[0].startswith("/m1 👑 Lyra") and "Bram" in lines[1] and lines[2].startswith("/m3 ⏳ Cora")
     assert "⏳ Esperando lugar en el campamento (1/10):" in members.body and any("🤝 Asistentes" in line for line in members.body)   # D-304: asistentes
-    assert ids(members) == ["guild"] and len(members.actions) <= button_cap(members.kind)
+    assert ids(members) == ["squads", "guild"] and len(members.actions) <= button_cap(members.kind)   # D-331: 🪖 Escuadras
     assert ids(service.text("test:1", "/m3"))[-1] == "gmembers"                   # a card goes back to 👥 Miembros
     assert "gmembers" in ids(service.act("test:3", "guild"))                     # who waits sees it too
     assert any("Cora" in line for line in service.act("test:3", "gmembers").body)
@@ -155,7 +156,7 @@ def test_join_requests_wait_in_members(service):
     guild = service.act("test:1", "guild")
     assert "🙋 1 solicitud espera: míralas en 👥 Miembros." in guild.body and "creqs" not in ids(guild)
     members = service.act("test:1", "gmembers")
-    assert ids(members) == ["creqs", "guild"]
+    assert ids(members) == ["creqs", "squads", "guild"]                           # D-331: 🪖 Escuadras before ↩️
     requests = service.act("test:1", "creqs")
     assert requests.kind == "camp_requests" and ids(requests)[-1] == "gmembers"
 
