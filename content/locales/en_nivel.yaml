@@ -57,7 +57,7 @@ lvlall:
   intro: "Your camp is level {level} ({stage}). What each step up needs:"
   line: "⏫ Level {level} ({stage}): build {works} · {items}{extra}"
   chests: " · 🪎 {n} {n|chest|chests}"
-  castle: "🏰 For a castle, also: the guild ready, {active} members who played in the last {days} days, {n} upgrades built and winning the 🌙 Trial Night with {winners} different winners or more."
+  castle: "🏰 For a castle, also: the guild ready, {active} members who played in the last {days} days, {n} upgrades built, winning the 🌙 Trial Night with {winners} different winners or more{waves}."
 
 territory:
   title: "🗺️ Expand territory"
