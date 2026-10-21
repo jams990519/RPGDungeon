@@ -30,6 +30,8 @@ Un **centro** (D-192): arriba, una línea por opción con lo que hace y sus núm
 
 ### 2.1 En el Claro
 
+Vale igual en las 9 🔥 fogatas (desde la 0.37). **Desde la 0.48 (D-311, D-324)** la pantalla se titula con el nombre de la fogata, "🔥 El Claro" o "🔥 Fogata del Norte" (antes "🏕️ Campamento del Claro" en todas), y su primera línea dice "🔥 La fogata, donde empiezan todos": "campamento" queda solo para el de los jugadores. El botón del menú de abajo sigue llamándose 🏕️ Campamento (E-245).
+
 | Botón | Qué hace | Si no se puede |
 |---|---|---|
 | 🍲 Cocinar | La estación de la 🍲 Cocina: carne, pescado y lo de cada terreno se vuelven raciones y guisos (rinden más en la despensa de un campamento) | Sin la 🍲 Cocina aprendida (D-257), la línea dice que primero se aprende y el botón lleva a aprenderla |

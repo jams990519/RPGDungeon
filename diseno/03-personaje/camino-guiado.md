@@ -15,7 +15,7 @@
 
 ## 1. Cómo se ve
 
-- **Al crear el héroe** sale **🔥 Llegaste al Claro**: dónde estás (el campamento base, la antorcha donde despiertan todos), que alrededor hay terrenos distintos (cada color del mapa es uno), que tendrás que moverte para investigar, juntar y hacer misiones, y **cómo moverte**: las 4 rutas, cuánto tarda cada viaje (2 minutos las zonas cercanas, más cuanto más lejos, hasta 20 por zona; desde la 0.29.1, 1 minuto por zona, D-197), que puedes cerrar el chat y que al llegar pueden salir monstruos. Los 4 botones son las rutas.
+- **Al crear el héroe** sale **🔥 Llegaste al Claro**: dónde estás (la fogata del inicio, la antorcha donde despiertan todos; hasta la 0.47 decía "el campamento base", D-311), que alrededor hay terrenos distintos (cada color del mapa es uno), que tendrás que moverte para investigar, juntar y hacer misiones, y **cómo moverte**: las 4 rutas, cuánto tarda cada viaje (2 minutos las zonas cercanas, más cuanto más lejos, hasta 20 por zona; desde la 0.29.1, 1 minuto por zona, D-197), que puedes cerrar el chat y que al llegar pueden salir monstruos. Los 4 botones son las rutas.
 - **Un solo paso a la vez.** El paso de ahora sale como una línea **🧭 Ahora:** con el botón exacto, al final de 📍 Zona, 🧭 Explorar, 🏕️ Campamento, 👤 Héroe y el campamento enemigo (y una línea "📖 /guia" para volver a leer la explicación).
 - **Al cumplir un paso**, el aviso dice **✅ Paso N de 11 hecho**, el premio (🎁 +5 🥉 · +20 de experiencia), lo que aprendiste (por ejemplo, cómo leer el mapa al abrirlo) y **👉 el paso siguiente** con su explicación.
 - **/guia** muestra el paso de ahora con su explicación y su botón, y la lista de avisos que ya viste.

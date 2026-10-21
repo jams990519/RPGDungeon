@@ -5,7 +5,7 @@
 **Qué pidió el dueño.** Que no exista un castillo al empezar: que todo arranque **desde cero** y la gente **construya el mundo** (D-45). Que el Claro sea la sede común y que los jugadores **funden sus propios campamentos**, que crezcan hasta ciudades y castillos (D-71, D-81, D-87). Que el mundo se pueda **dividir** por decisión de los jugadores, con desventajas para quien queda. Y que haya gente dedicada a todo: agricultores, cazadores, expertos en cada cosa.
 
 **Las dos piezas de hoy.**
-1. **El Claro:** el **campamento base** de todo el servidor, con mercader y posada. **No crece** (D-98): la obra común que lo subía de fogata a castillo se quitó en la 0.11.
+1. **El Claro:** la **🔥 fogata del inicio** de todo el servidor (D-98 lo llamaba "campamento base"; desde D-311 las 9 son **fogatas** y "campamento" es solo el de los jugadores), con mercader y posada. **No crece** (D-98): la obra común que lo subía de fogata a castillo se quitó en la 0.11.
 2. **Los campamentos de jugadores:** cada uno se funda lejos del Claro, tiene nombre y miembros, y crece **eligiendo zonas** hasta castillo.
 
 Todo lo demás de este documento (necesidades, gobierno, cisma, relaciones entre castillos) es la capa profunda que se monta encima, como propuesta.

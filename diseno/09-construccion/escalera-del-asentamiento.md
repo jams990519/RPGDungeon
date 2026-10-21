@@ -10,7 +10,7 @@ El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empece
 
 El 18-oct el dueño cambió el primer escalón: "hay que empezar a crear los grupos desde el primer momento" (D-269, **reemplaza a D-252**: el grupo ya no nace al construir). Cómo se aplicó, con las lecturas de D-274 (provisional):
 
-- **👥 Jugadores en la fogata (D-265, D-274.1-2).** En el menú del campamento del Claro, 👥 Jugadores reemplaza a 🔬 Investigar (que ahí repetía 📚 Aprender oficios; en tu propio campamento 🔬 Investigar sigue). Lista a los que jugaron en la fogata en el último minuto, con clase, nivel y gremio, cada uno con su código (/j1) que abre su tarjeta: desde ahí el líder o un oficial ✉️ invita, o tú 🙋 pides entrar al gremio del otro. Arriba, "👥 N/20 en la fogata" (N con la regla de 15 min de 📍 Zona). Desde la 0.37 hay 9 hogueras, cada una con su 👥 Jugadores y su "N/20", y una llena reparte a los que llegan (D-265, D-277).
+- **👥 Jugadores en la fogata (D-265, D-274.1-2).** En el menú de 🏕️ Campamento de la fogata del Claro, 👥 Jugadores reemplaza a 🔬 Investigar (que ahí repetía 📚 Aprender oficios; en tu propio campamento 🔬 Investigar sigue). Lista a los que jugaron en la fogata en el último minuto, con clase, nivel y gremio, cada uno con su código (/j1) que abre su tarjeta: desde ahí el líder o un oficial ✉️ invita, o tú 🙋 pides entrar al gremio del otro. Arriba, "👥 N/20 en la fogata" (N con la regla de 15 min de 📍 Zona). Desde la 0.37 hay 9 🔥 fogatas (antes «hogueras», D-311), cada una con su 👥 Jugadores y su "N/20", y una llena reparte a los que llegan (D-265, D-277).
 - **El gremio antes del campamento (D-269.1-2).** Cualquier héroe lo crea por 🥉20 con un nombre libre (que será el del campamento: es único entre gremios y campamentos). Un gremio por héroe. Caben **5**. Se entra pidiendo (desde 🔎 Buscar gremio o la tarjeta de un jugador) y acepta el **líder o un oficial**; el líder nombra oficiales, saca miembros y cede el liderazgo; cualquiera sale (si sale el último, el gremio se disuelve y el fondo vuelve a su mochila). Sirve para:
   - **ver a los miembros:** dónde está cada uno (zona y coordenadas), qué hace y si está en línea (🟢 con la regla de 15 min);
   - **📢 mensajes al gremio:** el texto le llega a cada miembro (hasta 200 letras; la pantalla guarda los últimos 5);
@@ -163,7 +163,7 @@ Con 40 activos recolectando (unas 3.200 unidades por día), la cosecha del casti
 
 > *(18-oct: D-269 reemplaza a D-252: el gremio se crea desde el primer momento, también en la fogata; ver §0. Lo de abajo queda como historia.)*
 
-- **En la fogata de salida no se crea grupo.** Eso vale para el Claro y, cuando existan, para las hogueras de inicio (D-224, D-239.10).
+- **En la fogata de salida no se crea grupo.** Eso vale para el Claro y para las otras 🔥 fogatas de inicio (D-224, D-239.10; en el juego desde la 0.37; antes «hogueras», D-311).
 - **El grupo nace cuando un jugador construye él mismo.** Cómo se leyó (D-256, provisional): levantar uno mismo la 🏠 casa de D-158 y, mientras la casa no exista en el juego, fundar el campamento. Aportar a la obra de otro no crea grupo.
 - **Hoy ya se cumple sola:** no se puede fundar dentro del territorio del Claro ni a Lejanía menor que 2. Hay que mantenerla cuando lleguen los grupos y la casa.
 - **Cambia D-246.2** ("cualquiera puede invitar desde el principio"): desde ahora invitan el líder y los oficiales, y recién desde la primera construcción.
