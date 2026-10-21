@@ -1,7 +1,7 @@
 """Terrain catalogs (D-180, D-183) and resource nodes (D-181, D-184).
 
 [ES] Pruebas del catálogo de cada terreno (10 a 15 recursos posibles; cada zona que no es fija trae de 4 a 6 de tierra, más la 🪵 madera
-que D-300 suma, y los 6 de base siguen exactamente donde estaban), de los recursos nuevos (cada uno con su oficio de recolección, una receta, precio en
+que D-300 y D-303 suman, y los 6 de base siguen exactamente donde estaban; D-303: en el bosque la madera va primera), de los recursos nuevos (cada uno con su oficio de recolección, una receta, precio en
 el mercader, nombre y "para qué sirve", sin dejar ganar monedas), del descubrimiento por exploración (umbrales para hasta 6) y de
 los nodos de recursos: lugar fijo para todos (2 o 3 por tramo de 6 × 6, nunca pegados, nunca en el Claro, la guarida ni una
 entrada de mazmorra), que se descubre solo al LLEGAR a su zona (explorar alrededor no lo descubre; D-223: el 🗺️ Mapa no lo
@@ -18,7 +18,7 @@ from engine.world import dungeons as dungeon_rules
 from engine.world import nodes as node_rules
 from engine.world import classic_biome, zone_at
 from engine.world.mapgen import lejania
-from engine.world.resources import catalog, terrain_resources, wood_resource, zone_resources
+from engine.world.resources import catalog, terrain_resources, wood_first, wood_resource, zone_resources
 from test_camps import place
 
 MINUTE = 60
@@ -98,6 +98,10 @@ def test_zones_bring_4_to_6_land_resources_and_the_base_ones_never_move(content)
         biome = classic_biome(7, x, y)                  # D-185, D-187: the base ones follow the classic biome, not the terrain
         assert zone_resources(7, x, y, biome, content.balance, content.biomes) == before, (x, y)
         found = service._zone_resources(x, y)
+        if wood_first(x, y, service._zone(x, y).biome, content.balance):    # D-303: a forest's wood leads, at 1.0
+            assert list(found)[0] == "madera" and found["madera"] == 1.0
+            found = {r: v for r, v in found.items() if r != "madera"}
+            before = {r: v for r, v in before.items() if r != "madera"}
         assert {r: found[r] for r in before} == before and list(found)[:len(before)] == list(before)   # base first, same
     sizes, picks, foreign = set(), 0, 0
     every_own = {r for d in content.biomes.values() for r in d.get("own", [])}
@@ -110,7 +114,11 @@ def test_zones_bring_4_to_6_land_resources_and_the_base_ones_never_move(content)
             base = zone_resources(7, x, y, rbiome, content.balance, content.biomes)
             own = terrain_resources(7, x, y, zone.biome, base, content.balance, content.biomes)
             wood = wood_resource(7, x, y, rbiome, zone.biome, base, content.balance, content.biomes)   # D-300: only added
-            assert land == {**base, **wood, **own} and list(land) == list({**base, **wood, **own})
+            if wood_first(x, y, zone.biome, content.balance):                 # D-303: in a forest the wood goes first
+                expected = {**wood, **{r: v for r, v in base.items() if r not in wood}, **own}
+            else:
+                expected = {**base, **wood, **own}
+            assert land == expected and list(land) == list(expected)
             assert found == service._zone_resources(x, y)                   # always the same for the same seed
             if service._territory(x, y) == {"claro": True} and zone.biome == "claro":
                 assert land == {"madera": 1.0, "fibra": 0.8}                 # the Claro and every bonfire (D-265): its fixed ones
@@ -162,8 +170,8 @@ def test_every_new_resource_has_a_family_a_use_a_price_and_its_texts(service):
 
 def test_exploring_reveals_up_to_six_resources(service):
     hero = ready(service)
-    zone = next((x, y) for x in range(1, 20) for y in range(1, 20)
-                if len([r for r in service._zone_resources(x, y) if r != "pescado"]) == 6)
+    zone = next((x, y) for x in range(1, 20) for y in range(1, 20)       # a zone with no added wood (a base one)
+                if len([r for r in service._zone_resources(x, y) if r != "pescado"]) == 6 and not service._zone_land(x, y)[1])
     ranked = list(service._zone_resources(*zone))
     key = f"{zone[0]}:{zone[1]}"
     counts = []
@@ -172,6 +180,22 @@ def test_exploring_reveals_up_to_six_resources(service):
         counts.append(len(service._known_resources(hero, *zone)))
     assert counts == [0, 1, 2, 3, 4, 5, 5, len(ranked)]                      # at 100 % everything is known
     assert service._known_resources(hero, *zone) == ranked
+    # D-303: the added 🪵 wood takes no reveal slot: in a forest it is known at 1 % with the first one; elsewhere it comes
+    # with the resource that follows the base ones
+    forest = next((x, y) for x in range(1, 20) for y in range(1, 20)
+                  if wood_first(x, y, service._zone(x, y).biome, service.content.balance))
+    hero.exploration[f"{forest[0]}:{forest[1]}"] = 1
+    assert service._known_resources(hero, *forest) == list(service._zone_resources(*forest))[:2]
+    assert service._known_resources(hero, *forest)[0] == "madera"
+    other = next((x, y) for x in range(1, 20) for y in range(1, 20)
+                 if service._zone_land(x, y)[1] and not wood_first(x, y, service._zone(x, y).biome, service.content.balance))
+    base = service._zone_land(*other)[0]
+    reveal = service.content.balance["exploration"]["reveal_at"]
+    hero.exploration[f"{other[0]}:{other[1]}"] = reveal[len(base) - 1]
+    assert "madera" not in service._known_resources(hero, *other)              # only the base ones yet
+    hero.exploration[f"{other[0]}:{other[1]}"] = reveal[len(base)]
+    known = service._known_resources(hero, *other)
+    assert known == list(service._zone_resources(*other))[:len(base) + 2] and known[len(base)] == "madera"
 
 
 # ---------------------------------------------------------------- resource nodes (D-181, D-184)

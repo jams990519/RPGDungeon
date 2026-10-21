@@ -222,7 +222,7 @@ gzones:                        # [ES] D-282 (0.38, pedido del dueño): lo que el
 
 rsearch:                       # [ES] D-296 (0.39.1, pedido del dueño): el buscador de recursos de 🛡️ Gremio y 🏰 Gestionar
   title: "🔎 Buscar recursos"
-  intro: "{names}: zonas investigadas al {pct} % o más, la más cercana primero."
+  intro: "{names}: zonas investigadas al {pct} % o más, primero las cercanas y más ricas."   # [ES] D-303 (0.41.1): el orden pesa también la riqueza (gremio.search_rich_penalty)
   line: "{n}. {emoji} {place} · a {zones} {zones|zona|zonas} · 🔎 {pct} % · riqueza {rich} % · {state} · /z{n}"
   left: "queda {bars}"
   empty: "⏳ agotado por ahora"
