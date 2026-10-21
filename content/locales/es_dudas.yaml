@@ -224,3 +224,9 @@ faq:
   d57:
     q: "🪓 ¿Cómo consigo madera?"
     a: "🪵 Hay madera en todas las zonas, y más en bosques, bosques oscuros y selvas. En 🧭 Explorar, 🪓 Talar junta solo madera: como 🧺 Recolectar ({gather_min} min y 1 ⚡ por vuelta, los mismos lotes), pero cada unidad es madera y sube al 🪓 Leñador. En tu territorio juntas {own_bonus} % más y en un ✨ nodo de madera rinde ×{node_yield}. Se agota y vuelve sola: unas {base_units} por hora en cada zona."   # [ES] D-305 (0.42)
+  d58:
+    q: "🏛️ ¿Cómo vendo a otros jugadores?"
+    a: "En una 🔥 fogata, 🛒 Mercader → 🏛️ Mercado (o /mercado; también en tu campamento con 🏪 Puesto de trueque). 🏷️ Vender: el equipo y lo fabricado (pociones, remedios, muebles, comida, bolsas y cofres) con su código (/s1); pones precio y cantidad y sale de tu mochila. Cuando alguien compra, cobras al momento menos el {market_tax} % de impuesto. Los recursos se venden en 📥 Pedidos de compra, a quien los pide. Hasta {market_orders} órdenes a la vez; duran {market_days} días y ❌ cancelar devuelve todo."   # [ES] D-320 (0.46)
+  d59:
+    q: "📦 ¿Cómo compro y cuándo me llega?"
+    a: "🏛️ Mercado → 🛍️ Comprar: cada lista va de la oferta más barata a la más cara; toca el código (/c1) y compra. Para recursos, 📝 Pedir recursos: apartas las monedas y quien los tenga te vende. Lo comprado lo trae un transportista: llega a 📦 Entregas en {market_delivery} y lo recoges en cualquier 🔥 fogata o en tu campamento, hasta donde quepa en la mochila; el resto espera."   # [ES] D-320 (0.46)

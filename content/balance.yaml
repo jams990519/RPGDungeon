@@ -402,6 +402,19 @@ shop:                        # [ES] mercader del Claro
   remedy_sell_ratio: 0.25    # [ES] D-306.5 (0.43, el dueño el 20-oct-2026): hasta que haya mercado entre jugadores, compra pociones y remedios (kind potion y bandage, de la mochila; lo del cinturón no) a un cuarto de su precio, al menos 1: a poco, menos que lo que pagan sus materiales. Nunca más que lo que el mercader cobra (no se gana comprando y vendiendo)
   weekly_cap: {provisiones: 20}   # [ES] D-125 (confirmada, entrevista E-09): cada jugador compra como mucho 20 🥖 provisiones por semana real; la despensa la llenan los oficios (cocina, caza, pesca). Se cuenta en el store "shop_week"
 
+market:                      # [ES] D-320 (0.46, provisional; D-137 confirmada: una subasta global con transportistas): 🏛️ Mercado entre jugadores (engine/service/market.py; economia.md §3.0). Números de Claude: se ajustan con el informe diario
+  tax: 0.05                  # [ES] impuesto del 5 % de cada venta, lo paga quien cobra (el vendedor, o quien le vende a un pedido de compra) y se quema: sumidero en porcentaje (D-27). Redondeo a la unidad más cercana (una venta de menos de 10 🥉 no paga)
+  delivery_minutes: 30       # [ES] lo comprado llega a 📦 Entregas a los 30 min (el transportista PNJ de D-137; igual para todos, sin distancia por ahora). Lo que vuelve de una orden cancelada o vencida está listo al instante
+  order_days: 7              # [ES] una orden vence a los 7 días (como economía §3); lo que queda vuelve (cosas a 📦 Entregas, monedas a la bolsa)
+  max_orders: 10             # [ES] órdenes activas por jugador, ventas y pedidos juntos
+  max_units: 500             # [ES] unidades como mucho en una orden
+  price_min: 0.25            # [ES] banda de precio obligatoria (D-26, confirmada): de 0,25 × el precio de referencia (items.yaml price; una 💰 bolsa o un 🪎 cofre, lo que cuesta su receta)...
+  price_max: 10              # [ES] ...a 10 × ese precio. Contra pasarle monedas a una cuenta alterna con precios absurdos. Más adelante, la banda saldrá del historial de ventas
+  price_buttons: [1, 2, 3]   # [ES] los botones de precio rápido del borrador: ×1, ×2 y ×3 del precio de referencia (dentro de la banda)
+  ask_buttons: [1, 10, 50]   # [ES] las cantidades rápidas de un pedido de compra (el 2.º es la cantidad con la que empieza)
+  per_page: 8                # [ES] líneas por página en las listas (📝 Pedir recursos muestra el doble: son ~40 recursos)
+  log_days: 30               # [ES] días que se guarda la cuenta del mercado de cada día ("market_log") para el informe diario
+
 currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se ganan, bolsas que se cosen, cofres que se arman, diamantes que se compran y credenciales de oficio
   rate: 100                  # [ES] 100 🥉 bronce = 1 🥈 plata; 100 🥈 = 1 🥇 oro. Hero.gold guarda TODO en bronce
   icons: {bronze: "🥉", silver: "🥈", gold: "🥇", bags: "💰", chests: "🪎", gems: "💎", cards: "🪪"}   # [ES] D-85: los iconos que eligió el dueño (🪎 cofre desde D-92; el 💵 billete no entra, P-73)

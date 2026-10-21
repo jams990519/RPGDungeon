@@ -1,6 +1,6 @@
 # Economía
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Profesiones](profesiones.md), [PvP](../06-contenido/pvp.md), [Monetización](monetizacion.md) · **Estado:** propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Profesiones](profesiones.md), [PvP](../06-contenido/pvp.md), [Monetización](monetizacion.md) · **Estado:** propuesta; el 🏛️ Mercado de §3.0 está en el juego desde la 0.46 (D-320)
 
 **De dónde sale.**
 - *Albion Online*: casi todo el equipo lo fabrican jugadores y cada ciudad tiene su mercado. El **Mercado Negro** compra objetos de jugadores y los pone en el botín de los monstruos. El equipo se pierde en zonas de botín completo, y el Enfoque diario sube el rendimiento de los oficios.
@@ -51,6 +51,26 @@ El estandarte que se compra durante la beta es el de **beta tester** (🚩[Beta]
 La reputación, los títulos de Pionero y el conocimiento **no** son monedas: son progreso.
 
 ## 3. Mercados
+
+### 3.0 Lo que está en el juego: el 🏛️ Mercado entre jugadores (0.46, D-320 provisional; D-137 y D-26 confirmadas)
+
+El dueño pidió el 21-oct-2026 que los jugadores se vendan entre ellos el equipo que encuentran o fabrican, con órdenes de venta para el equipo y lo fabricado y órdenes de compra para los recursos, "que funcione y luego vamos arreglando". La forma de hoy es la más simple que cumple **D-137** (una sola subasta para todos, transportistas que tardan) y **D-26** (precio mínimo y máximo obligatorio). Todo en `engine/service/market.py`; los números en `content/balance.yaml` → `market`.
+
+| Qué | Cómo está hoy |
+|---|---|
+| **Dónde** | Un solo libro para todos. Se abre en cualquier 🔥 fogata (🛒 Mercader → 🏛️ Mercado), en el centro de tu campamento si construyó el 🏪 Puesto de trueque (⚒️ Oficios de 🏘️ Servicios) y con /mercado o /market. Fuera de esos lugares solo se mira; cancelar una orden se puede desde cualquier lado |
+| **Órdenes de venta** (equipo y lo fabricado) | Piezas de equipo, pociones, remedios, muebles, comida, 💰 bolsas y 🪎 cofres, de la mochila. Eliges con /s1, escribes el precio por unidad en 🥉 (y la cantidad con "x5") o usas ×1, ×2 y ×3 del precio de referencia. Las unidades salen de la mochila a la orden (custodia). Se compran desde 7 categorías, de la más barata a la más cara (/c1); el equipo dice si te sirve |
+| **Pedidos de compra** (recursos) | Cualquier material con código (de base, del terreno, refinados, pescado, esencias). Eliges con /b07 (el código de 📦 Recursos); las monedas quedan apartadas. Quien lleva el recurso le vende con /k1, en parte o todo, y cobra al momento |
+| **Impuesto** | 5 % de cada venta (`market.tax`), lo paga quien cobra y se quema; sin tasa por publicar. Es la mitad de lo que propone §5 (1,5 % + 4 %), y se ajusta con el informe |
+| **Transporte** | Lo comprado llega a 📦 Entregas a los 30 min (`delivery_minutes`), igual para todos. Se recoge en cualquier fogata o en tu campamento, hasta donde quepa en la mochila; el resto espera. Lo que vuelve de una orden está listo al instante |
+| **Vida y topes** | Una orden dura 7 días (`order_days`, como §3); al vencer o cancelar vuelve todo lo que queda. Hasta 10 órdenes por jugador (`max_orders`) y 500 unidades por orden. Nadie se compra a sí mismo |
+| **Banda de precio** | De 0,25 a 10 veces el precio de referencia (`price_min`, `price_max`): `price` de items.yaml; una bolsa o un cofre, lo que cuesta su receta. Todavía no sale del historial de ventas |
+| **Equipo** | La ✒️ obra maestra viaja con su firma y la pieza con su ✨ encantamiento, como en la ⚔️ Armería |
+| **Medición** | Cada día se anota en `market_log` cuántas compras, unidades, monedas e impuesto hubo y cuántas órdenes se publicaron, cancelaron o vencieron; el informe diario lo muestra en su sección 9 ([Informes](../01-plataforma/informes.md)) |
+
+**Lo que todavía no está** (preguntas P-247 a P-250): órdenes de venta de recursos y pedidos de compra de equipo, transporte que tarda según la distancia y bandidos que asaltan transportes (D-137), bandas de precio por historial, el canal del mercado con precios, pedidos de fabricación (D-113), mercados locales (descartados por D-137) y el 💱 Comercio, que sigue bloqueado hasta las caravanas (D-298).
+
+### El diseño completo del mercado (propuesta)
 
 - **Libro de órdenes** en cada asentamiento: órdenes de compra y de venta con custodia, cruzadas por precio y antigüedad. Es el formato de Albion y EVE, y el que TowerWars ya usa para sus recursos.
 - **Mercados regionales grandes** en las capitales regionales, con más volumen y más productos.

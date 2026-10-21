@@ -45,7 +45,7 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
     gremio y las obras con tiempo; vive en engine/service/gremio.py, GremioMixin, de la que GameService también hereda) y
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata, D-265)
-Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M14, M15 y M19)
+Módulo: capa de servicios (une M1, M2, M3, M5, M6, M8, M9, M10, M13 (el 🏛️ Mercado, D-320), M14, M15 y M19)
 Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.world, engine.combat (y su forma de jugar
     sola, engine/combat/auto.py play_out, D-114), engine.messaging,
     engine.social (cuentas del gremio, D-97, y de la partida de caza, D-106), engine.professions (rangos y recetas,
@@ -55,7 +55,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     D-164/D-170), engine.world.resources (recursos de base, del terreno y pescado, D-87/D-180/D-115), engine.world.nodes
     (dónde están los nodos de recursos y de qué son, D-184), content/* (content/dungeons.yaml: las familias de enemigos de
     las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml), engine.service.gremio
-    (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274)
+    (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274),
+    engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -175,6 +176,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     guardado antes no lo tiene y sigue siendo 🧺 Recolectar. D-308 (0.42): nada nuevo guardado (🩹 lee Hero.options "retreat").
     D-306 (0.44): Hero.recipe_books (los 📚 libros de recetas, "<oficio>:<rango>") y Hero.books_checked (el regalo de la 0.44
     ya se hizo); los héroes de antes cargan con [] y False, y _load les da una vez los libros de los rangos que tenían.
+    D-320 (0.46): los espacios del 🏛️ Mercado ("market_order", "market_index", "market_mine", "market_box", "market_open",
+    "market_log" y "meta"/"market") son de engine/service/market.py (ver su encabezado). Nada nuevo en Hero.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -568,6 +571,16 @@ Si cambias esto, revisa:
       en_recetas.yaml (recipe_tier.*, books.*), prof.entry y prof.entry_ok ({prof}+{xp}). Pruebas:
       tests/test_tramos_de_recetas.py, tests/test_professions.py, tests/test_oficios_equipo.py, tests/test_especializaciones.py,
       tests/test_balance_d110.py y tests/test_ocultar_lo_bloqueado.py
+    - 🏛️ Mercado entre jugadores (0.46, pedido del dueño del 21-oct-2026; D-137 y D-26 confirmadas; cómo se armó: D-320,
+      provisional): vive en engine/service/market.py (MarketMixin, de la que GameService hereda; su encabezado lista sus datos y
+      reglas). Ganchos de este archivo: COMMANDS (/mercado, /market), HUB_KINDS ("market", "market_cats"), text() (los códigos
+      /c1 /s1 /b07 /k1 /o1 con market_code, fuera de combate, y el texto suelto con un borrador abierto, "market_open", antes del
+      chat del gremio: _market_typed), act() (borra "market_open" con un botón que no es "mkt…"), _idle_action (MARKET_ACTIONS,
+      también ocupado: es un menú), tick() (_market_tick antes de mirar a los héroes: vencimientos y avisos de entregas),
+      _shop_view (el botón 🏛️ Mercado y la línea de 📦 Entregas listas), _service_uses (🏛️ Mercado con el 🏪 Puesto de trueque) y
+      _faq_values (_market_faq_values: {market_tax}, {market_delivery}, {market_days}, {market_orders}). Números: balance.yaml
+      market. Textos: content/locales/es_mercado.yaml y en_mercado.yaml; ❓ /d58 y /d59; 📚 la guía "market". Pruebas:
+      tests/test_mercado.py y tests/test_fogata_ordenada.py
 """
 
 from __future__ import annotations
@@ -636,6 +649,7 @@ from engine.service.guide import GuideMixin                 # D-190, D-193: 🧭
 from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE, GUILD_CODE_RE, MEMBER_CODE_RE,   # D-269, D-265
                                    INVITE_CODE_RE, PLAYER_CODE_RE, ZONE_CODE_RE, GremioMixin,   # D-280, D-282
                                    ARMORY_IN_RE, ARMORY_OUT_RE)                                 # D-290: ⚔️ /a1 and /t1
+from engine.service.market import MARKET_ACTIONS, MarketMixin, market_code     # D-320 (0.46): 🏛️ Mercado entre jugadores
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -669,6 +683,7 @@ COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "
 # D-265/D-274: 👥 Jugadores of the bonfire (it took 🔬 Investigar's place in the Claro's hub).
 COMMANDS.update({"/jugadores": "players", "/players": "players"})
 COMMANDS.update({"/titulos": "ptitles", "/titles": "ptitles"})   # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador
+COMMANDS.update({"/mercado": "mkt", "/market": "mkt"})           # D-320 (0.46): 🏛️ Mercado entre jugadores (engine/service/market.py)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -727,7 +742,8 @@ SPEC_ACTIONS = ("pspecs", "pspec:", "pspv:", "pspp:", "pspx:", "pspx!:")
 HUB_KINDS = ("claro", "player_camp", "camp_manage", "hero", "dudas", "gremio",    # D-269: the guild hub too
              "guild", "camp_services", "camp_type",   # D-291 and D-288 (0.39): the camp's guild, 🏘️ Servicios and each type
              "guides_category",                       # D-297: a 📚 Guías category (up to 7 guides and ↩️ Volver)
-             "places")                                # D-301: 📒 Lugares (your camp, up to 5 kinds and ↩️ Volver)
+             "places",                                # D-301: 📒 Lugares (your camp, up to 5 kinds and ↩️ Volver)
+             "market", "market_cats")                 # D-320 (0.46): 🏛️ Mercado (6 and ↩️ Volver) and 🛍️ Comprar (7 categories and ↩️)
 HUB_BUTTONS = 8
 # D-297 (20-oct-2026, the owner asked for one extra button on each): ❓ Dudas shows 📚 Guías on top of its 7 topics and
 # ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
@@ -810,7 +826,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin, GremioMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -946,6 +962,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 typed = self._armory_in_code(hero, int(ARMORY_IN_RE.match(low).group(1)))
             elif self.store.get("combat", hero.id) is None and ARMORY_OUT_RE.match(low):    # D-290: /t2 = take that piece
                 typed = self._armory_out_code(hero, int(ARMORY_OUT_RE.match(low).group(1)))
+            elif self.store.get("combat", hero.id) is None and market_code(low):    # D-320: /c1 /s1 /b07 /k1 /o1 of 🏛️ Mercado
+                typed = self._market_code(hero, *market_code(low))
             else:
                 typed = self._dudas_typed(hero, text) or self._typed_command(hero, text)   # D-192: /dudas <words>, /d07; D-117
             self._save(hero)
@@ -961,6 +979,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return view
         if hero is not None and self.store.get("feedback_open", account_id):
             return self._save_feedback(hero, account_id, text)    # D-258: 💬 Feedback: the next message is the player's note
+        if hero is not None and self.store.get("market_open", account_id) and not self.store.get("combat", account_id):
+            self._mark_seen(hero)                        # D-320: a 🏛️ Mercado draft is open: "30" is its price, "30 x5" also its quantity
+            notices = self._settle(hero)
+            view = self._market_typed(hero, text)
+            self._save(hero)
+            if notices:
+                view.notice = self._join(notices + ([view.notice] if view.notice else []))
+            return view
         if hero is not None and " ".join(text.split()) in self.texts.all_languages("menu.story"):
             return self.act(account_id, "story")         # D-190: the 📖 Historia key of an old Telegram keyboard
         if hero is not None and not self.store.get("combat", account_id) and (
@@ -1011,6 +1037,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             self.store.delete("dudas_open", account_id)     # D-192: leaving ❓ Dudas: free text is no longer a search
         if action_id != "fb" and not action_id.startswith("fbk:") and self.store.get("feedback_open", account_id):
             self.store.delete("feedback_open", account_id)  # D-258: leaving 💬 Feedback: free text is no longer a message
+        if not action_id.startswith(MARKET_ACTIONS) and self.store.get("market_open", account_id):
+            self.store.delete("market_open", account_id)    # D-320: leaving 🏛️ Mercado: free text is no longer a price
         if action_id.startswith("rel:"):
             view = self._answer_visitor(hero, action_id)
             self._save(hero)
@@ -1178,6 +1206,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         now = self.clock.now()
         out: list[tuple[str, View]] = []
         self._works_tick()                  # D-269: a founding or a camp work whose time came ends now (its notices go out below)
+        self._market_tick()                 # D-320: 🏛️ orders that ran out go back and 📦 deliveries that arrived are told (below)
         for account_id, data in self.store.items("hero"):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
@@ -2062,6 +2091,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._hero_view(hero)
         if action_id.startswith(DUDAS_ACTIONS):         # D-191/D-192: ❓ Dudas (/dudas, /d07); a menu: also while busy
             return self._dudas_action(hero, action_id)
+        if action_id.startswith(MARKET_ACTIONS):        # D-320 (0.46): 🏛️ Mercado (a menu: also while busy; trading checks the place)
+            return self._market_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
         if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
@@ -3636,14 +3667,21 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         escojo a cuál quiero entrar"): quién es, tus monedas y dos botones, 🛒 Comprar (_shop_buy_view) y 💱 Vender
         (_shop_sell_view), más ↩️ Volver al centro de 🏕️ Campamento. Antes (hasta la 0.32) compra y venta iban juntas y el
         botón de vender solo salía con materiales comunes en la mochila.
-        La llaman: 🛒 Mercader del centro del Claro y los ↩️ Volver de comprar y vender. Si cambia, afecta: tests/test_shop.py.
+        D-320 (0.46, pedido del dueño del 21-oct-2026: el mercado entre jugadores): un 3.er botón, 🏛️ Mercado (_market_view), con
+        su línea; si en 📦 Entregas hay algo listo, otra línea lo dice. Quedan 4 botones (D-75).
+        La llaman: 🛒 Mercader del centro del Claro y los ↩️ Volver de comprar y vender. Si cambia, afecta: tests/test_shop.py y
+        tests/test_fogata_ordenada.py (el orden de sus botones).
         """
         t = self.texts
-        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), "", t.t("shop.menu_buy"), t.t("shop.menu_sell")]
+        body = [t.t("shop.intro"), t.t("hero.gold_line", gold=self._money(hero.gold)), "", t.t("shop.menu_buy"), t.t("shop.menu_sell"),
+                t.t("market.shop_line")]                  # D-320: 🏛️ Mercado entre jugadores
+        ready = sum(1 for e in self._mkt_box(hero.id) if float(e.get("at", 0)) <= self.clock.now())
+        if ready:                                         # D-320: 📦 something waits to be collected
+            body.append(t.t("market.shop_ready", n=ready))
         if self._bag_full(hero):  # D-90: buying waits until there is room again
             body += ["", self._bag_full_line(hero)]
         actions = [Action(id="shop:buy", label=t.t("shop.buy_menu_button")), Action(id="shop:sell", label=t.t("shop.sell_menu_button")),
-                   Action(id="claro", label=t.t("menu.back"))]
+                   Action(id="mkt", label=t.t("market.button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
 
     def _shop_buy_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -6772,7 +6810,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                     layout=self._pairs_layout(len(actions)))
 
     def _service_uses(self, hero: Hero, camp: dict[str, Any], kind: str) -> tuple[list[Action], list[str]]:
-        """The buttons and lines of what a type's BUILT services do (🛏️ Refugio, 💱 Vender, 🧵 Taller, ⚒️ Oficios, 📚), ≤ 2."""
+        """The buttons and lines of what a type's BUILT services do (🛏️ Refugio, 💱 Vender, 🏛️ Mercado, 🧵 Taller, ⚒️ Oficios, 📚), ≤ 4.
+
+        [ES] D-320 (0.46): con el 🏪 Puesto de trueque construido, ⚒️ Oficios suma 🏛️ Mercado (el mercado entre jugadores) al lado
+        de 💱 Vender, con su línea; las páginas de obras se achican solas para no pasar de HUB_BUTTONS (_type_pages).
+        """
         t = self.texts
         actions: list[Action] = []
         lines: list[str] = []
@@ -6794,6 +6836,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                     actions.append(Action(id="csell", label=t.t("shop.sell_all_button", total=self._money(total))))
                 else:
                     lines.append(t.t("upgrades.nothing_to_sell"))
+                lines.append(t.t("market.camp_line"))     # D-320: 🏛️ Mercado entre jugadores, next to the 🏪 Puesto de trueque
+                actions.append(Action(id="mkt", label=t.t("market.button")))
             craft = self._service_upgrade(camp, "craft")          # D-288: the 🪡 Sastrería (or an old 🧵 Taller)
             if craft:
                 lines.append(t.t("upgrades.workshop_line", name=self._upgrade_name(craft)))
@@ -7410,6 +7454,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "chest_bags": chest_bags, "chest_items": self._item_list(chest),
             "invite_bonus": b["invite"]["bonus_referrer"],
             "retreat": self._faq_and(b.get("auto_fight", {}).get("retreat_choices", [30, 50, 70])),
+            **self._market_faq_values(),                # D-320 (0.46): 🏛️ Mercado ({market_tax}, {market_delivery}...)
         }
 
     def _faq_code(self, raw: str) -> str | None:

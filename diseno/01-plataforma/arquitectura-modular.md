@@ -32,7 +32,7 @@ Todavía no se escribe código. Este documento fija **cómo se va a partir el ju
 | M10 | **Misiones** | Campañas, encargos, tablones, expediciones, cacerías, investigaciones | [Misiones y exploración](../06-contenido/misiones-y-exploracion.md), [Cacerías](../06-contenido/cacerias.md), [Investigaciones](../06-contenido/investigaciones.md) |
 | M11 | **Instancias** | Mazmorras, Llaves de Mazmorra, Profundidades, bandas, buscador de grupos | [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md) |
 | M12 | **PvP, crimen y justicia** | Zonas, karma, invasiones, arenas, campos, guerra de castillos, territorios, delitos, tribunal | [PvP](../06-contenido/pvp.md), [Crimen y justicia](../06-contenido/crimen-y-justicia.md) |
-| M13 | **Economía** | Monedas, mercados, órdenes, correo, impuestos, Mercado Negro, contratos | [Economía](../07-economia/economia.md) |
+| M13 | **Economía** | Monedas, mercados, órdenes, correo, impuestos, Mercado Negro, contratos. En el juego desde la 0.46 (D-320): el 🏛️ Mercado entre jugadores, en `engine/service/market.py` (una mezcla de `GameService`, como `gremio.py`) | [Economía](../07-economia/economia.md) §3.0 |
 | M14 | **Oficios** | Recolección, refinado, fabricación, recetas, calidad, vetas | [Profesiones](../07-economia/profesiones.md), [Fabricación](../07-economia/fabricacion.md) |
 | M15 | **Social** | Gremios, alianzas, grupos, amigos, salas (en Telegram, retransmitidas), vivienda | [08 · Social](../08-social/README.md) |
 | M16 | **Minijuegos y apuestas** | Cada minijuego es un complemento que se enchufa (taberna, dados, cartas…); apuestas legales e ilegales | [Minijuegos](../08-social/minijuegos-y-formatos-telegram.md), [Apuestas](../08-social/apuestas.md) |
