@@ -112,7 +112,7 @@ def test_martas_cooking_mission_needs_cooking(service):
 def test_the_trader_has_buy_and_sell_and_codes_sell_everything_of_a_thing(service):
     make_hero(service)
     view = service.act("test:1", "shop")
-    assert ids(view) == ["shop:buy", "shop:sell", "claro"]
+    assert ids(view) == ["shop:buy", "shop:sell", "mkt", "claro"]          # D-320 (0.46): 🏛️ Mercado entre jugadores
     assert service.act("test:1", "shop:buy").kind == "shop_buy"
     carry(service, piedra=10, carne=3, tablon=2)
     sell = service.act("test:1", "shop:sell")

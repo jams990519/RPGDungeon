@@ -47,6 +47,7 @@ Es **genérico**: sin nombres ni cuentas. Mira a todos los que jugaron en la úl
 6. **Mochila y economía:** monedas por jugador y lo que más llevan.
 7. **Mapa:** a cuántas zonas de la fogata andan y cuántas recuerdan.
 8. **Feedback:** cuántos mensajes llegaron en 24 horas.
+9. **Mercado entre jugadores** (0.46, D-320): de ayer y de hoy hasta ahora, cuántas compras hubo, cuántas unidades y monedas cambiaron de mano, cuánto impuesto se quemó y cuántas órdenes se publicaron, cancelaron o vencieron; y cuántas órdenes hay abiertas. Sale de lo que el 🏛️ Mercado anota cada día en `market_log` (`adapters/reports.py` → `market_lines`).
 
 **Cómo compara un día con otro.** Cada informe guarda una foto de los números de cada héroe (espacio `report_snap`, clave el día) y el siguiente informe resta. El primer informe con foto solo trae totales y lo dice.
 
