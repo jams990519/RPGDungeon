@@ -444,7 +444,7 @@ def test_the_camp_is_born_with_the_guild_and_invites_the_other_members(service, 
     camp = service.store.get("camp", "6:0")
     guild = service.store.get("guild", "6:0")
     assert camp["gremio"] == gid and guild["name"] == "Lobos Grises" and guild["gremio"] == gid and guild["level"] == 1
-    assert service._members_cap(camp) == service.content.balance["guild"]["levels"][0]["capacity"] == 5
+    assert service._members_cap(camp) == 10 and camp["cap_floor"] == 0     # D-327: the campamento stage; a new camp has no old cap
     assert service.store.get("upgrades", "6:0")["fund"] == {"madera": 5}       # what was left goes to the works
     assert service.store.get("gremio", gid)["invited"] == ["test:2", "test:3"]
     invites = [v for acc, v in service.tick() if acc == "test:3" and v.kind == "gremio_camp_invite"]

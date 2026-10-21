@@ -100,6 +100,18 @@ def instant_works(content):
     content.balance["works"]["minutes_per_level"] = 0
 
 
+@pytest.fixture
+def old_member_caps(content):
+    """Tests of the waiting line written with small camps (room for 2 at level 1, 2 more per level): that old count.
+
+    [ES] Desde la 0.51 (D-253.1, D-327) el cupo es el de la etapa (balance.yaml camps.members_by_stage: campamento 10…). Las
+    pruebas de la fila de espera del gremio (D-294, D-323), escritas con campamentos de 2 lugares, vacían esa tabla solo en su
+    contenido de prueba: sin etapa en la tabla, el cupo vuelve a ser la cuenta de antes (camps.members_base +
+    members_per_level, o el del gremio). El cupo por etapa se prueba en tests/test_escalera_cupo_oficiales.py.
+    """
+    content.balance["camps"]["members_by_stage"] = {}
+
+
 def listed_recipes(service, account="test:1", branch="craft", every_page=True):
     """The recipe ids the 🪚 / 🛠️ / 🍲 list shows, in order, page by page (D-321: a list with /rN codes, not buttons).
 

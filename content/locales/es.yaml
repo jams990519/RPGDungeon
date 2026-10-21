@@ -1948,11 +1948,11 @@ camps:
   cancel_name: "❌ Cancelar"
   renamed: "✏️ Ahora tu campamento se llama {name}."
   rename_button: "✏️ Cambiar nombre"
-  members_cap: "👥 Miembros: {n} de {cap}. Al subir de nivel caben más."
+  members_cap: "👥 Miembros: {n} de {cap}. Caben más al pasar a la etapa siguiente."   # [ES] D-327 (0.51): un solo cupo por etapa
   join_button: "🙋 Pedir unirme"
-  join_sent: "🙋 Le pediste al fundador unirte. Te avisaré cuando responda."
-  join_waiting: "⏳ Tu pedido para unirte espera la respuesta del fundador."
-  full: "Este campamento está lleno: tiene que subir de nivel para que entre alguien más."
+  join_sent: "🙋 Pediste unirte: decide el fundador o uno de sus 🤝 asistentes. Te avisaré cuando respondan."   # [ES] D-327: los asistentes son los oficiales (D-253.4)
+  join_waiting: "⏳ Tu pedido para unirte espera la respuesta del fundador o de un 🤝 asistente."
+  full: "Este campamento está lleno: caben más cuando pase a la etapa siguiente o cuando alguien salga."   # [ES] D-327 (0.51)
   join_title: "🙋 Alguien quiere unirse a tu campamento"
   join_body: "{name} (nivel {level}) quiere unirse a {camp}. ¿Lo dejas entrar?"
   join_yes: "✅ Aceptar"
@@ -2218,9 +2218,9 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   title: "🛡️ Gremio"
   button: "🛡️ Gremio"
   none: "🛡️ {camp} todavía no tiene gremio."
-  what: "Un gremio junta a los miembros del campamento. Sube de nivel con lo que hacen todos juntos (explorar, ganar peleas y recolectar), y cada nivel deja entrar a más gente."
-  castle_hint: "🏰 Para que el campamento llegue a castillo hace falta un gremio de nivel {level} o más, con {members} miembros o más."   # [ES] D-287 (0.39): solo se muestra en el nivel de antes del castillo
-  cap_warning: "👥 Con gremio, el cupo del campamento puede crecer: el gremio da {cap} lugares al nivel 1 y más al subirlo. Nunca baja el cupo que ya tienes."
+  what: "Un gremio junta a los miembros del campamento. Sube de nivel con lo que hacen todos juntos (explorar, ganar peleas y recolectar); el castillo pide un gremio de nivel alto."   # [ES] D-327 (0.51): el nivel del gremio ya no da cupo
+  castle_hint: "🏰 Para que el campamento llegue a castillo hace falta un gremio de nivel {level} o más y {members} miembros que jueguen en la semana."   # [ES] D-287 (0.39): solo se muestra en el nivel de antes del castillo
+  cap_warning: "👥 El cupo del campamento es el de su etapa (hoy {cap}) y crece al pasar de etapa; el gremio no lo cambia."   # [ES] D-327 (0.51): un solo cupo por etapa (D-253.1)
   found_cost: "Crearlo cuesta {coins}. Lo crea el fundador, estando en el campamento."
   only_founder: "Solo el fundador, {founder}, puede crearlo."
   found_button: "🛡️ Crear gremio"
@@ -2244,7 +2244,7 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
     hours: "activo hace {n} h"
     days: "activo hace {n} {n|día|días}"
     never: "sin actividad reciente"
-  needs_title: "Para subir a nivel {next} (caben {cap}):"
+  needs_title: "Para subir a nivel {next}:"   # [ES] D-327 (0.51): el nivel del gremio ya no da cupo
   need_line: "{label}: {have}/{need} {bar}"
   counter:
     explorations: "🧭 Exploraciones"
@@ -2256,18 +2256,18 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   ready_away: "✅ ¡Ya cumplen todo! Vuelve al campamento para subirlo."
   up_button: "⬆️ Subir el gremio"
   not_ready: "Todavía no cumplen lo que pide el nivel."
-  risen: "🎉 ¡El gremio {name} subió a nivel {level}! Ahora caben {cap} miembros."
+  risen: "🎉 ¡El gremio {name} subió a nivel {level}!"   # [ES] D-327 (0.51): ya no dice cuántos caben (el cupo es el de la etapa)
   risen_title: "🛡️ Tu gremio subió de nivel"
   camp_line_visitor: "🛡️ Gremio: {name} (nivel {level})"
-  members_cap: "👥 Miembros: {n} de {cap}. Caben más al subir el gremio."
-  full: "Este campamento está lleno: su gremio tiene que subir de nivel para que entre alguien más."
+  members_cap: "👥 Miembros: {n} de {cap}. Caben más al pasar a la etapa siguiente."   # [ES] D-327 (0.51)
+  full: "Este campamento está lleno: caben más cuando pase a la etapa siguiente o cuando alguien salga."   # [ES] D-327 (0.51)
   no_camp: "🛡️ El gremio se crea desde tu campamento. Primero funda uno o únete a uno."
   rename_camp: "✏️ Renombrar campamento"
   castle_title: "🏰 Para pasar a castillo hace falta:"   # [ES] D-97 y D-101: debajo van las líneas del gremio y la de las mejoras
   castle_has_guild: "Tener gremio"
   castle_level: "Gremio de nivel {need} o más (es de nivel {level})"
   castle_level_none: "Gremio de nivel {need} o más"
-  castle_members: "{need} miembros o más (son {n})"
+  castle_members: "{need} miembros o más (son {n})"   # [ES] desde la 0.51 solo si ladder.castle_active está en 0 (lo reemplaza ladder.castle_active)
   castle_blocked: "Todavía no puede ser castillo. Míralo en 🛡️ Gremio."
 
 upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de los campamentos de jugadores (catálogo en content/camp_upgrades.yaml). El Claro no tiene (D-98)

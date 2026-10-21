@@ -146,7 +146,7 @@ def test_the_last_give_levels_the_camp_up_at_once(service):
     assert "▫️ 🪵 Madera: 0 de 60 (faltan 60)" in view.body
     told = pushes(service, "test:2", "camp_news")
     assert told and "Lyra subió Roca Alta a nivel 2 (campamento)" in told[0].body[0]
-    assert service._members_cap(camp(service)) == 4                   # members_base 2 + 2 per level
+    assert service._members_cap(camp(service)) == 10                  # D-327: level 2 is still the campamento stage (10)
 
 
 def test_when_a_work_finishes_last_any_member_goes_up(service):
@@ -198,6 +198,8 @@ def test_the_castle_step_lists_the_guild_the_upgrades_and_the_trial(service):
     # everything but the trial: the guild, 15 built with the two works, the materials and the chests
     cfg = service.content.balance["guild"]
     cfg["castle_min_members"] = 2
+    service.content.balance["ladder"]["castle_active"] = 2           # D-327: 2 who played this week here, not 40
+    service.act("test:2", "home")
     service.store.put("guild", KEY, {"name": "Lobos Grises", "camp": KEY, "founder_id": "test:1",
                                      "level": cfg["castle_min_level"],
                                      "progress": {k: 0 for k in guild_rules.COUNTERS}, "created": 0.0})

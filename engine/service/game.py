@@ -42,7 +42,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas;
     0.32, D-233: el Paladín reemplaza al Chamán y la creación muestra las clases de 2 en 2, una armadura por página:
     CLASS_PAGE_SIZE)
-    diseno/09-construccion/escalera-del-asentamiento.md §5.5 (0.49, D-309 y D-325: la 🌾 cosecha de la muralla);
+    diseno/09-construccion/escalera-del-asentamiento.md §5.5 (0.49, D-309 y D-325: la 🌾 cosecha de la muralla) y §0.4 (0.51,
+    D-253 y D-327: el cupo por etapa, quien deja de jugar y los activos del castillo; vive en engine/service/ladder.py);
     diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
     gremio y las obras con tiempo; vive en engine/service/gremio.py, GremioMixin, de la que GameService también hereda) y
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata, D-265)
@@ -58,7 +59,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml), engine.service.gremio
     (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274),
     engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320), engine.service.map_scroll
-    (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326)
+    (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326), engine.service.ladder (LadderMixin: la
+    escalera del asentamiento, 1.ª parte: el cupo por etapa, quien deja de jugar y los activos del castillo, D-253 y D-327)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -189,6 +191,9 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     "market_log" y "meta"/"market") son de engine/service/market.py (ver su encabezado). Nada nuevo en Hero.
     D-322 (0.47): "upgrades" suma "fund_crafts", "fund_used" y "fund_log" (el 💰 fondo del gremio para los oficios; los escribe
     engine/service/gremio.py, ver su encabezado). Nada nuevo en Hero.
+    D-327 (0.51): "camp" suma "cap_floor" (el cupo de antes de la 0.51, el piso de su cupo; 0 en los nuevos), "idle_watch" y
+    "idle_warned" (quién no juega: el barrido de tick) y "meta"/"idle" ({"next"}). Los escribe engine/service/ladder.py
+    (LadderMixin, ver su encabezado). Nada nuevo en Hero: "jugó por última vez" es Hero.seen_at (_mark_seen).
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -205,7 +210,11 @@ Reglas que nunca se rompen:
        aunque la mochila pase de su espacio; con la mochila en su espacio o más, solo se frenan recolectar y comprar.
     9. Ver a otros jugadores en la zona (D-96) es solo información: nunca da premio, pelea ni ventaja, nunca se
        lista uno mismo, y el cruce al explorar usa su propio sorteo (no cambia ningún otro resultado de la vuelta).
-    10. El gremio (D-97) nunca saca a nadie: si el cupo baja, los que ya están se quedan.
+    10. El cupo nunca saca a nadie: si el cupo baja, los que ya están se quedan, y un campamento de antes de la 0.51 nunca
+        tiene menos cupo que antes ("cap_floor", D-64). Desde la 0.51 (D-253.3, confirmada; D-327) solo sale quien no juega:
+        a los ladder.idle_release_days (30) sin jugar, con el aviso de los ladder.idle_warn_days (25) y nunca contando días de
+        antes del parche; nunca el fundador. Su héroe y sus cosas quedan, lo que dio queda en el campamento y puede volver a
+        pedir entrar (engine/service/ladder.py).
     11. Una incursión perdida (D-99) solo quita parte de la despensa: nunca niveles, zonas ni miembros.
     12. Las mejoras (D-101) son solo de los campamentos de jugadores (el Claro no crece, D-98): lo construido queda para
         siempre, cada aporte toma solo lo que la obra todavía pide, y sus efectos valen solo para los miembros (y,
@@ -311,7 +320,11 @@ Si cambias esto, revisa:
     - Jugadores en la zona (D-96): balance.yaml presence; textos presence.* en es.yaml; Hero.seen_at (lo marca
       _mark_seen: si cambia cuándo se marca, cambia quién aparece en 📍 Zona); _arrive mueve la presencia al llegar
     - Gremio (D-97): balance.yaml guild; engine/social/guilds.py; textos guild.* en es.yaml; tests/test_guilds.py.
-      Sus contadores se suman en _settle (exploración y recolección) y en _end_combat (victoria)
+      Sus contadores se suman en _settle (exploración y recolección) y en _end_combat (victoria). Desde la 0.51 (D-327) su
+      nivel ya no da cupo (guild.levels → capacity solo cuenta para el piso de los campamentos de antes, "cap_floor")
+    - Escalera del asentamiento (D-253, D-327; 0.51): engine/service/ladder.py; balance.yaml camps.members_by_stage, ladder y
+      raids.trial.min_wins; textos en es_escalera.yaml y en_escalera.yaml; _members_cap, tick (_cap_floor_sweep, _idle_tick),
+      _castle_needs (la línea de los activos) y ⏫ Siguiente nivel (lvlup.gives); tests/test_escalera_cupo_oficiales.py
       tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
       🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _lvlup_rows (castillo pide la prueba ganada; D-304: antes
@@ -707,6 +720,7 @@ from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE,
                                    ARMORY_IN_RE, ARMORY_OUT_RE)                                 # D-290: ⚔️ /a1 and /t1
 from engine.service.market import MARKET_ACTIONS, MarketMixin, market_code     # D-320 (0.46): 🏛️ Mercado entre jugadores
 from engine.service.map_scroll import SCROLL_ACTIONS, SCROLL_CODE_RE, MapScrollMixin   # D-326 (0.50): 🗺️ pergamino de mapa
+from engine.service.ladder import LadderMixin           # D-327 (0.51): the settlement ladder (cap per stage, idle, castle)
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -889,7 +903,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1272,15 +1286,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: cumple los viajes y exploraciones que ya terminaron y devuelve los avisos. Antes de mirar a los héroes
         termina las obras (_works_tick), une a quien esperaba lugar (_waiting_sweep), cierra lo del 🏛️ Mercado
         (_market_tick) y, desde la 0.49 (D-325), entrega la 🌾 cosecha de la muralla de cada semana (_harvest_tick).
+        Desde la 0.51 (D-327): antes de la espera, guarda una vez el cupo de antes de cada campamento como su piso
+        (_cap_floor_sweep: nadie pierde lugar con el cupo por etapa), y al final mira quién no juega hace 25 o 30 días
+        (_idle_tick: aviso y lugar libre, nunca el fundador; cada ladder.idle_scan_minutes).
         La llaman: el adaptador de Telegram cada pocos segundos.
         Si cambia, afecta: los avisos de llegada.
         """
         now = self.clock.now()
         out: list[tuple[str, View]] = []
         self._works_tick()                  # D-269: a founding or a camp work whose time came ends now (its notices go out below)
+        self._cap_floor_sweep()             # D-327: once after start, each camp keeps its cap of before 0.51 as its floor (D-64)
         self._waiting_sweep()               # D-323: once after start, who waited since before the patch gets in if there is room
         self._market_tick()                 # D-320: 🏛️ orders that ran out go back and 📦 deliveries that arrived are told (below)
         self._harvest_tick()                # D-325: 🌾 a week of the wall's harvest goes to each camp's 💰 fund (its notice, below)
+        self._idle_tick()                   # D-327: 💤 warned at 25 days without playing, the place freed at 30 (never the founder)
         for account_id, data in self.store.items("hero"):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
@@ -4287,7 +4306,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         héroe como fundador y único miembro, y avisa lo de siempre: fundado, 📔 diario (D-117), 🧭 camino guiado (el paso
         "found", D-193) y las oleadas (D-105). Desde D-269 no cobra nada: lo llama _finish_founding cuando la fundación del
         gremio termina (el fondo ya pagó al empezar) y guarda "gremio" (el id del gremio que lo fundó). Reemplaza a
-        _found_camp (fundar solo, con el nombre escrito y pagando de la mochila).
+        _found_camp (fundar solo, con el nombre escrito y pagando de la mochila). D-327 (0.51): nace con "cap_floor" 0 (no
+        tiene un cupo de antes que conservar: su cupo es el de su etapa, ladder.py _base_cap_at).
         La llama: engine/service/gremio.py _finish_founding. Si cambia, afecta: los campamentos nuevos (tests/test_camps.py).
         """
         t = self.texts
@@ -4296,7 +4316,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self.store.put("camp_name", self._name_key(name), {"camp": key})
         self.store.put("camp", key, {"name": name, "founder": hero.name, "founder_id": hero.id,
                                       "members": [hero.id], "relations": {}, "asked": [], "x": x, "y": y, "created": now,
-                                      "level": 1, "zones": [[x, y]], "next_raid_at": now + self._raid_interval(), "gremio": gremio})
+                                      "level": 1, "zones": [[x, y]], "next_raid_at": now + self._raid_interval(), "gremio": gremio,
+                                      "cap_floor": 0})                 # D-327: a new camp has no cap of before 0.51 to keep
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
         lines = [t.t("camps.founded", name=name, x=x, y=y)]
@@ -4307,21 +4328,24 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return lines
 
     def _members_cap(self, camp: dict[str, Any]) -> int:
-        """How many members fit: base + per level (D-84), or the guild's capacity if bigger (D-97).
+        """How many members fit: the cap of the camp's stage (D-253.1, 0.51), never under its old cap, plus 🛖 / 🛏️ room.
 
         [ES]
-        Qué hace: da el cupo del campamento: la cuenta de siempre (camps.members_base + members_per_level por
-        nivel) o, si tiene gremio y es mayor, el cupo del nivel del gremio (guild.levels). Crear el gremio nunca
-        baja el cupo, y nunca se saca a nadie.
-        La llaman: la pantalla del campamento y del gremio, _ask_join y _answer_join.
-        Si cambia, afecta: quién puede entrar a cada campamento y el mínimo de miembros para castillo.
+        Qué hace: da el cupo del campamento. Desde la 0.51 (D-253.1, confirmada: "un solo cupo por etapa"; cómo se aplicó:
+        D-327, provisional) es el de su etapa (camps.members_by_stage: campamento 10, aldea 15, pueblo 25, ciudad 40,
+        castillo 50; ladder.py _base_cap_at) y nunca menos que lo que el campamento tenía antes de la 0.51 (su "cap_floor": la
+        cuenta de antes, camps.members_base + members_per_level por nivel o el cupo del gremio si era mayor). El nivel del
+        gremio ya no suma lugares. Las 🛖 Cabañas y los 🛏️ muebles suman encima (D-101, D-116). Si el cupo queda por debajo
+        de los miembros, nadie sale por eso (solo sale quien no juega 30 días: ladder.py _idle_tick).
+        La llaman: la pantalla del campamento y del gremio, _ask_join, _answer_join, _camp_room (y con él la espera, D-323),
+        las invitaciones (gremio.py) y _members_cap_at.
+        Si cambia, afecta: quién puede entrar a cada campamento (tests/test_escalera_cupo_oficiales.py).
         """
-        cfg = self.content.balance["camps"]
-        base = cfg["members_base"] + (camp.get("level", 1) - 1) * cfg["members_per_level"]
-        guild = self.store.get("guild", f"{camp['x']}:{camp['y']}")
-        if guild:              # the guild only adds room: creating it never lowers the cap
-            base = max(base, guild_rules.capacity(self.content.balance["guild"]["levels"], guild["level"]))
-        return base + int(self._camp_effect(camp, "members"))      # D-101: 🛖 Cabañas add room on top
+        return self._base_cap_at(camp, int(camp.get("level", 1))) + int(self._camp_effect(camp, "members"))
+
+    def _members_cap_at(self, camp: dict[str, Any], level: int) -> int:
+        """The cap the camp would have at another level (⏫ Siguiente nivel says what the next one gives, D-327)."""
+        return self._base_cap_at(camp, level) + int(self._camp_effect(camp, "members"))
 
     def _ask_join(self, hero: Hero) -> View:
         """Ask the founder to let you in; the founder (or a 🤝 helper, D-289) decides with two buttons (D-84).
@@ -4601,8 +4625,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: la lista de lo que pide pasar al nivel siguiente, cada cosa con si ya está: 🏗️ las obras de camps.level_up que
         tienen que estar CONSTRUIDAS (con su estado si no: 🏗️ en obra, 🔨 activa o ⏸️ sin activar), 📦 cada material con lo
         aportado de lo que pide (camps.level_up_cost_per_level × nivel), 🪎 los cofres desde el nivel 6 (D-92), y en el paso a
-        castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97), las mejoras construidas (_castle_upgrades, D-101)
-        y la 🌙 Noche de prueba ganada (D-99). Con la despensa vacía suma una línea ▫️ (D-93: la hambruna no deja subir).
+        castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97; desde la 0.51 con "👥 Activos esta semana: N de
+        40", D-253.2 y D-327), las mejoras construidas (_castle_upgrades, D-101) y la 🌙 Noche de prueba ganada (D-99; desde la
+        0.51 con 10 vencedores distintos como mínimo, raids.trial.min_wins). Con la despensa vacía suma una línea ▫️ (D-93: la
+        hambruna no deja subir).
         Tipos: "work", "item", "chests", "guild", "castle", "trial" y "famine" (los botones de _lvlup_view los miran).
         D-313 (0.41.1, el dueño: "específicamente, necesita esto, esto y esto; recursos tal, tal y tal"): cada línea dice lo que
         le falta: la obra activa, sus materiales que faltan; la obra en obra, cuándo termina (o que está pausada sin nadie en el
@@ -4651,7 +4677,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if chests:
             have = min(chests, data["chests"])
             rows.append(("chests", t.t("lvlup.chest_line", have=have, need=chests), have >= chests))
-        rows += [("guild", text, ok) for text, ok in self._castle_needs(camp)]           # D-97: 8 → 9 only
+        rows += [("guild", text, ok) for text, ok in self._castle_needs(camp, hero)]     # D-97, D-253.2: 8 → 9 only
         rows += [("castle", text, ok) for text, ok in self._castle_upgrades(camp)]       # D-101: 8 → 9 only
         if target == self._raid_sub("trial")["to_level"]:                                 # D-99: the won 🌙 Noche de prueba
             rows.append(("trial", t.t("lvlup.trial_line"), bool(camp.get("trial_won"))))
@@ -4709,7 +4735,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body += ["", t.t("lvlup.how_items")]
         if "work" in missing:
             body.append(t.t("lvlup.how_works"))
-        body += ["", t.t("lvlup.gives", members=int(self.content.balance["camps"]["members_per_level"]),
+        cap_now, cap_next = self._members_cap(camp), self._members_cap_at(camp, target)     # D-327: one cap per stage
+        body += ["", t.t("lvlup.gives" if cap_next > cap_now else "lvlup.gives_same", cap=cap_next, now=cap_now,
                          zones=self._zones_cap_at(target))]
         extra: list[Action] = []
         if not missing:
@@ -4817,7 +4844,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: D-313 (0.41.1, el dueño: "especifica mejor lo que hace falta para cada subida de nivel"): una línea por cada
         subida, desde la tuya hasta castillo, con las obras que tienen que estar construidas (camps.level_up), los materiales
         (camps.level_up_cost_per_level × nivel) y los 🪎 cofres desde el nivel 6 (D-92); al final, lo que pide además el
-        castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
+        castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba; desde la 0.51, D-327: ladder.castle_active
+        activos de la semana y raids.trial.min_wins vencedores distintos). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
         La llama: 📜 Qué pide cada nivel de ⬆️ Mejorar ("lvlall"). Si cambia, afecta: tests/test_siguiente_nivel.py.
         """
         here = self._upgrades_here(hero)
@@ -4835,7 +4863,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body.append(t.t("lvlall.line", level=target, stage=self._camp_stage(target), works=works,
                             items=self._item_list(self._lvlup_need(current)), extra=extra))
         if level < top:
-            body += ["", t.t("lvlall.castle", n=int(self.content.balance["upgrades"]["castle_min_built"]))]
+            body += ["", t.t("lvlall.castle", n=int(self.content.balance["upgrades"]["castle_min_built"]),   # D-327: 40 active, 10 winners
+                             active=self._castle_active_need(), days=int(round(self._active_days())),
+                             winners=int(self._raid_sub("trial")["min_wins"]))]
         else:
             body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
         return View(kind="camp_lvlall", title=t.t("lvlall.title"), body=body,
@@ -4870,8 +4900,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: suma 1 al nivel del campamento (camp["level"]), borra lo aportado al nivel ("upgrades"."levelup": nunca guarda
         de más), avisa a los demás miembros en su idioma (_push_each) y a quien espera lugar en el gremio (_tell_waiting_room: con
-        el nivel caben más miembros). Las zonas no cambian (se agrandan aparte, en 🗺️ Agrandar territorio). Devuelve la línea
-        para quien lo subió. Las oleadas (desde raids.from_level) se agendan solas al jugar (_raid_settle).
+        una etapa nueva caben más miembros; desde la 0.51 el cupo es el de la etapa, D-327, y entran solos, D-323). Las zonas no
+        cambian (se agrandan aparte, en 🗺️ Agrandar territorio). Devuelve la línea para quien lo subió (con el cupo de ahora).
+        Las oleadas (desde raids.from_level) se agendan solas al jugar (_raid_settle).
         La llaman: _lvlup_give (el último aporte) y _lvlup_go (⏫ Subir a nivel N).
         Si cambia, afecta: el cupo de miembros, las obras que se ven (D-287), la despensa (nivel 3), las oleadas y el castillo.
         """
@@ -4887,8 +4918,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
             kind="camp_news", title=t.t("lvlup.push_title"),
             body=[t.t("lvlup.push", hero=hero.name, camp=name, level=level, stage=self._camp_stage(level))]))
-        self._tell_waiting_room(key)                    # D-294: a higher level has room for more members
-        return [t.t("lvlup.done", camp=name, level=level, stage=self._camp_stage(level), zones=self._zones_cap_at(level))]
+        self._tell_waiting_room(key)                    # D-294, D-323: a new stage has room for more members (D-327)
+        return [t.t("lvlup.done", camp=name, level=level, stage=self._camp_stage(level), zones=self._zones_cap_at(level),
+                    cap=self._members_cap(self.store.get("camp", key) or camp))]
 
     # ------------------------------------------------------------------ 🗺️ Agrandar territorio (D-304, 0.41)
 
@@ -5430,6 +5462,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         ("gmsg", "gfund", "creqs") siguen funcionando.
         D-294 (0.39): quien está en el gremio esperando lugar en el campamento también la abre (con la línea "⏳ estás esperando
         lugar" y 🚪 Salir del gremio).
+        D-327 (0.51): el nivel del gremio ya no da lugares (el cupo es el de la etapa del campamento, D-253.1): "Para subir a
+        nivel N" ya no dice cuántos caben, y la pista del castillo pide los ladder.castle_active activos de la semana.
         D-269 (0.36): sin campamento abre el gremio desde el primer momento (engine/service/gremio.py _gremio_view).
         La llaman: el botón 🛡️ Gremio del centro y de 🏰 Gestionar (D-192; su ↩️ Volver vuelve a 🏰 Gestionar), 🛡️ Gremio de
         👥 Jugadores, el atajo /gremio y los ↩️ de 👥, 💰, 📢, ⚔️ y 🗺️.
@@ -5459,8 +5493,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if guild is None:
             body = [t.t("guild.none", camp=camp["name"]), t.t("guild.what")]
             if self._castle_needs(camp):                 # D-287: the castle hint only on the step before the castle
-                body.append(t.t("guild.castle_hint", level=cfg["castle_min_level"], members=cfg["castle_min_members"]))
-            body += [t.t("guild.cap_warning", cap=guild_rules.capacity(levels, 1)),
+                body.append(t.t("guild.castle_hint", level=cfg["castle_min_level"],      # D-327: 40 who played this week
+                                members=self._castle_active_need() or cfg["castle_min_members"]))
+            body += [t.t("guild.cap_warning", cap=self._members_cap(camp)),          # D-327: the guild no longer adds room
                      t.t("guild.found_cost", coins=self._money(cfg["found_coins"])) if founder else t.t("guild.only_founder", founder=camp["founder"])]
             if founder and here:
                 actions.append(Action(id="guildnew", label=t.t("guild.found_button")))
@@ -5468,7 +5503,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body = [t.t("guild.header", name=guild["name"], level=guild["level"]), t.t("guild.camp_line", camp=camp["name"])]
             need = guild_rules.needs(levels, guild["level"])
             if need:
-                body.append(t.t("guild.needs_title", next=guild["level"] + 1, cap=guild_rules.capacity(levels, guild["level"] + 1)))
+                body.append(t.t("guild.needs_title", next=guild["level"] + 1))         # D-327: the level no longer gives room
                 progress = guild.get("progress", {})
                 order = list(guild_rules.COUNTERS)
                 for k in sorted(need, key=lambda c: order.index(c) if c in order else len(order)):
@@ -5573,22 +5608,25 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not guild_rules.rise(guild, levels):
             return self._guild_view(hero, notice=t.t("guild.not_ready"))
         self.store.put("guild", key, guild)
-        self._tell_waiting_room(key)                    # D-294: a higher guild may have room for who waits
-        risen = lambda: t.t("guild.risen", name=guild["name"], level=guild["level"],      # noqa: E731
-                            cap=guild_rules.capacity(levels, guild["level"]))
+        self._tell_waiting_room(key)                    # D-294: harmless since 0.51 (the guild's level no longer adds room)
+        risen = lambda: t.t("guild.risen", name=guild["name"], level=guild["level"])      # noqa: E731  (D-327: no cap)
         self._push_each([m for m in camp["members"] if m != hero.id],
                         lambda: View(kind="guild_news", title=t.t("guild.risen_title"), body=[risen()]))
         return self._guild_view(hero, notice=risen())
 
-    def _castle_needs(self, camp: dict[str, Any]) -> list[tuple[str, bool]]:
-        """What becoming a castle asks of the camp's guild (D-97); empty unless the next level is the castle.
+    def _castle_needs(self, camp: dict[str, Any], hero: Hero | None = None) -> list[tuple[str, bool]]:
+        """What becoming a castle asks of the camp's guild (D-97) and its people (D-253.2); empty unless the next level is it.
 
         [ES]
-        Qué hace: dice qué le falta al gremio para que el campamento pase a castillo (nivel 8 → 9): tener gremio,
-        de nivel guild.castle_min_level o más, con guild.castle_min_members miembros o más. Vacío en cualquier
-        otro nivel.
-        La llama: _lvlup_rows (D-304, 0.41: son líneas de ⏫ Siguiente nivel; antes las mostraba y exigía ⬆️ Agrandar).
-        Si cambia, afecta: quién llega a castillo; los campamentos sin gremio se quedan en ciudad.
+        Qué hace: dice qué le falta al gremio para que el campamento pase a castillo (nivel 8 → 9): tener gremio, de nivel
+        guild.castle_min_level o más y, desde la 0.51 (D-253.2, confirmada: "40 activos con cupo de 50"; D-122; cómo se aplicó:
+        D-327), "👥 Activos esta semana: N de 40" (ladder.py _castle_active_row: los miembros que jugaron en los últimos
+        ladder.active_days). Esa línea reemplaza a la de guild.castle_min_members (10 miembros), que vuelve solo si
+        ladder.castle_active está en 0. Vacío en cualquier otro nivel. `hero`: quien mira (su copia fresca cuenta como activo).
+        La llaman: _lvlup_rows (D-304, 0.41: son líneas de ⏫ Siguiente nivel; antes las mostraba y exigía ⬆️ Agrandar) y
+        _guild_view (la pista del castillo).
+        Si cambia, afecta: quién llega a castillo; los campamentos sin gremio se quedan en ciudad
+        (tests/test_escalera_cupo_oficiales.py, tests/test_siguiente_nivel.py, tests/test_raids.py, tests/test_guilds.py).
         """
         t = self.texts
         cfg = self.content.balance["guild"]
@@ -5596,12 +5634,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if castle is None or camp.get("level", 1) + 1 != castle:
             return []
         guild = self.store.get("guild", f"{camp['x']}:{camp['y']}")
-        n = len(camp["members"])
         level_line = (t.t("guild.castle_level", need=cfg["castle_min_level"], level=guild["level"]) if guild
                       else t.t("guild.castle_level_none", need=cfg["castle_min_level"]))
-        return [(t.t("guild.castle_has_guild"), guild is not None),
-                (level_line, bool(guild) and guild["level"] >= cfg["castle_min_level"]),
-                (t.t("guild.castle_members", need=cfg["castle_min_members"], n=n), n >= cfg["castle_min_members"])]
+        rows = [(t.t("guild.castle_has_guild"), guild is not None),
+                (level_line, bool(guild) and guild["level"] >= cfg["castle_min_level"])]
+        active = self._castle_active_row(camp, hero)     # D-253.2: 40 who played this week
+        if active is not None:
+            rows.append(active)
+        else:
+            n = len(camp["members"])
+            rows.append((t.t("guild.castle_members", need=cfg["castle_min_members"], n=n), n >= cfg["castle_min_members"]))
+        return rows
 
     # ------------------------------------------------------------------ camp raids and the Noche de prueba (D-99, provisional)
 
@@ -7717,7 +7760,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         La llama: _duda_view. Si cambia, afecta: lo que dicen las respuestas de ❓ Dudas (tests/test_menus_y_dudas.py revisa
         que ninguna quede con un marcador sin llenar). D-305 (0.42): {base_regen} y {base_units} (_base_regen_values).
         D-325 (0.49): {own_bonus} (el +50 % de tu territorio) ya no está; la 🌾 cosecha de la muralla trae {harvest_pct},
-        {harvest_days}, {harvest_cap}, {harvest_zone} y {wall_level} (_harvest_faq_values).
+        {harvest_days}, {harvest_cap}, {harvest_zone} y {wall_level} (_harvest_faq_values). D-327 (0.51): {members_stages},
+        {idle_days}, {idle_left}, {castle_active}, {active_days} y {trial_winners} (ladder.py _ladder_faq_values); {members_base}
+        y {members_step} quedan (la cuenta de antes) aunque ninguna respuesta los use.
         """
         t = self.texts
         b = self.content.balance
@@ -7769,6 +7814,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             "retreat": self._faq_and(b.get("auto_fight", {}).get("retreat_choices", [30, 50, 70])),
             **self._market_faq_values(),                # D-320 (0.46): 🏛️ Mercado ({market_tax}, {market_delivery}...)
             **self._fund_faq_values(),                  # D-322 (0.47): {fund_cap}, the fund for the professions
+            **self._ladder_faq_values(),                # D-327 (0.51): {members_stages}, {idle_days}, {castle_active}...
         }
 
     def _faq_code(self, raw: str) -> str | None:

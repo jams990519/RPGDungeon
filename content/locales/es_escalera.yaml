@@ -1,0 +1,19 @@
+# Texts of the settlement ladder, first slice (D-253, confirmed; how: D-327, provisional; 0.51): who stops playing frees the
+# place (warning and release) and the castle's active members.
+# [ES] Textos de la escalera del asentamiento, 1.ª parte (D-253, confirmada el 17-oct-2026; cómo se aplicó: D-327). Se junta con
+# es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/ladder.py (el aviso de los 25 días, la salida de los 30, la
+# línea 💤 de 👥 Miembros y la línea de los activos del castillo en ⏫ Siguiente nivel). Una clave nueva va también en
+# en_escalera.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+ladder:                        # [ES] D-327: la escalera del asentamiento
+  # ---- 💤 quien no juega (D-253.3): el aviso (a los 25 días) y la salida (a los 30), a cada uno en su idioma (_push_each)
+  warn_title: "💤 Tu lugar en el campamento"
+  warn_push: "💤 Hace tiempo que no juegas. Si no juegas en {left} {left|día|días}, liberas tu lugar en {camp} (quien no juega {days} días sale del gremio y del campamento). Tu héroe y tus cosas quedan. Toca cualquier botón para quedarte."
+  released_title: "💤 Lugar liberado"
+  released_push: "💤 Pasaron {days} días sin jugar y liberaste tu lugar en {camp}: ya no eres miembro de su gremio ni de su campamento. Tu héroe, tu mochila, tu equipo y tus oficios siguen contigo, y lo que diste queda en el campamento. Puedes pedir entrar de nuevo cuando quieras."
+  released_managers: "💤 Por {days} días sin jugar, quedó libre en {camp} el lugar de: {names}. Si alguien espera lugar en el gremio, entra solo."
+  # ---- 👥 Miembros
+  idle_line: "💤 Quien no juega {days} días deja libre su lugar (se le avisa {left} {left|día|días} antes; nunca al fundador)."
+  idle_mark: "💤 "             # [ES] delante del nombre de quien ya fue avisado
+  # ---- ⏫ Siguiente nivel, el paso a castillo (D-253.2: "40 activos con cupo de 50")
+  castle_active: "👥 Activos esta semana: {n} de {need} (jugaron en los últimos {days} días)"

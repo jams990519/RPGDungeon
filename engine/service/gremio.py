@@ -38,6 +38,11 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     mochila, después el fondo: game.py _station_view, _recipe_view y _make con _fund_pool y _fund_take), con un tope por día
     real (fund_crafts.daily_cap), 📜 Quién usó qué (_fund_log_view) y un interruptor 🔓/🔒 del fundador o un 🤝 asistente en
     💰 Fondos (_fund_craft_toggle). Las reglas chicas las eligió Claude (D-322, provisional).
+    D-327 (0.51, la escalera del asentamiento, D-253): los 🤝 asistentes son los oficiales de D-253.4 ("aceptan gente el líder
+    y los oficiales"): una sola lista ("helpers"), con el tope de D-289 (1 cada 5 miembros); antes de fundar, los oficiales del
+    gremio siguen como siempre y al fundar pasan a asistentes. El cupo del campamento es el de su etapa (game.py _members_cap,
+    ladder.py) y quien no juega 30 días sale solo (ladder.py _idle_tick): 👥 Miembros lo dice (_idle_line) y marca con 💤 a
+    quien ya fue avisado (_camp_member_line).
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -50,7 +55,8 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     _gear_name, _enchant_mark, _forget_piece, _bag_full y _bag_full_line; 0.47 (D-322): _upgrades_here, _lvlup_need,
     _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today; 0.49 (D-325): _harvest_line, la línea de la 🌾 cosecha
     de la muralla en 💰 Fondos), content/balance.yaml fund_crafts y
-    content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios)
+    content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios); 0.51 (D-327):
+    _idle_line y _idle_warned_mark de engine/service/ladder.py (LadderMixin)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:", "cinv:" antes del
     combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1, /f02 y /inv_<código>;
     _gremio_text desde _name_camp), tick() (_works_tick), _idle_action (GREMIO_ACTIONS, "found" → _start_founding),
@@ -669,6 +675,8 @@ class GremioMixin:
         si está en línea, dónde está y qué hace, el bloque "⏳ Esperando lugar en el campamento" (sus códigos siguen después de
         los miembros; al fundador y a los ayudantes, cuántos lugares hay para unirlos), la pista de los códigos y, al fundador
         o a un ayudante con lugar, la de /inv_. Botones: 🙋 Solicitudes (fundador o ayudante, si hay) y ↩️ Volver al gremio.
+        D-327 (0.51): el cupo es el de la etapa (_members_cap); al final, la línea 💤 de quien no juega 30 días (_idle_line), y
+        💤 delante de quien ya fue avisado. Los 🤝 asistentes son los oficiales de D-253.4 (aceptan solicitudes).
         La llama: _guild_members_view. Si cambia, afecta: tests/test_submenus_campamento_gremio.py, tests/test_ayudantes.py y
         tests/test_espera_del_gremio.py."""
         t = self.texts
@@ -682,6 +690,9 @@ class GremioMixin:
         body += self._waiting_lines(camp, hero, len(members) + 1)      # D-294: ⏳ their own block, codes go on
         self._codes(hero, "members", members + list(camp.get("waiting") or []))   # D-291: /m1 works after founding too
         body += ["", t.t("gremio.codes_hint")]
+        idle = self._idle_line()                       # D-327: 💤 who does not play for 30 days frees the place
+        if idle:
+            body.append(idle)
         if manager and n < cap:
             body.append(t.t("gremio.invite_hint"))     # D-280, D-289: the founder or a helper invites with /inv_<code>
         actions = []
@@ -1928,7 +1939,7 @@ class GremioMixin:
         [ES]
         Qué hace: al terminar la fundación crea el campamento con el nombre del gremio y el líder como fundador (_create_camp:
         territorio, oleadas, 🧭 camino y 📔 diario del líder); crea el gremio del campamento (registro D-97 "guild", nivel 1, con
-        "gremio" = id) y su cupo pasa a ser el del campamento (guild.levels: 5 al nivel 1); lo que sobró del fondo va a las obras
+        "gremio" = id) y su cupo pasa a ser el del campamento (desde la 0.51, el de su etapa: 10, D-327); lo que sobró del fondo va a las obras
         del campamento ("upgrades"."fund"); a cada otro miembro le llega la invitación (✅ / ❌, "gcamp:"). Si mientras tanto otro
         campamento tomó el lugar (o el líder ya no puede), la fundación se corta y el fondo recupera lo pagado. D-291 y D-290
         (0.39): los 📢 mensajes del gremio pasan al campamento ("messages") y la ⚔️ Armería se muda con todas sus piezas.
@@ -2006,7 +2017,7 @@ class GremioMixin:
 
         [ES]
         Qué hace: el miembro decide si entra al campamento que fundó su gremio ("gcamp:<gremio>:y|n"). Si entra y hay lugar
-        (_members_cap: el cupo del gremio del campamento), queda como miembro (Hero.camp); si no, sale del gremio y queda libre.
+        (_members_cap: desde la 0.51, el cupo de la etapa, D-327), queda como miembro (Hero.camp); si no, sale del gremio y queda libre.
         D-289 (0.39): un oficial del gremio que entra queda de 🤝 ayudante, si hay lugar (1 por cada 5 miembros).
         Al fundador le llega la respuesta, como en _answer_join. La llama: act() (antes del combate).
         Si cambia, afecta: tests/test_gremio_desde_el_inicio.py.
@@ -2209,12 +2220,14 @@ class GremioMixin:
         return t.t("helpers.founder_line", n=len(helpers), cap=cap, names=names)
 
     def _camp_member_line(self, n: int, account: str, camp: dict[str, Any], hero: Hero) -> str:
-        """A camp member's line in 🛡️ Gremio (D-291): /m1, 👑 the founder or 🤝 a helper, online, where and doing what."""
+        """A camp member's line in 🛡️ Gremio (D-291): /m1, 👑 the founder or 🤝 a helper, online, where and doing what.
+
+        [ES] D-327 (0.51): delante, 💤 si ya se le avisó que libera su lugar por no jugar (ladder.py _idle_warned_mark)."""
         t = self.texts
         role = (t.t("gremio.role_leader") if account == camp.get("founder_id")
                 else t.t("helpers.role") if account in self._camp_helpers(camp)
                 else t.t("waiting.role") if account in (camp.get("waiting") or []) else "")     # D-294: ⏳ waiting
-        return self._member_row(n, account, role, hero)
+        return self._member_row(n, account, self._idle_warned_mark(camp, account) + role, hero)   # D-327: 💤 warned
 
     def _camp_gave(self, camp: dict[str, Any]) -> dict[str, dict[str, int]]:
         """Who gave what to the fund: before founding (the guild's "gave") and to the camp's fund after it (D-291)."""

@@ -20,6 +20,8 @@ _waiting_lines, _mates, _guild_chat, _camp_deposit, _armory_key) y engine/servic
 _camp_hub_actions, _ask_join).
 """
 
+import pytest
+
 from conftest import make_hero
 from engine.messaging import Action
 from engine.service.game import HUB_BUTTONS
@@ -27,6 +29,10 @@ from test_camps import old_camp_at, place
 from test_guilds import join
 
 KEY = "6:0"
+# D-327 (0.51): these tests are about the waiting line, written with camps of 2 places at level 1 (2 more per level):
+# they keep that old count in their test content (conftest.old_member_caps). [ES] El cupo por etapa (10, 15, 25…) y la
+# fila que entra al pasar de etapa se prueban en tests/test_escalera_cupo_oficiales.py.
+pytestmark = pytest.mark.usefixtures("old_member_caps")
 
 
 def ids(view):
