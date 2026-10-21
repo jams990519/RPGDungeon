@@ -587,6 +587,11 @@ harvest:                     # [ES] D-309 (confirmada por el dueño el 20-oct-20
   active_days: 7             # [ES] D-309: solo llega si algún miembro jugó (Hero.seen_at) en los últimos 7 días al momento de la entrega; si no, lo de esa semana se pierde (un campamento abandonado no se llena solo)
   scan_minutes: 60           # [ES] cada cuánto mira tick() los campamentos con muralla; una muralla construida antes de la 0.49 empieza a contar como mucho esto antes de que el juego la vea por primera vez
 
+group_missions:              # [ES] D-136 (confirmada: "para abrir cada nivel del campamento el grupo cumple misiones juntos") y D-332 (0.56, cómo se aplicó; Claude, provisional): la 🎯 misión de grupo de cada subida de nivel (las misiones, una por nivel, en content/story.yaml group_missions; el motor en engine/service/group_missions.py; escalera-del-asentamiento.md §0.7). Números de Claude: se ajustan en la beta
+  per_member: 0.15           # [ES] la meta de cada misión (su n en story.yaml) crece un 15 % por cada miembro que jugó esta semana después del primero (ladder.active_days): con 5 activos ×1,6; con 10, ×2,35; con 25, ×4,6. Se fija al empezar la misión (al fundar o al subir al nivel de antes) y no cambia después
+  members_cap: 40            # [ES] como mucho cuenta 40 activos (×6,85): la meta crece menos que el grupo, así cada uno pone menos cuanto más son
+  reward_per_level: {madera: 6, piedra: 4, fibra: 2}   # [ES] el premio chico de D-136 ("se abren los materiales"): al cumplir la misión, el 💰 fondo del campamento recibe esto × el nivel que deja (1 → 2: 🪵6 🪨4 🌿2; 8 → 9: 🪵48 🪨32 🌿16), el 20 % de los materiales de esa subida (camps.level_up_cost_per_level). Nunca va a la mochila de nadie. {} lo apaga
+
 professions:                # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.
   # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,

@@ -14,7 +14,8 @@ Documento de diseño: diseno/06-contenido/historia-y-rol.md §1 (capa simple) y 
 Módulo: M10 Misiones (personajes, facciones y diario: M2 Héroe y M15 Social; el código vive en engine/service/story.py)
 Depende de: engine.core.rng.hash_unit (sorteo fijo de los encargos); los datos llegan de content/story.yaml y los
     números de content/balance.yaml (bloque story)
-Lo usan: engine/service/story.py (StoryMixin)
+Lo usan: engine/service/story.py (StoryMixin) y, desde la 0.56 (D-332), engine/service/group_missions.py (las 🎯 misiones
+    de grupo: target y amount, con el tipo "defend")
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
@@ -23,9 +24,10 @@ Reglas que nunca se rompen:
     2. Los encargos del día son los mismos para todos y salen de la semilla del mundo y del día: nadie los elige ni los cambia.
     3. Un objetivo que no se entiende (tipo nuevo, datos viejos) nunca avanza ni rompe nada.
 Si cambias esto, revisa:
-    - Servicio: engine/service/story.py (_quest_progress, _daily_event, _camp_event, _npc_line)
+    - Servicio: engine/service/story.py (_quest_progress, _daily_event, _camp_event, _npc_line) y
+      engine/service/group_missions.py (_gm_target, _gm_event)
     - Datos: content/story.yaml (tipos de objetivo y condiciones de los saludos)
-    - Pruebas: tests/test_story.py
+    - Pruebas: tests/test_story.py y tests/test_misiones_de_grupo.py
 """
 
 from __future__ import annotations
@@ -39,7 +41,8 @@ from engine.core.rng import hash_unit
 # Goals that look at the hero's state instead of counting events. [ES] Objetivos de estado: se cumplen solos si ya está.
 STATE_GOALS = ("explored", "camp", "level")
 # Goals that count game events. [ES] Objetivos que cuentan cosas que pasan en el juego.
-EVENT_GOALS = ("talk", "deliver", "explore", "gather", "win", "guardian", "craft", "sell", "visit", "feed", "build", "choice")
+EVENT_GOALS = ("talk", "deliver", "explore", "gather", "win", "guardian", "craft", "sell", "visit", "feed", "build", "choice",
+               "defend")     # D-332 (0.56): defend = a won fight of a camp's wave (🛡️ Defender), for the group missions
 
 
 def target(goal: dict[str, Any]) -> int:
@@ -61,11 +64,13 @@ def amount(goal: dict[str, Any], kind: str, data: dict[str, Any]) -> int:
     Qué hace: dice cuánto suma una cosa que pasó en el juego a un objetivo. Explorar suma 1 por vuelta (con
     "claro: true", solo explorando desde el Claro o cualquier hoguera, Lejanía 0, desde la 0.37; con "outside: true", solo fuera de él). Recolectar suma las
     unidades del material pedido (o todas). Ganar suma 1 si la pelea cumple el bioma o es una presa de 🏹 Cazar,
-    si así lo pide. Fabricar suma las veces hechas; vender, las cosas vendidas; llegar a un lugar, 1 si es el pedido
+    si así lo pide; desde la 0.56 (D-332), "defend" suma 1 solo si la pelea ganada era de una oleada del campamento
+    (🛡️ Defender: el gancho manda raid=True). Fabricar suma las veces hechas; vender, las cosas vendidas; llegar a un lugar, 1 si es el pedido
     (la guarida, una Lejanía o unas coordenadas); hablar, 1 con el personaje justo; aportar a la despensa, las
     raciones; aportar a una obra, los materiales.
-    La llaman: el servicio, para las misiones, los encargos del día y los del campamento.
-    Si cambia, afecta: el avance de todas las misiones y encargos.
+    La llaman: el servicio, para las misiones, los encargos del día y los del campamento; desde la 0.56, también las
+    🎯 misiones de grupo (engine/service/group_missions.py _gm_event).
+    Si cambia, afecta: el avance de todas las misiones, encargos y misiones de grupo.
     """
     want = goal.get("kind")
     if want == "explore" and kind == "explore":
@@ -84,6 +89,8 @@ def amount(goal: dict[str, Any], kind: str, data: dict[str, Any]) -> int:
         if goal.get("biomes") and data.get("biome") not in goal["biomes"]:
             return 0
         return 1
+    if want == "defend" and kind == "win":                          # D-332 (0.56): only a wave fight (🛡️ Defender) counts
+        return 1 if data.get("raid") else 0
     if want == "guardian" and kind == "win":
         if not data.get("boss"):
             return 0

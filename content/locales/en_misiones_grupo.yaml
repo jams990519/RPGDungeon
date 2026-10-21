@@ -1,0 +1,29 @@
+# Texts of the camp's group missions (D-136, confirmed; how: D-332, provisional; 0.56): one shared goal per level-up, its row
+# in ⏫ Next level, its line in 📜 What each level needs and on the 📜 Board, and the notices when it is reached.
+# [ES] La versión en inglés de es_misiones_grupo.yaml (D-250): las mismas claves, los mismos huecos {nombre} y los mismos plurales.
+
+gm:
+  goal:
+    win: "defeat {n} {n|monster|monsters}"
+    gather: "gather {n} {n|resource|resources}"
+    gather_item: "gather {n} {item}"
+    feed: "bring {n} {n|ration|rations} to the pantry"
+    defend: "win {n} wave {n|fight|fights}"
+  section: "🤝 All together:"
+  row: "🎯 Group mission: {goal} — {p} of {n} ({left} to go)"
+  row_done: "🎯 Group mission: {goal} — done"
+  row_waived: "🎯 Group mission: this step up doesn't ask for one (your camp was already on its way when missions arrived); the first one comes when you level up"
+  how: "🎯 The group mission adds up what every member does, wherever they are ({how}). You have {mine}. When it's done, the camp's 💰 fund gets {reward}."
+  how_win: "every won fight counts: 🏹 Hunt, exploring, waves or dungeons"
+  how_gather: "every resource you gather counts"
+  how_feed: "rations given with 🌾 Contribute food (🏰 Manage) count"
+  how_defend: "every fight won with 🛡️ Defend when a wave comes counts"
+  all: " · 🎯 {goal}"
+  new: "🎯 New group mission to reach level {level}: {goal}, all the members together."
+  done: "🎯 Group mission done in {camp}: {goal}! You put in {mine} of {n}. The camp's 💰 fund got {reward}."
+  ready: "⏫ The whole list is ready: any member taps ⏫ Go up to level {level} (🏰 Manage → ⬆️ Improve camp)."
+  no_reward: "nothing this time"
+  push_title: "🎯 Group mission done"
+  push: "🎯 {hero} closed {camp}'s group mission: {goal}. You put in {mine} of {n}. The 💰 fund got {reward}."
+  board_line: "{mark} 🎯 Group mission (to reach level {level}): {goal} — {p} of {n} · you: {mine}"
+  board_waived: "✅ 🎯 Group mission: your camp doesn't need one to reach level {level}; the first one comes when you level up."

@@ -15,7 +15,7 @@
 - **Seis facciones:** las tres del juego más ladrones, constructores y comerciantes (D-129).
 - **Razas** al estilo de World of Warcraft, además de los orígenes, con beneficios de oficio y de arma (D-130).
 - Las decisiones cambian solo tu héroe, y las grandes se votan en el servidor (D-131). Los personajes importantes no mueren, salvo que se destruya su castillo (D-132). El romance, más adelante (D-133). El largo de cada texto depende del caso (D-134). Nombres propios (D-135).
-- **El campamento crece con misiones de grupo**, en 10 a 15 escalones (D-136).
+- **El campamento crece con misiones de grupo**, en 10 a 15 escalones (D-136). *En el juego desde la 0.56 (D-332): una 🎯 misión de grupo por cada subida de nivel del campamento, que cuenta lo mismo que los encargos de campamento ([Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.7).*
 - El tono sigue provisional (D-161), y la pregunta E-03 (si lo largo es la historia y no un progreso lento) quedó sin respuesta: el ritmo al nivel 100 se queda en unos 2 años (D-118).
 
 **Qué pidió el dueño (1-oct-2026).** "No me interesa que el progreso sea lento. Quiero más bien que el juego sea un roleplay con RPG; o sea, debe ser largo." Se tomó así: **lo largo tiene que salir de la historia y del rol**, no de subir de nivel despacio. El progreso se siente seguido (siempre hay algo que ganar), y lo que dura años es todo lo que hay para vivir: la historia del mundo, el propio personaje, las facciones, los oficios, el campamento y el castillo.

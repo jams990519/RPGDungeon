@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329); (0.55): las 🪖 escuadras de 5 con su 🎖️ jefe (§0.6, D-331)**; las tareas por escuadra, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329); (0.55): las 🪖 escuadras de 5 con su 🎖️ jefe (§0.6, D-331); (0.56): una 🎯 misión de grupo en cada subida de nivel (§0.7, D-136 y D-332)**; las tareas por escuadra, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -179,6 +179,41 @@ D-253.1 (confirmada) eligió la **Forma B**: "la escuadra de 5 como unidad para 
 - **Dónde está:** `engine/service/squads.py` (`SquadsMixin`: `_squad_slots`, `_squads_normal`, `_squads`, `_squad_settle`, `_squads_view`, `_squad_vote`, `_squad_move_view`, `_squad_move`, `_squad_name_ask`, `_squad_name_text`, `_squads_winners_line`, `_squads_winners_report`, `clean_squad_name`), los ganchos de `engine/service/gremio.py` (`_camp_members_view`, `_camp_member_view`) y de `engine/service/game.py` (`_idle_action`, `_name_camp`, `_raid_lines`, `_resolve_raid`, `_faq_values`); los números en `content/balance.yaml` → `ladder.squads` (`size` 5, `by_stage`, `name_max_chars` 20); lo guardado en `camp/<x:y>` → `squads` (`n`, `name`, `members`, `chief`, `votes`); los textos en `content/locales/es_escuadras.yaml` y `en_escuadras.yaml`; las pruebas en `tests/test_escuadras.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
 - **Preguntas para el dueño:** E-266 a E-268 (P-277 a P-279).
 
+## 0.7 Las 🎯 misiones de grupo de cada subida (0.56, D-136; cómo se aplicó: D-332)
+
+D-136 (confirmada) pide que "para abrir cada nivel del campamento el grupo cumpla misiones juntos (farmear, recolectar, llenar la despensa); al terminarlas se abren el siguiente rango de misiones, el crecimiento y los materiales". La tabla del §2 las nombra en el campamento (la 1.ª), la aldea (la 2.ª) y la ciudad (la 4.ª). Cómo quedó lo eligió Claude (D-332, provisional) y se le pregunta al dueño (E-269 a E-271).
+
+- **Una por subida.** Cada subida de nivel (1 → 2 … 8 → 9) pide, además de sus obras, sus materiales y lo del castillo, una **misión de grupo**: una meta para todos los miembros juntos, con lo de cada uno sumado, esté donde esté. Al subir empieza la del nivel siguiente ("el siguiente rango de misiones" de D-136).
+
+| Subida | Misión (con 1 activo) | De la escalera |
+|---|---|---|
+| 1 → 2 (campamento) | ⚔️ vencer 20 monstruos | la 1.ª misión del campamento |
+| 2 → 3 (aldea) | 🪵 juntar 60 de madera | la 2.ª misión, la de la aldea |
+| 3 → 4 | 🌾 llevar 20 raciones a la despensa (existe desde el nivel 3) | |
+| 4 → 5 (pueblo) | 🛡️ ganar 3 peleas de oleada (🛡️ Defender) | las "3 oleadas ganadas" del pueblo |
+| 5 → 6 | ⚔️ vencer 40 monstruos | |
+| 6 → 7 (ciudad) | 🪨 juntar 100 de piedra | la "4.ª misión" de la ciudad |
+| 7 → 8 | 🌾 llevar 40 raciones a la despensa | |
+| 8 → 9 (castillo) | ⚔️ vencer 80 monstruos | |
+
+  La escalera hablaba de una por etapa, pero en el juego cada etapa tiene 2 niveles y D-136 dice "cada nivel": por eso son 8 (E-269).
+- **Cuánto piden.** La meta crece con el nivel y, poco, con los miembros activos (los que jugaron en los últimos 7 días): un 15 % de la meta por cada activo después del primero, contando como mucho 40. Queda **fija al empezar** (al fundar, la 1.ª; al subir, la siguiente): si entra o sale gente, no cambia.
+
+| Activos | 1 | 5 | 10 | 25 | 40 |
+|---|---|---|---|---|---|
+| Vencer monstruos (→ 2) | 20 | 32 | 47 | 92 | 137 |
+| Peleas de oleada (→ 5) | 3 | 5 | 8 | 14 | 21 |
+| Vencer monstruos (→ 9) | 80 | 128 | 188 | 368 | 548 |
+
+  Cuanto más son, menos pone cada uno (con 10 activos, unas 5 peleas cada uno para el nivel 2).
+- **Qué cuenta.** Lo mismo que los encargos semanales del campamento (0.20), con el mismo gancho: cada pelea ganada (🏹 Cazar, explorar, oleadas, mazmorras), cada unidad que se junta del recurso pedido, cada ración de 🌾 Aportar comida y, para las de oleada, cada pelea ganada con 🛡️ Defender. Solo los miembros del campamento (no quien espera lugar ni un visitante), desde que empieza la misión.
+- **Se ve.** En ⏫ Siguiente nivel, bajo "🤝 Entre todos:", la línea "🎯 Misión de grupo: vencer 20 monstruos — 7 de 20 (faltan 13)" y otra con qué cuenta, cuánto llevas tú y el premio; también en ⬆️ Mejorar, en "x de y listos" de 🔨 Mejoras, en 📜 Qué pide cada nivel (las siguientes, con los activos de hoy), en el 📜 Tablón (debajo de los encargos de la semana, con lo tuyo), en el aviso al fundar y al subir ("🎯 Nueva misión de grupo para subir a nivel 3…"), en ❓ /d36 y en 📚 Guías → 🏕️ Campamento.
+- **Al cumplirla.** Se cierra una sola vez. El 💰 fondo del campamento recibe un **premio chico: 🪵6 🪨4 🧵2 × el nivel que deja** (el 20 % de los materiales de esa subida; de 🪵6 🪨4 🧵2 en la primera a 🪵48 🪨32 🧵16 en la del castillo), que toman las obras y ⏫ como todo lo del fondo (§0.3); nunca va a la mochila de nadie. A cada otro miembro le llega el aviso en su idioma, con lo que puso. **No sube sola:** si era lo último de la lista, cualquier miembro toca ⏫ Subir a nivel N (E-270).
+- **Nadie pierde (D-64).** La misión solo traba la subida siguiente. **Un campamento de antes de la 0.56 no necesita la misión de la subida en la que estaba:** la línea sale ✅ "esta subida no la pide" y la primera llega al subir. Se eligió esto, y no "contar desde el parche", porque es lo más justo: nadie recibe un obstáculo nuevo a mitad de un nivel que planeó con las reglas de antes (tampoco el que tenía toda la lista ✅ el día del parche), y todos los campamentos de antes quedan iguales. Una misión retirada deja de pedirse.
+- **Quedan fuera:** las misiones de una escuadra (§3: "las misiones de grupo son de una escuadra"; E-271), varias misiones por subida y un premio para cada miembro (los encargos de la semana ya pagan experiencia y monedas).
+- **Dónde está:** `engine/service/group_missions.py` (`GroupMissionMixin`: `_gm_target`, `_gm_start`, `_gm_state`, `_gm_row`, `_gm_how_line`, `_gm_new_line`, `_gm_all_part`, `_gm_board_lines`, `_gm_event`, `_gm_complete`); los ganchos en `engine/service/game.py` (`_create_camp`, `_level_up`, `_lvlup_rows` tipo "mission", `_lvlup_view`, `_lvlup_all_view`, `_end_combat` con `raid=True`) y `engine/service/story.py` (`_story_event`, `_camp_task_lines`); el tipo `defend` en `engine/story/rules.py`; las misiones en `content/story.yaml` → `group_missions` (ids estables, una por nivel de destino) y los números en `content/balance.yaml` → `group_missions` (`per_member` 0,15, `members_cap` 40, `reward_per_level`); lo guardado en el espacio `group_mission` (clave del campamento); los textos en `content/locales/es_misiones_grupo.yaml` y `en_misiones_grupo.yaml`; las pruebas en `tests/test_misiones_de_grupo.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-36.
+- **Preguntas para el dueño:** E-269 a E-271 (P-280 a P-282).
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |
@@ -195,6 +230,8 @@ D-253.1 (confirmada) eligió la **Forma B**: "la escuadra de 5 como unidad para 
 | **D-327** | *(Provisional, 0.51.)* Cómo quedó la 1.ª parte de la escalera (§0.4): el cupo por etapa (10, 15, 25, 40, 50; nadie pierde lugar), los asistentes son los oficiales (1 cada 5), quien no juega 30 días sale (aviso a los 25, nunca el fundador, desde el parche) y el castillo pide 40 activos de la semana y 10 vencedores en la Noche de prueba. |
 | **D-329** | *(Provisional, 0.53.)* Cómo quedaron las 🌊 oleadas crecientes del castillo (§0.5): en el nivel 8, las oleadas del campamento son una serie de 5, cada una un 20 % más fuerte; se aprueba ganando 3; con 3 perdidas vuelve a empezar a los 3 días; un castillo que ya existe no las recibe. |
 | **D-331** | *(Provisional, 0.55.)* Cómo quedaron las 🪖 escuadras (§0.6): de hasta 5, 2/3/5/8/10 por etapa (el cupo ÷ 5), armadas solas en orden de llegada; el 🎖️ jefe lo vota la mayoría de la escuadra (si no, sigue el que está); el jefe mueve a los suyos y le pone nombre, el fundador y los asistentes mueven a cualquiera; la Noche de prueba y las oleadas crecientes muestran cuántas escuadras tuvieron un vencedor, sin cambiar lo que piden. |
+| **D-136** | **Misiones de grupo:** para abrir cada nivel del campamento, el grupo cumple misiones juntos (farmear, recolectar, llenar la despensa). |
+| **D-332** | *(Provisional, 0.56.)* Cómo quedaron las 🎯 misiones de grupo (§0.7): una por subida de nivel, 8 hasta castillo; la meta crece con el nivel y un 15 % por activo y queda fija al empezar; al cumplirla, un premio chico al 💰 fondo; los campamentos de antes no la necesitan en la subida en la que estaban. |
 | **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
@@ -214,6 +251,7 @@ Un solo número dice cuánta gente cabe en cada etapa: se acaba el doble cupo de
 | 9 · Capital | 160 | 120 activos | Más territorio | 64 |
 | 10 · Reino | **200** | 150 activos y un mes sostenido | La mejora más grande (la monarquía de D-155) | 81 |
 
+- **Las misiones de grupo** (D-136) están en el juego desde la 0.56 con **una por subida de nivel**, no una por etapa: la 1.ª, la 2.ª, las "3 oleadas ganadas" y la 4.ª de la tabla caen en las subidas 1 → 2, 2 → 3, 4 → 5 y 6 → 7 (§0.7, D-332, provisional; E-269).
 - **Activo** es haber jugado en la última semana (hoy la despensa cuenta 24 horas; para subir de etapa conviene mirar la semana, para que no dependa de un día).
 - **La Casa y el Grupo son la misma etapa** (D-252): la propuesta que vio el dueño tenía 11 etapas, con "Grupo" antes de "Casa".
 - **Lo que no se tira:** los niveles, las 20 mejoras y las oleadas de hoy siguen. Las etapas se estiran hacia arriba, y hacen falta mejoras nuevas para las etapas 7 a 10 (hoy se acaban en el nivel 8).
@@ -325,6 +363,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 | Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
 | ~~+50 % al recolectar en tu territorio (`gather.own_land_bonus`)~~ | **Hecho en la 0.49 (D-309, D-325):** con la 🧱 Muralla, todo el territorio cosecha solo para el 💰 fondo y el +50 % ya no está (§5.5). Falta la muralla por anillos con su costo por zona |
 | No hay grupos | **Hecho en la 0.55 (D-331):** las 🪖 escuadras de 5 dentro del gremio del campamento (2, 3, 5, 8 y 10 por etapa), con su 🎖️ jefe votado; el grupo de 5 antes del campamento es el gremio de D-269 (§0, §0.6). Faltan las tareas por escuadra (la Noche de prueba por escuadras, E-266; los tramos de muralla y las misiones de grupo) |
+| ~~Subir de nivel pide obras y materiales (D-136, las misiones de grupo, por programar)~~ | **Hecho en la 0.56 (D-332):** cada subida pide también una 🎯 misión de grupo entre todos (§0.7); faltan las misiones de escuadra (§3, E-271) |
 
 **Los jugadores de hoy no pierden nada (D-64):**
 - cada campamento queda en la etapa que le corresponde por sus miembros y sus mejoras, nunca en una más baja;
@@ -336,13 +375,15 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **Consume:**
   - jugadores activos (para subir de etapa y para la Noche);
   - materiales (obras, muralla y mantenimiento);
-  - defensa (oleadas que le pegan a la muralla).
+  - defensa (oleadas que le pegan a la muralla);
+  - lo que hacen los miembros por el grupo (peleas, recolección, comida y defensa: las 🎯 misiones de grupo, §0.7).
 - **Produce:**
   - lugar para más gente;
   - cargos;
   - territorio que cosecha para el almacén;
   - control de nodos y peaje (D-236);
-  - motivos de conflicto entre asentamientos (la tierra de alrededor).
+  - motivos de conflicto entre asentamientos (la tierra de alrededor);
+  - un premio chico de materiales para el 💰 fondo al cumplir cada misión de grupo.
 - **Amplio pero ligero (D-44):**
   - la capa simple es "construyes tu casa, invitas a 4 y crecen";
   - las escuadras, los cargos y la muralla aparecen recién cuando el asentamiento las necesita (cargos en el pueblo, muralla con zonas desde el campamento). *Desde la 0.55 (D-331) las escuadras se arman solas desde la fundación, pero nadie tiene que hacer nada con ellas: votar, mover y ponerles nombre es la capa profunda, a quien le interese.*
@@ -356,6 +397,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **P-260 (E-249):** qué pasa antes de la muralla. Recomendado: dejarlo así; la muralla es la meta del pueblo.
 - **P-271 a P-273 (E-260 a E-262):** las 🌊 oleadas crecientes (0.53, D-329): sus números, cómo empiezan y se reintentan, y qué es mantener el castillo. Recomendado: dejarlas así y medirlas en la beta; que el castillo reciba una serie cada 4 semanas y, si la pierde, se frene su crecimiento.
 - **P-277 a P-279 (E-266 a E-268):** las 🪖 escuadras (0.55, D-331): ganar la Noche de prueba por escuadras, cómo se elige y qué hace el jefe, y cuántas escuadras hay y cómo se reparte a los que llegan. Recomendado: en un parche aparte, la Noche con un vencedor en 4 de cada 5 escuadras en lugar de los 10 vencedores; el jefe así; así, y 1 oficial cada 2 escuadras cuando cambien los oficiales.
+- **P-280 a P-282 (E-269 a E-271):** las 🎯 misiones de grupo (0.56, D-332): una por subida o una por etapa, sus números y su premio, y si son del campamento o de una escuadra. Recomendado: una por subida; dejar los números y medirlos en la beta; que sigan siendo del campamento y que, con escuadras, se vea lo de cada escuadra.
 - **P-264 a P-267 (E-253 a E-256):** la 1.ª parte de la escalera (0.51, D-327): el cupo de cada etapa, el asistente como oficial, quien deja de jugar y los requisitos del castillo. Recomendado: dejarlo así y medirlo en la beta; un solo cargo con 1 cada 5; quitar el gremio de nivel 5 cuando lleguen las oleadas crecientes.
 - **P-81 (E-58):** ✅ Decidido (D-253): esta escalera.
 - **P-79 (E-56):** ✅ Decidido, provisional (D-327 y D-329): la Noche con 10 vencedores distintos y 5 oleadas crecientes ganando 3 (§0.4 y §0.5); E-260 y E-261 la reemplazan.
@@ -374,4 +416,5 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **La muralla que marca el territorio y crece por anillos:** el territorio de alianza de Rise of Kingdoms, que se agranda con banderas y fortalezas.
 - **La tierra que produce sola:** los campos de recursos de Travian, que producen cada hora sin que nadie los trabaje. También las granjas de alianza de Rise of Kingdoms, que juntan recursos para la alianza, no para un jugador.
 - **Las oleadas que crecen antes del castillo:** los juegos de defensa de torres, donde cada oleada es más fuerte que la anterior, y la horda final de They Are Billions, que pone a prueba todo lo construido; el "gana la mayoría" es el "al mejor de 5" de los torneos.
+- **Las misiones de grupo para subir:** los desafíos de gremio de *World of Warcraft* (metas que el gremio cumple entre todos con lo que cada uno hace jugando) y los *Clan Games* de *Clash of Clans* (una meta común que suma lo de cada miembro y abre premios para el clan).
 - **Liberar el lugar de quien no juega:** la regla de TowerWars de sacar a los inactivos (allí, a los 14 días; aquí, a los 30, como pidió el dueño).
