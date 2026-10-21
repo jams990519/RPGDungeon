@@ -85,6 +85,11 @@ Si cambias esto, revisa:
       "Moverte allá" (eso sigue con exploration y known). Vacíos por defecto: los héroes guardados antes cargan igual
       (engine/service/map_scroll.py; engine/service/game.py _fog_cell, _known_terrains, _fog_notices y _zone_view;
       engine/service/market.py; tests/test_pergamino_mapa.py)
+    - hybrid (0.54, D-312 y D-330): lo que cambió el 🔀 modo híbrido del nivel 10, por pareja de roles ("<rol activo>><rol
+      que presta>", por ejemplo "guerrero_tanque>guerrero_dps" → ["H2"]): los botones de rol (H1, H2, H3) que llevan la
+      habilidad del mismo puesto del otro rol. Cada rol guarda la suya al cambiar de rol. Vacío por defecto: los héroes
+      guardados antes y quien nunca lo toca pelean con la barra de su rol, igual que antes (engine/classes/talents.py
+      hybrid_choice, toggle_hybrid, chain_bar; engine/service/game.py _hybrid_view; tests/test_modo_hibrido.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -183,6 +188,9 @@ class Hero:
             "at". The backpack counts them under balance.yaml map_scroll.item. Empty for heroes saved before it.
         charted: zones ("x:y") this hero sees in colour for ever because it used a map scroll (D-311 part 5). Only the map
             colour and the legend: no resources, nodes, places or travel. Empty for heroes saved before it.
+        hybrid: what the 🔀 hybrid mode swapped (0.54, D-312, D-330), per role pair "<active role>><lending role>" -> the role
+            slots ("H1", "H2", "H3") that carry the other role's ability in the same slot. Each role keeps its own choice.
+            Empty for heroes saved before it and for whoever never uses it (they fight with their role's own bar).
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -259,6 +267,7 @@ class Hero:
     book_gifts: list[str] = field(default_factory=list)                 # D-328 (0.52): ids of the book gifts already given
     map_scrolls: list[dict[str, Any]] = field(default_factory=list)     # D-326 (0.50): 🗺️ map scrolls carried, one record per copy
     charted: list[str] = field(default_factory=list)                    # D-311.5 (0.50): zones in colour for ever thanks to a scroll
+    hybrid: dict[str, list[str]] = field(default_factory=dict)          # D-330 (0.54): 🔀 hybrid swaps per role pair ("a>b" -> ["H2"])
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

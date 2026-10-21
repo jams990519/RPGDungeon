@@ -139,7 +139,7 @@ faq:
     a: "Cada clase tiene 2 roles. Eliges el primero al crear tu héroe y el segundo lo aprendes al nivel {second_role}, gratis: cambias de rol cuando quieras en 👤 Héroe → 🌟 Talentos. Cada nivel te da 1 punto, que se pone solo en tu rol activo y te hace un poco más fuerte."   # [ES] 0.31 (D-230)
   d28:
     q: "🎛️ ¿Cómo elijo mis habilidades?"
-    a: "Tus 4 botones son fijos y están abiertos desde el principio: Básico, Constructor, Preparador y Gastador. Cada rol pide su orden (lo ves en 🌟 Talentos y en cada pelea). Al nivel {hybrid_level} llega el modo híbrido, para mezclar habilidades de tus dos roles."   # [ES] 0.31 (D-225, D-230)
+    a: "Tus 4 botones están abiertos desde el principio: Básico, Constructor, Preparador y Gastador. Cada rol pide su orden (lo ves en 🌟 Talentos y en cada pelea). Desde el nivel {hybrid_level}, el 🔀 Modo híbrido (👤 Héroe → 🎛️ Barra de combate, o /hibrido) te deja cambiar el Constructor, el Preparador o el Gastador por el del mismo puesto de tu otro rol, gratis fuera de combate; el Básico y el orden de tu rol no cambian."   # [ES] 0.31 (D-225, D-230); 0.54 (D-312, D-330): el modo híbrido ya está en el juego
   d29:
     q: "🔀 ¿Qué es la doble especialización?"
     a: "Es tu segundo rol: al nivel {second_role} lo aprendes gratis y desde ahí cambias entre tus dos roles cuando quieras en 👤 Héroe → 🌟 Talentos. Tus puntos se reparten solos en el rol que juegas."   # [ES] 0.31 (D-230)
