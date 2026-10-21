@@ -419,7 +419,7 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 | Cuánto frena cada punto (`raids.defense_weaken_per_point`) | **4 %** menos de vida y de ataque a los atacantes; con 11 puntos, 44 % | Conectado en la 0.14: se nota desde la Empalizada sin volver trivial la pelea |
 | Tope (`raids.defense_floor`) | los atacantes nunca bajan de la **mitad** | Defender sigue siendo pelear |
 | Noche de los Braseros (`raids.night`) | de 19 a 6 h, hora UTC−5 | Provisional: el mundo todavía no tiene día y noche |
-| Conocimiento | Herramientas +10 % al recolectar, Cartografía +5 puntos por vuelta, Rastreo +10 % de carne; 200 a 230 materiales y 3 🥈 cada uno | Modestos a propósito: el territorio ya da +50 % al recolectar |
+| Conocimiento | Herramientas +10 % al recolectar, Cartografía +5 puntos por vuelta, Rastreo +10 % de carne; 200 a 230 materiales y 3 🥈 cada uno | Modestos a propósito: el territorio ya da +50 % al recolectar (hasta la 0.48: D-309 lo cambió por la 🌾 cosecha de la muralla) |
 
 **Cuenta rápida.** Un miembro que recolecta en su territorio junta unos 4 a 5 materiales por energía (con el +50 %); dedicando la mitad de su energía, unos 60 a 80 por día. Las 15 mejoras más baratas suman unos **2.500 materiales y 3 🥈**: un grupo de 5 que además agranda el campamento (unos 1.100 materiales y 6 🪎 cofres hasta castillo) tarda **varias semanas**, al ritmo del gremio de nivel 5 y de la Noche de prueba. Las 20 suman unos 5.000 materiales.
 
@@ -1458,6 +1458,38 @@ Con el +15 % por obra, cada uno se pide ×3 a ×5 (la Enfermería, hecha como ob
 - La 🪑 Carpintería sube al 75 y al 100 al ritmo de los otros oficios de equipo (171 y 329 días; antes 162 y 321, porque el Armero de rango 70 daba más experiencia por ⚡: [simulación](../07-economia/simulacion-oficios.md) §11).
 
 **Lo que queda por mirar:** E-235 (los edificios de oficio y el +15 %); cuánta piel se junta de verdad (informe diario); si los campamentos construyen sus edificios de oficio o los dejan para el final.
+
+### Octubre de 2026 (21-oct): la 🌾 cosecha de la muralla y adiós al +50 % del territorio (0.49, D-309 confirmada; D-325 provisional)
+
+**Por qué.** El dueño confirmó el 20-oct (D-309, E-216 y E-217) que cada zona cerrada por la muralla cosecha sola el 20 % de lo que vuelve a crecer, al almacén del asentamiento, solo con jugadores activos esa semana y con un tope de 7 días, y que eso **reemplaza** el +50 % de recolectar en tu territorio (D-239.3: nada de bonos de farmeo aparte).
+
+| Número | Antes | Ahora | Por qué |
+|---|---|---|---|
+| `gather.own_land_bonus` | 1,5 | **1,0** (la clave queda) | D-309: la cosecha lo reemplaza. En tu territorio juntas unas 3 unidades por ⚡ (antes ~4,7) |
+| `harvest.share` | — | **0,20** | D-309 (E-216) |
+| `harvest.real_regen` | — | **false**: 24 por recurso y día, sin el ×3 de la 0.42 ni el ⛲ Pozo | D-325: el número de la pregunta del dueño; contar el ×3 doblaría la cosecha (E-248) |
+| `harvest.week_days`, `cap_days`, `active_days` | — | **7, 7 y 7** | D-309: llega cada semana, guarda como mucho 7 días y solo si alguien jugó esa semana |
+| `harvest.scan_minutes` | — | 60 | D-325: cada cuánto mira `tick()`; una muralla de antes empieza a contar como mucho 1 hora antes |
+
+**Cuánto da.** Una zona tiene hoy de 4 a 6 recursos de tierra (5,6 en promedio, 2,8 de ellos de base; medido en 432 zonas de la semilla 12345), así que da **~27 unidades por día** (la tabla de la escalera §5.3 contaba 3 recursos: 14). Con el tope de zonas de cada etapa: pueblo (9) ~240 por día, ciudad (15) ~400, castillo (25) ~670. Lo que sirve para las obras son los de base: ~120, ~200 y ~330 por día. El 🐟 pescado no entra (es comida).
+
+**El ritmo hasta castillo** (`python tools/camp_costs.py`, que desde la 0.49 cuenta la cosecha desde el nivel siguiente al de la muralla: ahorra energía de juntar, nunca de refinar; de 5 a 10 miembros con el 75 % de su ⚡):
+
+| Camino | 0.48 (+50 %) | 0.49 sin cosecha | **0.49 con cosecha** | Con el ×3 (E-248) |
+|---|---|---|---|---|
+| La lista (castillo) | 17,6 días | 23,4 | **20,7** | 17,4 |
+| Las 31 obras | 41,1 | 52,1 | **47,7** | 42,4 |
+| La lista, con la mitad de la energía | 26,4 | 35,2 | **29,5** | — |
+
+Nivel por nivel (la lista, hoy): nivel 5 hacia el día 5,5 (antes 3,9), 6 hacia el 7,9 (antes 5,5), 7 hacia el 9,2, 8 hacia el 14,2 y castillo hacia el 20,7. Antes de la muralla la pérdida del +50 % no tiene vuelta (E-249); desde el pueblo, la cosecha devuelve 40 a 66 ⚡ por día en un campamento de 10 (300 ⚡ por día). Las columnas "antes de la 0.45" y "0.45" de la herramienta también cuentan ya sin el +50 % y con la cosecha.
+
+**Qué cambia al jugar.**
+
+- En tu territorio juntas lo mismo que afuera (siguen sin salir peleas y las ⚒️ Herramientas dan +10 %).
+- Con la 🧱 Muralla, cada semana entran al 💰 fondo unos cientos de materiales sin gastar energía; van primero a las obras y a ⏫ Siguiente nivel, y lo que sobra, a los oficios (D-322).
+- Un campamento de nivel 1 a 5 tarda un tercio más en juntar lo crudo; desde el pueblo, la cosecha compensa una parte.
+
+**Lo que queda por mirar:** E-247 (qué zonas cierra la muralla), E-248 (contar el ×3) y E-249 (los niveles antes de la muralla); cuánto entra de verdad por semana y por campamento y cuántas semanas se pierden por falta de actividad (informe diario).
 
 ### Octubre de 2026 (19-oct): el campamento de la 0.39 (D-288 a D-291, D-294, D-295)
 

@@ -42,6 +42,7 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     _chain_spec_view y "role:" para el segundo rol del nivel 5, _bar_view fijo, _level_point_lines y las estadísticas;
     0.32, D-233: el Paladín reemplaza al Chamán y la creación muestra las clases de 2 en 2, una armadura por página:
     CLASS_PAGE_SIZE)
+    diseno/09-construccion/escalera-del-asentamiento.md §5.5 (0.49, D-309 y D-325: la 🌾 cosecha de la muralla);
     diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
     gremio y las obras con tiempo; vive en engine/service/gremio.py, GremioMixin, de la que GameService también hereda) y
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata, D-265)
@@ -120,6 +121,11 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
     D-324 (0.48): "recon_shown" (clave el id del héroe: {"list": [[x, y], ...]}): los lugares con código /rcN de la última
     lista de 🔭 Reconocer, en orden (como "places_shown"). Es solo un estado de pantalla: nada de progreso.
+    D-325 (0.49): "upgrades" suma "harvest" ({"since": cuándo empezó la semana, "at": la última cuenta, "pile" {recurso:
+    unidades con fracción} lo guardado esta semana (tope harvest.cap_days), "carry" {recurso: fracción} lo que sobró de la
+    entrega anterior, "total" {recurso: n} lo que la cosecha dio al 💰 fondo para siempre, "last" {"at", "items"} la última
+    entrega}) solo en los campamentos con la 🧱 Muralla; "meta"/"harvest" ({"next"}: cuándo vuelve a mirar _harvest_tick).
+    Nada nuevo en Hero. Las unidades entregadas van a "upgrades"."fund" (el fondo de siempre, D-291).
     D-192: "dudas_open" (clave la cuenta: {"at", "from"}): la pantalla de ❓ Dudas (o de 📚 Guías, D-297) está abierta y el
     texto suelto es una búsqueda; act() lo borra con cualquier otro botón. D-297: "from" es de dónde se abrió ("claro",
     "options" u "hero"; sin él, el centro de 🏕️ Campamento) y adónde va su ↩️ Volver. Es solo un estado de pantalla, como
@@ -605,6 +611,19 @@ Si cambias esto, revisa:
       PLACE_KINDS "node", _important_places (los nodos de _node_found en zonas que recuerdas) y _place_confirm_view (si una
       zona sale en dos listas, vale la última que viste). Textos: places.kind.node, places.node_name, recon.* y
       explorer.what.*. Pruebas: tests/test_fogata_reconocer_lugares.py, tests/test_reconocimiento.py, tests/test_mapa_gris.py
+    - 🌾 La cosecha de la muralla (0.49, D-309 confirmada por el dueño el 20-oct-2026, E-216 y E-217; cómo se aplicó: D-325,
+      provisional). Sección "🌾 the wall's harvest" (_harvest_cfg, _harvest_wall, _harvest_has_wall, _harvest_goods,
+      _harvest_rate, _harvest_state, _harvest_due, _harvest_active, _harvest_deliver, _harvest_tick, _harvest_line) y sus
+      ganchos: tick() (_harvest_tick, después de _market_tick), _improve_view y _camp_info_lines (_harvest_line), gremio.py
+      _guild_funds_view (_harvest_line) y _faq_values (_harvest_faq_values: {harvest_pct}, {harvest_days}, {harvest_cap},
+      {harvest_zone}, {wall_level}; {own_bonus} se fue con el +50 %). _gather_step sigue multiplicando por
+      gather.own_land_bonus, que ahora vale 1,0 (D-309: la cosecha lo reemplaza). Lo que entra al 💰 fondo lo toman las obras
+      y ⏫ Siguiente nivel como siempre (_feed_works, _lvlup_give, _give_to_work) y lo que sobra, los oficios (D-322). Las
+      cuentas: engine/world/harvest.py. Números: balance.yaml harvest (y stock: si cambia lo que vuelve a crecer, cambia la
+      cosecha). Si cambian el id o el nivel de la 🧱 muralla en content/camp_upgrades.yaml, cambia quién cosecha y desde
+      cuándo (harvest.wall). Textos: content/locales/es_cosecha.yaml y en_cosecha.yaml; ❓ /d61 (y d09, d57); 📚 las guías
+      gather y camp; territory.info_line ya no promete el +50 %. El ritmo hasta castillo con la cosecha: tools/camp_costs.py.
+      Pruebas: tests/test_cosecha_muralla.py, tests/test_costos_edificios.py, tests/test_menus_y_dudas.py, tests/test_guias.py
 """
 
 from __future__ import annotations
@@ -667,6 +686,7 @@ from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, classic_biome, travel_minutes, zone_at
 from engine.world import mapgen                          # D-265: the bonfires (BONFIRES, is_bonfire, nearest_bonfire)
 from engine.world import pantry as pantry_rules
+from engine.world import harvest as harvest_rules       # D-309, D-325 (0.49): 🌾 the wall's harvest
 from engine.social import guilds as guild_rules
 from engine.social import hunting as hunt_rules
 from engine.service.story import STORY_ACTIONS, StoryMixin
@@ -1232,7 +1252,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """Finish every timer that is due; return (account_id, view) notifications.
 
         [ES]
-        Qué hace: cumple los viajes y exploraciones que ya terminaron y devuelve los avisos.
+        Qué hace: cumple los viajes y exploraciones que ya terminaron y devuelve los avisos. Antes de mirar a los héroes
+        termina las obras (_works_tick), une a quien esperaba lugar (_waiting_sweep), cierra lo del 🏛️ Mercado
+        (_market_tick) y, desde la 0.49 (D-325), entrega la 🌾 cosecha de la muralla de cada semana (_harvest_tick).
         La llaman: el adaptador de Telegram cada pocos segundos.
         Si cambia, afecta: los avisos de llegada.
         """
@@ -1241,6 +1263,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         self._works_tick()                  # D-269: a founding or a camp work whose time came ends now (its notices go out below)
         self._waiting_sweep()               # D-323: once after start, who waited since before the patch gets in if there is room
         self._market_tick()                 # D-320: 🏛️ orders that ran out go back and 📦 deliveries that arrived are told (below)
+        self._harvest_tick()                # D-325: 🌾 a week of the wall's harvest goes to each camp's 💰 fund (its notice, below)
         for account_id, data in self.store.items("hero"):
             activity = data.get("activity")
             if not activity or activity.get("until", 0) > now:
@@ -1919,11 +1942,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         node_rare). Las unidades de más y el raro usan su propio sorteo: la vuelta saca los mismos recursos que sin nodo. Lo
         que dio el nodo va a activity["node"] para el resumen del lote. Recolectar en la zona descubre el nodo (estás parado ahí).
         D-305 (0.42): en un lote de 🪓 Talar (activity["only"] = la 🪵 madera) cada unidad de la vuelta es madera: la misma
-        cantidad, el mismo +50 % de tu territorio, la misma emboscada y el mismo 🪓 Leñador (_trade_gather); solo se agota la
+        cantidad, el mismo bono de tu territorio (el +50 % hasta la 0.48), la misma emboscada y el mismo 🪓 Leñador (_trade_gather); solo se agota la
         madera. El nodo cuenta solo si es de madera (×2, la mitad de agotamiento y su raro); un nodo de otro recurso no se
         trabaja al talar (sin su raro). Sin madera para juntar, la vuelta termina con batch.reason.chop_depleted.
         D-306.5 (0.43): un lote de 🎣 Pescar es lo mismo con "only" = el 🐟 pescado (activity["mode"] "fish"): cada unidad es
         pescado, sube el 🎣 Pescador y, sin pescado, la vuelta termina con batch.reason.fish_depleted.
+        D-309 (0.49, el dueño, E-217): el +50 % de tu territorio (gather.own_land_bonus) lo reemplazó la 🌾 cosecha de la
+        muralla (_harvest_deliver): la clave vale 1,0 y en tu territorio juntas lo mismo que afuera, más las ⚒️ Herramientas.
         """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
@@ -1940,7 +1965,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         amount = int(rng.uniform(low, high + 1)) + zone.level // 3
         if land and not land.get("claro") and hero.id in land.get("members", []):
             tools = 1 + self._camp_tech_bonus(hero, zone.x, zone.y, "gather_bonus")    # D-101: Herramientas
-            amount = int(amount * bal["own_land_bonus"] * tools + 0.5)     # your camp's land gives more (D-87)
+            # D-87 gave ×1.5 here; D-309 (0.49): the wall's harvest replaced it, own_land_bonus is 1.0 (the key stays)
+            amount = int(amount * float(bal.get("own_land_bonus", 1.0)) * tools + 0.5)
         node = self._node_main(zone.x, zone.y)           # D-184: a resource node here doubles its resource
         if node:
             activity["log"] += self._node_discover(hero, zone.x, zone.y)
@@ -4136,7 +4162,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """The member's info block of a camp (D-302): the summary, the grow cost, upgrades and 🛡️, damage, pantry, perks, raids.
 
         [ES] Qué hace: lo que antes iba arriba del centro de tu campamento (D-302 lo mudó a ℹ️ Información): el resumen
-        (_camp_summary_lines), "Eres parte…", 🗺️ el costo de agrandar el territorio y su tope (D-304), 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
+        (_camp_summary_lines), "Eres parte…", 🗺️ el costo de agrandar el territorio y su tope (D-304), la 🌾 cosecha de la
+        muralla (D-325, _harvest_line), 🔨 lo construido y la 🛡️ Defensa (D-101), las 🛠️ defensas
         dañadas (D-115), la 🌾 despensa (D-93, desde el nivel 3) y la hambruna, los 🏰 beneficios de los oficios (D-115) y la
         👁 próxima oleada o la que está en curso (D-99). La llama: _camp_info_view. Si cambia, afecta: esa pantalla
         (tests/test_submenus_campamento_gremio.py, tests/test_pantry.py, tests/test_oficios_campamento.py, tests/test_raids.py).
@@ -4146,8 +4173,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         lines = self._camp_summary_lines(camp)
         lines += [t.t("camps.you_member"),
                   t.t("territory.info_line", items=self._grow_cost_text(len(self._camp_zone_list(camp))),   # D-304
-                      cap=self._zones_cap(camp)),
-                  t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
+                      cap=self._zones_cap(camp))]
+        lines += self._harvest_line(camp)               # D-325 (0.49): 🌾 the wall's harvest (it replaced the +50 % here)
+        lines += [t.t("upgrades.camp_line", n=len(self._built(camp)), defense=self._camp_defense(camp))]   # D-101
         damage = self._camp_damage(camp)                # D-115: 🛠️ what the last raids damaged, until it is repaired
         if damage:
             lines.append(t.t("camp_prof.damage_line", n=damage))
@@ -4480,8 +4508,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         están listos (D-287/D-302: poco texto). Botones: ⏫ Siguiente nivel ("lvlup"), 🗺️ Agrandar territorio ("grow", el id de
         siempre: los botones viejos siguen andando) y ↩️ Volver a 🏰 Gestionar. Solo para miembros, en el centro de su
         campamento (en otro lugar, _upgrades_elsewhere).
+        D-325 (0.49): debajo de las zonas, la línea de la 🌾 cosecha de la muralla (_harvest_line: con la muralla, +N/día,
+        lo guardado y cuándo llega al 💰 fondo; sin ella y con su nivel, la pista).
         La llaman: ⬆️ Mejorar campamento de 🏰 Gestionar ("improve") y los ↩️ Volver de ⏫ y 🗺️.
-        Si cambia, afecta: tests/test_siguiente_nivel.py, tests/test_agrandar_territorio.py y el recorrido de botones.
+        Si cambia, afecta: tests/test_siguiente_nivel.py, tests/test_agrandar_territorio.py, tests/test_cosecha_muralla.py y
+        el recorrido de botones.
         """
         here = self._upgrades_here(hero)
         if not here:
@@ -4493,6 +4524,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)), "",
                 t.t("improve.zones_line", zones=zones, cap=cap, stage=self._camp_stage(level)),
                 t.t("improve.zones_free", n=cap - zones) if zones < cap else t.t("improve.zones_full")]
+        body += self._harvest_line(camp)               # D-325 (0.49): 🌾 the wall's harvest, one line (or the hint at its level)
         if level < self._camp_top_level():           # D-313: the whole list here, each line saying what is missing
             rows = self._lvlup_rows(camp, self._upgrades(key), hero)
             body += ["", t.t("improve.next_title", level=level + 1, stage=self._camp_stage(level + 1))]
@@ -6658,6 +6690,189 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
                 timed_any = timed_any or timed
         return record, lines, timed_any
 
+    # ------------------------------------------------------------------ 🌾 the wall's harvest (D-309, D-325; 0.49)
+    # [ES] Pedido del dueño del 17-oct-2026 (D-254), con los números del 20-oct (D-309, E-216 y E-217): con la 🧱 Muralla
+    # construida, cada zona del territorio da sola el 20 % de lo que vuelve a crecer, al 💰 fondo del campamento (nunca a la
+    # mochila de nadie), solo si algún miembro jugó esa semana y con un tope de 7 días; reemplaza el +50 % de recolectar en tu
+    # territorio (gather.own_land_bonus quedó en 1,0). Las cuentas puras están en engine/world/harvest.py; aquí, lo guardado de
+    # cada campamento ("upgrades"."harvest"), la entrega de cada semana desde tick() con su aviso y la línea que se ve en
+    # ⬆️ Mejorar, 💰 Fondos y ℹ️ Información. Lo que no dijo el dueño lo eligió Claude (D-325, provisional): todo el territorio
+    # cuenta como cerrado con la muralla (E-247), "lo que vuelve a crecer" sin el ×3 de la 0.42 (E-248), solo los materiales
+    # que recibe el fondo (el 🐟 pescado es comida: no) y una entrega por semana, sola, con un aviso.
+
+    def _harvest_cfg(self) -> dict[str, Any]:
+        """balance.yaml "harvest" (D-309, D-325): wall, share, real_regen, week_days, cap_days, active_days, scan_minutes."""
+        return self.content.balance.get("harvest") or {}
+
+    def _harvest_wall(self) -> str:
+        """The improvement that closes the territory (harvest.wall: 🧱 muralla)."""
+        return str(self._harvest_cfg().get("wall") or "muralla")
+
+    def _harvest_has_wall(self, record: dict[str, Any] | None) -> bool:
+        """True if this "upgrades" record has the wall built (then every zone of the territory counts as closed, D-325)."""
+        return bool(self._harvest_cfg()) and self._harvest_wall() in ((record or {}).get("built") or {})
+
+    def _harvest_goods(self, x: int, y: int) -> list[str]:
+        """The resources of a zone the harvest yields: the ones the camp's fund takes (materials with a code, never food).
+
+        [ES] Qué hace: los recursos de la zona (_zone_resources: los de base, la madera, los propios del terreno y el pescado)
+        que el 💰 fondo recibe, con la misma regla que 💰 Depositar (gremio.py _fund_goods): material con código, nunca comida
+        (el 🐟 pescado va a la despensa, no al fondo). La llama: _harvest_rate. Si cambia, afecta: qué llega con la cosecha.
+        """
+        items = self.content.items
+        return [res for res in self._zone_resources(x, y) if items.get(res, {}).get("kind") == "material"
+                and items[res].get("code") and not items[res].get("food")]
+
+    def _harvest_rate(self, camp: dict[str, Any]) -> dict[str, float]:
+        """What the camp's closed land yields per day, per resource (engine/world/harvest.py daily_rate over its zones).
+
+        [ES] Qué hace: suma lo que da cada zona del territorio (todas cuentan como cerradas con la muralla, D-325): el
+        harvest.share (20 %) de lo que vuelve a crecer cada recurso por día (24 con harvest.real_regen false; con true, con el
+        ×3 de stock.regen_mult y el ⛲ Pozo). No mira si el campamento tiene la muralla: eso lo deciden quienes la llaman
+        (_harvest_state y _harvest_line, que también la muestra antes de construirla). Si cambia, afecta: la cosecha.
+        """
+        cfg = self._harvest_cfg()
+        real = bool(cfg.get("real_regen", False))
+        well = self._effect_at(f"{camp['x']}:{camp['y']}", "stock_regen") if real else 0.0
+        zones = [self._harvest_goods(x, y) for x, y in self._camp_zone_list(camp)]
+        return harvest_rules.daily_rate(zones, self.content.balance["stock"], float(cfg.get("share", 0.0)), real, well)
+
+    def _harvest_state(self, camp: dict[str, Any], record: dict[str, Any],
+                       rate: dict[str, float] | None = None) -> dict[str, Any] | None:
+        """The harvest settled up to now: {"since", "at", "pile", "carry", "total", "last"} (a copy: the caller saves it);
+        None without the wall.
+
+        [ES] Qué hace: lee "upgrades"."harvest" y le suma lo cosechado desde la última cuenta ("at"), con el tope de
+        harvest.cap_days días por recurso (engine/world/harvest.py accrue). "since" es cuándo empezó la semana. La primera vez
+        (la muralla recién terminada, o una de antes de la 0.49) la semana empieza cuando se terminó la muralla, pero nunca más
+        de harvest.scan_minutes antes de ahora (nadie cobra días de antes del parche). La llaman: _harvest_deliver y
+        _harvest_line. Si cambia, afecta: cuánto se guarda (tests/test_cosecha_muralla.py).
+        """
+        if not self._harvest_has_wall(record):
+            return None
+        cfg = self._harvest_cfg()
+        now = self.clock.now()
+        data = dict(record.get("harvest") or {})
+        if not data.get("since"):
+            built = float(record["built"][self._harvest_wall()])
+            start = min(now, max(built, now - self._seconds(float(cfg.get("scan_minutes", 60)))))
+            data = {"since": start, "at": start, "pile": {}, "total": {}}
+        days = max(0.0, (now - float(data.get("at", now)))) / self._day_seconds()
+        rate = self._harvest_rate(camp) if rate is None else rate     # `rate`: the caller already has it (_harvest_line)
+        data["pile"] = harvest_rules.accrue(data.get("pile") or {}, rate, days, float(cfg.get("cap_days", 7)))
+        data["total"] = dict(data.get("total") or {})
+        data["at"] = now
+        return data
+
+    def _harvest_due(self, data: dict[str, Any]) -> float:
+        """When this week's harvest goes to the fund: harvest.week_days after the week began."""
+        return float(data["since"]) + self._seconds(float(self._harvest_cfg().get("week_days", 7)) * 24 * 60)
+
+    def _harvest_active(self, camp: dict[str, Any]) -> bool:
+        """True if a member of the camp played (Hero.seen_at) in the last harvest.active_days days (D-309: "esa semana")."""
+        since = self.clock.now() - self._seconds(float(self._harvest_cfg().get("active_days", 7)) * 24 * 60)
+        return any(float((self.store.get("hero", member) or {}).get("seen_at", 0.0)) >= since
+                   for member in camp.get("members", []))
+
+    def _harvest_deliver(self, key: str, camp: dict[str, Any]) -> float:
+        """Settle one camp's harvest and, when its week is over, put the whole units in its 💰 fund; return when it is due next.
+
+        [ES] Qué hace: suma lo cosechado hasta ahora y lo guarda. Cuando pasó la semana (harvest.week_days): si algún miembro
+        jugó en esos días (_harvest_active), pasa las unidades enteras al 💰 fondo del campamento ("upgrades"."fund"), anota el
+        total y la última entrega ("total", "last"; la fracción de cada recurso queda en "carry" para la semana siguiente, fuera
+        del tope de 7 días, así nunca se pierde) y le avisa a cada miembro en su idioma (_push_each, uno por semana, con el
+        botón 💰 Fondos del campamento); si nadie jugó, lo de esa semana se pierde,
+        sin aviso. Después empieza otra semana. Lo del fondo lo toman las obras activas y ⏫ Siguiente nivel la próxima vez que
+        alguien aporta, deposita o activa una obra (como todo lo del fondo: _give_to_work, _lvlup_give, _feed_works), y lo que
+        sobra queda para los oficios (D-322). Nunca toca la mochila de nadie. Devuelve cuándo toca la próxima entrega (infinito
+        sin muralla). La llama: _harvest_tick. Si cambia, afecta: el 💰 fondo de los campamentos con muralla
+        (tests/test_cosecha_muralla.py).
+        """
+        t = self.texts
+        record = self._upgrades(key)
+        data = self._harvest_state(camp, record)
+        if data is None:
+            return math.inf
+        now = self.clock.now()
+        if now < self._harvest_due(data):
+            record["harvest"] = data
+            self.store.put("upgrades", key, record)
+            return self._harvest_due(data)
+        active = self._harvest_active(camp)
+        week = dict(data.get("carry") or {})             # the fractions of the weeks before (never lost, never capped)
+        for item, n in data["pile"].items():
+            week[item] = week.get(item, 0.0) + n
+        units, rest = harvest_rules.split_units(week)
+        if active and units:
+            for item, n in units.items():
+                record["fund"][item] = int(record["fund"].get(item, 0)) + n
+                data["total"][item] = int(data["total"].get(item, 0)) + n
+            data["last"] = {"at": now, "items": dict(units)}
+        data["pile"] = {}
+        data["carry"] = rest if active else {}           # D-309: a week nobody played yields nothing
+        data["since"] = now
+        record["harvest"] = data
+        self.store.put("upgrades", key, record)
+        if active and units:
+            name, zones = camp["name"], len(self._camp_zone_list(camp))
+            self._push_each(list(camp.get("members", [])), lambda: View(
+                kind="camp_news", title=t.t("harvest.push_title"),
+                body=[t.t("harvest.push", camp=name, items=self._item_list(units), zones=zones), t.t("harvest.push_where")],
+                actions=[Action(id="gfunds", label=t.t("guildmenu.funds_button"))]))
+        return self._harvest_due(data)
+
+    def _harvest_tick(self) -> None:
+        """tick(): every harvest.scan_minutes (or when a week ends), settle and deliver the harvest of every camp with a wall.
+
+        [ES] Qué hace: como el 🏛️ Mercado (_market_tick), guarda en "meta"/"harvest" cuándo tiene que volver a mirar ("next"):
+        lo más pronto entre la próxima entrega de algún campamento y harvest.scan_minutes desde ahora (así ve también las
+        murallas recién terminadas). Recorre los campamentos ("camp") y a los que tienen la muralla les cuenta y entrega la
+        cosecha (_harvest_deliver). Sin el bloque harvest en balance.yaml, no hace nada. La llama: tick(). Si cambia, afecta:
+        cuándo llega la cosecha (tests/test_cosecha_muralla.py).
+        """
+        cfg = self._harvest_cfg()
+        if not cfg:
+            return
+        now = self.clock.now()
+        meta = self.store.get("meta", "harvest") or {}
+        if float(meta.get("next", 0.0)) > now:
+            return
+        soonest = now + self._seconds(float(cfg.get("scan_minutes", 60)))
+        for key, camp in list(self.store.items("camp")):
+            if self._harvest_has_wall(self.store.get("upgrades", key)):
+                soonest = min(soonest, self._harvest_deliver(key, camp))
+        self.store.put("meta", "harvest", {"next": soonest})
+
+    def _harvest_line(self, camp: dict[str, Any], record: dict[str, Any] | None = None) -> list[str]:
+        """The one line of the wall's harvest for ⬆️ Mejorar, 💰 Fondos and ℹ️ Información (D-44: the simple layer).
+
+        [ES] Qué hace: con la muralla, "🌾 Cosecha de la muralla: +N/día · guardado X (tope 7 días) · al 💰 fondo en …" (lo
+        que da por día todo el territorio, lo guardado esta semana y cuándo llega). Sin la muralla, si el campamento ya tiene
+        el nivel de la muralla (D-287: lo que no es de tu nivel no se ve), una pista: con la 🧱 Muralla, cada zona cosecha sola
+        el 20 %, unas +N por día con sus zonas. Antes de ese nivel, nada. Solo lee: no guarda nada (eso lo hace tick()). La
+        llaman: _improve_view, _camp_info_lines y gremio.py _guild_funds_view. Si cambia, afecta: esas pantallas
+        (tests/test_cosecha_muralla.py).
+        """
+        t = self.texts
+        record = record if record is not None else self._upgrades(f"{camp['x']}:{camp['y']}")
+        cfg = self._harvest_cfg()
+        if not cfg:
+            return []
+        if not self._harvest_has_wall(record):
+            wall = self._upgrade_catalog().get(self._harvest_wall()) or {}
+            if not wall or wall.get("retired") or int(camp.get("level", 1)) < int(wall.get("level", 1)):
+                return []
+            zones = len(self._camp_zone_list(camp))
+            return [t.t("harvest.no_wall", pct=round(float(cfg.get("share", 0.0)) * 100), zones=zones,
+                        per_day=round(sum(self._harvest_rate(camp).values())))]
+        rate = self._harvest_rate(camp)
+        data = self._harvest_state(camp, record, rate) or {}
+        left = max(0.0, self._harvest_due(data) - self.clock.now())
+        when = (t.t("harvest.days", n=math.ceil(left / self._day_seconds() - 1e-9)) if left >= self._day_seconds()
+                else self._fmt_duration(left))
+        return [t.t("harvest.line", per_day=round(sum(rate.values())), stored=int(sum(data["pile"].values())),
+                    cap=int(float(cfg.get("cap_days", 7))), time=when)]
+
     def _activate_work(self, hero: Hero, uid: str, back: str = "type") -> View:
         """▶️ Activar: the founder or a 🤝 helper opens a work of the camp's level: from now on it asks for materials (D-291).
 
@@ -7446,6 +7661,24 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         per_hour = float(cfg["regen_per_hour"]) * lowest
         return {"base_regen": round(per_hour * 100), "base_units": f"{per_hour / max(1e-9, float(cfg['per_unit'])):g}"}
 
+    def _harvest_faq_values(self) -> dict[str, Any]:
+        """The numbers of the 🌾 wall's harvest for ❓ Dudas and 📚 Guías (D-325): {harvest_pct}, {harvest_days}, {harvest_cap},
+        {harvest_zone} and {wall_level}.
+
+        [ES] Qué hace: el porcentaje (harvest.share, 20), cada cuántos días llega (week_days, 7), el tope (cap_days, 7), unas
+        cuántas unidades da una zona por día (5 recursos de tierra, lo común: 4 a 6, con lo que vuelve de base: con
+        harvest.real_regen true da más, y el texto nunca promete de más) y desde qué nivel se construye la 🧱 Muralla (su
+        "level" en content/camp_upgrades.yaml). La llama: _faq_values (y por ella _guidebook_values). Si cambia,
+        afecta: lo que dicen /d09, /d57, /d61 y las guías gather y guild (tests/test_cosecha_muralla.py).
+        """
+        cfg = self._harvest_cfg()
+        share = float(cfg.get("share", 0.0))
+        per_zone = 5 * share * harvest_rules.regrow_per_day(self.content.balance["stock"], "")
+        wall = self._upgrade_catalog().get(self._harvest_wall()) or {}
+        return {"harvest_pct": round(share * 100), "harvest_days": int(float(cfg.get("week_days", 7))),
+                "harvest_cap": int(float(cfg.get("cap_days", 7))), "harvest_zone": round(per_zone),
+                "wall_level": int(wall.get("level", 5))}
+
     def _faq_values(self) -> dict[str, Any]:
         """The numbers the answers show, read from balance.yaml every time (an answer never keeps an old number).
 
@@ -7454,6 +7687,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         con content/balance.yaml y content/*.yaml. Si una respuesta nueva pide otro número, se agrega aquí.
         La llama: _duda_view. Si cambia, afecta: lo que dicen las respuestas de ❓ Dudas (tests/test_menus_y_dudas.py revisa
         que ninguna quede con un marcador sin llenar). D-305 (0.42): {base_regen} y {base_units} (_base_regen_values).
+        D-325 (0.49): {own_bonus} (el +50 % de tu territorio) ya no está; la 🌾 cosecha de la muralla trae {harvest_pct},
+        {harvest_days}, {harvest_cap}, {harvest_zone} y {wall_level} (_harvest_faq_values).
         """
         t = self.texts
         b = self.content.balance
@@ -7473,7 +7708,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             "explore_min": b["explore"]["minutes"], "gather_min": b["gather"]["minutes"],
             "explore_low": b["exploration"]["per_step"][0], "explore_high": b["exploration"]["per_step"][-1],
             "reveal": self._faq_and(b["exploration"].get("reveal_at", [100])),
-            "own_bonus": round((float(b["gather"].get("own_land_bonus", 1.0)) - 1) * 100),
+            **self._harvest_faq_values(),               # D-325 (0.49): 🌾 the wall's harvest ({own_bonus} left with the +50 %)
             "batches": ", ".join(str(n) for n in energy.get("batch", [])), "hunt_energy": b["hunt"]["energy"],
             "node_yield": f"{float(b['nodes']['yield_mult']):g}", "node_rare": round(float(b["nodes"]["rare_chance"]) * 100),
             **self._base_regen_values(),                # D-305 (0.42): the 6 base resources come back 3 per hour

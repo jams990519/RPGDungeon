@@ -584,7 +584,7 @@ Un campamento tiene de 2 a 18 miembros. La capa ligera mide todo **por miembro**
 | **1-2 (campamento)** | Nada. Fundar y crecer siguen como hoy |
 | **3-4 (aldea)** | **Despensa chica** en el almacén común: 1 ración por miembro activo por día. Si se vacía, el campamento no puede agrandarse hasta llenarla. Nunca pierde zonas ni niveles (**en el juego**, §0.4) |
 | **5-6 (pueblo)** | **Una incursión por semana**, con la fuerza escalada a los miembros activos. La juegan los miembros conectados; los demás pelean con su Eco (el Eco todavía no existe). Si se pierde, se pierde parte de la despensa y nada más (**en el juego**, §0.5; sigue también en los niveles siguientes) |
-| **7-8 (ciudad)** | Un medidor de **salud** simple: con la despensa llena y una enfermería, se mantiene solo. Si baja, la recolección extra del territorio (+50 %) se apaga hasta que suba |
+| **7-8 (ciudad)** | Un medidor de **salud** simple: con la despensa llena y una enfermería, se mantiene solo. Si baja, la 🌾 cosecha de la muralla se apaga hasta que suba (antes decía la recolección extra del territorio, +50 %, que la 0.49 quitó: D-309) |
 | **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días (**en el juego**, §0.5, con la versión élite del enemigo más fuerte del bioma) |
 
 - **Lo que nunca pasa:** un campamento activo nunca pierde niveles, zonas ni miembros por fallar. Lo que se apaga son servicios, hasta que se recuperen.

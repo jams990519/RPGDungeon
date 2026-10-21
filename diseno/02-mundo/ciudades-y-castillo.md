@@ -11,7 +11,7 @@ Una ciudad en Lost Realms no la pone el diseñador: **la levantan los jugadores*
 | Lugar | Quién lo levanta | Cómo crece | Qué tiene hoy |
 |---|---|---|---|
 | **El Claro** (0, 0) | Todo el servidor, con la obra común | 6 etapas: fogata, campamento, aldea, pueblo, ciudad y castillo. 1 zona más por etapa | 🏪 Mercader, 🛏️ posada (más barata en cada etapa), 💰 costura de bolsas, venta de equipo, territorio seguro |
-| **Campamento de jugadores** | Su fundador y sus miembros | Por nivel: campamento (1), aldea (3), pueblo (5), ciudad (7) y castillo (9). 1 zona elegida por nivel, sin tope | Territorio seguro, +50 % al recolectar para sus miembros, ancla del viaje, cupo de miembros que crece y **🔨 Mejoras** por nivel (D-101, provisional): servicios propios (refugio, puesto de trueque, taller, herrería), despensa mejor, defensas que suman 🛡️ Defensa y 📚 Conocimiento. Castillo pide 15 |
+| **Campamento de jugadores** | Su fundador y sus miembros | Por nivel: campamento (1), aldea (3), pueblo (5), ciudad (7) y castillo (9). 1 zona elegida por nivel, sin tope | Territorio seguro, 🌾 cosecha de la muralla para el 💰 fondo (desde la 0.49, D-309; antes +50 % al recolectar para sus miembros), ancla del viaje, cupo de miembros que crece y **🔨 Mejoras** por nivel (D-101, provisional): servicios propios (refugio, puesto de trueque, taller, herrería), despensa mejor, defensas que suman 🛡️ Defensa y 📚 Conocimiento. Castillo pide 15 |
 
 - Los números y las reglas están en [Fundación y cisma](fundacion-y-cisma.md) §1 y §2 (D-71, D-81, D-84, D-87).
 - **Cuando el Claro llega a castillo,** el juego dice: "¡El Claro ya es un castillo! Lo que sigue lo deciden sus habitantes". Ese "lo que sigue" son las alas del Castillo (§3).

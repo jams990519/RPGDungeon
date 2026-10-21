@@ -80,7 +80,7 @@ territory:
   page: "Page {n} of {total}"
   grown: "🗺️ The territory grew to the {dir}! It now has {zones} of {cap} zones (added ({x}, {y}))."
   grown_push: "🗺️ {hero} expanded {camp} to the {dir}: added ({x}, {y}) and it has {zones} of {cap} zones."
-  info_line: "🗺️ Expanding the territory adds 1 neighbouring zone (up to {cap} at this stage) and costs {items}. In your territory you gather 50 % more."
+  info_line: "🗺️ Expanding the territory adds 1 neighbouring zone (up to {cap} at this stage) and costs {items}."
   dir:
     n: "⬆️ North"
     ne: "↗️ Northeast"

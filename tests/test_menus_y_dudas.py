@@ -176,7 +176,7 @@ def test_every_faq_entry_has_texts_topic_and_valid_related(service):
     make_hero(service)
     faq = service.content.faq
     entries = service._faq_entries()
-    assert 40 <= len(entries) <= 60
+    assert 40 <= len(entries) <= 70                     # D-325 (0.49): /d61, the 🌾 wall's harvest, is the 61st
     topics = faq["topics"]
     assert set(topics) == {q["topic"] for q in entries.values()} and len(topics) + 1 <= HUB_BUTTONS
     values = service._faq_values()

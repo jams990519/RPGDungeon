@@ -80,7 +80,7 @@ faq:
     a: "🔎 Explorar busca en tu zona: cada vuelta toma {explore_min} min y 1 ⚡, suma de {explore_low} a {explore_high} % de la zona y puede darte cosas, monedas o una pelea. Al {reveal} % descubres sus recursos de a uno. Con la zona al 100 % sigues con las vecinas sin moverte."
   d09:
     q: "🧺 ¿Cómo recolecto?"
-    a: "🧺 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas (los 6 de base, unos {base_units} por hora). En el territorio de tu campamento juntas {own_bonus} % más. Para juntar solo 🪵 madera, 🪓 Talar (/d57)."   # [ES] D-305 (0.42)
+    a: "🧺 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas (los 6 de base, unos {base_units} por hora). En el territorio de tu campamento no salen peleas; desde la 0.49 ahí juntas lo mismo que afuera y, con la 🧱 Muralla, la tierra cosecha sola para el 💰 fondo (/d61). Para juntar solo 🪵 madera, 🪓 Talar (/d57)."   # [ES] D-305 (0.42); D-309 (0.49): sin el +50 % de tu territorio
   d10:
     q: "🔢 ¿Qué son los lotes?"
     a: "Al explorar, recolectar o cazar eliges cuánta energía gastar seguido ({batches} o Todo). Tu héroe hace una vuelta tras otra y te aviso al final con el resumen. Si sale una pelea, el lote se corta y la peleas tú."
@@ -223,7 +223,7 @@ faq:
     a: "Cada lugar dice sus coordenadas: (x, y). Tú estás donde dice 📍 Zona. El norte suma a la y y el este, a la x: (3, -2) está 3 zonas al este y 2 al sur del Claro, que es (0, 0). Para ir, escribe /ir x y (por ejemplo, /ir 3 -2): se arma el camino en 🔗 Moverte, primero este-oeste y después norte-sur, y tocas ✅ Terminar. Hasta {walk_max} pasos por vez."   # [ES] D-278 (0.36.1, pedido del dueño)
   d57:
     q: "🪓 ¿Cómo consigo madera?"
-    a: "🪵 Hay madera en todas las zonas, y más en bosques, bosques oscuros y selvas. En 🧭 Explorar, 🪓 Talar junta solo madera: como 🧺 Recolectar ({gather_min} min y 1 ⚡ por vuelta, los mismos lotes), pero cada unidad es madera y sube al 🪓 Leñador. En tu territorio juntas {own_bonus} % más y en un ✨ nodo de madera rinde ×{node_yield}. Se agota y vuelve sola: unas {base_units} por hora en cada zona."   # [ES] D-305 (0.42)
+    a: "🪵 Hay madera en todas las zonas, y más en bosques, bosques oscuros y selvas. En 🧭 Explorar, 🪓 Talar junta solo madera: como 🧺 Recolectar ({gather_min} min y 1 ⚡ por vuelta, los mismos lotes), pero cada unidad es madera y sube al 🪓 Leñador. En un ✨ nodo de madera rinde ×{node_yield}. Se agota y vuelve sola: unas {base_units} por hora en cada zona."   # [ES] D-305 (0.42); D-309 (0.49): sin el +50 % de tu territorio
   d58:
     q: "🏛️ ¿Cómo vendo a otros jugadores?"
     a: "En una 🔥 fogata, 🛒 Mercader → 🏛️ Mercado (o /mercado; también en tu campamento con 🏪 Puesto de trueque). 🏷️ Vender: el equipo y lo fabricado (pociones, remedios, muebles, comida, bolsas y cofres) con su código (/s1); pones precio y cantidad y sale de tu mochila. Cuando alguien compra, cobras al momento menos el {market_tax} % de impuesto. Los recursos se venden en 📥 Pedidos de compra, a quien los pide. Hasta {market_orders} órdenes a la vez; duran {market_days} días y ❌ cancelar devuelve todo."   # [ES] D-320 (0.46)
@@ -233,3 +233,6 @@ faq:
   d60:
     q: "💰 ¿Uso el fondo del gremio en mi oficio?"
     a: "Sí, en las estaciones de tu campamento (no en las 🔥 fogatas). Primero las obras: el fondo da lo que les falta a las obras activas y a ⏫ Siguiente nivel, y eso queda guardado. Lo que sobra cuenta al refinar y fabricar como si lo llevaras: la receta toma primero de tu mochila y después del fondo (✅💰 en la lista), hasta {fund_cap} por día. Queda anotado en 🛡️ Gremio → 💰 Fondos → 📜 Quién usó qué, y el fundador o un 🤝 asistente puede cerrarlo ahí."   # [ES] D-322 (0.47)
+  d61:
+    q: "🌾 ¿Qué es la cosecha de la muralla?"
+    a: "Con la 🧱 Muralla construida (desde el nivel {wall_level}, en 🏘️ Servicios → 🛡️ Defensas), cada zona del territorio de tu campamento cosecha sola el {harvest_pct} % de lo que vuelve a crecer (unas {harvest_zone} por día cada una), sin gastar energía y sin bajar los recursos de la zona. Se guarda hasta {harvest_cap} días y cada {harvest_days} días llega sola al 💰 fondo del campamento (nunca a la mochila de nadie), si algún miembro jugó esa semana; a cada miembro le llega un aviso. Va primero a las obras y a ⏫ Siguiente nivel, y lo que sobra, a los oficios (/d60). Reemplaza el +50 % que antes daba recolectar en tu territorio. Lo ves en 🏰 Gestionar → ⬆️ Mejorar y en 🛡️ Gremio → 💰 Fondos."   # [ES] D-309, D-325 (0.49)
