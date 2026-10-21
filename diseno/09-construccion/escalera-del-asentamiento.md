@@ -121,7 +121,7 @@ D-122 (confirmada) pide que, antes del castillo, el campamento "defienda su estr
   - en ⏫ Siguiente nivel: "🌊 Oleadas crecientes: 2 ganadas, 1 perdida de 5 (hace falta ganar 3; quedan 2)" y, mientras faltan, una línea que explica cómo llegan;
   - en el aviso, en la pelea y en la pantalla del campamento: "🌊 Oleada creciente 2 de 5 (+40 %)";
   - en el parte de cada oleada, que les llega a todos los miembros en su idioma: cómo va la serie;
-  - en 📜 Qué pide cada nivel y en ❓ /d39 y /d42.
+  - en 📜 Qué pide cada nivel, en ❓ /d39 y /d42 y en 📚 Guías → 🏕️ Campamento.
 - **La 🌙 Noche de prueba y las oleadas** se hacen en cualquier orden: si solo faltan esas dos, ⏫ muestra el botón 🌙.
 - **Nadie pierde (D-64):** un castillo que ya existe no recibe oleadas crecientes; solo traban el paso a castillo.
 - **Mantener el castillo** ("después hay que mantener la estructura") queda para después (E-262, P-273).
