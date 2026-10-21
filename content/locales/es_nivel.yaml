@@ -48,7 +48,8 @@ lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que s
   fund_hint: "💰 Al tocar 🤲 Aportar, el fondo pone primero {items}."
   how_items: "📦 Los materiales no llegan solos: dalos con 🤲 Aportar en ⏫ Siguiente nivel (estando en el campamento) o desde cualquier lugar con 💰 Depositar."   # [ES] D-313
   how_works: "🏗️ Las obras: el fundador o un 🤝 asistente las activa, todos aportan sus materiales y después se construyen con el tiempo."
-  gives: "Al subir: 👥 +{members} lugares, obras nuevas y 🗺️ hasta {zones} zonas."
+  gives: "Al subir: 👥 caben {cap} (hoy {now}), obras nuevas y 🗺️ hasta {zones} zonas."   # [ES] D-327 (0.51): el cupo de la etapa nueva
+  gives_same: "Al subir: obras nuevas y 🗺️ hasta {zones} zonas. 👥 El cupo ({cap}) crece al pasar a la etapa siguiente."   # [ES] D-327: subir dentro de la misma etapa no cambia el cupo
   give_button: "🤲 Aportar"
   go_button: "⏫ Subir a nivel {level}"
   trial_button: "🌙 Noche de prueba"
@@ -57,7 +58,7 @@ lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que s
   nothing: "No llevas nada de lo que falta: {items}."
   materials_done: "Los materiales ya están: falta lo demás de la lista."
   not_ready: "Todavía falta algo de la lista."
-  done: "⏫ ¡{camp} subió a nivel {level} ({stage})! Caben más miembros, hay obras nuevas y el territorio llega hasta {zones} zonas."
+  done: "⏫ ¡{camp} subió a nivel {level} ({stage})! 👥 Caben {cap} miembros, hay obras nuevas y el territorio llega hasta {zones} zonas."
   push_title: "⏫ Tu campamento subió de nivel"
   push: "⏫ {hero} subió {camp} a nivel {level} ({stage})."
   top: "🏰 Tu campamento llegó a {stage}: todavía no hay un nivel más."
@@ -67,7 +68,7 @@ lvlall:                        # [ES] D-313 (0.41.1): 📜 Qué pide cada nivel,
   intro: "Tu campamento está en nivel {level} ({stage}). Lo que pide cada subida:"
   line: "⏫ Nivel {level} ({stage}): construir {works} · {items}{extra}"
   chests: " · 🪎 {n} {n|cofre|cofres}"
-  castle: "🏰 Para castillo, además: el gremio listo, {n} mejoras construidas y ganar la 🌙 Noche de prueba."
+  castle: "🏰 Para castillo, además: el gremio listo, {active} miembros que jugaron en los últimos {days} días, {n} mejoras construidas y ganar la 🌙 Noche de prueba con {winners} vencedores distintos o más."   # [ES] D-327 (0.51, D-253.2 y D-122)
 
 territory:                     # [ES] D-304: 🗺️ Agrandar territorio, hacia dónde crece
   title: "🗺️ Agrandar territorio"
@@ -108,6 +109,6 @@ upgrades:                      # [ES] D-304: lo que ven TODOS los miembros en �
   lvlup_line: "⏫ Nivel {level}: {done} de {total} listos (⬆️ Mejorar → ⏫ Siguiente nivel)."
 
 helpers:                       # [ES] D-304: la línea del fundador en 👥 Miembros (cómo nombrar un asistente)
-  founder_line: "🤝 Asistentes: {n} de {cap}{names} — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente."
+  founder_line: "🤝 Asistentes: {n} de {cap}{names} — toca el código de un miembro (/m2) y elige 🤝 Hacer asistente. Son los oficiales: aceptan gente, invitan y activan obras."   # [ES] D-327 (0.51): los asistentes son los oficiales de D-253.4
   founder_names: ": {names}"
   founder_alone: "🤝 Asistentes: 0 de {cap}. Cuando entre otro miembro, podrás nombrarlo asistente."

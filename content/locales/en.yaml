@@ -2481,11 +2481,11 @@ camps:
   cancel_name: ❌ Cancel
   renamed: ✏️ Your camp is now called {name}.
   rename_button: ✏️ Change name
-  members_cap: '👥 Members: {n} of {cap}. Leveling it up makes room for more.'
+  members_cap: "👥 Members: {n} of {cap}. More fit when it reaches the next stage."
   join_button: 🙋 Ask to join
-  join_sent: 🙋 You asked the founder to join. I'll let you know when they answer.
-  join_waiting: ⏳ Your request to join is waiting for the founder's answer.
-  full: 'This camp is full: it has to level up for anyone else to join.'
+  join_sent: "🙋 You asked to join: the founder or one of their 🤝 assistants decides. I'll let you know when they answer."
+  join_waiting: "⏳ Your request to join is waiting for the answer of the founder or a 🤝 assistant."
+  full: "This camp is full: more fit when it reaches the next stage or when someone leaves."
   join_title: 🙋 Someone wants to join your camp
   join_body: '{name} (level {level}) wants to join {camp}. Do you let them in?'
   join_yes: ✅ Accept
@@ -2742,9 +2742,9 @@ guild:
   title: 🛡️ Guild
   button: 🛡️ Guild
   none: 🛡️ {camp} doesn't have a guild yet.
-  what: A guild brings the camp's members together. It levels up with what everyone does together (exploring, winning fights and gathering), and each level lets more people in.
-  castle_hint: 🏰 For the camp to become a castle, it needs a guild of level {level} or higher, with {members} or more members.
-  cap_warning: '👥 With a guild, the camp''s member cap can grow: the guild gives {cap} spots at level 1 and more as it levels up. It never lowers the cap you already have.'
+  what: "A guild brings the camp's members together. It levels up with what everyone does together (exploring, winning fights and gathering); the castle asks for a high-level guild."
+  castle_hint: "🏰 For the camp to become a castle, it needs a guild of level {level} or higher and {members} members who play during the week."
+  cap_warning: "👥 The camp's member cap is its stage's (now {cap}) and grows with each new stage; the guild doesn't change it."
   found_cost: Creating it costs {coins}. The founder creates it, while at the camp.
   only_founder: Only the founder, {founder}, can create it.
   found_button: 🛡️ Create guild
@@ -2768,7 +2768,7 @@ guild:
     hours: active {n} h ago
     days: active {n} {n|day|days} ago
     never: no recent activity
-  needs_title: 'To reach level {next} (room for {cap}):'
+  needs_title: 'To reach level {next}:'
   need_line: '{label}: {have}/{need} {bar}'
   counter:
     explorations: 🧭 Explorations
@@ -2780,11 +2780,11 @@ guild:
   ready_away: ✅ You meet every requirement! Go back to the camp to level it up.
   up_button: ⬆️ Level up guild
   not_ready: You don't meet the level's requirements yet.
-  risen: 🎉 The guild {name} reached level {level}! There's now room for {cap} members.
+  risen: "🎉 The guild {name} reached level {level}!"
   risen_title: 🛡️ Your guild leveled up
   camp_line_visitor: '🛡️ Guild: {name} (level {level})'
-  members_cap: '👥 Members: {n} of {cap}. There''s room for more as the guild levels up.'
-  full: 'This camp is full: its guild has to level up for anyone else to join.'
+  members_cap: "👥 Members: {n} of {cap}. More fit when it reaches the next stage."
+  full: "This camp is full: more fit when it reaches the next stage or when someone leaves."
   no_camp: 🛡️ The guild is created from your camp. First found one or join one.
   rename_camp: ✏️ Rename camp
   castle_title: '🏰 To become a castle it needs:'

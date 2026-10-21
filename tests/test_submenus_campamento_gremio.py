@@ -74,7 +74,7 @@ def test_the_camp_hub_shows_its_name_and_what_you_can_do_and_info_has_the_rest(s
     info = service.act("test:1", "campinfo")
     assert info.kind == "camp_info" and info.title == "ℹ️ Información del campamento"
     assert all(bit in text(info) for bit in INFO_BITS), text(info)
-    assert any("Miembros: 1 de 5" in line for line in info.body) and any("Gremio: Campo 1 6" in line for line in info.body)
+    assert any("Miembros: 1 de 10" in line for line in info.body) and any("Gremio: Campo 1 6" in line for line in info.body)
     assert ids(info) == ["campmgmt"] and len(info.actions) <= button_cap(info.kind)   # ↩️ back to 🏰 Gestionar
 
 
@@ -125,7 +125,7 @@ def test_the_guild_keeps_its_top_and_opens_members_funds_and_chat(service):
     assert guild.kind == "guild" and "🛡️ Campo 1 6 · nivel 1" in body and "Para subir a nivel 2" in body
     assert "Cuenta lo que hacen todos los miembros desde que entran." in body
     assert ids(guild)[:5] == ["gmembers", "gfunds", "gchat", "garm", "gzones"] and len(guild.actions) <= HUB_BUTTONS
-    assert guild.actions[0].label == "👥 Miembros (1/5)" and guild.actions[1].label == "💰 Fondos del campamento"
+    assert guild.actions[0].label == "👥 Miembros (1/10)" and guild.actions[1].label == "💰 Fondos del campamento"
     assert guild.actions[2].label == "📢 Chat"
     assert not any(line.startswith("/m") for line in guild.body)                # the members: in 👥 Miembros
     assert "Últimos mensajes" not in body and "Fondo" not in body and "Armería" not in body
@@ -133,7 +133,7 @@ def test_the_guild_keeps_its_top_and_opens_members_funds_and_chat(service):
     assert "🗃️ 0/30 piezas" in armory.body and ids(armory) == ["guild"]          # ⚔️ its count, on its own screen
 
 
-def test_members_list_the_members_and_who_waits_for_room(service):
+def test_members_list_the_members_and_who_waits_for_room(service, old_member_caps):     # D-327: a camp of 2, the old count
     waiting_cora(service)                                                         # Lyra's full camp; Cora waits in its guild
     members = service.act("test:1", "gmembers")
     assert members.kind == "guild_members" and members.title == "👥 Miembros del gremio"
@@ -257,7 +257,7 @@ def test_old_buttons_still_work_and_everything_reads_well_in_english(service):
     info = service.act("test:1", "campinfo")
     assert info.title == "ℹ️ Camp info" and "[" not in text(info)
     guild = service.act("test:1", "guild")
-    assert [a.label for a in guild.actions[:3]] == ["👥 Members (1/5)", "💰 Camp funds", "📢 Chat"]
+    assert [a.label for a in guild.actions[:3]] == ["👥 Members (1/10)", "💰 Camp funds", "📢 Chat"]
     assert "request is waiting" in text(guild)
     for action in ("gmembers", "gfunds", "gchat"):
         view = service.act("test:1", action)

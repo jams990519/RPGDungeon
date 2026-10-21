@@ -37,7 +37,8 @@ lvlup:
   fund_hint: "💰 When you tap 🤲 Give, the fund puts in {items} first."
   how_items: "📦 Materials do not arrive by themselves: give them with 🤲 Give in ⏫ Next level (at the camp) or from anywhere with 💰 Deposit."
   how_works: "🏗️ Works: the founder or an 🤝 assistant activates them, everyone gives their materials and then they are built over time."
-  gives: "Going up: 👥 +{members} places, new works and 🗺️ up to {zones} zones."
+  gives: "Going up: 👥 room for {cap} (now {now}), new works and 🗺️ up to {zones} zones."
+  gives_same: "Going up: new works and 🗺️ up to {zones} zones. 👥 The member cap ({cap}) grows at the next stage."
   give_button: "🤲 Give"
   go_button: "⏫ Go up to level {level}"
   trial_button: "🌙 Trial Night"
@@ -46,7 +47,7 @@ lvlup:
   nothing: "You carry nothing of what is missing: {items}."
   materials_done: "The materials are in: the rest of the list is missing."
   not_ready: "Something on the list is still missing."
-  done: "⏫ {camp} reached level {level} ({stage})! More members fit, there are new works and the territory goes up to {zones} zones."
+  done: "⏫ {camp} reached level {level} ({stage})! 👥 Room for {cap} members, there are new works and the territory goes up to {zones} zones."
   push_title: "⏫ Your camp went up a level"
   push: "⏫ {hero} took {camp} to level {level} ({stage})."
   top: "🏰 Your camp became a {stage}: there is no higher level yet."
@@ -56,7 +57,7 @@ lvlall:
   intro: "Your camp is level {level} ({stage}). What each step up needs:"
   line: "⏫ Level {level} ({stage}): build {works} · {items}{extra}"
   chests: " · 🪎 {n} {n|chest|chests}"
-  castle: "🏰 For a castle, also: the guild ready, {n} upgrades built and winning the 🌙 Trial Night."
+  castle: "🏰 For a castle, also: the guild ready, {active} members who played in the last {days} days, {n} upgrades built and winning the 🌙 Trial Night with {winners} different winners or more."
 
 territory:
   title: "🗺️ Expand territory"
@@ -97,6 +98,6 @@ upgrades:
   lvlup_line: "⏫ Level {level}: {done} of {total} ready (⬆️ Improve → ⏫ Next level)."
 
 helpers:
-  founder_line: "🤝 Assistants: {n} of {cap}{names} — tap a member's code (/m2) and choose 🤝 Make assistant."
+  founder_line: "🤝 Assistants: {n} of {cap}{names} — tap a member's code (/m2) and choose 🤝 Make assistant. They are the officers: they accept people, invite and activate works."
   founder_names: ": {names}"
   founder_alone: "🤝 Assistants: 0 of {cap}. When another member joins, you can name them assistant."

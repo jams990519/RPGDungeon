@@ -1001,3 +1001,18 @@ v0_50:
     - "🏛️ Sell it at the price you want in the 🏛️ Market (🏷️ Sell), from 1 🥉 to 1 🥇. Buyers find it in 🛍️ Buy → 🗺️ Maps and see how many zones are new for them."
     - "📜 Whoever uses it sees those zones in colour on their 🗺️ Map for ever, and their terrains join the legend. Only the colour: resources, nodes and direct travel are still earned by exploring. The scroll is spent when used."
     - "🎒 Your scrolls: /scrolls (the 🎒 Backpack says it too)."
+
+v0_51:
+  version: "0.51"
+  title: "🏰 Lost Realms 0.51: la escalera del asentamiento"
+  title_en: "🏰 Lost Realms 0.51: the settlement ladder"
+  notes:
+    - "👥 Cada etapa tiene un solo cupo: en el campamento caben 10, en la aldea 15, en el pueblo 25, en la ciudad 40 y en el castillo 50 (las 🛖 Cabañas y las 🛏️ Literas suman encima). Ningún campamento tiene menos lugar que antes, y quien esperaba lugar en el gremio entra solo."
+    - "🤝 Los asistentes son los oficiales del campamento: aceptan o rechazan a quien pide entrar, invitan y activan obras. El fundador los nombra en 🛡️ Gremio → 👥 Miembros, desde la tarjeta de cada miembro."
+    - "💤 Quien no juega 30 días deja libre su lugar en el gremio y el campamento (a los 25 le llega un aviso; nunca al fundador). Su héroe y sus cosas quedan, lo que dio queda en el campamento y puede pedir entrar de nuevo. La cuenta empieza hoy."
+    - "🏰 Para pasar a castillo ahora hacen falta 40 miembros que jugaron en la semana y ganar la 🌙 Noche de prueba con 10 vencedores distintos. Míralo en ⏫ Siguiente nivel."
+  notes_en:
+    - "👥 Each stage has a single member cap: 10 fit in a camp, 15 in a village, 25 in a town, 40 in a city and 50 in a castle (🛖 Cabins and 🛏️ Bunks add on top). No camp has less room than before, and whoever was waiting for room in the guild gets in by themselves."
+    - "🤝 Assistants are the camp's officers: they accept or refuse whoever asks to join, invite and activate works. The founder names them in 🛡️ Guild → 👥 Members, from each member's card."
+    - "💤 Whoever doesn't play for 30 days frees their place in the guild and the camp (at 25 days they get a warning; never the founder). Their hero and their things stay, what they gave stays in the camp and they can ask to join again. The count starts today."
+    - "🏰 To become a castle you now need 40 members who played during the week and to win the 🌙 Trial Night with 10 different winners. Check it in ⏫ Next level."

@@ -64,7 +64,7 @@ services:
 helpers:
   role: "🤝 "
   line: "🤝 Assistants ({n}/{cap}): {names}"
-  none: "🤝 Assistants (0/{cap}): the founder names them from each member's card (/m2). One per 5 members."
+  none: "🤝 Assistants (0/{cap}): they are the camp's officers (they accept whoever asks to join, invite and activate works). The founder names them from each member's card (/m2). One per 5 members."
   make_button: "🤝 Make assistant"
   remove_button: "✖️ Remove assistant"
   full: "🤝 There are already {cap} {cap|assistant|assistants}: one per 5 members."
