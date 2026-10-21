@@ -9600,7 +9600,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         (upgrades.castle_min_built).
         """
         stone = tuple(self._camp_prof_cfg().get("stone_items") or ())
-        base = self._work_need(udef)
+        base = self._work_base(udef, record, uid) if record is not None and uid else self._work_need(udef)
         mult = self._work_mult(record, uid) if record is not None and uid else 1.0
         if mult != 1.0:
             base = {k: max(1, math.ceil(n * mult - 1e-9)) for k, n in base.items()}
@@ -9628,8 +9628,31 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._growth_mult(record)
 
     def _freeze_mult(self, record: dict[str, Any], uid: str) -> None:
-        """Fix a work's cost multiplier at activation (D-295), unless it already has one."""
+        """Fix a work's cost multiplier (D-295) and its materials (D-317) at activation, unless it already has them."""
         record.setdefault("mult", {}).setdefault(uid, self._work_mult(record, uid))
+        udef = self._upgrade_catalog().get(uid)
+        if udef is not None:
+            record.setdefault("cost", {}).setdefault(uid, self._work_base(udef, record, uid))
+
+    def _work_base(self, udef: dict[str, Any], record: dict[str, Any], uid: str) -> dict[str, int]:
+        """A work's base cost (before growth and perks): frozen at activation, else the old one for works begun before 0.45.
+
+        [ES]
+        Qué hace: lo que pide una obra antes del multiplicador del campamento y de los beneficios. D-317 (0.45, pedido del
+        dueño): los 13 edificios de oficio pasaron a pedir sobre todo el material de su oficio; las obras que ya estaban
+        activadas o tenían materiales dados antes del parche siguen pidiendo su costo viejo (camp_upgrades.yaml
+        cost_before), y desde la 0.45 cada obra guarda su costo al activarse (record "cost" {obra: {material: n}}), así un
+        cambio futuro del catálogo tampoco le cambia lo que pide a mitad de camino. Sin nada de eso, el costo de hoy.
+        La llaman: _upgrade_need y _freeze_mult.
+        Si cambia, afecta: lo que piden las obras abiertas de todos los campamentos.
+        """
+        frozen = (record.get("cost") or {}).get(uid)
+        if frozen is not None:
+            return {k: int(n) for k, n in frozen.items()}
+        begun = uid in (record.get("active") or []) or self._work_started(record, uid)
+        if begun and udef.get("cost_before"):
+            return self._work_need({**udef, "cost": udef["cost_before"]})
+        return self._work_need(udef)
 
     def _repair_need(self, damage: int, perks: dict[str, tuple[float, str | None]]) -> dict[str, int]:
         """What repairing `damage` points asks: camp_professions.repair_per_point × damage, halved by 🏗️ at rank 100 (D-115)."""

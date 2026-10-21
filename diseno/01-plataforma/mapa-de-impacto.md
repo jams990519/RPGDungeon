@@ -175,7 +175,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M21 | Simulador de balance | Bajo en el juego, alto en el proceso | Escenarios y objetivos |
 | M22 | Pagos | Bajo en técnica, muy alto en reglas del dueño | D-43, aceleradores |
 | M23 | Anti-trampas | Medio | Umbrales, revisión humana |
-| M24 | Construcción | Medio | En el juego: costos y puntos de 🛡️ Defensa de las mejoras de los campamentos (`content/camp_upgrades.yaml`, D-101; desde el nivel 7 piden 🧱 sillar y 🟫 tablón, D-115) y las defensas que dañan las oleadas y se reparan (`camp_professions.damage`, `repair_per_point`, C-24). Propuesta: jornadas por obra, protecciones, mantenimiento |
+| M24 | Construcción | Medio | En el juego: costos y puntos de 🛡️ Defensa de las mejoras de los campamentos (`content/camp_upgrades.yaml`, D-101; desde el nivel 7 piden 🧱 sillar y 🟫 tablón, D-115; desde la 0.45 los 13 edificios de oficio piden el 90 % en materiales de su oficio y guardan su costo al activarse, con `cost_before` para las obras empezadas antes, D-317) y las defensas que dañan las oleadas y se reparan (`camp_professions.damage`, `repair_per_point`, C-24). Propuesta: jornadas por obra, protecciones, mantenimiento |
 | M25 | Propiedad | Medio | Cupos, tasa autodeclarada, intereses, impuesto de la casa |
 
 **Las cinco autopistas del impacto.** Casi toda cascada viaja por uno de estos caminos:

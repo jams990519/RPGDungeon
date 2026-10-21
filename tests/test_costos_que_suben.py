@@ -53,4 +53,40 @@ def test_a_work_started_before_the_rule_keeps_its_base_price(service):
     record = service._upgrades(KEY)
     record["works"]["curtiduria"] = {"madera": 5}                          # given before 0.39, no fixed price yet
     service.store.put("upgrades", KEY, record)
-    assert {k: v for k, v in need(service, "curtiduria").items() if k != "coins"} == base(service, "curtiduria")
+    old = dict(service._upgrade_catalog()["curtiduria"]["cost_before"])   # D-317: begun before 0.45, it keeps its old cost
+    assert {k: v for k, v in need(service, "curtiduria").items() if k != "coins"} == old
+
+
+def test_profession_buildings_ask_their_goods_and_open_works_keep_the_old_cost(service):
+    """D-317 (0.45): the 13 profession buildings ask ~90 % of their profession's goods; works begun before keep the old cost."""
+    from engine.professions import rules as profession_rules
+    two(service, 2)
+    catalog = service._upgrade_catalog()
+    raw = profession_rules.refined_from(service.content.professions["professions"], service.content.professions["recipes"])
+    changed = [uid for uid, udef in catalog.items() if udef.get("cost_before") and udef.get("kind") == "oficio"]
+    assert len(changed) == 13
+    for uid in changed:
+        cost = catalog[uid]["cost"]
+        value = {k: n * raw.get(k, (k, 1))[1] for k, n in cost.items()}
+        basic = value.get("madera", 0) + value.get("piedra", 0)
+        assert basic <= 0.15 * sum(value.values()), uid                     # just a little wood and stone
+    record = service._upgrades(KEY)
+    record["active"] = ["curtiduria"]                                       # activated before the patch: no frozen cost
+    service.store.put("upgrades", KEY, record)
+    assert {k: v for k, v in need(service, "curtiduria").items() if k != "coins"} == dict(catalog["curtiduria"]["cost_before"])
+    service.act("test:1", "upact:alambique")                                # activated now: the new cost, frozen
+    assert service._upgrades(KEY)["cost"]["alambique"] == {**catalog["alambique"]["cost"], "coins": catalog["alambique"]["coins"]}
+    assert {k: v for k, v in need(service, "alambique").items() if k != "coins"} == dict(catalog["alambique"]["cost"])
+
+
+def test_from_level_5_buildings_mix_goods_of_other_professions(service):
+    """D-318 (0.45): from camp level 5 the buildings that are not of a profession ask goods refined or made by others."""
+    catalog = service._upgrade_catalog()
+    recipes = service.content.professions["recipes"]
+    made = {item for rdef in recipes.values() if not rdef.get("retired") for item in (rdef.get("output") or {})}
+    for uid, udef in catalog.items():
+        if udef.get("retired") or udef.get("kind") == "oficio" or udef["level"] < 5:
+            continue
+        others = [item for item in udef["cost"] if item in made]
+        assert others, uid                                                  # at least one good from a profession
+    assert {"literas_roble", "unguento", "venda"} <= set(catalog["enfermeria"]["cost"])   # the hospital: carpentry, medicine, tailoring

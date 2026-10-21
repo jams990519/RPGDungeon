@@ -109,12 +109,12 @@ def test_the_founder_activates_and_every_member_sees_what_is_missing(service):
     assert told and "Lyra activó" in told[0].body[0] and "Curtiduría" in told[0].body[0] and "falta" in told[0].body[0]
     assert ids(told[0]) == ["gfund"]                                       # 💰 Depositar from wherever they are
     member = service.act("test:2", "svc:oficio")                           # now Bram sees it with its bars and 🤲
-    assert "upg:curtiduria:s" in ids(member) and "Madera: 0/30" in text(member)
+    assert "upg:curtiduria:s" in ids(member) and "Madera: 0/3" in text(member)
     set_hero(service, "test:2", backpack={"madera": 12, "fibra": 3}, gold=0)
     view = service.act("test:2", "upg:curtiduria:s")
     assert view.kind == "camp_type" and "Aportaste" in view.notice
-    assert service._upgrades(KEY)["works"]["curtiduria"] == {"madera": 12}
-    assert service._load("test:2").backpack == {"fibra": 3}               # never what it does not ask
+    assert service._upgrades(KEY)["works"]["curtiduria"] == {"madera": 3}  # D-317: it asks only 3 madera now
+    assert service._load("test:2").backpack == {"madera": 9, "fibra": 3}  # never more, nor what it does not ask
 
 
 def test_stop_only_while_nothing_was_given_and_no_limit_on_active_works(service):
@@ -126,7 +126,7 @@ def test_stop_only_while_nothing_was_given_and_no_limit_on_active_works(service)
     assert "upstop:aserradero" in ids(view)
     view = service.act("test:1", "upstop:aserradero")
     assert "Quitaste" in view.notice and "aserradero" not in service._upgrades(KEY)["active"]
-    set_hero(service, "test:2", backpack={"fibra": 5})
+    set_hero(service, "test:2", backpack={"tela_tejida": 5})
     service.act("test:2", "upg:tejeduria:s")                               # Bram gives a little
     assert "no se puede quitar" in service.act("test:1", "upstop:tejeduria").notice
     assert "tejeduria" in service._upgrades(KEY)["active"]

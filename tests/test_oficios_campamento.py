@@ -271,6 +271,8 @@ def test_higher_tier_upgrades_ask_refined_stone_without_breaking_what_was_built(
     camp_at(service, 8)
     catalog = service._upgrade_catalog()
     for uid, udef in catalog.items():                                       # only from level 7 on (D-115)
+        if udef.get("cost_before"):                                         # D-317: profession buildings ask their own goods
+            continue
         refined = {"sillar", "tablon"} & set(udef["cost"])
         assert bool(refined) == (udef["level"] >= 7), uid
     build(service, *[uid for uid in catalog if uid != "torres_arqueros"])   # the foso among them: built for ever
