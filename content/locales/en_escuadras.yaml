@@ -1,0 +1,50 @@
+# Texts of the squads of 5 inside a camp's guild (D-253.1 Forma B, confirmed; how it was applied: D-331, provisional; 0.55).
+# [ES] Los textos en inglés de las 🪖 escuadras: las mismas claves que es_escuadras.yaml (tools/check_locales.py lo revisa).
+
+squads:
+  title: "🪖 Squads"
+  button: "🪖 Squads"
+  label: "Squad {n}"
+  label_named: "Squad {n} “{name}”"
+  # ---- 🪖 Squads (🛡️ Guild → 👥 Members → 🪖 Squads)
+  header: "🪖 {n} {n|squad|squads} of up to {size}. This stage of the camp has room for {slots}."
+  squad_line: "🪖 {label} · {n}/{size} · 🎖️ chief: {chief}"
+  squad_line_mine: "🪖 {label} (yours) · {n}/{size} · 🎖️ chief: {chief}"
+  squad_empty: "▫️ empty: it takes whoever comes"
+  member_line: "{code} {role}{name} (lv {level}) · {state}"
+  role_chief: "🎖️ "
+  hint: "Tap the code (/m1) of someone in your squad to vote for them as 🎖️ chief: whoever has more than half of the squad's votes is chief. The chief moves the members of their squad to another one with room; the founder and the 🤝 assistants move anyone. Only the founder and the assistants accept people."
+  members_line: "🪖 Your squad: {label} · 🎖️ chief: {chief} ({n} {n|squad|squads} in all)."
+  # ---- a member's card (/m2)
+  card_line: "🪖 {label} · 🎖️ chief: {chief}"
+  card_votes: "🗳️ Votes for them as chief: {votes} of {n} ({need} make the chief)."
+  vote_button: "🗳️ Vote as chief"
+  unvote_button: "✖️ Take my vote back"
+  move_button: "🔀 Change squad"
+  # ---- 🗳️ the vote
+  voted: "🗳️ You voted for {name} as your squad's chief: {votes} of {n} ({need} make the chief)."
+  unvoted: "✖️ You took your vote back."
+  vote_other: "You only vote for someone in your own squad."
+  new_chief: "🎖️ {name} is the new chief of {label}."
+  new_chief_push: "🎖️ {name} is the new chief of {label} in {camp}."
+  # ---- 🔀 change squad
+  move_title: "🔀 Change squad"
+  move_ask: "Which squad does {name} move to? Today they are in {label}."
+  move_to: "🪖 {label} ({n}/{size})"
+  move_new: "🆕 Squad {n} (new)"
+  more: "➡️ More squads"
+  no_room: "No other squad has room. When the camp has room for more members, more squads fit."
+  cannot_move: "The 🎖️ chief moves the members of their squad; the founder and the 🤝 assistants move anyone."
+  full: "That squad already has {size}."
+  moved: "🔀 {name} moved to {label}."
+  moved_push: "🔀 {who} moved you to {label} in {camp}."
+  # ---- ✏️ the name (the chief only)
+  name_button: "✏️ Squad name"
+  name_ask: "✏️ Write your squad's name (up to {n} letters)."
+  name_bad: "That name won't do: write letters or numbers."
+  named: "✏️ Your squad is now {label}."
+  only_chief: "Only the squad's 🎖️ chief names it."
+  cancel: "❌ Cancel"
+  # ---- 🌙 the Trial Night and 🌊 the growing waves: information only
+  winners_line: "🪖 Squads with at least one winner: {n} of {total}."
+  winners_report: "🪖 {n} of {total} {total|squad|squads} had at least one winner."
