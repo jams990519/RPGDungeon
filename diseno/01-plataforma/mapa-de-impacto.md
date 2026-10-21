@@ -164,7 +164,7 @@ Si un cambio en cualquier módulo choca con una de estas, **rompe**:
 | M10 | Misiones | Medio | Oro que pagan (inflación), rendimiento de expediciones, investigación. En el juego (D-193): el 🧭 camino guiado (`content/guide.yaml`: ids de pasos y avisos guardados en los héroes, qué completa cada paso; `guide.*`, C-29). En el juego: 🏹 Cazar en la zona y la 🏹 Partida de caza del campamento (`hunt.*`, D-106); la historia y el rol (D-117): experiencia por ⚡ de misiones y encargos (`story.xp_per_energy`, `story.task_xp_per_energy`, C-22), rangos de facción (`story.ranks`) y los IDs de `content/story.yaml` (misiones, pasos, decisiones y opciones guardados en cada héroe) |
 | M11 | Instancias | Medio | Carriles de recompensa, reloj de rondas. En el juego: las mazmorras para uno (D-164, D-170): dónde están las entradas (`dungeons.stretch`, `second_chance`, `deep_share`: moverlos mueve las entradas), qué tan duro es cada piso (`dungeons.deep.*`), el cofre y la bolsa (`dungeons.small.chest`, `deep.pot`) y las familias de `content/dungeons.yaml` (C-26) |
 | M12 | PvP, crimen y justicia | Alto | Reglas de caída por zona, protección del Juramento de Hierro, karma |
-| M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles |
+| M13 | Economía | Muy alto | Impuestos, bandas de precio, monedas no transferibles. En el juego (0.46, D-320): el 🏛️ Mercado entre jugadores (`engine/service/market.py`, `balance.yaml` → `market`: `tax`, `delivery_minutes`, `order_days`, `max_orders`, `price_min`/`price_max`; los ids de orden "m1"… y de categoría van en los botones y el almacén) (C-04, C-32) |
 | M14 | Oficios | Alto | Costo del conocimiento (D-57), vetas, rangos y exámenes. En el juego (fase 2, D-115): los beneficios de campamento (🎣 🍲 🗿 🏗️, el mejor rango entre los miembros) y lo que piden las obras y la reparación (`camp_professions.*`, C-24); las 🎓 especializaciones (D-141: `Hero.prof_specs`, `Hero.spec_xp`, `balance.yaml` specs, C-25). Desde la 0.43 (D-306): los 🎖️ títulos que se compran (`professions.titles`, `Hero.prof_titles`: frenan la experiencia al tope), los precios por rama (`professions.learn_price`), la piel ×2,5 y el Desollador por bestia (`professions.skinning`) |
 | M15 | Social | Medio | Cupo por nivel de gremio y requisito del castillo (en el juego, D-97); quién cuenta como presente en una zona (en el juego, D-96); bono, meta y premio de la partida de caza del campamento (en el juego, D-106: `hunt.party.*`); tamaño de grupo, vales por reenvío |
 | M16 | Minijuegos y apuestas | Bajo en técnica, muy alto en reglas del dueño | D-43, tirada pública auditable, topes diarios |
@@ -594,6 +594,7 @@ flowchart LR
 | **Eventos que escucha** | `RegionAbierta` (`RegionOpened`): mercado nuevo. `ParteRota` (`PartBroken`): material exclusivo. `ObjetoFabricado` (`ItemCrafted`). Propuesto: `SancionAplicada` (M23 congela el comercio) |
 | **Datos de los que es dueño** | Saldos de oro, Esencia, Honor y moneda de temporada; libros de órdenes y custodias; historial de precios y bandas de precio; impuestos y comisiones; el Mercado Negro; contratos, seguros y correo |
 | **Reglas que nunca se rompen** | Sumideros siempre en porcentaje (D-27). Precio mínimo y máximo obligatorio (D-26). Esencia, Honor, reputación y moneda de temporada no se transfieren (D-28). El oro nunca se vende por dinero real (D-43). El oro que entra tiene que salir, y se mide cada mes. Todo trato importante pasa por custodia del bot. Economía es el único que mueve oro |
+| **En el juego: 🏛️ Mercado entre jugadores (0.46, D-137, D-26, D-320)** | `engine/service/market.py` (`MarketMixin`, de la que hereda `GameService`): un solo libro para todos; órdenes de venta para el equipo y lo fabricado (pociones, remedios, muebles, comida, 💰 bolsas, 🪎 cofres) y pedidos de compra para los recursos (todo material con código), con custodia de las unidades o de las monedas; impuesto del 5 % que paga quien cobra; 📦 Entregas a los 30 min; 7 días de vida; 10 órdenes por jugador; banda de 0,25 a 10 veces el precio de referencia (`content/balance.yaml` → `market`). Espacios del almacén: `market_order`, `market_index`, `market_mine`, `market_box`, `market_open`, `market_log` y `meta`/`market`. Lo abren el 🛒 Mercader de cada fogata (`_shop_view`), ⚒️ Oficios del campamento con el 🏪 Puesto de trueque (`_service_uses`) y /mercado; `tick()` cierra lo vencido y avisa las entregas (`_market_tick`); el informe diario lo cuenta (`adapters/reports.py` → `market_lines`). No mueve el 💱 Comercio (bloqueado, D-298). Pruebas: `tests/test_mercado.py` (C-32) |
 
 **Si cambias esto, revisa:**
 - **Los impuestos del mercado** → C-04.
@@ -955,7 +956,7 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 
 ### C-04 · Los impuestos del mercado
 
-**Dónde está:** 1,5 % por publicar + 4 % sobre la venta ([Economía](../07-economia/economia.md) §5). **Dueño:** M13.
+**Dónde está:** 1,5 % por publicar + 4 % sobre la venta ([Economía](../07-economia/economia.md) §5). **En el juego desde la 0.46 (D-320):** 5 % sobre la venta, sin tasa por publicar, lo paga quien cobra (`content/balance.yaml` → `market.tax`; `engine/service/market.py` → `_mkt_tax`). **Dueño:** M13.
 
 **Cadena:** cambia el oro que se quema (M20) → cambia la inflación y el riesgo de la crisis de inflación (M9) → cambia el margen del comerciante, que tiene que cubrir impuesto y transporte entre ciudades (M8) → cambia cuánto vale un puesto, que paga menos impuesto, y por eso el valor declarado y las pujas (M25) → cambia cuánta gente vende por fuera (evasión, delito en M12) y lo atractivo de los mercados de alianza (M24) → se suma a los impuestos locales que fija el gobernador (M9).
 
@@ -1201,6 +1202,15 @@ Cada cascada dice **dónde está** el número o la regla, **quién es el dueño*
 **También:** las 🎓 exclusivas siguen en el 25 y el 100 y también piden libros. Retirar la malla deja a la 🎓 ⛓️ Malla ligera sin recetas (P-243). El refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina todavía no tienen tramos: sus recetas de rango 25 o más piden libro pero dan su experiencia entera. Con el mercado entre jugadores, las miles de piezas que hacen los artesanos al subir son la materia prima del ✨ Encantamiento.
 **Medir:** cuántos compran cada libro y en qué rango, días reales al 25, 50 y 100 por oficio, cuántas recetas grises se hacen (piezas para usar o vender), la demanda de gemas y flores de luna y el oro que sale por libros.
 
+### C-32 · El 🏛️ Mercado entre jugadores: impuesto, transporte, vida de las órdenes y banda de precio (D-137, D-26, D-320)
+
+**Dónde está:** `content/balance.yaml` → `market` (`tax` 5 %, `delivery_minutes` 30, `order_days` 7, `max_orders` 10, `max_units` 500, `price_min` 0,25 y `price_max` 10 veces el precio de referencia, `price_buttons`, `ask_buttons`, `per_page`, `log_days`); el precio de referencia es `price` de `content/items.yaml` (de una 💰 bolsa o un 🪎 cofre, `currency.bag_recipe`, `bag_coins` y `chest_recipe`); las reglas en `engine/service/market.py`; los ganchos en `engine/service/game.py` (`text()`, `act()`, `tick()`, `_idle_action`, `_shop_view`, `_service_uses`, `_faq_values`); los textos en `content/locales/es_mercado.yaml` y `en_mercado.yaml`. **Dueño:** M13, con M4 (el equipo, su ✒️ firma y su ✨), M14 (lo que fabrican los oficios) y M20 (el informe diario).
+
+**Cadena:** cambia el impuesto → cambia cuántas monedas se queman por cada venta (el único sumidero del mercado, D-27) y el margen de quien revende → cambia el precio al que conviene vender frente al 🛒 Mercader, que paga la mitad (`shop.sell_ratio`) o un cuarto por pociones (`shop.remedy_sell_ratio`, P-250) → cambia cuánto se fabrica para vender (M14: las piezas grises de los tramos, C-31) y cuánto equipo termina en el ✨ desencantar. Cambia el tiempo de entrega → cambia cuánto vale tener la pieza ya (los 30 min son la primera versión del transportista de D-137; con distancia y bandidos, C-15 y M12) → cambia si conviene comprar o fabricar. Cambia la vida de las órdenes o el tope → cambia cuántas órdenes viejas llenan las listas y cuántas monedas quedan apartadas en pedidos de compra. Cambia la banda → cambia lo fácil que es pasarle monedas a una cuenta alterna (M23) y si se puede vender barato de verdad: quitarla **rompe** D-26.
+
+**También:** las monedas apartadas en un pedido y las cosas en una orden o en 📦 Entregas nunca se pierden (D-64): vencer o cancelar devuelve todo, y recoger con la mochila llena deja el resto en la caja. Un precio de referencia nuevo en `items.yaml` mueve la banda de ese objeto. Los ids de categoría (`weapons`, `armor`, `jewels`, `remedies`, `furniture`, `food`, `coinbags`) y los botones `mkt:…` son estables. Los códigos /c, /s, /b, /k y /o no pueden chocar con los de antes (`tests/test_mercado.py`).
+**Medir:** la sección 9 del informe diario: compras, unidades y monedas por día, impuesto quemado, órdenes publicadas, canceladas y vencidas, y órdenes abiertas; y en la beta, los precios a los que se vende cada cosa frente a su referencia.
+
 ---
 
 ## 4. Números sensibles
@@ -1280,9 +1290,11 @@ Los parámetros que más cosas mueven. **Valor hoy** es el del diseño al 1 de o
 
 | Número | Valor hoy | Definido en | Dueño | Qué mueve |
 |---|---|---|---|---|
-| Impuestos del mercado | 1,5 % por publicar + 4 % sobre la venta | [Economía](../07-economia/economia.md) §5 | M13 | C-04 |
-| Vencimiento de órdenes | 7 días | [Economía](../07-economia/economia.md) §3 | M13 | Tasas repetidas |
-| Bandas de precio | Mínimo y máximo por objeto según su historial | [Economía](../07-economia/economia.md) §3 (D-26) | M13 | Comercio con dinero real |
+| Impuestos del mercado | 1,5 % por publicar + 4 % sobre la venta (diseño). **En el juego (0.46):** 5 % sobre la venta, lo paga quien cobra (`market.tax`) | [Economía](../07-economia/economia.md) §3.0 y §5 | M13 | C-04, C-32 |
+| Vencimiento de órdenes | 7 días (en el juego desde la 0.46: `market.order_days`) | [Economía](../07-economia/economia.md) §3 | M13 | Tasas repetidas, C-32 |
+| Entrega del mercado | 30 min, igual para todos (`market.delivery_minutes`, 0.46) | [Economía](../07-economia/economia.md) §3.0 (D-137) | M13 | C-32 |
+| Órdenes por jugador | 10 activas, 500 unidades por orden (`market.max_orders`, `max_units`, 0.46) | [Economía](../07-economia/economia.md) §3.0 | M13 | C-32 |
+| Bandas de precio | Mínimo y máximo por objeto según su historial (diseño). **En el juego (0.46):** de 0,25 a 10 veces el precio de referencia (`market.price_min`, `price_max`) | [Economía](../07-economia/economia.md) §3 (D-26) | M13 | Comercio con dinero real, C-32 |
 | Quema en transferencias | Por definir (referencia: 5 %, como el bot Iris) | [Seguridad](seguridad-y-anti-trampas.md) §4 | M13 | Lavado de oro, mulas |
 | Desgaste al caer en zona amarilla | −10 % de durabilidad | [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1 | M4 | Reparaciones, herreros |
 | Tasa autodeclarada | Por ejemplo, 2 % semanal; una semana de gracia | [Propiedad y concesiones](../07-economia/propiedad-y-concesiones.md) §3 | M25 | Rotación de lugares, sumidero |

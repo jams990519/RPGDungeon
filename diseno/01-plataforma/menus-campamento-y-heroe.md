@@ -36,7 +36,7 @@ Un **centro** (D-192): arriba, una línea por opción con lo que hace y sus núm
 | 👥 Jugadores | **0.36 (D-265, D-274.1):** reemplaza a 🔬 Investigar, que en el Claro repetía 📚 Aprender oficios (los oficios se aprenden en 🧑‍🏫 Entrenador → 📚 Aprender oficios; el botón viejo y /aprender siguen andando). Los que jugaron en la fogata en el último minuto, con clase, nivel y gremio, cada uno con su código (/j1, en inglés /p1) que abre su tarjeta (✉️ invitar a tu gremio o 🙋 pedir entrar al suyo), y el contador **"👥 N/20 en la fogata"** (N con la regla de 15 min de 📍 Zona; 20 es `bonfire.cap`). Botones: 🛡️ Gremio, 🔄 Actualizar y ↩️ Volver. También /jugadores y /players | Lejos de la fogata, avisa que se ve ahí |
 | 🛠️ Fabricar | ⚒️ Oficios: una línea corta por oficio que tienes y 🪚 Refinar y 🛠️ Fabricar en las estaciones de aquí (D-259) | Una estación sin oficios aprendidos dice cuáles aprender |
 | 🧑‍🏫 Entrenador | Tus oficios, los que te faltan y cómo se aprenden (§4) | — |
-| 🛒 Mercader | **🛒 Comprar** (pociones, vendas, 🥖 provisiones) y **💱 Vender** (lo que traes, con su código /v02) (D-259) | — |
+| 🛒 Mercader | **🛒 Comprar** (pociones, vendas, 🥖 provisiones), **💱 Vender** (lo que traes, con su código /v02) (D-259) y **🏛️ Mercado** (el mercado entre jugadores, D-320, 0.46: [Economía](../07-economia/economia.md) §3.0) | — |
 | 🛏️ Posada | Dormir y despertar con la vida llena: tarda según la vida que falta, de 0 a llena en 1 hora (D-259) | Con la vida llena no cobra |
 | 📜 Tablón | **Un encargo por personaje cada día** (se cobra hablando con él, en el Claro o en tu campamento) y, con campamento, los de la semana (D-259) | — |
 | ❓ Dudas | Buscar respuestas (§5) | — |
@@ -50,7 +50,7 @@ Debajo va la pista de siempre: el Claro no crece; para crecer, funda tu campamen
 Arriba, la información de siempre (miembros, nivel, zonas, mejoras y 🛡️ Defensa, despensa, beneficios de campamento, próxima oleada). Abajo, el centro: **🍲 Cocinar · 🔬 Investigar · 🛠️ Fabricar · 🧑‍🏫 Entrenador · 🏘️ Servicios · 📜 Tablón · 🏰 Gestionar · ❓ Dudas**.
 
 - 🍲 Cocinar pide el 🔥 Fogón; 🔬 Investigar, la 📚 Biblioteca; 🛠️ Fabricar, el 🧵 Taller o la 🔨 Herrería. Sin ellos, la línea y el botón explican qué construir y dónde (🏰 Gestionar → 🔨 Mejoras).
-- 🏘️ Servicios ocupa el lugar del mercader y la posada: el 🛏️ Refugio, el 💱 Puesto de trueque y el 🧵 Taller que construyeron.
+- 🏘️ Servicios ocupa el lugar del mercader y la posada: el 🛏️ Refugio, el 💱 Puesto de trueque y el 🧵 Taller que construyeron. Desde la 0.46 (D-320), con el Puesto de trueque, ⚒️ Oficios de 🏘️ Servicios también abre 🏛️ Mercado.
 - **🏰 Gestionar** junta lo que hace crecer y mantener el campamento, que antes eran sus 4 botones: **⬆️ Mejorar campamento · 🔨 Mejoras · 🌾 Aportar comida** (desde el nivel 3) **· 🛡️ Gremio**, cada uno con su línea (nivel, etapa y zonas de su tope, cuánto hay construido, la despensa). Sus pantallas vuelven a 🏰 Gestionar. Es la duda E-134.
 - **⬆️ Mejorar campamento** (D-304, 0.41; antes ⬆️ Agrandar): tres líneas (nivel y etapa, zonas usadas de su tope y "⏫ Nivel N: x de y listos") y tres botones: **⏫ Siguiente nivel · 🗺️ Agrandar territorio · ↩️ Volver**. ⏫ y 🗺️ vuelven a ⬆️ Mejorar.
   - **⏫ Siguiente nivel:** "Para subir a nivel N te falta:" con dos listas, 🏗️ Construir y 📦 Recursos (y 🏰 lo del castillo en el paso 8 → 9), cada línea con ✅ o ▫️. Botones (4 como mucho): 🤲 Aportar, 🔨 Mejoras, 🛡️ Gremio o 🌾 Aportar comida según lo que falte; 🌙 Noche de prueba si es lo único que falta; ⏫ Subir a nivel N cuando todo está ✅; y ↩️ Volver.

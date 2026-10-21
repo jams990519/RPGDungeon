@@ -108,6 +108,16 @@ guides_page:
       ⚡ Cada receta gasta energía y da experiencia del oficio, hasta el rango {max_rank}: en los de equipo hay recetas nuevas cada 5 rangos y cada una tiene su color (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada); las de rango 25, 50 y 75 piden su 📚 libro de recetas del 🧑‍🏫 Entrenador.
       🎓 Al rango {spec_first} eliges una especialización, y al {spec_second}, otra.
       📋 Tus oficios: /misoficios (cada uno con su código, para ver todo de él).
+  market:                     # [ES] D-320 (0.46): 🏛️ Mercado entre jugadores
+    title: "🏛️ Mercado"
+    text: |-
+      🏛️ Un solo mercado para todos: 🛒 Mercader → 🏛️ Mercado en cualquier 🔥 fogata, en tu campamento con 🏪 Puesto de trueque o con /mercado.
+      🏷️ Vender: el equipo y lo fabricado (pociones, remedios, muebles, comida, 💰 bolsas y 🪎 cofres). Eliges con /s1, pones precio y cantidad y sale de tu mochila.
+      📥 Los recursos (de base, del terreno y refinados) se venden a los 📥 Pedidos de compra de otros: cobras al momento.
+      📝 Pedir recursos: eliges con su código (/b07, el de 📦 Recursos) y apartas las monedas; quien lo tenga te vende.
+      💸 Quien cobra paga un impuesto del {market_tax} %. El precio va dentro de una banda, para que nadie regale ni infle.
+      🐴 Lo comprado llega a 📦 Entregas en {market_delivery}: lo recoges en cualquier 🔥 fogata o en tu campamento, hasta donde quepa.
+      📋 Hasta {market_orders} órdenes a la vez; duran {market_days} días. ❌ Cancelar o vencer devuelve todo lo que queda.
   # ---- ⚙️ Cómo funciona
   energy:
     title: "⚡ Energía y vida"

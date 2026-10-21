@@ -1249,6 +1249,28 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): el 🏛️ Mercado entre jugadores (0.46, D-137 y D-26 confirmadas; D-320 provisional)
+
+El dueño pidió un mercado entre jugadores "que funcione y luego vamos arreglando". Todos los números son nuevos y de Claude (D-320), con las referencias de [Economía](../07-economia/economia.md) §3 y §5; se ajustan con la sección 9 del informe diario.
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `market.tax` (nuevo) | — | 0,05: el 5 % de cada venta, lo paga quien cobra y se quema (redondeado a la unidad: una venta de menos de 10 🥉 no paga). Sin tasa por publicar (economía §5 proponía 1,5 % + 4 %) |
+| `market.delivery_minutes` (nuevo) | — | 30: lo comprado llega a 📦 Entregas a los 30 min, igual para todos (D-137, sin distancia por ahora) |
+| `market.order_days` (nuevo) | — | 7 días, como economía §3 |
+| `market.max_orders` / `max_units` (nuevos) | — | 10 órdenes activas por jugador (ventas y pedidos juntos) / 500 unidades por orden |
+| `market.price_min` / `price_max` (nuevos) | — | 0,25 / 10 veces el precio de referencia (D-26): una 🧪 poción de vida (🥉6) va de 🥉1 a 🥉60; una 💰 bolsa (🥉114) de 🥉28 a 🥈11 🥉40 |
+| `market.price_buttons` / `ask_buttons` / `per_page` / `log_days` (nuevos) | — | ×1, ×2, ×3 / 1, 10, 50 unidades / 8 líneas por página / 30 días de cuenta diaria |
+
+**Qué cambia al jugar.**
+
+- **Una fuente nueva de monedas para los artesanos, sin crear monedas:** lo que paga un jugador lo cobra otro; solo el 5 % sale del juego. Hasta hoy, el equipo y las pociones solo se vendían al 🛒 Mercader (a la mitad, y las pociones a un cuarto); ahora se pueden vender más caro a quien los necesite.
+- **Un sumidero chico:** el 5 % de cada venta. Con pocos jugadores mueve poco; crece con el comercio.
+- **Los recursos tienen comprador:** quien junta puede venderle a un pedido de compra por encima de lo que paga el mercader (la banda llega hasta 10 veces la referencia).
+- **Lo que no cambia:** el 🛒 Mercader paga lo mismo (P-250 pregunta si deja de comprar pociones), el 💱 Comercio sigue bloqueado (D-298) y nada del combate se mueve.
+
+**Lo que queda por mirar:** cuántas compras hay por día y a qué precio frente a la referencia, cuánto impuesto se quema, cuántas órdenes vencen sin venderse (si es la mayoría, la banda o los 7 días no sirven), y si conviene sumar la tasa por publicar (P-247).
+
 ### Octubre de 2026 (21-oct): tramos de recetas, colores y libros (0.44, D-306 confirmada; D-315 provisional)
 
 El dueño decidió la reforma de recetas el 20-oct (E-221 a E-223): un tramo cada 5 rangos, colores de receta como en WoW y libros de recetas por tramo. Los números de experiencia y energía son de Claude (D-315), elegidos para la meta de la simulación: el especialista al 100 en ~11 meses y obligado a fabricar lo nuevo. Se recalculó con `tools/sim_oficios.py` ([Simulación](../07-economia/simulacion-oficios.md) §11).
