@@ -941,3 +941,18 @@ v0_46_1:
   notes_en:
     - "⏳ If you were waiting for room in the guild of a full camp, you now join by yourself as soon as there is room (when the camp goes up a level, with 🛖 Cabins or 🛏️ Bunks, or if someone leaves), first come first in. You get a notice, and so do the founder and the assistants."
     - "✅ If you accept to wait and there is already room, you join at once. Whoever was already waiting also joins, if their camp has room."
+
+v0_47:
+  version: "0.47"
+  title: "💰 Lost Realms 0.47: el fondo del gremio también para tu oficio"
+  title_en: "💰 Lost Realms 0.47: the guild fund for your profession too"
+  notes:
+    - "🏗️ Primero las obras: el 💰 fondo del campamento sigue dando a las obras activas y a ⏫ Siguiente nivel lo que les falta, y eso queda guardado para ellas."
+    - "🛠️ Lo que sobra es para los oficios: en las estaciones de tu campamento, al refinar o fabricar, la receta toma primero de tu mochila y lo que falta del fondo. En la lista sale ✅💰 lo que puedes hacer con ayuda del fondo, y cada receta dice cuánto pondría."
+    - "📏 Cada miembro toma hasta 40 por día del fondo para sus oficios; mañana se renueva."
+    - "📜 En 🛡️ Gremio → 💰 Fondos ves qué está guardado para las obras, qué sobra y 📜 Quién usó qué. El fundador o un 🤝 asistente puede 🔒 cerrar el fondo para oficios (empieza 🔓 abierto)."
+  notes_en:
+    - "🏗️ Works come first: the camp's 💰 fund still gives the active works and the ⏫ Next level what they lack, and that is kept for them."
+    - "🛠️ What is left over is for professions: at your camp's stations, when you refine or craft, the recipe takes from your backpack first and the rest from the fund. The list shows ✅💰 for what you can make with the fund's help, and each recipe says how much it would put in."
+    - "📏 Each member takes up to 40 a day from the fund for their professions; it resets the next day."
+    - "📜 In 🛡️ Guild → 💰 Funds you see what is kept for the works, what is left over and 📜 Who used what. The founder or a 🤝 assistant can 🔒 close the fund for professions (it starts 🔓 open)."

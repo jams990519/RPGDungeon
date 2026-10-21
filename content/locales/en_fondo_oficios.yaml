@@ -1,0 +1,35 @@
+# Texts of the guild's fund for the professions (D-322, 0.47), in English. Same keys as es_fondo_oficios.yaml.
+# [ES] Los mismos textos que es_fondo_oficios.yaml, en inglés (D-250). Una clave nueva va en los dos archivos
+# (tools/check_locales.py).
+
+fcraft:
+  # ---- 💰 Camp funds (🛡️ Guild → 💰 Funds)
+  state_open: "🛠️ Fund for professions: 🔓 open. What is left after the active works and the ⏫ next level, members use when they refine and craft at the camp's stations, up to {cap} a day each (you used {used} today)."
+  state_closed: "🛠️ Fund for professions: 🔒 closed. It only feeds the works and the ⏫ next level; the founder or a 🤝 assistant opens it here."
+  reserved: "🏗️ Kept for the works and the level: {items}"
+  free: "🛠️ Left over for professions: {items}"
+  free_none: "🛠️ Nothing left over for professions: it all goes to the works and the level."
+  close_button: "🔒 Close for professions"
+  open_button: "🔓 Open for professions"
+  log_button: "📜 Who used what"
+  only_managers: "🔒 Only the founder or a 🤝 assistant opens or closes the fund for professions."
+  opened: "🔓 You opened the fund for professions: members can use what is left over at the camp's stations."
+  closed: "🔒 You closed the fund for professions: now it only feeds the works and the next level."
+  # ---- 📜 Who used what
+  log_title: "📜 Who used what"
+  log_intro: "What each member took from the fund for their professions and who opened or closed it, newest first (the last {n})."
+  log_use: "🛠️ {name}: {items} → {recipe} ×{times} · {ago} ago"
+  log_open: "🔓 {name} opened the fund for professions · {ago} ago"
+  log_close: "🔒 {name} closed the fund for professions · {ago} ago"
+  log_none: "Nobody has used the fund for professions yet."
+  days: "{n} {n|day|days}"
+  # ---- 🪚 Refine / 🛠️ Craft / 🍲 Cook at your camp
+  list_line: "💰 What is left over in the guild's fund counts (✅💰: you make it with the fund's help). You can take {left} more today."
+  list_closed: "🔒 The guild's fund for professions is closed."
+  list_capped: "💰 You already took today's {cap} from the guild's fund for professions: it resets tomorrow."
+  line_fund: "{code} {color}✅💰 {item}{level} · {prof}+{xp}"
+  have_line: "✅ {item}: {have}/{need} +💰{fund}"
+  lack_line: "❌ {item}: {have}/{need} +💰{fund}"
+  recipe_fund: "💰 From the guild's fund, each time: {items}"
+  over_cap: "💰 You can only take {left} more from the guild's fund today ({cap} a day): make it fewer times or bring some yourself."
+  took: "💰 From the guild's fund: {items} · {used} of {cap} today"

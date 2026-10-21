@@ -51,6 +51,19 @@ El dueño pidió (20-oct): "ponme en el botón de mejorar dos opciones: una, sig
 - **Todo visible para todos:** 🔨 Mejoras nombra a cada miembro las obras de su nivel que siguen sin activar, muestra las activas con su barra y las 🏗️ en obra con su tiempo, y dice "⏫ Nivel N: x de y listos". La lista de ⏫ la ve cualquier miembro.
 - **Dónde está:** `engine/service/game.py` (`_improve_view`, `_lvlup_rows`, `_lvlup_view`, `_lvlup_give`, `_lvlup_go`, `_level_up`, `_grow_view`, `_grow_camp`, `_territory_map`), `engine/service/gremio.py` (`_helpers_founder_line`); los números en `content/balance.yaml` (`camps.level_up`, `level_up_cost_per_level`, `zones_by_stage`, `territory_map_radius`, `grow_cost_per_level`, `chests_*`); los textos en `content/locales/es_nivel.yaml` y `en_nivel.yaml`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md).
 
+## 0.3 💰 El fondo del gremio: primero las obras, después los oficios (0.47, D-322)
+
+El dueño pidió (21-oct): "diseña para que los jugadores del gremio puedan primero construir las estructuras y después poder utilizar los recursos para las profesiones de cada uno. Puedan utilizar los recursos del gremio". Cómo quedó (D-322, provisional):
+
+- **Primero las obras.** Lo depositado con 💰 Depositar (/f02) sigue yendo a las obras activas (la que se activó primero, antes) y después a ⏫ Siguiente nivel, como desde la 0.39 y la 0.41.1 (D-291, D-313). Lo que todavía les falta de cada material es la **reserva**: queda guardado para ellas y nunca se usa para oficios. La reserva se cuenta cada vez, así una obra que se activa mañana también queda cubierta.
+- **Después los oficios.** Lo que **sobra** (fondo − reserva, por material) lo usa cualquier miembro en las **estaciones de su campamento** (en el centro, con sus edificios de oficio; no en las 🔥 fogatas): al refinar, fabricar o cocinar, la receta toma primero de la mochila y lo que falta, del fondo, como si lo llevara. En la lista de recetas (/r1) sale **✅💰** lo que puedes hacer con ayuda del fondo; cada receta dice cuánto pondría el fondo ("+💰3" en cada material y "💰 Del fondo del gremio, por vez: …"). Todo o nada, como siempre.
+- **Control (como la ⚔️ Armería, D-290):** cada miembro toma como mucho **40 unidades por día real** (`fund_crafts.daily_cap`, todos los materiales juntos); **📜 Quién usó qué** (en 🛡️ Gremio → 💰 Fondos) dice quién tomó qué y para qué receta, y quién abrió o cerró (los últimos 20; se ven 10); el fundador o un 🤝 asistente tiene el interruptor **🔓 abierto / 🔒 cerrado** en 💰 Fondos (empieza abierto). Solo los miembros del campamento: quien espera lugar en el gremio (D-294) o un visitante no tiene las estaciones del campamento.
+- **💰 Fondos del campamento** dice, además de cada recurso con su código, si el fondo para oficios está abierto, el tope y lo que usaste hoy, qué está **guardado para las obras y el nivel** y qué **sobra para oficios**. Botones: 💰 Depositar · 📜 Quién usó qué · 🔒 Cerrar / 🔓 Abrir para oficios (fundador o asistente) · ↩️ Volver.
+- **El 🏛️ Mercado no cambia:** el fondo no se vende ahí (D-320); lo que un miembro fabrica con el fondo es suyo, como todo lo que fabrica.
+- **Dónde está:** `engine/service/gremio.py` (`_fund_reserve`, `_fund_surplus`, `_fund_pool`, `_fund_take`, `_fund_craft_lines`, `_fund_craft_toggle`, `_fund_log_view`), `engine/service/game.py` (`_recipe_status`, `_station_view`, `_recipe_view`, `_make`), `engine/professions/rules.py` (`fund_draw`, `max_times`); los números en `content/balance.yaml` → `fund_crafts`; lo guardado en `upgrades/<x:y>` (`fund_crafts`, `fund_used`, `fund_log`). Preguntas abiertas: P-251 a P-254 (E-240 a E-243).
+
+**De dónde sale:** el banco de gremio de *World of Warcraft* (pestañas con permisos y un tope de retiros por día para cada rango, con su registro) y el almacén común de *Chat Wars*, donde el gremio junta para construir y los artesanos toman lo que sobra.
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |
@@ -62,6 +75,7 @@ El dueño pidió (20-oct): "ponme en el botón de mejorar dos opciones: una, sig
 | **D-253.3** | **Un miembro que no juega** libera su lugar a los **30 días** sin jugar. |
 | **D-253.4** | **Aceptan gente** el líder y los oficiales. |
 | **D-254** | La **muralla** crece con el asentamiento, y la tierra que encierra **cosecha sola** una parte de sus recursos. El porcentaje sigue abierto (P-227). |
+| **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
 

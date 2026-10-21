@@ -284,3 +284,6 @@ faq:
   d59:
     q: 📦 How do I buy and when does it arrive?
     a: '🏛️ Market → 🛍️ Buy: every list goes from the cheapest offer to the most expensive; tap the code (/c1) and buy. For resources, 📝 Ask for resources: you set the coins aside and whoever has them sells to you. A transporter brings what you buy: it reaches 📦 Deliveries in {market_delivery} and you collect it at any 🔥 campfire or at your camp, as far as it fits in your backpack; the rest waits.'
+  d60:
+    q: 💰 Can I use the guild fund for my trade?
+    a: 'Yes, at your camp''s stations (not at the 🔥 campfires). Works come first: the fund gives the active works and the ⏫ Next level what they lack, and that is kept for them. What is left over counts when you refine and craft as if you carried it: the recipe takes from your backpack first and then from the fund (✅💰 in the list), up to {fund_cap} a day. It is written down in 🛡️ Guild → 💰 Funds → 📜 Who used what, and the founder or a 🤝 assistant can close it there.'

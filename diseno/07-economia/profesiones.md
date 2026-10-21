@@ -550,6 +550,14 @@ El dueño confirmó el 20-oct-2026 (E-222, E-223, E-228) que los oficios se apre
 
 🪚 Refinar, 🛠️ Fabricar y 🍲 Cocinar muestran las recetas como una **lista**: una línea por receta con su código **/r1, /r2…**, su color (🟧 🟨 🟩 ⬜), si la puedes hacer (✅ lo llevas todo, 🔸 te falta algo, ▫️ no llevas nada), la pieza con su nivel y la experiencia que da. Van agrupadas por oficio, 8 por página, y el botón **✅ Solo las que puedo hacer** filtra. El código abre la receta, con su detalle y los botones de cantidad. Pedido del dueño (21-oct): "un formato de listado fácil de entender, porque a medida que se aprende salen muchas recetas".
 
+### 0.10 El 💰 fondo del gremio en tu oficio (D-322, desde la 0.47)
+
+En las estaciones de **tu campamento** (no en las 🔥 fogatas), lo que **sobra** en el 💰 fondo del gremio después de las obras activas y de ⏫ Siguiente nivel cuenta como si lo llevaras: la receta toma primero de tu mochila y lo que falta, del fondo. La lista con código lo marca **✅💰** (la haces con ayuda del fondo) y cada receta dice cuánto pondría ("✅ 🪵 Madera: 1/3 +💰2" y "💰 Del fondo del gremio, por vez: 🪵 Madera ×2"); los botones de cantidad cuentan la mochila y el fondo. Cada miembro toma como mucho **40 por día** (`fund_crafts.daily_cap`), queda anotado en 📜 Quién usó qué y el fundador o un 🤝 asistente puede cerrarlo. Lo que sale es tuyo, como siempre (y la experiencia de oficio también). Cómo funciona el fondo: [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.3.
+
+- **Datos y código:** `engine/professions/rules.py` (`fund_draw`: lo que pone el fondo después de la mochila; `max_times` con `fund` y `fund_cap`), `engine/service/game.py` (`_recipe_status`, `_station_view`, `_recipe_view`, `_make`) y `engine/service/gremio.py` (`_fund_pool`, `_fund_take`).
+
+**De dónde sale:** el banco de gremio de *World of Warcraft*, con retiros por día, pero sin sacar nada: el material se usa ahí mismo, en la estación.
+
 ### 0.8 La reforma de recetas en el juego (D-306, desde la 0.44)
 
 El dueño decidió el 20-oct (E-221, E-222, E-223) acercar los oficios a WoW: **un tramo de recetas cada 5 rangos**, **colores de receta** y **libros de recetas** que vende el 🧑‍🏫 Entrenador. Lo pidió para que "las profesiones sean un camino lento, pero que se vea la progresión": antes un oficio se subía al 100 repitiendo su receta más barata (7.351 dagas forjadas, [Simulación](simulacion-oficios.md) §0). Cómo se aplicó lo que el dueño no dijo: D-315 (provisional).

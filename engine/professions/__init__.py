@@ -5,6 +5,7 @@ Para qué sirve: los oficios encadenados de la fase 1: el rango de cada oficio (
 produce cada material, las cuentas de las recetas, los beneficios de oficio (D-111), la ✒️ obra maestra (D-116,
 rules.py), las cuentas del ✨ Encantamiento (D-115, fase 2: esencias, encantamiento por ranura, valor y costo), las de las
 🎓 especializaciones (D-115, D-141: cuántas permite el rango, el dominio, lo que suma cada una, elegir o cambiar y su costo)
+D-322 (0.47): cuánto pone el 💰 fondo del gremio en una receta después de la mochila (fund_draw);
 y, en la fase 2 (D-115), los beneficios de campamento y castillo (🎣 Pescador, 🍲 Cocina, 🗿 Cantería, 🏗️ Construcción),
 que valen para el campamento con el mejor rango entre sus miembros (rules.py camp_perks). El catálogo está en
 content/professions.yaml; la experiencia de oficio de cada héroe, en Hero.professions, y sus especializaciones en
@@ -33,6 +34,7 @@ from engine.professions.rules import (
     enchant_cost,
     enchant_for_slot,
     enchant_value,
+    fund_draw,
     gatherer_of,
     masterwork_chance,
     masterwork_id,
@@ -54,6 +56,6 @@ from engine.professions.rules import (
     xp_for_rank,
 )
 
-__all__ = ["branches_of", "disenchant_amount", "disenchant_yield", "enchant_cost", "enchant_for_slot", "enchant_value", "gatherer_of", "masterwork_chance", "masterwork_id", "masterwork_items", "max_times", "missing_for",
+__all__ = ["branches_of", "disenchant_amount", "disenchant_yield", "enchant_cost", "enchant_for_slot", "enchant_value", "fund_draw", "gatherer_of", "masterwork_chance", "masterwork_id", "masterwork_items", "max_times", "missing_for",
            "rank_of", "rank_title", "source_of", "spec_bonus", "spec_choice", "spec_finds", "spec_held", "spec_list", "spec_owner",
            "spec_share", "spec_slots", "switch_cost", "xp_for_rank"]
