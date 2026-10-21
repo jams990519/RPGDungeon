@@ -476,8 +476,10 @@ El dueño lo dijo así: "ser carpintero te permite hacer piezas más exclusivas"
 
 | Mueble | Rango | Materiales | Lo que da al campamento |
 |---|---|---|---|
-| 🛏️ Literas de roble | 40 | tablón ×12, tela ×4, cuero ×2 | **+1 lugar** para un miembro (se suma al cupo, al del gremio y a las 🛖 Cabañas) |
-| 🗄️ Armero de roble | 70 | tablón ×16, lingote ×6, cuero ×3 | **+1 de 🛡️ Defensa** contra las oleadas |
+| 🛏️ Literas de roble | 10 (hasta la 0.45, 40) | tablón ×12, tela ×4, cuero ×2 | **+1 lugar** para un miembro (se suma al cupo, al del gremio y a las 🛖 Cabañas) |
+| 🗄️ Armero de roble | 15 (hasta la 0.45, 70) | tablón ×16, lingote ×6, cuero ×3 | **+1 de 🛡️ Defensa** contra las oleadas |
+
+  D-319 (0.45.1): bajaron de rango porque la 🏥 Enfermería y las 🏹 Torres de arqueros los piden para subir de nivel (D-318, `camps.level_up`); con 40 y 70 un campamento quedaba trabado meses esperando a su carpintero. Los muebles de las 🎓 (🛡️ Paveses, 🛒 Carro de víveres) no cambian y ninguna obra de la lista los pide.
 
   Un miembro, en el centro de su campamento, lo coloca desde 🔨 Mejoras → 🔨 Obras → 🪑 Colocar. Queda para siempre, con el nombre de quien lo puso, y vale para todos los miembros. **Uno de cada mueble por campamento:** un segundo igual no suma (se guarda en la mochila). Los muebles no cuentan como mejoras para el castillo. Mientras no se colocan, se ven en 🎒 Mochila → 📦 Recursos.
 - **Datos y código.** Números en `content/balance.yaml` → `masterwork`; las piezas gemelas `<id>_obra` las arma el motor al cargar (`engine/professions/rules.py`, `masterwork_items`); la firma se guarda en `Hero.gear_signatures` (vacío para los héroes de antes); los muebles son `kind: furniture` en `content/items.yaml` y se guardan en las mejoras del campamento (`furniture`). Pruebas: `tests/test_masterwork.py`.

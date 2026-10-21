@@ -118,8 +118,9 @@ def test_deposit_in_servicios_waits_for_a_work_and_an_activation_takes_it(servic
     assert view.kind == "camp_fund" and ids(view) == ["upsvc"]               # ↩️ back to 🏘️ Servicios
     view = service.text("test:1", "/f01")
     assert "No hay obras activas" in text(view) and service._upgrades(KEY)["fund"] == {"madera": 25}
-    view = service.act("test:1", "upact:aserradero")                        # ▶️ the fund gives it what it has
-    assert "El fondo puso" in view.notice and service._upgrades(KEY)["works"]["aserradero"] == {"madera": 25}
+    # [ES] D-317 (0.45): el 🪚 Aserradero ya casi no pide madera (pide tablones); la 🪵 Empalizada sigue pidiendo 30
+    view = service.act("test:1", "upact:empalizada")                        # ▶️ the fund gives it what it has
+    assert "El fondo puso" in view.notice and service._upgrades(KEY)["works"]["empalizada"] == {"madera": 25}
     assert service._upgrades(KEY)["fund"] == {}
 
 
