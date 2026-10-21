@@ -27,6 +27,8 @@ D-306 (0.44, la reforma de recetas): el tramo de cada pieza (tier_rank: nivel de
 experiencia que crecen con el tramo (tier_energy, tier_xp), el color de una receta según tu rango (recipe_color: naranja,
 amarilla, verde o gris, como en WoW) y la parte de la experiencia que da cada color (color_factor), y los 📚 libros de recetas
 (books_for: qué libros pide una receta; book_price; book_id, el id que guarda el héroe).
+D-322 (0.47, el 💰 fondo del gremio para los oficios): cuánto pondría el fondo después de la mochila (fund_draw) y cuántas
+veces alcanza con la mochila y el fondo juntos, sin pasar el tope del día (max_times con fund y fund_cap).
 No guarda nada: el servicio lee Hero.professions (y Hero.prof_specs, Hero.spec_xp) y llama a estas funciones.
 Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra y
     beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2), §0.8 (tramos, colores y libros, D-306) y §4;
@@ -38,7 +40,8 @@ Lo usan: engine/service/game.py (secciones "professions", "enchanting", "camp pr
     specializations", "🎖️ profession titles" y "recipe tiers, colors and books"), engine/core/content.py
     (masterwork_items, al cargar los objetos), tests/test_professions.py, tests/test_masterwork.py,
     tests/test_oficios_equipo.py, tests/test_oficios_campamento.py, tests/test_especializaciones.py,
-    tests/test_titulos_de_oficio.py y tests/test_tramos_de_recetas.py; tools/recipe_tiers.py y tools/sim_oficios.py (D-306)
+    tests/test_titulos_de_oficio.py, tests/test_tramos_de_recetas.py y tests/test_fondo_para_oficios.py (D-322);
+    tools/recipe_tiers.py y tools/sim_oficios.py (D-306)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -80,7 +83,7 @@ Si cambias esto, revisa:
       Hero.recipe_books: nunca cambia
     - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py,
       tests/test_oficios_campamento.py, tests/test_especializaciones.py, tests/test_titulos_de_oficio.py,
-      tests/test_tramos_de_recetas.py
+      tests/test_tramos_de_recetas.py, tests/test_fondo_para_oficios.py (D-322: fund_draw y max_times con el fondo)
 """
 
 from __future__ import annotations
@@ -235,19 +238,45 @@ def missing_for(recipe: dict[str, Any], carried: dict[str, int], times: int = 1)
     return {item: n - carried.get(item, 0) for item, n in need.items() if carried.get(item, 0) < n}
 
 
-def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int) -> int:
+def fund_draw(recipe: dict[str, Any], carried: dict[str, int], fund: dict[str, int], times: int = 1) -> dict[str, int]:
+    """What making a recipe `times` times takes from a shared fund after the backpack (D-322): never more than the fund has.
+
+    [ES]
+    Qué hace: D-322 (0.47, el 💰 fondo del gremio para los oficios): la receta toma primero de la mochila y lo que falta, del
+    fondo (lo que sobra después de las obras y del siguiente nivel, que le pasa el servicio). Devuelve material → unidades que
+    pondría el fondo; si el fondo no alcanza, pone lo que tiene (lo que sigue faltando lo dice missing_for con la mochila y el
+    fondo juntos). La llaman: GameService (_station_view, _recipe_view, _make, por _fund_pool) y max_times.
+    Si cambia, afecta: cuánto se toma del fondo del gremio al refinar o fabricar en el campamento.
+    """
+    out: dict[str, int] = {}
+    for item, n in (recipe.get("inputs") or {}).items():
+        take = min(int(n) * times - carried.get(item, 0), int(fund.get(item, 0)))
+        if take > 0:
+            out[item] = take
+    return out
+
+
+def max_times(recipe: dict[str, Any], carried: dict[str, int], energy: int, fund: dict[str, int] | None = None,
+              fund_cap: int | None = None) -> int:
     """How many times the recipe can be made now with the materials carried and the energy left.
 
     [ES]
     Qué hace: cuenta cuántas veces alcanza la receta con lo que llevas y tu energía (cada vez cuesta su energía).
+    D-322 (0.47): con `fund` (lo que sobra del 💰 fondo del gremio que puedes usar) cuenta la mochila y el fondo juntos, y con
+    `fund_cap` (lo que te queda del tope del día) nunca toma del fondo más que eso en total (fund_draw).
     La llaman: la pantalla de receta (botones 🔨 Hacer) y las pruebas.
     Si cambia, afecta: qué botones de hacer se ofrecen.
     """
     inputs = recipe.get("inputs") or {}
-    by_items = min((carried.get(item, 0) // int(n) for item, n in inputs.items() if int(n) > 0), default=0)
+    pool = {item: carried.get(item, 0) + int((fund or {}).get(item, 0)) for item in inputs}
+    by_items = min((pool[item] // int(n) for item, n in inputs.items() if int(n) > 0), default=0)
     cost = int(recipe.get("energy", 1))
     by_energy = energy // cost if cost > 0 else by_items
-    return max(0, min(by_items, by_energy))
+    best = max(0, min(by_items, by_energy))
+    if fund and fund_cap is not None:               # D-322: the daily cap counts every unit the fund puts in
+        while best > 0 and sum(fund_draw(recipe, carried, fund, best).values()) > fund_cap:
+            best -= 1
+    return best
 
 
 PERK_KEYS = ("attack", "hp", "armor", "regen", "potion", "bandage", "heal", "bag", "sell", "masterwork", "explore",

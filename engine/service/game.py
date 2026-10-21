@@ -178,6 +178,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     ya se hizo); los héroes de antes cargan con [] y False, y _load les da una vez los libros de los rangos que tenían.
     D-320 (0.46): los espacios del 🏛️ Mercado ("market_order", "market_index", "market_mine", "market_box", "market_open",
     "market_log" y "meta"/"market") son de engine/service/market.py (ver su encabezado). Nada nuevo en Hero.
+    D-322 (0.47): "upgrades" suma "fund_crafts", "fund_used" y "fund_log" (el 💰 fondo del gremio para los oficios; los escribe
+    engine/service/gremio.py, ver su encabezado). Nada nuevo en Hero.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -581,6 +583,15 @@ Si cambias esto, revisa:
       _faq_values (_market_faq_values: {market_tax}, {market_delivery}, {market_days}, {market_orders}). Números: balance.yaml
       market. Textos: content/locales/es_mercado.yaml y en_mercado.yaml; ❓ /d58 y /d59; 📚 la guía "market". Pruebas:
       tests/test_mercado.py y tests/test_fogata_ordenada.py
+    - 💰 El fondo del gremio para los oficios (0.47, pedido del dueño del 21-oct-2026; cómo se armó: D-322, provisional): primero
+      las obras (el fondo sigue alimentando las obras activas y ⏫ Siguiente nivel igual: _feed_works, _feed_levelup) y lo que
+      sobra se usa al refinar y fabricar en las estaciones de tu campamento. Las reglas viven en engine/service/gremio.py
+      (sección "the camp's fund for the professions": _fund_reserve, _fund_surplus, _fund_pool, _fund_take, el tope, el
+      registro y el interruptor); ganchos de este archivo: _recipe_status y _station_view (✅💰 y la línea del fondo),
+      _recipe_view (+💰 por material, "💰 Del fondo del gremio, por vez", max_times con el fondo y el tope), _make (primero la
+      mochila, después el fondo, todo o nada; _fund_take) y _faq_values ({fund_cap}). Las cuentas puras: engine/professions
+      (fund_draw, max_times con fund y fund_cap). Números: balance.yaml fund_crafts. Textos: content/locales/
+      es_fondo_oficios.yaml y en_fondo_oficios.yaml; ❓ /d60; 📚 la guía "guild". Pruebas: tests/test_fondo_para_oficios.py
 """
 
 from __future__ import annotations
@@ -636,7 +647,8 @@ from engine.hero import Hero, hero_stats, xp_for_level
 from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, roll_gear, source_choices,
                               starter_gear, suits, unequip)
 from engine.hero.gear import gear_score, is_better, piece_score, real_stats     # D-115 (fase 2): ✨ encantamientos y ⬆️ pieza mejor
-from engine.professions import gatherer_of, masterwork_chance, masterwork_id, max_times, missing_for, rank_of, rank_title, xp_for_rank
+from engine.professions import (fund_draw, gatherer_of, masterwork_chance, masterwork_id, max_times, missing_for, rank_of,   # D-322: fund_draw
+                                 rank_title, xp_for_rank)
 from engine.professions import rules as profession_rules
 from engine.messaging import Action, View
 from engine.world import DIRECTIONS, Zone, classic_biome, travel_minutes, zone_at
@@ -7455,6 +7467,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             "invite_bonus": b["invite"]["bonus_referrer"],
             "retreat": self._faq_and(b.get("auto_fight", {}).get("retreat_choices", [30, 50, 70])),
             **self._market_faq_values(),                # D-320 (0.46): 🏛️ Mercado ({market_tax}, {market_delivery}...)
+            **self._fund_faq_values(),                  # D-322 (0.47): {fund_cap}, the fund for the professions
         }
 
     def _faq_code(self, raw: str) -> str | None:
@@ -8661,6 +8674,25 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         actions.append(Action(id=self._prof_back(hero), label=t.t("menu.back")))
         return View(kind="professions", title=t.t("prof.title"), body=body, actions=actions, notice=notice)
 
+    def _recipe_status(self, hero: Hero, rdef: dict[str, Any], pool: dict[str, Any] | None) -> tuple[int, bool]:
+        """(0 ✅ / 1 🔸 / 2 ▫️, needs the fund) for a recipe of the list (D-321): ✅ also with the guild's fund here (D-322).
+
+        [ES] Qué hace: el estado de una receta en la lista de 🪚 / 🛠️ / 🍲: ✅ si la mochila alcanza para hacerla una vez; D-322
+        (0.47): en las estaciones de tu campamento, ✅ también si la mochila y lo que sobra del 💰 fondo del gremio alcanzan sin
+        pasar el tope del día (entonces la línea lleva ✅💰); 🔸 si llevas algo (o el fondo tiene algo) de lo que pide; ▫️ si no.
+        La llama: _station_view. Si cambia, afecta: qué recetas salen primero y con ✅ (tests/test_fondo_para_oficios.py).
+        """
+        bag = hero.backpack
+        if not missing_for(rdef, bag):
+            return 0, False
+        usable = pool["usable"] if pool else {}
+        if usable:
+            pooled = {item: bag.get(item, 0) + usable.get(item, 0) for item in rdef["inputs"]}
+            if not missing_for(rdef, pooled) and sum(fund_draw(rdef, bag, usable).values()) <= pool["left"]:
+                return 0, True
+        carried = any(bag.get(item, 0) > 0 or usable.get(item, 0) > 0 for item in rdef["inputs"])
+        return (1 if carried else 2), False
+
     def _station_view(self, hero: Hero, branch: str, page: int = 0, notice: str | None = None, only_ok: bool = False) -> View:
         """🪚 Refinar / 🛠️ Fabricar: the recipes of this branch you can do here with your rank, ✅ first (you carry it
         all), then those you carry part of (with what is missing), then the rest; 2 per page when there are more than 3.
@@ -8687,6 +8719,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         llevas nada, la pieza y la experiencia), agrupadas por oficio con su rango, de a professions.list_per_page (8) por
         página; el código /rN abre la receta (_recipe_code, guarda el orden con _codes "recipes"). Botones: ➡️ Ver más,
         ✅ Solo las que puedo hacer ("esto:<rama>:<página>", only_ok) / 📜 Ver todas, 📚 si cabe y ↩️ Volver.
+        D-322 (0.47, pedido del dueño: "puedan utilizar los recursos del gremio"): en las estaciones de tu campamento el estado
+        cuenta lo que sobra del 💰 fondo del gremio (_recipe_status: ✅💰 = la haces con ayuda del fondo) y una línea dice cuánto
+        puedes tomar hoy, o que el fondo para oficios está 🔒 cerrado o que llegaste al tope (_fund_pool_lines).
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, 🍲 Cocinar ("cook"), ➡️ Ver más y ↩️ Volver de cada receta.
         Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py, tests/test_menus_y_dudas.py,
         tests/test_lista_de_recetas.py).
@@ -8711,7 +8746,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             return self._professions_view(hero, notice=notice or t.t("prof.no_station"))
         catalog = self._prof_catalog()
         recipes = self._recipes()
-        entries: list[tuple[int, str, dict[str, int]]] = []
+        pool = self._fund_pool(hero, where)                               # D-322: the guild's fund at your camp's stations
+        entries: list[tuple[int, str, bool]] = []
         book_locked: dict[tuple[str, int], int] = {}                      # D-306: (profession, book rank) -> recipes it opens here
         elsewhere = False
         for rid, rdef in recipes.items():
@@ -8729,9 +8765,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             if lacking:
                 book_locked[(pid, lacking[0])] = book_locked.get((pid, lacking[0]), 0) + 1
                 continue
-            missing = missing_for(rdef, hero.backpack)
-            carried = any(hero.backpack.get(item, 0) > 0 for item in rdef["inputs"])
-            entries.append((0 if not missing else 1 if carried else 2, rid, missing))
+            status, with_fund = self._recipe_status(hero, rdef, pool)     # D-322: ✅ counts what the fund can put in
+            entries.append((status, rid, with_fund))
         # D-321 (0.46): grouped by profession (catalog order), and inside each one ✅ first, then 🔸, then ▫️; inside each group
         # the highest rank first (D-110: up to 13 tiers per line, the newest is the useful one), D-306: in a tier, the piece of
         # highest level first (a tier can make two levels: 8 and 10 at rank 10), then file order.
@@ -8758,10 +8793,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             body.append(t.t("rlist.legend"))                              # D-321: ✅ 🔸 ▫️ and "tap the code"
         if only_ok:
             body.append(t.t("rlist.only_ok_line"))
+        body += self._fund_pool_lines(pool)                               # D-322: 💰 what the guild's fund adds here
         actions = []
         codes = []
         group = None
-        for status, rid, missing in shown:                                # D-321: one line per recipe, with its code
+        for status, rid, with_fund in shown:                              # D-321: one line per recipe, with its code
             rdef = recipes[rid]
             pid = rdef["profession"]
             rank = self._prof_rank(hero, pid)
@@ -8772,7 +8808,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             out = self.content.items.get(next(iter(rdef["output"])), {})
             level = t.t("rlist.level", n=out["req_level"]) if out.get("kind") == "gear" and out.get("req_level") else ""
             # D-141: "🎓 " before an exclusive recipe; D-306: its color (🟧 🟨 🟩 ⬜) first and the profession xp it gives now
-            body.append(t.t(f"rlist.line_{('ok', 'part', 'none')[status]}", code=f"/r{len(codes)}",
+            line_key = "fcraft.line_fund" if with_fund and not status else f"rlist.line_{('ok', 'part', 'none')[status]}"
+            body.append(t.t(line_key, code=f"/r{len(codes)}",
                             color=self._color_mark(rdef, rank), item=self._pspec_mark(rdef) + self._recipe_name(rid),
                             level=level, prof=catalog.get(pid, {}).get("emoji", ""), xp=self._recipe_xp(rdef, rank)))
         self._codes(hero, "recipes", codes)
@@ -8829,6 +8866,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         (solo se llega con un botón viejo) no se abre: vuelve a su estación con el aviso corto prof.locked.
         D-306 (0.44): dice el color de la receta en una frase, la experiencia de oficio que da con ese color y, si pide un
         📚 libro que no tienes, el candado (sin botones de hacer, con uno a 📚 Libros de recetas).
+        D-322 (0.47): en las estaciones de tu campamento cuenta lo que sobra del 💰 fondo del gremio (_fund_pool): cada material
+        dice cuánto pondría el fondo ("+💰3"), una línea "💰 Del fondo del gremio, por vez: …", cuánto puedes tomar hoy (o 🔒 /
+        tope) y los botones de cantidad cuentan la mochila y el fondo sin pasar el tope del día (max_times con fund).
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar / 🍲 Cocinar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
         """
@@ -8844,6 +8884,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             return self._station_view(hero, "cook" if pid == COOK_PROFESSION else branch, page,
                                       notice=notice or t.t("prof.locked", need=need_rank, name=self._prof_name(pid), rank=rank))
         stations, where = self._stations_here(hero)
+        pool = self._fund_pool(hero, where) if pid in stations else None     # D-322: the guild's fund at your camp's stations
+        usable = pool["usable"] if pool else {}
         body = [self._pspec_mark(rdef) + self._recipe_name(rid),
                 t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank)]
         if rdef.get("spec"):                                    # D-141: 🎓 whose exclusive recipe it is
@@ -8854,6 +8896,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         body += ["", t.t("prof.recipe_needs")]
         for item_id, n in rdef["inputs"].items():
             have = hero.backpack.get(item_id, 0)
+            extra = min(int(usable.get(item_id, 0)), max(0, int(n) - have))      # D-322: what the fund puts in for one make
+            if extra:
+                body.append(t.t("fcraft.have_line" if have + extra >= n else "fcraft.lack_line", item=self._item_label(item_id),
+                                have=have, need=n, fund=extra))
+                continue
             body.append(t.t("prof.have_line" if have >= n else "prof.lack_line", item=self._item_label(item_id), have=have, need=n))
         out_id = next(iter(rdef["output"]))
         item = self.content.items[out_id]
@@ -8893,7 +8940,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         elif pid not in stations:
             body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
         else:
-            times = max_times(rdef, hero.backpack, hero.energy)
+            times = max_times(rdef, hero.backpack, hero.energy, usable, pool["left"] if pool else None)     # D-322: + the fund
             # D-189 (owner): every amount at once, small buttons with just the number side by side, and a wide ↩️ Volver.
             amounts = [n for n in self._prof_cfg().get("make_amounts", [1, 5]) if n <= times]
             for n in amounts:
@@ -8902,9 +8949,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
                 actions.append(Action(id=f"mk:{rid}:{times}:{page}", label=t.t("batch.all")))
             if times >= 1:
                 body.append(t.t("prof.make_ask", n=times))
-            missing = missing_for(rdef, hero.backpack)
+            draw = fund_draw(rdef, hero.backpack, usable) if usable else {}      # D-322: 💰 what the fund puts in per make
+            if draw:
+                body.append(t.t("fcraft.recipe_fund", items=self._item_list(draw)))
+            if pool and any(hero.backpack.get(item, 0) < n and item in pool["surplus"] for item, n in rdef["inputs"].items()):
+                body += self._fund_pool_lines(pool)                         # how much is left today, 🔒 closed or capped
+            missing = missing_for(rdef, {item: hero.backpack.get(item, 0) + int(usable.get(item, 0)) for item in rdef["inputs"]})
             if missing:
                 body.append(t.t("prof.missing_line", items=self._item_list(missing)))
+            elif draw and sum(draw.values()) > pool["left"]:                # D-322: more than today's cap in one make
+                body.append(t.t("fcraft.over_cap", left=pool["left"], cap=self._fund_cap()))
             elif not times:
                 body.append(self._no_energy_notice(hero))
         layout = [len(actions), 1] if actions else []       # D-189: the amounts in one row, ↩️ Volver wide below
@@ -8928,6 +8982,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         por vez (🪙 Metales preciosos).
         D-306 (0.44): sin el 📚 libro de recetas que pide la receta se rechaza sin gastar nada; la experiencia de oficio sale por el
         color de la receta, vez por vez (_batch_prof_xp: si a mitad del lote subes y cambia de color, lo que sigue da menos).
+        D-322 (0.47): en las estaciones de tu campamento la receta toma primero de la mochila y lo que falta, de lo que sobra del
+        💰 fondo del gremio (nunca de lo guardado para las obras y el siguiente nivel), sin pasar el tope del día; lo tomado se
+        anota en 📜 Quién usó qué (_fund_take). Todo o nada, como siempre.
         Publica ItemCrafted con la pieza normal y el total hecho (y ProfessionRankUp si sube de rango).
         La llaman: los botones 🔨 Hacer de la receta.
         Si cambia, afecta: la economía de los oficios (balance.yaml professions; content/professions.yaml).
@@ -8949,18 +9006,27 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             return self._recipe_view(hero, rid, page, notice=self._pspec_recipe_lock(hero, rdef))
         if self._book_missing(hero, rdef):                       # D-306 (0.44): no 📚 recipe book, nothing spent
             return self._recipe_view(hero, rid, page, notice=self._book_lock_line(hero, rdef))
-        missing = missing_for(rdef, hero.backpack, times)
+        pool = self._fund_pool(hero, where)                      # D-322: the backpack first, then what the guild's fund has left
+        usable = pool["usable"] if pool else {}
+        missing = missing_for(rdef, {item: hero.backpack.get(item, 0) + int(usable.get(item, 0)) for item in rdef["inputs"]}, times)
         if missing:
             return self._recipe_view(hero, rid, page, notice=t.t("prof.missing", items=self._item_list(missing)))
+        draw = fund_draw(rdef, hero.backpack, usable, times) if usable else {}
+        if draw and sum(draw.values()) > pool["left"]:           # D-322: never past today's cap (nothing spent)
+            return self._recipe_view(hero, rid, page, notice=t.t("fcraft.over_cap", left=pool["left"], cap=self._fund_cap()))
         cost = int(rdef.get("energy", 1)) * times
         if hero.energy < cost:
             return self._recipe_view(hero, rid, page, notice=self._no_energy_notice(hero))
         self._pay_energy(hero, cost)
         bag_before = dict(hero.backpack)                    # D-115: to tell a ⬆️ better piece among what comes out
         for item_id, n in rdef["inputs"].items():
-            hero.backpack[item_id] -= int(n) * times
+            own = int(n) * times - draw.get(item_id, 0)     # D-322: what the fund does not put in comes from the backpack
+            if own <= 0:
+                continue
+            hero.backpack[item_id] -= own
             if hero.backpack[item_id] <= 0:
                 del hero.backpack[item_id]
+        fund_line = self._fund_take(hero, pool, draw, rid, times) if draw else None
         out_id, out_n = next(iter(rdef["output"].items()))
         item = self.content.items[out_id]
         extra = 0
@@ -8993,6 +9059,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             hero.backpack[twin] = hero.backpack.get(twin, 0) + masters
             hero.gear_signatures[twin] = hero.name                          # the crafter's signature
         lines = [t.t("prof.made", items=self._item_list({out_id: made}), energy=cost)]
+        if fund_line:                                       # D-322: 💰 what the guild's fund put in
+            lines.append(fund_line)
         if extra:
             lines.append(t.t("prof.made_extra", n=extra))
         if found:

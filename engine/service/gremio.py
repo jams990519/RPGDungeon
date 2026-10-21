@@ -31,6 +31,13 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     recursos (_resource_search_view) pone primero las zonas cercanas Y ricas: a cada zona le suma a la distancia
     (1 - riqueza) × gremio.search_rich_penalty (4) zonas, así un bosque con madera al 100 % a 3 zonas sale antes que una
     montaña con madera al 30 % a 1 zona. La distancia que se muestra es la de verdad.
+    D-322 (0.47, pedido del dueño del 21-oct-2026: "que los jugadores del gremio puedan primero construir las estructuras y
+    después poder utilizar los recursos para las profesiones de cada uno"): el 💰 fondo del campamento sigue alimentando primero
+    las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado: _fund_reserve); lo que sobra (_fund_surplus) un
+    miembro lo usa al refinar y fabricar en las estaciones de SU campamento, como si lo llevara en la mochila (primero la
+    mochila, después el fondo: game.py _station_view, _recipe_view y _make con _fund_pool y _fund_take), con un tope por día
+    real (fund_crafts.daily_cap), 📜 Quién usó qué (_fund_log_view) y un interruptor 🔓/🔒 del fundador o un 🤝 asistente en
+    💰 Fondos (_fund_craft_toggle). Las reglas chicas las eligió Claude (D-322, provisional).
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -40,7 +47,9 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     _emblem_name, _load, _save, _push, _push_each, _speaking, _name_key, _camp_requirements, _camp_here_view, _main_view,
     _guild_view, _members_cap, _upgrades, _upgrade_catalog, _upgrade_name, _create_camp, _territory, _trip_seconds, _zone_players;
     0.39: _active_works, _feed_works, _upgrade_need, _camp_perks, _credit_raw, _missing_text, _works_refresh, _camp_member_order,
-    _gear_name, _enchant_mark, _forget_piece, _bag_full y _bag_full_line)
+    _gear_name, _enchant_mark, _forget_piece, _bag_full y _bag_full_line; 0.47 (D-322): _upgrades_here, _lvlup_need,
+    _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today), content/balance.yaml fund_crafts y
+    content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:", "cinv:" antes del
     combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1, /f02 y /inv_<código>;
     _gremio_text desde _name_camp), tick() (_works_tick), _idle_action (GREMIO_ACTIONS, "found" → _start_founding),
@@ -52,7 +61,10 @@ Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las r
     _services_view, _service_type_view, _upgrades_view, _guild_view, _ask_join, _answer_join), _helpers_line,
     _camp_member_line, _member_camp y text() (/a1, /t1: _armory_in_code, _armory_out_code); D-302: _guild_view (los botones
     "gmembers", "gfunds" y "gchat" que abren _guild_members_view, _guild_funds_view y _guild_chat_view; _armory_line se quitó:
-    la cuenta de la armería está solo en ⚔️ Armería). Usa también _resource_code de game.py (el código /07 de cada recurso)
+    la cuenta de la armería está solo en ⚔️ Armería). Usa también _resource_code de game.py (el código /07 de cada recurso).
+    D-322 (0.47): game.py _station_view (_fund_pool, _fund_pool_lines; el estado ✅💰 lo arma _recipe_status), _recipe_view
+    (_fund_pool, _fund_pool_lines, _fund_cap), _make (_fund_pool, _fund_take, _fund_cap) y _faq_values (_fund_faq_values);
+    aquí, _guild_funds_view (_fund_craft_lines y los botones "gflog" y "gfcraft")
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño:
@@ -97,6 +109,10 @@ Datos de los que es dueño:
     D-291 (0.39): después de fundar, 💰 Depositar y /f02 ponen en el fondo del campamento ("upgrades"."fund", quién dio qué en
         "upgrades"."gave") y el fondo alimenta las obras activas (game.py _feed_works); al fundar, los 📢 mensajes del gremio
         pasan a "messages" del campamento. Lo que se dio al fondo antes de fundar sigue en "gave" del gremio (se lee junto).
+    D-322 (0.47): "upgrades" suma "fund_crafts" (True/False: el fondo para oficios 🔓 abierto o 🔒 cerrado; sin el campo,
+        fund_crafts.default_open), "fund_used" ({"day": _today(), "by": {cuenta: unidades}}: lo que cada miembro tomó hoy para
+        sus oficios; un día nuevo empieza de cero) y "fund_log" ([{"k": "use" | "open" | "close", "who", "id", "at", y en "use"
+        "items" {material: n}, "recipe", "times"}], los últimos fund_crafts.log_kept: 📜 Quién usó qué).
 Reglas que nunca se rompen:
     1. Un gremio por héroe: quien es miembro de un campamento tiene el gremio de su campamento (D-97) y no entra a otro.
     2. Antes del campamento caben gremio.members_before_camp (5); entra quien pide y acepta el líder o un oficial (o quien
@@ -113,10 +129,14 @@ Reglas que nunca se rompen:
     7. La ⚔️ Armería nunca pierde una pieza (D-290): entra con su encantamiento y su firma, y sale igual; si quien la toma ya
        lleva una pieza igual con otro encantamiento o firma, no se la lleva (las copias de una pieza comparten esos datos).
        Si el gremio se disuelve, las piezas vuelven al último miembro.
+    8. D-322: primero las obras. Lo que les falta a las obras activas y a ⏫ Siguiente nivel nunca se usa para oficios (la
+       reserva se calcula cada vez); un miembro toma del fondo solo en las estaciones de su campamento, después de su mochila,
+       sin pasar el tope del día, y cada unidad queda en 📜 Quién usó qué. Hacer una receta sigue siendo todo o nada.
 Si cambias esto, revisa:
     - Números: balance.yaml gremio, works, bonfire.cap, presence.bonfire_seconds, camps.found_cost y guild.levels[0].capacity;
       desde la 0.39, camps.helpers_per_members (D-289), armory.slots y armory.log_kept (D-290) y gremio.waiting_max (D-294);
-      desde la 0.39.4 (D-302), gremio.messages_kept (50), gremio.chat_hours, gremio.chat_shown y gremio.chat_max_chars
+      desde la 0.39.4 (D-302), gremio.messages_kept (50), gremio.chat_hours, gremio.chat_shown y gremio.chat_max_chars;
+      desde la 0.47 (D-322), fund_crafts.daily_cap (40), default_open, log_kept y log_shown
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); engine/service/guide.py (el paso "found" lee
       _camp_requirements y se completa con el evento "camp" que manda _create_camp)
     - Pantallas y botones: HUB_KINDS ("gremio" y "guild": hasta 8 botones; los submenús de D-302, "guild_members",
@@ -126,7 +146,8 @@ Si cambias esto, revisa:
     - Pruebas: tests/test_gremio_desde_el_inicio.py; tests/test_camps.py (found_at funda por el gremio), tests/test_guilds.py,
       tests/test_camp_upgrades.py (las obras con tiempo), tests/test_menus_y_dudas.py (la fogata con 👥 Jugadores);
       0.39: tests/test_ayudantes.py, tests/test_armeria.py, tests/test_deposito_tras_fundar.py, tests/test_servicios_por_tipo.py,
-      tests/test_espera_del_gremio.py; 0.39.4: tests/test_submenus_campamento_gremio.py (D-302) y tests/test_chat_del_gremio.py
+      tests/test_espera_del_gremio.py; 0.39.4: tests/test_submenus_campamento_gremio.py (D-302) y tests/test_chat_del_gremio.py;
+      0.47: tests/test_fondo_para_oficios.py (D-322)
 """
 
 from __future__ import annotations
@@ -167,7 +188,8 @@ GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greq
                   "creqs",       # D-289: 🙋 Solicitudes to join the camp (the founder or a helper)
                   "cwjoin:",     # D-294: 🏕️ Unir al campamento a guild member who waits for room
                   "gwleave",     # D-294: 🚪 Salir del gremio while waiting for room ("gwleave!" confirms)
-                  "gmembers", "gfunds", "gchat")   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
+                  "gmembers", "gfunds", "gchat",   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
+                  "gfcraft", "gflog")              # D-322: 🔓/🔒 the fund for the professions and 📜 Quién usó qué
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
 GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:",   # D-280: "cinv:" = the camp's invitation by code
                   "cwait:")                              # D-294: the guild's invitation while its camp is full
@@ -477,7 +499,8 @@ class GremioMixin:
     def _gremio_action(self, hero: Hero, action_id: str) -> View:
         """Route the guild and bonfire buttons (GREMIO_ACTIONS). [ES] Qué hace: reparte los botones de esta sección (0.39: también
         ⚔️ "garm", 🤝 "ghelp:", 🙋 "creqs" y 💰 "gfund"/"gfund:svc", que después de fundar es el fondo del campamento; D-302,
-        0.39.4: 👥 "gmembers", 💰 "gfunds" y 📢 "gchat", los submenús del gremio). La llama:
+        0.39.4: 👥 "gmembers", 💰 "gfunds" y 📢 "gchat", los submenús del gremio; D-322, 0.47: "gfcraft" abre o cierra el fondo
+        para oficios y "gflog" es 📜 Quién usó qué). La llama:
         _idle_action. Si cambia, afecta: los IDs de botón del gremio (64 bytes como máximo en Telegram)."""
         arg = action_id.partition(":")[2]
         routes = {"players": lambda: self._players_view(hero), "gnew": lambda: self._gremio_new(hero),
@@ -491,6 +514,8 @@ class GremioMixin:
                   "gmembers": lambda: self._guild_members_view(hero),       # D-302: 👥 Miembros
                   "gfunds": lambda: self._guild_funds_view(hero),           # D-302: 💰 Fondos (before "gfund": its prefix)
                   "gchat": lambda: self._guild_chat_view(hero),             # D-302: 📢 Chat
+                  "gfcraft": lambda: self._fund_craft_toggle(hero),         # D-322: 🔓 / 🔒 the fund for the professions
+                  "gflog": lambda: self._fund_log_view(hero),               # D-322: 📜 Quién usó qué
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
         if action_id in routes:
             return routes[action_id]()
@@ -692,10 +717,15 @@ class GremioMixin:
         a las obras activas lo que les falta), cuántas obras activas hay, cada recurso con su código de 📦 Recursos (/07) y la
         pista de los códigos. Antes de fundar (💰 Fondo del gremio): lo mismo con lo que pide fundar (✅ o ▫️). Botones:
         💰 Depositar ("gfund": tu mochila con los códigos /f02, quién dio qué) y ↩️ Volver al gremio. Sin gremio, la pantalla
-        del gremio. La llama: el botón 💰 Fondos ("gfunds") y el ↩️ de 💰 Depositar. Si cambia, afecta:
-        tests/test_submenus_campamento_gremio.py."""
+        del gremio. D-322 (0.47): después de fundar suma el fondo para oficios (_fund_craft_lines: 🔓/🔒, el tope del día, lo
+        guardado para las obras y el nivel, lo que sobra) y los botones 📜 Quién usó qué ("gflog") y, para el fundador o un 🤝
+        asistente, 🔒 Cerrar / 🔓 Abrir para oficios ("gfcraft"): 4 botones como mucho. La llama: el botón 💰 Fondos ("gfunds"),
+        el ↩️ de 💰 Depositar y de 📜 Quién usó qué, y _fund_craft_toggle. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py y tests/test_fondo_para_oficios.py."""
         t = self.texts
         record = self._my_gremio(hero)
+        camp: dict[str, Any] | None = None
+        upgrades: dict[str, Any] = {}
         if record:                                     # before founding: the guild's fund pays the founding
             fund = record.get("fund") or {}
             cost = self.content.balance["camps"]["found_cost"]
@@ -711,10 +741,17 @@ class GremioMixin:
             fund = upgrades.get("fund") or {}
             body = [t.t("guildmenu.funds_intro"), t.t("guildmenu.funds_works", n=len(self._active_works(camp, upgrades))), ""]
             body += self._fund_item_lines(fund) or [t.t("guildmenu.funds_empty")]
+            body += [""] + self._fund_craft_lines(camp, upgrades, hero)      # D-322: 🛠️ the fund for the professions
             title = t.t("guildmenu.funds_title")
         if fund:
             body += ["", t.t("guildmenu.funds_hint")]
-        actions = [Action(id="gfund", label=t.t("services.deposit_button")), Action(id="guild", label=t.t("menu.back"))]
+        actions = [Action(id="gfund", label=t.t("services.deposit_button"))]
+        if camp:                                       # D-322: 📜 Quién usó qué, and 🔓/🔒 for the founder or an assistant
+            actions.append(Action(id="gflog", label=t.t("fcraft.log_button")))
+            if self._camp_manager(camp, hero.id):
+                actions.append(Action(id="gfcraft", label=t.t("fcraft.close_button" if self._fund_open(upgrades)
+                                                              else "fcraft.open_button")))
+        actions.append(Action(id="guild", label=t.t("menu.back")))
         return View(kind="guild_funds", title=title, body=body, actions=actions, notice=notice)
 
     def _chat_lines(self, messages: list[dict[str, Any]]) -> list[str]:
@@ -2361,6 +2398,214 @@ class GremioMixin:
         if timed:
             self._works_refresh(key, camp, hero)
         return self._camp_fund_view(hero, notice="\n".join(lines))
+
+    # ------------------------------------------------------------------ 🛠️ the camp's fund for the professions (D-322, 0.47)
+    # [ES] Pedido del dueño del 21-oct-2026: "que los jugadores del gremio puedan primero construir las estructuras y después
+    # utilizar los recursos para las profesiones de cada uno". Primero las obras: el fondo sigue alimentando las obras activas y
+    # ⏫ Siguiente nivel como siempre (game.py _feed_works y _feed_levelup), y lo que todavía les falta queda guardado (la
+    # reserva). Después los oficios: lo que sobra, un miembro lo usa en las estaciones de SU campamento como si lo llevara en la
+    # mochila (primero la mochila, después el fondo), con un tope por día, un registro de quién usó qué y un interruptor del
+    # fundador o un 🤝 asistente (como la ⚔️ Armería, D-290). Las reglas chicas las eligió Claude (D-322, provisional).
+
+    def _fcraft_cfg(self) -> dict[str, Any]:
+        """balance.yaml "fund_crafts" (D-322): daily_cap, default_open, log_kept and log_shown."""
+        return self.content.balance.get("fund_crafts", {})
+
+    def _fund_reserve(self, camp: dict[str, Any], record: dict[str, Any], actor: Hero | None = None) -> dict[str, int]:
+        """What the active works and the next level still lack, per material: the fund keeps it for them (D-322).
+
+        [ES] Qué hace: suma lo que les falta a las obras activas (lo que pide cada una con los beneficios del campamento, menos lo
+        aportado, con lo crudo de más contado como refinado: _credit_raw) y a ⏫ Siguiente nivel (camps.level_up_cost_per_level ×
+        nivel, menos lo aportado); las monedas no (el fondo no guarda monedas). Eso nunca se usa para oficios. En castillo no hay
+        nivel siguiente. La llaman: _fund_surplus y _fund_craft_lines. Si cambia, afecta: cuánto del fondo queda para oficios
+        (tests/test_fondo_para_oficios.py)."""
+        reserve: dict[str, int] = {}
+        perks = self._camp_perks(camp, actor)
+        catalog = self._upgrade_catalog()
+        for uid in self._active_works(camp, record):
+            if uid not in catalog:
+                continue
+            need = self._upgrade_need(catalog[uid], perks, record, uid)
+            progress = dict(record["works"].get(uid, {}))
+            self._credit_raw(need, progress)
+            for item, n in need.items():
+                lack = int(n) - int(progress.get(item, 0))
+                if item != "coins" and lack > 0:
+                    reserve[item] = reserve.get(item, 0) + lack
+        level = int(camp.get("level", 1))
+        if level < self._camp_top_level():
+            given = self._lvlup_progress(record, level + 1)["given"]
+            for item, n in self._lvlup_need(level).items():
+                lack = int(n) - int(given.get(item, 0))
+                if lack > 0:
+                    reserve[item] = reserve.get(item, 0) + lack
+        return reserve
+
+    def _fund_surplus(self, camp: dict[str, Any], record: dict[str, Any], actor: Hero | None = None) -> dict[str, int]:
+        """What the camp's fund holds beyond the reserve, per material (never below 0): what the professions may use (D-322)."""
+        reserve = self._fund_reserve(camp, record, actor)
+        surplus = {item: int(n) - reserve.get(item, 0) for item, n in (record.get("fund") or {}).items()}
+        return {item: n for item, n in surplus.items() if n > 0}
+
+    def _fund_open(self, record: dict[str, Any]) -> bool:
+        """🔓 / 🔒: whether the members may use the fund for their professions (D-322); fund_crafts.default_open if never set."""
+        return bool(record.get("fund_crafts", self._fcraft_cfg().get("default_open", True)))
+
+    def _fund_cap(self) -> int:
+        """Units of the fund one member may take per real day for the professions (fund_crafts.daily_cap, D-322)."""
+        return max(0, int(self._fcraft_cfg().get("daily_cap", 40)))
+
+    def _fund_used(self, record: dict[str, Any], account: str) -> int:
+        """Units this member took from the fund for the professions today (a new real day starts at 0: _today)."""
+        used = record.get("fund_used") or {}
+        if used.get("day") != self._today():
+            return 0
+        return int((used.get("by") or {}).get(account, 0))
+
+    def _fund_pool(self, hero: Hero, where: str | None) -> dict[str, Any] | None:
+        """The camp's fund a member can use at the stations here (D-322), or None away from your own camp's stations.
+
+        [ES] Qué hace: solo en el centro de TU campamento y con sus estaciones (where == "camp" de _stations_here; el 🔥 Claro no,
+        y quien espera lugar en el gremio, D-294, no es miembro: no tiene estaciones del campamento) devuelve {"key", "camp",
+        "record", "surplus" (lo que sobra después de la reserva), "open" (el interruptor), "left" (lo que te queda del tope de
+        hoy), "usable" (lo que sobra si está abierto; vacío si está cerrado: el tope del día lo cuentan, con "left", fund_draw y
+        max_times, así una receta que el fondo cubre pero el tope no dice "tope" y no "te falta")}. La llaman: game.py
+        _station_view, _recipe_view y _make. Si cambia, afecta: dónde y cuánto se usa el fondo para oficios."""
+        if where != "camp":
+            return None
+        here = self._upgrades_here(hero)
+        if not here:
+            return None
+        camp, key = here
+        record = self._upgrades(key)
+        surplus = self._fund_surplus(camp, record, hero)
+        is_open = self._fund_open(record)
+        left = max(0, self._fund_cap() - self._fund_used(record, hero.id))
+        return {"key": key, "camp": camp, "record": record, "surplus": surplus, "open": is_open, "left": left,
+                "usable": dict(surplus) if is_open else {}}
+
+    def _fund_pool_lines(self, pool: dict[str, Any] | None) -> list[str]:
+        """The one line a recipe list or a recipe shows about the fund here: usable (and how much is left today), 🔒 or capped."""
+        t = self.texts
+        if not pool or not pool["surplus"]:
+            return []
+        if not pool["open"]:
+            return [t.t("fcraft.list_closed")]
+        if pool["left"] <= 0:
+            return [t.t("fcraft.list_capped", cap=self._fund_cap())]
+        return [t.t("fcraft.list_line", left=pool["left"])]
+
+    def _fund_log(self, record: dict[str, Any], kind: str, hero: Hero, **extra: Any) -> None:
+        """Add a line to 📜 Quién usó qué ("use", "open" or "close"), keeping the last fund_crafts.log_kept (D-322)."""
+        keep = max(1, int(self._fcraft_cfg().get("log_kept", 20)))
+        entry = {"k": kind, "who": hero.name, "id": hero.id, "at": self.clock.now(), **extra}
+        record["fund_log"] = (list(record.get("fund_log") or []) + [entry])[-keep:]
+
+    def _fund_take(self, hero: Hero, pool: dict[str, Any], draw: dict[str, int], rid: str, times: int) -> str:
+        """Take `draw` out of the camp's fund for a recipe: today's count, 📜 the log, saved; the line for the maker (D-322).
+
+        [ES] Qué hace: saca del 💰 fondo del campamento lo que la receta toma después de la mochila (el que llama ya comprobó que
+        sale de lo que sobra y que no pasa el tope del día), suma esas unidades a lo que el miembro usó hoy ("fund_used": {"day",
+        "by" {cuenta: n}}, se reinicia con el día real), lo anota en 📜 Quién usó qué ("fund_log") y guarda. Devuelve "💰 Del
+        fondo del gremio: … · hoy llevas N de 40". La llama: game.py _make. Si cambia, afecta: el fondo y su registro."""
+        record = pool["record"]
+        fund = record["fund"]
+        for item, n in draw.items():
+            fund[item] = int(fund.get(item, 0)) - int(n)
+            if fund[item] <= 0:
+                del fund[item]
+        today = self._today()
+        used = dict(record.get("fund_used") or {})
+        if used.get("day") != today:
+            used = {"day": today, "by": {}}
+        used["by"] = dict(used.get("by") or {})
+        used["by"][hero.id] = int(used["by"].get(hero.id, 0)) + sum(int(n) for n in draw.values())
+        record["fund_used"] = used
+        self._fund_log(record, "use", hero, items=dict(draw), recipe=rid, times=times)
+        self.store.put("upgrades", pool["key"], record)
+        return self.texts.t("fcraft.took", items=self._item_list(draw), used=used["by"][hero.id], cap=self._fund_cap())
+
+    def _fund_ago(self, at: float) -> str:
+        """"1 min", "2 h 10 min" or "3 días" since a log line (D-322); never under a minute."""
+        elapsed = max(0.0, self.clock.now() - float(at or 0.0))
+        if elapsed >= 86400:
+            return self.texts.t("fcraft.days", n=int(elapsed // 86400))
+        return self._fmt_duration(max(60.0, elapsed))
+
+    def _fund_log_lines(self, record: dict[str, Any], limit: int | None = None) -> list[str]:
+        """📜 Quién usó qué, newest first: who took what for which recipe, and who opened or closed the fund (D-322)."""
+        t = self.texts
+        lines: list[str] = []
+        for entry in reversed(list(record.get("fund_log") or [])):
+            if limit is not None and len(lines) >= limit:
+                break
+            ago = self._fund_ago(entry.get("at", 0.0))
+            kind = entry.get("k", "use")
+            if kind in ("open", "close"):
+                lines.append(t.t(f"fcraft.log_{kind}", name=entry.get("who", "?"), ago=ago))
+                continue
+            items = {i: int(n) for i, n in (entry.get("items") or {}).items() if i in self.content.items}
+            rid = entry.get("recipe")
+            recipe = self._recipe_name(rid) if rid in self._recipes() else "?"
+            lines.append(t.t("fcraft.log_use", name=entry.get("who", "?"), items=self._item_list(items), recipe=recipe,
+                             times=int(entry.get("times", 1) or 1), ago=ago))
+        return lines
+
+    def _fund_craft_lines(self, camp: dict[str, Any], record: dict[str, Any], hero: Hero) -> list[str]:
+        """The 🛠️ part of 💰 Fondos del campamento: 🔓/🔒, the daily cap and your use today, what is kept and what is free (D-322).
+
+        [ES] Qué hace: dice si el fondo para oficios está 🔓 abierto o 🔒 cerrado, el tope por día y cuánto usaste hoy, qué
+        guarda el fondo para las obras activas y el nivel (lo que hay de la reserva) y qué sobra para oficios. La llama:
+        _guild_funds_view. Si cambia, afecta: tests/test_fondo_para_oficios.py."""
+        t = self.texts
+        fund = record.get("fund") or {}
+        lines = [t.t("fcraft.state_open", cap=self._fund_cap(), used=self._fund_used(record, hero.id)) if self._fund_open(record)
+                 else t.t("fcraft.state_closed")]
+        reserve = self._fund_reserve(camp, record, hero)
+        kept = {item: min(int(n), reserve[item]) for item, n in fund.items() if reserve.get(item, 0) > 0 and int(n) > 0}
+        if kept:
+            lines.append(t.t("fcraft.reserved", items=self._item_list(kept)))
+        if fund:
+            surplus = self._fund_surplus(camp, record, hero)
+            lines.append(t.t("fcraft.free", items=self._item_list(surplus)) if surplus else t.t("fcraft.free_none"))
+        return lines
+
+    def _fund_craft_toggle(self, hero: Hero) -> View:
+        """🔓 Abrir / 🔒 Cerrar para oficios in 💰 Fondos: only the founder or a 🤝 assistant; written in 📜 the log (D-322).
+
+        [ES] Qué hace: el fundador o un asistente (_camp_manager) abre o cierra el uso del fondo para oficios (el fondo sigue
+        alimentando las obras y el nivel igual). Un miembro común no puede (aviso). Queda en 📜 Quién usó qué. La llama: el botón
+        "gfcraft" de 💰 Fondos. Si cambia, afecta: tests/test_fondo_para_oficios.py."""
+        t = self.texts
+        camp = self._member_camp(hero)
+        if not camp:
+            return self._guild_funds_view(hero)
+        if not self._camp_manager(camp, hero.id):
+            return self._guild_funds_view(hero, notice=t.t("fcraft.only_managers"))
+        key = f"{camp['x']}:{camp['y']}"
+        record = self._upgrades(key)
+        now_open = not self._fund_open(record)
+        record["fund_crafts"] = now_open
+        self._fund_log(record, "open" if now_open else "close", hero)
+        self.store.put("upgrades", key, record)
+        return self._guild_funds_view(hero, notice=t.t("fcraft.opened" if now_open else "fcraft.closed"))
+
+    def _fund_log_view(self, hero: Hero) -> View:
+        """📜 Quién usó qué: the last uses of the fund for the professions and who opened or closed it (D-322); ↩️ 💰 Fondos."""
+        t = self.texts
+        camp = self._guild_camp(hero)
+        if not camp:
+            return self._guild_funds_view(hero)
+        record = self._upgrades(f"{camp['x']}:{camp['y']}")
+        shown = max(1, int(self._fcraft_cfg().get("log_shown", 10)))
+        lines = self._fund_log_lines(record, shown)
+        body = [t.t("fcraft.log_intro", n=shown), ""] + (lines or [t.t("fcraft.log_none")])
+        return View(kind="fund_log", title=t.t("fcraft.log_title"), body=body,
+                    actions=[Action(id="gfunds", label=t.t("menu.back"))])
+
+    def _fund_faq_values(self) -> dict[str, Any]:
+        """{fund_cap} for ❓ Dudas and 📚 Guías (D-322)."""
+        return {"fund_cap": self._fund_cap()}
 
     # ------------------------------------------------------------------ ⚔️ the guild's armory (D-290, 0.39)
 

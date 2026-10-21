@@ -153,6 +153,7 @@ guides_page:
       ✉️ To invite someone: /inv_ and their player code (everyone sees theirs in 👤 Hero).
       💬 Whatever you type in the game chat reaches your whole guild; the last day's messages are in 📢 Chat.
       💰 Fund (with a camp, 💰 Camp funds) → 💰 Deposit: add materials from wherever you are, using their code (/f02).
+      🛠️ What is left over in the fund (after the works and the next level) you use when you refine and craft at the camp's stations, up to {fund_cap} a day.
       ⚔️ Armory: leave gear with /a1 and take it with /t1.
       🗺️ What one member explores, the whole guild knows (the experience goes to whoever explores). If you leave, you keep what's yours.
       ⏳ When the camp is full, the founder or an 🤝 assistant can add you to the guild to wait for a spot (up to {waiting_max}).

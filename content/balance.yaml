@@ -544,7 +544,13 @@ armory:                      # [ES] D-290 (0.39, el dueño): ⚔️ Armería del
   slots: 30                  # [ES] cuántas piezas caben (Claude)
   log_kept: 10               # [ES] cuántos movimientos (quién dejó o tomó qué) guarda y muestra la pantalla (Claude)
 
-professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
+fund_crafts:                 # [ES] D-322 (0.47, pedido del dueño del 21-oct-2026; números de Claude, provisional): el 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento (engine/service/gremio.py _fund_pool)
+  daily_cap: 40              # [ES] unidades del fondo que cada miembro puede tomar por día real para sus oficios (E-240, P-251). 40 ≈ 13 tablones o un par de piezas de equipo por día
+  default_open: true         # [ES] el fondo para oficios empieza 🔓 abierto; el fundador o un 🤝 asistente lo cierra en 💰 Fondos (E-241, P-252)
+  log_kept: 20               # [ES] cuántas líneas guarda 📜 Quién usó qué (usos, y quién abrió o cerró)
+  log_shown: 10              # [ES] cuántas muestra la pantalla 📜 Quién usó qué
+
+professions:                # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.
   # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,
   # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.

@@ -173,7 +173,8 @@ def test_funds_list_each_resource_with_its_code_in_code_order(service):
     codes = [service._resource_code(i) for i in ("madera", "piedra", "fibra")]
     assert codes == sorted(codes) and all(codes)                                  # the 📦 Recursos codes, in order
     assert lines == [f"{codes[0]} 🪵 Madera ×12", f"{codes[1]} 🪨 Piedra ×5", f"{codes[2]} 🧵 Fibra ×3"]
-    assert ids(funds) == ["gfund", "guild"] and funds.actions[0].label == "💰 Depositar"
+    # D-322 (0.47): 📜 Quién usó qué, and 🔒 Cerrar para oficios for the founder (the fund for the professions)
+    assert ids(funds) == ["gfund", "gflog", "gfcraft", "guild"] and funds.actions[0].label == "💰 Depositar"
     deposit = service.act("test:1", "gfund")
     assert deposit.kind == "camp_fund" and ids(deposit) == ["gfunds"]             # ↩️ back to 💰 Fondos
     assert service.text("test:1", codes[0]).kind == "resource"                   # the code says what it is for (D-243)
