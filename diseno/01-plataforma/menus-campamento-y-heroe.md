@@ -40,7 +40,7 @@ Vale igual en las 9 🔥 fogatas (desde la 0.37). **Desde la 0.48 (D-311, D-324)
 | 🧑‍🏫 Entrenador | Tus oficios, los que te faltan y cómo se aprenden (§4) | — |
 | 🛒 Mercader | **🛒 Comprar** (pociones, vendas, 🥖 provisiones), **💱 Vender** (lo que traes, con su código /v02) (D-259) y **🏛️ Mercado** (el mercado entre jugadores, D-320, 0.46: [Economía](../07-economia/economia.md) §3.0) | — |
 | 🛏️ Posada | Dormir y despertar con la vida llena: tarda según la vida que falta, de 0 a llena en 1 hora (D-259) | Con la vida llena no cobra |
-| 📜 Tablón | **Un encargo por personaje cada día** (se cobra hablando con él, en el Claro o en tu campamento) y, con campamento, los de la semana (D-259) | — |
+| 📜 Tablón | **Un encargo por personaje cada día** (se cobra hablando con él, en el Claro o en tu campamento) y, con campamento, los de la semana (D-259) y, desde la 0.56, la 🎯 misión de grupo de la subida de nivel con lo tuyo (D-332) | — |
 | ❓ Dudas | Buscar respuestas (§5) | — |
 
 Debajo va la pista de siempre: el Claro no crece; para crecer, funda tu campamento.
@@ -57,7 +57,7 @@ Arriba, la información de siempre (miembros, nivel, zonas, mejoras y 🛡️ De
 - 🏘️ Servicios ocupa el lugar del mercader y la posada: el 🛏️ Refugio, el 💱 Puesto de trueque y el 🧵 Taller que construyeron. Desde la 0.46 (D-320), con el Puesto de trueque, ⚒️ Oficios de 🏘️ Servicios también abre 🏛️ Mercado.
 - **🏰 Gestionar** junta lo que hace crecer y mantener el campamento, que antes eran sus 4 botones: **⬆️ Mejorar campamento · 🔨 Mejoras · 🌾 Aportar comida** (desde el nivel 3) **· 🛡️ Gremio**, cada uno con su línea (nivel, etapa y zonas de su tope, cuánto hay construido, la despensa). Sus pantallas vuelven a 🏰 Gestionar. Es la duda E-134.
 - **⬆️ Mejorar campamento** (D-304, 0.41; antes ⬆️ Agrandar): tres líneas (nivel y etapa, zonas usadas de su tope y "⏫ Nivel N: x de y listos") y tres botones: **⏫ Siguiente nivel · 🗺️ Agrandar territorio · ↩️ Volver**. ⏫ y 🗺️ vuelven a ⬆️ Mejorar.
-  - **⏫ Siguiente nivel:** "Para subir a nivel N te falta:" con dos listas, 🏗️ Construir y 📦 Recursos (y 🏰 lo del castillo en el paso 8 → 9), cada línea con ✅ o ▫️. Botones (4 como mucho): 🤲 Aportar, 🔨 Mejoras, 🛡️ Gremio o 🌾 Aportar comida según lo que falte; 🌙 Noche de prueba si es lo único que falta; ⏫ Subir a nivel N cuando todo está ✅; y ↩️ Volver.
+  - **⏫ Siguiente nivel:** "Para subir a nivel N te falta:" con dos listas, 🏗️ Construir y 📦 Recursos (desde la 0.56, una tercera, 🤝 Entre todos, con la 🎯 misión de grupo de esa subida, D-332; y 🏰 lo del castillo en el paso 8 → 9), cada línea con ✅ o ▫️. Botones (4 como mucho): 🤲 Aportar, 🔨 Mejoras, 🛡️ Gremio o 🌾 Aportar comida según lo que falte; 🌙 Noche de prueba si es lo único que falta; ⏫ Subir a nivel N cuando todo está ✅; y ↩️ Volver.
   - **🗺️ Agrandar territorio:** zonas y tope, costo, el minimapa de 5 × 5 y una línea por zona libre ("1️⃣ ⬆️ Norte · (6, 1) · 🪵🪨"). Botones: una zona por botón con su número y dirección (de a 2 con ➡️ Más zonas, o de a 3), ↩️ Volver. Solo el fundador y los 🤝 asistentes tienen los botones de zona; los demás ven la pantalla con la línea de quién elige.
 - **Durante una oleada** que todavía no peleaste, 🛡️ Defender va primero en el centro y en 🏰 Gestionar (lo pendiente arriba, como en TowerWars); para no pasar de 8, 📜 Tablón sale del centro mientras dura (sigue en /encargos).
 
