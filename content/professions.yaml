@@ -482,21 +482,23 @@ recipes:
   # ---- D-116: 🪑 camp furniture, only Carpentry. [ES] Muebles exclusivos para el campamento: solo la 🪑 Carpintería los
   # hace. Se colocan en tu campamento (🔨 Mejoras → 🔨 Obras → 🪑 Colocar), uno de cada mueble por campamento, y dan un
   # bono chico para siempre a los miembros (items.yaml "effect"). Cuestan 4 ⚡ y dan 24 de experiencia de oficio (6 por ⚡, como las demás;
-  # D-306: × (1 + 0,01 × rango), escrito por tools/recipe_tiers.py).
+  # D-306: × (1 + 0,01 × rango), escrito por tools/recipe_tiers.py). D-319 (0.45.1): las literas se hacen desde el rango 10 y el
+  # armero desde el 15 (antes 40 y 70) porque la 🏥 Enfermería y las 🏹 Torres de arqueros los piden para subir de nivel
+  # (camps.level_up): con 40 y 70 un campamento se trababa meses. Si cambias su rango, revisa tests/test_costos_edificios.py.
   literas_roble:
     profession: carpinteria
     inputs: {tablon: 12, tela_tejida: 4, cuero_curtido: 2}   # [ES] aserradero + tejeduría + curtiduría
     output: {literas_roble: 1}
-    min_rank: 40
+    min_rank: 10                                             # [ES] D-319 (0.45.1): antes 40. La 🏥 Enfermería (nivel 7) las pide para subir a 8
     energy: 4
-    xp: 34
+    xp: 26
   armero_roble:
     profession: carpinteria
     inputs: {tablon: 16, lingote: 6, cuero_curtido: 3}       # [ES] aserradero + fundición + curtiduría
     output: {armero_roble: 1}
-    min_rank: 70
+    min_rank: 15                                             # [ES] D-319 (0.45.1): antes 70. Las 🏹 Torres de arqueros (nivel 8) lo piden para el castillo
     energy: 4
-    xp: 41
+    xp: 28
 
   # ---- Herrería: armas y placas (lingotes + cuero para el mango y las correas)
   espada_forjada:
