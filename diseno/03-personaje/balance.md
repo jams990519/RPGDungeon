@@ -1249,6 +1249,23 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): las 🪖 escuadras de 5 (0.55, D-253.1 confirmada; D-331 provisional)
+
+El dueño eligió la Forma B (D-253.1): "la escuadra de 5 como unidad para organizar y repartir las tareas". Los números de escuadras son los de la escalera §3, que ya estaban en el diseño; lo nuevo es cómo se aplican (D-331, provisional; E-266 a E-268).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `ladder.squads.size` (nuevo) | — (no había escuadras) | 5 por escuadra: el grupo de 5 de D-246, justo `chain.target_cap` (un área alcanza a una escuadra entera) |
+| `ladder.squads.by_stage` (nuevo) | — | campamento 2, aldea 3, pueblo 5, ciudad 8 y castillo 10: `camps.members_by_stage` ÷ 5. Un campamento con más cupo (🛖 Cabañas, 🛏️ Literas, el piso de antes) o con más miembros abre las que hagan falta (⌈cupo ÷ 5⌉, ⌈miembros ÷ 5⌉) |
+| `ladder.squads.name_max_chars` (nuevo) | — | 20 letras para el nombre que el 🎖️ jefe le pone a su escuadra |
+| Mayoría para ser jefe (regla, no número de balance) | — | más de la mitad de los votos de la escuadra: 1 de 1, 2 de 2 o 3, 3 de 4 o 5; si nadie la tiene, el jefe sigue |
+
+**Qué cambia al jugar.** Nada se gana ni se pierde: las escuadras solo organizan. Un campamento lleno de la ciudad (40) queda en 8 escuadras de 5 y un castillo (50) en 10. Con 🛖 Cabañas (+2) un campamento de 12 abre una 3.ª escuadra para los 2 que sobran. La 🌙 Noche de prueba y las 🌊 oleadas crecientes dicen cuántas escuadras tuvieron al menos un vencedor, pero lo que piden no cambia (la Noche, 10 vencedores distintos y la mitad de los activos; cada oleada, la mitad de los activos).
+
+**Cuenta rápida, por si la Noche pasa a pedirse por escuadras (E-266, recomendado: un vencedor en 4 de cada 5 escuadras con miembros):** en una ciudad llena (40, 8 escuadras) serían 7 escuadras con un vencedor (⌈8 × 4 ÷ 5⌉ = 7), frente a los 10 vencedores distintos de hoy; la mitad de los activos (20 de 40) sigue siendo lo más difícil. Lo que agrega es repartir: no alcanza con que gane la escuadra más fuerte.
+
+**Lo que queda por mirar:** cuántos campamentos votan jefe y cuántos cambian gente de escuadra; si las escuadras quedan parejas o se vacían; cuántas escuadras con un vencedor tiene una Noche de prueba ganada y una perdida (para elegir el número de E-266).
+
 ### Octubre de 2026 (21-oct): las 🌊 oleadas crecientes del castillo (0.53, D-122 confirmada; D-329 provisional)
 
 El dueño pidió (D-122) que el castillo pida "defender su estructura anterior durante varias oleadas que van creciendo: si pierde más de las que gana, no aprueba", y que los números los proponga Claude. Son números **nuevos** (D-329); se ajustan en la beta (E-260, E-261).

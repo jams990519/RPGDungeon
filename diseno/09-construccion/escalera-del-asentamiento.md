@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329)**; las escuadras, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329); (0.55): las 🪖 escuadras de 5 con su 🎖️ jefe (§0.6, D-331)**; las tareas por escuadra, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -97,7 +97,7 @@ La prioridad de lo grande es el asentamiento por etapas y el castillo (D-310). L
   - **"👥 Activos esta semana: N de 40"**: miembros que jugaron en los últimos 7 días; reemplaza a "10 miembros o más". La ciudad tiene cupo para 40 (más Cabañas y Literas): hacen falta casi todos activos la misma semana.
   - la 🌙 Noche de prueba con **10 vencedores distintos** como mínimo (antes 2; cada miembro pelea una vez).
   - **Queda para después:** las 5 oleadas crecientes de D-122 ("si pierde más de las que gana, no aprueba"), que son una pieza grande (una serie de oleadas que crecen, se cuentan y se aprueban; P-79). *Llegaron en la 0.53 (§0.5).*
-- **Lo que no entra en esta parte:** las escuadras de 5 con su jefe (Forma B, §3), las etapas 7 a 10 con sus mejoras nuevas y la muralla por anillos (§5.2).
+- **Lo que no entra en esta parte:** las escuadras de 5 con su jefe (Forma B, §3; *llegaron en la 0.55, §0.6*), las etapas 7 a 10 con sus mejoras nuevas y la muralla por anillos (§5.2).
 - **Dónde está:** `engine/service/ladder.py` (`LadderMixin`: `_base_cap_at`, `_cap_floor_sweep`, `_idle_tick`, `_idle_camp`, `_idle_release`, `_castle_active_row`), `engine/service/game.py` (`_members_cap`, `_members_cap_at`, `tick`, `_create_camp`, `_castle_needs`, `_lvlup_view`, `_level_up`), `engine/service/gremio.py` (`_camp_members_view`, `_camp_member_line`); los números en `content/balance.yaml` → `camps.members_by_stage`, `ladder` (`idle_warn_days`, `idle_release_days`, `idle_scan_minutes`, `castle_active`, `active_days`) y `raids.trial.min_wins`; lo guardado en `camp/<x:y>` (`cap_floor`, `idle_watch`, `idle_warned`) y `meta/idle`; los textos en `content/locales/es_escalera.yaml` y `en_escalera.yaml`; ❓ /d37 y /d42; las pruebas en `tests/test_escalera_cupo_oficiales.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
 - **Preguntas para el dueño:** E-253 a E-256 (P-264 a P-267).
 
@@ -137,6 +137,48 @@ D-122 (confirmada) pide que, antes del castillo, el campamento "defienda su estr
 - **Dónde está:** `engine/service/ladder.py` (la sección de las oleadas crecientes), `engine/world/raids.py` (`wave_mult`, `series_outcome`) y los ganchos de `engine/service/game.py` (`_open_raid`, `_raid_notice`, `_defend`, `_resolve_raid`, `_raid_lines`, `_lvlup_rows`, `_lvlup_view`, `_lvlup_all_view`); los números en `content/balance.yaml` → `ladder.castle_waves` (`count` 5, `pass_wins` 3, `growth` 0,2, `retry_days` 3); lo guardado en `camp/<x:y>` → `castle_waves` y, en la oleada abierta, `wave` y `wave_mult`; los textos en `content/locales/es_escalera.yaml` y `en_escalera.yaml`; las pruebas en `tests/test_oleadas_crecientes_castillo.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
 - **Preguntas para el dueño:** E-260 a E-262 (P-271 a P-273).
 
+## 0.6 Las 🪖 escuadras de 5 (0.55, D-253.1 Forma B; cómo se aplicó: D-331)
+
+D-253.1 (confirmada) eligió la **Forma B**: "la escuadra de 5 como unidad para organizar y repartir las tareas" (el grupo de 5 de D-246 pasa a ser una escuadra dentro del gremio). La 0.55 trae la capa simple (D-44): las escuadras se arman solas y nadie tiene que hacer nada. Lo que decidió Claude está en D-331 (provisional) y se le pregunta al dueño (E-266 a E-268).
+
+- **Cuántas:** escuadras de hasta **5**; cada etapa abre las del §3:
+
+| Etapa | Cupo | Escuadras |
+|---|---|---|
+| 1 · Casa (el gremio antes del campamento) | 5 | 1 (no se parte) |
+| 2 · Campamento (niveles 1 y 2) | 10 | 2 |
+| 3 · Aldea (3 y 4) | 15 | 3 |
+| 4 · Pueblo (5 y 6) | 25 | 5 |
+| 5 · Ciudad (7 y 8) | 40 | 8 |
+| 6 · Castillo (9) | 50 | 10 |
+
+  - Son el cupo de la etapa ÷ 5, así **los dos cupos nunca se contradicen**: un campamento con más lugar (🛖 Cabañas, 🛏️ Literas o el piso de antes, §0.4) abre una escuadra más cuando su cupo pasa un múltiplo de 5, y uno con más miembros que su cupo abre las que hagan falta. Nadie queda afuera.
+- **Cómo se arman:**
+  - un campamento de antes se agrupa **la primera vez que el juego lo mira**, llenando escuadras **en orden de llegada** (el fundador primero);
+  - quien entra después va solo a la **primera escuadra con lugar** o, si todas están llenas, a una nueva;
+  - quien sale (🚪 Salir o 30 días sin jugar) deja su lugar libre, y lo toma el próximo que entra;
+  - una escuadra vacía queda con su número y su nombre;
+  - **nadie sale ni pierde nada (D-64):** las escuadras solo leen la lista de miembros; entrar y salir del campamento sigue igual.
+- **🎖️ El jefe de cada escuadra:**
+  - por defecto, el fundador en su escuadra y el primero en las demás;
+  - cada miembro **vota con un botón** (🗳️ Votar como jefe, en la tarjeta de un compañero de su escuadra; también a sí mismo) y puede quitar su voto;
+  - es jefe quien tiene **más de la mitad de los votos de su escuadra**; si nadie la tiene, **el jefe sigue**;
+  - si el jefe sale o pasa a otra escuadra, vuelve la regla por defecto; al cambiar de escuadra se pierden los votos.
+- **Quién hace qué:**
+  - el **jefe** pasa a los de su escuadra a otra con lugar (o a una nueva, si la etapa la abre) y le pone **nombre** a la suya (hasta 20 letras, limpio: sin saltos de línea, letras invisibles ni < >);
+  - el **fundador y los 🤝 asistentes** (los oficiales, §0.4) mueven a cualquiera;
+  - **aceptan gente solo el fundador y los asistentes** (D-253.4): el jefe acomoda, no acepta;
+  - una escuadra nunca pasa de 5.
+- **Se ve:**
+  - 🛡️ Gremio → 👥 Miembros: "🪖 Tu escuadra: Escuadra 1 · 🎖️ jefe: Lyra (en total, 2 escuadras)" y el botón **🪖 Escuadras**;
+  - 🪖 Escuadras: cuántas hay y cuántas abre la etapa; cada escuadra (la tuya primero) con su número, su nombre, su jefe y sus miembros con su código /m, 👑 el fundador, 🤝 los asistentes, 🎖️ el jefe y si está en línea o cuándo jugó; el jefe tiene ✏️ Nombre de la escuadra;
+  - la tarjeta de cada miembro: su escuadra y su jefe y, si es de la tuya, cuántos votos tiene; los botones 🗳️ y 🔀 Cambiar de escuadra (con 🤝 y ↩️, 4 como mucho; la pantalla de mover pasa de página si hay muchas escuadras);
+  - los avisos (jefe nuevo, "te pasaron a la Escuadra 3") llegan a cada uno en su idioma; ❓ /d37 lo cuenta.
+- **Una tarea compartida, solo información:** la 🌙 Noche de prueba y las 🌊 oleadas crecientes (§0.5) dicen, en la pantalla del campamento y en el parte, "🪖 Escuadras con al menos un vencedor: 2 de 3". **Lo que piden no cambia** (la Noche sigue con 10 vencedores distintos): si se gana por "N escuadras que vencen" lo decide el dueño (E-266).
+- **Queda para después:** los oficiales "1 cada 2 a 4 escuadras" (hoy, 1 cada 5 miembros: E-254), cada escuadra con su tramo de muralla o su nodo y las misiones de grupo de una escuadra.
+- **Dónde está:** `engine/service/squads.py` (`SquadsMixin`: `_squad_slots`, `_squads_normal`, `_squads`, `_squad_settle`, `_squads_view`, `_squad_vote`, `_squad_move_view`, `_squad_move`, `_squad_name_ask`, `_squad_name_text`, `_squads_winners_line`, `_squads_winners_report`, `clean_squad_name`), los ganchos de `engine/service/gremio.py` (`_camp_members_view`, `_camp_member_view`) y de `engine/service/game.py` (`_idle_action`, `_name_camp`, `_raid_lines`, `_resolve_raid`, `_faq_values`); los números en `content/balance.yaml` → `ladder.squads` (`size` 5, `by_stage`, `name_max_chars` 20); lo guardado en `camp/<x:y>` → `squads` (`n`, `name`, `members`, `chief`, `votes`); los textos en `content/locales/es_escuadras.yaml` y `en_escuadras.yaml`; las pruebas en `tests/test_escuadras.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
+- **Preguntas para el dueño:** E-266 a E-268 (P-277 a P-279).
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |
@@ -152,6 +194,7 @@ D-122 (confirmada) pide que, antes del castillo, el campamento "defienda su estr
 | **D-325** | *(Provisional, 0.49.)* Cómo quedó la cosecha en el juego (§5.5): con la 🧱 Muralla todo el territorio cosecha; 24 por recurso y día como base (sin el ×3 de la 0.42); llega sola al 💰 fondo una vez por semana, con un aviso. |
 | **D-327** | *(Provisional, 0.51.)* Cómo quedó la 1.ª parte de la escalera (§0.4): el cupo por etapa (10, 15, 25, 40, 50; nadie pierde lugar), los asistentes son los oficiales (1 cada 5), quien no juega 30 días sale (aviso a los 25, nunca el fundador, desde el parche) y el castillo pide 40 activos de la semana y 10 vencedores en la Noche de prueba. |
 | **D-329** | *(Provisional, 0.53.)* Cómo quedaron las 🌊 oleadas crecientes del castillo (§0.5): en el nivel 8, las oleadas del campamento son una serie de 5, cada una un 20 % más fuerte; se aprueba ganando 3; con 3 perdidas vuelve a empezar a los 3 días; un castillo que ya existe no las recibe. |
+| **D-331** | *(Provisional, 0.55.)* Cómo quedaron las 🪖 escuadras (§0.6): de hasta 5, 2/3/5/8/10 por etapa (el cupo ÷ 5), armadas solas en orden de llegada; el 🎖️ jefe lo vota la mayoría de la escuadra (si no, sigue el que está); el jefe mueve a los suyos y le pone nombre, el fundador y los asistentes mueven a cualquiera; la Noche de prueba y las oleadas crecientes muestran cuántas escuadras tuvieron un vencedor, sin cambiar lo que piden. |
 | **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
@@ -176,6 +219,8 @@ Un solo número dice cuánta gente cabe en cada etapa: se acaba el doble cupo de
 - **Lo que no se tira:** los niveles, las 20 mejoras y las oleadas de hoy siguen. Las etapas se estiran hacia arriba, y hacen falta mejoras nuevas para las etapas 7 a 10 (hoy se acaban en el nivel 8).
 
 ## 3. Escuadras y cargos (Forma B)
+
+> **En el juego desde la 0.55 (§0.6, D-331, provisional):** las escuadras con su número, su nombre y su jefe votado; el jefe acomoda a los suyos y el fundador y los asistentes, a cualquiera; la Noche de prueba muestra las escuadras que vencen, todavía sin pedirlas (E-266). Faltan los oficiales por escuadras (E-254), los tramos de muralla o los nodos por escuadra y las misiones de grupo.
 
 - **La escuadra:** el grupo de 5 de D-246 pasa a ser una escuadra dentro del gremio. Cada etapa abre lugar para más escuadras: 1, 2, 3, 5 y 8 hasta la ciudad, **10 en el castillo** (50 personas) y **40 en el reino** (200).
 - **Cargos:**
@@ -279,7 +324,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 | Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | **Hecho en la 0.51 y la 0.53:** 40 activos de la semana y la Noche con 10 vencedores distintos (§0.4), y las 5 oleadas crecientes, ganando 3 (§0.5, D-329). Falta mantener el castillo (P-273) |
 | Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
 | ~~+50 % al recolectar en tu territorio (`gather.own_land_bonus`)~~ | **Hecho en la 0.49 (D-309, D-325):** con la 🧱 Muralla, todo el territorio cosecha solo para el 💰 fondo y el +50 % ya no está (§5.5). Falta la muralla por anillos con su costo por zona |
-| No hay grupos | Grupo de 5 que nace al construir; escuadras dentro del gremio |
+| No hay grupos | **Hecho en la 0.55 (D-331):** las 🪖 escuadras de 5 dentro del gremio del campamento (2, 3, 5, 8 y 10 por etapa), con su 🎖️ jefe votado; el grupo de 5 antes del campamento es el gremio de D-269 (§0, §0.6). Faltan las tareas por escuadra (la Noche de prueba por escuadras, E-266; los tramos de muralla y las misiones de grupo) |
 
 **Los jugadores de hoy no pierden nada (D-64):**
 - cada campamento queda en la etapa que le corresponde por sus miembros y sus mejoras, nunca en una más baja;
@@ -300,7 +345,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
   - motivos de conflicto entre asentamientos (la tierra de alrededor).
 - **Amplio pero ligero (D-44):**
   - la capa simple es "construyes tu casa, invitas a 4 y crecen";
-  - las escuadras, los cargos y la muralla aparecen recién cuando el asentamiento las necesita (cargos en el pueblo, muralla con zonas desde el campamento).
+  - las escuadras, los cargos y la muralla aparecen recién cuando el asentamiento las necesita (cargos en el pueblo, muralla con zonas desde el campamento). *Desde la 0.55 (D-331) las escuadras se arman solas desde la fundación, pero nadie tiene que hacer nada con ellas: votar, mover y ponerles nombre es la capa profunda, a quien le interese.*
 
 ## 9. Preguntas abiertas
 
@@ -310,6 +355,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **P-259 (E-248):** si la cosecha cuenta el ×3 de la 0.42. Recomendado: no por ahora (24 por recurso y día) y medirlo en la beta.
 - **P-260 (E-249):** qué pasa antes de la muralla. Recomendado: dejarlo así; la muralla es la meta del pueblo.
 - **P-271 a P-273 (E-260 a E-262):** las 🌊 oleadas crecientes (0.53, D-329): sus números, cómo empiezan y se reintentan, y qué es mantener el castillo. Recomendado: dejarlas así y medirlas en la beta; que el castillo reciba una serie cada 4 semanas y, si la pierde, se frene su crecimiento.
+- **P-277 a P-279 (E-266 a E-268):** las 🪖 escuadras (0.55, D-331): ganar la Noche de prueba por escuadras, cómo se elige y qué hace el jefe, y cuántas escuadras hay y cómo se reparte a los que llegan. Recomendado: en un parche aparte, la Noche con un vencedor en 4 de cada 5 escuadras en lugar de los 10 vencedores; el jefe así; así, y 1 oficial cada 2 escuadras cuando cambien los oficiales.
 - **P-264 a P-267 (E-253 a E-256):** la 1.ª parte de la escalera (0.51, D-327): el cupo de cada etapa, el asistente como oficial, quien deja de jugar y los requisitos del castillo. Recomendado: dejarlo así y medirlo en la beta; un solo cargo con 1 cada 5; quitar el gremio de nivel 5 cuando lleguen las oleadas crecientes.
 - **P-81 (E-58):** ✅ Decidido (D-253): esta escalera.
 - **P-79 (E-56):** ✅ Decidido, provisional (D-327 y D-329): la Noche con 10 vencedores distintos y 5 oleadas crecientes ganando 3 (§0.4 y §0.5); E-260 y E-261 la reemplazan.
@@ -323,7 +369,8 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 ## De dónde sale
 
 - **La escalera de etapas con un solo cupo:** las ciudades de Chat Wars y los niveles de clan de Clash of Clans, donde un número dice cuánta gente cabe.
-- **Las escuadras de 5 y los cargos:** los grupos de 5 y los rangos de gremio de World of Warcraft (líder, oficiales, miembros), y los escuadrones de EVE Online.
+- **Las escuadras de 5 y los cargos:** los grupos de 5 y los rangos de gremio de World of Warcraft (líder, oficiales, miembros), y los escuadrones de EVE Online, cada uno con su jefe dentro de la flota.
+- **El jefe que vota su escuadra:** las elecciones de alcalde de las ciudades de jugadores de Star Wars Galaxies, donde los vecinos votan y gana quien junta más apoyo.
 - **La muralla que marca el territorio y crece por anillos:** el territorio de alianza de Rise of Kingdoms, que se agranda con banderas y fortalezas.
 - **La tierra que produce sola:** los campos de recursos de Travian, que producen cada hora sin que nadie los trabaje. También las granjas de alianza de Rise of Kingdoms, que juntan recursos para la alianza, no para un jugador.
 - **Las oleadas que crecen antes del castillo:** los juegos de defensa de torres, donde cada oleada es más fuerte que la anterior, y la horda final de They Are Billions, que pone a prueba todo lo construido; el "gana la mayoría" es el "al mejor de 5" de los torneos.

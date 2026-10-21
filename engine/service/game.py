@@ -662,6 +662,16 @@ Si cambias esto, revisa:
       y EXTRA_BUTTON_KINDS ("market_cats": 🛍️ Comprar suma 🗺️ Mapas). Solo el color: no toca exploration, known ni nodes.
       Números: balance.yaml map_scroll. Textos: content/locales/es_pergamino.yaml y en_pergamino.yaml. Pruebas:
       tests/test_pergamino_mapa.py
+    - 🪖 Las escuadras de 5 (0.55, D-253.1 Forma B confirmada; cómo se aplicó: D-331, provisional): viven en
+      engine/service/squads.py (SquadsMixin, de la que GameService hereda; su encabezado lista sus datos y reglas: "squads" en
+      camp/<x:y>). Ganchos de este archivo: _idle_action (SQUAD_ACTIONS: "squads", "sqvote:", "sqmv:", "sqto:", "sqname";
+      también ocupado), _name_camp (el modo "sqname": el nombre que escribe el 🎖️ jefe), _raid_lines (_squads_winners_line:
+      la 🌙 Noche de prueba y la 🌊 oleada creciente abierta dicen cuántas escuadras tienen un vencedor), _resolve_raid
+      (_squads_winners_report, en el parte) y _faq_values ({squad_size}). Solo informan: no cambian lo que piden la Noche ni
+      las oleadas (E-266). Las escuadras leen camp["members"] (el orden de llegada) y no cambian quién es miembro: todo lo
+      que entra o sale por los caminos de siempre (_answer_join, las invitaciones, _leave_camp, _idle_release, la espera) se
+      acomoda solo la próxima vez que alguien mira las escuadras. Números: balance.yaml ladder.squads. Textos:
+      content/locales/es_escuadras.yaml y en_escuadras.yaml; ❓ /d37. Pruebas: tests/test_escuadras.py
 """
 
 from __future__ import annotations
@@ -742,6 +752,7 @@ from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE,
 from engine.service.market import MARKET_ACTIONS, MarketMixin, market_code     # D-320 (0.46): 🏛️ Mercado entre jugadores
 from engine.service.map_scroll import SCROLL_ACTIONS, SCROLL_CODE_RE, MapScrollMixin   # D-326 (0.50): 🗺️ pergamino de mapa
 from engine.service.ladder import LadderMixin           # D-327 (0.51): the settlement ladder (cap per stage, idle, castle)
+from engine.service.squads import SQUAD_ACTIONS, SquadsMixin    # D-331 (0.55): 🪖 the squads of 5 (D-253.1, Forma B)
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -927,7 +938,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -2224,6 +2235,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._market_action(hero, action_id)
         if action_id.startswith(SCROLL_ACTIONS):        # D-326 (0.50): 🗺️ Pergaminos de mapa (menus, making and using: also while busy)
             return self._scroll_action(hero, action_id)
+        if action_id.startswith(SQUAD_ACTIONS):         # D-331 (0.55): 🪖 Escuadras (a menu of the guild: also while busy)
+            return self._squad_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
         if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
@@ -4302,6 +4315,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._name_guild(hero, name, pending)
         if pending.get("mode") in ("gremio", "gmsg", "gsearch", "gzones"):    # D-269, D-282: guild texts and searches
             return self._gremio_text(hero, pending["mode"], name)
+        if pending.get("mode") == "sqname":                # D-331 (0.55): the name a 🎖️ chief gives their squad
+            return self._squad_name_text(hero, name)
         if pending.get("mode") == "found":                 # D-269: nobody founds alone any more (an old prompt founds nothing)
             self.store.delete("camp_naming", hero.id)
             return self._camp_here_view(hero, notice=t.t("camps.found_by_guild"))
@@ -5872,6 +5887,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Nunca toca niveles, zonas ni miembros (§15). El llamador guarda el campamento.
         D-329 (0.53): si era una 🌊 oleada creciente del castillo, la suma a la serie (ladder.py _castle_wave_done: aprobada,
         perdida o cómo va) y el parte que reciben todos los miembros (_push_each) lo dice en una línea.
+        D-331 (0.55): el parte de la 🌙 Noche de prueba y de una 🌊 oleada creciente suma cuántas escuadras tuvieron al menos un
+        vencedor (squads.py _squads_winners_report; solo información, no cambia si se gana).
         La llama: _raid_settle.
         Si cambia, afecta: la despensa, la experiencia y las monedas de los defensores, y si el campamento puede ser castillo.
         """
@@ -5912,6 +5929,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             lines += self._castle_wave_done(camp, raid, won)   # D-122, D-329: a 🌊 growing wave counts for the castle
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
             lines.append(("raids.next", {"n": self._days_until(camp["next_raid_at"])}))
+        lines += self._squads_winners_report(camp, raid)     # D-331: the 🌙 / 🌊 report says how many squads had a winner
 
         def report() -> View:
             body = []
@@ -5991,7 +6009,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES] Qué hace: la línea de oleadas de un campamento: la que está en curso, el aviso de la 🗼 Torre de vigía, la próxima
         o el aviso de un nivel antes. Con urgent=True (D-302: el centro de tu campamento) solo la que está en curso o el aviso
         de la torre; lo demás se ve en ℹ️ Información y 🏰 Gestionar. La llaman: _camp_here_view (urgent), _camp_manage_view,
-        _camp_info_lines y _trial_view. Si cambia, afecta: tests/test_raids.py."""
+        _camp_info_lines y _trial_view. D-331 (0.55): en la 🌙 Noche de prueba y en una 🌊 oleada creciente abierta, una línea
+        más con cuántas escuadras tienen al menos un vencedor (squads.py _squads_winners_line; solo información, E-266).
+        Si cambia, afecta: tests/test_raids.py y tests/test_escuadras.py."""
         t = self.texts
         cfg = self._raid_cfg()
         raid = camp.get("raid")
@@ -5999,7 +6019,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             left = self._fmt_duration(max(0.0, raid["until"] - self.clock.now()))
             line = t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
                        n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)
-            return [line] + self._castle_wave_open_line(raid)       # D-329: "🌊 Es la oleada creciente 2 de 5 (+40 %)"
+            return ([line] + self._castle_wave_open_line(raid)       # D-329: "🌊 Es la oleada creciente 2 de 5 (+40 %)"
+                    + self._squads_winners_line(camp, raid))         # D-331: "🪖 Escuadras con al menos un vencedor: 2 de 3"
         level = camp.get("level", 1)
         if level >= cfg["from_level"]:
             nxt = camp.get("next_raid_at")
@@ -7820,7 +7841,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         {harvest_days}, {harvest_cap}, {harvest_zone} y {wall_level} (_harvest_faq_values). D-327 (0.51): {members_stages},
         {idle_days}, {idle_left}, {castle_active}, {active_days} y {trial_winners} (ladder.py _ladder_faq_values); {members_base}
         y {members_step} quedan (la cuenta de antes) aunque ninguna respuesta los use. D-329 (0.53): {castle_waves},
-        {castle_waves_pass}, {castle_waves_pct} y {castle_waves_retry} (las 🌊 oleadas crecientes del castillo).
+        {castle_waves_pass}, {castle_waves_pct} y {castle_waves_retry} (las 🌊 oleadas crecientes del castillo). D-331 (0.55):
+        {squad_size} (las 🪖 escuadras, squads.py _squad_faq_values).
         """
         t = self.texts
         b = self.content.balance
@@ -7873,6 +7895,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             **self._market_faq_values(),                # D-320 (0.46): 🏛️ Mercado ({market_tax}, {market_delivery}...)
             **self._fund_faq_values(),                  # D-322 (0.47): {fund_cap}, the fund for the professions
             **self._ladder_faq_values(),                # D-327 (0.51): {members_stages}, {idle_days}, {castle_active}...
+            **self._squad_faq_values(),                 # D-331 (0.55): {squad_size}, the 🪖 squads of /d37
         }
 
     def _faq_code(self, raw: str) -> str | None:
