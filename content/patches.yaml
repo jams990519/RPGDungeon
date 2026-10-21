@@ -956,3 +956,18 @@ v0_47:
     - "🛠️ What is left over is for professions: at your camp's stations, when you refine or craft, the recipe takes from your backpack first and the rest from the fund. The list shows ✅💰 for what you can make with the fund's help, and each recipe says how much it would put in."
     - "📏 Each member takes up to 40 a day from the fund for their professions; it resets the next day."
     - "📜 In 🛡️ Guild → 💰 Funds you see what is kept for the works, what is left over and 📜 Who used what. The founder or a 🤝 assistant can 🔒 close the fund for professions (it starts 🔓 open)."
+
+v0_48:
+  version: "0.48"
+  title: "🔥 Lost Realms 0.48: fogatas, 🔭 Reconocer y ✨ nodos en Lugares"
+  title_en: "🔥 Lost Realms 0.48: campfires, 🔭 Scout and ✨ nodes in Places"
+  notes:
+    - "🔥 Las hogueras ahora se llaman fogatas en todo el juego: el Claro y las otras 8. Campamento es solo el que funda tu gremio."
+    - "🔭 Reconocer (/reconocer) también lista los 👹 campamentos enemigos que tu rango de 🧭 Explorador deja ver: a 1 zona, a 3 desde el rango 25 y en todo tu mapa desde el 50, con su nombre, su tiempo de viaje y, desde el rango 75, su fuerza. Lo que puedes reconocer ahora trae su código (/rc1)."
+    - "🗺️ Las zonas de tu campamento también se ven en blanco en el mapa hasta que tú o tu gremio las investiguen a la mitad, como cualquier otra zona."
+    - "✨ 📒 Lugares tiene un botón nuevo, ✨ Nodos: los nodos de recursos que encontraste, con su recurso, su zona y su código (/ir1), para volver de una vez."
+  notes_en:
+    - "🔥 The 9 campfires (the Clearing and the other 8) are called campfires on every screen, and a camp is only the one your guild founds."
+    - "🔭 Scout (/recon) also lists the 👹 enemy camps your 🧭 Explorer rank lets you see: 1 zone away, 3 from rank 25 and your whole map from rank 50, with their name, their travel time and, from rank 75, their strength. What you can scout now carries its code (/rc1)."
+    - "🗺️ Your camp's zones also show white on the map until you or your guild investigate them halfway, like any other zone."
+    - "✨ 📒 Places has a new button, ✨ Nodes: the resource nodes you found, with their resource, their zone and their code (/go1), so you can go straight back."

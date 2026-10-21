@@ -1212,8 +1212,8 @@ item:
 world:
   claro_name: "El Claro"
   place: "{name} ({x}, {y})"
-  bonfire_terrain: "Hoguera"          # [ES] D-265 (0.37): el terreno de las hogueras que no son el Claro
-  bonfire_name:                # [ES] D-277 (0.37): las 8 hogueras de alrededor del Claro se llaman por su lado
+  bonfire_terrain: "Fogata"           # [ES] D-265 (0.37): el terreno de las fogatas; D-311 y D-324 (0.48): "Fogata" (antes "Hoguera"), también el Claro
+  bonfire_name:                # [ES] D-277 (0.37): las 8 fogatas de alrededor del Claro se llaman por su lado
     n: "Fogata del Norte"
     ne: "Fogata del Noreste"
     e: "Fogata del Este"
@@ -1431,7 +1431,7 @@ map:
   mates_away: "{n} {n|compañero|compañeros} fuera de este mapa: los ves en 🛡️ Gremio."
   position: "Coordenadas {x}, {y} · Lejanía {lejania}"
   colors: "🎨 Terrenos que conoces ({n} de {total}): {items}. El color no dice qué recursos hay: eso se sabe explorando."   # [ES] D-220: solo los terrenos con una zona investigada al 50 % (y el 🔥 Claro)
-  bonfire: "Campamento"   # [ES] D-223 (0.30.2): en el mapa, el 🔥 del inicio se llama campamento (la hoguera), no "Claro"
+  bonfire: "Fogata"   # [ES] D-223 (0.30.2): en el mapa, el 🔥 no se llama "Claro"; D-311 y D-324 (0.48): "Fogata" ("campamento" es solo el de los jugadores)
   fog:                          # [ES] D-212, D-220 (0.30): el mapa gris que se desbloquea por etapas al investigar
     name:                       # [ES] nombre de cada etapa gris (las ids salen de balance.yaml map_view.fog.stages)
       unknown: "sin investigar"
@@ -1640,6 +1640,8 @@ places:
     guild: "🛡️ Gremio"
     camps: "🏕️ Campamentos"
     lair: "👑 Guarida"
+    node: "✨ Nodos"                 # [ES] D-311 (6), D-324 (0.48): los nodos de recursos que encontraste
+  node_name: "{item} en {name}"      # [ES] D-324: un nodo en 📒 Lugares: "🪵 Madera en Vado Gris" (el recurso y la zona)
   kind_title: "📒 Lugares · {kind}"
   kind_intro: "📒 {kind}: toca uno o escribe su código y confirma. Tu héroe irá solo, zona por zona."
   code_line: "{n}. {icon} {name} ({x}, {y}) · a {zones} {zones|zona|zonas} · {time} · /ir{n}"   # [ES] D-278: con sus coordenadas
@@ -1763,12 +1765,12 @@ camp:                         # [ES] D-98: ya no hay obra del Claro; quedan los 
 
 claro:
   button: "🏕️ Campamento"
-  title: "🏕️ Campamento del Claro"
-  intro: "El campamento base, donde empiezan todos: la fogata, el mercader y un lugar para dormir."
+  title: "🔥 El Claro"   # [ES] sin uso (el título es hub.title_claro); D-311: una fogata no es un campamento
+  intro: "La fogata donde empiezan todos: el fuego, el mercader y un lugar para dormir."
   grow_hint: "🏕️ El Claro no crece. Para crecer, funda tu propio campamento lejos de aquí: tus campamentos son los que suben de nivel, mejoran y llegan a castillo."
   trades_hint: "⚒️ Oficios: aquí están las estaciones básicas para refinar lo que juntas y fabricar equipo, pociones y vendas."
-  no_growth: "🔥 La obra del Claro terminó: el Claro es el campamento base y ya no crece. Lo que juntes sirve para fundar y agrandar tus campamentos, coser bolsas y armar cofres."
-  far: "🏕️ El campamento está en el Claro. Vuelve desde 🧭 Explorar → 📒 Lugares."
+  no_growth: "🔥 La obra del Claro terminó: el Claro es una fogata y ya no crece. Lo que juntes sirve para fundar y agrandar tus campamentos, coser bolsas y armar cofres."
+  far: "🔥 Eso está en las fogatas, como el Claro. Vuelve desde 🗺️ Mapa → 📒 Lugares."
 
 pantry:                       # [ES] D-93 (provisional): la despensa de los campamentos de jugadores (desde nivel 3). El Claro no tiene: no tiene dueño (D-95)
   line: "🌾 Despensa: {state} · {rations} {rations|ración|raciones} · alcanza {days} {days|día|días}"
@@ -2297,7 +2299,7 @@ upgrades:                     # [ES] D-101 (provisional): las 🔨 Mejoras de lo
   built_push_title: "🔨 Tu campamento tiene una mejora nueva"
   built_push: "🔨 {hero} terminó {name} en {camp}."
   coin_line: "Monedas: {have} de {need} {bar}"
-  claro_none: "🏕️ El Claro es el campamento base: no tiene mejoras. Las mejoras se construyen en tu campamento."
+  claro_none: "🔥 Las fogatas, como el Claro, no tienen mejoras. Las mejoras se construyen en tu campamento."
   members_only: "🔨 Las mejoras las construyen los miembros, estando en su campamento."
   camp_line: "🔨 Mejoras construidas: {n} · 🛡️ Defensa: {defense}"
   castle_line: "🔨 {need} mejoras construidas o más (tienen {n})"

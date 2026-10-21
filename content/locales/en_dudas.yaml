@@ -109,7 +109,7 @@ dudas:
 faq:
   d01:
     q: 🌱 What do I do first?
-    a: You wake up in the 🔥 Clearing, the base camp. Move to a neighboring zone from 📍 Zone, and there 🔎 explore, 🧺 gather, 🪓 chop wood and 🏹 hunt. Come back to the Clearing to sell, sleep, cook and craft. The game guides you step by step and tells you each time something new opens up.
+    a: You wake up in the 🔥 Clearing, the starting campfire. Move to a neighboring zone from 📍 Zone, and there 🔎 explore, 🧺 gather, 🪓 chop wood and 🏹 hunt. Come back to the Clearing to sell, sleep, cook and craft. The game guides you step by step and tells you each time something new opens up.
   d02:
     q: 🧭 What is each menu for?
     a: 'At the bottom you have 5 buttons: 📍 Zone (where you are and where to go), 🧭 Explore (explore, gather, chop wood, hunt and the 🗺️ Map), 🏕️ Camp (cook, the 👥 players at the campfire, craft, the trainer, the merchant and this ❓ Help), 👤 Hero (your character sheet, backpack, talents, health, professions and journal) and ⚙️ Options.'
@@ -148,13 +148,13 @@ faq:
     a: '🏹 Hunt (in 🧭 Explore) looks for prey in the zone: each one costs {hunt_energy} ⚡ and only gives the fight and its loot (meat, hide, coins, sometimes gear). There''s no prey in the Clearing. With a camp you can call a 🏹 Hunting party with your companions.'
   d12:
     q: 🎨 What do the map colors mean?
-    a: 'On the 🗺️ Map, zones you haven''t investigated show as white ▫️. When you investigate a zone halfway (50%), the color of its terrain appears (🟩 meadow, 🟢 forest, 🟫 hills…) and that terrain is added to the legend at the top. What you explore around you without moving counts too. The 🔥 is the starting camp and always shows. The color doesn''t tell you what resources there are: you learn that by exploring.'
+    a: 'On the 🗺️ Map, zones you haven''t investigated show as white ▫️. When you investigate a zone halfway (50%), the color of its terrain appears (🟩 meadow, 🟢 forest, 🟫 hills…) and that terrain is added to the legend at the top. What you explore around you without moving counts too. The 🔥 campfires always show; your camp''s zones, like the rest, show white until you investigate them halfway. The color doesn''t tell you what resources there are: you learn that by exploring.'
   d13:
     q: 🗺️ Where do I see the dungeons?
-    a: 'They no longer show on the 🗺️ Map: there you only see yourself 🧍, the 🔥 starting camp and the color of the zones you''ve investigated. 🕳️ 🌀 Dungeons, ✨ nodes, 👹 enemy camps, 🏕️ player camps and the 👑 lair are discovered by walking. The important places you''ve already visited stay in 📒 Places, so you can go straight back.'
+    a: 'They no longer show on the 🗺️ Map: there you see yourself 🧍, the 🔥 campfires, 🏕️ player camps, your guild and the color of the zones you''ve investigated. 🕳️ 🌀 Dungeons, ✨ nodes, 👹 enemy camps and the 👑 lair are discovered by walking. What you''ve already visited stays in 📒 Places, also the ✨ nodes you found, so you can go straight back. With the 🧭 Explorer, 🔭 Scout (/recon) lists the 👹 enemy camps your rank lets you see.'
   d14:
     q: ✨ What is a resource node?
-    a: A ✨ node is a zone rich in one resource. When you reach its zone you learn what it is, forever. There, that resource yields ×{node_yield}, gets depleted half as fast and sometimes ({node_rare}%) gives a 💠 rough gem or a 🌸 moonflower. Anyone can use it.
+    a: A ✨ node is a zone rich in one resource. When you reach its zone you learn what it is, forever. There, that resource yields ×{node_yield}, gets depleted half as fast and sometimes ({node_rare}%) gives a 💠 rough gem or a 🌸 moonflower. Anyone can use it. The ones you found stay in 🗺️ Map → 📒 Places → ✨ Nodes, so you can go straight back.
   d15:
     q: 🕳️ What is a dungeon?
     a: 'Dungeons are solo and always in the same place; what''s inside changes every day. 🕳️ The small one has 4 rooms, its boss and a chest you open once a day. 🌀 The deep one goes down floor by floor: you fill a bag of rewards and choose 🚪 Leave with your loot; if you lose, you keep half.'
@@ -166,7 +166,7 @@ faq:
     a: 'The Guardian of the Clearing waits in its lair 👑. Go to its zone and tap ⚔️ Challenge the Guardian in 🧭 Explore: it''s a tough fight, solo. The first to beat it is remembered forever as the Pioneer. If you lose, you can try again.'
   d18:
     q: 🔭 What is scouting from afar?
-    a: 'With the 🧭 Explorer profession at rank {recon_rank} you use /recon: you see from afar what''s in a dungeon or a 👹 enemy camp, without going or fighting. One per place per day. The Explorer''s 🥷 Stealth sometimes spares you a fight when exploring by hand or arriving from a trip.'
+    a: 'With the 🧭 Explorer profession at rank {recon_rank} you use /recon: you see from afar what''s in a dungeon or a 👹 enemy camp, without going or fighting. One per place per day. The list also brings the 👹 enemy camps your rank lets you see, with their name, their travel time and, with more rank, their strength; the ones you can scout now carry their code (/rc1). The Explorer''s 🥷 Stealth sometimes spares you a fight when exploring by hand or arriving from a trip.'
   d19:
     q: 🚫 Why can't I gather?
     a: It could be a full backpack (sell or use things), a depleted zone (come back in a few hours), a 👹 enemy camp standing in the zone, the Guardian's lair, your health below the 🩹 Retreat % (rest first), or you haven't discovered its resources yet (explore first). If you can't, energy is never charged.
@@ -214,7 +214,7 @@ faq:
     a: In 👤 Hero → 📔 Journal you'll find your card, the last thing you did, your 🎯 Quests and the ⚜️ Factions. Type /bio and some text for your biography, or /journal and a name to see another hero's card.
   d34:
     q: 🔥 What's in the Clearing?
-    a: 'The 🔥 Clearing is everyone''s base camp: 🛒 merchant, 🛏️ inn, the stations to 🍲 cook and 🛠️ craft, the 🧑‍🏫 trainer, the 📜 task board and this ❓ Help. The Clearing doesn''t grow: to grow, found your own camp.'
+    a: 'The 🔥 Clearing is the starting campfire, everyone''s base: 🛒 merchant, 🛏️ inn, the stations to 🍲 cook and 🛠️ craft, the 🧑‍🏫 trainer, the 📜 task board and this ❓ Help. The Clearing doesn''t grow: to grow, found your own camp.'
   d35:
     q: 🏕️ How do I found my camp?
     a: 'Your 🛡️ guild founds it. The leader goes to a zone at Distance {camp_far} or more, explores it to 100% and knows {camp_known} of the 8 zones around it, with no other camp within {camp_gap} zones. {found_members} guild members must be there and the 💰 fund must hold {found_cost}. The leader taps 🏕️ Camp → 🏕️ Found camp here: it takes {found_minutes} min with {found_members} members present, less with more (never under {found_floor} min). The camp takes the guild''s name and every member gets an invitation.'

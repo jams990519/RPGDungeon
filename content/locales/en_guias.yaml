@@ -64,7 +64,7 @@ guides_page:
       🌲 There is wood in every zone: forests, dark forests and jungles have more, and you discover it as soon as you start exploring. To collect only wood, 🪓 Chop wood (in 🧭 Explore).
       ➡️ Once your zone is at 100%, exploring moves on to the neighboring zones, without you moving.
       🗺️ At {color_at}% the zone shows its terrain on the 🗺️ Map; the color doesn't tell you which resources are there.
-      ✨ A node is a zone rich in one resource: you find out which one when you step on it.
+      ✨ A node is a zone rich in one resource: you find out which one when you step on it, and it stays in 📒 Places → ✨ Nodes.
       🔎 Find resources (🛡️ Guild or 🏰 Manage) or /search wood: tells you where that resource is in zones studied to {search_min}% or more, near and rich ones first.
       📍 Tap a zone's code (/z1) and the route is laid out in 🔗 Move.
       🛡️ In a guild, what one member discovers, everyone knows.
@@ -130,7 +130,7 @@ guides_page:
       📍 Zone: tap a direction. Each zone takes {travel_first} min, and moving {move_cost}.
       🔗 Move: build a route of up to {walk_max} steps and your hero walks it alone.
       📌 Coordinates (x, y): the Clearing is (0, 0); east adds to x and north adds to y. Type /go 3 -2 and the route is laid out.
-      📒 In 🗺️ Map → 📒 Places you go straight back to a place you already know (/go1).
+      📒 In 🗺️ Map → 📒 Places you go straight back to a place you already know (/go1), also to the ✨ nodes you found.
       🔥 There are {bonfires} campfires: the Clearing and one every {bonfire_spacing} zones around it. All of them have a merchant, an inn, a trainer and stations.
       👥 Each campfire holds {bonfire_cap} players: if it's full, you carry on to the nearest one with room.
       🎨 A zone shows its terrain on the map once you or your guild have studied it to {color_at}%.
@@ -177,7 +177,7 @@ guides_page:
       🌀 The deep one goes down floor by floor: you fill a bag and choose ⬇️ Go down or 🚪 Leave with your loot. If you fall or flee, you keep {deep_keep}%.
       👹 Enemy camps show up somewhere new every day and block exploring and gathering in their zone.
       ⚔️ Assault: each fight defeats one of the garrison, for everyone; the last one is the boss, and its chest goes to whoever finishes it.
-      🕵️ Infiltrate needs 🧭 Explorer rank {infiltrate_rank}; from rank {recon_rank}, /recon lets you see from afar what's there.
+      🕵️ Infiltrate needs 🧭 Explorer rank {infiltrate_rank}; from rank {recon_rank}, /recon lets you see from afar what's there and lists the 👹 enemy camps your rank lets you see, with their travel time.
       👑 The Guardian waits in its lair: ⚔️ Challenge the Guardian in 🧭 Explore. The first to beat it becomes Pioneer of the Clearing.
   quests:
     title: "📜 Quests and tasks"

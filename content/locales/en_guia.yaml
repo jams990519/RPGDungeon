@@ -40,7 +40,7 @@ guide:
     move:
       name: Move
       task: 'move to a neighboring zone: 📍 Zone → choose a route (⬆️ ⬇️ ➡️ ⬅️).'
-      intro: '🔥 You''re in the Clearing, the base camp: the torch where everyone who arrives wakes up.
+      intro: '🔥 You''re in the Clearing, the starting campfire: the torch where everyone who arrives wakes up.
 
         🗺️ All around are lands of different terrains: meadow, forest, hills, mountain, swamp... On the 🗺️ Map they look grey until you investigate them; then the color of their terrain appears.
 
@@ -107,9 +107,9 @@ guide:
 
         🎨 When you investigate a zone halfway (50%), the color of its terrain appears, and the terrain is added to the list at the top of the map. The color doesn''t tell you what resources there are: you learn that by exploring.
 
-        🔥 The starting camp (the bonfire): it always shows.
+        🔥 The campfires: the Clearing and the other 8 always show.
 
-        Nothing else shows on the map: dungeons, nodes and camps are discovered by walking.
+        🏕️ Player camps show too. Dungeons, nodes and 👹 enemy camps are discovered by walking.
 
         📌 Your coordinates (x, y) and the Distance, how many zones away the start is, are in 📍 Zone. The farther away, the stronger the enemies.
 
@@ -117,16 +117,16 @@ guide:
     return:
       name: Back to the Clearing
       task: 'go back to the Clearing: 🗺️ Map → 📒 Places → 🔥 Campfires → The Clearing (or by the routes in 📍 Zone).'
-      intro: '🔥 Go back to camp
+      intro: '🔥 Go back to the campfire
 
         • The Clearing is your base: the merchant, the inn and the professions are there.
 
         • In 📒 Places you choose the kind (🔥 Campfires, 🕳️ Dungeons...) and an important place you''ve already visited, confirm and your hero goes alone, zone by zone.'
     camp:
       name: The camp
-      task: 'open the camp: 🏕️ Camp (bottom menu).'
+      task: 'open 🏕️ Camp (bottom menu).'
       intro: 🏕️ You're in the Clearing now. Open 🏕️ Camp to see what you can do here.
-      learn: '🏕️ The camp is your base: here is everything the hero doesn''t carry around.
+      learn: '🔥 The campfire is your base: here is everything the hero doesn''t carry around.
 
         🍲 Cook and ⚒️ craft: the professions and their stations.
 
@@ -142,7 +142,7 @@ guide:
     trainer:
       name: The trainer
       task: 'talk to the trainer: 🏕️ Camp → 🧑‍🏫 Trainer.'
-      intro: '🧑‍🏫 There''s a trainer in the camp: the master who introduces you to the professions.'
+      intro: '🧑‍🏫 There''s a trainer at the campfire: the master who introduces you to the professions.'
       learn: '🧑‍🏫 Professions
 
         • Each profession improves as you practice it: gathering raises the gathering ones and crafting, the crafting ones.

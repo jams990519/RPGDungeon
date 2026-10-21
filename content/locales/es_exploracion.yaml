@@ -75,11 +75,11 @@ explorer:                     # [ES] D-112: lo que ve el 🧭 Explorador con cad
   time_camp: "⏱️ A tu campamento {name}: {time}"
   places_hint: "🧭 Con rango {rank} de Explorador, 📒 Lugares lista hasta {n} lugares con su tiempo."   # [ES] sin uso desde la 0.39 (D-287)
   what:
-    travel: "📒 Lugares lista hasta {places} lugares de cada tipo con su tiempo, y dice cuánto tardas a cada zona que marca tu mapa"   # [ES] D-222: la lista de lo que marca el mapa se mudó a 📒 Lugares; D-301: el tope es por tipo (Mazmorras, Campamentos...)
-    camps_near: "ves los 👹 campamentos enemigos hasta {n} zonas a la redonda, aunque no las hayas pisado"
+    travel: "📒 Lugares lista hasta {places} lugares de cada tipo con su tiempo, y 🔭 Reconocer dice cuánto tardas a cada 👹 campamento enemigo que ves"   # [ES] D-222: la lista de lo que marca el mapa se mudó a 📒 Lugares; D-301: el tope es por tipo (Mazmorras, Campamentos...); D-324 (0.48): los 👹 que ves, en 🔭 Reconocer
+    camps_near: "ves en 🔭 Reconocer los 👹 campamentos enemigos hasta {n} zonas a la redonda, aunque no las hayas pisado"
     infiltrate: "puedes 🕵️ infiltrarte en los campamentos enemigos"
-    camps_all: "ves los 👹 campamentos enemigos de todo tu mapa"
-    strength: "ves desde el mapa la fuerza de cada campamento: cuántos quedan, de qué nivel y su jefe"
+    camps_all: "ves en 🔭 Reconocer los 👹 campamentos enemigos de todo tu mapa"
+    strength: "ves en 🔭 Reconocer la fuerza de cada campamento: cuántos quedan, de qué nivel y su jefe"
     master: "eres 🏅 Gran Explorador"
   short:
     travel: "{rank} ⏱️ tiempos"
@@ -102,7 +102,7 @@ prof:
 profession:
   explorador:
     name: "Explorador"
-    how: "explora: cada vuelta suma, y más al dejar una zona al 100 %; con rango ves más en el mapa"
+    how: "explora: cada vuelta suma, y más al dejar una zona al 100 %; con rango ves más en 🔭 Reconocer"
 
 story:
   journal:

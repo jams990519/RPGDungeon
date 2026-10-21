@@ -118,6 +118,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     "at"}} (se vacía solo al cambiar el día: uno por lugar y día), "kinds" ["x:y", ...] (entradas de mazmorra reconocidas
     alguna vez: ya sabe si es 🕳️ o 🌀; nunca se borra)}). El 🥷 Sigilo no guarda nada: es el beneficio "stealth" del oficio.
     Los héroes de antes no tienen registro: empiezan vacíos (nada nuevo en Hero).
+    D-324 (0.48): "recon_shown" (clave el id del héroe: {"list": [[x, y], ...]}): los lugares con código /rcN de la última
+    lista de 🔭 Reconocer, en orden (como "places_shown"). Es solo un estado de pantalla: nada de progreso.
     D-192: "dudas_open" (clave la cuenta: {"at", "from"}): la pantalla de ❓ Dudas (o de 📚 Guías, D-297) está abierta y el
     texto suelto es una búsqueda; act() lo borra con cualquier otro botón. D-297: "from" es de dónde se abrió ("claro",
     "options" u "hero"; sin él, el centro de 🏕️ Campamento) y adónde va su ↩️ Volver. Es solo un estado de pantalla, como
@@ -396,7 +398,7 @@ Si cambias esto, revisa:
       _known_resources (un umbral por recurso), _gather_step (×2, se agota la mitad, el raro; activity["node"]),
       _batch_summary (línea ✨), _explore_step y _arrive (descubrir donde estás), _zone_view (aviso y línea ✨) y _grow_view
       (marca ✨ en las zonas con nodo descubierto). D-223 (0.30.2): el 🗺️ Mapa no dibuja nodos; _node_seen y _node_map_lines
-      quedan sin pantalla hasta que el dueño responda E-207
+      quedan sin pantalla. D-324 (0.48, E-206): los nodos que encontraste salen en 📒 Lugares → ✨ Nodos (_important_places)
     - 🎨 Terrenos nuevos (0.28, D-185, D-188): solo datos en content/biomes.yaml (terrain con weight, climate y tier; color,
       emoji, danger, water, gather, own, node_rare), content/enemies.yaml ("biomes") y los nombres biome.* de es.yaml. Los lee
       _terrain_cfg (la tanda "tier" pasa a mapgen._piece_terrain: un terreno nuevo solo cambia las piezas que pasan a ser suyas)
@@ -434,8 +436,8 @@ Si cambias esto, revisa:
       Tocan COMMANDS (/reconocer), _idle_action ("recon", "rcn:"; antes del freno de ocupado: es instantáneo), _arrive y
       _explore_step (el sigilo), _batch_summary (línea 🥷), _options_view (línea 🥷), _explore_menu y _ecamp_menu (línea 🔭),
       _recon_view (✅ y lo que hay hoy en cada lugar reconocido), _zone_view (marca en la ruta). D-223 (0.30.2): el 🗺️ Mapa
-      ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla hasta
-      que el dueño responda E-207, _ecamp_intel_lines (chest=False),
+      ya no dibuja ni lista nada; _recon_map_lines, _ecamp_map_lines, _dng_seen y _dng_map_lines quedan sin pantalla (E-207
+      respondida: D-324, 0.48, pone en 🔭 los 👹 que deja ver tu rango: _recon_entries, _recon_code), _ecamp_intel_lines (chest=False),
       _explorer_what y _explorer_prof_lines (los umbrales 🔭 que ya abriste, en la pantalla del 🧭 Explorador)
     - 🛡️ Gremio desde el inicio, 👥 Jugadores y obras con tiempo (D-265, D-269, D-274; 0.36): engine/service/gremio.py
       (GremioMixin: su encabezado lista todo), balance.yaml gremio, works, bonfire.cap y presence.bonfire_seconds (y
@@ -592,6 +594,17 @@ Si cambias esto, revisa:
       mochila, después el fondo, todo o nada; _fund_take) y _faq_values ({fund_cap}). Las cuentas puras: engine/professions
       (fund_draw, max_times con fund y fund_cap). Números: balance.yaml fund_crafts. Textos: content/locales/
       es_fondo_oficios.yaml y en_fondo_oficios.yaml; ❓ /d60; 📚 la guía "guild". Pruebas: tests/test_fondo_para_oficios.py
+    - 🔥 Fogatas, 🔭 Reconocer con lo del Explorador y ✨ nodos en 📒 Lugares (0.48, D-311 confirmada por el dueño el 20-oct-2026,
+      partes 1, 2, 3 y 6; cómo se aplicó: D-324, provisional). (1) E-205: las hogueras se llaman 🔥 Fogata en todo texto
+      (world.bonfire_terrain, map.bonfire, hub.title_claro con {name}, los "campamento base"...); solo cambian textos, los ids
+      siguen ("bonfire", "claro"). Tocan: _biome_label (las 9, también el Claro, "🔥 Fogata") y _claro_view (título
+      "🔥 <fogata>"). (2) E-207: _recon_view lista _recon_entries (lo que se reconoce y los 👹 campamentos que deja ver tu
+      rango, _ecamp_seen) con _recon_line (nombre, ⏱️, 💪 y /rcN), RECON_CODE_RE y _recon_code en text() (espacio
+      "recon_shown") y _recon_hint_lines (la pista también con campamentos a la vista). El 🗺️ Mapa no cambia. (3) E-177:
+      tu territorio gris hasta el 50 %: _fog_cell ya no tenía excepción; se deja escrito y probado. (6) E-203 y E-206:
+      PLACE_KINDS "node", _important_places (los nodos de _node_found en zonas que recuerdas) y _place_confirm_view (si una
+      zona sale en dos listas, vale la última que viste). Textos: places.kind.node, places.node_name, recon.* y
+      explorer.what.*. Pruebas: tests/test_fogata_reconocer_lugares.py, tests/test_reconocimiento.py, tests/test_mapa_gris.py
 """
 
 from __future__ import annotations
@@ -783,7 +796,11 @@ PLACE_CODE_RE = re.compile(r"^/(?:ir|go)_?(\d{1,2})(@\w+)?$")   # D-223: /ir1, /
 # 🕳️ dungeons, 🔥 bonfires, your 🛡️ guild's places, other players' 🏕️ camps and the 👑 lair. Each kind's list is "plc:<kind>".
 # [ES] D-301: el orden de los botones de 📒 Lugares (pedido del dueño: "el primer botón va a ser el del campamento... luego
 # Mazmorras... luego Fogatas, y así sucesivamente"). Son ids estables (van en los botones "plc:<tipo>"): solo se agregan.
-PLACE_KINDS = ("camp", "dng", "fire", "guild", "camps", "lair")
+# D-311 (6) and D-324 (0.48): "node" = the ✨ resource nodes you found, last (E-206: the owner added them to 📒 Lugares).
+PLACE_KINDS = ("camp", "dng", "fire", "guild", "camps", "lair", "node")
+# D-311 (2) and D-324 (0.48): /rc1 = scout the 1st place with a code in the last 🔭 Reconocer list (store "recon_shown").
+# [ES] El código de cada lugar que se puede reconocer ahora; los botones siguen siendo los 3 primeros (rcn:x:y).
+RECON_CODE_RE = re.compile(r"^/rc_?(\d{1,2})(@\w+)?$")
 WALK_ACTIONS = ("walk", "wlk:")    # D-244: 🔗 Moverte: "walk" opens it, "wlk:n/s/e/w" adds a step, "wlk:undo/cancel/go"
 WALK_ARROWS = {"n": "⬆️", "s": "⬇️", "e": "➡️", "w": "⬅️"}
 # D-304 (0.41): the 8 directions of 🗺️ Agrandar territorio, counter-clockwise from east (as atan2 counts); north = +y, east = +x
@@ -921,6 +938,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         todo su gremio (_guild_chat); los comandos con "/" y las pantallas que piden texto siguen igual.
         D-290 y D-291 (0.39): /a2 deja en la ⚔️ Armería del gremio la 2.ª pieza de tu lista y /t2 toma la 2.ª pieza de la
         armería (engine/service/gremio.py); /f02 sigue depositando también después de fundar (en el fondo del campamento).
+        D-324 (0.48): /rc2 reconoce el 2.º lugar con código de la última lista de 🔭 Reconocer (_recon_code), fuera de combate.
         La llaman: los clientes (Telegram manda aquí todo texto que empieza con "/" y no es un atajo exacto).
         Si cambia, afecta: la creación de personaje, los nombres de campamento y gremio, los atajos con texto y ❓ Dudas.
         """
@@ -942,8 +960,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             search = SEARCH_RE.match(text.strip())
             gcode = GEAR_CODE_RE.match(low)
             rcode = RECIPE_CODE_RE.match(low)
+            scode = RECON_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif scode and self.store.get("combat", hero.id) is None:     # D-324: /rc2 scouts the 2nd place of 🔭 Reconocer
+                typed = self._recon_code(hero, int(scode.group(1)))
             elif rcode and self.store.get("combat", hero.id) is None:     # D-321: /r3 opens the 3rd recipe of the last list
                 typed = self._recipe_code(hero, int(rcode.group(1)))
             elif gcode and self.store.get("combat", hero.id) is None:     # D-299: /e1 opens a piece, /q1 takes one off
@@ -1525,9 +1546,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         return self.texts.t("world.place", name=name, x=x, y=y)
 
     def _biome_label(self, zone: Zone) -> str:
+        """The terrain of a zone as 📍 Zona's header says it: "🌲 Bosque"; every bonfire, also the Claro, is "🔥 Fogata".
+
+        [ES] D-265: las hogueras no se llamaban "Claro". D-311 (1) y D-324 (0.48): las 9, también el Claro, son "🔥 Fogata"
+        (world.bonfire_terrain; antes "Hoguera", y el Claro decía "🔥 Claro"). La llaman: _zone_view, _explore_menu y otras
+        cabeceras de zona. Si cambia, afecta: solo lo que se lee.
+        """
         biome = self.content.biomes[zone.biome]
-        if mapgen.is_bonfire(zone.x, zone.y) and (zone.x, zone.y) != (0, 0):
-            return f"{biome['emoji']} {self.texts.t('world.bonfire_terrain')}"   # D-265: "🔥 Hoguera", not "Claro"
+        if mapgen.is_bonfire(zone.x, zone.y):
+            return f"{biome['emoji']} {self.texts.t('world.bonfire_terrain')}"   # D-311: "🔥 Fogata", the Claro too
         return f"{biome['emoji']} {self.texts.t(biome['name_key'])}"
 
     def _route_seconds(self, hero: Hero, direction: str) -> tuple[Zone, float, bool]:
@@ -2834,7 +2861,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         return [stage for stage in self._fog_cfg()["stages"] if not stage.get("retired")]
 
     def _fog_cell(self, hero: Hero, x: int, y: int) -> str:
-        """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour."""
+        """One map square with no icon on it: a grey mark until the hero investigates it to 50 %, then its terrain's colour.
+
+        [ES] Solo las 🔥 fogatas se ven siempre a color. D-311 (3), E-177 (el dueño, contra la recomendación) y D-324 (0.48):
+        las zonas de tu campamento también se ven grises hasta investigarlas al 50 %, como cualquier otra: aquí no hay
+        excepción por territorio (el centro del campamento lleva su ícono 🏕️, que sigue sus reglas, D-267 y D-311.4). Cuenta
+        lo que investigó tu gremio (D-282: _known_pct). Pruebas: tests/test_mapa_gris.py y tests/test_fogata_reconocer_lugares.py.
+        """
         stage = None if mapgen.is_bonfire(x, y) else self._fog_stage(self._known_pct(hero, x, y))   # 🔥 always; D-282: guild
         if stage is not None:
             return stage["mark"]
@@ -2843,7 +2876,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
 
     def _terrain_label(self, biome_id: str) -> str:
         biome = self.content.biomes[biome_id]
-        if biome_id == self._zone(0, 0).biome:          # D-223: on the map the 🔥 is a camp (the bonfire), not "Claro"
+        if biome_id == self._zone(0, 0).biome:          # D-223, D-311: on the map the 🔥 is a "Fogata" (map.bonfire), not "Claro"
             return f"{biome.get('color', biome['emoji'])} {self.texts.t('map.bonfire')}"
         return f"{biome.get('color', biome['emoji'])} {self.texts.t(biome['name_key'])}"
 
@@ -3288,13 +3321,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         Campamento) y ❓ Dudas. El Claro no crece ni se mantiene (D-95, D-98): no tiene obra común.
         La llaman: el botón 🏕️ Campamento estando en el Claro, los ↩️ Volver de sus pantallas y los botones viejos de la obra
         (camp, donate, feed).
+        D-311 (1) y D-324 (0.48): el título es "🔥 <nombre de la fogata>" ("🔥 El Claro", "🔥 Fogata del Norte"): una fogata no
+        es un campamento (antes decía "🏕️ Campamento del Claro" en las 9). Si el héroe no está parado en una, la más cercana.
         Si cambia, afecta: la primera pantalla de casi todos los jugadores (D-192: hasta 8 botones, HUB_KINDS;
         tests/test_menus_y_dudas.py, tests/test_pantry.py y tests/test_service.py miran el orden).
         """
         t = self.texts
+        spot = (hero.x, hero.y) if mapgen.is_bonfire(hero.x, hero.y) else mapgen.nearest_bonfire(hero.x, hero.y)
         body = [t.t("hub.intro_claro"), ""] + self._camp_hub_lines(hero, None) + ["", t.t("claro.grow_hint"), self._status_line(hero)]
-        return View(kind="claro", title=t.t("hub.title_claro"), body=body + self._tutorial_hint(hero),
-                    actions=self._camp_hub_actions(hero, None), notice=notice)
+        return View(kind="claro", title=t.t("hub.title_claro", name=self._zone_name(self._zone(*spot))),
+                    body=body + self._tutorial_hint(hero), actions=self._camp_hub_actions(hero, None), notice=notice)
 
     def _hub_view(self, hero: Hero, notice: str | None = None) -> View:
         """The 🏕️ Campamento screen of where the hero stands: the Claro hub, or the camp of this zone (D-192).
@@ -10732,18 +10768,22 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """The important places this hero knows, nearest first: (seconds, x, y, icon, name, kind) (D-223, D-301).
 
         kind is one of PLACE_KINDS: "camp" (your own camp), "dng" (a dungeon), "fire" (a bonfire), "guild" (your guild's
-        construction, meeting point or the camp it invited you to), "camps" (other players' camps) or "lair".
+        construction, meeting point or the camp it invited you to), "camps" (other players' camps), "lair" or "node" (a
+        ✨ resource node you found, D-324). A node zone that is also another kind of place is listed twice, once per kind.
 
         [ES]
         Qué hace: arma la lista de 📒 Lugares con los lugares importantes que el héroe ya visitó (hero.known): las 🔥 9 fogatas
         (siempre, D-277), su 🏕️ campamento (D-301: siempre, aunque nunca lo haya pisado: es el primer botón de 📒 Lugares) y
         los de otros jugadores que pisó (D-267, 0.34: y además los places.camps_listed campamentos de jugadores más cercanos,
         aunque nunca los haya pisado), las 🕳️ 🌀 mazmorras que visitó, la 👑 guarida del Guardián si llegó a ella y los
-        lugares de su gremio (D-269). Las zonas comunes y los ✨ nodos ya no salen (pedido del dueño: "los lugares más
-        importantes únicamente"). Ordenados por el tiempo del viaje. D-301: cada lugar dice de qué tipo es (el último campo),
-        para los botones por tipo de 📒 Lugares. La zona donde estás no sale.
+        lugares de su gremio (D-269). Las zonas comunes no salen (pedido del dueño: "los lugares más importantes únicamente").
+        D-311 (6), E-206 y D-324 (0.48): también los ✨ nodos de recursos que encontraste (espacio "nodes" del almacén,
+        _node_found), con su recurso y su zona ("✨ 🪵 Madera en Vado Gris"), tipo "node"; solo los de zonas que recuerdas
+        (hero.known: "Moverte allá" sigue yendo solo a lo visitado, D-222) y que siguen siendo nodo (un nodo que se movió no
+        sale). Un nodo en la zona de otro lugar sale en las dos listas. Ordenados por el tiempo del viaje. D-301: cada lugar
+        dice de qué tipo es (el último campo), para los botones por tipo de 📒 Lugares. La zona donde estás no sale.
         La llaman: _place_groups (📒 Lugares y cada tipo) y _place_confirm_view. Si cambia, afecta: qué se puede viajar de una
-        vez (tests/test_lugares.py).
+        vez (tests/test_lugares.py, tests/test_fogata_reconocer_lugares.py).
         """
         t = self.texts
         found: dict[tuple[int, int], tuple[str, str, str]] = {}
@@ -10771,7 +10811,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         for x, y, icon, name in self._gremio_places(hero):
             if found.get((x, y), ("", "", ""))[2] != "camp":
                 found[(x, y)] = (icon, name, "guild")    # D-269: your guild's 🏗️ construction and 📍 meeting point
-        places = [(self._trip_seconds(hero, x, y), x, y, icon, name, kind) for (x, y), (icon, name, kind) in found.items()
+        listed = list(found.items())
+        for key in sorted(self._node_found(hero)):      # D-324: the ✨ nodes you found, with their resource and zone
+            nx, ny = (int(v) for v in key.split(":"))
+            main = self._node_main(nx, ny)
+            if main and hero.remembers(nx, ny):         # D-222: only where you have been; a node that moved is gone
+                name = t.t("places.node_name", item=self._item_label(main), name=self._zone_name(self._zone(nx, ny)))
+                listed.append(((nx, ny), (self._node_icon(None), name, "node")))
+        places = [(self._trip_seconds(hero, x, y), x, y, icon, name, kind) for (x, y), (icon, name, kind) in listed
                   if (x, y) != (hero.x, hero.y)]
         return sorted(places)
 
@@ -10795,9 +10842,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         luego mazmorra: un botón que se llame Mazmorras. Luego un botón que se llame Fogatas. Y así sucesivamente"): el menú
         de 📒 Lugares. Arriba, a lo ancho, 🏕️ <nombre de tu campamento> (solo si tienes campamento y no estás en él): va
         directo a "¿Viajar?" (_place_confirm_view). Después un botón por tipo que tenga lugares, en el orden de PLACE_KINDS:
-        🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio, 🏕️ Campamentos y 👑 Guarida, cada uno con cuántos hay; cada botón abre su lista
-        (_places_kind_view, "plc:<tipo>") con los códigos /irN y el tiempo del viaje. ↩️ Volver va al 🗺️ Mapa. Como mucho 7
-        botones, de 2 en 2 (HUB_KINDS "places"). No guarda códigos: /irN es de la última lista que viste.
+        🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio, 🏕️ Campamentos, 👑 Guarida y ✨ Nodos (D-324, 0.48: los nodos que encontraste),
+        cada uno con cuántos hay; cada botón abre su lista (_places_kind_view, "plc:<tipo>") con los códigos /irN y el tiempo
+        del viaje. ↩️ Volver va al 🗺️ Mapa. Como mucho 8 botones (tu campamento, 6 tipos y ↩️), de 2 en 2 (HUB_KINDS "places",
+        HUB_BUTTONS). No guarda códigos: /irN es de la última lista que viste.
         Historia: hasta la 0.30.1 listaba cualquier zona que recordabas (D-222); D-223 dejó solo los lugares importantes, en
         una sola lista con códigos; D-301 la partió por tipo.
         La llaman: el botón 📒 Lugares del 🗺️ Mapa, ↩️ Volver de cada lista y de "¿Viajar?" (tu campamento) y los códigos o
@@ -10831,7 +10879,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """One kind of 📒 Lugares (D-301): its places nearest first, each with its /irN code and travel time (D-223).
 
         [ES]
-        Qué hace: la lista de un tipo de 📒 Lugares ("plc:<tipo>": dng, fire, guild, camps o lair), como era la lista única
+        Qué hace: la lista de un tipo de 📒 Lugares ("plc:<tipo>": dng, fire, guild, camps, lair o node), como era la lista única
         de antes: cada lugar con su número, sus coordenadas, cuántas zonas, el tiempo del viaje y su código (/ir1, /ir2...);
         los 3 más cercanos traen además un botón. Elegir uno (botón o código) pregunta antes de viajar (_place_confirm_view).
         Guarda el orden mostrado (espacio "places_shown", el mismo de siempre) para que /irN sea el de la última lista que
@@ -10874,11 +10922,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         fogata"): estando ocupado ya no responde "ese lugar ya no está en tu lista". Si exploras, recolectas o cazas en lote,
         avisa que el lote se corta; si vas de viaje, que cambias el rumbo; solo descansando en la posada pide esperar.
         D-301: ↩️ No, volver lleva a la lista del tipo de ese lugar ("plc:<tipo>"); el de tu campamento, al menú de 📒 Lugares.
-        La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso "return" del 🧭 camino.
+        D-324 (0.48): si la zona sale en dos listas (un ✨ nodo en la zona de otro lugar), vale la de la última lista que viste
+        (places_shown "kind"). La llaman: "goask:" y /irN (_place_code). Si cambia, afecta: tests/test_lugares.py y el paso
+        "return" del 🧭 camino.
         """
         t = self.texts
-        place = next(((icon, name, kind) for _, px, py, icon, name, kind in self._important_places(hero) if (px, py) == (x, y)),
-                     None)
+        matches = [(icon, name, kind) for _, px, py, icon, name, kind in self._important_places(hero) if (px, py) == (x, y)]
+        shown_kind = (self.store.get("places_shown", hero.id) or {}).get("kind")
+        place = next((m for m in matches if m[2] == shown_kind), matches[0] if matches else None)
         if place is None:
             return self._places_view(hero, notice=t.t("places.unknown"))
         kind = (hero.activity or {}).get("kind")
@@ -11127,6 +11178,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         D-267 (0.34, pedido del dueño: "los jugadores van a poder ver los lugares donde ya alguien empezó a construir un
         campamento"): los 🏕️ campamentos de jugadores se dibujan siempre, como el 🔥, y la leyenda los nombra si hay alguno.
         D-268 (0.34): también se abre desde 📍 Zona y desde la pantalla del viaje ("zmap"); ↩️ Volver regresa ahí (`back`).
+        D-311 y D-324 (0.48): en la leyenda el 🔥 se llama "Fogata" (map.bonfire, antes "Campamento"); las zonas de tu propio
+        campamento se ven grises hasta el 50 % como cualquier otra (_fog_cell, E-177); lo que veía el 🧭 Explorador de los
+        👹 campamentos enemigos (D-112) no vuelve al mapa: sale en 🔭 Reconocer (_recon_view, E-207). El mapa sigue igual.
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), 👹 Moverte al
         campamento enemigo más cercano que ves (D-112) y 🕳️ 🌀 Moverte a la mazmorra más cercana (D-171), los dos con el
         tiempo del viaje y SOLO si ya estuviste en esa zona (D-222: a un lugar nuevo se llega caminando; "goto:" también lo
@@ -12219,8 +12273,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         return None
 
     def _ecamp_seen(self, hero: Hero) -> list[dict[str, Any]]:
-        """Standing enemy camps the hero sees on its 🗺️ Mapa, nearest first.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        """Standing enemy camps the hero sees in its 13 × 13 square (its 🧭 sight, or scouted today), nearest first.
+
+        [ES] Lo que el 🧭 Explorador ve de los 👹 campamentos enemigos según su rango (D-112: 1 zona, 3 desde el 25, todo el
+        cuadrado de map_view.radius desde el 50). D-223 (0.30.2) lo sacó del 🗺️ Mapa; D-311 (2), E-207 y D-324 (0.48): sale
+        en 🔭 Reconocer (_recon_entries) y en la pista 🔭 de 🧭 Explorar (_recon_hint_lines). Incluye tu propia zona (quien la
+        lista la saca). Si cambia, afecta: esas dos pantallas (tests/test_enemy_camps.py, tests/test_fogata_reconocer_lugares.py).
+        """
         radius = self.content.balance["map_view"]["radius"]
         found = [camp for dx in range(-radius, radius + 1) for dy in range(-radius, radius + 1)
                  if (camp := self._ecamp_visible(hero, hero.x + dx, hero.y + dy))]
@@ -12524,7 +12583,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
     def _ecamp_map_lines(self, hero: Hero, seen: list[dict[str, Any]]) -> list[str]:
         """🗺️ Mapa lines: the legend and the nearest camps (⏱️ time from 🧭 rank 10, 👹 strength from 75 or after 🔭 scouting it
         today, D-172), how far you see, and from rank 10 the time to the Guardian's lair and to your camp.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        D-223 (0.30.2): no screen calls it now (the map is blank). E-207 was answered (D-311): 🔭 Reconocer builds its own
+        list (_recon_view, D-324), so this one stays unused.
         [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: dice hasta dónde ves
         (ecamp.map_sight), sin "con rango N de Explorador, más lejos" (ecamp.map_sight_next queda sin uso)."""
         t = self.texts
@@ -12677,7 +12737,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
 
     def _node_map_lines(self, hero: Hero, seen: list[tuple[int, int, str | None]]) -> list[str]:
         """🗺️ Mapa lines: the nearest nodes you see (nodes.map_lines, 2), with what they are once you arrived.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207."""
+        D-223 (0.30.2): no screen calls it now (the map is blank). Since D-311 (E-206, D-324) the nodes you found are in
+        📒 Lugares → ✨ Nodos (_important_places); this one stays unused."""
         if not seen:
             return []
         t = self.texts
@@ -13443,30 +13504,83 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         family = self._dng_families().get(self._dng_today(x, y, kind)["family"], {})
         return self.texts.t("recon.route_mark", mark=self._dng_icon(kind), emoji=family.get("emoji", ""))
 
-    def _recon_line(self, hero: Hero, x: int, y: int, what: str, scouted: bool) -> str:
-        """One line of the 🔭 list: where it is and how far; ✅ and what it holds today if you scouted it."""
+    def _recon_line(self, hero: Hero, x: int, y: int, what: str, scouted: bool, code: int | None = None) -> str:
+        """One line of the 🔭 list: what and where (name and coordinates), how far and how long, its strength if you know it,
+        and its /rcN code when you can scout it now; ✅ and what it holds today if you scouted it.
+
+        [ES] D-311 (2) y D-324 (0.48): cada línea es corta y dice nombre, coordenadas, zonas y ⏱️ tiempo (desde el rango
+        explorer.ranks.travel), la 💪 fuerza de un campamento si la sabes (rango explorer.ranks.strength o 🕵️ infiltrado hoy,
+        _ecamp_intel) y el código /rcN si se puede reconocer ahora. La llama: _recon_view.
+        """
         t = self.texts
-        zones = abs(x - hero.x) + abs(y - hero.y)       # walking distance, as the 🗺️ Mapa lines say it
+        zones = abs(x - hero.x) + abs(y - hero.y)       # walking distance, as 📒 Lugares says it
+        name = self._zone_name(self._zone(x, y))
+        time = (t.t("explorer.map_time", time=self._fmt_duration(self._trip_seconds(hero, x, y)))
+                if self._explorer_has(hero, "travel") else "")
         if scouted and what == "camp":
             camp = self._ecamp_standing(x, y)
             if camp:
-                return t.t("recon.line_done_camp", x=x, y=y, left=self._ecamp_left(camp), total=len(camp["garrison"]),
-                           chief=self._ecamp_enemy_name(camp["garrison"][-1]))
+                return t.t("recon.line_done_camp", name=name, x=x, y=y, time=time, left=self._ecamp_left(camp),
+                           total=len(camp["garrison"]), chief=self._ecamp_enemy_name(camp["garrison"][-1]))
         if scouted and what == "dungeon":
             info = self._dng_today(x, y)
             if info:
-                return t.t("recon.line_done_dungeon", mark=self._dng_icon(info["kind"]), x=x, y=y,
+                return t.t("recon.line_done_dungeon", mark=self._dng_icon(info["kind"]), name=name, x=x, y=y, time=time,
                            family=self._dng_family_label(info["family"]), boss=self._dng_enemy(info["boss"]))
-        return t.t("recon.line", mark=self._recon_mark(hero, x, y, what), x=x, y=y, zones=zones)
+        strength = ""
+        camp = self._ecamp_standing(x, y) if what == "camp" else None
+        if camp and self._ecamp_intel(hero, camp):      # D-112: 💪 from 🧭 rank 75, or infiltrated today
+            strength = t.t("ecamp.map_strength", left=self._ecamp_left(camp), level=camp["level"],
+                           chief=self._ecamp_enemy_name(camp["garrison"][-1]))
+        return t.t("recon.line", mark=self._recon_mark(hero, x, y, what), name=name, x=x, y=y, zones=zones, time=time,
+                   strength=strength, code=t.t("recon.line_code", n=code) if code else "")
+
+    def _recon_entries(self, hero: Hero) -> list[tuple[int, int, str, bool]]:
+        """What 🔭 Reconocer lists: (x, y, "camp" | "dungeon", within reach), nearest first; never your own zone.
+
+        [ES]
+        Qué hace: junta lo que se puede reconocer desde aquí (_recon_targets: 👹 y 🕳️ / 🌀 a recon_range zonas o menos) con
+        todos los 👹 campamentos enemigos que tu rango de 🧭 Explorador deja ver (_ecamp_seen: 1 zona, 3 desde el 25, todo el
+        cuadrado de 13 × 13 desde el 50), aunque estén fuera de alcance. D-311 (2), E-207 (el dueño: "en 🔭 Reconocer") y
+        D-324 (0.48): es lo que el Explorador veía en el mapa hasta la 0.30.2. Sin repetir zonas; los más cercanos primero.
+        La llama: _recon_view. Si cambia, afecta: la lista de 🔭 y sus códigos /rcN (tests/test_fogata_reconocer_lugares.py).
+        """
+        found = {(x, y): (x, y, what, True) for x, y, what in self._recon_targets(hero)}
+        for camp in self._ecamp_seen(hero):
+            spot = (camp["x"], camp["y"])
+            if spot != (hero.x, hero.y):
+                found.setdefault(spot, (spot[0], spot[1], "camp", False))
+        return sorted(found.values(), key=lambda e: (abs(e[0] - hero.x) + abs(e[1] - hero.y), e[0], e[1]))
+
+    def _recon_code(self, hero: Hero, n: int) -> View:
+        """/rcN: scout the N-th place with a code in the last 🔭 Reconocer list (store "recon_shown"), like its 🔭 button.
+
+        [ES] D-324 (0.48): los botones de 🔭 son 3 como mucho (D-75); el código deja reconocer cualquier lugar de la lista que
+        se pueda reconocer ahora. Usa la última lista que viste (espacio "recon_shown", clave el id del héroe: {"list":
+        [[x, y], ...]}), así /rc2 sigue siendo el mismo lugar aunque reconozcas otro antes. _recon vuelve a mirar el alcance,
+        la energía y si ya lo reconociste hoy. Un código que no está muestra 🔭 con su aviso. La llama: text() con
+        RECON_CODE_RE, fuera de combate. Si cambia, afecta: tests/test_fogata_reconocer_lugares.py.
+        """
+        shown = (self.store.get("recon_shown", hero.id) or {}).get("list", [])
+        if not 1 <= n <= len(shown):
+            return self._recon_view(hero, notice=self.texts.t("recon.bad_code"))
+        x, y = shown[n - 1]
+        return self._recon(hero, f"{int(x)}:{int(y)}")
 
     def _recon_hint_lines(self, hero: Hero) -> list[str]:
-        """🧭 Explorar: "🔭 2 lugares para reconocer de lejos: /reconocer", only when there is something to scout today."""
+        """🧭 Explorar: "🔭 2 lugares para reconocer de lejos: /reconocer" when there is something to scout today; else, from the
+        🧭 rank that opens 🔭, "🔭 3 👹 campamentos enemigos a la vista: /reconocer" if your rank lets you see some (D-324)."""
         pending = self._recon_pending(hero)
-        return [self.texts.t("recon.hint", n=len(pending))] if pending else []
+        if pending:
+            return [self.texts.t("recon.hint", n=len(pending))]
+        if self._recon_range(hero) <= 0:
+            return []
+        camps = [camp for camp in self._ecamp_seen(hero) if (camp["x"], camp["y"]) != (hero.x, hero.y)]
+        return [self.texts.t("recon.hint_camps", n=len(camps))] if camps else []
 
     def _recon_map_lines(self, hero: Hero, marks: bool, pending: list[tuple[int, int, str]]) -> list[str]:
         """🗺️ Mapa: how many places you can 🔭 scout today (/reconocer); nothing before the 🧭 rank that opens it.
-        D-223 (0.30.2): no screen calls it now (the map is blank); kept until the owner answers E-207.
+        D-223 (0.30.2): no screen calls it now (the map is blank); E-207 was answered (D-311): it stays unused.
         [ES] D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: antes del rango del 🔭 no dice
         nada (recon.map_locked queda sin uso)."""
         t = self.texts
@@ -13488,8 +13602,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         viajando (no en combate). D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: ya no dice
         hasta dónde llegarás con más rango (recon.next; se quitó _recon_next), y antes del rango 10 (solo si se escribe
         /reconocer: no hay botón) responde solo con el aviso corto recon.locked.
-        La llaman: "recon" (/reconocer, el botón 🔭 del mapa, 🔭 Reconocer otro) y lo que _recon rechaza.
-        Si cambia, afecta: tests/test_reconocimiento.py y el tope de 4 botones.
+        D-311 (2), E-207 y D-324 (0.48, el dueño: lo que veía el Explorador en el mapa "sale en 🔭 Reconocer, como lista de lo
+        que su rango deja ver"): la lista es _recon_entries: lo que se puede reconocer y además cada 👹 campamento enemigo que
+        tu rango deja ver aunque esté lejos. Debajo del alcance, una línea dice hasta dónde ves campamentos (ecamp.map_sight o
+        map_sight_all). Cada línea, corta: nombre, coordenadas, zonas, ⏱️ tiempo, 💪 fuerza si la sabes y el código /rcN si se
+        puede reconocer ahora (los números van seguidos entre los que tienen código; se guardan en "recon_shown" para
+        _recon_code). Los botones siguen siendo los 3 primeros sin reconocer hoy. El 🗺️ Mapa no cambia (sigue en blanco).
+        La llaman: "recon" (/reconocer, 🔭 Reconocer otro), _recon_code y lo que _recon rechaza.
+        Si cambia, afecta: tests/test_reconocimiento.py, tests/test_fogata_reconocer_lugares.py y el tope de 4 botones.
         """
         t = self.texts
         rcfg = self._recon_cfg()
@@ -13501,16 +13621,27 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             return View(kind="recon", title=t.t("recon.title"), body=body,
                         actions=[Action(id="map", label=t.t("menu.back"))], notice=notice)
         body.append(t.t("recon.reach", n=radius))
+        body.append(t.t("ecamp.map_sight_all") if self._explorer_has(hero, "camps_all")      # D-324: how far you see camps
+                    else t.t("ecamp.map_sight", n=self._ecamp_sight(hero)))
         done = self._recon_today(hero)
-        targets = self._recon_targets(hero)
+        entries = self._recon_entries(hero)
         listed = int(rcfg["listed"])
-        body += [self._recon_line(hero, x, y, what, f"{x}:{y}" in done) for x, y, what in targets[:listed]]
-        if len(targets) > listed:
-            body.append(t.t("recon.more", n=len(targets) - listed))
-        if not targets:
+        coded: list[list[int]] = []
+        for x, y, what, reach in entries[:listed]:
+            scouted = f"{x}:{y}" in done
+            code = None
+            if reach and not scouted:                   # D-324: a /rcN code only where scouting is possible now
+                coded.append([x, y])
+                code = len(coded)
+            body.append(self._recon_line(hero, x, y, what, scouted, code))
+        self.store.put("recon_shown", hero.id, {"list": coded})
+        if len(entries) > listed:
+            body.append(t.t("recon.more", n=len(entries) - listed))
+        if not entries:
             body.append(t.t("recon.none"))
         body += ["", self._status_line(hero)]
-        for x, y, what in [target for target in targets if f"{target[0]}:{target[1]}" not in done][:3]:
+        pending = [(x, y, what) for x, y, what, reach in entries if reach and f"{x}:{y}" not in done]
+        for x, y, what in pending[:3]:
             actions.append(Action(id=f"rcn:{x}:{y}", label=t.t("recon.button", mark=self._recon_mark(hero, x, y, what), x=x, y=y,
                                                               energy=rcfg["energy"])))
         actions.append(Action(id="map", label=t.t("menu.back")))

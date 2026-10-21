@@ -242,7 +242,8 @@ def test_nodes_are_found_on_arrival_and_the_map_never_shows_them(service, clock)
     view = service.act("test:1", "map")
     assert "✨" not in map_row(service, hero, y) and icon not in map_row(service, hero, y)   # the map is blank (D-223)
     assert len(view.actions) <= 4
-    assert not any(line.startswith("✨") for line in service.act("test:1", "places").body)  # 📒 Lugares: no nodes either
+    assert not any(line.startswith("✨") for line in service.act("test:1", "places").body)  # 📒 Lugares: not found yet
+    assert "plc:node" not in [a.id for a in service.act("test:1", "places").actions]      # D-324: ✨ Nodos only once found
     far = service._load("test:1")                                              # far from anything you remember: nothing
     place(service, "test:1", x + 13, y + 13, known=["0:0", f"{x + 13}:{y + 13}"])
     assert not any(n[:2] == (x, y) for n in service._node_seen(service._load("test:1")))
