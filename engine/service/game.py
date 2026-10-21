@@ -56,7 +56,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     (dónde están los nodos de recursos y de qué son, D-184), content/* (content/dungeons.yaml: las familias de enemigos de
     las mazmorras), engine.service.guide (GuideMixin: el 🧭 camino guiado, D-193; content/guide.yaml), engine.service.gremio
     (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274),
-    engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320)
+    engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320), engine.service.map_scroll
+    (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -605,6 +606,16 @@ Si cambias esto, revisa:
       PLACE_KINDS "node", _important_places (los nodos de _node_found en zonas que recuerdas) y _place_confirm_view (si una
       zona sale en dos listas, vale la última que viste). Textos: places.kind.node, places.node_name, recon.* y
       explorer.what.*. Pruebas: tests/test_fogata_reconocer_lugares.py, tests/test_reconocimiento.py, tests/test_mapa_gris.py
+    - 🗺️ Pergamino de mapa (0.50, D-311 parte 5 confirmada por el dueño, E-180; cómo se aplicó: D-326, provisional): vive en
+      engine/service/map_scroll.py (MapScrollMixin, de la que GameService hereda; su encabezado lista sus datos y reglas). Ganchos
+      de este archivo: COMMANDS (/pergaminos, /scrolls), text() (/pm1 con SCROLL_CODE_RE, fuera de combate), _idle_action
+      (SCROLL_ACTIONS, también ocupado), _load (_scroll_sync: la mochila cuenta Hero.map_scrolls), _fog_cell y _zone_view (las
+      zonas de Hero.charted se ven a color; 📍 Zona lo dice con scroll.zone_line), _known_terrains y _fog_notices (cuentan como
+      50 % para la leyenda), _map_view (botón 🗺️ Pergaminos si llevas alguno o tu 🧭 rango los hace), _bag_view (la línea de
+      pergaminos), _explorer_unlocks y _explorer_prof_lines (_explorer_thresholds: el rango map_scroll.rank como un umbral más)
+      y EXTRA_BUTTON_KINDS ("market_cats": 🛍️ Comprar suma 🗺️ Mapas). Solo el color: no toca exploration, known ni nodes.
+      Números: balance.yaml map_scroll. Textos: content/locales/es_pergamino.yaml y en_pergamino.yaml. Pruebas:
+      tests/test_pergamino_mapa.py
 """
 
 from __future__ import annotations
@@ -675,6 +686,7 @@ from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE,
                                    INVITE_CODE_RE, PLAYER_CODE_RE, ZONE_CODE_RE, GremioMixin,   # D-280, D-282
                                    ARMORY_IN_RE, ARMORY_OUT_RE)                                 # D-290: ⚔️ /a1 and /t1
 from engine.service.market import MARKET_ACTIONS, MarketMixin, market_code     # D-320 (0.46): 🏛️ Mercado entre jugadores
+from engine.service.map_scroll import SCROLL_ACTIONS, SCROLL_CODE_RE, MapScrollMixin   # D-326 (0.50): 🗺️ pergamino de mapa
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -709,6 +721,7 @@ COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "
 COMMANDS.update({"/jugadores": "players", "/players": "players"})
 COMMANDS.update({"/titulos": "ptitles", "/titles": "ptitles"})   # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador
 COMMANDS.update({"/mercado": "mkt", "/market": "mkt"})           # D-320 (0.46): 🏛️ Mercado entre jugadores (engine/service/market.py)
+COMMANDS.update({"/pergaminos": "scrolls", "/scrolls": "scrolls"})   # D-326 (0.50): 🗺️ Pergaminos de mapa (engine/service/map_scroll.py)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -775,7 +788,8 @@ HUB_BUTTONS = 8
 # [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
 EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1,
                       "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
-                      "trainer": 4 + 2}        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
+                      "trainer": 4 + 2,        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
+                      "market_cats": HUB_BUTTONS + 1}   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas, and ↩️ Volver
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -855,7 +869,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -961,8 +975,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             gcode = GEAR_CODE_RE.match(low)
             rcode = RECIPE_CODE_RE.match(low)
             scode = RECON_CODE_RE.match(low)
+            pcode = SCROLL_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif pcode and self.store.get("combat", hero.id) is None:     # D-326: /pm2 opens the 2nd scroll of 🗺️ Pergaminos
+                typed = self._scroll_code(hero, int(pcode.group(1)))
             elif scode and self.store.get("combat", hero.id) is None:     # D-324: /rc2 scouts the 2nd place of 🔭 Reconocer
                 typed = self._recon_code(hero, int(scode.group(1)))
             elif rcode and self.store.get("combat", hero.id) is None:     # D-321: /r3 opens the 3rd recipe of the last list
@@ -1383,6 +1400,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         if not hero.books_checked:                          # D-306 (0.44): who practised keeps what it could make (D-64)
             self._grant_old_books(hero)
             hero.books_checked = True
+        self._scroll_sync(hero)                             # D-326: the backpack counts the 🗺️ scrolls of Hero.map_scrolls
         return hero
 
     def _hero_icon(self, hero: Hero) -> str:
@@ -2133,6 +2151,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             return self._dudas_action(hero, action_id)
         if action_id.startswith(MARKET_ACTIONS):        # D-320 (0.46): 🏛️ Mercado (a menu: also while busy; trading checks the place)
             return self._market_action(hero, action_id)
+        if action_id.startswith(SCROLL_ACTIONS):        # D-326 (0.50): 🗺️ Pergaminos de mapa (menus, making and using: also while busy)
+            return self._scroll_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
         if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
@@ -2867,8 +2887,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         las zonas de tu campamento también se ven grises hasta investigarlas al 50 %, como cualquier otra: aquí no hay
         excepción por territorio (el centro del campamento lleva su ícono 🏕️, que sigue sus reglas, D-267 y D-311.4). Cuenta
         lo que investigó tu gremio (D-282: _known_pct). Pruebas: tests/test_mapa_gris.py y tests/test_fogata_reconocer_lugares.py.
+        D-311 (5) y D-326 (0.50): una zona que un 🗺️ pergamino de mapa te mostró (Hero.charted, _charted_set) se ve a color para
+        siempre, como si la hubieras investigado al 50 % (solo el color: los recursos siguen con tu %). tests/test_pergamino_mapa.py.
         """
-        stage = None if mapgen.is_bonfire(x, y) else self._fog_stage(self._known_pct(hero, x, y))   # 🔥 always; D-282: guild
+        charted = f"{x}:{y}" in self._charted_set(hero)                                              # D-326: 🗺️ a scroll showed it
+        stage = None if mapgen.is_bonfire(x, y) or charted else self._fog_stage(self._known_pct(hero, x, y))   # 🔥 always; D-282: guild
         if stage is not None:
             return stage["mark"]
         biome = self.content.biomes[self._zone(x, y).biome]
@@ -2884,13 +2907,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """The terrain types this hero has unlocked: the Claro's and every one with a zone investigated to 50 % (D-220).
 
         [ES] La leyenda del 🗺️ Mapa solo muestra estos (en el orden de content/biomes.yaml): el tipo de terreno se
-        desbloquea al investigar al 50 % una zona de ese terreno. La llaman: _map_view y _fog_notices.
+        desbloquea al investigar al 50 % una zona de ese terreno. La llaman: _map_view, _fog_notices y _scroll_use.
+        D-326 (0.50): una zona de un 🗺️ pergamino de mapa que usaste (Hero.charted) cuenta como investigada al 50 %.
         """
         color_at = int(self._fog_cfg()["color_at"])
         found = {self._zone(0, 0).biome}
         seen = dict(self._mates_knowledge(hero)[0])      # D-282: what the guild explored counts for the legend too
         for key, pct in hero.exploration.items():
             seen[key] = max(seen.get(key, 0), int(pct))
+        for key in hero.charted:                         # D-326: what a 🗺️ map scroll showed counts as 50 %
+            seen[key] = max(seen.get(key, 0), color_at)
         for key, pct in seen.items():
             if pct >= color_at:
                 x, y = (int(part) for part in key.split(":"))
@@ -2919,7 +2945,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             key = f"{zone.x}:{zone.y}"
             known_before = zone.biome == self._zone(0, 0).biome or any(
                 other != key and pct >= color_at and self._zone(*(int(p) for p in other.split(":"))).biome == zone.biome
-                for other, pct in hero.exploration.items())
+                for other, pct in hero.exploration.items()) or any(        # D-326: or a 🗺️ scroll already showed that terrain
+                other != key and self._zone(*(int(p) for p in other.split(":"))).biome == zone.biome for other in hero.charted)
             if not known_before:
                 lines.append(t.t("map.fog.new_terrain", terrain=label, n=len(self._known_terrains(hero)),
                                  total=len(self.content.biomes)))
@@ -3046,7 +3073,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
         body += [""] + self._resources_lines(hero, zone.x, zone.y)
         fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._known_pct(hero, zone.x, zone.y))
-        if fog_here is not None:                        # D-220, D-222: how grey your square still is (it left the 🗺️ Mapa)
+        if fog_here is not None and f"{zone.x}:{zone.y}" in self._charted_set(hero):    # D-326: in colour thanks to a 🗺️ scroll
+            body.append(t.t("scroll.zone_line", pct=self._known_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
+        elif fog_here is not None:                      # D-220, D-222: how grey your square still is (it left the 🗺️ Mapa)
             body.append(t.t("map.fog.here", mark=fog_here["mark"], stage=t.t("map.fog.name." + fog_here["id"]),
                             pct=self._known_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
         here: list[str] = []
@@ -11181,6 +11210,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         D-311 y D-324 (0.48): en la leyenda el 🔥 se llama "Fogata" (map.bonfire, antes "Campamento"); las zonas de tu propio
         campamento se ven grises hasta el 50 % como cualquier otra (_fog_cell, E-177); lo que veía el 🧭 Explorador de los
         👹 campamentos enemigos (D-112) no vuelve al mapa: sale en 🔭 Reconocer (_recon_view, E-207). El mapa sigue igual.
+        D-311 (5) y D-326 (0.50): las zonas de un 🗺️ pergamino de mapa que usaste se ven a color (_fog_cell) y su terreno entra a
+        la leyenda (_known_terrains); un botón 🗺️ Pergaminos (entre 📒 Lugares y ↩️ Volver) sale si llevas alguno o si tu rango de
+        🧭 Explorador ya los hace (map_scroll.rank; D-287: lo bloqueado no se muestra).
         La llaman: 🧭 Explorar → 🗺️ Mapa. Botones: 📒 Lugares (se mudó aquí desde 🧭 Explorar con D-106), 👹 Moverte al
         campamento enemigo más cercano que ves (D-112) y 🕳️ 🌀 Moverte a la mazmorra más cercana (D-171), los dos con el
         tiempo del viaje y SOLO si ya estuviste en esa zona (D-222: a un lugar nuevo se llega caminando; "goto:" también lo
@@ -11231,8 +11263,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         if mates or away:                               # D-286: who is who, with its class and where it stands
             body += self._map_mate_lines(hero, mates, away)
         body += rows                                    # D-222: nothing under the grid
-        actions = [Action(id="places", label=t.t("menu.places")),        # D-223: travel goes through 📒 Lugares only
-                   Action(id=back, label=t.t("menu.back"))]
+        actions = [Action(id="places", label=t.t("menu.places"))]        # D-223: travel goes through 📒 Lugares only
+        if self._scroll_shows(hero):                    # D-326: 🗺️ Pergaminos once you carry one or your 🧭 rank makes them
+            label = t.t("scroll.button_n", n=len(hero.map_scrolls)) if hero.map_scrolls else t.t("scroll.button")
+            actions.append(Action(id="scrolls", label=label))
+        actions.append(Action(id=back, label=t.t("menu.back")))
         return View(kind="map", title=t.t("map.title"), body=body, actions=actions)
 
     def _map_mate_lines(self, hero: Hero, mates: dict[tuple[int, int], list[tuple[str, str, str]]], away: int) -> list[str]:
@@ -11491,8 +11526,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         """
         t = self.texts
         space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))
-        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources"),
-                "", space, self._status_line(hero)]
+        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources")]
+        body += self._scroll_bag_lines(hero)            # D-326: 🗺️ map scrolls are not in 📦 Recursos: /pergaminos
+        body += ["", space, self._status_line(hero)]
         body += self._recovery_lines(hero, hero_stats(self._kit(hero), hero.level)["max_hp"])
         actions = [Action(id="gear", label=t.t("gear.button_new" if hero.gear_new else "gear.button")),
                    Action(id="potions", label=t.t("potions.button")), Action(id="wallet", label=t.t("wallet.button")),
@@ -12163,7 +12199,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         if pid != cfg["profession"]:
             return []
         lines: list[str] = []
-        for key, rank in cfg["ranks"].items():
+        for key, rank in self._explorer_thresholds():   # D-326: explorer.ranks plus the 🗺️ map scroll's rank
             if before < int(rank) <= after:
                 lines.append(self.texts.t("explorer.opened", what=self._explorer_what(key)))
                 if key == "master":
@@ -12184,7 +12220,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         t = self.texts
         rank = self._explorer_rank(hero)
         parts = ["✅" + t.t(f"explorer.short.{key}", rank=need, n=cfg["near_radius"], zones=self._recon_range_of(key))   # D-172: 🔭
-                 for key, need in cfg["ranks"].items() if rank >= int(need)]
+                 for key, need in self._explorer_thresholds() if rank >= int(need)]          # D-326: + 🗺️ map scrolls
         return [t.t("explorer.ranks_line", items=" · ".join(parts))] if parts else []
 
     def _trip_seconds(self, hero: Hero, x: int, y: int) -> float:

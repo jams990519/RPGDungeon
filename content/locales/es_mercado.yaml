@@ -60,7 +60,7 @@ market:
   sold_line: "{name} compró {item} ×{n}. Recibes {coins} (impuesto: {tax})."
   # 🏷️ Vender
   sell_title: "🏷️ Vender"
-  sell_intro: "Lo que puedes poner a la venta: equipo, pociones, remedios, muebles, comida, 💰 bolsas y 🪎 cofres."
+  sell_intro: "Lo que puedes poner a la venta: equipo, pociones, remedios, muebles, comida, 💰 bolsas, 🪎 cofres y 🗺️ pergaminos de mapa."   # [ES] D-326 (0.50): + los pergaminos
   sell_line: "{code} {item} ×{n} · referencia {price}{fit}"
   sell_none: "No llevas nada para vender aquí (lo que llevas puesto no se vende)."
   sell_hint: "👆 Toca el código (/s1) para armar tu orden de venta."

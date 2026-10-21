@@ -127,7 +127,18 @@ recon:                       # [ES] D-172 (confirmada; números propuestos por C
   coins_per_level: 2         # [ES] premio en monedas: nivel del lugar × 2 🥉 (nivel 4: 8 🥉; nivel 40: 80 🥉), parecido a lo que dan 2 ⚡ de explorar en monedas. Sin objeto que se vende (P-120 sigue abierta)
   listed: 6                  # [ES] cuántos lugares lista la pantalla 🔭 (los más cercanos); botones: los 3 primeros sin reconocer hoy + ↩️ Volver
 
-enemy_camps:                 # [ES] D-112 (confirmada): 👹 campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
+map_scroll:                  # [ES] D-311 parte 5 (confirmada, E-180) y D-326 (0.50, cómo se aplicó; provisional): el 🗺️ pergamino de mapa del 🧭 Explorador (engine/service/map_scroll.py; mapa-infinito-y-viaje.md §1.9.4). Quien lo usa ve a color, para siempre, las zonas que el Explorador investigó al 50 % en una región; solo el color (ni recursos, ni nodos, ni lugares). Números propuestos por Claude (E-250): se ajustan en la beta
+  item: pergamino_mapa       # [ES] id del objeto en content/items.yaml (estable: va en la mochila, en las órdenes del 🏛️ Mercado y en 📦 Entregas)
+  rank: 15                   # [ES] rango de 🧭 Explorador desde el que se hacen (entre el 10 de ⏱️ y 🔭 y el 25 de 👹 a 3 zonas). Antes, el botón 🗺️ Pergaminos ni aparece (D-287), salvo que lleves alguno
+  region: 6                  # [ES] la región es un cuadrado de 6 × 6 zonas de una cuadrícula fija; la del Claro va de (-3, -3) a (2, 2) y cada 🔥 fogata (cada 12 zonas) cae cerca del centro de la suya. Cambiarlo cambia las regiones de los pergaminos NUEVOS (los hechos guardan su centro, su tamaño y sus zonas)
+  min_zones: 6               # [ES] zonas investigadas por ti al 50 % o más (map_view.fog.color_at) que tiene que tener la región; las 🔥 fogatas no cuentan (se ven siempre)
+  energy: 5                  # [ES] ⚡ por pergamino (como 5 vueltas de explorar)
+  materials: {piel: 1}       # [ES] un pergamino es piel: 1 🦌 piel (sale de cazar bestias). Lo que se gasta de la mochila
+  explorer_xp: 30            # [ES] experiencia de 🧭 Explorador por pergamino: 6 por ⚡, como explorar y 🔭 Reconocer
+  price_min: 1               # [ES] el precio es libre (D-311: "al precio que quiera"): en el 🏛️ Mercado su banda va de 1 🥉...
+  price_max: 10000           # [ES] ...a 1 🥇 (10 000 🥉), en lugar de 0,25 a 10 veces la referencia (market.price_min/max, D-26). Excepción de la banda (D-326, E-251)
+
+enemy_camps:                # [ES] D-112 (confirmada): 👹 campamentos enemigos que cambian de lugar cada día (mapa-infinito-y-viaje.md §1.14). Números propuestos por Claude: se ajustan en la beta
   density: 0.03              # [ES] cada día, ~3 % de las zonas de Lejanía 2 o más tienen uno (en un mapa de 13 × 13, unos 4 o 5). Nunca en el Claro, la guarida ni el territorio de un campamento de jugadores, ni dos días seguidos en la misma zona. Cambiarlo mueve los campamentos del día
   min_lejania: 2             # [ES] desde qué Lejanía pueden salir
   garrison: [4, 8]           # [ES] cuántos enemigos tiene cada uno, contando al jefe (el último)

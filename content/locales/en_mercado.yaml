@@ -58,7 +58,7 @@ market:
   sold_line: "{name} bought {item} ×{n}. You get {coins} (tax: {tax})."
   # 🏷️ Sell
   sell_title: "🏷️ Sell"
-  sell_intro: "What you can put up for sale: gear, potions, remedies, furniture, food, 💰 bags and 🪎 chests."
+  sell_intro: "What you can put up for sale: gear, potions, remedies, furniture, food, 💰 bags, 🪎 chests and 🗺️ map scrolls."
   sell_line: "{code} {item} ×{n} · reference {price}{fit}"
   sell_none: "You carry nothing to sell here (what you wear is not sold)."
   sell_hint: "👆 Tap the code (/s1) to set up your sell order."
