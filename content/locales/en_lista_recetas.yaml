@@ -8,6 +8,7 @@ rlist:
   line_part: "{code} {color}🔸 {item}{level} · {prof}+{xp}"
   line_none: "{code} {color}▫️ {item}{level} · {prof}+{xp}"
   level: " · lv {n}"
+  tier: " · tier {n}"
   count: "{n} {n|recipe|recipes} · page {page} of {total}"
   only_ok_button: "✅ Only what I can make"
   all_button: "📜 See all"

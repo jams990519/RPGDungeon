@@ -73,7 +73,8 @@ def test_the_generated_content_is_up_to_date():
 
 def test_a_tier_every_5_ranks_in_the_gear_professions_with_piece_level_equal_to_rank(content):
     cfg = content.balance["recipe_tiers"]
-    assert cfg["professions"] == list(GEAR) and cfg["step"] == 5
+    # D-328 (0.52): the refining professions, ⚗️, 🩺 and 🍲 joined the gear ones (tests/test_tramos_refinado_alquimia_medicina_cocina.py)
+    assert cfg["professions"][:5] == list(GEAR) and set(GEAR) <= set(cfg["professions"]) and cfg["step"] == 5
     tiers = [1] + list(range(5, 101, 5))
     for pid in GEAR:
         for line, by_rank in gear_line(content, pid).items():
@@ -98,7 +99,7 @@ def test_energy_and_experience_grow_with_the_tier(content):
             assert rdef["xp"] == rules.tier_xp(6 * rdef["energy"], rank, cfg["xp_per_rank"]), rid
     assert [recipes[r]["energy"] for r in ("espada_forjada", "espada_nivel_50", "espada_nivel_55", "espada_nivel_100")] == [2, 2, 3, 4]
     assert [recipes[r]["xp"] for r in ("espada_forjada", "espada_nivel_50", "espada_nivel_100")] == [12, 18, 24]
-    assert recipes["pocion_vida"]["xp"] == 6 and recipes["tablon"]["xp"] == 6          # untiered professions: as before
+    assert recipes["pocion_vida"]["xp"] == 6 and recipes["tablon"]["xp"] == 6          # rank 1, 1 ⚡: 6, as before (D-328: tiered too)
 
 
 def test_new_pieces_beat_nothing_less_and_never_make_coins(content):
@@ -154,12 +155,15 @@ def test_a_batch_changes_color_when_the_rank_rises(service):
     assert service._load("test:1").professions["herreria"] == service._batch_prof_xp(hero, rdef, 20)
 
 
-def test_untiered_professions_still_give_their_whole_experience(service):
-    hero = crafter(service, "alquimia", rank=80, books=["alquimia:25", "alquimia:50"], bag={"extracto": 5, "arcilla": 5})
+def test_since_0_52_alchemy_has_colors_too(service):
+    # D-328 (0.52): every profession with recipes has its tiers up to 100, so the colors apply to ⚗️ Alchemy as well
+    hero = crafter(service, "alquimia", rank=80, books=["alquimia:25", "alquimia:50", "alquimia:75"],
+                   bag={"extracto": 5, "arcilla": 5})
     rdef = service._recipes()["pocion_vida"]
-    assert service._recipe_color(rdef, 80) is None and service._recipe_xp(rdef, 80) == rdef["xp"] == 6
+    assert service._recipe_color(rdef, 80) == "grey" and service._recipe_xp(rdef, 80) == 0
+    assert service._recipe_color(service._recipes()["pocion_mayor_tramo_80"], 80) == "orange"
     view = service.act("test:1", "est:craft:0")
-    assert "🟧" not in body(view) and "⚗️+6" in body(view)          # no color, but the experience it gives
+    assert "⬜" in body(view) and "🟧" in body(view) and "⚗️+0" in body(view)    # the old potion still shows, grey
 
 
 def test_the_station_shows_colors_their_legend_and_the_experience(service):

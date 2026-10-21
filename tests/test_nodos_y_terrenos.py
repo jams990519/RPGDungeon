@@ -13,6 +13,7 @@ import pytest
 from conftest import make_hero
 from engine.core import FixedClock, MemoryStore, Rng
 from engine.professions import branches_of, gatherer_of
+from engine.professions.rules import tier_xp
 from engine.service import GameService
 from engine.world import dungeons as dungeon_rules
 from engine.world import nodes as node_rules
@@ -157,7 +158,8 @@ def test_every_new_resource_has_a_family_a_use_a_price_and_its_texts(service):
         if out.get("kind") == "food":                                          # 🍲 more rations than its raw food
             raw = sum(int(content.items[i].get("food", 0)) * k for i, k in rdef["inputs"].items())
             assert out["food"] * n > raw > 0, rid
-            assert rdef["xp"] == 6 * rdef["energy"], rid
+            # 6 per ⚡, growing with the tier since 0.52 (D-328: × (1 + 0.01 × rank), like every tiered recipe)
+            assert rdef["xp"] == tier_xp(6 * rdef["energy"], rdef["min_rank"], content.balance["recipe_tiers"]["xp_per_rank"]), rid
         else:                                                                  # refining and crafting never make coins
             materials = sum(content.items[m]["price"] * k for m, k in rdef["inputs"].items())
             assert out["price"] * n * ratio < materials, rid

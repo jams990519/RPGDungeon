@@ -631,12 +631,12 @@ specs:                       # [ES] D-115 y D-141 (confirmada): 🎓 especializa
   per_page: 2                # [ES] oficios por página en 🎓 Especialización cuando hay más de 3 (4 botones como mucho, D-75)
 
 recipe_tiers:                # [ES] D-306 (confirmada, E-221 y E-222; en el juego desde la 0.44): un tramo de recetas cada 5 rangos, colores de receta como en WoW y 📚 libros de recetas en el 🧑‍🏫 Entrenador. Los números de experiencia y energía son de Claude (D-315, provisional): se ajustan en la beta
-  # [ES] Oficios con un tramo cada 5 rangos hasta el 100 (rango 1, 5, 10 ... 100; la pieza que sale es del nivel del tramo). Solo en
-  # [ES] estos rigen los colores: los demás (refinado, ⚗️ Alquimia, 🩺 Medicina, 🍲 Cocina) todavía no tienen recetas hasta el 100 y con
-  # [ES] colores se trabarían (simulacion-oficios.md §8.2); siguen dando la experiencia entera hasta que tengan sus tramos (pendiente).
+  # [ES] Oficios con un tramo cada 5 rangos hasta el 100 (rango 1, 5, 10 ... 100). En ellos rigen los colores (GameService._tiered). Los 5
+  # [ES] de equipo desde la 0.44 (la pieza que sale es del nivel del tramo); D-328 (0.52): también los 6 de refinado, la ⚗️ Alquimia, la
+  # [ES] 🩺 Medicina y la 🍲 Cocina, con sus recetas hasta el 100 (los bloques refine y consumables de abajo). Todos los oficios con recetas.
   # [ES] tools/recipe_tiers.py escribe en content/professions.yaml el rango, la energía y la experiencia de sus recetas con estos
   # [ES] números: si cambias uno, corre `python tools/recipe_tiers.py` (tests/test_tramos_de_recetas.py avisa si quedó viejo).
-  professions: [carpinteria, herreria, sastreria, peleteria, joyeria]
+  professions: [carpinteria, herreria, sastreria, peleteria, joyeria, aserradero, fundicion, destilacion, tejeduria, curtiduria, canteria, alquimia, medicina, cocina]
   step: 5                    # [ES] un tramo cada 5 rangos; una pieza de nivel N se hace desde el tramo N (las de nivel 3, desde el 1; las de nivel 8, desde el 10)
   colors:                    # [ES] d = tu rango − el rango de la receta. Naranja: experiencia entera; amarilla: la mitad; verde: un cuarto; gris: nada
     - {id: orange, below: 5, factor: 1.0}
@@ -654,6 +654,54 @@ recipe_tiers:                # [ES] D-306 (confirmada, E-221 y E-222; en el jueg
     - {rank: 50, price: 1000}   # [ES] 🥈10
     - {rank: 75, price: 2500}   # [ES] 🥈25 (las de rango 100 piden los tres)
   books_per_page: 2          # [ES] libros a la venta por página en 📚 Libros de recetas cuando hay más de 3 (4 botones como mucho, D-75)
+  book_gifts:                # [ES] D-328 (0.52, D-64): quien ya practicaba un oficio recibe gratis, una vez, los libros de los rangos que ya tenía, solo de los
+                             # [ES] libros que ese oficio no pedía antes (como el regalo de la 0.44, Hero.books_checked). Hero.book_gifts guarda los ids ya dados
+    - id: "0.52"
+      professions: {aserradero: [25, 50, 75], fundicion: [25, 50, 75], destilacion: [25, 50, 75], tejeduria: [25, 50, 75], curtiduria: [25, 50, 75], canteria: [25, 50, 75], alquimia: [75], medicina: [75]}
+  refine:                    # [ES] D-328 (0.52, Claude, provisional): un refinado mejor por tramo (5, 10 … 100) en cada oficio de refinado, que escribe tools/recipe_tiers.py.
+                             # [ES] Cada uno se hace con su refinado de siempre (1 + rango ÷ base_every), su crudo (rango ÷ raw_every: crece en cada tramo) y un catalizador
+                             # [ES] de terreno (1 + rango ÷ catalyst_every), con la ⚡ y la experiencia de una pieza de equipo del mismo tramo. Vale lo que sus materiales
+                             # [ES] más su ⚡ (como el tablón: 3 maderas + 1). Tramo 5 del tablón: 1 tablón, 1 madera y 1 resina; tramo 100: 3 tablones, 20 maderas y 5 resinas.
+                             # [ES] Hoy ninguna receta los pide (solo dan experiencia y se venden): si las piezas de los tramos altos deben pedirlos, E-257 (P-268)
+    base_every: 50
+    raw_every: 5
+    catalyst_every: 25
+    lines:                   # [ES] code: los códigos de sus materiales son code + rango ÷ 5 (tablón del tramo 5 = /101). Nunca se cambia (códigos estables, D-243)
+      aserradero: {base: tablon, raw: madera, catalyst: resina, code: 100}
+      fundicion: {base: lingote, raw: pieza_metal, catalyst: carbon, code: 120}
+      destilacion: {base: extracto, raw: hierba_curativa, catalyst: raiz_amarga, code: 140}
+      tejeduria: {base: tela_tejida, raw: fibra, catalyst: lino, code: 160}
+      curtiduria: {base: cuero_curtido, raw: piel, catalyst: corteza, code: 180}
+      canteria: {base: sillar, raw: piedra, catalyst: arena, code: 200}
+  consumables:               # [ES] D-328 (0.52, Claude, provisional): ⚗️ pociones, 🩺 remedios y 🍲 platos de cada tramo que no tiene receta (tools/recipe_tiers.py).
+                             # [ES] Cada oficio tiene líneas: empiezan en una receta "ancla" escrita a mano y terminan en "to" (rango, unidades por vez, cuánto cura o
+                             # [ES] cuántas raciones da, precio y materiales) o, sin "to", antes del ancla siguiente. Cada tramo queda a mitad de camino entre las dos puntas.
+                             # [ES] La toxicidad es la del ancla (no cambia qué pociones se juntan en una pelea: tope 100) y lo nuevo va en el lugar del cinturón de su
+                             # [ES] ancla (belt_slot): el cinturón no crece. Cuánto curan los tramos altos: E-258 (P-269)
+    alquimia:
+      code: 220              # [ES] códigos 221 a 240 (225 queda libre: el tramo 25 es la 🍷 poción mayor, /63)
+      lines:
+        - anchor: pocion_vida      # [ES] rango 1, cura 35 %, toxicidad 40: tramos 5 a 20 (2 por vez, como ella)
+          to: {rank: 20, output: 2, heal: 0.45, price: 10, inputs: {extracto: 2, arcilla: 2}}
+        - anchor: pocion_mayor     # [ES] rango 25, cura 60 %, toxicidad 60: tramos 30 a 100. En el 100 cura 75 %: con una de vida (40) suma 110 % por pelea (hoy, 95 %)
+          to: {rank: 100, output: 1, heal: 0.75, price: 40, inputs: {extracto: 6, arcilla: 2, flor_luna: 3}}
+    medicina:
+      code: 240              # [ES] códigos 241 a 260 (245 y 250 libres: botiquín /65 y vendaje de maestro /66)
+      lines:
+        - anchor: unguento         # [ES] rango 1, cura 22 %: tramos 5 a 20 (2 por vez)
+          to: {rank: 20, output: 2, heal: 0.32, price: 12, inputs: {extracto: 2, tela_tejida: 2}}
+        - anchor: botiquin         # [ES] rango 25, cura 35 %: tramos 30 a 45
+          to: {rank: 45, output: 1, heal: 0.47, price: 27, inputs: {extracto: 3, tela_tejida: 2, cuero_curtido: 1}}
+        - anchor: vendaje_maestro  # [ES] rango 50, cura 50 %: tramos 55 a 100 (en el 100, 60 %, sin toxicidad como todo remedio)
+          to: {rank: 100, output: 1, heal: 0.60, price: 50, inputs: {extracto: 4, tela_tejida: 4, cuero_curtido: 1, flor_luna: 2}}
+    cocina:
+      code: 260              # [ES] códigos 261 a 280 (265, 270, 275 y 280 libres: los platos de siempre). Sin "to": cada tramo va hacia el plato siguiente; el 🍽️ banquete es el del 100
+      lines:
+        - anchor: racion_campamento    # [ES] rango 1, 3 raciones
+        - anchor: guiso_cazador        # [ES] rango 25, 10
+        - anchor: conserva             # [ES] rango 50, 18
+        - anchor: festin               # [ES] rango 75, 27
+        - anchor: banquete             # [ES] rango 100, 45
 
 auto_fight:                  # [ES] D-258 (0.33): apagadas por ahora (enabled: false). D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
   enabled: false             # [ES] D-258 (0.33, pedido del dueño): sin peleas automáticas ni pociones automáticas por ahora; todo lote se corta al salir una pelea y 🏹 Cazar no va en lote. true las devuelve
