@@ -2,7 +2,7 @@
 
 [ES] Pruebas de aprender oficios (pedido del dueño, 17-oct-2026). Desde la 0.35 (D-272) solo la 🧭 exploración no se
 aprende: sube sola; la 🪓 recolección también se aprende. Los demás se aprenden una vez pagando su primera receta (balance.yaml
-professions.learn_price) en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios; sin aprenderlos su rango es 0:
+professions.learn_price; desde la 0.43, D-306.4, por rama: 🥈1 fabricación, 🥉50 recolección y refinado) en 🔬 Investigar del Claro o en 🧑‍🏫 Entrenador → 📚 Aprender oficios; sin aprenderlos su rango es 0:
 no se cocina, no se refina ni se fabrica con ellos, no se encanta y no suben. Lo que ya practicabas antes de la 0.33 se
 aprende gratis y conserva su rango. 📋 Mis oficios trae una línea corta por oficio con su código (/minero); lo largo sale
 tocando el código. 🛠️ Fabricar ya no lista los oficios "sin empezar". Todo en los dos idiomas.
@@ -52,8 +52,9 @@ def test_research_in_the_claro_lists_what_you_can_learn_with_its_price(service):
     make_hero(service)
     view = service.act("test:1", "research")
     assert view.kind == "learn"
-    price = service._money(service.content.balance["professions"]["learn_price"])
-    assert f"🍲 Cocina · {price}  /cocina" in body(view)
+    prices = service.content.balance["professions"]["learn_price"]          # D-306.4 (0.43): by branch
+    assert f"🍲 Cocina · {service._money(prices['craft'])}  /cocina" in body(view)
+    assert f"⛏️ Minero · {service._money(prices['gather'])}  /minero" in body(view)
     assert "Minero" in body(view) and "Explorador" not in body(view)            # D-272: only exploring rises on its own
     assert "Cocinar: primero aprende" in body(service.act("test:1", "claro"))
 
@@ -67,7 +68,7 @@ def test_learning_costs_its_first_recipe_and_opens_rank_one(service):
     rich(service, gold=100)
     view = service.act("test:1", "learn:cocina")
     hero = service._load("test:1")
-    assert "cocina" in hero.learned and hero.gold == 100 - service.content.balance["professions"]["learn_price"]
+    assert "cocina" in hero.learned and hero.gold == 100 - service.content.balance["professions"]["learn_price"]["craft"]
     assert "Aprendiste" in view.notice and service._prof_rank(hero, "cocina") == 1
     assert "cook" in ids(view)
     station = service.act("test:1", "cook")

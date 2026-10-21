@@ -1,11 +1,15 @@
 # Items of version 0.1.
 # [ES] Objetos de la versión 0.1. belt: true = puede ir en el cinturón (botón 🎒 Mochila en combate).
 # heal = fracción de la vida máxima que cura. toxicity = cuánto suma a la Toxicidad (tope en balance.yaml).
+# D-306.5 (0.43): las pociones y los remedios (kind potion y bandage) llevan un código del 61 al 66 para venderlos al mercader
+# (💱 Vender, /v61) a un cuarto de su precio (balance.yaml shop.remedy_sell_ratio); el resto de los códigos (D-243) son de los
+# recursos. Los códigos son estables: solo se agregan.
 # Lo usan: engine/combat (cinturón), engine/service (exploración, botín, mochila).
 # Si cambias esto, revisa: IDs estables; la curación y la toxicidad mueven el balance del combate.
 
 pocion_vida:
   name_key: item.pocion_vida
+  code: 61                 # [ES] D-306.5 (0.43): código para vender al mercader (/v61); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🧪"
   kind: potion
   heal: 0.35
@@ -14,6 +18,7 @@ pocion_vida:
   price: 6
 venda:
   name_key: item.venda
+  code: 62                 # [ES] D-306.5 (0.43): código para vender al mercader (/v62); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🩹"
   kind: bandage
   heal: 0.15
@@ -1606,6 +1611,7 @@ flor_luna:
   price: 12                  # [ES] rara: el herbolario la encuentra desde el rango 10
 pocion_mayor:
   name_key: item.pocion_mayor
+  code: 63                 # [ES] D-306.5 (0.43): código para vender al mercader (/v63); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🍷"
   kind: potion
   heal: 0.6                  # [ES] cura el 60 % de la vida (la de vida, 35 %)
@@ -1615,6 +1621,7 @@ pocion_mayor:
 
 unguento:
   name_key: item.unguento
+  code: 64                 # [ES] D-306.5 (0.43): código para vender al mercader (/v64); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🫙"
   kind: bandage              # [ES] D-111: cura como una venda mejor; la 🩺 Medicina (vendas +30 %) lo potencia. Sin toxicidad
   heal: 0.22
@@ -1623,6 +1630,7 @@ unguento:
   price: 8                   # [ES] solo lo hace la Medicina: el mercader no lo vende
 botiquin:
   name_key: item.botiquin
+  code: 65                 # [ES] D-306.5 (0.43): código para vender al mercader (/v65); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🧰"
   kind: bandage              # [ES] D-111: la cura grande sin toxicidad (Medicina rango 25)
   heal: 0.35
@@ -1632,6 +1640,7 @@ botiquin:
 
 vendaje_maestro:
   name_key: item.vendaje_maestro
+  code: 66                 # [ES] D-306.5 (0.43): código para vender al mercader (/v66); estable: nunca se renumera ni se reutiliza (61-66: pociones y remedios)
   emoji: "🩻"
   kind: bandage              # [ES] D-111: la mejor cura sin toxicidad (Medicina rango 50, pide 🌸 flor de luna del herbolario)
   heal: 0.5

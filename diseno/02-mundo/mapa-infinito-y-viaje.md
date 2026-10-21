@@ -356,6 +356,8 @@ Coordenadas 1, 2 · Lejanía 2
 > - **Los 6 recursos de base** (madera, piedra, fibra, hierba, metal y arcilla) **vuelven 3 por hora** en cada zona en vez de 1 (la madera venía con ×2 de D-300); los propios del terreno y el pescado siguen igual. El ⛲ Pozo se multiplica encima.
 > - En el código es un modo de recolectar (`BATCH_MODES` "chop": la actividad sigue siendo "gather" con `only`), así cuenta igual para misiones, gremio, camino guiado, presencia ("🪓 talando") e informes.
 
+> **0.43 (D-306.5, confirmada por el dueño el 20-oct; cómo se aplicó: D-316, provisional): 🎣 Pescar.** Lo mismo que 🪓 Talar con el 🐟 pescado: una vuelta de recolectar en la que todo es pescado (1 ⚡, 8 min, 1 a 3 unidades más las de zonas lejanas, los mismos lotes) y que sube al 🎣 Pescador; solo agota el pescado (vuelve ×1, 2 % por hora) y el lote se corta cuando se acaba. El botón sale donde la zona tiene agua: en el 🐸 pantano siempre (todo es agua) y en las demás zonas con agua (ríos y lagunas) cuando ya sabes que ahí hay pescado (explorándola, o tu gremio, D-282), para que el botón no delate un río que no encontraste. Con madera y agua, 🧭 Explorar tiene **6 botones en 4 filas**: 🔎 Explorar; 🧺 Recolectar y 🪓 Talar; 🎣 Pescar y 🏹 Cazar (o la mazmorra); 🗺️ Mapa. En el código: `BATCH_MODES` "fish", `activity["mode"]`, `_can_fish`, `_batch_mode`.
+
 > **0.40 (D-301, pedido del dueño): 📒 Lugares por botones.** Primero 🏕️ tu campamento (va directo a ¿Viajar?), después 🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio (la construcción o el punto de reunión), 🏕️ Campamentos de otros y 👑 Guarida; cada botón lista sus lugares con su código /ir.
 
 ### 1.12.1 Tiempo estimado y ⚙️ Opciones de pelea en los lotes (D-114)
