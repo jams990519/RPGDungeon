@@ -458,8 +458,9 @@ Si cambias esto, revisa:
     - 🪵 Más madera (D-300, pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo
       imposible encontrarlo" y "lento para las construcciones, pero tampoco tan lento"; números de Claude, provisionales).
       Tocan: _zone_land (devuelve tres partes: base, madera sumada y propios; engine/world/resources.py wood_resource),
-      _zone_resources (la madera va justo después de los de base), _node_main (los nodos no miran la madera sumada: no se
-      movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values ({wood_regen} de la guía de recolectar).
+      _zone_resources (la madera va justo después de los de base; desde D-303, primera en el bosque), _node_main (los nodos
+      no miran la madera sumada: no se movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values
+      ({wood_regen} de la guía de recolectar).
       Números: balance.yaml resources.wood y stock.regen_mult. Ninguna zona pierde un recurso. Pruebas: tests/test_resources.py
     - 📒 Lugares por tipo (D-301, pedido del dueño, 20-oct-2026: "el primer botón va a ser el del campamento... luego
       Mazmorras... luego Fogatas, y así sucesivamente"). Tocan: PLACE_KINDS (orden de los botones), HUB_KINDS ("places",
@@ -477,6 +478,14 @@ Si cambias esto, revisa:
       los botones viejos "gmsg", "gfund" y "creqs" siguen). Números: balance.yaml gremio.messages_kept (50), chat_hours,
       chat_shown y chat_max_chars. Textos: content/locales/es_submenus.yaml y en_submenus.yaml (campinfo.*, guildmenu.*).
       Pruebas: tests/test_submenus_campamento_gremio.py
+    - 🪵 Madera en todas las zonas (D-303, 0.40.1, orden del dueño del 20-oct-2026: "los bosques deberían tener, las montañas
+      deberían tener, o sea, en todos lugares, en menor medida, pero deberían tener"; números de Claude, provisionales).
+      Tocan: _zone_resources (en un terreno de bosque, engine/world/resources.py wood_first, la madera va PRIMERA con
+      riqueza 1,0; en el resto, pobre, justo después de los de base), _known_resources (la madera sumada no ocupa un lugar
+      de exploration.reveal_at: en el bosque se conoce al 1 %; nadie conoce menos que antes) y _zone_land (los de base
+      salen tal cual: _node_main no se movió). En engine/service/gremio.py, _resource_search_view ordena las zonas cercanas
+      con las más ricas primero (gremio.search_rich_penalty). Números: balance.yaml resources.wood (forest_min 1,0,
+      elsewhere_max 0,5; threshold sin uso). Pruebas: tests/test_resources.py, tests/test_buscador_de_recursos.py
 """
 
 from __future__ import annotations
@@ -550,7 +559,7 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import terrain_resources, water_resources, wood_resource, zone_resources
+from engine.world.resources import terrain_resources, water_resources, wood_first, wood_resource, zone_resources
 from engine.world import nodes as node_rules            # D-181, D-184: resource nodes
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
@@ -2408,11 +2417,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
         """The zone's land resources in three parts: (base, added wood, terrain's own). [ES] Qué hace: los 6 de base con el
-        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 suma (wood_resource: todo
-        terreno de bosque y un umbral propio más bajo; {} si ya era de base o no toca) y los propios del terreno que se ve
-        (D-183, con los de otro terreno de D-185). Los propios se sortean con los de base SIN la madera sumada, así D-300 no
-        sacó ninguno. La llaman: _zone_resources y _node_main (el nodo es de un recurso de base o propio, nunca de la madera
-        sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
+        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 y D-303 suman
+        (wood_resource: en el bosque, 1,0 aunque ya fuera de base; en el resto, pobre si no era de base; {} si ya era de base
+        fuera del bosque, o en el Claro y las hogueras) y los propios del terreno que se ve (D-183, con los de otro terreno de
+        D-185). Los propios se sortean con los de base SIN la madera sumada, así la madera no sacó ninguno. Devuelve los de
+        base tal como salen (la madera del bosque NO los cambia aquí). La llaman: _zone_resources, _known_resources (la
+        madera no ocupa lugar, D-303) y _node_main (el nodo es de un recurso de base o propio con su riqueza de siempre, nunca
+        de la madera sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
         terrain = self._zone(x, y).biome
         biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
         base = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
@@ -2433,10 +2444,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. Los propios y el agua
         siguen al terreno que se ve (un 🟪 pantano siempre tiene agua); los propios, a veces, salen del catálogo de otro terreno
         (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82).
-        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios."""
+        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios.
+        D-303 (0.40.1, orden del dueño: madera en todas las zonas, los bosques con más): en un terreno de bosque
+        (wood_first) la madera va PRIMERA, con riqueza 1,0, aunque ya fuera de base (se saca de su lugar y los demás de base
+        siguen en su orden); así se conoce desde la primera exploración."""
         base, wood, own = self._zone_land(x, y)
-        found = {**base, **wood, **own}
-        found.update(water_resources(self.world_seed, x, y, self._zone(x, y).biome, self.content.balance, self.content.biomes))
+        terrain = self._zone(x, y).biome
+        if wood and wood_first(x, y, terrain, self.content.balance):   # D-303: a forest's wood leads
+            found = {**wood, **{r: v for r, v in base.items() if r not in wood}, **own}
+        else:
+            found = {**base, **wood, **own}
+        found.update(water_resources(self.world_seed, x, y, terrain, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
@@ -2569,11 +2587,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES] D-183: exploration.reveal_at tiene un umbral por recurso (1, 20, 40, 60, 80 %); al 100 % se conocen todos, también
         los que pasan de la lista (el pescado). Nadie conoce menos que antes: los de base van primero y los umbrales bajaron.
+        D-303 (0.40.1): la 🪵 madera sumada por _zone_land (wood) no ocupa uno de esos lugares: cuando explorar llega a su
+        lugar se conoce además del recurso que tocaba. En el bosque va primera, así al 1 % se conocen la madera y el 1.º de
+        siempre; en el resto va justo después de los de base. Así nadie conoce menos que antes de la 0.40.1.
         """
         pct = self._known_pct(hero, x, y)               # D-282: the guild's best (experience still counts your own)
         ranked = list(self._zone_resources(x, y))
         reveal = self.content.balance["exploration"]["reveal_at"]
         count = len(ranked) if pct >= 100 else sum(1 for need in reveal if pct >= need)
+        wood = next(iter(self._zone_land(x, y)[1]), None) if 0 < count < len(ranked) else None
+        if wood in ranked[:count]:                      # D-303: the added wood takes no reveal slot of its own
+            count += 1
         return ranked[:count]
 
     def _resources_lines(self, hero: Hero, x: int, y: int) -> list[str]:

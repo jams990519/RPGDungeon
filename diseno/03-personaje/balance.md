@@ -1196,6 +1196,34 @@ Desde casi todas las fogatas hay madera a 1 zona. Solo se suma madera, sin quita
 
 **Lo que queda por mirar:** si alcanza para las obras; si hace falta un botón 🪓 Talar (P-238).
 
+> **Desde la 0.40.1 (D-303)** `forest_min` sube a 1,0 y `threshold` queda sin uso: la madera ya está en todas las zonas (abajo).
+
+### Octubre de 2026 (20-oct): madera en todas las zonas (0.40.1, D-303)
+
+El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, en todos lugares, en menor medida, pero deberían tener". Los números son de Claude (provisionales).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `resources.wood.forest_min` | 0,7 | 1,0: en el bosque, bosque oscuro y selva la madera es la más rica y va **primera** (se conoce al 1 %) |
+| `resources.wood.elsewhere_max` (nuevo) | — | 0,5: en los demás terrenos, si la madera no era de base, se suma pobre (de 0,3 a 0,5 según su fuerza en la zona) |
+| `resources.wood.threshold` | 0,62 | sin uso: ya no hay umbral, la madera está en todas las zonas |
+| `gremio.search_rich_penalty` (nuevo) | — (solo la distancia) | 4: el 🔎 buscador cuenta cada zona como si estuviera (1 − riqueza) × 4 zonas más lejos: primero las cercanas y ricas |
+| `exploration.reveal_at` (regla, no número) | la madera sumada ocupaba un lugar | la madera sumada no ocupa un lugar: se conoce junto con el recurso que tocaba (nadie conoce menos que antes) |
+
+**Qué cambia al jugar.** Medido en 61 × 61 zonas con las semillas 12345, 777 y 4242 (riqueza completa, sin agotar; "antes" es sin D-300):
+
+| | Zonas con madera (antes / 0.40 / 0.40.1) | Madera en cada unidad recolectada (antes / 0.40 / 0.40.1) | Se conoce al 1 % (0.40 / 0.40.1) |
+|---|---|---|---|
+| Bosques (23 % de las zonas) | 47 % / 100 % / 100 % | 11 % / 20 % / 23 % | 25 % / 100 % |
+| Los demás terrenos | 46 % / 49 % / 100 % | 11 % / 12 % / 17 % | 24 % / 24 % |
+| Fogatas (fijas) | 100 % | 56 % | 100 % |
+
+- **Toda zona que no es fija tiene madera** (3.712 de 3.712 en cada semilla).
+- Fuera del bosque hay dos casos: donde la madera ya era de base (46 % de esas zonas) sigue igual, riqueza media 0,93 y 24 % de cada unidad, como en el bosque; donde se suma, riqueza media 0,42 y 10 % de cada unidad.
+- Solo se suma madera: ninguna zona pierde un recurso ni la riqueza de otro, y los nodos no se mueven.
+
+**Lo que queda por mirar:** en el bosque, 1 de cada 4 unidades es madera, y en la fogata más de la mitad (sus 2 recursos fijos). Si hace falta más, lo que queda abierto en P-238: el botón 🪓 Talar (solo madera) y que los recursos de base vuelvan más rápido.
+
 ### Octubre de 2026 (19-oct): el buscador de recursos (0.39.1, D-296, confirmada)
 
 | Número | Antes | Ahora |

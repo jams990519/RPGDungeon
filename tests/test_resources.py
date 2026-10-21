@@ -2,8 +2,10 @@
 
 [ES] Prueba la exploración por porcentaje, las regiones de recursos, el agotamiento, el espacio de la
 mochila, el gasto de energía en lote (con cancelar) y los colores del mapa. D-300 (pedido del dueño, 20-oct-2026: más
-madera): toda zona de bosque tiene 🪵 madera, la madera solo se suma (ninguna zona pierde un recurso, comparado con el
-reparto de antes; los nodos no se mueven) y vuelve el doble de rápido.
+madera): la madera solo se suma (ninguna zona pierde un recurso, comparado con el reparto de antes; los nodos no se
+mueven) y vuelve el doble de rápido. D-303 (0.40.1, orden del dueño: "en todos lugares, en menor medida, pero deberían
+tener"): toda zona que no es fija tiene 🪵 madera; en el bosque es la más rica (1,0), va primera y se conoce al 1 %; en
+los demás terrenos es pobre (hasta 0,5) y va después de los de base; con cualquier %, nadie conoce menos que antes.
 """
 
 import copy
@@ -13,8 +15,8 @@ import pytest
 from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.service import GameService
-from engine.world import zone_at
-from engine.world.resources import main_resource, zone_resources
+from engine.world import mapgen, zone_at
+from engine.world.resources import main_resource, wood_first, zone_resources
 
 
 def test_regions_have_one_to_three_of_six_resources(content):
@@ -192,6 +194,10 @@ def test_the_terrain_patchwork_never_moved_the_land_resources(service):
                                      service.content.balance, service.content.biomes)
             found = service._zone_resources(x, y)
             assert service._zone_land(x, y)[0] == classic                   # the 6 base ones, as before
+            if _is_forest(service, x, y):                                   # D-303: a forest's wood leads (1.0)
+                assert list(found)[0] == "madera" and found["madera"] == 1.0
+                found = {r: v for r, v in found.items() if r != "madera"}
+                classic = {r: v for r, v in classic.items() if r != "madera"}
             assert {r: found[r] for r in classic} == classic and list(found)[:len(classic)] == list(classic)
     make_hero(service)
     hero = service._load("test:1")
@@ -205,7 +211,7 @@ def test_the_terrain_patchwork_never_moved_the_land_resources(service):
     assert sum(row.count(c) for row in rows for c in colours) >= (2 * radius + 1) ** 2 - 10
 
 
-# ---------------------------------------------------------------- D-300: more wood (owner, 20-oct-2026)
+# ---------------------------------------------------------------- D-300 and D-303: wood in every zone (owner, 20-oct-2026)
 
 def _without_wood(content):
     """The content as before D-300: no resources.wood block and no stock.regen_mult (the old wood distribution)."""
@@ -215,50 +221,109 @@ def _without_wood(content):
     return old
 
 
-def test_forest_zones_always_have_wood(content):
-    """D-300: every zone whose terrain the map shows as a forest has 🪵 wood, rich enough to gather (forest_min)."""
-    wcfg = content.balance["resources"]["wood"]
-    forests = set(wcfg["forest"])
-    assert forests == {"bosque", "bosque_oscuro", "selva"} and forests <= set(content.biomes)
-    for seed in (7, 12345):
+def _is_forest(service, x, y):
+    return wood_first(x, y, service._zone(x, y).biome, service.content.balance)
+
+
+def _fixed(service, x, y):
+    return mapgen.is_bonfire(x, y) or f"{x}:{y}" in service.content.balance["resources"].get("fixed", {})
+
+
+def test_every_zone_has_wood(content):
+    """D-303 (owner: "los bosques deberían tener, las montañas deberían tener, o sea, en todos lugares"): in a 61 × 61
+    sample every zone that is not fixed (the Claro, the bonfires, which keep their fixed wood) has 🪵 wood."""
+    for seed in (12345, 777):
         service = GameService(content, MemoryStore(), FixedClock(), world_seed=seed)
-        seen = 0
-        for x in range(-18, 19):
-            for y in range(-18, 19):
-                if service._zone(x, y).biome in forests:
-                    found = service._zone_resources(x, y)
-                    assert found.get("madera", 0) >= wcfg["forest_min"], (seed, x, y, found)
-                    seen += 1
-        assert seen > 100
+        zones = forests = 0
+        for x in range(-30, 31):
+            for y in range(-30, 31):
+                found = service._zone_resources(x, y)
+                assert "madera" in found and 0.3 <= found["madera"] <= 1.0, (seed, x, y, found)
+                if not _fixed(service, x, y):
+                    zones += 1
+                    forests += _is_forest(service, x, y)
+        assert zones > 3600 and forests > 400, (zones, forests)
 
 
-def test_wood_is_only_added_and_no_zone_loses_a_resource(content):
-    """D-300: compared with the distribution of before, every zone keeps each resource it had (same richness, same order),
-    wood goes right after the base ones, the nodes did not move and more zones have wood."""
+def test_forest_zones_list_wood_first_and_a_new_explorer_knows_it(content):
+    """D-303: in a forest terrain (bosque, bosque oscuro, selva) wood is the richest (1.0) and goes first, so a hero who
+    explored the zone to 1 % already knows it, along with the zone's first resource of before (nobody knows less)."""
+    wcfg = content.balance["resources"]["wood"]
+    assert set(wcfg["forest"]) == {"bosque", "bosque_oscuro", "selva"} and set(wcfg["forest"]) <= set(content.biomes)
+    assert wcfg["forest_min"] == 1.0
+    service = GameService(content, MemoryStore(), FixedClock(), world_seed=12345)
+    make_hero(service)
+    hero = service._load("test:1")
+    checked = 0
+    for x in range(-30, 31):
+        for y in range(-30, 31):
+            if _fixed(service, x, y) or not _is_forest(service, x, y):
+                continue
+            found = service._zone_resources(x, y)
+            assert list(found)[0] == "madera" and found["madera"] == 1.0, (x, y, found)
+            if checked < 40:
+                hero.exploration[f"{x}:{y}"] = 1
+                known = service._known_resources(hero, x, y)
+                base = list(service._zone_land(x, y)[0])
+                assert known[0] == "madera" and base[0] in known, (x, y, known)
+            checked += 1
+    assert checked > 400
+
+
+def test_wood_elsewhere_is_poor_only_added_and_nobody_knows_less(content):
+    """D-303: compared with the distribution of before D-300, every zone keeps each resource it had (same richness, except
+    wood lifted to 1.0 in a forest), only wood is added, outside a forest the added wood is poor (0.3 to elsewhere_max, 0.5)
+    and right after the base ones, a base wood outside a forest is untouched, and at every % a hero knows at least what
+    it knew before."""
+    wcfg = content.balance["resources"]["wood"]
+    assert wcfg["elsewhere_max"] == 0.5
     old_content = _without_wood(content)
-    for seed in (7, 2026):
+    reveal = content.balance["exploration"]["reveal_at"]
+    for seed in (12345, 2026):
         new = GameService(content, MemoryStore(), FixedClock(), world_seed=seed)
         old = GameService(old_content, MemoryStore(), FixedClock(), world_seed=seed)
-        before = after = total = 0
-        for x in range(-16, 17, 2):
-            for y in range(-16, 17):
+        make_hero(new)
+        make_hero(old)
+        hero_new, hero_old = new._load("test:1"), old._load("test:1")
+        added = 0
+        for x in range(-30, 31, 3):
+            for y in range(-30, 31, 2):
                 was, now = old._zone_resources(x, y), new._zone_resources(x, y)
                 assert all(r in now for r in was), (seed, x, y)                       # nothing lost...
                 assert {r: now[r] for r in was if r != "madera"} == {r: v for r, v in was.items() if r != "madera"}
                 assert now.get("madera", 0) >= was.get("madera", 0)                   # ...and wood never poorer
-                assert [r for r in now if r in was] == list(was), (seed, x, y)        # the old ones keep their order
-                added = [r for r in now if r not in was]
-                assert added in ([], ["madera"]), (seed, x, y, added)                  # only wood is ever added...
-                if added:
+                assert [r for r in now if r in was and r != "madera"] == [r for r in was if r != "madera"]
+                assert [r for r in now if r not in was] in ([], ["madera"]), (seed, x, y)   # only wood is ever added
+                if not _fixed(new, x, y) and not _is_forest(new, x, y):
                     base = old._zone_land(x, y)[0]
-                    assert list(now).index("madera") == len(base), (seed, x, y)        # ...right after the base ones
-                    assert 0.3 <= now["madera"] <= 1.0
-                assert new._node_main(x, y) == old._node_main(x, y), (seed, x, y)      # the nodes did not move
-                total += 1
-                before += "madera" in was
-                after += "madera" in now
-        assert after - before >= total * 0.08, (seed, before, after, total)          # clearly more zones with wood
+                    if "madera" in base:
+                        assert now == was, (seed, x, y)                               # a base wood stays as it was
+                    else:
+                        assert list(now).index("madera") == len(base), (seed, x, y)    # right after the base ones...
+                        assert 0.3 <= now["madera"] <= wcfg["elsewhere_max"], (seed, x, y, now)   # ...and poor
+                        added += 1
+                for pct in reveal[:-1]:                                               # nobody knows less than before
+                    key = f"{x}:{y}"
+                    hero_new.exploration[key] = hero_old.exploration[key] = pct
+                    knew, knows = old._known_resources(hero_old, x, y), new._known_resources(hero_new, x, y)
+                    assert set(knew) <= set(knows), (seed, x, y, pct, knew, knows)
+        assert added > 150, added
         assert new._zone_resources(3, 5) == new._zone_resources(3, 5)                  # the same seed, the same world
+
+
+def test_the_nodes_never_moved(content):
+    """D-300 and D-303: a node's resource is drawn from the base and own resources as they were, never from the added
+    wood (nor from the forest's lifted wood): every node is where it was, with the same resource."""
+    old_content = _without_wood(content)
+    new = GameService(content, MemoryStore(), FixedClock(), world_seed=4242)
+    old = GameService(old_content, MemoryStore(), FixedClock(), world_seed=4242)
+    nodes = 0
+    for x in range(-30, 31):
+        for y in range(-30, 31):
+            main = new._node_main(x, y)
+            assert main == old._node_main(x, y), (x, y)
+            nodes += main is not None
+    assert nodes > 100
 
 
 def test_wood_regrows_twice_as_fast(service, clock):

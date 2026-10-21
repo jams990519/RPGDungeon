@@ -319,7 +319,7 @@ Coordenadas 1, 2 · Lejanía 2
   - El lote se corta si te atacan (con ✋ Manual; con ⚔️ Peleas automáticas el héroe pelea solo y sigue, §1.12.1), si se acaba la energía, si se llena la mochila o, al explorar, si ya no queda nada por explorar desde donde estás (tu zona y las de alrededor al 100 %, D-107).
   - El bot te escribe una sola vez, al terminar, con el resumen.
 - **Explorar sube un porcentaje:** cada vuelta suma entre 15 % y 30 % de la zona (`exploration.per_step`).
-  - Al 1 %, 20 %, 40 %, 60 % y 80 % descubres el primero, el segundo, el tercero, el cuarto y el quinto recurso; al 100 %, todos (`exploration.reveal_at`; hasta la 0.26.1 eran 1 %, 50 % y 100 % para 3 recursos: nadie conoce menos que antes).
+  - Al 1 %, 20 %, 40 %, 60 % y 80 % descubres el primero, el segundo, el tercero, el cuarto y el quinto recurso; al 100 %, todos (`exploration.reveal_at`; hasta la 0.26.1 eran 1 %, 50 % y 100 % para 3 recursos: nadie conoce menos que antes). Desde la 0.40.1 (D-303) la 🪵 madera sumada no cuenta como uno de esos lugares: se conoce junto con el recurso que tocaba (en el bosque, al 1 %).
   - Al 100 % la zona ya no se explora más: conoces todo lo que tiene. (Hasta la 0.26 la zona aparecía en tu mapa con el color de su recurso principal; desde la 0.26.1 el mapa pinta el terreno, §1.9.)
   - **Desde 0.13.1 (D-107), explorar sigue alrededor sin moverte.** Con tu zona al 100 %, cada vuelta estudia la primera casilla vecina que no esté al 100 % (primero norte, este, sur y oeste; después las diagonales; `explore.around_radius` = 1, las 8 vecinas). El héroe no se mueve: los ataques, los hallazgos y las monedas son de la zona donde estás; lo que avanza es el porcentaje y los recursos de la vecina, que queda en tu memoria y en tu mapa. Así un lote grande completa tu zona y sigue con las de alrededor, en el mismo cuadro. Cuando tu zona y sus 8 vecinas están al 100 %, hay que moverse para seguir explorando.
   - Tu héroe recuerda los recursos de cada zona que exploró.
@@ -338,6 +338,14 @@ Coordenadas 1, 2 · Lejanía 2
 - **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
 
 > **0.40 (D-300, pedido del dueño): más madera.** Los terrenos de bosque (bosque, bosque oscuro, selva) siempre tienen madera (riqueza ≥ 0,7); fuera de ellos entra en algunas zonas más, y vuelve el doble de rápido que los demás recursos. Solo se suma, sin quitar recursos.
+
+> **0.40.1 (D-303, orden del dueño): 🪵 madera en todas las zonas.** "Los bosques deberían tener, las montañas deberían tener, o sea, en todos lugares, en menor medida." Toda zona que no es fija ni fogata tiene madera (`resources.wood`, `engine/world/resources.py` `wood_resource`):
+>
+> - **En el bosque, bosque oscuro y selva** (el terreno que se ve), la madera es la más rica (1,0) y va **primera**: se conoce desde la primera exploración (1 %).
+> - **En los demás terrenos** (montaña, pradera, desierto...), si la madera ya era de base queda igual; si no, se suma pobre (de 0,3 a 0,5 según su fuerza en la zona) justo después de los de base.
+> - **La madera sumada no ocupa un lugar de los que revela explorar:** se conoce junto con el recurso que tocaba. En el bosque, al 1 % se conocen la madera y el primer recurso de siempre. Nadie conoce menos que antes.
+> - **El 🔎 buscador** pone primero las zonas cercanas y ricas (`gremio.search_rich_penalty`): un bosque a 3 zonas sale antes que una montaña con poca madera a 1.
+> - Solo se suma: ninguna zona pierde un recurso, los propios del terreno salen igual y los nodos no se mueven. Medido en 61 × 61 zonas: en el bosque, 23 % de cada unidad recolectada es madera; fuera, 17 % en promedio; en las fogatas, 56 %. Sigue abierto el botón 🪓 Talar (P-238).
 
 > **0.40 (D-301, pedido del dueño): 📒 Lugares por botones.** Primero 🏕️ tu campamento (va directo a ¿Viajar?), después 🕳️ Mazmorras, 🔥 Fogatas, 🛡️ Gremio (la construcción o el punto de reunión), 🏕️ Campamentos de otros y 👑 Guarida; cada botón lista sus lugares con su código /ir.
 

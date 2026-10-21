@@ -22,6 +22,10 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     (_guild_funds_view: cada recurso con su código de 📦 Recursos, en orden por código, y 💰 Depositar) y 📢 Chat
     (_guild_chat_view: los mensajes del último día, como mucho gremio.chat_shown y gremio.chat_max_chars letras, y 📢 Mensaje).
     La ⚔️ Armería muestra su "0/30" solo en su pantalla.
+    D-303 (0.40.1, orden del dueño: 🪵 madera en todas las zonas): como ahora casi toda zona tiene madera, el 🔎 buscador de
+    recursos (_resource_search_view) pone primero las zonas cercanas Y ricas: a cada zona le suma a la distancia
+    (1 - riqueza) × gremio.search_rich_penalty (4) zonas, así un bosque con madera al 100 % a 3 zonas sale antes que una
+    montaña con madera al 30 % a 1 zona. La distancia que se muestra es la de verdad.
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -1129,6 +1133,9 @@ class GremioMixin:
         español o en inglés) lista las zonas investigadas al gremio.search_min_pct (50 %) o más, por ti o por tu gremio (D-282),
         donde ya se sabe que está: la más cercana primero, con su riqueza, cuánto queda (⏳ si está agotado) y el código /z1, que
         arma el camino en 🔗 Moverte. Sin gremio, usa solo lo que exploraste tú.
+        D-303 (0.40.1: la 🪵 madera está en todas las zonas, pobre fuera del bosque): el orden pesa también la riqueza: cada
+        zona cuenta como si estuviera (1 - riqueza) × gremio.search_rich_penalty zonas más lejos (con 4: al 30 %, 2,8 más;
+        al 50 %, 2 más; al 100 %, nada). A igual cuenta, la más rica. La distancia que muestra es la de verdad.
         La llaman: _gremio_zones_view (lo escrito en 🔎 Buscar recursos), el atajo /buscar <recurso> (text()).
         Si cambia, afecta: tests/test_buscador_de_recursos.py y tests/test_conocimiento_del_gremio.py.
         """
@@ -1158,7 +1165,8 @@ class GremioMixin:
             resources, stock = self._zone_resources(x, y), self._stock(x, y)
             for res in here:
                 rows.append((abs(x - hero.x) + abs(y - hero.y), x, y, res, pct, resources.get(res, 0.0), stock.get(res, 1.0)))
-        rows.sort(key=lambda r: (r[0], -r[5], r[1], r[2], r[3]))
+        penalty = float(self._gremio_cfg().get("search_rich_penalty", 0))   # D-303: near AND rich zones first
+        rows.sort(key=lambda r: (round(r[0] + (1 - r[5]) * penalty, 2), -r[5], r[0], r[1], r[2], r[3]))
         shown = rows[:int(self._gremio_cfg().get("zones_shown", 8))]
         self._codes(hero, "zones", [f"{x}:{y}" for _, x, y, _, _, _, _ in shown])
         names = " · ".join(f"{self.content.items[r]['emoji']} {t.t(self.content.items[r]['name_key'])}" for r in matches)

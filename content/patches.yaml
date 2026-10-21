@@ -790,3 +790,14 @@ v0_40:
     - "🏕️ Your camp shows only what you can do; the information (level, members, upgrades, next wave…) is in 🏰 Manage → ℹ️ Information."
     - "🛡️ The guild is tidier: its level and what's missing at the top; below, 👥 Members, 💰 Camp funds (each resource with its code), 📢 Chat (the last day's messages), ⚔️ Armory and 🔎 Find resources."
 
+
+v0_40_1:
+  version: "0.40.1"
+  title: "🪵 Lost Realms 0.40.1: madera en todas las zonas"
+  title_en: "🪵 Lost Realms 0.40.1: wood in every zone"
+  notes:
+    - "🪵 Ahora hay madera en todas las zonas: en los bosques, bosques oscuros y selvas hay mucha y la ves desde que empiezas a explorar; en las montañas, praderas y demás hay menos, pero hay."
+    - "🔎 Al buscar un recurso, salen primero las zonas cercanas donde hay más."
+  notes_en:
+    - "🪵 There is wood in every zone now: forests, dark forests and jungles have plenty, and you see it as soon as you start exploring; mountains, grasslands and the rest have less, but they have some."
+    - "🔎 When you look for a resource, nearby zones that have more of it come first."

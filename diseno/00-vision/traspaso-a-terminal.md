@@ -176,7 +176,8 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 12. **0.39.3:** 📚 Guías en ❓ Dudas (D-297) y ❓ Dudas también en ⚙️ Opciones; /d54 vuelve a ser «¿qué hay de nuevo?» y la de coordenadas pasa a /d56.
 13. **0.39.4:** 🔁 Equipar en lista solo con lo que no llevas (/e1) y 🔽 Desequipar (/q1) (D-299).
 14. **0.40:** más madera (D-300), 📒 Lugares por botones (D-301) y submenús del campamento y del gremio (D-302).
-15. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
+15. **0.40.1:** 🪵 madera en todas las zonas (D-303): en el bosque la más rica, primera y conocida al 1 %; en el resto, pobre (hasta 0,5); el 🔎 buscador pone primero las zonas cercanas y ricas. De la madera sigue abierto el botón 🪓 Talar (E-227).
+16. **La reforma de recetas** ([Simulación de los oficios](../07-economia/simulacion-oficios.md)) espera las respuestas E-221 a E-224.
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
 **Esperan respuesta del dueño** (están en el [Sistema de preguntas](sistema-de-preguntas.md), tanda 1):

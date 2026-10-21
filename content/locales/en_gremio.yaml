@@ -214,7 +214,7 @@ gzones:
 
 rsearch:
   title: "🔎 Find resources"
-  intro: "{names}: zones investigated to {pct}% or more, nearest first."
+  intro: "{names}: zones investigated to {pct}% or more, near and rich ones first."
   line: "{n}. {emoji} {place} · {zones} {zones|zone|zones} away · 🔎 {pct}% · richness {rich}% · {state} · /z{n}"
   left: "left {bars}"
   empty: "⏳ depleted for now"

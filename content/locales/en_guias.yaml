@@ -61,10 +61,11 @@ guides_page:
     text: |-
       🔎 Explore (in 🧭 Explore) studies your zone: each round takes {explore_min} min and {explore_energy} ⚡, and adds {explore_low} to {explore_high}%.
       🪵 At {reveal}% you discover its resources, one by one.
+      🌲 There is wood in every zone: forests, dark forests and jungles have more, and you discover it as soon as you start exploring.
       ➡️ Once your zone is at 100%, exploring moves on to the neighboring zones, without you moving.
       🗺️ At {color_at}% the zone shows its terrain on the 🗺️ Map; the color doesn't tell you which resources are there.
       ✨ A node is a zone rich in one resource: you find out which one when you step on it.
-      🔎 Find resources (🛡️ Guild or 🏰 Manage) or /search wood: tells you where that resource is in zones studied to {search_min}% or more, nearest first.
+      🔎 Find resources (🛡️ Guild or 🏰 Manage) or /search wood: tells you where that resource is in zones studied to {search_min}% or more, near and rich ones first.
       📍 Tap a zone's code (/z1) and the route is laid out in 🔗 Move.
       🛡️ In a guild, what one member discovers, everyone knows.
   gather:

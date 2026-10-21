@@ -255,15 +255,16 @@ resources:                   # [ES] D-87: regiones de recursos del mapa (cambiar
     total: [4, 6]            # [ES] ...sin quedar con menos de 4 ni pasar de 6 recursos de tierra en total (con 1 de base suma 3; el agua va aparte)
     richness: [0.3, 1.0]     # [ES] riqueza de cada propio (cuánto sale al recolectar, como la de los de base)
     foreign_chance: 0.3      # [ES] D-185 (confirmada: "bastante aleatorio"; el número lo propuso Claude): cada recurso propio de la zona tiene 3 de 10 de salir del catálogo de OTRO terreno (árboles donde no deberían, sal en el bosque...)
-  wood:                      # [ES] D-300 (pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo imposible encontrarlo"; números de Claude, provisionales): la 🪵 madera se SUMA en más zonas (engine/world/resources.py wood_resource). Solo suma: ninguna zona pierde un recurso, va justo después de los de base y puede pasar del tope de 3. Sin este bloque, el reparto de antes
+  wood:                      # [ES] D-300 (0.40) y D-303 (0.40.1, orden del dueño, 20-oct-2026: "los bosques deberían tener, las montañas deberían tener, o sea, en todos lugares, en menor medida, pero deberían tener"; números de Claude, provisionales): la 🪵 madera está en TODA zona que no es fija ni hoguera (engine/world/resources.py wood_resource). Solo suma: ninguna zona pierde un recurso y puede pasar del tope de 3. Sin este bloque, el reparto de antes de D-300
     resource: madera         # [ES] el recurso que se suma
-    forest: [bosque, bosque_oscuro, selva]   # [ES] toda zona cuyo terreno VISIBLE es uno de estos tiene madera...
-    forest_min: 0.7          # [ES] ...con riqueza de al menos 0,7 (cuánto sale al recolectar, como la de los de base)
-    threshold: 0.62          # [ES] en los demás terrenos, la madera aparece desde esta fuerza aunque ya haya 3 de base (nunca más alto que el general, threshold: 0.62). Igual al general porque solo la regla del bosque ya suma ~14 puntos (los bosques son ~24 % del mapa); así, fuera del bosque se suma donde la madera ya alcanzaba pero el tope de 3 la dejaba afuera (+2 a +3 puntos). Medido en 73 × 73 zonas con 3 semillas: zonas con madera de 39-47 % a 55-63 % (+16 puntos). Bajarlo suma más: 0.61 → +18 puntos; 0.58 → +22
+    forest: [bosque, bosque_oscuro, selva]   # [ES] en las zonas cuyo terreno VISIBLE es uno de estos, la madera va PRIMERA (se conoce desde la primera exploración, 1 %)...
+    forest_min: 1.0          # [ES] ...y vale 1,0, la más rica de la zona (D-303; D-300 tenía 0,7). Cuánto sale al recolectar, como la riqueza de los de base
+    elsewhere_max: 0.5       # [ES] D-303: en los demás terrenos (montaña, pradera, desierto...), si la madera no era de base, se suma pobre: de 0,3 a 0,5 según su fuerza en la zona, justo después de los de base. Si ya era de base, queda como estaba
+    threshold: 0.62          # [ES] sin uso desde la 0.40.1 (D-303: la madera ya está en todas las zonas). En D-300 decía desde qué fuerza se sumaba fuera del bosque
 
 exploration:                 # [ES] D-87: cada zona se explora por porcentaje
   per_step: [15, 30]         # [ES] cada exploración suma entre 15 % y 30 %
-  reveal_at: [1, 20, 40, 60, 80, 100]   # [ES] con estos % se conoce el 1.º, 2.º, 3.º... recurso de la zona (D-183: hasta 6 de tierra; antes [1, 50, 100] para 3, y nadie conoce menos que antes); al 100 % se ve todo, también el 🐟 pescado (D-179: el mapa pinta el terreno, no el recurso)
+  reveal_at: [1, 20, 40, 60, 80, 100]   # [ES] con estos % se conoce el 1.º, 2.º, 3.º... recurso de la zona (D-183: hasta 6 de tierra; antes [1, 50, 100] para 3, y nadie conoce menos que antes); al 100 % se ve todo, también el 🐟 pescado (D-179: el mapa pinta el terreno, no el recurso). D-303 (0.40.1): la 🪵 madera sumada (resources.wood) no ocupa uno de estos lugares: en el bosque va primera y se conoce al 1 % junto con el 1.º de siempre; en el resto, justo después de los de base, junto con el recurso que tocaba (nadie conoce menos que antes)
 
 stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
   per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)
@@ -488,6 +489,7 @@ gremio:                      # [ES] D-269 (confirmada; números del dueño salvo
   list_shown: 8              # [ES] cuántos gremios muestra 🔎 Buscar gremio de una vez (Claude)
   zones_shown: 8             # [ES] D-282 (0.38, Claude): cuántas zonas muestra 🗺️ Zonas del gremio de una vez (las más cercanas)
   search_min_pct: 50         # [ES] D-296 (0.39.1, pedido del dueño): el 🔎 buscador de recursos solo muestra zonas investigadas al 50 % o más (por ti o por tu gremio)
+  search_rich_penalty: 4     # [ES] D-303 (0.40.1, Claude, provisional): el 🔎 buscador pone primero las zonas cercanas Y ricas: cada zona cuenta como si estuviera (1 - riqueza) × 4 zonas más lejos (al 30 %, 2,8 más; al 50 %, 2 más; al 100 %, nada). Con la 🪵 madera en todas las zonas, así un bosque a 3 zonas sale antes que una montaña pobre a 1. Con 0, solo la distancia (como en la 0.39.1)
   found_min_members: 2       # [ES] miembros del gremio que tienen que estar en la zona para empezar a fundar (D-269, el dueño)
   found_minutes: 60          # [ES] fundar tarda 60 min con found_min_members presentes; con más, menos: tiempo = 60 × 2 ÷ presentes (4 → 30 min). Con 1, el doble; con nadie, se pausa (D-269, D-274)
   found_floor_minutes: 10    # [ES] nunca menos de 10 min, por más miembros que haya (D-269, el dueño)

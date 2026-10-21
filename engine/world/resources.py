@@ -19,32 +19,40 @@ más zonas (wood_resource): toda zona de terreno de bosque (el que se ve) la tie
 propio más bajo (balance.yaml resources.wood). Va justo después de los de base. Solo suma: ninguna zona pierde un recurso
 que tenía, los propios del terreno salen igual que antes y no hay sorteos nuevos. Además vuelve más rápido que los demás
 recursos (balance.yaml stock.regen_mult, lo aplica GameService._stock).
+D-303 (0.40.1, orden del dueño, 20-oct-2026: "los bosques deberían tener, las montañas deberían tener, o sea, en todos
+lugares, en menor medida, pero deberían tener"; números de Claude, provisionales): la 🪵 madera está en TODA zona que no es
+fija ni hoguera. En los terrenos de bosque (el que se ve: bosque, bosque oscuro y selva) es la más rica (1,0) y va PRIMERA
+(wood_first: se conoce desde la primera exploración); en los demás terrenos, si no era de base, se suma pobre (de 0,3 a
+resources.wood.elsewhere_max, 0,5) justo después de los de base. El umbral de D-300 (resources.wood.threshold) quedó sin uso.
 Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.12 (exploración y recursos; §1.12.2 el catálogo de cada terreno)
 Módulo: M8 Mundo (recursos)
 Depende de: engine.core (hash_unit), content/balance.yaml (resources, resources.terrain, resources.wood y
     camp_professions.fish), content/biomes.yaml (gather, own y water)
 Lo usan: engine/service/game.py (_zone_land y _zone_resources juntan los cuatro: explorar, recolectar, mapa, campamentos,
-    nodos de recursos, cofres de los campamentos enemigos)
+    nodos de recursos, cofres de los campamentos enemigos; wood_first lo usa _zone_resources para poner la madera primera)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (el agotamiento se guarda en el espacio "stock" del almacén, por recurso)
 Reglas que nunca se rompen:
     1. La misma semilla da siempre los mismos recursos en la misma zona.
     2. Toda zona tiene al menos 1 recurso de base y como mucho resources.max_per_zone (3). Con los del terreno, una zona
-       que no es fija tiene de resources.terrain.total[0] a total[1] recursos de tierra (4 a 6); la 🪵 madera de D-300
-       puede sumar 1 más (hasta 7) y el agua suma 1 aparte.
-    3. El agua (D-115), los recursos del terreno (D-180) y la madera de D-300 nunca cambian los de base de una zona: cada
-       uno usa su propio sorteo ("water", "terrain_count", "terrain_pick", "terrain_rich") o, la madera, la fuerza de
+       que no es fija tiene de resources.terrain.total[0] a total[1] recursos de tierra (4 a 6); la 🪵 madera de D-300 y
+       D-303 puede sumar 1 más (hasta 7) y el agua suma 1 aparte.
+    3. El agua (D-115), los recursos del terreno (D-180) y la madera de D-300/D-303 nunca cambian los de base de una zona:
+       cada uno usa su propio sorteo ("water", "terrain_count", "terrain_pick", "terrain_rich") o, la madera, la fuerza de
        siempre; los del terreno se sortean con los de base SIN la madera sumada.
-    4. D-300: la madera solo se suma. Ninguna zona pierde un recurso que tenía antes.
+    4. D-300 y D-303: la madera solo se suma. Ninguna zona pierde un recurso que tenía antes.
+    5. D-303: toda zona que no es fija ni hoguera tiene 🪵 madera (con el bloque resources.wood de content/balance.yaml).
 Si cambias esto, revisa:
     - Números: balance.yaml resources.* (cambiar escalas o umbrales mueve los recursos de un mundo ya creado; terrain.*
-      mueve solo los del terreno; wood.* solo dónde se suma madera)
+      mueve solo los del terreno; wood.* solo cuánta madera se suma: forest_min en los bosques, elsewhere_max en el resto)
     - Contenido: content/biomes.yaml "own" (agregar uno al final de la lista puede cambiar qué propios trae una zona: el
       sorteo ordena por recurso); cada recurso nuevo pide su objeto en content/items.yaml, su oficio de recolección
       ("gathers" de content/professions.yaml), un uso (una receta) y sus textos (content/locales/es_terrenos.yaml)
     - Servicio: engine/service/game.py (_zone_land y _zone_resources juntan los cuatro; _gather_step, _stock (D-300: la
-      madera vuelve más rápido), _known_resources, _map_view, _ecamp_chest, _node_main)
+      madera vuelve más rápido), _known_resources (D-303: la madera sumada o movida no ocupa un lugar de los que revela
+      explorar), _map_view, _ecamp_chest, _node_main); engine/service/gremio.py (_resource_search_view: D-303, las zonas
+      ricas primero entre las cercanas)
     - Pruebas: tests/test_resources.py, tests/test_oficios_campamento.py (el pescado), tests/test_nodos_y_terrenos.py
 """
 
@@ -71,9 +79,10 @@ def _base_scores(seed: int, x: int, y: int, biome: str, cfg: dict[str, Any], bio
     [ES]
     Qué hace: la "fuerza" de cada recurso de base en la zona: dos ruidos de la semilla (manchas de distinto tamaño,
     resources.region_scale) más la ayuda del bioma (resources.biome_bonus). zone_resources se queda con los que pasan
-    resources.threshold; wood_resource (D-300) mira la de la 🪵 madera con su propio umbral. Es el mismo cálculo que había
-    dentro de zone_resources antes de D-300: separarlo no movió ningún recurso. La llaman: zone_resources y wood_resource.
-    Si cambia, afecta: los recursos de base (y la madera de D-300) de todo el mapa ya creado.
+    resources.threshold; wood_resource (D-300, D-303) usa la de la 🪵 madera para su riqueza fuera del bosque. Es el mismo
+    cálculo que había dentro de zone_resources antes de D-300: separarlo no movió ningún recurso. La llaman: zone_resources
+    y wood_resource.
+    Si cambia, afecta: los recursos de base (y la riqueza de la madera de D-303 fuera del bosque) de todo el mapa ya creado.
     """
     affinity = biomes.get(biome, {}).get("gather", {})
     top_weight = max(affinity.values()) if affinity else 1
@@ -105,54 +114,68 @@ def zone_resources(seed: int, x: int, y: int, biome: str, balance: dict[str, Any
     return {r: round(max(0.3, min(1.0, v / best)), 2) for r, v in present}
 
 
+def wood_first(x: int, y: int, terrain: str, balance: dict[str, Any]) -> bool:
+    """True if this zone's 🪵 wood leads its land resources (D-303): a visible forest terrain, not fixed and not a bonfire.
+
+    [ES]
+    Qué hace: dice si la zona es de un terreno de bosque (el que se ve: resources.wood.forest, hoy bosque, bosque oscuro y
+    selva) y no es fija ni hoguera. Ahí la 🪵 madera es la más rica (wood_resource) y va PRIMERA en la lista de recursos de
+    la zona: se conoce desde la primera exploración (1 %). Sin el bloque resources.wood de content/balance.yaml, nunca.
+    La llaman: wood_resource y GameService._zone_resources (pone la madera primera).
+    Si cambia, afecta: el orden de los recursos de las zonas de bosque (qué se conoce primero al explorar).
+    """
+    cfg = balance["resources"]
+    wcfg = cfg.get("wood") or {}
+    return (bool(wcfg) and terrain in (wcfg.get("forest") or []) and not is_bonfire(x, y)
+            and f"{x}:{y}" not in cfg.get("fixed", {}))
+
+
 def wood_resource(seed: int, x: int, y: int, biome: str, terrain: str, base: dict[str, float], balance: dict[str, Any],
                   biomes: dict[str, Any]) -> dict[str, float]:
-    """The 🪵 wood a zone adds on top of its base resources (D-300), or {}: {"madera": richness}.
+    """The 🪵 wood a zone adds on top of its base resources (D-300, D-303), or {}: {"madera": richness}.
 
     Args:
         biome: the biome its base resources were drawn with (the classic one, mapgen.classic_biome; the lair's own).
-        terrain: the terrain the map shows (zone_at().biome): every forest terrain (resources.wood.forest) has wood.
-        base: the zone's base resources (zone_resources); if wood is already one of them, nothing is added (in a forest,
-            its richness is only lifted to resources.wood.forest_min if it was lower).
+        terrain: the terrain the map shows (zone_at().biome): in a forest terrain (resources.wood.forest, wood_first) wood
+            is the richest one (resources.wood.forest_min, 1.0), also when it was already a base one.
+        base: the zone's base resources (zone_resources); outside a forest, if wood is already one of them, nothing is
+            added.
 
-    Wood is only ever added: it never pushes another resource out (it may go beyond resources.max_per_zone, and the
-    terrain's own resources are still drawn from the base without it), and it uses no new draw: the same seed gives the
-    same wood.
+    Every zone that is not fixed nor a bonfire ends up with wood. Wood is only ever added: it never pushes another
+    resource out (it may go beyond resources.max_per_zone, and the terrain's own resources are still drawn from the base
+    without it), and it uses no new draw: the same seed gives the same wood.
 
     [ES]
-    Qué hace: D-300 (pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera en diferentes puntos del
-    mapa, porque prácticamente se está volviendo imposible encontrarlo"; los números son de Claude, provisionales). Suma
-    🪵 madera a la zona que no la tenía: (1) toda zona cuyo terreno VISIBLE es un bosque (resources.wood.forest: bosque,
-    bosque oscuro y selva) la tiene, con riqueza de al menos resources.wood.forest_min (0,7; si ya era de base con menos,
-    solo sube a 0,7 y queda en su lugar); (2) en los demás terrenos
-    aparece si su fuerza (la misma de siempre, _base_scores) pasa resources.wood.threshold, más bajo que el umbral general,
-    o si pasaba el general pero el tope de 3 de base la había dejado afuera. La riqueza se calcula como la de los de base:
-    su fuerza contra la del más fuerte de la zona, de 0,3 a 1,0. Solo SUMA: nunca saca otro recurso (puede pasar del tope
-    de 3 de base, y una zona puede quedar con 7 recursos de tierra) y no usa sorteos nuevos. Las hogueras y el Claro ya
-    tienen madera fija. Sin el bloque resources.wood de content/balance.yaml no suma nada (el reparto de antes).
-    La llama: GameService._zone_land, que la pone justo después de los de base (explorar los revela en ese orden).
-    Si cambia, afecta: dónde hay madera para todos (recolectar, 🔎 Buscar recursos, el cofre de los campamentos enemigos,
-    ⬆️ Agrandar campamento) y tests/test_resources.py.
+    Qué hace: D-303 (0.40.1, orden del dueño, 20-oct-2026: "los bosques deberían tener, las montañas deberían tener, o sea,
+    en todos lugares, en menor medida, pero deberían tener"; los números son de Claude, provisionales; reemplaza los de
+    D-300). Toda zona que no es fija ni hoguera tiene 🪵 madera: (1) si su terreno VISIBLE es un bosque (wood_first) la
+    madera vale resources.wood.forest_min (1,0, la más rica), aunque ya fuera de base con menos, y GameService la pone
+    primera; (2) en los demás terrenos, si ya era de base queda como estaba; si no, se suma pobre: su fuerza (la misma de
+    siempre, _base_scores) contra la del más fuerte de la zona, llevada de 0,3 a resources.wood.elsewhere_max (0,5).
+    Solo SUMA: nunca saca otro recurso (puede pasar del tope de 3 de base, y una zona puede quedar con 7 recursos de
+    tierra) y no usa sorteos nuevos. Las hogueras y el Claro ya tienen madera fija. Sin el bloque resources.wood de
+    content/balance.yaml no suma nada (el reparto de antes de D-300). resources.wood.threshold (D-300) ya no se usa.
+    La llama: GameService._zone_land. GameService._zone_resources la pone primera en el bosque y, en el resto, justo
+    después de los de base (explorar los revela en ese orden; la madera no ocupa un lugar: _known_resources).
+    Si cambia, afecta: dónde hay madera para todos y cuánta (recolectar, 🔎 Buscar recursos, el cofre de los campamentos
+    enemigos, ⬆️ Agrandar campamento) y tests/test_resources.py.
     """
     cfg = balance["resources"]
     wcfg = cfg.get("wood") or {}
     res = wcfg.get("resource", "madera")
     if not wcfg or not base or is_bonfire(x, y) or f"{x}:{y}" in cfg.get("fixed", {}):
         return {}
-    forest = terrain in (wcfg.get("forest") or [])
-    floor = float(wcfg.get("forest_min", 0.7))
-    if res in base:                                   # already a base one: a forest only lifts it to forest_min
-        return {res: floor} if forest and base[res] < floor else {}
+    if wood_first(x, y, terrain, balance):            # a forest: the richest wood, also when it was a base one
+        return {res: round(min(1.0, max(float(base.get(res, 0.0)), float(wcfg.get("forest_min", 1.0)))), 2)}
+    if res in base:                                   # elsewhere a base one stays as it was
+        return {}
     scores = _base_scores(seed, x, y, biome, cfg, biomes)
     if res not in scores:
         return {}
-    if not forest and scores[res] < min(float(wcfg.get("threshold", cfg["threshold"])), float(cfg["threshold"])):
-        return {}
     best = max([scores[r] for r in base if r in scores] or [scores[res]])
-    rich = max(0.3, min(1.0, scores[res] / best)) if best > 0 else 0.3
-    if forest:
-        rich = max(rich, floor)
-    return {res: round(min(1.0, rich), 2)}
+    share = max(0.0, min(1.0, scores[res] / best)) if best > 0 else 0.0
+    low, high = 0.3, max(0.3, float(wcfg.get("elsewhere_max", 0.5)))
+    return {res: round(low + (high - low) * share, 2)}
 
 
 def catalog(biome: str, biomes: dict[str, Any]) -> list[str]:
