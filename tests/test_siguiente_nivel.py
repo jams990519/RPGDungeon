@@ -65,11 +65,20 @@ def test_manage_has_improve_with_next_level_and_territory(service):
     camp_with(service)
     manage = service.act("test:1", "campmgmt")
     assert ids(manage)[0] == "improve" and "grow" not in ids(manage)
-    assert any("⬆️ Mejorar: nivel 1 (campamento) · 🗺️ 1/3 zonas" in line for line in manage.body)
+    assert any("⬆️ Mejorar: nivel 1 (campamento), territorio de 1 zona (hasta 3)" in line for line in manage.body)
     improve = service.act("test:1", "improve")
-    assert improve.kind == "camp_improve" and ids(improve) == ["lvlup", "grow", "campmgmt"]
-    assert [a.label for a in improve.actions[:2]] == ["⏫ Siguiente nivel", "🗺️ Agrandar territorio"]
-    assert improve.body == ["🏕️ Nivel 1 · campamento", "🗺️ Zonas: 1 de 3", "⏫ Nivel 2: 0 de 5 listos"]
+    assert improve.kind == "camp_improve" and ids(improve) == ["lvlup", "grow", "lvlall", "campmgmt"]
+    assert [a.label for a in improve.actions[:3]] == ["⏫ Siguiente nivel", "🗺️ Agrandar territorio", "📜 Qué pide cada nivel"]
+    # D-313 (the owner did not understand "1 de 3" nor "4 de 5 listos"): everything said in full, line by line
+    assert improve.body[:8] == [
+        "🏕️ Nivel 1 · campamento", "",
+        "🗺️ Territorio: tu campamento ocupa 1 de las 3 zonas que permite la etapa campamento.",
+        "Puedes sumarle 2 zonas más en 🗺️ Agrandar territorio.", "",
+        "⏫ Para subir a nivel 2 (campamento) necesitas:",
+        "▫️ 🔥 Fogón · ⏸️ sin activar: la activa el fundador o un 🤝 asistente en 🏘️ Servicios",
+        "▫️ 🪵 Empalizada · ⏸️ sin activar: la activa el fundador o un 🤝 asistente en 🏘️ Servicios"]
+    assert "▫️ 🪵 Madera: 0 de 30 (faltan 30)" in improve.body and "▫️ 🧵 Fibra: 0 de 10 (faltan 10)" in improve.body
+    assert any(line.startswith("📦 Los materiales no llegan solos") for line in improve.body)
 
 
 def test_level_one_checklist_names_the_works_and_the_resources(service):
@@ -78,8 +87,8 @@ def test_level_one_checklist_names_the_works_and_the_resources(service):
     assert view.kind == "camp_lvlup" and len(view.actions) <= button_cap(view.kind) == 4
     assert view.body[0] == "⏫ Para subir a nivel 2 (campamento) te falta:"
     assert "🏗️ Construir:" in view.body and "📦 Recursos:" in view.body
-    assert "▫️ 🔥 Fogón · ⏸️ sin activar" in view.body and "▫️ 🪵 Empalizada · ⏸️ sin activar" in view.body
-    for line in ("▫️ 🪵 Madera 0/30", "▫️ 🪨 Piedra 0/20", "▫️ 🧵 Fibra 0/10"):
+    assert "▫️ 🔥 Fogón · ⏸️ sin activar: la activa el fundador o un 🤝 asistente en 🏘️ Servicios" in view.body
+    for line in ("▫️ 🪵 Madera: 0 de 30 (faltan 30)", "▫️ 🪨 Piedra: 0 de 20 (faltan 20)", "▫️ 🧵 Fibra: 0 de 10 (faltan 10)"):
         assert line in view.body, view.body
     assert ids(view) == ["lvlgive", "upgrades", "improve"]
     assert service._lvlup_works(2) == ["fogon", "empalizada"]
@@ -94,7 +103,8 @@ def test_a_state_per_work_and_a_retired_work_is_skipped(service):
     data["building"] = {"empalizada": {"need": 60, "done": 0, "at": 0.0, "floor": 10, "by": "test:1", "started": 0.0}}
     service.store.put("upgrades", KEY, data)
     body = service.act("test:1", "lvlup").body
-    assert "▫️ 🔥 Fogón · 🔨 activa" in body and "▫️ 🪵 Empalizada · 🏗️ en obra" in body
+    assert any(line.startswith("▫️ 🔥 Fogón · 🔨 activa: faltan 🪵 Madera ×20 · 🪨 Piedra ×15") for line in body), body
+    assert "▫️ 🪵 Empalizada · 🏗️ en obra: termina en 1 min" in body     # D-313: when it ends (Lyra is there)
     service.content.balance["camps"]["level_up"][2] = ["fogon", "taller", "no_such_work"]   # taller is retired (D-288)
     assert service._lvlup_works(2) == ["fogon"]
 
@@ -109,14 +119,14 @@ def test_it_fills_in_as_any_member_gives_and_the_fund_goes_first(service):
     view = service.act("test:2", "lvlgive")
     assert "💰 El fondo puso 🪵 Madera ×10 en ⏫ Nivel 2." in view.notice
     assert "🤲 Aportaste 🪨 Piedra ×5 a ⏫ Nivel 2" in view.notice and "🏗️ Construcción +5" in view.notice
-    assert "▫️ 🪵 Madera 10/30" in view.body and "▫️ 🪨 Piedra 5/20" in view.body
+    assert "▫️ 🪵 Madera: 10 de 30 (faltan 20)" in view.body and "▫️ 🪨 Piedra: 5 de 20 (faltan 15)" in view.body
     assert record(service)["levelup"] == {"to": 2, "given": {"madera": 10, "piedra": 5}, "chests": 0}
     assert record(service)["fund"] == {} and service._load("test:2").backpack == {}
     assert service._load("test:2").merit > merit
     view = service.act("test:2", "lvlgive")                          # nothing left to give: it says what is missing
     assert view.notice == "No llevas nada de lo que falta: 🪵 Madera ×20 · 🪨 Piedra ×15 · 🧵 Fibra ×10."
     view = service.act("test:1", "lvlgive")                          # Lyra carries plenty: never more than missing
-    assert all(line.startswith("✅") for line in view.body if "/" in line and "Fogón" not in line)
+    assert all(line.startswith("✅") for line in view.body if " de " in line and line[2:4] in ("🪵", "🪨", "🧵") and ":" in line)
     hero = service._load("test:1")
     assert (hero.backpack["madera"], hero.backpack["piedra"], hero.backpack["fibra"]) == (160, 175, 90)
     assert camp(service)["level"] == 1                                # the works are still missing
@@ -132,7 +142,8 @@ def test_the_last_give_levels_the_camp_up_at_once(service):
     assert camp(service)["level"] == 2 and "levelup" not in record(service)
     assert "⏫ ¡Roca Alta subió a nivel 2 (campamento)!" in view.notice
     assert view.body[0] == "⏫ Para subir a nivel 3 (aldea) te falta:"
-    assert "▫️ 🗼 Torre de vigía · ⏸️ sin activar" in view.body and "▫️ 🪵 Madera 0/60" in view.body
+    assert any(line.startswith("▫️ 🗼 Torre de vigía · ⏸️ sin activar") for line in view.body)
+    assert "▫️ 🪵 Madera: 0 de 60 (faltan 60)" in view.body
     told = pushes(service, "test:2", "camp_news")
     assert told and "Lyra subió Roca Alta a nivel 2 (campamento)" in told[0].body[0]
     assert service._members_cap(camp(service)) == 4                   # members_base 2 + 2 per level
@@ -182,7 +193,7 @@ def test_the_castle_step_lists_the_guild_the_upgrades_and_the_trial(service):
     assert body[0] == "⏫ Para subir a nivel 9 (castillo) te falta:" and "🏰 Para pasar a castillo hace falta:" in body
     assert "▫️ Tener gremio" in body and "▫️ 🌙 Ganar la Noche de prueba" in body
     assert any(line.startswith("▫️ 🔨 15 mejoras construidas") for line in body)
-    assert "▫️ 🏹 Torres de arqueros · ⏸️ sin activar" in body and "▫️ 🪎 Cofres 0/3" in body
+    assert any(line.startswith("▫️ 🏹 Torres de arqueros · ⏸️ sin activar") for line in body) and "▫️ 🪎 Cofres 0/3" in body
     assert ids(view) == ["lvlgive", "upgrades", "guild", "improve"]
     # everything but the trial: the guild, 15 built with the two works, the materials and the chests
     cfg = service.content.balance["guild"]
@@ -222,11 +233,12 @@ def test_an_empty_pantry_blocks_the_level(service):
 def test_everyone_sees_the_checklist_and_the_progress_in_mejoras(service):
     camp_with(service, "Bram")
     member = service.act("test:2", "lvlup")                           # a common member sees the whole list
-    assert member.kind == "camp_lvlup" and "▫️ 🔥 Fogón · ⏸️ sin activar" in member.body
+    assert member.kind == "camp_lvlup" and any(line.startswith("▫️ 🔥 Fogón · ⏸️ sin activar") for line in member.body)
     build(service, "fogon")
     mejoras = service.act("test:2", "upgrades")
     assert "⏫ Nivel 2: 1 de 5 listos (⬆️ Mejorar → ⏫ Siguiente nivel)." in mejoras.body
-    assert service.act("test:2", "improve").body[-1] == "⏫ Nivel 2: 1 de 5 listos"
+    improve = service.act("test:2", "improve").body                    # D-313: the whole list, not "1 de 5 listos"
+    assert "✅ 🔥 Fogón" in improve and any(line.startswith("▫️ 🪵 Empalizada · ⏸️ sin activar") for line in improve)
 
 
 def test_old_camps_keep_their_level_and_zones(service):
@@ -237,7 +249,9 @@ def test_old_camps_keep_their_level_and_zones(service):
     service.act("test:1", "claro")
     service.act("test:1", "lvlup")
     assert camp(service)["level"] == 4 and len(camp(service)["zones"]) == 4
-    assert service.act("test:1", "improve").body[:2] == ["🏕️ Nivel 4 · aldea", "🗺️ Zonas: 4 de 5"]
+    assert service.act("test:1", "improve").body[:4] == [
+        "🏕️ Nivel 4 · aldea", "", "🗺️ Territorio: tu campamento ocupa 4 de las 5 zonas que permite la etapa aldea.",
+        "Puedes sumarle 1 zona más en 🗺️ Agrandar territorio."]
 
 
 def test_the_screens_read_well_in_english(service):
@@ -253,3 +267,48 @@ def test_the_screens_read_well_in_english(service):
         assert "[" not in text(view), text(view)
     assert not service.texts.fallbacks.get("en"), sorted(service.texts.fallbacks.get("en", []))[:20]
     assert not service.texts.missing
+
+
+def fund_code(service, item_id):
+    return f"/f{int(service.content.items[item_id]['code']):02d}"
+
+
+def test_a_deposit_from_far_away_fills_the_next_level_and_levels_it_up(service):
+    # [ES] D-313 (0.41.1, el dueño: "madera 11 de 30, lleva 40 minutos y no sé si está funcionando"): lo depositado con 💰
+    # Depositar también llena ⏫ Siguiente nivel (después de las obras activas), y con lo último el campamento sube solo
+    camp_with(service, "Bram")
+    build(service, "fogon", "empalizada")
+    place(service, "test:2", 12, -3, backpack={"madera": 35, "piedra": 20, "fibra": 10})      # far away
+    pushes(service, "test:1")
+    view = service.text("test:2", fund_code(service, "madera"))
+    assert "💰 El fondo puso 🪵 Madera ×30 en ⏫ Nivel 2." in view.notice
+    assert record(service)["levelup"]["given"] == {"madera": 30} and record(service)["fund"] == {"madera": 5}
+    service.text("test:2", fund_code(service, "piedra"))
+    view = service.text("test:2", fund_code(service, "fibra"))
+    assert camp(service)["level"] == 2 and "⏫ ¡Roca Alta subió a nivel 2 (campamento)!" in view.notice
+    assert "levelup" not in record(service) and record(service)["fund"] == {"madera": 5}       # nothing carried to level 3
+    told = pushes(service, "test:1", "camp_news")
+    assert told and "Bram subió Roca Alta a nivel 2 (campamento)" in told[0].body[0]
+
+
+def test_every_level_screen_lists_what_each_step_up_asks(service):
+    # [ES] D-313: 📜 Qué pide cada nivel, desde el tuyo hasta castillo (el dueño: "especifica mejor lo que hace falta para
+    # cada subida de nivel")
+    camp_with(service)
+    view = service.act("test:1", "lvlall")
+    assert view.kind == "camp_lvlall" and ids(view) == ["lvlup", "improve"]
+    assert view.body[0] == "Tu campamento está en nivel 1 (campamento). Lo que pide cada subida:"
+    assert ("⏫ Nivel 2 (campamento): construir 🔥 Fogón · 🪵 Empalizada · 🪵 Madera ×30 · 🪨 Piedra ×20 · 🧵 Fibra ×10"
+            in view.body)
+    assert any(line.startswith("⏫ Nivel 7 (ciudad): construir 🔥 Braseros") and line.endswith("· 🪎 1 cofre")
+               for line in view.body), view.body
+    assert sum(line.startswith("⏫ Nivel ") for line in view.body) == 8 and view.body[-1].startswith("🏰 Para castillo")
+    from test_idiomas import english_hero
+    english_hero(service, "test:9", "Ann")
+    camp_record = camp(service)
+    camp_record["members"].append("test:9")
+    service.store.put("camp", KEY, camp_record)
+    place(service, "test:9", 6, 0, camp=KEY)
+    view = service.act("test:9", "lvlall")
+    assert view.title == "📜 What each level needs" and not service.texts.fallbacks.get("en")
+    assert any("📦 Materials do not arrive by themselves" in line for line in service.act("test:9", "improve").body)

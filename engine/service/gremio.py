@@ -2331,8 +2331,9 @@ class GremioMixin:
 
         [ES] Qué hace: pasa al 💰 fondo del campamento todo lo que llevas de ese material (comida no: es para la despensa), anota
         quién dio qué ("gave", para siempre; sin experiencia ni mérito, como el fondo de antes de fundar: eso lo da 🤲 Aportar) y
-        el fondo alimenta las obras activas (_feed_works); si una se completa, empieza a construirse y se avisa. La llama:
-        _fund_code. Si cambia, afecta: tests/test_deposito_tras_fundar.py."""
+        el fondo alimenta las obras activas (_feed_works); si una se completa, empieza a construirse y se avisa. D-313 (0.41.1):
+        después, lo que sobra llena ⏫ Siguiente nivel (game.py _feed_levelup), y si completa la lista el campamento sube. La llama:
+        _fund_code. Si cambia, afecta: tests/test_deposito_tras_fundar.py y tests/test_siguiente_nivel.py."""
         t = self.texts
         item_id = next((i for i, _ in self._fund_goods(hero) if int(self.content.items[i]["code"]) == code), None)
         if item_id is None:
@@ -2345,6 +2346,8 @@ class GremioMixin:
         mine[item_id] = mine.get(item_id, 0) + n
         lines = [t.t("cfund.given", items=self._item_list({item_id: n}))]
         record, fed, timed = self._feed_works(key, camp, record, hero)
+        lines += fed
+        record, fed = self._feed_levelup(key, camp, record, hero)     # D-313: then ⏫ Siguiente nivel, not only the works
         lines += fed
         self.store.put("upgrades", key, record)
         if timed:

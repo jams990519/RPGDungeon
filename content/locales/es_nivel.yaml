@@ -18,10 +18,13 @@
 improve:                       # [ES] D-304: ⬆️ Mejorar campamento (desde 🏰 Gestionar)
   button: "⬆️ Mejorar campamento"
   title: "⬆️ Mejorar {name}"
-  manage_line: "⬆️ Mejorar: nivel {level} ({stage}) · 🗺️ {zones}/{cap} zonas. Sube de nivel o agranda el territorio."
+  manage_line: "⬆️ Mejorar: nivel {level} ({stage}), territorio de {zones} {zones|zona|zonas} (hasta {cap}). Sube de nivel o agranda el territorio."
   level_line: "🏕️ Nivel {level} · {stage}"
-  zones_line: "🗺️ Zonas: {zones} de {cap}"
-  next_line: "⏫ Nivel {level}: {done} de {total} listos"
+  zones_line: "🗺️ Territorio: tu campamento ocupa {zones} de las {cap} zonas que permite la etapa {stage}."   # [ES] D-313: dicho entero (el dueño no entendía "1 de 3")
+  zones_free: "Puedes sumarle {n} {n|zona|zonas} más en 🗺️ Agrandar territorio."
+  zones_full: "Ya está en el tope: sube de nivel para agrandarlo más."
+  next_title: "⏫ Para subir a nivel {level} ({stage}) necesitas:"   # [ES] D-313: la lista entera aquí, no "4 de 5 listos"
+  all_button: "📜 Qué pide cada nivel"
   lvlup_button: "⏫ Siguiente nivel"
   grow_button: "🗺️ Agrandar territorio"
 
@@ -32,14 +35,19 @@ lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que s
   works_title: "🏗️ Construir:"
   items_title: "📦 Recursos:"
   work_line: "{name}{state}"
-  state_building: " · 🏗️ en obra"
-  state_active: " · 🔨 activa"
-  state_idle: " · ⏸️ sin activar"
-  item_line: "{emoji} {item} {have}/{need}"
+  state_building: " · 🏗️ en obra: termina en {time}"   # [ES] D-313: cada obra dice qué le falta
+  state_paused: " · 🏗️ en obra, pausada: avanza con miembros dentro del territorio"
+  state_active: " · 🔨 activa: faltan {items} (aporta en 🔨 Mejoras → 🔨 Obras)"
+  state_active_full: " · 🔨 activa: ya tiene sus materiales"
+  state_idle: " · ⏸️ sin activar: la activa el fundador o un 🤝 asistente en 🏘️ Servicios"
+  item_line: "{emoji} {item}: {have} de {need}{left}"
+  item_left: " (faltan {n})"
   chest_line: "🪎 Cofres {have}/{need}"
   trial_line: "🌙 Ganar la Noche de prueba"
   famine_line: "🌾 Llenar la despensa: vacía, el campamento no sube"
   fund_hint: "💰 Al tocar 🤲 Aportar, el fondo pone primero {items}."
+  how_items: "📦 Los materiales no llegan solos: dalos con 🤲 Aportar en ⏫ Siguiente nivel (estando en el campamento) o desde cualquier lugar con 💰 Depositar."   # [ES] D-313
+  how_works: "🏗️ Las obras: el fundador o un 🤝 asistente las activa, todos aportan sus materiales y después se construyen con el tiempo."
   gives: "Al subir: 👥 +{members} lugares, obras nuevas y 🗺️ hasta {zones} zonas."
   give_button: "🤲 Aportar"
   go_button: "⏫ Subir a nivel {level}"
@@ -54,9 +62,16 @@ lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que s
   push: "⏫ {hero} subió {camp} a nivel {level} ({stage})."
   top: "🏰 Tu campamento llegó a {stage}: todavía no hay un nivel más."
 
+lvlall:                        # [ES] D-313 (0.41.1): 📜 Qué pide cada nivel, desde el tuyo hasta castillo
+  title: "📜 Qué pide cada nivel"
+  intro: "Tu campamento está en nivel {level} ({stage}). Lo que pide cada subida:"
+  line: "⏫ Nivel {level} ({stage}): construir {works} · {items}{extra}"
+  chests: " · 🪎 {n} {n|cofre|cofres}"
+  castle: "🏰 Para castillo, además: el gremio listo, {n} mejoras construidas y ganar la 🌙 Noche de prueba."
+
 territory:                     # [ES] D-304: 🗺️ Agrandar territorio, hacia dónde crece
   title: "🗺️ Agrandar territorio"
-  header: "🗺️ Zonas: {zones} de {cap} ({stage})"
+  header: "🗺️ Tu campamento ocupa {zones} de las {cap} zonas que permite la etapa {stage}."
   cost: "Cada zona nueva cuesta {items}, de tu mochila."
   hint: "Mira los recursos que conoces de cada una: elige con estrategia."
   managers_only: "🤝 La dirección la eligen el fundador o un asistente."

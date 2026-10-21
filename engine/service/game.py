@@ -499,6 +499,14 @@ Si cambias esto, revisa:
       content/locales/es_nivel.yaml y en_nivel.yaml (improve.*, lvlup.*, territory.*, upgrades.idle_names*). En los textos el
       rol de D-289 se llama 🤝 asistente (los ids siguen: "helpers", "ghelp:"). Pruebas: tests/test_siguiente_nivel.py y
       tests/test_agrandar_territorio.py
+    - D-313 (0.41.1, el dueño el 21-oct-2026: "¿qué es 1 de 3?… ¿qué 4 de 5?… específicamente necesita esto, esto y esto;
+      recursos tal, tal y tal… madera 11 de 30, lleva como 40 minutos y no sé si está funcionando"): ⬆️ Mejorar dice el
+      territorio con palabras y muestra la lista ENTERA del nivel siguiente; cada línea de _lvlup_rows dice lo que le falta (la
+      obra activa, sus materiales; la obra en obra, cuándo termina o que está pausada; la sin activar, quién la activa; cada
+      material, "12 de 30 (faltan 18)"); las dos líneas lvlup.how_items/how_works explican que nada llega solo; 💰 Depositar
+      también llena ⏫ Siguiente nivel después de las obras activas (_feed_levelup, desde gremio.py _camp_deposit) y puede
+      subirlo; 📜 Qué pide cada nivel ("lvlall", _lvlup_all_view). Pruebas: tests/test_siguiente_nivel.py y
+      tests/test_deposito_tras_fundar.py.
 """
 
 from __future__ import annotations
@@ -2102,6 +2110,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._lvlup_go(hero)
         if action_id == "lvltrial":                     # D-304: the 🌙 Noche de prueba screen from the 8 → 9 checklist
             return self._lvlup_trial(hero)
+        if action_id == "lvlall":                       # D-313: 📜 what every level asks, from yours to the castle
+            return self._lvlup_all_view(hero)
         if action_id == "grow" or action_id.startswith("grow:"):     # D-304: 🗺️ Agrandar territorio (old buttons too)
             page = action_id[5:]
             return self._grow_view(hero, int(page) if page.isdigit() else 0)
@@ -4095,15 +4105,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp, key = here
         t = self.texts
         level = camp.get("level", 1)
-        body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)),
-                t.t("improve.zones_line", zones=len(self._camp_zone_list(camp)), cap=self._zones_cap(camp))]
-        if level < self._camp_top_level():
-            rows = self._lvlup_rows(camp, self._upgrades(key))
-            body.append(t.t("improve.next_line", level=level + 1, done=sum(1 for _, _, ok in rows if ok), total=len(rows)))
+        zones, cap = len(self._camp_zone_list(camp)), self._zones_cap(camp)
+        body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)), "",
+                t.t("improve.zones_line", zones=zones, cap=cap, stage=self._camp_stage(level)),
+                t.t("improve.zones_free", n=cap - zones) if zones < cap else t.t("improve.zones_full")]
+        if level < self._camp_top_level():           # D-313: the whole list here, each line saying what is missing
+            rows = self._lvlup_rows(camp, self._upgrades(key), hero)
+            body += ["", t.t("improve.next_title", level=level + 1, stage=self._camp_stage(level + 1))]
+            body += [("✅ " if ok else "▫️ ") + text for _, text, ok in rows]
+            if any(not ok for _, _, ok in rows):
+                body += ["", t.t("lvlup.how_items"), t.t("lvlup.how_works")]
         else:
-            body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
+            body += ["", t.t("lvlup.top", stage=self._camp_stage(level))]
         actions = [Action(id="lvlup", label=t.t("improve.lvlup_button")), Action(id="grow", label=t.t("improve.grow_button")),
-                   Action(id="campmgmt", label=t.t("menu.back"))]
+                   Action(id="lvlall", label=t.t("improve.all_button")), Action(id="campmgmt", label=t.t("menu.back"))]
         return View(kind="camp_improve", title=t.t("improve.title", name=camp["name"]), body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ ⏫ Siguiente nivel (D-304, 0.41)
@@ -4134,7 +4149,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         data["chests"] = int(data.get("chests", 0) or 0)
         return data
 
-    def _lvlup_rows(self, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str, bool]]:
+    def _lvlup_rows(self, camp: dict[str, Any], record: dict[str, Any], hero: Hero | None = None) -> list[tuple[str, str, bool]]:
         """The ⏫ Siguiente nivel checklist: (kind, text, done) per requirement, in screen order (D-304).
 
         [ES]
@@ -4144,6 +4159,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97), las mejoras construidas (_castle_upgrades, D-101)
         y la 🌙 Noche de prueba ganada (D-99). Con la despensa vacía suma una línea ▫️ (D-93: la hambruna no deja subir).
         Tipos: "work", "item", "chests", "guild", "castle", "trial" y "famine" (los botones de _lvlup_view los miran).
+        D-313 (0.41.1, el dueño: "específicamente, necesita esto, esto y esto; recursos tal, tal y tal"): cada línea dice lo que
+        le falta: la obra activa, sus materiales que faltan; la obra en obra, cuándo termina (o que está pausada sin nadie en el
+        territorio); la obra sin activar, quién la activa; cada material, "12 de 30 (faltan 18)". `hero` (opcional) da los
+        beneficios de oficio con que se calcula lo que pide cada obra (_camp_perks) y quién cuenta como presente.
         La llaman: _lvlup_view, _lvlup_give, _lvlup_go, _improve_view y _upgrades_view (la línea "⏫ Nivel N: x de y listos").
         Si cambia, afecta: qué pide subir de nivel (tests/test_siguiente_nivel.py, tests/test_raids.py, tests/test_guilds.py).
         """
@@ -4153,17 +4172,36 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         rows: list[tuple[str, str, bool]] = []
         building = record.get("building") or {}
         active = set(self._active_works(camp, record))
+        catalog = self._upgrade_catalog()
+        perks = None
+        present = None
         for uid in self._lvlup_works(target):
             done = uid in record["built"]
-            state = ("" if done else t.t("lvlup.state_building") if uid in building
-                     else t.t("lvlup.state_active") if uid in active else t.t("lvlup.state_idle"))
+            if done:
+                state = ""
+            elif uid in building:                       # D-313: when it ends, or paused with nobody in the territory
+                if present is None:
+                    present = len(self._present_now(camp["members"], self._camp_zones(camp), hero))
+                left = self._work_left(building[uid], present)
+                state = (t.t("lvlup.state_building", time=self._fmt_duration(left)) if left is not None
+                         else t.t("lvlup.state_paused"))
+            elif uid in active:                         # D-313: what it still lacks
+                perks = self._camp_perks(camp, hero) if perks is None else perks
+                need = self._upgrade_need(catalog[uid], perks, record, uid)
+                progress = dict(record["works"].get(uid, {}))
+                self._credit_raw(need, progress)
+                lack = self._missing_text(need, progress)
+                state = t.t("lvlup.state_active", items=lack) if lack else t.t("lvlup.state_active_full")
+            else:
+                state = t.t("lvlup.state_idle")
             rows.append(("work", t.t("lvlup.work_line", name=self._upgrade_name(uid), state=state), done))
         data = self._lvlup_progress(record, target)
         for item_id, n in self._lvlup_need(level).items():
             have = min(n, int(data["given"].get(item_id, 0)))
             item = self.content.items[item_id]
-            rows.append(("item", t.t("lvlup.item_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=n),
-                         have >= n))
+            left = t.t("lvlup.item_left", n=n - have) if have < n else ""
+            rows.append(("item", t.t("lvlup.item_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=n,
+                                     left=left), have >= n))
         chests = self._grow_chests(level)               # D-92: from level 6, 🪎 chests too
         if chests:
             have = min(chests, data["chests"])
@@ -4203,7 +4241,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                         actions=[back], notice=notice)
         record = self._upgrades(key)
         target = level + 1
-        rows = self._lvlup_rows(camp, record)
+        rows = self._lvlup_rows(camp, record, hero)
         missing = {kind for kind, _, ok in rows if not ok}
         body = [t.t("lvlup.intro" if missing else "lvlup.ready", level=target, stage=self._camp_stage(target))]
         heading = None
@@ -4222,6 +4260,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("lvlup.fund_hint", items=self._item_list(useful)))
         if "chests" in missing:
             body.append(t.t("camps.chests_have", n=hero.chests))
+        if missing & {"item", "chests"}:                # D-313: nothing fills in by itself
+            body += ["", t.t("lvlup.how_items")]
+        if "work" in missing:
+            body.append(t.t("lvlup.how_works"))
         body += ["", t.t("lvlup.gives", members=int(self.content.balance["camps"]["members_per_level"]),
                          zones=self._zones_cap_at(target))]
         extra: list[Action] = []
@@ -4293,6 +4335,66 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if all(ok for _, _, ok in self._lvlup_rows(camp, record)):       # the last thing was given: up at once
             lines += self._level_up(key, hero)
         return self._lvlup_view(hero, notice="\n".join(lines))
+
+    def _feed_levelup(self, key: str, camp: dict[str, Any], record: dict[str, Any],
+                      actor: Hero) -> tuple[dict[str, Any], list[str]]:
+        """The camp's 💰 fund gives the next level the materials it lacks, after the active works (D-313); it may level up.
+
+        [ES]
+        Qué hace: D-313 (0.41.1, el dueño: "madera 11 de 30, lleva como 40 minutos en 11 de 30 y no sé si está funcionando"):
+        lo depositado con 💰 Depositar (/f02) también llena ⏫ Siguiente nivel, no solo las obras: después de _feed_works, el
+        fondo pone en "upgrades"."levelup" lo que falte de cada material (_take_from_fund: nunca de más). Sin experiencia ni
+        mérito (eso lo da 🤲 Aportar, como en las obras). Si con eso TODA la lista queda ✅, el campamento sube (_level_up) y se
+        devuelve el registro ya subido (sin lo aportado al nivel anterior). Guarda el registro antes de subir. En castillo o
+        sin nada útil en el fondo, no toca nada.
+        La llama: engine/service/gremio.py _camp_deposit. Si cambia, afecta: a dónde va el fondo (tests/test_siguiente_nivel.py).
+        """
+        level = camp.get("level", 1)
+        if level >= self._camp_top_level() or not record.get("fund"):
+            return record, []
+        target = level + 1
+        data = self._lvlup_progress(record, target)
+        from_fund = self._take_from_fund(record, self._lvlup_need(level), data["given"])
+        if not from_fund:
+            return record, []
+        record["levelup"] = data
+        self.store.put("upgrades", key, record)
+        lines = [self.texts.t("works.from_fund", items=self._item_list(from_fund), name=self.texts.t("lvlup.name", level=target))]
+        if all(ok for _, _, ok in self._lvlup_rows(camp, record, actor)):    # the last thing came from the fund: up at once
+            lines += self._level_up(key, actor)
+            record = self._upgrades(key)
+        return record, lines
+
+    def _lvlup_all_view(self, hero: Hero) -> View:
+        """📜 What every level asks, from the next one up to the castle: works, materials, chests and the castle gates (D-313).
+
+        [ES]
+        Qué hace: D-313 (0.41.1, el dueño: "especifica mejor lo que hace falta para cada subida de nivel"): una línea por cada
+        subida, desde la tuya hasta castillo, con las obras que tienen que estar construidas (camps.level_up), los materiales
+        (camps.level_up_cost_per_level × nivel) y los 🪎 cofres desde el nivel 6 (D-92); al final, lo que pide además el
+        castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
+        La llama: 📜 Qué pide cada nivel de ⬆️ Mejorar ("lvlall"). Si cambia, afecta: tests/test_siguiente_nivel.py.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        t = self.texts
+        level = camp.get("level", 1)
+        top = self._camp_top_level()
+        body = [t.t("lvlall.intro", level=level, stage=self._camp_stage(level)), ""]
+        for current in range(level, top):
+            target = current + 1
+            works = " · ".join(self._upgrade_name(uid) for uid in self._lvlup_works(target)) or "—"
+            extra = t.t("lvlall.chests", n=self._grow_chests(current)) if self._grow_chests(current) else ""
+            body.append(t.t("lvlall.line", level=target, stage=self._camp_stage(target), works=works,
+                            items=self._item_list(self._lvlup_need(current)), extra=extra))
+        if level < top:
+            body += ["", t.t("lvlall.castle", n=int(self.content.balance["upgrades"]["castle_min_built"]))]
+        else:
+            body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
+        return View(kind="camp_lvlall", title=t.t("lvlall.title"), body=body,
+                    actions=[Action(id="lvlup", label=t.t("improve.lvlup_button")), Action(id="improve", label=t.t("menu.back"))])
 
     def _lvlup_go(self, hero: Hero) -> View:
         """⏫ Subir a nivel N: any member at the camp, when every line is ✅ (the last thing was a work finishing, D-304)."""
