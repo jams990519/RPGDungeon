@@ -144,14 +144,21 @@ def test_the_trainer_my_professions_and_the_profession_say_what_to_buy(service):
     assert not service.texts.missing
 
 
-def test_the_trainer_fits_titles_and_specializations_in_five_buttons(service):
+def test_the_trainer_fits_titles_specializations_and_books(service):
     from engine.service.game import button_cap
     make_hero(service)
     hero_with(service, learned=("minero", "herreria"), professions={"minero": rank_xp(service, 21) - 1,
                                                                     "herreria": rank_xp(service, 30)})
     trainer = service.act("test:1", "trainer")
-    assert ids(trainer) == ["myprof", "learnlist", "ptitles", "pspecs", "claro"] and trainer.layout == [2, 2, 1]
-    assert len(trainer.actions) <= button_cap("trainer") == 5
+    # D-315 (0.44): Herrería at 30 also opens 📚 Libros de recetas (its rank-25 book is for sale): 6 buttons, ↩️ wide below
+    assert ids(trainer) == ["myprof", "learnlist", "ptitles", "pspecs", "pbooks", "claro"] and trainer.layout == [2, 2, 1, 1]
+    assert len(trainer.actions) <= button_cap("trainer") == 6
+    hero_with(service, learned=("minero", "herreria"), professions={"minero": rank_xp(service, 21) - 1,
+                                                                    "herreria": rank_xp(service, 26)}, prof_specs={})
+    hero = service._load("test:1")
+    hero.professions["herreria"] = rank_xp(service, 24)    # under 25: no 🎓 and no 📚 yet
+    service._save(hero)
+    assert ids(service.act("test:1", "trainer")) == ["myprof", "learnlist", "ptitles", "claro"]
 
 
 def test_the_explorer_has_no_titles(service):

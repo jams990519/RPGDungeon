@@ -1547,7 +1547,7 @@ resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedid
     hierba_curativa: "la 💧 Destilación la vuelve extracto; vendas de la 🪡 Sastrería"
     piel: "la 🪣 Curtiduría la vuelve cuero"
     tablon: "🪑 Carpintería: arcos, bastones y muebles del campamento"
-    lingote: "🔨 Herrería, 🦺 Peletería (malla) y 💍 Joyería"
+    lingote: "🔨 Herrería, 💍 Joyería y los 🪑 muebles de la Carpintería"   # [ES] D-306 (0.44): sin la malla de la Peletería (D-208)
     extracto: "⚗️ Alquimia (pociones), 🪡 Sastrería y 🦺 Peletería"
     tela_tejida: "🪡 Sastrería, 🪑 Carpintería, 🦺 Peletería y 🔨 Herrería"
     cuero_curtido: "🔨 Herrería, 🦺 Peletería, 🪑 Carpintería y 🪡 Sastrería"
@@ -2459,8 +2459,8 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
   station_title_craft: "🛠️ Fabricar"
   station_intro_refine: "Convierte lo que juntaste en materiales para fabricar. ✅ = llevas todo."
   station_intro_craft: "Equipo y remedios con materiales de varios oficios. ✅ = llevas todo."
-  entry_ok: "✅ {item} ← {inputs} · ⚡{energy}"
-  entry: "▫️ {item} ← {inputs} · ⚡{energy}"
+  entry_ok: "✅ {item} ← {inputs} · ⚡{energy} · {prof}+{xp}"   # [ES] D-306 (0.44): {item} lleva delante el color (🟧 🟨 🟩 ⬜) y {prof}+{xp} es la experiencia de oficio que da ahora
+  entry: "▫️ {item} ← {inputs} · ⚡{energy} · {prof}+{xp}"
   entry_missing: "   ❌ Falta: {items}"
   entry_button_ok: "✅ {item}"
   entry_button: "{item}"
@@ -2545,7 +2545,7 @@ profession:                   # [ES] D-109: nombre de cada oficio y cómo se sub
     how: "vendas, túnicas y piezas de tela (cabeza, manos, piernas y pies): 🧣 tela con 🌿 hierba, 🟤 cuero o 🧴 extracto"
   peleteria:
     name: "Peletería"
-    how: "armaduras de cuero y de malla, también de cabeza, manos, piernas y pies: 🟤 cuero con 🧣 tela o 🔩 lingotes"
+    how: "armaduras de cuero, también de cabeza, manos, piernas y pies: 🟤 cuero con 🧣 tela"   # [ES] D-306 (0.44): sin malla (D-208, E-223)
   joyeria:
     name: "Joyería"
     how: "anillos y amuletos: 🔩 lingotes con 💠 gemas en bruto"

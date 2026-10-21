@@ -18,7 +18,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     diseno/06-contenido/jefes.md (el Guardián, D-82); diseno/08-social/gremios-y-social.md §0 (el gremio, D-97);
     diseno/02-mundo/supervivencia-del-asentamiento.md §0.4-0.5 (despensa e incursiones de los campamentos, D-93 y D-99);
     diseno/06-contenido/cacerias.md §0 (🏹 Cazar en la zona y 🏹 Partida de caza del campamento, D-106)
-    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109; §0.5, el ✨ Encantamiento de la fase 2, D-115)
+    diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109; §0.5, el ✨ Encantamiento de la fase 2, D-115;
+    §0.8, los tramos de recetas, los colores y los 📚 libros, D-306)
     diseno/07-economia/red-de-oficios.md §3 (las 🎓 especializaciones de oficio, D-115 y D-141)
     diseno/03-personaje/equipamiento.md §11 (✨ encantamientos y el aviso "⬆️ Tienes una pieza mejor", fase 2 de D-115)
     diseno/07-economia/profesiones.md §0 (oficios encadenados, fase 1, D-109); §0.4 y red-de-oficios.md §5 (fase 2, lado
@@ -172,6 +173,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     sube con ⏫ Siguiente nivel y las zonas con 🗺️ Agrandar territorio (hasta camps.zones_by_stage). Nada nuevo en Hero.
     D-305 (0.42): la actividad "gather" de un lote de 🪓 Talar lleva "only" (el único recurso que junta: la 🪵 madera); un lote
     guardado antes no lo tiene y sigue siendo 🧺 Recolectar. D-308 (0.42): nada nuevo guardado (🩹 lee Hero.options "retreat").
+    D-306 (0.44): Hero.recipe_books (los 📚 libros de recetas, "<oficio>:<rango>") y Hero.books_checked (el regalo de la 0.44
+    ya se hizo); los héroes de antes cargan con [] y False, y _load les da una vez los libros de los rangos que tenían.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -551,6 +554,20 @@ Si cambias esto, revisa:
       (REMEDY_KINDS, _sellable, _sell_price con shop.remedy_sell_ratio; códigos /v61 a /v66 en items.yaml). Textos:
       content/locales/es_titulos_pesca.yaml y en_titulos_pesca.yaml, d44, d46 y d51 de ❓ Dudas y las guías hunt y trades.
       Pruebas: tests/test_titulos_de_oficio.py, tests/test_aprender_oficios.py, tests/test_talar.py, tests/test_buttons.py
+    - La reforma de recetas (0.44, D-306, confirmada por el dueño el 20-oct-2026: E-221, E-222 y E-223; cómo se aplicó: D-315,
+      provisional): tramos cada 5 rangos, colores de receta (🟧 🟨 🟩 ⬜) y 📚 libros de recetas. Sección "recipe tiers, colors
+      and books" (_tier_cfg, _tiered, _recipe_color, _recipe_xp, _batch_prof_xp, _color_mark, _book_missing, _book_profs,
+      _books_owned, _books_for_sale, _books_any, _book_opens, _book_lock_line, _book_rank_lines, _grant_old_books,
+      _books_action, _books_view, _buy_book) y sus ganchos: _station_view (el color, la experiencia de cada receta, la leyenda,
+      las recetas sin libro afuera con una línea 📚 por libro y, en un tramo, la pieza de nivel más alto primero), _recipe_view
+      (la línea del color, la experiencia con su color y el candado del libro), _make (sin libro no se gasta nada; la
+      experiencia de oficio por color vez por vez), _prof_gain (las recetas que esperan libro no se anuncian; el aviso del
+      libro al llegar al 25, 50 o 75), _trainer_view (el botón 📚 Libros de recetas: hasta 6 con 🎖️ y 🎓, EXTRA_BUTTON_KINDS "trainer"),
+      _idle_action (BOOK_ACTIONS) y _load (el regalo de la 0.44). Números: balance.yaml recipe_tiers; el rango, la energía y la
+      experiencia de las recetas de equipo los escribe tools/recipe_tiers.py. Textos: content/locales/es_recetas.yaml y
+      en_recetas.yaml (recipe_tier.*, books.*), prof.entry y prof.entry_ok ({prof}+{xp}). Pruebas:
+      tests/test_tramos_de_recetas.py, tests/test_professions.py, tests/test_oficios_equipo.py, tests/test_especializaciones.py,
+      tests/test_balance_d110.py y tests/test_ocultar_lo_bloqueado.py
 """
 
 from __future__ import annotations
@@ -697,6 +714,9 @@ PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:", "myprof", "learnlist", "pview:
 # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador: the screen ("ptitles") and buying a profession's next title
 # ("ptitle:<profession>", or "ptitle:<profession>:d" from that profession's screen, which it goes back to).
 TITLE_ACTIONS = ("ptitles", "ptitle:")
+# D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador: the list (and its pages, "pbooks:<page>") and buying one
+# ("pbook:<profession>:<rank>"). _books_action routes them. [ES] Los botones de los libros de recetas (E-222).
+BOOK_ACTIONS = ("pbooks", "pbook:")
 # Button ids (or prefixes) of ✨ Encantamiento (D-115, phase 2): the hub, a piece's screen, enchant, disenchant (and confirm it).
 ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 # Button ids (or prefixes) of 🎓 Especialización (D-141): the hub (and its pages), a profession, a specialization, pick it, switch
@@ -714,7 +734,7 @@ HUB_BUTTONS = 8
 # [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
 EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1,
                       "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
-                      "trainer": 4 + 1}        # D-306.1/D-316 (0.43): 🎖️ Títulos in the 🧑‍🏫 Entrenador when a title waits
+                      "trainer": 4 + 2}        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -1293,6 +1313,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         for pid, pdef in self._prof_catalog().items():      # D-272 (0.35): gathering is learned now; who practised keeps it
             if pdef.get("grandfather") and hero.professions.get(pid, 0) > 0 and pid not in hero.learned:
                 hero.learned.append(pid)
+        if not hero.books_checked:                          # D-306 (0.44): who practised keeps what it could make (D-64)
+            self._grant_old_books(hero)
+            hero.books_checked = True
         return hero
 
     def _hero_icon(self, hero: Hero) -> str:
@@ -1994,6 +2017,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.known = sorted({"0:0", f"{bx}:{by}"})
         starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
         hero.gear_started = True
+        hero.books_checked = True                           # D-306: a new hero buys its 📚 recipe books (nothing to grant)
         hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
         hero.energy_version = self.content.balance["energy"]["version"]
         referral = self.store.get("referral", account_id)
@@ -2036,6 +2060,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._dudas_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
+        if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
+            return self._books_action(hero, action_id)
         if action_id == "campmgmt":                     # D-192: 🏰 Gestionar (your own camp)
             return self._camp_manage_view(hero)
         if action_id == "campinfo":                     # D-302: ℹ️ Información del campamento (from 🏰 Gestionar)
@@ -7117,7 +7143,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         oficio (una vez, pagando su primera receta; después sube haciendo recetas y cada rango abre recetas nuevas; la
         🪓 recolección y la 🧭 exploración suben solas), los que ya tienes con su rango y, abajo, los que te faltan por aprender.
         Botones: 📋 Mis oficios, 📚 Aprender oficios, 🎓 Especialización (solo si ya puedes elegir una o tienes alguna,
-        _pspec_any, como en ⚒️ Oficios) y ↩️ Volver (4 como mucho). El ✨ Encantamiento ya no tiene botón aquí: se aprende como
+        _pspec_any, como en ⚒️ Oficios), 📚 Libros de recetas (D-306, 0.44: solo si hay un libro tuyo o a la venta, _books_any;
+        D-315) y ↩️ Volver. El ✨ Encantamiento ya no tiene botón aquí: se aprende como
         los demás y su pantalla se abre desde su código (/encantamiento) o con /encantar.
         D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel. Se quitó el bloque "🔒 Más adelante"
         (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento): sus textos trainer.later_* quedan sin uso.
@@ -7125,7 +7152,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-306 (0.43): el precio de aprender va por rama (🥈1 fabricación, 🥉50 recolección y refinado: _learn_prices_text), una
         línea explica los 🎖️ títulos y, por cada oficio en el tope de su título, la línea 🔒 de qué título comprar (con su
         precio y nivel) y el botón 🎖️ Títulos (_titles_view). Con 🎖️ y 🎓 son 5 botones (EXTRA_BUTTON_KINDS "trainer", D-316),
-        de 2 en 2.
+        de 2 en 2; con 📚 Libros de recetas (0.44, D-315), hasta 6 ([2, 2, 1, 1], ↩️ Volver ancho abajo).
         La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py,
         tests/test_aprender_oficios.py y tests/test_titulos_de_oficio.py.
         """
@@ -7147,8 +7174,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id="ptitles", label=t.t("ptitle.button")))
         if self._pspec_any(hero):
             actions.append(Action(id="pspecs", label=t.t("spec.button")))
+        if self._books_any(hero):                       # D-306 (0.44, E-222): 📚 Libros de recetas, once a profession reaches 25
+            actions.append(Action(id="pbooks", label=t.t("books.button")))
         actions.append(Action(id="claro", label=t.t("menu.back")))
-        layout = [2, 2, 1] if len(actions) == 5 else []  # D-316: the 5th button (🎖️ with 🎓) goes in rows of 2
+        # D-316: the 5th button (🎖️ with 🎓) goes in rows of 2; D-315 (0.44): with 📚 Libros de recetas too, 6 ([2, 2, 1, 1])
+        layout = {5: [2, 2, 1], 6: [2, 2, 1, 1]}.get(len(actions), [])
         return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice, layout=layout)
 
     def _trainer_recommend_lines(self, hero: Hero) -> list[str]:
@@ -8274,7 +8304,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         _infiltrate (🧭 Explorador) y _merchant_sale (💱 Comercio).
         D-141: la misma experiencia sube el dominio de las 🎓 especializaciones que tienes en ese oficio, y avisa cuando el
         oficio llega al 25 o al 75 (ya puedes elegir) o una especialización abre su receta exclusiva (_pspec_gain). Las recetas
-        exclusivas que no puedes hacer no se anuncian.
+        exclusivas que no puedes hacer no se anuncian. D-306 (0.44): tampoco las que esperan un 📚 libro; al llegar al rango 25, 50
+        o 75 avisa que el 🧑‍🏫 Entrenador ya vende su libro (_book_rank_lines).
         D-306.1 (0.43, E-228): al tope del 🎖️ título (20, 40, 60, 80, 95; _prof_room) solo entra lo que cabe y el resto se pierde
         (D-316: no se guarda); cuando algo no entró, la última línea dice qué título comprar en el 🧑‍🏫 Entrenador (ptitle.lock_gain).
         El 🧭 Explorador no tiene tope.
@@ -8300,9 +8331,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         t = self.texts
         lines = [t.t("prof.rank_up", name=self._prof_name(pid), rank=after, title=self._rank_title(after))]
         opened = [self._recipe_name(rid) for rid, rdef in self._recipes().items()
-                  if rdef["profession"] == pid and before < int(rdef.get("min_rank", 1)) <= after and self._pspec_recipe_ok(hero, rdef)]
+                  if rdef["profession"] == pid and before < int(rdef.get("min_rank", 1)) <= after and self._pspec_recipe_ok(hero, rdef)
+                  and not self._book_missing(hero, rdef)]                 # D-306: a recipe that needs a 📚 book waits for it
         if opened:
             lines.append(t.t("prof.unlocked", items=", ".join(opened)))
+        lines += self._book_rank_lines(hero, pid, before, after)          # D-306 (0.44): 📚 the Entrenador sells its book now
         rare = self._prof_catalog()[pid].get("rare")
         if rare and before < int(rare["min_rank"]) <= after:
             lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
@@ -8594,6 +8627,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-192: branch "cook" es 🍲 Cocinar del 🏕️ Campamento: la estación de fabricar con solo las recetas de la 🍲 Cocina
         (COOK_PROFESSION), su título, ➡️ Ver más como "est:cook:<página>" y ↩️ Volver al centro de 🏕️ Campamento. Sin la
         estación (tu campamento sin 🔥 Fogón) vuelve al campamento con el aviso de dónde se cocina.
+        D-306 (0.44): cada receta lleva delante su color (🟧 🟨 🟩 ⬜, en los oficios con tramos) y al final la experiencia de oficio
+        que da ahora ({prof}+{xp}), con la leyenda arriba; en un tramo sale primero la pieza de nivel más alto; las recetas que
+        piden un 📚 libro que no tienes no salen: una línea por libro dice cuántas abre aquí (y un botón 📚 si cabe).
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, 🍲 Cocinar ("cook"), ➡️ Ver más y ↩️ Volver de cada receta.
         Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py, tests/test_menus_y_dudas.py).
         """
@@ -8618,6 +8654,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         catalog = self._prof_catalog()
         recipes = self._recipes()
         entries: list[tuple[int, str, dict[str, int]]] = []
+        book_locked: dict[tuple[str, int], int] = {}                      # D-306: (profession, book rank) -> recipes it opens here
         elsewhere = False
         for rid, rdef in recipes.items():
             pid = rdef["profession"]
@@ -8630,12 +8667,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             if pid not in stations:
                 elsewhere = True
                 continue
+            lacking = self._book_missing(hero, rdef)                      # D-306 (0.44): it needs a 📚 recipe book first
+            if lacking:
+                book_locked[(pid, lacking[0])] = book_locked.get((pid, lacking[0]), 0) + 1
+                continue
             missing = missing_for(rdef, hero.backpack)
             carried = any(hero.backpack.get(item, 0) > 0 for item in rdef["inputs"])
             entries.append((0 if not missing else 1 if carried else 2, rid, missing))
         # Stable: inside each group the highest rank first (D-110: up to 13 tiers per line, the newest is the useful one),
-        # then file order.
-        entries.sort(key=lambda entry: (entry[0], -int(recipes[entry[1]].get("min_rank", 1))))
+        # D-306: in a tier, the piece of highest level first (a tier can make two levels: 8 and 10 at rank 10), then file order.
+        entries.sort(key=lambda entry: (entry[0], -int(recipes[entry[1]].get("min_rank", 1)),
+                                        -int(self.content.items[next(iter(recipes[entry[1]]["output"]))].get("req_level", 0))))
         per = int(self._prof_cfg()["per_page"])
         pages = 1 if len(entries) <= 3 else (len(entries) + per - 1) // per
         page %= pages
@@ -8644,13 +8686,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                                                    title=self._rank_title(self._prof_rank(hero, only)), bar=self._rank_bar(hero, only))
                  if only else t.t(f"prof.station_intro_{branch}"))
         body = [intro, self._stations_line(where, stations),
-                t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"]), ""]
+                t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"])]
+        if any(self._tiered(recipes[rid]["profession"]) for _, rid, _ in shown):
+            body.append(t.t("recipe_tier.legend"))                        # D-306: 🟧 🟨 🟩 ⬜ in one line
+        body.append("")
         actions = []
         for _, rid, missing in shown:
             rdef = recipes[rid]
-            name = self._pspec_mark(rdef) + self._recipe_name(rid)         # D-141: "🎓 " before an exclusive recipe
+            rank = self._prof_rank(hero, rdef["profession"])
+            # D-141: "🎓 " before an exclusive recipe; D-306: its color (🟧 🟨 🟩 ⬜) first and the profession xp it gives now
+            name = self._color_mark(rdef, rank) + self._pspec_mark(rdef) + self._recipe_name(rid)
             body.append(t.t("prof.entry_ok" if not missing else "prof.entry", item=name,
-                            inputs=self._item_list(rdef["inputs"]), energy=rdef["energy"]))
+                            inputs=self._item_list(rdef["inputs"]), energy=rdef["energy"],
+                            prof=catalog.get(rdef["profession"], {}).get("emoji", ""), xp=self._recipe_xp(rdef, rank)))
             if missing:
                 body.append(t.t("prof.entry_missing", items=self._item_list(missing)))
             actions.append(Action(id=f"rec:{rid}:{page}", label=t.t("prof.entry_button_ok" if not missing else "prof.entry_button",
@@ -8665,6 +8713,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id=f"est:{'cook' if only else branch}:{page + 1}", label=t.t("prof.more")))
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
+        for (pid, book), n in book_locked.items():                        # D-306: what each 📚 book you lack opens here
+            body.append(t.t("books.missing_hint", name=self._prof_name(pid), rank=book, n=n))
+        if book_locked and len(actions) < 3:
+            actions.append(Action(id="pbooks", label=t.t("books.button")))
         if unknown and len(actions) < 3:                                  # D-287: the 📚 button, without the 🔒 lines
             actions.append(Action(id="learnlist", label=t.t("learn.button")))
         actions.append(Action(id="claro" if only else "oficios", label=t.t("menu.back")))    # D-192: 🍲 Cocinar goes back to 🏕️
@@ -8685,6 +8737,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-192: ↩️ Volver de una receta de la 🍲 Cocina vuelve a 🍲 Cocinar ("est:cook").
         D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel: una receta de rango más alto que el tuyo
         (solo se llega con un botón viejo) no se abre: vuelve a su estación con el aviso corto prof.locked.
+        D-306 (0.44): dice el color de la receta en una frase, la experiencia de oficio que da con ese color y, si pide un
+        📚 libro que no tienes, el candado (sin botones de hacer, con uno a 📚 Libros de recetas).
         La llaman: los botones de cada receta en 🪚 Refinar / 🛠️ Fabricar / 🍲 Cocinar, y _make al terminar (o al rechazar).
         Si cambia, afecta: tests/test_professions.py.
         """
@@ -8704,6 +8758,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("prof.recipe_prof", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank), need=need_rank)]
         if rdef.get("spec"):                                    # D-141: 🎓 whose exclusive recipe it is
             body.append(t.t("spec.recipe_line", spec=self._pspec_name(rdef["spec"])))
+        color = self._recipe_color(rdef, rank)
+        if color and self._knows(hero, pid):                    # D-306 (0.44): 🟧 🟨 🟩 ⬜ how much profession xp it still gives
+            body.append(t.t(f"recipe_tier.line.{color}"))
         body += ["", t.t("prof.recipe_needs")]
         for item_id, n in rdef["inputs"].items():
             have = hero.backpack.get(item_id, 0)
@@ -8727,7 +8784,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         elif t.has(f"resources.use.{out_id}"):
             body.append(t.t("prof.material_out", use=t.t(f"resources.use.{out_id}")))
         body.append(t.t("prof.energy_cost", energy=rdef["energy"], have=hero.energy))
-        body.append(t.t("prof.gains", xp=int(self._make_xp(hero, rdef, rank) * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=rdef["xp"]))
+        body.append(t.t("prof.gains", xp=int(self._make_xp(hero, rdef, rank) * self._xp_mult(hero)), name=self._prof_name(pid),
+                        prof_xp=self._recipe_xp(rdef, rank)))           # D-306: with its color (half, a quarter or none)
         spec_yield = self._pspec_bonus(hero, "yield", item=out_id) if item.get("kind") != "gear" else 0.0     # D-141: 🎓
         if branch == "refine" and round(100 * (self._make_bonus(rank, where) + spec_yield)):
             body.append(t.t("prof.yield_line", pct=round(100 * (self._make_bonus(rank, where) + spec_yield))))
@@ -8739,6 +8797,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             actions.append(Action(id=f"pview:{pid}", label=t.t("learn.see_button", name=self._prof_name(pid))))
         elif not self._pspec_recipe_ok(hero, rdef):              # D-141: only its 🎓 specialization, with enough mastery
             body.append(self._pspec_recipe_lock(hero, rdef))
+        elif self._book_missing(hero, rdef):                    # D-306 (0.44): it needs a 📚 recipe book of the Entrenador
+            body.append(self._book_lock_line(hero, rdef))
+            actions.append(Action(id="pbooks", label=t.t("books.button")))
         elif pid not in stations:
             body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
         else:
@@ -8775,6 +8836,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-141: una receta exclusiva de otra 🎓 especialización se rechaza sin gastar nada; tus especializaciones suman a la
         unidad de más (al refinar, y en los remedios con su propio sorteo), a la ✒️ obra maestra de su línea y a sus hallazgos
         por vez (🪙 Metales preciosos).
+        D-306 (0.44): sin el 📚 libro de recetas que pide la receta se rechaza sin gastar nada; la experiencia de oficio sale por el
+        color de la receta, vez por vez (_batch_prof_xp: si a mitad del lote subes y cambia de color, lo que sigue da menos).
         Publica ItemCrafted con la pieza normal y el total hecho (y ProfessionRankUp si sube de rango).
         La llaman: los botones 🔨 Hacer de la receta.
         Si cambia, afecta: la economía de los oficios (balance.yaml professions; content/professions.yaml).
@@ -8794,6 +8857,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._recipe_view(hero, rid, page, notice=t.t("prof.locked", need=rdef["min_rank"], name=self._prof_name(pid), rank=rank))
         if not self._pspec_recipe_ok(hero, rdef):                # D-141: 🎓 exclusive recipe of another specialization (nothing spent)
             return self._recipe_view(hero, rid, page, notice=self._pspec_recipe_lock(hero, rdef))
+        if self._book_missing(hero, rdef):                       # D-306 (0.44): no 📚 recipe book, nothing spent
+            return self._recipe_view(hero, rid, page, notice=self._book_lock_line(hero, rdef))
         missing = missing_for(rdef, hero.backpack, times)
         if missing:
             return self._recipe_view(hero, rid, page, notice=t.t("prof.missing", items=self._item_list(missing)))
@@ -8858,7 +8923,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             self._refill_belt(hero)
         self.bus.publish(ItemCrafted(hero.id, rid, out_id, made))
         xp = self._make_xp(hero, rdef, rank) * times
-        prof_xp = int(rdef.get("xp", 0)) * times
+        prof_xp = self._batch_prof_xp(hero, rdef, times)         # D-306: by color, make after make (the rank may rise mid-batch)
         lines.append(t.t("prof.gained", xp=int(xp * self._xp_mult(hero)), name=self._prof_name(pid), prof_xp=prof_xp))
         lines += self._give_xp(hero, xp)
         lines += self._prof_gain(hero, pid, prof_xp)
@@ -8872,6 +8937,236 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             while len(view.actions) > 4:
                 view.actions.pop(-2)
         return view
+
+    # ------------------------------------------------------------------ recipe tiers, colors and books (D-306, 0.44)
+    # [ES] La reforma de recetas (E-221, E-222, E-223): en los oficios con tramos (balance.yaml recipe_tiers.professions) cada
+    # receta tiene un color según cuánto te queda chica (🟧 naranja, 🟨 amarilla, 🟩 verde, ⬜ gris) que decide cuánta
+    # experiencia de oficio da; y las recetas de rango 25, 50 y 75 o más piden el 📚 libro de recetas de su oficio, que vende el
+    # 🧑‍🏫 Entrenador. Quien ya practicaba recibe gratis los libros de los rangos que tenía (D-64, _grant_old_books en _load).
+
+    def _tier_cfg(self) -> dict[str, Any]:
+        """balance.yaml "recipe_tiers" ({} if missing: no colors and no books; every recipe gives its whole xp)."""
+        return self.content.balance.get("recipe_tiers") or {}
+
+    def _tiered(self, pid: str) -> bool:
+        """True for a profession with a tier every 5 ranks up to 100 (recipe_tiers.professions): only there colors apply.
+
+        [ES] Qué hace: dice si un oficio tiene tramos cada 5 rangos (🪑 🔨 🪡 🦺 💍): solo en esos rigen los colores. Los demás
+        (refinado, ⚗️, 🩺, 🍲) siguen dando la experiencia entera hasta tener sus tramos (pendiente, traspaso-a-terminal.md).
+        """
+        return pid in (self._tier_cfg().get("professions") or [])
+
+    def _recipe_color(self, rdef: dict[str, Any], rank: int) -> str | None:
+        """"orange", "yellow", "green" or "grey" for a crafter of this rank (rules.recipe_color); None if not tiered."""
+        if not self._tiered(rdef["profession"]):
+            return None
+        return profession_rules.recipe_color(rank, int(rdef.get("min_rank", 1)), self._tier_cfg().get("colors") or [])
+
+    def _recipe_xp(self, rdef: dict[str, Any], rank: int) -> int:
+        """Profession xp one make gives at this rank: the recipe's xp × its color's share (whole if not tiered).
+
+        [ES]
+        Qué hace: la experiencia de oficio que da hacer una vez la receta con tu rango: la de la receta (que ya crece con su
+        tramo) por la parte de su color (naranja entera, amarilla la mitad, verde un cuarto, gris nada), hacia abajo.
+        La llaman: _station_view, _recipe_view y _batch_prof_xp. Si cambia, afecta: el ritmo de los oficios con tramos.
+        """
+        color = self._recipe_color(rdef, rank)
+        base = int(rdef.get("xp", 0))
+        if color is None:
+            return base
+        return int(base * profession_rules.color_factor(color, self._tier_cfg().get("colors") or []) + 1e-9)
+
+    def _batch_prof_xp(self, hero: Hero, rdef: dict[str, Any], times: int) -> int:
+        """Profession xp of `times` makes in a row: each make by its color at the rank the hero has by then (D-306).
+
+        [ES]
+        Qué hace: suma la experiencia de oficio de un lote, vez por vez: si a mitad del lote subes de rango y la receta cambia
+        de color (de naranja a amarilla), las veces que siguen ya dan menos. Los oficios sin tramos dan xp × veces, como antes.
+        La llama: _make. Si cambia, afecta: cuánta experiencia de oficio da un lote.
+        """
+        pid = rdef["profession"]
+        if not self._tiered(pid):
+            return int(rdef.get("xp", 0)) * times
+        cfg = self._prof_cfg()
+        bonus = 1 + self._origin_prof_bonus(hero, pid)
+        have = float(hero.professions.get(pid, 0))
+        room = self._prof_room(hero, pid)               # D-306.1 (0.43): the rank never passes the title's cap
+        limit = have + room if room is not None else None
+        total = 0
+        for _ in range(times):
+            gain = self._recipe_xp(rdef, rank_of(int(have), cfg["rank_formula"], cfg["max_rank"]))
+            total += gain
+            have += gain * bonus
+            if limit is not None:
+                have = min(have, limit)
+        return total
+
+    def _color_mark(self, rdef: dict[str, Any], rank: int) -> str:
+        """"🟧 " before a tiered recipe's name (recipe_tier.color.<id>); "" for the others."""
+        color = self._recipe_color(rdef, rank)
+        return self.texts.t(f"recipe_tier.color.{color}") + " " if color else ""
+
+    def _books_cfg(self) -> list[dict[str, Any]]:
+        """balance.yaml recipe_tiers.books: [{rank, price}] (empty: no recipe needs a book)."""
+        return self._tier_cfg().get("books") or []
+
+    def _book_missing(self, hero: Hero, rdef: dict[str, Any]) -> list[int]:
+        """The 📚 book ranks this recipe needs that the hero does not own (empty = none missing), lowest first.
+
+        [ES]
+        Qué hace: dice qué libros de recetas le faltan al héroe para una receta: una de rango 25 o más pide el libro del 25 de
+        su oficio; de 50 o más, también el del 50; de 75 o más, también el del 75 (E-222). Vale para todos los oficios.
+        La llaman: _station_view, _recipe_view, _make, _prof_gain y _book_opens. Si cambia, afecta: qué recetas se ven y se hacen.
+        """
+        owned = set(hero.recipe_books or [])
+        pid = rdef["profession"]
+        return [r for r in profession_rules.books_for(int(rdef.get("min_rank", 1)), self._books_cfg())
+                if profession_rules.book_id(pid, r) not in owned]
+
+    def _book_profs(self) -> dict[str, list[int]]:
+        """Profession -> the book ranks some of its recipes need, in catalog order (professions without such recipes are out)."""
+        need: dict[str, set[int]] = {}
+        for rdef in self._recipes().values():
+            for r in profession_rules.books_for(int(rdef.get("min_rank", 1)), self._books_cfg()):
+                need.setdefault(rdef["profession"], set()).add(r)
+        return {pid: sorted(need[pid]) for pid in self._prof_catalog() if pid in need}
+
+    def _book_name(self, pid: str, rank: int) -> str:
+        """"🔨 Herrería 25": one book's name (books.book_name)."""
+        return self.texts.t("books.book_name", name=self._prof_name(pid), rank=rank)
+
+    def _books_owned(self, hero: Hero) -> list[tuple[str, int]]:
+        """The books the hero owns, as (profession, rank), in catalog and rank order."""
+        owned = set(hero.recipe_books or [])
+        return [(pid, r) for pid, ranks in self._book_profs().items() for r in ranks if profession_rules.book_id(pid, r) in owned]
+
+    def _books_for_sale(self, hero: Hero) -> list[tuple[str, int]]:
+        """The books the 🧑‍🏫 Entrenador sells this hero: of a profession it knows, up to its rank, not owned yet (D-287:
+        nothing above your rank is shown)."""
+        owned = set(hero.recipe_books or [])
+        out = []
+        for pid, ranks in self._book_profs().items():
+            if not self._knows(hero, pid):
+                continue
+            have = self._prof_rank(hero, pid)
+            out += [(pid, r) for r in ranks if r <= have and profession_rules.book_id(pid, r) not in owned]
+        return out
+
+    def _books_any(self, hero: Hero) -> bool:
+        """True if 📚 Libros de recetas has something to show this hero (a book owned or for sale): its button in the trainer."""
+        return bool(self._books_owned(hero) or self._books_for_sale(hero))
+
+    def _book_opens(self, hero: Hero, pid: str, rank: int) -> int:
+        """How many recipes buying this book lets the hero make now (its rank, its 🎓 and the other books it has)."""
+        have = self._prof_rank(hero, pid)
+        return sum(1 for rdef in self._recipes().values()
+                   if rdef["profession"] == pid and int(rdef.get("min_rank", 1)) <= have and self._pspec_recipe_ok(hero, rdef)
+                   and self._book_missing(hero, rdef) == [rank])
+
+    def _book_lock_line(self, hero: Hero, rdef: dict[str, Any]) -> str:
+        """"📕 Pide el libro de recetas de 🔨 Herrería del rango 25…": why a recipe is closed (its first missing book)."""
+        return self.texts.t("books.recipe_lock", name=self._prof_name(rdef["profession"]), rank=self._book_missing(hero, rdef)[0])
+
+    def _book_rank_lines(self, hero: Hero, pid: str, before: int, after: int) -> list[str]:
+        """On a rank up: one line per book rank crossed that the hero does not own ("the Entrenador sells it now")."""
+        owned = set(hero.recipe_books or [])
+        return [self.texts.t("books.rank_reached", rank=r, name=self._prof_name(pid),
+                             price=self._money(profession_rules.book_price(r, self._books_cfg())))
+                for r in self._book_profs().get(pid, []) if before < r <= after and profession_rules.book_id(pid, r) not in owned]
+
+    def _grant_old_books(self, hero: Hero) -> None:
+        """0.44 (D-306, D-64): who already practised a profession gets, free, the books of every book rank it had reached.
+
+        [ES]
+        Qué hace: la primera vez que se carga un héroe de antes de la 0.44, le regala los libros de recetas de los rangos que
+        ya tenía en cada oficio (con la experiencia guardada, aunque no lo haya aprendido todavía): así sigue haciendo todo lo
+        que podía hacer (D-64). Nunca quita nada. La llama: _load (una vez por héroe: Hero.books_checked).
+        Si cambia, afecta: qué libros tienen gratis los jugadores de antes.
+        """
+        cfg = self._prof_cfg()
+        books = list(hero.recipe_books or [])
+        for pid, ranks in self._book_profs().items():
+            rank = rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+            books += [profession_rules.book_id(pid, r) for r in ranks
+                      if r <= rank and profession_rules.book_id(pid, r) not in books]
+        hero.recipe_books = books
+
+    def _books_action(self, hero: Hero, action_id: str) -> View:
+        """Route 📚 Libros de recetas: "pbooks" (and "pbooks:<page>") the list, "pbook:<profession>:<rank>" buy one."""
+        if action_id.startswith("pbook:"):
+            _, pid, rank = (action_id.split(":") + ["", ""])[:3]
+            return self._buy_book(hero, pid, int(rank) if rank.isdigit() else 0)
+        page = action_id.partition(":")[2]
+        return self._books_view(hero, int(page) if page.isdigit() else 0)
+
+    def _books_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
+        """📚 Libros de recetas (D-306, E-222): the books you own and the ones the 🧑‍🏫 Entrenador sells you now.
+
+        [ES]
+        Qué hace: la pantalla de los libros de recetas del 🧑‍🏫 Entrenador: qué abre cada libro y sus precios
+        (balance.yaml recipe_tiers.books: 🥈2 el del 25, 🥈10 el del 50, 🥈25 el del 75), los que ya tienes y los que puedes
+        comprar (de un oficio que sabes, hasta tu rango: D-287, nada de más arriba), cada uno con cuántas recetas te abre ahora y
+        un botón para comprarlo; de a 2 por página cuando son más de 3 (4 botones como mucho, D-75), y ↩️ Volver al Entrenador.
+        La llaman: 📚 Libros de recetas del 🧑‍🏫 Entrenador, los botones 📚 de 🛠️ Fabricar y de una receta, y _buy_book.
+        Si cambia, afecta: tests/test_tramos_de_recetas.py.
+        """
+        t = self.texts
+        books = self._books_cfg()
+        prices = " · ".join(t.t("books.price_item", rank=int(b["rank"]), price=self._money(int(b.get("price", 0)))) for b in books)
+        body = [t.t("books.intro", prices=prices), ""]
+        owned = self._books_owned(hero)
+        body.append(t.t("books.owned", list=" · ".join(self._book_name(pid, r) for pid, r in owned)) if owned
+                    else t.t("books.owned_none"))
+        sale = self._books_for_sale(hero)
+        actions: list[Action] = []
+        if sale:
+            per = int(self._tier_cfg().get("books_per_page", 2))
+            pages = 1 if len(sale) <= 3 else (len(sale) + per - 1) // per
+            page %= pages
+            shown = sale if pages == 1 else sale[page * per: page * per + per]
+            body += ["", t.t("books.for_sale")]
+            for pid, r in shown:
+                price = self._money(profession_rules.book_price(r, books))
+                body.append(t.t("books.sale_line", name=self._book_name(pid, r), price=price, n=self._book_opens(hero, pid, r)))
+                actions.append(Action(id=f"pbook:{pid}:{r}", label=t.t("books.buy_button", name=self._book_name(pid, r), price=price)))
+            if pages > 1:
+                body.append(t.t("prof.page", n=page + 1, total=pages))
+                actions.append(Action(id=f"pbooks:{page + 1}", label=t.t("prof.more")))
+        else:
+            body += ["", t.t("books.none_for_sale")]
+        body += ["", t.t("hero.gold_line", gold=self._money(hero.gold))]
+        actions.append(Action(id="trainer", label=t.t("menu.back")))
+        return View(kind="recipe_books", title=t.t("books.title"), body=body, actions=actions, notice=notice)
+
+    def _buy_book(self, hero: Hero, pid: str, rank: int) -> View:
+        """📕 Buy one recipe book: pay its price and keep it for ever (Hero.recipe_books); nothing changes if it cannot.
+
+        [ES]
+        Qué hace: compra un libro de recetas: comprueba que exista, que sepas el oficio, que tu rango llegue, que no lo tengas
+        y que te alcancen las monedas; si algo falla, avisa y no cobra. Si alcanza, cobra, lo guarda para siempre y dice
+        cuántas recetas nuevas abrió. La llama: "pbook:<oficio>:<rango>". Si cambia, afecta: las monedas (un sumidero) y las
+        recetas que se ven.
+        """
+        t = self.texts
+        ranks = self._book_profs().get(pid) or []
+        if rank not in ranks:
+            return self._books_view(hero)
+        name = self._book_name(pid, rank)
+        bid = profession_rules.book_id(pid, rank)
+        if bid in (hero.recipe_books or []):
+            return self._books_view(hero, notice=t.t("books.already", name=name))
+        if not self._knows(hero, pid):
+            return self._books_view(hero, notice=t.t("learn.need", name=self._prof_name(pid)))
+        have = self._prof_rank(hero, pid)
+        if have < rank:
+            return self._books_view(hero, notice=t.t("books.rank_low", name=self._prof_name(pid), rank=rank, have=have))
+        price = profession_rules.book_price(rank, self._books_cfg())
+        if hero.gold < price:
+            return self._books_view(hero, notice=t.t("books.no_gold", price=self._money(price), gold=self._money(hero.gold)))
+        opens = self._book_opens(hero, pid, rank)
+        hero.gold -= price
+        hero.recipe_books = list(hero.recipe_books or []) + [bid]
+        return self._books_view(hero, notice=t.t("books.bought", name=name, n=opens))
 
     # ------------------------------------------------------------------ ✨ enchanting and the ⬆️ better piece (D-115, phase 2)
 

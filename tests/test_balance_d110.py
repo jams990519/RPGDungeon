@@ -21,6 +21,7 @@ from engine.classes import kit
 from engine.core import Rng
 from engine.hero import Hero, hero_stats
 from engine.hero.gear import drop_chance_for, roll_gear
+from engine.professions.rules import tier_energy, tier_rank, tier_xp
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "tools"))
 import balance_report as report  # noqa: E402  (the D-110 report: the same kits and fights, in small)
@@ -102,15 +103,18 @@ def test_best_crafted_beats_best_loot_at_every_level(content):
 def test_crafted_gear_has_a_recipe_from_two_branches_and_sells_for_less_than_its_materials(content):
     recipes = content.professions["recipes"]
     ratio = content.balance["shop"]["sell_ratio"]
+    tiers = content.balance["recipe_tiers"]
     made = crafted(content)
     by_output = {out: rdef for rdef in recipes.values() for out in rdef["output"]}
     for iid, it in made.items():
         rdef = by_output[iid]                                            # every crafted piece has its recipe
         materials = sum(content.items[m]["price"] * n for m, n in rdef["inputs"].items())
         assert it["price"] * ratio < materials, iid                     # crafting never makes coins at the merchant
-        if it["req_level"] >= 10:
-            assert rdef["min_rank"] == 50 + it["req_level"] // 2, iid   # level 10 → rank 55 ... level 100 → rank 100
-            assert rdef["energy"] == 2 and rdef["xp"] == 12, iid        # same pace as the other pieces (D-108)
+        if it["req_level"] >= 10 and it["type"] != "malla" and not rdef.get("spec"):
+            # D-306 (0.44, E-221): piece level = rank (level 10 → rank 10 ... level 100 → rank 100; the mail is retired)
+            assert rdef["min_rank"] == tier_rank(it["req_level"], tiers["step"]), iid
+            assert rdef["energy"] == tier_energy(rdef["min_rank"], tiers["energy_by_rank"]), iid     # 2, 3 or 4 ⚡ by tier
+            assert rdef["xp"] == tier_xp(12, rdef["min_rank"], tiers["xp_per_rank"]), iid           # grows with the tier
 
 
 @pytest.mark.parametrize("enemy_level", [12, 15, 25, 47, 63, 88, 99])
