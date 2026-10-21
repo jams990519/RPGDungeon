@@ -119,8 +119,9 @@ def test_deposit_in_servicios_waits_for_a_work_and_an_activation_takes_it(servic
     view = service.text("test:1", "/f01")
     assert "No hay obras activas" in text(view) and service._upgrades(KEY)["fund"] == {"madera": 25}
     view = service.act("test:1", "upact:aserradero")                        # ▶️ the fund gives it what it has
-    assert "El fondo puso" in view.notice and service._upgrades(KEY)["works"]["aserradero"] == {"madera": 25}
-    assert service._upgrades(KEY)["fund"] == {}
+    # D-317 (0.45): the 🪚 Aserradero asks tablón 10, madera 2, piedra 2: the fund gives the 2 wood and keeps the rest
+    assert "El fondo puso" in view.notice and service._upgrades(KEY)["works"]["aserradero"] == {"madera": 2}
+    assert service._upgrades(KEY)["fund"] == {"madera": 23}
 
 
 def test_old_camps_without_a_guild_deposit_too_and_it_reads_well_in_english(service):

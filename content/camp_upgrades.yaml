@@ -19,6 +19,10 @@
 #         un nivel que el campamento todavía no tiene no se muestra en ninguna pantalla.
 #     cost: materiales de la mochila (ids de items.yaml) que juntan entre todos los miembros.
 #     coins: monedas (en 🥉 bronce) que también pide; 0 o ausente = ninguna.
+#     cost_before: (D-317, 0.45) lo que pedía la obra antes de cambiar su costo. Lo siguen pidiendo las obras que ya estaban
+#         activadas o tenían materiales dados (GameService._work_base); desde la 0.45 cada obra guarda su costo al activarse
+#         (espacio "upgrades", clave "cost"). Solo lo llevan los 13 edificios de oficio, que pasaron a pedir el 90 % en
+#         materiales de su oficio y el 10 % en madera y piedra, con el mismo valor en crudo.
 #     defense: puntos de 🛡️ Defensa que suma (refuerzan los alrededores contra las oleadas); ausente = 0.
 #     effect: modificadores que se SUMAN entre mejoras (los lee GameService._camp_effect).
 #     service: lo que abre para usar en el campamento (Refugio, Trueque, Sastrería: bolsas y cofres, Forja: vender equipo,
@@ -76,21 +80,24 @@ upgrades:
     name_key: upgrade.aserradero.name
     desc_key: upgrade.aserradero.desc
     level: 1
-    cost: {madera: 25, piedra: 10}        # [ES] 35 unidades: madera → 🟫 tablón
+    cost: {tablon: 10, madera: 2, piedra: 2}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 34 en crudo
+    cost_before: {madera: 25, piedra: 10}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
   tejeduria:
     emoji: "🧶"
     kind: oficio
     name_key: upgrade.tejeduria.name
     desc_key: upgrade.tejeduria.desc
     level: 1
-    cost: {fibra: 20, madera: 20}         # [ES] 40 unidades: fibra → tela
+    cost: {tela_tejida: 12, madera: 2, piedra: 2}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 40 en crudo
+    cost_before: {fibra: 20, madera: 20}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
   canteria:
     emoji: "🗿"
     kind: oficio
     name_key: upgrade.canteria.name
     desc_key: upgrade.canteria.desc
     level: 1
-    cost: {piedra: 25, madera: 15}        # [ES] 40 unidades: piedra → 🧱 sillar
+    cost: {sillar: 12, madera: 2, piedra: 2}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 40 en crudo
+    cost_before: {piedra: 25, madera: 15}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
 
   # ---- Nivel 2
   torre_vigia:
@@ -116,7 +123,8 @@ upgrades:
     name_key: upgrade.curtiduria.name
     desc_key: upgrade.curtiduria.desc
     level: 2
-    cost: {madera: 30, piedra: 15, piel: 10}     # [ES] 55 unidades: piel → cuero
+    cost: {cuero_curtido: 25, madera: 3, piedra: 2}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 55 en crudo
+    cost_before: {madera: 30, piedra: 15, piel: 10}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 30
   alambique:
     emoji: "💧"
@@ -124,7 +132,8 @@ upgrades:
     name_key: upgrade.alambique.name
     desc_key: upgrade.alambique.desc
     level: 2
-    cost: {piedra: 25, arcilla: 15, hierba_curativa: 15}   # [ES] 55 unidades: la estación de 💧 Destilación (hierba → extracto)
+    cost: {extracto: 16, madera: 3, piedra: 3}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 54 en crudo
+    cost_before: {piedra: 25, arcilla: 15, hierba_curativa: 15}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 30
   fundicion:
     emoji: "🏭"
@@ -132,7 +141,8 @@ upgrades:
     name_key: upgrade.fundicion.name
     desc_key: upgrade.fundicion.desc
     level: 2
-    cost: {piedra: 30, arcilla: 15, pieza_metal: 10}       # [ES] 55 unidades: metal → lingote
+    cost: {lingote: 25, madera: 3, piedra: 2}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 55 en crudo
+    cost_before: {piedra: 30, arcilla: 15, pieza_metal: 10}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 30
 
   # ---- Nivel 3 (aldea): servicios propios y la despensa
@@ -176,7 +186,8 @@ upgrades:
     name_key: upgrade.carpinteria.name
     desc_key: upgrade.carpinteria.desc
     level: 3
-    cost: {madera: 60, piedra: 20, fibra: 20}        # [ES] 100 unidades: arcos, bastones y 🪑 muebles
+    cost: {tablon: 30, madera: 5, piedra: 5}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 100 en crudo
+    cost_before: {madera: 60, piedra: 20, fibra: 20}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 50
   sastreria:
     emoji: "🪡"
@@ -184,7 +195,8 @@ upgrades:
     name_key: upgrade.sastreria.name
     desc_key: upgrade.sastreria.desc
     level: 3
-    cost: {fibra: 60, madera: 30, arcilla: 15}       # [ES] 105 unidades: ropa de tela
+    cost: {tela_tejida: 32, madera: 5, piedra: 5}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 106 en crudo
+    cost_before: {fibra: 60, madera: 30, arcilla: 15}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 50
     service: {craft: 1}                   # [ES] también cose 💰 bolsas y arma 🪎 cofres en el campamento (lo que hacía el 🧵 Taller)
 
@@ -219,7 +231,8 @@ upgrades:
     name_key: upgrade.peleteria.name
     desc_key: upgrade.peleteria.desc
     level: 4
-    cost: {madera: 50, piel: 30, fibra: 30}          # [ES] 110 unidades: armaduras de cuero
+    cost: {cuero_curtido: 35, tela_tejida: 10, madera: 5, piedra: 5}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 110 en crudo
+    cost_before: {madera: 50, piel: 30, fibra: 30}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 100
   alquimia:
     emoji: "⚗️"
@@ -227,7 +240,8 @@ upgrades:
     name_key: upgrade.alquimia.name
     desc_key: upgrade.alquimia.desc
     level: 4
-    cost: {hierba_curativa: 40, arcilla: 40, piedra: 30}   # [ES] 110 unidades: pociones
+    cost: {extracto: 28, arcilla: 15, madera: 6, piedra: 5}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 110 en crudo
+    cost_before: {hierba_curativa: 40, arcilla: 40, piedra: 30}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 100
   botica:
     emoji: "🩺"
@@ -235,7 +249,8 @@ upgrades:
     name_key: upgrade.botica.name
     desc_key: upgrade.botica.desc
     level: 4
-    cost: {hierba_curativa: 50, madera: 40, fibra: 30}     # [ES] 120 unidades: la estación de 🩺 Medicina (vendas y remedios)
+    cost: {extracto: 25, tela_tejida: 11, madera: 6, piedra: 6}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 120 en crudo
+    cost_before: {hierba_curativa: 50, madera: 40, fibra: 30}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 100
 
   # ---- Nivel 5 (pueblo)
@@ -255,7 +270,8 @@ upgrades:
     name_key: upgrade.muralla.name
     desc_key: upgrade.muralla.desc
     level: 5
-    cost: {piedra: 260, madera: 60, arcilla: 40}     # [ES] 360 unidades
+    cost: {piedra: 210, madera: 60, arcilla: 40, paveses_roble: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {piedra: 260, madera: 60, arcilla: 40}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
   huerto:
     emoji: "🥬"
@@ -263,7 +279,8 @@ upgrades:
     name_key: upgrade.huerto.name
     desc_key: upgrade.huerto.desc
     level: 5
-    cost: {madera: 80, fibra: 60, hierba_curativa: 50, arcilla: 40}   # [ES] 230 unidades
+    cost: {madera: 45, fibra: 60, hierba_curativa: 50, arcilla: 40, carro_viveres: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {madera: 80, fibra: 60, hierba_curativa: 50, arcilla: 40}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     effect: {rations_per_day: 1}          # [ES] suma 1 ración por día real a la despensa, juegue quien juegue
   forja:
     emoji: "🔨"
@@ -271,7 +288,8 @@ upgrades:
     name_key: upgrade.forja.name
     desc_key: upgrade.forja.desc
     level: 5
-    cost: {piedra: 80, madera: 50, pieza_metal: 40}  # [ES] 170 unidades: la estación de 🔨 Herrería (armas y armaduras de metal)
+    cost: {lingote: 60, cuero_curtido: 15, madera: 10, piedra: 10}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 170 en crudo
+    cost_before: {piedra: 80, madera: 50, pieza_metal: 40}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 200
     service: {sell_gear: 1}               # [ES] también compra el equipo que no usas, al precio del Claro (lo que hacía la 🔨 Herrería, D-101)
   joyeria:
@@ -280,7 +298,8 @@ upgrades:
     name_key: upgrade.joyeria.name
     desc_key: upgrade.joyeria.desc
     level: 5
-    cost: {piedra: 60, arcilla: 40, pieza_metal: 30}  # [ES] 130 unidades: anillos y amuletos
+    cost: {lingote: 58, madera: 7, piedra: 7}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 130 en crudo
+    cost_before: {piedra: 60, arcilla: 40, pieza_metal: 30}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 200
 
   # ---- Nivel 6
@@ -290,7 +309,8 @@ upgrades:
     name_key: upgrade.braseros.name
     desc_key: upgrade.braseros.desc
     level: 6
-    cost: {madera: 120, piedra: 120, pieza_metal: 50}   # [ES] 290 unidades
+    cost: {madera: 120, piedra: 120, pieza_metal: 20, lingote: 15}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {madera: 120, piedra: 120, pieza_metal: 50}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 1
     effect: {night_defense: 1}            # [ES] de noche cuenta 1 punto más (GameService._camp_defense(camp, night=True))
   herreria:
@@ -311,7 +331,8 @@ upgrades:
     name_key: upgrade.enfermeria.name
     desc_key: upgrade.enfermeria.desc
     level: 7
-    cost: {tablon: 40, madera: 60, fibra: 100, hierba_curativa: 100, sillar: 20, piedra: 20}   # [ES] 460 en crudo (antes: madera 180, fibra 100, hierba 100, piedra 80)
+    cost: {tablon: 40, madera: 30, fibra: 40, hierba_curativa: 40, sillar: 20, piedra: 20, literas_roble: 1, unguento: 10, venda: 10}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {tablon: 40, madera: 60, fibra: 100, hierba_curativa: 100, sillar: 20, piedra: 20}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     coins: 300                            # [ES] 3 🥈
     effect: {downed_regen_mult: 0.5}      # [ES] quien cayó se recupera un 50 % más rápido en el territorio (×1,5)
   biblioteca:
@@ -320,7 +341,8 @@ upgrades:
     name_key: upgrade.biblioteca.name
     desc_key: upgrade.biblioteca.desc
     level: 7
-    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, fibra: 100, arcilla: 60}   # [ES] 530 en crudo (antes: madera 220, piedra 150, fibra 100, arcilla 60)
+    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, tela_tejida: 30, arcilla: 30, extracto: 10}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {tablon: 60, madera: 40, sillar: 40, piedra: 30, fibra: 100, arcilla: 60}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     coins: 500                            # [ES] 5 🥈
     service: {knowledge: 1}               # [ES] abre el 📚 Conocimiento (lista "knowledge" de abajo)
 
@@ -331,7 +353,8 @@ upgrades:
     name_key: upgrade.torres_arqueros.name
     desc_key: upgrade.torres_arqueros.desc
     level: 8
-    cost: {tablon: 80, madera: 40, sillar: 40, piedra: 30, pieza_metal: 70, fibra: 60}   # [ES] 560 en crudo (antes: madera 280, piedra 150, metal 70, fibra 60)
+    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, pieza_metal: 65, fibra: 60, armero_roble: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {tablon: 80, madera: 40, sillar: 40, piedra: 30, pieza_metal: 70, fibra: 60}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
   foso:
     emoji: "🌊"
@@ -339,7 +362,8 @@ upgrades:
     name_key: upgrade.foso.name
     desc_key: upgrade.foso.desc
     level: 8
-    cost: {sillar: 100, piedra: 60, arcilla: 140, tablon: 25, madera: 25}   # [ES] 600 en crudo (antes: piedra 360, arcilla 140, madera 100)
+    cost: {sillar: 100, piedra: 60, arcilla: 120, tablon: 25, madera: 25, lingote: 10}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost_before: {sillar: 100, piedra: 60, arcilla: 140, tablon: 25, madera: 25}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
 
 # Camp knowledge: needs the Biblioteca. One study at a time, paid by the members together.
