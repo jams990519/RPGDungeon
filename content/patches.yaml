@@ -896,3 +896,20 @@ v0_45:
     - "🔥 At the Clearing you can refine all of that from day one: wood into planks, fiber into cloth, hide into leather, metal into ingots, herbs into extract and stone into ashlar blocks."
     - "🏥 From level 5 buildings mix professions: the 🏥 Infirmary asks for 🪑 Bunks from Carpentry, ointments from Medicine and bandages from Tailoring; the 🧱 Wall, 🪑 Pavises; the 🏹 Archer towers, a 🪑 Weapon rack… A big camp needs all of its professions."
     - "🔒 Works your camp had already activated keep asking for what they did before: nobody loses what they already gave."
+
+v0_45_1:
+  version: "0.45.1"
+  title: "🔧 Lost Realms 0.45.1: ningún campamento se traba y las recetas en lista"
+  title_en: "🔧 Lost Realms 0.45.1: no camp gets stuck, and recipes as a list"
+  notes:
+    - "🪑 Las 🛏️ Literas de roble se hacen desde el rango 10 de la Carpintería (antes 40) y el 🗄️ Armero de roble desde el 15 (antes 70). La 🏥 Enfermería y las 🏹 Torres de arqueros los siguen pidiendo, pero ahora tu carpintero llega a tiempo."
+    - "🧱 La Muralla de piedra y el 🥬 Huerto ya no piden muebles de especialista (Paveses y Carro de víveres): piden tablones, lingotes y, la Muralla, sillares. Para subir de nivel nunca hace falta una 🎓 especialización ni un 📚 libro de recetas."
+    - "🔨 La Forja se construye solo con lingotes (antes también 15 de cuero): la piel queda para la Curtiduría, la Peletería y tus armaduras."
+    - "🔒 Las obras que tu campamento ya había activado siguen pidiendo lo mismo: nadie pierde lo que ya entregó."
+    - "📜 🛠️ Fabricar, 🪚 Refinar y 🍲 Cocinar son ahora una lista: una línea por receta con su código (/r1), su color, si la puedes hacer (✅ lo llevas todo, 🔸 te falta algo, ▫️ nada) y la experiencia que da, agrupadas por oficio. Toca el código para abrirla, o ✅ Solo las que puedo hacer."
+  notes_en:
+    - "🪑 🛏️ Oak Bunks are made from Carpentry rank 10 (was 40) and the 🗄️ Oak Weapon Rack from rank 15 (was 70). The 🏥 Infirmary and the 🏹 Archer Towers still ask for them, but now your carpenter gets there in time."
+    - "🧱 The Stone Wall and the 🥬 Garden no longer ask for specialist furniture (Oak Pavises and Supply Cart): they ask for planks, ingots and, the Wall, ashlar blocks. Levelling your camp up never needs a 🎓 specialization or a 📚 recipe book."
+    - "🔨 The Forge is built with ingots only (it also asked for 15 leather): hide is left for the Tannery, the Leatherworks and your armor."
+    - "🔒 Works your camp had already activated keep asking for the same: nobody loses what they already gave."
+    - "📜 🛠️ Craft, 🪚 Refine and 🍲 Cook are now a list: one line per recipe with its code (/r1), its color, whether you can make it (✅ you carry it all, 🔸 something is missing, ▫️ none) and the experience it gives, grouped by profession. Tap the code to open it, or ✅ Only what I can make."

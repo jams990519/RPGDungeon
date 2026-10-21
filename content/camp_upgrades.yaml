@@ -19,10 +19,12 @@
 #         un nivel que el campamento todavía no tiene no se muestra en ninguna pantalla.
 #     cost: materiales de la mochila (ids de items.yaml) que juntan entre todos los miembros.
 #     coins: monedas (en 🥉 bronce) que también pide; 0 o ausente = ninguna.
-#     cost_before: (D-317, 0.45) lo que pedía la obra antes de cambiar su costo. Lo siguen pidiendo las obras que ya estaban
-#         activadas o tenían materiales dados (GameService._work_base); desde la 0.45 cada obra guarda su costo al activarse
-#         (espacio "upgrades", clave "cost"). Solo lo llevan los 13 edificios de oficio, que pasaron a pedir el 90 % en
-#         materiales de su oficio y el 10 % en madera y piedra, con el mismo valor en crudo.
+#     cost_before: (D-317, 0.45) lo que pedía la obra antes de la 0.45. Lo siguen pidiendo las obras que ya estaban
+#         activadas o tenían materiales dados antes de la 0.45 (GameService._work_base); desde la 0.45 cada obra guarda su
+#         costo al activarse (espacio "upgrades", clave "cost"), así que un cambio posterior (la 0.45.1, D-319) no le cambia
+#         lo que pide a una obra ya activada. Lo llevan los 13 edificios de oficio (D-317: 90 % en materiales de su oficio y
+#         10 % en madera y piedra, con el mismo valor en crudo) y las obras de nivel 5 a 8 que mezclan oficios (D-318).
+#         Nunca se cambia: es lo de antes de la 0.45, aunque el "cost" de hoy cambie otra vez.
 #     defense: puntos de 🛡️ Defensa que suma (refuerzan los alrededores contra las oleadas); ausente = 0.
 #     effect: modificadores que se SUMAN entre mejoras (los lee GameService._camp_effect).
 #     service: lo que abre para usar en el campamento (Refugio, Trueque, Sastrería: bolsas y cofres, Forja: vender equipo,
@@ -52,7 +54,12 @@
 #       tenía de más cuenta como refinado (GameService._credit_raw). Los beneficios de campamento de la Cantería (−15 % de
 #       piedra y sillar) y de la 🏗️ Construcción (−20 % de todo) bajan lo que pide cada obra (GameService._upgrade_need);
 #       las monedas no. Las defensas que dañan las oleadas se reparan aparte (balance.yaml camp_professions).
-#     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles), tests/test_oficios_campamento.py.
+#     - D-319 (0.45.1, Claude, provisional): las obras que pide ⏫ Siguiente nivel (balance.yaml camps.level_up) solo piden
+#       cosas que un miembro hace con rango 10 o menos (rango 15 las del paso a castillo), sin 🎓 especialización, sin 📚
+#       libro y sin título comprado; si no, un campamento se traba en ese nivel hasta que alguien llegue al rango
+#       (tests/test_costos_edificios.py). El ritmo hasta castillo y la demanda de piel y metal: `python tools/camp_costs.py`.
+#     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles), tests/test_oficios_campamento.py,
+#       tests/test_costos_que_suben.py, tests/test_costos_edificios.py.
 
 upgrades:
   # ---- Nivel 1 (campamento): lo primero, al alcance de 2 jugadores en un día o dos
@@ -270,7 +277,7 @@ upgrades:
     name_key: upgrade.muralla.name
     desc_key: upgrade.muralla.desc
     level: 5
-    cost: {piedra: 210, madera: 60, arcilla: 40, paveses_roble: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost: {piedra: 180, sillar: 10, madera: 60, arcilla: 40, tablon: 12, lingote: 5}   # [ES] D-318 (0.45): desde el nivel 5 mezcla oficios (🗿 Cantería, 🪚 Aserradero, 🏭 Fundición). D-319 (0.45.1): sin los 🪑 Paveses (🎓 Escudos, rango 50: trababan el paso al nivel 6); 356 en crudo
     cost_before: {piedra: 260, madera: 60, arcilla: 40}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
   huerto:
@@ -279,7 +286,7 @@ upgrades:
     name_key: upgrade.huerto.name
     desc_key: upgrade.huerto.desc
     level: 5
-    cost: {madera: 45, fibra: 60, hierba_curativa: 50, arcilla: 40, carro_viveres: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost: {madera: 45, fibra: 60, hierba_curativa: 50, arcilla: 40, tablon: 10, lingote: 3}   # [ES] D-318 (0.45): desde el nivel 5 mezcla oficios (🪚 Aserradero, 🏭 Fundición). D-319 (0.45.1): sin el 🪑 Carro de víveres (🎓 Mobiliario, rango 25: trababan el paso al nivel 6); 231 en crudo
     cost_before: {madera: 80, fibra: 60, hierba_curativa: 50, arcilla: 40}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     effect: {rations_per_day: 1}          # [ES] suma 1 ración por día real a la despensa, juegue quien juegue
   forja:
@@ -288,7 +295,7 @@ upgrades:
     name_key: upgrade.forja.name
     desc_key: upgrade.forja.desc
     level: 5
-    cost: {lingote: 60, cuero_curtido: 15, madera: 10, piedra: 10}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 170 en crudo
+    cost: {lingote: 75, madera: 10, piedra: 10}        # [ES] D-317 (0.45): 90 % del material de su oficio y 10 % de madera y piedra; 170 en crudo. D-319 (0.45.1): solo lingotes (antes 60 y 15 de cuero: la piel es lo más caro de juntar)
     cost_before: {piedra: 80, madera: 50, pieza_metal: 40}        # [ES] D-317: lo que pedía antes de la 0.45; lo siguen pidiendo las obras activadas o empezadas antes
     coins: 200
     service: {sell_gear: 1}               # [ES] también compra el equipo que no usas, al precio del Claro (lo que hacía la 🔨 Herrería, D-101)
@@ -331,7 +338,7 @@ upgrades:
     name_key: upgrade.enfermeria.name
     desc_key: upgrade.enfermeria.desc
     level: 7
-    cost: {tablon: 40, madera: 30, fibra: 40, hierba_curativa: 40, sillar: 20, piedra: 20, literas_roble: 1, unguento: 10, venda: 10}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost: {tablon: 40, madera: 30, fibra: 40, hierba_curativa: 40, sillar: 20, piedra: 20, literas_roble: 1, unguento: 10, venda: 10}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios. D-319 (0.45.1): las 🪑 Literas se hacen desde el rango 10 de la Carpintería (antes 40)
     cost_before: {tablon: 40, madera: 60, fibra: 100, hierba_curativa: 100, sillar: 20, piedra: 20}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     coins: 300                            # [ES] 3 🥈
     effect: {downed_regen_mult: 0.5}      # [ES] quien cayó se recupera un 50 % más rápido en el territorio (×1,5)
@@ -353,7 +360,7 @@ upgrades:
     name_key: upgrade.torres_arqueros.name
     desc_key: upgrade.torres_arqueros.desc
     level: 8
-    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, pieza_metal: 65, fibra: 60, armero_roble: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios
+    cost: {tablon: 60, madera: 40, sillar: 40, piedra: 30, pieza_metal: 65, fibra: 60, armero_roble: 1}        # [ES] D-318 (0.45): desde el nivel 5 pide también cosas de otros oficios. D-319 (0.45.1): el 🪑 Armero se hace desde el rango 15 de la Carpintería (antes 70)
     cost_before: {tablon: 80, madera: 40, sillar: 40, piedra: 30, pieza_metal: 70, fibra: 60}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
   foso:

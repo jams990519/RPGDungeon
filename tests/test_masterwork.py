@@ -229,14 +229,15 @@ def test_furniture_is_made_only_by_carpentry_from_its_rank(service):
     # D-141: 🛡️ Escudos and 🛒 Mobiliario y carros add one exclusive piece each (recipes with "spec": tests/test_especializaciones.py)
     assert {rid for rid, r in furniture.items() if not r.get("spec")} == {"literas_roble", "armero_roble"}
     assert {r["profession"] for r in furniture.values()} == {"carpinteria"}
-    assert [furniture[r]["min_rank"] for r in ("literas_roble", "armero_roble")] == [40, 70]
+    # D-319 (0.45.1): ranks 10 and 15 (before 40 and 70): the 🏥 Enfermería and the 🏹 Torres ask them to level the camp up
+    assert [furniture[r]["min_rank"] for r in ("literas_roble", "armero_roble")] == [10, 15]
     ready(service, backpack={"tablon": 12, "tela_tejida": 4, "cuero_curtido": 2}, energy=30)
     hero = service._load("test:1")
-    hero.professions = {"carpinteria": rank_xp(service, 39)}
+    hero.professions = {"carpinteria": rank_xp(service, 9)}
     service._save(hero)
     assert "🔒" in service.act("test:1", "mk:literas_roble:1:0").notice
     hero = service._load("test:1")
-    hero.professions = {"carpinteria": rank_xp(service, 40)}
+    hero.professions = {"carpinteria": rank_xp(service, 10)}
     service._save(hero)
     recipe = service.act("test:1", "rec:literas_roble:0")
     assert any("mueble para tu campamento" in line for line in recipe.body) and len(recipe.actions) <= 4

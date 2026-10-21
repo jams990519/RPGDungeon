@@ -775,7 +775,7 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 
 | Oficio | Tramos y colores | Solo su ⚡ hoy: 25 / 50 / 75 / 100 | Antes (0.42) | Veces hasta el 100 (antes) | Cadena aprox. hoy (0.44, con la piel de la 0.43): 25 / 50 / 100 | Cadena aprox. 0.42 (misma cuenta) |
 |---|---|---|---|---|---|---|
-| 🪑 Carpintería | sí | 19 / 69 / 162 / 321 | 22 / 90 / 205 / 368 | 4.302 (7.351) | 417 / 1.797 / 9.561 | 150 / 624 / 2.547 |
+| 🪑 Carpintería | sí | 19 / 69 / 171 / 329 (0.44: 162 / 321) | 22 / 90 / 205 / 368 | 4.524 (7.351) | 368 / 2.047 / 10.508 (0.44: 417 / 1.797 / 9.561) | 150 / 624 / 2.547 |
 | 🔨 Herrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 382 / 1.878 / 8.549 | 181 / 753 / 3.073 |
 | 🪡 Sastrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 330 / 1.689 / 7.830 | 101 / 422 / 1.724 |
 | 🦺 Peletería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 430 / 2.158 / 9.963 | 286 / 1.194 / 4.874 |
@@ -787,7 +787,7 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 
 **Lo que dicen los números:**
 
-- **La meta se cumple para el especialista:** 329 días al 100 (~11 meses; la Carpintería, 321, por los 🪑 muebles), con ~4.600 piezas en vez de 7.351, y **siempre fabricando lo del tramo nuevo**: la receta que conviene en el rango r es la del tramo de r (por ejemplo, en la Herrería, la espada del nivel 20 en el rango 20, la del 50 en el 50). Llega al 25 y al 50 antes que hoy (19 y 69 días) porque las piezas de los tramos bajos ya dan más que 12; lo largo está del 50 al 100.
+- **La meta se cumple para el especialista:** 329 días al 100 (~11 meses; la Carpintería también desde la 0.45.1: en la 0.44 tardaba 321 porque el 🗄️ Armero de rango 70 daba más experiencia por ⚡, y D-319 lo bajó al rango 15), con ~4.600 piezas en vez de 7.351, y **siempre fabricando lo del tramo nuevo**: la receta que conviene en el rango r es la del tramo de r (por ejemplo, en la Herrería, la espada del nivel 20 en el rango 20, la del 50 en el 50). Llega al 25 y al 50 antes que hoy (19 y 69 días) porque las piezas de los tramos bajos ya dan más que 12; lo largo está del 50 al 100.
 - **La cadena en solitario es mucho más lenta** (2 a 4,5 veces la de antes con la misma cuenta, ya con la piel ×2,5 de la 0.43, que la alivia en la Herrería y la Peletería): cada tramo nuevo pide más material por la misma experiencia y no se puede seguir con la pieza barata. Llevado a la cuenta del §4.1, la Herrería pasa de ~6 a ~15-20 años, la Peletería de ~9 a ~20, la Sastrería y la Joyería de ~4 a ~18-20: el oficio queda para especialistas que reciben o compran sus materiales (el mercado entre jugadores, todavía sin hacer). Es la parte "lenta" que pidió el dueño; si parece demasiado, las palancas son `recipe_tiers.xp_per_rank`, los colores o los materiales de los tramos altos (P-245).
 - **Material que pide la economía:** un especialista al 100 gasta de 3 a 7 veces más material que antes, contado en la energía de juntarlo con los mismos precios por unidad (Peletería ×3,2, Herrería ×4,3, Carpintería ×4,5, Joyería ×5,3, Sastrería ×7,2): las piezas de los tramos altos piden de 6 a 10 veces lo crudo de la de rango 1 (§3.2). Sobre todo raros: un herrero al 100 usa ~12.700 💠 gemas (antes ninguna) y un sastre ~12.700 🌸 flores de luna: mucho trabajo para el ⛏️ Minero y el 🌿 Herbolario.
 - **Sin libros** (quien no compra el del 25) se sube hasta el ~35 con las recetas viejas (🟨 y 🟩); después todas son ⬜ y hay que comprarlo.

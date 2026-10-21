@@ -476,8 +476,10 @@ El dueño lo dijo así: "ser carpintero te permite hacer piezas más exclusivas"
 
 | Mueble | Rango | Materiales | Lo que da al campamento |
 |---|---|---|---|
-| 🛏️ Literas de roble | 40 | tablón ×12, tela ×4, cuero ×2 | **+1 lugar** para un miembro (se suma al cupo, al del gremio y a las 🛖 Cabañas) |
-| 🗄️ Armero de roble | 70 | tablón ×16, lingote ×6, cuero ×3 | **+1 de 🛡️ Defensa** contra las oleadas |
+| 🛏️ Literas de roble | 10 (hasta la 0.45, 40) | tablón ×12, tela ×4, cuero ×2 | **+1 lugar** para un miembro (se suma al cupo, al del gremio y a las 🛖 Cabañas) |
+| 🗄️ Armero de roble | 15 (hasta la 0.45, 70) | tablón ×16, lingote ×6, cuero ×3 | **+1 de 🛡️ Defensa** contra las oleadas |
+
+  D-319 (0.45.1): bajaron de rango porque la 🏥 Enfermería y las 🏹 Torres de arqueros los piden para subir de nivel (D-318, `camps.level_up`); con 40 y 70 un campamento quedaba trabado meses esperando a su carpintero. Los muebles de las 🎓 (🛡️ Paveses, 🛒 Carro de víveres) no cambian y ninguna obra de la lista los pide.
 
   Un miembro, en el centro de su campamento, lo coloca desde 🔨 Mejoras → 🔨 Obras → 🪑 Colocar. Queda para siempre, con el nombre de quien lo puso, y vale para todos los miembros. **Uno de cada mueble por campamento:** un segundo igual no suma (se guarda en la mochila). Los muebles no cuentan como mejoras para el castillo. Mientras no se colocan, se ven en 🎒 Mochila → 📦 Recursos.
 - **Datos y código.** Números en `content/balance.yaml` → `masterwork`; las piezas gemelas `<id>_obra` las arma el motor al cargar (`engine/professions/rules.py`, `masterwork_items`); la firma se guarda en `Hero.gear_signatures` (vacío para los héroes de antes); los muebles son `kind: furniture` en `content/items.yaml` y se guardan en las mejoras del campamento (`furniture`). Pruebas: `tests/test_masterwork.py`.
@@ -543,6 +545,10 @@ El dueño confirmó el 20-oct-2026 (E-222, E-223, E-228) que los oficios se apre
 - **Datos y código:** `content/balance.yaml` (`professions.titles`, `learn_price`, `skinning`; `shop.remedy_sell_ratio`; `camp_professions.maintenance`), `content/items.yaml` (códigos 61-66), `Hero.prof_titles`, `engine/professions/rules.py` (`title_cap`, `held_title_index`, `xp_room`), `engine/service/game.py` (sección "🎖️ profession titles", `_prof_gain`, `_learn_price`, `_skin_loot_count`, `_can_fish`, `_maintain`, `_sell_price`) y los textos de `content/locales/es_titulos_pesca.yaml`. Pruebas: `tests/test_titulos_de_oficio.py`.
 
 **De dónde sale:** *World of Warcraft* (los títulos que se compran al entrenador, de Aprendiz a Gran maestro, y la Pesca como oficio secundario con su propia acción).
+
+### 0.9 Las recetas en lista con código (D-321)
+
+🪚 Refinar, 🛠️ Fabricar y 🍲 Cocinar muestran las recetas como una **lista**: una línea por receta con su código **/r1, /r2…**, su color (🟧 🟨 🟩 ⬜), si la puedes hacer (✅ lo llevas todo, 🔸 te falta algo, ▫️ no llevas nada), la pieza con su nivel y la experiencia que da. Van agrupadas por oficio, 8 por página, y el botón **✅ Solo las que puedo hacer** filtra. El código abre la receta, con su detalle y los botones de cantidad. Pedido del dueño (21-oct): "un formato de listado fácil de entender, porque a medida que se aprende salen muchas recetas".
 
 ### 0.8 La reforma de recetas en el juego (D-306, desde la 0.44)
 

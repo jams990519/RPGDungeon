@@ -710,7 +710,7 @@ CAMP_KINDS = ("casa", "oficio", "defensa", "saber")
 # Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
 BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
-PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:")   # D-257: + 📋 📚 and a profession's screen
+PROF_ACTIONS = ("oficios", "est:", "esto:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:")   # D-321: "esto:" = only what you can make   # D-257: + 📋 📚 and a profession's screen
 # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador: the screen ("ptitles") and buying a profession's next title
 # ("ptitle:<profession>", or "ptitle:<profession>:d" from that profession's screen, which it goes back to).
 TITLE_ACTIONS = ("ptitles", "ptitle:")
@@ -770,6 +770,7 @@ LVLUP_SECTIONS = {"work": "lvlup.works_title", "item": "lvlup.items_title", "che
                   "guild": "guild.castle_title", "castle": "guild.castle_title", "trial": "guild.castle_title"}
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
+RECIPE_CODE_RE = re.compile(r"^/r_?(\d{1,3})(@\w+)?$")   # D-321: /r3 = the 3rd recipe of the last 🛠️ / 🪚 / 🍲 recipe list
 GEAR_CODE_RE = re.compile(r"^/(e|q)_?(\d{1,2})(@\w+)?$")   # D-299: /e1 = the 1st piece of 🔁 Equipar; /q1 = take off the 1st worn piece
 SEARCH_RE = re.compile(r"^/(?:buscar|search)(?:@\w+)?(?:\s+(.+))?$", re.IGNORECASE)   # D-296: /buscar madera = 🔎 the finder
 RESOURCE_CODE_RE = re.compile(r"^/(\d{1,3})(@\w+)?$")   # D-243: /07 = what the resource with code 7 is for (bare numbers are theirs)
@@ -912,8 +913,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             zcode = ZONE_CODE_RE.match(low)
             search = SEARCH_RE.match(text.strip())
             gcode = GEAR_CODE_RE.match(low)
+            rcode = RECIPE_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif rcode and self.store.get("combat", hero.id) is None:     # D-321: /r3 opens the 3rd recipe of the last list
+                typed = self._recipe_code(hero, int(rcode.group(1)))
             elif gcode and self.store.get("combat", hero.id) is None:     # D-299: /e1 opens a piece, /q1 takes one off
                 typed = self._gear_code(hero, "equip" if gcode.group(1) == "e" else "unequip", int(gcode.group(2)))
             elif search:                                 # D-296: /buscar madera = where there is wood, in zones known to 50 %
@@ -8555,6 +8559,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._learn(hero, parts[1])
         if parts[0] == "est" and len(parts) >= 2:
             return self._station_view(hero, parts[1], page)
+        if parts[0] == "esto" and len(parts) >= 2:      # D-321: ✅ only the recipes you can make now
+            return self._station_view(hero, parts[1], page, only_ok=True)
         if parts[0] == "rec" and len(parts) >= 2:
             return self._recipe_view(hero, parts[1], page)
         if parts[0] == "mk" and len(parts) >= 3 and parts[2].isdigit():
@@ -8610,7 +8616,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions.append(Action(id=self._prof_back(hero), label=t.t("menu.back")))
         return View(kind="professions", title=t.t("prof.title"), body=body, actions=actions, notice=notice)
 
-    def _station_view(self, hero: Hero, branch: str, page: int = 0, notice: str | None = None) -> View:
+    def _station_view(self, hero: Hero, branch: str, page: int = 0, notice: str | None = None, only_ok: bool = False) -> View:
         """🪚 Refinar / 🛠️ Fabricar: the recipes of this branch you can do here with your rank, ✅ first (you carry it
         all), then those you carry part of (with what is missing), then the rest; 2 per page when there are more than 3.
 
@@ -8630,8 +8636,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-306 (0.44): cada receta lleva delante su color (🟧 🟨 🟩 ⬜, en los oficios con tramos) y al final la experiencia de oficio
         que da ahora ({prof}+{xp}), con la leyenda arriba; en un tramo sale primero la pieza de nivel más alto; las recetas que
         piden un 📚 libro que no tienes no salen: una línea por libro dice cuántas abre aquí (y un botón 📚 si cabe).
+        D-321 (0.46, pedido del dueño: "las profesiones que hacen ropa, armas y demás necesitan un formato de listado fácil de
+        entender, porque a medida que se aprende salen muchas recetas"): las recetas son una LISTA con código, no botones: una
+        línea por receta ("/r1 🟧✅ Espada de nivel 45 · nv 45 · 🔨+17": color, ✅ lo llevas todo / 🔸 te falta algo / ▫️ no
+        llevas nada, la pieza y la experiencia), agrupadas por oficio con su rango, de a professions.list_per_page (8) por
+        página; el código /rN abre la receta (_recipe_code, guarda el orden con _codes "recipes"). Botones: ➡️ Ver más,
+        ✅ Solo las que puedo hacer ("esto:<rama>:<página>", only_ok) / 📜 Ver todas, 📚 si cabe y ↩️ Volver.
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, 🍲 Cocinar ("cook"), ➡️ Ver más y ↩️ Volver de cada receta.
-        Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py, tests/test_menus_y_dudas.py).
+        Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py, tests/test_menus_y_dudas.py,
+        tests/test_lista_de_recetas.py).
         """
         t = self.texts
         only = None
@@ -8674,14 +8687,21 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             missing = missing_for(rdef, hero.backpack)
             carried = any(hero.backpack.get(item, 0) > 0 for item in rdef["inputs"])
             entries.append((0 if not missing else 1 if carried else 2, rid, missing))
-        # Stable: inside each group the highest rank first (D-110: up to 13 tiers per line, the newest is the useful one),
-        # D-306: in a tier, the piece of highest level first (a tier can make two levels: 8 and 10 at rank 10), then file order.
-        entries.sort(key=lambda entry: (entry[0], -int(recipes[entry[1]].get("min_rank", 1)),
+        # D-321 (0.46): grouped by profession (catalog order), and inside each one ✅ first, then 🔸, then ▫️; inside each group
+        # the highest rank first (D-110: up to 13 tiers per line, the newest is the useful one), D-306: in a tier, the piece of
+        # highest level first (a tier can make two levels: 8 and 10 at rank 10), then file order.
+        prof_order = {pid: n for n, pid in enumerate(catalog)}
+        entries.sort(key=lambda entry: (prof_order.get(recipes[entry[1]]["profession"], len(prof_order)), entry[0],
+                                        -int(recipes[entry[1]].get("min_rank", 1)),
                                         -int(self.content.items[next(iter(recipes[entry[1]]["output"]))].get("req_level", 0))))
-        per = int(self._prof_cfg()["per_page"])
-        pages = 1 if len(entries) <= 3 else (len(entries) + per - 1) // per
+        total_listed = len(entries)
+        if only_ok:                                     # D-321: ✅ only the recipes you carry everything for
+            entries = [entry for entry in entries if entry[0] == 0]
+        per = max(1, int(self._prof_cfg().get("list_per_page", 8)))      # D-321: a list, 8 per page
+        pages = max(1, (len(entries) + per - 1) // per)
         page %= pages
-        shown = entries if pages == 1 else entries[page * per: page * per + per]
+        shown = entries[page * per: page * per + per]
+        station_id = "cook" if only else branch
         intro = (t.t("hub.cook_intro") + " " + t.t("prof.line", name=self._prof_name(only), rank=self._prof_rank(hero, only),
                                                    title=self._rank_title(self._prof_rank(hero, only)), bar=self._rank_bar(hero, only))
                  if only else t.t(f"prof.station_intro_{branch}"))
@@ -8689,28 +8709,41 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 t.t("prof.energy", energy=hero.energy, max=self.content.balance["energy"]["max"])]
         if any(self._tiered(recipes[rid]["profession"]) for _, rid, _ in shown):
             body.append(t.t("recipe_tier.legend"))                        # D-306: 🟧 🟨 🟩 ⬜ in one line
-        body.append("")
+        if shown:
+            body.append(t.t("rlist.legend"))                              # D-321: ✅ 🔸 ▫️ and "tap the code"
+        if only_ok:
+            body.append(t.t("rlist.only_ok_line"))
         actions = []
-        for _, rid, missing in shown:
+        codes = []
+        group = None
+        for status, rid, missing in shown:                                # D-321: one line per recipe, with its code
             rdef = recipes[rid]
-            rank = self._prof_rank(hero, rdef["profession"])
+            pid = rdef["profession"]
+            rank = self._prof_rank(hero, pid)
+            if pid != group:                                              # the profession and its rank above its recipes
+                body += ["", t.t("rlist.group", name=self._prof_name(pid), rank=rank)]
+                group = pid
+            codes.append(f"{rid}|{station_id}|{page}")
+            out = self.content.items.get(next(iter(rdef["output"])), {})
+            level = t.t("rlist.level", n=out["req_level"]) if out.get("kind") == "gear" and out.get("req_level") else ""
             # D-141: "🎓 " before an exclusive recipe; D-306: its color (🟧 🟨 🟩 ⬜) first and the profession xp it gives now
-            name = self._color_mark(rdef, rank) + self._pspec_mark(rdef) + self._recipe_name(rid)
-            body.append(t.t("prof.entry_ok" if not missing else "prof.entry", item=name,
-                            inputs=self._item_list(rdef["inputs"]), energy=rdef["energy"],
-                            prof=catalog.get(rdef["profession"], {}).get("emoji", ""), xp=self._recipe_xp(rdef, rank)))
-            if missing:
-                body.append(t.t("prof.entry_missing", items=self._item_list(missing)))
-            actions.append(Action(id=f"rec:{rid}:{page}", label=t.t("prof.entry_button_ok" if not missing else "prof.entry_button",
-                                                                     item=name)))
+            body.append(t.t(f"rlist.line_{('ok', 'part', 'none')[status]}", code=f"/r{len(codes)}",
+                            color=self._color_mark(rdef, rank), item=self._pspec_mark(rdef) + self._recipe_name(rid),
+                            level=level, prof=catalog.get(pid, {}).get("emoji", ""), xp=self._recipe_xp(rdef, rank)))
+        self._codes(hero, "recipes", codes)
         unknown = [pid for pid in self._to_learn(hero)                    # D-257: what you could learn to make more here
                    if catalog[pid].get("branch") == branch and not only and any(r["profession"] == pid for r in recipes.values())]
         known_here = only or any(catalog[pid].get("branch") == branch and self._knows(hero, pid) for pid in catalog)
         if not entries:
-            body.append(t.t("prof.station_empty") if known_here else t.t(f"learn.none_{branch}"))
+            body.append(t.t("rlist.only_ok_empty") if only_ok and total_listed
+                        else t.t("prof.station_empty") if known_here else t.t(f"learn.none_{branch}"))
         if pages > 1:
-            body.append(t.t("prof.page", n=page + 1, total=pages))
-            actions.append(Action(id=f"est:{'cook' if only else branch}:{page + 1}", label=t.t("prof.more")))
+            body += ["", t.t("rlist.count", n=len(entries), page=page + 1, total=pages)]
+            actions.append(Action(id=f"{'esto' if only_ok else 'est'}:{station_id}:{page + 1}", label=t.t("prof.more")))
+        if only_ok:                                     # D-321: back to every recipe
+            actions.append(Action(id=f"est:{station_id}:0", label=t.t("rlist.all_button")))
+        elif total_listed > per or any(status for status, _, _ in entries):
+            actions.append(Action(id=f"esto:{station_id}:0", label=t.t("rlist.only_ok_button")))
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
         for (pid, book), n in book_locked.items():                        # D-306: what each 📚 book you lack opens here
@@ -8722,6 +8755,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         actions.append(Action(id="claro" if only else "oficios", label=t.t("menu.back")))    # D-192: 🍲 Cocinar goes back to 🏕️
         title = t.t("hub.cook_title") if only else t.t(f"prof.station_title_{branch}")
         return View(kind="station", title=title, body=body, actions=actions[:4], notice=notice)
+
+    def _recipe_code(self, hero: Hero, n: int) -> View:
+        """/r3: the 3rd recipe of the last 🛠️ / 🪚 / 🍲 list you saw (D-321); a code not on it says so.
+
+        [ES] Qué hace: abre la receta número n de la última lista de recetas (la que guardó _station_view con _codes "recipes":
+        "receta|estación|página"), así el código es lo que viste. Si no está, avisa y abre ⚒️ Oficios. La llama: text() con
+        RECIPE_CODE_RE. Si cambia, afecta: tests/test_lista_de_recetas.py."""
+        target = self._code_target(hero, "recipes", n)
+        if not target:
+            return self._professions_view(hero, notice=self.texts.t("rlist.bad_code"))
+        rid, _, page = (target.split("|") + ["", "0"])[:3]
+        return self._recipe_view(hero, rid, int(page) if page.isdigit() else 0)
 
     def _recipe_view(self, hero: Hero, rid: str, page: int = 0, notice: str | None = None) -> View:
         """One recipe: what it needs (✅ / ❌ with have/need), what it makes, energy, what you earn, and how many to make.

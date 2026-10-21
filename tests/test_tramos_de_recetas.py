@@ -167,8 +167,8 @@ def test_the_station_shows_colors_their_legend_and_the_experience(service):
     view = service.act("test:1", "est:craft:0")
     text = body(view)
     assert "🟧 experiencia entera · 🟨 la mitad · 🟩 un cuarto · ⬜ nada" in text
-    assert "🟧 🟣🗡️ Hoja de la frontera" in text and "🔨+13" in text
-    assert any(a.label.startswith("✅ 🟧") for a in view.actions)
+    # D-321: one line per recipe with its code: the color, ✅ (you carry it all), the piece and its experience
+    assert any(line.startswith("/r") and "🟧 ✅ 🟣🗡️ Hoja de la frontera" in line and "🔨+13" in line for line in view.body)
     recipe = service.act("test:1", "rec:espada_forjada:0")
     assert "🟩 Receta verde" in body(recipe) and "Herrería +3" in body(recipe)
 
@@ -186,7 +186,8 @@ def test_book_prices_and_ranks(content):
 def test_recipes_of_rank_25_need_their_book_and_buying_it_opens_them(service):
     crafter(service, "herreria", rank=27, gold=150, bag={"lingote": 40, "cuero_curtido": 20, "gema_bruta": 5})
     station = service.act("test:1", "est:craft:0")
-    assert "rec:espada_nivel_25:0" not in ids(station)
+    from conftest import listed_recipes
+    assert "espada_nivel_25" not in listed_recipes(service)             # D-321: the list's /rN codes
     assert "📚 Con el libro 🔨 Herrería 25 se abren 7 recetas más aquí" in body(station)
     recipe = service.act("test:1", "rec:espada_nivel_25:0")
     assert "📕 Pide el libro de recetas 🔨 Herrería 25" in body(recipe) and "pbooks" in ids(recipe)
@@ -207,7 +208,7 @@ def test_recipes_of_rank_25_need_their_book_and_buying_it_opens_them(service):
     hero = service._load("test:1")
     assert hero.recipe_books == ["herreria:25"] and hero.gold == 50
     assert "Ya tienes" in service.act("test:1", "pbook:herreria:25").notice and service._load("test:1").gold == 50
-    assert "rec:espada_nivel_25:0" in ids(service.act("test:1", "est:craft:0"))
+    assert "espada_nivel_25" in listed_recipes(service)
     made = service.act("test:1", "mk:espada_nivel_25:1:0")
     assert "Hiciste" in made.notice
 

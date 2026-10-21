@@ -13,7 +13,7 @@ import pytest
 
 from collections import deque
 
-from conftest import make_hero
+from conftest import listed_recipes, make_hero
 from engine.combat import make_combat
 from engine.core import FixedClock, ItemCrafted, MemoryStore, ProfessionRankUp, Rng
 from engine.hero import Hero, hero_stats
@@ -355,28 +355,32 @@ def test_oficios_command_and_screen(service):
     assert not service.texts.missing
 
 
-def test_station_lists_what_you_can_make_first_two_per_page(service):
+def test_station_lists_every_recipe_with_a_code_grouped_by_profession(service):
+    # D-321 (0.46, the owner: "un formato de listado fácil de entender"): one line per recipe with its /rN code, grouped by
+    # profession (catalog order), ✅ first inside each, 8 per page; the code opens the recipe
     ready(service, backpack={"lingote": 2, "cuero_curtido": 1, "tablon": 1}, energy=30)
     view = service.act("test:1", "est:craft:0")
-    assert view.kind == "station" and len(view.actions) == 4
-    assert view.actions[0].id == "rec:daga_forjada:0" and view.actions[0].label.startswith("✅")
-    # D-306 (0.44): the 📿 copper pendant (lingot and leather) too; in a tier, the piece of highest level first
-    assert view.actions[1].id == "rec:colgante_cobre:0" and view.actions[1].label.startswith("✅")
-    assert view.actions[2].id == "est:craft:1" and view.actions[3].id == "oficios"
-    # then those you carry part of, in file order (Carpintería comes first): the staff, with what is missing
-    second = service.act("test:1", "est:craft:1")
-    assert second.actions[0].id == "rec:baston_roble:1" and not second.actions[0].label.startswith("✅")
-    assert any("Falta" in line and "Tablón ×2" in line and "Tela ×1" in line for line in second.body)
+    assert view.kind == "station" and ids(view) == ["est:craft:1", "esto:craft:0", "oficios"]
+    lines = [line for line in view.body if line.startswith("/r")]
+    assert len(lines) == 8 and lines[0].startswith("/r1 ") and lines[-1].startswith("/r8 ")
+    assert "🪑 Carpintería · rango 1" in view.body and "🔨 Herrería · rango 1" in view.body
+    assert view.body.index("🪑 Carpintería · rango 1") < view.body.index("🔨 Herrería · rango 1")
+    smith = [line for line in lines if "Daga forjada" in line or "Espada forjada" in line]
+    assert "✅" in smith[0] and "Daga forjada" in smith[0] and "🔸" in smith[1]     # ✅ first inside 🔨 Herrería
+    assert all(" · 🪑+" in line or " · 🔨+" in line for line in lines) and any(" · nv 3 · " in line for line in lines)
     # 34 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2; D-183: + 8 with terrain resources;
     # D-306: − 5 of mail, + 📿 the copper pendant)
-    assert any("Página 1 de 17" in line for line in view.body)
-    refine = service.act("test:1", "est:refine:0")
-    assert refine.kind == "station" and len(refine.actions) == 4      # 13 refining recipes (D-115: + 🧱 sillar; D-183: + 7): 2 per page
-    assert any("Página 1 de 7" in line for line in refine.body)
-    seen = set()
-    for page in range(3):
-        seen |= {a.id for a in service.act("test:1", f"est:refine:{page}").actions if a.id.startswith("rec:")}
-    assert seen == {"rec:tablon:0", "rec:lingote:0", "rec:extracto:1", "rec:tela:1", "rec:cuero:2", "rec:sillar:2"}
+    assert "34 recetas · página 1 de 5" in view.body
+    first = service.text("test:1", "/r1")
+    assert first.kind == "recipe" and first.actions[-1].id == "est:craft:0"
+    only = service.act("test:1", "esto:craft:0")                       # ✅ only what you can make now
+    assert [line.split(" ")[0] for line in only.body if line.startswith("/r")] == ["/r1", "/r2"]
+    assert "✅ Solo las que puedes hacer ya con lo que llevas." in only.body and ids(only) == ["est:craft:0", "oficios"]
+    shown = [code.split("|")[0] for code in service.store.get("gremio_codes", "test:1")["recipes"]]
+    assert set(shown) == {"daga_forjada", "colgante_cobre"} and len(listed_recipes(service)) == 34
+    refine = listed_recipes(service, branch="refine")                  # 14 refining recipes (D-115: + 🧱 sillar; D-183: + 7; later + 1)
+    assert len(refine) == 14 and {"tablon", "lingote", "extracto", "tela", "cuero", "sillar"} <= set(refine)
+    assert "⚠️" in service.text("test:1", "/r40").notice                # a code that was not on the list
     set_hero(service, "test:1", x=3, y=0)
     assert service.act("test:1", "est:craft:0").kind == "professions"   # no station here
 
@@ -394,7 +398,7 @@ def test_camp_stations_come_with_the_taller_and_the_herreria(service):
     assert ids(view) == ["est:refine:0", "est:craft:0", "claro"]         # D-192: back to the camp hub (🛠️ Fabricar)
     assert any("Estaciones de tu campamento" in line for line in view.body)
     refine = service.act("test:1", "est:refine:0")
-    listed = {a.id.split(":")[1] for p in range(2) for a in service.act("test:1", f"est:refine:{p}").actions if a.id.startswith("rec:")}
+    listed = set(listed_recipes(service, branch="refine"))               # D-321: the list's /rN codes
     assert "lingote" not in listed and "tablon" in listed               # no Herrería yet: no foundry here
     assert any("Claro" in line for line in refine.body)
     recipe = service.act("test:1", "rec:tablon:0")
@@ -480,8 +484,11 @@ def test_every_profession_screen_keeps_four_buttons_and_its_texts(content):
             continue
         seen.add(key)
         for action_id in ids(view):
-            if action_id.startswith(("oficios", "est:", "rec:", "mk:")):
+            if action_id.startswith(("oficios", "est:", "esto:", "rec:", "mk:")):
                 queue.append(path + [action_id])
+        if view.kind == "station":                     # D-321: recipes are a list with /rN codes; open the first one
+            codes = (service.store.get("gremio_codes", "test:1") or {}).get("recipes", [])[:1]
+            queue.extend(path + [f"rec:{code.split('|')[0]}:0"] for code in codes)
     assert {"professions", "station", "recipe"} <= kinds
 
 

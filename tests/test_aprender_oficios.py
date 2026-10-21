@@ -72,7 +72,7 @@ def test_learning_costs_its_first_recipe_and_opens_rank_one(service):
     assert "Aprendiste" in view.notice and service._prof_rank(hero, "cocina") == 1
     assert "cook" in ids(view)
     station = service.act("test:1", "cook")
-    assert station.kind == "station" and any(a.id.startswith("rec:") for a in station.actions)
+    assert station.kind == "station" and any(line.startswith("/r1 ") for line in station.body)     # D-321: a list with codes
     assert service.act("test:1", "learn:cocina").notice                        # already known: nothing charged
     assert service._load("test:1").gold == hero.gold
 
