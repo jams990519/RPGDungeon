@@ -77,7 +77,7 @@ trainer:
   title: 🧑‍🏫 Trainer
   intro: '«You learn a profession by doing it: you don''t pay for it or pick it, and you can have them all. Here''s what each family does:»'
   branch:
-    gather: '🪓 Gathering: you collect materials in the zones. They level up as you gather (the 🔪 Skinner, by defeating beasts; the 🎣 Fisher, in zones with water).'
+    gather: '🧺 Gathering: you collect materials in the zones. They level up as you gather (the 🔪 Skinner, by defeating beasts; the 🎣 Fisher, in zones with water).'
     explore: '🧭 Exploration: the 🧭 Explorer levels up by exploring and sees more on the map; from rank {recon} it lets you scout from afar.'
     refine: '🪚 Refining: you turn what you collect into better materials (planks, ingots, cloth, ashlar blocks…) at a station.'
     craft: '🛠️ Crafting: gear, potions, bandages, food and furniture, at a station. Sometimes a ✒️ masterwork comes out.'
@@ -96,7 +96,7 @@ trainer:
   stations_none: '📍 There are no stations here: the Clearing has all the basic ones.'
   mine_button: ⚒️ My professions
   ench_button: ✨ Enchanting
-  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here, in 📚 Learn professions. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. Only 🧭 exploration rises on its own; 🪓 gathering is learned too (without the profession, gathering still gives the base resources).»'
+  intro_learn: '«Each profession is learned once, by paying for its first recipe ({price}), here, in 📚 Learn professions. Then it rises as you make recipes, from rank 1 to 100, and each rank opens new recipes. Only 🧭 exploration rises on its own; 🧺 gathering is learned too (without the profession, gathering still gives the base resources).»'
   recommend: '⭐ For your {armor} armor: {name}. Tap /{code} to see it and learn it.'
   recommend_known: '⭐ For your {armor} armor: {name}, rank {rank}.'
   have: '✅ Your professions: {list}'

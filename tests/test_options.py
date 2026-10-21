@@ -223,8 +223,11 @@ def test_auto_batch_stops_when_life_drops_under_the_limit(service, clock, monkey
 
 def test_a_fight_with_life_already_low_waits_for_the_player(service, clock):
     service.content.balance["regen"].update(hp_full_minutes=10 ** 6, downed_full_minutes=10 ** 6)   # D-284: 30 min now;
-    ready(service, hp=0.01, downed=True)                    # frozen here so the life stays under 50 % for the check
+    ready(service)                                          # D-308 (0.42): a batch does not START under the limit...
     service.act("test:1", "do:explore:20")
+    hero = service._load("test:1")                          # ...so the life drops once it runs (frozen under 50 % for the check)
+    hero.hp, hero.downed = max(1, int(max_hp(service, hero) * 0.01)), True
+    service._save(hero)
     pushes = []
     for _ in range(20):
         clock.advance(10 * MINUTE)

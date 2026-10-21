@@ -826,3 +826,18 @@ v0_41_1:
     - "📜 New button What each level needs: every step up to the castle, with its works and materials."
     - "🪵 There is wood in every zone now: forests, dark forests and jungles have plenty, and you see it as soon as you start exploring; mountains, grasslands and the rest have less, but they have some."
     - "🔎 When you look for a resource, nearby zones that have more of it come first."
+
+v0_42:
+  version: "0.42"
+  title: "🪓 Lost Realms 0.42: botón Talar y recursos que vuelven más rápido"
+  title_en: "🪓 Lost Realms 0.42: a Chop wood button and resources that grow back faster"
+  notes:
+    - "🪓 Nuevo botón Talar en 🧭 Explorar, al lado de Recolectar: junta solo 🪵 madera. Cuesta y tarda lo mismo que recolectar, va en lotes y sube al 🪓 Leñador; en un ✨ nodo de madera rinde el doble."
+    - "🧺 Recolectar ahora lleva la canasta 🧺, para no confundirlo con 🪓 Talar."
+    - "🌱 Los 6 recursos de base (madera, piedra, fibra, hierba, metal y arcilla) vuelven 3 por hora en cada zona, en vez de 1. Los propios de cada terreno y el pescado siguen igual."
+    - "🩹 Con la vida por debajo de tu % de Retirarse (⚙️ Opciones) no empiezas a explorar, recolectar ni talar: el juego te avisa que descanses y te muestra cómo (🛏️ Posada en la fogata, 🩺 Salud o cambiar el % en ⚙️ Opciones). Las peleas siguen igual."
+  notes_en:
+    - "🪓 New Chop wood button in 🧭 Explore, next to Gather: it collects only 🪵 wood. It costs and takes the same as gathering, runs in batches and raises the 🪓 Lumberjack; on a ✨ wood node it yields double."
+    - "🧺 Gather now has the basket 🧺, so it is not mixed up with 🪓 Chop wood."
+    - "🌱 The 6 base resources (wood, stone, fiber, herb, metal and clay) grow back 3 per hour in each zone, instead of 1. Each terrain's own resources and fish stay the same."
+    - "🩹 With your health below your Retreat % (⚙️ Options) you do not start exploring, gathering or chopping wood: the game tells you to rest and shows you how (🛏️ Inn at the campfire, 🩺 Health or changing the % in ⚙️ Options). Fights stay the same."

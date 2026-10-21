@@ -69,7 +69,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 
 | Rama | Oficio | Cómo sube |
 |---|---|---|
-| Recolección | 🪓 Leñador | 1 de experiencia de oficio por cada 🪵 madera recolectada |
+| Recolección | 🪓 Leñador | 1 de experiencia de oficio por cada 🪵 madera recolectada (también con 🪓 Talar, que junta solo madera, desde la 0.42: D-305) |
 | | ⛏️ Minero | 1 por cada 🪨 piedra, ⚙️ metal o 🏺 arcilla; desde el rango 10, 💠 gemas en bruto |
 | | 🌿 Herbolario | 1 por cada 🌿 hierba curativa o 🧵 fibra; desde el rango 10, 🌸 flores de luna |
 | | 🔪 Desollador | 1 por cada 🍖 carne o 🦌 piel que sueltan las bestias al vencerlas |

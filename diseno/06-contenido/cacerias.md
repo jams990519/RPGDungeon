@@ -22,7 +22,7 @@
 
 ### 0.1 🏹 Cazar en la zona
 
-- **Dónde está el botón:** 🧭 Explorar → **🏹 Cazar**. 🧭 Explorar sigue con 4 botones (D-75): 🔎 Explorar · 🪓 Recolectar · 🏹 Cazar · 🗺️ Mapa. Para hacerle lugar, **📒 Lugares se mudó adentro de 🗺️ Mapa** (🗺️ Mapa → 📒 Lugares, y su ↩️ Volver vuelve al mapa).
+- **Dónde está el botón:** 🧭 Explorar → **🏹 Cazar**. 🧭 Explorar sigue con 4 botones (D-75): 🔎 Explorar · 🧺 Recolectar · 🏹 Cazar · 🗺️ Mapa; desde la 0.42, 5 con 🪓 Talar al lado de 🧺 Recolectar (D-305, D-314). Para hacerle lugar, **📒 Lugares se mudó adentro de 🗺️ Mapa** (🗺️ Mapa → 📒 Lugares, y su ↩️ Volver vuelve al mapa).
 - **La pantalla 🏹 Cazar** muestra qué enemigos rondan la zona (los mismos de los encuentros: del bioma y del nivel de la zona, nunca jefes), cuánto cuesta cada presa, que no suma exploración ni recursos, y tu vida y energía. Botones: **🏹 Buscar presa · ⚡2**, **🏹 Partida de caza** o **🏹 Unirme** (solo con campamento) y ↩️ Volver.
 - **🏹 Buscar presa** cobra **2 de energía** (`hunt.energy`; lo fijó D-108 para que cazar dé una experiencia por ⚡ parecida a explorar y recolectar; la pelea en sí no gasta, D-78) y empieza **enseguida** una pelea normal, de 1 contra 1, contra un enemigo común de la zona. Su nivel es el de la zona, +1 con 30 % de probabilidad, como en los encuentros.
 - **Qué da:** solo lo de la pelea: experiencia, monedas, botín (las bestias sueltan 🍖 carne para la despensa; equipo con la probabilidad de siempre) y la victoria cuenta para el gremio (D-97). **Nunca da exploración ni recursos.**

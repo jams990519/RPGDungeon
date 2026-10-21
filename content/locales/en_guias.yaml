@@ -61,7 +61,7 @@ guides_page:
     text: |-
       🔎 Explore (in 🧭 Explore) studies your zone: each round takes {explore_min} min and {explore_energy} ⚡, and adds {explore_low} to {explore_high}%.
       🪵 At {reveal}% you discover its resources, one by one.
-      🌲 There is wood in every zone: forests, dark forests and jungles have more, and you discover it as soon as you start exploring.
+      🌲 There is wood in every zone: forests, dark forests and jungles have more, and you discover it as soon as you start exploring. To collect only wood, 🪓 Chop wood (in 🧭 Explore).
       ➡️ Once your zone is at 100%, exploring moves on to the neighboring zones, without you moving.
       🗺️ At {color_at}% the zone shows its terrain on the 🗺️ Map; the color doesn't tell you which resources are there.
       ✨ A node is a zone rich in one resource: you find out which one when you step on it.
@@ -69,12 +69,13 @@ guides_page:
       📍 Tap a zone's code (/z1) and the route is laid out in 🔗 Move.
       🛡️ In a guild, what one member discovers, everyone knows.
   gather:
-    title: "🪓 Gathering"
+    title: "🧺 Gathering and 🪓 Chopping wood"
     text: |-
-      🪓 Gather (in 🧭 Explore) collects the resources you've already discovered in your zone.
+      🧺 Gather (in 🧭 Explore) collects the resources you've already discovered in your zone.
+      🪓 Chop wood, next to it, collects only 🪵 wood: the same energy, the same time and the same batches, and it raises the 🪓 Lumberjack.
       ⏱️ Each round takes {gather_min} min and {gather_energy} ⚡, and gives {gather_low} to {gather_high} units (more in faraway zones).
       🔢 You choose how many rounds in a row ({batches} or All) and I'll let you know when it's done.
-      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own at {stock_regen}% per hour (🪵 wood, {wood_regen}%); once depleted, it gives nothing.
+      📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own: the 6 base ones (wood, stone, fiber, herb, metal and clay) at {base_regen}% per hour (about {base_units} units); the terrain's own ones and fish at {stock_regen}%. Once depleted, it gives nothing.
       ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
       🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
       🏕️ No fights show up inside a camp's territory, and in yours you gather {own_bonus}% more.

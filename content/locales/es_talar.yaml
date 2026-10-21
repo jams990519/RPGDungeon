@@ -1,0 +1,48 @@
+# Texts of 0.42 (D-305, D-308, D-314): the 🪓 Talar gathering mode (only 🪵 wood) and the 🩹 rest-first notice that stops a
+# batch of exploring, gathering or chopping when the hero's life is under its 🩹 Retirarse % (⚙️ Opciones).
+# [ES] Textos de la 0.42: 🪓 Talar (D-305, confirmada por el dueño el 20-oct-2026: "un botón 🪓 Talar que recolecta solo
+# madera"), un modo de 🧺 Recolectar que junta solo 🪵 madera (la misma energía, los mismos minutos y los mismos lotes; D-314:
+# 5.º botón de 🧭 Explorar, al lado de 🧺 Recolectar), y 🩹 Descansa primero (D-308, confirmada el 20-oct-2026, E-219: con la
+# vida por debajo del % de 🩹 Retirarse no empieza un lote de explorar, recolectar ni talar). Se junta con es.yaml y los demás
+# es_*.yaml al cargar (engine/core/content.py, mezcla profunda: las claves de batch.*, presence.* y hero.* de aquí se suman a
+# las de es.yaml sin pisarlas).
+# Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.12 (🪓 Talar y los recursos que vuelven) y §1.12.1
+#     (🩹 Retirarse); diseno/07-economia/oficios-como-wow.md (🪓 Talar para el Leñador)
+# Lo leen: engine/service/game.py (_explore_menu, _amount_view, _start_batch, _gather_blocked, _gather_step, _batch_summary,
+#     _activity_view, _activity_word, _batch_gate y _retreat_view)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_talar.yaml, en el mismo
+# cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+chop:                          # [ES] D-305 (0.42): 🪓 Talar en 🧭 Explorar (un lote de recolectar que junta solo 🪵 madera)
+  button: "🪓 Talar · {time}"
+  title: "🪓 Talando"
+  in_progress: "Talas árboles y juntas 🪵 madera."
+  no_wood: "🪵 En esta zona no hay madera para talar."
+  depleted: "🪫 La 🪵 madera de esta zona se agotó por ahora: vuelve sola con las horas. Prueba en otra zona o usa 🧺 Recolectar."
+
+batch:                         # [ES] D-305: la pantalla de cantidades, el aviso de empezar y el resumen de un lote de 🪓 Talar
+  title_chop: "🪓 Talar"
+  ask_chop: "¿Cuánta energía quieres gastar talando? Cada vez gasta {energy} ⚡, tarda {minutes} min y solo juntas 🪵 madera; sigue sola hasta terminar."
+  started_chop: "🪓 Vas a talar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
+  chopped: "🪓 Talaste {n} {n|vez|veces}: {items}."
+  xp_chop: "✨ Talar te enseñó: +{xp} experiencia."
+  reason:
+    chop_depleted: "🪫 La 🪵 madera de esta zona se agotó por ahora: vuelve sola con las horas."
+
+presence:
+  activity:
+    chop: "🪓 talando"         # [ES] D-305: quien tala, en 👥 También en esta zona y en los cruces
+
+hero:
+  status:
+    chop: "🪓 Talando"         # [ES] D-305: el Estado del héroe mientras tala
+
+retreat:                       # [ES] D-308 (0.42): 🩹 Descansa primero (la vida bajo el % de 🩹 Retirarse no deja empezar el lote)
+  title: "🩹 Descansa primero"
+  blocked_explore: "🩹 Con tan poca vida no sales a explorar: descansa primero."
+  blocked_gather: "🩹 Con tan poca vida no sales a recolectar: descansa primero."
+  blocked_chop: "🩹 Con tan poca vida no sales a talar: descansa primero."
+  hp_line: "❤️ Vida: {hp}/{max_hp} ({now} %) · 🩹 Retirarse con menos de {pct} %"
+  inn_line: "🛏️ En la posada de la fogata te recuperas rápido."
+  how: "🩺 En Salud ves cómo te recuperas y puedes tomar una poción."
+  options_line: "⚙️ En Opciones cambias el % de 🩹 Retirarse."

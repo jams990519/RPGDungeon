@@ -49,10 +49,10 @@ faq:
   # ---- 🌱 Primeros pasos
   d01:
     q: "🌱 ¿Qué hago al empezar?"
-    a: "Despiertas en el 🔥 Claro, el campamento base. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🪓 recolecta y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
+    a: "Despiertas en el 🔥 Claro, el campamento base. Muévete a una zona vecina desde 📍 Zona, y ahí 🔎 explora, 🧺 recolecta, 🪓 tala y 🏹 caza. Vuelve al Claro a vender, dormir, cocinar y fabricar. El juego te guía paso a paso y te avisa cada vez que se abre algo nuevo."
   d02:
     q: "🧭 ¿Para qué sirve cada menú?"
-    a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, los 👥 jugadores de la fogata, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
+    a: "Abajo tienes 5 botones: 📍 Zona (dónde estás y a dónde ir), 🧭 Explorar (explorar, recolectar, talar, cazar y el 🗺️ Mapa), 🏕️ Campamento (cocinar, los 👥 jugadores de la fogata, fabricar, el entrenador, el mercader y estas ❓ Dudas), 👤 Héroe (tu ficha, mochila, talentos, salud, oficios y diario) y ⚙️ Opciones."
   d03:
     q: "📖 ¿Dónde quedó la Historia?"
     a: "El botón 📖 Historia salió del menú: ahora la historia te guía paso a paso mientras juegas. Tu 📔 Diario, tus 🎯 Misiones y las ⚜️ Facciones están en 👤 Héroe → 📔 Diario. El 📜 Tablón de encargos y los personajes del Claro, en 🏕️ Campamento. /historia también te lleva al diario."
@@ -67,7 +67,7 @@ faq:
     a: "Cuando el juego trae algo nuevo te llega una vez el aviso con las notas del parche. Si no ves el menú de abajo nuevo, escribe /start. Tu progreso se guarda para siempre."
   d55:
     q: "⚙️ ¿Qué cambio en Opciones?"
-    a: "En ⚙️ Opciones eliges con cuánta vida te retiras ({retreat} %), cambias el 🌐 idioma y nos mandas 💬 Feedback. Queda guardado y lo cambias cuando quieras."
+    a: "En ⚙️ Opciones eliges con cuánta vida te retiras ({retreat} %): con menos, no empiezas a explorar, recolectar ni talar hasta descansar. También cambias el 🌐 idioma y nos mandas 💬 Feedback. Queda guardado y lo cambias cuando quieras."   # [ES] D-308 (0.42)
   # ---- 🧭 Mapa y exploración
   d06:
     q: "🚶 ¿Cómo me muevo por el mapa?"
@@ -79,8 +79,8 @@ faq:
     q: "🔎 ¿Qué es explorar?"
     a: "🔎 Explorar busca en tu zona: cada vuelta toma {explore_min} min y 1 ⚡, suma de {explore_low} a {explore_high} % de la zona y puede darte cosas, monedas o una pelea. Al {reveal} % descubres sus recursos de a uno. Con la zona al 100 % sigues con las vecinas sin moverte."
   d09:
-    q: "🪓 ¿Cómo recolecto?"
-    a: "🪓 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas. En el territorio de tu campamento juntas {own_bonus} % más."
+    q: "🧺 ¿Cómo recolecto?"
+    a: "🧺 Recolectar junta los recursos que ya descubriste en tu zona: cada vuelta toma {gather_min} min y 1 ⚡. Si juntas mucho, la zona se agota y vuelve sola con las horas (los 6 de base, unos {base_units} por hora). En el territorio de tu campamento juntas {own_bonus} % más. Para juntar solo 🪵 madera, 🪓 Talar (/d57)."   # [ES] D-305 (0.42)
   d10:
     q: "🔢 ¿Qué son los lotes?"
     a: "Al explorar, recolectar o cazar eliges cuánta energía gastar seguido ({batches} o Todo). Tu héroe hace una vuelta tras otra y te aviso al final con el resumen. Si sale una pelea, el lote se corta y la peleas tú."
@@ -110,7 +110,7 @@ faq:
     a: "Con el oficio 🧭 Explorador en rango {recon_rank} usas /reconocer: ves desde lejos qué hay en una mazmorra o en un 👹 campamento enemigo, sin ir ni pelear. Uno por lugar al día. El 🥷 Sigilo del Explorador a veces te evita una pelea al explorar a mano o al llegar de un viaje."
   d19:
     q: "🚫 ¿Por qué no puedo recolectar?"
-    a: "Puede ser por la mochila llena (vende o usa cosas), la zona agotada (vuelve en unas horas), un 👹 campamento enemigo en pie en la zona, la guarida del Guardián o que todavía no descubriste sus recursos (explora primero). Si no se puede, nunca se cobra energía."
+    a: "Puede ser por la mochila llena (vende o usa cosas), la zona agotada (vuelve en unas horas), un 👹 campamento enemigo en pie en la zona, la guarida del Guardián, tu vida bajo el % de 🩹 Retirarse (descansa primero) o que todavía no descubriste sus recursos (explora primero). Si no se puede, nunca se cobra energía."   # [ES] D-308 (0.42): la vida bajo 🩹 Retirarse
   d20:
     q: "👥 ¿Veo a otros jugadores?"
     a: "En 📍 Zona ves quién anda en tu zona y qué hace; en la fogata, 🏕️ Campamento → 👥 Jugadores muestra quién jugó en el último minuto, con su tarjeta. Puedes saludar con /saludar o brindar con /brindar, y mostrar tu diario. Es solo para verse: no da premios ni peleas entre jugadores."
@@ -221,3 +221,6 @@ faq:
   d56:
     q: "📌 ¿Cómo voy a una coordenada?"
     a: "Cada lugar dice sus coordenadas: (x, y). Tú estás donde dice 📍 Zona. El norte suma a la y y el este, a la x: (3, -2) está 3 zonas al este y 2 al sur del Claro, que es (0, 0). Para ir, escribe /ir x y (por ejemplo, /ir 3 -2): se arma el camino en 🔗 Moverte, primero este-oeste y después norte-sur, y tocas ✅ Terminar. Hasta {walk_max} pasos por vez."   # [ES] D-278 (0.36.1, pedido del dueño)
+  d57:
+    q: "🪓 ¿Cómo consigo madera?"
+    a: "🪵 Hay madera en todas las zonas, y más en bosques, bosques oscuros y selvas. En 🧭 Explorar, 🪓 Talar junta solo madera: como 🧺 Recolectar ({gather_min} min y 1 ⚡ por vuelta, los mismos lotes), pero cada unidad es madera y sube al 🪓 Leñador. En tu territorio juntas {own_bonus} % más y en un ✨ nodo de madera rinde ×{node_yield}. Se agota y vuelve sola: unas {base_units} por hora en cada zona."   # [ES] D-305 (0.42)

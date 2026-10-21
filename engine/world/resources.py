@@ -18,7 +18,9 @@ porque prácticamente se está volviendo imposible encontrarlo"; números de Cla
 más zonas (wood_resource): toda zona de terreno de bosque (el que se ve) la tiene, y en las demás aparece con un umbral
 propio más bajo (balance.yaml resources.wood). Va justo después de los de base. Solo suma: ninguna zona pierde un recurso
 que tenía, los propios del terreno salen igual que antes y no hay sorteos nuevos. Además vuelve más rápido que los demás
-recursos (balance.yaml stock.regen_mult, lo aplica GameService._stock).
+recursos (balance.yaml stock.regen_mult, lo aplica GameService._stock). D-305 (0.42): los 6 de base vuelven ×3 (3 por hora
+en cada zona) y los propios del terreno y el pescado ×1; 🪓 Talar (GameService) junta solo la madera de wood_resource o de
+base: aquí no cambió nada.
 D-303 (0.41.1, orden del dueño, 20-oct-2026: "los bosques deberían tener, las montañas deberían tener, o sea, en todos
 lugares, en menor medida, pero deberían tener"; números de Claude, provisionales): la 🪵 madera está en TODA zona que no es
 fija ni hoguera. En los terrenos de bosque (el que se ve: bosque, bosque oscuro y selva) es la más rica (1,0) y va PRIMERA

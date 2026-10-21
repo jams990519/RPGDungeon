@@ -269,7 +269,13 @@ exploration:                 # [ES] D-87: cada zona se explora por porcentaje
 stock:                       # [ES] D-87: los recursos de cada zona se agotan si se recolecta mucho, y vuelven con el tiempo
   per_unit: 0.02             # [ES] cada unidad recolectada baja el recurso un 2 % (50 unidades lo vacían)
   regen_per_hour: 0.02       # [ES] y vuelve un 2 % por hora (de vacío a lleno: unas 50 horas)
-  regen_mult: {madera: 2.0}  # [ES] D-300 (pedido del dueño: "lento para las construcciones, pero tampoco tan lento"; número de Claude, provisional): la 🪵 madera vuelve el doble de rápido (4 % por hora: unas 2 unidades por hora en cada zona en vez de 1; de vacía a llena, unas 25 horas). Se multiplica con el ⛲ Pozo
+  regen_mult:                # [ES] D-305 (0.42, confirmada por el dueño el 20-oct-2026, E-227): los 6 recursos de base vuelven 3 por hora en cada zona en vez de 1 (6 % por hora; de vacío a lleno, unas 17 horas). Los propios del terreno y el 🐟 pescado no están aquí: siguen ×1 (2 % por hora). Se multiplica con el ⛲ Pozo. Antes (D-300, 0.40) solo la 🪵 madera, ×2
+    madera: 3.0              # [ES] D-305: ×3 (era 2,0 por D-300)
+    piedra: 3.0              # [ES] D-305: ×3 (era 1)
+    fibra: 3.0               # [ES] D-305: ×3 (era 1)
+    hierba_curativa: 3.0     # [ES] D-305: ×3 (era 1)
+    pieza_metal: 3.0         # [ES] D-305: ×3 (era 1)
+    arcilla: 3.0             # [ES] D-305: ×3 (era 1)
   min_yield: 0.15            # [ES] por debajo de esto, el recurso está agotado y no da nada
 
 gather:                      # [ES] recolectar en la zona actual

@@ -718,6 +718,8 @@ arreglar la piel (×2,5 pieles por presa), días hasta el 25 / 50 / 100 (`propue
 
 - Hoy una vuelta reparte al azar entre 4 a 6 recursos: en la mejor zona, el recurso que buscas es ~30-45 % de lo que sale. Propuesta para la
   capa profunda: desde un rango del recolector (por ejemplo 25), elegir qué recurso buscar (sube su peso en la vuelta).
+- **Desde la 0.42 (D-305), para la madera ya existe:** 🪓 Talar junta solo 🪵 madera, sin rango y para todos (es la capa simple).
+  Para los demás recursos sigue siendo una propuesta.
 
 ### 8.9 Para decidir con el dueño (con mi recomendación)
 

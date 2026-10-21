@@ -1247,6 +1247,27 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 **Lo que queda por mirar:** en el bosque, 1 de cada 4 unidades es madera, y en la fogata más de la mitad (sus 2 recursos fijos). Si hace falta más, lo que queda abierto en P-238: el botón 🪓 Talar (solo madera) y que los recursos de base vuelvan más rápido.
 
+> **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
+
+### Octubre de 2026 (21-oct): 🪓 Talar y los recursos de base ×3 (0.42, D-305, confirmada)
+
+El dueño eligió las dos recomendaciones de E-227 (20-oct): el botón 🪓 Talar y que los 6 recursos de base vuelvan 3 por hora. La forma de aplicarlo es de Claude (D-314, provisional).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `stock.regen_mult.madera` | ×2 (D-300: unas 2 por hora por zona) | ×3: unas 3 por hora por zona (6 % por hora) |
+| `stock.regen_mult` de piedra, fibra, hierba curativa, metal y arcilla (nuevos) | ×1 (1 por hora por zona) | ×3 (3 por hora por zona) |
+| Recursos propios del terreno y 🐟 pescado | ×1 | ×1 (sin cambio: no están en `regen_mult`) |
+| 🪓 Talar (regla, sin número nuevo) | — | una vuelta de recolectar (`gather.amount`, 1 a 3 más 1 cada 3 niveles de zona; `energy.per_gather` 1 ⚡; `gather.minutes` 8) en la que toda unidad es 🪵 madera; solo agota la madera; ×2 en un nodo de madera (`nodes.yield_mult`) |
+
+**Qué cambia al jugar.**
+
+- **Vuelve más rápido:** un recurso de base que se agotó al recolectar (justo bajo el 15 %, `stock.min_yield`) vuelve a dar en unos 10 minutos; de vacío a lleno tarda unas 17 horas (antes 50; la madera, 25). Cada zona da por día unas 72 unidades de cada recurso de base que tenga (antes 24; la madera, 48). Con el ⛲ Pozo, ×1,5 encima.
+- **Madera por ⚡:** recolectando en el bosque, 1 de cada 4 unidades es madera (unas 0,5 por ⚡ en una zona de nivel 1); talando, todas (unas 2 por ⚡, 4 veces más; en los demás terrenos, unas 6 veces más). Una zona llena aguanta unas 42 unidades seguidas (unas 21 vueltas) antes de agotarse; después, 3 por hora.
+- **Leñador:** sube 1 por unidad de madera (`professions.gather_xp_per_unit`), así que talar lo sube unas 4 veces más rápido que recolectar en el bosque.
+
+**Lo que queda por mirar:** si con 3 por hora y 🪓 Talar sobra madera para las obras (si sobra, se puede bajar a ×2); si el bosque pierde valor al talar, porque la riqueza no cambia cuánto sale (P-242); cuánto talan los jugadores en el informe diario.
+
 ### Octubre de 2026 (19-oct): el buscador de recursos (0.39.1, D-296, confirmada)
 
 | Número | Antes | Ahora |
