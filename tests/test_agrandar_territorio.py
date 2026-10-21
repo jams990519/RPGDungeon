@@ -55,7 +55,7 @@ def test_the_mini_map_and_one_line_per_direction(service):
     view = service.act("test:1", "improve")
     view = service.act("test:1", "grow")
     assert view.kind == "camp_grow" and view.title == "🗺️ Agrandar territorio"
-    assert view.body[0] == "🗺️ Zonas: 1 de 3 (campamento)"
+    assert view.body[0] == "🗺️ Tu campamento ocupa 1 de las 3 zonas que permite la etapa campamento."
     assert "Cada zona nueva cuesta 🪵 Madera ×15 · 🪨 Piedra ×10 · 🧵 Fibra ×5, de tu mochila." in view.body
     rows = grid(view)
     assert rows == ["▫️▫️▫️▫️▫️", "▫️▫️1️⃣▫️▫️", "▫️🔸🏕️2️⃣▫️", "▫️▫️🔸▫️▫️", "▫️▫️▫️▫️▫️"]
@@ -115,7 +115,7 @@ def test_a_camp_over_its_cap_keeps_its_zones(service):
     data["zones"] = [[6, 0], [7, 0], [8, 0], [6, 1], [6, -1]]           # 5 zones at level 1 (cap 3): nothing is taken away
     service.store.put("camp", KEY, data)
     view = service.act("test:1", "grow")
-    assert view.body[0] == "🗺️ Zonas: 5 de 3 (campamento)" and "lvlup" in ids(view)
+    assert view.body[0] == "🗺️ Tu campamento ocupa 5 de las 3 zonas que permite la etapa campamento." and "lvlup" in ids(view)
     assert len(camp(service)["zones"]) == 5
 
 
@@ -190,7 +190,7 @@ def test_the_territory_reads_well_in_english(service):
     english_hero(service, "test:1", "Lyra")
     old_camp_at(service, "test:1", 6, 0, name="Grey Rock")
     view = service.act("test:1", "grow")
-    assert view.title == "🗺️ Expand territory" and view.body[0] == "🗺️ Zones: 1 of 3 (camp)"
+    assert view.title == "🗺️ Expand territory" and view.body[0] == "🗺️ Your camp takes 1 of the 3 zones its stage (camp) allows."
     assert [a.label for a in view.actions[:2]] == ["1️⃣ ⬆️ North", "2️⃣ ➡️ East"]
     view = service.act("test:1", "claim:6:1")
     assert view.notice.startswith("🗺️ The territory grew to the ⬆️ North!")

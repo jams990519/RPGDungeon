@@ -116,13 +116,13 @@ gremio:                        # [ES] D-294 (0.39): avisos de /inv_ y ✉️ Inv
 
 cfund:                         # [ES] D-291 (0.39): el 💰 fondo del campamento, después de fundar
   title: "💰 Depositar en el fondo del campamento"   # [ES] D-302: la pantalla de 💰 Depositar (la lista es 💰 Fondos del campamento)
-  intro: "Deposita desde donde estés: escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso. El fondo le da a las obras activas lo que les falta, primero a la que se activó antes; lo que sobra queda aquí."
+  intro: "Deposita desde donde estés: escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso. El fondo le da a las obras activas lo que les falta, primero a la que se activó antes, y después a ⏫ Siguiente nivel; lo que sobra queda aquí."
   line: "💰 En el fondo: {items}"
   empty: "💰 El fondo está vacío."
   empty_short: "💰 Fondo del campamento: vacío."
   active_title: "🔨 Obras activas (el fondo las llena en este orden):"
   work_line: "{n}. {name}: falta {items}"
-  no_active: "No hay obras activas: lo que deposites espera en el fondo."
+  no_active: "No hay obras activas: lo que deposites va a ⏫ Siguiente nivel, y lo que sobre espera en el fondo."
   given: "💰 Depositaste {items} en el fondo del campamento."
 
 armory:                        # [ES] D-290 (0.39): ⚔️ Armería del gremio

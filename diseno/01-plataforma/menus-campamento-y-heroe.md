@@ -4,6 +4,8 @@
 
 > **0.40 (D-302, pedido del dueño):** el centro de tu campamento muestra solo su nombre, lo que puedes hacer y lo urgente (una oleada); la información de siempre (etapa, nivel, miembros, gremio, costo de agrandar, mejoras, defensa, despensa, beneficios, próxima oleada) pasó a 🏰 Gestionar → ℹ️ Información.
 
+> **0.41.1 (D-313, pedido del dueño):** ⬆️ Mejorar dice el territorio con palabras y muestra la lista entera del nivel siguiente, cada línea con lo que le falta ("🪵 Madera: 11 de 30 (faltan 19)", la obra sin activar o en obra y cuándo termina); 💰 Depositar también llena el nivel; botón nuevo 📜 Qué pide cada nivel.
+>
 > **0.41 (D-304, pedido del dueño):** en 🏰 Gestionar, ⬆️ Agrandar pasa a **⬆️ Mejorar campamento**, un menú chico con **⏫ Siguiente nivel** (la lista de obras construidas, materiales y 🪎 cofres que se va completando; cualquier miembro aporta con 🤲) y **🗺️ Agrandar territorio** (minimapa y 8 direcciones; eligen el fundador o un 🤝 asistente; tope de zonas por etapa). Ver §2.2 y [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.2.
 
 Cómo se ordenan las pantallas principales del juego desde la 0.29: el menú de abajo, el centro de 🏕️ Campamento (en el Claro y en tu propio campamento), el centro de 👤 Héroe, el 🧑‍🏫 Entrenador y ❓ Dudas. El camino guiado de la historia (D-190), que manda al jugador a hacer una cosa nueva por vez, se describe aparte.

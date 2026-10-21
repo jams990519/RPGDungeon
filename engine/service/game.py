@@ -463,8 +463,9 @@ Si cambias esto, revisa:
     - 🪵 Más madera (D-300, pedido del dueño, 20-oct-2026: "distribuye un poquitico el recurso de madera... se está volviendo
       imposible encontrarlo" y "lento para las construcciones, pero tampoco tan lento"; números de Claude, provisionales).
       Tocan: _zone_land (devuelve tres partes: base, madera sumada y propios; engine/world/resources.py wood_resource),
-      _zone_resources (la madera va justo después de los de base), _node_main (los nodos no miran la madera sumada: no se
-      movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values ({wood_regen} de la guía de recolectar).
+      _zone_resources (la madera va justo después de los de base; desde D-303, primera en el bosque), _node_main (los nodos
+      no miran la madera sumada: no se movieron), _stock (stock.regen_mult: la madera vuelve ×2) y _guidebook_values
+      ({wood_regen} de la guía de recolectar).
       Números: balance.yaml resources.wood y stock.regen_mult. Ninguna zona pierde un recurso. Pruebas: tests/test_resources.py
     - 📒 Lugares por tipo (D-301, pedido del dueño, 20-oct-2026: "el primer botón va a ser el del campamento... luego
       Mazmorras... luego Fogatas, y así sucesivamente"). Tocan: PLACE_KINDS (orden de los botones), HUB_KINDS ("places",
@@ -499,6 +500,22 @@ Si cambias esto, revisa:
       content/locales/es_nivel.yaml y en_nivel.yaml (improve.*, lvlup.*, territory.*, upgrades.idle_names*). En los textos el
       rol de D-289 se llama 🤝 asistente (los ids siguen: "helpers", "ghelp:"). Pruebas: tests/test_siguiente_nivel.py y
       tests/test_agrandar_territorio.py
+    - D-313 (0.41.1, el dueño el 21-oct-2026: "¿qué es 1 de 3?… ¿qué 4 de 5?… específicamente necesita esto, esto y esto;
+      recursos tal, tal y tal… madera 11 de 30, lleva como 40 minutos y no sé si está funcionando"): ⬆️ Mejorar dice el
+      territorio con palabras y muestra la lista ENTERA del nivel siguiente; cada línea de _lvlup_rows dice lo que le falta (la
+      obra activa, sus materiales; la obra en obra, cuándo termina o que está pausada; la sin activar, quién la activa; cada
+      material, "12 de 30 (faltan 18)"); las dos líneas lvlup.how_items/how_works explican que nada llega solo; 💰 Depositar
+      también llena ⏫ Siguiente nivel después de las obras activas (_feed_levelup, desde gremio.py _camp_deposit) y puede
+      subirlo; 📜 Qué pide cada nivel ("lvlall", _lvlup_all_view). Pruebas: tests/test_siguiente_nivel.py y
+      tests/test_deposito_tras_fundar.py.
+    - 🪵 Madera en todas las zonas (D-303, 0.41.1, orden del dueño del 20-oct-2026: "los bosques deberían tener, las montañas
+      deberían tener, o sea, en todos lugares, en menor medida, pero deberían tener"; números de Claude, provisionales).
+      Tocan: _zone_resources (en un terreno de bosque, engine/world/resources.py wood_first, la madera va PRIMERA con
+      riqueza 1,0; en el resto, pobre, justo después de los de base), _known_resources (la madera sumada no ocupa un lugar
+      de exploration.reveal_at: en el bosque se conoce al 1 %; nadie conoce menos que antes) y _zone_land (los de base
+      salen tal cual: _node_main no se movió). En engine/service/gremio.py, _resource_search_view ordena las zonas cercanas
+      con las más ricas primero (gremio.search_rich_penalty). Números: balance.yaml resources.wood (forest_min 1,0,
+      elsewhere_max 0,5; threshold sin uso). Pruebas: tests/test_resources.py, tests/test_buscador_de_recursos.py
 """
 
 from __future__ import annotations
@@ -572,7 +589,7 @@ from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
 from engine.world.encounters import clamp_level, encounter_pool
 from engine.world.territory import first_zones
-from engine.world.resources import terrain_resources, water_resources, wood_resource, zone_resources
+from engine.world.resources import terrain_resources, water_resources, wood_first, wood_resource, zone_resources
 from engine.world import nodes as node_rules            # D-181, D-184: resource nodes
 
 # Typed shortcuts that the texts mention (e.g. "🔀 Doble especialización: /doble"); every client offers the same ones.
@@ -2102,6 +2119,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._lvlup_go(hero)
         if action_id == "lvltrial":                     # D-304: the 🌙 Noche de prueba screen from the 8 → 9 checklist
             return self._lvlup_trial(hero)
+        if action_id == "lvlall":                       # D-313: 📜 what every level asks, from yours to the castle
+            return self._lvlup_all_view(hero)
         if action_id == "grow" or action_id.startswith("grow:"):     # D-304: 🗺️ Agrandar territorio (old buttons too)
             page = action_id[5:]
             return self._grow_view(hero, int(page) if page.isdigit() else 0)
@@ -2450,11 +2469,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
     def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
         """The zone's land resources in three parts: (base, added wood, terrain's own). [ES] Qué hace: los 6 de base con el
-        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 suma (wood_resource: todo
-        terreno de bosque y un umbral propio más bajo; {} si ya era de base o no toca) y los propios del terreno que se ve
-        (D-183, con los de otro terreno de D-185). Los propios se sortean con los de base SIN la madera sumada, así D-300 no
-        sacó ninguno. La llaman: _zone_resources y _node_main (el nodo es de un recurso de base o propio, nunca de la madera
-        sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
+        bioma clásico (D-185, D-187; la guarida con su bioma fijo, D-82), la 🪵 madera que D-300 y D-303 suman
+        (wood_resource: en el bosque, 1,0 aunque ya fuera de base; en el resto, pobre si no era de base; {} si ya era de base
+        fuera del bosque, o en el Claro y las hogueras) y los propios del terreno que se ve (D-183, con los de otro terreno de
+        D-185). Los propios se sortean con los de base SIN la madera sumada, así la madera no sacó ninguno. Devuelve los de
+        base tal como salen (la madera del bosque NO los cambia aquí). La llaman: _zone_resources, _known_resources (la
+        madera no ocupa lugar, D-303) y _node_main (el nodo es de un recurso de base o propio con su riqueza de siempre, nunca
+        de la madera sumada: los nodos no se movieron). Si cambia, afecta: los recursos y los nodos de todo el mapa."""
         terrain = self._zone(x, y).biome
         biome = terrain if self._is_lair(x, y) else classic_biome(self.world_seed, x, y)
         base = zone_resources(self.world_seed, x, y, biome, self.content.balance, self.content.biomes)
@@ -2475,10 +2496,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         tablero de terrenos no movió nada de lo que ya se conocía, y el terreno no decide los recursos. Los propios y el agua
         siguen al terreno que se ve (un 🟪 pantano siempre tiene agua); los propios, a veces, salen del catálogo de otro terreno
         (D-185, resources.terrain.foreign_chance). La guarida del Guardián conserva su bioma fijo (D-82).
-        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios."""
+        D-300 (pedido del dueño: más madera): la 🪵 madera sumada va justo después de los de base y antes de los propios.
+        D-303 (0.41.1, orden del dueño: madera en todas las zonas, los bosques con más): en un terreno de bosque
+        (wood_first) la madera va PRIMERA, con riqueza 1,0, aunque ya fuera de base (se saca de su lugar y los demás de base
+        siguen en su orden); así se conoce desde la primera exploración."""
         base, wood, own = self._zone_land(x, y)
-        found = {**base, **wood, **own}
-        found.update(water_resources(self.world_seed, x, y, self._zone(x, y).biome, self.content.balance, self.content.biomes))
+        terrain = self._zone(x, y).biome
+        if wood and wood_first(x, y, terrain, self.content.balance):   # D-303: a forest's wood leads
+            found = {**wood, **{r: v for r, v in base.items() if r not in wood}, **own}
+        else:
+            found = {**base, **wood, **own}
+        found.update(water_resources(self.world_seed, x, y, terrain, self.content.balance, self.content.biomes))
         return found
 
     def _stock(self, x: int, y: int) -> dict[str, float]:
@@ -2611,11 +2639,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES] D-183: exploration.reveal_at tiene un umbral por recurso (1, 20, 40, 60, 80 %); al 100 % se conocen todos, también
         los que pasan de la lista (el pescado). Nadie conoce menos que antes: los de base van primero y los umbrales bajaron.
+        D-303 (0.41.1): la 🪵 madera sumada por _zone_land (wood) no ocupa uno de esos lugares: cuando explorar llega a su
+        lugar se conoce además del recurso que tocaba. En el bosque va primera, así al 1 % se conocen la madera y el 1.º de
+        siempre; en el resto va justo después de los de base. Así nadie conoce menos que antes de la 0.41.1.
         """
         pct = self._known_pct(hero, x, y)               # D-282: the guild's best (experience still counts your own)
         ranked = list(self._zone_resources(x, y))
         reveal = self.content.balance["exploration"]["reveal_at"]
         count = len(ranked) if pct >= 100 else sum(1 for need in reveal if pct >= need)
+        wood = next(iter(self._zone_land(x, y)[1]), None) if 0 < count < len(ranked) else None
+        if wood in ranked[:count]:                      # D-303: the added wood takes no reveal slot of its own
+            count += 1
         return ranked[:count]
 
     def _resources_lines(self, hero: Hero, x: int, y: int) -> list[str]:
@@ -4095,15 +4129,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         camp, key = here
         t = self.texts
         level = camp.get("level", 1)
-        body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)),
-                t.t("improve.zones_line", zones=len(self._camp_zone_list(camp)), cap=self._zones_cap(camp))]
-        if level < self._camp_top_level():
-            rows = self._lvlup_rows(camp, self._upgrades(key))
-            body.append(t.t("improve.next_line", level=level + 1, done=sum(1 for _, _, ok in rows if ok), total=len(rows)))
+        zones, cap = len(self._camp_zone_list(camp)), self._zones_cap(camp)
+        body = [t.t("improve.level_line", level=level, stage=self._camp_stage(level)), "",
+                t.t("improve.zones_line", zones=zones, cap=cap, stage=self._camp_stage(level)),
+                t.t("improve.zones_free", n=cap - zones) if zones < cap else t.t("improve.zones_full")]
+        if level < self._camp_top_level():           # D-313: the whole list here, each line saying what is missing
+            rows = self._lvlup_rows(camp, self._upgrades(key), hero)
+            body += ["", t.t("improve.next_title", level=level + 1, stage=self._camp_stage(level + 1))]
+            body += [("✅ " if ok else "▫️ ") + text for _, text, ok in rows]
+            if any(not ok for _, _, ok in rows):
+                body += ["", t.t("lvlup.how_items"), t.t("lvlup.how_works")]
         else:
-            body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
+            body += ["", t.t("lvlup.top", stage=self._camp_stage(level))]
         actions = [Action(id="lvlup", label=t.t("improve.lvlup_button")), Action(id="grow", label=t.t("improve.grow_button")),
-                   Action(id="campmgmt", label=t.t("menu.back"))]
+                   Action(id="lvlall", label=t.t("improve.all_button")), Action(id="campmgmt", label=t.t("menu.back"))]
         return View(kind="camp_improve", title=t.t("improve.title", name=camp["name"]), body=body, actions=actions, notice=notice)
 
     # ------------------------------------------------------------------ ⏫ Siguiente nivel (D-304, 0.41)
@@ -4134,7 +4173,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         data["chests"] = int(data.get("chests", 0) or 0)
         return data
 
-    def _lvlup_rows(self, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str, bool]]:
+    def _lvlup_rows(self, camp: dict[str, Any], record: dict[str, Any], hero: Hero | None = None) -> list[tuple[str, str, bool]]:
         """The ⏫ Siguiente nivel checklist: (kind, text, done) per requirement, in screen order (D-304).
 
         [ES]
@@ -4144,6 +4183,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97), las mejoras construidas (_castle_upgrades, D-101)
         y la 🌙 Noche de prueba ganada (D-99). Con la despensa vacía suma una línea ▫️ (D-93: la hambruna no deja subir).
         Tipos: "work", "item", "chests", "guild", "castle", "trial" y "famine" (los botones de _lvlup_view los miran).
+        D-313 (0.41.1, el dueño: "específicamente, necesita esto, esto y esto; recursos tal, tal y tal"): cada línea dice lo que
+        le falta: la obra activa, sus materiales que faltan; la obra en obra, cuándo termina (o que está pausada sin nadie en el
+        territorio); la obra sin activar, quién la activa; cada material, "12 de 30 (faltan 18)". `hero` (opcional) da los
+        beneficios de oficio con que se calcula lo que pide cada obra (_camp_perks) y quién cuenta como presente.
         La llaman: _lvlup_view, _lvlup_give, _lvlup_go, _improve_view y _upgrades_view (la línea "⏫ Nivel N: x de y listos").
         Si cambia, afecta: qué pide subir de nivel (tests/test_siguiente_nivel.py, tests/test_raids.py, tests/test_guilds.py).
         """
@@ -4153,17 +4196,36 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         rows: list[tuple[str, str, bool]] = []
         building = record.get("building") or {}
         active = set(self._active_works(camp, record))
+        catalog = self._upgrade_catalog()
+        perks = None
+        present = None
         for uid in self._lvlup_works(target):
             done = uid in record["built"]
-            state = ("" if done else t.t("lvlup.state_building") if uid in building
-                     else t.t("lvlup.state_active") if uid in active else t.t("lvlup.state_idle"))
+            if done:
+                state = ""
+            elif uid in building:                       # D-313: when it ends, or paused with nobody in the territory
+                if present is None:
+                    present = len(self._present_now(camp["members"], self._camp_zones(camp), hero))
+                left = self._work_left(building[uid], present)
+                state = (t.t("lvlup.state_building", time=self._fmt_duration(left)) if left is not None
+                         else t.t("lvlup.state_paused"))
+            elif uid in active:                         # D-313: what it still lacks
+                perks = self._camp_perks(camp, hero) if perks is None else perks
+                need = self._upgrade_need(catalog[uid], perks, record, uid)
+                progress = dict(record["works"].get(uid, {}))
+                self._credit_raw(need, progress)
+                lack = self._missing_text(need, progress)
+                state = t.t("lvlup.state_active", items=lack) if lack else t.t("lvlup.state_active_full")
+            else:
+                state = t.t("lvlup.state_idle")
             rows.append(("work", t.t("lvlup.work_line", name=self._upgrade_name(uid), state=state), done))
         data = self._lvlup_progress(record, target)
         for item_id, n in self._lvlup_need(level).items():
             have = min(n, int(data["given"].get(item_id, 0)))
             item = self.content.items[item_id]
-            rows.append(("item", t.t("lvlup.item_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=n),
-                         have >= n))
+            left = t.t("lvlup.item_left", n=n - have) if have < n else ""
+            rows.append(("item", t.t("lvlup.item_line", emoji=item["emoji"], item=t.t(item["name_key"]), have=have, need=n,
+                                     left=left), have >= n))
         chests = self._grow_chests(level)               # D-92: from level 6, 🪎 chests too
         if chests:
             have = min(chests, data["chests"])
@@ -4203,7 +4265,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                         actions=[back], notice=notice)
         record = self._upgrades(key)
         target = level + 1
-        rows = self._lvlup_rows(camp, record)
+        rows = self._lvlup_rows(camp, record, hero)
         missing = {kind for kind, _, ok in rows if not ok}
         body = [t.t("lvlup.intro" if missing else "lvlup.ready", level=target, stage=self._camp_stage(target))]
         heading = None
@@ -4222,6 +4284,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("lvlup.fund_hint", items=self._item_list(useful)))
         if "chests" in missing:
             body.append(t.t("camps.chests_have", n=hero.chests))
+        if missing & {"item", "chests"}:                # D-313: nothing fills in by itself
+            body += ["", t.t("lvlup.how_items")]
+        if "work" in missing:
+            body.append(t.t("lvlup.how_works"))
         body += ["", t.t("lvlup.gives", members=int(self.content.balance["camps"]["members_per_level"]),
                          zones=self._zones_cap_at(target))]
         extra: list[Action] = []
@@ -4293,6 +4359,66 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if all(ok for _, _, ok in self._lvlup_rows(camp, record)):       # the last thing was given: up at once
             lines += self._level_up(key, hero)
         return self._lvlup_view(hero, notice="\n".join(lines))
+
+    def _feed_levelup(self, key: str, camp: dict[str, Any], record: dict[str, Any],
+                      actor: Hero) -> tuple[dict[str, Any], list[str]]:
+        """The camp's 💰 fund gives the next level the materials it lacks, after the active works (D-313); it may level up.
+
+        [ES]
+        Qué hace: D-313 (0.41.1, el dueño: "madera 11 de 30, lleva como 40 minutos en 11 de 30 y no sé si está funcionando"):
+        lo depositado con 💰 Depositar (/f02) también llena ⏫ Siguiente nivel, no solo las obras: después de _feed_works, el
+        fondo pone en "upgrades"."levelup" lo que falte de cada material (_take_from_fund: nunca de más). Sin experiencia ni
+        mérito (eso lo da 🤲 Aportar, como en las obras). Si con eso TODA la lista queda ✅, el campamento sube (_level_up) y se
+        devuelve el registro ya subido (sin lo aportado al nivel anterior). Guarda el registro antes de subir. En castillo o
+        sin nada útil en el fondo, no toca nada.
+        La llama: engine/service/gremio.py _camp_deposit. Si cambia, afecta: a dónde va el fondo (tests/test_siguiente_nivel.py).
+        """
+        level = camp.get("level", 1)
+        if level >= self._camp_top_level() or not record.get("fund"):
+            return record, []
+        target = level + 1
+        data = self._lvlup_progress(record, target)
+        from_fund = self._take_from_fund(record, self._lvlup_need(level), data["given"])
+        if not from_fund:
+            return record, []
+        record["levelup"] = data
+        self.store.put("upgrades", key, record)
+        lines = [self.texts.t("works.from_fund", items=self._item_list(from_fund), name=self.texts.t("lvlup.name", level=target))]
+        if all(ok for _, _, ok in self._lvlup_rows(camp, record, actor)):    # the last thing came from the fund: up at once
+            lines += self._level_up(key, actor)
+            record = self._upgrades(key)
+        return record, lines
+
+    def _lvlup_all_view(self, hero: Hero) -> View:
+        """📜 What every level asks, from the next one up to the castle: works, materials, chests and the castle gates (D-313).
+
+        [ES]
+        Qué hace: D-313 (0.41.1, el dueño: "especifica mejor lo que hace falta para cada subida de nivel"): una línea por cada
+        subida, desde la tuya hasta castillo, con las obras que tienen que estar construidas (camps.level_up), los materiales
+        (camps.level_up_cost_per_level × nivel) y los 🪎 cofres desde el nivel 6 (D-92); al final, lo que pide además el
+        castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
+        La llama: 📜 Qué pide cada nivel de ⬆️ Mejorar ("lvlall"). Si cambia, afecta: tests/test_siguiente_nivel.py.
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, _ = here
+        t = self.texts
+        level = camp.get("level", 1)
+        top = self._camp_top_level()
+        body = [t.t("lvlall.intro", level=level, stage=self._camp_stage(level)), ""]
+        for current in range(level, top):
+            target = current + 1
+            works = " · ".join(self._upgrade_name(uid) for uid in self._lvlup_works(target)) or "—"
+            extra = t.t("lvlall.chests", n=self._grow_chests(current)) if self._grow_chests(current) else ""
+            body.append(t.t("lvlall.line", level=target, stage=self._camp_stage(target), works=works,
+                            items=self._item_list(self._lvlup_need(current)), extra=extra))
+        if level < top:
+            body += ["", t.t("lvlall.castle", n=int(self.content.balance["upgrades"]["castle_min_built"]))]
+        else:
+            body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
+        return View(kind="camp_lvlall", title=t.t("lvlall.title"), body=body,
+                    actions=[Action(id="lvlup", label=t.t("improve.lvlup_button")), Action(id="improve", label=t.t("menu.back"))])
 
     def _lvlup_go(self, hero: Hero) -> View:
         """⏫ Subir a nivel N: any member at the camp, when every line is ✅ (the last thing was a work finishing, D-304)."""

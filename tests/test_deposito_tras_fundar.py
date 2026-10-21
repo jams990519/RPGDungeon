@@ -91,7 +91,7 @@ def test_deposits_from_far_away_feed_the_active_works_oldest_first(service):
     assert "Depositaste" in view.notice and "El fondo puso" in view.notice
     record = service._upgrades(KEY)
     assert record["works"]["fogon"] == {"madera": 20} and record["works"]["empalizada"] == {"madera": 30}
-    assert record["fund"] == {"madera": 10} and any("×10" in line for line in view.body if line.startswith("💰"))
+    assert record["fund"] == {} and record["levelup"]["given"] == {"madera": 10}    # D-313: the rest fills ⏫ Siguiente nivel
     service.text("test:2", "/f02")
     assert service._upgrades(KEY)["works"]["fogon"] == {"madera": 20, "piedra": 5}
     assert service._upgrades(KEY)["gave"]["test:2"] == {"madera": 60, "piedra": 5}       # who gave what
@@ -100,7 +100,7 @@ def test_deposits_from_far_away_feed_the_active_works_oldest_first(service):
     view = service.text("test:2", "/f02")
     record = service._upgrades(KEY)
     assert "fogon" in record["building"] and "fogon" not in record["active"] and "Materiales completos" in view.notice
-    assert record["fund"] == {"madera": 10, "piedra": 2}                    # the rest stays in the fund
+    assert record["fund"] == {} and record["levelup"]["given"] == {"madera": 10, "piedra": 2}   # D-313: the rest, to the level
     news = pushes(service, "test:1", "camp_news")
     assert news and "Fogón" in news[-1].body[0]
     assert any("Bram" in line and "×60" in line for line in service.act("test:1", "gfund").body)
@@ -111,6 +111,9 @@ def test_deposit_in_servicios_waits_for_a_work_and_an_activation_takes_it(servic
     found_at(service, "test:1", 6, 0)
     assert ids(service.act("test:1", "upsvc"))[-2:] == ["gfund:svc", "claro"]
     set_hero(service, "test:1", backpack={"madera": 25, "fibra": 4})
+    data = service._upgrades(KEY)                                           # D-313: the level's materials are in already,
+    data["levelup"] = {"to": 2, "given": {"madera": 30, "piedra": 20, "fibra": 10}, "chests": 0}   # so the deposit waits
+    service.store.put("upgrades", KEY, data)
     view = service.act("test:1", "gfund:svc")
     assert view.kind == "camp_fund" and ids(view) == ["upsvc"]               # ↩️ back to 🏘️ Servicios
     view = service.text("test:1", "/f01")

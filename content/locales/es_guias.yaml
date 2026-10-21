@@ -66,10 +66,11 @@ guides_page:
     text: |-
       🔎 Explorar (en 🧭 Explorar) investiga tu zona: cada vuelta toma {explore_min} min y {explore_energy} ⚡, y suma de {explore_low} a {explore_high} %.
       🪵 Al {reveal} % descubres sus recursos, de a uno.
+      🌲 Hay madera en todas las zonas: en los bosques, bosques oscuros y selvas hay más y la descubres al empezar a explorar.
       ➡️ Con tu zona al 100 %, explorar sigue con las vecinas sin moverte.
       🗺️ Al {color_at} % la zona muestra su terreno en el 🗺️ Mapa; el color no dice qué recursos hay.
       ✨ Un nodo es una zona rica en un recurso: sabes de qué es al pisarla.
-      🔎 Buscar recursos (🛡️ Gremio o 🏰 Gestionar) o /buscar madera: te dice dónde hay ese recurso en zonas investigadas al {search_min} % o más, la más cercana primero.
+      🔎 Buscar recursos (🛡️ Gremio o 🏰 Gestionar) o /buscar madera: te dice dónde hay ese recurso en zonas investigadas al {search_min} % o más, primero las cercanas y más ricas.
       📍 Toca el código de una zona (/z1) y se arma el camino en 🔗 Moverte.
       🛡️ En un gremio, lo que descubre uno lo saben todos.
   gather:

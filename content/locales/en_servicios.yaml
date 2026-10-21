@@ -105,13 +105,13 @@ gremio:
 
 cfund:
   title: "💰 Deposit in the camp fund"
-  intro: "Deposit from wherever you are: type or tap a material's code (/f02) and everything you carry of it goes in. The fund gives the active works what they lack, the oldest activated first; whatever is left stays here."
+  intro: "Deposit from wherever you are: type or tap a material's code (/f02) and everything you carry of it goes in. The fund gives the active works what they lack, the oldest activated first, and then ⏫ Next level; whatever is left stays here."
   line: "💰 In the fund: {items}"
   empty: "💰 The fund is empty."
   empty_short: "💰 Camp fund: empty."
   active_title: "🔨 Active works (the fund fills them in this order):"
   work_line: "{n}. {name}: still missing {items}"
-  no_active: "No works are active: what you deposit waits in the fund."
+  no_active: "No works are active: what you deposit goes to ⏫ Next level, and whatever is left waits in the fund."
   given: "💰 You deposited {items} in the camp fund."
 
 armory:

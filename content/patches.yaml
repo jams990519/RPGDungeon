@@ -807,3 +807,22 @@ v0_41:
     - "🗺️ Expand territory has a mini-map: you choose where it grows (north, east…) seeing each zone's resources. Each stage has its zone cap (camp 3, village 5, town 9, city 15, castle 25). Your camps keep their level and their zones."
     - "🤝 Helpers are now called assistants: they activate works and choose with the founder where the territory grows. The founder names them in 🛡️ Guild → 👥 Members."
     - "🔨 Every member sees the works: the active ones, the ones being built, the ones still to activate and how much is missing for the next level."
+
+v0_41_1:
+  version: "0.41.1"
+  title: "⏫ Lost Realms 0.41.1: subir de nivel más claro y madera en todas las zonas"
+  title_en: "⏫ Lost Realms 0.41.1: clearer leveling up and wood in every zone"
+  notes:
+    - "⬆️ Mejorar campamento ahora dice todo con palabras: cuántas zonas ocupa tu territorio y cuántas más puedes sumar, y la lista entera de lo que pide el siguiente nivel."
+    - "📋 Cada línea dice lo que le falta: la obra sin activar (quién la activa), la activa (qué materiales le faltan), la que está en obra (cuándo termina) y cada material (\"🪵 Madera: 11 de 30, faltan 19\")."
+    - "💰 Lo que depositas en el fondo ahora también llena el siguiente nivel, después de las obras activas; con lo último, el campamento sube solo. Los materiales no llegan solos: dalos con 🤲 Aportar o 💰 Depositar."
+    - "📜 Nuevo botón Qué pide cada nivel: todas las subidas hasta castillo, con sus obras y materiales."
+    - "🪵 Ahora hay madera en todas las zonas: en los bosques, bosques oscuros y selvas hay mucha y la ves desde que empiezas a explorar; en las montañas, praderas y demás hay menos, pero hay."
+    - "🔎 Al buscar un recurso, salen primero las zonas cercanas donde hay más."
+  notes_en:
+    - "⬆️ Improve camp now says everything in words: how many zones your territory takes and how many more you can add, and the whole list of what the next level needs."
+    - "📋 Each line says what it lacks: the work not active yet (who activates it), the active one (which materials it lacks), the one being built (when it ends) and each material (\"🪵 Wood: 11 of 30, 19 missing\")."
+    - "💰 What you deposit in the fund now also fills the next level, after the active works; with the last thing, the camp goes up by itself. Materials do not arrive by themselves: give them with 🤲 Give or 💰 Deposit."
+    - "📜 New button What each level needs: every step up to the castle, with its works and materials."
+    - "🪵 There is wood in every zone now: forests, dark forests and jungles have plenty, and you see it as soon as you start exploring; mountains, grasslands and the rest have less, but they have some."
+    - "🔎 When you look for a resource, nearby zones that have more of it come first."
