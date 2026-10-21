@@ -1206,6 +1206,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         now = self.clock.now()
         out: list[tuple[str, View]] = []
         self._works_tick()                  # D-269: a founding or a camp work whose time came ends now (its notices go out below)
+        self._waiting_sweep()               # D-323: once after start, who waited since before the patch gets in if there is room
         self._market_tick()                 # D-320: 🏛️ orders that ran out go back and 📦 deliveries that arrived are told (below)
         for account_id, data in self.store.items("hero"):
             activity = data.get("activity")
@@ -5331,9 +5332,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin):
         if not camp:
             return self._gremio_view(hero, notice=notice)    # D-269: without a camp, the guild from the first moment
         key = f"{camp['x']}:{camp['y']}"
-        waiting = hero.id not in camp["members"]
-        self._tell_waiting_room(key)                   # D-294: room may have opened (lazy, once per change)
+        self._tell_waiting_room(key, hero)             # D-323: room may have opened: who waits gets in by itself
         camp = self.store.get("camp", key) or camp
+        waiting = hero.id not in camp["members"]
         cfg = self.content.balance["guild"]
         levels = cfg["levels"]
         guild = self.store.get("guild", key)

@@ -1,5 +1,5 @@
 """In the guild, waiting for room in the camp (D-294, 0.39): invited while the camp is full, everything of the guild, nothing of
-the camp, joined by the founder or a helper when there is room.
+the camp, joined by themselves when there is room (D-323; before, by the founder or a helper).
 
 [ES] Pruebas de lo que respondió el dueño el 19-oct-2026 ("quien va a entrar a tu territorio, puedes invitarlo si no tiene
 campamento. Lo vas a invitar al gremio en sí. Cuando tengas más capacidad en el campamento, lo vas a unir al campamento. Hasta ese
@@ -139,33 +139,24 @@ def test_while_waiting_everything_of_the_guild_and_nothing_of_the_camp(service):
     assert "Ya estás en un gremio" in service.act("test:3", "askjoin").notice   # ...nor another camp
 
 
-def test_when_there_is_room_they_are_told_and_a_founder_or_helper_joins_them(service):
+def test_when_there_is_room_who_waits_gets_in_by_itself(service):
+    # D-323 (the owner, 21-oct-2026: "que entren automáticamente cuando sube de nivel… garantiza que eso pase"; was D-294's manual join)
     waiting_cora(service)
     record = service._upgrades(KEY)                                          # D-304: the camp goes up a level: room for 4
     record["built"].update({"fogon": 0.0, "empalizada": 0.0})
     service.store.put("upgrades", KEY, record)
     service.act("test:1", "lvlgive")
-    room = pushes(service, "test:3", "gremio_news")
-    assert room and "Hay lugar en el campamento Roca Alta" in room[0].body[0]
-    assert service.store.get("camp", KEY)["waiting"] == ["test:3"]           # never automatic
-    told = [v for acc, v in service.tick() if acc == "test:1"]
-    assert not told                                                          # the notice was already delivered
-    assert "Hay 2 lugares" in text(service.act("test:1", "gmembers"))
-    service.act("test:2", "gmembers")
-    assert "cwjoin" not in " ".join(ids(service.text("test:2", "/m3")))      # a plain member cannot
-    assert "fundador o un 🤝 asistente" in service.act("test:2", "cwjoin:test:3").notice
-    camp = service.store.get("camp", KEY)
-    camp["helpers"] = ["test:2"]                                             # a helper can
-    service.store.put("camp", KEY, camp)
-    service.act("test:2", "gmembers")
-    card = service.text("test:2", "/m3")
-    assert "cwjoin:test:3" in ids(card)
-    view = service.act("test:2", "cwjoin:test:3")
     camp = service.store.get("camp", KEY)
     assert "test:3" in camp["members"] and camp["waiting"] == [] and service._load("test:3").camp == KEY
-    assert "ya es miembro" in view.notice and service.store.get("camp_wait", "test:3") is None
-    joined = pushes(service, "test:3", "camp_answer")
+    assert service.store.get("camp_wait", "test:3") is None
+    out = service.tick()
+    joined = [v for acc, v in out if acc == "test:3" and v.kind == "camp_answer"]
     assert joined and "Ya eres miembro del campamento Roca Alta" in joined[0].body[0]
+    told = [v for acc, v in out if acc == "test:2" and v.kind == "gremio_news"]
+    assert not told                                                          # Bram is not a manager
+    camp["waiting"] = ["test:9"]                                             # the manual button still works if needed
+    service.store.put("camp", KEY, camp)
+    assert service.act("test:2", "cwjoin:test:9").notice                     # a plain member cannot
 
 
 def test_leaving_the_guild_while_waiting(service):

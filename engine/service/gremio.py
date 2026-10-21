@@ -2624,15 +2624,18 @@ class GremioMixin:
         self._push_each(self._camp_managers(camp), lambda: View(
             kind="camp_answer", title=t.t("camps.title"), body=[t.t(f"waiting.{result}_push", name=hero.name, camp=name)]))
         if result == "accepted":
-            self._tell_waiting_room(key)
+            self._tell_waiting_room(key, hero)          # D-323: room already? then in at once
+            camp = self.store.get("camp", key) or camp
+            if hero.id in camp.get("members", []):
+                return self._guild_view(hero, notice=t.t("waiting.joined_now", camp=name))
             return self._guild_view(hero, notice=t.t("waiting.welcome", camp=name))
         return self._main_view(hero, notice=t.t(f"waiting.{result}", camp=name))
 
     def _camp_join_waiting(self, hero: Hero, account: str) -> View:
         """🏕️ Unir al campamento: the founder or a helper turns a waiting guild member into a camp member, if there is room.
 
-        [ES] Qué hace: nunca es solo (pedido del dueño: "cuando tengas más capacidad en el campamento, lo vas a unir"): el
-        fundador o un ayudante, desde la tarjeta de quien espera, lo une si hay lugar; desde ahí tiene también lo del campamento
+        [ES] Qué hace: desde D-323 (0.46.1) quien espera entra SOLO cuando hay lugar (_tell_waiting_room); este botón queda para
+        el fundador o un asistente por si hace falta: desde la tarjeta de quien espera, lo une si hay lugar; desde ahí tiene también lo del campamento
         (Hero.camp). Se le avisa en su idioma. La llama: "cwjoin:<cuenta>". Si cambia, afecta: tests/test_espera_del_gremio.py."""
         t = self.texts
         camp = self._member_camp(hero)
@@ -2676,28 +2679,60 @@ class GremioMixin:
             kind="gremio_news", title=t.t("gremio.title"), body=[t.t("waiting.left_push", name=hero.name, camp=name)]))
         return self._gremio_none_view(hero, notice=t.t("waiting.left", camp=name))
 
-    def _tell_waiting_room(self, key: str) -> None:
-        """When the camp has room and someone waits, tell the waiting ones and the founder and helpers, once per change.
+    def _tell_waiting_room(self, key: str, actor: Hero | None = None) -> None:
+        """When the camp has room, who waits in its guild joins BY ITSELF, first come first in, until it is full (D-323).
 
-        [ES] Qué hace: el aviso de que hay lugar (D-294): a quien espera ("el fundador o un ayudante te une") y al fundador y sus
-        ayudantes ("únelos desde 🛡️ Gremio"). Se avisa una vez por cada cambio de lugares libres ("room_told" del campamento),
-        nunca une a nadie solo. La llaman: game.py (_leave_camp, _level_up (D-304; antes _grow_camp), _rise_guild, _complete_work,
-        _place_furniture, _guild_view) y aquí (_wait_invite_answer, _camp_join_waiting, _works_settle_camp). Si cambia, afecta: los avisos."""
+        [ES] Qué hace: D-323 (orden del dueño del 21-oct-2026: "verifica que los jugadores que están en cola de espera para entrar
+        en el campamento entren automáticamente cuando sube de nivel… garantiza que eso pase"; cambia D-294, que solo avisaba):
+        cada vez que el campamento puede tener lugar (subir de nivel, el gremio que sube, 🛖 Cabañas, 🛏️ Literas, alguien que
+        sale, al aceptar la espera o al abrir 🛡️ Gremio), los de camp["waiting"] entran solos en orden de llegada hasta llenar
+        los lugares (_camp_room): pasan a miembros con Hero.camp, se les avisa en su idioma (waiting.joined_push) y al fundador y
+        sus 🤝 asistentes (waiting.auto_joined_push). Quien ya no existe o ya tiene campamento sale de la espera sin ocupar lugar.
+        `actor`: el héroe que está jugando ahora, si puede ser uno de los que esperan (así no se pisa con su copia en memoria).
+        La llaman: game.py (_leave_camp, _level_up, _rise_guild, _complete_work, _place_furniture, _guild_view, el barrido de
+        tick, _waiting_sweep) y aquí (_wait_invite_answer, _camp_join_waiting, _works_settle_camp).
+        Si cambia, afecta: quién entra al campamento (tests/test_espera_del_gremio.py, tests/test_espera_entra_sola.py).
+        """
         t = self.texts
         camp = self.store.get("camp", key)
-        if not camp:
+        if not camp or not camp.get("waiting"):
             return
-        waiting = list(camp.get("waiting") or [])
-        room = self._camp_room(camp) if waiting else 0
-        if room == int(camp.get("room_told", 0) or 0):
-            return
-        camp["room_told"] = room
+        joined: list[str] = []
+        while camp.get("waiting") and self._camp_room(camp) > 0:
+            account = camp["waiting"].pop(0)
+            self.store.delete("camp_wait", account)
+            if actor is not None and account == actor.id:
+                if actor.camp:                          # already in another camp: out of the line, no place used
+                    continue
+                actor.camp = key
+            else:
+                data = self.store.get("hero", account)
+                if data is None or data.get("camp"):
+                    continue
+                data["camp"] = key
+                self.store.put("hero", account, data)
+            camp["members"].append(account)
+            joined.append(account)
+        camp["room_told"] = 0
         self.store.put("camp", key, camp)
-        if room <= 0:
+        if not joined:
             return
         name = camp["name"]
-        self._push_each(waiting, lambda: View(kind="gremio_news", title=t.t("gremio.title"),
-                                              body=[t.t("waiting.room_push", camp=name)]))
-        self._push_each(self._camp_managers(camp), lambda: View(
-            kind="gremio_news", title=t.t("gremio.title"), body=[t.t("waiting.room_push_managers", n=room, w=len(waiting), camp=name)],
-            actions=[Action(id="guild", label=t.t("gremio.button"))]))
+        self._push_each(joined, lambda: View(kind="camp_answer", title=t.t("camps.title"),
+                                             body=[t.t("waiting.joined_push", camp=name)]))
+        names = ", ".join(self._hero_name(a) if not (actor is not None and a == actor.id) else actor.name for a in joined)
+        self._push_each([m for m in self._camp_managers(camp) if m not in joined], lambda: View(
+            kind="gremio_news", title=t.t("gremio.title"), body=[t.t("waiting.auto_joined_push", names=names, camp=name)]))
+
+    def _waiting_sweep(self) -> None:
+        """Once per process: let in who waited since before D-323 where their camp already has room (the owner's order).
+
+        [ES] Qué hace: la primera vez que corre tick() después de arrancar, revisa los campamentos con gente en espera y les
+        aplica _tell_waiting_room: así entran también los que esperaban desde antes del parche. La llama: game.py tick().
+        Si cambia, afecta: solo ese primer barrido."""
+        if getattr(self, "_waiting_swept", False):
+            return
+        self._waiting_swept = True
+        for key, camp in list(self.store.items("camp")):
+            if camp.get("waiting"):
+                self._tell_waiting_room(key)
