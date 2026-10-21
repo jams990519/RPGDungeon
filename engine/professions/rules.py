@@ -20,6 +20,9 @@ D-115 y D-141: las cuentas de las 🎓 especializaciones de oficio (3 por oficio
 cuántas permite el rango (spec_slots), el dominio que crece con la experiencia de oficio ganada mientras la tienes
 (spec_share), lo que suma cada efecto según el contexto (spec_bonus, spec_finds), si elegirla es gratis o un cambio pagado
 (spec_choice) y cuánto cuesta cambiar (switch_cost).
+D-306.1 (0.43, el dueño el 20-oct-2026, E-228): los 🎖️ títulos de oficio se compran en el 🧑‍🏫 Entrenador, como en WoW: el
+lugar de cada título (title_index), su tope (title_cap: 20, 40, 60, 80, 95 y 100), el que tiene el héroe (held_title_index:
+el comprado o, si es más alto, el que ya le da su rango, D-64) y cuánta experiencia entra antes del tope (xp_room).
 No guarda nada: el servicio lee Hero.professions (y Hero.prof_specs, Hero.spec_xp) y llama a estas funciones.
 Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0.2 (beneficios), §0.4 (obra maestra y
     beneficios de campamento), §0.5 (✨ Encantamiento, D-115 fase 2) y §4; diseno/07-economia/red-de-oficios.md §3
@@ -27,10 +30,10 @@ Documento de diseño: diseno/07-economia/profesiones.md §0 (fase 1, D-109), §0
 Módulo: M14 Oficios
 Depende de: ninguno (los datos llegan de content/professions.yaml, también su bloque specs, y de content/balance.yaml,
     bloques professions, masterwork, enchanting, camp_professions y specs)
-Lo usan: engine/service/game.py (secciones "professions", "enchanting", "camp professions, phase 2" y "profession
-    specializations"), engine/core/content.py (masterwork_items, al cargar los objetos), tests/test_professions.py,
-    tests/test_masterwork.py, tests/test_oficios_equipo.py, tests/test_oficios_campamento.py y
-    tests/test_especializaciones.py
+Lo usan: engine/service/game.py (secciones "professions", "enchanting", "camp professions, phase 2", "profession
+    specializations" y "🎖️ profession titles"), engine/core/content.py (masterwork_items, al cargar los objetos),
+    tests/test_professions.py, tests/test_masterwork.py, tests/test_oficios_equipo.py, tests/test_oficios_campamento.py,
+    tests/test_especializaciones.py y tests/test_titulos_de_oficio.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (la experiencia de oficio se guarda en Hero.professions)
@@ -44,6 +47,8 @@ Reglas que nunca se rompen:
        un campamento grande no rinde más por tener muchos cocineros. Una obra nunca pide menos de 1 de cada cosa.
     6. D-141: nunca más de dos especializaciones por oficio (spec_slots solo cuenta los umbrales de balance.yaml specs.slots_at,
        que son dos) y el dominio nunca baja: cambiar de especialización guarda el de la vieja (Hero.spec_xp).
+    7. D-306.1: un título nunca se pierde y el rango nunca baja: el título que tiene el héroe es el mayor entre el comprado
+       y el que da su rango (held_title_index); el tope solo frena la experiencia que llega, nunca quita la guardada.
 Si cambias esto, revisa:
     - La curva (balance.yaml professions.rank_formula): cuánto tarda el rango 100 (~1 año dedicado, profesiones.md §4)
     - Servicio: engine/service/game.py (_prof_rank, _trade_gather, _trade_loot, _station_view, _recipe_view, _make)
@@ -61,8 +66,11 @@ Si cambias esto, revisa:
     - 🎓 Especializaciones (D-141): content/professions.yaml "specs" (efectos con SPEC_KINDS y los filtros de SPEC_FILTERS: un
       tipo de efecto nuevo va aquí, en el texto spec.effect.<tipo> y donde el servicio lo use) y balance.yaml specs (umbrales,
       dominio, recetas exclusivas y costo de cambiar). enchant_value suma el efecto "enchant" antes de redondear
+    - 🎖️ Títulos (D-306.1): los "from" de content/professions.yaml "ranks" son los topes (title_cap) y los precios y niveles
+      están en balance.yaml professions.titles; el servicio los usa en _prof_gain (frena la experiencia), _titles_view y
+      _buy_title. El 🧭 Explorador (learn: auto) no tiene títulos (D-316)
     - Pruebas: tests/test_professions.py, tests/test_masterwork.py, tests/test_enemy_camps.py, tests/test_oficios_equipo.py,
-      tests/test_oficios_campamento.py, tests/test_especializaciones.py
+      tests/test_oficios_campamento.py, tests/test_especializaciones.py, tests/test_titulos_de_oficio.py
 """
 
 from __future__ import annotations
@@ -112,6 +120,56 @@ def rank_title(rank: int, titles: list[dict[str, Any]]) -> str:
         if rank >= int(row["from"]):
             current = row["id"]
     return current
+
+
+def title_index(titles: list[dict[str, Any]], title_id: str | None) -> int:
+    """Position of a title id in the rank titles (0 = aprendiz), or -1 when it is not one of them.
+
+    [ES]
+    Qué hace: dice en qué lugar va un título (Aprendiz 0, Oficial 1... Gran Maestro 5) o -1 si no existe.
+    La llaman: held_title_index y el servicio (🎖️ Títulos de oficio, D-306.1). Si cambia, afecta: qué título tiene cada uno.
+    """
+    return next((i for i, row in enumerate(titles) if row["id"] == title_id), -1)
+
+
+def title_cap(titles: list[dict[str, Any]], index: int, max_rank: int) -> int:
+    """The last rank a title lets a profession reach: the next title's "from" minus 1 (the last title: max_rank).
+
+    [ES]
+    Qué hace: el tope de un título (D-306.1, E-228): Aprendiz 20, Oficial 40, Experto 60, Artesano 80, Maestro 95 y
+    Gran Maestro max_rank (100). Al tope el oficio no sube hasta comprar el título siguiente en el 🧑‍🏫 Entrenador.
+    La llaman: el servicio (_prof_cap). Si cambia, afecta: dónde se frena cada oficio (los "from" de professions.yaml "ranks").
+    """
+    if 0 <= index + 1 < len(titles):
+        return int(titles[index + 1]["from"]) - 1
+    return max_rank
+
+
+def held_title_index(titles: list[dict[str, Any]], rank: int, bought: str | None) -> int:
+    """The title a hero holds in a profession: the one bought, or the one its rank already gives if higher (D-64).
+
+    [ES]
+    Qué hace: el título que tiene el héroe en un oficio (D-306.1): el último que compró en el 🧑‍🏫 Entrenador o, si es más
+    alto, el que ya le da su rango. Así quien pasaba un tope antes de la 0.43 conserva su rango y tiene gratis los títulos
+    hasta su rango (D-64); solo compra los que vienen. Como la experiencia nunca pasa del tope (xp_room), el rango solo da un
+    título que no compró si ya lo tenía antes de la 0.43.
+    La llaman: el servicio (_prof_title_idx). Si cambia, afecta: el tope de todos los oficios de todos los héroes.
+    """
+    return max(title_index(titles, rank_title(rank, titles)), title_index(titles, bought))
+
+
+def xp_room(xp: int, formula: dict[str, float], cap: int, max_rank: int) -> int | None:
+    """How much profession xp still fits under a title's cap (0 = at the cap); None when the cap is the last rank.
+
+    [ES]
+    Qué hace: cuánta experiencia de oficio entra todavía antes del tope del título: hasta un punto antes del rango siguiente
+    al tope (con tope 20, hasta 3.599 con la curva de siempre). 0 = en el tope: la experiencia que llega no se guarda
+    (D-316). None = sin tope (Gran Maestro llega a max_rank, donde rank_of ya frena).
+    La llaman: el servicio (_prof_room, _prof_gain). Si cambia, afecta: cuánto sube cada oficio antes de frenarse.
+    """
+    if cap >= max_rank:
+        return None
+    return max(0, xp_for_rank(formula, cap + 1) - 1 - int(xp))
 
 
 def gatherer_of(item_id: str, professions: dict[str, Any]) -> str | None:

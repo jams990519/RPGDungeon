@@ -36,6 +36,12 @@ Si cambias esto, revisa:
       dominio de cada una (id de especialización → experiencia de oficio ganada mientras la tenía). El dominio de una
       especialización que se cambia queda guardado por si vuelve. Vacíos por defecto: los héroes guardados antes cargan
       igual (engine/service/game.py sección "profession specializations"; tests/test_especializaciones.py)
+    - prof_titles (D-306.1, 0.43): el 🎖️ título de oficio que el héroe COMPRÓ en el 🧑‍🏫 Entrenador (id de oficio → id de título
+      de content/professions.yaml "ranks": oficial, experto, artesano, maestro, gran_maestro). Vacío por defecto: los héroes
+      guardados antes cargan igual y tienen gratis los títulos hasta su rango (D-64: el título que vale es el mayor entre el
+      comprado y el que da su rango; engine/professions/rules.py held_title_index). Al tope del título (20, 40, 60, 80, 95)
+      el oficio no guarda experiencia hasta comprar el siguiente (engine/service/game.py _prof_gain, _buy_title;
+      tests/test_titulos_de_oficio.py)
     - titles: también guarda "gran_explorador", el título del rango 100 del 🧭 Explorador (D-112, para siempre)
     - options (D-114): ⚙️ Opciones del jugador ("fights": "manual" | "auto", "retreat": % de vida, "potions": sí/no).
       Vacío = lo de balance.yaml auto_fight.defaults (también para los héroes guardados antes: ✋ Manual, 50 %, sí).
@@ -110,6 +116,9 @@ class Hero:
             is derived from it; empty for heroes saved before it (every profession starts at rank 1). No cap (D-57).
         learned: the professions the hero learned by paying their first recipe (0.33, D-257). Only exploration is never
             learned (learn: auto; gathering too until 0.35, D-272). A profession not learned has rank 0; its xp stays.
+        prof_titles: the 🎖️ profession title the hero BOUGHT at the 🧑‍🏫 Entrenador (0.43, D-306.1), profession id -> title id
+            of content/professions.yaml "ranks". The title that counts is the higher of this and the one the rank already
+            gives (heroes saved before it keep their titles for free, D-64). Empty for heroes saved before it.
         class_changes: how many times the hero changed class (0.35, D-270): the first is free, then the price grows
             (balance.yaml class_change.prices). 0 for heroes saved before it.
         home: the bonfire where the hero was born (0.37, D-265): one of the 9; heroes from before have [0, 0] (the Claro)
@@ -214,6 +223,7 @@ class Hero:
     combo_shapes: list[str] = field(default_factory=list)               # D-229: different chain combos ever cashed (variety)
     class_changes: int = 0                                              # D-270: class changes done (the first is free)
     home: list[int] = field(default_factory=lambda: [0, 0])               # D-265: the bonfire where the hero was born (0.37)
+    prof_titles: dict[str, str] = field(default_factory=dict)           # D-306.1 (0.43): 🎖️ profession titles bought
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

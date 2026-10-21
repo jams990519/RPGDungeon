@@ -136,6 +136,7 @@ def test_rank_up_tells_what_it_opens(service):
     hero = ready(service)
     lines = service._prof_gain(hero, "minero", rank_xp(service, 10))
     assert any("rango 10" in line for line in lines) and any("Gema en bruto" in line for line in lines)
+    hero.prof_titles["herreria"] = "oficial"                            # D-306.1 (0.43): past rank 20 only with Oficial
     lines = service._prof_gain(hero, "herreria", rank_xp(service, 25))
     assert any("Espada templada" in line for line in lines)
     assert service._prof_gain(hero, "herreria", 1) == []                # no new rank: no line

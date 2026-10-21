@@ -692,6 +692,8 @@ arreglar la piel (×2,5 pieles por presa), días hasta el 25 / 50 / 100 (`propue
 
 ### 8.6 Los cuellos de botella
 
+> **Desde la 0.43 (D-306.5; cómo se aplicó: D-316):** en el juego la piel ×2,5 por bestia, +3 de 🔪 Desollador por bestia desollada, el botón 🎣 Pescar (solo pescado) y 🧱 Mantenimiento, la obra que se repite para la 🏗️ Construcción; el mercader compra pociones y remedios a un cuarto de su precio (§8.7). Los títulos que se compran y los precios por rama (§8.5) también. Las tablas de arriba son de antes de la 0.43. Ver [Oficios como WoW](oficios-como-wow.md) §4.
+
 - **🦌 Piel (Curtiduría, Peletería, Herrería, arcos):** hoy ~4,4 ⚡ por piel; un recurso común cuesta ~0,7 ⚡. Llevarla a ~1,5-2 ⚡: que las
   bestias suelten 1 a 3 pieles (`loot_amount`) o que el 🔪 Desollador saque una piel más por bestia. Un peletero al 100 necesita ~20.600
   pieles: hoy son ~6 años de un cazador a tiempo completo.

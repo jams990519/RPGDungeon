@@ -244,13 +244,13 @@ faq:
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one from each character: completing them gives experience, coins and reputation with their faction. If you have a camp, you also see its weekly tasks, which everyone does together.'
   d44:
     q: ⚒️ How do I learn a profession?
-    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. Your professions: /myprofessions.'
+    a: 'Each profession is learned once, by paying for its first recipe ({learn_price}), in 🧑‍🏫 Trainer → 📚 Learn professions. Then it rises as you make recipes, and each rank opens new recipes. Only the 🧭 Explorer is never learned: it rises on its own. Gathering is learned too; without the profession, gathering still gives you the base resources. At rank 20, 40, 60, 80 and 95 a profession stops until you buy the next 🎖️ title at the 🧑‍🏫 Trainer (/titles). Your professions: /myprofessions.'
   d45:
     q: 🛠️ How do I craft?
     a: In 🏕️ Camp → 🛠️ Craft you choose 🪚 Refine (wood → plank, metal → ingot…) or 🛠️ Craft (gear, potions, bandages, furniture). Each recipe shows what it needs and how much ⚡ it costs. The Clearing has all the basic stations; your camp, the ones from its upgrades.
   d46:
     q: 🍲 How do I cook?
-    a: '🍲 Cook (🏕️ Camp) uses the 🍲 Cooking station: meat, fish and what each terrain gives become rations and stews that go further in the 🌾 pantry. You can already cook in the Clearing; in your camp, with the 🔥 Hearth. 🎣 Fish comes from zones with water.'
+    a: '🍲 Cook (🏕️ Camp) uses the 🍲 Cooking station: meat, fish and what each terrain gives become rations and stews that go further in the 🌾 pantry. You can already cook in the Clearing; in your camp, with the 🔥 Hearth. 🎣 Fish comes from zones with water: 🎣 Fish (in 🧭 Explore) collects only fish.'
   d47:
     q: 🎓 What are specializations?
     a: When a profession reaches rank {spec_first} you choose its first 🎓 specialization, and at {spec_second} the second (never all three). They give bonuses and their own recipes that grow with mastery. Choose them in ⚒️ Professions → 🎓 Specialization or with /specialty.
@@ -265,7 +265,7 @@ faq:
     a: 'There''s 🥉 bronze, 🥈 silver and 🥇 gold: {rate} 🥉 = 1 🥈 and {rate} 🥈 = 1 🥇. Also 💰 bags (sewn), 🪎 chests (built from bags) and 💎 diamonds. It''s all in 🎒 Backpack → 💰 Coins.'
   d51:
     q: 🛒 What does the merchant do?
-    a: 'The Clearing''s 🛒 Merchant sells potions, bandages and 🥖 provisions (up to {provisions_cap} a week) and buys your materials at {sell_pct}% of their price. Gear you don''t use is sold from 🛡️ Gear. Food can''t be sold: it''s for the pantry.'
+    a: 'The Clearing''s 🛒 Merchant sells potions, bandages and 🥖 provisions (up to {provisions_cap} a week) and buys your materials at {sell_pct}% of their price, and the potions and remedies in your backpack for a little ({remedy_pct}%). Gear you don''t use is sold from 🛡️ Gear. Food can''t be sold: it''s for the pantry.'
   d52:
     q: 🪎 How do I make bags and chests?
     a: A 💰 bag is sewn with {bag_recipe} and {bag_coins}. A 🪎 chest is built with {chest_bags} bags and {chest_items}. You make them in 🎒 Backpack → 💰 Coins (in the Clearing) or in your camp's 🪡 Tailor's shop. Chests pay for the camp's high levels.

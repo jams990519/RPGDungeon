@@ -533,6 +533,24 @@ Si cambias esto, revisa:
       en_talar.yaml (chop.*, retreat.*, batch.*_chop, presence.activity.chop, hero.status.chop), options.retreat_now,
       faq d09, d19, d55 y d57 (content/faq.yaml) y las guías find y gather. Pruebas: tests/test_talar.py,
       tests/test_resources.py, tests/test_buttons.py, tests/test_hunt.py, tests/test_mazmorras.py y tests/test_options.py
+    - La reforma de los oficios, parte del Entrenador y de lo que no avanzaba (0.43, D-306 confirmada por el dueño el
+      20-oct-2026; lo que eligió Claude: D-316, provisional). (1) 🎖️ Títulos (E-228): sección "🎖️ profession titles"
+      (_title_rows, _title_cost, _prof_titled, _prof_title_idx, _prof_cap, _prof_room, _title_next, _title_waiting,
+      _title_lock_line, _title_prof_lines, _title_action, _titles_view, _buy_title; TITLE_ACTIONS y /titulos). _prof_gain frena
+      la experiencia al tope del título (20, 40, 60, 80, 95) y lo que no entra se pierde (D-316); _trade_gather y _build_gain
+      dicen solo lo guardado. El título que vale es el mayor entre Hero.prof_titles y el que da el rango (D-64: gratis hasta
+      tu rango); el 🧭 Explorador (learn: auto) no tiene. Se ven en _prof_list_lines (📋 Mis oficios y ⚒️ Oficios),
+      _trainer_view (línea, 🔒 y el botón 🎖️; con 🎓 son 5, EXTRA_BUTTON_KINDS "trainer") y _prof_detail_view (🎖️ Comprar).
+      (2) Precios por rama (E-222): _learn_price y _learn_prices_text (balance.yaml professions.learn_price ahora es un mapa
+      por rama; {learn_price} de ❓ y 📚). (3) Lo que no avanzaba (E-223): _skin_loot_count (🦌 piel ×2,5 por bestia con su
+      propio sorteo) y +3 de 🔪 Desollador por bestia desollada en _end_combat (professions.skinning); 🎣 Pescar es otro modo
+      de recolectar (BATCH_MODES "fish", activity["mode"], _fish_resource, _batch_mode, _can_fish: solo con agua y si lo sabes
+      o el terreno es todo agua; 6 botones en 🧭 Explorar, [1, 2, 2, 1]); 🧱 Mantenimiento (_upkeep_cfg, _upkeep_need,
+      _upkeep_open, _maintain, _upkeep_page; "upkeep" en UPGRADE_ACTIONS; ("keep", "upkeep") en _works_entries; "upkeep" y
+      "upkeep_done" en el registro de mejoras) sube la 🏗️ Construcción una y otra vez; el mercader compra pociones y remedios
+      (REMEDY_KINDS, _sellable, _sell_price con shop.remedy_sell_ratio; códigos /v61 a /v66 en items.yaml). Textos:
+      content/locales/es_titulos_pesca.yaml y en_titulos_pesca.yaml, d44, d46 y d51 de ❓ Dudas y las guías hunt y trades.
+      Pruebas: tests/test_titulos_de_oficio.py, tests/test_aprender_oficios.py, tests/test_talar.py, tests/test_buttons.py
 """
 
 from __future__ import annotations
@@ -633,6 +651,7 @@ COMMANDS.update({"/cambiarclase": "chcls", "/changeclass": "chcls"})   # D-270 (
 COMMANDS.update({"/feedback": "fb", "/misoficios": "myprof", "/myprofessions": "myprof", "/aprender": "learnlist", "/learn": "learnlist"})
 # D-265/D-274: 👥 Jugadores of the bonfire (it took 🔬 Investigar's place in the Claro's hub).
 COMMANDS.update({"/jugadores": "players", "/players": "players"})
+COMMANDS.update({"/titulos": "ptitles", "/titles": "ptitles"})   # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -654,23 +673,30 @@ BATCH_KINDS = ("explore", "gather", "hunt")
 # activity it starts stays "gather" with activity["only"] = the resource (D-314: same energy, minutes, presence, missions,
 # guide step and reports as 🧺 Recolectar). [ES] D-305: 🪓 Talar es un modo de recolectar (la actividad sigue siendo
 # "gather" con "only"); estos ids van en los botones: solo se agregan.
-BATCH_MODES = {"chop": "gather"}
+# D-306.5 (0.43): 🎣 Pescar ("fish") is the same kind of mode with only = 🐟 the fish (balance.yaml camp_professions.fish.resource);
+# a batch started since 0.43 also keeps its mode in activity["mode"] (a 0.42 batch with "only" and no "mode" is 🪓 Talar).
+# [ES] D-306.5: 🎣 Pescar es otro modo de recolectar (solo 🐟 pescado); activity["mode"] dice cuál es.
+BATCH_MODES = {"chop": "gather", "fish": "gather"}
 # D-308 (0.42): the batches that do not start with the hero's life under its 🩹 Retirarse % (⚙️ Opciones). A hunting batch
 # has its own check (_hunt_batch_blocker). [ES] D-308: con la vida bajo el % de 🩹 Retirarse no empiezan estos lotes.
-RETREAT_GATED = ("explore", "gather", "chop")
+RETREAT_GATED = ("explore", "gather", "chop", "fish")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive",
                    "upf:",       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
                    "uprep",      # D-115: 🛠️ Reparar defensas after a raid (from 🔨 Obras)
                    "svc:",       # D-288 (0.39): one type of 🏘️ Servicios ("svc:<kind>" or "svc:<kind>:<page>")
                    "upact:",     # D-291: ▶️ Activar a work (the founder or a 🤝 helper); "upact:<id>:w" comes from 🔨 Obras
-                   "upstop:")    # D-291: ⏹️ Quitar an active work nobody gave to yet
+                   "upstop:",    # D-291: ⏹️ Quitar an active work nobody gave to yet
+                   "upkeep")     # D-306.5 (0.43): 🧱 Mantenimiento, the camp work that repeats (from 🔨 Obras)
 # D-288 (0.39): the types of camp buildings, in the order of their 🏘️ Servicios buttons (content/camp_upgrades.yaml "kind").
 CAMP_KINDS = ("casa", "oficio", "defensa", "saber")
 # Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
 BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
 PROF_ACTIONS = ("oficios", "est:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:")   # D-257: + 📋 📚 and a profession's screen
+# D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador: the screen ("ptitles") and buying a profession's next title
+# ("ptitle:<profession>", or "ptitle:<profession>:d" from that profession's screen, which it goes back to).
+TITLE_ACTIONS = ("ptitles", "ptitle:")
 # Button ids (or prefixes) of ✨ Encantamiento (D-115, phase 2): the hub, a piece's screen, enchant, disenchant (and confirm it).
 ENCHANT_ACTIONS = ("ench", "enc:", "dis:", "dis!:")
 # Button ids (or prefixes) of 🎓 Especialización (D-141): the hub (and its pages), a profession, a specialization, pick it, switch
@@ -687,7 +713,8 @@ HUB_BUTTONS = 8
 # ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
 # [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
 EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1,
-                      "explore_menu": 4 + 1}   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar in 🧭 Explorar
+                      "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
+                      "trainer": 4 + 1}        # D-306.1/D-316 (0.43): 🎖️ Títulos in the 🧑‍🏫 Entrenador when a title waits
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -695,6 +722,9 @@ EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1,
 DUDAS_ACTIONS = ("dudas", "duda:", "guides", "guide:")
 # D-297: where ↩️ Volver of the ❓ Dudas main screen may go (the screen it was opened from); anything else goes to the hub.
 DUDAS_ORIGINS = ("claro", "options", "hero")
+# D-306.5 (0.43): what the Claro trader buys at shop.remedy_sell_ratio (a little, until there is a player market): potions and
+# remedies (content/items.yaml kind). [ES] Las pociones y los remedios que el mercader compra a poco.
+REMEDY_KINDS = ("potion", "bandage")
 # D-192: the profession whose recipes 🍲 Cocinar lists (the 🍲 Cocina, content/professions.yaml); its station page is "est:cook".
 COOK_PROFESSION = "cocina"
 # D-192: professions that need your own camp to rise (🏗️ Construcción: giving to its works); the 🧑‍🏫 Entrenador says so.
@@ -1796,6 +1826,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         cantidad, el mismo +50 % de tu territorio, la misma emboscada y el mismo 🪓 Leñador (_trade_gather); solo se agota la
         madera. El nodo cuenta solo si es de madera (×2, la mitad de agotamiento y su raro); un nodo de otro recurso no se
         trabaja al talar (sin su raro). Sin madera para juntar, la vuelta termina con batch.reason.chop_depleted.
+        D-306.5 (0.43): un lote de 🎣 Pescar es lo mismo con "only" = el 🐟 pescado (activity["mode"] "fish"): cada unidad es
+        pescado, sube el 🎣 Pescador y, sin pescado, la vuelta termina con batch.reason.fish_depleted.
         """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
@@ -1859,7 +1891,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             activity["log"] += self._give_xp(hero, xp)
         if not got:
             activity["left"] = 0
-            reason = "chop_depleted" if only else "depleted"       # D-305: 🪓 Talar says it is the wood that ran out
+            reason = f"{self._batch_mode(activity)}_depleted" if only else "depleted"   # D-305/D-306.5: the wood or the fish ran out
             activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else f"batch.reason.{reason}"))
         return None
 
@@ -2131,6 +2163,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._memento_view(hero)
         if action_id.startswith("mem:"):
             return self._use_memento(hero, action_id[4:])
+        if action_id.startswith(TITLE_ACTIONS):         # D-306.1 (0.43): 🎖️ Títulos de oficio (a menu: also while busy)
+            return self._title_action(hero, action_id)
         if action_id.startswith(PROF_ACTIONS):          # D-109: ⚒️ Oficios, its stations, recipes and 🔨 Hacer
             return self._prof_action(hero, action_id)
         if action_id.startswith(SPEC_ACTIONS):          # D-141: 🎓 Especialización (choosing works while busy: it is a menu)
@@ -2255,9 +2289,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hero.activity = {"kind": "travel", "to": [dest.x, dest.y], "until": until, "dir": direction}
             self.bus.publish(TravelStarted(hero.id, dest.x, dest.y, until))
             return self._activity_view(hero, notice=t.t("travel.started", time=self._fmt_duration(seconds)))
-        if action_id in ("gather", "chop") and self._is_lair(hero.x, hero.y):     # D-305: no 🪓 Talar in the lair either
+        if action_id in ("gather", "chop", "fish") and self._is_lair(hero.x, hero.y):     # D-305/D-306.5: nor 🪓 nor 🎣 in the lair
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
-        if action_id in ("gather", "explore", "chop"):
+        if action_id in ("gather", "explore", "chop", "fish"):          # D-306.5 (0.43): 🎣 Pescar
             return self._amount_view(hero, action_id, 0)
         if action_id.startswith("amt:"):
             _, kind, page = action_id.split(":")
@@ -2294,7 +2328,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         pelea (⚙️ Opciones). Con un 👹 campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
         🧭 Explorar con el aviso, sin gastar nada.
         D-305 (0.42): 🪓 Talar es un modo de recolectar (BATCH_MODES "chop" → "gather"): la misma energía, los mismos minutos y
-        las mismas cantidades; sus textos son batch.*_chop y solo mira la 🪵 madera (_gather_blocked con only). D-308 (0.42):
+        las mismas cantidades; sus textos son batch.*_chop y solo mira la 🪵 madera (_gather_blocked con only). D-306.5 (0.43):
+        🎣 Pescar ("fish") igual, con batch.*_fish y solo el 🐟 pescado. D-308 (0.42):
         lo que frena antes de todo (campamento enemigo, guarida, cazar en lote y la vida bajo el % de 🩹 Retirarse) va en
         _batch_gate, igual que al empezar.
         La llaman: los botones 🔎 Explorar, 🧺 Recolectar, 🪓 Talar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
@@ -2388,6 +2423,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.activity = {"kind": base, "until": self.clock.now() + seconds, "left": steps - 1, "total": steps, "done": 0, "got": {}, "log": []}
         if only:                                        # D-305: 🪓 Talar gathers this one resource only
             hero.activity["only"] = only
+            hero.activity["mode"] = kind                # D-306.5 (0.43): "chop" or "fish" (its texts and its reason to stop)
         return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=steps, time=self._fmt_duration(seconds * steps)))
 
     def _batch_gate(self, hero: Hero, kind: str) -> View | None:
@@ -2448,9 +2484,29 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """The one resource 🪓 Talar gathers: 🪵 wood (balance.yaml resources.wood.resource, D-305)."""
         return str((self.content.balance["resources"].get("wood") or {}).get("resource", "madera"))
 
+    def _fish_resource(self) -> str:
+        """The one resource 🎣 Pescar gathers: 🐟 fish (balance.yaml camp_professions.fish.resource, D-306.5)."""
+        return str((self.content.balance.get("camp_professions") or {}).get("fish", {}).get("resource", "pescado"))
+
     def _mode_only(self, kind: str) -> str | None:
-        """The only resource a batch choice gathers: 🪵 wood for 🪓 Talar ("chop", D-305), else None (everything)."""
-        return self._chop_resource() if kind == "chop" else None
+        """The only resource a batch choice gathers: 🪵 wood for 🪓 Talar ("chop", D-305), 🐟 fish for 🎣 Pescar ("fish",
+        D-306.5), else None (everything)."""
+        if kind == "chop":
+            return self._chop_resource()
+        return self._fish_resource() if kind == "fish" else None
+
+    @staticmethod
+    def _batch_mode(activity: dict[str, Any] | None) -> str:
+        """The batch choice of a gathering activity: "chop" or "fish" when it takes one resource, else "gather".
+
+        [ES] Qué hace: D-306.5 (0.43): un lote que junta un solo recurso dice cuál es en activity["mode"] ("chop" 🪓 Talar o
+        "fish" 🎣 Pescar); uno de la 0.42 con "only" y sin "mode" es de 🪓 Talar. La llaman: los textos de lotes, 👥 y el Estado.
+        Si cambia, afecta: qué dicen las pantallas de un lote (tests/test_talar.py, tests/test_titulos_de_oficio.py).
+        """
+        activity = activity or {}
+        if not activity.get("only"):
+            return "gather"
+        return "fish" if activity.get("mode") == "fish" else "chop"
 
     def _can_chop(self, x: int, y: int) -> bool:
         """True if 🪓 Talar makes sense in this zone: it has 🪵 wood (D-305; since D-303 every zone but the fixed ones does).
@@ -2459,20 +2515,38 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         return self._chop_resource() in self._zone_resources(x, y)
 
+    def _can_fish(self, hero: Hero, x: int, y: int) -> bool:
+        """True if 🎣 Pescar is offered here: the zone has water (🐟 fish) and the hero knows it, or its terrain is all water.
+
+        [ES] Qué hace: D-306.5 (0.43, el dueño el 20-oct-2026, E-223): 🎣 Pescar solo donde la zona tiene agua. D-316 (Claude):
+        en un terreno que es todo agua (content/biomes.yaml water 1.0: el 🐸 pantano) siempre; en los demás (ríos y lagunas de
+        algunas zonas), cuando ya sabes que ahí hay 🐟 pescado (_known_resources: explorar la zona o tu gremio, D-282), así el
+        botón no delata un río que todavía no encontraste. La llama: _explore_menu.
+        Si cambia, afecta: dónde se ve el botón (tests/test_titulos_de_oficio.py).
+        """
+        fish = self._fish_resource()
+        if fish not in self._zone_resources(x, y):
+            return False
+        if float((self.content.biomes.get(self._zone(x, y).biome) or {}).get("water", 0.0)) >= 1.0:
+            return True
+        return fish in self._known_resources(hero, x, y)
+
     def _gather_blocked(self, hero: Hero, zone: Zone, only: str | None = None) -> str | None:
         """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None.
 
         [ES] D-305 (0.42): con `only` (🪓 Talar, la 🪵 madera) solo mira ese recurso: si la zona no lo tiene (chop.no_wood) o
-        si está bajo stock.min_yield (chop.depleted). La llaman: _amount_view y _start_batch.
+        si está bajo stock.min_yield (chop.depleted). D-306.5 (0.43): con el 🐟 pescado (🎣 Pescar), fish.no_fish y
+        fish.depleted. La llaman: _amount_view y _start_batch.
         """
         if self._bag_full(hero):
             return self._bag_full_line(hero)
         stock = self._stock(zone.x, zone.y)
         min_yield = self.content.balance["stock"]["min_yield"]
-        if only:                                        # D-305: 🪓 Talar looks at the wood alone
+        if only:                                        # D-305: 🪓 Talar looks at the wood alone (D-306.5: 🎣 the fish)
+            mode = "fish" if only == self._fish_resource() else "chop"
             if only not in stock:
-                return self.texts.t("chop.no_wood")
-            return self.texts.t("chop.depleted") if stock[only] < min_yield else None
+                return self.texts.t("fish.no_fish" if mode == "fish" else "chop.no_wood")
+            return self.texts.t(f"{mode}.depleted") if stock[only] < min_yield else None
         if all(level < min_yield for level in stock.values()):
             return self.texts.t("batch.reason.depleted")
         return None
@@ -2505,12 +2579,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         lines = []
         if activity.get("done") and kind != "hunt":     # D-114: a hunting batch is only its fights (the lines below)
             if kind == "gather":
-                chop = bool(activity.get("only"))       # D-305: a 🪓 Talar batch has its own two lines
-                lines.append(t.t("batch.chopped" if chop else "batch.gathered", n=activity["done"],
-                                 items=self._item_list(activity.get("got", {}))))
+                mode = self._batch_mode(activity)       # D-305: a 🪓 Talar batch has its own two lines (D-306.5: 🎣 too)
+                done_key = {"chop": "batch.chopped", "fish": "batch.fished"}.get(mode, "batch.gathered")
+                lines.append(t.t(done_key, n=activity["done"], items=self._item_list(activity.get("got", {}))))
                 if activity.get("xp"):
-                    lines.append(t.t("batch.xp_chop" if chop else "batch.xp_gather", xp=activity["xp"]))
-                if activity.get("trade"):                 # D-109: what each gathering profession earned
+                    lines.append(t.t(f"batch.xp_{mode}", xp=activity["xp"]))
+                if activity.get("trade") and any(activity["trade"].values()):     # D-109: what each gathering profession earned
                     lines.append(self._trade_summary(activity["trade"]))
                 lines += self._node_batch_lines(activity)  # D-184: ✨ what the resource node added
             else:
@@ -2552,7 +2626,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return "bag_full"
         only = activity.get("only") if kind == "gather" else None
         if only and self._stock(zone.x, zone.y).get(only, 0.0) < self.content.balance["stock"]["min_yield"]:
-            return "chop_depleted"                      # D-305: 🪓 Talar stops when the wood runs out, before paying a round
+            return f"{self._batch_mode(activity)}_depleted"     # D-305: 🪓 Talar stops when the wood runs out (D-306.5: 🎣 the fish)
         if not self._spend_energy(hero, kind, self._step_cost(kind)):
             return "energy"
         activity["left"] -= 1
@@ -2958,7 +3032,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("travel.goal", name=goal, legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
-            mode = "chop" if activity.get("only") else "gather"      # D-305: a 🪓 Talar batch says so
+            mode = self._batch_mode(activity)            # D-305: a 🪓 Talar batch says so (D-306.5: 🎣 Pescar too)
             body = [t.t(f"{mode}.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
             title = t.t(f"{mode}.title")
@@ -3562,13 +3636,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return View(kind="shop_buy", title=t.t("shop.buy_title"), body=body, actions=actions, notice=notice)
 
     def _sellable(self, hero: Hero) -> dict[str, int]:
-        """What the trader buys from your backpack: materials, food and furniture (gear is sold from 🛡️ Equipo)."""
+        """What the trader buys from your backpack: materials, food, furniture and, since 0.43, potions and remedies (D-306.5;
+        what is on the belt stays there). Gear is sold from 🛡️ Equipo."""
         return {i: n for i, n in hero.backpack.items()
-                if n > 0 and self.content.items.get(i, {}).get("kind") in ("material", "food", "furniture") and self.content.items[i].get("code")}
+                if n > 0 and self.content.items.get(i, {}).get("kind") in ("material", "food", "furniture") + REMEDY_KINDS
+                and self.content.items[i].get("code")}
 
     def _sell_price(self, item_id: str) -> int:
-        """What the trader pays for one unit before 💱 Comercio: half its price (shop.sell_ratio), at least 1."""
-        return max(1, int(self.content.items[item_id].get("price", 1) * self.content.balance["shop"]["sell_ratio"]))
+        """What the trader pays for one unit before 💱 Comercio: half its price (shop.sell_ratio), at least 1; potions and
+        remedies, a quarter (shop.remedy_sell_ratio, D-306.5: little, until there is a player market)."""
+        item = self.content.items[item_id]
+        shop = self.content.balance["shop"]
+        ratio = shop.get("remedy_sell_ratio", shop["sell_ratio"]) if item.get("kind") in REMEDY_KINDS else shop["sell_ratio"]
+        return max(1, int(item.get("price", 1) * ratio))
 
     def _sell_all_common(self, hero: Hero) -> dict[str, int]:
         """The common gathered materials "💱 Vender materiales" sells at once (never food, refined goods or rares, D-93, D-109)."""
@@ -3584,7 +3664,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         compra (materiales, comida y muebles; el equipo se vende desde 🛡️ Equipo) en una línea con cuántas llevas, cuánto paga
         cada una (la mitad de su precio, más el 💱 Comercio si lo aprendiste) y su código (/v02, el mismo número de
         📦 Recursos): tocarlo vende todas las de esa cosa. 💱 Vender materiales vende de una vez lo común que juntaste (no la
-        comida, ni lo refinado, ni lo raro). ↩️ Volver al mercader.
+        comida, ni lo refinado, ni lo raro). ↩️ Volver al mercader. D-306.5 (0.43): también las 🧪 pociones y los remedios de
+        la mochila (no los del cinturón), a un cuarto de su precio (/v61 a /v66), con una línea que lo explica.
         La llaman: 💱 Vender del mercader, los códigos /vNN y _sell. Si cambia, afecta: tests/test_shop.py.
         """
         t = self.texts
@@ -3596,6 +3677,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                             total=self._money(price * n), code=f"{int(item['code']):02d}"))
         if not goods:
             body.append(t.t("shop.sell_none"))
+        if any(self.content.items[i].get("kind") in REMEDY_KINDS for i in goods):     # D-306.5: 🧪 a little, belt kept
+            body += ["", t.t("shop.remedy_line", pct=round(100 * float(self.content.balance["shop"].get("remedy_sell_ratio", 0))))]
         actions = []
         common = self._sell_all_common(hero)
         if common:
@@ -3720,6 +3803,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         lado de 🧺 Recolectar: 5 botones, uno más que el tope de D-75 porque el dueño pidió el botón (EXTRA_BUTTON_KINDS
         "explore_menu"), en 3 filas (layout [1, 2, 2]: 🔎 Explorar ancho; 🧺 Recolectar y 🪓 Talar; 🏹 Cazar o la mazmorra y
         🗺️ Mapa). En la guarida no hay ni recolectar ni talar. Los botones se buscan por id (no por lugar).
+        D-306.5 y D-316 (0.43): donde la zona tiene agua y lo sabes (_can_fish) va 🎣 Pescar (junta solo 🐟 pescado): con
+        madera y agua son 6 botones, uno más por el botón que pidió el dueño (EXTRA_BUTTON_KINDS "explore_menu"), en 4 filas
+        (layout [1, 2, 2, 1]: 🔎 Explorar; 🧺 Recolectar y 🪓 Talar; 🎣 Pescar y 🏹 Cazar o la mazmorra; 🗺️ Mapa); con agua y sin
+        madera, 🎣 toma el lugar de 🪓 ([1, 2, 2]).
         La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
         Si cambia, afecta: tests/test_boss.py, tests/test_hunt.py y tests/test_enemy_camps.py (los botones),
         tests/test_buttons.py (tope de 4) y la consola (adapters/cli/play.py numera estos botones).
@@ -3751,11 +3838,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             # The lair (D-82): the challenge takes the gather slot and there is no prey but the Guardian (D-106).
             body += ["", self._guardian_ready_line(hero), t.t("guardian.no_gather")]
             actions = [explore, Action(id="boss", label=t.t("guardian.button")), mapb]
-        elif self._can_chop(zone.x, zone.y):            # D-305/D-314: 🪓 Talar next to 🧺 Recolectar, 3 rows
-            actions = [explore, gather, Action(id="chop", label=t.t("chop.button", time=gather_time)), third, mapb]
-            layout = [1, 2, 2]
         else:
-            actions = [explore, gather, third, mapb]
+            modes = []                                  # D-305/D-314: 🪓 Talar next to 🧺 Recolectar; D-306.5: 🎣 Pescar
+            if self._can_chop(zone.x, zone.y):
+                modes.append(Action(id="chop", label=t.t("chop.button", time=gather_time)))
+            if self._can_fish(hero, zone.x, zone.y):
+                modes.append(Action(id="fish", label=t.t("fish.button", time=gather_time)))
+            actions = [explore, gather] + modes + [third, mapb]
+            if len(modes) == 2:                         # D-316: 🔎 · 🧺 🪓 · 🎣 🏹 · 🗺️
+                layout = [1, 2, 2, 1]
+            elif modes:                                 # D-314: 🔎 · 🧺 🪓 (or 🎣) · 🏹 🗺️
+                layout = [1, 2, 2]
         return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice,
                     layout=layout)
 
@@ -5729,7 +5822,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         y su conocimiento ("tech": "done" aprendidos, "current" el que estudian y "progress" lo aportado). D-116: también
         los 🪑 muebles colocados ("furniture": id del mueble → {"by": nombre, "id": cuenta, "at": hora}), uno de cada uno.
         D-115: "damage" (puntos de 🛡️ Defensa que dañaron las oleadas, 0 en los guardados de antes) y "repair" (lo aportado
-        a 🛠️ Reparar defensas). D-269 (0.36): "building" (las 🏗️ obras en curso: materiales completos, se construyen con el
+        a 🛠️ Reparar defensas). D-306.5 (0.43): "upkeep" (lo aportado a la vuelta de 🧱 Mantenimiento) y "upkeep_done" (cuántas
+        vueltas completaron). D-269 (0.36): "building" (las 🏗️ obras en curso: materiales completos, se construyen con el
         tiempo y los miembros en el territorio) y "fund" (lo que sobró del fondo del gremio al fundar; se usa primero).
         D-291 (0.39): "fund" es el 💰 fondo del campamento (cualquier miembro deposita desde donde esté con 💰 Depositar o /f02 y
         alimenta las obras activas), "gave" (quién dio qué al fondo: cuenta → {objeto: cantidad}, para siempre) y "active" (las
@@ -5748,6 +5842,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         data.setdefault("building", {})         # D-269: 🏗️ works in progress (materials complete, being built with time)
         data.setdefault("fund", {})             # D-269: what the guild's fund left when it founded the camp (used first)
         data.setdefault("gave", {})             # D-291: who put what in the camp's 💰 fund (for ever)
+        data.setdefault("upkeep", {})           # D-306.5 (0.43): what this round of 🧱 Mantenimiento has
+        data.setdefault("upkeep_done", 0)       # D-306.5: how many rounds of 🧱 Mantenimiento the members completed
         if "active" not in data:                # D-291: works with materials given before 0.39 are active by themselves
             data["active"] = [uid for uid in self._upgrade_catalog() if self._work_started(data, uid)]
         return data
@@ -6089,6 +6185,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._place_furniture(hero, action_id[4:])
         if action_id == "uprep":                    # D-115: 🛠️ Reparar defensas
             return self._repair_defenses(hero)
+        if action_id == "upkeep":                   # D-306.5 (0.43): 🧱 Mantenimiento
+            return self._maintain(hero)
         if action_id.startswith("kstart:"):
             return self._start_study(hero, action_id[7:])
         if action_id == "kgive":
@@ -6252,6 +6350,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body += ["", t.t("camp_prof.repair_entry", n=record["damage"]), t.t("camp_prof.repair_desc")]
                 body += self._need_lines(self._repair_need(record["damage"], perks), record["repair"])
                 actions.append(Action(id="uprep", label=t.t("camp_prof.repair_button")))
+                continue
+            if kind == "keep":                      # D-306.5 (0.43): 🧱 Mantenimiento, given to again and again
+                body += ["", t.t("upkeep.entry", n=int(record.get("upkeep_done", 0))), t.t("upkeep.desc")]
+                body += self._need_lines(self._upkeep_need(), record.get("upkeep") or {})
+                actions.append(Action(id="upkeep", label=t.t("upkeep.button")))
                 continue
             if kind == "furn":                      # D-116: 🪑 a furniture piece you carry, ready to place
                 name = self._item_label(uid)
@@ -6507,13 +6610,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
     def _works_entries(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any]) -> list[tuple[str, str]]:
         """What 🔨 Obras lists, in order: ("fix", "defense") when the raids damaged the defenses (D-115), ("work",
         improvement id) for the ACTIVE works (D-291), ("open", improvement id) for the works the founder or a helper can
-        activate (only for them), then ("furn", item id) for the 🪑 furniture the hero can place (D-116). One list, so the
-        pages of the screen and of each 🤲 match."""
+        activate (only for them), ("keep", "upkeep") for 🧱 Mantenimiento once something is built (D-306.5), then ("furn", item
+        id) for the 🪑 furniture the hero can place (D-116). One list, so the pages of the screen and of each 🤲 match."""
         fix = [("fix", "defense")] if record.get("damage") else []      # D-115: 🛠️ repair the defenses first
         active = [("work", uid) for uid in self._active_works(camp, record)]
         available = ([("open", uid) for uid in self._available_works(camp, record)]
                      if self._camp_manager(camp, hero.id) else [])      # D-291: only they see what is not active yet
-        return fix + active + available + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
+        keep = [("keep", "upkeep")] if self._upkeep_open(record) else []     # D-306.5: 🧱 the work that repeats
+        return fix + active + available + keep + [("furn", fid) for fid in self._furniture_to_place(hero, record)]
 
     def _place_furniture(self, hero: Hero, fid: str) -> View:
         """🪑 Colocar: a member places a furniture piece in their camp, for ever; one of each piece per camp (D-116).
@@ -7018,25 +7122,34 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-287 (0.39, pedido del dueño): no se muestra lo que todavía no es de tu nivel. Se quitó el bloque "🔒 Más adelante"
         (🎓 especializaciones al 25 y al 75, 🏗️ Construcción con tu campamento): sus textos trainer.later_* quedan sin uso.
         Es un menú: se abre también ocupado y desde cualquier lugar (/entrenador). No cambia nada guardado.
-        La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py y
-        tests/test_aprender_oficios.py.
+        D-306 (0.43): el precio de aprender va por rama (🥈1 fabricación, 🥉50 recolección y refinado: _learn_prices_text), una
+        línea explica los 🎖️ títulos y, por cada oficio en el tope de su título, la línea 🔒 de qué título comprar (con su
+        precio y nivel) y el botón 🎖️ Títulos (_titles_view). Con 🎖️ y 🎓 son 5 botones (EXTRA_BUTTON_KINDS "trainer", D-316),
+        de 2 en 2.
+        La llaman: 🧑‍🏫 Entrenador del centro de 🏕️ Campamento y /entrenador. Si cambia, afecta: tests/test_menus_y_dudas.py,
+        tests/test_aprender_oficios.py y tests/test_titulos_de_oficio.py.
         """
         t = self.texts
         known = self._known_profs(hero)
         missing = self._to_learn(hero)
-        price = self._money(int(self._prof_cfg().get("learn_price", 20)))
-        body = [t.t("trainer.intro_learn", price=price), ""]
+        price = self._learn_prices_text()               # D-306.4 (0.43): 🥈1 crafting, 🥉50 gathering and refining
+        body = [t.t("trainer.intro_learn", price=price), t.t("ptitle.trainer_line"), ""]     # D-306.1: 🎖️ titles bought here
         body += self._trainer_recommend_lines(hero)
         have = [t.t("trainer.entry_rank", name=self._prof_name(pid), rank=self._prof_rank(hero, pid)) for pid in known]
         body.append(t.t("trainer.have", list=" · ".join(have)) if have else t.t("trainer.have_none"))
         body.append(t.t("trainer.missing", n=len(missing), list=" · ".join(self._prof_name(pid) for pid in missing))
                     if missing else t.t("trainer.missing_none"))
+        waiting = [pid for pid in known if self._title_waiting(hero, pid)]      # D-306.1: a title to buy
+        body += [self._title_lock_line(hero, pid, "ptitle.lock_named") for pid in waiting]
         # D-287 (0.39, owner): nothing that is not for your level yet: no "🔒 Más adelante" block, no 🎓 button before rank 25.
         actions = [Action(id="myprof", label=t.t("myprof.button")), Action(id="learnlist", label=t.t("learn.button"))]
+        if waiting:                                     # D-306.1/D-316: 🎖️ Títulos only when one waits (also /titulos)
+            actions.append(Action(id="ptitles", label=t.t("ptitle.button")))
         if self._pspec_any(hero):
             actions.append(Action(id="pspecs", label=t.t("spec.button")))
         actions.append(Action(id="claro", label=t.t("menu.back")))
-        return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice)
+        layout = [2, 2, 1] if len(actions) == 5 else []  # D-316: the 5th button (🎖️ with 🎓) goes in rows of 2
+        return View(kind="trainer", title=t.t("trainer.title"), body=body, actions=actions, notice=notice, layout=layout)
 
     def _trainer_recommend_lines(self, hero: Hero) -> list[str]:
         """⭐ line of 🧑‍🏫 Entrenador: the profession that makes your class's armour, and whether you know it (D-271).
@@ -7228,7 +7341,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "energy_every": self._fmt_duration(86400 / max(1, energy["per_day"])),
             "move_cost": t.t("dudas.value.move_cost", n=move) if move else t.t("dudas.value.move_free"),
             "travel_first": travel["first_minutes"], "travel_max": travel["max_minutes"], "walk_max": travel.get("walk_max", 50),
-            "learn_price": self._money(int(b["professions"].get("learn_price", 20))),     # D-257
+            "learn_price": self._learn_prices_text(),     # D-257; D-306.4 (0.43): by branch
+            "remedy_pct": round(float(b["shop"].get("remedy_sell_ratio", 0)) * 100),     # D-306.5: 🧪 potions to the trader
             "explore_min": b["explore"]["minutes"], "gather_min": b["gather"]["minutes"],
             "explore_low": b["exploration"]["per_step"][0], "explore_high": b["exploration"]["per_step"][-1],
             "reveal": self._faq_and(b["exploration"].get("reveal_at", [100])),
@@ -7723,10 +7837,31 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return [pid for pid in ordered if not self._prof_auto(pid) and not self._knows(hero, pid)]
 
     def _learn_price(self, hero: Hero, pid: str) -> int:
-        """🥉 to learn a profession (its first recipe): free if the hero practised it before 0.33 (its xp is kept)."""
+        """🥉 to learn a profession (its first recipe): free if the hero practised it before (its xp is kept).
+
+        [ES] Qué hace: D-306.4 (0.43, el dueño el 20-oct-2026, E-222): el precio depende de la rama del oficio
+        (balance.yaml professions.learn_price: fabricación 🥈1, recolección y refinado 🥉50; ✨ Encantamiento 🥈1 y
+        🏗️ Construcción 🥉50, D-316); un oficio con learn_price propio en content/professions.yaml usa ese. Gratis si ya
+        tenía experiencia (D-257, D-272). La llaman: _learn_view, _prof_detail_view y _learn.
+        Si cambia, afecta: cuántas monedas salen del juego al aprender (tests/test_aprender_oficios.py, test_titulos_de_oficio.py).
+        """
         if hero.professions.get(pid, 0) > 0:
             return 0
-        return int(self._prof_catalog().get(pid, {}).get("learn_price", self._prof_cfg().get("learn_price", 20)))
+        pdef = self._prof_catalog().get(pid, {})
+        if "learn_price" in pdef:
+            return int(pdef["learn_price"])
+        table = self._prof_cfg().get("learn_price", 20)
+        if not isinstance(table, dict):                 # before 0.43: one price for every profession
+            return int(table)
+        return int(table.get(pdef.get("branch"), max((int(v) for v in table.values()), default=20)))
+
+    def _learn_prices_text(self) -> str:
+        """"🥈1 los de fabricación y 🥉50 los de recolección y refinado" (D-306.4), for the 🧑‍🏫 Entrenador, ❓ and 📚 Guías."""
+        table = self._prof_cfg().get("learn_price", 20)
+        if not isinstance(table, dict):
+            return self._money(int(table))
+        return self.texts.t("learn.prices", craft=self._money(int(table.get("craft", 0))),
+                            other=self._money(int(table.get("gather", table.get("refine", 0)))))
 
     def _first_recipe(self, pid: str) -> str | None:
         """The first rank-1 recipe of a profession (file order, never a 🎓 exclusive one): what learning it opens."""
@@ -7756,6 +7891,25 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self.texts.t("myprof.line", name=self._prof_name(pid), rank=rank, title=self._rank_title(rank),
                             bar=self._rank_bar(hero, pid), code=pid)
 
+    def _prof_list_lines(self, hero: Hero, known: list[str]) -> list[str]:
+        """One short line per profession; under one at its title's cap, "🔒 Tope de Aprendiz: compra Oficial…" (D-306.1).
+
+        [ES] Qué hace: las líneas cortas de 📋 Mis oficios y ⚒️ Oficios (_prof_short_line) y, debajo de cada oficio que llegó al
+        tope de su título, la línea del dueño "🔒 Tope de Oficial: compra Experto en el Entrenador (🥈2, nivel 20)"; si hay
+        alguno, al final, que la experiencia del tope no se guarda (D-316). La llaman: _my_profs_view y _professions_view.
+        Si cambia, afecta: tests/test_aprender_oficios.py y tests/test_titulos_de_oficio.py.
+        """
+        lines: list[str] = []
+        capped = False
+        for pid in known:
+            lines.append(self._prof_short_line(hero, pid))
+            if self._title_waiting(hero, pid):
+                lines.append(self._title_lock_line(hero, pid, "ptitle.lock_short"))
+                capped = True
+        if capped:
+            lines += ["", self.texts.t("ptitle.lost_note")]
+        return lines
+
     def _my_profs_view(self, hero: Hero, notice: str | None = None) -> View:
         """📋 Mis oficios: one short line per profession you have, with its code; the details are behind the code (D-257).
 
@@ -7769,7 +7923,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         t = self.texts
         known = self._known_profs(hero)
-        body = [t.t("myprof.intro"), ""] + ([self._prof_short_line(hero, pid) for pid in known] or [t.t("myprof.none")])
+        body = [t.t("myprof.intro"), ""] + (self._prof_list_lines(hero, known) or [t.t("myprof.none")])
         actions = [Action(id="learnlist", label=t.t("learn.button")), Action(id="trainer", label=t.t("menu.back"))]
         return View(kind="my_professions", title=t.t("myprof.title"), body=body, actions=actions, notice=notice)
 
@@ -7809,6 +7963,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar o ✨ Encantar) si hay. D-287 (0.39, pedido del dueño): no se muestra lo que todavía
         no es de tu nivel: ya no dice qué abre el próximo rango ("🔓 En rango N: ..."). Si no lo sabes: qué hace, su primera receta, lo que cuesta
         y 📚 Aprender (gratis si ya lo practicabas). La 🧭 exploración dice que sube sola (D-272: la recolección ya se aprende).
+        D-306.1 (0.43): si lo sabes, su 🎖️ título y su tope (_title_prof_lines) y, en el tope, 🎖️ Comprar <título> primero
+        ("ptitle:<oficio>:d", vuelve aquí): 4 botones como mucho.
         La llaman: los códigos /<oficio> (text), "pview:<oficio>", y las pantallas que piden un oficio que no sabes
         (🍲 Cocinar, ✨ Encantar, una receta). Si cambia, afecta: tests/test_aprender_oficios.py.
         """
@@ -7831,7 +7987,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("prof.perk_line", perk=perk))
             if pid in profession_rules.camp_perk_professions(catalog):
                 body.append(t.t("camp_prof.perk_note"))
+            body += self._title_prof_lines(hero, pid)                       # D-306.1: 🎖️ its title, its cap, what to buy
             body += self._pspec_prof_lines(hero, pid) + self._explorer_prof_lines(hero, pid)
+            if self._title_waiting(hero, pid):                              # D-306.1: 🎖️ Comprar <next title> first
+                nxt = self._title_next(hero, pid)
+                actions.append(Action(id=f"ptitle:{pid}:d", label=t.t("ptitle.buy_button", title=self._ptitle_name(nxt),
+                                                                     price=self._money(self._title_cost(nxt)[0]))))
             stations, _ = self._stations_here(hero)
             branch = pdef.get("branch")
             if pid == COOK_PROFESSION and pid in stations:
@@ -7891,6 +8052,174 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         hero.learned = list(hero.learned or []) + [pid]
         return self._prof_detail_view(hero, pid, notice=t.t("learn.done", name=name, unlocks=self._learn_unlocks(pid)))
 
+    # ------------------------------------------------------------------ 🎖️ profession titles (D-306.1, 0.43)
+
+    def _title_rows(self) -> list[dict[str, Any]]:
+        """The rank titles of content/professions.yaml "ranks" (aprendiz 1, oficial 21... gran_maestro 96)."""
+        return list((self.content.professions or {}).get("ranks") or [])
+
+    def _title_cost(self, title_id: str | None) -> tuple[int, int]:
+        """(🥉 price, hero level) of buying a title (balance.yaml professions.titles); (0, 0) for one that is not sold."""
+        row = (self._prof_cfg().get("titles") or {}).get(title_id or "") or {}
+        return int(row.get("price", 0)), int(row.get("level", 0))
+
+    def _ptitle_name(self, title_id: str | None) -> str:
+        return self.texts.t(f"prof.rank.{title_id}") if title_id else ""
+
+    def _prof_titled(self, pid: str) -> bool:
+        """True if a profession has 🎖️ titles to buy: every one that is learned (D-306.1); the 🧭 Explorador, never (D-316)."""
+        return pid in self._prof_catalog() and not self._prof_auto(pid) and bool(self._prof_cfg().get("titles"))
+
+    def _prof_title_idx(self, hero: Hero, pid: str) -> int:
+        """Index of the title the hero holds in a profession: bought, or given by its rank if higher (D-64)."""
+        cfg = self._prof_cfg()
+        rank = rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+        return profession_rules.held_title_index(self._title_rows(), rank, (hero.prof_titles or {}).get(pid))
+
+    def _prof_cap(self, hero: Hero, pid: str) -> int:
+        """The last rank a hero's title lets this profession reach (max_rank without titles)."""
+        top = int(self._prof_cfg()["max_rank"])
+        if not self._prof_titled(pid):
+            return top
+        return profession_rules.title_cap(self._title_rows(), self._prof_title_idx(hero, pid), top)
+
+    def _prof_room(self, hero: Hero, pid: str) -> int | None:
+        """Profession xp that still fits under the title's cap (0 = at the cap); None = no cap (D-306.1)."""
+        if not self._prof_titled(pid):
+            return None
+        cfg = self._prof_cfg()
+        return profession_rules.xp_room(hero.professions.get(pid, 0), cfg["rank_formula"], self._prof_cap(hero, pid),
+                                        int(cfg["max_rank"]))
+
+    def _title_next(self, hero: Hero, pid: str) -> str | None:
+        """The id of the next title to buy in a profession, or None (Gran Maestro, or a profession without titles)."""
+        if not self._prof_titled(pid):
+            return None
+        rows = self._title_rows()
+        idx = self._prof_title_idx(hero, pid) + 1
+        return rows[idx]["id"] if 0 < idx < len(rows) else None
+
+    def _title_waiting(self, hero: Hero, pid: str) -> bool:
+        """True when a known profession reached its title's cap and the next title can be bought (D-306.1)."""
+        if not self._knows(hero, pid) or self._title_next(hero, pid) is None:
+            return False
+        cfg = self._prof_cfg()
+        rank = rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+        return rank >= self._prof_cap(hero, pid)
+
+    def _title_lock_line(self, hero: Hero, pid: str, key: str) -> str:
+        """The 🔒 line of a profession at its title's cap: which title to buy at the 🧑‍🏫 Entrenador, its price and level.
+
+        [ES] Qué hace: arma la línea "🔒 Tope de Oficial: compra Experto en el Entrenador (🥈2, nivel 20)" (D-306.1, con las
+        palabras del dueño) en sus tres formas: ptitle.lock_short (📋 Mis oficios y ⚒️ Oficios), ptitle.lock_named (🧑‍🏫 Entrenador,
+        con el nombre del oficio) y ptitle.lock_gain (cuando la experiencia no entró: dice que no se guarda).
+        La llaman: _prof_list_lines, _trainer_view, _title_prof_lines y _prof_gain. Si cambia, afecta: solo lo que se lee.
+        """
+        nxt = self._title_next(hero, pid)
+        price, level = self._title_cost(nxt)
+        rows = self._title_rows()
+        now = rows[self._prof_title_idx(hero, pid)]["id"] if rows else ""
+        return self.texts.t(key, name=self._prof_name(pid), title=self._ptitle_name(now), next=self._ptitle_name(nxt),
+                            price=self._money(price), level=level, cap=self._prof_cap(hero, pid))
+
+    def _title_prof_lines(self, hero: Hero, pid: str) -> list[str]:
+        """🎖️ lines of a profession's screen: its title and cap, or the 🔒 line of what to buy (D-306.1)."""
+        if not self._prof_titled(pid) or not self._knows(hero, pid):
+            return []
+        if self._title_waiting(hero, pid):
+            return [self._title_lock_line(hero, pid, "ptitle.lock_short")]
+        rows = self._title_rows()
+        now = self._ptitle_name(rows[self._prof_title_idx(hero, pid)]["id"]) if rows else ""
+        cap = self._prof_cap(hero, pid)
+        if cap >= int(self._prof_cfg()["max_rank"]):
+            return [self.texts.t("ptitle.top_line", title=now)]
+        return [self.texts.t("ptitle.cap_line", title=now, cap=cap)]
+
+    def _title_action(self, hero: Hero, action_id: str) -> View:
+        """Route 🎖️ Títulos: "ptitles" (the screen) and "ptitle:<profession>[:d]" (buy; ":d" goes back to its screen)."""
+        if action_id.startswith("ptitle:"):
+            pid, _, origin = action_id[7:].partition(":")
+            return self._buy_title(hero, pid, back="detail" if origin == "d" else "titles")
+        return self._titles_view(hero)
+
+    def _titles_view(self, hero: Hero, notice: str | None = None) -> View:
+        """🎖️ Títulos de oficio: how titles work, their prices and, per profession you know, its title and cap (D-306.1).
+
+        [ES]
+        Qué hace: la pantalla de los títulos del 🧑‍🏫 Entrenador (D-306.1, el dueño el 20-oct-2026, E-228: "como en WoW"): cómo
+        funcionan (al tope de tu título, rangos 20, 40, 60, 80 y 95, el oficio no sube hasta comprar el siguiente; la
+        experiencia del tope no se guarda, D-316), los precios y niveles (balance.yaml professions.titles) y una línea por oficio
+        que sabes con su título y su tope, o la línea 🔒 de qué comprar; el 🧭 Explorador sube solo, sin títulos (D-316). Un
+        botón 🎖️ por oficio en el tope (3 como mucho; los demás desde su código) y ↩️ Volver al 🧑‍🏫 Entrenador.
+        La llaman: 🎖️ Títulos del Entrenador, /titulos (/titles) y cada compra. No cambia nada guardado.
+        Si cambia, afecta: tests/test_titulos_de_oficio.py.
+        """
+        t = self.texts
+        rows = self._title_rows()
+        prices = []
+        for row in rows[1:]:
+            price, level = self._title_cost(row["id"])
+            prices.append(t.t("ptitle.price_item", title=self._ptitle_name(row["id"]), price=self._money(price), level=level))
+        body = [t.t("ptitle.intro"), t.t("ptitle.prices", items=" · ".join(prices)), ""]
+        known = [pid for pid in self._known_profs(hero) if self._prof_titled(pid)]
+        actions: list[Action] = []
+        for pid in known:
+            if self._title_waiting(hero, pid):
+                body.append(self._title_lock_line(hero, pid, "ptitle.lock_named") + f"  /{pid}")
+                if len(actions) < 3:
+                    nxt = self._title_next(hero, pid)
+                    actions.append(Action(id=f"ptitle:{pid}", label=t.t("ptitle.buy_named", name=self._prof_name(pid),
+                                                                         title=self._ptitle_name(nxt))))
+            else:
+                rows_now = self._ptitle_name(rows[self._prof_title_idx(hero, pid)]["id"]) if rows else ""
+                cap = self._prof_cap(hero, pid)
+                state = (t.t("ptitle.top_short", title=rows_now) if cap >= int(self._prof_cfg()["max_rank"])
+                         else t.t("ptitle.cap_short", title=rows_now, cap=cap))
+                body.append(t.t("ptitle.prof_line", name=self._prof_name(pid), state=state, code=pid))
+        if not known:
+            body.append(t.t("ptitle.none"))
+        body += ["", t.t("ptitle.explorer"), t.t("ptitle.wallet", gold=self._money(hero.gold), level=hero.level)]
+        actions.append(Action(id="trainer", label=t.t("menu.back")))
+        return View(kind="titles", title=t.t("ptitle.title"), body=body, actions=actions, notice=notice)
+
+    def _buy_title(self, hero: Hero, pid: str, back: str = "titles") -> View:
+        """🎖️ Buy a profession's next title at the 🧑‍🏫 Entrenador: at its cap, with the hero level and the coins (D-306.1).
+
+        [ES]
+        Qué hace: compra el título siguiente de un oficio (D-306.1, E-228): solo en el tope del título que tienes (D-316), con
+        héroe del nivel que pide y las monedas (balance.yaml professions.titles: Oficial 🥉50 y nivel 10, Experto 🥈2 y 20,
+        Artesano 🥈10 y 30, Maestro 🥈30 y 40, Gran Maestro 🥈50 y 50). Lo anota en Hero.prof_titles para siempre y el oficio
+        vuelve a subir hasta el tope nuevo. Si algo falta, avisa y no cobra. Se puede también ocupado (es un menú, como aprender).
+        La llama: "ptitle:<oficio>" (🎖️ Títulos) y "ptitle:<oficio>:d" (la pantalla del oficio, back="detail").
+        Si cambia, afecta: Hero.prof_titles y las monedas (tests/test_titulos_de_oficio.py).
+        """
+        t = self.texts
+
+        def answer(notice: str) -> View:
+            if back == "detail" and pid in self._prof_catalog():
+                return self._prof_detail_view(hero, pid, notice=notice)
+            return self._titles_view(hero, notice=notice)
+
+        if not self._prof_titled(pid):
+            return self._titles_view(hero)
+        name = self._prof_name(pid)
+        if not self._knows(hero, pid):
+            return self._prof_detail_view(hero, pid, notice=t.t("learn.need", name=name))
+        nxt = self._title_next(hero, pid)
+        if nxt is None:
+            return answer(t.t("ptitle.already_top", name=name))
+        if not self._title_waiting(hero, pid):
+            return answer(t.t("ptitle.not_yet", name=name, next=self._ptitle_name(nxt), cap=self._prof_cap(hero, pid)))
+        price, level = self._title_cost(nxt)
+        if hero.level < level:
+            return answer(t.t("ptitle.low_level", next=self._ptitle_name(nxt), level=level, now=hero.level))
+        if hero.gold < price:
+            return answer(t.t("ptitle.no_gold", next=self._ptitle_name(nxt), price=self._money(price), gold=self._money(hero.gold)))
+        hero.gold -= price
+        hero.prof_titles = {**(hero.prof_titles or {}), pid: nxt}
+        return answer(t.t("ptitle.done", name=name, title=self._ptitle_name(nxt), price=self._money(price),
+                          cap=self._prof_cap(hero, pid)))
+
     def _prof_name(self, pid: str) -> str:
         pdef = self._prof_catalog().get(pid, {})
         return f"{pdef.get('emoji', '')} {self.texts.t(pdef.get('name_key', f'profession.{pid}.name'))}".strip()
@@ -7946,17 +8275,27 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         D-141: la misma experiencia sube el dominio de las 🎓 especializaciones que tienes en ese oficio, y avisa cuando el
         oficio llega al 25 o al 75 (ya puedes elegir) o una especialización abre su receta exclusiva (_pspec_gain). Las recetas
         exclusivas que no puedes hacer no se anuncian.
+        D-306.1 (0.43, E-228): al tope del 🎖️ título (20, 40, 60, 80, 95; _prof_room) solo entra lo que cabe y el resto se pierde
+        (D-316: no se guarda); cuando algo no entró, la última línea dice qué título comprar en el 🧑‍🏫 Entrenador (ptitle.lock_gain).
+        El 🧭 Explorador no tiene tope.
         Si cambia, afecta: el avance de todos los oficios y los avisos de subida.
         """
         if xp <= 0 or pid not in self._prof_catalog() or not self._knows(hero, pid):    # D-257: a profession not learned never rises
             return []
         xp = int(round(xp * (1 + self._origin_prof_bonus(hero, pid))))      # D-117: the origin's trait (e.g. ⛏️ Minero +15 %)
+        room = self._prof_room(hero, pid)                # D-306.1: at its title's cap the xp is not kept (D-316)
+        capped = room is not None and xp > room
+        if capped:
+            xp = room
+        if xp <= 0:
+            return [self._title_lock_line(hero, pid, "ptitle.lock_gain")]
+        cap_lines = [self._title_lock_line(hero, pid, "ptitle.lock_gain")] if capped else []
         before = self._prof_rank(hero, pid)
         hero.professions[pid] = hero.professions.get(pid, 0) + int(xp)
         after = self._prof_rank(hero, pid)
         spec_lines = self._pspec_gain(hero, pid, int(xp), before, after)     # D-141: 🎓 mastery, "you can choose" and exclusive recipes
         if after <= before:
-            return spec_lines
+            return spec_lines + cap_lines
         self.bus.publish(ProfessionRankUp(hero.id, pid, after))
         t = self.texts
         lines = [t.t("prof.rank_up", name=self._prof_name(pid), rank=after, title=self._rank_title(after))]
@@ -7969,7 +8308,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             lines.append(t.t("prof.rare_unlocked", item=self._item_label(rare["item"])))
         lines += self._explorer_unlocks(hero, pid, before, after)     # D-112: what the 🧭 Explorador sees now (and its title)
         lines += self._ench_unlocks(pid, before, after)               # D-115: the ✨ enchantments a new rank opens
-        return lines + spec_lines
+        return lines + spec_lines + cap_lines
 
     def _trade_gather(self, hero: Hero, got: dict[str, int], activity: dict[str, Any]) -> list[str]:
         """One gathering round raises its gathering professions (🪓 ⛏️ 🌿): profession xp per unit, an extra unit
@@ -8020,9 +8359,28 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 if find_rng.chance(chance):
                     self._bag_add(hero, item_id, 1)               # a find: never lost (D-90)
                     got[item_id] = got.get(item_id, 0) + 1
-            trade[pid] = trade.get(pid, 0) + xp
-            lines += self._prof_gain(hero, pid, xp)
+            room = self._prof_room(hero, pid) if self._knows(hero, pid) else None     # D-306.1: the summary says what was kept
+            trade[pid] = trade.get(pid, 0) + (xp if room is None else min(xp, room))
+            lines += [line for line in self._prof_gain(hero, pid, xp) if line not in activity.get("log", [])]   # 🔒 once
         return lines
+
+    def _skin_loot_count(self, hero: Hero, item_id: str, count: int, seed: int) -> int:
+        """How many of a beast's drop the hero gets: × professions.skinning.loot_mult (🦌 hide ×2.5, D-306.5), own draw.
+
+        [ES]
+        Qué hace: D-306.5 (0.43, el dueño el 20-oct-2026, E-223): las bestias sueltan más 🦌 piel (balance.yaml
+        professions.skinning.loot_mult, piel ×2,5: de 1-2 a 2,5-5 en promedio), para todos, sepan o no 🔪 Desollador. La
+        fracción se sortea con su propio sorteo, así el resto del botín y la pelea no cambian. Lo demás del botín, igual.
+        La llama: _end_combat (botín de cada victoria; también las peleas automáticas de los lotes).
+        Si cambia, afecta: cuánta piel entra al juego (🪣 Curtiduría, 🦺 Peletería, 🔨 Herrería y los arcos).
+        """
+        mult = float(((self._prof_cfg().get("skinning") or {}).get("loot_mult") or {}).get(item_id, 1.0))
+        if count <= 0 or mult == 1.0:
+            return count
+        total = count * mult
+        whole = int(total)
+        rng = Rng(int(hash_unit(self.world_seed, hero.id, "skin_mult", seed, item_id) * 2**31))
+        return max(1, whole + (1 if rng.random() < total - whole else 0))
 
     def _trade_summary(self, trade: dict[str, int]) -> str:
         """⚒️ Oficios: 🪓 Leñador +12 · 🌿 Herbolario +7 (end of a gathering batch)."""
@@ -8203,7 +8561,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """
         t = self.texts
         known = self._known_profs(hero)
-        body = [t.t("prof.intro"), ""] + ([self._prof_short_line(hero, pid) for pid in known] or [t.t("prof.none")])
+        body = [t.t("prof.intro"), ""] + (self._prof_list_lines(hero, known) or [t.t("prof.none")])
         camp = self.store.get("camp", hero.camp) if hero.camp else None
         if camp and hero.id in camp.get("members", []):
             perk_lines = self._camp_perk_lines(camp, hero)             # D-115: 🏰 your camp's perks and who gives them
@@ -9049,7 +9407,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         xp = sum(int(n) * per * (refined[k][1] if k in refined else 1) for k, n in given.items() if k != "coins")
         if xp <= 0 or pid not in self._prof_catalog():
             return []
-        return [self.texts.t("prof.summary", items=f"{self._prof_name(pid)} +{xp}")] + self._prof_gain(hero, pid, xp)
+        room = self._prof_room(hero, pid) if self._knows(hero, pid) else None     # D-306.1: at the cap, only the 🔒 line
+        kept = xp if room is None else min(xp, room)
+        head = [self.texts.t("prof.summary", items=f"{self._prof_name(pid)} +{kept}")] if kept > 0 else []
+        return head + self._prof_gain(hero, pid, xp)
 
     def _repair_defenses(self, hero: Hero) -> View:
         """🛠️ Reparar defensas: any member at the camp gives what the repair still asks; when complete the damage is gone.
@@ -9092,6 +9453,68 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body=[t.t("camp_prof.repaired_push", hero=hero.name, camp=camp["name"], n=damage)]))
         self.store.put("upgrades", key, record)
         return self._works_view(hero, notice="\n".join(lines))
+
+    def _upkeep_cfg(self) -> dict[str, Any]:
+        return self._camp_prof_cfg().get("maintenance") or {}
+
+    def _upkeep_need(self) -> dict[str, int]:
+        """What one round of 🧱 Mantenimiento asks (balance.yaml camp_professions.maintenance.cost; the perks do not lower it)."""
+        return {k: int(n) for k, n in (self._upkeep_cfg().get("cost") or {}).items() if int(n) > 0}
+
+    def _upkeep_open(self, record: dict[str, Any]) -> bool:
+        """True when 🧱 Mantenimiento is in 🔨 Obras: it has a cost and the camp built maintenance.min_built works or more."""
+        built = [uid for uid in self._upgrade_catalog() if uid in (record.get("built") or {})]
+        return bool(self._upkeep_need()) and len(built) >= int(self._upkeep_cfg().get("min_built", 1))
+
+    def _maintain(self, hero: Hero) -> View:
+        """🧱 Mantenimiento: any member at the camp gives what this round asks; complete, it counts one and starts again.
+
+        [ES]
+        Qué hace: D-306.5 (0.43, el dueño el 20-oct-2026, E-223: "obras que se repiten para la 🏗️ Construcción"; la forma es de
+        Claude, D-316): la obra que se repite. Como 🛠️ Reparar defensas, el miembro aporta lo que lleva de lo que pide la vuelta
+        (balance.yaml camp_professions.maintenance.cost: 🪵15 🪨15 🧵10), gana la experiencia y el mérito de siempre por material
+        y sube la 🏗️ Construcción (_build_gain, 1 por material crudo). Completa, suma 1 a "upkeep_done", se avisa a los demás
+        miembros y empieza otra vuelta vacía. No da otro efecto (D-316): es la manera de subir la 🏗️ Construcción más allá
+        del rango 24 y gasta materiales. Sale en 🔨 Obras desde que el campamento construyó maintenance.min_built obras.
+        Si no lleva nada de lo que pide, avisa qué falta; ocupado no aporta.
+        La llama: el botón 🧱 Mantenimiento de 🔨 Obras ("upkeep").
+        Si cambia, afecta: el ritmo de la 🏗️ Construcción y la demanda de madera, piedra y fibra (tests/test_titulos_de_oficio.py).
+        """
+        here = self._upgrades_here(hero)
+        if not here:
+            return self._upgrades_elsewhere(hero)
+        camp, key = here
+        t = self.texts
+        if hero.activity:
+            return self._works_view(hero, notice=t.t("activity.busy"))
+        record = self._upgrades(key)
+        if not self._upkeep_open(record):
+            return self._works_view(hero)
+        need = self._upkeep_need()
+        progress = record.setdefault("upkeep", {})
+        given = self._contribute(hero, need, progress)
+        name = t.t("upkeep.name")
+        if not given:
+            return self._works_view(hero, notice=t.t("upgrades.nothing_to_give", name=name, items=self._missing_text(need, progress)))
+        lines = self._contribution_lines(hero, given, name)
+        lines += self._build_gain(hero, given)                # 🏗️ Construcción: 1 per raw material, as any work
+        lines += self._story_event(hero, "build", n=sum(n for k, n in given.items() if k != "coins"))     # D-117
+        if all(int(progress.get(k, 0)) >= n for k, n in need.items()):
+            record["upkeep"] = {}
+            record["upkeep_done"] = int(record.get("upkeep_done", 0)) + 1
+            done = record["upkeep_done"]
+            lines.append(t.t("upkeep.done", n=done))
+            self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
+                kind="camp_news", title=t.t("upkeep.push_title"),
+                body=[t.t("upkeep.push", hero=hero.name, camp=camp["name"], n=done)]))
+        self.store.put("upgrades", key, record)
+        return self._works_view(hero, page=self._upkeep_page(hero, camp, record), notice="\n".join(lines))
+
+    def _upkeep_page(self, hero: Hero, camp: dict[str, Any], record: dict[str, Any]) -> int:
+        """The 🔨 Obras page where 🧱 Mantenimiento is (so a 🤲 stays on it)."""
+        entries = self._works_entries(hero, camp, record)
+        per = 3 if len(entries) <= 3 else 2
+        return entries.index(("keep", "upkeep")) // per if ("keep", "upkeep") in entries else 0
 
     def _talents_view(self, hero: Hero, notice: str | None = None) -> View:
         t = self.texts
@@ -10432,7 +10855,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES] Qué hace: un lote de 🪓 Talar es una actividad "gather" con "only": en 👥 quién está en la zona y en el Estado del
         héroe se lee "🪓 talando" en lugar de "🧺 recolectando". La llaman: _status_text y _zone_players.
         """
-        return "chop" if kind == "gather" and (activity or {}).get("only") else kind
+        return GameService._batch_mode(activity) if kind == "gather" else kind     # D-306.5: "fish" for a 🎣 Pescar batch
 
     def _activity_left_seconds(self, hero: Hero) -> float:
         """Seconds until the WHOLE activity ends, not just the round in progress (0 if the hero is free).
@@ -13362,16 +13785,24 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hero.gold += gold
             hero.kills += 1
             lines.append(t.t("combat.rewards", xp=xp, gold=self._money(gold)))
+            skinned: list[str] = []                     # D-306.5: the professions that skinned this beast (🔪 Desollador)
             for item_id, chance in edef.get("loot", {}).items():
                 chance += self._camp_tech_bonus(hero, hero.x, hero.y, "loot_bonus", item_id) if hero.camp else 0.0   # D-101: Rastreo
                 if item_id in self.content.items and rng.chance(min(1.0, chance * (1 + bonus))):
                     item = self.content.items[item_id]
                     low, high = item.get("loot_amount", [1, 1])      # D-93: 🍖 carne comes in 1-2
                     count = low if high <= low else min(high, int(rng.uniform(low, high + 1)))
+                    count = self._skin_loot_count(hero, item_id, count, state["seed"])     # D-306.5: 🦌 hide ×2.5 (own draw)
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
                     count += self._trade_loot(hero, item_id, count, lines, state["seed"])     # D-109: 🔪 Desollador (carne, piel)
+                    skin_pid = gatherer_of(item_id, self._prof_catalog())
+                    if skin_pid and item_id in (self._prof_catalog()[skin_pid].get("skins") or []) and skin_pid not in skinned:
+                        skinned.append(skin_pid)
                     label = f"{item['emoji']} {t.t(item['name_key'])}" if count == 1 else self._item_list({item_id: count})
                     lines.append(t.t("combat.loot", item=label))
+            per_beast = int((self._prof_cfg().get("skinning") or {}).get("xp_per_beast", 0))
+            for skin_pid in skinned:                    # D-306.5 (0.43): +3 🔪 Desollador xp per beast skinned
+                lines += self._prof_gain(hero, skin_pid, per_beast)
             drop = drop_chance_for(self.content.balance, enemy["level"]) * (1 + bonus) if bonus else None    # D-106: party bonus (D-113: less from level 10)
             dropped = roll_gear(self.content.items, self.content.classes, self.content.balance, hero, enemy["level"], rng, chance=drop)
             if dropped:
