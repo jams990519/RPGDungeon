@@ -1,0 +1,40 @@
+# Texts of the guild's fund for the professions (D-322, 0.47): the camp's 💰 fund feeds the works first; what is left over the
+# members use at the camp's stations when they refine or craft, with a daily cap, a log and a switch.
+# [ES] Textos del 💰 fondo del gremio para los oficios (pedido del dueño del 21-oct-2026: "que los jugadores del gremio puedan
+# primero construir las estructuras y después poder utilizar los recursos para las profesiones de cada uno"). Se junta con
+# es.yaml al cargar (engine/core/content.py). Lo leen: engine/service/gremio.py (_fund_pool_lines, _fund_take, _fund_log_lines,
+# _fund_craft_lines, _fund_craft_toggle, _fund_log_view, _guild_funds_view) y engine/service/game.py (_station_view,
+# _recipe_view, _make). Una clave nueva va también en en_fondo_oficios.yaml (tools/check_locales.py). Si cambias una clave,
+# búscala en el código: una clave que falta se ve como [clave].
+
+fcraft:                        # [ES] D-322: el fondo del gremio para los oficios
+  # ---- 💰 Fondos del campamento (🛡️ Gremio → 💰 Fondos)
+  state_open: "🛠️ Fondo para oficios: 🔓 abierto. Lo que sobra después de las obras activas y del ⏫ siguiente nivel lo usan los miembros al refinar y fabricar en las estaciones del campamento, hasta {cap} por día cada uno (hoy usaste {used})."
+  state_closed: "🛠️ Fondo para oficios: 🔒 cerrado. Solo alimenta las obras y el ⏫ siguiente nivel; el fundador o un 🤝 asistente lo abre aquí."
+  reserved: "🏗️ Guardado para las obras y el nivel: {items}"
+  free: "🛠️ Sobra para oficios: {items}"
+  free_none: "🛠️ Para oficios no sobra nada: todo es para las obras y el nivel."
+  close_button: "🔒 Cerrar para oficios"
+  open_button: "🔓 Abrir para oficios"
+  log_button: "📜 Quién usó qué"
+  only_managers: "🔒 Solo el fundador o un 🤝 asistente abre o cierra el fondo para oficios."
+  opened: "🔓 Abriste el fondo para oficios: los miembros pueden usar lo que sobra en las estaciones del campamento."
+  closed: "🔒 Cerraste el fondo para oficios: ahora solo alimenta las obras y el siguiente nivel."
+  # ---- 📜 Quién usó qué
+  log_title: "📜 Quién usó qué"
+  log_intro: "Lo que cada miembro tomó del fondo para sus oficios y quién lo abrió o cerró, lo más nuevo arriba (los últimos {n})."
+  log_use: "🛠️ {name}: {items} → {recipe} ×{times} · hace {ago}"
+  log_open: "🔓 {name} abrió el fondo para oficios · hace {ago}"
+  log_close: "🔒 {name} cerró el fondo para oficios · hace {ago}"
+  log_none: "Nadie usó el fondo para oficios todavía."
+  days: "{n} {n|día|días}"
+  # ---- 🪚 Refinar / 🛠️ Fabricar / 🍲 Cocinar en tu campamento
+  list_line: "💰 Cuenta lo que sobra en el fondo del gremio (✅💰: la haces con ayuda del fondo). Hoy puedes tomar {left} más."
+  list_closed: "🔒 El fondo del gremio para oficios está cerrado."
+  list_capped: "💰 Ya tomaste hoy los {cap} del fondo del gremio para oficios: mañana se renueva."
+  line_fund: "{code} {color}✅💰 {item}{level} · {prof}+{xp}"   # [ES] como rlist.line_ok, pero con ayuda del fondo
+  have_line: "✅ {item}: {have}/{need} +💰{fund}"
+  lack_line: "❌ {item}: {have}/{need} +💰{fund}"
+  recipe_fund: "💰 Del fondo del gremio, por vez: {items}"
+  over_cap: "💰 Del fondo del gremio solo puedes tomar {left} más hoy (tope de {cap} por día): haz menos veces o lleva algo tú."
+  took: "💰 Del fondo del gremio: {items} · hoy llevas {used} de {cap}"

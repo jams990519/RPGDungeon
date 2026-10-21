@@ -230,3 +230,6 @@ faq:
   d59:
     q: "📦 ¿Cómo compro y cuándo me llega?"
     a: "🏛️ Mercado → 🛍️ Comprar: cada lista va de la oferta más barata a la más cara; toca el código (/c1) y compra. Para recursos, 📝 Pedir recursos: apartas las monedas y quien los tenga te vende. Lo comprado lo trae un transportista: llega a 📦 Entregas en {market_delivery} y lo recoges en cualquier 🔥 fogata o en tu campamento, hasta donde quepa en la mochila; el resto espera."   # [ES] D-320 (0.46)
+  d60:
+    q: "💰 ¿Uso el fondo del gremio en mi oficio?"
+    a: "Sí, en las estaciones de tu campamento (no en las 🔥 fogatas). Primero las obras: el fondo da lo que les falta a las obras activas y a ⏫ Siguiente nivel, y eso queda guardado. Lo que sobra cuenta al refinar y fabricar como si lo llevaras: la receta toma primero de tu mochila y después del fondo (✅💰 en la lista), hasta {fund_cap} por día. Queda anotado en 🛡️ Gremio → 💰 Fondos → 📜 Quién usó qué, y el fundador o un 🤝 asistente puede cerrarlo ahí."   # [ES] D-322 (0.47)

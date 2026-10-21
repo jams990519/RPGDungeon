@@ -1249,6 +1249,25 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): el 💰 fondo del gremio para los oficios (0.47, D-322 provisional)
+
+El dueño pidió que los del gremio "puedan primero construir las estructuras y después poder utilizar los recursos para las profesiones de cada uno". Los números son nuevos y de Claude (D-322); se ajustan en la beta.
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `fund_crafts.daily_cap` (nuevo) | — | 40 unidades del fondo por miembro y por día real, todos los materiales juntos (unos 13 tablones, o un par de piezas de equipo de nivel bajo) |
+| `fund_crafts.default_open` (nuevo) | — | `true`: el fondo para oficios empieza 🔓 abierto; el fundador o un 🤝 asistente lo cierra |
+| `fund_crafts.log_kept` / `log_shown` (nuevos) | — | 20 líneas guardadas / 10 en pantalla (📜 Quién usó qué) |
+
+**Qué cambia al jugar.**
+
+- **Nada sale del juego ni entra:** el material del fondo lo juntaron los miembros; ahora, además de las obras, puede ir a sus oficios. No se crean monedas ni materiales.
+- **Las obras no esperan más que antes:** la reserva (lo que les falta a las obras activas y a ⏫ Siguiente nivel) nunca se usa para oficios.
+- **Un artesano del campamento sube más rápido:** con el fondo lleno, hasta 40 unidades por día más de material para refinar o fabricar (con una receta de 3 maderas por tablón, 13 vueltas de 1 ⚡ y ~78 de experiencia de oficio). El freno es el tope y su ⚡.
+- **Lo que no cambia:** lo que piden las obras y el nivel, el 🏛️ Mercado (el fondo no se vende ahí) y el combate.
+
+**Lo que queda por mirar:** cuánto se toma por día y por campamento, cuántos llegan al tope, cuántos campamentos lo cierran y si las obras nuevas se quedan sin material porque lo que sobraba se usó antes de activarlas (P-251).
+
 ### Octubre de 2026 (21-oct): el 🏛️ Mercado entre jugadores (0.46, D-137 y D-26 confirmadas; D-320 provisional)
 
 El dueño pidió un mercado entre jugadores "que funcione y luego vamos arreglando". Todos los números son nuevos y de Claude (D-320), con las referencias de [Economía](../07-economia/economia.md) §3 y §5; se ajustan con la sección 9 del informe diario.
