@@ -444,4 +444,7 @@ def test_every_camp_screen_keeps_four_buttons_with_damage_and_perks(content):
         for action_id in ids(view):
             if not action_id.startswith(("claim:", "go:", "goto:", "guild", "rename", "leave", "grow")):
                 queue.append(path + [action_id])
+        if view.kind == "station":                     # D-321: recipes are a list with /rN codes; open the first one
+            codes = (service.store.get("gremio_codes", "test:1") or {}).get("recipes", [])[:1]
+            queue.extend(path + [f"rec:{code.split('|')[0]}:0"] for code in codes)
     assert {"player_camp", "camp_upgrades", "camp_works", "camp_services", "professions", "station", "recipe"} <= kinds

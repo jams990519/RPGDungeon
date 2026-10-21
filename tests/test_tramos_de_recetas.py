@@ -167,8 +167,8 @@ def test_the_station_shows_colors_their_legend_and_the_experience(service):
     view = service.act("test:1", "est:craft:0")
     text = body(view)
     assert "🟧 experiencia entera · 🟨 la mitad · 🟩 un cuarto · ⬜ nada" in text
-    assert "🟧 🟣🗡️ Hoja de la frontera" in text and "🔨+13" in text
-    assert any(a.label.startswith("✅ 🟧") for a in view.actions)
+    # D-321: one line per recipe with its code: the color, ✅ (you carry it all), the piece and its experience
+    assert any(line.startswith("/r") and "🟧 ✅ 🟣🗡️ Hoja de la frontera" in line and "🔨+13" in line for line in view.body)
     recipe = service.act("test:1", "rec:espada_forjada:0")
     assert "🟩 Receta verde" in body(recipe) and "Herrería +3" in body(recipe)
 

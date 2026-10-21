@@ -375,10 +375,11 @@ def test_station_lists_every_recipe_with_a_code_grouped_by_profession(service):
     assert first.kind == "recipe" and first.actions[-1].id == "est:craft:0"
     only = service.act("test:1", "esto:craft:0")                       # ✅ only what you can make now
     assert [line.split(" ")[0] for line in only.body if line.startswith("/r")] == ["/r1", "/r2"]
-    assert "rlist.only_ok_line" not in "".join(only.body) and ids(only) == ["est:craft:0", "oficios"]
-    assert set(listed_recipes(service, branch="craft", every_page=False)) == {"daga_forjada", "colgante_cobre"}
-    refine = listed_recipes(service, branch="refine")                  # 13 refining recipes (D-115: + 🧱 sillar; D-183: + 7)
-    assert len(refine) == 13 and {"tablon", "lingote", "extracto", "tela", "cuero", "sillar"} <= set(refine)
+    assert "✅ Solo las que puedes hacer ya con lo que llevas." in only.body and ids(only) == ["est:craft:0", "oficios"]
+    shown = [code.split("|")[0] for code in service.store.get("gremio_codes", "test:1")["recipes"]]
+    assert set(shown) == {"daga_forjada", "colgante_cobre"} and len(listed_recipes(service)) == 34
+    refine = listed_recipes(service, branch="refine")                  # 14 refining recipes (D-115: + 🧱 sillar; D-183: + 7; later + 1)
+    assert len(refine) == 14 and {"tablon", "lingote", "extracto", "tela", "cuero", "sillar"} <= set(refine)
     assert "⚠️" in service.text("test:1", "/r40").notice                # a code that was not on the list
     set_hero(service, "test:1", x=3, y=0)
     assert service.act("test:1", "est:craft:0").kind == "professions"   # no station here
