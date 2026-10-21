@@ -1016,3 +1016,20 @@ v0_51:
     - "🤝 Assistants are the camp's officers: they accept or refuse whoever asks to join, invite and activate works. The founder names them in 🛡️ Guild → 👥 Members, from each member's card."
     - "💤 Whoever doesn't play for 30 days frees their place in the guild and the camp (at 25 days they get a warning; never the founder). Their hero and their things stay, what they gave stays in the camp and they can ask to join again. The count starts today."
     - "🏰 To become a castle you now need 40 members who played during the week and to win the 🌙 Trial Night with 10 different winners. Check it in ⏫ Next level."
+
+v0_52:
+  version: "0.52"
+  title: "⚗️ Lost Realms 0.52: un tramo cada 5 rangos en todos los oficios"
+  title_en: "⚗️ Lost Realms 0.52: a tier every 5 ranks in every profession"
+  notes:
+    - "🪚 El refinado (Aserradero, Fundición, Destilación, Tejeduría, Curtiduría y Cantería), la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina tienen ahora una receta cada 5 rangos hasta el 100, con sus colores 🟧 🟨 🟩 ⬜, como los oficios de equipo. Para subir, haz lo de tu tramo."
+    - "🟫 Cada oficio de refinado hace un refinado mejor por tramo (Tablón del sendero, Lingote de la frontera… hasta el del alba eterna), con su refinado de siempre, su crudo y un material de terreno (resina, carbón, raíz amarga, lino, corteza o arena). Vale más que el del tramo anterior: véndelo al 🛒 Mercader o en el 🏛️ Mercado. El tablón, el lingote y los demás de siempre no cambian."
+    - "🧪 Las pociones, los remedios y los platos de cada tramo curan más o alimentan más: las pociones mayores llegan a curar 75 %, los vendajes 60 % y los platos dan hasta 41 raciones. Las nuevas van en el mismo lugar del cinturón que las de siempre, primero las que más curan."
+    - "📚 Las recetas de rango 25, 50 y 75 piden su libro en el 🧑‍🏫 Entrenador. Si ya tenías ese rango en un refinado, en la Alquimia o en la Medicina, te regalamos los libros nuevos que te tocan."
+    - "📜 En 🪚 Refinar, 🛠️ Fabricar y 🍲 Cocinar cada receta dice su tramo (« · tramo 45»), agrupadas por oficio y con su código (/r1)."
+  notes_en:
+    - "🪚 Refining (Sawmill, Smelting, Distilling, Weaving, Tanning and Stonemasonry), ⚗️ Alchemy, 🩺 Medicine and 🍲 Cooking now have a recipe every 5 ranks up to 100, with their 🟧 🟨 🟩 ⬜ colors, like the gear professions. To rise, make what belongs to your tier."
+    - "🟫 Each refining profession makes a better refined good every tier (Trail Plank, Frontier Ingot… up to the Everdawn ones), from its usual refined good, its raw material and a terrain material (resin, coal, bitter root, flax, bark or sand). It is worth more than the tier below: sell it to the 🛒 Merchant or on the 🏛️ Market. The usual plank, ingot and the rest do not change."
+    - "🧪 The potions, remedies and dishes of each tier heal or feed more: greater potions reach 75%, bandages 60% and dishes up to 41 rations. The new ones take the same belt place as the usual ones, the strongest first."
+    - "📚 Recipes of rank 25, 50 and 75 need their book from the 🧑‍🏫 Trainer. If you already had that rank in a refining profession, Alchemy or Medicine, you get the new books you are due as a gift."
+    - "📜 In 🪚 Refine, 🛠️ Craft and 🍲 Cook every recipe shows its tier (\" · tier 45\"), grouped by profession and with its code (/r1)."

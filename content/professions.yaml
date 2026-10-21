@@ -22,6 +22,14 @@
 #     Las 67 recetas de malla (D-208, E-223) tienen retired: true: ya no se hacen, las piezas quedan en las mochilas. Las recetas
 #     de rango 25, 50 y 75 o más de cualquier oficio piden su 📚 libro de recetas (balance.yaml recipe_tiers.books; GameService
 #     _book_missing). La primera receta de 💍 Joyería es colgante_cobre (sin gema), antes del anillo.
+# D-328 (0.52): los tramos llegan a todos los oficios con recetas: también el refinado (🪚 🔥 💧 🧶 🪣 🗿), la ⚗️ Alquimia, la
+#     🩺 Medicina y la 🍲 Cocina están en recipe_tiers.professions (colores) y tools/recipe_tiers.py escribe la experiencia de
+#     sus recetas escritas a mano (6 por ⚡ × (1 + 0,01 × rango): la de rango 1 sigue en 6) y agrega en el mismo bloque
+#     "GENERATED" una receta por tramo (5, 10 … 100): un refinado mejor por tramo ("<refinado>_tramo_<N>", balance.yaml
+#     recipe_tiers.refine) y las pociones, remedios y platos de los tramos sin receta, a mitad de camino entre sus recetas
+#     ancla (las escritas a mano: pocion_vida, pocion_mayor, unguento, botiquin, vendaje_maestro, racion_campamento,
+#     guiso_cazador, conserva, festin y banquete; recipe_tiers.consumables). Cambiar una receta ancla cambia sus tramos:
+#     corre la herramienta otra vez. Los ids de antes no cambian (las obras del campamento piden tablón, sillar, lingote…).
 # Campos de cada oficio:
 #     emoji, name_key, how_key: lo que se muestra (cómo se sube, en una frase).
 #     branch: gather (recolección), refine (refinado) o craft (fabricación).
@@ -586,7 +594,7 @@ recipes:
     output: {pocion_mayor: 2}
     min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
 
   # ---- Sastrería: vendas y túnicas (tela + algo de otro oficio)
   vendas:
@@ -711,14 +719,14 @@ recipes:
     output: {botiquin: 1}
     min_rank: 25
     energy: 2
-    xp: 12
+    xp: 15
   vendaje_maestro:
     profession: medicina
     inputs: {extracto: 2, tela_tejida: 2, flor_luna: 1}
     output: {vendaje_maestro: 1}
     min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
 
   # ---- D-115 / D-141: 🎓 exclusive recipes (spec: <id>): only that specialization makes them, with recipe_mastery of mastery.
   # [ES] Recetas exclusivas de las especializaciones (red-de-oficios.md §3): solo las ve y las hace quien tiene esa especialización
@@ -1622,7 +1630,8 @@ recipes:
     xp: 6
   # 🍲 Cocina (fabricación): carne, pescado y hierbas → raciones para la despensa del campamento (items.yaml "cooked"; el
   # mercader no las compra). Cada plato vale más raciones que lo crudo que lleva: ×1,5 en el rango 1, ×1,75 en el 25, ×2 en
-  # el 50, ×2,25 en el 75 y ×2,5 en el 100. 6 de experiencia de oficio por ⚡, como las demás. Toda receta pide 2 oficios o más.
+  # el 50, ×2,25 en el 75 y ×2,5 en el 100. 6 de experiencia de oficio por ⚡ que crece con el rango (D-328: × (1 + 0,01 × rango),
+  # la escribe tools/recipe_tiers.py; los platos de los tramos sin receta, en el bloque generado). Toda receta pide 2 oficios o más.
   racion_campamento:
     profession: cocina
     inputs: {carne: 1, hierba_curativa: 1}                     # [ES] desollador + herbolario: 2 raciones crudas → 3
@@ -1643,34 +1652,34 @@ recipes:
     output: {guiso_cazador: 1}
     min_rank: 25
     energy: 2
-    xp: 12
+    xp: 15
   conserva:
     profession: cocina
     inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}    # [ES] + minero (el tarro) y destilación (la salmuera): 9 → 18
     output: {conserva: 1}
     min_rank: 50
     energy: 2
-    xp: 12
+    xp: 18
   festin:
     profession: cocina
     inputs: {carne: 4, pescado: 4, hierba_curativa: 2, flor_luna: 1}   # [ES] 12 → 27
     output: {festin: 1}
     min_rank: 75
     energy: 2
-    xp: 12
+    xp: 21
   banquete:
     profession: cocina
     inputs: {carne: 6, pescado: 6, extracto: 2, flor_luna: 2}  # [ES] 18 → 45
     output: {banquete: 1}
     min_rank: 100
     energy: 2
-    xp: 12
+    xp: 24
 
   # ---- D-180 / D-183 (0.27): the terrain resources. [ES] Los recursos propios de cada terreno: cada uno tiene al menos una
   # receta, en la capa ligera (D-44): otra forma de hacer lo de siempre, con "variant" para que el nombre no se repita. Los
   # refinados nunca dejan ganar monedas (lo que sale × 0,5 vale menos que lo que entra) y van DESPUÉS de los de siempre (lo crudo
   # que se aportó de más a una obra sigue contando con la receta vieja: engine/professions/rules.py refined_from). Las de 🍲 Cocina
-  # llevan carne o pescado (lo cocinado vale más raciones que lo crudo) y 6 de experiencia de oficio por ⚡, como todas.
+  # llevan carne o pescado (lo cocinado vale más raciones que lo crudo) y 6 de experiencia de oficio por ⚡, como todas (D-328: × (1 + 0,01 × rango)).
   tela_lino: {profession: tejeduria, variant: lino, inputs: {lino: 3}, output: {tela_tejida: 1}, min_rank: 1, energy: 1, xp: 6}
   tela_juncos: {profession: tejeduria, variant: juncos, inputs: {juncos: 2, fibra: 1}, output: {tela_tejida: 1}, min_rank: 1, energy: 1, xp: 6}
   lingote_carbon: {profession: fundicion, variant: carbon, inputs: {pieza_metal: 3, carbon: 1}, output: {lingote: 2}, min_rank: 1, energy: 1, xp: 6}      # [ES] el carbón de la fragua: 3 piezas dan 2 lingotes
@@ -1684,19 +1693,19 @@ recipes:
   pocion_mayor_escarcha: {profession: alquimia, variant: flor_escarcha, inputs: {extracto: 2, cuarzo: 1, flor_escarcha: 2}, output: {pocion_mayor: 1}, min_rank: 25, energy: 1, xp: 8}
   unguento_musgo: {profession: medicina, variant: musgo, inputs: {extracto: 1, musgo: 2}, output: {unguento: 2}, min_rank: 1, energy: 1, xp: 6}
   unguento_cactus: {profession: medicina, variant: cactus, inputs: {cactus: 2, tela_tejida: 1}, output: {unguento: 2}, min_rank: 1, energy: 1, xp: 6}     # [ES] el jugo del cactus calma las heridas
-  botiquin_miel: {profession: medicina, variant: miel, inputs: {extracto: 1, miel: 2, tela_tejida: 1}, output: {botiquin: 1}, min_rank: 25, energy: 2, xp: 12}
+  botiquin_miel: {profession: medicina, variant: miel, inputs: {extracto: 1, miel: 2, tela_tejida: 1}, output: {botiquin: 1}, min_rank: 25, energy: 2, xp: 15}
   racion_setas: {profession: cocina, variant: setas, inputs: {carne: 1, setas: 1}, output: {racion_campamento: 1}, min_rank: 1, energy: 1, xp: 6}         # [ES] 2 raciones crudas → 3
   racion_bayas: {profession: cocina, variant: bayas, inputs: {carne: 1, bayas: 2}, output: {racion_campamento: 1}, min_rank: 1, energy: 1, xp: 6}
   pescado_sal: {profession: cocina, variant: sal, inputs: {pescado: 2, sal: 1}, output: {pescado_asado: 1}, min_rank: 1, energy: 1, xp: 6}
   pescado_mazorca: {profession: cocina, variant: mazorca, inputs: {pescado: 2, mazorca: 1}, output: {pescado_asado: 1}, min_rank: 1, energy: 1, xp: 6}
-  guiso_tomillo: {profession: cocina, variant: tomillo, inputs: {carne: 2, pescado: 2, tomillo: 1}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 12}   # [ES] 6 raciones crudas → 10
-  guiso_datiles: {profession: cocina, variant: datiles, inputs: {carne: 2, pescado: 2, datiles: 2}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 12}
-  conserva_hielo: {profession: cocina, variant: hielo, inputs: {carne: 3, pescado: 3, sal: 1, hielo: 1}, output: {conserva: 1}, min_rank: 50, energy: 2, xp: 12}     # [ES] 9 → 18, sin tarro ni salmuera
-  festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 12}          # [ES] 12 → 27, sin 🌸 flor de luna
+  guiso_tomillo: {profession: cocina, variant: tomillo, inputs: {carne: 2, pescado: 2, tomillo: 1}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 15}   # [ES] 6 raciones crudas → 10
+  guiso_datiles: {profession: cocina, variant: datiles, inputs: {carne: 2, pescado: 2, datiles: 2}, output: {guiso_cazador: 1}, min_rank: 25, energy: 2, xp: 15}
+  conserva_hielo: {profession: cocina, variant: hielo, inputs: {carne: 3, pescado: 3, sal: 1, hielo: 1}, output: {conserva: 1}, min_rank: 50, energy: 2, xp: 18}     # [ES] 9 → 18, sin tarro ni salmuera
+  festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 21}          # [ES] 12 → 27, sin 🌸 flor de luna
   # [ES] 0.28 (D-188): el material nuevo del 🌋 volcán. Bloques de vidrio de lava: 1 piedra y 1 obsidiana en vez de 3 piedras (7 → 3,5 al venderlo: no deja ganar).
   sillar_obsidiana: {profession: canteria, variant: obsidiana, inputs: {piedra: 1, obsidiana: 1}, output: {sillar: 1}, min_rank: 1, energy: 1, xp: 6}
 
-  # ---- BEGIN GENERATED by tools/recipe_tiers.py (D-306, 0.44). Do not edit by hand: change the tool or balance.yaml recipe_tiers and run it again.
+  # ---- BEGIN GENERATED by tools/recipe_tiers.py (D-306, 0.44; D-328, 0.52). Do not edit by hand: change the tool or balance.yaml recipe_tiers and run it again.
   # [ES] Los tramos nuevos de los oficios de equipo (E-221): una receta por línea en los niveles 15, 25 … 95, desde
   # [ES] el rango igual al nivel; materiales a mitad de camino entre sus dos vecinas; energía y experiencia por tramo.
   baston_nivel_15: {profession: carpinteria, inputs: {tablon: 10, tela_tejida: 4, gema_bruta: 1}, output: {artesano_baston_nivel_15: 1}, min_rank: 15, energy: 2, xp: 14}
@@ -1879,4 +1888,180 @@ recipes:
   artesano_pies_placas_nivel_75: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 3, gema_bruta: 2}, output: {artesano_pies_placas_nivel_75: 1}, min_rank: 75, energy: 3, xp: 21}
   artesano_pies_placas_nivel_85: {profession: herreria, inputs: {lingote: 14, cuero_curtido: 6, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_nivel_85: 1}, min_rank: 85, energy: 4, xp: 22}
   artesano_pies_placas_nivel_95: {profession: herreria, inputs: {lingote: 15, cuero_curtido: 7, tela_tejida: 4, gema_bruta: 2}, output: {artesano_pies_placas_nivel_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  # [ES] D-328 (0.52): un tramo cada 5 en el refinado (un refinado mejor por tramo: su refinado de siempre, su crudo y
+  # [ES] un catalizador; balance.yaml recipe_tiers.refine) y en ⚗️ 🩺 🍲 (a mitad de camino entre sus recetas ancla,
+  # [ES] recipe_tiers.consumables). Energía y experiencia como una pieza de equipo del mismo tramo.
+  tablon_tramo_5: {profession: aserradero, inputs: {tablon: 1, madera: 1, resina: 1}, output: {tablon_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  tablon_tramo_10: {profession: aserradero, inputs: {tablon: 1, madera: 2, resina: 1}, output: {tablon_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  tablon_tramo_15: {profession: aserradero, inputs: {tablon: 1, madera: 3, resina: 1}, output: {tablon_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  tablon_tramo_20: {profession: aserradero, inputs: {tablon: 1, madera: 4, resina: 1}, output: {tablon_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  tablon_tramo_25: {profession: aserradero, inputs: {tablon: 1, madera: 5, resina: 2}, output: {tablon_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  tablon_tramo_30: {profession: aserradero, inputs: {tablon: 1, madera: 6, resina: 2}, output: {tablon_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  tablon_tramo_35: {profession: aserradero, inputs: {tablon: 1, madera: 7, resina: 2}, output: {tablon_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  tablon_tramo_40: {profession: aserradero, inputs: {tablon: 1, madera: 8, resina: 2}, output: {tablon_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  tablon_tramo_45: {profession: aserradero, inputs: {tablon: 1, madera: 9, resina: 2}, output: {tablon_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  tablon_tramo_50: {profession: aserradero, inputs: {tablon: 2, madera: 10, resina: 3}, output: {tablon_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  tablon_tramo_55: {profession: aserradero, inputs: {tablon: 2, madera: 11, resina: 3}, output: {tablon_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  tablon_tramo_60: {profession: aserradero, inputs: {tablon: 2, madera: 12, resina: 3}, output: {tablon_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  tablon_tramo_65: {profession: aserradero, inputs: {tablon: 2, madera: 13, resina: 3}, output: {tablon_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  tablon_tramo_70: {profession: aserradero, inputs: {tablon: 2, madera: 14, resina: 3}, output: {tablon_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  tablon_tramo_75: {profession: aserradero, inputs: {tablon: 2, madera: 15, resina: 4}, output: {tablon_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  tablon_tramo_80: {profession: aserradero, inputs: {tablon: 2, madera: 16, resina: 4}, output: {tablon_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  tablon_tramo_85: {profession: aserradero, inputs: {tablon: 2, madera: 17, resina: 4}, output: {tablon_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  tablon_tramo_90: {profession: aserradero, inputs: {tablon: 2, madera: 18, resina: 4}, output: {tablon_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  tablon_tramo_95: {profession: aserradero, inputs: {tablon: 2, madera: 19, resina: 4}, output: {tablon_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  tablon_tramo_100: {profession: aserradero, inputs: {tablon: 3, madera: 20, resina: 5}, output: {tablon_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  lingote_tramo_5: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 1, carbon: 1}, output: {lingote_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  lingote_tramo_10: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 2, carbon: 1}, output: {lingote_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  lingote_tramo_15: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 3, carbon: 1}, output: {lingote_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  lingote_tramo_20: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 4, carbon: 1}, output: {lingote_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  lingote_tramo_25: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 5, carbon: 2}, output: {lingote_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  lingote_tramo_30: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 6, carbon: 2}, output: {lingote_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  lingote_tramo_35: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 7, carbon: 2}, output: {lingote_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  lingote_tramo_40: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 8, carbon: 2}, output: {lingote_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  lingote_tramo_45: {profession: fundicion, inputs: {lingote: 1, pieza_metal: 9, carbon: 2}, output: {lingote_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  lingote_tramo_50: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 10, carbon: 3}, output: {lingote_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  lingote_tramo_55: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 11, carbon: 3}, output: {lingote_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  lingote_tramo_60: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 12, carbon: 3}, output: {lingote_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  lingote_tramo_65: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 13, carbon: 3}, output: {lingote_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  lingote_tramo_70: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 14, carbon: 3}, output: {lingote_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  lingote_tramo_75: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 15, carbon: 4}, output: {lingote_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  lingote_tramo_80: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 16, carbon: 4}, output: {lingote_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  lingote_tramo_85: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 17, carbon: 4}, output: {lingote_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  lingote_tramo_90: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 18, carbon: 4}, output: {lingote_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  lingote_tramo_95: {profession: fundicion, inputs: {lingote: 2, pieza_metal: 19, carbon: 4}, output: {lingote_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  lingote_tramo_100: {profession: fundicion, inputs: {lingote: 3, pieza_metal: 20, carbon: 5}, output: {lingote_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  extracto_tramo_5: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 1, raiz_amarga: 1}, output: {extracto_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  extracto_tramo_10: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 2, raiz_amarga: 1}, output: {extracto_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  extracto_tramo_15: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 3, raiz_amarga: 1}, output: {extracto_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  extracto_tramo_20: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 4, raiz_amarga: 1}, output: {extracto_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  extracto_tramo_25: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 5, raiz_amarga: 2}, output: {extracto_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  extracto_tramo_30: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 6, raiz_amarga: 2}, output: {extracto_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  extracto_tramo_35: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 7, raiz_amarga: 2}, output: {extracto_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  extracto_tramo_40: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 8, raiz_amarga: 2}, output: {extracto_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  extracto_tramo_45: {profession: destilacion, inputs: {extracto: 1, hierba_curativa: 9, raiz_amarga: 2}, output: {extracto_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  extracto_tramo_50: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 10, raiz_amarga: 3}, output: {extracto_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  extracto_tramo_55: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 11, raiz_amarga: 3}, output: {extracto_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  extracto_tramo_60: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 12, raiz_amarga: 3}, output: {extracto_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  extracto_tramo_65: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 13, raiz_amarga: 3}, output: {extracto_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  extracto_tramo_70: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 14, raiz_amarga: 3}, output: {extracto_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  extracto_tramo_75: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 15, raiz_amarga: 4}, output: {extracto_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  extracto_tramo_80: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 16, raiz_amarga: 4}, output: {extracto_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  extracto_tramo_85: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 17, raiz_amarga: 4}, output: {extracto_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  extracto_tramo_90: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 18, raiz_amarga: 4}, output: {extracto_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  extracto_tramo_95: {profession: destilacion, inputs: {extracto: 2, hierba_curativa: 19, raiz_amarga: 4}, output: {extracto_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  extracto_tramo_100: {profession: destilacion, inputs: {extracto: 3, hierba_curativa: 20, raiz_amarga: 5}, output: {extracto_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  tela_tejida_tramo_5: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 1, lino: 1}, output: {tela_tejida_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  tela_tejida_tramo_10: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 2, lino: 1}, output: {tela_tejida_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  tela_tejida_tramo_15: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 3, lino: 1}, output: {tela_tejida_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  tela_tejida_tramo_20: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 4, lino: 1}, output: {tela_tejida_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  tela_tejida_tramo_25: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 5, lino: 2}, output: {tela_tejida_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  tela_tejida_tramo_30: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 6, lino: 2}, output: {tela_tejida_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  tela_tejida_tramo_35: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 7, lino: 2}, output: {tela_tejida_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  tela_tejida_tramo_40: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 8, lino: 2}, output: {tela_tejida_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  tela_tejida_tramo_45: {profession: tejeduria, inputs: {tela_tejida: 1, fibra: 9, lino: 2}, output: {tela_tejida_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  tela_tejida_tramo_50: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 10, lino: 3}, output: {tela_tejida_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  tela_tejida_tramo_55: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 11, lino: 3}, output: {tela_tejida_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  tela_tejida_tramo_60: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 12, lino: 3}, output: {tela_tejida_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  tela_tejida_tramo_65: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 13, lino: 3}, output: {tela_tejida_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  tela_tejida_tramo_70: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 14, lino: 3}, output: {tela_tejida_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  tela_tejida_tramo_75: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 15, lino: 4}, output: {tela_tejida_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  tela_tejida_tramo_80: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 16, lino: 4}, output: {tela_tejida_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  tela_tejida_tramo_85: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 17, lino: 4}, output: {tela_tejida_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  tela_tejida_tramo_90: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 18, lino: 4}, output: {tela_tejida_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  tela_tejida_tramo_95: {profession: tejeduria, inputs: {tela_tejida: 2, fibra: 19, lino: 4}, output: {tela_tejida_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  tela_tejida_tramo_100: {profession: tejeduria, inputs: {tela_tejida: 3, fibra: 20, lino: 5}, output: {tela_tejida_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  cuero_curtido_tramo_5: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 1, corteza: 1}, output: {cuero_curtido_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  cuero_curtido_tramo_10: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 2, corteza: 1}, output: {cuero_curtido_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  cuero_curtido_tramo_15: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 3, corteza: 1}, output: {cuero_curtido_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  cuero_curtido_tramo_20: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 4, corteza: 1}, output: {cuero_curtido_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  cuero_curtido_tramo_25: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 5, corteza: 2}, output: {cuero_curtido_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  cuero_curtido_tramo_30: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 6, corteza: 2}, output: {cuero_curtido_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  cuero_curtido_tramo_35: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 7, corteza: 2}, output: {cuero_curtido_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  cuero_curtido_tramo_40: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 8, corteza: 2}, output: {cuero_curtido_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  cuero_curtido_tramo_45: {profession: curtiduria, inputs: {cuero_curtido: 1, piel: 9, corteza: 2}, output: {cuero_curtido_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  cuero_curtido_tramo_50: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 10, corteza: 3}, output: {cuero_curtido_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  cuero_curtido_tramo_55: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 11, corteza: 3}, output: {cuero_curtido_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  cuero_curtido_tramo_60: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 12, corteza: 3}, output: {cuero_curtido_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  cuero_curtido_tramo_65: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 13, corteza: 3}, output: {cuero_curtido_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  cuero_curtido_tramo_70: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 14, corteza: 3}, output: {cuero_curtido_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  cuero_curtido_tramo_75: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 15, corteza: 4}, output: {cuero_curtido_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  cuero_curtido_tramo_80: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 16, corteza: 4}, output: {cuero_curtido_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  cuero_curtido_tramo_85: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 17, corteza: 4}, output: {cuero_curtido_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  cuero_curtido_tramo_90: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 18, corteza: 4}, output: {cuero_curtido_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  cuero_curtido_tramo_95: {profession: curtiduria, inputs: {cuero_curtido: 2, piel: 19, corteza: 4}, output: {cuero_curtido_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  cuero_curtido_tramo_100: {profession: curtiduria, inputs: {cuero_curtido: 3, piel: 20, corteza: 5}, output: {cuero_curtido_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  sillar_tramo_5: {profession: canteria, inputs: {sillar: 1, piedra: 1, arena: 1}, output: {sillar_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  sillar_tramo_10: {profession: canteria, inputs: {sillar: 1, piedra: 2, arena: 1}, output: {sillar_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  sillar_tramo_15: {profession: canteria, inputs: {sillar: 1, piedra: 3, arena: 1}, output: {sillar_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  sillar_tramo_20: {profession: canteria, inputs: {sillar: 1, piedra: 4, arena: 1}, output: {sillar_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  sillar_tramo_25: {profession: canteria, inputs: {sillar: 1, piedra: 5, arena: 2}, output: {sillar_tramo_25: 1}, min_rank: 25, energy: 2, xp: 15}
+  sillar_tramo_30: {profession: canteria, inputs: {sillar: 1, piedra: 6, arena: 2}, output: {sillar_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  sillar_tramo_35: {profession: canteria, inputs: {sillar: 1, piedra: 7, arena: 2}, output: {sillar_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  sillar_tramo_40: {profession: canteria, inputs: {sillar: 1, piedra: 8, arena: 2}, output: {sillar_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  sillar_tramo_45: {profession: canteria, inputs: {sillar: 1, piedra: 9, arena: 2}, output: {sillar_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  sillar_tramo_50: {profession: canteria, inputs: {sillar: 2, piedra: 10, arena: 3}, output: {sillar_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  sillar_tramo_55: {profession: canteria, inputs: {sillar: 2, piedra: 11, arena: 3}, output: {sillar_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  sillar_tramo_60: {profession: canteria, inputs: {sillar: 2, piedra: 12, arena: 3}, output: {sillar_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  sillar_tramo_65: {profession: canteria, inputs: {sillar: 2, piedra: 13, arena: 3}, output: {sillar_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  sillar_tramo_70: {profession: canteria, inputs: {sillar: 2, piedra: 14, arena: 3}, output: {sillar_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  sillar_tramo_75: {profession: canteria, inputs: {sillar: 2, piedra: 15, arena: 4}, output: {sillar_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  sillar_tramo_80: {profession: canteria, inputs: {sillar: 2, piedra: 16, arena: 4}, output: {sillar_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  sillar_tramo_85: {profession: canteria, inputs: {sillar: 2, piedra: 17, arena: 4}, output: {sillar_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  sillar_tramo_90: {profession: canteria, inputs: {sillar: 2, piedra: 18, arena: 4}, output: {sillar_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  sillar_tramo_95: {profession: canteria, inputs: {sillar: 2, piedra: 19, arena: 4}, output: {sillar_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  sillar_tramo_100: {profession: canteria, inputs: {sillar: 3, piedra: 20, arena: 5}, output: {sillar_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  pocion_vida_tramo_5: {profession: alquimia, inputs: {extracto: 1, arcilla: 1}, output: {pocion_vida_tramo_5: 2}, min_rank: 5, energy: 2, xp: 13}
+  pocion_vida_tramo_10: {profession: alquimia, inputs: {extracto: 1, arcilla: 1}, output: {pocion_vida_tramo_10: 2}, min_rank: 10, energy: 2, xp: 13}
+  pocion_vida_tramo_15: {profession: alquimia, inputs: {extracto: 2, arcilla: 2}, output: {pocion_vida_tramo_15: 2}, min_rank: 15, energy: 2, xp: 14}
+  pocion_vida_tramo_20: {profession: alquimia, inputs: {extracto: 2, arcilla: 2}, output: {pocion_vida_tramo_20: 2}, min_rank: 20, energy: 2, xp: 14}
+  pocion_mayor_tramo_30: {profession: alquimia, inputs: {extracto: 2, arcilla: 1, flor_luna: 1}, output: {pocion_mayor_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  pocion_mayor_tramo_35: {profession: alquimia, inputs: {extracto: 3, arcilla: 1, flor_luna: 1}, output: {pocion_mayor_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  pocion_mayor_tramo_40: {profession: alquimia, inputs: {extracto: 3, arcilla: 1, flor_luna: 1}, output: {pocion_mayor_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  pocion_mayor_tramo_45: {profession: alquimia, inputs: {extracto: 3, arcilla: 1, flor_luna: 2}, output: {pocion_mayor_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  pocion_mayor_tramo_50: {profession: alquimia, inputs: {extracto: 3, arcilla: 1, flor_luna: 2}, output: {pocion_mayor_tramo_50: 1}, min_rank: 50, energy: 2, xp: 18}
+  pocion_mayor_tramo_55: {profession: alquimia, inputs: {extracto: 4, arcilla: 1, flor_luna: 2}, output: {pocion_mayor_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  pocion_mayor_tramo_60: {profession: alquimia, inputs: {extracto: 4, arcilla: 1, flor_luna: 2}, output: {pocion_mayor_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  pocion_mayor_tramo_65: {profession: alquimia, inputs: {extracto: 4, arcilla: 2, flor_luna: 2}, output: {pocion_mayor_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  pocion_mayor_tramo_70: {profession: alquimia, inputs: {extracto: 4, arcilla: 2, flor_luna: 2}, output: {pocion_mayor_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  pocion_mayor_tramo_75: {profession: alquimia, inputs: {extracto: 5, arcilla: 2, flor_luna: 2}, output: {pocion_mayor_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  pocion_mayor_tramo_80: {profession: alquimia, inputs: {extracto: 5, arcilla: 2, flor_luna: 2}, output: {pocion_mayor_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  pocion_mayor_tramo_85: {profession: alquimia, inputs: {extracto: 5, arcilla: 2, flor_luna: 3}, output: {pocion_mayor_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  pocion_mayor_tramo_90: {profession: alquimia, inputs: {extracto: 5, arcilla: 2, flor_luna: 3}, output: {pocion_mayor_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  pocion_mayor_tramo_95: {profession: alquimia, inputs: {extracto: 6, arcilla: 2, flor_luna: 3}, output: {pocion_mayor_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  pocion_mayor_tramo_100: {profession: alquimia, inputs: {extracto: 6, arcilla: 2, flor_luna: 3}, output: {pocion_mayor_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  unguento_tramo_5: {profession: medicina, inputs: {extracto: 1, tela_tejida: 1}, output: {unguento_tramo_5: 2}, min_rank: 5, energy: 2, xp: 13}
+  unguento_tramo_10: {profession: medicina, inputs: {extracto: 1, tela_tejida: 1}, output: {unguento_tramo_10: 2}, min_rank: 10, energy: 2, xp: 13}
+  unguento_tramo_15: {profession: medicina, inputs: {extracto: 2, tela_tejida: 2}, output: {unguento_tramo_15: 2}, min_rank: 15, energy: 2, xp: 14}
+  unguento_tramo_20: {profession: medicina, inputs: {extracto: 2, tela_tejida: 2}, output: {unguento_tramo_20: 2}, min_rank: 20, energy: 2, xp: 14}
+  botiquin_tramo_30: {profession: medicina, inputs: {extracto: 2, tela_tejida: 1, cuero_curtido: 1}, output: {botiquin_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  botiquin_tramo_35: {profession: medicina, inputs: {extracto: 3, tela_tejida: 2, cuero_curtido: 1}, output: {botiquin_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  botiquin_tramo_40: {profession: medicina, inputs: {extracto: 3, tela_tejida: 2, cuero_curtido: 1}, output: {botiquin_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  botiquin_tramo_45: {profession: medicina, inputs: {extracto: 3, tela_tejida: 2, cuero_curtido: 1}, output: {botiquin_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  vendaje_maestro_tramo_55: {profession: medicina, inputs: {extracto: 2, tela_tejida: 2, flor_luna: 1}, output: {vendaje_maestro_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  vendaje_maestro_tramo_60: {profession: medicina, inputs: {extracto: 2, tela_tejida: 2, flor_luna: 1}, output: {vendaje_maestro_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  vendaje_maestro_tramo_65: {profession: medicina, inputs: {extracto: 3, tela_tejida: 3, flor_luna: 1}, output: {vendaje_maestro_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  vendaje_maestro_tramo_70: {profession: medicina, inputs: {extracto: 3, tela_tejida: 3, flor_luna: 1}, output: {vendaje_maestro_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  vendaje_maestro_tramo_75: {profession: medicina, inputs: {extracto: 3, tela_tejida: 3, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_75: 1}, min_rank: 75, energy: 3, xp: 21}
+  vendaje_maestro_tramo_80: {profession: medicina, inputs: {extracto: 3, tela_tejida: 3, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  vendaje_maestro_tramo_85: {profession: medicina, inputs: {extracto: 3, tela_tejida: 3, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  vendaje_maestro_tramo_90: {profession: medicina, inputs: {extracto: 4, tela_tejida: 4, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  vendaje_maestro_tramo_95: {profession: medicina, inputs: {extracto: 4, tela_tejida: 4, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
+  vendaje_maestro_tramo_100: {profession: medicina, inputs: {extracto: 4, tela_tejida: 4, cuero_curtido: 1, flor_luna: 2}, output: {vendaje_maestro_tramo_100: 1}, min_rank: 100, energy: 4, xp: 24}
+  racion_campamento_tramo_5: {profession: cocina, inputs: {carne: 1, hierba_curativa: 1}, output: {racion_campamento_tramo_5: 1}, min_rank: 5, energy: 2, xp: 13}
+  racion_campamento_tramo_10: {profession: cocina, inputs: {carne: 1, hierba_curativa: 1, pescado: 1}, output: {racion_campamento_tramo_10: 1}, min_rank: 10, energy: 2, xp: 13}
+  racion_campamento_tramo_15: {profession: cocina, inputs: {carne: 2, pescado: 1, hierba_curativa: 1}, output: {racion_campamento_tramo_15: 1}, min_rank: 15, energy: 2, xp: 14}
+  racion_campamento_tramo_20: {profession: cocina, inputs: {carne: 2, pescado: 2, hierba_curativa: 1}, output: {racion_campamento_tramo_20: 1}, min_rank: 20, energy: 2, xp: 14}
+  guiso_cazador_tramo_30: {profession: cocina, inputs: {carne: 2, pescado: 2, hierba_curativa: 1}, output: {guiso_cazador_tramo_30: 1}, min_rank: 30, energy: 2, xp: 16}
+  guiso_cazador_tramo_35: {profession: cocina, inputs: {carne: 2, pescado: 2, hierba_curativa: 1}, output: {guiso_cazador_tramo_35: 1}, min_rank: 35, energy: 2, xp: 16}
+  guiso_cazador_tramo_40: {profession: cocina, inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}, output: {guiso_cazador_tramo_40: 1}, min_rank: 40, energy: 2, xp: 17}
+  guiso_cazador_tramo_45: {profession: cocina, inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}, output: {guiso_cazador_tramo_45: 1}, min_rank: 45, energy: 2, xp: 17}
+  conserva_tramo_55: {profession: cocina, inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}, output: {conserva_tramo_55: 1}, min_rank: 55, energy: 3, xp: 19}
+  conserva_tramo_60: {profession: cocina, inputs: {carne: 3, pescado: 3, arcilla: 1, extracto: 1}, output: {conserva_tramo_60: 1}, min_rank: 60, energy: 3, xp: 19}
+  conserva_tramo_65: {profession: cocina, inputs: {carne: 4, pescado: 4, hierba_curativa: 1, flor_luna: 1}, output: {conserva_tramo_65: 1}, min_rank: 65, energy: 3, xp: 20}
+  conserva_tramo_70: {profession: cocina, inputs: {carne: 4, pescado: 4, hierba_curativa: 2, flor_luna: 1}, output: {conserva_tramo_70: 1}, min_rank: 70, energy: 3, xp: 20}
+  festin_tramo_80: {profession: cocina, inputs: {carne: 4, pescado: 4, hierba_curativa: 2, flor_luna: 1}, output: {festin_tramo_80: 1}, min_rank: 80, energy: 3, xp: 22}
+  festin_tramo_85: {profession: cocina, inputs: {carne: 5, pescado: 5, hierba_curativa: 1, flor_luna: 1}, output: {festin_tramo_85: 1}, min_rank: 85, energy: 4, xp: 22}
+  festin_tramo_90: {profession: cocina, inputs: {carne: 5, pescado: 5, extracto: 1, flor_luna: 2}, output: {festin_tramo_90: 1}, min_rank: 90, energy: 4, xp: 23}
+  festin_tramo_95: {profession: cocina, inputs: {carne: 6, pescado: 6, extracto: 2, flor_luna: 2}, output: {festin_tramo_95: 1}, min_rank: 95, energy: 4, xp: 23}
   # ---- END GENERATED by tools/recipe_tiers.py

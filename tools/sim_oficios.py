@@ -10,7 +10,8 @@ Model (the "solo su ⚡" column of diseno/07-economia/simulacion-oficios.md: the
     - At each make the crafter picks the recipe with the most profession xp per ⚡ among those its rank opens (not 🎓
       exclusive, not retired; every 📚 recipe book is bought on time). In the tiered professions (balance.yaml
       recipe_tiers.professions) the xp of a make is the recipe's xp × its color share at the rank it has then (the same
-      rule as GameService._recipe_xp); the other professions give the recipe's whole xp, as before.
+      rule as GameService._recipe_xp); the other professions give the recipe's whole xp, as before. Since 0.52 (D-328) every
+      refining and crafting profession is tiered (the gear ones since 0.44).
     - "Cadena aprox." adds the energy of gathering and refining every material yourself, with the energy per raw unit
       measured for the simulation of 18-oct (simulacion-oficios.md §1 and §4: mid distance, Lejanía ≤ 6) in RAW_ENERGY.
       It is an approximation: it ignores the other professions rising on the way, the rank's extra unit and travel.
@@ -20,8 +21,10 @@ Para qué sirve: recalcula cuánto tarda un especialista en llevar un oficio al 
     números de hoy (D-306: tramos cada 5 rangos, colores de receta, experiencia y energía que crecen con el tramo), cuántas
     piezas hace y una cuenta aproximada de lo que tarda si junta y refina todo él mismo. Es la tabla del §11 de
     simulacion-oficios.md (los scripts del 18-oct, que medían el mundo con el motor, quedaron fuera del repositorio; este
-    reemplaza la parte de "solo su ⚡" y aproxima la cadena con lo que ellos midieron).
-Documento de diseño: diseno/07-economia/simulacion-oficios.md §11; diseno/00-vision/decisiones.md D-306 y D-315
+    reemplaza la parte de "solo su ⚡" y aproxima la cadena con lo que ellos midieron). Desde la 0.52 (D-328) también mide el
+    refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina con sus tramos y colores; los catalizadores de los refinados nuevos
+    (resina, carbón, raíz amarga, lino, corteza, arena) cuentan como OTHER_RAW (~1 ⚡ por unidad).
+Documento de diseño: diseno/07-economia/simulacion-oficios.md §11; diseno/00-vision/decisiones.md D-306, D-315 y D-328
 Módulo: herramienta (M14 Oficios, M21 Simulador; no es parte del juego, no la usa ningún cliente)
 Depende de: engine/core/content.py (load_content), engine/professions/rules.py (rank_of, recipe_color, color_factor),
     content/balance.yaml (professions.rank_formula, energy.per_day, recipe_tiers), content/professions.yaml
