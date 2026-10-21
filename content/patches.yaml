@@ -1063,3 +1063,18 @@ v0_54:
     - "🎛️ It's in 👤 Hero → 🎛️ Combat Bar → 🔀 Hybrid mode, or type /hybrid. Each slot has its own button to swap it and back. It's free outside combat."
     - "⚔️ The Basic doesn't change and the bar keeps its 4 buttons. Your chain follows your role's order, each ability does its own thing (damage, healing or threat) and you fight with your role's life and attack."
     - "🔄 Each role keeps its own mix: if you switch roles, the other one fights with its own. If you never touch it, everything stays as before. The mix is on you: the game doesn't balance it."
+
+v0_56:
+  version: "0.56"
+  title: "🎯 Lost Realms 0.56: las misiones de grupo del campamento"
+  title_en: "🎯 Lost Realms 0.56: the camp's group missions"
+  notes:
+    - "🎯 Cada subida de nivel del campamento pide ahora una misión de grupo: una meta para todos los miembros juntos, como vencer 20 monstruos, juntar madera o piedra, llenar la despensa o ganar peleas de oleada."
+    - "🤝 Suma lo que hace cada uno, esté donde esté. La ves en ⏫ Siguiente nivel, en 📜 Qué pide cada nivel y en el 📜 Tablón, con lo que llevan entre todos y lo que pusiste tú."
+    - "💰 Al cumplirla, el fondo del campamento recibe un premio chico en materiales y a todos les llega el aviso. Si era lo último de la lista, cualquier miembro toca ⏫ Subir."
+    - "📏 La meta crece con el nivel y un poco con los miembros que juegan, y queda fija al empezar. Los campamentos que ya existían no necesitan la misión de la subida en la que estaban: la primera llega al subir. Más en ❓ /d36."
+  notes_en:
+    - "🎯 Each level-up of the camp now asks for a group mission: a goal for all the members together, like defeating 20 monsters, gathering wood or stone, filling the pantry or winning wave fights."
+    - "🤝 It adds up what each one does, wherever they are. You see it in ⏫ Next level, in 📜 What each level needs and on the 📜 Board, with what everyone has done and what you put in."
+    - "💰 When it's done, the camp's fund gets a small reward in materials and everyone is told. If it was the last thing on the list, any member taps ⏫ Go up."
+    - "📏 The goal grows with the level and a little with the members who play, and it stays fixed once it starts. Camps that already existed don't need the mission of the step they were on: the first one comes when they level up. More in ❓ /d36."

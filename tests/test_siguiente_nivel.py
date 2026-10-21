@@ -242,7 +242,8 @@ def test_everyone_sees_the_checklist_and_the_progress_in_mejoras(service):
     assert member.kind == "camp_lvlup" and any(line.startswith("▫️ 🔥 Fogón · ⏸️ sin activar") for line in member.body)
     build(service, "fogon")
     mejoras = service.act("test:2", "upgrades")
-    assert "⏫ Nivel 2: 1 de 5 listos (⬆️ Mejorar → ⏫ Siguiente nivel)." in mejoras.body
+    # D-332 (0.56): the 🎯 group mission is one more row; a camp from before 0.56 does not need it on this step (✅)
+    assert "⏫ Nivel 2: 2 de 6 listos (⬆️ Mejorar → ⏫ Siguiente nivel)." in mejoras.body
     improve = service.act("test:2", "improve").body                    # D-313: the whole list, not "1 de 5 listos"
     assert "✅ 🔥 Fogón" in improve and any(line.startswith("▫️ 🪵 Empalizada · ⏸️ sin activar") for line in improve)
 

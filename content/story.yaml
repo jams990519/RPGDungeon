@@ -5,11 +5,13 @@
 # Para qué sirve: la historia del juego como datos: los 6 orígenes (rasgo, regalo y cadena de misiones), el Capítulo 1
 #     de la campaña (7 misiones en el Claro y sus alrededores, con 2 decisiones), los 5 personajes del Claro (facción y
 #     saludos que cambian), las 3 facciones con lo que da cada rango, los encargos del tablón (uno por facción cada
-#     día) y los encargos de campamento (semanales, entre todos los miembros). Agregar una misión o un encargo aquí lo
+#     día), los encargos de campamento (semanales, entre todos los miembros) y, desde la 0.56 (D-332), las 🎯 misiones
+#     de grupo (una por cada subida de nivel del campamento; las corre engine/service/group_missions.py). Agregar una misión o un encargo aquí lo
 #     mete en el juego; sus textos van en content/locales/es_historia.yaml con las claves de abajo.
 # Documento de diseño: diseno/06-contenido/historia-y-rol.md §1 y "En el juego"; orígenes: diseno/03-personaje/
 #     creacion-de-personaje.md §4; tipos de misión: diseno/06-contenido/misiones-y-exploracion.md §2
-# Lo leen: engine/core/content.py (Content.story), engine/story/rules.py y engine/service/story.py (StoryMixin)
+# Lo leen: engine/core/content.py (Content.story), engine/story/rules.py, engine/service/story.py (StoryMixin) y
+#     engine/service/group_missions.py (GroupMissionMixin: el bloque group_missions, D-332)
 # IDs: estables. Nunca se renombran, nunca se borran, nunca se reutilizan: los héroes guardan su origen, sus misiones
 #     hechas, el paso en que van, sus decisiones (por el id de la decisión y de la opción), su reputación por facción,
 #     sus títulos y lo que ya cobraron. Para retirar una misión o un encargo se marca retired: true.
@@ -32,6 +34,7 @@
 #     guardian {enemy} (vencer al Guardián) · craft {n, profession?} (veces fabricadas o refinadas)
 #     sell {n} (cosas vendidas) · visit {lair | lejania | zone} (llegar a un lugar) · camp (tener campamento, estado)
 #     level {n} (estado) · feed {n} (raciones a la despensa) · build {n} (materiales a una obra)
+#     defend {n} (peleas de oleada ganadas con 🛡️ Defender; desde la 0.56, para las misiones de grupo)
 #     choice {id, options, effects} (una decisión: id para recordarla, sus opciones y qué cambia cada una)
 # Condiciones de los saludos (when): done, active, choice, rank_min, rank_max, origin, met. Gana la primera que se cumple.
 # Si cambias esto, revisa:
@@ -491,3 +494,28 @@ camp_tasks:
   ct_acopio: {goal: {kind: gather, n: 60}, reward: {xp: 60, gold: 30}}
   ct_obra: {goal: {kind: build, n: 40}, reward: {xp: 60, gold: 30}}
   ct_despensa: {goal: {kind: feed, n: 20}, reward: {xp: 60, gold: 30}, min_level: 3}
+# Group missions (D-136, confirmed; how it was applied: D-332, provisional; 0.56): ONE per camp level-up, done together.
+# to_level: the level the camp goes up TO (the mission of 1 → 2 has to_level 2). goal: the same kinds as the camp tasks, plus
+# defend (a won fight of a camp wave, 🛡️ Defender). n is the goal of a camp with 1 active member: when the mission starts
+# (at founding, or when the camp reaches the level before), balance.yaml group_missions.per_member adds a share of n for
+# every other member who played this week, and the goal stays fixed. Reached: a small reward to the camp's 💰 fund
+# (group_missions.reward_per_level × the level the camp leaves) and a notice to every member. Engine: engine/service/group_missions.py.
+# [ES] Misiones de grupo: UNA por cada subida de nivel del campamento, entre todos los miembros (lo de cada uno se suma, en
+# cualquier lugar). to_level: el nivel AL que se sube. n: la meta con 1 miembro activo; al empezar la misión se suma un poco
+# por cada otro miembro que jugó esta semana (balance.yaml group_missions) y queda fija. Tipos: win (peleas ganadas),
+# gather {item?} (unidades recolectadas), feed (raciones a la despensa, que existe desde el nivel 3) y defend (peleas de
+# oleada ganadas con 🛡️ Defender). Una por nivel: si hubiera dos, vale la primera. IDs estables: nunca se renombran ni se
+# reutilizan; para retirar una, retired: true (la subida que la tenía activa deja de pedirla). Los textos salen del tipo de
+# objetivo (gm.goal.<tipo> en es_misiones_grupo.yaml), así una misión nueva no pide claves nuevas.
+# Cómo se repartió la escalera (escalera-del-asentamiento.md §2, D-332): la "1.ª misión" del campamento es la de 1 → 2, la
+# "2.ª" (aldea) la de 2 → 3, las "3 oleadas ganadas" del pueblo son la de 4 → 5 (defend, n 3) y la "4.ª" de la ciudad quedó
+# como la de 6 → 7: en el juego cada etapa tiene 2 niveles y D-136 pide una misión "para abrir cada nivel" (E-269).
+group_missions:
+  gm_caza_2: {to_level: 2, goal: {kind: win, n: 20}}                    # [ES] campamento: vencer 20 monstruos (la 1.ª)
+  gm_madera_3: {to_level: 3, goal: {kind: gather, item: madera, n: 60}} # [ES] → aldea: juntar 60 🪵 madera (la 2.ª)
+  gm_despensa_4: {to_level: 4, goal: {kind: feed, n: 20}}               # [ES] aldea: 20 raciones a la despensa
+  gm_oleadas_5: {to_level: 5, goal: {kind: defend, n: 3}}               # [ES] → pueblo: ganar 3 peleas de oleada ("3 oleadas ganadas")
+  gm_caza_6: {to_level: 6, goal: {kind: win, n: 40}}                    # [ES] pueblo: vencer 40 monstruos
+  gm_piedra_7: {to_level: 7, goal: {kind: gather, item: piedra, n: 100}} # [ES] → ciudad: juntar 100 🪨 piedra
+  gm_despensa_8: {to_level: 8, goal: {kind: feed, n: 40}}               # [ES] ciudad: 40 raciones a la despensa
+  gm_caza_9: {to_level: 9, goal: {kind: win, n: 80}}                    # [ES] → castillo: vencer 80 monstruos

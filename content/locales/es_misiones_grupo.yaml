@@ -1,0 +1,41 @@
+# Texts of the camp's group missions (D-136, confirmed; how: D-332, provisional; 0.56): one shared goal per level-up, its row
+# in ⏫ Siguiente nivel, its line in 📜 Qué pide cada nivel and in the 📜 Tablón, and the notices when it is reached.
+# [ES] Textos de las 🎯 misiones de grupo (D-136, confirmada por el dueño: "para abrir cada nivel del campamento el grupo cumple
+# misiones juntos"; cómo se aplicó: D-332, provisional; 0.56). Se junta con es.yaml al cargar (engine/core/content.py).
+# Lo lee: engine/service/group_missions.py (la línea de ⏫ Siguiente nivel y su explicación, la de 📜 Qué pide cada nivel, la
+# del 📜 Tablón, la de la misión nueva al fundar y al subir, y los avisos al cumplirla, a cada miembro en su idioma con
+# _push_each). Una clave nueva va también en en_misiones_grupo.yaml (tools/check_locales.py). Si cambias una clave, búscala en
+# el código: una clave que falta se ve como [clave].
+# Estilo: español neutro, de tú, frases cortas para el teléfono (D-287/D-302: poco texto).
+
+gm:                            # [ES] D-332: las 🎯 misiones de grupo
+  # ---- lo que pide cada misión (por tipo de objetivo: una misión nueva en story.yaml no pide claves nuevas)
+  goal:
+    win: "vencer {n} {n|monstruo|monstruos}"
+    gather: "juntar {n} {n|recurso|recursos}"
+    gather_item: "juntar {n} {item}"
+    feed: "llevar {n} {n|ración|raciones} a la despensa"
+    defend: "ganar {n} {n|pelea|peleas} de oleada"
+  # ---- ⏫ Siguiente nivel (y ⬆️ Mejorar): una línea más de la lista, bajo su título
+  section: "🤝 Entre todos:"
+  row: "🎯 Misión de grupo: {goal} — {p} de {n} (faltan {left})"
+  row_done: "🎯 Misión de grupo: {goal} — cumplida"
+  row_waived: "🎯 Misión de grupo: esta subida no la pide (tu campamento ya iba en camino cuando llegaron las misiones); la primera llega al subir de nivel"   # [ES] D-332: un campamento de antes de la 0.56 no la necesita en la subida en la que estaba
+  how: "🎯 La misión de grupo suma lo que hace cada miembro, esté donde esté ({how}). Tú llevas {mine}. Al cumplirla, el 💰 fondo del campamento recibe {reward}."
+  how_win: "cada pelea ganada cuenta: 🏹 Cazar, explorar, oleadas o mazmorras"
+  how_gather: "cada recurso que juntas cuenta"
+  how_feed: "cuentan las raciones de 🌾 Aportar comida, en 🏰 Gestionar"
+  how_defend: "cuenta cada pelea ganada con 🛡️ Defender cuando llega una oleada"
+  # ---- 📜 Qué pide cada nivel: se suma a la línea de cada subida
+  all: " · 🎯 {goal}"
+  # ---- al fundar y al subir de nivel: la misión que empieza
+  new: "🎯 Nueva misión de grupo para subir a nivel {level}: {goal}, entre todos los miembros."
+  # ---- al cumplirla: quien la cerró lee la primera; a cada otro miembro le llega el aviso, en su idioma
+  done: "🎯 ¡Misión de grupo cumplida en {camp}: {goal}! Tú pusiste {mine} de {n}. El 💰 fondo del campamento recibió {reward}."
+  ready: "⏫ Ya está toda la lista: cualquier miembro toca ⏫ Subir a nivel {level} (🏰 Gestionar → ⬆️ Mejorar campamento)."
+  no_reward: "nada esta vez"
+  push_title: "🎯 Misión de grupo cumplida"
+  push: "🎯 {hero} cerró la misión de grupo de {camp}: {goal}. Tú pusiste {mine} de {n}. El 💰 fondo recibió {reward}."
+  # ---- 📜 Tablón, debajo de los encargos de la semana
+  board_line: "{mark} 🎯 Misión de grupo (para subir a nivel {level}): {goal} — {p} de {n} · tú: {mine}"
+  board_waived: "✅ 🎯 Misión de grupo: tu campamento no la necesita para subir a nivel {level}; la primera llega al subir."

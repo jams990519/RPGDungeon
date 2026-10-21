@@ -44,7 +44,8 @@ Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md; diseno/04-combat
     CLASS_PAGE_SIZE; §12, 0.54, D-312 y D-330: el 🔀 modo híbrido del nivel 10, _hybrid_view y _hybrid_action, "hyb" y
     "hyb:<H1|H2|H3>", /hibrido)
     diseno/09-construccion/escalera-del-asentamiento.md §5.5 (0.49, D-309 y D-325: la 🌾 cosecha de la muralla) y §0.4 (0.51,
-    D-253 y D-327: el cupo por etapa, quien deja de jugar y los activos del castillo; vive en engine/service/ladder.py);
+    D-253 y D-327: el cupo por etapa, quien deja de jugar y los activos del castillo; vive en engine/service/ladder.py) y §0.6
+    (0.56, D-136 y D-332: la 🎯 misión de grupo de cada subida; vive en engine/service/group_missions.py);
     diseno/09-construccion/escalera-del-asentamiento.md §0 (0.36, D-269 y D-274: el gremio desde el primer momento, fundar con el
     gremio y las obras con tiempo; vive en engine/service/gremio.py, GremioMixin, de la que GameService también hereda) y
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata, D-265)
@@ -61,7 +62,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     (GremioMixin: 👥 Jugadores, el gremio desde el inicio, la fundación y las obras con tiempo, D-265/D-269/D-274),
     engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320), engine.service.map_scroll
     (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326), engine.service.ladder (LadderMixin: la
-    escalera del asentamiento, 1.ª parte: el cupo por etapa, quien deja de jugar y los activos del castillo, D-253 y D-327)
+    escalera del asentamiento, 1.ª parte: el cupo por etapa, quien deja de jugar y los activos del castillo, D-253 y D-327),
+    engine.service.group_missions (GroupMissionMixin: la 🎯 misión de grupo de cada subida del campamento, D-136 y D-332)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -197,6 +199,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-327 (0.51): "camp" suma "cap_floor" (el cupo de antes de la 0.51, el piso de su cupo; 0 en los nuevos), "idle_watch" y
     "idle_warned" (quién no juega: el barrido de tick) y "meta"/"idle" ({"next"}). Los escribe engine/service/ladder.py
     (LadderMixin, ver su encabezado). Nada nuevo en Hero: "jugó por última vez" es Hero.seen_at (_mark_seen).
+    D-332 (0.56): el espacio "group_mission" (la 🎯 misión de grupo de la subida siguiente de cada campamento, clave "x:y"); lo
+    escribe engine/service/group_missions.py (GroupMissionMixin, ver su encabezado). Nada nuevo en Hero ni en "camp".
     D-328 (0.52): Hero.book_gifts (los regalos de libros ya dados, ids de balance.yaml recipe_tiers.book_gifts); los héroes de
     antes cargan con [] y _load (_grant_book_gifts) les da una vez los libros nuevos del refinado, ⚗️ y 🩺 de los rangos que tenían.
 Reglas que nunca se rompen:
@@ -333,6 +337,10 @@ Si cambias esto, revisa:
       Las 🌊 oleadas crecientes del castillo (D-122, D-329; 0.53): balance.yaml ladder.castle_waves; _open_raid, _raid_notice,
       _defend, _resolve_raid, _raid_lines, _lvlup_rows ("waves"), _lvlup_view y _lvlup_all_view llaman a ladder.py;
       tests/test_oleadas_crecientes_castillo.py
+    - 🎯 Misiones de grupo (D-136, D-332; 0.56): engine/service/group_missions.py; content/story.yaml group_missions y
+      balance.yaml group_missions; textos en es_misiones_grupo.yaml y en_misiones_grupo.yaml; _create_camp y _level_up
+      (_gm_start), _lvlup_rows ("mission"), _lvlup_view (_gm_how_line y el botón 🌙), _lvlup_all_view (_gm_all_part) y
+      _end_combat (raid=True: las peleas de oleada cuentan para "defend"); tests/test_misiones_de_grupo.py
       tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
       🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _lvlup_rows (castillo pide la prueba ganada; D-304: antes
@@ -742,6 +750,7 @@ from engine.service.gremio import (GREMIO_ACTIONS, GREMIO_ANSWERS, FUND_CODE_RE,
 from engine.service.market import MARKET_ACTIONS, MarketMixin, market_code     # D-320 (0.46): 🏛️ Mercado entre jugadores
 from engine.service.map_scroll import SCROLL_ACTIONS, SCROLL_CODE_RE, MapScrollMixin   # D-326 (0.50): 🗺️ pergamino de mapa
 from engine.service.ladder import LadderMixin           # D-327 (0.51): the settlement ladder (cap per stage, idle, castle)
+from engine.service.group_missions import GroupMissionMixin   # D-332 (0.56): 🎯 the camp's group mission of each level-up
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -884,7 +893,8 @@ TERRITORY_KEYCAPS = ("1️⃣", "2️⃣", "3️⃣")
 # the castle asks. A kind without a heading (the famine line) goes under the last one.
 LVLUP_SECTIONS = {"work": "lvlup.works_title", "item": "lvlup.items_title", "chests": "lvlup.items_title",
                   "guild": "guild.castle_title", "castle": "guild.castle_title", "trial": "guild.castle_title",
-                  "waves": "guild.castle_title"}     # D-329 (0.53): the 🌊 growing waves of the castle
+                  "waves": "guild.castle_title",     # D-329 (0.53): the 🌊 growing waves of the castle
+                  "mission": "gm.section"}           # D-332 (0.56): 🎯 the group mission of the level-up, under "🤝 Entre todos:"
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
 RECIPE_CODE_RE = re.compile(r"^/r_?(\d{1,3})(@\w+)?$")   # D-321: /r3 = the 3rd recipe of the last 🛠️ / 🪚 / 🍲 recipe list
@@ -927,7 +937,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 
 
-class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin):
+class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, GroupMissionMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -4339,7 +4349,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         "found", D-193) y las oleadas (D-105). Desde D-269 no cobra nada: lo llama _finish_founding cuando la fundación del
         gremio termina (el fondo ya pagó al empezar) y guarda "gremio" (el id del gremio que lo fundó). Reemplaza a
         _found_camp (fundar solo, con el nombre escrito y pagando de la mochila). D-327 (0.51): nace con "cap_floor" 0 (no
-        tiene un cupo de antes que conservar: su cupo es el de su etapa, ladder.py _base_cap_at).
+        tiene un cupo de antes que conservar: su cupo es el de su etapa, ladder.py _base_cap_at). D-332 (0.56): nace con su
+        primera 🎯 misión de grupo (la de subir a nivel 2, group_missions.py _gm_start) y el fundador lee cuál es.
         La llama: engine/service/gremio.py _finish_founding. Si cambia, afecta: los campamentos nuevos (tests/test_camps.py).
         """
         t = self.texts
@@ -4352,7 +4363,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                                       "cap_floor": 0})                 # D-327: a new camp has no cap of before 0.51 to keep
         self.store.put("territory", key, {"camp": key})
         hero.camp = key
+        self._gm_start(key, self.store.get("camp", key), hero)      # D-332 (0.56): 🎯 the first group mission (to level 2)
         lines = [t.t("camps.founded", name=name, x=x, y=y)]
+        lines += [line for line in [self._gm_new_line(key)] if line]
         lines += self._story_event(hero, "camp", name=name)          # D-117: the journal (and any mission that asks for a camp)
         lines += self._guide_event(hero, "camp", name=name)          # D-193: 🧭 the "found" step and the camp's short tutorial
         if self._raid_cfg()["from_level"] <= 1:      # D-105: waves start with the camp, and the founder is told so
@@ -4662,7 +4675,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         0.51 con 10 vencedores distintos como mínimo, raids.trial.min_wins); desde la 0.53 (D-122, D-329), las 🌊 oleadas
         crecientes (ladder.py _castle_waves_row: "2 ganadas, 1 perdida de 5…"). Con la despensa vacía suma una línea ▫️ (D-93:
         la hambruna no deja subir).
-        Tipos: "work", "item", "chests", "guild", "castle", "waves", "trial" y "famine" (los botones de _lvlup_view los miran).
+        Desde la 0.56 (D-136, D-332), después de los cofres, la 🎯 misión de grupo de esta subida (group_missions.py _gm_row:
+        "🎯 Misión de grupo: vencer 20 monstruos — 7 de 20 (faltan 13)"; ✅ en un campamento de antes de la 0.56, que no la
+        necesita en esta subida).
+        Tipos: "work", "item", "chests", "mission", "guild", "castle", "waves", "trial" y "famine" (los botones de _lvlup_view
+        los miran).
         D-313 (0.41.1, el dueño: "específicamente, necesita esto, esto y esto; recursos tal, tal y tal"): cada línea dice lo que
         le falta: la obra activa, sus materiales que faltan; la obra en obra, cuándo termina (o que está pausada sin nadie en el
         territorio); la obra sin activar, quién la activa; cada material, "12 de 30 (faltan 18)". `hero` (opcional) da los
@@ -4710,6 +4727,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if chests:
             have = min(chests, data["chests"])
             rows.append(("chests", t.t("lvlup.chest_line", have=have, need=chests), have >= chests))
+        mission = self._gm_row(camp)                    # D-136, D-332 (0.56): 🎯 the group mission of this level-up
+        if mission is not None:
+            rows.append(("mission", *mission))
         rows += [("guild", text, ok) for text, ok in self._castle_needs(camp, hero)]     # D-97, D-253.2: 8 → 9 only
         rows += [("castle", text, ok) for text, ok in self._castle_upgrades(camp)]       # D-101: 8 → 9 only
         waves = self._castle_waves_row(camp)            # D-122, D-329: the 🌊 growing waves, 8 → 9 only
@@ -4731,8 +4751,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         que el 💰 fondo pone primero y tus 🪎 cofres. La ven todos los miembros (pedido del dueño del 20-oct-2026: todo visible
         para todos). Botones (4 como máximo): ⏫ Subir a nivel N (todo ✅: cualquier miembro), 🌙 Noche de prueba (si es lo
         único que falta, o solo faltan ella y las 🌊 oleadas crecientes, que llegan solas y no tienen botón: D-329, con su
-        línea de cómo llegan, _castle_waves_how), 🤲 Aportar (faltan materiales o cofres), 🔨 Mejoras (faltan obras),
-        🛡️ Gremio (falta el gremio del castillo), 🌾 Aportar comida (hambruna) y ↩️ Volver a ⬆️ Mejorar. En castillo dice que todavía no hay otro nivel.
+        línea de cómo llegan, _castle_waves_how; desde la 0.56 también con la 🎯 misión de grupo, que no tiene botón: D-332,
+        con su línea de qué cuenta, cuánto llevas y el premio, _gm_how_line), 🤲 Aportar (faltan materiales o cofres),
+        🔨 Mejoras (faltan obras), 🛡️ Gremio (falta el gremio del castillo), 🌾 Aportar comida (hambruna) y ↩️ Volver a
+        ⬆️ Mejorar. En castillo dice que todavía no hay otro nivel.
         Solo en el centro de tu campamento (en otro lugar, _upgrades_elsewhere).
         La llaman: ⏫ Siguiente nivel ("lvlup"), _lvlup_give, _lvlup_go, el tope de 🗺️ Agrandar territorio y _lvlup_trial.
         Si cambia, afecta: tests/test_siguiente_nivel.py y el recorrido de botones (tests/test_buttons.py).
@@ -4774,13 +4796,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body.append(t.t("lvlup.how_works"))
         if "waves" in missing:                          # D-329: they come by themselves with the camp's waves, no button
             body.append(self._castle_waves_how())
+        if "mission" in missing:                        # D-332: what counts, what you did and what the 💰 fund gets
+            body.append(self._gm_how_line(camp, hero))
         cap_now, cap_next = self._members_cap(camp), self._members_cap_at(camp, target)     # D-327: one cap per stage
         body += ["", t.t("lvlup.gives" if cap_next > cap_now else "lvlup.gives_same", cap=cap_next, now=cap_now,
                          zones=self._zones_cap_at(target))]
         extra: list[Action] = []
         if not missing:
             extra.append(Action(id="lvlgo", label=t.t("lvlup.go_button", level=target)))
-        elif "trial" in missing and missing <= {"trial", "waves"}:     # D-99: the 🌙 Noche de prueba (D-329: the waves come alone)
+        elif "trial" in missing and missing <= {"trial", "waves", "mission"}:     # D-99: the 🌙 (D-329, D-332: no button for those)
             extra.append(Action(id="lvltrial", label=t.t("lvlup.trial_button")))
         else:
             if missing & {"item", "chests"}:
@@ -4885,7 +4909,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         (camps.level_up_cost_per_level × nivel) y los 🪎 cofres desde el nivel 6 (D-92); al final, lo que pide además el
         castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba; desde la 0.51, D-327: ladder.castle_active
         activos de la semana y raids.trial.min_wins vencedores distintos; desde la 0.53, D-329: las 🌊 oleadas crecientes,
-        _castle_waves_all). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
+        _castle_waves_all). Desde la 0.56 (D-332), cada subida dice también su 🎯 misión de grupo (_gm_all_part: la de la
+        subida en curso con su meta fijada; las siguientes con los activos de hoy). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
         La llama: 📜 Qué pide cada nivel de ⬆️ Mejorar ("lvlall"). Si cambia, afecta: tests/test_siguiente_nivel.py.
         """
         here = self._upgrades_here(hero)
@@ -4896,10 +4921,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         level = camp.get("level", 1)
         top = self._camp_top_level()
         body = [t.t("lvlall.intro", level=level, stage=self._camp_stage(level)), ""]
+        active = self._week_active(camp, hero)          # D-332: the members active this week, counted once for every line
         for current in range(level, top):
             target = current + 1
             works = " · ".join(self._upgrade_name(uid) for uid in self._lvlup_works(target)) or "—"
-            extra = t.t("lvlall.chests", n=self._grow_chests(current)) if self._grow_chests(current) else ""
+            extra = self._gm_all_part(camp, target, active)    # D-332 (0.56): " · 🎯 vencer 20 monstruos"
+            extra += t.t("lvlall.chests", n=self._grow_chests(current)) if self._grow_chests(current) else ""
             body.append(t.t("lvlall.line", level=target, stage=self._camp_stage(target), works=works,
                             items=self._item_list(self._lvlup_need(current)), extra=extra))
         if level < top:
@@ -4943,6 +4970,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         una etapa nueva caben más miembros; desde la 0.51 el cupo es el de la etapa, D-327, y entran solos, D-323). Las zonas no
         cambian (se agrandan aparte, en 🗺️ Agrandar territorio). Devuelve la línea para quien lo subió (con el cupo de ahora).
         Las oleadas (desde raids.from_level) se agendan solas al jugar (_raid_settle).
+        D-332 (0.56): empieza la 🎯 misión de grupo de la subida siguiente (group_missions.py _gm_start, con su meta fijada
+        con los activos de la semana) y la línea "🎯 Nueva misión de grupo…" va en el aviso a todos y en la de quien subió.
         La llaman: _lvlup_give (el último aporte) y _lvlup_go (⏫ Subir a nivel N).
         Si cambia, afecta: el cupo de miembros, las obras que se ven (D-287), la despensa (nivel 3), las oleadas y el castillo.
         """
@@ -4954,13 +4983,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self.store.put("camp", key, camp)
         record.pop("levelup", None)
         self.store.put("upgrades", key, record)
+        self._gm_start(key, camp, hero)                 # D-332 (0.56): 🎯 the group mission of the next level-up starts now
         name = camp["name"]
         self._push_each([m for m in camp["members"] if m != hero.id], lambda: View(
             kind="camp_news", title=t.t("lvlup.push_title"),
-            body=[t.t("lvlup.push", hero=hero.name, camp=name, level=level, stage=self._camp_stage(level))]))
+            body=[t.t("lvlup.push", hero=hero.name, camp=name, level=level, stage=self._camp_stage(level))]
+            + [line for line in [self._gm_new_line(key)] if line]))
         self._tell_waiting_room(key)                    # D-294, D-323: a new stage has room for more members (D-327)
-        return [t.t("lvlup.done", camp=name, level=level, stage=self._camp_stage(level), zones=self._zones_cap_at(level),
+        done = [t.t("lvlup.done", camp=name, level=level, stage=self._camp_stage(level), zones=self._zones_cap_at(level),
                     cap=self._members_cap(self.store.get("camp", key) or camp))]
+        return done + [line for line in [self._gm_new_line(key)] if line]
 
     # ------------------------------------------------------------------ 🗺️ Agrandar territorio (D-304, 0.41)
 
@@ -14933,7 +14965,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             # D-117: a won fight moves missions and tasks (the zone's biome; a hunt; the Guardian); automatic fights read
             # state["story"] to put these lines in the batch summary (_auto_combat)
             state["story"] = self._story_event(hero, "win", enemy=enemy["id"], biome=self._zone(hero.x, hero.y).biome,
-                                               level=enemy["level"], hunt=bool(state.get("hunt")), boss=bool(edef.get("boss")))
+                                               level=enemy["level"], hunt=bool(state.get("hunt")), boss=bool(edef.get("boss")),
+                                               raid=bool(state.get("raid")))     # D-332: a wave fight (🛡️ Defender)
             lines += state["story"]
         elif outcome == "defeat":
             lost = int(hero.gold * hb["defeat_gold_loss"])

@@ -45,8 +45,9 @@ Si cambias esto, revisa:
       los atajos; _hero_view (botones 📔 Diario y 🎭 Origen, D-192); _claro_view y _camp_hub_lines (📜 Tablón y su línea);
       text(), que entiende el texto "📖 Historia" de un teclado viejo)
     - Números: balance.yaml story (experiencia por ⚡, rangos, largo de la biografía, tope del diario, espera de gestos)
-    - Datos: content/story.yaml y content/locales/es_historia.yaml
-    - Pruebas: tests/test_story.py
+    - Datos: content/story.yaml y content/locales/es_historia.yaml (desde la 0.56, story.yaml también tiene las 🎯 misiones
+      de grupo, group_missions, que corren en engine/service/group_missions.py con sus textos en es_misiones_grupo.yaml)
+    - Pruebas: tests/test_story.py y tests/test_misiones_de_grupo.py
 """
 
 from __future__ import annotations
@@ -488,9 +489,10 @@ class StoryMixin:
         [ES]
         Qué hace: el único gancho de la historia. El juego lo llama cuando pasa algo (explorar, recolectar, ganar una
         pelea, fabricar, vender, llegar a una zona, fundar un campamento, aportar a la despensa o a una obra) y aquí
-        avanzan las misiones en curso, los encargos del día y los del campamento; también anota en el diario el primer
-        Guardián, el título de Pionero y el campamento fundado. Devuelve las líneas para mostrar (una vez: el lote las
-        junta en su resumen; una pelea, en su final).
+        avanzan las misiones en curso, los encargos del día y los del campamento (y, desde la 0.56, la 🎯 misión de grupo de
+        la subida de nivel del campamento: group_missions.py _gm_event, D-332); también anota en el diario el primer
+        Guardián, el título de Pionero y el campamento fundado. Una pelea ganada trae raid=True si era de una oleada.
+        Devuelve las líneas para mostrar (una vez: el lote las junta en su resumen; una pelea, en su final).
         La llaman: engine/service/game.py en _explore_step, _gather_step, _end_combat, _make, _sell, _camp_sell,
         _sell_gear, _arrive, _create_camp (antes _found_camp), _camp_feed, _give_to_work y _give_to_study; y D-112: _infiltrate (🕵️ te
         infiltraste) y _ecamp_destroyed (👹 destruiste un campamento enemigo: queda en el 📔 Diario).
@@ -501,6 +503,7 @@ class StoryMixin:
             lines += self._quest_progress(hero, qid, kind, data)
         lines += self._daily_event(hero, kind, data)
         lines += self._camp_event(hero, kind, data)
+        lines += self._gm_event(hero, kind, data)       # D-332 (0.56): 🎯 the camp's group mission of the level-up
         self._story_marks(hero, kind, data)
         return lines
 
@@ -1273,7 +1276,8 @@ class StoryMixin:
         [ES]
         Qué hace: el tablón de encargos del Claro (también desde 🎯 Misiones → 📜 Encargos y /encargos): los 3 encargos de
         hoy, quién los da, cuánto llevas y qué pagan; cuándo cambian; y, si tienes campamento, sus encargos de la semana
-        con lo que llevan entre todos y lo que aportaste tú. Botones (D-192): 🧑 Personajes, 📔 Diario y ↩️ Volver al centro de
+        con lo que llevan entre todos y lo que aportaste tú, y desde la 0.56 (D-332) la 🎯 misión de grupo de la subida de
+        nivel del campamento (group_missions.py _gm_board_lines). Botones (D-192): 🧑 Personajes, 📔 Diario y ↩️ Volver al centro de
         🏕️ Campamento (antes 📖 Historia y ↩️ Volver al Claro): 3 como mucho.
         La llaman: el botón 📜 Tablón del centro de 🏕️ Campamento (el Claro o tu campamento, E-130), 📜 Encargos y /encargos. Si cambia, afecta: tests/test_story.py.
         """
@@ -1316,7 +1320,7 @@ class StoryMixin:
                              xp=int(reward.get("xp", 0)), gold=self._money(int(reward.get("gold", 0)))))
         left = (self._story_week() + 1) * 7 * self._day_seconds() - self.clock.now()
         lines.append(t.t("story.board_camp_reset", time=self._fmt_duration(left)))
-        return lines
+        return lines + self._gm_board_lines(hero, camp)     # D-332 (0.56): 🎯 the group mission of the next level-up
 
     def _factions_view(self, hero: Hero) -> View:
         """⚜️ Facciones: each faction, your rank and points, and what the next rank gives. [ES] Qué hace: muestra las tres facciones con tu rango, tus puntos y lo que da el rango siguiente. La llama: ⚜️ Facciones del 📔 Diario. Si cambia, afecta: solo lo que se muestra."""
