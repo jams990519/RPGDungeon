@@ -1,0 +1,29 @@
+# Texts of the 🔀 hybrid mode (0.54, D-231, D-312; how it was built: D-330): from level 10 each role button (Builder,
+# Primer, Spender) can carry the ability in the same slot of the other role; the Basic never changes.
+# [ES] Textos del 🔀 modo híbrido del nivel 10: la pantalla 🔀 Modo híbrido (en 👤 Héroe → 🎛️ Barra de combate, o /hibrido), sus
+# avisos y la línea que marca un botón prestado. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py).
+# Una clave nueva va también en en_hibrido.yaml, en el mismo cambio (python tools/check_locales.py: 0 errores).
+# Lo leen: engine/service/game.py (_hybrid_view, _hybrid_action, _bar_view, _chain_button_lines, _level_point_lines) y
+#     tests/test_modo_hibrido.py. Los textos de la cadena que lo nombran (chain.hybrid_soon y chain.bar_fixed) siguen en
+#     es_clases_031.yaml; la respuesta de ❓ Dudas, en es_dudas.yaml (d28).
+# Números: nunca a mano ({n} = nivel de balance.yaml chain.hybrid.level o tope chain.hybrid.max_mixed).
+# Estilo: español neutro, de tú, líneas cortas para el teléfono. Los nombres de los puestos salen de chain.link
+#     (Básico, Constructor, Preparador, Gastador) y los de las habilidades de ability.<id>.name.
+
+hybrid:
+  button: "🔀 Modo híbrido"
+  title: "🔀 Modo híbrido"
+  intro: "Juegas como {own}. Cada botón de rol puede llevar la habilidad del mismo puesto de {other}. Toca uno para cambiarlo:"
+  slot_own: "{icon} {slot}: ✅ {name} · o {other}"
+  slot_swapped: "{icon} {slot}: 🔀 {name} (de {role}) · o {own}"
+  slot_none: "{icon} {slot}: {name} · —"                   # [ES] un puesto sin pareja en el otro rol: no se cambia
+  use_button: "{icon} Usar {name}"
+  basic_line: "{icon} Básico: {name} (no cambia)."
+  rules: "🎲 La mezcla corre por tu cuenta: el juego no la balancea. Tu cadena sigue el orden de tu rol, cada habilidad hace lo suyo (daño, curación o agro) y cambiarla es gratis fuera de combate. Cada rol guarda su elección."
+  max_line: "Puedes cambiar hasta {n}."
+  full: "🔀 Ya cambiaste {n}, el máximo: devuelve otro primero."
+  swapped: "🔀 {slot}: ahora usas {name}, de {role}."
+  restored: "↩️ {slot}: vuelves a {name}."
+  locked: "🔒 El 🔀 modo híbrido se abre al nivel {n}, con tu segundo rol."   # [ES] D-287: aviso corto a un /hibrido o un botón viejo antes del nivel
+  learned: "🔀 ¡Se abrió el modo híbrido! Cambia tus botones de rol por los del mismo puesto de tu otro rol en 👤 Héroe → 🎛️ Barra de combate (/hibrido)."
+  from_tag: " · 🔀 de {role}"                               # [ES] va pegado al nombre de un botón prestado en 🎛️ Barra de combate

@@ -6,25 +6,38 @@ repartidas en los 100 niveles), armar su barra de 3 (elegida por el jugador o au
 el "kit" (clase + habilidades + mejoras pasivas) que usa el combate.
 Documento de diseño: diseno/03-personaje/talentos.md (D-68, D-79)
 Módulo: M3 Clases y talentos
-Depende de: content/classes.yaml (group, role, abilities), content/balance.yaml (talents)
+Depende de: content/classes.yaml (group, role, abilities), content/balance.yaml (talents; chain.second_role_level, chain.hybrid)
 Lo usan: engine/service/game.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
-Datos de los que es dueño: ninguno (lee y cambia hero.talents, hero.points, hero.unlocked y hero.bar)
+Datos de los que es dueño: ninguno (lee y cambia hero.talents, hero.points, hero.unlocked, hero.bar y hero.hybrid)
 Reglas que nunca se rompen:
     1. bar() siempre pone una respuesta en la casilla 1 si el héroe tiene alguna desbloqueada.
     2. Un héroe nunca pierde una habilidad desbloqueada (salvo al reiniciar talentos o si su especialización se retira).
     3. Una barra guardada que ya no vale (hero.bar) no rompe nada: se usa la barra automática.
+    4. El modo híbrido (0.54, D-312) solo cambia un botón de rol por el del mismo puesto (link) del otro rol: el Básico, el
+       orden de los botones (H1, H2, H3) y su número nunca cambian; una elección guardada que ya no vale (modo cerrado,
+       puesto sin pareja) se ignora y se pelea con la barra del rol.
 Si cambias esto, revisa:
     - Combate: engine/combat/engine.py recibe el kit como class_def (el orden de la barra es el de los botones)
     - Servicio: engine/service/game.py (pantallas 🌟 Talentos y 🎛️ Barra de combate)
     - D-110: la barra automática de Defensa guarda su curación más nueva en la casilla 3 (HEAL_FIRST_ROLES); la mejora
       pasiva puede traer armor (talents.passive.defensa), que hero_stats suma a la armadura (tools/balance_report.py)
     - 0.31 (D-225, D-230): las clases nuevas (system: chain) no reparten puntos a mano: van solos al rol activo
-      (sync_chain), sus 3 habilidades están siempre abiertas, la barra es fija y desde el nivel 5 se cambia de rol gratis
+      (sync_chain), sus 3 habilidades están siempre abiertas, la barra es la del rol (el modo híbrido de la 0.54 la mezcla,
+      abajo) y desde el nivel 5 se cambia de rol gratis
       (switch_role). Un héroe con una especialización vieja (retired con migrate_to) pasa a la nueva al cargar, con su
       nivel, experiencia, equipo y monedas (ensure_talents)
-    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py, tests/test_balance_d110.py, tests/test_clases_031.py
+    - 0.54 (D-231, D-312, D-330): el 🔀 modo híbrido. Desde chain.hybrid.level (10) y con el segundo rol abierto, cada uno de
+      los 3 botones de rol (H1, H2, H3) puede llevar la habilidad del MISMO puesto del otro rol de la clase (toggle_hybrid);
+      el Básico nunca cambia y la barra sigue con 4 botones. La elección se guarda en hero.hybrid por pareja de roles
+      ("<rol activo>><rol que presta>": cada rol guarda la suya al cambiar de rol) y como mucho chain.hybrid.max_mixed (3).
+      kit() pasa balance a bar(), que arma la barra con chain_bar: la habilidad prestada es la del otro rol tal cual (sus
+      números y sus marcas: daño, cura, agro), marcada con from_spec. El cuerpo (vida, ataque, armadura, iniciativa, la mejora
+      pasiva de los puntos) y el orden de la cadena siguen siendo los del rol activo. Quien no toca el modo híbrido pelea
+      igual que antes (hero.hybrid vacío)
+    - Pruebas: tests/test_talents.py, tests/test_spec_abilities.py, tests/test_balance_d110.py, tests/test_clases_031.py,
+      tests/test_modo_hibrido.py
 """
 
 from __future__ import annotations
@@ -136,9 +149,10 @@ def sync_chain(classes: dict[str, Any], hero: Hero) -> None:
     [ES]
     Qué hace: en las clases nuevas (0.31) los puntos de nivel van solos al rol activo (1 por nivel, D-215: subir de nivel no
     da estadísticas por sí solo, las dan los puntos), los 3 botones de habilidad siempre están abiertos (todas las clases
-    pegan desde el principio) y la barra es fija (Básico, H1, H2, H3). Al cambiar de rol los puntos se recogen y se ponen en
-    el rol nuevo (chain.keep_points: pendiente 4 del parche; hoy no cambia nada porque los puntos tienen un solo destino).
-    La llaman: ensure_talents (cada vez que se carga el héroe) y switch_role.
+    pegan desde el principio) y la barra es la del rol (Básico, H1, H2, H3). Al cambiar de rol los puntos se recogen y se ponen
+    en el rol nuevo (chain.keep_points: pendiente 4 del parche; hoy no cambia nada porque los puntos tienen un solo destino).
+    No toca hero.hybrid: lo que cambió el modo híbrido (0.54) se guarda por pareja de roles y sigue al volver a cada rol.
+    La llaman: ensure_talents (cada vez que se carga el héroe), switch_role y el cambio de clase (D-270).
     Si cambia, afecta: la mejora pasiva de cada héroe de las clases nuevas.
     """
     hero.talents = {hero.class_id: max(0, hero.level - 1)}
@@ -157,7 +171,8 @@ def switch_role(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, sp
 
     [ES]
     Qué hace: cambia el rol activo a la otra especialización de la clase, desde el nivel chain.second_role_level y gratis.
-    Los puntos se recogen y se reparten de nuevo en el rol nuevo (sync_chain).
+    Los puntos se recogen y se reparten de nuevo en el rol nuevo (sync_chain). El modo híbrido no se toca: cada rol guarda
+    su propia elección en hero.hybrid (D-330), así que el rol nuevo pelea con la suya.
     La llaman: el servicio (botón 🔄 en la especialización).
     Si cambia, afecta: el rol de cada héroe de las clases nuevas.
     """
@@ -169,6 +184,144 @@ def switch_role(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, sp
     hero.class_id = spec
     sync_chain(classes, hero)
     return True
+
+
+HYBRID_LINKS = ("H1", "H2", "H3")      # D-312: the three role buttons the hybrid mode can swap; the Básico (B) never changes
+
+
+def hybrid_max(balance: dict[str, Any]) -> int:
+    """How many role buttons the hybrid mode may swap at once (chain.hybrid.max_mixed; null or 0 = not offered).
+
+    [ES] Qué hace: dice cuántos de los 3 botones de rol se pueden cambiar (D-312: los 3). La llaman: hybrid_open,
+    hybrid_choice, toggle_hybrid y el servicio. Si cambia, afecta: cuántos botones presta el otro rol.
+    """
+    return int((balance["chain"].get("hybrid") or {}).get("max_mixed") or 0)
+
+
+def hybrid_partner(classes: dict[str, Any], hero: Hero) -> str | None:
+    """The role that lends its abilities: the other active role of the hero's class (None if there is none).
+
+    [ES] Qué hace: devuelve el otro rol de la clase (el que presta sus botones). La llaman: este módulo y el servicio. Si
+    cambia, afecta: de dónde salen las habilidades prestadas.
+    """
+    others = [s for s in specs_of(classes, _group(classes, hero)) if s != hero.class_id and is_chain_spec(classes, s)]
+    return others[0] if others else None
+
+
+def hybrid_open(classes: dict[str, Any], balance: dict[str, Any], hero: Hero) -> bool:
+    """True when the hero can use the hybrid mode: a chain role, level chain.hybrid.level, second role open, max_mixed > 0.
+
+    [ES] Qué hace: dice si el 🔀 modo híbrido está abierto (D-231: nivel 10; hace falta el segundo rol, D-230). La llaman:
+    hybrid_choice, toggle_hybrid y el servicio (botón 🔀 Modo híbrido, D-287: antes no se muestra). Si cambia, afecta:
+    quién ve y usa el modo híbrido.
+    """
+    if not is_chain_spec(classes, hero.class_id) or hybrid_max(balance) <= 0:
+        return False
+    if hero.level < int(balance["chain"]["hybrid"]["level"]) or not second_role_open(balance, hero):
+        return False
+    return hybrid_partner(classes, hero) is not None
+
+
+def _in_slot(class_def: dict[str, Any], link: str) -> dict[str, Any] | None:
+    """The ability of a chain spec in a slot (H1, H2, H3), or None."""
+    return next((a for a in class_def.get("abilities") or [] if a.get("link") == link), None)
+
+
+def hybrid_pairs(classes: dict[str, Any], hero: Hero) -> list[tuple[str, dict[str, Any] | None, dict[str, Any] | None]]:
+    """Each role slot in order: (link, the active role's ability, the other role's ability in the same slot or None).
+
+    [ES] Qué hace: para cada puesto (Constructor, Preparador, Gastador) da la habilidad de tu rol y la del mismo puesto de tu
+    otro rol (None si no tiene: ese puesto no se puede cambiar y la pantalla muestra "—"). La llaman: hybrid_choice,
+    toggle_hybrid y la pantalla 🔀 Modo híbrido. Si cambia, afecta: qué se puede cambiar.
+    """
+    partner = hybrid_partner(classes, hero)
+    own, other = classes[hero.class_id], (classes[partner] if partner else {})
+    return [(link, _in_slot(own, link), _in_slot(other, link)) for link in HYBRID_LINKS]
+
+
+def hybrid_key(classes: dict[str, Any], hero: Hero) -> str | None:
+    """Where the choice is saved in hero.hybrid: "<active role>><lending role>" (one choice per role pair and direction).
+
+    [ES] Qué hace: la clave de la elección guardada, por pareja de roles (D-330: cada rol guarda la suya; al cambiar de rol se
+    usa la del rol nuevo). La llaman: hybrid_choice y toggle_hybrid. Si cambia, afecta: las elecciones guardadas (las
+    claves viejas dejarían de leerse).
+    """
+    partner = hybrid_partner(classes, hero)
+    return f"{hero.class_id}>{partner}" if partner else None
+
+
+def hybrid_choice(classes: dict[str, Any], balance: dict[str, Any], hero: Hero) -> list[str]:
+    """The role slots swapped right now, in order (H1, H2, H3); [] while the mode is closed.
+
+    [ES] Qué hace: devuelve los puestos que llevan la habilidad del otro rol. Una elección guardada que ya no vale (modo
+    cerrado, puesto sin pareja, más que chain.hybrid.max_mixed) se ignora sin borrarla. La llaman: chain_bar, toggle_hybrid
+    y el servicio. Si cambia, afecta: qué botones salen en combate.
+    """
+    if not hybrid_open(classes, balance, hero):
+        return []
+    saved = (hero.hybrid or {}).get(hybrid_key(classes, hero) or "") or []
+    valid = [link for link, own, other in hybrid_pairs(classes, hero) if link in saved and own and other]
+    return valid[:hybrid_max(balance)]
+
+
+def toggle_hybrid(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, link: str) -> bool:
+    """Swap one role slot for the other role's same slot, or put the own one back. Returns True if done.
+
+    [ES]
+    Qué hace: cambia un puesto (H1, H2 o H3) por el del mismo puesto de tu otro rol, o lo devuelve al tuyo, y lo guarda en
+    hero.hybrid (por pareja de roles). Gratis; el servicio no lo deja en combate. No hace nada si el modo está cerrado, si
+    ese puesto no tiene pareja o si ya hay chain.hybrid.max_mixed cambiados.
+    La llaman: el servicio (botones de la pantalla 🔀 Modo híbrido).
+    Si cambia, afecta: la barra de combate del héroe (chain_bar, kit).
+    """
+    if link not in HYBRID_LINKS or not hybrid_open(classes, balance, hero):
+        return False
+    _link, own, other = next(p for p in hybrid_pairs(classes, hero) if p[0] == link)
+    if not (own and other):
+        return False
+    current = hybrid_choice(classes, balance, hero)
+    if link in current:
+        current.remove(link)
+    elif len(current) >= hybrid_max(balance):
+        return False
+    else:
+        current.append(link)
+    key = hybrid_key(classes, hero) or ""
+    saved = dict(hero.hybrid or {})
+    ordered = [slot for slot in HYBRID_LINKS if slot in current]
+    if ordered:
+        saved[key] = ordered
+    else:
+        saved.pop(key, None)                   # back to the role's own bar: nothing saved (as a hero who never touched it)
+    hero.hybrid = saved
+    return True
+
+
+def chain_bar(classes: dict[str, Any], balance: dict[str, Any] | None, hero: Hero) -> list[dict[str, Any]]:
+    """The 3 role buttons a chain hero fights with (H1, H2, H3): its active role's, with the hybrid swaps applied.
+
+    [ES]
+    Qué hace: la barra de combate de las clases nuevas. Sin modo híbrido (o sin balance) son los 3 botones del rol activo, como
+    siempre. Con él, cada puesto cambiado lleva la habilidad del mismo puesto del otro rol tal cual está en classes.yaml (sus
+    números y sus marcas: daño, curación, agro, escuela), marcada con from_spec (el rol de donde viene). El puesto (link)
+    no cambia, así que la cadena y el orden siguen siendo los del rol activo.
+    La llaman: bar() (y por ella kit(), o sea todo el combate). Si cambia, afecta: qué hace cada botón en combate.
+    """
+    own = list(classes[hero.class_id]["abilities"])
+    swapped = hybrid_choice(classes, balance, hero) if balance is not None else []
+    if not swapped:
+        return own
+    partner = hybrid_partner(classes, hero) or ""
+    out = []
+    for ability in own:
+        other = _in_slot(classes[partner], ability.get("link", "")) if ability.get("link") in swapped else None
+        if other:
+            borrowed = copy.deepcopy(other)
+            borrowed["from_spec"] = partner    # the view says where it comes from; the combat reads only the ability itself
+            out.append(borrowed)
+        else:
+            out.append(ability)
+    return out
 
 
 def spend_point(classes: dict[str, Any], balance: dict[str, Any], hero: Hero, spec: str) -> list[str]:
@@ -233,7 +386,7 @@ def _auto_slots(known: dict[str, Any], unlocked: list[str], role: str | None = N
     return chosen
 
 
-def bar_slots(classes: dict[str, Any], hero: Hero) -> list[str]:
+def bar_slots(classes: dict[str, Any], hero: Hero, balance: dict[str, Any] | None = None) -> list[str]:
     """Ability ids of the bar, slot 1 first (slot 1 = a response).
 
     [ES]
@@ -241,11 +394,12 @@ def bar_slots(classes: dict[str, Any], hero: Hero) -> list[str]:
     la automática (casilla 1 = la respuesta más nueva, casilla 2 = el golpe más nuevo, casilla 3 = la otra
     habilidad más nueva; D-110: en Defensa, la curación más nueva, si ya abrió alguna).
     Si la barra elegida tiene casillas vacías y hay habilidades libres, las llena con las últimas.
+    En las clases nuevas (0.31) son H1, H2 y H3 del rol activo; con balance, con los cambios del modo híbrido (0.54).
     La llaman: bar(), el servicio (pantalla 🎛️ Barra de combate) y set_bar_slot().
     Si cambia, afecta: qué botones salen en combate y en qué orden.
     """
-    if is_chain_spec(classes, hero.class_id):      # 0.31: the bar is fixed: H1, H2, H3 (the Básico is ⚔️)
-        return [a["id"] for a in classes[hero.class_id]["abilities"]]
+    if is_chain_spec(classes, hero.class_id):      # 0.31: H1, H2, H3 (the Básico is ⚔️); 0.54: the hybrid swaps (D-312)
+        return [a["id"] for a in chain_bar(classes, balance, hero)]
     known, unlocked = _known_unlocked(classes, hero)
     auto = _auto_slots(known, unlocked, classes.get(hero.class_id, {}).get("role"))
     saved = list(hero.bar or [])
@@ -268,16 +422,17 @@ def bar_slots(classes: dict[str, Any], hero: Hero) -> list[str]:
     return saved
 
 
-def bar(classes: dict[str, Any], hero: Hero) -> list[dict[str, Any]]:
+def bar(classes: dict[str, Any], hero: Hero, balance: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """The (up to) 3 abilities in use, slot 1 first.
 
     [ES]
-    Qué hace: arma la barra de 3 habilidades (ver bar_slots); la casilla 1 es siempre una respuesta.
-    La llaman: kit() y la vista del héroe.
+    Qué hace: arma la barra de 3 habilidades (ver bar_slots); la casilla 1 es siempre una respuesta. En las clases nuevas,
+    los 3 botones de rol (chain_bar): con balance, con lo que cambió el modo híbrido; sin balance, los del rol tal cual.
+    La llaman: kit() (con balance: así pelea el héroe) y la vista del héroe.
     Si cambia, afecta: qué botones salen en combate.
     """
     if is_chain_spec(classes, hero.class_id):
-        return list(classes[hero.class_id]["abilities"])
+        return chain_bar(classes, balance, hero)
     known = _abilities(classes, _group(classes, hero))
     return [known[a][2] for a in bar_slots(classes, hero)]
 
@@ -291,7 +446,7 @@ def bar_choices(classes: dict[str, Any], hero: Hero, slot: int) -> list[str]:
     La llaman: el servicio (pantalla para elegir casilla).
     Si cambia, afecta: qué opciones ve el jugador.
     """
-    if is_chain_spec(classes, hero.class_id):      # 0.31: the bar is fixed (the hybrid mode, D-231, will open it)
+    if is_chain_spec(classes, hero.class_id):      # 0.31: no free picking; 0.54: the hybrid mode swaps whole slots (toggle_hybrid)
         return []
     known, unlocked = _known_unlocked(classes, hero)
     slots = bar_slots(classes, hero)
@@ -330,12 +485,14 @@ def kit(classes: dict[str, Any], balance: dict[str, Any], hero: Hero) -> dict[st
 
     [ES]
     Qué hace: devuelve la "clase efectiva" del héroe: recurso y estadísticas de su especialización
-    principal, su barra de habilidades y las mejoras pasivas de sus puntos.
+    principal, su barra de habilidades y las mejoras pasivas de sus puntos. En las clases nuevas la barra trae los cambios
+    del 🔀 modo híbrido (0.54, D-330): la habilidad prestada usa sus propios números y el cuerpo es el del rol activo
+    (vida, ataque, armadura, iniciativa y la mejora pasiva de sus puntos).
     La llaman: el servicio (combate, vida máxima, vistas).
     Si cambia, afecta: todo el combate del héroe.
     """
     base = copy.deepcopy(classes[hero.class_id])
-    base["abilities"] = bar(classes, hero)
+    base["abilities"] = bar(classes, hero, balance)
     cfg = balance["talents"]
     bonus = {"attack": 0.0, "hp": 0.0}
     talents = hero.talents
