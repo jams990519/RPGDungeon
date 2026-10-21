@@ -841,3 +841,24 @@ v0_42:
     - "🧺 Gather now has the basket 🧺, so it is not mixed up with 🪓 Chop wood."
     - "🌱 The 6 base resources (wood, stone, fiber, herb, metal and clay) grow back 3 per hour in each zone, instead of 1. Each terrain's own resources and fish stay the same."
     - "🩹 With your health below your Retreat % (⚙️ Options) you do not start exploring, gathering or chopping wood: the game tells you to rest and shows you how (🛏️ Inn at the campfire, 🩺 Health or changing the % in ⚙️ Options). Fights stay the same."
+
+v0_43:
+  version: "0.43"
+  title: "🎖️ Lost Realms 0.43: títulos de oficio en el Entrenador y 🎣 Pescar"
+  title_en: "🎖️ Lost Realms 0.43: profession titles at the Trainer and 🎣 Fish"
+  notes:
+    - "🎖️ Los títulos de oficio ahora se compran en el 🧑‍🏫 Entrenador, como en WoW: al rango 20, 40, 60, 80 y 95 un oficio se frena hasta que compras el título siguiente. Oficial 🥉50 (héroe de nivel 10), Experto 🥈2 (nivel 20), Artesano 🥈10 (nivel 30), Maestro 🥈30 (nivel 40) y Gran Maestro 🥈50 (nivel 50). En el tope, la experiencia del oficio no se guarda. Míralos con /titulos."
+    - "🎁 Si ya pasabas un tope, conservas tu rango y tienes gratis los títulos hasta él: solo compras los que vienen. El 🧭 Explorador sigue subiendo solo."
+    - "📚 Aprender un oficio cuesta 🥈1 los de fabricación (y ✨ Encantamiento) y 🥉50 los de recolección, refinado y 🏗️ Construcción. Sigue gratis si ya lo practicabas."
+    - "🎣 Nuevo botón Pescar en 🧭 Explorar, donde la zona tiene agua (en el pantano siempre; en los ríos, cuando ya sabes que hay pescado): junta solo 🐟 pescado, va en lotes y sube al 🎣 Pescador."
+    - "🦌 Las bestias sueltan 2,5 veces más piel, y el 🔪 Desollador gana +3 de experiencia por cada bestia que desuella."
+    - "🧱 Nueva obra que se repite en 🔨 Obras: Mantenimiento. Cada vuelta pide madera, piedra y fibra y sube la 🏗️ Construcción; al completarla empieza otra."
+    - "🧪 El 🛒 Mercader ahora te compra pociones y remedios de la mochila, a poco (un cuarto de su precio), hasta que haya mercado entre jugadores. Lo del cinturón no se vende."
+  notes_en:
+    - "🎖️ Profession titles are now bought at the 🧑‍🏫 Trainer, as in WoW: at rank 20, 40, 60, 80 and 95 a profession stops until you buy the next title. Journeyman 🥉50 (hero level 10), Expert 🥈2 (level 20), Artisan 🥈10 (level 30), Master 🥈30 (level 40) and Grandmaster 🥈50 (level 50). At the cap, profession experience is not kept. See them with /titles."
+    - "🎁 If you were already past a cap, you keep your rank and get the titles up to it for free: you only buy the ones ahead. The 🧭 Explorer still rises on its own."
+    - "📚 Learning a profession costs 🥈1 for crafting ones (and ✨ Enchanting) and 🥉50 for gathering, refining and 🏗️ Construction. Still free if you already practised it."
+    - "🎣 New Fish button in 🧭 Explore, where the zone has water (always in the swamp; on rivers, once you know there are fish): it collects only 🐟 fish, runs in batches and raises the 🎣 Fisher."
+    - "🦌 Beasts drop 2.5 times more hide, and the 🔪 Skinner gets +3 experience for every beast it skins."
+    - "🧱 A new work that repeats in 🔨 Works: Upkeep. Each round asks for wood, stone and fiber and raises 🏗️ Construction; when it is complete another one starts."
+    - "🧪 The 🛒 Merchant now buys potions and remedies from your backpack, for a little (a quarter of their price), until there is a player market. What is on your belt is not sold."

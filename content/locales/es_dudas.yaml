@@ -189,13 +189,13 @@ faq:
   # ---- ⚒️ Oficios
   d44:
     q: "⚒️ ¿Cómo aprendo un oficio?"
-    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Tus oficios: /misoficios."
+    a: "Cada oficio se aprende una vez, pagando su primera receta ({learn_price}), en 🧑‍🏫 Entrenador → 📚 Aprender oficios. Después sube haciendo recetas, y cada rango abre recetas nuevas. Solo el 🧭 Explorador no se aprende: sube solo. La recolección también se aprende; sin el oficio, recolectar te da igual los recursos base. Al rango 20, 40, 60, 80 y 95 el oficio se frena hasta que compras el 🎖️ título siguiente en el 🧑‍🏫 Entrenador (/titulos). Tus oficios: /misoficios."
   d45:
     q: "🛠️ ¿Cómo fabrico?"
     a: "En 🏕️ Campamento → 🛠️ Fabricar eliges 🪚 Refinar (madera → tablón, metal → lingote…) o 🛠️ Fabricar (equipo, pociones, vendas, muebles). Cada receta muestra lo que pide y cuánta ⚡ gasta. El Claro tiene todas las estaciones básicas; tu campamento, las de sus mejoras."
   d46:
     q: "🍲 ¿Cómo cocino?"
-    a: "🍲 Cocinar (🏕️ Campamento) usa la estación de la 🍲 Cocina: carne, pescado y lo que da cada terreno se vuelven raciones y guisos que rinden más en la 🌾 despensa. En el Claro ya se cocina; en tu campamento, con el 🔥 Fogón. El 🎣 pescado sale de las zonas con agua."
+    a: "🍲 Cocinar (🏕️ Campamento) usa la estación de la 🍲 Cocina: carne, pescado y lo que da cada terreno se vuelven raciones y guisos que rinden más en la 🌾 despensa. En el Claro ya se cocina; en tu campamento, con el 🔥 Fogón. El 🎣 pescado sale de las zonas con agua: 🎣 Pescar (en 🧭 Explorar) junta solo pescado."
   d47:
     q: "🎓 ¿Qué son las especializaciones?"
     a: "Cuando un oficio llega al rango {spec_first} eliges su primera 🎓 especialización, y al {spec_second} la segunda (nunca las tres). Dan bonos y recetas propias que crecen con el dominio. Se eligen en ⚒️ Oficios → 🎓 Especialización o con /especialidad."
@@ -211,7 +211,7 @@ faq:
     a: "Hay 🥉 bronce, 🥈 plata y 🥇 oro: {rate} 🥉 = 1 🥈 y {rate} 🥈 = 1 🥇. También 💰 bolsas (se cosen), 🪎 cofres (se arman con bolsas) y 💎 diamantes. Todo está en 🎒 Mochila → 💰 Monedas."
   d51:
     q: "🛒 ¿Qué hago con el mercader?"
-    a: "El 🛒 Mercader del Claro vende pociones, vendas y 🥖 provisiones (hasta {provisions_cap} por semana) y te compra materiales al {sell_pct} % de su precio. El equipo que no usas se vende desde 🛡️ Equipo. La comida no se vende: es para la despensa."
+    a: "El 🛒 Mercader del Claro vende pociones, vendas y 🥖 provisiones (hasta {provisions_cap} por semana) y te compra materiales al {sell_pct} % de su precio, y las pociones y los remedios de la mochila a poco ({remedy_pct} %). El equipo que no usas se vende desde 🛡️ Equipo. La comida no se vende: es para la despensa."
   d52:
     q: "🪎 ¿Cómo hago bolsas y cofres?"
     a: "Una 💰 bolsa se cose con {bag_recipe} y {bag_coins}. Un 🪎 cofre se arma con {chest_bags} bolsas y {chest_items}. Se hacen en 🎒 Mochila → 💰 Monedas (en el Claro) o en la 🪡 Sastrería de tu campamento. Los cofres pagan los niveles altos del campamento."
