@@ -55,7 +55,7 @@ Clásico (1.x), The Burning Crusade (TBC), Wrath of the Lich King (WotLK), Catac
 | 38 | Robo de vida (Leech) | WoD en adelante | Te curas una parte de lo que haces | ✅ Terciaria |
 | 39 | Evasión (Avoidance) | WoD en adelante | Menos daño de golpes en área | ✅ Terciaria |
 | 40 | Velocidad (Speed) | WoD en adelante | Moverte más rápido | ⏳ Terciaria, solo si E-161 permite acortar el viaje |
-| 41 | Indestructible | WoD en adelante | El equipo se gasta menos | ✅ Terciaria (cuando llegue el desgaste, E-70) |
+| 41 | Indestructible | WoD en adelante | El equipo se gasta menos | ✅ Terciaria (el desgaste llegó en la 0.57, D-333; Indestructible todavía no) |
 | 42 | Nivel de objeto, engarces y bono de engarce | TBC en adelante | Cuánto vale una pieza; gemas | ✅ Ya decidido: gemas en armaduras y armas (D-199) |
 | 43 | Efectos al equipar y al usar, bonos de conjunto | Todas | Efectos especiales | ✅ Capa profunda (§7) |
 | 44 | Corrupción | Solo BfA 8.3 | Efectos fuertes con un castigo | ❌ |

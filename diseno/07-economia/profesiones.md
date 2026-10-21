@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; fase 2 del lado del campamento, D-115: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción, ver §0.4; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5; las 🎓 especializaciones de D-141, §0.6 y §5; la reforma de recetas de D-306 en la 0.44: tramos cada 5, colores de receta y 📚 libros, §0.8; en la 0.52, también en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina, §0.11); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; fase 2 del lado del campamento, D-115: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción, ver §0.4; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5; las 🎓 especializaciones de D-141, §0.6 y §5; la reforma de recetas de D-306 en la 0.44: tramos cada 5, colores de receta y 📚 libros, §0.8; en la 0.52, también en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina, §0.11; desde la 0.57, 🔧 reparar el equipo y los 📜 encargos de reparación, §0.12); el resto, propuesta
 
 > **Repaso del 2-oct-2026 (D-194, D-195):** el dueño redefinió los oficios: refinar pasa a ser estructuras del asentamiento, cuatro oficios de armadura (tres desde D-208: ya no hay malla), oficios nuevos (Ladrón, Agricultura, Ganadería; el Mallero se cayó con D-208) y la granja de cada etapa. El 2-oct también decidió que el Joyero refina las gemas desde la mena del Minero, sin Gemólogo (D-198), y que las ranuras para gemas van solo en armaduras y armas (D-199). Ver [Repaso de los oficios](oficios-repaso-2-oct.md). Hasta que se programe, este documento describe lo que está en el juego.
 
@@ -386,7 +386,7 @@ Cada oficio es también un **trabajo pagado**:
 
 | Oficio | Cómo se cobra |
 |---|---|
-| Artesanos | Venta en el mercado, pedidos de fabricación con comisión, puesto o local propio (ver [Propiedad y concesiones](propiedad-y-concesiones.md)) |
+| Artesanos | Venta en el mercado, pedidos de fabricación con comisión, puesto o local propio (ver [Propiedad y concesiones](propiedad-y-concesiones.md)). **En el juego desde la 0.57:** los 📜 encargos de reparación (§0.12) |
 | Constructores | Paga por jornada de obra desde el presupuesto en custodia, más el bono de inauguración |
 | Médicos | Consultas, cirugías y tratamientos con pago en custodia; sueldo como médico de gremio |
 | Agricultores, ganaderos, cazadores | Venta de cosechas y carne, **pedidos semanales de la ciudad** para cubrir sus necesidades |
@@ -609,3 +609,25 @@ La reforma de recetas (§0.8) llega a **todos los oficios con recetas**: los 6 d
 - **Datos y código:** `content/balance.yaml` → `recipe_tiers` (`professions`, `refine`, `consumables`, `book_gifts`); `tools/recipe_tiers.py` (escribe el bloque generado de `content/professions.yaml` e `items.yaml` y los nombres de `content/locales/es_tramos.yaml` y `en_tramos.yaml`, con lo que hace cada cosa en `resources.use`); `engine/service/game.py` (`_station_view` con `rlist.tier`, `_refill_belt` y `_belt_members`, `_grant_book_gifts`); `engine/hero/hero.py` (`book_gifts`). Pruebas: `tests/test_tramos_refinado_alquimia_medicina_cocina.py`.
 
 **De dónde sale:** *World of Warcraft* (la minería y la herrería por niveles de lingote; las pociones y los vendajes de Primeros Auxilios que curan más en cada nivel; la cocina con un plato por tramo) y *Albion Online* (el refinado por tier con más material en cada uno).
+
+### 0.12 🔧 Reparar el equipo y los 📜 encargos de reparación (D-139 y D-140, desde la 0.57; cómo se aplicó: D-333)
+
+El equipo se gasta en cada pelea ([Equipamiento](../03-personaje/equipamiento.md) §4.1) y lo reparan **los oficios que lo fabrican**: es el trabajo que el dueño pidió para los artesanos (D-139).
+
+| Oficio | Repara | Gasta por reparación |
+|---|---|---|
+| 🔨 Herrería | espadas, dagas y placas | 🔩 lingote |
+| 🪑 Carpintería | arcos y bastones | 🟫 tablón |
+| 🦺 Peletería | cuero y malla (la malla ya no se fabrica, D-306, pero se repara) | 🟤 cuero |
+| 🪡 Sastrería | tela | 🧣 tela |
+| 💍 Joyería | joyas | 🔩 lingote |
+
+- **Cuánto pide:** rango desde el nivel de la pieza − 10 (`durability.rank_margin`; la pieza de nivel 3 la repara un rango 1, la de nivel 50 un rango 40, la de nivel 100 un rango 90), estar en una estación de ese oficio (cualquier 🔥 fogata o el edificio de tu campamento), 1 + nivel ÷ 20 del refinado (`material_step`: 1 hasta el nivel 19, 6 en el 100) y ⚡1.
+- **Qué da:** experiencia de oficio 6 × (1 + nivel ÷ 100) (de 6 a 12: 6 por ⚡, como toda receta) y experiencia de héroe como 1 ⚡ de fabricar. Respeta el tope del 🎖️ título (D-306.1).
+- **Tu propia pieza:** si tienes el oficio, la reparas tú (🔨 Reparar yo) y solo gastas el refinado y la energía.
+- **El herrero de la 🔥 fogata:** quien no tiene el oficio (o no quiere esperar) paga 3 × lo que valen esos materiales (`npc_mult`; la espada de nivel 3, 39 🥉; la pieza de nivel 100 en placas, 234 🥉). Siempre cuesta más que un artesano y esas monedas se queman ([Economía](economia.md) §5).
+- **📜 Encargos de reparación (D-140: todo servicio entre jugadores se paga aparte):** el dueño de una pieza puesta aparta 2 × el valor de los materiales (`order_mult`) y la deja en 🔧 Reparar → 📜 Encargos. Cualquier artesano con el oficio y el rango la ve con ✅ y la toma con /ro1 desde una estación: pone el refinado y la ⚡, cobra al momento el precio menos el impuesto del mercado (5 %, se quema) y gana la experiencia; la pieza del dueño queda reparada sin moverse (como el transportista del 🏛️ Mercado) y le llega un aviso. Uno por pieza; dura 7 días (`order_days`); si se cancela, vence o ya no hace falta (la pieza ya no está puesta o está llena), las monedas vuelven. En la pantalla de cada oficio que repara sale cuántos encargos puedes hacer.
+- **Ejemplo:** la espada de nivel 3 de un jugador sin Herrería: el herrero cobra 39 🥉; un encargo, 26 🥉; el herrero jugador gasta 1 🔩 lingote (13 🥉) y ⚡1, cobra 25 🥉 (1 de impuesto) y gana 6 de experiencia de Herrería.
+- **Datos y código:** `content/balance.yaml` → `durability`; `engine/hero/durability.py` (las cuentas); `engine/service/repair.py` (las pantallas y los encargos); textos en `content/locales/es_desgaste.yaml` y `en_desgaste.yaml`; ❓ /d63. Preguntas: E-272 (los encargos y el herrero), E-273 (qué deja la pieza rota) y E-274 (la obra maestra).
+
+**De dónde sale:** *Albion Online* (el equipo se gasta y se repara en la estación de su oficio; los jugadores cobran por usar su estación), *World of Warcraft* (los pedidos de fabricación con comisión, desde *Dragonflight*) y *Star Wars Galaxies* (el artesano vive de mantener el equipo de los demás).
