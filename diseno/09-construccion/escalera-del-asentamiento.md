@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325)**; la escalera de etapas (§2 a §7) todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327)**; las escuadras, las etapas 7 a 10, las oleadas crecientes del castillo y la muralla por anillos todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -44,10 +44,10 @@ El dueño pidió (20-oct): "ponme en el botón de mejorar dos opciones: una, sig
   - 📦 **Recursos:** 🪵 30, 🪨 20 y 🌿 10 por el nivel actual, con lo aportado (por ejemplo "🪵 Madera 12/30"); desde el nivel 6, 🪎 cofres (D-92: 1, 2 y 3; antes los pedía agrandar).
   - 🏰 **Para castillo (8 → 9):** el gremio listo (D-97), las 15 mejoras construidas (D-101) y la 🌙 Noche de prueba ganada (D-99, con su botón cuando es lo único que falta).
   - 🌾 Con la despensa vacía, una línea más: el campamento no sube (D-93).
-  - Cualquier miembro aporta con **🤲 Aportar** (lo que hay en el 💰 fondo del campamento va primero; nunca toma de más; da experiencia, mérito y 🏗️ Construcción como las obras). Si el último aporte completa la lista, el campamento **sube en ese momento**; si lo último fue terminar una obra, cualquier miembro toca **⏫ Subir a nivel N**. Al subir se avisa a todos y caben 2 miembros más. En castillo todavía no hay otro nivel.
+  - Cualquier miembro aporta con **🤲 Aportar** (lo que hay en el 💰 fondo del campamento va primero; nunca toma de más; da experiencia, mérito y 🏗️ Construcción como las obras). Si el último aporte completa la lista, el campamento **sube en ese momento**; si lo último fue terminar una obra, cualquier miembro toca **⏫ Subir a nivel N**. Al subir se avisa a todos y caben 2 miembros más (desde la 0.51, el cupo es el de la etapa: §0.4). En castillo todavía no hay otro nivel.
 - **🗺️ Agrandar territorio:** las zonas usadas de su tope, el costo (de tu mochila: lo de antes, 🪵15 🪨10 🌿5, por las zonas que ya tiene, sin cofres), un **minimapa de 5 × 5** centrado en el campamento (🏕️ el centro, 🟩 lo tuyo, 1️⃣ 2️⃣ las zonas de esta página, 🔸 otras libres, ⬛ de otro) y una línea por zona libre con su **dirección** (⬆️ Norte, ↗️ Noreste… el norte suma a la y) y los recursos que conoces. **La eligen el fundador o un 🤝 asistente**; los demás ven todo. Sumar una zona no sube el nivel.
 - **Tope de zonas por etapa** (la tabla de E-218, confirmada): campamento **3** · aldea **5** · pueblo **9** · ciudad **15** · castillo **25**. Al tope: "sube de nivel para agrandar más". Quien ya tenía más, las conserva.
-- **🤝 Asistentes:** el ayudante de D-289 se llama asistente en los textos (1 cada 5 miembros, como antes). Activa obras, elige hacia dónde crece el territorio, invita y acepta solicitudes. En 🛡️ Gremio → 👥 Miembros el fundador ve cuántos tiene y cómo nombrar uno (tocar el código /m2 de un miembro → 🤝 Hacer asistente).
+- **🤝 Asistentes:** el ayudante de D-289 se llama asistente en los textos (1 cada 5 miembros, como antes). Activa obras, elige hacia dónde crece el territorio, invita y acepta solicitudes. En 🛡️ Gremio → 👥 Miembros el fundador ve cuántos tiene y cómo nombrar uno (tocar el código /m2 de un miembro → 🤝 Hacer asistente). Desde la 0.51 son los oficiales de D-253.4 (§0.4).
 - **Todo visible para todos:** 🔨 Mejoras nombra a cada miembro las obras de su nivel que siguen sin activar, muestra las activas con su barra y las 🏗️ en obra con su tiempo, y dice "⏫ Nivel N: x de y listos". La lista de ⏫ la ve cualquier miembro.
 - **Dónde está:** `engine/service/game.py` (`_improve_view`, `_lvlup_rows`, `_lvlup_view`, `_lvlup_give`, `_lvlup_go`, `_level_up`, `_grow_view`, `_grow_camp`, `_territory_map`), `engine/service/gremio.py` (`_helpers_founder_line`); los números en `content/balance.yaml` (`camps.level_up`, `level_up_cost_per_level`, `zones_by_stage`, `territory_map_radius`, `grow_cost_per_level`, `chests_*`); los textos en `content/locales/es_nivel.yaml` y `en_nivel.yaml`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md).
 
@@ -64,6 +64,43 @@ El dueño pidió (21-oct): "diseña para que los jugadores del gremio puedan pri
 
 **De dónde sale:** el banco de gremio de *World of Warcraft* (pestañas con permisos y un tope de retiros por día para cada rango, con su registro) y el almacén común de *Chat Wars*, donde el gremio junta para construir y los artesanos toman lo que sobra.
 
+## 0.4 La escalera en el juego, 1.ª parte (0.51, D-253; cómo se aplicó: D-327)
+
+La prioridad de lo grande es el asentamiento por etapas y el castillo (D-310). La 0.51 trae lo de D-253 que no necesita escuadras ni etapas nuevas; lo que decidió Claude está en D-327 (provisional) y se le pregunta al dueño (E-253 a E-256).
+
+- **👥 Un solo cupo por etapa (D-253.1, Forma A).** Se acabó el doble cupo (el del campamento, 2 + 2 por nivel, y el del gremio, 4 a 30, donde ganaba el mayor). Cómo se repartió la tabla del §2 en los niveles de hoy:
+
+| Etapa de la escalera | En el juego | Cupo |
+|---|---|---|
+| 1 · Casa | el gremio antes del campamento (D-269) | 5 |
+| 2 · Campamento | niveles 1 y 2 | 10 |
+| 3 · Aldea | niveles 3 y 4 | 15 |
+| 4 · Pueblo | niveles 5 y 6 | 25 |
+| 5 · Ciudad | niveles 7 y 8 | 40 |
+| 6 · Castillo | nivel 9 | 50 |
+
+  - El nivel del gremio (D-97) **ya no da lugares**; sigue subiendo y el castillo todavía pide nivel 5.
+  - Las 🛖 Cabañas (+2) y las 🛏️ Literas (+1) **suman encima**: quien las construyó no pierde su efecto.
+  - **Nadie pierde lugar (D-64):** la primera vez que el juego ve un campamento de antes, guarda su cupo viejo como piso (`cap_floor`); por ejemplo, una aldea con gremio de nivel 6 tenía 20 y sigue con 20 hasta que la etapa da más. Si un campamento tiene más miembros que su cupo, nadie sale por eso.
+  - **Cuando el cupo sube** (al pasar de etapa, y el día del parche en los campamentos que ganaron lugar), quien espera lugar en el gremio entra solo, en orden de llegada (D-323).
+  - ⏫ Siguiente nivel dice "Al subir: 👥 caben 15 (hoy 10)…" o, si el nivel siguiente es de la misma etapa, que el cupo crece en la etapa siguiente.
+- **🤝 Los oficiales son los asistentes (D-253.4).** Desde la 0.39 los 🤝 asistentes (D-289, D-304) aceptan o rechazan a quien pide entrar, invitan con /inv_, activan obras y eligen hacia dónde crece el territorio. Se tomaron como los oficiales: una sola lista y un solo botón (🛡️ Gremio → 👥 Miembros → el código de un miembro → 🤝 Hacer asistente), con el tope que eligió el dueño, **1 cada 5 miembros** (D-289), mientras no haya escuadras (D-253.4 hablaba de 1 cada 2 a 4 escuadras). Antes del campamento, el líder nombra ⭐ oficiales como siempre, y al fundar pasan a asistentes.
+- **💤 Quien deja de jugar libera su lugar (D-253.3).**
+  - A los **25 días** sin jugar le llega "en 5 días liberas tu lugar en …", con un botón; tocar cualquier botón lo deja adentro y la cuenta vuelve a empezar.
+  - A los **30 días** (y siempre 5 días o más después del aviso) sale del gremio y del campamento y su lugar queda libre: entra quien espera, y al fundador y a sus asistentes les llega quién salió.
+  - **Nunca el fundador.** Conserva su héroe, su mochila, su equipo, sus oficios y su progreso; lo que dio a las obras y al fondo queda en el campamento; puede volver a pedir entrar.
+  - "Jugar" es tocar un botón o escribir un comando (`Hero.seen_at`, la misma marca de la despensa y de 👥). **La cuenta empieza con el parche:** vale lo más nuevo entre esa marca y la primera vez que el juego vio al miembro en ese campamento, así nadie sale por días de antes (nadie puede salir antes del 20-nov) ni quien no tenía marca.
+  - Solo los miembros del campamento: en el gremio sin campamento el líder ya puede 🚫 sacar a alguien, y quien espera lugar (D-294) no ocupa lugar.
+  - 👥 Miembros dice la regla en una línea y marca con 💤 a quien ya fue avisado. Corre desde `tick()`, cada 60 min.
+  - **Cambió la regla 10 del servicio** (`game.py`): "el cupo nunca saca a nadie; solo sale quien no juega 30 días, nunca el fundador".
+- **🏰 Castillo (D-253.2, D-122).** El paso 8 → 9 pide, además de lo de siempre (las obras, los materiales, los cofres, el gremio de nivel 5 y las 15 mejoras):
+  - **"👥 Activos esta semana: N de 40"**: miembros que jugaron en los últimos 7 días; reemplaza a "10 miembros o más". La ciudad tiene cupo para 40 (más Cabañas y Literas): hacen falta casi todos activos la misma semana.
+  - la 🌙 Noche de prueba con **10 vencedores distintos** como mínimo (antes 2; cada miembro pelea una vez).
+  - **Queda para después:** las 5 oleadas crecientes de D-122 ("si pierde más de las que gana, no aprueba"), que son una pieza grande (una serie de oleadas que crecen, se cuentan y se aprueban; P-79).
+- **Lo que no entra en esta parte:** las escuadras de 5 con su jefe (Forma B, §3), las etapas 7 a 10 con sus mejoras nuevas y la muralla por anillos (§5.2).
+- **Dónde está:** `engine/service/ladder.py` (`LadderMixin`: `_base_cap_at`, `_cap_floor_sweep`, `_idle_tick`, `_idle_camp`, `_idle_release`, `_castle_active_row`), `engine/service/game.py` (`_members_cap`, `_members_cap_at`, `tick`, `_create_camp`, `_castle_needs`, `_lvlup_view`, `_level_up`), `engine/service/gremio.py` (`_camp_members_view`, `_camp_member_line`); los números en `content/balance.yaml` → `camps.members_by_stage`, `ladder` (`idle_warn_days`, `idle_release_days`, `idle_scan_minutes`, `castle_active`, `active_days`) y `raids.trial.min_wins`; lo guardado en `camp/<x:y>` (`cap_floor`, `idle_watch`, `idle_warned`) y `meta/idle`; los textos en `content/locales/es_escalera.yaml` y `en_escalera.yaml`; ❓ /d37 y /d42; las pruebas en `tests/test_escalera_cupo_oficiales.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
+- **Preguntas para el dueño:** E-253 a E-256 (P-264 a P-267).
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |
@@ -77,6 +114,7 @@ El dueño pidió (21-oct): "diseña para que los jugadores del gremio puedan pri
 | **D-254** | La **muralla** crece con el asentamiento, y la tierra que encierra **cosecha sola** una parte de sus recursos. |
 | **D-309** | **Los números de la cosecha (confirmados, 20-oct):** el 20 % de lo que vuelve a crecer, al almacén del asentamiento, solo con jugadores activos esa semana y como mucho 7 días; reemplaza el +50 % de recolectar en tu territorio; las zonas por etapa son las de la tabla del §2 (en el juego como tope del territorio desde la 0.41). |
 | **D-325** | *(Provisional, 0.49.)* Cómo quedó la cosecha en el juego (§5.5): con la 🧱 Muralla todo el territorio cosecha; 24 por recurso y día como base (sin el ×3 de la 0.42); llega sola al 💰 fondo una vez por semana, con un aviso. |
+| **D-327** | *(Provisional, 0.51.)* Cómo quedó la 1.ª parte de la escalera (§0.4): el cupo por etapa (10, 15, 25, 40, 50; nadie pierde lugar), los asistentes son los oficiales (1 cada 5), quien no juega 30 días sale (aviso a los 25, nunca el fundador, desde el parche) y el castillo pide 40 activos de la semana y 10 vencedores en la Noche de prueba. |
 | **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
@@ -119,7 +157,8 @@ Un solo número dice cuánta gente cabe en cada etapa: se acaba el doble cupo de
 - **A los 30 días sin jugar**, el miembro deja de ocupar lugar: sale del gremio y su lugar queda libre (D-253.3).
 - **Puede volver a pedir entrar,** y lo acepta el líder o un oficial.
 - **Propuesta de Claude:** avisarle a los 25 días ("en 5 días liberas tu lugar en …"), y que lo que aportó a las obras quede en el asentamiento.
-- **Cambia la regla 10 del servicio**, que hoy dice "el gremio nunca saca a nadie".
+- **Cambia la regla 10 del servicio**, que decía "el gremio nunca saca a nadie".
+- **En el juego desde la 0.51** (§0.4, D-327), con la propuesta de Claude, nunca para el fundador y contando desde el parche.
 
 ## 5. La muralla y la tierra que cosecha sola (D-254)
 
@@ -197,10 +236,10 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 
 | Hoy (0.33) | Con la escalera |
 |---|---|
-| Cupo del campamento 2 + 2 por nivel; el del gremio, 4 a 30; gana el mayor (`_members_cap`) | Un solo cupo por etapa: 5, 10, 15, 25, 40, 50, 80, 120, 160 y 200 |
-| Solo el fundador acepta (`_answer_join`, D-84) | El líder y los oficiales |
-| Nadie sale si no quiere (regla 10) | Sale a los 30 días sin jugar |
-| Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | 40 activos, la Noche con 10 vencedores distintos y 5 oleadas crecientes (D-122) |
+| ~~Cupo del campamento 2 + 2 por nivel; el del gremio, 4 a 30; gana el mayor (`_members_cap`)~~ | **Hecho en la 0.51 (D-327) hasta castillo:** 5 (el gremio antes del campamento), 10, 15, 25, 40 y 50; nadie pierde lugar (§0.4). Faltan 80, 120, 160 y 200 (etapas 7 a 10) |
+| ~~Solo el fundador acepta (`_answer_join`, D-84)~~ | **Hecho:** el fundador y sus 🤝 asistentes desde la 0.39 (D-289); desde la 0.51 los asistentes son los oficiales (§0.4) |
+| ~~Nadie sale si no quiere (regla 10)~~ | **Hecho en la 0.51:** sale a los 30 días sin jugar, con aviso a los 25, nunca el fundador (§0.4) |
+| Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | **En parte en la 0.51:** 40 activos de la semana y la Noche con 10 vencedores distintos (§0.4). Faltan las 5 oleadas crecientes (D-122, P-79) |
 | Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
 | ~~+50 % al recolectar en tu territorio (`gather.own_land_bonus`)~~ | **Hecho en la 0.49 (D-309, D-325):** con la 🧱 Muralla, todo el territorio cosecha solo para el 💰 fondo y el +50 % ya no está (§5.5). Falta la muralla por anillos con su costo por zona |
 | No hay grupos | Grupo de 5 que nace al construir; escuadras dentro del gremio |
@@ -233,6 +272,8 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **P-258 (E-247):** qué zonas cierra la muralla. Recomendado: todo el territorio con la muralla, hasta que llegue la muralla por anillos.
 - **P-259 (E-248):** si la cosecha cuenta el ×3 de la 0.42. Recomendado: no por ahora (24 por recurso y día) y medirlo en la beta.
 - **P-260 (E-249):** qué pasa antes de la muralla. Recomendado: dejarlo así; la muralla es la meta del pueblo.
+- **P-264 a P-267 (E-253 a E-256):** la 1.ª parte de la escalera (0.51, D-327): el cupo de cada etapa, el asistente como oficial, quien deja de jugar y los requisitos del castillo. Recomendado: dejarlo así y medirlo en la beta; un solo cargo con 1 cada 5; quitar el gremio de nivel 5 cuando lleguen las oleadas crecientes.
+- **P-81 (E-58):** ✅ Decidido (D-253): esta escalera.
 - **P-229 (E-218):** ✅ Decidido (D-304): la tabla del §2 (en el juego, desde la 0.41, como tope de zonas del territorio hasta castillo).
 - **Siguen de antes:**
   - P-224, la Academia o la Biblioteca;

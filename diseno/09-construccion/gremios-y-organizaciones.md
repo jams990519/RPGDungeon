@@ -6,7 +6,7 @@
 
 **Qué pediste.** Sistemas de construcción para gremios u organizaciones más grandes, y que todo tenga que ver una cosa con la otra.
 
-**Lo que ya está en el juego.** Cada campamento de jugadores puede tener **un gremio** (capa simple, D-97, provisional): lo crea el fundador, sus miembros son los del campamento, sube de nivel con lo que hacen juntos y su nivel da el cupo de miembros. Para que el campamento llegue a castillo hace falta un gremio de nivel 5 con 10 miembros. Ver [Gremios y vida social](../08-social/gremios-y-social.md) §0. Todo lo de abajo (salones, talleres, fortalezas, obras de servidor) es propuesta y se montaría sobre ese gremio y su campamento.
+**Lo que ya está en el juego.** Cada campamento de jugadores puede tener **un gremio** (capa simple, D-97, provisional): lo crea el fundador, sus miembros son los del campamento, sube de nivel con lo que hacen juntos y su nivel daba el cupo de miembros (desde la 0.51, D-327, el cupo es el de la etapa del campamento: 10, 15, 25, 40 y 50). Para que el campamento llegue a castillo hace falta un gremio de nivel 5 y, desde la 0.51, 40 miembros activos de la semana ([Escalera del asentamiento](escalera-del-asentamiento.md) §0.4). Ver [Gremios y vida social](../08-social/gremios-y-social.md) §0. Todo lo de abajo (salones, talleres, fortalezas, obras de servidor) es propuesta y se montaría sobre ese gremio y su campamento.
 
 ---
 
