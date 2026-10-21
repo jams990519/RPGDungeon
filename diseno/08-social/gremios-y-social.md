@@ -2,6 +2,8 @@
 
 > **Módulo** [08 · Social](README.md) · **Depende de:** [Telegram](../01-plataforma/telegram.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2 (los campamentos) · **Alimenta a:** [Mazmorras y bandas](../06-contenido/mazmorras-y-bandas.md), [PvP](../06-contenido/pvp.md), [Mente](../05-salud/mente.md), [Fundación y cisma](../02-mundo/fundacion-y-cisma.md) §2.4 (el castillo) · **Estado:** §0 está en el juego (el gremio del campamento, capa simple, D-97 provisional); lo demás es propuesta
 
+> **0.46.1 (D-323, orden del dueño):** quien espera lugar en el gremio de un campamento lleno entra **solo**, en orden de llegada, en cuanto hay lugar (al subir de nivel, con 🛖 Cabañas o 🛏️ Literas, o si alguien sale). Antes (D-294) lo unía a mano el fundador o un asistente.
+
 **De dónde sale.** Los gremios de WoW (rangos, banco, calendario, niveles de gremio que existieron en *Cataclysm*), las alianzas de Albion, los gremios de Chat Wars (almacén común, órdenes fijadas en el chat del castillo), los grupos de SAO (los "clearers", la orden de caballeros, el informante, la herrera) y lo que TowerWars ya probó en Telegram: almacén de gremio, vales por reenvío y alianzas.
 
 ---

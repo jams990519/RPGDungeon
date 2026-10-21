@@ -930,3 +930,14 @@ v0_46:
     - "📝 Short of resources? Ask for them in 📝 Ask for resources (/b07, the same code as in 📦 Resources): you set the coins aside and whoever has them sells them to you. And if you have them, sell them in 📥 Buy orders."
     - "🐴 A transporter brings what you buy: it reaches 📦 Deliveries in 30 minutes and you collect it at any campfire or at your camp. If your backpack is full, the rest waits: nothing is lost."
     - "💸 Whoever gets the coins pays a 5% tax. You can have up to 10 orders at a time; they last 7 days and ❌ cancelling gives everything back. ✒️ Masterworks are sold with their maker's signature."
+
+v0_46_1:
+  version: "0.46.1"
+  title: "⏳ Lost Realms 0.46.1: quien espera lugar entra solo al campamento"
+  title_en: "⏳ Lost Realms 0.46.1: whoever waits for room joins the camp by themselves"
+  notes:
+    - "⏳ Si esperabas lugar en el gremio de un campamento lleno, ahora entras solo en cuanto hay lugar (cuando el campamento sube de nivel, con 🛖 Cabañas o 🛏️ Literas, o si alguien sale), por orden de llegada. Te llega un aviso, y al fundador y a sus asistentes también."
+    - "✅ Si aceptas esperar y ya hay lugar, entras en el momento. Quien ya esperaba desde antes también entra, si su campamento tiene lugar."
+  notes_en:
+    - "⏳ If you were waiting for room in the guild of a full camp, you now join by yourself as soon as there is room (when the camp goes up a level, with 🛖 Cabins or 🛏️ Bunks, or if someone leaves), first come first in. You get a notice, and so do the founder and the assistants."
+    - "✅ If you accept to wait and there is already room, you join at once. Whoever was already waiting also joins, if their camp has room."
