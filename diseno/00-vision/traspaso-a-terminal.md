@@ -179,6 +179,7 @@ Así se hizo cada versión de la 0.6 a la 0.32. Se publica solo lo probado (D-60
 14.1. **0.41 (D-304):** ⬆️ Mejorar campamento con ⏫ Siguiente nivel (la lista de obras y materiales que se va completando) y 🗺️ Agrandar territorio (minimapa, dirección y tope de zonas por etapa, E-218); el ayudante pasa a llamarse 🤝 asistente y elige la dirección con el fundador; 🔨 Mejoras muestra todo a todos. Las obras de cada nivel y los materiales los eligió Claude (provisional).
 14.1.1. **0.41.1 (D-313):** ⬆️ Mejorar dice exactamente qué falta (territorio con palabras, la lista entera, "faltan N" y cuándo termina cada obra), 💰 Depositar también llena el nivel y 📜 Qué pide cada nivel.
 14.1.2. **0.41.1, madera (D-303; la programó un agente como 0.40.1 y salió junto con la 0.41.1):** 🪵 madera en todas las zonas (D-303): en el bosque la más rica, primera y conocida al 1 %; en el resto, pobre (hasta 0,5); el 🔎 buscador pone primero las zonas cercanas y ricas. De la madera sigue abierto el botón 🪓 Talar (E-227).
+14.1.3. **0.42 (D-305, D-308; cómo se aplicó: D-314, provisional):** 🪓 Talar en 🧭 Explorar (un modo de recolectar que junta solo madera; Recolectar pasó a 🧺 y 🧭 Explorar tiene 5 botones), los 6 recursos de base vuelven 3 por hora (`stock.regen_mult` ×3) y 🩹 Descansa primero: con la vida bajo el % de 🩹 Retirarse no empieza un lote de explorar, recolectar ni talar. Preguntas nuevas: E-230 (confirmar cómo quedó) y E-231 (si la riqueza de la madera cambia lo que da talar).
 14.2. **20-oct: el dueño respondió 34 preguntas** (D-305 a D-312). Lo que falta programar, en este orden (D-306.6): **0.42** 🪓 Talar, los 6 recursos de base vuelven 3 por hora (D-305) y 🩹 Retirarse que no deja empezar un lote con poca vida (D-308); **después la reforma de los oficios** (D-306: tramos de recetas cada 5 y colores, títulos que se compran al Entrenador, precios por tipo y libros, los cuatro arreglos, sin tope de oficios; [Simulación de los oficios](../07-economia/simulacion-oficios.md)); después lo de D-311 (🔥 Fogata en todo el juego, el 🧭 Explorador en 🔭 Reconocer, tu territorio gris hasta el 50 %, el 🗺️ pergamino de mapa, los nodos en 📒 Lugares) y la muralla (D-309); el modo híbrido con las 3 habilidades (D-312) va con la reforma de estadísticas. La prioridad de lo grande es el asentamiento y el castillo (D-310).
 El mundo se reinicia al abrir la beta, no antes (D-273).
 
@@ -187,7 +188,8 @@ El mundo se reinicia al abrir la beta, no antes (D-273).
 | Pregunta | De qué trata | Recomendación |
 |---|---|---|
 | E-187 en adelante | Estadísticas (puntos, afinidad, tope, armas), E-194 (descubrir zonas), E-173 a E-176 y el resto de la tanda 1 | Ver el [Sistema de preguntas](sistema-de-preguntas.md) |
-| Tandas 1 a 6 | El resto: 73 preguntas en la tanda 1 | — |
+| E-230, E-231 | 🪓 Talar de la 0.42: confirmar 🧺 Recolectar y los 5 botones; si la riqueza de la madera cambia lo que da talar | Dejarlo así hasta medirlo |
+| Tandas 1 a 6 | El resto: 75 preguntas en la tanda 1 | — |
 
 **Otras cosas pendientes con el dueño**
 - **Notas del "mundo abierto"** que trajo de otro chat el 8-oct: modo campamento, nodos por guerra de grupos, territorios con impuesto y cuadrantes, y 7 preguntas. Se le pidió el texto completo; todavía no se registraron como decisiones.

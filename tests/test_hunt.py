@@ -2,7 +2,7 @@
 
 [ES] Pruebas de la cacería: 🧭 Explorar → 🏹 Cazar abre la pantalla de cacería y 🏹 Buscar presa empieza enseguida una pelea
 contra un enemigo común de la zona por 2 de energía (D-108), sin exploración ni recursos; al ganar sale 🏹 Otra presa. No se caza
-malherido, ocupado, sin energía, en el Claro ni en la guarida. 📒 Lugares se mudó a 🗺️ Mapa (🧭 Explorar sigue en 4 botones).
+malherido, ocupado, sin energía, en el Claro ni en la guarida. 📒 Lugares se mudó a 🗺️ Mapa (🧭 Explorar sigue en 4 botones; desde la 0.42, 5 con 🪓 Talar, D-314).
 La 🏹 Partida de caza de un campamento avisa solo a los miembros presentes en la misma zona, da bono de grupo y cuenta las
 presas; al terminar la ventana (reloj perezoso) llega un informe y, si juntaron la meta, un premio chico. También: ningún
 texto falta y ninguna pantalla pasa de 4 botones (6 en combate).
@@ -14,6 +14,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore
 from engine.hero import hero_stats
 from engine.service import GameService
+from engine.service.game import button_cap
 from engine.social import hunting as hunt_rules
 from test_camps import found_at, place
 
@@ -95,10 +96,10 @@ def test_pure_rules():
     assert not hunt_rules.reward_earned({"members": {"a": 9}, "prey": 9}, 3, 2)                      # a party of one
 
 
-def test_explore_menu_keeps_four_buttons_and_places_moved_to_the_map(service):
+def test_explore_menu_buttons_and_places_moved_to_the_map(service):
     hunter(service)
     menu = service.act("test:1", "explore_menu")
-    assert ids(menu) == ["explore", "gather", "hunt", "map"]
+    assert ids(menu) == ["explore", "gather", "chop", "hunt", "map"]      # D-305/D-314 (0.42): + 🪓 Talar where there is wood
     assert "🏹 Cazar" in [a.label for a in menu.actions]
     mapv = service.act("test:1", "map")
     assert ids(mapv) == ["places", "explore_menu"]                          # D-223: 📒 Lugares and ↩️ Volver, nothing else
@@ -166,8 +167,9 @@ def test_hunting_is_blocked_downed_busy_without_energy_in_the_claro_and_in_the_l
     view = service.act("test:1", "prey")
     assert view.kind == "hunt" and "malherido" in view.notice
     assert service.store.get("combat", "test:1") is None and service._load("test:1").energy == energy
-    # Busy exploring: the usual "busy" answer.
-    place(service, "test:1", x, y, downed=False)
+    # Busy exploring: the usual "busy" answer (healed first: D-308 does not start a batch under the 🩹 Retirarse %).
+    hero = service._load("test:1")
+    place(service, "test:1", x, y, downed=False, hp=hero_stats(service._kit(hero), hero.level)["max_hp"])
     service.act("test:1", "do:explore:5")
     view = service.act("test:1", "prey")
     assert view.kind == "activity" and view.notice == service.texts.t("activity.busy")
@@ -350,7 +352,7 @@ def test_hunt_screens_have_at_most_four_buttons_and_no_missing_texts(content):
     while queue:
         path = queue.popleft()
         service, view = _build(content, path)
-        assert len(view.actions) <= (6 if view.kind == "combat" else 4), (path, view.kind)
+        assert len(view.actions) <= button_cap(view.kind), (path, view.kind)     # 6 in combat; 0.42: 🧭 Explorar 5 (D-314)
         assert not service.texts.missing, (path, service.texts.missing)
         for _, pushed in service.tick():
             assert len(pushed.actions) <= 4 and all(len(a.id.encode()) <= 64 for a in pushed.actions)
@@ -359,7 +361,7 @@ def test_hunt_screens_have_at_most_four_buttons_and_no_missing_texts(content):
             continue
         seen.add(key)
         for action in view.actions:
-            if len(path) < 4 and not action.id.startswith(("go:", "goto:", "explore", "gather", "sellg:", "ab:", "flee", "dodge", "use:")):
+            if len(path) < 4 and not action.id.startswith(("go:", "goto:", "explore", "gather", "chop", "sellg:", "ab:", "flee", "dodge", "use:")):
                 queue.append(path + [action.id])
     kinds = {k for k, _ in seen}
     assert {"hunt", "combat", "explore_menu", "map"} <= kinds

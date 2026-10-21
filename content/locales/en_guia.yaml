@@ -71,10 +71,12 @@ guide:
         • While exploring you find items and coins... and sometimes a fight.'
     gather:
       name: Gather
-      task: 'gather resources: 🧭 Explore → 🪓 Gather.'
-      intro: '🪓 Gather
+      task: 'gather resources: 🧭 Explore → 🧺 Gather.'
+      intro: '🧺 Gather
 
         • You collect the resources you''ve already discovered in the zone: wood, stone, fiber, herbs...
+
+        • 🪓 Chop wood, next to it, collects only 🪵 wood.
 
         • Each run takes {gather_time} and costs {per_gather} ⚡. It goes into your 🎒 backpack (space: {cap}).
 

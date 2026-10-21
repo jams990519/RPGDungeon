@@ -27,7 +27,7 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 
 | Oficio | Qué hace | Beneficio (al rango 100) | 🎓 Especializaciones | En WoW |
 |---|---|---|---|---|
-| 🪓 **Leñador** | Tala 🪵 madera, resina y corteza. | +10 de espacio en la mochila | Maderas nobles · Leña y carbón · Tala rápida | Sin equivalente directo |
+| 🪓 **Leñador** | Tala 🪵 madera, resina y corteza. Desde la 0.42 (D-305), el botón 🪓 Talar de 🧭 Explorar junta solo madera: cada unidad le suma 1 de experiencia, unas 4 veces más rápido que recolectar en el bosque. | +10 de espacio en la mochila | Maderas nobles · Leña y carbón · Tala rápida | Sin equivalente directo |
 | ⛏️ **Minero** | Saca piedra, metal, arcilla, carbón, sal, cuarzo, arena, hielo, chatarra y obsidiana. Desde el rango 10, a veces 💠 gemas en bruto. | +5 % de vida | Metales · Gemas · Cantera | Minería |
 | 🌿 **Herbolario** | Recoge hierba curativa, fibra y las plantas de cada terreno. Desde el rango 10, a veces 🌸 flor de luna. | +20 % de vida que vuelve sola | Medicinales · Flores raras · Fibras | Herboristería |
 | 🔪 **Desollador** | Las bestias que vences sueltan 🍖 carne y 🦌 piel. | +4 % de ataque | Pieles finas · Carnicería · Trofeos | Desuello |

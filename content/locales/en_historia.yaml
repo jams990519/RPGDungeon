@@ -201,8 +201,8 @@ story:
     explore_claro: 🔎 Explore in the Clearing {n} {n|time|times} ({p}/{n})
     explore_outside: 🔎 Explore outside the Clearing {n} {n|time|times} ({p}/{n})
     explored: 🔎 Explore {zone} to {pct}% (you're at {now}%)
-    gather: 🪓 Gather {n} {n|item|items} ({p}/{n})
-    gather_item: 🪓 Gather {item} ({p}/{n})
+    gather: 🧺 Gather {n} {n|item|items} ({p}/{n})
+    gather_item: 🧺 Gather {item} ({p}/{n})
     win: ⚔️ Win {n} {n|fight|fights} ({p}/{n})
     win_biomes: ⚔️ Win {n} {n|fight|fights} in {biomes} ({p}/{n})
     hunt: 🏹 Hunt {n} {n|prey|prey} with 🏹 Hunt ({p}/{n})
@@ -350,7 +350,7 @@ story:
         🔎 Explore with 🧭 Explore → 🔎 Explore.'
       lena: 'Marta: “Nothing''s coming… for now. Bring me four logs of 🪵 wood: that''ll get us through the night.”
 
-        🪓 Wood is collected with 🧭 Explore → 🪓 Gather.'
+        🪓 Wood is collected with 🧭 Explore → 🪓 Chop wood (or 🧺 Gather).'
       done: Marta throws the wood on the fire and the flame rises, tall and still. “You're one of the Clearing now,” she says. “Nobody here asks where you come from. But everyone watches where you're going.”
     c1_m2:
       title: Everything Is Worth Something

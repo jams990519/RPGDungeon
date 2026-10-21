@@ -252,7 +252,7 @@ def test_every_button_in_the_lair_works(content):
             continue
         seen.add(key)
         for action in view.actions:
-            if len(path) < 4 and not action.id.startswith(("go:", "goto:", "explore", "gather", "sellg:")):
+            if len(path) < 4 and not action.id.startswith(("go:", "goto:", "explore", "gather", "chop", "sellg:")):
                 queue.append(path + [action.id])
     kinds = {k for k, _ in seen}
     assert {"explore_menu", "combat", "memento", "item"} <= kinds

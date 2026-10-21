@@ -40,7 +40,7 @@ guides:
   mago: {category: classes, class: mago}
   # ---- 🪵 Recursos
   find: {category: resources}       # [ES] 🔎 encontrar recursos: explorar por %, el buscador y el gremio
-  gather: {category: resources}     # [ES] 🪓 recolectar: vueltas, lotes, agotarse, nodos, mochila y territorio
+  gather: {category: resources}     # [ES] 🧺 recolectar y 🪓 talar (D-305, 0.42): vueltas, lotes, agotarse (los 6 de base ×3), nodos, mochila y territorio
   hunt: {category: resources}       # [ES] 🏹 caza y comida: presas, pescado, cocina, despensa y provisiones
   trades: {category: resources}     # [ES] ⚒️ oficios: aprender, refinar, fabricar, estaciones y especializaciones
   # ---- ⚙️ Cómo funciona

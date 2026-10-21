@@ -488,7 +488,7 @@ def test_every_story_screen_has_four_buttons_at_most_and_no_missing_text(content
             continue
         seen.add(key)
         for action in ids(view):        # D-192: stay on the story's screens (the hero and camp hubs have their own crawls)
-            if len(path) < 4 and not action.startswith(("go:", "explore", "gather", "inn", "do:", "bag", "talents", "health",
+            if len(path) < 4 and not action.startswith(("go:", "explore", "gather", "chop", "inn", "do:", "bag", "talents", "health",
                                                         "stats", "bar", "oficios", "claro")):
                 queue.append(path + [action])
     kinds = {k for k, _ in seen}

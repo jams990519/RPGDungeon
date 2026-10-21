@@ -890,7 +890,7 @@ class StoryMixin:
     # ------------------------------------------------------------------ 📖 Historia and 🎯 Misiones
 
     def _goal_line(self, hero: Hero, goal: dict[str, Any], progress: int) -> str:
-        """What a goal asks, in one line, with its progress ("🪓 Recolecta 🌿 Hierba curativa (2/4)")."""
+        """What a goal asks, in one line, with its progress ("🧺 Recolecta 🌿 Hierba curativa (2/4)")."""
         t = self.texts
         kind = goal.get("kind")
         n = story_rules.target(goal) if kind not in ("explore", "gather", "win", "craft", "sell", "feed", "build") else max(1, int(goal.get("n", 1)))

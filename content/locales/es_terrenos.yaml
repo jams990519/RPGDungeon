@@ -3,7 +3,7 @@
 # content/items.yaml; their recipes in content/professions.yaml (the ones with "variant").
 # [ES] Textos de los recursos propios de cada terreno (0.27, y la 🖤 obsidiana de la 0.28: nombre y "para qué sirve" en 📦 Recursos) y de los nodos de
 # recursos del mapa (el símbolo genérico ✨ del 🗺️ Mapa, sus líneas, el aviso al llegar, la línea de 📍 Zona, lo que dio en el
-# resumen de 🪓 Recolectar y la marca en ⬆️ Agrandar campamento). También prof.variant: el nombre de una receta que hace lo mismo
+# resumen de 🧺 Recolectar y la marca en ⬆️ Agrandar campamento). También prof.variant: el nombre de una receta que hace lo mismo
 # que otra con un recurso del terreno. Se junta con es.yaml y los demás es_*.yaml al cargar (engine/core/content.py: las
 # claves que ya existen, como item, resources o prof, se completan, no se pisan).
 # Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.12.2 (catálogo de cada terreno) y §1.16 (nodos de recursos)

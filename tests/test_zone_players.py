@@ -68,7 +68,7 @@ def test_busy_hero_stays_listed_with_the_chat_closed(service, clock):
     clock.advance(40 * MIN)
     service.tick()
     view = service.act("test:1", "home")
-    assert "• Bram · 🤺 Guerrero · nv 1 · 🪓 recolectando" in view.body
+    assert "• Bram · 🤺 Guerrero · nv 1 · 🧺 recolectando" in view.body          # 0.42: 🧺 (🪓 is 🪓 Talar now, D-314)
 
 
 def test_hero_who_left_is_not_listed_and_appears_where_he_arrived(service, clock):
@@ -121,7 +121,7 @@ def test_crossing_paths_while_exploring(service, clock):
     service.store.put("hero", "test:1", {**service.store.get("hero", "test:1"), "exploration": {}})
     service.act("test:1", "do:explore:5")
     summary = run_batch(service, clock, "test:1", 8)
-    line = "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 1), que andaba 🪓 recolectando."
+    line = "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 1), que andaba 🧺 recolectando."
     assert summary.count(line) == 1                         # once per batch, even with chance 1.0
 
 

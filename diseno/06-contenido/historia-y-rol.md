@@ -32,7 +32,7 @@ Lo que ya se juega de §1. La historia es **datos**: misiones, personajes, facci
 
 - **📖 Historia** es el 6.º botón del menú de abajo (D-46 deja hasta 6; ⚙️ Opciones sigue último) y también **/historia**. Muestra:
   - tu origen y el capítulo, con la misión en que vas (por ejemplo, "misión 2 de 7");
-  - **🎯 Ahora:** qué hacer en cada misión en curso y cuánto llevas ("🪓 Recolecta 🌿 Hierba curativa (2/4)"), o desde qué nivel empieza la siguiente;
+  - **🎯 Ahora:** qué hacer en cada misión en curso y cuánto llevas ("🧺 Recolecta 🌿 Hierba curativa (2/4)"), o desde qué nivel empieza la siguiente;
   - los encargos de hoy cumplidos y cuándo cambian;
   - tu rango y tus puntos con cada facción;
   - los atajos: /diario, /bio, /saludar, /brindar.

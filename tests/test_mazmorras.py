@@ -18,6 +18,7 @@ from conftest import make_hero
 from engine.core import FixedClock, MemoryStore, Rng
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
+from engine.service.game import button_cap
 from engine.world import dungeons as dungeon_rules
 from engine.world.mapgen import lejania
 from test_camps import place
@@ -241,7 +242,7 @@ def test_the_content_changes_with_the_day_and_is_the_same_for_everyone(content, 
 def test_the_small_dungeon_has_four_rooms_and_its_chest_once_a_day(service, clock):
     x, y = at_dungeon(service, "small", level=20)
     menu = service.act("test:1", "explore_menu")
-    assert ids(menu) == ["explore", "gather", "dungeon", "map"]                         # 🕳️ Entrar takes 🏹 Cazar's place
+    assert ids(menu) == ["explore", "gather", "chop", "dungeon", "map"]                 # 🕳️ Entrar takes 🏹 Cazar's place (0.42: + 🪓 Talar)
     screen = service.act("test:1", "dungeon")
     assert screen.kind == "dungeon" and ids(screen) == ["dgo", "hunt", "explore_menu"]
     info = service._dng_today(x, y)
@@ -490,9 +491,10 @@ def test_every_dungeon_screen_keeps_four_buttons_and_its_texts(content, kind):
     while queue and len(seen) < 40:
         path = queue.popleft()
         service, view = build(path)
-        limit = 6 if view.kind == "combat" else 4
+        limit = button_cap(view.kind)                   # 6 in combat, 4 elsewhere; 0.42: 🧭 Explorar 5 with 🪓 Talar (D-314)
         if view.layout:                                 # D-189: amount pickers: a row of small amounts, then one wide back
-            assert view.layout[-1] == 1 and sum(view.layout) == len(view.actions), (path, view.kind, ids(view))
+            assert view.layout[-1] == 1 or view.kind == "explore_menu", (path, view.kind, ids(view))   # D-314: [1, 2, 2]
+            assert sum(view.layout) == len(view.actions) <= max(limit, 8), (path, view.kind, ids(view))
         else:
             assert len(view.actions) <= limit, (path, view.kind, ids(view))
         assert not service.texts.missing, (path, service.texts.missing)
