@@ -488,6 +488,23 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
                              # [ES] (lo que la pieza te da de verdad: la mitad si no es de tu tipo, más su ✨ encantamiento). La defensa pesa doble: 1 punto de defensa
                              # [ES] quita daño en cada golpe. Es el mismo puntaje que ya usaba la comparación "⬆️/⬇️ Frente a lo que llevas" (engine/hero/gear.py gear_score)
 
+durability:                  # [ES] D-139 (confirmada, E-23: "el equipo se gasta, se repara y un día se rompe, con una duración generosa que dé trabajo a los artesanos") y D-333 (0.57, cómo se aplicó; provisional): la durabilidad de cada pieza de equipo (engine/hero/durability.py, engine/service/repair.py; equipamiento.md §4 y §11). Números de Claude con la recomendación de E-70 (P-93): unas 3 semanas de juego diario por reparación y se rompe tras 5 reparaciones (unos 4 meses). Cuentas en el registro de balance ("el equipo se gasta")
+  max: 100                   # [ES] la durabilidad de una pieza nueva (las de antes de la 0.57 no tienen registro: cuentan llenas, D-64)
+  wear: {win: 0.15, flee: 0.5, defeat: 1.5}   # [ES] lo que pierde CADA pieza puesta por pelea: ganada, dejada (huir) o perdida (caer). Un día de juego (20 peleas: 18 ganadas, 1 dejada, 1 perdida) = 4,7: 100 duran ~21 días
+  low_pct: 0.20              # [ES] el aviso "⚠️ gastada" sale una vez al bajar al 20 % de su máximo (y la pieza se marca ⚠️ en 🛡️ Equipo y en la ficha)
+  repair_loss: 4             # [ES] cada reparación le baja el máximo 4 (100 → 96 → 92 → 88 → 84 → 80) y la deja llena en el máximo nuevo
+  repairs: 5                 # [ES] reparaciones que aguanta (E-70); después de la última, la próxima vez que llega a 0 se rompe para siempre. La pantalla avisa antes de la última
+  masterwork_repairs: 8      # [ES] una ✒️ obra maestra aguanta 8 (dura más: E-274, provisional)
+  rank_margin: 10            # [ES] repara el oficio que hace ese tipo de pieza con rango ≥ nivel de la pieza − 10 (al menos 1): la pieza de nivel 3 la repara un rango 1; la de nivel 50, un rango 40
+  repair_by: {espada: herreria, daga: herreria, placas: herreria, arco: carpinteria, baston: carpinteria, cuero: peleteria, malla: peleteria, tela: sastreria, joya: joyeria}   # [ES] qué oficio repara cada tipo (el que lo fabrica, content/professions.yaml; la malla ya no se fabrica, D-306, la sigue reparando la 🦺 Peletería)
+  material: {herreria: lingote, carpinteria: tablon, peleteria: cuero_curtido, sastreria: tela_tejida, joyeria: lingote}   # [ES] el refinado de base que gasta cada reparación
+  material_step: 20          # [ES] unidades por reparación: 1 + nivel de la pieza ÷ 20 (nivel 1-19: 1; nivel 100: 6)
+  energy: 1                  # [ES] ⚡ por reparación (uno mismo o un encargo)
+  xp: 6                      # [ES] experiencia de oficio por reparación × (1 + nivel ÷ 100): de 6 a 12 (6 por ⚡, como toda receta de D-328); la de héroe, como 1 ⚡ de fabricar
+  npc_mult: 3                # [ES] el herrero de la 🔥 fogata cobra 3 × lo que valen los materiales (lingote 13, tablón 7, cuero y tela 7): la espada de nivel 3, 39 🥉; la pieza de nivel 100, 234 🥉. Siempre más caro que un artesano
+  order_mult: 2              # [ES] un 📜 encargo de reparación paga al artesano 2 × lo que valen los materiales (D-140: los materiales que pone, más su mano de obra; menos el impuesto del mercado, market.tax)
+  order_days: 7              # [ES] un encargo vence a los 7 días: las monedas vuelven solas
+
 feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones; el bot manda cada mensaje al chat de informes
   max_chars: 1000            # [ES] largo máximo que se guarda de un mensaje
   kinds: [bug, idea, balance, confusing, other]   # [ES] D-275 (0.35, confirmada): tipos que elige el jugador (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende, 💬 Otro); sus nombres y palabras en content/locales (feedback.kind, feedback.keywords)

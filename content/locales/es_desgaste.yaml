@@ -1,0 +1,113 @@
+# Texts of gear durability and repairs (D-139, confirmed; how it was applied: D-333, provisional; 0.57).
+# [ES] Textos de la durabilidad del equipo y de 🔧 Reparar (D-139, confirmada por el dueño en E-23; cómo se aplicó: D-333,
+# provisional). Se junta con es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/repair.py (los avisos de desgaste
+# al terminar una pelea, la pantalla 🔧 Reparar, la de cada pieza, la confirmación de la última reparación, los 📜 encargos de
+# reparación y sus avisos a otros jugadores) y las marcas de durabilidad de 🛡️ Equipo, 🔁 Equipar, 🔽 Desequipar, la pieza, la
+# ficha del héroe, el 🛒 Mercader, el 🏛️ Mercado y la ⚔️ Armería (engine/service/game.py, market.py, gremio.py).
+# Una clave nueva va también en en_desgaste.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave
+# que falta se ve como [clave].
+
+wear:                          # [ES] D-333: la durabilidad de cada pieza
+  tag: "🔧 {cur}/{max}"
+  tag_low: "⚠️ 🔧 {cur}/{max}"
+  tag_damaged: "⚠️ 🔧 0/{max} dañada"
+  damaged_stats: "sin bonos"                 # [ES] lo que da una pieza dañada (en 🛡️ Equipo y 🔽 Desequipar)
+  line: "🔧 Durabilidad: {cur}/{max} · {left}"
+  left: "{n} {n|reparación más|reparaciones más}"
+  left_none: "💔 última vida: sin reparaciones"
+  damaged_line: "⚠️ Dañada: no da bonos hasta que la repares (🔧 Reparar, /reparar). Sigue puesta y no se pierde."
+  low_line: "⚠️ Está gastada: repárala pronto (🔧 Reparar, /reparar)."
+  last_life_line: "💔 Última vida: ya no le quedan reparaciones. Cuando llegue a 0, se rompe para siempre."
+  bag_hint: "🔧 Para repararla, póntela: 🔧 Reparar trabaja con lo que llevas puesto."
+  # ---- avisos al terminar una pelea (también en el resumen de un lote); {items}: "⚪🗡️ Espada (🔧 19/100), …", una línea por tipo de aviso
+  low: "⚠️ Desgaste alto: {items}. {n|Repara la pieza|Repara las piezas} en 🛡️ Equipo → 🔧 Reparar (/reparar)."
+  damaged: "⚠️ Se {n|dañó|dañaron}: {items}. {n|Sigue puesta, pero no da|Siguen puestas, pero no dan} bonos hasta que {n|la|las} repares (/reparar)."
+  broken: "💔 {item} se rompió para siempre: ya no le quedaban reparaciones."
+  # ---- 🛡️ Equipo y 👤 Héroe
+  worn_hint: "⚠️ Tienes equipo gastado o dañado: tócalo en 🔧 Reparar."
+  hero_line: "⚠️ Equipo para reparar: {items} — /reparar"
+  shop_line: "🔧 El herrero de la fogata repara tu equipo: 🛡️ Equipo → 🔧 Reparar (/reparar)."
+  prof_line: "🔧 Reparas {types} (rango desde el nivel de la pieza − {margin}). Encargos de reparación que puedes hacer: {n} — /reparar"
+
+repair:                        # [ES] D-333: 🔧 Reparar (🛡️ Equipo → 🔧 Reparar, /reparar, /repair)
+  button: "🔧 Reparar"
+  button_alert: "🔧 Reparar ⚠️"
+  title: "🔧 Reparar equipo"
+  intro: "Cada pelea gasta un poco tu equipo puesto. En 0 queda ⚠️ dañado: sigue puesto, pero no da bonos hasta que lo repares. Cada reparación le baja {loss} al máximo; después de {n} reparaciones ({mw} una ✒️ obra maestra), la próxima vez que llega a 0 se rompe."
+  piece_line: "{code} {item} — {tag} · {left}{marks}"
+  mark_order: " · 📜 encargada"
+  none_worn: "No llevas nada puesto."
+  hint: "Toca el código de una pieza para repararla: tú (con su oficio), el herrero de cualquier 🔥 fogata o un 📜 encargo a un artesano."
+  orders_line: "📜 Hay {n} {n|encargo|encargos} de reparación que puedes hacer."
+  orders_button: "📜 Encargos ({n})"
+  bad_code: "Ese código no está en la lista: usa uno de los que ves aquí."
+  # ---- la pantalla de una pieza
+  piece_title: "🔧 Reparar pieza"
+  state_full: "✅ Está llena: todavía no hace falta repararla."
+  after_line: "Al repararla, su máximo baja de {old} a {new} y queda llena."
+  last_warning: "⚠️ Esta reparación es la última: después, cuando vuelva a llegar a 0, se rompe para siempre."
+  masterwork_line: "✒️ Las obras maestras aguantan {n} reparaciones (las demás, {base})."
+  options_title: "Quién la repara:"
+  self_line: "🔨 Tú, con {prof} (rango {need} o más, en su estación): {items} y ⚡{energy}{state}"
+  self_ok: " — tienes rango {rank}"
+  self_low: " — te falta rango ({rank} de {need})"
+  self_unknown: " — no sabes {prof} (se aprende en el 🧑‍🏫 Entrenador)"
+  npc_line: "🛒 El herrero de cualquier 🔥 fogata: {price}"
+  order_line: "📜 Un encargo a un artesano: {price} (lo hace quien tenga {prof} {need}+; si nadie lo toma en {days} días, te devolvemos las monedas)"
+  order_open: "📜 Encargada por {price}: vence en {left}."
+  self_button: "🔨 Reparar yo"
+  npc_button: "🛒 Herrero · {price}"
+  order_button: "📜 Encargar · {price}"
+  cancel_button: "❌ Cancelar encargo"
+  # ---- la confirmación de la última reparación
+  confirm_title: "⚠️ Última reparación"
+  confirm: "⚠️ Es la última reparación de {item}: queda llena en {max}/{max} y, cuando vuelva a llegar a 0, se rompe para siempre. ¿Sigues?"
+  confirm_button: "✅ Sí, reparar"
+  confirm_order_button: "✅ Sí, encargar"
+  # ---- lo que pasa al reparar
+  done_self: "🔧 Reparaste {item}: 🔧 {max}/{max} ({left}). Gastaste {items} y ⚡{energy}."
+  done_npc: "🔧 El herrero de la fogata reparó {item} por {price}: 🔧 {max}/{max} ({left})."
+  not_worn: "Esa pieza ya no está puesta."
+  is_full: "Esa pieza está llena: no hace falta repararla."
+  no_repairs: "A esa pieza ya no le quedan reparaciones: cuando llegue a 0, se rompe."
+  need_rank: "Para reparar esta pieza necesitas {prof} {need} (tienes {rank})."
+  need_prof: "Esta pieza la repara {prof}: apréndelo en el 🧑‍🏫 Entrenador, o usa el herrero de la fogata o un 📜 encargo."
+  need_station: "Repárala en una estación de {prof}: cualquier 🔥 fogata, o tu campamento con su edificio."
+  need_fire: "El herrero está en las 🔥 fogatas: ve a una (sin otra actividad) para que te la repare."
+  missing: "Para repararla te falta: {items}."
+  no_coins: "No te alcanza: cuesta {price}."
+  busy: "Termina lo que estás haciendo para reparar."
+  # ---- 📜 encargos de reparación (D-140: todo servicio entre jugadores se paga aparte)
+  posted: "📜 Encargaste reparar {item} por {price}: lo hará el primer artesano de {prof} {need}+ que lo tome. Si nadie lo toma en {days} días, te devolvemos las monedas."
+  already: "Ya encargaste reparar esa pieza."
+  cancelled: "❌ Cancelaste el encargo: te devolvimos {price}."
+  orders_title: "📜 Encargos de reparación"
+  orders_intro: "Otros jugadores pagan por reparar su equipo. Hazlo en una estación de su oficio (cualquier 🔥 fogata, o tu campamento con su edificio), con los materiales y ⚡{energy}: cobras al momento, menos el impuesto del mercado ({tax} %), y ganas experiencia del oficio."
+  order_entry: "{code} {item} de {name} — {tag} · {prof} {need}+ · pagan {pay} · gastas {items}{fit}"
+  fit_yes: " · ✅"
+  fit_no: " · 🔒"
+  orders_none: "No hay encargos de reparación de otros jugadores ahora."
+  mine_title: "Tus encargos:"
+  mine_entry: "📜 {item} por {price} · vence en {left}"
+  orders_hint: "Toca el código de un encargo ✅ para hacerlo."
+  page: "Página {n} de {total}."
+  more: "➡️ Más"
+  gone: "⌛ Ese encargo ya no está: otro artesano lo hizo, se canceló o venció."
+  own: "Ese encargo es tuyo: repara tu pieza desde 🔧 Reparar."
+  void: "Ese encargo ya no hace falta (la pieza ya no está puesta o ya está llena): se cerró y su dueño recuperó las monedas."
+  done_order: "🔧 Reparaste {item} de {name}: cobraste {pay} ({tax} de impuesto). Gastaste {items} y ⚡{energy}."
+  # ---- avisos a otros jugadores (con _push_each, en su idioma)
+  push_done_title: "🔧 Tu equipo está reparado"
+  push_done: "🔧 {name} reparó tu {item}: 🔧 {max}/{max} ({left}). Pagaste {price} al encargarlo."
+  push_void_title: "📜 Encargo cerrado"
+  push_void: "📜 Tu encargo de reparación de {item} se cerró porque la pieza ya no lo necesitaba: te devolvimos {price}."
+  push_expired_title: "📜 Encargo vencido"
+  push_expired: "📜 Nadie tomó tu encargo de reparación de {item}: te devolvimos {price}."
+
+market:                        # [ES] D-333: en la oferta del 🏛️ Mercado, la durabilidad de las otras unidades (la próxima va arriba)
+  wear_rest: "🔧 Las siguientes: {tags}"
+
+faq:                           # [ES] D-333: ❓ /d63 (content/faq.yaml); los números salen de balance.yaml durability (_repair_faq_values)
+  d63:
+    q: "🔧 ¿Por qué mi equipo dice ⚠️ o 🔧 84/100?"
+    a: "Es su durabilidad: cada pelea gasta un poco lo que llevas puesto (más si huyes o caes). Al bajar del {wear_low} % de su máximo se marca ⚠️ y te avisamos; en 0 queda dañado: sigue puesto, pero no da bonos hasta que lo repares. En 🛡️ Equipo → 🔧 Reparar (/reparar) lo reparas tú con el oficio que hace esa pieza (rango desde su nivel − {repair_margin}, en su estación, con un refinado y ⚡), el herrero de cualquier 🔥 fogata por monedas, o un 📜 encargo a un artesano, que cobra por su trabajo (dura {repair_days} días; si nadie lo toma, te devolvemos las monedas). Cada reparación le baja {repair_loss} al máximo; después de {repairs} reparaciones ({repairs_mw} una ✒️ obra maestra), la próxima vez que llega a 0 se rompe para siempre: antes de la última te preguntamos. Tu equipo de antes empezó lleno."
