@@ -1362,7 +1362,61 @@ Las monedas no cambian. Las obras activadas o empezadas antes de la 0.45 siguen 
 | Torres de arqueros | tablón 80, madera 40, sillar 40, piedra 30, metal 70, fibra 60 | tablón 60, madera 40, sillar 40, piedra 30, metal 65, fibra 60, 🪑 Armero de roble 1 |
 | Foso | sillar 100, piedra 60, arcilla 140, tablón 25, madera 25 | sillar 100, piedra 60, arcilla 120, tablón 25, madera 25, lingote 10 |
 
-**Lo que queda por mirar:** si la piel y el metal frenan los campamentos (los dos son más escasos que la piedra); si conviene una pequeña rebaja en esas tres obras; si los 🪑 muebles que piden las obras de nivel alto llegan a tiempo (la 🪑 Carpintería tiene que existir en el gremio).
+**Lo que queda por mirar:** si la piel y el metal frenan los campamentos (los dos son más escasos que la piedra); si conviene una pequeña rebaja en esas tres obras; si los 🪑 muebles que piden las obras de nivel alto llegan a tiempo (la 🪑 Carpintería tiene que existir en el gremio). *Lo midió la 0.45.1 (D-319, el bloque siguiente): los muebles trababan la subida de nivel y se cambiaron; la piel ×2,5 de la 0.43 y el metal ×3 de la 0.42 compensan casi todo.*
+
+### Octubre de 2026 (21-oct): recálculo de costos y beneficios de los edificios (0.45.1, D-319, provisional)
+
+**Por qué.** Después de la 0.45 el dueño pidió (por otra sesión) "recálculo y ajuste de costos y beneficios de los edificios": si la piel y el metal frenan, si los 🪑 muebles que piden las obras de nivel alto llegan a tiempo y si cada edificio vale lo que cuesta. Se midió con `python tools/camp_costs.py` (nuevo; sus supuestos, en el encabezado).
+
+**Supuestos.** ~4,7 unidades de recurso de base por ⚡ en tu territorio (zona de nivel 3: `gather.amount` 1 a 3, +1 por el nivel, × `gather.own_land_bonus` 1,5, redondeado como el juego); 🦌 piel 1,76 ⚡ y 🍖 carne 3,3 ⚡ cazando fuera del territorio (la simulación del 18-oct, con la piel ×2,5 de la 0.43); refinar y fabricar, el ⚡ de su receta (1 por pieza refinada); cada miembro da 30 ⚡ por día (75 % de `energy.per_day`); 5 miembros en los niveles 1 y 2, 6 en el 3, 8 en el 4 y 10 desde el 5; las obras una tras otra con el +15 % por obra construida (D-295) y ⏫ `camps.level_up_cost_per_level` × nivel (D-304). Quedan fuera, sin cambios: los 6 🪎 cofres, la 🌙 Noche de prueba y 🗺️ Agrandar territorio.
+
+**Del campamento al castillo.** "Lista" son las 17 obras que pide ⏫ Siguiente nivel (el castillo no pide otras: ya son más que `castle_min_built`); "las 31" suma los 13 edificios de oficio y el 🏪 Trueque.
+
+| Camino | Versión | En crudo | 🦌 piel | ⚙️ metal | ⚡ total (juntar + refinar y fabricar) | 🥉 | Días | Lo más alto que pide |
+|---|---|---|---|---|---|---|---|---|
+| Lista (castillo) | antes de la 0.45 | 13.585 | 0 | 397 | 4.417 (3.115 + 1.302) | 2.435 | 15,9 | refinado de rango 1 |
+| Lista (castillo) | 0.45 | 13.510 | 72 | 521 | 5.020 (3.210 + 1.810) | 2.435 | 17,9 **+ meses de espera** | 🪑 Carpintería 70, y 🎓 Escudos (50) y 🎓 Mobiliario (25): dos carpinteros |
+| Lista (castillo) | **0.45.1** | 13.447 | 36 | 539 | 4.928 (3.141 + 1.787) | 2.435 | **17,6** | 🪑 Carpintería 15 (un carpintero dedicado: 7 días) |
+| Las 31 obras | antes de la 0.45 | 25.278 | 137 | 1.013 | 8.112 (5.959 + 2.153) | 7.997 | 30,0 | refinado de rango 1 |
+| Las 31 obras | 0.45 | 25.159 | 632 | 2.080 | 11.160 (6.698 + 4.462) | 7.997 | 42,3 + espera | lo mismo que arriba |
+| Las 31 obras | **0.45.1** | 25.062 | 434 | 2.250 | 10.799 (6.371 + 4.428) | 7.997 | **41,1** | 🪑 Carpintería 15 |
+
+Con la mitad de la energía de cada miembro (`--share=0.5`): la lista, 23,8 / 26,9 / 26,4 días; las 31, 45 / 63 / 62.
+
+**El camino de la lista, hoy:** nivel 5 hacia el día 4, 6 hacia el 5,5, 7 hacia el 6,5, 8 hacia el 11 y castillo hacia el 17,6. En la 0.45 se trababa en el nivel 5: la 🧱 Muralla y el 🥬 Huerto (los dos obligatorios para subir a 6) pedían muebles de especialista.
+
+**1. Piel y metal.**
+
+- **Piel:** un campamento completo pedía 632 en la 0.45 (antes 137: ×4,6), sobre todo por el crecimiento (la 🦺 Peletería, hecha como obra 20.ª, pide ×3,85: 135 cueros, 270 pieles). Contado en energía: 137 × 4,4 ⚡ = 603 ⚡ antes de la 0.43; 632 × 1,76 = 1.112 ⚡ en la 0.45 (×1,8). Con la 0.45.1 (la 🔨 Forja sin cuero y sin los muebles de la Muralla y el Huerto), 434 pieles = 764 ⚡ (×1,3): **la piel ×2,5 de la 0.43 compensa casi todo**. El camino al castillo pide solo 36 (las 🛏️ Literas y el 🗄️ Armero).
+- **Metal:** de 1.013 a 2.080 (0.45) y 2.250 (0.45.1: la Forja pide 75 lingotes): ×2,2, mientras la 0.42 triplicó lo que vuelve (cada zona con metal da unas 72 piezas por día, 108 con el ⛲ Pozo). En energía son ~260 ⚡ más de juntar (2 % del total). **No se recortó.**
+- **Lo que más pesa es refinar:** 1 ⚡ por pieza, más que juntar lo que lleva (3 maderas son 0,64 ⚡ en tu territorio). Por eso los 13 edificios de oficio cuestan de 2 a 4 veces la energía de antes, aunque pidan lo mismo en crudo: 🪣 Curtiduría 27 → 114 ⚡, 🦺 Peletería 70 → 177, 🔨 Forja 36 → 111 (158 en la 0.45), 💍 Joyería 28 → 86, 🩺 Botica 26 → 62, 🪡 Sastrería 22 → 55, ⚗️ Alquimia 24 → 52, 🪑 Carpintería 21 → 51, 🏭 Fundición 12 → 37, 💧 Alambique 12 → 28, 🪚 🧶 🗿 8-9 → 17-21 (de base, sin el +15 %).
+
+**2. Los muebles que pedían las obras de la lista** (días de un carpintero dedicado: todo su ⚡ a la 🪑 Carpintería, con los materiales en la mano, como `tools/sim_oficios.py`):
+
+| Mueble | Lo que pedía en la 0.45 | Obra (sube a) | Tardaba | En la 0.45.1 |
+|---|---|---|---|---|
+| 🛡️ Paveses de roble | Carpintería 50, 🎓 Escudos, 📚 libro del 50 (🥈10), título Experto (héroe 20) | 🧱 Muralla (6) | ~69 días (~66.000 en crudo de lo que fabrica para subir) | ya no lo pide (🪨180 🧱10 🪵60 arcilla 40 🟫12 lingote 5); sigue como mueble de su 🎓 |
+| 🛒 Carro de víveres | Carpintería 25, 🎓 Mobiliario con el 25 % de dominio (~rango 29), 📚 del 25, Oficial (héroe 10) | 🥬 Huerto (6) | ~24 días, **y otro carpintero**: una 🎓 por héroe hasta el 75 | ya no lo pide (🪵45 🌿60 hierba 50 arcilla 40 🟫10 lingote 3); sigue como mueble de su 🎓 |
+| 🛏️ Literas de roble | Carpintería 40, 📚 del 25, Oficial | 🏥 Enfermería (8) | ~46 días (~40.000 en crudo) | **rango 10**: ~3 días (~1.100 en crudo), sin libro ni título |
+| 🗄️ Armero de roble | Carpintería 70, 📚 del 25 y del 50, Artesano (🥈10, héroe 30) | 🏹 Torres de arqueros (9) | ~147 días (~140.000 en crudo) | **rango 15**: ~7 días (~3.800 en crudo) |
+
+Con el +15 % por obra, cada uno se pide ×3 a ×5 (la Enfermería, hecha como obra 14.ª de la lista, pide 3 Literas, 30 ungüentos y 30 vendas; las Torres, 4 Armeros). La 🏥 Enfermería sigue pidiendo Carpintería, Medicina y Sastrería, el ejemplo del dueño (D-318). Regla nueva (D-319): lo que piden las obras de ⏫ se hace con rango 10 o menos (15 en el paso a castillo), sin 🎓, sin 📚 y sin título comprado (`tests/test_costos_edificios.py`).
+
+**3. ¿Vale cada edificio lo que cuesta?**
+
+- **Las 17 obras de la lista:** son obligatorias para subir, así que se miden por el ritmo: cuestan un 11 % más de energía que antes de la 0.45 (lo refinado desde el nivel 5) y no traban a nadie. Sus efectos no cambiaron.
+- **Los 13 edificios de oficio:** dan la estación en casa (ahorra el viaje al Claro, que tiene todas: tiempo, no energía), la 🪡 Sastrería las bolsas y los cofres y la 🔨 Forja la venta de equipo. El castillo no los pide y **cada uno sube un 15 % lo que sigue**. Con la 0.45 cuestan de 2 a 4 veces más energía: hoy son un lujo del campamento, no el camino. Si deben dejar de encarecer lo demás lo decide el dueño (E-235, P-246; con `--growth-no-oficio`, las 31 obras bajan a ~28 días).
+- **Los muebles:** las 🛏️ Literas (+1 lugar) y el 🗄️ Armero (+1 de 🛡️ Defensa) llegan antes; la obra los gasta, así que quien quiera colocar uno hace uno más.
+- **Monedas:** sin cambios (2.435 🥉 en la lista; 7.997 en las 31).
+
+**Qué cambia al jugar.**
+
+- Ningún campamento se traba en un nivel esperando un rango alto: el carpintero del campamento llega al 10 en ~3 días y al 15 en ~7, antes de que el campamento llegue al 7 y al 8.
+- La Muralla y el Huerto piden tablones, lingotes y sillares en vez de muebles de especialista; la Forja, solo lingotes.
+- Las obras activadas antes conservan su costo: lo de antes de la 0.45 (`cost_before`) o el que guardaron al activarse.
+- La 🪑 Carpintería sube al 75 y al 100 al ritmo de los otros oficios de equipo (171 y 329 días; antes 162 y 321, porque el Armero de rango 70 daba más experiencia por ⚡: [simulación](../07-economia/simulacion-oficios.md) §11).
+
+**Lo que queda por mirar:** E-235 (los edificios de oficio y el +15 %); cuánta piel se junta de verdad (informe diario); si los campamentos construyen sus edificios de oficio o los dejan para el final.
 
 ### Octubre de 2026 (19-oct): el campamento de la 0.39 (D-288 a D-291, D-294, D-295)
 
