@@ -590,6 +590,31 @@ specs:                       # [ES] D-115 y D-141 (confirmada): 🎓 especializa
                              # [ES] (rango 25: 6 🥈; 50: 11 🥈; 75: 16 🥈; 100: 21 🥈). Elegir la 1.ª (rango 25) y la 2.ª (rango 75) no cuesta nada
   per_page: 2                # [ES] oficios por página en 🎓 Especialización cuando hay más de 3 (4 botones como mucho, D-75)
 
+recipe_tiers:                # [ES] D-306 (confirmada, E-221 y E-222; en el juego desde la 0.44): un tramo de recetas cada 5 rangos, colores de receta como en WoW y 📚 libros de recetas en el 🧑‍🏫 Entrenador. Los números de experiencia y energía son de Claude (D-315, provisional): se ajustan en la beta
+  # [ES] Oficios con un tramo cada 5 rangos hasta el 100 (rango 1, 5, 10 ... 100; la pieza que sale es del nivel del tramo). Solo en
+  # [ES] estos rigen los colores: los demás (refinado, ⚗️ Alquimia, 🩺 Medicina, 🍲 Cocina) todavía no tienen recetas hasta el 100 y con
+  # [ES] colores se trabarían (simulacion-oficios.md §8.2); siguen dando la experiencia entera hasta que tengan sus tramos (pendiente).
+  # [ES] tools/recipe_tiers.py escribe en content/professions.yaml el rango, la energía y la experiencia de sus recetas con estos
+  # [ES] números: si cambias uno, corre `python tools/recipe_tiers.py` (tests/test_tramos_de_recetas.py avisa si quedó viejo).
+  professions: [carpinteria, herreria, sastreria, peleteria, joyeria]
+  step: 5                    # [ES] un tramo cada 5 rangos; una pieza de nivel N se hace desde el tramo N (las de nivel 3, desde el 1; las de nivel 8, desde el 10)
+  colors:                    # [ES] d = tu rango − el rango de la receta. Naranja: experiencia entera; amarilla: la mitad; verde: un cuarto; gris: nada
+    - {id: orange, below: 5, factor: 1.0}
+    - {id: yellow, below: 10, factor: 0.5}
+    - {id: green, below: 15, factor: 0.25}
+    - {id: grey, factor: 0.0}
+  xp_per_rank: 0.01          # [ES] la experiencia de oficio de una pieza crece con su tramo: base × (1 + 0,01 × rango): 12 en el 1, 18 en el 50, 24 en el 100.
+                             # [ES] Con la energía de abajo, un especialista (con los materiales en la mano) llega al 100 en ~11 meses (329 días; antes 368) y tiene que fabricar lo nuevo para subir
+  energy_by_rank:            # [ES] ⚡ de cada pieza de equipo según el rango de su receta (los 🪑 muebles y las vendas no cambian)
+    - {from: 1, energy: 2}
+    - {from: 55, energy: 3}
+    - {from: 85, energy: 4}
+  books:                     # [ES] E-222: 📚 libros de recetas que vende el 🧑‍🏫 Entrenador, uno por oficio y tramo; abren las recetas de ese rango o más
+    - {rank: 25, price: 200}    # [ES] 🥈2
+    - {rank: 50, price: 1000}   # [ES] 🥈10
+    - {rank: 75, price: 2500}   # [ES] 🥈25 (las de rango 100 piden los tres)
+  books_per_page: 2          # [ES] libros a la venta por página en 📚 Libros de recetas cuando hay más de 3 (4 botones como mucho, D-75)
+
 auto_fight:                  # [ES] D-258 (0.33): apagadas por ahora (enabled: false). D-114 (confirmada): ⚙️ Opciones de cada jugador y peleas automáticas en los lotes (mapa-infinito-y-viaje.md §1.12.1). Números propuestos por Claude: se ajustan en la beta
   enabled: false             # [ES] D-258 (0.33, pedido del dueño): sin peleas automáticas ni pociones automáticas por ahora; todo lote se corta al salir una pelea y 🏹 Cazar no va en lote. true las devuelve
   defaults: {fights: manual, retreat: 30, potions: true}   # [ES] lo que tiene cada héroe hasta que lo cambia (también los guardados antes): ✋ Manual (el lote se corta y peleas tú), retirarse con menos de 30 % de vida (D-119, entrevista E-02; antes 50), sí usar pociones

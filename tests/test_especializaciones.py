@@ -113,7 +113,11 @@ def test_exclusive_pieces_beat_the_crafted_piece_of_their_level_and_never_make_c
         assert item["slot"] == base["slot"] and item["req_level"] == base["req_level"] and item["source"] == "crafted", out
         assert all(item["stats"].get(k, 0) >= v for k, v in base["stats"].items()), out
         assert sum(item["stats"].values()) > sum(base["stats"].values()), out        # better in its line
-        assert rdef["min_rank"] == (25 if tier == 2 else 100) and rdef["energy"] == 2 and rdef["xp"] == 12, out
+        assert rdef["min_rank"] == (25 if tier == 2 else 100), out
+        if not rdef.get("retired"):                                                 # D-306 (0.44): ⚡ and xp by tier (the mail
+            tiers = content.balance["recipe_tiers"]                                 # ones are retired as they were, E-223)
+            assert rdef["energy"] == profession_rules.tier_energy(rdef["min_rank"], tiers["energy_by_rank"]), out
+            assert rdef["xp"] == profession_rules.tier_xp(12, rdef["min_rank"], tiers["xp_per_rank"]), out
         materials = sum(content.items[m]["price"] * n for m, n in rdef["inputs"].items())
         assert item["price"] * ratio < materials, out                               # crafting never makes coins (D-113)
         assert masterwork_id(out) in content.items, out                             # its ✒️ twin, made at load
@@ -214,30 +218,31 @@ def test_switching_costs_coins_removes_the_old_one_and_keeps_its_mastery(service
 
 
 def test_mastery_grows_with_profession_xp_and_tells_what_opens(service):
-    ready(service, backpack={"lingote": 200, "cuero_curtido": 100}, energy=500, level=5)
+    ready(service, backpack={"lingote": 200, "cuero_curtido": 100, "gema_bruta": 50}, energy=500, level=5)
     hero = with_ranks(service, {"herreria": 24})
     hero.professions["herreria"] = rank_xp(service, 25) - 6
     service._save(hero)
-    view = service.act("test:1", "mk:espada_forjada:1:0")                  # crossing rank 25 tells you can choose
+    # D-306 (0.44): a recipe of your tier (🟧, the whole xp); the old espada forjada is ⬜ grey here and gives none
+    view = service.act("test:1", "mk:espada_nivel_20:1:0")                 # crossing rank 25 tells you can choose
     assert "Ya puedes elegir especialización" in view.notice and "🔨 Herrería" in view.notice
     service.act("test:1", "pspp:herreria_armas")
     need = int(full(service) * service.content.balance["specs"]["recipe_mastery"])
     hero = service._load("test:1")
-    hero.spec_xp["herreria_armas"] = need - 12
+    hero.spec_xp["herreria_armas"] = need - 15
     service._save(hero)
     assert "rec:espec_espada_1:0" not in str(ids(service.act("test:1", "est:craft:0")))
-    view = service.act("test:1", "mk:espada_forjada:1:0")                  # +12 profession xp → 25 % mastery
+    view = service.act("test:1", "mk:espada_nivel_25:1:0")                 # +15 profession xp (rank 25, 🟧) → 25 % mastery
     hero = service._load("test:1")
     assert hero.spec_xp["herreria_armas"] == need
     assert "Nueva receta exclusiva" in view.notice and "Hoja de forjador" in view.notice
     hero.professions["herreria"] = rank_xp(service, 75) - 6
     service._save(hero)
-    view = service.act("test:1", "mk:espada_forjada:1:0")
+    view = service.act("test:1", "mk:espada_nivel_70:1:0")                 # 🟧 at rank 74
     assert "segunda especialización" in view.notice
     hero = service._load("test:1")
     hero.spec_xp["herreria_armas"] = full(service) - 12
     service._save(hero)
-    assert "Dominas" in service.act("test:1", "mk:espada_forjada:1:0").notice
+    assert "Dominas" in service.act("test:1", "mk:espada_nivel_75:1:0").notice
 
 
 # ---------------------------------------------------------------- effects, only in their line

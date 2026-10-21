@@ -68,6 +68,11 @@ Si cambias esto, revisa:
     - combo_shapes (0.31, D-229): los combos distintos de la cadena que el héroe cobró alguna vez; solo cuentan para la
       variedad si balance.yaml chain.variety.scope es "permanent" (pendiente 5 del parche). Vacío por defecto: los héroes
       guardados antes cargan igual (engine/combat/chain_round.py; tests/test_cadena.py)
+    - recipe_books y books_checked (0.44, D-306): los 📚 libros de recetas que el héroe compró en el 🧑‍🏫 Entrenador
+      ("<oficio>:<rango>", por ejemplo "herreria:25"; una receta de rango 25 o más pide los libros de su oficio hasta su rango)
+      y si ya se le regalaron los libros de los rangos que tenía al llegar la 0.44 (D-64: quien ya practicaba conserva lo que
+      podía hacer). Vacío y False por defecto: la primera carga de un héroe de antes le da sus libros y lo marca
+      (engine/service/game.py _load, _grant_old_books, sección "recipe tiers, colors and books"; tests/test_tramos_de_recetas.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -153,6 +158,11 @@ class Hero:
         combo_shapes: the different chain combos (0.31, D-229) the hero ever cashed with a spender, e.g. "B-H2-H1-H3". Only
             used when balance.yaml chain.variety.scope is "permanent" (the variety bonus then lasts for ever, not one fight).
             Empty for heroes saved before it.
+        recipe_books: the 📚 recipe books the hero owns (D-306, 0.44), as "<profession>:<rank>" (e.g. "herreria:25"): a recipe
+            of rank 25 or more needs every book of its profession up to its rank (balance.yaml recipe_tiers.books). Empty for
+            heroes saved before it.
+        books_checked: True once the 0.44 grant ran for this hero (D-64: who had already practised a profession gets, free,
+            the books of the ranks it had reached). False for heroes saved before it; the first load grants and sets it.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -224,6 +234,8 @@ class Hero:
     class_changes: int = 0                                              # D-270: class changes done (the first is free)
     home: list[int] = field(default_factory=lambda: [0, 0])               # D-265: the bonfire where the hero was born (0.37)
     prof_titles: dict[str, str] = field(default_factory=dict)           # D-306.1 (0.43): 🎖️ profession titles bought
+    recipe_books: list[str] = field(default_factory=list)               # D-306: 📚 recipe books owned, "<profession>:<rank>" (0.44)
+    books_checked: bool = False                                         # D-306: the 0.44 books already granted to who practised
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

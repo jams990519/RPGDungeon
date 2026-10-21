@@ -17,7 +17,7 @@ from engine.hero import Hero, hero_stats
 from engine.hero.gear import gear_bonus, gear_score, is_better, piece_score
 from engine.professions import (branches_of, disenchant_amount, disenchant_yield, enchant_cost, enchant_for_slot,
                                 enchant_value, masterwork_id, xp_for_rank)
-from engine.professions.rules import PERK_KEYS
+from engine.professions.rules import PERK_KEYS, tier_energy, tier_rank, tier_xp
 import engine.service.game as game_module
 
 # D-257 (0.33): these tests are about crafting itself; learning a profession has its own tests.
@@ -341,21 +341,30 @@ def test_automatic_fights_put_the_better_piece_in_the_batch_summary(service, mon
 def test_every_new_crafted_piece_has_its_recipe_and_beats_loot_of_its_level(content):
     recipes = content.professions["recipes"]
     profs = content.professions["professions"]
+    tiers = content.balance["recipe_tiers"]
     by_output = {out: rdef for rdef in recipes.values() for out in rdef["output"]}
     ratio = content.balance["shop"]["sell_ratio"]
     count = 0
     for slot in NEW_SLOTS:
         for typ in TYPES:
             made = sorted((it["req_level"], iid) for iid, it in gear_items(content, slot=slot, type=typ, source="crafted").items())
-            assert [lv for lv, _ in made] == [3, 5, 8] + list(range(10, 101, 10)), (slot, typ)
+            loot_levels = sorted(it["req_level"] for it in gear_items(content, slot=slot, type=typ).values() if not it.get("source"))
+            # D-306 (0.44, E-221): a piece every 5 levels from the 10 (tools/recipe_tiers.py); the mail stays as it was, retired
+            step = 10 if typ == "malla" else 5
+            assert [lv for lv, _ in made] == [3, 5, 8] + list(range(10, 101, step)), (slot, typ)
             for level, iid in made:
                 item = content.items[iid]
                 rdef = by_output[iid]
                 assert rdef["profession"] == PROFESSION_OF[typ], iid
-                assert rdef["min_rank"] == ({3: 1, 5: 25, 8: 50}.get(level) or 50 + level // 2), iid
-                assert rdef["energy"] == 2 and rdef["xp"] == 12, iid
+                if typ == "malla":                                   # E-223 / D-208: retired, the pieces stay
+                    assert rdef.get("retired") and rdef["min_rank"] == ({3: 1, 5: 25, 8: 50}.get(level) or 50 + level // 2), iid
+                else:
+                    assert not rdef.get("retired") and rdef["min_rank"] == tier_rank(level, tiers["step"]), iid
+                    assert rdef["energy"] == tier_energy(rdef["min_rank"], tiers["energy_by_rank"]), iid
+                    assert rdef["xp"] == tier_xp(12, rdef["min_rank"], tiers["xp_per_rank"]), iid
                 assert len(branches_of(rdef, profs, recipes)) >= 2, iid
-                loot = [it for it in gear_items(content, slot=slot, type=typ).values() if not it.get("source") and it["req_level"] == level]
+                below = max(lv for lv in loot_levels if lv <= level)     # the 15, 25 … pieces beat the loot of 10, 20 …
+                loot = [it for it in gear_items(content, slot=slot, type=typ).values() if not it.get("source") and it["req_level"] == below]
                 assert len(loot) == 1, iid
                 assert all(item["stats"].get(k, 0) >= v for k, v in loot[0]["stats"].items()), iid
                 assert sum(item["stats"].values()) > sum(loot[0]["stats"].values()), iid
@@ -363,7 +372,7 @@ def test_every_new_crafted_piece_has_its_recipe_and_beats_loot_of_its_level(cont
                 assert item["price"] * ratio < materials, iid                # crafting never makes coins (D-113)
                 assert masterwork_id(iid) in content.items, iid              # its ✒️ twin, made at load
                 count += 1
-    assert count == 208
+    assert count == 208 + 4 * 3 * 9                                          # D-306: + 9 levels in 12 lines (not the mail)
 
 
 def test_best_crafted_beats_best_loot_in_the_new_slots_at_every_level(content):

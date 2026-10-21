@@ -61,7 +61,7 @@ def test_a_station_and_a_profession_hide_higher_ranks_and_the_next_unlock(servic
                     assert service._prof_rank(hero, rdef["profession"]) >= int(rdef.get("min_rank", 1)), action.id
     detail = service.text("test:1", "/herreria")
     assert detail.kind == "profession" and "🔓" not in body(detail) and "En rango" not in body(detail)
-    old = service.act("test:1", "rec:espada_templada:0")              # rank 25, from an old button: back to the station
+    old = service.act("test:1", "rec:espada_templada:0")              # rank 5 (25 until 0.44), from an old button: back to the station
     assert old.kind == "station" and old.notice.startswith("🔒") and "Espada templada" not in body(old)
     assert service._load("test:1").backpack == hero.backpack            # nothing made, nothing spent
 
@@ -94,8 +94,8 @@ def test_the_trainer_hides_what_comes_later(service):
     assert ids(view) == ["myprof", "learnlist", "claro"]               # no 🎓 before rank 25
     text = body(view)
     assert "🔒" not in text and "Más adelante" not in text and "25" not in text and "75" not in text
-    set_profs(service, herreria=25)
-    assert ids(service.act("test:1", "trainer")) == ["myprof", "learnlist", "pspecs", "claro"]
+    set_profs(service, herreria=25)                                     # D-306 (0.44): rank 25 also opens 📚 its recipe book
+    assert ids(service.act("test:1", "trainer")) == ["myprof", "learnlist", "pspecs", "pbooks", "claro"]
 
 
 def test_specializations_show_only_what_your_ranks_open(service):

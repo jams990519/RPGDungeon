@@ -69,10 +69,10 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
     for pid in by_branch["refine"] + by_branch["craft"]:
         ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid})
         assert ranks[0] == 1, pid                                       # everyone can start every profession
-        if pid in gear_crafts:                                          # D-110/D-113: a gear tier every 5 ranks from 55 to 100
-            gear_ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid
+        if pid in gear_crafts:                                          # D-306 (0.44, E-221): a gear tier every 5 ranks, 1 to 100
+            gear_ranks = sorted({r["min_rank"] for r in recipes.values() if r["profession"] == pid and not r.get("retired")
                                  and content.items[next(iter(r["output"]))].get("kind") == "gear"})   # D-116: 🪑 furniture apart
-            assert gear_ranks == [1, 25, 50] + list(range(55, 101, 5)), pid
+            assert gear_ranks == [1] + list(range(5, 101, 5)), pid
         elif pid in by_branch["craft"]:
             assert ranks[:3] == [1, 25, 50], pid                        # recipes at increasing ranks (D-115: 🍲 up to 100)
     stations = data["stations"]
@@ -360,12 +360,16 @@ def test_station_lists_what_you_can_make_first_two_per_page(service):
     view = service.act("test:1", "est:craft:0")
     assert view.kind == "station" and len(view.actions) == 4
     assert view.actions[0].id == "rec:daga_forjada:0" and view.actions[0].label.startswith("✅")
-    # then those you carry part of, in file order (Carpintería comes first): the staff, with what is missing
-    assert view.actions[1].id == "rec:baston_roble:0" and not view.actions[1].label.startswith("✅")
+    # D-306 (0.44): the 📿 copper pendant (lingot and leather) too; in a tier, the piece of highest level first
+    assert view.actions[1].id == "rec:colgante_cobre:0" and view.actions[1].label.startswith("✅")
     assert view.actions[2].id == "est:craft:1" and view.actions[3].id == "oficios"
-    assert any("Falta" in line and "Tablón ×2" in line and "Tela ×1" in line for line in view.body)
-    # 37 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2; D-183: + 8 with terrain resources)
-    assert any("Página 1 de 19" in line for line in view.body)
+    # then those you carry part of, in file order (Carpintería comes first): the staff, with what is missing
+    second = service.act("test:1", "est:craft:1")
+    assert second.actions[0].id == "rec:baston_roble:1" and not second.actions[0].label.startswith("✅")
+    assert any("Falta" in line and "Tablón ×2" in line and "Tela ×1" in line for line in second.body)
+    # 34 rank-1 crafting recipes in the Claro (D-115: +16 head/hands/legs/feet, + 🍲 2; D-183: + 8 with terrain resources;
+    # D-306: − 5 of mail, + 📿 the copper pendant)
+    assert any("Página 1 de 17" in line for line in view.body)
     refine = service.act("test:1", "est:refine:0")
     assert refine.kind == "station" and len(refine.actions) == 4      # 13 refining recipes (D-115: + 🧱 sillar; D-183: + 7): 2 per page
     assert any("Página 1 de 7" in line for line in refine.body)

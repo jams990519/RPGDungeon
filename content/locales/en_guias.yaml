@@ -100,7 +100,7 @@ guides_page:
       ⭐ The Trainer recommends the profession that makes your class's armor.
       🔗 You gather materials → 🪚 Refine (wood → plank, metal → ingot…) → 🛠️ Craft (gear, potions, bandages, furniture).
       🔥 It's all done in 🏕️ Camp → 🛠️ Craft: every campfire has the basic stations; your camp, the ones its profession buildings open.
-      ⚡ Each recipe spends energy and gives profession experience; each rank opens new recipes, up to {max_rank}.
+      ⚡ Each recipe spends energy and gives profession experience, up to rank {max_rank}: the gear professions get new recipes every 5 ranks and each one has its color (🟧 full, 🟨 half, 🟩 a quarter, ⬜ none); those of rank 25, 50 and 75 need their 📚 recipe book from the 🧑‍🏫 Trainer.
       🎓 At rank {spec_first} you pick a specialization, and at {spec_second}, another one.
       📋 Your professions: /myprofessions (each with its code, to see everything about it).
   # ---- ⚙️ How it works

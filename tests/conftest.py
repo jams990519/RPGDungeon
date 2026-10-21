@@ -60,8 +60,11 @@ def every_profession_known(monkeypatch):
 
     [ES] Desde la 0.33 los oficios se aprenden (D-257, con sus propias pruebas en test_aprender_oficios.py). Las pruebas de
     cómo se fabrica, se refina, se encanta o se especializa usan este arreglo para que todo oficio cuente como aprendido.
+    Desde la 0.44 (D-306) las recetas de rango 25, 50 y 75 o más piden su 📚 libro de recetas: este arreglo también da todos
+    los libros por comprados (los libros tienen sus propias pruebas en tests/test_tramos_de_recetas.py).
     """
     monkeypatch.setattr(GameService, "_knows", lambda self, hero, pid: True)
+    monkeypatch.setattr(GameService, "_book_missing", lambda self, hero, rdef: [])
 
 
 @pytest.fixture
