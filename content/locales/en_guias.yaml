@@ -168,7 +168,7 @@ guides_page:
       📈 Each new work costs {growth_pct}% more for every work already built.
       🏗️ Once its materials are complete, it gets built: {work_minutes} min per level with {work_members} members in the territory (faster with more).
       ⬆️ Improve (🏰 Manage): ⏫ Next level lists the works and materials still missing; 🗺️ Expand territory adds a zone wherever the founder or an 🤝 assistant chooses; 🌾 with the 🧱 Wall (level {wall_level}) every zone harvests by itself {harvest_pct}% of what grows back (about {harvest_zone} a day) and every {harvest_days} days it reaches the 💰 fund, if someone played that week (/d61).
-      🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight.
+      🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight. At level 8 they are {castle_waves} 🌊 growing waves, each one {castle_waves_pct}% stronger: to become a castle you need to win {castle_waves_pass} (/d39).
   dungeons:
     title: "🕳️ Dungeons and enemies"
     text: |-

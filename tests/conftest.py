@@ -128,3 +128,17 @@ def listed_recipes(service, account="test:1", branch="craft", every_page=True):
         rids += [code.split("|")[0] for code in (service.store.get("gremio_codes", account) or {}).get("recipes", [])]
         page += 1
     return rids
+
+
+def pass_castle_waves(service, key="6:0"):
+    """The camp at `key` passed the castle's 🌊 growing waves (D-122, D-329), straight in the store.
+
+    [ES] Desde la 0.53 el paso a castillo pide también las oleadas crecientes (balance.yaml ladder.castle_waves: ganar 3 de 5).
+    Las pruebas viejas que llegan a castillo, y que no prueban las oleadas, las dan por superadas con esto, como ya daban por
+    ganada la 🌙 Noche de prueba ("trial_won"). Las oleadas tienen sus propias pruebas en
+    tests/test_oleadas_crecientes_castillo.py.
+    """
+    need = int(service.content.balance["ladder"]["castle_waves"]["pass_wins"])
+    camp = service.store.get("camp", key)
+    camp["castle_waves"] = {"won": need, "lost": 0, "passed": True, "tries": 1}
+    service.store.put("camp", key, camp)

@@ -12,7 +12,7 @@ de 4 botones. D-327 (0.51): el cupo ya no sale del nivel del gremio sino de la e
 
 from collections import deque
 
-from conftest import make_hero
+from conftest import make_hero, pass_castle_waves
 from engine.combat import make_combat
 from engine.core import FixedClock, MemoryStore
 from engine.hero import Hero
@@ -274,6 +274,7 @@ def test_no_castle_without_a_guild_that_is_ready(service):
     camp = service.store.get("camp", "6:0")
     camp["trial_won"] = True                                       # the Noche de prueba is its own gate (D-99, test_raids.py)
     service.store.put("camp", "6:0", camp)
+    pass_castle_waves(service, "6:0")                              # and the 🌊 growing waves (D-329, their own tests)
     need = service.content.balance["upgrades"]["castle_min_built"]     # D-101: the castle also asks 15 improvements
     built = {uid: 0 for uid in list(service._upgrade_catalog())[:need] + ["torres_arqueros", "foso"]}   # D-304: and its 2 works
     service.store.put("upgrades", "6:0", {"built": built, "works": {}, "tech": {}})

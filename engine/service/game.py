@@ -82,6 +82,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     "raid" (la incursión abierta: kind "raid" o "trial", at, until, required, wins, fights {héroe: fighting, won,
     lost o fled}, enemy, level), "raids" ({"won", "lost"}), "trial_won" y "trial_retry_at" (Noche de prueba).
     Una pelea de defensa lleva "raid" ({"camp", "at"}) en su estado de "combat". Diseño: §0.5 del mismo documento
+    D-329 (0.53): en el nivel anterior al castillo la incursión semanal lleva también "wave" (su número en la serie de 🌊
+    oleadas crecientes) y "wave_mult" (su fuerza); la serie se guarda en "castle_waves" (engine/service/ladder.py)
     D-101 (provisional): "upgrades" (mejoras de un campamento, clave "x:y": "built" id → hora, "works" obras a medias
     con lo aportado, "tech" conocimiento aprendido, el estudio en curso y su avance). Lo construido nunca se borra.
     D-116: en "upgrades" también "furniture" (🪑 muebles colocados: id del mueble → {"by", "id", "at"}; uno de cada uno,
@@ -326,7 +328,10 @@ Si cambias esto, revisa:
       nivel ya no da cupo (guild.levels → capacity solo cuenta para el piso de los campamentos de antes, "cap_floor")
     - Escalera del asentamiento (D-253, D-327; 0.51): engine/service/ladder.py; balance.yaml camps.members_by_stage, ladder y
       raids.trial.min_wins; textos en es_escalera.yaml y en_escalera.yaml; _members_cap, tick (_cap_floor_sweep, _idle_tick),
-      _castle_needs (la línea de los activos) y ⏫ Siguiente nivel (lvlup.gives); tests/test_escalera_cupo_oficiales.py
+      _castle_needs (la línea de los activos) y ⏫ Siguiente nivel (lvlup.gives); tests/test_escalera_cupo_oficiales.py.
+      Las 🌊 oleadas crecientes del castillo (D-122, D-329; 0.53): balance.yaml ladder.castle_waves; _open_raid, _raid_notice,
+      _defend, _resolve_raid, _raid_lines, _lvlup_rows ("waves"), _lvlup_view y _lvlup_all_view llaman a ladder.py;
+      tests/test_oleadas_crecientes_castillo.py
       tests/test_raids.py (incursiones y Noche de prueba, D-99)
     - Incursiones (D-99): balance.yaml raids; engine/world/raids.py; textos raids.* en es.yaml; los botones
       🛡️ Defender ("defend") y 🌙 Noche de prueba ("trial"); _lvlup_rows (castillo pide la prueba ganada; D-304: antes
@@ -868,7 +873,8 @@ TERRITORY_KEYCAPS = ("1️⃣", "2️⃣", "3️⃣")
 # D-304: the headings of the ⏫ Siguiente nivel checklist, by kind of line (_lvlup_rows): what to build, the resources and what
 # the castle asks. A kind without a heading (the famine line) goes under the last one.
 LVLUP_SECTIONS = {"work": "lvlup.works_title", "item": "lvlup.items_title", "chests": "lvlup.items_title",
-                  "guild": "guild.castle_title", "castle": "guild.castle_title", "trial": "guild.castle_title"}
+                  "guild": "guild.castle_title", "castle": "guild.castle_title", "trial": "guild.castle_title",
+                  "waves": "guild.castle_title"}     # D-329 (0.53): the 🌊 growing waves of the castle
 COORD_RE = re.compile(r"^/(?:ir|go)_?\s*\(?\s*(-?\d{1,4})\s*[,;\s]\s*(-?\d{1,4})\s*\)?(@\w+)?$")   # D-278: /ir 12 -3, /ir 12,-3, /go (12, -3)
 SELL_CODE_RE = re.compile(r"^/v(\d{1,3})(@\w+)?$")   # D-259: /v02 = sell every unit of the resource with code 2 (Claro trader)
 RECIPE_CODE_RE = re.compile(r"^/r_?(\d{1,3})(@\w+)?$")   # D-321: /r3 = the 3rd recipe of the last 🛠️ / 🪚 / 🍲 recipe list
@@ -4637,9 +4643,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         aportado de lo que pide (camps.level_up_cost_per_level × nivel), 🪎 los cofres desde el nivel 6 (D-92), y en el paso a
         castillo (8 → 9) lo de siempre: el gremio listo (_castle_needs, D-97; desde la 0.51 con "👥 Activos esta semana: N de
         40", D-253.2 y D-327), las mejoras construidas (_castle_upgrades, D-101) y la 🌙 Noche de prueba ganada (D-99; desde la
-        0.51 con 10 vencedores distintos como mínimo, raids.trial.min_wins). Con la despensa vacía suma una línea ▫️ (D-93: la
-        hambruna no deja subir).
-        Tipos: "work", "item", "chests", "guild", "castle", "trial" y "famine" (los botones de _lvlup_view los miran).
+        0.51 con 10 vencedores distintos como mínimo, raids.trial.min_wins); desde la 0.53 (D-122, D-329), las 🌊 oleadas
+        crecientes (ladder.py _castle_waves_row: "2 ganadas, 1 perdida de 5…"). Con la despensa vacía suma una línea ▫️ (D-93:
+        la hambruna no deja subir).
+        Tipos: "work", "item", "chests", "guild", "castle", "waves", "trial" y "famine" (los botones de _lvlup_view los miran).
         D-313 (0.41.1, el dueño: "específicamente, necesita esto, esto y esto; recursos tal, tal y tal"): cada línea dice lo que
         le falta: la obra activa, sus materiales que faltan; la obra en obra, cuándo termina (o que está pausada sin nadie en el
         territorio); la obra sin activar, quién la activa; cada material, "12 de 30 (faltan 18)". `hero` (opcional) da los
@@ -4689,6 +4696,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             rows.append(("chests", t.t("lvlup.chest_line", have=have, need=chests), have >= chests))
         rows += [("guild", text, ok) for text, ok in self._castle_needs(camp, hero)]     # D-97, D-253.2: 8 → 9 only
         rows += [("castle", text, ok) for text, ok in self._castle_upgrades(camp)]       # D-101: 8 → 9 only
+        waves = self._castle_waves_row(camp)            # D-122, D-329: the 🌊 growing waves, 8 → 9 only
+        if waves is not None:
+            rows.append(("waves", *waves))
         if target == self._raid_sub("trial")["to_level"]:                                 # D-99: the won 🌙 Noche de prueba
             rows.append(("trial", t.t("lvlup.trial_line"), bool(camp.get("trial_won"))))
         if self._camp_starving(camp):                   # D-93: an empty pantry blocks leveling
@@ -4704,8 +4714,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         a medida que va completándose"): las líneas de _lvlup_rows con ✅ (listo) o ▫️ (falta), lo que da el nivel siguiente, lo
         que el 💰 fondo pone primero y tus 🪎 cofres. La ven todos los miembros (pedido del dueño del 20-oct-2026: todo visible
         para todos). Botones (4 como máximo): ⏫ Subir a nivel N (todo ✅: cualquier miembro), 🌙 Noche de prueba (si es lo
-        único que falta), 🤲 Aportar (faltan materiales o cofres), 🔨 Mejoras (faltan obras), 🛡️ Gremio (falta el gremio del
-        castillo), 🌾 Aportar comida (hambruna) y ↩️ Volver a ⬆️ Mejorar. En castillo dice que todavía no hay otro nivel.
+        único que falta, o solo faltan ella y las 🌊 oleadas crecientes, que llegan solas y no tienen botón: D-329, con su
+        línea de cómo llegan, _castle_waves_how), 🤲 Aportar (faltan materiales o cofres), 🔨 Mejoras (faltan obras),
+        🛡️ Gremio (falta el gremio del castillo), 🌾 Aportar comida (hambruna) y ↩️ Volver a ⬆️ Mejorar. En castillo dice que todavía no hay otro nivel.
         Solo en el centro de tu campamento (en otro lugar, _upgrades_elsewhere).
         La llaman: ⏫ Siguiente nivel ("lvlup"), _lvlup_give, _lvlup_go, el tope de 🗺️ Agrandar territorio y _lvlup_trial.
         Si cambia, afecta: tests/test_siguiente_nivel.py y el recorrido de botones (tests/test_buttons.py).
@@ -4745,13 +4756,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body += ["", t.t("lvlup.how_items")]
         if "work" in missing:
             body.append(t.t("lvlup.how_works"))
+        if "waves" in missing:                          # D-329: they come by themselves with the camp's waves, no button
+            body.append(self._castle_waves_how())
         cap_now, cap_next = self._members_cap(camp), self._members_cap_at(camp, target)     # D-327: one cap per stage
         body += ["", t.t("lvlup.gives" if cap_next > cap_now else "lvlup.gives_same", cap=cap_next, now=cap_now,
                          zones=self._zones_cap_at(target))]
         extra: list[Action] = []
         if not missing:
             extra.append(Action(id="lvlgo", label=t.t("lvlup.go_button", level=target)))
-        elif missing == {"trial"}:                      # D-99: only the 🌙 Noche de prueba is left
+        elif "trial" in missing and missing <= {"trial", "waves"}:     # D-99: the 🌙 Noche de prueba (D-329: the waves come alone)
             extra.append(Action(id="lvltrial", label=t.t("lvlup.trial_button")))
         else:
             if missing & {"item", "chests"}:
@@ -4855,7 +4868,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         subida, desde la tuya hasta castillo, con las obras que tienen que estar construidas (camps.level_up), los materiales
         (camps.level_up_cost_per_level × nivel) y los 🪎 cofres desde el nivel 6 (D-92); al final, lo que pide además el
         castillo (gremio, upgrades.castle_min_built mejoras, la 🌙 Noche de prueba; desde la 0.51, D-327: ladder.castle_active
-        activos de la semana y raids.trial.min_wins vencedores distintos). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
+        activos de la semana y raids.trial.min_wins vencedores distintos; desde la 0.53, D-329: las 🌊 oleadas crecientes,
+        _castle_waves_all). Solo muestra; ↩️ Volver a ⬆️ Mejorar.
         La llama: 📜 Qué pide cada nivel de ⬆️ Mejorar ("lvlall"). Si cambia, afecta: tests/test_siguiente_nivel.py.
         """
         here = self._upgrades_here(hero)
@@ -4875,7 +4889,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if level < top:
             body += ["", t.t("lvlall.castle", n=int(self.content.balance["upgrades"]["castle_min_built"]),   # D-327: 40 active, 10 winners
                              active=self._castle_active_need(), days=int(round(self._active_days())),
-                             winners=int(self._raid_sub("trial")["min_wins"]))]
+                             winners=int(self._raid_sub("trial")["min_wins"]), waves=self._castle_waves_all())]   # D-329: 🌊
         else:
             body.append(t.t("lvlup.top", stage=self._camp_stage(level)))
         return View(kind="camp_lvlall", title=t.t("lvlall.title"), body=body,
@@ -5730,6 +5744,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: abre la incursión en el campamento (enemigo, ventana, victorias necesarias según los miembros activos)
         y les manda el aviso con 🛡️ Defender. Quien la abrió cuenta como activo. El llamador guarda el campamento.
+        D-329 (0.53): en el nivel anterior al castillo, la oleada semanal es la siguiente 🌊 oleada creciente de la serie
+        (ladder.py _castle_wave_mark: "wave" y "wave_mult" en la incursión).
         La llaman: _raid_settle (la semanal) y _start_trial (la Noche de prueba).
         Si cambia, afecta: a quién le llega el aviso y cuántas victorias hacen falta.
         """
@@ -5742,6 +5758,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 "required": raid_rules.required_wins(len(told), sub["required_share"], sub["min_wins"]),
                 "wins": 0, "fights": {}, "enemy": enemy_id, "level": level,
                 "defense": self._camp_defense(camp, night=self._is_night(now))}     # D-101: what the improvements hold back
+        if kind == "raid":                              # D-122, D-329: on the step to the castle, the next 🌊 growing wave
+            self._castle_wave_mark(camp, raid)
         camp["raid"] = raid
         self._push_each(told, lambda: self._raid_notice(camp, raid))
 
@@ -5754,6 +5772,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 t.t("raids.trial_stakes", days=self._raid_cfg()["trial"]["retry_days"]) if trial else t.t("raids.stakes")]
         if raid.get("defense"):
             body.insert(1, t.t("raids.defense_line", defense=raid["defense"], pct=round(100 * (1 - self._raid_weaken(raid)))))
+        wave = self._castle_wave_notice_line(raid)      # D-329: "🌊 Oleada creciente 2 de 5: un 40 % más fuerte…"
+        if wave:
+            body.insert(1, wave)
         return View(kind="camp_raid", title=t.t("raids.trial_title" if trial else "raids.title", camp=camp["name"]), body=body,
                     actions=[Action(id="defend", label=t.t("raids.defend_button"))])
 
@@ -5770,7 +5791,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: el miembro sale a defender su campamento: UNA pelea con el motor de combate normal contra el enemigo
         de la incursión (en la Noche de prueba, su versión élite). Se puede desde cualquier zona, sin energía, si no
-        estás ocupado. Perder sigue las reglas normales de derrota: no hay castigo extra.
+        estás ocupado. Perder sigue las reglas normales de derrota: no hay castigo extra. D-329 (0.53): en una 🌊 oleada creciente
+        del castillo, el enemigo trae la fuerza de esa oleada ("wave_mult": vida y ataque, antes de la 🛡️ Defensa).
         La llaman: el botón 🛡️ Defender del aviso, de la pantalla del campamento o de la Noche de prueba.
         Si cambia, afecta: las victorias de la incursión (_raid_fight_done) y tests/test_raids.py.
         """
@@ -5791,6 +5813,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if trial:
             sub = self._raid_sub("trial")
             raid_rules.scale_enemy(state, sub["enemy_hp_mult"], sub["enemy_attack_mult"])
+        if float(raid.get("wave_mult", 1.0)) > 1:      # D-329: a 🌊 growing wave of the castle, stronger each time
+            raid_rules.scale_enemy(state, float(raid["wave_mult"]), float(raid["wave_mult"]))
         weaken = self._raid_weaken(raid)
         if weaken < 1:                                  # D-101: walls, traps and towers hold part of the wave back
             raid_rules.scale_enemy(state, weaken, weaken)
@@ -5800,6 +5824,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self.store.put("camp", key, camp)
         self.bus.publish(CombatStarted(hero.id, raid["enemy"], seed))
         notice = t.t("raids.trial_started" if trial else "raids.started", camp=camp["name"], enemy=t.t(edef["name_key"]), level=raid["level"])
+        wave = self._castle_wave_fight_line(raid)       # D-329: "🌊 Oleada creciente 2 de 5: +40 % de vida y de ataque"
+        if wave:
+            notice += "\n" + wave
         return self._combat_view(hero, state, notice=notice)
 
     def _raid_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
@@ -5827,6 +5854,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         D-115: la oleada semanal (defendida o perdida) daña las defensas unos puntos hasta que las reparen (_raid_damage;
         la Noche de prueba no daña). Las mejoras construidas nunca se pierden: solo baja la 🛡️ Defensa hasta reparar.
         Nunca toca niveles, zonas ni miembros (§15). El llamador guarda el campamento.
+        D-329 (0.53): si era una 🌊 oleada creciente del castillo, la suma a la serie (ladder.py _castle_wave_done: aprobada,
+        perdida o cómo va) y el parte que reciben todos los miembros (_push_each) lo dice en una línea.
         La llama: _raid_settle.
         Si cambia, afecta: la despensa, la experiencia y las monedas de los defensores, y si el campamento puede ser castillo.
         """
@@ -5864,6 +5893,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             damaged = self._raid_damage(camp, won)            # D-115: 🛠️ the wave damages the defenses until repaired
             if damaged:
                 lines.append(("camp_prof.raid_damage", {"n": damaged, "defense": self._camp_defense(camp)}))
+            lines += self._castle_wave_done(camp, raid, won)   # D-122, D-329: a 🌊 growing wave counts for the castle
             camp["next_raid_at"] = raid_rules.next_raid_at(raid["until"], now, self._raid_interval())
             lines.append(("raids.next", {"n": self._days_until(camp["next_raid_at"])}))
 
@@ -5951,8 +5981,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         raid = camp.get("raid")
         if raid:
             left = self._fmt_duration(max(0.0, raid["until"] - self.clock.now()))
-            return [t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
-                        n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)]
+            line = t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
+                       n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)
+            return [line] + self._castle_wave_open_line(raid)       # D-329: "🌊 Es la oleada creciente 2 de 5 (+40 %)"
         level = camp.get("level", 1)
         if level >= cfg["from_level"]:
             nxt = camp.get("next_raid_at")
@@ -7772,7 +7803,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         D-325 (0.49): {own_bonus} (el +50 % de tu territorio) ya no está; la 🌾 cosecha de la muralla trae {harvest_pct},
         {harvest_days}, {harvest_cap}, {harvest_zone} y {wall_level} (_harvest_faq_values). D-327 (0.51): {members_stages},
         {idle_days}, {idle_left}, {castle_active}, {active_days} y {trial_winners} (ladder.py _ladder_faq_values); {members_base}
-        y {members_step} quedan (la cuenta de antes) aunque ninguna respuesta los use.
+        y {members_step} quedan (la cuenta de antes) aunque ninguna respuesta los use. D-329 (0.53): {castle_waves},
+        {castle_waves_pass}, {castle_waves_pct} y {castle_waves_retry} (las 🌊 oleadas crecientes del castillo).
         """
         t = self.texts
         b = self.content.balance

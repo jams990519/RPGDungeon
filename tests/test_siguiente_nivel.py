@@ -13,7 +13,7 @@ Archivo: tests/test_siguiente_nivel.py · Módulo: M14 Construcción · Prueba: 
 _lvlup_rows, _lvlup_view, _lvlup_give, _lvlup_go, _lvlup_trial, _level_up, _upgrades_view)
 """
 
-from conftest import make_hero
+from conftest import make_hero, pass_castle_waves
 from test_camps import old_camp_at, place
 from test_guilds import join, set_level
 from engine.service.game import button_cap
@@ -212,8 +212,12 @@ def test_the_castle_step_lists_the_guild_the_upgrades_and_the_trial(service):
     data = camp(service)
     data["trial_won"] = True
     service.store.put("camp", KEY, data)
+    view = service.act("test:1", "lvlup")                             # D-329: the 🌊 growing waves are still missing
+    assert "✅ 🌙 Ganar la Noche de prueba" in view.body and ids(view) == ["improve"]
+    assert any(line.startswith("▫️ 🌊 Oleadas crecientes: ganar 3 de 5") for line in view.body)
+    pass_castle_waves(service, KEY)                                   # (they have their own tests)
     view = service.act("test:1", "lvlup")
-    assert "✅ 🌙 Ganar la Noche de prueba" in view.body and ids(view) == ["lvlgo", "improve"]
+    assert "✅ 🌊 Oleadas crecientes: superadas (3 ganadas, 0 perdidas)" in view.body and ids(view) == ["lvlgo", "improve"]
     view = service.act("test:2", "lvlgo")
     assert camp(service)["level"] == 9 and "castillo" in view.notice
     assert view.body == ["🏰 Tu campamento llegó a castillo: todavía no hay un nivel más."] and ids(view) == ["improve"]
