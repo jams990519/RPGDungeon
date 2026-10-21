@@ -155,7 +155,7 @@ guides_page:
       💰 Fund (with a camp, 💰 Camp funds) → 💰 Deposit: add materials from wherever you are, using their code (/f02).
       ⚔️ Armory: leave gear with /a1 and take it with /t1.
       🗺️ What one member explores, the whole guild knows (the experience goes to whoever explores). If you leave, you keep what's yours.
-      ⏳ When the camp is full, the founder or an 🤝 assistant can add you to the guild to wait for a spot (up to {waiting_max}).
+      ⏳ When the camp is full, the founder or an 🤝 assistant can add you to the guild to wait for a spot (up to {waiting_max}); once there's room, you join by yourself, first come first in.
   camp:
     title: "🏕️ Camp"
     text: |-

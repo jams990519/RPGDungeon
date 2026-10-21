@@ -92,18 +92,20 @@ waiting:                       # [ES] D-294 (0.39, el dueño): del gremio, esper
   you: "⏳ Estás en el gremio de {camp} esperando lugar en el campamento: depositas, chateas y usas la armería; lo del campamento llega cuando te unan."
   card: "⏳ Espera lugar en el campamento: tiene lo del gremio, todavía no lo del campamento."
   join_button: "🏕️ Unir al campamento"
-  no_room: "🏕️ El campamento está lleno: cuando haya lugar, se podrá unir."
+  no_room: "🏕️ El campamento está lleno: cuando haya lugar, entra solo."
   joined: "🏕️ {name} ya es miembro del campamento."
   joined_push: "🏕️ ¡Ya eres miembro del campamento {camp}! Ahora tienes también sus beneficios."
   invite_title: "✉️ Invitación a un gremio"
   invite_body: "✉️ {name} te invita al gremio de {camp}. El campamento está lleno: entras al gremio y esperas lugar (depositas, chateas y usas la armería)."
-  welcome: "✅ Entraste al gremio de {camp}: esperas lugar en el campamento."
+  welcome: "✅ Entraste al gremio de {camp}: esperas lugar en el campamento. Cuando haya lugar, entras solo."
+  joined_now: "✅ Había lugar: ya eres miembro del campamento {camp}."   # [ES] D-323: aceptó la espera y había lugar
+  auto_joined_push: "⏳ Había lugar en {camp} y entraron solos los que esperaban: {names}."   # [ES] D-323 (orden del dueño): al fundador y a sus asistentes
   declined: "No entraste al gremio de {camp}."
   full: "El gremio de {camp} ya no tiene lugar para esperar."
   accepted_push: "✅ {name} entró al gremio de {camp} y espera lugar en el campamento."
   declined_push: "❌ {name} no aceptó la invitación al gremio de {camp}."
   full_push: "⚠️ {name} quiso entrar al gremio de {camp}, pero ya no había lugar para esperar."
-  room_push: "🏕️ Hay lugar en el campamento {camp}: el fundador o un 🤝 asistente te une."
+  room_push: "🏕️ Hay lugar en el campamento {camp}: entras solo."   # [ES] D-323: ya no se usa (entran solos); queda por si vuelve el aviso
   room_push_managers: "🏕️ Hay {n} {n|lugar|lugares} en {camp} y {w} {w|espera|esperan} en el gremio: únelos desde 🛡️ Gremio."
   leave_button: "🚪 Salir del gremio"
   leave_ask: "🚪 ¿Sales del gremio de {camp}? Lo que depositaste queda en el fondo."

@@ -160,7 +160,7 @@ guides_page:
       💰 Fondo (con campamento, 💰 Fondos del campamento) → 💰 Depositar: pones materiales desde donde estés, con su código (/f02).
       ⚔️ Armería: dejas equipo con /a1 y lo tomas con /t1.
       🗺️ Lo que explora uno lo sabe todo el gremio (la experiencia es de quien explora). Si sales, te quedas con lo tuyo.
-      ⏳ Con el campamento lleno, el fundador o un 🤝 asistente puede sumarte al gremio a esperar lugar (hasta {waiting_max}).
+      ⏳ Con el campamento lleno, el fundador o un 🤝 asistente puede sumarte al gremio a esperar lugar (hasta {waiting_max}); cuando haya lugar, entras solo, por orden de llegada.
   camp:
     title: "🏕️ Campamento"
     text: |-
