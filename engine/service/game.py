@@ -170,6 +170,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-304 (0.41): "upgrades" suma "levelup" ({"to": nivel al que suben, "given": {material: n}, "chests": n}: lo aportado a
     ⏫ Siguiente nivel; se borra al subir y nunca guarda de más). camp["level"] y camp["zones"] ya no van juntos: el nivel
     sube con ⏫ Siguiente nivel y las zonas con 🗺️ Agrandar territorio (hasta camps.zones_by_stage). Nada nuevo en Hero.
+    D-305 (0.42): la actividad "gather" de un lote de 🪓 Talar lleva "only" (el único recurso que junta: la 🪵 madera); un lote
+    guardado antes no lo tiene y sigue siendo 🧺 Recolectar. D-308 (0.42): nada nuevo guardado (🩹 lee Hero.options "retreat").
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -177,7 +179,8 @@ Reglas que nunca se rompen:
     4. El servicio no sabe qué cliente lo llama: el id de cuenta lo arma el adaptador.
     5. El Pionero de un Guardián se escribe una sola vez y nunca se pisa; el aviso al servidor sale una sola vez.
     6. Nada se cobra a cambio de nada: un remedio con la vida llena, la posada sin heridas, recolectar o comprar
-       con la mochila llena o recolectar en la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos.
+       con la mochila llena o recolectar en la zona agotada se rechazan con un aviso, sin gastar energía, monedas ni objetos
+       (D-305: también 🪓 Talar sin madera; D-308: un lote con la vida bajo el % de 🩹 Retirarse).
     7. La despensa (D-93) es solo de los campamentos de jugadores y solo recibe lo que un jugador aporta: nunca
        toma comida de la mochila de nadie, y el hambre nunca quita niveles, zonas o miembros. El Claro es el
        campamento base: no crece ni se mantiene (D-95, D-98).
@@ -516,6 +519,20 @@ Si cambias esto, revisa:
       salen tal cual: _node_main no se movió). En engine/service/gremio.py, _resource_search_view ordena las zonas cercanas
       con las más ricas primero (gremio.search_rich_penalty). Números: balance.yaml resources.wood (forest_min 1,0,
       elsewhere_max 0,5; threshold sin uso). Pruebas: tests/test_resources.py, tests/test_buscador_de_recursos.py
+    - 🪓 Talar, los recursos de base ×3 y 🩹 Descansa primero (0.42, D-305 y D-308, confirmadas por el dueño el 20-oct-2026;
+      cómo se aplicó: D-314, provisional). 🪓 Talar es un MODO de recolectar (BATCH_MODES "chop" → "gather" con activity["only"]):
+      tocan _explore_menu (el botón al lado de 🧺 Recolectar, 5 botones en [1, 2, 2], EXTRA_BUTTON_KINDS "explore_menu"),
+      act() ("chop", "amt:chop", "do:chop:N"), _amount_view y _start_batch, _gather_blocked (only), _gather_step (solo ese
+      recurso; el nodo solo si es de él), _continue_batch ("chop_depleted" antes de cobrar), _batch_summary, _activity_view,
+      _activity_word (👥 y Estado: "🪓 talando"), _chop_resource, _mode_only y _can_chop. Si Talar pasara a ser una actividad
+      propia, habría que tocar PRESENT_BUSY, BATCH_KINDS, _settle, la historia, el gremio, el camino guiado y
+      adapters/reports.py. Los 6 de base vuelven ×3: balance.yaml stock.regen_mult (lo lee _stock; _base_regen_values da
+      {base_regen} y {base_units} a ❓ Dudas y 📚 Guías). 🩹 Descansa primero: _batch_gate (campamento enemigo, guarida, cazar en
+      lote y, con RETREAT_GATED, _below_retreat → _retreat_view) en _amount_view y _start_batch; las peleas no cambian.
+      Recolectar pasó de 🪓 a 🧺 en los textos (🪓 queda para Talar y el Leñador). Textos: content/locales/es_talar.yaml y
+      en_talar.yaml (chop.*, retreat.*, batch.*_chop, presence.activity.chop, hero.status.chop), options.retreat_now,
+      faq d09, d19, d55 y d57 (content/faq.yaml) y las guías find y gather. Pruebas: tests/test_talar.py,
+      tests/test_resources.py, tests/test_buttons.py, tests/test_hunt.py, tests/test_mazmorras.py y tests/test_options.py
 """
 
 from __future__ import annotations
@@ -632,6 +649,15 @@ CAMP_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 PRESENT_BUSY = ("explore", "gather", "rest", "hunt")
 # Activities that go in batches of energy (D-87); "hunt" only with ⚔️ automatic fights (D-114).
 BATCH_KINDS = ("explore", "gather", "hunt")
+# D-305 (0.42): batch choices that are a mode of another activity. 🪓 Talar ("chop") is a gathering batch that takes only
+# 🪵 wood (balance.yaml resources.wood.resource): its button and amount screen say "chop" ("amt:chop:0", "do:chop:10"), the
+# activity it starts stays "gather" with activity["only"] = the resource (D-314: same energy, minutes, presence, missions,
+# guide step and reports as 🧺 Recolectar). [ES] D-305: 🪓 Talar es un modo de recolectar (la actividad sigue siendo
+# "gather" con "only"); estos ids van en los botones: solo se agregan.
+BATCH_MODES = {"chop": "gather"}
+# D-308 (0.42): the batches that do not start with the hero's life under its 🩹 Retirarse % (⚙️ Opciones). A hunting batch
+# has its own check (_hunt_batch_blocker). [ES] D-308: con la vida bajo el % de 🩹 Retirarse no empiezan estos lotes.
+RETREAT_GATED = ("explore", "gather", "chop")
 # Button ids (or prefixes) of the camp improvements, their services and the knowledge (D-101): _upgrade_action routes them.
 UPGRADE_ACTIONS = ("upgrades", "upw", "upg:", "upsvc", "crest", "csell", "ctaller", "tsew", "tchest", "know", "kstart:", "kgive",
                    "upf:",       # D-116: 🪑 Colocar a camp furniture piece (from 🔨 Obras)
@@ -660,7 +686,8 @@ HUB_BUTTONS = 8
 # D-297 (20-oct-2026, the owner asked for one extra button on each): ❓ Dudas shows 📚 Guías on top of its 7 topics and
 # ↩️ Volver (HUB_BUTTONS + 1) and ⚙️ Opciones shows ❓ Dudas next to its 4 (D-75's 4 + 1). button_cap() reads them.
 # [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
-EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1}
+EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 1,
+                      "explore_menu": 4 + 1}   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar in 🧭 Explorar
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -706,7 +733,8 @@ def button_cap(kind: str) -> int:
 
     [ES]
     Qué hace: dice el tope de botones de una pantalla según su tipo. D-297 (20-oct-2026): el dueño pidió un botón extra en
-    ❓ Dudas (📚 Guías, 9) y en ⚙️ Opciones (❓ Dudas, 5); el resto sigue igual.
+    ❓ Dudas (📚 Guías, 9) y en ⚙️ Opciones (❓ Dudas, 5); D-305 (0.42): el botón 🪓 Talar que pidió el dueño deja 5 en
+    🧭 Explorar (D-314); el resto sigue igual.
     La usan: las pruebas que recorren los botones (tests/test_buttons.py, test_story, test_guilds, test_camp_upgrades,
     test_oficios_campamento, test_menus_y_dudas, test_options, test_idiomas y test_guias).
     Si cambia, afecta: lo que esas pruebas dejan pasar; el motor no lo usa para recortar botones.
@@ -1764,6 +1792,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         agota la mitad (nodes.stock_mult), y la vuelta tiene nodes.rare_chance de dar el raro de su terreno (biomes.yaml
         node_rare). Las unidades de más y el raro usan su propio sorteo: la vuelta saca los mismos recursos que sin nodo. Lo
         que dio el nodo va a activity["node"] para el resumen del lote. Recolectar en la zona descubre el nodo (estás parado ahí).
+        D-305 (0.42): en un lote de 🪓 Talar (activity["only"] = la 🪵 madera) cada unidad de la vuelta es madera: la misma
+        cantidad, el mismo +50 % de tu territorio, la misma emboscada y el mismo 🪓 Leñador (_trade_gather); solo se agota la
+        madera. El nodo cuenta solo si es de madera (×2, la mitad de agotamiento y su raro); un nodo de otro recurso no se
+        trabaja al talar (sin su raro). Sin madera para juntar, la vuelta termina con batch.reason.chop_depleted.
         """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
@@ -1772,6 +1804,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return self._start_combat(hero, zone, rng, "gather.ambush")
         cfg = self.content.balance["stock"]
         resources = self._zone_resources(zone.x, zone.y)
+        only = activity.get("only")                      # D-305: 🪓 Talar takes this one resource
+        if only:
+            resources = {only: resources[only]} if only in resources else {}
         stock = self._stock(zone.x, zone.y)
         low, high = bal["amount"]
         amount = int(rng.uniform(low, high + 1)) + zone.level // 3
@@ -1781,6 +1816,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         node = self._node_main(zone.x, zone.y)           # D-184: a resource node here doubles its resource
         if node:
             activity["log"] += self._node_discover(hero, zone.x, zone.y)
+            if only and node != only:                    # D-305: 🪓 Talar works a wood node only
+                node = None
         ncfg = self._node_cfg()
         node_rng = Rng(int(hash_unit(self.world_seed, hero.id, "node", activity.get("until", 0), activity.get("done", 0)) * 2**31))
         got: dict[str, int] = {}
@@ -1822,7 +1859,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             activity["log"] += self._give_xp(hero, xp)
         if not got:
             activity["left"] = 0
-            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else "batch.reason.depleted"))
+            reason = "chop_depleted" if only else "depleted"       # D-305: 🪓 Talar says it is the wood that ran out
+            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else f"batch.reason.{reason}"))
         return None
 
     # ------------------------------------------------------------------ creation
@@ -2217,9 +2255,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             hero.activity = {"kind": "travel", "to": [dest.x, dest.y], "until": until, "dir": direction}
             self.bus.publish(TravelStarted(hero.id, dest.x, dest.y, until))
             return self._activity_view(hero, notice=t.t("travel.started", time=self._fmt_duration(seconds)))
-        if action_id == "gather" and self._is_lair(hero.x, hero.y):
+        if action_id in ("gather", "chop") and self._is_lair(hero.x, hero.y):     # D-305: no 🪓 Talar in the lair either
             return self._explore_menu(hero, notice=t.t("guardian.no_gather"))
-        if action_id in ("gather", "explore"):
+        if action_id in ("gather", "explore", "chop"):
             return self._amount_view(hero, action_id, 0)
         if action_id.startswith("amt:"):
             _, kind, page = action_id.split(":")
@@ -2247,39 +2285,41 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """Choose how much energy to spend in a row (5, 10, 20, 40 or all) — or cancel (D-87).
 
         [ES]
-        Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🪓 Recolectar y, con ⚔️ Peleas automáticas, de
+        Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🧺 Recolectar, 🪓 Talar (D-305, "chop": recolectar
+        solo 🪵 madera) y, con ⚔️ Peleas automáticas, de
         🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). D-189 (pedido del dueño): todas las cantidades a
         la vez, como botoncitos uno al lado del otro con solo el número (5, 10, 20, 40 y "Todo" si alcanza para más), y un
         botón ancho ❌ Cancelar abajo (View.layout = [n, 1]); el tiempo de cada cantidad va en una línea del texto ("⏱️ 5 → 50
         min · 10 → 1 h 40 min..."). Ya no hay páginas (▶️ Más): "amt:" muestra lo mismo. Dice además qué pasa si sale una
         pelea (⚙️ Opciones). Con un 👹 campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
         🧭 Explorar con el aviso, sin gastar nada.
-        La llaman: los botones 🔎 Explorar, 🪓 Recolectar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
-        Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py y la excepción de D-189 al
-        tope de 4 botones (D-75).
+        D-305 (0.42): 🪓 Talar es un modo de recolectar (BATCH_MODES "chop" → "gather"): la misma energía, los mismos minutos y
+        las mismas cantidades; sus textos son batch.*_chop y solo mira la 🪵 madera (_gather_blocked con only). D-308 (0.42):
+        lo que frena antes de todo (campamento enemigo, guarida, cazar en lote y la vida bajo el % de 🩹 Retirarse) va en
+        _batch_gate, igual que al empezar.
+        La llaman: los botones 🔎 Explorar, 🧺 Recolectar, 🪓 Talar y 🏹 Cazar en lote (acción "prey" en automático), y "amt:".
+        Si cambia, afecta: tests/test_service.py, tests/test_resources.py, tests/test_options.py, tests/test_talar.py y la
+        excepción de D-189 al tope de 4 botones (D-75).
         """
         t = self.texts
-        if kind not in BATCH_KINDS:
+        base = BATCH_MODES.get(kind, kind)              # D-305: 🪓 Talar ("chop") is a gathering batch
+        if base not in BATCH_KINDS:
             return self._explore_menu(hero)
-        camp_block = self._ecamp_block_line(hero) if kind in ("explore", "gather") else None
-        if camp_block:                                  # D-112: an enemy camp stands here (nothing is spent)
-            return self._explore_menu(hero, notice=camp_block)
+        gate = self._batch_gate(hero, kind)             # D-112, D-82, D-114 and D-308 (🩹 rest first): nothing is spent
+        if gate is not None:
+            return gate
         back = "hunt" if kind == "hunt" else "explore_menu"
-        if kind == "hunt":
-            blocked = self._hunt_batch_blocker(hero)
-            if blocked:
-                return self._hunt_view(hero, notice=blocked)
         zone = self._zone(hero.x, hero.y)
         if kind == "explore" and self._explore_target(hero) is None:
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
-        blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
+        blocked = self._gather_blocked(hero, zone, self._mode_only(kind)) if base == "gather" else None
         if blocked:
             return self._explore_menu(hero, notice=blocked)
-        per = self._step_cost(kind)
+        per = self._step_cost(base)
         if hero.energy < per:
             notice = self._no_energy_notice(hero)
             return self._hunt_view(hero, notice=notice) if kind == "hunt" else self._explore_menu(hero, notice=notice)
-        minutes = self._step_minutes(kind)
+        minutes = self._step_minutes(base)
         step = self._seconds(minutes)
         top = hero.energy - hero.energy % per          # the most energy whole steps can use (all of it, but for a prey)
 
@@ -2289,11 +2329,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         body = [t.t(f"batch.ask_{kind}", minutes=minutes, energy=per), t.t("batch.energy", energy=hero.energy),
                 t.t("batch.estimate_hunt" if kind == "hunt" else "batch.estimate", step=total(per), n=top, k=top // per,
                     total=total(top))]
-        if kind == "gather":
+        if base == "gather":
             body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero)))
         elif kind == "explore":
             body += self._explore_progress_lines(hero)
-        body += self._auto_lines(hero, kind)            # D-114: what happens if a fight comes up (⚙️ Opciones)
+        body += self._auto_lines(hero, base)            # D-114: what happens if a fight comes up (⚙️ Opciones)
         batch = self._hunt_cfg()["batch"] if kind == "hunt" else self.content.balance["energy"]["batch"]
         options = [n for n in batch if n <= hero.energy]
         # D-189 (owner): every amount at once, as small buttons side by side (just the number), and one wide ❌ Cancelar.
@@ -2314,45 +2354,126 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """Start a batch: pay the first step and set the timer; a hunt batch only with ⚔️ automatic fights (D-114).
 
         [ES]
-        Qué hace: empieza el lote elegido ("do:explore:10", "do:gather:max", "do:hunt:20"): cobra la energía de la primera
-        vuelta (1 ⚡; una presa, hunt.energy) y deja el reloj; las demás vueltas se cobran al empezar cada una. Si algo lo
-        impide (mochila llena, zona agotada, nada por explorar, sin energía, un 👹 campamento enemigo en pie en la zona (D-112);
-        para cazar: ✋ Manual, sin presas, malherido o con la vida bajo el límite de ⚙️ Opciones) avisa y no cobra nada.
+        Qué hace: empieza el lote elegido ("do:explore:10", "do:gather:max", "do:chop:20", "do:hunt:20"): cobra la energía de
+        la primera vuelta (1 ⚡; una presa, hunt.energy) y deja el reloj; las demás vueltas se cobran al empezar cada una. Si
+        algo lo impide (mochila llena, zona agotada, nada por explorar, sin energía, un 👹 campamento enemigo en pie en la zona
+        (D-112), la guarida para recolectar o talar (D-82), la vida bajo el % de 🩹 Retirarse para explorar, recolectar o talar
+        (D-308, _batch_gate); para cazar: ✋ Manual, sin presas, malherido o con la vida bajo el límite de ⚙️ Opciones) avisa y
+        no cobra nada. D-305 (0.42): "chop" (🪓 Talar) deja una actividad "gather" con "only" = la 🪵 madera (_mode_only):
+        _gather_step solo junta ese recurso y _continue_batch corta el lote cuando se agota.
         La llaman: los botones de cantidad de _amount_view. Si cambia, afecta: el gasto de energía de todos los lotes.
         """
         t = self.texts
-        if kind not in BATCH_KINDS:
+        base = BATCH_MODES.get(kind, kind)              # D-305: 🪓 Talar ("chop") is a gathering batch
+        if base not in BATCH_KINDS:
             return self._explore_menu(hero)
-        camp_block = self._ecamp_block_line(hero) if kind in ("explore", "gather") else None
-        if camp_block:                                  # D-112: an enemy camp stands here (nothing is spent)
-            return self._explore_menu(hero, notice=camp_block)
-        if kind == "hunt":
-            blocked = self._hunt_batch_blocker(hero)
-            if blocked:
-                return self._hunt_view(hero, notice=blocked)
-        per = self._step_cost(kind)
+        gate = self._batch_gate(hero, kind)             # D-112, D-82, D-114 and D-308 (🩹 rest first): nothing is spent
+        if gate is not None:
+            return gate
+        per = self._step_cost(base)
         n = hero.energy if amount == "max" else (int(amount) if amount.isdigit() else 0)
         steps = min(n, hero.energy) // per
         zone = self._zone(hero.x, hero.y)
-        blocked = self._gather_blocked(hero, zone) if kind == "gather" else None
+        only = self._mode_only(kind)
+        blocked = self._gather_blocked(hero, zone, only) if base == "gather" else None
         if blocked:
             return self._explore_menu(hero, notice=blocked)   # no energy spent for nothing
-        if steps < 1 or not self._spend_energy(hero, kind, per):
+        if steps < 1 or not self._spend_energy(hero, base, per):
             notice = self._no_energy_notice(hero)
             return self._hunt_view(hero, notice=notice) if kind == "hunt" else self._explore_menu(hero, notice=notice)
         if kind == "explore" and self._explore_target(hero) is None:
             hero.energy += per
             return self._explore_menu(hero, notice=t.t("explore.already_full"))
-        seconds = self._seconds(self._step_minutes(kind))
-        hero.activity = {"kind": kind, "until": self.clock.now() + seconds, "left": steps - 1, "total": steps, "done": 0, "got": {}, "log": []}
+        seconds = self._seconds(self._step_minutes(base))
+        hero.activity = {"kind": base, "until": self.clock.now() + seconds, "left": steps - 1, "total": steps, "done": 0, "got": {}, "log": []}
+        if only:                                        # D-305: 🪓 Talar gathers this one resource only
+            hero.activity["only"] = only
         return self._activity_view(hero, notice=t.t(f"batch.started_{kind}", n=steps, time=self._fmt_duration(seconds * steps)))
 
-    def _gather_blocked(self, hero: Hero, zone: Zone) -> str | None:
-        """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None."""
+    def _batch_gate(self, hero: Hero, kind: str) -> View | None:
+        """What stops a batch choice before anything else, as the screen to show, else None (D-112, D-82, D-114, D-308).
+
+        [ES]
+        Qué hace: junta lo que frena un lote antes de mirar la energía, igual en la pantalla de cantidades y al empezar: un
+        👹 campamento enemigo en pie en la zona (explorar, recolectar y talar, D-112), la guarida del Guardián (recolectar y
+        talar, D-82; antes solo se miraba al tocar el botón), lo que impide cazar en lote (D-114, _hunt_batch_blocker) y,
+        D-308 (0.42, el dueño el 20-oct-2026, E-219), la vida por debajo del % de 🩹 Retirarse de ⚙️ Opciones para explorar,
+        recolectar y talar (RETREAT_GATED: muestra _retreat_view). Nada se cobra. Las peleas no cambian.
+        La llaman: _amount_view y _start_batch.
+        Si cambia, afecta: cuándo empiezan los lotes (tests/test_talar.py, tests/test_options.py, tests/test_enemy_camps.py,
+        tests/test_boss.py).
+        """
+        base = BATCH_MODES.get(kind, kind)
+        camp_block = self._ecamp_block_line(hero) if base in ("explore", "gather") else None
+        if camp_block:                                  # D-112: an enemy camp stands here (nothing is spent)
+            return self._explore_menu(hero, notice=camp_block)
+        if base == "gather" and self._is_lair(hero.x, hero.y):      # D-82: no gathering (nor 🪓 Talar) in the lair
+            return self._explore_menu(hero, notice=self.texts.t("guardian.no_gather"))
+        if kind == "hunt":
+            blocked = self._hunt_batch_blocker(hero)
+            if blocked:
+                return self._hunt_view(hero, notice=blocked)
+        if kind in RETREAT_GATED and self._below_retreat(hero):     # D-308: under the 🩹 Retirarse %, rest first
+            return self._retreat_view(hero, kind)
+        return None
+
+    def _retreat_view(self, hero: Hero, kind: str) -> View:
+        """🩹 Rest first (D-308): the hero's life is under its 🩹 Retirarse % (⚙️ Opciones), so the batch does not start.
+
+        [ES]
+        Qué hace: D-308 (0.42, el dueño el 20-oct-2026, E-219: "con la vida por debajo del % de 🩹 Retirarse no empieza un lote
+        de explorar o recolectar: el juego avisa que descanses"). Dice qué no empezó (retreat.blocked_<explore|gather|chop>),
+        tu vida contra el límite ("❤️ 20/100 (20 %) · 🩹 Retirarse con menos de 30 %"), cuánto tarda en volver sola
+        (_recovery_lines) y cómo descansar. Botones con las acciones de siempre: 🛏️ Posada ("inn") solo si estás en una fogata
+        y libre, 🩺 Salud ("health": pociones y cómo te recuperas), ⚙️ Opciones ("options": cambiar el %) y ↩️ Volver a
+        🧭 Explorar ("explore_menu"): 4 como mucho (D-75). No cobra nada; las peleas no cambian.
+        La llama: _batch_gate. Si cambia, afecta: tests/test_talar.py (D-308) y tests/test_buttons.py (el tope de 4).
+        """
+        t = self.texts
+        max_hp = hero_stats(self._kit(hero), hero.level)["max_hp"]
+        pct = self._option(hero, "retreat")
+        body = [t.t(f"retreat.blocked_{kind}"), "",
+                t.t("retreat.hp_line", hp=hero.hp, max_hp=max_hp, now=round(100 * hero.hp / max(1, max_hp)), pct=pct)]
+        body += self._recovery_lines(hero, max_hp)
+        actions: list[Action] = []
+        if mapgen.is_bonfire(hero.x, hero.y) and not hero.activity:     # the inn of a 🔥 Fogata (as act() allows it)
+            body += ["", t.t("retreat.inn_line")]
+            actions.append(Action(id="inn", label=t.t("hub.inn_button")))
+        body += ["", t.t("retreat.how"), t.t("retreat.options_line")]
+        actions += [Action(id="health", label=t.t("health.button")), Action(id="options", label=t.t("menu.options")),
+                    Action(id="explore_menu", label=t.t("menu.back"))]
+        return View(kind="retreat", title=t.t("retreat.title"), body=body, actions=actions)
+
+    def _chop_resource(self) -> str:
+        """The one resource 🪓 Talar gathers: 🪵 wood (balance.yaml resources.wood.resource, D-305)."""
+        return str((self.content.balance["resources"].get("wood") or {}).get("resource", "madera"))
+
+    def _mode_only(self, kind: str) -> str | None:
+        """The only resource a batch choice gathers: 🪵 wood for 🪓 Talar ("chop", D-305), else None (everything)."""
+        return self._chop_resource() if kind == "chop" else None
+
+    def _can_chop(self, x: int, y: int) -> bool:
+        """True if 🪓 Talar makes sense in this zone: it has 🪵 wood (D-305; since D-303 every zone but the fixed ones does).
+
+        [ES] La llama: _explore_menu (muestra 🪓 Talar solo donde hay madera; agotada o no, el botón está y el aviso lo dice).
+        """
+        return self._chop_resource() in self._zone_resources(x, y)
+
+    def _gather_blocked(self, hero: Hero, zone: Zone, only: str | None = None) -> str | None:
+        """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None.
+
+        [ES] D-305 (0.42): con `only` (🪓 Talar, la 🪵 madera) solo mira ese recurso: si la zona no lo tiene (chop.no_wood) o
+        si está bajo stock.min_yield (chop.depleted). La llaman: _amount_view y _start_batch.
+        """
         if self._bag_full(hero):
             return self._bag_full_line(hero)
         stock = self._stock(zone.x, zone.y)
-        if all(level < self.content.balance["stock"]["min_yield"] for level in stock.values()):
+        min_yield = self.content.balance["stock"]["min_yield"]
+        if only:                                        # D-305: 🪓 Talar looks at the wood alone
+            if only not in stock:
+                return self.texts.t("chop.no_wood")
+            return self.texts.t("chop.depleted") if stock[only] < min_yield else None
+        if all(level < min_yield for level in stock.values()):
             return self.texts.t("batch.reason.depleted")
         return None
 
@@ -2374,7 +2495,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         [ES]
         Qué hace: arma el resumen del final del lote: lo recolectado o explorado, la experiencia, las peleas automáticas
         (cuántas ganó y perdió, lo que dieron y el botín, D-114), lo que pasó en el camino y por qué terminó. `values` va al
-        texto del motivo (por ejemplo, el % de vida de ⚙️ Opciones).
+        texto del motivo (por ejemplo, el % de vida de ⚙️ Opciones). D-305 (0.42): un lote de 🪓 Talar (activity["only"])
+        empieza con batch.chopped y batch.xp_chop en lugar de las líneas de recolectar.
         La llaman: _settle (al terminar o cortarse el lote) y _stop_batch.
         Si cambia, afecta: el único aviso que manda el bot al terminar cada lote.
         """
@@ -2383,9 +2505,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         lines = []
         if activity.get("done") and kind != "hunt":     # D-114: a hunting batch is only its fights (the lines below)
             if kind == "gather":
-                lines.append(t.t("batch.gathered", n=activity["done"], items=self._item_list(activity.get("got", {}))))
+                chop = bool(activity.get("only"))       # D-305: a 🪓 Talar batch has its own two lines
+                lines.append(t.t("batch.chopped" if chop else "batch.gathered", n=activity["done"],
+                                 items=self._item_list(activity.get("got", {}))))
                 if activity.get("xp"):
-                    lines.append(t.t("batch.xp_gather", xp=activity["xp"]))
+                    lines.append(t.t("batch.xp_chop" if chop else "batch.xp_gather", xp=activity["xp"]))
                 if activity.get("trade"):                 # D-109: what each gathering profession earned
                     lines.append(self._trade_summary(activity["trade"]))
                 lines += self._node_batch_lines(activity)  # D-184: ✨ what the resource node added
@@ -2411,7 +2535,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return lines
 
     def _continue_batch(self, hero: Hero, activity: dict[str, Any], until: float) -> str | None:
-        """After a finished step: start the next one, or say why the batch stops."""
+        """After a finished step: start the next one, or say why the batch stops.
+
+        [ES] D-305 (0.42): un lote de 🪓 Talar (activity["only"]) se corta con "chop_depleted" cuando la 🪵 madera de la zona
+        bajó de stock.min_yield, antes de cobrar la vuelta siguiente (recolectar sigue cortándose con una vuelta vacía).
+        """
         kind = activity["kind"]
         zone = self._zone(hero.x, hero.y)
         if activity["left"] <= 0:
@@ -2422,6 +2550,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return "full_explored"
         if kind == "gather" and self._bag_full(hero):
             return "bag_full"
+        only = activity.get("only") if kind == "gather" else None
+        if only and self._stock(zone.x, zone.y).get(only, 0.0) < self.content.balance["stock"]["min_yield"]:
+            return "chop_depleted"                      # D-305: 🪓 Talar stops when the wood runs out, before paying a round
         if not self._spend_energy(hero, kind, self._step_cost(kind)):
             return "energy"
         activity["left"] -= 1
@@ -2514,7 +2645,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES] D-300 (pedido del dueño: "tiene que ser lento para las construcciones, pero tampoco tan lento"): cada recurso
         puede volver más rápido que los demás con stock.regen_mult (la 🪵 madera ×2: unas 2 unidades por hora en cada zona en
-        vez de 1). Se multiplica con el ⛲ Pozo. La llaman: recolectar, 📍 Zona, 🧭 Explorar y 🔎 Buscar recursos.
+        vez de 1). D-305 (0.42, el dueño el 20-oct-2026): los 6 de base (madera, piedra, fibra, hierba, metal y arcilla) ×3,
+        unas 3 unidades por hora en cada zona; los propios del terreno y el pescado siguen ×1. Se multiplica con el ⛲ Pozo.
+        La llaman: recolectar, talar (D-305), 📍 Zona, 🧭 Explorar y 🔎 Buscar recursos.
         Si cambia, afecta: cuánto se puede recolectar de cada recurso por hora en una zona.
         """
         cfg = self.content.balance["stock"]
@@ -2523,7 +2656,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         levels = data.get("levels", {})
         ref = self.store.get("territory", f"{x}:{y}") if levels else None
         regen = cfg["regen_per_hour"] * (1 + (self._effect_at(ref["camp"], "stock_regen") if ref else 0.0))
-        mult = cfg.get("regen_mult") or {}               # D-300: wood comes back faster
+        mult = cfg.get("regen_mult") or {}               # D-300, D-305: the 6 base resources come back ×3
         return {res: min(1.0, levels.get(res, 1.0) + hours * regen * float(mult.get(res, 1.0)))
                 for res in self._zone_resources(x, y)}
 
@@ -2801,6 +2934,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return t.t("zone.danger_wild", word=t.t(f"zone.danger_word.{word}"), pct=pct)
 
     def _activity_view(self, hero: Hero, notice: str | None = None) -> View:
+        """The screen of what the hero is doing now (a trip, a batch or the inn), with 🔄 and ❌ Detener.
+
+        [ES] D-305 (0.42): un lote de 🪓 Talar (actividad "gather" con "only") se titula chop.title y dice chop.in_progress.
+        """
         t = self.texts
         activity = hero.activity or {}
         remaining = self._fmt_duration(activity.get("until", 0) - self.clock.now())
@@ -2821,9 +2958,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                 body.append(t.t("travel.goal", name=goal, legs=len(activity.get("path", [])) + 1, time=self._fmt_duration(total)))
             title = t.t("travel.title")
         elif activity.get("kind") == "gather":
-            body = [t.t("gather.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
+            mode = "chop" if activity.get("only") else "gather"      # D-305: a 🪓 Talar batch says so
+            body = [t.t(f"{mode}.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
                     t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
-            title = t.t("gather.title")
+            title = t.t(f"{mode}.title")
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
             title = t.t("inn.title")
@@ -2931,7 +3069,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             group = self.content.classes.get(other.class_id, {}).get("group", other.class_id)
             players.append({"id": account, "name": self._banner(other) + self._emblem_name(other), "plain": other.name,   # D-117: emblem
                             "cls": t.t(f"class_group.{group}.name"),
-                            "level": other.level, "activity": t.t(f"presence.activity.{kind}"), "seen": other.seen_at})
+                            "level": other.level, "seen": other.seen_at,
+                            "activity": t.t(f"presence.activity.{self._activity_word(data.get('activity'), kind)}")})   # D-305
         if gone:
             for account in gone:
                 record["seen"].pop(account, None)
@@ -2970,7 +3109,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
 
         [ES]
         Qué hace: tras una vuelta de exploración o recolección sin pelea, con probabilidad presence.cross_chance,
-        agrega al resumen "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 2), que andaba 🪓 recolectando." si hay
+        agrega al resumen "👋 Te cruzaste con Bram (🤺 Guerrero, nivel 2), que andaba 🧺 recolectando." si hay
         alguien en la zona. Solo texto: sin premio, sin pelea, sin PvP, en cualquier zona (también el Claro y los
         campamentos). Usa su propio sorteo fijo, así no cambia ningún otro resultado de la vuelta; a cada jugador
         te lo cruzas una sola vez por lote (activity["met"]).
@@ -3567,16 +3706,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         return self._activity_view(hero, notice=t.t("inn.started", price=self._money(price), time=self._fmt_duration(seconds)))
 
     def _explore_menu(self, hero: Hero, notice: str | None = None) -> View:
-        """🧭 Explorar: explore, gather, hunt and the map (4 buttons at most, D-75).
+        """🧭 Explorar: explore, gather, 🪓 chop wood, hunt and the map (D-75's 4, plus 🪓 Talar since D-305: 5, D-314).
 
         [ES]
-        Qué hace: el menú de la zona: 🔎 Explorar, 🪓 Recolectar, 🏹 Cazar (D-106) y 🗺️ Mapa. 📒 Lugares se mudó adentro
+        Qué hace: el menú de la zona: 🔎 Explorar, 🧺 Recolectar, 🪓 Talar (D-305), 🏹 Cazar (D-106) y 🗺️ Mapa. 📒 Lugares se mudó adentro
         de 🗺️ Mapa para dejarle lugar a 🏹 Cazar. En la guarida del Guardián (D-82) ⚔️ Desafiar al Guardián toma el lugar
         de recolectar y no hay 🏹 Cazar: quedan 3 botones. Con un 👹 campamento enemigo en pie en la zona (D-112) el menú es
         el del campamento (_ecamp_menu: ⚔️ Asaltar y 🕵️ Infiltrarse en lugar de explorar y recolectar); si cayó hoy, una
         línea lo dice. Con una entrada de mazmorra en la zona (D-170) 🕳️ Entrar o 🌀 Descender toma el lugar de 🏹 Cazar (que
         pasa adentro de la pantalla de la mazmorra) y una línea dice qué familia la ocupa hoy. D-172: si hay lugares para
         🔭 reconocer de lejos hoy, una línea lo dice con /reconocer (sin botón: los 4 lugares están tomados).
+        D-305 y D-314 (0.42): donde la zona tiene 🪵 madera (_can_chop; desde D-303, toda zona que no es fija) va 🪓 Talar al
+        lado de 🧺 Recolectar: 5 botones, uno más que el tope de D-75 porque el dueño pidió el botón (EXTRA_BUTTON_KINDS
+        "explore_menu"), en 3 filas (layout [1, 2, 2]: 🔎 Explorar ancho; 🧺 Recolectar y 🪓 Talar; 🏹 Cazar o la mazmorra y
+        🗺️ Mapa). En la guarida no hay ni recolectar ni talar. Los botones se buscan por id (no por lugar).
         La llaman: el botón 🧭 Explorar del menú fijo y las acciones de explorar, recolectar y cazar cuando rechazan algo.
         Si cambia, afecta: tests/test_boss.py, tests/test_hunt.py y tests/test_enemy_camps.py (los botones),
         tests/test_buttons.py (tope de 4) y la consola (adapters/cli/play.py numera estos botones).
@@ -3595,19 +3738,26 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             body.append(t.t("ecamp.ruins", name=camp["destroyed"].get("name", "?")))
         body += self._recon_hint_lines(hero)            # D-172: 🔭 N places to scout from afar: /reconocer
         body += self._tutorial_hint(hero)
-        actions = [Action(id="explore", label=t.t("zone.explore_button", time=explore_time)),
-                   Action(id="gather", label=t.t("gather.button", time=gather_time)),
-                   Action(id="hunt", label=t.t("hunt.button")),          # D-106; 📒 Lugares lives in 🗺️ Mapa now
-                   Action(id="map", label=t.t("menu.map"))]
+        explore = Action(id="explore", label=t.t("zone.explore_button", time=explore_time))
+        gather = Action(id="gather", label=t.t("gather.button", time=gather_time))
+        third = Action(id="hunt", label=t.t("hunt.button"))              # D-106; 📒 Lugares lives in 🗺️ Mapa now
+        mapb = Action(id="map", label=t.t("menu.map"))
         dungeon = self._dng_explore_button(hero)
         if dungeon:                                     # D-170: the dungeon takes 🏹 Cazar's place (its screen offers 🏹 Cazar)
             body += self._dng_zone_lines(hero, zone)
-            actions[2] = dungeon
+            third = dungeon
+        layout: list[int] = []
         if self._is_lair(zone.x, zone.y):
             # The lair (D-82): the challenge takes the gather slot and there is no prey but the Guardian (D-106).
             body += ["", self._guardian_ready_line(hero), t.t("guardian.no_gather")]
-            actions = [actions[0], Action(id="boss", label=t.t("guardian.button")), actions[3]]
-        return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice)
+            actions = [explore, Action(id="boss", label=t.t("guardian.button")), mapb]
+        elif self._can_chop(zone.x, zone.y):            # D-305/D-314: 🪓 Talar next to 🧺 Recolectar, 3 rows
+            actions = [explore, gather, Action(id="chop", label=t.t("chop.button", time=gather_time)), third, mapb]
+            layout = [1, 2, 2]
+        else:
+            actions = [explore, gather, third, mapb]
+        return View(kind="explore_menu", title=t.t("explore.menu_title"), body=body, actions=actions, notice=notice,
+                    layout=layout)
 
     # ------------------------------------------------------------------ player camps (D-71)
 
@@ -7040,6 +7190,22 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             return "".join(parts)
         return self.texts.t("dudas.value.list_and", items=", ".join(parts[:-1]), last=parts[-1])
 
+    def _base_regen_values(self) -> dict[str, Any]:
+        """How fast the 6 base resources come back in a zone (D-305): {base_regen} % and {base_units} units per hour.
+
+        [ES] Qué hace: D-305 (0.42, el dueño el 20-oct-2026): los 6 recursos de base (resources.region_scale: madera, piedra,
+        fibra, hierba, metal y arcilla) vuelven stock.regen_per_hour × stock.regen_mult (×3: 6 % por hora, unas 3 unidades
+        con stock.per_unit 2 %); los propios del terreno y el pescado, ×1 ({stock_regen}). Toma el multiplicador más bajo de
+        los 6, así el texto nunca promete de más. La llaman: _faq_values (y por ella _guidebook_values).
+        Si cambia, afecta: lo que dicen ❓ Dudas y 📚 Guías de cuánto vuelven los recursos.
+        """
+        cfg = self.content.balance["stock"]
+        mult = cfg.get("regen_mult") or {}
+        base = list(self.content.balance["resources"].get("region_scale") or {})
+        lowest = min((float(mult.get(r, 1.0)) for r in base), default=1.0)
+        per_hour = float(cfg["regen_per_hour"]) * lowest
+        return {"base_regen": round(per_hour * 100), "base_units": f"{per_hour / max(1e-9, float(cfg['per_unit'])):g}"}
+
     def _faq_values(self) -> dict[str, Any]:
         """The numbers the answers show, read from balance.yaml every time (an answer never keeps an old number).
 
@@ -7047,7 +7213,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         Qué hace: arma los valores que llenan los marcadores de las respuestas ({energy_max}, {found_cost}, {hp_full}...)
         con content/balance.yaml y content/*.yaml. Si una respuesta nueva pide otro número, se agrega aquí.
         La llama: _duda_view. Si cambia, afecta: lo que dicen las respuestas de ❓ Dudas (tests/test_menus_y_dudas.py revisa
-        que ninguna quede con un marcador sin llenar).
+        que ninguna quede con un marcador sin llenar). D-305 (0.42): {base_regen} y {base_units} (_base_regen_values).
         """
         t = self.texts
         b = self.content.balance
@@ -7069,6 +7235,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "own_bonus": round((float(b["gather"].get("own_land_bonus", 1.0)) - 1) * 100),
             "batches": ", ".join(str(n) for n in energy.get("batch", [])), "hunt_energy": b["hunt"]["energy"],
             "node_yield": f"{float(b['nodes']['yield_mult']):g}", "node_rare": round(float(b["nodes"]["rare_chance"]) * 100),
+            **self._base_regen_values(),                # D-305 (0.42): the 6 base resources come back 3 per hour
             "recon_rank": b["explorer"]["ranks"]["recon"], "infiltrate_rank": b["explorer"]["ranks"]["infiltrate"],
             "defeat_pct": round(float(b["hero"]["defeat_gold_loss"]) * 100),
             "hp_full": self._fmt_duration(b["regen"]["hp_full_minutes"] * 60),
@@ -7362,7 +7529,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
             "explore_energy": b["energy"].get("per_explore", 1), "gather_energy": b["energy"].get("per_gather", 1),
             "gather_low": b["gather"]["amount"][0], "gather_high": b["gather"]["amount"][-1],
             "stock_unit": pct(b["stock"]["per_unit"]), "stock_regen": pct(b["stock"]["regen_per_hour"]),
-            # D-300: wood comes back faster (stock.regen_mult)
+            # D-300, D-305: the base resources come back faster (stock.regen_mult; {base_regen} comes from _faq_values)
             "wood_regen": pct(float(b["stock"]["regen_per_hour"]) * float((b["stock"].get("regen_mult") or {}).get("madera", 1.0))),
             "color_at": b["map_view"]["fog"]["color_at"], "search_min": b["gremio"]["search_min_pct"],
             "inn_price": self._money(self._inn_price()), "bonfires": len(mapgen.BONFIRES),
@@ -10256,7 +10423,16 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         if self.store.get("combat", hero.id):
             return t.t("hero.status.combat")
         kind = (hero.activity or {}).get("kind")
-        return t.t(f"hero.status.{kind}") if kind else t.t("hero.status.idle")
+        return t.t(f"hero.status.{self._activity_word(hero.activity, kind)}") if kind else t.t("hero.status.idle")
+
+    @staticmethod
+    def _activity_word(activity: dict[str, Any] | None, kind: str) -> str:
+        """The text key of what a hero is doing: its activity kind, or "chop" for a 🪓 Talar batch (D-305).
+
+        [ES] Qué hace: un lote de 🪓 Talar es una actividad "gather" con "only": en 👥 quién está en la zona y en el Estado del
+        héroe se lee "🪓 talando" en lugar de "🧺 recolectando". La llaman: _status_text y _zone_players.
+        """
+        return "chop" if kind == "gather" and (activity or {}).get("only") else kind
 
     def _activity_left_seconds(self, hero: Hero) -> float:
         """Seconds until the WHOLE activity ends, not just the round in progress (0 if the hero is free).
@@ -11625,7 +11801,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
                              effect=self._node_effect_text(zone.x, zone.y))]
 
     def _node_batch_lines(self, activity: dict[str, Any]) -> list[str]:
-        """🪓 Recolectar summary: what the node added (units of more and its rare finds)."""
+        """🧺 Recolectar (or 🪓 Talar) summary: what the node added (units of more and its rare finds)."""
         info = activity.get("node") or {}
         if not info or info.get("item") not in self.content.items:
             return []
@@ -12805,7 +12981,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin):
         """A fight came up in a batch step (D-114): returns the batch's end lines, or None if the batch goes on.
 
         [ES]
-        Qué hace: decide qué pasa con una pelea que sale en un lote (🔎 explorar, 🪓 recolectar o 🏹 cazar en lote).
+        Qué hace: decide qué pasa con una pelea que sale en un lote (🔎 explorar, 🧺 recolectar, 🪓 talar o 🏹 cazar en lote).
         Con ✋ Manual, o si la pelea no es un encuentro común (Guardián, defensa del campamento, campamento enemigo de D-112,
         mazmorra de D-170: nunca van solas), el lote
         se corta y la pelea te espera, como siempre. Con ⚔️ Automática el héroe la pelea ya (_auto_combat): si gana y su vida

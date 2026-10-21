@@ -3,7 +3,8 @@
 [ES] El dueño pidió verificar que explorar (no moverse), hacer misiones, entrar a las mazmorras y minar gastan energía. Esta
 prueba juega cada acción con la energía sin recuperarse y mira cuánto bajó:
 - moverse: 0 (D-190: solo tiempo), también con /ir y 🔗 Moverte;
-- explorar y recolectar (minar, talar, recoger): 1 ⚡ por vuelta (energy.per_explore, per_gather), solo las vueltas hechas;
+- explorar y recolectar (minar, talar, recoger; desde la 0.42 también el botón 🪓 Talar): 1 ⚡ por vuelta (energy.per_explore,
+  per_gather), solo las vueltas hechas (D-308: el héroe empieza con la vida llena, o el lote no arranca);
 - cazar: 2 ⚡ por presa (hunt.energy); 🔭 reconocer: 2 (recon.energy);
 - mazmorra chica: 2 ⚡ por pelea; profunda: 2 por entrar y 2 por pelea (dungeons.*.fight_energy, enter_energy);
 - campamento enemigo: 2 ⚡ por pelea del asalto; 🕵️ infiltrarse: 3 (ecamps.fight_energy, infiltrate.energy);
@@ -15,6 +16,7 @@ _step_cost, los lotes, la caza, las mazmorras, los campamentos enemigos y el rec
 
 import pytest
 from conftest import make_hero
+from engine.hero import hero_stats
 from test_camps import place
 from test_enemy_camps import rank_xp
 
@@ -39,6 +41,8 @@ def energy(service):
 def setup(service, x, y, **extra):
     service.store.delete("combat", A)                               # the fight of the step before is not this test's
     place(service, A, x, y, known=[f"{x}:{y}", "0:0"], energy=200, level=30, **extra)
+    hero = service._load(A)                                         # D-308 (0.42): full life at level 30, or no batch starts
+    place(service, A, x, y, hp=hero_stats(service._kit(hero), hero.level)["max_hp"])
 
 
 def finish(service, clock):
@@ -73,6 +77,10 @@ def test_moving_is_free_exploring_and_gathering_cost_one_per_round(service, cloc
     assert before - energy(service) == 5
     before = energy(service)
     service.act(A, "do:gather:5")
+    finish(service, clock)
+    assert before - energy(service) == 5
+    before = energy(service)
+    service.act(A, "do:chop:5")                                     # D-305 (0.42): 🪓 Talar costs like gathering
     finish(service, clock)
     assert before - energy(service) == 5
 

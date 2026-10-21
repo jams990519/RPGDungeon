@@ -1275,7 +1275,7 @@ options:                      # [ES] D-114 (confirmada): pantalla ⚙️ Opcione
   saved_potions_on: "🧪 Listo: en las peleas automáticas usa las pociones y las vendas del cinturón."
   saved_potions_off: "🧪 Listo: en las peleas automáticas no toca el cinturón."
   intro_short: "Toca un botón para cambiarlo: queda guardado."   # [ES] D-258 (0.33): sin peleas ni pociones automáticas; con 💬 Feedback
-  retreat_now: "🩹 Retirarse con menos de {pct} % de vida: lo usarán las peleas automáticas cuando vuelvan. Hoy, si sale una pelea en un lote, el lote se corta y la peleas tú."
+  retreat_now: "🩹 Retirarse con menos de {pct} % de vida: con menos vida no empiezas a explorar, recolectar ni talar (te aviso que descanses). Si sale una pelea en un lote, el lote se corta y la peleas tú."   # [ES] D-308 (0.42)
   language_line: "🌐 Idioma: {name}."
   feedback_line: "💬 Feedback: cuéntanos un error, una idea o algo que no se entiende."
 
@@ -1449,7 +1449,7 @@ presence:                     # [ES] D-96 (provisional): los otros jugadores de 
   crossed: "👋 Te cruzaste con {name} ({cls}, nivel {level}), que andaba {activity}."
   activity:                   # [ES] lo que hace cada uno; el motor elige la clave según su actividad
     explore: "🔎 explorando"
-    gather: "🪓 recolectando"
+    gather: "🧺 recolectando"
     combat: "⚔️ peleando"
     rest: "🛌 descansando"
     travel: "🚶 de paso"
@@ -1479,7 +1479,7 @@ hero:
     idle: "🧍 Libre"
     travel: "🚶 De viaje"
     explore: "🔎 Explorando"
-    gather: "🪓 Recolectando"
+    gather: "🧺 Recolectando"
     rest: "🛌 Descansando"
     combat: "⚔️ En combate"
   status_line: "❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · {gold} · Nivel {level}"
@@ -1534,7 +1534,7 @@ resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedid
   detail_have: "Tienes ×{n}."
   no_code: "⚠️ No hay ningún recurso con el código {code}."
   back: "↩️ Volver a 📦 Recursos"
-  none: "Todavía no juntaste nada. Recolecta en las zonas con 🪓 Recolectar."
+  none: "Todavía no juntaste nada. Recolecta en las zonas con 🧺 Recolectar o 🪓 Talar."
   page: "Página {n} de {total}"
   more: "➡️ Ver más"
   use_default: "se vende al mercader del Claro"
@@ -1695,11 +1695,11 @@ inn:
   full_hp: "❤️ Ya tienes la vida llena: no hace falta dormir."
 
 gather:
-  button: "🪓 Recolectar · {time}"
-  title: "🪓 Recolectando"
-  started: "🪓 Empiezas a juntar lo que da esta tierra. Tardarás {time}."
+  button: "🧺 Recolectar · {time}"
+  title: "🧺 Recolectando"
+  started: "🧺 Empiezas a juntar lo que da esta tierra. Tardarás {time}."
   in_progress: "Juntas materiales con cuidado."
-  found: "🪓 Recolectaste: {items}."
+  found: "🧺 Recolectaste: {items}."
   ambush: "⚠️ Mientras recolectabas, un {enemy} (nv {level}) te sorprendió."
 
 hunt:                         # [ES] D-106 (provisional): 🏹 Cazar en la zona (solo pelear: sin exploración ni recursos) y 🏹 Partida de caza con los miembros de tu campamento (cacerias.md §0)
@@ -2149,7 +2149,7 @@ guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), s
 
 batch:
   total_left: "⏳ En total faltan {time} para terminar."   # [ES] D-242.1: el tiempo del lote entero, no de la vuelta
-  title_gather: "🪓 Recolectar"
+  title_gather: "🧺 Recolectar"
   title_explore: "🔎 Explorar"
   title_hunt: "🏹 Cazar en lote"
   ask_hunt: "¿Cuánta energía quieres gastar cazando? Cada presa gasta ⚡{energy}, tarda {minutes} min y tu héroe la pelea solo."
@@ -2175,10 +2175,10 @@ batch:
   back: "◀️ Volver"
   cancel: "❌ Cancelar"
   stop: "❌ Detener"
-  started_gather: "🪓 Vas a recolectar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
+  started_gather: "🧺 Vas a recolectar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
   started_explore: "🔎 Vas a explorar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
   progress: "Vuelta {done} de {total}"
-  gathered: "🪓 Recolectaste {n} {n|vez|veces}: {items}."
+  gathered: "🧺 Recolectaste {n} {n|vez|veces}: {items}."
   explored_done: "🔎 Exploraste {n} {n|vez|veces}: la zona va al {pct} %."
   found: "🔎 Encontraste: {items}."
   coins: "🔎 Encontraste {coins} entre los restos."
@@ -2247,7 +2247,7 @@ guild:                        # [ES] D-97 (provisional): el gremio de un campame
   counter:
     explorations: "🧭 Exploraciones"
     victories: "⚔️ Peleas ganadas"
-    gathered: "🪓 Recursos recolectados"
+    gathered: "🧺 Recursos recolectados"
   how: "Cuenta lo que hacen todos los miembros desde que entran."
   top: "🏆 Es el nivel más alto por ahora."
   ready: "✅ ¡Ya cumplen todo: el gremio puede subir de nivel!"
@@ -2437,7 +2437,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
     only_armor: "con {what}"
     only_weapon: "con {what}"
   branch:
-    gather: "🪓 Recolección"
+    gather: "🧺 Recolección"
     refine: "🪚 Refinado"
     craft: "🛠️ Fabricación"
     service: "💱 Servicios"

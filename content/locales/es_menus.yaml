@@ -92,7 +92,7 @@ trainer:
   title: "🧑‍🏫 Entrenador"
   intro: "«Un oficio se aprende haciéndolo: no se paga ni se elige, y puedes tenerlos todos. Esto hace cada familia:»"
   branch:
-    gather: "🪓 Recolección: juntas materiales en las zonas. Suben al recolectar (el 🔪 Desollador, al vencer bestias; el 🎣 Pescador, en zonas con agua)."
+    gather: "🧺 Recolección: juntas materiales en las zonas. Suben al recolectar (el 🔪 Desollador, al vencer bestias; el 🎣 Pescador, en zonas con agua)."
     explore: "🧭 Exploración: el 🧭 Explorador sube explorando y ve más en el mapa; desde el rango {recon} reconoce de lejos."
     refine: "🪚 Refinado: conviertes lo que juntas en materiales mejores (tablones, lingotes, telas, sillares…) en una estación."
     craft: "🛠️ Fabricación: equipo, pociones, vendas, comida y muebles, en una estación. A veces sale una ✒️ obra maestra."
@@ -111,7 +111,7 @@ trainer:
   stations_none: "📍 Aquí no hay estaciones: en el Claro están todas las básicas."
   mine_button: "⚒️ Mis oficios"
   ench_button: "✨ Encantamiento"
-  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí, en 📚 Aprender oficios. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. Solo 🧭 la exploración sube sola; la 🪓 recolección también se aprende (sin el oficio, recolectar da igual los recursos base).»"   # [ES] D-257 (0.33), D-272 (0.35)
+  intro_learn: "«Cada oficio se aprende una vez, pagando su primera receta ({price}), aquí, en 📚 Aprender oficios. Después sube haciendo recetas, del rango 1 al 100, y cada rango abre recetas nuevas. Solo 🧭 la exploración sube sola; la 🧺 recolección también se aprende (sin el oficio, recolectar da igual los recursos base).»"   # [ES] D-257 (0.33), D-272 (0.35)
   recommend: "⭐ Para tu armadura de {armor}: {name}. Toca /{code} para verlo y aprenderlo."   # [ES] D-271 (0.34)
   recommend_known: "⭐ Para tu armadura de {armor}: {name}, rango {rank}."
   have: "✅ Tus oficios: {list}"

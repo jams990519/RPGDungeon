@@ -68,10 +68,11 @@ guide:
         • Explorando encuentras objetos y monedas... y a veces una pelea.
     gather:                    # [ES] b) después, recolectar
       name: "Recolectar"
-      task: "junta recursos: 🧭 Explorar → 🪓 Recolectar."
+      task: "junta recursos: 🧭 Explorar → 🧺 Recolectar."
       intro: |-
-        🪓 Recolectar
+        🧺 Recolectar
         • Juntas los recursos que ya descubriste en la zona: madera, piedra, fibra, hierbas...
+        • 🪓 Talar, al lado, junta solo 🪵 madera.
         • Cada vuelta tarda {gather_time} y gasta {per_gather} ⚡. Va a tu 🎒 mochila (espacio: {cap}).
         • Con eso se fabrica, se funda un campamento y se vende al mercader.
         • Si recolectas mucho en un lugar, se agota por un tiempo.

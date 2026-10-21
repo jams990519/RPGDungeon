@@ -1845,7 +1845,7 @@ options:
   saved_potions_on: '🧪 Done: in auto-fights your hero uses potions and bandages from the belt.'
   saved_potions_off: '🧪 Done: in auto-fights your hero won''t touch the belt.'
   intro_short: 'Tap a button to change it: it is saved.'
-  retreat_now: '🩹 Retreat below {pct}% health: automatic fights will use it when they come back. Today, if a fight comes up in a batch, the batch stops and you fight it.'
+  retreat_now: '🩹 Retreat below {pct}% health: with less health you don''t start exploring, gathering or chopping wood (I''ll tell you to rest). If a fight comes up in a batch, the batch stops and you fight it.'
   language_line: '🌐 Language: {name}.'
   feedback_line: '💬 Feedback: tell us about a bug, an idea or something that is unclear.'
 feedback:
@@ -2007,7 +2007,7 @@ presence:
   crossed: 👋 You crossed paths with {name} ({cls}, level {level}), who was {activity}.
   activity:
     explore: 🔎 exploring
-    gather: 🪓 gathering
+    gather: 🧺 gathering
     combat: ⚔️ fighting
     rest: 🛌 resting
     travel: 🚶 passing through
@@ -2035,7 +2035,7 @@ hero:
     idle: 🧍 Idle
     travel: 🚶 Traveling
     explore: 🔎 Exploring
-    gather: 🪓 Gathering
+    gather: 🧺 Gathering
     rest: 🛌 Resting
     combat: ⚔️ In combat
   status_line: ❤️ {hp}/{max_hp} · ⚡ {energy}/{max_energy} · {gold} · Level {level}
@@ -2087,7 +2087,7 @@ resources:
   detail_have: You have ×{n}.
   no_code: ⚠️ There is no resource with the code {code}.
   back: ↩️ Back to 📦 Resources
-  none: You haven't gathered anything yet. Gather in the zones with 🪓 Gather.
+  none: You haven't gathered anything yet. Gather in the zones with 🧺 Gather or 🪓 Chop wood.
   page: Page {n} of {total}
   more: ➡️ See more
   use_default: sells to the merchant in the Clearing
@@ -2243,11 +2243,11 @@ inn:
   rested: '🛏️ You wake up rested: your health is full.'
   full_hp: '❤️ Your health is already full: no need to sleep.'
 gather:
-  button: 🪓 Gather · {time}
-  title: 🪓 Gathering
-  started: 🪓 You start collecting what this land has to offer. It will take {time}.
+  button: 🧺 Gather · {time}
+  title: 🧺 Gathering
+  started: 🧺 You start collecting what this land has to offer. It will take {time}.
   in_progress: You gather materials carefully.
-  found: '🪓 You gathered: {items}.'
+  found: '🧺 You gathered: {items}.'
   ambush: '⚠️ While you were gathering, an enemy took you by surprise: {enemy} (lv {level}).'
 hunt:
   button: 🏹 Hunt
@@ -2676,7 +2676,7 @@ guardian:
   memento_done: 🌰 The seed opens and leaves you {item}.
 batch:
   total_left: ⏳ {time} left in total until it's done.
-  title_gather: 🪓 Gather
+  title_gather: 🧺 Gather
   title_explore: 🔎 Explore
   title_hunt: 🏹 Batch hunt
   ask_hunt: How much energy do you want to spend hunting? Each prey costs ⚡{energy}, takes {minutes} min, and your hero fights it alone.
@@ -2702,10 +2702,10 @@ batch:
   back: ◀️ Back
   cancel: ❌ Cancel
   stop: ❌ Stop
-  started_gather: 🪓 You'll gather {n} {n|time|times} (until {time}). You can stop whenever you want.
+  started_gather: 🧺 You'll gather {n} {n|time|times} (until {time}). You can stop whenever you want.
   started_explore: 🔎 You'll explore {n} {n|time|times} (until {time}). You can stop whenever you want.
   progress: Run {done} of {total}
-  gathered: '🪓 You gathered {n} {n|time|times}: {items}.'
+  gathered: '🧺 You gathered {n} {n|time|times}: {items}.'
   explored_done: '🔎 You explored {n} {n|time|times}: the zone is at {pct}%.'
   found: '🔎 You found: {items}.'
   coins: 🔎 You found {coins} among the remains.
@@ -2771,7 +2771,7 @@ guild:
   counter:
     explorations: 🧭 Explorations
     victories: ⚔️ Fights won
-    gathered: 🪓 Resources gathered
+    gathered: 🧺 Resources gathered
   how: It counts what every member does from the moment they join.
   top: 🏆 It's the highest level for now.
   ready: '✅ You meet every requirement: the guild can level up!'
@@ -2956,7 +2956,7 @@ prof:
     only_armor: with {what}
     only_weapon: with {what}
   branch:
-    gather: 🪓 Gathering
+    gather: 🧺 Gathering
     refine: 🪚 Refining
     craft: 🛠️ Crafting
     service: 💱 Services

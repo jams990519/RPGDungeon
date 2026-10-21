@@ -1,0 +1,39 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_talar.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_talar.yaml (0.42: 🪓 Talar,
+# D-305, y 🩹 Descansa primero, D-308). Una clave nueva va primero en es_talar.yaml y, en el mismo cambio, aquí.
+# tools/check_locales.py compara los dos idiomas (tests/test_idiomas.py lo exige): mismas claves, mismos huecos {nombre} y
+# {n|uno|varios} y mismas etiquetas HTML.
+
+chop:
+  button: "🪓 Chop wood · {time}"
+  title: "🪓 Chopping wood"
+  in_progress: "You fell trees and collect 🪵 wood."
+  no_wood: "🪵 There is no wood to chop in this zone."
+  depleted: "🪫 The 🪵 wood in this zone is used up for now: it grows back on its own over the hours. Try another zone or use 🧺 Gather."
+
+batch:
+  title_chop: "🪓 Chop wood"
+  ask_chop: "How much energy do you want to spend chopping wood? Each time costs {energy} ⚡, takes {minutes} min and you only collect 🪵 wood; it keeps going on its own until done."
+  started_chop: "🪓 You'll chop wood {n} {n|time|times} (until {time}). You can stop whenever you want."
+  chopped: "🪓 You chopped wood {n} {n|time|times}: {items}."
+  xp_chop: "✨ Chopping wood taught you: +{xp} experience."
+  reason:
+    chop_depleted: "🪫 The 🪵 wood in this zone is used up for now: it grows back on its own over the hours."
+
+presence:
+  activity:
+    chop: "🪓 chopping wood"
+
+hero:
+  status:
+    chop: "🪓 Chopping wood"
+
+retreat:
+  title: "🩹 Rest first"
+  blocked_explore: "🩹 With so little health you don't go out exploring: rest first."
+  blocked_gather: "🩹 With so little health you don't go out gathering: rest first."
+  blocked_chop: "🩹 With so little health you don't go out chopping wood: rest first."
+  hp_line: "❤️ Health: {hp}/{max_hp} ({now}%) · 🩹 Retreat below {pct}%"
+  inn_line: "🛏️ At the campfire's inn you recover fast."
+  how: "🩺 In Health you see how you recover and can drink a potion."
+  options_line: "⚙️ In Options you change the 🩹 Retreat %."

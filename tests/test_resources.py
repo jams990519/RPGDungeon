@@ -6,6 +6,8 @@ madera): la madera solo se suma (ninguna zona pierde un recurso, comparado con e
 mueven) y vuelve el doble de rápido. D-303 (0.41.1, orden del dueño: "en todos lugares, en menor medida, pero deberían
 tener"): toda zona que no es fija tiene 🪵 madera; en el bosque es la más rica (1,0), va primera y se conoce al 1 %; en
 los demás terrenos es pobre (hasta 0,5) y va después de los de base; con cualquier %, nadie conoce menos que antes.
+D-305 (0.42, el dueño el 20-oct-2026): los 6 recursos de base vuelven 3 por hora en cada zona (la madera también, antes ×2);
+los propios del terreno y el pescado siguen ×1. 🪓 Talar se prueba en tests/test_talar.py.
 """
 
 import copy
@@ -326,17 +328,28 @@ def test_the_nodes_never_moved(content):
     assert nodes > 100
 
 
-def test_wood_regrows_twice_as_fast(service, clock):
-    """D-300 (owner: "lento para las construcciones, pero tampoco tan lento"): wood comes back ×2 (stock.regen_mult)."""
-    mult = service.content.balance["stock"]["regen_mult"]["madera"]
-    assert mult == 2.0
+BASE = ("madera", "piedra", "fibra", "hierba_curativa", "pieza_metal", "arcilla")
+
+
+def test_the_six_base_resources_regrow_three_times_as_fast(service, clock):
+    """D-305 (0.42, owner, 20-oct-2026): the 6 base resources come back 3 per hour in each zone instead of 1 (wood ×3 too,
+    it was ×2 by D-300); the terrain's own resources and fish stay at ×1 (stock.regen_mult)."""
+    cfg = service.content.balance["stock"]
+    assert {r: cfg["regen_mult"][r] for r in BASE} == {r: 3.0 for r in BASE}
+    assert set(cfg["regen_mult"]) == set(BASE)                                            # nothing else goes faster
     x, y = next((x, y) for x in range(1, 30) for y in range(0, 30)
-                if "madera" in service._zone_resources(x, y) and len(service._zone_resources(x, y)) > 1)
-    service.store.put("stock", f"{x}:{y}", {"levels": {r: 0.0 for r in service._zone_resources(x, y)}, "at": clock.now()})
+                if any(r != "madera" for r in service._zone_land(x, y)[0]) and service._zone_land(x, y)[2])
+    resources = service._zone_resources(x, y)
+    service.store.put("stock", f"{x}:{y}", {"levels": {r: 0.0 for r in resources}, "at": clock.now()})
     clock.advance(5 * 3600)
     stock = service._stock(x, y)
-    regen = service.content.balance["stock"]["regen_per_hour"]
-    other = next(r for r in stock if r != "madera")
-    assert stock[other] == pytest.approx(5 * regen)
-    assert stock["madera"] == pytest.approx(5 * regen * mult)                          # 2 units an hour instead of 1
+    regen = cfg["regen_per_hour"]
+    base = next(r for r in service._zone_land(x, y)[0] if r != "madera")
+    own = next(iter(service._zone_land(x, y)[2]))
+    assert stock["madera"] == pytest.approx(5 * regen * 3)                             # 3 units an hour instead of 1
+    assert stock[base] == pytest.approx(5 * regen * 3)
+    assert stock[own] == pytest.approx(5 * regen)                                       # the terrain's own: as before
+    assert round(regen * 3 / cfg["per_unit"]) == 3                                      # 3 units of 2 % an hour
     assert service._stock(0, 0)["madera"] == 1.0                                          # untouched zones stay full
+    values = service._faq_values()
+    assert values["base_units"] == "3" and values["base_regen"] == 6                    # what ❓ Dudas and 📚 Guías say

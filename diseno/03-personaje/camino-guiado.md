@@ -26,7 +26,7 @@
 |---|---|---|---|---|
 | 1 | Moverte | Ir a una zona vecina | Llegar a una zona que no es el Claro | Las 4 rutas |
 | 2 | Explorar | 🧭 Explorar → 🔎 Explorar (un lote cualquiera) | La primera vuelta de exploración | 🧭 Explorar |
-| 3 | Recolectar | 🧭 Explorar → 🪓 Recolectar | La primera vuelta de recolección | 🧭 Explorar |
+| 3 | Recolectar | 🧭 Explorar → 🧺 Recolectar | La primera vuelta de recolección | 🧭 Explorar |
 | 4 | Cazar | 🧭 Explorar → 🏹 Cazar → 🏹 Buscar presa | El final de una pelea de cacería, ganada o perdida | 🏹 Cazar |
 | 5 | El mapa | 🧭 Explorar → 🗺️ Mapa | Abrir el mapa: ahí se explica todo lo que muestra (colores, 🕳️ 🌀, ✨, 👹, 🏕️, 👑, coordenadas y Lejanía, 📒 Lugares) | 🗺️ Mapa |
 | 6 | Volver al Claro | 📒 Lugares → El Claro (o las rutas) | Llegar al Claro (o a tu campamento); si ya estás ahí, se da por hecho | 📒 Lugares |
