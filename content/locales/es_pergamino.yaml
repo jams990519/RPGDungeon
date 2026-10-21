@@ -1,0 +1,70 @@
+# Textos del 🗺️ pergamino de mapa del 🧭 Explorador (D-311 parte 5, confirmada por el dueño, E-180; cómo se aplicó: D-326,
+# provisional; 0.50).
+# [ES] Para qué sirve: todo lo que ve el jugador al hacer, mirar, usar y vender un pergamino de mapa (engine/service/map_scroll.py),
+#     el botón 🗺️ Pergaminos del 🗺️ Mapa, la línea de la 🎒 Mochila y de 📍 Zona, la categoría 🗺️ Mapas del 🏛️ Mercado y lo que
+#     abre el rango del 🧭 Explorador (explorer.what.map_scroll y explorer.short.map_scroll). Se junta con es.yaml y los demás
+#     es_*.yaml al cargar (engine/core/content.py: las claves que ya existen, como item, market o explorer, se completan, no se
+#     pisan). Cada clave va también en en_pergamino.yaml (D-250; python tools/check_locales.py en 0 errores). Los números salen
+#     de content/balance.yaml (bloque map_scroll y map_view.fog.color_at).
+# Documento de diseño: diseno/02-mundo/mapa-infinito-y-viaje.md §1.9.4
+# Lo usan: engine/service/map_scroll.py, engine/service/market.py (market.cat.maps, market.scroll_mark, scroll.new_line,
+#     scroll.nothing_new, scroll.use_explain) y engine/service/game.py (_map_view, _bag_view, _zone_view, _explorer_what,
+#     _explorer_prof_lines).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Si cambias una clave, búscala en el código: una clave que falta
+#     se ve como [clave] (tests/test_pergamino_mapa.py revisa que no falte ninguna).
+
+item:
+  pergamino_mapa: "Pergamino de mapa"
+
+scroll:
+  title: "🗺️ Pergaminos de mapa"
+  item_title: "🗺️ Pergamino de mapa"
+  button: "🗺️ Pergaminos"
+  button_n: "🗺️ Pergaminos ({n})"
+  intro: "🗺️ Un pergamino de mapa muestra a color, para siempre, las zonas que un 🧭 Explorador investigó al {pct} % o más en una región de {size} × {size}. Solo el color: no da los recursos, los nodos ni el viaje directo."
+  yours_title: "📜 Tus pergaminos ({n}):"
+  line: "{code} {summary} · 🆕 {new} para ti"
+  use_hint: "👆 Toca el código (/pm1) o un botón para verlo y usarlo."
+  none: "No llevas pergaminos. Se compran en 🏛️ Mercado → 🛍️ Comprar → 🗺️ Mapas."
+  make_hint: "🧭 Con tu rango de Explorador puedes hacer uno con lo que exploraste: 🗺️ Hacer pergamino."
+  make_button: "🗺️ Hacer pergamino"
+  open_button: "📜 {n}. {name}"
+  bad_code: "❔ {code} no está en tu última lista de pergaminos. Ábrela otra vez: /pergaminos"
+  gone: "⌛ Ese pergamino ya no está en tu mochila."
+  region: "Región de {name} ({x}, {y})"
+  summary: "{region} · {n} {n|zona|zonas} · ✍️ {by}"
+  by: "✍️ Lo hizo: {name}"
+  zones_line: "🗺️ {n} {n|zona|zonas} a color, de ({x0}, {y0}) a ({x1}, {y1})"
+  new_line: "🆕 {n} {n|zona|zonas} que todavía no ves a color."
+  nothing_new: "Ya ves todas esas zonas a color: no te suma nada nuevo."
+  use_explain: "📜 Al usarlo se gasta y esas zonas quedan a color en tu 🗺️ Mapa para siempre. Solo el color: no da sus recursos, sus nodos ni el viaje directo."
+  use_button: "📜 Usar"
+  used: "📜 Usaste el pergamino de la {region}: {n} {n|zona nueva|zonas nuevas} a color en tu 🗺️ Mapa ({total} en total)."
+  new_terrains: "🆕 Terrenos nuevos en tu leyenda: {terrains} (ya conoces {n} de {total})."
+  zone_line: "🗺️ Esta zona se ve a color en tu mapa por un pergamino. Tú la investigaste al {pct} %: sus recursos se descubren explorando."
+  bag_line: "🗺️ Pergaminos de mapa: {n}. Los ves y los usas con /pergaminos (también en 🗺️ Mapa → 🗺️ Pergaminos)."
+  make_title: "🗺️ Hacer pergamino"
+  make_intro: "🗺️ Dibujas tu región con las zonas que investigaste tú al {pct} % o más. Lo que sabes por tu gremio o por otro pergamino no entra."
+  make_region: "📍 Tu región: {region}, de ({x0}, {y0}) a ({x1}, {y1}) ({size} × {size} zonas)."
+  make_legend: "🧍 tú · a color: entra · {blank} no entra (menos del {pct} %) · 🔥 fogata: se ve siempre, no cuenta"
+  make_zones: "🗺️ Zonas que llevaría: {n} (mínimo {need})."
+  make_cost: "💸 Cuesta: ⚡{energy} · {items}"
+  make_xp: "{name}: +{xp} de experiencia por pergamino."
+  need_zones: "❌ Te faltan {n} {n|zona|zonas} investigadas al {pct} % en esta región (mínimo {need}). Explora más o muévete a otra región."
+  need_items: "❌ Te falta: {items}."
+  need_rank: "🔒 Hacer pergaminos pide rango {rank} de 🧭 Explorador (tienes {have}). Sube explorando."
+  do_button: "✅ Hacer pergamino · ⚡{energy}"
+  made: "🗺️ Hiciste un pergamino: {summary}."
+  made_xp: "{name}: +{xp} de experiencia."
+  sell_hint: "🏛️ Véndelo al precio que quieras en 🏛️ Mercado → 🏷️ Vender, o úsalo tú."
+
+market:
+  cat:
+    maps: "🗺️ Mapas"   # [ES] D-326 (0.50): la 8.ª categoría de 🛍️ Comprar (id estable "maps")
+  scroll_mark: " · {summary}"   # [ES] D-326: lo que dice un 🗺️ pergamino en las listas del mercado y en 📦 Entregas
+
+explorer:
+  what:
+    map_scroll: "puedes hacer 🗺️ pergaminos de mapa con lo que exploraste (🗺️ Mapa → 🗺️ Pergaminos) y venderlos en el 🏛️ Mercado al precio que quieras"   # [ES] D-326 (0.50): balance.yaml map_scroll.rank
+  short:
+    map_scroll: "{rank} 🗺️ pergaminos"

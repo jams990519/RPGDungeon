@@ -73,6 +73,13 @@ Si cambias esto, revisa:
       y si ya se le regalaron los libros de los rangos que tenía al llegar la 0.44 (D-64: quien ya practicaba conserva lo que
       podía hacer). Vacío y False por defecto: la primera carga de un héroe de antes le da sus libros y lo marca
       (engine/service/game.py _load, _grant_old_books, sección "recipe tiers, colors and books"; tests/test_tramos_de_recetas.py)
+    - map_scrolls y charted (0.50, D-311 parte 5 y D-326): los 🗺️ pergaminos de mapa que el héroe lleva, uno por copia
+      ({"id": "p7", "by": autor, "center": [x, y], "size": 6, "zones": ["x:y", …], "at": hora}; la mochila solo cuenta
+      cuántos hay con el id balance.yaml map_scroll.item) y las zonas que ve a color para siempre porque usó un pergamino
+      ("x:y"). charted solo pinta el 🗺️ Mapa y suma su terreno a la leyenda: no da recursos, ni nodos, ni lugares, ni
+      "Moverte allá" (eso sigue con exploration y known). Vacíos por defecto: los héroes guardados antes cargan igual
+      (engine/service/map_scroll.py; engine/service/game.py _fog_cell, _known_terrains, _fog_notices y _zone_view;
+      engine/service/market.py; tests/test_pergamino_mapa.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -163,6 +170,11 @@ class Hero:
             heroes saved before it.
         books_checked: True once the 0.44 grant ran for this hero (D-64: who had already practised a profession gets, free,
             the books of the ranks it had reached). False for heroes saved before it; the first load grants and sets it.
+        map_scrolls: the 🗺️ map scrolls the hero carries (0.50, D-326), one record per copy: "id" (global, "p1"…), "by" (the
+            🧭 Explorador who made it), "center" and "size" (its region), "zones" ("x:y" investigated to 50 % by its maker) and
+            "at". The backpack counts them under balance.yaml map_scroll.item. Empty for heroes saved before it.
+        charted: zones ("x:y") this hero sees in colour for ever because it used a map scroll (D-311 part 5). Only the map
+            colour and the legend: no resources, nodes, places or travel. Empty for heroes saved before it.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -236,6 +248,8 @@ class Hero:
     prof_titles: dict[str, str] = field(default_factory=dict)           # D-306.1 (0.43): 🎖️ profession titles bought
     recipe_books: list[str] = field(default_factory=list)               # D-306: 📚 recipe books owned, "<profession>:<rank>" (0.44)
     books_checked: bool = False                                         # D-306: the 0.44 books already granted to who practised
+    map_scrolls: list[dict[str, Any]] = field(default_factory=list)     # D-326 (0.50): 🗺️ map scrolls carried, one record per copy
+    charted: list[str] = field(default_factory=list)                    # D-311.5 (0.50): zones in colour for ever thanks to a scroll
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

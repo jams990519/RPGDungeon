@@ -90,7 +90,7 @@ def test_market_opens_from_the_merchant_the_command_and_the_camp_trading_post(se
     check_caps(hub)
     assert service.text("test:1", "/mercado").kind == "market" and service.text("test:1", "/market").kind == "market"
     cats = service.act("test:1", "mkt:cats")
-    assert cats.kind == "market_cats" and len(cats.actions) == 8
+    assert cats.kind == "market_cats" and len(cats.actions) == 9          # D-326 (0.50): + 🗺️ Mapas
     check_caps(cats)
     camp_at(service, 3)                                              # the founder stands at its camp (6, 0)
     assert "mkt" not in ids(service.act("test:1", "svc:oficio"))    # no 🏪 Puesto de trueque yet
