@@ -103,6 +103,16 @@ guides_page:
       ⚡ Each recipe spends energy and gives profession experience, up to rank {max_rank}: the gear professions get new recipes every 5 ranks and each one has its color (🟧 full, 🟨 half, 🟩 a quarter, ⬜ none); those of rank 25, 50 and 75 need their 📚 recipe book from the 🧑‍🏫 Trainer.
       🎓 At rank {spec_first} you pick a specialization, and at {spec_second}, another one.
       📋 Your professions: /myprofessions (each with its code, to see everything about it).
+  market:
+    title: "🏛️ Market"
+    text: |-
+      🏛️ One market for everyone: 🛒 Merchant → 🏛️ Market at any 🔥 campfire, at your camp with a 🏪 Trading Post or with /market.
+      🏷️ Sell: gear and crafted goods (potions, remedies, furniture, food, 💰 bags and 🪎 chests). Pick with /s1, set the price and the quantity and it leaves your backpack.
+      📥 Resources (base, terrain and refined) are sold to other players' 📥 Buy orders: you get paid at once.
+      📝 Ask for resources: pick with its code (/b07, the one in 📦 Resources) and set the coins aside; whoever has it sells to you.
+      💸 Whoever gets the coins pays a {market_tax}% tax. The price stays inside a band, so nobody gives things away or inflates them.
+      🐴 What you buy reaches 📦 Deliveries in {market_delivery}: collect it at any 🔥 campfire or at your camp, as far as it fits.
+      📋 Up to {market_orders} orders at a time; they last {market_days} days. ❌ Cancelling or expiring gives back everything left.
   # ---- ⚙️ How it works
   energy:
     title: "⚡ Energy and health"

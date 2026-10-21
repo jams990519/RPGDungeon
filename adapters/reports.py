@@ -6,6 +6,8 @@ Para qué sirve: arma el informe diario de los jugadores que el bot manda como a
     actividad"). Es la primera pieza de la telemetría con exportación diaria de D-241.4. Solo LEE el juego: no cambia
     ninguna regla ni ningún héroe; lo único que escribe es su propia foto del día (espacio "report_snap") y la marca del
     último informe (espacio "reports"), para comparar un día con el siguiente.
+    D-320 (0.46): la sección 9 cuenta el 🏛️ Mercado entre jugadores (compras, unidades, monedas que cambiaron de mano, impuesto
+    quemado, órdenes publicadas, canceladas y vencidas) con lo que el mercado anota cada día en "market_log" (clave el día).
 Documento de diseño: diseno/01-plataforma/informes.md
 Módulo: M20 Administración y telemetría (D-241.4)
 Depende de: engine.service (GameService: store, content, clock), engine.hero (Hero)
@@ -20,7 +22,8 @@ Reglas que nunca se rompen:
     3. Es para el equipo, no para los jugadores: va en español y no pasa por los archivos de idiomas.
 Si cambias esto, revisa:
     - El bot: adapters/telegram/bot.py (REPORTS_CHAT_ID, notifier)
-    - Lo que se mide: los campos de Hero (engine/hero/hero.py) y los oficios (content/professions.yaml)
+    - Lo que se mide: los campos de Hero (engine/hero/hero.py) y los oficios (content/professions.yaml); el mercado
+      (engine/service/market.py _mkt_log, espacio "market_log")
     - Pruebas: tests/test_informes.py
 """
 
@@ -83,7 +86,8 @@ def build(service: Any) -> tuple[str, str]:
     Qué hace: arma el informe del día: cuántos jugadores hay y cuántos jugaron; los 10 más activos (los que más
     experiencia sumaron desde la foto anterior; el primer día, los que jugaron más reciente); quiénes son (niveles, clases,
     idiomas, campamentos), qué hacen ahora, cuánto juntaron, exploraron, pelearon, fabricaron y vendieron desde la foto
-    anterior (y en total), sus oficios, su economía, la mochila y el mapa; y cuántos mensajes de 💬 Feedback llegaron. Guarda
+    anterior (y en total), sus oficios, su economía, la mochila y el mapa; cuántos mensajes de 💬 Feedback llegaron y, desde la
+    0.46 (D-320), el 🏛️ Mercado entre jugadores de ayer y de hoy (market_lines). Guarda
     la foto de hoy en "report_snap".
     La llama: el bot (notifier). Si cambia, afecta: lo que lee el equipo cada día.
     """
@@ -206,4 +210,28 @@ def build(service: Any) -> tuple[str, str]:
     pending = [d for _, d in service.store.items("feedback") if now - d.get("at", 0) <= DAY]
     add("8. FEEDBACK")
     add(f"- Mensajes de 💬 Feedback en las últimas 24 h: {len(pending)} (cada uno llega suelto a este chat).")
+    add("")
+    lines += market_lines(service)
     return f"informe-jugadores-{date}.txt", "\n".join(lines) + "\n"
+
+
+def market_lines(service: Any) -> list[str]:
+    """Section 9: the 🏛️ player market of yesterday (a whole day) and of today so far, from "market_log" (D-320).
+
+    [ES] Qué hace: las líneas del mercado entre jugadores para el informe (todos juntos, sin nombres): cuántas compras hubo,
+    cuántas unidades y monedas cambiaron de mano, cuánto impuesto se quemó y cuántas órdenes se publicaron, cancelaron o
+    vencieron; y cuántas órdenes hay abiertas ahora. Solo lee. La llama: build().
+    Si cambia, afecta: lo que lee el equipo.
+    """
+    today = int(service._today())
+    out = ["9. MERCADO ENTRE JUGADORES"]
+    for label, day in (("ayer", today - 1), ("hoy hasta ahora", today)):
+        log = service.store.get("market_log", str(day)) or {}
+        out.append(f"- {label}: compras {int(log.get('trades', 0))} · unidades {int(log.get('units', 0))} · monedas que "
+                   f"cambiaron de mano (🥉) {int(log.get('coins', 0))} · impuesto quemado (🥉) {int(log.get('tax', 0))} · "
+                   f"órdenes de venta {int(log.get('sell_orders', 0))} · pedidos de compra {int(log.get('buy_orders', 0))} · "
+                   f"canceladas {int(log.get('cancelled', 0))} · vencidas {int(log.get('expired', 0))}")
+    orders = [o for _, o in service.store.items("market_order")]
+    out.append(f"- Órdenes abiertas ahora: {sum(1 for o in orders if o.get('side') == 'sell')} de venta · "
+               f"{sum(1 for o in orders if o.get('side') == 'buy')} pedidos de compra")
+    return out

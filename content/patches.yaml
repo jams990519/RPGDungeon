@@ -913,3 +913,20 @@ v0_45_1:
     - "🔨 The Forge is built with ingots only (it also asked for 15 leather): hide is left for the Tannery, the Leatherworks and your armor."
     - "🔒 Works your camp had already activated keep asking for the same: nobody loses what they already gave."
     - "📜 🛠️ Craft, 🪚 Refine and 🍲 Cook are now a list: one line per recipe with its code (/r1), its color, whether you can make it (✅ you carry it all, 🔸 something is missing, ▫️ none) and the experience it gives, grouped by profession. Tap the code to open it, or ✅ Only what I can make."
+
+v0_46:
+  version: "0.46"
+  title: "🏛️ Lost Realms 0.46: el mercado entre jugadores"
+  title_en: "🏛️ Lost Realms 0.46: the player market"
+  notes:
+    - "🏛️ Nuevo 🏛️ Mercado: un solo mercado para todos. Ábrelo en cualquier 🔥 fogata (🛒 Mercader → 🏛️ Mercado), en tu campamento con 🏪 Puesto de trueque, o escribe /mercado."
+    - "🏷️ Vende a otros jugadores el equipo que encuentras o fabricas, y también pociones, remedios, muebles, comida, 💰 bolsas y 🪎 cofres: eliges qué (/s1), pones el precio en 🥉 y la cantidad, y cuando alguien compra cobras al momento."
+    - "📝 ¿Te faltan recursos? Pídelos en 📝 Pedir recursos (/b07, el mismo código de 📦 Recursos): apartas las monedas y quien los tenga te los vende. Y si tú los tienes, véndelos en 📥 Pedidos de compra."
+    - "🐴 Lo que compras lo trae un transportista: llega a 📦 Entregas en 30 minutos y lo recoges en cualquier fogata o en tu campamento. Si la mochila está llena, el resto espera: nada se pierde."
+    - "💸 Quien cobra paga un impuesto del 5 %. Tienes hasta 10 órdenes a la vez; duran 7 días y ❌ cancelar devuelve todo. Las ✒️ obras maestras se venden con la firma de quien las hizo."
+  notes_en:
+    - "🏛️ New 🏛️ Market: one market for everyone. Open it at any 🔥 campfire (🛒 Merchant → 🏛️ Market), at your camp with a 🏪 Trading Post, or type /market."
+    - "🏷️ Sell other players the gear you find or craft, and also potions, remedies, furniture, food, 💰 bags and 🪎 chests: pick what (/s1), set the price in 🥉 and the quantity, and when someone buys you get paid at once."
+    - "📝 Short of resources? Ask for them in 📝 Ask for resources (/b07, the same code as in 📦 Resources): you set the coins aside and whoever has them sells them to you. And if you have them, sell them in 📥 Buy orders."
+    - "🐴 A transporter brings what you buy: it reaches 📦 Deliveries in 30 minutes and you collect it at any campfire or at your camp. If your backpack is full, the rest waits: nothing is lost."
+    - "💸 Whoever gets the coins pays a 5% tax. You can have up to 10 orders at a time; they last 7 days and ❌ cancelling gives everything back. ✒️ Masterworks are sold with their maker's signature."

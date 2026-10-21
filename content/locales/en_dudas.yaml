@@ -278,3 +278,9 @@ faq:
   d57:
     q: 🪓 How do I get wood?
     a: '🪵 There is wood in every zone, and more in forests, dark forests and jungles. In 🧭 Explore, 🪓 Chop wood collects only wood: like 🧺 Gather ({gather_min} min and 1 ⚡ per run, the same batches), but every unit is wood and it raises the 🪓 Lumberjack. In your territory you collect {own_bonus}% more and on a ✨ wood node it yields ×{node_yield}. It runs out and grows back on its own: about {base_units} per hour in each zone.'
+  d58:
+    q: 🏛️ How do I sell to other players?
+    a: 'At a 🔥 campfire, 🛒 Merchant → 🏛️ Market (or /market; also at your camp with a 🏪 Trading Post). 🏷️ Sell: gear and crafted goods (potions, remedies, furniture, food, bags and chests) with their code (/s1); you set the price and the quantity and it leaves your backpack. When someone buys, you get paid at once minus a {market_tax}% tax. Resources are sold in 📥 Buy orders, to whoever asks for them. Up to {market_orders} orders at a time; they last {market_days} days and ❌ cancelling gives everything back.'
+  d59:
+    q: 📦 How do I buy and when does it arrive?
+    a: '🏛️ Market → 🛍️ Buy: every list goes from the cheapest offer to the most expensive; tap the code (/c1) and buy. For resources, 📝 Ask for resources: you set the coins aside and whoever has them sells to you. A transporter brings what you buy: it reaches 📦 Deliveries in {market_delivery} and you collect it at any 🔥 campfire or at your camp, as far as it fits in your backpack; the rest waits.'
