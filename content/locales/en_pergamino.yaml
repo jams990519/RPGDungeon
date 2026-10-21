@@ -1,0 +1,60 @@
+# Texts of the 🧭 Explorer's 🗺️ map scroll (D-311 part 5, confirmed by the owner, E-180; how it was applied: D-326,
+# provisional; 0.50).
+# [ES] La versión en inglés de es_pergamino.yaml (D-250): las mismas claves, huecos y plurales (python tools/check_locales.py
+#     en 0 errores). Lo usan engine/service/map_scroll.py, engine/service/market.py y engine/service/game.py.
+
+item:
+  pergamino_mapa: "Map scroll"
+
+scroll:
+  title: "🗺️ Map scrolls"
+  item_title: "🗺️ Map scroll"
+  button: "🗺️ Scrolls"
+  button_n: "🗺️ Scrolls ({n})"
+  intro: "🗺️ A map scroll shows in colour, for ever, the zones a 🧭 Explorer investigated to {pct} % or more in a {size} × {size} region. Only the colour: it does not give the resources, the nodes or direct travel."
+  yours_title: "📜 Your scrolls ({n}):"
+  line: "{code} {summary} · 🆕 {new} for you"
+  use_hint: "👆 Tap the code (/pm1) or a button to see it and use it."
+  none: "You carry no scrolls. They are bought in 🏛️ Market → 🛍️ Buy → 🗺️ Maps."
+  make_hint: "🧭 Your Explorer rank lets you make one from what you explored: 🗺️ Make a scroll."
+  make_button: "🗺️ Make a scroll"
+  open_button: "📜 {n}. {name}"
+  bad_code: "❔ {code} is not in your last list of scrolls. Open it again: /scrolls"
+  gone: "⌛ That scroll is no longer in your backpack."
+  region: "{name} region ({x}, {y})"
+  summary: "{region} · {n} {n|zone|zones} · ✍️ {by}"
+  by: "✍️ Made by: {name}"
+  zones_line: "🗺️ {n} {n|zone|zones} in colour, from ({x0}, {y0}) to ({x1}, {y1})"
+  new_line: "🆕 {n} {n|zone|zones} you do not see in colour yet."
+  nothing_new: "You already see all those zones in colour: it adds nothing new."
+  use_explain: "📜 Using it spends it and those zones stay in colour on your 🗺️ Map for ever. Only the colour: it does not give their resources, their nodes or direct travel."
+  use_button: "📜 Use"
+  used: "📜 You used the scroll of the {region}: {n} new {n|zone|zones} in colour on your 🗺️ Map ({total} in all)."
+  new_terrains: "🆕 New terrains in your legend: {terrains} (you know {n} of {total})."
+  zone_line: "🗺️ This zone shows in colour on your map thanks to a scroll. You investigated it to {pct} %: its resources are found by exploring."
+  bag_line: "🗺️ Map scrolls: {n}. See and use them with /scrolls (also in 🗺️ Map → 🗺️ Scrolls)."
+  make_title: "🗺️ Make a scroll"
+  make_intro: "🗺️ You draw your region with the zones you investigated yourself to {pct} % or more. What you know through your guild or another scroll does not go in."
+  make_region: "📍 Your region: {region}, from ({x0}, {y0}) to ({x1}, {y1}) ({size} × {size} zones)."
+  make_legend: "🧍 you · in colour: goes in · {blank} does not (under {pct} %) · 🔥 campfire: always seen, does not count"
+  make_zones: "🗺️ Zones it would hold: {n} (at least {need})."
+  make_cost: "💸 Cost: ⚡{energy} · {items}"
+  make_xp: "{name}: +{xp} experience per scroll."
+  need_zones: "❌ You need {n} more {n|zone|zones} investigated to {pct} % in this region (at least {need}). Explore more or move to another region."
+  need_items: "❌ You lack: {items}."
+  need_rank: "🔒 Making scrolls needs 🧭 Explorer rank {rank} (you have {have}). Rise by exploring."
+  do_button: "✅ Make a scroll · ⚡{energy}"
+  made: "🗺️ You made a scroll: {summary}."
+  made_xp: "{name}: +{xp} experience."
+  sell_hint: "🏛️ Sell it at the price you want in 🏛️ Market → 🏷️ Sell, or use it yourself."
+
+market:
+  cat:
+    maps: "🗺️ Maps"
+  scroll_mark: " · {summary}"
+
+explorer:
+  what:
+    map_scroll: "you can make 🗺️ map scrolls from what you explored (🗺️ Map → 🗺️ Scrolls) and sell them in the 🏛️ Market at the price you want"
+  short:
+    map_scroll: "{rank} 🗺️ scrolls"

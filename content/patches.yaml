@@ -986,3 +986,18 @@ v0_49:
     - "💰 The harvest is kept for up to 7 days and every week it reaches the camp's fund by itself (never anyone's backpack), if some member played that week. Every member gets a notice."
     - "📋 In 🏰 Manage → ⬆️ Improve and in 🛡️ Guild → 💰 Funds you see how much it gives a day, how much is stored and when it arrives. More in ❓ /d61."
     - "⚖️ The harvest replaces the +50% that gathering in your territory used to give: now you gather there the same as outside, and the land works for the whole camp."
+
+v0_50:
+  version: "0.50"
+  title: "🗺️ Lost Realms 0.50: el pergamino de mapa del Explorador"
+  title_en: "🗺️ Lost Realms 0.50: the Explorer's map scroll"
+  notes:
+    - "🗺️ Desde el rango 15 de 🧭 Explorador haces pergaminos de mapa: 🗺️ Mapa → 🗺️ Pergaminos → 🗺️ Hacer pergamino. Lleva las zonas que investigaste tú a la mitad o más en tu región de 6 × 6 (al menos 6). Cuesta ⚡5 y 1 🦌 piel, y da experiencia de Explorador."
+    - "🏛️ Véndelo al precio que quieras en el 🏛️ Mercado (🏷️ Vender), de 1 🥉 a 1 🥇. Los compradores lo encuentran en 🛍️ Comprar → 🗺️ Mapas y ven cuántas zonas son nuevas para ellos."
+    - "📜 Quien lo usa ve esas zonas a color en su 🗺️ Mapa para siempre, y sus terrenos entran en su leyenda. Solo el color: los recursos, los nodos y el viaje directo se siguen ganando explorando. El pergamino se gasta al usarlo."
+    - "🎒 Tus pergaminos: /pergaminos (también lo dice la 🎒 Mochila)."
+  notes_en:
+    - "🗺️ From 🧭 Explorer rank 15 you make map scrolls: 🗺️ Map → 🗺️ Scrolls → 🗺️ Make a scroll. It holds the zones you investigated yourself halfway or more in your 6 × 6 region (at least 6). It costs ⚡5 and 1 🦌 hide, and gives Explorer experience."
+    - "🏛️ Sell it at the price you want in the 🏛️ Market (🏷️ Sell), from 1 🥉 to 1 🥇. Buyers find it in 🛍️ Buy → 🗺️ Maps and see how many zones are new for them."
+    - "📜 Whoever uses it sees those zones in colour on their 🗺️ Map for ever, and their terrains join the legend. Only the colour: resources, nodes and direct travel are still earned by exploring. The scroll is spent when used."
+    - "🎒 Your scrolls: /scrolls (the 🎒 Backpack says it too)."

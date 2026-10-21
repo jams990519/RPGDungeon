@@ -9,6 +9,8 @@ terrain or refined) at a unit price: the coins are escrowed; anyone who carries 
 part, gets the coins minus the tax at once, and the units travel to the asker's box. Orders expire after
 market.order_days; on expiry or ❌ cancel what is left goes back (items to 📦 Entregas, ready at once; coins to the
 wallet). The box is collected at any bonfire or at your camp, as far as the backpack has room: what does not fit stays.
+D-326 (0.50): a 🗺️ map scroll (map_scroll.py) is sold one copy per order, category "maps", with its zones, author and region
+travelling in the order and the box ("scroll"), at a free price (map_scroll.price_min to price_max instead of the band).
 
 [ES]
 Para qué sirve: el mercado entre jugadores que pidió el dueño el 21-oct-2026 ("los jugadores venden a otros jugadores el
@@ -22,7 +24,9 @@ Depende de: content/balance.yaml (bloque market; shop.sell_ratio para mostrar lo
     slot, req_level, masterwork), content/locales/es_mercado.yaml y en_mercado.yaml (textos), engine.hero (Hero) y las
     ayudas de GameService (_money, _gear_name, _gear_status, _gear_stats_text, _ench_defs, _ench_label, _forget_piece,
     _bag_used, _bag_cap, _bag_full_line, _refill_belt, _fmt_duration, _seconds, _join, _load, _save, _push_each, _codes,
-    _code_target, _upgrades_here, _camp_service, _main_view, _today)
+    _code_target, _upgrades_here, _camp_service, _main_view, _today); D-326: content/balance.yaml map_scroll (price_min,
+    price_max) y las ayudas de MapScrollMixin (_scroll_item, _scroll_cfg, _scroll_find, _scroll_take, _scroll_add,
+    _scroll_summary, _scroll_new)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (borra "market_open" con cualquier botón que no sea
     del mercado; _idle_action manda MARKET_ACTIONS a _market_action), text() (los códigos /c1 /s1 /b07 /k1 /o1 con
     market_code, y el texto suelto con un borrador abierto: _market_typed), tick() (_market_tick: vencimientos y avisos de
@@ -36,16 +40,19 @@ Datos de los que es dueño:
         items.yaml, o "bags" / "chests"), "n" (lo que queda), "n0" (lo publicado), "price" (precio por unidad en 🥉), "by"
         (cuenta), "name" (nombre del héroe al publicar), "at", "until" (vence), "x", "y" (dónde se publicó; para el
         transporte por distancia de más adelante), "enchant" y "sig" (el ✨ encantamiento y la ✒️ firma de la pieza: viajan
-        con ella, como en la ⚔️ Armería)}. Una orden que se llena, se cancela o vence se BORRA (lo que quedaba ya volvió).
+        con ella, como en la ⚔️ Armería), "scroll" (D-326: solo en un 🗺️ pergamino de mapa, siempre de a 1: su registro
+        completo, {"id", "by", "center", "size", "zones", "at"}, que viaja con él)}. Una orden que se llena, se cancela o
+        vence se BORRA (lo que quedaba ya volvió).
     "market_index" (clave "sell:<categoría>" o "buy"): {"ids": [[precio, id, good], …]} ordenado: ventas de la más barata a
         la más cara, compras de la que más paga a la que menos (a igual precio, la más vieja primero). Es solo un índice:
         se arregla solo si apunta a una orden que ya no está.
     "market_mine" (clave la cuenta): {"ids": [id, …]}: las órdenes activas de cada jugador (📋 Mis órdenes y el tope).
     "market_box" (clave la cuenta): {"items": [{"good", "n", "at" (cuándo llega), "enchant", "sig", "from" (de quién),
-        "why" ("bought", "filled", "returned", "expired"), "told" (ya se avisó que llegó), "coins" (solo si son monedas)}]}:
-        📦 Entregas. Se borra al quedar vacía.
-    "market_open" (clave la cuenta): {"side", "good", "price", "n"}: el borrador de una orden mientras se arma; el texto
-        suelto que escribes es su precio (y "x5", su cantidad). Solo pantalla: act() lo borra con cualquier otro botón.
+        "why" ("bought", "filled", "returned", "expired"), "told" (ya se avisó que llegó), "coins" (solo si son monedas),
+        "scroll" (D-326: el 🗺️ pergamino que llega, con sus zonas)}]}: 📦 Entregas. Se borra al quedar vacía.
+    "market_open" (clave la cuenta): {"side", "good", "price", "n", "scroll" (D-326: el id del 🗺️ pergamino que se vende)}:
+        el borrador de una orden mientras se arma; el texto suelto que escribes es su precio (y "x5", su cantidad). Solo
+        pantalla: act() lo borra con cualquier otro botón.
     "market_log" (clave el día, _today()): {"trades", "units", "coins", "tax", "sell_orders", "buy_orders", "cancelled",
         "expired"}: la cuenta del día para el informe diario (adapters/reports.py). Se guardan market.log_days días.
     "meta"/"market": {"seq" (último número de orden), "next_expire" (la orden que vence antes), "next_due" (la entrega que
@@ -58,7 +65,8 @@ Reglas que nunca se rompen:
     2. Una orden no se llena dos veces: la revisión y la escritura van en la misma llamada (un solo proceso del motor) y
        siempre se relee la orden del almacén antes de tocarla.
     3. Nadie se compra ni se vende a sí mismo; el precio va dentro de la banda de su objeto (D-26: de market.price_min a
-       market.price_max veces su precio de referencia).
+       market.price_max veces su precio de referencia). La excepción es el 🗺️ pergamino de mapa (D-311.5, "al precio que
+       quiera"; D-326): su banda es map_scroll.price_min a price_max (de 1 🥉 a 1 🥇).
     4. El impuesto es un porcentaje (D-27): lo paga quien cobra (el vendedor de una orden de venta, quien llena un pedido de
        compra) y se quema (sumidero).
     5. A otra cuenta se le paga a través de su ficha guardada; si es el héroe que juega ahora, en memoria (como
@@ -67,14 +75,18 @@ Reglas que nunca se rompen:
        a otro jugador se arma con _push_each (le llega en su idioma, D-250).
     7. Una pieza con ✨ o ✒️ que el comprador ya tiene con otro encantamiento o firma no entra a su mochila: espera en la caja
        (las copias de una pieza comparten esos datos, como en la ⚔️ Armería, D-290).
+    8. D-326: un 🗺️ pergamino de mapa se vende de a uno (cada copia tiene sus zonas); sale de la mochila y vuelve a ella solo
+       por _scroll_take y _scroll_add (map_scroll.py), así la mochila sigue contando lo que hay en Hero.map_scrolls.
 Si cambias esto, revisa:
     - Números: balance.yaml market (tax, delivery_minutes, order_days, max_orders, max_units, price_min, price_max,
       price_buttons, ask_buttons, per_page, log_days); el registro de balance (diseno/03-personaje/balance.md)
-    - Pantallas y botones: HUB_KINDS ("market" y "market_cats": hasta 8 botones), el layout del borrador (filas de precio y
+    - Pantallas y botones: HUB_KINDS ("market" y "market_cats": hasta 8 botones; "market_cats" 9 desde la 0.50 con 🗺️ Mapas,
+      EXTRA_BUTTON_KINDS), el layout del borrador (filas de precio y
       cantidad, ✅ Publicar y ↩️ Volver a lo ancho) y los ids "mkt…" (64 bytes como máximo en Telegram)
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (M13 y la cascada C-32)
-    - Pruebas: tests/test_mercado.py; tests/test_fogata_ordenada.py (el 🛒 Mercader con 🏛️ Mercado)
+    - Pruebas: tests/test_mercado.py; tests/test_fogata_ordenada.py (el 🛒 Mercader con 🏛️ Mercado); tests/test_pergamino_mapa.py
+      (el 🗺️ pergamino en el mercado)
 """
 
 from __future__ import annotations
@@ -92,7 +104,8 @@ from engine.world import mapgen
 MARKET_ACTIONS = ("mkt",)
 # The 7 categories of 🛍️ Comprar, in button order. [ES] Las categorías de las órdenes de venta, en el orden de sus botones
 # (ids estables: van en los botones "mkt:cat:<categoría>" y en las claves del índice "sell:<categoría>").
-MARKET_CATEGORIES = ("weapons", "armor", "jewels", "remedies", "furniture", "food", "coinbags")
+MARKET_CATEGORIES = ("weapons", "armor", "jewels", "remedies", "furniture", "food", "coinbags",
+                     "maps")         # D-326 (0.50): 🗺️ Mapas, the 🧭 Explorador's map scrolls (one per order, each with its zones)
 # Goods that are coins kept apart (Hero.bags, Hero.chests), not backpack items. [ES] 💰 bolsas y 🪎 cofres.
 COIN_GOODS = ("bags", "chests")
 # Typed codes of the market lists. [ES] /c1: una oferta de 🛍️ Comprar; /s1: algo tuyo de 🏷️ Vender; /b07: pedir el recurso con
@@ -152,6 +165,8 @@ class MarketMixin:
             return "furniture"
         if kind == "food":
             return "food"
+        if kind == "map_scroll":                         # D-326: 🗺️ map scrolls
+            return "maps"
         return None
 
     def _mkt_is_resource(self, good: str) -> bool:
@@ -176,7 +191,12 @@ class MarketMixin:
         return max(1, int((self.content.items.get(good) or {}).get("price", 1)))
 
     def _mkt_band(self, good: str) -> tuple[int, int]:
-        """(lowest, highest) unit price allowed (D-26): market.price_min and price_max times the reference price."""
+        """(lowest, highest) unit price allowed (D-26): market.price_min and price_max times the reference price. A 🗺️ map
+        scroll is the exception (D-311.5: "at whatever price they want"; D-326): map_scroll.price_min to price_max."""
+        if good == self._scroll_item():
+            scfg = self._scroll_cfg()
+            low = max(1, int(scfg.get("price_min", 1)))
+            return low, max(low, int(scfg.get("price_max", 10000)))
         cfg = self._mkt_cfg()
         ref = self._mkt_ref_price(good)
         low = max(1, int(ref * float(cfg.get("price_min", 0.25))))
@@ -211,6 +231,8 @@ class MarketMixin:
             label += t.t("ench.mark")
         if entry.get("sig"):
             label += t.t("market.signed", name=entry["sig"])
+        if entry.get("scroll"):                          # D-326: a 🗺️ scroll says its region, zones and author
+            label += t.t("market.scroll_mark", summary=self._scroll_summary(entry["scroll"]))
         return label
 
     def _mkt_enchant_text(self, enchant: dict[str, Any] | None) -> str:
@@ -284,12 +306,19 @@ class MarketMixin:
             self._forget_piece(hero, good)          # the last copy takes its ✨ and ✒️ along (they travel in the order)
 
     def _mkt_sellables(self, hero: Hero) -> list[str]:
-        """What the hero can put up for sale, by category order then name: gear, remedies, furniture, food, bags, chests."""
-        goods = [i for i, n in hero.backpack.items() if n > 0 and self._mkt_category(i)]
+        """What the hero can put up for sale, by category order then name: gear, remedies, furniture, food, bags, chests and
+        🗺️ map scrolls. Each scroll is its own line, "<item>@<scroll id>" (D-326: every copy has its own zones)."""
+        scroll = self._scroll_item()
+        goods = [i for i, n in hero.backpack.items() if n > 0 and i != scroll and self._mkt_category(i)]
         goods += [g for g in COIN_GOODS if self._mkt_have(hero, g) > 0]
+        goods += [f"{scroll}@{data.get('id')}" for data in hero.map_scrolls]
         order = {cat: n for n, cat in enumerate(MARKET_CATEGORIES)}
-        return sorted(goods, key=lambda g: (order[self._mkt_category(g)], -int((self.content.items.get(g) or {}).get("tier", 0)),
-                                            self._mkt_name(g)))
+
+        def key(good: str) -> tuple[Any, ...]:
+            base = good.partition("@")[0]
+            return (order[self._mkt_category(base)], -int((self.content.items.get(base) or {}).get("tier", 0)), self._mkt_name(base))
+
+        return sorted(goods, key=key)
 
     def _mkt_resources(self) -> list[str]:
         """Every resource a buy order can ask for, by its code (the codes of 📦 Recursos, /07)."""
@@ -399,7 +428,7 @@ class MarketMixin:
         if left > 0 and order["side"] == "sell":
             self._mkt_box_add(owner, {"good": order["good"], "n": left, "at": now, "enchant": order.get("enchant"),
                                       "sig": order.get("sig"), "from": "", "why": "expired" if why == "expired" else "returned",
-                                      "told": True})
+                                      "told": True, **({"scroll": order["scroll"]} if order.get("scroll") else {})})
         elif left > 0:
             self._mkt_credit(owner, left * int(order["price"]), actor)
         self._mkt_index_remove(order)
@@ -579,7 +608,9 @@ class MarketMixin:
         else:
             target = self._code_target(hero, MARKET_CODE_KINDS[letter], n)
             if letter == "s":
-                view = (self._market_draft_new(hero, "sell", target) if target and self._mkt_have(hero, target) > 0
+                good, _, sid = (target or "").partition("@")        # D-326: "<item>@<scroll id>" is one 🗺️ scroll
+                ok = bool(target) and (self._scroll_find(hero, sid) is not None if sid else self._mkt_have(hero, good) > 0)
+                view = (self._market_draft_new(hero, "sell", good, scroll=sid or None) if ok
                         else self._market_sell_list(hero, 0, notice=t.t("market.bad_code", code=f"/s{n}")))
             elif letter == "c":
                 view = self._market_offer_view(hero, target or "", notice=None if target else t.t("market.bad_code", code=f"/c{n}"))
@@ -658,6 +689,9 @@ class MarketMixin:
             enchant = self._mkt_enchant_text(order.get("enchant"))
             if enchant:
                 body.append(t.t("ench.item_line", enchant=enchant))
+        if order.get("scroll"):                           # D-326: how many of its zones are new for you; only the colour
+            new = self._scroll_new(hero, list(order["scroll"].get("zones") or []))
+            body += [t.t("scroll.new_line", n=len(new)) if new else t.t("scroll.nothing_new"), t.t("scroll.use_explain")]
         body += ["", t.t("market.offer_detail", name=order.get("name", "?"), price=self._money(order["price"]), n=order["n"],
                          left=self._mkt_left(float(order["until"]) - self.clock.now())),
                  t.t("market.delivery_line", time=self._fmt_duration(self._mkt_delivery_seconds()))]
@@ -696,7 +730,8 @@ class MarketMixin:
         self._mkt_credit(seller, cost - tax, hero)
         arrive = self.clock.now() + self._mkt_delivery_seconds()
         self._mkt_box_add(hero.id, {"good": order["good"], "n": n, "at": arrive, "enchant": order.get("enchant"),
-                                    "sig": order.get("sig"), "from": order.get("name", "?"), "why": "bought", "told": False})
+                                    "sig": order.get("sig"), "from": order.get("name", "?"), "why": "bought", "told": False,
+                                    **({"scroll": order["scroll"]} if order.get("scroll") else {})})   # D-326: its zones travel
         snap = dict(order)
         label = self._mkt_label(snap)
         if order["n"] <= 0:
@@ -727,6 +762,12 @@ class MarketMixin:
         self._codes(hero, "mkt_sell", goods)
         body = [t.t("market.sell_intro")]
         for n, good in enumerate(goods[page * per:(page + 1) * per], page * per + 1):
+            base, _, sid = good.partition("@")
+            scroll = self._scroll_find(hero, sid) if sid else None
+            if scroll is not None:                        # D-326: one line per 🗺️ scroll, with its region, zones and author
+                body.append(t.t("market.sell_line", code=f"/s{n}", item=self._mkt_label({"good": base, "scroll": scroll}), n=1,
+                                price=self._money(self._mkt_ref_price(base)), fit=""))
+                continue
             fit = self._mkt_fit(hero, good)
             body.append(t.t("market.sell_line", code=f"/s{n}", item=self._mkt_name(good) + (self._enchant_mark(hero, good)
                             if good not in COIN_GOODS else ""), n=self._mkt_have(hero, good),
@@ -742,12 +783,15 @@ class MarketMixin:
         actions.append(Action(id="mkt", label=t.t("menu.back")))
         return View(kind="market_sell", title=t.t("market.sell_title"), body=body, actions=actions, notice=notice)
 
-    def _market_draft_new(self, hero: Hero, side: str, good: str) -> View:
-        """Open a draft order ("market_open"): a sale of `good` (1 unit at its reference price) or a buy order (10 units)."""
+    def _market_draft_new(self, hero: Hero, side: str, good: str, scroll: str | None = None) -> View:
+        """Open a draft order ("market_open"): a sale of `good` (1 unit at its reference price) or a buy order (10 units).
+        D-326: `scroll` is the id of the 🗺️ map scroll being sold (always 1: every copy has its own zones)."""
         cfg = self._mkt_cfg()
         asks = list(cfg.get("ask_buttons") or [1, 10, 50])
         draft = {"side": side, "good": good, "price": self._mkt_clamp(good, self._mkt_ref_price(good)),
                  "n": 1 if side == "sell" else int(asks[1] if len(asks) > 1 else asks[0])}
+        if scroll:
+            draft["scroll"] = scroll
         self.store.put("market_open", hero.id, draft)
         return self._market_draft_view(hero)
 
@@ -760,6 +804,10 @@ class MarketMixin:
             return None
         if draft["side"] == "buy" and not self._mkt_is_resource(good):
             return None
+        if draft["side"] == "sell" and good == self._scroll_item():   # D-326: a 🗺️ scroll is sold one copy at a time
+            if self._scroll_find(hero, draft.get("scroll")) is None:
+                return None
+            draft["n"] = 1
         return draft
 
     def _mkt_qty_choices(self, hero: Hero, draft: dict[str, Any]) -> list[tuple[str, int]]:
@@ -767,6 +815,8 @@ class MarketMixin:
         market.ask_buttons (1, 10, 50)."""
         if draft["side"] == "buy":
             return [(str(n), int(n)) for n in (self._mkt_cfg().get("ask_buttons") or [1, 10, 50])]
+        if draft.get("scroll"):                           # D-326: one 🗺️ scroll per order
+            return []
         have = self._mkt_have(hero, draft["good"])
         if have <= 1:
             return []
@@ -797,7 +847,9 @@ class MarketMixin:
         ref = self._mkt_ref_price(good)
         total = price * n
         sell = draft["side"] == "sell"
-        body = [self._mkt_name(good) + (self._enchant_mark(hero, good) if sell and good not in COIN_GOODS else "")]
+        scroll = self._scroll_find(hero, draft.get("scroll")) if sell and draft.get("scroll") else None
+        body = [self._mkt_label({"good": good, "scroll": scroll}) if scroll is not None    # D-326: the 🗺️ scroll being sold
+                else self._mkt_name(good) + (self._enchant_mark(hero, good) if sell and good not in COIN_GOODS else "")]
         item = self.content.items.get(good) or {}
         if sell and item.get("kind") == "gear":
             body.append(self._gear_status(hero, item))
@@ -805,7 +857,7 @@ class MarketMixin:
             if note:
                 body.append(note)
         if sell:
-            body.append(t.t("market.draft_have", n=self._mkt_have(hero, good)))
+            body.append(t.t("market.draft_have", n=1 if scroll is not None else self._mkt_have(hero, good)))
         else:
             body.append(t.t("hero.gold_line", gold=self._money(hero.gold)))
             best = next((row for row in self._mkt_index("buy") if row[2] == good), None)
@@ -879,7 +931,8 @@ class MarketMixin:
         return self._market_draft_view(hero, notice=self._join(notes))
 
     def _mkt_new_order(self, hero: Hero, side: str, good: str, price: int, n: int,
-                       enchant: dict[str, Any] | None = None, sig: str | None = None) -> dict[str, Any]:
+                       enchant: dict[str, Any] | None = None, sig: str | None = None,
+                       scroll: dict[str, Any] | None = None) -> dict[str, Any]:
         meta = self._mkt_meta()
         meta["seq"] = int(meta.get("seq", 0)) + 1
         now = self.clock.now()
@@ -889,6 +942,8 @@ class MarketMixin:
         order = {"id": f"m{meta['seq']}", "side": side, "good": good, "n": n, "n0": n, "price": price, "by": hero.id,
                  "name": hero.name, "at": now, "until": until, "x": hero.x, "y": hero.y,
                  "enchant": dict(enchant) if enchant else None, "sig": sig}
+        if scroll:                                        # D-326: the 🗺️ scroll's zones, author and region travel with it
+            order["scroll"] = dict(scroll)
         self.store.put("market_order", order["id"], order)
         self._mkt_index_add(order)
         self._mkt_mine_put(hero.id, self._mkt_mine(hero.id) + [order["id"]])
@@ -911,7 +966,14 @@ class MarketMixin:
         low, high = self._mkt_band(good)
         if not low <= price <= high or n < 1 or n > int(cfg.get("max_units", 500)):
             return self._market_draft_view(hero, notice=t.t("market.band_fixed", low=self._money(low), high=self._money(high)))
-        if draft["side"] == "sell":
+        if draft["side"] == "sell" and draft.get("scroll"):    # D-326: the 🗺️ scroll leaves the backpack with its zones
+            data = self._scroll_take(hero, draft["scroll"])
+            if data is None:
+                return self._market_sell_list(hero, notice=t.t("market.not_enough", n=0))
+            order = self._mkt_new_order(hero, "sell", good, price, 1, scroll=data)
+            self._mkt_log(sell_orders=1)
+            notice = t.t("market.listed", item=self._mkt_label(order), n=1, price=self._money(price))
+        elif draft["side"] == "sell":
             if self._mkt_have(hero, good) < n:
                 return self._market_draft_view(hero, notice=t.t("market.not_enough", n=self._mkt_have(hero, good)))
             enchant = (hero.gear_enchants or {}).get(good) if good not in COIN_GOODS else None
@@ -1161,6 +1223,14 @@ class MarketMixin:
             if good in COIN_GOODS:
                 setattr(hero, good, int(getattr(hero, good)) + n)
                 got.append(t.t("market.box_item", item=self._mkt_label(entry), n=n))
+                continue
+            if entry.get("scroll"):                       # D-326: a 🗺️ scroll comes back as its own copy (needs 1 of space)
+                if self._bag_used(hero) >= self._bag_cap(hero):
+                    full = True
+                    stays.append(entry)
+                    continue
+                self._scroll_add(hero, entry["scroll"])
+                got.append(t.t("market.box_item", item=self._mkt_label(entry), n=1))
                 continue
             if good not in self.content.items or n <= 0:
                 stays.append(entry)                      # something no longer in the catalog waits (D-64)

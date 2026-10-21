@@ -187,7 +187,8 @@ def test_the_map_still_draws_no_enemy_camp(service):
     explorer(service, cx + 2, cy, 100)
     view = service.act("test:1", "map")
     assert not any("👹" in row for row in grid(service, view))           # E-207: it went to 🔭, not back to the map
-    assert [a.id for a in view.actions] == ["places", "explore_menu"]
+    # no 🔭 button on the map (E-246 is open); D-326 (0.50): from 🧭 rank 15 the map shows 🗺️ Pergaminos
+    assert [a.id for a in view.actions] == ["places", "scrolls", "explore_menu"]
 
 
 # ---------------------------------------------------------------- (3) your own territory is grey too
