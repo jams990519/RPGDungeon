@@ -229,7 +229,7 @@ faq:
     a: 'From level {pantry_level} your camp has a 🌾 pantry: each member who played that day eats 1 ration. Fill it with 🏰 Manage → 🌾 Contribute food (meat, fish, cooked food or 🥖 provisions). During a famine the camp doesn''t grow, but it never loses levels.'
   d39:
     q: 🛡️ What are waves?
-    a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers.'
+    a: '{raids_week} times a week a wave reaches your camp. You have {raid_window} min to tap 🛡️ Defend and fight once each; half of the active members need to win. If you fall short, the pantry loses {raid_loss}% and nothing else. The 🛡️ Defense from your upgrades weakens the attackers. Before the castle come the 🌊 growing waves: {castle_waves} waves in a row, each one {castle_waves_pct}% stronger; you need to win {castle_waves_pass} (if you can''t, they start again after {castle_waves_retry} days).'
   d40:
     q: 🔨 What are upgrades?
     a: 'In 🏘️ Services the camp''s works are sorted by type (🏠 Homes, ⚒️ Crafts with one building per profession, 🛡️ Defenses, 📚 Knowledge). The founder or an 🤝 assistant activates each work; then everyone sees what''s missing and contributes with 🤲 or from afar with 💰 Deposit until they''re complete, and then they are built over time: {work_minutes} min per level of the work with 2 members in the territory (with 1, twice as long; with more, less). What''s built stays forever and gives services and defense.'
@@ -238,7 +238,7 @@ faq:
     a: '🔬 Research is your camp''s 📚 Knowledge: with the 📚 Library (level {library_level}) you study {studies}, one at a time, and what you learn counts forever for all members. You can''t research in the Clearing.'
   d42:
     q: 🛡️ What is the guild?
-    a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle} and {castle_active} members who played in the last {active_days} days.'
+    a: 'Anyone creates a guild for {gremio_cost} (🏕️ Camp → 👥 Players → 🛡️ Guild, or /guild); {gremio_cap} fit before the camp. You ask to join and the leader or an officer accepts. It shows where each member is and what they do, carries 📢 messages and gathers a 💰 fund from wherever you are; the leader sets the 📍 meeting point and founds the camp. After that, its members are the camp''s members: it levels up with what everyone explores, wins and gathers together. To become a castle you need a guild of level {guild_castle}, {castle_active} members who played in the last {active_days} days and to win {castle_waves_pass} of the {castle_waves} 🌊 growing waves.'
   d43:
     q: 📜 What is the board?
     a: 'On the 📜 Board (🏕️ Camp) there are 3 new tasks every day, one from each character: completing them gives experience, coins and reputation with their faction. If you have a camp, you also see its weekly tasks, which everyone does together.'

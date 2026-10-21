@@ -1,8 +1,9 @@
 # Texts of the settlement ladder, first slice (D-253, confirmed; how: D-327, provisional; 0.51): who stops playing frees the
-# place (warning and release) and the castle's active members.
+# place (warning and release), the castle's active members and, since 0.53 (D-329), the castle's growing waves.
 # [ES] Textos de la escalera del asentamiento, 1.ª parte (D-253, confirmada el 17-oct-2026; cómo se aplicó: D-327). Se junta con
 # es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/ladder.py (el aviso de los 25 días, la salida de los 30, la
-# línea 💤 de 👥 Miembros y la línea de los activos del castillo en ⏫ Siguiente nivel). Una clave nueva va también en
+# línea 💤 de 👥 Miembros y la línea de los activos del castillo en ⏫ Siguiente nivel; desde la 0.53, D-329, las 🌊 oleadas
+# crecientes: su línea de ⏫, el aviso, la pelea, la pantalla del campamento y el parte de cada oleada). Una clave nueva va también en
 # en_escalera.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
 
 ladder:                        # [ES] D-327: la escalera del asentamiento
@@ -17,3 +18,17 @@ ladder:                        # [ES] D-327: la escalera del asentamiento
   idle_mark: "💤 "             # [ES] delante del nombre de quien ya fue avisado
   # ---- ⏫ Siguiente nivel, el paso a castillo (D-253.2: "40 activos con cupo de 50")
   castle_active: "👥 Activos esta semana: {n} de {need} (jugaron en los últimos {days} días)"
+  # ---- 🌊 las oleadas crecientes del castillo (D-122, confirmada; cómo se aplicó: D-329, provisional; 0.53): ladder.py. En el
+  # nivel anterior al castillo, las oleadas del campamento son una serie de 5 que crece; se aprueba ganando 3
+  waves_row_new: "🌊 Oleadas crecientes: ganar {need} de {count} (empiezan solas con la próxima oleada; cada una, un {pct} % más fuerte)"   # [ES] ⏫ Siguiente nivel, antes de la primera
+  waves_row: "🌊 Oleadas crecientes: {won} {won|ganada|ganadas}, {lost} {lost|perdida|perdidas} de {count} (hace falta ganar {need}; {left|queda|quedan} {left})"   # [ES] ⏫, en curso
+  waves_row_wait: "🌊 Oleadas crecientes: perdidas; vuelven a empezar en {time} (hay que ganar {need} de {count})"   # [ES] ⏫, esperando después de perder la serie
+  waves_row_done: "🌊 Oleadas crecientes: superadas ({won} {won|ganada|ganadas}, {lost} {lost|perdida|perdidas})"   # [ES] ⏫, aprobada (para siempre)
+  waves_how: "🌊 Las oleadas crecientes llegan solas, con las oleadas del campamento ({per_week} por semana), y se defienden con 🛡️ Defender. La 1.ª es un {pct} % más fuerte que una oleada normal y cada una suma otro {pct} %: la {count}.ª, un {top} % más. Si pierden {lose}, vuelven a empezar a los {days} {days|día|días}."   # [ES] ⏫, mientras faltan
+  waves_arrive: "🌊 Oleada creciente {n} de {count}: un {pct} % más fuerte que una oleada normal. Para pasar a castillo hay que ganar {need} de {count}."   # [ES] el aviso de la oleada (_push_each)
+  waves_fight: "🌊 Oleada creciente {n} de {count}: +{pct} % de vida y de ataque."   # [ES] al salir a defender
+  waves_open_line: "🌊 Es la oleada creciente {n} de {count} (+{pct} %)."   # [ES] la pantalla del campamento mientras dura
+  waves_progress: "🌊 Oleadas crecientes de {camp}: {won} {won|ganada|ganadas} y {lost} {lost|perdida|perdidas} de {count}. Para pasar a castillo hace falta ganar {need}; {left|queda|quedan} {left}."   # [ES] el parte de cada oleada, a todos los miembros (_push_each)
+  waves_passed: "🏰 ¡{camp} superó las oleadas crecientes ({won} {won|ganada|ganadas} y {lost} {lost|perdida|perdidas})! El castillo ya no las pide."
+  waves_failed: "🌊 {camp} perdió las oleadas crecientes ({won} {won|ganada|ganadas} y {lost} {lost|perdida|perdidas}). Vuelven a empezar desde la primera en {time}. No se pierde nada más."
+  waves_all: " y superar las 🌊 {count} oleadas crecientes (ganar {need})"   # [ES] el final de la línea del castillo en 📜 Qué pide cada nivel (lvlall.castle)

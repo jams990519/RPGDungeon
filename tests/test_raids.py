@@ -9,7 +9,7 @@ a los 2 días. El Claro nunca tiene incursiones: es el campamento base (D-95, D-
 
 import pytest
 
-from conftest import make_hero
+from conftest import make_hero, pass_castle_waves
 from engine.combat import make_combat
 from engine.social import guilds as guild_rules
 from engine.world import raids as raid_rules
@@ -307,6 +307,7 @@ def test_noche_de_prueba_gates_castillo(service, clock):
     record["built"].update({"torres_arqueros": 0.0, "foso": 0.0})
     service.store.put("upgrades", KEY, record)
     place(service, "test:1", 6, 0, backpack={"madera": 999, "piedra": 999, "fibra": 999}, chests=99)   # ...its materials (D-92)
+    pass_castle_waves(service, KEY)          # D-329: ...and the 🌊 growing waves (tests/test_oleadas_crecientes_castillo.py)
     service.act("test:1", "lvlgive")                                 # the last thing given: a castle at once
     assert camp(service)["level"] == 9 and any("castillo" in line for line in service.act("test:1", "campinfo").body)
 

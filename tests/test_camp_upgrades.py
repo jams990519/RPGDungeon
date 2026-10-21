@@ -11,7 +11,7 @@ from collections import deque
 
 import pytest
 
-from conftest import make_hero
+from conftest import make_hero, pass_castle_waves
 from engine.core import FixedClock, MemoryStore, Rng
 from engine.hero import Hero, hero_stats
 from engine.service import GameService
@@ -354,6 +354,7 @@ def test_castle_needs_fifteen_improvements(service):
     data = service.store.get("camp", KEY)
     data["trial_won"] = True
     service.store.put("camp", KEY, data)
+    pass_castle_waves(service, KEY)          # D-329: the 🌊 growing waves too (tests/test_oleadas_crecientes_castillo.py)
     view = service.act("test:1", "lvlup")
     assert any("✅" in line and f"{need} mejoras" in line for line in view.body)
     service.act("test:1", "lvlgo")

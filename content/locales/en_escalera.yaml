@@ -1,5 +1,5 @@
 # Texts of the settlement ladder, first slice (D-253, confirmed; how: D-327, provisional; 0.51): who stops playing frees the
-# place (warning and release) and the castle's active members.
+# place (warning and release), the castle's active members and, since 0.53 (D-329), the castle's growing waves.
 # [ES] La versión en inglés de es_escalera.yaml (D-250): las mismas claves, los mismos huecos {nombre} y los mismos plurales.
 
 ladder:
@@ -11,3 +11,15 @@ ladder:
   idle_line: "💤 Whoever doesn't play for {days} days frees their place (they are warned {left} {left|day|days} before; never the founder)."
   idle_mark: "💤 "
   castle_active: "👥 Active this week: {n} of {need} (played in the last {days} days)"
+  waves_row_new: "🌊 Growing waves: win {need} of {count} (they start by themselves with the next wave; each one {pct}% stronger)"
+  waves_row: "🌊 Growing waves: {won} {won|win|wins}, {lost} {lost|loss|losses} of {count} (you need to win {need}; {left} {left|wave|waves} left)"
+  waves_row_wait: "🌊 Growing waves: lost; they start again in {time} (you need to win {need} of {count})"
+  waves_row_done: "🌊 Growing waves: passed ({won} {won|win|wins}, {lost} {lost|loss|losses})"
+  waves_how: "🌊 The growing waves come by themselves, with the camp's waves ({per_week} a week), and are defended with 🛡️ Defend. The 1st is {pct}% stronger than a normal wave and each one adds another {pct}%: wave {count}, {top}% more. If you lose {lose}, they start again after {days} {days|day|days}."
+  waves_arrive: "🌊 Growing wave {n} of {count}: {pct}% stronger than a normal wave. To become a castle you need to win {need} of {count}."
+  waves_fight: "🌊 Growing wave {n} of {count}: +{pct}% health and attack."
+  waves_open_line: "🌊 It's growing wave {n} of {count} (+{pct}%)."
+  waves_progress: "🌊 {camp}'s growing waves: {won} {won|win|wins} and {lost} {lost|loss|losses} of {count}. To become a castle you need to win {need}; {left} {left|wave|waves} left."
+  waves_passed: "🏰 {camp} got through the growing waves ({won} {won|win|wins} and {lost} {lost|loss|losses})! The castle no longer asks for them."
+  waves_failed: "🌊 {camp} lost the growing waves ({won} {won|win|wins} and {lost} {lost|loss|losses}). They start again from the first one in {time}. Nothing else is lost."
+  waves_all: " and getting through the 🌊 {count} growing waves (win {need})"

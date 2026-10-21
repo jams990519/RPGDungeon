@@ -1016,3 +1016,18 @@ v0_51:
     - "🤝 Assistants are the camp's officers: they accept or refuse whoever asks to join, invite and activate works. The founder names them in 🛡️ Guild → 👥 Members, from each member's card."
     - "💤 Whoever doesn't play for 30 days frees their place in the guild and the camp (at 25 days they get a warning; never the founder). Their hero and their things stay, what they gave stays in the camp and they can ask to join again. The count starts today."
     - "🏰 To become a castle you now need 40 members who played during the week and to win the 🌙 Trial Night with 10 different winners. Check it in ⏫ Next level."
+
+v0_53:
+  version: "0.53"
+  title: "🌊 Lost Realms 0.53: las oleadas crecientes del castillo"
+  title_en: "🌊 Lost Realms 0.53: the castle's growing waves"
+  notes:
+    - "🌊 Para pasar a castillo, la ciudad tiene que resistir las oleadas crecientes: en el nivel 8, las oleadas del campamento son una serie de 5 que crece. La 1.ª llega un 20 % más fuerte que una oleada normal y cada una suma otro 20 % (la 5.ª, el doble)."
+    - "🏰 Ganando 3 de las 5, la ciudad las supera para siempre. Con 3 perdidas, la serie vuelve a empezar a los 3 días; no se pierde nada más que lo de cualquier oleada perdida."
+    - "🛡️ Llegan solas, como siempre: cada miembro toca 🛡️ Defender, esté donde esté. Las defensas del campamento las frenan, así que conviene repararlas entre una y otra."
+    - "📋 Cómo van, en ⏫ Siguiente nivel y en el aviso que les llega a todos después de cada oleada. Los castillos que ya existen no cambian. Más en ❓ /d39."
+  notes_en:
+    - "🌊 To become a castle, the city has to withstand the growing waves: at level 8, the camp's waves are a series of 5 that grows. The 1st arrives 20% stronger than a normal wave and each one adds another 20% (the 5th, double)."
+    - "🏰 Winning 3 of the 5, the city gets through them for good. With 3 lost, the series starts again after 3 days; nothing else is lost beyond what any lost wave costs."
+    - "🛡️ They come by themselves, as always: each member taps 🛡️ Defend, wherever they are. The camp's defenses hold them back, so it pays to repair them between one and the next."
+    - "📋 How it's going, in ⏫ Next level and in the notice everyone gets after each wave. Castles that already exist don't change. More in ❓ /d39."

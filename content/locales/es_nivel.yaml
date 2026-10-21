@@ -68,7 +68,7 @@ lvlall:                        # [ES] D-313 (0.41.1): 📜 Qué pide cada nivel,
   intro: "Tu campamento está en nivel {level} ({stage}). Lo que pide cada subida:"
   line: "⏫ Nivel {level} ({stage}): construir {works} · {items}{extra}"
   chests: " · 🪎 {n} {n|cofre|cofres}"
-  castle: "🏰 Para castillo, además: el gremio listo, {active} miembros que jugaron en los últimos {days} días, {n} mejoras construidas y ganar la 🌙 Noche de prueba con {winners} vencedores distintos o más."   # [ES] D-327 (0.51, D-253.2 y D-122)
+  castle: "🏰 Para castillo, además: el gremio listo, {active} miembros que jugaron en los últimos {days} días, {n} mejoras construidas, ganar la 🌙 Noche de prueba con {winners} vencedores distintos o más{waves}."   # [ES] D-327 (0.51, D-253.2 y D-122); D-329 (0.53): {waves} es ladder.waves_all (" y superar las 🌊 5 oleadas crecientes (ganar 3)"), vacío si la regla está apagada
 
 territory:                     # [ES] D-304: 🗺️ Agrandar territorio, hacia dónde crece
   title: "🗺️ Agrandar territorio"
