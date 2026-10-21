@@ -1249,6 +1249,32 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): los tramos del refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina (0.52, D-306 confirmada; D-328 provisional)
+
+La reforma de recetas de la 0.44 llega a los 9 oficios que faltaban: una receta cada 5 rangos hasta el 100 y los colores de receta. Los números son de Claude (D-328); se generan con `python tools/recipe_tiers.py` desde `balance.yaml` → `recipe_tiers` y se ajustan en la beta (E-258, P-269).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `recipe_tiers.professions` | los 5 de equipo | + 🪚 🔥 💧 🧶 🪣 🗿, ⚗️, 🩺 y 🍲: los 14 oficios con recetas (colores en todos) |
+| `recipe_tiers.refine` (nuevo) | 1 receta por oficio de refinado (rango 1) | un refinado mejor por tramo (5 … 100): refinado de siempre 1 + rango ÷ 50 (`base_every`), crudo rango ÷ 5 (`raw_every`), catalizador 1 + rango ÷ 25 (`catalyst_every`); vale sus materiales + su ⚡. Tablón del 5: 1 tablón, 1 madera, 1 resina, 🥉14; del 100: 3 tablones, 20 maderas, 5 resinas, 🥉80. Lingote del 100: 🥉178 |
+| `recipe_tiers.consumables` (nuevo) | recetas en el 1, 25 y 50 (⚗️ 🩺) y cada 25 (🍲) | una por tramo, a mitad de camino entre las recetas de siempre (las "anclas") y un punto final: 🧪 vida 37 → 45 % (🥉7 → 10, toxicidad 40), 🍷 mayor 61 → 75 % (🥉19 → 40, toxicidad 60), 🫙 ungüento 24 → 32 % (🥉9 → 12), 🧰 botiquín 38 → 47 % (🥉19 → 27), 🩻 vendaje 51 → 60 % (🥉32 → 50); 🍲 platos de 4 a 41 raciones (🥉 = raciones) |
+| Cinturón (`hero.belt_slots`) | un lugar por objeto | igual: lo nuevo comparte el lugar de su ancla (`belt_slot`), primero lo que más cura |
+| Energía y experiencia de lo generado | — | como una pieza de equipo de su tramo: 2 ⚡ hasta el 50, 3 desde el 55, 4 desde el 85; 12 × (1 + rango ÷ 100) |
+| Experiencia de las recetas de siempre de esos oficios | 6 por ⚡ | 6 por ⚡ × (1 + rango ÷ 100): las de rango 1 siguen en 6; 🧰 botiquín y 🥘 guiso 12 → 15; 🍷 pociones mayores ×2, 🩻 vendaje y 🥫 conservas 12 → 18; 🍗 festín 12 → 21; 🍽️ banquete 12 → 24 |
+| `recipe_tiers.book_gifts` (nuevo) | — | "0.52": gratis una vez los libros que esos oficios no pedían, para los rangos ya ganados (refinado 25, 50, 75; ⚗️ y 🩺 el 75) |
+| Códigos (`items.yaml` `code`) | 1 a 50 y 61 a 66 | + /101 a /220 refinados, /221 a /240 pociones, /241 a /260 remedios, /261 a /280 platos |
+
+**Qué cambia al jugar.**
+
+- **Especialista con los materiales en la mano** (`python tools/sim_oficios.py`): rango 25 en 19 días (antes 22), 50 en 69 (90), 75 en 171 (205) y **100 en 329 (368)** en los 9 oficios, como los de equipo; la ⚗️ Alquimia, que era la más rápida (281), queda igual que las demás; la 🍲 Cocina, 321. ~4.600 veces en vez de 14.702, siempre haciendo lo de su tramo.
+- **Quien junta y refina todo solo** (cuenta aproximada): el refinado pasa de 904 a 1.661 días al 100 a 2.149 a 3.998 (la 🪣 Curtiduría, la más lenta, por la piel), ⚗️ de 1.852 a 3.372, 🩺 de 1.868 a 3.344 y 🍲 de 1.709 a 3.066: unas 2 veces más, menos que el equipo en la 0.44 (P-245).
+- **Combate:** cada poción y remedio de tramo cura más, con la toxicidad y el cinturón de siempre: lo máximo en pociones por pelea pasa del 95 % (mayor + vida) al 120 % en el rango 100 (la mayor del 100 + la de vida del 20); en remedios (sin toxicidad), de 159 % a 201 % con el cinturón lleno de lo mejor. El simulador de combate usa la 🧪 poción de vida de siempre y no cambia.
+- **Despensa:** cada tramo de 🍲 da más raciones (4 a 41) y, como siempre, más que lo crudo que lleva (de ×1,4 a ×2,6; los de siempre, de ×1,5 a ×2,5).
+- **Monedas:** refinar sigue sin fabricar monedas (el mercader paga la mitad de lo que valen los materiales más la ⚡); las pociones y remedios se le venden a un cuarto. Los libros del refinado sacan 🥈37 por oficio de quien llega al 75 (gratis para quien ya tenía el rango).
+- **Lo que no cambia:** las recetas de equipo, los refinados de siempre y lo que piden las obras del campamento (`python tools/camp_costs.py` da lo mismo: castillo ~20,7 días, las 31 obras ~47,7).
+
+**Lo que queda por mirar:** si los refinados nuevos se venden (ninguna receta los pide todavía, P-268), qué pociones y remedios lleva la gente en el cinturón y si el 120 % por pelea pesa contra los jefes (P-269), cuántos alquimistas y médicos hay (informe diario).
+
 ### Octubre de 2026 (21-oct): el 🗺️ pergamino de mapa del Explorador (0.50, D-311.5 confirmada; D-326 provisional)
 
 El dueño respondió E-180: el 🧭 Explorador hace un pergamino con las zonas que exploró al 50 % en una región de 6 × 6 y lo vende al precio que quiera. Los números son nuevos y de Claude (D-326); se ajustan en la beta (E-250, E-251).
@@ -1332,7 +1358,7 @@ El dueño decidió la reforma de recetas el 20-oct (E-221 a E-223): un tramo cad
 - **Quien junta, caza y refina todo solo:** mucho más lento que antes (2 a 4,5 veces con la misma cuenta aproximada, ya con la piel ×2,5 de la 0.43): la Herrería pasa de ~6 años a ~15-20, la Peletería de ~9 a ~20 y la Sastrería y la Joyería de ~4 a ~18-20, porque cada tramo pide más material (de 3 a 7 veces más en total, sobre todo 💠 gemas y 🌸 flores de luna: ~12.700 para un herrero o un sastre al 100). Queda para especialistas que reciben o compran materiales (P-245).
 - **Experiencia de héroe al fabricar:** sube con la energía de la pieza (20 por ⚡, D-108), así que por ⚡ es la misma; una pieza de rango 85 da el doble que una de rango 1 del mismo nivel de héroe.
 - **Monedas:** los libros sacan 🥈37 por oficio de quien llega al 75 (un sumidero nuevo). Las piezas nuevas se venden al mercader por menos que sus materiales (D-113), como todas.
-- **Sin cambios:** el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina siguen con su experiencia entera (sin colores) hasta tener sus tramos; sus recetas de rango 25 o más piden libro.
+- **Sin cambios:** el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina siguen con su experiencia entera (sin colores) hasta tener sus tramos; sus recetas de rango 25 o más piden libro. *(0.52: ya tienen sus tramos, ver la entrada de la 0.52.)*
 
 **Lo que queda por mirar:** cuántos compran cada libro y cuándo (informe diario); si el especialista tarda de verdad ~11 meses; si la cadena en solitario es demasiado lenta (P-245: la palanca es `xp_per_rank`); la demanda de gemas y flores de luna.
 
