@@ -5904,6 +5904,23 @@ esencia_mayor:
   keep: true                 # [ES] solo sale de piezas 🟣 épicas (las de artesano, las obras maestras, las del Guardián)
   price: 6                   # [ES] el mercader paga 3 🥉
 
+# The 🧭 Explorador's map scroll (D-311 part 5, D-326, 0.50): each copy carries its own zones, author and region in
+# Hero.map_scrolls (the backpack only counts them), like a ✒️ masterwork carries its signature.
+# [ES] El 🗺️ pergamino de mapa (D-311 parte 5, confirmada; cómo se aplicó: D-326, provisional). Lo hace el 🧭 Explorador desde
+# el rango balance.yaml map_scroll.rank con las zonas que investigó al 50 % en una región de 6 × 6; quien lo usa ve esas zonas a
+# color para siempre (solo el color). Cada copia es distinta: sus zonas, su autor y su región van en Hero.map_scrolls (la
+# mochila solo cuenta cuántos hay; engine/service/map_scroll.py los mantiene iguales). Sin código: no es un recurso ni lo
+# compra el 🛒 Mercader (kind map_scroll no entra en 💱 Vender, 📦 Recursos, el fondo del gremio ni el trueque). Se vende en el
+# 🏛️ Mercado (categoría 🗺️ Mapas) a precio libre: su banda es map_scroll.price_min/price_max, no la de "price".
+# Lo usan: engine/service/map_scroll.py, engine/service/market.py (categoría "maps", la banda y los datos de cada copia).
+# Si cambias esto, revisa: el id es estable (lo guardan las mochilas, las órdenes y las entregas); "price" es solo el precio
+# de referencia con el que abre el borrador de venta (×1, ×2, ×3) (tests/test_pergamino_mapa.py).
+pergamino_mapa:
+  name_key: item.pergamino_mapa
+  emoji: "🗺️"
+  kind: map_scroll
+  price: 100                 # [ES] 1 🥈: el precio con el que abre el borrador del 🏛️ Mercado; quien vende escribe el que quiera
+
 # --- D-110 / D-113 / D-115: crafted head, hands, legs and feet ---
 # Crafted pieces for the slots that only had loot: one per armor type and per gear tier (level 3, 5, 8, then every 10 up to
 # 100), always better than loot of their level. Generated once from the loot pieces of the same slot, type and level.
