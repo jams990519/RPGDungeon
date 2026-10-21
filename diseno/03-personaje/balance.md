@@ -1326,6 +1326,44 @@ El dueño eligió las dos recomendaciones de E-227 (20-oct): el botón 🪓 Tala
 
 **Qué cambia al jugar.** Nada de balance: encontrar un recurso conocido es más rápido. Con 50 % se conocen los 3 primeros recursos de la zona (`exploration.reveal_at`); los demás aparecen al seguir explorando.
 
+### Octubre de 2026 (21-oct): los edificios de oficio piden lo de su oficio (0.45, D-317, confirmada)
+
+**Por qué.** El dueño pidió que cada edificio de oficio se construya sobre todo con los materiales de ese oficio y solo un poco de madera y piedra (90 % y 10 %). Se mantuvo el valor en crudo de cada obra para no alargar el camino al castillo.
+
+| Edificio | Antes | Ahora (en crudo) |
+|---|---|---|
+| Aserradero | madera 25, piedra 10 | tablón 10, madera 2, piedra 2 (34) |
+| Tejeduría | fibra 20, madera 20 | tela 12, madera 2, piedra 2 (40) |
+| Cantería | piedra 25, madera 15 | sillar 12, madera 2, piedra 2 (40) |
+| Curtiduría | madera 30, piedra 15, piel 10 | cuero 25, madera 3, piedra 2 (55) |
+| Alambique | piedra 25, arcilla 15, hierba 15 | extracto 16, madera 3, piedra 3 (54) |
+| Fundición | piedra 30, arcilla 15, metal 10 | lingote 25, madera 3, piedra 2 (55) |
+| Carpintería | madera 60, piedra 20, fibra 20 | tablón 30, madera 5, piedra 5 (100) |
+| Sastrería | fibra 60, madera 30, arcilla 15 | tela 32, madera 5, piedra 5 (106) |
+| Peletería | madera 50, piel 30, fibra 30 | cuero 35, tela 10, madera 5, piedra 5 (110) |
+| Alquimia | hierba 40, arcilla 40, piedra 30 | extracto 28, arcilla 15, madera 6, piedra 5 (110) |
+| Botica | hierba 50, madera 40, fibra 30 | extracto 25, tela 11, madera 6, piedra 6 (120) |
+| Forja | piedra 80, madera 50, metal 40 | lingote 60, cuero 15, madera 10, piedra 10 (170) |
+| Joyería | piedra 60, arcilla 40, metal 30 | lingote 58, madera 7, piedra 7 (130) |
+
+Las monedas no cambian. Las obras activadas o empezadas antes de la 0.45 siguen pidiendo lo de antes (`cost_before`).
+
+**Qué cambia al jugar.** Construir un edificio de oficio pide refinar antes (1 ⚡ por pieza), y gana peso tener a alguien con ese oficio en el gremio (D-168). La demanda se mueve de la piedra y la madera a la **piel** (Curtiduría y Peletería: 120 pieles en total, antes 40) y al **metal** (Fundición, Forja y Joyería: 286 piezas en total, antes 80).
+
+**D-318, en la misma 0.45: desde el nivel 5 las obras mezclan oficios.**
+
+| Edificio | Antes | Ahora |
+|---|---|---|
+| Muralla | piedra 260, madera 60, arcilla 40 | piedra 210, madera 60, arcilla 40, 🪑 Paveses de roble 1 |
+| Huerto | madera 80, fibra 60, hierba 50, arcilla 40 | madera 45, fibra 60, hierba 50, arcilla 40, 🪑 Carro de víveres 1 |
+| Braseros | madera 120, piedra 120, metal 50 | madera 120, piedra 120, metal 20, lingote 15 |
+| Enfermería | tablón 40, madera 60, fibra 100, hierba 100, sillar 20, piedra 20 | tablón 40, madera 30, fibra 40, hierba 40, sillar 20, piedra 20, 🪑 Literas de roble 1, ungüento 10, venda 10 |
+| Biblioteca | tablón 60, madera 40, sillar 40, piedra 30, fibra 100, arcilla 60 | tablón 60, madera 40, sillar 40, piedra 30, tela 30, arcilla 30, extracto 10 |
+| Torres de arqueros | tablón 80, madera 40, sillar 40, piedra 30, metal 70, fibra 60 | tablón 60, madera 40, sillar 40, piedra 30, metal 65, fibra 60, 🪑 Armero de roble 1 |
+| Foso | sillar 100, piedra 60, arcilla 140, tablón 25, madera 25 | sillar 100, piedra 60, arcilla 120, tablón 25, madera 25, lingote 10 |
+
+**Lo que queda por mirar:** si la piel y el metal frenan los campamentos (los dos son más escasos que la piedra); si conviene una pequeña rebaja en esas tres obras; si los 🪑 muebles que piden las obras de nivel alto llegan a tiempo (la 🪑 Carpintería tiene que existir en el gremio).
+
 ### Octubre de 2026 (19-oct): el campamento de la 0.39 (D-288 a D-291, D-294, D-295)
 
 | Número | Antes | Ahora |

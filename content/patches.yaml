@@ -881,3 +881,18 @@ v0_44:
     - "📚 Recipe books at the 🧑‍🏫 Trainer: recipes of rank 25, 50 and 75 or more need their book (🥈2, 🥈10 and 🥈25). If you already had that rank in a profession, its books are a gift: you keep making everything you made."
     - "📿 💍 Jewelcrafting starts with the Copper Pendant, no gem needed: an ingot and leather."
     - "⛓️ Mail is no longer crafted (no class uses it). The mail pieces you have stay in your backpack."
+
+v0_45:
+  version: "0.45"
+  title: "🛠️ Lost Realms 0.45: los edificios de oficio se construyen con lo de su oficio"
+  title_en: "🛠️ Lost Realms 0.45: profession buildings are built with their profession's goods"
+  notes:
+    - "🛠️ Los 13 edificios de oficio del campamento ahora piden sobre todo lo que trabaja su oficio y solo un poco de madera y piedra: la 🪑 Carpintería, tablones; la 🪡 Sastrería, tela; la 🔨 Forja, lingotes y cuero; la ⚗️ Alquimia, extracto… Cuestan lo mismo contado en crudo."
+    - "🔥 En el Claro puedes refinar todo eso desde el primer día: madera en tablones, fibra en tela, piel en cuero, metal en lingotes, hierbas en extracto y piedra en sillares."
+    - "🏥 Desde el nivel 5 los edificios mezclan oficios: la 🏥 Enfermería pide 🪑 Literas de la Carpintería, ungüentos de la Medicina y vendas de la Sastrería; la 🧱 Muralla, 🪑 Paveses; las 🏹 Torres de arqueros, un 🪑 Armero… Un campamento grande necesita de todos sus oficios."
+    - "🔒 Las obras que tu campamento ya había activado siguen pidiendo lo de antes: nadie pierde lo que ya entregó."
+  notes_en:
+    - "🛠️ The camp's 13 profession buildings now ask mostly for what their profession works with and only a little wood and stone: 🪑 Carpentry, planks; 🪡 Tailoring, cloth; 🔨 the Forge, ingots and leather; ⚗️ Alchemy, extract… They cost the same counted in raw materials."
+    - "🔥 At the Clearing you can refine all of that from day one: wood into planks, fiber into cloth, hide into leather, metal into ingots, herbs into extract and stone into ashlar blocks."
+    - "🏥 From level 5 buildings mix professions: the 🏥 Infirmary asks for 🪑 Bunks from Carpentry, ointments from Medicine and bandages from Tailoring; the 🧱 Wall, 🪑 Pavises; the 🏹 Archer towers, a 🪑 Weapon rack… A big camp needs all of its professions."
+    - "🔒 Works your camp had already activated keep asking for what they did before: nobody loses what they already gave."

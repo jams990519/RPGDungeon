@@ -72,7 +72,12 @@ def test_catalog_is_wide_spread_and_complete(content):
     assert all(sum(udef["cost"].values()) <= 60 and not udef.get("coins") for udef in first)   # 2 players, a day or two
     # D-288 (0.39): one small building per profession makes the 15 cheapest much cheaper than before (2000+ with the 20 of
     # D-101); castle_min_built stays 15 and the owner was told (the castle also asks the guild, the pantry and 🪎 chests)
-    cheapest = sorted(sum(udef["cost"].values()) for udef in catalog.values() if not udef.get("retired"))[:15]
+    # D-317 (0.45): the profession buildings ask refined goods, so a cost is counted in raw units (1 tablón = 3 madera)
+    from engine.professions import rules as profession_rules
+    raw = profession_rules.refined_from(content.professions["professions"], content.professions["recipes"])
+    def in_raw(cost):
+        return sum(n * raw.get(item, (item, 1))[1] for item, n in cost.items())
+    cheapest = sorted(in_raw(udef["cost"]) for udef in catalog.values() if not udef.get("retired"))[:15]
     assert sum(cheapest) >= 1000
     assert all(udef.get("kind") in ("casa", "oficio", "defensa", "saber") for udef in catalog.values())     # D-288
     assert catalog["taller"]["retired"] and catalog["herreria"]["retired"]                                  # D-288
