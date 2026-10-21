@@ -12,6 +12,9 @@ Usage (from the repository root):
     python3 tools/sim.py --boss [--level=6] [--tier=2] [--seeds=100] [--only=...]
         Every spec against the region Guardian (D-82) with level - 1 points in the spec, attentive play, a full belt
         and, in every slot, the best normal piece of its type for its level up to that piece tier (2 = poco común).
+    python3 tools/sim.py --hybrid [--level=10] [--seeds=40] [--tier=2] [--only=...]
+        0.54 (D-312): every chain spec with each of its 8 hybrid setups (none, each slot borrowed, two, all three): win %
+        against the Guardian and life left against the level 1-3 enemies brought to the hero's level.
     python3 tools/sim.py [enemy_id ...]
         Win rate of every spec against each enemy at its minimum level.
 
@@ -255,13 +258,47 @@ def boss_mode(only, level, seeds, max_tier):
         print(f"{cid:30s} {C.classes[cid]['role']:9s} {win:4.0f}  {sum(r[1] for r in results) / seeds:6.1f}{flag}")
 
 
+HYBRID_SETUPS = [(), ("H1",), ("H2",), ("H3",), ("H1", "H2"), ("H1", "H3"), ("H2", "H3"), ("H1", "H2", "H3")]
+
+
+def hybrid_mode(only, level, seeds, max_tier):
+    """Every chain spec with each of its 8 hybrid setups (0.54, D-312): win % against the Guardian and life left (%) against
+    the level 1-3 enemies scaled to the hero's level. [ES] Qué hace: mide el 🔀 modo híbrido: para cada rol, sin cambios, cada
+    puesto prestado, de a dos y los 3, contra el Guardián (equipo de su nivel, como --boss) y contra los enemigos de nivel 1-3
+    llevados al nivel del héroe. La mezcla corre por cuenta del jugador (D-230): sirve para ver cuánto se aleja, no para
+    igualarla. La llama: main (--hybrid). Si cambia, afecta: solo el simulador."""
+    from engine.classes import toggle_hybrid
+    early = [e for e in C.enemies if C.enemies[e]["level_min"] <= 3]
+    labels = ["-".join(s) or "rol" for s in HYBRID_SETUPS]
+    print(f"Modo híbrido al nivel {level}: Guardián gana % / enemigos de nivel 1-3 llevados al {level}, vida que queda %; "
+          f"{seeds} peleas por caso; equipo hasta nivel de pieza {max_tier}")
+    print(f"{'spec':18s} " + " ".join(f"{label:>11s}" for label in labels))
+    for cid in active_specs(only):
+        if C.classes[cid].get("system") != "chain":
+            continue
+        row = []
+        for setup in HYBRID_SETUPS:
+            hero = spec_hero(cid, level)
+            for link in setup:
+                toggle_hybrid(C.classes, C.balance, hero, link)
+            cdef = level_gear(hero, level, max_tier)
+            boss = [boss_play(cdef, level, s * 7919 + level) for s in range(seeds)]
+            common = run(cdef, early, lambda e: level, hero_level=level, seeds=max(4, seeds // 4))
+            row.append(f"{100 * sum(r[0] for r in boss) / seeds:4.0f}/{common[2]:4.0f}")
+        print(f"{cid:18s} " + " ".join(f"{cell:>11s}" for cell in row))
+
+
 def main():
     args = sys.argv[1:]
     only = [a[7:].split(",") for a in args if a.startswith("--only=")]
     only = only[0] if only else None
     level = int(next((a[8:] for a in args if a.startswith("--level=")), 25))
     seeds = int(next((a[8:] for a in args if a.startswith("--seeds=")), 12))
-    if "--boss" in args:
+    if "--hybrid" in args:
+        hybrid_mode(only, int(next((a[8:] for a in args if a.startswith("--level=")), 10)),
+                    int(next((a[8:] for a in args if a.startswith("--seeds=")), 40)),
+                    int(next((a[7:] for a in args if a.startswith("--tier=")), 2)))
+    elif "--boss" in args:
         tier = int(next((a[7:] for a in args if a.startswith("--tier=")), 2))
         boss_mode(only, int(next((a[8:] for a in args if a.startswith("--level=")), 6)),
                   int(next((a[8:] for a in args if a.startswith("--seeds=")), 100)), tier)

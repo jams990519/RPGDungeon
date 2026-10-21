@@ -11,10 +11,12 @@ Depende de: engine.core (contenido), engine.hero
 Lo usan: engine/service/game.py
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
-Datos de los que es dueño: los campos talents, points, unlocked y bar del héroe
+Datos de los que es dueño: los campos talents, points, unlocked, bar e hybrid del héroe
 Reglas que nunca se rompen:
     1. La barra tiene como máximo 3 habilidades y la casilla 1 es siempre una respuesta (D-46, D-79).
     2. La especialización principal es la que tiene más puntos (en empate, se queda la actual).
+    3. Clases nuevas (0.31): 4 botones fijos por rol; desde la 0.54 el 🔀 modo híbrido (nivel 10, D-312) cambia cada botón de
+       rol por el del mismo puesto del otro rol, sin sumar botones (toggle_hybrid, chain_bar).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (_kit, vistas de talentos, subida de nivel)
     - Números: balance.yaml talents.*
@@ -22,12 +24,19 @@ Si cambias esto, revisa:
 """
 
 from engine.classes.talents import (
+    HYBRID_LINKS,
     base_response,
     bar,
     bar_choices,
     bar_slots,
+    chain_bar,
     default_spec,
     ensure_talents,
+    hybrid_choice,
+    hybrid_max,
+    hybrid_open,
+    hybrid_pairs,
+    hybrid_partner,
     is_chain_spec,
     kit,
     second_role_open,
@@ -36,8 +45,11 @@ from engine.classes.talents import (
     specs_of,
     switch_role,
     sync_chain,
+    toggle_hybrid,
     unlock_points,
 )
 
-__all__ = ["base_response", "bar", "bar_choices", "bar_slots", "default_spec", "ensure_talents", "is_chain_spec", "kit",
-           "second_role_open", "set_bar_slot", "spend_point", "specs_of", "switch_role", "sync_chain", "unlock_points"]
+__all__ = ["HYBRID_LINKS", "base_response", "bar", "bar_choices", "bar_slots", "chain_bar", "default_spec", "ensure_talents",
+           "hybrid_choice", "hybrid_max", "hybrid_open", "hybrid_pairs", "hybrid_partner", "is_chain_spec", "kit",
+           "second_role_open", "set_bar_slot", "spend_point", "specs_of", "switch_role", "sync_chain", "toggle_hybrid",
+           "unlock_points"]
