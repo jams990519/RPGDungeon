@@ -1,0 +1,85 @@
+# Texts of 0.43 (D-306, the owner on 20-oct-2026; how it was done: D-316): 🎖️ profession titles bought at the 🧑‍🏫 Entrenador,
+# learning prices by branch, 🎣 Pescar (a gathering mode that takes only 🐟 fish), 🧱 Mantenimiento (the camp work that
+# repeats, for 🏗️ Construcción) and the trader buying potions and remedies for a little.
+# [ES] Textos de la 0.43 (D-306, el dueño el 20-oct-2026; cómo se hizo: D-316, provisional): los 🎖️ títulos de oficio que se
+# compran en el 🧑‍🏫 Entrenador como en WoW (al tope de tu título, rangos 20, 40, 60, 80 y 95, el oficio no sube hasta comprar
+# el siguiente), los precios de aprender por rama (🥈1 fabricación, 🥉50 recolección y refinado), 🎣 Pescar (un modo de
+# 🧺 Recolectar que junta solo 🐟 pescado, como 🪓 Talar), 🧱 Mantenimiento (la obra que se repite para subir la
+# 🏗️ Construcción) y el mercader que compra pociones y remedios a poco. Se junta con es.yaml y los demás es_*.yaml al cargar
+# (engine/core/content.py, mezcla profunda: las claves de batch.*, presence.*, hero.*, retreat.*, learn.* y shop.* de aquí se
+# suman a las de los otros archivos sin pisarlas).
+# Documento de diseño: diseno/07-economia/oficios-como-wow.md §3 y §4 (0.43), diseno/07-economia/profesiones.md §0.7
+# Lo leen: engine/service/game.py (_titles_view, _buy_title, _title_lock_line, _title_prof_lines, _prof_list_lines,
+#     _trainer_view, _prof_gain, _learn_prices_text, _explore_menu, _amount_view, _start_batch, _gather_blocked,
+#     _gather_step, _batch_summary, _activity_view, _activity_word, _retreat_view, _works_view, _maintain, _shop_sell_view)
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_titulos_pesca.yaml, en el
+# mismo cambio (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+ptitle:                        # [ES] D-306.1 (0.43, E-228): 🎖️ Títulos de oficio del 🧑‍🏫 Entrenador
+  title: "🎖️ Títulos de oficio"
+  button: "🎖️ Títulos"
+  trainer_line: "🎖️ Títulos: al rango 20, 40, 60, 80 y 95 un oficio se frena hasta que compras aquí el título siguiente (/titulos)."
+  intro: "Como en WoW, cada título de oficio se compra aquí. Al tope de tu título (rangos 20, 40, 60, 80 y 95) el oficio deja de subir hasta que compras el siguiente; la experiencia que ganes en el tope no se guarda."
+  prices: "💰 {items}"
+  price_item: "{title} {price} (nivel {level})"
+  prof_line: "{name} · {state}  /{code}"
+  cap_short: "{title}, hasta el rango {cap}"
+  top_short: "{title}, sin tope"
+  cap_line: "🎖️ {title}: sube hasta el rango {cap}."
+  top_line: "🎖️ {title}: sin tope."
+  lock_short: "🔒 Tope de {title}: compra {next} en el Entrenador ({price}, nivel {level})"
+  lock_named: "🔒 {name} en el tope de {title} (rango {cap}): compra {next} ({price}, nivel {level})"
+  lock_gain: "🔒 {name} llegó al tope de {title} (rango {cap}): compra {next} en el 🧑‍🏫 Entrenador ({price}, nivel {level}). Hasta entonces la experiencia de este oficio no se guarda."
+  lost_note: "🔒 En el tope, la experiencia del oficio no se guarda: compra el título siguiente en 🎖️ Títulos."
+  buy_button: "🎖️ Comprar {title} · {price}"
+  buy_named: "🎖️ {name} → {title}"
+  none: "Todavía no sabes ningún oficio con títulos: aprende uno en 📚 Aprender oficios."
+  explorer: "🧭 El Explorador sube solo: no tiene títulos que comprar."
+  wallet: "💰 Tienes {gold} · ⭐ Nivel {level}"
+  already_top: "🎖️ {name} ya tiene el título más alto."
+  not_yet: "🎖️ {name} todavía no llegó al tope de su título (rango {cap}): {next} se compra al llegar."
+  low_level: "⭐ {next} pide héroe de nivel {level}: eres nivel {now}."
+  no_gold: "💰 {next} cuesta {price} y tienes {gold}."
+  done: "🎖️ ¡Ya eres {title} de {name}! Pagaste {price}. El oficio sube otra vez, hasta el rango {cap}."
+
+learn:
+  prices: "{craft} los de fabricación y {other} los de recolección y refinado"   # [ES] D-306.4 (0.43, E-222): el precio por rama
+
+fish:                          # [ES] D-306.5 (0.43, E-223): 🎣 Pescar en 🧭 Explorar (un lote de recolectar que junta solo 🐟 pescado)
+  button: "🎣 Pescar · {time}"
+  title: "🎣 Pescando"
+  in_progress: "Pescas en el agua de la zona y juntas 🐟 pescado."
+  no_fish: "🐟 En esta zona no hay agua para pescar."
+  depleted: "🪫 El 🐟 pescado de esta zona se agotó por ahora: vuelve solo con las horas. Prueba en otra zona con agua."
+
+batch:                         # [ES] D-306.5: la pantalla de cantidades, el aviso de empezar y el resumen de un lote de 🎣 Pescar
+  title_fish: "🎣 Pescar"
+  ask_fish: "¿Cuánta energía quieres gastar pescando? Cada vez gasta {energy} ⚡, tarda {minutes} min y solo juntas 🐟 pescado; sigue sola hasta terminar."
+  started_fish: "🎣 Vas a pescar {n} {n|vez|veces} (hasta {time}). Puedes detenerte cuando quieras."
+  fished: "🎣 Pescaste {n} {n|vez|veces}: {items}."
+  xp_fish: "✨ Pescar te enseñó: +{xp} experiencia."
+  reason:
+    fish_depleted: "🪫 El 🐟 pescado de esta zona se agotó por ahora: vuelve solo con las horas."
+
+presence:
+  activity:
+    fish: "🎣 pescando"        # [ES] D-306.5: quien pesca, en 👥 También en esta zona y en los cruces
+
+hero:
+  status:
+    fish: "🎣 Pescando"        # [ES] D-306.5: el Estado del héroe mientras pesca
+
+retreat:
+  blocked_fish: "🩹 Con tan poca vida no sales a pescar: descansa primero."
+
+upkeep:                        # [ES] D-306.5 y D-316 (0.43): 🧱 Mantenimiento, la obra que se repite (🔨 Obras)
+  name: "🧱 Mantenimiento"
+  entry: "🧱 Mantenimiento · {n} {n|vez|veces} hecho"
+  desc: "Cuidar lo construido no termina nunca: al completar una vuelta empieza otra. Cada material sube la 🏗️ Construcción."
+  button: "🤲 🧱 Mantenimiento"
+  done: "🧱 ¡Mantenimiento completo! Ya van {n}. Empieza otra vuelta."
+  push_title: "🧱 Mantenimiento"
+  push: "🧱 {hero} completó un mantenimiento de {camp} (ya van {n})."
+
+shop:
+  remedy_line: "🧪 Las pociones y los remedios de la mochila te los compra a poco (el {pct} % de su precio) hasta que haya mercado entre jugadores; lo del cinturón no se vende."   # [ES] D-306.5 (0.43)

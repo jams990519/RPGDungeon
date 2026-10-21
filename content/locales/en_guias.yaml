@@ -86,7 +86,7 @@ guides_page:
       🏹 Hunt (in 🧭 Explore) looks for prey in your zone: {hunt_energy} ⚡ per prey.
       🍖 You get the fight and its loot: meat, hide, coins and sometimes gear. There's no prey at the campfires.
       {skinner}: once you've learned it, you sometimes get extra meat or hide.
-      🐟 Zones with water also have fish: you gather it, and it's what the {fisher} profession collects.
+      🐟 Zones with water also have fish: 🎣 Fish (in 🧭 Explore) collects only fish, and it raises the {fisher} profession.
       🍲 Cook (🏕️ Camp) turns meat and fish into rations and stews; learn 🍲 Cooking first.
       🌾 From level {pantry_level}, food fills your camp's pantry: 🏰 Manage → 🌾 Contribute food.
       🥖 The 🛒 Merchant sells provisions: up to {provisions_cap} a week.
@@ -94,7 +94,8 @@ guides_page:
   trades:
     title: "⚒️ Professions"
     text: |-
-      🧑‍🏫 You learn them in 🏕️ Camp → 🧑‍🏫 Trainer → 📚 Learn professions: {learn_price} each, with no limit on how many.
+      🧑‍🏫 You learn them in 🏕️ Camp → 🧑‍🏫 Trainer → 📚 Learn professions: {learn_price}, with no limit on how many.
+      🎖️ At rank 20, 40, 60, 80 and 95 a profession stops until you buy the next title at the Trainer (/titles).
       🧭 The Explorer is the only one that levels up on its own, as you explore. Gathering is learned too: {gatherers}.
       ⭐ The Trainer recommends the profession that makes your class's armor.
       🔗 You gather materials → 🪚 Refine (wood → plank, metal → ingot…) → 🛠️ Craft (gear, potions, bandages, furniture).

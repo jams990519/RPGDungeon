@@ -91,7 +91,7 @@ guides_page:
       🏹 Cazar (en 🧭 Explorar) busca una presa en tu zona: {hunt_energy} ⚡ por presa.
       🍖 Da la pelea y su botín: carne, piel, monedas y a veces equipo. En las fogatas no hay presas.
       {skinner}: con el oficio aprendido, a veces sacas carne o piel de más.
-      🐟 En las zonas con agua también hay pescado: se recolecta, y es lo que junta el {fisher}.
+      🐟 En las zonas con agua también hay pescado: 🎣 Pescar (en 🧭 Explorar) junta solo pescado, y es lo que sube el {fisher}.
       🍲 Cocinar (🏕️ Campamento) vuelve la carne y el pescado raciones y guisos; antes aprende la 🍲 Cocina.
       🌾 Desde el nivel {pantry_level}, la comida llena la despensa de tu campamento: 🏰 Gestionar → 🌾 Aportar comida.
       🥖 El 🛒 Mercader vende provisiones: hasta {provisions_cap} por semana.
@@ -99,7 +99,8 @@ guides_page:
   trades:
     title: "⚒️ Oficios"
     text: |-
-      🧑‍🏫 Se aprenden en 🏕️ Campamento → 🧑‍🏫 Entrenador → 📚 Aprender oficios: {learn_price} cada uno, sin tope de oficios.
+      🧑‍🏫 Se aprenden en 🏕️ Campamento → 🧑‍🏫 Entrenador → 📚 Aprender oficios: {learn_price}, sin tope de oficios.
+      🎖️ Al rango 20, 40, 60, 80 y 95 un oficio se frena hasta que compras el título siguiente en el Entrenador (/titulos).
       🧭 El Explorador es el único que sube solo, explorando. La recolección también se aprende: {gatherers}.
       ⭐ El Entrenador te recomienda el oficio que fabrica la armadura de tu clase.
       🔗 Juntas materiales → 🪚 Refinar (madera → tablón, metal → lingote…) → 🛠️ Fabricar (equipo, pociones, vendas, muebles).

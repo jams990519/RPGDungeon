@@ -399,6 +399,7 @@ raids:                       # [ES] D-99 (provisional): incursiones de los campa
 shop:                        # [ES] mercader del Claro
   sells: [pocion_vida, venda, provisiones]   # [ES] D-93: 🥖 provisiones, comida de emergencia cara (sumidero de monedas, §15.8)
   sell_ratio: 0.5            # [ES] compra materiales a la mitad de su precio
+  remedy_sell_ratio: 0.25    # [ES] D-306.5 (0.43, el dueño el 20-oct-2026): hasta que haya mercado entre jugadores, compra pociones y remedios (kind potion y bandage, de la mochila; lo del cinturón no) a un cuarto de su precio, al menos 1: a poco, menos que lo que pagan sus materiales. Nunca más que lo que el mercader cobra (no se gana comprando y vendiendo)
   weekly_cap: {provisiones: 20}   # [ES] D-125 (confirmada, entrevista E-09): cada jugador compra como mucho 20 🥖 provisiones por semana real; la despensa la llenan los oficios (cocina, caza, pesca). Se cuenta en el store "shop_week"
 
 currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se ganan, bolsas que se cosen, cofres que se arman, diamantes que se compran y credenciales de oficio
@@ -535,7 +536,21 @@ professions:                 # [ES] D-109: oficios encadenados, fase 1 (recolect
   # [ES] Quien dedica toda su energía a un oficio de refinado o fabricación junta ~240 por día (6 por ⚡): rango 25 en ~3 semanas,
   # [ES] 50 en ~3 meses y 100 en ~1 año (profesiones.md §4: Gran Maestro en un año de juego constante). Recolectando, 1 por unidad.
   recommend_by_armor: {placas: herreria, cuero: peleteria, tela: sastreria}   # [ES] D-271 (0.34, confirmada): el 🧑‍🏫 Entrenador recomienda el oficio que hace la armadura de tu clase (gear.armor_by_group)
-  learn_price: 20             # [ES] D-257 (0.33, confirmada la regla; el número es de Claude): 🥉 que cuesta aprender un oficio (su primera receta). Gratis si ya lo practicabas antes de la 0.33. La recolección y la exploración no se aprenden
+  learn_price:                # [ES] D-306.4 (0.43, el dueño el 20-oct-2026, E-222; antes D-257: 🥉20 para todos): 🥉 que cuesta aprender un oficio (su primera receta), según su rama (content/professions.yaml "branch"). Gratis si ya lo practicabas (su experiencia queda). La 🧭 exploración no se aprende. Un oficio con su propio learn_price en professions.yaml usa ese
+    craft: 100               # [ES] fabricación (🪑 🔨 ⚗️ 🪡 🦺 🩺 💍 🍲): 🥈1
+    enchant: 100             # [ES] ✨ Encantamiento: 🥈1, como la fabricación (D-316, Claude: trabaja el equipo)
+    gather: 50               # [ES] recolección (🪓 ⛏️ 🌿 🔪 🎣): 🥉50
+    refine: 50               # [ES] refinado (🪚 🔥 💧 🧶 🪣 🗿): 🥉50
+    service: 50              # [ES] servicio (🏗️ Construcción): 🥉50, como la recolección (D-316, Claude: no fabrica)
+  titles:                    # [ES] D-306.1 (0.43, el dueño el 20-oct-2026, E-228): 🎖️ cada título de oficio se compra en el 🧑‍🏫 Entrenador, como en WoW. Al tope de tu título (rangos 20, 40, 60, 80 y 95: el "from" del título siguiente en content/professions.yaml "ranks", menos 1) el oficio no guarda experiencia hasta comprar el siguiente (D-316: lo ganado en el tope se pierde). Aprendiz viene con el oficio. Quien ya pasaba un tope antes de la 0.43 tiene gratis los títulos hasta su rango (D-64). El 🧭 Explorador (learn: auto) no tiene títulos (D-316)
+    oficial: {price: 50, level: 10}        # [ES] 🥉50 y héroe de nivel 10: del rango 21 al 40
+    experto: {price: 200, level: 20}       # [ES] 🥈2 y nivel 20: del 41 al 60
+    artesano: {price: 1000, level: 30}     # [ES] 🥈10 y nivel 30: del 61 al 80
+    maestro: {price: 3000, level: 40}      # [ES] 🥈30 y nivel 40: del 81 al 95
+    gran_maestro: {price: 5000, level: 50} # [ES] 🥈50 y nivel 50: del 96 al 100
+  skinning:                  # [ES] D-306.5 (0.43, el dueño el 20-oct-2026, E-223): la 🦌 piel era el cuello de botella (~4,4 ⚡ por piel; simulacion-oficios.md §8.6)
+    loot_mult: {piel: 2.5}   # [ES] cada bestia suelta 2,5 veces la piel de antes (para todos; la fracción se sortea aparte, sin tocar el resto del botín): de 1-2 a 2,5-5
+    xp_per_beast: 3          # [ES] +3 de experiencia de 🔪 Desollador por bestia que suelta carne o piel, además de 1 por unidad (de ~0,5 a ~2 por ⚡, como los demás)
   rank_formula: {base: 9, exponent: 2.0}
   max_rank: 100              # [ES] rango máximo de cada oficio (profesiones.md §4)
   trade_xp_per_coin: 1       # [ES] D-116: 💱 Comercio sube 1 de experiencia por cada 🥉 que cobras vendiendo (la venta base, sin el beneficio)
@@ -673,4 +688,7 @@ camp_professions:            # [ES] D-115/D-116 (confirmadas): oficios de la fas
   damage:                    # [ES] 🛠️ cada oleada semanal daña las defensas del campamento hasta que las reparen (nunca más que la 🛡️ Defensa construida; la Noche de prueba no daña)
     won: 1                   # [ES] defendida: −1 de 🛡️ Defensa
     lost: 2                  # [ES] perdida: −2 (además de la comida de raids.loss_share)
+  maintenance:               # [ES] D-306.5 y D-316 (0.43): 🧱 Mantenimiento, la obra que se repite (el catálogo entero daba como mucho rango 24 de 🏗️ Construcción; simulacion-oficios.md §8.6). En 🔨 Obras desde que el campamento tiene min_built obras construidas; cualquier miembro aporta y, completa, vuelve a empezar
+    cost: {madera: 15, piedra: 15, fibra: 10}   # [ES] lo que pide cada vuelta (40 crudo = 40 de experiencia de 🏗️ Construcción, más la experiencia y el mérito de siempre por material). Los beneficios del campamento no la bajan (Claude)
+    min_built: 1             # [ES] desde cuántas obras construidas aparece (hay algo que mantener)
   repair_per_point: {tablon: 2, sillar: 2}   # [ES] reparar cada punto dañado pide 2 🟫 tablones y 2 🧱 sillares (Aserradero + Cantería: 12 de lo crudo y 4 ⚡ de refinar). Se aporta entre todos como una obra (🔨 Mejoras → 🔨 Obras → 🛠️ Reparar defensas); 🏗️ Construcción lo baja a la mitad al rango 100

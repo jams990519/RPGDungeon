@@ -694,6 +694,8 @@ arreglar la piel (×2,5 pieles por presa), días hasta el 25 / 50 / 100 (`propue
 
 ### 8.6 Los cuellos de botella
 
+> **Desde la 0.43 (D-306.5; cómo se aplicó: D-316):** en el juego la piel ×2,5 por bestia, +3 de 🔪 Desollador por bestia desollada, el botón 🎣 Pescar (solo pescado) y 🧱 Mantenimiento, la obra que se repite para la 🏗️ Construcción; el mercader compra pociones y remedios a un cuarto de su precio (§8.7). Los títulos que se compran y los precios por rama (§8.5) también. Las tablas de arriba son de antes de la 0.43. Ver [Oficios como WoW](oficios-como-wow.md) §4.
+
 - **🦌 Piel (Curtiduría, Peletería, Herrería, arcos):** hoy ~4,4 ⚡ por piel; un recurso común cuesta ~0,7 ⚡. Llevarla a ~1,5-2 ⚡: que las
   bestias suelten 1 a 3 pieles (`loot_amount`) o que el 🔪 Desollador saque una piel más por bestia. Un peletero al 100 necesita ~20.600
   pieles: hoy son ~6 años de un cazador a tiempo completo.
@@ -754,7 +756,7 @@ arreglar la piel (×2,5 pieles por presa), días hasta el 25 / 50 / 100 (`propue
 
 ## 11. Lo que quedó en el juego (0.44) y los números de hoy
 
-El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte de las recetas; cómo se aplicó lo que no dijo está en D-315 (provisional). El detalle para el jugador: [Profesiones](profesiones.md) §0.7.
+El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte de las recetas; cómo se aplicó lo que no dijo está en D-315 (provisional). El detalle para el jugador: [Profesiones](profesiones.md) §0.8.
 
 **Lo que se hizo, frente a lo que recomendaba el §8:**
 
@@ -769,24 +771,24 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 | §8.7 Retirar las 67 recetas de malla | **Sí** (`retired: true`); las piezas quedan. La 🎓 ⛓️ Malla ligera sigue: P-243 |
 | §8.3 N recetas del tramo anterior · §8.4 refinados intermedios · §8.6 piel, 🔪, 🎣, 🏗️ · §8.7 mercader y mercado | No en esta parte: la piel, 🎣 Pescar, las obras que se repiten y el mercader salieron en la 0.43; el resto sigue pendiente |
 
-**Días hasta el rango 25 / 50 / 75 / 100** (`python tools/sim_oficios.py`; 40 ⚡ al día, todo a ese oficio). "Solo su ⚡": los materiales ya están en la mochila; elige en cada vez la receta con más experiencia de oficio por ⚡ entre las que su rango abre (con los libros comprados a tiempo), con el color de esa vez. "Cadena aprox.": junta, caza y refina todo él mismo, con la energía por unidad cruda que midió la simulación del 18-oct (§1 y §4, Lejanía ≤ 6: metal 0,73 ⚡, madera 0,65, fibra 0,67, hierba 0,68, piel 4,4, gema y flor de luna ~7); no cuenta la unidad de más por rango ni los demás oficios que suben de paso, así que da entre 20 y 45 % más que la cadena del §4.1 (la misma cuenta con el contenido de la 0.42: Herrería 3.073 días contra 2.246 del §4.1).
+**Días hasta el rango 25 / 50 / 75 / 100** (`python tools/sim_oficios.py`; 40 ⚡ al día, todo a ese oficio). "Solo su ⚡": los materiales ya están en la mochila; elige en cada vez la receta con más experiencia de oficio por ⚡ entre las que su rango abre (con los libros comprados a tiempo), con el color de esa vez. "Cadena aprox.": junta, caza y refina todo él mismo, con la energía por unidad cruda que midió la simulación del 18-oct (§1 y §4, Lejanía ≤ 6: metal 0,73 ⚡, madera 0,65, fibra 0,67, hierba 0,68, piel 4,4 hasta la 0.42 y ~1,8 desde la 0.43, que la sacó ×2,5; gema y flor de luna ~7); no cuenta la unidad de más por rango ni los demás oficios que suben de paso, así que da entre 20 y 45 % más que la cadena del §4.1 (la misma cuenta con el contenido de la 0.42: Herrería 3.073 días contra 2.246 del §4.1).
 
-| Oficio | Tramos y colores | Solo su ⚡ hoy: 25 / 50 / 75 / 100 | Antes (0.42) | Veces hasta el 100 (antes) | Cadena aprox. hoy: 25 / 50 / 100 | Cadena aprox. 0.42 (misma cuenta) |
+| Oficio | Tramos y colores | Solo su ⚡ hoy: 25 / 50 / 75 / 100 | Antes (0.42) | Veces hasta el 100 (antes) | Cadena aprox. hoy (0.44, con la piel de la 0.43): 25 / 50 / 100 | Cadena aprox. 0.42 (misma cuenta) |
 |---|---|---|---|---|---|---|
-| 🪑 Carpintería | sí | 19 / 69 / 162 / 321 | 22 / 90 / 205 / 368 | 4.302 (7.351) | 417 / 1.899 / 9.861 | 150 / 624 / 2.547 |
-| 🔨 Herrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 553 / 2.671 / 11.727 | 181 / 753 / 3.073 |
+| 🪑 Carpintería | sí | 19 / 69 / 162 / 321 | 22 / 90 / 205 / 368 | 4.302 (7.351) | 417 / 1.797 / 9.561 | 150 / 624 / 2.547 |
+| 🔨 Herrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 382 / 1.878 / 8.549 | 181 / 753 / 3.073 |
 | 🪡 Sastrería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 330 / 1.689 / 7.830 | 101 / 422 / 1.724 |
-| 🦺 Peletería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 794 / 3.841 / 17.247 | 286 / 1.194 / 4.874 |
-| 💍 Joyería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 328 / 1.859 / 9.577 | 124 / 516 / 2.106 |
+| 🦺 Peletería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 430 / 2.158 / 9.963 | 286 / 1.194 / 4.874 |
+| 💍 Joyería | sí | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.577 (7.351) | 323 / 1.854 / 9.572 | 124 / 516 / 2.106 |
 | ⚗️ Alquimia | no | 22 / 73 / 159 / 281 | igual | 11.243 | 109 / 454 / 1.852 | igual |
 | 🩺 Medicina · 🍲 Cocina | no | 22 / 90 / 205 / 368 | igual | 14.702 | 130 / 474 / 1.868 · 100 / 419 / 1.709 | igual |
 | Refinado (🪚 🔥 💧 🧶 🗿) | no | 22 / 90 / 205 / 368 | igual | 14.702 | de 53 / 222 / 904 (Fundición) a 66 / 274 / 1.117 (Destilación) | igual |
-| 🪣 Curtiduría | no | 22 / 90 / 205 / 368 | igual | 14.702 | 212 / 882 / 3.602 | igual |
+| 🪣 Curtiduría | no | 22 / 90 / 205 / 368 | igual | 14.702 | 98 / 407 / 1.661 (la piel de la 0.43) | 212 / 882 / 3.602 |
 
 **Lo que dicen los números:**
 
 - **La meta se cumple para el especialista:** 329 días al 100 (~11 meses; la Carpintería, 321, por los 🪑 muebles), con ~4.600 piezas en vez de 7.351, y **siempre fabricando lo del tramo nuevo**: la receta que conviene en el rango r es la del tramo de r (por ejemplo, en la Herrería, la espada del nivel 20 en el rango 20, la del 50 en el 50). Llega al 25 y al 50 antes que hoy (19 y 69 días) porque las piezas de los tramos bajos ya dan más que 12; lo largo está del 50 al 100.
-- **La cadena en solitario es mucho más lenta** (3,5 a 4,5 veces la de antes con la misma cuenta): cada tramo nuevo pide más material por la misma experiencia y no se puede seguir con la pieza barata. Llevado a la cuenta del §4.1, la Herrería pasa de ~6 a ~20-25 años y la Peletería de ~9 a ~30: el oficio queda para especialistas que reciben o compran sus materiales (el mercado entre jugadores, todavía sin hacer). Es la parte "lenta" que pidió el dueño; si parece demasiado, las palancas son `recipe_tiers.xp_per_rank`, los colores o los materiales de los tramos altos (P-245).
-- **Material que pide la economía:** un especialista al 100 gasta de 3 a 7 veces más material que antes, contado en la energía de juntarlo (Peletería ×2,9, Herrería ×4,1, Carpintería ×5,1, Joyería ×5,3, Sastrería ×7,2): las piezas de los tramos altos piden de 6 a 10 veces lo crudo de la de rango 1 (§3.2). Sobre todo raros: un herrero al 100 usa ~12.700 💠 gemas (antes ninguna) y un sastre ~12.700 🌸 flores de luna: mucho trabajo para el ⛏️ Minero y el 🌿 Herbolario.
+- **La cadena en solitario es mucho más lenta** (2 a 4,5 veces la de antes con la misma cuenta, ya con la piel ×2,5 de la 0.43, que la alivia en la Herrería y la Peletería): cada tramo nuevo pide más material por la misma experiencia y no se puede seguir con la pieza barata. Llevado a la cuenta del §4.1, la Herrería pasa de ~6 a ~15-20 años, la Peletería de ~9 a ~20, la Sastrería y la Joyería de ~4 a ~18-20: el oficio queda para especialistas que reciben o compran sus materiales (el mercado entre jugadores, todavía sin hacer). Es la parte "lenta" que pidió el dueño; si parece demasiado, las palancas son `recipe_tiers.xp_per_rank`, los colores o los materiales de los tramos altos (P-245).
+- **Material que pide la economía:** un especialista al 100 gasta de 3 a 7 veces más material que antes, contado en la energía de juntarlo con los mismos precios por unidad (Peletería ×3,2, Herrería ×4,3, Carpintería ×4,5, Joyería ×5,3, Sastrería ×7,2): las piezas de los tramos altos piden de 6 a 10 veces lo crudo de la de rango 1 (§3.2). Sobre todo raros: un herrero al 100 usa ~12.700 💠 gemas (antes ninguna) y un sastre ~12.700 🌸 flores de luna: mucho trabajo para el ⛏️ Minero y el 🌿 Herbolario.
 - **Sin libros** (quien no compra el del 25) se sube hasta el ~35 con las recetas viejas (🟨 y 🟩); después todas son ⬜ y hay que comprarlo.
 - **Lo que no se midió:** el informe diario dirá cuántos compran cada libro y cuánto tardan de verdad; la simulación supone que gana todas las peleas y no viaja (§9).

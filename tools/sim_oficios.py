@@ -51,6 +51,8 @@ from engine.professions.rules import color_factor, rank_of, recipe_color, xp_for
 # gemas y flores de luna con el recolector en rango (con el metal o la hierba que salen en la misma vuelta). Aproximado.
 RAW_ENERGY = {"madera": 0.65, "pieza_metal": 0.73, "fibra": 0.67, "hierba_curativa": 0.68, "piedra": 0.65, "arcilla": 1.0,
               "piel": 4.4, "carne": 3.3, "pescado": 1.5, "gema_bruta": 7.0, "flor_luna": 7.0}
+# [ES] La piel se divide por balance.yaml professions.skinning.loot_mult.piel (0.43, D-306.5: ×2,5 → ~1,8 ⚡ por piel); con el
+# contenido de antes (sin ese número) queda en 4,4.
 OTHER_RAW = 1.0          # [ES] cualquier otro recurso propio de un terreno (~1 unidad por ⚡ en su terreno)
 MARKS = (25, 50, 75, 100)
 
@@ -69,6 +71,8 @@ class Sim:
         self.recipes = {rid: r for rid, r in recipes.items() if not r.get("retired") and not r.get("spec")}
         self.profs = self.content.professions["professions"]
         self._raw_cache: dict[str, float] = {}
+        mult = float(((balance["professions"].get("skinning") or {}).get("loot_mult") or {}).get("piel", 1.0))
+        self.raw_energy = dict(RAW_ENERGY, piel=RAW_ENERGY["piel"] / mult)
 
     def tiered(self, pid: str) -> bool:
         return pid in (self.tiers.get("professions") or [])
@@ -85,7 +89,7 @@ class Sim:
         """⚡ to get one unit of a material yourself: gathered (RAW_ENERGY) or refined with the first recipe that makes it."""
         if item in self._raw_cache:
             return self._raw_cache[item]
-        cost = RAW_ENERGY.get(item)
+        cost = self.raw_energy.get(item)
         if cost is None:
             refine = next((r for r in self.recipes.values() if item in r["output"]
                            and self.profs.get(r["profession"], {}).get("branch") == "refine"), None)

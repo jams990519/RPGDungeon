@@ -1266,12 +1266,38 @@ El dueño decidió la reforma de recetas el 20-oct (E-221 a E-223): un tramo cad
 **Qué cambia al jugar.**
 
 - **Especialista con los materiales en la mano:** rango 25 en 19 días (antes 22), 50 en 69 (90), 75 en 171 (205) y **100 en 329 (368)**, con ~4.600 piezas (antes 7.351 dagas). Lo que conviene es siempre la receta de su tramo: subir obliga a fabricar lo nuevo.
-- **Quien junta, caza y refina todo solo:** mucho más lento que antes (3,5 a 4,5 veces con la misma cuenta aproximada): la Herrería pasa de ~6 años a ~20-25 y la Peletería de ~9 a ~30, porque cada tramo pide más material (de 3 a 7 veces más en total, sobre todo 💠 gemas y 🌸 flores de luna: ~12.700 para un herrero o un sastre al 100). Queda para especialistas que reciben o compran materiales (P-245).
+- **Quien junta, caza y refina todo solo:** mucho más lento que antes (2 a 4,5 veces con la misma cuenta aproximada, ya con la piel ×2,5 de la 0.43): la Herrería pasa de ~6 años a ~15-20, la Peletería de ~9 a ~20 y la Sastrería y la Joyería de ~4 a ~18-20, porque cada tramo pide más material (de 3 a 7 veces más en total, sobre todo 💠 gemas y 🌸 flores de luna: ~12.700 para un herrero o un sastre al 100). Queda para especialistas que reciben o compran materiales (P-245).
 - **Experiencia de héroe al fabricar:** sube con la energía de la pieza (20 por ⚡, D-108), así que por ⚡ es la misma; una pieza de rango 85 da el doble que una de rango 1 del mismo nivel de héroe.
 - **Monedas:** los libros sacan 🥈37 por oficio de quien llega al 75 (un sumidero nuevo). Las piezas nuevas se venden al mercader por menos que sus materiales (D-113), como todas.
 - **Sin cambios:** el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina siguen con su experiencia entera (sin colores) hasta tener sus tramos; sus recetas de rango 25 o más piden libro.
 
 **Lo que queda por mirar:** cuántos compran cada libro y cuándo (informe diario); si el especialista tarda de verdad ~11 meses; si la cadena en solitario es demasiado lenta (P-245: la palanca es `xp_per_rank`); la demanda de gemas y flores de luna.
+
+### Octubre de 2026 (21-oct): títulos de oficio, precios por rama y lo que no avanzaba (0.43, D-306, confirmada; forma: D-316)
+
+El dueño confirmó el 20-oct (E-222, E-223, E-228) los títulos que se compran, los precios por tipo de oficio y los arreglos que recomendó la [simulación de los oficios](../07-economia/simulacion-oficios.md) §8.6. Los números de los títulos y los precios son los del dueño; el resto, de Claude (D-316, provisional).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `professions.titles` (nuevo) | — (los títulos salían solos con el rango) | Oficial 🥉50 y héroe de nivel 10 · Experto 🥈2 y 20 · Artesano 🥈10 y 30 · Maestro 🥈30 y 40 · Gran Maestro 🥈50 y 50 (del dueño). Al tope (20, 40, 60, 80, 95) la experiencia de oficio no se guarda |
+| `professions.learn_price` | 🥉20 todos | por rama: `craft` 100 (🥈1), `gather` 50, `refine` 50 (del dueño); `enchant` 100 y `service` 50 (Claude) |
+| `professions.skinning.loot_mult.piel` (nuevo) | ×1 (1 o 2 por bestia que la suelta, 1,5 de promedio) | ×2,5 (2, 3 o 5: 3,75 de promedio) |
+| `professions.skinning.xp_per_beast` (nuevo) | 0 | +3 de 🔪 Desollador por bestia que suelta carne o piel |
+| `shop.remedy_sell_ratio` (nuevo) | el mercader no compraba pociones ni remedios | 0,25: 🧪 vida 🥉1 (cuesta 🥉6), 🩹 venda 🥉1 (🥉3), 🍷 mayor 🥉4, 🫙 ungüento 🥉2, 🧰 botiquín 🥉4, 🩻 vendaje maestro 🥉7 |
+| `camp_professions.maintenance` (nuevo) | — | 🧱 Mantenimiento: 🪵15 🪨15 🧵10 por vuelta (40 de 🏗️ Construcción), desde 1 obra construida |
+| 🎣 Pescar (regla, sin número nuevo) | — | una vuelta de recolectar (`gather.amount`, 1 a 3 más 1 cada 3 niveles de zona; 1 ⚡; 8 min) en la que toda unidad es 🐟 pescado; solo agota el pescado (vuelve ×1, 2 % por hora) |
+
+**Qué cambia al jugar.**
+
+- **Títulos:** subir un oficio al 100 cuesta en total 🥈92,5 en títulos (🥉9.250) y pide un héroe de nivel 50. Para el que va al ritmo de diseño (rango 25 en ~3 semanas, 50 en ~3 meses, 100 en ~1 año, `rank_formula`) y sube de nivel al ritmo de siempre (nivel 10 en ~18 días, 20 en ~70), el nivel casi nunca frena: el Oficial (rango 20, ~2 semanas) llega con el héroe cerca del nivel 10; el Experto (rango 40, ~2 meses) con el nivel 20. Quien sube un oficio muy rápido sin pelear ni explorar sí espera al héroe: es lo que pidió el dueño ("el oficio acompaña al héroe"). Es una salida de monedas que se nota, como querían E-222 y E-228.
+- **Precios:** aprender los 8 oficios de fabricación cuesta 🥈8 (antes 🥉160); los 11 de recolección, refinado y servicio, 🥉550 (antes 🥉220).
+- **🦌 Piel:** en las mejores zonas, de 0,45 a ~1,1 pieles por presa: de ~4,4 ⚡ por piel a ~1,8, cerca del 1,5-2 que pedía la simulación. La cadena de cuero (Curtiduría, Peletería, Herrería, arcos) deja de esperar la piel.
+- **🔪 Desollador:** por presa, de ~1,05 unidades (0,53 por ⚡) a ~1,7 unidades más ~2,1 por bestia desollada (7 de cada 10 sueltan algo): ~1,9 por ⚡, como los demás recolectores (~2).
+- **🎣 Pescador:** pescando, unas 2 unidades por ⚡ en una zona cercana (antes 0,66 en la mejor zona, recolectando): ~3 veces más rápido. Una zona llena aguanta unas 42 unidades seguidas y después vuelve 1 por hora.
+- **🏗️ Construcción:** el catálogo entero daba como mucho rango 24; con 🧱 Mantenimiento, el rango 100 (88.209) son unas 2.200 vueltas: ~1 a 1,5 años aportando lo de un día, como decía el diseño. Gasta 🪵 🪨 🧵 (sumidero) y da la experiencia y el mérito de siempre por material.
+- **🧪 Mercader:** un alquimista que hace de más recupera poco (🧪 vida 🥉1 frente a sus materiales, ~🥉6 vendidos sueltos): sirve para no tirar lo que sobra, no para hacer monedas. Nunca paga más de lo que cobra.
+
+**Lo que queda por mirar:** si en el tope la gente siente que pierde la experiencia (la otra forma es guardarla para cuando compre el título, P-244); si 🥈92,5 por oficio es mucho o poco frente a lo que entra (informe diario); si con la piel ×2,5 sobra piel para el mercader; cuánta gente pesca y si el pescado se agota en las zonas cercanas.
 
 ### Octubre de 2026 (21-oct): 🪓 Talar y los recursos de base ×3 (0.42, D-305, confirmada)
 

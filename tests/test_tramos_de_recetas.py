@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 
 from conftest import make_hero
+from engine.service.game import button_cap
 from engine.professions import rules
 from engine.professions import xp_for_rank
 
@@ -237,7 +238,7 @@ def test_the_trainer_shows_books_only_when_there_is_something(service):
     assert "pbooks" not in ids(service.act("test:1", "trainer"))
     crafter(service, "herreria", rank=26)
     view = service.act("test:1", "trainer")
-    assert "pbooks" in ids(view) and len(view.actions) <= 5         # D-315: 📚 one more button in the 🧑‍🏫 Entrenador
+    assert "pbooks" in ids(view) and len(view.actions) <= button_cap("trainer")    # D-315: 📚 in the 🧑‍🏫 Entrenador (up to 6)
     assert service.act("test:1", "pbooks").actions[-1].id == "trainer"
 
 

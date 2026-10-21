@@ -1,6 +1,6 @@
 # Los oficios de Lost Realms, explicados como los de World of Warcraft
 
-> **Módulo** [07 · Economía y oficios](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), [Simulación de los oficios](simulacion-oficios.md) · **Alimenta a:** las 📚 Guías (D-297), la reforma de recetas (P-232 a P-235) · **Estado:** §1 y §2 describen el juego (0.39.1, con lo que cambió la 0.44 marcado); §3: los colores y los libros de recetas están en el juego desde la 0.44 (D-306, D-315), el resto es propuesta
+> **Módulo** [07 · Economía y oficios](README.md) · **Depende de:** [Profesiones](profesiones.md), [Red de oficios](red-de-oficios.md), [Simulación de los oficios](simulacion-oficios.md) · **Alimenta a:** las 📚 Guías (D-297), la reforma de recetas (P-232 a P-235) · **Estado:** §1 y §2 describen el juego de hoy (0.39.1, con lo de la 0.43 y la 0.44 marcado); §3 es lo que decidió el dueño (D-306) y §4, lo que ya está en el juego desde la 0.43 (D-316, provisional) y la 0.44 (tramos, colores y libros de recetas: D-315, provisional)
 
 Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripción de cada una de las profesiones y cómo se va aprendiendo, como si fueran profesiones del World of Warcraft".
 
@@ -12,10 +12,10 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 
 | Paso | Cómo es hoy | En WoW |
 |---|---|---|
-| **Aprender** | En el 🧑‍🏫 Entrenador de cualquier hoguera o de tu campamento: 📚 Aprender oficios, 🥉20 cada uno (`professions.learn_price`). Gratis si ya lo practicabas antes de la 0.35. El 🧭 Explorador no se aprende: sube solo. | Pagas al entrenador de tu ciudad. |
+| **Aprender** | En el 🧑‍🏫 Entrenador de cualquier hoguera o de tu campamento: 📚 Aprender oficios. Desde la 0.43 (D-306.4): 🥈1 los de fabricación (y ✨ Encantamiento), 🥉50 los de recolección, refinado (y 🏗️ Construcción) (`professions.learn_price`, por rama; antes 🥉20 todos). Gratis si ya lo practicabas. El 🧭 Explorador no se aprende: sube solo. | Pagas al entrenador de tu ciudad. |
 | **Cuántos** | Todos los que quieras. | 2 principales y los secundarios. |
 | **Rangos** | Del 1 al 100. Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81) y Gran maestro (96). | Aprendiz, Oficial, Experto, Artesano, Maestro y Gran maestro. Cada título se le compra al entrenador. |
-| **Subir** | Cada cosa que haces da experiencia de oficio. Recolectar da 1 por unidad. Refinar y fabricar dan la experiencia de la receta (6 al refinar). Vender da experiencia de 💱 Comercio por moneda. No hace falta volver al Entrenador para pasar de título. **Desde la 0.44 (D-306):** en los oficios de equipo la experiencia depende del color de la receta (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada) y crece con su tramo (12 a 24 por pieza). | Las recetas dan experiencia según su color (naranja, amarillo, verde, gris). |
+| **Subir** | Cada cosa que haces da experiencia de oficio. Recolectar da 1 por unidad. Refinar y fabricar dan la experiencia de la receta (6 al refinar). Vender da experiencia de 💱 Comercio por moneda. Desde la 0.43 (D-306.1): al tope de tu título (20, 40, 60, 80, 95) el oficio no guarda experiencia hasta que compras el título siguiente en el Entrenador (🎖️ Títulos). **Desde la 0.44 (D-306):** en los oficios de equipo la experiencia depende del color de la receta (🟧 entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada) y crece con su tramo (12 a 24 por pieza). | Las recetas dan experiencia según su color (naranja, amarillo, verde, gris). |
 | **Recetas** | Se abren solas al llegar al rango que piden. **Desde la 0.44 (D-306):** en los oficios de equipo, un tramo cada 5 rangos del 1 al 100, con la pieza del nivel del tramo (⚗️ Alquimia y 🩺 Medicina llegan hasta el 50; 🍲 Cocina, cada 25; en el refinado, todas desde el 1). Las de rango 25, 50 y 75 o más piden su 📚 libro de recetas, que vende el 🧑‍🏫 Entrenador (🥈2, 🥈10, 🥈25). | El entrenador te enseña las recetas de tu título; otras salen del botín o de las facciones. |
 | **Especializaciones** | 🎓 Eliges una al rango 25 y otra al 75, entre 3 por oficio. Nunca las tres: la tercera la tiene otro jugador (D-141). | Forjador de armas o Armero, Transmutación… |
 | **Dónde** | Las estaciones de refinar y fabricar están en todas las hogueras. En tu campamento, cada edificio de oficio abre la suya (D-288), con un poco más de rendimiento. | Las forjas y los yunques de las ciudades. |
@@ -30,8 +30,8 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 | 🪓 **Leñador** | Tala 🪵 madera, resina y corteza. Desde la 0.42 (D-305), el botón 🪓 Talar de 🧭 Explorar junta solo madera: cada unidad le suma 1 de experiencia, unas 4 veces más rápido que recolectar en el bosque. | +10 de espacio en la mochila | Maderas nobles · Leña y carbón · Tala rápida | Sin equivalente directo |
 | ⛏️ **Minero** | Saca piedra, metal, arcilla, carbón, sal, cuarzo, arena, hielo, chatarra y obsidiana. Desde el rango 10, a veces 💠 gemas en bruto. | +5 % de vida | Metales · Gemas · Cantera | Minería |
 | 🌿 **Herbolario** | Recoge hierba curativa, fibra y las plantas de cada terreno. Desde el rango 10, a veces 🌸 flor de luna. | +20 % de vida que vuelve sola | Medicinales · Flores raras · Fibras | Herboristería |
-| 🔪 **Desollador** | Las bestias que vences sueltan 🍖 carne y 🦌 piel. | +4 % de ataque | Pieles finas · Carnicería · Trofeos | Desuello |
-| 🎣 **Pescador** | Pesca 🐟 en las zonas con agua: todo el pantano y el lago, y algunos ríos. | +30 % de comida del pescado | Redes · Perlas · Ahumado y salazón | Pesca (secundario) |
+| 🔪 **Desollador** | Las bestias que vences sueltan 🍖 carne y 🦌 piel. Desde la 0.43 (D-306.5) sueltan 2,5 veces más piel y cada bestia desollada da +3 de experiencia, además de 1 por unidad. | +4 % de ataque | Pieles finas · Carnicería · Trofeos | Desuello |
+| 🎣 **Pescador** | Pesca 🐟 en las zonas con agua: todo el pantano y el lago, y algunos ríos. Desde la 0.43 (D-306.5), el botón 🎣 Pescar de 🧭 Explorar junta solo pescado. | +30 % de comida del pescado | Redes · Perlas · Ahumado y salazón | Pesca (secundario) |
 | 🧭 **Explorador** | Sube solo al explorar. Con rango ves más en el mapa, reconoces lugares de lejos y te infiltras en campamentos enemigos. | más exploración por vuelta y 🥷 sigilo | Cartógrafo de campo · Rastreador · Infiltrado | Arqueología, más o menos |
 
 **Refinado:** convierte lo crudo en material de trabajo, en una estación. En WoW se parece a fundir en la Minería o a hacer rollos de tela en la Sastrería.
@@ -64,7 +64,7 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 | Oficio | Qué hace | Beneficio | 🎓 Especializaciones | En WoW |
 |---|---|---|---|---|
 | 💱 **Comercio** | 🔒 **Bloqueado desde la 0.39.2 (D-298):** se redefine para las caravanas, que todavía no existen. Antes subía al vender. | (antes, +20 % al vender) | Abastecedor · Tratante de equipo · Caravanero | — |
-| 🏗️ **Construcción** | Sube al aportar a las obras del campamento y al reparar defensas | −20 % de materiales en las obras y −50 % al reparar | Obras de madera · Obras de piedra · Fortificaciones | — |
+| 🏗️ **Construcción** | Sube al aportar a las obras del campamento y al reparar defensas; desde la 0.43, también con 🧱 Mantenimiento, la obra que se repite | −20 % de materiales en las obras y −50 % al reparar | Obras de madera · Obras de piedra · Fortificaciones | — |
 
 **La cadena, de punta a punta.** Por ejemplo, una espada: ⛏️ Minero (metal) → 🔥 Fundición (lingote) → 🔨 Herrería (espada), con 🔪 Desollador → 🪣 Curtiduría (cuero) para la empuñadura. Nadie lo hace todo solo rápido: por eso hay gremios y mercado.
 
@@ -72,8 +72,34 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 
 Hoy subir es fácil y todo se abre solo. La propuesta acerca el juego a WoW sin hacerlo pesado. Se junta con la reforma de recetas que ya está preguntada (E-221 a E-224).
 
-1. **Cada título se compra al Entrenador** (como en WoW). Llegas al tope de tu título (20, 40, 60, 80, 95) y no subes más hasta pagar el siguiente. Recomendado: Oficial 🥉50, Experto 🥈2, Artesano 🥈10, Maestro 🥈30 y Gran maestro 🥈50, con nivel de héroe mínimo 10, 20, 30, 40 y 50. Así el oficio acompaña al héroe y es un gasto de monedas que se nota (E-228, P-239).
-2. **Recetas con colores** (E-221): naranja da experiencia siempre, amarillo casi siempre, verde a veces y gris nada. Para subir hay que hacer recetas nuevas, no repetir la primera mil veces. **En el juego desde la 0.44** (D-306, D-315) en los 5 oficios de equipo, con un tramo cada 5 rangos: 🟧 la experiencia entera, 🟨 la mitad, 🟩 un cuarto y ⬜ nada ([Profesiones](profesiones.md) §0.7). El refinado, la Alquimia, la Medicina y la Cocina esperan sus tramos.
+1. ✅ **En el juego desde la 0.43 (D-306.1, §4).** **Cada título se compra al Entrenador** (como en WoW). Llegas al tope de tu título (20, 40, 60, 80, 95) y no subes más hasta pagar el siguiente. Recomendado: Oficial 🥉50, Experto 🥈2, Artesano 🥈10, Maestro 🥈30 y Gran maestro 🥈50, con nivel de héroe mínimo 10, 20, 30, 40 y 50. Así el oficio acompaña al héroe y es un gasto de monedas que se nota (E-228, P-239).
+2. **Recetas con colores** (E-221): naranja da experiencia siempre, amarillo casi siempre, verde a veces y gris nada. Para subir hay que hacer recetas nuevas, no repetir la primera mil veces. **En el juego desde la 0.44** (D-306, D-315) en los 5 oficios de equipo, con un tramo cada 5 rangos: 🟧 la experiencia entera, 🟨 la mitad, 🟩 un cuarto y ⬜ nada ([Profesiones](profesiones.md) §0.8). El refinado, la Alquimia, la Medicina y la Cocina esperan sus tramos.
 3. **Recetas que se aprenden en el Entrenador**, por título (los "libros de recetas", E-222); además, recetas raras en mazmorras, campamentos enemigos y facciones. **Los libros están en el juego desde la 0.44:** 🧑‍🏫 Entrenador → 📚 Libros de recetas, uno por oficio en los rangos 25, 50 y 75 (🥈2, 🥈10, 🥈25), gratis los de los rangos que cada uno ya tenía. Las recetas raras del botín y las facciones siguen siendo propuesta.
 4. **¿Un tope de oficios como en WoW?** Recomiendo **sin tope** para la recolección y la 🍲 Cocina, el 🎣 Pescador y la 🩺 Medicina (como los secundarios de WoW), y **2 principales** entre los demás: refinado, fabricación y servicio. Así cada jugador necesita a otros (E-229, P-240). Quien hoy tiene más que eso los conserva (el progreso no se pierde, D-64).
 5. **Las especializaciones siguen igual:** una al 25 y otra al 75 (D-141).
+
+## 4. En el juego desde la 0.43 (D-306, cómo se aplicó: D-316)
+
+Lo que el dueño confirmó el 20-oct-2026 de los títulos, los precios y los arreglos de lo que no avanzaba. Las recetas (tramos, colores, libros, la Joyería y la malla) llegaron en la 0.44 (§5).
+
+| Qué | Cómo quedó | Dónde |
+|---|---|---|
+| 🎖️ **Títulos** | Al tope de tu título (20, 40, 60, 80, 95) el oficio no guarda experiencia: lo que no entra se pierde. El siguiente se compra en 🧑‍🏫 Entrenador → 🎖️ Títulos (/titulos) o en la pantalla del oficio, solo al llegar al tope: Oficial 🥉50 (héroe de nivel 10), Experto 🥈2 (20), Artesano 🥈10 (30), Maestro 🥈30 (40) y Gran maestro 🥈50 (50). Quien ya pasaba un tope conserva su rango y tiene gratis los títulos hasta él (D-64). El 🧭 Explorador no tiene títulos. 📋 Mis oficios, ⚒️ Oficios y el Entrenador dicen "🔒 Tope de Oficial: compra Experto en el Entrenador (🥈2, nivel 20)". | `balance.yaml` → `professions.titles`; `Hero.prof_titles`; `engine/professions/rules.py` (`title_cap`, `held_title_index`, `xp_room`); `engine/service/game.py` (`_prof_gain`, `_titles_view`, `_buy_title`) |
+| 📚 **Precios de aprender** | 🥈1 los de fabricación y ✨ Encantamiento; 🥉50 los de recolección, refinado y 🏗️ Construcción. Gratis si ya lo practicabas. | `balance.yaml` → `professions.learn_price` (por rama) |
+| 🦌 **Piel** | Cada bestia suelta 2,5 veces la piel de antes (de 1-2 a 2,5-5 en promedio), para todos. | `balance.yaml` → `professions.skinning.loot_mult` |
+| 🔪 **Desollador** | +3 de experiencia por bestia que suelta carne o piel, además de 1 por unidad: de ~0,5 a ~2 por ⚡, como los demás. | `professions.skinning.xp_per_beast` |
+| 🎣 **Pescar** | Botón de 🧭 Explorar que junta solo 🐟 pescado (como 🪓 Talar): en el pantano siempre; en otras zonas con agua, cuando ya sabes que hay pescado. Con madera y agua, 🧭 Explorar tiene 6 botones. | `engine/service/game.py` (`BATCH_MODES` "fish", `_can_fish`) |
+| 🧱 **Mantenimiento** | En 🔨 Obras, desde que el campamento construyó una obra: cada vuelta pide 🪵15 🪨15 🧵10 (40 de experiencia de 🏗️ Construcción) y, completa, empieza otra. Sin otro efecto: es lo que deja subir la Construcción más allá del rango 24. | `balance.yaml` → `camp_professions.maintenance`; `_maintain` |
+| 🧪 **Mercader** | Compra pociones y remedios de la mochila (no los del cinturón) al 25 % de su precio, hasta que haya mercado entre jugadores (/v61 a /v66). | `balance.yaml` → `shop.remedy_sell_ratio`; `content/items.yaml` (códigos 61-66) |
+
+## 5. En el juego desde la 0.44 (D-306, cómo se aplicó: D-315)
+
+Las recetas, como en WoW. El detalle está en [Profesiones](profesiones.md) §0.8 y los números en la [Simulación](simulacion-oficios.md) §11.
+
+| Qué | Cómo quedó | Dónde |
+|---|---|---|
+| 🛠️ **Tramos** | En 🪑 🔨 🪡 🦺 💍, recetas nuevas cada 5 rangos y la pieza es del nivel del tramo (rango 30 → nivel 30); 180 piezas nuevas. Las piezas cuestan 2 ⚡ hasta el 50, 3 desde el 55 y 4 desde el 85, y dan de 12 a 24 de experiencia. | `balance.yaml` → `recipe_tiers`; `tools/recipe_tiers.py` |
+| 🟧 **Colores** | 🟧 la experiencia entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada, según cuánto te queda chica la receta; se ven en 🛠️ Fabricar con la experiencia de cada receta. Solo en los 5 oficios de equipo (los demás, pendientes). | `recipe_tiers.colors`; `engine/service/game.py` → `_recipe_xp` |
+| 📚 **Libros de recetas** | Las recetas de rango 25, 50 y 75 o más piden su libro (🥈2, 🥈10, 🥈25), en 🧑‍🏫 Entrenador → 📚 Libros de recetas; gratis los de los rangos que ya tenías. | `recipe_tiers.books`; `Hero.recipe_books` |
+| 📿 **Joyería** | Empieza con el Colgante de cobre (lingote y cuero), sin gema. | `content/professions.yaml` → `colgante_cobre` |
+| ⛓️ **Malla** | Las 67 recetas, retiradas; las piezas quedan. | `retired: true` |

@@ -1,0 +1,74 @@
+# Player-facing texts in English (D-250). Same keys, same order as es_titulos_pesca.yaml; the engine only uses the keys.
+# [ES] Los textos que ve el jugador, en inglés (D-250): las mismas claves y en el mismo orden que es_titulos_pesca.yaml (0.43:
+# 🎖️ títulos de oficio, precios por rama, 🎣 Pescar, 🧱 Mantenimiento y el mercader que compra pociones; D-306, D-316). Una clave
+# nueva va primero en es_titulos_pesca.yaml y, en el mismo cambio, aquí. tools/check_locales.py compara los dos idiomas
+# (tests/test_idiomas.py lo exige): mismas claves, mismos huecos {nombre} y {n|uno|varios} y mismas etiquetas HTML.
+
+ptitle:
+  title: "🎖️ Profession titles"
+  button: "🎖️ Titles"
+  trainer_line: "🎖️ Titles: at rank 20, 40, 60, 80 and 95 a profession stops until you buy the next title here (/titles)."
+  intro: "As in WoW, every profession title is bought here. At your title's cap (ranks 20, 40, 60, 80 and 95) the profession stops rising until you buy the next one; the experience you earn at the cap is not kept."
+  prices: "💰 {items}"
+  price_item: "{title} {price} (level {level})"
+  prof_line: "{name} · {state}  /{code}"
+  cap_short: "{title}, up to rank {cap}"
+  top_short: "{title}, no cap"
+  cap_line: "🎖️ {title}: rises up to rank {cap}."
+  top_line: "🎖️ {title}: no cap."
+  lock_short: "🔒 {title} cap: buy {next} at the Trainer ({price}, level {level})"
+  lock_named: "🔒 {name} at the {title} cap (rank {cap}): buy {next} ({price}, level {level})"
+  lock_gain: "🔒 {name} reached the {title} cap (rank {cap}): buy {next} at the 🧑‍🏫 Trainer ({price}, level {level}). Until then this profession keeps no experience."
+  lost_note: "🔒 At the cap, profession experience is not kept: buy the next title in 🎖️ Titles."
+  buy_button: "🎖️ Buy {title} · {price}"
+  buy_named: "🎖️ {name} → {title}"
+  none: "You don't know any profession with titles yet: learn one in 📚 Learn professions."
+  explorer: "🧭 The Explorer rises on its own: it has no titles to buy."
+  wallet: "💰 You have {gold} · ⭐ Level {level}"
+  already_top: "🎖️ {name} already has the highest title."
+  not_yet: "🎖️ {name} hasn't reached its title's cap yet (rank {cap}): {next} is bought when it gets there."
+  low_level: "⭐ {next} needs a level {level} hero: you are level {now}."
+  no_gold: "💰 {next} costs {price} and you have {gold}."
+  done: "🎖️ You are now a {title} {name}! You paid {price}. The profession rises again, up to rank {cap}."
+
+learn:
+  prices: "{craft} for crafting and {other} for gathering and refining"
+
+fish:
+  button: "🎣 Fish · {time}"
+  title: "🎣 Fishing"
+  in_progress: "You fish in the zone's water and collect 🐟 fish."
+  no_fish: "🐟 There is no water to fish in this zone."
+  depleted: "🪫 The 🐟 fish in this zone are used up for now: they come back on their own over the hours. Try another zone with water."
+
+batch:
+  title_fish: "🎣 Fish"
+  ask_fish: "How much energy do you want to spend fishing? Each time costs {energy} ⚡, takes {minutes} min and you only collect 🐟 fish; it keeps going on its own until done."
+  started_fish: "🎣 You'll fish {n} {n|time|times} (until {time}). You can stop whenever you want."
+  fished: "🎣 You fished {n} {n|time|times}: {items}."
+  xp_fish: "✨ Fishing taught you: +{xp} experience."
+  reason:
+    fish_depleted: "🪫 The 🐟 fish in this zone are used up for now: they come back on their own over the hours."
+
+presence:
+  activity:
+    fish: "🎣 fishing"
+
+hero:
+  status:
+    fish: "🎣 Fishing"
+
+retreat:
+  blocked_fish: "🩹 With so little health you don't go out fishing: rest first."
+
+upkeep:
+  name: "🧱 Upkeep"
+  entry: "🧱 Upkeep · done {n} {n|time|times}"
+  desc: "Looking after what was built never ends: when a round is complete, another starts. Every material raises 🏗️ Construction."
+  button: "🤲 🧱 Upkeep"
+  done: "🧱 Upkeep complete! That makes {n}. Another round starts."
+  push_title: "🧱 Upkeep"
+  push: "🧱 {hero} completed an upkeep round of {camp} (that makes {n})."
+
+shop:
+  remedy_line: "🧪 Potions and remedies from your backpack are bought for a little ({pct}% of their price) until there is a player market; what is on your belt is not sold."
