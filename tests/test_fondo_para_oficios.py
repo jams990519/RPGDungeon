@@ -27,6 +27,7 @@ from test_guilds import join
 pytestmark = pytest.mark.usefixtures("every_profession_known")
 
 KEY = "6:0"
+# D-328 (0.52): refining has tiers and colors too, so a list line starts with its color ("/r1 🟧 ✅💰 🟫 Tablón · tramo 1 …").
 
 
 def ids(view):
@@ -132,19 +133,19 @@ def test_the_recipe_list_counts_the_left_over(service):
     camp = camp_with_sawmill(service)
     keep = wood_reserve(service, camp)
     view = service.act("test:2", "est:refine:0")
-    assert any(line.startswith("/r1 ▫️ 🟫 Tablón") for line in view.body)        # nothing carried, nothing in the fund
+    assert any(line.startswith("/r1 🟧 ▫️ 🟫 Tablón") for line in view.body)        # nothing carried, nothing in the fund
     assert not any("fondo del gremio" in line for line in view.body)
     put_fund(service, {"madera": keep + 2})                                      # 2 left over: something, not enough
-    assert any(line.startswith("/r1 🔸 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
+    assert any(line.startswith("/r1 🟧 🔸 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
     put_fund(service, {"madera": keep + 3})
     view = service.act("test:2", "est:refine:0")
-    assert any(line.startswith("/r1 ✅💰 🟫 Tablón") for line in view.body)
+    assert any(line.startswith("/r1 🟧 ✅💰 🟫 Tablón") for line in view.body)
     assert any("Cuenta lo que sobra en el fondo del gremio" in line for line in view.body)
     only = service.act("test:2", "esto:refine:0")                               # ✅ Solo las que puedo hacer: with the fund
-    assert any(line.startswith("/r1 ✅💰 🟫 Tablón") for line in only.body)
+    assert any(line.startswith("/r1 🟧 ✅💰 🟫 Tablón") for line in only.body)
     assert service.text("test:2", "/r1").kind == "recipe"
     set_hero(service, "test:2", backpack={"madera": 3})                         # the backpack alone: a plain ✅
-    assert any(line.startswith("/r1 ✅ 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
+    assert any(line.startswith("/r1 🟧 ✅ 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
     assert not service.texts.missing
 
 
@@ -160,7 +161,7 @@ def test_the_daily_cap_and_a_new_day(service, clock):
     service.act("test:2", "mk:tablon:2:0")
     assert service._fund_used(service._upgrades(KEY), "test:2") == 6
     view = service.act("test:2", "est:refine:0")
-    assert any(line.startswith("/r1 🔸 🟫 Tablón") for line in view.body)       # 1 left today: not enough for one
+    assert any(line.startswith("/r1 🟧 🔸 🟫 Tablón") for line in view.body)       # 1 left today: not enough for one
     set_hero(service, "test:2", backpack={"madera": 2})                         # 2 of mine + 1 of the fund = 1 make
     assert "🪵 Madera ×1 · hoy llevas 7 de 7" in service.act("test:2", "mk:tablon:1:0").notice
     assert service._fund_used(service._upgrades(KEY), "test:2") == 7
@@ -187,7 +188,7 @@ def test_only_the_founder_or_an_assistant_opens_or_closes_it_and_the_log_says_wh
     assert "Cerraste" in view.notice and not service._fund_open(service._upgrades(KEY))
     assert "gfcraft" in ids(view) and "🔒 cerrado" in text(view)
     view = service.act("test:2", "est:refine:0")
-    assert any("está cerrado" in line for line in view.body) and any(line.startswith("/r1 ▫️") for line in view.body)
+    assert any("está cerrado" in line for line in view.body) and any(line.startswith("/r1 🟧 ▫️") for line in view.body)
     view = service.act("test:2", "mk:tablon:1:0")
     assert "Te falta" in view.notice and service._upgrades(KEY)["fund"] == {"madera": keep + 24}   # closed: nothing taken
     camp = service.store.get("camp", KEY)
@@ -213,7 +214,7 @@ def test_not_at_the_campfires_nor_for_who_is_not_a_member(service):
     place(service, "test:2", 0, 0, backpack={"madera": 1})                      # the Claro has every station, not the fund
     view = service.act("test:2", "rec:tablon:0")
     assert "+💰" not in text(view) and not any(a.id.startswith("mk:") for a in view.actions)
-    assert any(line.startswith("/r1 🔸 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
+    assert any(line.startswith("/r1 🟧 🔸 🟫 Tablón") for line in service.act("test:2", "est:refine:0").body)
     assert "Te falta" in service.act("test:2", "mk:tablon:1:0").notice
     assert service._upgrades(KEY)["fund"] == {"madera": keep + 30}
     make_hero(service, "test:3", "Cora")                                        # a visitor at the camp: no stations at all

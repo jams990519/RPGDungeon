@@ -194,6 +194,8 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     D-327 (0.51): "camp" suma "cap_floor" (el cupo de antes de la 0.51, el piso de su cupo; 0 en los nuevos), "idle_watch" y
     "idle_warned" (quién no juega: el barrido de tick) y "meta"/"idle" ({"next"}). Los escribe engine/service/ladder.py
     (LadderMixin, ver su encabezado). Nada nuevo en Hero: "jugó por última vez" es Hero.seen_at (_mark_seen).
+    D-328 (0.52): Hero.book_gifts (los regalos de libros ya dados, ids de balance.yaml recipe_tiers.book_gifts); los héroes de
+    antes cargan con [] y _load (_grant_book_gifts) les da una vez los libros nuevos del refinado, ⚗️ y 🩺 de los rangos que tenían.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -595,6 +597,12 @@ Si cambias esto, revisa:
       en_recetas.yaml (recipe_tier.*, books.*), prof.entry y prof.entry_ok ({prof}+{xp}). Pruebas:
       tests/test_tramos_de_recetas.py, tests/test_professions.py, tests/test_oficios_equipo.py, tests/test_especializaciones.py,
       tests/test_balance_d110.py y tests/test_ocultar_lo_bloqueado.py
+    - La reforma de recetas en todos los oficios (0.52, D-306; cómo se aplicó: D-328, provisional): el refinado, la ⚗️ Alquimia,
+      la 🩺 Medicina y la 🍲 Cocina también tienen un tramo cada 5 rangos y colores (balance.yaml recipe_tiers.professions; las
+      recetas y objetos nuevos los genera tools/recipe_tiers.py). Ganchos: _station_view (la línea de lo que no es equipo dice su
+      tramo, rlist.tier), _refill_belt y _belt_members (las pociones y remedios de un tramo comparten el lugar del cinturón de su
+      ancla: items.yaml belt_slot; primero lo que más cura) y _grant_book_gifts (_load: el regalo de libros de la 0.52, D-64).
+      Pruebas: tests/test_tramos_refinado_alquimia_medicina_cocina.py
     - 🏛️ Mercado entre jugadores (0.46, pedido del dueño del 21-oct-2026; D-137 y D-26 confirmadas; cómo se armó: D-320,
       provisional): vive en engine/service/market.py (MarketMixin, de la que GameService hereda; su encabezado lista sus datos y
       reglas). Ganchos de este archivo: COMMANDS (/mercado, /market), HUB_KINDS ("market", "market_cats"), text() (los códigos
@@ -1442,6 +1450,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not hero.books_checked:                          # D-306 (0.44): who practised keeps what it could make (D-64)
             self._grant_old_books(hero)
             hero.books_checked = True
+        self._grant_book_gifts(hero)                        # D-328 (0.52): the books the refining, ⚗️ and 🩺 did not ask before
         self._scroll_sync(hero)                             # D-326: the backpack counts the 🗺️ scrolls of Hero.map_scrolls
         return hero
 
@@ -2154,6 +2163,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         starter_gear(self.content.items, self.content.classes, self.content.balance, hero)
         hero.gear_started = True
         hero.books_checked = True                           # D-306: a new hero buys its 📚 recipe books (nothing to grant)
+        hero.book_gifts = [str(g["id"]) for g in self._tier_cfg().get("book_gifts") or []]     # D-328: nor the 0.52 ones
         hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
         hero.energy_version = self.content.balance["energy"]["version"]
         referral = self.store.get("referral", account_id)
@@ -9069,6 +9079,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         D-322 (0.47, pedido del dueño: "puedan utilizar los recursos del gremio"): en las estaciones de tu campamento el estado
         cuenta lo que sobra del 💰 fondo del gremio (_recipe_status: ✅💰 = la haces con ayuda del fondo) y una línea dice cuánto
         puedes tomar hoy, o que el fondo para oficios está 🔒 cerrado o que llegaste al tope (_fund_pool_lines).
+        D-328 (0.52): el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina también tienen un tramo cada 5 rangos y colores:
+        la línea de lo que no es equipo dice su tramo (" · tramo 45", rlist.tier) en vez del nivel de la pieza. Con un oficio
+        al 100 son 21 tramos por oficio: la lista los agrupa por oficio, primero lo que puedes hacer y dentro, el tramo más alto.
         La llaman: 🪚 Refinar y 🛠️ Fabricar de ⚒️ Oficios, 🍲 Cocinar ("cook"), ➡️ Ver más y ↩️ Volver de cada receta.
         Si cambia, afecta: cómo encuentra el jugador qué hacer (tests/test_professions.py, tests/test_menus_y_dudas.py,
         tests/test_lista_de_recetas.py).
@@ -9153,7 +9166,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 group = pid
             codes.append(f"{rid}|{station_id}|{page}")
             out = self.content.items.get(next(iter(rdef["output"])), {})
-            level = t.t("rlist.level", n=out["req_level"]) if out.get("kind") == "gear" and out.get("req_level") else ""
+            if out.get("kind") == "gear" and out.get("req_level"):
+                level = t.t("rlist.level", n=out["req_level"])
+            elif self._tiered(pid):                                       # D-328: the tier of a refined good, potion or dish
+                level = t.t("rlist.tier", n=int(rdef.get("min_rank", 1)))
+            else:
+                level = ""
             # D-141: "🎓 " before an exclusive recipe; D-306: its color (🟧 🟨 🟩 ⬜) first and the profession xp it gives now
             line_key = "fcraft.line_fund" if with_fund and not status else f"rlist.line_{('ok', 'part', 'none')[status]}"
             body.append(t.t(line_key, code=f"/r{len(codes)}",
@@ -9456,8 +9474,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
     def _tiered(self, pid: str) -> bool:
         """True for a profession with a tier every 5 ranks up to 100 (recipe_tiers.professions): only there colors apply.
 
-        [ES] Qué hace: dice si un oficio tiene tramos cada 5 rangos (🪑 🔨 🪡 🦺 💍): solo en esos rigen los colores. Los demás
-        (refinado, ⚗️, 🩺, 🍲) siguen dando la experiencia entera hasta tener sus tramos (pendiente, traspaso-a-terminal.md).
+        [ES] Qué hace: dice si un oficio tiene tramos cada 5 rangos: solo en esos rigen los colores. Desde la 0.44 los de equipo
+        (🪑 🔨 🪡 🦺 💍); desde la 0.52 (D-328) también el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina: todos los
+        oficios con recetas (balance.yaml recipe_tiers.professions). Uno que no esté en la lista da la experiencia entera.
         """
         return pid in (self._tier_cfg().get("professions") or [])
 
@@ -9595,6 +9614,31 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             books += [profession_rules.book_id(pid, r) for r in ranks
                       if r <= rank and profession_rules.book_id(pid, r) not in books]
         hero.recipe_books = books
+
+    def _grant_book_gifts(self, hero: Hero) -> None:
+        """D-328 (0.52, D-64): the books of balance.yaml recipe_tiers.book_gifts, once per gift, for the ranks already reached.
+
+        [ES]
+        Qué hace: la 0.52 dio tramos hasta el 100 al refinado, a la ⚗️ Alquimia y a la 🩺 Medicina, y con ellos libros de recetas
+        que esos oficios no pedían antes (el refinado, los tres; la Alquimia y la Medicina, el del 75). Quien ya tenía ese rango
+        recibe gratis esos libros, una sola vez por regalo (Hero.book_gifts guarda los ids ya dados), como el regalo de la 0.44
+        (_grant_old_books): así sigue subiendo sin pagar por lo que ya había ganado. Solo los libros que dice cada regalo (nunca
+        los de los oficios de equipo, que se compran desde la 0.44). Los héroes nuevos nacen con todos los regalos marcados.
+        La llama: _load. Si cambia, afecta: qué libros tienen gratis los jugadores de antes
+        (tests/test_tramos_refinado_alquimia_medicina_cocina.py).
+        """
+        gifts = [g for g in self._tier_cfg().get("book_gifts") or [] if str(g.get("id")) not in (hero.book_gifts or [])]
+        if not gifts:
+            return
+        cfg = self._prof_cfg()
+        books = list(hero.recipe_books or [])
+        for gift in gifts:
+            for pid, ranks in (gift.get("professions") or {}).items():
+                rank = rank_of(hero.professions.get(pid, 0), cfg["rank_formula"], cfg["max_rank"])
+                books += [profession_rules.book_id(pid, int(r)) for r in ranks
+                          if int(r) <= rank and profession_rules.book_id(pid, int(r)) not in books]
+        hero.recipe_books = books
+        hero.book_gifts = list(hero.book_gifts or []) + [str(g["id"]) for g in gifts]
 
     def _books_action(self, hero: Hero, action_id: str) -> View:
         """Route 📚 Libros de recetas: "pbooks" (and "pbooks:<page>") the list, "pbook:<profession>:<rank>" buy one."""
@@ -14788,12 +14832,36 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return View(kind="combat_end", title=title, body=lines, actions=actions)
 
     def _refill_belt(self, hero: Hero) -> bool:
+        """Fill the belt from the backpack: each balance.yaml hero.belt_slots place up to its size, the best first.
+
+        [ES] Qué hace: llena los lugares del cinturón con lo que hay en la mochila. Cada lugar de hero.belt_slots (🧪 poción
+        de vida 3, 🩹 venda 2, 🍷 mayor 1…) lo comparten su objeto y, desde la 0.52 (D-328), las pociones y remedios de los
+        tramos que dicen belt_slot: <ese objeto> en items.yaml (la 🍷 poción mayor del tramo 60 va en el lugar de la 🍷 mayor):
+        el cinturón no crece. Pone primero lo que más cura; nunca saca nada que ya esté puesto. Devuelve True si movió algo.
+        La llaman: _buy, _make, el final de una pelea y el 📦 de Entregas del mercado. Si cambia, afecta: qué lleva cada héroe
+        a la pelea (tests/test_tramos_refinado_alquimia_medicina_cocina.py).
+        """
         changed = False
-        for item_id, slots in self.content.balance["hero"]["belt_slots"].items():
-            while hero.belt.get(item_id, 0) < slots and hero.backpack.get(item_id, 0) > 0:
+        items = self.content.items
+        groups = self._belt_members()
+        for slot_id, slots in self.content.balance["hero"]["belt_slots"].items():
+            members = [slot_id] + groups.get(slot_id, [])
+            while sum(hero.belt.get(i, 0) for i in members) < slots:
+                ready = [i for i in members if hero.backpack.get(i, 0) > 0]
+                if not ready:
+                    break
+                item_id = max(ready, key=lambda i: (float(items.get(i, {}).get("heal", 0.0)), -members.index(i)))
                 hero.belt[item_id] = hero.belt.get(item_id, 0) + 1
                 hero.backpack[item_id] -= 1
                 if hero.backpack[item_id] <= 0:
                     del hero.backpack[item_id]
                 changed = True
         return changed
+
+    def _belt_members(self) -> dict[str, list[str]]:
+        """balance.yaml belt place -> the items that share it (items.yaml belt_slot, D-328), in file order."""
+        groups: dict[str, list[str]] = {}
+        for item_id, item in self.content.items.items():
+            if item.get("belt") and item.get("belt_slot"):
+                groups.setdefault(str(item["belt_slot"]), []).append(item_id)
+        return groups

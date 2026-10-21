@@ -762,14 +762,15 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 
 | Recomendación | En la 0.44 |
 |---|---|
-| §8.1 Un tramo cada 5 rangos en todos los oficios, nivel de pieza = rango | **Sí en los 5 oficios de equipo** (🪑 🔨 🪡 🦺 💍): las 20 líneas que no son de malla tienen una receta en el 1, 5, 10 … 100; las de antes bajaron de rango (nivel 3 → 1, 5 → 5, 8 → 10, 10 al 100 → su número) y se agregaron 180 piezas de los niveles 15, 25 … 95 (`tools/recipe_tiers.py`). **Pendiente** en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina: necesitan recetas nuevas hasta el 100 |
-| §8.2 Colores d < 5 / 5-9 / 10-14 / 15+ | **Sí**, en los mismos 5 oficios (con colores, los demás se trabarían: Alquimia y Medicina en el 80, el refinado en el 16) |
+| §8.1 Un tramo cada 5 rangos en todos los oficios, nivel de pieza = rango | **Sí en los 5 oficios de equipo** (🪑 🔨 🪡 🦺 💍): las 20 líneas que no son de malla tienen una receta en el 1, 5, 10 … 100; las de antes bajaron de rango (nivel 3 → 1, 5 → 5, 8 → 10, 10 al 100 → su número) y se agregaron 180 piezas de los niveles 15, 25 … 95 (`tools/recipe_tiers.py`). **0.52 (D-328): también en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina** (173 recetas nuevas, §11.1) |
+| §8.2 Colores d < 5 / 5-9 / 10-14 / 15+ | **Sí**, en los mismos 5 oficios (con colores, los demás se trabarían: Alquimia y Medicina en el 80, el refinado en el 16); **desde la 0.52, en todos** (§11.1) |
 | §8.2 Experiencia que crece con el tramo × (1 + rango ÷ 50) | **× (1 + rango ÷ 100)** (`recipe_tiers.xp_per_rank` 0,01): con un tramo cada 5, ÷ 50 dejaba al especialista en 239 días; ÷ 100 lo deja en 329 (~11 meses, la meta) |
 | §8.2 Energía 2 ⚡ hasta el 50, 3 del 55 al 80, 4 del 85 al 100 | **Sí** (`recipe_tiers.energy_by_rank`) |
 | §8.5 Libros de recetas por tramo (🥈2, 🥈10, 🥈25) | **Sí**, en 🧑‍🏫 Entrenador → 📚 Libros de recetas, para todos los oficios con recetas de rango 25 o más; gratis los de los rangos que cada uno ya tenía (D-64) |
 | §8.6 Primera receta de 💍 Joyería sin gema | **Sí**: 📿 Colgante de cobre (lingote y cuero) |
 | §8.7 Retirar las 67 recetas de malla | **Sí** (`retired: true`); las piezas quedan. La 🎓 ⛓️ Malla ligera sigue: P-243 |
-| §8.3 N recetas del tramo anterior · §8.4 refinados intermedios · §8.6 piel, 🔪, 🎣, 🏗️ · §8.7 mercader y mercado | No en esta parte: la piel, 🎣 Pescar, las obras que se repiten y el mercader salieron en la 0.43; el resto sigue pendiente |
+| §8.4 Refinados intermedios | **0.52 (D-328):** un refinado mejor por tramo (cada 5, no cada 25) en los 6 oficios de refinado; todavía ninguna receta de fabricación los pide (P-268) |
+| §8.3 N recetas del tramo anterior · §8.6 piel, 🔪, 🎣, 🏗️ · §8.7 mercader y mercado | No en esta parte: la piel, 🎣 Pescar, las obras que se repiten y el mercader salieron en la 0.43; el resto sigue pendiente |
 
 **Días hasta el rango 25 / 50 / 75 / 100** (`python tools/sim_oficios.py`; 40 ⚡ al día, todo a ese oficio). "Solo su ⚡": los materiales ya están en la mochila; elige en cada vez la receta con más experiencia de oficio por ⚡ entre las que su rango abre (con los libros comprados a tiempo), con el color de esa vez. "Cadena aprox.": junta, caza y refina todo él mismo, con la energía por unidad cruda que midió la simulación del 18-oct (§1 y §4, Lejanía ≤ 6: metal 0,73 ⚡, madera 0,65, fibra 0,67, hierba 0,68, piel 4,4 hasta la 0.42 y ~1,8 desde la 0.43, que la sacó ×2,5; gema y flor de luna ~7); no cuenta la unidad de más por rango ni los demás oficios que suben de paso, así que da entre 20 y 45 % más que la cadena del §4.1 (la misma cuenta con el contenido de la 0.42: Herrería 3.073 días contra 2.246 del §4.1).
 
@@ -792,3 +793,31 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 - **Material que pide la economía:** un especialista al 100 gasta de 3 a 7 veces más material que antes, contado en la energía de juntarlo con los mismos precios por unidad (Peletería ×3,2, Herrería ×4,3, Carpintería ×4,5, Joyería ×5,3, Sastrería ×7,2): las piezas de los tramos altos piden de 6 a 10 veces lo crudo de la de rango 1 (§3.2). Sobre todo raros: un herrero al 100 usa ~12.700 💠 gemas (antes ninguna) y un sastre ~12.700 🌸 flores de luna: mucho trabajo para el ⛏️ Minero y el 🌿 Herbolario.
 - **Sin libros** (quien no compra el del 25) se sube hasta el ~35 con las recetas viejas (🟨 y 🟩); después todas son ⬜ y hay que comprarlo.
 - **Lo que no se midió:** el informe diario dirá cuántos compran cada libro y cuánto tardan de verdad; la simulación supone que gana todas las peleas y no viaja (§9).
+
+### 11.1 La 0.52: el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina (D-306; cómo se aplicó: D-328)
+
+Lo que faltaba de §8.1 y §8.2: los 9 oficios que no tenían recetas hasta el 100 ganan una cada 5 rangos y los colores. Lo genera `tools/recipe_tiers.py` (`balance.yaml` → `recipe_tiers.refine` y `consumables`): un refinado mejor por tramo (su refinado de siempre + su crudo + un catalizador de terreno: 1 + rango ÷ 50, rango ÷ 5 y 1 + rango ÷ 25) y, en ⚗️ 🩺 🍲, una receta por tramo a mitad de camino entre las de siempre. Lo nuevo cuesta y da como una pieza de equipo de su tramo (2/3/4 ⚡, 12 × (1 + rango ÷ 100)); las recetas de siempre guardan su energía y su experiencia crece igual. El detalle para el jugador: [Profesiones](profesiones.md) §0.11.
+
+**Días hasta el rango 25 / 50 / 75 / 100** (`python tools/sim_oficios.py`, la misma cuenta de arriba; antes = 0.51):
+
+| Oficio | Solo su ⚡ hoy (0.52) | Antes | Veces hasta el 100 (antes) | Cadena aprox. hoy: 25 / 50 / 100 | Cadena aprox. antes |
+|---|---|---|---|---|---|
+| 🪚 Aserradero | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 74 / 367 / 2.149 | 64 / 266 / 1.084 |
+| 🔥 Fundición | 19 / 69 / 171 / 329 | igual | 4.589 (14.702) | 71 / 367 / 2.165 | 53 / 222 / 904 |
+| 💧 Destilación | 19 / 69 / 171 / 329 | igual | 4.589 (14.702) | 76 / 377 / 2.208 | 66 / 274 / 1.117 |
+| 🧶 Tejeduría | 19 / 69 / 171 / 329 | igual | 4.589 (14.702) | 75 / 373 / 2.189 | 65 / 271 / 1.106 |
+| 🪣 Curtiduría | 19 / 69 / 171 / 329 | igual | 4.589 (14.702) | 119 / 654 / 3.998 | 98 / 407 / 1.661 |
+| 🗿 Cantería | 19 / 69 / 171 / 329 | igual | 4.589 (14.702) | 74 / 367 / 2.149 | 57 / 239 / 974 |
+| ⚗️ Alquimia | 19 / 69 / 170 / 329 | 22 / 73 / 159 / 281 | 4.728 (11.243) | 83 / 594 / 3.372 | 109 / 454 / 1.852 |
+| 🩺 Medicina | 19 / 69 / 171 / 329 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 115 / 588 / 3.344 | 130 / 474 / 1.868 |
+| 🍲 Cocina | 19 / 69 / 171 / 321 | 22 / 90 / 205 / 368 | 4.589 (14.702) | 95 / 500 / 3.066 | 100 / 419 / 1.709 |
+| Los 5 de equipo | sin cambios (329) | — | — | sin cambios (7.830 a 10.508) | — |
+
+**Lo que dicen los números:**
+
+- **Todos los oficios tardan lo mismo para el especialista:** 329 días al 100 (la 🍲 321, porque el 🍗 festín de rango 75 y el 🍽️ banquete guardan sus 2 ⚡), con ~4.600 veces en vez de 14.702 y siempre haciendo lo de su tramo. La ⚗️ Alquimia era la más rápida (281: la 🍷 poción mayor de rango 25 daba 8 por ⚡) y ahora es como las demás.
+- **La cadena en solitario se alarga unas 2 veces** (el refinado de ~1.000 a ~2.200 días; la 🪣 Curtiduría, por la piel, de 1.661 a 3.998; ⚗️, 🩺 y 🍲 de ~1.800 a ~3.300), menos que los oficios de equipo en la 0.44 (2 a 4,5 veces): sus tramos altos piden de 9 a 15 veces lo crudo del rango 1 (el tablón del 100, 11; el lingote y el cuero, 15,5; la 🍷 mayor del 100, 11,5; las piezas de equipo, de 6 a 10), pero en crudos baratos de juntar (~0,7 ⚡ cada uno) y no en 💠 gemas. Al 25 la ⚗️ y la 🩺 llegan antes que hoy (los tramos 5 a 20 dan más experiencia por vez con los mismos materiales).
+- **Material que pide la economía:** un refinador al 100 come ~55.700 crudos, ~7.750 refinados de siempre y ~13.700 catalizadores de terreno (resina, carbón, raíz amarga, lino, corteza, arena, que casi no tenían uso; el tramo 60 pide 2 refinados de siempre, 12 crudos y 3 catalizadores): más trabajo para el 🪓 Leñador, el ⛏️ Minero, el 🌿 Herbolario y, en la 🪣 Curtiduría, el 🔪 Desollador (~55.700 pieles). Un alquimista al 100 usa ~18.200 extractos y ~8.600 🌸 flores de luna; un médico, ~12.800 extractos, ~11.800 telas y ~4.900 flores; un cocinero, ~16.500 carnes y ~16.300 pescados (un herrero de la 0.44, para comparar: ~65.300 lingotes y ~12.700 💠 gemas).
+- **El combate:** las pociones y remedios curan más con el tramo, con la misma toxicidad y el mismo cinturón: lo máximo en pociones por pelea pasa del 95 % al 120 % en el rango 100 (P-269). El simulador de combate (`tools/sim.py`) usa la 🧪 poción de vida de siempre: no cambia.
+- **El campamento:** `python tools/camp_costs.py` da lo mismo que antes (castillo ~20,7 días, las 31 obras ~47,7): las obras piden los refinados de siempre y recetas de rango 15 o menos.
+- **Lo que no se midió:** si los refinados nuevos se venden (no los pide ninguna receta, P-268) y a qué precio en el 🏛️ Mercado; cuántos alquimistas y médicos hay (el informe diario).

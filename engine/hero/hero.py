@@ -73,6 +73,11 @@ Si cambias esto, revisa:
       y si ya se le regalaron los libros de los rangos que tenía al llegar la 0.44 (D-64: quien ya practicaba conserva lo que
       podía hacer). Vacío y False por defecto: la primera carga de un héroe de antes le da sus libros y lo marca
       (engine/service/game.py _load, _grant_old_books, sección "recipe tiers, colors and books"; tests/test_tramos_de_recetas.py)
+    - book_gifts (0.52, D-328): los regalos de libros de recetas que ya recibió el héroe (ids de balance.yaml
+      recipe_tiers.book_gifts, "0.52"): la 0.52 dio tramos al refinado, a la ⚗️ Alquimia y a la 🩺 Medicina y con ellos libros
+      que esos oficios no pedían; quien ya tenía el rango los recibe gratis una vez (D-64). Vacío por defecto: la primera
+      carga de un héroe de antes le da sus libros y lo llena; un héroe nuevo nace con todos (engine/service/game.py _load,
+      _grant_book_gifts; tests/test_tramos_refinado_alquimia_medicina_cocina.py)
     - map_scrolls y charted (0.50, D-311 parte 5 y D-326): los 🗺️ pergaminos de mapa que el héroe lleva, uno por copia
       ({"id": "p7", "by": autor, "center": [x, y], "size": 6, "zones": ["x:y", …], "at": hora}; la mochila solo cuenta
       cuántos hay con el id balance.yaml map_scroll.item) y las zonas que ve a color para siempre porque usó un pergamino
@@ -170,6 +175,9 @@ class Hero:
             heroes saved before it.
         books_checked: True once the 0.44 grant ran for this hero (D-64: who had already practised a profession gets, free,
             the books of the ranks it had reached). False for heroes saved before it; the first load grants and sets it.
+        book_gifts: ids of balance.yaml recipe_tiers.book_gifts already given to this hero (D-328, 0.52: the recipe books the
+            refining, Alchemy and Medicine professions did not ask before, free for the ranks already reached). Empty for heroes
+            saved before it (the first load gives them and fills it); a new hero starts with every id.
         map_scrolls: the 🗺️ map scrolls the hero carries (0.50, D-326), one record per copy: "id" (global, "p1"…), "by" (the
             🧭 Explorador who made it), "center" and "size" (its region), "zones" ("x:y" investigated to 50 % by its maker) and
             "at". The backpack counts them under balance.yaml map_scroll.item. Empty for heroes saved before it.
@@ -248,6 +256,7 @@ class Hero:
     prof_titles: dict[str, str] = field(default_factory=dict)           # D-306.1 (0.43): 🎖️ profession titles bought
     recipe_books: list[str] = field(default_factory=list)               # D-306: 📚 recipe books owned, "<profession>:<rank>" (0.44)
     books_checked: bool = False                                         # D-306: the 0.44 books already granted to who practised
+    book_gifts: list[str] = field(default_factory=list)                 # D-328 (0.52): ids of the book gifts already given
     map_scrolls: list[dict[str, Any]] = field(default_factory=list)     # D-326 (0.50): 🗺️ map scrolls carried, one record per copy
     charted: list[str] = field(default_factory=list)                    # D-311.5 (0.50): zones in colour for ever thanks to a scroll
 

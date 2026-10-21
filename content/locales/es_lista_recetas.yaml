@@ -12,6 +12,7 @@ rlist:                         # [ES] D-321: la lista de recetas con código
   line_part: "{code} {color}🔸 {item}{level} · {prof}+{xp}"
   line_none: "{code} {color}▫️ {item}{level} · {prof}+{xp}"
   level: " · nv {n}"
+  tier: " · tramo {n}"           # [ES] D-328 (0.52): el tramo de un refinado, una poción, un remedio o un plato (lo que no es equipo)
   count: "{n} {n|receta|recetas} · página {page} de {total}"
   only_ok_button: "✅ Solo las que puedo hacer"
   all_button: "📜 Ver todas"
