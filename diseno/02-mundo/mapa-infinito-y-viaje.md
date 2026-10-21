@@ -166,7 +166,7 @@ Fuera de combate se recupera **1 % de la vida máxima por minuto**, también via
 
 ### 1.9 El mapa en texto
 
-> **2-oct-2026 (D-212, confirmada):** el mapa vuelve a estar **en blanco ⬜** hasta que investigas: cada zona muestra el color de su terreno solo cuando la exploraste al 50 % o más. Así nadie sabe dónde está nada si no fue a investigar o no le compró el mapa a un investigador (D-213). Esto cambia D-186, que pintaba todo el tablero. Detalles pendientes: E-177 a E-181.
+> **2-oct-2026 (D-212, confirmada):** el mapa vuelve a estar **en blanco ⬜** hasta que investigas: cada zona muestra el color de su terreno solo cuando la exploraste al 50 % o más. Así nadie sabe dónde está nada si no fue a investigar o no le compró el mapa a un investigador (D-213; el 🗺️ pergamino de mapa del Explorador, en el juego desde la 0.50, §1.9.4). Esto cambia D-186, que pintaba todo el tablero. Detalles pendientes: E-177 a E-181.
 
 **Mapa gris por etapas (D-220, desde la 0.30).** El 4-oct el dueño precisó D-212: el mapa vuelve a los **puntos grises**, y cada zona se descubre poco a poco, de formas distintas, a medida que la investigas (el porcentaje de 🔎 Explorar, §1.12):
 
@@ -277,6 +277,36 @@ El 20-oct el dueño respondió E-205, E-207, E-177, E-203 y E-206 (D-311). Cómo
 - **Tu territorio también es gris (E-177, contra la recomendación):** las zonas de tu campamento se ven ▫️ hasta que tú o tu gremio las investigan al 50 %, como cualquier otra; solo las 🔥 fogatas se ven siempre. El mapa ya no hacía excepción desde la 0.30; en la 0.48 quedó escrito y probado. El 🏕️ del centro sigue su regla (los íconos siguen sus reglas, D-311.4) y el minimapa de 🗺️ Agrandar territorio marca tus zonas con 🟩 ("tuyo", no el color del terreno).
 - **📒 Lugares → ✨ Nodos (E-203, E-206):** "Moverte allá" sigue yendo solo a lugares que ya visitaste, y 📒 Lugares tiene un botón más, el último: **✨ Nodos**, con los nodos de recursos que encontraste ("1. ✨ 🪵 Madera en Vado Gris (4, 2) · a 3 zonas · 3 min · /ir1"); los 3 más cercanos traen botón y, con el rango 10 del Explorador, se listan hasta 8, como los demás tipos. Solo los de zonas que recuerdas (un nodo se descubre al pisar su zona, §1.16). Si una zona sale en dos listas (un nodo en la zona de otro lugar), ↩️ No, volver lleva a la última que viste.
 - **Código:** `engine/service/game.py` (`_biome_label`, `_claro_view`, `_fog_cell`, `_recon_view`, `_recon_entries`, `_recon_line`, `_recon_code`, `RECON_CODE_RE`, `_recon_hint_lines`, `PLACE_KINDS`, `_important_places`, `_place_confirm_view`); textos en `content/locales` (es y en). Pruebas: `tests/test_fogata_reconocer_lugares.py`.
+
+### 1.9.4 🗺️ El pergamino de mapa del Explorador (D-311 parte 5, D-326, en el juego desde la 0.50)
+
+El 20-oct el dueño respondió E-180 (D-311.5): "el 🧭 Explorador hace un 🗺️ pergamino con las zonas que exploró al 50 % o más de una región de 6 × 6 y lo vende al precio que quiera; quien lo usa ve esos colores para siempre". Es lo que pedía D-213: "nadie sabe dónde está nada, a no ser que haya ido a investigar o le compre contenido a un investigador". Cómo se aplicó, en la capa simple (D-326, provisional):
+
+- **Dónde se hace:** 🗺️ Mapa → **🗺️ Pergaminos** → **🗺️ Hacer pergamino** (también /pergaminos o /scrolls). El botón 🗺️ Pergaminos sale entre 📒 Lugares y ↩️ Volver solo si llevas un pergamino o desde el **rango 15** de 🧭 Explorador (`map_scroll.rank`); antes no se ve (D-287). El rango se avisa al subir ("🧭 Ahora puedes hacer 🗺️ pergaminos de mapa…") y sale en /explorador.
+- **La región:** un cuadrado de **6 × 6** zonas de una cuadrícula fija (`map_scroll.region`): la del Claro va de (-3, -3) a (2, 2) y cada 🔥 fogata, cada 12 zonas, cae cerca del centro de la suya. Se usa la región de la zona donde estás parado y se llama por la zona de su centro: "Región de Vado Gris (6, 0)".
+- **Qué lleva:** las zonas que **tú** investigaste al 50 % o más (`map_view.fog.color_at`, el mismo del mapa gris). No entra lo que sabes por tu gremio (D-282) ni por otro pergamino, y nunca una 🔥 fogata (se ven siempre). Pide al menos **6** (`map_scroll.min_zones`). La pantalla dibuja la región como la llevaría el pergamino:
+
+  ```text
+  📍 Tu región: Región de Cerro de Hierro (6, 0), de (3, -3) a (8, 2) (6 × 6 zonas).
+  🟩🟨🟢🟢🟢🟢
+  🟩🟢▫️▫️▫️▫️
+  ▫️▫️▫️🧍▫️▫️
+  ▫️▫️▫️▫️▫️▫️
+  ▫️▫️▫️▫️▫️▫️
+  ▫️▫️▫️▫️▫️▫️
+  🧍 tú · a color: entra · ▫️ no entra (menos del 50 %) · 🔥 fogata: se ve siempre, no cuenta
+
+  🗺️ Zonas que llevaría: 8 (mínimo 6).
+  💸 Cuesta: ⚡5 · 🦌 Piel ×1
+  🧭 Explorador: +30 de experiencia por pergamino.
+  ```
+
+- **Lo que cuesta:** ⚡5 y 1 🦌 piel (no hay papel en el juego; un pergamino es piel, y la piel sale de cazar bestias), y da **+30** de experiencia de 🧭 Explorador (6 por ⚡, como explorar y 🔭 Reconocer). Se hace en cualquier lugar, también en medio de un lote (no te mueve), nunca en una pelea. Si falta algo, la pantalla lo dice y no muestra el botón ✅ Hacer pergamino.
+- **El objeto:** el 🗺️ **Pergamino de mapa** va a la mochila (ocupa 1). Cada copia guarda sus zonas, quién lo hizo, el centro y el tamaño de su región (`Hero.map_scrolls`), como la ✒️ obra maestra guarda su firma, pero cada copia la suya; la mochila solo cuenta cuántos hay. No está en 📦 Recursos: la 🎒 Mochila dice cuántos llevas y /pergaminos los lista, cada uno con su código (/pm1), su región, sus zonas, su autor y cuántas zonas son nuevas para ti (🆕).
+- **Usarlo:** en su ficha, **📜 Usar**. El pergamino se gasta; el aviso dice cuántas zonas son nuevas en tu mapa y qué terrenos entran a tu leyenda. Esas zonas quedan **a color para siempre** (`Hero.charted`), también las que ya veías por tu gremio (si dejas el gremio, las del pergamino siguen). **Solo el color:** el porcentaje de esas zonas sigue siendo el tuyo, así que sus recursos se descubren explorando; no da ✨ nodos, ni lugares en 📒 Lugares, ni "Moverte allá" (D-222). En 📍 Zona, una zona así dice "🗺️ Esta zona se ve a color en tu mapa por un pergamino". Lo ve solo quien lo usa, no su gremio (a confirmar en E-252).
+- **Venderlo:** 🏛️ Mercado → 🏷️ Vender: cada pergamino es una línea (/s3) y se publica de a uno. Los compradores lo ven en 🛍️ Comprar → **🗺️ Mapas** (la 8.ª categoría), con su región, sus zonas y su autor, y la oferta les dice cuántas zonas son nuevas para ellos, sin mostrar cuáles. **El precio es libre** (D-311.5): su banda es de 1 🥉 a 1 🥇 (`map_scroll.price_min`, `price_max`) en lugar de 0,25 a 10 veces la referencia (D-26); el borrador abre en 1 🥈 (su precio de referencia) con los botones ×1, ×2 y ×3, y se escribe el que se quiera. Llega a 📦 Entregas con sus zonas; cancelar o vencer la orden lo devuelve igual. El 🛒 Mercader no lo compra.
+- **A confirmar:** los números (E-250), el tope de 1 🥇 del precio (E-251) y si las zonas se comparten con el gremio (E-252).
+- **Código:** `engine/service/map_scroll.py` (`MapScrollMixin`: `_scrolls_view`, `_scroll_make_view`, `_scroll_make`, `_scroll_view`, `_scroll_use`, `_scroll_own_zones`, `_scroll_new`, `_charted_set`, `_scroll_sync`); `engine/service/market.py` (categoría `maps`, `_mkt_band`, el campo `scroll` de órdenes y entregas); `engine/service/game.py` (`_fog_cell`, `_known_terrains`, `_fog_notices`, `_zone_view`, `_map_view`, `_bag_view`, `_explorer_unlocks`, `_explorer_prof_lines`); `engine/hero/hero.py` (`map_scrolls`, `charted`); `content/balance.yaml` → `map_scroll`; `content/items.yaml` → `pergamino_mapa`; textos en `content/locales/es_pergamino.yaml` y `en_pergamino.yaml`. Pruebas: `tests/test_pergamino_mapa.py`.
 
 ### 1.10 Pantalla de ejemplo
 

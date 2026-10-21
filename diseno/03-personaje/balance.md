@@ -1249,6 +1249,28 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): el 🗺️ pergamino de mapa del Explorador (0.50, D-311.5 confirmada; D-326 provisional)
+
+El dueño respondió E-180: el 🧭 Explorador hace un pergamino con las zonas que exploró al 50 % en una región de 6 × 6 y lo vende al precio que quiera. Los números son nuevos y de Claude (D-326); se ajustan en la beta (E-250, E-251).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `map_scroll.rank` (nuevo) | — | 15: rango de 🧭 Explorador desde el que se hacen (entre el 10 de ⏱️ y 🔭 y el 25 de 👹 a 3 zonas; unos 1.764 de experiencia, ~300 vueltas de explorar) |
+| `map_scroll.region` / `min_zones` (nuevos) | — | región de 6 × 6 de una cuadrícula fija / al menos 6 zonas investigadas por el autor al 50 % (sin contar fogatas) |
+| `map_scroll.energy` / `materials` (nuevos) | — | ⚡5 / 1 🦌 piel (🥉3 de referencia) |
+| `map_scroll.explorer_xp` (nuevo) | — | 30 de experiencia de Explorador por pergamino: 6 por ⚡, como explorar y 🔭 Reconocer |
+| `map_scroll.price_min` / `price_max` (nuevos) | — (la banda de `market` habría sido de 🥉25 a 🥈10 con su referencia) | de 1 🥉 a 1 🥇 (10.000 🥉): precio libre, la excepción de la banda de D-26 |
+| `pergamino_mapa.price` (nuevo, `content/items.yaml`) | — | 100 (1 🥈): solo el precio con el que abre el borrador del 🏛️ Mercado |
+
+**Qué cambia al jugar.**
+
+- **Una salida nueva para la energía del Explorador:** 5 ⚡ y una piel dan un pergamino y la misma experiencia que 5 vueltas de explorar; el pergamino vale lo que alguien pague por él (menos el 5 % del mercado, que se quema).
+- **No crea monedas ni recursos:** lo que se paga lo cobra otro jugador; el comprador gana solo el color de esas zonas, no sus recursos (los sigue descubriendo explorando, con su propio porcentaje).
+- **La piel tiene un uso más** (cazar bestias, D-306.5), chico: una por pergamino.
+- **Lo que no cambia:** el combate, la exploración, los recursos de cada zona, el 🛒 Mercader y la banda de los demás objetos.
+
+**Lo que queda por mirar:** cuántos pergaminos se hacen y se venden por día, a qué precio (si se juntan contra el tope de 1 🥇, E-251), si alguien pasa monedas entre cuentas con precios raros (el informe diario cuenta las ventas del mercado) y si 6 zonas o el rango 15 frenan demasiado (E-250).
+
 ### Octubre de 2026 (21-oct): el 💰 fondo del gremio para los oficios (0.47, D-322 provisional)
 
 El dueño pidió que los del gremio "puedan primero construir las estructuras y después poder utilizar los recursos para las profesiones de cada uno". Los números son nuevos y de Claude (D-322); se ajustan en la beta.
