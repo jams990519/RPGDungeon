@@ -544,6 +544,10 @@ El dueño confirmó el 20-oct-2026 (E-222, E-223, E-228) que los oficios se apre
 
 **De dónde sale:** *World of Warcraft* (los títulos que se compran al entrenador, de Aprendiz a Gran maestro, y la Pesca como oficio secundario con su propia acción).
 
+### 0.9 Las recetas en lista con código (D-321)
+
+🪚 Refinar, 🛠️ Fabricar y 🍲 Cocinar muestran las recetas como una **lista**: una línea por receta con su código **/r1, /r2…**, su color (🟧 🟨 🟩 ⬜), si la puedes hacer (✅ lo llevas todo, 🔸 te falta algo, ▫️ no llevas nada), la pieza con su nivel y la experiencia que da. Van agrupadas por oficio, 8 por página, y el botón **✅ Solo las que puedo hacer** filtra. El código abre la receta, con su detalle y los botones de cantidad. Pedido del dueño (21-oct): "un formato de listado fácil de entender, porque a medida que se aprende salen muchas recetas".
+
 ### 0.8 La reforma de recetas en el juego (D-306, desde la 0.44)
 
 El dueño decidió el 20-oct (E-221, E-222, E-223) acercar los oficios a WoW: **un tramo de recetas cada 5 rangos**, **colores de receta** y **libros de recetas** que vende el 🧑‍🏫 Entrenador. Lo pidió para que "las profesiones sean un camino lento, pero que se vea la progresión": antes un oficio se subía al 100 repitiendo su receta más barata (7.351 dagas forjadas, [Simulación](simulacion-oficios.md) §0). Cómo se aplicó lo que el dueño no dijo: D-315 (provisional).
