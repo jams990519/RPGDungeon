@@ -230,7 +230,8 @@ def test_mastery_grows_with_profession_xp_and_tells_what_opens(service):
     hero = service._load("test:1")
     hero.spec_xp["herreria_armas"] = need - 15
     service._save(hero)
-    assert "rec:espec_espada_1:0" not in str(ids(service.act("test:1", "est:craft:0")))
+    from conftest import listed_recipes
+    assert "espec_espada_1" not in listed_recipes(service)              # D-321: the list's /rN codes
     view = service.act("test:1", "mk:espada_nivel_25:1:0")                 # +15 profession xp (rank 25, 🟧) → 25 % mastery
     hero = service._load("test:1")
     assert hero.spec_xp["herreria_armas"] == need

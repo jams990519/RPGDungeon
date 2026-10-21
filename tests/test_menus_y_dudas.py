@@ -69,8 +69,8 @@ def test_claro_options_lead_somewhere_or_explain(service):
     service._save(hero)
     cook = service.act("test:1", "cook")
     assert cook.kind == "station" and cook.title == "🍲 Cocinar" and ids(cook)[-1] == "claro"
-    assert all(a.id.startswith(("rec:", "est:cook:", "claro")) for a in cook.actions)
-    recipe = service.act("test:1", cook.actions[0].id)
+    assert all(a.id.startswith(("est:cook:", "esto:cook:", "claro")) for a in cook.actions)
+    recipe = service.text("test:1", "/r1")                             # D-321: recipes are a list with /rN codes
     assert recipe.kind == "recipe" and recipe.actions[-1].id.startswith("est:cook:")   # a kitchen recipe goes back to 🍲
     research = service.act("test:1", "research")       # D-257: an old 🔬 key in the Claro opens 📚 Aprender oficios (D-274.1: 👥 took its place)
     assert research.kind == "learn"

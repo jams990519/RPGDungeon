@@ -55,10 +55,9 @@ def test_a_station_and_a_profession_hide_higher_ranks_and_the_next_unlock(servic
             view = service.act("test:1", f"est:{branch}:{page}")
             assert view.kind == "station", branch
             assert "🔒" not in body(view) and "Más recetas" not in body(view)
-            for action in view.actions:
-                if action.id.startswith("rec:"):
-                    rdef = recipes[action.id.split(":")[1]]
-                    assert service._prof_rank(hero, rdef["profession"]) >= int(rdef.get("min_rank", 1)), action.id
+            for code in (service.store.get("gremio_codes", "test:1") or {}).get("recipes", []):     # D-321: the /rN list
+                rid = code.split("|")[0]
+                assert service._prof_rank(hero, recipes[rid]["profession"]) >= int(recipes[rid].get("min_rank", 1)), rid
     detail = service.text("test:1", "/herreria")
     assert detail.kind == "profession" and "🔓" not in body(detail) and "En rango" not in body(detail)
     old = service.act("test:1", "rec:espada_templada:0")              # rank 5 (25 until 0.44), from an old button: back to the station

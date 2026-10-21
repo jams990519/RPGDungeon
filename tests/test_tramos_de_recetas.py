@@ -186,7 +186,8 @@ def test_book_prices_and_ranks(content):
 def test_recipes_of_rank_25_need_their_book_and_buying_it_opens_them(service):
     crafter(service, "herreria", rank=27, gold=150, bag={"lingote": 40, "cuero_curtido": 20, "gema_bruta": 5})
     station = service.act("test:1", "est:craft:0")
-    assert "rec:espada_nivel_25:0" not in ids(station)
+    from conftest import listed_recipes
+    assert "espada_nivel_25" not in listed_recipes(service)             # D-321: the list's /rN codes
     assert "📚 Con el libro 🔨 Herrería 25 se abren 7 recetas más aquí" in body(station)
     recipe = service.act("test:1", "rec:espada_nivel_25:0")
     assert "📕 Pide el libro de recetas 🔨 Herrería 25" in body(recipe) and "pbooks" in ids(recipe)
@@ -207,7 +208,7 @@ def test_recipes_of_rank_25_need_their_book_and_buying_it_opens_them(service):
     hero = service._load("test:1")
     assert hero.recipe_books == ["herreria:25"] and hero.gold == 50
     assert "Ya tienes" in service.act("test:1", "pbook:herreria:25").notice and service._load("test:1").gold == 50
-    assert "rec:espada_nivel_25:0" in ids(service.act("test:1", "est:craft:0"))
+    assert "espada_nivel_25" in listed_recipes(service)
     made = service.act("test:1", "mk:espada_nivel_25:1:0")
     assert "Hiciste" in made.notice
 

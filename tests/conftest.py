@@ -98,3 +98,21 @@ def instant_works(content):
     tests/test_gremio_desde_el_inicio.py.
     """
     content.balance["works"]["minutes_per_level"] = 0
+
+
+def listed_recipes(service, account="test:1", branch="craft", every_page=True):
+    """The recipe ids the 🪚 / 🛠️ / 🍲 list shows, in order, page by page (D-321: a list with /rN codes, not buttons).
+
+    [ES] Para las pruebas de los oficios: lee el orden que guardó _station_view (gremio_codes "recipes") en cada página de
+    la estación; con every_page=False, solo la primera página.
+    """
+    import re
+    rids, page, total = [], 0, 1
+    while page < total:
+        view = service.act(account, f"est:{branch}:{page}")
+        found = re.search(r"página \d+ de (\d+)|page \d+ of (\d+)", "\n".join(view.body))
+        if page == 0 and found and every_page:
+            total = int(next(g for g in found.groups() if g))
+        rids += [code.split("|")[0] for code in (service.store.get("gremio_codes", account) or {}).get("recipes", [])]
+        page += 1
+    return rids
