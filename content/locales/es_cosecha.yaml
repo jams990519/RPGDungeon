@@ -1,0 +1,17 @@
+# Texts of the wall's harvest (D-309, confirmed; how: D-325, provisional; 0.49): with the 🧱 Muralla built, the camp's land
+# yields by itself into the camp's 💰 fund, once a week, with a notice to the members.
+# [ES] Textos de la 🌾 cosecha de la muralla (pedido del dueño del 17-oct-2026, D-254; números del 20-oct, D-309). Se junta con
+# es.yaml al cargar (engine/core/content.py). Lo leen: engine/service/game.py (_harvest_line en ⬆️ Mejorar e ℹ️ Información,
+# _harvest_deliver para el aviso de cada semana) y engine/service/gremio.py (_guild_funds_view, la línea en 💰 Fondos). Una
+# clave nueva va también en en_cosecha.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que
+# falta se ve como [clave].
+
+harvest:                       # [ES] D-309, D-325: la 🌾 cosecha de la muralla
+  # ---- la línea de ⬆️ Mejorar, 💰 Fondos e ℹ️ Información (D-44: una sola línea, la capa simple)
+  line: "🌾 Cosecha de la muralla: +{per_day}/día · guardado {stored} (tope {cap} días) · al 💰 fondo en {time}"
+  no_wall: "🌾 Con la 🧱 Muralla construida, cada zona del territorio cosecha sola el {pct} % de lo que vuelve a crecer para el 💰 fondo: unas +{per_day}/día con {zones} {zones|zona|zonas} de territorio."
+  days: "{n} {n|día|días}"     # [ES] cuánto falta para que llegue al fondo, si es 1 día o más (si no, el tiempo de siempre)
+  # ---- el aviso de cada semana (a cada miembro, en su idioma: _push_each)
+  push_title: "🌾 Cosecha de la muralla"
+  push: "🌾 Llegó al 💰 fondo de {camp} la cosecha de la semana ({zones} {zones|zona|zonas}): {items}."
+  push_where: "Va primero a las obras activas y a ⏫ Siguiente nivel cuando alguien aporta, deposita o activa una obra; lo que sobra queda para los oficios."

@@ -78,7 +78,7 @@ guides_page:
       📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own: the 6 base ones (wood, stone, fiber, herb, metal and clay) at {base_regen}% per hour (about {base_units} units); the terrain's own ones and fish at {stock_regen}%. Once depleted, it gives nothing.
       ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
       🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
-      🏕️ No fights show up inside a camp's territory, and in yours you gather {own_bonus}% more.
+      🏕️ No fights show up inside a camp's territory. With the 🧱 Wall, your camp's land harvests by itself {harvest_pct}% of what grows back, for the 💰 fund.
       ⚒️ Without the profession you get the basics; once you learn it, you sometimes get an extra unit and, with rank, something rare.
   hunt:
     title: "🏹 Hunting and food"
@@ -167,7 +167,7 @@ guides_page:
       ▶️ The founder or an 🤝 assistant (1 per {helpers_per} members) activates a work; everyone contributes with 🤲, or from afar with 💰 Deposit.
       📈 Each new work costs {growth_pct}% more for every work already built.
       🏗️ Once its materials are complete, it gets built: {work_minutes} min per level with {work_members} members in the territory (faster with more).
-      ⬆️ Improve (🏰 Manage): ⏫ Next level lists the works and materials still missing; 🗺️ Expand territory adds a zone wherever the founder or an 🤝 assistant chooses (there you gather {own_bonus}% more).
+      ⬆️ Improve (🏰 Manage): ⏫ Next level lists the works and materials still missing; 🗺️ Expand territory adds a zone wherever the founder or an 🤝 assistant chooses; 🌾 with the 🧱 Wall (level {wall_level}) every zone harvests by itself {harvest_pct}% of what grows back (about {harvest_zone} a day) and every {harvest_days} days it reaches the 💰 fund, if someone played that week (/d61).
       🛡️ {raids_week} waves come each week: you have {raid_window} min to tap 🛡️ Defend and fight.
   dungeons:
     title: "🕳️ Dungeons and enemies"

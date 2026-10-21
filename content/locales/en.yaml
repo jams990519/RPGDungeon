@@ -2444,7 +2444,7 @@ camps:
   info: '🏕️ {name}, founded by {founder}, at coordinates ({x}, {y}). Members: {n}.'
   you_member: You're part of this camp.
   size: 📐 Level {level} · covers {zones} zone(s). In its territory you aren't attacked on arrival, and travel counts the distance from its edge.
-  grow_cost: ⬆️ Expanding it adds 1 neighboring zone of your choice and costs {items}. In your territory you gather 50% more.   # [ES] sin uso desde la 0.41 (D-304)
+  grow_cost: ⬆️ Expanding it adds 1 neighboring zone of your choice and costs {items}.   # [ES] sin uso desde la 0.41 (D-304). D-309 (0.49): sin el +50 %
   grow_button: ⬆️ Expand camp   # [ES] sin uso desde la 0.41 (D-304)
   grow_title: ⬆️ Which way does it grow?   # [ES] sin uso desde la 0.41 (D-304)
   grow_intro: 'Choose which neighboring zone your camp takes. It costs {items}. Check the resources you know in each one: choose strategically.'   # [ES] sin uso desde la 0.41 (D-304)
@@ -2903,7 +2903,7 @@ upgrade:
     desc: Sew 💰 bags and build 🪎 chests at the camp.
   muralla:
     name: Stone Wall
-    desc: 'A real wall: it has to be broken down to get in.'
+    desc: 'A real wall: it has to be broken down to get in. It closes the territory: every zone harvests by itself for the 💰 fund.'
   huerto:
     name: Garden
     desc: Adds 1 ration a day to the pantry.

@@ -971,3 +971,18 @@ v0_48:
     - "🔭 Scout (/recon) also lists the 👹 enemy camps your 🧭 Explorer rank lets you see: 1 zone away, 3 from rank 25 and your whole map from rank 50, with their name, their travel time and, from rank 75, their strength. What you can scout now carries its code (/rc1)."
     - "🗺️ Your camp's zones also show white on the map until you or your guild investigate them halfway, like any other zone."
     - "✨ 📒 Places has a new button, ✨ Nodes: the resource nodes you found, with their resource, their zone and their code (/go1), so you can go straight back."
+
+v0_49:
+  version: "0.49"
+  title: "🌾 Lost Realms 0.49: la muralla cosecha sola"
+  title_en: "🌾 Lost Realms 0.49: the wall harvests by itself"
+  notes:
+    - "🌾 Con la 🧱 Muralla construida, cada zona del territorio de tu campamento cosecha sola el 20 % de lo que vuelve a crecer, sin gastar energía y sin bajar los recursos de la zona."
+    - "💰 La cosecha se guarda hasta 7 días y cada semana llega sola al fondo del campamento (nunca a la mochila de nadie), si algún miembro jugó esa semana. A cada miembro le llega un aviso."
+    - "📋 En 🏰 Gestionar → ⬆️ Mejorar y en 🛡️ Gremio → 💰 Fondos ves cuánto da por día, cuánto hay guardado y cuándo llega. Más en ❓ /d61."
+    - "⚖️ La cosecha reemplaza el +50 % que daba recolectar en tu territorio: ahora ahí juntas lo mismo que afuera, y la tierra trabaja para todo el campamento."
+  notes_en:
+    - "🌾 With the 🧱 Wall built, every zone of your camp's territory harvests by itself 20% of what grows back, without spending energy and without lowering the zone's resources."
+    - "💰 The harvest is kept for up to 7 days and every week it reaches the camp's fund by itself (never anyone's backpack), if some member played that week. Every member gets a notice."
+    - "📋 In 🏰 Manage → ⬆️ Improve and in 🛡️ Guild → 💰 Funds you see how much it gives a day, how much is stored and when it arrives. More in ❓ /d61."
+    - "⚖️ The harvest replaces the +50% that gathering in your territory used to give: now you gather there the same as outside, and the land works for the whole camp."
