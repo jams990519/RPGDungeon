@@ -1320,6 +1320,39 @@ El dueño eligió que el modo híbrido cambie **los 3** botones de rol por los d
 
 **Lo que queda por mirar:** cuántos usan el modo híbrido y qué mezclas eligen (informe diario); si el DPS con curaciones de su sanador saca demasiada ventaja en solitario y en grupo (E-264 ofrece que la prestada use el cuerpo del rol de donde viene o que rinda al 80 %); el agro de las habilidades prestadas cuando exista el combate en grupo.
 
+### Octubre de 2026 (21-oct): las 🎯 misiones de grupo de cada subida del campamento (0.56, D-136 confirmada; D-332 provisional)
+
+El dueño pidió (D-136) que, para abrir cada nivel del campamento, el grupo cumpla misiones juntos. Son números **nuevos** de Claude (D-332); se ajustan en la beta (E-269, E-270).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `story.yaml` → `group_missions` (nuevo) | — (subir pedía obras, materiales, cofres y lo del castillo) | Una misión por subida, su meta con 1 activo: vencer 20 monstruos (→ 2), juntar 60 🪵 (→ 3), 20 raciones a la despensa (→ 4), ganar 3 peleas de oleada (→ 5), vencer 40 (→ 6), juntar 100 🪨 (→ 7), 40 raciones (→ 8), vencer 80 (→ 9) |
+| `group_missions.per_member` (nuevo) | — | +15 % de la meta por cada miembro que jugó esta semana después del primero (`ladder.active_days`); se fija al empezar la misión |
+| `group_missions.members_cap` (nuevo) | — | Cuenta como mucho 40 activos (×6,85) |
+| `group_missions.reward_per_level` (nuevo) | — | Al cumplirla, el 💰 fondo recibe 🪵6 🪨4 🧵2 × el nivel que deja: el 20 % de los materiales de esa subida (`camps.level_up_cost_per_level`); 🪵216 🪨144 🧵72 en las 8 |
+
+**Cuánto piden** (la meta, con los activos de la semana al empezar; cada uno pone menos cuanto más son):
+
+| Misión | 1 activo | 5 | 10 | 25 | 40 |
+|---|---|---|---|---|---|
+| Vencer monstruos (→ 2) | 20 | 32 | 47 | 92 | 137 |
+| Juntar 🪵 madera (→ 3) | 60 | 96 | 141 | 276 | 411 |
+| Raciones a la despensa (→ 4) | 20 | 32 | 47 | 92 | 137 |
+| Peleas de oleada (→ 5) | 3 | 5 | 8 | 14 | 21 |
+| Vencer monstruos (→ 6) | 40 | 64 | 94 | 184 | 274 |
+| Juntar 🪨 piedra (→ 7) | 100 | 160 | 235 | 460 | 685 |
+| Raciones a la despensa (→ 8) | 40 | 64 | 94 | 184 | 274 |
+| Vencer monstruos (→ 9) | 80 | 128 | 188 | 368 | 548 |
+
+**Cuenta rápida del costo** (a mano: `tools/camp_costs.py` no cuenta las misiones; sus niveles llegan en 0,3 · 1,0 · 2,5 · 5,5 · 7,9 · 9,2 · 14,2 y 20,7 días con 5 a 10 miembros):
+- **Vencer monstruos:** una presa de 🏹 Cazar cuesta 2 ⚡ (D-108) y explorar trae una pelea cada 2 ⚡ más o menos. Con los miembros de la tabla de `camp_costs` (5 a 10), la del nivel 2 son unas 5 peleas por miembro (10 ⚡, un cuarto de la energía de un día) y la del castillo, con 10 activos, unas 19 (38 ⚡, un día). Además dan experiencia y botín: no se pierde nada.
+- **Juntar madera o piedra:** casi gratis: lo juntado queda en la mochila y sirve para los materiales de la subida y de sus obras (la 2 → 3 pide 60 🪵 y la 6 → 7, 120 🪨, más lo de sus obras).
+- **Raciones:** la despensa ya pide 1 por activo y día; la misión adelanta unos 5 días de comida (47 raciones con 10 activos para el nivel 4), que igual se comen.
+- **Peleas de oleada:** no gastan energía, solo esperan las oleadas (3 por semana, cada 2 días y 8 horas). Con 8 miembros (los del nivel 4 → 5 en `camp_costs`, ~7 de meta) y la mitad ganando en cada oleada, alcanzan 2 oleadas: unos 2 a 5 días, contra los 3 días de materiales y obras de ese nivel. Es la que más puede frenar; es la "3 oleadas ganadas" del pueblo de la escalera.
+- **El premio** suma el 20 % de los materiales de ⏫ (no de las obras): 432 en las 8 subidas, un 3 % de los 13.447 en crudo hasta castillo; acorta muy poco (unas horas en total) y se siente más en los niveles bajos.
+
+**Lo que queda por mirar:** cuántos días tarda cada misión en la beta (sobre todo la de oleadas del 4 → 5), si la meta por activo está bien (E-270 ofrece 25 %) y si el premio se siente (E-270 ofrece la mitad de los materiales o experiencia y monedas para cada uno).
+
 ### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
 
 El dueño eligió el 17-oct un solo cupo por etapa, el castillo con 40 activos y cupo de 50, la salida de quien no juega 30 días y que acepten gente el líder y los oficiales (D-253). Los números de la escalera (§2) son los que aceptó; cómo se repartieron en los niveles y el aviso de los 25 días los eligió Claude (D-327); se ajustan en la beta (E-253 a E-256).

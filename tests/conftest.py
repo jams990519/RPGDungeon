@@ -142,3 +142,21 @@ def pass_castle_waves(service, key="6:0"):
     camp = service.store.get("camp", key)
     camp["castle_waves"] = {"won": need, "lost": 0, "passed": True, "tries": 1}
     service.store.put("camp", key, camp)
+
+
+def pass_group_mission(service, key="6:0"):
+    """The camp at `key` completed the 🎯 group mission of its current level-up (D-136, D-332), straight in the store.
+
+    [ES] Desde la 0.56 cada subida de nivel pide también su misión de grupo (content/story.yaml group_missions; empieza al
+    fundar y al subir de nivel). Las pruebas viejas que suben un campamento más de una vez, o que lo fundan de verdad y lo
+    suben, y que no prueban las misiones, la dan por cumplida con esto (como pass_castle_waves con las oleadas). Un
+    campamento de antes de la 0.56 (sin registro, o con uno de otro nivel) no la necesita en esa subida: no toca nada. Las
+    misiones tienen sus propias pruebas en tests/test_misiones_de_grupo.py.
+    """
+    camp = service.store.get("camp", key)
+    record = service.store.get("group_mission", key)
+    if not camp or not record or int(record.get("to", 0)) != int(camp.get("level", 1)) + 1:
+        return
+    record["p"] = int(record.get("n", 0) or 0)
+    record["done_at"] = service.clock.now()
+    service.store.put("group_mission", key, record)
