@@ -31,7 +31,7 @@ players:
   hint: "Su tarjeta: escribe o toca su código (/j1). Desde ahí puedes invitarlo a tu gremio o pedir entrar al suyo."
   none: "Nadie más jugó aquí en el último minuto."
   refresh: "🔄 Actualizar"
-  only_bonfire: "👥 Jugadores se ve en la fogata del Claro."
+  only_bonfire: "👥 Jugadores se ve en las 🔥 fogatas."
   bad_code: "Ese código no está en la lista. Mira la lista de nuevo."
   gone: "Ese jugador ya no está."
   card_title: "👤 Tarjeta del jugador"
@@ -40,7 +40,7 @@ players:
   card_guild: "🛡️ Gremio: {name}"
   card_no_guild: "🛡️ Sin gremio"
   card_seen: "🕒 {ago}"
-  card_here: "🔥 En {place}"   # [ES] D-265 (0.37): cuál de las 9 hogueras
+  card_here: "🔥 En {place}"   # [ES] D-265 (0.37): cuál de las 9 fogatas
   card_code: "🆔 Código de jugador: {code} · para invitarlo: /inv_{code}"   # [ES] D-280 (0.36.1)
 
 gremio:
@@ -230,8 +230,8 @@ rsearch:                       # [ES] D-296 (0.39.1, pedido del dueño): el busc
   unknown: "No conozco un recurso llamado «{query}». Escribe su nombre, por ejemplo: {examples}."
   hint: "Toca el código (/z1) para armar el camino en 🔗 Moverte. Escribe otro recurso para buscarlo, o usa /buscar madera desde cualquier lugar."
 
-bonfire:                       # [ES] D-265 (0.37): una hoguera llena manda a los que llegan a la más cercana con lugar
-  full_reroute: "🔥 {name} está llena ({cap} jugadores): sigues hacia {next}, la hoguera más cercana con lugar."
+bonfire:                       # [ES] D-265 (0.37): una fogata llena manda a los que llegan a la más cercana con lugar
+  full_reroute: "🔥 {name} está llena ({cap} jugadores): sigues hacia {next}, la fogata más cercana con lugar."
 
 works:
   title: "🏗️ Obras en curso:"

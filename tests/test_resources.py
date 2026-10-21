@@ -76,7 +76,7 @@ def test_exploring_reaches_100_then_goes_on_around_you_without_moving(service, c
     assert hero.exploration["0:0"] == 100
     assert service._known_resources(hero, 0, 0) == ["madera", "fibra"]
     body = service.act("test:1", "map").body                                 # D-179: colours by terrain, legend built alone
-    assert "🔥 Campamento" in body[1]                                        # D-220: only the terrains you know; D-223: the 🔥 is a camp
+    assert "🔥 Fogata" in body[1]                                            # D-220: only the terrains you know; D-311: the 🔥 is a Fogata
     north = service.content.biomes[service._zone(0, 1).biome]
     radius = service.content.balance["map_view"]["radius"]
     north_cell = north["color"] if hero.exploration.get("0:1", 0) >= 50 else service._fog_stage(hero.exploration.get("0:1", 0))["mark"]

@@ -1,9 +1,9 @@
 """The blank map: zones show ▫️ until investigated to 50 %, then their terrain's colour; nothing else is drawn (D-212,
 D-220, D-223).
 
-[ES] Pruebas del mapa en blanco. Un héroe nuevo ve todo en blanco ▫️; solo se ven él (🧍) y el 🔥 campamento del inicio
+[ES] Pruebas del mapa en blanco. Un héroe nuevo ve todo en blanco ▫️; solo se ven él (🧍) y las 🔥 fogatas
 (D-223: ya no se dibujan mazmorras, nodos, campamentos ni la guarida, y las etapas ◽ ◻️ se retiraron). Al 50 % aparece el
-color del terreno. La leyenda solo nombra los terrenos que ya conoces (cuántos de cuántos) y el 🔥 se llama campamento.
+color del terreno. La leyenda solo nombra los terrenos que ya conoces (cuántos de cuántos) y el 🔥 se llama Fogata (D-311).
 Explorar avisa al llegar el color (🎨) y la primera vez que ves un terreno (🆕); también vale lo que exploras alrededor sin
 moverte (D-107). 📍 Zona dice cuánto le falta a tu zona para su color. Ningún texto falta.
 Archivo: tests/test_mapa_gris.py · Módulo: M8 Mundo y mapa · Prueba: engine/service/game.py (_fog_stage, _fog_stages,
@@ -68,7 +68,7 @@ def test_a_new_hero_sees_the_whole_map_blank(service):
     blank = mark(service, "unknown")
     grid = rows(service, body)
     assert sum(row.count(blank) for row in grid) == len(grid) ** 2 - 1                   # everything blank but you
-    assert "(1 de 15)" in body[1] and "🔥 Campamento" in body[1] and "🟩" not in body[1]
+    assert "(1 de 15)" in body[1] and "🔥 Fogata" in body[1] and "🟩" not in body[1]       # D-311: the 🔥 is a Fogata
     assert blank in body[0] and "50 %" in body[0] and "Guardián" not in body[0]
     assert "◽" not in body[0] and "◻️" not in body[0]                                    # D-223: no grey stages any more
     assert cell(service, hero, body, 0, 0) == "🧍"

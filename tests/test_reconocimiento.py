@@ -220,10 +220,10 @@ def test_scouted_places_show_on_the_recon_list_and_on_the_routes(service):
         return re.findall(r".\ufe0f?", service.act("test:1", "map").body[2 + radius + 2])[radius]
 
     assert cell() not in ("🕳️", "🌀")                                              # the map is blank (D-223)
-    assert any(line.startswith(f"🕳️ ({x}, {y})") for line in service.act("test:1", "recon").body)
+    assert any(line.startswith("🕳️") and f"({x}, {y})" in line for line in service.act("test:1", "recon").body)   # D-324: with its name
     service.act("test:1", f"rcn:{x}:{y}")
     family = service._dng_family_label(service._dng_today(x, y)["family"])
-    assert any(line.startswith(f"✅ 🌀 ({x}, {y})") and family in line for line in service.act("test:1", "recon").body)
+    assert any(line.startswith("✅ 🌀") and f"({x}, {y})" in line and family in line for line in service.act("test:1", "recon").body)
     assert cell() not in ("🕳️", "🌀")                                              # scouting never draws it either
     scout_at(service, x, y + 1, 30, known=["0:0", f"{x}:{y + 1}"])          # next door: the route says it
     zone = service.act("test:1", "home")
@@ -234,7 +234,7 @@ def test_scouted_places_show_on_the_recon_list_and_on_the_routes(service):
     scout_at(service, x, y + 2, 30, known=["0:0", f"{x}:{y + 2}"])
     hero = service._load("test:1")
     assert service._dng_state(hero, x, y) == "deep"
-    assert not any(line.startswith(f"✅ 🌀 ({x}, {y})") for line in service.act("test:1", "recon").body)
+    assert not any(line.startswith("✅ 🌀") and f"({x}, {y})" in line for line in service.act("test:1", "recon").body)
     assert not service.texts.missing
 
 
@@ -242,10 +242,10 @@ def test_a_scouted_camp_shows_its_strength_on_the_recon_list(service):
     """D-223 (0.30.2): the 🗺️ Mapa no longer lists camps; the 🔭 list says how many are left once you scouted it."""
     cx, cy = camp_zone(service)
     scout_at(service, cx + 1, cy, 10)
-    mark = f"✅ 👹 ({cx}, {cy})"
-    assert not any(line.startswith(mark) for line in service.act("test:1", "recon").body)
+    coords = f"({cx}, {cy})"                                                         # D-324: the line also has its name
+    assert not any(line.startswith("✅ 👹") and coords in line for line in service.act("test:1", "recon").body)
     service.act("test:1", f"rcn:{cx}:{cy}")
-    assert any(line.startswith(mark) and "quedan" in line for line in service.act("test:1", "recon").body)
+    assert any(line.startswith("✅ 👹") and coords in line and "quedan" in line for line in service.act("test:1", "recon").body)
     assert not service.texts.missing
 
 

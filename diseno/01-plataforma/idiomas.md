@@ -67,7 +67,7 @@ El dueño pidió el juego también en inglés: "añadas la traducción al inglé
 | ⚙️ Opciones | ⚙️ Options | | /historia, /diario | /story, /journal |
 | ❓ Dudas | ❓ Help | | /encargos | /board |
 | el Claro | the Clearing | | /saludar, /brindar | /greet, /toast |
-| hoguera | bonfire | | /habilidades | /skills |
+| 🔥 fogata (antes «hoguera», D-311) | 🔥 campfire | | /habilidades | /skills |
 | mazmorra chica / profunda | small / deep dungeon | | /zona, /equipo | /zone, /gear |
 | oleada · Noche de prueba | wave · Trial Night | | /doble, /gremio, /salud | /dual, /guild, /health |
 | Básico · Constructor · Preparador · Gastador | Basic · Builder · Primer · Spender | | /encantar, /especialidad | /enchant, /specialty |

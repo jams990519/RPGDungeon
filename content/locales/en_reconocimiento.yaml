@@ -6,18 +6,20 @@
 
 recon:
   title: 🔭 Scout
-  intro: '🔭 You look from afar at what''s in a 🕳️ dungeon or a 👹 enemy camp, without going there: the same thing anyone arriving today would see. Each one costs ⚡{energy} and gives 🧭 Explorer experience and a few coins. One per place per day.'
+  intro: '🔭 You look from afar at what''s in a 🕳️ dungeon or a 👹 enemy camp, without going there: the same thing anyone arriving today would see. Each one costs ⚡{energy} and gives 🧭 Explorer experience and a few coins. One per place per day. Below, also the 👹 enemy camps your rank lets you see; tap a button or type the line''s code.'
   locked: 🔒 Scouting needs 🧭 Explorer rank {rank} (you have {have}). Level it up by exploring.
   reach: '🔭 You reach up to {n} {n|zone|zones} around you (not your own zone: there you enter or infiltrate).'
-  line: '{mark} ({x}, {y}) · {zones} {zones|zone|zones} away'
-  line_done_dungeon: ✅ {mark} ({x}, {y}) · today {family} · 👑 {boss}
-  line_done_camp: ✅ 👹 ({x}, {y}) · 👹 {left} of {total} left · 👑 {chief}
+  line: '{mark} {name} ({x}, {y}) · {zones} {zones|zone|zones} away{time}{strength}{code}'
+  line_code: ' · /rc{n}'
+  line_done_dungeon: ✅ {mark} {name} ({x}, {y}){time} · today {family} · 👑 {boss}
+  line_done_camp: ✅ 👹 {name} ({x}, {y}){time} · 👹 {left} of {total} left · 👑 {chief}
   more: …and {n} more, farther away.
-  none: '🔭 You don''t see anything to scout within reach. Explore and travel: the 🗺️ Map marks 🕳️ dungeons and 👹 enemy camps.'
+  none: '🔭 You don''t see anything to scout within reach. Explore and travel: the 🕳️ dungeons and 👹 enemy camps you find nearby show up here.'
   next: 🔓 With 🧭 Explorer rank {rank}, up to {n} {n|zone|zones}.
   button: 🔭 {mark} ({x}, {y}) · ⚡{energy}
   out_of_reach: 🔭 That place isn't within your reach or there's nothing left to see there. You didn't spend anything.
   already: '🔭 You already scouted that place today: what you know is in the list. Tomorrow there may be something else.'
+  bad_code: '🔭 That code isn''t in your 🔭 Scout list: use one of the ones you see here.'
   report_title: 🔭 Scouting report
   done: '🔭 You looked from afar at {name} ({x}, {y}), {zones} {zones|zone|zones} away, without moving:'
   dungeon_small: '🕳️ A small dungeon · level {level}: {rooms} rooms and their boss.'
@@ -36,6 +38,7 @@ recon:
   map_locked: 🔭 From 🧭 Explorer rank {rank} you can scout from afar what the map marks.
   map_today: ' · 🔭 today {family}'
   hint: '🔭 {n} {n|place|places} to scout from afar: /recon'
+  hint_camps: '🔭 {n} 👹 {n|enemy camp|enemy camps} in sight: /recon'
   route_mark: ' {mark}{emoji}'
 stealth:
   travel: 🥷 You passed through {name} without anything seeing you.
