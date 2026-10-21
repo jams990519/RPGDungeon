@@ -98,10 +98,16 @@ La segunda parte de este documento, en su **capa simple** de §6.1, §6.2 y §7.
 - En el nivel 8, **⬆️ Agrandar campamento** (desde la 0.41, D-304: la línea 🌙 de ⏫ Siguiente nivel, con su botón cuando es lo único que falta) muestra que castillo pide ganar la Noche de prueba, contra qué enemigo y cuántas victorias hacen falta.
 - Un miembro **en el campamento** la convoca con **🌙 Noche de prueba**, si la despensa no está vacía y no hay otra incursión en curso. Funciona como una incursión: aviso a los activos, 60 minutos, una pelea por miembro.
 - **El enemigo** es el **más fuerte del bioma** del campamento, con el nivel de la zona + 2, en versión **élite**: el doble de vida y un 30 % más de ataque, solo en esa pelea.
-- **Victorias necesarias:** la mitad de los miembros activos, redondeado hacia arriba, y **al menos 2**: el castillo se gana en conjunto.
+- **Victorias necesarias:** la mitad de los miembros activos, redondeado hacia arriba, y **al menos 10** desde la 0.51 (D-327; antes 2): el castillo se gana en conjunto.
 - **Ganada:** el campamento ya puede crecer a castillo, pagando los materiales de siempre. Cada defensor gana **200 de experiencia y 100 🥉**.
 - **Perdida:** no se pierde nada; se puede volver a convocar a los **2 días**.
 - Si la incursión semanal tocaba mientras duraba la Noche de prueba, la Noche cuenta como la de esa semana.
+
+**Las 🌊 oleadas crecientes (para pasar del nivel 8 al 9; en el juego desde la 0.53, D-122 y D-329, provisional).**
+- Mientras el campamento está en el nivel 8, sus incursiones semanales (3 por semana) son una **serie de 5** que crece: cada una suma un 20 % a la vida y al ataque de una incursión normal (la 1.ª ×1,2… la 5.ª ×2,0), antes de lo que frena la 🛡️ Defensa. Empiezan solas, sin botón.
+- **Se aprueba ganando 3.** Termina apenas se decide; con 3 perdidas vuelve a empezar desde la 1.ª a los 3 días. Cada oleada perdida cuesta lo de una incursión perdida y nada más.
+- Junto con la Noche de prueba (en cualquier orden), es lo que pide el castillo además de las obras, los materiales, el gremio, los 40 activos y las 15 mejoras. Un castillo que ya existe no las recibe (D-64).
+- El detalle está en [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §0.5.
 
 **Botones.** La pantalla del campamento sigue con 4 botones como máximo: ⬆️ Agrandar · 🌾 Aportar comida (desde nivel 3) · 🛡️ Gremio · 🔨 Mejoras (D-101), y ↩️ Volver si no hay despensa (cambiar el nombre y salir del campamento están dentro de 🛡️ Gremio). Mientras dura la incursión, **🛡️ Defender** ocupa el 4.º lugar (el de ↩️ Volver o, con despensa, el de 🔨 Mejoras), que vuelve apenas ese miembro pelea o termina la incursión; el menú de abajo siempre lleva a otro lado.
 
@@ -585,7 +591,7 @@ Un campamento tiene de 2 a 18 miembros. La capa ligera mide todo **por miembro**
 | **3-4 (aldea)** | **Despensa chica** en el almacén común: 1 ración por miembro activo por día. Si se vacía, el campamento no puede agrandarse hasta llenarla. Nunca pierde zonas ni niveles (**en el juego**, §0.4) |
 | **5-6 (pueblo)** | **Una incursión por semana**, con la fuerza escalada a los miembros activos. La juegan los miembros conectados; los demás pelean con su Eco (el Eco todavía no existe). Si se pierde, se pierde parte de la despensa y nada más (**en el juego**, §0.5; sigue también en los niveles siguientes) |
 | **7-8 (ciudad)** | Un medidor de **salud** simple: con la despensa llena y una enfermería, se mantiene solo. Si baja, la 🌾 cosecha de la muralla se apaga hasta que suba (antes decía la recolección extra del territorio, +50 %, que la 0.49 quitó: D-309) |
-| **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días (**en el juego**, §0.5, con la versión élite del enemigo más fuerte del bioma) |
+| **9 (castillo)** | **Noche de prueba** antes de pasar a castillo: una incursión grande con un jefe de la zona. Si se pierde, se reintenta a los 2 días (**en el juego**, §0.5, con la versión élite del enemigo más fuerte del bioma). Desde la 0.53, además, **5 oleadas crecientes** en el nivel 8, ganando 3 (D-122, D-329) |
 
 - **Lo que nunca pasa:** un campamento activo nunca pierde niveles, zonas ni miembros por fallar. Lo que se apaga son servicios, hasta que se recuperen.
 - **El campamento abandonado** es otra cosa: sin miembros activos durante semanas, decae (ver [Fundación y cisma](fundacion-y-cisma.md) §4.1).

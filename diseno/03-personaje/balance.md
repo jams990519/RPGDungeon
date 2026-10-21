@@ -1249,6 +1249,35 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): las 🌊 oleadas crecientes del castillo (0.53, D-122 confirmada; D-329 provisional)
+
+El dueño pidió (D-122) que el castillo pida "defender su estructura anterior durante varias oleadas que van creciendo: si pierde más de las que gana, no aprueba", y que los números los proponga Claude. Son números **nuevos** (D-329); se ajustan en la beta (E-260, E-261).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `ladder.castle_waves.count` (nuevo) | — (el castillo no pedía oleadas) | 5 oleadas: las del campamento (`raids.per_week` 3) mientras está en el nivel 8; 0 apaga la regla |
+| `ladder.castle_waves.pass_wins` (nuevo) | — | 3 ganadas (la mayoría de 5); con 3 perdidas la serie se pierde |
+| `ladder.castle_waves.growth` (nuevo) | — | +20 % de vida y de ataque por oleada sobre una oleada normal: ×1,2, ×1,4, ×1,6, ×1,8 y ×2,0 |
+| `ladder.castle_waves.retry_days` (nuevo) | — | 3 días después de perder la serie (se salta una oleada normal) |
+
+**Cuenta rápida** (medida con las funciones de `tools/sim.py`: las 12 especializaciones, la forma de jugar atenta, cinturón con 2 pociones y 1 venda, equipo poco común de su nivel, los 3 primeros enemigos de cada bioma en zonas de nivel 10 y 20, héroe de 3 a 8 niveles sobre el enemigo; 864 peleas por casilla):
+
+| Fuerza de la oleada | Sin defensas | Con 6 puntos de 🛡️ (×0,76) | Con los 11 (×0,56) |
+|---|---|---|---|
+| ×1,0 (normal) | 100 % | 100 % | 100 % |
+| ×1,2 (1.ª) | 87-100 % | 100 % | 100 % |
+| ×1,4 (2.ª) | 61-95 % | 100 % | 100 % |
+| ×1,6 (3.ª) | 36-77 % | 85-100 % | 100 % |
+| ×1,8 (4.ª) | 16-57 % | 63-96 % | 100 % |
+| ×2,0 (5.ª) | 9-33 % | 43-86 % | 94-100 % |
+
+- **Una oleada pide que gane la mitad de los activos:** con muchos defensores, lo que decide es si cada uno gana más de la mitad de las veces. Con las defensas construidas y reparadas, la serie se aprueba casi siempre con las 3 primeras; sin defensas, la 1.ª y la 2.ª se ganan y la 4.ª y la 5.ª se pierden casi siempre, así que hay que ganar la 3.ª.
+- **Las defensas pesan más que antes:** cada oleada daña la 🛡️ Defensa (−1 ganada, −2 perdida, D-115) y la siguiente llega más fuerte; reparar entre oleadas (🟫 tablones y 🧱 sillares) es parte de aprobar.
+- **El ritmo hasta castillo:** las oleadas llegan cada 2 días y 8 horas y corren en paralelo con lo demás del nivel 8 (obras, materiales, cofres, 40 activos, Noche de prueba). Aprobar con 3 seguidas lleva unos 5 a 7 días; con 5, unos 10 a 12; perder la serie suma unos 5 días más antes de volver a empezar.
+- **Lo que no cambia:** las oleadas de los niveles 1 a 7, las del castillo (nivel 9), la Noche de prueba, el premio de cada oleada y lo que cuesta perderla.
+
+**Lo que queda por mirar:** en cuántos días aprueban los campamentos de la beta y cuántas series pierden; si la 5.ª (×2) es demasiado dura para los campamentos sin todas las defensas (E-260 ofrece crecer un 10 %); si conviene que siempre se jueguen las 5 (E-261).
+
 ### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
 
 El dueño eligió el 17-oct un solo cupo por etapa, el castillo con 40 activos y cupo de 50, la salida de quien no juega 30 días y que acepten gente el líder y los oficiales (D-253). Los números de la escalera (§2) son los que aceptó; cómo se repartieron en los niveles y el aviso de los 25 días los eligió Claude (D-327); se ajustan en la beta (E-253 a E-256).

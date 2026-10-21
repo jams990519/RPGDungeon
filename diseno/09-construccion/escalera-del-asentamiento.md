@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327)**; las escuadras, las etapas 7 a 10, las oleadas crecientes del castillo y la muralla por anillos todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329)**; las escuadras, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -96,10 +96,46 @@ La prioridad de lo grande es el asentamiento por etapas y el castillo (D-310). L
 - **🏰 Castillo (D-253.2, D-122).** El paso 8 → 9 pide, además de lo de siempre (las obras, los materiales, los cofres, el gremio de nivel 5 y las 15 mejoras):
   - **"👥 Activos esta semana: N de 40"**: miembros que jugaron en los últimos 7 días; reemplaza a "10 miembros o más". La ciudad tiene cupo para 40 (más Cabañas y Literas): hacen falta casi todos activos la misma semana.
   - la 🌙 Noche de prueba con **10 vencedores distintos** como mínimo (antes 2; cada miembro pelea una vez).
-  - **Queda para después:** las 5 oleadas crecientes de D-122 ("si pierde más de las que gana, no aprueba"), que son una pieza grande (una serie de oleadas que crecen, se cuentan y se aprueban; P-79).
+  - **Queda para después:** las 5 oleadas crecientes de D-122 ("si pierde más de las que gana, no aprueba"), que son una pieza grande (una serie de oleadas que crecen, se cuentan y se aprueban; P-79). *Llegaron en la 0.53 (§0.5).*
 - **Lo que no entra en esta parte:** las escuadras de 5 con su jefe (Forma B, §3), las etapas 7 a 10 con sus mejoras nuevas y la muralla por anillos (§5.2).
 - **Dónde está:** `engine/service/ladder.py` (`LadderMixin`: `_base_cap_at`, `_cap_floor_sweep`, `_idle_tick`, `_idle_camp`, `_idle_release`, `_castle_active_row`), `engine/service/game.py` (`_members_cap`, `_members_cap_at`, `tick`, `_create_camp`, `_castle_needs`, `_lvlup_view`, `_level_up`), `engine/service/gremio.py` (`_camp_members_view`, `_camp_member_line`); los números en `content/balance.yaml` → `camps.members_by_stage`, `ladder` (`idle_warn_days`, `idle_release_days`, `idle_scan_minutes`, `castle_active`, `active_days`) y `raids.trial.min_wins`; lo guardado en `camp/<x:y>` (`cap_floor`, `idle_watch`, `idle_warned`) y `meta/idle`; los textos en `content/locales/es_escalera.yaml` y `en_escalera.yaml`; ❓ /d37 y /d42; las pruebas en `tests/test_escalera_cupo_oficiales.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
 - **Preguntas para el dueño:** E-253 a E-256 (P-264 a P-267).
+
+## 0.5 Las 🌊 oleadas crecientes del castillo (0.53, D-122; cómo se aplicó: D-329)
+
+D-122 (confirmada) pide que, antes del castillo, el campamento "defienda su estructura anterior durante varias oleadas que van creciendo: si pierde más de las que gana, no aprueba". Los números los propone Claude (D-329, provisional) y se le preguntan al dueño (E-260 a E-262).
+
+- **Cuándo:** mientras el campamento está en el nivel 8 (la ciudad, el paso a castillo), sus oleadas de siempre (3 por semana, D-154) son una **serie de 5**. Empiezan solas con la primera oleada después de llegar al nivel 8, sin botón, y corren en paralelo con lo demás del castillo.
+- **Cómo crecen:** cada una suma un 20 % a la vida y al ataque de una oleada normal.
+
+| Oleada | 1.ª | 2.ª | 3.ª | 4.ª | 5.ª |
+|---|---|---|---|---|---|
+| Fuerza contra una oleada normal | ×1,2 | ×1,4 | ×1,6 | ×1,8 | ×2,0 |
+
+  La 🛡️ Defensa del campamento las frena después, como a todas (D-101). Cada oleada daña las defensas (D-115), así que conviene repararlas entre una y otra.
+- **Cuándo aprueba:** con **3 ganadas**. La serie termina apenas se decide:
+  - con 3 ganadas queda aprobada para siempre, y las oleadas vuelven a ser normales;
+  - con 3 perdidas ya no se puede: se pierde y vuelve a empezar desde la 1.ª después de **3 días** (se salta una oleada normal).
+- **Qué cuesta perder:** lo de cualquier oleada perdida (el 25 % de la despensa y −2 de 🛡️ Defensa hasta reparar). Nada más.
+- **Se ve:**
+  - en ⏫ Siguiente nivel: "🌊 Oleadas crecientes: 2 ganadas, 1 perdida de 5 (hace falta ganar 3; quedan 2)" y, mientras faltan, una línea que explica cómo llegan;
+  - en el aviso, en la pelea y en la pantalla del campamento: "🌊 Oleada creciente 2 de 5 (+40 %)";
+  - en el parte de cada oleada, que les llega a todos los miembros en su idioma: cómo va la serie;
+  - en 📜 Qué pide cada nivel y en ❓ /d39 y /d42.
+- **La 🌙 Noche de prueba y las oleadas** se hacen en cualquier orden: si solo faltan esas dos, ⏫ muestra el botón 🌙.
+- **Nadie pierde (D-64):** un castillo que ya existe no recibe oleadas crecientes; solo traban el paso a castillo.
+- **Mantener el castillo** ("después hay que mantener la estructura") queda para después (E-262, P-273).
+- **Cuánto cuestan** (medido con las funciones de `tools/sim.py`: un defensor atento, con equipo poco común y de 3 a 8 niveles sobre el enemigo de la oleada (zonas de nivel 10 y 20)):
+
+| Fuerza | Sin defensas | Con 6 puntos de 🛡️ | Con los 11 |
+|---|---|---|---|
+| ×1,2 (1.ª) | 87-100 % | 100 % | 100 % |
+| ×1,6 (3.ª) | 36-77 % | 85-100 % | 100 % |
+| ×2,0 (5.ª) | 9-33 % | 43-86 % | 94-100 % |
+
+  Como cada oleada pide que gane la mitad de los activos, con muchos defensores lo que cuenta es si cada uno gana más de la mitad de las veces: con las defensas construidas y reparadas se aprueba; sin ellas, la 4.ª y la 5.ª se pierden casi siempre.
+- **Dónde está:** `engine/service/ladder.py` (la sección de las oleadas crecientes), `engine/world/raids.py` (`wave_mult`, `series_outcome`) y los ganchos de `engine/service/game.py` (`_open_raid`, `_raid_notice`, `_defend`, `_resolve_raid`, `_raid_lines`, `_lvlup_rows`, `_lvlup_view`, `_lvlup_all_view`); los números en `content/balance.yaml` → `ladder.castle_waves` (`count` 5, `pass_wins` 3, `growth` 0,2, `retry_days` 3); lo guardado en `camp/<x:y>` → `castle_waves` y, en la oleada abierta, `wave` y `wave_mult`; los textos en `content/locales/es_escalera.yaml` y `en_escalera.yaml`; las pruebas en `tests/test_oleadas_crecientes_castillo.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-35.
+- **Preguntas para el dueño:** E-260 a E-262 (P-271 a P-273).
 
 ## 1. Lo decidido
 
@@ -115,6 +151,7 @@ La prioridad de lo grande es el asentamiento por etapas y el castillo (D-310). L
 | **D-309** | **Los números de la cosecha (confirmados, 20-oct):** el 20 % de lo que vuelve a crecer, al almacén del asentamiento, solo con jugadores activos esa semana y como mucho 7 días; reemplaza el +50 % de recolectar en tu territorio; las zonas por etapa son las de la tabla del §2 (en el juego como tope del territorio desde la 0.41). |
 | **D-325** | *(Provisional, 0.49.)* Cómo quedó la cosecha en el juego (§5.5): con la 🧱 Muralla todo el territorio cosecha; 24 por recurso y día como base (sin el ×3 de la 0.42); llega sola al 💰 fondo una vez por semana, con un aviso. |
 | **D-327** | *(Provisional, 0.51.)* Cómo quedó la 1.ª parte de la escalera (§0.4): el cupo por etapa (10, 15, 25, 40, 50; nadie pierde lugar), los asistentes son los oficiales (1 cada 5), quien no juega 30 días sale (aviso a los 25, nunca el fundador, desde el parche) y el castillo pide 40 activos de la semana y 10 vencedores en la Noche de prueba. |
+| **D-329** | *(Provisional, 0.53.)* Cómo quedaron las 🌊 oleadas crecientes del castillo (§0.5): en el nivel 8, las oleadas del campamento son una serie de 5, cada una un 20 % más fuerte; se aprueba ganando 3; con 3 perdidas vuelve a empezar a los 3 días; un castillo que ya existe no las recibe. |
 | **D-322** | *(Provisional, 0.47.)* El 💰 fondo del campamento primero alimenta las obras activas y ⏫ Siguiente nivel (lo que les falta queda guardado); lo que sobra lo usan los miembros al refinar y fabricar en las estaciones de su campamento, hasta 40 por día, con 📜 Quién usó qué y un interruptor del fundador o un asistente (§0.3). |
 
 ## 2. La escalera
@@ -239,7 +276,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 | ~~Cupo del campamento 2 + 2 por nivel; el del gremio, 4 a 30; gana el mayor (`_members_cap`)~~ | **Hecho en la 0.51 (D-327) hasta castillo:** 5 (el gremio antes del campamento), 10, 15, 25, 40 y 50; nadie pierde lugar (§0.4). Faltan 80, 120, 160 y 200 (etapas 7 a 10) |
 | ~~Solo el fundador acepta (`_answer_join`, D-84)~~ | **Hecho:** el fundador y sus 🤝 asistentes desde la 0.39 (D-289); desde la 0.51 los asistentes son los oficiales (§0.4) |
 | ~~Nadie sale si no quiere (regla 10)~~ | **Hecho en la 0.51:** sale a los 30 días sin jugar, con aviso a los 25, nunca el fundador (§0.4) |
-| Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | **En parte en la 0.51:** 40 activos de la semana y la Noche con 10 vencedores distintos (§0.4). Faltan las 5 oleadas crecientes (D-122, P-79) |
+| Castillo: gremio de nivel 5 con 10 miembros, 15 mejoras y la Noche (`_castle_needs`) | **Hecho en la 0.51 y la 0.53:** 40 activos de la semana y la Noche con 10 vencedores distintos (§0.4), y las 5 oleadas crecientes, ganando 3 (§0.5, D-329). Falta mantener el castillo (P-273) |
 | Desde la 0.41 (D-304): 🗺️ Agrandar territorio suma zonas hasta el tope de la etapa (3, 5, 9, 15 y 25; `_grow_camp`, `camps.zones_by_stage`); el nivel sube aparte, con ⏫ Siguiente nivel | Las zonas de muralla de cada etapa (P-229) |
 | ~~+50 % al recolectar en tu territorio (`gather.own_land_bonus`)~~ | **Hecho en la 0.49 (D-309, D-325):** con la 🧱 Muralla, todo el territorio cosecha solo para el 💰 fondo y el +50 % ya no está (§5.5). Falta la muralla por anillos con su costo por zona |
 | No hay grupos | Grupo de 5 que nace al construir; escuadras dentro del gremio |
@@ -272,12 +309,13 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **P-258 (E-247):** qué zonas cierra la muralla. Recomendado: todo el territorio con la muralla, hasta que llegue la muralla por anillos.
 - **P-259 (E-248):** si la cosecha cuenta el ×3 de la 0.42. Recomendado: no por ahora (24 por recurso y día) y medirlo en la beta.
 - **P-260 (E-249):** qué pasa antes de la muralla. Recomendado: dejarlo así; la muralla es la meta del pueblo.
+- **P-271 a P-273 (E-260 a E-262):** las 🌊 oleadas crecientes (0.53, D-329): sus números, cómo empiezan y se reintentan, y qué es mantener el castillo. Recomendado: dejarlas así y medirlas en la beta; que el castillo reciba una serie cada 4 semanas y, si la pierde, se frene su crecimiento.
 - **P-264 a P-267 (E-253 a E-256):** la 1.ª parte de la escalera (0.51, D-327): el cupo de cada etapa, el asistente como oficial, quien deja de jugar y los requisitos del castillo. Recomendado: dejarlo así y medirlo en la beta; un solo cargo con 1 cada 5; quitar el gremio de nivel 5 cuando lleguen las oleadas crecientes.
 - **P-81 (E-58):** ✅ Decidido (D-253): esta escalera.
+- **P-79 (E-56):** ✅ Decidido, provisional (D-327 y D-329): la Noche con 10 vencedores distintos y 5 oleadas crecientes ganando 3 (§0.4 y §0.5); E-260 y E-261 la reemplazan.
 - **P-229 (E-218):** ✅ Decidido (D-304): la tabla del §2 (en el juego, desde la 0.41, como tope de zonas del territorio hasta castillo).
 - **Siguen de antes:**
   - P-224, la Academia o la Biblioteca;
-  - P-79 / E-56, las oleadas del castillo;
   - P-82 / E-59, el monarca;
   - P-112 / E-89, la fusión de grupos;
   - P-97 / E-74, el tope diario por zona.
@@ -288,4 +326,5 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **Las escuadras de 5 y los cargos:** los grupos de 5 y los rangos de gremio de World of Warcraft (líder, oficiales, miembros), y los escuadrones de EVE Online.
 - **La muralla que marca el territorio y crece por anillos:** el territorio de alianza de Rise of Kingdoms, que se agranda con banderas y fortalezas.
 - **La tierra que produce sola:** los campos de recursos de Travian, que producen cada hora sin que nadie los trabaje. También las granjas de alianza de Rise of Kingdoms, que juntan recursos para la alianza, no para un jugador.
+- **Las oleadas que crecen antes del castillo:** los juegos de defensa de torres, donde cada oleada es más fuerte que la anterior, y la horda final de They Are Billions, que pone a prueba todo lo construido; el "gana la mayoría" es el "al mejor de 5" de los torneos.
 - **Liberar el lugar de quien no juega:** la regla de TowerWars de sacar a los inactivos (allí, a los 14 días; aquí, a los 30, como pidió el dueño).
