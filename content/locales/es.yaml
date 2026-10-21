@@ -1911,7 +1911,7 @@ camps:
   info: "🏕️ {name}, fundado por {founder}, en las coordenadas ({x}, {y}). Miembros: {n}."
   you_member: "Eres parte de este campamento."
   size: "📐 Nivel {level} · ocupa {zones} zona(s). En su territorio no te atacan al llegar, y el viaje cuenta la distancia desde su borde."
-  grow_cost: "⬆️ Agrandarlo suma 1 zona vecina que tú eliges y cuesta {items}. En tu territorio recolectas un 50 % más."   # [ES] sin uso desde la 0.41 (D-304): ahora territory.info_line
+  grow_cost: "⬆️ Agrandarlo suma 1 zona vecina que tú eliges y cuesta {items}."   # [ES] sin uso desde la 0.41 (D-304): ahora territory.info_line. D-309 (0.49): sin el +50 %
   grow_button: "⬆️ Agrandar campamento"   # [ES] sin uso desde la 0.41 (D-304): ahora improve.button
   grow_title: "⬆️ ¿Hacia dónde crece?"   # [ES] sin uso desde la 0.41 (D-304)
   grow_intro: "Elige qué zona vecina toma tu campamento. Cuesta {items}. Mira los recursos que conoces de cada una: elige con estrategia."   # [ES] sin uso desde la 0.41 (D-304)
@@ -2382,7 +2382,7 @@ upgrade:                      # [ES] D-101: nombre y efecto de cada mejora (los 
     desc: "Cose 💰 bolsas y arma 🪎 cofres en el campamento."
   muralla:
     name: "Muralla de piedra"
-    desc: "Una muralla de verdad: hay que romperla para entrar."
+    desc: "Una muralla de verdad: hay que romperla para entrar. Cierra el territorio: cada zona cosecha sola para el 💰 fondo."   # [ES] D-309, D-325 (0.49): la 🌾 cosecha de la muralla
   huerto:
     name: "Huerto"
     desc: "Suma 1 ración por día a la despensa."

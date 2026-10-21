@@ -58,6 +58,9 @@
 #       cosas que un miembro hace con rango 10 o menos (rango 15 las del paso a castillo), sin 🎓 especialización, sin 📚
 #       libro y sin título comprado; si no, un campamento se traba en ese nivel hasta que alguien llegue al rango
 #       (tests/test_costos_edificios.py). El ritmo hasta castillo y la demanda de piel y metal: `python tools/camp_costs.py`.
+#     - D-309, D-325 (0.49): la 🧱 muralla construida abre la 🌾 cosecha de la muralla (balance.yaml harvest.wall): todo el
+#       territorio cosecha solo para el 💰 fondo. Su "level" es el de la pista de ⬆️ Mejorar y de ❓ /d61 ({wall_level}) y
+#       mueve desde cuándo llega la cosecha en tools/camp_costs.py (tests/test_cosecha_muralla.py).
 #     - Pruebas: tests/test_camp_upgrades.py, tests/test_masterwork.py (muebles), tests/test_oficios_campamento.py,
 #       tests/test_costos_que_suben.py, tests/test_costos_edificios.py.
 
@@ -280,6 +283,8 @@ upgrades:
     cost: {piedra: 180, sillar: 10, madera: 60, arcilla: 40, tablon: 12, lingote: 5}   # [ES] D-318 (0.45): desde el nivel 5 mezcla oficios (🗿 Cantería, 🪚 Aserradero, 🏭 Fundición). D-319 (0.45.1): sin los 🪑 Paveses (🎓 Escudos, rango 50: trababan el paso al nivel 6); 356 en crudo
     cost_before: {piedra: 260, madera: 60, arcilla: 40}        # [ES] D-318: lo de antes de la 0.45, para las obras activadas o empezadas antes
     defense: 2
+    # [ES] D-309, D-325 (0.49): construida, cierra TODO el territorio y cada zona cosecha sola para el 💰 fondo (balance.yaml
+    # harvest, wall: muralla; GameService._harvest_tick). Cambiar su id o retirarla apaga la cosecha (harvest.wall)
   huerto:
     emoji: "🥬"
     kind: casa
@@ -386,7 +391,7 @@ knowledge:
     desc_key: tech.herramientas.desc
     cost: {madera: 150, pieza_metal: 50}  # [ES] 200 unidades
     coins: 300                            # [ES] 3 🥈
-    effect: {gather_bonus: 0.10}          # [ES] +10 % de recursos al recolectar en el territorio (encima del +50 % de gather.own_land_bonus)
+    effect: {gather_bonus: 0.10}          # [ES] +10 % de recursos al recolectar en el territorio (hasta la 0.48, encima del +50 % de gather.own_land_bonus; desde la 0.49, D-309, ese bono vale 1,0 y queda solo este +10 %)
   cartografia:
     emoji: "🗺️"
     name_key: tech.cartografia.name

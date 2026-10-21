@@ -91,7 +91,7 @@ territory:                     # [ES] D-304: 🗺️ Agrandar territorio, hacia 
   page: "Página {n} de {total}"
   grown: "🗺️ ¡El territorio creció hacia el {dir}! Ahora tiene {zones} de {cap} zonas (sumó ({x}, {y}))."
   grown_push: "🗺️ {hero} agrandó {camp} hacia el {dir}: sumó ({x}, {y}) y tiene {zones} de {cap} zonas."
-  info_line: "🗺️ Agrandar el territorio suma 1 zona vecina (hasta {cap} en esta etapa) y cuesta {items}. En tu territorio recolectas un 50 % más."
+  info_line: "🗺️ Agrandar el territorio suma 1 zona vecina (hasta {cap} en esta etapa) y cuesta {items}."   # [ES] D-309 (0.49): sin el +50 % de tu territorio; la 🌾 cosecha de la muralla va en la línea de abajo
   dir:                         # [ES] las 8 direcciones desde el centro del campamento (el norte suma a la y; el este, a la x)
     n: "⬆️ Norte"
     ne: "↗️ Noreste"

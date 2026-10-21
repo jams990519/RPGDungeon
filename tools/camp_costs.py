@@ -4,6 +4,7 @@ Usage (from the repository root):
     python tools/camp_costs.py                    # Markdown tables: per work, totals (before 0.45 / 0.45 / now), the pace
     python tools/camp_costs.py --share=0.5        # members give half their daily energy to the camp (default 0.75)
     python tools/camp_costs.py --growth-no-oficio # what if the 13 profession buildings did not raise the +15 % (P-246)
+    python tools/camp_costs.py --no-harvest       # without the 🌾 wall's harvest (D-309, D-325): only the members' energy
     python tools/camp_costs.py --content=<folder> # measure another copy of content/
 
 Model (every number comes from content/, except the measured energy per hunted unit of tools/sim_oficios.py):
@@ -17,11 +18,16 @@ Model (every number comes from content/, except the measured energy per hunted u
     - Refined and crafted goods become raw through their recipe (the one without "variant" with the lowest rank; a 🎓
       exclusive one if it is the only one): energy = the recipe's ⚡ ÷ the units one make gives.
     - Gathering: the 6 base resources (balance.yaml stock.regen_mult) in your territory: gather.amount + 1 every 3 zone
-      levels (zone at Lejanía camps.min_lejania), × gather.own_land_bonus rounded like GameService._gather_step: ~4.7
-      units per ⚡ of whatever the zone has. 🦌 piel and 🍖 carne are hunted outside (no fights in a territory, D-81):
-      tools/sim_oficios.py RAW_ENERGY (the piel ÷ professions.skinning.loot_mult). Any other resource: 1 per ⚡.
+      levels (zone at Lejanía camps.min_lejania), × gather.own_land_bonus rounded like GameService._gather_step: ~3
+      units per ⚡ of whatever the zone has since 0.49 (~4.7 with the +50 % before, D-309). 🦌 piel and 🍖 carne are
+      hunted outside (no fights in a territory, D-81): tools/sim_oficios.py RAW_ENERGY (the piel ÷
+      professions.skinning.loot_mult). Any other resource: 1 per ⚡.
     - Pace: members by level = camps.members_base + members_per_level × (level − 1), at least 5 (the gremio) and at most
       10; each gives energy.per_day × share to the camp. Days = energy of the level ÷ energy per day of the camp.
+    - The 🌾 wall's harvest (D-309, D-325; off with --no-harvest): from the level after the one that builds harvest.wall,
+      the camp holds the zones cap of its stage (camps.zones_by_stage) and each zone yields harvest.share of what its base
+      resources regrow (BASE_PER_ZONE of them, engine/world/harvest.py regrow_per_day). Those units save gathering energy
+      (÷ the units per ⚡), never refining: days = max((gather + make) ÷ (camp ⚡ + harvest ⚡), make ÷ camp ⚡).
     - Ranks: the highest min_rank of the goods a work asks, its 🎓 specialization if the recipe is exclusive, and the days
       of a dedicated crafter to reach it (all its ⚡ to the best recipe, the materials given, as tools/sim_oficios.py; a 🎓
       recipe also waits for specs.recipe_mastery of specs.mastery_xp after the first slot), with the raw it eats.
@@ -59,6 +65,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "tools"))
 
 from engine.professions.rules import rank_of, xp_for_rank  # noqa: E402
+from engine.world.harvest import regrow_per_day  # noqa: E402
 from sim_oficios import Sim  # noqa: E402
 
 # What 0.45 asked in the works that 0.45.1 changed (D-319). [ES] Lo que pedía la 0.45 en las obras que cambió la 0.45.1;
@@ -69,6 +76,10 @@ COST_045: dict[str, dict[str, int]] = {
     "forja": {"lingote": 60, "cuero_curtido": 15, "madera": 10, "piedra": 10},
 }
 RANK_045: dict[str, int] = {"literas_roble": 40, "armero_roble": 70}   # [ES] el rango de esas recetas en la 0.45
+# [ES] D-325 (0.49): cuántos de los 6 recursos de base tiene en promedio una zona (con la 🪵 madera de D-303). Medido con
+# GameService._zone_resources en 432 zonas de la semilla 12345 (x e y de −30 a 30 de a 3, lejos del Claro): 2,77 de base,
+# 5,58 recursos de tierra en total y 1 de cada 4 con 🐟 pescado. Solo los de base ahorran energía de juntar para las obras.
+BASE_PER_ZONE = 2.77
 VERSIONS = ("before", "045", "now")
 LABEL = {"before": "antes de la 0.45", "045": "0.45", "now": "hoy"}
 TOP_RANK = 75                                          # [ES] hasta dónde mide al artesano dedicado
@@ -108,13 +119,20 @@ class Acc:
 class Model:
     """The content and the numbers of the model. [ES] El contenido y los supuestos (ver el encabezado)."""
 
-    def __init__(self, content_dir: Path | None = None, share: float = 0.75, growth_no_oficio: bool = False) -> None:
+    def __init__(self, content_dir: Path | None = None, share: float = 0.75, growth_no_oficio: bool = False,
+                 harvest: bool = True) -> None:
         self.sim = Sim(content_dir)                                    # [ES] carga el contenido una sola vez
         self.content = self.sim.content
         bal = self.content.balance
         self.bal = bal
         self.share = share
         self.growth_no_oficio = growth_no_oficio
+        hcfg = bal.get("harvest") or {}                               # [ES] D-325: la 🌾 cosecha de la muralla
+        self.wall = str(hcfg.get("wall") or "") if harvest and hcfg else ""
+        self.harvest_per_zone = (BASE_PER_ZONE * float(hcfg.get("share", 0.0))
+                                 * regrow_per_day(bal["stock"], "madera", bool(hcfg.get("real_regen", False)))) if self.wall else 0.0
+        self.stages = list(bal["camps"].get("stages") or [])
+        self.zone_caps = dict(bal["camps"].get("zones_by_stage") or {})
         stations = set(((self.content.professions.get("stations") or {}).get("camp") or {}))
         ladder_ids = {u for ids in ((bal["camps"].get("level_up") or {}).values()) for u in ids}
         # [ES] los 13 edificios de oficio (D-288, D-317): abren una estación y no los pide ⏫ (el 🔥 Fogón sí)
@@ -215,10 +233,27 @@ class Model:
 
     # ---------------------------------------------------------------- paths
 
+    def zones_at(self, level: int) -> int:
+        """The zones cap of a camp level (camps.zones_by_stage of its stage, like GameService._zones_cap_at)."""
+        stage = self.stages[0]["id"] if self.stages else ""
+        for row in self.stages:
+            if level >= int(row["from_level"]):
+                stage = row["id"]
+        return int(self.zone_caps.get(stage, level))
+
+    def harvest_energy(self, level: int) -> float:
+        """⚡ per day the 🌾 wall's harvest saves a camp of this level that holds its zones cap (D-325)."""
+        return self.zones_at(level) * self.harvest_per_zone / self.per_energy if self.wall else 0.0
+
     def path(self, version: str, full: bool) -> list[dict[str, Any]]:
-        """Level by level from 1: the works built there (list ones first) and ⏫ to the next level."""
+        """Level by level from 1: the works built there (list ones first) and ⏫ to the next level.
+
+        [ES] D-325 (0.49): desde el nivel siguiente al que construye la 🧱 muralla, la 🌾 cosecha ahorra energía de juntar
+        (nunca de refinar): días = máx((juntar + fabricar) ÷ (⚡ del campamento + ⚡ de la cosecha), fabricar ÷ ⚡ del campamento).
+        """
         required = self.required()
         built = 0
+        walled = False
         steps = []
         for level in range(1, self.top):
             works = list(self.ladder.get(level + 1, []))
@@ -231,8 +266,11 @@ class Model:
                     built += 1
             acc.add(self.analyze({k: n * level for k, n in self.levelup_cost.items()}, version))
             members = min(10, max(5, self.members_base + self.members_step * (level - 1)))
-            steps.append({"level": level, "works": works, "acc": acc, "members": members,
-                          "days": acc.energy / (members * self.per_day * self.share)})
+            camp = members * self.per_day * self.share
+            harvest = self.harvest_energy(level) if walled else 0.0
+            days = max(acc.energy / (camp + harvest), acc.make / camp) if harvest else acc.energy / camp
+            steps.append({"level": level, "works": works, "acc": acc, "members": members, "days": days, "harvest": harvest})
+            walled = walled or (bool(self.wall) and self.wall in works)
         return steps
 
     def total(self, steps: list[dict[str, Any]]) -> Acc:
@@ -334,14 +372,17 @@ def same_trade_specs(acc: Acc) -> int:
 def main(argv: list[str]) -> int:
     folder = next((Path(a.split("=", 1)[1]) for a in argv if a.startswith("--content=")), None)
     share = next((float(a.split("=", 1)[1]) for a in argv if a.startswith("--share=")), 0.75)
-    model = Model(folder, share, "--growth-no-oficio" in argv)
+    model = Model(folder, share, "--growth-no-oficio" in argv, "--no-harvest" not in argv)
     required = model.required()
+    harvest = (f"; 🌾 cosecha de la muralla desde el nivel siguiente al de la {model.wall}: {model.harvest_per_zone:.1f} "
+               f"de base por zona y día con el tope de zonas de cada etapa ({model.harvest_energy(6):.0f} ⚡ por día en un "
+               f"pueblo, {model.harvest_energy(7):.0f} en una ciudad)" if model.wall else "; sin la 🌾 cosecha de la muralla")
     print(f"Supuestos: {model.per_energy:.2f} unidades de recurso de base por ⚡ en tu territorio (zona de nivel "
           f"{model.zone_level}, +{int((float(model.bal['gather']['own_land_bonus']) - 1) * 100)} %); 🦌 piel "
           f"{model.unit_energy('piel'):.2f} ⚡ y 🍖 carne {model.unit_energy('carne'):.2f} ⚡ cazando; refinar y fabricar, el ⚡ "
           f"de su receta; cada miembro da {model.per_day * share:g} ⚡ por día ({share:.0%} de {model.per_day:g}); de 5 a 10 "
           f"miembros según el nivel; +{model.growth:.0%} por obra construida"
-          + (" (sin contar los edificios de oficio)" if model.growth_no_oficio else "") + ", obras una tras otra.")
+          + (" (sin contar los edificios de oficio)" if model.growth_no_oficio else "") + ", obras una tras otra" + harvest + ".")
     print()
     print("## Obra por obra (costo de base, sin el +15 % por obra)")
     print()

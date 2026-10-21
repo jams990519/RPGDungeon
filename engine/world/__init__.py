@@ -25,6 +25,8 @@ resources.py dice qué recursos tiene cada zona: los 6 de base (D-87), los propi
 por terreno, de 4 a 6 por zona) y el pescado de las zonas con agua (D-115).
 nodes.py dice dónde hay ✨ nodos de recursos (semilla del mundo: 2 o 3 por tramo de 6 × 6, nunca se mueven) y de qué
 recurso es cada uno (D-171, D-181, D-184).
+harvest.py (0.49, D-309 y D-325) hace las cuentas de la 🌾 cosecha de la muralla de M9: cuánto da por día cada recurso del
+territorio cerrado, cuánto se junta (tope de 7 días) y qué parte entera pasa al 💰 fondo del campamento.
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
     - Encuentros: encounters.py (bioma y franja de nivel de content/enemies.yaml); tests/test_bestiary.py

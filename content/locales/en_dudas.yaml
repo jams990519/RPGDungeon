@@ -139,7 +139,7 @@ faq:
     a: '🔎 Explore searches your zone: each run takes {explore_min} min and 1 ⚡, adds {explore_low} to {explore_high}% of the zone and can give you items, coins or a fight. At {reveal}% you discover its resources one at a time. With the zone at 100% you keep going with the neighboring ones without moving.'
   d09:
     q: 🧺 How do I gather?
-    a: '🧺 Gather collects the resources you''ve already discovered in your zone: each run takes {gather_min} min and 1 ⚡. If you gather a lot, the zone gets depleted and recovers on its own over the hours (the 6 base ones, about {base_units} per hour). In your camp''s territory you gather {own_bonus}% more. To collect only 🪵 wood, 🪓 Chop wood (/d57).'
+    a: '🧺 Gather collects the resources you''ve already discovered in your zone: each run takes {gather_min} min and 1 ⚡. If you gather a lot, the zone gets depleted and recovers on its own over the hours (the 6 base ones, about {base_units} per hour). No fights show up in your camp''s territory; since 0.49 you gather there the same as outside and, with the 🧱 Wall, the land harvests by itself for the 💰 fund (/d61). To collect only 🪵 wood, 🪓 Chop wood (/d57).'
   d10:
     q: 🔢 What are batches?
     a: When exploring, gathering or hunting, you choose how much energy to spend in a row ({batches} or All). Your hero does one run after another and I'll send you a summary at the end. If a fight comes up, the batch stops and you fight it yourself.
@@ -277,7 +277,7 @@ faq:
     a: 'Every place shows its coordinates: (x, y). You are where 📍 Zone says. North adds to y and east adds to x: (3, -2) is 3 zones east and 2 south of the Clearing, which is (0, 0). To go, type /go x y (for example, /go 3 -2): the way is laid out in 🔗 Move, first east-west, then north-south, and you tap ✅ Finish. Up to {walk_max} steps at a time.'
   d57:
     q: 🪓 How do I get wood?
-    a: '🪵 There is wood in every zone, and more in forests, dark forests and jungles. In 🧭 Explore, 🪓 Chop wood collects only wood: like 🧺 Gather ({gather_min} min and 1 ⚡ per run, the same batches), but every unit is wood and it raises the 🪓 Lumberjack. In your territory you collect {own_bonus}% more and on a ✨ wood node it yields ×{node_yield}. It runs out and grows back on its own: about {base_units} per hour in each zone.'
+    a: '🪵 There is wood in every zone, and more in forests, dark forests and jungles. In 🧭 Explore, 🪓 Chop wood collects only wood: like 🧺 Gather ({gather_min} min and 1 ⚡ per run, the same batches), but every unit is wood and it raises the 🪓 Lumberjack. On a ✨ wood node it yields ×{node_yield}. It runs out and grows back on its own: about {base_units} per hour in each zone.'
   d58:
     q: 🏛️ How do I sell to other players?
     a: 'At a 🔥 campfire, 🛒 Merchant → 🏛️ Market (or /market; also at your camp with a 🏪 Trading Post). 🏷️ Sell: gear and crafted goods (potions, remedies, furniture, food, bags and chests) with their code (/s1); you set the price and the quantity and it leaves your backpack. When someone buys, you get paid at once minus a {market_tax}% tax. Resources are sold in 📥 Buy orders, to whoever asks for them. Up to {market_orders} orders at a time; they last {market_days} days and ❌ cancelling gives everything back.'
@@ -287,3 +287,6 @@ faq:
   d60:
     q: 💰 Can I use the guild fund for my trade?
     a: 'Yes, at your camp''s stations (not at the 🔥 campfires). Works come first: the fund gives the active works and the ⏫ Next level what they lack, and that is kept for them. What is left over counts when you refine and craft as if you carried it: the recipe takes from your backpack first and then from the fund (✅💰 in the list), up to {fund_cap} a day. It is written down in 🛡️ Guild → 💰 Funds → 📜 Who used what, and the founder or a 🤝 assistant can close it there.'
+  d61:
+    q: 🌾 What is the wall's harvest?
+    a: 'With the 🧱 Wall built (from level {wall_level}, in 🏘️ Services → 🛡️ Defenses), every zone of your camp''s territory harvests by itself {harvest_pct}% of what grows back (about {harvest_zone} a day each), without spending energy and without lowering the zone''s resources. It is kept for up to {harvest_cap} days and every {harvest_days} days it reaches the camp''s 💰 fund by itself (never anyone''s backpack), if some member played that week; every member gets a notice. It goes to the works and the ⏫ Next level first, and what is left over, to the professions (/d60). It replaces the +50% that gathering in your territory used to give. You see it in 🏰 Manage → ⬆️ Improve and in 🛡️ Guild → 💰 Funds.'

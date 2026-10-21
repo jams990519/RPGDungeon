@@ -105,7 +105,7 @@ Desde la fundación hasta castillo se pagan en total **560 de madera, 370 de pie
 
 **Qué da el territorio:**
 - En cualquier territorio (de tu campamento, de otro o del Claro) no te atacan: ni al llegar, ni al explorar, ni al recolectar.
-- **En el territorio de tu campamento recolectas un 50 % más** (`gather.own_land_bonus`, D-87).
+- ~~En el territorio de tu campamento recolectas un 50 % más~~ (D-87, hasta la 0.48). **Desde la 0.49 (D-309):** en tu territorio juntas lo mismo que afuera (`gather.own_land_bonus` 1,0) y, con la 🧱 Muralla, **todo el territorio cosecha solo** el 20 % de lo que vuelve a crecer para el 💰 fondo del campamento, una vez por semana ([Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §5.5).
 - Nadie puede fundar otro campamento encima.
 - El viaje cuenta la distancia desde la zona más cercana de tu territorio.
 
@@ -158,7 +158,7 @@ En total son 20 mejoras (unos 5.000 materiales y 14 🥈). Todas se abren antes 
 
 | Estudio | Cuesta | Qué hace (solo miembros) |
 |---|---|---|
-| ⚒️ Herramientas | 150 madera, 50 metal y 3 🥈 | +10 % de recursos al recolectar en el territorio (encima del +50 % de siempre) |
+| ⚒️ Herramientas | 150 madera, 50 metal y 3 🥈 | +10 % de recursos al recolectar en el territorio (hasta la 0.48, encima del +50 %; desde la 0.49, D-309, es el único bono) |
 | 🗺️ Cartografía | 150 fibra, 80 arcilla y 3 🥈 | +5 puntos de exploración por vuelta en el territorio |
 | 🐾 Rastreo | 100 fibra, 60 hierba, 40 carne y 3 🥈 | +10 % de probabilidad de 🍖 carne en el territorio y en las zonas que lo tocan (en el territorio no hay peleas, D-81) |
 

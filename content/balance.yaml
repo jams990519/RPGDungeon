@@ -282,7 +282,7 @@ gather:                      # [ES] recolectar en la zona actual
   minutes: 8
   amount: [1, 3]             # [ES] unidades por recolección (más 1 cada 3 niveles de zona)
   encounter_scale: 0.4       # [ES] probabilidad de pelea = peligro del bioma × esto
-  own_land_bonus: 1.5        # [ES] D-87: en el territorio de tu campamento recolectas un 50 % más
+  own_land_bonus: 1.0        # [ES] D-87 daba 1,5 (+50 % al recolectar en el territorio de tu campamento). D-309 (confirmada por el dueño el 20-oct-2026, E-217): la 🌾 cosecha de la muralla (bloque harvest) lo REEMPLAZA, así que desde la 0.49 vale 1,0 (sin bono). La clave queda (la lee GameService._gather_step con las ⚒️ Herramientas encima); no volver a subirla sin el dueño (D-239.3: nada de bonos de farmeo aparte)
   xp_per_step: 14            # [ES] D-108: experiencia por recolección (× nivel de la zona, como matar): solo recolectando también se llega al nivel 100, al ritmo de explorar y cazar
 
 nodes:                       # [ES] D-181 (confirmada) y D-184 (provisional; números propuestos por Claude, se ajustan en la beta): nodos de recursos del mapa (mapa-infinito-y-viaje.md §1.16). Lugar fijo (semilla del mundo), igual para todos; su tipo se descubre al llegar a su zona
@@ -549,6 +549,15 @@ fund_crafts:                 # [ES] D-322 (0.47, pedido del dueño del 21-oct-20
   default_open: true         # [ES] el fondo para oficios empieza 🔓 abierto; el fundador o un 🤝 asistente lo cierra en 💰 Fondos (E-241, P-252)
   log_kept: 20               # [ES] cuántas líneas guarda 📜 Quién usó qué (usos, y quién abrió o cerró)
   log_shown: 10              # [ES] cuántas muestra la pantalla 📜 Quién usó qué
+
+harvest:                     # [ES] D-309 (confirmada por el dueño el 20-oct-2026, E-216 y E-217) y D-325 (cómo se aplicó, Claude, provisional; 0.49): la 🌾 cosecha de la muralla. Con la 🧱 Muralla construida, cada zona del territorio del campamento da sola una parte de lo que vuelve a crecer, al 💰 fondo del campamento ("upgrades"."fund"), nunca a la mochila de nadie. Reemplaza el +50 % de gather.own_land_bonus. Cuentas: engine/world/harvest.py; la entrega: GameService._harvest_tick (desde tick()). Diseño: diseno/09-construccion/escalera-del-asentamiento.md §5.5
+  wall: muralla              # [ES] la obra que cierra el territorio (id de content/camp_upgrades.yaml). D-325 (E-247): mientras no exista la muralla por anillos (escalera §5.2), con ella construida TODO el territorio cuenta como cerrado
+  share: 0.20                # [ES] D-309 (E-216): el 20 % de lo que vuelve a crecer cada recurso de cada zona por día
+  real_regen: false          # [ES] D-325 (E-248): false = sobre lo que vuelve cada recurso sin el ×3 de la 0.42 ni el ⛲ Pozo (stock.regen_per_hour ÷ stock.per_unit × 24 = 24 unidades por día, el número de la pregunta que respondió el dueño): 4,8 por recurso y día, unas 27 por zona (de 4 a 6 recursos). true = lo que vuelve de verdad (stock.regen_mult y el ⛲ Pozo): unas 53 por zona, el doble
+  week_days: 7               # [ES] D-325: cada cuántos días llega lo guardado al 💰 fondo, de una vez y con un aviso a los miembros (uno por semana: nada de avisos diarios)
+  cap_days: 7                # [ES] D-309: lo guardado no pasa de 7 días de cosecha de cada recurso (si la entrega se atrasa, no se junta más)
+  active_days: 7             # [ES] D-309: solo llega si algún miembro jugó (Hero.seen_at) en los últimos 7 días al momento de la entrega; si no, lo de esa semana se pierde (un campamento abandonado no se llena solo)
+  scan_minutes: 60           # [ES] cada cuánto mira tick() los campamentos con muralla; una muralla construida antes de la 0.49 empieza a contar como mucho esto antes de que el juego la vea por primera vez
 
 professions:                # [ES] D-109: oficios encadenados, fase 1 (recolectar → refinar → fabricar; catálogo y recetas en content/professions.yaml). Sin tope de oficios (D-57). Números propuestos por Claude: se ajustan en la beta
   # [ES] Experiencia de oficio total para el rango R = base × (R − 1) ^ exponent. Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209.

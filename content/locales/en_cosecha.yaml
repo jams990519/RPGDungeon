@@ -1,0 +1,13 @@
+# Texts of the wall's harvest (D-309, D-325; 0.49), in English. Same keys as es_cosecha.yaml.
+# [ES] Los mismos textos que es_cosecha.yaml, en inglés (D-250). Una clave nueva va en los dos archivos
+# (tools/check_locales.py).
+
+harvest:
+  # ---- the line of ⬆️ Improve, 💰 Funds and ℹ️ Information
+  line: "🌾 Wall harvest: +{per_day}/day · stored {stored} (cap {cap} days) · to the 💰 fund in {time}"
+  no_wall: "🌾 With the 🧱 Wall built, every zone of the territory harvests by itself {pct}% of what grows back for the 💰 fund: about +{per_day}/day with {zones} {zones|zone|zones} of territory."
+  days: "{n} {n|day|days}"
+  # ---- the weekly notice (to every member, in their language)
+  push_title: "🌾 Wall harvest"
+  push: "🌾 The week's harvest ({zones} {zones|zone|zones}) reached the 💰 fund of {camp}: {items}."
+  push_where: "It goes to the active works and the ⏫ Next level first, when someone contributes, deposits or activates a work; what is left over stays for the professions."

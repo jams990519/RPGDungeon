@@ -48,7 +48,8 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     _guild_view, _members_cap, _upgrades, _upgrade_catalog, _upgrade_name, _create_camp, _territory, _trip_seconds, _zone_players;
     0.39: _active_works, _feed_works, _upgrade_need, _camp_perks, _credit_raw, _missing_text, _works_refresh, _camp_member_order,
     _gear_name, _enchant_mark, _forget_piece, _bag_full y _bag_full_line; 0.47 (D-322): _upgrades_here, _lvlup_need,
-    _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today), content/balance.yaml fund_crafts y
+    _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today; 0.49 (D-325): _harvest_line, la línea de la 🌾 cosecha
+    de la muralla en 💰 Fondos), content/balance.yaml fund_crafts y
     content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (las respuestas "gans:", "ginv:", "gcamp:", "cinv:" antes del
     combate y _works_settle después de _settle), view() y text() (_works_settle; los códigos /j1 /p1, /g1, /m1, /f02 y /inv_<código>;
@@ -109,6 +110,8 @@ Datos de los que es dueño:
     D-291 (0.39): después de fundar, 💰 Depositar y /f02 ponen en el fondo del campamento ("upgrades"."fund", quién dio qué en
         "upgrades"."gave") y el fondo alimenta las obras activas (game.py _feed_works); al fundar, los 📢 mensajes del gremio
         pasan a "messages" del campamento. Lo que se dio al fondo antes de fundar sigue en "gave" del gremio (se lee junto).
+        D-325 (0.49): la 🌾 cosecha de la muralla (game.py _harvest_deliver) también pone en "upgrades"."fund" cada semana; no
+        es de nadie, así que no va a "gave" (queda en "upgrades"."harvest"."total").
     D-322 (0.47): "upgrades" suma "fund_crafts" (True/False: el fondo para oficios 🔓 abierto o 🔒 cerrado; sin el campo,
         fund_crafts.default_open), "fund_used" ({"day": _today(), "by": {cuenta: unidades}}: lo que cada miembro tomó hoy para
         sus oficios; un día nuevo empieza de cero) y "fund_log" ([{"k": "use" | "open" | "close", "who", "id", "at", y en "use"
@@ -719,9 +722,10 @@ class GremioMixin:
         💰 Depositar ("gfund": tu mochila con los códigos /f02, quién dio qué) y ↩️ Volver al gremio. Sin gremio, la pantalla
         del gremio. D-322 (0.47): después de fundar suma el fondo para oficios (_fund_craft_lines: 🔓/🔒, el tope del día, lo
         guardado para las obras y el nivel, lo que sobra) y los botones 📜 Quién usó qué ("gflog") y, para el fundador o un 🤝
-        asistente, 🔒 Cerrar / 🔓 Abrir para oficios ("gfcraft"): 4 botones como mucho. La llama: el botón 💰 Fondos ("gfunds"),
-        el ↩️ de 💰 Depositar y de 📜 Quién usó qué, y _fund_craft_toggle. Si cambia, afecta:
-        tests/test_submenus_campamento_gremio.py y tests/test_fondo_para_oficios.py."""
+        asistente, 🔒 Cerrar / 🔓 Abrir para oficios ("gfcraft"): 4 botones como mucho. D-325 (0.49): debajo de las obras
+        activas, la línea de la 🌾 cosecha de la muralla (game.py _harvest_line). La llama: el botón 💰 Fondos ("gfunds"; también
+        el del aviso de la cosecha), el ↩️ de 💰 Depositar y de 📜 Quién usó qué, y _fund_craft_toggle. Si cambia, afecta:
+        tests/test_submenus_campamento_gremio.py, tests/test_fondo_para_oficios.py y tests/test_cosecha_muralla.py."""
         t = self.texts
         record = self._my_gremio(hero)
         camp: dict[str, Any] | None = None
@@ -739,8 +743,9 @@ class GremioMixin:
                 return self._gremio_view(hero, notice=notice)
             upgrades = self._upgrades(f"{camp['x']}:{camp['y']}")
             fund = upgrades.get("fund") or {}
-            body = [t.t("guildmenu.funds_intro"), t.t("guildmenu.funds_works", n=len(self._active_works(camp, upgrades))), ""]
-            body += self._fund_item_lines(fund) or [t.t("guildmenu.funds_empty")]
+            body = [t.t("guildmenu.funds_intro"), t.t("guildmenu.funds_works", n=len(self._active_works(camp, upgrades)))]
+            body += self._harvest_line(camp, upgrades)       # D-325 (0.49): 🌾 what the wall's harvest brings to this fund
+            body += [""] + (self._fund_item_lines(fund) or [t.t("guildmenu.funds_empty")])
             body += [""] + self._fund_craft_lines(camp, upgrades, hero)      # D-322: 🛠️ the fund for the professions
             title = t.t("guildmenu.funds_title")
         if fund:

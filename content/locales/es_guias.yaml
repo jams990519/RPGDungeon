@@ -83,7 +83,7 @@ guides_page:
       📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo: los 6 de base (madera, piedra, fibra, hierba, metal y arcilla), un {base_regen} % por hora (unas {base_units} unidades); los propios del terreno y el pescado, un {stock_regen} %. Agotado, no da nada.
       ✨ En un nodo, su recurso rinde ×{node_yield}, se agota más lento y a veces ({node_rare} %) da algo raro.
       🎒 Con la mochila llena ({bag_cap}) no recolectas: vende o usa cosas.
-      🏕️ En el territorio de un campamento no salen peleas, y en el tuyo juntas un {own_bonus} % más.
+      🏕️ En el territorio de un campamento no salen peleas. Con la 🧱 Muralla, la tierra de tu campamento cosecha sola el {harvest_pct} % de lo que vuelve a crecer, para el 💰 fondo.
       ⚒️ Sin el oficio juntas lo básico; aprendido, a veces sale una unidad más y, con rango, algo raro.
   hunt:
     title: "🏹 Caza y comida"
@@ -172,7 +172,7 @@ guides_page:
       ▶️ El fundador o un 🤝 asistente (1 cada {helpers_per} miembros) activa una obra; todos aportan con 🤲, o desde lejos con 💰 Depositar.
       📈 Cada obra nueva cuesta un {growth_pct} % más por cada obra que ya construyeron.
       🏗️ Con los materiales completos se construye: {work_minutes} min por nivel con {work_members} miembros en el territorio (con más, menos).
-      ⬆️ Mejorar (🏰 Gestionar): ⏫ Siguiente nivel lista las obras y los materiales que faltan; 🗺️ Agrandar territorio suma una zona hacia donde elijan el fundador o un 🤝 asistente (ahí recolectas un {own_bonus} % más).
+      ⬆️ Mejorar (🏰 Gestionar): ⏫ Siguiente nivel lista las obras y los materiales que faltan; 🗺️ Agrandar territorio suma una zona hacia donde elijan el fundador o un 🤝 asistente; 🌾 con la 🧱 Muralla (nivel {wall_level}) cada zona cosecha sola el {harvest_pct} % de lo que vuelve a crecer (unas {harvest_zone} por día) y cada {harvest_days} días llega al 💰 fondo, si alguien jugó esa semana (/d61).
       🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear.
   dungeons:
     title: "🕳️ Mazmorras y enemigos"
