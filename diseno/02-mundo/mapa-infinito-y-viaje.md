@@ -387,7 +387,7 @@ Coordenadas 1, 2 · Lejanía 2
   - Con la mochila en 60 o más **no se recolecta ni se compra** en el mercader hasta vender o usar cosas: "🎒 Mochila llena (63/60): vende o usa cosas para volver a recolectar o comprar." No se gasta energía ni monedas.
 - **El territorio vale:** al agrandar tu campamento eliges qué zona vecina toma, viendo los recursos que conoces de cada una. Desde la 0.49 (D-309) en tu territorio juntas lo mismo que afuera, y con la 🧱 Muralla todo el territorio cosecha solo para el 💰 fondo del campamento (antes: +50 % al recolectar; [Escalera del asentamiento](../09-construccion/escalera-del-asentamiento.md) §5.5). El campamento cambia de nombre al crecer: campamento, aldea (nivel 3), pueblo (5), ciudad (7) y castillo (9).
 - Lo pidió el dueño. Los números los propuso Claude.
-- **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más.
+- **Falta (P-74):** sembrar, comprar semillas a otros jugadores y hacer abonos para que una zona produzca más. **Desde la 0.60 (D-145, D-336)** los oficios ya aceleran lo que vuelve (🌱, abajo).
 
 > **0.40 (D-300, pedido del dueño): más madera.** Los terrenos de bosque (bosque, bosque oscuro, selva) siempre tienen madera (riqueza ≥ 0,7); fuera de ellos entra en algunas zonas más, y vuelve el doble de rápido que los demás recursos. Solo se suma, sin quitar recursos.
 
@@ -406,6 +406,14 @@ Coordenadas 1, 2 · Lejanía 2
 > - **El lote se corta** cuando la madera de la zona baja del 15 % (antes de cobrar la vuelta siguiente), con la mochila llena, sin energía, con una pelea o con ❌ Detener. Con la madera agotada no empieza: el aviso propone otra zona o 🧺 Recolectar.
 > - **Los 6 recursos de base** (madera, piedra, fibra, hierba, metal y arcilla) **vuelven 3 por hora** en cada zona en vez de 1 (la madera venía con ×2 de D-300); los propios del terreno y el pescado siguen igual. El ⛲ Pozo se multiplica encima.
 > - En el código es un modo de recolectar (`BATCH_MODES` "chop": la actividad sigue siendo "gather" con `only`), así cuenta igual para misiones, gremio, camino guiado, presencia ("🪓 talando") e informes.
+
+> **0.60 (D-145, confirmada por el dueño en E-29: "una zona agotada vuelve sola, pero lento; los oficios aceleran y aumentan esa regeneración"; cómo se aplicó: D-336, provisional): 🌱 el cuidado de los oficios.** La vuelta sola ya estaba (D-87, ×3 los de base desde la 0.42). Ahora, quien recolecta un recurso con su oficio de recolección **aprendido** (🪓 Leñador: madera, resina y corteza; ⛏️ Minero: piedra, metal, arcilla y los minerales del terreno; 🌿 Herbolario: hierba, fibra y las plantas; 🎣 Pescador: pescado) **cuida** ese recurso en esa zona: vuelve un **2 % más rápido por rango** (`stock.tend.per_rank`), hasta **el doble** en el rango 50 (`max_bonus`), durante **24 horas** desde la última vuelta (`hours`), para todos los que recolectan ahí.
+>
+> - **Ejemplo:** la madera de una zona vuelve 3 unidades por hora; con un 🪓 Leñador de rango 10 que taló ahí, 3,6 por hora durante un día; con uno de rango 50 o más, 6 por hora (de vacía a llena en ~8 h en vez de ~17).
+> - Uno más fuerte reemplaza al que había; uno más débil no lo acorta. Sin el oficio aprendido (rango 0) no hay cuidado.
+> - **📍 Zona lo muestra** debajo de los recursos: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min".
+> - **No cuenta** en la 🌾 cosecha de la muralla (que lee lo que vuelve sin el ×3 ni el ⛲ Pozo, E-248) ni en ningún otro lugar: solo en lo que queda para recolectar.
+> - En el código: `_tend_after` (lo escribe al recolectar, también al 🪓 talar y 🎣 pescar), el registro "tend" de la zona en el espacio `stock` y `_stock` (las horas de más hasta `until`); preguntas: E-283 (P-294).
 
 > **0.43 (D-306.5, confirmada por el dueño el 20-oct; cómo se aplicó: D-316, provisional): 🎣 Pescar.** Lo mismo que 🪓 Talar con el 🐟 pescado: una vuelta de recolectar en la que todo es pescado (1 ⚡, 8 min, 1 a 3 unidades más las de zonas lejanas, los mismos lotes) y que sube al 🎣 Pescador; solo agota el pescado (vuelve ×1, 2 % por hora) y el lote se corta cuando se acaba. El botón sale donde la zona tiene agua: en el 🐸 pantano siempre (todo es agua) y en las demás zonas con agua (ríos y lagunas) cuando ya sabes que ahí hay pescado (explorándola, o tu gremio, D-282), para que el botón no delate un río que no encontraste. Con madera y agua, 🧭 Explorar tiene **6 botones en 4 filas**: 🔎 Explorar; 🧺 Recolectar y 🪓 Talar; 🎣 Pescar y 🏹 Cazar (o la mazmorra); 🗺️ Mapa. En el código: `BATCH_MODES` "fish", `activity["mode"]`, `_can_fish`, `_batch_mode`.
 
