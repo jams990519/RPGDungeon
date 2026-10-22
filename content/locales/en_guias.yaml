@@ -113,6 +113,7 @@ guides_page:
       💸 Whoever gets the coins pays a {market_tax}% tax. The price stays inside a band, so nobody gives things away or inflates them.
       🐴 What you buy reaches 📦 Deliveries in {market_delivery}: collect it at any 🔥 campfire or at your camp, as far as it fits.
       📋 Up to {market_orders} orders at a time; they last {market_days} days. ❌ Cancelling or expiring gives back everything left.
+      📜 Crafting orders (/orders): you order from an artisan what you cannot make; you put in the materials or pay them to get them, plus their labor, and what they make reaches your 📦 Deliveries. More in ❓ /d64.
   # ---- ⚙️ How it works
   energy:
     title: "⚡ Energy and health"

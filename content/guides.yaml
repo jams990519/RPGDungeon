@@ -43,7 +43,7 @@ guides:
   gather: {category: resources}     # [ES] 🧺 recolectar y 🪓 talar (D-305, 0.42): vueltas, lotes, agotarse (los 6 de base ×3), nodos, mochila y territorio
   hunt: {category: resources}       # [ES] 🏹 caza y comida: presas, pescado, cocina, despensa y provisiones
   trades: {category: resources}     # [ES] ⚒️ oficios: aprender, refinar, fabricar, estaciones y especializaciones
-  market: {category: resources}     # [ES] 🏛️ mercado entre jugadores (D-320, 0.46): vender, pedidos de compra, impuesto, 📦 Entregas
+  market: {category: resources}     # [ES] 🏛️ mercado entre jugadores (D-320, 0.46): vender, pedidos de compra, impuesto, 📦 Entregas; desde la 0.59 (D-335), una línea de los 📜 pedidos de fabricación
   # ---- ⚙️ Cómo funciona
   energy: {category: howto}         # [ES] ⚡ energía y vida
   map: {category: howto}            # [ES] 🚶 moverte, coordenadas, lugares y fogatas

@@ -505,6 +505,15 @@ durability:                  # [ES] D-139 (confirmada, E-23: "el equipo se gasta
   order_mult: 2              # [ES] un 📜 encargo de reparación paga al artesano 2 × lo que valen los materiales (D-140: los materiales que pone, más su mano de obra; menos el impuesto del mercado, market.tax)
   order_days: 7              # [ES] un encargo vence a los 7 días: las monedas vuelven solas
 
+craft_order:                 # [ES] D-140 (confirmada, E-24: "le das al artesano los materiales, o le pagas para que los consiga, más su mano de obra; todo servicio entre jugadores se cobra aparte") y D-335 (0.59, cómo se aplicó; provisional): los 📜 pedidos de fabricación (engine/service/craft_orders.py; profesiones.md §0.13). El impuesto (market.tax, sobre todo lo que cobra el artesano), el tope de pedidos abiertos (market.max_orders, contados aparte de las órdenes del mercado), la banda (market.price_min y price_max) y el viaje a 📦 Entregas (market.delivery_minutes) son los del 🏛️ Mercado. Cuentas en el registro de balance ("los pedidos de fabricación")
+  order_days: 7              # [ES] un pedido vence a los 7 días (como los encargos de reparación y las órdenes del mercado): las monedas vuelven a la bolsa y los materiales a 📦 Entregas
+  max_units: 5               # [ES] veces como mucho en un pedido ("1 o un número chico"); se cambia con los botones o escribiendo "x3"
+  qty_buttons: [1, 2, 5]     # [ES] los botones de cantidad del borrador
+  labor_per_energy: 8        # [ES] la mano de obra sugerida de una vez: 8 🥉 por ⚡ de la receta...
+  labor_rank_step: 20        # [ES] ...× (1 + rango de la receta ÷ 20): espada de rango 1 (2 ⚡) 17 🥉; de rango 45 (2 ⚡) 52 🥉; pieza de rango 100 (4 ⚡) 192 🥉. La banda es la del mercado: de 0,25 a 10 veces la sugerida (D-26, contra pasar monedas a otra cuenta)
+  labor_buttons: [1, 2, 3]   # [ES] los botones de mano de obra del borrador: ×1, ×2 y ×3 de la sugerida (dentro de la banda)
+  station_shown: 3           # [ES] cuántos pedidos que puedes hacer muestra la lista de una estación (🪚 Refinar, 🛠️ Fabricar, 🍲 Cocinar); el resto, en /pedidos
+
 feedback:                    # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opciones; el bot manda cada mensaje al chat de informes
   max_chars: 1000            # [ES] largo máximo que se guarda de un mensaje
   kinds: [bug, idea, balance, confusing, other]   # [ES] D-275 (0.35, confirmada): tipos que elige el jugador (🐞 Error, 💡 Idea, ⚖️ Balance, ❓ No se entiende, 💬 Otro); sus nombres y palabras en content/locales (feedback.kind, feedback.keywords)
