@@ -35,7 +35,7 @@ Cuando algo de aquí quede viejo, se corrige en el mismo cambio que lo cambia.
    ```
 3. **Comprobar que todo anda:**
    ```bash
-   python -m pytest -q                       # 539 pruebas; tarda unos 20 minutos
+   python -m pytest -q                       # más de 1.000 pruebas (0.59): de corrido tardan unas 2 horas; conviene pedirle a Claude que las corra en 4 partes a la vez
    python -m adapters.cli.play --fast        # jugar en la consola; "q" para salir
    ```
    Después de jugar en la consola, **borrar la carpeta `data/`** (guarda la partida de prueba en `data/consola.sqlite3` y no se sube). En Windows: `Remove-Item -Recurse data` (PowerShell) o `rmdir /s /q data` (CMD); en macOS o Linux: `rm -rf data`.
@@ -303,7 +303,7 @@ El mundo se reinicia al abrir la beta, no antes (D-273).
 - **Conectores:** si la terminal entra con la cuenta de claude.ai, los conectores conectados en claude.ai (por ejemplo Notion) aparecen solos; se revisan con `/mcp`.
 - **Agregar uno a mano:** `claude mcp add --transport http notion https://mcp.notion.com/mcp`. Para Railway, la dirección `https://mcp.railway.com` no está comprobada; hay que revisarla en la documentación de Railway.
 - **Más ayuda:** https://code.claude.com/docs/en/mcp.md y https://code.claude.com/docs/en/claude-code-on-the-web.md
-| Telegram | No hace falta: el bot corre en Railway. Para probar, la consola (`python -m adapters.cli.play`) |
+| Telegram | No hace falta: el bot corre en Railway. Para probar, la consola (`python -m adapters.cli.play`). **Nunca arrancar el bot en la computadora con el token de @LostRealmsbot:** dos copias con el mismo token se pisan con la de Railway (22-oct-2026) |
 
 ## De dónde sale
 
