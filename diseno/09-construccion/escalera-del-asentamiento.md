@@ -1,6 +1,6 @@
 # Escalera del asentamiento: de 5 a 200 jugadores
 
-> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329); (0.55): las 🪖 escuadras de 5 con su 🎖️ jefe (§0.6, D-331); (0.56): una 🎯 misión de grupo en cada subida de nivel (§0.7, D-136 y D-332)**; las tareas por escuadra, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
+> **Módulo** [09 · Construcción](README.md) · **Depende de:** [Fundación y cisma](../02-mundo/fundacion-y-cisma.md), [Supervivencia del asentamiento](../02-mundo/supervivencia-del-asentamiento.md), [Gremios y social](../08-social/gremios-y-social.md), [Casa propia](casa-propia.md) · **Alimenta a:** [Defensa y protecciones](defensa-y-protecciones.md), [PvP](../06-contenido/pvp.md), [Economía](../07-economia/economia.md) · **Estado:** confirmado por el dueño en lo grande (D-252, D-253 y D-254, 17-oct-2026; D-269, 18-oct, reemplaza a D-252); los números son propuesta de Claude, a medir en la beta. **En el código (0.36): el gremio desde el primer momento, fundar con el gremio y las obras con tiempo (§0); (0.41): ⏫ Siguiente nivel con su lista, 🗺️ Agrandar territorio con tope de zonas por etapa y el 🤝 asistente (§0.2, D-304); (0.49): la 🌾 cosecha de la muralla, que reemplaza el +50 % de tu territorio (§5.5, D-309 y D-325); (0.51): un solo cupo por etapa hasta castillo, los 🤝 asistentes como oficiales, quien no juega 30 días libera su lugar y el castillo con 40 activos (§0.4, D-327); (0.53): las 🌊 oleadas crecientes del castillo (§0.5, D-329); (0.55): las 🪖 escuadras de 5 con su 🎖️ jefe (§0.6, D-331); (0.56): una 🎯 misión de grupo en cada subida de nivel (§0.7, D-136 y D-332); (0.61): la ⚔️ dificultad escalonada de las oleadas, más fuertes en el castillo (§0.8, D-153 y D-337)**; las tareas por escuadra, las etapas 7 a 10, mantener el castillo y la muralla por anillos todavía no
 
 El dueño pidió (17-oct) armar los grupos, gremios y castillos para que "empecemos con 5 jugadores y a partir de ahí vaya creciendo incluso hasta 200 jugadores". Claude le mostró tres formas; eligió **A + B** con las cuatro recomendaciones, sumó la regla de la fogata y la idea de la muralla que cosecha sola.
 
@@ -214,6 +214,42 @@ D-136 (confirmada) pide que "para abrir cada nivel del campamento el grupo cumpl
 - **Dónde está:** `engine/service/group_missions.py` (`GroupMissionMixin`: `_gm_target`, `_gm_start`, `_gm_state`, `_gm_row`, `_gm_how_line`, `_gm_new_line`, `_gm_all_part`, `_gm_board_lines`, `_gm_event`, `_gm_complete`); los ganchos en `engine/service/game.py` (`_create_camp`, `_level_up`, `_lvlup_rows` tipo "mission", `_lvlup_view`, `_lvlup_all_view`, `_end_combat` con `raid=True`) y `engine/service/story.py` (`_story_event`, `_camp_task_lines`); el tipo `defend` en `engine/story/rules.py`; las misiones en `content/story.yaml` → `group_missions` (ids estables, una por nivel de destino) y los números en `content/balance.yaml` → `group_missions` (`per_member` 0,15, `members_cap` 40, `reward_per_level`); lo guardado en el espacio `group_mission` (clave del campamento); los textos en `content/locales/es_misiones_grupo.yaml` y `en_misiones_grupo.yaml`; las pruebas en `tests/test_misiones_de_grupo.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-36.
 - **Preguntas para el dueño:** E-269 a E-271 (P-280 a P-282).
 
+## 0.8 La ⚔️ dificultad escalonada de las oleadas (0.61, D-153; cómo se aplicó: D-337)
+
+D-153 (confirmada en la entrevista de voz, E-37) pide: "empieza media y sube con el tiempo y el avance. Al llegar a castillo, los enemigos ya saben dónde estás y las oleadas son más fuertes". La prioridad de lo grande sigue siendo el asentamiento y el castillo (D-310). Cómo quedó lo eligió Claude en la capa simple (D-337, provisional) y se le pregunta al dueño (E-284 a E-286).
+
+- **Qué sube:** solo la **oleada normal** del campamento (las 3 por semana, D-154): la vida y el ataque de sus atacantes. La 🛡️ Defensa la frena después, como siempre (D-101). La fuerza se fija cuando la oleada llega y no cambia mientras dura.
+- **Cómo estaba antes:** la oleada no cambiaba con el nivel del campamento. Su enemigo es del bioma y del nivel de la zona del campamento + 1, y la zona no se mueve; con el nivel solo cambiaban las victorias que pide (la mitad de los activos) y la 🛡️ Defensa, que la bajaba. Por eso, al crecer, las oleadas se volvían más fáciles.
+- **Empieza media:** la base es la oleada de siempre (×1). Medido con `tools/sim.py`, un héroe del nivel del enemigo con el equipo inicial gana el 94-100 % de esas peleas. Al empezar, lo difícil es juntarse: la mitad de los activos en 60 minutos (E-284).
+- **Sube con el avance y con el tiempo** (`raids.difficulty`):
+  - **+2 % por cada nivel** del campamento después del 1, contando como mucho el de la ciudad (nivel 8: +14 %);
+  - **+2,5 % por cada semana real** desde que se fundó, con **tope +20 %** (a las 8 semanas).
+- **En el castillo "los enemigos ya saben dónde estás":** la fuerza de la ciudad **× 1,25**. El ritmo sigue en 3 por semana, porque D-154 está confirmada (E-286).
+
+| Momento (con todas las defensas de su nivel) | Fuerza | 🛡️ Defensa | Queda | Sin defensas | Con las defensas | Con 2 puntos dañados |
+|---|---|---|---|---|---|---|
+| Nivel 1, recién fundado | ×1,00 | 1 | ×0,96 | 100 % | 100 % | 100 % |
+| Nivel 3, semana 1 | ×1,07 | 3 | ×0,94 | 98-100 % | 100 % | 98-100 % |
+| Nivel 5, semana 2 | ×1,13 | 6 | ×0,86 | 95-100 % | 100 % | 100 % |
+| Nivel 7, semana 3 | ×1,20 | 7 | ×0,86 | 92-100 % | 100 % | 100 % |
+| Nivel 8 (después de la serie), semana 4 | ×1,24 | 11 | ×0,69 | 88-100 % | 100 % | 100 % |
+| Nivel 8, semana 8 (lo más alto antes del castillo) | ×1,34 | 11 | ×0,75 | 79-100 % | 100 % | 100 % |
+| Castillo, semana 4 | ×1,55 | 11 | ×0,87 | 53-94 % | 100 % | 100 % |
+| Castillo, semana 8 o más (el tope) | ×1,68 | 11 | ×0,94 | 37-87 % | 100 % | 98-100 % |
+
+  Peleas ganadas, medidas como en la 0.53 (§0.5): las 12 especializaciones, forma de jugar atenta, equipo poco común, héroe de 3 a 8 niveles sobre el enemigo, zonas de nivel 10 y 20. Con las defensas construidas y reparadas se sigue ganando casi todo; sin ellas, el castillo pierde muchas. Construir y reparar es lo que mantiene ganables las oleadas, y la 🌾 cosecha de la muralla (§5.5) ayuda a pagar las obras.
+- **Lo que no cambia:** la 🌙 Noche de prueba; las 🌊 oleadas crecientes del nivel 8 (§0.5), que siguen con ×1,2 a ×2,0 sobre la oleada de siempre y no suman esto (después de aprobarlas, las oleadas normales de la ciudad sí); los monstruos de afuera.
+- **Nadie pierde (D-64):** solo cambia la fuerza de las oleadas que lleguen desde el parche. Las semanas cuentan desde la fecha de fundación que todo campamento guarda desde que existe (`created`), también los de antes del parche. Un campamento sin esa fecha cuenta desde el parche (`difficulty_from`).
+- **Se ve:**
+  - en 🏰 Gestionar, ℹ️ Información y el aviso de la 🗼 torre: "⚔️ Dificultad: media ×1,04 (sube con el tiempo y el nivel: +2 % por el nivel, +2 % por el tiempo)";
+  - en el aviso y la pantalla de cada oleada normal: "⚔️ Dificultad de esta oleada: …"; al salir a defender, "⚔️ Dificultad ×1,09: +9 % de vida y de ataque";
+  - en el castillo: "👁️ Los enemigos saben dónde está tu castillo: las oleadas llegan más fuertes (+25 %)";
+  - en el nivel 8, que las oleadas crecientes llevan su propia fuerza; en ⏫ Siguiente nivel del paso a castillo, el aviso 👁️;
+  - en ❓ /d66 (y /d39) y en 📚 Guías → 🏕️ Campamento. Los nombres: media desde ×1, alta desde ×1,15, muy alta desde ×1,45.
+- **Con mantener el castillo (E-262, sin programar):** si el dueño acepta la serie de oleadas crecientes cada 4 semanas, la serie crecería sobre la oleada normal del castillo (con su ×1,25 y lo que subió con el tiempo), para que sus primeras oleadas no sean más débiles que las normales. El tope de tiempo evita que la dificultad siga subiendo con los meses. Si la serie se pierde y el crecimiento se frena, la dificultad no baja.
+- **Dónde está:** `engine/service/raid_difficulty.py` (`RaidDifficultyMixin`), `engine/world/raids.py` (`difficulty_parts`, `difficulty_label`) y los ganchos de `engine/service/game.py` (`_raid_settle`, `_open_raid`, `_defend`, `_raid_notice`, `_raid_watch`, `_raid_lines`, `_lvlup_view`, `_faq_values`); los números en `content/balance.yaml` → `raids.difficulty` (`base` 1, `per_level` 0,02, `per_week` 0,025, `time_cap` 0,2, `castle_mult` 1,25, `labels`); lo guardado en la oleada abierta, `difficulty` (y `difficulty_from` en un campamento sin fecha); los textos en `content/locales/es_dificultad.yaml` y `en_dificultad.yaml`; las pruebas en `tests/test_dificultad_escalonada.py`; la cascada en el [mapa de impacto](../01-plataforma/mapa-de-impacto.md) C-40.
+- **Preguntas para el dueño:** E-284 a E-286 (P-295 a P-297).
+
 ## 1. Lo decidido
 
 | Decisión | Qué dice |
@@ -375,7 +411,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **Consume:**
   - jugadores activos (para subir de etapa y para la Noche);
   - materiales (obras, muralla y mantenimiento);
-  - defensa (oleadas que le pegan a la muralla);
+  - defensa (oleadas que le pegan a la muralla; desde la 0.61, más fuertes con el nivel, las semanas y en el castillo, §0.8);
   - lo que hacen los miembros por el grupo (peleas, recolección, comida y defensa: las 🎯 misiones de grupo, §0.7).
 - **Produce:**
   - lugar para más gente;
@@ -398,6 +434,7 @@ El dueño aceptó las recomendaciones 1 a 4 el 20-oct (D-309) y la tabla de zona
 - **P-271 a P-273 (E-260 a E-262):** las 🌊 oleadas crecientes (0.53, D-329): sus números, cómo empiezan y se reintentan, y qué es mantener el castillo. Recomendado: dejarlas así y medirlas en la beta; que el castillo reciba una serie cada 4 semanas y, si la pierde, se frene su crecimiento.
 - **P-277 a P-279 (E-266 a E-268):** las 🪖 escuadras (0.55, D-331): ganar la Noche de prueba por escuadras, cómo se elige y qué hace el jefe, y cuántas escuadras hay y cómo se reparte a los que llegan. Recomendado: en un parche aparte, la Noche con un vencedor en 4 de cada 5 escuadras en lugar de los 10 vencedores; el jefe así; así, y 1 oficial cada 2 escuadras cuando cambien los oficiales.
 - **P-280 a P-282 (E-269 a E-271):** las 🎯 misiones de grupo (0.56, D-332): una por subida o una por etapa, sus números y su premio, y si son del campamento o de una escuadra. Recomendado: una por subida; dejar los números y medirlos en la beta; que sigan siendo del campamento y que, con escuadras, se vea lo de cada escuadra.
+- **P-295 a P-297 (E-284 a E-286):** la ⚔️ dificultad escalonada (0.61, D-337): si la oleada de siempre es la "media" para empezar, cuánto y cómo sube (por nivel, por semana, el tope y el castillo) y si el castillo recibe oleadas más seguido. Recomendado: dejar la base; dejar los números y medirlos en la beta; el castillo sigue con 3 por semana hasta decidir cómo se mantiene (E-262).
 - **P-264 a P-267 (E-253 a E-256):** la 1.ª parte de la escalera (0.51, D-327): el cupo de cada etapa, el asistente como oficial, quien deja de jugar y los requisitos del castillo. Recomendado: dejarlo así y medirlo en la beta; un solo cargo con 1 cada 5; quitar el gremio de nivel 5 cuando lleguen las oleadas crecientes.
 - **P-81 (E-58):** ✅ Decidido (D-253): esta escalera.
 - **P-79 (E-56):** ✅ Decidido, provisional (D-327 y D-329): la Noche con 10 vencedores distintos y 5 oleadas crecientes ganando 3 (§0.4 y §0.5); E-260 y E-261 la reemplazan.
