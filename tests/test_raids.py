@@ -395,6 +395,14 @@ def test_braseros_count_only_at_night(service):
     build_all(service, braseros)
     day, night = service._camp_defense(camp(service)), service._camp_defense(camp(service), night=True)
     assert braseros and night == day + 1
-    offset = service.content.balance["raids"]["night"]["utc_offset_hours"]
+    # D-126, D-334 (0.58): the Braseros' night is the world clock's 🌙 night (raids.night.source "world"), the same for all
+    cfg = service.content.balance["raids"]["night"]
+    wc = service.content.balance["world_clock"]
+    band = wc["day_hours"] / len(wc["bands"]) * HOUR
+    morning, night_time = wc["anchor"] + HOUR, wc["anchor"] + 2 * band + HOUR      # ☀️ day, then 🌙 night of the same world day
+    assert cfg["source"] == "world" and not service._is_night(morning) and service._is_night(night_time)
+    # "fixed" brings back the hours of before (19 to 6 in UTC−5): one word in balance.yaml (E-277)
+    cfg["source"] = "fixed"
+    offset = cfg["utc_offset_hours"]
     noon, midnight = (12 - offset) * HOUR, (24 - offset) * HOUR
     assert not service._is_night(noon) and service._is_night(midnight)

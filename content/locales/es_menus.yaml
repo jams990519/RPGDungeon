@@ -34,7 +34,7 @@ hub:
   inn_full: "🛏️ Posada: {price} · tu vida ya está llena."
   services: "🏘️ Servicios: {list}."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
   services_none: "🏘️ Servicios: refugio, trueque y taller llegan con las 🔨 Mejoras."   # [ES] sin uso desde la 0.39 (D-288: 🏘️ Servicios por tipo)
-  board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time}."
+  board: "📜 Tablón: {done} de {total} encargos de hoy · cambian en {time} (🕐 {clock})."
   manage: "🏰 Gestionar: ⬆️ mejorar (nivel y territorio), 🔨 mejoras, 🌾 despensa, 🛡️ gremio e ℹ️ información del campamento."   # [ES] D-302: ℹ️ Información está ahí; D-304: ⬆️ Mejorar
   dudas: "❓ Dudas: escribe una palabra y te muestro las preguntas ya respondidas."
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."

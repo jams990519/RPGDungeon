@@ -1095,3 +1095,20 @@ v0_56:
     - "🤝 It adds up what each one does, wherever they are. You see it in ⏫ Next level, in 📜 What each level needs and on the 📜 Board, with what everyone has done and what you put in."
     - "💰 When it's done, the camp's fund gets a small reward in materials and everyone is told. If it was the last thing on the list, any member taps ⏫ Go up."
     - "📏 The goal grows with the level and a little with the members who play, and it stays fixed once it starts. Camps that already existed don't need the mission of the step they were on: the first one comes when they level up. More in ❓ /d36."
+
+v0_58:
+  version: "0.58"
+  title: "🕐 Lost Realms 0.58: tu hora y el día, la tarde y la noche del mundo"
+  title_en: "🕐 Lost Realms 0.58: your time zone and the world's day, evening and night"
+  notes:
+    - "🕐 Elige tu zona horaria en ⚙️ Opciones → 🕐 Zona horaria (o /hora): México, Colombia, Venezuela, Chile, Argentina, España, EE. UU., UTC o cualquier hora con ➖ y ➕. Desde ahí ves las horas del juego en tu hora."
+    - "⏰ Ahora el juego también dice a qué hora pasan las cosas: cuándo cambian los encargos del 📜 Tablón, cuándo termina tu lote o tu viaje, hasta qué hora dura una oleada, cuándo vence una orden del 🏛️ Mercado y cuándo termina una obra. Las oleadas y el tablón siguen siendo los mismos para todos: solo cambia cómo los ves."
+    - "☀️ 🌇 🌙 El mundo tiene día, tarde y noche: un día del mundo dura 4 días reales y cada franja unas 32 horas, así ves las tres aunque juegues siempre a la misma hora. Mira la franja de ahora y cuándo llega la siguiente en 📍 Zona."
+    - "🧺 Cada franja da un poco distinto: de día sale más madera y piedra al recolectar; de noche, más hierbas, setas y pescado; de tarde, lo de siempre. Nada desaparece y la cantidad no cambia. 🧭 Explorar te dice qué sale más ahora en tu zona."
+    - "🔥 Los Braseros de tu campamento ahora defienden más en la 🌙 noche del mundo, que es igual para todos y se ve en 📍 Zona. Más en ❓ /d05."
+  notes_en:
+    - "🕐 Choose your time zone in ⚙️ Options → 🕐 Time zone (or /time): Mexico, Colombia, Venezuela, Chile, Argentina, Spain, the US, UTC or any hour with ➖ and ➕. From then on you see the game's times in your own time."
+    - "⏰ The game now also tells you at what time things happen: when the 📜 Board's tasks change, when your batch or trip ends, until when a wave lasts, when a 🏛️ Market order expires and when a building work ends. Waves and the board are still the same for everyone: only how you see them changes."
+    - "☀️ 🌇 🌙 The world has day, evening and night: a world day lasts 4 real days and each band about 32 hours, so you see all three even if you always play at the same hour. See the current band and when the next one comes in 📍 Zone."
+    - "🧺 Each band gives a little differently: by day, gathering gives more wood and stone; at night, more herbs, mushrooms and fish; in the evening, the usual. Nothing disappears and the amount doesn't change. 🧭 Explore tells you what comes out more now in your zone."
+    - "🔥 Your camp's Braziers now defend more in the world's 🌙 night, which is the same for everyone and shows in 📍 Zone. More in ❓ /d05."

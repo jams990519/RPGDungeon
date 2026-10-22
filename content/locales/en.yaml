@@ -1927,7 +1927,7 @@ travel:
   discovered_named: 🧭 No one had ever set foot in {name}! It goes on the map with your name.
   interrupted: ⛔ Your journey stops at {name}.
   started_route: 🚶 You set out for {name}. You'll go zone by zone; I'll let you know when you arrive.
-  goal: '🎯 Destination: {name} · {legs} legs · you arrive in {time}'
+  goal: '🎯 Destination: {name} · {legs} legs · you arrive in {time} (🕐 {clock})'
   interrupted_fight: ⛔ An enemy jumps you at {name}. Beat it and you go on your way.
   resumed: '🚶 You go on your way: {n} {n|leg|legs} left.'
   route_lost: '🧭 You stay at {name}: the rest of the way was cancelled.'
@@ -2337,13 +2337,13 @@ raids:
   defend_button: 🛡️ Defend
   defense_line: '🛡️ Defense {defense}: the camp''s defenses take {pct}% off their health and attack.'
   watch_title: 🗼 {camp}'s Watchtower
-  watch: '🗼 The tower sees a wave coming: it arrives in {time}. Camp defense: {defense}. Get ready to tap 🛡️ Defend.'
-  watch_line: '🗼 The tower sees a wave coming: it arrives in {time}.'
+  watch: '🗼 The tower sees a wave coming: it arrives in {time} (🕐 {clock}). Camp defense: {defense}. Get ready to tap 🛡️ Defend.'
+  watch_line: '🗼 The tower sees a wave coming: it arrives in {time} (🕐 {clock}).'
   title: 🔔 Wave at {camp}!
   trial_title: 🌙 Trial Night at {camp}
   arrive: ⚔️ A pack led by {enemy} (level {level}) surrounds the camp.
   trial_arrive: '⚔️ Tonight an elite {enemy} arrives (level {level}): more health and more strength.'
-  need: You have {time} to rack up {need} {need|win|wins}. Each member fights once, wherever they are.
+  need: You have {time} (until 🕐 {clock}) to rack up {need} {need|win|wins}. Each member fights once, wherever they are.
   stakes: 'If you fall short, the pantry loses part of its food. Nothing else: no levels, no zones, no members.'
   trial_stakes: If you win, the camp can become a castle. If not, you retry after {days} {days|day|days} and nothing is lost.
   started: '🛡️ You go out to defend {camp}: you face {enemy} (level {level})!'
@@ -2677,7 +2677,7 @@ guardian:
   memento_option: '{item} · {slot} · {stats} · from level {level}'
   memento_done: 🌰 The seed opens and leaves you {item}.
 batch:
-  total_left: ⏳ {time} left in total until it's done.
+  total_left: ⏳ {time} left in total until it's done (🕐 {clock}).
   title_gather: 🧺 Gather
   title_explore: 🔎 Explore
   title_hunt: 🏹 Batch hunt
@@ -2909,7 +2909,7 @@ upgrade:
     desc: Adds 1 ration a day to the pantry.
   braseros:
     name: Braziers
-    desc: 'Fire on the wall: at night it defends even better.'
+    desc: 'Fire on the wall: in the world''s 🌙 night it defends even better.'
   herreria:
     name: Smithy
     desc: Sell the gear you don't use at the camp.
