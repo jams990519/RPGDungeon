@@ -3,8 +3,9 @@
 [ES] Pruebas de ⚙️ Opciones y las peleas automáticas. D-258 (0.33): la pantalla trae 🩹 Retirarse, 🌐 Idioma, 💬 Feedback y
 ↩️ Volver, y las peleas automáticas están apagadas en el juego (sus pruebas las prenden con el arreglo auto_fights_on para
 seguir cuidando el código). D-297 (20-oct-2026, el dueño): suma ❓ Dudas ("dudas@options"; su ↩️ Volver vuelve a
-⚙️ Opciones), 5 botones (button_cap "options"); D-124 y D-334 (0.58): suma 🕐 Zona horaria ("tz"), 6 botones en filas
-[2, 2, 1, 1]. Lo de antes: la pantalla tiene 4 botones como mucho y lo que se cambia queda
+⚙️ Opciones), 5 botones (button_cap "options"); D-124 y D-334 (0.58): suma 🕐 Zona horaria ("tz"); D-336 (0.60):
+suma 💀 Muerte permanente ("oath", D-147): 7 botones en filas [2, 2, 2, 1]. Lo de antes: la pantalla tiene 4 botones
+como mucho y lo que se cambia queda
 guardado; el menú de abajo suma ⚙️ Opciones (6 como mucho) y /opciones la abre. Con ✋ Manual (lo de siempre) el lote se
 corta en la pelea. Con ⚔️ Automática el héroe pelea solo: si gana, el lote sigue; si pierde o su vida queda bajo el límite,
 el lote se corta; el resumen cuenta las peleas y el bot avisa una sola vez por lote (también con el chat cerrado). Las
@@ -85,9 +86,9 @@ def fake_play_out(result, hp=None, calls=None):
 def test_options_screen_has_six_buttons_and_toggles_persist(service):
     make_hero(service)
     view = service.act("test:1", "options")
-    assert view.kind == "options" and len(view.actions) <= button_cap("options") == 6    # D-297: ❓ Dudas; D-334: 🕐 Zona horaria
-    assert ids(view) == ["opt:retreat", "lang", "tz", "fb", "dudas@options", "home"]   # D-258: no auto fights; 💬; D-297: ❓; D-334: 🕐
-    assert view.layout == [2, 2, 1, 1]                                  # D-334: ↩️ Volver still alone at the bottom
+    assert view.kind == "options" and len(view.actions) <= button_cap("options") == 7    # D-297: ❓; D-334: 🕐; D-336: 💀
+    assert ids(view) == ["opt:retreat", "lang", "tz", "fb", "dudas@options", "oath", "home"]   # D-258: no auto fights; 💬; D-297: ❓; D-334: 🕐; D-147: 💀
+    assert view.layout == [2, 2, 2, 1]                                  # D-336: ↩️ Volver still alone at the bottom
     assert "30 %" in view.actions[0].label
     for expected in (50, 70, 30):                       # 30 → 50 → 70 → 30 (D-119: 30 by default)
         view = service.act("test:1", "opt:retreat")

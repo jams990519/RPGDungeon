@@ -1249,6 +1249,36 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (22-oct): la 💀 muerte permanente opcional y los oficios que aceleran lo que vuelve (0.60, D-147 y D-145 confirmadas; D-336 provisional)
+
+El dueño confirmó las dos ideas en la entrevista de voz (E-31 y E-29) sin números; los eligió Claude en la capa simple (D-336, provisional; E-281 a E-283).
+
+| Número (`balance.yaml`) | Antes | Ahora |
+|---|---|---|
+| `permadeath.max_level` (nuevo) | — (no había muerte permanente) | 10: se jura solo hasta el nivel 10 (0 = en cualquier nivel) |
+| `permadeath.confirm_minutes` (nuevo) | — | 10: cada una de las dos confirmaciones vale 10 minutos |
+| `permadeath.hall_shown` (nuevo) | — | 10: el 🪦 Salón muestra los 10 últimos caídos |
+| `permadeath.titles` (nuevo) | — | títulos de prestigio a los 7, 30 y 100 días con 💀 (`hierro_7`, `hierro_30`, `hierro_100`) |
+| `stock.tend.per_rank` (nuevo) | — (los oficios no cambiaban lo que vuelve) | +2 % de lo que vuelve por rango del oficio que recolecta ese recurso |
+| `stock.tend.max_bonus` (nuevo) | — | +100 % como mucho (rango 50 o más: vuelve el doble) |
+| `stock.tend.hours` (nuevo) | — | 24 h desde la última vuelta de recolección |
+| `stock.tend.min_rank` (nuevo) | — | 1: cuenta apenas se aprende el oficio |
+
+**💀 La muerte permanente no mueve la economía.** Los títulos no dan estadísticas ni monedas y nada de lo que tenía el caído pasa al héroe nuevo, salvo lo comprado con 💎 (que es dinero real, D-43) y las ⚙️ Opciones. Lo único que cambia al caer es que el héroe no pierde el 10 % de monedas (`hero.defeat_gold_loss`): todo queda con él en su archivo. Sus órdenes del 🏛️ Mercado y sus encargos se cancelan (no vencen ni se llenan después), así ninguna moneda ni unidad aparece ni desaparece. Con el objetivo de ganar el 90 % de las peleas (§7: 1 perdida de cada 20), un héroe con 💀 que pelea 20 veces por día cae, en promedio, en su primer día: la muerte permanente pide jugar con más margen (pelear abajo de tu nivel, retirarte antes: 🩹 Retirarse, peleas a mano) o cuidarse mucho. Por eso solo se jura hasta el nivel 10 (se pierde poco) y los títulos llegan a los 7, 30 y 100 días.
+
+**🌱 Cuánto acelera el cuidado.** Lo que vuelve por hora en una zona (`stock.regen_per_hour` 2 % × `regen_mult`; cada unidad baja `stock.per_unit` 2 %):
+
+| Recurso | Sin cuidado | Rango 10 (+20 %) | Rango 25 (+50 %) | Rango 50 o más (+100 %) |
+|---|---|---|---|---|
+| Los 6 de base (×3: madera, piedra, fibra, hierba, metal, arcilla) | 3 por hora · de vacío a lleno ~17 h | 3,6 por hora · ~14 h | 4,5 por hora · ~11 h | 6 por hora · ~8,3 h |
+| Los propios del terreno y el 🐟 pescado (×1) | 1 por hora · ~50 h | 1,2 por hora · ~42 h | 1,5 por hora · ~33 h | 2 por hora · 25 h |
+
+- **Para quién:** para todos los que recolectan en esa zona mientras dura (24 h desde la última vuelta del que cuida), no solo para el del oficio. Un 🪓 Leñador de rango 50 que tala cada día en su zona la deja con el doble de madera por hora: en un día, unas 144 unidades en vez de 72 si se recolecta todo lo que vuelve.
+- **Lo que no toca:** la 🌾 cosecha de la muralla (lee `stock.regen_per_hour` sin el ×3 ni el ⛲ Pozo: E-248), los nodos (su ×2 sigue igual) y la cantidad que da cada vuelta. El ⛲ Pozo se multiplica encima (como `regen_mult`).
+- **Cuándo pesa:** en zonas que se recolectan sin parar (cerca de la fogata, el territorio de un campamento). Los oficios de recolección se aprenden (D-272); con rango 1 el cuidado es apenas +2 %: crece con el rango, como pidió el dueño ("aceleran y aumentan").
+
+**Lo que queda por mirar:** cuántos juran la muerte permanente, a qué nivel y en qué pelea caen (E-281, E-282); si sobra madera o piedra en los campamentos con un Leñador o un Minero alto (si sobra, bajar `max_bonus` a 0,5: E-283).
+
 ### Octubre de 2026 (22-oct): los 📜 pedidos de fabricación (0.59, D-140 confirmada; D-335 provisional)
 
 El dueño lo pidió en la entrevista de voz (E-24): el artesano recibe los materiales o la paga para conseguirlos, **más su mano de obra, siempre aparte**. Los números son de Claude (D-335, provisional; E-278 a E-280), con la recomendación de E-272: lo simple primero y medir en la beta. No se crea ni se quema oro nuevo salvo el impuesto: un pedido mueve monedas de un jugador a otro.

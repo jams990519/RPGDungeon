@@ -652,3 +652,15 @@ El dueño lo dijo en la entrevista de voz (E-24): **"le das al artesano los mate
 - **Datos y código:** `content/balance.yaml` → `craft_order`; `engine/service/craft_orders.py` (las pantallas, la custodia, hacerlo, cancelar y vencer); los ganchos en `engine/service/game.py` (`_recipe_code`, `_recipe_view`, `_station_view`, `_prof_detail_view`, `text()`, `act()`, `tick()`) y `engine/service/market.py` (el botón); textos en `content/locales/es_pedidos.yaml` y `en_pedidos.yaml`; ❓ /d64. Preguntas: E-278 (la mano de obra y su banda), E-279 (el impuesto sobre todo o solo la mano de obra) y E-280 (pedidos personales y de gremio).
 
 **De dónde sale:** *World of Warcraft* (los pedidos de fabricación desde *Dragonflight*: el cliente pone los materiales o parte de ellos y una comisión, el artesano fabrica con su calidad y su firma), *Albion Online* (el buen equipo lo hacen los jugadores y el mercado mueve los materiales) y *Star Wars Galaxies* (el artesano vive de lo que le encargan).
+
+### 0.14 🌱 Los oficios de recolección cuidan la tierra (D-145, desde la 0.60; cómo se aplicó: D-336)
+
+El dueño lo dijo en la entrevista de voz (E-29): "una zona agotada vuelve sola, pero lento; los oficios aceleran y aumentan esa regeneración". La vuelta sola ya estaba (D-87); lo nuevo es la parte de los oficios ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12):
+
+- **Quién:** quien recolecta un recurso con el oficio que lo junta **aprendido** (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador; `gathers` en `content/professions.yaml`). Sin aprenderlo (rango 0) no hay cuidado.
+- **Qué hace:** ese recurso vuelve un 2 % más rápido por rango en esa zona (`stock.tend.per_rank`), hasta el doble en el rango 50 (`max_bonus`), durante 24 h desde la última vuelta (`hours`), para todos los que recolectan ahí. Uno más fuerte reemplaza al que había; uno más débil no lo acorta.
+- **Dónde se ve:** 📍 Zona, debajo de los recursos: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min"; ❓ /d09 lo explica.
+- **Lo que no toca:** la experiencia del oficio (sigue 1 por unidad), la cantidad de cada vuelta, los nodos y la 🌾 cosecha de la muralla.
+- **Datos y código:** `content/balance.yaml` → `stock.tend`; `_tend_after`, `_stock` y `_tend_lines` en `engine/service/game.py`; pruebas en `tests/test_muerte_permanente_y_regeneracion.py`. Pregunta abierta: E-283 (P-294).
+
+**De dónde sale:** *Stardew Valley* (la tierra que se cuida da más) y los recursos que vuelven solos de *Albion Online* y *New World*; aquí, en la capa simple (D-44), sin sembrar todavía (P-74).
