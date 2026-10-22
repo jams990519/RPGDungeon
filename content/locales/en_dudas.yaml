@@ -121,13 +121,13 @@ faq:
     a: Type /zone, /hero, /inv (backpack), /stats, /health, /skills, /professions, /options, /journal, /board, /recon or /help. With /help and a word you search for answers, and each answer has its own code, like /d05.
   d05:
     q: ⏱️ Why do I have to wait?
-    a: 'Traveling, exploring, gathering and sleeping take real minutes. You can close the chat: your hero keeps going and I''ll let you know when it''s done. Nothing is lost while you wait.'
+    a: "Traveling, exploring, gathering and sleeping take real minutes. You can close the chat: your hero keeps going and I'll let you know when it's done. Nothing is lost while you wait.\n🕐 Clock times are shown in your time zone: choose it in ⚙️ Options → 🕐 Time zone (or /time). Waves, the 📜 Board and the world's day are the same for everyone.\n☀️ 🌇 🌙 The world has day, evening and night: a world day lasts {world_days} real {world_days|day|days} and each band about {world_band_hours} hours, so you see all three even if you always play at the same hour. By day, gathering gives more wood and stone; at night, more herbs, mushrooms and fish. The current band is in 📍 Zone."
   d54:
     q: 🆕 How do I know what's new?
     a: When the game brings something new, you get a one-time notice with the patch notes. If you don't see the new bottom menu, type /start. Your progress is saved forever.
   d55:
     q: ⚙️ What can I change in Options?
-    a: 'In ⚙️ Options you choose at what health you retreat ({retreat}%): below it, you don''t start exploring, gathering or chopping wood until you rest. You also change the 🌐 language and send us 💬 Feedback. It stays saved and you can change it whenever you want.'
+    a: 'In ⚙️ Options you choose at what health you retreat ({retreat}%): below it, you don''t start exploring, gathering or chopping wood until you rest. You also change the 🌐 language and the 🕐 time zone (the clock in which you see the game''s times) and send us 💬 Feedback. It stays saved and you can change it whenever you want.'
   d06:
     q: 🚶 How do I move around the map?
     a: 'In 📍 Zone tap a direction. Each zone you cross takes {travel_first} min, near or far (10 zones, 10 minutes), and {move_cost}. With 🔗 Move you build a way of several steps (up to {walk_max}) and your hero walks it alone. At each zone a monster may show up: beat it and you go on. With 🗺️ Map → 📒 Places you go straight back to a place you already know.'

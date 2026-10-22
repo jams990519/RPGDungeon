@@ -26,7 +26,7 @@ hub:
   inn_full: '🛏️ Inn: {price} · your health is already full.'
   services: '🏘️ Services: {list}.'
   services_none: '🏘️ Services: shelter, trading post and workshop come with 🔨 Upgrades.'
-  board: '📜 Board: {done} of {total} of today''s tasks · they change in {time}.'
+  board: '📜 Board: {done} of {total} of today''s tasks · they change in {time} (🕐 {clock}).'
   manage: '🏰 Manage: ⬆️ improve (level and territory), 🔨 upgrades, 🌾 pantry, 🛡️ guild and ℹ️ camp info.'
   dudas: '❓ Help: type a word and I''ll show you questions that are already answered.'
   defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.

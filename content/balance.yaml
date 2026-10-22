@@ -233,6 +233,30 @@ hero:
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado
 
+world_clock:                 # [ES] D-126 (confirmada: "día, tarde y noche en el mundo; cada franja del día da recursos distintos, y un día del mundo dura hasta 4 días reales"), D-239.9 (confirmada: 4 días reales) y D-334 (0.58, cómo se aplicó; Claude, provisional). El reloj del mundo, igual para todos (engine/world/world_clock.py; mundo-vivo-y-viaje.md §2). No guarda nada: sale de la hora
+  day_hours: 96              # [ES] D-239.9: un día del mundo dura 96 horas reales (4 días); cada franja, un tercio: 32 horas. Como 32 no es múltiplo de 24, quien juega siempre a la misma hora ve las tres en 4 días (P-86). Se multiplica por time_scale (la consola --fast lo acelera)
+  anchor: 1792472400         # [ES] el instante (segundos UTC) en que empezó un ☀️ día del mundo: el 20-oct-2026 a las 05:00 UTC (medianoche en UTC−5). NO CAMBIAR: movería la franja de todos al instante. Con este valor, el reloj fijo de las pruebas (1.000.000) cae al empezar una 🌇 tarde
+  bands: [dia, tarde, noche] # [ES] ids estables de las franjas, en orden (textos world_clock.* en content/locales/es_dia_y_hora.yaml); cada una dura day_hours ÷ 3
+  min_weight: 0.5            # [ES] ningún recurso pesa menos de esto en una franja (ninguno desaparece)...
+  max_weight: 2.0            # [ES] ...ni más de esto
+  weights:                   # [ES] D-334: cuánto pesa cada recurso en el sorteo de cada vuelta de 🧺 Recolectar (y en los hallazgos de 🔎 Explorar) según la franja; lo que no está vale 1,0. Cambia la MEZCLA de la vuelta, no cuántas unidades da: 🪓 Talar y 🎣 Pescar (un solo recurso) rinden igual. Números de Claude (E-276): se ajustan en la beta
+    dia: {madera: 1.25, piedra: 1.25, fibra: 1.2, arcilla: 1.15, pieza_metal: 1.1, lino: 1.2, mazorca: 1.2, miel: 1.2, bayas: 1.15, datiles: 1.15, sal: 1.15}   # [ES] ☀️ de día: madera, piedra y lo que crece al sol
+    tarde: {}                # [ES] 🌇 la tarde: lo de siempre (la mezcla de antes de la 0.58)
+    noche: {hierba_curativa: 1.3, setas: 1.3, musgo: 1.3, raiz_amarga: 1.25, nenufar: 1.25, flor_escarcha: 1.25, resina: 1.15, pescado: 1.3}   # [ES] 🌙 de noche: hierbas, setas, musgo y pescado
+
+time_zones:                  # [ES] D-124 (confirmada: "cada jugador elige su zona horaria para ver las horas, pero los horarios de combate y de eventos son los mismos para todos") y D-334 (0.58, cómo se aplicó; provisional): ⚙️ Opciones → 🕐 Zona horaria (engine/core/timezones.py, engine/service/world_time.py). Solo cambia cómo se VEN las horas; ninguna regla la lee
+  default: utc               # [ES] la zona de quien nunca eligió: UTC, la que el juego ya usaba (el 📔 Diario y el corte del día iban en UTC). Cambiarla cambia lo que ven todos los que no eligieron (E-275)
+  offsets: [-12, 14]         # [ES] con ➖ 1 h / ➕ 1 h se llega a cualquier hora fija de UTC−12 a UTC+14 (ids "utc-5", "utc", "utc+1")
+  per_page: 6                # [ES] zonas por página en la pantalla 🕐 Zona horaria (con ➡️ y ↩️ quedan 8 botones, el tope de un centro, D-192)
+  presets:                   # [ES] los botones de un toque. Ids ESTABLES (se guardan en "prefs"): solo se agregan; para sacar uno, retired: true (quien ya lo eligió conserva su hora). tz = zona IANA (con horario de verano si el servidor la conoce: el paquete tzdata de requirements.txt); offset = sus horas fijas si no. Nombres: tz.preset.<id> en es_dia_y_hora.yaml
+    - {id: mx, tz: America/Mexico_City, offset: -6}    # [ES] México y Centroamérica (UTC−6, sin horario de verano desde 2022)
+    - {id: co, tz: America/Bogota, offset: -5}         # [ES] Colombia, Perú, Ecuador y Panamá (UTC−5)
+    - {id: ve, tz: America/Caracas, offset: -4}        # [ES] Venezuela, Bolivia y el Caribe (UTC−4)
+    - {id: cl, tz: America/Santiago, offset: -4}       # [ES] Chile (UTC−4; UTC−3 en su verano)
+    - {id: ar, tz: America/Argentina/Buenos_Aires, offset: -3}   # [ES] Argentina, Uruguay y Paraguay (UTC−3)
+    - {id: es, tz: Europe/Madrid, offset: 1}           # [ES] España (UTC+1; UTC+2 en verano)
+    - {id: us, tz: America/New_York, offset: -5}       # [ES] EE. UU., costa este (UTC−5; UTC−4 en verano)
+
 terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es "como jugando Tetris": piezas de 4 zonas de distintas formas y colores, encajadas (engine/world/mapgen.py terrain_at, bloques de 4 × 4). Cambiar esto CAMBIA el terreno (enemigos y peligro) de zonas ya visitadas; los recursos no se mueven (D-185)
   climate_slope: 0.02        # [ES] cuánto se enfría cada zona hacia el norte (y positiva) y se calienta hacia el sur
   climate_strength: 3.0      # [ES] cuánto pesa el clima: los terrenos "cold" salen hasta 3 veces más al norte, los "hot" al sur
@@ -396,7 +420,7 @@ raids:                       # [ES] D-99 (provisional): incursiones de los campa
   enemy_level_bonus: 1       # [ES] el enemigo es del bioma del campamento, con el nivel de su zona + 1 (§6.2: nunca más de + 2)
   defense_weaken_per_point: 0.04   # [ES] D-101: cada punto de 🛡️ Defensa de las mejoras les quita 4 % de vida y de ataque a los atacantes (11 puntos: 44 % menos). Vale también para la Noche de prueba
   defense_floor: 0.5         # [ES] nunca les quita más de la mitad: defender sigue siendo pelear
-  night: {from_hour: 19, to_hour: 6, utc_offset_hours: -5}   # [ES] horas de noche para los 🔥 Braseros (+1 de defensa si la oleada llega de noche). Hora de América (UTC−5), provisional hasta que haya día y noche en el mundo
+  night: {source: world, band: noche, from_hour: 19, to_hour: 6, utc_offset_hours: -5}   # [ES] cuándo es de noche para los 🔥 Braseros (+1 de defensa si la oleada llega de noche). D-126 y D-334 (0.58): source "world" = la 🌙 noche del reloj del mundo (world_clock, franja "band"), igual para todos y a la vista en 📍 Zona; source "fixed" = las horas de antes (de from_hour a to_hour en UTC utc_offset_hours: de 19 a 6 en UTC−5, la noche de América). Las horas fijas quedan por si el dueño quiere volver (E-277)
   reward: {xp: 80, gold: 30} # [ES] si se defiende, cada defensor gana 80 de experiencia y 30 🥉, además del premio normal de su pelea
   trial:                     # [ES] Noche de prueba: la incursión grande antes de castillo (§7.2). Si se pierde no se pierde nada
     to_level: 9              # [ES] crecer a este nivel pide haberla ganado (tiene que coincidir con castillo en camps.stages)

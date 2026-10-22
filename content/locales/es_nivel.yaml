@@ -35,7 +35,7 @@ lvlup:                         # [ES] D-304: ⏫ Siguiente nivel, la lista que s
   works_title: "🏗️ Construir:"
   items_title: "📦 Recursos:"
   work_line: "{name}{state}"
-  state_building: " · 🏗️ en obra: termina en {time}"   # [ES] D-313: cada obra dice qué le falta
+  state_building: " · 🏗️ en obra: termina en {time} (🕐 {clock})"   # [ES] D-313: cada obra dice qué le falta
   state_paused: " · 🏗️ en obra, pausada: avanza con miembros dentro del territorio"
   state_active: " · 🔨 activa: faltan {items} (aporta en 🔨 Mejoras → 🔨 Obras)"
   state_active_full: " · 🔨 activa: ya tiene sus materiales"

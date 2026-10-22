@@ -12,7 +12,7 @@ El mundo es un mapa infinito por explorar, donde moverse toma tiempo real (D-58)
 | [geografia-y-recursos.md](geografia-y-recursos.md) | 10 terrenos con lo que producen y lo que les falta; recursos del terreno, vetas móviles y **yacimientos únicos** que se disputan |
 | [torre-y-pisos.md](torre-y-pisos.md) | **Retirado por D-58.** Solo un aviso que lleva a [mapa-infinito-y-viaje.md](mapa-infinito-y-viaje.md) |
 | [mapa-infinito-y-viaje.md](mapa-infinito-y-viaje.md) | **El mapa en el juego (D-58):** zonas, biomas, viaje que toma tiempo, exploración por porcentaje y recursos, campamentos que crecen, **quién está en tu zona** (§1.13, D-96 provisional) y **el 🧭 Explorador y los 👹 campamentos enemigos que cambian cada día** (§1.14, D-112), con su **🔭 reconocimiento de lejos y 🥷 sigilo** (§1.14, D-172). Propuesta: lugares, Frontera, caminos y monturas |
-| [mundo-vivo-y-viaje.md](mundo-vivo-y-viaje.md) | Viaje y transporte, día y noche, clima, estaciones, ecología, vetas que se mueven |
+| [mundo-vivo-y-viaje.md](mundo-vivo-y-viaje.md) | Viaje y transporte, día y noche, clima, estaciones, ecología, vetas que se mueven. **En el juego (0.58, D-334):** el reloj del mundo (☀️ día, 🌇 tarde y 🌙 noche de 32 horas cada una; un día del mundo de 4 días reales, D-239.9), lo que da cada franja al recolectar, la noche de los 🔥 Braseros y la 🕐 zona horaria de cada jugador (D-124) |
 | [facciones.md](facciones.md) | Las facciones nacen de los cismas: cada castillo fundado es una facción; reglas de equilibrio |
 
 **Depende de:** [Jefes](../06-contenido/jefes.md) (Guardianes), [Misiones](../06-contenido/misiones-y-exploracion.md) (campañas).

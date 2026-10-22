@@ -90,6 +90,8 @@ Si cambias esto, revisa:
       cantidad, ✅ Publicar y ↩️ Volver a lo ancho) y los ids "mkt…" (64 bytes como máximo en Telegram)
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (M13 y la cascada C-32)
+    - Horas (0.58, D-124, D-334): el detalle de una orden dice a qué hora vence en la zona horaria de quien mira (_clock de
+      engine/service/world_time.py); la orden vence a la misma hora para todos ("until", segundos UTC)
     - Pruebas: tests/test_mercado.py; tests/test_fogata_ordenada.py (el 🛒 Mercader con 🏛️ Mercado); tests/test_pergamino_mapa.py
       (el 🗺️ pergamino en el mercado); tests/test_desgaste_reparacion.py (la durabilidad que viaja, D-333)
 """
@@ -713,7 +715,8 @@ class MarketMixin:
             new = self._scroll_new(hero, list(order["scroll"].get("zones") or []))
             body += [t.t("scroll.new_line", n=len(new)) if new else t.t("scroll.nothing_new"), t.t("scroll.use_explain")]
         body += ["", t.t("market.offer_detail", name=order.get("name", "?"), price=self._money(order["price"]), n=order["n"],
-                         left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                         left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                         clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                  t.t("market.delivery_line", time=self._fmt_duration(self._mkt_delivery_seconds()))]
         actions = []
         if order["by"] == hero.id:
@@ -1067,7 +1070,8 @@ class MarketMixin:
         price = int(order["price"])
         body = [self._mkt_name(order["good"]),
                 t.t("market.bo_detail", name=order.get("name", "?"), price=self._money(price), n=order["n"],
-                    left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                    left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                    clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                 t.t("market.you_carry_line", n=carry)]
         actions = []
         if order["by"] == hero.id:
@@ -1183,7 +1187,8 @@ class MarketMixin:
         body = [self._mkt_label(order) if sell else self._mkt_name(order["good"]),
                 t.t("market.my_detail_" + order["side"], n=order["n"], n0=order.get("n0", order["n"]), price=self._money(order["price"]),
                     total=self._money(int(order["n"]) * int(order["price"])),
-                    left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                    left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                    clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                 t.t("market.cancel_hint_" + order["side"])]
         actions = [Action(id=f"mkt:x:{oid}", label=t.t("market.cancel_button")), Action(id="mkt:mine", label=t.t("menu.back"))]
         return View(kind="market_order", title=t.t("market.my_title"), body=body, actions=actions, notice=notice)

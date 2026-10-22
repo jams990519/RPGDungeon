@@ -1,0 +1,64 @@
+# Texts of the time zones and the world clock (D-124 and D-126, confirmed; D-239.9, confirmed; how: D-334, provisional; 0.58):
+# ⚙️ Opciones → 🕐 Zona horaria, the clock times written in each player's zone, and ☀️ day, 🌇 evening and 🌙 night.
+# [ES] Textos de la zona horaria y del reloj del mundo (D-124: "cada jugador elige su zona horaria para ver las horas, pero los
+# horarios de combate y de eventos son los mismos para todos"; D-126: "día, tarde y noche en el mundo"; cómo se aplicó: D-334,
+# provisional; 0.58). Se junta con es.yaml al cargar (engine/core/content.py): options.tz_line y raids.night_line caen en los
+# bloques options y raids de siempre.
+# Lo lee: engine/service/world_time.py (la pantalla 🕐 Zona horaria, _clock, la línea del reloj del mundo de 📍 Zona y la de
+# 🧭 Explorar) y engine/service/game.py (_options_view, _raid_notice). Una clave nueva va también en en_dia_y_hora.yaml
+# (tools/check_locales.py). Los nombres de las zonas (tz.preset.<id>) siguen a los ids de balance.yaml time_zones.presets, y
+# los de las franjas (world_clock.*.<id>) a world_clock.bands: un id nuevo pide su texto aquí y en inglés.
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Las horas van de 00:00 a 23:59 en todos los idiomas.
+
+tz:                            # [ES] D-124, D-334: ⚙️ Opciones → 🕐 Zona horaria (/hora)
+  title: "🕐 Zona horaria"
+  button: "🕐 Zona horaria"
+  intro: "Elige tu zona horaria y el juego te muestra las horas en ella. Toca la que tenga la misma hora que tu reloj."
+  now: "🕐 Tu zona: {zone} · ahora: {time} ({date})."
+  game_clock: "🌐 Hora del juego (UTC): {time}."
+  rules_same: "Solo cambia cómo ves las horas: las oleadas, el 📜 Tablón y el día del mundo son iguales para todos."
+  choice_line: "• {name}: {time}"
+  step_help: "➖ 1 h y ➕ 1 h corren tu hora de a una, de {low} a {high}."
+  page: "Página {n} de {total}."
+  more: "➡️ Más zonas"
+  first: "⬅️ Primeras zonas"
+  step_minus: "➖ 1 h"
+  step_plus: "➕ 1 h"
+  saved: "✅ Listo: ves las horas en {zone} (ahora: {time})."
+  utc: "UTC"
+  offset: "UTC{sign}{hours}"   # [ES] "UTC−5", "UTC+1"
+  utc_button: "🌐 UTC"
+  with_offset: "{name} ({offset})"
+  default_zone: "{zone}, la del juego (elige la tuya)"   # [ES] quien nunca eligió
+  clock_date: "{date} {time}"  # [ES] una hora que no es de hoy en tu zona: "23/10 14:32"
+  clock_default: "{time} {zone}"   # [ES] quien nunca eligió ve la zona al lado de la hora: "14:32 UTC"
+  preset:                      # [ES] los botones de un toque (ids de balance.yaml time_zones.presets: estables)
+    mx: "🇲🇽 México y Centroamérica"
+    co: "🇨🇴 Colombia, Perú, Ecuador"
+    ve: "🇻🇪 Venezuela, Bolivia, Caribe"
+    cl: "🇨🇱 Chile"
+    ar: "🇦🇷 Argentina, Uruguay, Paraguay"
+    es: "🇪🇸 España"
+    us: "🇺🇸 EE. UU. (este)"
+
+options:
+  tz_line: "🕐 Zona horaria: {zone} · ahora: {time}"   # [ES] D-124, D-334: la línea de ⚙️ Opciones
+
+world_clock:                   # [ES] D-126, D-239.9, D-334: el reloj del mundo (ids de balance.yaml world_clock.bands)
+  now:
+    dia: "☀️ Es de día en el mundo"
+    tarde: "🌇 Es de tarde en el mundo"
+    noche: "🌙 Es de noche en el mundo"
+  next:
+    dia: "☀️ el día llega"
+    tarde: "🌇 la tarde llega"
+    noche: "🌙 la noche llega"
+  tilt_band:
+    dia: "☀️ De día"
+    tarde: "🌇 De tarde"
+    noche: "🌙 De noche"
+  zone_line: "{now} · {next} en {time} (🕐 {clock})"   # [ES] 📍 Zona y 🕐 Zona horaria
+  tilt: "{band}, al 🧺 recolectar aquí sale más: {list}."   # [ES] 🧭 Explorar: los recursos de la zona que pesan más en esta franja
+
+raids:
+  night_line: "🌙 Es de noche en el mundo: los 🔥 Braseros suman +{n} de 🛡️ Defensa."   # [ES] D-126, D-334: el aviso de una oleada que llega de noche

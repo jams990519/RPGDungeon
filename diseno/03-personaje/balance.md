@@ -1386,6 +1386,36 @@ El dueño pidió (D-136) que, para abrir cada nivel del campamento, el grupo cum
 
 **Lo que queda por mirar:** cuántos días tarda cada misión en la beta (sobre todo la de oleadas del 4 → 5), si la meta por activo está bien (E-270 ofrece 25 %) y si el premio se siente (E-270 ofrece la mitad de los materiales o experiencia y monedas para cada uno).
 
+### Octubre de 2026 (22-oct): el día, la tarde y la noche del mundo y la zona horaria (0.58, D-124, D-126 y D-239.9 confirmadas; D-334 provisional)
+
+El dueño pidió día, tarde y noche en el mundo, con recursos distintos por franja y un día del mundo de hasta 4 días reales (D-126), y que cada jugador vea las horas en su zona (D-124). La duración ya la había confirmado (D-239.9: 4 días reales). Los pesos de cada franja son números **nuevos** de Claude (D-334); se ajustan en la beta (E-276).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `world_clock.day_hours` (nuevo) | — (no había reloj del mundo) | 96 horas reales (D-239.9); tres franjas de 32 horas |
+| `world_clock.anchor` (nuevo) | — | 20-oct-2026, 05:00 UTC: el instante en que empezó un ☀️ día. No se cambia (movería la franja de todos) |
+| `world_clock.weights.dia` (nuevo) | — (todo ×1) | madera y piedra ×1,25; fibra, lino, mazorca y miel ×1,2; arcilla, bayas, dátiles y sal ×1,15; metal ×1,1 |
+| `world_clock.weights.tarde` (nuevo) | — | nada: la mezcla de antes de la 0.58 |
+| `world_clock.weights.noche` (nuevo) | — | hierba curativa, setas, musgo y pescado ×1,3; raíz amarga, nenúfar y flor de escarcha ×1,25; resina ×1,15 |
+| `world_clock.min_weight` / `max_weight` (nuevos) | — | 0,5 y 2,0: ningún recurso desaparece en una franja |
+| `raids.night.source` (nuevo; las horas fijas quedan) | de 19 a 6 en UTC−5 (11 horas de cada 24) | `world`: la 🌙 noche del mundo (32 horas de cada 96, un tercio) |
+| `time_zones` (nuevo) | — (las horas, en UTC) | por defecto UTC; 7 zonas de un toque y ➖/➕ de UTC−12 a UTC+14. No mueve ningún número del juego |
+
+**Qué cambia al jugar.** La cantidad de cada vuelta de 🧺 Recolectar no cambia (es el mismo sorteo, uno por unidad, con otros pesos); cambia de qué es cada unidad. Ejemplo, una zona con 🪵 madera 1,0, 🪨 piedra 0,6 y 🌿 hierba 0,5 (llena):
+
+| Franja | 🪵 Madera | 🪨 Piedra | 🌿 Hierba |
+|---|---|---|---|
+| ☀️ Día | 50,0 % | 30,0 % | 20,0 % |
+| 🌇 Tarde (como antes) | 47,6 % | 28,6 % | 23,8 % |
+| 🌙 Noche | 44,4 % | 26,7 % | 28,9 % |
+| Promedio de las tres | 47,4 % | 28,4 % | 24,2 % |
+
+En el promedio de un día del mundo casi nada se mueve (la madera 0,2 puntos menos, la hierba 0,4 más): el ritmo de las obras y del camino al castillo (`tools/camp_costs.py`, ~20,7 días) no cambia. Quien elige recolectar en la franja buena junta más de lo que busca (en el ejemplo, un 5 % más de madera de día y un 21 % más de hierba de noche), sin juntar más en total. 🪓 Talar y 🎣 Pescar rinden igual en cualquier franja. Los hallazgos de 🔎 Explorar (hierba curativa, metal, venda y poción, pesos 5, 3, 2 y 1) usan las mismas tablas: de noche la hierba sale el 52 % de las veces en vez del 45 %.
+
+**Los 🔥 Braseros.** Su +1 de 🛡️ Defensa (un 4 % menos de vida y ataque para los atacantes) contaba en las oleadas que llegaban de 19 a 6 en UTC−5; ahora en la 🌙 noche del mundo. Para oleadas que llegan a cualquier hora, la defensa media de un campamento con Braseros baja de 11,46 a 11,33 (−0,13 puntos, medio punto de % de los atacantes); para quien juega sobre todo de noche en América baja algo más, y para quien juega de día o en España sube. Se eligió por justo y visible, no por balance.
+
+**Lo que queda por mirar:** cuánto de cada recurso entra por franja y si la gente cambia de horario para recolectar (si nadie lo nota, subir a ×1,5, E-276); si quien nunca elige su zona entiende las horas en UTC (E-275); si la noche de los Braseros en el mundo se siente mejor o peor que la de América (E-277).
+
 ### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
 
 El dueño eligió el 17-oct un solo cupo por etapa, el castillo con 40 activos y cupo de 50, la salida de quien no juega 30 días y que acepten gente el líder y los oficiales (D-253). Los números de la escalera (§2) son los que aceptó; cómo se repartieron en los niveles y el aviso de los 25 días los eligió Claude (D-327); se ajustan en la beta (E-253 a E-256).
