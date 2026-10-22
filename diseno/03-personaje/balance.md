@@ -1249,6 +1249,39 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (21-oct): el equipo se gasta, se repara y un día se rompe (0.57, D-139 confirmada; D-333 provisional)
+
+El dueño confirmó la idea en la entrevista de voz (E-23: "con una duración generosa que dé trabajo a los artesanos") y dejó abierta la duración (E-70, P-93), con esta recomendación: **unas 3 semanas de juego diario por reparación y se rompe tras unas 5 reparaciones (unos 4 meses)**. Los números son de Claude para cumplirla (D-333, provisional; E-272 a E-274).
+
+| Número (`balance.yaml` → `durability`) | Antes | Ahora |
+|---|---|---|
+| `max` (nuevo) | — (el equipo no se gastaba) | 100 por pieza; las de antes no tienen registro y cuentan llenas (D-64) |
+| `wear` (nuevo) | — | lo que pierde cada pieza puesta por pelea: 0,15 ganada, 0,5 dejada (huir), 1,5 perdida (caer) |
+| `low_pct` (nuevo) | — | 20 %: el aviso ⚠️, una vez |
+| `repair_loss` (nuevo) | — | 4: el máximo baja 100 → 96 → 92 → 88 → 84 → 80 |
+| `repairs` y `masterwork_repairs` (nuevos) | — | 5 reparaciones (la ✒️ obra maestra, 8); después, la próxima vez que llega a 0 se rompe |
+| `rank_margin` (nuevo) | — | repara el oficio que fabrica la pieza con rango ≥ nivel − 10 |
+| `material` y `material_step` (nuevos) | — | 1 + nivel ÷ 20 del refinado de base (🔩 lingote 13 🥉; 🟫 tablón, 🟤 cuero y 🧣 tela 7 🥉): 1 hasta el nivel 19, 6 en el 100 |
+| `energy` y `xp` (nuevos) | — | ⚡1 por reparación; 6 × (1 + nivel ÷ 100) de experiencia de oficio (6 a 12), la de héroe como 1 ⚡ de fabricar |
+| `npc_mult` (nuevo) | — | el herrero de la 🔥 fogata cobra 3 × el valor de los materiales: de 21 a 39 🥉 hasta el nivel 19, de 126 a 234 🥉 en el 100 |
+| `order_mult` y `order_days` (nuevos) | — | un 📜 encargo paga 2 × (de 14 a 26 🥉 hasta el nivel 19; de 84 a 156 🥉 en el 100), menos el 5 % del mercado; dura 7 días |
+
+**La cuenta de "unas 3 semanas".** Un día de juego diario = 20 peleas (40 ⚡ cazando a 2 ⚡ la presa, o ~44 vueltas de exploración con 45 % de encuentro), con el objetivo de ganar el 90 % (§7): 18 ganadas, 1 dejada y 1 perdida. Cada pieza puesta pierde 18 × 0,15 + 0,5 + 1,5 = **4,7 por día**.
+
+| Jugador | Peleas por día | Pierde por día | Hasta el aviso del 20 % | Hasta 0 (primera reparación) | Hasta romperse (5 reparaciones) | ✒️ Obra maestra (8) |
+|---|---|---|---|---|---|---|
+| Tranquilo | 10 (9 · ½ · ½) | 2,35 | 34 días | 43 días | 230 días (~7,5 meses) | 322 días |
+| **Diario** | **20 (18 · 1 · 1)** | **4,7** | **17 días** | **21 días** | **115 días (~4 meses)** | **161 días (~5 meses)** |
+| Intenso | 40 (36 · 2 · 2) | 9,4 | 9 días | 11 días | 57 días (~2 meses) | 80 días |
+
+- **Toda la vida de una pieza** son 100 + 96 + 92 + 88 + 84 + 80 = 540 de durabilidad (la obra maestra suma 76 + 72 + 68: 756). Quien repara antes de llegar a 0 pierde máximo de más (cada reparación baja 4): conviene reparar cerca del aviso, y la pantalla dice cómo queda.
+- **En la práctica casi nada llega a romperse:** el equipo se cambia cada 5 niveles de pieza (D-306), mucho antes de 4 meses en los primeros niveles. Romperse pesa en el equipo de los niveles altos, que es lo que fabrican los artesanos (D-113).
+- **Cuánto cuesta (sumidero, D-27):** cada pelea ganada da en promedio 2 × (1 + 0,1 × (nivel − 1)) monedas (`enemies.yaml` gold 1-3). Con 7 piezas que piden reparación cada 21 días (1 cada 3 días), el herrero de la fogata se lleva al nivel 10 (39 🥉 por pieza de placas, 21 de tela o cuero) ~7 a 13 🥉 por día de unas ~80 que se ganan peleando (9 a 16 %), y al nivel 100 (126 a 234 🥉) ~42 a 78 de ~440 (10 a 18 %). Un artesano gasta un tercio de eso en materiales; un encargo, dos tercios.
+- **Trabajo para los artesanos:** por cada 7 jugadores diarios hay ~2,3 reparaciones por día (7 × 7 ÷ 21); con 50 jugadores, ~17 por día, repartidas entre 5 oficios. Cada una da 6 a 12 de experiencia de oficio y 1 a 6 refinados de demanda.
+- **Combate:** sin cambios. `gear_bonus` es lo único que lee el equipo y sin registros de durabilidad suma lo mismo que antes: `python tools/sim.py --summary --real` y `python tools/sim.py --boss --seeds=40` dan exactamente lo mismo antes y después del parche. Una pieza dañada resta su bono entero (arma de nivel 1: −4 % de ataque; pecho de nivel 100: −40 % de vida).
+
+**Lo que queda por mirar:** cuántas peleas hace de verdad un jugador diario (si son más de 20, la reparación llega antes: E-70), cuántos encargos se toman y cuánto tardan (E-272), cuántas piezas se rompen por semana y qué hacía su dueño (E-273), y si el herrero de la fogata es demasiado barato al nivel 100 frente a lo que se gana.
+
 ### Octubre de 2026 (21-oct): las 🪖 escuadras de 5 (0.55, D-253.1 confirmada; D-331 provisional)
 
 El dueño eligió la Forma B (D-253.1): "la escuadra de 5 como unidad para organizar y repartir las tareas". Los números de escuadras son los de la escalera §3, que ya estaban en el diseño; lo nuevo es cómo se aplican (D-331, provisional; E-266 a E-268).

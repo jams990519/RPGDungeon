@@ -41,15 +41,17 @@ Datos de los que es dueño:
         (cuenta), "name" (nombre del héroe al publicar), "at", "until" (vence), "x", "y" (dónde se publicó; para el
         transporte por distancia de más adelante), "enchant" y "sig" (el ✨ encantamiento y la ✒️ firma de la pieza: viajan
         con ella, como en la ⚔️ Armería), "scroll" (D-326: solo en un 🗺️ pergamino de mapa, siempre de a 1: su registro
-        completo, {"id", "by", "center", "size", "zones", "at"}, que viaja con él)}. Una orden que se llena, se cancela o
-        vence se BORRA (lo que quedaba ya volvió).
+        completo, {"id", "by", "center", "size", "zones", "at"}, que viaja con él), "wear" (D-333, 0.57: solo en el equipo con
+        alguna copia usada: un registro de durabilidad por unidad, en el orden en que se venden, None = nueva; la próxima unidad
+        es la primera)}. Una orden que se llena, se cancela o vence se BORRA (lo que quedaba ya volvió).
     "market_index" (clave "sell:<categoría>" o "buy"): {"ids": [[precio, id, good], …]} ordenado: ventas de la más barata a
         la más cara, compras de la que más paga a la que menos (a igual precio, la más vieja primero). Es solo un índice:
         se arregla solo si apunta a una orden que ya no está.
     "market_mine" (clave la cuenta): {"ids": [id, …]}: las órdenes activas de cada jugador (📋 Mis órdenes y el tope).
     "market_box" (clave la cuenta): {"items": [{"good", "n", "at" (cuándo llega), "enchant", "sig", "from" (de quién),
         "why" ("bought", "filled", "returned", "expired"), "told" (ya se avisó que llegó), "coins" (solo si son monedas),
-        "scroll" (D-326: el 🗺️ pergamino que llega, con sus zonas)}]}: 📦 Entregas. Se borra al quedar vacía.
+        "scroll" (D-326: el 🗺️ pergamino que llega, con sus zonas), "wear" (D-333: la durabilidad de cada unidad, como en la
+        orden)}]}: 📦 Entregas. Se borra al quedar vacía.
     "market_open" (clave la cuenta): {"side", "good", "price", "n", "scroll" (D-326: el id del 🗺️ pergamino que se vende)}:
         el borrador de una orden mientras se arma; el texto suelto que escribes es su precio (y "x5", su cantidad). Solo
         pantalla: act() lo borra con cualquier otro botón.
@@ -77,6 +79,9 @@ Reglas que nunca se rompen:
        (las copias de una pieza comparten esos datos, como en la ⚔️ Armería, D-290).
     8. D-326: un 🗺️ pergamino de mapa se vende de a uno (cada copia tiene sus zonas); sale de la mochila y vuelve a ella solo
        por _scroll_take y _scroll_add (map_scroll.py), así la mochila sigue contando lo que hay en Hero.map_scrolls.
+    9. D-333 (0.57): la durabilidad viaja con cada pieza (engine/hero/durability.py): al publicar salen primero las copias más
+       gastadas (take_copies), cada unidad lleva su registro en "wear" hasta 📦 Entregas, y al recogerla entra a la mochila con
+       él (put_back). Quien compra ve la durabilidad de la próxima unidad ("🔧 80/96") en la lista y en la oferta.
 Si cambias esto, revisa:
     - Números: balance.yaml market (tax, delivery_minutes, order_days, max_orders, max_units, price_min, price_max,
       price_buttons, ask_buttons, per_page, log_days); el registro de balance (diseno/03-personaje/balance.md)
@@ -86,7 +91,7 @@ Si cambias esto, revisa:
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (M13 y la cascada C-32)
     - Pruebas: tests/test_mercado.py; tests/test_fogata_ordenada.py (el 🛒 Mercader con 🏛️ Mercado); tests/test_pergamino_mapa.py
-      (el 🗺️ pergamino en el mercado)
+      (el 🗺️ pergamino en el mercado); tests/test_desgaste_reparacion.py (la durabilidad que viaja, D-333)
 """
 
 from __future__ import annotations
@@ -95,7 +100,7 @@ import math
 import re
 from typing import Any
 
-from engine.hero import Hero
+from engine.hero import Hero, durability
 from engine.hero.gear import can_use, suits
 from engine.messaging import Action, View
 from engine.world import mapgen
@@ -233,6 +238,9 @@ class MarketMixin:
             label += t.t("market.signed", name=entry["sig"])
         if entry.get("scroll"):                          # D-326: a 🗺️ scroll says its region, zones and author
             label += t.t("market.scroll_mark", summary=self._scroll_summary(entry["scroll"]))
+        if durability.wears(self.content.items.get(entry.get("good", ""))):     # D-333: 🔧 the next unit's durability
+            wear = list(entry.get("wear") or [])
+            label += " · " + self._dur_tag(wear[0] if wear else None)
         return label
 
     def _mkt_enchant_text(self, enchant: dict[str, Any] | None) -> str:
@@ -294,16 +302,22 @@ class MarketMixin:
             return int(hero.chests)
         return int(hero.backpack.get(good, 0))
 
-    def _mkt_take(self, hero: Hero, good: str, n: int) -> None:
+    def _mkt_take(self, hero: Hero, good: str, n: int) -> list[dict[str, Any] | None]:
+        """Take `n` units of a good out of the hero; for gear, returns the durability record of each unit that leaves, the most
+        worn first (None = a new copy; D-333), else []."""
+        wear: list[dict[str, Any] | None] = []
         if good == "bags":
             hero.bags -= n
         elif good == "chests":
             hero.chests -= n
         else:
+            if durability.wears(self.content.items.get(good)):
+                wear = durability.take_copies(hero, good, n)     # D-333: before the backpack loses them
             hero.backpack[good] = hero.backpack.get(good, 0) - n
             if hero.backpack[good] <= 0:
                 del hero.backpack[good]
             self._forget_piece(hero, good)          # the last copy takes its ✨ and ✒️ along (they travel in the order)
+        return wear
 
     def _mkt_sellables(self, hero: Hero) -> list[str]:
         """What the hero can put up for sale, by category order then name: gear, remedies, furniture, food, bags, chests and
@@ -428,7 +442,8 @@ class MarketMixin:
         if left > 0 and order["side"] == "sell":
             self._mkt_box_add(owner, {"good": order["good"], "n": left, "at": now, "enchant": order.get("enchant"),
                                       "sig": order.get("sig"), "from": "", "why": "expired" if why == "expired" else "returned",
-                                      "told": True, **({"scroll": order["scroll"]} if order.get("scroll") else {})})
+                                      "told": True, **({"scroll": order["scroll"]} if order.get("scroll") else {}),
+                                      **({"wear": order["wear"]} if any(order.get("wear") or []) else {})})   # D-333
         elif left > 0:
             self._mkt_credit(owner, left * int(order["price"]), actor)
         self._mkt_index_remove(order)
@@ -689,6 +704,11 @@ class MarketMixin:
             enchant = self._mkt_enchant_text(order.get("enchant"))
             if enchant:
                 body.append(t.t("ench.item_line", enchant=enchant))
+            wear = list(order.get("wear") or [])          # D-333: 🔧 the next unit's durability and repairs left
+            body.append(self._dur_line(wear[0] if wear else None, good))
+            if int(order["n"]) > 1:
+                rest = [self._dur_tag(wear[i] if i < len(wear) else None) for i in range(1, min(int(order["n"]), 5))]
+                body.append(t.t("market.wear_rest", tags=" · ".join(rest)))
         if order.get("scroll"):                           # D-326: how many of its zones are new for you; only the colour
             new = self._scroll_new(hero, list(order["scroll"].get("zones") or []))
             body += [t.t("scroll.new_line", n=len(new)) if new else t.t("scroll.nothing_new"), t.t("scroll.use_explain")]
@@ -729,10 +749,15 @@ class MarketMixin:
         seller = order["by"]
         self._mkt_credit(seller, cost - tax, hero)
         arrive = self.clock.now() + self._mkt_delivery_seconds()
+        wear = list(order.get("wear") or [])             # D-333: the next units' durability goes with them
+        bought = wear[:n]
+        if wear:
+            order["wear"] = wear[n:]
         self._mkt_box_add(hero.id, {"good": order["good"], "n": n, "at": arrive, "enchant": order.get("enchant"),
                                     "sig": order.get("sig"), "from": order.get("name", "?"), "why": "bought", "told": False,
-                                    **({"scroll": order["scroll"]} if order.get("scroll") else {})})   # D-326: its zones travel
-        snap = dict(order)
+                                    **({"scroll": order["scroll"]} if order.get("scroll") else {}),   # D-326: its zones travel
+                                    **({"wear": bought} if any(bought) else {})})
+        snap = {**order, "wear": bought}                  # D-333: the notices name the units that were bought
         label = self._mkt_label(snap)
         if order["n"] <= 0:
             self._mkt_close(order, "filled", hero)
@@ -770,6 +795,7 @@ class MarketMixin:
                 continue
             fit = self._mkt_fit(hero, good)
             body.append(t.t("market.sell_line", code=f"/s{n}", item=self._mkt_name(good) + (self._enchant_mark(hero, good)
+                            + self._bag_wear_note(hero, good, worst=True)          # D-333: 🔧 the copy that goes first
                             if good not in COIN_GOODS else ""), n=self._mkt_have(hero, good),
                             price=self._money(self._mkt_ref_price(good)), fit=f" · {fit}" if fit else ""))
         if not goods:
@@ -932,7 +958,8 @@ class MarketMixin:
 
     def _mkt_new_order(self, hero: Hero, side: str, good: str, price: int, n: int,
                        enchant: dict[str, Any] | None = None, sig: str | None = None,
-                       scroll: dict[str, Any] | None = None) -> dict[str, Any]:
+                       scroll: dict[str, Any] | None = None,
+                       wear: list[dict[str, Any] | None] | None = None) -> dict[str, Any]:
         meta = self._mkt_meta()
         meta["seq"] = int(meta.get("seq", 0)) + 1
         now = self.clock.now()
@@ -944,6 +971,8 @@ class MarketMixin:
                  "enchant": dict(enchant) if enchant else None, "sig": sig}
         if scroll:                                        # D-326: the 🗺️ scroll's zones, author and region travel with it
             order["scroll"] = dict(scroll)
+        if wear and any(wear):                            # D-333: 🔧 each unit's durability travels with it (None = new)
+            order["wear"] = [dict(r) if r else None for r in wear]
         self.store.put("market_order", order["id"], order)
         self._mkt_index_add(order)
         self._mkt_mine_put(hero.id, self._mkt_mine(hero.id) + [order["id"]])
@@ -978,8 +1007,8 @@ class MarketMixin:
                 return self._market_draft_view(hero, notice=t.t("market.not_enough", n=self._mkt_have(hero, good)))
             enchant = (hero.gear_enchants or {}).get(good) if good not in COIN_GOODS else None
             sig = (hero.gear_signatures or {}).get(good) if good not in COIN_GOODS else None
-            self._mkt_take(hero, good, n)
-            order = self._mkt_new_order(hero, "sell", good, price, n, enchant, sig)
+            wear = self._mkt_take(hero, good, n)              # D-333: the most worn copies go first, each with its durability
+            order = self._mkt_new_order(hero, "sell", good, price, n, enchant, sig, wear=wear)
             self._mkt_log(sell_orders=1)
             notice = t.t("market.listed", item=self._mkt_label(order), n=n, price=self._money(price))
         else:
@@ -1248,6 +1277,9 @@ class MarketMixin:
                 stays.append(entry)
                 continue
             hero.backpack[good] = hero.backpack.get(good, 0) + take
+            wear = list(entry.get("wear") or [])          # D-333: each unit comes in with its durability
+            for rec in wear[:take]:
+                durability.put_back(hero, good, rec, self.content.balance)
             if entry.get("enchant"):
                 hero.gear_enchants[good] = dict(entry["enchant"])
             if entry.get("sig"):
@@ -1257,7 +1289,7 @@ class MarketMixin:
             got.append(t.t("market.box_item", item=self._mkt_label(entry), n=take))
             if take < n:
                 full = True
-                stays.append({**entry, "n": n - take})
+                stays.append({**entry, "n": n - take, **({"wear": wear[take:]} if wear else {})})
         self._mkt_box_put(hero.id, stays)
         self._refill_belt(hero)
         lines = [t.t("market.collected", items=", ".join(got))] if got else []

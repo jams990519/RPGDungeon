@@ -1,6 +1,6 @@
 # Equipamiento
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1); tres tipos de armadura sin malla (D-208, confirmada, §2); las estadísticas se reforman según el WoW (D-210; propuesta en [Estadísticas](estadisticas.md))
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Fabricación](../07-economia/fabricacion.md), [Jefes](../06-contenido/jefes.md) · **Alimenta a:** [Combate](../04-combate/README.md), [Heridas](../05-salud/heridas.md), [Economía](../07-economia/economia.md) · **Se conecta con:** [Inventario y mochilas](inventario-y-mochilas.md) · **Estado:** propuesta, con D-46 (6 botones) aplicada. Del 2-oct-2026: ranuras para gemas solo en armaduras y armas (D-199, confirmada, §3.1); tres tipos de armadura sin malla (D-208, confirmada, §2); las estadísticas se reforman según el WoW (D-210; propuesta en [Estadísticas](estadisticas.md)). Desde la 0.57, la durabilidad y la reparación de §4 están en el juego (D-139 confirmada; cómo se aplicó: D-333, provisional; ver §4.1)
 
 > **0.39.4 (D-299, pedido del dueño):** en 🎒 Mochila → 🛡️ Equipo, 🔁 Equipar es una lista con solo lo que no llevas puesto (cada pieza con su código /e1, de a 8 por página) y, al lado, 🔽 Desequipar lista lo puesto (su código /q1 te lo quita).
 
@@ -121,6 +121,22 @@ Durabilidad 84/100 (máx. 96) · 4,2 kg · Libre
 - Cuando la máxima llega a 0, el objeto se rompe **para siempre**. Se puede desmontar para recuperar parte del material.
 - Resultado: una pieza normal dura varias semanas de uso intenso. Siempre hay demanda de armas y armaduras, **aunque no salga contenido nuevo**.
 
+### 4.1 Lo que está en el juego (0.57, D-139 confirmada; cómo se aplicó: D-333, provisional)
+
+El dueño lo confirmó en la entrevista de voz (E-23): "el equipo se gasta, se repara y un día se rompe, con una duración generosa que dé trabajo a los artesanos". La duración es la recomendación de E-70 (P-93), que sigue esperando su respuesta. Capa simple (D-44):
+
+| Qué | Cómo está hoy |
+|---|---|
+| **Qué tiene durabilidad** | Toda pieza de equipo (armas, armaduras y joyas), 100 al estar nueva (`durability.max`). Nunca los consumibles, las 💰 bolsas ni los 🪎 cofres. Cada copia guarda la suya; una pieza que nadie usó no tiene registro y está llena: **todo el equipo de antes de la 0.57 empezó lleno** (D-64) |
+| **Desgaste** | Cada pelea gasta cada pieza puesta: 0,15 si ganas, 0,5 si huyes y 1,5 si caes (`durability.wear`). Lo de la mochila no se gasta. Un día de juego (20 peleas) gasta 4,7: **unas 3 semanas** de juego diario por reparación (cuentas en el [registro de balance](balance.md)) |
+| **⚠️ Gastada y dañada** | Al bajar del 20 % de su máximo (`low_pct`) llega un aviso, una sola vez, y la pieza se marca ⚠️ en 🛡️ Equipo, 🔽 Desequipar, la pieza y la ficha del héroe. En 0 queda **dañada**: sigue puesta y en la mochila, **nunca se borra**, pero no da bonos (ni su ✨ encantamiento) hasta repararla. Una pieza dañada cuenta 0 al comparar, así que cualquier pieza de tu tipo sale ⬆️ mejor |
+| **Reparar** | 🛡️ Equipo → 🔧 Reparar (/reparar, /repair; cada pieza con su código /rp1). Tres formas: **🔨 tú**, con el oficio que fabrica ese tipo (ver [Profesiones](../07-economia/profesiones.md) §0.12), con rango desde el nivel de la pieza − 10, en su estación, con un refinado de base y ⚡1; **🛒 el herrero de cualquier 🔥 fogata**, por monedas (3 × lo que valen esos materiales: siempre más caro); **📜 un encargo** a un artesano, que cobra por su trabajo (D-140) |
+| **Un día se rompe** | Cada reparación baja el máximo 4 (100 → 96 → 92 → 88 → 84 → 80) y la deja llena. Después de **5 reparaciones** (`repairs`; **8 una ✒️ obra maestra**) la pieza vive su última vida: cuando vuelve a 0 se rompe para siempre y sale del equipo con su ✨ y su ✒️. La pieza dice cuántas le quedan ("🔧 84/96 · 4 reparaciones más") y antes de la última el juego pregunta otra vez. Total: unos 4 meses de juego diario (la obra maestra, unos 5) |
+| **Viaja con la pieza** | En el 🏛️ Mercado (cada unidad lleva la suya hasta 📦 Entregas; quien compra ve "🔧 80/96") y en la ⚔️ Armería. De varias copias, te pones la mejor y lo que sale de la mochila (vender, el mercado, la armería, desencantar) se lleva la más gastada |
+| **Lo que no cambia** | El combate lee el equipo solo por `gear_bonus`: sin desgaste rinde igual que antes (el simulador da lo mismo). El ícono de la durabilidad es 🔧 (🛡️ ya es la defensa) |
+
+**Lo que todavía no está** (E-272 a E-274, P-283 a P-285): el herrero de mucho rango que repara perdiendo menos máximo (el párrafo de arriba), desmontar o sacar esencias de la pieza rota, el −10 % al caer en zona amarilla ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.1: no hay zonas por color todavía), la propiedad Indestructible ([Estadísticas](estadisticas.md)) y el desgaste de las herramientas (E-148).
+
 ## 5. Atadura
 
 | Tipo | Regla | Para qué objetos |
@@ -225,8 +241,9 @@ La capa simple (D-44). Todo lo de arriba sigue siendo el plan; esto es lo que ho
 | **Equipo inicial** | Arma y pecho básicos de tu clase, ya puestos. Los héroes que existían antes de la 0.6 los recibieron una vez | `starter_gear` |
 | **Se pone solo** | Solo la primera pieza de una ranura vacía, aunque no sea la mejor para ti (si no tenías botas, te pone las que caen). Si ya llevas algo ahí, la pieza nueva va a la mochila (D-83) | `auto_equip` |
 | **Dónde se ve** | 👤 Héroe → 🎒 Mochila → 🛡️ Equipo: lo que llevas puesto, una línea por pieza (icono, nombre y lo que te da). Desde ahí, 🔁 Equipar lista lo que tienes en la mochila para ver sus bonos, el consejo y ponértelo, o quitarte lo puesto. La ficha del héroe ya no muestra el equipo (D-86) | Cliente de Telegram |
+| **🔧 Durabilidad (D-139, D-333, 0.57)** | Cada pieza se gasta en cada pelea; en 0 queda ⚠️ dañada (sin bonos, nunca se borra); se repara con su oficio, el herrero de la fogata o un 📜 encargo; tras 5 reparaciones (8 la ✒️ obra maestra) se rompe la próxima vez que llega a 0. Detalle en §4.1 | `balance.yaml` → `durability`; `engine/hero/durability.py`; `engine/service/repair.py`; `Hero.gear_wear`, `Hero.bag_wear` |
 | **Recuerdo del Guardián (D-82)** | La primera victoria de cada héroe contra Raigambre, el primer Guardián, da un 🌰 Recuerdo garantizado (§6). Se cambia en 🎒 Mochila por **una** de dos piezas 🟣 únicas "para ti": el arma de tu tipo principal o la armadura de tu tipo, desde nivel 5 (+15 % de ataque, o +17 % de vida y +4 % de defensa). Esas 8 piezas llevan `source: guardian` y nunca salen en el botín al azar | `items.yaml` → `recuerdo_raigambre`, `guardian_*`; `gear.py` → `source_choices`; [Jefes](../06-contenido/jefes.md) §6 |
 
 **Cómo se mide:** `tools/balance_report.py` compara cada especialización con el equipo inicial, con el botín de su nivel y con el de artesano y los beneficios de oficio, del nivel 1 al 100 (registro en [Balance](balance.md) §7, "pasada de balance de clases y roles").
 
-**Falta, en este orden:** más ranuras, durabilidad y reparación (D-113), elegir el encantamiento y encantamientos más fuertes (capa profunda del ✨ Encantamiento), afijos y la carga. Fabricar equipo ya está (D-109, ver [Profesiones](../07-economia/profesiones.md) §0.1), también en cabeza, manos, piernas y pies (fase 2 de D-115).
+**Falta, en este orden:** más ranuras (la durabilidad y la reparación de D-113 salieron en la 0.57, §4.1), elegir el encantamiento y encantamientos más fuertes (capa profunda del ✨ Encantamiento), afijos y la carga. Fabricar equipo ya está (D-109, ver [Profesiones](../07-economia/profesiones.md) §0.1), también en cabeza, manos, piernas y pies (fase 2 de D-115).

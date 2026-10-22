@@ -16,6 +16,7 @@ Si cambias esto, revisa:
     - Servicio: engine/service/game.py — crea y guarda héroes
     - Combate: engine/combat/engine.py — lee vida, ataque, armadura e iniciativa
     - Equipo: engine/hero/gear.py — requisitos, bonos y botín de equipo
+    - Durabilidad: engine/hero/durability.py — desgaste, piezas dañadas, reparaciones y la rotura final (D-139, D-333)
     - Pruebas: tests/test_service.py, tests/test_gear.py
 """
 
