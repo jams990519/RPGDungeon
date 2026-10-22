@@ -122,7 +122,7 @@ Condición: ✨ EXCELENTE
 1. **Minería.** La minera Kira encuentra una veta de mineral estelar con pureza 870 y dureza 790 en las tierras salvajes de Lejanía 13. Arriesga una zona roja para sacarlo.
 2. **Fundición.** Vende el mineral al fundidor Tor, que lo convierte en lingotes (conservan los atributos).
 3. **Curtiduría.** El curtidor Ansel vende cuero de wyrm para el mango.
-4. **Pedido de fabricación.** El guerrero Bram compra los lingotes y el cuero y le manda un pedido a Lisbeth, Gran Maestra herrera con maestría alta en espadas largas, con una comisión.
+4. **Pedido de fabricación.** El guerrero Bram compra los lingotes y el cuero y le manda un pedido a Lisbeth, Gran Maestra herrera con maestría alta en espadas largas, con una comisión. *(En el juego desde la 0.59, en su capa simple: el pedido es público, sin elegir a Lisbeth por su nombre todavía, E-280; [Profesiones](profesiones.md) §0.13.)*
 5. **Minijuego.** Lisbeth forja a mano, aprovecha dos condiciones Excelentes y la espada sale **Excelente**.
 6. **Encantamiento.** El encantador Vael infunde una runa y la deja en +2.
 7. **Joyería.** La joyera Nim talla un rubí para el engarce.

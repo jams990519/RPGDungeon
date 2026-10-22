@@ -1249,6 +1249,39 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Octubre de 2026 (22-oct): los 📜 pedidos de fabricación (0.59, D-140 confirmada; D-335 provisional)
+
+El dueño lo pidió en la entrevista de voz (E-24): el artesano recibe los materiales o la paga para conseguirlos, **más su mano de obra, siempre aparte**. Los números son de Claude (D-335, provisional; E-278 a E-280), con la recomendación de E-272: lo simple primero y medir en la beta. No se crea ni se quema oro nuevo salvo el impuesto: un pedido mueve monedas de un jugador a otro.
+
+| Número (`balance.yaml` → `craft_order`, y lo que usa del `market`) | Antes | Ahora |
+|---|---|---|
+| `labor_per_energy` y `labor_rank_step` (nuevos) | — (no había pedidos) | mano de obra sugerida de cada vez: 8 🥉 por ⚡ × (1 + rango de la receta ÷ 20): de 8,4 🥉 por ⚡ en el rango 1 a 48 🥉 por ⚡ en el 100 |
+| La banda (de `market.price_min` y `price_max`) | — | de 0,25 a 10 veces la sugerida (y los materiales, de 0,25 a 10 veces su referencia): la misma traba que el 🏛️ Mercado contra pasar monedas a otra cuenta (D-26) |
+| `labor_buttons`, `qty_buttons`, `max_units` (nuevos) | — | ×1, ×2, ×3 de la sugerida; 1, 2 o 5 veces; como mucho 5 por pedido |
+| `order_days`, `station_shown` (nuevos) | — | 7 días; la estación muestra hasta 3 pedidos |
+| `market.tax` (el de siempre) | 5 % de las ventas | también 5 % de todo lo que cobra el artesano en un pedido (la mano de obra y los materiales que consiguió) |
+| `market.max_orders` (el de siempre) | 10 órdenes | también 10 pedidos abiertos, contados aparte |
+
+**Qué sugiere el juego** (precio de referencia de los materiales, `price` de `items.yaml`; lo que paga el 🛒 Mercader por lo hecho, para comparar):
+
+| Receta | Rango y ⚡ | Materiales (referencia) | Lo hecho vale | Mano de obra sugerida (banda) |
+|---|---|---|---|---|
+| 🟢🗡️ Espada forjada | 1 · ⚡2 | 46 🥉 | 20 🥉 | 17 🥉 (4 a 170) |
+| 🧪 Poción de vida | 1 · ⚡1 | 12 🥉 | 12 🥉 | 8 🥉 (2 a 80) |
+| 🟫 Tablón | 1 · ⚡1 | 6 🥉 | 7 🥉 | 8 🥉 (2 a 80) |
+| Espada de nivel 45 | 45 · ⚡2 | 234 🥉 | 311 🥉 | 52 🥉 (13 a 520) |
+| Espada de nivel 85 | 85 · ⚡4 | 330 🥉 | 495 🥉 | 168 🥉 (42 a 1.680) |
+| Bastón de nivel 100 | 100 · ⚡4 | 287 🥉 | 564 🥉 | 192 🥉 (48 a 1.920) |
+| 🍷 Poción mayor del tramo 95 | 95 · ⚡4 | 100 🥉 | 39 🥉 | 184 🥉 (46 a 1.840) |
+
+- **En el equipo**, la mano de obra sugerida queda entre un quinto y dos tercios de lo que valen los materiales: encargar conviene a quien no tiene el oficio y le da al artesano una paga segura por su ⚡, sin esperar a vender.
+- **En las pociones y la comida de los tramos altos**, la mano de obra sugerida pasa a los materiales (la poción mayor del tramo 95: 184 🥉 por 100 🥉 de materiales), porque cuenta la ⚡ del artesano (4) y su rango (95), no el precio de lo hecho. Quien encarga la baja hasta un cuarto (46 🥉). Es una de las opciones de E-278 que la sugerida no pase de lo que valen los materiales.
+- **El impuesto (sumidero, D-27):** un pedido de la espada de nivel 45 con los materiales del artesano aparta 234 + 52 = 286 🥉; el artesano cobra 272 🥉 y se queman 14 (5 %). Con los materiales de quien encarga: aparta 52, cobra 49 y se queman 3.
+- **Lo que gana el artesano por ⚡:** de 8 🥉 (rango 1) a 48 🥉 (rango 100) de mano de obra, más la experiencia de oficio y de héroe de fabricar. Pelear da ~2 × (1 + 0,1 × (nivel − 1)) monedas por pelea (2 ⚡ cazando): la mano de obra paga más por ⚡, pero la pone otro jugador (no entra oro nuevo) y el artesano no gana el botín ni la experiencia de pelear.
+- **Combate:** sin cambios; lo hecho es el mismo equipo de siempre (la ✒️ obra maestra sale con la probabilidad de siempre del artesano, D-116).
+
+**Lo que queda por mirar:** cuántos pedidos se publican y cuántos se toman, a qué mano de obra (la mitad, la sugerida, el doble), cuántos vencen sin tomarse y de qué oficios faltan artesanos (el informe diario los cuenta en su sección 9; E-278); si el impuesto sobre los materiales frena los pedidos con materiales del artesano (E-279).
+
 ### Octubre de 2026 (21-oct): el equipo se gasta, se repara y un día se rompe (0.57, D-139 confirmada; D-333 provisional)
 
 El dueño confirmó la idea en la entrevista de voz (E-23: "con una duración generosa que dé trabajo a los artesanos") y dejó abierta la duración (E-70, P-93), con esta recomendación: **unas 3 semanas de juego diario por reparación y se rompe tras unas 5 reparaciones (unos 4 meses)**. Los números son de Claude para cumplirla (D-333, provisional; E-272 a E-274).
