@@ -46,6 +46,10 @@ Para qué sirve: el gremio desde el primer momento (D-269, reemplaza a D-252), l
     D-331 (0.55, las 🪖 escuadras de 5, D-253.1 Forma B): 👥 Miembros del campamento suma la línea de tu escuadra y el botón
     🪖 Escuadras, y la tarjeta de un miembro su escuadra con 🗳️ Votar como jefe y 🔀 Cambiar de escuadra. Las reglas viven en
     engine/service/squads.py; aquí solo están los ganchos (_camp_members_view y _camp_member_view).
+    D-336 (0.60, la 💀 muerte permanente, D-147): quien la juró no crea un gremio (_gremio_new, _gremio_name) ni recibe el
+    liderazgo (_gremio_lead), porque todavía no hay sucesión de fundador; al caer sale del gremio como un miembro
+    (engine/service/permadeath.py _oath_unlink usa _gremio_leave_member). Su nombre lleva 💀 en la tarjeta (_player_card). Usa las
+    ayudas de PermadeathMixin _oath_no_lead, _oath_account_on y _oath_mark.
 Documento de diseño: diseno/09-construccion/escalera-del-asentamiento.md §0 (cómo está D-269 en el juego);
     diseno/01-plataforma/menus-campamento-y-heroe.md (👥 Jugadores en la fogata); diseno/08-social/gremios-y-social.md §0
 Módulo: capa de servicios (M15 Social: el gremio; M14 Construcción: la fundación y las obras con tiempo)
@@ -490,7 +494,7 @@ class GremioMixin:
             return self._players_view(hero, notice=t.t("players.gone"))
         other = Hero.from_dict(data)
         guild = self._guild_name_of(account, data)
-        body = [t.t("players.card_name", name=self._banner(other) + self._emblem_name(other)),
+        body = [t.t("players.card_name", name=self._oath_mark(other) + self._banner(other) + self._emblem_name(other)),   # D-336: 💀
                 t.t("players.card_class", cls=self._class_label(data), level=other.level),
                 t.t("players.card_guild", name=guild) if guild else t.t("players.card_no_guild"),
                 t.t("players.card_seen", ago=self._ago(other.seen_at))]
@@ -846,6 +850,8 @@ class GremioMixin:
         cost = int(self._gremio_cfg().get("found_coins", 20))
         if not self._gremio_free(hero.id, hero):
             return self._gremio_view(hero, notice=t.t("gremio.already"))
+        if self._oath_no_lead(hero):                    # D-336: a 💀 hero leads nothing (there is no succession yet)
+            return self._gremio_view(hero, notice=self._oath_no_lead(hero))
         if hero.gold < cost:
             return self._gremio_view(hero, notice=t.t("gremio.no_coins", coins=self._money(cost)))
         self.store.put("camp_naming", hero.id, {"mode": "gremio", "x": hero.x, "y": hero.y})
@@ -879,6 +885,8 @@ class GremioMixin:
         cost = int(self._gremio_cfg().get("found_coins", 20))
         if not self._gremio_free(hero.id, hero):
             return self._gremio_view(hero, notice=t.t("gremio.already"))
+        if self._oath_no_lead(hero):                    # D-336: a 💀 hero leads nothing (a prompt opened before the oath)
+            return self._gremio_view(hero, notice=self._oath_no_lead(hero))
         if hero.gold < cost:
             return self._gremio_view(hero, notice=t.t("gremio.no_coins", coins=self._money(cost)))
         seq = self.store.get("meta", "gremio_seq") or {"n": 0}
@@ -1466,6 +1474,8 @@ class GremioMixin:
         if not record or hero.id != record["leader"] or account not in record["members"] or account == hero.id:
             return self._gremio_view(hero)
         name = self._hero_name(account)
+        if self._oath_account_on(account):              # D-336: a 💀 hero cannot receive the leadership (no succession yet)
+            return self._gremio_view(hero, notice=t.t("oath.no_lead_other", name=name))
         if not confirmed:
             return self._gremio_confirm("gremio.title", t.t("gremio.lead_ask", name=name), f"glead!:{account}", f"gmem:{account}")
         record["leader"] = account

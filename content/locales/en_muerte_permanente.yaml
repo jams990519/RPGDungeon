@@ -1,0 +1,75 @@
+# Texts of 0.60: the 💀 optional permadeath and the 🪦 hall of the fallen (D-147, confirmed; how it was applied: D-336,
+# provisional), and the line of a zone that a profession tends (D-145, confirmed; D-336).
+# [ES] La versión en inglés de es_muerte_permanente.yaml: las mismas claves y los mismos huecos (tools/check_locales.py).
+
+oath:
+  mark: "💀"
+  button: "💀 Permadeath"
+  title: "💀 Permadeath"
+  options_off: "💀 Permadeath: off."
+  options_on: "💀 Permadeath: sworn, day {days}."
+  intro: "💀 Permadeath is an oath: your hero has a single life."
+  rules_fall: "If {name} loses a fight, any fight (by hand or automatic, hunting, in a dungeon, against the Guardian or defending the camp), they fall for ever."
+  rules_keep: "They stay in the 🪦 Hall of the Fallen with everything they carried (level, gear, coins and professions) and you create a new hero from scratch. Your account, your language, your ⚙️ Options and your 💎 diamonds stay."
+  rules_prize: "Reward: prestige only. The 💀 mark next to your name and these titles: {titles}. No stats, no coins."
+  title_item: "{days} days, {title}"
+  rules_when: "It can be sworn up to level {n}, with two confirmations, and it cannot be undone."
+  rules_when_any: "It can be sworn at any level, with two confirmations, and it cannot be undone."
+  rules_lead: "Whoever swears it leads no guild or camp: there is nobody to inherit the command yet."
+  status_off: "Status: off."
+  status_on: "Status: sworn {days} {days|day|days} ago. A single life."
+  next_title: "Next title: {title}, at {days} days."
+  swear_button: "☠️ Swear"
+  hall_button: "🪦 Hall of the Fallen"
+  too_high: "🔒 It can only be sworn up to level {n}, and {name} is past it."
+  no_founder: "🔒 A camp's founder cannot swear it: the camp has nobody to inherit it yet."
+  no_leader: "🔒 A guild's leader cannot swear it: hand over the leadership first (👑) or leave the guild."
+  already: "💀 You already swore it."
+  confirm1_title: "⚠️ Permadeath (1 of 2)"
+  confirm1: "⚠️ Read this before going on: with permadeath, losing ONE fight makes {name} fall for ever."
+  confirm1_lose: "Their level {level}, gear, coins, professions, recipes, map and journal stay with {name} in the 🪦 Hall of the Fallen. You will have to create a new hero from level 1."
+  confirm1_lead: "When they fall they leave their camp and guild, and while they live they cannot lead one."
+  confirm1_prize: "It gives no advantage at all: prestige only."
+  confirm1_yes: "✅ I understand, go on"
+  confirm2_title: "🛑 Permadeath (2 of 2)"
+  confirm2: "🛑 Last confirmation: it can never be switched off. Do you swear permadeath for {name}?"
+  confirm2_yes: "💀 Yes, for ever"
+  confirm_no: "❌ No, go back"
+  confirm_again: "⏳ It has to be confirmed again: start from ☠️ Swear."
+  sworn: "💀 {name} swore permadeath. A single life: may their name stay in history."
+  hero_line: "💀 Permadeath: day {days} of their only life"
+  no_lead: "💀 A hero under permadeath leads no guild or camp: there is nobody to inherit the command yet."
+  no_lead_other: "💀 {name} swore permadeath: they cannot lead the guild (there is nobody to inherit the command yet)."
+  fell_title: "🪦 {name} fell for ever"
+  fell_body: "Their name stays in the 🪦 Hall of the Fallen."
+  fell_left: "They left their camp and guild. Their 🏛️ Market orders and repair orders were cancelled, and what they held stayed with them."
+  fell_keep: "Your account, your language, your ⚙️ Options and your 💎 diamonds stay. Create a new hero to start again."
+  new_hero_button: "✨ Create a new hero"
+  hall_title: "🪦 Hall of the Fallen"
+  hall_intro: "The heroes who swore 💀 permadeath and fell, from the latest to the first:"
+  hall_empty: "Nobody has fallen for ever yet."
+  hall_line: "🪦 {name} · {cls} · level {level} · fell to {enemy} (level {elevel}) at {place} · {date} · {days} {days|day|days} with 💀"
+  hall_more: "… and {n} more."
+  news_title: "🪦 Fell for ever"
+  news_body: "💀 {name} fell for ever to {enemy}. Their name stays in the 🪦 Hall of the Fallen (/fallen)."
+
+faq:
+  d65:
+    q: "💀 What is permadeath?"
+    a: "It is an optional oath: in ⚙️ Options → 💀 Permadeath, up to level {oath_level} and with two confirmations. It cannot be undone. From then on your hero has a single life: if they lose any fight, they fall for ever and stay in the 🪦 Hall of the Fallen (/fallen) with everything they carried; they leave their camp and guild, and you create a new hero from scratch. Your account, your language, your ⚙️ Options and your 💎 diamonds stay. While they live they carry the 💀 mark and earn titles at {oath_days} days: prestige only, no stats and no coins. Whoever swears it leads no guild or camp."
+
+batch:
+  reason:
+    auto_fell: "💀 You lost an auto-fight to {enemy} (lv {level})."
+
+tend:
+  zone_line: "🌱 {emoji} {name} grows back faster thanks to {prof}: +{pct} % · {left}"
+
+story:
+  journal:
+    oath: "💀 Swore permadeath."
+    fell: "🪦 Fell for ever to {enemy}."
+  titles:
+    hierro_7: "«Iron Survivor»"
+    hierro_30: "«Iron Veteran»"
+    hierro_100: "«Iron Legend»"

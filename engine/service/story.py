@@ -15,6 +15,8 @@ Claro (con 🧑 Personajes), la elección del 🎭 origen (👤 Héroe → 🎭 
 las decisiones, la reputación y sus rangos, los encargos del día y del campamento, el diario y su tarjeta, /bio, los
 gestos y el emblema. Es parte de GameService (una "mezcla": GameService hereda de StoryMixin), separada en su propio
 archivo para no agrandar game.py; usa sus ayudas (_give_xp, _bag_add, _zone_players, _push, _main_view...).
+D-336 (0.60, la 💀 muerte permanente de engine/service/permadeath.py): el 📔 Diario entiende "oath" (juró) y "fell" (cayó
+para siempre ante…); la tarjeta lleva 💀 antes del nombre (_oath_mark) y los títulos hierro_7/30/100 se dan con _grant_title.
 Documento de diseño: diseno/06-contenido/historia-y-rol.md §1 y "En el juego"; diseno/03-personaje/creacion-de-personaje.md §4
 Módulo: capa de servicios (M10 Misiones; personajes, facciones y diario con M2 Héroe y M15 Social)
 Depende de: engine.story (cuentas puras), engine.messaging, engine.hero, content/story.yaml,
@@ -464,6 +466,11 @@ class StoryMixin:
             return t.t("story.journal.enemy_camp" if v.get("f") else "story.journal.enemy_camp_help", x=v.get("x"), y=v.get("y"))
         if key == "title":
             return t.t("story.journal.title", title=self._title_name(v.get("t", "")))
+        if key == "oath":                                             # D-336 (0.60): 💀 swore the permadeath
+            return t.t("story.journal.oath")
+        if key == "fell":                                             # D-336 (0.60): 🪦 fell for ever (its last entry)
+            edef = self.content.enemies.get(v.get("e", ""), {})
+            return t.t("story.journal.fell", enemy=t.t(edef["name_key"]) if edef else v.get("e", "?"))
         if key == "rank":
             ranks = self._ranks()
             return t.t("story.journal.rank", faction=self._faction_name(v.get("f", "")),
@@ -1355,7 +1362,8 @@ class StoryMixin:
         """The hero's card: name with emblem, class, level, origin, bio, titles, faction ranks, tasks and last deeds."""
         t = self.texts
         group = self.content.classes.get(hero.class_id, {}).get("group", hero.class_id)
-        lines = [t.t("story.card_head", name=self._banner(hero) + self._emblem_name(hero), cls=t.t(f"class_group.{group}.name"), level=hero.level)]
+        lines = [t.t("story.card_head", name=self._oath_mark(hero) + self._banner(hero) + self._emblem_name(hero),   # D-336: 💀
+                      cls=t.t(f"class_group.{group}.name"), level=hero.level)]
         if hero.origin:
             lines.append(t.t("story.card_origin", origin=self._origin_name(hero.origin)))
         if hero.bio:

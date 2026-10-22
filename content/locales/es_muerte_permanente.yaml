@@ -1,0 +1,83 @@
+# Texts of 0.60: the 💀 optional permadeath and the 🪦 hall of the fallen (D-147, confirmed; how it was applied: D-336,
+# provisional), and the line of a zone that a profession tends (D-145, confirmed; D-336).
+# [ES] Textos de la 💀 muerte permanente opcional (⚙️ Opciones → 💀 Muerte permanente, sus dos confirmaciones, la caída, el
+# 🪦 Salón de los caídos y el aviso a los compañeros), de sus títulos de prestigio y de la línea 🌱 de 📍 Zona (los oficios
+# aceleran lo que vuelve). Se junta con es.yaml al cargar (engine/core/content.py: las claves que ya existen, como story,
+# se completan, no se pisan).
+# Documento de diseño: diseno/05-salud/secuelas-y-muerte.md §4.2; diseno/02-mundo/mapa-infinito-y-viaje.md §1.12
+# Lo leen: engine/service/permadeath.py (todo lo de oath.*), engine/service/story.py (📔 Diario: story.journal.oath y
+#     story.journal.fell; los títulos story.titles.hierro_*) y engine/service/game.py (_tend_lines: tend.zone_line).
+# Estilo: español neutro, de tú, frases cortas para el teléfono. Una clave nueva va también en en_muerte_permanente.yaml
+# (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+oath:                          # [ES] D-147, D-336: la 💀 muerte permanente
+  mark: "💀"                   # [ES] la marca junto al nombre de quien la juró (👥 Jugadores, su tarjeta, 👤 Héroe y el 📔 Diario)
+  button: "💀 Muerte permanente"
+  title: "💀 Muerte permanente"
+  options_off: "💀 Muerte permanente: apagada."
+  options_on: "💀 Muerte permanente: jurada, día {days}."
+  intro: "💀 La muerte permanente es un juramento: tu héroe tiene una sola vida."
+  rules_fall: "Si {name} pierde una pelea, cualquiera (a mano o automática, cazando, en una mazmorra, contra el Guardián o defendiendo el campamento), cae para siempre."
+  rules_keep: "Queda en el 🪦 Salón de los caídos con todo lo que llevaba (nivel, equipo, monedas y oficios) y creas un héroe nuevo desde cero. Siguen tu cuenta, tu idioma, tus ⚙️ Opciones y tus 💎 diamantes."
+  rules_prize: "Premio: solo prestigio. La marca 💀 junto a tu nombre y estos títulos: {titles}. No da estadísticas ni monedas."
+  title_item: "{days} días, {title}"
+  rules_when: "Se jura hasta el nivel {n}, con dos confirmaciones, y no se puede deshacer."
+  rules_when_any: "Se jura en cualquier nivel, con dos confirmaciones, y no se puede deshacer."
+  rules_lead: "Quien la jura no lidera gremios ni campamentos: todavía no hay quién herede el mando."
+  status_off: "Estado: apagada."
+  status_on: "Estado: jurada hace {days} {days|día|días}. Una sola vida."
+  next_title: "Próximo título: {title}, a los {days} días."
+  swear_button: "☠️ Jurar"
+  hall_button: "🪦 Salón de los caídos"
+  too_high: "🔒 Solo se jura hasta el nivel {n}, y {name} ya lo pasó."
+  no_founder: "🔒 El fundador de un campamento no puede jurarla: el campamento todavía no tiene quién lo herede."
+  no_leader: "🔒 El líder de un gremio no puede jurarla: primero cede el liderazgo (👑) o sal del gremio."
+  already: "💀 Ya la juraste."
+  confirm1_title: "⚠️ Muerte permanente (1 de 2)"
+  confirm1: "⚠️ Lee esto antes de seguir: con la muerte permanente, perder UNA pelea hace caer a {name} para siempre."
+  confirm1_lose: "Se quedan con {name} en el 🪦 Salón de los caídos su nivel {level}, su equipo, sus monedas, sus oficios, sus recetas, su mapa y su diario. Tendrás que crear un héroe nuevo desde el nivel 1."
+  confirm1_lead: "Al caer sale de su campamento y de su gremio, y mientras viva no puede liderar uno."
+  confirm1_prize: "No da ninguna ventaja: solo prestigio."
+  confirm1_yes: "✅ Entiendo, seguir"
+  confirm2_title: "🛑 Muerte permanente (2 de 2)"
+  confirm2: "🛑 Última confirmación: no se puede apagar nunca. ¿Juras la muerte permanente para {name}?"
+  confirm2_yes: "💀 Sí, para siempre"
+  confirm_no: "❌ No, volver"
+  confirm_again: "⏳ Hay que confirmar otra vez: empieza desde ☠️ Jurar."
+  sworn: "💀 {name} juró la muerte permanente. Una sola vida: que su nombre quede en la historia."
+  hero_line: "💀 Muerte permanente: día {days} de su única vida"
+  no_lead: "💀 Un héroe con muerte permanente no lidera gremios ni campamentos: todavía no hay quién herede el mando."
+  no_lead_other: "💀 {name} juró la muerte permanente: no puede liderar el gremio (todavía no hay quién herede el mando)."
+  fell_title: "🪦 {name} cayó para siempre"
+  fell_body: "Su nombre queda en el 🪦 Salón de los caídos."
+  fell_left: "Salió de su campamento y de su gremio. Sus órdenes del 🏛️ Mercado y sus encargos de reparación se cancelaron, y lo que tenían quedó con él."
+  fell_keep: "Siguen tu cuenta, tu idioma, tus ⚙️ Opciones y tus 💎 diamantes. Crea un héroe nuevo para volver a empezar."
+  new_hero_button: "✨ Crear héroe nuevo"
+  hall_title: "🪦 Salón de los caídos"
+  hall_intro: "Los héroes que juraron la 💀 muerte permanente y cayeron, del último al primero:"
+  hall_empty: "Todavía nadie cayó para siempre."
+  hall_line: "🪦 {name} · {cls} · nivel {level} · cayó ante {enemy} (nivel {elevel}) en {place} · {date} · {days} {days|día|días} con 💀"
+  hall_more: "… y {n} más."
+  news_title: "🪦 Cayó para siempre"
+  news_body: "💀 {name} cayó para siempre ante {enemy}. Su nombre queda en el 🪦 Salón de los caídos (/caidos)."
+
+faq:                           # [ES] D-336: ❓ /d65 (content/faq.yaml); los números salen de balance.yaml permadeath (_oath_faq_values)
+  d65:
+    q: "💀 ¿Qué es la muerte permanente?"
+    a: "Es un juramento opcional: en ⚙️ Opciones → 💀 Muerte permanente, hasta el nivel {oath_level} y con dos confirmaciones. No se puede deshacer. Desde ahí tu héroe tiene una sola vida: si pierde cualquier pelea, cae para siempre y queda en el 🪦 Salón de los caídos (/caidos) con todo lo que llevaba; sale de su campamento y de su gremio, y creas un héroe nuevo desde cero. Siguen tu cuenta, tu idioma, tus ⚙️ Opciones y tus 💎 diamantes. Mientras vive lleva la marca 💀 y gana títulos a los {oath_days} días: solo prestigio, sin estadísticas ni monedas. Quien la jura no lidera gremios ni campamentos."
+
+batch:
+  reason:
+    auto_fell: "💀 Un {enemy} (nv {level}) te venció en una pelea automática."   # [ES] D-336: el lote termina con la caída para siempre
+
+tend:                          # [ES] D-145, D-336: un oficio que recolecta en una zona hace que ese recurso vuelva más rápido un tiempo
+  zone_line: "🌱 {emoji} {name} vuelve más rápido por {prof}: +{pct} % · {left}"
+
+story:
+  journal:
+    oath: "💀 Juró la muerte permanente."
+    fell: "🪦 Cayó para siempre ante {enemy}."
+  titles:                      # [ES] los títulos de prestigio de la muerte permanente (balance.yaml permadeath.titles)
+    hierro_7: "«Superviviente de hierro»"
+    hierro_30: "«Veterano de hierro»"
+    hierro_100: "«Leyenda de hierro»"

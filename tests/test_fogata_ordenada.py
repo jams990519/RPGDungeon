@@ -146,7 +146,7 @@ def test_the_inn_takes_time_by_the_life_you_lack(service):
 def test_options_without_automatic_fights_and_with_feedback(service):
     make_hero(service)
     view = service.act("test:1", "options")
-    assert ids(view) == ["opt:retreat", "lang", "fb", "dudas@options", "home"]     # D-297: ❓ Dudas too (the owner)
+    assert ids(view) == ["opt:retreat", "lang", "fb", "dudas@options", "oath", "home"]   # D-297: ❓ Dudas; D-336: 💀 Muerte permanente
     assert "Peleas automáticas" not in body(view) and "Pociones" not in body(view)
     hero = service._load("test:1")
     hero.options["fights"] = "auto"                                                # an old choice no longer turns them on

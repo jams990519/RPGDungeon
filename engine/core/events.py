@@ -10,7 +10,8 @@ Documento de diseño: diseno/01-plataforma/arquitectura-modular.md §1 regla 3 y
 Módulo: M1 Núcleo
 Depende de: ninguno
 Lo usan: engine/service/game.py (publica), telemetría futura (escucha)
-Eventos que publica: los define aquí; los publican Combate, Mundo, Héroe y Oficios (ItemCrafted, ProfessionRankUp: D-109)
+Eventos que publica: los define aquí; los publican Combate, Mundo, Héroe y Oficios (ItemCrafted, ProfessionRankUp: D-109);
+    HeroFellForever (0.60, D-336): un héroe con 💀 muerte permanente cayó para siempre (engine/service/permadeath.py)
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno
 Reglas que nunca se rompen:
@@ -91,6 +92,15 @@ class HitReceived(Event):
 class HeroDowned(Event):
     """A hero reached 0 health. [ES] HeroeDerribado."""
     hero_id: str
+
+
+@dataclass(frozen=True)
+class HeroFellForever(Event):
+    """A hero who swore the 💀 permadeath lost a fight and fell for ever (D-147, D-336, 0.60). memorial_id: its entry in the
+    🪦 hall of the fallen ("f1"...). [ES] PersonajeCaidoParaSiempre: el héroe queda en el Salón de los caídos; nadie lo
+    escucha todavía (la Gaceta y el ranking del diseño, más adelante)."""
+    hero_id: str
+    memorial_id: str
 
 
 @dataclass(frozen=True)

@@ -1114,3 +1114,18 @@ v0_57:
     - "🛒 Without the profession, the smith of any 🔥 campfire repairs it for coins (dearer), or you place an order: any artisan with the profession and the rank can take a 📜 repair order, gets paid for the work and your piece is repaired. If nobody takes it within 7 days, you get the coins back."
     - "💔 Every repair lowers its maximum a little. After 5 repairs (8 for a ✒️ masterwork), the next time it reaches 0 it breaks for good: the piece shows how many it has left and we ask you before the last one."
     - "🏛️ Durability travels with the piece in the Market and the ⚔️ Armory: buyers see 🔧 80/96 before paying. More in ❓ /d63."
+
+v0_60:
+  version: "0.60"
+  title: "💀 Lost Realms 0.60: muerte permanente opcional y oficios que hacen volver los recursos"
+  title_en: "💀 Lost Realms 0.60: optional permadeath and professions that make resources grow back"
+  notes:
+    - "💀 Nueva opción en ⚙️ Opciones → 💀 Muerte permanente: un juramento para una sola vida. Se jura hasta el nivel 10, con dos confirmaciones que dicen bien qué se pierde, y no se puede deshacer. Es solo para quien la quiera: nadie la tiene si no la jura."
+    - "🪦 Con la muerte permanente, perder cualquier pelea hace caer a tu héroe para siempre: queda en el 🪦 Salón de los caídos (/caidos) con su nombre, su clase, su nivel, quién lo venció, dónde, la fecha y los días que vivió, y creas un héroe nuevo. Tu cuenta, tu idioma, tus ⚙️ Opciones y tus 💎 diamantes siguen."
+    - "🏅 El premio es solo prestigio: la marca 💀 junto a tu nombre y títulos a los 7, 30 y 100 días. Sin estadísticas ni monedas. Quien la jura no lidera gremios ni campamentos (todavía no hay quién herede el mando). Más en ❓ /d65."
+    - "🌱 Los oficios cuidan la tierra: si recolectas un recurso con su oficio aprendido (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario o 🎣 Pescador), ese recurso vuelve más rápido en esa zona por 24 horas, más cuanto más rango tienes. 📍 Zona lo muestra con 🌱."
+  notes_en:
+    - "💀 New option in ⚙️ Options → 💀 Permadeath: an oath for a single life. It can be sworn up to level 10, with two confirmations that spell out what is lost, and it cannot be undone. It is only for those who want it: nobody has it unless they swear it."
+    - "🪦 With permadeath, losing any fight makes your hero fall for ever: they stay in the 🪦 Hall of the Fallen (/fallen) with their name, class, level, who beat them, where, the date and the days they lived, and you create a new hero. Your account, your language, your ⚙️ Options and your 💎 diamonds stay."
+    - "🏅 The reward is prestige only: the 💀 mark next to your name and titles at 7, 30 and 100 days. No stats, no coins. Whoever swears it leads no guild or camp (there is nobody to inherit the command yet). More in ❓ /d65."
+    - "🌱 Professions tend the land: if you gather a resource with its profession learned (🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist or 🎣 Fisher), that resource grows back faster in that zone for 24 hours, more the higher your rank. 📍 Zone shows it with 🌱."
