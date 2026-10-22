@@ -681,6 +681,19 @@ Si cambias esto, revisa:
       que entra o sale por los caminos de siempre (_answer_join, las invitaciones, _leave_camp, _idle_release, la espera) se
       acomoda solo la próxima vez que alguien mira las escuadras. Números: balance.yaml ladder.squads. Textos:
       content/locales/es_escuadras.yaml y en_escuadras.yaml; ❓ /d37. Pruebas: tests/test_escuadras.py
+    - 🔧 El equipo se gasta, se repara y un día se rompe (0.57, D-139 confirmada por el dueño, E-23; cómo se aplicó: D-333,
+      provisional): las cuentas viven en engine/hero/durability.py y las pantallas en engine/service/repair.py (RepairMixin, de
+      la que GameService hereda; su encabezado lista sus datos y reglas: "repair_order" y meta/repair). Ganchos de este
+      archivo: _end_combat (_wear_after_fight al empezar: toda pelea gasta el equipo puesto; los avisos van al final y en
+      state["wear"], que _auto_combat pasa al resumen del lote), COMMANDS (/reparar, /repair), text() (/rp1 y /ro1 con
+      REPAIR_CODE_RE, fuera de combate), _idle_action (REPAIR_ACTIONS, también ocupado), tick() (_repair_tick: los encargos
+      que vencen devuelven sus monedas), _forget_piece (durability.sync_bag: lo que sale de la mochila se lleva la copia más
+      gastada), _worn_view (la durabilidad de cada pieza, ⚠️ y el botón 🔧 Reparar: EXTRA_BUTTON_KINDS "gear_worn" 5 con el
+      🌰 Recuerdo), _gear_view y _unequip_view (la durabilidad de cada copia), _item_view (la línea 🔧 Durabilidad y el botón
+      🔧 Reparar de una pieza puesta), _gear_diff (una pieza dañada cuenta 0), _hero_view (_wear_hero_lines), _shop_view
+      (wear.shop_line), _prof_detail_view (_repair_prof_lines) y _faq_values (_repair_faq_values). unequip recibe balance
+      para llevar la durabilidad. Números: balance.yaml durability. Textos: content/locales/es_desgaste.yaml y
+      en_desgaste.yaml; ❓ /d63. Pruebas: tests/test_desgaste_reparacion.py
     - 🕐 La zona horaria de cada jugador y ☀️ 🌇 🌙 el reloj del mundo (0.58, D-124 y D-126 confirmadas, D-239.9 confirmada:
       el día del mundo dura 4 días reales; cómo se aplicó: D-334, provisional): viven en engine/service/world_time.py
       (WorldTimeMixin), engine/core/timezones.py (las cuentas de las zonas) y engine/world/world_clock.py (la franja y sus
@@ -754,6 +767,7 @@ from engine.core import (
     hash_unit,
 )
 from engine.hero import Hero, hero_stats, xp_for_level
+from engine.hero import durability                     # D-139, D-333 (0.57): 🔧 gear wear, damage, repairs and the final break
 from engine.hero.gear import (auto_equip, can_use, drop_chance_for, equip, gear_bonus, roll_gear, source_choices,
                               starter_gear, suits, unequip)
 from engine.hero.gear import gear_score, is_better, piece_score, real_stats     # D-115 (fase 2): ✨ encantamientos y ⬆️ pieza mejor
@@ -777,6 +791,7 @@ from engine.service.map_scroll import SCROLL_ACTIONS, SCROLL_CODE_RE, MapScrollM
 from engine.service.ladder import LadderMixin           # D-327 (0.51): the settlement ladder (cap per stage, idle, castle)
 from engine.service.squads import SQUAD_ACTIONS, SquadsMixin    # D-331 (0.55): 🪖 the squads of 5 (D-253.1, Forma B)
 from engine.service.group_missions import GroupMissionMixin   # D-332 (0.56): 🎯 the camp's group mission of each level-up
+from engine.service.repair import REPAIR_ACTIONS, REPAIR_CODE_RE, RepairMixin   # D-333 (0.57): 🔧 Reparar and 📜 repair orders
 from engine.service.world_time import WorldTimeMixin   # D-334 (0.58): 🕐 time zones and ☀️ 🌇 🌙 the world clock
 from engine.core import timezones as tz_rules          # D-124, D-334: the zone of the player being served (_speaking)
 from engine.world import raids as raid_rules
@@ -816,6 +831,7 @@ COMMANDS.update({"/mercado": "mkt", "/market": "mkt"})           # D-320 (0.46):
 COMMANDS.update({"/pergaminos": "scrolls", "/scrolls": "scrolls"})   # D-326 (0.50): 🗺️ Pergaminos de mapa (engine/service/map_scroll.py)
 COMMANDS.update({"/hora": "tz", "/zonahoraria": "tz", "/time": "tz", "/timezone": "tz"})   # D-124, D-334 (0.58): 🕐 Zona horaria
 COMMANDS.update({"/hibrido": "hyb", "/hybrid": "hyb"})               # D-330 (0.54): 🔀 Modo híbrido (from level 10, D-312)
+COMMANDS.update({"/reparar": "rpr", "/repair": "rpr"})               # D-333 (0.57): 🔧 Reparar (engine/service/repair.py)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -887,7 +903,8 @@ HUB_BUTTONS = 8
 EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 2,
                       "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
                       "trainer": 4 + 2,        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
-                      "market_cats": HUB_BUTTONS + 1}   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas, and ↩️ Volver
+                      "market_cats": HUB_BUTTONS + 1,   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas, and ↩️ Volver
+                      "gear_worn": 4 + 1}   # D-333 (0.57): 🛡️ Equipo adds 🔧 Reparar (with the 🌰 Recuerdo: 5)
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -970,7 +987,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 
 
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
-                  WorldTimeMixin):
+                  RepairMixin, WorldTimeMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1077,8 +1094,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             rcode = RECIPE_CODE_RE.match(low)
             scode = RECON_CODE_RE.match(low)
             pcode = SCROLL_CODE_RE.match(low)
+            wcode = REPAIR_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif wcode and self.store.get("combat", hero.id) is None:     # D-333: /rp2 a worn piece of 🔧 Reparar, /ro2 an order
+                typed = self._repair_code(hero, wcode.group(1), int(wcode.group(2)))
             elif pcode and self.store.get("combat", hero.id) is None:     # D-326: /pm2 opens the 2nd scroll of 🗺️ Pergaminos
                 typed = self._scroll_code(hero, int(pcode.group(1)))
             elif scode and self.store.get("combat", hero.id) is None:     # D-324: /rc2 scouts the 2nd place of 🔭 Reconocer
@@ -1352,7 +1372,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: cumple los viajes y exploraciones que ya terminaron y devuelve los avisos. Antes de mirar a los héroes
         termina las obras (_works_tick), une a quien esperaba lugar (_waiting_sweep), cierra lo del 🏛️ Mercado
-        (_market_tick) y, desde la 0.49 (D-325), entrega la 🌾 cosecha de la muralla de cada semana (_harvest_tick).
+        (_market_tick), devuelve las monedas de los 📜 encargos de reparación vencidos (_repair_tick, D-333) y, desde la 0.49
+        (D-325), entrega la 🌾 cosecha de la muralla de cada semana (_harvest_tick).
         Desde la 0.51 (D-327): antes de la espera, guarda una vez el cupo de antes de cada campamento como su piso
         (_cap_floor_sweep: nadie pierde lugar con el cupo por etapa), y al final mira quién no juega hace 25 o 30 días
         (_idle_tick: aviso y lugar libre, nunca el fundador; cada ladder.idle_scan_minutes).
@@ -1365,6 +1386,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self._cap_floor_sweep()             # D-327: once after start, each camp keeps its cap of before 0.51 as its floor (D-64)
         self._waiting_sweep()               # D-323: once after start, who waited since before the patch gets in if there is room
         self._market_tick()                 # D-320: 🏛️ orders that ran out go back and 📦 deliveries that arrived are told (below)
+        self._repair_tick()                 # D-333: 📜 repair orders that ran out give their coins back (their notices, below)
         self._harvest_tick()                # D-325: 🌾 a week of the wall's harvest goes to each camp's 💰 fund (its notice, below)
         self._idle_tick()                   # D-327: 💤 warned at 25 days without playing, the place freed at 30 (never the founder)
         for account_id, data in self.store.items("hero"):
@@ -2284,6 +2306,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._scroll_action(hero, action_id)
         if action_id.startswith(SQUAD_ACTIONS):         # D-331 (0.55): 🪖 Escuadras (a menu of the guild: also while busy)
             return self._squad_action(hero, action_id)
+        if action_id.startswith(REPAIR_ACTIONS):        # D-333 (0.57): 🔧 Reparar (a menu: also while busy; repairing checks the place)
+            return self._repair_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
         if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
@@ -2390,7 +2414,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if action_id.startswith("equip:"):
             return self._equip(hero, action_id[6:])
         if action_id.startswith("unequip:"):
-            item_id = unequip(hero, action_id[8:])
+            item_id = unequip(hero, action_id[8:], self.content.balance)     # D-333: with its durability
             self._clamp_hp(hero)
             if not item_id:
                 return self._unequip_view(hero)
@@ -3901,6 +3925,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         ready = sum(1 for e in self._mkt_box(hero.id) if float(e.get("at", 0)) <= self.clock.now())
         if ready:                                         # D-320: 📦 something waits to be collected
             body.append(t.t("market.shop_ready", n=ready))
+        if self._needs_any_repair(hero):                  # D-333: 🔧 the campfire smith repairs (from 🛡️ Equipo → 🔧 Reparar)
+            body.append(t.t("wear.shop_line"))
         if self._bag_full(hero):  # D-90: buying waits until there is room again
             body += ["", self._bag_full_line(hero)]
         actions = [Action(id="shop:buy", label=t.t("shop.buy_menu_button")), Action(id="shop:sell", label=t.t("shop.sell_menu_button")),
@@ -7939,8 +7965,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         {idle_days}, {idle_left}, {castle_active}, {active_days} y {trial_winners} (ladder.py _ladder_faq_values); {members_base}
         y {members_step} quedan (la cuenta de antes) aunque ninguna respuesta los use. D-329 (0.53): {castle_waves},
         {castle_waves_pass}, {castle_waves_pct} y {castle_waves_retry} (las 🌊 oleadas crecientes del castillo). D-331 (0.55):
-        {squad_size} (las 🪖 escuadras, squads.py _squad_faq_values). D-334 (0.58): {world_days} y {world_band_hours} (el día del
-        mundo y cada franja, world_time.py _world_time_faq_values).
+        {squad_size} (las 🪖 escuadras, squads.py _squad_faq_values). D-333 (0.57): {wear_low}, {repair_loss}, {repairs},
+        {repairs_mw}, {repair_margin} y {repair_days} (🔧 la durabilidad, repair.py _repair_faq_values). D-334 (0.58):
+        {world_days} y {world_band_hours} (el día del mundo y cada franja, world_time.py _world_time_faq_values).
         """
         t = self.texts
         b = self.content.balance
@@ -7994,6 +8021,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             **self._fund_faq_values(),                  # D-322 (0.47): {fund_cap}, the fund for the professions
             **self._ladder_faq_values(),                # D-327 (0.51): {members_stages}, {idle_days}, {castle_active}...
             **self._squad_faq_values(),                 # D-331 (0.55): {squad_size}, the 🪖 squads of /d37
+            **self._repair_faq_values(),                # D-333 (0.57): {wear_low}, {repair_loss}, {repairs}… of /d63
             **self._world_time_faq_values(),            # D-334 (0.58): {world_days}, {world_band_hours} (☀️ 🌇 🌙, /d05)
         }
 
@@ -8608,6 +8636,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 body.append(t.t("camp_prof.perk_note"))
             body += self._title_prof_lines(hero, pid)                       # D-306.1: 🎖️ its title, its cap, what to buy
             body += self._pspec_prof_lines(hero, pid) + self._explorer_prof_lines(hero, pid)
+            body += self._repair_prof_lines(hero, pid)                      # D-333: 🔧 what this profession repairs, its orders
             if self._title_waiting(hero, pid):                              # D-306.1: 🎖️ Comprar <next title> first
                 nxt = self._title_next(hero, pid)
                 actions.append(Action(id=f"ptitle:{pid}:d", label=t.t("ptitle.buy_button", title=self._ptitle_name(nxt),
@@ -9961,7 +9990,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return Action(id=f"equip:{item_id}", label=self.texts.t("gear.better_button", item=f"{item['emoji']} {self.texts.t(item['name_key'])}"))
 
     def _forget_piece(self, hero: Hero, item_id: str) -> None:
-        """When the last copy of a piece leaves the hero, its ✒️ signature (D-116), ✨ enchantment (D-115) and 🆕 mark go too."""
+        """When the last copy of a piece leaves the hero, its ✒️ signature (D-116), ✨ enchantment (D-115) and 🆕 mark go too.
+
+        [ES] D-333 (0.57): antes, deja como mucho un registro de durabilidad por copia de la mochila (durability.sync_bag): la
+        copia que salió se llevó el registro más gastado (vender al mercader, desencantar). La llaman: todo lo que saca una pieza
+        de la mochila o del equipo (vender, desencantar, 🏛️ Mercado, ⚔️ Armería, la rotura de una pieza)."""
+        durability.sync_bag(hero)
         if hero.backpack.get(item_id, 0) > 0 or item_id in hero.gear.values():
             return
         hero.gear_signatures.pop(item_id, None)
@@ -11931,6 +11965,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 timer=t.t("hero_card.hp_timer", time=self._fmt_duration(refill)) if refill > 0 else ""),
             *(self._recovery_lines(hero, max_hp) if hero.downed else []),   # 🤕 malherido: why it is slow and what fixes it
             t.t("hero.atk_def", attack=round(stats["attack"], 1), armor=round(stats["armor"] * 100)),
+            *self._wear_hero_lines(hero),                               # D-333: ⚠️ gear to repair (only when worn out or damaged)
             t.t("hero_card.energy", energy=hero.energy, max=energy_max, timer=energy_timer),
             # La 🔷 energía de combate solo se ve en la pelea (pedido del dueño): en la ficha, el centinela de "sin tope"
             # (resource_max 100000, D-226) salía como "100000/100000" y no significaba nada. Las clases retiradas, que sí
@@ -12390,6 +12425,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         mine = self._real_stats(hero, item_id)
         worn_id = hero.gear.get(item["slot"], "")
         worn = self._real_stats(hero, worn_id) if worn_id in self.content.items else {}
+        if durability.slot_damaged(hero, item["slot"], self.content.balance):      # D-333: a damaged piece gives nothing
+            worn = {}
         diff = {k: mine.get(k, 0.0) - worn.get(k, 0.0) for k in sorted(set(mine) | set(worn))}
         return diff, gear_score(diff, self.content.balance)
 
@@ -12406,25 +12443,38 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         hero.hp = min(hero.hp, hero_stats(self._kit(hero), hero.level)["max_hp"])
 
     def _worn_view(self, hero: Hero, notice: str | None = None) -> View:
-        """What you wear, one simple line per piece: icon, name and what it gives you (D-86); 🔁 Equipar and 🔽 Desequipar (D-299)."""
+        """What you wear, one simple line per piece: icon, name and what it gives you (D-86); 🔁 Equipar and 🔽 Desequipar (D-299).
+
+        [ES] D-333 (0.57): cada línea dice su durabilidad (🔧 84/100; ⚠️ gastada o dañada, y una dañada "sin bonos"), un aviso si
+        algo está gastado o dañado, y el botón 🔧 Reparar cuando algo necesita reparación, tienes un 📜 encargo o hay encargos que
+        puedes hacer (5 botones como mucho con el 🌰 Recuerdo: EXTRA_BUTTON_KINDS "gear_worn"). Pruebas: tests/test_gear.py y
+        tests/test_desgaste_reparacion.py."""
         t = self.texts
+        bal = self.content.balance
         body = []
-        for slot in self.content.balance["gear"]["slots"]:
+        for slot in bal["gear"]["slots"]:
             item_id = hero.gear.get(slot)
             if item_id in self.content.items:
                 item = self.content.items[item_id]
+                rec = durability.worn_record(hero, slot, bal)          # D-333: 🔧 its durability
+                stats = (t.t("wear.damaged_stats") if durability.damaged(rec)
+                         else self._gear_stats_text(self._real_stats(hero, item_id)))
                 body.append(t.t("gear.simple_line", emoji=item["emoji"],
                                 item=t.t(item["name_key"]) + self._masterwork_mark(item_id) + self._enchant_mark(hero, item_id)
                                 + self._new_mark(hero, item_id),
-                                stats=self._gear_stats_text(self._real_stats(hero, item_id))))
+                                stats=f"{stats} · {self._dur_tag(rec)}" if durability.wears(item) else stats))
         if not body:
             body.append(t.t("gear.nothing_worn"))
         body += ["", t.t("gear.total", stats=self._gear_stats_text(gear_bonus(self.content.items, hero, self.content.classes, self.content.balance)))]
         loose = sum(n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "gear")
         body.append(t.t("gear.in_bag", n=loose))
+        if self._worn_alerts(hero):                    # D-333: ⚠️ something worn out or damaged
+            body.append(t.t("wear.worn_hint"))
         actions = [Action(id="gear:0", label=t.t("gear.equip_menu_new" if hero.gear_new else "gear.equip_menu"))]
         if any(hero.gear.get(slot) in self.content.items for slot in self.content.balance["gear"]["slots"]):
             actions.append(Action(id="unequipl", label=t.t("gear.unequip_menu")))     # D-299: 🔽 Desequipar, beside 🔁 Equipar
+        if self._repair_button_shown(hero):            # D-333: 🔧 Reparar
+            actions.append(self._repair_button(hero))
         if self._has_memento(hero):
             actions.append(Action(id="memento", label=t.t("guardian.memento_button")))
         actions.append(Action(id="bag", label=t.t("menu.back")))
@@ -12461,7 +12511,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 note = self._masterwork_note(hero, item_id)                     # D-116: ✒️ Obra maestra de Lyra
                 body.append(t.t("gear.list_line", code=f"/e{n}", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id)
                                 + self._better_mark(hero, item_id) + self._new_mark(hero, item_id), n=f" ×{count}" if count > 1 else "",
-                                status=self._gear_status(hero, self.content.items[item_id]) + (f" · {note}" if note else "")))
+                                status=self._gear_status(hero, self.content.items[item_id]) + (f" · {note}" if note else "")
+                                + self._bag_wear_note(hero, item_id)))        # D-333: 🔧 the copy you would put on, if used
             if pages > 1:
                 body.append(t.t("gear.list_page", page=page + 1, pages=pages))
             body += ["", t.t("gear.list_hint")]
@@ -12490,8 +12541,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         body = []
         for n, slot in enumerate(worn, 1):
             item_id = hero.gear[slot]
+            rec = durability.worn_record(hero, slot, self.content.balance)      # D-333: 🔧 its durability
+            stats = t.t("wear.damaged_stats") if durability.damaged(rec) else self._gear_stats_text(self._real_stats(hero, item_id))
             body.append(t.t("gear.unequip_line", code=f"/q{n}", item=self._gear_name(item_id) + self._enchant_mark(hero, item_id),
-                            stats=self._gear_stats_text(self._real_stats(hero, item_id))))
+                            stats=f"{stats} · {self._dur_tag(rec)}"))
         body += ["", t.t("gear.unequip_hint")] if worn else [t.t("gear.nothing_worn")]
         return View(kind="gear_unequip", title=t.t("gear.unequip_title"), body=body,
                     actions=[Action(id="gear", label=t.t("menu.back"))], notice=notice)
@@ -12506,7 +12559,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._item_view(hero, target)
         if target is None or not hero.gear.get(target):
             return self._unequip_view(hero, notice=t.t("gear.bad_code"))
-        item_id = unequip(hero, target)
+        item_id = unequip(hero, target, self.content.balance)          # D-333: with its durability
         self._clamp_hp(hero)
         return self._unequip_view(hero, notice=t.t("gear.unequipped", item=self._gear_name(item_id)) if item_id else None)
 
@@ -12539,6 +12592,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         enchant = self._enchant_text(hero, item_id)
         if enchant:                                 # D-115: ✨ its enchantment
             body.append(t.t("ench.item_line", enchant=enchant))
+        wear_rec = (durability.worn_record(hero, worn_slot, self.content.balance) if worn_slot
+                    else durability.best_in_bag(hero, item_id, self.content.balance))
+        body.append(self._dur_line(wear_rec, item_id))          # D-333: 🔧 Durabilidad 84/96 · 4 reparaciones más
+        body += self._wear_state_lines(wear_rec, item_id)
+        if not worn_slot and durability.needs_repair(wear_rec):  # D-333: 🔧 Reparar works on what you wear
+            body.append(t.t("wear.bag_hint"))
         if item_id in hero.gear_new:
             hero.gear_new.remove(item_id)
         actions = []
@@ -12547,6 +12606,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if worn_slot:
             body.append(t.t("gear.is_worn"))
             actions.append(Action(id=f"unequip:{worn_slot}", label=t.t("gear.unequip_button")))
+            if durability.needs_repair(wear_rec):      # D-333: 🔧 Reparar this piece (4 buttons at most: ↩️ Quitar, 🔧, ✨, ↩️)
+                actions.append(Action(id=f"rpr:{worn_slot}", label=t.t("repair.button")))
         else:
             usable = can_use(item, hero, self.content.classes, self.content.balance)
             if hero.gear.get(item["slot"]):
@@ -14694,6 +14755,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         ups = {t.t("combat.level_up", level=n) for n in range(level + 1, hero.level + 1)} | {t.t("talents.new_point")}
         activity["log"] += [line for line in state.get("story", []) if line not in ups]    # D-117 (level-ups come below)
         activity["log"] += state.get("guide", [])                                           # D-193: 🧭 the "hunt" step
+        activity["log"] += [line for line in state.get("wear", []) if line not in activity["log"]]   # D-333: 🔧 once each
         fights = activity.setdefault("fights", {})
         key = {"victory": "won", "defeat": "lost"}.get(outcome, "fled")
         fights[key] = fights.get(key, 0) + 1
@@ -15010,6 +15072,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         hb = self.content.balance["hero"]
         actions = [Action(id="home", label=t.t("menu.continue"))]
         bag_before = dict(hero.backpack)                # D-115: to tell a ⬆️ better piece that came in this fight
+        wear_lines = self._wear_after_fight(hero, outcome)   # D-333: the pieces worn in this fight wear out (before any new one)
         # D-106: a hunt won while your camp's hunting party lasts in that zone gets the group bonus (0 otherwise)
         party = self._hunt_party_of_fight(hero, state) if outcome == "victory" else None
         bonus = self._hunt_bonus(hero, party) if party else 0.0
@@ -15084,6 +15147,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         # D-193: 🧭 the "hunt" step ends with a hunt fight, won or lost; automatic fights put it in the batch (_auto_combat)
         state["guide"] = self._guide_event(hero, "fight", outcome=outcome, hunt=bool(state.get("hunt")))
         lines += state["guide"]
+        state["wear"] = wear_lines                       # D-333: ⚠️ worn out, damaged or 💔 broken (automatic fights: the summary)
+        lines += wear_lines
         refilled = self._refill_belt(hero)
         if refilled:
             lines.append(t.t("combat.belt_refilled"))

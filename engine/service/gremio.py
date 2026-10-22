@@ -110,7 +110,9 @@ Datos de los que es dueño:
     D-290 (0.39): "armory" (la ⚔️ Armería del gremio; clave el id del gremio antes del campamento y la clave "x:y" del
         campamento después: al fundar se muda): {"items": [{"id", "item", "enchant", "sig", "by", "by_id", "at"}], "log":
         [{"k": "in" | "out", "who", "item", "at"}] (los últimos armory.log_kept), "seq"}. Cada pieza guarda su ✨ encantamiento
-        y su ✒️ firma (los de Hero.gear_enchants y Hero.gear_signatures), así nada se pierde. "gremio_codes" suma "arm_in" y
+        y su ✒️ firma (los de Hero.gear_enchants y Hero.gear_signatures), así nada se pierde. D-333 (0.57): una pieza usada guarda
+        también su 🔧 durabilidad ("wear": el registro de engine/hero/durability.py; sin "wear" = nueva): sale la copia más gastada
+        de la mochila (take_worst) y vuelve con ella al tomarla (put_back). "gremio_codes" suma "arm_in" y
         "arm_out" (el orden de /a1 y /t1: solo pantalla).
     D-294 (0.39): del gremio sin ser del campamento. El campamento suma "waiting" [cuentas que esperan lugar: tienen lo del
         gremio, nada del campamento; tope gremio.waiting_max], "wait_invites" [a quién invitaron al gremio con el campamento lleno,
@@ -173,7 +175,7 @@ import unicodedata
 from typing import Any
 
 from engine.core.rng import hash_unit
-from engine.hero import Hero
+from engine.hero import Hero, durability
 from engine.messaging import Action, View
 from engine.social import guilds as guild_rules
 from engine.world import mapgen                          # D-265: the 9 bonfires
@@ -2676,6 +2678,8 @@ class GremioMixin:
             label += t.t("ench.mark")
         if entry.get("sig"):
             label += t.t("armory.signed", name=entry["sig"])
+        if entry.get("wear"):                          # D-333: 🔧 a used piece says its durability
+            label += " · " + self._dur_tag(entry["wear"])
         return label
 
     def _armory_gear(self, hero: Hero) -> list[str]:
@@ -2744,9 +2748,10 @@ class GremioMixin:
             return self._armory_view(hero, notice=t.t("armory.full", cap=cap))
         data["seq"] = int(data.get("seq", 0)) + 1
         enchant = (hero.gear_enchants or {}).get(item_id)
+        wear = durability.take_worst(hero, item_id)    # D-333: the most worn copy goes, with its durability
         data["items"].append({"id": data["seq"], "item": item_id, "enchant": dict(enchant) if enchant else None,
                               "sig": (hero.gear_signatures or {}).get(item_id), "by": hero.name, "by_id": hero.id,
-                              "at": self.clock.now()})
+                              "at": self.clock.now(), **({"wear": wear} if wear else {})})
         hero.backpack[item_id] -= 1
         if hero.backpack[item_id] <= 0:
             del hero.backpack[item_id]
@@ -2775,6 +2780,7 @@ class GremioMixin:
             return self._armory_view(hero, notice=t.t("armory.conflict", item=self._gear_name(item_id)))   # rule 7
         data["items"].remove(entry)
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        durability.put_back(hero, item_id, entry.get("wear"), self.content.balance)     # D-333: with its durability
         if entry.get("enchant"):
             hero.gear_enchants[item_id] = dict(entry["enchant"])
         if entry.get("sig"):
@@ -2796,6 +2802,7 @@ class GremioMixin:
             if item_id not in self.content.items:
                 continue
             hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+            durability.put_back(hero, item_id, entry.get("wear"), self.content.balance)     # D-333: with its durability
             if entry.get("enchant"):
                 hero.gear_enchants.setdefault(item_id, dict(entry["enchant"]))
             if entry.get("sig"):

@@ -1096,6 +1096,25 @@ v0_56:
     - "💰 When it's done, the camp's fund gets a small reward in materials and everyone is told. If it was the last thing on the list, any member taps ⏫ Go up."
     - "📏 The goal grows with the level and a little with the members who play, and it stays fixed once it starts. Camps that already existed don't need the mission of the step they were on: the first one comes when they level up. More in ❓ /d36."
 
+v0_57:
+  version: "0.57"
+  title: "🔧 Lost Realms 0.57: el equipo se gasta, se repara y un día se rompe"
+  title_en: "🔧 Lost Realms 0.57: gear wears out, gets repaired and one day breaks"
+  notes:
+    - "🔧 Tu equipo tiene durabilidad: cada pelea gasta un poco lo que llevas puesto (más si huyes o caes). Una pieza usada todos los días aguanta unas 3 semanas antes de pedir reparación. Todo tu equipo de antes empieza lleno: nadie pierde nada."
+    - "⚠️ Al bajar del 20 % te avisamos y la pieza se marca ⚠️ en 🛡️ Equipo y en tu ficha. En 0 queda dañada: sigue puesta y en la mochila, pero no da bonos hasta que la repares. Nunca se pierde por llegar a 0."
+    - "🔨 Repárala en 🛡️ Equipo → 🔧 Reparar (/reparar): tú, con el oficio que hace esa pieza (la Herrería repara espadas, dagas y placas; la Carpintería, arcos y bastones; la Peletería, cuero; la Sastrería, tela; la Joyería, joyas), en su estación, con un refinado y ⚡1. Ganas experiencia del oficio."
+    - "🛒 Sin el oficio, el herrero de cualquier 🔥 fogata la repara por monedas (más caro), o la encargas: un 📜 encargo de reparación lo toma cualquier artesano con el oficio y el rango, cobra por su trabajo y tu pieza queda reparada. Si nadie lo toma en 7 días, te devolvemos las monedas."
+    - "💔 Cada reparación le baja un poco el máximo. Después de 5 reparaciones (8 una ✒️ obra maestra), la próxima vez que llega a 0 se rompe para siempre: la pieza dice cuántas le quedan y antes de la última te preguntamos."
+    - "🏛️ La durabilidad viaja con la pieza en el Mercado y en la ⚔️ Armería: quien compra ve 🔧 80/96 antes de pagar. Más en ❓ /d63."
+  notes_en:
+    - "🔧 Your gear has durability: every fight wears what you are wearing a little (more if you flee or fall). A piece used every day lasts about 3 weeks before it needs a repair. All your gear from before starts full: nobody loses anything."
+    - "⚠️ Under 20% you get a notice and the piece is marked ⚠️ in 🛡️ Gear and on your sheet. At 0 it is damaged: it stays on you and in your backpack, but gives no bonuses until you repair it. It is never lost for reaching 0."
+    - "🔨 Repair it in 🛡️ Gear → 🔧 Repair (/repair): yourself, with the profession that makes that piece (Blacksmithing repairs swords, daggers and plate; Carpentry, bows and staves; Leatherworking, leather; Tailoring, cloth; Jewelcrafting, jewels), at its station, with a refined material and ⚡1. You earn profession experience."
+    - "🛒 Without the profession, the smith of any 🔥 campfire repairs it for coins (dearer), or you place an order: any artisan with the profession and the rank can take a 📜 repair order, gets paid for the work and your piece is repaired. If nobody takes it within 7 days, you get the coins back."
+    - "💔 Every repair lowers its maximum a little. After 5 repairs (8 for a ✒️ masterwork), the next time it reaches 0 it breaks for good: the piece shows how many it has left and we ask you before the last one."
+    - "🏛️ Durability travels with the piece in the Market and the ⚔️ Armory: buyers see 🔧 80/96 before paying. More in ❓ /d63."
+
 v0_58:
   version: "0.58"
   title: "🕐 Lost Realms 0.58: tu hora y el día, la tarde y la noche del mundo"
