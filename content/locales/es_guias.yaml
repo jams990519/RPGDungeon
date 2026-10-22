@@ -118,6 +118,7 @@ guides_page:
       💸 Quien cobra paga un impuesto del {market_tax} %. El precio va dentro de una banda, para que nadie regale ni infle.
       🐴 Lo comprado llega a 📦 Entregas en {market_delivery}: lo recoges en cualquier 🔥 fogata o en tu campamento, hasta donde quepa.
       📋 Hasta {market_orders} órdenes a la vez; duran {market_days} días. ❌ Cancelar o vencer devuelve todo lo que queda.
+      📜 Pedidos de fabricación (/pedidos): encargas a un artesano lo que no sabes hacer; pones los materiales o le pagas para que los consiga, más su mano de obra, y lo hecho te llega a 📦 Entregas. Más en ❓ /d64.
   # ---- ⚙️ Cómo funciona
   energy:
     title: "⚡ Energía y vida"
