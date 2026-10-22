@@ -384,7 +384,10 @@ def test_defenses_weaken_the_wave_and_the_watchtower_warns(service, clock):
     service.act("test:1", "defend")
     state = service.store.get("combat", "test:1")
     normal = make_combat(raid["enemy"], service.content.enemies[raid["enemy"]], raid["level"], service._kit(service._load("test:1")), 1)
-    assert state["enemy"]["max_hp"] == max(1, round(normal["enemy"]["max_hp"] * weaken))
+    # D-337 (0.61): a level-5 camp's normal wave carries its ⚔️ difficulty (+2 % per level, +2,5 % per week), then the defense
+    assert raid["difficulty"] > 1
+    assert raid["difficulty"] == pytest.approx(service._difficulty_parts(camp(service))["mult"], abs=1e-3)
+    assert state["enemy"]["max_hp"] == max(1, round(round(normal["enemy"]["max_hp"] * raid["difficulty"]) * weaken))
     assert not service.texts.missing
 
 
