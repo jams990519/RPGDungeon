@@ -1,6 +1,6 @@
 # Secuelas y muerte
 
-> **Módulo** [05 · Salud](README.md) · **Depende de:** [Heridas](heridas.md), [Enfermedades](enfermedades.md), [Combate](../04-combate/ronda-y-acciones.md) (derribado y caído) · **Se conecta con:** [Curación](curacion-y-tratamientos.md), [Investigación médica](investigacion-medica.md) (Regeneración), [Rasgos adquiridos](rasgos-adquiridos.md) (adaptación), [Equipamiento](../03-personaje/equipamiento.md) (carga y armas) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (penalizaciones), [Profesiones](../07-economia/profesiones.md) (prótesis), [PvP](../06-contenido/pvp.md) (botín), [Progresión](../03-personaje/progresion.md) (trofeos) · **Estado:** propuesta
+> **Módulo** [05 · Salud](README.md) · **Depende de:** [Heridas](heridas.md), [Enfermedades](enfermedades.md), [Combate](../04-combate/ronda-y-acciones.md) (derribado y caído) · **Se conecta con:** [Curación](curacion-y-tratamientos.md), [Investigación médica](investigacion-medica.md) (Regeneración), [Rasgos adquiridos](rasgos-adquiridos.md) (adaptación), [Equipamiento](../03-personaje/equipamiento.md) (carga y armas) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (penalizaciones), [Profesiones](../07-economia/profesiones.md) (prótesis), [PvP](../06-contenido/pvp.md) (botín), [Progresión](../03-personaje/progresion.md) (trofeos) · **Estado:** propuesta; §4.2.0 (la 💀 muerte permanente opcional) está en el juego desde la 0.60 (D-147, D-336)
 
 Pediste que algunas enfermedades y problemas **duren mucho o sean para siempre**: que perder una pierna por una infección te quite movimiento y se note incluso en el combate. Es la decisión D-51 (ver [Decisiones](../00-vision/decisiones.md)). Antes la regla era "siempre hay salida". Ahora es: **siempre se puede seguir jugando y siempre hay cómo compensar, pero algunas secuelas son para siempre.** Ninguna llega por un solo mal dado, y solo la medicina más avanzada del servidor puede llegar a reponerlas (D-53).
 
@@ -14,6 +14,7 @@ Pediste que algunas enfermedades y problemas **duren mucho o sean para siempre**
 - *Elden Ring*: dejar las runas donde mueres y recuperarlas si vuelves; manchas de sangre.
 - *Albion Online* y *EVE Online*: perder el equipo en zonas peligrosas.
 - *Sword Art Online*, el modo *Hardcore* de WoW Clásico (2023, con su variante *Self-Found* de 2024) y los modos de muerte permanente de *Diablo* y *Path of Exile*.
+- *Roguelikes* como *NetHack* y *Dungeon Crawl* (la lista de los caídos con su causa) y el "Salón de la fama" de los personajes *Hardcore* de *Diablo II*: de ahí el 🪦 Salón de los caídos de la 0.60.
 
 ---
 
@@ -160,6 +161,21 @@ Las enfermedades cuya carrera se pierde y las heridas que sueldan mal dejan male
 - **Las prótesis no se pierden:** pierden durabilidad como el equipo, pero nunca se saquean ni se destruyen, tampoco en zona negra.
 
 ### 4.2 Juramento de Hierro: muerte permanente opcional
+
+#### 4.2.0 Cómo está en el juego (0.60; D-147 confirmada, cómo se aplicó: D-336, provisional)
+
+El dueño confirmó la idea en la entrevista de voz (E-31): "Muerte permanente opcional. Se activa en ⚙️ Opciones con doble confirmación. Es una sola muerte: el héroe queda en la historia y hay que crear uno nuevo. Los premios son solo de prestigio." **D-147 manda sobre la lista de abajo**, que era la propuesta: ya no "se elige al crear" sino que se jura en ⚙️ Opciones.
+
+- **Dónde y cuándo:** ⚙️ Opciones → **💀 Muerte permanente** → ☠️ Jurar, solo **hasta el nivel 10** (`permadeath.max_level`; el héroe nuevo empieza en el 1, así cuenta casi desde la creación). **Dos confirmaciones:** la 1.ª dice qué se pierde al caer (nivel, equipo, monedas, oficios, recetas, mapa y diario) y que no da ventaja; la 2.ª, que no se apaga nunca. Cada paso vale 10 minutos y cualquier otro botón lo cancela (un botón viejo no la jura solo). **No se puede abandonar** (pregunta E-281).
+- **Una sola vida:** perder **cualquier** pelea (a mano o automática, cazando, en una mazmorra, contra el Guardián, defendiendo el campamento o en un campamento enemigo) lo hace caer para siempre. No hay "malherido" ni monedas perdidas: todo se queda con él.
+- **🪦 Salón de los caídos** (/caidos, /fallen; también desde 💀 Muerte permanente y en la pantalla de la caída, aunque ya no tengas héroe): nombre, clase, nivel, quién lo venció y su nivel, dónde (con coordenadas), fecha y días vividos con 💀; los 10 últimos. Sus compañeros de campamento o de gremio reciben el aviso. Todavía no hay Gaceta ni ranking propio.
+- **Queda en la historia:** el héroe se guarda **entero** y para siempre (D-64), con su 📦 Entregas; sus órdenes del 🏛️ Mercado, sus 📜 pedidos de fabricación y sus 📜 encargos de reparación se cancelan hacia él. Sale de su campamento (como con 🚪 Salir; quien espera entra solo), de la espera de un campamento lleno y de su gremio. Nadie más pierde nada.
+- **Héroe nuevo:** la cuenta vuelve a la creación (nombre y clase, desde cero). Siguen el idioma, el código de jugador, las ⚙️ Opciones y lo comprado con 💎 (diamantes, estandarte y acelerador: es dinero real, D-43). El nombre del caído queda en el Salón: otra cuenta no puede usarlo; su propio jugador sí.
+- **Solo prestigio:** la marca 💀 antes del nombre (👥 Jugadores, su tarjeta, 👤 Héroe y el 📔 Diario), "💀 día N de su única vida" en 👤 Héroe y títulos a los 7, 30 y 100 días («Superviviente», «Veterano» y «Leyenda de hierro»). Nada de estadísticas, monedas ni cosas que se vendan.
+- **No lidera:** el código no tiene sucesión de fundador, así que un fundador o un líder de gremio no puede jurarla, y quien la juró no crea un gremio ni recibe el liderazgo (👑). Así nunca queda un campamento sin fundador.
+- **Por hacer de la lista de abajo:** el ranking propio, el legado para el héroe siguiente, la variante Autosuficiente, la Gaceta y la protección en PvP (no hay PvP todavía). Preguntas: E-281 a E-283 (P-292 a P-294).
+
+#### 4.2.1 La propuesta del diseño
 
 - Se elige al crear el personaje. No se puede activar después; sí abandonar: el personaje pasa a normal y pierde las recompensas del modo.
 - Si cae, **cae para siempre.** Queda en el **Salón de los Caídos** con su historia, sus cicatrices, sus secuelas, el lugar donde murió y quién lo mató, y la Gaceta publica la caída.

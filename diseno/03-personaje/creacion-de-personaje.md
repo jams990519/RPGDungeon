@@ -1,6 +1,6 @@
 # Creación de personaje
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); desde la 0.29 la creación termina en el [Camino guiado](camino-guiado.md) (D-190, D-193); §4 en el juego como **origen** (capa simple, D-117, provisional; desde la 0.29 se ofrece después, E-131); §3, §5 y §6 son propuesta
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Clases y especializaciones](clases-y-especializaciones.md), [Talentos](talentos.md) · **Alimenta a:** [Progresión](progresion.md), [Equipamiento](equipamiento.md), [Salud](../05-salud/README.md), [Profesiones](../07-economia/profesiones.md), [Misiones](../06-contenido/misiones-y-exploracion.md) · **Estado:** §1 y §2 están en el juego (0.9.2); desde la 0.29 la creación termina en el [Camino guiado](camino-guiado.md) (D-190, D-193); §4 en el juego como **origen** (capa simple, D-117, provisional; desde la 0.29 se ofrece después, E-131); §2.2 (héroe nuevo después de la 💀 muerte permanente) desde la 0.60 (D-336); §3, §5 y §6 son propuesta
 
 Crear un héroe tiene que tomar menos de un minuto. Hoy son tres pasos: **nombre → clase → confirmación**. La especialización no se elige al crear: se gana con el primer punto de talento (D-68, D-74). Linaje, trasfondo y apariencia quedan como capa profunda opcional para más adelante (D-44).
 
@@ -73,6 +73,15 @@ El dueño pidió (18-oct-2026): "cuando escoges una clase, tienes la opción de 
 - Queda anotado en el 📔 Diario y en `Hero.class_changes`.
 
 **Por qué así.** Elegir clase, especialización, raza y origen de golpe, con nombres que todavía no dicen nada, asusta al jugador nuevo. Con un solo paso importante (la clase) se entra rápido. La especialización se elige cuando ya se peleó un poco y se sabe qué gusta.
+
+### 2.2 Un héroe nuevo después de la 💀 muerte permanente (D-147, en el juego desde la 0.60; cómo: D-336)
+
+Si tu héroe juró la muerte permanente (⚙️ Opciones → 💀, hasta el nivel 10) y pierde una pelea, cae para siempre y queda en el 🪦 Salón de los caídos ([Secuelas y muerte](../05-salud/secuelas-y-muerte.md) §4.2.0). La cuenta vuelve a **este mismo flujo** (§1: nombre, clase y confirmación) y el héroe nuevo empieza como cualquiera (nivel 1, en una fogata, con lo de §1.4).
+
+- **Sigue con la cuenta:** el idioma, el código de jugador y el de invitación, las ⚙️ Opciones y lo comprado con 💎 (diamantes, estandarte y acelerador).
+- **Se queda con el caído:** nivel, equipo, monedas, oficios, recetas, títulos, mapa, nodos, diario, su campamento y su gremio (hay que volver a entrar).
+- **El nombre:** el del caído queda en el Salón; otra cuenta no puede usarlo, tú sí.
+- Una invitación o un premio por invitar ya cobrados no se repiten.
 
 ## 3. Linajes (propuesta): 12 razas que cambian el cuerpo, no el daño
 

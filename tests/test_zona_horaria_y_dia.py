@@ -59,7 +59,7 @@ def choose(service, account, zone_id):
 def test_the_zone_is_chosen_in_options_and_saved(service):
     make_hero(service)
     options = service.act("test:1", "options")
-    assert "tz" in ids(options) and len(options.actions) == button_cap("options") == 6
+    assert "tz" in ids(options) and len(options.actions) == button_cap("options") == 7   # D-336 (0.60): and 💀
     assert any(line.startswith("🕐 Zona horaria: UTC, la del juego") for line in options.body)
     screen = service.act("test:1", "tz")
     assert screen.kind == "timezone" and len(screen.actions) <= button_cap("timezone") == 8

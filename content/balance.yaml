@@ -264,6 +264,15 @@ terrain:                     # [ES] D-186 (confirmada): el terreno del mapa es "
 class_change:                # [ES] D-270 (0.35, confirmada): 🔄 Cambiar de clase (🌟 Talentos o /cambiarclase). Se conservan nivel, oficios, monedas y equipo; los puntos de nivel se reparten solos en el rol nuevo
   prices: [0, 100, 1000, 3000, 5000]   # [ES] 🥉 de cada cambio: el 1.º gratis, después 🥈1, 🥈10, 🥈30 y 🥈50; el último se repite para siempre (el dueño: "primer cambio 1, el siguiente 10, el siguiente 30 y luego 50 para siempre")
 
+permadeath:                  # [ES] D-147 (confirmada, E-31: "muerte permanente opcional; se activa en ⚙️ Opciones con doble confirmación; una sola muerte: el héroe queda en la historia y hay que crear uno nuevo; premios solo de prestigio") y D-336 (0.60, cómo se aplicó; provisional; números de Claude). engine/service/permadeath.py
+  max_level: 10              # [ES] se jura solo hasta este nivel del héroe (E-281: hasta el 10 / siempre / solo al crear). 0 = en cualquier nivel
+  confirm_minutes: 10        # [ES] las dos confirmaciones valen 10 minutos: un botón viejo no la activa solo
+  hall_shown: 10             # [ES] cuántos caídos muestra el 🪦 Salón de los caídos (/caidos), del último al primero
+  titles:                    # [ES] premios solo de prestigio: títulos por días vividos con 💀 (ids estables: nombres en story.titles.<id>, es/en_muerte_permanente.yaml). No dan estadísticas ni monedas
+    - {id: hierro_7, days: 7}
+    - {id: hierro_30, days: 30}
+    - {id: hierro_100, days: 100}
+
 places:                      # [ES] D-267 (0.34): 📒 Lugares
   camps_listed: 5            # [ES] cuántos campamentos de jugadores (los más cercanos) entran en 📒 Lugares aunque nunca los hayas pisado ("los jugadores van a poder ver los lugares donde alguien empezó a construir un campamento")
 
@@ -312,6 +321,11 @@ stock:                       # [ES] D-87: los recursos de cada zona se agotan si
     pieza_metal: 3.0         # [ES] D-305: ×3 (era 1)
     arcilla: 3.0             # [ES] D-305: ×3 (era 1)
   min_yield: 0.15            # [ES] por debajo de esto, el recurso está agotado y no da nada
+  tend:                      # [ES] D-145 (confirmada, E-29: "los oficios aceleran y aumentan esa regeneración") y D-336 (0.60, cómo se aplicó; provisional; números de Claude): quien recolecta con el oficio de ese recurso aprendido (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) cuida la zona: ese recurso vuelve más rápido ahí un tiempo. Lo ve 📍 Zona ("🌱 … vuelve más rápido por …"). Solo `_stock` (game.py); la 🌾 cosecha de la muralla no lo cuenta
+    per_rank: 0.02           # [ES] +2 % de lo que vuelve por cada rango del oficio (rango 10: +20 %; rango 50: el doble)...
+    max_bonus: 1.0           # [ES] ...sin pasar de +100 % (vuelve al doble como mucho)
+    hours: 24                # [ES] cuánto dura desde la última vuelta que recolectó (cada vuelta lo renueva; uno más fuerte reemplaza al más débil, uno más débil no acorta al más fuerte)
+    min_rank: 1              # [ES] desde qué rango cuenta (1 = apenas lo aprendes)
 
 gather:                      # [ES] recolectar en la zona actual
   minutes: 8

@@ -96,6 +96,10 @@ Si cambias esto, revisa:
       cargan con todo su equipo lleno (D-64). Las cuentas son de engine/hero/durability.py; los mueven equip y unequip
       (engine/hero/gear.py), el final de cada pelea y las reparaciones (engine/service/repair.py), _forget_piece (game.py) y
       la durabilidad que viaja en el 🏛️ Mercado y la ⚔️ Armería (market.py, gremio.py; tests/test_desgaste_reparacion.py)
+    - oath (0.60, D-147 y D-336): la 💀 muerte permanente. {} = apagada (todos los héroes de antes); {"at": hora} = jurada (no
+      se apaga); al caer suma {"fell": hora, "key": clave del archivo "fallen_hero", "memorial": id del 🪦 Salón ("f1"…)}. Un
+      héroe con "fell" ya no se guarda en "hero": GameService._save lo escribe en su archivo (engine/service/permadeath.py;
+      tests/test_muerte_permanente_y_regeneracion.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -201,6 +205,9 @@ class Hero:
             its maximum, "rep": repairs done}. A worn piece without a record is new (full). Empty for heroes saved before it.
         bag_wear: the durability of the USED copies in the backpack (0.57), item id -> one record per used copy (same shape);
             the copies without a record are new. Empty for heroes saved before it.
+        oath: the 💀 optional permadeath (0.60, D-147, D-336): {} = off (every hero saved before it); {"at": ts} = sworn (it
+            cannot be undone); a fallen hero also has "fell" (ts), "key" (its record in "fallen_hero") and "memorial" (its id
+            in the 🪦 hall, "f1"…). Prestige only: it never changes stats or coins.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -280,6 +287,7 @@ class Hero:
     hybrid: dict[str, list[str]] = field(default_factory=dict)          # D-330 (0.54): 🔀 hybrid swaps per role pair ("a>b" -> ["H2"])
     gear_wear: dict[str, dict[str, Any]] = field(default_factory=dict)  # D-333 (0.57): 🔧 durability of each worn piece, by slot
     bag_wear: dict[str, list[dict[str, Any]]] = field(default_factory=dict)   # D-333 (0.57): 🔧 durability of the used copies in the bag
+    oath: dict[str, Any] = field(default_factory=dict)                  # D-147, D-336 (0.60): 💀 permadeath ({} off, {"at"} sworn)
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

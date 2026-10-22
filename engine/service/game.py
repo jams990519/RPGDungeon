@@ -720,6 +720,24 @@ Si cambias esto, revisa:
       market.py: el botón 📜 Pedidos de fabricación del 🏛️ Mercado y _market_draft_new (borra "corder_open"). Números:
       balance.yaml craft_order (y market: tax, max_orders, price_min, price_max, delivery_minutes). Textos:
       content/locales/es_pedidos.yaml y en_pedidos.yaml; ❓ /d64. Pruebas: tests/test_pedidos_de_fabricacion.py
+    - 💀 La muerte permanente opcional y el 🪦 Salón de los caídos (0.60, D-147 confirmada por el dueño, E-31; cómo se aplicó:
+      D-336, provisional): todo vive en engine/service/permadeath.py (PermadeathMixin, de la que GameService hereda; su
+      encabezado lista sus datos y reglas: Hero.oath, "oath_confirm", "fallen", "fallen_hero", "reborn"). Ganchos de este
+      archivo: act() ("fallen" antes de mirar si hay héroe; después de _settle, si el héroe cayó en un lote, solo la pantalla
+      de la caída; _oath_titles; borra "oath_confirm" con cualquier botón que no sea "oath…"), text() (el mismo corte; /caidos
+      sin héroe), _main_view (un héroe caído muestra _fallen_view), _save (un héroe caído se escribe en "fallen_hero", nunca
+      en "hero"), _end_combat (una pelea perdida con 💀: sin monedas perdidas ni malherido; al final, _fall_forever con el
+      registro de la pelea), _batch_fight (la razón "auto_fell"), _idle_action (OATH_ACTIONS), _options_view (la línea y el
+      botón 💀 Muerte permanente, con el 🕐 de la 0.58: 7 botones, EXTRA_BUTTON_KINDS "options", layout [2, 2, 2, 1]), _name_taken (el nombre de un
+      caído de otra cuenta queda en el Salón), _create_action (_reborn_apply), _hero_view (_oath_hero_lines y la marca 💀),
+      _zone_players (la marca 💀), COMMANDS (/caidos, /fallen) y _faq_values (_oath_faq_values, ❓ /d65). Números:
+      balance.yaml permadeath. Textos: content/locales/es_muerte_permanente.yaml y en_muerte_permanente.yaml. Pruebas:
+      tests/test_muerte_permanente_y_regeneracion.py
+    - 🌱 Los oficios aceleran lo que vuelve (0.60, D-145 confirmada por el dueño, E-29; cómo se aplicó: D-336, provisional):
+      _gather_step guarda en el registro "stock" de la zona un "tend" por recurso ({"bonus", "until", "by"}: _tend_after) si el
+      héroe juntó ese recurso con su oficio de recolección aprendido; _stock suma esas horas de más hasta "until"; _zone_view
+      lo muestra (_tend_lines, la línea 🌱). Números: balance.yaml stock.tend. La 🌾 cosecha de la muralla no lo cuenta (lee
+      stock.regen_per_hour, no _stock). Pruebas: tests/test_muerte_permanente_y_regeneracion.py
 """
 
 from __future__ import annotations
@@ -808,6 +826,7 @@ from engine.service.world_time import WorldTimeMixin   # D-334 (0.58): 🕐 time
 from engine.core import timezones as tz_rules          # D-124, D-334: the zone of the player being served (_speaking)
 from engine.service.craft_orders import (CRAFT_ORDER_ACTIONS, CRAFT_ORDER_CODE_RE,   # D-335 (0.59): 📜 crafting orders (D-140)
                                          CraftOrderMixin)
+from engine.service.permadeath import HALL_ACTION, OATH_ACTIONS, PermadeathMixin   # D-147, D-336 (0.60): 💀 permadeath and 🪦 the hall
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -847,6 +866,7 @@ COMMANDS.update({"/hora": "tz", "/zonahoraria": "tz", "/time": "tz", "/timezone"
 COMMANDS.update({"/hibrido": "hyb", "/hybrid": "hyb"})               # D-330 (0.54): 🔀 Modo híbrido (from level 10, D-312)
 COMMANDS.update({"/reparar": "rpr", "/repair": "rpr"})               # D-333 (0.57): 🔧 Reparar (engine/service/repair.py)
 COMMANDS.update({"/pedidos": "cord", "/orders": "cord"})             # D-335 (0.59): 📜 Pedidos de fabricación (craft_orders.py)
+COMMANDS.update({"/caidos": "fallen", "/fallen": "fallen"})         # D-336 (0.60): 🪦 Salón de los caídos (engine/service/permadeath.py)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -915,7 +935,9 @@ HUB_BUTTONS = 8
 # [ES] D-297: el dueño pidió un botón extra en ❓ Dudas (📚 Guías) y en ⚙️ Opciones (❓ Dudas): por eso pasan del tope.
 # D-124 (confirmed: "cada jugador elige su zona horaria") and D-334 (0.58): ⚙️ Opciones also shows 🕐 Zona horaria: 4 + 2.
 # [ES] D-124/D-334: el dueño pidió elegir la zona horaria en ⚙️ Opciones: un botón más (6, en filas [2, 2, 1, 1]).
-EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 2,
+# D-147 and D-336 (0.60): and 💀 Muerte permanente ("se activa en Opciones"): 4 + 3, in rows [2, 2, 2, 1].
+# [ES] D-336: con 🕐 y 💀 son 7 botones (🩹 🌐 · 🕐 💬 · ❓ 💀 · ↩️): ↩️ Volver sigue solo abajo.
+EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 3,
                       "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
                       "trainer": 4 + 2,        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
                       "market_cats": HUB_BUTTONS + 1,   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas, and ↩️ Volver
@@ -1003,7 +1025,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
                   RepairMixin, WorldTimeMixin,
-                  CraftOrderMixin):
+                  CraftOrderMixin, PermadeathMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1097,9 +1119,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         text = self._canonical_command(text)            # D-250: "/greet Bram" is "/saludar Bram"
         if text.lstrip().startswith("/"):
             if hero is None:
-                return self.view(account_id)
+                word = text.split()[0].split("@")[0].lower() if text.split() else ""
+                return self.act(account_id, HALL_ACTION) if COMMANDS.get(word) == HALL_ACTION else self.view(account_id)
             self._mark_seen(hero)
             notices = self._settle(hero)
+            if self._fell(hero):                        # D-147: a 💀 hero fell in a batch fight just now
+                view = self._fallen_view(hero, notice=self._join(notices))
+                self._save(hero)
+                return view
             notices += self._works_settle(hero)        # D-269: the founding and the camp's works
             code = PLACE_CODE_RE.match(text.strip().lower())
             low = text.strip().lower()
@@ -1223,10 +1250,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         hero = self._load(account_id)
         if action_id == "lang" or action_id.startswith("lang:"):     # D-250: 🌐 before or after creating the hero
             return self._language_action(account_id, action_id, hero)
+        if action_id == HALL_ACTION:                    # D-336: 🪦 Salón de los caídos, also with no hero (right after the fall)
+            return self._hall_view(account_id, hero)
         if hero is None:
             return self._create_action(account_id, action_id)
         self._mark_seen(hero)
         notices = self._settle(hero)
+        if self._fell(hero):                            # D-147: a 💀 hero fell in a batch fight just now: nothing else happens
+            view = self._fallen_view(hero, notice=self._join(notices))
+            self._save(hero)                            # into its "fallen_hero" record, never back to "hero"
+            return view
+        notices += self._oath_titles(hero)              # D-336: 💀 a prestige title reached by days lived with the oath
+        if not action_id.startswith(OATH_ACTIONS) and self.store.get("oath_confirm", account_id):
+            self.store.delete("oath_confirm", account_id)   # D-336: leaving the 💀 confirmations cancels them
         self._presence_note(hero)                       # D-96: others see you in 📍 Zona
         self._raid_settle(hero)             # D-99: the camp's raid clock is lazy too
         self._hunt_party_settle(hero)       # D-106: and so is its hunting party
@@ -1636,6 +1672,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return " ".join(parts) or f"{cfg['icons']['bronze']}0"
 
     def _save(self, hero: Hero) -> None:
+        """Save the hero; a 💀 hero that fell for ever goes to its "fallen_hero" record instead (D-147, D-336).
+
+        [ES] Qué hace: guarda la ficha del héroe en "hero". Si el héroe cayó para siempre (Hero.oath "fell"), lo que siga
+        guardándose en la misma llamada (el final de un lote, la vista) va a su archivo y nunca vuelve a "hero": así la cuenta
+        queda libre para el héroe nuevo. La llaman: todo el motor. Si cambia, afecta: el guardado de todos los héroes.
+        """
+        oath = hero.oath or {}
+        if oath.get("fell") and oath.get("key"):
+            record = self.store.get("fallen_hero", oath["key"]) or {"account": hero.id}
+            record["hero"] = hero.to_dict()
+            self.store.put("fallen_hero", oath["key"], record)
+            return
         self.store.put("hero", hero.id, hero.to_dict())
 
     @staticmethod
@@ -1648,6 +1696,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """True if a hero, or another player still choosing a class, already uses this name."""
         key = self._name_key(name)
         if any(self._name_key(d.get("name", "")) == key for _, d in self.store.items("hero")):
+            return True
+        if self._fallen_name_taken(key, account_id):   # D-336: a fallen 💀 hero keeps its name in the 🪦 hall (its player may reuse it)
             return True
         return any(acc != account_id and self._name_key(p.get("name", "")) == key
                    for acc, p in self.store.items("pending") if p.get("stage") == "class")
@@ -2122,6 +2172,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         de cada recurso en el sorteo (world_clock.weights: de día, más madera y piedra; de noche, más hierbas, setas y pescado).
         Cambia la mezcla, no la cantidad, y sigue siendo un solo sorteo por unidad; 🪓 Talar y 🎣 Pescar (un solo recurso) no
         cambian. En _explore_step pasa lo mismo con los hallazgos (la 🌿 hierba curativa pesa más de noche).
+        D-145 y D-336 (0.60): al guardar lo que queda de la zona, _tend_after suma el 🌱 cuidado de tu oficio (lo que juntaste
+        con su oficio aprendido vuelve más rápido ahí por stock.tend.hours).
         """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
@@ -2166,7 +2218,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             self._bag_add(hero, res, units)
             stock[res] = max(0.0, stock[res] - per_unit)
             got[res] = got.get(res, 0) + units
-        self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now()})
+        old = self.store.get("stock", f"{zone.x}:{zone.y}") or {}
+        self.store.put("stock", f"{zone.x}:{zone.y}", {"levels": stock, "at": self.clock.now(),
+                                                       **self._tend_after(hero, old, got)})   # D-145, D-336: 🌱 a trade's care
         activity["log"] += self._trade_gather(hero, got, activity)    # D-109: gathering professions (rank, extra units, rare finds)
         if node and got:
             rare = self._node_rare(zone.x, zone.y)
@@ -2295,6 +2349,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         hero.book_gifts = [str(g["id"]) for g in self._tier_cfg().get("book_gifts") or []]     # D-328: nor the 0.52 ones
         hero.hp = hero_stats(self._kit(hero), 1)["max_hp"]
         hero.energy_version = self.content.balance["energy"]["version"]
+        self._reborn_apply(hero)                            # D-336: after a 💀 fall, the ⚙️ Opciones and what 💎 bought come back
         referral = self.store.get("referral", account_id)
         if referral:
             hero.referred_by = referral["referrer"]
@@ -2316,6 +2371,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
     # ------------------------------------------------------------------ idle actions
 
     def _main_view(self, hero: Hero, notice: str | None = None) -> View:
+        if self._fell(hero):                            # D-147, D-336: a 💀 hero that fell shows its memorial, not the world
+            return self._fallen_view(hero, notice)
         combat = self.store.get("combat", hero.id)
         if combat is not None:
             return self._combat_view(hero, combat, notice)
@@ -2359,6 +2416,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._options_view(hero)
         if action_id == "tz" or action_id.startswith("tz:"):   # D-124, D-334: 🕐 Zona horaria (⚙️ Opciones, /hora); also busy
             return self._tz_action(hero, action_id)
+        if action_id.startswith(OATH_ACTIONS):          # D-147, D-336: 💀 Muerte permanente (from ⚙️ Opciones); a menu: also busy
+            return self._oath_action(hero, action_id)
         if action_id.startswith(STORY_ACTIONS):         # D-117: 📔 Diario (the old 📖 Historia), 📜 Tablón, 🎭 Origen, gestures; also busy
             return self._story_action(hero, action_id)
         if action_id == "fb":                           # D-258: 💬 Feedback (⚙️ Opciones, /feedback); also while busy
@@ -3036,18 +3095,77 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         puede volver más rápido que los demás con stock.regen_mult (la 🪵 madera ×2: unas 2 unidades por hora en cada zona en
         vez de 1). D-305 (0.42, el dueño el 20-oct-2026): los 6 de base (madera, piedra, fibra, hierba, metal y arcilla) ×3,
         unas 3 unidades por hora en cada zona; los propios del terreno y el pescado siguen ×1. Se multiplica con el ⛲ Pozo.
+        D-145 (confirmada, E-29) y D-336 (0.60): si alguien con el oficio de un recurso lo recolectó aquí, ese recurso vuelve
+        más rápido hasta su "until" (registro "tend" de la zona: +stock.tend.per_rank por rango, sin pasar de max_bonus; lo
+        escribe _tend_after). Solo cuenta el tiempo entre la última recolección ("at") y el fin del cuidado: el resto, normal.
         La llaman: recolectar, talar (D-305), 📍 Zona, 🧭 Explorar y 🔎 Buscar recursos.
         Si cambia, afecta: cuánto se puede recolectar de cada recurso por hora en una zona.
         """
         cfg = self.content.balance["stock"]
         data = self.store.get("stock", f"{x}:{y}") or {}
-        hours = (self.clock.now() - data.get("at", self.clock.now())) / (3600 * self.time_scale)
+        now = self.clock.now()
+        at = float(data.get("at", now))
+        hours = (now - at) / (3600 * self.time_scale)
         levels = data.get("levels", {})
         ref = self.store.get("territory", f"{x}:{y}") if levels else None
         regen = cfg["regen_per_hour"] * (1 + (self._effect_at(ref["camp"], "stock_regen") if ref else 0.0))
         mult = cfg.get("regen_mult") or {}               # D-300, D-305: the 6 base resources come back ×3
-        return {res: min(1.0, levels.get(res, 1.0) + hours * regen * float(mult.get(res, 1.0)))
+        tend = data.get("tend") or {}                    # D-145, D-336: a profession's care, for a while
+
+        def tended(res: str) -> float:                   # the extra hours of regrowth its care gave since the last gathering
+            entry = tend.get(res) or {}
+            span = max(0.0, min(now, float(entry.get("until", 0.0))) - at)
+            return span / (3600 * self.time_scale) * float(entry.get("bonus", 0.0))
+
+        return {res: min(1.0, levels.get(res, 1.0) + (hours + tended(res)) * regen * float(mult.get(res, 1.0)))
                 for res in self._zone_resources(x, y)}
+
+    def _tend_cfg(self) -> dict[str, Any]:
+        return self.content.balance["stock"].get("tend") or {}
+
+    def _tend_after(self, hero: Hero, record: dict[str, Any], got: dict[str, int]) -> dict[str, Any]:
+        """The zone's "tend" after this hero gathered `got` there: its trade's care makes those resources grow back faster.
+
+        [ES] Qué hace: D-145 ("los oficios aceleran y aumentan esa regeneración") en la capa simple (D-336, provisional): por cada
+        recurso que juntó, si el héroe aprendió el oficio que lo recolecta (gatherer_of: 🪓 Leñador, ⛏️ Minero, 🌿 Herbolario,
+        🎣 Pescador) con rango stock.tend.min_rank o más, ese recurso vuelve en la zona un per_rank × rango más rápido (sin
+        pasar de max_bonus) durante stock.tend.hours desde ahora. Uno más fuerte reemplaza al que había; uno más débil no lo
+        acorta. Los vencidos se borran. Devuelve {"tend": …} o {} para el registro "stock" de la zona.
+        La llama: _gather_step (también talar y pescar). Si cambia, afecta: lo que vuelve en las zonas trabajadas por oficios
+        (tests/test_muerte_permanente_y_regeneracion.py).
+        """
+        cfg = self._tend_cfg()
+        now = self.clock.now()
+        tend = {res: dict(e) for res, e in (record.get("tend") or {}).items() if float(e.get("until", 0.0)) > now}
+        if cfg:
+            for res in got:
+                pid = gatherer_of(res, self._prof_catalog())
+                rank = self._prof_rank(hero, pid) if pid else 0
+                if not pid or rank <= 0 or rank < int(cfg.get("min_rank", 1)):
+                    continue
+                bonus = round(min(float(cfg.get("max_bonus", 1.0)), float(cfg.get("per_rank", 0.0)) * rank), 4)
+                old = tend.get(res)
+                if bonus <= 0 or (old and float(old.get("bonus", 0.0)) > bonus):
+                    continue
+                tend[res] = {"bonus": bonus, "until": now + self._seconds(float(cfg.get("hours", 24)) * 60), "by": pid}
+        return {"tend": tend} if tend else {}
+
+    def _tend_lines(self, hero: Hero, x: int, y: int) -> list[str]:
+        """📍 Zona: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min", one per known resource being tended."""
+        t = self.texts
+        tend = (self.store.get("stock", f"{x}:{y}") or {}).get("tend") or {}
+        now = self.clock.now()
+        known = set(self._known_resources(hero, x, y))
+        lines = []
+        for res, entry in tend.items():
+            until = float(entry.get("until", 0.0))
+            item = self.content.items.get(res)
+            if until <= now or res not in known or not item:
+                continue
+            lines.append(t.t("tend.zone_line", emoji=item["emoji"], name=t.t(item["name_key"]),
+                             pct=round(100 * float(entry.get("bonus", 0.0))), prof=self._prof_name(str(entry.get("by", ""))),
+                             left=self._fmt_duration(until - now)))
+        return lines
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
@@ -3252,6 +3370,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         (_build_site_action) y el layout pasa a [2, 2, 1, 1, 1]. Si cambia, afecta: tests/test_buttons.py y tests/test_moverte.py.
         D-126 y D-334 (0.58): la cuarta línea del primer bloque es el reloj del mundo (_world_clock_line: la franja de ahora,
         cuál sigue, en cuánto y a qué hora en tu zona horaria).
+        D-145 y D-336 (0.60): debajo de los recursos, una línea 🌱 por recurso que vuelve más rápido gracias a un oficio
+        (_tend_lines).
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
@@ -3269,6 +3389,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
         body += [""] + self._resources_lines(hero, zone.x, zone.y)
+        body += self._tend_lines(hero, zone.x, zone.y)  # D-145, D-336: 🌱 what grows back faster thanks to a trade
         fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._known_pct(hero, zone.x, zone.y))
         if fog_here is not None and f"{zone.x}:{zone.y}" in self._charted_set(hero):    # D-326: in colour thanks to a 🗺️ scroll
             body.append(t.t("scroll.zone_line", pct=self._known_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
@@ -3476,7 +3597,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 continue
             other = Hero.from_dict(data)
             group = self.content.classes.get(other.class_id, {}).get("group", other.class_id)
-            players.append({"id": account, "name": self._banner(other) + self._emblem_name(other), "plain": other.name,   # D-117: emblem
+            players.append({"id": account, "name": self._oath_mark(other) + self._banner(other) + self._emblem_name(other), "plain": other.name,   # D-117: emblem; D-336: 💀
                             "cls": t.t(f"class_group.{group}.name"),
                             "level": other.level, "seen": other.seen_at,
                             "activity": t.t(f"presence.activity.{self._activity_word(data.get('activity'), kind)}")})   # D-305
@@ -8005,6 +8126,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         {world_days} y {world_band_hours} (el día del mundo y cada franja, world_time.py _world_time_faq_values).
         D-335 (0.59):
         {corder_days}, {corder_units} y {corder_orders} (📜 los pedidos de fabricación, craft_orders.py _corder_faq_values).
+        D-336 (0.60):
+        {oath_level} y {oath_days} (💀 la muerte permanente, permadeath.py _oath_faq_values), {tend_pct} y {tend_hours} (🌱 lo que
+        vuelve más rápido con un oficio, /d09).
         """
         t = self.texts
         b = self.content.balance
@@ -8061,6 +8185,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             **self._repair_faq_values(),                # D-333 (0.57): {wear_low}, {repair_loss}, {repairs}… of /d63
             **self._world_time_faq_values(),            # D-334 (0.58): {world_days}, {world_band_hours} (☀️ 🌇 🌙, /d05)
             **self._corder_faq_values(),                # D-335 (0.59): {corder_days}, {corder_units}, {corder_orders} of /d64
+            **self._oath_faq_values(),                  # D-336 (0.60): {oath_level}, {oath_days} of /d65
+            "tend_pct": f"{float(self._tend_cfg().get('per_rank', 0.0)) * 100:g}",        # D-336: 🌱 a trade's care (/d09)
+            "tend_hours": f"{float(self._tend_cfg().get('hours', 0)):g}",
         }
 
     def _faq_code(self, raw: str) -> str | None:
@@ -12012,9 +12139,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         busy_left = self._activity_left_seconds(hero)      # D-242.1: el tiempo total de lo que está haciendo
         body = [t.t("hero_card.points", n=hero.points)] if hero.points else []      # pending first (TowerWars)
         body += [
-            t.t("hero.top_line", icon=self._hero_icon(hero), name=self._banner(hero) + hero.name, place=self._place_label(zone.x, zone.y)),
+            t.t("hero.top_line", icon=self._hero_icon(hero), name=self._oath_mark(hero) + self._banner(hero) + hero.name,   # D-336: 💀
+                 place=self._place_label(zone.x, zone.y)),
             t.t("hero.class_short", icon=self._hero_icon(hero), cls=class_line),
             *([t.t("guardian.titles_line", titles=", ".join(self._title_name(x) for x in hero.titles))] if hero.titles else []),
+            *self._oath_hero_lines(hero),                               # D-336: 💀 Muerte permanente, day N of its only life
             *self._story_hero_lines(hero),                              # D-117: origin, role emblem and /bio
             t.t("hero.level_pct", level=hero.level, pct=f"{pct:.2f}"),
             t.t("hero.xp_line", xp=hero.xp, next=high),
@@ -14557,11 +14686,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         La llaman: el botón ⚙️ Opciones del menú fijo, /opciones, _set_option y _save_feedback.
         Si cambia, afecta: tests/test_options.py, tests/test_idiomas.py, tests/test_guias.py, tests/test_zona_horaria_y_dia.py
         y el tope de botones (button_cap "options").
+        D-147 y D-336 (0.60): la línea y el botón 💀 Muerte permanente ("oath": D-147 dice "se activa en ⚙️ Opciones"), después
+        de ❓ Dudas: con el 🕐 son 7 botones (EXTRA_BUTTON_KINDS "options"), en filas [2, 2, 2, 1] (🩹 🌐 · 🕐 💬 · ❓ 💀 · ↩️).
+        También la llama ↩️ Volver de 💀 Muerte permanente; tests/test_muerte_permanente_y_regeneracion.py mira sus botones.
         """
         t = self.texts
         pct = self._option(hero, "retreat")
         body = [t.t("options.intro_short"), "", t.t("options.retreat_now", pct=pct), t.t("options.language_line", name=t.t("language.name")),
-                self._tz_options_line(), t.t("options.feedback_line")]      # D-334: 🕐 your zone and its time now
+                self._tz_options_line(), t.t("options.feedback_line"),      # D-334: 🕐 your zone and its time now
+                self._oath_options_line(hero)]                              # D-336: 💀 Muerte permanente
         stealth = self._stealth_chance(hero)
         if stealth > 0:                                 # D-172: 🥷 Sigilo only helps with fights by hand (and when travelling)
             body += ["", t.t("stealth.options", pct=f"{round(100 * stealth, 1):g}")]
@@ -14570,8 +14703,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                    Action(id="tz", label=t.t("tz.button")),                                       # D-124, D-334: 🕐
                    Action(id="fb", label=t.t("feedback.button")),                                 # D-258: 💬
                    Action(id="dudas@options", label=t.t("dudas.button")),                         # D-297: ❓, back comes here
+                   Action(id="oath", label=t.t("oath.button")),                                   # D-147, D-336: 💀
                    Action(id="home", label=t.t("menu.back"))]
-        return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice, layout=[2, 2, 1, 1])
+        return View(kind="options", title=t.t("options.title"), body=body, actions=actions, notice=notice,
+                    layout=[2, 2, 2, 1])            # D-336: 🩹 🌐 · 🕐 💬 · ❓ 💀 · ↩️ alone at the bottom
 
     def _set_option(self, hero: Hero, key: str) -> View:
         """Change one option ("opt:retreat" cycles 30 → 50 → 70); saved now. Old "opt:fights"/"opt:potions" buttons do nothing.
@@ -14782,6 +14917,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if self._below_retreat(hero):
             return self._batch_summary(hero, activity, "auto_wait", pct=pct) + [notice]
         outcome = self._auto_combat(hero, state, activity)
+        if outcome == "defeat" and self._fell(hero):    # D-336: 💀 it fell for ever (no coins lost, no wounds: the 🪦 screen follows)
+            return self._batch_summary(hero, activity, "auto_fell", enemy=self.texts.t(edef["name_key"]), level=state["enemy"]["level"])
         if outcome == "defeat":
             return self._batch_summary(hero, activity, "auto_defeat", enemy=self.texts.t(edef["name_key"]),
                                        level=state["enemy"]["level"], gold=self._money(activity.get("gold_lost", 0)))
@@ -15129,6 +15266,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         hb = self.content.balance["hero"]
         actions = [Action(id="home", label=t.t("menu.continue"))]
         bag_before = dict(hero.backpack)                # D-115: to tell a ⬆️ better piece that came in this fight
+        fell = False                                    # D-336: set when a 💀 sworn hero loses (the fall comes at the end)
         wear_lines = self._wear_after_fight(hero, outcome)   # D-333: the pieces worn in this fight wear out (before any new one)
         # D-106: a hunt won while your camp's hunting party lasts in that zone gets the group bonus (0 otherwise)
         party = self._hunt_party_of_fight(hero, state) if outcome == "victory" else None
@@ -15183,6 +15321,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                                                level=enemy["level"], hunt=bool(state.get("hunt")), boss=bool(edef.get("boss")),
                                                raid=bool(state.get("raid")))     # D-332: a wave fight (🛡️ Defender)
             lines += state["story"]
+        elif outcome == "defeat" and self._oath_on(hero):
+            fell = True                        # D-147, D-336: 💀 a sworn hero falls for ever (once the fight is closed, below):
+            hero.hp = 0                        # no coins lost, no "you wake up wounded": it all stays with it in the 🪦 hall
+            self.bus.publish(HeroDowned(hero.id))
         elif outcome == "defeat":
             lost = int(hero.gold * hb["defeat_gold_loss"])
             hero.gold -= lost
@@ -15222,6 +15364,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             if len(actions) < 4:                                   # 4 buttons at most (D-75): 🔁 Equipar first
                 actions.insert(0, self._better_action(better))
         self.bus.publish(CombatEnded(hero.id, outcome))
+        if fell:                               # D-147, D-336: everything of the fight is done; now the 💀 fall and its screen
+            return self._fall_forever(hero, state, list(state["log"]))      # only the fight itself: the rest no longer matters
         title = t.t(f"combat.end_title.{outcome}")
         return View(kind="combat_end", title=title, body=lines, actions=actions)
 
