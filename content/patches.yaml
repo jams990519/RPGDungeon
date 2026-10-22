@@ -1131,3 +1131,18 @@ v0_58:
     - "☀️ 🌇 🌙 The world has day, evening and night: a world day lasts 4 real days and each band about 32 hours, so you see all three even if you always play at the same hour. See the current band and when the next one comes in 📍 Zone."
     - "🧺 Each band gives a little differently: by day, gathering gives more wood and stone; at night, more herbs, mushrooms and fish; in the evening, the usual. Nothing disappears and the amount doesn't change. 🧭 Explore tells you what comes out more now in your zone."
     - "🔥 Your camp's Braziers now defend more in the world's 🌙 night, which is the same for everyone and shows in 📍 Zone. More in ❓ /d05."
+
+v0_59:
+  version: "0.59"
+  title: "📜 Lost Realms 0.59: pedidos de fabricación entre jugadores"
+  title_en: "📜 Lost Realms 0.59: crafting orders between players"
+  notes:
+    - "📜 ¿No sabes hacer esa espada, ese peto o esa poción? Encárgasela a un artesano: 🏛️ Mercado → 📜 Pedidos de fabricación (/pedidos) → 📜 Encargar. Eliges el oficio, lo que quieres (también lo que tú no sabes hacer) y cuántos."
+    - "🧺 Pones tú los materiales o le pagas al artesano para que los consiga, más su mano de obra, que va siempre aparte. Te sugerimos una mano de obra y la cambias con los botones o escribiendo el número. Las monedas y tus materiales quedan apartados."
+    - "🔨 Si eres artesano, los pedidos que puedes hacer salen en 🔨 Para hacer, en tu estación y en la pantalla de tu oficio. Toca su código en una estación de ese oficio: lo haces al momento, cobras menos el impuesto del mercado y ganas experiencia del oficio."
+    - "📦 Lo hecho te llega a 📦 Entregas, y si sale ✒️ obra maestra, llega con la firma del artesano. Si nadie toma tu pedido en 7 días, o lo cancelas antes, te devolvemos todo. Más en ❓ /d64."
+  notes_en:
+    - "📜 Can't make that sword, that chestplate or that potion? Order it from an artisan: 🏛️ Market → 📜 Crafting orders (/orders) → 📜 Order. You pick the profession, what you want (also what you cannot make) and how many."
+    - "🧺 You put in the materials or pay the artisan to get them, plus their labor, which always goes apart. We suggest a labor fee and you change it with the buttons or by typing the number. The coins and your materials are set aside."
+    - "🔨 If you are an artisan, the orders you can make show up in 🔨 To make, at your station and on your profession's screen. Tap their code at a station of that profession: you make it at once, get paid minus the market tax and earn profession experience."
+    - "📦 What is made reaches your 📦 Deliveries, and a ✒️ masterwork comes with the artisan's signature. If nobody takes your order within 7 days, or you cancel it before, you get everything back. More in ❓ /d64."

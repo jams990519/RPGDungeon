@@ -1,6 +1,6 @@
 # Economía
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Profesiones](profesiones.md), [PvP](../06-contenido/pvp.md), [Monetización](monetizacion.md) · **Estado:** propuesta; el 🏛️ Mercado de §3.0 está en el juego desde la 0.46 (D-320); las reparaciones de §5 y los encargos de reparación de §7, desde la 0.57 (D-333)
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md), [Equipamiento](../03-personaje/equipamiento.md) · **Alimenta a:** [Profesiones](profesiones.md), [PvP](../06-contenido/pvp.md), [Monetización](monetizacion.md) · **Estado:** propuesta; el 🏛️ Mercado de §3.0 está en el juego desde la 0.46 (D-320); las reparaciones de §5 y los encargos de reparación de §7, desde la 0.57 (D-333); los pedidos de fabricación de §7, desde la 0.59 (D-335)
 
 **De dónde sale.**
 - *Albion Online*: casi todo el equipo lo fabrican jugadores y cada ciudad tiene su mercado. El **Mercado Negro** compra objetos de jugadores y los pone en el botín de los monstruos. El equipo se pierde en zonas de botín completo, y el Enfoque diario sube el rendimiento de los oficios.
@@ -67,9 +67,10 @@ El dueño pidió el 21-oct-2026 que los jugadores se vendan entre ellos el equip
 | **Banda de precio** | De 0,25 a 10 veces el precio de referencia (`price_min`, `price_max`): `price` de items.yaml; una bolsa o un cofre, lo que cuesta su receta. Todavía no sale del historial de ventas |
 | **Equipo** | La ✒️ obra maestra viaja con su firma y la pieza con su ✨ encantamiento, como en la ⚔️ Armería. **Desde la 0.57 (D-333)**, también con su 🔧 durabilidad: cada unidad lleva la suya hasta 📦 Entregas, la lista y la oferta la muestran ("🔧 80/96") y al publicar salen primero las copias más gastadas |
 | **🗺️ Pergaminos de mapa** (0.50, D-311.5 confirmada, D-326 provisional) | El 🧭 Explorador vende sus pergaminos de a uno (cada copia lleva sus zonas, su autor y su región, que viajan en la orden y en 📦 Entregas) en una 8.ª categoría de 🛍️ Comprar, 🗺️ Mapas. **Precio libre:** es la excepción de la banda, de 1 🥉 a 1 🥇 (`map_scroll.price_min`, `price_max`); la referencia (1 🥈) solo abre el borrador. La oferta le dice a quien mira cuántas zonas son nuevas para él. El 🛒 Mercader no los compra ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.9.4) |
-| **Medición** | Cada día se anota en `market_log` cuántas compras, unidades, monedas e impuesto hubo y cuántas órdenes se publicaron, cancelaron o vencieron; el informe diario lo muestra en su sección 9 ([Informes](../01-plataforma/informes.md)) |
+| **📜 Pedidos de fabricación** (0.59, D-140 confirmada, D-335 provisional) | El 7.º botón del mercado (/pedidos): encargas una receta a un artesano, pones los materiales o le pagas para que los consiga (a su referencia), más su **mano de obra**, siempre aparte (sugerida 8 🥉 por ⚡ × (1 + rango ÷ 20), dentro de la banda: 0,25 a 10 veces). Las monedas y los materiales quedan en custodia; el artesano lo hace en su estación, cobra menos el 5 % sobre todo lo que cobra y lo hecho llega a 📦 Entregas a los 30 min (la ✒️ obra maestra, con su firma). 7 días; hasta 10 pedidos abiertos, aparte de las órdenes ([Profesiones](profesiones.md) §0.13) |
+| **Medición** | Cada día se anota en `market_log` cuántas compras, unidades, monedas e impuesto hubo y cuántas órdenes se publicaron, cancelaron o vencieron, y desde la 0.59 cuántos pedidos de fabricación se publicaron, hicieron, cancelaron y vencieron, con sus monedas y su impuesto; el informe diario lo muestra en su sección 9 ([Informes](../01-plataforma/informes.md)) |
 
-**Lo que todavía no está** (preguntas P-247 a P-250): órdenes de venta de recursos y pedidos de compra de equipo, transporte que tarda según la distancia y bandidos que asaltan transportes (D-137), bandas de precio por historial, el canal del mercado con precios, pedidos de fabricación (D-113), mercados locales (descartados por D-137) y el 💱 Comercio, que sigue bloqueado hasta las caravanas (D-298).
+**Lo que todavía no está** (preguntas P-247 a P-250): órdenes de venta de recursos y pedidos de compra de equipo, transporte que tarda según la distancia y bandidos que asaltan transportes (D-137), bandas de precio por historial, el canal del mercado con precios, los pedidos de fabricación personales y de gremio (los públicos están desde la 0.59, D-335; E-280), mercados locales (descartados por D-137) y el 💱 Comercio, que sigue bloqueado hasta las caravanas (D-298).
 
 ### El diseño completo del mercado (propuesta)
 
@@ -115,6 +116,7 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 
 - **Impuestos de referencia:** alrededor de 1,5 % por publicar una orden y 4 % sobre la venta, con descuento para Premium (como en Albion). Se ajustan con el informe mensual.
 - **Precio techo de servicios:** el sanatorio y los PNJ de reparación ponen un precio máximo a lo que pueden cobrar los jugadores por lo mismo, y los jugadores compiten por debajo.
+- **En el juego desde la 0.59 (D-140, D-335):** los 📜 **pedidos de fabricación** queman el impuesto del mercado (5 %) sobre todo lo que cobra el artesano (la mano de obra y los materiales que consiguió); lo demás pasa de un jugador a otro, no entra ni sale oro.
 - **En el juego desde la 0.57 (D-139, D-333):** las **reparaciones** son un sumidero: el herrero de cualquier 🔥 fogata cobra 3 × lo que valen los materiales (`durability.npc_mult`) y esas monedas se queman; los 📜 encargos entre jugadores (§7) pagan 2 × y queman el impuesto del mercado. Es el precio techo de arriba: el herrero de la fogata siempre cuesta más que un artesano. Detalle en [Equipamiento](../03-personaje/equipamiento.md) §4.1 y [Profesiones](profesiones.md) §0.12.
 
 ## 6. Mercado Negro
@@ -140,7 +142,9 @@ Ver [Mundo vivo y viaje](../02-mundo/mundo-vivo-y-viaje.md). En resumen:
 | **Seguro** | Pagas una prima y, si pierdes el equipo asegurado en PvP, recuperas una parte del valor | EVE (seguro de naves) |
 | **Préstamo** | Un gremio o un jugador presta oro con garantía en objetos, y el bot hace de custodio | Emergente |
 
-**En el juego desde la 0.57 (D-140, D-333): el 📜 encargo de reparación**, el primer pedido entre jugadores: el dueño de una pieza aparta las monedas (2 × el valor de los materiales), un artesano con el oficio lo hace desde una estación y cobra al momento menos el impuesto del mercado; si nadie lo toma en 7 días, las monedas vuelven ([Profesiones](profesiones.md) §0.12). Los pedidos de fabricación siguen por programar.
+**En el juego desde la 0.57 (D-140, D-333): el 📜 encargo de reparación**, el primer pedido entre jugadores: el dueño de una pieza aparta las monedas (2 × el valor de los materiales), un artesano con el oficio lo hace desde una estación y cobra al momento menos el impuesto del mercado; si nadie lo toma en 7 días, las monedas vuelven ([Profesiones](profesiones.md) §0.12).
+
+**En el juego desde la 0.59 (D-140, D-335): el 📜 pedido de fabricación**, con la forma de arriba en su capa simple: público (lo ve cualquier artesano que puede hacerlo; el de gremio y el personal, E-280). Quien encarga pone los materiales (en custodia) o paga para que el artesano los consiga, más la **mano de obra**, siempre aparte (D-140), dentro de la banda del mercado; el artesano lo hace en su estación con su rango, cobra menos el impuesto del mercado y lo hecho llega a 📦 Entregas, una ✒️ obra maestra con su firma. Dura 7 días; cancelar o vencer devuelve todo ([Profesiones](profesiones.md) §0.13).
 
 **Vales por reenvío.** Un vale del almacén del gremio se cobra reenviando el mensaje, solo dentro del gremio, y caduca rápido. TowerWars lo usa así y funciona.
 
