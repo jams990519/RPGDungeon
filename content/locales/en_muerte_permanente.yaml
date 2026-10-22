@@ -42,7 +42,7 @@ oath:
   no_lead_other: "💀 {name} swore permadeath: they cannot lead the guild (there is nobody to inherit the command yet)."
   fell_title: "🪦 {name} fell for ever"
   fell_body: "Their name stays in the 🪦 Hall of the Fallen."
-  fell_left: "They left their camp and guild. Their 🏛️ Market orders and repair orders were cancelled, and what they held stayed with them."
+  fell_left: "They left their camp and guild. Their 🏛️ Market orders, crafting orders and repair orders were cancelled, and what they held stayed with them."
   fell_keep: "Your account, your language, your ⚙️ Options and your 💎 diamonds stay. Create a new hero to start again."
   new_hero_button: "✨ Create a new hero"
   hall_title: "🪦 Hall of the Fallen"

@@ -50,7 +50,7 @@ oath:                          # [ES] D-147, D-336: la 💀 muerte permanente
   no_lead_other: "💀 {name} juró la muerte permanente: no puede liderar el gremio (todavía no hay quién herede el mando)."
   fell_title: "🪦 {name} cayó para siempre"
   fell_body: "Su nombre queda en el 🪦 Salón de los caídos."
-  fell_left: "Salió de su campamento y de su gremio. Sus órdenes del 🏛️ Mercado y sus encargos de reparación se cancelaron, y lo que tenían quedó con él."
+  fell_left: "Salió de su campamento y de su gremio. Sus órdenes del 🏛️ Mercado, sus pedidos de fabricación y sus encargos de reparación se cancelaron, y lo que tenían quedó con él."
   fell_keep: "Siguen tu cuenta, tu idioma, tus ⚙️ Opciones y tus 💎 diamantes. Crea un héroe nuevo para volver a empezar."
   new_hero_button: "✨ Crear héroe nuevo"
   hall_title: "🪦 Salón de los caídos"

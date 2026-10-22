@@ -407,6 +407,7 @@ En la web es más fácil automatizar: un script del navegador o un programa que 
 - **El idioma es de la cuenta**, igual en todos los clientes: cambiarlo en la web lo cambia en Telegram.
 - Los clientes solo traducen **su propia interfaz** ("Cerrar sesión", "Reconectando…").
 - Números, fechas y horas llegan como valores, con las horas en UTC. Cada cliente los muestra según el idioma y la zona horaria del jugador, así las horas de apertura se ven en la hora local de cada uno.
+  **En el juego (0.58, D-124, D-334):** como el motor entrega las pantallas ya escritas y Telegram no dice la zona de nadie, la hora la escribe el motor en la zona que cada jugador eligió en ⚙️ Opciones → 🕐 Zona horaria (quien no eligió ve UTC con su etiqueta). Es igual en los tres clientes: la zona es del jugador, no del cliente, y ninguna regla la lee.
 - Las frases de plantilla (gestos, notas en el suelo) son del motor y se traducen como el resto.
 
 ## 12. Accesibilidad

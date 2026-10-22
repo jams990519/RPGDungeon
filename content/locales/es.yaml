@@ -1363,7 +1363,7 @@ travel:
   discovered_named: "🧭 ¡Nadie había pisado {name}! Queda en el mapa con tu nombre."
   interrupted: "⛔ Tu viaje se corta en {name}."
   started_route: "🚶 Sales hacia {name}. Irás zona por zona; te aviso al llegar."
-  goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time}"
+  goal: "🎯 Destino: {name} · {legs} tramos · llegas en {time} (🕐 {clock})"
   interrupted_fight: "⛔ Te sale un enemigo en {name}. Si le ganas, sigues tu camino."   # [ES] D-244 (0.33): la emboscada ya no tira el resto del viaje
   resumed: "🚶 Sigues tu camino: te {n|queda|quedan} {n} {n|tramo|tramos}."
   route_lost: "🧭 Te quedas en {name}: el resto del camino se canceló."
@@ -1798,13 +1798,13 @@ raids:                        # [ES] D-99 (provisional), D-105: oleadas (desde q
   defend_button: "🛡️ Defender"
   defense_line: "🛡️ Defensa {defense}: las defensas del campamento les quitan {pct} % de vida y de ataque."
   watch_title: "🗼 Torre de vigía de {camp}"
-  watch: "🗼 La torre ve venir una oleada: llega en {time}. Defensa del campamento: {defense}. Prepárense para tocar 🛡️ Defender."
-  watch_line: "🗼 La torre ve venir una oleada: llega en {time}."
+  watch: "🗼 La torre ve venir una oleada: llega en {time} (🕐 {clock}). Defensa del campamento: {defense}. Prepárense para tocar 🛡️ Defender."
+  watch_line: "🗼 La torre ve venir una oleada: llega en {time} (🕐 {clock})."
   title: "🔔 ¡Oleada en {camp}!"
   trial_title: "🌙 Noche de prueba en {camp}"
   arrive: "⚔️ {enemy} (nivel {level}) y los suyos rodean el campamento."
   trial_arrive: "⚔️ Esta noche llega {enemy} élite (nivel {level}): más vida y más fuerza."
-  need: "Tienen {time} para sumar {need} {need|victoria|victorias}. Cada miembro pelea una vez, esté donde esté."
+  need: "Tienen {time} (hasta 🕐 {clock}) para sumar {need} {need|victoria|victorias}. Cada miembro pelea una vez, esté donde esté."
   stakes: "Si no alcanzan, la despensa pierde parte de su comida. Nada más: ni niveles, ni zonas, ni miembros."
   trial_stakes: "Si la ganan, el campamento puede pasar a castillo. Si no, se reintenta a los {days} {days|día|días} y no se pierde nada."
   started: "🛡️ Sales a defender {camp}: ¡{enemy} (nivel {level}) te ataca!"
@@ -2150,7 +2150,7 @@ guardian:                     # [ES] D-82: el Guardián del Claro (Raigambre), s
   memento_done: "🌰 La semilla se abre y te deja {item}."
 
 batch:
-  total_left: "⏳ En total faltan {time} para terminar."   # [ES] D-242.1: el tiempo del lote entero, no de la vuelta
+  total_left: "⏳ En total faltan {time} para terminar (🕐 {clock})."   # [ES] D-242.1: el tiempo del lote entero, no de la vuelta
   title_gather: "🧺 Recolectar"
   title_explore: "🔎 Explorar"
   title_hunt: "🏹 Cazar en lote"
@@ -2388,7 +2388,7 @@ upgrade:                      # [ES] D-101: nombre y efecto de cada mejora (los 
     desc: "Suma 1 ración por día a la despensa."
   braseros:
     name: "Braseros"
-    desc: "Fuego en la muralla: de noche defiende todavía más."
+    desc: "Fuego en la muralla: en la 🌙 noche del mundo defiende todavía más."   # [ES] D-126, D-334 (0.58): la noche del reloj del mundo (raids.night.source), a la vista en 📍 Zona
   herreria:
     name: "Herrería"
     desc: "Vende en el campamento el equipo que no usas."

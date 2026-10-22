@@ -32,7 +32,10 @@ Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (borra
     market_code, y el texto suelto con un borrador abierto: _market_typed), tick() (_market_tick: vencimientos y avisos de
     entregas que llegaron), COMMANDS (/mercado, /market), _shop_view (botón 🏛️ Mercado del 🛒 Mercader), _service_uses
     (botón 🏛️ Mercado al lado del 🏪 Puesto de trueque en ⚒️ Oficios de 🏘️ Servicios) y _faq_values (_market_faq_values);
-    adapters/reports.py lee "market_log" (sección 9 del informe diario)
+    adapters/reports.py lee "market_log" (sección 9 del informe diario); D-335 (0.59): engine/service/craft_orders.py
+    (CraftOrderMixin, los 📜 pedidos de fabricación) usa _mkt_cfg, _mkt_tax, _mkt_credit, _mkt_box_add, _mkt_box, _mkt_left,
+    _mkt_fit, _mkt_log y _mkt_delivery_seconds: lo hecho viaja por 📦 Entregas con "why": "crafted"; los materiales
+    devueltos, con "returned" o "expired"; y suma "craft_*" a "market_log"
 Eventos que publica: ninguno (el evento OrderFilled del diseño, M13, queda para cuando haya telemetría por eventos)
 Eventos que escucha: ninguno
 Datos de los que es dueño:
@@ -49,7 +52,8 @@ Datos de los que es dueño:
         se arregla solo si apunta a una orden que ya no está.
     "market_mine" (clave la cuenta): {"ids": [id, …]}: las órdenes activas de cada jugador (📋 Mis órdenes y el tope).
     "market_box" (clave la cuenta): {"items": [{"good", "n", "at" (cuándo llega), "enchant", "sig", "from" (de quién),
-        "why" ("bought", "filled", "returned", "expired"), "told" (ya se avisó que llegó), "coins" (solo si son monedas),
+        "why" ("bought", "filled", "returned", "expired"; D-335: "crafted", lo que hizo un artesano por un pedido de
+        fabricación), "told" (ya se avisó que llegó), "coins" (solo si son monedas),
         "scroll" (D-326: el 🗺️ pergamino que llega, con sus zonas), "wear" (D-333: la durabilidad de cada unidad, como en la
         orden)}]}: 📦 Entregas. Se borra al quedar vacía.
     "market_open" (clave la cuenta): {"side", "good", "price", "n", "scroll" (D-326: el id del 🗺️ pergamino que se vende)}:
@@ -85,13 +89,17 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - Números: balance.yaml market (tax, delivery_minutes, order_days, max_orders, max_units, price_min, price_max,
       price_buttons, ask_buttons, per_page, log_days); el registro de balance (diseno/03-personaje/balance.md)
-    - Pantallas y botones: HUB_KINDS ("market" y "market_cats": hasta 8 botones; "market_cats" 9 desde la 0.50 con 🗺️ Mapas,
+    - Pantallas y botones: HUB_KINDS ("market" y "market_cats": hasta 8 botones, "market" con 📜 Pedidos de fabricación desde la
+      0.59; "market_cats" 9 desde la 0.50 con 🗺️ Mapas,
       EXTRA_BUTTON_KINDS), el layout del borrador (filas de precio y
       cantidad, ✅ Publicar y ↩️ Volver a lo ancho) y los ids "mkt…" (64 bytes como máximo en Telegram)
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (M13 y la cascada C-32)
+    - Horas (0.58, D-124, D-334): el detalle de una orden dice a qué hora vence en la zona horaria de quien mira (_clock de
+      engine/service/world_time.py); la orden vence a la misma hora para todos ("until", segundos UTC)
     - Pruebas: tests/test_mercado.py; tests/test_fogata_ordenada.py (el 🛒 Mercader con 🏛️ Mercado); tests/test_pergamino_mapa.py
-      (el 🗺️ pergamino en el mercado); tests/test_desgaste_reparacion.py (la durabilidad que viaja, D-333)
+      (el 🗺️ pergamino en el mercado); tests/test_desgaste_reparacion.py (la durabilidad que viaja, D-333);
+      tests/test_pedidos_de_fabricacion.py (los pedidos de fabricación usan la custodia, el impuesto, la banda y 📦 Entregas)
 """
 
 from __future__ import annotations
@@ -532,7 +540,8 @@ class MarketMixin:
         espera en 📦 Entregas (listo o en camino), el impuesto y el tiempo del transporte, y si aquí solo se puede mirar (para
         publicar, comprar, vender a un pedido o recoger hay que estar en una 🔥 fogata o en tu campamento con 🏪 Puesto de
         trueque). Hasta 8 botones (HUB_KINDS "market"): 🛍️ Comprar, 🏷️ Vender, 📥 Pedidos de compra, 📝 Pedir recursos,
-        📋 Mis órdenes, 📦 Entregas y ↩️ Volver (al 🛒 Mercader, a ⚒️ Oficios de tu campamento o a 📍 Zona).
+        📋 Mis órdenes, 📦 Entregas, 📜 Pedidos de fabricación (D-335, 0.59: engine/service/craft_orders.py) y ↩️ Volver (al
+        🛒 Mercader, a ⚒️ Oficios de tu campamento o a 📍 Zona).
         La llaman: el botón 🏛️ Mercado del 🛒 Mercader y de ⚒️ Oficios (con el 🏪 Puesto de trueque), /mercado y /market.
         Si cambia, afecta: tests/test_mercado.py.
         """
@@ -554,6 +563,7 @@ class MarketMixin:
                    Action(id="mkt:fill:0", label=t.t("market.fill_button")), Action(id="mkt:ask:0", label=t.t("market.ask_button")),
                    Action(id="mkt:mine", label=t.t("market.mine_button", n=len(mine))),
                    Action(id="mkt:box", label=t.t("market.box_button", n=len(box))),
+                   Action(id="cord", label=t.t("corder.market_button")),        # D-335 (0.59): 📜 Pedidos de fabricación
                    Action(id=self._mkt_back(hero), label=t.t("menu.back"))]
         return View(kind="market", title=t.t("market.title"), body=body, actions=actions, notice=notice)
 
@@ -713,7 +723,8 @@ class MarketMixin:
             new = self._scroll_new(hero, list(order["scroll"].get("zones") or []))
             body += [t.t("scroll.new_line", n=len(new)) if new else t.t("scroll.nothing_new"), t.t("scroll.use_explain")]
         body += ["", t.t("market.offer_detail", name=order.get("name", "?"), price=self._money(order["price"]), n=order["n"],
-                         left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                         left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                         clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                  t.t("market.delivery_line", time=self._fmt_duration(self._mkt_delivery_seconds()))]
         actions = []
         if order["by"] == hero.id:
@@ -814,6 +825,7 @@ class MarketMixin:
         D-326: `scroll` is the id of the 🗺️ map scroll being sold (always 1: every copy has its own zones)."""
         cfg = self._mkt_cfg()
         asks = list(cfg.get("ask_buttons") or [1, 10, 50])
+        self.store.delete("corder_open", hero.id)          # D-335: only one draft that reads typed numbers at a time
         draft = {"side": side, "good": good, "price": self._mkt_clamp(good, self._mkt_ref_price(good)),
                  "n": 1 if side == "sell" else int(asks[1] if len(asks) > 1 else asks[0])}
         if scroll:
@@ -1067,7 +1079,8 @@ class MarketMixin:
         price = int(order["price"])
         body = [self._mkt_name(order["good"]),
                 t.t("market.bo_detail", name=order.get("name", "?"), price=self._money(price), n=order["n"],
-                    left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                    left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                    clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                 t.t("market.you_carry_line", n=carry)]
         actions = []
         if order["by"] == hero.id:
@@ -1183,7 +1196,8 @@ class MarketMixin:
         body = [self._mkt_label(order) if sell else self._mkt_name(order["good"]),
                 t.t("market.my_detail_" + order["side"], n=order["n"], n0=order.get("n0", order["n"]), price=self._money(order["price"]),
                     total=self._money(int(order["n"]) * int(order["price"])),
-                    left=self._mkt_left(float(order["until"]) - self.clock.now())),
+                    left=self._mkt_left(float(order["until"]) - self.clock.now()),
+                    clock=self._clock(float(order["until"]))),       # D-124, D-334: 🕐 when it expires, in your zone
                 t.t("market.cancel_hint_" + order["side"])]
         actions = [Action(id=f"mkt:x:{oid}", label=t.t("market.cancel_button")), Action(id="mkt:mine", label=t.t("menu.back"))]
         return View(kind="market_order", title=t.t("market.my_title"), body=body, actions=actions, notice=notice)

@@ -49,12 +49,14 @@ Si cambias esto, revisa:
     - Números: balance.yaml story (experiencia por ⚡, rangos, largo de la biografía, tope del diario, espera de gestos)
     - Datos: content/story.yaml y content/locales/es_historia.yaml (desde la 0.56, story.yaml también tiene las 🎯 misiones
       de grupo, group_missions, que corren en engine/service/group_missions.py con sus textos en es_misiones_grupo.yaml)
-    - Pruebas: tests/test_story.py y tests/test_misiones_de_grupo.py
+    - Horas (0.58, D-124, D-334): el 📔 Diario escribe la fecha en la zona horaria del jugador (_local_date de
+      engine/service/world_time.py; UTC para quien nunca eligió) y el 📜 Tablón dice a qué hora cambian los encargos del día
+      y los del campamento (_clock). El corte sigue siendo el mismo para todos (_story_day, _story_week: medianoche UTC)
+    - Pruebas: tests/test_story.py y tests/test_misiones_de_grupo.py; tests/test_zona_horaria_y_dia.py (las horas)
 """
 
 from __future__ import annotations
 
-import time
 from typing import Any
 
 from engine.hero import Hero
@@ -480,8 +482,8 @@ class StoryMixin:
     def _journal_lines(self, hero: Hero, count: int) -> list[str]:
         lines = []
         for entry in hero.journal[-count:] if count > 0 else []:
-            stamp = time.gmtime(float(entry.get("t", 0)))
-            lines.append(self.texts.t("story.journal_line", date=f"{stamp.tm_mday:02d}/{stamp.tm_mon:02d}", text=self._journal_text(entry)))
+            # D-124, D-334 (0.58): the date in the player's own time zone (UTC before, and for whoever never chose one)
+            lines.append(self.texts.t("story.journal_line", date=self._local_date(float(entry.get("t", 0))), text=self._journal_text(entry)))
         return lines
 
     # ------------------------------------------------------------------ the hook
@@ -1001,7 +1003,8 @@ class StoryMixin:
         daily = self._daily(hero)
         ids = self._daily_ids(hero)
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
-        body.append(t.t("story.tasks_line", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left)))
+        body.append(t.t("story.tasks_line", done=sum(1 for i in ids if i in daily["done"]), total=len(ids), time=self._fmt_duration(left),
+                        clock=self._clock(self.clock.now() + left)))     # D-124, D-334: the same reset for all, 🕐 in your zone
         body.append(t.t("story.factions_line", list=self._factions_short(hero)))
         return body
 
@@ -1305,7 +1308,7 @@ class StoryMixin:
                             task=t.t(f"story.daily.{tid}"), goal=t.t("story.board_paid") if done else self._goal_line(hero, dict(goal, npc=tdef.get("giver", "")), daily["p"].get(tid, 0)),
                             reward=prize))
         left = (self._story_day() + 1) * self._day_seconds() - self.clock.now()
-        body += [t.t("story.board_reset", time=self._fmt_duration(left)), ""]
+        body += [t.t("story.board_reset", time=self._fmt_duration(left), clock=self._clock(self.clock.now() + left)), ""]   # D-334: 🕐
         body += self._camp_task_lines(hero)
         actions = [Action(id="npcs", label=t.t("story.button_npcs")), Action(id="cjournal", label=t.t("story.button_journal")),
                    Action(id="claro", label=t.t("menu.back"))]                # D-192: the board is a button of 🏕️ Campamento; D-259: cjournal
@@ -1326,7 +1329,7 @@ class StoryMixin:
                              n=story_rules.target(pool[tid]["goal"]), mine=int(record["by"].get(tid, {}).get(hero.id, 0)),
                              xp=int(reward.get("xp", 0)), gold=self._money(int(reward.get("gold", 0)))))
         left = (self._story_week() + 1) * 7 * self._day_seconds() - self.clock.now()
-        lines.append(t.t("story.board_camp_reset", time=self._fmt_duration(left)))
+        lines.append(t.t("story.board_camp_reset", time=self._fmt_duration(left), clock=self._clock(self.clock.now() + left)))   # D-334
         return lines + self._gm_board_lines(hero, camp)     # D-332 (0.56): 🎯 the group mission of the next level-up
 
     def _factions_view(self, hero: Hero) -> View:

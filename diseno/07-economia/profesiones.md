@@ -1,6 +1,6 @@
 # Profesiones
 
-> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; fase 2 del lado del campamento, D-115: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción, ver §0.4; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5; las 🎓 especializaciones de D-141, §0.6 y §5; la reforma de recetas de D-306 en la 0.44: tramos cada 5, colores de receta y 📚 libros, §0.8; en la 0.52, también en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina, §0.11; desde la 0.57, 🔧 reparar el equipo y los 📜 encargos de reparación, §0.12); el resto, propuesta
+> **Módulo** [07 · Economía](README.md) · **Depende de:** [Mundo vivo](../02-mundo/mundo-vivo-y-viaje.md) (vetas), [Economía](economia.md) · **Alimenta a:** [Equipamiento](../03-personaje/equipamiento.md), [Salud](../05-salud/README.md), [Fabricación](fabricacion.md) · **Estado:** §0 en el juego (fase 1, D-109, ver §0.1; beneficios §0.2 y §0.4, con la obra maestra y los muebles de D-116; fase 2 del lado del campamento, D-115: 🎣 Pescador, 🍲 Cocina, 🗿 Cantería y 🏗️ Construcción, ver §0.4; el ✨ Encantamiento y el artesano de cabeza, manos, piernas y pies de la fase 2 de D-115, §0.5; las 🎓 especializaciones de D-141, §0.6 y §5; la reforma de recetas de D-306 en la 0.44: tramos cada 5, colores de receta y 📚 libros, §0.8; en la 0.52, también en el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina, §0.11; desde la 0.57, 🔧 reparar el equipo y los 📜 encargos de reparación, §0.12; desde la 0.59, los 📜 pedidos de fabricación, §0.13); el resto, propuesta
 
 > **Repaso del 2-oct-2026 (D-194, D-195):** el dueño redefinió los oficios: refinar pasa a ser estructuras del asentamiento, cuatro oficios de armadura (tres desde D-208: ya no hay malla), oficios nuevos (Ladrón, Agricultura, Ganadería; el Mallero se cayó con D-208) y la granja de cada etapa. El 2-oct también decidió que el Joyero refina las gemas desde la mena del Minero, sin Gemólogo (D-198), y que las ranuras para gemas van solo en armaduras y armas (D-199). Ver [Repaso de los oficios](oficios-repaso-2-oct.md). Hasta que se programe, este documento describe lo que está en el juego.
 
@@ -196,7 +196,7 @@ El dueño pidió (1-oct-2026) **mezclar el sistema de oficios de World of Warcra
 |---|---|
 | Rango de oficio 1-100 que sube haciendo recetas; recetas que se abren por rango | **Casi todo el buen equipo lo fabrican los jugadores**: los monstruos sueltan sobre todo materiales y monedas, y equipo de menos calidad |
 | El beneficio propio de cada oficio (§0.2, D-111) | **Aprender haciendo cada línea de objetos:** fabricar una línea (por ejemplo, espadas) sube su maestría; dominar un nivel de pieza abre el siguiente de esa línea, y la maestría mejora la calidad (§6) |
-| **Pedidos de fabricación:** mandas materiales y una comisión a un artesano y él fabrica con su rango y su firma ([Economía](economia.md) §7) | **El equipo se gasta:** cada pieza tiene durabilidad que baja al pelear; repararla cuesta y la deja un poco más gastada, hasta que se rompe. Siempre hay demanda de artesanos ([Equipamiento](../03-personaje/equipamiento.md) §4) |
+| **Pedidos de fabricación:** mandas materiales y una comisión a un artesano y él fabrica con su rango y su firma ([Economía](economia.md) §7; **en el juego desde la 0.59**, §0.13) | **El equipo se gasta:** cada pieza tiene durabilidad que baja al pelear; repararla cuesta y la deja un poco más gastada, hasta que se rompe. Siempre hay demanda de artesanos ([Equipamiento](../03-personaje/equipamiento.md) §4) |
 | | **Mercado de órdenes:** órdenes de compra y de venta en el Claro (y en los campamentos que lo construyan), con un pequeño impuesto que saca monedas del juego ([Economía](economia.md)) |
 | | **Refinar con retorno:** quien refina recupera una parte del material (el beneficio del refinado en §0.2), más en una estación de su campamento |
 
@@ -206,7 +206,7 @@ El dueño pidió (1-oct-2026) **mezclar el sistema de oficios de World of Warcra
 1. Oficios fase 1 (en curso): rangos, refinado y recetas de varias ramas.
 2. Beneficios de oficio (D-111).
 3. Pasada de balance (D-110), **hecha**: equipo por niveles hasta el 100, donde **lo mejor de cada nivel lo fabrican los jugadores** (arma, pecho y joya; recetas de los rangos 55 a 100) y el botín suelta menos (10 % desde el nivel 10) y peor (como mucho 🔵 raro). Ver §0.1 y [Balance](../03-personaje/balance.md) §7.
-4. Mercado de órdenes, pedidos de fabricación, durabilidad y reparación: la segunda tanda de la economía de jugadores.
+4. Mercado de órdenes, pedidos de fabricación, durabilidad y reparación: la segunda tanda de la economía de jugadores. **Hecha:** el 🏛️ Mercado (0.46), el desgaste y la reparación (0.57, §0.12) y los 📜 pedidos de fabricación (0.59, §0.13).
 
 ---
 
@@ -386,7 +386,7 @@ Cada oficio es también un **trabajo pagado**:
 
 | Oficio | Cómo se cobra |
 |---|---|
-| Artesanos | Venta en el mercado, pedidos de fabricación con comisión, puesto o local propio (ver [Propiedad y concesiones](propiedad-y-concesiones.md)). **En el juego desde la 0.57:** los 📜 encargos de reparación (§0.12) |
+| Artesanos | Venta en el mercado, pedidos de fabricación con comisión, puesto o local propio (ver [Propiedad y concesiones](propiedad-y-concesiones.md)). **En el juego desde la 0.57:** los 📜 encargos de reparación (§0.12); **desde la 0.59**, los 📜 pedidos de fabricación con su mano de obra (§0.13) |
 | Constructores | Paga por jornada de obra desde el presupuesto en custodia, más el bono de inauguración |
 | Médicos | Consultas, cirugías y tratamientos con pago en custodia; sueldo como médico de gremio |
 | Agricultores, ganaderos, cazadores | Venta de cosechas y carne, **pedidos semanales de la ciudad** para cubrir sus necesidades |
@@ -632,7 +632,28 @@ El equipo se gasta en cada pelea ([Equipamiento](../03-personaje/equipamiento.md
 
 **De dónde sale:** *Albion Online* (el equipo se gasta y se repara en la estación de su oficio; los jugadores cobran por usar su estación), *World of Warcraft* (los pedidos de fabricación con comisión, desde *Dragonflight*) y *Star Wars Galaxies* (el artesano vive de mantener el equipo de los demás).
 
-### 0.13 🌱 Los oficios de recolección cuidan la tierra (D-145, desde la 0.60; cómo se aplicó: D-336)
+### 0.13 📜 Pedidos de fabricación entre jugadores (D-140, desde la 0.59; cómo se aplicó: D-335)
+
+El dueño lo dijo en la entrevista de voz (E-24): **"le das al artesano los materiales, o le pagas para que los consiga, más su mano de obra. Todo servicio entre jugadores se cobra aparte del costo de materiales y procesos."** La forma de hoy es la más simple (D-44), con la maquinaria de los 📜 encargos de reparación (§0.12) y del 🏛️ Mercado ([Economía](economia.md) §3.0).
+
+| Qué | Cómo está hoy |
+|---|---|
+| **Dónde** | 🏛️ Mercado → 📜 Pedidos de fabricación (/pedidos, /orders): tus pedidos abiertos (/cm1), 📜 Encargar y 🔨 Para hacer. También desde la pantalla de un oficio que no sabes y desde una receta que no puedes hacer (sin el oficio, la 🎓 especialización o el 📚 libro): 📜 Encargar a un artesano |
+| **Qué se encarga** | Cualquier receta de los 14 oficios de refinado y fabricación: el oficio (/cf1), lo que quieres (/r1, la lista con código de §0.9 con todo lo que hace ese oficio, también lo que tú no sabes hacer; primero el equipo que te sirve) y la cantidad, de 1 a 5 (`craft_order.max_units`) |
+| **Los materiales** | O los **pones tú** (salen de tu mochila y quedan apartados en el pedido) o le **pagas al artesano para que los consiga**, a su precio de referencia (`price` de cada material en `items.yaml`) o al que escribes ("m120"), dentro de la banda del mercado |
+| **La mano de obra** | Siempre aparte (D-140). Sugerida por la energía y el tramo de la receta: **8 🥉 por ⚡ × (1 + rango ÷ 20)** por vez (`labor_per_energy`, `labor_rank_step`): la espada de rango 1, 17 🥉; una de rango 45, 52 🥉; una pieza del rango 100, 192 🥉. Se cambia con ×1, ×2, ×3 o escribiendo el número ("50"), **de 0,25 a 10 veces la sugerida** (la banda del mercado, D-26: la misma traba contra pasar monedas a otra cuenta) |
+| **Apartado** | La mano de obra y, si el artesano consigue los materiales, lo que pagas por ellos, como un pedido de compra del mercado. Se encarga desde cualquier lugar |
+| **Hacerlo** | Lo ve con ✅ quien tiene el oficio, el rango, la 🎓 especialización y el 📚 libro que pide la receta: en 🔨 Para hacer (los que más pagan arriba), en su estación (🪚 Refinar, 🛠️ Fabricar o 🍲 Cocinar: hasta 3, `station_shown`), y la pantalla de su oficio dice cuántos puede hacer. Con /co1, en una estación de ese oficio (cualquier 🔥 fogata o el edificio de su campamento), lo fabrica al momento: pone la ⚡ de todas las veces y, si se los pagaron, los materiales. Hace justo lo pedido (sin la unidad de más del refinado ni los hallazgos de las 🎓); el equipo sortea la ✒️ obra maestra con su probabilidad |
+| **Qué gana el artesano** | Todo lo apartado **menos el impuesto del mercado (5 %, sobre todo lo que cobra)**, al momento; la experiencia de oficio (por color, §0.8) y de héroe de esas veces, como al fabricar; y cuenta para las misiones de fabricar |
+| **La entrega** | Lo hecho viaja a 📦 Entregas de quien encargó con el transportista del mercado (30 min); una ✒️ obra maestra llega **con la firma del artesano** (D-116). Le llega un aviso en su idioma |
+| **Vida y topes** | 7 días (`order_days`); quien encargó lo cancela mientras nadie lo tomó; al cancelar o vencer, las monedas vuelven a la bolsa y los materiales a 📦 Entregas. Hasta 10 pedidos abiertos (`market.max_orders`, aparte de las órdenes del mercado). Nadie hace su propio pedido |
+
+- **Ejemplo:** Lyra (guerrera, sin Herrería) quiere 2 🟢🗡️ Espadas forjadas y tiene los materiales (6 🔩 lingotes y 2 🟤 cueros): los pone y aparta 2 × 17 = 34 🥉 de mano de obra. Bram (🔨 Herrería 1) lo ve en su estación, toca /co1 en el Claro, gasta ⚡4, cobra 32 🥉 (2 de impuesto) y gana la experiencia de 2 espadas; a los 30 min Lyra recoge sus 2 espadas en 📦 Entregas. Si Lyra no tuviera los materiales, pagaría también 2 × 46 = 92 🥉 por ellos y Bram pondría los suyos (cobraría 120 🥉, 6 de impuesto).
+- **Datos y código:** `content/balance.yaml` → `craft_order`; `engine/service/craft_orders.py` (las pantallas, la custodia, hacerlo, cancelar y vencer); los ganchos en `engine/service/game.py` (`_recipe_code`, `_recipe_view`, `_station_view`, `_prof_detail_view`, `text()`, `act()`, `tick()`) y `engine/service/market.py` (el botón); textos en `content/locales/es_pedidos.yaml` y `en_pedidos.yaml`; ❓ /d64. Preguntas: E-278 (la mano de obra y su banda), E-279 (el impuesto sobre todo o solo la mano de obra) y E-280 (pedidos personales y de gremio).
+
+**De dónde sale:** *World of Warcraft* (los pedidos de fabricación desde *Dragonflight*: el cliente pone los materiales o parte de ellos y una comisión, el artesano fabrica con su calidad y su firma), *Albion Online* (el buen equipo lo hacen los jugadores y el mercado mueve los materiales) y *Star Wars Galaxies* (el artesano vive de lo que le encargan).
+
+### 0.14 🌱 Los oficios de recolección cuidan la tierra (D-145, desde la 0.60; cómo se aplicó: D-336)
 
 El dueño lo dijo en la entrevista de voz (E-29): "una zona agotada vuelve sola, pero lento; los oficios aceleran y aumentan esa regeneración". La vuelta sola ya estaba (D-87); lo nuevo es la parte de los oficios ([Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) §1.12):
 

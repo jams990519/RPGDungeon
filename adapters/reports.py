@@ -8,6 +8,8 @@ Para qué sirve: arma el informe diario de los jugadores que el bot manda como a
     último informe (espacio "reports"), para comparar un día con el siguiente.
     D-320 (0.46): la sección 9 cuenta el 🏛️ Mercado entre jugadores (compras, unidades, monedas que cambiaron de mano, impuesto
     quemado, órdenes publicadas, canceladas y vencidas) con lo que el mercado anota cada día en "market_log" (clave el día).
+    D-335 (0.59): la misma sección suma los 📜 pedidos de fabricación (publicados, hechos, monedas, impuesto, cancelados,
+    vencidos y abiertos).
 Documento de diseño: diseno/01-plataforma/informes.md
 Módulo: M20 Administración y telemetría (D-241.4)
 Depende de: engine.service (GameService: store, content, clock), engine.hero (Hero)
@@ -23,7 +25,7 @@ Reglas que nunca se rompen:
 Si cambias esto, revisa:
     - El bot: adapters/telegram/bot.py (REPORTS_CHAT_ID, notifier)
     - Lo que se mide: los campos de Hero (engine/hero/hero.py) y los oficios (content/professions.yaml); el mercado
-      (engine/service/market.py _mkt_log, espacio "market_log")
+      (engine/service/market.py _mkt_log, espacio "market_log"; engine/service/craft_orders.py, "craft_*" y "craft_order")
     - Pruebas: tests/test_informes.py
 """
 
@@ -220,7 +222,8 @@ def market_lines(service: Any) -> list[str]:
 
     [ES] Qué hace: las líneas del mercado entre jugadores para el informe (todos juntos, sin nombres): cuántas compras hubo,
     cuántas unidades y monedas cambiaron de mano, cuánto impuesto se quemó y cuántas órdenes se publicaron, cancelaron o
-    vencieron; y cuántas órdenes hay abiertas ahora. Solo lee. La llama: build().
+    vencieron; y cuántas órdenes hay abiertas ahora. D-335 (0.59): lo mismo de los 📜 pedidos de fabricación ("craft_*" de
+    "market_log", que anota engine/service/craft_orders.py, y el espacio "craft_order"). Solo lee. La llama: build().
     Si cambia, afecta: lo que lee el equipo.
     """
     today = int(service._today())
@@ -234,4 +237,11 @@ def market_lines(service: Any) -> list[str]:
     orders = [o for _, o in service.store.items("market_order")]
     out.append(f"- Órdenes abiertas ahora: {sum(1 for o in orders if o.get('side') == 'sell')} de venta · "
                f"{sum(1 for o in orders if o.get('side') == 'buy')} pedidos de compra")
+    for label, day in (("ayer", today - 1), ("hoy hasta ahora", today)):     # D-335 (0.59): 📜 the crafting orders
+        log = service.store.get("market_log", str(day)) or {}
+        out.append(f"- Pedidos de fabricación {label}: publicados {int(log.get('craft_posted', 0))} · hechos "
+                   f"{int(log.get('craft_done', 0))} · monedas a los artesanos (🥉) {int(log.get('craft_coins', 0))} · impuesto "
+                   f"quemado (🥉) {int(log.get('craft_tax', 0))} · cancelados {int(log.get('craft_cancelled', 0))} · vencidos "
+                   f"{int(log.get('craft_expired', 0))}")
+    out.append(f"- Pedidos de fabricación abiertos ahora: {sum(1 for _ in service.store.items('craft_order'))}")
     return out

@@ -7,7 +7,7 @@ changes stats or coins. A sworn hero leads nothing (there is no founder successi
 cannot swear it, and a sworn hero cannot create a guild or receive the leadership.
 
 When a sworn hero loses any fight (_end_combat), it falls for ever: a memorial goes to the 🪦 hall ("fallen", "f1", "f2"…),
-its open 🏛️ Mercado orders and 📜 repair orders are cancelled into it, it leaves its camp, its waiting list and its guild, its
+its open 🏛️ Mercado orders, 📜 crafting orders and 📜 repair orders are cancelled into it, it leaves its camp, its waiting list and its guild, its
 per-hero records move with it, and the whole hero is kept in "fallen_hero" (never deleted, D-64). The account keeps its
 language, player code and invite code; the next hero receives the ⚙️ Opciones and what was bought with 💎 ("reborn").
 
@@ -23,7 +23,8 @@ Módulo: capa de servicios (M7 Salud: la muerte; M2 Héroe: crear otro; M19 Mens
 Depende de: content/balance.yaml (permadeath), content/locales/es_muerte_permanente.yaml y en_muerte_permanente.yaml (textos),
     engine.hero (Hero) y las ayudas de GameService (_seconds, _day_seconds, _journal, _grant_title, _title_name, _place_label,
     _push_each, _join, _options_view, _my_gremio, _gremio_link, _gremio_leave_member, _waiting_key, _tell_waiting_room,
-    _mkt_mine, _mkt_order, _mkt_close, _mkt_box, _mkt_box_put, _repair_mine, _repair_close)
+    _mkt_mine, _mkt_order, _mkt_close, _mkt_box, _mkt_box_put, _repair_mine, _repair_close; desde la 0.59, _corder_mine y
+    _corder_close de engine/service/craft_orders.py)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() ("fallen" antes de mirar si hay héroe; el corte
     después de _settle si el héroe cayó; _oath_titles; borra "oath_confirm" con cualquier otro botón), text() (el mismo corte;
     /caidos sin héroe), _main_view (_fallen_view), _save (un héroe caído se escribe en su archivo), _end_combat
@@ -78,7 +79,8 @@ HALL_ACTION = "fallen"
 # scouting, its nodes, the order of its last lists and any open prompt). shop_week stays with the account (no free reset).
 # [ES] Los registros por héroe que se van con él al archivo (así el héroe nuevo empieza sin lo que sabía el caído).
 OATH_HERO_SPACES = ("walk", "dungeon", "recon", "nodes", "places_shown", "recon_shown", "gremio_codes", "journal_back",
-                    "camp_naming", "market_open", "dudas_open", "feedback_open", "oath_confirm", "pending")
+                    "camp_naming", "market_open", "dudas_open", "feedback_open", "oath_confirm", "pending",
+                    "corder_open")          # D-335 (0.59): an open 📜 crafting order draft
 
 
 class PermadeathMixin:
@@ -259,14 +261,16 @@ class PermadeathMixin:
     def _oath_unlink(self, hero: Hero) -> dict[str, Any]:
         """Take the fallen hero out of everything shared, into itself; returns what goes to its record ("box", "extra").
 
-        [ES] Qué hace: antes de archivar al héroe, cancela sus órdenes del 🏛️ Mercado (lo que quedaba vuelve a él: las monedas a
-        su bolsa en memoria y las unidades a su 📦 Entregas, que se va entera al archivo) y sus 📜 encargos de reparación (las
-        monedas vuelven a él); sale de su campamento como con 🚪 Salir (deja de ser asistente; lo que dio queda; quien espera
+        [ES] Qué hace: antes de archivar al héroe, cancela sus 📜 pedidos de fabricación (0.59: las monedas a su bolsa, los
+        materiales a su 📦 Entregas), sus órdenes del 🏛️ Mercado (lo que quedaba vuelve a él: las monedas a su bolsa en memoria
+        y las unidades a su 📦 Entregas, que se va entera al archivo) y sus 📜 encargos de reparación (las monedas vuelven a él); sale de su campamento como con 🚪 Salir (deja de ser asistente; lo que dio queda; quien espera
         entra solo, _tell_waiting_room), de la espera de un campamento lleno y de su gremio de antes del campamento (lo que dio
         queda en el fondo). Un fundador no sale (no puede jurarla: regla 5). Los registros por héroe de OATH_HERO_SPACES se van
         con él. Nada de otro jugador cambia, salvo que ya no está. La llama: _fall_forever.
         """
         out: dict[str, Any] = {}
+        for order in self._corder_mine(hero.id):        # D-335 (0.59): its 📜 crafting orders: coins back, materials to the box
+            self._corder_close(order, "cancelled", hero)
         for oid in self._mkt_mine(hero.id):
             order = self._mkt_order(oid)
             if order is not None and order.get("by") == hero.id:

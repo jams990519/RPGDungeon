@@ -176,7 +176,7 @@ def test_dudas_from_options_goes_back_to_options(service):
     make_hero(service)
     options = service.act("test:1", "options")
     assert "dudas@options" in ids(options) and ids(options)[-1] == "home"
-    assert len(options.actions) == button_cap("options") == 6           # D-297: ❓ Dudas; D-336 (0.60): 💀 Muerte permanente
+    assert len(options.actions) == button_cap("options") == 7           # D-297 (❓), D-334 (🕐) and D-336 (💀): the owner asked
     view = service.act("test:1", "dudas@options")
     assert view.kind == "dudas" and ids(view)[-1] == "options"
     service.act("test:1", "dudas:world")                                  # a topic, an answer, a guide: the way back stays

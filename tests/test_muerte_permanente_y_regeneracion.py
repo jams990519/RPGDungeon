@@ -4,8 +4,8 @@
 confirmación (en orden, con tiempo, y otro botón la cancela), hasta el nivel 10, que no se apaga, que no la jura un fundador
 ni un líder de gremio y que quien la juró no crea un gremio ni recibe el liderazgo. Una caída SIN 💀 sigue igual (malherido,
 pierde el 10 % de las monedas y sigue en el juego). Una caída CON 💀 (a mano o en un lote automático) anota el 🪦 Salón, guarda
-el héroe entero en su archivo, cancela sus órdenes del 🏛️ Mercado y sus encargos de reparación hacia él, lo saca de su
-campamento y su gremio, publica HeroFellForever, avisa a los compañeros y deja crear un héroe nuevo con las mismas ⚙️ Opciones
+el héroe entero en su archivo, cancela sus órdenes del 🏛️ Mercado, sus pedidos de fabricación (0.59) y sus encargos de
+reparación hacia él, lo saca de su campamento y su gremio, publica HeroFellForever, avisa a los compañeros y deja crear un héroe nuevo con las mismas ⚙️ Opciones
 y los 💎 diamantes; ninguna otra cuenta cambia. Los títulos de prestigio, la marca 💀, ❓ /d65 y el aviso del parche. 🌱 Los
 oficios: quien recolecta con su oficio aprendido hace que ese recurso vuelva más rápido en la zona por 24 h, se ve en
 📍 Zona y vence. Todo en español y en inglés, sin textos faltantes.
@@ -76,15 +76,15 @@ def lose_by_hand(service, account="test:1"):
 def test_options_show_the_permadeath_button_in_both_languages(service):
     make_hero(service)
     view = service.act("test:1", "options")
-    assert ids(view) == ["opt:retreat", "lang", "fb", "dudas@options", "oath", "home"]
-    assert len(view.actions) <= button_cap("options") == 6 and view.layout == [2, 2, 1, 1]
-    assert "💀 Muerte permanente: apagada." in view.body and view.actions[4].label == "💀 Muerte permanente"
+    assert ids(view) == ["opt:retreat", "lang", "tz", "fb", "dudas@options", "oath", "home"]     # 0.58 added 🕐
+    assert len(view.actions) <= button_cap("options") == 7 and view.layout == [2, 2, 2, 1]
+    assert "💀 Muerte permanente: apagada." in view.body and view.actions[5].label == "💀 Muerte permanente"
     screen = service.act("test:1", "oath")
     assert screen.kind == "oath" and ids(screen) == ["oath:ask", "fallen", "options"]
     assert "hasta el nivel 10" in text(screen) and "«Superviviente de hierro»" in text(screen) and "Estado: apagada." in screen.body
     service.act("test:1", "lang:en")
     view = service.act("test:1", "options")
-    assert "💀 Permadeath: off." in view.body and view.actions[4].label == "💀 Permadeath"
+    assert "💀 Permadeath: off." in view.body and view.actions[5].label == "💀 Permadeath"
     screen = service.act("test:1", "oath")
     assert "up to level 10" in text(screen) and "«Iron Survivor»" in text(screen) and "☠️ Swear" == screen.actions[0].label
     assert not service.texts.missing
@@ -219,7 +219,7 @@ def test_a_sworn_hero_falls_for_ever_and_the_account_starts_again(service, clock
     assert not service.texts.missing
 
 
-def test_the_fall_cancels_market_and_repair_orders_into_the_fallen_hero(service, losing):
+def test_the_fall_cancels_market_crafting_and_repair_orders_into_the_fallen_hero(service, losing):
     make_hero(service)
     swear(service)
     hero = service._load("test:1")
@@ -233,14 +233,20 @@ def test_the_fall_cancels_market_and_repair_orders_into_the_fallen_hero(service,
     service.store.put("repair_order", "test:1|arma", {"id": "test:1|arma", "by": "test:1", "name": "Lyra", "slot": "arma",
                                                       "item": hero.gear.get("arma", "espada_1"), "price": 26, "at": 0,
                                                       "until": 10**12})
+    hero.gold -= 30                                       # 0.59: a 📜 crafting order escrows its coins and its materials
+    service.store.put("craft_order", "p1", {"id": "p1", "by": "test:1", "name": "Lyra", "rid": "x", "item": "pocion_vida",
+                                            "units": 1, "n": 1, "prof": "alquimia", "rank": 1, "mode": "mats",
+                                            "mats": {"hierba_curativa": 3}, "labor": 30, "coins": 30, "at": 0, "until": 10**12})
     service._save(hero)
     lose_by_hand(service)
+    assert service.store.get("craft_order", "p1") is None
     assert service.store.get("market_order", sell["id"]) is None and service.store.get("market_order", buy["id"]) is None
     assert service.store.get("repair_order", "test:1|arma") is None
     assert service.store.get("market_box", "test:1") is None and service.store.get("market_mine", "test:1") is None
     record = service.store.get("fallen_hero", "test:1#1")
-    assert record["hero"]["gold"] == 1000                 # 954 + 20 back from the buy order + 26 from the repair order
+    assert record["hero"]["gold"] == 1000                 # 924 + 20 (buy order) + 26 (repair order) + 30 (crafting order)
     assert any(e["good"] == "pocion_vida" and e["n"] == 2 for e in record["box"])
+    assert any(e["good"] == "hierba_curativa" and e["n"] == 3 for e in record["box"])
 
 
 def test_the_fall_leaves_the_camp_and_the_guild_and_tells_the_mates(service, losing):

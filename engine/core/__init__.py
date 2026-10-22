@@ -10,6 +10,8 @@ Lo usan: todos los módulos del motor
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: espacio "meta" del almacén (semilla del mundo)
+timezones.py (0.58, D-124 y D-334): las zonas horarias de los jugadores (solo cambian cómo se ven las horas); se importa
+como módulo (from engine.core import timezones), igual que i18n guarda el idioma de quien se atiende.
 Reglas que nunca se rompen:
     1. Los demás módulos importan solo desde engine.core, no desde sus archivos internos.
 Si cambias esto, revisa:

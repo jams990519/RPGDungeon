@@ -61,13 +61,13 @@ faq:
     a: "Escribe /zona, /hero, /inv (mochila), /stats, /salud, /habilidades, /oficios, /opciones, /diario, /encargos, /reconocer o /dudas. Con /dudas y una palabra buscas respuestas, y cada respuesta tiene su código, como /d05."
   d05:
     q: "⏱️ ¿Por qué hay que esperar?"
-    a: "Viajar, explorar, recolectar y dormir toman minutos de verdad. Puedes cerrar el chat: tu héroe sigue y te aviso cuando termina. Nada se pierde mientras esperas."
+    a: "Viajar, explorar, recolectar y dormir toman minutos de verdad. Puedes cerrar el chat: tu héroe sigue y te aviso cuando termina. Nada se pierde mientras esperas.\n🕐 Las horas se ven en tu zona horaria: elígela en ⚙️ Opciones → 🕐 Zona horaria (o /hora). Las oleadas, el 📜 Tablón y el día del mundo son iguales para todos.\n☀️ 🌇 🌙 El mundo tiene día, tarde y noche: un día del mundo dura {world_days} {world_days|día real|días reales} y cada franja unas {world_band_hours} horas, así ves las tres aunque juegues siempre a la misma hora. De día sale más madera y piedra al recolectar; de noche, más hierbas, setas y pescado. La franja de ahora está en 📍 Zona."   # [ES] D-124, D-126, D-334 (0.58)
   d54:
     q: "🆕 ¿Cómo sé qué hay de nuevo?"
     a: "Cuando el juego trae algo nuevo te llega una vez el aviso con las notas del parche. Si no ves el menú de abajo nuevo, escribe /start. Tu progreso se guarda para siempre."
   d55:
     q: "⚙️ ¿Qué cambio en Opciones?"
-    a: "En ⚙️ Opciones eliges con cuánta vida te retiras ({retreat} %): con menos, no empiezas a explorar, recolectar ni talar hasta descansar. También cambias el 🌐 idioma y nos mandas 💬 Feedback. Queda guardado y lo cambias cuando quieras."   # [ES] D-308 (0.42)
+    a: "En ⚙️ Opciones eliges con cuánta vida te retiras ({retreat} %): con menos, no empiezas a explorar, recolectar ni talar hasta descansar. También cambias el 🌐 idioma y la 🕐 zona horaria (en qué hora ves las horas del juego) y nos mandas 💬 Feedback. Queda guardado y lo cambias cuando quieras."   # [ES] D-308 (0.42)
   # ---- 🧭 Mapa y exploración
   d06:
     q: "🚶 ¿Cómo me muevo por el mapa?"

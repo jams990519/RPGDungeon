@@ -24,7 +24,7 @@ lvlup:
   works_title: "🏗️ Build:"
   items_title: "📦 Resources:"
   work_line: "{name}{state}"
-  state_building: " · 🏗️ being built: ends in {time}"
+  state_building: " · 🏗️ being built: ends in {time} (🕐 {clock})"
   state_paused: " · 🏗️ being built, paused: it moves on with members inside the territory"
   state_active: " · 🔨 active: missing {items} (give in 🔨 Upgrades → 🔨 Works)"
   state_active_full: " · 🔨 active: it has its materials"

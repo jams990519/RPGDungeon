@@ -1279,6 +1279,39 @@ El dueño confirmó las dos ideas en la entrevista de voz (E-31 y E-29) sin núm
 
 **Lo que queda por mirar:** cuántos juran la muerte permanente, a qué nivel y en qué pelea caen (E-281, E-282); si sobra madera o piedra en los campamentos con un Leñador o un Minero alto (si sobra, bajar `max_bonus` a 0,5: E-283).
 
+### Octubre de 2026 (22-oct): los 📜 pedidos de fabricación (0.59, D-140 confirmada; D-335 provisional)
+
+El dueño lo pidió en la entrevista de voz (E-24): el artesano recibe los materiales o la paga para conseguirlos, **más su mano de obra, siempre aparte**. Los números son de Claude (D-335, provisional; E-278 a E-280), con la recomendación de E-272: lo simple primero y medir en la beta. No se crea ni se quema oro nuevo salvo el impuesto: un pedido mueve monedas de un jugador a otro.
+
+| Número (`balance.yaml` → `craft_order`, y lo que usa del `market`) | Antes | Ahora |
+|---|---|---|
+| `labor_per_energy` y `labor_rank_step` (nuevos) | — (no había pedidos) | mano de obra sugerida de cada vez: 8 🥉 por ⚡ × (1 + rango de la receta ÷ 20): de 8,4 🥉 por ⚡ en el rango 1 a 48 🥉 por ⚡ en el 100 |
+| La banda (de `market.price_min` y `price_max`) | — | de 0,25 a 10 veces la sugerida (y los materiales, de 0,25 a 10 veces su referencia): la misma traba que el 🏛️ Mercado contra pasar monedas a otra cuenta (D-26) |
+| `labor_buttons`, `qty_buttons`, `max_units` (nuevos) | — | ×1, ×2, ×3 de la sugerida; 1, 2 o 5 veces; como mucho 5 por pedido |
+| `order_days`, `station_shown` (nuevos) | — | 7 días; la estación muestra hasta 3 pedidos |
+| `market.tax` (el de siempre) | 5 % de las ventas | también 5 % de todo lo que cobra el artesano en un pedido (la mano de obra y los materiales que consiguió) |
+| `market.max_orders` (el de siempre) | 10 órdenes | también 10 pedidos abiertos, contados aparte |
+
+**Qué sugiere el juego** (precio de referencia de los materiales, `price` de `items.yaml`; lo que paga el 🛒 Mercader por lo hecho, para comparar):
+
+| Receta | Rango y ⚡ | Materiales (referencia) | Lo hecho vale | Mano de obra sugerida (banda) |
+|---|---|---|---|---|
+| 🟢🗡️ Espada forjada | 1 · ⚡2 | 46 🥉 | 20 🥉 | 17 🥉 (4 a 170) |
+| 🧪 Poción de vida | 1 · ⚡1 | 12 🥉 | 12 🥉 | 8 🥉 (2 a 80) |
+| 🟫 Tablón | 1 · ⚡1 | 6 🥉 | 7 🥉 | 8 🥉 (2 a 80) |
+| Espada de nivel 45 | 45 · ⚡2 | 234 🥉 | 311 🥉 | 52 🥉 (13 a 520) |
+| Espada de nivel 85 | 85 · ⚡4 | 330 🥉 | 495 🥉 | 168 🥉 (42 a 1.680) |
+| Bastón de nivel 100 | 100 · ⚡4 | 287 🥉 | 564 🥉 | 192 🥉 (48 a 1.920) |
+| 🍷 Poción mayor del tramo 95 | 95 · ⚡4 | 100 🥉 | 39 🥉 | 184 🥉 (46 a 1.840) |
+
+- **En el equipo**, la mano de obra sugerida queda entre un quinto y dos tercios de lo que valen los materiales: encargar conviene a quien no tiene el oficio y le da al artesano una paga segura por su ⚡, sin esperar a vender.
+- **En las pociones y la comida de los tramos altos**, la mano de obra sugerida pasa a los materiales (la poción mayor del tramo 95: 184 🥉 por 100 🥉 de materiales), porque cuenta la ⚡ del artesano (4) y su rango (95), no el precio de lo hecho. Quien encarga la baja hasta un cuarto (46 🥉). Es una de las opciones de E-278 que la sugerida no pase de lo que valen los materiales.
+- **El impuesto (sumidero, D-27):** un pedido de la espada de nivel 45 con los materiales del artesano aparta 234 + 52 = 286 🥉; el artesano cobra 272 🥉 y se queman 14 (5 %). Con los materiales de quien encarga: aparta 52, cobra 49 y se queman 3.
+- **Lo que gana el artesano por ⚡:** de 8 🥉 (rango 1) a 48 🥉 (rango 100) de mano de obra, más la experiencia de oficio y de héroe de fabricar. Pelear da ~2 × (1 + 0,1 × (nivel − 1)) monedas por pelea (2 ⚡ cazando): la mano de obra paga más por ⚡, pero la pone otro jugador (no entra oro nuevo) y el artesano no gana el botín ni la experiencia de pelear.
+- **Combate:** sin cambios; lo hecho es el mismo equipo de siempre (la ✒️ obra maestra sale con la probabilidad de siempre del artesano, D-116).
+
+**Lo que queda por mirar:** cuántos pedidos se publican y cuántos se toman, a qué mano de obra (la mitad, la sugerida, el doble), cuántos vencen sin tomarse y de qué oficios faltan artesanos (el informe diario los cuenta en su sección 9; E-278); si el impuesto sobre los materiales frena los pedidos con materiales del artesano (E-279).
+
 ### Octubre de 2026 (21-oct): el equipo se gasta, se repara y un día se rompe (0.57, D-139 confirmada; D-333 provisional)
 
 El dueño confirmó la idea en la entrevista de voz (E-23: "con una duración generosa que dé trabajo a los artesanos") y dejó abierta la duración (E-70, P-93), con esta recomendación: **unas 3 semanas de juego diario por reparación y se rompe tras unas 5 reparaciones (unos 4 meses)**. Los números son de Claude para cumplirla (D-333, provisional; E-272 a E-274).
@@ -1415,6 +1448,36 @@ El dueño pidió (D-136) que, para abrir cada nivel del campamento, el grupo cum
 - **El premio** suma el 20 % de los materiales de ⏫ (no de las obras): 432 en las 8 subidas, un 3 % de los 13.447 en crudo hasta castillo; acorta muy poco (unas horas en total) y se siente más en los niveles bajos.
 
 **Lo que queda por mirar:** cuántos días tarda cada misión en la beta (sobre todo la de oleadas del 4 → 5), si la meta por activo está bien (E-270 ofrece 25 %) y si el premio se siente (E-270 ofrece la mitad de los materiales o experiencia y monedas para cada uno).
+
+### Octubre de 2026 (22-oct): el día, la tarde y la noche del mundo y la zona horaria (0.58, D-124, D-126 y D-239.9 confirmadas; D-334 provisional)
+
+El dueño pidió día, tarde y noche en el mundo, con recursos distintos por franja y un día del mundo de hasta 4 días reales (D-126), y que cada jugador vea las horas en su zona (D-124). La duración ya la había confirmado (D-239.9: 4 días reales). Los pesos de cada franja son números **nuevos** de Claude (D-334); se ajustan en la beta (E-276).
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `world_clock.day_hours` (nuevo) | — (no había reloj del mundo) | 96 horas reales (D-239.9); tres franjas de 32 horas |
+| `world_clock.anchor` (nuevo) | — | 20-oct-2026, 05:00 UTC: el instante en que empezó un ☀️ día. No se cambia (movería la franja de todos) |
+| `world_clock.weights.dia` (nuevo) | — (todo ×1) | madera y piedra ×1,25; fibra, lino, mazorca y miel ×1,2; arcilla, bayas, dátiles y sal ×1,15; metal ×1,1 |
+| `world_clock.weights.tarde` (nuevo) | — | nada: la mezcla de antes de la 0.58 |
+| `world_clock.weights.noche` (nuevo) | — | hierba curativa, setas, musgo y pescado ×1,3; raíz amarga, nenúfar y flor de escarcha ×1,25; resina ×1,15 |
+| `world_clock.min_weight` / `max_weight` (nuevos) | — | 0,5 y 2,0: ningún recurso desaparece en una franja |
+| `raids.night.source` (nuevo; las horas fijas quedan) | de 19 a 6 en UTC−5 (11 horas de cada 24) | `world`: la 🌙 noche del mundo (32 horas de cada 96, un tercio) |
+| `time_zones` (nuevo) | — (las horas, en UTC) | por defecto UTC; 7 zonas de un toque y ➖/➕ de UTC−12 a UTC+14. No mueve ningún número del juego |
+
+**Qué cambia al jugar.** La cantidad de cada vuelta de 🧺 Recolectar no cambia (es el mismo sorteo, uno por unidad, con otros pesos); cambia de qué es cada unidad. Ejemplo, una zona con 🪵 madera 1,0, 🪨 piedra 0,6 y 🌿 hierba 0,5 (llena):
+
+| Franja | 🪵 Madera | 🪨 Piedra | 🌿 Hierba |
+|---|---|---|---|
+| ☀️ Día | 50,0 % | 30,0 % | 20,0 % |
+| 🌇 Tarde (como antes) | 47,6 % | 28,6 % | 23,8 % |
+| 🌙 Noche | 44,4 % | 26,7 % | 28,9 % |
+| Promedio de las tres | 47,4 % | 28,4 % | 24,2 % |
+
+En el promedio de un día del mundo casi nada se mueve (la madera 0,2 puntos menos, la hierba 0,4 más): el ritmo de las obras y del camino al castillo (`tools/camp_costs.py`, ~20,7 días) no cambia. Quien elige recolectar en la franja buena junta más de lo que busca (en el ejemplo, un 5 % más de madera de día y un 21 % más de hierba de noche), sin juntar más en total. 🪓 Talar y 🎣 Pescar rinden igual en cualquier franja. Los hallazgos de 🔎 Explorar (hierba curativa, metal, venda y poción, pesos 5, 3, 2 y 1) usan las mismas tablas: de noche la hierba sale el 52 % de las veces en vez del 45 %.
+
+**Los 🔥 Braseros.** Su +1 de 🛡️ Defensa (un 4 % menos de vida y ataque para los atacantes) contaba en las oleadas que llegaban de 19 a 6 en UTC−5; ahora en la 🌙 noche del mundo. Para oleadas que llegan a cualquier hora, la defensa media de un campamento con Braseros baja de 11,46 a 11,33 (−0,13 puntos, medio punto de % de los atacantes); para quien juega sobre todo de noche en América baja algo más, y para quien juega de día o en España sube. Se eligió por justo y visible, no por balance.
+
+**Lo que queda por mirar:** cuánto de cada recurso entra por franja y si la gente cambia de horario para recolectar (si nadie lo nota, subir a ×1,5, E-276); si quien nunca elige su zona entiende las horas en UTC (E-275); si la noche de los Braseros en el mundo se siente mejor o peor que la de América (E-277).
 
 ### Octubre de 2026 (21-oct): la escalera del asentamiento, 1.ª parte (0.51, D-253 confirmada; D-327 provisional)
 

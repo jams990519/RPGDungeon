@@ -104,7 +104,8 @@ def test_a_state_per_work_and_a_retired_work_is_skipped(service):
     service.store.put("upgrades", KEY, data)
     body = service.act("test:1", "lvlup").body
     assert any(line.startswith("▫️ 🔥 Fogón · 🔨 activa: faltan 🪵 Madera ×20 · 🪨 Piedra ×15") for line in body), body
-    assert "▫️ 🪵 Empalizada · 🏗️ en obra: termina en 1 min" in body     # D-313: when it ends (Lyra is there)
+    assert "▫️ 🪵 Empalizada · 🏗️ en obra: termina en 1 min (🕐 13:47 UTC)" in body     # D-313: when it ends (Lyra is there);
+    # D-334 (0.58): and at what time, in the player's zone (UTC with its label for whoever never chose one)
     service.content.balance["camps"]["level_up"][2] = ["fogon", "taller", "no_such_work"]   # taller is retired (D-288)
     assert service._lvlup_works(2) == ["fogon"]
 
