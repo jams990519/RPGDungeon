@@ -1161,3 +1161,18 @@ v0_60:
     - "🪦 With permadeath, losing any fight makes your hero fall for ever: they stay in the 🪦 Hall of the Fallen (/fallen) with their name, class, level, who beat them, where, the date and the days they lived, and you create a new hero. Your account, your language, your ⚙️ Options and your 💎 diamonds stay."
     - "🏅 The reward is prestige only: the 💀 mark next to your name and titles at 7, 30 and 100 days. No stats, no coins. Whoever swears it leads no guild or camp (there is nobody to inherit the command yet). More in ❓ /d65."
     - "🌱 Professions tend the land: if you gather a resource with its profession learned (🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist or 🎣 Fisher), that resource grows back faster in that zone for 24 hours, more the higher your rank. 📍 Zone shows it with 🌱."
+
+v0_61:
+  version: "0.61"
+  title: "⚔️ Lost Realms 0.61: las oleadas se vuelven más duras con el tiempo"
+  title_en: "⚔️ Lost Realms 0.61: waves get tougher over time"
+  notes:
+    - "⚔️ Las oleadas de tu campamento empiezan en dificultad media y suben despacio: un poco por cada nivel del campamento y un poco por cada semana desde que lo fundaron, con tope. Mira la dificultad de ahora en 🏰 Gestionar o en ℹ️ Información: «⚔️ Dificultad: media ×1,04»."
+    - "👁️ En el castillo los enemigos ya saben dónde están: las oleadas normales llegan un 25 % más fuertes. ⏫ Siguiente nivel te avisa antes de subir."
+    - "🛡️ Las defensas las frenan como siempre: con las defensas construidas y reparadas, las oleadas se siguen ganando. El aviso de la 🗼 torre y el de cada oleada dicen qué tan fuerte llega."
+    - "🌊 Las oleadas crecientes de la ciudad y la 🌙 Noche de prueba no cambian, y no se pierde nada de lo que tienen. Más en ❓ /d66."
+  notes_en:
+    - "⚔️ Your camp's waves start at medium difficulty and grow slowly: a little for each camp level and a little for each week since it was founded, with a cap. See the current difficulty in 🏰 Manage or ℹ️ Information: «⚔️ Difficulty: medium ×1.04»."
+    - "👁️ At the castle the enemies already know where you are: normal waves come 25% stronger. ⏫ Next level warns you before you go up."
+    - "🛡️ Defenses hold them back as always: with the defenses built and repaired, waves can still be won. The 🗼 watchtower's warning and each wave's notice say how strong it comes."
+    - "🌊 The city's growing waves and the 🌙 Trial Night don't change, and you lose nothing you have. More in ❓ /d66."

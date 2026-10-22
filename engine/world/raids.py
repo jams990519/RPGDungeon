@@ -4,18 +4,24 @@ Phase 2 of "building is not enough" (capa simple, player camps only): from level
 a camp once a week; to grow to castillo the camp must win a Noche de prueba (a bigger raid with an
 elite enemy). The clock is lazy like the pantry: the camp stores next_raid_at and the service opens,
 counts and resolves raids when a member plays. These helpers are pure: the service reads the store,
-counts active members and calls them.
+counts active members and calls them. Since 0.61 (D-153, D-337) a camp's normal raids grow gently with its level and the
+weeks since it was founded, and once more at the castle (difficulty_parts); the Noche de prueba and the castle's growing waves
+keep their own strength.
 
 [ES]
 Para qué sirve: las cuentas de las incursiones de los campamentos de jugadores (desde pueblo, nivel 5) y
 de la Noche de prueba antes de castillo: cuántas victorias hacen falta, cuándo llega la próxima, qué
-enemigo ataca (y su versión élite) y cuánta comida se pierde si no alcanzan.
+enemigo ataca (y su versión élite) y cuánta comida se pierde si no alcanzan. Desde la 0.53, la fuerza de las 🌊 oleadas
+crecientes del castillo; desde la 0.61 (D-153, D-337), la ⚔️ dificultad escalonada: cuánto más fuertes llegan las oleadas
+normales con el nivel del campamento, con las semanas desde que se fundó y en el castillo.
 Documento de diseño: diseno/02-mundo/supervivencia-del-asentamiento.md §0.5, §6.1-6.2, §7.2 y §15 (D-99, provisional)
 Módulo: M9 Frontera y Fundación (vive en engine/world hasta que exista engine/front)
 Depende de: engine/world/encounters.py (qué enemigos caben en el bioma y el nivel, D-108); los números llegan de
     content/balance.yaml, bloque raids; los enemigos de content/enemies.yaml
 Lo usan: engine/service/game.py (_raid_settle, _open_raid, _defend, _resolve_raid, _trial_view) y, desde la 0.53 (D-122,
-    D-329), engine/service/ladder.py (wave_mult y series_outcome: las 🌊 oleadas crecientes antes del castillo)
+    D-329), engine/service/ladder.py (wave_mult y series_outcome: las 🌊 oleadas crecientes antes del castillo); desde la 0.61
+    (D-153, D-337), engine/service/raid_difficulty.py (difficulty_parts y difficulty_label: la ⚔️ dificultad escalonada de las
+    oleadas normales)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: ninguno (el servicio guarda la incursión abierta y la próxima hora en el campamento: "camp/<x:y>")
@@ -26,12 +32,16 @@ Reglas que nunca se rompen:
     4. La versión élite solo cambia vida y ataque del enemigo en esa pelea: nunca toca enemies.yaml.
     5. Las oleadas crecientes (D-122, D-329): cada oleada de la serie es más fuerte que la anterior (nunca más débil), y la
        serie se aprueba al llegar a las victorias pedidas o se pierde cuando ya no se pueden alcanzar (nunca antes).
+    6. La dificultad escalonada (D-153, D-337): la parte del nivel y la del tiempo nunca restan, la del tiempo nunca pasa de
+       time_cap, el nivel cuenta como mucho el de la ciudad (el anterior al castillo) y el ×castle_mult solo vale desde el
+       castillo. Sin el bloque raids.difficulty, la fuerza es ×1 (la de antes de la 0.61).
 Si cambias esto, revisa:
-    - Servicio: engine/service/game.py (pantalla del campamento, botón 🛡️ Defender, crecer a castillo)
+    - Servicio: engine/service/game.py (pantalla del campamento, botón 🛡️ Defender, crecer a castillo) y
+      engine/service/raid_difficulty.py (la dificultad de cada campamento y sus líneas)
     - Combate: engine/combat/engine.py make_combat (scale_enemy depende de las claves hp, max_hp, attack, base_attack)
-    - Números: balance.yaml raids (required_share, min_wins, per_week, loss_share, trial.*) y ladder.castle_waves (count,
-      pass_wins, growth, retry_days)
-    - Pruebas: tests/test_raids.py y tests/test_oleadas_crecientes_castillo.py
+    - Números: balance.yaml raids (required_share, min_wins, per_week, loss_share, trial.*, difficulty.*) y ladder.castle_waves
+      (count, pass_wins, growth, retry_days)
+    - Pruebas: tests/test_raids.py, tests/test_oleadas_crecientes_castillo.py y tests/test_dificultad_escalonada.py
 """
 
 from __future__ import annotations
@@ -158,3 +168,49 @@ def series_outcome(won: int, lost: int, count: int, pass_wins: int) -> str | Non
     if won + max(0, int(count) - won - lost) < need:
         return "failed"
     return None
+
+
+def difficulty_parts(level: int, days: float, cfg: dict[str, Any] | None, castle_level: int) -> dict[str, float]:
+    """How strong a camp's normal wave is (D-153, D-337): (base + level part + time part) × the castle's multiplier.
+
+    level part = per_level × (level − 1), counting the city's level (castle_level − 1) at most; time part = per_week × weeks
+    since the camp was founded, never above time_cap; castle = castle_mult from castle_level on (1 before). Returns
+    {"level", "time", "castle", "mult"}; with no config every part is neutral and mult is 1.0 (the wave of before 0.61).
+
+    [ES]
+    Qué hace: la ⚔️ dificultad escalonada de las oleadas normales de un campamento (D-153, confirmada: "empieza media y sube con
+    el tiempo y el avance; al llegar a castillo, los enemigos ya saben dónde estás y las oleadas son más fuertes"). La fuerza
+    es (base + per_level × (nivel − 1) + per_week × semanas desde la fundación, con tope time_cap) y, en el castillo, × castle_mult.
+    El nivel cuenta como mucho el de la ciudad: el castillo es "la ciudad × castle_mult". Devuelve las partes (para mostrarlas)
+    y el total. Nunca resta: las partes negativas o un tope negativo cuentan 0.
+    La llama: engine/service/raid_difficulty.py (_difficulty_parts: al abrir cada oleada normal y en las líneas que la muestran).
+    Si cambia, afecta: qué tan fuertes llegan las oleadas normales de todos los campamentos (no la 🌙 Noche de prueba ni las 🌊
+    oleadas crecientes, que llevan su propia fuerza) y tests/test_dificultad_escalonada.py.
+    """
+    if not cfg:
+        return {"level": 0.0, "time": 0.0, "castle": 1.0, "mult": 1.0}
+    base = float(cfg.get("base", 1.0) or 1.0)
+    top = max(1, int(castle_level) - 1)
+    level_part = max(0.0, float(cfg.get("per_level", 0) or 0)) * max(0, min(int(level), top) - 1)
+    weeks = max(0.0, float(days)) / 7
+    time_part = min(max(0.0, float(cfg.get("time_cap", 0) or 0)), max(0.0, float(cfg.get("per_week", 0) or 0)) * weeks)
+    castle = max(1.0, float(cfg.get("castle_mult", 1.0) or 1.0)) if int(level) >= int(castle_level) else 1.0
+    return {"level": level_part, "time": time_part, "castle": castle, "mult": (base + level_part + time_part) * castle}
+
+
+def difficulty_label(mult: float, labels: dict[str, float] | None) -> str:
+    """The label of a strength: the one with the highest threshold that mult reaches (the lowest one if none; "media" if no table).
+
+    [ES]
+    Qué hace: el nombre de la dificultad (media, alta, muy alta) según la fuerza: el de umbral más alto que la fuerza alcanza
+    (raids.difficulty.labels: media desde ×1, alta desde ×1,15, muy alta desde ×1,45). Si no alcanza ninguno, el más bajo.
+    La llama: engine/service/raid_difficulty.py (la línea ⚔️ Dificultad). Si cambia, afecta: solo lo que se lee.
+    """
+    if not labels:
+        return "media"
+    ordered = sorted(labels.items(), key=lambda pair: float(pair[1]))
+    name = ordered[0][0]
+    for label, threshold in ordered:
+        if float(mult) + 1e-9 >= float(threshold):
+            name = label
+    return name

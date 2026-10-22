@@ -738,6 +738,16 @@ Si cambias esto, revisa:
       héroe juntó ese recurso con su oficio de recolección aprendido; _stock suma esas horas de más hasta "until"; _zone_view
       lo muestra (_tend_lines, la línea 🌱). Números: balance.yaml stock.tend. La 🌾 cosecha de la muralla no lo cuenta (lee
       stock.regen_per_hour, no _stock). Pruebas: tests/test_muerte_permanente_y_regeneracion.py
+    - ⚔️ La dificultad escalonada de las oleadas (0.61, D-153 confirmada por el dueño, E-37; cómo se aplicó: D-337,
+      provisional): vive en engine/service/raid_difficulty.py (RaidDifficultyMixin, de la que GameService hereda; su encabezado
+      lista sus datos y reglas: "difficulty" en la oleada abierta y "difficulty_from" en un campamento sin "created") y la
+      cuenta pura en engine/world/raids.py (difficulty_parts, difficulty_label). Ganchos de este archivo: _raid_settle
+      (_difficulty_mark), _open_raid (_difficulty_for_raid: solo la oleada normal; ni la 🌙 Noche de prueba ni una 🌊 oleada
+      creciente), _defend (aplica "difficulty" antes de la 🛡️ Defensa y dice _difficulty_fight_line), _raid_notice y
+      _raid_lines (_difficulty_open_lines y _difficulty_lines), _raid_watch (la línea en el aviso de la 🗼 torre), _lvlup_view
+      (_difficulty_lvlup_line: el paso a castillo) y _faq_values (_difficulty_faq_values). Números: balance.yaml
+      raids.difficulty. Textos: content/locales/es_dificultad.yaml y en_dificultad.yaml; ❓ /d66 (y /d39). Pruebas:
+      tests/test_dificultad_escalonada.py
 """
 
 from __future__ import annotations
@@ -827,6 +837,7 @@ from engine.core import timezones as tz_rules          # D-124, D-334: the zone 
 from engine.service.craft_orders import (CRAFT_ORDER_ACTIONS, CRAFT_ORDER_CODE_RE,   # D-335 (0.59): 📜 crafting orders (D-140)
                                          CraftOrderMixin)
 from engine.service.permadeath import HALL_ACTION, OATH_ACTIONS, PermadeathMixin   # D-147, D-336 (0.60): 💀 permadeath and 🪦 the hall
+from engine.service.raid_difficulty import RaidDifficultyMixin   # D-337 (0.61): ⚔️ the waves' escalating difficulty (D-153)
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -1025,7 +1036,8 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
                   RepairMixin, WorldTimeMixin,
-                  CraftOrderMixin, PermadeathMixin):
+                  CraftOrderMixin, PermadeathMixin,
+                  RaidDifficultyMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -5047,6 +5059,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         cap_now, cap_next = self._members_cap(camp), self._members_cap_at(camp, target)     # D-327: one cap per stage
         body += ["", t.t("lvlup.gives" if cap_next > cap_now else "lvlup.gives_same", cap=cap_next, now=cap_now,
                          zones=self._zones_cap_at(target))]
+        known = self._difficulty_lvlup_line(target)     # D-337: "👁️ En el castillo los enemigos sabrán dónde están…"
+        if known:
+            body.append(known)
         extra: list[Action] = []
         if not missing:
             extra.append(Action(id="lvlgo", label=t.t("lvlup.go_button", level=target)))
@@ -5999,7 +6014,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not camp or hero.id not in camp.get("members", []):
             return
         now = self.clock.now()
-        changed = False
+        changed = self._difficulty_mark(camp)           # D-337: a camp without "created" counts its weeks from the patch
         raid = camp.get("raid")
         if raid and self._raid_over(raid):
             self._resolve_raid(camp, raid, hero)
@@ -6039,9 +6054,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: abre la incursión en el campamento (enemigo, ventana, victorias necesarias según los miembros activos)
         y les manda el aviso con 🛡️ Defender. Quien la abrió cuenta como activo. El llamador guarda el campamento.
         D-329 (0.53): en el nivel anterior al castillo, la oleada semanal es la siguiente 🌊 oleada creciente de la serie
-        (ladder.py _castle_wave_mark: "wave" y "wave_mult" en la incursión).
+        (ladder.py _castle_wave_mark: "wave" y "wave_mult" en la incursión). D-337 (0.61): una oleada normal (ni la Noche de
+        prueba ni una oleada creciente) guarda su ⚔️ dificultad escalonada de hoy ("difficulty": el nivel, las semanas desde la
+        fundación y el castillo; raid_difficulty.py _difficulty_for_raid), que _defend aplica a cada pelea.
         La llaman: _raid_settle (la semanal) y _start_trial (la Noche de prueba).
-        Si cambia, afecta: a quién le llega el aviso y cuántas victorias hacen falta.
+        Si cambia, afecta: a quién le llega el aviso, cuántas victorias hacen falta y qué tan fuerte llega.
         """
         now = self.clock.now()
         sub = self._raid_sub(kind)
@@ -6054,6 +6071,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 "defense": self._camp_defense(camp, night=self._is_night(now))}     # D-101: what the improvements hold back
         if kind == "raid":                              # D-122, D-329: on the step to the castle, the next 🌊 growing wave
             self._castle_wave_mark(camp, raid)
+            self._difficulty_for_raid(camp, raid)       # D-153, D-337: ⚔️ a normal wave grows with the level and the weeks
         camp["raid"] = raid
         self._push_each(told, lambda: self._raid_notice(camp, raid))
 
@@ -6073,6 +6091,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         wave = self._castle_wave_notice_line(raid)      # D-329: "🌊 Oleada creciente 2 de 5: un 40 % más fuerte…"
         if wave:
             body.insert(1, wave)
+        body[1:1] = self._difficulty_open_lines(camp, raid)     # D-337: "⚔️ Dificultad de esta oleada: media ×1,09…" (and 👁️)
         return View(kind="camp_raid", title=t.t("raids.trial_title" if trial else "raids.title", camp=camp["name"]), body=body,
                     actions=[Action(id="defend", label=t.t("raids.defend_button"))])
 
@@ -6090,7 +6109,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: el miembro sale a defender su campamento: UNA pelea con el motor de combate normal contra el enemigo
         de la incursión (en la Noche de prueba, su versión élite). Se puede desde cualquier zona, sin energía, si no
         estás ocupado. Perder sigue las reglas normales de derrota: no hay castigo extra. D-329 (0.53): en una 🌊 oleada creciente
-        del castillo, el enemigo trae la fuerza de esa oleada ("wave_mult": vida y ataque, antes de la 🛡️ Defensa).
+        del castillo, el enemigo trae la fuerza de esa oleada ("wave_mult": vida y ataque, antes de la 🛡️ Defensa). D-337 (0.61):
+        en una oleada normal, la ⚔️ dificultad escalonada que se fijó al abrirla ("difficulty"), también antes de la 🛡️ Defensa.
         La llaman: el botón 🛡️ Defender del aviso, de la pantalla del campamento o de la Noche de prueba.
         Si cambia, afecta: las victorias de la incursión (_raid_fight_done) y tests/test_raids.py.
         """
@@ -6113,6 +6133,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             raid_rules.scale_enemy(state, sub["enemy_hp_mult"], sub["enemy_attack_mult"])
         if float(raid.get("wave_mult", 1.0)) > 1:      # D-329: a 🌊 growing wave of the castle, stronger each time
             raid_rules.scale_enemy(state, float(raid["wave_mult"]), float(raid["wave_mult"]))
+        difficulty = float(raid.get("difficulty", 1.0) or 1.0)
+        if abs(difficulty - 1) > 1e-9:                  # D-153, D-337: ⚔️ a normal wave, stronger with the level and the weeks
+            raid_rules.scale_enemy(state, difficulty, difficulty)
         weaken = self._raid_weaken(raid)
         if weaken < 1:                                  # D-101: walls, traps and towers hold part of the wave back
             raid_rules.scale_enemy(state, weaken, weaken)
@@ -6125,6 +6148,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         wave = self._castle_wave_fight_line(raid)       # D-329: "🌊 Oleada creciente 2 de 5: +40 % de vida y de ataque"
         if wave:
             notice += "\n" + wave
+        harder = self._difficulty_fight_line(raid)      # D-337: "⚔️ Dificultad ×1,09: +9 % de vida y de ataque."
+        if harder:
+            notice += "\n" + harder
         return self._combat_view(hero, state, notice=notice)
 
     def _raid_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
@@ -6268,7 +6294,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self._push_each([m for m in camp["members"] if m in active], lambda: View(
             kind="camp_watch", title=t.t("raids.watch_title", camp=camp["name"]),
             body=[t.t("raids.watch", time=self._fmt_duration(nxt - now), clock=self._clock(nxt),    # D-334: in each one's zone
-                      defense=self._camp_defense(camp))]))
+                      defense=self._camp_defense(camp))] + self._difficulty_lines(camp)))   # D-337: ⚔️ how strong it comes
         return True
 
     def _raid_food_loss(self, camp: dict[str, Any]) -> int:
@@ -6290,7 +6316,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         de la torre; lo demás se ve en ℹ️ Información y 🏰 Gestionar. La llaman: _camp_here_view (urgent), _camp_manage_view,
         _camp_info_lines y _trial_view. D-331 (0.55): en la 🌙 Noche de prueba y en una 🌊 oleada creciente abierta, una línea
         más con cuántas escuadras tienen al menos un vencedor (squads.py _squads_winners_line; solo información, E-266).
-        Si cambia, afecta: tests/test_raids.py y tests/test_escuadras.py."""
+        D-337 (0.61): con la próxima oleada (o la torre, fuera del centro) y con una oleada normal en curso, la línea
+        "⚔️ Dificultad…" y, en el castillo, "👁️ Los enemigos saben dónde está tu castillo…" (raid_difficulty.py); el centro
+        (urgent) no la suma a la torre.
+        Si cambia, afecta: tests/test_raids.py, tests/test_escuadras.py y tests/test_dificultad_escalonada.py."""
         t = self.texts
         cfg = self._raid_cfg()
         raid = camp.get("raid")
@@ -6299,16 +6328,19 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             line = t.t("raids.trial_line" if raid["kind"] == "trial" else "raids.open_line",
                        n=len(raid["fights"]), wins=raid["wins"], need=raid["required"], time=left)
             return ([line] + self._castle_wave_open_line(raid)       # D-329: "🌊 Es la oleada creciente 2 de 5 (+40 %)"
-                    + self._squads_winners_line(camp, raid))         # D-331: "🪖 Escuadras con al menos un vencedor: 2 de 3"
+                    + self._squads_winners_line(camp, raid)          # D-331: "🪖 Escuadras con al menos un vencedor: 2 de 3"
+                    + self._difficulty_open_lines(camp, raid))       # D-337: "⚔️ Dificultad de esta oleada: media ×1,09…"
         level = camp.get("level", 1)
         if level >= cfg["from_level"]:
             nxt = camp.get("next_raid_at")
             hours = self._camp_effect(camp, "warning_hours")
             if nxt is not None and hours and 0 < nxt - self.clock.now() <= self._seconds(hours * 60):
-                return [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()), clock=self._clock(nxt))]     # 🗼 Torre de vigía
+                watch = [t.t("raids.watch_line", time=self._fmt_duration(nxt - self.clock.now()), clock=self._clock(nxt))]     # 🗼 Torre de vigía
+                return watch if urgent else watch + self._difficulty_lines(camp)     # D-337: ⚔️ how strong the next one comes
             if urgent:
                 return []
-            return [t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else math.ceil(7 / cfg["per_week"]))]
+            return ([t.t("raids.next_line", n=self._days_until(nxt) if nxt is not None else math.ceil(7 / cfg["per_week"]))]
+                    + self._difficulty_lines(camp))                  # D-337: "⚔️ Dificultad de las oleadas: media ×1,09 (…)"
         if urgent:
             return []
         if level == cfg["from_level"] - 1:
@@ -8129,6 +8161,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         D-336 (0.60):
         {oath_level} y {oath_days} (💀 la muerte permanente, permadeath.py _oath_faq_values), {tend_pct} y {tend_hours} (🌱 lo que
         vuelve más rápido con un oficio, /d09).
+        D-337 (0.61): {diff_level}, {diff_week}, {diff_cap}, {diff_cap_weeks} y {diff_castle} (⚔️ la dificultad escalonada de
+        las oleadas, raid_difficulty.py _difficulty_faq_values).
         """
         t = self.texts
         b = self.content.balance
@@ -8188,6 +8222,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             **self._oath_faq_values(),                  # D-336 (0.60): {oath_level}, {oath_days} of /d65
             "tend_pct": f"{float(self._tend_cfg().get('per_rank', 0.0)) * 100:g}",        # D-336: 🌱 a trade's care (/d09)
             "tend_hours": f"{float(self._tend_cfg().get('hours', 0)):g}",
+            **self._difficulty_faq_values(),            # D-337 (0.61): {diff_level}, {diff_week}, {diff_cap}… of /d66
         }
 
     def _faq_code(self, raw: str) -> str | None:
