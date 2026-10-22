@@ -174,7 +174,7 @@ guides_page:
       📈 Cada obra nueva cuesta un {growth_pct} % más por cada obra que ya construyeron.
       🏗️ Con los materiales completos se construye: {work_minutes} min por nivel con {work_members} miembros en el territorio (con más, menos).
       ⬆️ Mejorar (🏰 Gestionar): ⏫ Siguiente nivel lista las obras, los materiales que faltan y la 🎯 misión de grupo de esa subida, que se cumple entre todos (/d36); 🗺️ Agrandar territorio suma una zona hacia donde elijan el fundador o un 🤝 asistente; 🌾 con la 🧱 Muralla (nivel {wall_level}) cada zona cosecha sola el {harvest_pct} % de lo que vuelve a crecer (unas {harvest_zone} por día) y cada {harvest_days} días llega al 💰 fondo, si alguien jugó esa semana (/d61).
-      🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear. En el nivel 8 son {castle_waves} 🌊 oleadas crecientes, un {castle_waves_pct} % más fuertes cada una: para pasar a castillo hay que ganar {castle_waves_pass} (/d39).
+      🛡️ Llegan {raids_week} oleadas por semana: tienen {raid_window} min para tocar 🛡️ Defender y pelear. En el nivel 8 son {castle_waves} 🌊 oleadas crecientes, un {castle_waves_pct} % más fuertes cada una: para pasar a castillo hay que ganar {castle_waves_pass} (/d39). ⚔️ Las oleadas normales suben despacio con el nivel y las semanas, y en el castillo llegan un {diff_castle} % más fuertes (/d66).
   dungeons:
     title: "🕳️ Mazmorras y enemigos"
     text: |-

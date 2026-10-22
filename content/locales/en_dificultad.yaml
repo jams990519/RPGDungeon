@@ -1,0 +1,22 @@
+# Texts of the waves' escalating difficulty (D-153, confirmed in E-37; how it was applied: D-337, provisional; 0.61).
+# [ES] Los textos en inglés de la ⚔️ dificultad escalonada de las oleadas (la referencia es es_dificultad.yaml: las mismas
+# claves, los mismos huecos {nombre}; tools/check_locales.py lo revisa). Lo lee: engine/service/raid_difficulty.py y ❓ /d66.
+
+difficulty:
+  label:
+    media: "medium"
+    alta: "high"
+    muy_alta: "very high"
+  line: "⚔️ Difficulty: {label} ×{mult} (grows with time and level: +{lvl}% for the level, +{time}% for time)"
+  line_castle: "⚔️ Difficulty: {label} ×{mult} (grows with time and level: +{lvl}% for the level, +{time}% for time; ×{castle} for the castle)"
+  castle_line: "👁️ The enemies know where your castle is: the waves come stronger (+{pct}%)."
+  series_line: "⚔️ Difficulty: the 🌊 growing waves bring their own strength and add neither the level nor time. Afterwards the usual one comes back: {label} ×{mult}."
+  open_line: "⚔️ This wave's difficulty: {label} ×{mult} (+{pct}% health and attack)."
+  open_line_base: "⚔️ This wave's difficulty: {label} ×{mult} (the usual wave)."
+  fight: "⚔️ Difficulty ×{mult}: +{pct}% health and attack."
+  lvlup_castle: "👁️ At the castle the enemies will know where it is: normal waves will come {pct}% stronger. Defenses hold them back, as always."
+
+faq:
+  d66:
+    q: "⚔️ Do the waves get harder?"
+    a: "Yes, slowly. They start at medium difficulty (the usual wave) and grow {diff_level}% for each camp level after 1 (up to the city's) and {diff_week}% for each week since the camp was founded, up to +{diff_cap}% for time (after {diff_cap_weeks} weeks). At the castle the enemies already know where you are: normal waves come {diff_castle}% stronger. Your 🛡️ Defense holds them back afterwards, as always: with the defenses built and repaired they can still be won. The 🌙 Trial Night and the city's 🌊 growing waves bring their own strength and don't add this. You see it in 🏰 Manage, in ℹ️ Information, in the 🗼 watchtower's warning and in each wave's notice."

@@ -409,6 +409,6 @@ def test_faq_and_patch_in_both_languages(service):
     answer = service.act("test:1", "duda:d65")
     assert "Permadeath" in answer.title or "permadeath" in text(answer)
     assert "level 10" in text(answer) and "{" not in text(answer)
-    patch = list(service.content.patches.values())[-1]
+    patch = service.content.patches["v0_60"]                       # by id: later patches come after it
     assert patch["version"] == "0.60" and patch["title_en"] and len(patch["notes"]) == len(patch["notes_en"])
     assert not service.texts.missing

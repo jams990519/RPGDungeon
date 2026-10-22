@@ -1389,6 +1389,40 @@ El dueño pidió (D-122) que el castillo pida "defender su estructura anterior d
 - **El ritmo hasta castillo:** las oleadas llegan cada 2 días y 8 horas y corren en paralelo con lo demás del nivel 8 (obras, materiales, cofres, 40 activos, Noche de prueba). Aprobar con 3 seguidas lleva unos 5 a 7 días; con 5, unos 10 a 12; perder la serie suma unos 5 días más antes de volver a empezar.
 - **Lo que no cambia:** las oleadas de los niveles 1 a 7, las del castillo (nivel 9), la Noche de prueba, el premio de cada oleada y lo que cuesta perderla.
 
+### Octubre de 2026 (22-oct): la ⚔️ dificultad escalonada de las oleadas (0.61, D-153 confirmada; D-337 provisional)
+
+El dueño dijo en la entrevista de voz (E-37, D-153): "empieza media y sube con el tiempo y el avance. Al llegar a castillo, los enemigos ya saben dónde estás y las oleadas son más fuertes". Son números **nuevos** (D-337); se ajustan en la beta (E-284 a E-286). Solo tocan la oleada **normal** de los campamentos: la 🌙 Noche de prueba, las 🌊 oleadas crecientes de la 0.53 (tabla de arriba) y los monstruos de afuera no cambian.
+
+| Número | Antes | Ahora |
+|---|---|---|
+| `raids.difficulty.base` (nuevo) | ×1 (la oleada no cambiaba con el campamento: enemigo de la zona + 1) | ×1: "media", la oleada de siempre |
+| `raids.difficulty.per_level` (nuevo) | — | +2 % de vida y ataque por cada nivel después del 1, como mucho el de la ciudad (nivel 8: +14 %) |
+| `raids.difficulty.per_week` (nuevo) | — | +2,5 % por cada semana real desde la fundación (`camp.created`) |
+| `raids.difficulty.time_cap` (nuevo) | — | la parte del tiempo, como mucho +20 % (8 semanas) |
+| `raids.difficulty.castle_mult` (nuevo) | — | ×1,25 sobre la ciudad en el castillo: de ×1,52 (4 semanas) a ×1,68 (tope) |
+| `raids.difficulty.labels` (nuevo) | — | media desde ×1, alta desde ×1,15, muy alta desde ×1,45 (solo el nombre que se lee) |
+
+**Cuánto cuesta** (medido con las funciones de `tools/sim.py`, como la tabla de la 0.53: las 12 especializaciones, la forma de jugar atenta, cinturón con 2 pociones y 1 venda, equipo poco común de su nivel, los 3 primeros enemigos de cada bioma en zonas de nivel 10 y 20, héroe de 3 a 8 niveles sobre el enemigo; peleas ganadas):
+
+| Momento | Fuerza | 🛡️ con las defensas de su nivel | Queda | Sin defensas | Con las defensas | Con 2 puntos dañados |
+|---|---|---|---|---|---|---|
+| Nivel 1, recién fundado | ×1,00 | 1 (×0,96) | ×0,96 | 100 % | 100 % | 100 % |
+| Nivel 3, semana 1 | ×1,07 | 3 (×0,88) | ×0,94 | 98-100 % | 100 % | 98-100 % |
+| Nivel 5, semana 2 | ×1,13 | 6 (×0,76) | ×0,86 | 95-100 % | 100 % | 100 % |
+| Nivel 7, semana 3 | ×1,20 | 7 (×0,72) | ×0,86 | 92-100 % | 100 % | 100 % |
+| Nivel 8 después de la serie, semana 4 | ×1,24 | 11 (×0,56) | ×0,69 | 88-100 % | 100 % | 100 % |
+| Nivel 8, semana 8 (lo más alto antes del castillo) | ×1,34 | 11 (×0,56) | ×0,75 | 79-100 % | 100 % | 100 % |
+| Castillo, semana 4 | ×1,55 | 11 (×0,56) | ×0,87 | 53-94 % | 100 % | 100 % |
+| Castillo, semana 8 o más (el tope) | ×1,68 | 11 (×0,56) | ×0,94 | 37-87 % | 100 % | 98-100 % |
+
+- **"Empieza media":** un héroe **del nivel del enemigo con el equipo inicial** gana el 94-100 % de las primeras oleadas (zonas de nivel 1 a 10; 100 % con 2 niveles más). La pelea sola es fácil: al empezar pesa juntarse (la mitad de los activos en 60 minutos) y no perder el 25 % de la despensa. Por eso la base quedó en ×1 (E-284 pregunta si subirla).
+- **Ganables:** con las defensas de cada nivel construidas, la oleada queda siempre entre ×0,69 y ×0,94 de una oleada de siempre: la subida le devuelve peso a las defensas, que antes volvían las oleadas cada vez más fáciles (el 4 % por punto de D-101 llegaba al 44 % menos). Sin defensas, el castillo con el tope se gana el 37-87 % de las peleas: hay que construir y reparar (−1 de 🛡️ por oleada ganada y −2 por perdida, D-115). La 🌾 cosecha de la muralla (D-325) ayuda a pagar las obras.
+- **Antes del castillo, lo más alto es ×1,34**, menos que la 3.ª oleada creciente (×1,6): la serie de la 0.53 sigue siendo la prueba más dura del nivel 8, y no suma esta dificultad (si sumara, la 5.ª con el tope sería ×2,7 y sin defensas no se ganaría nunca). Un campamento lento puede encontrar su 1.ª oleada creciente (×1,2) un poco más blanda que su última oleada normal (hasta ×1,32 en el nivel 7 a las 8 semanas); la 3.ª, la 4.ª y la 5.ª siempre son más fuertes.
+- **El castillo:** con las 11 defensas (12 de noche con los 🔥 Braseros) y reparadas se gana casi todo; el ×1,25 obliga a mantenerlas. El ritmo sigue en 3 por semana (D-154; E-286).
+- **Lo que no cambia:** la Noche de prueba, las 🌊 oleadas crecientes, el premio de cada oleada, lo que cuesta perderla, las victorias que pide (la mitad de los activos) y los monstruos de afuera. `python tools/sim.py --summary --real` y `--boss` dan lo mismo que antes: la dificultad solo la aplica `_defend` a una oleada normal.
+
+**Lo que queda por mirar:** cuántas oleadas normales se pierden por etapa y por semana desde la fundación (si sube la tasa de pérdida con las semanas, bajar `per_week`); si los castillos sostienen sus defensas reparadas; si la base ×1 se siente "media" o fácil (E-284), y el número de E-285.
+
 **Lo que queda por mirar:** en cuántos días aprueban los campamentos de la beta y cuántas series pierden; si la 5.ª (×2) es demasiado dura para los campamentos sin todas las defensas (E-260 ofrece crecer un 10 %); si conviene que siempre se jueguen las 5 (E-261).
 
 ### Octubre de 2026 (21-oct): el 🔀 modo híbrido del nivel 10 (0.54, D-312 confirmada; D-330 provisional)

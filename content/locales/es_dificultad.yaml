@@ -1,0 +1,27 @@
+# Texts of the waves' escalating difficulty (D-153, confirmed in E-37; how it was applied: D-337, provisional; 0.61).
+# [ES] Textos de la ⚔️ dificultad escalonada de las oleadas (D-153, confirmada por el dueño en la entrevista de voz, E-37:
+# "empieza media y sube con el tiempo y el avance; al llegar a castillo, los enemigos ya saben dónde estás y las oleadas son más
+# fuertes"; cómo se aplicó: D-337, provisional). Se junta con es.yaml al cargar (engine/core/content.py). Lo lee:
+# engine/service/raid_difficulty.py (la línea ⚔️ Dificultad de 🏰 Gestionar, ℹ️ Información y el aviso de la 🗼 torre; la de la
+# oleada en curso y su aviso; la de la pelea; la línea 👁️ del castillo y la de ⏫ Siguiente nivel en el paso a castillo) y
+# ❓ /d66 (content/faq.yaml). Una clave nueva va también en en_dificultad.yaml (tools/check_locales.py). Si cambias una clave,
+# búscala en el código: una clave que falta se ve como [clave].
+
+difficulty:                    # [ES] D-337: los números salen de balance.yaml raids.difficulty
+  label:                       # [ES] el nombre de la dificultad (raids.difficulty.labels: desde qué fuerza vale cada uno)
+    media: "media"
+    alta: "alta"
+    muy_alta: "muy alta"
+  line: "⚔️ Dificultad: {label} ×{mult} (sube con el tiempo y el nivel: +{lvl} % por el nivel, +{time} % por el tiempo)"   # [ES] la próxima oleada normal: 🏰 Gestionar, ℹ️ Información, 🗼 torre
+  line_castle: "⚔️ Dificultad: {label} ×{mult} (sube con el tiempo y el nivel: +{lvl} % por el nivel, +{time} % por el tiempo; ×{castle} por el castillo)"   # [ES] lo mismo en el castillo
+  castle_line: "👁️ Los enemigos saben dónde está tu castillo: las oleadas llegan más fuertes (+{pct} %)."   # [ES] D-153: en el castillo, debajo de la línea ⚔️
+  series_line: "⚔️ Dificultad: las 🌊 oleadas crecientes llevan su propia fuerza y no suman el nivel ni el tiempo. Después vuelve la de siempre: {label} ×{mult}."   # [ES] nivel 8, mientras la próxima es una oleada creciente (D-329 no cambia)
+  open_line: "⚔️ Dificultad de esta oleada: {label} ×{mult} (+{pct} % de vida y de ataque)."   # [ES] el aviso y la pantalla de una oleada normal en curso (la fuerza que se fijó al llegar)
+  open_line_base: "⚔️ Dificultad de esta oleada: {label} ×{mult} (la oleada de siempre)."   # [ES] lo mismo con ×1,00
+  fight: "⚔️ Dificultad ×{mult}: +{pct} % de vida y de ataque."   # [ES] al salir a defender una oleada normal más fuerte que la de siempre
+  lvlup_castle: "👁️ En el castillo los enemigos sabrán dónde está: las oleadas normales llegarán un {pct} % más fuertes. Las defensas las frenan, como siempre."   # [ES] ⏫ Siguiente nivel del nivel 8 (el paso a castillo)
+
+faq:                           # [ES] D-337: ❓ /d66 (content/faq.yaml); los números salen de balance.yaml (_difficulty_faq_values)
+  d66:
+    q: "⚔️ ¿Las oleadas se vuelven más duras?"
+    a: "Sí, despacio. Empiezan en dificultad media (la oleada de siempre) y suben un {diff_level} % por cada nivel del campamento después del 1 (como mucho, el de la ciudad) y un {diff_week} % por cada semana desde que se fundó, hasta +{diff_cap} % por el tiempo (a las {diff_cap_weeks} semanas). En el castillo los enemigos ya saben dónde están: las oleadas normales llegan un {diff_castle} % más fuertes. La 🛡️ Defensa las frena después, como siempre: con las defensas construidas y reparadas se siguen ganando. La 🌙 Noche de prueba y las 🌊 oleadas crecientes de la ciudad llevan su propia fuerza y no suman esto. Lo ves en 🏰 Gestionar, en ℹ️ Información, en el aviso de la 🗼 torre y en el de cada oleada."
