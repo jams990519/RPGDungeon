@@ -8,16 +8,21 @@ es de tu clase se puede llevar, pero rinde la mitad (gear.off_type_factor). La p
 ranura vacía se pone sola. D-115 (fase 2): suma el ✨ encantamiento de cada pieza (real_stats) y dice con un solo
 puntaje (gear_score: ataque + vida + 2 × defensa, balance.yaml gear.score) si una pieza que no llevas es "⬆️ mejor"
 (is_better): tu nivel la permite, es de tu tipo y su puntaje pasa al de lo que llevas en esa ranura.
+D-333 (0.57, D-139): una pieza puesta con la durabilidad en 0 ("dañada", engine/hero/durability.py) no suma nada en gear_bonus y
+cuenta 0 en is_better; equip y unequip llevan el registro de durabilidad de cada copia (la mejor copia se pone; la que se quita
+vuelve a la mochila con el suyo).
 Documento de diseño: diseno/03-personaje/equipamiento.md §6 (Recuerdos del Guardián) y §11 (lo que ya está en el juego)
 Módulo: M2 Héroe (equipo)
-Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear; enchanting.enchants para el encantamiento),
-    content/classes.yaml (group)
+Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear; enchanting.enchants para el encantamiento;
+    durability, D-333), content/classes.yaml (group), engine/hero/durability.py (slot_damaged, take_best, put_back, set_worn)
 Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial, Recuerdo del Guardián), engine/hero/hero.py (bonos vía el kit)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
-Datos de los que es dueño: Hero.gear (ranura -> id de objeto); lee Hero.gear_enchants (lo escribe el servicio)
+Datos de los que es dueño: Hero.gear (ranura -> id de objeto); lee Hero.gear_enchants (lo escribe el servicio); mueve
+    Hero.gear_wear y Hero.bag_wear al poner y quitar (las cuentas son de engine/hero/durability.py)
 Reglas que nunca se rompen:
-    1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde.
+    1. Una pieza puesta sale de la mochila; al quitarla vuelve a la mochila. Nunca se duplica ni se pierde. Su durabilidad
+       (D-333) va con ella: la ranura guarda la de la pieza puesta y la mochila la de cada copia usada.
     2. Solo el nivel impide ponerse una pieza (D-83). El tipo es una referencia: fuera de tu clase rinde menos.
     3. Las piezas con "source" (por ejemplo las del Guardián, D-82, el equipo de artesano, source: crafted, D-109, o
        sus ✒️ obras maestras, source: masterwork, D-116) nunca salen en el botín al azar: solo se consiguen por su
@@ -34,8 +39,11 @@ Si cambias esto, revisa:
     - D-115 (fase 2): gear_bonus suma los encantamientos (Hero.gear_enchants) con real_stats; gear_score/is_better deciden el
       aviso "⬆️ Tienes una pieza mejor" y la marca ⬆️ del servicio (engine/service/game.py _better_piece, _gear_view). Cambiar
       gear.score cambia qué pieza se ofrece; is_better nunca pone nada solo (no hay opción de equipar solo)
+    - D-333 (0.57): gear_bonus salta las piezas dañadas (durability.slot_damaged). Sin registros de durabilidad (héroes de
+      antes, tools/sim.py, tools/balance_report.py) todo rinde igual que antes. Si una pieza dañada volviera a sumar, el
+      desgaste dejaría de importar (tests/test_desgaste_reparacion.py)
     - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano), tests/test_balance_d110.py,
-      tests/test_oficios_equipo.py (encantamientos y pieza mejor)
+      tests/test_oficios_equipo.py (encantamientos y pieza mejor), tests/test_desgaste_reparacion.py (durabilidad)
 """
 
 from __future__ import annotations
@@ -43,6 +51,7 @@ from __future__ import annotations
 from typing import Any
 
 from engine.core.rng import Rng
+from engine.hero import durability
 from engine.hero.hero import Hero
 
 
@@ -123,13 +132,14 @@ def gear_bonus(items: dict[str, Any], hero: Hero, classes: dict[str, Any], balan
 
     [ES]
     Qué hace: suma los bonos de lo que llevas puesto (las piezas que no son de tu clase rinden la mitad) y sus ✨
-    encantamientos (D-115, fase 2).
+    encantamientos (D-115, fase 2). D-333 (0.57): una pieza dañada (durabilidad en 0) no suma nada, ni su encantamiento,
+    hasta que se repara.
     La llaman: el servicio al armar el kit; hero_stats los aplica (la defensa nunca pasa gear.armor_cap).
     Si cambia, afecta: vida, ataque y defensa en combate.
     """
     total: dict[str, float] = {}
-    for item_id in hero.gear.values():
-        if item_id in items:
+    for slot, item_id in hero.gear.items():
+        if item_id in items and not durability.slot_damaged(hero, slot, balance):
             for stat, value in real_stats(items, item_id, hero, classes, balance).items():
                 total[stat] = total.get(stat, 0.0) + value
     return total
@@ -172,8 +182,10 @@ def is_better(items: dict[str, Any], item_id: str, hero: Hero, classes: dict[str
         return False
     if can_use(item, hero, classes, balance) is not None or not suits(item, hero, classes, balance):
         return False
-    worn = hero.gear.get(item.get("slot", ""), "")
-    return piece_score(items, item_id, hero, classes, balance) > piece_score(items, worn, hero, classes, balance) + 1e-9
+    slot = item.get("slot", "")
+    worn = hero.gear.get(slot, "")
+    worn_score = 0.0 if durability.slot_damaged(hero, slot, balance) else piece_score(items, worn, hero, classes, balance)
+    return piece_score(items, item_id, hero, classes, balance) > worn_score + 1e-9      # D-333: a damaged piece counts 0
 
 
 def drop_chance_for(balance: dict[str, Any], enemy_level: int) -> float:
@@ -260,7 +272,8 @@ def equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[str, An
     """Wear a piece from the backpack; the old piece of that slot goes back. Returns an error code or None.
 
     [ES]
-    Qué hace: te pone una pieza de la mochila y guarda en la mochila la que tenías en esa ranura.
+    Qué hace: te pone una pieza de la mochila y guarda en la mochila la que tenías en esa ranura. D-333: de varias copias se
+    pone la mejor (una nueva si la hay; si no, la usada con más durabilidad) y la que se quita vuelve con su durabilidad.
     La llama: el servicio (botón ✅ Equipar).
     Si cambia, afecta: el inventario y las estadísticas.
     """
@@ -272,12 +285,16 @@ def equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[str, An
         return reason
     slot = item["slot"]
     old = hero.gear.get(slot)
+    old_rec = durability.worn_record(hero, slot, balance) if old else None      # D-333: each copy keeps its durability
+    new_rec = durability.take_best(hero, item_id, balance)
     hero.backpack[item_id] -= 1
     if hero.backpack[item_id] <= 0:
         del hero.backpack[item_id]
     if old:
         hero.backpack[old] = hero.backpack.get(old, 0) + 1
+        durability.put_back(hero, old, old_rec, balance)
     hero.gear[slot] = item_id
+    durability.set_worn(hero, slot, {**new_rec, "id": item_id} if new_rec else None, balance)
     return None
 
 
@@ -289,11 +306,18 @@ def auto_equip(hero: Hero, item_id: str, items: dict[str, Any], classes: dict[st
     return equip(hero, item_id, items, classes, balance) is None
 
 
-def unequip(hero: Hero, slot: str) -> str | None:
-    """Take off the piece of a slot and put it in the backpack. Returns the item id or None. [ES] Qué hace: quita la pieza y la guarda en la mochila. La llama: el servicio (botón Quitar). Si cambia, afecta: inventario y estadísticas."""
+def unequip(hero: Hero, slot: str, balance: dict[str, Any] | None = None) -> str | None:
+    """Take off the piece of a slot and put it in the backpack, with its durability (D-333). Returns the item id or None.
+
+    [ES] Qué hace: quita la pieza y la guarda en la mochila con su durabilidad (si no se pasa balance, la durabilidad de
+    siempre: 100). La llama: el servicio (botón Quitar, /q1). Si cambia, afecta: inventario y estadísticas."""
+    bal = balance or {}
+    rec = durability.worn_record(hero, slot, bal) if hero.gear.get(slot) else None
     item_id = hero.gear.pop(slot, None)
+    hero.gear_wear.pop(slot, None)
     if item_id:
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        durability.put_back(hero, item_id, rec, bal)
     return item_id
 
 

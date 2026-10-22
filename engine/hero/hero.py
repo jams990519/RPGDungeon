@@ -90,6 +90,12 @@ Si cambias esto, revisa:
       habilidad del mismo puesto del otro rol. Cada rol guarda la suya al cambiar de rol. Vacío por defecto: los héroes
       guardados antes y quien nunca lo toca pelean con la barra de su rol, igual que antes (engine/classes/talents.py
       hybrid_choice, toggle_hybrid, chain_bar; engine/service/game.py _hybrid_view; tests/test_modo_hibrido.py)
+    - gear_wear y bag_wear (0.57, D-139 y D-333): la durabilidad del equipo. gear_wear: ranura -> registro de la pieza puesta
+      ({"id": la pieza, "cur": durabilidad, "max": máximo, "rep": reparaciones hechas}); bag_wear: id de pieza -> registros de
+      las copias USADAS de la mochila (las que no tienen registro están nuevas). Vacíos por defecto: los héroes guardados antes
+      cargan con todo su equipo lleno (D-64). Las cuentas son de engine/hero/durability.py; los mueven equip y unequip
+      (engine/hero/gear.py), el final de cada pelea y las reparaciones (engine/service/repair.py), _forget_piece (game.py) y
+      la durabilidad que viaja en el 🏛️ Mercado y la ⚔️ Armería (market.py, gremio.py; tests/test_desgaste_reparacion.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -191,6 +197,10 @@ class Hero:
         hybrid: what the 🔀 hybrid mode swapped (0.54, D-312, D-330), per role pair "<active role>><lending role>" -> the role
             slots ("H1", "H2", "H3") that carry the other role's ability in the same slot. Each role keeps its own choice.
             Empty for heroes saved before it and for whoever never uses it (they fight with their role's own bar).
+        gear_wear: the durability of each worn piece (0.57, D-139, D-333), slot -> {"id": item id, "cur": durability, "max":
+            its maximum, "rep": repairs done}. A worn piece without a record is new (full). Empty for heroes saved before it.
+        bag_wear: the durability of the USED copies in the backpack (0.57), item id -> one record per used copy (same shape);
+            the copies without a record are new. Empty for heroes saved before it.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -268,6 +278,8 @@ class Hero:
     map_scrolls: list[dict[str, Any]] = field(default_factory=list)     # D-326 (0.50): 🗺️ map scrolls carried, one record per copy
     charted: list[str] = field(default_factory=list)                    # D-311.5 (0.50): zones in colour for ever thanks to a scroll
     hybrid: dict[str, list[str]] = field(default_factory=dict)          # D-330 (0.54): 🔀 hybrid swaps per role pair ("a>b" -> ["H2"])
+    gear_wear: dict[str, dict[str, Any]] = field(default_factory=dict)  # D-333 (0.57): 🔧 durability of each worn piece, by slot
+    bag_wear: dict[str, list[dict[str, Any]]] = field(default_factory=dict)   # D-333 (0.57): 🔧 durability of the used copies in the bag
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""
