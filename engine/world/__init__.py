@@ -27,8 +27,12 @@ nodes.py dice dónde hay ✨ nodos de recursos (semilla del mundo: 2 o 3 por tra
 recurso es cada uno (D-171, D-181, D-184).
 harvest.py (0.49, D-309 y D-325) hace las cuentas de la 🌾 cosecha de la muralla de M9: cuánto da por día cada recurso del
 territorio cerrado, cuánto se junta (tope de 7 días) y qué parte entera pasa al 💰 fondo del campamento.
+world_clock.py (0.58, D-126 y D-239.9 confirmadas; D-334) es el reloj del mundo: ☀️ día, 🌇 tarde y 🌙 noche, iguales para
+todos (un día del mundo de 96 horas reales, desde balance.yaml world_clock.anchor) y cuánto pesa cada recurso en cada franja
+al recolectar (cambia la mezcla, nunca la cantidad).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py — viaje, exploración, encuentros y territorio (territory.py, D-81)
+    - Reloj del mundo: world_clock.py (lo usa engine/service/world_time.py); tests/test_zona_horaria_y_dia.py
     - Encuentros: encounters.py (bioma y franja de nivel de content/enemies.yaml); tests/test_bestiary.py
     - Campamentos enemigos: enemy_camps.py (usa encounters.py y raids.power); tests/test_enemy_camps.py
     - Mazmorras: dungeons.py (usa mapgen.lejania y raids.power; las familias en content/dungeons.yaml); tests/test_mazmorras.py

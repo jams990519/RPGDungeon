@@ -1,0 +1,56 @@
+# Texts of the time zones and the world clock (D-124 and D-126, confirmed; D-239.9, confirmed; how: D-334, provisional; 0.58):
+# ⚙️ Options → 🕐 Time zone, the clock times written in each player's zone, and ☀️ day, 🌇 evening and 🌙 night.
+# [ES] La versión en inglés de es_dia_y_hora.yaml (D-250): las mismas claves, los mismos huecos {nombre} y los mismos plurales.
+
+tz:
+  title: "🕐 Time zone"
+  button: "🕐 Time zone"
+  intro: "Choose your time zone and the game shows you clock times in it. Tap the one whose time matches your clock."
+  now: "🕐 Your zone: {zone} · now: {time} ({date})."
+  game_clock: "🌐 Game time (UTC): {time}."
+  rules_same: "It only changes how you see clock times: waves, the 📜 Board and the world's day are the same for everyone."
+  choice_line: "• {name}: {time}"
+  step_help: "➖ 1 h and ➕ 1 h move your time one hour at a time, from {low} to {high}."
+  page: "Page {n} of {total}."
+  more: "➡️ More zones"
+  first: "⬅️ First zones"
+  step_minus: "➖ 1 h"
+  step_plus: "➕ 1 h"
+  saved: "✅ Done: you see clock times in {zone} (now: {time})."
+  utc: "UTC"
+  offset: "UTC{sign}{hours}"
+  utc_button: "🌐 UTC"
+  with_offset: "{name} ({offset})"
+  default_zone: "{zone}, the game's (choose yours)"
+  clock_date: "{date} {time}"
+  clock_default: "{time} {zone}"
+  preset:
+    mx: "🇲🇽 Mexico & Central America"
+    co: "🇨🇴 Colombia, Peru, Ecuador"
+    ve: "🇻🇪 Venezuela, Bolivia, Caribbean"
+    cl: "🇨🇱 Chile"
+    ar: "🇦🇷 Argentina, Uruguay, Paraguay"
+    es: "🇪🇸 Spain"
+    us: "🇺🇸 US (East)"
+
+options:
+  tz_line: "🕐 Time zone: {zone} · now: {time}"
+
+world_clock:
+  now:
+    dia: "☀️ It's day in the world"
+    tarde: "🌇 It's evening in the world"
+    noche: "🌙 It's night in the world"
+  next:
+    dia: "☀️ day comes"
+    tarde: "🌇 evening comes"
+    noche: "🌙 night comes"
+  tilt_band:
+    dia: "☀️ By day"
+    tarde: "🌇 In the evening"
+    noche: "🌙 At night"
+  zone_line: "{now} · {next} in {time} (🕐 {clock})"
+  tilt: "{band}, gathering here gives more: {list}."
+
+raids:
+  night_line: "🌙 It's night in the world: the 🔥 Braziers add +{n} 🛡️ Defense."

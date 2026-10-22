@@ -17,7 +17,7 @@ story:
   now_line: '• “{title}”: {goal}'
   now_locked: • 🔒 “{title}” starts at level {level}.
   now_none: • Nothing pending in the story for now.
-  tasks_line: '📜 Today''s tasks: {done} of {total} done · they change in {time}'
+  tasks_line: '📜 Today''s tasks: {done} of {total} done · they change in {time} (🕐 {clock})'
   factions_line: ⚜️ {list}
   faction_short: '{emoji} {rank} ({points})'
   links: '📔 Journal: /journal · 📝 Biography: /bio · 👋 /greet · 🍻 /toast'
@@ -86,10 +86,10 @@ story:
   board_title: 📜 The Clearing's Board
   board_intro: Each character of the Clearing gives you one task a day. Do it and cash it in by talking to them in 🧑 Characters, in the Clearing or at your own camp.
   board_line: "{mark} {npc}: {task}\n   {goal} · \U0001F381 {reward}"
-  board_reset: 🔄 They change in {time}.
+  board_reset: 🔄 They change in {time} (🕐 {clock}).
   board_camp_title: '🏕️ {camp}''s tasks (this week, everyone together):'
   board_camp_line: '{mark} {task}: {p}/{n} · you contributed {mine} · 🎁 +{xp} XP and +{gold} each'
-  board_camp_reset: 🔄 They change in {time}.
+  board_camp_reset: 🔄 They change in {time} (🕐 {clock}).
   board_no_camp: 🏕️ With a camp there are also weekly tasks shared by all its members.
   mark_done: ✅
   mark_todo: ▫️
