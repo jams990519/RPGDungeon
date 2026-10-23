@@ -339,7 +339,7 @@ stock:                       # [ES] D-87: los recursos de cada zona se agotan si
     pieza_metal: 3.0         # [ES] D-305: ×3 (era 1)
     arcilla: 3.0             # [ES] D-305: ×3 (era 1)
   min_yield: 0.15            # [ES] por debajo de esto, el recurso está agotado y no da nada
-  tend:                      # [ES] D-145 (confirmada, E-29: "los oficios aceleran y aumentan esa regeneración") y D-336 (0.60, cómo se aplicó; provisional; números de Claude): quien recolecta con el oficio de ese recurso aprendido (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) cuida la zona: ese recurso vuelve más rápido ahí un tiempo. Lo ve 📍 Zona ("🌱 … vuelve más rápido por …"). Solo `_stock` (game.py); la 🌾 cosecha de la muralla no lo cuenta
+  tend:                      # [ES] D-145 (confirmada, E-29: "los oficios aceleran y aumentan esa regeneración") y D-336 (0.60, cómo se aplicó; provisional; números de Claude): quien recolecta con el oficio de ese recurso aprendido (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador) cuida la zona: ese recurso vuelve más rápido ahí un tiempo. Lo explica 📋 Mis oficios → 🌱 Recursos que vuelven (D-340, 0.62.1; hasta la 0.62 salía en 📍 Zona: "🌱 … vuelve más rápido por …"). Solo `_stock` (game.py); la 🌾 cosecha de la muralla no lo cuenta
     per_rank: 0.02           # [ES] +2 % de lo que vuelve por cada rango del oficio (rango 10: +20 %; rango 50: el doble)...
     max_bonus: 1.0           # [ES] ...sin pasar de +100 % (vuelve al doble como mucho)
     hours: 24                # [ES] cuánto dura desde la última vuelta que recolectó (cada vuelta lo renueva; uno más fuerte reemplaza al más débil, uno más débil no acorta al más fuerte)

@@ -71,7 +71,16 @@ batch:
     auto_fell: "💀 Un {enemy} (nv {level}) te venció en una pelea automática."   # [ES] D-336: el lote termina con la caída para siempre
 
 tend:                          # [ES] D-145, D-336: un oficio que recolecta en una zona hace que ese recurso vuelva más rápido un tiempo
-  zone_line: "🌱 {emoji} {name} vuelve más rápido por {prof}: +{pct} % · {left}"
+  zone_line: "🌱 {emoji} {name} vuelve más rápido por {prof}: +{pct} % · {left}"   # [ES] D-340 (0.62.1): ya no sale en 📍 Zona, sale en 🌱 Recursos que vuelven
+  # [ES] D-340 (0.62.1, pedido del dueño): 📋 Mis oficios → 🌱 Recursos que vuelven (GameService._tend_view)
+  button: "🌱 Recursos que vuelven"
+  title: "🌱 Recursos que vuelven"
+  intro: "Cuando recolectas un recurso con su oficio aprendido (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario o 🎣 Pescador), ese recurso vuelve más rápido en esa zona durante {hours} h: +{per} % por cada rango del oficio, hasta +{max} %. Cada vuelta que recolectas lo renueva."
+  yours: "⚒️ Lo que dan tus oficios hoy:"
+  prof_line: "{name} · rango {rank}: +{pct} %"
+  yours_none: "⚒️ Todavía no tienes un oficio de recolección: apréndelo en 📚 Aprender oficios."
+  here: "📍 En tu zona ahora:"
+  here_none: "📍 En tu zona, nada vuelve más rápido por ahora."
 
 story:
   journal:

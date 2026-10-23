@@ -1193,3 +1193,14 @@ v0_62:
     - "🧺 When a thing reaches its cap it stops being gathered and the rest keeps coming in; the batch only ends when nothing of the zone fits any more, and it tells you what filled up. What you find (loot, finds, rewards) always goes in."
     - "🎒 New profession backpacks: the 🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist, 🎣 Fisher and 🔪 Skinner make their own at any 🔥 Campfire or at your camp's 🔥 Hearth: the basic one from rank 5 (40 of each resource of its profession) and the large one from rank 40 (50). Worn, its resources go apart and use no types. You wear up to 3, of different professions, in 🎒 Backpack → 🎒 Profession backpacks. They sell in the 🏛️ Market and can be ordered. More in ❓ /d30 and /d67."
     - "🤝 If you already carried more than the new caps allow, you lose nothing: only no more of it comes in until you go below."
+
+v0_62_1:
+  version: "0.62.1"
+  title: "🌱 Lost Realms 0.62.1: 📍 Zona más limpia"
+  title_en: "🌱 Lost Realms 0.62.1: a cleaner 📍 Zone"
+  notes:
+    - "📍 Zona ya no lista los recursos que vuelven más rápido: queda más corta y se lee de un vistazo."
+    - "🌱 Eso ahora está en 🧑‍🏫 Entrenador → 📋 Mis oficios → 🌱 Recursos que vuelven: explica cómo tus oficios de recolección hacen que un recurso vuelva más rápido, cuánto da cada uno de los tuyos y qué vuelve más rápido en tu zona ahora."
+  notes_en:
+    - "📍 Zone no longer lists the resources that grow back faster: it is shorter and reads at a glance."
+    - "🌱 That is now in 🧑‍🏫 Trainer → 📋 My professions → 🌱 Faster regrowth: it explains how your gathering professions make a resource grow back faster, how much each of yours gives and what grows back faster in your zone right now."

@@ -357,10 +357,19 @@ def test_a_trade_tends_the_zone_and_it_grows_back_faster(service, clock):
     tend = service.store.get("stock", "0:0")["tend"]["madera"]
     assert tend["bonus"] == pytest.approx(0.2) and tend["by"] == "lenador"
     assert tend["until"] == pytest.approx(clock.now() + 24 * HOUR)
-    view = service.act("test:1", "home")
+    # D-340 (0.62.1, the owner: "de este apartado vas a quitar los bonos, déjalo en las profesiones como un botón explicando"):
+    # 📍 Zona no longer shows it; 📋 Mis oficios → 🌱 Recursos que vuelven explains it, with yours and your zone's
+    assert "🌱" not in text(service.act("test:1", "home"))
+    mine = service.act("test:1", "myprof")
+    assert [a.id for a in mine.actions] == ["learnlist", "ptend", "trainer"]
+    view = service.act("test:1", "ptend")
+    assert view.kind == "tend" and "+2 % por cada rango del oficio, hasta +100 %" in text(view) and "24 h" in text(view)
+    assert "🪓 Leñador · rango 10: +20 %" in text(view)
     assert "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 %" in text(view)
+    assert [a.id for a in view.actions] == ["myprof"]
     service.act("test:1", "lang:en")
-    assert "grows back faster thanks to 🪓 Lumberjack: +20 %" in text(service.act("test:1", "home"))
+    assert "grows back faster thanks to 🪓 Lumberjack: +20 %" in text(service.act("test:1", "ptend"))
+    service.act("test:1", "lang:es")
     # a weaker gatherer does not shorten it; a stronger one replaces it
     make_hero(service, "test:2", "Bram")
     learn(service, "test:2", "lenador", 5)
@@ -372,7 +381,8 @@ def test_a_trade_tends_the_zone_and_it_grows_back_faster(service, clock):
     assert service.store.get("stock", "0:0")["tend"]["madera"]["bonus"] == pytest.approx(1.0)   # capped at max_bonus
     # it runs out after 24 hours: no line and no record left after the next gathering
     clock.advance(25 * HOUR)
-    assert "🌱" not in text(service.act("test:1", "home"))
+    after = text(service.act("test:1", "ptend"))
+    assert "🌱 🪵" not in after and "nada vuelve más rápido" in after
     hero = learn(service, "test:1", "lenador", 0)
     hero.learned.remove("lenador")
     service._save(hero)

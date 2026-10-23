@@ -659,9 +659,9 @@ El dueño lo dijo en la entrevista de voz (E-29): "una zona agotada vuelve sola,
 
 - **Quién:** quien recolecta un recurso con el oficio que lo junta **aprendido** (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador; `gathers` en `content/professions.yaml`). Sin aprenderlo (rango 0) no hay cuidado.
 - **Qué hace:** ese recurso vuelve un 2 % más rápido por rango en esa zona (`stock.tend.per_rank`), hasta el doble en el rango 50 (`max_bonus`), durante 24 h desde la última vuelta (`hours`), para todos los que recolectan ahí. Uno más fuerte reemplaza al que había; uno más débil no lo acorta.
-- **Dónde se ve:** 📍 Zona, debajo de los recursos: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min"; ❓ /d09 lo explica.
+- **Dónde se ve:** desde la 0.62.1 (D-340, pedido del dueño), en 🧑‍🏫 Entrenador → 📋 Mis oficios → **🌱 Recursos que vuelven**: la regla con sus números, cuánto da cada oficio de recolección que aprendiste y lo que vuelve más rápido en tu zona ahora ("🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min"). Hasta la 0.62 esas líneas salían en 📍 Zona, debajo de los recursos. ❓ /d09 lo explica.
 - **Lo que no toca:** la experiencia del oficio (sigue 1 por unidad), la cantidad de cada vuelta, los nodos y la 🌾 cosecha de la muralla.
-- **Datos y código:** `content/balance.yaml` → `stock.tend`; `_tend_after`, `_stock` y `_tend_lines` en `engine/service/game.py`; pruebas en `tests/test_muerte_permanente_y_regeneracion.py`. Pregunta abierta: E-283 (P-294).
+- **Datos y código:** `content/balance.yaml` → `stock.tend`; `_tend_after`, `_stock`, `_tend_lines` y `_tend_view` (D-340) en `engine/service/game.py`; pruebas en `tests/test_muerte_permanente_y_regeneracion.py`. Pregunta abierta: E-283 (P-294).
 
 **De dónde sale:** *Stardew Valley* (la tierra que se cuida da más) y los recursos que vuelven solos de *Albion Online* y *New World*; aquí, en la capa simple (D-44), sin sembrar todavía (P-74).
 

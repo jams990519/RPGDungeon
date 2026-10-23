@@ -741,8 +741,9 @@ Si cambias esto, revisa:
       tests/test_muerte_permanente_y_regeneracion.py
     - 🌱 Los oficios aceleran lo que vuelve (0.60, D-145 confirmada por el dueño, E-29; cómo se aplicó: D-336, provisional):
       _gather_step guarda en el registro "stock" de la zona un "tend" por recurso ({"bonus", "until", "by"}: _tend_after) si el
-      héroe juntó ese recurso con su oficio de recolección aprendido; _stock suma esas horas de más hasta "until"; _zone_view
-      lo muestra (_tend_lines, la línea 🌱). Números: balance.yaml stock.tend. La 🌾 cosecha de la muralla no lo cuenta (lee
+      héroe juntó ese recurso con su oficio de recolección aprendido; _stock suma esas horas de más hasta "until"; lo muestra
+      📋 Mis oficios → 🌱 Recursos que vuelven (_tend_view con _tend_lines; D-340, 0.62.1: ya no sale en 📍 Zona, pedido del
+      dueño). Números: balance.yaml stock.tend. La 🌾 cosecha de la muralla no lo cuenta (lee
       stock.regen_per_hour, no _stock). Pruebas: tests/test_muerte_permanente_y_regeneracion.py
     - ⚔️ La dificultad escalonada de las oleadas (0.61, D-153 confirmada por el dueño, E-37; cómo se aplicó: D-337,
       provisional): vive en engine/service/raid_difficulty.py (RaidDifficultyMixin, de la que GameService hereda; su encabezado
@@ -928,7 +929,7 @@ CAMP_KINDS = ("casa", "oficio", "defensa", "saber")
 # Order of the profession branches in ⚒️ Oficios (D-115: new professions are appended to the catalog, the screen groups them).
 BRANCH_ORDER = ("gather", "explore", "refine", "craft", "service")
 # Button ids (or prefixes) of ⚒️ Oficios, its stations, recipes and "make" (D-109): _prof_action routes them.
-PROF_ACTIONS = ("oficios", "est:", "esto:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:")   # D-321: "esto:" = only what you can make   # D-257: + 📋 📚 and a profession's screen
+PROF_ACTIONS = ("oficios", "est:", "esto:", "rec:", "mk:", "myprof", "learnlist", "pview:", "learn:", "ptend")   # D-321: "esto:" = only what you can make   # D-257: + 📋 📚 and a profession's screen
 # D-306.1 (0.43): 🎖️ Títulos de oficio of the 🧑‍🏫 Entrenador: the screen ("ptitles") and buying a profession's next title
 # ("ptitle:<profession>", or "ptitle:<profession>:d" from that profession's screen, which it goes back to).
 TITLE_ACTIONS = ("ptitles", "ptitle:")
@@ -3183,7 +3184,12 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return {"tend": tend} if tend else {}
 
     def _tend_lines(self, hero: Hero, x: int, y: int) -> list[str]:
-        """📍 Zona: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min", one per known resource being tended."""
+        """"🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min", one per known resource being tended in a zone.
+
+        [ES] Qué hace: una línea por recurso de esa zona que vuelve más rápido por un oficio (solo los que el héroe ya conoce).
+        La llama: _tend_view (🌱 Recursos que vuelven, D-340; hasta la 0.62 salía en 📍 Zona). Si cambia, afecta:
+        tests/test_muerte_permanente_y_regeneracion.py.
+        """
         t = self.texts
         tend = (self.store.get("stock", f"{x}:{y}") or {}).get("tend") or {}
         now = self.clock.now()
@@ -3198,6 +3204,35 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                              pct=round(100 * float(entry.get("bonus", 0.0))), prof=self._prof_name(str(entry.get("by", ""))),
                              left=self._fmt_duration(until - now)))
         return lines
+
+    def _tend_view(self, hero: Hero) -> View:
+        """🌱 Recursos que vuelven (D-340): how a gathering trade makes its resources grow back faster, what yours give now and
+        what grows back faster in your zone.
+
+        [ES]
+        Qué hace: la pantalla del botón 🌱 de 📋 Mis oficios (pedido del dueño, 23-oct: "de este apartado vas a quitar los bonos,
+        déjalo en las profesiones como un botón explicando"). Explica D-145/D-336 con los números de balance.yaml stock.tend
+        (cuánto por rango, el tope y cuántas horas dura), dice cuánto da cada oficio de recolección que aprendiste (los que
+        juntan en las zonas: 🪓 ⛏️ 🌿 🎣; el 🔪 Desollador saca de las bestias y no cuenta) y lista lo que vuelve más rápido en
+        tu zona ahora (_tend_lines, las líneas que hasta la 0.62 salían en 📍 Zona). Botón: ↩️ Volver a 📋 Mis oficios.
+        La llama: _prof_action ("ptend"). Si cambia, afecta: tests/test_muerte_permanente_y_regeneracion.py.
+        """
+        t = self.texts
+        cfg = self._tend_cfg()
+        per, top = float(cfg.get("per_rank", 0.0)), float(cfg.get("max_bonus", 1.0))
+        body = [t.t("tend.intro", per=round(100 * per), max=round(100 * top), hours=round(float(cfg.get("hours", 24)))), ""]
+        mine = []
+        for pid, pdef in self._prof_catalog().items():
+            if pdef.get("branch") != "gather" or not pdef.get("gathers"):   # the 🔪 Desollador skins beasts: no zone care
+                continue
+            rank = self._prof_rank(hero, pid)                            # 0 if not learned (D-257)
+            if rank <= 0 or rank < int(cfg.get("min_rank", 1)):
+                continue
+            mine.append(t.t("tend.prof_line", name=self._prof_name(pid), rank=rank, pct=round(100 * min(top, per * rank))))
+        body += [t.t("tend.yours")] + mine if mine else [t.t("tend.yours_none")]
+        here = self._tend_lines(hero, hero.x, hero.y)
+        body += ["", t.t("tend.here")] + here if here else ["", t.t("tend.here_none")]
+        return View(kind="tend", title=t.t("tend.title"), body=body, actions=[Action(id="myprof", label=t.t("menu.back"))])
 
     def _explored_pct(self, hero: Hero, x: int, y: int) -> int:
         return hero.exploration.get(f"{x}:{y}", 0)
@@ -3402,8 +3437,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         (_build_site_action) y el layout pasa a [2, 2, 1, 1, 1]. Si cambia, afecta: tests/test_buttons.py y tests/test_moverte.py.
         D-126 y D-334 (0.58): la cuarta línea del primer bloque es el reloj del mundo (_world_clock_line: la franja de ahora,
         cuál sigue, en cuánto y a qué hora en tu zona horaria).
-        D-145 y D-336 (0.60): debajo de los recursos, una línea 🌱 por recurso que vuelve más rápido gracias a un oficio
-        (_tend_lines).
+        D-145 y D-336 (0.60): debajo de los recursos iba una línea 🌱 por recurso que vuelve más rápido gracias a un oficio;
+        D-340 (0.62.1, pedido del dueño: "de este apartado vas a quitar los bonos, déjalo en las profesiones como un botón
+        explicando") ya no sale aquí: está en 📋 Mis oficios → 🌱 Recursos que vuelven (_tend_view).
         """
         t = self.texts
         zone = self._zone(hero.x, hero.y)
@@ -3420,8 +3456,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         ]
         if record.get("discovered_by"):
             body.append(t.t("zone.discovered_by", name=record["discovered_by"]))
-        body += [""] + self._resources_lines(hero, zone.x, zone.y)
-        body += self._tend_lines(hero, zone.x, zone.y)  # D-145, D-336: 🌱 what grows back faster thanks to a trade
+        body += [""] + self._resources_lines(hero, zone.x, zone.y)   # D-340: the 🌱 lines moved to 📋 Mis oficios (_tend_view)
         fog_here = None if mapgen.is_bonfire(zone.x, zone.y) else self._fog_stage(self._known_pct(hero, zone.x, zone.y))
         if fog_here is not None and f"{zone.x}:{zone.y}" in self._charted_set(hero):    # D-326: in colour thanks to a 🗺️ scroll
             body.append(t.t("scroll.zone_line", pct=self._known_pct(hero, zone.x, zone.y), need=self._fog_cfg()["color_at"]))
@@ -8795,14 +8830,15 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: la lista corta de tus oficios (pedido del dueño, 17-oct): nombre, rango, título, la barrita y su código
         (/minero). Lo largo (qué junta, su beneficio, lo que abre cada rango, sus especializaciones) sale tocando el código
         (_prof_detail_view). Salen los oficios aprendidos y los de recolección o exploración que ya subiste. Botones:
-        📚 Aprender oficios y ↩️ Volver al 🧑‍🏫 Entrenador.
+        📚 Aprender oficios, 🌱 Recursos que vuelven (D-340, _tend_view) y ↩️ Volver al 🧑‍🏫 Entrenador.
         La llaman: 📋 Mis oficios del 🧑‍🏫 Entrenador y ↩️ Volver del detalle de un oficio. Si cambia, afecta:
         tests/test_aprender_oficios.py.
         """
         t = self.texts
         known = self._known_profs(hero)
         body = [t.t("myprof.intro"), ""] + (self._prof_list_lines(hero, known) or [t.t("myprof.none")])
-        actions = [Action(id="learnlist", label=t.t("learn.button")), Action(id="trainer", label=t.t("menu.back"))]
+        actions = [Action(id="learnlist", label=t.t("learn.button")), Action(id="ptend", label=t.t("tend.button")),   # D-340: 🌱
+                   Action(id="trainer", label=t.t("menu.back"))]
         return View(kind="my_professions", title=t.t("myprof.title"), body=body, actions=actions, notice=notice)
 
     def _learn_view(self, hero: Hero, notice: str | None = None) -> View:
@@ -9424,6 +9460,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._my_profs_view(hero)
         if parts[0] == "learnlist":                     # D-257: 📚 Aprender oficios
             return self._learn_view(hero)
+        if parts[0] == "ptend":                         # D-340: 🌱 Recursos que vuelven (it left 📍 Zona)
+            return self._tend_view(hero)
         if parts[0] == "pview" and len(parts) >= 2:     # D-257: one profession's screen (the same as its code /minero)
             return self._prof_detail_view(hero, parts[1])
         if parts[0] == "learn" and len(parts) >= 2:     # D-257: 📚 Aprender (pays the first recipe)
