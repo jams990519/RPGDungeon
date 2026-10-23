@@ -1,6 +1,7 @@
 """📜 Crafting orders between players (D-140, confirmed; how it was applied: D-335, provisional; 0.59): the service side.
 
-A player asks an artisan to make a recipe (any recipe of a refining or crafting profession) from 🏛️ Mercado → 📜 Pedidos de
+A player asks an artisan to make a recipe (any recipe of a refining or crafting profession; since 0.62, D-339, also the 🎒
+profession backpacks of the gathering professions) from 🏛️ Mercado → 📜 Pedidos de
 fabricación (/pedidos, /orders), from a profession's screen they do not know, or from a recipe they cannot make:
 - they pick the profession (/cf1), the recipe (/r1, the codes of the last recipe list, D-321) and the quantity (1 to
   craft_order.max_units);
@@ -107,8 +108,9 @@ CRAFT_ORDER_CODE_RE = re.compile(r"^/(cf|co|cm)_?(\d{1,2})(@\w+)?$")
 LABOR_RE = re.compile(r"^\s*(\d{1,9})\s*(?:🥉)?\s*(?:[x×*]\s*(\d{1,3}))?\s*$")
 QTY_RE = re.compile(r"^\s*[x×*]\s*(\d{1,3})\s*$")
 MATS_RE = re.compile(r"^\s*m\s*(\d{1,9})\s*(?:🥉)?\s*$", re.IGNORECASE)
-# The professions whose recipes can be ordered (content/professions.yaml branch). [ES] Las ramas que tienen recetas.
-ORDER_BRANCHES = ("refine", "craft")
+# The professions whose recipes can be ordered (content/professions.yaml branch). [ES] Las ramas que tienen recetas. D-339
+# (0.62): también la recolección, que tiene las recetas de sus 🎒 mochilas de oficio (se hacen al fuego: stations.fire).
+ORDER_BRANCHES = ("refine", "craft", "gather")
 
 
 class CraftOrderMixin:
@@ -140,7 +142,8 @@ class CraftOrderMixin:
         return round(float(self._mkt_cfg().get("tax", 0.05)) * 100)
 
     def _corder_profs(self) -> list[str]:
-        """The professions whose recipes can be ordered (refining and crafting, with recipes), in catalog order."""
+        """The professions whose recipes can be ordered (refining and crafting, with recipes; since 0.62 the gathering ones
+        too, for their 🎒 profession backpacks, D-339), in catalog order."""
         catalog = self._prof_catalog()
         with_recipes = {rdef["profession"] for rdef in self._recipes().values()}
         return [pid for pid, pdef in catalog.items() if pdef.get("branch") in ORDER_BRANCHES and pid in with_recipes]
@@ -540,7 +543,10 @@ class CraftOrderMixin:
                     layout=layout)
 
     def _corder_books(self, rdef: dict[str, Any]) -> list[int]:
-        """The 📚 book ranks a recipe asks of whoever makes it (recipe_tiers.books), lowest first."""
+        """The 📚 book ranks a recipe asks of whoever makes it (recipe_tiers.books), lowest first; none for a no_book recipe
+        (the 🎒 profession backpacks, D-339)."""
+        if rdef.get("no_book"):
+            return []
         return list(profession_rules.books_for(int(rdef.get("min_rank", 1)), self._books_cfg()))
 
     def _corder_typed(self, hero: Hero, text: str) -> View:

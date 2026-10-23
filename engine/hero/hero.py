@@ -100,6 +100,10 @@ Si cambias esto, revisa:
       se apaga); al caer suma {"fell": hora, "key": clave del archivo "fallen_hero", "memorial": id del 🪦 Salón ("f1"…)}. Un
       héroe con "fell" ya no se guarda en "hero": GameService._save lo escribe en su archivo (engine/service/permadeath.py;
       tests/test_muerte_permanente_y_regeneracion.py)
+    - prof_bags (0.62, D-338 y D-339): las 🎒 mochilas de oficio PUESTAS (ids de content/items.yaml kind prof_bag, hasta
+      balance.yaml hero.backpack.prof_slots, de oficios distintos). Puesta, no está en backpack ni cuenta como tipo; quitada,
+      vuelve a backpack como un objeto más. Vacío por defecto: los héroes guardados antes cargan igual y nadie pierde nada
+      (engine/service/backpack.py; tests/test_mochila_por_tipos.py)
     - Pruebas: tests/test_service.py
 """
 
@@ -208,6 +212,9 @@ class Hero:
         oath: the 💀 optional permadeath (0.60, D-147, D-336): {} = off (every hero saved before it); {"at": ts} = sworn (it
             cannot be undone); a fallen hero also has "fell" (ts), "key" (its record in "fallen_hero") and "memorial" (its id
             in the 🪦 hall, "f1"…). Prestige only: it never changes stats or coins.
+        prof_bags: the 🎒 profession backpacks the hero carries ON (0.62, D-338, D-339): item ids of content/items.yaml kind
+            prof_bag, up to balance.yaml hero.backpack.prof_slots, of different professions. One that is on is not in
+            backpack and is not a type; taken off it goes back to backpack. Empty for heroes saved before it.
 
     [ES]
     Qué es: el héroe del jugador (en el diseño, "héroe").
@@ -288,6 +295,7 @@ class Hero:
     gear_wear: dict[str, dict[str, Any]] = field(default_factory=dict)  # D-333 (0.57): 🔧 durability of each worn piece, by slot
     bag_wear: dict[str, list[dict[str, Any]]] = field(default_factory=dict)   # D-333 (0.57): 🔧 durability of the used copies in the bag
     oath: dict[str, Any] = field(default_factory=dict)                  # D-147, D-336 (0.60): 💀 permadeath ({} off, {"at"} sworn)
+    prof_bags: list[str] = field(default_factory=list)                  # D-338, D-339 (0.62): 🎒 profession backpacks carried on
 
     def remembers(self, x: int, y: int) -> bool:
         """True if this hero has been in zone (x, y). [ES] Qué hace: dice si el héroe recuerda esa zona. La llaman: el servicio (mapa, rutas, lugares). Si cambia, afecta: qué ve cada héroe en su mapa."""

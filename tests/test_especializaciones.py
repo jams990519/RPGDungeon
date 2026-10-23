@@ -284,6 +284,7 @@ def test_find_effect_brings_gems_while_mining(service):
 
 
 def test_refining_yield_applies_only_to_its_output(service):
+    service.content.balance["hero"]["backpack"]["per_type"] = 10000    # test only: 200 makes at once never reach a type's cap (D-338)
     ready(service, energy=1000, backpack={"pieza_metal": 400, "madera": 600})
     hero = with_ranks(service, {"fundicion": 25, "aserradero": 25}, prof_specs={"fundicion": ["fundicion_hierro"]},
                       spec_xp={"fundicion_hierro": full(service)})
@@ -312,6 +313,7 @@ def test_crafting_masterwork_effect_only_in_its_line(service):
 
 
 def test_remedy_specializations_heal_more_or_make_more(service):
+    service.content.balance["hero"]["backpack"]["per_type"] = 10000    # test only: 100 makes at once never reach a type's cap (D-338)
     ready(service, energy=500, backpack={"extracto": 120, "arcilla": 120})
     hero = with_ranks(service, {"medicina": 25, "alquimia": 25},
                       prof_specs={"medicina": ["medicina_auxilios"], "alquimia": ["alquimia_pociones"]},

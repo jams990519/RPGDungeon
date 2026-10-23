@@ -202,7 +202,7 @@ faq:
     a: 'It''s your second role: at level {second_role} you learn it for free, and from then on you switch between your two roles whenever you want in 👤 Hero → 🌟 Talents. Your points are spread on their own into the role you''re playing.'
   d30:
     q: 🎒 How does the backpack work?
-    a: 'The 🎒 backpack has {bag_cap} space: each unit takes 1 (the belt and what you''re wearing don''t count). What you find is never lost even if it goes over the space, but with a full backpack you can''t gather or buy until you sell or use things.'
+    a: 'The 🎒 backpack counts item types: you carry up to {bag_types} different types (resources, potions, food, furniture…) and up to {bag_per_type} of each. Loose gear goes apart, up to {bag_gear} pieces; what you wear and the belt don''t count. When a type is full it stops being gathered and the rest keeps coming in; with no free types nothing new comes in. A 🎒 profession backpack keeps its profession''s resources apart, up to {pbag_low} or {pbag_high} of each (❓ /d67). What you find (loot, finds, rewards) is never lost even past a cap, and if you are over one you lose nothing: only no more of it comes in until you go below.'
   d31:
     q: 🛡️ How do I equip gear?
     a: 'In 🎒 Backpack → 🛡️ Gear you see what you''re wearing and the pieces you''ve found, whether they suit you and how much better they are. 🔁 Equip lists what you are not wearing, each piece with its code (/e1): ⬆️ marks one better than yours; tap it and choose ✅ Equip. 🔽 Unequip lists what you wear: its code (/q1) takes it off. Each piece needs a level and a type.'

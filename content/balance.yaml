@@ -220,15 +220,33 @@ hero:
   belt_slots: {pocion_vida: 3, venda: 2, pocion_mayor: 1, unguento: 2, botiquin: 1, vendaje_maestro: 1}     # [ES] cuánto cabe en el cinturón de cada cosa (D-109: 1 🍷 poción mayor, la hace la Alquimia; D-111: ungüentos, botiquín y vendaje de la Medicina)
   start_belt: {pocion_vida: 2, venda: 1}
   start_backpack: {pocion_vida: 2, venda: 2}
-  backpack_capacity: 60      # [ES] D-87: espacio de la mochila (cada unidad ocupa 1; el cinturón y lo puesto no cuentan).
-                             # [ES] D-90 (provisional): lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos entran aunque pase de 60),
-                             # [ES] pero con la mochila en 60 o más no se recolecta ni se compra hasta vender o usar cosas
+  backpack_capacity: 60      # [ES] RETIRADO desde la 0.62 (D-338): ya no lo lee el motor; la mochila cuenta tipos (bloque backpack de abajo).
+                             # [ES] Era D-87: 60 de espacio, cada unidad ocupaba 1. La clave queda como historia (no se borra).
+  backpack:                  # [ES] D-338 (confirmada por el dueño el 23-oct-2026: "quiero poder farmear mucho más, aunque tarde, y que el límite sea el inventario") y D-339 (cómo se aplicó; provisional). engine/service/backpack.py
+    types: 50                # [ES] D-338: hasta 50 TIPOS de artículo distintos (recursos, pociones y remedios, comida, muebles, pergaminos, mochilas de oficio sin poner…); el equipo va aparte
+    per_type: 30             # [ES] D-338: hasta 30 unidades de cada tipo (30 × 50 = 1.500 como mucho). Una 🎒 mochila de oficio puesta lo sube a 40 o 50 para los recursos de su oficio (prof_backpacks)
+    gear_pieces: 20          # [ES] D-338/D-339: las piezas de equipo SUELTAS en la mochila van aparte, con su propio tope (cada pieza es única: durabilidad, firma, encantamiento; no se apilan). El 20 lo eligió Claude (provisional, E-288). Lo puesto y el cinturón nunca cuentan
+    prof_slots: 3            # [ES] D-338: hasta 3 mochilas de oficio puestas a la vez, de oficios distintos
+                             # [ES] D-338.4 y D-90: lo que ya tienes nunca se pierde: quien pasa un tope lo conserva todo y solo no puede sumar más de ese tipo (o tipos nuevos) hasta bajar. El botín, los hallazgos y los premios entran aunque pasen el tope
   defeat_gold_loss: 0.1
   # [ES] Experiencia total para llegar al nivel N = base × (N − 1) ^ exponent (D-78). Con toda la energía
   # cada día, el nivel 100 llega en unos 2,5 años; quien juega menos tarda más. Nivel 10 en ~18 días, 20 en ~70.
   xp_formula: {base: 120, exponent: 2.35}
   xp_level_scale: 0.15       # [ES] D-108: la experiencia de matar y de recolectar sube 15 % por cada nivel de la zona o del enemigo (el mismo número que tenía el combate)
   max_level: 100             # [ES] D-78: 100 niveles por ahora
+
+prof_backpacks:              # [ES] D-338 (confirmada el 23-oct-2026) y D-339 (cómo se aplicó; provisional): las 🎒 mochilas de oficio (engine/service/backpack.py; inventario-y-mochilas.md §0). Se LLEVAN (no son una ranura de equipo): hasta hero.backpack.prof_slots (3), de oficios distintos, desde 🎒 Mochila → 🎒 Mochilas de oficio. Puesta, los recursos de su oficio (gathers, skins y rare de content/professions.yaml) van a su compartimento: no ocupan los tipos generales (D-339, E-287) y caben hasta su per_type de cada uno. Las recetas (rango 5 y 40) están en content/professions.yaml
+  items:                     # [ES] id del objeto (content/items.yaml, kind prof_bag) -> su oficio y el tope por tipo de los recursos de ese oficio. IDs estables: solo se agregan (retired: true para retirar una)
+    mochila_lenador: {profession: lenador, per_type: 40}               # [ES] D-338: la básica, desde un rango bajo (5): 40 por tipo
+    mochila_lenador_grande: {profession: lenador, per_type: 50}        # [ES] D-338: la del rango 40: 50 por tipo
+    mochila_minero: {profession: minero, per_type: 40}
+    mochila_minero_grande: {profession: minero, per_type: 50}
+    mochila_herbolario: {profession: herbolario, per_type: 40}
+    mochila_herbolario_grande: {profession: herbolario, per_type: 50}
+    mochila_pescador: {profession: pescador, per_type: 40}
+    mochila_pescador_grande: {profession: pescador, per_type: 50}
+    mochila_desollador: {profession: desollador, per_type: 40}         # [ES] la carne y la piel son botín (entran siempre, D-90): esta mochila sirve sobre todo para que no ocupen tipos
+    mochila_desollador_grande: {profession: desollador, per_type: 50}
 
 world:
   epoch: 2                   # [ES] NO TOCAR sin permiso explícito del dueño (D-64): subir este número BORRA el progreso de todos los jugadores. El reinicio a la época 2 fue el único autorizado

@@ -145,7 +145,7 @@ faq:
     a: "Es tu segundo rol: al nivel {second_role} lo aprendes gratis y desde ahí cambias entre tus dos roles cuando quieras en 👤 Héroe → 🌟 Talentos. Tus puntos se reparten solos en el rol que juegas."   # [ES] 0.31 (D-230)
   d30:
     q: "🎒 ¿Cómo funciona la mochila?"
-    a: "La 🎒 mochila tiene {bag_cap} de espacio: cada unidad ocupa 1 (el cinturón y lo que llevas puesto no cuentan). Lo que encuentras nunca se pierde aunque pase del espacio, pero con la mochila llena no recolectas ni compras hasta vender o usar cosas."
+    a: "La 🎒 mochila cuenta tipos de artículo: llevas hasta {bag_types} tipos distintos (recursos, pociones, comida, muebles…) y hasta {bag_per_type} de cada uno. El equipo suelto va aparte, hasta {bag_gear} piezas; lo que llevas puesto y el cinturón no cuentan. Cuando un tipo se llena deja de juntarse y lo demás sigue entrando; sin tipos libres no entra nada nuevo. Una 🎒 mochila de oficio guarda aparte los recursos de su oficio, hasta {pbag_low} o {pbag_high} de cada uno (❓ /d67). Lo que encuentras (botín, hallazgos, premios) nunca se pierde aunque pase un tope, y si pasas uno no pierdes nada: solo no entra más de eso hasta bajar."
   d31:
     q: "🛡️ ¿Cómo me equipo?"
     a: "En 🎒 Mochila → 🛡️ Equipo ves lo que llevas y las piezas que encontraste, si te sirven y cuánto mejoran. 🔁 Equipar lista lo que no llevas puesto, cada pieza con su código (/e1): ⬆️ marca una mejor que la tuya; tócala y elige ✅ Equipar. 🔽 Desequipar lista lo puesto: su código (/q1) te lo quita. Cada pieza pide un nivel y un tipo."

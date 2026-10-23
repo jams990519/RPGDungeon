@@ -306,7 +306,7 @@ Si cambias esto, revisa:
       entra en _effect_at/_camp_effect (members → _members_cap) y en _camp_defense (defense → oleadas); se colocan desde
       🔨 Obras (_works_entries, _place_furniture, botón "upf:<id>"); 📦 Recursos los lista (tests/test_masterwork.py)
     - Beneficio de cada oficio (D-111): _perks (content/professions.yaml "perk", engine/professions/rules.py perks) entra en
-      _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_cap
+      _kit (perk_bonus, heal_bonus, item_bonus), _settle (Herbolario), _use_out_of_combat (Alquimia, Medicina) y _bag_types_cap (D-338: el "bag" suma tipos)
       (Leñador); hero_stats y el combate lo leen del kit (tests/test_professions.py)
     - Pasada de balance de clases y roles (D-110, D-113): _stats_view muestra la armadura que dan los puntos de Defensa
       (stats.talents_armor); _station_view pone primero las recetas de rango más alto (equipo de artesano hasta el nivel
@@ -322,7 +322,13 @@ Si cambias esto, revisa:
       tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
       tests/test_backpack.py (mochila llena D-90 y cofre D-92)
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
-    - Mochila llena (D-90): balance.yaml hero.backpack_capacity; _bag_full, _bag_add, _gather_blocked, _buy
+    - Mochila llena (D-90): desde la 0.62 (D-338, D-339) la mochila cuenta TIPOS: balance.yaml hero.backpack (types 50,
+      per_type 30, gear_pieces 20, prof_slots 3) y prof_backpacks; las cuentas y las 🎒 mochilas de oficio están en
+      engine/service/backpack.py (BackpackMixin: _bag_room, _bag_full, _bag_add, las líneas, "pbags", /mp1 /mq1); aquí las
+      usan _gather_step, _gather_blocked, _continue_batch, _batch_summary, _trade_gather, _buy, _shop_no_room, _make,
+      _recipe_view, _bag_view, _resources_view y _hero_view; _stations_here suma los oficios que trabajan "al fuego"
+      (content/professions.yaml stations.fire: las mochilas de oficio, en las 🔥 Fogatas y el 🔥 Fogón). hero.backpack_capacity
+      (60) queda retirado (tests/test_mochila_por_tipos.py)
     - Cofre (D-92): balance.yaml currency.chest_recipe e icons.chests, camps.chests_from_level y chests_per_level;
       Hero.chests; _build_chest, _grow_chests (D-304: los cofres los pide ⏫ Siguiente nivel, ya no agrandar); textos
       wallet.chest*, camps.chest* en es.yaml
@@ -838,6 +844,7 @@ from engine.service.craft_orders import (CRAFT_ORDER_ACTIONS, CRAFT_ORDER_CODE_R
                                          CraftOrderMixin)
 from engine.service.permadeath import HALL_ACTION, OATH_ACTIONS, PermadeathMixin   # D-147, D-336 (0.60): 💀 permadeath and 🪦 the hall
 from engine.service.raid_difficulty import RaidDifficultyMixin   # D-337 (0.61): ⚔️ the waves' escalating difficulty (D-153)
+from engine.service.backpack import PBAG_ACTIONS, PBAG_CODE_RE, BackpackMixin   # D-338, D-339 (0.62): 🎒 the backpack by types
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -878,6 +885,7 @@ COMMANDS.update({"/hibrido": "hyb", "/hybrid": "hyb"})               # D-330 (0.
 COMMANDS.update({"/reparar": "rpr", "/repair": "rpr"})               # D-333 (0.57): 🔧 Reparar (engine/service/repair.py)
 COMMANDS.update({"/pedidos": "cord", "/orders": "cord"})             # D-335 (0.59): 📜 Pedidos de fabricación (craft_orders.py)
 COMMANDS.update({"/caidos": "fallen", "/fallen": "fallen"})         # D-336 (0.60): 🪦 Salón de los caídos (engine/service/permadeath.py)
+COMMANDS.update({"/mochilas": "pbags", "/backpacks": "pbags"})      # D-338, D-339 (0.62): 🎒 Mochilas de oficio (engine/service/backpack.py)
 # D-250: typed commands that carry words after them ("/greet Bram", "/help energy"): the English word -> the one the
 # handlers read. [ES] Los atajos con texto detrás: la palabra en inglés se cambia por la española antes de atenderlos.
 TYPED_ALIASES = {"/greet": "/saludar", "/toast": "/brindar", "/journal": "/diario", "/help": "/dudas", "/faq": "/dudas"}
@@ -951,8 +959,9 @@ HUB_BUTTONS = 8
 EXTRA_BUTTON_KINDS = {"dudas": HUB_BUTTONS + 1, "options": 4 + 3,
                       "explore_menu": 4 + 2,   # D-305/D-314 (0.42): 🪓 Talar next to 🧺 Recolectar; D-306.5/D-316 (0.43): 🎣 Pescar
                       "trainer": 4 + 2,        # D-306.1/D-316 (0.43): 🎖️ Títulos when a title waits; D-306/D-315 (0.44): 📚 Libros de recetas
-                      "market_cats": HUB_BUTTONS + 1,   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas, and ↩️ Volver
-                      "gear_worn": 4 + 1}   # D-333 (0.57): 🛡️ Equipo adds 🔧 Reparar (with the 🌰 Recuerdo: 5)
+                      "market_cats": HUB_BUTTONS + 2,   # D-326 (0.50): 🛍️ Comprar has an 8th category, 🗺️ Mapas; D-339 (0.62): a 9th, 🎒 Mochilas
+                      "gear_worn": 4 + 1,   # D-333 (0.57): 🛡️ Equipo adds 🔧 Reparar (with the 🌰 Recuerdo: 5)
+                      "bag": 4 + 1}         # D-338/D-339 (0.62): 🎒 Mochila adds 🎒 Mochilas de oficio (the owner asked to put them on there)
 # Button ids (or prefixes) of ❓ Dudas (D-191): the main screen ("dudas"), opened from a screen that ↩️ Volver goes back to
 # ("dudas@options", D-297), a topic ("dudas:<topic>"), an answer ("duda:<code>") and the 📚 Guías (D-297): their menu
 # ("guides"), a category ("guides:<category>" and its pages "guides:<category>:<page>") and a guide ("guide:<id>").
@@ -1037,7 +1046,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
                   RepairMixin, WorldTimeMixin,
                   CraftOrderMixin, PermadeathMixin,
-                  RaidDifficultyMixin):
+                  RaidDifficultyMixin, BackpackMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1153,8 +1162,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             pcode = SCROLL_CODE_RE.match(low)
             wcode = REPAIR_CODE_RE.match(low)
             ocode = CRAFT_ORDER_CODE_RE.match(low)
+            bcode = PBAG_CODE_RE.match(low)
             if invite and self.store.get("combat", hero.id) is None:   # D-280: /inv_12345678 = invite that player
                 typed = self._invite_code(hero, invite.group(1))
+            elif bcode and self.store.get("combat", hero.id) is None:     # D-338: /mp2 puts on a 🎒 profession backpack, /mq2 takes one off
+                typed = self._pbag_code(hero, bcode.group(1), int(bcode.group(2)))
             elif ocode and self.store.get("combat", hero.id) is None:     # D-335: /cf2 a profession, /co2 an order, /cm2 yours
                 typed = self._corder_code(hero, ocode.group(1), int(ocode.group(2)))
             elif wcode and self.store.get("combat", hero.id) is None:     # D-333: /rp2 a worn piece of 🔧 Reparar, /ro2 an order
@@ -1658,7 +1670,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         D-141: les suma los efectos "perk" de las 🎓 especializaciones que tiene (por su dominio): 🍷 Elixires (pociones),
         🩹 Primeros auxilios (vendas), 🩺 Cirugía (curaciones, solo sanadores), ☠️ Venenos (ataque), 🎒 Talabartería y 🛒 Mobiliario
         (mochila), 🗺️ Cartógrafo, 📜 Papel y Pergamino (exploración) y 💨 Desencantar (esencias).
-        La llaman: _kit (ataque, vida, armadura, curación, pociones y vendas), _settle (vida que vuelve), _bag_cap.
+        La llaman: _kit (ataque, vida, armadura, curación, pociones y vendas), _settle (vida que vuelve), _bag_types_cap (tipos de la mochila, D-338).
         Si cambia, afecta: cuánto ayuda cada oficio (content/professions.yaml "perk" y "specs"; profesiones.md §0.2).
         """
         catalog = self._prof_catalog()                  # D-298: a locked profession (💱 Comercio) gives nothing for now
@@ -2166,7 +2178,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return None
 
     def _gather_step(self, hero: Hero, zone: Zone, rng: Rng, activity: dict[str, Any]) -> str | None:
-        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's space (D-87, D-90).
+        """One gathering: only the resources this zone has, less when it is depleted, up to the backpack's caps (D-87, D-338).
 
         [ES] D-184: si la zona tiene un nodo de recursos (_node_main), cada unidad de su recurso vale nodes.yield_mult (2) y lo
         agota la mitad (nodes.stock_mult), y la vuelta tiene nodes.rare_chance de dar el raro de su terreno (biomes.yaml
@@ -2186,6 +2198,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         cambian. En _explore_step pasa lo mismo con los hallazgos (la 🌿 hierba curativa pesa más de noche).
         D-145 y D-336 (0.60): al guardar lo que queda de la zona, _tend_after suma el 🌱 cuidado de tu oficio (lo que juntaste
         con su oficio aprendido vuelve más rápido ahí por stock.tend.hours).
+        D-338 y D-339 (0.62): cada unidad mira la mochila por tipos (_bag_room): un recurso cuyo tipo está lleno (30, o 40/50
+        con la 🎒 mochila de su oficio puesta), o que sería un tipo nuevo sin tipos libres, no entra al sorteo y queda anotado en
+        activity["full"] (el resumen lo dice); lo demás sigue entrando. Si no cabe nada de lo que da la zona, la vuelta termina
+        con batch.reason.bag_full. El raro del nodo y los hallazgos entran siempre (D-90).
         """
         bal = self.content.balance["gather"]
         danger = self.content.biomes[zone.biome]["danger"] * bal["encounter_scale"]
@@ -2214,9 +2230,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         band = self._world_band(activity.get("until") or self.clock.now())["id"]    # D-126, D-334: the band of this round
         got: dict[str, int] = {}
         extra = 0
+        blocked = False
         for _ in range(max(1, amount)):
-            options = [r for r in resources if stock[r] >= cfg["min_yield"]]
-            if not options or self._bag_full(hero):      # gathering stops at the space (D-90); finds do not
+            open_ = [r for r in resources if stock[r] >= cfg["min_yield"]]
+            # D-338, D-339 (0.62): a resource whose type is full (or that needs a new type with none free) is skipped; the
+            # rest keeps coming. Gathering stops when nothing of here fits; finds never stop (D-90).
+            options = [r for r in open_ if self._bag_room(hero, r) > 0]
+            full = [r for r in open_ if r not in options]
+            if full:
+                seen = activity.setdefault("full", [])
+                seen += [r for r in full if r not in seen]
+            if not options:
+                blocked = bool(open_)
                 break
             # D-126, D-334: ☀️ 🌇 🌙 the band tilts the mix (world_clock.weights), never the amount; one draw as before
             res = rng.pick_weighted(options, self._band_weights(band, options, [resources[r] * stock[r] for r in options]))
@@ -2224,7 +2249,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             if res == node:                              # D-184: ×2 and half the depletion (its own draw for a fraction)
                 mult = float(ncfg.get("yield_mult", 1.0))
                 units = max(1, int(mult) + (1 if node_rng.random() < mult - int(mult) else 0))
-                units = min(units, max(1, self._bag_cap(hero) - self._bag_used(hero)))
+                units = min(units, max(1, self._bag_room(hero, res)))      # D-338: up to its type's cap
                 per_unit *= float(ncfg.get("stock_mult", 1.0))
                 extra += units - 1
             self._bag_add(hero, res, units)
@@ -2255,7 +2280,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not got:
             activity["left"] = 0
             reason = f"{self._batch_mode(activity)}_depleted" if only else "depleted"   # D-305/D-306.5: the wood or the fish ran out
-            activity["log"].append(self.texts.t("batch.reason.bag_full" if self._bag_full(hero) else f"batch.reason.{reason}"))
+            activity["log"].append(self.texts.t("batch.reason.bag_full" if blocked else f"batch.reason.{reason}"))
+            if blocked:
+                activity["bag_full"] = True              # D-338: the round ended for lack of room (the summary's 💡)
         return None
 
     # ------------------------------------------------------------------ creation
@@ -2412,6 +2439,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._repair_action(hero, action_id)
         if action_id.startswith(CRAFT_ORDER_ACTIONS):   # D-335 (0.59): 📜 Pedidos de fabricación (menus also while busy; making checks)
             return self._corder_action(hero, action_id)
+        if action_id.startswith(PBAG_ACTIONS):          # D-338, D-339 (0.62): 🎒 Mochilas de oficio (a menu: also while busy)
+            return self._pbag_action(hero, action_id)
         if action_id == "trainer":                      # D-191/D-192: 🧑‍🏫 Entrenador (/entrenador); a menu: also while busy
             return self._trainer_view(hero)
         if action_id.startswith(BOOK_ACTIONS):          # D-306 (0.44): 📚 Libros de recetas of the 🧑‍🏫 Entrenador (a menu too)
@@ -2750,8 +2779,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         body = [t.t(f"batch.ask_{kind}", minutes=minutes, energy=per), t.t("batch.energy", energy=hero.energy),
                 t.t("batch.estimate_hunt" if kind == "hunt" else "batch.estimate", step=total(per), n=top, k=top // per,
                     total=total(top))]
-        if base == "gather":
-            body.append(t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero)))
+        if base == "gather":                            # D-338 (0.62): 🎒 types, and how much of 🪵/🐟 still fits
+            body.append(self._bag_space_line(hero))
+            if self._mode_only(kind):
+                body.append(self._bag_item_line(hero, self._mode_only(kind)))
         elif kind == "explore":
             body += self._explore_progress_lines(hero)
         body += self._auto_lines(hero, base)            # D-114: what happens if a fight comes up (⚙️ Opciones)
@@ -2917,23 +2948,33 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return True
         return fish in self._known_resources(hero, x, y)
 
+    def _gather_open(self, zone: Zone, only: str | None = None) -> list[str]:
+        """The resources gathering here can still give (stock at stock.min_yield or more); with `only`, just that one."""
+        stock = self._stock(zone.x, zone.y)
+        min_yield = self.content.balance["stock"]["min_yield"]
+        return [r for r, level in stock.items() if level >= min_yield and (only is None or r == only)]
+
     def _gather_blocked(self, hero: Hero, zone: Zone, only: str | None = None) -> str | None:
-        """The notice of why gathering here cannot start (full backpack, D-90, or depleted zone), else None.
+        """The notice of why gathering here cannot start (nothing of here fits in the backpack, D-338, or a depleted zone),
+        else None.
 
         [ES] D-305 (0.42): con `only` (🪓 Talar, la 🪵 madera) solo mira ese recurso: si la zona no lo tiene (chop.no_wood) o
         si está bajo stock.min_yield (chop.depleted). D-306.5 (0.43): con el 🐟 pescado (🎣 Pescar), fish.no_fish y
-        fish.depleted. La llaman: _amount_view y _start_batch.
+        fish.depleted. D-338 y D-339 (0.62): ya no hay "mochila llena" de 60: no empieza si NINGUNO de los recursos que todavía
+        da la zona cabe (su tipo lleno, o es un tipo nuevo y no quedan tipos libres), y el aviso dice qué tope frena y, si sirve,
+        lo de las 🎒 mochilas de oficio (_bag_gather_block). Si cabe alguno, empieza: lo lleno se salta. La llaman: _amount_view
+        y _start_batch. Si cambia, afecta: tests/test_mochila_por_tipos.py, test_backpack.py y test_talar.py.
         """
-        if self._bag_full(hero):
-            return self._bag_full_line(hero)
         stock = self._stock(zone.x, zone.y)
-        min_yield = self.content.balance["stock"]["min_yield"]
+        open_ = self._gather_open(zone, only)
+        if open_ and not any(self._bag_room(hero, r) > 0 for r in open_):
+            return self._bag_gather_block(hero, open_)
         if only:                                        # D-305: 🪓 Talar looks at the wood alone (D-306.5: 🎣 the fish)
             mode = "fish" if only == self._fish_resource() else "chop"
             if only not in stock:
                 return self.texts.t("fish.no_fish" if mode == "fish" else "chop.no_wood")
-            return self.texts.t(f"{mode}.depleted") if stock[only] < min_yield else None
-        if all(level < min_yield for level in stock.values()):
+            return self.texts.t(f"{mode}.depleted") if not open_ else None
+        if not open_:
             return self.texts.t("batch.reason.depleted")
         return None
 
@@ -2956,7 +2997,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: arma el resumen del final del lote: lo recolectado o explorado, la experiencia, las peleas automáticas
         (cuántas ganó y perdió, lo que dieron y el botín, D-114), lo que pasó en el camino y por qué terminó. `values` va al
         texto del motivo (por ejemplo, el % de vida de ⚙️ Opciones). D-305 (0.42): un lote de 🪓 Talar (activity["only"])
-        empieza con batch.chopped y batch.xp_chop en lugar de las líneas de recolectar.
+        empieza con batch.chopped y batch.xp_chop en lugar de las líneas de recolectar. D-338 y D-339 (0.62): un lote de
+        recolectar dice qué se llenó en la mochila mientras seguía entrando lo demás (activity["full"], _bag_batch_full_line) y,
+        si se cortó porque ya no cabía nada de la zona ("bag_full"), la 💡 de las 🎒 mochilas de oficio cuando sirve.
         La llaman: _settle (al terminar o cortarse el lote) y _stop_batch.
         Si cambia, afecta: el único aviso que manda el bot al terminar cada lote.
         """
@@ -2973,6 +3016,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 if activity.get("trade") and any(activity["trade"].values()):     # D-109: what each gathering profession earned
                     lines.append(self._trade_summary(activity["trade"]))
                 lines += self._node_batch_lines(activity)  # D-184: ✨ what the resource node added
+                ended = reason == "bag_full" or bool(activity.get("bag_full"))
+                full = self._bag_batch_full_line(hero, activity.get("full") or [], ended)     # D-338: 🎒 what filled up
+                if full:
+                    lines.append(full)
             else:
                 zone = self._zone(hero.x, hero.y)
                 lines.append(t.t("batch.explored_done", n=activity["done"], pct=self._explored_pct(hero, zone.x, zone.y)))
@@ -2992,6 +3039,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         lines += activity.get("log", [])
         if reason not in ("done", "full_explored"):        # reaching 100 % already has its own line
             lines.append(t.t(f"batch.reason.{reason}", **values))
+        if reason == "bag_full" or activity.get("bag_full"):
+            lines += [hint for hint in self._pbag_hint(hero, activity.get("full") or []) if hint not in lines]   # D-338: 💡 🎒
         return lines
 
     def _continue_batch(self, hero: Hero, activity: dict[str, Any], until: float) -> str | None:
@@ -2999,6 +3048,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
 
         [ES] D-305 (0.42): un lote de 🪓 Talar (activity["only"]) se corta con "chop_depleted" cuando la 🪵 madera de la zona
         bajó de stock.min_yield, antes de cobrar la vuelta siguiente (recolectar sigue cortándose con una vuelta vacía).
+        D-338 (0.62): un lote de recolectar (también 🪓 y 🎣) se corta con "bag_full" cuando ya no cabe nada de lo que la zona
+        todavía da, antes de cobrar la vuelta siguiente (nada se gasta de más).
         """
         kind = activity["kind"]
         zone = self._zone(hero.x, hero.y)
@@ -3008,9 +3059,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return "enemy_camp"                         # D-112: a camp came up here (a new day): the next round waits
         if kind == "explore" and self._explore_target(hero) is None:
             return "full_explored"
-        if kind == "gather" and self._bag_full(hero):
-            return "bag_full"
         only = activity.get("only") if kind == "gather" else None
+        if kind == "gather":                            # D-338 (0.62): nothing of here fits any more: stop before the next round
+            open_ = self._gather_open(zone, only)
+            if open_ and not any(self._bag_room(hero, r) > 0 for r in open_):
+                return "bag_full"
         if only and self._stock(zone.x, zone.y).get(only, 0.0) < self.content.balance["stock"]["min_yield"]:
             return f"{self._batch_mode(activity)}_depleted"     # D-305: 🪓 Talar stops when the wood runs out (D-306.5: 🎣 the fish)
         if not self._spend_energy(hero, kind, self._step_cost(kind)):
@@ -3022,41 +3075,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
 
     # ------------------------------------------------------------------ zone resources and exploration (D-87)
 
-    def _bag_cap(self, hero: Hero | None = None) -> int:
-        """Backpack space: the base, plus the 🪓 Leñador's perk (D-111) when a hero is given."""
-        base = self.content.balance["hero"]["backpack_capacity"]
-        return base + (int(self._perks(hero)["bag"]) if hero is not None else 0)
-
-    def _bag_used(self, hero: Hero) -> int:
-        return sum(hero.backpack.values())
-
-    def _bag_full(self, hero: Hero) -> bool:
-        """True when the backpack is at or over its space: then gathering and buying wait (D-90).
-
-        [ES]
-        Qué hace: dice si la mochila llegó a su espacio (60) o lo pasó. Con la mochila llena no se recolecta ni se
-        compra hasta vender o usar cosas; lo que se encuentra igual entra (D-90, provisional).
-        La llaman: _gather_blocked, _continue_batch, _gather_step, _buy, _shop_view y _bag_view.
-        Si cambia, afecta: cuándo se corta recolectar y cuándo el mercader no vende (balance.yaml hero.backpack_capacity).
-        """
-        return self._bag_used(hero) >= self._bag_cap(hero)
-
-    def _bag_full_line(self, hero: Hero) -> str:
-        """🎒 Mochila llena (63/60): sell or use things to gather or buy again (D-90)."""
-        return self.texts.t("bag.full_line", used=self._bag_used(hero), cap=self._bag_cap(hero))
-
-    def _bag_add(self, hero: Hero, item_id: str, count: int) -> int:
-        """Put found items in the backpack, even beyond its space: what you find is never lost (D-90).
-
-        [ES]
-        Qué hace: guarda en la mochila lo que encuentras (hallazgos de explorar), aunque pase del espacio.
-        La llaman: _explore_step y _gather_step (recolectar se corta antes, en el tope).
-        Si cambia, afecta: si los hallazgos se pierden con la mochila llena (D-90 dice que nunca).
-        """
-        count = max(0, count)
-        if count:
-            hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
-        return count
+    # D-338, D-339 (0.62): the backpack's caps (_bag_room, _bag_full, _bag_add, the lines) live in engine/service/backpack.py
+    # (BackpackMixin). [ES] La mochila por tipos y las mochilas de oficio están en su propio archivo.
 
     def _zone_land(self, x: int, y: int) -> tuple[dict[str, float], dict[str, float], dict[str, float]]:
         """The zone's land resources in three parts: (base, added wood, terrain's own). [ES] Qué hace: los 6 de base con el
@@ -3501,7 +3521,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         elif activity.get("kind") == "gather":
             mode = self._batch_mode(activity)            # D-305: a 🪓 Talar batch says so (D-306.5: 🎣 Pescar too)
             body = [t.t(f"{mode}.in_progress"), t.t("batch.progress", done=activity.get("done", 0) + 1, total=activity.get("total", 1)),
-                    t.t("travel.remaining", time=remaining), t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
+                    t.t("travel.remaining", time=remaining), self._bag_space_line(hero)]     # D-338: 🎒 types
             title = t.t(f"{mode}.title")
         elif activity.get("kind") == "rest":
             body = [t.t("inn.in_progress"), t.t("travel.remaining", time=remaining)]
@@ -4095,8 +4115,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             body.append(t.t("market.shop_ready", n=ready))
         if self._needs_any_repair(hero):                  # D-333: 🔧 the campfire smith repairs (from 🛡️ Equipo → 🔧 Reparar)
             body.append(t.t("wear.shop_line"))
-        if self._bag_full(hero):  # D-90: buying waits until there is room again
-            body += ["", self._bag_full_line(hero)]
+        if self._shop_no_room(hero):  # D-90, D-338: buying waits until there is room again (nothing it sells fits)
+            body += ["", self._shop_no_room(hero)]
         actions = [Action(id="shop:buy", label=t.t("shop.buy_menu_button")), Action(id="shop:sell", label=t.t("shop.sell_menu_button")),
                    Action(id="mkt", label=t.t("market.button")), Action(id="claro", label=t.t("menu.back"))]
         return View(kind="shop", title=t.t("shop.title"), body=body, actions=actions, notice=notice)
@@ -4115,8 +4135,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             if cap is not None:                                  # D-125: 20 🥖 provisions a week
                 body.append(t.t("shop.cap_line", left=max(0, cap - self._shop_week(hero).get(item_id, 0)), n=cap))
             actions.append(Action(id=f"buy:{item_id}", label=t.t("shop.buy_button", emoji=item["emoji"], price=self._money(price))))
-        if self._bag_full(hero):  # D-90: buying waits until there is room again
-            body += ["", self._bag_full_line(hero)]
+        if self._shop_no_room(hero):  # D-90, D-338: buying waits until there is room again (nothing it sells fits)
+            body += ["", self._shop_no_room(hero)]
         actions = actions[:3] + [Action(id="shop", label=t.t("menu.back"))]
         return View(kind="shop_buy", title=t.t("shop.buy_title"), body=body, actions=actions, notice=notice)
 
@@ -4188,8 +4208,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if item_id not in self.content.balance["shop"]["sells"]:
             return self._shop_buy_view(hero)
         item = self.content.items[item_id]
-        if self._bag_full(hero):
-            return self._shop_buy_view(hero, notice=self._bag_full_line(hero))   # D-90: sell or use things first (never charged)
+        if self._bag_room(hero, item_id) < 1:          # D-90, D-338: its type is full or no type is free (never charged)
+            return self._shop_buy_view(hero, notice=self._bag_no_room(hero, item_id))
         cap = self.content.balance["shop"].get("weekly_cap", {}).get(item_id)
         bought = self._shop_week(hero)
         if cap is not None and bought.get(item_id, 0) >= cap:      # D-125: never charged once the week's cap is reached
@@ -4204,6 +4224,17 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             self.store.put("shop_week", hero.id, {"week": self._today() // 7, "bought": bought})
         self._refill_belt(hero)
         return self._shop_buy_view(hero, notice=t.t("shop.bought", item=t.t(item["name_key"])))
+
+    def _shop_no_room(self, hero: Hero) -> str | None:
+        """The 🎒 line of the trader when nothing it sells fits in the backpack (D-90, D-338), else None.
+
+        [ES] Qué hace: si no cabe nada de lo que vende el mercader (shop.sells: cada tipo lleno o sin tipos libres), la línea que
+        dice qué tope frena; si cabe algo, nada (cada compra se mira sola en _buy). La llaman: _shop_view y _shop_buy_view.
+        Si cambia, afecta: tests/test_backpack.py y tests/test_mochila_por_tipos.py."""
+        sells = [i for i in self.content.balance["shop"]["sells"] if i in self.content.items]
+        if not sells or any(self._bag_room(hero, i) > 0 for i in sells):
+            return None
+        return self._join([self.texts.t("pack.no_room", why=self._bag_why(hero, sells))])
 
     def _shop_week(self, hero: Hero) -> dict[str, int]:
         """What the hero bought this real week from the capped items (balance.yaml shop.weekly_cap), {item_id: n}.
@@ -4308,7 +4339,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         body = [t.t("zone.header", name=self._place_label(zone.x, zone.y), biome=self._biome_label(zone)), t.t("explore.menu_intro"), ""]
         body += self._resources_lines(hero, zone.x, zone.y)     # D-221: one resource per line
         tilt = self._band_tilt_lines(hero, zone.x, zone.y)      # D-126, D-334: what comes out more in this band (its own block)
-        body += ([""] + tilt if tilt else []) + ["", t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
+        body += ([""] + tilt if tilt else []) + ["", self._bag_space_line(hero)]     # D-338 (0.62): 🎒 types and loose gear
         if camp:                                        # D-112: the camp here fell today
             body.append(t.t("ecamp.ruins", name=camp["destroyed"].get("name", "?")))
         body += self._recon_hint_lines(hero)            # D-172: 🔭 N places to scout from afar: /reconocer
@@ -8194,7 +8225,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             "respec_cost": self._money(int(b["talents"]["respec_cost_per_level"])),
             "dual_points": b["talents"]["dual"]["min_points"], "dual_bags": b["talents"]["dual"]["cost_bags"],
             "second_role": b["chain"]["second_role_level"], "hybrid_level": b["chain"]["hybrid"]["level"],   # 0.31 (D-230)
-            "bag_cap": b["hero"]["backpack_capacity"],
+            **self._pack_faq_values(),                  # D-338, D-339 (0.62): {bag_types}, {bag_per_type}, {bag_gear}, {pbag_*} (/d30, /d67)
             "camp_far": camps["min_lejania"], "camp_known": camps["known_neighbors"], "camp_gap": camps["min_distance"],
             "found_cost": self._item_list(camps["found_cost"]), "chests_from": camps["chests_from_level"],
             "members_base": camps["members_base"], "members_step": camps["members_per_level"],
@@ -8844,7 +8875,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 actions.append(Action(id=f"ptitle:{pid}:d", label=t.t("ptitle.buy_button", title=self._ptitle_name(nxt),
                                                                      price=self._money(self._title_cost(nxt)[0]))))
             stations, _ = self._stations_here(hero)
-            branch = pdef.get("branch")
+            branch = self._recipe_branch(pid) if pdef.get("branch") == "gather" else pdef.get("branch")   # D-339: 🎒 at the fire
             if pid == COOK_PROFESSION and pid in stations:
                 actions.append(Action(id="cook", label=t.t("hub.cook_button")))
             elif branch in ("refine", "craft") and pid in stations:
@@ -9175,7 +9206,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: después de cada vuelta de recolección, suma 1 de experiencia de oficio por unidad al oficio que la
         junta (madera → leñador; piedra, metal y arcilla → minero; hierba y fibra → herbolario), sortea una unidad más
-        por unidad según el rango (professions.rank_yield, sin pasar el espacio de la mochila) y, desde el rango del
+        por unidad según el rango (professions.rank_yield, sin pasar el tope de su tipo en la mochila, D-338) y, desde el rango del
         raro, la 💠 gema en bruto o la 🌸 flor de luna. Agrega lo extra a `got` (cuenta para el resumen y el gremio).
         D-141: la 🎓 especialización suma a la unidad de más ("yield": ⚙️ Metales, 🪓 Tala rápida...) y sus hallazgos ("find":
         💠 Gemas, 🌸 Flores raras) se sortean aparte, una vez por vuelta del oficio.
@@ -9195,7 +9226,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             rank = self._prof_rank(hero, pid)
             chance = rank * cfg["rank_yield"] + self._pspec_bonus(hero, "yield", item=res)   # D-141: 🎓 e.g. ⚙️ Metales +20 %
             extra = sum(1 for _ in range(got[res]) if rng.chance(chance))
-            extra = min(extra, max(0, self._bag_cap(hero) - self._bag_used(hero)))     # gathering stops at the space (D-90)
+            extra = min(extra, self._bag_room(hero, res))     # D-338: gathering stops at its type's cap (finds do not, D-90)
             if extra:
                 self._bag_add(hero, res, extra)
                 got[res] += extra
@@ -9284,14 +9315,18 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Qué hace: dice qué estaciones de oficio hay donde está el héroe: todas las básicas en el Claro; en el centro de
         su campamento, las que abren sus mejoras construidas (content/professions.yaml "stations"; D-288, 0.39: un edificio
         por oficio, y el 🧵 Taller y la 🔨 Herrería de quien ya los tenía). Ocupado (viaje, exploración...) no hay ninguna.
+        D-339 (0.62): los oficios de recolección (stations.fire) hacen sus 🎒 mochilas de oficio "al fuego": se suman en las 9
+        🔥 Fogatas y en el centro de tu campamento con su 🔥 Fogón (stations.fire_camp).
         La llaman: ⚒️ Oficios, las estaciones, las recetas, _make, el Taller y los servicios del campamento.
         Si cambia, afecta: dónde se puede refinar y fabricar.
         """
         if hero.activity:
             return [], None
         stations = (self.content.professions or {}).get("stations") or {}
+        fire = [sid for sid in (stations.get("fire") or []) if sid in self._prof_catalog()]
         if mapgen.is_bonfire(hero.x, hero.y):
-            return list(stations.get("claro") or []), "claro"
+            found = list(stations.get("claro") or [])
+            return found + [sid for sid in fire if sid not in found], "claro"
         here = self._upgrades_here(hero)
         if not here:
             return [], None
@@ -9300,7 +9335,23 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         for uid, sids in (stations.get("camp") or {}).items():
             if uid in built:
                 found += [sid for sid in sids if sid not in found]
+        if any(uid in built for uid in (stations.get("fire_camp") or [])):      # D-339: 🔥 the camp's Fogón is a fire too
+            found += [sid for sid in fire if sid not in found]
         return (found, "camp") if found else ([], None)
+
+    def _fire_stations(self) -> list[str]:
+        """The professions that work "at the fire" (content/professions.yaml stations.fire: the gathering ones, D-339)."""
+        return list(((self.content.professions or {}).get("stations") or {}).get("fire") or [])
+
+    def _recipe_branch(self, pid: str) -> str:
+        """The station list a profession's recipes go in: "refine" or "craft"; a gathering profession's 🎒 backpacks, "craft"."""
+        branch = self._prof_catalog().get(pid, {}).get("branch", "craft")
+        return "craft" if branch == "gather" else branch
+
+    def _no_station_line(self, pid: str) -> str:
+        """Why a recipe cannot be made here: its station is elsewhere (prof.no_station), or, for a gathering profession's 🎒
+        backpack, "at any 🔥 Fogata or at your camp's 🔥 Fogón" (D-339)."""
+        return self.texts.t("pack.no_fire" if pid in self._fire_stations() else "prof.no_station")
 
     def _prof_back(self, hero: Hero) -> str:
         """Where ↩️ Volver of ⚒️ Oficios goes: the 🏕️ hub (the Claro or your camp, D-192: 🛠️ Fabricar opens it) or the hero."""
@@ -9357,8 +9408,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         t = self.texts
         if where == "claro":
             return t.t("prof.stations_claro")
-        if where == "camp":
-            return t.t("prof.stations_camp", items=", ".join(self._prof_name(sid) for sid in stations),
+        if where == "camp":                             # D-339: the 🎒 backpacks "at the fire" are not a building's station
+            fire = set(self._fire_stations())
+            return t.t("prof.stations_camp", items=", ".join(self._prof_name(sid) for sid in stations if sid not in fire),
                        pct=round(100 * self._prof_cfg()["camp_bonus"]))
         return t.t("prof.stations_none")
 
@@ -9519,8 +9571,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         elsewhere = False
         for rid, rdef in recipes.items():
             pid = rdef["profession"]
-            if catalog.get(pid, {}).get("branch") != branch or self._prof_rank(hero, pid) < int(rdef.get("min_rank", 1)):
-                continue
+            if pid not in catalog or self._recipe_branch(pid) != branch or self._prof_rank(hero, pid) < int(rdef.get("min_rank", 1)):
+                continue                                                  # D-339: a gathering profession's 🎒 backpacks are "craft"
             if not self._pspec_recipe_ok(hero, rdef):                     # D-141: 🎓 exclusive recipes, only for their specialization
                 continue
             if only and pid != only:                                      # D-192: 🍲 Cocinar, only the kitchen's recipes
@@ -9599,7 +9651,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         elif total_listed > per or any(status for status, _, _ in entries):
             actions.append(Action(id=f"esto:{station_id}:0", label=t.t("rlist.only_ok_button")))
         body += self._corder_station_lines(hero, [pid for pid in stations                 # D-335: 📜 orders you can make here
-                                                  if catalog.get(pid, {}).get("branch") == branch and (not only or pid == only)])
+                                                  if pid in catalog and self._recipe_branch(pid) == branch and (not only or pid == only)])
         if elsewhere:
             body.append(t.t("prof.more_in_claro"))
         for (pid, book), n in book_locked.items():                        # D-306: what each 📚 book you lack opens here
@@ -9657,7 +9709,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not rdef:
             return self._professions_view(hero, notice=notice)
         pid = rdef["profession"]
-        branch = self._prof_catalog().get(pid, {}).get("branch", "craft")
+        branch = self._recipe_branch(pid)                       # D-339: a gathering profession's 🎒 backpack is in 🛠️ Fabricar
         rank = self._prof_rank(hero, pid)
         need_rank = int(rdef.get("min_rank", 1))
         if self._knows(hero, pid) and rank < need_rank:         # D-287: a recipe above your rank is not shown (an old button)
@@ -9694,6 +9746,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 body.append(t.t("prof.masterwork_line", pct=f"{round(100 * chance, 1):g}"))
         elif item.get("kind") == "furniture":                   # D-116: 🪑 camp furniture
             body.append(t.t("prof.furniture_out", desc=t.t(item["desc_key"])))
+        elif out_id in self._pbag_defs():                       # D-339 (0.62): 🎒 a profession backpack
+            pdef_bag = self._pbag_defs()[out_id]
+            body.append(t.t("pack.recipe_out", prof=self._prof_name(pdef_bag["profession"]), per=pdef_bag["per_type"]))
         elif item.get("food"):                                  # D-115: 🍲 rations for the camp's pantry
             body.append(t.t("camp_prof.food_out", rations=item["food"]))
         elif item.get("heal"):
@@ -9721,9 +9776,13 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             actions.append(Action(id="pbooks", label=t.t("books.button")))
             actions.append(self._corder_recipe_action(rid))     # D-335: 📜 an artisan with the book can make it
         elif pid not in stations:
-            body.append(t.t("activity.busy") if hero.activity else t.t("prof.no_station"))
+            body.append(t.t("activity.busy") if hero.activity else self._no_station_line(pid))
         else:
             times = max_times(rdef, hero.backpack, hero.energy, usable, pool["left"] if pool else None)     # D-322: + the fund
+            fit = self._make_fit_times(hero, rdef, times, (lambda n: fund_draw(rdef, hero.backpack, usable, n)) if usable else None)
+            if fit < times:                                     # D-338 (0.62): what comes out has to fit in the backpack
+                body.append(self._bag_no_room(hero, out_id) if not fit else t.t("pack.make_fit", n=fit))
+                times = fit
             # D-189 (owner): every amount at once, small buttons with just the number side by side, and a wide ↩️ Volver.
             amounts = [n for n in self._prof_cfg().get("make_amounts", [1, 5]) if n <= times]
             for n in amounts:
@@ -9742,7 +9801,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 body.append(t.t("prof.missing_line", items=self._item_list(missing)))
             elif draw and sum(draw.values()) > pool["left"]:                # D-322: more than today's cap in one make
                 body.append(t.t("fcraft.over_cap", left=pool["left"], cap=self._fund_cap()))
-            elif not times:
+            elif not times and self._make_fits(hero, rdef, 1, draw):         # D-338: no room was said above
                 body.append(self._no_energy_notice(hero))
         layout = [len(actions), 1] if actions else []       # D-189: the amounts in one row, ↩️ Volver wide below
         station = "cook" if pid == COOK_PROFESSION else branch     # D-192: a kitchen recipe goes back to 🍲 Cocinar
@@ -9781,7 +9840,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._recipe_view(hero, rid, page, notice=t.t("activity.busy"))
         stations, where = self._stations_here(hero)
         if pid not in stations:
-            return self._recipe_view(hero, rid, page, notice=t.t("prof.no_station"))
+            return self._recipe_view(hero, rid, page, notice=self._no_station_line(pid))
         rank = self._prof_rank(hero, pid)
         if rank < int(rdef.get("min_rank", 1)):
             return self._recipe_view(hero, rid, page, notice=t.t("prof.locked", need=rdef["min_rank"], name=self._prof_name(pid), rank=rank))
@@ -9797,6 +9856,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         draw = fund_draw(rdef, hero.backpack, usable, times) if usable else {}
         if draw and sum(draw.values()) > pool["left"]:           # D-322: never past today's cap (nothing spent)
             return self._recipe_view(hero, rid, page, notice=t.t("fcraft.over_cap", left=pool["left"], cap=self._fund_cap()))
+        if not self._make_fits(hero, rdef, times, draw):        # D-338 (0.62): what comes out does not fit (nothing spent)
+            return self._recipe_view(hero, rid, page, notice=self._bag_no_room(hero, next(iter(rdef["output"]))))
         cost = int(rdef.get("energy", 1)) * times
         if hero.energy < cost:
             return self._recipe_view(hero, rid, page, notice=self._no_energy_notice(hero))
@@ -9860,6 +9921,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             lines.append(t.t("prof.gear_worn" if worn else "prof.gear_made"))
         elif item.get("kind") == "furniture":                               # D-116: 🪑 where to place it
             lines.append(t.t("prof.furniture_made"))
+        elif out_id in self._pbag_defs():                                   # D-339 (0.62): 🎒 it goes on by itself if it can
+            lines += self._pbag_auto_wear(hero, out_id) or [t.t("pack.made_hint")]
         if item.get("belt"):
             self._refill_belt(hero)
         self.bus.publish(ItemCrafted(hero.id, rid, out_id, made))
@@ -9958,8 +10021,11 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         [ES]
         Qué hace: dice qué libros de recetas le faltan al héroe para una receta: una de rango 25 o más pide el libro del 25 de
         su oficio; de 50 o más, también el del 50; de 75 o más, también el del 75 (E-222). Vale para todos los oficios.
+        D-339 (0.62): una receta con no_book (las 🎒 mochilas de oficio grandes) no pide libro.
         La llaman: _station_view, _recipe_view, _make, _prof_gain y _book_opens. Si cambia, afecta: qué recetas se ven y se hacen.
         """
+        if rdef.get("no_book"):                         # D-339: the 🎒 profession backpacks need no 📚 book
+            return []
         owned = set(hero.recipe_books or [])
         pid = rdef["profession"]
         return [r for r in profession_rules.books_for(int(rdef.get("min_rank", 1)), self._books_cfg())
@@ -9969,6 +10035,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         """Profession -> the book ranks some of its recipes need, in catalog order (professions without such recipes are out)."""
         need: dict[str, set[int]] = {}
         for rdef in self._recipes().values():
+            if rdef.get("no_book"):                     # D-339: the 🎒 profession backpacks open no book
+                continue
             for r in profession_rules.books_for(int(rdef.get("min_rank", 1)), self._books_cfg()):
                 need.setdefault(rdef["profession"], set()).add(r)
         return {pid: sorted(need[pid]) for pid in self._prof_catalog() if pid in need}
@@ -12194,7 +12262,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             *([] if cdef.get("system") == "chain" else
               [t.t("hero.resource_line", resource=t.t(f"resource.{cdef['resource']}"), max=cdef.get("resource_max", 100))]),
             self._coins_line(hero),
-            t.t("hero.inv_link", n=self._bag_used(hero), cap=self._bag_cap(hero)),     # same count as "space in the backpack" (D-87)
+            t.t("hero.inv_link", n=self._bag_types_used(hero), cap=self._bag_types_cap(hero)),     # D-338 (0.62): the types, as 🎒 Mochila
             self._hero_trades_line(hero),                               # D-109: ⚒️ Oficios (/oficios)
             "",
             # D-242.1: con una actividad en marcha, el Estado dice cuánto falta EN TOTAL, no solo de la vuelta
@@ -12362,24 +12430,28 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return " · ".join(parts)
 
     def _bag_view(self, hero: Hero) -> View:
-        """The backpack hub: what each button holds (it never lists everything you carry), the space line, health.
+        """The backpack hub: what each button holds (it never lists everything you carry), the types line, health.
 
         [ES]
         Qué hace: explica para qué sirve cada botón (🛡️ Equipo, 🧪 Pociones, 💰 Monedas, 📦 Recursos) en lugar de
-        listar todo lo que llevas: con miles de cosas no se podría leer (pedido del dueño). Muestra el espacio
-        (o la mochila llena, D-90). Son 4 botones (D-75): para volver al héroe está 👤 Héroe en el menú de abajo.
+        listar todo lo que llevas: con miles de cosas no se podría leer (pedido del dueño). D-338 y D-339 (0.62): la mochila
+        cuenta tipos: dice cuántos tipos llevas de cuántos (hasta 30 de cada uno), el equipo suelto aparte, qué cuenta y qué no,
+        las 🎒 mochilas de oficio puestas y, si pasas un tope, que no pierdes nada. 5 botones (EXTRA_BUTTON_KINDS "bag"): el 5.º,
+        🎒 Mochilas de oficio, para ponérselas y quitárselas (pedido del dueño). Para volver al héroe está 👤 Héroe en el menú.
         La llaman: el botón 🎒 Mochila de la ficha del héroe y el atajo /inv.
-        Si cambia, afecta: cómo llega el jugador a su equipo, pociones, monedas y recursos.
+        Si cambia, afecta: cómo llega el jugador a su equipo, pociones, monedas, recursos y mochilas de oficio.
         """
         t = self.texts
-        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))
-        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources")]
+        body = [t.t("bag.intro"), t.t("bag.help_gear"), t.t("bag.help_potions"), t.t("bag.help_wallet"), t.t("bag.help_resources"),
+                t.t("pack.help_pbags")]
         body += self._scroll_bag_lines(hero)            # D-326: 🗺️ map scrolls are not in 📦 Recursos: /pergaminos
-        body += ["", space, self._status_line(hero)]
+        body += ["", self._bag_space_line(hero), t.t("pack.help_count", per=self._pack_per_type())]
+        body += self._pbag_worn_line(hero) + self._bag_over_lines(hero)      # D-338: 🎒 worn, and "nothing is lost" over a cap
+        body += ["", self._status_line(hero)]
         body += self._recovery_lines(hero, hero_stats(self._kit(hero), hero.level)["max_hp"])
         actions = [Action(id="gear", label=t.t("gear.button_new" if hero.gear_new else "gear.button")),
                    Action(id="potions", label=t.t("potions.button")), Action(id="wallet", label=t.t("wallet.button")),
-                   Action(id="resources", label=t.t("resources.button"))]
+                   Action(id="resources", label=t.t("resources.button")), Action(id="pbags", label=t.t("pack.pbags_button"))]
         return View(kind="bag", title=t.t("bag.title"), body=body, actions=actions)
 
     def _resources_view(self, hero: Hero, page: int = 0, notice: str | None = None) -> View:
@@ -12390,6 +12462,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         🛡️ Equipo, ni las pociones, que están en 🧪 Pociones), de a resources.per_page por página. D-243 (0.33): una línea
         corta por recurso (emoji, nombre, ×cantidad y su código, "/07"); para qué sirve se ve tocando el código
         (_resource_detail).
+        D-338 y D-339 (0.62): cada línea dice cuántas llevas de cuántas caben de ese tipo ("🪵 Madera 7/30  /01"; 40 o 50 con la
+        🎒 mochila de su oficio puesta, marcada con 🎒: no ocupa tipo) y abajo los tipos que llevas de cuántos.
         La llaman: el botón 📦 Recursos de la mochila y ↩️ Volver del detalle de un recurso.
         Si cambia, afecta: dónde ve el jugador lo que recolectó (tope de 4 botones, D-75).
         """
@@ -12400,17 +12474,20 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                        key=lambda kv: (-kv[1], kv[0]))
         pages = max(1, (len(owned) + per - 1) // per)
         page %= pages
+        pockets = self._pbag_pockets(hero)              # D-338: what goes in a worn 🎒 profession backpack (no type)
         body = [t.t("resources.intro")]
         for item_id, n in owned[page * per: page * per + per]:
             item = self.content.items[item_id]
             body.append(t.t("resources.line", emoji=item["emoji"], item=t.t(item["name_key"]), n=n,
+                            cap=self._bag_type_cap(hero, item_id, pockets), mark=t.t("pack.pocket_mark") if item_id in pockets else "",
                             code=self._resource_code(item_id)))
         if not owned:
             body.append(t.t("resources.none"))
         if pages > 1:
             body.append(t.t("resources.page", n=page + 1, total=pages))
-        space = self._bag_full_line(hero) if self._bag_full(hero) else t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))
-        body += ["", space]
+        if any(item_id in pockets for item_id, _ in owned):
+            body.append(t.t("pack.pocket_legend"))
+        body += ["", self._bag_space_line(hero)] + self._bag_over_lines(hero)
         actions = [Action(id=f"res:{page + 1}", label=t.t("resources.more"))] if pages > 1 else []
         actions.append(Action(id="bag", label=t.t("menu.back")))
         return View(kind="resources", title=t.t("resources.title"), body=body, actions=actions, notice=notice)

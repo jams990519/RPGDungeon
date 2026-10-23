@@ -23,10 +23,11 @@ Depende de: content/balance.yaml (bloque market; shop.sell_ratio para mostrar lo
     bag_coins y chest_recipe para el precio de referencia de 💰 bolsas y 🪎 cofres), content/items.yaml (kind, price, code,
     slot, req_level, masterwork), content/locales/es_mercado.yaml y en_mercado.yaml (textos), engine.hero (Hero) y las
     ayudas de GameService (_money, _gear_name, _gear_status, _gear_stats_text, _ench_defs, _ench_label, _forget_piece,
-    _bag_used, _bag_cap, _bag_full_line, _refill_belt, _fmt_duration, _seconds, _join, _load, _save, _push_each, _codes,
+    _refill_belt, _fmt_duration, _seconds, _join, _load, _save, _push_each, _codes,
     _code_target, _upgrades_here, _camp_service, _main_view, _today); D-326: content/balance.yaml map_scroll (price_min,
     price_max) y las ayudas de MapScrollMixin (_scroll_item, _scroll_cfg, _scroll_find, _scroll_take, _scroll_add,
-    _scroll_summary, _scroll_new)
+    _scroll_summary, _scroll_new); D-338 (0.62): las de BackpackMixin (engine/service/backpack.py: _bag_room, _bag_why,
+    _bag_space_line, _pbag_hint) para 📦 Recoger: cada cosa entra hasta el tope de su tipo (o del equipo suelto)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (borra "market_open" con cualquier botón que no sea
     del mercado; _idle_action manda MARKET_ACTIONS a _market_action), text() (los códigos /c1 /s1 /b07 /k1 /o1 con
     market_code, y el texto suelto con un borrador abierto: _market_typed), tick() (_market_tick: vencimientos y avisos de
@@ -90,7 +91,7 @@ Si cambias esto, revisa:
     - Números: balance.yaml market (tax, delivery_minutes, order_days, max_orders, max_units, price_min, price_max,
       price_buttons, ask_buttons, per_page, log_days); el registro de balance (diseno/03-personaje/balance.md)
     - Pantallas y botones: HUB_KINDS ("market" y "market_cats": hasta 8 botones, "market" con 📜 Pedidos de fabricación desde la
-      0.59; "market_cats" 9 desde la 0.50 con 🗺️ Mapas,
+      0.59; "market_cats" 9 desde la 0.50 con 🗺️ Mapas y 10 desde la 0.62 con 🎒 Mochilas de oficio,
       EXTRA_BUTTON_KINDS), el layout del borrador (filas de precio y
       cantidad, ✅ Publicar y ↩️ Volver a lo ancho) y los ids "mkt…" (64 bytes como máximo en Telegram)
     - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
@@ -115,10 +116,11 @@ from engine.world import mapgen
 
 # Button ids of the market: "mkt" (the hub) and "mkt:<what>[:<args>]". [ES] Los botones del mercado (ids estables).
 MARKET_ACTIONS = ("mkt",)
-# The 7 categories of 🛍️ Comprar, in button order. [ES] Las categorías de las órdenes de venta, en el orden de sus botones
+# The categories of 🛍️ Comprar, in button order. [ES] Las categorías de las órdenes de venta, en el orden de sus botones
 # (ids estables: van en los botones "mkt:cat:<categoría>" y en las claves del índice "sell:<categoría>").
 MARKET_CATEGORIES = ("weapons", "armor", "jewels", "remedies", "furniture", "food", "coinbags",
-                     "maps")         # D-326 (0.50): 🗺️ Mapas, the 🧭 Explorador's map scrolls (one per order, each with its zones)
+                     "maps",         # D-326 (0.50): 🗺️ Mapas, the 🧭 Explorador's map scrolls (one per order, each with its zones)
+                     "packs")        # D-339 (0.62): 🎒 Mochilas, the gathering professions' profession backpacks (kind prof_bag)
 # Goods that are coins kept apart (Hero.bags, Hero.chests), not backpack items. [ES] 💰 bolsas y 🪎 cofres.
 COIN_GOODS = ("bags", "chests")
 # Typed codes of the market lists. [ES] /c1: una oferta de 🛍️ Comprar; /s1: algo tuyo de 🏷️ Vender; /b07: pedir el recurso con
@@ -180,6 +182,8 @@ class MarketMixin:
             return "food"
         if kind == "map_scroll":                         # D-326: 🗺️ map scrolls
             return "maps"
+        if kind == "prof_bag":                           # D-339 (0.62): 🎒 profession backpacks (only the ones not on)
+            return "packs"
         return None
 
     def _mkt_is_resource(self, good: str) -> bool:
@@ -1238,13 +1242,14 @@ class MarketMixin:
                 actions.append(Action(id="mkt:get", label=t.t("market.collect_button")))
             else:
                 body += ["", t.t("market.collect_where")]
-        body += ["", t.t("batch.space", used=self._bag_used(hero), cap=self._bag_cap(hero))]
+        body += ["", self._bag_space_line(hero)]        # D-338 (0.62): 🎒 types and loose gear
         actions.append(Action(id="mkt", label=t.t("menu.back")))
         return View(kind="market_box", title=t.t("market.box_title"), body=body, actions=actions, notice=notice)
 
     def _market_collect(self, hero: Hero) -> View:
         """📦 Recoger: everything ready that fits. Coins, 💰 bags and 🪎 chests always fit; items as far as the backpack has
-        room; a piece whose ✨/✒️ clashes with the copy you hold waits (rule 7). What stays, stays (never lost)."""
+        room (D-338, 0.62: each up to its type's cap, a new type only with a free one, gear up to the loose-pieces cap); a piece
+        whose ✨/✒️ clashes with the copy you hold waits (rule 7). What stays, stays (never lost); the notice says which cap."""
         t = self.texts
         if not self._mkt_can_collect(hero):
             return self._market_box_view(hero, notice=t.t("market.collect_where"))
@@ -1253,6 +1258,7 @@ class MarketMixin:
         got: list[str] = []
         stays: list[dict[str, Any]] = []
         full = clash = False
+        blocked: list[str] = []                           # D-338: what waits for room, to say which cap
         for entry in box:
             good = entry.get("good", "")
             if float(entry.get("at", 0)) > now:
@@ -1267,9 +1273,10 @@ class MarketMixin:
                 setattr(hero, good, int(getattr(hero, good)) + n)
                 got.append(t.t("market.box_item", item=self._mkt_label(entry), n=n))
                 continue
-            if entry.get("scroll"):                       # D-326: a 🗺️ scroll comes back as its own copy (needs 1 of space)
-                if self._bag_used(hero) >= self._bag_cap(hero):
+            if entry.get("scroll"):                       # D-326: a 🗺️ scroll comes back as its own copy (D-338: 1 of its type)
+                if self._bag_room(hero, self._scroll_item()) < 1:
                     full = True
+                    blocked.append(self._scroll_item())
                     stays.append(entry)
                     continue
                 self._scroll_add(hero, entry["scroll"])
@@ -1284,10 +1291,11 @@ class MarketMixin:
                 clash = True
                 stays.append(entry)
                 continue
-            room = max(0, self._bag_cap(hero) - self._bag_used(hero))
+            room = self._bag_room(hero, good)            # D-338: up to its type's cap (or the loose-gear cap)
             take = min(n, room)
             if take <= 0:
                 full = True
+                blocked.append(good)
                 stays.append(entry)
                 continue
             hero.backpack[good] = hero.backpack.get(good, 0) + take
@@ -1303,12 +1311,14 @@ class MarketMixin:
             got.append(t.t("market.box_item", item=self._mkt_label(entry), n=take))
             if take < n:
                 full = True
+                blocked.append(good)
                 stays.append({**entry, "n": n - take, **({"wear": wear[take:]} if wear else {})})
         self._mkt_box_put(hero.id, stays)
         self._refill_belt(hero)
         lines = [t.t("market.collected", items=", ".join(got))] if got else []
-        if full:
-            lines.append(t.t("market.collect_full", line=self._bag_full_line(hero)))
+        if full:                                          # D-338: which cap keeps the rest in 📦 Entregas
+            lines.append(t.t("market.collect_full", line=self._bag_why(hero, blocked)))
+            lines += self._pbag_hint(hero, blocked)
         if clash:
             lines.append(t.t("market.collect_clash"))
         if not lines:

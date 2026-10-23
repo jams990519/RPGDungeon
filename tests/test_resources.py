@@ -135,9 +135,11 @@ def test_gathering_only_gives_the_zone_resources_and_depletes(service, clock):
 
 
 def test_backpack_space_stops_gathering(service, clock):
+    # [ES] D-338 (0.62): el lote se corta cuando lo de la zona llega al tope de su tipo (30), ya no al espacio de 60
     make_hero(service)
     hero = service._load("test:1")
-    hero.backpack["piedra"] = service._bag_cap() - service._bag_used(hero) - 1
+    per = service._pack_per_type()
+    hero.backpack.update({res: per - 1 for res in service._zone_resources(0, 0)})
     service._save(hero)
     service.act("test:1", "do:gather:10")
     pushes = []
@@ -145,7 +147,7 @@ def test_backpack_space_stops_gathering(service, clock):
         clock.advance(3600)
         pushes += [v for acc, v in service.tick() if acc == "test:1"]
     hero = service._load("test:1")
-    assert service._bag_used(hero) == service._bag_cap() and hero.activity is None
+    assert all(hero.backpack[res] == per for res in service._zone_resources(0, 0)) and hero.activity is None
     assert len(pushes) == 1 and "mochila" in (pushes[0].notice or "").lower()   # one message at the end, not one per step
 
 

@@ -140,7 +140,7 @@ market:
   collect_where: "🚶 To collect, go to a 🔥 campfire or to your camp."
   collect_hint: "📦 Collect it at any 🔥 campfire or at your camp: /market → 📦 Deliveries."
   collected: "📦 You collected: {items}."
-  collect_full: "🎒 The rest waits in 📦 Deliveries: {line}"
+  collect_full: "🎒 The rest waits in 📦 Deliveries because it doesn't fit in your backpack. {line}"
   collect_clash: "✨ A piece waits: you already carry the same one with another enchantment or signature."
   collect_nothing: "📦 Nothing has arrived yet."
   arrived_title: "📦 Your delivery arrived!"

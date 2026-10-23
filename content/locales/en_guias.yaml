@@ -77,7 +77,7 @@ guides_page:
       🔢 You choose how many rounds in a row ({batches} or All) and I'll let you know when it's done.
       📉 Each unit lowers that resource by {stock_unit}%, and it comes back on its own: the 6 base ones (wood, stone, fiber, herb, metal and clay) at {base_regen}% per hour (about {base_units} units); the terrain's own ones and fish at {stock_regen}%. Once depleted, it gives nothing.
       ✨ On a node, its resource yields ×{node_yield}, depletes more slowly and sometimes ({node_rare}%) gives something rare.
-      🎒 With a full backpack ({bag_cap}) you can't gather: sell or use things.
+      🎒 The backpack holds up to {bag_types} types and {bag_per_type} of each: what fills up stops being gathered and the rest goes on. With your profession's 🎒 backpack, its resources go apart, up to {pbag_high} of each (❓ /d67).
       🏕️ No fights show up inside a camp's territory. With the 🧱 Wall, your camp's land harvests by itself {harvest_pct}% of what grows back, for the 💰 fund.
       ⚒️ Without the profession you get the basics; once you learn it, you sometimes get an extra unit and, with rank, something rare.
   hunt:

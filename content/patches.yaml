@@ -1176,3 +1176,20 @@ v0_61:
     - "👁️ At the castle the enemies already know where you are: normal waves come 25% stronger. ⏫ Next level warns you before you go up."
     - "🛡️ Defenses hold them back as always: with the defenses built and repaired, waves can still be won. The 🗼 watchtower's warning and each wave's notice say how strong it comes."
     - "🌊 The city's growing waves and the 🌙 Trial Night don't change, and you lose nothing you have. More in ❓ /d66."
+
+v0_62:
+  version: "0.62"
+  title: "🎒 Lost Realms 0.62: la mochila cuenta tipos y llegan las mochilas de oficio"
+  title_en: "🎒 Lost Realms 0.62: the backpack counts types and profession backpacks arrive"
+  notes:
+    - "🎒 Tu mochila ya no tiene 60 de espacio: ahora lleva hasta 50 tipos de cosas distintas y hasta 30 de cada una. Puedes juntar mucho más antes de volver a vender. Lo que llevas puesto y el cinturón siguen sin contar."
+    - "🛡️ Las piezas de equipo sueltas van aparte, hasta 20 (cada una es única). 📦 Recursos muestra cuántas llevas de cada cosa («🪵 Madera 7/30») y 🎒 Mochila cuántos tipos usas."
+    - "🧺 Cuando una cosa llega a su tope deja de juntarse y lo demás sigue entrando; el lote termina solo cuando ya no cabe nada de la zona, y te dice qué se llenó. Lo que encuentras (botín, hallazgos, premios) entra siempre."
+    - "🎒 Nuevas mochilas de oficio: el 🪓 Leñador, el ⛏️ Minero, el 🌿 Herbolario, el 🎣 Pescador y el 🔪 Desollador hacen la suya en cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento: la básica desde el rango 5 (40 de cada recurso de su oficio) y la grande desde el 40 (50). Puesta, sus recursos van aparte y no ocupan tipos. Te pones hasta 3, de oficios distintos, en 🎒 Mochila → 🎒 Mochilas de oficio. Se venden en el 🏛️ Mercado y se encargan. Más en ❓ /d30 y /d67."
+    - "🤝 Si ya llevabas más de lo que permiten los topes nuevos, no pierdes nada: solo no entra más de eso hasta que bajes."
+  notes_en:
+    - "🎒 Your backpack no longer has 60 of space: it now holds up to 50 different types of things and up to 30 of each. You can gather much more before going back to sell. What you wear and the belt still don't count."
+    - "🛡️ Loose gear pieces go apart, up to 20 (each one is unique). 📦 Resources shows how many you carry of each thing («🪵 Wood 7/30») and 🎒 Backpack how many types you use."
+    - "🧺 When a thing reaches its cap it stops being gathered and the rest keeps coming in; the batch only ends when nothing of the zone fits any more, and it tells you what filled up. What you find (loot, finds, rewards) always goes in."
+    - "🎒 New profession backpacks: the 🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist, 🎣 Fisher and 🔪 Skinner make their own at any 🔥 Campfire or at your camp's 🔥 Hearth: the basic one from rank 5 (40 of each resource of its profession) and the large one from rank 40 (50). Worn, its resources go apart and use no types. You wear up to 3, of different professions, in 🎒 Backpack → 🎒 Profession backpacks. They sell in the 🏛️ Market and can be ordered. More in ❓ /d30 and /d67."
+    - "🤝 If you already carried more than the new caps allow, you lose nothing: only no more of it comes in until you go below."

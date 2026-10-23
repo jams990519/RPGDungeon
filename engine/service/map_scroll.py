@@ -19,7 +19,8 @@ Depende de: content/balance.yaml (bloque map_scroll; map_view.fog.color_at; expl
     (pergamino_mapa, kind map_scroll), content/locales/es_pergamino.yaml y en_pergamino.yaml (textos), engine.hero (Hero) y
     las ayudas de GameService (_fog_cfg, _fog_stage, _known_pct, _known_terrains, _terrain_label, _zone, _zone_name,
     _explorer_rank, _explorer_cfg, _prof_gain, _prof_name, _spend_energy, _no_energy_notice, _item_list, _codes, _code_target,
-    _status_line)
+    _status_line); D-338 (0.62): _bag_room y _bag_no_room de engine/service/backpack.py (los pergaminos son un tipo de la
+    mochila, hasta 30: hacer uno pide lugar)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): _idle_action (SCROLL_ACTIONS: "scrolls" y "scr:…", también
     ocupado: es un menú), text() (/pm1 con SCROLL_CODE_RE, fuera de combate), COMMANDS (/pergaminos, /scrolls), _load
     (_scroll_sync), _fog_cell y _zone_view (_charted_set), _known_terrains y _fog_notices (las zonas de Hero.charted), _map_view
@@ -323,7 +324,8 @@ class MapScrollMixin:
         return rows
 
     def _scroll_missing(self, hero: Hero, zones: list[str]) -> list[str]:
-        """Why a scroll cannot be made now (empty when it can): too few zones, materials or energy."""
+        """Why a scroll cannot be made now (empty when it can): too few zones, materials, energy or, since 0.62 (D-338), no
+        room for it in the backpack (its type full at 30, or a new type with none free)."""
         t = self.texts
         cfg = self._scroll_cfg()
         lines = []
@@ -336,6 +338,10 @@ class MapScrollMixin:
             lines.append(t.t("scroll.need_items", items=self._item_list(missing)))
         if hero.energy < int(cfg.get("energy", 5)):
             lines.append(self._no_energy_notice(hero))
+        if not missing:                                 # D-338 (0.62): the new scroll needs room in its type
+            after = {i: n - materials.get(i, 0) for i, n in hero.backpack.items() if n - materials.get(i, 0) > 0}
+            if self._bag_room(hero, self._scroll_item(), after) < 1:
+                lines.append(self._bag_no_room(hero, self._scroll_item()))
         return lines
 
     def _scroll_make_view(self, hero: Hero, notice: str | None = None) -> View:
