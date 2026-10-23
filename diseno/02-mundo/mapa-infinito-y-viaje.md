@@ -411,7 +411,7 @@ Coordenadas 1, 2 · Lejanía 2
 >
 > - **Ejemplo:** la madera de una zona vuelve 3 unidades por hora; con un 🪓 Leñador de rango 10 que taló ahí, 3,6 por hora durante un día; con uno de rango 50 o más, 6 por hora (de vacía a llena en ~8 h en vez de ~17).
 > - Uno más fuerte reemplaza al que había; uno más débil no lo acorta. Sin el oficio aprendido (rango 0) no hay cuidado.
-> - **📍 Zona lo muestra** debajo de los recursos: "🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min".
+> - **Dónde se ve:** hasta la 0.62, 📍 Zona debajo de los recursos ("🌱 🪵 Madera vuelve más rápido por 🪓 Leñador: +20 % · 18 h 0 min"). Desde la 0.62.1 (D-340, pedido del dueño) ya no sale en 📍 Zona: está en 🧑‍🏫 Entrenador → 📋 Mis oficios → 🌱 Recursos que vuelven, con la regla explicada.
 > - **No cuenta** en la 🌾 cosecha de la muralla (que lee lo que vuelve sin el ×3 ni el ⛲ Pozo, E-248) ni en ningún otro lugar: solo en lo que queda para recolectar.
 > - En el código: `_tend_after` (lo escribe al recolectar, también al 🪓 talar y 🎣 pescar), el registro "tend" de la zona en el espacio `stock` y `_stock` (las horas de más hasta `until`); preguntas: E-283 (P-294).
 

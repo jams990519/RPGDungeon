@@ -64,6 +64,14 @@ batch:
 
 tend:
   zone_line: "🌱 {emoji} {name} grows back faster thanks to {prof}: +{pct} % · {left}"
+  button: "🌱 Faster regrowth"
+  title: "🌱 Faster regrowth"
+  intro: "When you gather a resource with its profession learned (🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist or 🎣 Fisher), that resource grows back faster in that zone for {hours} h: +{per} % per profession rank, up to +{max} %. Every round you gather renews it."
+  yours: "⚒️ What your professions give today:"
+  prof_line: "{name} · rank {rank}: +{pct} %"
+  yours_none: "⚒️ You have no gathering profession yet: learn one in 📚 Learn professions."
+  here: "📍 In your zone right now:"
+  here_none: "📍 Nothing grows back faster in your zone right now."
 
 story:
   journal:

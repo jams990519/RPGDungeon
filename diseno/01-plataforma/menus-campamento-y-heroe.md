@@ -101,6 +101,8 @@ Lo pidió el dueño: "cuando el jugador vuelve, le presenta los oficios" y le cu
 - **Más adelante:** 🏗️ Construcción con tu propio campamento y la 🎓 especialización al rango 25 y la segunda al 75.
 - Botones: 📋 Mis oficios (una línea por oficio con su código), 📚 Aprender oficios, 🎓 Especialización y ↩️ Volver. El ✨ Encantamiento ya no tiene botón aquí: se aprende como los demás. Se abre también con /entrenador y estando ocupado.
 
+**Desde la 0.62.1 (D-340, pedido del dueño: "de este apartado vas a quitar los bonos, déjalo en las profesiones como un botón explicando"):** 📋 Mis oficios suma el botón **🌱 Recursos que vuelven** (📚 Aprender oficios, 🌱 y ↩️ Volver). Explica cómo un oficio de recolección hace que su recurso vuelva más rápido en la zona (+2 % por rango, hasta +100 %, por 24 h), dice cuánto da cada uno de los tuyos y lista lo que vuelve más rápido en tu zona ahora. Esas líneas 🌱 ya no salen en 📍 Zona.
+
 **Desde la lista de recetas (D-321):** 🪚 Refinar, 🛠️ Fabricar y 🍲 Cocinar son una lista con código /rN (8 por página, agrupadas por oficio) con los botones ➡️ Ver más, ✅ Solo las que puedo hacer / 📜 Ver todas, 📚 (si cabe) y ↩️ Volver; ya no hay un botón por receta.
 
 **Desde la 0.44 (D-306, D-315):** un botón más, **📚 Libros de recetas**, cuando tienes un libro o hay uno a la venta para ti (un oficio en el rango 25, 50 o 75): los libros que tienes, los que puedes comprar (🥈2, 🥈10 y 🥈25) con cuántas recetas abre cada uno y un botón para comprarlo ([Profesiones](../07-economia/profesiones.md) §0.8). Con 🎖️ Títulos y 🎓 Especialización el Entrenador llega a 6 botones (`EXTRA_BUTTON_KINDS` "trainer", de 2 en 2 y ↩️ Volver ancho abajo: [2, 2, 1, 1]), dos más que el tope de 4 (D-75), como ❓ Dudas y ⚙️ Opciones (D-297).
