@@ -1468,7 +1468,7 @@ hero:
   resource_line: "🔷 {resource}: {max}/{max}"
   class_short: "{cls}"
   coins_line: "{coins}"
-  inv_link: "🎒 Mochila: {n}/{cap} — /inv"
+  inv_link: "🎒 Mochila: {n}/{cap} tipos — /inv"   # [ES] D-338 (0.62): los tipos de artículo, como 🎒 Mochila
   skills_link: "🌟 Habilidades: /habilidades"
   trades_link: "⚒️ Oficios: /oficios"
   status_title: "Estado: {status}"
@@ -1506,7 +1506,7 @@ bag:
   button_new: "🎒 Mochila 🆕"
   used: "Usaste {item}: recuperas {amount} de vida."
   full_hp: "❤️ Ya tienes la vida llena: guarda tus remedios para cuando los necesites."
-  full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90: lo que encuentras igual entra
+  full_line: "🎒 Mochila llena ({used}/{cap}): vende o usa cosas para volver a recolectar o comprar."   # [ES] D-90. Sin uso desde la 0.62 (D-338): lo reemplazan pack.space_full y los avisos de es_mochila.yaml
 
 health:                       # [ES] pantalla 🩺 Salud del héroe (pedido del dueño): el estado del cuerpo y cómo se cura
   button: "🩺 Salud"
@@ -1529,7 +1529,7 @@ resources:                    # [ES] pantalla 📦 Recursos de la mochila (pedid
   button: "📦 Recursos"
   title: "📦 Recursos"
   intro: "Lo que juntaste. Toca el código de un recurso para ver para qué sirve:"     # [ES] D-243 (0.33): la lista corta, la explicación detrás del código
-  line: "{emoji} {item} ×{n}  {code}"
+  line: "{emoji} {item} {n}/{cap}{mark}  {code}"   # [ES] D-338 (0.62): cuántas llevas de cuántas caben de ese tipo; {mark} = " 🎒" si va en tu mochila de oficio
   detail_title: "{emoji} {item} · {code}"
   detail_have: "Tienes ×{n}."
   no_code: "⚠️ No hay ningún recurso con el código {code}."
@@ -2161,7 +2161,7 @@ batch:
   ask_explore: "¿Cuánta energía quieres gastar explorando? Cada vez gasta 1 ⚡, tarda {minutes} min y suma entre 15 % y 30 % de la zona."
   energy: "⚡ Tienes {energy}."
   estimate: "⏱️ Cada vuelta tarda {step}; con toda tu energía ({n}), unas {total} en total. Las peleas que salgan lo alargan un poco."
-  space: "🎒 Espacio en la mochila: {used}/{cap}"
+  space: "🎒 Espacio en la mochila: {used}/{cap}"   # [ES] sin uso desde la 0.62 (D-338): lo reemplaza pack.space (es_mochila.yaml)
   explored: "🔎 Esta zona va explorada al {pct} %."
   around: "🔭 Alrededor: {done}/{total} zonas al 100 %."
   around_next: "Ahora estudias {name} ({x}, {y}), al {pct} %, sin moverte."
@@ -2190,7 +2190,7 @@ batch:
     stopped: "❌ Te detuviste: la energía de la vuelta en curso volvió."
     fight: "⚔️ Algo te interrumpió."
     energy: "⚡ Te quedaste sin energía."
-    bag_full: "🎒 La mochila está llena: vende en el mercader o aporta a la obra del Claro."
+    bag_full: "🎒 El lote terminó: en la mochila ya no cabe nada más de lo que hay en esta zona."   # [ES] D-338 (0.62): cada tipo lleno, o sin tipos libres para lo que falta
     depleted: "🪫 Esta zona está agotada por ahora: sus recursos vuelven con el tiempo."
     full_explored: "✅ Ya no queda nada por explorar desde aquí: tu zona y las de alrededor están al 100 %."
     auto_wait: "🩹 Tu vida estaba por debajo del {pct} %: tu héroe no pelea solo. La pelea te espera."     # [ES] D-114
@@ -2434,7 +2434,7 @@ prof:                         # [ES] D-109: ⚒️ Oficios, fase 1 (recolectar �
     potion: "pociones +{v} %"
     bandage: "vendas y ungüentos +{v} %"
     heal: "curaciones +{v} % (sanadores)"
-    bag: "+{v} de espacio en la mochila"
+    bag: "+{v} tipos en la mochila"   # [ES] D-339 (0.62): el beneficio "bag" (D-111) suma tipos desde que la mochila cuenta tipos
     sell: "+{v} % de monedas al vender"
     only_armor: "con {what}"
     only_weapon: "con {what}"

@@ -262,7 +262,8 @@ def test_tips_show_once_and_one_per_screen(service):
     make_hero(service)
     hero = service._load(ACC)
     hero.energy = 3
-    hero.backpack["madera"] = service._bag_cap(hero) + 5
+    materials = [i for i, it in service.content.items.items() if it.get("kind") == "material" and it.get("code")]
+    hero.backpack.update({i: 1 for i in materials[:service._bag_types_cap(hero) + 5]})     # D-338: no free type
     service._save(hero)
     first = [line for line in service.act(ACC, "home").body if line.startswith("💡")]
     second = [line for line in service.act(ACC, "home").body if line.startswith("💡")]

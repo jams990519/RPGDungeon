@@ -80,6 +80,7 @@ def test_talar_is_not_offered_without_wood_nor_in_the_lair(content, service, mon
 
 def test_talar_gives_only_wood_and_depletes_only_wood(service, clock):
     make_hero(service)                                          # the Claro: 🪵 madera and 🧵 fibra
+    service.content.balance["hero"]["backpack"]["per_type"] = 100      # test only: 20 rounds never reach a type's cap (D-338)
     view = service.act("test:1", "do:chop:20")
     assert view.kind == "activity" and view.title == "🪓 Talando" and "talar 20 veces" in view.notice
     hero = service._load("test:1")
@@ -147,14 +148,15 @@ def test_talar_stops_when_the_wood_runs_out_and_waits_while_it_is_out(service, c
 
 
 def test_talar_stops_with_a_full_backpack(service, clock):
+    # [ES] D-338 (0.62): 🪓 Talar se corta cuando la 🪵 madera llega al tope de su tipo (30)
     make_hero(service)
     hero = service._load("test:1")
-    hero.backpack["piedra"] = service._bag_cap() - service._bag_used(hero) - 1
+    hero.backpack["madera"] = service._pack_per_type() - 1
     service._save(hero)
     service.act("test:1", "do:chop:10")
     summary = run(service, clock, hours=3)
     hero = service._load("test:1")
-    assert service._bag_used(hero) == service._bag_cap() and hero.activity is None and "mochila" in summary.lower()
+    assert hero.backpack["madera"] == service._pack_per_type() and hero.activity is None and "mochila" in summary.lower()
     assert service.act("test:1", "chop").kind == "explore_menu"                # full: it does not start
 
 

@@ -160,7 +160,7 @@ specs:
   carpinteria:
     - {id: carpinteria_arqueria, emoji: "🏹", effects: [{kind: masterwork, types: [arco], value: 0.05}]}      # [ES] exclusivas: espec_arco_1 y _2
     - {id: carpinteria_escudos, emoji: "🛡️", effects: [{kind: masterwork, types: [baston], value: 0.05}]}    # [ES] madera dura: bastones y, cuando exista su ranura, escudos; exclusiva: 🛡️ paveses_roble
-    - {id: carpinteria_mobiliario, emoji: "🛒", effects: [{kind: perk, key: bag, value: 10}]}                 # [ES] un carro de mano: +10 de mochila; exclusiva: 🛒 carro_viveres
+    - {id: carpinteria_mobiliario, emoji: "🛒", effects: [{kind: perk, key: bag, value: 10}]}                 # [ES] un carro de mano: +10 de mochila (D-339, 0.62: +10 tipos); exclusiva: 🛒 carro_viveres
   herreria:
     - {id: herreria_armas, emoji: "⚔️", effects: [{kind: masterwork, types: [espada, daga], value: 0.05}]}  # [ES] exclusivas: espec_espada_1 y _2
     - {id: herreria_armero, emoji: "🛡️", effects: [{kind: masterwork, types: [placas], value: 0.05}]}      # [ES] exclusivas: espec_placas_1 y _2
@@ -168,7 +168,7 @@ specs:
   peleteria:
     - {id: peleteria_cuero, emoji: "🦺", effects: [{kind: masterwork, types: [cuero], value: 0.05}]}       # [ES] exclusivas: espec_cuero_1 y _2
     - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2 (retiradas en la 0.44: ya no hay malla, D-208; qué hacer con ella: P-243)
-    - {id: peleteria_talabarteria, emoji: "🎒", effects: [{kind: perk, key: bag, value: 10}]}             # [ES] alforjas y mochilas: +10 de mochila (las sillas de montar, con las monturas)
+    - {id: peleteria_talabarteria, emoji: "🎒", effects: [{kind: perk, key: bag, value: 10}]}             # [ES] alforjas y mochilas: +10 de mochila (D-339, 0.62: +10 tipos; las sillas de montar, con las monturas)
   sastreria:
     - {id: sastreria_tunicas, emoji: "🔮", effects: [{kind: masterwork, types: [tela], slots: [armadura], value: 0.05}]}                  # [ES] exclusivas: espec_tela_1 y _2
     - {id: sastreria_clima, emoji: "🧥", effects: [{kind: masterwork, types: [tela], slots: [cabeza, manos, piernas, pies], value: 0.05}]}   # [ES] el clima, cuando llegue
@@ -224,7 +224,7 @@ professions:
     branch: gather
     grandfather: true                          # [ES] D-272 (0.35): ya no sube solo, se aprende; quien lo practicaba antes lo conserva aprendido
     gathers: [madera, resina, corteza]       # [ES] D-183: también lo leñoso de cada terreno (💧 resina, 🍂 corteza)
-    perk: {bag: 10}                          # [ES] D-111: +10 de espacio en la mochila al rango 100 (crece parejo con el rango)
+    perk: {bag: 10}                          # [ES] D-111: +10 de espacio en la mochila al rango 100 (crece parejo con el rango). D-339 (0.62): desde que la mochila cuenta tipos (D-338), son +10 TIPOS (la parte entera)
   minero:
     emoji: "⛏️"
     name_key: profession.minero.name
@@ -404,6 +404,12 @@ stations:
     botica: [medicina]
     forja: [herreria]
     joyeria: [joyeria]
+  # [ES] D-339 (0.62, Claude, provisional): los oficios de recolección no tenían estación; hacen sus 🎒 mochilas de oficio "al
+  # fuego": en cualquiera de las 9 🔥 Fogatas y en el centro de tu campamento con su 🔥 Fogón construido (fire_camp: ids de
+  # content/camp_upgrades.yaml). GameService._stations_here los suma a las estaciones de ese lugar; 🛠️ Fabricar los lista (su
+  # rama "gather" cuenta como fabricación para la lista: _recipe_branch). Van aparte de claro/camp para no cambiar esas listas.
+  fire: [lenador, minero, herbolario, pescador, desollador]
+  fire_camp: [fogon]
 
 recipes:
   # ---- Refinado (1 ⚡, 6 de experiencia de oficio). [ES] Lo que sale vale como lo que entra en el mercader:
@@ -1704,6 +1710,22 @@ recipes:
   festin_miel: {profession: cocina, variant: miel, inputs: {carne: 4, pescado: 4, miel: 2, bayas: 2}, output: {festin: 1}, min_rank: 75, energy: 2, xp: 21}          # [ES] 12 → 27, sin 🌸 flor de luna
   # [ES] 0.28 (D-188): el material nuevo del 🌋 volcán. Bloques de vidrio de lava: 1 piedra y 1 obsidiana en vez de 3 piedras (7 → 3,5 al venderlo: no deja ganar).
   sillar_obsidiana: {profession: canteria, variant: obsidiana, inputs: {piedra: 1, obsidiana: 1}, output: {sillar: 1}, min_rank: 1, energy: 1, xp: 6}
+  # [ES] D-338 / D-339 (0.62): las 🎒 mochilas de oficio. "Solo las fabrica cada profesión, con su propio oficio": cada oficio de
+  # recolección hace la suya con sus recursos y algo de otro oficio (cuero, fibra o tela: nadie es autosuficiente, D-109), en
+  # cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento (stations.fire, abajo). La básica desde el rango 5 (40 por tipo) y la
+  # grande desde el 40 (50 por tipo; balance.yaml prof_backpacks). no_book: no piden 📚 libro de recetas (D-339: el dueño pidió
+  # que se puedan hacer desde rangos bajos; sin libros para los oficios de recolección). Los oficios de recolección no tienen
+  # tramos (balance.yaml recipe_tiers.professions): la experiencia es la escrita. Se pueden 📜 encargar (0.59).
+  mochila_lenador: {profession: lenador, inputs: {madera: 12, cuero_curtido: 2}, output: {mochila_lenador: 1}, min_rank: 5, energy: 2, xp: 12}
+  mochila_lenador_grande: {profession: lenador, inputs: {madera: 30, tablon: 6, cuero_curtido: 6}, output: {mochila_lenador_grande: 1}, min_rank: 40, energy: 4, xp: 24, no_book: true}
+  mochila_minero: {profession: minero, inputs: {piedra: 10, pieza_metal: 3, cuero_curtido: 2}, output: {mochila_minero: 1}, min_rank: 5, energy: 2, xp: 12}
+  mochila_minero_grande: {profession: minero, inputs: {piedra: 25, pieza_metal: 10, lingote: 3, cuero_curtido: 6}, output: {mochila_minero_grande: 1}, min_rank: 40, energy: 4, xp: 24, no_book: true}
+  mochila_herbolario: {profession: herbolario, inputs: {hierba_curativa: 8, fibra: 8, cuero_curtido: 2}, output: {mochila_herbolario: 1}, min_rank: 5, energy: 2, xp: 12}
+  mochila_herbolario_grande: {profession: herbolario, inputs: {hierba_curativa: 20, fibra: 20, tela_tejida: 4, cuero_curtido: 4}, output: {mochila_herbolario_grande: 1}, min_rank: 40, energy: 4, xp: 24, no_book: true}
+  mochila_pescador: {profession: pescador, inputs: {pescado: 12, fibra: 8, cuero_curtido: 1}, output: {mochila_pescador: 1}, min_rank: 5, energy: 2, xp: 12}
+  mochila_pescador_grande: {profession: pescador, inputs: {pescado: 30, fibra: 16, tela_tejida: 4, cuero_curtido: 4}, output: {mochila_pescador_grande: 1}, min_rank: 40, energy: 4, xp: 24, no_book: true}
+  mochila_desollador: {profession: desollador, inputs: {piel: 10, fibra: 6}, output: {mochila_desollador: 1}, min_rank: 5, energy: 2, xp: 12}
+  mochila_desollador_grande: {profession: desollador, inputs: {piel: 20, cuero_curtido: 8, tela_tejida: 3}, output: {mochila_desollador_grande: 1}, min_rank: 40, energy: 4, xp: 24, no_book: true}
 
   # ---- BEGIN GENERATED by tools/recipe_tiers.py (D-306, 0.44; D-328, 0.52). Do not edit by hand: change the tool or balance.yaml recipe_tiers and run it again.
   # [ES] Los tramos nuevos de los oficios de equipo (E-221): una receta por línea en los niveles 15, 25 … 95, desde

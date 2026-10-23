@@ -1,0 +1,74 @@
+# Texts of the backpack by item types and the 🎒 profession backpacks (D-338, confirmed; how it was applied: D-339, provisional;
+# 0.62).
+# [ES] Textos de la mochila por tipos de artículo y de las 🎒 mochilas de oficio (D-338, confirmada por el dueño el 23-oct-2026:
+# "quiero poder farmear mucho más, aunque tarde, y que el límite sea el inventario"; cómo se aplicó: D-339, provisional). Se junta
+# con es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/backpack.py (las líneas de la mochila, los avisos de qué
+# tope frena, la pantalla 🎒 Mochilas de oficio y sus códigos /mp1 /mq1), engine/service/game.py (🎒 Mochila, 📦 Recursos,
+# recolectar y sus lotes, el mercader, las recetas), market.py (📦 Recoger y la categoría 🎒 Mochilas) y ❓ /d67 (content/faq.yaml).
+# Una clave nueva va también en en_mochila.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave
+# que falta se ve como [clave].
+
+pack:                          # [ES] D-338: los números salen de balance.yaml hero.backpack y prof_backpacks
+  space: "🎒 Mochila: {used}/{cap} tipos (hasta {per} de cada uno) · 🛡️ Equipo suelto: {gear}/{gcap}"
+  space_full: "🎒 Mochila sin tipos libres ({used}/{cap}): vende, usa o deja algo para juntar o comprar cosas nuevas · 🛡️ Equipo suelto: {gear}/{gcap}"
+  help_count: "Cuenta cada tipo distinto que llevas (recursos, pociones, comida…), hasta {per} de cada uno. El equipo suelto va aparte; lo puesto y el cinturón no cuentan."
+  help_pbags: "🎒 Mochilas de oficio: guardan aparte los recursos de su oficio. Te pones hasta 3."
+  item_line: "{item}: {n}/{cap} en la mochila"
+  item_full: "{item} {n}/{cap}"
+  item_no_type: "{item} (sin tipos libres)"
+  why_full: "Llenos: {items}."
+  why_types: "Sin tipos libres ({used}/{cap}) para: {items}."
+  why_gear: "Equipo suelto lleno ({gear}/{gcap})."
+  gather_block: "🎒 No cabe más de lo que hay aquí. {why} Vende, usa o deja cosas para seguir."
+  no_room: "🎒 No cabe en la mochila. {why} Vende, usa o deja cosas para hacer lugar."
+  gear_full: "🛡️ Ya llevas {gear}/{gcap} piezas de equipo sueltas: vende, deja en la ⚔️ Armería o desencanta alguna para tener otra."
+  hint: "💡 Una 🎒 mochila de oficio sube a 40 o 50 el tope de los recursos de su oficio y no les cuenta tipos (❓ /d67)."
+  batch_full: "🎒 Ya no caben más: {items}. Lo demás siguió entrando."
+  batch_full_end: "🎒 Ya no caben más: {items}."
+  over_note: "🎒 Pasas un tope: no pierdes nada, pero hasta bajar de él no entra más de eso."
+  worn_line: "🎒 Mochilas de oficio puestas: {items}"
+  worn_item: "{prof} ({per} por tipo)"
+  pocket_mark: " 🎒"
+  pocket_legend: "🎒 = va en tu mochila de oficio: no ocupa tipo."
+  pbags_button: "🎒 Mochilas de oficio"
+  pbags_title: "🎒 Mochilas de oficio"
+  pbags_intro: "Una mochila de oficio puesta guarda aparte los recursos de su oficio: no ocupan tipos y caben hasta {low} o {high} de cada uno. Te pones hasta {slots}, de oficios distintos."
+  pbags_worn_title: "Puestas ({n}/{slots}):"
+  pbags_worn_line: "{code} {item} · {prof} · {per} por tipo · {kinds} {kinds|tipo|tipos} de su oficio contigo"
+  pbags_carried_title: "En la mochila:"
+  pbags_carried_line: "{code} {item} ×{n} · {prof} · {per} por tipo"
+  pbags_none: "Ninguna."
+  pbags_codes: "Toca /mp1 para ponerte una y /mq1 para quitártela."
+  pbags_how: "🔥 Cada oficio de recolección hace la suya en cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento (🛠️ Fabricar): la básica desde el rango {low_rank} ({low} por tipo) y la grande desde el {high_rank} ({high} por tipo). También se compran en el 🏛️ Mercado o se encargan (📜 Pedidos de fabricación)."
+  bad_code: "⚠️ {code} no está en la lista: mírala otra vez."
+  pbag_gone: "⚠️ Esa mochila ya no está donde estaba: mira la lista otra vez."
+  pbag_slots_full: "🎒 Ya llevas {slots} mochilas de oficio: quítate una primero (/mq1)."
+  pbag_on: "🎒 Te pusiste la {item}: tus recursos de {prof} van aparte, hasta {per} de cada uno."
+  pbag_swapped: "La {item} volvió a la mochila."
+  pbag_off: "🎒 Te quitaste la {item}: quedó en la mochila. Tus recursos de {prof} vuelven a contar como tipos ({used}/{cap})."
+  pbag_auto: "🎒 Te la pusiste: tus recursos de {prof} van aparte, hasta {per} de cada uno (🎒 Mochila → 🎒 Mochilas de oficio)."
+  made_hint: "🎒 Póntela en 🎒 Mochila → 🎒 Mochilas de oficio (/mochilas)."
+  recipe_out: "🎒 Mochila de oficio de {prof}: puesta, sus recursos van aparte, hasta {per} de cada uno, y no ocupan tipos."
+  make_fit: "🎒 Por el lugar en la mochila puedes hacer {n} ahora."
+  no_fire: "🔥 Las mochilas de oficio se hacen al fuego: en cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento."
+
+item:                          # [ES] D-339: los nombres de las mochilas de oficio (content/items.yaml, kind prof_bag)
+  mochila_lenador: "Mochila de leñador"
+  mochila_lenador_grande: "Mochila grande de leñador"
+  mochila_minero: "Mochila de minero"
+  mochila_minero_grande: "Mochila grande de minero"
+  mochila_herbolario: "Mochila de herbolario"
+  mochila_herbolario_grande: "Mochila grande de herbolario"
+  mochila_pescador: "Mochila de pescador"
+  mochila_pescador_grande: "Mochila grande de pescador"
+  mochila_desollador: "Mochila de desollador"
+  mochila_desollador_grande: "Mochila grande de desollador"
+
+market:
+  cat:
+    packs: "🎒 Mochilas de oficio"   # [ES] D-339: la 10.ª categoría de 🛍️ Comprar (engine/service/market.py MARKET_CATEGORIES)
+
+faq:                           # [ES] D-338/D-339: ❓ /d67 (content/faq.yaml); los números salen de balance.yaml (_pack_faq_values)
+  d67:
+    q: "🎒 ¿Qué es una mochila de oficio?"
+    a: "Una mochila que hace cada oficio de recolección (🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador y 🔪 Desollador) con su propio oficio, en cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento: la básica desde el rango {pbag_low_rank} y la grande desde el {pbag_high_rank}. Puesta, los recursos de su oficio (por ejemplo, las hierbas, las setas y el musgo del Herbolario) van aparte: no ocupan los {bag_types} tipos de la mochila y caben hasta {pbag_low} de cada uno (la grande, {pbag_high}) en vez de {bag_per_type}. Te pones hasta {pbag_slots}, de oficios distintos, en 🎒 Mochila → 🎒 Mochilas de oficio (/mochilas). Quitada es un objeto más: se vende en el 🏛️ Mercado o se encarga en 📜 Pedidos de fabricación."

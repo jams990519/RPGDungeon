@@ -159,6 +159,7 @@ def test_masterworks_go_on_by_themselves_in_an_empty_slot(service, monkeypatch):
 
 def test_how_many_masterworks_come_out_by_profession(service):
     # Real draws, fixed seed: at rank 100 a carpenter gets ~15 % and a blacksmith ~5 %.
+    service.content.balance["hero"]["backpack"]["gear_pieces"] = 10000   # test only: 400 pieces at once (D-338: the cap is 20)
     ready(service, backpack={"tablon": 600, "cuero_curtido": 400, "lingote": 600}, energy=2000, level=3)
     hero = service._load("test:1")
     hero.professions = {"carpinteria": rank_xp(service, 100), "herreria": rank_xp(service, 100)}

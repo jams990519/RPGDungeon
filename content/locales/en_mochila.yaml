@@ -1,0 +1,70 @@
+# Texts of the backpack by item types and the 🎒 profession backpacks (D-338, confirmed; how it was applied: D-339, provisional;
+# 0.62).
+# [ES] Los textos en inglés de la mochila por tipos y de las 🎒 mochilas de oficio (la referencia es es_mochila.yaml: las mismas
+# claves, los mismos huecos {nombre}; tools/check_locales.py lo revisa). Lo leen engine/service/backpack.py, game.py, market.py
+# y ❓ /d67.
+
+pack:
+  space: "🎒 Backpack: {used}/{cap} types (up to {per} of each) · 🛡️ Loose gear: {gear}/{gcap}"
+  space_full: "🎒 Backpack with no free types ({used}/{cap}): sell, use or leave something to gather or buy new things · 🛡️ Loose gear: {gear}/{gcap}"
+  help_count: "Every different type you carry counts (resources, potions, food…), up to {per} of each. Loose gear goes apart; what you wear and the belt don't count."
+  help_pbags: "🎒 Profession backpacks: they keep their profession's resources apart. You can wear up to 3."
+  item_line: "{item}: {n}/{cap} in your backpack"
+  item_full: "{item} {n}/{cap}"
+  item_no_type: "{item} (no free types)"
+  why_full: "Full: {items}."
+  why_types: "No free types ({used}/{cap}) for: {items}."
+  why_gear: "Loose gear full ({gear}/{gcap})."
+  gather_block: "🎒 Nothing more of what is here fits. {why} Sell, use or leave things to go on."
+  no_room: "🎒 It doesn't fit in your backpack. {why} Sell, use or leave things to make room."
+  gear_full: "🛡️ You already carry {gear}/{gcap} loose gear pieces: sell, leave one in the ⚔️ Armory or disenchant one to have another."
+  hint: "💡 A 🎒 profession backpack raises its profession's resources to 40 or 50 each and they use no types (❓ /d67)."
+  batch_full: "🎒 No more room for: {items}. The rest kept coming in."
+  batch_full_end: "🎒 No more room for: {items}."
+  over_note: "🎒 You are over a cap: you lose nothing, but until you go below it no more of that comes in."
+  worn_line: "🎒 Profession backpacks on: {items}"
+  worn_item: "{prof} ({per} per type)"
+  pocket_mark: " 🎒"
+  pocket_legend: "🎒 = goes in your profession backpack: it uses no type."
+  pbags_button: "🎒 Profession backpacks"
+  pbags_title: "🎒 Profession backpacks"
+  pbags_intro: "A profession backpack you wear keeps its profession's resources apart: they use no types and hold up to {low} or {high} of each. You wear up to {slots}, of different professions."
+  pbags_worn_title: "On ({n}/{slots}):"
+  pbags_worn_line: "{code} {item} · {prof} · {per} per type · {kinds} {kinds|type|types} of its profession with you"
+  pbags_carried_title: "In your backpack:"
+  pbags_carried_line: "{code} {item} ×{n} · {prof} · {per} per type"
+  pbags_none: "None."
+  pbags_codes: "Tap /mp1 to put one on and /mq1 to take it off."
+  pbags_how: "🔥 Each gathering profession makes its own at any 🔥 Campfire or at your camp's 🔥 Hearth (🛠️ Craft): the basic one from rank {low_rank} ({low} per type) and the large one from {high_rank} ({high} per type). They are also bought in the 🏛️ Market or ordered (📜 Crafting orders)."
+  bad_code: "⚠️ {code} is not on the list: look at it again."
+  pbag_gone: "⚠️ That backpack is no longer where it was: look at the list again."
+  pbag_slots_full: "🎒 You already wear {slots} profession backpacks: take one off first (/mq1)."
+  pbag_on: "🎒 You put on the {item}: your {prof} resources go apart, up to {per} of each."
+  pbag_swapped: "The {item} went back to your backpack."
+  pbag_off: "🎒 You took off the {item}: it stayed in your backpack. Your {prof} resources count as types again ({used}/{cap})."
+  pbag_auto: "🎒 You put it on: your {prof} resources go apart, up to {per} of each (🎒 Backpack → 🎒 Profession backpacks)."
+  made_hint: "🎒 Put it on in 🎒 Backpack → 🎒 Profession backpacks (/backpacks)."
+  recipe_out: "🎒 {prof} profession backpack: worn, its resources go apart, up to {per} of each, and use no types."
+  make_fit: "🎒 With the room in your backpack you can make {n} now."
+  no_fire: "🔥 Profession backpacks are made at the fire: at any 🔥 Campfire or at your camp's 🔥 Hearth."
+
+item:
+  mochila_lenador: "Lumberjack's backpack"
+  mochila_lenador_grande: "Large lumberjack's backpack"
+  mochila_minero: "Miner's backpack"
+  mochila_minero_grande: "Large miner's backpack"
+  mochila_herbolario: "Herbalist's backpack"
+  mochila_herbolario_grande: "Large herbalist's backpack"
+  mochila_pescador: "Fisher's backpack"
+  mochila_pescador_grande: "Large fisher's backpack"
+  mochila_desollador: "Skinner's backpack"
+  mochila_desollador_grande: "Large skinner's backpack"
+
+market:
+  cat:
+    packs: "🎒 Profession backpacks"
+
+faq:
+  d67:
+    q: "🎒 What is a profession backpack?"
+    a: "A backpack each gathering profession (🪓 Lumberjack, ⛏️ Miner, 🌿 Herbalist, 🎣 Fisher and 🔪 Skinner) makes with its own trade, at any 🔥 Campfire or at your camp's 🔥 Hearth: the basic one from rank {pbag_low_rank} and the large one from {pbag_high_rank}. Worn, its profession's resources (for example the Herbalist's herbs, mushrooms and moss) go apart: they don't use the backpack's {bag_types} types and hold up to {pbag_low} of each (the large one, {pbag_high}) instead of {bag_per_type}. You wear up to {pbag_slots}, of different professions, in 🎒 Backpack → 🎒 Profession backpacks (/backpacks). Taken off it is just another item: it sells in the 🏛️ Market or can be ordered in 📜 Crafting orders."

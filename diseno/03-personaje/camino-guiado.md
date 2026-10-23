@@ -65,7 +65,7 @@ Salen **la primera vez** que pasa cada cosa, **de a uno por pantalla** (si pasan
 | 🩹 Caíste en combate | Al quedar malherido | La vida vuelve lento; poción, posada o esperar; 🩺 Salud |
 | 🌟 Punto de talento | Al subir de nivel con un punto sin gastar | 👤 Héroe → 🌟 Talentos; el primero elige la especialización |
 | ⚡ Energía | Con 10 ⚡ o menos | Se recupera sola (+1 cada 36 minutos); qué la gasta; invitar da más |
-| 🎒 Mochila llena | Al llenarla | No se recolecta ni se compra; vender, fabricar o aportar |
+| 🎒 Mochila llena | Sin tipos libres (desde la 0.62, D-338: 50 tipos) | Lo que llevas sigue entrando hasta 30 de cada uno, pero nada nuevo; vender, fabricar o aportar |
 | 🕳️ Mazmorras | Parado en una entrada | Chica y profunda; se entra desde 🧭 Explorar; cambian cada día |
 | 👹 Campamento enemigo | Parado en uno | Bloquea la zona; ⚔️ Asaltar hasta el jefe y su cofre |
 | ✨ Nodo de recursos | Al descubrir el primero | Rinde el doble y a veces da un raro; es fijo para todos |

@@ -5926,6 +5926,27 @@ pergamino_mapa:
   kind: map_scroll
   price: 100                 # [ES] 1 🥈: el precio con el que abre el borrador del 🏛️ Mercado; quien vende escribe el que quiera
 
+# --- D-338 / D-339 (0.62): 🎒 profession backpacks ---
+# A profession backpack is CARRIED, not worn in a gear slot: the hero puts up to balance.yaml hero.backpack.prof_slots (3) on,
+# of different professions, from 🎒 Mochila → 🎒 Mochilas de oficio. While on, the resources of its profession (gathers, skins
+# and rare of content/professions.yaml) live in its compartment: they do not use the 50 general types and hold up to its
+# per_type (balance.yaml prof_backpacks) of each. Taken off (or never put on) it is just an item: one type in the backpack.
+# [ES] Mochilas de oficio (D-338, confirmada; cómo: D-339, provisional). Cada oficio de recolección hace la suya (recetas en
+#     content/professions.yaml, en cualquier 🔥 Fogata o en el 🔥 Fogón de tu campamento): la básica desde el rango 5 (40 por
+#     tipo) y la grande desde el 40 (50 por tipo). El oficio y el tope de cada una están en balance.yaml prof_backpacks (no aquí).
+#     kind: prof_bag (se vende en el 🏛️ Mercado, categoría 🎒 Mochilas; el mercader del Claro no las compra: no llevan código).
+#     price: lo que valen sus materiales (la banda del mercado sale de aquí). IDs estables: nunca se renombran ni se borran.
+mochila_lenador: {name_key: item.mochila_lenador, emoji: "🎒", kind: prof_bag, price: 40}                  # [ES] 🪵 12 + 🟤 2 cuero
+mochila_lenador_grande: {name_key: item.mochila_lenador_grande, emoji: "🎒", kind: prof_bag, price: 150}   # [ES] 🪵 30 + 🟫 6 tablones + 🟤 6
+mochila_minero: {name_key: item.mochila_minero, emoji: "🎒", kind: prof_bag, price: 55}                    # [ES] 🪨 10 + ⚙️ 3 + 🟤 2
+mochila_minero_grande: {name_key: item.mochila_minero_grande, emoji: "🎒", kind: prof_bag, price: 195}     # [ES] 🪨 25 + ⚙️ 10 + 🔩 3 lingotes + 🟤 6
+mochila_herbolario: {name_key: item.mochila_herbolario, emoji: "🎒", kind: prof_bag, price: 55}            # [ES] 🌿 8 + 🧵 8 fibra + 🟤 2
+mochila_herbolario_grande: {name_key: item.mochila_herbolario_grande, emoji: "🎒", kind: prof_bag, price: 160}   # [ES] 🌿 20 + 🧵 20 + 🧣 4 tela + 🟤 4
+mochila_pescador: {name_key: item.mochila_pescador, emoji: "🎒", kind: prof_bag, price: 50}                # [ES] 🐟 12 + 🧵 8 (la red) + 🟤 1
+mochila_pescador_grande: {name_key: item.mochila_pescador_grande, emoji: "🎒", kind: prof_bag, price: 150} # [ES] 🐟 30 + 🧵 16 + 🧣 4 + 🟤 4
+mochila_desollador: {name_key: item.mochila_desollador, emoji: "🎒", kind: prof_bag, price: 45}            # [ES] 🦌 10 pieles + 🧵 6
+mochila_desollador_grande: {name_key: item.mochila_desollador_grande, emoji: "🎒", kind: prof_bag, price: 140}   # [ES] 🦌 20 + 🟤 8 + 🧣 3
+
 # --- D-110 / D-113 / D-115: crafted head, hands, legs and feet ---
 # Crafted pieces for the slots that only had loot: one per armor type and per gear tier (level 3, 5, 8, then every 10 up to
 # 100), always better than loot of their level. Generated once from the loot pieces of the same slot, type and level.

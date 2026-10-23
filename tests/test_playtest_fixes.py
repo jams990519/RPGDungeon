@@ -48,7 +48,8 @@ def test_the_inn_does_not_charge_with_full_health(service):
 def test_gathering_with_a_full_backpack_spends_nothing(service):
     make_hero(service)
     hero = service._load("test:1")
-    hero.backpack["piedra"] = service._bag_cap() - service._bag_used(hero)
+    # [ES] D-338 (0.62): "llena" = lo de la zona en su tope (30 de cada uno); sin tipos libres, lo nuevo tampoco entra
+    hero.backpack.update({res: service._pack_per_type() for res in service._zone_resources(0, 0)})
     service._save(hero)
     energy = hero.energy
     for action in ("gather", "do:gather:5"):
@@ -71,7 +72,7 @@ def test_hero_sheet_counts_the_backpack_like_the_space_line(service):
     make_hero(service)
     hero = service._load("test:1")
     line = next(x for x in service.act("test:1", "hero").body if x.startswith("🎒"))
-    assert f"{service._bag_used(hero)}/{service._bag_cap()}" in line      # the belt does not take backpack space
+    assert f"{service._bag_types_used(hero)}/{service._bag_types_cap(hero)} tipos" in line      # the belt takes no type (D-338)
 
 
 def _camp_ready(service, account="test:1"):

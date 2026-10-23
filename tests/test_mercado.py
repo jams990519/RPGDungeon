@@ -90,7 +90,7 @@ def test_market_opens_from_the_merchant_the_command_and_the_camp_trading_post(se
     check_caps(hub)
     assert service.text("test:1", "/mercado").kind == "market" and service.text("test:1", "/market").kind == "market"
     cats = service.act("test:1", "mkt:cats")
-    assert cats.kind == "market_cats" and len(cats.actions) == 9          # D-326 (0.50): + 🗺️ Mapas
+    assert cats.kind == "market_cats" and len(cats.actions) == 10         # D-326 (0.50): + 🗺️ Mapas; D-339 (0.62): + 🎒 Mochilas
     check_caps(cats)
     camp_at(service, 3)                                              # the founder stands at its camp (6, 0)
     assert "mkt" not in ids(service.act("test:1", "svc:oficio"))    # no 🏪 Puesto de trueque yet
@@ -233,11 +233,11 @@ def test_backpack_full_leaves_the_rest_in_the_box(service, clock):
     service.act("test:1", "mkt:ok")
     service.act("test:2", "mkt:buy:m1:a")
     clock.advance(delivery(service) + 1)
-    cap = service._bag_cap(service._load("test:2"))
-    set_hero(service, "test:2", backpack={"piedra": cap - 4})
+    cap = service._pack_per_type()                                           # D-338 (0.62): up to its type's cap
+    set_hero(service, "test:2", backpack={"provisiones": cap - 4})
     view = service.act("test:2", "mkt:get")
     hero = service._load("test:2")
-    assert hero.backpack["provisiones"] == 4 and "🎒" in view.notice
+    assert hero.backpack["provisiones"] == cap and "🎒" in view.notice and f"🥖 Provisiones {cap}/{cap}" in view.notice
     assert service._mkt_box("test:2")[0]["n"] == 6                          # never lost: it waits
     set_hero(service, "test:2", backpack={})
     service.act("test:2", "mkt:get")

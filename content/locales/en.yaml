@@ -2025,7 +2025,7 @@ hero:
   resource_line: '🔷 {resource}: {max}/{max}'
   class_short: '{cls}'
   coins_line: '{coins}'
-  inv_link: '🎒 Backpack: {n}/{cap} — /inv'
+  inv_link: '🎒 Backpack: {n}/{cap} types — /inv'
   skills_link: '🌟 Skills: /skills'
   trades_link: '⚒️ Professions: /professions'
   status_title: 'Status: {status}'
@@ -2082,7 +2082,7 @@ resources:
   button: 📦 Resources
   title: 📦 Resources
   intro: 'What you''ve gathered. Tap a resource''s code to see what it''s for:'
-  line: '{emoji} {item} ×{n}  {code}'
+  line: '{emoji} {item} {n}/{cap}{mark}  {code}'
   detail_title: '{emoji} {item} · {code}'
   detail_have: You have ×{n}.
   no_code: ⚠️ There is no resource with the code {code}.
@@ -2717,7 +2717,7 @@ batch:
     stopped: '❌ You stopped: the energy for the run in progress came back.'
     fight: ⚔️ Something interrupted you.
     energy: ⚡ You ran out of energy.
-    bag_full: '🎒 Your backpack is full: sell to the merchant or contribute to the Clearing''s works.'
+    bag_full: '🎒 The batch ended: nothing more of what this zone has fits in your backpack.'
     depleted: '🪫 This zone is depleted for now: its resources come back over time.'
     full_explored: '✅ There''s nothing left to explore from here: your zone and the ones around it are at 100%.'
     auto_wait: '🩹 Your health was below {pct}%: your hero won''t fight alone. The fight is waiting for you.'
@@ -2953,7 +2953,7 @@ prof:
     potion: potions +{v}%
     bandage: bandages and salves +{v}%
     heal: heals +{v}% (healers)
-    bag: +{v} backpack space
+    bag: +{v} backpack types
     sell: +{v}% coins when selling
     only_armor: with {what}
     only_weapon: with {what}
