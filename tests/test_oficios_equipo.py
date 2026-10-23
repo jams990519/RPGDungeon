@@ -414,5 +414,5 @@ def test_enchanting_screens_keep_four_buttons_and_no_missing_texts(service):
                    "ench:espada_1", "ench:joya_5", "enc:joya_5", f"dis:{twin}", f"ench:{twin}", f"dis!:{twin}", "dis:placas_5",
                    "ench:nada", "enc:nada", "dis:nada", "oficios", "hero", "bag"):
         view = service.act("test:1", action)
-        assert len(view.actions) <= (8 if view.kind == "hero" else 4), (action, ids(view))   # D-192: the hero hub, up to 8
+        assert len(view.actions) <= game_module.button_cap(view.kind), (action, ids(view))   # D-192: the hero hub, 8; 🎒 Mochila, 5 (D-339)
     assert not service.texts.missing

@@ -1,6 +1,6 @@
 # Inventario y mochilas: qué llevas encima y dónde guardas el resto
 
-> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Equipamiento](equipamiento.md) (ranuras de Mochila, Cinturón y Montura; carga), [Profesiones](../07-economia/profesiones.md) (quién las fabrica) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (el cinturón del botón 🎒 Mochila), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (peso y tiempo de viaje), [Economía](../07-economia/economia.md) (cuánto se trae en cada viaje) · **Se conecta con:** [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) (qué se pierde al caer), [Casa propia](../09-construccion/casa-propia.md) (almacén), [Monetización](../07-economia/monetizacion.md) · **Estado:** propuesta, aplica D-47 (mochilas) y D-46 (cinturón)
+> **Módulo** [03 · Personaje](README.md) · **Depende de:** [Equipamiento](equipamiento.md) (ranuras de Mochila, Cinturón y Montura; carga), [Profesiones](../07-economia/profesiones.md) (quién las fabrica) · **Alimenta a:** [Ronda y acciones](../04-combate/ronda-y-acciones.md) (el cinturón del botón 🎒 Mochila), [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (peso y tiempo de viaje), [Economía](../07-economia/economia.md) (cuánto se trae en cada viaje) · **Se conecta con:** [Secuelas y muerte](../05-salud/secuelas-y-muerte.md) (qué se pierde al caer), [Casa propia](../09-construccion/casa-propia.md) (almacén), [Monetización](../07-economia/monetizacion.md) · **Estado:** la mochila por tipos y las mochilas de oficio, **en el juego desde la 0.62** (D-338, confirmada; cómo: D-339, provisional; §0); el resto, propuesta (D-47 mochilas, D-46 cinturón). §1 a §3 quedan como historia (los reemplazó D-338)
 
 **Qué pediste (D-47).** Mochilas fabricadas, con niveles de capacidad que se amplían; tipos de mochila según el oficio (herborista, minero, médico, comerciante…); un cinturón para el combate; alforjas, almacén y banco.
 
@@ -18,9 +18,80 @@
 
 ---
 
-> En el juego hoy: la mochila tiene 60 de espacio y cada unidad ocupa 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78). El cinturón tiene un lugar por cosa (`balance.yaml` → `hero.belt_slots`: 3 🧪 pociones de vida, 2 🩹 vendas, 1 🍷 poción mayor, 2 🫙 ungüentos, 1 🧰 botiquín y 1 🩻 vendaje de maestro); desde la 0.52 (D-328) las pociones y remedios de los tramos de ⚗️ y 🩺 comparten el lugar de la suya (la 🍷 mayor del tramo 60 va en el de la 🍷 mayor) y se pone primero lo que más cura: el cinturón no crece. La ficha del héroe cuenta igual que el resto del juego ("🎒 Mochila: 4/60", sin el cinturón). Recolectar con la mochila llena o en una zona agotada no empieza ni gasta energía; beber una poción o una venda con la vida llena tampoco se permite, para no gastarla en nada. **Mochila llena (D-90, provisional):** lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos de explorar entran aunque pase de 60, por ejemplo 63/60), pero con la mochila en 60 o más no se recolecta ni se compra en el mercader hasta vender o usar cosas. La mochila, la pantalla del mercader y el aviso al intentarlo lo dicen: "🎒 Mochila llena (63/60): vende o usa cosas para volver a recolectar o comprar."
+## 0. Cómo está en el juego (0.62: D-338, confirmada; cómo se aplicó: D-339, provisional)
 
-## 1. Casillas y peso: dos números, una regla cada uno
+**Qué pidió el dueño (23-oct-2026).** "La mochila de hoy (60 de espacio) se llena demasiado rápido. Quiero poder farmear mucho más, aunque tarde, y que el límite sea el inventario." Él mismo respondió los puntos abiertos: 50 tipos y 30 de cada uno, todo cuenta menos el equipo, mochilas de oficio en dos niveles (40 y 50), hasta 3 a la vez y nadie pierde lo que ya tiene (D-338).
+
+**De dónde sale.** *RuneScape*: las bolsas de oficio (saco de hierbas, bolsa de gemas) que solo guardan lo de su oficio. *World of Warcraft*: las bolsas de profesión (de herbalista, de minero) con más casillas para lo de su oficio, y el inventario que cuenta casillas de cosas apiladas. *Albion Online*: farmear mucho y volver a la ciudad a vender. *Stardew Valley*: las pilas grandes de un mismo recurso.
+
+### 0.1 Tipos de artículo, no espacio
+
+| Qué | Tope | Dónde está |
+|---|---|---|
+| 🎒 **Tipos de artículo** distintos en la mochila | **50** | `content/balance.yaml` → `hero.backpack.types` |
+| Unidades de cada tipo | **30** (30 × 50 = 1.500 como máximo) | `hero.backpack.per_type` |
+| 🛡️ Piezas de equipo **sueltas** (aparte) | **20** (número de Claude, E-288) | `hero.backpack.gear_pieces` |
+| 🎒 Mochilas de oficio puestas | **3**, de oficios distintos | `hero.backpack.prof_slots` |
+
+- **Cuenta todo menos el equipo:** recursos, pociones y remedios, comida, 🪑 muebles sin colocar, los 🗺️ pergaminos de mapa (un tipo; cada pergamino es una unidad), las mochilas de oficio sin poner y el 🌰 Recuerdo. Las monedas, 💰 bolsas, 🪎 cofres y 💎 no están en la mochila.
+- **El equipo suelto va aparte** porque cada pieza es única (durabilidad, ✒️ firma, ✨ encantamiento) y no se apila. Cada unidad es una pieza.
+- **Nunca cuentan:** lo que llevas puesto y el cinturón (3 🧪, 2 🩹… como siempre). Las pociones que pasan del cinturón sí cuentan, como un tipo.
+- El beneficio "bag" (🪓 Leñador +10 al rango 100; 🎒 Talabartería y 🛒 Mobiliario +10 con todo el dominio) daba espacio: ahora da **tipos** (la parte entera de lo ganado).
+- `hero.backpack_capacity` (60) queda en `balance.yaml` como historia, sin uso.
+
+### 0.2 Las 🎒 mochilas de oficio
+
+Cada oficio de recolección hace la suya, "con su propio oficio", y desde rangos bajos:
+
+| Oficio | Básica (40 por tipo) | Grande (50 por tipo) | Lo que guarda aparte |
+|---|---|---|---|
+| 🪓 Leñador | rango 5: 🪵 12 + 🟤 2 cuero | rango 40: 🪵 30 + 🟫 6 + 🟤 6 | madera, resina, corteza |
+| ⛏️ Minero | rango 5: 🪨 10 + ⚙️ 3 + 🟤 2 | rango 40: 🪨 25 + ⚙️ 10 + 🔩 3 + 🟤 6 | piedra, metal, arcilla, carbón, sal, cuarzo, arena, hielo, chatarra, obsidiana y 💠 gema en bruto |
+| 🌿 Herbolario | rango 5: 🌿 8 + 🧵 8 + 🟤 2 | rango 40: 🌿 20 + 🧵 20 + 🧣 4 + 🟤 4 | hierbas, fibra, bayas, setas, miel, mazorca, lino, juncos, nenúfar, cactus, dátiles, flor de escarcha, musgo, raíz amarga, tomillo y 🌸 flor de luna |
+| 🎣 Pescador | rango 5: 🐟 12 + 🧵 8 + 🟤 1 | rango 40: 🐟 30 + 🧵 16 + 🧣 4 + 🟤 4 | pescado |
+| 🔪 Desollador | rango 5: 🦌 10 + 🧵 6 | rango 40: 🦌 20 + 🟤 8 + 🧣 3 | carne y piel (son botín y entran siempre: su mochila sirve sobre todo para que no ocupen tipos) |
+
+- **Se hacen al fuego** (los oficios de recolección no tenían estación): en cualquiera de las 9 🔥 Fogatas y en el 🔥 Fogón de tu campamento, desde 🛠️ Fabricar. 2 ⚡ la básica y 4 ⚡ la grande; sin 📚 libro de recetas. Piden algo de otro oficio (cuero, fibra o tela): nadie es autosuficiente (D-109).
+- **Se llevan, no son una ranura de equipo.** 🎒 Mochila → 🎒 Mochilas de oficio (/mochilas): /mp1 te pones una de la mochila y /mq1 te la quitas. Una del mismo oficio se cambia (la de antes vuelve a la mochila). La que acabas de hacer se pone sola si es la primera de su oficio y queda lugar, o si es mejor que la puesta.
+- **Puesta**, sale de la mochila y los recursos de su oficio **no ocupan tipos** (así se leyó "permite cargar más de un tipo de recurso de esa profesión", E-287): van a su compartimento, hasta 40 o 50 de cada uno. **Quitada** es un objeto más (un tipo): se vende en el 🏛️ Mercado (🛍️ Comprar → 🎒 Mochilas de oficio) o se encarga con 📜 Pedidos de fabricación. Las mochilas de otros orígenes (las de la 🎒 Talabartería del diseño, §2) serán mochilas normales.
+- Los oficios de refinado todavía no tienen mochila (E-289 propone darles una para sus refinados).
+
+### 0.3 Cuándo se frena y qué nunca se pierde
+
+- **Recolectar** (🧺, 🪓 Talar y 🎣 Pescar): cada unidad mira su tipo. Un recurso lleno (o que sería un tipo nuevo sin tipos libres) deja de juntarse y lo demás sigue; la vuelta y el lote terminan cuando ya no cabe nada de lo que da la zona, sin cobrar la vuelta siguiente. El resumen dice qué se llenó ("🎒 Ya no caben más: 🪵 Madera 30/30") y, si sirve, la 💡 de las mochilas de oficio. La unidad de más del oficio también para en el tope.
+- **Comprar al 🛒 mercader, 📦 Recoger de Entregas, lo que sale de una receta, tomar de la ⚔️ Armería y hacer un 🗺️ pergamino:** cada cosa hasta su tope; lo que no cabe espera en 📦 Entregas, y una receta que no cabe no gasta nada (se cuenta la mochila después de gastar los materiales). El aviso dice qué tope frena: "Llenos: 🧪 Poción de vida 30/30" o "Sin tipos libres (50/50) para: 🌿 Hierba curativa".
+- **Entra siempre** (D-90): el botín, los hallazgos de explorar, los raros, los premios de la historia, las esencias de desencantar y lo que devuelve un gremio que se disuelve.
+- **Nadie pierde nada** (D-338.4, D-64): quien ya pasaba un tope lo conserva todo; solo no entra más de ese tipo (o tipos nuevos) hasta bajar. La mochila lo dice: "🎒 Pasas un tope: no pierdes nada, pero hasta bajar de él no entra más de eso." Quitarse una mochila de oficio siempre se puede, aunque sus recursos pasen a contar como tipos por encima del tope.
+
+### 0.4 Cómo se ve
+
+```
+🎒 Mochila
+…
+🎒 Mochilas de oficio: guardan aparte los recursos de su oficio. Te pones hasta 3.
+
+🎒 Mochila: 12/50 tipos (hasta 30 de cada uno) · 🛡️ Equipo suelto: 3/20
+Cuenta cada tipo distinto que llevas (recursos, pociones, comida…), hasta 30 de cada uno. El equipo suelto va aparte; lo puesto y el cinturón no cuentan.
+🎒 Mochilas de oficio puestas: 🌿 Herbolario (40 por tipo)
+
+[🛡️ Equipo] [🧪 Pociones]
+[💰 Monedas] [📦 Recursos]
+[🎒 Mochilas de oficio]
+```
+
+📦 Recursos: `🪵 Madera 7/30  /01` · `🌿 Hierba curativa 33/40 🎒  /06` (🎒 = va en tu mochila de oficio: no ocupa tipo). La ficha del héroe: `🎒 Mochila: 12/50 tipos — /inv`. ❓ /d30 (la mochila) y /d67 (las mochilas de oficio).
+
+**Cuánto más se farmea** (registro de balance, 0.62): antes 60 unidades eran ~30 vueltas en una zona de nivel 1 (¾ de día de energía, 4 h); ahora una zona llena sus ~5,7 tipos a las ~170 unidades y la mochila entera guarda 1.500 (25 veces más, ~19 días de energía), más hasta 800 hierbas aparte con la mochila grande del Herbolario.
+
+**Código:** `engine/service/backpack.py` (`BackpackMixin`), `Hero.prof_bags`, `content/items.yaml` (`kind: prof_bag`), `content/professions.yaml` (recetas, `stations.fire`), textos en `content/locales/es_mochila.yaml` y `en_mochila.yaml`; pruebas en `tests/test_mochila_por_tipos.py`.
+
+---
+
+> *Historia (de la 0.6 a la 0.61; lo reemplazó D-338 en la 0.62, §0):* la mochila tenía 60 de espacio y cada unidad ocupaba 1; el cinturón (3 pociones y 2 vendas) y lo que llevas puesto no cuentan. Todavía no hay peso (D-87). Usar algo del cinturón en combate gasta el turno (D-78). El cinturón tiene un lugar por cosa (`balance.yaml` → `hero.belt_slots`: 3 🧪 pociones de vida, 2 🩹 vendas, 1 🍷 poción mayor, 2 🫙 ungüentos, 1 🧰 botiquín y 1 🩻 vendaje de maestro); desde la 0.52 (D-328) las pociones y remedios de los tramos de ⚗️ y 🩺 comparten el lugar de la suya (la 🍷 mayor del tramo 60 va en el de la 🍷 mayor) y se pone primero lo que más cura: el cinturón no crece. La ficha del héroe cuenta igual que el resto del juego ("🎒 Mochila: 4/60", sin el cinturón). Recolectar con la mochila llena o en una zona agotada no empieza ni gasta energía; beber una poción o una venda con la vida llena tampoco se permite, para no gastarla en nada. **Mochila llena (D-90, provisional):** lo que encuentras nunca se pierde (botín, equipo, carne y hallazgos de explorar entran aunque pase de 60, por ejemplo 63/60), pero con la mochila en 60 o más no se recolecta ni se compra en el mercader hasta vender o usar cosas. La mochila, la pantalla del mercader y el aviso al intentarlo lo dicen: "🎒 Mochila llena (63/60): vende o usa cosas para volver a recolectar o comprar."
+
+## 1. Casillas y peso: dos números, una regla cada uno *(historia: diseño anterior a D-338, nunca programado)*
+
+> **Reemplazado por D-338 (0.62, §0).** La mochila del juego cuenta tipos de artículo (50) y unidades de cada uno (30), sin peso. Esta sección y las dos siguientes quedan como historia del diseño: el peso, las mochilas por niveles y los compartimentos podrían volver como capa profunda (D-44), pero no son la regla de hoy.
 
 | Número | Qué limita | Regla |
 |---|---|---|
@@ -43,7 +114,7 @@
 - La **Carga** es la de [Equipamiento](equipamiento.md) §2 (ligera, media, pesada, sobrecargado), que sale de lo que llevas puesto. La mochila solo la empeora cuando pasa del peso cómodo. Así basta mirar un número: si la mochila dice "cómodo", no te afecta.
 - Los tiempos de viaje son los de [Mapa infinito y viaje](../02-mundo/mapa-infinito-y-viaje.md) (fila «Carga y heridas»). Una pierna herida o una secuela que frena se suman aparte.
 
-## 2. Mochilas fabricadas, por niveles
+## 2. Mochilas fabricadas, por niveles *(historia, ver §0)*
 
 Todos empiezan con una **bolsa de tela**. Lo demás se fabrica: la **Peletería** hace las mochilas de cuero y la **Sastrería** las de tela (ver [Profesiones](../07-economia/profesiones.md)).
 
@@ -63,7 +134,7 @@ Los números son orientativos y van al registro de balance.
 - **Subir de nivel** pide al artesano del rango que toca, materiales y oro del juego.
 - La **calidad** de la fabricación (ver [Fabricación](../07-economia/fabricacion.md)) da un pequeño extra: una mochila de calidad excelente lleva 1 casilla más.
 
-## 3. Tipos de mochila según el oficio
+## 3. Tipos de mochila según el oficio *(historia: lo que está en el juego, en §0.2)*
 
 Cada mochila puede llevar **un compartimento de oficio**. El compartimento tiene casillas propias que solo aceptan ciertas cosas y da una comodidad de ese oficio. **Nunca da poder de combate**: ayuda a trabajar, a viajar y a comerciar. Así el oficio hace la diferencia, como pide D-49, sin desbalancear las peleas.
 
@@ -166,7 +237,7 @@ La capa simple no pide ordenar nada (D-44):
 - **🏦 Depositar materiales.** En un banco o en tu casa, un toque manda todos los materiales al depósito. Los consumibles y el cinturón se quedan.
 - **💰 Vender lo sobrante.** En un mercader PNJ, un toque vende lo marcado "para vender" (el equipo que no te sirve, ver [Botín](botin.md)). Lo marcado con 🔒 nunca se vende ni se tira.
 - **Mochila llena.** El bot no pierde nada en silencio: ofrece cambiar lo nuevo por lo de menos valor, dejarlo o abrir la mochila.
-  - *En el juego hoy (D-90, provisional), en más simple:* lo encontrado entra siempre, aunque pase del espacio; lo que se frena es recolectar y comprar hasta que vendas o uses cosas.
+  - *En el juego (D-90 y D-338, desde la 0.62):* lo encontrado entra siempre, aunque pase los topes; lo que se frena es sumar más de un tipo lleno o tipos nuevos (recolectar, comprar, recoger, fabricar) hasta que vendas o uses cosas (§0.3).
 
 **Capa profunda (opcional):** reglas de recogida ("no recoger lo gris", "solo hierbas de calidad buena o mejor"), pestañas de banco con nombre y orden a mano.
 

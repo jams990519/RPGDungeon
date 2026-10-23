@@ -142,7 +142,7 @@ market:
   collect_where: "🚶 Para recoger, ve a una 🔥 fogata o a tu campamento."
   collect_hint: "📦 Recógelo en cualquier 🔥 fogata o en tu campamento: /mercado → 📦 Entregas."
   collected: "📦 Recogiste: {items}."
-  collect_full: "🎒 El resto espera en 📦 Entregas: {line}"
+  collect_full: "🎒 El resto espera en 📦 Entregas porque no cabe en la mochila. {line}"   # [ES] D-338 (0.62): {line} dice qué tope frena
   collect_clash: "✨ Una pieza espera: ya llevas una igual con otro encantamiento o firma."
   collect_nothing: "📦 Todavía no llegó nada."
   arrived_title: "📦 ¡Llegó tu entrega!"

@@ -252,6 +252,8 @@ Ver P-12 y P-30 en [Preguntas abiertas](../00-vision/preguntas-abiertas.md).
 
 **Por qué.** El dueño aceptó por voz dos reglas. **Mochila llena (D-90):** lo que encuentras nunca se pierde, pero con la mochila llena no se recolecta ni se compra hasta vender o usar cosas. **Cofre (D-92, resuelve P-73):** el 🪎 cofre entra como moneda que se arma con bolsas y paga lo grande; el 💵 billete no entra. Son números **nuevos**, no movidos: los propuso Claude y todavía no se midieron con jugadores.
 
+> **Desde la 0.62 (D-338)** la mochila ya no tiene espacio de 60: cuenta tipos (50 tipos, 30 de cada uno; el equipo suelto aparte, 20). La regla de D-90 sigue: lo encontrado entra aunque pase los topes. Ver la entrada de la 0.62.
+
 **Lo que no cambia:** el espacio de la mochila sigue en 60 (`hero.backpack_capacity`). Cambia la regla: antes los hallazgos de explorar se perdían con la mochila llena y comprar no miraba el espacio; ahora los hallazgos entran siempre y comprar espera, como recolectar.
 
 **Números nuevos** (`content/balance.yaml`):
@@ -1248,6 +1250,34 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 **Lo que queda por mirar:** en el bosque, 1 de cada 4 unidades es madera, y en la fogata más de la mitad (sus 2 recursos fijos). Si hace falta más, lo que queda abierto en P-238: el botón 🪓 Talar (solo madera) y que los recursos de base vuelvan más rápido.
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
+
+### Octubre de 2026 (23-oct): la 🎒 mochila cuenta tipos y las mochilas de oficio (0.62, D-338 confirmada; D-339 provisional)
+
+El dueño: "la mochila de hoy (60 de espacio) se llena demasiado rápido. Quiero poder farmear mucho más, aunque tarde, y que el límite sea el inventario". Él eligió los números de la mochila (50 tipos, 30 de cada uno), los de las mochilas de oficio (40 y 50, rango ~5 y 40) y el tope de 3; las piezas de equipo sueltas (20) las eligió Claude (E-288).
+
+| Número (`balance.yaml`) | Antes | Ahora |
+|---|---|---|
+| `hero.backpack_capacity` | 60 de espacio, cada unidad ocupaba 1 | sin uso (queda como historia) |
+| `hero.backpack.types` (nuevo) | — | 50 tipos de artículo distintos (+ el beneficio "bag": 🪓 Leñador +10 al rango 100; 🎒 Talabartería y 🛒 Mobiliario +10 con todo el dominio, que antes daban +10 de espacio) |
+| `hero.backpack.per_type` (nuevo) | — | 30 unidades de cada tipo (1.500 como mucho) |
+| `hero.backpack.gear_pieces` (nuevo) | contaban en el 60 | 20 piezas de equipo sueltas, aparte |
+| `hero.backpack.prof_slots` (nuevo) | — | 3 mochilas de oficio puestas, de oficios distintos |
+| `prof_backpacks.items` (nuevo) | — | 10 mochilas: la básica de cada oficio de recolección, 40 por tipo (receta de rango 5, 2 ⚡); la grande, 50 (rango 40, 4 ⚡) |
+
+**Cuánto más se farmea** (medido con el motor sobre 41 × 41 zonas con las semillas 12345, 777 y 4242: una zona tiene de 4 a 8 recursos, ~5,7 en promedio; cada vuelta de 🧺 Recolectar da de 1 a 3 unidades más 1 cada 3 niveles de zona, 1 ⚡ y 8 min; 40 ⚡ por día):
+
+| Zona | Unidades por vuelta | Antes: 60 de espacio | Ahora: una zona llena sus tipos (5,7 × 30) | Ahora: la mochila entera (1.500) |
+|---|---|---|---|---|
+| Nivel 1 | 2 | 30 vueltas (¾ de día de energía, 4 h) | ~85 vueltas (~2 días) | 750 vueltas (~19 días de energía) |
+| Nivel 6 | 4 | 15 vueltas (0,4 días, 2 h) | ~43 vueltas (~1 día) | 375 vueltas (~9 días) |
+| Nivel 20 | 8 | 8 vueltas (0,2 días, 1 h) | ~21 vueltas (~½ día) | 188 vueltas (~5 días) |
+
+- **25 veces más en total**, y en una sola zona unas 3 veces más (sus ~5,7 tipos a 30 cada uno, contra 60 de antes). Un recurso a full baja a su mínimo a las ~42 unidades (2 % por unidad hasta el 15 %): el tope de 30 llega **antes** de agotar la zona, así que lo que frena ahora es el tipo lleno, y moverse a otra zona trae tipos nuevos.
+- **Con mochilas de oficio:** cada una saca de los 50 tipos los recursos de su oficio y les da 40 o 50 de cada uno. La grande del 🌿 Herbolario guarda aparte hasta 16 × 50 = 800 unidades; la del ⛏️ Minero, 11 × 50 = 550; la del 🪓 Leñador, 3 × 50 = 150; la del 🎣 Pescador, 50; la del 🔪 Desollador, 2 × 50 = 100 (su carne y su piel son botín: entran igual). Con tres puestas, un recolector lleva más de 2.500 unidades.
+- **Costo de las mochilas** (valor de sus materiales en el mercader): básicas de 🥉38 a 🥉54; grandes de 🥉137 a 🥉191 (su `price` en `items.yaml`, que fija la banda del 🏛️ Mercado, es ese valor redondeado). La básica del Herbolario: 8 🌿 + 8 🧵 + 2 🟤 (unas 8 vueltas de recolectar en una zona de nivel 1 y 2 ⚡ de Curtiduría).
+- **Lo que no cambia:** cuánto da cada vuelta, la energía, el agotamiento de las zonas, la experiencia de recolectar, el cinturón y lo que se encuentra (D-90: entra aunque pase los topes). Nadie pierde nada: quien ya pasaba un tope lo conserva (D-338.4).
+
+**Lo que queda por mirar:** en la beta, cuántas vueltas seguidas recolecta cada uno y por qué corta (la mochila, la zona agotada o la energía); cuántos tipos lleva un jugador típico; si 20 piezas de equipo alcanzan (E-288); si el mercado se llena de recursos ahora que se trae más por salida (bajar `per_type` si los precios se hunden); y cuántas mochilas de oficio se hacen y se venden (E-287, E-289).
 
 ### Octubre de 2026 (22-oct): la 💀 muerte permanente opcional y los oficios que aceleran lo que vuelve (0.60, D-147 y D-145 confirmadas; D-336 provisional)
 

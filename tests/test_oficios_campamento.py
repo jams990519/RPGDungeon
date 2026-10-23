@@ -210,7 +210,8 @@ def test_cooking_spends_ingredients_and_feeds_the_pantry_with_the_cook_perk(serv
     camp = service.store.get("camp", KEY)
     assert service._stations_here(service._load("test:1")) == ([], None)
     build(service, "fogon")
-    assert service._stations_here(service._load("test:1")) == (["cocina"], "camp")
+    fire = service.content.professions["stations"]["fire"]        # D-339 (0.62): the 🔥 Fogón is a fire for the 🎒 backpacks too
+    assert service._stations_here(service._load("test:1")) == (["cocina"] + fire, "camp")
     assert "upsvc" in ids(service.act("test:1", "upgrades"))               # 🏘️ Servicios is always there (D-288)
     services = service.act("test:1", "svc:oficio")                          # D-288: the Fogón's station, in ⚒️ Oficios
     assert "oficios" in ids(services) and len(services.actions) <= HUB_BUTTONS

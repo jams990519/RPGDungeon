@@ -1,7 +1,9 @@
 """Full backpack (D-90) and the 🪎 chest (D-92), both provisional.
 
 [ES] Pruebas de la mochila llena y del cofre. Lo que encuentras nunca se pierde (hallazgos de explorar y botín entran
-aunque la mochila pase de 60), pero con la mochila llena no se recolecta ni se compra hasta vender o usar cosas.
+aunque la mochila pase sus topes), pero con la mochila llena no se recolecta ni se compra hasta vender o usar cosas.
+Desde la 0.62 (D-338) la mochila cuenta TIPOS (50 tipos, 30 de cada uno; el equipo suelto aparte): "llena" es sin tipos
+libres y con lo de la zona en su tope (las pruebas nuevas están en tests/test_mochila_por_tipos.py).
 El cofre se arma solo en el Claro con 10 bolsas, madera y metal, y paga el crecimiento de los campamentos desde el
 nivel 6 (1 cofre de 6 a 7, 2 de 7 a 8, 3 de 8 a 9). También: la ficha del héroe muestra 🪎, los héroes viejos
 cargan con 0 cofres, la billetera del Claro tiene 4 botones y la etapa del campamento se lee bien.
@@ -29,10 +31,24 @@ class StubRng:
         return False
 
 
+def fillers(service, n, skip=()):
+    """`n` materials with a resource code that are not in `skip` (one type each)."""
+    out = [i for i, it in service.content.items.items()
+           if it.get("kind") == "material" and it.get("code") and i not in skip]
+    return out[:n]
+
+
 def fill(service, account="test:1", extra=0, **more):
-    """Leave the backpack at its space (plus `extra`) with stone, and whatever else is asked."""
+    """D-338 (0.62): no free type left (plus `extra` types over the cap) and the Claro's resources at their 30 (nothing of
+    there fits), and whatever else is asked."""
     hero = service._load(account)
-    hero.backpack = {"piedra": service._bag_cap() + extra, **more}
+    per = service._pack_per_type()
+    claro = list(service._zone_resources(0, 0))
+    bag = {res: per for res in claro}
+    bag.update(more)
+    need = service._bag_types_cap(hero) + extra - len(bag)
+    bag.update({i: 1 for i in fillers(service, need, skip=set(bag) | {"hierba_curativa", "pieza_metal", "carne"})})
+    hero.backpack = bag
     service._save(hero)
     return hero
 
@@ -43,7 +59,7 @@ def test_exploration_finds_go_in_beyond_the_space(service):
     activity = {"log": [], "got": {}}
     assert service._explore_step(hero, service._zone(0, 0), StubRng(), activity) is None
     assert hero.backpack["hierba_curativa"] == 1 and activity["got"] == {"hierba_curativa": 1}
-    assert service._bag_used(hero) == service._bag_cap() + 1        # never lost, even over the space
+    assert service._bag_types_used(hero) == service._bag_types_cap(hero) + 1     # never lost, even over the cap (a new type)
 
 
 def test_combat_loot_goes_in_beyond_the_space(service):
@@ -56,7 +72,7 @@ def test_combat_loot_goes_in_beyond_the_space(service):
         service._end_combat(hero, state)
         if hero.backpack.get("carne"):
             break
-    assert hero.backpack["carne"] >= 1 and service._bag_used(hero) > service._bag_cap()
+    assert hero.backpack["carne"] >= 1 and service._bag_types_used(hero) > service._bag_types_cap(hero)
 
 
 def test_gathering_is_refused_with_a_full_or_overfull_backpack(service):
@@ -64,45 +80,50 @@ def test_gathering_is_refused_with_a_full_or_overfull_backpack(service):
     for extra in (0, 3):
         fill(service, extra=extra)
         energy = service._load("test:1").energy
-        cap = service._bag_cap()
         for action in ("gather", "do:gather:5"):
             view = service.act("test:1", action)
             assert view.kind == "explore_menu"
-            assert view.notice == f"🎒 Mochila llena ({cap + extra}/{cap}): vende o usa cosas para volver a recolectar o comprar."
+            assert view.notice.startswith("🎒 No cabe más de lo que hay aquí. Llenos: ")      # D-338: which cap blocks it
+            assert "Vende, usa o deja cosas para seguir." in view.notice
         hero = service._load("test:1")
         assert hero.energy == energy and hero.activity is None      # nothing spent for nothing
 
 
 def test_buying_is_refused_when_full_and_selling_frees_space(service):
     make_hero(service)
-    hero = fill(service, madera=2)
+    hero = fill(service)
     hero.gold = 100
     service._save(hero)
+    before = dict(service._load("test:1").backpack)
     view = service.act("test:1", "shop")
-    assert any("Mochila llena" in line for line in view.body) and len(view.actions) <= 4
+    assert any("No cabe en la mochila" in line for line in view.body) and len(view.actions) <= 4
     view = service.act("test:1", "buy:pocion_vida")
     hero = service._load("test:1")
-    assert "Mochila llena (62/60)" in view.notice
-    assert hero.gold == 100 and hero.backpack == {"piedra": service._bag_cap(), "madera": 2}   # never charged
+    cap = service._bag_types_cap(hero)
+    assert f"Sin tipos libres ({cap}/{cap}) para: 🧪 Poción de vida." in view.notice      # D-338: a new type, none free
+    assert hero.gold == 100 and hero.backpack == before                                     # never charged
     service.act("test:1", "sell:all")
     hero = service._load("test:1")
-    assert hero.backpack == {} and hero.gold > 100
+    assert not any(n for i, n in hero.backpack.items() if service._sell_all_common(hero).get(i)) and hero.gold > 100
     gold = hero.gold
     view = service.act("test:1", "buy:pocion_vida")
     hero = service._load("test:1")
-    assert "Mochila llena" not in (view.notice or "") and hero.gold == gold - service.content.items["pocion_vida"]["price"]
-    assert not any("Mochila llena" in line for line in view.body)
+    assert "No cabe" not in (view.notice or "") and hero.gold == gold - service.content.items["pocion_vida"]["price"]
+    assert not any("No cabe" in line for line in view.body)
 
 
 def test_bag_view_shows_the_space_or_the_full_line(service):
     make_hero(service)
     hero = service._load("test:1")
     view = service.act("test:1", "bag")
-    assert f"🎒 Espacio en la mochila: {service._bag_used(hero)}/{service._bag_cap()}" in view.body
+    used, cap = service._bag_types_used(hero), service._bag_types_cap(hero)
+    assert f"🎒 Mochila: {used}/{cap} tipos (hasta 30 de cada uno) · 🛡️ Equipo suelto: 0/20" in view.body   # D-338
     fill(service, extra=3)
     view = service.act("test:1", "bag")
-    assert any(line.startswith("🎒 Mochila llena (63/60)") for line in view.body) and len(view.actions) <= 4
-    assert "🎒 Mochila: 63/60 — /inv" in service.act("test:1", "hero").body   # the hero sheet counts the same
+    assert any(line.startswith(f"🎒 Mochila sin tipos libres ({cap + 3}/{cap})") for line in view.body)
+    assert "🎒 Pasas un tope: no pierdes nada, pero hasta bajar de él no entra más de eso." in view.body
+    assert len(view.actions) <= 5                                            # D-339: + 🎒 Mochilas de oficio
+    assert f"🎒 Mochila: {cap + 3}/{cap} tipos — /inv" in service.act("test:1", "hero").body   # the hero sheet counts the same
 
 
 def test_chest_is_assembled_only_in_the_claro(service):
@@ -229,7 +250,7 @@ def test_the_backpack_explains_its_buttons_and_does_not_list_everything(service)
     service._save(hero)
     view = service.act("test:1", "bag")
     body = "\n".join(view.body)
-    assert [a.id for a in view.actions] == ["gear", "potions", "wallet", "resources"]
+    assert [a.id for a in view.actions] == ["gear", "potions", "wallet", "resources", "pbags"]   # D-339 (0.62): 🎒 Mochilas de oficio
     for word in ("🛡️ Equipo", "🧪 Pociones", "💰 Monedas", "📦 Recursos"):
         assert word in body
     assert "Madera" not in body                                  # the hub never lists what you carry
@@ -243,7 +264,7 @@ def test_resources_screen_lists_materials_and_food_by_pages(service):
     view = service.act("test:1", "resources")
     body = "\n".join(view.body)
     assert view.kind == "resources" and [a.id for a in view.actions] == ["bag"]
-    assert "🪵 Madera ×7  /01" in body and "Fibra ×3  /03" in body
+    assert "🪵 Madera 7/30  /01" in body and "Fibra 3/30  /03" in body                # D-338 (0.62): how many of how many
     assert "agrandar campamentos" not in body and "raciones" not in body      # D-243: what it is for, behind the code
     assert "Poción" not in body and "Espada" not in body           # potions and gear have their own buttons
     assert not service.texts.missing

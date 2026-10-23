@@ -82,7 +82,7 @@ guides_page:
       🔢 Eliges cuántas vueltas seguidas ({batches} o Todo) y te aviso al terminar.
       📉 Cada unidad baja ese recurso un {stock_unit} % y vuelve solo: los 6 de base (madera, piedra, fibra, hierba, metal y arcilla), un {base_regen} % por hora (unas {base_units} unidades); los propios del terreno y el pescado, un {stock_regen} %. Agotado, no da nada.
       ✨ En un nodo, su recurso rinde ×{node_yield}, se agota más lento y a veces ({node_rare} %) da algo raro.
-      🎒 Con la mochila llena ({bag_cap}) no recolectas: vende o usa cosas.
+      🎒 La mochila guarda hasta {bag_types} tipos y {bag_per_type} de cada uno: lo que se llena deja de juntarse y lo demás sigue. Con la 🎒 mochila de tu oficio, sus recursos van aparte, hasta {pbag_high} de cada uno (❓ /d67).
       🏕️ En el territorio de un campamento no salen peleas. Con la 🧱 Muralla, la tierra de tu campamento cosecha sola el {harvest_pct} % de lo que vuelve a crecer, para el 💰 fondo.
       ⚒️ Sin el oficio juntas lo básico; aprendido, a veces sale una unidad más y, con rango, algo raro.
   hunt:

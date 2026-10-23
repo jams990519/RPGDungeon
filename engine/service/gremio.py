@@ -59,7 +59,8 @@ Depende de: content/balance.yaml (bloques gremio, works, bonfire, presence, camp
     _emblem_name, _load, _save, _push, _push_each, _speaking, _name_key, _camp_requirements, _camp_here_view, _main_view,
     _guild_view, _members_cap, _upgrades, _upgrade_catalog, _upgrade_name, _create_camp, _territory, _trip_seconds, _zone_players;
     0.39: _active_works, _feed_works, _upgrade_need, _camp_perks, _credit_raw, _missing_text, _works_refresh, _camp_member_order,
-    _gear_name, _enchant_mark, _forget_piece, _bag_full y _bag_full_line; 0.47 (D-322): _upgrades_here, _lvlup_need,
+    _gear_name, _enchant_mark, _forget_piece, _bag_room y _bag_no_room (D-338, 0.62: el tope del equipo suelto, de
+    engine/service/backpack.py); 0.47 (D-322): _upgrades_here, _lvlup_need,
     _lvlup_progress, _camp_top_level, _recipes, _recipe_name y _today; 0.49 (D-325): _harvest_line, la línea de la 🌾 cosecha
     de la muralla en 💰 Fondos), content/balance.yaml fund_crafts y
     content/locales/es_fondo_oficios.yaml y en_fondo_oficios.yaml (los textos del fondo para oficios); 0.51 (D-327):
@@ -2782,8 +2783,8 @@ class GremioMixin:
         if entry is None or entry.get("item") not in self.content.items:
             return self._armory_view(hero, notice=t.t("armory.gone"))
         item_id = entry["item"]
-        if self._bag_full(hero):
-            return self._armory_view(hero, notice=self._bag_full_line(hero))
+        if self._bag_room(hero, item_id) < 1:          # D-338 (0.62): the loose-gear cap (20) of the backpack
+            return self._armory_view(hero, notice=self._bag_no_room(hero, item_id))
         holds = hero.backpack.get(item_id, 0) > 0 or item_id in hero.gear.values()
         if holds and ((entry.get("enchant") or None) != ((hero.gear_enchants or {}).get(item_id) or None)
                       or (entry.get("sig") or None) != ((hero.gear_signatures or {}).get(item_id) or None)):

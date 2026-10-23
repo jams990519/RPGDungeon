@@ -18,7 +18,8 @@ Módulo: capa de servicios (M10 Misiones: el camino es una cadena de pasos; los 
 Depende de: content/guide.yaml (pasos y avisos), content/locales/es_guia.yaml (textos), content/balance.yaml (bloques guide,
     tutorial (solo para leer el tutorial viejo), travel, energy, explore, gather, hunt, exploration y camps), engine.hero,
     engine.messaging y las ayudas de GameService (_give_xp, _money, _xp_mult, _claro_zones, _territory, _own_camp_here,
-    _camp_requirements, _route_seconds, _fmt_duration, _seconds, _energy_period, _bag_cap, _bag_full, _prof_rank,
+    _camp_requirements, _route_seconds, _fmt_duration, _seconds, _energy_period, _bag_types_cap, _pack_per_type y
+    _bag_full (D-338, 0.62: de engine/service/backpack.py; el aviso "bag_full" sale sin tipos libres), _prof_rank,
     _node_found, _dng_kind, _ecamp_standing, _zone, _join)
 Lo usan: engine/service/game.py (GameService hereda de esta clase; llama a _guide_new_request al empezar _settle, a
     _guide_event en _settle (explorar y recolectar),
@@ -329,7 +330,8 @@ class GuideMixin:
             "per_explore": b["energy"]["per_explore"], "per_gather": b["energy"]["per_gather"],
             "pct_low": low, "pct_high": high,
             "batch": ", ".join(str(n) for n in b["energy"]["batch"]),
-            "cap": self._bag_cap(hero), "hunt": b["hunt"]["energy"],
+            "cap": self._bag_types_cap(hero), "per": self._pack_per_type(),     # D-338 (0.62): types and units of each
+            "hunt": b["hunt"]["energy"],
             "energy_now": hero.energy, "max_energy": b["energy"]["max"],
             "period": self._fmt_duration(self._energy_period()),
             "min_lejania": b["camps"]["min_lejania"],

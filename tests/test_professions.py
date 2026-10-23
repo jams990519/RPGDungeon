@@ -62,7 +62,9 @@ def test_catalog_has_the_three_branches_and_every_recipe_is_complete(content):
     for pid, pdef in profs.items():
         assert pdef["emoji"] and t.has(pdef["name_key"]) and t.has(pdef["how_key"]), pid
     for rid, rdef in recipes.items():
-        assert rdef["profession"] in profs and profs[rdef["profession"]]["branch"] in ("refine", "craft"), rid
+        branch = profs[rdef["profession"]]["branch"] if rdef["profession"] in profs else None
+        prof_bag = content.items.get(next(iter(rdef["output"])), {}).get("kind") == "prof_bag"   # D-339 (0.62): 🎒 at the fire
+        assert branch in ("refine", "craft") or (branch == "gather" and prof_bag), rid
         assert all(item in content.items for item in list(rdef["inputs"]) + list(rdef["output"])), rid
         assert rdef["energy"] >= 1 and rdef["xp"] >= 1 and 1 <= rdef["min_rank"] <= 100, rid
     gear_crafts = {"carpinteria", "herreria", "sastreria", "peleteria", "joyeria"}
@@ -164,16 +166,17 @@ def test_gathering_gives_profession_xp_per_unit(service, clock):
 
 
 def test_rank_gives_extra_units_up_to_the_backpack_space(service):
+    # [ES] D-338 (0.62): la unidad de más llega hasta el tope de su tipo (30), ya no hasta el espacio de 60
     hero = ready(service)
     service.content.balance["professions"]["rank_yield"] = 1.0          # every rank: always one more (test only)
     got = {"madera": 3}
     hero.backpack = {"madera": 3}
     service._trade_gather(hero, got, {"until": 1, "done": 1, "log": []})
     assert got["madera"] == 6 and hero.backpack["madera"] == 6 and hero.professions["lenador"] == 6
-    hero.backpack = {"piedra": service._bag_cap() - 1}
+    hero.backpack = {"piedra": service._pack_per_type() - 1}
     got = {"piedra": 1}
     service._trade_gather(hero, got, {"until": 2, "done": 1, "log": []})
-    assert got["piedra"] == 2 and service._bag_used(hero) == service._bag_cap()   # gathering stops at the space (D-90)
+    assert got["piedra"] == 2 and hero.backpack["piedra"] == service._pack_per_type()   # it stops at its type's cap (D-338)
 
 
 def test_rare_material_only_from_its_rank(service):
@@ -522,13 +525,13 @@ def test_profession_perks_grow_with_rank_and_need_the_right_gear(service, clock)
     ready(service)
     hero = service._load("test:1")
     base = hero_stats(service._kit(hero), hero.level)["max_hp"]
-    cap = service._bag_cap(hero)
+    cap = service._bag_types_cap(hero)
     hero.professions = {"minero": rank_xp(service, 100), "lenador": rank_xp(service, 100)}
     service._save(hero)
     hero = service._load("test:1")
     assert hero_stats(service._kit(hero), hero.level)["max_hp"] == int(base * 1.05) or \
         abs(hero_stats(service._kit(hero), hero.level)["max_hp"] - base * 1.05) <= 1                  # ⛏️ +5 % de vida
-    assert service._bag_cap(hero) == cap + 10                                                          # 🪓 +10 de espacio
+    assert service._bag_types_cap(hero) == cap + 10                                                    # 🪓 +10 tipos (D-339)
     view = service.text("test:1", "/minero")                       # D-257: the perk shows behind the profession's code
     assert any("Beneficio ahora" in line and "+5 % de vida" in line for line in view.body)
     assert not service.texts.missing

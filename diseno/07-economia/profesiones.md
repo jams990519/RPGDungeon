@@ -83,7 +83,7 @@ Lo que ya está programado. El catálogo vive en `content/professions.yaml` (ofi
 
 **Rangos.** Experiencia de oficio total para el rango R = 9 × (R − 1)². Rango 10: 729 · 25: 5.184 · 50: 21.609 · 100: 88.209. Quien dedica toda su energía a un oficio de refinado o fabricación junta unos 240 por día: rango 25 en ~3 semanas, 50 en ~3 meses, **100 en ~1 año** (§4). Un recolector dedicado llega al 100 en 9 a 11 meses (junta más unidades por vuelta a medida que sube de nivel). Títulos: Aprendiz (1), Oficial (21), Experto (41), Artesano (61), Maestro (81), Gran Maestro (96). Los exámenes del §4 son capa profunda.
 
-**Recolectar con oficio.** Cada rango suma 0,3 % de sacar una unidad más por unidad recolectada (rango 50: 15 %; rango 100: 30 %), sin pasar el espacio de la mochila (D-90). Desde el rango 10, cada vuelta en la que el minero junta algo de lo suyo tiene 5 % de dar una 💠 gema en bruto, +0,15 % por rango (18,5 % en el 100); lo mismo el herbolario con la 🌸 flor de luna. El desollador saca carne y piel del botín de las bestias, con la misma unidad extra por rango. Las unidades extra y los raros usan su propio sorteo: no cambian lo que la vuelta o la pelea dan.
+**Recolectar con oficio.** Cada rango suma 0,3 % de sacar una unidad más por unidad recolectada (rango 50: 15 %; rango 100: 30 %), sin pasar el tope de su tipo en la mochila (D-90; desde la 0.62, D-338: 30 por tipo, o 40/50 con la 🎒 mochila de su oficio, §0.15). Desde el rango 10, cada vuelta en la que el minero junta algo de lo suyo tiene 5 % de dar una 💠 gema en bruto, +0,15 % por rango (18,5 % en el 100); lo mismo el herbolario con la 🌸 flor de luna. El desollador saca carne y piel del botín de las bestias, con la misma unidad extra por rango. Las unidades extra y los raros usan su propio sorteo: no cambian lo que la vuelta o la pelea dan.
 
 **🦌 Piel.** Toda bestia que suelta carne suelta también piel, con 10 puntos menos de probabilidad que su carne (30 a 50 %, 1 o 2). Humanoides, no muertos, hongos y limos, nunca.
 
@@ -664,3 +664,24 @@ El dueño lo dijo en la entrevista de voz (E-29): "una zona agotada vuelve sola,
 - **Datos y código:** `content/balance.yaml` → `stock.tend`; `_tend_after`, `_stock` y `_tend_lines` en `engine/service/game.py`; pruebas en `tests/test_muerte_permanente_y_regeneracion.py`. Pregunta abierta: E-283 (P-294).
 
 **De dónde sale:** *Stardew Valley* (la tierra que se cuida da más) y los recursos que vuelven solos de *Albion Online* y *New World*; aquí, en la capa simple (D-44), sin sembrar todavía (P-74).
+
+### 0.15 🎒 Las mochilas de oficio (D-338, desde la 0.62; cómo se aplicó: D-339)
+
+El dueño lo decidió el 23-oct-2026 al pedir que la mochila cuente tipos y no espacio ("quiero poder farmear mucho más, aunque tarde, y que el límite sea el inventario"): **cada oficio fabrica su mochila, con su propio oficio, desde rangos bajos**; sube el tope por tipo de los recursos de ese oficio y deja cargar más tipos de ellos; dos niveles (40 y 50 por tipo) y hasta 3 a la vez. La mochila por tipos está en [Inventario y mochilas](../03-personaje/inventario-y-mochilas.md) §0.
+
+| Qué | Cómo está hoy |
+|---|---|
+| **Quién las hace** | Los 5 oficios de recolección: 🪓 Leñador, ⛏️ Minero, 🌿 Herbolario, 🎣 Pescador y 🔪 Desollador, cada uno la suya (10 objetos, `mochila_<oficio>` y `mochila_<oficio>_grande`, `kind: prof_bag`) |
+| **Desde qué rango** | La básica desde el **5** (40 por tipo, 2 ⚡, 12 de experiencia de oficio); la grande desde el **40** (50 por tipo, 4 ⚡, 24). Sin 📚 libro de recetas (`no_book`) y sin tramos (los oficios de recolección no tienen colores) |
+| **Con qué** | Sus recursos y algo de otro oficio, para que nadie sea autosuficiente (D-109): 🟤 cuero (🪣 Curtiduría), 🧵 fibra (🌿 Herbolario) o 🧣 tela (🧶 Tejeduría); las grandes, también 🟫 tablones o 🔩 lingotes. La tabla está en [Inventario y mochilas](../03-personaje/inventario-y-mochilas.md) §0.2 |
+| **Dónde** | **Al fuego**: en cualquiera de las 9 🔥 Fogatas y en el centro de tu campamento con su 🔥 Fogón (`stations.fire` y `fire_camp` en `content/professions.yaml`). Están en 🛠️ Fabricar, agrupadas con su oficio. La pantalla del oficio (/lenador…) tiene el botón 🛠️ Fabricar donde hay fuego |
+| **Qué guardan** | Los recursos de su oficio: lo que junta (`gathers`), lo que saca de las bestias (`skins`) y su raro (`rare`). Puesta, no ocupan tipos y caben hasta 40 o 50 de cada uno |
+| **Ponérselas** | 🎒 Mochila → 🎒 Mochilas de oficio (/mochilas): /mp1 te pones una, /mq1 te la quitas; hasta 3, de oficios distintos. La recién hecha se pone sola si es la primera de su oficio y queda lugar, o si es mejor que la puesta (y la otra vuelve a la mochila) |
+| **Venderlas y encargarlas** | 🏛️ Mercado → 🛍️ Comprar → 🎒 Mochilas de oficio (la 10.ª categoría); 📜 Pedidos de fabricación: los oficios de recolección ya se pueden encargar (sus mochilas son sus únicas recetas). El 🛒 mercader no las compra |
+
+- **Ejemplo:** Lyra es 🌿 Herbolaria de rango 5. En la 🔥 Fogata, 🛠️ Fabricar → 🎒 Mochila de herbolario: 8 🌿 hierbas, 8 🧵 fibras y 2 🟤 cueros, 2 ⚡. Se la pone sola: sus 16 recursos de herbolaria salen de los tipos de la mochila y caben 40 de cada uno. En el rango 40 hace la grande (50 por tipo) y la básica vuelve a su mochila para venderla en el 🏛️ Mercado.
+- **El 🔪 Desollador:** la carne y la piel son botín y entran siempre (D-90), así que su mochila sirve sobre todo para que no ocupen tipos.
+- **Lo que falta:** las mochilas de los oficios de refinado para sus refinados (21 por oficio desde la 0.52; E-289) y las del diseño viejo (médico, comerciante…, D-47).
+- **Datos y código:** `content/balance.yaml` → `prof_backpacks` (el oficio y el tope de cada mochila) y `hero.backpack.prof_slots`; las recetas en `content/professions.yaml`; `engine/service/backpack.py` (ponérselas, el compartimento, la que se pone sola) y en `engine/service/game.py` `_stations_here` (el fuego), `_recipe_branch`, `_make` y `_recipe_view`; pruebas en `tests/test_mochila_por_tipos.py`. Preguntas: E-287 a E-289 (P-298 a P-300).
+
+**De dónde sale:** *World of Warcraft* (las bolsas de profesión: la de herbalista guarda solo hierbas, con más casillas) y *RuneScape* (el saco de hierbas y la bolsa de gemas del oficio); aquí, en la capa simple (D-44): una mochila por oficio, dos niveles, y se lleva sin ocupar una ranura de equipo.

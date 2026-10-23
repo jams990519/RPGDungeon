@@ -8,6 +8,7 @@ al servidor del primer vencedor sale una sola vez.
 from conftest import make_hero
 from engine.combat import find_move, make_combat, phase_for, phase_moves, resolve_round, validate_choice
 from engine.core import BossDefeated, Rng
+from engine.service.game import button_cap
 from engine.world import zone_at
 
 
@@ -245,7 +246,7 @@ def test_every_button_in_the_lair_works(content):
     while queue:
         path = queue.popleft()
         service, view = build(path)
-        assert len(view.actions) <= (6 if view.kind == "combat" else 4), (path, view.kind)
+        assert len(view.actions) <= button_cap(view.kind), (path, view.kind)     # 6 in combat; D-339 (0.62): 🎒 Mochila 5
         assert not service.texts.missing, (path, service.texts.missing)
         key = (view.kind, tuple(a.id for a in view.actions))
         if key in seen:

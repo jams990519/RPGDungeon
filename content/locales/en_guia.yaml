@@ -78,7 +78,7 @@ guide:
 
         • 🪓 Chop wood, next to it, collects only 🪵 wood.
 
-        • Each run takes {gather_time} and costs {per_gather} ⚡. It goes into your 🎒 backpack (space: {cap}).
+        • Each run takes {gather_time} and costs {per_gather} ⚡. It goes into your 🎒 backpack (up to {cap} types, {per} of each).
 
         • With that you craft, found a camp and sell to the merchant.
 
@@ -226,7 +226,7 @@ guide:
         • Inviting friends gives extra energy: your link is in 👤 Hero.'
     bag_full:
       name: Backpack full
-      text: '• With a full backpack you can''t gather or buy (what you find still goes in).
+      text: '• Your backpack has no free types: what you already carry keeps coming in up to {per} of each, but nothing new (what you find still goes in).
 
         • Sell what you don''t need to the Clearing''s 🏪 Merchant, use it in ⚒️ Professions or contribute it to your camp.'
     cave:

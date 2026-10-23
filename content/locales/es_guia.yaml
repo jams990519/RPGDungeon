@@ -73,7 +73,7 @@ guide:
         🧺 Recolectar
         • Juntas los recursos que ya descubriste en la zona: madera, piedra, fibra, hierbas...
         • 🪓 Talar, al lado, junta solo 🪵 madera.
-        • Cada vuelta tarda {gather_time} y gasta {per_gather} ⚡. Va a tu 🎒 mochila (espacio: {cap}).
+        • Cada vuelta tarda {gather_time} y gasta {per_gather} ⚡. Va a tu 🎒 mochila (hasta {cap} tipos, {per} de cada uno).
         • Con eso se fabrica, se funda un campamento y se vende al mercader.
         • Si recolectas mucho en un lugar, se agota por un tiempo.
     hunt:                      # [ES] b) y después, cazar
@@ -188,7 +188,7 @@ guide:
     bag_full:
       name: "Mochila llena"
       text: |-
-        • Con la mochila llena no puedes recolectar ni comprar (lo que encuentras igual entra).
+        • Tu mochila no tiene tipos libres: lo que ya llevas sigue entrando hasta {per} de cada uno, pero nada nuevo (lo que encuentras igual entra).
         • Vende lo que sobra al 🏪 Mercader del Claro, úsalo en ⚒️ Oficios o apórtalo a tu campamento.
     cave:
       name: "Mazmorras"
