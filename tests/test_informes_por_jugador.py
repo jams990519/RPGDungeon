@@ -31,7 +31,7 @@ from adapters.telegram import bot as tg
 from engine.core import MemoryStore
 from engine.service import GameService
 from engine.service import telemetry
-from engine.service.telemetry import SLOT_SECONDS, action_category, typed_category
+from engine.service.telemetry import KEEP_SECONDS, SLOT_SECONDS, action_category, typed_category
 
 HOUR = 3600
 
@@ -276,12 +276,18 @@ def test_who_stopped_coming_is_listed_with_their_at(service, clock):
 def test_the_mail_section_shows_only_when_the_migration_left_its_record(service, clock):
     make_hero(service)
     to_slot_start(clock)
+    # 0.62.2 runs once at start-up and always leaves its record: with nobody holding mail, one line says so
+    assert "Nadie tenía piezas de malla" in reports.build(service).txt
+    service.store.delete("migrations", "malla_to_leather")
     assert "MALLA CONVERTIDA" not in reports.build(service).txt and reports.malla_lines(service) == []
     service.store.put("migrations", "malla_to_leather", {
         "at": clock.now(), "version": "0.62.2", "other": {},
         "accounts": {"test:1": {"hero": "Lyra", "handle": "@lyra", "pieces": [["malla_1", "cuero_1"]]}}})
     text = reports.build(service).txt
     assert "MALLA CONVERTIDA EN CUERO" in text and "@lyra · Lyra · test:1: piezas 1" in text
+    clock.advance(KEEP_SECONDS + 1)                  # only in the reports of the 3 days after the change
+    assert reports.malla_lines(service) == []
+    clock.advance(-(KEEP_SECONDS + 1))
     service.store.put("migrations", "malla_to_leather", {"accounts": "otro formato"})
     assert "otro formato" in "\n".join(reports.malla_lines(service))
 

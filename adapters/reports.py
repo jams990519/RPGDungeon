@@ -769,8 +769,10 @@ def malla_lines(service: Any, number: int = 12) -> list[str]:
     """Who had 🧥 mail pieces turned into leather by the 0.62.2 migration ("migrations"/"malla_to_leather"), or [] if none.
 
     [ES] Qué hace: si la migración de la 0.62.2 dejó su registro (formato {"at", "version", "accounts": {cuenta: {"hero",
-    "handle", "pieces": [[de, a], ...]}}, "other": {...}}), lista a quién se le convirtió qué, con su @. Si no está, no sale
-    nada y nunca falla. Solo lee. La llama: build(). Si cambia, afecta: lo que lee el equipo.
+    "handle", "pieces": [[de, a], ...]}}, "other": {...}}), lista a quién se le convirtió qué, con su @; si no convirtió nada,
+    lo dice en una línea ("nadie tenía malla"). Sale solo en los informes de los 3 días que siguen al cambio (KEEP_SECONDS,
+    lo mismo que guarda el servidor): el cambio corre una vez al arrancar y no hace falta repetirlo para siempre. Si no está
+    el registro, no sale nada y nunca falla. Solo lee. La llama: build(). Si cambia, afecta: lo que lee el equipo.
     """
     try:
         record = service.store.get("migrations", "malla_to_leather")
@@ -779,8 +781,14 @@ def malla_lines(service: Any, number: int = 12) -> list[str]:
     if not record:
         return []
     try:
+        at = record.get("at")
+        if at is not None and service.clock.now() - float(at) > KEEP_SECONDS:   # only the 3 days after the change
+            return []
         accounts = record.get("accounts") or {}
         out = [f"{number}. MALLA CONVERTIDA EN CUERO ({record.get('version', '0.62.2')}, {_when(float(record.get('at') or 0))} UTC)"]
+        if not accounts and not any(v for v in (record.get("other") or {}).values()):
+            out.append("- Nadie tenía piezas de malla: no hubo nada que cambiar.")
+            return out
         out.append(f"- Jugadores con piezas convertidas: {len(accounts)}")
         for account, info in sorted(accounts.items(), key=lambda kv: str((kv[1] or {}).get("hero", ""))):
             info = info or {}
