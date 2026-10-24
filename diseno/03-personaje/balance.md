@@ -1359,7 +1359,7 @@ El dueño lo pidió en la entrevista de voz (E-24): el artesano recibe los mater
 - **Lo que gana el artesano por ⚡:** de 8 🥉 (rango 1) a 48 🥉 (rango 100) de mano de obra, más la experiencia de oficio y de héroe de fabricar. Pelear da ~2 × (1 + 0,1 × (nivel − 1)) monedas por pelea (2 ⚡ cazando): la mano de obra paga más por ⚡, pero la pone otro jugador (no entra oro nuevo) y el artesano no gana el botín ni la experiencia de pelear.
 - **Combate:** sin cambios; lo hecho es el mismo equipo de siempre (la ✒️ obra maestra sale con la probabilidad de siempre del artesano, D-116).
 
-**Lo que queda por mirar:** cuántos pedidos se publican y cuántos se toman, a qué mano de obra (la mitad, la sugerida, el doble), cuántos vencen sin tomarse y de qué oficios faltan artesanos (el informe diario los cuenta en su sección 9; E-278); si el impuesto sobre los materiales frena los pedidos con materiales del artesano (E-279).
+**Lo que queda por mirar:** cuántos pedidos se publican y cuántos se toman, a qué mano de obra (la mitad, la sugerida, el doble), cuántos vencen sin tomarse y de qué oficios faltan artesanos (el informe diario los cuenta en su sección 10; E-278); si el impuesto sobre los materiales frena los pedidos con materiales del artesano (E-279).
 
 ### Octubre de 2026 (21-oct): el equipo se gasta, se repara y un día se rompe (0.57, D-139 confirmada; D-333 provisional)
 
@@ -1665,7 +1665,7 @@ El dueño pidió que los del gremio "puedan primero construir las estructuras y 
 
 ### Octubre de 2026 (21-oct): el 🏛️ Mercado entre jugadores (0.46, D-137 y D-26 confirmadas; D-320 provisional)
 
-El dueño pidió un mercado entre jugadores "que funcione y luego vamos arreglando". Todos los números son nuevos y de Claude (D-320), con las referencias de [Economía](../07-economia/economia.md) §3 y §5; se ajustan con la sección 9 del informe diario.
+El dueño pidió un mercado entre jugadores "que funcione y luego vamos arreglando". Todos los números son nuevos y de Claude (D-320), con las referencias de [Economía](../07-economia/economia.md) §3 y §5; se ajustan con la sección 10 del informe de jugadores.
 
 | Número | Antes | Ahora |
 |---|---|---|

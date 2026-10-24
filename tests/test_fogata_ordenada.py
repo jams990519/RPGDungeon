@@ -10,7 +10,8 @@ the daily player report for the team (D-258, D-259, D-260).
 - ⚙️ Opciones: sin ⚔️ Peleas automáticas ni 🧪 Pociones; 🩹 Retirarse, 🌐 Idioma, 💬 Feedback, ❓ Dudas (D-297) y ↩️ Volver; el mensaje de
   feedback se guarda y sale una sola vez para el chat de informes.
 - 📔 Diario: ↩️ Volver va al campamento si lo abriste desde 📜 Tablón, y al héroe si lo abriste desde 👤 Héroe.
-- El informe de jugadores (adapters/reports.py): genérico, sin nombres, uno por día, con la foto del día.
+- El informe de jugadores (adapters/reports.py): desde D-341, cada 3 horas, con el nombre y la cuenta de cada jugador (el
+  resto, en tests/test_informes_por_jugador.py).
 Archivo: tests/test_fogata_ordenada.py · Módulo: M7 Historia, M10 Economía, M20 Telemetría · Prueba:
 engine/service/story.py (_daily_ids, _claim_daily, _can_meet, _npc_view, _board_view, _journal_view),
 engine/service/game.py (_shop_view, _shop_sell_view, _sell_code, _inn_seconds, _options_view, _feedback_view,
@@ -174,23 +175,20 @@ def test_the_journal_goes_back_where_it_was_opened(service):
     assert from_hero.actions[-1].id == "hero"
 
 
-def test_the_daily_player_report_is_generic_and_once_a_day(service, clock):
+def test_the_player_report_names_each_player_every_3_hours(service, clock):
+    # D-341 (24-oct-2026) replaced the generic daily report of D-260: every 3 hours, a card per player with its @
+    # (the whole report is tested in tests/test_informes_por_jugador.py)
     make_hero(service, "test:1", "Lyra")
     make_hero(service, "test:2", "Bram")
     service.act("test:1", "home")
     service.act("test:2", "home")
+    clock.advance(3 * 3600)                     # the report covers the slot that ended, not the one being played
     assert reports.due(service)
-    name, text = reports.build(service)
-    assert name.startswith("informe-jugadores-") and name.endswith(".txt")
-    assert "Lyra" not in text and "Bram" not in text and "test:" not in text      # generic: no names, no accounts
-    assert "Héroes creados: 2" in text and "primer informe" in text
-    reports.mark_sent(service)
+    record = reports.generate(service)
+    assert record["txt_name"].startswith("informe-jugadores-") and record["txt_name"].endswith(".txt")
+    assert "Lyra · test:1" in record["txt"] and "Bram · test:2" in record["txt"] and "Héroes en total: 2" in record["txt"]
+    reports.mark_sent(service, record["key"], "txt")
+    reports.mark_sent(service, record["key"], "csv")
     assert not reports.due(service)
-    clock.advance(86400)
-    hero = service._load("test:1")
-    hero.professions["minero"] = 40
-    service._save(hero)
-    service.act("test:1", "home")
+    clock.advance(3 * 3600)
     assert reports.due(service)
-    _, text = reports.build(service)
-    assert "Unidades recolectadas: hoy 40" in text
