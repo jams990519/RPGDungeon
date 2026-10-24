@@ -19,7 +19,8 @@
 #     con los números de balance.yaml recipe_tiers (pieza de nivel N → rango N, un tramo cada 5; 2/3/4 ⚡ por tramo; experiencia
 #     12 × (1 + 0,01 × rango)), y agrega al final el bloque "GENERATED" con las recetas de los niveles 15, 25 … 95. Si cambias una
 #     receta de equipo o esos números, corre `python tools/recipe_tiers.py` (tests/test_tramos_de_recetas.py avisa si quedó viejo).
-#     Las 67 recetas de malla (D-208, E-223) tienen retired: true: ya no se hacen, las piezas quedan en las mochilas. Las recetas
+#     Las 67 recetas de malla (D-208, E-223) tienen retired: true: ya no se hacen. D-342 (0.62.2): las piezas de malla que
+#     quedaban se cambiaron una vez por las de cuero y la 🎓 ⛓️ Malla de la Peletería (peleteria_malla) se retiró. Las recetas
 #     de rango 25, 50 y 75 o más de cualquier oficio piden su 📚 libro de recetas (balance.yaml recipe_tiers.books; GameService
 #     _book_missing). La primera receta de 💍 Joyería es colgante_cobre (sin gema), antes del anillo.
 # D-328 (0.52): los tramos llegan a todos los oficios con recetas: también el refinado (🪚 🔥 💧 🧶 🪣 🗿), la ⚗️ Alquimia, la
@@ -143,7 +144,7 @@ specs:
   fundicion:
     - {id: fundicion_hierro, emoji: "🔩", effects: [{kind: yield, items: [lingote], value: 0.15}]}
     - {id: fundicion_preciosos, emoji: "🪙", effects: [{kind: yield, items: [lingote], value: 0.05}, {kind: find, items: [gema_bruta], value: 0.03}]}
-    - {id: fundicion_aleaciones, emoji: "⛓️", effects: [{kind: yield, items: [lingote], value: 0.05}, {kind: masterwork, types: [malla, placas], value: 0.02}]}
+    - {id: fundicion_aleaciones, emoji: "⛓️", effects: [{kind: yield, items: [lingote], value: 0.05}, {kind: masterwork, types: [placas], value: 0.02}]}   # [ES] D-342 (0.62.2): sin malla (ya no existe); las obras maestras, solo en placas
   destilacion:
     - {id: destilacion_extractos, emoji: "🧴", effects: [{kind: yield, items: [extracto], value: 0.15}]}
     - {id: destilacion_tintes, emoji: "🎨", effects: [{kind: yield, items: [extracto], value: 0.05}, {kind: masterwork, types: [tela, cuero], value: 0.02}]}
@@ -167,7 +168,8 @@ specs:
     - {id: herreria_herramientas, emoji: "🔧", effects: [{kind: yield, items: [madera, piedra, pieza_metal, arcilla, hierba_curativa, fibra, carne, piel, bayas, setas, miel, mazorca, lino, juncos, nenufar, cactus, datiles, flor_escarcha, musgo, raiz_amarga, tomillo, resina, corteza, carbon, sal, cuarzo, arena, hielo, chatarra], value: 0.05}]}   # [ES] tus herramientas: +5 % en todo lo que recolectas o desuellas (D-183: también los recursos de cada terreno)
   peleteria:
     - {id: peleteria_cuero, emoji: "🦺", effects: [{kind: masterwork, types: [cuero], value: 0.05}]}       # [ES] exclusivas: espec_cuero_1 y _2
-    - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}]}      # [ES] exclusivas: espec_malla_1 y _2 (retiradas en la 0.44: ya no hay malla, D-208; qué hacer con ella: P-243)
+    - {id: peleteria_malla, emoji: "⛓️", effects: [{kind: masterwork, types: [malla], value: 0.05}], retired: true}   # [ES] D-342 (0.62.2, P-243 decidida por el dueño: "quitarla y elegir otra gratis"): retirada; ya no se ofrece ni cuenta.
+      # [ES] Quien la tenía la perdió de Hero.prof_specs y elige otra gratis (su lugar queda libre); su dominio sigue en Hero.spec_xp. Sus exclusivas espec_malla_1 y _2 se retiraron en la 0.44
     - {id: peleteria_talabarteria, emoji: "🎒", effects: [{kind: perk, key: bag, value: 10}]}             # [ES] alforjas y mochilas: +10 de mochila (D-339, 0.62: +10 tipos; las sillas de montar, con las monturas)
   sastreria:
     - {id: sastreria_tunicas, emoji: "🔮", effects: [{kind: masterwork, types: [tela], slots: [armadura], value: 0.05}]}                  # [ES] exclusivas: espec_tela_1 y _2
@@ -319,7 +321,7 @@ professions:
     name_key: profession.peleteria.name
     how_key: profession.peleteria.how
     branch: craft
-    perk: {attack: 0.04, hp: 0.03, armor_type: [cuero, malla]}   # [ES] D-111: +4 % de ataque y +3 % de vida con cuero o malla
+    perk: {attack: 0.04, hp: 0.03, armor_type: [cuero]}   # [ES] D-111: +4 % de ataque y +3 % de vida con cuero (D-342, 0.62.2: sin malla; ninguna clase la usa)
   medicina:
     emoji: "🩺"
     name_key: profession.medicina.name
@@ -632,7 +634,7 @@ recipes:
     energy: 2
     xp: 13
 
-  # ---- Peletería: armaduras de cuero (cuero + tela) y de malla ligera (cuero + lingotes)
+  # ---- Peletería: armaduras de cuero (cuero + tela); las de malla ligera (cuero + lingotes) quedaron retiradas (D-208; D-342: ya no hay malla)
   jubon_cuero:
     profession: peleteria
     inputs: {cuero_curtido: 4, tela_tejida: 1}

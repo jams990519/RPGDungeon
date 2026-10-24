@@ -11,11 +11,17 @@ puntaje (gear_score: ataque + vida + 2 × defensa, balance.yaml gear.score) si u
 D-333 (0.57, D-139): una pieza puesta con la durabilidad en 0 ("dañada", engine/hero/durability.py) no suma nada en gear_bonus y
 cuenta 0 en is_better; equip y unequip llevan el registro de durabilidad de cada copia (la mejor copia se pone; la que se quita
 vuelve a la mochila con el suyo).
+D-342 (0.62.2, orden del dueño: "la malla la quitamos, dejamos cuero, tela y placa únicamente"): balance.yaml gear.retired_types
+({malla: cuero}) dice qué tipos ya no existen y cuál los reemplaza (retired_types). Una pieza de un tipo retirado nunca sale en el
+botín (roll_gear), en el Recuerdo (source_choices) ni en el equipo inicial (starter_gear pone el tipo que la reemplaza);
+retired_twin dice por qué pieza se cambia (misma ranura, tier y origen; la ✒️ obra maestra, por la de su gemela).
 Documento de diseño: diseno/03-personaje/equipamiento.md §6 (Recuerdos del Guardián) y §11 (lo que ya está en el juego)
 Módulo: M2 Héroe (equipo)
-Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear; enchanting.enchants para el encantamiento;
-    durability, D-333), content/classes.yaml (group), engine/hero/durability.py (slot_damaged, take_best, put_back, set_worn)
-Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial, Recuerdo del Guardián), engine/hero/hero.py (bonos vía el kit)
+Depende de: content/items.yaml (kind: gear), content/balance.yaml (gear; gear.retired_types, D-342; enchanting.enchants para el
+    encantamiento; durability, D-333), content/classes.yaml (group), engine/hero/durability.py (slot_damaged, take_best, put_back,
+    set_worn)
+Lo usan: engine/service/game.py (vistas de equipo, botín, equipo inicial, Recuerdo del Guardián), engine/hero/hero.py (bonos vía el kit),
+    engine/world/dungeons.py (retired_types en chest_gear) y engine/service/retired_gear.py (retired_twin, el cambio de la malla)
 Eventos que publica: ninguno
 Eventos que escucha: ninguno
 Datos de los que es dueño: Hero.gear (ranura -> id de objeto); lee Hero.gear_enchants (lo escribe el servicio); mueve
@@ -27,6 +33,8 @@ Reglas que nunca se rompen:
     3. Las piezas con "source" (por ejemplo las del Guardián, D-82, el equipo de artesano, source: crafted, D-109, o
        sus ✒️ obras maestras, source: masterwork, D-116) nunca salen en el botín al azar: solo se consiguen por su
        fuente (el Recuerdo, una receta de oficio, la suerte del artesano al fabricar).
+    4. D-342: ninguna pieza de un tipo de gear.retired_types (la malla) entra al juego: ni botín, ni cofres, ni Recuerdo, ni
+       equipo inicial. Sus piezas siguen en items.yaml (sin retired: true) para que las viejas carguen y se puedan cambiar.
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (_gear_view, _item_view, _end_combat; drop_chance_for en el bono de la partida de caza)
     - Números: balance.yaml gear.* (drop_chance, high_level_drop, level_window), items.yaml stats (mueven el balance de
@@ -42,8 +50,11 @@ Si cambias esto, revisa:
     - D-333 (0.57): gear_bonus salta las piezas dañadas (durability.slot_damaged). Sin registros de durabilidad (héroes de
       antes, tools/sim.py, tools/balance_report.py) todo rinde igual que antes. Si una pieza dañada volviera a sumar, el
       desgaste dejaría de importar (tests/test_desgaste_reparacion.py)
+    - D-342 (0.62.2): gear.retired_types y retired_twin; si se retira otro tipo, sus piezas viejas necesitan su gemela (y un
+      cambio de una sola vez como engine/service/retired_gear.py); la cascada C-42 del mapa de impacto
     - Pruebas: tests/test_gear.py, tests/test_boss.py, tests/test_professions.py (equipo de artesano), tests/test_balance_d110.py,
-      tests/test_oficios_equipo.py (encantamientos y pieza mejor), tests/test_desgaste_reparacion.py (durabilidad)
+      tests/test_oficios_equipo.py (encantamientos y pieza mejor), tests/test_desgaste_reparacion.py (durabilidad),
+      tests/test_sin_malla.py (la malla no sale y se cambia por cuero, D-342)
 """
 
 from __future__ import annotations
@@ -53,6 +64,61 @@ from typing import Any
 from engine.core.rng import Rng
 from engine.hero import durability
 from engine.hero.hero import Hero
+
+
+def retired_types(balance: dict[str, Any]) -> dict[str, str]:
+    """{retired gear type: the type that replaces it}, from balance.yaml gear.retired_types (D-342: {"malla": "cuero"}).
+
+    [ES]
+    Qué hace: da los tipos de equipo que ya no existen en el juego y cuál los reemplaza (D-342, 0.62.2: la malla se quitó;
+    quedan cuero, tela y placas). Una pieza de un tipo retirado nunca sale en el botín (roll_gear), en los cofres de las
+    mazmorras (engine/world/dungeons.py chest_gear), en el Recuerdo del Guardián (source_choices) ni en el equipo inicial
+    (starter_gear, que usa el tipo que la reemplaza); las que ya tenían los jugadores se cambiaron una vez por su gemela
+    (retired_twin, engine/service/retired_gear.py). Sin la clave, {} (nada retirado: el juego queda como antes).
+    La llaman: este módulo, engine/world/dungeons.py y engine/service/retired_gear.py.
+    Si cambia, afecta: qué equipo entra al juego y a qué se cambia lo que queda (C-42 del mapa de impacto).
+    """
+    return dict((balance.get("gear") or {}).get("retired_types") or {})
+
+
+def retired_twin(items: dict[str, Any], item_id: str, balance: dict[str, Any]) -> str | None:
+    """The piece that replaces a piece of a retired type (D-342): same slot, tier and source, of the replacing type.
+
+    The twin is first looked for by name (the type's word swapped: "artesano_cabeza_malla_3" → "artesano_cabeza_cuero_3",
+    "guardian_malla" → "guardian_cuero"), checked by slot, tier and source; if that piece does not exist, the only piece of the
+    replacing type with the same slot, tier, source and level. A ✒️ masterwork ("<id>_obra", built at load by masterwork_items)
+    goes to the masterwork twin of its base's twin. None if the piece is not of a retired type or has no twin (then it stays).
+
+    [ES]
+    Qué hace: dice por qué pieza se cambia una pieza de un tipo retirado (D-342: la malla por el cuero): la de la misma ranura,
+    nivel de pieza (tier) y origen (botín, artesano, Guardián) del tipo que la reemplaza; una ✒️ obra maestra va a la obra
+    maestra de su gemela. Si no hay gemela, None: la pieza queda como está (nadie pierde nada).
+    La llama: engine/service/retired_gear.py (el cambio de una sola vez de la 0.62.2) y las pruebas.
+    Si cambia, afecta: qué pieza recibe cada jugador por su malla (tests/test_sin_malla.py).
+    """
+    item = items.get(item_id) or {}
+    new_type = retired_types(balance).get(item.get("type", ""))
+    if item.get("kind") != "gear" or not new_type:
+        return None
+    base_id = item.get("base", "") if item.get("masterwork") else item_id
+    base = items.get(base_id) or {}
+    if not base:
+        return None
+
+    def twin_of(cand: str) -> bool:
+        it = items.get(cand) or {}
+        return (it.get("kind") == "gear" and it.get("type") == new_type and it.get("slot") == base.get("slot")
+                and it.get("tier") == base.get("tier") and it.get("source") == base.get("source"))
+
+    named = "_".join(new_type if part == base.get("type") else part for part in base_id.split("_"))
+    twin = named if twin_of(named) else None
+    if twin is None:
+        same = [iid for iid, it in items.items() if twin_of(iid) and it.get("req_level") == base.get("req_level")]
+        twin = same[0] if len(same) == 1 else None
+    if twin is None or not item.get("masterwork"):
+        return twin
+    obra = next((iid for iid, it in items.items() if it.get("masterwork") and it.get("base") == twin), None)
+    return obra
 
 
 def group_of(classes: dict[str, Any], hero: Hero) -> str:
@@ -219,15 +285,18 @@ def roll_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str,
     [ES]
     Qué hace: sortea si cae una pieza y cuál. Casi siempre es de tu tipo (botín "para ti"),
     a veces de otra clase (para vender). Lo raro sale menos. Si no hay piezas en la ventana de nivel (el equipo va
-    cada 10 niveles desde el 10, D-110), salen las del nivel de pieza más cercano por debajo.
-    La llama: el servicio al ganar un combate.
+    cada 10 niveles desde el 10, D-110), salen las del nivel de pieza más cercano por debajo. D-342: nunca una pieza de un
+    tipo retirado (gear.retired_types: la malla).
+    La llama: el servicio al ganar un combate (también el cofre del campamento enemigo, los jefes y las peleas automáticas).
     Si cambia, afecta: cuánto equipo entra al juego (balance.yaml gear.drop_chance y gear.high_level_drop).
     """
     cfg = balance["gear"]
     if not rng.chance(drop_chance_for(balance, enemy_level) if chance is None else chance):
         return None
     below, above = cfg["level_window"]
-    lootable = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")]
+    gone = retired_types(balance)                      # D-342: a retired type (mail) never drops
+    lootable = [(iid, it) for iid, it in items.items() if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")
+                and it.get("type") not in gone]
     pool = [(iid, it) for iid, it in lootable if enemy_level - below <= it.get("req_level", 1) <= enemy_level + above]
     if not pool:
         lower = [it.get("req_level", 1) for _, it in lootable if it.get("req_level", 1) <= enemy_level + above]
@@ -252,17 +321,21 @@ def source_choices(items: dict[str, Any], classes: dict[str, Any], balance: dict
 
     [ES]
     Qué hace: da las dos piezas que el Recuerdo del Guardián ofrece a este héroe: el arma de su
-    tipo principal y la armadura de su tipo (siempre "para ti").
+    tipo principal y la armadura de su tipo (siempre "para ti"). D-342: nunca una pieza de un tipo retirado (la Cota de
+    Anillos de Raíz, guardian_malla, ya no se ofrece; una clase con malla recibiría la de cuero).
     La llama: el servicio (pantalla del Recuerdo).
     Si cambia, afecta: qué puede elegir cada clase con su Recuerdo.
     """
     cfg = balance["gear"]
     group = group_of(classes, hero)
-    wanted = [(cfg["weapons_by_group"].get(group) or [None])[0], cfg["armor_by_group"].get(group)]
+    gone = retired_types(balance)                      # D-342: never a piece of a retired type (mail): its replacement
+    armor = cfg["armor_by_group"].get(group)
+    wanted = [(cfg["weapons_by_group"].get(group) or [None])[0], gone.get(armor, armor)]
     out = []
     for typ in wanted:
         for iid, it in items.items():
-            if it.get("kind") == "gear" and it.get("source") == source and it.get("type") == typ and not it.get("retired"):
+            if it.get("kind") == "gear" and it.get("source") == source and it.get("type") == typ and not it.get("retired") \
+                    and typ not in gone:
                 out.append(iid)
                 break
     return out
@@ -322,10 +395,12 @@ def unequip(hero: Hero, slot: str, balance: dict[str, Any] | None = None) -> str
 
 
 def starter_gear(items: dict[str, Any], classes: dict[str, Any], balance: dict[str, Any], hero: Hero) -> list[str]:
-    """Equip the tier-1 weapon (first type of the class) and armor of the hero's type in empty slots. [ES] Qué hace: da el equipo inicial (arma y armadura básicas de tu clase), ya puesto. La llama: el servicio al crear el héroe y una vez a los héroes viejos (parche 0.6). Si cambia, afecta: el poder inicial."""
+    """Equip the tier-1 weapon (first type of the class) and armor of the hero's type in empty slots. [ES] Qué hace: da el equipo inicial (arma y armadura básicas de tu clase), ya puesto; D-342: si la armadura de la clase es de un tipo retirado, la del tipo que la reemplaza. La llama: el servicio al crear el héroe y una vez a los héroes viejos (parche 0.6). Si cambia, afecta: el poder inicial."""
     cfg = balance["gear"]
     group = group_of(classes, hero)
-    wanted = {"arma": (cfg["weapons_by_group"].get(group) or [None])[0], "armadura": cfg["armor_by_group"].get(group)}
+    gone = retired_types(balance)                      # D-342: a retired armor type (mail) starts with its replacement
+    armor = cfg["armor_by_group"].get(group)
+    wanted = {"arma": (cfg["weapons_by_group"].get(group) or [None])[0], "armadura": gone.get(armor, armor)}
     given = []
     for slot, typ in wanted.items():
         if not typ or hero.gear.get(slot):

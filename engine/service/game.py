@@ -64,7 +64,9 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320), engine.service.map_scroll
     (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326), engine.service.ladder (LadderMixin: la
     escalera del asentamiento, 1.ª parte: el cupo por etapa, quien deja de jugar y los activos del castillo, D-253 y D-327),
-    engine.service.group_missions (GroupMissionMixin: la 🎯 misión de grupo de cada subida del campamento, D-136 y D-332)
+    engine.service.group_missions (GroupMissionMixin: la 🎯 misión de grupo de cada subida del campamento, D-136 y D-332),
+    engine.service.retired_gear (RetiredGearMixin: sin malla, D-342 y D-343: el cambio de una sola vez de cada pieza de malla por
+    su gemela de cuero, que corre en __init__, y su aviso, que sale en _settle)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -204,6 +206,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     escribe engine/service/group_missions.py (GroupMissionMixin, ver su encabezado). Nada nuevo en Hero ni en "camp".
     D-328 (0.52): Hero.book_gifts (los regalos de libros ya dados, ids de balance.yaml recipe_tiers.book_gifts); los héroes de
     antes cargan con [] y _load (_grant_book_gifts) les da una vez los libros nuevos del refinado, ⚗️ y 🩺 de los rangos que tenían.
+    D-342 (0.62.2): los espacios "migrations" (los cambios de una sola vez: "malla_to_leather", con el formato fijo que lee el
+    informe de otro agente, y "peleteria_malla") y "migration_notice" (el aviso que falta mostrar) son de
+    engine/service/retired_gear.py (RetiredGearMixin, ver su encabezado). Nada nuevo en Hero: el cambio reescribe Hero.gear,
+    gear_wear, backpack, belt, bag_wear, gear_enchants, gear_signatures, gear_new y prof_specs de quien tenía malla.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -322,6 +328,10 @@ Si cambias esto, revisa:
       tests/test_playtest_fixes.py (fallos de la prueba de juego de la 0.9.2), tests/test_pantry.py (despensa, D-93),
       tests/test_backpack.py (mochila llena D-90 y cofre D-92)
     - Despensa (D-93): balance.yaml pantry; engine/world/pantry.py; textos pantry.* en es.yaml
+    - Sin malla (D-342, 0.62.2): __init__ llama a _retire_gear_once (engine/service/retired_gear.py) antes de cualquier pantalla y
+      _settle suma _retired_gear_notice a los avisos; los generadores de equipo (roll_gear, source_choices, starter_gear y
+      dungeon_rules.chest_gear) leen balance.yaml gear.retired_types. Un lugar nuevo del almacén que guarde equipo no necesita
+      sumarse al cambio (ya corrió), pero lo que genere equipo debe respetar gear.retired_types (C-42; tests/test_sin_malla.py)
     - Mochila llena (D-90): desde la 0.62 (D-338, D-339) la mochila cuenta TIPOS: balance.yaml hero.backpack (types 50,
       per_type 30, gear_pieces 20, prof_slots 3) y prof_backpacks; las cuentas y las 🎒 mochilas de oficio están en
       engine/service/backpack.py (BackpackMixin: _bag_room, _bag_full, _bag_add, las líneas, "pbags", /mp1 /mq1); aquí las
@@ -846,6 +856,7 @@ from engine.service.craft_orders import (CRAFT_ORDER_ACTIONS, CRAFT_ORDER_CODE_R
 from engine.service.permadeath import HALL_ACTION, OATH_ACTIONS, PermadeathMixin   # D-147, D-336 (0.60): 💀 permadeath and 🪦 the hall
 from engine.service.raid_difficulty import RaidDifficultyMixin   # D-337 (0.61): ⚔️ the waves' escalating difficulty (D-153)
 from engine.service.backpack import PBAG_ACTIONS, PBAG_CODE_RE, BackpackMixin   # D-338, D-339 (0.62): 🎒 the backpack by types
+from engine.service.retired_gear import RetiredGearMixin   # D-342, D-343 (0.62.2): ⛓️ → 🦺 no more mail (the one-time change)
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -1047,7 +1058,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
                   RepairMixin, WorldTimeMixin,
                   CraftOrderMixin, PermadeathMixin,
-                  RaidDifficultyMixin, BackpackMixin):
+                  RaidDifficultyMixin, BackpackMixin, RetiredGearMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1096,6 +1107,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             mapgen.configure_bonfires(int(bonfire.get("spacing", 12)), int(bonfire.get("ring", 1)))
             dungeon_rules.clear_cache()
             node_rules.clear_cache()
+        self._retire_gear_once()         # D-342 (0.62.2): once, every mail piece becomes its leather twin (before any screen)
 
     # ------------------------------------------------------------------ public API
 
@@ -1958,6 +1970,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                 notices.append(self.texts.t("inn.rested"))
         self._guild_count(hero, tally)
         notices += self._dng_settle(hero)               # D-170: a deep run left behind is closed (its pot paid in full)
+        notices += self._retired_gear_notice(hero)      # D-342 (0.62.2): once, which mail pieces became leather (and the 🎓 Malla)
         return notices
 
     def _arrive(self, hero: Hero, activity: dict[str, Any], rng: Rng) -> list[str]:

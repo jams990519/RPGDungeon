@@ -124,7 +124,7 @@ Al refinar, cada rango suma también 0,3 % de sacar una unidad más, y en las es
 | 🔨 Peto (placas) | lingote ×11, cuero ×4, tela ×2 | lingote ×15, cuero ×6, tela ×3, gema | lingote ×20, cuero ×9, tela ×5, gema ×3 |
 | 🪡 Túnica (tela) | tela ×10, extracto ×2, flor de luna | tela ×15, extracto ×4, flor de luna ×2 | tela ×24, extracto ×7, flor de luna ×4 |
 | 🦺 Jubón (cuero) | cuero ×10, tela ×3, extracto | cuero ×14, tela ×5, extracto ×2, gema | cuero ×21, tela ×8, extracto ×4, gema ×3 |
-| 🦺 Cota (malla) | lingote ×8, cuero ×5, tela ×2 | lingote ×12, cuero ×7, tela ×3, gema | lingote ×17, cuero ×10, tela ×5, gema ×3 |
+| ~~🦺 Cota (malla)~~ *(retirada en la 0.44, D-208; desde la 0.62.2 las cotas que quedaban son jubones de cuero, D-342)* | lingote ×8, cuero ×5, tela ×2 | lingote ×12, cuero ×7, tela ×3, gema | lingote ×17, cuero ×10, tela ×5, gema ×3 |
 | 💍 Joya | lingote ×3, gema ×3 | lingote ×6, gema ×6, flor de luna | lingote ×8, gema ×11, flor de luna ×3 |
 
 En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea llega a tener 13).
@@ -135,7 +135,7 @@ En 🛠️ Fabricar, las recetas de rango más alto salen primero (cada línea l
 |---|---|---|---|
 | Tela | 🪡 Sastrería | Tocado · Manguitos · Faldones · Zapatillas | 🧣 tela con 🟤 cuero (nivel 3) o 🧴 extracto (desde el 5), y 🌸 flor de luna desde el 8 |
 | Cuero | 🦺 Peletería | Caperuza · Brazales · Zahones · Polainas | 🟤 cuero, 🧣 tela, 🧴 extracto desde el nivel 8 y 💠 gema desde el 40 |
-| Malla | 🦺 Peletería | Almófar · Muñequeras · Perneras · Botines | 🔩 lingote, 🟤 cuero, 🧣 tela desde el nivel 8 y 💠 gema desde el 40 |
+| ~~Malla~~ *(retiradas en la 0.44; desde la 0.62.2 las que quedaban son las de cuero de la misma ranura y nivel, D-342)* | 🦺 Peletería | Almófar · Muñequeras · Perneras · Botines | 🔩 lingote, 🟤 cuero, 🧣 tela desde el nivel 8 y 💠 gema desde el 40 |
 | Placas | 🔨 Herrería | Celada · Avambrazos · Musleras · Sabatones | 🔩 lingote, 🟤 cuero, 🧣 tela desde el nivel 8 y 💠 gema desde el 40 |
 
 - **Nombres:** "de aprendiz" (nivel 3), "de oficial" (5), "del artesano" (8) y, del 10 al 100, los mismos lugares que el resto del equipo (de la frontera, del páramo … del alba eterna).
@@ -174,7 +174,7 @@ El dueño pidió (1-oct-2026) que **cada oficio le dé un beneficio propio a un 
 | 🔪 Desollador | Ataque | **+4 %** de ataque | Maestro de anatomía |
 | Refinado (aserradero, fundición, destilación, tejeduría, curtiduría) | Artesanos y comerciantes | Hasta **30 %** de sacar una unidad extra al refinar (0,3 % por rango, ya en la fase 1; +10 % en una estación del campamento) | El retorno de *Albion* |
 | 🔨 Herrería | Quien usa placas (guerrero, paladín, caballero de la muerte) | **+3 puntos** de armadura (sin pasar el tope del 60 %) | Engarces de herrero |
-| 🧶 Peletería | Quien usa cuero o malla (pícaro, druida, monje, cazador de demonios, bardo, cazador, chamán, evocador) | **+4 %** de ataque y **+3 %** de vida | Refuerzo de brazales |
+| 🧶 Peletería | Quien usa cuero (pícaro, druida, monje, cazador de demonios, bardo, cazador; la malla ya no existe, D-342) | **+4 %** de ataque y **+3 %** de vida | Refuerzo de brazales |
 | 🧵 Sastrería | Quien usa tela (sacerdote, mago, brujo, nigromante) | **+5 %** de ataque (poder de hechizos) | Bordado de capa |
 | 🪵 Carpintería | Artesanos (no es de combate desde D-116) | Hasta **15 %** de que cada arco o bastón que fabricas salga ✒️ **obra maestra**, y 🪑 muebles para el campamento (§0.4). Antes (0.16 a 0.20): +4 % de ataque con arco o bastón | — |
 | ⚗️ Alquimia | Todos | Las pociones curan un **30 %** más | Mixología |
@@ -254,7 +254,7 @@ El refinado puede hacerlo cualquier recolector de su rama hasta cierto nivel, o 
 | Oficio | Fabrica | Especializaciones posibles |
 |---|---|---|
 | **Herrería** | Armas de metal, placas, malla, herramientas, piezas de prótesis | Forjador de armas, Armero, Herrero de herramientas |
-| **Peletería** | Armaduras de cuero y malla ligera, mochilas, Tambores de Guerra | Cuero ligero, Cuero pesado, Monturas (sillas y alforjas) |
+| **Peletería** | Armaduras de cuero (la malla ligera se quitó: D-208, D-342), mochilas, Tambores de Guerra | Cuero ligero, Cuero pesado, Monturas (sillas y alforjas) |
 | **Sastrería** | Tela, túnicas, capas, vendas limpias, ropa de clima, máscaras | Túnicas mágicas, Ropa de clima, Textil médico |
 | **Carpintería** | Arcos, bastones, escudos, varitas, férulas, carros de caravana, muebles | Arquería, Escudos, Mobiliario |
 | **Ingeniería** | Artilugios, explosivos, torretas, **prótesis**, desfibriladores, armas de asedio | Prótesis, Asedio, Explosivos, Artilugios |
@@ -417,7 +417,7 @@ El dueño pidió (1-oct-2026) que **los beneficios de los oficios no sean solo p
 | 🗿 Cantería | 🏰 Castillo | Las obras del campamento piden **15 %** menos 🪨 piedra y 🧱 sillar (y, como todo refinado, hasta 30 % de sacar un sillar más) | **en el juego** (fase 2) |
 | 🪑 Carpintería | 🛠️ Exclusivo | Hasta **15 %** de que una pieza salga **obra maestra**: exclusiva, con un bono más y tu firma; y muebles exclusivos para el campamento | **en el juego** (reemplazó al +4 % de ataque con arco o bastón; ver "La obra maestra en el juego", abajo) |
 | 🔨 Herrería | ⚔️ Combate + 🛠️ | +3 de armadura con placas (en el juego); reparar cuesta 30 % menos cuando exista el desgaste | en el juego / con el desgaste |
-| 🦺 Peletería | ⚔️ Combate | +4 % de ataque y +3 % de vida con cuero o malla | en el juego |
+| 🦺 Peletería | ⚔️ Combate | +4 % de ataque y +3 % de vida con cuero (sin malla desde la 0.62.2, D-342) | en el juego |
 | 🪡 Sastrería | ⚔️ Combate | +5 % de ataque con tela | en el juego |
 | ⚗️ Alquimia | ⚔️ Combate | Pociones +30 % | en el juego |
 | 💍 Joyería | ⚔️ Combate | +3 % de vida y de ataque | en el juego |
@@ -569,7 +569,7 @@ El dueño decidió el 20-oct (E-221, E-222, E-223) acercar los oficios a WoW: **
 - **📚 Libros de recetas** (E-222; `recipe_tiers.books`): las recetas de rango 25 o más de un oficio piden su libro del 25 (🥈2); las de 50 o más, también el del 50 (🥈10); las de 75 o más, también el del 75 (🥈25). Vale para todos los oficios (también ⚗️, 🩺 y 🍲). Se compran en 🧑‍🏫 Entrenador → **📚 Libros de recetas** (el botón sale cuando hay algo que mostrar), solo desde tu rango (D-287) y una vez para siempre (`Hero.recipe_books`). Sin el libro, las recetas de ese tramo no salen en 🛠️ Fabricar: una línea dice cuántas abre el libro ("📚 Con el libro 🔨 Herrería 25 se abren 7 recetas más aquí"). Al llegar al rango 25, 50 o 75, el aviso de subida dice que el Entrenador ya vende el libro. Sin libro se puede seguir subiendo un poco con las recetas viejas (🟨 y 🟩) hasta que se ponen grises.
 - **Quien ya practicaba no pierde nada (D-64):** la primera vez que entra después de la 0.44, cada héroe recibe gratis los libros de los rangos que ya tenía en cada oficio (con su experiencia guardada, aunque no lo hubiera aprendido), una sola vez (`Hero.books_checked`). Los rangos siguientes se compran.
 - **💍 Joyería sin gema al empezar (E-223):** su primera receta es el 📿 Colgante de cobre (nivel 1, 🔩 lingote y 🟤 cuero), antes del 💍 Anillo engarzado (nivel 3, con 💠 gema). Desde el tramo 5 las joyas piden gemas, como antes.
-- **Sin malla (E-223, D-208):** las 67 recetas de malla (cota, almófar, muñequeras, perneras, botines y las 2 exclusivas de la ⛓️ Malla ligera) quedaron con `retired: true`: ya no se ven ni se hacen. Las piezas de malla que alguien tenga siguen en su mochila (se ponen, se venden y se desencantan como siempre). Qué hacer con la 🎓 ⛓️ Malla ligera: P-243.
+- **Sin malla (E-223, D-208):** las 67 recetas de malla (cota, almófar, muñequeras, perneras, botines y las 2 exclusivas de la ⛓️ Malla ligera) quedaron con `retired: true`: ya no se ven ni se hacen. **Desde la 0.62.2 (D-342, D-343)** la malla ya no existe: no cae como botín, las piezas que alguien tenía pasaron una sola vez a ser su gemela de cuero (misma ranura y nivel; la ✒️ obra maestra, la de cuero), y la 🎓 ⛓️ Malla ligera de la 🦺 Peletería se retiró (P-243 decidida: quien la tenía elige otra gratis y su dominio queda guardado; la Peletería queda con 🦺 Cuero ligero y 🎒 Talabartería).
 - **Datos y código:** `content/balance.yaml` → `recipe_tiers`; `content/professions.yaml` (los rangos, la energía y la experiencia de los 5 oficios de equipo, y el bloque generado al final) y `content/items.yaml` (el bloque generado al final), escritos por **`tools/recipe_tiers.py`** (se vuelve a correr si cambian los números; `tests/test_tramos_de_recetas.py` avisa si quedó viejo); las cuentas en `engine/professions/rules.py` (`tier_rank`, `tier_energy`, `tier_xp`, `recipe_color`, `color_factor`, `books_for`, `book_price`, `book_id`); las pantallas en la sección "recipe tiers, colors and books" de `engine/service/game.py` (`_recipe_xp`, `_batch_prof_xp`, `_book_missing`, `_books_view`, `_buy_book`, `_grant_old_books`); los textos en `content/locales/es_recetas.yaml` y los nombres de las piezas nuevas en `es_tramos.yaml` (generado), con su par inglés. La simulación: `tools/sim_oficios.py`.
 - **Lo que faltaba** (tramos cada 5 y colores para el refinado, la ⚗️ Alquimia, la 🩺 Medicina y la 🍲 Cocina) salió en la 0.52: §0.11. La cadena en solitario queda mucho más lenta que antes (P-245).
 
@@ -618,7 +618,7 @@ El equipo se gasta en cada pelea ([Equipamiento](../03-personaje/equipamiento.md
 |---|---|---|
 | 🔨 Herrería | espadas, dagas y placas | 🔩 lingote |
 | 🪑 Carpintería | arcos y bastones | 🟫 tablón |
-| 🦺 Peletería | cuero y malla (la malla ya no se fabrica, D-306, pero se repara) | 🟤 cuero |
+| 🦺 Peletería | cuero (y la malla, por si quedara alguna pieza: desde la 0.62.2 todas pasaron a ser de cuero, D-342) | 🟤 cuero |
 | 🪡 Sastrería | tela | 🧣 tela |
 | 💍 Joyería | joyas | 🔩 lingote |
 

@@ -518,7 +518,7 @@ Un artesano dedicado sube su rango más rápido que su nivel (rango 100 en ~1 a�
 | 🔪 Desollador | +4 % de ataque | — |
 | 🪑 Carpintería | +4 % de ataque (hasta la 0.20; desde D-116, la ✒️ obra maestra: ver el registro de abajo) | peleas con arco o bastón |
 | 🔨 Herrería | +3 puntos de armadura (tope 60 %) | llevas placas |
-| 🦺 Peletería | +4 % de ataque y +3 % de vida | llevas cuero o malla |
+| 🦺 Peletería | +4 % de ataque y +3 % de vida | llevas cuero (o malla hasta la 0.62.2, D-342) |
 | 🪡 Sastrería | +5 % de ataque | llevas tela |
 | ⚗️ Alquimia | pociones +30 % | — |
 | 💍 Joyería | +3 % de vida y de ataque | — |
@@ -1250,6 +1250,25 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 **Lo que queda por mirar:** en el bosque, 1 de cada 4 unidades es madera, y en la fogata más de la mitad (sus 2 recursos fijos). Si hace falta más, lo que queda abierto en P-238: el botón 🪓 Talar (solo madera) y que los recursos de base vuelvan más rápido.
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
+
+### Octubre de 2026 (24-oct): sin malla (0.62.2, D-342 confirmada; D-343 provisional)
+
+El dueño: "la malla la quitamos, dejamos cuero, tela y placa únicamente". Ninguna clase usaba malla, pero seguía cayendo. Ningún número de balance cambia; cambia de qué tipos sale el botín.
+
+| Qué (`balance.yaml`) | Antes | Ahora |
+|---|---|---|
+| `gear.retired_types` (nuevo) | — | `{malla: cuero}`: la malla no cae, no sale en cofres, en el Recuerdo ni en el equipo inicial |
+| `gear.armor_by_group.evocador` (grupo retirado) | malla | cuero |
+| El beneficio de la 🦺 Peletería (`professions.yaml`, `armor_type`) | cuero o malla | cuero (ninguna clase usaba malla: nadie gana ni pierde) |
+| 🎓 ⛓️ Aleaciones (Fundición), obra maestra | malla y placas | placas (la malla no se fabricaba: nada cambia) |
+
+**Qué cambia al jugar** (medido con el motor: 4.000 piezas por clase y nivel, niveles 3, 25 y 60):
+
+- **El botín de las peleas:** la malla era el ~8 % de todas las piezas que caían (7,6 a 8,7 % según la clase), casi un tercio de lo "que no es para ti". Ahora esas piezas se reparten entre las otras armaduras y las armas de otras clases: lo "para ti" sigue en el 70 % (`for_you_chance`) y la probabilidad de soltar una pieza no cambia.
+- **Los cofres y bolsas de las mazmorras** (cualquier clase y tipo): la malla era el ~20 %; ahora cuero 26 %, placas 25 %, tela 24 % y cada arma y la joya ~5 %.
+- **Las piezas que había:** pasan a su gemela de cuero, que tiene las mismas estadísticas, rareza y precio; quien las llevaba siendo Cazador o Druida (cuero) ahora rinde entero con ellas en vez de la mitad.
+
+**Lo que queda por mirar:** cuántas piezas se cambiaron al arrancar (`migrations`/`malla_to_leather` en el almacén de Railway) y si el mercado se llena de piezas de cuero.
 
 ### Octubre de 2026 (23-oct): la 🎒 mochila cuenta tipos y las mochilas de oficio (0.62, D-338 confirmada; D-339 provisional)
 

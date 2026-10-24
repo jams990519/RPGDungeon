@@ -93,7 +93,7 @@ spec:
     desc: 'You separate the valuable bits from the ore: a few more ingots and, sometimes, a rough gem.'
   fundicion_aleaciones:
     name: Alloys
-    desc: 'You blend metals for armor: a few more ingots, and more mail and plate masterworks if you craft them.'
+    desc: 'You blend metals for armor: a few more ingots, and more plate masterworks if you craft them.'   # [ES] D-342 (0.62.2): sin malla
   destilacion_extractos:
     name: Extracts
     desc: 'Master of the still: more extract from the same herbs.'

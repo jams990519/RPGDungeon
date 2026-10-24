@@ -1204,3 +1204,16 @@ v0_62_1:
   notes_en:
     - "📍 Zone no longer lists the resources that grow back faster: it is shorter and reads at a glance."
     - "🌱 That is now in 🧑‍🏫 Trainer → 📋 My professions → 🌱 Faster regrowth: it explains how your gathering professions make a resource grow back faster, how much each of yours gives and what grows back faster in your zone right now."
+
+v0_62_2:
+  version: "0.62.2"
+  title: "🦺 Lost Realms 0.62.2: adiós a la malla"
+  title_en: "🦺 Lost Realms 0.62.2: farewell to mail"
+  notes:
+    - "⛓️ La malla ya no existe: las armaduras son de cuero, tela o placas. Ya no cae como botín ni sale en los cofres."
+    - "🦺 Si tenías piezas de malla (puestas o guardadas, también en el 🏛️ Mercado, en 📦 Entregas o en la ⚔️ Armería), ahora son de cuero, de la misma ranura y el mismo nivel; una ✒️ obra maestra pasa a ser la obra maestra de cuero. Conservan su 🔧 durabilidad, su ✨ encantamiento y su ✒️ firma. No pierdes nada, y el juego te avisa qué cambió."
+    - "🎓 La especialización ⛓️ Malla de la 🦺 Peletería se retiró: si la tenías, elige otra gratis en ⚒️ Oficios → 🎓 Especialización. Su dominio queda guardado."
+  notes_en:
+    - "⛓️ Mail no longer exists: armor is leather, cloth or plate. It no longer drops as loot or comes out of chests."
+    - "🦺 If you had mail pieces (worn or stored, also in the 🏛️ Market, in 📦 Deliveries or in the ⚔️ Armory), they are now leather, of the same slot and the same level; a ✒️ masterwork becomes the leather masterwork. They keep their 🔧 durability, their ✨ enchantment and their ✒️ signature. You lose nothing, and the game tells you what changed."
+    - "🎓 The ⛓️ Mail specialization of 🦺 Leatherworking was retired: if you had it, pick another one for free in ⚒️ Professions → 🎓 Specialization. Its mastery stays saved."
