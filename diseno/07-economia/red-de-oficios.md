@@ -60,7 +60,7 @@
 |---|---|---|---|---|
 | 🪵 **Carpintería** | Arcos, bastones, escudos, cañas, mangos de herramienta, muebles, carros (en el juego: arcos, bastones, ✒️ obras maestras y 🪑 muebles del campamento, D-116) | Los que pelean, los campamentos, Pescador, Construcción | Aserradero, Curtiduría o Tejeduría, Herrería (clavos) | Arquería · Escudos · Mobiliario y carros |
 | 🔨 **Herrería** | Armas de metal, placas, herramientas de todos los oficios, clavos y bisagras, agujas; repara | Los que pelean, todos los recolectores, Construcción, Medicina | Fundición, Curtiduría, Leñador (carbón) | Forjador de armas · Armero · Herramientas |
-| 🧶 **Peletería** | Armaduras de cuero y malla, mochilas (más espacio), sillas de montar | Los que pelean, todos (mochilas), Ganadero | Curtiduría, Tejeduría, Fundición | Cuero ligero · Malla · Talabartería |
+| 🧶 **Peletería** | Armaduras de cuero (sin malla: D-208, D-342), mochilas (más espacio), sillas de montar | Los que pelean, todos (mochilas), Ganadero | Curtiduría, Tejeduría, Fundición | Cuero ligero · Malla · Talabartería |
 | 🧵 **Sastrería** | Túnicas, capas, ropa de clima, vendas limpias, toldos, 💰 bolsas | Los que pelean, Medicina, Construcción, todos (bolsas) | Tejeduría, Destilación (tintes) | Túnicas mágicas · Ropa de clima · Textil médico |
 | ⚗️ **Alquimia** | Pociones, elixires, antídotos, venenos para armas, pólvora, polvos | Los que pelean, Ingeniería, Encantamiento, Medicina | Destilación, Joyería o Minero (frascos), Pescador (aceite) | Pociones · Elixires · Venenos |
 | 💍 **Joyería** | Anillos, collares, gemas talladas, frascos y lentes de vidrio | Los que pelean, Encantamiento, Alquimia, Ingeniería | Fundición, Minero (gemas), Pescador (perlas) | Talla de gemas · Orfebrería · Vidriería |
@@ -103,13 +103,13 @@ Lo que ya está programado (capa simple, D-44). Decisión del dueño: **una al r
 | 🔪 Desollador | 🦌 Pieles finas: +20 % de 🦌 piel · 🍖 Carnicería: +20 % de 🍖 carne · 🦴 Trofeos: +3 % por cada carne o piel de hallar una 💠 gema |
 | 🧭 Explorador | 🗺️ Cartógrafo de campo: +3 de exploración por vuelta · 🐾 Rastreador: +30 % de monedas de los 👹 campamentos enemigos (cofre y parte) · 🕵️ Infiltrado: −10 puntos de que te descubran y +10 puntos de 🥷 Sigilo (D-172: evitar peleas al azar al explorar con ✋ Manual y al viajar) |
 | 🪚 Aserradero | 🟫 Tablones nobles: +15 % de tablón · 🔥 Carbón: +5 % de tablón y +10 % de lingote · 📜 Papel: +5 % de tablón y +1 de exploración |
-| 🔥 Fundición | 🔩 Hierro: +15 % de lingote · 🪙 Metales preciosos: +5 % de lingote y +3 % por vez de una 💠 gema · ⛓️ Aleaciones: +5 % de lingote y +2 % de ✒️ obra maestra en malla y placas |
+| 🔥 Fundición | 🔩 Hierro: +15 % de lingote · 🪙 Metales preciosos: +5 % de lingote y +3 % por vez de una 💠 gema · ⛓️ Aleaciones: +5 % de lingote y +2 % de ✒️ obra maestra en placas (sin malla desde la 0.62.2, D-342) |
 | 💧 Destilación | 🧴 Extractos: +15 % de extracto · 🎨 Tintes y tinta: +5 % de extracto y +2 % de obra maestra en tela y cuero · 🍶 Licores: +5 % de extracto y +10 % de pociones |
 | 🧶 Tejeduría | 🌾 Lino: +5 % de tela y +10 % de vendas · 🐑 Lana: +15 % de tela · 🪡 Seda: +5 % de tela y +2 % de obra maestra en tela |
 | 🪣 Curtiduría | 🟤 Cuero grueso: +15 % de cuero · 🧤 Cuero fino: +5 % de cuero y +2 % de obra maestra en cuero · 📜 Pergamino: +5 % de cuero y +1 de exploración |
 | 🪑 Carpintería | 🏹 Arquería: +5 % de obra maestra en arcos; 🎓 Arco largo de arquero (nivel 5) y del maestro arquero (nivel 100) · 🛡️ Escudos: +5 % de obra maestra en bastones; 🎓 🛡️ Paveses de roble (mueble, rango 50: +1 de 🛡️ Defensa) · 🛒 Mobiliario y carros: +10 de mochila; 🎓 🛒 Carro de víveres (mueble, rango 25: los miembros comen 5 % menos) |
 | 🔨 Herrería | ⚔️ Forjador de armas: +5 % de obra maestra en espadas y dagas; 🎓 Hoja de forjador y del maestro forjador · 🛡️ Armero: +5 % de obra maestra en placas; 🎓 Coraza de armero y del maestro armero · 🔧 Herramientas: +5 % de unidad extra en todo lo que recolectas o desuellas |
-| 🦺 Peletería | 🦺 Cuero ligero: +5 % de obra maestra en cuero; 🎓 Jubón de cuero fino y del maestro peletero · ⛓️ Malla: +5 % de obra maestra en malla; 🎓 Cota de anillas finas y del maestro mallero · 🎒 Talabartería: +10 de mochila |
+| 🦺 Peletería | 🦺 Cuero ligero: +5 % de obra maestra en cuero; 🎓 Jubón de cuero fino y del maestro peletero · ~~⛓️ Malla~~ (retirada en la 0.62.2, D-342: quien la tenía elige otra gratis, su dominio queda guardado) · 🎒 Talabartería: +10 de mochila |
 | 🪡 Sastrería | 🔮 Túnicas mágicas: +5 % de obra maestra en túnicas; 🎓 Túnica rúnica y del maestro arcano · 🧥 Ropa de clima: +5 % de obra maestra en cabeza, manos, piernas y pies de tela · 🩹 Textil médico: +25 % de vendas |
 | ⚗️ Alquimia | 🧪 Pociones: +20 % de pociones · 🍷 Elixires: pociones +10 % · ☠️ Venenos: +2 % de ataque |
 | 🩺 Medicina | 🩹 Primeros auxilios: vendas y ungüentos +15 % · 🩺 Cirugía: curaciones +10 % (sanadores) · 💊 Farmacia: +20 % de ungüentos, botiquines y vendajes |

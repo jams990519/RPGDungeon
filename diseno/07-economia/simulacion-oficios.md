@@ -768,7 +768,7 @@ El dueño respondió E-221 a E-223 el 20-oct (D-306). En la 0.44 entró la parte
 | §8.2 Energía 2 ⚡ hasta el 50, 3 del 55 al 80, 4 del 85 al 100 | **Sí** (`recipe_tiers.energy_by_rank`) |
 | §8.5 Libros de recetas por tramo (🥈2, 🥈10, 🥈25) | **Sí**, en 🧑‍🏫 Entrenador → 📚 Libros de recetas, para todos los oficios con recetas de rango 25 o más; gratis los de los rangos que cada uno ya tenía (D-64) |
 | §8.6 Primera receta de 💍 Joyería sin gema | **Sí**: 📿 Colgante de cobre (lingote y cuero) |
-| §8.7 Retirar las 67 recetas de malla | **Sí** (`retired: true`); las piezas quedan. La 🎓 ⛓️ Malla ligera sigue: P-243 |
+| §8.7 Retirar las 67 recetas de malla | **Sí** (`retired: true`); las piezas quedan. Desde la 0.62.2 (D-342) las piezas pasaron a ser de cuero y la 🎓 ⛓️ Malla ligera se retiró (P-243 decidida) |
 | §8.4 Refinados intermedios | **0.52 (D-328):** un refinado mejor por tramo (cada 5, no cada 25) en los 6 oficios de refinado; todavía ninguna receta de fabricación los pide (P-268) |
 | §8.3 N recetas del tramo anterior · §8.6 piel, 🔪, 🎣, 🏗️ · §8.7 mercader y mercado | No en esta parte: la piel, 🎣 Pescar, las obras que se repiten y el mercader salieron en la 0.43; el resto sigue pendiente |
 
