@@ -37,7 +37,7 @@ Reglas que nunca se rompen:
        profunda tiene 1 o 2 peleas y cada boss_every pisos la última es el jefe.
     4. Nunca salen jefes de mundo (boss: true) ni enemigos retirados; el nivel del enemigo es el de la mazmorra o el piso.
     5. El equipo del cofre y de la bolsa puede ser de cualquier clase y tipo (D-165) y nunca es de artesano ni del Guardián
-       (piezas con "source").
+       (piezas con "source"). D-342 (0.62.2): ni de un tipo retirado (balance.yaml gear.retired_types: la malla).
 Si cambias esto, revisa:
     - Servicio: engine/service/game.py (🧭 Explorar, 📍 Zona, 🗺️ Mapa, la pantalla de la mazmorra, _end_combat, _settle)
     - Números: balance.yaml dungeons (stretch, second_chance, third_chance, min_lejania, spacing, deep_share, level_bonus, small.*, deep.*)
@@ -329,14 +329,16 @@ def chest_gear(items: dict[str, Any], gear_cfg: dict[str, Any], level: int, rng:
     Qué hace: sortea si cae una pieza y cuál, de cualquier clase y tipo por igual (D-165: el botín no está cortado a tu
     medida; lo que no te sirve se vende). Usa la misma ventana de nivel y el mismo peso de rareza que el botín de siempre,
     y nunca da equipo de artesano ni del Guardián (piezas con "source"). El botín de las peleas sigue igual (P-111).
+    D-342 (0.62.2): tampoco una pieza de un tipo retirado (balance.yaml gear.retired_types: la malla).
     La llama: el servicio al abrir el cofre de la chica y al despejar un piso de jefe de la profunda.
     Si cambia, afecta: cuánto equipo de otras clases entra al juego para vender.
     """
     if not rng.chance(chance):
         return None
     below, above = gear_cfg["level_window"]
+    gone = gear_cfg.get("retired_types") or {}         # D-342: a retired type (mail) never comes out of a chest
     lootable = [(iid, it) for iid, it in items.items()
-                if it.get("kind") == "gear" and not it.get("retired") and not it.get("source")]
+                if it.get("kind") == "gear" and not it.get("retired") and not it.get("source") and it.get("type") not in gone]
     pool = [(iid, it) for iid, it in lootable if level - below <= it.get("req_level", 1) <= level + above]
     if not pool:
         lower = [it.get("req_level", 1) for _, it in lootable if it.get("req_level", 1) <= level + above]

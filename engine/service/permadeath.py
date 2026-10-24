@@ -76,11 +76,13 @@ from engine.messaging import Action, View
 OATH_ACTIONS = ("oath",)
 HALL_ACTION = "fallen"
 # What leaves the account with the fallen hero (records keyed by the hero's id: its route being laid out, its dungeon day, its
-# scouting, its nodes, the order of its last lists and any open prompt). shop_week stays with the account (no free reset).
+# scouting, its nodes, the order of its last lists, any open prompt and an unread notice of the 0.62.2 mail → leather change,
+# D-342). shop_week stays with the account (no free reset).
 # [ES] Los registros por héroe que se van con él al archivo (así el héroe nuevo empieza sin lo que sabía el caído).
 OATH_HERO_SPACES = ("walk", "dungeon", "recon", "nodes", "places_shown", "recon_shown", "gremio_codes", "journal_back",
                     "camp_naming", "market_open", "dudas_open", "feedback_open", "oath_confirm", "pending",
-                    "corder_open")          # D-335 (0.59): an open 📜 crafting order draft
+                    "corder_open",          # D-335 (0.59): an open 📜 crafting order draft
+                    "migration_notice")     # D-342 (0.62.2): an unread notice of the mail → leather change goes with its hero
 
 
 class PermadeathMixin:

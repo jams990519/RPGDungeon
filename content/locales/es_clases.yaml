@@ -12,15 +12,15 @@
 
 class_group:
   paladin: {name: "🦁 Paladín", desc: "placas y Poder Sagrado: juzga, protege y cura desde el frente"}
-  cazador: {name: "🧝 Cazador", desc: "malla y foco: apunta, manda a su bestia y pone trampas"}
+  cazador: {name: "🧝 Cazador", desc: "cuero y foco: apunta, manda a su bestia y pone trampas"}
   caballero_muerte: {name: "💀 Caballero de la Muerte", desc: "placas y runas: congela, drena vida y esparce plagas"}
-  chaman: {name: "⚡ Chamán", desc: "malla y Vorágine: rayos, mareas y tótems"}
+  chaman: {name: "⚡ Chamán", desc: "cuero y Vorágine: rayos, mareas y tótems"}
   mago: {name: "🧙 Mago", desc: "tela y maná: fuego, hielo y magia arcana"}
   brujo: {name: "🕯️ Brujo", desc: "tela y fragmentos de alma: caos, demonios y maldiciones"}
   monje: {name: "☯️ Monje", desc: "cuero y chi: combos, tambaleo y nieblas que curan"}
   druida: {name: "🌿 Druida", desc: "cuero y formas: felino, oso, sanador o astral; el único con los 4 roles"}
   cazador_demonios: {name: "😈 Cazador de demonios", desc: "cuero y Furia: saltos de azufre, glifos y almas"}
-  evocador: {name: "🐉 Evocador", desc: "malla y Esencia: aliento de dragón y magia del tiempo"}
+  evocador: {name: "🐉 Evocador", desc: "cuero y Esencia: aliento de dragón y magia del tiempo"}
   nigromante: {name: "🦴 Nigromante", desc: "tela y almas cosechadas: plagas, esqueletos y vida robada"}
   bardo: {name: "🎻 Bardo", desc: "cuero y Compás: ritmo de espadas, baladas y tempo"}
 

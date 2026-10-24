@@ -1,0 +1,11 @@
+# Texts of the one-time notice of 0.62.2: mail no longer exists and every mail piece became its leather twin (D-342, confirmed;
+# how it was applied: D-343, provisional). English twin of es_sin_malla.yaml (same keys; tools/check_locales.py).
+# [ES] Textos en inglés del aviso de una sola vez de la 0.62.2 (las mismas claves que es_sin_malla.yaml). Lo lee:
+# engine/service/retired_gear.py (_retired_gear_notice).
+
+nomail:
+  notice: "🦺 Mail no longer exists in the game: leather, cloth and plate remain. Your mail pieces are now leather, of the same slot and the same level:"
+  line: "• {old} → {new}"
+  line_n: "• {old} → {new} ×{n}"
+  kept: "They keep their 🔧 durability, their ✨ enchantment and their ✒️ signature. You lost nothing."
+  spec: "🎓 The {spec} specialization of {prof} was retired with mail: pick another one for free in ⚒️ Professions → 🎓 Specialization. Its mastery ({pct}%) stays saved."

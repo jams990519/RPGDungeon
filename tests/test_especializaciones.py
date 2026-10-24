@@ -94,8 +94,10 @@ def test_every_profession_has_three_specializations_with_texts_and_known_effects
     exclusive = {rid: r for rid, r in recipes.items() if r.get("spec")}
     assert len(exclusive) == 18                                             # 16 gear pieces and 2 camp furniture pieces
     for rid, rdef in exclusive.items():
-        owner = profession_rules.spec_owner(specs, rdef["spec"])[0]
+        owner = next(pid for pid, rows in specs.items() if any(s["id"] == rdef["spec"] for s in rows))   # retired ones too
         assert owner == rdef["profession"], rid                             # a specialization of the profession that makes it
+        if profession_rules.spec_owner(specs, rdef["spec"])[0] is None:     # D-342 (0.62.2): the retired ⛓️ Malla: its
+            assert rdef.get("retired"), rid                                  # exclusives were retired with the mail (0.44)
         assert len(branches_of(rdef, profs, recipes)) >= 2, rid             # nobody is self-sufficient (D-109)
     assert not t.missing
 
