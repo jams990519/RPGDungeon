@@ -137,7 +137,7 @@ def test_the_report_and_feedback_wait_when_the_chat_refuses_and_go_out_later(ser
     tg._report_failed_at[0] = float("-inf")                                                 # an hour later
     open_chat = FakeBot(refuse={-1004365890113})
     asyncio.run(tg.send_reports(open_chat, service))
-    kinds = [type(c) for c in open_chat.calls]
-    assert kinds == [SendMessage, SendDocument] and all(c.chat_id == -4365890113 for c in open_chat.calls)
+    kinds = [type(c) for c in open_chat.calls]                  # D-341: the report is a .txt and a .csv
+    assert kinds == [SendMessage, SendDocument, SendDocument] and all(c.chat_id == -4365890113 for c in open_chat.calls)
     assert "Me gusta la fogata" in open_chat.calls[0].text
     assert service.take_feedback() == []

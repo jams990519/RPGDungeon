@@ -5,13 +5,14 @@ Environment variables (names only in .env.example, never values in the repo):
   RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
-  RPG_REPORTS_CHAT_ID chat that receives the daily player report and the 💬 Feedback notes (default: the team's reports chat)
+  RPG_REPORTS_CHAT_ID chat that receives the player report (every 3 hours) and the 💬 Feedback notes (default: the team's chat)
 
 [ES]
 Para qué sirve: el proceso del bot. Recibe mensajes y botones de Telegram, se los pasa
 al motor y edita el "mensaje vivo" con la vista nueva. Cada pocos segundos revisa los
 viajes que terminaron y avisa al jugador. D-260 (0.33): también manda al chat de informes cada mensaje de
-💬 Feedback y, una vez por día, el informe de jugadores como archivo (adapters/reports.py). D-262 (0.33.1): el juego se
+💬 Feedback y el informe de jugadores (adapters/reports.py); desde D-341 (24-oct-2026) cada 3 horas, en dos archivos (.txt y
+.csv), con una tarjeta por jugador y su @, solo para ese chat. D-262 (0.33.1): el juego se
 juega solo por privado; en un grupo el bot no juega: a un comando responde "🔒 se juega por privado" con un botón a su chat,
 a un botón viejo le muestra ese aviso aparte y la charla del grupo la ignora. D-275 (0.35): cada 💬 Feedback llega al chat de
 informes como una tarjeta (adapters/feedback_desk.py) con el @ del jugador, su tipo, prioridad y paso, y botones que el equipo
@@ -259,7 +260,7 @@ async def notifier(bot: Bot, service: GameService) -> None:
         except Exception:  # keep the loop alive; the error is logged
             log.exception("notifier error")
         try:
-            await send_reports(bot, service)          # D-260: 💬 Feedback and the daily player report
+            await send_reports(bot, service)          # D-260, D-341: 💬 Feedback and the player report every 3 hours
         except Exception:
             log.exception("reports error")
         await asyncio.sleep(TICK_SECONDS)
@@ -320,13 +321,16 @@ async def post_to_reports(send: Callable[[int], Awaitable[Any]]) -> Any:
 
 
 async def send_reports(bot: Bot, service: GameService) -> None:
-    """Post every new 💬 Feedback note and, once a day, the player report file to the reports chat (D-260).
+    """Post every new 💬 Feedback note and, every 3 hours, the player report (.txt and .csv) to the reports chat (D-260, D-341).
 
     [ES]
-    Qué hace: manda al chat de informes cada mensaje de 💬 Feedback nuevo (con el héroe, su nivel y su idioma) y, una vez por
-    día, el informe de jugadores como archivo .txt (adapters/reports.py). Si Telegram no deja (por ejemplo, el bot no está
-    en el chat), lo anota en el registro, el feedback vuelve a la cola (return_feedback) y todo se intenta de nuevo a la
-    hora, o apenas agregan al bot a un chat. Un error nunca para al bot.
+    Qué hace: manda al chat de informes cada mensaje de 💬 Feedback nuevo (con el héroe, su nivel y su idioma) y, cada 3 horas
+    (00, 03, 06 … 21 UTC, D-341), el informe de jugadores en dos archivos: informe-jugadores-AAAA-MM-DD-HHh.txt y
+    datos-jugadores-AAAA-MM-DD-HHh.csv (adapters/reports.py: due, generate, pending, mark_sent). El informe se arma una vez y
+    queda guardado 3 días: si Telegram no deja (por ejemplo, el bot no está en el chat), se anota en el registro, el feedback
+    vuelve a la cola (return_feedback) y todo se intenta de nuevo a la hora, o apenas agregan al bot a un chat, con lo mismo
+    que se armó (el archivo que ya salió no se repite). Si el bot estuvo apagado varios tramos, sale uno solo que cubre desde
+    el último. Un error nunca para al bot.
     La llama: notifier, en cada vuelta. Si cambia, afecta: lo que recibe el equipo.
     """
     loop_now = asyncio.get_event_loop().time()
@@ -345,16 +349,21 @@ async def send_reports(bot: Bot, service: GameService) -> None:
             _report_failed_at[0] = loop_now
             log.exception("could not post feedback; %d note(s) wait", len(notes) - index)
             return
-    if reports.due(service):
-        try:
-            name, body = reports.build(service)
-            document = BufferedInputFile(body.encode("utf-8"), filename=name)
-            await post_to_reports(lambda chat: bot.send_document(chat, document, caption="📊 Informe de jugadores"))
-            reports.mark_sent(service)
-            log.info("player report sent: %s", name)
-        except Exception:
-            _report_failed_at[0] = loop_now
-            log.exception("could not send the player report (tried %s)", report_chats())
+    try:
+        if reports.due(service):
+            reports.generate(service)                  # D-341: one per 3-hour slot; after a downtime, just one
+        record = reports.pending(service)
+        for part in ("txt", "csv") if record else ():
+            if record["sent"].get(part):
+                continue                                # it already went out: never twice
+            body = record[part].encode("utf-8")         # the .csv starts with a BOM (Excel shows the accents)
+            document = BufferedInputFile(body, filename=record[f"{part}_name"])
+            await post_to_reports(lambda chat, document=document: bot.send_document(chat, document, caption=record["caption"]))
+            reports.mark_sent(service, record["key"], part)
+            log.info("player report sent: %s", record[f"{part}_name"])
+    except Exception:
+        _report_failed_at[0] = loop_now
+        log.exception("could not send the player report (tried %s)", report_chats())
 
 
 async def announce_patch(bot: Bot, service: GameService) -> None:
