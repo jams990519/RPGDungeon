@@ -100,6 +100,7 @@ TowerWars aprendió que "un diagnóstico de segunda mano no es un hecho": varias
 - **Registro de balance**: cada número que se mueve, con su antes → después y la medición que lo justifica.
 - **Informe económico**: oro que entra y sale por fuente y sumidero, precios por ciudad, objetos destruidos.
 - **Cola de feedback clasificada** por tema, sistema y gravedad.
+- **Informe de jugadores cada 3 horas** (en el juego desde D-341 y D-344): quién juega, con su @, cuánto juega y junta cada uno y qué contenido hace más, con la telemetría liviana del motor (`engine/service/telemetry.py`). Ver [Informes](informes.md).
 
 ## 6. Cómo se vería el repositorio cuando empiece el código (propuesta)
 

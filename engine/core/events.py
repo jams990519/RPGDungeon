@@ -9,7 +9,8 @@ Para qué sirve: es el "correo interno" del motor. Un módulo avisa que pasó al
 Documento de diseño: diseno/01-plataforma/arquitectura-modular.md §1 regla 3 y §4
 Módulo: M1 Núcleo
 Depende de: ninguno
-Lo usan: engine/service/game.py (publica), telemetría futura (escucha)
+Lo usan: engine/service/game.py (publica); engine/service/telemetry.py (escucha HeroCreated, ItemCrafted, CombatEnded,
+    ProfessionRankUp, TravelArrived, BossDefeated y HeroFellForever para el informe de jugadores, D-344)
 Eventos que publica: los define aquí; los publican Combate, Mundo, Héroe y Oficios (ItemCrafted, ProfessionRankUp: D-109);
     HeroFellForever (0.60, D-336): un héroe con 💀 muerte permanente cayó para siempre (engine/service/permadeath.py)
 Eventos que escucha: ninguno

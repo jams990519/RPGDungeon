@@ -346,6 +346,6 @@ def test_the_daily_report_counts_the_market(service):
     list_potions(service, price=20, n=2)
     service.act("test:2", "mkt:buy:m1:1")
     lines = "\n".join(reports.market_lines(service))
-    assert "9. MERCADO" in lines and "compras 1" in lines and "unidades 1" in lines and "1 de venta" in lines
-    _, report = reports.build(service)
-    assert "9. MERCADO" in report
+    assert "10. MERCADO" in lines and "compras 1" in lines and "unidades 1" in lines and "1 de venta" in lines
+    report = reports.build(service).txt                       # D-341: the report every 3 hours, section 10
+    assert "10. MERCADO" in report

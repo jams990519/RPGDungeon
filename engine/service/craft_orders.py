@@ -65,7 +65,7 @@ Datos de los que es dueño:
     "gremio_codes" (de gremio.py) suma "corder_profs" (/cf1), "corder_take" (/co1) y "corder_mine" (/cm1); "recipes" (/r1) lleva
         "receta|order|página" cuando la última lista fue la de encargar. Solo pantalla.
     "market_log" (de market.py) suma "craft_posted", "craft_done", "craft_coins", "craft_tax", "craft_cancelled" y
-        "craft_expired" para el informe diario.
+        "craft_expired" para el informe de jugadores (adapters/reports.py).
 Reglas que nunca se rompen:
     1. Nada se pierde (D-64): las monedas y los materiales de un pedido están en el pedido o vuelven (monedas a la bolsa,
        materiales a 📦 Entregas). Lo hecho siempre llega a 📦 Entregas, aunque la mochila esté llena.

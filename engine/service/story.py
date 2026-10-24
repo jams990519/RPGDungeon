@@ -20,7 +20,9 @@ para siempre ante…); la tarjeta lleva 💀 antes del nombre (_oath_mark) y los
 Documento de diseño: diseno/06-contenido/historia-y-rol.md §1 y "En el juego"; diseno/03-personaje/creacion-de-personaje.md §4
 Módulo: capa de servicios (M10 Misiones; personajes, facciones y diario con M2 Héroe y M15 Social)
 Depende de: engine.story (cuentas puras), engine.messaging, engine.hero, content/story.yaml,
-    content/locales/es_historia.yaml, content/balance.yaml (bloque story)
+    content/locales/es_historia.yaml, content/balance.yaml (bloque story); D-344: las ayudas de TelemetryMixin
+    (engine/service/telemetry.py: _tel_story en _story_event, _tel_add en _quest_complete y _claim_daily; solo cuentan para el
+    informe de jugadores y nunca cambian nada)
 Lo usan: engine/service/game.py (GameService hereda de esta clase; llama a _story_event, _story_action, _typed_command,
     _origin_offer, _origin_view, _story_hero_lines, _title_name, _emblem_name, _origin_prof_bonus, _shop_price, _journal y,
     desde la 0.39, _story_level_lines al subir de nivel)
@@ -303,6 +305,7 @@ class StoryMixin:
         st["q"].pop(qid, None)
         if qid not in st["done"]:
             st["done"].append(qid)
+            self._tel_add(hero.id, quests=1)            # D-344: 📊 a mission closed (the team's report)
         lines = [t.t("story.quest_done", title=self._quest_title(qid))]
         if t.has(f"story.quest.{qid}.done"):
             lines.append(t.t(f"story.quest.{qid}.done"))
@@ -514,6 +517,7 @@ class StoryMixin:
         lines += self._camp_event(hero, kind, data)
         lines += self._gm_event(hero, kind, data)       # D-332 (0.56): 🎯 the camp's group mission of the level-up
         self._story_marks(hero, kind, data)
+        self._tel_story(hero, kind, data)               # D-344: 📊 the team's report counts rounds and units (only counts)
         return lines
 
     def _story_marks(self, hero: Hero, kind: str, data: dict[str, Any]) -> None:
@@ -667,6 +671,7 @@ class StoryMixin:
             return self._npc_view(hero, nid, notice=t.t("story.task_not_yet", name=name, goal=self._goal_line(hero, dict(goal, npc=nid), record["p"].get(tid, 0))))
         record["done"].append(tid)
         self._st(hero)["tasks"] = int(self._st(hero).get("tasks", 0)) + 1
+        self._tel_add(hero.id, tasks=1)                 # D-344: 📊 a 📜 task of the board cashed in (the team's report)
         lines.append(t.t("story.task_done", npc=self._npc_label(nid), task=t.t(f"story.daily.{tid}")))
         reward, xp = self._task_reward(hero, tdef)
         lines += self._apply_reward(hero, reward, xp=xp)
