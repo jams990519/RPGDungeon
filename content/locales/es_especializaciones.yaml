@@ -105,7 +105,7 @@ spec:
     desc: "Separas lo valioso del mineral: algo más de lingotes y, a veces, una gema en bruto."
   fundicion_aleaciones:
     name: "Aleaciones"
-    desc: "Mezclas metales para las armaduras: algo más de lingotes y más obras maestras en malla y placas, si las fabricas."
+    desc: "Mezclas metales para las armaduras: algo más de lingotes y más obras maestras en placas, si las fabricas."   # [ES] D-342 (0.62.2): sin malla
   destilacion_extractos:
     name: "Extractos"
     desc: "El maestro del alambique: más extractos de las mismas hierbas."

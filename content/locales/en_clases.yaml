@@ -10,13 +10,13 @@ class_group:
     desc: 'plate and Holy Power: judges, protects and heals from the front line'
   cazador:
     name: 🧝 Hunter
-    desc: 'mail and focus: aims, commands their beast and sets traps'
+    desc: 'leather and focus: aims, commands their beast and sets traps'
   caballero_muerte:
     name: 💀 Death Knight
     desc: 'plate and runes: freezes, drains life and spreads plagues'
   chaman:
     name: ⚡ Shaman
-    desc: 'mail and Maelstrom: lightning, tides and totems'
+    desc: 'leather and Maelstrom: lightning, tides and totems'
   mago:
     name: 🧙 Mage
     desc: 'cloth and mana: fire, frost and arcane magic'
@@ -34,7 +34,7 @@ class_group:
     desc: 'leather and Fury: brimstone leaps, glyphs and souls'
   evocador:
     name: 🐉 Evoker
-    desc: 'mail and Essence: dragon breath and time magic'
+    desc: 'leather and Essence: dragon breath and time magic'
   nigromante:
     name: 🦴 Necromancer
     desc: 'cloth and reaped souls: plagues, skeletons and stolen life'

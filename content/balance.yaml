@@ -503,7 +503,7 @@ currency:                    # [ES] monedas (D-80, D-85, D-92): 3 comunes que se
     xp_boost: {gems: 100, xp_mult: 1.5, days: 7}   # [ES] +50 % de experiencia por 7 días (P-66)
     banner: {gems: 150}      # [ES] estandarte único al lado de tu nombre
 
-gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranuras, 4 tipos de armadura, 4 de arma; piezas cada 10 niveles hasta el 100 (D-110)
+gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranuras, 3 tipos de armadura (cuero, tela y placas: la malla se quitó, D-342), 4 de arma; piezas cada 10 niveles hasta el 100 (D-110)
   slots: [arma, cabeza, armadura, manos, piernas, pies, joya]   # [ES] D-83: armadura = pecho
   off_type_factor: 0.5       # [ES] D-83: puedes ponerte lo que quieras; si no es de tu clase rinde la mitad
   armor_cap: 0.6             # [ES] la defensa total nunca pasa de 60 %
@@ -512,9 +512,9 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
     guerrero: placas
     paladin: placas
     caballero_muerte: placas
-    cazador: cuero          # [ES] 0.31 y D-208: ya no hay malla; el Cazador y el Chamán usan cuero (sus piezas de malla siguen siendo suyas, rinden la mitad). 0.32 (D-233): el Paladín (placa) reemplaza al Chamán; 2 clases por armadura
+    cazador: cuero          # [ES] 0.31 y D-208: ya no hay malla; el Cazador y el Chamán usan cuero. 0.32 (D-233): el Paladín (placa) reemplaza al Chamán; 2 clases por armadura. D-342 (0.62.2): las piezas de malla que quedaban se cambiaron por las de cuero (gear.retired_types)
     chaman: cuero
-    evocador: malla
+    evocador: cuero          # [ES] grupo retirado en la 0.31 (D-225); D-342 (0.62.2): era malla, ahora cuero, así ninguna clase usa malla
     picaro: cuero
     druida: cuero
     monje: cuero
@@ -547,6 +547,10 @@ gear:                        # [ES] equipo y botín (D-77). Capa simple: 7 ranur
   for_you_chance: 0.7        # [ES] de las piezas que caen, cuántas son de tu tipo (botín "para ti")
   level_window: [4, 1]       # [ES] piezas con nivel requerido entre (nivel del enemigo − 4) y (+1); si la ventana cae entre dos niveles de pieza (van cada 10 desde el 10, D-110), salen las del nivel de pieza más cercano por debajo (engine/hero/gear.py roll_gear)
   start_tier: 1              # [ES] equipo inicial: arma y armadura de tu tipo, nivel 1, ya puestas
+  retired_types: {malla: cuero}   # [ES] D-342 (0.62.2, orden del dueño del 24-oct-2026: "la malla la quitamos, dejamos cuero, tela y placa únicamente"): tipo retirado → el que lo reemplaza.
+                             # [ES] Una pieza de un tipo retirado nunca sale en el botín, los cofres, el Recuerdo del Guardián ni el equipo inicial (engine/hero/gear.py
+                             # [ES] retired_types, engine/world/dungeons.py chest_gear); las que ya tenían los jugadores se cambiaron una vez por su gemela de cuero
+                             # [ES] (misma ranura, tier y origen; engine/service/retired_gear.py). Las piezas de malla siguen en items.yaml sin retired: true (las viejas cargan)
   score: {attack: 1, hp: 1, armor: 2}   # [ES] D-115 (fase 2): el puntaje de una pieza para decir si es "⬆️ mejor" que la que llevas: ataque % + vida % + 2 × defensa
                              # [ES] (lo que la pieza te da de verdad: la mitad si no es de tu tipo, más su ✨ encantamiento). La defensa pesa doble: 1 punto de defensa
                              # [ES] quita daño en cada golpe. Es el mismo puntaje que ya usaba la comparación "⬆️/⬇️ Frente a lo que llevas" (engine/hero/gear.py gear_score)
@@ -559,7 +563,7 @@ durability:                  # [ES] D-139 (confirmada, E-23: "el equipo se gasta
   repairs: 5                 # [ES] reparaciones que aguanta (E-70); después de la última, la próxima vez que llega a 0 se rompe para siempre. La pantalla avisa antes de la última
   masterwork_repairs: 8      # [ES] una ✒️ obra maestra aguanta 8 (dura más: E-274, provisional)
   rank_margin: 10            # [ES] repara el oficio que hace ese tipo de pieza con rango ≥ nivel de la pieza − 10 (al menos 1): la pieza de nivel 3 la repara un rango 1; la de nivel 50, un rango 40
-  repair_by: {espada: herreria, daga: herreria, placas: herreria, arco: carpinteria, baston: carpinteria, cuero: peleteria, malla: peleteria, tela: sastreria, joya: joyeria}   # [ES] qué oficio repara cada tipo (el que lo fabrica, content/professions.yaml; la malla ya no se fabrica, D-306, la sigue reparando la 🦺 Peletería)
+  repair_by: {espada: herreria, daga: herreria, placas: herreria, arco: carpinteria, baston: carpinteria, cuero: peleteria, malla: peleteria, tela: sastreria, joya: joyeria}   # [ES] qué oficio repara cada tipo (el que lo fabrica, content/professions.yaml). malla: queda por si alguna pieza no tuvo gemela (D-342: la malla se quitó y sus piezas se cambiaron por cuero); no molesta
   material: {herreria: lingote, carpinteria: tablon, peleteria: cuero_curtido, sastreria: tela_tejida, joyeria: lingote}   # [ES] el refinado de base que gasta cada reparación
   material_step: 20          # [ES] unidades por reparación: 1 + nivel de la pieza ÷ 20 (nivel 1-19: 1; nivel 100: 6)
   energy: 1                  # [ES] ⚡ por reparación (uno mismo o un encargo)

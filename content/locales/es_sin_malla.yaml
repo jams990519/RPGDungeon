@@ -1,0 +1,15 @@
+# Texts of the one-time notice of 0.62.2: mail no longer exists and every mail piece became its leather twin (D-342, confirmed;
+# how it was applied: D-343, provisional).
+# [ES] Textos del aviso de una sola vez de la 0.62.2: la malla ya no existe y cada pieza de malla pasó a ser su gemela de cuero
+# (D-342, confirmada por el dueño el 24-oct-2026: "la malla la quitamos, dejamos cuero, tela y placa únicamente"; sus piezas,
+# "cambiarlas por la de cuero igual"; la 🎓 ⛓️ Malla de la Peletería, "quitarla y elegir otra gratis"; cómo se aplicó: D-343,
+# provisional). Se junta con es.yaml al cargar (engine/core/content.py). Lo lee: engine/service/retired_gear.py
+# (_retired_gear_notice, la primera pantalla de cada jugador al que se le cambió algo). Una clave nueva va también en
+# en_sin_malla.yaml (tools/check_locales.py). Si cambias una clave, búscala en el código: una clave que falta se ve como [clave].
+
+nomail:
+  notice: "🦺 La malla ya no existe en el juego: quedan cuero, tela y placas. Tus piezas de malla ahora son de cuero, de la misma ranura y el mismo nivel:"
+  line: "• {old} → {new}"
+  line_n: "• {old} → {new} ×{n}"
+  kept: "Conservan su 🔧 durabilidad, su ✨ encantamiento y su ✒️ firma. No perdiste nada."
+  spec: "🎓 La especialización {spec} de la {prof} se retiró con la malla: elige otra gratis en ⚒️ Oficios → 🎓 Especialización. Su dominio ({pct} %) queda guardado."

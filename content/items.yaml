@@ -8,7 +8,10 @@
 # Si cambias esto, revisa: IDs estables; la curación y la toxicidad mueven el balance del combate.
 # D-306 (0.44): el bloque "GENERATED" del final (el equipo de artesano de los niveles 15, 25 … 95) lo escribe
 #     tools/recipe_tiers.py desde las piezas de su línea de 5 niveles menos y 5 más: no se edita a mano. Las piezas de
-#     malla siguen aquí aunque sus recetas se retiraron (quien las tiene las conserva, D-64).
+#     malla siguen aquí aunque sus recetas se retiraron. D-342 (0.62.2): la malla ya no existe en el juego: no cae
+#     (balance.yaml gear.retired_types) y las piezas que quedaban pasaron una vez a ser su gemela de cuero
+#     (engine/service/retired_gear.py). NO llevan retired: true a propósito: el cargador borra lo retirado de este archivo y
+#     una ficha vieja con malla no podría cargarse ni cambiarse.
 # D-328 (0.52): el mismo bloque generado suma los refinados de cada tramo (tablon_tramo_5 … sillar_tramo_100, códigos 101-220),
 #     las pociones (221-240), los remedios (241-260) y los platos (261-280) de los tramos nuevos: código = el "code" de su línea
 #     en balance.yaml recipe_tiers + rango ÷ 5 (estable; los números que quedan libres en cada bloque no se usan). belt_slot (solo

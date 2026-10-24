@@ -50,7 +50,7 @@ Pedido del dueño (20-oct-2026): "defíneme para mí personalmente la descripci�
 | Oficio | Qué hace | Beneficio | 🎓 Especializaciones | En WoW |
 |---|---|---|---|---|
 | 🔨 **Herrería** | Espadas, dagas y armadura de placas: lingotes con cuero | +3 % de armadura con placas | Forjador de armas · Armero · Herramientas | Herrería |
-| 🦺 **Peletería** | Armadura de cuero: cuero con tela (la malla se retiró en la 0.44, D-208) | +4 % de ataque y +3 % de vida | Cuero ligero · Malla (sin recetas desde la 0.44: P-243) · Talabartería | Peletería |
+| 🦺 **Peletería** | Armadura de cuero: cuero con tela (la malla se retiró en la 0.44, D-208) | +4 % de ataque y +3 % de vida | Cuero ligero · ~~Malla~~ (retirada en la 0.62.2: D-342) · Talabartería | Peletería |
 | 🪡 **Sastrería** | Vendas, túnicas y armadura de tela; también bolsas | +5 % de ataque con tela | Túnicas mágicas · Ropa de clima · Textil médico | Sastrería |
 | 🪑 **Carpintería** | Arcos y bastones; desde el rango 40, 🪑 muebles para el campamento | 15 % de salir ✒️ obra maestra | Arquería · Escudos · Mobiliario y carros | Ingeniería, más o menos |
 | ⚗️ **Alquimia** | Pociones: extracto con arcilla (las mayores, con flor de luna) | +30 % de lo que cura una poción | Pociones · Elixires · Venenos | Alquimia |
@@ -102,4 +102,4 @@ Las recetas, como en WoW. El detalle está en [Profesiones](profesiones.md) §0.
 | 🟧 **Colores** | 🟧 la experiencia entera, 🟨 la mitad, 🟩 un cuarto, ⬜ nada, según cuánto te queda chica la receta; se ven en 🛠️ Fabricar con la experiencia de cada receta. En la 0.44, solo en los 5 oficios de equipo; desde la 0.52 (D-328), en todos. | `recipe_tiers.colors`; `engine/service/game.py` → `_recipe_xp` |
 | 📚 **Libros de recetas** | Las recetas de rango 25, 50 y 75 o más piden su libro (🥈2, 🥈10, 🥈25), en 🧑‍🏫 Entrenador → 📚 Libros de recetas; gratis los de los rangos que ya tenías. | `recipe_tiers.books`; `Hero.recipe_books` |
 | 📿 **Joyería** | Empieza con el Colgante de cobre (lingote y cuero), sin gema. | `content/professions.yaml` → `colgante_cobre` |
-| ⛓️ **Malla** | Las 67 recetas, retiradas; las piezas quedan. | `retired: true` |
+| ⛓️ **Malla** | Las 67 recetas, retiradas. Desde la 0.62.2 (D-342) las piezas que quedaban pasaron a ser de cuero y la malla ya no cae. | `retired: true`; `gear.retired_types` |
