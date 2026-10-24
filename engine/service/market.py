@@ -27,13 +27,15 @@ Depende de: content/balance.yaml (bloque market; shop.sell_ratio para mostrar lo
     _code_target, _upgrades_here, _camp_service, _main_view, _today); D-326: content/balance.yaml map_scroll (price_min,
     price_max) y las ayudas de MapScrollMixin (_scroll_item, _scroll_cfg, _scroll_find, _scroll_take, _scroll_add,
     _scroll_summary, _scroll_new); D-338 (0.62): las de BackpackMixin (engine/service/backpack.py: _bag_room, _bag_why,
-    _bag_space_line, _pbag_hint) para 📦 Recoger: cada cosa entra hasta el tope de su tipo (o del equipo suelto)
+    _bag_space_line, _pbag_hint) para 📦 Recoger: cada cosa entra hasta el tope de su tipo (o del equipo suelto); D-344: la de
+    TelemetryMixin (engine/service/telemetry.py: _tel_add en _market_buy y _market_fill cuenta cada compra y venta para el
+    informe de jugadores, a los dos jugadores; nunca cambia nada)
 Lo usan: engine/service/game.py (GameService hereda de esta clase): act() (borra "market_open" con cualquier botón que no sea
     del mercado; _idle_action manda MARKET_ACTIONS a _market_action), text() (los códigos /c1 /s1 /b07 /k1 /o1 con
     market_code, y el texto suelto con un borrador abierto: _market_typed), tick() (_market_tick: vencimientos y avisos de
     entregas que llegaron), COMMANDS (/mercado, /market), _shop_view (botón 🏛️ Mercado del 🛒 Mercader), _service_uses
     (botón 🏛️ Mercado al lado del 🏪 Puesto de trueque en ⚒️ Oficios de 🏘️ Servicios) y _faq_values (_market_faq_values);
-    adapters/reports.py lee "market_log" (sección 9 del informe diario); D-335 (0.59): engine/service/craft_orders.py
+    adapters/reports.py lee "market_log" (sección 10 del informe de jugadores); D-335 (0.59): engine/service/craft_orders.py
     (CraftOrderMixin, los 📜 pedidos de fabricación) usa _mkt_cfg, _mkt_tax, _mkt_credit, _mkt_box_add, _mkt_box, _mkt_left,
     _mkt_fit, _mkt_log y _mkt_delivery_seconds: lo hecho viaja por 📦 Entregas con "why": "crafted"; los materiales
     devueltos, con "returned" o "expired"; y suma "craft_*" a "market_log"
@@ -61,7 +63,7 @@ Datos de los que es dueño:
         el borrador de una orden mientras se arma; el texto suelto que escribes es su precio (y "x5", su cantidad). Solo
         pantalla: act() lo borra con cualquier otro botón.
     "market_log" (clave el día, _today()): {"trades", "units", "coins", "tax", "sell_orders", "buy_orders", "cancelled",
-        "expired"}: la cuenta del día para el informe diario (adapters/reports.py). Se guardan market.log_days días.
+        "expired"}: la cuenta del día para el informe de jugadores (adapters/reports.py, cada 3 horas desde D-341). Se guardan market.log_days días.
     "meta"/"market": {"seq" (último número de orden), "next_expire" (la orden que vence antes), "next_due" (la entrega que
         llega antes sin avisar)}: así tick() no recorre todo a cada rato.
     "gremio_codes" (de gremio.py) suma "mkt_offers", "mkt_sell", "mkt_fill" y "mkt_mine": el orden de las listas con /c1, /s1,
@@ -94,7 +96,7 @@ Si cambias esto, revisa:
       0.59; "market_cats" 9 desde la 0.50 con 🗺️ Mapas y 10 desde la 0.62 con 🎒 Mochilas de oficio,
       EXTRA_BUTTON_KINDS), el layout del borrador (filas de precio y
       cantidad, ✅ Publicar y ↩️ Volver a lo ancho) y los ids "mkt…" (64 bytes como máximo en Telegram)
-    - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 9)
+    - Servicio: engine/service/game.py (los ganchos de "Lo usan"); adapters/reports.py (sección 10 desde D-341, market_lines)
     - Mapa de impacto: diseno/01-plataforma/mapa-de-impacto.md (M13 y la cascada C-32)
     - Horas (0.58, D-124, D-334): el detalle de una orden dice a qué hora vence en la zona horaria de quien mira (_clock de
       engine/service/world_time.py); la orden vence a la misma hora para todos ("until", segundos UTC)
@@ -779,6 +781,8 @@ class MarketMixin:
         else:
             self.store.put("market_order", oid, order)
         self._mkt_log(trades=1, units=n, coins=cost, tax=tax)
+        self._tel_add(hero.id, mkt_bought=1)              # D-344: 📊 the team's report counts each trade for both players
+        self._tel_add(seller, mkt_sold=1)
         buyer = hero.name
         self._push_each([seller], lambda: View(          # built again in the seller's language (D-250)
             kind="market_notice", title=self.texts.t("market.sold_title"),
@@ -1132,6 +1136,8 @@ class MarketMixin:
         else:
             self.store.put("market_order", oid, order)
         self._mkt_log(trades=1, units=n, coins=total, tax=tax)
+        self._tel_add(hero.id, mkt_sold=1)                # D-344: 📊 the team's report counts each trade for both players
+        self._tel_add(asker, mkt_bought=1)
         seller, label = hero.name, self._mkt_name(good)
         time = self._fmt_duration(self._mkt_delivery_seconds())
         self._push_each([asker], lambda: View(          # built again in the asker's language (D-250)

@@ -64,7 +64,8 @@ Depende de: engine.core, engine.hero (y engine.hero.gear: equipo, D-77), engine.
     engine.service.market (MarketMixin: el 🏛️ Mercado entre jugadores, D-137/D-320), engine.service.map_scroll
     (MapScrollMixin: el 🗺️ pergamino de mapa del 🧭 Explorador, D-311 parte 5 y D-326), engine.service.ladder (LadderMixin: la
     escalera del asentamiento, 1.ª parte: el cupo por etapa, quien deja de jugar y los activos del castillo, D-253 y D-327),
-    engine.service.group_missions (GroupMissionMixin: la 🎯 misión de grupo de cada subida del campamento, D-136 y D-332)
+    engine.service.group_missions (GroupMissionMixin: la 🎯 misión de grupo de cada subida del campamento, D-136 y D-332),
+    engine.service.telemetry (TelemetryMixin y tracked: los contadores del informe de jugadores cada 3 horas, D-341 y D-344)
 Lo usan: adapters/telegram/bot.py, adapters/cli/play.py, tests/test_service.py
 Eventos que publica: HeroCreated, TravelStarted, TravelArrived, ZoneDiscovered, CombatStarted,
     HitReceived, HeroDowned, CombatEnded, BossDefeated, ItemCrafted y ProfessionRankUp (oficios, D-109)
@@ -204,6 +205,10 @@ Datos de los que es dueño: espacios "hero", "combat", "zone", "pending" y "meta
     escribe engine/service/group_missions.py (GroupMissionMixin, ver su encabezado). Nada nuevo en Hero ni en "camp".
     D-328 (0.52): Hero.book_gifts (los regalos de libros ya dados, ids de balance.yaml recipe_tiers.book_gifts); los héroes de
     antes cargan con [] y _load (_grant_book_gifts) les da una vez los libros nuevos del refinado, ⚗️ y 🩺 de los rangos que tenían.
+    D-341 y D-344 (24-oct-2026): el espacio "telemetry" (los contadores del informe de jugadores cada 3 horas, clave
+    "<tramo>:<cuenta>") es de engine/service/telemetry.py (TelemetryMixin, ver su encabezado): act() y text() llevan el
+    decorador tracked, _save llama a _tel_saved, tick() a _tel_tick y __init__ a _tel_listen; solo cuenta y nunca cambia una
+    jugada. Nada nuevo en Hero.
 Reglas que nunca se rompen:
     1. Toda orden empieza por _settle(): ningún temporizador se pierde ni se duplica.
     2. En combate no se viaja ni se explora; viajando no se explora (una actividad a la vez).
@@ -846,6 +851,7 @@ from engine.service.craft_orders import (CRAFT_ORDER_ACTIONS, CRAFT_ORDER_CODE_R
 from engine.service.permadeath import HALL_ACTION, OATH_ACTIONS, PermadeathMixin   # D-147, D-336 (0.60): 💀 permadeath and 🪦 the hall
 from engine.service.raid_difficulty import RaidDifficultyMixin   # D-337 (0.61): ⚔️ the waves' escalating difficulty (D-153)
 from engine.service.backpack import PBAG_ACTIONS, PBAG_CODE_RE, BackpackMixin   # D-338, D-339 (0.62): 🎒 the backpack by types
+from engine.service.telemetry import TelemetryMixin, tracked   # D-341, D-344: 📊 the light play telemetry of the team's reports
 from engine.world import raids as raid_rules
 from engine.world import enemy_camps as camp_rules
 from engine.world import dungeons as dungeon_rules      # D-164, D-170, D-171: solo dungeons
@@ -1047,7 +1053,7 @@ def _in_player_language(method: Callable[..., Any]) -> Callable[..., Any]:
 class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMixin, LadderMixin, SquadsMixin, GroupMissionMixin,
                   RepairMixin, WorldTimeMixin,
                   CraftOrderMixin, PermadeathMixin,
-                  RaidDifficultyMixin, BackpackMixin):
+                  RaidDifficultyMixin, BackpackMixin, TelemetryMixin):
     """The engine's facade for every client (the story and roleplay part lives in engine/service/story.py, D-117; the
     guided path in engine/service/guide.py, D-190/D-193).
 
@@ -1096,6 +1102,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             mapgen.configure_bonfires(int(bonfire.get("spacing", 12)), int(bonfire.get("ring", 1)))
             dungeon_rules.clear_cache()
             node_rules.clear_cache()
+        self._tel_listen()                  # D-344: 📊 the report's telemetry counts crafts, fights, arrivals... from the bus
 
     # ------------------------------------------------------------------ public API
 
@@ -1115,6 +1122,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self._save(hero)                    # after the view: a 🧭 tip it showed stays seen
         return view
 
+    @tracked("text")                    # D-341, D-344: 📊 every typed text counts once for the team's report (never changes it)
     @_in_player_language
     def text(self, account_id: str, text: str) -> View:
         """Handle free text: the hero's name, a camp or guild name, or a typed command ("/bio ...", "/saludar Bram").
@@ -1269,6 +1277,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         self.store.put("pending", account_id, pending)
         return self._creation_view(account_id)
 
+    @tracked("act")                     # D-341, D-344: 📊 every button counts once for the team's report (never changes it)
     @_in_player_language
     def act(self, account_id: str, action_id: str) -> View:
         """Handle a button press. [ES] Qué hace: ejecuta la acción de un botón. La llaman: los clientes. Si cambia, afecta: todos los botones."""
@@ -1470,6 +1479,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         Desde la 0.51 (D-327): antes de la espera, guarda una vez el cupo de antes de cada campamento como su piso
         (_cap_floor_sweep: nadie pierde lugar con el cupo por etapa), y al final mira quién no juega hace 25 o 30 días
         (_idle_tick: aviso y lugar libre, nunca el fundador; cada ladder.idle_scan_minutes).
+        D-344: al final guarda los contadores del informe de jugadores, como mucho una vez por minuto (_tel_tick).
         La llaman: el adaptador de Telegram cada pocos segundos.
         Si cambia, afecta: los avisos de llegada.
         """
@@ -1503,6 +1513,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             for item in box.get("items", []):
                 actions = [Action(**a) for a in item.pop("actions", [])]
                 out.append((account_id, View(actions=actions, **item)))
+        self._tel_tick()                    # D-344: 📊 the report's counts go to the store at most once a minute
         return out
 
     def _push(self, account_id: str, view: View) -> None:
@@ -1701,7 +1712,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
 
         [ES] Qué hace: guarda la ficha del héroe en "hero". Si el héroe cayó para siempre (Hero.oath "fell"), lo que siga
         guardándose en la misma llamada (el final de un lote, la vista) va a su archivo y nunca vuelve a "hero": así la cuenta
-        queda libre para el héroe nuevo. La llaman: todo el motor. Si cambia, afecta: el guardado de todos los héroes.
+        queda libre para el héroe nuevo. D-344: después de guardar, _tel_saved anota en memoria (para el informe de jugadores)
+        las monedas, la experiencia, los niveles y el tiempo de actividad desde el guardado anterior; no escribe nada más.
+        La llaman: todo el motor. Si cambia, afecta: el guardado de todos los héroes.
         """
         oath = hero.oath or {}
         if oath.get("fell") and oath.get("key"):
@@ -1710,6 +1723,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             self.store.put("fallen_hero", oath["key"], record)
             return
         self.store.put("hero", hero.id, hero.to_dict())
+        self._tel_saved(hero)               # D-344: 📊 coins, XP, levels and timed activity since its last save (memory only)
 
     @staticmethod
     def _name_key(name: str) -> str:
@@ -2172,6 +2186,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             item_id = rng.pick_weighted(options, self._band_weights(band, options, [5, 3, 2, 1]))
             self._bag_add(hero, item_id, 1)                  # never lost, even with a full backpack (D-90)
             activity["got"][item_id] = activity["got"].get(item_id, 0) + 1
+            self._tel_items(hero.id, "found", {item_id: 1})   # D-344: 📊 a find while exploring (the report counts it apart)
             return None
         coins = int(zone.level * rng.uniform(2, 5)) + 1
         hero.gold += coins
@@ -4254,6 +4269,7 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
             return self._shop_buy_view(hero, notice=t.t("shop.no_gold"))
         hero.gold -= price
         hero.backpack[item_id] = hero.backpack.get(item_id, 0) + 1
+        self._tel_add(hero.id, merchant_bought=1)       # D-344: 📊 a purchase from the 🛒 trader
         if cap is not None:
             bought[item_id] = bought.get(item_id, 0) + 1
             self.store.put("shop_week", hero.id, {"week": self._today() // 7, "bought": bought})
@@ -14238,6 +14254,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         state["dungeon"] = mark
         self.store.put("combat", hero.id, state)
         hero.activity = None
+        first = mark.get("room") == 0 if "room" in mark else (mark.get("floor") == 1 and mark.get("fight") == 0)
+        self._tel_add(hero.id, dng_fights=1, dng_runs=1 if first else 0)    # D-344: 📊 a dungeon fight (and a run that starts)
         self.bus.publish(CombatStarted(hero.id, member["id"], seed))
 
     def _dng_fight_done(self, hero: Hero, state: dict[str, Any]) -> list[str]:
@@ -15444,8 +15462,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                     hero.backpack[item_id] = hero.backpack.get(item_id, 0) + count
                     count += self._trade_loot(hero, item_id, count, lines, state["seed"])     # D-109: 🔪 Desollador (carne, piel)
                     skin_pid = gatherer_of(item_id, self._prof_catalog())
-                    if skin_pid and item_id in (self._prof_catalog()[skin_pid].get("skins") or []) and skin_pid not in skinned:
-                        skinned.append(skin_pid)
+                    if skin_pid and item_id in (self._prof_catalog()[skin_pid].get("skins") or []):
+                        self._tel_items(hero.id, "items", {item_id: count})     # D-344: 📊 skinned units count as gathered
+                        if skin_pid not in skinned:
+                            skinned.append(skin_pid)
                     label = f"{item['emoji']} {t.t(item['name_key'])}" if count == 1 else self._item_list({item_id: count})
                     lines.append(t.t("combat.loot", item=label))
             per_beast = int((self._prof_cfg().get("skinning") or {}).get("xp_per_beast", 0))
