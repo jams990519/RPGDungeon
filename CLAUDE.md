@@ -21,7 +21,7 @@ Antes de proponer algo, buscar si ya está decidido o preguntado: `grep -rn "pal
 ## 2. Reglas fijas del dueño (no se negocian)
 
 1. **TowerWars no se toca.** Ni el bot @TowerWarsBot, ni el repositorio `jams990519/towerwars`, ni su carpeta local, ni su base de datos, ni sus servicios (D-01). De TowerWars solo se toman lecciones, y ya están resumidas en el diseño.
-2. **El juego corre en @LostRealmsbot** (D-02), en Railway, servicio RPGDungeon del proyecto satisfied-balance. Ningún otro servicio se toca.
+2. **El juego corre en @LostRealmsbot** (D-02), en Railway, servicio RPGDungeon. Ningún otro servicio se toca. El nombre y los identificadores del proyecto no se escriben en el repositorio (D-345).
 3. **Railway solo en el servicio RPGDungeon** (D-60, D-63): los parches probados se unen a `main` y se despliegan solos. Nada más en Railway sin permiso explícito del dueño, y nunca borrar datos sin su confirmación.
 4. **Todo en texto y por turnos** (D-05).
 5. **Modular para Telegram, web y app móvil:** un solo motor y las mismas reglas para los tres. Ningún cliente da ventaja. El motor no sabe desde qué cliente juega cada jugador (D-40, D-41).
@@ -57,7 +57,7 @@ Lo que pidió el dueño: que, si le pide a la IA cambiar una sola línea, la IA 
 - **Diseño y código se actualizan juntos.** Si no coinciden, es un error: se le avisa al dueño, que decide, y se corrigen los dos.
 - **IDs estables:** solo se agregan. Nunca se renombran, se borran ni se reutilizan; para retirar algo se marca `retired: true`.
 - **El progreso de los jugadores se guarda para siempre:** nunca subir `world.epoch` en `content/balance.yaml` ni borrar datos del juego sin permiso explícito del dueño (D-64).
-- **Credenciales nunca en el repositorio:** solo los nombres de las variables, en un archivo de ejemplo. Los valores, jamás.
+- **Credenciales nunca en el repositorio:** solo los nombres de las variables, en un archivo de ejemplo. Los valores, jamás. Desde D-345 (25-oct-2026, intento de ataque), tampoco nada que identifique al servidor: ni identificadores de Railway, ni el número del chat de informes, ni datos de cuentas. Todo eso vive solo en las variables del servidor.
 - **Antes de subir:** correr las pruebas **y** arrancar el motor con al menos un cliente.
 - **Cada parche jugable agrega su entrada al final de `content/patches.yaml`** (versión nueva y notas en lenguaje de jugador, con `title_en` y `notes_en` en inglés desde la 0.33): el bot la avisa a todos al arrancar, a cada uno en su idioma (D-67, D-250). Mismo contenido: 0.5 → 0.5.1 → 0.5.2; contenido nuevo: 0.6 (D-73).
 

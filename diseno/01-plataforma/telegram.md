@@ -99,3 +99,11 @@ El dueño pidió (18-oct-2026) que no se juegue dentro de los grupos: "si no, to
 
 El aviso sale en el idioma del jugador o, si nunca eligió, en el de su Telegram ([Idiomas](idiomas.md)). Ningún mensaje ni botón de un grupo llega al motor como jugada. Cómo se aplicó: D-263.
 
+## 7. Seguridad (D-345, 25-oct-2026)
+
+Tras un intento de ataque por Railway, el dueño cambió el token del bot y pidió todas las protecciones:
+
+- **Nada del servidor en el repositorio** (es público): ni tokens, ni claves, ni identificadores de Railway, ni el número del chat de informes. El chat se lee solo de `RPG_REPORTS_CHAT_ID`; sin esa variable no se manda nada. `tests/test_seguridad.py` falla si alguien sube un token, una clave o un identificador con forma de UUID.
+- **Freno contra mensajes en masa (FloodGuard):** más de 20 mensajes o botones en 10 segundos de un mismo jugador se ignoran antes de llegar al motor, y el jugador recibe "⏳ Vas muy rápido" como mucho una vez por minuto. Un jugador normal no llega nunca.
+- **Superficie mínima:** el bot recibe por *polling*; el servicio no tiene dominios públicos, puertos ni webhooks.
+- **Lo que depende del dueño:** repositorio privado, revisar quién tiene permiso de escritura, verificación en dos pasos en GitHub, Railway y Telegram, y revisar miembros y tokens de Railway.

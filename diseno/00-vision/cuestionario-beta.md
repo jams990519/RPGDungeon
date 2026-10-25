@@ -536,7 +536,7 @@ Las preguntas que choquen con eso quedan respondidas por esas decisiones.
 - *Opciones:* Sí · Solo en parches grandes · No
 - *Recomiendo:* Sí: antes de cada parche se hace una copia automática, el cambio se prueba sobre ella en el bot de pruebas y solo después se sube.
 
-**C-049. ¿El proyecto satisfied-balance de Railway comparte cuenta, plan o recursos con TowerWars?** · 🟠 antes de la beta
+**C-049. ¿El proyecto de Railway del juego comparte cuenta, plan o recursos con TowerWars?** · 🟠 antes de la beta
 
 ⏳ Sigue abierta: tanda 5, bloque Q en el sistema de preguntas, reescrita con lo que cambió.
 

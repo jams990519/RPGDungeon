@@ -1872,6 +1872,7 @@ feedback:
 client:
   private_only: '🔒 Lost Realms is played in private, in your chat with the bot. It is not played in groups.'
   play_private: '▶️ Play in private'
+  slow_down: "⏳ You're going too fast: wait a few seconds and keep playing."
 chclass:
   button: 🔄 Change class
   title: 🔄 Change class

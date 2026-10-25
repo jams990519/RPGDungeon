@@ -5,7 +5,8 @@ Environment variables (names only in .env.example, never values in the repo):
   RPG_DB_PATH         SQLite file (default data/lostrealms.sqlite3)
   RPG_WORLD_SEED      optional fixed world seed
   RPG_TIME_SCALE      1.0 normal; smaller numbers speed up timers for testing
-  RPG_REPORTS_CHAT_ID chat that receives the player report (every 3 hours) and the 💬 Feedback notes (default: the team's chat)
+  RPG_REPORTS_CHAT_ID chat that receives the player report (every 3 hours) and the 💬 Feedback notes (required: set it only
+                      in the server; without it nothing is posted)
 
 [ES]
 Para qué sirve: el proceso del bot. Recibe mensajes y botones de Telegram, se los pasa
@@ -31,6 +32,10 @@ Reglas que nunca se rompen:
        un grupo llega al motor como jugada.
     4. El informe y el 💬 Feedback van solo al chat configurado (RPG_REPORTS_CHAT_ID) o a la otra forma de su número; nunca
        a un grupo cualquiera al que agreguen al bot.
+    5. D-345 (25-oct-2026, seguridad): ningún dato del servidor en el código ni en el repositorio (el repositorio es público):
+       ni el número del chat de informes ni identificadores de Railway. Todo eso vive solo en las variables del servidor.
+    6. D-345: FloodGuard frena a quien manda más de FLOOD_MAX_UPDATES mensajes o botones en FLOOD_WINDOW_SECONDS: lo de más
+       se ignora (no llega al motor) y el jugador recibe un aviso como mucho una vez por minuto.
 Si cambias esto, revisa:
     - Motor: engine/service/game.py (view, text, act, tick, menu, commands: los atajos /stats, /doble, /opciones... salen
       del motor; el menú fijo tiene 5 botones desde D-190: 📖 Historia salió). Un texto con "/" que no es un atajo exacto
@@ -47,10 +52,12 @@ import logging
 import os
 import re
 import sys
+import time
+from collections import deque
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from aiogram import Bot, Dispatcher, F
+from aiogram import BaseMiddleware, Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ChatType
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramMigrateToChat
@@ -77,7 +84,10 @@ def menu_keyboard(service: GameService, account: str | None = None) -> ReplyKeyb
     rows = [labels[i:i + 2] for i in range(0, len(labels), 2)]
     return ReplyKeyboardMarkup(keyboard=rows, resize_keyboard=True, is_persistent=True)
 TICK_SECONDS = 15
-REPORTS_CHAT_DEFAULT = "-1004365890113"   # D-260: the team's reports chat (the owner gave it, 17-oct-2026); not a credential
+# D-345 (security): no reports chat in the code any more; it is read only from RPG_REPORTS_CHAT_ID (set in the server)
+FLOOD_WINDOW_SECONDS = 10                # D-345: anti-flood window...
+FLOOD_MAX_UPDATES = 20                   # ...more messages or buttons than this from one player inside it are ignored
+FLOOD_NOTICE_SECONDS = 60                # the "you are going too fast" notice, at most once a minute per player
 REPORT_RETRY_SECONDS = 3600              # a report Telegram refused is tried again an hour later, not every tick
 TOKEN_RE = re.compile(r"^\d{6,12}:[A-Za-z0-9_-]{30,}$")
 
@@ -140,6 +150,67 @@ def desk_keyboard(note: dict[str, Any]) -> InlineKeyboardMarkup:
     """The feedback card's buttons (adapters/feedback_desk.buttons) as a Telegram inline keyboard (D-275)."""
     rows = [[InlineKeyboardButton(text=label, callback_data=data) for label, data in row] for row in feedback_desk.buttons(note)]
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+class FloodGuard(BaseMiddleware):
+    """Drop a player's messages and buttons beyond FLOOD_MAX_UPDATES in FLOOD_WINDOW_SECONDS (D-345, anti-flood).
+
+    [ES]
+    Qué hace: protege al servidor de quien manda mensajes o toca botones en masa (a mano o con un programa). Cuenta, por
+    usuario de Telegram, lo que llegó en los últimos FLOOD_WINDOW_SECONDS; desde el FLOOD_MAX_UPDATES + 1 lo ignora (no llega
+    al motor ni gasta nada) y le avisa "⏳ vas muy rápido" en su idioma, como mucho una vez por FLOOD_NOTICE_SECONDS. Un
+    jugador normal no llega nunca al tope (son 2 por segundo durante 10 segundos). Solo guarda en memoria las marcas de
+    tiempo de la ventana; los usuarios quietos se olvidan solos.
+    La llama: aiogram, antes de cada manejador (main la registra en mensajes y botones). Si cambia, afecta: cuánto puede
+    tocar un jugador por segundo (tests/test_seguridad.py).
+    """
+
+    def __init__(self, service: GameService, now: Callable[[], float] = time.monotonic) -> None:
+        self.service = service
+        self.now = now
+        self.seen: dict[int, deque[float]] = {}
+        self.noticed: dict[int, float] = {}
+
+    def allow(self, user_id: int) -> bool:
+        """True if this update of the user fits in the window (and it is counted); False if it must be dropped."""
+        now = self.now()
+        window = self.seen.setdefault(user_id, deque())
+        while window and now - window[0] > FLOOD_WINDOW_SECONDS:
+            window.popleft()
+        if len(window) >= FLOOD_MAX_UPDATES:
+            return False
+        window.append(now)
+        if len(self.seen) > 5000:                          # forget idle users so memory never grows
+            self.seen = {uid: q for uid, q in self.seen.items() if q and now - q[-1] <= FLOOD_WINDOW_SECONDS}
+            self.noticed = {uid: at for uid, at in self.noticed.items() if now - at <= FLOOD_NOTICE_SECONDS}
+        return True
+
+    def should_notice(self, user_id: int) -> bool:
+        """True at most once every FLOOD_NOTICE_SECONDS per user (the slow-down notice is not spammed back)."""
+        now = self.now()
+        if now - self.noticed.get(user_id, float("-inf")) < FLOOD_NOTICE_SECONDS:
+            return False
+        self.noticed[user_id] = now
+        return True
+
+    async def __call__(self, handler: Callable[..., Awaitable[Any]], event: Any, data: dict[str, Any]) -> Any:
+        user = getattr(event, "from_user", None)
+        if user is None or self.allow(user.id):
+            return await handler(event, data)
+        notice = self.should_notice(user.id)
+        if notice:
+            log.warning("flood: user %s sent more than %d updates in %d s", user.id, FLOOD_MAX_UPDATES, FLOOD_WINDOW_SECONDS)
+        try:
+            text = self.service.say(account_of(user.id), "client.slow_down",
+                                    lang_hint=(user.language_code or "")[:2].lower() or None) if notice else None
+            if isinstance(event, Message):
+                if text and event.chat.type == ChatType.PRIVATE:
+                    await event.answer(text)
+            else:                                          # a button: always answered, so its spinner stops
+                await event.answer(text or None, show_alert=bool(text))
+        except Exception:  # noqa: BLE001 - the guard never breaks the bot
+            log.info("could not send the slow-down notice to %s", user.id)
+        return None
 
 
 def in_group(query: CallbackQuery) -> bool:
@@ -271,10 +342,17 @@ def report_chats() -> list[int]:
 
     [ES]
     Qué hace: da el número del chat de informes y su otra forma, por si se copió mal: un grupo común tiene un número como
-    -4365890113 y un supergrupo, -100 delante (-1004365890113). El bot prueba el primero y, si Telegram dice "chat no
-    encontrado", el otro. La llama: post_to_reports. Si cambia, afecta: a dónde llegan el informe y el feedback.
+    -1234567890 y un supergrupo, -100 delante (-1001234567890). El bot prueba el primero y, si Telegram dice "chat no
+    encontrado", el otro. D-345 (25-oct-2026, seguridad): el número ya no está en el código; si la variable falta, no hay
+    chat de informes ([]), lo dice una vez en el registro y nada se manda (el feedback espera en la cola).
+    La llama: post_to_reports. Si cambia, afecta: a dónde llegan el informe y el feedback.
     """
-    raw = (os.environ.get("RPG_REPORTS_CHAT_ID") or REPORTS_CHAT_DEFAULT).strip()
+    raw = (os.environ.get("RPG_REPORTS_CHAT_ID") or "").strip()
+    if not raw:
+        if not _no_chat_logged[0]:
+            log.warning("RPG_REPORTS_CHAT_ID is not set: reports and feedback wait until it is")
+            _no_chat_logged[0] = True
+        return []
     try:
         chat = int(raw)
     except ValueError:
@@ -288,6 +366,7 @@ def report_chats() -> list[int]:
 
 
 _reports_chat: list[int | None] = [None]   # the reports chat id that worked last (one of report_chats()), once known
+_no_chat_logged = [False]                  # D-345: the missing RPG_REPORTS_CHAT_ID was already logged
 _report_failed_at = [float("-inf")]       # when the reports chat last refused us (loop time); none yet
 
 
@@ -403,6 +482,9 @@ async def main() -> None:
     bot = Bot(token, default=DefaultBotProperties(parse_mode="HTML"))
     dp = Dispatcher()
     service = build_service()
+    guard = FloodGuard(service)                  # D-345: anti-flood before any handler (messages and buttons)
+    dp.message.outer_middleware(guard)
+    dp.callback_query.outer_middleware(guard)
     register(dp, service)
     me = await bot.get_me()
     log.info("running as @%s", me.username)
