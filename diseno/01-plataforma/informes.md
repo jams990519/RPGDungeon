@@ -17,7 +17,7 @@ El 24-oct-2026 lo cambió (D-341): "cuando estemos dando los informes diarios, q
 
 El chat sale de la variable `RPG_REPORTS_CHAT_ID`. Si no está, se usa el chat que dio el dueño. El número del chat no es una credencial: sin el token del bot no sirve para nada.
 
-**El número del chat (0.33.1, D-263).** Un grupo común tiene un número como `-4365890113`; un supergrupo lleva `-100` delante (`-1004365890113`). Si Telegram dice "chat no encontrado", el bot prueba la otra forma; si el grupo pasó a supergrupo, sigue al número nuevo. Recuerda el que funcionó y lo anota en el registro ("reports chat: …"). Cuando agregan al bot a un chat, el registro anota su número real ("bot membership: chat …") y el informe que esperaba se intenta enseguida. El bot nunca manda informes a otro grupo, aunque lo agreguen ahí. En los grupos el bot no juega (D-262, [Telegram](telegram.md) §6).
+**El número del chat (0.33.1, D-263).** Un grupo común tiene un número como `-1234567890`; un supergrupo lleva `-100` delante (`-1001234567890`). Si Telegram dice "chat no encontrado", el bot prueba la otra forma; si el grupo pasó a supergrupo, sigue al número nuevo. Recuerda el que funcionó y lo anota en el registro ("reports chat: …"). Cuando agregan al bot a un chat, el registro anota su número real ("bot membership: chat …") y el informe que esperaba se intenta enseguida. El bot nunca manda informes a otro grupo, aunque lo agreguen ahí. En los grupos el bot no juega (D-262, [Telegram](telegram.md) §6).
 
 ### 1.1 El 💬 Feedback, con su tipo, su prioridad y sus pasos (D-275, desde la 0.35)
 

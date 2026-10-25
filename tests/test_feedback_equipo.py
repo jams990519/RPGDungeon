@@ -24,7 +24,7 @@ from test_solo_privado import FakeBot, feed, message, user
 from adapters import feedback_desk
 from adapters.telegram import bot as tg
 
-REPORTS = -1004365890113
+REPORTS = -1001234567890
 
 
 def ids(view):

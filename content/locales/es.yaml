@@ -1304,6 +1304,7 @@ feedback:                      # [ES] D-258 (0.33): 💬 Feedback de ⚙️ Opci
 client:                       # [ES] D-262 (0.33.1): textos de los clientes. En un grupo de Telegram no se juega: a un comando el bot responde esto
   private_only: "🔒 Lost Realms se juega por privado, en tu chat con el bot. En los grupos no se juega."
   play_private: "▶️ Jugar por privado"
+  slow_down: "⏳ Vas muy rápido: espera unos segundos y sigue jugando."   # [ES] D-345: aviso del freno contra mensajes en masa (FloodGuard, adapters/telegram/bot.py)
 
 chclass:                      # [ES] D-270 (0.35): 🔄 Cambiar de clase (🌟 Talentos, /cambiarclase)
   button: "🔄 Cambiar de clase"

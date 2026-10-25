@@ -326,7 +326,7 @@ def test_measuring_never_breaks_a_move(service, monkeypatch):
 
 @pytest.fixture
 def reports_chat(monkeypatch):
-    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1004365890113")
+    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1001234567890")
     tg._reports_chat[0] = None
     tg._report_failed_at[0] = float("-inf")
 

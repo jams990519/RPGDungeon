@@ -113,31 +113,31 @@ def test_the_notice_speaks_the_players_language(service):
 
 
 def test_the_reports_chat_tries_its_other_form_and_remembers_it(monkeypatch):
-    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1004365890113")
-    assert tg.report_chats() == [-1004365890113, -4365890113]
-    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-4365890113")
-    assert tg.report_chats() == [-4365890113, -1004365890113]
+    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1001234567890")
+    assert tg.report_chats() == [-1001234567890, -1234567890]
+    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1234567890")
+    assert tg.report_chats() == [-1234567890, -1001234567890]
     monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "no")
     assert tg.report_chats() == []
-    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1004365890113")
-    fake = FakeBot(refuse={-1004365890113})
+    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1001234567890")
+    fake = FakeBot(refuse={-1001234567890})
     asyncio.run(tg.post_to_reports(lambda chat: fake(SendMessage(chat_id=chat, text="hola"))))
-    assert fake.calls[0].chat_id == -4365890113 and tg._reports_chat[0] == -4365890113
+    assert fake.calls[0].chat_id == -1234567890 and tg._reports_chat[0] == -1234567890
 
 
 def test_the_report_and_feedback_wait_when_the_chat_refuses_and_go_out_later(service, monkeypatch):
-    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1004365890113")
+    monkeypatch.setenv("RPG_REPORTS_CHAT_ID", "-1001234567890")
     make_hero(service, "tg:42")
     service.act("tg:42", "fb")
     service.text("tg:42", "Me gusta la fogata")
-    closed = FakeBot(refuse={-1004365890113, -4365890113})
+    closed = FakeBot(refuse={-1001234567890, -1234567890})
     asyncio.run(tg.send_reports(closed, service))
     assert closed.calls == [] and tg._report_failed_at[0] > float("-inf")
     assert len([d for _, d in service.store.items("feedback") if not d.get("sent")]) == 1   # back in the queue
     tg._report_failed_at[0] = float("-inf")                                                 # an hour later
-    open_chat = FakeBot(refuse={-1004365890113})
+    open_chat = FakeBot(refuse={-1001234567890})
     asyncio.run(tg.send_reports(open_chat, service))
     kinds = [type(c) for c in open_chat.calls]                  # D-341: the report is a .txt and a .csv
-    assert kinds == [SendMessage, SendDocument, SendDocument] and all(c.chat_id == -4365890113 for c in open_chat.calls)
+    assert kinds == [SendMessage, SendDocument, SendDocument] and all(c.chat_id == -1234567890 for c in open_chat.calls)
     assert "Me gusta la fogata" in open_chat.calls[0].text
     assert service.take_feedback() == []
