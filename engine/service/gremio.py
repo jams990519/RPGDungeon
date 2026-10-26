@@ -211,8 +211,9 @@ GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greq
                   "creqs",       # D-289: 🙋 Solicitudes to join the camp (the founder or a helper)
                   "cwjoin:",     # D-294: 🏕️ Unir al campamento a guild member who waits for room
                   "gwleave",     # D-294: 🚪 Salir del gremio while waiting for room ("gwleave!" confirms)
-                  "gmembers", "gfunds", "gchat",   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
-                  "gfcraft", "gflog")              # D-322: 🔓/🔒 the fund for the professions and 📜 Quién usó qué
+                       "gmembers", "gfunds", "gchat", "gchat_toggle",   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
+                       "gfcraft", "gflog")              # D-322: 🔓/🔒 the fund for the professions and 📜 Quién usó qué
+
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
 GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:",   # D-280: "cinv:" = the camp's invitation by code
                   "cwait:")                              # D-294: the guild's invitation while its camp is full
@@ -826,9 +827,13 @@ class GremioMixin:
         if not (record or camp):
             return self._guild_view(hero, notice=notice)
         lines = self._chat_lines((record or camp).get("messages") or [])
+        # Chat notification status
+        notif_on = self.store.get("hero", hero.id, {}).get("chat_notifications", True)
+        status_text = t.t("gremio.chat_notif_status", status="ON" if notif_on else "OFF")
+        
         body = [t.t("guildmenu.chat_intro", hours=int(self._gremio_cfg().get("chat_hours", 24))), ""]
         body += lines or [t.t("guildmenu.chat_none")]
-        body += ["", t.t("gremio.chat_hint")]
+        body += ["", t.t("gremio.chat_hint"), status_text]
         actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="guild", label=t.t("menu.back"))]
         return View(kind="guild_chat", title=t.t("guildmenu.chat_title"), body=body, actions=actions, notice=notice)
 
