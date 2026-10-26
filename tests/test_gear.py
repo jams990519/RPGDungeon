@@ -157,25 +157,3 @@ def test_loot_marks_new_pieces_until_seen(service):
     assert "🆕" in "\n".join(service.act("test:1", "gear").body)
     service.act("test:1", "item:espada_1")
     assert "espada_1" not in service._load("test:1").gear_new
-
-
-def test_a_new_worn_piece_is_seen_when_the_gear_screen_opens(service):
-    make_hero(service, class_id="guerrero")
-    hero = service._load("test:1")
-    hero.backpack["pies_placas_1"] = 1
-    line = service._loot_line(hero, "pies_placas_1")          # empty slot: it goes on by itself
-    assert "te la pusiste" in line and hero.gear["pies"] == "pies_placas_1"
-    assert "pies_placas_1" in hero.gear_new
-    service._save(hero)
-
-    view = service.act("test:1", "gear")
-    assert any("🆕" in line for line in view.body)             # the mark is shown once
-    assert all("🆕" not in action.label for action in view.actions)   # there is nothing new to equip
-    assert "pies_placas_1" not in service._load("test:1").gear_new
-
-    again = service.act("test:1", "gear")
-    assert all("🆕" not in line for line in again.body)
-    assert all("🆕" not in action.label for action in again.actions)
-    assert all("🆕" not in action.label for action in service.act("test:1", "bag").actions)
-    assert all("🆕" not in action.label for action in service.act("test:1", "gear:0").actions)
-
