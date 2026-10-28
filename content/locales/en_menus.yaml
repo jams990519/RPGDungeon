@@ -57,9 +57,8 @@ manage:
   guild: '🛡️ Guild: the members, ✏️ the name, 🚪 leaving and the camp''s guild.'
   defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
 hero_card:
-    global_chat_invite: "💬 Join the global chat: https://t.me/+ljZ8QIYYDQFhYTM1"
-    points: '✨ Talent points: {n} — spend them in 🌟 Talents'
-
+  global_chat_invite: "💬 Join the global chat: https://t.me/+ljZ8QIYYDQFhYTM1"
+  points: '✨ Talent points: {n} — spend them in 🌟 Talents'
   hp: '❤️ Health: {hp}/{max_hp}{timer}'
   hp_timer: ' (full in {time})'
   energy: '⚡ Energy: {energy}/{max}{timer}'

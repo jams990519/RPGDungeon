@@ -69,9 +69,8 @@ manage:
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
 
 hero_card:
-    global_chat_invite: "💬 Únete al chat global: https://t.me/+ljZ8QIYYDQFhYTM1"
-    points: "✨ Puntos de talento: {n} — ponlos en 🌟 Talentos"
-
+  global_chat_invite: "💬 Únete al chat global: https://t.me/+ljZ8QIYYDQFhYTM1"
+  points: "✨ Puntos de talento: {n} — ponlos en 🌟 Talentos"
   hp: "❤️ Vida: {hp}/{max_hp}{timer}"
   hp_timer: " (llena en {time})"
   energy: "⚡ Energía: {energy}/{max}{timer}"
