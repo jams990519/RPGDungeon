@@ -62,6 +62,8 @@ gremio:
   offline: "⚪ {ago}"
   messages_title: "📢 Últimos mensajes:"   # [ES] sin uso desde la 0.39.4 (D-302: 📢 Chat es un botón)
   msg_line: "💬 {name}: {text}"
+  chat_toggle_button: "🔔 Notificaciones del chat"
+  chat_notif_status: "📢 Notificaciones del chat: {status}"
   codes_hint: "Toca el código de un miembro (/m1) para ver su tarjeta."
   msg_button: "📢 Mensaje"
   fund_button: "💰 Fondo"   # [ES] sin uso desde la 0.39.4 (D-302: guildmenu.gfunds_button)
