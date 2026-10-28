@@ -549,7 +549,6 @@ class GremioMixin:
                   "gfcraft": lambda: self._fund_craft_toggle(hero),         # D-322: 🔓 / 🔒 the fund for the professions
                   "gflog": lambda: self._fund_log_view(hero),               # D-322: 📜 Quién usó qué
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
-                  "gchat_toggle": lambda: self._guild_chat_toggle(hero) 
         if action_id in routes:
             return routes[action_id]()
         if action_id == "gleave!":
@@ -573,7 +572,7 @@ class GremioMixin:
             return prefixed[head]()
         return self._gremio_view(hero)
 
-    def _guild_chat_toggle(self,hero: Hero) -> View:data = self.store.get("hero", hero.id) or {} enabled = not bool(data.get(data.get"chat_notifications", True)) 
+    def _guild_chat_toggle(self,hero: Hero) -> View:data = self.store.get("hero", hero.id) or {} enabled = not bool(data.get("chat_notifications", True)) 
         data["chat_notifications"] = enabled
         self.store.put("hero", hero.id, data)
         notice = self.texts.t("gremio.chat_notif_status", status="ON" if enabled else "OFF")
@@ -849,7 +848,8 @@ class GremioMixin:
         body = [t.t("guildmenu.chat_intro", hours=int(self._gremio_cfg().get("chat_hours", 24))), ""]
         body += lines or [t.t("guildmenu.chat_none")]
         body += ["", t.t("gremio.chat_hint"), status_text]
-        actions = [Action(id="gchat_toggle","gmsg", label=t.t("gremio.msg_button")),Action(id="gchat_toggle", label=t.t("gremio.chat_toggle_button")), Action(id="guild", label=t.t("menu.back"))]
+        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")),
+                   Action(id="gchat_toggle", label=t.t("gremio.chat_toggle_button")), Action(id="guild", label=t.t("menu.back"))]
         return View(kind="guild_chat", title=t.t("guildmenu.chat_title"), body=body, actions=actions, notice=notice)
 
     def _gremio_none_view(self, hero: Hero, notice: str | None = None) -> View:
