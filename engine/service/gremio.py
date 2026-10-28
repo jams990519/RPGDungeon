@@ -204,7 +204,7 @@ ARMORY_OUT_RE = re.compile(r"^/t_?(\d{1,2})(@\w+)?$")
 # Guild names follow the camp names (the camp takes the guild's name when it is founded). [ES] Igual que CAMP_NAME_RE.
 GREMIO_NAME_RE = re.compile(r"^[^\W_][\w '\-]{2,23}$", re.UNICODE)
 # Button ids (or prefixes) that _gremio_action routes (menus: they also work while busy). [ES] Si cambian, cambian los botones.
-GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greqs", "ginvite:", "gmsg", "gchat_tggle", "gfund", "gmeet", "gzones",
+GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greqs", "ginvite:", "gmsg", "gfund", "gmeet", "gzones",
                   "gmeetset", "gfound", "gfoundx", "gleave", "gmem:", "goff:", "glead:", "glead!:", "gkick:", "gkick!:",
                   "garm",        # D-290: ⚔️ Armería
                   "ghelp:",      # D-289: 🤝 Hacer ayudante / ✖️ Quitar ayudante (the founder, from a member's card)
@@ -218,13 +218,6 @@ GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:",   # D-280: "cinv:" = the 
                   "cwait:")                              # D-294: the guild's invitation while its camp is full
 EPS = 1e-6
 
-def _guild_chat_toggle(self, hero: Hero) -> View:
-    data = self.store.get("hero", hero.id) or {}
-    enabled = not bool(data.get("chat_notifications", True))
-    data["chat_notifications"] = enabled
-    self.store.put("hero", hero.id, data)
-    notice = self.texts.t("gremio.chat_notif_status", status="ON" if enabled else "OFF")
-    return self._guild_chat_view(hero, notice=notice)
 
 def _busy_kinds() -> tuple[str, ...]:
     """The activities that keep a hero present in its zone with the chat closed (game.PRESENT_BUSY, D-96)."""
@@ -544,7 +537,6 @@ class GremioMixin:
                   "gmembers": lambda: self._guild_members_view(hero),       # D-302: 👥 Miembros
                   "gfunds": lambda: self._guild_funds_view(hero),           # D-302: 💰 Fondos (before "gfund": its prefix)
                   "gchat": lambda: self._guild_chat_view(hero),             # D-302: 📢 Chat
-                  "gchat_toggle": lambda: self._guild_chat_toggle(hero),   
                   "gfcraft": lambda: self._fund_craft_toggle(hero),         # D-322: 🔓 / 🔒 the fund for the professions
                   "gflog": lambda: self._fund_log_view(hero),               # D-322: 📜 Quién usó qué
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
@@ -570,12 +562,6 @@ class GremioMixin:
         if head in prefixed:
             return prefixed[head]()
         return self._gremio_view(hero)
-
-    def _guild_chat_toggle(self,hero: Hero) -> View:data = self.store.get("hero", hero.id) or {} enabled = not bool(data.get("chat_notifications", True)) 
-        data["chat_notifications"] = enabled
-        self.store.put("hero", hero.id, data)
-        notice = self.texts.t("gremio.chat_notif_status", status="ON" if enabled else "OFF")
-            return self._guild_chat_view(hero, notice=notice)
 
     def _gremio_view(self, hero: Hero, notice: str | None = None) -> View:
         """🛡️ Gremio before a camp: name, leader, founding and meeting point on top; members, fund and chat behind buttons (D-302).
@@ -842,9 +828,8 @@ class GremioMixin:
         lines = self._chat_lines((record or camp).get("messages") or [])
         body = [t.t("guildmenu.chat_intro", hours=int(self._gremio_cfg().get("chat_hours", 24))), ""]
         body += lines or [t.t("guildmenu.chat_none")]
-        body += ["", t.t("gremio.chat_hint"), status_text]
-        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")),
-                   Action(id="gchat_toggle", label=t.t("gremio.chat_toggle_button")), Action(id="guild", label=t.t("menu.back"))]
+        body += ["", t.t("gremio.chat_hint")]
+        actions = [Action(id="gmsg", label=t.t("gremio.msg_button")), Action(id="guild", label=t.t("menu.back"))]
         return View(kind="guild_chat", title=t.t("guildmenu.chat_title"), body=body, actions=actions, notice=notice)
 
     def _gremio_none_view(self, hero: Hero, notice: str | None = None) -> View:
