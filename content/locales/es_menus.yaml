@@ -68,7 +68,7 @@ manage:
   guild: "🛡️ Gremio: los miembros, ✏️ el nombre, 🚪 salir y el gremio del campamento."
   defend: "🛡️ ¡Oleada en curso! Toca 🛡️ Defender y pelea una vez."
 
-  hero_card:
+hero_card:
     global_chat_invite: "💬 Únete al chat global: https://t.me/+ljZ8QIYYDQFhYTM1"
     points: "✨ Puntos de talento: {n} — ponlos en 🌟 Talentos"
 
