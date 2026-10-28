@@ -55,8 +55,6 @@ gremio:
   offline: "⚪ {ago}"
   messages_title: "📢 Latest messages:"
   msg_line: "💬 {name}: {text}"
-  chat_toggle_button: "🔔 Chat notifications"
-  chat_notif_status: "📢 Chat notifications: {status}"
   codes_hint: "Tap a member's code (/m1) to see their card."
   msg_button: "📢 Message"
   fund_button: "💰 Fund"
