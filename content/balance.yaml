@@ -72,7 +72,7 @@ invite:                      # [ES] invitar jugadores da energía (D-65): se pag
   reward_level: 1
   cap_factor: 2              # [ES] la energía extra puede llegar hasta 2 × el máximo
 
-community:                   # [ES] D-350 (0.63.1): el chat global de jugadores (un grupo de Telegram que el dueño administra)
+community:                   # [ES] D-350 (0.63.1): el chat global de jugadores (enlace comprobado por el dueño el 1-nov-2026)
   # [ES] Sale al pie de 👤 Héroe en los tres clientes (engine/service/game.py _hero_view). Vacío ("") = no se muestra.
   # Es un enlace público para jugadores: nunca poner aquí el chat de informes ni nada del servidor (D-345).
   global_chat_url: "https://t.me/+ljZ8QIYYDQFhYTM1"
