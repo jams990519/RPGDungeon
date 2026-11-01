@@ -63,7 +63,7 @@ energy:                      # [ES] energía para toda acción fuera del combate
   per_move: 0                # [ES] D-190 (confirmada): moverse entre zonas no gasta energía, solo tiempo (antes 1 por zona, D-78). Subirlo vuelve a cobrar cada zona del viaje
   per_explore: 1             # [ES] cada exploración
   per_gather: 1              # [ES] cada recolección
-  batch: [5, 10, 20, 40]     # [ES] D-87: cuánta energía gastar seguido al explorar o recolectar (más "todo"); moverse no va en lote
+  batch: [1, 5, 10, 20, 40]  # [ES] D-87: cuánta energía gastar seguido al explorar o recolectar (más "todo"); moverse no va en lote. D-351 (0.63.1): el 1, de a una vuelta
   version: 2                 # [ES] subirlo llena la energía de todos una vez (0.6.1: todos a 50). Nunca toca el progreso
 
 invite:                      # [ES] invitar jugadores da energía (D-65): se paga apenas el invitado entra con el enlace y crea su héroe
@@ -378,7 +378,7 @@ hunt:                        # [ES] D-106 (provisional): 🏹 Cazar en la zona (
     prey_per_hunter: 3       # [ES] meta de presas entre todos = 3 × cazadores que se unieron (contando al menos 2)
     min_hunters: 2           # [ES] el premio del final pide al menos 2 cazadores: una partida de uno solo no lo da
     reward: {xp: 40, gold: 20}   # [ES] si juntan la meta, cada cazador con al menos 1 presa gana 40 de experiencia y 20 🥉 (chico: como una presa más)
-  batch: [4, 10, 20, 40]     # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), cuánta energía gastar cazando en lote (más "todo"); cada presa cuesta hunt.energy, así 4 = 2 presas y 40 = 20
+  batch: [2, 4, 10, 20, 40]  # [ES] D-114: con ⚔️ Peleas automáticas (⚙️ Opciones), cuánta energía gastar cazando en lote (más "todo"); cada presa cuesta hunt.energy, así 4 = 2 presas y 40 = 20. D-351 (0.63.1): el 2 = una sola presa (un 1 no alcanzaría para ninguna)
   batch_minutes: 16          # [ES] D-114: cuánto tarda cada presa del lote (8 min por ⚡, como recolectar). Cazar de a una presa, a mano, sigue siendo enseguida
 
 settlement:                  # [ES] D-98: el Claro es el campamento base y NO crece. La etapa guardada queda fija (decide la posada y las zonas del Claro); "needs" ya no se usa y queda solo como historia. No borrar: los ids de etapa son estables

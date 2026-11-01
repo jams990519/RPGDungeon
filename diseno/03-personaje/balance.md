@@ -1251,6 +1251,17 @@ El dueño: "los bosques deberían tener, las montañas deberían tener, o sea, e
 
 > **Desde la 0.42 (D-305)** las dos cosas están en el juego (abajo).
 
+### Noviembre de 2026 (1-nov): la cantidad más chica de los lotes es una sola vuelta (0.63.1, D-351 provisional)
+
+Idea de arkensaw203 (autorizado por el dueño, que mandó su pull request). Su cambio agregaba un 1 a las dos listas y dejó el bot caído por la sangría rota; aquí va bien escrito y con el 2 para cazar, porque cada presa cuesta 2 ⚡ (D-108) y un 1 no alcanzaría para ninguna.
+
+| Qué (`balance.yaml`) | Antes | Ahora |
+|---|---|---|
+| `energy.batch` (explorar, recolectar, talar, pescar) | ⚡ 5, 10, 20, 40 o todo | ⚡ **1**, 5, 10, 20, 40 o todo |
+| `hunt.batch` (cazar en lote) | ⚡ 4, 10, 20, 40 o todo | ⚡ **2** (una presa), 4, 10, 20, 40 o todo |
+
+**Por qué no cambia el balance:** lo que da cada vuelta y lo que cuesta son iguales; solo se puede hacer una vuelta sola (útil con poca energía o para probar una zona). **Lo que queda por mirar:** si los lotes de 1 llenan el informe de acciones sueltas.
+
 ### Octubre de 2026 (31-oct): vender desde cualquier lugar, con precios por niveles (0.63, D-346 confirmada; D-347 provisional)
 
 El dueño: "que los jugadores puedan vender directamente sin necesidad de llegar al campamento... a un precio estimado; si van al campamento, otro precio; y si va a la fogata, otro precio. Dale niveles de importancia". Él eligió los cuatro números; cómo se cuentan lo eligió Claude.

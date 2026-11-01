@@ -2796,13 +2796,14 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         return self.content.balance[kind]["minutes"]
 
     def _amount_view(self, hero: Hero, kind: str, page: int) -> View:
-        """Choose how much energy to spend in a row (5, 10, 20, 40 or all) — or cancel (D-87).
+        """Choose how much energy to spend in a row (1, 5, 10, 20, 40 or all; a hunt 2, 4, 10, 20, 40) — or cancel (D-87, D-351).
 
         [ES]
         Qué hace: la pantalla "¿cuánta energía gastas?" de 🔎 Explorar, 🧺 Recolectar, 🪓 Talar (D-305, "chop": recolectar
         solo 🪵 madera) y, con ⚔️ Peleas automáticas, de
         🏹 Cazar en lote (D-114: hunt.batch, cada presa cuesta hunt.energy). D-189 (pedido del dueño): todas las cantidades a
-        la vez, como botoncitos uno al lado del otro con solo el número (5, 10, 20, 40 y "Todo" si alcanza para más), y un
+        la vez, como botoncitos uno al lado del otro con solo el número (1, 5, 10, 20, 40 y "Todo" si alcanza para más; el 1
+        desde la 0.63.1, D-351, idea de arkensaw203; al cazar el más chico es 2, una presa), y un
         botón ancho ❌ Cancelar abajo (View.layout = [n, 1]); el tiempo de cada cantidad va en una línea del texto ("⏱️ 5 → 50
         min · 10 → 1 h 40 min..."). Ya no hay páginas (▶️ Más): "amt:" muestra lo mismo. Dice además qué pasa si sale una
         pelea (⚙️ Opciones). Con un 👹 campamento enemigo en pie en la zona (D-112) no se explora ni se recolecta: vuelve a
@@ -12899,7 +12900,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
 
         [ES] D-333 (0.57): cada línea dice su durabilidad (🔧 84/100; ⚠️ gastada o dañada, y una dañada "sin bonos"), un aviso si
         algo está gastado o dañado, y el botón 🔧 Reparar cuando algo necesita reparación, tienes un 📜 encargo o hay encargos que
-        puedes hacer (5 botones como mucho con el 🌰 Recuerdo: EXTRA_BUTTON_KINDS "gear_worn"). Pruebas: tests/test_gear.py y
+        puedes hacer (5 botones como mucho con el 🌰 Recuerdo: EXTRA_BUTTON_KINDS "gear_worn"). D-351 (0.63.1): la pieza que se
+        puso sola sale 🆕 aquí una vez y deja de ser nueva (antes la marca quedaba para siempre). Pruebas: tests/test_gear.py y
         tests/test_desgaste_reparacion.py."""
         t = self.texts
         bal = self.content.balance
@@ -12917,6 +12919,10 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
                                 stats=f"{stats} · {self._dur_tag(rec)}" if durability.wears(item) else stats))
         if not body:
             body.append(t.t("gear.nothing_worn"))
+        # D-351 (0.63.1, arkensaw203's fix): a piece that went on by itself (_loot_line) is shown 🆕 here once and is then
+        # seen; before, it stayed 🆕 forever on 🎒 Mochila and 🛡️ Equipo, because only 🔁 Equipar (the loose pieces) cleared it.
+        for item_id in [i for i in hero.gear_new if i in hero.gear.values() and hero.backpack.get(i, 0) <= 0]:
+            hero.gear_new.remove(item_id)
         body += ["", t.t("gear.total", stats=self._gear_stats_text(gear_bonus(self.content.items, hero, self.content.classes, self.content.balance)))]
         loose = sum(n for i, n in hero.backpack.items() if self.content.items.get(i, {}).get("kind") == "gear")
         body.append(t.t("gear.in_bag", n=loose))
