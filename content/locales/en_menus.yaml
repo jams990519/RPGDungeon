@@ -58,6 +58,7 @@ manage:
   defend: 🛡️ Wave underway! Tap 🛡️ Defend and fight once.
 hero_card:
   points: '✨ Talent points: {n} — spend them in 🌟 Talents'
+  global_chat: "💬 Players' global chat: {url}"
   hp: '❤️ Health: {hp}/{max_hp}{timer}'
   hp_timer: ' (full in {time})'
   energy: '⚡ Energy: {energy}/{max}{timer}'

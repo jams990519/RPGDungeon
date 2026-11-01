@@ -219,7 +219,8 @@ GREMIO_ACTIONS = ("players", "pcard:", "gnew", "glist", "gcard:", "greq:", "greq
                   "cwjoin:",     # D-294: 🏕️ Unir al campamento a guild member who waits for room
                   "gwleave",     # D-294: 🚪 Salir del gremio while waiting for room ("gwleave!" confirms)
                   "gmembers", "gfunds", "gchat",   # D-302: 👥 Miembros, 💰 Fondos and 📢 Chat (the guild's submenus)
-                  "gfcraft", "gflog")              # D-322: 🔓/🔒 the fund for the professions and 📜 Quién usó qué
+                  "gfcraft", "gflog",              # D-322: 🔓/🔒 the fund for the professions and 📜 Quién usó qué
+                  "gmute")                         # D-350: 🔕/🔔 the chat's pushes off or on (prefs "chat_mute")
 # Answers that arrive as pushes: handled before the combat check, like "join:". [ES] Las respuestas que llegan como aviso.
 GREMIO_ANSWERS = ("gans:", "ginv:", "gcamp:", "cinv:",   # D-280: "cinv:" = the camp's invitation by code
                   "cwait:")                              # D-294: the guild's invitation while its camp is full
@@ -546,6 +547,7 @@ class GremioMixin:
                   "gchat": lambda: self._guild_chat_view(hero),             # D-302: 📢 Chat
                   "gfcraft": lambda: self._fund_craft_toggle(hero),         # D-322: 🔓 / 🔒 the fund for the professions
                   "gflog": lambda: self._fund_log_view(hero),               # D-322: 📜 Quién usó qué
+                  "gmute": lambda: self._guild_chat_mute(hero),             # D-350: 🔕 / 🔔 the chat's pushes
                   "gleave": lambda: self._gremio_leave(hero, confirmed=False)}
         if action_id in routes:
             return routes[action_id]()
@@ -834,8 +836,10 @@ class GremioMixin:
         del gremio; después, los del campamento (D-285, D-291; también para quien espera lugar, D-294). Muestra _chat_lines,
         "no hay mensajes del último día" si no hay, y la pista "💬 Escribe cualquier mensaje…". Botones: 📢 Mensaje ("gmsg") y
         ↩️ Volver al gremio. D-346 (0.63): arriba, el 📣 anuncio vigente (permissions.py _gnote_lines) y, para el fundador, un 🤝
-        asistente o quien tiene 👥 Gente y chat, el botón 📣 Anuncio ("gnote"): 3 botones. Sin gremio, la pantalla del gremio. La llaman: el botón 📢 Chat ("gchat"), el del aviso de un
-        mensaje y _gremio_post. Si cambia, afecta: tests/test_submenus_campamento_gremio.py y tests/test_chat_del_gremio.py."""
+        asistente o quien tiene 👥 Gente y chat, el botón 📣 Anuncio ("gnote"). D-350 (0.63.1): el botón 🔕 Silenciar avisos /
+        🔔 Activar avisos ("gmute", _guild_chat_mute) y, si están apagados, una línea que lo recuerda. Sin gremio, la pantalla del gremio. La llaman: el botón 📢 Chat ("gchat"), el del aviso de un
+        mensaje y _gremio_post. Si cambia, afecta: tests/test_submenus_campamento_gremio.py, tests/test_chat_del_gremio.py y
+        tests/test_chat_silenciado.py."""
         t = self.texts
         record = self._my_gremio(hero)
         camp = None if record else self._guild_camp(hero)
@@ -846,9 +850,13 @@ class GremioMixin:
         body += [t.t("guildmenu.chat_intro", hours=int(self._gremio_cfg().get("chat_hours", 24))), ""]
         body += lines or [t.t("guildmenu.chat_none")]
         body += ["", t.t("gremio.chat_hint")]
+        muted = self._chat_muted(hero.id)
+        if muted:                                       # D-350: the messages still land here, only the pushes stop
+            body.append(t.t("gremio.muted_line"))
         actions = [Action(id="gmsg", label=t.t("gremio.msg_button"))]
         if camp and self._camp_can(camp, hero.id, "people"):    # D-346: 📣 Anuncio (the founder, 🤝 or 👥)
             actions.append(Action(id="gnote", label=t.t("perm.note_button")))
+        actions.append(Action(id="gmute", label=t.t("gremio.unmute_button" if muted else "gremio.mute_button")))   # D-350
         actions.append(Action(id="guild", label=t.t("menu.back")))
         return View(kind="guild_chat", title=t.t("guildmenu.chat_title"), body=body, actions=actions, notice=notice)
 
@@ -1613,6 +1621,27 @@ class GremioMixin:
         self._guild_chat(hero, text)
         return self._guild_chat_view(hero, notice=t.t("gremio.msg_sent"))
 
+    def _chat_muted(self, account_id: str) -> bool:
+        """True when this player turned off the pushes of the guild chat (prefs "chat_mute", D-350).
+
+        [ES] Qué hace: dice si el jugador apagó los avisos del chat del gremio con 🔕 Silenciar avisos. Se guarda en "prefs" (el
+        mismo registro que el idioma y la zona horaria), así que sigue igual si cambia de gremio o de campamento. La llaman:
+        _guild_chat (a quién avisar) y _guild_chat_view (la línea y el botón). Si cambia, afecta: quién recibe los mensajes."""
+        return bool((self.store.get("prefs", account_id) or {}).get("chat_mute"))
+
+    def _guild_chat_mute(self, hero: Hero) -> View:
+        """🔕 Silenciar avisos / 🔔 Activar avisos: flip the guild chat's pushes for this player and show 📢 Chat (D-350).
+
+        [ES] Qué hace: apaga o prende los avisos de los mensajes del gremio (pedido de arkensaw203, autorizado por el dueño el
+        31-oct-2026). Solo los mensajes del chat: los avisos importantes (invitaciones, permisos, 📣 anuncios, oleadas) siguen
+        llegando. Los mensajes se siguen guardando y se leen en 📢 Chat. La llama: el botón "gmute" de 📢 Chat. Si cambia,
+        afecta: tests/test_chat_silenciado.py."""
+        t = self.texts
+        prefs = self.store.get("prefs", hero.id) or {}
+        muted = not prefs.get("chat_mute")
+        self.store.put("prefs", hero.id, dict(prefs, chat_mute=muted))
+        return self._guild_chat_view(hero, notice=t.t("gremio.muted" if muted else "gremio.unmuted"))
+
     def _guild_chat(self, hero: Hero, text: str) -> str | None:
         """A message to the whole guild (or camp): kept with the last few and pushed to every mate; None without a guild.
 
@@ -1623,7 +1652,9 @@ class GremioMixin:
         ser recibidos por el resto de jugadores"): cualquier texto suelto que escribe un miembro (que no sea un comando ni la
         respuesta a una pantalla que pide texto) llega a todos. Devuelve el aviso para quien lo mandó, o None si no tiene
         gremio. D-302 (0.39.4): se guardan los últimos 50 (gremio.messages_kept) para la pantalla 📢 Chat (_guild_chat_view, los
-        del último día) y el botón del aviso abre 📢 Chat. La llaman: text() (el texto suelto) y _gremio_post (📢 Mensaje).
+        del último día) y el botón del aviso abre 📢 Chat. D-350 (0.63.1): el aviso no le llega a quien silenció el chat
+        (_chat_muted); el mensaje igual se guarda y la cuenta "enviado a N" incluye a todos, porque todos lo pueden leer.
+        La llaman: text() (el texto suelto) y _gremio_post (📢 Mensaje).
         Si cambia, afecta: el chat del gremio.
         """
         t = self.texts
@@ -1646,7 +1677,8 @@ class GremioMixin:
             camp["messages"] = ((camp.get("messages") or []) + [entry])[-keep:]
             self.store.put("camp", f"{camp['x']}:{camp['y']}", camp)
             name = camp["name"]
-        self._push_each(mates, lambda: View(
+        listeners = [mate for mate in mates if not self._chat_muted(mate)]     # D-350: 🔕 muted mates read it in 📢 Chat
+        self._push_each(listeners, lambda: View(
             kind="gremio_message", title=t.t("gremio.msg_push_title", name=name),
             body=[t.t("gremio.msg_line", name=hero.name, text=text)],
             actions=[Action(id="gchat", label=t.t("guildmenu.chat_button"))]))      # D-302: the push opens 📢 Chat

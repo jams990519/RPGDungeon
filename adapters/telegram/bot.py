@@ -18,6 +18,8 @@ juega solo por privado; en un grupo el bot no juega: a un comando responde "🔒
 a un botón viejo le muestra ese aviso aparte y la charla del grupo la ignora. D-275 (0.35): cada 💬 Feedback llega al chat de
 informes como una tarjeta (adapters/feedback_desk.py) con el @ del jugador, su tipo, prioridad y paso, y botones que el equipo
 toca para moverlo hasta ✔️ Resuelto (on_desk_button); son los únicos botones de un grupo que el bot atiende.
+D-350 (0.63.1): un botón tocado mientras el bot estaba caído llega tarde y Telegram no deja contestarlo; ya no sale como
+error (answer_button).
 Documento de diseño: diseno/01-plataforma/telegram.md; web-y-multiplataforma.md §4 (identidad)
 Módulo: adaptador de Telegram
 Depende de: aiogram, engine.service, engine.core, adapters.storage, adapters.telegram.render
@@ -213,6 +215,19 @@ class FloodGuard(BaseMiddleware):
         return None
 
 
+async def answer_button(query: CallbackQuery) -> None:
+    """Stop a button's spinner; a press too old to answer (it waited while the bot was down) is not an error (D-350).
+
+    [ES] Qué hace: le contesta a Telegram que el botón ya se atendió. Si el bot estuvo caído o reiniciando, los botones que
+    se tocaron mientras tanto llegan tarde y Telegram ya no deja contestarlos ("query is too old"): la jugada igual se hizo
+    y la pantalla igual se cambió, así que solo se anota en el registro, sin el error largo que antes salía en Railway (visto
+    el 1-nov-2026 después de una caída). La llaman: on_button y on_desk_button. Si cambia, afecta: tests/test_seguridad.py."""
+    try:
+        await query.answer()
+    except TelegramBadRequest as error:
+        log.info("button answered too late: %s", error)
+
+
 def in_group(query: CallbackQuery) -> bool:
     """A button pressed on a message that lives in a group or channel, not in the private chat (D-262)."""
     return query.message is not None and query.message.chat.type != ChatType.PRIVATE
@@ -246,7 +261,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
         except TelegramBadRequest as error:
             if "not modified" not in str(error):
                 log.exception("could not edit feedback card %s", parsed[0])
-        await query.answer()
+        await answer_button(query)
 
     @dp.message(F.chat.type != ChatType.PRIVATE)
     async def on_group_message(message: Message) -> None:
@@ -311,7 +326,7 @@ def register(dp: Dispatcher, service: GameService) -> None:
         except TelegramBadRequest as error:
             if "not modified" not in str(error):
                 await send_view(query.bot, query.from_user.id, view)
-        await query.answer()
+        await answer_button(query)                 # D-350: a press that waited while the bot was down is not an error
         if view.meta.get("menu_changed"):          # D-250: a new language also changes the bottom keyboard
             await query.bot.send_message(query.from_user.id, "🌅 Lost Realms", reply_markup=menu_keyboard(service, account))
 

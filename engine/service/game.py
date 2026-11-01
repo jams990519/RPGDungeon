@@ -12362,7 +12362,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         defensa, ⚡ energía con cuánto falta para el próximo punto, recurso, monedas, mochila, oficios (/oficios), estado e
         invitación. Botones (D-192, E-132: hasta 8 de 2 en 2): 🎒 Mochila, 🌟 Talentos, 🩺 Salud, 📊 Estadísticas,
         🎛️ Barra de combate, ⚒️ Oficios, 📔 Diario (E-130: el diario pasó al héroe) y 🎭 Origen (E-131: se elige cuando
-        quieras; si ya lo tienes, lo muestra). Ya no ofrece el origen solo al abrirse: es siempre el centro.
+        quieras; si ya lo tienes, lo muestra). Ya no ofrece el origen solo al abrirse: es siempre el centro. D-350 (0.63.1): al
+        pie, después del código de jugador, el enlace al 💬 chat global (balance.yaml community.global_chat_url; vacío = no sale).
         La llaman: el botón 👤 Héroe del menú de abajo, /hero y los ↩️ Volver de sus pantallas.
         Si cambia, afecta: tests/test_gear.py, tests/test_menus_y_dudas.py y las pruebas que leen la ficha (test_backpack,
         test_professions, test_story, test_service).
@@ -12418,6 +12419,9 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         cfg = self.content.balance["invite"]
         body += ["", t.t("invite.line", code=self.invite_code(hero.id), n=hero.invites, bonus=cfg["bonus_referrer"], level=cfg["reward_level"]),
                  t.t("gremio.code_line", code=self.player_code(hero.id))]        # D-280: 🆔 your player code, for /inv_<code>
+        chat_url = str((self.content.balance.get("community") or {}).get("global_chat_url") or "").strip()
+        if chat_url:                                    # D-350 (0.63.1): 💬 the players' global chat
+            body.append(t.t("hero_card.global_chat", url=chat_url))
         body += self._tutorial_hint(hero)
         actions = [Action(id="bag", label=t.t("bag.button_new" if hero.gear_new else "menu.bag")),
                    Action(id="talents", label=t.t("talents.button", n=hero.points)),

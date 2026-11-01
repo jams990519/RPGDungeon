@@ -70,6 +70,7 @@ manage:
 
 hero_card:
   points: "✨ Puntos de talento: {n} — ponlos en 🌟 Talentos"
+  global_chat: "💬 Chat global de jugadores: {url}"   # [ES] D-350 (0.63.1): el enlace sale de balance.yaml community.global_chat_url
   hp: "❤️ Vida: {hp}/{max_hp}{timer}"
   hp_timer: " (llena en {time})"
   energy: "⚡ Energía: {energy}/{max}{timer}"

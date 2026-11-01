@@ -72,6 +72,11 @@ invite:                      # [ES] invitar jugadores da energía (D-65): se pag
   reward_level: 1
   cap_factor: 2              # [ES] la energía extra puede llegar hasta 2 × el máximo
 
+community:                   # [ES] D-350 (0.63.1): el chat global de jugadores (un grupo de Telegram que el dueño administra)
+  # [ES] Sale al pie de 👤 Héroe en los tres clientes (engine/service/game.py _hero_view). Vacío ("") = no se muestra.
+  # Es un enlace público para jugadores: nunca poner aquí el chat de informes ni nada del servidor (D-345).
+  global_chat_url: "https://t.me/+ljZ8QIYYDQFhYTM1"
+
 talents:                     # [ES] talentos por nivel (D-68, D-79): 1 punto por nivel en una especialización de tu clase
   # [ES] Puntos en una especialización para desbloquear sus 8 habilidades (D-79). Con todo en una sola,
   # la 4.ª llega al nivel 11, la 5.ª al 17, la 6.ª al 25, la 7.ª al 35 y la 8.ª al 47 (de 100 niveles).

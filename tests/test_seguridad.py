@@ -5,8 +5,9 @@ the repository.
 Para qué sirve: comprueba las protecciones de D-345 (25-oct-2026, intento de ataque): el freno FloodGuard (más de
 FLOOD_MAX_UPDATES en FLOOD_WINDOW_SECONDS se ignora y el aviso sale como mucho una vez por minuto), que sin
 RPG_REPORTS_CHAT_ID no hay chat de informes (el número ya no está en el código) y que el repositorio, que es público, no
-tiene tokens de Telegram, claves ni identificadores de Railway.
-Lo que prueba: adapters/telegram/bot.py (FloodGuard, report_chats) y todos los archivos del repositorio.
+tiene tokens de Telegram, claves ni identificadores de Railway. D-350 (0.63.1): un botón tocado mientras el bot estaba
+caído llega tarde y ya no da error (answer_button).
+Lo que prueba: adapters/telegram/bot.py (FloodGuard, report_chats, answer_button) y todos los archivos del repositorio.
 Si falla: alguien subió un dato del servidor o cambió el freno; ver D-345 en diseno/00-vision/decisiones.md.
 """
 
@@ -99,3 +100,14 @@ def test_the_repository_has_no_secrets_nor_server_ids():
                 continue
             found.append(f"{name}: uuid {match[:8]}…")
     assert not found, found
+
+
+def test_a_button_pressed_while_the_bot_was_down_is_not_an_error():
+    # D-350 (0.63.1): after a crash, the presses that waited arrive too old to answer; that is only logged, never raised
+    from aiogram.exceptions import TelegramBadRequest
+
+    class OldButton(SimpleNamespace):
+        async def answer(self, *args, **kwargs):
+            raise TelegramBadRequest(method=None, message="query is too old and response timeout expired")
+
+    asyncio.run(tg.answer_button(OldButton()))

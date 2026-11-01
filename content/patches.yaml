@@ -1243,3 +1243,16 @@ v0_63:
     - "🔑 The founder gives permissions to the members: 🛡️ Guild → 👥 Members → 👔 Managers (only the founder sees it). Tap the permission type (/en1 to /en4), the list of members comes up and with each one's code (/em1) you give it; the same code takes it away. There are four: 🏗️ Building (activate works and choose what is built), ⚒️ Professions (use the fund for professions with the professions they choose), ⚔️ Armory and fund (take from the armory while it is closed and take out of the fund with /fs07 what is left after the works) and 👥 People and chat (accept and invite people and send 📣 announcements)."
     - "🔒 The founder can close the ⚔️ Armory: then only they and whoever has ⚔️ take (leaving pieces stays open). 🤝 Assistants stay as before and whoever leaves the camp loses their permissions. Everyone gets a notice when a permission is given or taken."
     - "👀 👔 Managers shows the founder what needs attention: requests, people waiting for room, works without materials or works not activated. ❓ /d68 and /d69 explain it."
+
+v0_63_1:
+  version: "0.63.1"
+  title: "🔕 Lost Realms 0.63.1: silencia el chat del gremio y únete al chat global"
+  title_en: "🔕 Lost Realms 0.63.1: mute the guild chat and join the global chat"
+  notes:
+    - "🔕 En 🛡️ Gremio → 📢 Chat hay un botón nuevo, 🔕 Silenciar avisos: ya no te llega un aviso por cada mensaje del gremio, pero los mensajes quedan en 📢 Chat para leerlos cuando quieras. 🔔 Activar avisos los vuelve a prender. Los avisos importantes (invitaciones, permisos, 📣 anuncios) siguen llegando."
+    - "💬 En 👤 Héroe, al pie, está el enlace al chat global de jugadores: entra para hablar con todos."
+    - "🛠️ Si tocaste un botón mientras el juego se reiniciaba, ya no se traba."
+  notes_en:
+    - "🔕 In 🛡️ Guild → 📢 Chat there is a new button, 🔕 Mute notices: you no longer get a notice for every guild message, but the messages stay in 📢 Chat to read whenever you like. 🔔 Turn notices on brings them back. Important notices (invitations, permissions, 📣 announcements) still arrive."
+    - "💬 In 👤 Hero, at the bottom, there is the link to the players' global chat: join to talk with everyone."
+    - "🛠️ If you tapped a button while the game was restarting, it no longer gets stuck."

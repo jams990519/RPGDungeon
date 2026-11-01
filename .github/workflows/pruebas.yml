@@ -5,17 +5,23 @@
 #     Si algo falla, el cambio queda marcado en rojo. Para que nadie pueda unir un cambio en rojo hace falta la regla de
 #     main en GitHub (Settings → Branches → "Require status checks to pass"), que pone el dueño.
 #     Lo que nunca va aquí: tokens, claves ni datos del servidor (D-345). No toca Railway.
+#     D-350 (1-nov-2026): también corre la revisión rápida en cada subida directa a main (el 1-nov un cambio subido directo
+#     a main dejó el bot caído 1 h 43 min). Con esto el commit roto sale en rojo; y si el dueño activa en Railway "Wait for
+#     CI" (esperar a GitHub antes de desplegar), Railway no despliega un commit en rojo y el juego sigue con la versión buena.
+#     La suite completa sigue solo en los pull request.
 name: Pruebas
 
 on:
   pull_request:
+    branches: [main]
+  push:
     branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
-  group: pruebas-${{ github.event.pull_request.number }}
+  group: pruebas-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
 jobs:
@@ -44,7 +50,7 @@ jobs:
 
   suite:
     name: Pruebas (parte ${{ matrix.shard }} de 4)
-    if: ${{ !startsWith(github.head_ref, 'claude/') }}
+    if: ${{ github.event_name == 'pull_request' && !startsWith(github.head_ref, 'claude/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:

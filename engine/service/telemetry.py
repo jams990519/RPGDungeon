@@ -78,7 +78,7 @@ CATEGORIES = ("explore", "gather", "fight", "travel", "craft", "market", "camp",
 ACTION_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("menus", ("guides", "guide:", "dudas", "duda:", "home", "refresh", "options", "opt:", "tz", "lang", "fb", "fbk:", "stop",
                "claro", "back", "fallen")),
-    ("social", ("gmsg", "gchat", "players", "pcard:", "bio", "gesture:", "rel:")),
+    ("social", ("gmsg", "gchat", "gmute", "players", "pcard:", "bio", "gesture:", "rel:")),     # D-350: 🔕 "gmute"
     ("dungeon", ("dungeon", "dgo", "dout")),
     ("gather", ("gather", "chop", "fish", "do:gather", "do:chop", "do:fish", "amt:gather", "amt:chop", "amt:fish")),
     ("explore", ("explore", "do:explore", "amt:explore", "recon", "rcn:", "infiltrate", "scrolls", "scr:", "gzones")),

@@ -148,6 +148,11 @@ gremio:
   msg_sent: "📢 Mensaje enviado a todo el gremio."
   chat_sent: "📢 Enviado a tu gremio ({n} {n|compañero|compañeros})."   # [ES] D-285 (0.38.1): el texto suelto de un miembro le llega a todo el gremio
   chat_hint: "💬 Escribe cualquier mensaje en el chat del juego, desde donde estés, y le llega a todo tu gremio."
+  mute_button: "🔕 Silenciar avisos"   # [ES] D-350 (0.63.1): apaga los avisos de los mensajes del chat (prefs "chat_mute")
+  unmute_button: "🔔 Activar avisos"
+  muted_line: "🔕 Tienes silenciados los avisos del chat: los mensajes no te llegan como aviso, pero quedan aquí."
+  muted: "🔕 Listo: ya no te llegan avisos de los mensajes del gremio. Los lees aquí, en 📢 Chat, cuando quieras."
+  unmuted: "🔔 Listo: te vuelven a llegar los mensajes del gremio como aviso."
   fund_title: "💰 Depositar en el fondo del gremio"   # [ES] D-302: la pantalla de 💰 Depositar (la lista es 💰 Fondo del gremio)
   fund_intro: "Deposita desde donde estés: no hace falta llevarlo a ningún lugar. Escribe o toca el código de un material (/f02) y pasa todo lo que llevas de eso."
   fund_found: "Fundar el campamento pide {items}"
