@@ -379,8 +379,9 @@ def test_auto_hunting_goes_in_batches_of_two_energy_per_prey(service, clock, wea
 def test_hunting_batch_stops_properly(service, clock):
     ready(service, level=30, energy=3)
     view = service.act("test:1", "prey")
-    assert ids(view) == ["do:hunt:max", "hunt"] and view.actions[0].label == "Todo"     # D-189: just the amount
-    assert any("todo (2)" in line for line in view.body)                              # the energy and time go in the text
+    # D-351 (0.63.1): 3 ⚡ give one prey, and that is the 2 button (D-189: just the amount); "Todo" only when it is more
+    assert ids(view) == ["do:hunt:2", "hunt"] and view.actions[0].label == "2"
+    assert any("2 → 16 min" in line for line in view.body)                            # the energy and time go in the text
     service.act("test:1", "do:hunt:max")
     assert service._load("test:1").activity["total"] == 1 and service._load("test:1").energy == 1
     pushes = run_batch(service, clock, "test:1", 16, 2)

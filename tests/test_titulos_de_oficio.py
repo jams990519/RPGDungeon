@@ -275,7 +275,7 @@ def test_fishing_gives_only_fish_and_raises_the_fisher(service, clock, content):
     river = _water_zone(service)
     place(service, "test:1", *river, exploration={f"{river[0]}:{river[1]}": 100}, learned=["pescador"])
     screen = service.act("test:1", "fish")
-    assert screen.kind == "batch" and screen.title == "🎣 Pescar" and ids(screen)[0] == "do:fish:5"
+    assert screen.kind == "batch" and screen.title == "🎣 Pescar" and ids(screen)[0] == "do:fish:1"   # D-351: from ⚡ 1
     view = service.act("test:1", "do:fish:10")
     hero = service._load("test:1")
     assert view.title == "🎣 Pescando" and hero.activity["only"] == "pescado" and hero.activity["mode"] == "fish"

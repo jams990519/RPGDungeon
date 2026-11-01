@@ -198,7 +198,7 @@ def test_chat_shows_the_last_day_capped_newest_last_with_the_write_button(servic
     cap = service.content.balance["gremio"]["chat_shown"]
     assert chat.kind == "guild_chat" and len(shown) == cap == 20
     assert shown[-1] == "💬 Bram: m29" and shown[0] == "💬 Bram: m10" and "💬 Bram: viejo" not in chat.body
-    assert ids(chat) == ["gmsg", "gnote", "guild"] and any("le llega a todo tu gremio" in line for line in chat.body)   # D-346: 📣
+    assert ids(chat) == ["gmsg", "gnote", "gmute", "guild"] and any("le llega a todo tu gremio" in line for line in chat.body)   # D-346: 📣; D-350: 🔕
     service.content.balance["gremio"]["chat_max_chars"] = 60                    # long chats: only what fits
     shown = [line for line in service.act("test:1", "gchat").body if line.startswith("💬 Bram:")]
     assert 1 <= len(shown) < 20 and shown[-1] == "💬 Bram: m29" and sum(len(line) + 1 for line in shown) <= 60
@@ -239,7 +239,7 @@ def test_the_guild_before_founding_has_the_same_shape(service):
     assert ids(service.act("test:1", "gfund")) == ["gfunds"]
     service.text("test:2", "Nos vemos")
     chat = service.act("test:1", "gchat")
-    assert "💬 Bram: Nos vemos" in chat.body and ids(chat) == ["gmsg", "guild"]
+    assert "💬 Bram: Nos vemos" in chat.body and ids(chat) == ["gmsg", "gmute", "guild"]     # D-350: 🔕 Silenciar avisos
 
 
 def test_old_buttons_still_work_and_everything_reads_well_in_english(service):

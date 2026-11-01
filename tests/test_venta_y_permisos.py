@@ -326,7 +326,7 @@ def test_what_waits_for_attention(service):
 def test_patch_faq_and_both_languages(service):
     patch = service.content.patches["v0_63"]
     assert patch["version"] == "0.63" and patch["title_en"] and len(patch["notes"]) == len(patch["notes_en"])
-    assert list(service.content.patches)[-1] == "v0_63"
+    assert "v0_63" in service.content.patches                                       # 0.63.1 came after it
     faq = service.content.faq["questions"]
     for code in ("d68", "d69"):
         assert code in faq

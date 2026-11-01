@@ -59,7 +59,7 @@ def test_talar_sits_next_to_gather_where_the_zone_has_wood(service):
     assert labels[1].startswith("🧺 Recolectar") and labels[2].startswith("🪓 Talar")
     screen = service.act("test:1", "chop")
     assert screen.kind == "batch" and screen.title == "🪓 Talar" and screen.layout == [len(screen.actions) - 1, 1]
-    assert ids(screen)[0] == "do:chop:5" and ids(screen)[-1] == "explore_menu"
+    assert ids(screen)[0] == "do:chop:1" and ids(screen)[-1] == "explore_menu"           # D-351 (0.63.1): from ⚡ 1
     assert ids(service.act("test:1", "amt:chop:0")) == ids(screen)
     assert not service.texts.missing
 
