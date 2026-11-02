@@ -4177,8 +4177,8 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         if not data:
             return
         inviter = Hero.from_dict(data)
-        cap = self.content.balance["energy"]["max"] * cfg["cap_factor"]
-        inviter.energy = min(cap, inviter.energy + cfg["bonus_referrer"])
+        # D-345 (bugfix): add to bonus_energy instead of current energy to increase the max cap
+        inviter.bonus_energy = getattr(inviter, "bonus_energy", 0) + cfg["bonus_referrer"]
         inviter.invites += 1
         self._save(inviter)
 
@@ -12553,22 +12553,31 @@ class GameService(StoryMixin, GuideMixin, GremioMixin, MarketMixin, MapScrollMix
         cdef = self._kit(hero)
         stats = hero_stats(cdef, hero.level)
         bonus = cdef.get("talent_bonus", {})
+        
+        # D-345 (bugfix): max energy is base + bonus_energy, clamped by cap_factor
+        base_max = self.content.balance["energy"]["max"]
+        cfg = self.content.balance["invite"]
+        bonus_energy = getattr(hero, "bonus_energy", 0)
+        total_max = min(base_max * cfg["cap_factor"], base_max + bonus_energy)
+        energy_line = t.t("stats.energy", value=hero.energy, max=total_max, per_day=self.content.balance["energy"]["per_day"])
+        
         body = [
             t.t("stats.hp", value=stats["max_hp"]),
             t.t("stats.attack", value=round(stats["attack"], 1)),
             t.t("stats.defense", value=round(stats["armor"] * 100)),
             t.t("stats.initiative", value=round(stats["initiative"])),
             *([t.t("chain.stats_energy", start=self.content.balance["chain"]["energy"]["start"],
-                   per=self.content.balance["chain"]["energy"]["per_turn"])] if cdef.get("system") == "chain" else    # 0.31
+               per=self.content.balance["chain"]["energy"]["per_turn"])] if cdef.get("system") == "chain" else
               [t.t("stats.stamina", value=self.content.balance["combat"]["stamina_max"]),
                t.t("stats.resource", resource=t.t(f"resource.{cdef['resource']}"), value=cdef.get("resource_max", 100))]),
-            t.t("stats.energy", value=hero.energy, max=self.content.balance["energy"]["max"], per_day=self.content.balance["energy"]["per_day"]),
+            energy_line,
             t.t("stats.toxicity", value=self.content.balance["combat"]["toxicity_max"]),
-            t.t("stats.talents_armor" if round(bonus.get("armor", 0) * 100) else "stats.talents",   # D-110: Defensa points add armor
+            t.t("stats.talents_armor" if round(bonus.get("armor", 0) * 100) else "stats.talents",
                 attack=round(bonus.get("attack", 0) * 100), hp=round(bonus.get("hp", 0) * 100), armor=round(bonus.get("armor", 0) * 100)),
             t.t("stats.gear", **self._gear_numbers(cdef.get("gear_bonus", {}))),
         ]
         return View(kind="stats", title=t.t("stats.title"), body=body, actions=[Action(id="hero", label=t.t("menu.back"))])
+
 
     def _item_list(self, items: dict[str, int]) -> str:
         if not items:

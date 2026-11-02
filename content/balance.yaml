@@ -59,7 +59,7 @@ travel:
 
 energy:                      # [ES] energía para toda acción fuera del combate (D-65, D-78)
   max: 50
-  per_day: 40                # [ES] se recupera de a 1, repartido en el día (1 cada 36 min)
+  per_day: 72                # [ES] se recupera de a 1, repartido en el día (1 cada 36 min)
   per_move: 0                # [ES] D-190 (confirmada): moverse entre zonas no gasta energía, solo tiempo (antes 1 por zona, D-78). Subirlo vuelve a cobrar cada zona del viaje
   per_explore: 1             # [ES] cada exploración
   per_gather: 1              # [ES] cada recolección
